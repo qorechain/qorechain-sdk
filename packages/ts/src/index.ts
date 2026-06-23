@@ -1,6 +1,29 @@
+/**
+ * `@qorechain/sdk` public API.
+ *
+ * The exports below are the deliberate, supported surface of the SDK. Start with
+ * {@link createClient} for the high-level composed client; the individual
+ * networks, accounts, query clients, and tx primitives are also exported for
+ * callers who want to compose them directly. Internal helpers are not exported.
+ */
+
+/** SDK version. */
 export const VERSION = "0.1.0";
 
+// Top-level factory: the recommended entrypoint that resolves a network and
+// composes the read clients, fee helper, and a lazy signing entrypoint.
+export { createClient } from "./client";
+export type {
+  QoreChainClient,
+  CreateClientOptions,
+  ConnectTxOptions,
+  ClientFees,
+} from "./client";
+
+// Networks: presets, lookup/list helpers, and config types.
 export * from "./config/networks";
+
+// Utilities: denom conversion and address encoding/validation.
 export * from "./utils/denom";
 export * from "./utils/address";
 
