@@ -110,8 +110,9 @@ export type {
 export { QorClient } from "./query/qor";
 
 // Native transactions: fee estimation, the signer adapter, the tx builder /
-// broadcaster, and the (live-testnet-verification-required) PQC hybrid
-// extension attachment. See each module for details.
+// broadcaster, the low-level PQC hybrid extension encode/attach helpers, and the
+// end-to-end hybrid (classical + PQC) signing/broadcast builder. See each module
+// for details.
 export { estimateFee, STATIC_FALLBACK } from "./tx/fees";
 export type { StdFee, EstimateFeeOptions } from "./tx/fees";
 export { directSignerFromPrivateKey } from "./tx/signer-adapter";
@@ -127,3 +128,10 @@ export type {
 } from "./tx/builder";
 export { encodeHybridExtension, attachHybridExtension } from "./tx/hybrid";
 export type { HybridPlacement, AttachHybridOptions } from "./tx/hybrid";
+export { buildHybridTx, signAndBroadcastHybrid } from "./tx/hybrid-tx";
+export type {
+  BuildHybridTxOptions,
+  BuiltHybridTx,
+  HybridBroadcaster,
+  SignAndBroadcastHybridOptions,
+} from "./tx/hybrid-tx";

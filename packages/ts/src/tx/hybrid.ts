@@ -1,40 +1,36 @@
 /**
- * Attachment of the QoreChain PQC hybrid-signature extension to a native tx.
+ * Encoding and attachment of the QoreChain PQC hybrid-signature extension to a
+ * native tx.
  *
  * ──────────────────────────────────────────────────────────────────────────
- *  ⚠️  LIVE-TESTNET VERIFICATION REQUIRED — DO NOT TREAT AS VERIFIED  ⚠️
+ *  The wallet ↔ chain contract (now known and enforced)
  * ──────────────────────────────────────────────────────────────────────────
- * The classical signing path (see {@link TxClient}) is fully functional and
- * matches what the node's ante handler verifies for a secp256k1 account. The
- * HYBRID path implemented here is BEST-EFFORT, derived from the PUBLIC core
- * sources, which do NOT make the end-to-end wiring unambiguous:
+ * These are low-level encode/attach primitives. The full, contract-correct
+ * hybrid build sequence lives in {@link ../tx/hybrid-tx} ({@link buildHybridTx}
+ * / {@link signAndBroadcastHybrid}) — prefer those for end-to-end signing. This
+ * module documents the on-wire encoding the chain reads:
  *
- *  - `x/pqc/types/hybrid.go` defines the `PQCHybridSignature` struct, its JSON
- *    field tags (`algorithm_id`, `pqc_signature`, `pqc_public_key,omitempty`),
- *    and the type URL `/qorechain.pqc.v1.PQCHybridSignature`.
- *  - `x/pqc/types/codec.go` states the ante handler "extracts it using the type
- *    URL and JSON decoding" — so the extension `Any.value` carries the struct's
- *    Go-JSON encoding (Go marshals `[]byte` as standard base64 strings), NOT a
- *    protobuf message. This module encodes accordingly.
- *  - The verifying decorator `PQCHybridVerifyDecorator` is a PASS-THROUGH STUB
- *    in the public build (`ante_hybrid_stub.go`, build tag `!full`); the real
- *    implementation lives in the private `full` build. Therefore the PUBLIC
- *    source does NOT reveal two things needed to finalize hybrid signing:
- *      1. PLACEMENT: whether the extension goes in `TxBody.extension_options`
- *         or `TxBody.non_critical_extension_options`. We DEFAULT to
- *         `non_critical_extension_options` (the conventional, fee-neutral slot
- *         for signatures that the SDK's default decoder won't reject), and
- *         expose {@link AttachHybridOptions.placement} to switch.
- *      2. SIGNED BYTES: exactly which bytes the ML-DSA-87 signature must cover
- *         (the SIGN_MODE_DIRECT sign-doc bytes? the raw TxBody bytes? the
- *         classical signature?). This CANNOT be determined from public source.
+ *  - `PQCHybridSignature` struct, JSON field tags (`algorithm_id`,
+ *    `pqc_signature`, `pqc_public_key,omitempty`), and type URL
+ *    `/qorechain.pqc.v1.PQCHybridSignature`.
+ *  - The ante handler extracts the extension by type URL and JSON-decodes it, so
+ *    the `Any.value` carries the struct's Go-JSON encoding (Go marshals
+ *    `[]byte` as standard padded base64 strings), NOT a protobuf message. This
+ *    module encodes accordingly (see {@link toGoJson}).
+ *  - PLACEMENT: the extension is a CRITICAL extension option — it goes in
+ *    `TxBody.extension_options`. {@link buildHybridTx} always uses this slot.
+ *    This module additionally exposes `non_critical_extension_options` via
+ *    {@link AttachHybridOptions.placement} for callers with other needs, but the
+ *    chain reads the critical slot.
+ *  - SIGNED BYTES: the ML-DSA-87 signature is computed over the tx body WITH the
+ *    PQC extension REMOVED, framed with the authInfo bytes:
+ *    `BE32(len(B0)) || B0 || BE32(len(A)) || A` (see {@link buildHybridTx} for
+ *    the full contract). This module does not decide what the PQC signature
+ *    signs — {@link buildHybridTx} does.
  *
- * Consequently this module only ENCODES and ATTACHES a caller-supplied
- * {@link PQCHybridSignature} object; it deliberately does NOT decide what the
- * PQC signature signs. The caller (or a future, testnet-verified builder hook)
- * must produce the signature over the correct bytes. Until verified against a
- * live testnet `full` build, do not assume a hybrid tx assembled this way will
- * pass the ante handler.
+ * Cross-implementation proto byte-determinism (cosmjs encode vs. the chain's
+ * re-marshal) is confirmed on the live testnet for the default registry message
+ * types.
  */
 
 import { Any } from "cosmjs-types/google/protobuf/any";
