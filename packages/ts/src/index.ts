@@ -85,3 +85,22 @@ export type {
   FeeUrgency,
 } from "./query/rest";
 export { QorClient } from "./query/qor";
+
+// Native transactions: fee estimation, the signer adapter, the tx builder /
+// broadcaster, and the (live-testnet-verification-required) PQC hybrid
+// extension attachment. See each module for details.
+export { estimateFee, STATIC_FALLBACK } from "./tx/fees";
+export type { StdFee, EstimateFeeOptions } from "./tx/fees";
+export { directSignerFromPrivateKey } from "./tx/signer-adapter";
+export type { BroadcastMode, BroadcastResult } from "./tx/broadcast";
+export { TxClient, MSG_SEND_TYPE_URL } from "./tx/builder";
+export type {
+  SigningClientLike,
+  TxClientOptions,
+  TxConnectOptions,
+  SignAndBroadcastOptions,
+  SimulateOptions,
+  BankSendOptions,
+} from "./tx/builder";
+export { encodeHybridExtension, attachHybridExtension } from "./tx/hybrid";
+export type { HybridPlacement, AttachHybridOptions } from "./tx/hybrid";
