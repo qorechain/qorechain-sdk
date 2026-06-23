@@ -51,3 +51,37 @@ export type {
   SignatureMode,
   PqcSignaturePart,
 } from "./accounts/pqc";
+
+// Read/query clients: shared HTTP transport, Cosmos+custom REST, the generic
+// JSON-RPC 2.0 client (with thin EVM helpers), and the typed `qor_` namespace.
+export {
+  getJson,
+  postJsonRpc,
+  buildUrl,
+  joinUrl,
+  QoreHttpError,
+} from "./query/http";
+export type {
+  FetchLike,
+  QueryValue,
+  HttpOptions,
+  GetJsonOptions,
+} from "./query/http";
+export { JsonRpcClient, JsonRpcError } from "./query/jsonrpc";
+export type {
+  JsonRpcClientOptions,
+  JsonRpcResponse,
+  JsonRpcErrorObject,
+} from "./query/jsonrpc";
+export { RestClient } from "./query/rest";
+export type {
+  RestClientOptions,
+  Coin,
+  PageResponse,
+  AllBalancesResponse,
+  BalanceResponse,
+  Pagination,
+  PaginatedOptions,
+  FeeUrgency,
+} from "./query/rest";
+export { QorClient } from "./query/qor";
