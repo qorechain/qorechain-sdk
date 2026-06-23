@@ -28,6 +28,10 @@ coverage/
 # Generated proto staging
 proto/github.com/
 
+# CLI bundles a copy of templates/ at build time; the source of truth is the
+# root templates/ dir, so the generated copy is not tracked.
+cli/templates/
+
 # Generated API docs (run `pnpm --filter @qorechain/sdk docs:api`)
 docs/api/
 packages/ts/docs/

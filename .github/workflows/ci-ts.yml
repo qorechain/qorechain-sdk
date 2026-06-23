@@ -40,3 +40,10 @@ jobs:
 
       - name: Test
         run: pnpm -r test
+
+      # Templates are not pnpm workspace members (so their published
+      # @qorechain/* version ranges don't break root install). Type-check them
+      # separately by linking the local workspace packages via the CLI's
+      # --local rewrite.
+      - name: Type-check templates
+        run: pnpm typecheck:templates
