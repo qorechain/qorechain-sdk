@@ -37,4 +37,25 @@ export {
   type DeployContractArgs,
 } from "./contracts";
 
-export { ERC20_ABI } from "./abi";
+export {
+  precompiles,
+  pqcVerify,
+  pqcKeyStatus,
+  aiRiskScore,
+  aiAnomalyCheck,
+  rlConsensusParams,
+  PRECOMPILE_ADDRESSES,
+  type PqcVerifyArgs,
+  type PqcKeyStatus,
+  type AiRiskScore,
+  type AiAnomalyCheckArgs,
+  type AiAnomalyCheck,
+  type ConsensusParams,
+} from "./precompiles";
+
+export {
+  ERC20_ABI,
+  IQORE_PQC_ABI,
+  IQORE_AI_ABI,
+  IQORE_CONSENSUS_ABI,
+} from "./abi";
