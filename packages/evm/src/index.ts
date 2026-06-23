@@ -19,3 +19,22 @@ export {
 } from "./client";
 
 export { evmAccountFromPrivateKey } from "./accounts";
+
+export {
+  erc20,
+  balanceOf,
+  allowance,
+  metadata,
+  transfer,
+  approve,
+  type Erc20Metadata,
+} from "./erc20";
+
+export {
+  deployContract,
+  readContract,
+  writeContract,
+  type DeployContractArgs,
+} from "./contracts";
+
+export { ERC20_ABI } from "./abi";
