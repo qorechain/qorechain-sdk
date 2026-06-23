@@ -39,6 +39,9 @@
     "access": "public"
   },
   "dependencies": {
+    "@cosmjs/amino": "^0.39.0",
+    "@cosmjs/proto-signing": "^0.39.0",
+    "@cosmjs/stargate": "^0.39.0",
     "@noble/curves": "^1.9.0",
     "@noble/hashes": "^1.8.0",
     "@noble/post-quantum": "0.4.1",
@@ -46,11 +49,11 @@
     "@scure/bip32": "^1.7.0",
     "@scure/bip39": "^1.6.0",
     "bech32": "^2.0.0",
+    "cosmjs-types": "^0.11.0",
     "micro-key-producer": "^0.9.0"
   },
   "devDependencies": {
     "@cosmjs/crypto": "^0.39.0",
-    "@cosmjs/proto-signing": "^0.39.0",
     "@types/node": "^22.7.5",
     "tsup": "^8.3.0",
     "typescript": "^5.6.3",
