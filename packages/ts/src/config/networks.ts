@@ -1,0 +1,131 @@
+/**
+ * Network presets for the QoreChain SDK.
+ *
+ * The `testnet` preset is fully populated and live. Its endpoints default to
+ * localhost ports so the SDK works out of the box against a locally running
+ * node; callers can override these with real testnet hostnames when creating a
+ * client. The `mainnet` preset is a placeholder: mainnet is not yet live, so it
+ * carries no chain ID and no endpoints, and {@link getNetwork} throws if asked
+ * for it.
+ */
+
+/** Bech32 human-readable prefixes used across QoreChain address types. */
+export interface Bech32Prefixes {
+  /** Prefix for account addresses (e.g. `qor1...`). */
+  account: string;
+  /** Prefix for validator operator addresses (e.g. `qorvaloper1...`). */
+  validator: string;
+  /** Prefix for validator consensus addresses (e.g. `qorvalcons1...`). */
+  consensus: string;
+}
+
+/** Display and base denomination metadata for the network's staking coin. */
+export interface CoinInfo {
+  /** Human-facing denomination (e.g. `QOR`). */
+  display: string;
+  /** Base (smallest) denomination used on-chain (e.g. `uqor`). */
+  base: string;
+  /** Decimal exponent relating base to display (1 display = 10^exponent base). */
+  exponent: number;
+}
+
+/** Service endpoints for talking to a network across its supported VMs. */
+export interface NetworkEndpoints {
+  /** Cosmos SDK REST (LCD) endpoint. */
+  rest: string;
+  /** Cosmos SDK gRPC endpoint. */
+  grpc: string;
+  /** Consensus RPC endpoint. */
+  rpc: string;
+  /** EVM JSON-RPC HTTP endpoint. */
+  evmRpc: string;
+  /** EVM JSON-RPC WebSocket endpoint. */
+  evmWs: string;
+  /** SVM JSON-RPC endpoint. */
+  svmRpc: string;
+}
+
+/** A fully described network preset. */
+export interface NetworkConfig {
+  /** Canonical preset name. */
+  name: string;
+  /** Whether the network is live and usable without custom endpoints. */
+  live: boolean;
+  /** Chain ID, or `null` when the network is not yet live. */
+  chainId: string | null;
+  /** Bech32 prefixes for address encoding. */
+  bech32: Bech32Prefixes;
+  /** Staking coin metadata. */
+  coin: CoinInfo;
+  /** Default endpoints, or `null` when the network is not yet live. */
+  endpoints: NetworkEndpoints | null;
+}
+
+/** Known network preset names. */
+export type NetworkName = "testnet" | "mainnet";
+
+/**
+ * QoreChain uses the same token and address prefixes on every network, so these
+ * are shared (not invented) values across the presets below.
+ */
+const BECH32: Bech32Prefixes = {
+  account: "qor",
+  validator: "qorvaloper",
+  consensus: "qorvalcons",
+};
+
+const COIN: CoinInfo = {
+  display: "QOR",
+  base: "uqor",
+  exponent: 6,
+};
+
+/** The set of built-in network presets, keyed by name. */
+export const NETWORKS: Record<NetworkName, NetworkConfig> = {
+  testnet: {
+    name: "testnet",
+    live: true,
+    chainId: "qorechain-diana",
+    bech32: BECH32,
+    coin: COIN,
+    endpoints: {
+      rest: "http://localhost:1317",
+      grpc: "http://localhost:9090",
+      rpc: "http://localhost:26657",
+      evmRpc: "http://localhost:8545",
+      evmWs: "ws://localhost:8546",
+      svmRpc: "http://localhost:8899",
+    },
+  },
+  mainnet: {
+    name: "mainnet",
+    live: false,
+    chainId: null,
+    bech32: BECH32,
+    coin: COIN,
+    endpoints: null,
+  },
+};
+
+/**
+ * Resolve a network preset by name.
+ *
+ * @returns The requested {@link NetworkConfig}, guaranteed to be live and usable.
+ * @throws If the named network is not yet live (e.g. `mainnet`). Pass custom
+ *   endpoints via `createClient({ endpoints })` to target a network that has no
+ *   built-in preset.
+ */
+export function getNetwork(name: NetworkName): NetworkConfig {
+  const config = NETWORKS[name];
+  if (!config.live) {
+    throw new Error(
+      `${name} is not yet live — pass custom endpoints via createClient({ endpoints })`,
+    );
+  }
+  return config;
+}
+
+/** List the known network preset names without triggering any liveness check. */
+export function listNetworks(): NetworkName[] {
+  return Object.keys(NETWORKS) as NetworkName[];
+}
