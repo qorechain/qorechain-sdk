@@ -60,6 +60,25 @@ export function bech32ToHex(addr: string): string {
 }
 
 /**
+ * Encode raw bytes to a bech32 address with the given prefix.
+ *
+ * This is the primitive encoder; callers holding a `Uint8Array` payload (e.g.
+ * the 20-byte `ripemd160(sha256(pubkey))` account hash) should use this
+ * directly rather than round-tripping through hex.
+ *
+ * @param bytes - The raw byte payload.
+ * @param prefix - The bech32 human-readable prefix. Defaults to `"qor"`.
+ * @returns The bech32-encoded address, e.g. `qor1...`.
+ */
+export function bytesToBech32(
+  bytes: Uint8Array,
+  prefix: string = DEFAULT_PREFIX,
+): string {
+  const words = bech32.toWords(bytes);
+  return bech32.encode(prefix, words, LIMIT);
+}
+
+/**
  * Encode hex bytes to a bech32 address with the given prefix.
  *
  * @param hex - The byte payload as hex, with or without a `0x` prefix.
@@ -68,9 +87,7 @@ export function bech32ToHex(addr: string): string {
  * @throws If `hex` is not a valid hex string.
  */
 export function hexToBech32(hex: string, prefix: string = DEFAULT_PREFIX): string {
-  const bytes = hexToBytes(hex);
-  const words = bech32.toWords(bytes);
-  return bech32.encode(prefix, words, LIMIT);
+  return bytesToBech32(hexToBytes(hex), prefix);
 }
 
 /**

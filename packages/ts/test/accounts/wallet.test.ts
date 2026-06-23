@@ -15,6 +15,13 @@ import { isValidBech32 } from "../../src/utils/address";
  */
 const TEST_MNEMONIC = "test test test test test test test test test test test junk";
 
+/**
+ * A 12-word phrase with valid words but an INVALID BIP-39 checksum. Deriving
+ * from this must reject rather than silently produce a valid-looking wrong
+ * account (fund-loss footgun).
+ */
+const BAD_CHECKSUM_MNEMONIC = "zoo zoo zoo zoo zoo zoo zoo zoo zoo zoo zoo zoo";
+
 describe("mnemonic helpers", () => {
   it("generateMnemonic() returns a 12-word phrase that validates", () => {
     const m = generateMnemonic();
@@ -122,5 +129,58 @@ describe("accountIndex varies the address for every type", () => {
     const a0 = await deriveSvmAccount(TEST_MNEMONIC, { accountIndex: 0 });
     const a1 = await deriveSvmAccount(TEST_MNEMONIC, { accountIndex: 1 });
     expect(a0.address).not.toBe(a1.address);
+  });
+});
+
+describe("derivation rejects an invalid mnemonic (fund-loss guard)", () => {
+  // A typo'd mnemonic must NOT silently derive a valid-looking wrong account.
+  it("deriveNativeAccount throws on a bad-checksum phrase", async () => {
+    await expect(deriveNativeAccount(BAD_CHECKSUM_MNEMONIC)).rejects.toThrow(
+      /invalid mnemonic/i,
+    );
+  });
+
+  it("deriveEvmAccount throws on a bad-checksum phrase", async () => {
+    await expect(deriveEvmAccount(BAD_CHECKSUM_MNEMONIC)).rejects.toThrow(
+      /invalid mnemonic/i,
+    );
+  });
+
+  it("deriveSvmAccount throws on a bad-checksum phrase", async () => {
+    await expect(deriveSvmAccount(BAD_CHECKSUM_MNEMONIC)).rejects.toThrow(
+      /invalid mnemonic/i,
+    );
+  });
+
+  it("the error never leaks the mnemonic text", async () => {
+    await expect(deriveEvmAccount(BAD_CHECKSUM_MNEMONIC)).rejects.toThrow(
+      expect.not.stringContaining("zoo"),
+    );
+  });
+
+  it("a valid phrase still derives for every type (regression)", async () => {
+    await expect(deriveNativeAccount(TEST_MNEMONIC)).resolves.toBeDefined();
+    await expect(deriveEvmAccount(TEST_MNEMONIC)).resolves.toBeDefined();
+    await expect(deriveSvmAccount(TEST_MNEMONIC)).resolves.toBeDefined();
+  });
+});
+
+describe("accountIndex guard rejects invalid indices", () => {
+  it("native: throws on a negative index", async () => {
+    await expect(
+      deriveNativeAccount(TEST_MNEMONIC, { accountIndex: -1 }),
+    ).rejects.toThrow(/accountIndex/i);
+  });
+
+  it("evm: throws on a non-integer index", async () => {
+    await expect(
+      deriveEvmAccount(TEST_MNEMONIC, { accountIndex: 1.5 }),
+    ).rejects.toThrow(/accountIndex/i);
+  });
+
+  it("svm: throws on a negative index", async () => {
+    await expect(
+      deriveSvmAccount(TEST_MNEMONIC, { accountIndex: -1 }),
+    ).rejects.toThrow(/accountIndex/i);
   });
 });

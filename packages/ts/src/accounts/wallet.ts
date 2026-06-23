@@ -14,6 +14,15 @@
  * (secp256k1 HD), micro-key-producer SLIP-0010 (ed25519 HD), @noble/hashes and
  * @noble/curves. Secret material is returned explicitly from the derive functions
  * and is never logged.
+ *
+ * Dependency note: this module pins @noble/hashes/@noble/curves/@scure/base on
+ * the 1.x line, while `micro-key-producer` brings its own 2.x copies of those
+ * packages. The two majors are installed side by side intentionally. They never
+ * exchange hash or curve instances across the boundary — micro-key-producer is
+ * used only as a self-contained SLIP-0010 derivation black box (seed in, ed25519
+ * node out), so the duplicate copies are isolated and harmless. Do not force a
+ * `pnpm.overrides` that drags micro-key-producer onto a different major; that
+ * would risk breaking its internals for no behavioural gain here.
  */
 
 import {
@@ -30,7 +39,7 @@ import { ripemd160 } from "@noble/hashes/ripemd160";
 import { keccak_256 } from "@noble/hashes/sha3";
 import { base58 } from "@scure/base";
 
-import { hexToBech32 } from "../utils/address";
+import { bytesToBech32 } from "../utils/address";
 import type {
   DerivationOptions,
   Secp256k1Account,
@@ -75,13 +84,29 @@ function addressIndex(opts?: DerivationOptions): number {
   return index;
 }
 
+/**
+ * Validate a mnemonic and derive its BIP-39 seed.
+ *
+ * Centralizing this here is the single guard against the fund-loss footgun where
+ * a typo'd phrase (valid words, wrong checksum) would otherwise silently derive
+ * a valid-looking but WRONG account. {@link mnemonicToSeed} does NOT check the
+ * checksum, so we must validate first. The thrown error deliberately omits the
+ * mnemonic text to avoid leaking secret material into logs.
+ */
+async function seedFromMnemonic(mnemonic: string): Promise<Uint8Array> {
+  if (!validateMnemonic(mnemonic)) {
+    throw new Error("invalid mnemonic");
+  }
+  return mnemonicToSeed(mnemonic);
+}
+
 /** Derive a secp256k1 HD node at the given BIP-44 path from a mnemonic. */
 async function deriveSecp256k1(
   mnemonic: string,
   coinType: number,
   index: number,
 ): Promise<{ privateKey: Uint8Array; publicKey: Uint8Array }> {
-  const seed = await mnemonicToSeed(mnemonic);
+  const seed = await seedFromMnemonic(mnemonic);
   const node = HDKey.fromMasterSeed(seed).derive(
     `m/44'/${coinType}'/0'/0/${index}`,
   );
@@ -133,7 +158,7 @@ export async function deriveNativeAccount(
     index,
   );
   const digest = ripemd160(sha256(publicKey)); // 20 bytes
-  const address = hexToBech32(toHex(digest), NATIVE_PREFIX);
+  const address = bytesToBech32(digest, NATIVE_PREFIX);
   return { type: "native", address, publicKey, privateKey };
 }
 
@@ -156,8 +181,11 @@ export async function deriveEvmAccount(
     index,
   );
   // EVM addresses are computed from the 64-byte uncompressed public key body
-  // (drop the 0x04 prefix byte).
-  const uncompressed = secp256k1.getPublicKey(privateKey, false); // 65 bytes
+  // (drop the 0x04 prefix byte). Decompress the already-derived compressed key
+  // rather than touching the private key again.
+  const uncompressed = secp256k1.ProjectivePoint.fromHex(publicKey).toRawBytes(
+    false,
+  ); // 65 bytes
   const hash = keccak_256(uncompressed.slice(1)); // 32 bytes
   const addressBytes = hash.slice(-20); // last 20 bytes
   const address = toEip55Checksum(addressBytes);
@@ -179,7 +207,7 @@ export async function deriveSvmAccount(
   opts?: DerivationOptions,
 ): Promise<Ed25519Account> {
   const index = addressIndex(opts);
-  const seed = await mnemonicToSeed(mnemonic);
+  const seed = await seedFromMnemonic(mnemonic);
   const node = Slip10HDKey.fromMasterSeed(seed).derive(
     `m/44'/${COIN_TYPE_SVM}'/${index}'/0'`,
   );
@@ -191,13 +219,4 @@ export async function deriveSvmAccount(
   secretKey.set(publicKey, 32);
   const address = base58.encode(publicKey);
   return { type: "svm", address, publicKey, secretKey };
-}
-
-/** Encode bytes as a `0x`-prefixed lowercase hex string. */
-function toHex(bytes: Uint8Array): string {
-  let out = "0x";
-  for (let i = 0; i < bytes.length; i++) {
-    out += bytes[i].toString(16).padStart(2, "0");
-  }
-  return out;
 }

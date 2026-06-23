@@ -1,8 +1,16 @@
 import { describe, it, expect } from "vitest";
-import { bech32ToHex, hexToBech32, isValidBech32 } from "../../src/utils/address";
+import {
+  bech32ToHex,
+  bytesToBech32,
+  hexToBech32,
+  isValidBech32,
+} from "../../src/utils/address";
 
 // A known 20-byte value (40 hex chars). Used as a self-generated round-trip vector.
 const HEX20 = "0x0123456789abcdef0123456789abcdef01234567";
+const BYTES20 = Uint8Array.from(
+  HEX20.slice(2).match(/.{2}/g)!.map((h) => parseInt(h, 16)),
+);
 
 describe("hexToBech32 / bech32ToHex round-trip", () => {
   it("round-trips a 20-byte hex through a qor1 address", () => {
@@ -41,6 +49,28 @@ describe("hexToBech32 / bech32ToHex round-trip", () => {
 
   it("throws when decoding an invalid bech32 string", () => {
     expect(() => bech32ToHex("not-a-bech32-address")).toThrow();
+  });
+});
+
+describe("bytesToBech32", () => {
+  it("round-trips raw bytes through bech32ToHex for a 20-byte input", () => {
+    const addr = bytesToBech32(BYTES20, "qor");
+    expect(addr.startsWith("qor1")).toBe(true);
+    expect(bech32ToHex(addr)).toBe(HEX20);
+  });
+
+  it("defaults the prefix to qor", () => {
+    expect(bytesToBech32(BYTES20).startsWith("qor1")).toBe(true);
+  });
+
+  it("matches the old hexToBech32(toHex(bytes)) path exactly", () => {
+    expect(bytesToBech32(BYTES20, "qor")).toBe(hexToBech32(HEX20, "qor"));
+  });
+
+  it("supports other prefixes", () => {
+    const addr = bytesToBech32(BYTES20, "qorvaloper");
+    expect(addr.startsWith("qorvaloper1")).toBe(true);
+    expect(bech32ToHex(addr)).toBe(HEX20);
   });
 });
 
