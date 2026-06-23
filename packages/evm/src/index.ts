@@ -1,0 +1,21 @@
+/**
+ * `@qorechain/evm` — a thin, type-safe adapter over [viem](https://viem.sh) for
+ * the QoreChain EVM Engine.
+ *
+ * It does not reimplement an EVM client; viem is a peer dependency. This package
+ * adds QoreChain-specific conveniences: a chain-aware client factory with EVM
+ * chain-id auto-detection, ERC-20 helpers, contract deploy/call wrappers, and
+ * typed bindings for QoreChain's EVM precompiles.
+ */
+
+/** Package version. */
+export const VERSION = "0.1.0";
+
+export {
+  createEvmClient,
+  type CreateEvmClientOptions,
+  type EvmClient,
+  type EvmEndpoints,
+} from "./client";
+
+export { evmAccountFromPrivateKey } from "./accounts";
