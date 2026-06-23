@@ -1,0 +1,39 @@
+import pytest
+
+from qorechain import NETWORKS, get_network, list_networks
+
+
+def test_testnet_preset():
+    net = get_network("testnet")
+    assert net.live is True
+    assert net.chain_id == "qorechain-diana"
+    assert net.bech32.account == "qor"
+    assert net.bech32.validator == "qorvaloper"
+    assert net.bech32.consensus == "qorvalcons"
+    assert net.coin.display == "QOR"
+    assert net.coin.base == "uqor"
+    assert net.coin.exponent == 6
+    assert net.endpoints is not None
+    assert net.endpoints.rest == "http://localhost:1317"
+    assert net.endpoints.grpc == "http://localhost:9090"
+    assert net.endpoints.rpc == "http://localhost:26657"
+    assert net.endpoints.evm_rpc == "http://localhost:8545"
+    assert net.endpoints.evm_ws == "ws://localhost:8546"
+    assert net.endpoints.svm_rpc == "http://localhost:8899"
+
+
+def test_mainnet_not_live():
+    assert NETWORKS["mainnet"].live is False
+    assert NETWORKS["mainnet"].chain_id is None
+    assert NETWORKS["mainnet"].endpoints is None
+    with pytest.raises(ValueError, match="not yet live"):
+        get_network("mainnet")
+
+
+def test_unknown_network():
+    with pytest.raises(ValueError, match="unknown network"):
+        get_network("devnet")
+
+
+def test_list_networks():
+    assert list_networks() == ["testnet", "mainnet"]
