@@ -1,0 +1,21 @@
+{
+  "name": "@qorechain/example-svm-transfer",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Build a SOL transfer + memo on QoreChain's SVM runtime.",
+  "scripts": {
+    "start": "tsx index.ts",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@qorechain/sdk": "workspace:*",
+    "@qorechain/svm": "workspace:*",
+    "@solana/web3.js": "^1.98.0"
+  },
+  "devDependencies": {
+    "@types/node": "^22.7.5",
+    "tsx": "^4.19.0",
+    "typescript": "^5.6.3"
+  }
+}

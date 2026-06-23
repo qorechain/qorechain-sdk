@@ -1,0 +1,21 @@
+{
+  "name": "@qorechain/example-pqc-hybrid-sign",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Generate an ML-DSA-87 PQC keypair, sign/verify locally, and build a hybrid tx.",
+  "scripts": {
+    "start": "tsx index.ts",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@cosmjs/proto-signing": "^0.39.0",
+    "@cosmjs/stargate": "^0.39.0",
+    "@qorechain/sdk": "workspace:*"
+  },
+  "devDependencies": {
+    "@types/node": "^22.7.5",
+    "tsx": "^4.19.0",
+    "typescript": "^5.6.3"
+  }
+}

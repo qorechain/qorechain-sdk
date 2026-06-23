@@ -1,0 +1,20 @@
+{
+  "name": "@qorechain/example-evm-precompile",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Call QoreChain EVM precompiles and read an ERC-20 balance.",
+  "scripts": {
+    "start": "tsx index.ts",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@qorechain/evm": "workspace:*",
+    "viem": "^2.0.0"
+  },
+  "devDependencies": {
+    "@types/node": "^22.7.5",
+    "tsx": "^4.19.0",
+    "typescript": "^5.6.3"
+  }
+}
