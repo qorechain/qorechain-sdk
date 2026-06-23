@@ -1,0 +1,42 @@
+# Local files — local only
+
+
+
+
+
+
+
+
+
+# Secrets / env
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*.enc
+secrets/
+
+# Node / TS
+node_modules/
+dist/
+build/
+*.tsbuildinfo
+coverage/
+.turbo/
+
+# Generated proto staging
+proto/github.com/
+
+# Per-language (placeholders)
+target/
+__pycache__/
+*.py[cod]
+.venv/
+
+# OS / IDE
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+*.swp
