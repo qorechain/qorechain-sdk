@@ -39,10 +39,34 @@ importers:
 
   packages/ts:
     dependencies:
+      '@noble/curves':
+        specifier: ^1.9.0
+        version: 1.9.7
+      '@noble/hashes':
+        specifier: ^1.8.0
+        version: 1.8.0
+      '@scure/base':
+        specifier: ^1.2.0
+        version: 1.2.6
+      '@scure/bip32':
+        specifier: ^1.7.0
+        version: 1.7.0
+      '@scure/bip39':
+        specifier: ^1.6.0
+        version: 1.6.0
       bech32:
         specifier: ^2.0.0
         version: 2.0.0
+      micro-key-producer:
+        specifier: ^0.9.0
+        version: 0.9.0
     devDependencies:
+      '@cosmjs/crypto':
+        specifier: ^0.39.0
+        version: 0.39.0
+      '@cosmjs/proto-signing':
+        specifier: ^0.39.0
+        version: 0.39.0
       '@types/node':
         specifier: ^22.7.5
         version: 22.20.0
@@ -116,6 +140,24 @@ packages:
 
   '@changesets/write@0.4.0':
     resolution: {integrity: sha512-CdTLvIOPiCNuH71pyDu3rA+Q0n65cmAbXnwWH84rKGiFumFzkmHNT8KHTMEchcxN+Kl8I54xGUhJ7l3E7X396Q==}
+
+  '@cosmjs/amino@0.39.0':
+    resolution: {integrity: sha512-56WqsZ4xbdJE4KWJTPbw7hUzePflRxRLuxoBlUsa8qIiFumpzZRW0Ycb7IloEF8wAmdgsdfrG1hSJSBlqdFE7A==}
+
+  '@cosmjs/crypto@0.39.0':
+    resolution: {integrity: sha512-ATRhSXN8w3fvUkj9xzLHwvzylDvvn4f3cC1CQwhQc2OxyzpEEFACS3wHS6iwdJJS99acV8dq+oVOYflUqI0brQ==}
+
+  '@cosmjs/encoding@0.39.0':
+    resolution: {integrity: sha512-+poEaeM8YjGNVtrHLQNWqkhEeDxapjrdpnPCT+JCRh8YNbeHEdftzZLCH5VCBSOtvo7PF0gK1B7sbQbBl6q5pQ==}
+
+  '@cosmjs/math@0.39.0':
+    resolution: {integrity: sha512-FSLy/oDF+BtOP/J60RsjL5W4MCKiCfBjSoeV5xj6qg2g8N884Ue853iuWanjqGkQJwkXCp+JbeK8Mv9j6AaYHw==}
+
+  '@cosmjs/proto-signing@0.39.0':
+    resolution: {integrity: sha512-jthQ2PA092fvrbFaZRRKuHV7awOsayjDLIBACaGIblFj9yJCcrvhFp+8YV87ia990DjKmWJc3sstHvQZ3yK/EQ==}
+
+  '@cosmjs/utils@0.39.0':
+    resolution: {integrity: sha512-h7fy7Tbcl9v8ABntp8+kqw2VmUus2HbnRJFyzTkM7byRktLtECHYNMsztwyl1rdHkzc8Nc2xs6K/56d7a+75aw==}
 
   '@esbuild/aix-ppc64@0.21.5':
     resolution: {integrity: sha512-1SDgH6ZSPTlggy1yI6+Dbkiz8xzpHJEVAlF/AM1tHPLsf5STom9rwtjE4hKAF20FfXXNTFqEYXyJNWh1GiZedQ==}
@@ -497,6 +539,26 @@ packages:
   '@manypkg/get-packages@1.1.3':
     resolution: {integrity: sha512-fo+QhuU3qE/2TQMQmbVMqaQ6EWbMhi4ABWP+O4AM1NqPBuy0OrApV5LO6BrrgnhtAHS2NH6RrVk9OL181tTi8A==}
 
+  '@noble/ciphers@2.2.0':
+    resolution: {integrity: sha512-Z6pjIZ/8IJcCGzb2S/0Px5J81yij85xASuk1teLNeg75bfT07MV3a/O2Mtn1I2se43k3lkVEcFaR10N4cgQcZA==}
+    engines: {node: '>= 20.19.0'}
+
+  '@noble/curves@1.9.7':
+    resolution: {integrity: sha512-gbKGcRUYIjA3/zCCNaWDciTMFI0dCkvou3TL8Zmy5Nc7sJ47a0jtOeZoTaMxkuqRo9cRhjOdZJXegxYE5FN/xw==}
+    engines: {node: ^14.21.3 || >=16}
+
+  '@noble/curves@2.2.0':
+    resolution: {integrity: sha512-T/BoHgFXirb0ENSPBquzX0rcjXeM6Lo892a2jlYJkqk83LqZx0l1Of7DzlKJ6jkpvMrkHSnAcgb5JegL8SeIkQ==}
+    engines: {node: '>= 20.19.0'}
+
+  '@noble/hashes@1.8.0':
+    resolution: {integrity: sha512-jCs9ldd7NwzpgXDIf6P3+NrHh9/sD6CQdxHyjQI+h/6rDNo88ypBxxz45UDuZHz9r3tNz7N/VInSVoVdtXEI4A==}
+    engines: {node: ^14.21.3 || >=16}
+
+  '@noble/hashes@2.2.0':
+    resolution: {integrity: sha512-IYqDGiTXab6FniAgnSdZwgWbomxpy9FtYvLKs7wCUs2a8RkITG+DFGO1DM9cr+E3/RgADRpFjrKVaJ1z6sjtEg==}
+    engines: {node: '>= 20.19.0'}
+
   '@nodelib/fs.scandir@2.1.5':
     resolution: {integrity: sha512-vq24Bq3ym5HEQm2NKCr3yXDwjc7vTsEThRDnkp2DK9p1uqLR+DHurm/NOTo0KG7HYHU7eppKZj3MyqYuMBf62g==}
     engines: {node: '>= 8'}
@@ -633,6 +695,21 @@ packages:
     resolution: {integrity: sha512-BfzEnDJOt9T8M989/lA37EcJgat01wLRnoi5dQf3QzOH7jzpqTAzdDbVfRljVr5r+jzKqpbHeyOfAaXxAd0PAA==}
     cpu: [x64]
     os: [win32]
+
+  '@scure/base@1.2.6':
+    resolution: {integrity: sha512-g/nm5FgUa//MCj1gV09zTJTaM6KBAHqLN907YVQqf7zC49+DcO4B1so4ZX07Ef10Twr6nuqYEH9GEggFXA4Fmg==}
+
+  '@scure/base@2.2.0':
+    resolution: {integrity: sha512-b8XEupJibegiXV+tDUseI8oLQc8ei3d/4Jkb2RpbHh3MfE054ov3uIz2dhFkB3FI8iwYkEh0gGCApkrYggkPNg==}
+
+  '@scure/bip32@1.7.0':
+    resolution: {integrity: sha512-E4FFX/N3f4B80AKWp5dP6ow+flD1LQZo/w8UnLGYZO674jS6YnYeepycOOksv+vLPSpgN35wgKgy+ybfTb2SMw==}
+
+  '@scure/bip39@1.6.0':
+    resolution: {integrity: sha512-+lF0BbLiJNwVlev4eKelw1WWLaiKXw7sSl8T6FvBlWkdX+94aGJ4o8XjUdlyhTCjd8c+B3KT3JfS8P0bLRNU6A==}
+
+  '@scure/bip39@2.2.0':
+    resolution: {integrity: sha512-T/Bj/YvYMNkIPq6EENO6/rcs2e7qTNuyoUXf0KBFDmp0ZDu0H2X4Lq6yC3i0c8PcWkov5EbW+yQZZbdMmk154A==}
 
   '@types/estree@1.0.9':
     resolution: {integrity: sha512-GhdPgy1el4/ImP05X05Uw4cw2/M93BCUmnEvWZNStlCzEKME4Fkk+YpoA5OiHNQmoS7Cafb8Xa3Pya8m1Qrzeg==}
@@ -783,6 +860,9 @@ packages:
     resolution: {integrity: sha512-BLrgEcRTwX2o6gGxGOCNyMvGSp35YofuYzw9h1IMTRmKqttAZZVU67bdb9Pr2vUHA8+j3i2tJfjO6C6+4myGTA==}
     engines: {node: 18 || 20 || >=22}
 
+  base64-js@1.5.1:
+    resolution: {integrity: sha512-AKpaYlHn8t4SVbOHCy+b5+KKgvR4vrsD8vbvrbiQJps7fKDTkjkDry6ji0rUJjC0kzbNePLwzxq8iypo41qeWA==}
+
   bech32@2.0.0:
     resolution: {integrity: sha512-LcknSilhIGatDAsY1ak2I8VtGaHNhgMSYVxFrGLXv+xLHytaKZKcaUJJUE7qmBr7h33o5YQwP55pMI0xmkpJwg==}
 
@@ -854,6 +934,10 @@ packages:
   consola@3.4.2:
     resolution: {integrity: sha512-5IKcdX0nnYavi6G7TtOhwkYzyjfJlatbjMjuLSfE2kYT5pMDOilZ4OvMhi637CcDICTmz3wARPoyhqyX1Y+XvA==}
     engines: {node: ^14.18.0 || >=16.10.0}
+
+  cosmjs-types@0.11.0:
+    resolution: {integrity: sha512-kDSkgHpRTrg1413jCNehT3P21+EBxZWFMBr9JEzVfmPiNdtuwAoLAkCYo7c7i/pTakAwyHsXbxOg8kkD+AN33w==}
+    engines: {node: '>=20.19'}
 
   cross-spawn@7.0.6:
     resolution: {integrity: sha512-uV2QOWP2nWzsy2aMp8aRibhi9dlzF5Hgh5SHaB9OiTGEyDTiJJyx0uy51QXdyWbtAHNua4XJzUKca3OzKUd3vA==}
@@ -1165,6 +1249,14 @@ packages:
     resolution: {integrity: sha512-8q7VEgMJW4J8tcfVPy8g09NcQwZdbwFEqhe/WZkoIzjn/3TGDwtOCYtXGxA3O8tPzpczCCDgv+P2P5y00ZJOOg==}
     engines: {node: '>= 8'}
 
+  micro-key-producer@0.9.0:
+    resolution: {integrity: sha512-987j9gtkxCxH0KyNzkj9nq7K6JK/f8J1EJV8qBkEJI50CA/zEM7jBl7im36819mAww7oiFgmHsYzIe0m9v9b3Q==}
+    hasBin: true
+
+  micro-packed@0.9.0:
+    resolution: {integrity: sha512-gFdaWTxEXOwtSOcpxulO4AuXVtp3HWIRmB8eq8+3m1Zku0ubgva0UGpi03YhcvsTJasHngG9gTIUK5kHNKdesg==}
+    engines: {node: '>= 20.19.0'}
+
   micromatch@4.0.8:
     resolution: {integrity: sha512-PXwfBhYu0hBCPw8Dn0E+WDYb7af3dSLVWKi3HGv84IdF4TyFoC0ysxFd0Goxw7nSv4T/PzEJQxsYsEiFCKo2BA==}
     engines: {node: '>=8.6'}
@@ -1340,6 +1432,9 @@ packages:
   readdirp@4.1.2:
     resolution: {integrity: sha512-GDhwkLfywWL2s6vEjyhri+eXmfH6j1L7JE27WhqLeYzoh/A3DBaYGEj2H/HFZCn/kMfim73FXxEJTw06WtxQwg==}
     engines: {node: '>= 14.18.0'}
+
+  readonly-date-esm@2.0.0:
+    resolution: {integrity: sha512-adlyzz144ofU22kjnnRIN0HPPqIbc5IZvMmMuVtEgMY4mKgNyKqOVb4Fa2GUzE2By4TEPOYoGqDoKRyqmeEuPQ==}
 
   resolve-from@4.0.0:
     resolution: {integrity: sha512-pb/MYmXstAkysRFx8piNI1tGFNQIFA3vkE3Gq4EuA1dF6gHp/+vgZqsCGJapvy8N3Q+4o7FwvquPJcnZ7RYy4g==}
@@ -1753,6 +1848,42 @@ snapshots:
       human-id: 4.2.0
       prettier: 2.8.8
 
+  '@cosmjs/amino@0.39.0':
+    dependencies:
+      '@cosmjs/crypto': 0.39.0
+      '@cosmjs/encoding': 0.39.0
+      '@cosmjs/math': 0.39.0
+      '@cosmjs/utils': 0.39.0
+
+  '@cosmjs/crypto@0.39.0':
+    dependencies:
+      '@cosmjs/encoding': 0.39.0
+      '@cosmjs/math': 0.39.0
+      '@cosmjs/utils': 0.39.0
+      '@noble/ciphers': 2.2.0
+      '@noble/curves': 2.2.0
+      '@noble/hashes': 2.2.0
+      '@scure/bip39': 2.2.0
+
+  '@cosmjs/encoding@0.39.0':
+    dependencies:
+      '@scure/base': 2.2.0
+      base64-js: 1.5.1
+      readonly-date-esm: 2.0.0
+
+  '@cosmjs/math@0.39.0': {}
+
+  '@cosmjs/proto-signing@0.39.0':
+    dependencies:
+      '@cosmjs/amino': 0.39.0
+      '@cosmjs/crypto': 0.39.0
+      '@cosmjs/encoding': 0.39.0
+      '@cosmjs/math': 0.39.0
+      '@cosmjs/utils': 0.39.0
+      cosmjs-types: 0.11.0
+
+  '@cosmjs/utils@0.39.0': {}
+
   '@esbuild/aix-ppc64@0.21.5':
     optional: true
 
@@ -1999,6 +2130,20 @@ snapshots:
       globby: 11.1.0
       read-yaml-file: 1.1.0
 
+  '@noble/ciphers@2.2.0': {}
+
+  '@noble/curves@1.9.7':
+    dependencies:
+      '@noble/hashes': 1.8.0
+
+  '@noble/curves@2.2.0':
+    dependencies:
+      '@noble/hashes': 2.2.0
+
+  '@noble/hashes@1.8.0': {}
+
+  '@noble/hashes@2.2.0': {}
+
   '@nodelib/fs.scandir@2.1.5':
     dependencies:
       '@nodelib/fs.stat': 2.0.5
@@ -2085,6 +2230,26 @@ snapshots:
 
   '@rollup/rollup-win32-x64-msvc@4.62.2':
     optional: true
+
+  '@scure/base@1.2.6': {}
+
+  '@scure/base@2.2.0': {}
+
+  '@scure/bip32@1.7.0':
+    dependencies:
+      '@noble/curves': 1.9.7
+      '@noble/hashes': 1.8.0
+      '@scure/base': 1.2.6
+
+  '@scure/bip39@1.6.0':
+    dependencies:
+      '@noble/hashes': 1.8.0
+      '@scure/base': 1.2.6
+
+  '@scure/bip39@2.2.0':
+    dependencies:
+      '@noble/hashes': 2.2.0
+      '@scure/base': 2.2.0
 
   '@types/estree@1.0.9': {}
 
@@ -2264,6 +2429,8 @@ snapshots:
 
   balanced-match@4.0.4: {}
 
+  base64-js@1.5.1: {}
+
   bech32@2.0.0: {}
 
   better-path-resolve@1.0.0:
@@ -2326,6 +2493,8 @@ snapshots:
   confbox@0.1.8: {}
 
   consola@3.4.2: {}
+
+  cosmjs-types@0.11.0: {}
 
   cross-spawn@7.0.6:
     dependencies:
@@ -2669,6 +2838,18 @@ snapshots:
 
   merge2@1.4.1: {}
 
+  micro-key-producer@0.9.0:
+    dependencies:
+      '@noble/ciphers': 2.2.0
+      '@noble/curves': 2.2.0
+      '@noble/hashes': 2.2.0
+      '@scure/base': 2.2.0
+      micro-packed: 0.9.0
+
+  micro-packed@0.9.0:
+    dependencies:
+      '@scure/base': 2.2.0
+
   micromatch@4.0.8:
     dependencies:
       braces: 3.0.3
@@ -2808,6 +2989,8 @@ snapshots:
       strip-bom: 3.0.0
 
   readdirp@4.1.2: {}
+
+  readonly-date-esm@2.0.0: {}
 
   resolve-from@4.0.0: {}
 
