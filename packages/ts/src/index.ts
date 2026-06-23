@@ -109,6 +109,40 @@ export type {
 } from "./query/rest";
 export { QorClient } from "./query/qor";
 
+// Cross-VM reads: typed REST wrappers over `x/crossvm`. EVM→native routing
+// itself runs on-chain via the cross-VM bridge precompile in `@qorechain/evm`;
+// these helpers (and `QorClient.getCrossVmMessage`) track message state.
+export {
+  getCrossVmMessage,
+  getPendingCrossVmMessages,
+  getCrossVmParams,
+} from "./query/crossvm";
+export type {
+  CrossVmMessage,
+  CrossVmMessageResponse,
+  PendingCrossVmMessagesResponse,
+  CrossVmParamsResponse,
+} from "./query/crossvm";
+
+// CosmWasm: read/signing client constructors plus thin typed wrappers over
+// `@cosmjs/cosmwasm-stargate` (query/instantiate/execute/upload).
+export {
+  createCosmWasmClient,
+  connectCosmWasmSigner,
+  queryContractSmart,
+  getContractInfo,
+  instantiate,
+  execute,
+  uploadCode,
+} from "./cosmwasm";
+export type {
+  ContractMsg,
+  FeeInput,
+  CosmWasmReadClient,
+  CosmWasmSigningClient,
+  InstantiateOpts,
+} from "./cosmwasm";
+
 // Native transactions: fee estimation, the signer adapter, the tx builder /
 // broadcaster, the low-level PQC hybrid extension encode/attach helpers, and the
 // end-to-end hybrid (classical + PQC) signing/broadcast builder. See each module

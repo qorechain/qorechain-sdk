@@ -94,6 +94,51 @@ const signature = pqcSign(keypair.secretKey, message);
 const ok = pqcVerify(keypair.publicKey, message, signature);
 ```
 
+### CosmWasm contracts
+
+Interact with CosmWasm contracts via thin wrappers over
+`@cosmjs/cosmwasm-stargate`. `client.cosmwasm()` opens a read-only client at the
+`rpc` endpoint; for writes, connect a `SigningCosmWasmClient` with an offline
+signer.
+
+```ts
+import {
+  connectCosmWasmSigner,
+  queryContractSmart,
+  getContractInfo,
+  instantiate,
+  execute,
+} from "@qorechain/sdk";
+
+// Reads
+const cw = await client.cosmwasm();
+const info = await getContractInfo(cw, "qor1contract...");
+const state = await queryContractSmart(cw, "qor1contract...", { get_count: {} });
+
+// Writes
+const signing = await connectCosmWasmSigner("https://rpc.testnet.example", signer);
+const inst = await instantiate(signing, sender, codeId, { count: 0 }, "my-contract", {
+  fee: "auto",
+});
+await execute(signing, sender, inst.contractAddress, { increment: {} }, "auto");
+```
+
+### Cross-VM messages
+
+QoreChain routes calls across its native, EVM, and CosmWasm execution
+environments. The EVM→native direction (e.g. an EVM contract triggering a native
+AMM swap) is performed on-chain through the cross-VM bridge precompile exposed in
+the `@qorechain/evm` package. From this SDK you can read message state:
+
+```ts
+const pending = await client.crossvm.pending();
+const message = await client.crossvm.message("42");
+const params = await client.crossvm.params();
+
+// Or track a message by id over the EVM JSON-RPC namespace:
+const status = await client.qor.getCrossVmMessage("42");
+```
+
 ## Network reference
 
 - Testnet chain id: `qorechain-diana` (live).

@@ -38,6 +38,16 @@ import { QorClient } from "./query/qor";
 import { estimateFee } from "./tx/fees";
 import type { FeeUrgency } from "./query/rest";
 import { TxClient } from "./tx/builder";
+import { createCosmWasmClient } from "./cosmwasm";
+import type { CosmWasmClient } from "@cosmjs/cosmwasm-stargate";
+import {
+  getCrossVmMessage,
+  getPendingCrossVmMessages,
+  getCrossVmParams,
+  type CrossVmMessageResponse,
+  type PendingCrossVmMessagesResponse,
+  type CrossVmParamsResponse,
+} from "./query/crossvm";
 
 /** Options for {@link createClient}. */
 export interface CreateClientOptions {
@@ -81,6 +91,16 @@ export interface ClientFees {
   estimate(urgency?: FeeUrgency): Promise<StdFee>;
 }
 
+/** Cross-VM read convenience surface, bound to the client's REST endpoint. */
+export interface ClientCrossVm {
+  /** A cross-VM message by id (`/qorechain/crossvm/v1/message/{id}`). */
+  message(id: string): Promise<CrossVmMessageResponse>;
+  /** Currently pending cross-VM messages (`/qorechain/crossvm/v1/pending`). */
+  pending(): Promise<PendingCrossVmMessagesResponse>;
+  /** Cross-VM module params (`/qorechain/crossvm/v1/params`). */
+  params(): Promise<CrossVmParamsResponse>;
+}
+
 /**
  * A composed QoreChain client: resolved config, read clients, fee helper, and a
  * lazy signing entrypoint.
@@ -96,6 +116,15 @@ export interface QoreChainClient {
   readonly qor: QorClient;
   /** Fee-estimate convenience over the REST client. */
   readonly fees: ClientFees;
+  /** Cross-VM read helpers over the REST client. */
+  readonly crossvm: ClientCrossVm;
+  /**
+   * Connect a read-only CosmWasm client at `endpoints.rpc`.
+   *
+   * Async (the cosmjs client opens an RPC connection on connect), so this is a
+   * method rather than a lazy getter; the result is memoized across calls.
+   */
+  cosmwasm(): Promise<CosmWasmClient>;
   /**
    * Connect a signer and return a {@link TxClient} bound to `endpoints.rpc`.
    * The heavy lifting lives in {@link TxClient.connect}.
@@ -204,6 +233,15 @@ export function createClient(opts: CreateClientOptions = {}): QoreChainClient {
     estimate: (urgency?: FeeUrgency) => estimateFee(getRest(), { urgency }),
   };
 
+  const crossvm: ClientCrossVm = {
+    message: (id: string) => getCrossVmMessage(getRest(), id),
+    pending: () => getPendingCrossVmMessages(getRest()),
+    params: () => getCrossVmParams(getRest()),
+  };
+
+  // Memoize the (async) CosmWasm client so repeated calls reuse one connection.
+  let cosmWasmClient: Promise<CosmWasmClient> | undefined;
+
   return {
     network,
     get rest() {
@@ -216,6 +254,15 @@ export function createClient(opts: CreateClientOptions = {}): QoreChainClient {
       return getQor();
     },
     fees,
+    crossvm,
+    cosmwasm() {
+      if (!cosmWasmClient) {
+        cosmWasmClient = createCosmWasmClient(
+          requireEndpoint(network.endpoints, "rpc"),
+        );
+      }
+      return cosmWasmClient;
+    },
     connectTx(signer: OfflineDirectSigner, txOpts: ConnectTxOptions = {}) {
       return TxClient.connect({
         rpcEndpoint: requireEndpoint(network.endpoints, "rpc"),

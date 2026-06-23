@@ -113,6 +113,44 @@ describe("createClient sub-clients and fees", () => {
     expect(fee.amount).toEqual([{ denom: "uqor", amount: "1200" }]);
   });
 
+  it("crossvm.message hits the crossvm message path via the rest client", async () => {
+    const fetchMock = vi.fn(async () => jsonResponse({ message: { id: "5" } }));
+    const client = createClient({ fetch: fetchMock });
+    await client.crossvm.message("5");
+    expect(calledUrl(fetchMock)).toBe(
+      "http://localhost:1317/qorechain/crossvm/v1/message/5",
+    );
+  });
+
+  it("crossvm.pending and crossvm.params hit their paths", async () => {
+    const fetchMock = vi.fn(async () => jsonResponse({}));
+    const client = createClient({ fetch: fetchMock });
+    await client.crossvm.pending();
+    expect(calledUrl(fetchMock, 0)).toBe(
+      "http://localhost:1317/qorechain/crossvm/v1/pending",
+    );
+    await client.crossvm.params();
+    expect(calledUrl(fetchMock, 1)).toBe(
+      "http://localhost:1317/qorechain/crossvm/v1/params",
+    );
+  });
+
+  it("cosmwasm() memoizes a single read client and requires the rpc endpoint", async () => {
+    const connectSpy = vi
+      .spyOn(
+        await import("@cosmjs/cosmwasm-stargate").then((m) => m.CosmWasmClient),
+        "connect",
+      )
+      .mockResolvedValue({} as never);
+    const client = createClient();
+    const a = await client.cosmwasm();
+    const b = await client.cosmwasm();
+    expect(a).toBe(b);
+    expect(connectSpy).toHaveBeenCalledTimes(1);
+    expect(connectSpy).toHaveBeenCalledWith("http://localhost:26657");
+    connectSpy.mockRestore();
+  });
+
   it("throws an actionable error when a needed endpoint is missing", () => {
     // Mainnet built from only rest+rpc: evmRpc is absent, so evm/qor must throw.
     const client = createClient({
@@ -152,6 +190,18 @@ describe("createClient sub-clients and fees", () => {
       "RestClient",
       "JsonRpcClient",
       "QorClient",
+      // cross-VM reads
+      "getCrossVmMessage",
+      "getPendingCrossVmMessages",
+      "getCrossVmParams",
+      // cosmwasm
+      "createCosmWasmClient",
+      "connectCosmWasmSigner",
+      "queryContractSmart",
+      "getContractInfo",
+      "instantiate",
+      "execute",
+      "uploadCode",
       // tx
       "TxClient",
       "estimateFee",
