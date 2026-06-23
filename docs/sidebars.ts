@@ -1,0 +1,32 @@
+import type { SidebarsConfig } from "@docusaurus/plugin-content-docs";
+
+const sidebars: SidebarsConfig = {
+  docsSidebar: [
+    "overview",
+    "install",
+    "quickstart",
+    {
+      type: "category",
+      label: "Concepts",
+      items: ["concepts/architecture", "concepts/accounts-pqc"],
+    },
+    {
+      type: "category",
+      label: "Guides",
+      items: [
+        "guides/evm",
+        "guides/svm",
+        "guides/cosmwasm",
+        "guides/cross-vm",
+      ],
+    },
+    {
+      type: "category",
+      label: "Reference",
+      items: ["reference/network", "reference/cli", "reference/api"],
+    },
+    "faq",
+  ],
+};
+
+export default sidebars;

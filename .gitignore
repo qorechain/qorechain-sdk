@@ -36,6 +36,11 @@ cli/templates/
 docs/api/
 packages/ts/docs/
 
+# Docusaurus docs site (standalone; not in the pnpm workspace)
+.docusaurus/
+docs/.docusaurus/
+docs/build/
+
 # Per-language (placeholders)
 target/
 __pycache__/

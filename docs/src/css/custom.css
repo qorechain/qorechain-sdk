@@ -1,0 +1,26 @@
+/**
+ * QoreChain SDK docs theme. Classic preset with a calmer accent palette.
+ */
+
+:root {
+  --ifm-color-primary: #1f6feb;
+  --ifm-color-primary-dark: #1c64d4;
+  --ifm-color-primary-darker: #1a5fc8;
+  --ifm-color-primary-darkest: #154ea5;
+  --ifm-color-primary-light: #3a80ee;
+  --ifm-color-primary-lighter: #4988ef;
+  --ifm-color-primary-lightest: #6da0f2;
+  --ifm-code-font-size: 95%;
+  --docusaurus-highlighted-code-line-bg: rgba(0, 0, 0, 0.1);
+}
+
+[data-theme="dark"] {
+  --ifm-color-primary: #6da0f2;
+  --ifm-color-primary-dark: #4988ef;
+  --ifm-color-primary-darker: #3a80ee;
+  --ifm-color-primary-darkest: #1f6feb;
+  --ifm-color-primary-light: #8fb6f5;
+  --ifm-color-primary-lighter: #a0c1f6;
+  --ifm-color-primary-lightest: #c3d8fa;
+  --docusaurus-highlighted-code-line-bg: rgba(0, 0, 0, 0.3);
+}

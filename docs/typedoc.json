@@ -1,0 +1,10 @@
+{
+  "$schema": "https://typedoc.org/schema.json",
+  "entryPoints": ["../packages/ts/src/index.ts"],
+  "tsconfig": "../packages/ts/tsconfig.json",
+  "out": "build/api",
+  "name": "@qorechain/sdk API",
+  "readme": "none",
+  "excludeInternal": true,
+  "excludePrivate": true
+}
