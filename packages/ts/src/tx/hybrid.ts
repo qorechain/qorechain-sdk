@@ -120,7 +120,7 @@ export function attachHybridExtension(
   ext: PQCHybridSignature,
   opts: AttachHybridOptions = {},
 ): TxBody {
-  const any = encodeHybridExtension(ext);
+  const anyExt = encodeHybridExtension(ext);
   const placement = opts.placement ?? "non_critical_extension_options";
   const next = TxBody.fromPartial({
     messages: body.messages,
@@ -130,9 +130,9 @@ export function attachHybridExtension(
     nonCriticalExtensionOptions: [...body.nonCriticalExtensionOptions],
   });
   if (placement === "extension_options") {
-    next.extensionOptions.push(any);
+    next.extensionOptions.push(anyExt);
   } else {
-    next.nonCriticalExtensionOptions.push(any);
+    next.nonCriticalExtensionOptions.push(anyExt);
   }
   return next;
 }

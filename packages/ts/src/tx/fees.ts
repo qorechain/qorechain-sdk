@@ -15,15 +15,16 @@
  * missing/erroring endpoint; only a successful response is preferred.
  */
 
-import type { RestClient, Coin, FeeUrgency } from "../query/rest";
+import type { StdFee } from "@cosmjs/amino";
+import type { RestClient, FeeUrgency } from "../query/rest";
 
-/** A Cosmos `StdFee`: the fee `amount` plus the `gas` (gas limit) to request. */
-export interface StdFee {
-  /** The fee coins offered to validators. */
-  amount: Coin[];
-  /** The gas limit, as a decimal string. */
-  gas: string;
-}
+/**
+ * Re-export cosmjs's canonical `StdFee` so the SDK shares one fee type with what
+ * `SigningStargateClient.signAndBroadcast` expects. This is the cosmjs shape
+ * (`{ amount: readonly Coin[]; gas: string; granter?; payer? }`), so feegrant
+ * `granter`/`payer` are supported.
+ */
+export type { StdFee };
 
 /**
  * Default static-fallback parameters, used when the AI fee oracle is

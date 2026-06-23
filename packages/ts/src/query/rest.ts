@@ -11,6 +11,7 @@
  * defaulting to {@link Record}<string, unknown> rather than over-modeled here.
  */
 
+import type { Coin } from "@cosmjs/amino";
 import {
   getJson,
   joinUrl,
@@ -19,11 +20,12 @@ import {
   type QueryValue,
 } from "./http";
 
-/** A Cosmos coin amount. */
-export interface Coin {
-  denom: string;
-  amount: string;
-}
+/**
+ * A Cosmos coin amount. Re-exported from `@cosmjs/amino` so the SDK has a single
+ * canonical `Coin` type shared across query, fee, and tx code (no duplicated
+ * structural definition).
+ */
+export type { Coin };
 
 /** Cosmos pagination response metadata. */
 export interface PageResponse {
