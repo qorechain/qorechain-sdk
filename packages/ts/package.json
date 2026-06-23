@@ -24,7 +24,8 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "typecheck": "tsc --noEmit",
-    "lint": "eslint src test"
+    "lint": "eslint src test",
+    "docs:api": "typedoc"
   },
   "repository": {
     "type": "git",
@@ -56,6 +57,7 @@
     "@cosmjs/crypto": "^0.39.0",
     "@types/node": "^22.7.5",
     "tsup": "^8.3.0",
+    "typedoc": "^0.28.0",
     "typescript": "^5.6.3",
     "vitest": "^2.1.2"
   }

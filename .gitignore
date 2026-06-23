@@ -28,6 +28,10 @@ coverage/
 # Generated proto staging
 proto/github.com/
 
+# Generated API docs (run `pnpm --filter @qorechain/sdk docs:api`)
+docs/api/
+packages/ts/docs/
+
 # Per-language (placeholders)
 target/
 __pycache__/
