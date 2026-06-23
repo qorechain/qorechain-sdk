@@ -2,6 +2,7 @@
   "name": "qorechain-sdk",
   "version": "0.0.0",
   "private": true,
+  "type": "module",
   "description": "Official multi-language SDK and developer kit for the QoreChain network.",
   "license": "Apache-2.0",
   "packageManager": "pnpm@9.12.0",
