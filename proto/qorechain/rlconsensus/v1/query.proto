@@ -1,0 +1,76 @@
+syntax = "proto3";
+package qorechain.rlconsensus.v1;
+
+option go_package = "github.com/qorechain/qorechain-core/x/rlconsensus/types";
+
+import "gogoproto/gogo.proto";
+
+// Query defines the rlconsensus module's gRPC query service.
+service Query {
+  // AgentStatus returns the live RL agent status (epoch, steps, mode).
+  rpc AgentStatus(QueryAgentStatusRequest) returns (QueryAgentStatusResponse);
+  // Params returns the rlconsensus module parameters.
+  rpc Params(QueryParamsRequest) returns (QueryParamsResponse);
+  // Observation returns the latest 25-dim observation vector captured by the agent.
+  rpc Observation(QueryObservationRequest) returns (QueryObservationResponse);
+  // Reward returns the latest reward signal (total + per-component deltas).
+  rpc Reward(QueryRewardRequest) returns (QueryRewardResponse);
+  // Policy returns the current policy network summary (epoch, params, update height).
+  rpc Policy(QueryPolicyRequest) returns (QueryPolicyResponse);
+}
+
+message QueryObservationRequest {}
+message QueryObservationResponse {
+  int64 height = 1;
+  repeated string values = 2;
+}
+
+message QueryRewardRequest {}
+message QueryRewardResponse {
+  int64 height = 1;
+  string total_reward = 2;
+  string throughput_delta = 3;
+  string finality_delta = 4;
+  string decentralization_delta = 5;
+  string mev_estimate = 6 [(gogoproto.customname) = "MEVEstimate"];
+  string failed_tx_ratio = 7;
+}
+
+message QueryPolicyRequest {}
+message QueryPolicyResponse {
+  uint64 epoch = 1;
+  int64 updated_at = 2;
+  uint64 weight_count = 3;
+}
+
+message QueryAgentStatusRequest {}
+message QueryAgentStatusResponse {
+  string mode = 1;
+  uint64 current_epoch = 2;
+  uint64 total_steps = 3;
+  int64 last_observation_at = 4;
+  int64 last_action_at = 5;
+  bool circuit_breaker_active = 6;
+  int64 blocks_since_revert = 7;
+}
+
+message QueryParamsRequest {}
+message QueryParamsResponse {
+  bool enabled = 1;
+  uint64 observation_interval = 2;
+  string agent_mode = 3;
+  string max_change_conservative = 4;
+  string max_change_autonomous = 5;
+  uint64 circuit_breaker_window = 6;
+  string circuit_breaker_threshold = 7;
+  // Reward weights (flattened to avoid clashing with the hand-written
+  // types.RewardWeights struct used in genesis state).
+  string reward_weight_throughput = 8;
+  string reward_weight_finality = 9;
+  string reward_weight_decentralization = 10;
+  string reward_weight_mev = 11 [(gogoproto.customname) = "RewardWeightMEV"];
+  string reward_weight_failed_txs = 12;
+  int64 default_block_time_ms = 13;
+  string default_base_gas_price = 14;
+  uint64 default_validator_set_size = 15;
+}
