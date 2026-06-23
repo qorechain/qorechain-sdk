@@ -152,6 +152,20 @@ describe("PqcSigner (pqc-only mode)", () => {
     expect(out.pqc!.publicKey).toEqual(kp.publicKey);
     expect(pqcVerify(kp.publicKey, msg, out.pqc!.signature)).toBe(true);
   });
+
+  it("sign() always returns a Promise that yields the pqc-only output", async () => {
+    const kp = generatePqcKeypair();
+    const signer = new PqcSigner(kp);
+
+    const pending = signer.sign(msg);
+    expect(pending).toBeInstanceOf(Promise);
+
+    const out = await pending;
+    expect(out.classicalSignature).toBeUndefined();
+    expect(out.pqc).toBeDefined();
+    expect(out.pqc!.algorithmId).toBe(AlgorithmDilithium5);
+    expect(pqcVerify(kp.publicKey, msg, out.pqc!.signature)).toBe(true);
+  });
 });
 
 describe("HybridSigner (hybrid mode)", () => {
@@ -190,5 +204,25 @@ describe("HybridSigner (hybrid mode)", () => {
     expect(ext.algorithm_id).toBe(1);
     expect(ext.pqc_signature).toEqual(out.pqc!.signature);
     expect(ext.pqc_public_key).toEqual(kp.publicKey);
+  });
+
+  it("rejects a non-classical wrapped signer (PqcSigner)", () => {
+    const kp = generatePqcKeypair();
+    const pqcSigner = new PqcSigner(kp);
+    expect(() => new HybridSigner(pqcSigner, kp)).toThrow(
+      "HybridSigner requires a classical-mode signer",
+    );
+  });
+
+  it("rejects a non-classical wrapped signer (stub with mode 'pqc')", () => {
+    const kp = generatePqcKeypair();
+    const stub: Signer = {
+      mode: "pqc",
+      publicKey: () => kp.publicKey,
+      sign: async () => ({}),
+    };
+    expect(() => new HybridSigner(stub, kp)).toThrow(
+      "HybridSigner requires a classical-mode signer",
+    );
   });
 });

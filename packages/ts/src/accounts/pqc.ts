@@ -204,7 +204,7 @@ export class PqcSigner implements Signer {
     return this.keypair.publicKey;
   }
 
-  sign(message: Uint8Array): SignOutput {
+  async sign(message: Uint8Array): Promise<SignOutput> {
     const part: PqcSignaturePart = {
       algorithmId: this.algorithmId,
       signature: pqcSign(this.keypair.secretKey, message),
@@ -230,15 +230,19 @@ export class HybridSigner implements Signer {
   private readonly algorithmId: AlgorithmID;
 
   /**
-   * @param classical The wrapped classical signer. Its `classicalSignature`
-   *   output is passed through unchanged.
+   * @param classical The wrapped classical signer. Must be a `classical`-mode
+   *   signer; its `classicalSignature` output is passed through unchanged.
    * @param keypair The ML-DSA-87 keypair used for the PQC half.
+   * @throws if `classical` is not a `classical`-mode signer.
    */
   constructor(
     classical: Signer,
     keypair: PqcKeypair,
     algorithmId: AlgorithmID = AlgorithmDilithium5,
   ) {
+    if (classical.mode !== "classical") {
+      throw new Error("HybridSigner requires a classical-mode signer");
+    }
     this.classical = classical;
     this.keypair = keypair;
     this.algorithmId = algorithmId;

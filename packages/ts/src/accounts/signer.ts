@@ -57,9 +57,10 @@ export interface SignOutput {
 /**
  * A pluggable signer over arbitrary message bytes.
  *
- * `sign` may be synchronous or asynchronous: hardware/remote classical signers
- * are typically async, while the in-process PQC path is synchronous. Callers
- * should always `await` the result.
+ * `sign` is always asynchronous and returns a `Promise<SignOutput>`. Some
+ * signers are inherently async (hardware/remote classical signers) while the
+ * in-process PQC path is synchronous, but the interface normalizes both to a
+ * Promise so callers never have to remember to `await` conditionally.
  */
 export interface Signer {
   /** The signature posture this signer implements. */
@@ -70,6 +71,6 @@ export interface Signer {
    * - `pqc`: the PQC public key.
    */
   publicKey(): Uint8Array;
-  /** Sign the given message bytes. */
-  sign(message: Uint8Array): Promise<SignOutput> | SignOutput;
+  /** Sign the given message bytes. Always resolves to a {@link SignOutput}. */
+  sign(message: Uint8Array): Promise<SignOutput>;
 }
