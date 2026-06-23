@@ -6,7 +6,7 @@ Official multi-language SDK and developer kit for building decentralized applica
 
 | Package | Language | Status |
 | --- | --- | --- |
-| `@qorechain/sdk` | TypeScript | Available |
+| `@qorechain/sdk` | TypeScript | Coming soon |
 | `qorechain` (Python) | Python | Coming soon |
 | `qorechain-go` | Go | Coming soon |
 | `qorechain` (Rust) | Rust | Coming soon |
