@@ -5,8 +5,9 @@ account derivation (native / EVM / SVM), post-quantum (ML-DSA-87) signing, and
 async read clients for the REST (LCD) and `qor_*` JSON-RPC surfaces.
 
 This crate lives in the `qorechain-sdk` monorepo and mirrors the TypeScript,
-Python, and Go SDK surfaces. Native transaction building/broadcast is a planned
-follow-up (consistent with the other SDKs).
+Python, and Go SDK surfaces — including native transaction building/signing,
+REST broadcast, and end-to-end hybrid (classical + ML-DSA-87) transaction
+signing (`tx` module).
 
 ## Install
 
@@ -29,6 +30,7 @@ Requires Rust 1.74+.
 | `pqc` | ML-DSA-87 (FIPS 204) keygen / sign / verify + hybrid extension. |
 | `query` | `RestClient`, `JsonRpcClient`, and the typed `qor_*` `QorClient`. |
 | `client` | `create_client` / `ClientBuilder` composing the read clients + fees. |
+| `tx` | `bank_send`, `broadcast`, `fee_from_estimate`, and `build_hybrid_tx`. |
 
 ## Quickstart
 
@@ -114,12 +116,26 @@ assert_eq!(from_base("1500000", 6).unwrap(), "1.5");
 All amount math is exact integer arithmetic on decimal strings — never floating
 point — so conversions never drift for any magnitude.
 
-## Roadmap
+## Transactions
 
-Native transaction building, signing, and broadcast are intentionally not yet
-included, matching the staged rollout of the other QoreChain SDKs. The hybrid
-post-quantum signature extension builder (`pqc::build_hybrid_signature_extension`)
-is already provided so that transaction support can layer on top cleanly.
+The `tx` module builds, signs, and broadcasts native transactions, and provides
+end-to-end hybrid (classical secp256k1 + post-quantum ML-DSA-87) signing:
+
+- `bank_send` builds and signs a `cosmos.bank.v1beta1.MsgSend` into a
+  broadcast-ready `TxRaw` (`SIGN_MODE_DIRECT`).
+- `broadcast` POSTs signed bytes to the REST `/cosmos/tx/v1beta1/txs` endpoint
+  (`sync` / `async` / `block`).
+- `fee_from_estimate` turns an AI fee-oracle response into a `Fee`.
+- `build_hybrid_tx` produces a tx carrying the classical signature in
+  `TxRaw.signatures` PLUS an ML-DSA-87 signature in the `TxBody`
+  `PQCHybridSignature` extension. The PQC half signs
+  `BE32(len(B0)) || B0 || BE32(len(A)) || A` (body without the extension, then
+  authInfo); the classical half signs the final body. The signer's PQC key must
+  be registered on-chain (`MsgRegisterPQCKey`) — or pass `include_pqc_public_key`
+  to embed it for auto-registration.
+
+Transaction proto encoding/signing is delegated to the `cosmrs` crate; no
+proto/crypto primitives are reimplemented here.
 
 ## Development
 

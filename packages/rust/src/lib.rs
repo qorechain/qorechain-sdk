@@ -16,9 +16,8 @@
 //!   `qor_*` namespace.
 //! - [`client`] — the top-level [`create_client`](client::create_client)
 //!   factory.
-//!
-//! Native transaction building and broadcast are intentionally deferred (see the
-//! crate README) and tracked as a follow-up, consistent with the other SDKs.
+//! - [`tx`] — native bank-send building/signing, REST broadcast, and end-to-end
+//!   hybrid (classical + ML-DSA-87) transaction signing.
 
 #![forbid(unsafe_code)]
 #![warn(missing_docs)]
@@ -31,6 +30,7 @@ pub mod error;
 pub mod networks;
 pub mod pqc;
 pub mod query;
+pub mod tx;
 
 pub use error::{Error, Result};
 
@@ -56,3 +56,8 @@ pub use pqc::{
 pub use query::{JsonRpcClient, QorClient, RestClient, QOR_METHODS};
 
 pub use client::{create_client, Client, ClientBuilder, Fees};
+
+pub use tx::{
+    bank_send, broadcast, build_hybrid_tx, fee_from_estimate, BankSendParams, BroadcastMode,
+    BuildHybridTxParams, BuiltTx, Coin, Fee, Message, MSG_SEND_TYPE_URL,
+};
