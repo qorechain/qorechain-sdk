@@ -1,0 +1,20 @@
+{
+  "name": "qorechain-evm-solidity-dapp",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "description": "A QoreChain EVM dApp: a Solidity Counter contract deployed and exercised with viem via @qorechain/evm.",
+  "scripts": {
+    "deploy": "tsx scripts/deploy.ts",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@qorechain/evm": "^0.1.0",
+    "viem": "^2.0.0"
+  },
+  "devDependencies": {
+    "@types/node": "^22.7.5",
+    "tsx": "^4.19.0",
+    "typescript": "^5.6.3"
+  }
+}
