@@ -9,13 +9,9 @@
  * {@link TxClient}.
  *
  * Network resolution rules:
- *  - The default network is `testnet`. Its endpoints default to localhost; pass
- *    `endpoints` to point at real testnet hostnames.
- *  - `mainnet` is not yet live and ships no endpoints. If `endpoints` supplies
- *    the needed URLs, a usable client is built from `mainnet` metadata + those
- *    overrides (the throwing `getNetwork("mainnet")` is not used). If the
- *    required endpoints are absent, this throws the same "not yet live" error as
- *    {@link getNetwork}.
+ *  - The default network is `testnet`. Both `testnet` and `mainnet` are live and
+ *    ship localhost endpoint defaults; pass `endpoints` to point at real
+ *    hostnames.
  *
  * Read sub-clients are lazy getters: each only needs its own endpoint, so
  * accessing one whose endpoint is missing throws a clear, actionable error
@@ -26,7 +22,6 @@ import type { OfflineDirectSigner, GeneratedType } from "@cosmjs/proto-signing";
 import type { StdFee } from "@cosmjs/amino";
 import {
   getNetwork,
-  NETWORKS,
   type NetworkConfig,
   type NetworkEndpoints,
   type NetworkName,
@@ -54,14 +49,13 @@ export interface CreateClientOptions {
   /** Network preset to target. Defaults to `"testnet"`. */
   network?: NetworkName;
   /**
-   * Endpoint overrides, merged over the preset's defaults. On `testnet` this
-   * lets you swap localhost for real hostnames; on `mainnet` (not yet live) it
-   * is REQUIRED — supply at least the endpoints you intend to use.
+   * Endpoint overrides, merged over the preset's defaults. Both `testnet` and
+   * `mainnet` default to localhost; pass real hostnames here to override them.
    */
   endpoints?: Partial<NetworkEndpoints>;
   /**
-   * Chain ID to use. Only meaningful for `mainnet`, which has no preset chain
-   * ID; ignored for `testnet` (which always uses its live chain ID).
+   * Chain ID override. Both presets ship a live chain ID, so this is only needed
+   * to point at a non-standard chain.
    */
   chainId?: string;
   /** Injectable `fetch` for the read clients (used by tests). */
@@ -138,42 +132,24 @@ export interface QoreChainClient {
 /**
  * Resolve the effective {@link NetworkConfig} for the given options.
  *
- * For `testnet`, starts from the live preset and overlays `opts.endpoints`. For
- * `mainnet`, builds the config from `mainnet` metadata + the supplied endpoints
- * (or throws the not-yet-live error if none are supplied).
+ * Starts from the live preset (`testnet` or `mainnet`) and overlays
+ * `opts.endpoints` and an optional `opts.chainId`.
  */
 function resolveNetwork(opts: CreateClientOptions): NetworkConfig {
   const name: NetworkName = opts.network ?? "testnet";
   const overrides = opts.endpoints ?? {};
-  const hasOverrides = Object.keys(overrides).length > 0;
 
-  if (name === "mainnet" && !NETWORKS.mainnet.live) {
-    // Not live: only buildable from caller-supplied endpoints.
-    if (!hasOverrides) {
-      // Match getNetwork's wording exactly.
-      getNetwork("mainnet"); // throws
-    }
-    const meta = NETWORKS.mainnet;
-    return {
-      ...meta,
-      chainId: opts.chainId ?? meta.chainId,
-      // Partial endpoints are intentional here: missing ones are caught lazily
-      // by the sub-client getters with an actionable error.
-      endpoints: { ...(meta.endpoints ?? {}), ...overrides } as NetworkEndpoints,
-    };
-  }
-
-  // Live preset (testnet): start from it, overlay any endpoint overrides.
   const base = getNetwork(name);
   return {
     ...base,
-    endpoints: { ...(base.endpoints as NetworkEndpoints), ...overrides },
+    chainId: opts.chainId ?? base.chainId,
+    endpoints: { ...base.endpoints, ...overrides },
   };
 }
 
 /** Read a required endpoint or throw an actionable error naming it. */
 function requireEndpoint(
-  endpoints: NetworkEndpoints | null,
+  endpoints: NetworkEndpoints,
   key: keyof NetworkEndpoints,
 ): string {
   const value = endpoints?.[key];
@@ -189,7 +165,6 @@ function requireEndpoint(
  * Create a composed {@link QoreChainClient}.
  *
  * @param opts - Network selection, endpoint overrides, and transport options.
- * @throws If `mainnet` is selected without the endpoints needed to build it.
  */
 export function createClient(opts: CreateClientOptions = {}): QoreChainClient {
   const network = resolveNetwork(opts);

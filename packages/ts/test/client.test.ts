@@ -60,13 +60,19 @@ describe("createClient network resolution", () => {
     );
   });
 
-  it("throws the not-yet-live error for mainnet without endpoints", () => {
-    expect(() => createClient({ network: "mainnet" })).toThrow(
-      /mainnet is not yet live — pass custom endpoints via createClient\(\{ endpoints \}\)/,
+  it("builds a working mainnet client with localhost defaults", async () => {
+    const fetchMock = vi.fn(async () => jsonResponse({ balances: [] }));
+    const client = createClient({ network: "mainnet", fetch: fetchMock });
+    expect(client.network.name).toBe("mainnet");
+    expect(client.network.chainId).toBe("qorechain-vladi");
+    expect(client.network.endpoints).toEqual(NETWORKS.mainnet.endpoints);
+    await client.rest.getAllBalances("qor1abc");
+    expect(calledUrl(fetchMock)).toBe(
+      "http://localhost:1317/cosmos/bank/v1beta1/balances/qor1abc",
     );
   });
 
-  it("builds a working client for mainnet when endpoints are supplied", async () => {
+  it("builds a working client for mainnet with custom endpoints", async () => {
     const fetchMock = vi.fn(async () => jsonResponse({ balances: [] }));
     const client = createClient({
       network: "mainnet",
@@ -75,11 +81,10 @@ describe("createClient network resolution", () => {
         rpc: "https://rpc.main",
         evmRpc: "https://evm.main",
       },
-      chainId: "qorechain-1",
       fetch: fetchMock,
     });
     expect(client.network.name).toBe("mainnet");
-    expect(client.network.chainId).toBe("qorechain-1");
+    expect(client.network.chainId).toBe("qorechain-vladi");
     expect(client.network.endpoints?.rest).toBe("https://rest.main");
     await client.rest.getAllBalances("qor1abc");
     expect(calledUrl(fetchMock)).toBe(
@@ -87,16 +92,14 @@ describe("createClient network resolution", () => {
     );
   });
 
-  it("leaves mainnet chainId as the metadata value when none supplied", () => {
-    const client = createClient({
-      network: "mainnet",
-      endpoints: {
-        rest: "https://rest.main",
-        rpc: "https://rpc.main",
-        evmRpc: "https://evm.main",
-      },
-    });
-    expect(client.network.chainId).toBeNull();
+  it("keeps the mainnet preset chain id when none is supplied", () => {
+    const client = createClient({ network: "mainnet" });
+    expect(client.network.chainId).toBe("qorechain-vladi");
+  });
+
+  it("applies a chainId override", () => {
+    const client = createClient({ network: "mainnet", chainId: "qorechain-1" });
+    expect(client.network.chainId).toBe("qorechain-1");
   });
 });
 
@@ -152,14 +155,14 @@ describe("createClient sub-clients and fees", () => {
   });
 
   it("throws an actionable error when a needed endpoint is missing", () => {
-    // Mainnet built from only rest+rpc: evmRpc is absent, so evm/qor must throw.
+    // Explicitly blanking evmRpc leaves evm/qor without an endpoint, so they throw.
     const client = createClient({
       network: "mainnet",
-      endpoints: { rest: "https://rest.main", rpc: "https://rpc.main" },
+      endpoints: { evmRpc: "" },
     });
     expect(() => client.evm).toThrow(/evmRpc/);
     expect(() => client.qor).toThrow(/evmRpc/);
-    // rest is present, so it must not throw.
+    // rest keeps its preset default, so it must not throw.
     expect(() => client.rest).not.toThrow();
   });
 

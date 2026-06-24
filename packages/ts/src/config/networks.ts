@@ -1,12 +1,10 @@
 /**
  * Network presets for the QoreChain SDK.
  *
- * The `testnet` preset is fully populated and live. Its endpoints default to
- * localhost ports so the SDK works out of the box against a locally running
- * node; callers can override these with real testnet hostnames when creating a
- * client. The `mainnet` preset is a placeholder: mainnet is not yet live, so it
- * carries no chain ID and no endpoints, and {@link getNetwork} throws if asked
- * for it.
+ * Both the `testnet` and `mainnet` presets are fully populated and live. Their
+ * endpoints default to localhost ports so the SDK works out of the box against a
+ * locally running node; callers override these with real hostnames when creating
+ * a client. {@link getNetwork} returns either preset.
  */
 
 /** Bech32 human-readable prefixes used across QoreChain address types. */
@@ -51,14 +49,14 @@ export interface NetworkConfig {
   name: string;
   /** Whether the network is live and usable without custom endpoints. */
   live: boolean;
-  /** Chain ID, or `null` when the network is not yet live. */
-  chainId: string | null;
+  /** Chain ID. */
+  chainId: string;
   /** Bech32 prefixes for address encoding. */
   bech32: Bech32Prefixes;
   /** Staking coin metadata. */
   coin: CoinInfo;
-  /** Default endpoints, or `null` when the network is not yet live. */
-  endpoints: NetworkEndpoints | null;
+  /** Default endpoints. */
+  endpoints: NetworkEndpoints;
 }
 
 /** Known network preset names. */
@@ -99,11 +97,18 @@ export const NETWORKS: Record<NetworkName, NetworkConfig> = {
   },
   mainnet: {
     name: "mainnet",
-    live: false,
-    chainId: null,
+    live: true,
+    chainId: "qorechain-vladi",
     bech32: BECH32,
     coin: COIN,
-    endpoints: null,
+    endpoints: {
+      rest: "http://localhost:1317",
+      grpc: "http://localhost:9090",
+      rpc: "http://localhost:26657",
+      evmRpc: "http://localhost:8545",
+      evmWs: "ws://localhost:8546",
+      svmRpc: "http://localhost:8899",
+    },
   },
 };
 
@@ -111,18 +116,9 @@ export const NETWORKS: Record<NetworkName, NetworkConfig> = {
  * Resolve a network preset by name.
  *
  * @returns The requested {@link NetworkConfig}, guaranteed to be live and usable.
- * @throws If the named network is not yet live (e.g. `mainnet`). Pass custom
- *   endpoints via `createClient({ endpoints })` to target a network that has no
- *   built-in preset.
  */
 export function getNetwork(name: NetworkName): NetworkConfig {
-  const config = NETWORKS[name];
-  if (!config.live) {
-    throw new Error(
-      `${name} is not yet live — pass custom endpoints via createClient({ endpoints })`,
-    );
-  }
-  return config;
+  return NETWORKS[name];
 }
 
 /** List the known network preset names without triggering any liveness check. */
