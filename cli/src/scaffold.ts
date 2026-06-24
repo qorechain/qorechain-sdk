@@ -25,8 +25,8 @@ import { findTemplate, templateIdList } from "./templates.js";
 /** Supported package managers. */
 export type PackageManager = "pnpm" | "npm" | "yarn";
 
-/** Supported networks (mainnet is not yet live). */
-export type Network = "testnet";
+/** Supported networks. */
+export type Network = "testnet" | "mainnet";
 
 /** Options for {@link scaffold}. */
 export interface ScaffoldOptions {

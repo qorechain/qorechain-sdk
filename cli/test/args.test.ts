@@ -49,8 +49,12 @@ describe("parseArgs", () => {
     expect(() => parseArgs(["--package-manager", "bun"])).toThrow(ArgError);
   });
 
-  it("rejects mainnet (not yet live)", () => {
-    expect(() => parseArgs(["--network", "mainnet"])).toThrow(ArgError);
+  it("accepts mainnet as a live network", () => {
+    expect(parseArgs(["--network", "mainnet"]).network).toBe("mainnet");
+  });
+
+  it("rejects an unknown network", () => {
+    expect(() => parseArgs(["--network", "devnet"])).toThrow(ArgError);
   });
 
   it("rejects unknown options", () => {

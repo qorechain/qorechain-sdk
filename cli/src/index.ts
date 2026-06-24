@@ -86,23 +86,15 @@ async function promptTemplate(initial?: string): Promise<string> {
 
 async function promptNetwork(initial?: Network): Promise<Network> {
   if (initial) return initial;
-  // testnet is the only live network today; surface it but note mainnet status.
   const value = await select({
     message: "Which network?",
     options: [
-      { value: "testnet", label: "testnet", hint: "live" },
-      {
-        value: "mainnet-disabled",
-        label: "mainnet",
-        hint: "not yet live — unavailable",
-      },
+      { value: "testnet", label: "testnet", hint: "qorechain-diana" },
+      { value: "mainnet", label: "mainnet", hint: "qorechain-vladi" },
     ],
+    initialValue: "testnet",
   });
   if (isCancel(value)) bail();
-  if (value === "mainnet-disabled") {
-    log.warn("mainnet is not yet live; using testnet.");
-    return "testnet";
-  }
   return value as Network;
 }
 

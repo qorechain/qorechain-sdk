@@ -11,7 +11,7 @@ export interface ParsedArgs {
   dir?: string;
   /** `--template <name>`. */
   template?: string;
-  /** `--network <testnet>`. */
+  /** `--network <testnet|mainnet>`. */
   network?: Network;
   /** `--package-manager <pnpm|npm|yarn>`. */
   packageManager?: PackageManager;
@@ -28,7 +28,7 @@ export interface ParsedArgs {
 }
 
 const VALID_PM: readonly PackageManager[] = ["pnpm", "npm", "yarn"];
-const VALID_NETWORK: readonly Network[] = ["testnet"];
+const VALID_NETWORK: readonly Network[] = ["testnet", "mainnet"];
 
 /** Thrown for malformed CLI input; carries a user-facing message. */
 export class ArgError extends Error {}
@@ -125,8 +125,7 @@ function parseNetwork(value: string): Network {
     return value as Network;
   }
   throw new ArgError(
-    `Invalid --network "${value}". Expected one of: ${VALID_NETWORK.join(", ")} ` +
-      `(mainnet is not yet live).`,
+    `Invalid --network "${value}". Expected one of: ${VALID_NETWORK.join(", ")}.`,
   );
 }
 
@@ -147,7 +146,7 @@ Arguments:
 Options:
   -t, --template <name>      Template to use. One of:
 ${templates}
-      --network <name>       Network preset (testnet). mainnet is not yet live.
+      --network <name>       Network preset: testnet | mainnet.
       --package-manager <pm> Package manager: pnpm | npm | yarn.
   -y, --yes                  Skip prompts and use defaults.
       --no-install           Do not install dependencies after scaffolding.
