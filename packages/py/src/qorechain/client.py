@@ -6,12 +6,9 @@
 plus a fee-estimate convenience.
 
 Network resolution rules:
-  - The default network is ``testnet``; its endpoints default to localhost, and
-    callers can override them with real hostnames.
-  - ``mainnet`` is not yet live and ships no endpoints. If ``endpoints`` supplies
-    the needed URLs, a usable client is built from ``mainnet`` metadata + those
-    overrides; otherwise this raises the same "not yet live" error as
-    :func:`~qorechain.networks.get_network`.
+  - The default network is ``testnet``. Both ``testnet`` and ``mainnet`` are live
+    and ship localhost endpoint defaults; callers can override them with real
+    hostnames.
 """
 
 from __future__ import annotations
@@ -74,22 +71,14 @@ def _resolve_network(
     if base is None:
         raise ValueError(f"unknown network: {network}")
 
-    if not base.live:
-        # Not live (mainnet): only buildable from caller-supplied endpoints.
-        if not overrides:
-            raise ValueError(f"{network} is not yet live — pass custom endpoints")
-        merged = {k: overrides.get(k, "") for k in _ENDPOINT_KEYS}
-        return replace(
-            base,
-            chain_id=chain_id or base.chain_id,
-            endpoints=NetworkEndpoints(**merged),
-        )
-
-    # Live preset (testnet): overlay endpoint overrides onto the defaults.
-    assert base.endpoints is not None
+    # Live preset (testnet or mainnet): overlay endpoint overrides onto the defaults.
     current = {k: getattr(base.endpoints, k) for k in _ENDPOINT_KEYS}
     current.update(overrides)
-    return replace(base, endpoints=NetworkEndpoints(**current))
+    return replace(
+        base,
+        chain_id=chain_id or base.chain_id,
+        endpoints=NetworkEndpoints(**current),
+    )
 
 
 def _require_endpoint(network: NetworkConfig, key: str) -> str:
@@ -113,9 +102,9 @@ def create_client(
 
     :param network: Network preset to target. Defaults to ``"testnet"``.
     :param endpoints: Endpoint overrides (keys: ``rest``, ``grpc``, ``rpc``,
-        ``evm_rpc``, ``evm_ws``, ``svm_rpc``). Required for ``mainnet``.
-    :param chain_id: Chain ID override (meaningful only for ``mainnet``).
-    :raises ValueError: If ``mainnet`` is selected without endpoints.
+        ``evm_rpc``, ``evm_ws``, ``svm_rpc``). Both presets default to localhost.
+    :param chain_id: Chain ID override.
+    :raises ValueError: If the network or an endpoint key is unknown.
     """
     resolved = _resolve_network(network, endpoints, chain_id)
     rest = RestClient(_require_endpoint(resolved, "rest"), timeout=timeout)

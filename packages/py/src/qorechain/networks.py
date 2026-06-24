@@ -1,10 +1,9 @@
 """Network presets for the QoreChain Python SDK.
 
-The ``testnet`` preset is fully populated and live; its endpoints default to
-localhost ports so the SDK works out of the box against a locally running node,
-and callers can override them with real hostnames. The ``mainnet`` preset is a
-placeholder: mainnet is not yet live, so it carries no chain ID and no
-endpoints, and :func:`get_network` raises if asked for it.
+Both the ``testnet`` and ``mainnet`` presets are fully populated and live; their
+endpoints default to localhost ports so the SDK works out of the box against a
+locally running node, and callers can override them with real hostnames.
+:func:`get_network` returns either preset.
 """
 
 from __future__ import annotations
@@ -48,10 +47,10 @@ class NetworkConfig:
 
     name: str
     live: bool
-    chain_id: str | None
+    chain_id: str
     bech32: Bech32Prefixes
     coin: CoinInfo
-    endpoints: NetworkEndpoints | None
+    endpoints: NetworkEndpoints
 
 
 # QoreChain uses the same token and address prefixes on every network.
@@ -77,11 +76,18 @@ NETWORKS: dict[str, NetworkConfig] = {
     ),
     "mainnet": NetworkConfig(
         name="mainnet",
-        live=False,
-        chain_id=None,
+        live=True,
+        chain_id="qorechain-vladi",
         bech32=_BECH32,
         coin=_COIN,
-        endpoints=None,
+        endpoints=NetworkEndpoints(
+            rest="http://localhost:1317",
+            grpc="http://localhost:9090",
+            rpc="http://localhost:26657",
+            evm_rpc="http://localhost:8545",
+            evm_ws="ws://localhost:8546",
+            svm_rpc="http://localhost:8899",
+        ),
     ),
 }
 
@@ -90,14 +96,11 @@ def get_network(name: str) -> NetworkConfig:
     """Resolve a network preset by name.
 
     :returns: The requested live :class:`NetworkConfig`.
-    :raises ValueError: If the named network is unknown or not yet live
-        (e.g. ``mainnet``). Pass custom endpoints to target such a network.
+    :raises ValueError: If the named network is unknown.
     """
     config = NETWORKS.get(name)
     if config is None:
         raise ValueError(f"unknown network: {name}")
-    if not config.live:
-        raise ValueError(f"{name} is not yet live — pass custom endpoints")
     return config
 
 

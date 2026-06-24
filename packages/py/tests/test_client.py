@@ -23,9 +23,13 @@ def test_endpoint_override_applied():
     client.close()
 
 
-def test_mainnet_without_endpoints_raises():
-    with pytest.raises(ValueError, match="not yet live"):
-        create_client(network="mainnet")
+def test_mainnet_default():
+    client = create_client(network="mainnet")
+    assert client.network.name == "mainnet"
+    assert client.network.chain_id == "qorechain-vladi"
+    assert client.rest.base_url == "http://localhost:1317"
+    assert client.qor.url == "http://localhost:8545"
+    client.close()
 
 
 def test_mainnet_with_endpoints():
