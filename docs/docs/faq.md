@@ -8,10 +8,11 @@ sidebar_position: 9
 
 ## Is mainnet live?
 
-No. Mainnet is **not yet live**. Build against the `testnet` preset (chain id
-`qorechain-diana`). When mainnet launches you will target it by passing a custom
-`chainId` and `endpoints` to `createClient` (there are no built-in mainnet
-endpoints yet). See [Network & endpoints](reference/network.md).
+Yes. Mainnet is **live** (chain id `qorechain-vladi`). The testnet preset
+(`qorechain-diana`) also remains available. Both presets ship localhost endpoint
+defaults; select the network with `createClient({ network: "mainnet" })` and
+override `endpoints` with your node URLs. See
+[Network & endpoints](reference/network.md).
 
 ## Why do my calls hit localhost?
 

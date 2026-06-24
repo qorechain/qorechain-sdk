@@ -7,12 +7,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- Mainnet is now live (chain id `qorechain-vladi`). The `mainnet` preset is fully
+  populated across all four SDKs with the same localhost endpoint defaults as
+  testnet; `getNetwork("mainnet")` and the client factories now return a usable
+  config instead of raising the former mainnet-unavailable error.
+
 ### Added
 
 - Initial public repository scaffolding for the QoreChain SDK monorepo.
 - `@qorechain/sdk` TypeScript core:
   - Network presets (`NETWORKS`, `getNetwork`, `listNetworks`): live testnet
-    (`qorechain-diana`) with localhost defaults; mainnet placeholder.
+    (`qorechain-diana`) and live mainnet (`qorechain-vladi`), both with localhost
+    defaults.
   - Account derivation from a single mnemonic — native (`qor1…` secp256k1), EVM
     (`0x…` EIP-55), and SVM (base58 ed25519) — plus `generateMnemonic` /
     `validateMnemonic`.

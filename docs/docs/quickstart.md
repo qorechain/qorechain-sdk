@@ -33,14 +33,17 @@ const remote = createClient({
 });
 ```
 
-Mainnet is not yet live. When it launches you can target it with custom
-endpoints:
+Mainnet (chain id `qorechain-vladi`) is live. Select it and override the
+localhost defaults with your node URLs:
 
 ```ts
 const main = createClient({
   network: "mainnet",
-  chainId: "...",
-  endpoints: { /* ... */ },
+  endpoints: {
+    rest: "https://rest.mainnet.example",
+    rpc: "https://rpc.mainnet.example",
+    evmRpc: "https://evm.mainnet.example",
+  },
 });
 ```
 

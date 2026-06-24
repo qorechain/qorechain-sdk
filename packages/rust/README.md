@@ -23,7 +23,7 @@ Requires Rust 1.74+.
 
 | Module | Purpose |
 |---|---|
-| `networks` | Network presets (`testnet` live, `mainnet` placeholder), `get_network`. |
+| `networks` | Network presets (`testnet` and `mainnet`, both live), `get_network`. |
 | `denom` | `to_base` / `from_base` exact integer money math (no floats). |
 | `address` | bech32 ⇄ hex conversion and validation. |
 | `accounts` | BIP-39 mnemonics + HD derivation (native, EVM, SVM). |
@@ -55,7 +55,8 @@ async fn main() -> qorechain::Result<()> {
 }
 ```
 
-For a network without built-in endpoints (e.g. mainnet), pass overrides:
+Mainnet (chain id `qorechain-vladi`) is live; select it and override the
+localhost defaults with your node URLs:
 
 ```rust,no_run
 use qorechain::ClientBuilder;
@@ -64,9 +65,9 @@ let client = ClientBuilder::new()
     .network("mainnet")
     .rest("https://rest.example")
     .evm_rpc("https://evm.example")
-    .chain_id("qorechain-1")
     .build()
     .unwrap();
+// client.network.chain_id == Some("qorechain-vladi".into())
 ```
 
 ### Derive accounts

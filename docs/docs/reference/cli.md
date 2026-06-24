@@ -33,7 +33,7 @@ npx create-qorechain-dapp my-dapp --template evm-solidity --yes --no-install
 | Flag | Description |
 | --- | --- |
 | `-t, --template <name>` | Template to use (`evm-solidity` \| `fullstack-web`). |
-| `--network <name>` | Network preset (`testnet`). mainnet is not yet live. |
+| `--network <name>` | Network preset (`testnet` \| `mainnet`). |
 | `--package-manager <pm>` | `pnpm` \| `npm` \| `yarn`. |
 | `-y, --yes` | Skip prompts and use defaults. |
 | `--no-install` | Do not install dependencies after scaffolding. |

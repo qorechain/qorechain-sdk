@@ -20,7 +20,7 @@ Requires Go 1.22+.
 
 | Package | Purpose |
 |---|---|
-| `qorechain/networks` | Network presets (`testnet` live, `mainnet` placeholder), `GetNetwork`. |
+| `qorechain/networks` | Network presets (`testnet` and `mainnet`, both live), `GetNetwork`. |
 | `qorechain/denom` | `ToBase` / `FromBase` exact big.Int money math. |
 | `qorechain/address` | bech32 ⇄ hex conversion and validation. |
 | `qorechain/accounts` | BIP-39 mnemonics + HD derivation (native, EVM, SVM). |
@@ -46,7 +46,8 @@ stats, err := c.Qor.GetAIStats()
 fee, err := c.Fees.Estimate("fast")
 ```
 
-For a network without built-in endpoints (e.g. mainnet), pass overrides:
+Mainnet (chain id `qorechain-vladi`) is live; select it and override the
+localhost defaults with your node URLs:
 
 ```go
 c, err := client.CreateClient(client.Options{
@@ -55,8 +56,8 @@ c, err := client.CreateClient(client.Options{
         REST:   "https://rest.example",
         EVMRPC: "https://evm.example",
     },
-    ChainID: "qorechain-1",
 })
+// c.Network.ChainID == "qorechain-vladi"
 ```
 
 ### Derive accounts

@@ -47,9 +47,15 @@ const remote = createClient({
   },
 });
 
-// Mainnet is not yet live; when it launches you can target it with custom
-// endpoints:
-// const main = createClient({ network: "mainnet", chainId: "...", endpoints: { /* ... */ } });
+// Mainnet (chain id "qorechain-vladi") is live; select it and point at a node.
+const main = createClient({
+  network: "mainnet",
+  endpoints: {
+    rest: "https://rest.mainnet.example",
+    rpc: "https://rpc.mainnet.example",
+    evmRpc: "https://evm.mainnet.example",
+  },
+});
 ```
 
 ### Accounts
@@ -146,12 +152,12 @@ const ok = pqcVerify(keypair.publicKey, message, signature);
 
 ## Network reference
 
+- Mainnet chain id: `qorechain-vladi` (live).
 - Testnet chain id: `qorechain-diana` (live).
 - Default endpoint ports (localhost): REST `1317`, gRPC `9090`, consensus RPC
   `26657`, EVM JSON-RPC `8545` / WS `8546`, SVM RPC `8899`. Override these to
   point at a real node.
 - Token: `QOR` (display) / `uqor` (base), with 10^6 base units per QOR.
-- Mainnet is not yet live; target it with custom endpoints once it launches.
 
 ## License
 

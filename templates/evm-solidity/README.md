@@ -8,8 +8,8 @@ increment → read) using [`@qorechain/evm`](https://github.com/qorechain/qorech
 
 - **Node.js >= 20**.
 - A reachable **QoreChain EVM JSON-RPC** endpoint (`QORE_EVM_RPC_URL`). With no
-  value set it defaults to `http://localhost:8545`. **Note:** mainnet is not yet
-  live; use a testnet endpoint or a local node.
+  value set it defaults to `http://localhost:8545`. Point it at a testnet
+  (`qorechain-diana`) or mainnet (`qorechain-vladi`) node, or a local node.
 - A **funded EVM account** private key (`QORE_EVM_PRIVATE_KEY`, `0x`-prefixed,
   32 bytes). It needs enough QOR to cover gas for the deploy + one write.
 

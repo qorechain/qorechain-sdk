@@ -6,6 +6,18 @@ sidebar_position: 1
 
 # Network & endpoints reference
 
+## Mainnet
+
+| Field | Value |
+| --- | --- |
+| Network preset | `mainnet` |
+| Chain id | `qorechain-vladi` (live) |
+| Display token | `QOR` |
+| Base denomination | `uqor` |
+| Base units per QOR | `10^6` |
+| Account bech32 prefix | `qor` |
+| Validator bech32 prefix | `qorvaloper` |
+
 ## Testnet
 
 | Field | Value |
@@ -52,15 +64,18 @@ module) so you can list and resolve networks programmatically. In Python/Go/Rust
 the equivalents are `create_client` / `CreateClient` / `ClientBuilder` plus the
 `networks` module.
 
-## Mainnet
+## Targeting mainnet
 
-Mainnet is **not yet live**. When it launches you will target it with a custom
-chain id and endpoints:
+Both presets ship the same localhost defaults; select `mainnet` and override the
+endpoints with your node URLs:
 
 ```ts
 const main = createClient({
-  network: "mainnet",
-  chainId: "...",          // assigned at launch
-  endpoints: { /* ... */ }, // required — no built-in mainnet endpoints yet
+  network: "mainnet",       // chain id qorechain-vladi
+  endpoints: {
+    rest: "https://rest.mainnet.example",
+    rpc: "https://rpc.mainnet.example",
+    evmRpc: "https://evm.mainnet.example",
+  },
 });
 ```

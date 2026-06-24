@@ -31,8 +31,9 @@ const remote = createClient({
 });
 ```
 
-Mainnet is not yet live; target it with `createClient({ network: "mainnet",
-chainId, endpoints })` once it launches.
+Mainnet (chain id `qorechain-vladi`) is live; target it with
+`createClient({ network: "mainnet", endpoints })`, overriding the localhost
+defaults with your node URLs.
 
 ### Accounts
 
@@ -141,6 +142,7 @@ const status = await client.qor.getCrossVmMessage("42");
 
 ## Network reference
 
+- Mainnet chain id: `qorechain-vladi` (live).
 - Testnet chain id: `qorechain-diana` (live).
 - Token: `QOR` / `uqor` (10^6 base units per QOR).
 - Default endpoints point at localhost — override them to reach a real node.

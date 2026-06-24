@@ -12,8 +12,8 @@ A minimal [Vite](https://vitejs.dev) + React + TypeScript dApp that uses
 - **Node.js >= 20**.
 - A reachable QoreChain **REST** endpoint (`VITE_QORE_REST_URL`) for balances and
   an **EVM JSON-RPC** endpoint (`VITE_QORE_EVM_RPC_URL`) for the `qor_*`
-  namespace. Both default to localhost. **Note:** mainnet is not yet live; use a
-  testnet endpoint or a local node.
+  namespace. Both default to localhost. Point them at a testnet
+  (`qorechain-diana`) or mainnet (`qorechain-vladi`) node, or a local node.
 
 ## Setup & run
 

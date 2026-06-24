@@ -36,7 +36,8 @@ fee = client.fees.estimate("fast")
 client.close()
 ```
 
-Override endpoints (required for `mainnet`, which is not yet live):
+Mainnet (chain id `qorechain-vladi`) is live; select it and override the
+localhost defaults with your node URLs:
 
 ```python
 client = create_client(
@@ -45,8 +46,8 @@ client = create_client(
         "rest": "https://rest.qore.network",
         "evm_rpc": "https://evm.qore.network",
     },
-    chain_id="qorechain-1",
 )
+print(client.network.chain_id)  # "qorechain-vladi"
 ```
 
 ### Derive accounts
