@@ -45,13 +45,28 @@ func TestGetNetworkTestnet(t *testing.T) {
 	}
 }
 
-func TestGetNetworkMainnetNotLive(t *testing.T) {
-	_, err := GetNetwork("mainnet")
-	if err == nil {
-		t.Fatal("expected error for not-live mainnet")
+func TestGetNetworkMainnetLive(t *testing.T) {
+	cfg, err := GetNetwork("mainnet")
+	if err != nil {
+		t.Fatalf("unexpected error: %v", err)
 	}
-	if !strings.Contains(err.Error(), "not yet live") {
-		t.Errorf("error = %q, want 'not yet live'", err.Error())
+	if !cfg.Live {
+		t.Error("mainnet should be live")
+	}
+	if cfg.ChainID != "qorechain-vladi" {
+		t.Errorf("chain id = %q, want qorechain-vladi", cfg.ChainID)
+	}
+	if cfg.Endpoints == nil {
+		t.Fatal("mainnet endpoints should not be nil")
+	}
+	if cfg.Endpoints.REST != "http://localhost:1317" {
+		t.Errorf("rest = %q", cfg.Endpoints.REST)
+	}
+	if cfg.Bech32.Account != "qor" || cfg.Bech32.Validator != "qorvaloper" || cfg.Bech32.Consensus != "qorvalcons" {
+		t.Errorf("bech32 prefixes wrong: %+v", cfg.Bech32)
+	}
+	if cfg.Coin.Display != "QOR" || cfg.Coin.Base != "uqor" || cfg.Coin.Exponent != 6 {
+		t.Errorf("coin info wrong: %+v", cfg.Coin)
 	}
 }
 
@@ -67,13 +82,13 @@ func TestGetNetworkUnknown(t *testing.T) {
 
 func TestMainnetPresetShape(t *testing.T) {
 	cfg := Networks["mainnet"]
-	if cfg.Live {
-		t.Error("mainnet should not be live")
+	if !cfg.Live {
+		t.Error("mainnet should be live")
 	}
-	if cfg.ChainID != "" {
-		t.Errorf("mainnet chain id should be empty, got %q", cfg.ChainID)
+	if cfg.ChainID != "qorechain-vladi" {
+		t.Errorf("mainnet chain id should be qorechain-vladi, got %q", cfg.ChainID)
 	}
-	if cfg.Endpoints != nil {
-		t.Error("mainnet endpoints should be nil")
+	if cfg.Endpoints == nil {
+		t.Error("mainnet endpoints should not be nil")
 	}
 }

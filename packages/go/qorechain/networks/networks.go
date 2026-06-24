@@ -1,10 +1,9 @@
 // Package networks provides built-in network presets for the QoreChain Go SDK.
 //
-// The "testnet" preset is fully populated and live; its endpoints default to
-// localhost ports so the SDK works out of the box against a locally running
-// node, and callers can override them with real hostnames. The "mainnet"
-// preset is a placeholder: mainnet is not yet live, so it carries no chain ID
-// and no endpoints, and GetNetwork returns an error if asked for it.
+// Both the "testnet" and "mainnet" presets are fully populated and live; their
+// endpoints default to localhost ports so the SDK works out of the box against a
+// locally running node, and callers can override them with real hostnames.
+// GetNetwork returns either preset.
 package networks
 
 import "fmt"
@@ -36,8 +35,7 @@ type Endpoints struct {
 	SVMRPC string
 }
 
-// NetworkConfig is a fully described network preset. Endpoints is nil for
-// networks that are not yet live (e.g. mainnet).
+// NetworkConfig is a fully described network preset.
 type NetworkConfig struct {
 	Name      string
 	Live      bool
@@ -71,26 +69,29 @@ var Networks = map[string]NetworkConfig{
 		},
 	},
 	"mainnet": {
-		Name:      "mainnet",
-		Live:      false,
-		ChainID:   "",
-		Bech32:    bech32Prefixes,
-		Coin:      coinInfo,
-		Endpoints: nil,
+		Name:    "mainnet",
+		Live:    true,
+		ChainID: "qorechain-vladi",
+		Bech32:  bech32Prefixes,
+		Coin:    coinInfo,
+		Endpoints: &Endpoints{
+			REST:   "http://localhost:1317",
+			GRPC:   "http://localhost:9090",
+			RPC:    "http://localhost:26657",
+			EVMRPC: "http://localhost:8545",
+			EVMWS:  "ws://localhost:8546",
+			SVMRPC: "http://localhost:8899",
+		},
 	},
 }
 
 // GetNetwork resolves a network preset by name.
 //
-// It returns an error if the named network is unknown or not yet live (e.g.
-// mainnet); for not-yet-live networks the caller should pass custom endpoints.
+// It returns an error if the named network is unknown.
 func GetNetwork(name string) (NetworkConfig, error) {
 	config, ok := Networks[name]
 	if !ok {
 		return NetworkConfig{}, fmt.Errorf("unknown network: %s", name)
-	}
-	if !config.Live {
-		return NetworkConfig{}, fmt.Errorf("%s is not yet live — pass custom endpoints", name)
 	}
 	return config, nil
 }

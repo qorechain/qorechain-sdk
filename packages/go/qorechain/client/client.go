@@ -6,12 +6,9 @@
 // query.QorClient) plus a fee-estimate convenience.
 //
 // Network resolution rules:
-//   - The default network is "testnet"; its endpoints default to localhost, and
-//     callers can override them with real hostnames.
-//   - "mainnet" is not yet live and ships no endpoints. If Endpoints supplies
-//     the needed URLs, a usable client is built from mainnet metadata + those
-//     overrides; otherwise this returns the same "not yet live" error as
-//     networks.GetNetwork.
+//   - The default network is "testnet". Both "testnet" and "mainnet" are live
+//     and ship localhost endpoint defaults; callers can override them with real
+//     hostnames.
 package client
 
 import (
@@ -26,8 +23,7 @@ import (
 )
 
 // EndpointOverrides holds optional per-endpoint URL overrides. Empty fields are
-// left at their preset defaults (for live networks) or treated as unset (for
-// not-yet-live networks).
+// left at their preset defaults.
 type EndpointOverrides struct {
 	REST   string
 	GRPC   string
@@ -41,9 +37,9 @@ type EndpointOverrides struct {
 type Options struct {
 	// Network is the preset to target. Empty means "testnet".
 	Network string
-	// Endpoints holds optional endpoint overrides. Required for mainnet.
+	// Endpoints holds optional endpoint overrides. Both presets default to localhost.
 	Endpoints EndpointOverrides
-	// ChainID overrides the resolved chain ID (meaningful only for mainnet).
+	// ChainID overrides the resolved chain ID.
 	ChainID string
 	// HTTPClient is the http.Client used for all requests. Optional.
 	HTTPClient *http.Client
@@ -174,27 +170,7 @@ func resolveNetwork(network string, overrides map[string]string, chainID string)
 		return networks.NetworkConfig{}, fmt.Errorf("unknown network: %s", network)
 	}
 
-	if !base.Live {
-		// Not live (mainnet): only buildable from caller-supplied endpoints.
-		if len(overrides) == 0 {
-			return networks.NetworkConfig{}, fmt.Errorf("%s is not yet live — pass custom endpoints", network)
-		}
-		eps := &networks.Endpoints{
-			REST:   overrides["rest"],
-			GRPC:   overrides["grpc"],
-			RPC:    overrides["rpc"],
-			EVMRPC: overrides["evm_rpc"],
-			EVMWS:  overrides["evm_ws"],
-			SVMRPC: overrides["svm_rpc"],
-		}
-		base.Endpoints = eps
-		if chainID != "" {
-			base.ChainID = chainID
-		}
-		return base, nil
-	}
-
-	// Live preset (testnet): overlay endpoint overrides onto the defaults.
+	// Live preset (testnet or mainnet): overlay endpoint overrides onto the defaults.
 	current := *base.Endpoints // copy
 	if v, ok := overrides["rest"]; ok {
 		current.REST = v
@@ -228,8 +204,8 @@ func requireEndpoint(key, value string) (string, error) {
 	return value, nil
 }
 
-// CreateClient creates a composed Client. It returns an error if mainnet is
-// selected without endpoints, or if a required endpoint is missing.
+// CreateClient creates a composed Client. It returns an error if the network is
+// unknown or a required endpoint is missing.
 func CreateClient(opts Options) (*Client, error) {
 	network := opts.Network
 	if network == "" {

@@ -4,7 +4,6 @@ import (
 	"encoding/json"
 	"net/http"
 	"net/http/httptest"
-	"strings"
 	"testing"
 )
 
@@ -24,13 +23,19 @@ func TestCreateClientTestnetDefault(t *testing.T) {
 	}
 }
 
-func TestCreateClientMainnetWithoutEndpointsErrors(t *testing.T) {
-	_, err := CreateClient(Options{Network: "mainnet"})
-	if err == nil {
-		t.Fatal("expected error for mainnet without endpoints")
+func TestCreateClientMainnetDefault(t *testing.T) {
+	c, err := CreateClient(Options{Network: "mainnet"})
+	if err != nil {
+		t.Fatal(err)
 	}
-	if !strings.Contains(err.Error(), "not yet live") {
-		t.Errorf("error = %q", err.Error())
+	if c.Network.Name != "mainnet" {
+		t.Errorf("network = %q, want mainnet", c.Network.Name)
+	}
+	if c.Network.ChainID != "qorechain-vladi" {
+		t.Errorf("chain id = %q, want qorechain-vladi", c.Network.ChainID)
+	}
+	if c.Network.Endpoints.REST != "http://localhost:1317" {
+		t.Errorf("rest = %q", c.Network.Endpoints.REST)
 	}
 }
 
