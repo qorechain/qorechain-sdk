@@ -99,7 +99,7 @@ fn hex_to_bech32_rejects_bad_hex() {
 }
 
 #[test]
-fn testnet_is_live_mainnet_is_not() {
+fn testnet_and_mainnet_are_live() {
     let testnet = get_network("testnet").unwrap();
     assert!(testnet.live);
     assert_eq!(testnet.chain_id.as_deref(), Some("qorechain-diana"));
@@ -114,7 +114,18 @@ fn testnet_is_live_mainnet_is_not() {
     assert_eq!(testnet.bech32.account, "qor");
     assert_eq!(testnet.bech32.validator, "qorvaloper");
 
-    assert!(get_network("mainnet").is_err());
+    let mainnet = get_network("mainnet").unwrap();
+    assert!(mainnet.live);
+    assert_eq!(mainnet.chain_id.as_deref(), Some("qorechain-vladi"));
+    let meps = mainnet.endpoints.unwrap();
+    assert_eq!(meps.rest, "http://localhost:1317");
+    assert_eq!(meps.evm_rpc, "http://localhost:8545");
+    assert_eq!(meps.svm_rpc, "http://localhost:8899");
+    assert_eq!(mainnet.coin.display, "QOR");
+    assert_eq!(mainnet.bech32.account, "qor");
+    assert_eq!(mainnet.bech32.validator, "qorvaloper");
+    assert_eq!(mainnet.bech32.consensus, "qorvalcons");
+
     assert!(get_network("nonexistent").is_err());
 
     assert_eq!(list_networks(), vec!["testnet", "mainnet"]);

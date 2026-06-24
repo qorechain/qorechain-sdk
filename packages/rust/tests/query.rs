@@ -292,9 +292,13 @@ async fn client_testnet_default_and_overrides() {
 }
 
 #[test]
-fn client_mainnet_without_endpoints_errors() {
-    let err = ClientBuilder::new().network("mainnet").build().unwrap_err();
-    assert!(matches!(err, qorechain::Error::NetworkNotLive(_)));
+fn client_mainnet_default_builds_live() {
+    let client = ClientBuilder::new().network("mainnet").build().unwrap();
+    assert_eq!(client.network.name, "mainnet");
+    assert!(client.network.live);
+    assert_eq!(client.network.chain_id.as_deref(), Some("qorechain-vladi"));
+    let eps = client.network.endpoints.as_ref().unwrap();
+    assert_eq!(eps.rest, "http://localhost:1317");
 }
 
 #[test]
@@ -306,6 +310,9 @@ fn client_mainnet_with_endpoints_builds() {
         .build()
         .unwrap();
     assert_eq!(client.network.name, "mainnet");
+    assert_eq!(client.network.chain_id.as_deref(), Some("qorechain-vladi"));
+    let eps = client.network.endpoints.as_ref().unwrap();
+    assert_eq!(eps.rest, "https://rest.example.com");
 }
 
 #[test]

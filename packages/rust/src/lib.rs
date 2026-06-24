@@ -4,8 +4,7 @@
 //! provides the building blocks dApp developers need to talk to a QoreChain
 //! network:
 //!
-//! - [`networks`] — built-in network presets (testnet is live; mainnet is a
-//!   not-yet-live placeholder).
+//! - [`networks`] — built-in network presets (testnet and mainnet, both live).
 //! - [`denom`] — exact integer conversion between display and base amounts.
 //! - [`address`] — bech32 / hex address conversion and validation.
 //! - [`accounts`] — BIP-39 mnemonics and HD derivation of native (Cosmos-style

@@ -9,10 +9,6 @@ pub enum Error {
     #[error("unknown network: {0}")]
     UnknownNetwork(String),
 
-    /// The named network exists but is not yet live (e.g. mainnet).
-    #[error("{0} is not yet live — pass custom endpoints")]
-    NetworkNotLive(String),
-
     /// A required endpoint URL was not configured.
     #[error("endpoint \"{0}\" is not configured — pass it via create_client endpoints")]
     MissingEndpoint(String),

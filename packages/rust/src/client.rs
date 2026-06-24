@@ -7,20 +7,16 @@
 //! convenience.
 //!
 //! Network resolution rules:
-//! - The default network is `"testnet"`; its endpoints default to localhost, and
-//!   callers can override them with real hostnames.
-//! - `"mainnet"` is not yet live and ships no endpoints. If overrides supply the
-//!   needed URLs, a usable client is built from mainnet metadata plus those
-//!   overrides; otherwise this returns the same "not yet live" error as
-//!   [`get_network`](crate::networks::get_network).
+//! - The default network is `"testnet"`. Both `"testnet"` and `"mainnet"` are
+//!   live and ship localhost endpoint defaults; callers can override them with
+//!   real hostnames.
 
 use crate::error::{Error, Result};
-use crate::networks::{get_network, networks, Endpoints, NetworkConfig};
+use crate::networks::{get_network, Endpoints, NetworkConfig};
 use crate::query::{QorClient, RestClient};
 use serde_json::{json, Value};
 
-/// Optional per-endpoint URL overrides. `None` fields keep their preset defaults
-/// (for live networks) or are treated as unset (for not-yet-live networks).
+/// Optional per-endpoint URL overrides. `None` fields keep their preset defaults.
 #[derive(Debug, Clone, Default)]
 pub struct EndpointOverrides {
     /// Cosmos REST (LCD) endpoint.
@@ -119,14 +115,14 @@ impl ClientBuilder {
 
     /// Builds the composed [`Client`].
     ///
-    /// Returns an error if mainnet is selected without endpoints, or if a
-    /// required endpoint (`rest`, `evm_rpc`) is missing.
+    /// Returns an error if the network is unknown or a required endpoint
+    /// (`rest`, `evm_rpc`) is missing.
     pub fn build(self) -> Result<Client> {
         let resolved = resolve_network(&self.network, &self.overrides, self.chain_id.as_deref())?;
         let eps = resolved
             .endpoints
             .as_ref()
-            .ok_or_else(|| Error::NetworkNotLive(self.network.clone()))?;
+            .ok_or_else(|| Error::MissingEndpoint("rest".to_string()))?;
 
         let rest_url = require_endpoint("rest", &eps.rest)?;
         let evm_url = require_endpoint("evm_rpc", &eps.evm_rpc)?;
@@ -256,37 +252,12 @@ fn resolve_network(
     overrides: &EndpointOverrides,
     chain_id: Option<&str>,
 ) -> Result<NetworkConfig> {
-    let base = networks()
-        .into_iter()
-        .find(|n| n.name == network)
-        .ok_or_else(|| Error::UnknownNetwork(network.to_string()))?;
-
-    if base.live {
-        // Re-resolve via get_network so liveness rules stay centralized, then
-        // overlay endpoint overrides onto the defaults.
-        let mut resolved = get_network(network)?;
-        if let Some(eps) = resolved.endpoints.as_mut() {
-            overlay(eps, overrides);
-        }
-        if let Some(cid) = chain_id {
-            resolved.chain_id = Some(cid.to_string());
-        }
-        return Ok(resolved);
+    // Live preset (testnet or mainnet): start from it, then overlay endpoint
+    // overrides onto the defaults.
+    let mut resolved = get_network(network)?;
+    if let Some(eps) = resolved.endpoints.as_mut() {
+        overlay(eps, overrides);
     }
-
-    // Not live (mainnet): only buildable from caller-supplied endpoints.
-    if overrides.is_empty() {
-        return Err(Error::NetworkNotLive(network.to_string()));
-    }
-    let mut resolved = base;
-    resolved.endpoints = Some(Endpoints {
-        rest: overrides.rest.clone().unwrap_or_default(),
-        grpc: overrides.grpc.clone().unwrap_or_default(),
-        rpc: overrides.rpc.clone().unwrap_or_default(),
-        evm_rpc: overrides.evm_rpc.clone().unwrap_or_default(),
-        evm_ws: overrides.evm_ws.clone().unwrap_or_default(),
-        svm_rpc: overrides.svm_rpc.clone().unwrap_or_default(),
-    });
     if let Some(cid) = chain_id {
         resolved.chain_id = Some(cid.to_string());
     }
@@ -311,17 +282,6 @@ fn overlay(eps: &mut Endpoints, o: &EndpointOverrides) {
     }
     if let Some(v) = &o.svm_rpc {
         eps.svm_rpc = v.clone();
-    }
-}
-
-impl EndpointOverrides {
-    fn is_empty(&self) -> bool {
-        self.rest.is_none()
-            && self.grpc.is_none()
-            && self.rpc.is_none()
-            && self.evm_rpc.is_none()
-            && self.evm_ws.is_none()
-            && self.svm_rpc.is_none()
     }
 }
 

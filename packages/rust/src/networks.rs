@@ -1,10 +1,9 @@
 //! Built-in network presets for the QoreChain Rust SDK.
 //!
-//! The `testnet` preset is fully populated and live; its endpoints default to
-//! localhost ports so the SDK works out of the box against a locally running
-//! node, and callers can override them with real hostnames. The `mainnet`
-//! preset is a placeholder: mainnet is not yet live, so it carries no chain ID
-//! and no endpoints, and [`get_network`] returns an error if asked for it.
+//! Both the `testnet` and `mainnet` presets are fully populated and live; their
+//! endpoints default to localhost ports so the SDK works out of the box against
+//! a locally running node, and callers can override them with real hostnames.
+//! [`get_network`] returns either preset.
 
 use crate::error::{Error, Result};
 
@@ -47,21 +46,20 @@ pub struct Endpoints {
     pub svm_rpc: String,
 }
 
-/// A fully described network preset. `endpoints` is `None` for networks that
-/// are not yet live (e.g. mainnet).
+/// A fully described network preset.
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct NetworkConfig {
     /// Preset name.
     pub name: String,
     /// Whether the network is live.
     pub live: bool,
-    /// Chain ID; `None` for not-yet-live networks.
+    /// Chain ID.
     pub chain_id: Option<String>,
     /// bech32 prefixes.
     pub bech32: Bech32Prefixes,
     /// Staking coin metadata.
     pub coin: CoinInfo,
-    /// Service endpoints; `None` for not-yet-live networks.
+    /// Service endpoints.
     pub endpoints: Option<Endpoints>,
 }
 
@@ -101,28 +99,30 @@ pub fn networks() -> Vec<NetworkConfig> {
         },
         NetworkConfig {
             name: "mainnet".into(),
-            live: false,
-            chain_id: None,
+            live: true,
+            chain_id: Some("qorechain-vladi".into()),
             bech32: bech32_prefixes(),
             coin: coin_info(),
-            endpoints: None,
+            endpoints: Some(Endpoints {
+                rest: "http://localhost:1317".into(),
+                grpc: "http://localhost:9090".into(),
+                rpc: "http://localhost:26657".into(),
+                evm_rpc: "http://localhost:8545".into(),
+                evm_ws: "ws://localhost:8546".into(),
+                svm_rpc: "http://localhost:8899".into(),
+            }),
         },
     ]
 }
 
 /// Resolves a network preset by name.
 ///
-/// Returns an error if the named network is unknown or not yet live (e.g.
-/// mainnet); for not-yet-live networks the caller should pass custom endpoints.
+/// Returns an error if the named network is unknown.
 pub fn get_network(name: &str) -> Result<NetworkConfig> {
-    let config = networks()
+    networks()
         .into_iter()
         .find(|n| n.name == name)
-        .ok_or_else(|| Error::UnknownNetwork(name.to_string()))?;
-    if !config.live {
-        return Err(Error::NetworkNotLive(name.to_string()));
-    }
-    Ok(config)
+        .ok_or_else(|| Error::UnknownNetwork(name.to_string()))
 }
 
 /// Lists the known network preset names without any liveness check.
