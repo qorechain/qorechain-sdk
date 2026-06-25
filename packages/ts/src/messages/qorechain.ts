@@ -26,23 +26,28 @@ import * as abstractaccountTx from "../codegen/qorechain/abstractaccount/v1/tx";
 import * as crossvmTx from "../codegen/qorechain/crossvm/v1/tx";
 import * as rlconsensusTx from "../codegen/qorechain/rlconsensus/v1/tx";
 
-/** A partial of a generated message (ts-proto `DeepPartial`-friendly). */
-type Partial<T> = Parameters<{ fromPartial(o: never): T }["fromPartial"]> extends [
-  infer P,
-]
-  ? P
-  : never;
-
-/** A generated message type with the methods the composers use. */
+/**
+ * A generated message type with the methods the composers use.
+ *
+ * `fromPartial` is typed to *return* `T` and accept a structurally-partial
+ * input; inferring `T` from the return position (covariant) keeps the emitted
+ * `.d.ts` rollup honest. Inferring from the argument position instead caused the
+ * bundled declarations to collapse the composer parameters to `never`.
+ */
 interface MsgType<T> {
-  fromPartial(object: Partial<T>): T;
+  fromPartial(object: never): T;
 }
+
+/** A structurally-partial value accepted by a composer. */
+type PartialMsg<T> = {
+  [K in keyof T]?: T[K] extends object ? PartialMsg<T[K]> : T[K];
+};
 
 /** Build a `{ typeUrl, value }` composer bound to a fixed typeUrl + message. */
 function composer<T>(typeUrl: string, msg: MsgType<T>) {
-  return (value: Partial<T>): EncodeObject => ({
+  return (value: PartialMsg<T>): EncodeObject => ({
     typeUrl,
-    value: msg.fromPartial(value),
+    value: msg.fromPartial(value as never),
   });
 }
 
