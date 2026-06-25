@@ -70,6 +70,9 @@ module = [
   "cosmpy.*",
   "google.protobuf.*",
   "websockets.*",
+  "grpc",
+  "grpc.*",
+  "Crypto.*",
   # Generated protobuf modules consumed by the typed message layer.
   "qorechain.proto.*",
 ]
