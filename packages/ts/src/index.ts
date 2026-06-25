@@ -26,6 +26,25 @@ export * from "./config/networks";
 // Utilities: denom conversion and address encoding/validation.
 export * from "./utils/denom";
 export * from "./utils/address";
+// Generic integer-exact unit math (EVM 18-decimals etc.), hash helpers, and
+// cross-VM address validation + EIP-55 checksum.
+export { parseUnits, formatUnits } from "./utils/units";
+export {
+  sha256,
+  sha256Hex,
+  keccak256,
+  keccak256Hex,
+  ripemd160,
+  ripemd160Hex,
+  toHex,
+} from "./utils/hash";
+export type { HashInput } from "./utils/hash";
+export {
+  isValidEvmAddress,
+  toChecksumAddress,
+  isChecksumAddress,
+  isValidSvmAddress,
+} from "./utils/validation";
 
 // Accounts & keys. Re-export the documented derivation functions and types only.
 // The derive functions return key material deliberately (callers need it for

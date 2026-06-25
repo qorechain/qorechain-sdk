@@ -106,3 +106,34 @@ export function isValidBech32(addr: string, prefix?: string): boolean {
   }
   return prefix === undefined ? true : decoded.prefix === prefix;
 }
+
+/**
+ * Decode a QoreChain bech32 account address into the `0x`-prefixed hex form of
+ * its 20-byte payload — the same byte payload an EVM address carries.
+ *
+ * QoreChain shares one account-key space across its VMs: a native `qor1...`
+ * address and the matching EVM `0x...` address are two encodings of the same
+ * underlying account bytes. This is the bech32 → EVM-hex direction; it is an
+ * alias of {@link bech32ToHex} named for the cross-VM use case.
+ *
+ * @param addr - A `qor1...` bech32 account address.
+ * @returns The 20-byte payload as a lowercase `0x`-prefixed hex string.
+ * @throws If `addr` is not a valid bech32 string.
+ */
+export function qorToEvm(addr: string): string {
+  return bech32ToHex(addr);
+}
+
+/**
+ * Encode an EVM `0x...` address into the matching QoreChain bech32 account
+ * address. The hex → bech32 direction of {@link qorToEvm}; an alias of
+ * {@link hexToBech32} with the `qor` account prefix.
+ *
+ * @param hex - A 20-byte EVM address, with or without `0x`.
+ * @param prefix - bech32 prefix. Defaults to `"qor"`.
+ * @returns The bech32 account address, e.g. `qor1...`.
+ * @throws If `hex` is not a valid hex string.
+ */
+export function evmToQor(hex: string, prefix: string = DEFAULT_PREFIX): string {
+  return hexToBech32(hex, prefix);
+}
