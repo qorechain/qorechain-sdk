@@ -170,7 +170,13 @@ export { estimateFee, STATIC_FALLBACK } from "./tx/fees";
 export type { StdFee, EstimateFeeOptions } from "./tx/fees";
 export { directSignerFromPrivateKey } from "./tx/signer-adapter";
 export type { BroadcastMode, BroadcastResult } from "./tx/broadcast";
-export { TxClient, MSG_SEND_TYPE_URL, buildAminoTypes } from "./tx/builder";
+export {
+  TxClient,
+  MSG_SEND_TYPE_URL,
+  buildAminoTypes,
+  DEFAULT_GAS_MULTIPLIER,
+  DEFAULT_GAS_PRICE,
+} from "./tx/builder";
 export type {
   SigningClientLike,
   TxClientOptions,
@@ -178,7 +184,71 @@ export type {
   SignAndBroadcastOptions,
   SimulateOptions,
   BankSendOptions,
+  AutoFeeOptions,
+  FeeInput as TxFeeInput,
 } from "./tx/builder";
+// Auto-gas fee math: gas-price parsing and ceil(gas * price) fee computation.
+export { GasPrice, calculateFee } from "./tx/gas";
+
+// Transaction error decoding: structured, human-readable errors with a typed
+// QoreTxError thrown on non-zero ABCI codes.
+export {
+  decodeTxError,
+  isTxFailure,
+  QoreTxError,
+  txErrorFrom,
+} from "./errors";
+export type {
+  TxErrorInput,
+  DecodedTxError,
+  TxResultLike,
+} from "./errors";
+
+// Event subscriptions over the consensus RPC websocket: new blocks and Tx
+// events, each returning an unsubscribe function.
+export {
+  createSubscriptionClient,
+  subscribeNewBlocks,
+  subscribeTx,
+  buildTxQuery,
+} from "./subscribe";
+export type {
+  Handler,
+  Unsubscribe,
+  EventStream,
+  NewBlockEventLike,
+  TxEventLike,
+  SubscriptionClient,
+  TxQueryFilters,
+} from "./subscribe";
+
+// Tx tracking + retry: poll for inclusion, broadcast-and-wait, and a transient
+// error retry helper.
+export { waitForTx, broadcastAndWait, withRetry } from "./track";
+export type {
+  GetTxFn,
+  WaitForTxOptions,
+  IncludedTx,
+  SyncBroadcaster,
+  RetryOptions,
+} from "./track";
+
+// Block/tx lookup + search over REST, with an events query builder.
+export {
+  getTx,
+  getBlock,
+  getLatestBlock,
+  searchTxs,
+  buildEventsQuery,
+} from "./search";
+export type {
+  GetTxResponse,
+  GetBlockResponse,
+  SearchTxsResponse,
+  TxOrderBy,
+  SearchTxsOptions,
+  EventFilters,
+} from "./search";
 export { encodeHybridExtension, attachHybridExtension } from "./tx/hybrid";
 export type { HybridPlacement, AttachHybridOptions } from "./tx/hybrid";
 export { buildHybridTx, signAndBroadcastHybrid } from "./tx/hybrid-tx";
