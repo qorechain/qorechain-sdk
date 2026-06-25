@@ -39,3 +39,12 @@ export {
   type TransferTokenInstructionArgs,
   type CreateAssociatedTokenAccountInstructionArgs,
 } from "./programs";
+
+export {
+  getSvmWallet,
+  detectSvmProvider,
+  type InjectedSvmWallet,
+  type GetSvmWalletOptions,
+  type SvmWalletConnection,
+  type SvmSignableTransaction,
+} from "./wallet";
