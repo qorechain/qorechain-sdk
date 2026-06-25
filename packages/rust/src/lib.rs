@@ -26,10 +26,14 @@ pub mod address;
 pub mod client;
 pub mod denom;
 pub mod error;
+pub mod msg;
 pub mod networks;
 pub mod pqc;
+pub mod proto;
 pub mod query;
+pub mod subscribe;
 pub mod tx;
+pub mod utils;
 
 pub use error::{Error, Result};
 
@@ -52,11 +56,21 @@ pub use pqc::{
     HYBRID_SIG_TYPE_URL, MLDSA87_PUBLIC_KEY_LEN, MLDSA87_SECRET_KEY_LEN, MLDSA87_SIGNATURE_LEN,
 };
 
-pub use query::{JsonRpcClient, QorClient, RestClient, QOR_METHODS};
+pub use query::{JsonRpcClient, QorClient, RestClient, TypedQueryClient, QOR_METHODS};
 
 pub use client::{create_client, Client, ClientBuilder, Fees};
 
 pub use tx::{
-    bank_send, broadcast, build_hybrid_tx, fee_from_estimate, BankSendParams, BroadcastMode,
-    BuildHybridTxParams, BuiltTx, Coin, Fee, Message, MSG_SEND_TYPE_URL,
+    bank_send, broadcast, broadcast_and_wait, build_hybrid_tx, calculate_fee, decode_tx_error,
+    estimate_fee, estimate_gas, fee_from_estimate, get_block, get_latest_block, get_tx, search_txs,
+    send_messages, wait_for_tx, with_retry, BankSendParams, BroadcastMode, BuildHybridTxParams,
+    BuiltTx, Coin, Fee, GasPrice, Message, QoreTxError, SendMessagesParams, TxResult,
+    TxSearchResult, WaitOptions, MSG_SEND_TYPE_URL,
+};
+
+pub use subscribe::{Event, SubscribeClient, Subscription};
+
+pub use utils::{
+    format_units, hash160, is_valid_evm_address, is_valid_svm_address, keccak256, parse_units,
+    ripemd160, sha256, to_checksum_address,
 };

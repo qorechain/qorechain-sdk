@@ -1,19 +1,19 @@
 # qorechain (Rust)
 
 Rust SDK for QoreChain — network presets, denomination/address utilities, HD
-account derivation (native / EVM / SVM), post-quantum (ML-DSA-87) signing, and
+account derivation (native / EVM / SVM), post-quantum (ML-DSA-87) signing, typed
+messages for every custom chain module, the full transaction lifecycle (auto-gas,
+error decoding, tracking, search), typed queries, WebSocket subscriptions, and
 async read clients for the REST (LCD) and `qor_*` JSON-RPC surfaces.
 
 This crate lives in the `qorechain-sdk` monorepo and mirrors the TypeScript,
-Python, and Go SDK surfaces — including native transaction building/signing,
-REST broadcast, and end-to-end hybrid (classical + ML-DSA-87) transaction
-signing (`tx` module).
+Python, and Go SDK surfaces for the native chain.
 
 ## Install
 
 ```toml
 [dependencies]
-qorechain = "0.1"
+qorechain = "0.2"
 tokio = { version = "1", features = ["macros", "rt-multi-thread"] }
 ```
 
@@ -28,9 +28,48 @@ Requires Rust 1.74+.
 | `address` | bech32 ⇄ hex conversion and validation. |
 | `accounts` | BIP-39 mnemonics + HD derivation (native, EVM, SVM). |
 | `pqc` | ML-DSA-87 (FIPS 204) keygen / sign / verify + hybrid extension. |
-| `query` | `RestClient`, `JsonRpcClient`, and the typed `qor_*` `QorClient`. |
+| `proto` | Generated prost types for every QoreChain custom module. |
+| `msg` | Typed message composers (49 custom + standard Cosmos) and `to_any`. |
+| `query` | `RestClient`, `JsonRpcClient`, typed `qor_*` `QorClient`, and `TypedQueryClient`. |
 | `client` | `create_client` / `ClientBuilder` composing the read clients + fees. |
-| `tx` | `bank_send`, `broadcast`, `fee_from_estimate`, and `build_hybrid_tx`. |
+| `tx` | `bank_send`, `send_messages`, `build_hybrid_tx`, `broadcast`, auto-gas, error decoding, tracking, and search. |
+| `subscribe` | WebSocket new-block / tx subscriptions over the chain RPC `/websocket`. |
+| `utils` | Hashing (sha256/keccak256/ripemd160), exact unit math, EVM/SVM address validators. |
+
+### Typed messages and composers
+
+Every QoreChain custom-module message (49 across amm, bridge, rdk, multilayer,
+pqc, svm, lightnode, license, abstractaccount, crossvm, rlconsensus) plus the
+common standard Cosmos messages have typed composers under `msg`. Each returns a
+prost message; the `*_any` variants pack it into a `cosmrs::Any` with the correct
+type URL, ready for `tx::send_messages` or `tx::build_hybrid_tx`:
+
+```rust
+use qorechain::msg;
+use cosmrs::proto::cosmos::base::v1beta1::Coin;
+
+let any = msg::amm::swap_exact_in_any(
+    "qor1sender",
+    1,                                  // pool id
+    Coin { denom: "uqor".into(), amount: "1000".into() },
+    "uatom",
+    "990",
+);
+assert_eq!(any.type_url, "/qorechain.amm.v1.MsgSwapExactIn");
+```
+
+The prost types are generated offline by `scripts/codegen-rust.sh` (buf +
+`protoc-gen-prost`) and committed under `src/proto`, so `cargo build` needs no
+protoc. Type URLs use the exact on-chain message names (e.g.
+`MsgRegisterPQCKey`), which is what the chain's interface registry resolves.
+
+### Out of scope
+
+Browser wallet adapters and EVM/SVM transaction adapters are intentionally not
+bundled — Rust dApps use `ethers-rs`/`alloy` (EVM) and the Solana SDK (SVM)
+directly. The ICS-20 IBC `MsgTransfer` is not bundled either (the underlying
+proto crate omits IBC types); build it with `ibc-proto` and pack it via
+`msg::to_any` using `msg::cosmos::MSG_TRANSFER`.
 
 ## Quickstart
 
@@ -138,7 +177,89 @@ end-to-end hybrid (classical secp256k1 + post-quantum ML-DSA-87) signing:
 Transaction proto encoding/signing is delegated to the `cosmrs` crate; no
 proto/crypto primitives are reimplemented here.
 
+### Generic messages, auto-gas, tracking, and search
+
+```rust,no_run
+use qorechain::{msg, tx};
+use cosmrs::proto::cosmos::base::v1beta1::Coin;
+
+# async fn run(priv_key: Vec<u8>, pub_key: Vec<u8>) -> qorechain::Result<()> {
+let rest = "http://localhost:1317";
+
+// Build any messages and sign them with send_messages.
+let messages = vec![msg::amm::swap_exact_in_any(
+    "qor1sender",
+    1,
+    Coin { denom: "uqor".into(), amount: "1000".into() },
+    "uatom",
+    "990",
+)];
+
+let built = tx::send_messages(tx::SendMessagesParams {
+    private_key: priv_key,
+    public_key: pub_key,
+    messages,
+    chain_id: "qorechain-diana".into(),
+    account_number: 1,
+    sequence: 0,
+    fee: tx::estimate_fee(rest, &[], 1.4, "0.025uqor").await?, // auto-gas via simulate
+    memo: String::new(),
+    timeout_height: 0,
+})?;
+
+// Broadcast and wait for inclusion; a failed code returns a typed QoreTxError.
+let result = tx::broadcast_and_wait(rest, &built.tx_raw_bytes, tx::WaitOptions::default()).await?;
+println!("included at height {}", result.height);
+
+// Search by events.
+let page = tx::search_txs(rest, &["message.sender=qor1sender"], 1, 50).await?;
+let _ = page.total;
+# Ok(())
+# }
+```
+
+### Typed queries
+
+`TypedQueryClient` runs the modules' gRPC `Query` services over the chain RPC
+`abci_query` transport (no gRPC dependency) and returns the strongly typed prost
+responses:
+
+```rust,no_run
+use qorechain::TypedQueryClient;
+
+# async fn run() -> qorechain::Result<()> {
+let q = TypedQueryClient::new("http://localhost:26657");
+let acct = q.pqc_account("qor1...").await?;     // qorechain.pqc.v1.Query/Account
+let slot = q.svm_slot().await?;                 // qorechain.svm.v1.Query/Slot
+let _ = (acct.found, slot.slot);
+# Ok(())
+# }
+```
+
+### WebSocket subscriptions
+
+```rust,no_run
+use qorechain::SubscribeClient;
+
+# async fn run() -> qorechain::Result<()> {
+let client = SubscribeClient::connect("http://localhost:26657").await?;
+let mut sub = client.subscribe_new_blocks()?;
+while let Some(event) = sub.events.recv().await {
+    println!("new block: {}", event.data);
+}
+sub.unsubscribe()?;
+# Ok(())
+# }
+```
+
 ## Development
+
+Regenerate the committed prost types (maintainer only; needs `buf` and
+`protoc-gen-prost`):
+
+```sh
+bash scripts/codegen-rust.sh
+```
 
 ```sh
 cd packages/rust
