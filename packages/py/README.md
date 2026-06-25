@@ -1,9 +1,11 @@
 # qorechain (Python SDK)
 
-A typed Python SDK for QoreChain — network presets, denom/address utilities,
-HD account derivation (native / EVM / SVM), post-quantum (ML-DSA-87) signing
-primitives, and read clients (REST + `qor_` JSON-RPC). It mirrors the QoreChain
-TypeScript SDK surface with idiomatic Python.
+A typed Python SDK for QoreChain — typed messages for every module, typed query
+clients, auto-gas, tx tracking, error decoding, block/tx search, websocket
+subscriptions, network presets, denom/address utilities, HD account derivation
+(native / EVM / SVM), post-quantum (ML-DSA-87) signing, and read clients (REST +
+`qor_` JSON-RPC). It mirrors the QoreChain TypeScript SDK surface with idiomatic
+Python.
 
 ## Install
 
@@ -124,6 +126,131 @@ async def main():
 
 asyncio.run(main())
 ```
+
+### Typed messages for every module
+
+`msg.<module>.<name>(...)` builds any of the chain's 49 custom messages (across
+amm / bridge / rdk / multilayer / pqc / svm / lightnode / license /
+abstractaccount / crossvm / rlconsensus) plus the standard Cosmos modules
+(bank / staking / distribution / gov / authz / feegrant / ibc). Each returns a
+`Msg` (`{type_url, value}`) you pass to `send_messages` or the hybrid PQC path.
+
+```python
+from cosmpy.protos.cosmos.base.v1beta1.coin_pb2 import Coin
+from qorechain import msg, send_messages, build_hybrid_tx, generate_pqc_keypair
+
+swap = msg.amm.swap_exact_in(
+    sender=native.address,
+    pool_id=1,
+    token_in=Coin(denom="uqor", amount="1000000"),
+    denom_out="uusdc",
+    min_out="990000",
+)
+delegate = msg.staking.delegate(delegator_address=native.address, validator_address="qorvaloper1...")
+
+# Classical tx carrying any messages.
+built = send_messages(
+    account=native, messages=[swap, delegate],
+    chain_id="qorechain-diana", account_number=0, sequence=0,
+    fee={"amount": [{"denom": "uqor", "amount": "5000"}], "gas": "200000"},
+)
+
+# Or a quantum-safe hybrid (classical + ML-DSA-87) tx over the same messages.
+hybrid = build_hybrid_tx(
+    account=native, pqc_keypair=generate_pqc_keypair(), messages=[swap],
+    fee={"amount": [{"denom": "uqor", "amount": "5000"}], "gas": "200000"},
+    chain_id="qorechain-diana", account_number=0, sequence=0,
+)
+```
+
+The `qorechain_registry()` type-URL → proto map and `decode_any(type_url, value)`
+let you parse any supported message back into a typed object.
+
+### Typed query clients (gRPC)
+
+Modules with a `Query` service (crossvm, lightnode, pqc, qca, reputation,
+rlconsensus, svm) expose typed callers over a gRPC channel:
+
+```python
+from qorechain import connect_query_clients
+
+with connect_query_clients("localhost:9090") as q:
+    res = q.crossvm.message("msg-123")     # -> QueryMessageResponse
+    node = q.lightnode.light_node(native.address)
+    acct = q.pqc.account(native.address)
+```
+
+### Auto-gas, errors, tracking, search
+
+```python
+from qorechain import (
+    auto_fee, GasPrice, calculate_fee,        # gas
+    decode_tx_error, QoreTxError,             # errors
+    wait_for_tx, broadcast_and_wait, with_retry,  # tracking
+    get_tx, get_block, search_txs, build_events_query,  # search
+)
+
+# Simulate -> gas_used x 1.4 x 0.025uqor.
+fee = auto_fee("http://localhost:1317", built)
+calculate_fee(200000, GasPrice.from_string("0.025uqor"))
+
+# Wait for inclusion; raises a typed QoreTxError on a non-zero code.
+included = wait_for_tx(client.rest, "TXHASH")
+
+search_txs(client.rest, {"message.sender": native.address}, limit=20, order_by="desc")
+```
+
+### Websocket subscriptions
+
+```python
+from qorechain import SubscriptionClient
+
+async def run():
+    sub = await SubscriptionClient.connect("http://localhost:26657")
+    async def on_block(ev): print("block", ev)
+    unsubscribe = await sub.subscribe_new_blocks(on_block)
+    await sub.subscribe_tx({"message.sender": native.address}, lambda ev: ...)
+    # ... later ...
+    await unsubscribe()
+    await sub.close()
+```
+
+### Utilities
+
+```python
+from qorechain import (
+    sha256_hex, keccak256_hex, ripemd160_hex,
+    parse_units, format_units,
+    is_valid_evm_address, is_valid_svm_address, to_checksum_address,
+)
+
+parse_units("1.5", 18)                 # 1500000000000000000
+format_units(1500000000000000000, 18)  # "1.5"
+to_checksum_address("0x5aaeb6053f3e94c9b9a09f33669435e7ef1beaed")
+```
+
+## Regenerating protobuf code (maintainers)
+
+The generated protobuf modules under `src/qorechain/proto/` are committed, so
+users never run `protoc`. To regenerate after a proto change (requires `buf`):
+
+```bash
+bash scripts/codegen-py.sh
+```
+
+It runs `buf generate` (public-registry `protocolbuffers/python` + `pyi`
+plugins, pinned to the protobuf 5.29.x line), rewrites dependency imports to
+`cosmpy`'s bundled protos so the gencode shares one descriptor pool, and writes
+package `__init__.py` files.
+
+## Out of scope (use a dedicated library)
+
+Browser-wallet adapters (Keplr / MetaMask / Phantom) and viem / `@solana/web3.js`
+-style EVM/SVM clients are intentionally **not** part of this SDK — they are
+JS/browser-specific. In Python, talk to the EVM with [web3.py](https://web3py.readthedocs.io)
+and to the SVM with [solana-py](https://michaelhly.github.io/solana-py/), pointing
+them at the network's `evm_rpc` / `svm_rpc` endpoints. This SDK covers the native
+(Cosmos-SDK) chain surface end to end.
 
 ## Development
 
