@@ -59,3 +59,17 @@ export {
   IQORE_AI_ABI,
   IQORE_CONSENSUS_ABI,
 } from "./abi";
+
+export {
+  getEvmWalletClient,
+  requestAccounts,
+  addQoreChainNetwork,
+  switchChain,
+  discoverEvmProviders,
+  toHexChainId,
+  type Eip1193Provider,
+  type EvmNetworkInfo,
+  type GetEvmWalletClientOptions,
+  type EvmWalletConnection,
+  type Eip6963ProviderDetail,
+} from "./wallet";
