@@ -4,8 +4,8 @@ build-backend = "hatchling.build"
 
 [project]
 name = "qorechain"
-version = "0.1.0"
-description = "Python SDK for QoreChain — networks, accounts (native/EVM/SVM), post-quantum signing, and read clients."
+version = "0.2.0"
+description = "Python SDK for QoreChain — typed messages for every module, queries, auto-gas, tx tracking, subscriptions, accounts (native/EVM/SVM), and post-quantum signing."
 readme = "README.md"
 requires-python = ">=3.10"
 license = "Apache-2.0"
@@ -28,6 +28,7 @@ dependencies = [
   "base58>=2.1,<3",
   "dilithium-py>=1.1",
   "cosmpy>=0.11,<1",
+  "websockets>=12,<16",
 ]
 
 [project.optional-dependencies]
@@ -55,6 +56,9 @@ asyncio_mode = "auto"
 python_version = "3.10"
 strict = true
 files = ["src/qorechain"]
+# Generated protobuf gencode is not hand-written and ships its own .pyi stubs;
+# exclude it from strict checking (it is consumed via cosmpy's Any packing).
+exclude = "src/qorechain/proto/"
 
 # Third-party crypto libs ship no type stubs / py.typed marker.
 [[tool.mypy.overrides]]
@@ -65,12 +69,17 @@ module = [
   "base58.*",
   "cosmpy.*",
   "google.protobuf.*",
+  "websockets.*",
+  # Generated protobuf modules consumed by the typed message layer.
+  "qorechain.proto.*",
 ]
 ignore_missing_imports = true
 
 [tool.ruff]
 line-length = 100
 target-version = "py310"
+# Generated protobuf gencode is not linted (DO NOT EDIT).
+extend-exclude = ["src/qorechain/proto"]
 
 [tool.ruff.lint]
 select = ["E", "F", "I", "UP", "B"]

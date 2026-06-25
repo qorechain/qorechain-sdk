@@ -1,0 +1,27 @@
+# Codegen config for the Python SDK.
+#
+# Emits standard protobuf message classes (protocolbuffers/python) plus type
+# stubs (protocolbuffers/pyi) for the QoreChain modules into the committed
+# `packages/py/src/qorechain/proto` tree. Dependency protos (coin, gogo,
+# cosmos_proto, well-known types) are resolved from the public schema registry
+# (see proto/buf.yaml deps) so a maintainer running codegen needs no local
+# dependency protos; the generated Python is committed so SDK users never run
+# protoc.
+#
+# Only files under `qorechain/**` are emitted (scripts/codegen-py.sh `--path`).
+# Generated cross-package imports (e.g. cosmos.base.v1beta1.coin_pb2) are
+# rewritten to cosmpy's bundled equivalents by scripts/codegen-py.sh so the
+# generated modules pack cleanly into cosmpy's `Any` without a duplicate copy of
+# the Cosmos / well-known descriptor pool.
+version: v2
+clean: false
+managed:
+  enabled: true
+# The plugin version is pinned to the v29 line so the emitted gencode targets
+# the protobuf 5.29.x runtime the SDK depends on (a newer plugin embeds a
+# runtime-version assertion that would refuse to load under protobuf 5.x).
+plugins:
+  - remote: buf.build/protocolbuffers/python:v29.3
+    out: packages/py/src/qorechain/proto
+  - remote: buf.build/protocolbuffers/pyi:v29.3
+    out: packages/py/src/qorechain/proto
