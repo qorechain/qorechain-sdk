@@ -57,3 +57,10 @@ export {
   onSlotChange,
   type SvmSubscription,
 } from "./subscribe";
+
+export {
+  fees,
+  withComputeBudget,
+  estimatePriorityFee,
+  type ComputeBudgetOptions,
+} from "./fees";
