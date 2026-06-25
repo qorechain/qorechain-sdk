@@ -1,0 +1,20 @@
+# Codegen config for the TypeScript SDK.
+#
+# Emits ts-proto message + service-interface types for the QoreChain modules into
+# the committed `packages/ts/src/codegen` tree. Only files under `qorechain/**`
+# are generated (see scripts/codegen.sh `--path`); dependency types (coin, gogo,
+# well-known types) are not re-emitted — the generated message modules import the
+# corresponding `cosmjs-types` / runtime equivalents at hand-written call sites.
+version: v2
+clean: true
+plugins:
+  - local: packages/ts/node_modules/.bin/protoc-gen-ts_proto
+    out: packages/ts/src/codegen
+    opt:
+      - esModuleInterop=true
+      - forceLong=string
+      - useOptionals=messages
+      - outputServices=generic-definitions
+      - snakeToCamel=true
+      - useExactTypes=false
+      - onlyTypes=false

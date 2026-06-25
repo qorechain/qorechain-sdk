@@ -1,0 +1,16 @@
+# buf workspace for the vendored QoreChain protos.
+#
+# Third-party dependency protos (gogoproto, cosmos-proto, the SDK's coin/msg
+# types, and the well-known types) are resolved from the public schema registry
+# so consumers of this SDK never need them locally — only the SDK maintainer
+# runs `pnpm codegen`, and the generated TypeScript is committed.
+version: v2
+modules:
+  - path: .
+    name: buf.build/qorechain/qorechain-sdk
+deps:
+  - buf.build/cosmos/cosmos-sdk
+  - buf.build/cosmos/cosmos-proto
+  - buf.build/cosmos/gogo-proto
+  - buf.build/googleapis/googleapis
+  - buf.build/protocolbuffers/wellknowntypes
