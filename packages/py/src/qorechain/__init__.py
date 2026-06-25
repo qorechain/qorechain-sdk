@@ -118,7 +118,7 @@ from .utils import (
     to_checksum_address,
 )
 
-__version__ = "0.2.0"
+__version__ = "0.1.0"
 
 __all__ = [
     "__version__",

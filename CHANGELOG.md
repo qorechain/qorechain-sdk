@@ -5,16 +5,16 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [0.2.0]
+## [0.1.0]
 
-### Added (TypeScript SDK)
+### Added
 
-- Full transaction-message coverage: `qorechainRegistry` plus typed message
-  composers for every custom module (amm, bridge, rdk, multilayer, pqc, svm,
-  lightnode, license, abstractaccount, crossvm, rlconsensus) and standard Cosmos
-  modules (bank, staking, distribution, gov, ibc, authz, feegrant), generated
-  from protobuf via a reproducible `pnpm codegen` pipeline; typed query clients
-  for all query modules.
+- Full transaction-message coverage (TypeScript): `qorechainRegistry` plus typed
+  message composers for every custom module (amm, bridge, rdk, multilayer, pqc,
+  svm, lightnode, license, abstractaccount, crossvm, rlconsensus) and standard
+  Cosmos modules (bank, staking, distribution, gov, ibc, authz, feegrant),
+  generated from protobuf via a reproducible `pnpm codegen` pipeline; typed query
+  clients for all query modules.
 - Browser wallet integration: Keplr/Leap (`@qorechain/sdk`), MetaMask/EIP-1193 +
   EIP-6963 discovery (`@qorechain/evm`), and Phantom/Wallet-Standard
   (`@qorechain/svm`); Amino signing for standard messages.
@@ -27,17 +27,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   compute-budget / priority-fee helpers; full CosmWasm lifecycle (`instantiate2`,
   `migrate`, `updateAdmin`, `clearAdmin`, code reads); address/hash/unit
   utilities; config-driven explorer and faucet helpers.
-
-### Changed
-
-- Mainnet is now live (chain id `qorechain-vladi`). The `mainnet` preset is fully
-  populated across all four SDKs with the same localhost endpoint defaults as
-  testnet; `getNetwork("mainnet")` and the client factories now return a usable
-  config instead of raising the former mainnet-unavailable error.
-
-## [0.1.0]
-
-### Added
+- Full native-chain parity across the Python, Go, and Rust SDKs: protobuf codegen
+  for all custom modules, typed message composers + standard Cosmos builders,
+  typed query clients, generic message broadcast + hybrid PQC transactions,
+  auto-gas, error decoding, tx tracking, block/tx search, utilities, and
+  websocket subscriptions — matching the TypeScript native-chain surface.
 
 - Initial public repository scaffolding for the QoreChain SDK monorepo.
 - `@qorechain/sdk` TypeScript core:
