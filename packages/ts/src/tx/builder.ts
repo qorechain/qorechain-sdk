@@ -39,9 +39,34 @@ import { MsgSend } from "cosmjs-types/cosmos/bank/v1beta1/tx";
 import type { Coin } from "../query/rest";
 import type { StdFee } from "./fees";
 import type { BroadcastMode, BroadcastResult } from "./broadcast";
+import { txErrorFrom } from "../errors";
+import { GasPrice, calculateFee } from "./gas";
 
 /** The `/cosmos.bank.v1beta1.MsgSend` type URL. */
 export const MSG_SEND_TYPE_URL = "/cosmos.bank.v1beta1.MsgSend";
+
+/** Default gas-used safety multiplier applied to a simulation result. */
+export const DEFAULT_GAS_MULTIPLIER = 1.4;
+
+/** Default gas price for the auto-fee path (conservative, matches `tx/fees`). */
+export const DEFAULT_GAS_PRICE = "0.025uqor";
+
+/**
+ * A fee that is either an explicit {@link StdFee} or the literal `"auto"`, which
+ * triggers simulation-based gas estimation and fee computation.
+ */
+export type FeeInput = StdFee | "auto";
+
+/** Auto-fee tuning, used when a fee of `"auto"` is supplied. */
+export interface AutoFeeOptions {
+  /** Multiplier applied to the simulated gas. Defaults to {@link DEFAULT_GAS_MULTIPLIER}. */
+  gasMultiplier?: number;
+  /**
+   * Gas price (base denom per gas unit) used to price the fee. A
+   * {@link GasPrice} or a parseable string. Defaults to {@link DEFAULT_GAS_PRICE}.
+   */
+  gasPrice?: GasPrice | string;
+}
 
 /**
  * Build the {@link AminoTypes} used for Amino-mode signing.
@@ -145,6 +170,11 @@ export interface TxConnectOptions {
 export interface SignAndBroadcastOptions {
   /** Broadcast mode. Defaults to `"commit"`. */
   mode?: BroadcastMode;
+  /**
+   * Auto-fee tuning, used only when `fee` is `"auto"`. Multiplier and gas price
+   * applied to the simulated gas to compute the fee.
+   */
+  autoFee?: AutoFeeOptions;
 }
 
 /** Options for {@link TxClient.simulate}. */
@@ -155,8 +185,11 @@ export interface SimulateOptions {
 
 /** Options for {@link TxClient.bankSend}. */
 export interface BankSendOptions extends SignAndBroadcastOptions {
-  /** The fee to pay. Required (estimate via `estimateFee`). */
-  fee: StdFee;
+  /**
+   * The fee to pay: an explicit {@link StdFee} or `"auto"` to simulate and
+   * compute it. Defaults to `"auto"` when omitted.
+   */
+  fee?: FeeInput;
   /** Optional memo. */
   memo?: string;
 }
@@ -203,7 +236,8 @@ export class TxClient {
   /**
    * Simulate the given messages and return the estimated gas units.
    *
-   * Use the result (with a safety multiplier) as the `gas` for `estimateFee`.
+   * Use the result (with a safety multiplier) as the `gas` for `estimateFee`,
+   * or let {@link estimateGas}/the `"auto"` fee path apply the multiplier.
    */
   simulate(
     messages: readonly EncodeObject[],
@@ -213,32 +247,83 @@ export class TxClient {
   }
 
   /**
-   * Sign and broadcast the given messages with an explicit fee.
+   * Estimate the gas limit for `messages` by simulating and applying a safety
+   * multiplier (default {@link DEFAULT_GAS_MULTIPLIER}). Returns the gas units,
+   * rounded up.
+   */
+  async estimateGas(
+    messages: readonly EncodeObject[],
+    memo?: string,
+    gasMultiplier: number = DEFAULT_GAS_MULTIPLIER,
+  ): Promise<number> {
+    const gasUsed = await this.simulate(messages, { memo });
+    return Math.ceil(gasUsed * gasMultiplier);
+  }
+
+  /**
+   * Compute a {@link StdFee} for a gas limit at a gas price. Thin re-export of
+   * {@link calculateFee} for callers who already have a gas estimate.
+   */
+  calculateFee(gas: number | string, gasPrice: GasPrice | string): StdFee {
+    return calculateFee(gas, gasPrice);
+  }
+
+  /**
+   * Resolve a {@link FeeInput} to a concrete {@link StdFee}. For `"auto"`,
+   * simulates `messages`, multiplies the gas by `gasMultiplier`, and prices it
+   * with `gasPrice` via {@link calculateFee}.
+   */
+  async resolveFee(
+    messages: readonly EncodeObject[],
+    fee: FeeInput,
+    memo: string | undefined,
+    autoFee: AutoFeeOptions = {},
+  ): Promise<StdFee> {
+    if (fee !== "auto") return fee;
+    const gas = await this.estimateGas(
+      messages,
+      memo,
+      autoFee.gasMultiplier ?? DEFAULT_GAS_MULTIPLIER,
+    );
+    return calculateFee(gas, autoFee.gasPrice ?? DEFAULT_GAS_PRICE);
+  }
+
+  /**
+   * Sign and broadcast the given messages.
+   *
+   * `fee` may be an explicit {@link StdFee} or the literal `"auto"`, which
+   * simulates the tx to estimate gas and computes the fee from a gas
+   * multiplier (default 1.4) and gas price (default `0.025uqor`); tune both via
+   * `opts.autoFee`.
    *
    * Broadcast mode maps onto cosmjs transports:
    * - `commit` (default): polls until the tx lands in a block; returns the full
-   *   result and throws on a non-zero delivery code.
+   *   result and throws a {@link QoreTxError} on a non-zero delivery code.
    * - `sync` / `async`: returns after mempool submission with just the tx hash.
    */
   async signAndBroadcast(
     messages: readonly EncodeObject[],
-    fee: StdFee,
+    fee: FeeInput,
     memo = "",
     opts: SignAndBroadcastOptions = {},
   ): Promise<BroadcastResult> {
     const mode: BroadcastMode = opts.mode ?? "commit";
+    const resolvedFee = await this.resolveFee(messages, fee, memo, opts.autoFee);
 
     if (mode === "commit") {
       const res = await this.client.signAndBroadcast(
         this.senderAddress,
         messages,
-        fee,
+        resolvedFee,
         memo,
       );
       if (res.code !== 0) {
-        throw new Error(
-          `transaction failed with code ${res.code}: ${res.rawLog ?? "(no log)"} (hash ${res.transactionHash})`,
-        );
+        throw txErrorFrom({
+          code: res.code,
+          codespace: (res as { codespace?: string }).codespace,
+          rawLog: res.rawLog,
+          txHash: res.transactionHash,
+        });
       }
       return {
         transactionHash: res.transactionHash,
@@ -254,7 +339,7 @@ export class TxClient {
     const hash = await this.client.signAndBroadcastSync(
       this.senderAddress,
       messages,
-      fee,
+      resolvedFee,
       memo,
     );
     return { transactionHash: hash, code: 0 };
@@ -264,11 +349,12 @@ export class TxClient {
    * Send `amount` to `toAddress` via a bank `MsgSend`, then broadcast.
    *
    * Constructs `/cosmos.bank.v1beta1.MsgSend` from this client's sender address.
+   * The fee defaults to `"auto"` (simulation-based) when not supplied.
    */
   bankSend(
     toAddress: string,
     amount: Coin[],
-    opts: BankSendOptions,
+    opts: BankSendOptions = {},
   ): Promise<BroadcastResult> {
     const msg: EncodeObject = {
       typeUrl: MSG_SEND_TYPE_URL,
@@ -278,8 +364,9 @@ export class TxClient {
         amount,
       }),
     };
-    return this.signAndBroadcast([msg], opts.fee, opts.memo ?? "", {
+    return this.signAndBroadcast([msg], opts.fee ?? "auto", opts.memo ?? "", {
       mode: opts.mode,
+      autoFee: opts.autoFee,
     });
   }
 

@@ -1,5 +1,6 @@
 import { describe, it, expect, vi } from "vitest";
 import { TxClient } from "../../src/tx/builder";
+import { QoreTxError } from "../../src/errors";
 import type { Coin } from "../../src/query/rest";
 
 const SENDER = "qor15yk64u7zc9g9k2yr2wmzeva5qgwxps6yjecvvu";
@@ -68,17 +69,72 @@ describe("TxClient.signAndBroadcast", () => {
     expect(sg.signAndBroadcastSync).toHaveBeenCalledOnce();
   });
 
-  it("throws on a non-zero broadcast result code (commit mode)", async () => {
+  it("throws a typed QoreTxError on a non-zero broadcast result code (commit mode)", async () => {
     const sg = fakeStargate();
     sg.signAndBroadcast.mockResolvedValueOnce({
       code: 5,
+      codespace: "sdk",
       transactionHash: "DEAD",
       rawLog: "insufficient funds",
     });
     const client = makeClient(sg);
-    await expect(
-      client.signAndBroadcast([{ typeUrl: "/x", value: {} }], FEE),
-    ).rejects.toThrow(/insufficient funds|code 5/);
+    const err = await client
+      .signAndBroadcast([{ typeUrl: "/x", value: {} }], FEE)
+      .catch((e) => e);
+    expect(err).toBeInstanceOf(QoreTxError);
+    expect(err.code).toBe(5);
+    expect(err.kind).toBe("insufficient_funds");
+    expect(err.txHash).toBe("DEAD");
+  });
+});
+
+describe("TxClient auto-gas", () => {
+  it("estimateGas applies the default 1.4 multiplier and rounds up", async () => {
+    const sg = fakeStargate(); // simulate -> 123456
+    const client = makeClient(sg);
+    const gas = await client.estimateGas([{ typeUrl: "/x", value: {} }]);
+    expect(gas).toBe(Math.ceil(123456 * 1.4)); // 172839
+  });
+
+  it('resolves fee "auto" via simulate * multiplier * gasPrice', async () => {
+    const sg = fakeStargate();
+    const client = makeClient(sg);
+    const msgs = [{ typeUrl: "/x", value: {} }];
+    await client.signAndBroadcast(msgs, "auto", "");
+    const fee = sg.signAndBroadcast.mock.calls[0][2];
+    // gas = ceil(123456 * 1.4) = 172839; fee = ceil(172839 * 0.025) = 4321
+    expect(fee).toEqual({
+      gas: "172839",
+      amount: [{ denom: "uqor", amount: "4321" }],
+    });
+  });
+
+  it("honors a custom gasMultiplier and gasPrice", async () => {
+    const sg = fakeStargate();
+    const client = makeClient(sg);
+    await client.signAndBroadcast([{ typeUrl: "/x", value: {} }], "auto", "", {
+      autoFee: { gasMultiplier: 2, gasPrice: "0.1uqor" },
+    });
+    const fee = sg.signAndBroadcast.mock.calls[0][2];
+    // gas = ceil(123456 * 2) = 246912; fee = ceil(246912 * 0.1) = 24692 (24691.2 -> 24692)
+    expect(fee.gas).toBe("246912");
+    expect(fee.amount[0].amount).toBe("24692");
+  });
+
+  it("bankSend defaults to the auto fee path", async () => {
+    const sg = fakeStargate();
+    const client = makeClient(sg);
+    await client.bankSend(RECIPIENT, [{ denom: "uqor", amount: "1" }]);
+    expect(sg.simulate).toHaveBeenCalledOnce();
+    const fee = sg.signAndBroadcast.mock.calls[0][2];
+    expect(fee.amount[0].denom).toBe("uqor");
+  });
+
+  it("does not simulate when an explicit fee is supplied", async () => {
+    const sg = fakeStargate();
+    const client = makeClient(sg);
+    await client.signAndBroadcast([{ typeUrl: "/x", value: {} }], FEE, "");
+    expect(sg.simulate).not.toHaveBeenCalled();
   });
 });
 
