@@ -44,6 +44,21 @@
 //! custom message types with non-canonical field ordering must ensure their
 //! encoding is canonical.
 
+pub mod errors;
+pub mod gas;
+pub mod search;
+pub mod track;
+
+pub use errors::{decode_tx_error, QoreTxError};
+pub use gas::{
+    calculate_fee, estimate_fee, estimate_gas, GasPrice, DEFAULT_GAS_MULTIPLIER, DEFAULT_GAS_PRICE,
+    GAS_AUTO,
+};
+pub use search::{
+    build_event_query, get_block, get_latest_block, get_tx, search_txs, TxSearchResult,
+};
+pub use track::{broadcast_and_wait, wait_for_tx, with_retry, TxResult, WaitOptions};
+
 use crate::error::{Error, Result};
 use crate::pqc::{
     build_hybrid_signature_extension, pqc_sign, ALGORITHM_DILITHIUM5, HYBRID_SIG_TYPE_URL,
@@ -228,6 +243,71 @@ pub fn bank_send(params: BankSendParams) -> Result<BuiltTx> {
 
     let body = TxBody {
         messages,
+        memo: params.memo,
+        timeout_height: params.timeout_height,
+        extension_options: vec![],
+        non_critical_extension_options: vec![],
+    };
+    let body_bytes = body.encode_to_vec();
+
+    let auth_info_bytes = build_auth_info_bytes(&params.public_key, params.sequence, &params.fee)?;
+    let sig = sign_direct(
+        &params.private_key,
+        &body_bytes,
+        &auth_info_bytes,
+        &params.chain_id,
+        params.account_number,
+    )?;
+
+    let tx_raw = TxRaw {
+        body_bytes: body_bytes.clone(),
+        auth_info_bytes: auth_info_bytes.clone(),
+        signatures: vec![sig],
+    };
+    Ok(BuiltTx {
+        tx_raw_bytes: tx_raw.encode_to_vec(),
+        auth_info_bytes,
+        body_bytes,
+        pqc_signed_message: vec![],
+        pqc_signature: vec![],
+    })
+}
+
+/// The inputs to [`send_messages`].
+#[derive(Debug, Clone)]
+pub struct SendMessagesParams {
+    /// The signer's 32-byte secp256k1 private key.
+    pub private_key: Vec<u8>,
+    /// The signer's 33-byte compressed secp256k1 public key.
+    pub public_key: Vec<u8>,
+    /// The tx messages, already packed as `cosmrs::Any` (e.g. from the `msg`
+    /// composers).
+    pub messages: Vec<Any>,
+    /// The chain id (e.g. `"qorechain-diana"`).
+    pub chain_id: String,
+    /// The signer's on-chain account number.
+    pub account_number: u64,
+    /// The signer's current account sequence (nonce).
+    pub sequence: u64,
+    /// The fee to pay.
+    pub fee: Fee,
+    /// An optional tx memo.
+    pub memo: String,
+    /// An optional tx timeout height (`0` = none).
+    pub timeout_height: u64,
+}
+
+/// Builds and signs an arbitrary set of messages into a broadcast-ready `TxRaw`,
+/// carrying a single classical secp256k1 `SIGN_MODE_DIRECT` signature.
+///
+/// This is the generic counterpart of [`bank_send`]: pass any messages produced
+/// by the [`crate::msg`] composers (custom QoreChain modules or standard Cosmos
+/// modules). Use [`build_hybrid_tx`] when a post-quantum signature is also
+/// required. This does not broadcast — pass [`BuiltTx::tx_raw_bytes`] to
+/// [`broadcast`].
+pub fn send_messages(params: SendMessagesParams) -> Result<BuiltTx> {
+    let body = TxBody {
+        messages: params.messages,
         memo: params.memo,
         timeout_height: params.timeout_height,
         extension_options: vec![],
