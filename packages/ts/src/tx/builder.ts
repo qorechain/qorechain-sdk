@@ -12,17 +12,18 @@
  *    any object satisfying {@link SigningClientLike}, so unit tests never touch
  *    the network.
  *
- * Custom QoreChain module messages are out of scope for v0.1 codegen; instead,
- * callers may register their own protobuf types by passing `registryTypes` to
- * {@link TxClient.connect} (added to cosmjs's default bank/staking/gov/etc.
- * registry), then build `{ typeUrl, value }` messages for them.
+ * By default {@link TxClient.connect} uses {@link qorechainRegistry} — cosmjs's
+ * standard bank/staking/gov/etc. types plus every QoreChain custom-module
+ * message — so any message built via the `msg.*` composers can be carried
+ * without extra setup. Callers may still register additional protobuf types
+ * (e.g. from a private module) by passing `registryTypes`, or supply a fully
+ * custom `registry` to override the default entirely.
  */
 
 import {
   SigningStargateClient,
   type SigningStargateClientOptions,
   type DeliverTxResponse,
-  defaultRegistryTypes,
 } from "@cosmjs/stargate";
 import {
   Registry,
@@ -30,6 +31,7 @@ import {
   type OfflineDirectSigner,
   type GeneratedType,
 } from "@cosmjs/proto-signing";
+import { qorechainRegistry } from "../messages/registry";
 import { MsgSend } from "cosmjs-types/cosmos/bank/v1beta1/tx";
 import type { Coin } from "../query/rest";
 import type { StdFee } from "./fees";
@@ -79,11 +81,17 @@ export interface TxConnectOptions {
   signer: OfflineDirectSigner;
   /**
    * Extra protobuf message types to register, as `[typeUrl, GeneratedType]`
-   * pairs. Added to cosmjs's default registry (bank/staking/gov/distribution/…).
-   * Use this to support custom QoreChain module messages without bundling full
-   * codegen into the SDK.
+   * pairs. Added on top of the default {@link qorechainRegistry} (standard
+   * Cosmos types + all QoreChain custom-module messages). Use this for messages
+   * the SDK does not ship, e.g. from a private module. Ignored if `registry`
+   * is supplied.
    */
   registryTypes?: ReadonlyArray<[string, GeneratedType]>;
+  /**
+   * A fully custom message registry to use instead of the default
+   * {@link qorechainRegistry}. When set, `registryTypes` is ignored.
+   */
+  registry?: Registry;
   /** Additional cosmjs `SigningStargateClientOptions` (gas price, etc.). */
   clientOptions?: SigningStargateClientOptions;
 }
@@ -128,10 +136,8 @@ export class TxClient {
    * `registryTypes` into cosmjs's default message registry.
    */
   static async connect(opts: TxConnectOptions): Promise<TxClient> {
-    const registry = new Registry(defaultRegistryTypes);
-    for (const [typeUrl, type] of opts.registryTypes ?? []) {
-      registry.register(typeUrl, type);
-    }
+    const registry =
+      opts.registry ?? qorechainRegistry(opts.registryTypes ?? []);
     const client = await SigningStargateClient.connectWithSigner(
       opts.rpcEndpoint,
       opts.signer,

@@ -169,3 +169,52 @@ export type {
   HybridBroadcaster,
   SignAndBroadcastHybridOptions,
 } from "./tx/hybrid-tx";
+
+// Messages: typed composers for every transaction the chain supports, plus the
+// message registry that resolves them. `msg.<module>.<message>(value)` returns a
+// cosmjs `{ typeUrl, value }` ready for `TxClient.signAndBroadcast` or the hybrid
+// tx path; `qorechainRegistry()` seeds a cosmjs Registry with the standard Cosmos
+// types and all QoreChain custom-module messages (the default for `TxClient`).
+export {
+  msg,
+  qorechainRegistry,
+  qorechainRegistryTypes,
+} from "./messages";
+// Per-module composer groups, also re-exported for tree-shakeable named imports.
+export {
+  bank,
+  staking,
+  distribution,
+  gov,
+  authz,
+  feegrant,
+  ibc,
+  amm,
+  bridge,
+  rdk,
+  multilayer,
+  pqc as pqcMsg,
+  svm,
+  lightnode,
+  license,
+  abstractaccount,
+  crossvm,
+  rlconsensus,
+} from "./messages";
+// Generated message types, namespaced by module, for callers who want the raw
+// encode/decode/interface types (e.g. to decode a message read back from chain).
+export * as qorechainTypes from "./codegen";
+
+// Typed gRPC query clients for the modules with a query service (crossvm,
+// lightnode, pqc, qca, reputation, rlconsensus, svm) over a cosmjs QueryClient.
+export { createQueryClients, connectQueryClients } from "./query/grpc";
+export type {
+  QoreChainQueryClients,
+  CrossVmQueryClient,
+  LightNodeQueryClient,
+  PqcQueryClient,
+  QcaQueryClient,
+  ReputationQueryClient,
+  RlConsensusQueryClient,
+  SvmQueryClient,
+} from "./query/grpc";
