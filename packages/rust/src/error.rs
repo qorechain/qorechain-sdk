@@ -60,6 +60,10 @@ pub enum Error {
     /// A response body could not be parsed as expected JSON.
     #[error("invalid response: {0}")]
     InvalidResponse(String),
+
+    /// A broadcast/confirmed transaction returned a non-zero ABCI result code.
+    #[error(transparent)]
+    Tx(#[from] crate::tx::QoreTxError),
 }
 
 /// Convenience result type used throughout the crate.
