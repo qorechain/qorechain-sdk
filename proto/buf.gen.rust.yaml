@@ -1,0 +1,33 @@
+# Codegen config for the Rust SDK.
+#
+# Emits prost message types (protoc-gen-prost) for the QoreChain modules. The
+# emitted types implement `prost::Message`, so each packs into a
+# `cosmrs::Any { type_url, value }` with `value = msg.encode_to_vec()` exactly
+# like the chain's own message types — this is what lets a custom Msg be carried
+# in a tx Any and decoded back (see the composer round-trip test).
+#
+# Dependency protos (the SDK coin type, gogoproto, cosmos_proto, well-known
+# types) are resolved from the public schema registry (see proto/buf.yaml deps)
+# and are NOT re-emitted: the prost `extern_path` options below remap the Cosmos
+# coin import to the type already re-exported by the `cosmrs` crate
+# (`cosmrs::proto::cosmos::base::v1beta1`); gogoproto / cosmos_proto carry only
+# field options (no message types referenced by our messages), so nothing from
+# them is generated.
+#
+# Query services are NOT generated as tonic gRPC clients — the SDK exposes typed
+# query methods over the existing JSON-RPC `abci_query` transport (see
+# src/query/typed.rs) using the prost request/response types generated here, so
+# the crate keeps its lean reqwest-only dependency surface.
+#
+# Output is post-processed by scripts/codegen-rust.sh into one flat file per
+# package (qorechain.<module>.v1.rs) committed under packages/rust/src/proto.
+version: v2
+clean: false
+plugins:
+  - local: protoc-gen-prost
+    out: gen
+    opt:
+      # Reuse the Cosmos coin type re-exported by cosmrs instead of emitting our
+      # own copy, so generated messages share the wire/Any representation.
+      - extern_path=.cosmos.base.v1beta1=::cosmrs::proto::cosmos::base::v1beta1
+      - compile_well_known_types=false

@@ -1,9 +1,9 @@
 [package]
 name = "qorechain"
-version = "0.1.0"
+version = "0.2.0"
 edition = "2021"
 license = "Apache-2.0"
-description = "QoreChain SDK for Rust: networks, denom/address utils, HD accounts (native/EVM/SVM), ML-DSA-87 PQC signing, and REST/JSON-RPC read clients."
+description = "QoreChain SDK for Rust: networks, denom/address utils, HD accounts (native/EVM/SVM), ML-DSA-87 PQC signing, typed messages for all custom modules, tx lifecycle (auto-gas, tracking, search), typed queries, WS subscriptions, and REST/JSON-RPC read clients."
 repository = "https://github.com/qorechain/qorechain-sdk"
 homepage = "https://github.com/qorechain/qorechain-sdk"
 keywords = ["qorechain", "blockchain", "pqc", "ml-dsa", "wallet"]
@@ -36,11 +36,18 @@ serde_json = "1"
 thiserror = "2"
 # Async HTTP
 reqwest = { version = "0.12", default-features = false, features = ["json", "rustls-tls"] }
-tokio = { version = "1", features = ["rt", "rt-multi-thread", "macros", "sync"] }
+tokio = { version = "1", features = ["rt", "rt-multi-thread", "macros", "sync", "time"] }
 cosmrs = { version = "0.22.0", features = ["cosmwasm"] }
+# Protobuf: prost types for the generated QoreChain custom-module messages
+# (pinned to the line cosmos-sdk-proto / cosmrs use so the generated types and
+# the re-exported Cosmos types share one prost runtime).
+prost = "0.13"
+# WebSocket subscriptions to the chain RPC /websocket endpoint.
+tokio-tungstenite = { version = "0.24", default-features = false, features = ["connect", "rustls-tls-webpki-roots"] }
+futures-util = { version = "0.3", default-features = false, features = ["sink", "std"] }
 
 [dev-dependencies]
-tokio = { version = "1", features = ["rt", "rt-multi-thread", "macros", "net", "io-util"] }
+tokio = { version = "1", features = ["rt", "rt-multi-thread", "macros", "net", "io-util", "time"] }
 hyper = { version = "1", features = ["server", "http1"] }
 hyper-util = { version = "0.1", features = ["tokio"] }
 http-body-util = "0.1"
