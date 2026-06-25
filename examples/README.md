@@ -14,6 +14,10 @@ via `workspace:*`, with its own `README.md`, `.env.example`, and a single
 | [`svm-transfer`](./svm-transfer) | build a SOL transfer + memo instruction | No to build; yes to send |
 | [`cosmwasm-query`](./cosmwasm-query) | smart-query a CosmWasm contract | Yes (+ deployed contract) |
 | [`read-tokenomics`](./read-tokenomics) | `qor_getBurnStats` / `qor_getXQOREPosition` / `qor_getInflationRate` | Yes |
+| [`connect-keplr`](./connect-keplr) | connect a Keplr/Leap browser wallet → send | Browser (web app) |
+| [`amm-swap`](./amm-swap) | compose + broadcast an AMM `SwapExactIn` | No to compose; yes to send |
+| [`subscribe-blocks`](./subscribe-blocks) | stream new blocks over the consensus RPC | Yes |
+| [`evm-nft`](./evm-nft) | read ERC-721 NFT metadata | Yes (+ deployed NFT) |
 
 ## Running an example
 

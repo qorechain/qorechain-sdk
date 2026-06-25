@@ -1,0 +1,19 @@
+{
+  "name": "@qorechain/example-connect-keplr",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Connect a Keplr/Leap browser wallet and send a QOR transfer.",
+  "scripts": {
+    "start": "tsx index.ts",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@qorechain/sdk": "workspace:*"
+  },
+  "devDependencies": {
+    "@types/node": "^22.7.5",
+    "tsx": "^4.19.0",
+    "typescript": "^5.6.3"
+  }
+}

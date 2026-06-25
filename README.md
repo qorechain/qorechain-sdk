@@ -150,6 +150,29 @@ const signature = pqcSign(keypair.secretKey, message);
 const ok = pqcVerify(keypair.publicKey, message, signature);
 ```
 
+## Features
+
+The TypeScript SDK (`@qorechain/sdk` plus the `@qorechain/evm` and
+`@qorechain/svm` adapters) covers:
+
+- **Full message coverage** — typed composers for every chain message (bank,
+  staking, distribution, gov, authz, feegrant, IBC, and the QoreChain custom
+  modules: AMM, bridge, RDK, multilayer, PQC, SVM, lightnode, license,
+  abstract-account, cross-VM, RL consensus), resolved through a message registry.
+- **Browser wallets** — Keplr/Leap (Cosmos), MetaMask/EIP-1193 (EVM), and
+  Phantom/Wallet-Standard (SVM).
+- **Auto-gas** — simulation-based fee estimation, plus EVM EIP-1559 helpers and
+  SVM compute-budget / priority-fee helpers.
+- **Subscriptions** — new-block and tx event streams (Cosmos), block/event/log
+  watchers (EVM), and logs/account/slot subscriptions (SVM).
+- **Error decoding** — structured, human-readable errors across all three VMs.
+- **NFT helpers** — typed ERC-721 and ERC-1155 read/write wrappers.
+- **CosmWasm lifecycle** — query, upload, instantiate/instantiate2, execute,
+  migrate, and admin management.
+- **PQC** — ML-DSA-87 (Dilithium-5) signing and hybrid-signature transactions.
+
+See the [docs](./docs) and [examples](./examples) for runnable usage.
+
 ## Network reference
 
 - Mainnet chain id: `qorechain-vladi` (live).

@@ -1,0 +1,20 @@
+{
+  "name": "@qorechain/example-evm-nft",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Read ERC-721 NFT metadata over the QoreChain EVM Engine.",
+  "scripts": {
+    "start": "tsx index.ts",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@qorechain/evm": "workspace:*",
+    "viem": "^2.0.0"
+  },
+  "devDependencies": {
+    "@types/node": "^22.7.5",
+    "tsx": "^4.19.0",
+    "typescript": "^5.6.3"
+  }
+}

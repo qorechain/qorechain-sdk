@@ -3,6 +3,22 @@
 Official TypeScript SDK for building decentralized applications on the QoreChain
 network — a quantum-safe, triple-VM Layer 1 with native, EVM, and SVM accounts.
 
+## Features
+
+- **Full message coverage** — typed composers for every chain message (bank,
+  staking, distribution, gov, authz, feegrant, IBC, and the QoreChain custom
+  modules), resolved through a message registry.
+- **Browser wallets** — Keplr/Leap (Cosmos); MetaMask/EIP-1193 and
+  Phantom/Wallet-Standard via the `@qorechain/evm` and `@qorechain/svm` adapters.
+- **Auto-gas** — simulation-based fee estimation, with EVM EIP-1559 and SVM
+  compute-budget helpers in the adapters.
+- **Subscriptions** — new-block and tx event streams over the consensus RPC.
+- **Error decoding** — structured, human-readable transaction errors.
+- **NFT helpers** — ERC-721 / ERC-1155 wrappers in `@qorechain/evm`.
+- **CosmWasm lifecycle** — query, upload, instantiate/instantiate2, execute,
+  migrate, and admin management.
+- **PQC** — ML-DSA-87 (Dilithium-5) signing and hybrid-signature transactions.
+
 ## Install
 
 ```sh
