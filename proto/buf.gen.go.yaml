@@ -1,0 +1,34 @@
+# Codegen config for the Go SDK.
+#
+# Emits gogoproto-compatible Go types (protoc-gen-gocosmos from
+# github.com/cosmos/gogoproto) for the QoreChain modules into the committed
+# packages/go/qorechain/proto tree. The emitted types implement the gogo
+# proto.Message interface, so they pack into the Cosmos SDK codec Any and an
+# InterfaceRegistry exactly like the chain's own types.
+#
+# Dependency protos (coin, gogo, cosmos_proto, well-known types) are resolved
+# from the public schema registry (see proto/buf.yaml deps) and are NOT
+# re-emitted: M= overrides remap each dependency import to the existing Go module
+# already in go.mod, and the qorechain go_package is rewritten from the core repo
+# path to the SDK's committed proto tree.
+version: v2
+clean: false
+managed:
+  enabled: true
+  override:
+    - file_option: go_package_prefix
+      value: github.com/qorechain/qorechain-sdk/packages/go/qorechain/proto
+  disable:
+    # Keep dependency types pointing at their existing Go modules (already in
+    # go.mod); do not rewrite their go_package.
+    - module: buf.build/cosmos/cosmos-sdk
+    - module: buf.build/cosmos/cosmos-proto
+    - module: buf.build/cosmos/gogo-proto
+    - module: buf.build/googleapis/googleapis
+    - module: buf.build/protocolbuffers/wellknowntypes
+plugins:
+  - local: protoc-gen-gocosmos
+    out: packages/go/qorechain/proto
+    opt:
+      - plugins=grpc
+      - Mgoogle/protobuf/any.proto=github.com/cosmos/gogoproto/types/any
