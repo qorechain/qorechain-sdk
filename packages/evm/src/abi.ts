@@ -93,6 +93,240 @@ export const ERC20_ABI = [
   },
 ] as const;
 
+/** Minimal ERC-721 ABI covering the helpers this package exposes. */
+export const ERC721_ABI = [
+  {
+    type: "function",
+    name: "name",
+    stateMutability: "view",
+    inputs: [],
+    outputs: [{ name: "", type: "string" }],
+  },
+  {
+    type: "function",
+    name: "symbol",
+    stateMutability: "view",
+    inputs: [],
+    outputs: [{ name: "", type: "string" }],
+  },
+  {
+    type: "function",
+    name: "balanceOf",
+    stateMutability: "view",
+    inputs: [{ name: "owner", type: "address" }],
+    outputs: [{ name: "", type: "uint256" }],
+  },
+  {
+    type: "function",
+    name: "ownerOf",
+    stateMutability: "view",
+    inputs: [{ name: "tokenId", type: "uint256" }],
+    outputs: [{ name: "", type: "address" }],
+  },
+  {
+    type: "function",
+    name: "tokenURI",
+    stateMutability: "view",
+    inputs: [{ name: "tokenId", type: "uint256" }],
+    outputs: [{ name: "", type: "string" }],
+  },
+  {
+    type: "function",
+    name: "getApproved",
+    stateMutability: "view",
+    inputs: [{ name: "tokenId", type: "uint256" }],
+    outputs: [{ name: "", type: "address" }],
+  },
+  {
+    type: "function",
+    name: "isApprovedForAll",
+    stateMutability: "view",
+    inputs: [
+      { name: "owner", type: "address" },
+      { name: "operator", type: "address" },
+    ],
+    outputs: [{ name: "", type: "bool" }],
+  },
+  {
+    type: "function",
+    name: "approve",
+    stateMutability: "nonpayable",
+    inputs: [
+      { name: "to", type: "address" },
+      { name: "tokenId", type: "uint256" },
+    ],
+    outputs: [],
+  },
+  {
+    type: "function",
+    name: "setApprovalForAll",
+    stateMutability: "nonpayable",
+    inputs: [
+      { name: "operator", type: "address" },
+      { name: "approved", type: "bool" },
+    ],
+    outputs: [],
+  },
+  {
+    type: "function",
+    name: "transferFrom",
+    stateMutability: "nonpayable",
+    inputs: [
+      { name: "from", type: "address" },
+      { name: "to", type: "address" },
+      { name: "tokenId", type: "uint256" },
+    ],
+    outputs: [],
+  },
+  {
+    type: "function",
+    name: "safeTransferFrom",
+    stateMutability: "nonpayable",
+    inputs: [
+      { name: "from", type: "address" },
+      { name: "to", type: "address" },
+      { name: "tokenId", type: "uint256" },
+    ],
+    outputs: [],
+  },
+  {
+    type: "function",
+    name: "safeTransferFrom",
+    stateMutability: "nonpayable",
+    inputs: [
+      { name: "from", type: "address" },
+      { name: "to", type: "address" },
+      { name: "tokenId", type: "uint256" },
+      { name: "data", type: "bytes" },
+    ],
+    outputs: [],
+  },
+  {
+    type: "event",
+    name: "Transfer",
+    inputs: [
+      { indexed: true, name: "from", type: "address" },
+      { indexed: true, name: "to", type: "address" },
+      { indexed: true, name: "tokenId", type: "uint256" },
+    ],
+  },
+  {
+    type: "event",
+    name: "Approval",
+    inputs: [
+      { indexed: true, name: "owner", type: "address" },
+      { indexed: true, name: "approved", type: "address" },
+      { indexed: true, name: "tokenId", type: "uint256" },
+    ],
+  },
+  {
+    type: "event",
+    name: "ApprovalForAll",
+    inputs: [
+      { indexed: true, name: "owner", type: "address" },
+      { indexed: true, name: "operator", type: "address" },
+      { indexed: false, name: "approved", type: "bool" },
+    ],
+  },
+] as const;
+
+/** Minimal ERC-1155 ABI covering the helpers this package exposes. */
+export const ERC1155_ABI = [
+  {
+    type: "function",
+    name: "balanceOf",
+    stateMutability: "view",
+    inputs: [
+      { name: "account", type: "address" },
+      { name: "id", type: "uint256" },
+    ],
+    outputs: [{ name: "", type: "uint256" }],
+  },
+  {
+    type: "function",
+    name: "balanceOfBatch",
+    stateMutability: "view",
+    inputs: [
+      { name: "accounts", type: "address[]" },
+      { name: "ids", type: "uint256[]" },
+    ],
+    outputs: [{ name: "", type: "uint256[]" }],
+  },
+  {
+    type: "function",
+    name: "uri",
+    stateMutability: "view",
+    inputs: [{ name: "id", type: "uint256" }],
+    outputs: [{ name: "", type: "string" }],
+  },
+  {
+    type: "function",
+    name: "isApprovedForAll",
+    stateMutability: "view",
+    inputs: [
+      { name: "account", type: "address" },
+      { name: "operator", type: "address" },
+    ],
+    outputs: [{ name: "", type: "bool" }],
+  },
+  {
+    type: "function",
+    name: "setApprovalForAll",
+    stateMutability: "nonpayable",
+    inputs: [
+      { name: "operator", type: "address" },
+      { name: "approved", type: "bool" },
+    ],
+    outputs: [],
+  },
+  {
+    type: "function",
+    name: "safeTransferFrom",
+    stateMutability: "nonpayable",
+    inputs: [
+      { name: "from", type: "address" },
+      { name: "to", type: "address" },
+      { name: "id", type: "uint256" },
+      { name: "amount", type: "uint256" },
+      { name: "data", type: "bytes" },
+    ],
+    outputs: [],
+  },
+  {
+    type: "function",
+    name: "safeBatchTransferFrom",
+    stateMutability: "nonpayable",
+    inputs: [
+      { name: "from", type: "address" },
+      { name: "to", type: "address" },
+      { name: "ids", type: "uint256[]" },
+      { name: "amounts", type: "uint256[]" },
+      { name: "data", type: "bytes" },
+    ],
+    outputs: [],
+  },
+  {
+    type: "event",
+    name: "TransferSingle",
+    inputs: [
+      { indexed: true, name: "operator", type: "address" },
+      { indexed: true, name: "from", type: "address" },
+      { indexed: true, name: "to", type: "address" },
+      { indexed: false, name: "id", type: "uint256" },
+      { indexed: false, name: "value", type: "uint256" },
+    ],
+  },
+  {
+    type: "event",
+    name: "ApprovalForAll",
+    inputs: [
+      { indexed: true, name: "account", type: "address" },
+      { indexed: true, name: "operator", type: "address" },
+      { indexed: false, name: "approved", type: "bool" },
+    ],
+  },
+] as const;
+
 /**
  * Post-quantum cryptography precompile interface (`IQorePQC`).
  *

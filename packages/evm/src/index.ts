@@ -31,6 +31,20 @@ export {
 } from "./erc20";
 
 export {
+  erc721,
+  type Erc721Metadata,
+} from "./erc721";
+
+export { erc1155 } from "./erc1155";
+
+export {
+  fees,
+  estimateEip1559Fees,
+  gasPrice,
+  type Eip1559Fees,
+} from "./fees";
+
+export {
   deployContract,
   readContract,
   writeContract,
@@ -55,6 +69,8 @@ export {
 
 export {
   ERC20_ABI,
+  ERC721_ABI,
+  ERC1155_ABI,
   IQORE_PQC_ABI,
   IQORE_AI_ABI,
   IQORE_CONSENSUS_ABI,
