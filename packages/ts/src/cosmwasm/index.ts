@@ -36,6 +36,9 @@ export type FeeInput = StdFee | "auto" | number;
 export interface CosmWasmReadClient {
   queryContractSmart(address: string, queryMsg: ContractMsg): Promise<unknown>;
   getContract(address: string): Promise<unknown>;
+  getCodes(): Promise<unknown>;
+  getContracts(codeId: number): Promise<unknown>;
+  getCodeDetails(codeId: number): Promise<unknown>;
 }
 
 /** Signing slice of `SigningCosmWasmClient` used by the write wrappers. */
@@ -61,6 +64,36 @@ export interface CosmWasmSigningClient {
     fee: FeeInput,
     memo?: string,
     funds?: readonly Coin[],
+  ): Promise<unknown>;
+  instantiate2(
+    senderAddress: string,
+    codeId: number,
+    salt: Uint8Array,
+    msg: ContractMsg,
+    label: string,
+    fee: FeeInput,
+    options?: InstantiateOpts,
+  ): Promise<unknown>;
+  migrate(
+    senderAddress: string,
+    contractAddress: string,
+    codeId: number,
+    migrateMsg: ContractMsg,
+    fee: FeeInput,
+    memo?: string,
+  ): Promise<unknown>;
+  updateAdmin(
+    senderAddress: string,
+    contractAddress: string,
+    newAdmin: string,
+    fee: FeeInput,
+    memo?: string,
+  ): Promise<unknown>;
+  clearAdmin(
+    senderAddress: string,
+    contractAddress: string,
+    fee: FeeInput,
+    memo?: string,
   ): Promise<unknown>;
 }
 
@@ -172,4 +205,104 @@ export function uploadCode<T = unknown>(
   fee: FeeInput,
 ): Promise<T> {
   return client.upload(sender, wasmBytes, fee) as Promise<T>;
+}
+
+/**
+ * Instantiate a contract at a predictable address derived from `(codeId, salt,
+ * creator)` via `instantiate2`. The resulting address can be computed ahead of
+ * time, enabling counterfactual deployments.
+ */
+export function instantiate2<T = unknown>(
+  client: CosmWasmSigningClient,
+  sender: string,
+  codeId: number,
+  salt: Uint8Array,
+  initMsg: ContractMsg,
+  label: string,
+  opts: InstantiateOpts = {},
+): Promise<T> {
+  const { fee = "auto", memo, funds, admin } = opts;
+  const options: InstantiateOpts = {};
+  if (funds !== undefined) options.funds = funds;
+  if (admin !== undefined) options.admin = admin;
+  if (memo !== undefined) options.memo = memo;
+  return client.instantiate2(
+    sender,
+    codeId,
+    salt,
+    initMsg,
+    label,
+    fee,
+    options,
+  ) as Promise<T>;
+}
+
+/** Migrate `contractAddress` to a new `codeId`, running `migrateMsg`. */
+export function migrate<T = unknown>(
+  client: CosmWasmSigningClient,
+  sender: string,
+  contractAddress: string,
+  codeId: number,
+  migrateMsg: ContractMsg,
+  fee: FeeInput,
+  memo?: string,
+): Promise<T> {
+  return client.migrate(
+    sender,
+    contractAddress,
+    codeId,
+    migrateMsg,
+    fee,
+    memo,
+  ) as Promise<T>;
+}
+
+/** Set a new admin (who may migrate) on `contractAddress`. */
+export function updateAdmin<T = unknown>(
+  client: CosmWasmSigningClient,
+  sender: string,
+  contractAddress: string,
+  newAdmin: string,
+  fee: FeeInput,
+  memo?: string,
+): Promise<T> {
+  return client.updateAdmin(
+    sender,
+    contractAddress,
+    newAdmin,
+    fee,
+    memo,
+  ) as Promise<T>;
+}
+
+/** Clear the admin on `contractAddress`, making it immutable (no more migrates). */
+export function clearAdmin<T = unknown>(
+  client: CosmWasmSigningClient,
+  sender: string,
+  contractAddress: string,
+  fee: FeeInput,
+  memo?: string,
+): Promise<T> {
+  return client.clearAdmin(sender, contractAddress, fee, memo) as Promise<T>;
+}
+
+/** List all uploaded code metadata (`getCodes`). */
+export function getCodes<T = unknown>(client: CosmWasmReadClient): Promise<T> {
+  return client.getCodes() as Promise<T>;
+}
+
+/** List all contracts instantiated from `codeId` (`getContracts`). */
+export function getContracts<T = unknown>(
+  client: CosmWasmReadClient,
+  codeId: number,
+): Promise<T> {
+  return client.getContracts(codeId) as Promise<T>;
+}
+
+/** Fetch full details (incl. data hash) for an uploaded `codeId`. */
+export function getCodeDetails<T = unknown>(
+  client: CosmWasmReadClient,
+  codeId: number,
+): Promise<T> {
+  return client.getCodeDetails(codeId) as Promise<T>;
 }

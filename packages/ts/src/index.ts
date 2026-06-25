@@ -23,6 +23,22 @@ export type {
 // Networks: presets, lookup/list helpers, and config types.
 export * from "./config/networks";
 
+// Explorer + faucet helpers (config-driven; no hostnames baked in). The
+// explorer URL builders and faucet request require the network's
+// `explorerUrl` / `faucetUrl` (both `undefined` by default) and throw a clear
+// error otherwise.
+export {
+  explorerTxUrl,
+  explorerAddressUrl,
+  explorerBlockUrl,
+  type ExplorerConfig,
+} from "./explorer";
+export {
+  requestFaucet,
+  type FaucetConfig,
+  type RequestFaucetOptions,
+} from "./faucet";
+
 // Utilities: denom conversion and address encoding/validation.
 export * from "./utils/denom";
 export * from "./utils/address";
@@ -153,6 +169,13 @@ export {
   instantiate,
   execute,
   uploadCode,
+  instantiate2,
+  migrate,
+  updateAdmin,
+  clearAdmin,
+  getCodes,
+  getContracts,
+  getCodeDetails,
 } from "./cosmwasm";
 export type {
   ContractMsg,
