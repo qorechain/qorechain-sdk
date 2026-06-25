@@ -1,6 +1,6 @@
 [package]
 name = "qorechain"
-version = "0.1.0"
+version = "0.3.0"
 edition = "2021"
 license = "Apache-2.0"
 description = "QoreChain SDK for Rust: networks, denom/address utils, HD accounts (native/EVM/SVM), ML-DSA-87 PQC signing, typed messages for all custom modules, tx lifecycle (auto-gas, tracking, search), typed queries, WS subscriptions, and REST/JSON-RPC read clients."

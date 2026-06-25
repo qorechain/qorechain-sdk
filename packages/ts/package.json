@@ -1,6 +1,6 @@
 {
   "name": "@qorechain/sdk",
-  "version": "0.1.0",
+  "version": "0.3.0",
   "description": "Official TypeScript SDK for building decentralized applications on the QoreChain network.",
   "license": "Apache-2.0",
   "author": "QoreChain",

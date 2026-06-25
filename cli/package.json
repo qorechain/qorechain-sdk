@@ -1,6 +1,6 @@
 {
   "name": "create-qorechain-dapp",
-  "version": "0.1.0",
+  "version": "0.3.0",
   "description": "Scaffold a new QoreChain dApp from an official starter template.",
   "license": "Apache-2.0",
   "author": "QoreChain",

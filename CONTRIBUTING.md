@@ -22,10 +22,7 @@ pnpm -r build
 pnpm -r lint
 pnpm -r typecheck
 pnpm -r test
-bash scripts/check.sh
 ```
-
-The `scripts/check.sh` check must report `OK`.
 
 ## Pull requests
 

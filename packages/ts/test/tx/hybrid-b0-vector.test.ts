@@ -18,7 +18,7 @@ function toHex(b: Uint8Array): string {
 }
 
 describe("hybrid PQC B0 cross-implementation vector", () => {
-  it("SDK B0 encoding is byte-identical to the chain (qorechain x/pqc)", () => {
+  it("SDK B0 encoding is byte-identical to the chain's reference implementation", () => {
     const registry = new Registry();
     registry.register("/cosmos.bank.v1beta1.MsgSend", MsgSend);
 

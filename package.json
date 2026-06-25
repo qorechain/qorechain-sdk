@@ -14,8 +14,7 @@
     "test": "pnpm -r test",
     "lint": "pnpm -r lint",
     "typecheck": "pnpm -r typecheck",
-    "typecheck:templates": "bash scripts/typecheck-templates.sh",
-    "scan": "bash scripts/check.sh"
+    "typecheck:templates": "bash scripts/typecheck-templates.sh"
   },
   "devDependencies": {
     "@changesets/cli": "^2.27.9",

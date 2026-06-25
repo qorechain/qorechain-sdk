@@ -11,7 +11,7 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "@qorechain/sdk": "^0.1.0",
+    "@qorechain/sdk": "^0.3.0",
     "react": "^18.3.1",
     "react-dom": "^18.3.1"
   },

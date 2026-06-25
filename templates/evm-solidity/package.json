@@ -9,7 +9,7 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "@qorechain/evm": "^0.1.0",
+    "@qorechain/evm": "^0.3.0",
     "viem": "^2.0.0"
   },
   "devDependencies": {
