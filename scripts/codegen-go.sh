@@ -38,10 +38,13 @@ fi
 PKG_ROOT="packages/go/qorechain/proto"
 # buf writes the plugin output relative to proto/ under a path that mirrors the
 # full go_package (github.com/qorechain/.../proto). Capture that scratch root so
-# it can be relocated to the package and cleaned up.
+# the generated .pb.go files can be copied into the package and cleaned up.
 GEN_TMP="proto/packages/go/qorechain/proto/github.com/qorechain/qorechain-sdk/packages/go/qorechain/proto/qorechain"
 
-rm -rf "$PKG_ROOT/qorechain" "proto/packages"
+rm -rf "proto/packages"
+# Remove ONLY the generated *.pb.go files; hand-written cast/custom-type files
+# (types.go) live in the same per-module dirs and must be preserved.
+find "$PKG_ROOT/qorechain" -name '*.pb.go' -delete 2>/dev/null || true
 
 # Generate only the qorechain chain modules (their dep types are imported, not
 # emitted). The `sidecar` package is an off-chain gRPC service definition, not a
@@ -50,12 +53,15 @@ rm -rf "$PKG_ROOT/qorechain" "proto/packages"
     --path qorechain \
     --exclude-path qorechain/sidecar )
 
-# Relocate buf's output into the package and clean up the scratch tree.
-mkdir -p "$PKG_ROOT"
-rm -rf "$PKG_ROOT/qorechain"
-mv "$GEN_TMP" "$PKG_ROOT/qorechain"
+# Copy the freshly generated .pb.go files into the package (preserving any
+# hand-written types.go already present) and clean up the scratch tree.
+mkdir -p "$PKG_ROOT/qorechain"
+( cd "$GEN_TMP/.." && find qorechain -name '*.pb.go' -print0 ) | while IFS= read -r -d '' rel; do
+  mkdir -p "$PKG_ROOT/$(dirname "$rel")"
+  cp "$GEN_TMP/../$rel" "$PKG_ROOT/$rel"
+done
 rm -rf proto/packages
 
 gofmt -w "$PKG_ROOT/qorechain"
 
-echo "Generated Go protobuf modules into $PKG_ROOT/qorechain"
+echo "Generated Go protobuf modules into $PKG_ROOT/qorechain (hand-written types.go preserved)"
