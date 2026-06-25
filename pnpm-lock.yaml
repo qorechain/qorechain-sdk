@@ -235,6 +235,9 @@ importers:
       '@cosmjs/stargate':
         specifier: ^0.39.0
         version: 0.39.0(bufferutil@4.1.0)
+      '@cosmjs/tendermint-rpc':
+        specifier: ^0.39.0
+        version: 0.39.0(bufferutil@4.1.0)
       '@noble/curves':
         specifier: ^1.9.0
         version: 1.9.7
@@ -2770,7 +2773,7 @@ snapshots:
   '@cosmjs/socket@0.38.1(bufferutil@4.1.0)':
     dependencies:
       '@cosmjs/stream': 0.38.1
-      isomorphic-ws: 4.0.1(ws@7.5.11(bufferutil@4.1.0)(utf-8-validate@6.0.6))
+      isomorphic-ws: 4.0.1(ws@7.5.11(bufferutil@4.1.0))
       ws: 7.5.11(bufferutil@4.1.0)(utf-8-validate@6.0.6)
       xstream: 11.14.0
     transitivePeerDependencies:
@@ -2780,7 +2783,7 @@ snapshots:
   '@cosmjs/socket@0.39.0(bufferutil@4.1.0)':
     dependencies:
       '@cosmjs/stream': 0.39.0
-      isomorphic-ws: 4.0.1(ws@7.5.11(bufferutil@4.1.0)(utf-8-validate@6.0.6))
+      isomorphic-ws: 4.0.1(ws@7.5.11(bufferutil@4.1.0))
       ws: 7.5.11(bufferutil@4.1.0)(utf-8-validate@6.0.6)
       xstream: 11.14.0
     transitivePeerDependencies:
@@ -4067,7 +4070,7 @@ snapshots:
 
   isexe@2.0.0: {}
 
-  isomorphic-ws@4.0.1(ws@7.5.11(bufferutil@4.1.0)(utf-8-validate@6.0.6)):
+  isomorphic-ws@4.0.1(ws@7.5.11(bufferutil@4.1.0)):
     dependencies:
       ws: 7.5.11(bufferutil@4.1.0)(utf-8-validate@6.0.6)
 
@@ -4084,7 +4087,7 @@ snapshots:
       delay: 5.0.0
       es6-promisify: 5.0.0
       eyes: 0.1.8
-      isomorphic-ws: 4.0.1(ws@7.5.11(bufferutil@4.1.0)(utf-8-validate@6.0.6))
+      isomorphic-ws: 4.0.1(ws@7.5.11(bufferutil@4.1.0))
       json-stringify-safe: 5.0.1
       stream-json: 1.9.1
       uuid: 8.3.2
