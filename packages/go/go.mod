@@ -14,6 +14,7 @@ require (
 	github.com/cosmos/gogoproto v1.7.2
 	github.com/cosmos/ibc-go/v8 v8.5.1
 	github.com/decred/dcrd/dcrec/secp256k1/v4 v4.3.0
+	github.com/gorilla/websocket v1.5.3
 	github.com/mr-tron/base58 v1.2.0
 	golang.org/x/crypto v0.40.0
 	google.golang.org/grpc v1.64.1
@@ -80,7 +81,6 @@ require (
 	github.com/google/go-cmp v0.7.0 // indirect
 	github.com/gorilla/handlers v1.5.2 // indirect
 	github.com/gorilla/mux v1.8.1 // indirect
-	github.com/gorilla/websocket v1.5.3 // indirect
 	github.com/grpc-ecosystem/go-grpc-middleware v1.4.0 // indirect
 	github.com/grpc-ecosystem/grpc-gateway v1.16.0 // indirect
 	github.com/gsterjov/go-libsecret v0.0.0-20161001094733-a6f4afe4910c // indirect
