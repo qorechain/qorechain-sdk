@@ -5,8 +5,12 @@
 # are generated (see scripts/codegen.sh `--path`); dependency types (coin, gogo,
 # well-known types) are not re-emitted — the generated message modules import the
 # corresponding `cosmjs-types` / runtime equivalents at hand-written call sites.
+# `clean` is intentionally false: the hand-written barrel
+# `packages/ts/src/codegen/index.ts` lives alongside the generated tree, and
+# scripts/codegen.sh removes only the generated `qorechain/` subtree before each
+# run, so a full `out` wipe would clobber the barrel.
 version: v2
-clean: true
+clean: false
 plugins:
   - local: packages/ts/node_modules/.bin/protoc-gen-ts_proto
     out: packages/ts/src/codegen
