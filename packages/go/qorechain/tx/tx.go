@@ -481,6 +481,39 @@ func buildAuthInfoBytes(compressedPubKey []byte, sequence uint64, fee Fee) ([]by
 	return authInfoBytes, nil
 }
 
+// newTxBody assembles a TxBody from encoded message Anys, an optional memo and
+// timeout height, and optional extension options.
+func newTxBody(messages []*codectypes.Any, memo string, timeoutHeight uint64, extensions []*codectypes.Any) (*sdktx.TxBody, error) {
+	return &sdktx.TxBody{
+		Messages:         messages,
+		Memo:             memo,
+		TimeoutHeight:    timeoutHeight,
+		ExtensionOptions: extensions,
+	}, nil
+}
+
+// assembleTxRaw builds and encodes a TxRaw from the final body/authInfo bytes
+// and classical signature, returning a BuiltTx. pqcMessage/pqcSignature are
+// recorded for auditing (nil for a non-hybrid tx).
+func assembleTxRaw(bodyBytes, authInfoBytes, sig, pqcMessage, pqcSignature []byte) (*BuiltTx, error) {
+	txRaw := &sdktx.TxRaw{
+		BodyBytes:     bodyBytes,
+		AuthInfoBytes: authInfoBytes,
+		Signatures:    [][]byte{sig},
+	}
+	txRawBytes, err := proto.Marshal(txRaw)
+	if err != nil {
+		return nil, fmt.Errorf("marshal TxRaw: %w", err)
+	}
+	return &BuiltTx{
+		TxRaw:            txRaw,
+		TxRawBytes:       txRawBytes,
+		AuthInfoBytes:    authInfoBytes,
+		PQCSignedMessage: pqcMessage,
+		PQCSignature:     pqcSignature,
+	}, nil
+}
+
 func encodeMessages(messages []Message) ([]*codectypes.Any, error) {
 	out := make([]*codectypes.Any, 0, len(messages))
 	for _, m := range messages {
