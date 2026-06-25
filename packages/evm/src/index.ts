@@ -73,3 +73,16 @@ export {
   type EvmWalletConnection,
   type Eip6963ProviderDetail,
 } from "./wallet";
+
+export { decodeEvmError, type DecodedEvmError } from "./errors";
+
+export {
+  createEvmSubscriptionClient,
+  watchBlocks,
+  watchEvent,
+  watchContractEvent,
+  watchPendingTransactions,
+  type CreateEvmSubscriptionClientOptions,
+  type EvmWsEndpoints,
+  type Unwatch,
+} from "./subscribe";
