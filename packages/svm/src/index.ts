@@ -48,3 +48,12 @@ export {
   type SvmWalletConnection,
   type SvmSignableTransaction,
 } from "./wallet";
+
+export { decodeSvmError, type DecodedSvmError } from "./errors";
+
+export {
+  onLogs,
+  onAccountChange,
+  onSlotChange,
+  type SvmSubscription,
+} from "./subscribe";
