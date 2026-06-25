@@ -163,17 +163,30 @@ def _build_auth_info_bytes(
     return serialized
 
 
-def _encode_message(message: dict[str, TypingAny]) -> ProtoAny:
-    """Encode a ``{"type_url", "value"}`` message into a protobuf ``Any``.
+def _message_parts(message: TypingAny) -> tuple[str, TypingAny]:
+    """Extract ``(type_url, value)`` from a :class:`~qorechain.messages.Msg` or dict.
 
-    ``value`` may be a protobuf message instance (it is serialized) or raw
-    ``bytes`` (used verbatim).
+    Accepts either a composer-produced :class:`Msg` (with ``type_url`` /
+    ``value`` attributes) or a plain ``{"type_url", "value"}`` dict, so callers
+    can pass composer output or hand-built messages interchangeably.
     """
-    value = message["value"]
+    if isinstance(message, dict):
+        return message["type_url"], message["value"]
+    return message.type_url, message.value
+
+
+def _encode_message(message: TypingAny) -> ProtoAny:
+    """Encode a message into a protobuf ``Any``.
+
+    ``message`` is a :class:`~qorechain.messages.Msg` or a ``{"type_url",
+    "value"}`` dict. ``value`` may be a protobuf message instance (it is
+    serialized) or raw ``bytes`` (used verbatim).
+    """
+    type_url, value = _message_parts(message)
     raw: bytes = (
         value.SerializeToString() if hasattr(value, "SerializeToString") else value
     )
-    return ProtoAny(type_url=message["type_url"], value=raw)
+    return ProtoAny(type_url=type_url, value=raw)
 
 
 def _sign_direct(private_key: bytes, sign_doc: SignDoc) -> bytes:
@@ -188,11 +201,10 @@ def _sign_direct(private_key: bytes, sign_doc: SignDoc) -> bytes:
     return signature
 
 
-def bank_send(
+def send_messages(
     *,
     account: Secp256k1Account,
-    to_address: str,
-    amount: list[CoinDict],
+    messages: list[TypingAny],
     chain_id: str,
     account_number: int,
     sequence: int,
@@ -200,21 +212,26 @@ def bank_send(
     memo: str = "",
     timeout_height: int = 0,
 ) -> BuiltTx:
-    """Build and sign a bank ``MsgSend`` into a broadcast-ready ``TxRaw``.
+    """Build and sign a tx carrying ANY supported messages (classical only).
 
-    Constructs ``/cosmos.bank.v1beta1.MsgSend`` from ``account.address`` to
-    ``to_address``, builds the SIGN_MODE_DIRECT ``AuthInfo`` from the account's
-    compressed secp256k1 pubkey, signs the ``SignDoc``, and assembles the
-    ``TxRaw``. This does not broadcast — pass :attr:`BuiltTx.tx_raw_bytes` to
-    :func:`broadcast`.
+    This is the generic counterpart to :func:`bank_send`: it accepts a list of
+    composer-produced :class:`~qorechain.messages.Msg` objects (or ``{"type_url",
+    "value"}`` dicts), packs each into a Cosmos ``Any``, builds the single-signer
+    SIGN_MODE_DIRECT ``AuthInfo`` from the account's compressed secp256k1 pubkey,
+    signs the ``SignDoc``, and assembles the ``TxRaw``. It does not broadcast —
+    pass :attr:`BuiltTx.tx_raw_bytes` to :func:`broadcast`.
+
+    For a quantum-safe (classical + ML-DSA-87) transaction over the same
+    messages, use :func:`build_hybrid_tx` instead.
+
+    :param messages: Messages to include (``Msg`` objects or
+        ``{"type_url", "value"}`` dicts). Must be non-empty.
     """
-    msg = MsgSend(
-        from_address=account.address,
-        to_address=to_address,
-        amount=_to_coins(amount),
-    )
+    if not messages:
+        raise ValueError("send_messages requires at least one message")
+
     body = TxBody(
-        messages=[ProtoAny(type_url=MSG_SEND_TYPE_URL, value=msg.SerializeToString())],
+        messages=[_encode_message(m) for m in messages],
         memo=memo,
         timeout_height=int(timeout_height),
     )
@@ -241,11 +258,47 @@ def bank_send(
     )
 
 
+def bank_send(
+    *,
+    account: Secp256k1Account,
+    to_address: str,
+    amount: list[CoinDict],
+    chain_id: str,
+    account_number: int,
+    sequence: int,
+    fee: FeeDict,
+    memo: str = "",
+    timeout_height: int = 0,
+) -> BuiltTx:
+    """Build and sign a bank ``MsgSend`` into a broadcast-ready ``TxRaw``.
+
+    A thin convenience over :func:`send_messages` that constructs
+    ``/cosmos.bank.v1beta1.MsgSend`` from ``account.address`` to ``to_address``.
+    This does not broadcast — pass :attr:`BuiltTx.tx_raw_bytes` to
+    :func:`broadcast`.
+    """
+    msg = MsgSend(
+        from_address=account.address,
+        to_address=to_address,
+        amount=_to_coins(amount),
+    )
+    return send_messages(
+        account=account,
+        messages=[{"type_url": MSG_SEND_TYPE_URL, "value": msg}],
+        chain_id=chain_id,
+        account_number=account_number,
+        sequence=sequence,
+        fee=fee,
+        memo=memo,
+        timeout_height=timeout_height,
+    )
+
+
 def build_hybrid_tx(
     *,
     account: Secp256k1Account,
     pqc_keypair: PqcKeypair,
-    messages: list[dict[str, TypingAny]],
+    messages: list[TypingAny],
     fee: FeeDict,
     chain_id: str,
     account_number: int,
@@ -268,8 +321,10 @@ def build_hybrid_tx(
        ``SignDoc(final_body, A, chain_id, account_number)``.
     6. Assemble ``TxRaw(final_body, A, [classical_sig])``.
 
-    ``messages`` are ``{"type_url", "value"}`` dicts where ``value`` is a
-    protobuf message (or raw bytes). The signer's PQC key must already be
+    ``messages`` are composer-produced :class:`~qorechain.messages.Msg` objects
+    (or ``{"type_url", "value"}`` dicts where ``value`` is a protobuf message or
+    raw bytes), so any supported message carries a hybrid signature. The signer's
+    PQC key must already be
     registered on-chain via ``MsgRegisterPQCKey`` unless
     ``include_pqc_public_key`` is ``True``.
 

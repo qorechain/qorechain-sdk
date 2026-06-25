@@ -24,8 +24,34 @@ from .address import (
 )
 from .client import QoreChainClient, create_client
 from .denom import from_base, to_base
+from .errors import (
+    DecodedTxError,
+    QoreTxError,
+    decode_tx_error,
+    is_tx_failure,
+    tx_error_from,
+)
 from .fees import estimate_fee
+from .gas import (
+    DEFAULT_GAS_MULTIPLIER,
+    DEFAULT_GAS_PRICE,
+    GasPrice,
+    auto_fee,
+    calculate_fee,
+    estimate_gas,
+    simulate_gas_used,
+)
 from .jsonrpc import AsyncJsonRpcClient, JsonRpcClient, JsonRpcError
+from .messages import (
+    COSMOS_REGISTRY_TYPES,
+    QORECHAIN_REGISTRY_TYPES,
+    Msg,
+    composer,
+    decode_any,
+    msg,
+    qorechain_registry,
+    resolve_message_type,
+)
 from .networks import (
     NETWORKS,
     Bech32Prefixes,
@@ -52,7 +78,22 @@ from .pqc import (
     pqc_verify,
 )
 from .qor import QOR_METHODS, AsyncQorClient, QorClient
+from .query import QueryClients, connect_query_clients
 from .rest import AsyncRestClient, QoreHttpError, RestClient
+from .search import (
+    build_events_query,
+    get_block,
+    get_latest_block,
+    get_tx,
+    search_txs,
+)
+from .subscribe import SubscriptionClient, build_tx_query
+from .track import (
+    IncludedTx,
+    broadcast_and_wait,
+    wait_for_tx,
+    with_retry,
+)
 from .tx import (
     MSG_SEND_TYPE_URL,
     BroadcastMode,
@@ -60,9 +101,24 @@ from .tx import (
     bank_send,
     broadcast,
     build_hybrid_tx,
+    send_messages,
+)
+from .utils import (
+    format_units,
+    is_checksum_address,
+    is_valid_evm_address,
+    is_valid_svm_address,
+    keccak256,
+    keccak256_hex,
+    parse_units,
+    ripemd160,
+    ripemd160_hex,
+    sha256,
+    sha256_hex,
+    to_checksum_address,
 )
 
-__version__ = "0.1.0"
+__version__ = "0.2.0"
 
 __all__ = [
     "__version__",
@@ -121,8 +177,62 @@ __all__ = [
     "BroadcastMode",
     "BuiltTx",
     "bank_send",
+    "send_messages",
     "build_hybrid_tx",
     "broadcast",
+    # messages
+    "Msg",
+    "composer",
+    "msg",
+    "qorechain_registry",
+    "resolve_message_type",
+    "decode_any",
+    "QORECHAIN_REGISTRY_TYPES",
+    "COSMOS_REGISTRY_TYPES",
+    # typed query clients
+    "QueryClients",
+    "connect_query_clients",
+    # gas / auto-fee
+    "GasPrice",
+    "calculate_fee",
+    "estimate_gas",
+    "simulate_gas_used",
+    "auto_fee",
+    "DEFAULT_GAS_MULTIPLIER",
+    "DEFAULT_GAS_PRICE",
+    # errors
+    "DecodedTxError",
+    "QoreTxError",
+    "decode_tx_error",
+    "is_tx_failure",
+    "tx_error_from",
+    # tx tracking
+    "IncludedTx",
+    "wait_for_tx",
+    "broadcast_and_wait",
+    "with_retry",
+    # search
+    "get_tx",
+    "get_block",
+    "get_latest_block",
+    "search_txs",
+    "build_events_query",
+    # subscriptions
+    "SubscriptionClient",
+    "build_tx_query",
+    # utils
+    "sha256",
+    "sha256_hex",
+    "keccak256",
+    "keccak256_hex",
+    "ripemd160",
+    "ripemd160_hex",
+    "parse_units",
+    "format_units",
+    "is_valid_evm_address",
+    "to_checksum_address",
+    "is_checksum_address",
+    "is_valid_svm_address",
     # client
     "QoreChainClient",
     "create_client",
