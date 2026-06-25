@@ -151,7 +151,7 @@ export { estimateFee, STATIC_FALLBACK } from "./tx/fees";
 export type { StdFee, EstimateFeeOptions } from "./tx/fees";
 export { directSignerFromPrivateKey } from "./tx/signer-adapter";
 export type { BroadcastMode, BroadcastResult } from "./tx/broadcast";
-export { TxClient, MSG_SEND_TYPE_URL } from "./tx/builder";
+export { TxClient, MSG_SEND_TYPE_URL, buildAminoTypes } from "./tx/builder";
 export type {
   SigningClientLike,
   TxClientOptions,
@@ -204,6 +204,21 @@ export {
 // Generated message types, namespaced by module, for callers who want the raw
 // encode/decode/interface types (e.g. to decode a message read back from chain).
 export * as qorechainTypes from "./codegen";
+
+// Browser wallets: Keplr/Leap connection + chain-suggestion helper. The
+// returned signer plugs straight into `TxClient.connect` and can carry standard
+// and custom messages via DIRECT signing.
+export { getCosmosWallet, suggestChainInfo } from "./wallet/cosmos";
+export type {
+  CosmosWalletName,
+  GetCosmosWalletOptions,
+  CosmosWalletConnection,
+  InjectedCosmosWallet,
+  KeplrChainInfo,
+  KeplrCurrency,
+  KeplrFeeCurrency,
+  Bech32Config,
+} from "./wallet/cosmos";
 
 // Typed gRPC query clients for the modules with a query service (crossvm,
 // lightnode, pqc, qca, reputation, rlconsensus, svm) over a cosmjs QueryClient.

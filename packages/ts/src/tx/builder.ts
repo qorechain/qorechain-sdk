@@ -22,13 +22,16 @@
 
 import {
   SigningStargateClient,
+  AminoTypes,
+  createDefaultAminoConverters,
+  type AminoConverters,
   type SigningStargateClientOptions,
   type DeliverTxResponse,
 } from "@cosmjs/stargate";
 import {
   Registry,
   type EncodeObject,
-  type OfflineDirectSigner,
+  type OfflineSigner,
   type GeneratedType,
 } from "@cosmjs/proto-signing";
 import { qorechainRegistry } from "../messages/registry";
@@ -39,6 +42,24 @@ import type { BroadcastMode, BroadcastResult } from "./broadcast";
 
 /** The `/cosmos.bank.v1beta1.MsgSend` type URL. */
 export const MSG_SEND_TYPE_URL = "/cosmos.bank.v1beta1.MsgSend";
+
+/**
+ * Build the {@link AminoTypes} used for Amino-mode signing.
+ *
+ * Seeds cosmjs's `createDefaultAminoConverters()` (standard Cosmos modules:
+ * bank, staking, gov, distribution, IBC, etc.) and merges any `extra`
+ * converters on top — e.g. for QoreChain custom modules to support Ledger.
+ *
+ * QoreChain custom messages sign via DIRECT mode today (Keplr/Leap support it);
+ * full Amino converters for those modules are a follow-up. Use the `extra`
+ * argument as the extension point.
+ */
+export function buildAminoTypes(extra?: AminoConverters): AminoTypes {
+  return new AminoTypes({
+    ...createDefaultAminoConverters(),
+    ...(extra ?? {}),
+  });
+}
 
 /**
  * The subset of `SigningStargateClient` that {@link TxClient} depends on.
@@ -77,8 +98,15 @@ export interface TxClientOptions {
 export interface TxConnectOptions {
   /** Consensus RPC endpoint (e.g. `endpoints.rpc`). */
   rpcEndpoint: string;
-  /** An offline direct signer (see {@link directSignerFromPrivateKey}). */
-  signer: OfflineDirectSigner;
+  /**
+   * An offline signer. Either a DIRECT signer (see
+   * {@link directSignerFromPrivateKey}) or an Amino signer — including the
+   * `OfflineSigner` returned by a browser wallet's `getOfflineSignerAuto`
+   * (Keplr/Leap), which picks DIRECT or Amino automatically. Custom QoreChain
+   * messages sign via DIRECT mode; Amino mode covers standard Cosmos messages
+   * (see `aminoTypes`).
+   */
+  signer: OfflineSigner;
   /**
    * Extra protobuf message types to register, as `[typeUrl, GeneratedType]`
    * pairs. Added on top of the default {@link qorechainRegistry} (standard
@@ -92,6 +120,23 @@ export interface TxConnectOptions {
    * {@link qorechainRegistry}. When set, `registryTypes` is ignored.
    */
   registry?: Registry;
+  /**
+   * Amino converters for Amino-mode signing (Ledger and some hardware/mobile
+   * wallets sign Amino). Defaults to cosmjs's `createDefaultAminoConverters()`,
+   * which covers the standard Cosmos modules (bank, staking, gov, distribution,
+   * etc.). When set, this replaces the defaults entirely — to add converters on
+   * top of the defaults use {@link extraAminoConverters} instead.
+   *
+   * Full Amino converters for QoreChain's custom modules are a follow-up; for
+   * now those messages sign via DIRECT mode (supported by Keplr/Leap).
+   */
+  aminoTypes?: AminoTypes;
+  /**
+   * Extra Amino converters merged on top of the default converters. Use this to
+   * register converters for custom modules (e.g. for Ledger support) without
+   * losing the standard Cosmos converters. Ignored if `aminoTypes` is supplied.
+   */
+  extraAminoConverters?: AminoConverters;
   /** Additional cosmjs `SigningStargateClientOptions` (gas price, etc.). */
   clientOptions?: SigningStargateClientOptions;
 }
@@ -138,10 +183,12 @@ export class TxClient {
   static async connect(opts: TxConnectOptions): Promise<TxClient> {
     const registry =
       opts.registry ?? qorechainRegistry(opts.registryTypes ?? []);
+    const aminoTypes =
+      opts.aminoTypes ?? buildAminoTypes(opts.extraAminoConverters);
     const client = await SigningStargateClient.connectWithSigner(
       opts.rpcEndpoint,
       opts.signer,
-      { registry, ...opts.clientOptions },
+      { registry, aminoTypes, ...opts.clientOptions },
     );
     const accounts = await opts.signer.getAccounts();
     if (accounts.length === 0) {
