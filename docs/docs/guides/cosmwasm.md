@@ -57,14 +57,15 @@ const signingCw = await connectCosmWasmSigner(rpcUrl, signer);
 // Upload Wasm bytecode -> a code id.
 const { codeId } = await uploadCode(signingCw, sender, wasmBytes, fee);
 
-// Instantiate a contract from a code id.
+// Instantiate a contract from a code id. The final argument is InstantiateOpts
+// ({ fee, memo, funds, admin }); fee defaults to "auto" (simulate).
 const { contractAddress } = await instantiate(
   signingCw,
   sender,
   codeId,
   { /* init msg */ },
   "label",
-  fee,
+  { fee, admin: sender },
 );
 
 // Execute a message against a deployed contract.
@@ -80,5 +81,48 @@ const res = await execute(
 The exact argument shapes follow `@cosmjs/cosmwasm-stargate`; the SDK adds typed
 `ContractMsg`, `FeeInput`, `InstantiateOpts`, `CosmWasmReadClient`, and
 `CosmWasmSigningClient` types.
+
+## Full lifecycle: instantiate2, migrate, admin
+
+The signing wrappers cover the rest of the contract lifecycle, forwarding to the
+matching `SigningCosmWasmClient` methods:
+
+```ts
+import {
+  instantiate2,
+  migrate,
+  updateAdmin,
+  clearAdmin,
+} from "@qorechain/sdk";
+
+// Predictable address from (codeId, salt, creator) — counterfactual deploys.
+const salt = new TextEncoder().encode("my-salt");
+const { contractAddress } = await instantiate2(
+  signingCw,
+  sender,
+  codeId,
+  salt,
+  { /* init msg */ },
+  "label",
+  { fee, admin: sender },
+);
+
+// Migrate to a new code id (requires the caller to be the admin).
+await migrate(signingCw, sender, contractAddress, newCodeId, { /* migrate msg */ }, fee);
+
+// Rotate or clear the admin.
+await updateAdmin(signingCw, sender, contractAddress, newAdmin, fee);
+await clearAdmin(signingCw, sender, contractAddress, fee); // makes it immutable
+```
+
+## Read helpers
+
+```ts
+import { getCodes, getContracts, getCodeDetails } from "@qorechain/sdk";
+
+const codes = await getCodes(cw);            // all uploaded code metadata
+const addrs = await getContracts(cw, codeId); // contracts from a code id
+const details = await getCodeDetails(cw, codeId); // incl. data hash
+```
 
 See the `cosmwasm-query` example in the repository for a runnable read example.

@@ -79,3 +79,31 @@ const main = createClient({
   },
 });
 ```
+
+## Explorer & faucet URLs (config-driven)
+
+`NetworkConfig` has two optional fields — `explorerUrl` and `faucetUrl` — that
+are **undefined by default** on both presets. No public explorer or faucet
+hostname is baked into the SDK; supply them through a network override when you
+have confirmed URLs:
+
+```ts
+import {
+  getNetwork,
+  explorerTxUrl,
+  requestFaucet,
+} from "@qorechain/sdk";
+
+const network = {
+  ...getNetwork("testnet"),
+  explorerUrl: "https://explorer.example",
+  faucetUrl: "https://faucet.example",
+};
+
+const url = explorerTxUrl(network, txHash);      // https://explorer.example/tx/<hash>
+await requestFaucet(network, "qor1...");          // POSTs to the faucet URL
+```
+
+`explorerTxUrl` / `explorerAddressUrl` / `explorerBlockUrl` and `requestFaucet`
+throw a clear error when the corresponding URL is not configured. (For the SVM
+runtime, `@qorechain/svm` exposes `requestAirdrop` directly.)

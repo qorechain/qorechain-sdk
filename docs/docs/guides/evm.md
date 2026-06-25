@@ -64,6 +64,57 @@ const allowed = await erc20.allowance(client.publicClient, token, owner, spender
 
 The raw ABI is exported as `ERC20_ABI` if you prefer to call viem directly.
 
+## NFTs (ERC-721 / ERC-1155)
+
+The `erc721` and `erc1155` namespaces mirror the `erc20` style: reads take a
+viem public client, writes take a wallet client. The bundled ABIs are exported
+as `ERC721_ABI` and `ERC1155_ABI`.
+
+```ts
+import { erc721, erc1155 } from "@qorechain/evm";
+
+// ERC-721 reads
+const owner = await erc721.ownerOf(client.publicClient, nft, 1n);
+const uri = await erc721.tokenURI(client.publicClient, nft, 1n);
+const meta = await erc721.metadata(client.publicClient, nft); // { name, symbol }
+const count = await erc721.balanceOf(client.publicClient, nft, owner);
+const approved = await erc721.isApprovedForAll(client.publicClient, nft, owner, operator);
+
+// ERC-721 writes (wallet client)
+// await erc721.approve(wallet, nft, to, tokenId);
+// await erc721.setApprovalForAll(wallet, nft, operator, true);
+// await erc721.transferFrom(wallet, nft, from, to, tokenId);
+// await erc721.safeTransferFrom(wallet, nft, from, to, tokenId);          // 3-arg
+// await erc721.safeTransferFrom(wallet, nft, from, to, tokenId, "0x...");  // 4-arg (with data)
+
+// ERC-1155 reads
+const bal = await erc1155.balanceOf(client.publicClient, multi, account, id);
+const bals = await erc1155.balanceOfBatch(client.publicClient, multi, [a, b], [1n, 2n]);
+const tmpl = await erc1155.uri(client.publicClient, multi, id);
+
+// ERC-1155 writes
+// await erc1155.setApprovalForAll(wallet, multi, operator, true);
+// await erc1155.safeTransferFrom(wallet, multi, from, to, id, amount);
+// await erc1155.safeBatchTransferFrom(wallet, multi, from, to, ids, amounts);
+```
+
+See the `evm-nft` example in the repository for a runnable read.
+
+## Fees
+
+`estimateEip1559Fees` wraps viem's fee estimation; `gasPrice` is the legacy
+single-price helper. Both take a public client.
+
+```ts
+import { estimateEip1559Fees, gasPrice } from "@qorechain/evm";
+
+const { maxFeePerGas, maxPriorityFeePerGas } = await estimateEip1559Fees(client.publicClient);
+const legacy = await gasPrice(client.publicClient);
+```
+
+Pass these into a viem write (`maxFeePerGas` / `maxPriorityFeePerGas`) when you
+want explicit fee control rather than viem's automatic estimation.
+
 ## Contracts
 
 Generic deploy and call wrappers:

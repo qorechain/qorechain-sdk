@@ -14,6 +14,10 @@ const sidebars: SidebarsConfig = {
       type: "category",
       label: "Guides",
       items: [
+        "guides/messages",
+        "guides/wallets",
+        "guides/events",
+        "guides/gas-fees-errors",
         "guides/evm",
         "guides/svm",
         "guides/cosmwasm",
