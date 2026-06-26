@@ -10,7 +10,7 @@ Python.
 ## Install
 
 ```bash
-pip install qorechain
+pip install qorechain-sdk
 ```
 
 Python 3.10+ is required. The package ships type hints and a `py.typed` marker.

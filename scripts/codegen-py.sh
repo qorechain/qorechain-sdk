@@ -16,7 +16,7 @@
 # imports (google.protobuf.*) are left untouched.
 #
 # Output (packages/py/src/qorechain/proto/qorechain/**) is COMMITTED: users
-# `pip install qorechain` and get the typed messages without running protoc/buf.
+# `pip install qorechain-sdk` and get the typed messages without running protoc/buf.
 #
 # Prereqs (maintainer only): `buf` on PATH and a Python 3 interpreter.
 set -euo pipefail

@@ -70,7 +70,7 @@ constants.
 
 | Language | Generated docs | Notes |
 | --- | --- | --- |
-| Python | [PyPI](https://pypi.org/project/qorechain/) — docstrings on the public API | publish-pending |
+| Python | [PyPI](https://pypi.org/project/qorechain-sdk/) — docstrings on the public API | publish-pending |
 | Go | [pkg.go.dev](https://pkg.go.dev/github.com/qorechain/qorechain-sdk/packages/go) (godoc) | publish-pending |
 | Rust | [docs.rs](https://docs.rs/qorechain) (rustdoc) | publish-pending |
 

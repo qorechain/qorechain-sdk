@@ -52,9 +52,9 @@ math, and read surfaces.
 | `@qorechain/sdk` | TypeScript | `npm i @qorechain/sdk` | Available |
 | `@qorechain/evm` | TypeScript (EVM adapter) | `npm i @qorechain/evm viem` | Publish-pending |
 | `@qorechain/svm` | TypeScript (SVM adapter) | `npm i @qorechain/svm @solana/web3.js` | Publish-pending |
-| `qorechain` | Python | `pip install qorechain` | Publish-pending |
+| `qorechain-sdk` | Python | `pip install qorechain-sdk` | Publish-pending |
 | `qorechain-sdk` | Go | `go get github.com/qorechain/qorechain-sdk/packages/go/...` | Publish-pending |
-| `qorechain` | Rust | `cargo add qorechain` | Publish-pending |
+| `qorechain-sdk` | Rust | `cargo add qorechain-sdk` | Publish-pending |
 | `create-qorechain-dapp` | CLI | `npm create qorechain-dapp` | Publish-pending |
 
 The TypeScript core (`@qorechain/sdk`) is the most complete package and is the

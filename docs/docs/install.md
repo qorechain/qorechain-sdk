@@ -47,7 +47,7 @@ npm i @qorechain/svm @solana/web3.js
 ## Python
 
 ```bash
-pip install qorechain
+pip install qorechain-sdk
 ```
 
 Requires Python 3.10+. The package ships type hints and a `py.typed` marker.
@@ -74,7 +74,7 @@ import (
 ## Rust
 
 ```bash
-cargo add qorechain
+cargo add qorechain-sdk
 ```
 
 Or in `Cargo.toml`:

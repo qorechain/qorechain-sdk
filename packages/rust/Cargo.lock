@@ -1019,7 +1019,7 @@ dependencies = [
 ]
 
 [[package]]
-name = "qorechain"
+name = "qorechain-sdk"
 version = "0.3.0"
 dependencies = [
  "base64",

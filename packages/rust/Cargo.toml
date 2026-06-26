@@ -1,5 +1,5 @@
 [package]
-name = "qorechain"
+name = "qorechain-sdk"
 version = "0.3.0"
 edition = "2021"
 license = "Apache-2.0"
@@ -10,6 +10,10 @@ keywords = ["qorechain", "blockchain", "pqc", "ml-dsa", "wallet"]
 categories = ["cryptography", "api-bindings"]
 readme = "README.md"
 rust-version = "1.74"
+
+# Published as `qorechain-sdk`; imported as `qorechain` (e.g. `use qorechain::...`).
+[lib]
+name = "qorechain"
 
 [dependencies]
 # Mnemonics & HD derivation
