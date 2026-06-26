@@ -1,0 +1,19 @@
+# Codegen config for the Java SDK.
+#
+# Emits standard protobuf-java message classes for the QoreChain modules into the
+# committed `packages/java/src/main/java` tree. The dependency protos
+# (cosmos coin/msg, cosmos_proto, gogoproto, well-known types) are resolved from
+# the public schema registry (see proto/buf.yaml deps). gogoproto/cosmos_proto/
+# cosmos.msg are option-only extension files (no runtime message classes the
+# qorechain messages reference); cosmos.base.v1beta1.Coin and the well-known
+# types ARE referenced, so they are generated alongside. google.protobuf.* maps
+# onto protobuf-java's built-in classes via the java_package the WKTs already
+# declare, so those are not committed.
+#
+# scripts/codegen-java.sh generates into a temp dir, then copies only the needed
+# packages into the committed source tree.
+version: v2
+clean: false
+plugins:
+  - remote: buf.build/protocolbuffers/java
+    out: gen-java
