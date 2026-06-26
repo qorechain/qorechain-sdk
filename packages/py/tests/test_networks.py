@@ -1,6 +1,6 @@
 import pytest
 
-from qorechain import NETWORKS, get_network, list_networks
+from qorsdk import NETWORKS, get_network, list_networks
 
 
 def test_testnet_preset():

@@ -4,7 +4,7 @@ from __future__ import annotations
 
 import pytest
 
-from qorechain import (
+from qorsdk import (
     QoreHttpError,
     QoreTxError,
     broadcast_and_wait,

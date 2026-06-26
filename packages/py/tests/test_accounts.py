@@ -1,6 +1,6 @@
 import pytest
 
-from qorechain import (
+from qorsdk import (
     derive_evm_account,
     derive_native_account,
     derive_svm_account,

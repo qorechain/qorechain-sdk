@@ -7,8 +7,8 @@ import pytest
 import respx
 from cosmpy.protos.cosmos.tx.v1beta1.tx_pb2 import TxRaw
 
-from qorechain import GasPrice, auto_fee, calculate_fee, estimate_gas, simulate_gas_used
-from qorechain.tx import BuiltTx
+from qorsdk import GasPrice, auto_fee, calculate_fee, estimate_gas, simulate_gas_used
+from qorsdk.tx import BuiltTx
 
 BASE = "http://localhost:1317"
 

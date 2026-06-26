@@ -125,7 +125,7 @@ These mirror the same network presets and read surface.
 ### Python
 
 ```python
-from qorechain import create_client
+from qorsdk import create_client
 
 client = create_client()  # testnet preset (localhost endpoints)
 print(client.network.chain_id)  # "qorechain-diana"

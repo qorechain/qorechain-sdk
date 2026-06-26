@@ -2,7 +2,7 @@ import base64
 
 import pytest
 
-from qorechain import (
+from qorsdk import (
     ALGORITHM_DILITHIUM5,
     ALGORITHM_MLKEM1024,
     ALGORITHM_UNSPECIFIED,

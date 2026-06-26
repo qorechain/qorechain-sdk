@@ -10,7 +10,7 @@ import pytest
 from cosmpy.protos.cosmos.base.v1beta1.coin_pb2 import Coin
 from cosmpy.protos.cosmos.tx.v1beta1.tx_pb2 import TxBody, TxRaw
 
-from qorechain import (
+from qorsdk import (
     HYBRID_SIG_TYPE_URL,
     build_hybrid_tx,
     decode_any,
@@ -22,8 +22,8 @@ from qorechain import (
     resolve_message_type,
     send_messages,
 )
-from qorechain.messages import Msg
-from qorechain.messages.qorechain import (
+from qorsdk.messages import Msg
+from qorsdk.messages.qorechain import (
     abstractaccount,
     amm,
     bridge,

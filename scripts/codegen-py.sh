@@ -15,7 +15,7 @@
 # is what lets them pack/unpack cleanly through cosmpy's `Any`. Well-known-type
 # imports (google.protobuf.*) are left untouched.
 #
-# Output (packages/py/src/qorechain/proto/qorechain/**) is COMMITTED: users
+# Output (packages/py/src/qorsdk/proto/qorechain/**) is COMMITTED: users
 # `pip install qorechain-sdk` and get the typed messages without running protoc/buf.
 #
 # Prereqs (maintainer only): `buf` on PATH and a Python 3 interpreter.
@@ -27,8 +27,8 @@ if ! command -v buf >/dev/null 2>&1; then
   exit 1
 fi
 
-PKG_ROOT="packages/py/src/qorechain/proto"
-GEN_TMP="proto/packages/py/src/qorechain/proto"
+PKG_ROOT="packages/py/src/qorsdk/proto"
+GEN_TMP="proto/packages/py/src/qorsdk/proto"
 
 rm -rf "$PKG_ROOT" "proto/packages"
 

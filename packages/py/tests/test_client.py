@@ -2,7 +2,7 @@ import httpx
 import pytest
 import respx
 
-from qorechain import create_client
+from qorsdk import create_client
 
 
 def test_testnet_default():

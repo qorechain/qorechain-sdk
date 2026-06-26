@@ -15,7 +15,7 @@ import pytest
 from cosmpy.protos.cosmos.bank.v1beta1.tx_pb2 import MsgSend
 from cosmpy.protos.cosmos.tx.v1beta1.tx_pb2 import SignDoc, TxBody, TxRaw
 
-from qorechain import (
+from qorsdk import (
     ALGORITHM_DILITHIUM5,
     HYBRID_SIG_TYPE_URL,
     ML_DSA_87_SIGNATURE_LENGTH,
@@ -24,7 +24,7 @@ from qorechain import (
     generate_pqc_keypair,
     pqc_verify,
 )
-from qorechain.tx import MSG_SEND_TYPE_URL, bank_send, broadcast
+from qorsdk.tx import MSG_SEND_TYPE_URL, bank_send, broadcast
 
 # Public test mnemonic only — never a real one.
 TEST_MNEMONIC = (

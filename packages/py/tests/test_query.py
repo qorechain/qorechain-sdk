@@ -2,7 +2,7 @@ import httpx
 import pytest
 import respx
 
-from qorechain import (
+from qorsdk import (
     AsyncJsonRpcClient,
     AsyncQorClient,
     AsyncRestClient,
@@ -12,7 +12,7 @@ from qorechain import (
     QoreHttpError,
     RestClient,
 )
-from qorechain.qor import QOR_METHODS
+from qorsdk.qor import QOR_METHODS
 
 BASE = "http://localhost:1317"
 RPC = "http://localhost:8545"

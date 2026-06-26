@@ -6,7 +6,7 @@ import httpx
 import pytest
 import respx
 
-from qorechain import (
+from qorsdk import (
     RestClient,
     build_events_query,
     get_block,

@@ -7,10 +7,10 @@ service/method routing and typing are exercised without opening a socket.
 
 from __future__ import annotations
 
-from qorechain import connect_query_clients
-from qorechain.proto.qorechain.crossvm.v1 import query_pb2 as crossvm_q
-from qorechain.proto.qorechain.lightnode.v1 import query_pb2 as lightnode_q
-from qorechain.proto.qorechain.svm.v1 import query_pb2 as svm_q
+from qorsdk import connect_query_clients
+from qorsdk.proto.qorechain.crossvm.v1 import query_pb2 as crossvm_q
+from qorsdk.proto.qorechain.lightnode.v1 import query_pb2 as lightnode_q
+from qorsdk.proto.qorechain.svm.v1 import query_pb2 as svm_q
 
 
 class FakeMultiCallable:

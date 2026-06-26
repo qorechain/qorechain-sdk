@@ -1,6 +1,6 @@
 import pytest
 
-from qorechain import (
+from qorsdk import (
     bech32_to_hex,
     bytes_to_bech32,
     hex_to_bech32,

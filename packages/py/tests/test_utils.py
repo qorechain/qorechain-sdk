@@ -4,7 +4,7 @@ from __future__ import annotations
 
 import pytest
 
-from qorechain import (
+from qorsdk import (
     format_units,
     is_checksum_address,
     is_valid_evm_address,

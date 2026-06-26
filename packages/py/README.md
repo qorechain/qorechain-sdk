@@ -20,7 +20,7 @@ Python 3.10+ is required. The package ships type hints and a `py.typed` marker.
 ### Connect a client
 
 ```python
-from qorechain import create_client
+from qorsdk import create_client
 
 # Defaults to the testnet preset (localhost endpoints).
 client = create_client()
@@ -55,7 +55,7 @@ print(client.network.chain_id)  # "qorechain-vladi"
 ### Derive accounts
 
 ```python
-from qorechain import (
+from qorsdk import (
     generate_mnemonic,
     derive_native_account,
     derive_evm_account,
@@ -85,7 +85,7 @@ a typo'd phrase raises rather than silently producing a wrong account.
 ### Denomination math
 
 ```python
-from qorechain import to_base, from_base
+from qorsdk import to_base, from_base
 
 to_base("1.5")        # "1500000"  (QOR -> uqor, exponent 6)
 from_base("1500000")  # "1.5"
@@ -96,7 +96,7 @@ All conversions use integer arithmetic — never floats — so they are exact.
 ### Post-quantum signing (ML-DSA-87 / Dilithium-5)
 
 ```python
-from qorechain import (
+from qorsdk import (
     generate_pqc_keypair,
     pqc_sign,
     pqc_verify,
@@ -116,7 +116,7 @@ ext = build_hybrid_signature_extension(ALGORITHM_DILITHIUM5, sig, kp.public_key)
 
 ```python
 import asyncio
-from qorechain import AsyncRestClient, AsyncQorClient
+from qorsdk import AsyncRestClient, AsyncQorClient
 
 async def main():
     async with AsyncRestClient("http://localhost:1317") as rest:
@@ -137,7 +137,7 @@ abstractaccount / crossvm / rlconsensus) plus the standard Cosmos modules
 
 ```python
 from cosmpy.protos.cosmos.base.v1beta1.coin_pb2 import Coin
-from qorechain import msg, send_messages, build_hybrid_tx, generate_pqc_keypair
+from qorsdk import msg, send_messages, build_hybrid_tx, generate_pqc_keypair
 
 swap = msg.amm.swap_exact_in(
     sender=native.address,
@@ -172,7 +172,7 @@ Modules with a `Query` service (crossvm, lightnode, pqc, qca, reputation,
 rlconsensus, svm) expose typed callers over a gRPC channel:
 
 ```python
-from qorechain import connect_query_clients
+from qorsdk import connect_query_clients
 
 with connect_query_clients("localhost:9090") as q:
     res = q.crossvm.message("msg-123")     # -> QueryMessageResponse
@@ -183,7 +183,7 @@ with connect_query_clients("localhost:9090") as q:
 ### Auto-gas, errors, tracking, search
 
 ```python
-from qorechain import (
+from qorsdk import (
     auto_fee, GasPrice, calculate_fee,        # gas
     decode_tx_error, QoreTxError,             # errors
     wait_for_tx, broadcast_and_wait, with_retry,  # tracking
@@ -203,7 +203,7 @@ search_txs(client.rest, {"message.sender": native.address}, limit=20, order_by="
 ### Websocket subscriptions
 
 ```python
-from qorechain import SubscriptionClient
+from qorsdk import SubscriptionClient
 
 async def run():
     sub = await SubscriptionClient.connect("http://localhost:26657")
@@ -218,7 +218,7 @@ async def run():
 ### Utilities
 
 ```python
-from qorechain import (
+from qorsdk import (
     sha256_hex, keccak256_hex, ripemd160_hex,
     parse_units, format_units,
     is_valid_evm_address, is_valid_svm_address, to_checksum_address,

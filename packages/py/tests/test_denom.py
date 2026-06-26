@@ -1,6 +1,6 @@
 import pytest
 
-from qorechain import from_base, to_base
+from qorsdk import from_base, to_base
 
 
 @pytest.mark.parametrize(

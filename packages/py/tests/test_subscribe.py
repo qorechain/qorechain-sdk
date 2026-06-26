@@ -7,7 +7,7 @@ import json
 
 import pytest
 
-from qorechain import SubscriptionClient, build_tx_query
+from qorsdk import SubscriptionClient, build_tx_query
 
 
 def test_build_tx_query():

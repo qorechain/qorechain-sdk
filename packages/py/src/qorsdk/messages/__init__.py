@@ -40,7 +40,7 @@ from .registry import (
 
 #: All message composers, grouped by module. Recommended import::
 #:
-#:     from qorechain import msg
+#:     from qorsdk import msg
 #:     m = msg.amm.swap_exact_in(sender=addr, pool_id=1, denom_out="uqor", min_out="100")
 msg = SimpleNamespace(
     # standard cosmos
