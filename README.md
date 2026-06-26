@@ -4,7 +4,8 @@ Official multi-language SDK and developer kit for building decentralized applica
 
 QoreChain is a triple-VM Layer 1 with first-class support for CosmWasm,
 EVM/Solidity, and SVM smart contracts, plus IBC interoperability. SDKs are
-available for **TypeScript, Python, Go, and Rust** — all published at `0.3.x`.
+available for **TypeScript, Python, Go, Rust, and Java** — all published at
+`0.3.x`.
 
 ## Packages
 
@@ -16,6 +17,7 @@ available for **TypeScript, Python, Go, and Rust** — all published at `0.3.x`.
 | `qorechain-sdk` | Python | `pip install qorechain-sdk` | `import qorsdk` |
 | `qorechain-sdk` | Rust | `cargo add qorechain-sdk` | `use qorechain` |
 | Go module | Go | `go get github.com/qorechain/qorechain-sdk/packages/go` | `.../packages/go` |
+| `io.github.qorechain:qorechain-sdk` | Java | `implementation("io.github.qorechain:qorechain-sdk:0.3.0")` | `io.github.qorechain` |
 | `create-qorechain-dapp` | CLI scaffolder | `npm create qorechain-dapp@latest` | — |
 
 > **Import names:** the Python distribution `qorechain-sdk` imports as `qorsdk`;
@@ -23,7 +25,8 @@ available for **TypeScript, Python, Go, and Rust** — all published at `0.3.x`.
 
 Per-language guides: [TypeScript](./packages/ts/README.md) ·
 [Python](./packages/py/README.md) · [Go](./packages/go/README.md) ·
-[Rust](./packages/rust/README.md). Full documentation lives in [`docs/`](./docs).
+[Rust](./packages/rust/README.md) · [Java](./packages/java/README.md). Full
+documentation lives in [`docs/`](./docs).
 
 ## Quickstart (TypeScript)
 
@@ -153,7 +156,7 @@ const ok = pqcVerify(keypair.publicKey, message, signature);
 
 ## Other languages
 
-The Python, Go, and Rust SDKs mirror the TypeScript native-chain surface —
+The Python, Go, Rust, and Java SDKs mirror the TypeScript native-chain surface —
 networks, accounts (native/EVM/SVM + PQC), typed messages for every module,
 typed queries, the tx lifecycle (auto-gas, error decoding, tracking, search),
 and WebSocket subscriptions.
@@ -161,6 +164,7 @@ and WebSocket subscriptions.
 - **Python** — `pip install qorechain-sdk`, then `import qorsdk`. See [packages/py](./packages/py/README.md).
 - **Go** — `go get github.com/qorechain/qorechain-sdk/packages/go`. See [packages/go](./packages/go/README.md).
 - **Rust** — `cargo add qorechain-sdk`, then `use qorechain;`. See [packages/rust](./packages/rust/README.md).
+- **Java** — `io.github.qorechain:qorechain-sdk:0.3.0` (Maven Central), package `io.github.qorechain`. See [packages/java](./packages/java/README.md).
 
 > Browser wallets and the viem / `@solana/web3.js` EVM/SVM adapters are
 > TypeScript-only; in Python/Go/Rust use that ecosystem's standard libraries for
