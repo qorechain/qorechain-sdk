@@ -2,30 +2,30 @@
 
 Official multi-language SDK and developer kit for building decentralized applications on the QoreChain network — a quantum-safe, triple-VM Layer 1.
 
+QoreChain is a triple-VM Layer 1 with first-class support for CosmWasm,
+EVM/Solidity, and SVM smart contracts, plus IBC interoperability. SDKs are
+available for **TypeScript, Python, Go, and Rust** — all published at `0.3.x`.
+
 ## Packages
 
-| Package | Language | Status |
-| --- | --- | --- |
-| `@qorechain/sdk` | TypeScript | Available |
-| `qorechain` (Python) | Python | Coming soon |
-| `qorechain-go` | Go | Coming soon |
-| `qorechain` (Rust) | Rust | Coming soon |
-| `@qorechain/evm` | EVM / Solidity adapter | Coming soon |
-| `@qorechain/svm` | SVM adapter | Coming soon |
-| `create-qorechain-dapp` | Project scaffolding CLI | Coming soon |
+| Package | Language | Install | Import |
+| --- | --- | --- | --- |
+| `@qorechain/sdk` | TypeScript | `npm i @qorechain/sdk` | `@qorechain/sdk` |
+| `@qorechain/evm` | TS — EVM adapter (viem peer) | `npm i @qorechain/evm viem` | `@qorechain/evm` |
+| `@qorechain/svm` | TS — SVM adapter | `npm i @qorechain/svm @solana/web3.js` | `@qorechain/svm` |
+| `qorechain-sdk` | Python | `pip install qorechain-sdk` | `import qorsdk` |
+| `qorechain-sdk` | Rust | `cargo add qorechain-sdk` | `use qorechain` |
+| Go module | Go | `go get github.com/qorechain/qorechain-sdk/packages/go` | `.../packages/go` |
+| `create-qorechain-dapp` | CLI scaffolder | `npm create qorechain-dapp@latest` | — |
 
-The TypeScript SDK (`@qorechain/sdk`) is the first available package; the other
-language packages are in progress. QoreChain is a triple-VM Layer 1 with
-first-class support for CosmWasm, EVM/Solidity, and SVM smart contracts, plus
-IBC interoperability.
+> **Import names:** the Python distribution `qorechain-sdk` imports as `qorsdk`;
+> the Rust crate `qorechain-sdk` imports as `qorechain`.
+
+Per-language guides: [TypeScript](./packages/ts/README.md) ·
+[Python](./packages/py/README.md) · [Go](./packages/go/README.md) ·
+[Rust](./packages/rust/README.md). Full documentation lives in [`docs/`](./docs).
 
 ## Quickstart (TypeScript)
-
-### Install
-
-```sh
-npm install @qorechain/sdk
-```
 
 ### Connect
 
@@ -136,10 +136,11 @@ console.log(result.transactionHash);
 
 QoreChain supports post-quantum cryptography via ML-DSA-87 (Dilithium-5) and a
 hybrid posture that carries both a classical and a post-quantum signature. The
-PQC key generation, signing, and verification primitives are available today
-through `generatePqcKeypair`, `pqcSign`, `pqcVerify`, and the pluggable
-`PqcSigner` / `HybridSigner`. Hybrid transaction submission is being finalized
-for the live network.
+PQC key generation, signing, and verification are available through
+`generatePqcKeypair`, `pqcSign`, `pqcVerify`, and the pluggable
+`PqcSigner` / `HybridSigner`. Hybrid transactions are supported end-to-end via
+`buildHybridTx` / `signAndBroadcastHybrid` (the signer's PQC key must first be
+registered on-chain with `MsgRegisterPQCKey`).
 
 ```ts
 import { generatePqcKeypair, pqcSign, pqcVerify } from "@qorechain/sdk";
@@ -150,10 +151,26 @@ const signature = pqcSign(keypair.secretKey, message);
 const ok = pqcVerify(keypair.publicKey, message, signature);
 ```
 
+## Other languages
+
+The Python, Go, and Rust SDKs mirror the TypeScript native-chain surface —
+networks, accounts (native/EVM/SVM + PQC), typed messages for every module,
+typed queries, the tx lifecycle (auto-gas, error decoding, tracking, search),
+and WebSocket subscriptions.
+
+- **Python** — `pip install qorechain-sdk`, then `import qorsdk`. See [packages/py](./packages/py/README.md).
+- **Go** — `go get github.com/qorechain/qorechain-sdk/packages/go`. See [packages/go](./packages/go/README.md).
+- **Rust** — `cargo add qorechain-sdk`, then `use qorechain;`. See [packages/rust](./packages/rust/README.md).
+
+> Browser wallets and the viem / `@solana/web3.js` EVM/SVM adapters are
+> TypeScript-only; in Python/Go/Rust use that ecosystem's standard libraries for
+> EVM/SVM access.
+
 ## Features
 
 The TypeScript SDK (`@qorechain/sdk` plus the `@qorechain/evm` and
-`@qorechain/svm` adapters) covers:
+`@qorechain/svm` adapters) has the full surface; Python/Go/Rust mirror the
+native-chain parts. Highlights:
 
 - **Full message coverage** — typed composers for every chain message (bank,
   staking, distribution, gov, authz, feegrant, IBC, and the QoreChain custom
