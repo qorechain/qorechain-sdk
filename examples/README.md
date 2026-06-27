@@ -16,6 +16,8 @@ via `workspace:*`, with its own `README.md`, `.env.example`, and a single
 | [`read-tokenomics`](./read-tokenomics) | `qor_getBurnStats` / `qor_getXQOREPosition` / `qor_getInflationRate` | Yes |
 | [`connect-keplr`](./connect-keplr) | connect a Keplr/Leap browser wallet → send | Browser (web app) |
 | [`amm-swap`](./amm-swap) | compose + broadcast an AMM `SwapExactIn` | No to compose; yes to send |
+| [`register-sidechain`](./register-sidechain) | `createMultilayerClient`: register a sidechain + paychain, anchor state, route a tx, read layers | No to compose; yes to send/read |
+| [`rollup-lifecycle`](./rollup-lifecycle) | `createRollupClient`: create rollup, submit batch, read status/latest batch, execute a withdrawal | No to compose; yes to send/read |
 | [`subscribe-blocks`](./subscribe-blocks) | stream new blocks over the consensus RPC | Yes |
 | [`evm-nft`](./evm-nft) | read ERC-721 NFT metadata | Yes (+ deployed NFT) |
 

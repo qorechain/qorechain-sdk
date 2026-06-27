@@ -24,7 +24,7 @@ pnpm --filter create-qorechain-dapp build
 TMP="$(mktemp -d)"
 trap 'rm -rf "$TMP"' EXIT
 
-for tmpl in evm-solidity fullstack-web; do
+for tmpl in evm-solidity fullstack-web rollup-app; do
   echo "==> Type-checking template: $tmpl"
   out="$TMP/$tmpl"
   node cli/dist/index.js "$out" --template "$tmpl" --yes --local --no-install

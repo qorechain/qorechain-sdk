@@ -18,6 +18,8 @@ pub const PAUSE_ROLLUP: &str = "/qorechain.rdk.v1.MsgPauseRollup";
 pub const RESUME_ROLLUP: &str = "/qorechain.rdk.v1.MsgResumeRollup";
 /// `/qorechain.rdk.v1.MsgStopRollup` type URL.
 pub const STOP_ROLLUP: &str = "/qorechain.rdk.v1.MsgStopRollup";
+/// `/qorechain.rdk.v1.MsgExecuteWithdrawal` type URL.
+pub const EXECUTE_WITHDRAWAL: &str = "/qorechain.rdk.v1.MsgExecuteWithdrawal";
 
 /// Builds `MsgCreateRollup`.
 pub fn create_rollup(
@@ -51,6 +53,10 @@ pub fn create_rollup_any(
 }
 
 /// Builds `MsgSubmitBatch`.
+///
+/// `withdrawals_root` commits the L2->L1 messages (withdrawals) in this batch as
+/// a binary Merkle root; pass an empty `Vec` when the batch carries no
+/// cross-layer messages.
 #[allow(clippy::too_many_arguments)]
 pub fn submit_batch(
     sequencer: impl Into<String>,
@@ -61,6 +67,7 @@ pub fn submit_batch(
     tx_count: u64,
     data_hash: Vec<u8>,
     proof: Vec<u8>,
+    withdrawals_root: Vec<u8>,
 ) -> pb::MsgSubmitBatch {
     pb::MsgSubmitBatch {
         sequencer: sequencer.into(),
@@ -71,6 +78,7 @@ pub fn submit_batch(
         tx_count,
         data_hash,
         proof,
+        withdrawals_root,
     }
 }
 
@@ -85,6 +93,7 @@ pub fn submit_batch_any(
     tx_count: u64,
     data_hash: Vec<u8>,
     proof: Vec<u8>,
+    withdrawals_root: Vec<u8>,
 ) -> Any {
     to_any(
         &submit_batch(
@@ -96,6 +105,7 @@ pub fn submit_batch_any(
             tx_count,
             data_hash,
             proof,
+            withdrawals_root,
         ),
         SUBMIT_BATCH,
     )
@@ -206,4 +216,59 @@ pub fn stop_rollup(creator: impl Into<String>, rollup_id: impl Into<String>) -> 
 /// Builds `MsgStopRollup` packed into an `Any`.
 pub fn stop_rollup_any(creator: impl Into<String>, rollup_id: impl Into<String>) -> Any {
     to_any(&stop_rollup(creator, rollup_id), STOP_ROLLUP)
+}
+
+/// Builds `MsgExecuteWithdrawal`.
+///
+/// Finalizes an L2->L1 withdrawal by proving the leaf is committed in a
+/// finalized batch's `withdrawals_root`. `proof` is the binary-Merkle sibling
+/// hash list from the leaf up to the root.
+#[allow(clippy::too_many_arguments)]
+pub fn execute_withdrawal(
+    submitter: impl Into<String>,
+    rollup_id: impl Into<String>,
+    batch_index: u64,
+    withdrawal_index: u64,
+    recipient: impl Into<String>,
+    denom: impl Into<String>,
+    amount: i64,
+    proof: Vec<Vec<u8>>,
+) -> pb::MsgExecuteWithdrawal {
+    pb::MsgExecuteWithdrawal {
+        submitter: submitter.into(),
+        rollup_id: rollup_id.into(),
+        batch_index,
+        withdrawal_index,
+        recipient: recipient.into(),
+        denom: denom.into(),
+        amount,
+        proof,
+    }
+}
+
+/// Builds `MsgExecuteWithdrawal` packed into an `Any`.
+#[allow(clippy::too_many_arguments)]
+pub fn execute_withdrawal_any(
+    submitter: impl Into<String>,
+    rollup_id: impl Into<String>,
+    batch_index: u64,
+    withdrawal_index: u64,
+    recipient: impl Into<String>,
+    denom: impl Into<String>,
+    amount: i64,
+    proof: Vec<Vec<u8>>,
+) -> Any {
+    to_any(
+        &execute_withdrawal(
+            submitter,
+            rollup_id,
+            batch_index,
+            withdrawal_index,
+            recipient,
+            denom,
+            amount,
+            proof,
+        ),
+        EXECUTE_WITHDRAWAL,
+    )
 }

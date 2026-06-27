@@ -23,10 +23,13 @@ export * as crossvm from "./qorechain/crossvm/v1/tx";
 export * as rlconsensus from "./qorechain/rlconsensus/v1/tx";
 
 // Query types (request/response) for modules that expose a query service.
+export * as bridgeQuery from "./qorechain/bridge/v1/query";
 export * as crossvmQuery from "./qorechain/crossvm/v1/query";
 export * as lightnodeQuery from "./qorechain/lightnode/v1/query";
+export * as multilayerQuery from "./qorechain/multilayer/v1/query";
 export * as pqcQuery from "./qorechain/pqc/v1/query";
 export * as qcaQuery from "./qorechain/qca/v1/query";
+export * as rdkQuery from "./qorechain/rdk/v1/query";
 export * as reputationQuery from "./qorechain/reputation/v1/query";
 export * as rlconsensusQuery from "./qorechain/rlconsensus/v1/query";
 export * as svmQuery from "./qorechain/svm/v1/query";

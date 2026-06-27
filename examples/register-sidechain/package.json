@@ -1,0 +1,20 @@
+{
+  "name": "@qorechain/example-register-sidechain",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Register a sidechain + paychain, anchor a state root, route a tx, and read layers via the multilayer helper.",
+  "scripts": {
+    "start": "tsx index.ts",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@cosmjs/tendermint-rpc": "^0.39.0",
+    "@qorechain/sdk": "workspace:*"
+  },
+  "devDependencies": {
+    "@types/node": "^22.7.5",
+    "tsx": "^4.19.0",
+    "typescript": "^5.6.3"
+  }
+}

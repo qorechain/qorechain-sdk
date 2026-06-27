@@ -27,7 +27,7 @@ from cosmpy.protos.cosmos_proto import cosmos_pb2 as cosmos__proto_dot_cosmos__p
 from cosmpy.protos.gogoproto import gogo_pb2 as gogoproto_dot_gogo__pb2
 
 
-DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\x19qorechain/rdk/v1/tx.proto\x12\x10qorechain.rdk.v1\x1a\x17\x63osmos/msg/v1/msg.proto\x1a\x19\x63osmos_proto/cosmos.proto\x1a\x14gogoproto/gogo.proto\"\xd4\x01\n\x0fMsgCreateRollup\x12\x32\n\x07\x63reator\x18\x01 \x01(\tB\x18\xd2\xb4-\x14\x63osmos.AddressStringR\x07\x63reator\x12)\n\trollup_id\x18\x02 \x01(\tB\x0c\xe2\xde\x1f\x08RollupIDR\x08rollupId\x12\x18\n\x07profile\x18\x03 \x01(\tR\x07profile\x12\x17\n\x07vm_type\x18\x04 \x01(\tR\x06vmType\x12!\n\x0cstake_amount\x18\x05 \x01(\x03R\x0bstakeAmount:\x0c\x82\xe7\xb0*\x07\x63reator\"D\n\x17MsgCreateRollupResponse\x12)\n\trollup_id\x18\x01 \x01(\tB\x0c\xe2\xde\x1f\x08RollupIDR\x08rollupId\"\xb9\x02\n\x0eMsgSubmitBatch\x12\x36\n\tsequencer\x18\x01 \x01(\tB\x18\xd2\xb4-\x14\x63osmos.AddressStringR\tsequencer\x12)\n\trollup_id\x18\x02 \x01(\tB\x0c\xe2\xde\x1f\x08RollupIDR\x08rollupId\x12\x1f\n\x0b\x62\x61tch_index\x18\x03 \x01(\x04R\nbatchIndex\x12\x1d\n\nstate_root\x18\x04 \x01(\x0cR\tstateRoot\x12&\n\x0fprev_state_root\x18\x05 \x01(\x0cR\rprevStateRoot\x12\x19\n\x08tx_count\x18\x06 \x01(\x04R\x07txCount\x12\x1b\n\tdata_hash\x18\x07 \x01(\x0cR\x08\x64\x61taHash\x12\x14\n\x05proof\x18\x08 \x01(\x0cR\x05proof:\x0e\x82\xe7\xb0*\tsequencer\"\x18\n\x16MsgSubmitBatchResponse\"\xc0\x01\n\x11MsgChallengeBatch\x12\x38\n\nchallenger\x18\x01 \x01(\tB\x18\xd2\xb4-\x14\x63osmos.AddressStringR\nchallenger\x12)\n\trollup_id\x18\x02 \x01(\tB\x0c\xe2\xde\x1f\x08RollupIDR\x08rollupId\x12\x1f\n\x0b\x62\x61tch_index\x18\x03 \x01(\x04R\nbatchIndex\x12\x14\n\x05proof\x18\x04 \x01(\x0cR\x05proof:\x0f\x82\xe7\xb0*\nchallenger\"\x1b\n\x19MsgChallengeBatchResponse\"\xc9\x01\n\x13MsgResolveChallenge\x12\x34\n\x08resolver\x18\x01 \x01(\tB\x18\xd2\xb4-\x14\x63osmos.AddressStringR\x08resolver\x12)\n\trollup_id\x18\x02 \x01(\tB\x0c\xe2\xde\x1f\x08RollupIDR\x08rollupId\x12\x1f\n\x0b\x62\x61tch_index\x18\x03 \x01(\x04R\nbatchIndex\x12!\n\x0c\x66raud_upheld\x18\x04 \x01(\x08R\x0b\x66raudUpheld:\r\x82\xe7\xb0*\x08resolver\"\x1d\n\x1bMsgResolveChallengeResponse\"\x95\x01\n\x0eMsgPauseRollup\x12\x32\n\x07\x63reator\x18\x01 \x01(\tB\x18\xd2\xb4-\x14\x63osmos.AddressStringR\x07\x63reator\x12)\n\trollup_id\x18\x02 \x01(\tB\x0c\xe2\xde\x1f\x08RollupIDR\x08rollupId\x12\x16\n\x06reason\x18\x03 \x01(\tR\x06reason:\x0c\x82\xe7\xb0*\x07\x63reator\"\x18\n\x16MsgPauseRollupResponse\"~\n\x0fMsgResumeRollup\x12\x32\n\x07\x63reator\x18\x01 \x01(\tB\x18\xd2\xb4-\x14\x63osmos.AddressStringR\x07\x63reator\x12)\n\trollup_id\x18\x02 \x01(\tB\x0c\xe2\xde\x1f\x08RollupIDR\x08rollupId:\x0c\x82\xe7\xb0*\x07\x63reator\"\x19\n\x17MsgResumeRollupResponse\"|\n\rMsgStopRollup\x12\x32\n\x07\x63reator\x18\x01 \x01(\tB\x18\xd2\xb4-\x14\x63osmos.AddressStringR\x07\x63reator\x12)\n\trollup_id\x18\x02 \x01(\tB\x0c\xe2\xde\x1f\x08RollupIDR\x08rollupId:\x0c\x82\xe7\xb0*\x07\x63reator\"\x17\n\x15MsgStopRollupResponse2\xa4\x05\n\x03Msg\x12\\\n\x0c\x43reateRollup\x12!.qorechain.rdk.v1.MsgCreateRollup\x1a).qorechain.rdk.v1.MsgCreateRollupResponse\x12Y\n\x0bSubmitBatch\x12 .qorechain.rdk.v1.MsgSubmitBatch\x1a(.qorechain.rdk.v1.MsgSubmitBatchResponse\x12\x62\n\x0e\x43hallengeBatch\x12#.qorechain.rdk.v1.MsgChallengeBatch\x1a+.qorechain.rdk.v1.MsgChallengeBatchResponse\x12h\n\x10ResolveChallenge\x12%.qorechain.rdk.v1.MsgResolveChallenge\x1a-.qorechain.rdk.v1.MsgResolveChallengeResponse\x12Y\n\x0bPauseRollup\x12 .qorechain.rdk.v1.MsgPauseRollup\x1a(.qorechain.rdk.v1.MsgPauseRollupResponse\x12\\\n\x0cResumeRollup\x12!.qorechain.rdk.v1.MsgResumeRollup\x1a).qorechain.rdk.v1.MsgResumeRollupResponse\x12V\n\nStopRollup\x12\x1f.qorechain.rdk.v1.MsgStopRollup\x1a\'.qorechain.rdk.v1.MsgStopRollupResponse\x1a\x05\x80\xe7\xb0*\x01\x42\xb2\x01\n\x14\x63om.qorechain.rdk.v1B\x07TxProtoP\x01Z/github.com/qorechain/qorechain-core/x/rdk/types\xa2\x02\x03QRX\xaa\x02\x10Qorechain.Rdk.V1\xca\x02\x10Qorechain\\Rdk\\V1\xe2\x02\x1cQorechain\\Rdk\\V1\\GPBMetadata\xea\x02\x12Qorechain::Rdk::V1b\x06proto3')
+DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\x19qorechain/rdk/v1/tx.proto\x12\x10qorechain.rdk.v1\x1a\x17\x63osmos/msg/v1/msg.proto\x1a\x19\x63osmos_proto/cosmos.proto\x1a\x14gogoproto/gogo.proto\"\xd4\x01\n\x0fMsgCreateRollup\x12\x32\n\x07\x63reator\x18\x01 \x01(\tB\x18\xd2\xb4-\x14\x63osmos.AddressStringR\x07\x63reator\x12)\n\trollup_id\x18\x02 \x01(\tB\x0c\xe2\xde\x1f\x08RollupIDR\x08rollupId\x12\x18\n\x07profile\x18\x03 \x01(\tR\x07profile\x12\x17\n\x07vm_type\x18\x04 \x01(\tR\x06vmType\x12!\n\x0cstake_amount\x18\x05 \x01(\x03R\x0bstakeAmount:\x0c\x82\xe7\xb0*\x07\x63reator\"D\n\x17MsgCreateRollupResponse\x12)\n\trollup_id\x18\x01 \x01(\tB\x0c\xe2\xde\x1f\x08RollupIDR\x08rollupId\"\xe4\x02\n\x0eMsgSubmitBatch\x12\x36\n\tsequencer\x18\x01 \x01(\tB\x18\xd2\xb4-\x14\x63osmos.AddressStringR\tsequencer\x12)\n\trollup_id\x18\x02 \x01(\tB\x0c\xe2\xde\x1f\x08RollupIDR\x08rollupId\x12\x1f\n\x0b\x62\x61tch_index\x18\x03 \x01(\x04R\nbatchIndex\x12\x1d\n\nstate_root\x18\x04 \x01(\x0cR\tstateRoot\x12&\n\x0fprev_state_root\x18\x05 \x01(\x0cR\rprevStateRoot\x12\x19\n\x08tx_count\x18\x06 \x01(\x04R\x07txCount\x12\x1b\n\tdata_hash\x18\x07 \x01(\x0cR\x08\x64\x61taHash\x12\x14\n\x05proof\x18\x08 \x01(\x0cR\x05proof\x12)\n\x10withdrawals_root\x18\t \x01(\x0cR\x0fwithdrawalsRoot:\x0e\x82\xe7\xb0*\tsequencer\"\x18\n\x16MsgSubmitBatchResponse\"\xc0\x01\n\x11MsgChallengeBatch\x12\x38\n\nchallenger\x18\x01 \x01(\tB\x18\xd2\xb4-\x14\x63osmos.AddressStringR\nchallenger\x12)\n\trollup_id\x18\x02 \x01(\tB\x0c\xe2\xde\x1f\x08RollupIDR\x08rollupId\x12\x1f\n\x0b\x62\x61tch_index\x18\x03 \x01(\x04R\nbatchIndex\x12\x14\n\x05proof\x18\x04 \x01(\x0cR\x05proof:\x0f\x82\xe7\xb0*\nchallenger\"\x1b\n\x19MsgChallengeBatchResponse\"\xc9\x01\n\x13MsgResolveChallenge\x12\x34\n\x08resolver\x18\x01 \x01(\tB\x18\xd2\xb4-\x14\x63osmos.AddressStringR\x08resolver\x12)\n\trollup_id\x18\x02 \x01(\tB\x0c\xe2\xde\x1f\x08RollupIDR\x08rollupId\x12\x1f\n\x0b\x62\x61tch_index\x18\x03 \x01(\x04R\nbatchIndex\x12!\n\x0c\x66raud_upheld\x18\x04 \x01(\x08R\x0b\x66raudUpheld:\r\x82\xe7\xb0*\x08resolver\"\x1d\n\x1bMsgResolveChallengeResponse\"\x95\x01\n\x0eMsgPauseRollup\x12\x32\n\x07\x63reator\x18\x01 \x01(\tB\x18\xd2\xb4-\x14\x63osmos.AddressStringR\x07\x63reator\x12)\n\trollup_id\x18\x02 \x01(\tB\x0c\xe2\xde\x1f\x08RollupIDR\x08rollupId\x12\x16\n\x06reason\x18\x03 \x01(\tR\x06reason:\x0c\x82\xe7\xb0*\x07\x63reator\"\x18\n\x16MsgPauseRollupResponse\"~\n\x0fMsgResumeRollup\x12\x32\n\x07\x63reator\x18\x01 \x01(\tB\x18\xd2\xb4-\x14\x63osmos.AddressStringR\x07\x63reator\x12)\n\trollup_id\x18\x02 \x01(\tB\x0c\xe2\xde\x1f\x08RollupIDR\x08rollupId:\x0c\x82\xe7\xb0*\x07\x63reator\"\x19\n\x17MsgResumeRollupResponse\"|\n\rMsgStopRollup\x12\x32\n\x07\x63reator\x18\x01 \x01(\tB\x18\xd2\xb4-\x14\x63osmos.AddressStringR\x07\x63reator\x12)\n\trollup_id\x18\x02 \x01(\tB\x0c\xe2\xde\x1f\x08RollupIDR\x08rollupId:\x0c\x82\xe7\xb0*\x07\x63reator\"\x17\n\x15MsgStopRollupResponse\"\xd1\x02\n\x14MsgExecuteWithdrawal\x12\x36\n\tsubmitter\x18\x01 \x01(\tB\x18\xd2\xb4-\x14\x63osmos.AddressStringR\tsubmitter\x12)\n\trollup_id\x18\x02 \x01(\tB\x0c\xe2\xde\x1f\x08RollupIDR\x08rollupId\x12\x1f\n\x0b\x62\x61tch_index\x18\x03 \x01(\x04R\nbatchIndex\x12)\n\x10withdrawal_index\x18\x04 \x01(\x04R\x0fwithdrawalIndex\x12\x36\n\trecipient\x18\x05 \x01(\tB\x18\xd2\xb4-\x14\x63osmos.AddressStringR\trecipient\x12\x14\n\x05\x64\x65nom\x18\x06 \x01(\tR\x05\x64\x65nom\x12\x16\n\x06\x61mount\x18\x07 \x01(\x03R\x06\x61mount\x12\x14\n\x05proof\x18\x08 \x03(\x0cR\x05proof:\x0e\x82\xe7\xb0*\tsubmitter\"\x1e\n\x1cMsgExecuteWithdrawalResponse2\x91\x06\n\x03Msg\x12\\\n\x0c\x43reateRollup\x12!.qorechain.rdk.v1.MsgCreateRollup\x1a).qorechain.rdk.v1.MsgCreateRollupResponse\x12Y\n\x0bSubmitBatch\x12 .qorechain.rdk.v1.MsgSubmitBatch\x1a(.qorechain.rdk.v1.MsgSubmitBatchResponse\x12\x62\n\x0e\x43hallengeBatch\x12#.qorechain.rdk.v1.MsgChallengeBatch\x1a+.qorechain.rdk.v1.MsgChallengeBatchResponse\x12h\n\x10ResolveChallenge\x12%.qorechain.rdk.v1.MsgResolveChallenge\x1a-.qorechain.rdk.v1.MsgResolveChallengeResponse\x12Y\n\x0bPauseRollup\x12 .qorechain.rdk.v1.MsgPauseRollup\x1a(.qorechain.rdk.v1.MsgPauseRollupResponse\x12\\\n\x0cResumeRollup\x12!.qorechain.rdk.v1.MsgResumeRollup\x1a).qorechain.rdk.v1.MsgResumeRollupResponse\x12V\n\nStopRollup\x12\x1f.qorechain.rdk.v1.MsgStopRollup\x1a\'.qorechain.rdk.v1.MsgStopRollupResponse\x12k\n\x11\x45xecuteWithdrawal\x12&.qorechain.rdk.v1.MsgExecuteWithdrawal\x1a..qorechain.rdk.v1.MsgExecuteWithdrawalResponse\x1a\x05\x80\xe7\xb0*\x01\x42\xb2\x01\n\x14\x63om.qorechain.rdk.v1B\x07TxProtoP\x01Z/github.com/qorechain/qorechain-core/x/rdk/types\xa2\x02\x03QRX\xaa\x02\x10Qorechain.Rdk.V1\xca\x02\x10Qorechain\\Rdk\\V1\xe2\x02\x1cQorechain\\Rdk\\V1\\GPBMetadata\xea\x02\x12Qorechain::Rdk::V1b\x06proto3')
 
 _globals = globals()
 _builder.BuildMessageAndEnumDescriptors(DESCRIPTOR, _globals)
@@ -79,6 +79,14 @@ if not _descriptor._USE_C_DESCRIPTORS:
   _globals['_MSGSTOPROLLUP'].fields_by_name['rollup_id']._serialized_options = b'\342\336\037\010RollupID'
   _globals['_MSGSTOPROLLUP']._loaded_options = None
   _globals['_MSGSTOPROLLUP']._serialized_options = b'\202\347\260*\007creator'
+  _globals['_MSGEXECUTEWITHDRAWAL'].fields_by_name['submitter']._loaded_options = None
+  _globals['_MSGEXECUTEWITHDRAWAL'].fields_by_name['submitter']._serialized_options = b'\322\264-\024cosmos.AddressString'
+  _globals['_MSGEXECUTEWITHDRAWAL'].fields_by_name['rollup_id']._loaded_options = None
+  _globals['_MSGEXECUTEWITHDRAWAL'].fields_by_name['rollup_id']._serialized_options = b'\342\336\037\010RollupID'
+  _globals['_MSGEXECUTEWITHDRAWAL'].fields_by_name['recipient']._loaded_options = None
+  _globals['_MSGEXECUTEWITHDRAWAL'].fields_by_name['recipient']._serialized_options = b'\322\264-\024cosmos.AddressString'
+  _globals['_MSGEXECUTEWITHDRAWAL']._loaded_options = None
+  _globals['_MSGEXECUTEWITHDRAWAL']._serialized_options = b'\202\347\260*\tsubmitter'
   _globals['_MSG']._loaded_options = None
   _globals['_MSG']._serialized_options = b'\200\347\260*\001'
   _globals['_MSGCREATEROLLUP']._serialized_start=122
@@ -86,29 +94,33 @@ if not _descriptor._USE_C_DESCRIPTORS:
   _globals['_MSGCREATEROLLUPRESPONSE']._serialized_start=336
   _globals['_MSGCREATEROLLUPRESPONSE']._serialized_end=404
   _globals['_MSGSUBMITBATCH']._serialized_start=407
-  _globals['_MSGSUBMITBATCH']._serialized_end=720
-  _globals['_MSGSUBMITBATCHRESPONSE']._serialized_start=722
-  _globals['_MSGSUBMITBATCHRESPONSE']._serialized_end=746
-  _globals['_MSGCHALLENGEBATCH']._serialized_start=749
-  _globals['_MSGCHALLENGEBATCH']._serialized_end=941
-  _globals['_MSGCHALLENGEBATCHRESPONSE']._serialized_start=943
-  _globals['_MSGCHALLENGEBATCHRESPONSE']._serialized_end=970
-  _globals['_MSGRESOLVECHALLENGE']._serialized_start=973
-  _globals['_MSGRESOLVECHALLENGE']._serialized_end=1174
-  _globals['_MSGRESOLVECHALLENGERESPONSE']._serialized_start=1176
-  _globals['_MSGRESOLVECHALLENGERESPONSE']._serialized_end=1205
-  _globals['_MSGPAUSEROLLUP']._serialized_start=1208
-  _globals['_MSGPAUSEROLLUP']._serialized_end=1357
-  _globals['_MSGPAUSEROLLUPRESPONSE']._serialized_start=1359
-  _globals['_MSGPAUSEROLLUPRESPONSE']._serialized_end=1383
-  _globals['_MSGRESUMEROLLUP']._serialized_start=1385
-  _globals['_MSGRESUMEROLLUP']._serialized_end=1511
-  _globals['_MSGRESUMEROLLUPRESPONSE']._serialized_start=1513
-  _globals['_MSGRESUMEROLLUPRESPONSE']._serialized_end=1538
-  _globals['_MSGSTOPROLLUP']._serialized_start=1540
-  _globals['_MSGSTOPROLLUP']._serialized_end=1664
-  _globals['_MSGSTOPROLLUPRESPONSE']._serialized_start=1666
-  _globals['_MSGSTOPROLLUPRESPONSE']._serialized_end=1689
-  _globals['_MSG']._serialized_start=1692
-  _globals['_MSG']._serialized_end=2368
+  _globals['_MSGSUBMITBATCH']._serialized_end=763
+  _globals['_MSGSUBMITBATCHRESPONSE']._serialized_start=765
+  _globals['_MSGSUBMITBATCHRESPONSE']._serialized_end=789
+  _globals['_MSGCHALLENGEBATCH']._serialized_start=792
+  _globals['_MSGCHALLENGEBATCH']._serialized_end=984
+  _globals['_MSGCHALLENGEBATCHRESPONSE']._serialized_start=986
+  _globals['_MSGCHALLENGEBATCHRESPONSE']._serialized_end=1013
+  _globals['_MSGRESOLVECHALLENGE']._serialized_start=1016
+  _globals['_MSGRESOLVECHALLENGE']._serialized_end=1217
+  _globals['_MSGRESOLVECHALLENGERESPONSE']._serialized_start=1219
+  _globals['_MSGRESOLVECHALLENGERESPONSE']._serialized_end=1248
+  _globals['_MSGPAUSEROLLUP']._serialized_start=1251
+  _globals['_MSGPAUSEROLLUP']._serialized_end=1400
+  _globals['_MSGPAUSEROLLUPRESPONSE']._serialized_start=1402
+  _globals['_MSGPAUSEROLLUPRESPONSE']._serialized_end=1426
+  _globals['_MSGRESUMEROLLUP']._serialized_start=1428
+  _globals['_MSGRESUMEROLLUP']._serialized_end=1554
+  _globals['_MSGRESUMEROLLUPRESPONSE']._serialized_start=1556
+  _globals['_MSGRESUMEROLLUPRESPONSE']._serialized_end=1581
+  _globals['_MSGSTOPROLLUP']._serialized_start=1583
+  _globals['_MSGSTOPROLLUP']._serialized_end=1707
+  _globals['_MSGSTOPROLLUPRESPONSE']._serialized_start=1709
+  _globals['_MSGSTOPROLLUPRESPONSE']._serialized_end=1732
+  _globals['_MSGEXECUTEWITHDRAWAL']._serialized_start=1735
+  _globals['_MSGEXECUTEWITHDRAWAL']._serialized_end=2072
+  _globals['_MSGEXECUTEWITHDRAWALRESPONSE']._serialized_start=2074
+  _globals['_MSGEXECUTEWITHDRAWALRESPONSE']._serialized_end=2104
+  _globals['_MSG']._serialized_start=2107
+  _globals['_MSG']._serialized_end=2892
 # @@protoc_insertion_point(module_scope)

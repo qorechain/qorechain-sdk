@@ -12,6 +12,7 @@ npx create-qorechain-dapp my-dapp --template <name>
 | --------------- | ------------------------------------------------------------------------------------ |
 | `evm-solidity`  | A Solidity `Counter` contract + a viem deploy/interact script (`@qorechain/evm`).    |
 | `fullstack-web` | A Vite + React + TypeScript dApp reading balances and tokenomics (`@qorechain/sdk`). |
+| `rollup-app`    | A rollup + sidechain/paychain app using the `RollupClient` + multilayer helper (`@qorechain/sdk`). |
 
 Each template is a complete, type-checking project with its own README.
 

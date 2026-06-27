@@ -44,7 +44,7 @@ TEST_MNEMONIC = (
 CHAIN_ID = "qorechain-diana"
 FEE = {"amount": [{"denom": "uqor", "amount": "5000"}], "gas": "200000"}
 
-# Every QoreChain composer call -> the exact typeUrl it must emit. Covers all 49.
+# Every QoreChain composer call -> the exact typeUrl it must emit. Covers all 53.
 QORECHAIN_COMPOSER_CASES = [
     # amm (7)
     (amm.create_pool(creator="qor1"), "/qorechain.amm.v1.MsgCreatePool"),
@@ -54,7 +54,7 @@ QORECHAIN_COMPOSER_CASES = [
     (amm.swap_exact_out(sender="qor1"), "/qorechain.amm.v1.MsgSwapExactOut"),
     (amm.pause_pool(authority="qor1"), "/qorechain.amm.v1.MsgPausePool"),
     (amm.resume_pool(authority="qor1"), "/qorechain.amm.v1.MsgResumePool"),
-    # bridge (4)
+    # bridge (7)
     (bridge.bridge_deposit(sender="qor1"), "/qorechain.bridge.v1.MsgBridgeDeposit"),
     (bridge.bridge_withdraw(sender="qor1"), "/qorechain.bridge.v1.MsgBridgeWithdraw"),
     (
@@ -65,7 +65,19 @@ QORECHAIN_COMPOSER_CASES = [
         bridge.bridge_attestation(validator="qor1", amount="1"),
         "/qorechain.bridge.v1.MsgBridgeAttestation",
     ),
-    # rdk (7)
+    (
+        bridge.update_eth_light_client(relayer="qor1"),
+        "/qorechain.bridge.v1.MsgUpdateEthLightClient",
+    ),
+    (
+        bridge.update_chain_config(admin="qor1"),
+        "/qorechain.bridge.v1.MsgUpdateChainConfig",
+    ),
+    (
+        bridge.set_verifier_bootstrap(admin="qor1"),
+        "/qorechain.bridge.v1.MsgSetVerifierBootstrap",
+    ),
+    # rdk (8)
     (rdk.create_rollup(creator="qor1"), "/qorechain.rdk.v1.MsgCreateRollup"),
     (rdk.submit_batch(sequencer="qor1"), "/qorechain.rdk.v1.MsgSubmitBatch"),
     (rdk.challenge_batch(challenger="qor1"), "/qorechain.rdk.v1.MsgChallengeBatch"),
@@ -73,6 +85,10 @@ QORECHAIN_COMPOSER_CASES = [
     (rdk.pause_rollup(creator="qor1"), "/qorechain.rdk.v1.MsgPauseRollup"),
     (rdk.resume_rollup(creator="qor1"), "/qorechain.rdk.v1.MsgResumeRollup"),
     (rdk.stop_rollup(creator="qor1"), "/qorechain.rdk.v1.MsgStopRollup"),
+    (
+        rdk.execute_withdrawal(submitter="qor1"),
+        "/qorechain.rdk.v1.MsgExecuteWithdrawal",
+    ),
     # multilayer (6)
     (
         multilayer.register_sidechain(creator="qor1"),
@@ -163,10 +179,10 @@ QORECHAIN_COMPOSER_CASES = [
 ]
 
 
-def test_all_49_qorechain_composers_covered():
-    assert len(QORECHAIN_COMPOSER_CASES) == 49
+def test_all_53_qorechain_composers_covered():
+    assert len(QORECHAIN_COMPOSER_CASES) == 53
     type_urls = {tu for _m, tu in QORECHAIN_COMPOSER_CASES}
-    assert len(type_urls) == 49
+    assert len(type_urls) == 53
 
 
 @pytest.mark.parametrize("built_msg,type_url", QORECHAIN_COMPOSER_CASES)
@@ -206,11 +222,11 @@ def test_cosmos_composer_returns_exact_type_url(built_msg, type_url):
     assert built_msg.type_url == type_url
 
 
-def test_registry_covers_all_49_qorechain_and_18_cosmos():
+def test_registry_covers_all_53_qorechain_and_18_cosmos():
     reg = qorechain_registry()
     qc = [k for k in reg if k.startswith("/qorechain.")]
-    assert len(qc) == 49
-    assert len(reg) == 49 + 18
+    assert len(qc) == 53
+    assert len(reg) == 53 + 18
 
 
 def test_registry_extra_types_override():
@@ -233,6 +249,66 @@ def test_encode_decode_round_trip():
     assert decoded.pool_id == 7
     assert decoded.denom_out == "uother"
     assert decoded.min_out == "90"
+
+
+def test_rdk_execute_withdrawal_round_trip():
+    m = rdk.execute_withdrawal(
+        submitter="qor1submit",
+        rollup_id="roll-1",
+        batch_index=4,
+        withdrawal_index=2,
+        recipient="qor1recv",
+        denom="uqor",
+        amount=1000,
+        proof=[b"\x01\x02", b"\x03\x04"],
+    )
+    assert m.type_url == "/qorechain.rdk.v1.MsgExecuteWithdrawal"
+    decoded = decode_any(m.type_url, m.value.SerializeToString())
+    assert decoded.submitter == "qor1submit"
+    assert decoded.rollup_id == "roll-1"
+    assert decoded.batch_index == 4
+    assert decoded.withdrawal_index == 2
+    assert decoded.recipient == "qor1recv"
+    assert decoded.denom == "uqor"
+    assert decoded.amount == 1000
+    assert list(decoded.proof) == [b"\x01\x02", b"\x03\x04"]
+
+
+def test_rdk_submit_batch_carries_withdrawals_root():
+    m = rdk.submit_batch(sequencer="qor1seq", withdrawals_root=b"\xaa\xbb")
+    decoded = decode_any(m.type_url, m.value.SerializeToString())
+    assert decoded.withdrawals_root == b"\xaa\xbb"
+
+
+def test_bridge_admin_composers_round_trip():
+    eth = bridge.update_eth_light_client(relayer="qor1relay", update=b"\x10\x20")
+    decoded_eth = decode_any(eth.type_url, eth.value.SerializeToString())
+    assert eth.type_url == "/qorechain.bridge.v1.MsgUpdateEthLightClient"
+    assert decoded_eth.relayer == "qor1relay"
+    assert decoded_eth.update == b"\x10\x20"
+
+    cfg = bridge.update_chain_config(
+        admin="qor1admin",
+        chain_id="eth-mainnet",
+        status="active",
+        verifier="light_client",
+    )
+    decoded_cfg = decode_any(cfg.type_url, cfg.value.SerializeToString())
+    assert cfg.type_url == "/qorechain.bridge.v1.MsgUpdateChainConfig"
+    assert decoded_cfg.admin == "qor1admin"
+    assert decoded_cfg.chain_id == "eth-mainnet"
+    assert decoded_cfg.status == "active"
+    assert decoded_cfg.verifier == "light_client"
+
+    boot = bridge.set_verifier_bootstrap(
+        admin="qor1admin",
+        chain_id="sol-mainnet",
+        starknet_state_root=b"\x99",
+    )
+    decoded_boot = decode_any(boot.type_url, boot.value.SerializeToString())
+    assert boot.type_url == "/qorechain.bridge.v1.MsgSetVerifierBootstrap"
+    assert decoded_boot.admin == "qor1admin"
+    assert decoded_boot.starknet_state_root == b"\x99"
 
 
 def test_resolve_message_type_unknown_raises():

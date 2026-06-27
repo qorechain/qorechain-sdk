@@ -39,7 +39,7 @@ fn sample_fee() -> Fee {
     }
 }
 
-/// The full set of 49 custom-module type URLs, paired with an `Any` produced by
+/// The full set of 53 custom-module type URLs, paired with an `Any` produced by
 /// the matching `*_any` composer. Asserts every exact string AND that the
 /// composer emits it.
 #[test]
@@ -102,14 +102,47 @@ fn all_custom_type_urls_are_produced() {
                 vec![],
             ),
         ),
-        // rdk (7)
+        // bridge admin (3)
+        (
+            "/qorechain.bridge.v1.MsgUpdateEthLightClient",
+            msg::bridge::update_eth_light_client_any(addr, vec![1, 2, 3]),
+        ),
+        (
+            "/qorechain.bridge.v1.MsgUpdateChainConfig",
+            msg::bridge::update_chain_config_any(
+                addr,
+                "eth",
+                "0xcontract",
+                12,
+                "evm",
+                "active",
+                "light_client",
+                "0xtopic0",
+            ),
+        ),
+        (
+            "/qorechain.bridge.v1.MsgSetVerifierBootstrap",
+            msg::bridge::set_verifier_bootstrap_any(
+                addr,
+                "eth",
+                Some(msg::bridge::WormholeGuardianSet {
+                    addresses: vec![vec![0u8; 20]],
+                    quorum: 1,
+                }),
+                None,
+                None,
+                None,
+                vec![],
+            ),
+        ),
+        // rdk (8)
         (
             "/qorechain.rdk.v1.MsgCreateRollup",
             msg::rdk::create_rollup_any(addr, "r1", "default", "evm", 1),
         ),
         (
             "/qorechain.rdk.v1.MsgSubmitBatch",
-            msg::rdk::submit_batch_any(addr, "r1", 0, vec![], vec![], 0, vec![], vec![]),
+            msg::rdk::submit_batch_any(addr, "r1", 0, vec![], vec![], 0, vec![], vec![], vec![]),
         ),
         (
             "/qorechain.rdk.v1.MsgChallengeBatch",
@@ -130,6 +163,10 @@ fn all_custom_type_urls_are_produced() {
         (
             "/qorechain.rdk.v1.MsgStopRollup",
             msg::rdk::stop_rollup_any(addr, "r1"),
+        ),
+        (
+            "/qorechain.rdk.v1.MsgExecuteWithdrawal",
+            msg::rdk::execute_withdrawal_any(addr, "r1", 0, 0, addr, "uqor", 1, vec![vec![0u8; 32]]),
         ),
         // multilayer (6)
         (
@@ -274,8 +311,8 @@ fn all_custom_type_urls_are_produced() {
 
     assert_eq!(
         cases.len(),
-        49,
-        "exactly 49 custom messages must be covered"
+        53,
+        "exactly 53 custom messages must be covered"
     );
     for (want_url, any) in &cases {
         assert_eq!(&any.type_url, want_url, "type URL mismatch");
@@ -318,6 +355,112 @@ fn custom_msg_round_trips_through_any() {
     assert_eq!(decoded.token_in.as_ref().unwrap().amount, "1000");
     assert_eq!(decoded.denom_out, "uatom");
     assert_eq!(decoded.min_out, "990");
+}
+
+/// `MsgExecuteWithdrawal` round-trips through `Any`, including the repeated-bytes
+/// `proof` field.
+#[test]
+fn execute_withdrawal_round_trips_through_any() {
+    let proof = vec![vec![1u8; 32], vec![2u8; 32], vec![3u8; 32]];
+    let m = msg::rdk::execute_withdrawal(
+        "qor1submitter000000000000000000000000000000",
+        "rollup-1",
+        7,
+        3,
+        "qor1recipient00000000000000000000000000000",
+        "uqor",
+        12345,
+        proof.clone(),
+    );
+    let any = msg::to_any(&m, msg::rdk::EXECUTE_WITHDRAWAL);
+    assert_eq!(any.type_url, "/qorechain.rdk.v1.MsgExecuteWithdrawal");
+
+    let decoded: qorechain::proto::qorechain::rdk::v1::MsgExecuteWithdrawal =
+        msg::from_any(&any).expect("decode");
+    assert_eq!(decoded.submitter, m.submitter);
+    assert_eq!(decoded.rollup_id, "rollup-1");
+    assert_eq!(decoded.batch_index, 7);
+    assert_eq!(decoded.withdrawal_index, 3);
+    assert_eq!(decoded.recipient, m.recipient);
+    assert_eq!(decoded.denom, "uqor");
+    assert_eq!(decoded.amount, 12345);
+    assert_eq!(decoded.proof, proof);
+}
+
+/// `MsgUpdateEthLightClient` round-trips through `Any`.
+#[test]
+fn update_eth_light_client_round_trips_through_any() {
+    let m = msg::bridge::update_eth_light_client(
+        "qor1relayer00000000000000000000000000000000",
+        vec![9, 8, 7, 6],
+    );
+    let any = msg::to_any(&m, msg::bridge::UPDATE_ETH_LIGHT_CLIENT);
+    assert_eq!(any.type_url, "/qorechain.bridge.v1.MsgUpdateEthLightClient");
+
+    let decoded: qorechain::proto::qorechain::bridge::v1::MsgUpdateEthLightClient =
+        msg::from_any(&any).expect("decode");
+    assert_eq!(decoded.relayer, m.relayer);
+    assert_eq!(decoded.update, vec![9, 8, 7, 6]);
+}
+
+/// `MsgUpdateChainConfig` round-trips through `Any` (all scalar fields).
+#[test]
+fn update_chain_config_round_trips_through_any() {
+    let m = msg::bridge::update_chain_config(
+        "qor1admin000000000000000000000000000000000",
+        "ethereum",
+        "0xBridgeContract",
+        12,
+        "evm",
+        "active",
+        "light_client",
+        "0xddf252ad",
+    );
+    let any = msg::to_any(&m, msg::bridge::UPDATE_CHAIN_CONFIG);
+    assert_eq!(any.type_url, "/qorechain.bridge.v1.MsgUpdateChainConfig");
+
+    let decoded: qorechain::proto::qorechain::bridge::v1::MsgUpdateChainConfig =
+        msg::from_any(&any).expect("decode");
+    assert_eq!(decoded.admin, m.admin);
+    assert_eq!(decoded.chain_id, "ethereum");
+    assert_eq!(decoded.bridge_contract, "0xBridgeContract");
+    assert_eq!(decoded.confirmations_required, 12);
+    assert_eq!(decoded.architecture, "evm");
+    assert_eq!(decoded.status, "active");
+    assert_eq!(decoded.verifier, "light_client");
+    assert_eq!(decoded.lock_event_sig, "0xddf252ad");
+}
+
+/// `MsgSetVerifierBootstrap` round-trips through `Any`, including a populated
+/// nested verifier sub-message.
+#[test]
+fn set_verifier_bootstrap_round_trips_through_any() {
+    let m = msg::bridge::set_verifier_bootstrap(
+        "qor1admin000000000000000000000000000000000",
+        "ethereum",
+        Some(msg::bridge::WormholeGuardianSet {
+            addresses: vec![vec![0xaa; 20], vec![0xbb; 20]],
+            quorum: 2,
+        }),
+        None,
+        None,
+        None,
+        vec![],
+    );
+    let any = msg::to_any(&m, msg::bridge::SET_VERIFIER_BOOTSTRAP);
+    assert_eq!(any.type_url, "/qorechain.bridge.v1.MsgSetVerifierBootstrap");
+
+    let decoded: qorechain::proto::qorechain::bridge::v1::MsgSetVerifierBootstrap =
+        msg::from_any(&any).expect("decode");
+    assert_eq!(decoded.admin, m.admin);
+    assert_eq!(decoded.chain_id, "ethereum");
+    let wh = decoded.wormhole.expect("wormhole set");
+    assert_eq!(wh.quorum, 2);
+    assert_eq!(wh.addresses.len(), 2);
+    assert_eq!(wh.addresses[0], vec![0xaa; 20]);
+    assert!(decoded.ed25519.is_none());
+    assert!(decoded.bls.is_none());
+    assert!(decoded.bitcoin.is_none());
 }
 
 /// A tx carrying a custom message builds and signs (via `send_messages`), and the

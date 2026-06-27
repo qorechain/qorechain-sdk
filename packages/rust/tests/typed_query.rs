@@ -115,3 +115,155 @@ async fn typed_svm_slot_query_decodes_response() {
     let v: serde_json::Value = serde_json::from_str(&body).unwrap();
     assert_eq!(v["params"]["path"], "/qorechain.svm.v1.Query/Slot");
 }
+
+#[tokio::test]
+async fn typed_multilayer_layer_query_decodes_response() {
+    let resp = pb::multilayer::v1::QueryLayerResponse {
+        layer: Some(pb::multilayer::v1::LayerView {
+            layer_id: "layer-1".into(),
+            layer_type: "sidechain".into(),
+            status: "active".into(),
+            chain_id: "qorechain-vladi".into(),
+            ..Default::default()
+        }),
+    };
+    let value_b64 = BASE64.encode(prost::Message::encode_to_vec(&resp));
+    let server = MockServer::start(value_b64).await;
+
+    let client = TypedQueryClient::new(server.base_url.clone());
+    let got = client.multilayer_layer("layer-1").await.unwrap();
+    let layer = got.layer.unwrap();
+    assert_eq!(layer.layer_id, "layer-1");
+    assert_eq!(layer.layer_type, "sidechain");
+    assert_eq!(layer.status, "active");
+
+    let body = server.last_body.lock().unwrap().clone().unwrap();
+    let v: serde_json::Value = serde_json::from_str(&body).unwrap();
+    assert_eq!(v["method"], "abci_query");
+    assert_eq!(v["params"]["path"], "/qorechain.multilayer.v1.Query/Layer");
+}
+
+#[tokio::test]
+async fn typed_multilayer_routing_stats_query_decodes_response() {
+    let resp = pb::multilayer::v1::QueryRoutingStatsView {
+        stats: Some(pb::multilayer::v1::RoutingStatsView {
+            total_routed: 42,
+            routed_to_sidechains: 30,
+            ..Default::default()
+        }),
+    };
+    let value_b64 = BASE64.encode(prost::Message::encode_to_vec(&resp));
+    let server = MockServer::start(value_b64).await;
+
+    let client = TypedQueryClient::new(server.base_url.clone());
+    let got = client.multilayer_routing_stats().await.unwrap();
+    let stats = got.stats.unwrap();
+    assert_eq!(stats.total_routed, 42);
+    assert_eq!(stats.routed_to_sidechains, 30);
+
+    let body = server.last_body.lock().unwrap().clone().unwrap();
+    let v: serde_json::Value = serde_json::from_str(&body).unwrap();
+    assert_eq!(
+        v["params"]["path"],
+        "/qorechain.multilayer.v1.Query/RoutingStats"
+    );
+}
+
+#[tokio::test]
+async fn typed_rdk_rollup_query_decodes_response() {
+    let resp = pb::rdk::v1::QueryRollupResponse {
+        rollup: Some(pb::rdk::v1::RollupView {
+            rollup_id: "rollup-1".into(),
+            creator: "qor1creator".into(),
+            vm_type: "evm".into(),
+            status: "active".into(),
+            stake_amount: 1000,
+            ..Default::default()
+        }),
+    };
+    let value_b64 = BASE64.encode(prost::Message::encode_to_vec(&resp));
+    let server = MockServer::start(value_b64).await;
+
+    let client = TypedQueryClient::new(server.base_url.clone());
+    let got = client.rdk_rollup("rollup-1").await.unwrap();
+    let rollup = got.rollup.unwrap();
+    assert_eq!(rollup.rollup_id, "rollup-1");
+    assert_eq!(rollup.vm_type, "evm");
+    assert_eq!(rollup.stake_amount, 1000);
+
+    let body = server.last_body.lock().unwrap().clone().unwrap();
+    let v: serde_json::Value = serde_json::from_str(&body).unwrap();
+    assert_eq!(v["params"]["path"], "/qorechain.rdk.v1.Query/Rollup");
+}
+
+#[tokio::test]
+async fn typed_rdk_latest_batch_query_decodes_response() {
+    let resp = pb::rdk::v1::QueryLatestBatchResponse {
+        batch: Some(pb::rdk::v1::BatchView {
+            rollup_id: "rollup-1".into(),
+            batch_index: 9,
+            status: "finalized".into(),
+            withdrawals_root: "0xroot".into(),
+            ..Default::default()
+        }),
+    };
+    let value_b64 = BASE64.encode(prost::Message::encode_to_vec(&resp));
+    let server = MockServer::start(value_b64).await;
+
+    let client = TypedQueryClient::new(server.base_url.clone());
+    let got = client.rdk_latest_batch("rollup-1").await.unwrap();
+    let batch = got.batch.unwrap();
+    assert_eq!(batch.batch_index, 9);
+    assert_eq!(batch.status, "finalized");
+    assert_eq!(batch.withdrawals_root, "0xroot");
+
+    let body = server.last_body.lock().unwrap().clone().unwrap();
+    let v: serde_json::Value = serde_json::from_str(&body).unwrap();
+    assert_eq!(v["params"]["path"], "/qorechain.rdk.v1.Query/LatestBatch");
+}
+
+#[tokio::test]
+async fn typed_rdk_batch_query_sends_batch_index() {
+    let resp = pb::rdk::v1::QueryBatchResponse {
+        batch: Some(pb::rdk::v1::BatchView {
+            rollup_id: "rollup-1".into(),
+            batch_index: 4,
+            ..Default::default()
+        }),
+    };
+    let value_b64 = BASE64.encode(prost::Message::encode_to_vec(&resp));
+    let server = MockServer::start(value_b64).await;
+
+    let client = TypedQueryClient::new(server.base_url.clone());
+    let got = client.rdk_batch("rollup-1", 4).await.unwrap();
+    assert_eq!(got.batch.unwrap().batch_index, 4);
+
+    let body = server.last_body.lock().unwrap().clone().unwrap();
+    let v: serde_json::Value = serde_json::from_str(&body).unwrap();
+    assert_eq!(v["params"]["path"], "/qorechain.rdk.v1.Query/Batch");
+}
+
+#[tokio::test]
+async fn typed_bridge_chain_config_query_decodes_response() {
+    let resp = pb::bridge::v1::QueryChainConfigResponse {
+        chain: Some(pb::bridge::v1::ChainConfigView {
+            chain_id: "ethereum".into(),
+            name: "Ethereum".into(),
+            status: "active".into(),
+            architecture: "evm".into(),
+            ..Default::default()
+        }),
+    };
+    let value_b64 = BASE64.encode(prost::Message::encode_to_vec(&resp));
+    let server = MockServer::start(value_b64).await;
+
+    let client = TypedQueryClient::new(server.base_url.clone());
+    let got = client.bridge_chain_config("ethereum").await.unwrap();
+    let chain = got.chain.unwrap();
+    assert_eq!(chain.chain_id, "ethereum");
+    assert_eq!(chain.status, "active");
+
+    let body = server.last_body.lock().unwrap().clone().unwrap();
+    let v: serde_json::Value = serde_json::from_str(&body).unwrap();
+    assert_eq!(v["params"]["path"], "/qorechain.bridge.v1.Query/ChainConfig");
+}

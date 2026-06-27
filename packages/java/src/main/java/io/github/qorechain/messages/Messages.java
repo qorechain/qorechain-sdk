@@ -14,7 +14,7 @@ import java.util.Set;
  * The QoreChain message registry: a {@code typeUrl → protobuf Parser} map plus
  * Cosmos-style {@link Any} pack/unpack.
  *
- * <p>Covers all 49 QoreChain custom-module {@code Msg} types (amm, bridge, rdk,
+ * <p>Covers all 53 QoreChain custom-module {@code Msg} types (amm, bridge, rdk,
  * multilayer, pqc, svm, lightnode, license, abstractaccount, crossvm,
  * rlconsensus) and the standard Cosmos messages exposed by {@link CosmosMessages}.
  *
@@ -45,13 +45,16 @@ public final class Messages {
         m.put("/qorechain.amm.v1.MsgPausePool", qorechain.amm.v1.Tx.MsgPausePool.parser());
         m.put("/qorechain.amm.v1.MsgResumePool", qorechain.amm.v1.Tx.MsgResumePool.parser());
 
-        // ---- bridge (4) ----
+        // ---- bridge (7) ----
         m.put("/qorechain.bridge.v1.MsgBridgeDeposit", qorechain.bridge.v1.Tx.MsgBridgeDeposit.parser());
         m.put("/qorechain.bridge.v1.MsgBridgeWithdraw", qorechain.bridge.v1.Tx.MsgBridgeWithdraw.parser());
         m.put("/qorechain.bridge.v1.MsgRegisterBridgeValidator", qorechain.bridge.v1.Tx.MsgRegisterBridgeValidator.parser());
         m.put("/qorechain.bridge.v1.MsgBridgeAttestation", qorechain.bridge.v1.Tx.MsgBridgeAttestation.parser());
+        m.put("/qorechain.bridge.v1.MsgUpdateEthLightClient", qorechain.bridge.v1.Tx.MsgUpdateEthLightClient.parser());
+        m.put("/qorechain.bridge.v1.MsgUpdateChainConfig", qorechain.bridge.v1.Tx.MsgUpdateChainConfig.parser());
+        m.put("/qorechain.bridge.v1.MsgSetVerifierBootstrap", qorechain.bridge.v1.Tx.MsgSetVerifierBootstrap.parser());
 
-        // ---- rdk (7) ----
+        // ---- rdk (8) ----
         m.put("/qorechain.rdk.v1.MsgCreateRollup", qorechain.rdk.v1.Tx.MsgCreateRollup.parser());
         m.put("/qorechain.rdk.v1.MsgSubmitBatch", qorechain.rdk.v1.Tx.MsgSubmitBatch.parser());
         m.put("/qorechain.rdk.v1.MsgChallengeBatch", qorechain.rdk.v1.Tx.MsgChallengeBatch.parser());
@@ -59,6 +62,7 @@ public final class Messages {
         m.put("/qorechain.rdk.v1.MsgPauseRollup", qorechain.rdk.v1.Tx.MsgPauseRollup.parser());
         m.put("/qorechain.rdk.v1.MsgResumeRollup", qorechain.rdk.v1.Tx.MsgResumeRollup.parser());
         m.put("/qorechain.rdk.v1.MsgStopRollup", qorechain.rdk.v1.Tx.MsgStopRollup.parser());
+        m.put("/qorechain.rdk.v1.MsgExecuteWithdrawal", qorechain.rdk.v1.Tx.MsgExecuteWithdrawal.parser());
 
         // ---- multilayer (6) ----
         m.put("/qorechain.multilayer.v1.MsgRegisterSidechain", qorechain.multilayer.v1.Tx.MsgRegisterSidechain.parser());
@@ -110,7 +114,7 @@ public final class Messages {
         REGISTRY = Collections.unmodifiableMap(m);
     }
 
-    /** All registered type URLs (Cosmos standard + 49 QoreChain customs). */
+    /** All registered type URLs (Cosmos standard + 53 QoreChain customs). */
     public static Set<String> typeUrls() {
         return REGISTRY.keySet();
     }

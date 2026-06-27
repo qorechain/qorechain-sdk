@@ -1,7 +1,7 @@
 // Package messages provides the interface registry, codec, and typed message
 // composers for every transaction QoreChain supports.
 //
-// The registry registers all 49 custom QoreChain Msg implementations (across the
+// The registry registers all 53 custom QoreChain Msg implementations (across the
 // 11 custom modules) plus the standard Cosmos SDK modules under their type URLs,
 // so a custom Msg can be packed into a tx Any and decoded back through the codec
 // exactly like the chain does. RegisterInterfaces mirrors each module's
@@ -44,7 +44,7 @@ func RegisterInterfaces(reg codectypes.InterfaceRegistry) {
 	registerCosmosInterfaces(reg)
 }
 
-// registerQoreChainInterfaces registers all 49 custom QoreChain Msg
+// registerQoreChainInterfaces registers all 53 custom QoreChain Msg
 // implementations under the sdk.Msg interface.
 func registerQoreChainInterfaces(reg codectypes.InterfaceRegistry) {
 	reg.RegisterImplementations((*sdk.Msg)(nil),
@@ -56,12 +56,15 @@ func registerQoreChainInterfaces(reg codectypes.InterfaceRegistry) {
 		&ammv1.MsgSwapExactOut{},
 		&ammv1.MsgPausePool{},
 		&ammv1.MsgResumePool{},
-		// bridge (4)
+		// bridge (7)
 		&bridgev1.MsgBridgeDeposit{},
 		&bridgev1.MsgBridgeWithdraw{},
 		&bridgev1.MsgRegisterBridgeValidator{},
 		&bridgev1.MsgBridgeAttestation{},
-		// rdk (7)
+		&bridgev1.MsgUpdateEthLightClient{},
+		&bridgev1.MsgUpdateChainConfig{},
+		&bridgev1.MsgSetVerifierBootstrap{},
+		// rdk (8)
 		&rdkv1.MsgCreateRollup{},
 		&rdkv1.MsgSubmitBatch{},
 		&rdkv1.MsgChallengeBatch{},
@@ -69,6 +72,7 @@ func registerQoreChainInterfaces(reg codectypes.InterfaceRegistry) {
 		&rdkv1.MsgPauseRollup{},
 		&rdkv1.MsgResumeRollup{},
 		&rdkv1.MsgStopRollup{},
+		&rdkv1.MsgExecuteWithdrawal{},
 		// multilayer (6)
 		&multilayerv1.MsgRegisterSidechain{},
 		&multilayerv1.MsgRegisterPaychain{},

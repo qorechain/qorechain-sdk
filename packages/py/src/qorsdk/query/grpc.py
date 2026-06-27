@@ -1,9 +1,9 @@
 """Typed gRPC query clients for the QoreChain modules with a query service.
 
 Each module that defines a ``Query`` service (crossvm, lightnode, pqc, qca,
-reputation, rlconsensus, svm) gets a typed client whose methods take the
-generated ``Query*Request`` and return the decoded ``Query*Response`` protobuf
-message — fully typed, no hand-rolled paths.
+reputation, rlconsensus, svm, multilayer, rdk, bridge) gets a typed client whose
+methods take the generated ``Query*Request`` and return the decoded
+``Query*Response`` protobuf message — fully typed, no hand-rolled paths.
 
 The transport is a gRPC channel (cosmpy bundles ``grpcio``). Service stubs are
 not generated; instead each call uses the channel's generic ``unary_unary`` with
@@ -20,10 +20,13 @@ from typing import Any
 
 import grpc
 
+from ..proto.qorechain.bridge.v1 import query_pb2 as bridge_q
 from ..proto.qorechain.crossvm.v1 import query_pb2 as crossvm_q
 from ..proto.qorechain.lightnode.v1 import query_pb2 as lightnode_q
+from ..proto.qorechain.multilayer.v1 import query_pb2 as multilayer_q
 from ..proto.qorechain.pqc.v1 import query_pb2 as pqc_q
 from ..proto.qorechain.qca.v1 import query_pb2 as qca_q
+from ..proto.qorechain.rdk.v1 import query_pb2 as rdk_q
 from ..proto.qorechain.reputation.v1 import query_pb2 as reputation_q
 from ..proto.qorechain.rlconsensus.v1 import query_pb2 as rlconsensus_q
 from ..proto.qorechain.svm.v1 import query_pb2 as svm_q
@@ -255,6 +258,145 @@ class SvmQueryClient:
         return self._program(svm_q.QueryProgramRequest(address=address))
 
 
+class MultilayerQueryClient:
+    """Typed query client for ``x/multilayer``."""
+
+    _SERVICE = "qorechain.multilayer.v1.Query"
+
+    def __init__(self, channel: grpc.Channel) -> None:
+        self._params = _unary(
+            channel, self._SERVICE, "Params",
+            multilayer_q.QueryParamsRequest, multilayer_q.QueryParamsResponse,
+        )
+        self._layer = _unary(
+            channel, self._SERVICE, "Layer",
+            multilayer_q.QueryLayerRequest, multilayer_q.QueryLayerResponse,
+        )
+        self._layers = _unary(
+            channel, self._SERVICE, "Layers",
+            multilayer_q.QueryLayersRequest, multilayer_q.QueryLayersResponse,
+        )
+        self._routing_stats = _unary(
+            channel, self._SERVICE, "RoutingStats",
+            multilayer_q.QueryRoutingStatsRequest,
+            multilayer_q.QueryRoutingStatsView,
+        )
+
+    def params(self) -> Any:
+        return self._params(multilayer_q.QueryParamsRequest())
+
+    def layer(self, layer_id: str) -> Any:
+        return self._layer(multilayer_q.QueryLayerRequest(layer_id=layer_id))
+
+    def layers(self) -> Any:
+        return self._layers(multilayer_q.QueryLayersRequest())
+
+    def routing_stats(self) -> Any:
+        return self._routing_stats(multilayer_q.QueryRoutingStatsRequest())
+
+
+class RdkQueryClient:
+    """Typed query client for ``x/rdk`` (rollup development kit)."""
+
+    _SERVICE = "qorechain.rdk.v1.Query"
+
+    def __init__(self, channel: grpc.Channel) -> None:
+        self._params = _unary(
+            channel, self._SERVICE, "Params",
+            rdk_q.QueryParamsRequest, rdk_q.QueryParamsResponse,
+        )
+        self._rollup = _unary(
+            channel, self._SERVICE, "Rollup",
+            rdk_q.QueryRollupRequest, rdk_q.QueryRollupResponse,
+        )
+        self._rollups = _unary(
+            channel, self._SERVICE, "Rollups",
+            rdk_q.QueryRollupsRequest, rdk_q.QueryRollupsResponse,
+        )
+        self._batch = _unary(
+            channel, self._SERVICE, "Batch",
+            rdk_q.QueryBatchRequest, rdk_q.QueryBatchResponse,
+        )
+        self._latest_batch = _unary(
+            channel, self._SERVICE, "LatestBatch",
+            rdk_q.QueryLatestBatchRequest, rdk_q.QueryLatestBatchResponse,
+        )
+
+    def params(self) -> Any:
+        return self._params(rdk_q.QueryParamsRequest())
+
+    def rollup(self, rollup_id: str) -> Any:
+        return self._rollup(rdk_q.QueryRollupRequest(rollup_id=rollup_id))
+
+    def rollups(self) -> Any:
+        return self._rollups(rdk_q.QueryRollupsRequest())
+
+    def batch(self, rollup_id: str, batch_index: int) -> Any:
+        return self._batch(
+            rdk_q.QueryBatchRequest(rollup_id=rollup_id, batch_index=batch_index)
+        )
+
+    def latest_batch(self, rollup_id: str) -> Any:
+        return self._latest_batch(rdk_q.QueryLatestBatchRequest(rollup_id=rollup_id))
+
+
+class BridgeQueryClient:
+    """Typed query client for ``x/bridge``."""
+
+    _SERVICE = "qorechain.bridge.v1.Query"
+
+    def __init__(self, channel: grpc.Channel) -> None:
+        self._config = _unary(
+            channel, self._SERVICE, "Config",
+            bridge_q.QueryConfigRequest, bridge_q.QueryConfigResponse,
+        )
+        self._chain_config = _unary(
+            channel, self._SERVICE, "ChainConfig",
+            bridge_q.QueryChainConfigRequest, bridge_q.QueryChainConfigResponse,
+        )
+        self._chain_configs = _unary(
+            channel, self._SERVICE, "ChainConfigs",
+            bridge_q.QueryChainConfigsRequest, bridge_q.QueryChainConfigsResponse,
+        )
+        self._validator = _unary(
+            channel, self._SERVICE, "Validator",
+            bridge_q.QueryValidatorRequest, bridge_q.QueryValidatorResponse,
+        )
+        self._validators = _unary(
+            channel, self._SERVICE, "Validators",
+            bridge_q.QueryValidatorsRequest, bridge_q.QueryValidatorsResponse,
+        )
+        self._operation = _unary(
+            channel, self._SERVICE, "Operation",
+            bridge_q.QueryOperationRequest, bridge_q.QueryOperationResponse,
+        )
+        self._operations = _unary(
+            channel, self._SERVICE, "Operations",
+            bridge_q.QueryOperationsRequest, bridge_q.QueryOperationsResponse,
+        )
+
+    def config(self) -> Any:
+        return self._config(bridge_q.QueryConfigRequest())
+
+    def chain_config(self, chain_id: str) -> Any:
+        return self._chain_config(bridge_q.QueryChainConfigRequest(chain_id=chain_id))
+
+    def chain_configs(self) -> Any:
+        return self._chain_configs(bridge_q.QueryChainConfigsRequest())
+
+    def validator(self, address: str) -> Any:
+        return self._validator(bridge_q.QueryValidatorRequest(address=address))
+
+    def validators(self) -> Any:
+        return self._validators(bridge_q.QueryValidatorsRequest())
+
+    def operation(self, operation_id: str) -> Any:
+        return self._operation(bridge_q.QueryOperationRequest(id=operation_id))
+
+    def operations(self) -> Any:
+        return self._operations(bridge_q.QueryOperationsRequest())
+
+
 class QueryClients:
     """A bundle of every module query client over one shared gRPC channel.
 
@@ -271,6 +413,9 @@ class QueryClients:
         self.reputation = ReputationQueryClient(channel)
         self.rlconsensus = RlconsensusQueryClient(channel)
         self.svm = SvmQueryClient(channel)
+        self.multilayer = MultilayerQueryClient(channel)
+        self.rdk = RdkQueryClient(channel)
+        self.bridge = BridgeQueryClient(channel)
 
     def close(self) -> None:
         self._channel.close()

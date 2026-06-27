@@ -1,9 +1,10 @@
 from cosmos.msg.v1 import msg_pb2 as _msg_pb2
 from cosmos_proto import cosmos_pb2 as _cosmos_pb2
 from gogoproto import gogo_pb2 as _gogo_pb2
+from google.protobuf.internal import containers as _containers
 from google.protobuf import descriptor as _descriptor
 from google.protobuf import message as _message
-from typing import ClassVar as _ClassVar, Optional as _Optional
+from typing import ClassVar as _ClassVar, Iterable as _Iterable, Optional as _Optional
 
 DESCRIPTOR: _descriptor.FileDescriptor
 
@@ -28,7 +29,7 @@ class MsgCreateRollupResponse(_message.Message):
     def __init__(self, rollup_id: _Optional[str] = ...) -> None: ...
 
 class MsgSubmitBatch(_message.Message):
-    __slots__ = ("sequencer", "rollup_id", "batch_index", "state_root", "prev_state_root", "tx_count", "data_hash", "proof")
+    __slots__ = ("sequencer", "rollup_id", "batch_index", "state_root", "prev_state_root", "tx_count", "data_hash", "proof", "withdrawals_root")
     SEQUENCER_FIELD_NUMBER: _ClassVar[int]
     ROLLUP_ID_FIELD_NUMBER: _ClassVar[int]
     BATCH_INDEX_FIELD_NUMBER: _ClassVar[int]
@@ -37,6 +38,7 @@ class MsgSubmitBatch(_message.Message):
     TX_COUNT_FIELD_NUMBER: _ClassVar[int]
     DATA_HASH_FIELD_NUMBER: _ClassVar[int]
     PROOF_FIELD_NUMBER: _ClassVar[int]
+    WITHDRAWALS_ROOT_FIELD_NUMBER: _ClassVar[int]
     sequencer: str
     rollup_id: str
     batch_index: int
@@ -45,7 +47,8 @@ class MsgSubmitBatch(_message.Message):
     tx_count: int
     data_hash: bytes
     proof: bytes
-    def __init__(self, sequencer: _Optional[str] = ..., rollup_id: _Optional[str] = ..., batch_index: _Optional[int] = ..., state_root: _Optional[bytes] = ..., prev_state_root: _Optional[bytes] = ..., tx_count: _Optional[int] = ..., data_hash: _Optional[bytes] = ..., proof: _Optional[bytes] = ...) -> None: ...
+    withdrawals_root: bytes
+    def __init__(self, sequencer: _Optional[str] = ..., rollup_id: _Optional[str] = ..., batch_index: _Optional[int] = ..., state_root: _Optional[bytes] = ..., prev_state_root: _Optional[bytes] = ..., tx_count: _Optional[int] = ..., data_hash: _Optional[bytes] = ..., proof: _Optional[bytes] = ..., withdrawals_root: _Optional[bytes] = ...) -> None: ...
 
 class MsgSubmitBatchResponse(_message.Message):
     __slots__ = ()
@@ -118,5 +121,29 @@ class MsgStopRollup(_message.Message):
     def __init__(self, creator: _Optional[str] = ..., rollup_id: _Optional[str] = ...) -> None: ...
 
 class MsgStopRollupResponse(_message.Message):
+    __slots__ = ()
+    def __init__(self) -> None: ...
+
+class MsgExecuteWithdrawal(_message.Message):
+    __slots__ = ("submitter", "rollup_id", "batch_index", "withdrawal_index", "recipient", "denom", "amount", "proof")
+    SUBMITTER_FIELD_NUMBER: _ClassVar[int]
+    ROLLUP_ID_FIELD_NUMBER: _ClassVar[int]
+    BATCH_INDEX_FIELD_NUMBER: _ClassVar[int]
+    WITHDRAWAL_INDEX_FIELD_NUMBER: _ClassVar[int]
+    RECIPIENT_FIELD_NUMBER: _ClassVar[int]
+    DENOM_FIELD_NUMBER: _ClassVar[int]
+    AMOUNT_FIELD_NUMBER: _ClassVar[int]
+    PROOF_FIELD_NUMBER: _ClassVar[int]
+    submitter: str
+    rollup_id: str
+    batch_index: int
+    withdrawal_index: int
+    recipient: str
+    denom: str
+    amount: int
+    proof: _containers.RepeatedScalarFieldContainer[bytes]
+    def __init__(self, submitter: _Optional[str] = ..., rollup_id: _Optional[str] = ..., batch_index: _Optional[int] = ..., withdrawal_index: _Optional[int] = ..., recipient: _Optional[str] = ..., denom: _Optional[str] = ..., amount: _Optional[int] = ..., proof: _Optional[_Iterable[bytes]] = ...) -> None: ...
+
+class MsgExecuteWithdrawalResponse(_message.Message):
     __slots__ = ()
     def __init__(self) -> None: ...

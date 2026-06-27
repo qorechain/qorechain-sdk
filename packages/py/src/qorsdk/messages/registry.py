@@ -74,6 +74,13 @@ QORECHAIN_REGISTRY_TYPES: dict[str, ProtoType] = {
         bridge_tx.MsgRegisterBridgeValidator
     ),
     "/qorechain.bridge.v1.MsgBridgeAttestation": bridge_tx.MsgBridgeAttestation,
+    "/qorechain.bridge.v1.MsgUpdateEthLightClient": (
+        bridge_tx.MsgUpdateEthLightClient
+    ),
+    "/qorechain.bridge.v1.MsgUpdateChainConfig": bridge_tx.MsgUpdateChainConfig,
+    "/qorechain.bridge.v1.MsgSetVerifierBootstrap": (
+        bridge_tx.MsgSetVerifierBootstrap
+    ),
     # rdk
     "/qorechain.rdk.v1.MsgCreateRollup": rdk_tx.MsgCreateRollup,
     "/qorechain.rdk.v1.MsgSubmitBatch": rdk_tx.MsgSubmitBatch,
@@ -82,6 +89,7 @@ QORECHAIN_REGISTRY_TYPES: dict[str, ProtoType] = {
     "/qorechain.rdk.v1.MsgPauseRollup": rdk_tx.MsgPauseRollup,
     "/qorechain.rdk.v1.MsgResumeRollup": rdk_tx.MsgResumeRollup,
     "/qorechain.rdk.v1.MsgStopRollup": rdk_tx.MsgStopRollup,
+    "/qorechain.rdk.v1.MsgExecuteWithdrawal": rdk_tx.MsgExecuteWithdrawal,
     # multilayer
     "/qorechain.multilayer.v1.MsgRegisterSidechain": (
         multilayer_tx.MsgRegisterSidechain

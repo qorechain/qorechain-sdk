@@ -94,6 +94,27 @@ func (BridgeComposers) Attestation(validator, chain, eventType, operationID, txH
 	return &bridgev1.MsgBridgeAttestation{Validator: validator, Chain: chain, EventType: eventType, OperationID: operationID, TxHash: txHash, Amount: amount, Asset: asset, Proof: proof, PQCSignature: pqcSignature}
 }
 
+// UpdateEthLightClient builds MsgUpdateEthLightClient. update is the encoded
+// Altair LightClientUpdate bundle the chain verifies before advancing the
+// on-chain light client.
+func (BridgeComposers) UpdateEthLightClient(relayer string, update []byte) *bridgev1.MsgUpdateEthLightClient {
+	return &bridgev1.MsgUpdateEthLightClient{Relayer: relayer, Update: update}
+}
+
+// UpdateChainConfig builds MsgUpdateChainConfig. Empty string / zero fields fall
+// back to the existing config (handler merge semantics), so a caller can flip
+// just status plus one verifier flag to activate a chain post-deploy.
+func (BridgeComposers) UpdateChainConfig(admin, chainID, bridgeContract string, confirmationsRequired uint32, architecture, status, verifier, lockEventSig string) *bridgev1.MsgUpdateChainConfig {
+	return &bridgev1.MsgUpdateChainConfig{Admin: admin, ChainId: chainID, BridgeContract: bridgeContract, ConfirmationsRequired: confirmationsRequired, Architecture: architecture, Status: status, Verifier: verifier, LockEventSig: lockEventSig}
+}
+
+// SetVerifierBootstrap builds MsgSetVerifierBootstrap. Exactly one verifier
+// trust root should be populated; the handler routes by which is non-nil. Pass
+// nil for the unused roots and an empty slice for an unused starknetStateRoot.
+func (BridgeComposers) SetVerifierBootstrap(admin, chainID string, wormhole *bridgev1.WormholeGuardianSet, ed25519, bls *bridgev1.ValidatorQuorum, bitcoin *bridgev1.BitcoinCheckpoint, starknetStateRoot []byte) *bridgev1.MsgSetVerifierBootstrap {
+	return &bridgev1.MsgSetVerifierBootstrap{Admin: admin, ChainId: chainID, Wormhole: wormhole, Ed25519: ed25519, Bls: bls, Bitcoin: bitcoin, StarknetStateRoot: starknetStateRoot}
+}
+
 // ---- rdk ----
 
 // RdkComposers builds rdk module messages.
@@ -107,9 +128,11 @@ func (RdkComposers) CreateRollup(creator, rollupID, profile, vmType string, stak
 	return &rdkv1.MsgCreateRollup{Creator: creator, RollupID: rollupID, Profile: profile, VmType: vmType, StakeAmount: stakeAmount}
 }
 
-// SubmitBatch builds MsgSubmitBatch.
-func (RdkComposers) SubmitBatch(sequencer, rollupID string, batchIndex uint64, stateRoot, prevStateRoot []byte, txCount uint64, dataHash, proof []byte) *rdkv1.MsgSubmitBatch {
-	return &rdkv1.MsgSubmitBatch{Sequencer: sequencer, RollupID: rollupID, BatchIndex: batchIndex, StateRoot: stateRoot, PrevStateRoot: prevStateRoot, TxCount: txCount, DataHash: dataHash, Proof: proof}
+// SubmitBatch builds MsgSubmitBatch. withdrawalsRoot commits the batch's L2->L1
+// messages (withdrawals) as a binary-Merkle root; pass nil when the batch
+// carries no cross-layer messages.
+func (RdkComposers) SubmitBatch(sequencer, rollupID string, batchIndex uint64, stateRoot, prevStateRoot []byte, txCount uint64, dataHash, proof, withdrawalsRoot []byte) *rdkv1.MsgSubmitBatch {
+	return &rdkv1.MsgSubmitBatch{Sequencer: sequencer, RollupID: rollupID, BatchIndex: batchIndex, StateRoot: stateRoot, PrevStateRoot: prevStateRoot, TxCount: txCount, DataHash: dataHash, Proof: proof, WithdrawalsRoot: withdrawalsRoot}
 }
 
 // ChallengeBatch builds MsgChallengeBatch.
@@ -135,6 +158,12 @@ func (RdkComposers) ResumeRollup(creator, rollupID string) *rdkv1.MsgResumeRollu
 // StopRollup builds MsgStopRollup.
 func (RdkComposers) StopRollup(creator, rollupID string) *rdkv1.MsgStopRollup {
 	return &rdkv1.MsgStopRollup{Creator: creator, RollupID: rollupID}
+}
+
+// ExecuteWithdrawal builds MsgExecuteWithdrawal. proof is the binary-Merkle
+// sibling-hash path from the withdrawal leaf to the batch's withdrawals_root.
+func (RdkComposers) ExecuteWithdrawal(submitter, rollupID string, batchIndex, withdrawalIndex uint64, recipient, denom string, amount int64, proof [][]byte) *rdkv1.MsgExecuteWithdrawal {
+	return &rdkv1.MsgExecuteWithdrawal{Submitter: submitter, RollupID: rollupID, BatchIndex: batchIndex, WithdrawalIndex: withdrawalIndex, Recipient: recipient, Denom: denom, Amount: amount, Proof: proof}
 }
 
 // ---- multilayer ----

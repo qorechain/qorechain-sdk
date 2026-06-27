@@ -1,7 +1,7 @@
 package io.github.qorechain.messages;
 
 /**
- * Typed composers for every QoreChain custom-module {@code Msg} (49 total).
+ * Typed composers for every QoreChain custom-module {@code Msg} (53 total).
  *
  * <p>Each method wraps an already-built protobuf message in a {@link TypedMessage}
  * carrying the correct on-chain type URL, ready to feed into the tx builder. The
@@ -65,6 +65,21 @@ public final class QorechainMessages {
         public static TypedMessage bridgeAttestation(qorechain.bridge.v1.Tx.MsgBridgeAttestation m) {
             return new TypedMessage("/qorechain.bridge.v1.MsgBridgeAttestation", m);
         }
+
+        public static TypedMessage updateEthLightClient(
+                qorechain.bridge.v1.Tx.MsgUpdateEthLightClient m) {
+            return new TypedMessage("/qorechain.bridge.v1.MsgUpdateEthLightClient", m);
+        }
+
+        public static TypedMessage updateChainConfig(
+                qorechain.bridge.v1.Tx.MsgUpdateChainConfig m) {
+            return new TypedMessage("/qorechain.bridge.v1.MsgUpdateChainConfig", m);
+        }
+
+        public static TypedMessage setVerifierBootstrap(
+                qorechain.bridge.v1.Tx.MsgSetVerifierBootstrap m) {
+            return new TypedMessage("/qorechain.bridge.v1.MsgSetVerifierBootstrap", m);
+        }
     }
 
     /** RDK (rollup development kit) module composers. */
@@ -97,6 +112,11 @@ public final class QorechainMessages {
 
         public static TypedMessage stopRollup(qorechain.rdk.v1.Tx.MsgStopRollup m) {
             return new TypedMessage("/qorechain.rdk.v1.MsgStopRollup", m);
+        }
+
+        public static TypedMessage executeWithdrawal(
+                qorechain.rdk.v1.Tx.MsgExecuteWithdrawal m) {
+            return new TypedMessage("/qorechain.rdk.v1.MsgExecuteWithdrawal", m);
         }
     }
 

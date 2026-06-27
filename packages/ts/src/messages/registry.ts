@@ -56,6 +56,9 @@ export const qorechainRegistryTypes: ReadonlyArray<[string, GeneratedType]> = [
     bridge.MsgRegisterBridgeValidator,
   ],
   ["/qorechain.bridge.v1.MsgBridgeAttestation", bridge.MsgBridgeAttestation],
+  ["/qorechain.bridge.v1.MsgUpdateEthLightClient", bridge.MsgUpdateEthLightClient],
+  ["/qorechain.bridge.v1.MsgUpdateChainConfig", bridge.MsgUpdateChainConfig],
+  ["/qorechain.bridge.v1.MsgSetVerifierBootstrap", bridge.MsgSetVerifierBootstrap],
   // rdk
   ["/qorechain.rdk.v1.MsgCreateRollup", rdk.MsgCreateRollup],
   ["/qorechain.rdk.v1.MsgSubmitBatch", rdk.MsgSubmitBatch],
@@ -64,6 +67,7 @@ export const qorechainRegistryTypes: ReadonlyArray<[string, GeneratedType]> = [
   ["/qorechain.rdk.v1.MsgPauseRollup", rdk.MsgPauseRollup],
   ["/qorechain.rdk.v1.MsgResumeRollup", rdk.MsgResumeRollup],
   ["/qorechain.rdk.v1.MsgStopRollup", rdk.MsgStopRollup],
+  ["/qorechain.rdk.v1.MsgExecuteWithdrawal", rdk.MsgExecuteWithdrawal],
   // multilayer
   [
     "/qorechain.multilayer.v1.MsgRegisterSidechain",

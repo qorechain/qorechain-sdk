@@ -9,6 +9,64 @@ import { BinaryReader, BinaryWriter } from "@bufbuild/protobuf/wire";
 
 export const protobufPackage = "qorechain.bridge.v1";
 
+/**
+ * MsgUpdateChainConfig sets/replaces a chain's bridge configuration. Empty
+ * string / zero fields fall back to the existing config (merge semantics in the
+ * handler), so a caller can flip just `status`+one verifier flag to activate.
+ */
+export interface MsgUpdateChainConfig {
+  admin: string;
+  chainId: string;
+  /** contract/program address on the external chain */
+  bridgeContract: string;
+  confirmationsRequired: number;
+  /** ChainArchitecture string (empty keeps existing) */
+  architecture: string;
+  /** "active" | "paused" | "pending" (empty keeps existing) */
+  status: string;
+  /** Exactly one verifier flag should be set when activating trustless mode. */
+  verifier: string;
+  /** hex topic0 of the lock event (EVM/light-client chains) */
+  lockEventSig: string;
+}
+
+export interface MsgUpdateChainConfigResponse {
+}
+
+/**
+ * MsgSetVerifierBootstrap installs a verifier trust root. Exactly one of the
+ * sub-messages must be populated; the handler routes by which is non-nil.
+ */
+export interface MsgSetVerifierBootstrap {
+  admin: string;
+  chainId: string;
+  wormhole?: WormholeGuardianSet | undefined;
+  ed25519?: ValidatorQuorum | undefined;
+  bls?: ValidatorQuorum | undefined;
+  bitcoin?: BitcoinCheckpoint | undefined;
+  starknetStateRoot: Uint8Array;
+}
+
+export interface MsgSetVerifierBootstrapResponse {
+}
+
+export interface WormholeGuardianSet {
+  /** 20-byte guardian eth addresses */
+  addresses: Uint8Array[];
+  quorum: number;
+}
+
+export interface ValidatorQuorum {
+  /** ed25519 (32B) or BLS (48B) pubkeys */
+  pubkeys: Uint8Array[];
+  threshold: number;
+}
+
+export interface BitcoinCheckpoint {
+  blockHash: Uint8Array;
+  minConfs: number;
+}
+
 export interface MsgBridgeDeposit {
   sender: string;
   sourceChain: string;
@@ -56,6 +114,719 @@ export interface MsgBridgeAttestation {
 
 export interface MsgBridgeAttestationResponse {
 }
+
+export interface MsgUpdateEthLightClient {
+  relayer: string;
+  /**
+   * Encoded Altair LightClientUpdate bundle verified against the stored sync
+   * committee before advancing the on-chain light client.
+   */
+  update: Uint8Array;
+}
+
+export interface MsgUpdateEthLightClientResponse {
+}
+
+function createBaseMsgUpdateChainConfig(): MsgUpdateChainConfig {
+  return {
+    admin: "",
+    chainId: "",
+    bridgeContract: "",
+    confirmationsRequired: 0,
+    architecture: "",
+    status: "",
+    verifier: "",
+    lockEventSig: "",
+  };
+}
+
+export const MsgUpdateChainConfig: MessageFns<MsgUpdateChainConfig> = {
+  encode(message: MsgUpdateChainConfig, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.admin !== "") {
+      writer.uint32(10).string(message.admin);
+    }
+    if (message.chainId !== "") {
+      writer.uint32(18).string(message.chainId);
+    }
+    if (message.bridgeContract !== "") {
+      writer.uint32(26).string(message.bridgeContract);
+    }
+    if (message.confirmationsRequired !== 0) {
+      writer.uint32(32).uint32(message.confirmationsRequired);
+    }
+    if (message.architecture !== "") {
+      writer.uint32(42).string(message.architecture);
+    }
+    if (message.status !== "") {
+      writer.uint32(50).string(message.status);
+    }
+    if (message.verifier !== "") {
+      writer.uint32(58).string(message.verifier);
+    }
+    if (message.lockEventSig !== "") {
+      writer.uint32(66).string(message.lockEventSig);
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): MsgUpdateChainConfig {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseMsgUpdateChainConfig();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.admin = reader.string();
+          continue;
+        }
+        case 2: {
+          if (tag !== 18) {
+            break;
+          }
+
+          message.chainId = reader.string();
+          continue;
+        }
+        case 3: {
+          if (tag !== 26) {
+            break;
+          }
+
+          message.bridgeContract = reader.string();
+          continue;
+        }
+        case 4: {
+          if (tag !== 32) {
+            break;
+          }
+
+          message.confirmationsRequired = reader.uint32();
+          continue;
+        }
+        case 5: {
+          if (tag !== 42) {
+            break;
+          }
+
+          message.architecture = reader.string();
+          continue;
+        }
+        case 6: {
+          if (tag !== 50) {
+            break;
+          }
+
+          message.status = reader.string();
+          continue;
+        }
+        case 7: {
+          if (tag !== 58) {
+            break;
+          }
+
+          message.verifier = reader.string();
+          continue;
+        }
+        case 8: {
+          if (tag !== 66) {
+            break;
+          }
+
+          message.lockEventSig = reader.string();
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(object: any): MsgUpdateChainConfig {
+    return {
+      admin: isSet(object.admin) ? globalThis.String(object.admin) : "",
+      chainId: isSet(object.chainId)
+        ? globalThis.String(object.chainId)
+        : isSet(object.chain_id)
+        ? globalThis.String(object.chain_id)
+        : "",
+      bridgeContract: isSet(object.bridgeContract)
+        ? globalThis.String(object.bridgeContract)
+        : isSet(object.bridge_contract)
+        ? globalThis.String(object.bridge_contract)
+        : "",
+      confirmationsRequired: isSet(object.confirmationsRequired)
+        ? globalThis.Number(object.confirmationsRequired)
+        : isSet(object.confirmations_required)
+        ? globalThis.Number(object.confirmations_required)
+        : 0,
+      architecture: isSet(object.architecture) ? globalThis.String(object.architecture) : "",
+      status: isSet(object.status) ? globalThis.String(object.status) : "",
+      verifier: isSet(object.verifier) ? globalThis.String(object.verifier) : "",
+      lockEventSig: isSet(object.lockEventSig)
+        ? globalThis.String(object.lockEventSig)
+        : isSet(object.lock_event_sig)
+        ? globalThis.String(object.lock_event_sig)
+        : "",
+    };
+  },
+
+  toJSON(message: MsgUpdateChainConfig): unknown {
+    const obj: any = {};
+    if (message.admin !== "") {
+      obj.admin = message.admin;
+    }
+    if (message.chainId !== "") {
+      obj.chainId = message.chainId;
+    }
+    if (message.bridgeContract !== "") {
+      obj.bridgeContract = message.bridgeContract;
+    }
+    if (message.confirmationsRequired !== 0) {
+      obj.confirmationsRequired = Math.round(message.confirmationsRequired);
+    }
+    if (message.architecture !== "") {
+      obj.architecture = message.architecture;
+    }
+    if (message.status !== "") {
+      obj.status = message.status;
+    }
+    if (message.verifier !== "") {
+      obj.verifier = message.verifier;
+    }
+    if (message.lockEventSig !== "") {
+      obj.lockEventSig = message.lockEventSig;
+    }
+    return obj;
+  },
+
+  create(base?: DeepPartial<MsgUpdateChainConfig>): MsgUpdateChainConfig {
+    return MsgUpdateChainConfig.fromPartial(base ?? {});
+  },
+  fromPartial(object: DeepPartial<MsgUpdateChainConfig>): MsgUpdateChainConfig {
+    const message = createBaseMsgUpdateChainConfig();
+    message.admin = object.admin ?? "";
+    message.chainId = object.chainId ?? "";
+    message.bridgeContract = object.bridgeContract ?? "";
+    message.confirmationsRequired = object.confirmationsRequired ?? 0;
+    message.architecture = object.architecture ?? "";
+    message.status = object.status ?? "";
+    message.verifier = object.verifier ?? "";
+    message.lockEventSig = object.lockEventSig ?? "";
+    return message;
+  },
+};
+
+function createBaseMsgUpdateChainConfigResponse(): MsgUpdateChainConfigResponse {
+  return {};
+}
+
+export const MsgUpdateChainConfigResponse: MessageFns<MsgUpdateChainConfigResponse> = {
+  encode(_: MsgUpdateChainConfigResponse, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): MsgUpdateChainConfigResponse {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseMsgUpdateChainConfigResponse();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(_: any): MsgUpdateChainConfigResponse {
+    return {};
+  },
+
+  toJSON(_: MsgUpdateChainConfigResponse): unknown {
+    const obj: any = {};
+    return obj;
+  },
+
+  create(base?: DeepPartial<MsgUpdateChainConfigResponse>): MsgUpdateChainConfigResponse {
+    return MsgUpdateChainConfigResponse.fromPartial(base ?? {});
+  },
+  fromPartial(_: DeepPartial<MsgUpdateChainConfigResponse>): MsgUpdateChainConfigResponse {
+    const message = createBaseMsgUpdateChainConfigResponse();
+    return message;
+  },
+};
+
+function createBaseMsgSetVerifierBootstrap(): MsgSetVerifierBootstrap {
+  return {
+    admin: "",
+    chainId: "",
+    wormhole: undefined,
+    ed25519: undefined,
+    bls: undefined,
+    bitcoin: undefined,
+    starknetStateRoot: new Uint8Array(0),
+  };
+}
+
+export const MsgSetVerifierBootstrap: MessageFns<MsgSetVerifierBootstrap> = {
+  encode(message: MsgSetVerifierBootstrap, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.admin !== "") {
+      writer.uint32(10).string(message.admin);
+    }
+    if (message.chainId !== "") {
+      writer.uint32(18).string(message.chainId);
+    }
+    if (message.wormhole !== undefined) {
+      WormholeGuardianSet.encode(message.wormhole, writer.uint32(26).fork()).join();
+    }
+    if (message.ed25519 !== undefined) {
+      ValidatorQuorum.encode(message.ed25519, writer.uint32(34).fork()).join();
+    }
+    if (message.bls !== undefined) {
+      ValidatorQuorum.encode(message.bls, writer.uint32(42).fork()).join();
+    }
+    if (message.bitcoin !== undefined) {
+      BitcoinCheckpoint.encode(message.bitcoin, writer.uint32(50).fork()).join();
+    }
+    if (message.starknetStateRoot.length !== 0) {
+      writer.uint32(58).bytes(message.starknetStateRoot);
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): MsgSetVerifierBootstrap {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseMsgSetVerifierBootstrap();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.admin = reader.string();
+          continue;
+        }
+        case 2: {
+          if (tag !== 18) {
+            break;
+          }
+
+          message.chainId = reader.string();
+          continue;
+        }
+        case 3: {
+          if (tag !== 26) {
+            break;
+          }
+
+          message.wormhole = WormholeGuardianSet.decode(reader, reader.uint32());
+          continue;
+        }
+        case 4: {
+          if (tag !== 34) {
+            break;
+          }
+
+          message.ed25519 = ValidatorQuorum.decode(reader, reader.uint32());
+          continue;
+        }
+        case 5: {
+          if (tag !== 42) {
+            break;
+          }
+
+          message.bls = ValidatorQuorum.decode(reader, reader.uint32());
+          continue;
+        }
+        case 6: {
+          if (tag !== 50) {
+            break;
+          }
+
+          message.bitcoin = BitcoinCheckpoint.decode(reader, reader.uint32());
+          continue;
+        }
+        case 7: {
+          if (tag !== 58) {
+            break;
+          }
+
+          message.starknetStateRoot = reader.bytes();
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(object: any): MsgSetVerifierBootstrap {
+    return {
+      admin: isSet(object.admin) ? globalThis.String(object.admin) : "",
+      chainId: isSet(object.chainId)
+        ? globalThis.String(object.chainId)
+        : isSet(object.chain_id)
+        ? globalThis.String(object.chain_id)
+        : "",
+      wormhole: isSet(object.wormhole) ? WormholeGuardianSet.fromJSON(object.wormhole) : undefined,
+      ed25519: isSet(object.ed25519) ? ValidatorQuorum.fromJSON(object.ed25519) : undefined,
+      bls: isSet(object.bls) ? ValidatorQuorum.fromJSON(object.bls) : undefined,
+      bitcoin: isSet(object.bitcoin) ? BitcoinCheckpoint.fromJSON(object.bitcoin) : undefined,
+      starknetStateRoot: isSet(object.starknetStateRoot)
+        ? bytesFromBase64(object.starknetStateRoot)
+        : isSet(object.starknet_state_root)
+        ? bytesFromBase64(object.starknet_state_root)
+        : new Uint8Array(0),
+    };
+  },
+
+  toJSON(message: MsgSetVerifierBootstrap): unknown {
+    const obj: any = {};
+    if (message.admin !== "") {
+      obj.admin = message.admin;
+    }
+    if (message.chainId !== "") {
+      obj.chainId = message.chainId;
+    }
+    if (message.wormhole !== undefined) {
+      obj.wormhole = WormholeGuardianSet.toJSON(message.wormhole);
+    }
+    if (message.ed25519 !== undefined) {
+      obj.ed25519 = ValidatorQuorum.toJSON(message.ed25519);
+    }
+    if (message.bls !== undefined) {
+      obj.bls = ValidatorQuorum.toJSON(message.bls);
+    }
+    if (message.bitcoin !== undefined) {
+      obj.bitcoin = BitcoinCheckpoint.toJSON(message.bitcoin);
+    }
+    if (message.starknetStateRoot.length !== 0) {
+      obj.starknetStateRoot = base64FromBytes(message.starknetStateRoot);
+    }
+    return obj;
+  },
+
+  create(base?: DeepPartial<MsgSetVerifierBootstrap>): MsgSetVerifierBootstrap {
+    return MsgSetVerifierBootstrap.fromPartial(base ?? {});
+  },
+  fromPartial(object: DeepPartial<MsgSetVerifierBootstrap>): MsgSetVerifierBootstrap {
+    const message = createBaseMsgSetVerifierBootstrap();
+    message.admin = object.admin ?? "";
+    message.chainId = object.chainId ?? "";
+    message.wormhole = (object.wormhole !== undefined && object.wormhole !== null)
+      ? WormholeGuardianSet.fromPartial(object.wormhole)
+      : undefined;
+    message.ed25519 = (object.ed25519 !== undefined && object.ed25519 !== null)
+      ? ValidatorQuorum.fromPartial(object.ed25519)
+      : undefined;
+    message.bls = (object.bls !== undefined && object.bls !== null)
+      ? ValidatorQuorum.fromPartial(object.bls)
+      : undefined;
+    message.bitcoin = (object.bitcoin !== undefined && object.bitcoin !== null)
+      ? BitcoinCheckpoint.fromPartial(object.bitcoin)
+      : undefined;
+    message.starknetStateRoot = object.starknetStateRoot ?? new Uint8Array(0);
+    return message;
+  },
+};
+
+function createBaseMsgSetVerifierBootstrapResponse(): MsgSetVerifierBootstrapResponse {
+  return {};
+}
+
+export const MsgSetVerifierBootstrapResponse: MessageFns<MsgSetVerifierBootstrapResponse> = {
+  encode(_: MsgSetVerifierBootstrapResponse, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): MsgSetVerifierBootstrapResponse {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseMsgSetVerifierBootstrapResponse();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(_: any): MsgSetVerifierBootstrapResponse {
+    return {};
+  },
+
+  toJSON(_: MsgSetVerifierBootstrapResponse): unknown {
+    const obj: any = {};
+    return obj;
+  },
+
+  create(base?: DeepPartial<MsgSetVerifierBootstrapResponse>): MsgSetVerifierBootstrapResponse {
+    return MsgSetVerifierBootstrapResponse.fromPartial(base ?? {});
+  },
+  fromPartial(_: DeepPartial<MsgSetVerifierBootstrapResponse>): MsgSetVerifierBootstrapResponse {
+    const message = createBaseMsgSetVerifierBootstrapResponse();
+    return message;
+  },
+};
+
+function createBaseWormholeGuardianSet(): WormholeGuardianSet {
+  return { addresses: [], quorum: 0 };
+}
+
+export const WormholeGuardianSet: MessageFns<WormholeGuardianSet> = {
+  encode(message: WormholeGuardianSet, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    for (const v of message.addresses) {
+      writer.uint32(10).bytes(v!);
+    }
+    if (message.quorum !== 0) {
+      writer.uint32(16).uint32(message.quorum);
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): WormholeGuardianSet {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseWormholeGuardianSet();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.addresses.push(reader.bytes());
+          continue;
+        }
+        case 2: {
+          if (tag !== 16) {
+            break;
+          }
+
+          message.quorum = reader.uint32();
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(object: any): WormholeGuardianSet {
+    return {
+      addresses: globalThis.Array.isArray(object?.addresses)
+        ? object.addresses.map((e: any) => bytesFromBase64(e))
+        : [],
+      quorum: isSet(object.quorum) ? globalThis.Number(object.quorum) : 0,
+    };
+  },
+
+  toJSON(message: WormholeGuardianSet): unknown {
+    const obj: any = {};
+    if (message.addresses?.length) {
+      obj.addresses = message.addresses.map((e) => base64FromBytes(e));
+    }
+    if (message.quorum !== 0) {
+      obj.quorum = Math.round(message.quorum);
+    }
+    return obj;
+  },
+
+  create(base?: DeepPartial<WormholeGuardianSet>): WormholeGuardianSet {
+    return WormholeGuardianSet.fromPartial(base ?? {});
+  },
+  fromPartial(object: DeepPartial<WormholeGuardianSet>): WormholeGuardianSet {
+    const message = createBaseWormholeGuardianSet();
+    message.addresses = object.addresses?.map((e) => e) || [];
+    message.quorum = object.quorum ?? 0;
+    return message;
+  },
+};
+
+function createBaseValidatorQuorum(): ValidatorQuorum {
+  return { pubkeys: [], threshold: 0 };
+}
+
+export const ValidatorQuorum: MessageFns<ValidatorQuorum> = {
+  encode(message: ValidatorQuorum, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    for (const v of message.pubkeys) {
+      writer.uint32(10).bytes(v!);
+    }
+    if (message.threshold !== 0) {
+      writer.uint32(16).uint32(message.threshold);
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): ValidatorQuorum {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseValidatorQuorum();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.pubkeys.push(reader.bytes());
+          continue;
+        }
+        case 2: {
+          if (tag !== 16) {
+            break;
+          }
+
+          message.threshold = reader.uint32();
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(object: any): ValidatorQuorum {
+    return {
+      pubkeys: globalThis.Array.isArray(object?.pubkeys) ? object.pubkeys.map((e: any) => bytesFromBase64(e)) : [],
+      threshold: isSet(object.threshold) ? globalThis.Number(object.threshold) : 0,
+    };
+  },
+
+  toJSON(message: ValidatorQuorum): unknown {
+    const obj: any = {};
+    if (message.pubkeys?.length) {
+      obj.pubkeys = message.pubkeys.map((e) => base64FromBytes(e));
+    }
+    if (message.threshold !== 0) {
+      obj.threshold = Math.round(message.threshold);
+    }
+    return obj;
+  },
+
+  create(base?: DeepPartial<ValidatorQuorum>): ValidatorQuorum {
+    return ValidatorQuorum.fromPartial(base ?? {});
+  },
+  fromPartial(object: DeepPartial<ValidatorQuorum>): ValidatorQuorum {
+    const message = createBaseValidatorQuorum();
+    message.pubkeys = object.pubkeys?.map((e) => e) || [];
+    message.threshold = object.threshold ?? 0;
+    return message;
+  },
+};
+
+function createBaseBitcoinCheckpoint(): BitcoinCheckpoint {
+  return { blockHash: new Uint8Array(0), minConfs: 0 };
+}
+
+export const BitcoinCheckpoint: MessageFns<BitcoinCheckpoint> = {
+  encode(message: BitcoinCheckpoint, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.blockHash.length !== 0) {
+      writer.uint32(10).bytes(message.blockHash);
+    }
+    if (message.minConfs !== 0) {
+      writer.uint32(16).uint32(message.minConfs);
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): BitcoinCheckpoint {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseBitcoinCheckpoint();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.blockHash = reader.bytes();
+          continue;
+        }
+        case 2: {
+          if (tag !== 16) {
+            break;
+          }
+
+          message.minConfs = reader.uint32();
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(object: any): BitcoinCheckpoint {
+    return {
+      blockHash: isSet(object.blockHash)
+        ? bytesFromBase64(object.blockHash)
+        : isSet(object.block_hash)
+        ? bytesFromBase64(object.block_hash)
+        : new Uint8Array(0),
+      minConfs: isSet(object.minConfs)
+        ? globalThis.Number(object.minConfs)
+        : isSet(object.min_confs)
+        ? globalThis.Number(object.min_confs)
+        : 0,
+    };
+  },
+
+  toJSON(message: BitcoinCheckpoint): unknown {
+    const obj: any = {};
+    if (message.blockHash.length !== 0) {
+      obj.blockHash = base64FromBytes(message.blockHash);
+    }
+    if (message.minConfs !== 0) {
+      obj.minConfs = Math.round(message.minConfs);
+    }
+    return obj;
+  },
+
+  create(base?: DeepPartial<BitcoinCheckpoint>): BitcoinCheckpoint {
+    return BitcoinCheckpoint.fromPartial(base ?? {});
+  },
+  fromPartial(object: DeepPartial<BitcoinCheckpoint>): BitcoinCheckpoint {
+    const message = createBaseBitcoinCheckpoint();
+    message.blockHash = object.blockHash ?? new Uint8Array(0);
+    message.minConfs = object.minConfs ?? 0;
+    return message;
+  },
+};
 
 function createBaseMsgBridgeDeposit(): MsgBridgeDeposit {
   return {
@@ -859,6 +1630,125 @@ export const MsgBridgeAttestationResponse: MessageFns<MsgBridgeAttestationRespon
   },
 };
 
+function createBaseMsgUpdateEthLightClient(): MsgUpdateEthLightClient {
+  return { relayer: "", update: new Uint8Array(0) };
+}
+
+export const MsgUpdateEthLightClient: MessageFns<MsgUpdateEthLightClient> = {
+  encode(message: MsgUpdateEthLightClient, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.relayer !== "") {
+      writer.uint32(10).string(message.relayer);
+    }
+    if (message.update.length !== 0) {
+      writer.uint32(18).bytes(message.update);
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): MsgUpdateEthLightClient {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseMsgUpdateEthLightClient();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.relayer = reader.string();
+          continue;
+        }
+        case 2: {
+          if (tag !== 18) {
+            break;
+          }
+
+          message.update = reader.bytes();
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(object: any): MsgUpdateEthLightClient {
+    return {
+      relayer: isSet(object.relayer) ? globalThis.String(object.relayer) : "",
+      update: isSet(object.update) ? bytesFromBase64(object.update) : new Uint8Array(0),
+    };
+  },
+
+  toJSON(message: MsgUpdateEthLightClient): unknown {
+    const obj: any = {};
+    if (message.relayer !== "") {
+      obj.relayer = message.relayer;
+    }
+    if (message.update.length !== 0) {
+      obj.update = base64FromBytes(message.update);
+    }
+    return obj;
+  },
+
+  create(base?: DeepPartial<MsgUpdateEthLightClient>): MsgUpdateEthLightClient {
+    return MsgUpdateEthLightClient.fromPartial(base ?? {});
+  },
+  fromPartial(object: DeepPartial<MsgUpdateEthLightClient>): MsgUpdateEthLightClient {
+    const message = createBaseMsgUpdateEthLightClient();
+    message.relayer = object.relayer ?? "";
+    message.update = object.update ?? new Uint8Array(0);
+    return message;
+  },
+};
+
+function createBaseMsgUpdateEthLightClientResponse(): MsgUpdateEthLightClientResponse {
+  return {};
+}
+
+export const MsgUpdateEthLightClientResponse: MessageFns<MsgUpdateEthLightClientResponse> = {
+  encode(_: MsgUpdateEthLightClientResponse, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): MsgUpdateEthLightClientResponse {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseMsgUpdateEthLightClientResponse();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(_: any): MsgUpdateEthLightClientResponse {
+    return {};
+  },
+
+  toJSON(_: MsgUpdateEthLightClientResponse): unknown {
+    const obj: any = {};
+    return obj;
+  },
+
+  create(base?: DeepPartial<MsgUpdateEthLightClientResponse>): MsgUpdateEthLightClientResponse {
+    return MsgUpdateEthLightClientResponse.fromPartial(base ?? {});
+  },
+  fromPartial(_: DeepPartial<MsgUpdateEthLightClientResponse>): MsgUpdateEthLightClientResponse {
+    const message = createBaseMsgUpdateEthLightClientResponse();
+    return message;
+  },
+};
+
 /** Msg defines the bridge module's transaction service. */
 export type MsgDefinition = typeof MsgDefinition;
 export const MsgDefinition = {
@@ -898,6 +1788,47 @@ export const MsgDefinition = {
       requestType: MsgBridgeAttestation as typeof MsgBridgeAttestation,
       requestStream: false,
       responseType: MsgBridgeAttestationResponse as typeof MsgBridgeAttestationResponse,
+      responseStream: false,
+      options: {},
+    },
+    /**
+     * UpdateEthLightClient advances the on-chain Ethereum light client with a
+     * verified Altair LightClientUpdate (carried as an opaque encoded bundle).
+     */
+    updateEthLightClient: {
+      name: "UpdateEthLightClient",
+      requestType: MsgUpdateEthLightClient as typeof MsgUpdateEthLightClient,
+      requestStream: false,
+      responseType: MsgUpdateEthLightClientResponse as typeof MsgUpdateEthLightClientResponse,
+      responseStream: false,
+      options: {},
+    },
+    /**
+     * UpdateChainConfig registers/updates a chain's bridge config — real contract
+     * address, confirmations, architecture, status, and which trustless verifier
+     * is active. Authorized by the bridge_admin key OR a qcb_bridge license; lets
+     * operators activate a chain's bridge POST-DEPLOY without governance or an
+     * upgrade.
+     */
+    updateChainConfig: {
+      name: "UpdateChainConfig",
+      requestType: MsgUpdateChainConfig as typeof MsgUpdateChainConfig,
+      requestStream: false,
+      responseType: MsgUpdateChainConfigResponse as typeof MsgUpdateChainConfigResponse,
+      responseStream: false,
+      options: {},
+    },
+    /**
+     * SetVerifierBootstrap installs the per-architecture trust root a chain's
+     * trustless verifier needs (Wormhole guardian set / ed25519 or BLS validator
+     * quorum / Bitcoin checkpoint / Starknet state root). Same authorization as
+     * UpdateChainConfig. (Ethereum uses UpdateEthLightClient.)
+     */
+    setVerifierBootstrap: {
+      name: "SetVerifierBootstrap",
+      requestType: MsgSetVerifierBootstrap as typeof MsgSetVerifierBootstrap,
+      requestStream: false,
+      responseType: MsgSetVerifierBootstrapResponse as typeof MsgSetVerifierBootstrapResponse,
       responseStream: false,
       options: {},
     },

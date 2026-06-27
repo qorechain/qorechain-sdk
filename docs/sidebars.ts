@@ -22,6 +22,8 @@ const sidebars: SidebarsConfig = {
         "guides/svm",
         "guides/cosmwasm",
         "guides/cross-vm",
+        "guides/multilayer",
+        "guides/rollups",
       ],
     },
     {

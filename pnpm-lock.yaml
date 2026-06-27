@@ -195,6 +195,44 @@ importers:
         specifier: ^5.6.3
         version: 5.9.3
 
+  examples/register-sidechain:
+    dependencies:
+      '@cosmjs/tendermint-rpc':
+        specifier: ^0.39.0
+        version: 0.39.0(bufferutil@4.1.0)
+      '@qorechain/sdk':
+        specifier: workspace:*
+        version: link:../../packages/ts
+    devDependencies:
+      '@types/node':
+        specifier: ^22.7.5
+        version: 22.20.0
+      tsx:
+        specifier: ^4.19.0
+        version: 4.22.4
+      typescript:
+        specifier: ^5.6.3
+        version: 5.9.3
+
+  examples/rollup-lifecycle:
+    dependencies:
+      '@cosmjs/tendermint-rpc':
+        specifier: ^0.39.0
+        version: 0.39.0(bufferutil@4.1.0)
+      '@qorechain/sdk':
+        specifier: workspace:*
+        version: link:../../packages/ts
+    devDependencies:
+      '@types/node':
+        specifier: ^22.7.5
+        version: 22.20.0
+      tsx:
+        specifier: ^4.19.0
+        version: 4.22.4
+      typescript:
+        specifier: ^5.6.3
+        version: 5.9.3
+
   examples/send-qor:
     dependencies:
       '@qorechain/sdk':

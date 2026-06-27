@@ -9,11 +9,13 @@ import (
 	"github.com/cosmos/gogoproto/proto"
 
 	ammv1 "github.com/qorechain/qorechain-sdk/packages/go/qorechain/proto/qorechain/amm/v1"
+	bridgev1 "github.com/qorechain/qorechain-sdk/packages/go/qorechain/proto/qorechain/bridge/v1"
+	rdkv1 "github.com/qorechain/qorechain-sdk/packages/go/qorechain/proto/qorechain/rdk/v1"
 	svmv1 "github.com/qorechain/qorechain-sdk/packages/go/qorechain/proto/qorechain/svm/v1"
 )
 
 // allCustomTypeURLs is every custom QoreChain Msg type URL the registry must
-// resolve. The 49 entries match the chain's tx services across all 11 modules.
+// resolve. The 53 entries match the chain's tx services across all 11 modules.
 var allCustomTypeURLs = []string{
 	// amm (7)
 	"/qorechain.amm.v1.MsgCreatePool",
@@ -23,12 +25,15 @@ var allCustomTypeURLs = []string{
 	"/qorechain.amm.v1.MsgSwapExactOut",
 	"/qorechain.amm.v1.MsgPausePool",
 	"/qorechain.amm.v1.MsgResumePool",
-	// bridge (4)
+	// bridge (7)
 	"/qorechain.bridge.v1.MsgBridgeDeposit",
 	"/qorechain.bridge.v1.MsgBridgeWithdraw",
 	"/qorechain.bridge.v1.MsgRegisterBridgeValidator",
 	"/qorechain.bridge.v1.MsgBridgeAttestation",
-	// rdk (7)
+	"/qorechain.bridge.v1.MsgUpdateEthLightClient",
+	"/qorechain.bridge.v1.MsgUpdateChainConfig",
+	"/qorechain.bridge.v1.MsgSetVerifierBootstrap",
+	// rdk (8)
 	"/qorechain.rdk.v1.MsgCreateRollup",
 	"/qorechain.rdk.v1.MsgSubmitBatch",
 	"/qorechain.rdk.v1.MsgChallengeBatch",
@@ -36,6 +41,7 @@ var allCustomTypeURLs = []string{
 	"/qorechain.rdk.v1.MsgPauseRollup",
 	"/qorechain.rdk.v1.MsgResumeRollup",
 	"/qorechain.rdk.v1.MsgStopRollup",
+	"/qorechain.rdk.v1.MsgExecuteWithdrawal",
 	// multilayer (6)
 	"/qorechain.multilayer.v1.MsgRegisterSidechain",
 	"/qorechain.multilayer.v1.MsgRegisterPaychain",
@@ -78,8 +84,8 @@ var allCustomTypeURLs = []string{
 }
 
 func TestAllCustomTypeURLsCount(t *testing.T) {
-	if got := len(allCustomTypeURLs); got != 49 {
-		t.Fatalf("expected 49 custom type URLs, got %d", got)
+	if got := len(allCustomTypeURLs); got != 53 {
+		t.Fatalf("expected 53 custom type URLs, got %d", got)
 	}
 }
 
@@ -178,6 +184,76 @@ func TestSvmBytes32RoundTrip(t *testing.T) {
 	}
 	if len(decoded.Accounts) != 1 || !decoded.Accounts[0].Address.Equal(pid) {
 		t.Fatalf("Accounts mismatch: %+v", decoded.Accounts)
+	}
+}
+
+// TestExecuteWithdrawalRoundTrip exercises the rdk MsgExecuteWithdrawal repeated
+// bytes (proof) field through the codec Any.
+func TestExecuteWithdrawalRoundTrip(t *testing.T) {
+	original := &rdkv1.MsgExecuteWithdrawal{
+		Submitter:       "qor1submit",
+		RollupID:        "rollup-1",
+		BatchIndex:      7,
+		WithdrawalIndex: 3,
+		Recipient:       "qor1recipient",
+		Denom:           "uqor",
+		Amount:          5000,
+		Proof:           [][]byte{{0x01, 0x02}, {0x03, 0x04}, {0x05}},
+	}
+
+	any, err := PackAny(original)
+	if err != nil {
+		t.Fatalf("pack any: %v", err)
+	}
+	if any.TypeUrl != "/qorechain.rdk.v1.MsgExecuteWithdrawal" {
+		t.Fatalf("unexpected type URL: %s", any.TypeUrl)
+	}
+
+	var decodedMsg sdk.Msg
+	if err := DefaultProtoCodec().UnpackAny(any, &decodedMsg); err != nil {
+		t.Fatalf("unpack any: %v", err)
+	}
+	decoded := decodedMsg.(*rdkv1.MsgExecuteWithdrawal)
+	if decoded.Submitter != original.Submitter || decoded.RollupID != original.RollupID ||
+		decoded.BatchIndex != original.BatchIndex || decoded.WithdrawalIndex != original.WithdrawalIndex ||
+		decoded.Recipient != original.Recipient || decoded.Denom != original.Denom || decoded.Amount != original.Amount {
+		t.Fatalf("scalar field mismatch: %+v", decoded)
+	}
+	if len(decoded.Proof) != 3 || string(decoded.Proof[0]) != "\x01\x02" || string(decoded.Proof[2]) != "\x05" {
+		t.Fatalf("proof mismatch: %+v", decoded.Proof)
+	}
+}
+
+// TestSetVerifierBootstrapRoundTrip exercises the bridge MsgSetVerifierBootstrap
+// nested-submessage fields (WormholeGuardianSet) through the codec Any.
+func TestSetVerifierBootstrapRoundTrip(t *testing.T) {
+	original := &bridgev1.MsgSetVerifierBootstrap{
+		Admin:   "qor1admin",
+		ChainId: "eth",
+		Wormhole: &bridgev1.WormholeGuardianSet{
+			Addresses: [][]byte{{0xaa}, {0xbb}},
+			Quorum:    2,
+		},
+	}
+
+	any, err := PackAny(original)
+	if err != nil {
+		t.Fatalf("pack any: %v", err)
+	}
+	if any.TypeUrl != "/qorechain.bridge.v1.MsgSetVerifierBootstrap" {
+		t.Fatalf("unexpected type URL: %s", any.TypeUrl)
+	}
+
+	var decodedMsg sdk.Msg
+	if err := DefaultProtoCodec().UnpackAny(any, &decodedMsg); err != nil {
+		t.Fatalf("unpack any: %v", err)
+	}
+	decoded := decodedMsg.(*bridgev1.MsgSetVerifierBootstrap)
+	if decoded.Admin != original.Admin || decoded.ChainId != original.ChainId {
+		t.Fatalf("scalar field mismatch: %+v", decoded)
+	}
+	if decoded.Wormhole == nil || decoded.Wormhole.Quorum != 2 || len(decoded.Wormhole.Addresses) != 2 {
+		t.Fatalf("wormhole mismatch: %+v", decoded.Wormhole)
 	}
 }
 

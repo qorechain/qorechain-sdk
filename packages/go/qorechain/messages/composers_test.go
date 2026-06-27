@@ -47,7 +47,11 @@ func TestQoreChainComposerTypeURLs(t *testing.T) {
 	cases := map[string]proto.Message{
 		"/qorechain.amm.v1.MsgSwapExactIn":                       Amm.SwapExactIn("s", 1, coin, "uusdc", math.NewInt(1)),
 		"/qorechain.bridge.v1.MsgBridgeWithdraw":                 Bridge.Withdraw("s", "eth", "0xabc", "uqor", "1"),
+		"/qorechain.bridge.v1.MsgUpdateEthLightClient":           Bridge.UpdateEthLightClient("r", []byte{1}),
+		"/qorechain.bridge.v1.MsgUpdateChainConfig":              Bridge.UpdateChainConfig("a", "eth", "0xbridge", 12, "evm", "active", "light_client", "0xtopic"),
+		"/qorechain.bridge.v1.MsgSetVerifierBootstrap":           Bridge.SetVerifierBootstrap("a", "eth", nil, nil, nil, nil, nil),
 		"/qorechain.rdk.v1.MsgCreateRollup":                      Rdk.CreateRollup("s", "r1", "default", "evm", 1),
+		"/qorechain.rdk.v1.MsgExecuteWithdrawal":                 Rdk.ExecuteWithdrawal("s", "r1", 1, 0, "qor1rcpt", "uqor", 100, [][]byte{{0x01}}),
 		"/qorechain.multilayer.v1.MsgRouteTransaction":           Multilayer.RouteTransaction("s", nil, "", 0, ""),
 		"/qorechain.pqc.v1.MsgRegisterPQCKeyV2":                  Pqc.RegisterKeyV2("s", nil, 1, nil, ""),
 		"/qorechain.svm.v1.MsgDeployProgram":                     Svm.DeployProgram("s", []byte{1}),

@@ -24,6 +24,23 @@ pnpm -r typecheck
 pnpm -r test
 ```
 
+## Maintainers: proto sync (pre-release)
+
+The TypeScript codegen is generated from the vendored protos under
+`proto/qorechain/**`, which mirror the chain core protos. Before cutting a
+release, maintainers should confirm the vendored protos still match the chain by
+running the local drift check:
+
+```bash
+# Uses the default local core path; override with CORE_PROTO=/path/... if needed.
+scripts/check-proto-sync.sh
+```
+
+This script is intentionally **maintainer-local** and is not part of public CI:
+it reads a private, machine-local checkout of the chain core. If it reports
+drift, re-sync the affected protos and regenerate codegen
+(`scripts/codegen.sh`).
+
 ## Pull requests
 
 - Keep changes focused and well described.

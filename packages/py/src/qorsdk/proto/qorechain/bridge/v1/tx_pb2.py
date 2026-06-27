@@ -27,7 +27,7 @@ from cosmpy.protos.cosmos_proto import cosmos_pb2 as cosmos__proto_dot_cosmos__p
 from cosmpy.protos.gogoproto import gogo_pb2 as gogoproto_dot_gogo__pb2
 
 
-DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\x1cqorechain/bridge/v1/tx.proto\x12\x13qorechain.bridge.v1\x1a\x17\x63osmos/msg/v1/msg.proto\x1a\x19\x63osmos_proto/cosmos.proto\x1a\x14gogoproto/gogo.proto\"\xb6\x02\n\x10MsgBridgeDeposit\x12\x30\n\x06sender\x18\x01 \x01(\tB\x18\xd2\xb4-\x14\x63osmos.AddressStringR\x06sender\x12!\n\x0csource_chain\x18\x02 \x01(\tR\x0bsourceChain\x12$\n\x0esource_tx_hash\x18\x03 \x01(\tR\x0csourceTxHash\x12\x14\n\x05\x61sset\x18\x04 \x01(\tR\x05\x61sset\x12\x16\n\x06\x61mount\x18\x05 \x01(\tR\x06\x61mount\x12\x32\n\x15\x62ridge_validator_sigs\x18\x06 \x01(\x0cR\x13\x62ridgeValidatorSigs\x12\x38\n\x0epqc_commitment\x18\x07 \x01(\x0c\x42\x11\xe2\xde\x1f\rPQCCommitmentR\rpqcCommitment:\x0b\x82\xe7\xb0*\x06sender\"\x1a\n\x18MsgBridgeDepositResponse\"\xde\x01\n\x11MsgBridgeWithdraw\x12\x30\n\x06sender\x18\x01 \x01(\tB\x18\xd2\xb4-\x14\x63osmos.AddressStringR\x06sender\x12+\n\x11\x64\x65stination_chain\x18\x02 \x01(\tR\x10\x64\x65stinationChain\x12/\n\x13\x64\x65stination_address\x18\x03 \x01(\tR\x12\x64\x65stinationAddress\x12\x14\n\x05\x61sset\x18\x04 \x01(\tR\x05\x61sset\x12\x16\n\x06\x61mount\x18\x05 \x01(\tR\x06\x61mount:\x0b\x82\xe7\xb0*\x06sender\"\x1b\n\x19MsgBridgeWithdrawResponse\"\xd4\x01\n\x1aMsgRegisterBridgeValidator\x12\x45\n\x11validator_address\x18\x01 \x01(\tB\x18\xd2\xb4-\x14\x63osmos.AddressStringR\x10validatorAddress\x12,\n\npqc_pubkey\x18\x02 \x01(\x0c\x42\r\xe2\xde\x1f\tPQCPubkeyR\tpqcPubkey\x12)\n\x10supported_chains\x18\x03 \x03(\tR\x0fsupportedChains:\x16\x82\xe7\xb0*\x11validator_address\"$\n\"MsgRegisterBridgeValidatorResponse\"\xfa\x02\n\x14MsgBridgeAttestation\x12\x36\n\tvalidator\x18\x01 \x01(\tB\x18\xd2\xb4-\x14\x63osmos.AddressStringR\tvalidator\x12\x14\n\x05\x63hain\x18\x02 \x01(\tR\x05\x63hain\x12\x1d\n\nevent_type\x18\x03 \x01(\tR\teventType\x12\x32\n\x0coperation_id\x18\x04 \x01(\tB\x0f\xe2\xde\x1f\x0bOperationIDR\x0boperationId\x12\x17\n\x07tx_hash\x18\x05 \x01(\tR\x06txHash\x12\x35\n\x06\x61mount\x18\x06 \x01(\tB\x1d\xc8\xde\x1f\x00\xda\xde\x1f\x15\x63osmossdk.io/math.IntR\x06\x61mount\x12\x14\n\x05\x61sset\x18\x07 \x01(\tR\x05\x61sset\x12\x14\n\x05proof\x18\x08 \x01(\x0cR\x05proof\x12\x35\n\rpqc_signature\x18\t \x01(\x0c\x42\x10\xe2\xde\x1f\x0cPQCSignatureR\x0cpqcSignature:\x0e\x82\xe7\xb0*\tvalidator\"\x1e\n\x1cMsgBridgeAttestationResponse2\xd6\x03\n\x03Msg\x12\x65\n\rBridgeDeposit\x12%.qorechain.bridge.v1.MsgBridgeDeposit\x1a-.qorechain.bridge.v1.MsgBridgeDepositResponse\x12h\n\x0e\x42ridgeWithdraw\x12&.qorechain.bridge.v1.MsgBridgeWithdraw\x1a..qorechain.bridge.v1.MsgBridgeWithdrawResponse\x12\x83\x01\n\x17RegisterBridgeValidator\x12/.qorechain.bridge.v1.MsgRegisterBridgeValidator\x1a\x37.qorechain.bridge.v1.MsgRegisterBridgeValidatorResponse\x12q\n\x11\x42ridgeAttestation\x12).qorechain.bridge.v1.MsgBridgeAttestation\x1a\x31.qorechain.bridge.v1.MsgBridgeAttestationResponse\x1a\x05\x80\xe7\xb0*\x01\x42\xc4\x01\n\x17\x63om.qorechain.bridge.v1B\x07TxProtoP\x01Z2github.com/qorechain/qorechain-core/x/bridge/types\xa2\x02\x03QBX\xaa\x02\x13Qorechain.Bridge.V1\xca\x02\x13Qorechain\\Bridge\\V1\xe2\x02\x1fQorechain\\Bridge\\V1\\GPBMetadata\xea\x02\x15Qorechain::Bridge::V1b\x06proto3')
+DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\x1cqorechain/bridge/v1/tx.proto\x12\x13qorechain.bridge.v1\x1a\x17\x63osmos/msg/v1/msg.proto\x1a\x19\x63osmos_proto/cosmos.proto\x1a\x14gogoproto/gogo.proto\"\xcb\x02\n\x14MsgUpdateChainConfig\x12.\n\x05\x61\x64min\x18\x01 \x01(\tB\x18\xd2\xb4-\x14\x63osmos.AddressStringR\x05\x61\x64min\x12\x19\n\x08\x63hain_id\x18\x02 \x01(\tR\x07\x63hainId\x12\'\n\x0f\x62ridge_contract\x18\x03 \x01(\tR\x0e\x62ridgeContract\x12\x35\n\x16\x63onfirmations_required\x18\x04 \x01(\rR\x15\x63onfirmationsRequired\x12\"\n\x0c\x61rchitecture\x18\x05 \x01(\tR\x0c\x61rchitecture\x12\x16\n\x06status\x18\x06 \x01(\tR\x06status\x12\x1a\n\x08verifier\x18\x07 \x01(\tR\x08verifier\x12$\n\x0elock_event_sig\x18\x08 \x01(\tR\x0clockEventSig:\n\x82\xe7\xb0*\x05\x61\x64min\"\x1e\n\x1cMsgUpdateChainConfigResponse\"\xa0\x03\n\x17MsgSetVerifierBootstrap\x12.\n\x05\x61\x64min\x18\x01 \x01(\tB\x18\xd2\xb4-\x14\x63osmos.AddressStringR\x05\x61\x64min\x12\x19\n\x08\x63hain_id\x18\x02 \x01(\tR\x07\x63hainId\x12\x44\n\x08wormhole\x18\x03 \x01(\x0b\x32(.qorechain.bridge.v1.WormholeGuardianSetR\x08wormhole\x12>\n\x07\x65\x64\x32\x35\x35\x31\x39\x18\x04 \x01(\x0b\x32$.qorechain.bridge.v1.ValidatorQuorumR\x07\x65\x64\x32\x35\x35\x31\x39\x12\x36\n\x03\x62ls\x18\x05 \x01(\x0b\x32$.qorechain.bridge.v1.ValidatorQuorumR\x03\x62ls\x12@\n\x07\x62itcoin\x18\x06 \x01(\x0b\x32&.qorechain.bridge.v1.BitcoinCheckpointR\x07\x62itcoin\x12.\n\x13starknet_state_root\x18\x07 \x01(\x0cR\x11starknetStateRoot:\n\x82\xe7\xb0*\x05\x61\x64min\"!\n\x1fMsgSetVerifierBootstrapResponse\"K\n\x13WormholeGuardianSet\x12\x1c\n\taddresses\x18\x01 \x03(\x0cR\taddresses\x12\x16\n\x06quorum\x18\x02 \x01(\rR\x06quorum\"I\n\x0fValidatorQuorum\x12\x18\n\x07pubkeys\x18\x01 \x03(\x0cR\x07pubkeys\x12\x1c\n\tthreshold\x18\x02 \x01(\rR\tthreshold\"O\n\x11\x42itcoinCheckpoint\x12\x1d\n\nblock_hash\x18\x01 \x01(\x0cR\tblockHash\x12\x1b\n\tmin_confs\x18\x02 \x01(\rR\x08minConfs\"\xb6\x02\n\x10MsgBridgeDeposit\x12\x30\n\x06sender\x18\x01 \x01(\tB\x18\xd2\xb4-\x14\x63osmos.AddressStringR\x06sender\x12!\n\x0csource_chain\x18\x02 \x01(\tR\x0bsourceChain\x12$\n\x0esource_tx_hash\x18\x03 \x01(\tR\x0csourceTxHash\x12\x14\n\x05\x61sset\x18\x04 \x01(\tR\x05\x61sset\x12\x16\n\x06\x61mount\x18\x05 \x01(\tR\x06\x61mount\x12\x32\n\x15\x62ridge_validator_sigs\x18\x06 \x01(\x0cR\x13\x62ridgeValidatorSigs\x12\x38\n\x0epqc_commitment\x18\x07 \x01(\x0c\x42\x11\xe2\xde\x1f\rPQCCommitmentR\rpqcCommitment:\x0b\x82\xe7\xb0*\x06sender\"\x1a\n\x18MsgBridgeDepositResponse\"\xde\x01\n\x11MsgBridgeWithdraw\x12\x30\n\x06sender\x18\x01 \x01(\tB\x18\xd2\xb4-\x14\x63osmos.AddressStringR\x06sender\x12+\n\x11\x64\x65stination_chain\x18\x02 \x01(\tR\x10\x64\x65stinationChain\x12/\n\x13\x64\x65stination_address\x18\x03 \x01(\tR\x12\x64\x65stinationAddress\x12\x14\n\x05\x61sset\x18\x04 \x01(\tR\x05\x61sset\x12\x16\n\x06\x61mount\x18\x05 \x01(\tR\x06\x61mount:\x0b\x82\xe7\xb0*\x06sender\"\x1b\n\x19MsgBridgeWithdrawResponse\"\xd4\x01\n\x1aMsgRegisterBridgeValidator\x12\x45\n\x11validator_address\x18\x01 \x01(\tB\x18\xd2\xb4-\x14\x63osmos.AddressStringR\x10validatorAddress\x12,\n\npqc_pubkey\x18\x02 \x01(\x0c\x42\r\xe2\xde\x1f\tPQCPubkeyR\tpqcPubkey\x12)\n\x10supported_chains\x18\x03 \x03(\tR\x0fsupportedChains:\x16\x82\xe7\xb0*\x11validator_address\"$\n\"MsgRegisterBridgeValidatorResponse\"\xfa\x02\n\x14MsgBridgeAttestation\x12\x36\n\tvalidator\x18\x01 \x01(\tB\x18\xd2\xb4-\x14\x63osmos.AddressStringR\tvalidator\x12\x14\n\x05\x63hain\x18\x02 \x01(\tR\x05\x63hain\x12\x1d\n\nevent_type\x18\x03 \x01(\tR\teventType\x12\x32\n\x0coperation_id\x18\x04 \x01(\tB\x0f\xe2\xde\x1f\x0bOperationIDR\x0boperationId\x12\x17\n\x07tx_hash\x18\x05 \x01(\tR\x06txHash\x12\x35\n\x06\x61mount\x18\x06 \x01(\tB\x1d\xc8\xde\x1f\x00\xda\xde\x1f\x15\x63osmossdk.io/math.IntR\x06\x61mount\x12\x14\n\x05\x61sset\x18\x07 \x01(\tR\x05\x61sset\x12\x14\n\x05proof\x18\x08 \x01(\x0cR\x05proof\x12\x35\n\rpqc_signature\x18\t \x01(\x0c\x42\x10\xe2\xde\x1f\x0cPQCSignatureR\x0cpqcSignature:\x0e\x82\xe7\xb0*\tvalidator\"\x1e\n\x1cMsgBridgeAttestationResponse\"s\n\x17MsgUpdateEthLightClient\x12\x32\n\x07relayer\x18\x01 \x01(\tB\x18\xd2\xb4-\x14\x63osmos.AddressStringR\x07relayer\x12\x16\n\x06update\x18\x02 \x01(\x0cR\x06update:\x0c\x82\xe7\xb0*\x07relayer\"!\n\x1fMsgUpdateEthLightClientResponse2\xc1\x06\n\x03Msg\x12\x65\n\rBridgeDeposit\x12%.qorechain.bridge.v1.MsgBridgeDeposit\x1a-.qorechain.bridge.v1.MsgBridgeDepositResponse\x12h\n\x0e\x42ridgeWithdraw\x12&.qorechain.bridge.v1.MsgBridgeWithdraw\x1a..qorechain.bridge.v1.MsgBridgeWithdrawResponse\x12\x83\x01\n\x17RegisterBridgeValidator\x12/.qorechain.bridge.v1.MsgRegisterBridgeValidator\x1a\x37.qorechain.bridge.v1.MsgRegisterBridgeValidatorResponse\x12q\n\x11\x42ridgeAttestation\x12).qorechain.bridge.v1.MsgBridgeAttestation\x1a\x31.qorechain.bridge.v1.MsgBridgeAttestationResponse\x12z\n\x14UpdateEthLightClient\x12,.qorechain.bridge.v1.MsgUpdateEthLightClient\x1a\x34.qorechain.bridge.v1.MsgUpdateEthLightClientResponse\x12q\n\x11UpdateChainConfig\x12).qorechain.bridge.v1.MsgUpdateChainConfig\x1a\x31.qorechain.bridge.v1.MsgUpdateChainConfigResponse\x12z\n\x14SetVerifierBootstrap\x12,.qorechain.bridge.v1.MsgSetVerifierBootstrap\x1a\x34.qorechain.bridge.v1.MsgSetVerifierBootstrapResponse\x1a\x05\x80\xe7\xb0*\x01\x42\xc4\x01\n\x17\x63om.qorechain.bridge.v1B\x07TxProtoP\x01Z2github.com/qorechain/qorechain-core/x/bridge/types\xa2\x02\x03QBX\xaa\x02\x13Qorechain.Bridge.V1\xca\x02\x13Qorechain\\Bridge\\V1\xe2\x02\x1fQorechain\\Bridge\\V1\\GPBMetadata\xea\x02\x15Qorechain::Bridge::V1b\x06proto3')
 
 _globals = globals()
 _builder.BuildMessageAndEnumDescriptors(DESCRIPTOR, _globals)
@@ -35,6 +35,14 @@ _builder.BuildTopDescriptorsAndMessages(DESCRIPTOR, 'qorechain.bridge.v1.tx_pb2'
 if not _descriptor._USE_C_DESCRIPTORS:
   _globals['DESCRIPTOR']._loaded_options = None
   _globals['DESCRIPTOR']._serialized_options = b'\n\027com.qorechain.bridge.v1B\007TxProtoP\001Z2github.com/qorechain/qorechain-core/x/bridge/types\242\002\003QBX\252\002\023Qorechain.Bridge.V1\312\002\023Qorechain\\Bridge\\V1\342\002\037Qorechain\\Bridge\\V1\\GPBMetadata\352\002\025Qorechain::Bridge::V1'
+  _globals['_MSGUPDATECHAINCONFIG'].fields_by_name['admin']._loaded_options = None
+  _globals['_MSGUPDATECHAINCONFIG'].fields_by_name['admin']._serialized_options = b'\322\264-\024cosmos.AddressString'
+  _globals['_MSGUPDATECHAINCONFIG']._loaded_options = None
+  _globals['_MSGUPDATECHAINCONFIG']._serialized_options = b'\202\347\260*\005admin'
+  _globals['_MSGSETVERIFIERBOOTSTRAP'].fields_by_name['admin']._loaded_options = None
+  _globals['_MSGSETVERIFIERBOOTSTRAP'].fields_by_name['admin']._serialized_options = b'\322\264-\024cosmos.AddressString'
+  _globals['_MSGSETVERIFIERBOOTSTRAP']._loaded_options = None
+  _globals['_MSGSETVERIFIERBOOTSTRAP']._serialized_options = b'\202\347\260*\005admin'
   _globals['_MSGBRIDGEDEPOSIT'].fields_by_name['sender']._loaded_options = None
   _globals['_MSGBRIDGEDEPOSIT'].fields_by_name['sender']._serialized_options = b'\322\264-\024cosmos.AddressString'
   _globals['_MSGBRIDGEDEPOSIT'].fields_by_name['pqc_commitment']._loaded_options = None
@@ -61,24 +69,46 @@ if not _descriptor._USE_C_DESCRIPTORS:
   _globals['_MSGBRIDGEATTESTATION'].fields_by_name['pqc_signature']._serialized_options = b'\342\336\037\014PQCSignature'
   _globals['_MSGBRIDGEATTESTATION']._loaded_options = None
   _globals['_MSGBRIDGEATTESTATION']._serialized_options = b'\202\347\260*\tvalidator'
+  _globals['_MSGUPDATEETHLIGHTCLIENT'].fields_by_name['relayer']._loaded_options = None
+  _globals['_MSGUPDATEETHLIGHTCLIENT'].fields_by_name['relayer']._serialized_options = b'\322\264-\024cosmos.AddressString'
+  _globals['_MSGUPDATEETHLIGHTCLIENT']._loaded_options = None
+  _globals['_MSGUPDATEETHLIGHTCLIENT']._serialized_options = b'\202\347\260*\007relayer'
   _globals['_MSG']._loaded_options = None
   _globals['_MSG']._serialized_options = b'\200\347\260*\001'
-  _globals['_MSGBRIDGEDEPOSIT']._serialized_start=128
-  _globals['_MSGBRIDGEDEPOSIT']._serialized_end=438
-  _globals['_MSGBRIDGEDEPOSITRESPONSE']._serialized_start=440
-  _globals['_MSGBRIDGEDEPOSITRESPONSE']._serialized_end=466
-  _globals['_MSGBRIDGEWITHDRAW']._serialized_start=469
-  _globals['_MSGBRIDGEWITHDRAW']._serialized_end=691
-  _globals['_MSGBRIDGEWITHDRAWRESPONSE']._serialized_start=693
-  _globals['_MSGBRIDGEWITHDRAWRESPONSE']._serialized_end=720
-  _globals['_MSGREGISTERBRIDGEVALIDATOR']._serialized_start=723
-  _globals['_MSGREGISTERBRIDGEVALIDATOR']._serialized_end=935
-  _globals['_MSGREGISTERBRIDGEVALIDATORRESPONSE']._serialized_start=937
-  _globals['_MSGREGISTERBRIDGEVALIDATORRESPONSE']._serialized_end=973
-  _globals['_MSGBRIDGEATTESTATION']._serialized_start=976
-  _globals['_MSGBRIDGEATTESTATION']._serialized_end=1354
-  _globals['_MSGBRIDGEATTESTATIONRESPONSE']._serialized_start=1356
-  _globals['_MSGBRIDGEATTESTATIONRESPONSE']._serialized_end=1386
-  _globals['_MSG']._serialized_start=1389
-  _globals['_MSG']._serialized_end=1859
+  _globals['_MSGUPDATECHAINCONFIG']._serialized_start=128
+  _globals['_MSGUPDATECHAINCONFIG']._serialized_end=459
+  _globals['_MSGUPDATECHAINCONFIGRESPONSE']._serialized_start=461
+  _globals['_MSGUPDATECHAINCONFIGRESPONSE']._serialized_end=491
+  _globals['_MSGSETVERIFIERBOOTSTRAP']._serialized_start=494
+  _globals['_MSGSETVERIFIERBOOTSTRAP']._serialized_end=910
+  _globals['_MSGSETVERIFIERBOOTSTRAPRESPONSE']._serialized_start=912
+  _globals['_MSGSETVERIFIERBOOTSTRAPRESPONSE']._serialized_end=945
+  _globals['_WORMHOLEGUARDIANSET']._serialized_start=947
+  _globals['_WORMHOLEGUARDIANSET']._serialized_end=1022
+  _globals['_VALIDATORQUORUM']._serialized_start=1024
+  _globals['_VALIDATORQUORUM']._serialized_end=1097
+  _globals['_BITCOINCHECKPOINT']._serialized_start=1099
+  _globals['_BITCOINCHECKPOINT']._serialized_end=1178
+  _globals['_MSGBRIDGEDEPOSIT']._serialized_start=1181
+  _globals['_MSGBRIDGEDEPOSIT']._serialized_end=1491
+  _globals['_MSGBRIDGEDEPOSITRESPONSE']._serialized_start=1493
+  _globals['_MSGBRIDGEDEPOSITRESPONSE']._serialized_end=1519
+  _globals['_MSGBRIDGEWITHDRAW']._serialized_start=1522
+  _globals['_MSGBRIDGEWITHDRAW']._serialized_end=1744
+  _globals['_MSGBRIDGEWITHDRAWRESPONSE']._serialized_start=1746
+  _globals['_MSGBRIDGEWITHDRAWRESPONSE']._serialized_end=1773
+  _globals['_MSGREGISTERBRIDGEVALIDATOR']._serialized_start=1776
+  _globals['_MSGREGISTERBRIDGEVALIDATOR']._serialized_end=1988
+  _globals['_MSGREGISTERBRIDGEVALIDATORRESPONSE']._serialized_start=1990
+  _globals['_MSGREGISTERBRIDGEVALIDATORRESPONSE']._serialized_end=2026
+  _globals['_MSGBRIDGEATTESTATION']._serialized_start=2029
+  _globals['_MSGBRIDGEATTESTATION']._serialized_end=2407
+  _globals['_MSGBRIDGEATTESTATIONRESPONSE']._serialized_start=2409
+  _globals['_MSGBRIDGEATTESTATIONRESPONSE']._serialized_end=2439
+  _globals['_MSGUPDATEETHLIGHTCLIENT']._serialized_start=2441
+  _globals['_MSGUPDATEETHLIGHTCLIENT']._serialized_end=2556
+  _globals['_MSGUPDATEETHLIGHTCLIENTRESPONSE']._serialized_start=2558
+  _globals['_MSGUPDATEETHLIGHTCLIENTRESPONSE']._serialized_end=2591
+  _globals['_MSG']._serialized_start=2594
+  _globals['_MSG']._serialized_end=3427
 # @@protoc_insertion_point(module_scope)

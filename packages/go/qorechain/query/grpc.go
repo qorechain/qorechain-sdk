@@ -8,10 +8,13 @@ import (
 	"google.golang.org/grpc/credentials"
 	"google.golang.org/grpc/credentials/insecure"
 
+	bridgev1 "github.com/qorechain/qorechain-sdk/packages/go/qorechain/proto/qorechain/bridge/v1"
 	crossvmv1 "github.com/qorechain/qorechain-sdk/packages/go/qorechain/proto/qorechain/crossvm/v1"
 	lightnodev1 "github.com/qorechain/qorechain-sdk/packages/go/qorechain/proto/qorechain/lightnode/v1"
+	multilayerv1 "github.com/qorechain/qorechain-sdk/packages/go/qorechain/proto/qorechain/multilayer/v1"
 	pqcv1 "github.com/qorechain/qorechain-sdk/packages/go/qorechain/proto/qorechain/pqc/v1"
 	qcav1 "github.com/qorechain/qorechain-sdk/packages/go/qorechain/proto/qorechain/qca/v1"
+	rdkv1 "github.com/qorechain/qorechain-sdk/packages/go/qorechain/proto/qorechain/rdk/v1"
 	reputationv1 "github.com/qorechain/qorechain-sdk/packages/go/qorechain/proto/qorechain/reputation/v1"
 	rlconsensusv1 "github.com/qorechain/qorechain-sdk/packages/go/qorechain/proto/qorechain/rlconsensus/v1"
 	svmv1 "github.com/qorechain/qorechain-sdk/packages/go/qorechain/proto/qorechain/svm/v1"
@@ -19,7 +22,8 @@ import (
 
 // GRPCClient holds a gRPC connection to a QoreChain node and exposes the typed
 // Query service clients for every module that defines a gRPC query service
-// (crossvm, lightnode, pqc, qca, reputation, rlconsensus, svm).
+// (bridge, crossvm, lightnode, multilayer, pqc, qca, rdk, reputation,
+// rlconsensus, svm).
 //
 // The underlying *grpc.ClientConn satisfies the gogoproto grpc.ClientConn
 // interface the generated clients require, so each accessor returns the
@@ -90,6 +94,20 @@ func (c *GRPCClient) RLConsensus() rlconsensusv1.QueryClient {
 
 // SVM returns the typed svm Query client.
 func (c *GRPCClient) SVM() svmv1.QueryClient { return svmv1.NewQueryClient(c.conn) }
+
+// Multilayer returns the typed multilayer Query client (Params, Layer, Layers,
+// RoutingStats).
+func (c *GRPCClient) Multilayer() multilayerv1.QueryClient {
+	return multilayerv1.NewQueryClient(c.conn)
+}
+
+// Rdk returns the typed rdk Query client (Params, Rollup, Rollups, Batch,
+// LatestBatch).
+func (c *GRPCClient) Rdk() rdkv1.QueryClient { return rdkv1.NewQueryClient(c.conn) }
+
+// Bridge returns the typed bridge Query client (Config, ChainConfig,
+// ChainConfigs, Validator, Validators, Operation, Operations).
+func (c *GRPCClient) Bridge() bridgev1.QueryClient { return bridgev1.NewQueryClient(c.conn) }
 
 // normalizeGRPCTarget strips a URL scheme from endpoint and reports whether TLS
 // should be used (true for https://).

@@ -4,6 +4,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import com.google.protobuf.Any;
+import com.google.protobuf.ByteString;
 import com.google.protobuf.Message;
 import io.github.qorechain.messages.Messages;
 import io.github.qorechain.messages.QorechainMessages;
@@ -12,10 +13,10 @@ import java.util.List;
 import java.util.Set;
 import org.junit.jupiter.api.Test;
 
-/** Registry coverage of all 49 QoreChain custom messages + Any pack/unpack round-trip. */
+/** Registry coverage of all 53 QoreChain custom messages + Any pack/unpack round-trip. */
 class MessagesTest {
 
-    /** The 49 QoreChain custom Msg type URLs (amm 7, bridge 4, rdk 7, multilayer 6, pqc 5,
+    /** The 53 QoreChain custom Msg type URLs (amm 7, bridge 7, rdk 8, multilayer 6, pqc 5,
      * svm 4, lightnode 4, license 4, abstractaccount 2, crossvm 2, rlconsensus 4). */
     private static final List<String> QORECHAIN_TYPE_URLS =
             List.of(
@@ -30,6 +31,9 @@ class MessagesTest {
                     "/qorechain.bridge.v1.MsgBridgeWithdraw",
                     "/qorechain.bridge.v1.MsgRegisterBridgeValidator",
                     "/qorechain.bridge.v1.MsgBridgeAttestation",
+                    "/qorechain.bridge.v1.MsgUpdateEthLightClient",
+                    "/qorechain.bridge.v1.MsgUpdateChainConfig",
+                    "/qorechain.bridge.v1.MsgSetVerifierBootstrap",
                     "/qorechain.rdk.v1.MsgCreateRollup",
                     "/qorechain.rdk.v1.MsgSubmitBatch",
                     "/qorechain.rdk.v1.MsgChallengeBatch",
@@ -37,6 +41,7 @@ class MessagesTest {
                     "/qorechain.rdk.v1.MsgPauseRollup",
                     "/qorechain.rdk.v1.MsgResumeRollup",
                     "/qorechain.rdk.v1.MsgStopRollup",
+                    "/qorechain.rdk.v1.MsgExecuteWithdrawal",
                     "/qorechain.multilayer.v1.MsgRegisterSidechain",
                     "/qorechain.multilayer.v1.MsgRegisterPaychain",
                     "/qorechain.multilayer.v1.MsgAnchorState",
@@ -70,8 +75,8 @@ class MessagesTest {
                     "/qorechain.rlconsensus.v1.MsgUpdateRewardWeights");
 
     @Test
-    void allFortyNineCustomTypeUrlsRegistered() {
-        assertEquals(49, QORECHAIN_TYPE_URLS.size());
+    void allCustomTypeUrlsRegistered() {
+        assertEquals(53, QORECHAIN_TYPE_URLS.size());
         Set<String> registered = Messages.typeUrls();
         for (String url : QORECHAIN_TYPE_URLS) {
             assertTrue(registered.contains(url), "missing registry entry: " + url);
@@ -94,6 +99,85 @@ class MessagesTest {
         Message decoded = Messages.unpack(any);
         assertTrue(decoded instanceof qorechain.amm.v1.Tx.MsgCreatePool);
         assertEquals("qor1creator", ((qorechain.amm.v1.Tx.MsgCreatePool) decoded).getCreator());
+    }
+
+    @Test
+    void rdkExecuteWithdrawalTypeUrlAndRoundTrip() throws Exception {
+        qorechain.rdk.v1.Tx.MsgExecuteWithdrawal msg =
+                qorechain.rdk.v1.Tx.MsgExecuteWithdrawal.newBuilder()
+                        .setSubmitter("qor1submitter")
+                        .setRollupId("rollup-1")
+                        .setBatchIndex(7)
+                        .setWithdrawalIndex(3)
+                        .setRecipient("qor1recipient")
+                        .setDenom("uqor")
+                        .setAmount(1000)
+                        .addProof(ByteString.copyFromUtf8("sibling-0"))
+                        .addProof(ByteString.copyFromUtf8("sibling-1"))
+                        .build();
+        TypedMessage tm = QorechainMessages.rdk.executeWithdrawal(msg);
+        assertEquals("/qorechain.rdk.v1.MsgExecuteWithdrawal", tm.typeUrl);
+
+        Any any = Messages.pack(tm);
+        assertEquals("/qorechain.rdk.v1.MsgExecuteWithdrawal", any.getTypeUrl());
+
+        Message decoded = Messages.unpack(any);
+        assertTrue(decoded instanceof qorechain.rdk.v1.Tx.MsgExecuteWithdrawal);
+        qorechain.rdk.v1.Tx.MsgExecuteWithdrawal back =
+                (qorechain.rdk.v1.Tx.MsgExecuteWithdrawal) decoded;
+        assertEquals("qor1submitter", back.getSubmitter());
+        assertEquals(7, back.getBatchIndex());
+        assertEquals(2, back.getProofCount());
+    }
+
+    @Test
+    void bridgeAdminMsgTypeUrlsAndRoundTrip() throws Exception {
+        // MsgUpdateEthLightClient
+        qorechain.bridge.v1.Tx.MsgUpdateEthLightClient ethMsg =
+                qorechain.bridge.v1.Tx.MsgUpdateEthLightClient.newBuilder()
+                        .setRelayer("qor1relayer")
+                        .setUpdate(ByteString.copyFromUtf8("altair-bundle"))
+                        .build();
+        TypedMessage ethTm = QorechainMessages.bridge.updateEthLightClient(ethMsg);
+        assertEquals("/qorechain.bridge.v1.MsgUpdateEthLightClient", ethTm.typeUrl);
+        Any ethAny = Messages.pack(ethTm);
+        assertEquals("/qorechain.bridge.v1.MsgUpdateEthLightClient", ethAny.getTypeUrl());
+        Message ethBack = Messages.unpack(ethAny);
+        assertTrue(ethBack instanceof qorechain.bridge.v1.Tx.MsgUpdateEthLightClient);
+        assertEquals(
+                "qor1relayer",
+                ((qorechain.bridge.v1.Tx.MsgUpdateEthLightClient) ethBack).getRelayer());
+
+        // MsgUpdateChainConfig
+        qorechain.bridge.v1.Tx.MsgUpdateChainConfig cfgMsg =
+                qorechain.bridge.v1.Tx.MsgUpdateChainConfig.newBuilder()
+                        .setAdmin("qor1admin")
+                        .setChainId("eth")
+                        .setStatus("active")
+                        .setVerifier("light_client")
+                        .build();
+        TypedMessage cfgTm = QorechainMessages.bridge.updateChainConfig(cfgMsg);
+        assertEquals("/qorechain.bridge.v1.MsgUpdateChainConfig", cfgTm.typeUrl);
+        Any cfgAny = Messages.pack(cfgTm);
+        Message cfgBack = Messages.unpack(cfgAny);
+        assertTrue(cfgBack instanceof qorechain.bridge.v1.Tx.MsgUpdateChainConfig);
+        assertEquals(
+                "eth", ((qorechain.bridge.v1.Tx.MsgUpdateChainConfig) cfgBack).getChainId());
+
+        // MsgSetVerifierBootstrap
+        qorechain.bridge.v1.Tx.MsgSetVerifierBootstrap bsMsg =
+                qorechain.bridge.v1.Tx.MsgSetVerifierBootstrap.newBuilder()
+                        .setAdmin("qor1admin")
+                        .setChainId("eth")
+                        .build();
+        TypedMessage bsTm = QorechainMessages.bridge.setVerifierBootstrap(bsMsg);
+        assertEquals("/qorechain.bridge.v1.MsgSetVerifierBootstrap", bsTm.typeUrl);
+        Any bsAny = Messages.pack(bsTm);
+        Message bsBack = Messages.unpack(bsAny);
+        assertTrue(bsBack instanceof qorechain.bridge.v1.Tx.MsgSetVerifierBootstrap);
+        assertEquals(
+                "qor1admin",
+                ((qorechain.bridge.v1.Tx.MsgSetVerifierBootstrap) bsBack).getAdmin());
     }
 
     @Test

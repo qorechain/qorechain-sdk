@@ -92,6 +92,35 @@ export const bridge = {
     "/qorechain.bridge.v1.MsgBridgeAttestation",
     bridgeTx.MsgBridgeAttestation,
   ),
+  /**
+   * Advance the on-chain external light client with a verified update bundle
+   * (carried as an opaque encoded blob). Signed by the `relayer`.
+   */
+  updateEthLightClient: composer(
+    "/qorechain.bridge.v1.MsgUpdateEthLightClient",
+    bridgeTx.MsgUpdateEthLightClient,
+  ),
+  /**
+   * Register or update a chain's bridge config (contract address,
+   * confirmations, architecture, status, active verifier). Merge semantics:
+   * empty/zero fields keep the existing value, so a caller can flip just
+   * `status` + one verifier flag to activate a chain post-deploy. Signed by the
+   * bridge `admin`.
+   */
+  updateChainConfig: composer(
+    "/qorechain.bridge.v1.MsgUpdateChainConfig",
+    bridgeTx.MsgUpdateChainConfig,
+  ),
+  /**
+   * Install the per-architecture trust root a chain's trustless verifier needs
+   * (guardian set / ed25519 or BLS validator quorum / Bitcoin checkpoint /
+   * Starknet state root). Exactly one of the sub-fields should be populated.
+   * Signed by the bridge `admin`.
+   */
+  setVerifierBootstrap: composer(
+    "/qorechain.bridge.v1.MsgSetVerifierBootstrap",
+    bridgeTx.MsgSetVerifierBootstrap,
+  ),
 };
 
 /** RDK (rollup development kit) message composers. */
@@ -121,6 +150,18 @@ export const rdk = {
     rdkTx.MsgResumeRollup,
   ),
   stopRollup: composer("/qorechain.rdk.v1.MsgStopRollup", rdkTx.MsgStopRollup),
+  /**
+   * Finalize an L2->L1 withdrawal: prove a withdrawal leaf is committed in a
+   * finalized batch's `withdrawalsRoot` and pay the committed recipient from the
+   * rdk module escrow. Permissionless — anyone may submit a valid proof; funds
+   * always go to the committed recipient. Replay-protected per
+   * (rollupId, batchIndex, withdrawalIndex). `proof` is the list of binary-Merkle
+   * sibling hashes from the leaf to the root.
+   */
+  executeWithdrawal: composer(
+    "/qorechain.rdk.v1.MsgExecuteWithdrawal",
+    rdkTx.MsgExecuteWithdrawal,
+  ),
 };
 
 /** Multilayer (sidechain / paychain anchoring) message composers. */

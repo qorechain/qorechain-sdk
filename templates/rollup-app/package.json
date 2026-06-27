@@ -1,0 +1,20 @@
+{
+  "name": "qorechain-rollup-app",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "description": "A QoreChain rollup + multilayer dApp scaffold using the RollupClient and multilayer helper from @qorechain/sdk.",
+  "scripts": {
+    "start": "tsx src/index.ts",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@cosmjs/tendermint-rpc": "^0.39.0",
+    "@qorechain/sdk": "^0.3.0"
+  },
+  "devDependencies": {
+    "@types/node": "^22.7.5",
+    "tsx": "^4.19.0",
+    "typescript": "^5.6.3"
+  }
+}

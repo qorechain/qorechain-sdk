@@ -1644,6 +1644,17 @@ public final class Tx extends com.google.protobuf.GeneratedFile {
      * @return The proof.
      */
     com.google.protobuf.ByteString getProof();
+
+    /**
+     * <pre>
+     * withdrawals_root commits the L2-&gt;L1 messages (withdrawals) in this batch as
+     * a binary Merkle root. Empty when the batch carries no cross-layer messages.
+     * </pre>
+     *
+     * <code>bytes withdrawals_root = 9 [json_name = "withdrawalsRoot"];</code>
+     * @return The withdrawalsRoot.
+     */
+    com.google.protobuf.ByteString getWithdrawalsRoot();
   }
   /**
    * Protobuf type {@code qorechain.rdk.v1.MsgSubmitBatch}
@@ -1673,6 +1684,7 @@ public final class Tx extends com.google.protobuf.GeneratedFile {
       prevStateRoot_ = com.google.protobuf.ByteString.EMPTY;
       dataHash_ = com.google.protobuf.ByteString.EMPTY;
       proof_ = com.google.protobuf.ByteString.EMPTY;
+      withdrawalsRoot_ = com.google.protobuf.ByteString.EMPTY;
     }
 
     public static final com.google.protobuf.Descriptors.Descriptor
@@ -1837,6 +1849,22 @@ public final class Tx extends com.google.protobuf.GeneratedFile {
       return proof_;
     }
 
+    public static final int WITHDRAWALS_ROOT_FIELD_NUMBER = 9;
+    private com.google.protobuf.ByteString withdrawalsRoot_ = com.google.protobuf.ByteString.EMPTY;
+    /**
+     * <pre>
+     * withdrawals_root commits the L2-&gt;L1 messages (withdrawals) in this batch as
+     * a binary Merkle root. Empty when the batch carries no cross-layer messages.
+     * </pre>
+     *
+     * <code>bytes withdrawals_root = 9 [json_name = "withdrawalsRoot"];</code>
+     * @return The withdrawalsRoot.
+     */
+    @java.lang.Override
+    public com.google.protobuf.ByteString getWithdrawalsRoot() {
+      return withdrawalsRoot_;
+    }
+
     private byte memoizedIsInitialized = -1;
     @java.lang.Override
     public final boolean isInitialized() {
@@ -1875,6 +1903,9 @@ public final class Tx extends com.google.protobuf.GeneratedFile {
       if (!proof_.isEmpty()) {
         output.writeBytes(8, proof_);
       }
+      if (!withdrawalsRoot_.isEmpty()) {
+        output.writeBytes(9, withdrawalsRoot_);
+      }
       getUnknownFields().writeTo(output);
     }
     private int computeSerializedSize_0() {
@@ -1908,6 +1939,10 @@ public final class Tx extends com.google.protobuf.GeneratedFile {
       if (!proof_.isEmpty()) {
         size += com.google.protobuf.CodedOutputStream
           .computeBytesSize(8, proof_);
+      }
+      if (!withdrawalsRoot_.isEmpty()) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeBytesSize(9, withdrawalsRoot_);
       }
       return size;
     }
@@ -1949,6 +1984,8 @@ public final class Tx extends com.google.protobuf.GeneratedFile {
           .equals(other.getDataHash())) return false;
       if (!getProof()
           .equals(other.getProof())) return false;
+      if (!getWithdrawalsRoot()
+          .equals(other.getWithdrawalsRoot())) return false;
       if (!getUnknownFields().equals(other.getUnknownFields())) return false;
       return true;
     }
@@ -1978,6 +2015,8 @@ public final class Tx extends com.google.protobuf.GeneratedFile {
       hash = (53 * hash) + getDataHash().hashCode();
       hash = (37 * hash) + PROOF_FIELD_NUMBER;
       hash = (53 * hash) + getProof().hashCode();
+      hash = (37 * hash) + WITHDRAWALS_ROOT_FIELD_NUMBER;
+      hash = (53 * hash) + getWithdrawalsRoot().hashCode();
       hash = (29 * hash) + getUnknownFields().hashCode();
       memoizedHashCode = hash;
       return hash;
@@ -2117,6 +2156,7 @@ public final class Tx extends com.google.protobuf.GeneratedFile {
         txCount_ = 0L;
         dataHash_ = com.google.protobuf.ByteString.EMPTY;
         proof_ = com.google.protobuf.ByteString.EMPTY;
+        withdrawalsRoot_ = com.google.protobuf.ByteString.EMPTY;
         return this;
       }
 
@@ -2174,6 +2214,9 @@ public final class Tx extends com.google.protobuf.GeneratedFile {
         if (((from_bitField0_ & 0x00000080) != 0)) {
           result.proof_ = proof_;
         }
+        if (((from_bitField0_ & 0x00000100) != 0)) {
+          result.withdrawalsRoot_ = withdrawalsRoot_;
+        }
       }
 
       @java.lang.Override
@@ -2215,6 +2258,9 @@ public final class Tx extends com.google.protobuf.GeneratedFile {
         }
         if (!other.getProof().isEmpty()) {
           setProof(other.getProof());
+        }
+        if (!other.getWithdrawalsRoot().isEmpty()) {
+          setWithdrawalsRoot(other.getWithdrawalsRoot());
         }
         this.mergeUnknownFields(other.getUnknownFields());
         onChanged();
@@ -2282,6 +2328,11 @@ public final class Tx extends com.google.protobuf.GeneratedFile {
                 bitField0_ |= 0x00000080;
                 break;
               } // case 66
+              case 74: {
+                withdrawalsRoot_ = input.readBytes();
+                bitField0_ |= 0x00000100;
+                break;
+              } // case 74
               default: {
                 if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                   done = true; // was an endgroup tag
@@ -2631,6 +2682,53 @@ public final class Tx extends com.google.protobuf.GeneratedFile {
       public Builder clearProof() {
         bitField0_ = (bitField0_ & ~0x00000080);
         proof_ = getDefaultInstance().getProof();
+        onChanged();
+        return this;
+      }
+
+      private com.google.protobuf.ByteString withdrawalsRoot_ = com.google.protobuf.ByteString.EMPTY;
+      /**
+       * <pre>
+       * withdrawals_root commits the L2-&gt;L1 messages (withdrawals) in this batch as
+       * a binary Merkle root. Empty when the batch carries no cross-layer messages.
+       * </pre>
+       *
+       * <code>bytes withdrawals_root = 9 [json_name = "withdrawalsRoot"];</code>
+       * @return The withdrawalsRoot.
+       */
+      @java.lang.Override
+      public com.google.protobuf.ByteString getWithdrawalsRoot() {
+        return withdrawalsRoot_;
+      }
+      /**
+       * <pre>
+       * withdrawals_root commits the L2-&gt;L1 messages (withdrawals) in this batch as
+       * a binary Merkle root. Empty when the batch carries no cross-layer messages.
+       * </pre>
+       *
+       * <code>bytes withdrawals_root = 9 [json_name = "withdrawalsRoot"];</code>
+       * @param value The withdrawalsRoot to set.
+       * @return This builder for chaining.
+       */
+      public Builder setWithdrawalsRoot(com.google.protobuf.ByteString value) {
+        if (value == null) { throw new NullPointerException(); }
+        withdrawalsRoot_ = value;
+        bitField0_ |= 0x00000100;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * withdrawals_root commits the L2-&gt;L1 messages (withdrawals) in this batch as
+       * a binary Merkle root. Empty when the batch carries no cross-layer messages.
+       * </pre>
+       *
+       * <code>bytes withdrawals_root = 9 [json_name = "withdrawalsRoot"];</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearWithdrawalsRoot() {
+        bitField0_ = (bitField0_ & ~0x00000100);
+        withdrawalsRoot_ = getDefaultInstance().getWithdrawalsRoot();
         onChanged();
         return this;
       }
@@ -8645,6 +8743,1786 @@ public final class Tx extends com.google.protobuf.GeneratedFile {
 
   }
 
+  public interface MsgExecuteWithdrawalOrBuilder extends
+      // @@protoc_insertion_point(interface_extends:qorechain.rdk.v1.MsgExecuteWithdrawal)
+      com.google.protobuf.MessageOrBuilder {
+
+    /**
+     * <code>string submitter = 1 [json_name = "submitter", (.cosmos_proto.scalar) = "cosmos.AddressString"];</code>
+     * @return The submitter.
+     */
+    java.lang.String getSubmitter();
+    /**
+     * <code>string submitter = 1 [json_name = "submitter", (.cosmos_proto.scalar) = "cosmos.AddressString"];</code>
+     * @return The bytes for submitter.
+     */
+    com.google.protobuf.ByteString
+        getSubmitterBytes();
+
+    /**
+     * <code>string rollup_id = 2 [json_name = "rollupId", (.gogoproto.customname) = "RollupID"];</code>
+     * @return The rollupId.
+     */
+    java.lang.String getRollupId();
+    /**
+     * <code>string rollup_id = 2 [json_name = "rollupId", (.gogoproto.customname) = "RollupID"];</code>
+     * @return The bytes for rollupId.
+     */
+    com.google.protobuf.ByteString
+        getRollupIdBytes();
+
+    /**
+     * <code>uint64 batch_index = 3 [json_name = "batchIndex"];</code>
+     * @return The batchIndex.
+     */
+    long getBatchIndex();
+
+    /**
+     * <code>uint64 withdrawal_index = 4 [json_name = "withdrawalIndex"];</code>
+     * @return The withdrawalIndex.
+     */
+    long getWithdrawalIndex();
+
+    /**
+     * <code>string recipient = 5 [json_name = "recipient", (.cosmos_proto.scalar) = "cosmos.AddressString"];</code>
+     * @return The recipient.
+     */
+    java.lang.String getRecipient();
+    /**
+     * <code>string recipient = 5 [json_name = "recipient", (.cosmos_proto.scalar) = "cosmos.AddressString"];</code>
+     * @return The bytes for recipient.
+     */
+    com.google.protobuf.ByteString
+        getRecipientBytes();
+
+    /**
+     * <code>string denom = 6 [json_name = "denom"];</code>
+     * @return The denom.
+     */
+    java.lang.String getDenom();
+    /**
+     * <code>string denom = 6 [json_name = "denom"];</code>
+     * @return The bytes for denom.
+     */
+    com.google.protobuf.ByteString
+        getDenomBytes();
+
+    /**
+     * <code>int64 amount = 7 [json_name = "amount"];</code>
+     * @return The amount.
+     */
+    long getAmount();
+
+    /**
+     * <pre>
+     * proof are the binary-Merkle sibling hashes from the leaf to withdrawals_root.
+     * </pre>
+     *
+     * <code>repeated bytes proof = 8 [json_name = "proof"];</code>
+     * @return A list containing the proof.
+     */
+    java.util.List<com.google.protobuf.ByteString> getProofList();
+    /**
+     * <pre>
+     * proof are the binary-Merkle sibling hashes from the leaf to withdrawals_root.
+     * </pre>
+     *
+     * <code>repeated bytes proof = 8 [json_name = "proof"];</code>
+     * @return The count of proof.
+     */
+    int getProofCount();
+    /**
+     * <pre>
+     * proof are the binary-Merkle sibling hashes from the leaf to withdrawals_root.
+     * </pre>
+     *
+     * <code>repeated bytes proof = 8 [json_name = "proof"];</code>
+     * @param index The index of the element to return.
+     * @return The proof at the given index.
+     */
+    com.google.protobuf.ByteString getProof(int index);
+  }
+  /**
+   * <pre>
+   * MsgExecuteWithdrawal finalizes an L2-&gt;L1 cross-layer message: it proves a
+   * withdrawal leaf is committed in a finalized batch's withdrawals_root and pays
+   * the recipient from the rdk module escrow. Permissionless — anyone may submit a
+   * valid proof; the funds always go to the committed recipient. Replay-protected
+   * per (rollup_id, batch_index, withdrawal_index).
+   * </pre>
+   *
+   * Protobuf type {@code qorechain.rdk.v1.MsgExecuteWithdrawal}
+   */
+  public static final class MsgExecuteWithdrawal extends
+      com.google.protobuf.GeneratedMessage implements
+      // @@protoc_insertion_point(message_implements:qorechain.rdk.v1.MsgExecuteWithdrawal)
+      MsgExecuteWithdrawalOrBuilder {
+  private static final long serialVersionUID = 0L;
+    static {
+      com.google.protobuf.RuntimeVersion.validateProtobufGencodeVersion(
+        com.google.protobuf.RuntimeVersion.RuntimeDomain.PUBLIC,
+        /* major= */ 4,
+        /* minor= */ 35,
+        /* patch= */ 1,
+        /* suffix= */ "",
+        "MsgExecuteWithdrawal");
+    }
+    // Use MsgExecuteWithdrawal.newBuilder() to construct.
+    private MsgExecuteWithdrawal(com.google.protobuf.GeneratedMessage.Builder<?> builder) {
+      super(builder);
+    }
+    private MsgExecuteWithdrawal() {
+      submitter_ = "";
+      rollupId_ = "";
+      recipient_ = "";
+      denom_ = "";
+      proof_ = emptyList(com.google.protobuf.ByteString.class);
+    }
+
+    public static final com.google.protobuf.Descriptors.Descriptor
+        getDescriptor() {
+      return qorechain.rdk.v1.Tx.internal_static_qorechain_rdk_v1_MsgExecuteWithdrawal_descriptor;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Descriptors.Descriptor getDescriptorForType() {
+      return qorechain.rdk.v1.Tx.internal_static_qorechain_rdk_v1_MsgExecuteWithdrawal_descriptor;
+    }
+
+    @java.lang.Override
+    protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+        internalGetFieldAccessorTable() {
+      return qorechain.rdk.v1.Tx.internal_static_qorechain_rdk_v1_MsgExecuteWithdrawal_fieldAccessorTable
+          .ensureFieldAccessorsInitialized(
+              qorechain.rdk.v1.Tx.MsgExecuteWithdrawal.class, qorechain.rdk.v1.Tx.MsgExecuteWithdrawal.Builder.class);
+    }
+
+    public static final int SUBMITTER_FIELD_NUMBER = 1;
+    @SuppressWarnings("serial")
+    private volatile java.lang.Object submitter_ = "";
+    /**
+     * <code>string submitter = 1 [json_name = "submitter", (.cosmos_proto.scalar) = "cosmos.AddressString"];</code>
+     * @return The submitter.
+     */
+    @java.lang.Override
+    public java.lang.String getSubmitter() {
+      java.lang.Object ref = submitter_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        submitter_ = s;
+        return s;
+      }
+    }
+    /**
+     * <code>string submitter = 1 [json_name = "submitter", (.cosmos_proto.scalar) = "cosmos.AddressString"];</code>
+     * @return The bytes for submitter.
+     */
+    @java.lang.Override
+    public com.google.protobuf.ByteString
+        getSubmitterBytes() {
+      java.lang.Object ref = submitter_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        submitter_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
+    public static final int ROLLUP_ID_FIELD_NUMBER = 2;
+    @SuppressWarnings("serial")
+    private volatile java.lang.Object rollupId_ = "";
+    /**
+     * <code>string rollup_id = 2 [json_name = "rollupId", (.gogoproto.customname) = "RollupID"];</code>
+     * @return The rollupId.
+     */
+    @java.lang.Override
+    public java.lang.String getRollupId() {
+      java.lang.Object ref = rollupId_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        rollupId_ = s;
+        return s;
+      }
+    }
+    /**
+     * <code>string rollup_id = 2 [json_name = "rollupId", (.gogoproto.customname) = "RollupID"];</code>
+     * @return The bytes for rollupId.
+     */
+    @java.lang.Override
+    public com.google.protobuf.ByteString
+        getRollupIdBytes() {
+      java.lang.Object ref = rollupId_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        rollupId_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
+    public static final int BATCH_INDEX_FIELD_NUMBER = 3;
+    private long batchIndex_ = 0L;
+    /**
+     * <code>uint64 batch_index = 3 [json_name = "batchIndex"];</code>
+     * @return The batchIndex.
+     */
+    @java.lang.Override
+    public long getBatchIndex() {
+      return batchIndex_;
+    }
+
+    public static final int WITHDRAWAL_INDEX_FIELD_NUMBER = 4;
+    private long withdrawalIndex_ = 0L;
+    /**
+     * <code>uint64 withdrawal_index = 4 [json_name = "withdrawalIndex"];</code>
+     * @return The withdrawalIndex.
+     */
+    @java.lang.Override
+    public long getWithdrawalIndex() {
+      return withdrawalIndex_;
+    }
+
+    public static final int RECIPIENT_FIELD_NUMBER = 5;
+    @SuppressWarnings("serial")
+    private volatile java.lang.Object recipient_ = "";
+    /**
+     * <code>string recipient = 5 [json_name = "recipient", (.cosmos_proto.scalar) = "cosmos.AddressString"];</code>
+     * @return The recipient.
+     */
+    @java.lang.Override
+    public java.lang.String getRecipient() {
+      java.lang.Object ref = recipient_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        recipient_ = s;
+        return s;
+      }
+    }
+    /**
+     * <code>string recipient = 5 [json_name = "recipient", (.cosmos_proto.scalar) = "cosmos.AddressString"];</code>
+     * @return The bytes for recipient.
+     */
+    @java.lang.Override
+    public com.google.protobuf.ByteString
+        getRecipientBytes() {
+      java.lang.Object ref = recipient_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        recipient_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
+    public static final int DENOM_FIELD_NUMBER = 6;
+    @SuppressWarnings("serial")
+    private volatile java.lang.Object denom_ = "";
+    /**
+     * <code>string denom = 6 [json_name = "denom"];</code>
+     * @return The denom.
+     */
+    @java.lang.Override
+    public java.lang.String getDenom() {
+      java.lang.Object ref = denom_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        denom_ = s;
+        return s;
+      }
+    }
+    /**
+     * <code>string denom = 6 [json_name = "denom"];</code>
+     * @return The bytes for denom.
+     */
+    @java.lang.Override
+    public com.google.protobuf.ByteString
+        getDenomBytes() {
+      java.lang.Object ref = denom_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        denom_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
+    public static final int AMOUNT_FIELD_NUMBER = 7;
+    private long amount_ = 0L;
+    /**
+     * <code>int64 amount = 7 [json_name = "amount"];</code>
+     * @return The amount.
+     */
+    @java.lang.Override
+    public long getAmount() {
+      return amount_;
+    }
+
+    public static final int PROOF_FIELD_NUMBER = 8;
+    @SuppressWarnings("serial")
+    private com.google.protobuf.Internal.ProtobufList<com.google.protobuf.ByteString> proof_ =
+        emptyList(com.google.protobuf.ByteString.class);
+    /**
+     * <pre>
+     * proof are the binary-Merkle sibling hashes from the leaf to withdrawals_root.
+     * </pre>
+     *
+     * <code>repeated bytes proof = 8 [json_name = "proof"];</code>
+     * @return A list containing the proof.
+     */
+    @java.lang.Override
+    public java.util.List<com.google.protobuf.ByteString>
+        getProofList() {
+      return proof_;
+    }
+    /**
+     * <pre>
+     * proof are the binary-Merkle sibling hashes from the leaf to withdrawals_root.
+     * </pre>
+     *
+     * <code>repeated bytes proof = 8 [json_name = "proof"];</code>
+     * @return The count of proof.
+     */
+    public int getProofCount() {
+      return proof_.size();
+    }
+    /**
+     * <pre>
+     * proof are the binary-Merkle sibling hashes from the leaf to withdrawals_root.
+     * </pre>
+     *
+     * <code>repeated bytes proof = 8 [json_name = "proof"];</code>
+     * @param index The index of the element to return.
+     * @return The proof at the given index.
+     */
+    public com.google.protobuf.ByteString getProof(int index) {
+      return proof_.get(index);
+    }
+
+    private byte memoizedIsInitialized = -1;
+    @java.lang.Override
+    public final boolean isInitialized() {
+      byte isInitialized = memoizedIsInitialized;
+      if (isInitialized == 1) return true;
+      if (isInitialized == 0) return false;
+
+      memoizedIsInitialized = 1;
+      return true;
+    }
+
+    @java.lang.Override
+    public void writeTo(com.google.protobuf.CodedOutputStream output)
+                        throws java.io.IOException {
+      if (!com.google.protobuf.GeneratedMessage.isStringEmpty(submitter_)) {
+        com.google.protobuf.GeneratedMessage.writeString(output, 1, submitter_);
+      }
+      if (!com.google.protobuf.GeneratedMessage.isStringEmpty(rollupId_)) {
+        com.google.protobuf.GeneratedMessage.writeString(output, 2, rollupId_);
+      }
+      if (batchIndex_ != 0L) {
+        output.writeUInt64(3, batchIndex_);
+      }
+      if (withdrawalIndex_ != 0L) {
+        output.writeUInt64(4, withdrawalIndex_);
+      }
+      if (!com.google.protobuf.GeneratedMessage.isStringEmpty(recipient_)) {
+        com.google.protobuf.GeneratedMessage.writeString(output, 5, recipient_);
+      }
+      if (!com.google.protobuf.GeneratedMessage.isStringEmpty(denom_)) {
+        com.google.protobuf.GeneratedMessage.writeString(output, 6, denom_);
+      }
+      if (amount_ != 0L) {
+        output.writeInt64(7, amount_);
+      }
+      for (int i = 0; i < proof_.size(); i++) {
+        output.writeBytes(8, proof_.get(i));
+      }
+      getUnknownFields().writeTo(output);
+    }
+    private int computeSerializedSize_0() {
+      int size = 0;
+      if (!com.google.protobuf.GeneratedMessage.isStringEmpty(submitter_)) {
+        size += com.google.protobuf.GeneratedMessage.computeStringSize(1, submitter_);
+      }
+      if (!com.google.protobuf.GeneratedMessage.isStringEmpty(rollupId_)) {
+        size += com.google.protobuf.GeneratedMessage.computeStringSize(2, rollupId_);
+      }
+      if (batchIndex_ != 0L) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeUInt64Size(3, batchIndex_);
+      }
+      if (withdrawalIndex_ != 0L) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeUInt64Size(4, withdrawalIndex_);
+      }
+      if (!com.google.protobuf.GeneratedMessage.isStringEmpty(recipient_)) {
+        size += com.google.protobuf.GeneratedMessage.computeStringSize(5, recipient_);
+      }
+      if (!com.google.protobuf.GeneratedMessage.isStringEmpty(denom_)) {
+        size += com.google.protobuf.GeneratedMessage.computeStringSize(6, denom_);
+      }
+      if (amount_ != 0L) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeInt64Size(7, amount_);
+      }
+      {
+        int dataSize = 0;
+        for (int i = 0; i < proof_.size(); i++) {
+          dataSize += com.google.protobuf.CodedOutputStream
+            .computeBytesSizeNoTag(proof_.get(i));
+        }
+        size += dataSize;
+        size += 1 * getProofList().size();
+      }
+      return size;
+    }
+    @java.lang.Override
+    public int getSerializedSize() {
+      int size = memoizedSize;
+      if (size != -1) return size;
+
+      size = 0;
+      size += computeSerializedSize_0();
+      size += getUnknownFields().getSerializedSize();
+      memoizedSize = size;
+      return size;
+    }
+
+    @java.lang.Override
+    public boolean equals(final java.lang.Object obj) {
+      if (obj == this) {
+       return true;
+      }
+      if (!(obj instanceof qorechain.rdk.v1.Tx.MsgExecuteWithdrawal)) {
+        return super.equals(obj);
+      }
+      qorechain.rdk.v1.Tx.MsgExecuteWithdrawal other = (qorechain.rdk.v1.Tx.MsgExecuteWithdrawal) obj;
+
+      if (!getSubmitter()
+          .equals(other.getSubmitter())) return false;
+      if (!getRollupId()
+          .equals(other.getRollupId())) return false;
+      if (getBatchIndex()
+          != other.getBatchIndex()) return false;
+      if (getWithdrawalIndex()
+          != other.getWithdrawalIndex()) return false;
+      if (!getRecipient()
+          .equals(other.getRecipient())) return false;
+      if (!getDenom()
+          .equals(other.getDenom())) return false;
+      if (getAmount()
+          != other.getAmount()) return false;
+      if (!getProofList()
+          .equals(other.getProofList())) return false;
+      if (!getUnknownFields().equals(other.getUnknownFields())) return false;
+      return true;
+    }
+
+    @java.lang.Override
+    public int hashCode() {
+      if (memoizedHashCode != 0) {
+        return memoizedHashCode;
+      }
+      int hash = 41;
+      hash = (19 * hash) + getDescriptor().hashCode();
+      hash = (37 * hash) + SUBMITTER_FIELD_NUMBER;
+      hash = (53 * hash) + getSubmitter().hashCode();
+      hash = (37 * hash) + ROLLUP_ID_FIELD_NUMBER;
+      hash = (53 * hash) + getRollupId().hashCode();
+      hash = (37 * hash) + BATCH_INDEX_FIELD_NUMBER;
+      hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
+          getBatchIndex());
+      hash = (37 * hash) + WITHDRAWAL_INDEX_FIELD_NUMBER;
+      hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
+          getWithdrawalIndex());
+      hash = (37 * hash) + RECIPIENT_FIELD_NUMBER;
+      hash = (53 * hash) + getRecipient().hashCode();
+      hash = (37 * hash) + DENOM_FIELD_NUMBER;
+      hash = (53 * hash) + getDenom().hashCode();
+      hash = (37 * hash) + AMOUNT_FIELD_NUMBER;
+      hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
+          getAmount());
+      if (getProofCount() > 0) {
+        hash = (37 * hash) + PROOF_FIELD_NUMBER;
+        hash = (53 * hash) + getProofList().hashCode();
+      }
+      hash = (29 * hash) + getUnknownFields().hashCode();
+      memoizedHashCode = hash;
+      return hash;
+    }
+
+    public static qorechain.rdk.v1.Tx.MsgExecuteWithdrawal parseFrom(
+        java.nio.ByteBuffer data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static qorechain.rdk.v1.Tx.MsgExecuteWithdrawal parseFrom(
+        java.nio.ByteBuffer data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static qorechain.rdk.v1.Tx.MsgExecuteWithdrawal parseFrom(
+        com.google.protobuf.ByteString data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static qorechain.rdk.v1.Tx.MsgExecuteWithdrawal parseFrom(
+        com.google.protobuf.ByteString data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static qorechain.rdk.v1.Tx.MsgExecuteWithdrawal parseFrom(byte[] data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static qorechain.rdk.v1.Tx.MsgExecuteWithdrawal parseFrom(
+        byte[] data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static qorechain.rdk.v1.Tx.MsgExecuteWithdrawal parseFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input);
+    }
+    public static qorechain.rdk.v1.Tx.MsgExecuteWithdrawal parseFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    public static qorechain.rdk.v1.Tx.MsgExecuteWithdrawal parseDelimitedFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseDelimitedWithIOException(PARSER, input);
+    }
+
+    public static qorechain.rdk.v1.Tx.MsgExecuteWithdrawal parseDelimitedFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static qorechain.rdk.v1.Tx.MsgExecuteWithdrawal parseFrom(
+        com.google.protobuf.CodedInputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input);
+    }
+    public static qorechain.rdk.v1.Tx.MsgExecuteWithdrawal parseFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    @java.lang.Override
+    public Builder newBuilderForType() { return newBuilder(); }
+    public static Builder newBuilder() {
+      return DEFAULT_INSTANCE.toBuilder();
+    }
+    public static Builder newBuilder(qorechain.rdk.v1.Tx.MsgExecuteWithdrawal prototype) {
+      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+    }
+    @java.lang.Override
+    public Builder toBuilder() {
+      return this == DEFAULT_INSTANCE
+          ? new Builder() : new Builder().mergeFrom(this);
+    }
+
+    @java.lang.Override
+    protected Builder newBuilderForType(
+        com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+      Builder builder = new Builder(parent);
+      return builder;
+    }
+    /**
+     * <pre>
+     * MsgExecuteWithdrawal finalizes an L2-&gt;L1 cross-layer message: it proves a
+     * withdrawal leaf is committed in a finalized batch's withdrawals_root and pays
+     * the recipient from the rdk module escrow. Permissionless — anyone may submit a
+     * valid proof; the funds always go to the committed recipient. Replay-protected
+     * per (rollup_id, batch_index, withdrawal_index).
+     * </pre>
+     *
+     * Protobuf type {@code qorechain.rdk.v1.MsgExecuteWithdrawal}
+     */
+    public static final class Builder extends
+        com.google.protobuf.GeneratedMessage.Builder<Builder> implements
+        // @@protoc_insertion_point(builder_implements:qorechain.rdk.v1.MsgExecuteWithdrawal)
+        qorechain.rdk.v1.Tx.MsgExecuteWithdrawalOrBuilder {
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return qorechain.rdk.v1.Tx.internal_static_qorechain_rdk_v1_MsgExecuteWithdrawal_descriptor;
+      }
+
+      @java.lang.Override
+      protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return qorechain.rdk.v1.Tx.internal_static_qorechain_rdk_v1_MsgExecuteWithdrawal_fieldAccessorTable
+            .ensureFieldAccessorsInitialized(
+                qorechain.rdk.v1.Tx.MsgExecuteWithdrawal.class, qorechain.rdk.v1.Tx.MsgExecuteWithdrawal.Builder.class);
+      }
+
+      // Construct using qorechain.rdk.v1.Tx.MsgExecuteWithdrawal.newBuilder()
+      private Builder() {
+
+      }
+
+      private Builder(
+          com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+        super(parent);
+
+      }
+      @java.lang.Override
+      public Builder clear() {
+        super.clear();
+        bitField0_ = 0;
+        submitter_ = "";
+        rollupId_ = "";
+        batchIndex_ = 0L;
+        withdrawalIndex_ = 0L;
+        recipient_ = "";
+        denom_ = "";
+        amount_ = 0L;
+        proof_ = emptyList(com.google.protobuf.ByteString.class);
+        return this;
+      }
+
+      @java.lang.Override
+      public com.google.protobuf.Descriptors.Descriptor
+          getDescriptorForType() {
+        return qorechain.rdk.v1.Tx.internal_static_qorechain_rdk_v1_MsgExecuteWithdrawal_descriptor;
+      }
+
+      @java.lang.Override
+      public qorechain.rdk.v1.Tx.MsgExecuteWithdrawal getDefaultInstanceForType() {
+        return qorechain.rdk.v1.Tx.MsgExecuteWithdrawal.getDefaultInstance();
+      }
+
+      @java.lang.Override
+      public qorechain.rdk.v1.Tx.MsgExecuteWithdrawal build() {
+        qorechain.rdk.v1.Tx.MsgExecuteWithdrawal result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(result);
+        }
+        return result;
+      }
+
+      @java.lang.Override
+      public qorechain.rdk.v1.Tx.MsgExecuteWithdrawal buildPartial() {
+        qorechain.rdk.v1.Tx.MsgExecuteWithdrawal result = new qorechain.rdk.v1.Tx.MsgExecuteWithdrawal(this);
+        if (bitField0_ != 0) { buildPartial0(result); }
+        onBuilt();
+        return result;
+      }
+
+      private void buildPartial0(qorechain.rdk.v1.Tx.MsgExecuteWithdrawal result) {
+        int from_bitField0_ = bitField0_;
+        if (((from_bitField0_ & 0x00000001) != 0)) {
+          result.submitter_ = submitter_;
+        }
+        if (((from_bitField0_ & 0x00000002) != 0)) {
+          result.rollupId_ = rollupId_;
+        }
+        if (((from_bitField0_ & 0x00000004) != 0)) {
+          result.batchIndex_ = batchIndex_;
+        }
+        if (((from_bitField0_ & 0x00000008) != 0)) {
+          result.withdrawalIndex_ = withdrawalIndex_;
+        }
+        if (((from_bitField0_ & 0x00000010) != 0)) {
+          result.recipient_ = recipient_;
+        }
+        if (((from_bitField0_ & 0x00000020) != 0)) {
+          result.denom_ = denom_;
+        }
+        if (((from_bitField0_ & 0x00000040) != 0)) {
+          result.amount_ = amount_;
+        }
+        if (((from_bitField0_ & 0x00000080) != 0)) {
+          proof_.makeImmutable();
+          result.proof_ = proof_;
+        }
+      }
+
+      @java.lang.Override
+      public Builder mergeFrom(com.google.protobuf.Message other) {
+        if (other instanceof qorechain.rdk.v1.Tx.MsgExecuteWithdrawal) {
+          return mergeFrom((qorechain.rdk.v1.Tx.MsgExecuteWithdrawal)other);
+        } else {
+          super.mergeFrom(other);
+          return this;
+        }
+      }
+
+      public Builder mergeFrom(qorechain.rdk.v1.Tx.MsgExecuteWithdrawal other) {
+        if (other == qorechain.rdk.v1.Tx.MsgExecuteWithdrawal.getDefaultInstance()) return this;
+        if (!other.getSubmitter().isEmpty()) {
+          submitter_ = other.submitter_;
+          bitField0_ |= 0x00000001;
+          onChanged();
+        }
+        if (!other.getRollupId().isEmpty()) {
+          rollupId_ = other.rollupId_;
+          bitField0_ |= 0x00000002;
+          onChanged();
+        }
+        if (other.getBatchIndex() != 0L) {
+          setBatchIndex(other.getBatchIndex());
+        }
+        if (other.getWithdrawalIndex() != 0L) {
+          setWithdrawalIndex(other.getWithdrawalIndex());
+        }
+        if (!other.getRecipient().isEmpty()) {
+          recipient_ = other.recipient_;
+          bitField0_ |= 0x00000010;
+          onChanged();
+        }
+        if (!other.getDenom().isEmpty()) {
+          denom_ = other.denom_;
+          bitField0_ |= 0x00000020;
+          onChanged();
+        }
+        if (other.getAmount() != 0L) {
+          setAmount(other.getAmount());
+        }
+        if (!other.proof_.isEmpty()) {
+          if (proof_.isEmpty()) {
+            proof_ = other.proof_;
+            proof_.makeImmutable();
+            bitField0_ |= 0x00000080;
+          } else {
+            ensureProofIsMutable();
+            proof_.addAll(other.proof_);
+          }
+          onChanged();
+        }
+        this.mergeUnknownFields(other.getUnknownFields());
+        onChanged();
+        return this;
+      }
+
+      @java.lang.Override
+      public final boolean isInitialized() {
+        return true;
+      }
+
+      @java.lang.Override
+      public Builder mergeFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        if (extensionRegistry == null) {
+          throw new java.lang.NullPointerException();
+        }
+        try {
+          boolean done = false;
+          while (!done) {
+            int tag = input.readTag();
+            switch (tag) {
+              case 0:
+                done = true;
+                break;
+              case 10: {
+                submitter_ = input.readStringRequireUtf8();
+                bitField0_ |= 0x00000001;
+                break;
+              } // case 10
+              case 18: {
+                rollupId_ = input.readStringRequireUtf8();
+                bitField0_ |= 0x00000002;
+                break;
+              } // case 18
+              case 24: {
+                batchIndex_ = input.readUInt64();
+                bitField0_ |= 0x00000004;
+                break;
+              } // case 24
+              case 32: {
+                withdrawalIndex_ = input.readUInt64();
+                bitField0_ |= 0x00000008;
+                break;
+              } // case 32
+              case 42: {
+                recipient_ = input.readStringRequireUtf8();
+                bitField0_ |= 0x00000010;
+                break;
+              } // case 42
+              case 50: {
+                denom_ = input.readStringRequireUtf8();
+                bitField0_ |= 0x00000020;
+                break;
+              } // case 50
+              case 56: {
+                amount_ = input.readInt64();
+                bitField0_ |= 0x00000040;
+                break;
+              } // case 56
+              case 66: {
+                com.google.protobuf.ByteString v = input.readBytes();
+                ensureProofIsMutable();
+                proof_.add(v);
+                break;
+              } // case 66
+              default: {
+                if (!super.parseUnknownField(input, extensionRegistry, tag)) {
+                  done = true; // was an endgroup tag
+                }
+                break;
+              } // default:
+            } // switch (tag)
+          } // while (!done)
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          throw e.unwrapIOException();
+        } finally {
+          onChanged();
+        } // finally
+        return this;
+      }
+      private int bitField0_;
+
+      private java.lang.Object submitter_ = "";
+      /**
+       * <code>string submitter = 1 [json_name = "submitter", (.cosmos_proto.scalar) = "cosmos.AddressString"];</code>
+       * @return The submitter.
+       */
+      public java.lang.String getSubmitter() {
+        java.lang.Object ref = submitter_;
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          submitter_ = s;
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
+      }
+      /**
+       * <code>string submitter = 1 [json_name = "submitter", (.cosmos_proto.scalar) = "cosmos.AddressString"];</code>
+       * @return The bytes for submitter.
+       */
+      public com.google.protobuf.ByteString
+          getSubmitterBytes() {
+        java.lang.Object ref = submitter_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          submitter_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <code>string submitter = 1 [json_name = "submitter", (.cosmos_proto.scalar) = "cosmos.AddressString"];</code>
+       * @param value The submitter to set.
+       * @return This builder for chaining.
+       */
+      public Builder setSubmitter(
+          java.lang.String value) {
+        if (value == null) { throw new NullPointerException(); }
+        submitter_ = value;
+        bitField0_ |= 0x00000001;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>string submitter = 1 [json_name = "submitter", (.cosmos_proto.scalar) = "cosmos.AddressString"];</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearSubmitter() {
+        submitter_ = getDefaultInstance().getSubmitter();
+        bitField0_ = (bitField0_ & ~0x00000001);
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>string submitter = 1 [json_name = "submitter", (.cosmos_proto.scalar) = "cosmos.AddressString"];</code>
+       * @param value The bytes for submitter to set.
+       * @return This builder for chaining.
+       */
+      public Builder setSubmitterBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) { throw new NullPointerException(); }
+        checkByteStringIsUtf8(value);
+        submitter_ = value;
+        bitField0_ |= 0x00000001;
+        onChanged();
+        return this;
+      }
+
+      private java.lang.Object rollupId_ = "";
+      /**
+       * <code>string rollup_id = 2 [json_name = "rollupId", (.gogoproto.customname) = "RollupID"];</code>
+       * @return The rollupId.
+       */
+      public java.lang.String getRollupId() {
+        java.lang.Object ref = rollupId_;
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          rollupId_ = s;
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
+      }
+      /**
+       * <code>string rollup_id = 2 [json_name = "rollupId", (.gogoproto.customname) = "RollupID"];</code>
+       * @return The bytes for rollupId.
+       */
+      public com.google.protobuf.ByteString
+          getRollupIdBytes() {
+        java.lang.Object ref = rollupId_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          rollupId_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <code>string rollup_id = 2 [json_name = "rollupId", (.gogoproto.customname) = "RollupID"];</code>
+       * @param value The rollupId to set.
+       * @return This builder for chaining.
+       */
+      public Builder setRollupId(
+          java.lang.String value) {
+        if (value == null) { throw new NullPointerException(); }
+        rollupId_ = value;
+        bitField0_ |= 0x00000002;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>string rollup_id = 2 [json_name = "rollupId", (.gogoproto.customname) = "RollupID"];</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearRollupId() {
+        rollupId_ = getDefaultInstance().getRollupId();
+        bitField0_ = (bitField0_ & ~0x00000002);
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>string rollup_id = 2 [json_name = "rollupId", (.gogoproto.customname) = "RollupID"];</code>
+       * @param value The bytes for rollupId to set.
+       * @return This builder for chaining.
+       */
+      public Builder setRollupIdBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) { throw new NullPointerException(); }
+        checkByteStringIsUtf8(value);
+        rollupId_ = value;
+        bitField0_ |= 0x00000002;
+        onChanged();
+        return this;
+      }
+
+      private long batchIndex_ ;
+      /**
+       * <code>uint64 batch_index = 3 [json_name = "batchIndex"];</code>
+       * @return The batchIndex.
+       */
+      @java.lang.Override
+      public long getBatchIndex() {
+        return batchIndex_;
+      }
+      /**
+       * <code>uint64 batch_index = 3 [json_name = "batchIndex"];</code>
+       * @param value The batchIndex to set.
+       * @return This builder for chaining.
+       */
+      public Builder setBatchIndex(long value) {
+
+        batchIndex_ = value;
+        bitField0_ |= 0x00000004;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>uint64 batch_index = 3 [json_name = "batchIndex"];</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearBatchIndex() {
+        bitField0_ = (bitField0_ & ~0x00000004);
+        batchIndex_ = 0L;
+        onChanged();
+        return this;
+      }
+
+      private long withdrawalIndex_ ;
+      /**
+       * <code>uint64 withdrawal_index = 4 [json_name = "withdrawalIndex"];</code>
+       * @return The withdrawalIndex.
+       */
+      @java.lang.Override
+      public long getWithdrawalIndex() {
+        return withdrawalIndex_;
+      }
+      /**
+       * <code>uint64 withdrawal_index = 4 [json_name = "withdrawalIndex"];</code>
+       * @param value The withdrawalIndex to set.
+       * @return This builder for chaining.
+       */
+      public Builder setWithdrawalIndex(long value) {
+
+        withdrawalIndex_ = value;
+        bitField0_ |= 0x00000008;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>uint64 withdrawal_index = 4 [json_name = "withdrawalIndex"];</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearWithdrawalIndex() {
+        bitField0_ = (bitField0_ & ~0x00000008);
+        withdrawalIndex_ = 0L;
+        onChanged();
+        return this;
+      }
+
+      private java.lang.Object recipient_ = "";
+      /**
+       * <code>string recipient = 5 [json_name = "recipient", (.cosmos_proto.scalar) = "cosmos.AddressString"];</code>
+       * @return The recipient.
+       */
+      public java.lang.String getRecipient() {
+        java.lang.Object ref = recipient_;
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          recipient_ = s;
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
+      }
+      /**
+       * <code>string recipient = 5 [json_name = "recipient", (.cosmos_proto.scalar) = "cosmos.AddressString"];</code>
+       * @return The bytes for recipient.
+       */
+      public com.google.protobuf.ByteString
+          getRecipientBytes() {
+        java.lang.Object ref = recipient_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          recipient_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <code>string recipient = 5 [json_name = "recipient", (.cosmos_proto.scalar) = "cosmos.AddressString"];</code>
+       * @param value The recipient to set.
+       * @return This builder for chaining.
+       */
+      public Builder setRecipient(
+          java.lang.String value) {
+        if (value == null) { throw new NullPointerException(); }
+        recipient_ = value;
+        bitField0_ |= 0x00000010;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>string recipient = 5 [json_name = "recipient", (.cosmos_proto.scalar) = "cosmos.AddressString"];</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearRecipient() {
+        recipient_ = getDefaultInstance().getRecipient();
+        bitField0_ = (bitField0_ & ~0x00000010);
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>string recipient = 5 [json_name = "recipient", (.cosmos_proto.scalar) = "cosmos.AddressString"];</code>
+       * @param value The bytes for recipient to set.
+       * @return This builder for chaining.
+       */
+      public Builder setRecipientBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) { throw new NullPointerException(); }
+        checkByteStringIsUtf8(value);
+        recipient_ = value;
+        bitField0_ |= 0x00000010;
+        onChanged();
+        return this;
+      }
+
+      private java.lang.Object denom_ = "";
+      /**
+       * <code>string denom = 6 [json_name = "denom"];</code>
+       * @return The denom.
+       */
+      public java.lang.String getDenom() {
+        java.lang.Object ref = denom_;
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          denom_ = s;
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
+      }
+      /**
+       * <code>string denom = 6 [json_name = "denom"];</code>
+       * @return The bytes for denom.
+       */
+      public com.google.protobuf.ByteString
+          getDenomBytes() {
+        java.lang.Object ref = denom_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          denom_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <code>string denom = 6 [json_name = "denom"];</code>
+       * @param value The denom to set.
+       * @return This builder for chaining.
+       */
+      public Builder setDenom(
+          java.lang.String value) {
+        if (value == null) { throw new NullPointerException(); }
+        denom_ = value;
+        bitField0_ |= 0x00000020;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>string denom = 6 [json_name = "denom"];</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearDenom() {
+        denom_ = getDefaultInstance().getDenom();
+        bitField0_ = (bitField0_ & ~0x00000020);
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>string denom = 6 [json_name = "denom"];</code>
+       * @param value The bytes for denom to set.
+       * @return This builder for chaining.
+       */
+      public Builder setDenomBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) { throw new NullPointerException(); }
+        checkByteStringIsUtf8(value);
+        denom_ = value;
+        bitField0_ |= 0x00000020;
+        onChanged();
+        return this;
+      }
+
+      private long amount_ ;
+      /**
+       * <code>int64 amount = 7 [json_name = "amount"];</code>
+       * @return The amount.
+       */
+      @java.lang.Override
+      public long getAmount() {
+        return amount_;
+      }
+      /**
+       * <code>int64 amount = 7 [json_name = "amount"];</code>
+       * @param value The amount to set.
+       * @return This builder for chaining.
+       */
+      public Builder setAmount(long value) {
+
+        amount_ = value;
+        bitField0_ |= 0x00000040;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>int64 amount = 7 [json_name = "amount"];</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearAmount() {
+        bitField0_ = (bitField0_ & ~0x00000040);
+        amount_ = 0L;
+        onChanged();
+        return this;
+      }
+
+      private com.google.protobuf.Internal.ProtobufList<com.google.protobuf.ByteString> proof_ = emptyList(com.google.protobuf.ByteString.class);
+      private void ensureProofIsMutable() {
+        if (!proof_.isModifiable()) {
+          proof_ = makeMutableCopy(proof_);
+        }
+        bitField0_ |= 0x00000080;
+      }
+      /**
+       * <pre>
+       * proof are the binary-Merkle sibling hashes from the leaf to withdrawals_root.
+       * </pre>
+       *
+       * <code>repeated bytes proof = 8 [json_name = "proof"];</code>
+       * @return A list containing the proof.
+       */
+      public java.util.List<com.google.protobuf.ByteString>
+          getProofList() {
+        proof_.makeImmutable();
+        return proof_;
+      }
+      /**
+       * <pre>
+       * proof are the binary-Merkle sibling hashes from the leaf to withdrawals_root.
+       * </pre>
+       *
+       * <code>repeated bytes proof = 8 [json_name = "proof"];</code>
+       * @return The count of proof.
+       */
+      public int getProofCount() {
+        return proof_.size();
+      }
+      /**
+       * <pre>
+       * proof are the binary-Merkle sibling hashes from the leaf to withdrawals_root.
+       * </pre>
+       *
+       * <code>repeated bytes proof = 8 [json_name = "proof"];</code>
+       * @param index The index of the element to return.
+       * @return The proof at the given index.
+       */
+      public com.google.protobuf.ByteString getProof(int index) {
+        return proof_.get(index);
+      }
+      /**
+       * <pre>
+       * proof are the binary-Merkle sibling hashes from the leaf to withdrawals_root.
+       * </pre>
+       *
+       * <code>repeated bytes proof = 8 [json_name = "proof"];</code>
+       * @param index The index to set the value at.
+       * @param value The proof to set.
+       * @return This builder for chaining.
+       */
+      public Builder setProof(
+          int index, com.google.protobuf.ByteString value) {
+        if (value == null) { throw new NullPointerException(); }
+        ensureProofIsMutable();
+        proof_.set(index, value);
+        bitField0_ |= 0x00000080;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * proof are the binary-Merkle sibling hashes from the leaf to withdrawals_root.
+       * </pre>
+       *
+       * <code>repeated bytes proof = 8 [json_name = "proof"];</code>
+       * @param value The proof to add.
+       * @return This builder for chaining.
+       */
+      public Builder addProof(com.google.protobuf.ByteString value) {
+        if (value == null) { throw new NullPointerException(); }
+        ensureProofIsMutable();
+        proof_.add(value);
+        bitField0_ |= 0x00000080;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * proof are the binary-Merkle sibling hashes from the leaf to withdrawals_root.
+       * </pre>
+       *
+       * <code>repeated bytes proof = 8 [json_name = "proof"];</code>
+       * @param values The proof to add.
+       * @return This builder for chaining.
+       */
+      public Builder addAllProof(
+          java.lang.Iterable<? extends com.google.protobuf.ByteString> values) {
+        ensureProofIsMutable();
+        com.google.protobuf.AbstractMessageLite.Builder.addAll(
+            values, proof_);
+        bitField0_ |= 0x00000080;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * proof are the binary-Merkle sibling hashes from the leaf to withdrawals_root.
+       * </pre>
+       *
+       * <code>repeated bytes proof = 8 [json_name = "proof"];</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearProof() {
+        proof_ = emptyList(com.google.protobuf.ByteString.class);
+        bitField0_ = (bitField0_ & ~0x00000080);
+        onChanged();
+        return this;
+      }
+
+      // @@protoc_insertion_point(builder_scope:qorechain.rdk.v1.MsgExecuteWithdrawal)
+    }
+
+    // @@protoc_insertion_point(class_scope:qorechain.rdk.v1.MsgExecuteWithdrawal)
+    private static final qorechain.rdk.v1.Tx.MsgExecuteWithdrawal DEFAULT_INSTANCE;
+    static {
+      DEFAULT_INSTANCE = new qorechain.rdk.v1.Tx.MsgExecuteWithdrawal();
+    }
+
+    public static qorechain.rdk.v1.Tx.MsgExecuteWithdrawal getDefaultInstance() {
+      return DEFAULT_INSTANCE;
+    }
+
+    private static final com.google.protobuf.Parser<MsgExecuteWithdrawal>
+        PARSER = new com.google.protobuf.AbstractParser<MsgExecuteWithdrawal>() {
+      @java.lang.Override
+      public MsgExecuteWithdrawal parsePartialFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        Builder builder = newBuilder();
+        try {
+          builder.mergeFrom(input, extensionRegistry);
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          throw e.setUnfinishedMessage(builder.buildPartial());
+        } catch (com.google.protobuf.UninitializedMessageException e) {
+          throw e.asInvalidProtocolBufferException().setUnfinishedMessage(builder.buildPartial());
+        } catch (java.io.IOException e) {
+          throw new com.google.protobuf.InvalidProtocolBufferException(e)
+              .setUnfinishedMessage(builder.buildPartial());
+        }
+        return builder.buildPartial();
+      }
+    };
+
+    public static com.google.protobuf.Parser<MsgExecuteWithdrawal> parser() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Parser<MsgExecuteWithdrawal> getParserForType() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public qorechain.rdk.v1.Tx.MsgExecuteWithdrawal getDefaultInstanceForType() {
+      return DEFAULT_INSTANCE;
+    }
+
+  }
+
+  public interface MsgExecuteWithdrawalResponseOrBuilder extends
+      // @@protoc_insertion_point(interface_extends:qorechain.rdk.v1.MsgExecuteWithdrawalResponse)
+      com.google.protobuf.MessageOrBuilder {
+  }
+  /**
+   * Protobuf type {@code qorechain.rdk.v1.MsgExecuteWithdrawalResponse}
+   */
+  public static final class MsgExecuteWithdrawalResponse extends
+      com.google.protobuf.GeneratedMessage implements
+      // @@protoc_insertion_point(message_implements:qorechain.rdk.v1.MsgExecuteWithdrawalResponse)
+      MsgExecuteWithdrawalResponseOrBuilder {
+  private static final long serialVersionUID = 0L;
+    static {
+      com.google.protobuf.RuntimeVersion.validateProtobufGencodeVersion(
+        com.google.protobuf.RuntimeVersion.RuntimeDomain.PUBLIC,
+        /* major= */ 4,
+        /* minor= */ 35,
+        /* patch= */ 1,
+        /* suffix= */ "",
+        "MsgExecuteWithdrawalResponse");
+    }
+    // Use MsgExecuteWithdrawalResponse.newBuilder() to construct.
+    private MsgExecuteWithdrawalResponse(com.google.protobuf.GeneratedMessage.Builder<?> builder) {
+      super(builder);
+    }
+    private MsgExecuteWithdrawalResponse() {
+    }
+
+    public static final com.google.protobuf.Descriptors.Descriptor
+        getDescriptor() {
+      return qorechain.rdk.v1.Tx.internal_static_qorechain_rdk_v1_MsgExecuteWithdrawalResponse_descriptor;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Descriptors.Descriptor getDescriptorForType() {
+      return qorechain.rdk.v1.Tx.internal_static_qorechain_rdk_v1_MsgExecuteWithdrawalResponse_descriptor;
+    }
+
+    @java.lang.Override
+    protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+        internalGetFieldAccessorTable() {
+      return qorechain.rdk.v1.Tx.internal_static_qorechain_rdk_v1_MsgExecuteWithdrawalResponse_fieldAccessorTable
+          .ensureFieldAccessorsInitialized(
+              qorechain.rdk.v1.Tx.MsgExecuteWithdrawalResponse.class, qorechain.rdk.v1.Tx.MsgExecuteWithdrawalResponse.Builder.class);
+    }
+
+    private byte memoizedIsInitialized = -1;
+    @java.lang.Override
+    public final boolean isInitialized() {
+      byte isInitialized = memoizedIsInitialized;
+      if (isInitialized == 1) return true;
+      if (isInitialized == 0) return false;
+
+      memoizedIsInitialized = 1;
+      return true;
+    }
+
+    @java.lang.Override
+    public void writeTo(com.google.protobuf.CodedOutputStream output)
+                        throws java.io.IOException {
+      getUnknownFields().writeTo(output);
+    }
+    @java.lang.Override
+    public int getSerializedSize() {
+      int size = memoizedSize;
+      if (size != -1) return size;
+
+      size = 0;
+      size += getUnknownFields().getSerializedSize();
+      memoizedSize = size;
+      return size;
+    }
+
+    @java.lang.Override
+    public boolean equals(final java.lang.Object obj) {
+      if (obj == this) {
+       return true;
+      }
+      if (!(obj instanceof qorechain.rdk.v1.Tx.MsgExecuteWithdrawalResponse)) {
+        return super.equals(obj);
+      }
+      qorechain.rdk.v1.Tx.MsgExecuteWithdrawalResponse other = (qorechain.rdk.v1.Tx.MsgExecuteWithdrawalResponse) obj;
+
+      if (!getUnknownFields().equals(other.getUnknownFields())) return false;
+      return true;
+    }
+
+    @java.lang.Override
+    public int hashCode() {
+      if (memoizedHashCode != 0) {
+        return memoizedHashCode;
+      }
+      int hash = 41;
+      hash = (19 * hash) + getDescriptor().hashCode();
+      hash = (29 * hash) + getUnknownFields().hashCode();
+      memoizedHashCode = hash;
+      return hash;
+    }
+
+    public static qorechain.rdk.v1.Tx.MsgExecuteWithdrawalResponse parseFrom(
+        java.nio.ByteBuffer data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static qorechain.rdk.v1.Tx.MsgExecuteWithdrawalResponse parseFrom(
+        java.nio.ByteBuffer data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static qorechain.rdk.v1.Tx.MsgExecuteWithdrawalResponse parseFrom(
+        com.google.protobuf.ByteString data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static qorechain.rdk.v1.Tx.MsgExecuteWithdrawalResponse parseFrom(
+        com.google.protobuf.ByteString data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static qorechain.rdk.v1.Tx.MsgExecuteWithdrawalResponse parseFrom(byte[] data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static qorechain.rdk.v1.Tx.MsgExecuteWithdrawalResponse parseFrom(
+        byte[] data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static qorechain.rdk.v1.Tx.MsgExecuteWithdrawalResponse parseFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input);
+    }
+    public static qorechain.rdk.v1.Tx.MsgExecuteWithdrawalResponse parseFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    public static qorechain.rdk.v1.Tx.MsgExecuteWithdrawalResponse parseDelimitedFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseDelimitedWithIOException(PARSER, input);
+    }
+
+    public static qorechain.rdk.v1.Tx.MsgExecuteWithdrawalResponse parseDelimitedFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static qorechain.rdk.v1.Tx.MsgExecuteWithdrawalResponse parseFrom(
+        com.google.protobuf.CodedInputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input);
+    }
+    public static qorechain.rdk.v1.Tx.MsgExecuteWithdrawalResponse parseFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    @java.lang.Override
+    public Builder newBuilderForType() { return newBuilder(); }
+    public static Builder newBuilder() {
+      return DEFAULT_INSTANCE.toBuilder();
+    }
+    public static Builder newBuilder(qorechain.rdk.v1.Tx.MsgExecuteWithdrawalResponse prototype) {
+      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+    }
+    @java.lang.Override
+    public Builder toBuilder() {
+      return this == DEFAULT_INSTANCE
+          ? new Builder() : new Builder().mergeFrom(this);
+    }
+
+    @java.lang.Override
+    protected Builder newBuilderForType(
+        com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+      Builder builder = new Builder(parent);
+      return builder;
+    }
+    /**
+     * Protobuf type {@code qorechain.rdk.v1.MsgExecuteWithdrawalResponse}
+     */
+    public static final class Builder extends
+        com.google.protobuf.GeneratedMessage.Builder<Builder> implements
+        // @@protoc_insertion_point(builder_implements:qorechain.rdk.v1.MsgExecuteWithdrawalResponse)
+        qorechain.rdk.v1.Tx.MsgExecuteWithdrawalResponseOrBuilder {
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return qorechain.rdk.v1.Tx.internal_static_qorechain_rdk_v1_MsgExecuteWithdrawalResponse_descriptor;
+      }
+
+      @java.lang.Override
+      protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return qorechain.rdk.v1.Tx.internal_static_qorechain_rdk_v1_MsgExecuteWithdrawalResponse_fieldAccessorTable
+            .ensureFieldAccessorsInitialized(
+                qorechain.rdk.v1.Tx.MsgExecuteWithdrawalResponse.class, qorechain.rdk.v1.Tx.MsgExecuteWithdrawalResponse.Builder.class);
+      }
+
+      // Construct using qorechain.rdk.v1.Tx.MsgExecuteWithdrawalResponse.newBuilder()
+      private Builder() {
+
+      }
+
+      private Builder(
+          com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+        super(parent);
+
+      }
+      @java.lang.Override
+      public Builder clear() {
+        super.clear();
+        return this;
+      }
+
+      @java.lang.Override
+      public com.google.protobuf.Descriptors.Descriptor
+          getDescriptorForType() {
+        return qorechain.rdk.v1.Tx.internal_static_qorechain_rdk_v1_MsgExecuteWithdrawalResponse_descriptor;
+      }
+
+      @java.lang.Override
+      public qorechain.rdk.v1.Tx.MsgExecuteWithdrawalResponse getDefaultInstanceForType() {
+        return qorechain.rdk.v1.Tx.MsgExecuteWithdrawalResponse.getDefaultInstance();
+      }
+
+      @java.lang.Override
+      public qorechain.rdk.v1.Tx.MsgExecuteWithdrawalResponse build() {
+        qorechain.rdk.v1.Tx.MsgExecuteWithdrawalResponse result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(result);
+        }
+        return result;
+      }
+
+      @java.lang.Override
+      public qorechain.rdk.v1.Tx.MsgExecuteWithdrawalResponse buildPartial() {
+        qorechain.rdk.v1.Tx.MsgExecuteWithdrawalResponse result = new qorechain.rdk.v1.Tx.MsgExecuteWithdrawalResponse(this);
+        onBuilt();
+        return result;
+      }
+
+      @java.lang.Override
+      public Builder mergeFrom(com.google.protobuf.Message other) {
+        if (other instanceof qorechain.rdk.v1.Tx.MsgExecuteWithdrawalResponse) {
+          return mergeFrom((qorechain.rdk.v1.Tx.MsgExecuteWithdrawalResponse)other);
+        } else {
+          super.mergeFrom(other);
+          return this;
+        }
+      }
+
+      public Builder mergeFrom(qorechain.rdk.v1.Tx.MsgExecuteWithdrawalResponse other) {
+        if (other == qorechain.rdk.v1.Tx.MsgExecuteWithdrawalResponse.getDefaultInstance()) return this;
+        this.mergeUnknownFields(other.getUnknownFields());
+        onChanged();
+        return this;
+      }
+
+      @java.lang.Override
+      public final boolean isInitialized() {
+        return true;
+      }
+
+      @java.lang.Override
+      public Builder mergeFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        if (extensionRegistry == null) {
+          throw new java.lang.NullPointerException();
+        }
+        try {
+          boolean done = false;
+          while (!done) {
+            int tag = input.readTag();
+            switch (tag) {
+              case 0:
+                done = true;
+                break;
+              default: {
+                if (!super.parseUnknownField(input, extensionRegistry, tag)) {
+                  done = true; // was an endgroup tag
+                }
+                break;
+              } // default:
+            } // switch (tag)
+          } // while (!done)
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          throw e.unwrapIOException();
+        } finally {
+          onChanged();
+        } // finally
+        return this;
+      }
+
+      // @@protoc_insertion_point(builder_scope:qorechain.rdk.v1.MsgExecuteWithdrawalResponse)
+    }
+
+    // @@protoc_insertion_point(class_scope:qorechain.rdk.v1.MsgExecuteWithdrawalResponse)
+    private static final qorechain.rdk.v1.Tx.MsgExecuteWithdrawalResponse DEFAULT_INSTANCE;
+    static {
+      DEFAULT_INSTANCE = new qorechain.rdk.v1.Tx.MsgExecuteWithdrawalResponse();
+    }
+
+    public static qorechain.rdk.v1.Tx.MsgExecuteWithdrawalResponse getDefaultInstance() {
+      return DEFAULT_INSTANCE;
+    }
+
+    private static final com.google.protobuf.Parser<MsgExecuteWithdrawalResponse>
+        PARSER = new com.google.protobuf.AbstractParser<MsgExecuteWithdrawalResponse>() {
+      @java.lang.Override
+      public MsgExecuteWithdrawalResponse parsePartialFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        Builder builder = newBuilder();
+        try {
+          builder.mergeFrom(input, extensionRegistry);
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          throw e.setUnfinishedMessage(builder.buildPartial());
+        } catch (com.google.protobuf.UninitializedMessageException e) {
+          throw e.asInvalidProtocolBufferException().setUnfinishedMessage(builder.buildPartial());
+        } catch (java.io.IOException e) {
+          throw new com.google.protobuf.InvalidProtocolBufferException(e)
+              .setUnfinishedMessage(builder.buildPartial());
+        }
+        return builder.buildPartial();
+      }
+    };
+
+    public static com.google.protobuf.Parser<MsgExecuteWithdrawalResponse> parser() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Parser<MsgExecuteWithdrawalResponse> getParserForType() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public qorechain.rdk.v1.Tx.MsgExecuteWithdrawalResponse getDefaultInstanceForType() {
+      return DEFAULT_INSTANCE;
+    }
+
+  }
+
   private static final com.google.protobuf.Descriptors.Descriptor
     internal_static_qorechain_rdk_v1_MsgCreateRollup_descriptor;
   private static final 
@@ -8715,6 +10593,16 @@ public final class Tx extends com.google.protobuf.GeneratedFile {
   private static final 
     com.google.protobuf.GeneratedMessage.FieldAccessorTable
       internal_static_qorechain_rdk_v1_MsgStopRollupResponse_fieldAccessorTable;
+  private static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_qorechain_rdk_v1_MsgExecuteWithdrawal_descriptor;
+  private static final 
+    com.google.protobuf.GeneratedMessage.FieldAccessorTable
+      internal_static_qorechain_rdk_v1_MsgExecuteWithdrawal_fieldAccessorTable;
+  private static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_qorechain_rdk_v1_MsgExecuteWithdrawalResponse_descriptor;
+  private static final 
+    com.google.protobuf.GeneratedMessage.FieldAccessorTable
+      internal_static_qorechain_rdk_v1_MsgExecuteWithdrawalResponse_fieldAccessorTable;
 
   public static com.google.protobuf.Descriptors.FileDescriptor
       getDescriptor() {
@@ -8734,57 +10622,70 @@ public final class Tx extends com.google.protobuf.GeneratedFile {
       "mType\022!\n\014stake_amount\030\005 \001(\003R\013stakeAmount" +
       ":\014\202\347\260*\007creator\"D\n\027MsgCreateRollupRespons" +
       "e\022)\n\trollup_id\030\001 \001(\tB\014\342\336\037\010RollupIDR\010roll" +
-      "upId\"\271\002\n\016MsgSubmitBatch\0226\n\tsequencer\030\001 \001" +
+      "upId\"\344\002\n\016MsgSubmitBatch\0226\n\tsequencer\030\001 \001" +
       "(\tB\030\322\264-\024cosmos.AddressStringR\tsequencer\022" +
       ")\n\trollup_id\030\002 \001(\tB\014\342\336\037\010RollupIDR\010rollup" +
       "Id\022\037\n\013batch_index\030\003 \001(\004R\nbatchIndex\022\035\n\ns" +
       "tate_root\030\004 \001(\014R\tstateRoot\022&\n\017prev_state" +
       "_root\030\005 \001(\014R\rprevStateRoot\022\031\n\010tx_count\030\006" +
       " \001(\004R\007txCount\022\033\n\tdata_hash\030\007 \001(\014R\010dataHa" +
-      "sh\022\024\n\005proof\030\010 \001(\014R\005proof:\016\202\347\260*\tsequencer" +
-      "\"\030\n\026MsgSubmitBatchResponse\"\300\001\n\021MsgChalle" +
-      "ngeBatch\0228\n\nchallenger\030\001 \001(\tB\030\322\264-\024cosmos" +
-      ".AddressStringR\nchallenger\022)\n\trollup_id\030" +
-      "\002 \001(\tB\014\342\336\037\010RollupIDR\010rollupId\022\037\n\013batch_i" +
-      "ndex\030\003 \001(\004R\nbatchIndex\022\024\n\005proof\030\004 \001(\014R\005p" +
-      "roof:\017\202\347\260*\nchallenger\"\033\n\031MsgChallengeBat" +
-      "chResponse\"\311\001\n\023MsgResolveChallenge\0224\n\010re" +
-      "solver\030\001 \001(\tB\030\322\264-\024cosmos.AddressStringR\010" +
-      "resolver\022)\n\trollup_id\030\002 \001(\tB\014\342\336\037\010RollupI" +
-      "DR\010rollupId\022\037\n\013batch_index\030\003 \001(\004R\nbatchI" +
-      "ndex\022!\n\014fraud_upheld\030\004 \001(\010R\013fraudUpheld:" +
-      "\r\202\347\260*\010resolver\"\035\n\033MsgResolveChallengeRes" +
-      "ponse\"\225\001\n\016MsgPauseRollup\0222\n\007creator\030\001 \001(" +
-      "\tB\030\322\264-\024cosmos.AddressStringR\007creator\022)\n\t" +
-      "rollup_id\030\002 \001(\tB\014\342\336\037\010RollupIDR\010rollupId\022" +
-      "\026\n\006reason\030\003 \001(\tR\006reason:\014\202\347\260*\007creator\"\030\n" +
-      "\026MsgPauseRollupResponse\"~\n\017MsgResumeRoll" +
-      "up\0222\n\007creator\030\001 \001(\tB\030\322\264-\024cosmos.AddressS" +
-      "tringR\007creator\022)\n\trollup_id\030\002 \001(\tB\014\342\336\037\010R" +
-      "ollupIDR\010rollupId:\014\202\347\260*\007creator\"\031\n\027MsgRe" +
-      "sumeRollupResponse\"|\n\rMsgStopRollup\0222\n\007c" +
-      "reator\030\001 \001(\tB\030\322\264-\024cosmos.AddressStringR\007" +
-      "creator\022)\n\trollup_id\030\002 \001(\tB\014\342\336\037\010RollupID" +
-      "R\010rollupId:\014\202\347\260*\007creator\"\027\n\025MsgStopRollu" +
-      "pResponse2\244\005\n\003Msg\022\\\n\014CreateRollup\022!.qore" +
-      "chain.rdk.v1.MsgCreateRollup\032).qorechain" +
-      ".rdk.v1.MsgCreateRollupResponse\022Y\n\013Submi" +
-      "tBatch\022 .qorechain.rdk.v1.MsgSubmitBatch" +
-      "\032(.qorechain.rdk.v1.MsgSubmitBatchRespon" +
-      "se\022b\n\016ChallengeBatch\022#.qorechain.rdk.v1." +
-      "MsgChallengeBatch\032+.qorechain.rdk.v1.Msg" +
-      "ChallengeBatchResponse\022h\n\020ResolveChallen" +
-      "ge\022%.qorechain.rdk.v1.MsgResolveChalleng" +
-      "e\032-.qorechain.rdk.v1.MsgResolveChallenge" +
-      "Response\022Y\n\013PauseRollup\022 .qorechain.rdk." +
-      "v1.MsgPauseRollup\032(.qorechain.rdk.v1.Msg" +
-      "PauseRollupResponse\022\\\n\014ResumeRollup\022!.qo" +
-      "rechain.rdk.v1.MsgResumeRollup\032).qorecha" +
-      "in.rdk.v1.MsgResumeRollupResponse\022V\n\nSto" +
-      "pRollup\022\037.qorechain.rdk.v1.MsgStopRollup" +
-      "\032\'.qorechain.rdk.v1.MsgStopRollupRespons" +
-      "e\032\005\200\347\260*\001B1Z/github.com/qorechain/qorecha" +
-      "in-core/x/rdk/typesb\006proto3"
+      "sh\022\024\n\005proof\030\010 \001(\014R\005proof\022)\n\020withdrawals_" +
+      "root\030\t \001(\014R\017withdrawalsRoot:\016\202\347\260*\tsequen" +
+      "cer\"\030\n\026MsgSubmitBatchResponse\"\300\001\n\021MsgCha" +
+      "llengeBatch\0228\n\nchallenger\030\001 \001(\tB\030\322\264-\024cos" +
+      "mos.AddressStringR\nchallenger\022)\n\trollup_" +
+      "id\030\002 \001(\tB\014\342\336\037\010RollupIDR\010rollupId\022\037\n\013batc" +
+      "h_index\030\003 \001(\004R\nbatchIndex\022\024\n\005proof\030\004 \001(\014" +
+      "R\005proof:\017\202\347\260*\nchallenger\"\033\n\031MsgChallenge" +
+      "BatchResponse\"\311\001\n\023MsgResolveChallenge\0224\n" +
+      "\010resolver\030\001 \001(\tB\030\322\264-\024cosmos.AddressStrin" +
+      "gR\010resolver\022)\n\trollup_id\030\002 \001(\tB\014\342\336\037\010Roll" +
+      "upIDR\010rollupId\022\037\n\013batch_index\030\003 \001(\004R\nbat" +
+      "chIndex\022!\n\014fraud_upheld\030\004 \001(\010R\013fraudUphe" +
+      "ld:\r\202\347\260*\010resolver\"\035\n\033MsgResolveChallenge" +
+      "Response\"\225\001\n\016MsgPauseRollup\0222\n\007creator\030\001" +
+      " \001(\tB\030\322\264-\024cosmos.AddressStringR\007creator\022" +
+      ")\n\trollup_id\030\002 \001(\tB\014\342\336\037\010RollupIDR\010rollup" +
+      "Id\022\026\n\006reason\030\003 \001(\tR\006reason:\014\202\347\260*\007creator" +
+      "\"\030\n\026MsgPauseRollupResponse\"~\n\017MsgResumeR" +
+      "ollup\0222\n\007creator\030\001 \001(\tB\030\322\264-\024cosmos.Addre" +
+      "ssStringR\007creator\022)\n\trollup_id\030\002 \001(\tB\014\342\336" +
+      "\037\010RollupIDR\010rollupId:\014\202\347\260*\007creator\"\031\n\027Ms" +
+      "gResumeRollupResponse\"|\n\rMsgStopRollup\0222" +
+      "\n\007creator\030\001 \001(\tB\030\322\264-\024cosmos.AddressStrin" +
+      "gR\007creator\022)\n\trollup_id\030\002 \001(\tB\014\342\336\037\010Rollu" +
+      "pIDR\010rollupId:\014\202\347\260*\007creator\"\027\n\025MsgStopRo" +
+      "llupResponse\"\321\002\n\024MsgExecuteWithdrawal\0226\n" +
+      "\tsubmitter\030\001 \001(\tB\030\322\264-\024cosmos.AddressStri" +
+      "ngR\tsubmitter\022)\n\trollup_id\030\002 \001(\tB\014\342\336\037\010Ro" +
+      "llupIDR\010rollupId\022\037\n\013batch_index\030\003 \001(\004R\nb" +
+      "atchIndex\022)\n\020withdrawal_index\030\004 \001(\004R\017wit" +
+      "hdrawalIndex\0226\n\trecipient\030\005 \001(\tB\030\322\264-\024cos" +
+      "mos.AddressStringR\trecipient\022\024\n\005denom\030\006 " +
+      "\001(\tR\005denom\022\026\n\006amount\030\007 \001(\003R\006amount\022\024\n\005pr" +
+      "oof\030\010 \003(\014R\005proof:\016\202\347\260*\tsubmitter\"\036\n\034MsgE" +
+      "xecuteWithdrawalResponse2\221\006\n\003Msg\022\\\n\014Crea" +
+      "teRollup\022!.qorechain.rdk.v1.MsgCreateRol" +
+      "lup\032).qorechain.rdk.v1.MsgCreateRollupRe" +
+      "sponse\022Y\n\013SubmitBatch\022 .qorechain.rdk.v1" +
+      ".MsgSubmitBatch\032(.qorechain.rdk.v1.MsgSu" +
+      "bmitBatchResponse\022b\n\016ChallengeBatch\022#.qo" +
+      "rechain.rdk.v1.MsgChallengeBatch\032+.qorec" +
+      "hain.rdk.v1.MsgChallengeBatchResponse\022h\n" +
+      "\020ResolveChallenge\022%.qorechain.rdk.v1.Msg" +
+      "ResolveChallenge\032-.qorechain.rdk.v1.MsgR" +
+      "esolveChallengeResponse\022Y\n\013PauseRollup\022 " +
+      ".qorechain.rdk.v1.MsgPauseRollup\032(.qorec" +
+      "hain.rdk.v1.MsgPauseRollupResponse\022\\\n\014Re" +
+      "sumeRollup\022!.qorechain.rdk.v1.MsgResumeR" +
+      "ollup\032).qorechain.rdk.v1.MsgResumeRollup" +
+      "Response\022V\n\nStopRollup\022\037.qorechain.rdk.v" +
+      "1.MsgStopRollup\032\'.qorechain.rdk.v1.MsgSt" +
+      "opRollupResponse\022k\n\021ExecuteWithdrawal\022&." +
+      "qorechain.rdk.v1.MsgExecuteWithdrawal\032.." +
+      "qorechain.rdk.v1.MsgExecuteWithdrawalRes" +
+      "ponse\032\005\200\347\260*\001B1Z/github.com/qorechain/qor" +
+      "echain-core/x/rdk/typesb\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
@@ -8810,7 +10711,7 @@ public final class Tx extends com.google.protobuf.GeneratedFile {
     internal_static_qorechain_rdk_v1_MsgSubmitBatch_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_qorechain_rdk_v1_MsgSubmitBatch_descriptor,
-        new java.lang.String[] { "Sequencer", "RollupId", "BatchIndex", "StateRoot", "PrevStateRoot", "TxCount", "DataHash", "Proof", });
+        new java.lang.String[] { "Sequencer", "RollupId", "BatchIndex", "StateRoot", "PrevStateRoot", "TxCount", "DataHash", "Proof", "WithdrawalsRoot", });
     internal_static_qorechain_rdk_v1_MsgSubmitBatchResponse_descriptor =
       getDescriptor().getMessageType(3);
     internal_static_qorechain_rdk_v1_MsgSubmitBatchResponse_fieldAccessorTable = new
@@ -8876,6 +10777,18 @@ public final class Tx extends com.google.protobuf.GeneratedFile {
     internal_static_qorechain_rdk_v1_MsgStopRollupResponse_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_qorechain_rdk_v1_MsgStopRollupResponse_descriptor,
+        new java.lang.String[] { });
+    internal_static_qorechain_rdk_v1_MsgExecuteWithdrawal_descriptor =
+      getDescriptor().getMessageType(14);
+    internal_static_qorechain_rdk_v1_MsgExecuteWithdrawal_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessage.FieldAccessorTable(
+        internal_static_qorechain_rdk_v1_MsgExecuteWithdrawal_descriptor,
+        new java.lang.String[] { "Submitter", "RollupId", "BatchIndex", "WithdrawalIndex", "Recipient", "Denom", "Amount", "Proof", });
+    internal_static_qorechain_rdk_v1_MsgExecuteWithdrawalResponse_descriptor =
+      getDescriptor().getMessageType(15);
+    internal_static_qorechain_rdk_v1_MsgExecuteWithdrawalResponse_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessage.FieldAccessorTable(
+        internal_static_qorechain_rdk_v1_MsgExecuteWithdrawalResponse_descriptor,
         new java.lang.String[] { });
     descriptor.resolveAllFeaturesImmutable();
     cosmos.msg.v1.Msg.getDescriptor();

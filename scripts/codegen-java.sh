@@ -73,6 +73,16 @@ EOF
     --path cosmos_proto \
     --path gogoproto \
     --path amino \
+    --output "$WORK"
+
+  # google.api.{annotations,http} must be generated in a dedicated pass: when
+  # bundled with the other --path roots above, buf treats them as import-only
+  # transitive deps and prunes their Java output. Modules whose query.proto
+  # carries (google.api.http) route annotations (e.g. bridge) reference the
+  # com.google.api.AnnotationsProto extension registry, so it must exist.
+  buf generate --template "$WORK/buf.gen.yaml" \
+    --path google/api/annotations.proto \
+    --path google/api/http.proto \
     --output "$WORK" )
 
 echo "==> Copying generated Java into the committed source tree"
@@ -95,6 +105,17 @@ done
 if [ -f "$GEN/com/google/protobuf/GoGoProtos.java" ]; then
   mkdir -p "$JAVA_SRC/com/google/protobuf"
   cp "$GEN/com/google/protobuf/GoGoProtos.java" "$JAVA_SRC/com/google/protobuf/GoGoProtos.java"
+fi
+
+# google.api.{annotations,http} declare java_package = com.google.api, so their
+# generated extension/descriptor classes land under com/google/api. They are
+# referenced by modules whose query.proto carries (google.api.http) route
+# annotations (e.g. the bridge Query service), and are NOT part of the
+# protobuf-java runtime — so the generated sources are committed here.
+if [ -d "$GEN/com/google/api" ]; then
+  rm -rf "$JAVA_SRC/com/google/api"
+  mkdir -p "$JAVA_SRC/com/google/api"
+  cp -R "$GEN/com/google/api/." "$JAVA_SRC/com/google/api/"
 fi
 
 echo "==> Done. Generated Java committed under $JAVA_SRC"

@@ -26,6 +26,5801 @@ public final class Tx extends com.google.protobuf.GeneratedFile {
     registerAllExtensions(
         (com.google.protobuf.ExtensionRegistryLite) registry);
   }
+  public interface MsgUpdateChainConfigOrBuilder extends
+      // @@protoc_insertion_point(interface_extends:qorechain.bridge.v1.MsgUpdateChainConfig)
+      com.google.protobuf.MessageOrBuilder {
+
+    /**
+     * <code>string admin = 1 [json_name = "admin", (.cosmos_proto.scalar) = "cosmos.AddressString"];</code>
+     * @return The admin.
+     */
+    java.lang.String getAdmin();
+    /**
+     * <code>string admin = 1 [json_name = "admin", (.cosmos_proto.scalar) = "cosmos.AddressString"];</code>
+     * @return The bytes for admin.
+     */
+    com.google.protobuf.ByteString
+        getAdminBytes();
+
+    /**
+     * <code>string chain_id = 2 [json_name = "chainId"];</code>
+     * @return The chainId.
+     */
+    java.lang.String getChainId();
+    /**
+     * <code>string chain_id = 2 [json_name = "chainId"];</code>
+     * @return The bytes for chainId.
+     */
+    com.google.protobuf.ByteString
+        getChainIdBytes();
+
+    /**
+     * <pre>
+     * contract/program address on the external chain
+     * </pre>
+     *
+     * <code>string bridge_contract = 3 [json_name = "bridgeContract"];</code>
+     * @return The bridgeContract.
+     */
+    java.lang.String getBridgeContract();
+    /**
+     * <pre>
+     * contract/program address on the external chain
+     * </pre>
+     *
+     * <code>string bridge_contract = 3 [json_name = "bridgeContract"];</code>
+     * @return The bytes for bridgeContract.
+     */
+    com.google.protobuf.ByteString
+        getBridgeContractBytes();
+
+    /**
+     * <code>uint32 confirmations_required = 4 [json_name = "confirmationsRequired"];</code>
+     * @return The confirmationsRequired.
+     */
+    int getConfirmationsRequired();
+
+    /**
+     * <pre>
+     * ChainArchitecture string (empty keeps existing)
+     * </pre>
+     *
+     * <code>string architecture = 5 [json_name = "architecture"];</code>
+     * @return The architecture.
+     */
+    java.lang.String getArchitecture();
+    /**
+     * <pre>
+     * ChainArchitecture string (empty keeps existing)
+     * </pre>
+     *
+     * <code>string architecture = 5 [json_name = "architecture"];</code>
+     * @return The bytes for architecture.
+     */
+    com.google.protobuf.ByteString
+        getArchitectureBytes();
+
+    /**
+     * <pre>
+     * "active" | "paused" | "pending" (empty keeps existing)
+     * </pre>
+     *
+     * <code>string status = 6 [json_name = "status"];</code>
+     * @return The status.
+     */
+    java.lang.String getStatus();
+    /**
+     * <pre>
+     * "active" | "paused" | "pending" (empty keeps existing)
+     * </pre>
+     *
+     * <code>string status = 6 [json_name = "status"];</code>
+     * @return The bytes for status.
+     */
+    com.google.protobuf.ByteString
+        getStatusBytes();
+
+    /**
+     * <pre>
+     * Exactly one verifier flag should be set when activating trustless mode.
+     * </pre>
+     *
+     * <code>string verifier = 7 [json_name = "verifier"];</code>
+     * @return The verifier.
+     */
+    java.lang.String getVerifier();
+    /**
+     * <pre>
+     * Exactly one verifier flag should be set when activating trustless mode.
+     * </pre>
+     *
+     * <code>string verifier = 7 [json_name = "verifier"];</code>
+     * @return The bytes for verifier.
+     */
+    com.google.protobuf.ByteString
+        getVerifierBytes();
+
+    /**
+     * <pre>
+     * hex topic0 of the lock event (EVM/light-client chains)
+     * </pre>
+     *
+     * <code>string lock_event_sig = 8 [json_name = "lockEventSig"];</code>
+     * @return The lockEventSig.
+     */
+    java.lang.String getLockEventSig();
+    /**
+     * <pre>
+     * hex topic0 of the lock event (EVM/light-client chains)
+     * </pre>
+     *
+     * <code>string lock_event_sig = 8 [json_name = "lockEventSig"];</code>
+     * @return The bytes for lockEventSig.
+     */
+    com.google.protobuf.ByteString
+        getLockEventSigBytes();
+  }
+  /**
+   * <pre>
+   * MsgUpdateChainConfig sets/replaces a chain's bridge configuration. Empty
+   * string / zero fields fall back to the existing config (merge semantics in the
+   * handler), so a caller can flip just `status`+one verifier flag to activate.
+   * </pre>
+   *
+   * Protobuf type {@code qorechain.bridge.v1.MsgUpdateChainConfig}
+   */
+  public static final class MsgUpdateChainConfig extends
+      com.google.protobuf.GeneratedMessage implements
+      // @@protoc_insertion_point(message_implements:qorechain.bridge.v1.MsgUpdateChainConfig)
+      MsgUpdateChainConfigOrBuilder {
+  private static final long serialVersionUID = 0L;
+    static {
+      com.google.protobuf.RuntimeVersion.validateProtobufGencodeVersion(
+        com.google.protobuf.RuntimeVersion.RuntimeDomain.PUBLIC,
+        /* major= */ 4,
+        /* minor= */ 35,
+        /* patch= */ 1,
+        /* suffix= */ "",
+        "MsgUpdateChainConfig");
+    }
+    // Use MsgUpdateChainConfig.newBuilder() to construct.
+    private MsgUpdateChainConfig(com.google.protobuf.GeneratedMessage.Builder<?> builder) {
+      super(builder);
+    }
+    private MsgUpdateChainConfig() {
+      admin_ = "";
+      chainId_ = "";
+      bridgeContract_ = "";
+      architecture_ = "";
+      status_ = "";
+      verifier_ = "";
+      lockEventSig_ = "";
+    }
+
+    public static final com.google.protobuf.Descriptors.Descriptor
+        getDescriptor() {
+      return qorechain.bridge.v1.Tx.internal_static_qorechain_bridge_v1_MsgUpdateChainConfig_descriptor;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Descriptors.Descriptor getDescriptorForType() {
+      return qorechain.bridge.v1.Tx.internal_static_qorechain_bridge_v1_MsgUpdateChainConfig_descriptor;
+    }
+
+    @java.lang.Override
+    protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+        internalGetFieldAccessorTable() {
+      return qorechain.bridge.v1.Tx.internal_static_qorechain_bridge_v1_MsgUpdateChainConfig_fieldAccessorTable
+          .ensureFieldAccessorsInitialized(
+              qorechain.bridge.v1.Tx.MsgUpdateChainConfig.class, qorechain.bridge.v1.Tx.MsgUpdateChainConfig.Builder.class);
+    }
+
+    public static final int ADMIN_FIELD_NUMBER = 1;
+    @SuppressWarnings("serial")
+    private volatile java.lang.Object admin_ = "";
+    /**
+     * <code>string admin = 1 [json_name = "admin", (.cosmos_proto.scalar) = "cosmos.AddressString"];</code>
+     * @return The admin.
+     */
+    @java.lang.Override
+    public java.lang.String getAdmin() {
+      java.lang.Object ref = admin_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        admin_ = s;
+        return s;
+      }
+    }
+    /**
+     * <code>string admin = 1 [json_name = "admin", (.cosmos_proto.scalar) = "cosmos.AddressString"];</code>
+     * @return The bytes for admin.
+     */
+    @java.lang.Override
+    public com.google.protobuf.ByteString
+        getAdminBytes() {
+      java.lang.Object ref = admin_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        admin_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
+    public static final int CHAIN_ID_FIELD_NUMBER = 2;
+    @SuppressWarnings("serial")
+    private volatile java.lang.Object chainId_ = "";
+    /**
+     * <code>string chain_id = 2 [json_name = "chainId"];</code>
+     * @return The chainId.
+     */
+    @java.lang.Override
+    public java.lang.String getChainId() {
+      java.lang.Object ref = chainId_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        chainId_ = s;
+        return s;
+      }
+    }
+    /**
+     * <code>string chain_id = 2 [json_name = "chainId"];</code>
+     * @return The bytes for chainId.
+     */
+    @java.lang.Override
+    public com.google.protobuf.ByteString
+        getChainIdBytes() {
+      java.lang.Object ref = chainId_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        chainId_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
+    public static final int BRIDGE_CONTRACT_FIELD_NUMBER = 3;
+    @SuppressWarnings("serial")
+    private volatile java.lang.Object bridgeContract_ = "";
+    /**
+     * <pre>
+     * contract/program address on the external chain
+     * </pre>
+     *
+     * <code>string bridge_contract = 3 [json_name = "bridgeContract"];</code>
+     * @return The bridgeContract.
+     */
+    @java.lang.Override
+    public java.lang.String getBridgeContract() {
+      java.lang.Object ref = bridgeContract_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        bridgeContract_ = s;
+        return s;
+      }
+    }
+    /**
+     * <pre>
+     * contract/program address on the external chain
+     * </pre>
+     *
+     * <code>string bridge_contract = 3 [json_name = "bridgeContract"];</code>
+     * @return The bytes for bridgeContract.
+     */
+    @java.lang.Override
+    public com.google.protobuf.ByteString
+        getBridgeContractBytes() {
+      java.lang.Object ref = bridgeContract_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        bridgeContract_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
+    public static final int CONFIRMATIONS_REQUIRED_FIELD_NUMBER = 4;
+    private int confirmationsRequired_ = 0;
+    /**
+     * <code>uint32 confirmations_required = 4 [json_name = "confirmationsRequired"];</code>
+     * @return The confirmationsRequired.
+     */
+    @java.lang.Override
+    public int getConfirmationsRequired() {
+      return confirmationsRequired_;
+    }
+
+    public static final int ARCHITECTURE_FIELD_NUMBER = 5;
+    @SuppressWarnings("serial")
+    private volatile java.lang.Object architecture_ = "";
+    /**
+     * <pre>
+     * ChainArchitecture string (empty keeps existing)
+     * </pre>
+     *
+     * <code>string architecture = 5 [json_name = "architecture"];</code>
+     * @return The architecture.
+     */
+    @java.lang.Override
+    public java.lang.String getArchitecture() {
+      java.lang.Object ref = architecture_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        architecture_ = s;
+        return s;
+      }
+    }
+    /**
+     * <pre>
+     * ChainArchitecture string (empty keeps existing)
+     * </pre>
+     *
+     * <code>string architecture = 5 [json_name = "architecture"];</code>
+     * @return The bytes for architecture.
+     */
+    @java.lang.Override
+    public com.google.protobuf.ByteString
+        getArchitectureBytes() {
+      java.lang.Object ref = architecture_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        architecture_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
+    public static final int STATUS_FIELD_NUMBER = 6;
+    @SuppressWarnings("serial")
+    private volatile java.lang.Object status_ = "";
+    /**
+     * <pre>
+     * "active" | "paused" | "pending" (empty keeps existing)
+     * </pre>
+     *
+     * <code>string status = 6 [json_name = "status"];</code>
+     * @return The status.
+     */
+    @java.lang.Override
+    public java.lang.String getStatus() {
+      java.lang.Object ref = status_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        status_ = s;
+        return s;
+      }
+    }
+    /**
+     * <pre>
+     * "active" | "paused" | "pending" (empty keeps existing)
+     * </pre>
+     *
+     * <code>string status = 6 [json_name = "status"];</code>
+     * @return The bytes for status.
+     */
+    @java.lang.Override
+    public com.google.protobuf.ByteString
+        getStatusBytes() {
+      java.lang.Object ref = status_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        status_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
+    public static final int VERIFIER_FIELD_NUMBER = 7;
+    @SuppressWarnings("serial")
+    private volatile java.lang.Object verifier_ = "";
+    /**
+     * <pre>
+     * Exactly one verifier flag should be set when activating trustless mode.
+     * </pre>
+     *
+     * <code>string verifier = 7 [json_name = "verifier"];</code>
+     * @return The verifier.
+     */
+    @java.lang.Override
+    public java.lang.String getVerifier() {
+      java.lang.Object ref = verifier_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        verifier_ = s;
+        return s;
+      }
+    }
+    /**
+     * <pre>
+     * Exactly one verifier flag should be set when activating trustless mode.
+     * </pre>
+     *
+     * <code>string verifier = 7 [json_name = "verifier"];</code>
+     * @return The bytes for verifier.
+     */
+    @java.lang.Override
+    public com.google.protobuf.ByteString
+        getVerifierBytes() {
+      java.lang.Object ref = verifier_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        verifier_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
+    public static final int LOCK_EVENT_SIG_FIELD_NUMBER = 8;
+    @SuppressWarnings("serial")
+    private volatile java.lang.Object lockEventSig_ = "";
+    /**
+     * <pre>
+     * hex topic0 of the lock event (EVM/light-client chains)
+     * </pre>
+     *
+     * <code>string lock_event_sig = 8 [json_name = "lockEventSig"];</code>
+     * @return The lockEventSig.
+     */
+    @java.lang.Override
+    public java.lang.String getLockEventSig() {
+      java.lang.Object ref = lockEventSig_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        lockEventSig_ = s;
+        return s;
+      }
+    }
+    /**
+     * <pre>
+     * hex topic0 of the lock event (EVM/light-client chains)
+     * </pre>
+     *
+     * <code>string lock_event_sig = 8 [json_name = "lockEventSig"];</code>
+     * @return The bytes for lockEventSig.
+     */
+    @java.lang.Override
+    public com.google.protobuf.ByteString
+        getLockEventSigBytes() {
+      java.lang.Object ref = lockEventSig_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        lockEventSig_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
+    private byte memoizedIsInitialized = -1;
+    @java.lang.Override
+    public final boolean isInitialized() {
+      byte isInitialized = memoizedIsInitialized;
+      if (isInitialized == 1) return true;
+      if (isInitialized == 0) return false;
+
+      memoizedIsInitialized = 1;
+      return true;
+    }
+
+    @java.lang.Override
+    public void writeTo(com.google.protobuf.CodedOutputStream output)
+                        throws java.io.IOException {
+      if (!com.google.protobuf.GeneratedMessage.isStringEmpty(admin_)) {
+        com.google.protobuf.GeneratedMessage.writeString(output, 1, admin_);
+      }
+      if (!com.google.protobuf.GeneratedMessage.isStringEmpty(chainId_)) {
+        com.google.protobuf.GeneratedMessage.writeString(output, 2, chainId_);
+      }
+      if (!com.google.protobuf.GeneratedMessage.isStringEmpty(bridgeContract_)) {
+        com.google.protobuf.GeneratedMessage.writeString(output, 3, bridgeContract_);
+      }
+      if (confirmationsRequired_ != 0) {
+        output.writeUInt32(4, confirmationsRequired_);
+      }
+      if (!com.google.protobuf.GeneratedMessage.isStringEmpty(architecture_)) {
+        com.google.protobuf.GeneratedMessage.writeString(output, 5, architecture_);
+      }
+      if (!com.google.protobuf.GeneratedMessage.isStringEmpty(status_)) {
+        com.google.protobuf.GeneratedMessage.writeString(output, 6, status_);
+      }
+      if (!com.google.protobuf.GeneratedMessage.isStringEmpty(verifier_)) {
+        com.google.protobuf.GeneratedMessage.writeString(output, 7, verifier_);
+      }
+      if (!com.google.protobuf.GeneratedMessage.isStringEmpty(lockEventSig_)) {
+        com.google.protobuf.GeneratedMessage.writeString(output, 8, lockEventSig_);
+      }
+      getUnknownFields().writeTo(output);
+    }
+    private int computeSerializedSize_0() {
+      int size = 0;
+      if (!com.google.protobuf.GeneratedMessage.isStringEmpty(admin_)) {
+        size += com.google.protobuf.GeneratedMessage.computeStringSize(1, admin_);
+      }
+      if (!com.google.protobuf.GeneratedMessage.isStringEmpty(chainId_)) {
+        size += com.google.protobuf.GeneratedMessage.computeStringSize(2, chainId_);
+      }
+      if (!com.google.protobuf.GeneratedMessage.isStringEmpty(bridgeContract_)) {
+        size += com.google.protobuf.GeneratedMessage.computeStringSize(3, bridgeContract_);
+      }
+      if (confirmationsRequired_ != 0) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeUInt32Size(4, confirmationsRequired_);
+      }
+      if (!com.google.protobuf.GeneratedMessage.isStringEmpty(architecture_)) {
+        size += com.google.protobuf.GeneratedMessage.computeStringSize(5, architecture_);
+      }
+      if (!com.google.protobuf.GeneratedMessage.isStringEmpty(status_)) {
+        size += com.google.protobuf.GeneratedMessage.computeStringSize(6, status_);
+      }
+      if (!com.google.protobuf.GeneratedMessage.isStringEmpty(verifier_)) {
+        size += com.google.protobuf.GeneratedMessage.computeStringSize(7, verifier_);
+      }
+      if (!com.google.protobuf.GeneratedMessage.isStringEmpty(lockEventSig_)) {
+        size += com.google.protobuf.GeneratedMessage.computeStringSize(8, lockEventSig_);
+      }
+      return size;
+    }
+    @java.lang.Override
+    public int getSerializedSize() {
+      int size = memoizedSize;
+      if (size != -1) return size;
+
+      size = 0;
+      size += computeSerializedSize_0();
+      size += getUnknownFields().getSerializedSize();
+      memoizedSize = size;
+      return size;
+    }
+
+    @java.lang.Override
+    public boolean equals(final java.lang.Object obj) {
+      if (obj == this) {
+       return true;
+      }
+      if (!(obj instanceof qorechain.bridge.v1.Tx.MsgUpdateChainConfig)) {
+        return super.equals(obj);
+      }
+      qorechain.bridge.v1.Tx.MsgUpdateChainConfig other = (qorechain.bridge.v1.Tx.MsgUpdateChainConfig) obj;
+
+      if (!getAdmin()
+          .equals(other.getAdmin())) return false;
+      if (!getChainId()
+          .equals(other.getChainId())) return false;
+      if (!getBridgeContract()
+          .equals(other.getBridgeContract())) return false;
+      if (getConfirmationsRequired()
+          != other.getConfirmationsRequired()) return false;
+      if (!getArchitecture()
+          .equals(other.getArchitecture())) return false;
+      if (!getStatus()
+          .equals(other.getStatus())) return false;
+      if (!getVerifier()
+          .equals(other.getVerifier())) return false;
+      if (!getLockEventSig()
+          .equals(other.getLockEventSig())) return false;
+      if (!getUnknownFields().equals(other.getUnknownFields())) return false;
+      return true;
+    }
+
+    @java.lang.Override
+    public int hashCode() {
+      if (memoizedHashCode != 0) {
+        return memoizedHashCode;
+      }
+      int hash = 41;
+      hash = (19 * hash) + getDescriptor().hashCode();
+      hash = (37 * hash) + ADMIN_FIELD_NUMBER;
+      hash = (53 * hash) + getAdmin().hashCode();
+      hash = (37 * hash) + CHAIN_ID_FIELD_NUMBER;
+      hash = (53 * hash) + getChainId().hashCode();
+      hash = (37 * hash) + BRIDGE_CONTRACT_FIELD_NUMBER;
+      hash = (53 * hash) + getBridgeContract().hashCode();
+      hash = (37 * hash) + CONFIRMATIONS_REQUIRED_FIELD_NUMBER;
+      hash = (53 * hash) + getConfirmationsRequired();
+      hash = (37 * hash) + ARCHITECTURE_FIELD_NUMBER;
+      hash = (53 * hash) + getArchitecture().hashCode();
+      hash = (37 * hash) + STATUS_FIELD_NUMBER;
+      hash = (53 * hash) + getStatus().hashCode();
+      hash = (37 * hash) + VERIFIER_FIELD_NUMBER;
+      hash = (53 * hash) + getVerifier().hashCode();
+      hash = (37 * hash) + LOCK_EVENT_SIG_FIELD_NUMBER;
+      hash = (53 * hash) + getLockEventSig().hashCode();
+      hash = (29 * hash) + getUnknownFields().hashCode();
+      memoizedHashCode = hash;
+      return hash;
+    }
+
+    public static qorechain.bridge.v1.Tx.MsgUpdateChainConfig parseFrom(
+        java.nio.ByteBuffer data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static qorechain.bridge.v1.Tx.MsgUpdateChainConfig parseFrom(
+        java.nio.ByteBuffer data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static qorechain.bridge.v1.Tx.MsgUpdateChainConfig parseFrom(
+        com.google.protobuf.ByteString data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static qorechain.bridge.v1.Tx.MsgUpdateChainConfig parseFrom(
+        com.google.protobuf.ByteString data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static qorechain.bridge.v1.Tx.MsgUpdateChainConfig parseFrom(byte[] data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static qorechain.bridge.v1.Tx.MsgUpdateChainConfig parseFrom(
+        byte[] data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static qorechain.bridge.v1.Tx.MsgUpdateChainConfig parseFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input);
+    }
+    public static qorechain.bridge.v1.Tx.MsgUpdateChainConfig parseFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    public static qorechain.bridge.v1.Tx.MsgUpdateChainConfig parseDelimitedFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseDelimitedWithIOException(PARSER, input);
+    }
+
+    public static qorechain.bridge.v1.Tx.MsgUpdateChainConfig parseDelimitedFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static qorechain.bridge.v1.Tx.MsgUpdateChainConfig parseFrom(
+        com.google.protobuf.CodedInputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input);
+    }
+    public static qorechain.bridge.v1.Tx.MsgUpdateChainConfig parseFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    @java.lang.Override
+    public Builder newBuilderForType() { return newBuilder(); }
+    public static Builder newBuilder() {
+      return DEFAULT_INSTANCE.toBuilder();
+    }
+    public static Builder newBuilder(qorechain.bridge.v1.Tx.MsgUpdateChainConfig prototype) {
+      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+    }
+    @java.lang.Override
+    public Builder toBuilder() {
+      return this == DEFAULT_INSTANCE
+          ? new Builder() : new Builder().mergeFrom(this);
+    }
+
+    @java.lang.Override
+    protected Builder newBuilderForType(
+        com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+      Builder builder = new Builder(parent);
+      return builder;
+    }
+    /**
+     * <pre>
+     * MsgUpdateChainConfig sets/replaces a chain's bridge configuration. Empty
+     * string / zero fields fall back to the existing config (merge semantics in the
+     * handler), so a caller can flip just `status`+one verifier flag to activate.
+     * </pre>
+     *
+     * Protobuf type {@code qorechain.bridge.v1.MsgUpdateChainConfig}
+     */
+    public static final class Builder extends
+        com.google.protobuf.GeneratedMessage.Builder<Builder> implements
+        // @@protoc_insertion_point(builder_implements:qorechain.bridge.v1.MsgUpdateChainConfig)
+        qorechain.bridge.v1.Tx.MsgUpdateChainConfigOrBuilder {
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return qorechain.bridge.v1.Tx.internal_static_qorechain_bridge_v1_MsgUpdateChainConfig_descriptor;
+      }
+
+      @java.lang.Override
+      protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return qorechain.bridge.v1.Tx.internal_static_qorechain_bridge_v1_MsgUpdateChainConfig_fieldAccessorTable
+            .ensureFieldAccessorsInitialized(
+                qorechain.bridge.v1.Tx.MsgUpdateChainConfig.class, qorechain.bridge.v1.Tx.MsgUpdateChainConfig.Builder.class);
+      }
+
+      // Construct using qorechain.bridge.v1.Tx.MsgUpdateChainConfig.newBuilder()
+      private Builder() {
+
+      }
+
+      private Builder(
+          com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+        super(parent);
+
+      }
+      @java.lang.Override
+      public Builder clear() {
+        super.clear();
+        bitField0_ = 0;
+        admin_ = "";
+        chainId_ = "";
+        bridgeContract_ = "";
+        confirmationsRequired_ = 0;
+        architecture_ = "";
+        status_ = "";
+        verifier_ = "";
+        lockEventSig_ = "";
+        return this;
+      }
+
+      @java.lang.Override
+      public com.google.protobuf.Descriptors.Descriptor
+          getDescriptorForType() {
+        return qorechain.bridge.v1.Tx.internal_static_qorechain_bridge_v1_MsgUpdateChainConfig_descriptor;
+      }
+
+      @java.lang.Override
+      public qorechain.bridge.v1.Tx.MsgUpdateChainConfig getDefaultInstanceForType() {
+        return qorechain.bridge.v1.Tx.MsgUpdateChainConfig.getDefaultInstance();
+      }
+
+      @java.lang.Override
+      public qorechain.bridge.v1.Tx.MsgUpdateChainConfig build() {
+        qorechain.bridge.v1.Tx.MsgUpdateChainConfig result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(result);
+        }
+        return result;
+      }
+
+      @java.lang.Override
+      public qorechain.bridge.v1.Tx.MsgUpdateChainConfig buildPartial() {
+        qorechain.bridge.v1.Tx.MsgUpdateChainConfig result = new qorechain.bridge.v1.Tx.MsgUpdateChainConfig(this);
+        if (bitField0_ != 0) { buildPartial0(result); }
+        onBuilt();
+        return result;
+      }
+
+      private void buildPartial0(qorechain.bridge.v1.Tx.MsgUpdateChainConfig result) {
+        int from_bitField0_ = bitField0_;
+        if (((from_bitField0_ & 0x00000001) != 0)) {
+          result.admin_ = admin_;
+        }
+        if (((from_bitField0_ & 0x00000002) != 0)) {
+          result.chainId_ = chainId_;
+        }
+        if (((from_bitField0_ & 0x00000004) != 0)) {
+          result.bridgeContract_ = bridgeContract_;
+        }
+        if (((from_bitField0_ & 0x00000008) != 0)) {
+          result.confirmationsRequired_ = confirmationsRequired_;
+        }
+        if (((from_bitField0_ & 0x00000010) != 0)) {
+          result.architecture_ = architecture_;
+        }
+        if (((from_bitField0_ & 0x00000020) != 0)) {
+          result.status_ = status_;
+        }
+        if (((from_bitField0_ & 0x00000040) != 0)) {
+          result.verifier_ = verifier_;
+        }
+        if (((from_bitField0_ & 0x00000080) != 0)) {
+          result.lockEventSig_ = lockEventSig_;
+        }
+      }
+
+      @java.lang.Override
+      public Builder mergeFrom(com.google.protobuf.Message other) {
+        if (other instanceof qorechain.bridge.v1.Tx.MsgUpdateChainConfig) {
+          return mergeFrom((qorechain.bridge.v1.Tx.MsgUpdateChainConfig)other);
+        } else {
+          super.mergeFrom(other);
+          return this;
+        }
+      }
+
+      public Builder mergeFrom(qorechain.bridge.v1.Tx.MsgUpdateChainConfig other) {
+        if (other == qorechain.bridge.v1.Tx.MsgUpdateChainConfig.getDefaultInstance()) return this;
+        if (!other.getAdmin().isEmpty()) {
+          admin_ = other.admin_;
+          bitField0_ |= 0x00000001;
+          onChanged();
+        }
+        if (!other.getChainId().isEmpty()) {
+          chainId_ = other.chainId_;
+          bitField0_ |= 0x00000002;
+          onChanged();
+        }
+        if (!other.getBridgeContract().isEmpty()) {
+          bridgeContract_ = other.bridgeContract_;
+          bitField0_ |= 0x00000004;
+          onChanged();
+        }
+        if (other.getConfirmationsRequired() != 0) {
+          setConfirmationsRequired(other.getConfirmationsRequired());
+        }
+        if (!other.getArchitecture().isEmpty()) {
+          architecture_ = other.architecture_;
+          bitField0_ |= 0x00000010;
+          onChanged();
+        }
+        if (!other.getStatus().isEmpty()) {
+          status_ = other.status_;
+          bitField0_ |= 0x00000020;
+          onChanged();
+        }
+        if (!other.getVerifier().isEmpty()) {
+          verifier_ = other.verifier_;
+          bitField0_ |= 0x00000040;
+          onChanged();
+        }
+        if (!other.getLockEventSig().isEmpty()) {
+          lockEventSig_ = other.lockEventSig_;
+          bitField0_ |= 0x00000080;
+          onChanged();
+        }
+        this.mergeUnknownFields(other.getUnknownFields());
+        onChanged();
+        return this;
+      }
+
+      @java.lang.Override
+      public final boolean isInitialized() {
+        return true;
+      }
+
+      @java.lang.Override
+      public Builder mergeFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        if (extensionRegistry == null) {
+          throw new java.lang.NullPointerException();
+        }
+        try {
+          boolean done = false;
+          while (!done) {
+            int tag = input.readTag();
+            switch (tag) {
+              case 0:
+                done = true;
+                break;
+              case 10: {
+                admin_ = input.readStringRequireUtf8();
+                bitField0_ |= 0x00000001;
+                break;
+              } // case 10
+              case 18: {
+                chainId_ = input.readStringRequireUtf8();
+                bitField0_ |= 0x00000002;
+                break;
+              } // case 18
+              case 26: {
+                bridgeContract_ = input.readStringRequireUtf8();
+                bitField0_ |= 0x00000004;
+                break;
+              } // case 26
+              case 32: {
+                confirmationsRequired_ = input.readUInt32();
+                bitField0_ |= 0x00000008;
+                break;
+              } // case 32
+              case 42: {
+                architecture_ = input.readStringRequireUtf8();
+                bitField0_ |= 0x00000010;
+                break;
+              } // case 42
+              case 50: {
+                status_ = input.readStringRequireUtf8();
+                bitField0_ |= 0x00000020;
+                break;
+              } // case 50
+              case 58: {
+                verifier_ = input.readStringRequireUtf8();
+                bitField0_ |= 0x00000040;
+                break;
+              } // case 58
+              case 66: {
+                lockEventSig_ = input.readStringRequireUtf8();
+                bitField0_ |= 0x00000080;
+                break;
+              } // case 66
+              default: {
+                if (!super.parseUnknownField(input, extensionRegistry, tag)) {
+                  done = true; // was an endgroup tag
+                }
+                break;
+              } // default:
+            } // switch (tag)
+          } // while (!done)
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          throw e.unwrapIOException();
+        } finally {
+          onChanged();
+        } // finally
+        return this;
+      }
+      private int bitField0_;
+
+      private java.lang.Object admin_ = "";
+      /**
+       * <code>string admin = 1 [json_name = "admin", (.cosmos_proto.scalar) = "cosmos.AddressString"];</code>
+       * @return The admin.
+       */
+      public java.lang.String getAdmin() {
+        java.lang.Object ref = admin_;
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          admin_ = s;
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
+      }
+      /**
+       * <code>string admin = 1 [json_name = "admin", (.cosmos_proto.scalar) = "cosmos.AddressString"];</code>
+       * @return The bytes for admin.
+       */
+      public com.google.protobuf.ByteString
+          getAdminBytes() {
+        java.lang.Object ref = admin_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          admin_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <code>string admin = 1 [json_name = "admin", (.cosmos_proto.scalar) = "cosmos.AddressString"];</code>
+       * @param value The admin to set.
+       * @return This builder for chaining.
+       */
+      public Builder setAdmin(
+          java.lang.String value) {
+        if (value == null) { throw new NullPointerException(); }
+        admin_ = value;
+        bitField0_ |= 0x00000001;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>string admin = 1 [json_name = "admin", (.cosmos_proto.scalar) = "cosmos.AddressString"];</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearAdmin() {
+        admin_ = getDefaultInstance().getAdmin();
+        bitField0_ = (bitField0_ & ~0x00000001);
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>string admin = 1 [json_name = "admin", (.cosmos_proto.scalar) = "cosmos.AddressString"];</code>
+       * @param value The bytes for admin to set.
+       * @return This builder for chaining.
+       */
+      public Builder setAdminBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) { throw new NullPointerException(); }
+        checkByteStringIsUtf8(value);
+        admin_ = value;
+        bitField0_ |= 0x00000001;
+        onChanged();
+        return this;
+      }
+
+      private java.lang.Object chainId_ = "";
+      /**
+       * <code>string chain_id = 2 [json_name = "chainId"];</code>
+       * @return The chainId.
+       */
+      public java.lang.String getChainId() {
+        java.lang.Object ref = chainId_;
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          chainId_ = s;
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
+      }
+      /**
+       * <code>string chain_id = 2 [json_name = "chainId"];</code>
+       * @return The bytes for chainId.
+       */
+      public com.google.protobuf.ByteString
+          getChainIdBytes() {
+        java.lang.Object ref = chainId_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          chainId_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <code>string chain_id = 2 [json_name = "chainId"];</code>
+       * @param value The chainId to set.
+       * @return This builder for chaining.
+       */
+      public Builder setChainId(
+          java.lang.String value) {
+        if (value == null) { throw new NullPointerException(); }
+        chainId_ = value;
+        bitField0_ |= 0x00000002;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>string chain_id = 2 [json_name = "chainId"];</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearChainId() {
+        chainId_ = getDefaultInstance().getChainId();
+        bitField0_ = (bitField0_ & ~0x00000002);
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>string chain_id = 2 [json_name = "chainId"];</code>
+       * @param value The bytes for chainId to set.
+       * @return This builder for chaining.
+       */
+      public Builder setChainIdBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) { throw new NullPointerException(); }
+        checkByteStringIsUtf8(value);
+        chainId_ = value;
+        bitField0_ |= 0x00000002;
+        onChanged();
+        return this;
+      }
+
+      private java.lang.Object bridgeContract_ = "";
+      /**
+       * <pre>
+       * contract/program address on the external chain
+       * </pre>
+       *
+       * <code>string bridge_contract = 3 [json_name = "bridgeContract"];</code>
+       * @return The bridgeContract.
+       */
+      public java.lang.String getBridgeContract() {
+        java.lang.Object ref = bridgeContract_;
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          bridgeContract_ = s;
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
+      }
+      /**
+       * <pre>
+       * contract/program address on the external chain
+       * </pre>
+       *
+       * <code>string bridge_contract = 3 [json_name = "bridgeContract"];</code>
+       * @return The bytes for bridgeContract.
+       */
+      public com.google.protobuf.ByteString
+          getBridgeContractBytes() {
+        java.lang.Object ref = bridgeContract_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          bridgeContract_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <pre>
+       * contract/program address on the external chain
+       * </pre>
+       *
+       * <code>string bridge_contract = 3 [json_name = "bridgeContract"];</code>
+       * @param value The bridgeContract to set.
+       * @return This builder for chaining.
+       */
+      public Builder setBridgeContract(
+          java.lang.String value) {
+        if (value == null) { throw new NullPointerException(); }
+        bridgeContract_ = value;
+        bitField0_ |= 0x00000004;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * contract/program address on the external chain
+       * </pre>
+       *
+       * <code>string bridge_contract = 3 [json_name = "bridgeContract"];</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearBridgeContract() {
+        bridgeContract_ = getDefaultInstance().getBridgeContract();
+        bitField0_ = (bitField0_ & ~0x00000004);
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * contract/program address on the external chain
+       * </pre>
+       *
+       * <code>string bridge_contract = 3 [json_name = "bridgeContract"];</code>
+       * @param value The bytes for bridgeContract to set.
+       * @return This builder for chaining.
+       */
+      public Builder setBridgeContractBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) { throw new NullPointerException(); }
+        checkByteStringIsUtf8(value);
+        bridgeContract_ = value;
+        bitField0_ |= 0x00000004;
+        onChanged();
+        return this;
+      }
+
+      private int confirmationsRequired_ ;
+      /**
+       * <code>uint32 confirmations_required = 4 [json_name = "confirmationsRequired"];</code>
+       * @return The confirmationsRequired.
+       */
+      @java.lang.Override
+      public int getConfirmationsRequired() {
+        return confirmationsRequired_;
+      }
+      /**
+       * <code>uint32 confirmations_required = 4 [json_name = "confirmationsRequired"];</code>
+       * @param value The confirmationsRequired to set.
+       * @return This builder for chaining.
+       */
+      public Builder setConfirmationsRequired(int value) {
+
+        confirmationsRequired_ = value;
+        bitField0_ |= 0x00000008;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>uint32 confirmations_required = 4 [json_name = "confirmationsRequired"];</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearConfirmationsRequired() {
+        bitField0_ = (bitField0_ & ~0x00000008);
+        confirmationsRequired_ = 0;
+        onChanged();
+        return this;
+      }
+
+      private java.lang.Object architecture_ = "";
+      /**
+       * <pre>
+       * ChainArchitecture string (empty keeps existing)
+       * </pre>
+       *
+       * <code>string architecture = 5 [json_name = "architecture"];</code>
+       * @return The architecture.
+       */
+      public java.lang.String getArchitecture() {
+        java.lang.Object ref = architecture_;
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          architecture_ = s;
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
+      }
+      /**
+       * <pre>
+       * ChainArchitecture string (empty keeps existing)
+       * </pre>
+       *
+       * <code>string architecture = 5 [json_name = "architecture"];</code>
+       * @return The bytes for architecture.
+       */
+      public com.google.protobuf.ByteString
+          getArchitectureBytes() {
+        java.lang.Object ref = architecture_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          architecture_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <pre>
+       * ChainArchitecture string (empty keeps existing)
+       * </pre>
+       *
+       * <code>string architecture = 5 [json_name = "architecture"];</code>
+       * @param value The architecture to set.
+       * @return This builder for chaining.
+       */
+      public Builder setArchitecture(
+          java.lang.String value) {
+        if (value == null) { throw new NullPointerException(); }
+        architecture_ = value;
+        bitField0_ |= 0x00000010;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * ChainArchitecture string (empty keeps existing)
+       * </pre>
+       *
+       * <code>string architecture = 5 [json_name = "architecture"];</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearArchitecture() {
+        architecture_ = getDefaultInstance().getArchitecture();
+        bitField0_ = (bitField0_ & ~0x00000010);
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * ChainArchitecture string (empty keeps existing)
+       * </pre>
+       *
+       * <code>string architecture = 5 [json_name = "architecture"];</code>
+       * @param value The bytes for architecture to set.
+       * @return This builder for chaining.
+       */
+      public Builder setArchitectureBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) { throw new NullPointerException(); }
+        checkByteStringIsUtf8(value);
+        architecture_ = value;
+        bitField0_ |= 0x00000010;
+        onChanged();
+        return this;
+      }
+
+      private java.lang.Object status_ = "";
+      /**
+       * <pre>
+       * "active" | "paused" | "pending" (empty keeps existing)
+       * </pre>
+       *
+       * <code>string status = 6 [json_name = "status"];</code>
+       * @return The status.
+       */
+      public java.lang.String getStatus() {
+        java.lang.Object ref = status_;
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          status_ = s;
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
+      }
+      /**
+       * <pre>
+       * "active" | "paused" | "pending" (empty keeps existing)
+       * </pre>
+       *
+       * <code>string status = 6 [json_name = "status"];</code>
+       * @return The bytes for status.
+       */
+      public com.google.protobuf.ByteString
+          getStatusBytes() {
+        java.lang.Object ref = status_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          status_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <pre>
+       * "active" | "paused" | "pending" (empty keeps existing)
+       * </pre>
+       *
+       * <code>string status = 6 [json_name = "status"];</code>
+       * @param value The status to set.
+       * @return This builder for chaining.
+       */
+      public Builder setStatus(
+          java.lang.String value) {
+        if (value == null) { throw new NullPointerException(); }
+        status_ = value;
+        bitField0_ |= 0x00000020;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * "active" | "paused" | "pending" (empty keeps existing)
+       * </pre>
+       *
+       * <code>string status = 6 [json_name = "status"];</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearStatus() {
+        status_ = getDefaultInstance().getStatus();
+        bitField0_ = (bitField0_ & ~0x00000020);
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * "active" | "paused" | "pending" (empty keeps existing)
+       * </pre>
+       *
+       * <code>string status = 6 [json_name = "status"];</code>
+       * @param value The bytes for status to set.
+       * @return This builder for chaining.
+       */
+      public Builder setStatusBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) { throw new NullPointerException(); }
+        checkByteStringIsUtf8(value);
+        status_ = value;
+        bitField0_ |= 0x00000020;
+        onChanged();
+        return this;
+      }
+
+      private java.lang.Object verifier_ = "";
+      /**
+       * <pre>
+       * Exactly one verifier flag should be set when activating trustless mode.
+       * </pre>
+       *
+       * <code>string verifier = 7 [json_name = "verifier"];</code>
+       * @return The verifier.
+       */
+      public java.lang.String getVerifier() {
+        java.lang.Object ref = verifier_;
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          verifier_ = s;
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
+      }
+      /**
+       * <pre>
+       * Exactly one verifier flag should be set when activating trustless mode.
+       * </pre>
+       *
+       * <code>string verifier = 7 [json_name = "verifier"];</code>
+       * @return The bytes for verifier.
+       */
+      public com.google.protobuf.ByteString
+          getVerifierBytes() {
+        java.lang.Object ref = verifier_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          verifier_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <pre>
+       * Exactly one verifier flag should be set when activating trustless mode.
+       * </pre>
+       *
+       * <code>string verifier = 7 [json_name = "verifier"];</code>
+       * @param value The verifier to set.
+       * @return This builder for chaining.
+       */
+      public Builder setVerifier(
+          java.lang.String value) {
+        if (value == null) { throw new NullPointerException(); }
+        verifier_ = value;
+        bitField0_ |= 0x00000040;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * Exactly one verifier flag should be set when activating trustless mode.
+       * </pre>
+       *
+       * <code>string verifier = 7 [json_name = "verifier"];</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearVerifier() {
+        verifier_ = getDefaultInstance().getVerifier();
+        bitField0_ = (bitField0_ & ~0x00000040);
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * Exactly one verifier flag should be set when activating trustless mode.
+       * </pre>
+       *
+       * <code>string verifier = 7 [json_name = "verifier"];</code>
+       * @param value The bytes for verifier to set.
+       * @return This builder for chaining.
+       */
+      public Builder setVerifierBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) { throw new NullPointerException(); }
+        checkByteStringIsUtf8(value);
+        verifier_ = value;
+        bitField0_ |= 0x00000040;
+        onChanged();
+        return this;
+      }
+
+      private java.lang.Object lockEventSig_ = "";
+      /**
+       * <pre>
+       * hex topic0 of the lock event (EVM/light-client chains)
+       * </pre>
+       *
+       * <code>string lock_event_sig = 8 [json_name = "lockEventSig"];</code>
+       * @return The lockEventSig.
+       */
+      public java.lang.String getLockEventSig() {
+        java.lang.Object ref = lockEventSig_;
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          lockEventSig_ = s;
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
+      }
+      /**
+       * <pre>
+       * hex topic0 of the lock event (EVM/light-client chains)
+       * </pre>
+       *
+       * <code>string lock_event_sig = 8 [json_name = "lockEventSig"];</code>
+       * @return The bytes for lockEventSig.
+       */
+      public com.google.protobuf.ByteString
+          getLockEventSigBytes() {
+        java.lang.Object ref = lockEventSig_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          lockEventSig_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <pre>
+       * hex topic0 of the lock event (EVM/light-client chains)
+       * </pre>
+       *
+       * <code>string lock_event_sig = 8 [json_name = "lockEventSig"];</code>
+       * @param value The lockEventSig to set.
+       * @return This builder for chaining.
+       */
+      public Builder setLockEventSig(
+          java.lang.String value) {
+        if (value == null) { throw new NullPointerException(); }
+        lockEventSig_ = value;
+        bitField0_ |= 0x00000080;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * hex topic0 of the lock event (EVM/light-client chains)
+       * </pre>
+       *
+       * <code>string lock_event_sig = 8 [json_name = "lockEventSig"];</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearLockEventSig() {
+        lockEventSig_ = getDefaultInstance().getLockEventSig();
+        bitField0_ = (bitField0_ & ~0x00000080);
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * hex topic0 of the lock event (EVM/light-client chains)
+       * </pre>
+       *
+       * <code>string lock_event_sig = 8 [json_name = "lockEventSig"];</code>
+       * @param value The bytes for lockEventSig to set.
+       * @return This builder for chaining.
+       */
+      public Builder setLockEventSigBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) { throw new NullPointerException(); }
+        checkByteStringIsUtf8(value);
+        lockEventSig_ = value;
+        bitField0_ |= 0x00000080;
+        onChanged();
+        return this;
+      }
+
+      // @@protoc_insertion_point(builder_scope:qorechain.bridge.v1.MsgUpdateChainConfig)
+    }
+
+    // @@protoc_insertion_point(class_scope:qorechain.bridge.v1.MsgUpdateChainConfig)
+    private static final qorechain.bridge.v1.Tx.MsgUpdateChainConfig DEFAULT_INSTANCE;
+    static {
+      DEFAULT_INSTANCE = new qorechain.bridge.v1.Tx.MsgUpdateChainConfig();
+    }
+
+    public static qorechain.bridge.v1.Tx.MsgUpdateChainConfig getDefaultInstance() {
+      return DEFAULT_INSTANCE;
+    }
+
+    private static final com.google.protobuf.Parser<MsgUpdateChainConfig>
+        PARSER = new com.google.protobuf.AbstractParser<MsgUpdateChainConfig>() {
+      @java.lang.Override
+      public MsgUpdateChainConfig parsePartialFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        Builder builder = newBuilder();
+        try {
+          builder.mergeFrom(input, extensionRegistry);
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          throw e.setUnfinishedMessage(builder.buildPartial());
+        } catch (com.google.protobuf.UninitializedMessageException e) {
+          throw e.asInvalidProtocolBufferException().setUnfinishedMessage(builder.buildPartial());
+        } catch (java.io.IOException e) {
+          throw new com.google.protobuf.InvalidProtocolBufferException(e)
+              .setUnfinishedMessage(builder.buildPartial());
+        }
+        return builder.buildPartial();
+      }
+    };
+
+    public static com.google.protobuf.Parser<MsgUpdateChainConfig> parser() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Parser<MsgUpdateChainConfig> getParserForType() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public qorechain.bridge.v1.Tx.MsgUpdateChainConfig getDefaultInstanceForType() {
+      return DEFAULT_INSTANCE;
+    }
+
+  }
+
+  public interface MsgUpdateChainConfigResponseOrBuilder extends
+      // @@protoc_insertion_point(interface_extends:qorechain.bridge.v1.MsgUpdateChainConfigResponse)
+      com.google.protobuf.MessageOrBuilder {
+  }
+  /**
+   * Protobuf type {@code qorechain.bridge.v1.MsgUpdateChainConfigResponse}
+   */
+  public static final class MsgUpdateChainConfigResponse extends
+      com.google.protobuf.GeneratedMessage implements
+      // @@protoc_insertion_point(message_implements:qorechain.bridge.v1.MsgUpdateChainConfigResponse)
+      MsgUpdateChainConfigResponseOrBuilder {
+  private static final long serialVersionUID = 0L;
+    static {
+      com.google.protobuf.RuntimeVersion.validateProtobufGencodeVersion(
+        com.google.protobuf.RuntimeVersion.RuntimeDomain.PUBLIC,
+        /* major= */ 4,
+        /* minor= */ 35,
+        /* patch= */ 1,
+        /* suffix= */ "",
+        "MsgUpdateChainConfigResponse");
+    }
+    // Use MsgUpdateChainConfigResponse.newBuilder() to construct.
+    private MsgUpdateChainConfigResponse(com.google.protobuf.GeneratedMessage.Builder<?> builder) {
+      super(builder);
+    }
+    private MsgUpdateChainConfigResponse() {
+    }
+
+    public static final com.google.protobuf.Descriptors.Descriptor
+        getDescriptor() {
+      return qorechain.bridge.v1.Tx.internal_static_qorechain_bridge_v1_MsgUpdateChainConfigResponse_descriptor;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Descriptors.Descriptor getDescriptorForType() {
+      return qorechain.bridge.v1.Tx.internal_static_qorechain_bridge_v1_MsgUpdateChainConfigResponse_descriptor;
+    }
+
+    @java.lang.Override
+    protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+        internalGetFieldAccessorTable() {
+      return qorechain.bridge.v1.Tx.internal_static_qorechain_bridge_v1_MsgUpdateChainConfigResponse_fieldAccessorTable
+          .ensureFieldAccessorsInitialized(
+              qorechain.bridge.v1.Tx.MsgUpdateChainConfigResponse.class, qorechain.bridge.v1.Tx.MsgUpdateChainConfigResponse.Builder.class);
+    }
+
+    private byte memoizedIsInitialized = -1;
+    @java.lang.Override
+    public final boolean isInitialized() {
+      byte isInitialized = memoizedIsInitialized;
+      if (isInitialized == 1) return true;
+      if (isInitialized == 0) return false;
+
+      memoizedIsInitialized = 1;
+      return true;
+    }
+
+    @java.lang.Override
+    public void writeTo(com.google.protobuf.CodedOutputStream output)
+                        throws java.io.IOException {
+      getUnknownFields().writeTo(output);
+    }
+    @java.lang.Override
+    public int getSerializedSize() {
+      int size = memoizedSize;
+      if (size != -1) return size;
+
+      size = 0;
+      size += getUnknownFields().getSerializedSize();
+      memoizedSize = size;
+      return size;
+    }
+
+    @java.lang.Override
+    public boolean equals(final java.lang.Object obj) {
+      if (obj == this) {
+       return true;
+      }
+      if (!(obj instanceof qorechain.bridge.v1.Tx.MsgUpdateChainConfigResponse)) {
+        return super.equals(obj);
+      }
+      qorechain.bridge.v1.Tx.MsgUpdateChainConfigResponse other = (qorechain.bridge.v1.Tx.MsgUpdateChainConfigResponse) obj;
+
+      if (!getUnknownFields().equals(other.getUnknownFields())) return false;
+      return true;
+    }
+
+    @java.lang.Override
+    public int hashCode() {
+      if (memoizedHashCode != 0) {
+        return memoizedHashCode;
+      }
+      int hash = 41;
+      hash = (19 * hash) + getDescriptor().hashCode();
+      hash = (29 * hash) + getUnknownFields().hashCode();
+      memoizedHashCode = hash;
+      return hash;
+    }
+
+    public static qorechain.bridge.v1.Tx.MsgUpdateChainConfigResponse parseFrom(
+        java.nio.ByteBuffer data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static qorechain.bridge.v1.Tx.MsgUpdateChainConfigResponse parseFrom(
+        java.nio.ByteBuffer data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static qorechain.bridge.v1.Tx.MsgUpdateChainConfigResponse parseFrom(
+        com.google.protobuf.ByteString data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static qorechain.bridge.v1.Tx.MsgUpdateChainConfigResponse parseFrom(
+        com.google.protobuf.ByteString data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static qorechain.bridge.v1.Tx.MsgUpdateChainConfigResponse parseFrom(byte[] data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static qorechain.bridge.v1.Tx.MsgUpdateChainConfigResponse parseFrom(
+        byte[] data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static qorechain.bridge.v1.Tx.MsgUpdateChainConfigResponse parseFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input);
+    }
+    public static qorechain.bridge.v1.Tx.MsgUpdateChainConfigResponse parseFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    public static qorechain.bridge.v1.Tx.MsgUpdateChainConfigResponse parseDelimitedFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseDelimitedWithIOException(PARSER, input);
+    }
+
+    public static qorechain.bridge.v1.Tx.MsgUpdateChainConfigResponse parseDelimitedFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static qorechain.bridge.v1.Tx.MsgUpdateChainConfigResponse parseFrom(
+        com.google.protobuf.CodedInputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input);
+    }
+    public static qorechain.bridge.v1.Tx.MsgUpdateChainConfigResponse parseFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    @java.lang.Override
+    public Builder newBuilderForType() { return newBuilder(); }
+    public static Builder newBuilder() {
+      return DEFAULT_INSTANCE.toBuilder();
+    }
+    public static Builder newBuilder(qorechain.bridge.v1.Tx.MsgUpdateChainConfigResponse prototype) {
+      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+    }
+    @java.lang.Override
+    public Builder toBuilder() {
+      return this == DEFAULT_INSTANCE
+          ? new Builder() : new Builder().mergeFrom(this);
+    }
+
+    @java.lang.Override
+    protected Builder newBuilderForType(
+        com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+      Builder builder = new Builder(parent);
+      return builder;
+    }
+    /**
+     * Protobuf type {@code qorechain.bridge.v1.MsgUpdateChainConfigResponse}
+     */
+    public static final class Builder extends
+        com.google.protobuf.GeneratedMessage.Builder<Builder> implements
+        // @@protoc_insertion_point(builder_implements:qorechain.bridge.v1.MsgUpdateChainConfigResponse)
+        qorechain.bridge.v1.Tx.MsgUpdateChainConfigResponseOrBuilder {
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return qorechain.bridge.v1.Tx.internal_static_qorechain_bridge_v1_MsgUpdateChainConfigResponse_descriptor;
+      }
+
+      @java.lang.Override
+      protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return qorechain.bridge.v1.Tx.internal_static_qorechain_bridge_v1_MsgUpdateChainConfigResponse_fieldAccessorTable
+            .ensureFieldAccessorsInitialized(
+                qorechain.bridge.v1.Tx.MsgUpdateChainConfigResponse.class, qorechain.bridge.v1.Tx.MsgUpdateChainConfigResponse.Builder.class);
+      }
+
+      // Construct using qorechain.bridge.v1.Tx.MsgUpdateChainConfigResponse.newBuilder()
+      private Builder() {
+
+      }
+
+      private Builder(
+          com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+        super(parent);
+
+      }
+      @java.lang.Override
+      public Builder clear() {
+        super.clear();
+        return this;
+      }
+
+      @java.lang.Override
+      public com.google.protobuf.Descriptors.Descriptor
+          getDescriptorForType() {
+        return qorechain.bridge.v1.Tx.internal_static_qorechain_bridge_v1_MsgUpdateChainConfigResponse_descriptor;
+      }
+
+      @java.lang.Override
+      public qorechain.bridge.v1.Tx.MsgUpdateChainConfigResponse getDefaultInstanceForType() {
+        return qorechain.bridge.v1.Tx.MsgUpdateChainConfigResponse.getDefaultInstance();
+      }
+
+      @java.lang.Override
+      public qorechain.bridge.v1.Tx.MsgUpdateChainConfigResponse build() {
+        qorechain.bridge.v1.Tx.MsgUpdateChainConfigResponse result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(result);
+        }
+        return result;
+      }
+
+      @java.lang.Override
+      public qorechain.bridge.v1.Tx.MsgUpdateChainConfigResponse buildPartial() {
+        qorechain.bridge.v1.Tx.MsgUpdateChainConfigResponse result = new qorechain.bridge.v1.Tx.MsgUpdateChainConfigResponse(this);
+        onBuilt();
+        return result;
+      }
+
+      @java.lang.Override
+      public Builder mergeFrom(com.google.protobuf.Message other) {
+        if (other instanceof qorechain.bridge.v1.Tx.MsgUpdateChainConfigResponse) {
+          return mergeFrom((qorechain.bridge.v1.Tx.MsgUpdateChainConfigResponse)other);
+        } else {
+          super.mergeFrom(other);
+          return this;
+        }
+      }
+
+      public Builder mergeFrom(qorechain.bridge.v1.Tx.MsgUpdateChainConfigResponse other) {
+        if (other == qorechain.bridge.v1.Tx.MsgUpdateChainConfigResponse.getDefaultInstance()) return this;
+        this.mergeUnknownFields(other.getUnknownFields());
+        onChanged();
+        return this;
+      }
+
+      @java.lang.Override
+      public final boolean isInitialized() {
+        return true;
+      }
+
+      @java.lang.Override
+      public Builder mergeFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        if (extensionRegistry == null) {
+          throw new java.lang.NullPointerException();
+        }
+        try {
+          boolean done = false;
+          while (!done) {
+            int tag = input.readTag();
+            switch (tag) {
+              case 0:
+                done = true;
+                break;
+              default: {
+                if (!super.parseUnknownField(input, extensionRegistry, tag)) {
+                  done = true; // was an endgroup tag
+                }
+                break;
+              } // default:
+            } // switch (tag)
+          } // while (!done)
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          throw e.unwrapIOException();
+        } finally {
+          onChanged();
+        } // finally
+        return this;
+      }
+
+      // @@protoc_insertion_point(builder_scope:qorechain.bridge.v1.MsgUpdateChainConfigResponse)
+    }
+
+    // @@protoc_insertion_point(class_scope:qorechain.bridge.v1.MsgUpdateChainConfigResponse)
+    private static final qorechain.bridge.v1.Tx.MsgUpdateChainConfigResponse DEFAULT_INSTANCE;
+    static {
+      DEFAULT_INSTANCE = new qorechain.bridge.v1.Tx.MsgUpdateChainConfigResponse();
+    }
+
+    public static qorechain.bridge.v1.Tx.MsgUpdateChainConfigResponse getDefaultInstance() {
+      return DEFAULT_INSTANCE;
+    }
+
+    private static final com.google.protobuf.Parser<MsgUpdateChainConfigResponse>
+        PARSER = new com.google.protobuf.AbstractParser<MsgUpdateChainConfigResponse>() {
+      @java.lang.Override
+      public MsgUpdateChainConfigResponse parsePartialFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        Builder builder = newBuilder();
+        try {
+          builder.mergeFrom(input, extensionRegistry);
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          throw e.setUnfinishedMessage(builder.buildPartial());
+        } catch (com.google.protobuf.UninitializedMessageException e) {
+          throw e.asInvalidProtocolBufferException().setUnfinishedMessage(builder.buildPartial());
+        } catch (java.io.IOException e) {
+          throw new com.google.protobuf.InvalidProtocolBufferException(e)
+              .setUnfinishedMessage(builder.buildPartial());
+        }
+        return builder.buildPartial();
+      }
+    };
+
+    public static com.google.protobuf.Parser<MsgUpdateChainConfigResponse> parser() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Parser<MsgUpdateChainConfigResponse> getParserForType() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public qorechain.bridge.v1.Tx.MsgUpdateChainConfigResponse getDefaultInstanceForType() {
+      return DEFAULT_INSTANCE;
+    }
+
+  }
+
+  public interface MsgSetVerifierBootstrapOrBuilder extends
+      // @@protoc_insertion_point(interface_extends:qorechain.bridge.v1.MsgSetVerifierBootstrap)
+      com.google.protobuf.MessageOrBuilder {
+
+    /**
+     * <code>string admin = 1 [json_name = "admin", (.cosmos_proto.scalar) = "cosmos.AddressString"];</code>
+     * @return The admin.
+     */
+    java.lang.String getAdmin();
+    /**
+     * <code>string admin = 1 [json_name = "admin", (.cosmos_proto.scalar) = "cosmos.AddressString"];</code>
+     * @return The bytes for admin.
+     */
+    com.google.protobuf.ByteString
+        getAdminBytes();
+
+    /**
+     * <code>string chain_id = 2 [json_name = "chainId"];</code>
+     * @return The chainId.
+     */
+    java.lang.String getChainId();
+    /**
+     * <code>string chain_id = 2 [json_name = "chainId"];</code>
+     * @return The bytes for chainId.
+     */
+    com.google.protobuf.ByteString
+        getChainIdBytes();
+
+    /**
+     * <code>.qorechain.bridge.v1.WormholeGuardianSet wormhole = 3 [json_name = "wormhole"];</code>
+     * @return Whether the wormhole field is set.
+     */
+    boolean hasWormhole();
+    /**
+     * <code>.qorechain.bridge.v1.WormholeGuardianSet wormhole = 3 [json_name = "wormhole"];</code>
+     * @return The wormhole.
+     */
+    qorechain.bridge.v1.Tx.WormholeGuardianSet getWormhole();
+    /**
+     * <code>.qorechain.bridge.v1.WormholeGuardianSet wormhole = 3 [json_name = "wormhole"];</code>
+     */
+    qorechain.bridge.v1.Tx.WormholeGuardianSetOrBuilder getWormholeOrBuilder();
+
+    /**
+     * <code>.qorechain.bridge.v1.ValidatorQuorum ed25519 = 4 [json_name = "ed25519"];</code>
+     * @return Whether the ed25519 field is set.
+     */
+    boolean hasEd25519();
+    /**
+     * <code>.qorechain.bridge.v1.ValidatorQuorum ed25519 = 4 [json_name = "ed25519"];</code>
+     * @return The ed25519.
+     */
+    qorechain.bridge.v1.Tx.ValidatorQuorum getEd25519();
+    /**
+     * <code>.qorechain.bridge.v1.ValidatorQuorum ed25519 = 4 [json_name = "ed25519"];</code>
+     */
+    qorechain.bridge.v1.Tx.ValidatorQuorumOrBuilder getEd25519OrBuilder();
+
+    /**
+     * <code>.qorechain.bridge.v1.ValidatorQuorum bls = 5 [json_name = "bls"];</code>
+     * @return Whether the bls field is set.
+     */
+    boolean hasBls();
+    /**
+     * <code>.qorechain.bridge.v1.ValidatorQuorum bls = 5 [json_name = "bls"];</code>
+     * @return The bls.
+     */
+    qorechain.bridge.v1.Tx.ValidatorQuorum getBls();
+    /**
+     * <code>.qorechain.bridge.v1.ValidatorQuorum bls = 5 [json_name = "bls"];</code>
+     */
+    qorechain.bridge.v1.Tx.ValidatorQuorumOrBuilder getBlsOrBuilder();
+
+    /**
+     * <code>.qorechain.bridge.v1.BitcoinCheckpoint bitcoin = 6 [json_name = "bitcoin"];</code>
+     * @return Whether the bitcoin field is set.
+     */
+    boolean hasBitcoin();
+    /**
+     * <code>.qorechain.bridge.v1.BitcoinCheckpoint bitcoin = 6 [json_name = "bitcoin"];</code>
+     * @return The bitcoin.
+     */
+    qorechain.bridge.v1.Tx.BitcoinCheckpoint getBitcoin();
+    /**
+     * <code>.qorechain.bridge.v1.BitcoinCheckpoint bitcoin = 6 [json_name = "bitcoin"];</code>
+     */
+    qorechain.bridge.v1.Tx.BitcoinCheckpointOrBuilder getBitcoinOrBuilder();
+
+    /**
+     * <code>bytes starknet_state_root = 7 [json_name = "starknetStateRoot"];</code>
+     * @return The starknetStateRoot.
+     */
+    com.google.protobuf.ByteString getStarknetStateRoot();
+  }
+  /**
+   * <pre>
+   * MsgSetVerifierBootstrap installs a verifier trust root. Exactly one of the
+   * sub-messages must be populated; the handler routes by which is non-nil.
+   * </pre>
+   *
+   * Protobuf type {@code qorechain.bridge.v1.MsgSetVerifierBootstrap}
+   */
+  public static final class MsgSetVerifierBootstrap extends
+      com.google.protobuf.GeneratedMessage implements
+      // @@protoc_insertion_point(message_implements:qorechain.bridge.v1.MsgSetVerifierBootstrap)
+      MsgSetVerifierBootstrapOrBuilder {
+  private static final long serialVersionUID = 0L;
+    static {
+      com.google.protobuf.RuntimeVersion.validateProtobufGencodeVersion(
+        com.google.protobuf.RuntimeVersion.RuntimeDomain.PUBLIC,
+        /* major= */ 4,
+        /* minor= */ 35,
+        /* patch= */ 1,
+        /* suffix= */ "",
+        "MsgSetVerifierBootstrap");
+    }
+    // Use MsgSetVerifierBootstrap.newBuilder() to construct.
+    private MsgSetVerifierBootstrap(com.google.protobuf.GeneratedMessage.Builder<?> builder) {
+      super(builder);
+    }
+    private MsgSetVerifierBootstrap() {
+      admin_ = "";
+      chainId_ = "";
+      starknetStateRoot_ = com.google.protobuf.ByteString.EMPTY;
+    }
+
+    public static final com.google.protobuf.Descriptors.Descriptor
+        getDescriptor() {
+      return qorechain.bridge.v1.Tx.internal_static_qorechain_bridge_v1_MsgSetVerifierBootstrap_descriptor;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Descriptors.Descriptor getDescriptorForType() {
+      return qorechain.bridge.v1.Tx.internal_static_qorechain_bridge_v1_MsgSetVerifierBootstrap_descriptor;
+    }
+
+    @java.lang.Override
+    protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+        internalGetFieldAccessorTable() {
+      return qorechain.bridge.v1.Tx.internal_static_qorechain_bridge_v1_MsgSetVerifierBootstrap_fieldAccessorTable
+          .ensureFieldAccessorsInitialized(
+              qorechain.bridge.v1.Tx.MsgSetVerifierBootstrap.class, qorechain.bridge.v1.Tx.MsgSetVerifierBootstrap.Builder.class);
+    }
+
+    private int bitField0_;
+    public static final int ADMIN_FIELD_NUMBER = 1;
+    @SuppressWarnings("serial")
+    private volatile java.lang.Object admin_ = "";
+    /**
+     * <code>string admin = 1 [json_name = "admin", (.cosmos_proto.scalar) = "cosmos.AddressString"];</code>
+     * @return The admin.
+     */
+    @java.lang.Override
+    public java.lang.String getAdmin() {
+      java.lang.Object ref = admin_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        admin_ = s;
+        return s;
+      }
+    }
+    /**
+     * <code>string admin = 1 [json_name = "admin", (.cosmos_proto.scalar) = "cosmos.AddressString"];</code>
+     * @return The bytes for admin.
+     */
+    @java.lang.Override
+    public com.google.protobuf.ByteString
+        getAdminBytes() {
+      java.lang.Object ref = admin_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        admin_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
+    public static final int CHAIN_ID_FIELD_NUMBER = 2;
+    @SuppressWarnings("serial")
+    private volatile java.lang.Object chainId_ = "";
+    /**
+     * <code>string chain_id = 2 [json_name = "chainId"];</code>
+     * @return The chainId.
+     */
+    @java.lang.Override
+    public java.lang.String getChainId() {
+      java.lang.Object ref = chainId_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        chainId_ = s;
+        return s;
+      }
+    }
+    /**
+     * <code>string chain_id = 2 [json_name = "chainId"];</code>
+     * @return The bytes for chainId.
+     */
+    @java.lang.Override
+    public com.google.protobuf.ByteString
+        getChainIdBytes() {
+      java.lang.Object ref = chainId_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        chainId_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
+    public static final int WORMHOLE_FIELD_NUMBER = 3;
+    private qorechain.bridge.v1.Tx.WormholeGuardianSet wormhole_;
+    /**
+     * <code>.qorechain.bridge.v1.WormholeGuardianSet wormhole = 3 [json_name = "wormhole"];</code>
+     * @return Whether the wormhole field is set.
+     */
+    @java.lang.Override
+    public boolean hasWormhole() {
+      return ((bitField0_ & 0x00000001) != 0);
+    }
+    /**
+     * <code>.qorechain.bridge.v1.WormholeGuardianSet wormhole = 3 [json_name = "wormhole"];</code>
+     * @return The wormhole.
+     */
+    @java.lang.Override
+    public qorechain.bridge.v1.Tx.WormholeGuardianSet getWormhole() {
+      return wormhole_ == null ? qorechain.bridge.v1.Tx.WormholeGuardianSet.getDefaultInstance() : wormhole_;
+    }
+    /**
+     * <code>.qorechain.bridge.v1.WormholeGuardianSet wormhole = 3 [json_name = "wormhole"];</code>
+     */
+    @java.lang.Override
+    public qorechain.bridge.v1.Tx.WormholeGuardianSetOrBuilder getWormholeOrBuilder() {
+      return wormhole_ == null ? qorechain.bridge.v1.Tx.WormholeGuardianSet.getDefaultInstance() : wormhole_;
+    }
+
+    public static final int ED25519_FIELD_NUMBER = 4;
+    private qorechain.bridge.v1.Tx.ValidatorQuorum ed25519_;
+    /**
+     * <code>.qorechain.bridge.v1.ValidatorQuorum ed25519 = 4 [json_name = "ed25519"];</code>
+     * @return Whether the ed25519 field is set.
+     */
+    @java.lang.Override
+    public boolean hasEd25519() {
+      return ((bitField0_ & 0x00000002) != 0);
+    }
+    /**
+     * <code>.qorechain.bridge.v1.ValidatorQuorum ed25519 = 4 [json_name = "ed25519"];</code>
+     * @return The ed25519.
+     */
+    @java.lang.Override
+    public qorechain.bridge.v1.Tx.ValidatorQuorum getEd25519() {
+      return ed25519_ == null ? qorechain.bridge.v1.Tx.ValidatorQuorum.getDefaultInstance() : ed25519_;
+    }
+    /**
+     * <code>.qorechain.bridge.v1.ValidatorQuorum ed25519 = 4 [json_name = "ed25519"];</code>
+     */
+    @java.lang.Override
+    public qorechain.bridge.v1.Tx.ValidatorQuorumOrBuilder getEd25519OrBuilder() {
+      return ed25519_ == null ? qorechain.bridge.v1.Tx.ValidatorQuorum.getDefaultInstance() : ed25519_;
+    }
+
+    public static final int BLS_FIELD_NUMBER = 5;
+    private qorechain.bridge.v1.Tx.ValidatorQuorum bls_;
+    /**
+     * <code>.qorechain.bridge.v1.ValidatorQuorum bls = 5 [json_name = "bls"];</code>
+     * @return Whether the bls field is set.
+     */
+    @java.lang.Override
+    public boolean hasBls() {
+      return ((bitField0_ & 0x00000004) != 0);
+    }
+    /**
+     * <code>.qorechain.bridge.v1.ValidatorQuorum bls = 5 [json_name = "bls"];</code>
+     * @return The bls.
+     */
+    @java.lang.Override
+    public qorechain.bridge.v1.Tx.ValidatorQuorum getBls() {
+      return bls_ == null ? qorechain.bridge.v1.Tx.ValidatorQuorum.getDefaultInstance() : bls_;
+    }
+    /**
+     * <code>.qorechain.bridge.v1.ValidatorQuorum bls = 5 [json_name = "bls"];</code>
+     */
+    @java.lang.Override
+    public qorechain.bridge.v1.Tx.ValidatorQuorumOrBuilder getBlsOrBuilder() {
+      return bls_ == null ? qorechain.bridge.v1.Tx.ValidatorQuorum.getDefaultInstance() : bls_;
+    }
+
+    public static final int BITCOIN_FIELD_NUMBER = 6;
+    private qorechain.bridge.v1.Tx.BitcoinCheckpoint bitcoin_;
+    /**
+     * <code>.qorechain.bridge.v1.BitcoinCheckpoint bitcoin = 6 [json_name = "bitcoin"];</code>
+     * @return Whether the bitcoin field is set.
+     */
+    @java.lang.Override
+    public boolean hasBitcoin() {
+      return ((bitField0_ & 0x00000008) != 0);
+    }
+    /**
+     * <code>.qorechain.bridge.v1.BitcoinCheckpoint bitcoin = 6 [json_name = "bitcoin"];</code>
+     * @return The bitcoin.
+     */
+    @java.lang.Override
+    public qorechain.bridge.v1.Tx.BitcoinCheckpoint getBitcoin() {
+      return bitcoin_ == null ? qorechain.bridge.v1.Tx.BitcoinCheckpoint.getDefaultInstance() : bitcoin_;
+    }
+    /**
+     * <code>.qorechain.bridge.v1.BitcoinCheckpoint bitcoin = 6 [json_name = "bitcoin"];</code>
+     */
+    @java.lang.Override
+    public qorechain.bridge.v1.Tx.BitcoinCheckpointOrBuilder getBitcoinOrBuilder() {
+      return bitcoin_ == null ? qorechain.bridge.v1.Tx.BitcoinCheckpoint.getDefaultInstance() : bitcoin_;
+    }
+
+    public static final int STARKNET_STATE_ROOT_FIELD_NUMBER = 7;
+    private com.google.protobuf.ByteString starknetStateRoot_ = com.google.protobuf.ByteString.EMPTY;
+    /**
+     * <code>bytes starknet_state_root = 7 [json_name = "starknetStateRoot"];</code>
+     * @return The starknetStateRoot.
+     */
+    @java.lang.Override
+    public com.google.protobuf.ByteString getStarknetStateRoot() {
+      return starknetStateRoot_;
+    }
+
+    private byte memoizedIsInitialized = -1;
+    @java.lang.Override
+    public final boolean isInitialized() {
+      byte isInitialized = memoizedIsInitialized;
+      if (isInitialized == 1) return true;
+      if (isInitialized == 0) return false;
+
+      memoizedIsInitialized = 1;
+      return true;
+    }
+
+    @java.lang.Override
+    public void writeTo(com.google.protobuf.CodedOutputStream output)
+                        throws java.io.IOException {
+      if (!com.google.protobuf.GeneratedMessage.isStringEmpty(admin_)) {
+        com.google.protobuf.GeneratedMessage.writeString(output, 1, admin_);
+      }
+      if (!com.google.protobuf.GeneratedMessage.isStringEmpty(chainId_)) {
+        com.google.protobuf.GeneratedMessage.writeString(output, 2, chainId_);
+      }
+      if (((bitField0_ & 0x00000001) != 0)) {
+        output.writeMessage(3, getWormhole());
+      }
+      if (((bitField0_ & 0x00000002) != 0)) {
+        output.writeMessage(4, getEd25519());
+      }
+      if (((bitField0_ & 0x00000004) != 0)) {
+        output.writeMessage(5, getBls());
+      }
+      if (((bitField0_ & 0x00000008) != 0)) {
+        output.writeMessage(6, getBitcoin());
+      }
+      if (!starknetStateRoot_.isEmpty()) {
+        output.writeBytes(7, starknetStateRoot_);
+      }
+      getUnknownFields().writeTo(output);
+    }
+    private int computeSerializedSize_0() {
+      int size = 0;
+      if (!com.google.protobuf.GeneratedMessage.isStringEmpty(admin_)) {
+        size += com.google.protobuf.GeneratedMessage.computeStringSize(1, admin_);
+      }
+      if (!com.google.protobuf.GeneratedMessage.isStringEmpty(chainId_)) {
+        size += com.google.protobuf.GeneratedMessage.computeStringSize(2, chainId_);
+      }
+      if (((bitField0_ & 0x00000001) != 0)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeMessageSize(3, getWormhole());
+      }
+      if (((bitField0_ & 0x00000002) != 0)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeMessageSize(4, getEd25519());
+      }
+      if (((bitField0_ & 0x00000004) != 0)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeMessageSize(5, getBls());
+      }
+      if (((bitField0_ & 0x00000008) != 0)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeMessageSize(6, getBitcoin());
+      }
+      if (!starknetStateRoot_.isEmpty()) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeBytesSize(7, starknetStateRoot_);
+      }
+      return size;
+    }
+    @java.lang.Override
+    public int getSerializedSize() {
+      int size = memoizedSize;
+      if (size != -1) return size;
+
+      size = 0;
+      size += computeSerializedSize_0();
+      size += getUnknownFields().getSerializedSize();
+      memoizedSize = size;
+      return size;
+    }
+
+    @java.lang.Override
+    public boolean equals(final java.lang.Object obj) {
+      if (obj == this) {
+       return true;
+      }
+      if (!(obj instanceof qorechain.bridge.v1.Tx.MsgSetVerifierBootstrap)) {
+        return super.equals(obj);
+      }
+      qorechain.bridge.v1.Tx.MsgSetVerifierBootstrap other = (qorechain.bridge.v1.Tx.MsgSetVerifierBootstrap) obj;
+
+      if (!getAdmin()
+          .equals(other.getAdmin())) return false;
+      if (!getChainId()
+          .equals(other.getChainId())) return false;
+      if (hasWormhole() != other.hasWormhole()) return false;
+      if (hasWormhole()) {
+        if (!getWormhole()
+            .equals(other.getWormhole())) return false;
+      }
+      if (hasEd25519() != other.hasEd25519()) return false;
+      if (hasEd25519()) {
+        if (!getEd25519()
+            .equals(other.getEd25519())) return false;
+      }
+      if (hasBls() != other.hasBls()) return false;
+      if (hasBls()) {
+        if (!getBls()
+            .equals(other.getBls())) return false;
+      }
+      if (hasBitcoin() != other.hasBitcoin()) return false;
+      if (hasBitcoin()) {
+        if (!getBitcoin()
+            .equals(other.getBitcoin())) return false;
+      }
+      if (!getStarknetStateRoot()
+          .equals(other.getStarknetStateRoot())) return false;
+      if (!getUnknownFields().equals(other.getUnknownFields())) return false;
+      return true;
+    }
+
+    @java.lang.Override
+    public int hashCode() {
+      if (memoizedHashCode != 0) {
+        return memoizedHashCode;
+      }
+      int hash = 41;
+      hash = (19 * hash) + getDescriptor().hashCode();
+      hash = (37 * hash) + ADMIN_FIELD_NUMBER;
+      hash = (53 * hash) + getAdmin().hashCode();
+      hash = (37 * hash) + CHAIN_ID_FIELD_NUMBER;
+      hash = (53 * hash) + getChainId().hashCode();
+      if (hasWormhole()) {
+        hash = (37 * hash) + WORMHOLE_FIELD_NUMBER;
+        hash = (53 * hash) + getWormhole().hashCode();
+      }
+      if (hasEd25519()) {
+        hash = (37 * hash) + ED25519_FIELD_NUMBER;
+        hash = (53 * hash) + getEd25519().hashCode();
+      }
+      if (hasBls()) {
+        hash = (37 * hash) + BLS_FIELD_NUMBER;
+        hash = (53 * hash) + getBls().hashCode();
+      }
+      if (hasBitcoin()) {
+        hash = (37 * hash) + BITCOIN_FIELD_NUMBER;
+        hash = (53 * hash) + getBitcoin().hashCode();
+      }
+      hash = (37 * hash) + STARKNET_STATE_ROOT_FIELD_NUMBER;
+      hash = (53 * hash) + getStarknetStateRoot().hashCode();
+      hash = (29 * hash) + getUnknownFields().hashCode();
+      memoizedHashCode = hash;
+      return hash;
+    }
+
+    public static qorechain.bridge.v1.Tx.MsgSetVerifierBootstrap parseFrom(
+        java.nio.ByteBuffer data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static qorechain.bridge.v1.Tx.MsgSetVerifierBootstrap parseFrom(
+        java.nio.ByteBuffer data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static qorechain.bridge.v1.Tx.MsgSetVerifierBootstrap parseFrom(
+        com.google.protobuf.ByteString data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static qorechain.bridge.v1.Tx.MsgSetVerifierBootstrap parseFrom(
+        com.google.protobuf.ByteString data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static qorechain.bridge.v1.Tx.MsgSetVerifierBootstrap parseFrom(byte[] data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static qorechain.bridge.v1.Tx.MsgSetVerifierBootstrap parseFrom(
+        byte[] data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static qorechain.bridge.v1.Tx.MsgSetVerifierBootstrap parseFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input);
+    }
+    public static qorechain.bridge.v1.Tx.MsgSetVerifierBootstrap parseFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    public static qorechain.bridge.v1.Tx.MsgSetVerifierBootstrap parseDelimitedFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseDelimitedWithIOException(PARSER, input);
+    }
+
+    public static qorechain.bridge.v1.Tx.MsgSetVerifierBootstrap parseDelimitedFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static qorechain.bridge.v1.Tx.MsgSetVerifierBootstrap parseFrom(
+        com.google.protobuf.CodedInputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input);
+    }
+    public static qorechain.bridge.v1.Tx.MsgSetVerifierBootstrap parseFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    @java.lang.Override
+    public Builder newBuilderForType() { return newBuilder(); }
+    public static Builder newBuilder() {
+      return DEFAULT_INSTANCE.toBuilder();
+    }
+    public static Builder newBuilder(qorechain.bridge.v1.Tx.MsgSetVerifierBootstrap prototype) {
+      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+    }
+    @java.lang.Override
+    public Builder toBuilder() {
+      return this == DEFAULT_INSTANCE
+          ? new Builder() : new Builder().mergeFrom(this);
+    }
+
+    @java.lang.Override
+    protected Builder newBuilderForType(
+        com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+      Builder builder = new Builder(parent);
+      return builder;
+    }
+    /**
+     * <pre>
+     * MsgSetVerifierBootstrap installs a verifier trust root. Exactly one of the
+     * sub-messages must be populated; the handler routes by which is non-nil.
+     * </pre>
+     *
+     * Protobuf type {@code qorechain.bridge.v1.MsgSetVerifierBootstrap}
+     */
+    public static final class Builder extends
+        com.google.protobuf.GeneratedMessage.Builder<Builder> implements
+        // @@protoc_insertion_point(builder_implements:qorechain.bridge.v1.MsgSetVerifierBootstrap)
+        qorechain.bridge.v1.Tx.MsgSetVerifierBootstrapOrBuilder {
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return qorechain.bridge.v1.Tx.internal_static_qorechain_bridge_v1_MsgSetVerifierBootstrap_descriptor;
+      }
+
+      @java.lang.Override
+      protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return qorechain.bridge.v1.Tx.internal_static_qorechain_bridge_v1_MsgSetVerifierBootstrap_fieldAccessorTable
+            .ensureFieldAccessorsInitialized(
+                qorechain.bridge.v1.Tx.MsgSetVerifierBootstrap.class, qorechain.bridge.v1.Tx.MsgSetVerifierBootstrap.Builder.class);
+      }
+
+      // Construct using qorechain.bridge.v1.Tx.MsgSetVerifierBootstrap.newBuilder()
+      private Builder() {
+        maybeForceBuilderInitialization();
+      }
+
+      private Builder(
+          com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+        super(parent);
+        maybeForceBuilderInitialization();
+      }
+      private void maybeForceBuilderInitialization() {
+        if (com.google.protobuf.GeneratedMessage
+                .alwaysUseFieldBuilders) {
+          internalGetWormholeFieldBuilder();
+          internalGetEd25519FieldBuilder();
+          internalGetBlsFieldBuilder();
+          internalGetBitcoinFieldBuilder();
+        }
+      }
+      @java.lang.Override
+      public Builder clear() {
+        super.clear();
+        bitField0_ = 0;
+        admin_ = "";
+        chainId_ = "";
+        wormhole_ = null;
+        if (wormholeBuilder_ != null) {
+          wormholeBuilder_.dispose();
+          wormholeBuilder_ = null;
+        }
+        ed25519_ = null;
+        if (ed25519Builder_ != null) {
+          ed25519Builder_.dispose();
+          ed25519Builder_ = null;
+        }
+        bls_ = null;
+        if (blsBuilder_ != null) {
+          blsBuilder_.dispose();
+          blsBuilder_ = null;
+        }
+        bitcoin_ = null;
+        if (bitcoinBuilder_ != null) {
+          bitcoinBuilder_.dispose();
+          bitcoinBuilder_ = null;
+        }
+        starknetStateRoot_ = com.google.protobuf.ByteString.EMPTY;
+        return this;
+      }
+
+      @java.lang.Override
+      public com.google.protobuf.Descriptors.Descriptor
+          getDescriptorForType() {
+        return qorechain.bridge.v1.Tx.internal_static_qorechain_bridge_v1_MsgSetVerifierBootstrap_descriptor;
+      }
+
+      @java.lang.Override
+      public qorechain.bridge.v1.Tx.MsgSetVerifierBootstrap getDefaultInstanceForType() {
+        return qorechain.bridge.v1.Tx.MsgSetVerifierBootstrap.getDefaultInstance();
+      }
+
+      @java.lang.Override
+      public qorechain.bridge.v1.Tx.MsgSetVerifierBootstrap build() {
+        qorechain.bridge.v1.Tx.MsgSetVerifierBootstrap result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(result);
+        }
+        return result;
+      }
+
+      @java.lang.Override
+      public qorechain.bridge.v1.Tx.MsgSetVerifierBootstrap buildPartial() {
+        qorechain.bridge.v1.Tx.MsgSetVerifierBootstrap result = new qorechain.bridge.v1.Tx.MsgSetVerifierBootstrap(this);
+        if (bitField0_ != 0) { buildPartial0(result); }
+        onBuilt();
+        return result;
+      }
+
+      private void buildPartial0(qorechain.bridge.v1.Tx.MsgSetVerifierBootstrap result) {
+        int from_bitField0_ = bitField0_;
+        if (((from_bitField0_ & 0x00000001) != 0)) {
+          result.admin_ = admin_;
+        }
+        if (((from_bitField0_ & 0x00000002) != 0)) {
+          result.chainId_ = chainId_;
+        }
+        int to_bitField0_ = 0;
+        if (((from_bitField0_ & 0x00000004) != 0)) {
+          result.wormhole_ = wormholeBuilder_ == null
+              ? wormhole_
+              : wormholeBuilder_.build();
+          to_bitField0_ |= 0x00000001;
+        }
+        if (((from_bitField0_ & 0x00000008) != 0)) {
+          result.ed25519_ = ed25519Builder_ == null
+              ? ed25519_
+              : ed25519Builder_.build();
+          to_bitField0_ |= 0x00000002;
+        }
+        if (((from_bitField0_ & 0x00000010) != 0)) {
+          result.bls_ = blsBuilder_ == null
+              ? bls_
+              : blsBuilder_.build();
+          to_bitField0_ |= 0x00000004;
+        }
+        if (((from_bitField0_ & 0x00000020) != 0)) {
+          result.bitcoin_ = bitcoinBuilder_ == null
+              ? bitcoin_
+              : bitcoinBuilder_.build();
+          to_bitField0_ |= 0x00000008;
+        }
+        if (((from_bitField0_ & 0x00000040) != 0)) {
+          result.starknetStateRoot_ = starknetStateRoot_;
+        }
+        result.bitField0_ |= to_bitField0_;
+      }
+
+      @java.lang.Override
+      public Builder mergeFrom(com.google.protobuf.Message other) {
+        if (other instanceof qorechain.bridge.v1.Tx.MsgSetVerifierBootstrap) {
+          return mergeFrom((qorechain.bridge.v1.Tx.MsgSetVerifierBootstrap)other);
+        } else {
+          super.mergeFrom(other);
+          return this;
+        }
+      }
+
+      public Builder mergeFrom(qorechain.bridge.v1.Tx.MsgSetVerifierBootstrap other) {
+        if (other == qorechain.bridge.v1.Tx.MsgSetVerifierBootstrap.getDefaultInstance()) return this;
+        if (!other.getAdmin().isEmpty()) {
+          admin_ = other.admin_;
+          bitField0_ |= 0x00000001;
+          onChanged();
+        }
+        if (!other.getChainId().isEmpty()) {
+          chainId_ = other.chainId_;
+          bitField0_ |= 0x00000002;
+          onChanged();
+        }
+        if (other.hasWormhole()) {
+          mergeWormhole(other.getWormhole());
+        }
+        if (other.hasEd25519()) {
+          mergeEd25519(other.getEd25519());
+        }
+        if (other.hasBls()) {
+          mergeBls(other.getBls());
+        }
+        if (other.hasBitcoin()) {
+          mergeBitcoin(other.getBitcoin());
+        }
+        if (!other.getStarknetStateRoot().isEmpty()) {
+          setStarknetStateRoot(other.getStarknetStateRoot());
+        }
+        this.mergeUnknownFields(other.getUnknownFields());
+        onChanged();
+        return this;
+      }
+
+      @java.lang.Override
+      public final boolean isInitialized() {
+        return true;
+      }
+
+      @java.lang.Override
+      public Builder mergeFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        if (extensionRegistry == null) {
+          throw new java.lang.NullPointerException();
+        }
+        try {
+          boolean done = false;
+          while (!done) {
+            int tag = input.readTag();
+            switch (tag) {
+              case 0:
+                done = true;
+                break;
+              case 10: {
+                admin_ = input.readStringRequireUtf8();
+                bitField0_ |= 0x00000001;
+                break;
+              } // case 10
+              case 18: {
+                chainId_ = input.readStringRequireUtf8();
+                bitField0_ |= 0x00000002;
+                break;
+              } // case 18
+              case 26: {
+                input.readMessage(
+                    internalGetWormholeFieldBuilder().getBuilder(),
+                    extensionRegistry);
+                bitField0_ |= 0x00000004;
+                break;
+              } // case 26
+              case 34: {
+                input.readMessage(
+                    internalGetEd25519FieldBuilder().getBuilder(),
+                    extensionRegistry);
+                bitField0_ |= 0x00000008;
+                break;
+              } // case 34
+              case 42: {
+                input.readMessage(
+                    internalGetBlsFieldBuilder().getBuilder(),
+                    extensionRegistry);
+                bitField0_ |= 0x00000010;
+                break;
+              } // case 42
+              case 50: {
+                input.readMessage(
+                    internalGetBitcoinFieldBuilder().getBuilder(),
+                    extensionRegistry);
+                bitField0_ |= 0x00000020;
+                break;
+              } // case 50
+              case 58: {
+                starknetStateRoot_ = input.readBytes();
+                bitField0_ |= 0x00000040;
+                break;
+              } // case 58
+              default: {
+                if (!super.parseUnknownField(input, extensionRegistry, tag)) {
+                  done = true; // was an endgroup tag
+                }
+                break;
+              } // default:
+            } // switch (tag)
+          } // while (!done)
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          throw e.unwrapIOException();
+        } finally {
+          onChanged();
+        } // finally
+        return this;
+      }
+      private int bitField0_;
+
+      private java.lang.Object admin_ = "";
+      /**
+       * <code>string admin = 1 [json_name = "admin", (.cosmos_proto.scalar) = "cosmos.AddressString"];</code>
+       * @return The admin.
+       */
+      public java.lang.String getAdmin() {
+        java.lang.Object ref = admin_;
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          admin_ = s;
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
+      }
+      /**
+       * <code>string admin = 1 [json_name = "admin", (.cosmos_proto.scalar) = "cosmos.AddressString"];</code>
+       * @return The bytes for admin.
+       */
+      public com.google.protobuf.ByteString
+          getAdminBytes() {
+        java.lang.Object ref = admin_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          admin_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <code>string admin = 1 [json_name = "admin", (.cosmos_proto.scalar) = "cosmos.AddressString"];</code>
+       * @param value The admin to set.
+       * @return This builder for chaining.
+       */
+      public Builder setAdmin(
+          java.lang.String value) {
+        if (value == null) { throw new NullPointerException(); }
+        admin_ = value;
+        bitField0_ |= 0x00000001;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>string admin = 1 [json_name = "admin", (.cosmos_proto.scalar) = "cosmos.AddressString"];</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearAdmin() {
+        admin_ = getDefaultInstance().getAdmin();
+        bitField0_ = (bitField0_ & ~0x00000001);
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>string admin = 1 [json_name = "admin", (.cosmos_proto.scalar) = "cosmos.AddressString"];</code>
+       * @param value The bytes for admin to set.
+       * @return This builder for chaining.
+       */
+      public Builder setAdminBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) { throw new NullPointerException(); }
+        checkByteStringIsUtf8(value);
+        admin_ = value;
+        bitField0_ |= 0x00000001;
+        onChanged();
+        return this;
+      }
+
+      private java.lang.Object chainId_ = "";
+      /**
+       * <code>string chain_id = 2 [json_name = "chainId"];</code>
+       * @return The chainId.
+       */
+      public java.lang.String getChainId() {
+        java.lang.Object ref = chainId_;
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          chainId_ = s;
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
+      }
+      /**
+       * <code>string chain_id = 2 [json_name = "chainId"];</code>
+       * @return The bytes for chainId.
+       */
+      public com.google.protobuf.ByteString
+          getChainIdBytes() {
+        java.lang.Object ref = chainId_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          chainId_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <code>string chain_id = 2 [json_name = "chainId"];</code>
+       * @param value The chainId to set.
+       * @return This builder for chaining.
+       */
+      public Builder setChainId(
+          java.lang.String value) {
+        if (value == null) { throw new NullPointerException(); }
+        chainId_ = value;
+        bitField0_ |= 0x00000002;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>string chain_id = 2 [json_name = "chainId"];</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearChainId() {
+        chainId_ = getDefaultInstance().getChainId();
+        bitField0_ = (bitField0_ & ~0x00000002);
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>string chain_id = 2 [json_name = "chainId"];</code>
+       * @param value The bytes for chainId to set.
+       * @return This builder for chaining.
+       */
+      public Builder setChainIdBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) { throw new NullPointerException(); }
+        checkByteStringIsUtf8(value);
+        chainId_ = value;
+        bitField0_ |= 0x00000002;
+        onChanged();
+        return this;
+      }
+
+      private qorechain.bridge.v1.Tx.WormholeGuardianSet wormhole_;
+      private com.google.protobuf.SingleFieldBuilder<
+          qorechain.bridge.v1.Tx.WormholeGuardianSet, qorechain.bridge.v1.Tx.WormholeGuardianSet.Builder, qorechain.bridge.v1.Tx.WormholeGuardianSetOrBuilder> wormholeBuilder_;
+      /**
+       * <code>.qorechain.bridge.v1.WormholeGuardianSet wormhole = 3 [json_name = "wormhole"];</code>
+       * @return Whether the wormhole field is set.
+       */
+      public boolean hasWormhole() {
+        return ((bitField0_ & 0x00000004) != 0);
+      }
+      /**
+       * <code>.qorechain.bridge.v1.WormholeGuardianSet wormhole = 3 [json_name = "wormhole"];</code>
+       * @return The wormhole.
+       */
+      public qorechain.bridge.v1.Tx.WormholeGuardianSet getWormhole() {
+        if (wormholeBuilder_ == null) {
+          return wormhole_ == null ? qorechain.bridge.v1.Tx.WormholeGuardianSet.getDefaultInstance() : wormhole_;
+        } else {
+          return wormholeBuilder_.getMessage();
+        }
+      }
+      /**
+       * <code>.qorechain.bridge.v1.WormholeGuardianSet wormhole = 3 [json_name = "wormhole"];</code>
+       */
+      public Builder setWormhole(qorechain.bridge.v1.Tx.WormholeGuardianSet value) {
+        if (wormholeBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          wormhole_ = value;
+        } else {
+          wormholeBuilder_.setMessage(value);
+        }
+        bitField0_ |= 0x00000004;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>.qorechain.bridge.v1.WormholeGuardianSet wormhole = 3 [json_name = "wormhole"];</code>
+       */
+      public Builder setWormhole(
+          qorechain.bridge.v1.Tx.WormholeGuardianSet.Builder builderForValue) {
+        if (wormholeBuilder_ == null) {
+          wormhole_ = builderForValue.build();
+        } else {
+          wormholeBuilder_.setMessage(builderForValue.build());
+        }
+        bitField0_ |= 0x00000004;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>.qorechain.bridge.v1.WormholeGuardianSet wormhole = 3 [json_name = "wormhole"];</code>
+       */
+      public Builder mergeWormhole(qorechain.bridge.v1.Tx.WormholeGuardianSet value) {
+        if (wormholeBuilder_ == null) {
+          if (((bitField0_ & 0x00000004) != 0) &&
+            wormhole_ != null &&
+            wormhole_ != qorechain.bridge.v1.Tx.WormholeGuardianSet.getDefaultInstance()) {
+            getWormholeBuilder().mergeFrom(value);
+          } else {
+            wormhole_ = value;
+          }
+        } else {
+          wormholeBuilder_.mergeFrom(value);
+        }
+        if (wormhole_ != null) {
+          bitField0_ |= 0x00000004;
+          onChanged();
+        }
+        return this;
+      }
+      /**
+       * <code>.qorechain.bridge.v1.WormholeGuardianSet wormhole = 3 [json_name = "wormhole"];</code>
+       */
+      public Builder clearWormhole() {
+        bitField0_ = (bitField0_ & ~0x00000004);
+        wormhole_ = null;
+        if (wormholeBuilder_ != null) {
+          wormholeBuilder_.dispose();
+          wormholeBuilder_ = null;
+        }
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>.qorechain.bridge.v1.WormholeGuardianSet wormhole = 3 [json_name = "wormhole"];</code>
+       */
+      public qorechain.bridge.v1.Tx.WormholeGuardianSet.Builder getWormholeBuilder() {
+        bitField0_ |= 0x00000004;
+        onChanged();
+        return internalGetWormholeFieldBuilder().getBuilder();
+      }
+      /**
+       * <code>.qorechain.bridge.v1.WormholeGuardianSet wormhole = 3 [json_name = "wormhole"];</code>
+       */
+      public qorechain.bridge.v1.Tx.WormholeGuardianSetOrBuilder getWormholeOrBuilder() {
+        if (wormholeBuilder_ != null) {
+          return wormholeBuilder_.getMessageOrBuilder();
+        } else {
+          return wormhole_ == null ?
+              qorechain.bridge.v1.Tx.WormholeGuardianSet.getDefaultInstance() : wormhole_;
+        }
+      }
+      /**
+       * <code>.qorechain.bridge.v1.WormholeGuardianSet wormhole = 3 [json_name = "wormhole"];</code>
+       */
+      private com.google.protobuf.SingleFieldBuilder<
+          qorechain.bridge.v1.Tx.WormholeGuardianSet, qorechain.bridge.v1.Tx.WormholeGuardianSet.Builder, qorechain.bridge.v1.Tx.WormholeGuardianSetOrBuilder> 
+          internalGetWormholeFieldBuilder() {
+        if (wormholeBuilder_ == null) {
+          wormholeBuilder_ = new com.google.protobuf.SingleFieldBuilder<
+              qorechain.bridge.v1.Tx.WormholeGuardianSet, qorechain.bridge.v1.Tx.WormholeGuardianSet.Builder, qorechain.bridge.v1.Tx.WormholeGuardianSetOrBuilder>(
+                  getWormhole(),
+                  getParentForChildren(),
+                  isClean());
+          wormhole_ = null;
+        }
+        return wormholeBuilder_;
+      }
+
+      private qorechain.bridge.v1.Tx.ValidatorQuorum ed25519_;
+      private com.google.protobuf.SingleFieldBuilder<
+          qorechain.bridge.v1.Tx.ValidatorQuorum, qorechain.bridge.v1.Tx.ValidatorQuorum.Builder, qorechain.bridge.v1.Tx.ValidatorQuorumOrBuilder> ed25519Builder_;
+      /**
+       * <code>.qorechain.bridge.v1.ValidatorQuorum ed25519 = 4 [json_name = "ed25519"];</code>
+       * @return Whether the ed25519 field is set.
+       */
+      public boolean hasEd25519() {
+        return ((bitField0_ & 0x00000008) != 0);
+      }
+      /**
+       * <code>.qorechain.bridge.v1.ValidatorQuorum ed25519 = 4 [json_name = "ed25519"];</code>
+       * @return The ed25519.
+       */
+      public qorechain.bridge.v1.Tx.ValidatorQuorum getEd25519() {
+        if (ed25519Builder_ == null) {
+          return ed25519_ == null ? qorechain.bridge.v1.Tx.ValidatorQuorum.getDefaultInstance() : ed25519_;
+        } else {
+          return ed25519Builder_.getMessage();
+        }
+      }
+      /**
+       * <code>.qorechain.bridge.v1.ValidatorQuorum ed25519 = 4 [json_name = "ed25519"];</code>
+       */
+      public Builder setEd25519(qorechain.bridge.v1.Tx.ValidatorQuorum value) {
+        if (ed25519Builder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          ed25519_ = value;
+        } else {
+          ed25519Builder_.setMessage(value);
+        }
+        bitField0_ |= 0x00000008;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>.qorechain.bridge.v1.ValidatorQuorum ed25519 = 4 [json_name = "ed25519"];</code>
+       */
+      public Builder setEd25519(
+          qorechain.bridge.v1.Tx.ValidatorQuorum.Builder builderForValue) {
+        if (ed25519Builder_ == null) {
+          ed25519_ = builderForValue.build();
+        } else {
+          ed25519Builder_.setMessage(builderForValue.build());
+        }
+        bitField0_ |= 0x00000008;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>.qorechain.bridge.v1.ValidatorQuorum ed25519 = 4 [json_name = "ed25519"];</code>
+       */
+      public Builder mergeEd25519(qorechain.bridge.v1.Tx.ValidatorQuorum value) {
+        if (ed25519Builder_ == null) {
+          if (((bitField0_ & 0x00000008) != 0) &&
+            ed25519_ != null &&
+            ed25519_ != qorechain.bridge.v1.Tx.ValidatorQuorum.getDefaultInstance()) {
+            getEd25519Builder().mergeFrom(value);
+          } else {
+            ed25519_ = value;
+          }
+        } else {
+          ed25519Builder_.mergeFrom(value);
+        }
+        if (ed25519_ != null) {
+          bitField0_ |= 0x00000008;
+          onChanged();
+        }
+        return this;
+      }
+      /**
+       * <code>.qorechain.bridge.v1.ValidatorQuorum ed25519 = 4 [json_name = "ed25519"];</code>
+       */
+      public Builder clearEd25519() {
+        bitField0_ = (bitField0_ & ~0x00000008);
+        ed25519_ = null;
+        if (ed25519Builder_ != null) {
+          ed25519Builder_.dispose();
+          ed25519Builder_ = null;
+        }
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>.qorechain.bridge.v1.ValidatorQuorum ed25519 = 4 [json_name = "ed25519"];</code>
+       */
+      public qorechain.bridge.v1.Tx.ValidatorQuorum.Builder getEd25519Builder() {
+        bitField0_ |= 0x00000008;
+        onChanged();
+        return internalGetEd25519FieldBuilder().getBuilder();
+      }
+      /**
+       * <code>.qorechain.bridge.v1.ValidatorQuorum ed25519 = 4 [json_name = "ed25519"];</code>
+       */
+      public qorechain.bridge.v1.Tx.ValidatorQuorumOrBuilder getEd25519OrBuilder() {
+        if (ed25519Builder_ != null) {
+          return ed25519Builder_.getMessageOrBuilder();
+        } else {
+          return ed25519_ == null ?
+              qorechain.bridge.v1.Tx.ValidatorQuorum.getDefaultInstance() : ed25519_;
+        }
+      }
+      /**
+       * <code>.qorechain.bridge.v1.ValidatorQuorum ed25519 = 4 [json_name = "ed25519"];</code>
+       */
+      private com.google.protobuf.SingleFieldBuilder<
+          qorechain.bridge.v1.Tx.ValidatorQuorum, qorechain.bridge.v1.Tx.ValidatorQuorum.Builder, qorechain.bridge.v1.Tx.ValidatorQuorumOrBuilder> 
+          internalGetEd25519FieldBuilder() {
+        if (ed25519Builder_ == null) {
+          ed25519Builder_ = new com.google.protobuf.SingleFieldBuilder<
+              qorechain.bridge.v1.Tx.ValidatorQuorum, qorechain.bridge.v1.Tx.ValidatorQuorum.Builder, qorechain.bridge.v1.Tx.ValidatorQuorumOrBuilder>(
+                  getEd25519(),
+                  getParentForChildren(),
+                  isClean());
+          ed25519_ = null;
+        }
+        return ed25519Builder_;
+      }
+
+      private qorechain.bridge.v1.Tx.ValidatorQuorum bls_;
+      private com.google.protobuf.SingleFieldBuilder<
+          qorechain.bridge.v1.Tx.ValidatorQuorum, qorechain.bridge.v1.Tx.ValidatorQuorum.Builder, qorechain.bridge.v1.Tx.ValidatorQuorumOrBuilder> blsBuilder_;
+      /**
+       * <code>.qorechain.bridge.v1.ValidatorQuorum bls = 5 [json_name = "bls"];</code>
+       * @return Whether the bls field is set.
+       */
+      public boolean hasBls() {
+        return ((bitField0_ & 0x00000010) != 0);
+      }
+      /**
+       * <code>.qorechain.bridge.v1.ValidatorQuorum bls = 5 [json_name = "bls"];</code>
+       * @return The bls.
+       */
+      public qorechain.bridge.v1.Tx.ValidatorQuorum getBls() {
+        if (blsBuilder_ == null) {
+          return bls_ == null ? qorechain.bridge.v1.Tx.ValidatorQuorum.getDefaultInstance() : bls_;
+        } else {
+          return blsBuilder_.getMessage();
+        }
+      }
+      /**
+       * <code>.qorechain.bridge.v1.ValidatorQuorum bls = 5 [json_name = "bls"];</code>
+       */
+      public Builder setBls(qorechain.bridge.v1.Tx.ValidatorQuorum value) {
+        if (blsBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          bls_ = value;
+        } else {
+          blsBuilder_.setMessage(value);
+        }
+        bitField0_ |= 0x00000010;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>.qorechain.bridge.v1.ValidatorQuorum bls = 5 [json_name = "bls"];</code>
+       */
+      public Builder setBls(
+          qorechain.bridge.v1.Tx.ValidatorQuorum.Builder builderForValue) {
+        if (blsBuilder_ == null) {
+          bls_ = builderForValue.build();
+        } else {
+          blsBuilder_.setMessage(builderForValue.build());
+        }
+        bitField0_ |= 0x00000010;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>.qorechain.bridge.v1.ValidatorQuorum bls = 5 [json_name = "bls"];</code>
+       */
+      public Builder mergeBls(qorechain.bridge.v1.Tx.ValidatorQuorum value) {
+        if (blsBuilder_ == null) {
+          if (((bitField0_ & 0x00000010) != 0) &&
+            bls_ != null &&
+            bls_ != qorechain.bridge.v1.Tx.ValidatorQuorum.getDefaultInstance()) {
+            getBlsBuilder().mergeFrom(value);
+          } else {
+            bls_ = value;
+          }
+        } else {
+          blsBuilder_.mergeFrom(value);
+        }
+        if (bls_ != null) {
+          bitField0_ |= 0x00000010;
+          onChanged();
+        }
+        return this;
+      }
+      /**
+       * <code>.qorechain.bridge.v1.ValidatorQuorum bls = 5 [json_name = "bls"];</code>
+       */
+      public Builder clearBls() {
+        bitField0_ = (bitField0_ & ~0x00000010);
+        bls_ = null;
+        if (blsBuilder_ != null) {
+          blsBuilder_.dispose();
+          blsBuilder_ = null;
+        }
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>.qorechain.bridge.v1.ValidatorQuorum bls = 5 [json_name = "bls"];</code>
+       */
+      public qorechain.bridge.v1.Tx.ValidatorQuorum.Builder getBlsBuilder() {
+        bitField0_ |= 0x00000010;
+        onChanged();
+        return internalGetBlsFieldBuilder().getBuilder();
+      }
+      /**
+       * <code>.qorechain.bridge.v1.ValidatorQuorum bls = 5 [json_name = "bls"];</code>
+       */
+      public qorechain.bridge.v1.Tx.ValidatorQuorumOrBuilder getBlsOrBuilder() {
+        if (blsBuilder_ != null) {
+          return blsBuilder_.getMessageOrBuilder();
+        } else {
+          return bls_ == null ?
+              qorechain.bridge.v1.Tx.ValidatorQuorum.getDefaultInstance() : bls_;
+        }
+      }
+      /**
+       * <code>.qorechain.bridge.v1.ValidatorQuorum bls = 5 [json_name = "bls"];</code>
+       */
+      private com.google.protobuf.SingleFieldBuilder<
+          qorechain.bridge.v1.Tx.ValidatorQuorum, qorechain.bridge.v1.Tx.ValidatorQuorum.Builder, qorechain.bridge.v1.Tx.ValidatorQuorumOrBuilder> 
+          internalGetBlsFieldBuilder() {
+        if (blsBuilder_ == null) {
+          blsBuilder_ = new com.google.protobuf.SingleFieldBuilder<
+              qorechain.bridge.v1.Tx.ValidatorQuorum, qorechain.bridge.v1.Tx.ValidatorQuorum.Builder, qorechain.bridge.v1.Tx.ValidatorQuorumOrBuilder>(
+                  getBls(),
+                  getParentForChildren(),
+                  isClean());
+          bls_ = null;
+        }
+        return blsBuilder_;
+      }
+
+      private qorechain.bridge.v1.Tx.BitcoinCheckpoint bitcoin_;
+      private com.google.protobuf.SingleFieldBuilder<
+          qorechain.bridge.v1.Tx.BitcoinCheckpoint, qorechain.bridge.v1.Tx.BitcoinCheckpoint.Builder, qorechain.bridge.v1.Tx.BitcoinCheckpointOrBuilder> bitcoinBuilder_;
+      /**
+       * <code>.qorechain.bridge.v1.BitcoinCheckpoint bitcoin = 6 [json_name = "bitcoin"];</code>
+       * @return Whether the bitcoin field is set.
+       */
+      public boolean hasBitcoin() {
+        return ((bitField0_ & 0x00000020) != 0);
+      }
+      /**
+       * <code>.qorechain.bridge.v1.BitcoinCheckpoint bitcoin = 6 [json_name = "bitcoin"];</code>
+       * @return The bitcoin.
+       */
+      public qorechain.bridge.v1.Tx.BitcoinCheckpoint getBitcoin() {
+        if (bitcoinBuilder_ == null) {
+          return bitcoin_ == null ? qorechain.bridge.v1.Tx.BitcoinCheckpoint.getDefaultInstance() : bitcoin_;
+        } else {
+          return bitcoinBuilder_.getMessage();
+        }
+      }
+      /**
+       * <code>.qorechain.bridge.v1.BitcoinCheckpoint bitcoin = 6 [json_name = "bitcoin"];</code>
+       */
+      public Builder setBitcoin(qorechain.bridge.v1.Tx.BitcoinCheckpoint value) {
+        if (bitcoinBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          bitcoin_ = value;
+        } else {
+          bitcoinBuilder_.setMessage(value);
+        }
+        bitField0_ |= 0x00000020;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>.qorechain.bridge.v1.BitcoinCheckpoint bitcoin = 6 [json_name = "bitcoin"];</code>
+       */
+      public Builder setBitcoin(
+          qorechain.bridge.v1.Tx.BitcoinCheckpoint.Builder builderForValue) {
+        if (bitcoinBuilder_ == null) {
+          bitcoin_ = builderForValue.build();
+        } else {
+          bitcoinBuilder_.setMessage(builderForValue.build());
+        }
+        bitField0_ |= 0x00000020;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>.qorechain.bridge.v1.BitcoinCheckpoint bitcoin = 6 [json_name = "bitcoin"];</code>
+       */
+      public Builder mergeBitcoin(qorechain.bridge.v1.Tx.BitcoinCheckpoint value) {
+        if (bitcoinBuilder_ == null) {
+          if (((bitField0_ & 0x00000020) != 0) &&
+            bitcoin_ != null &&
+            bitcoin_ != qorechain.bridge.v1.Tx.BitcoinCheckpoint.getDefaultInstance()) {
+            getBitcoinBuilder().mergeFrom(value);
+          } else {
+            bitcoin_ = value;
+          }
+        } else {
+          bitcoinBuilder_.mergeFrom(value);
+        }
+        if (bitcoin_ != null) {
+          bitField0_ |= 0x00000020;
+          onChanged();
+        }
+        return this;
+      }
+      /**
+       * <code>.qorechain.bridge.v1.BitcoinCheckpoint bitcoin = 6 [json_name = "bitcoin"];</code>
+       */
+      public Builder clearBitcoin() {
+        bitField0_ = (bitField0_ & ~0x00000020);
+        bitcoin_ = null;
+        if (bitcoinBuilder_ != null) {
+          bitcoinBuilder_.dispose();
+          bitcoinBuilder_ = null;
+        }
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>.qorechain.bridge.v1.BitcoinCheckpoint bitcoin = 6 [json_name = "bitcoin"];</code>
+       */
+      public qorechain.bridge.v1.Tx.BitcoinCheckpoint.Builder getBitcoinBuilder() {
+        bitField0_ |= 0x00000020;
+        onChanged();
+        return internalGetBitcoinFieldBuilder().getBuilder();
+      }
+      /**
+       * <code>.qorechain.bridge.v1.BitcoinCheckpoint bitcoin = 6 [json_name = "bitcoin"];</code>
+       */
+      public qorechain.bridge.v1.Tx.BitcoinCheckpointOrBuilder getBitcoinOrBuilder() {
+        if (bitcoinBuilder_ != null) {
+          return bitcoinBuilder_.getMessageOrBuilder();
+        } else {
+          return bitcoin_ == null ?
+              qorechain.bridge.v1.Tx.BitcoinCheckpoint.getDefaultInstance() : bitcoin_;
+        }
+      }
+      /**
+       * <code>.qorechain.bridge.v1.BitcoinCheckpoint bitcoin = 6 [json_name = "bitcoin"];</code>
+       */
+      private com.google.protobuf.SingleFieldBuilder<
+          qorechain.bridge.v1.Tx.BitcoinCheckpoint, qorechain.bridge.v1.Tx.BitcoinCheckpoint.Builder, qorechain.bridge.v1.Tx.BitcoinCheckpointOrBuilder> 
+          internalGetBitcoinFieldBuilder() {
+        if (bitcoinBuilder_ == null) {
+          bitcoinBuilder_ = new com.google.protobuf.SingleFieldBuilder<
+              qorechain.bridge.v1.Tx.BitcoinCheckpoint, qorechain.bridge.v1.Tx.BitcoinCheckpoint.Builder, qorechain.bridge.v1.Tx.BitcoinCheckpointOrBuilder>(
+                  getBitcoin(),
+                  getParentForChildren(),
+                  isClean());
+          bitcoin_ = null;
+        }
+        return bitcoinBuilder_;
+      }
+
+      private com.google.protobuf.ByteString starknetStateRoot_ = com.google.protobuf.ByteString.EMPTY;
+      /**
+       * <code>bytes starknet_state_root = 7 [json_name = "starknetStateRoot"];</code>
+       * @return The starknetStateRoot.
+       */
+      @java.lang.Override
+      public com.google.protobuf.ByteString getStarknetStateRoot() {
+        return starknetStateRoot_;
+      }
+      /**
+       * <code>bytes starknet_state_root = 7 [json_name = "starknetStateRoot"];</code>
+       * @param value The starknetStateRoot to set.
+       * @return This builder for chaining.
+       */
+      public Builder setStarknetStateRoot(com.google.protobuf.ByteString value) {
+        if (value == null) { throw new NullPointerException(); }
+        starknetStateRoot_ = value;
+        bitField0_ |= 0x00000040;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>bytes starknet_state_root = 7 [json_name = "starknetStateRoot"];</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearStarknetStateRoot() {
+        bitField0_ = (bitField0_ & ~0x00000040);
+        starknetStateRoot_ = getDefaultInstance().getStarknetStateRoot();
+        onChanged();
+        return this;
+      }
+
+      // @@protoc_insertion_point(builder_scope:qorechain.bridge.v1.MsgSetVerifierBootstrap)
+    }
+
+    // @@protoc_insertion_point(class_scope:qorechain.bridge.v1.MsgSetVerifierBootstrap)
+    private static final qorechain.bridge.v1.Tx.MsgSetVerifierBootstrap DEFAULT_INSTANCE;
+    static {
+      DEFAULT_INSTANCE = new qorechain.bridge.v1.Tx.MsgSetVerifierBootstrap();
+    }
+
+    public static qorechain.bridge.v1.Tx.MsgSetVerifierBootstrap getDefaultInstance() {
+      return DEFAULT_INSTANCE;
+    }
+
+    private static final com.google.protobuf.Parser<MsgSetVerifierBootstrap>
+        PARSER = new com.google.protobuf.AbstractParser<MsgSetVerifierBootstrap>() {
+      @java.lang.Override
+      public MsgSetVerifierBootstrap parsePartialFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        Builder builder = newBuilder();
+        try {
+          builder.mergeFrom(input, extensionRegistry);
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          throw e.setUnfinishedMessage(builder.buildPartial());
+        } catch (com.google.protobuf.UninitializedMessageException e) {
+          throw e.asInvalidProtocolBufferException().setUnfinishedMessage(builder.buildPartial());
+        } catch (java.io.IOException e) {
+          throw new com.google.protobuf.InvalidProtocolBufferException(e)
+              .setUnfinishedMessage(builder.buildPartial());
+        }
+        return builder.buildPartial();
+      }
+    };
+
+    public static com.google.protobuf.Parser<MsgSetVerifierBootstrap> parser() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Parser<MsgSetVerifierBootstrap> getParserForType() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public qorechain.bridge.v1.Tx.MsgSetVerifierBootstrap getDefaultInstanceForType() {
+      return DEFAULT_INSTANCE;
+    }
+
+  }
+
+  public interface MsgSetVerifierBootstrapResponseOrBuilder extends
+      // @@protoc_insertion_point(interface_extends:qorechain.bridge.v1.MsgSetVerifierBootstrapResponse)
+      com.google.protobuf.MessageOrBuilder {
+  }
+  /**
+   * Protobuf type {@code qorechain.bridge.v1.MsgSetVerifierBootstrapResponse}
+   */
+  public static final class MsgSetVerifierBootstrapResponse extends
+      com.google.protobuf.GeneratedMessage implements
+      // @@protoc_insertion_point(message_implements:qorechain.bridge.v1.MsgSetVerifierBootstrapResponse)
+      MsgSetVerifierBootstrapResponseOrBuilder {
+  private static final long serialVersionUID = 0L;
+    static {
+      com.google.protobuf.RuntimeVersion.validateProtobufGencodeVersion(
+        com.google.protobuf.RuntimeVersion.RuntimeDomain.PUBLIC,
+        /* major= */ 4,
+        /* minor= */ 35,
+        /* patch= */ 1,
+        /* suffix= */ "",
+        "MsgSetVerifierBootstrapResponse");
+    }
+    // Use MsgSetVerifierBootstrapResponse.newBuilder() to construct.
+    private MsgSetVerifierBootstrapResponse(com.google.protobuf.GeneratedMessage.Builder<?> builder) {
+      super(builder);
+    }
+    private MsgSetVerifierBootstrapResponse() {
+    }
+
+    public static final com.google.protobuf.Descriptors.Descriptor
+        getDescriptor() {
+      return qorechain.bridge.v1.Tx.internal_static_qorechain_bridge_v1_MsgSetVerifierBootstrapResponse_descriptor;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Descriptors.Descriptor getDescriptorForType() {
+      return qorechain.bridge.v1.Tx.internal_static_qorechain_bridge_v1_MsgSetVerifierBootstrapResponse_descriptor;
+    }
+
+    @java.lang.Override
+    protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+        internalGetFieldAccessorTable() {
+      return qorechain.bridge.v1.Tx.internal_static_qorechain_bridge_v1_MsgSetVerifierBootstrapResponse_fieldAccessorTable
+          .ensureFieldAccessorsInitialized(
+              qorechain.bridge.v1.Tx.MsgSetVerifierBootstrapResponse.class, qorechain.bridge.v1.Tx.MsgSetVerifierBootstrapResponse.Builder.class);
+    }
+
+    private byte memoizedIsInitialized = -1;
+    @java.lang.Override
+    public final boolean isInitialized() {
+      byte isInitialized = memoizedIsInitialized;
+      if (isInitialized == 1) return true;
+      if (isInitialized == 0) return false;
+
+      memoizedIsInitialized = 1;
+      return true;
+    }
+
+    @java.lang.Override
+    public void writeTo(com.google.protobuf.CodedOutputStream output)
+                        throws java.io.IOException {
+      getUnknownFields().writeTo(output);
+    }
+    @java.lang.Override
+    public int getSerializedSize() {
+      int size = memoizedSize;
+      if (size != -1) return size;
+
+      size = 0;
+      size += getUnknownFields().getSerializedSize();
+      memoizedSize = size;
+      return size;
+    }
+
+    @java.lang.Override
+    public boolean equals(final java.lang.Object obj) {
+      if (obj == this) {
+       return true;
+      }
+      if (!(obj instanceof qorechain.bridge.v1.Tx.MsgSetVerifierBootstrapResponse)) {
+        return super.equals(obj);
+      }
+      qorechain.bridge.v1.Tx.MsgSetVerifierBootstrapResponse other = (qorechain.bridge.v1.Tx.MsgSetVerifierBootstrapResponse) obj;
+
+      if (!getUnknownFields().equals(other.getUnknownFields())) return false;
+      return true;
+    }
+
+    @java.lang.Override
+    public int hashCode() {
+      if (memoizedHashCode != 0) {
+        return memoizedHashCode;
+      }
+      int hash = 41;
+      hash = (19 * hash) + getDescriptor().hashCode();
+      hash = (29 * hash) + getUnknownFields().hashCode();
+      memoizedHashCode = hash;
+      return hash;
+    }
+
+    public static qorechain.bridge.v1.Tx.MsgSetVerifierBootstrapResponse parseFrom(
+        java.nio.ByteBuffer data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static qorechain.bridge.v1.Tx.MsgSetVerifierBootstrapResponse parseFrom(
+        java.nio.ByteBuffer data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static qorechain.bridge.v1.Tx.MsgSetVerifierBootstrapResponse parseFrom(
+        com.google.protobuf.ByteString data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static qorechain.bridge.v1.Tx.MsgSetVerifierBootstrapResponse parseFrom(
+        com.google.protobuf.ByteString data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static qorechain.bridge.v1.Tx.MsgSetVerifierBootstrapResponse parseFrom(byte[] data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static qorechain.bridge.v1.Tx.MsgSetVerifierBootstrapResponse parseFrom(
+        byte[] data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static qorechain.bridge.v1.Tx.MsgSetVerifierBootstrapResponse parseFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input);
+    }
+    public static qorechain.bridge.v1.Tx.MsgSetVerifierBootstrapResponse parseFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    public static qorechain.bridge.v1.Tx.MsgSetVerifierBootstrapResponse parseDelimitedFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseDelimitedWithIOException(PARSER, input);
+    }
+
+    public static qorechain.bridge.v1.Tx.MsgSetVerifierBootstrapResponse parseDelimitedFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static qorechain.bridge.v1.Tx.MsgSetVerifierBootstrapResponse parseFrom(
+        com.google.protobuf.CodedInputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input);
+    }
+    public static qorechain.bridge.v1.Tx.MsgSetVerifierBootstrapResponse parseFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    @java.lang.Override
+    public Builder newBuilderForType() { return newBuilder(); }
+    public static Builder newBuilder() {
+      return DEFAULT_INSTANCE.toBuilder();
+    }
+    public static Builder newBuilder(qorechain.bridge.v1.Tx.MsgSetVerifierBootstrapResponse prototype) {
+      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+    }
+    @java.lang.Override
+    public Builder toBuilder() {
+      return this == DEFAULT_INSTANCE
+          ? new Builder() : new Builder().mergeFrom(this);
+    }
+
+    @java.lang.Override
+    protected Builder newBuilderForType(
+        com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+      Builder builder = new Builder(parent);
+      return builder;
+    }
+    /**
+     * Protobuf type {@code qorechain.bridge.v1.MsgSetVerifierBootstrapResponse}
+     */
+    public static final class Builder extends
+        com.google.protobuf.GeneratedMessage.Builder<Builder> implements
+        // @@protoc_insertion_point(builder_implements:qorechain.bridge.v1.MsgSetVerifierBootstrapResponse)
+        qorechain.bridge.v1.Tx.MsgSetVerifierBootstrapResponseOrBuilder {
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return qorechain.bridge.v1.Tx.internal_static_qorechain_bridge_v1_MsgSetVerifierBootstrapResponse_descriptor;
+      }
+
+      @java.lang.Override
+      protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return qorechain.bridge.v1.Tx.internal_static_qorechain_bridge_v1_MsgSetVerifierBootstrapResponse_fieldAccessorTable
+            .ensureFieldAccessorsInitialized(
+                qorechain.bridge.v1.Tx.MsgSetVerifierBootstrapResponse.class, qorechain.bridge.v1.Tx.MsgSetVerifierBootstrapResponse.Builder.class);
+      }
+
+      // Construct using qorechain.bridge.v1.Tx.MsgSetVerifierBootstrapResponse.newBuilder()
+      private Builder() {
+
+      }
+
+      private Builder(
+          com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+        super(parent);
+
+      }
+      @java.lang.Override
+      public Builder clear() {
+        super.clear();
+        return this;
+      }
+
+      @java.lang.Override
+      public com.google.protobuf.Descriptors.Descriptor
+          getDescriptorForType() {
+        return qorechain.bridge.v1.Tx.internal_static_qorechain_bridge_v1_MsgSetVerifierBootstrapResponse_descriptor;
+      }
+
+      @java.lang.Override
+      public qorechain.bridge.v1.Tx.MsgSetVerifierBootstrapResponse getDefaultInstanceForType() {
+        return qorechain.bridge.v1.Tx.MsgSetVerifierBootstrapResponse.getDefaultInstance();
+      }
+
+      @java.lang.Override
+      public qorechain.bridge.v1.Tx.MsgSetVerifierBootstrapResponse build() {
+        qorechain.bridge.v1.Tx.MsgSetVerifierBootstrapResponse result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(result);
+        }
+        return result;
+      }
+
+      @java.lang.Override
+      public qorechain.bridge.v1.Tx.MsgSetVerifierBootstrapResponse buildPartial() {
+        qorechain.bridge.v1.Tx.MsgSetVerifierBootstrapResponse result = new qorechain.bridge.v1.Tx.MsgSetVerifierBootstrapResponse(this);
+        onBuilt();
+        return result;
+      }
+
+      @java.lang.Override
+      public Builder mergeFrom(com.google.protobuf.Message other) {
+        if (other instanceof qorechain.bridge.v1.Tx.MsgSetVerifierBootstrapResponse) {
+          return mergeFrom((qorechain.bridge.v1.Tx.MsgSetVerifierBootstrapResponse)other);
+        } else {
+          super.mergeFrom(other);
+          return this;
+        }
+      }
+
+      public Builder mergeFrom(qorechain.bridge.v1.Tx.MsgSetVerifierBootstrapResponse other) {
+        if (other == qorechain.bridge.v1.Tx.MsgSetVerifierBootstrapResponse.getDefaultInstance()) return this;
+        this.mergeUnknownFields(other.getUnknownFields());
+        onChanged();
+        return this;
+      }
+
+      @java.lang.Override
+      public final boolean isInitialized() {
+        return true;
+      }
+
+      @java.lang.Override
+      public Builder mergeFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        if (extensionRegistry == null) {
+          throw new java.lang.NullPointerException();
+        }
+        try {
+          boolean done = false;
+          while (!done) {
+            int tag = input.readTag();
+            switch (tag) {
+              case 0:
+                done = true;
+                break;
+              default: {
+                if (!super.parseUnknownField(input, extensionRegistry, tag)) {
+                  done = true; // was an endgroup tag
+                }
+                break;
+              } // default:
+            } // switch (tag)
+          } // while (!done)
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          throw e.unwrapIOException();
+        } finally {
+          onChanged();
+        } // finally
+        return this;
+      }
+
+      // @@protoc_insertion_point(builder_scope:qorechain.bridge.v1.MsgSetVerifierBootstrapResponse)
+    }
+
+    // @@protoc_insertion_point(class_scope:qorechain.bridge.v1.MsgSetVerifierBootstrapResponse)
+    private static final qorechain.bridge.v1.Tx.MsgSetVerifierBootstrapResponse DEFAULT_INSTANCE;
+    static {
+      DEFAULT_INSTANCE = new qorechain.bridge.v1.Tx.MsgSetVerifierBootstrapResponse();
+    }
+
+    public static qorechain.bridge.v1.Tx.MsgSetVerifierBootstrapResponse getDefaultInstance() {
+      return DEFAULT_INSTANCE;
+    }
+
+    private static final com.google.protobuf.Parser<MsgSetVerifierBootstrapResponse>
+        PARSER = new com.google.protobuf.AbstractParser<MsgSetVerifierBootstrapResponse>() {
+      @java.lang.Override
+      public MsgSetVerifierBootstrapResponse parsePartialFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        Builder builder = newBuilder();
+        try {
+          builder.mergeFrom(input, extensionRegistry);
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          throw e.setUnfinishedMessage(builder.buildPartial());
+        } catch (com.google.protobuf.UninitializedMessageException e) {
+          throw e.asInvalidProtocolBufferException().setUnfinishedMessage(builder.buildPartial());
+        } catch (java.io.IOException e) {
+          throw new com.google.protobuf.InvalidProtocolBufferException(e)
+              .setUnfinishedMessage(builder.buildPartial());
+        }
+        return builder.buildPartial();
+      }
+    };
+
+    public static com.google.protobuf.Parser<MsgSetVerifierBootstrapResponse> parser() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Parser<MsgSetVerifierBootstrapResponse> getParserForType() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public qorechain.bridge.v1.Tx.MsgSetVerifierBootstrapResponse getDefaultInstanceForType() {
+      return DEFAULT_INSTANCE;
+    }
+
+  }
+
+  public interface WormholeGuardianSetOrBuilder extends
+      // @@protoc_insertion_point(interface_extends:qorechain.bridge.v1.WormholeGuardianSet)
+      com.google.protobuf.MessageOrBuilder {
+
+    /**
+     * <pre>
+     * 20-byte guardian eth addresses
+     * </pre>
+     *
+     * <code>repeated bytes addresses = 1 [json_name = "addresses"];</code>
+     * @return A list containing the addresses.
+     */
+    java.util.List<com.google.protobuf.ByteString> getAddressesList();
+    /**
+     * <pre>
+     * 20-byte guardian eth addresses
+     * </pre>
+     *
+     * <code>repeated bytes addresses = 1 [json_name = "addresses"];</code>
+     * @return The count of addresses.
+     */
+    int getAddressesCount();
+    /**
+     * <pre>
+     * 20-byte guardian eth addresses
+     * </pre>
+     *
+     * <code>repeated bytes addresses = 1 [json_name = "addresses"];</code>
+     * @param index The index of the element to return.
+     * @return The addresses at the given index.
+     */
+    com.google.protobuf.ByteString getAddresses(int index);
+
+    /**
+     * <code>uint32 quorum = 2 [json_name = "quorum"];</code>
+     * @return The quorum.
+     */
+    int getQuorum();
+  }
+  /**
+   * Protobuf type {@code qorechain.bridge.v1.WormholeGuardianSet}
+   */
+  public static final class WormholeGuardianSet extends
+      com.google.protobuf.GeneratedMessage implements
+      // @@protoc_insertion_point(message_implements:qorechain.bridge.v1.WormholeGuardianSet)
+      WormholeGuardianSetOrBuilder {
+  private static final long serialVersionUID = 0L;
+    static {
+      com.google.protobuf.RuntimeVersion.validateProtobufGencodeVersion(
+        com.google.protobuf.RuntimeVersion.RuntimeDomain.PUBLIC,
+        /* major= */ 4,
+        /* minor= */ 35,
+        /* patch= */ 1,
+        /* suffix= */ "",
+        "WormholeGuardianSet");
+    }
+    // Use WormholeGuardianSet.newBuilder() to construct.
+    private WormholeGuardianSet(com.google.protobuf.GeneratedMessage.Builder<?> builder) {
+      super(builder);
+    }
+    private WormholeGuardianSet() {
+      addresses_ = emptyList(com.google.protobuf.ByteString.class);
+    }
+
+    public static final com.google.protobuf.Descriptors.Descriptor
+        getDescriptor() {
+      return qorechain.bridge.v1.Tx.internal_static_qorechain_bridge_v1_WormholeGuardianSet_descriptor;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Descriptors.Descriptor getDescriptorForType() {
+      return qorechain.bridge.v1.Tx.internal_static_qorechain_bridge_v1_WormholeGuardianSet_descriptor;
+    }
+
+    @java.lang.Override
+    protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+        internalGetFieldAccessorTable() {
+      return qorechain.bridge.v1.Tx.internal_static_qorechain_bridge_v1_WormholeGuardianSet_fieldAccessorTable
+          .ensureFieldAccessorsInitialized(
+              qorechain.bridge.v1.Tx.WormholeGuardianSet.class, qorechain.bridge.v1.Tx.WormholeGuardianSet.Builder.class);
+    }
+
+    public static final int ADDRESSES_FIELD_NUMBER = 1;
+    @SuppressWarnings("serial")
+    private com.google.protobuf.Internal.ProtobufList<com.google.protobuf.ByteString> addresses_ =
+        emptyList(com.google.protobuf.ByteString.class);
+    /**
+     * <pre>
+     * 20-byte guardian eth addresses
+     * </pre>
+     *
+     * <code>repeated bytes addresses = 1 [json_name = "addresses"];</code>
+     * @return A list containing the addresses.
+     */
+    @java.lang.Override
+    public java.util.List<com.google.protobuf.ByteString>
+        getAddressesList() {
+      return addresses_;
+    }
+    /**
+     * <pre>
+     * 20-byte guardian eth addresses
+     * </pre>
+     *
+     * <code>repeated bytes addresses = 1 [json_name = "addresses"];</code>
+     * @return The count of addresses.
+     */
+    public int getAddressesCount() {
+      return addresses_.size();
+    }
+    /**
+     * <pre>
+     * 20-byte guardian eth addresses
+     * </pre>
+     *
+     * <code>repeated bytes addresses = 1 [json_name = "addresses"];</code>
+     * @param index The index of the element to return.
+     * @return The addresses at the given index.
+     */
+    public com.google.protobuf.ByteString getAddresses(int index) {
+      return addresses_.get(index);
+    }
+
+    public static final int QUORUM_FIELD_NUMBER = 2;
+    private int quorum_ = 0;
+    /**
+     * <code>uint32 quorum = 2 [json_name = "quorum"];</code>
+     * @return The quorum.
+     */
+    @java.lang.Override
+    public int getQuorum() {
+      return quorum_;
+    }
+
+    private byte memoizedIsInitialized = -1;
+    @java.lang.Override
+    public final boolean isInitialized() {
+      byte isInitialized = memoizedIsInitialized;
+      if (isInitialized == 1) return true;
+      if (isInitialized == 0) return false;
+
+      memoizedIsInitialized = 1;
+      return true;
+    }
+
+    @java.lang.Override
+    public void writeTo(com.google.protobuf.CodedOutputStream output)
+                        throws java.io.IOException {
+      for (int i = 0; i < addresses_.size(); i++) {
+        output.writeBytes(1, addresses_.get(i));
+      }
+      if (quorum_ != 0) {
+        output.writeUInt32(2, quorum_);
+      }
+      getUnknownFields().writeTo(output);
+    }
+    private int computeSerializedSize_0() {
+      int size = 0;
+      {
+        int dataSize = 0;
+        for (int i = 0; i < addresses_.size(); i++) {
+          dataSize += com.google.protobuf.CodedOutputStream
+            .computeBytesSizeNoTag(addresses_.get(i));
+        }
+        size += dataSize;
+        size += 1 * getAddressesList().size();
+      }
+      if (quorum_ != 0) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeUInt32Size(2, quorum_);
+      }
+      return size;
+    }
+    @java.lang.Override
+    public int getSerializedSize() {
+      int size = memoizedSize;
+      if (size != -1) return size;
+
+      size = 0;
+      size += computeSerializedSize_0();
+      size += getUnknownFields().getSerializedSize();
+      memoizedSize = size;
+      return size;
+    }
+
+    @java.lang.Override
+    public boolean equals(final java.lang.Object obj) {
+      if (obj == this) {
+       return true;
+      }
+      if (!(obj instanceof qorechain.bridge.v1.Tx.WormholeGuardianSet)) {
+        return super.equals(obj);
+      }
+      qorechain.bridge.v1.Tx.WormholeGuardianSet other = (qorechain.bridge.v1.Tx.WormholeGuardianSet) obj;
+
+      if (!getAddressesList()
+          .equals(other.getAddressesList())) return false;
+      if (getQuorum()
+          != other.getQuorum()) return false;
+      if (!getUnknownFields().equals(other.getUnknownFields())) return false;
+      return true;
+    }
+
+    @java.lang.Override
+    public int hashCode() {
+      if (memoizedHashCode != 0) {
+        return memoizedHashCode;
+      }
+      int hash = 41;
+      hash = (19 * hash) + getDescriptor().hashCode();
+      if (getAddressesCount() > 0) {
+        hash = (37 * hash) + ADDRESSES_FIELD_NUMBER;
+        hash = (53 * hash) + getAddressesList().hashCode();
+      }
+      hash = (37 * hash) + QUORUM_FIELD_NUMBER;
+      hash = (53 * hash) + getQuorum();
+      hash = (29 * hash) + getUnknownFields().hashCode();
+      memoizedHashCode = hash;
+      return hash;
+    }
+
+    public static qorechain.bridge.v1.Tx.WormholeGuardianSet parseFrom(
+        java.nio.ByteBuffer data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static qorechain.bridge.v1.Tx.WormholeGuardianSet parseFrom(
+        java.nio.ByteBuffer data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static qorechain.bridge.v1.Tx.WormholeGuardianSet parseFrom(
+        com.google.protobuf.ByteString data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static qorechain.bridge.v1.Tx.WormholeGuardianSet parseFrom(
+        com.google.protobuf.ByteString data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static qorechain.bridge.v1.Tx.WormholeGuardianSet parseFrom(byte[] data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static qorechain.bridge.v1.Tx.WormholeGuardianSet parseFrom(
+        byte[] data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static qorechain.bridge.v1.Tx.WormholeGuardianSet parseFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input);
+    }
+    public static qorechain.bridge.v1.Tx.WormholeGuardianSet parseFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    public static qorechain.bridge.v1.Tx.WormholeGuardianSet parseDelimitedFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseDelimitedWithIOException(PARSER, input);
+    }
+
+    public static qorechain.bridge.v1.Tx.WormholeGuardianSet parseDelimitedFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static qorechain.bridge.v1.Tx.WormholeGuardianSet parseFrom(
+        com.google.protobuf.CodedInputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input);
+    }
+    public static qorechain.bridge.v1.Tx.WormholeGuardianSet parseFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    @java.lang.Override
+    public Builder newBuilderForType() { return newBuilder(); }
+    public static Builder newBuilder() {
+      return DEFAULT_INSTANCE.toBuilder();
+    }
+    public static Builder newBuilder(qorechain.bridge.v1.Tx.WormholeGuardianSet prototype) {
+      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+    }
+    @java.lang.Override
+    public Builder toBuilder() {
+      return this == DEFAULT_INSTANCE
+          ? new Builder() : new Builder().mergeFrom(this);
+    }
+
+    @java.lang.Override
+    protected Builder newBuilderForType(
+        com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+      Builder builder = new Builder(parent);
+      return builder;
+    }
+    /**
+     * Protobuf type {@code qorechain.bridge.v1.WormholeGuardianSet}
+     */
+    public static final class Builder extends
+        com.google.protobuf.GeneratedMessage.Builder<Builder> implements
+        // @@protoc_insertion_point(builder_implements:qorechain.bridge.v1.WormholeGuardianSet)
+        qorechain.bridge.v1.Tx.WormholeGuardianSetOrBuilder {
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return qorechain.bridge.v1.Tx.internal_static_qorechain_bridge_v1_WormholeGuardianSet_descriptor;
+      }
+
+      @java.lang.Override
+      protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return qorechain.bridge.v1.Tx.internal_static_qorechain_bridge_v1_WormholeGuardianSet_fieldAccessorTable
+            .ensureFieldAccessorsInitialized(
+                qorechain.bridge.v1.Tx.WormholeGuardianSet.class, qorechain.bridge.v1.Tx.WormholeGuardianSet.Builder.class);
+      }
+
+      // Construct using qorechain.bridge.v1.Tx.WormholeGuardianSet.newBuilder()
+      private Builder() {
+
+      }
+
+      private Builder(
+          com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+        super(parent);
+
+      }
+      @java.lang.Override
+      public Builder clear() {
+        super.clear();
+        bitField0_ = 0;
+        addresses_ = emptyList(com.google.protobuf.ByteString.class);
+        quorum_ = 0;
+        return this;
+      }
+
+      @java.lang.Override
+      public com.google.protobuf.Descriptors.Descriptor
+          getDescriptorForType() {
+        return qorechain.bridge.v1.Tx.internal_static_qorechain_bridge_v1_WormholeGuardianSet_descriptor;
+      }
+
+      @java.lang.Override
+      public qorechain.bridge.v1.Tx.WormholeGuardianSet getDefaultInstanceForType() {
+        return qorechain.bridge.v1.Tx.WormholeGuardianSet.getDefaultInstance();
+      }
+
+      @java.lang.Override
+      public qorechain.bridge.v1.Tx.WormholeGuardianSet build() {
+        qorechain.bridge.v1.Tx.WormholeGuardianSet result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(result);
+        }
+        return result;
+      }
+
+      @java.lang.Override
+      public qorechain.bridge.v1.Tx.WormholeGuardianSet buildPartial() {
+        qorechain.bridge.v1.Tx.WormholeGuardianSet result = new qorechain.bridge.v1.Tx.WormholeGuardianSet(this);
+        if (bitField0_ != 0) { buildPartial0(result); }
+        onBuilt();
+        return result;
+      }
+
+      private void buildPartial0(qorechain.bridge.v1.Tx.WormholeGuardianSet result) {
+        int from_bitField0_ = bitField0_;
+        if (((from_bitField0_ & 0x00000001) != 0)) {
+          addresses_.makeImmutable();
+          result.addresses_ = addresses_;
+        }
+        if (((from_bitField0_ & 0x00000002) != 0)) {
+          result.quorum_ = quorum_;
+        }
+      }
+
+      @java.lang.Override
+      public Builder mergeFrom(com.google.protobuf.Message other) {
+        if (other instanceof qorechain.bridge.v1.Tx.WormholeGuardianSet) {
+          return mergeFrom((qorechain.bridge.v1.Tx.WormholeGuardianSet)other);
+        } else {
+          super.mergeFrom(other);
+          return this;
+        }
+      }
+
+      public Builder mergeFrom(qorechain.bridge.v1.Tx.WormholeGuardianSet other) {
+        if (other == qorechain.bridge.v1.Tx.WormholeGuardianSet.getDefaultInstance()) return this;
+        if (!other.addresses_.isEmpty()) {
+          if (addresses_.isEmpty()) {
+            addresses_ = other.addresses_;
+            addresses_.makeImmutable();
+            bitField0_ |= 0x00000001;
+          } else {
+            ensureAddressesIsMutable();
+            addresses_.addAll(other.addresses_);
+          }
+          onChanged();
+        }
+        if (other.getQuorum() != 0) {
+          setQuorum(other.getQuorum());
+        }
+        this.mergeUnknownFields(other.getUnknownFields());
+        onChanged();
+        return this;
+      }
+
+      @java.lang.Override
+      public final boolean isInitialized() {
+        return true;
+      }
+
+      @java.lang.Override
+      public Builder mergeFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        if (extensionRegistry == null) {
+          throw new java.lang.NullPointerException();
+        }
+        try {
+          boolean done = false;
+          while (!done) {
+            int tag = input.readTag();
+            switch (tag) {
+              case 0:
+                done = true;
+                break;
+              case 10: {
+                com.google.protobuf.ByteString v = input.readBytes();
+                ensureAddressesIsMutable();
+                addresses_.add(v);
+                break;
+              } // case 10
+              case 16: {
+                quorum_ = input.readUInt32();
+                bitField0_ |= 0x00000002;
+                break;
+              } // case 16
+              default: {
+                if (!super.parseUnknownField(input, extensionRegistry, tag)) {
+                  done = true; // was an endgroup tag
+                }
+                break;
+              } // default:
+            } // switch (tag)
+          } // while (!done)
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          throw e.unwrapIOException();
+        } finally {
+          onChanged();
+        } // finally
+        return this;
+      }
+      private int bitField0_;
+
+      private com.google.protobuf.Internal.ProtobufList<com.google.protobuf.ByteString> addresses_ = emptyList(com.google.protobuf.ByteString.class);
+      private void ensureAddressesIsMutable() {
+        if (!addresses_.isModifiable()) {
+          addresses_ = makeMutableCopy(addresses_);
+        }
+        bitField0_ |= 0x00000001;
+      }
+      /**
+       * <pre>
+       * 20-byte guardian eth addresses
+       * </pre>
+       *
+       * <code>repeated bytes addresses = 1 [json_name = "addresses"];</code>
+       * @return A list containing the addresses.
+       */
+      public java.util.List<com.google.protobuf.ByteString>
+          getAddressesList() {
+        addresses_.makeImmutable();
+        return addresses_;
+      }
+      /**
+       * <pre>
+       * 20-byte guardian eth addresses
+       * </pre>
+       *
+       * <code>repeated bytes addresses = 1 [json_name = "addresses"];</code>
+       * @return The count of addresses.
+       */
+      public int getAddressesCount() {
+        return addresses_.size();
+      }
+      /**
+       * <pre>
+       * 20-byte guardian eth addresses
+       * </pre>
+       *
+       * <code>repeated bytes addresses = 1 [json_name = "addresses"];</code>
+       * @param index The index of the element to return.
+       * @return The addresses at the given index.
+       */
+      public com.google.protobuf.ByteString getAddresses(int index) {
+        return addresses_.get(index);
+      }
+      /**
+       * <pre>
+       * 20-byte guardian eth addresses
+       * </pre>
+       *
+       * <code>repeated bytes addresses = 1 [json_name = "addresses"];</code>
+       * @param index The index to set the value at.
+       * @param value The addresses to set.
+       * @return This builder for chaining.
+       */
+      public Builder setAddresses(
+          int index, com.google.protobuf.ByteString value) {
+        if (value == null) { throw new NullPointerException(); }
+        ensureAddressesIsMutable();
+        addresses_.set(index, value);
+        bitField0_ |= 0x00000001;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * 20-byte guardian eth addresses
+       * </pre>
+       *
+       * <code>repeated bytes addresses = 1 [json_name = "addresses"];</code>
+       * @param value The addresses to add.
+       * @return This builder for chaining.
+       */
+      public Builder addAddresses(com.google.protobuf.ByteString value) {
+        if (value == null) { throw new NullPointerException(); }
+        ensureAddressesIsMutable();
+        addresses_.add(value);
+        bitField0_ |= 0x00000001;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * 20-byte guardian eth addresses
+       * </pre>
+       *
+       * <code>repeated bytes addresses = 1 [json_name = "addresses"];</code>
+       * @param values The addresses to add.
+       * @return This builder for chaining.
+       */
+      public Builder addAllAddresses(
+          java.lang.Iterable<? extends com.google.protobuf.ByteString> values) {
+        ensureAddressesIsMutable();
+        com.google.protobuf.AbstractMessageLite.Builder.addAll(
+            values, addresses_);
+        bitField0_ |= 0x00000001;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * 20-byte guardian eth addresses
+       * </pre>
+       *
+       * <code>repeated bytes addresses = 1 [json_name = "addresses"];</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearAddresses() {
+        addresses_ = emptyList(com.google.protobuf.ByteString.class);
+        bitField0_ = (bitField0_ & ~0x00000001);
+        onChanged();
+        return this;
+      }
+
+      private int quorum_ ;
+      /**
+       * <code>uint32 quorum = 2 [json_name = "quorum"];</code>
+       * @return The quorum.
+       */
+      @java.lang.Override
+      public int getQuorum() {
+        return quorum_;
+      }
+      /**
+       * <code>uint32 quorum = 2 [json_name = "quorum"];</code>
+       * @param value The quorum to set.
+       * @return This builder for chaining.
+       */
+      public Builder setQuorum(int value) {
+
+        quorum_ = value;
+        bitField0_ |= 0x00000002;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>uint32 quorum = 2 [json_name = "quorum"];</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearQuorum() {
+        bitField0_ = (bitField0_ & ~0x00000002);
+        quorum_ = 0;
+        onChanged();
+        return this;
+      }
+
+      // @@protoc_insertion_point(builder_scope:qorechain.bridge.v1.WormholeGuardianSet)
+    }
+
+    // @@protoc_insertion_point(class_scope:qorechain.bridge.v1.WormholeGuardianSet)
+    private static final qorechain.bridge.v1.Tx.WormholeGuardianSet DEFAULT_INSTANCE;
+    static {
+      DEFAULT_INSTANCE = new qorechain.bridge.v1.Tx.WormholeGuardianSet();
+    }
+
+    public static qorechain.bridge.v1.Tx.WormholeGuardianSet getDefaultInstance() {
+      return DEFAULT_INSTANCE;
+    }
+
+    private static final com.google.protobuf.Parser<WormholeGuardianSet>
+        PARSER = new com.google.protobuf.AbstractParser<WormholeGuardianSet>() {
+      @java.lang.Override
+      public WormholeGuardianSet parsePartialFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        Builder builder = newBuilder();
+        try {
+          builder.mergeFrom(input, extensionRegistry);
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          throw e.setUnfinishedMessage(builder.buildPartial());
+        } catch (com.google.protobuf.UninitializedMessageException e) {
+          throw e.asInvalidProtocolBufferException().setUnfinishedMessage(builder.buildPartial());
+        } catch (java.io.IOException e) {
+          throw new com.google.protobuf.InvalidProtocolBufferException(e)
+              .setUnfinishedMessage(builder.buildPartial());
+        }
+        return builder.buildPartial();
+      }
+    };
+
+    public static com.google.protobuf.Parser<WormholeGuardianSet> parser() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Parser<WormholeGuardianSet> getParserForType() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public qorechain.bridge.v1.Tx.WormholeGuardianSet getDefaultInstanceForType() {
+      return DEFAULT_INSTANCE;
+    }
+
+  }
+
+  public interface ValidatorQuorumOrBuilder extends
+      // @@protoc_insertion_point(interface_extends:qorechain.bridge.v1.ValidatorQuorum)
+      com.google.protobuf.MessageOrBuilder {
+
+    /**
+     * <pre>
+     * ed25519 (32B) or BLS (48B) pubkeys
+     * </pre>
+     *
+     * <code>repeated bytes pubkeys = 1 [json_name = "pubkeys"];</code>
+     * @return A list containing the pubkeys.
+     */
+    java.util.List<com.google.protobuf.ByteString> getPubkeysList();
+    /**
+     * <pre>
+     * ed25519 (32B) or BLS (48B) pubkeys
+     * </pre>
+     *
+     * <code>repeated bytes pubkeys = 1 [json_name = "pubkeys"];</code>
+     * @return The count of pubkeys.
+     */
+    int getPubkeysCount();
+    /**
+     * <pre>
+     * ed25519 (32B) or BLS (48B) pubkeys
+     * </pre>
+     *
+     * <code>repeated bytes pubkeys = 1 [json_name = "pubkeys"];</code>
+     * @param index The index of the element to return.
+     * @return The pubkeys at the given index.
+     */
+    com.google.protobuf.ByteString getPubkeys(int index);
+
+    /**
+     * <code>uint32 threshold = 2 [json_name = "threshold"];</code>
+     * @return The threshold.
+     */
+    int getThreshold();
+  }
+  /**
+   * Protobuf type {@code qorechain.bridge.v1.ValidatorQuorum}
+   */
+  public static final class ValidatorQuorum extends
+      com.google.protobuf.GeneratedMessage implements
+      // @@protoc_insertion_point(message_implements:qorechain.bridge.v1.ValidatorQuorum)
+      ValidatorQuorumOrBuilder {
+  private static final long serialVersionUID = 0L;
+    static {
+      com.google.protobuf.RuntimeVersion.validateProtobufGencodeVersion(
+        com.google.protobuf.RuntimeVersion.RuntimeDomain.PUBLIC,
+        /* major= */ 4,
+        /* minor= */ 35,
+        /* patch= */ 1,
+        /* suffix= */ "",
+        "ValidatorQuorum");
+    }
+    // Use ValidatorQuorum.newBuilder() to construct.
+    private ValidatorQuorum(com.google.protobuf.GeneratedMessage.Builder<?> builder) {
+      super(builder);
+    }
+    private ValidatorQuorum() {
+      pubkeys_ = emptyList(com.google.protobuf.ByteString.class);
+    }
+
+    public static final com.google.protobuf.Descriptors.Descriptor
+        getDescriptor() {
+      return qorechain.bridge.v1.Tx.internal_static_qorechain_bridge_v1_ValidatorQuorum_descriptor;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Descriptors.Descriptor getDescriptorForType() {
+      return qorechain.bridge.v1.Tx.internal_static_qorechain_bridge_v1_ValidatorQuorum_descriptor;
+    }
+
+    @java.lang.Override
+    protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+        internalGetFieldAccessorTable() {
+      return qorechain.bridge.v1.Tx.internal_static_qorechain_bridge_v1_ValidatorQuorum_fieldAccessorTable
+          .ensureFieldAccessorsInitialized(
+              qorechain.bridge.v1.Tx.ValidatorQuorum.class, qorechain.bridge.v1.Tx.ValidatorQuorum.Builder.class);
+    }
+
+    public static final int PUBKEYS_FIELD_NUMBER = 1;
+    @SuppressWarnings("serial")
+    private com.google.protobuf.Internal.ProtobufList<com.google.protobuf.ByteString> pubkeys_ =
+        emptyList(com.google.protobuf.ByteString.class);
+    /**
+     * <pre>
+     * ed25519 (32B) or BLS (48B) pubkeys
+     * </pre>
+     *
+     * <code>repeated bytes pubkeys = 1 [json_name = "pubkeys"];</code>
+     * @return A list containing the pubkeys.
+     */
+    @java.lang.Override
+    public java.util.List<com.google.protobuf.ByteString>
+        getPubkeysList() {
+      return pubkeys_;
+    }
+    /**
+     * <pre>
+     * ed25519 (32B) or BLS (48B) pubkeys
+     * </pre>
+     *
+     * <code>repeated bytes pubkeys = 1 [json_name = "pubkeys"];</code>
+     * @return The count of pubkeys.
+     */
+    public int getPubkeysCount() {
+      return pubkeys_.size();
+    }
+    /**
+     * <pre>
+     * ed25519 (32B) or BLS (48B) pubkeys
+     * </pre>
+     *
+     * <code>repeated bytes pubkeys = 1 [json_name = "pubkeys"];</code>
+     * @param index The index of the element to return.
+     * @return The pubkeys at the given index.
+     */
+    public com.google.protobuf.ByteString getPubkeys(int index) {
+      return pubkeys_.get(index);
+    }
+
+    public static final int THRESHOLD_FIELD_NUMBER = 2;
+    private int threshold_ = 0;
+    /**
+     * <code>uint32 threshold = 2 [json_name = "threshold"];</code>
+     * @return The threshold.
+     */
+    @java.lang.Override
+    public int getThreshold() {
+      return threshold_;
+    }
+
+    private byte memoizedIsInitialized = -1;
+    @java.lang.Override
+    public final boolean isInitialized() {
+      byte isInitialized = memoizedIsInitialized;
+      if (isInitialized == 1) return true;
+      if (isInitialized == 0) return false;
+
+      memoizedIsInitialized = 1;
+      return true;
+    }
+
+    @java.lang.Override
+    public void writeTo(com.google.protobuf.CodedOutputStream output)
+                        throws java.io.IOException {
+      for (int i = 0; i < pubkeys_.size(); i++) {
+        output.writeBytes(1, pubkeys_.get(i));
+      }
+      if (threshold_ != 0) {
+        output.writeUInt32(2, threshold_);
+      }
+      getUnknownFields().writeTo(output);
+    }
+    private int computeSerializedSize_0() {
+      int size = 0;
+      {
+        int dataSize = 0;
+        for (int i = 0; i < pubkeys_.size(); i++) {
+          dataSize += com.google.protobuf.CodedOutputStream
+            .computeBytesSizeNoTag(pubkeys_.get(i));
+        }
+        size += dataSize;
+        size += 1 * getPubkeysList().size();
+      }
+      if (threshold_ != 0) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeUInt32Size(2, threshold_);
+      }
+      return size;
+    }
+    @java.lang.Override
+    public int getSerializedSize() {
+      int size = memoizedSize;
+      if (size != -1) return size;
+
+      size = 0;
+      size += computeSerializedSize_0();
+      size += getUnknownFields().getSerializedSize();
+      memoizedSize = size;
+      return size;
+    }
+
+    @java.lang.Override
+    public boolean equals(final java.lang.Object obj) {
+      if (obj == this) {
+       return true;
+      }
+      if (!(obj instanceof qorechain.bridge.v1.Tx.ValidatorQuorum)) {
+        return super.equals(obj);
+      }
+      qorechain.bridge.v1.Tx.ValidatorQuorum other = (qorechain.bridge.v1.Tx.ValidatorQuorum) obj;
+
+      if (!getPubkeysList()
+          .equals(other.getPubkeysList())) return false;
+      if (getThreshold()
+          != other.getThreshold()) return false;
+      if (!getUnknownFields().equals(other.getUnknownFields())) return false;
+      return true;
+    }
+
+    @java.lang.Override
+    public int hashCode() {
+      if (memoizedHashCode != 0) {
+        return memoizedHashCode;
+      }
+      int hash = 41;
+      hash = (19 * hash) + getDescriptor().hashCode();
+      if (getPubkeysCount() > 0) {
+        hash = (37 * hash) + PUBKEYS_FIELD_NUMBER;
+        hash = (53 * hash) + getPubkeysList().hashCode();
+      }
+      hash = (37 * hash) + THRESHOLD_FIELD_NUMBER;
+      hash = (53 * hash) + getThreshold();
+      hash = (29 * hash) + getUnknownFields().hashCode();
+      memoizedHashCode = hash;
+      return hash;
+    }
+
+    public static qorechain.bridge.v1.Tx.ValidatorQuorum parseFrom(
+        java.nio.ByteBuffer data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static qorechain.bridge.v1.Tx.ValidatorQuorum parseFrom(
+        java.nio.ByteBuffer data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static qorechain.bridge.v1.Tx.ValidatorQuorum parseFrom(
+        com.google.protobuf.ByteString data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static qorechain.bridge.v1.Tx.ValidatorQuorum parseFrom(
+        com.google.protobuf.ByteString data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static qorechain.bridge.v1.Tx.ValidatorQuorum parseFrom(byte[] data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static qorechain.bridge.v1.Tx.ValidatorQuorum parseFrom(
+        byte[] data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static qorechain.bridge.v1.Tx.ValidatorQuorum parseFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input);
+    }
+    public static qorechain.bridge.v1.Tx.ValidatorQuorum parseFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    public static qorechain.bridge.v1.Tx.ValidatorQuorum parseDelimitedFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseDelimitedWithIOException(PARSER, input);
+    }
+
+    public static qorechain.bridge.v1.Tx.ValidatorQuorum parseDelimitedFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static qorechain.bridge.v1.Tx.ValidatorQuorum parseFrom(
+        com.google.protobuf.CodedInputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input);
+    }
+    public static qorechain.bridge.v1.Tx.ValidatorQuorum parseFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    @java.lang.Override
+    public Builder newBuilderForType() { return newBuilder(); }
+    public static Builder newBuilder() {
+      return DEFAULT_INSTANCE.toBuilder();
+    }
+    public static Builder newBuilder(qorechain.bridge.v1.Tx.ValidatorQuorum prototype) {
+      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+    }
+    @java.lang.Override
+    public Builder toBuilder() {
+      return this == DEFAULT_INSTANCE
+          ? new Builder() : new Builder().mergeFrom(this);
+    }
+
+    @java.lang.Override
+    protected Builder newBuilderForType(
+        com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+      Builder builder = new Builder(parent);
+      return builder;
+    }
+    /**
+     * Protobuf type {@code qorechain.bridge.v1.ValidatorQuorum}
+     */
+    public static final class Builder extends
+        com.google.protobuf.GeneratedMessage.Builder<Builder> implements
+        // @@protoc_insertion_point(builder_implements:qorechain.bridge.v1.ValidatorQuorum)
+        qorechain.bridge.v1.Tx.ValidatorQuorumOrBuilder {
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return qorechain.bridge.v1.Tx.internal_static_qorechain_bridge_v1_ValidatorQuorum_descriptor;
+      }
+
+      @java.lang.Override
+      protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return qorechain.bridge.v1.Tx.internal_static_qorechain_bridge_v1_ValidatorQuorum_fieldAccessorTable
+            .ensureFieldAccessorsInitialized(
+                qorechain.bridge.v1.Tx.ValidatorQuorum.class, qorechain.bridge.v1.Tx.ValidatorQuorum.Builder.class);
+      }
+
+      // Construct using qorechain.bridge.v1.Tx.ValidatorQuorum.newBuilder()
+      private Builder() {
+
+      }
+
+      private Builder(
+          com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+        super(parent);
+
+      }
+      @java.lang.Override
+      public Builder clear() {
+        super.clear();
+        bitField0_ = 0;
+        pubkeys_ = emptyList(com.google.protobuf.ByteString.class);
+        threshold_ = 0;
+        return this;
+      }
+
+      @java.lang.Override
+      public com.google.protobuf.Descriptors.Descriptor
+          getDescriptorForType() {
+        return qorechain.bridge.v1.Tx.internal_static_qorechain_bridge_v1_ValidatorQuorum_descriptor;
+      }
+
+      @java.lang.Override
+      public qorechain.bridge.v1.Tx.ValidatorQuorum getDefaultInstanceForType() {
+        return qorechain.bridge.v1.Tx.ValidatorQuorum.getDefaultInstance();
+      }
+
+      @java.lang.Override
+      public qorechain.bridge.v1.Tx.ValidatorQuorum build() {
+        qorechain.bridge.v1.Tx.ValidatorQuorum result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(result);
+        }
+        return result;
+      }
+
+      @java.lang.Override
+      public qorechain.bridge.v1.Tx.ValidatorQuorum buildPartial() {
+        qorechain.bridge.v1.Tx.ValidatorQuorum result = new qorechain.bridge.v1.Tx.ValidatorQuorum(this);
+        if (bitField0_ != 0) { buildPartial0(result); }
+        onBuilt();
+        return result;
+      }
+
+      private void buildPartial0(qorechain.bridge.v1.Tx.ValidatorQuorum result) {
+        int from_bitField0_ = bitField0_;
+        if (((from_bitField0_ & 0x00000001) != 0)) {
+          pubkeys_.makeImmutable();
+          result.pubkeys_ = pubkeys_;
+        }
+        if (((from_bitField0_ & 0x00000002) != 0)) {
+          result.threshold_ = threshold_;
+        }
+      }
+
+      @java.lang.Override
+      public Builder mergeFrom(com.google.protobuf.Message other) {
+        if (other instanceof qorechain.bridge.v1.Tx.ValidatorQuorum) {
+          return mergeFrom((qorechain.bridge.v1.Tx.ValidatorQuorum)other);
+        } else {
+          super.mergeFrom(other);
+          return this;
+        }
+      }
+
+      public Builder mergeFrom(qorechain.bridge.v1.Tx.ValidatorQuorum other) {
+        if (other == qorechain.bridge.v1.Tx.ValidatorQuorum.getDefaultInstance()) return this;
+        if (!other.pubkeys_.isEmpty()) {
+          if (pubkeys_.isEmpty()) {
+            pubkeys_ = other.pubkeys_;
+            pubkeys_.makeImmutable();
+            bitField0_ |= 0x00000001;
+          } else {
+            ensurePubkeysIsMutable();
+            pubkeys_.addAll(other.pubkeys_);
+          }
+          onChanged();
+        }
+        if (other.getThreshold() != 0) {
+          setThreshold(other.getThreshold());
+        }
+        this.mergeUnknownFields(other.getUnknownFields());
+        onChanged();
+        return this;
+      }
+
+      @java.lang.Override
+      public final boolean isInitialized() {
+        return true;
+      }
+
+      @java.lang.Override
+      public Builder mergeFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        if (extensionRegistry == null) {
+          throw new java.lang.NullPointerException();
+        }
+        try {
+          boolean done = false;
+          while (!done) {
+            int tag = input.readTag();
+            switch (tag) {
+              case 0:
+                done = true;
+                break;
+              case 10: {
+                com.google.protobuf.ByteString v = input.readBytes();
+                ensurePubkeysIsMutable();
+                pubkeys_.add(v);
+                break;
+              } // case 10
+              case 16: {
+                threshold_ = input.readUInt32();
+                bitField0_ |= 0x00000002;
+                break;
+              } // case 16
+              default: {
+                if (!super.parseUnknownField(input, extensionRegistry, tag)) {
+                  done = true; // was an endgroup tag
+                }
+                break;
+              } // default:
+            } // switch (tag)
+          } // while (!done)
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          throw e.unwrapIOException();
+        } finally {
+          onChanged();
+        } // finally
+        return this;
+      }
+      private int bitField0_;
+
+      private com.google.protobuf.Internal.ProtobufList<com.google.protobuf.ByteString> pubkeys_ = emptyList(com.google.protobuf.ByteString.class);
+      private void ensurePubkeysIsMutable() {
+        if (!pubkeys_.isModifiable()) {
+          pubkeys_ = makeMutableCopy(pubkeys_);
+        }
+        bitField0_ |= 0x00000001;
+      }
+      /**
+       * <pre>
+       * ed25519 (32B) or BLS (48B) pubkeys
+       * </pre>
+       *
+       * <code>repeated bytes pubkeys = 1 [json_name = "pubkeys"];</code>
+       * @return A list containing the pubkeys.
+       */
+      public java.util.List<com.google.protobuf.ByteString>
+          getPubkeysList() {
+        pubkeys_.makeImmutable();
+        return pubkeys_;
+      }
+      /**
+       * <pre>
+       * ed25519 (32B) or BLS (48B) pubkeys
+       * </pre>
+       *
+       * <code>repeated bytes pubkeys = 1 [json_name = "pubkeys"];</code>
+       * @return The count of pubkeys.
+       */
+      public int getPubkeysCount() {
+        return pubkeys_.size();
+      }
+      /**
+       * <pre>
+       * ed25519 (32B) or BLS (48B) pubkeys
+       * </pre>
+       *
+       * <code>repeated bytes pubkeys = 1 [json_name = "pubkeys"];</code>
+       * @param index The index of the element to return.
+       * @return The pubkeys at the given index.
+       */
+      public com.google.protobuf.ByteString getPubkeys(int index) {
+        return pubkeys_.get(index);
+      }
+      /**
+       * <pre>
+       * ed25519 (32B) or BLS (48B) pubkeys
+       * </pre>
+       *
+       * <code>repeated bytes pubkeys = 1 [json_name = "pubkeys"];</code>
+       * @param index The index to set the value at.
+       * @param value The pubkeys to set.
+       * @return This builder for chaining.
+       */
+      public Builder setPubkeys(
+          int index, com.google.protobuf.ByteString value) {
+        if (value == null) { throw new NullPointerException(); }
+        ensurePubkeysIsMutable();
+        pubkeys_.set(index, value);
+        bitField0_ |= 0x00000001;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * ed25519 (32B) or BLS (48B) pubkeys
+       * </pre>
+       *
+       * <code>repeated bytes pubkeys = 1 [json_name = "pubkeys"];</code>
+       * @param value The pubkeys to add.
+       * @return This builder for chaining.
+       */
+      public Builder addPubkeys(com.google.protobuf.ByteString value) {
+        if (value == null) { throw new NullPointerException(); }
+        ensurePubkeysIsMutable();
+        pubkeys_.add(value);
+        bitField0_ |= 0x00000001;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * ed25519 (32B) or BLS (48B) pubkeys
+       * </pre>
+       *
+       * <code>repeated bytes pubkeys = 1 [json_name = "pubkeys"];</code>
+       * @param values The pubkeys to add.
+       * @return This builder for chaining.
+       */
+      public Builder addAllPubkeys(
+          java.lang.Iterable<? extends com.google.protobuf.ByteString> values) {
+        ensurePubkeysIsMutable();
+        com.google.protobuf.AbstractMessageLite.Builder.addAll(
+            values, pubkeys_);
+        bitField0_ |= 0x00000001;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * ed25519 (32B) or BLS (48B) pubkeys
+       * </pre>
+       *
+       * <code>repeated bytes pubkeys = 1 [json_name = "pubkeys"];</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearPubkeys() {
+        pubkeys_ = emptyList(com.google.protobuf.ByteString.class);
+        bitField0_ = (bitField0_ & ~0x00000001);
+        onChanged();
+        return this;
+      }
+
+      private int threshold_ ;
+      /**
+       * <code>uint32 threshold = 2 [json_name = "threshold"];</code>
+       * @return The threshold.
+       */
+      @java.lang.Override
+      public int getThreshold() {
+        return threshold_;
+      }
+      /**
+       * <code>uint32 threshold = 2 [json_name = "threshold"];</code>
+       * @param value The threshold to set.
+       * @return This builder for chaining.
+       */
+      public Builder setThreshold(int value) {
+
+        threshold_ = value;
+        bitField0_ |= 0x00000002;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>uint32 threshold = 2 [json_name = "threshold"];</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearThreshold() {
+        bitField0_ = (bitField0_ & ~0x00000002);
+        threshold_ = 0;
+        onChanged();
+        return this;
+      }
+
+      // @@protoc_insertion_point(builder_scope:qorechain.bridge.v1.ValidatorQuorum)
+    }
+
+    // @@protoc_insertion_point(class_scope:qorechain.bridge.v1.ValidatorQuorum)
+    private static final qorechain.bridge.v1.Tx.ValidatorQuorum DEFAULT_INSTANCE;
+    static {
+      DEFAULT_INSTANCE = new qorechain.bridge.v1.Tx.ValidatorQuorum();
+    }
+
+    public static qorechain.bridge.v1.Tx.ValidatorQuorum getDefaultInstance() {
+      return DEFAULT_INSTANCE;
+    }
+
+    private static final com.google.protobuf.Parser<ValidatorQuorum>
+        PARSER = new com.google.protobuf.AbstractParser<ValidatorQuorum>() {
+      @java.lang.Override
+      public ValidatorQuorum parsePartialFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        Builder builder = newBuilder();
+        try {
+          builder.mergeFrom(input, extensionRegistry);
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          throw e.setUnfinishedMessage(builder.buildPartial());
+        } catch (com.google.protobuf.UninitializedMessageException e) {
+          throw e.asInvalidProtocolBufferException().setUnfinishedMessage(builder.buildPartial());
+        } catch (java.io.IOException e) {
+          throw new com.google.protobuf.InvalidProtocolBufferException(e)
+              .setUnfinishedMessage(builder.buildPartial());
+        }
+        return builder.buildPartial();
+      }
+    };
+
+    public static com.google.protobuf.Parser<ValidatorQuorum> parser() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Parser<ValidatorQuorum> getParserForType() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public qorechain.bridge.v1.Tx.ValidatorQuorum getDefaultInstanceForType() {
+      return DEFAULT_INSTANCE;
+    }
+
+  }
+
+  public interface BitcoinCheckpointOrBuilder extends
+      // @@protoc_insertion_point(interface_extends:qorechain.bridge.v1.BitcoinCheckpoint)
+      com.google.protobuf.MessageOrBuilder {
+
+    /**
+     * <code>bytes block_hash = 1 [json_name = "blockHash"];</code>
+     * @return The blockHash.
+     */
+    com.google.protobuf.ByteString getBlockHash();
+
+    /**
+     * <code>uint32 min_confs = 2 [json_name = "minConfs"];</code>
+     * @return The minConfs.
+     */
+    int getMinConfs();
+  }
+  /**
+   * Protobuf type {@code qorechain.bridge.v1.BitcoinCheckpoint}
+   */
+  public static final class BitcoinCheckpoint extends
+      com.google.protobuf.GeneratedMessage implements
+      // @@protoc_insertion_point(message_implements:qorechain.bridge.v1.BitcoinCheckpoint)
+      BitcoinCheckpointOrBuilder {
+  private static final long serialVersionUID = 0L;
+    static {
+      com.google.protobuf.RuntimeVersion.validateProtobufGencodeVersion(
+        com.google.protobuf.RuntimeVersion.RuntimeDomain.PUBLIC,
+        /* major= */ 4,
+        /* minor= */ 35,
+        /* patch= */ 1,
+        /* suffix= */ "",
+        "BitcoinCheckpoint");
+    }
+    // Use BitcoinCheckpoint.newBuilder() to construct.
+    private BitcoinCheckpoint(com.google.protobuf.GeneratedMessage.Builder<?> builder) {
+      super(builder);
+    }
+    private BitcoinCheckpoint() {
+      blockHash_ = com.google.protobuf.ByteString.EMPTY;
+    }
+
+    public static final com.google.protobuf.Descriptors.Descriptor
+        getDescriptor() {
+      return qorechain.bridge.v1.Tx.internal_static_qorechain_bridge_v1_BitcoinCheckpoint_descriptor;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Descriptors.Descriptor getDescriptorForType() {
+      return qorechain.bridge.v1.Tx.internal_static_qorechain_bridge_v1_BitcoinCheckpoint_descriptor;
+    }
+
+    @java.lang.Override
+    protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+        internalGetFieldAccessorTable() {
+      return qorechain.bridge.v1.Tx.internal_static_qorechain_bridge_v1_BitcoinCheckpoint_fieldAccessorTable
+          .ensureFieldAccessorsInitialized(
+              qorechain.bridge.v1.Tx.BitcoinCheckpoint.class, qorechain.bridge.v1.Tx.BitcoinCheckpoint.Builder.class);
+    }
+
+    public static final int BLOCK_HASH_FIELD_NUMBER = 1;
+    private com.google.protobuf.ByteString blockHash_ = com.google.protobuf.ByteString.EMPTY;
+    /**
+     * <code>bytes block_hash = 1 [json_name = "blockHash"];</code>
+     * @return The blockHash.
+     */
+    @java.lang.Override
+    public com.google.protobuf.ByteString getBlockHash() {
+      return blockHash_;
+    }
+
+    public static final int MIN_CONFS_FIELD_NUMBER = 2;
+    private int minConfs_ = 0;
+    /**
+     * <code>uint32 min_confs = 2 [json_name = "minConfs"];</code>
+     * @return The minConfs.
+     */
+    @java.lang.Override
+    public int getMinConfs() {
+      return minConfs_;
+    }
+
+    private byte memoizedIsInitialized = -1;
+    @java.lang.Override
+    public final boolean isInitialized() {
+      byte isInitialized = memoizedIsInitialized;
+      if (isInitialized == 1) return true;
+      if (isInitialized == 0) return false;
+
+      memoizedIsInitialized = 1;
+      return true;
+    }
+
+    @java.lang.Override
+    public void writeTo(com.google.protobuf.CodedOutputStream output)
+                        throws java.io.IOException {
+      if (!blockHash_.isEmpty()) {
+        output.writeBytes(1, blockHash_);
+      }
+      if (minConfs_ != 0) {
+        output.writeUInt32(2, minConfs_);
+      }
+      getUnknownFields().writeTo(output);
+    }
+    private int computeSerializedSize_0() {
+      int size = 0;
+      if (!blockHash_.isEmpty()) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeBytesSize(1, blockHash_);
+      }
+      if (minConfs_ != 0) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeUInt32Size(2, minConfs_);
+      }
+      return size;
+    }
+    @java.lang.Override
+    public int getSerializedSize() {
+      int size = memoizedSize;
+      if (size != -1) return size;
+
+      size = 0;
+      size += computeSerializedSize_0();
+      size += getUnknownFields().getSerializedSize();
+      memoizedSize = size;
+      return size;
+    }
+
+    @java.lang.Override
+    public boolean equals(final java.lang.Object obj) {
+      if (obj == this) {
+       return true;
+      }
+      if (!(obj instanceof qorechain.bridge.v1.Tx.BitcoinCheckpoint)) {
+        return super.equals(obj);
+      }
+      qorechain.bridge.v1.Tx.BitcoinCheckpoint other = (qorechain.bridge.v1.Tx.BitcoinCheckpoint) obj;
+
+      if (!getBlockHash()
+          .equals(other.getBlockHash())) return false;
+      if (getMinConfs()
+          != other.getMinConfs()) return false;
+      if (!getUnknownFields().equals(other.getUnknownFields())) return false;
+      return true;
+    }
+
+    @java.lang.Override
+    public int hashCode() {
+      if (memoizedHashCode != 0) {
+        return memoizedHashCode;
+      }
+      int hash = 41;
+      hash = (19 * hash) + getDescriptor().hashCode();
+      hash = (37 * hash) + BLOCK_HASH_FIELD_NUMBER;
+      hash = (53 * hash) + getBlockHash().hashCode();
+      hash = (37 * hash) + MIN_CONFS_FIELD_NUMBER;
+      hash = (53 * hash) + getMinConfs();
+      hash = (29 * hash) + getUnknownFields().hashCode();
+      memoizedHashCode = hash;
+      return hash;
+    }
+
+    public static qorechain.bridge.v1.Tx.BitcoinCheckpoint parseFrom(
+        java.nio.ByteBuffer data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static qorechain.bridge.v1.Tx.BitcoinCheckpoint parseFrom(
+        java.nio.ByteBuffer data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static qorechain.bridge.v1.Tx.BitcoinCheckpoint parseFrom(
+        com.google.protobuf.ByteString data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static qorechain.bridge.v1.Tx.BitcoinCheckpoint parseFrom(
+        com.google.protobuf.ByteString data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static qorechain.bridge.v1.Tx.BitcoinCheckpoint parseFrom(byte[] data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static qorechain.bridge.v1.Tx.BitcoinCheckpoint parseFrom(
+        byte[] data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static qorechain.bridge.v1.Tx.BitcoinCheckpoint parseFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input);
+    }
+    public static qorechain.bridge.v1.Tx.BitcoinCheckpoint parseFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    public static qorechain.bridge.v1.Tx.BitcoinCheckpoint parseDelimitedFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseDelimitedWithIOException(PARSER, input);
+    }
+
+    public static qorechain.bridge.v1.Tx.BitcoinCheckpoint parseDelimitedFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static qorechain.bridge.v1.Tx.BitcoinCheckpoint parseFrom(
+        com.google.protobuf.CodedInputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input);
+    }
+    public static qorechain.bridge.v1.Tx.BitcoinCheckpoint parseFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    @java.lang.Override
+    public Builder newBuilderForType() { return newBuilder(); }
+    public static Builder newBuilder() {
+      return DEFAULT_INSTANCE.toBuilder();
+    }
+    public static Builder newBuilder(qorechain.bridge.v1.Tx.BitcoinCheckpoint prototype) {
+      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+    }
+    @java.lang.Override
+    public Builder toBuilder() {
+      return this == DEFAULT_INSTANCE
+          ? new Builder() : new Builder().mergeFrom(this);
+    }
+
+    @java.lang.Override
+    protected Builder newBuilderForType(
+        com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+      Builder builder = new Builder(parent);
+      return builder;
+    }
+    /**
+     * Protobuf type {@code qorechain.bridge.v1.BitcoinCheckpoint}
+     */
+    public static final class Builder extends
+        com.google.protobuf.GeneratedMessage.Builder<Builder> implements
+        // @@protoc_insertion_point(builder_implements:qorechain.bridge.v1.BitcoinCheckpoint)
+        qorechain.bridge.v1.Tx.BitcoinCheckpointOrBuilder {
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return qorechain.bridge.v1.Tx.internal_static_qorechain_bridge_v1_BitcoinCheckpoint_descriptor;
+      }
+
+      @java.lang.Override
+      protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return qorechain.bridge.v1.Tx.internal_static_qorechain_bridge_v1_BitcoinCheckpoint_fieldAccessorTable
+            .ensureFieldAccessorsInitialized(
+                qorechain.bridge.v1.Tx.BitcoinCheckpoint.class, qorechain.bridge.v1.Tx.BitcoinCheckpoint.Builder.class);
+      }
+
+      // Construct using qorechain.bridge.v1.Tx.BitcoinCheckpoint.newBuilder()
+      private Builder() {
+
+      }
+
+      private Builder(
+          com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+        super(parent);
+
+      }
+      @java.lang.Override
+      public Builder clear() {
+        super.clear();
+        bitField0_ = 0;
+        blockHash_ = com.google.protobuf.ByteString.EMPTY;
+        minConfs_ = 0;
+        return this;
+      }
+
+      @java.lang.Override
+      public com.google.protobuf.Descriptors.Descriptor
+          getDescriptorForType() {
+        return qorechain.bridge.v1.Tx.internal_static_qorechain_bridge_v1_BitcoinCheckpoint_descriptor;
+      }
+
+      @java.lang.Override
+      public qorechain.bridge.v1.Tx.BitcoinCheckpoint getDefaultInstanceForType() {
+        return qorechain.bridge.v1.Tx.BitcoinCheckpoint.getDefaultInstance();
+      }
+
+      @java.lang.Override
+      public qorechain.bridge.v1.Tx.BitcoinCheckpoint build() {
+        qorechain.bridge.v1.Tx.BitcoinCheckpoint result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(result);
+        }
+        return result;
+      }
+
+      @java.lang.Override
+      public qorechain.bridge.v1.Tx.BitcoinCheckpoint buildPartial() {
+        qorechain.bridge.v1.Tx.BitcoinCheckpoint result = new qorechain.bridge.v1.Tx.BitcoinCheckpoint(this);
+        if (bitField0_ != 0) { buildPartial0(result); }
+        onBuilt();
+        return result;
+      }
+
+      private void buildPartial0(qorechain.bridge.v1.Tx.BitcoinCheckpoint result) {
+        int from_bitField0_ = bitField0_;
+        if (((from_bitField0_ & 0x00000001) != 0)) {
+          result.blockHash_ = blockHash_;
+        }
+        if (((from_bitField0_ & 0x00000002) != 0)) {
+          result.minConfs_ = minConfs_;
+        }
+      }
+
+      @java.lang.Override
+      public Builder mergeFrom(com.google.protobuf.Message other) {
+        if (other instanceof qorechain.bridge.v1.Tx.BitcoinCheckpoint) {
+          return mergeFrom((qorechain.bridge.v1.Tx.BitcoinCheckpoint)other);
+        } else {
+          super.mergeFrom(other);
+          return this;
+        }
+      }
+
+      public Builder mergeFrom(qorechain.bridge.v1.Tx.BitcoinCheckpoint other) {
+        if (other == qorechain.bridge.v1.Tx.BitcoinCheckpoint.getDefaultInstance()) return this;
+        if (!other.getBlockHash().isEmpty()) {
+          setBlockHash(other.getBlockHash());
+        }
+        if (other.getMinConfs() != 0) {
+          setMinConfs(other.getMinConfs());
+        }
+        this.mergeUnknownFields(other.getUnknownFields());
+        onChanged();
+        return this;
+      }
+
+      @java.lang.Override
+      public final boolean isInitialized() {
+        return true;
+      }
+
+      @java.lang.Override
+      public Builder mergeFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        if (extensionRegistry == null) {
+          throw new java.lang.NullPointerException();
+        }
+        try {
+          boolean done = false;
+          while (!done) {
+            int tag = input.readTag();
+            switch (tag) {
+              case 0:
+                done = true;
+                break;
+              case 10: {
+                blockHash_ = input.readBytes();
+                bitField0_ |= 0x00000001;
+                break;
+              } // case 10
+              case 16: {
+                minConfs_ = input.readUInt32();
+                bitField0_ |= 0x00000002;
+                break;
+              } // case 16
+              default: {
+                if (!super.parseUnknownField(input, extensionRegistry, tag)) {
+                  done = true; // was an endgroup tag
+                }
+                break;
+              } // default:
+            } // switch (tag)
+          } // while (!done)
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          throw e.unwrapIOException();
+        } finally {
+          onChanged();
+        } // finally
+        return this;
+      }
+      private int bitField0_;
+
+      private com.google.protobuf.ByteString blockHash_ = com.google.protobuf.ByteString.EMPTY;
+      /**
+       * <code>bytes block_hash = 1 [json_name = "blockHash"];</code>
+       * @return The blockHash.
+       */
+      @java.lang.Override
+      public com.google.protobuf.ByteString getBlockHash() {
+        return blockHash_;
+      }
+      /**
+       * <code>bytes block_hash = 1 [json_name = "blockHash"];</code>
+       * @param value The blockHash to set.
+       * @return This builder for chaining.
+       */
+      public Builder setBlockHash(com.google.protobuf.ByteString value) {
+        if (value == null) { throw new NullPointerException(); }
+        blockHash_ = value;
+        bitField0_ |= 0x00000001;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>bytes block_hash = 1 [json_name = "blockHash"];</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearBlockHash() {
+        bitField0_ = (bitField0_ & ~0x00000001);
+        blockHash_ = getDefaultInstance().getBlockHash();
+        onChanged();
+        return this;
+      }
+
+      private int minConfs_ ;
+      /**
+       * <code>uint32 min_confs = 2 [json_name = "minConfs"];</code>
+       * @return The minConfs.
+       */
+      @java.lang.Override
+      public int getMinConfs() {
+        return minConfs_;
+      }
+      /**
+       * <code>uint32 min_confs = 2 [json_name = "minConfs"];</code>
+       * @param value The minConfs to set.
+       * @return This builder for chaining.
+       */
+      public Builder setMinConfs(int value) {
+
+        minConfs_ = value;
+        bitField0_ |= 0x00000002;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>uint32 min_confs = 2 [json_name = "minConfs"];</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearMinConfs() {
+        bitField0_ = (bitField0_ & ~0x00000002);
+        minConfs_ = 0;
+        onChanged();
+        return this;
+      }
+
+      // @@protoc_insertion_point(builder_scope:qorechain.bridge.v1.BitcoinCheckpoint)
+    }
+
+    // @@protoc_insertion_point(class_scope:qorechain.bridge.v1.BitcoinCheckpoint)
+    private static final qorechain.bridge.v1.Tx.BitcoinCheckpoint DEFAULT_INSTANCE;
+    static {
+      DEFAULT_INSTANCE = new qorechain.bridge.v1.Tx.BitcoinCheckpoint();
+    }
+
+    public static qorechain.bridge.v1.Tx.BitcoinCheckpoint getDefaultInstance() {
+      return DEFAULT_INSTANCE;
+    }
+
+    private static final com.google.protobuf.Parser<BitcoinCheckpoint>
+        PARSER = new com.google.protobuf.AbstractParser<BitcoinCheckpoint>() {
+      @java.lang.Override
+      public BitcoinCheckpoint parsePartialFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        Builder builder = newBuilder();
+        try {
+          builder.mergeFrom(input, extensionRegistry);
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          throw e.setUnfinishedMessage(builder.buildPartial());
+        } catch (com.google.protobuf.UninitializedMessageException e) {
+          throw e.asInvalidProtocolBufferException().setUnfinishedMessage(builder.buildPartial());
+        } catch (java.io.IOException e) {
+          throw new com.google.protobuf.InvalidProtocolBufferException(e)
+              .setUnfinishedMessage(builder.buildPartial());
+        }
+        return builder.buildPartial();
+      }
+    };
+
+    public static com.google.protobuf.Parser<BitcoinCheckpoint> parser() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Parser<BitcoinCheckpoint> getParserForType() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public qorechain.bridge.v1.Tx.BitcoinCheckpoint getDefaultInstanceForType() {
+      return DEFAULT_INSTANCE;
+    }
+
+  }
+
   public interface MsgBridgeDepositOrBuilder extends
       // @@protoc_insertion_point(interface_extends:qorechain.bridge.v1.MsgBridgeDeposit)
       com.google.protobuf.MessageOrBuilder {
@@ -6188,6 +11983,1017 @@ public final class Tx extends com.google.protobuf.GeneratedFile {
 
   }
 
+  public interface MsgUpdateEthLightClientOrBuilder extends
+      // @@protoc_insertion_point(interface_extends:qorechain.bridge.v1.MsgUpdateEthLightClient)
+      com.google.protobuf.MessageOrBuilder {
+
+    /**
+     * <code>string relayer = 1 [json_name = "relayer", (.cosmos_proto.scalar) = "cosmos.AddressString"];</code>
+     * @return The relayer.
+     */
+    java.lang.String getRelayer();
+    /**
+     * <code>string relayer = 1 [json_name = "relayer", (.cosmos_proto.scalar) = "cosmos.AddressString"];</code>
+     * @return The bytes for relayer.
+     */
+    com.google.protobuf.ByteString
+        getRelayerBytes();
+
+    /**
+     * <pre>
+     * Encoded Altair LightClientUpdate bundle verified against the stored sync
+     * committee before advancing the on-chain light client.
+     * </pre>
+     *
+     * <code>bytes update = 2 [json_name = "update"];</code>
+     * @return The update.
+     */
+    com.google.protobuf.ByteString getUpdate();
+  }
+  /**
+   * Protobuf type {@code qorechain.bridge.v1.MsgUpdateEthLightClient}
+   */
+  public static final class MsgUpdateEthLightClient extends
+      com.google.protobuf.GeneratedMessage implements
+      // @@protoc_insertion_point(message_implements:qorechain.bridge.v1.MsgUpdateEthLightClient)
+      MsgUpdateEthLightClientOrBuilder {
+  private static final long serialVersionUID = 0L;
+    static {
+      com.google.protobuf.RuntimeVersion.validateProtobufGencodeVersion(
+        com.google.protobuf.RuntimeVersion.RuntimeDomain.PUBLIC,
+        /* major= */ 4,
+        /* minor= */ 35,
+        /* patch= */ 1,
+        /* suffix= */ "",
+        "MsgUpdateEthLightClient");
+    }
+    // Use MsgUpdateEthLightClient.newBuilder() to construct.
+    private MsgUpdateEthLightClient(com.google.protobuf.GeneratedMessage.Builder<?> builder) {
+      super(builder);
+    }
+    private MsgUpdateEthLightClient() {
+      relayer_ = "";
+      update_ = com.google.protobuf.ByteString.EMPTY;
+    }
+
+    public static final com.google.protobuf.Descriptors.Descriptor
+        getDescriptor() {
+      return qorechain.bridge.v1.Tx.internal_static_qorechain_bridge_v1_MsgUpdateEthLightClient_descriptor;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Descriptors.Descriptor getDescriptorForType() {
+      return qorechain.bridge.v1.Tx.internal_static_qorechain_bridge_v1_MsgUpdateEthLightClient_descriptor;
+    }
+
+    @java.lang.Override
+    protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+        internalGetFieldAccessorTable() {
+      return qorechain.bridge.v1.Tx.internal_static_qorechain_bridge_v1_MsgUpdateEthLightClient_fieldAccessorTable
+          .ensureFieldAccessorsInitialized(
+              qorechain.bridge.v1.Tx.MsgUpdateEthLightClient.class, qorechain.bridge.v1.Tx.MsgUpdateEthLightClient.Builder.class);
+    }
+
+    public static final int RELAYER_FIELD_NUMBER = 1;
+    @SuppressWarnings("serial")
+    private volatile java.lang.Object relayer_ = "";
+    /**
+     * <code>string relayer = 1 [json_name = "relayer", (.cosmos_proto.scalar) = "cosmos.AddressString"];</code>
+     * @return The relayer.
+     */
+    @java.lang.Override
+    public java.lang.String getRelayer() {
+      java.lang.Object ref = relayer_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        relayer_ = s;
+        return s;
+      }
+    }
+    /**
+     * <code>string relayer = 1 [json_name = "relayer", (.cosmos_proto.scalar) = "cosmos.AddressString"];</code>
+     * @return The bytes for relayer.
+     */
+    @java.lang.Override
+    public com.google.protobuf.ByteString
+        getRelayerBytes() {
+      java.lang.Object ref = relayer_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        relayer_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
+    public static final int UPDATE_FIELD_NUMBER = 2;
+    private com.google.protobuf.ByteString update_ = com.google.protobuf.ByteString.EMPTY;
+    /**
+     * <pre>
+     * Encoded Altair LightClientUpdate bundle verified against the stored sync
+     * committee before advancing the on-chain light client.
+     * </pre>
+     *
+     * <code>bytes update = 2 [json_name = "update"];</code>
+     * @return The update.
+     */
+    @java.lang.Override
+    public com.google.protobuf.ByteString getUpdate() {
+      return update_;
+    }
+
+    private byte memoizedIsInitialized = -1;
+    @java.lang.Override
+    public final boolean isInitialized() {
+      byte isInitialized = memoizedIsInitialized;
+      if (isInitialized == 1) return true;
+      if (isInitialized == 0) return false;
+
+      memoizedIsInitialized = 1;
+      return true;
+    }
+
+    @java.lang.Override
+    public void writeTo(com.google.protobuf.CodedOutputStream output)
+                        throws java.io.IOException {
+      if (!com.google.protobuf.GeneratedMessage.isStringEmpty(relayer_)) {
+        com.google.protobuf.GeneratedMessage.writeString(output, 1, relayer_);
+      }
+      if (!update_.isEmpty()) {
+        output.writeBytes(2, update_);
+      }
+      getUnknownFields().writeTo(output);
+    }
+    private int computeSerializedSize_0() {
+      int size = 0;
+      if (!com.google.protobuf.GeneratedMessage.isStringEmpty(relayer_)) {
+        size += com.google.protobuf.GeneratedMessage.computeStringSize(1, relayer_);
+      }
+      if (!update_.isEmpty()) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeBytesSize(2, update_);
+      }
+      return size;
+    }
+    @java.lang.Override
+    public int getSerializedSize() {
+      int size = memoizedSize;
+      if (size != -1) return size;
+
+      size = 0;
+      size += computeSerializedSize_0();
+      size += getUnknownFields().getSerializedSize();
+      memoizedSize = size;
+      return size;
+    }
+
+    @java.lang.Override
+    public boolean equals(final java.lang.Object obj) {
+      if (obj == this) {
+       return true;
+      }
+      if (!(obj instanceof qorechain.bridge.v1.Tx.MsgUpdateEthLightClient)) {
+        return super.equals(obj);
+      }
+      qorechain.bridge.v1.Tx.MsgUpdateEthLightClient other = (qorechain.bridge.v1.Tx.MsgUpdateEthLightClient) obj;
+
+      if (!getRelayer()
+          .equals(other.getRelayer())) return false;
+      if (!getUpdate()
+          .equals(other.getUpdate())) return false;
+      if (!getUnknownFields().equals(other.getUnknownFields())) return false;
+      return true;
+    }
+
+    @java.lang.Override
+    public int hashCode() {
+      if (memoizedHashCode != 0) {
+        return memoizedHashCode;
+      }
+      int hash = 41;
+      hash = (19 * hash) + getDescriptor().hashCode();
+      hash = (37 * hash) + RELAYER_FIELD_NUMBER;
+      hash = (53 * hash) + getRelayer().hashCode();
+      hash = (37 * hash) + UPDATE_FIELD_NUMBER;
+      hash = (53 * hash) + getUpdate().hashCode();
+      hash = (29 * hash) + getUnknownFields().hashCode();
+      memoizedHashCode = hash;
+      return hash;
+    }
+
+    public static qorechain.bridge.v1.Tx.MsgUpdateEthLightClient parseFrom(
+        java.nio.ByteBuffer data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static qorechain.bridge.v1.Tx.MsgUpdateEthLightClient parseFrom(
+        java.nio.ByteBuffer data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static qorechain.bridge.v1.Tx.MsgUpdateEthLightClient parseFrom(
+        com.google.protobuf.ByteString data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static qorechain.bridge.v1.Tx.MsgUpdateEthLightClient parseFrom(
+        com.google.protobuf.ByteString data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static qorechain.bridge.v1.Tx.MsgUpdateEthLightClient parseFrom(byte[] data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static qorechain.bridge.v1.Tx.MsgUpdateEthLightClient parseFrom(
+        byte[] data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static qorechain.bridge.v1.Tx.MsgUpdateEthLightClient parseFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input);
+    }
+    public static qorechain.bridge.v1.Tx.MsgUpdateEthLightClient parseFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    public static qorechain.bridge.v1.Tx.MsgUpdateEthLightClient parseDelimitedFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseDelimitedWithIOException(PARSER, input);
+    }
+
+    public static qorechain.bridge.v1.Tx.MsgUpdateEthLightClient parseDelimitedFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static qorechain.bridge.v1.Tx.MsgUpdateEthLightClient parseFrom(
+        com.google.protobuf.CodedInputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input);
+    }
+    public static qorechain.bridge.v1.Tx.MsgUpdateEthLightClient parseFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    @java.lang.Override
+    public Builder newBuilderForType() { return newBuilder(); }
+    public static Builder newBuilder() {
+      return DEFAULT_INSTANCE.toBuilder();
+    }
+    public static Builder newBuilder(qorechain.bridge.v1.Tx.MsgUpdateEthLightClient prototype) {
+      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+    }
+    @java.lang.Override
+    public Builder toBuilder() {
+      return this == DEFAULT_INSTANCE
+          ? new Builder() : new Builder().mergeFrom(this);
+    }
+
+    @java.lang.Override
+    protected Builder newBuilderForType(
+        com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+      Builder builder = new Builder(parent);
+      return builder;
+    }
+    /**
+     * Protobuf type {@code qorechain.bridge.v1.MsgUpdateEthLightClient}
+     */
+    public static final class Builder extends
+        com.google.protobuf.GeneratedMessage.Builder<Builder> implements
+        // @@protoc_insertion_point(builder_implements:qorechain.bridge.v1.MsgUpdateEthLightClient)
+        qorechain.bridge.v1.Tx.MsgUpdateEthLightClientOrBuilder {
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return qorechain.bridge.v1.Tx.internal_static_qorechain_bridge_v1_MsgUpdateEthLightClient_descriptor;
+      }
+
+      @java.lang.Override
+      protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return qorechain.bridge.v1.Tx.internal_static_qorechain_bridge_v1_MsgUpdateEthLightClient_fieldAccessorTable
+            .ensureFieldAccessorsInitialized(
+                qorechain.bridge.v1.Tx.MsgUpdateEthLightClient.class, qorechain.bridge.v1.Tx.MsgUpdateEthLightClient.Builder.class);
+      }
+
+      // Construct using qorechain.bridge.v1.Tx.MsgUpdateEthLightClient.newBuilder()
+      private Builder() {
+
+      }
+
+      private Builder(
+          com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+        super(parent);
+
+      }
+      @java.lang.Override
+      public Builder clear() {
+        super.clear();
+        bitField0_ = 0;
+        relayer_ = "";
+        update_ = com.google.protobuf.ByteString.EMPTY;
+        return this;
+      }
+
+      @java.lang.Override
+      public com.google.protobuf.Descriptors.Descriptor
+          getDescriptorForType() {
+        return qorechain.bridge.v1.Tx.internal_static_qorechain_bridge_v1_MsgUpdateEthLightClient_descriptor;
+      }
+
+      @java.lang.Override
+      public qorechain.bridge.v1.Tx.MsgUpdateEthLightClient getDefaultInstanceForType() {
+        return qorechain.bridge.v1.Tx.MsgUpdateEthLightClient.getDefaultInstance();
+      }
+
+      @java.lang.Override
+      public qorechain.bridge.v1.Tx.MsgUpdateEthLightClient build() {
+        qorechain.bridge.v1.Tx.MsgUpdateEthLightClient result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(result);
+        }
+        return result;
+      }
+
+      @java.lang.Override
+      public qorechain.bridge.v1.Tx.MsgUpdateEthLightClient buildPartial() {
+        qorechain.bridge.v1.Tx.MsgUpdateEthLightClient result = new qorechain.bridge.v1.Tx.MsgUpdateEthLightClient(this);
+        if (bitField0_ != 0) { buildPartial0(result); }
+        onBuilt();
+        return result;
+      }
+
+      private void buildPartial0(qorechain.bridge.v1.Tx.MsgUpdateEthLightClient result) {
+        int from_bitField0_ = bitField0_;
+        if (((from_bitField0_ & 0x00000001) != 0)) {
+          result.relayer_ = relayer_;
+        }
+        if (((from_bitField0_ & 0x00000002) != 0)) {
+          result.update_ = update_;
+        }
+      }
+
+      @java.lang.Override
+      public Builder mergeFrom(com.google.protobuf.Message other) {
+        if (other instanceof qorechain.bridge.v1.Tx.MsgUpdateEthLightClient) {
+          return mergeFrom((qorechain.bridge.v1.Tx.MsgUpdateEthLightClient)other);
+        } else {
+          super.mergeFrom(other);
+          return this;
+        }
+      }
+
+      public Builder mergeFrom(qorechain.bridge.v1.Tx.MsgUpdateEthLightClient other) {
+        if (other == qorechain.bridge.v1.Tx.MsgUpdateEthLightClient.getDefaultInstance()) return this;
+        if (!other.getRelayer().isEmpty()) {
+          relayer_ = other.relayer_;
+          bitField0_ |= 0x00000001;
+          onChanged();
+        }
+        if (!other.getUpdate().isEmpty()) {
+          setUpdate(other.getUpdate());
+        }
+        this.mergeUnknownFields(other.getUnknownFields());
+        onChanged();
+        return this;
+      }
+
+      @java.lang.Override
+      public final boolean isInitialized() {
+        return true;
+      }
+
+      @java.lang.Override
+      public Builder mergeFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        if (extensionRegistry == null) {
+          throw new java.lang.NullPointerException();
+        }
+        try {
+          boolean done = false;
+          while (!done) {
+            int tag = input.readTag();
+            switch (tag) {
+              case 0:
+                done = true;
+                break;
+              case 10: {
+                relayer_ = input.readStringRequireUtf8();
+                bitField0_ |= 0x00000001;
+                break;
+              } // case 10
+              case 18: {
+                update_ = input.readBytes();
+                bitField0_ |= 0x00000002;
+                break;
+              } // case 18
+              default: {
+                if (!super.parseUnknownField(input, extensionRegistry, tag)) {
+                  done = true; // was an endgroup tag
+                }
+                break;
+              } // default:
+            } // switch (tag)
+          } // while (!done)
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          throw e.unwrapIOException();
+        } finally {
+          onChanged();
+        } // finally
+        return this;
+      }
+      private int bitField0_;
+
+      private java.lang.Object relayer_ = "";
+      /**
+       * <code>string relayer = 1 [json_name = "relayer", (.cosmos_proto.scalar) = "cosmos.AddressString"];</code>
+       * @return The relayer.
+       */
+      public java.lang.String getRelayer() {
+        java.lang.Object ref = relayer_;
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          relayer_ = s;
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
+      }
+      /**
+       * <code>string relayer = 1 [json_name = "relayer", (.cosmos_proto.scalar) = "cosmos.AddressString"];</code>
+       * @return The bytes for relayer.
+       */
+      public com.google.protobuf.ByteString
+          getRelayerBytes() {
+        java.lang.Object ref = relayer_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          relayer_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <code>string relayer = 1 [json_name = "relayer", (.cosmos_proto.scalar) = "cosmos.AddressString"];</code>
+       * @param value The relayer to set.
+       * @return This builder for chaining.
+       */
+      public Builder setRelayer(
+          java.lang.String value) {
+        if (value == null) { throw new NullPointerException(); }
+        relayer_ = value;
+        bitField0_ |= 0x00000001;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>string relayer = 1 [json_name = "relayer", (.cosmos_proto.scalar) = "cosmos.AddressString"];</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearRelayer() {
+        relayer_ = getDefaultInstance().getRelayer();
+        bitField0_ = (bitField0_ & ~0x00000001);
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>string relayer = 1 [json_name = "relayer", (.cosmos_proto.scalar) = "cosmos.AddressString"];</code>
+       * @param value The bytes for relayer to set.
+       * @return This builder for chaining.
+       */
+      public Builder setRelayerBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) { throw new NullPointerException(); }
+        checkByteStringIsUtf8(value);
+        relayer_ = value;
+        bitField0_ |= 0x00000001;
+        onChanged();
+        return this;
+      }
+
+      private com.google.protobuf.ByteString update_ = com.google.protobuf.ByteString.EMPTY;
+      /**
+       * <pre>
+       * Encoded Altair LightClientUpdate bundle verified against the stored sync
+       * committee before advancing the on-chain light client.
+       * </pre>
+       *
+       * <code>bytes update = 2 [json_name = "update"];</code>
+       * @return The update.
+       */
+      @java.lang.Override
+      public com.google.protobuf.ByteString getUpdate() {
+        return update_;
+      }
+      /**
+       * <pre>
+       * Encoded Altair LightClientUpdate bundle verified against the stored sync
+       * committee before advancing the on-chain light client.
+       * </pre>
+       *
+       * <code>bytes update = 2 [json_name = "update"];</code>
+       * @param value The update to set.
+       * @return This builder for chaining.
+       */
+      public Builder setUpdate(com.google.protobuf.ByteString value) {
+        if (value == null) { throw new NullPointerException(); }
+        update_ = value;
+        bitField0_ |= 0x00000002;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * Encoded Altair LightClientUpdate bundle verified against the stored sync
+       * committee before advancing the on-chain light client.
+       * </pre>
+       *
+       * <code>bytes update = 2 [json_name = "update"];</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearUpdate() {
+        bitField0_ = (bitField0_ & ~0x00000002);
+        update_ = getDefaultInstance().getUpdate();
+        onChanged();
+        return this;
+      }
+
+      // @@protoc_insertion_point(builder_scope:qorechain.bridge.v1.MsgUpdateEthLightClient)
+    }
+
+    // @@protoc_insertion_point(class_scope:qorechain.bridge.v1.MsgUpdateEthLightClient)
+    private static final qorechain.bridge.v1.Tx.MsgUpdateEthLightClient DEFAULT_INSTANCE;
+    static {
+      DEFAULT_INSTANCE = new qorechain.bridge.v1.Tx.MsgUpdateEthLightClient();
+    }
+
+    public static qorechain.bridge.v1.Tx.MsgUpdateEthLightClient getDefaultInstance() {
+      return DEFAULT_INSTANCE;
+    }
+
+    private static final com.google.protobuf.Parser<MsgUpdateEthLightClient>
+        PARSER = new com.google.protobuf.AbstractParser<MsgUpdateEthLightClient>() {
+      @java.lang.Override
+      public MsgUpdateEthLightClient parsePartialFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        Builder builder = newBuilder();
+        try {
+          builder.mergeFrom(input, extensionRegistry);
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          throw e.setUnfinishedMessage(builder.buildPartial());
+        } catch (com.google.protobuf.UninitializedMessageException e) {
+          throw e.asInvalidProtocolBufferException().setUnfinishedMessage(builder.buildPartial());
+        } catch (java.io.IOException e) {
+          throw new com.google.protobuf.InvalidProtocolBufferException(e)
+              .setUnfinishedMessage(builder.buildPartial());
+        }
+        return builder.buildPartial();
+      }
+    };
+
+    public static com.google.protobuf.Parser<MsgUpdateEthLightClient> parser() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Parser<MsgUpdateEthLightClient> getParserForType() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public qorechain.bridge.v1.Tx.MsgUpdateEthLightClient getDefaultInstanceForType() {
+      return DEFAULT_INSTANCE;
+    }
+
+  }
+
+  public interface MsgUpdateEthLightClientResponseOrBuilder extends
+      // @@protoc_insertion_point(interface_extends:qorechain.bridge.v1.MsgUpdateEthLightClientResponse)
+      com.google.protobuf.MessageOrBuilder {
+  }
+  /**
+   * Protobuf type {@code qorechain.bridge.v1.MsgUpdateEthLightClientResponse}
+   */
+  public static final class MsgUpdateEthLightClientResponse extends
+      com.google.protobuf.GeneratedMessage implements
+      // @@protoc_insertion_point(message_implements:qorechain.bridge.v1.MsgUpdateEthLightClientResponse)
+      MsgUpdateEthLightClientResponseOrBuilder {
+  private static final long serialVersionUID = 0L;
+    static {
+      com.google.protobuf.RuntimeVersion.validateProtobufGencodeVersion(
+        com.google.protobuf.RuntimeVersion.RuntimeDomain.PUBLIC,
+        /* major= */ 4,
+        /* minor= */ 35,
+        /* patch= */ 1,
+        /* suffix= */ "",
+        "MsgUpdateEthLightClientResponse");
+    }
+    // Use MsgUpdateEthLightClientResponse.newBuilder() to construct.
+    private MsgUpdateEthLightClientResponse(com.google.protobuf.GeneratedMessage.Builder<?> builder) {
+      super(builder);
+    }
+    private MsgUpdateEthLightClientResponse() {
+    }
+
+    public static final com.google.protobuf.Descriptors.Descriptor
+        getDescriptor() {
+      return qorechain.bridge.v1.Tx.internal_static_qorechain_bridge_v1_MsgUpdateEthLightClientResponse_descriptor;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Descriptors.Descriptor getDescriptorForType() {
+      return qorechain.bridge.v1.Tx.internal_static_qorechain_bridge_v1_MsgUpdateEthLightClientResponse_descriptor;
+    }
+
+    @java.lang.Override
+    protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+        internalGetFieldAccessorTable() {
+      return qorechain.bridge.v1.Tx.internal_static_qorechain_bridge_v1_MsgUpdateEthLightClientResponse_fieldAccessorTable
+          .ensureFieldAccessorsInitialized(
+              qorechain.bridge.v1.Tx.MsgUpdateEthLightClientResponse.class, qorechain.bridge.v1.Tx.MsgUpdateEthLightClientResponse.Builder.class);
+    }
+
+    private byte memoizedIsInitialized = -1;
+    @java.lang.Override
+    public final boolean isInitialized() {
+      byte isInitialized = memoizedIsInitialized;
+      if (isInitialized == 1) return true;
+      if (isInitialized == 0) return false;
+
+      memoizedIsInitialized = 1;
+      return true;
+    }
+
+    @java.lang.Override
+    public void writeTo(com.google.protobuf.CodedOutputStream output)
+                        throws java.io.IOException {
+      getUnknownFields().writeTo(output);
+    }
+    @java.lang.Override
+    public int getSerializedSize() {
+      int size = memoizedSize;
+      if (size != -1) return size;
+
+      size = 0;
+      size += getUnknownFields().getSerializedSize();
+      memoizedSize = size;
+      return size;
+    }
+
+    @java.lang.Override
+    public boolean equals(final java.lang.Object obj) {
+      if (obj == this) {
+       return true;
+      }
+      if (!(obj instanceof qorechain.bridge.v1.Tx.MsgUpdateEthLightClientResponse)) {
+        return super.equals(obj);
+      }
+      qorechain.bridge.v1.Tx.MsgUpdateEthLightClientResponse other = (qorechain.bridge.v1.Tx.MsgUpdateEthLightClientResponse) obj;
+
+      if (!getUnknownFields().equals(other.getUnknownFields())) return false;
+      return true;
+    }
+
+    @java.lang.Override
+    public int hashCode() {
+      if (memoizedHashCode != 0) {
+        return memoizedHashCode;
+      }
+      int hash = 41;
+      hash = (19 * hash) + getDescriptor().hashCode();
+      hash = (29 * hash) + getUnknownFields().hashCode();
+      memoizedHashCode = hash;
+      return hash;
+    }
+
+    public static qorechain.bridge.v1.Tx.MsgUpdateEthLightClientResponse parseFrom(
+        java.nio.ByteBuffer data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static qorechain.bridge.v1.Tx.MsgUpdateEthLightClientResponse parseFrom(
+        java.nio.ByteBuffer data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static qorechain.bridge.v1.Tx.MsgUpdateEthLightClientResponse parseFrom(
+        com.google.protobuf.ByteString data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static qorechain.bridge.v1.Tx.MsgUpdateEthLightClientResponse parseFrom(
+        com.google.protobuf.ByteString data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static qorechain.bridge.v1.Tx.MsgUpdateEthLightClientResponse parseFrom(byte[] data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static qorechain.bridge.v1.Tx.MsgUpdateEthLightClientResponse parseFrom(
+        byte[] data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static qorechain.bridge.v1.Tx.MsgUpdateEthLightClientResponse parseFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input);
+    }
+    public static qorechain.bridge.v1.Tx.MsgUpdateEthLightClientResponse parseFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    public static qorechain.bridge.v1.Tx.MsgUpdateEthLightClientResponse parseDelimitedFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseDelimitedWithIOException(PARSER, input);
+    }
+
+    public static qorechain.bridge.v1.Tx.MsgUpdateEthLightClientResponse parseDelimitedFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static qorechain.bridge.v1.Tx.MsgUpdateEthLightClientResponse parseFrom(
+        com.google.protobuf.CodedInputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input);
+    }
+    public static qorechain.bridge.v1.Tx.MsgUpdateEthLightClientResponse parseFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    @java.lang.Override
+    public Builder newBuilderForType() { return newBuilder(); }
+    public static Builder newBuilder() {
+      return DEFAULT_INSTANCE.toBuilder();
+    }
+    public static Builder newBuilder(qorechain.bridge.v1.Tx.MsgUpdateEthLightClientResponse prototype) {
+      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+    }
+    @java.lang.Override
+    public Builder toBuilder() {
+      return this == DEFAULT_INSTANCE
+          ? new Builder() : new Builder().mergeFrom(this);
+    }
+
+    @java.lang.Override
+    protected Builder newBuilderForType(
+        com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+      Builder builder = new Builder(parent);
+      return builder;
+    }
+    /**
+     * Protobuf type {@code qorechain.bridge.v1.MsgUpdateEthLightClientResponse}
+     */
+    public static final class Builder extends
+        com.google.protobuf.GeneratedMessage.Builder<Builder> implements
+        // @@protoc_insertion_point(builder_implements:qorechain.bridge.v1.MsgUpdateEthLightClientResponse)
+        qorechain.bridge.v1.Tx.MsgUpdateEthLightClientResponseOrBuilder {
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return qorechain.bridge.v1.Tx.internal_static_qorechain_bridge_v1_MsgUpdateEthLightClientResponse_descriptor;
+      }
+
+      @java.lang.Override
+      protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return qorechain.bridge.v1.Tx.internal_static_qorechain_bridge_v1_MsgUpdateEthLightClientResponse_fieldAccessorTable
+            .ensureFieldAccessorsInitialized(
+                qorechain.bridge.v1.Tx.MsgUpdateEthLightClientResponse.class, qorechain.bridge.v1.Tx.MsgUpdateEthLightClientResponse.Builder.class);
+      }
+
+      // Construct using qorechain.bridge.v1.Tx.MsgUpdateEthLightClientResponse.newBuilder()
+      private Builder() {
+
+      }
+
+      private Builder(
+          com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+        super(parent);
+
+      }
+      @java.lang.Override
+      public Builder clear() {
+        super.clear();
+        return this;
+      }
+
+      @java.lang.Override
+      public com.google.protobuf.Descriptors.Descriptor
+          getDescriptorForType() {
+        return qorechain.bridge.v1.Tx.internal_static_qorechain_bridge_v1_MsgUpdateEthLightClientResponse_descriptor;
+      }
+
+      @java.lang.Override
+      public qorechain.bridge.v1.Tx.MsgUpdateEthLightClientResponse getDefaultInstanceForType() {
+        return qorechain.bridge.v1.Tx.MsgUpdateEthLightClientResponse.getDefaultInstance();
+      }
+
+      @java.lang.Override
+      public qorechain.bridge.v1.Tx.MsgUpdateEthLightClientResponse build() {
+        qorechain.bridge.v1.Tx.MsgUpdateEthLightClientResponse result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(result);
+        }
+        return result;
+      }
+
+      @java.lang.Override
+      public qorechain.bridge.v1.Tx.MsgUpdateEthLightClientResponse buildPartial() {
+        qorechain.bridge.v1.Tx.MsgUpdateEthLightClientResponse result = new qorechain.bridge.v1.Tx.MsgUpdateEthLightClientResponse(this);
+        onBuilt();
+        return result;
+      }
+
+      @java.lang.Override
+      public Builder mergeFrom(com.google.protobuf.Message other) {
+        if (other instanceof qorechain.bridge.v1.Tx.MsgUpdateEthLightClientResponse) {
+          return mergeFrom((qorechain.bridge.v1.Tx.MsgUpdateEthLightClientResponse)other);
+        } else {
+          super.mergeFrom(other);
+          return this;
+        }
+      }
+
+      public Builder mergeFrom(qorechain.bridge.v1.Tx.MsgUpdateEthLightClientResponse other) {
+        if (other == qorechain.bridge.v1.Tx.MsgUpdateEthLightClientResponse.getDefaultInstance()) return this;
+        this.mergeUnknownFields(other.getUnknownFields());
+        onChanged();
+        return this;
+      }
+
+      @java.lang.Override
+      public final boolean isInitialized() {
+        return true;
+      }
+
+      @java.lang.Override
+      public Builder mergeFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        if (extensionRegistry == null) {
+          throw new java.lang.NullPointerException();
+        }
+        try {
+          boolean done = false;
+          while (!done) {
+            int tag = input.readTag();
+            switch (tag) {
+              case 0:
+                done = true;
+                break;
+              default: {
+                if (!super.parseUnknownField(input, extensionRegistry, tag)) {
+                  done = true; // was an endgroup tag
+                }
+                break;
+              } // default:
+            } // switch (tag)
+          } // while (!done)
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          throw e.unwrapIOException();
+        } finally {
+          onChanged();
+        } // finally
+        return this;
+      }
+
+      // @@protoc_insertion_point(builder_scope:qorechain.bridge.v1.MsgUpdateEthLightClientResponse)
+    }
+
+    // @@protoc_insertion_point(class_scope:qorechain.bridge.v1.MsgUpdateEthLightClientResponse)
+    private static final qorechain.bridge.v1.Tx.MsgUpdateEthLightClientResponse DEFAULT_INSTANCE;
+    static {
+      DEFAULT_INSTANCE = new qorechain.bridge.v1.Tx.MsgUpdateEthLightClientResponse();
+    }
+
+    public static qorechain.bridge.v1.Tx.MsgUpdateEthLightClientResponse getDefaultInstance() {
+      return DEFAULT_INSTANCE;
+    }
+
+    private static final com.google.protobuf.Parser<MsgUpdateEthLightClientResponse>
+        PARSER = new com.google.protobuf.AbstractParser<MsgUpdateEthLightClientResponse>() {
+      @java.lang.Override
+      public MsgUpdateEthLightClientResponse parsePartialFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        Builder builder = newBuilder();
+        try {
+          builder.mergeFrom(input, extensionRegistry);
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          throw e.setUnfinishedMessage(builder.buildPartial());
+        } catch (com.google.protobuf.UninitializedMessageException e) {
+          throw e.asInvalidProtocolBufferException().setUnfinishedMessage(builder.buildPartial());
+        } catch (java.io.IOException e) {
+          throw new com.google.protobuf.InvalidProtocolBufferException(e)
+              .setUnfinishedMessage(builder.buildPartial());
+        }
+        return builder.buildPartial();
+      }
+    };
+
+    public static com.google.protobuf.Parser<MsgUpdateEthLightClientResponse> parser() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Parser<MsgUpdateEthLightClientResponse> getParserForType() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public qorechain.bridge.v1.Tx.MsgUpdateEthLightClientResponse getDefaultInstanceForType() {
+      return DEFAULT_INSTANCE;
+    }
+
+  }
+
+  private static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_qorechain_bridge_v1_MsgUpdateChainConfig_descriptor;
+  private static final 
+    com.google.protobuf.GeneratedMessage.FieldAccessorTable
+      internal_static_qorechain_bridge_v1_MsgUpdateChainConfig_fieldAccessorTable;
+  private static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_qorechain_bridge_v1_MsgUpdateChainConfigResponse_descriptor;
+  private static final 
+    com.google.protobuf.GeneratedMessage.FieldAccessorTable
+      internal_static_qorechain_bridge_v1_MsgUpdateChainConfigResponse_fieldAccessorTable;
+  private static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_qorechain_bridge_v1_MsgSetVerifierBootstrap_descriptor;
+  private static final 
+    com.google.protobuf.GeneratedMessage.FieldAccessorTable
+      internal_static_qorechain_bridge_v1_MsgSetVerifierBootstrap_fieldAccessorTable;
+  private static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_qorechain_bridge_v1_MsgSetVerifierBootstrapResponse_descriptor;
+  private static final 
+    com.google.protobuf.GeneratedMessage.FieldAccessorTable
+      internal_static_qorechain_bridge_v1_MsgSetVerifierBootstrapResponse_fieldAccessorTable;
+  private static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_qorechain_bridge_v1_WormholeGuardianSet_descriptor;
+  private static final 
+    com.google.protobuf.GeneratedMessage.FieldAccessorTable
+      internal_static_qorechain_bridge_v1_WormholeGuardianSet_fieldAccessorTable;
+  private static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_qorechain_bridge_v1_ValidatorQuorum_descriptor;
+  private static final 
+    com.google.protobuf.GeneratedMessage.FieldAccessorTable
+      internal_static_qorechain_bridge_v1_ValidatorQuorum_fieldAccessorTable;
+  private static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_qorechain_bridge_v1_BitcoinCheckpoint_descriptor;
+  private static final 
+    com.google.protobuf.GeneratedMessage.FieldAccessorTable
+      internal_static_qorechain_bridge_v1_BitcoinCheckpoint_fieldAccessorTable;
   private static final com.google.protobuf.Descriptors.Descriptor
     internal_static_qorechain_bridge_v1_MsgBridgeDeposit_descriptor;
   private static final 
@@ -6228,6 +13034,16 @@ public final class Tx extends com.google.protobuf.GeneratedFile {
   private static final 
     com.google.protobuf.GeneratedMessage.FieldAccessorTable
       internal_static_qorechain_bridge_v1_MsgBridgeAttestationResponse_fieldAccessorTable;
+  private static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_qorechain_bridge_v1_MsgUpdateEthLightClient_descriptor;
+  private static final 
+    com.google.protobuf.GeneratedMessage.FieldAccessorTable
+      internal_static_qorechain_bridge_v1_MsgUpdateEthLightClient_fieldAccessorTable;
+  private static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_qorechain_bridge_v1_MsgUpdateEthLightClientResponse_descriptor;
+  private static final 
+    com.google.protobuf.GeneratedMessage.FieldAccessorTable
+      internal_static_qorechain_bridge_v1_MsgUpdateEthLightClientResponse_fieldAccessorTable;
 
   public static com.google.protobuf.Descriptors.FileDescriptor
       getDescriptor() {
@@ -6240,52 +13056,91 @@ public final class Tx extends com.google.protobuf.GeneratedFile {
       "\n\034qorechain/bridge/v1/tx.proto\022\023qorechai" +
       "n.bridge.v1\032\027cosmos/msg/v1/msg.proto\032\031co" +
       "smos_proto/cosmos.proto\032\024gogoproto/gogo." +
-      "proto\"\266\002\n\020MsgBridgeDeposit\0220\n\006sender\030\001 \001" +
-      "(\tB\030\322\264-\024cosmos.AddressStringR\006sender\022!\n\014" +
-      "source_chain\030\002 \001(\tR\013sourceChain\022$\n\016sourc" +
-      "e_tx_hash\030\003 \001(\tR\014sourceTxHash\022\024\n\005asset\030\004" +
-      " \001(\tR\005asset\022\026\n\006amount\030\005 \001(\tR\006amount\0222\n\025b" +
-      "ridge_validator_sigs\030\006 \001(\014R\023bridgeValida" +
-      "torSigs\0228\n\016pqc_commitment\030\007 \001(\014B\021\342\336\037\rPQC" +
-      "CommitmentR\rpqcCommitment:\013\202\347\260*\006sender\"\032" +
-      "\n\030MsgBridgeDepositResponse\"\336\001\n\021MsgBridge" +
-      "Withdraw\0220\n\006sender\030\001 \001(\tB\030\322\264-\024cosmos.Add" +
-      "ressStringR\006sender\022+\n\021destination_chain\030" +
-      "\002 \001(\tR\020destinationChain\022/\n\023destination_a" +
-      "ddress\030\003 \001(\tR\022destinationAddress\022\024\n\005asse" +
-      "t\030\004 \001(\tR\005asset\022\026\n\006amount\030\005 \001(\tR\006amount:\013" +
-      "\202\347\260*\006sender\"\033\n\031MsgBridgeWithdrawResponse" +
-      "\"\324\001\n\032MsgRegisterBridgeValidator\022E\n\021valid" +
-      "ator_address\030\001 \001(\tB\030\322\264-\024cosmos.AddressSt" +
-      "ringR\020validatorAddress\022,\n\npqc_pubkey\030\002 \001" +
-      "(\014B\r\342\336\037\tPQCPubkeyR\tpqcPubkey\022)\n\020supporte" +
-      "d_chains\030\003 \003(\tR\017supportedChains:\026\202\347\260*\021va" +
-      "lidator_address\"$\n\"MsgRegisterBridgeVali" +
-      "datorResponse\"\372\002\n\024MsgBridgeAttestation\0226" +
-      "\n\tvalidator\030\001 \001(\tB\030\322\264-\024cosmos.AddressStr" +
-      "ingR\tvalidator\022\024\n\005chain\030\002 \001(\tR\005chain\022\035\n\n" +
-      "event_type\030\003 \001(\tR\teventType\0222\n\014operation" +
-      "_id\030\004 \001(\tB\017\342\336\037\013OperationIDR\013operationId\022" +
-      "\027\n\007tx_hash\030\005 \001(\tR\006txHash\0225\n\006amount\030\006 \001(\t" +
-      "B\035\310\336\037\000\332\336\037\025cosmossdk.io/math.IntR\006amount\022" +
-      "\024\n\005asset\030\007 \001(\tR\005asset\022\024\n\005proof\030\010 \001(\014R\005pr" +
-      "oof\0225\n\rpqc_signature\030\t \001(\014B\020\342\336\037\014PQCSigna" +
-      "tureR\014pqcSignature:\016\202\347\260*\tvalidator\"\036\n\034Ms" +
-      "gBridgeAttestationResponse2\326\003\n\003Msg\022e\n\rBr" +
-      "idgeDeposit\022%.qorechain.bridge.v1.MsgBri" +
-      "dgeDeposit\032-.qorechain.bridge.v1.MsgBrid" +
-      "geDepositResponse\022h\n\016BridgeWithdraw\022&.qo" +
-      "rechain.bridge.v1.MsgBridgeWithdraw\032..qo" +
-      "rechain.bridge.v1.MsgBridgeWithdrawRespo" +
-      "nse\022\203\001\n\027RegisterBridgeValidator\022/.qorech" +
-      "ain.bridge.v1.MsgRegisterBridgeValidator" +
-      "\0327.qorechain.bridge.v1.MsgRegisterBridge" +
-      "ValidatorResponse\022q\n\021BridgeAttestation\022)" +
-      ".qorechain.bridge.v1.MsgBridgeAttestatio" +
-      "n\0321.qorechain.bridge.v1.MsgBridgeAttesta" +
-      "tionResponse\032\005\200\347\260*\001B4Z2github.com/qorech" +
-      "ain/qorechain-core/x/bridge/typesb\006proto" +
-      "3"
+      "proto\"\313\002\n\024MsgUpdateChainConfig\022.\n\005admin\030" +
+      "\001 \001(\tB\030\322\264-\024cosmos.AddressStringR\005admin\022\031" +
+      "\n\010chain_id\030\002 \001(\tR\007chainId\022\'\n\017bridge_cont" +
+      "ract\030\003 \001(\tR\016bridgeContract\0225\n\026confirmati" +
+      "ons_required\030\004 \001(\rR\025confirmationsRequire" +
+      "d\022\"\n\014architecture\030\005 \001(\tR\014architecture\022\026\n" +
+      "\006status\030\006 \001(\tR\006status\022\032\n\010verifier\030\007 \001(\tR" +
+      "\010verifier\022$\n\016lock_event_sig\030\010 \001(\tR\014lockE" +
+      "ventSig:\n\202\347\260*\005admin\"\036\n\034MsgUpdateChainCon" +
+      "figResponse\"\240\003\n\027MsgSetVerifierBootstrap\022" +
+      ".\n\005admin\030\001 \001(\tB\030\322\264-\024cosmos.AddressString" +
+      "R\005admin\022\031\n\010chain_id\030\002 \001(\tR\007chainId\022D\n\010wo" +
+      "rmhole\030\003 \001(\0132(.qorechain.bridge.v1.Wormh" +
+      "oleGuardianSetR\010wormhole\022>\n\007ed25519\030\004 \001(" +
+      "\0132$.qorechain.bridge.v1.ValidatorQuorumR" +
+      "\007ed25519\0226\n\003bls\030\005 \001(\0132$.qorechain.bridge" +
+      ".v1.ValidatorQuorumR\003bls\022@\n\007bitcoin\030\006 \001(" +
+      "\0132&.qorechain.bridge.v1.BitcoinCheckpoin" +
+      "tR\007bitcoin\022.\n\023starknet_state_root\030\007 \001(\014R" +
+      "\021starknetStateRoot:\n\202\347\260*\005admin\"!\n\037MsgSet" +
+      "VerifierBootstrapResponse\"K\n\023WormholeGua" +
+      "rdianSet\022\034\n\taddresses\030\001 \003(\014R\taddresses\022\026" +
+      "\n\006quorum\030\002 \001(\rR\006quorum\"I\n\017ValidatorQuoru" +
+      "m\022\030\n\007pubkeys\030\001 \003(\014R\007pubkeys\022\034\n\tthreshold" +
+      "\030\002 \001(\rR\tthreshold\"O\n\021BitcoinCheckpoint\022\035" +
+      "\n\nblock_hash\030\001 \001(\014R\tblockHash\022\033\n\tmin_con" +
+      "fs\030\002 \001(\rR\010minConfs\"\266\002\n\020MsgBridgeDeposit\022" +
+      "0\n\006sender\030\001 \001(\tB\030\322\264-\024cosmos.AddressStrin" +
+      "gR\006sender\022!\n\014source_chain\030\002 \001(\tR\013sourceC" +
+      "hain\022$\n\016source_tx_hash\030\003 \001(\tR\014sourceTxHa" +
+      "sh\022\024\n\005asset\030\004 \001(\tR\005asset\022\026\n\006amount\030\005 \001(\t" +
+      "R\006amount\0222\n\025bridge_validator_sigs\030\006 \001(\014R" +
+      "\023bridgeValidatorSigs\0228\n\016pqc_commitment\030\007" +
+      " \001(\014B\021\342\336\037\rPQCCommitmentR\rpqcCommitment:\013" +
+      "\202\347\260*\006sender\"\032\n\030MsgBridgeDepositResponse\"" +
+      "\336\001\n\021MsgBridgeWithdraw\0220\n\006sender\030\001 \001(\tB\030\322" +
+      "\264-\024cosmos.AddressStringR\006sender\022+\n\021desti" +
+      "nation_chain\030\002 \001(\tR\020destinationChain\022/\n\023" +
+      "destination_address\030\003 \001(\tR\022destinationAd" +
+      "dress\022\024\n\005asset\030\004 \001(\tR\005asset\022\026\n\006amount\030\005 " +
+      "\001(\tR\006amount:\013\202\347\260*\006sender\"\033\n\031MsgBridgeWit" +
+      "hdrawResponse\"\324\001\n\032MsgRegisterBridgeValid" +
+      "ator\022E\n\021validator_address\030\001 \001(\tB\030\322\264-\024cos" +
+      "mos.AddressStringR\020validatorAddress\022,\n\np" +
+      "qc_pubkey\030\002 \001(\014B\r\342\336\037\tPQCPubkeyR\tpqcPubke" +
+      "y\022)\n\020supported_chains\030\003 \003(\tR\017supportedCh" +
+      "ains:\026\202\347\260*\021validator_address\"$\n\"MsgRegis" +
+      "terBridgeValidatorResponse\"\372\002\n\024MsgBridge" +
+      "Attestation\0226\n\tvalidator\030\001 \001(\tB\030\322\264-\024cosm" +
+      "os.AddressStringR\tvalidator\022\024\n\005chain\030\002 \001" +
+      "(\tR\005chain\022\035\n\nevent_type\030\003 \001(\tR\teventType" +
+      "\0222\n\014operation_id\030\004 \001(\tB\017\342\336\037\013OperationIDR" +
+      "\013operationId\022\027\n\007tx_hash\030\005 \001(\tR\006txHash\0225\n" +
+      "\006amount\030\006 \001(\tB\035\310\336\037\000\332\336\037\025cosmossdk.io/math" +
+      ".IntR\006amount\022\024\n\005asset\030\007 \001(\tR\005asset\022\024\n\005pr" +
+      "oof\030\010 \001(\014R\005proof\0225\n\rpqc_signature\030\t \001(\014B" +
+      "\020\342\336\037\014PQCSignatureR\014pqcSignature:\016\202\347\260*\tva" +
+      "lidator\"\036\n\034MsgBridgeAttestationResponse\"" +
+      "s\n\027MsgUpdateEthLightClient\0222\n\007relayer\030\001 " +
+      "\001(\tB\030\322\264-\024cosmos.AddressStringR\007relayer\022\026" +
+      "\n\006update\030\002 \001(\014R\006update:\014\202\347\260*\007relayer\"!\n\037" +
+      "MsgUpdateEthLightClientResponse2\301\006\n\003Msg\022" +
+      "e\n\rBridgeDeposit\022%.qorechain.bridge.v1.M" +
+      "sgBridgeDeposit\032-.qorechain.bridge.v1.Ms" +
+      "gBridgeDepositResponse\022h\n\016BridgeWithdraw" +
+      "\022&.qorechain.bridge.v1.MsgBridgeWithdraw" +
+      "\032..qorechain.bridge.v1.MsgBridgeWithdraw" +
+      "Response\022\203\001\n\027RegisterBridgeValidator\022/.q" +
+      "orechain.bridge.v1.MsgRegisterBridgeVali" +
+      "dator\0327.qorechain.bridge.v1.MsgRegisterB" +
+      "ridgeValidatorResponse\022q\n\021BridgeAttestat" +
+      "ion\022).qorechain.bridge.v1.MsgBridgeAttes" +
+      "tation\0321.qorechain.bridge.v1.MsgBridgeAt" +
+      "testationResponse\022z\n\024UpdateEthLightClien" +
+      "t\022,.qorechain.bridge.v1.MsgUpdateEthLigh" +
+      "tClient\0324.qorechain.bridge.v1.MsgUpdateE" +
+      "thLightClientResponse\022q\n\021UpdateChainConf" +
+      "ig\022).qorechain.bridge.v1.MsgUpdateChainC" +
+      "onfig\0321.qorechain.bridge.v1.MsgUpdateCha" +
+      "inConfigResponse\022z\n\024SetVerifierBootstrap" +
+      "\022,.qorechain.bridge.v1.MsgSetVerifierBoo" +
+      "tstrap\0324.qorechain.bridge.v1.MsgSetVerif" +
+      "ierBootstrapResponse\032\005\200\347\260*\001B4Z2github.co" +
+      "m/qorechain/qorechain-core/x/bridge/type" +
+      "sb\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
@@ -6294,53 +13149,107 @@ public final class Tx extends com.google.protobuf.GeneratedFile {
           cosmos_proto.Cosmos.getDescriptor(),
           com.google.protobuf.GoGoProtos.getDescriptor(),
         });
-    internal_static_qorechain_bridge_v1_MsgBridgeDeposit_descriptor =
+    internal_static_qorechain_bridge_v1_MsgUpdateChainConfig_descriptor =
       getDescriptor().getMessageType(0);
+    internal_static_qorechain_bridge_v1_MsgUpdateChainConfig_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessage.FieldAccessorTable(
+        internal_static_qorechain_bridge_v1_MsgUpdateChainConfig_descriptor,
+        new java.lang.String[] { "Admin", "ChainId", "BridgeContract", "ConfirmationsRequired", "Architecture", "Status", "Verifier", "LockEventSig", });
+    internal_static_qorechain_bridge_v1_MsgUpdateChainConfigResponse_descriptor =
+      getDescriptor().getMessageType(1);
+    internal_static_qorechain_bridge_v1_MsgUpdateChainConfigResponse_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessage.FieldAccessorTable(
+        internal_static_qorechain_bridge_v1_MsgUpdateChainConfigResponse_descriptor,
+        new java.lang.String[] { });
+    internal_static_qorechain_bridge_v1_MsgSetVerifierBootstrap_descriptor =
+      getDescriptor().getMessageType(2);
+    internal_static_qorechain_bridge_v1_MsgSetVerifierBootstrap_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessage.FieldAccessorTable(
+        internal_static_qorechain_bridge_v1_MsgSetVerifierBootstrap_descriptor,
+        new java.lang.String[] { "Admin", "ChainId", "Wormhole", "Ed25519", "Bls", "Bitcoin", "StarknetStateRoot", });
+    internal_static_qorechain_bridge_v1_MsgSetVerifierBootstrapResponse_descriptor =
+      getDescriptor().getMessageType(3);
+    internal_static_qorechain_bridge_v1_MsgSetVerifierBootstrapResponse_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessage.FieldAccessorTable(
+        internal_static_qorechain_bridge_v1_MsgSetVerifierBootstrapResponse_descriptor,
+        new java.lang.String[] { });
+    internal_static_qorechain_bridge_v1_WormholeGuardianSet_descriptor =
+      getDescriptor().getMessageType(4);
+    internal_static_qorechain_bridge_v1_WormholeGuardianSet_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessage.FieldAccessorTable(
+        internal_static_qorechain_bridge_v1_WormholeGuardianSet_descriptor,
+        new java.lang.String[] { "Addresses", "Quorum", });
+    internal_static_qorechain_bridge_v1_ValidatorQuorum_descriptor =
+      getDescriptor().getMessageType(5);
+    internal_static_qorechain_bridge_v1_ValidatorQuorum_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessage.FieldAccessorTable(
+        internal_static_qorechain_bridge_v1_ValidatorQuorum_descriptor,
+        new java.lang.String[] { "Pubkeys", "Threshold", });
+    internal_static_qorechain_bridge_v1_BitcoinCheckpoint_descriptor =
+      getDescriptor().getMessageType(6);
+    internal_static_qorechain_bridge_v1_BitcoinCheckpoint_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessage.FieldAccessorTable(
+        internal_static_qorechain_bridge_v1_BitcoinCheckpoint_descriptor,
+        new java.lang.String[] { "BlockHash", "MinConfs", });
+    internal_static_qorechain_bridge_v1_MsgBridgeDeposit_descriptor =
+      getDescriptor().getMessageType(7);
     internal_static_qorechain_bridge_v1_MsgBridgeDeposit_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_qorechain_bridge_v1_MsgBridgeDeposit_descriptor,
         new java.lang.String[] { "Sender", "SourceChain", "SourceTxHash", "Asset", "Amount", "BridgeValidatorSigs", "PqcCommitment", });
     internal_static_qorechain_bridge_v1_MsgBridgeDepositResponse_descriptor =
-      getDescriptor().getMessageType(1);
+      getDescriptor().getMessageType(8);
     internal_static_qorechain_bridge_v1_MsgBridgeDepositResponse_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_qorechain_bridge_v1_MsgBridgeDepositResponse_descriptor,
         new java.lang.String[] { });
     internal_static_qorechain_bridge_v1_MsgBridgeWithdraw_descriptor =
-      getDescriptor().getMessageType(2);
+      getDescriptor().getMessageType(9);
     internal_static_qorechain_bridge_v1_MsgBridgeWithdraw_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_qorechain_bridge_v1_MsgBridgeWithdraw_descriptor,
         new java.lang.String[] { "Sender", "DestinationChain", "DestinationAddress", "Asset", "Amount", });
     internal_static_qorechain_bridge_v1_MsgBridgeWithdrawResponse_descriptor =
-      getDescriptor().getMessageType(3);
+      getDescriptor().getMessageType(10);
     internal_static_qorechain_bridge_v1_MsgBridgeWithdrawResponse_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_qorechain_bridge_v1_MsgBridgeWithdrawResponse_descriptor,
         new java.lang.String[] { });
     internal_static_qorechain_bridge_v1_MsgRegisterBridgeValidator_descriptor =
-      getDescriptor().getMessageType(4);
+      getDescriptor().getMessageType(11);
     internal_static_qorechain_bridge_v1_MsgRegisterBridgeValidator_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_qorechain_bridge_v1_MsgRegisterBridgeValidator_descriptor,
         new java.lang.String[] { "ValidatorAddress", "PqcPubkey", "SupportedChains", });
     internal_static_qorechain_bridge_v1_MsgRegisterBridgeValidatorResponse_descriptor =
-      getDescriptor().getMessageType(5);
+      getDescriptor().getMessageType(12);
     internal_static_qorechain_bridge_v1_MsgRegisterBridgeValidatorResponse_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_qorechain_bridge_v1_MsgRegisterBridgeValidatorResponse_descriptor,
         new java.lang.String[] { });
     internal_static_qorechain_bridge_v1_MsgBridgeAttestation_descriptor =
-      getDescriptor().getMessageType(6);
+      getDescriptor().getMessageType(13);
     internal_static_qorechain_bridge_v1_MsgBridgeAttestation_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_qorechain_bridge_v1_MsgBridgeAttestation_descriptor,
         new java.lang.String[] { "Validator", "Chain", "EventType", "OperationId", "TxHash", "Amount", "Asset", "Proof", "PqcSignature", });
     internal_static_qorechain_bridge_v1_MsgBridgeAttestationResponse_descriptor =
-      getDescriptor().getMessageType(7);
+      getDescriptor().getMessageType(14);
     internal_static_qorechain_bridge_v1_MsgBridgeAttestationResponse_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_qorechain_bridge_v1_MsgBridgeAttestationResponse_descriptor,
+        new java.lang.String[] { });
+    internal_static_qorechain_bridge_v1_MsgUpdateEthLightClient_descriptor =
+      getDescriptor().getMessageType(15);
+    internal_static_qorechain_bridge_v1_MsgUpdateEthLightClient_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessage.FieldAccessorTable(
+        internal_static_qorechain_bridge_v1_MsgUpdateEthLightClient_descriptor,
+        new java.lang.String[] { "Relayer", "Update", });
+    internal_static_qorechain_bridge_v1_MsgUpdateEthLightClientResponse_descriptor =
+      getDescriptor().getMessageType(16);
+    internal_static_qorechain_bridge_v1_MsgUpdateEthLightClientResponse_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessage.FieldAccessorTable(
+        internal_static_qorechain_bridge_v1_MsgUpdateEthLightClientResponse_descriptor,
         new java.lang.String[] { });
     descriptor.resolveAllFeaturesImmutable();
     cosmos.msg.v1.Msg.getDescriptor();

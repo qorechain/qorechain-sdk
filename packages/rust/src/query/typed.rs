@@ -1,5 +1,6 @@
 //! Typed query clients for the QoreChain modules that expose a gRPC `Query`
-//! service (crossvm, lightnode, pqc, qca, reputation, rlconsensus, svm).
+//! service (bridge, crossvm, lightnode, multilayer, pqc, qca, rdk, reputation,
+//! rlconsensus, svm).
 //!
 //! Rather than pull in a gRPC transport, the queries ride the chain RPC's
 //! `abci_query` method (the same JSON-RPC transport as [`JsonRpcClient`]): the
@@ -295,6 +296,203 @@ impl TypedQueryClient {
         self.grpc_query(
             "/qorechain.rlconsensus.v1.Query/Policy",
             &qorechain::rlconsensus::v1::QueryPolicyRequest {},
+        )
+        .await
+    }
+
+    // --- multilayer ---
+
+    /// Queries `qorechain.multilayer.v1.Query/Params`.
+    pub async fn multilayer_params(
+        &self,
+    ) -> Result<qorechain::multilayer::v1::QueryParamsResponse> {
+        self.grpc_query(
+            "/qorechain.multilayer.v1.Query/Params",
+            &qorechain::multilayer::v1::QueryParamsRequest {},
+        )
+        .await
+    }
+
+    /// Queries `qorechain.multilayer.v1.Query/Layer`.
+    pub async fn multilayer_layer(
+        &self,
+        layer_id: impl Into<String>,
+    ) -> Result<qorechain::multilayer::v1::QueryLayerResponse> {
+        self.grpc_query(
+            "/qorechain.multilayer.v1.Query/Layer",
+            &qorechain::multilayer::v1::QueryLayerRequest {
+                layer_id: layer_id.into(),
+            },
+        )
+        .await
+    }
+
+    /// Queries `qorechain.multilayer.v1.Query/Layers`.
+    pub async fn multilayer_layers(
+        &self,
+    ) -> Result<qorechain::multilayer::v1::QueryLayersResponse> {
+        self.grpc_query(
+            "/qorechain.multilayer.v1.Query/Layers",
+            &qorechain::multilayer::v1::QueryLayersRequest {},
+        )
+        .await
+    }
+
+    /// Queries `qorechain.multilayer.v1.Query/RoutingStats`.
+    pub async fn multilayer_routing_stats(
+        &self,
+    ) -> Result<qorechain::multilayer::v1::QueryRoutingStatsView> {
+        self.grpc_query(
+            "/qorechain.multilayer.v1.Query/RoutingStats",
+            &qorechain::multilayer::v1::QueryRoutingStatsRequest {},
+        )
+        .await
+    }
+
+    // --- rdk ---
+
+    /// Queries `qorechain.rdk.v1.Query/Params`.
+    pub async fn rdk_params(&self) -> Result<qorechain::rdk::v1::QueryParamsResponse> {
+        self.grpc_query(
+            "/qorechain.rdk.v1.Query/Params",
+            &qorechain::rdk::v1::QueryParamsRequest {},
+        )
+        .await
+    }
+
+    /// Queries `qorechain.rdk.v1.Query/Rollup`.
+    pub async fn rdk_rollup(
+        &self,
+        rollup_id: impl Into<String>,
+    ) -> Result<qorechain::rdk::v1::QueryRollupResponse> {
+        self.grpc_query(
+            "/qorechain.rdk.v1.Query/Rollup",
+            &qorechain::rdk::v1::QueryRollupRequest {
+                rollup_id: rollup_id.into(),
+            },
+        )
+        .await
+    }
+
+    /// Queries `qorechain.rdk.v1.Query/Rollups`.
+    pub async fn rdk_rollups(&self) -> Result<qorechain::rdk::v1::QueryRollupsResponse> {
+        self.grpc_query(
+            "/qorechain.rdk.v1.Query/Rollups",
+            &qorechain::rdk::v1::QueryRollupsRequest {},
+        )
+        .await
+    }
+
+    /// Queries `qorechain.rdk.v1.Query/Batch`.
+    pub async fn rdk_batch(
+        &self,
+        rollup_id: impl Into<String>,
+        batch_index: u64,
+    ) -> Result<qorechain::rdk::v1::QueryBatchResponse> {
+        self.grpc_query(
+            "/qorechain.rdk.v1.Query/Batch",
+            &qorechain::rdk::v1::QueryBatchRequest {
+                rollup_id: rollup_id.into(),
+                batch_index,
+            },
+        )
+        .await
+    }
+
+    /// Queries `qorechain.rdk.v1.Query/LatestBatch`.
+    pub async fn rdk_latest_batch(
+        &self,
+        rollup_id: impl Into<String>,
+    ) -> Result<qorechain::rdk::v1::QueryLatestBatchResponse> {
+        self.grpc_query(
+            "/qorechain.rdk.v1.Query/LatestBatch",
+            &qorechain::rdk::v1::QueryLatestBatchRequest {
+                rollup_id: rollup_id.into(),
+            },
+        )
+        .await
+    }
+
+    // --- bridge ---
+
+    /// Queries `qorechain.bridge.v1.Query/Config`.
+    pub async fn bridge_config(&self) -> Result<qorechain::bridge::v1::QueryConfigResponse> {
+        self.grpc_query(
+            "/qorechain.bridge.v1.Query/Config",
+            &qorechain::bridge::v1::QueryConfigRequest {},
+        )
+        .await
+    }
+
+    /// Queries `qorechain.bridge.v1.Query/ChainConfig`.
+    pub async fn bridge_chain_config(
+        &self,
+        chain_id: impl Into<String>,
+    ) -> Result<qorechain::bridge::v1::QueryChainConfigResponse> {
+        self.grpc_query(
+            "/qorechain.bridge.v1.Query/ChainConfig",
+            &qorechain::bridge::v1::QueryChainConfigRequest {
+                chain_id: chain_id.into(),
+            },
+        )
+        .await
+    }
+
+    /// Queries `qorechain.bridge.v1.Query/ChainConfigs`.
+    pub async fn bridge_chain_configs(
+        &self,
+    ) -> Result<qorechain::bridge::v1::QueryChainConfigsResponse> {
+        self.grpc_query(
+            "/qorechain.bridge.v1.Query/ChainConfigs",
+            &qorechain::bridge::v1::QueryChainConfigsRequest {},
+        )
+        .await
+    }
+
+    /// Queries `qorechain.bridge.v1.Query/Validator`.
+    pub async fn bridge_validator(
+        &self,
+        address: impl Into<String>,
+    ) -> Result<qorechain::bridge::v1::QueryValidatorResponse> {
+        self.grpc_query(
+            "/qorechain.bridge.v1.Query/Validator",
+            &qorechain::bridge::v1::QueryValidatorRequest {
+                address: address.into(),
+            },
+        )
+        .await
+    }
+
+    /// Queries `qorechain.bridge.v1.Query/Validators`.
+    pub async fn bridge_validators(
+        &self,
+    ) -> Result<qorechain::bridge::v1::QueryValidatorsResponse> {
+        self.grpc_query(
+            "/qorechain.bridge.v1.Query/Validators",
+            &qorechain::bridge::v1::QueryValidatorsRequest {},
+        )
+        .await
+    }
+
+    /// Queries `qorechain.bridge.v1.Query/Operation`.
+    pub async fn bridge_operation(
+        &self,
+        id: impl Into<String>,
+    ) -> Result<qorechain::bridge::v1::QueryOperationResponse> {
+        self.grpc_query(
+            "/qorechain.bridge.v1.Query/Operation",
+            &qorechain::bridge::v1::QueryOperationRequest { id: id.into() },
+        )
+        .await
+    }
+
+    /// Queries `qorechain.bridge.v1.Query/Operations`.
+    pub async fn bridge_operations(
+        &self,
+    ) -> Result<qorechain::bridge::v1::QueryOperationsResponse> {
+        self.grpc_query(
+            "/qorechain.bridge.v1.Query/Operations",
+            &qorechain::bridge::v1::QueryOperationsRequest {},
         )
         .await
     }

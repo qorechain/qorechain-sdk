@@ -1,0 +1,20 @@
+{
+  "name": "@qorechain/example-rollup-lifecycle",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Create a rollup, submit a batch, query status/latest batch, and execute a withdrawal via the RollupClient helper.",
+  "scripts": {
+    "start": "tsx index.ts",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@cosmjs/tendermint-rpc": "^0.39.0",
+    "@qorechain/sdk": "workspace:*"
+  },
+  "devDependencies": {
+    "@types/node": "^22.7.5",
+    "tsx": "^4.19.0",
+    "typescript": "^5.6.3"
+  }
+}

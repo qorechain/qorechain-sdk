@@ -58,6 +58,18 @@ bridge = SimpleNamespace(
     bridge_attestation=composer(
         "/qorechain.bridge.v1.MsgBridgeAttestation", bridge_tx.MsgBridgeAttestation
     ),
+    update_eth_light_client=composer(
+        "/qorechain.bridge.v1.MsgUpdateEthLightClient",
+        bridge_tx.MsgUpdateEthLightClient,
+    ),
+    update_chain_config=composer(
+        "/qorechain.bridge.v1.MsgUpdateChainConfig",
+        bridge_tx.MsgUpdateChainConfig,
+    ),
+    set_verifier_bootstrap=composer(
+        "/qorechain.bridge.v1.MsgSetVerifierBootstrap",
+        bridge_tx.MsgSetVerifierBootstrap,
+    ),
 )
 
 # --------------------------------------------------------------------------- #
@@ -75,6 +87,9 @@ rdk = SimpleNamespace(
     pause_rollup=composer("/qorechain.rdk.v1.MsgPauseRollup", rdk_tx.MsgPauseRollup),
     resume_rollup=composer("/qorechain.rdk.v1.MsgResumeRollup", rdk_tx.MsgResumeRollup),
     stop_rollup=composer("/qorechain.rdk.v1.MsgStopRollup", rdk_tx.MsgStopRollup),
+    execute_withdrawal=composer(
+        "/qorechain.rdk.v1.MsgExecuteWithdrawal", rdk_tx.MsgExecuteWithdrawal
+    ),
 )
 
 # --------------------------------------------------------------------------- #

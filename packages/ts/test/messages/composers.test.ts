@@ -75,6 +75,32 @@ const cases: Array<{ name: string; obj: { typeUrl: string }; typeUrl: string }> 
       typeUrl: "/qorechain.bridge.v1.MsgBridgeAttestation",
       obj: msg.bridge.bridgeAttestation({ validator: ADDR, amount: "1" }),
     },
+    {
+      name: "bridge.updateEthLightClient",
+      typeUrl: "/qorechain.bridge.v1.MsgUpdateEthLightClient",
+      obj: msg.bridge.updateEthLightClient({
+        relayer: ADDR,
+        update: new Uint8Array([1, 2, 3]),
+      }),
+    },
+    {
+      name: "bridge.updateChainConfig",
+      typeUrl: "/qorechain.bridge.v1.MsgUpdateChainConfig",
+      obj: msg.bridge.updateChainConfig({
+        admin: ADDR,
+        chainId: "ethereum",
+        status: "active",
+      }),
+    },
+    {
+      name: "bridge.setVerifierBootstrap",
+      typeUrl: "/qorechain.bridge.v1.MsgSetVerifierBootstrap",
+      obj: msg.bridge.setVerifierBootstrap({
+        admin: ADDR,
+        chainId: "ethereum",
+        wormhole: { addresses: [new Uint8Array(20).fill(1)], quorum: 1 },
+      }),
+    },
     // rdk
     {
       name: "rdk.createRollup",
@@ -110,6 +136,20 @@ const cases: Array<{ name: string; obj: { typeUrl: string }; typeUrl: string }> 
       name: "rdk.stopRollup",
       typeUrl: "/qorechain.rdk.v1.MsgStopRollup",
       obj: msg.rdk.stopRollup({ creator: ADDR, rollupId: "r1" }),
+    },
+    {
+      name: "rdk.executeWithdrawal",
+      typeUrl: "/qorechain.rdk.v1.MsgExecuteWithdrawal",
+      obj: msg.rdk.executeWithdrawal({
+        submitter: ADDR,
+        rollupId: "r1",
+        batchIndex: "0",
+        withdrawalIndex: "0",
+        recipient: ADDR,
+        denom: "uqor",
+        amount: "100",
+        proof: [new Uint8Array([1]), new Uint8Array([2])],
+      }),
     },
     // multilayer
     {
@@ -277,8 +317,8 @@ const cases: Array<{ name: string; obj: { typeUrl: string }; typeUrl: string }> 
   ];
 
 describe("qorechain custom-module composers", () => {
-  it("covers all 49 custom Msg types", () => {
-    expect(cases).toHaveLength(49);
+  it("covers all 53 custom Msg types", () => {
+    expect(cases).toHaveLength(53);
   });
 
   for (const c of cases) {
@@ -287,6 +327,58 @@ describe("qorechain custom-module composers", () => {
       const bytes = registry.encode(c.obj as never);
       // Empty-body messages encode to zero bytes; that is still valid.
       expect(bytes).toBeInstanceOf(Uint8Array);
+    });
+  }
+});
+
+/**
+ * The newly-wired messages (re-synced protos): each must round-trip
+ * composer -> Any encode -> registry decode back to the same value, proving the
+ * registry entry and the generated codec agree.
+ */
+describe("new composers round-trip through the registry (Any encode/decode)", () => {
+  const roundTrip = [
+    msg.rdk.executeWithdrawal({
+      submitter: ADDR,
+      rollupId: "r1",
+      batchIndex: "5",
+      withdrawalIndex: "2",
+      recipient: ADDR,
+      denom: "uqor",
+      amount: "777",
+      proof: [new Uint8Array([1, 2, 3]), new Uint8Array([4, 5, 6])],
+    }),
+    msg.bridge.updateEthLightClient({
+      relayer: ADDR,
+      update: new Uint8Array([9, 8, 7, 6]),
+    }),
+    msg.bridge.updateChainConfig({
+      admin: ADDR,
+      chainId: "ethereum",
+      bridgeContract: "0xabc",
+      confirmationsRequired: 12,
+      architecture: "evm",
+      status: "active",
+      verifier: "light_client",
+      lockEventSig: "0xtopic0",
+    }),
+    msg.bridge.setVerifierBootstrap({
+      admin: ADDR,
+      chainId: "solana",
+      ed25519: { pubkeys: [new Uint8Array(32).fill(2)], threshold: 1 },
+    }),
+  ];
+
+  for (const sample of roundTrip) {
+    it(`${sample.typeUrl} round-trips`, () => {
+      const bytes = registry.encode(sample);
+      const decoded = registry.decode({
+        typeUrl: sample.typeUrl,
+        value: bytes,
+      });
+      expect(decoded, sample.typeUrl).toMatchObject(
+        sample.value as Record<string, unknown>,
+      );
     });
   }
 });

@@ -332,16 +332,47 @@ export type {
   Bech32Config,
 } from "./wallet/cosmos";
 
-// Typed gRPC query clients for the modules with a query service (crossvm,
-// lightnode, pqc, qca, reputation, rlconsensus, svm) over a cosmjs QueryClient.
+// Typed gRPC query clients for the modules with a query service (bridge,
+// crossvm, lightnode, multilayer, pqc, qca, rdk, reputation, rlconsensus, svm)
+// over a cosmjs QueryClient.
 export { createQueryClients, connectQueryClients } from "./query/grpc";
 export type {
   QoreChainQueryClients,
+  BridgeQueryClient,
   CrossVmQueryClient,
   LightNodeQueryClient,
+  MultilayerQueryClient,
   PqcQueryClient,
   QcaQueryClient,
+  RdkQueryClient,
   ReputationQueryClient,
   RlConsensusQueryClient,
   SvmQueryClient,
 } from "./query/grpc";
+
+// High-level developer-experience helpers: ergonomic, strongly-typed clients for
+// building sidechains/paychains (multilayer) and rollups (rdk) — register →
+// anchor → route, and create → batch → withdraw — without hand-building Any
+// payloads. See ./helpers for the full option-object docs.
+export {
+  createMultilayerClient,
+  createRollupClient,
+} from "./helpers";
+export type {
+  MultilayerClient,
+  CreateMultilayerClientOptions,
+  MultilayerWriteOptions,
+  RegisterSidechainOptions,
+  RegisterPaychainOptions,
+  AnchorStateOptions,
+  RouteTransactionOptions,
+  RollupClient,
+  CreateRollupClientOptions,
+  RollupWriteOptions,
+  CreateRollupOptions,
+  SubmitBatchOptions,
+  ChallengeBatchOptions,
+  ResolveChallengeOptions,
+  RollupLifecycleOptions,
+  ExecuteWithdrawalOptions,
+} from "./helpers";

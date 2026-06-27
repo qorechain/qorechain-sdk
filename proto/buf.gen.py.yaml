@@ -2,7 +2,7 @@
 #
 # Emits standard protobuf message classes (protocolbuffers/python) plus type
 # stubs (protocolbuffers/pyi) for the QoreChain modules into the committed
-# `packages/py/src/qorechain/proto` tree. Dependency protos (coin, gogo,
+# `packages/py/src/qorsdk/proto` tree. Dependency protos (coin, gogo,
 # cosmos_proto, well-known types) are resolved from the public schema registry
 # (see proto/buf.yaml deps) so a maintainer running codegen needs no local
 # dependency protos; the generated Python is committed so SDK users never run
@@ -22,6 +22,6 @@ managed:
 # runtime-version assertion that would refuse to load under protobuf 5.x).
 plugins:
   - remote: buf.build/protocolbuffers/python:v29.3
-    out: packages/py/src/qorechain/proto
+    out: packages/py/src/qorsdk/proto
   - remote: buf.build/protocolbuffers/pyi:v29.3
-    out: packages/py/src/qorechain/proto
+    out: packages/py/src/qorsdk/proto

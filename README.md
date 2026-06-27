@@ -5,7 +5,7 @@ Official multi-language SDK and developer kit for building decentralized applica
 QoreChain is a triple-VM Layer 1 with first-class support for CosmWasm,
 EVM/Solidity, and SVM smart contracts, plus IBC interoperability. SDKs are
 available for **TypeScript, Python, Go, Rust, and Java** — all published at
-`0.3.x`.
+`0.4.x`.
 
 ## Packages
 
@@ -17,7 +17,7 @@ available for **TypeScript, Python, Go, Rust, and Java** — all published at
 | `qorechain-sdk` | Python | `pip install qorechain-sdk` | `import qorsdk` |
 | `qorechain-sdk` | Rust | `cargo add qorechain-sdk` | `use qorechain` |
 | Go module | Go | `go get github.com/qorechain/qorechain-sdk/packages/go` | `.../packages/go` |
-| `io.github.qorechain:qorechain-sdk` | Java | `implementation("io.github.qorechain:qorechain-sdk:0.3.0")` | `io.github.qorechain` |
+| `io.github.qorechain:qorechain-sdk` | Java | `implementation("io.github.qorechain:qorechain-sdk:0.4.0")` | `io.github.qorechain` |
 | `create-qorechain-dapp` | CLI scaffolder | `npm create qorechain-dapp@latest` | — |
 
 > **Import names:** the Python distribution `qorechain-sdk` imports as `qorsdk`;
@@ -164,7 +164,7 @@ and WebSocket subscriptions.
 - **Python** — `pip install qorechain-sdk`, then `import qorsdk`. See [packages/py](./packages/py/README.md).
 - **Go** — `go get github.com/qorechain/qorechain-sdk/packages/go`. See [packages/go](./packages/go/README.md).
 - **Rust** — `cargo add qorechain-sdk`, then `use qorechain;`. See [packages/rust](./packages/rust/README.md).
-- **Java** — `io.github.qorechain:qorechain-sdk:0.3.0` (Maven Central), package `io.github.qorechain`. See [packages/java](./packages/java/README.md).
+- **Java** — `io.github.qorechain:qorechain-sdk:0.4.0` (Maven Central), package `io.github.qorechain`. See [packages/java](./packages/java/README.md).
 
 > Browser wallets and the viem / `@solana/web3.js` EVM/SVM adapters are
 > TypeScript-only; in Python/Go/Rust use that ecosystem's standard libraries for
@@ -191,6 +191,10 @@ native-chain parts. Highlights:
 - **CosmWasm lifecycle** — query, upload, instantiate/instantiate2, execute,
   migrate, and admin management.
 - **PQC** — ML-DSA-87 (Dilithium-5) signing and hybrid-signature transactions.
+- **Sidechains, paychains & rollups** — high-level `multilayer` and rollup
+  helpers to register a sidechain/paychain, anchor state, route transactions,
+  and run a full rollup lifecycle (create → submit batch → execute withdrawal),
+  with typed `multilayer` and `rdk` query clients.
 
 See the [docs](./docs) and [examples](./examples) for runnable usage.
 

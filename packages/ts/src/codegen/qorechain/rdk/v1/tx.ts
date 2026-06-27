@@ -30,6 +30,11 @@ export interface MsgSubmitBatch {
   txCount: string;
   dataHash: Uint8Array;
   proof: Uint8Array;
+  /**
+   * withdrawals_root commits the L2->L1 messages (withdrawals) in this batch as
+   * a binary Merkle root. Empty when the batch carries no cross-layer messages.
+   */
+  withdrawalsRoot: Uint8Array;
 }
 
 export interface MsgSubmitBatchResponse {
@@ -83,6 +88,28 @@ export interface MsgStopRollup {
 }
 
 export interface MsgStopRollupResponse {
+}
+
+/**
+ * MsgExecuteWithdrawal finalizes an L2->L1 cross-layer message: it proves a
+ * withdrawal leaf is committed in a finalized batch's withdrawals_root and pays
+ * the recipient from the rdk module escrow. Permissionless — anyone may submit a
+ * valid proof; the funds always go to the committed recipient. Replay-protected
+ * per (rollup_id, batch_index, withdrawal_index).
+ */
+export interface MsgExecuteWithdrawal {
+  submitter: string;
+  rollupId: string;
+  batchIndex: string;
+  withdrawalIndex: string;
+  recipient: string;
+  denom: string;
+  amount: string;
+  /** proof are the binary-Merkle sibling hashes from the leaf to withdrawals_root. */
+  proof: Uint8Array[];
+}
+
+export interface MsgExecuteWithdrawalResponse {
 }
 
 function createBaseMsgCreateRollup(): MsgCreateRollup {
@@ -295,6 +322,7 @@ function createBaseMsgSubmitBatch(): MsgSubmitBatch {
     txCount: "0",
     dataHash: new Uint8Array(0),
     proof: new Uint8Array(0),
+    withdrawalsRoot: new Uint8Array(0),
   };
 }
 
@@ -323,6 +351,9 @@ export const MsgSubmitBatch: MessageFns<MsgSubmitBatch> = {
     }
     if (message.proof.length !== 0) {
       writer.uint32(66).bytes(message.proof);
+    }
+    if (message.withdrawalsRoot.length !== 0) {
+      writer.uint32(74).bytes(message.withdrawalsRoot);
     }
     return writer;
   },
@@ -398,6 +429,14 @@ export const MsgSubmitBatch: MessageFns<MsgSubmitBatch> = {
           message.proof = reader.bytes();
           continue;
         }
+        case 9: {
+          if (tag !== 74) {
+            break;
+          }
+
+          message.withdrawalsRoot = reader.bytes();
+          continue;
+        }
       }
       if ((tag & 7) === 4 || tag === 0) {
         break;
@@ -441,6 +480,11 @@ export const MsgSubmitBatch: MessageFns<MsgSubmitBatch> = {
         ? bytesFromBase64(object.data_hash)
         : new Uint8Array(0),
       proof: isSet(object.proof) ? bytesFromBase64(object.proof) : new Uint8Array(0),
+      withdrawalsRoot: isSet(object.withdrawalsRoot)
+        ? bytesFromBase64(object.withdrawalsRoot)
+        : isSet(object.withdrawals_root)
+        ? bytesFromBase64(object.withdrawals_root)
+        : new Uint8Array(0),
     };
   },
 
@@ -470,6 +514,9 @@ export const MsgSubmitBatch: MessageFns<MsgSubmitBatch> = {
     if (message.proof.length !== 0) {
       obj.proof = base64FromBytes(message.proof);
     }
+    if (message.withdrawalsRoot.length !== 0) {
+      obj.withdrawalsRoot = base64FromBytes(message.withdrawalsRoot);
+    }
     return obj;
   },
 
@@ -486,6 +533,7 @@ export const MsgSubmitBatch: MessageFns<MsgSubmitBatch> = {
     message.txCount = object.txCount ?? "0";
     message.dataHash = object.dataHash ?? new Uint8Array(0);
     message.proof = object.proof ?? new Uint8Array(0);
+    message.withdrawalsRoot = object.withdrawalsRoot ?? new Uint8Array(0);
     return message;
   },
 };
@@ -1240,6 +1288,242 @@ export const MsgStopRollupResponse: MessageFns<MsgStopRollupResponse> = {
   },
 };
 
+function createBaseMsgExecuteWithdrawal(): MsgExecuteWithdrawal {
+  return {
+    submitter: "",
+    rollupId: "",
+    batchIndex: "0",
+    withdrawalIndex: "0",
+    recipient: "",
+    denom: "",
+    amount: "0",
+    proof: [],
+  };
+}
+
+export const MsgExecuteWithdrawal: MessageFns<MsgExecuteWithdrawal> = {
+  encode(message: MsgExecuteWithdrawal, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.submitter !== "") {
+      writer.uint32(10).string(message.submitter);
+    }
+    if (message.rollupId !== "") {
+      writer.uint32(18).string(message.rollupId);
+    }
+    if (message.batchIndex !== "0") {
+      writer.uint32(24).uint64(message.batchIndex);
+    }
+    if (message.withdrawalIndex !== "0") {
+      writer.uint32(32).uint64(message.withdrawalIndex);
+    }
+    if (message.recipient !== "") {
+      writer.uint32(42).string(message.recipient);
+    }
+    if (message.denom !== "") {
+      writer.uint32(50).string(message.denom);
+    }
+    if (message.amount !== "0") {
+      writer.uint32(56).int64(message.amount);
+    }
+    for (const v of message.proof) {
+      writer.uint32(66).bytes(v!);
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): MsgExecuteWithdrawal {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseMsgExecuteWithdrawal();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.submitter = reader.string();
+          continue;
+        }
+        case 2: {
+          if (tag !== 18) {
+            break;
+          }
+
+          message.rollupId = reader.string();
+          continue;
+        }
+        case 3: {
+          if (tag !== 24) {
+            break;
+          }
+
+          message.batchIndex = reader.uint64().toString();
+          continue;
+        }
+        case 4: {
+          if (tag !== 32) {
+            break;
+          }
+
+          message.withdrawalIndex = reader.uint64().toString();
+          continue;
+        }
+        case 5: {
+          if (tag !== 42) {
+            break;
+          }
+
+          message.recipient = reader.string();
+          continue;
+        }
+        case 6: {
+          if (tag !== 50) {
+            break;
+          }
+
+          message.denom = reader.string();
+          continue;
+        }
+        case 7: {
+          if (tag !== 56) {
+            break;
+          }
+
+          message.amount = reader.int64().toString();
+          continue;
+        }
+        case 8: {
+          if (tag !== 66) {
+            break;
+          }
+
+          message.proof.push(reader.bytes());
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(object: any): MsgExecuteWithdrawal {
+    return {
+      submitter: isSet(object.submitter) ? globalThis.String(object.submitter) : "",
+      rollupId: isSet(object.rollupId)
+        ? globalThis.String(object.rollupId)
+        : isSet(object.rollup_id)
+        ? globalThis.String(object.rollup_id)
+        : "",
+      batchIndex: isSet(object.batchIndex)
+        ? globalThis.String(object.batchIndex)
+        : isSet(object.batch_index)
+        ? globalThis.String(object.batch_index)
+        : "0",
+      withdrawalIndex: isSet(object.withdrawalIndex)
+        ? globalThis.String(object.withdrawalIndex)
+        : isSet(object.withdrawal_index)
+        ? globalThis.String(object.withdrawal_index)
+        : "0",
+      recipient: isSet(object.recipient) ? globalThis.String(object.recipient) : "",
+      denom: isSet(object.denom) ? globalThis.String(object.denom) : "",
+      amount: isSet(object.amount) ? globalThis.String(object.amount) : "0",
+      proof: globalThis.Array.isArray(object?.proof) ? object.proof.map((e: any) => bytesFromBase64(e)) : [],
+    };
+  },
+
+  toJSON(message: MsgExecuteWithdrawal): unknown {
+    const obj: any = {};
+    if (message.submitter !== "") {
+      obj.submitter = message.submitter;
+    }
+    if (message.rollupId !== "") {
+      obj.rollupId = message.rollupId;
+    }
+    if (message.batchIndex !== "0") {
+      obj.batchIndex = message.batchIndex;
+    }
+    if (message.withdrawalIndex !== "0") {
+      obj.withdrawalIndex = message.withdrawalIndex;
+    }
+    if (message.recipient !== "") {
+      obj.recipient = message.recipient;
+    }
+    if (message.denom !== "") {
+      obj.denom = message.denom;
+    }
+    if (message.amount !== "0") {
+      obj.amount = message.amount;
+    }
+    if (message.proof?.length) {
+      obj.proof = message.proof.map((e) => base64FromBytes(e));
+    }
+    return obj;
+  },
+
+  create(base?: DeepPartial<MsgExecuteWithdrawal>): MsgExecuteWithdrawal {
+    return MsgExecuteWithdrawal.fromPartial(base ?? {});
+  },
+  fromPartial(object: DeepPartial<MsgExecuteWithdrawal>): MsgExecuteWithdrawal {
+    const message = createBaseMsgExecuteWithdrawal();
+    message.submitter = object.submitter ?? "";
+    message.rollupId = object.rollupId ?? "";
+    message.batchIndex = object.batchIndex ?? "0";
+    message.withdrawalIndex = object.withdrawalIndex ?? "0";
+    message.recipient = object.recipient ?? "";
+    message.denom = object.denom ?? "";
+    message.amount = object.amount ?? "0";
+    message.proof = object.proof?.map((e) => e) || [];
+    return message;
+  },
+};
+
+function createBaseMsgExecuteWithdrawalResponse(): MsgExecuteWithdrawalResponse {
+  return {};
+}
+
+export const MsgExecuteWithdrawalResponse: MessageFns<MsgExecuteWithdrawalResponse> = {
+  encode(_: MsgExecuteWithdrawalResponse, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): MsgExecuteWithdrawalResponse {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseMsgExecuteWithdrawalResponse();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(_: any): MsgExecuteWithdrawalResponse {
+    return {};
+  },
+
+  toJSON(_: MsgExecuteWithdrawalResponse): unknown {
+    const obj: any = {};
+    return obj;
+  },
+
+  create(base?: DeepPartial<MsgExecuteWithdrawalResponse>): MsgExecuteWithdrawalResponse {
+    return MsgExecuteWithdrawalResponse.fromPartial(base ?? {});
+  },
+  fromPartial(_: DeepPartial<MsgExecuteWithdrawalResponse>): MsgExecuteWithdrawalResponse {
+    const message = createBaseMsgExecuteWithdrawalResponse();
+    return message;
+  },
+};
+
 /** Msg defines the rdk module's transaction service. */
 export type MsgDefinition = typeof MsgDefinition;
 export const MsgDefinition = {
@@ -1299,6 +1583,14 @@ export const MsgDefinition = {
       requestType: MsgStopRollup as typeof MsgStopRollup,
       requestStream: false,
       responseType: MsgStopRollupResponse as typeof MsgStopRollupResponse,
+      responseStream: false,
+      options: {},
+    },
+    executeWithdrawal: {
+      name: "ExecuteWithdrawal",
+      requestType: MsgExecuteWithdrawal as typeof MsgExecuteWithdrawal,
+      requestStream: false,
+      responseType: MsgExecuteWithdrawalResponse as typeof MsgExecuteWithdrawalResponse,
       responseStream: false,
       options: {},
     },

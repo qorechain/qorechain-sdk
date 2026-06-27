@@ -36,6 +36,12 @@ export const TEMPLATES: readonly TemplateInfo[] = [
     hint: "A minimal Vite + React dApp using @qorechain/sdk to read balances and tokenomics.",
     language: "typescript",
   },
+  {
+    id: "rollup-app",
+    label: "Rollup + multilayer app",
+    hint: "A rollup + sidechain/paychain app using the RollupClient and multilayer helper from @qorechain/sdk.",
+    language: "typescript",
+  },
 ] as const;
 
 /** Look up a template by id, or `undefined` if unknown. */
