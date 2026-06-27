@@ -20,6 +20,14 @@ Go, and Rust SDKs:
 - **query** — `RestClient` (Cosmos + 8 custom routes), `JsonRpcClient`
   (EVM `eth_*`), `QorClient` (25 `qor_*` methods).
 - **subscribe** — WebSocket `subscribeNewBlocks` / `subscribeTx`.
+- **multilayer / rdk** — typed composers and `MultilayerQueryClient` /
+  `RdkQueryClient` / `BridgeQueryClient` for sidechains, paychains, and rollups
+  (v0.4.0).
+- **crossvm** — `CrossVMClient`: unified cross-VM calls (single + atomic
+  triple-VM) over `MsgCrossVMCall` (v0.5.0).
+- **evm** — `EvmPrecompiles`: AI pre-flight risk/anomaly scoring (v0.5.0).
+- **pqc** — `PqcDx`: quantum-safe DX (idempotent registration + classical→hybrid
+  migration) (v0.5.0).
 
 ## Coordinates
 
@@ -38,6 +46,145 @@ export JAVA_HOME="$(/usr/libexec/java_home -v 21 2>/dev/null || echo /opt/homebr
 ./gradlew build test            # compile + run the JUnit 5 suite
 ./gradlew publishToMavenLocal   # validate packaging (main + sources + javadoc jars)
 ```
+
+## Sidechains, paychains & rollups (v0.4.0)
+
+The multilayer (sidechains/paychains) and `rdk` (rollup) modules are covered by
+the typed composers under `QorechainMessages.multilayer` / `QorechainMessages.rdk`
+and the typed query clients. Build the proto `Msg`, wrap it with the composer into
+a `TypedMessage`, sign/broadcast it like any other message, and read layer/rollup
+state through the query clients.
+
+```java
+import io.github.qorechain.messages.QorechainMessages;
+import io.github.qorechain.messages.TypedMessage;
+import io.github.qorechain.query.MultilayerQueryClient;
+import io.github.qorechain.query.RdkQueryClient;
+import io.github.qorechain.query.BridgeQueryClient;
+
+// Compose a rollup-creation message.
+TypedMessage create = QorechainMessages.rdk.createRollup(
+        qorechain.rdk.v1.Tx.MsgCreateRollup.newBuilder()
+                .setCreator(account.address()).setRollupId("r1")
+                .setProfile("default").setVmType("evm").setStakeAmount(1)
+                .build());
+
+// Compose a sidechain registration.
+TypedMessage register = QorechainMessages.multilayer.registerSidechain(
+        qorechain.multilayer.v1.Tx.MsgRegisterSidechain.newBuilder()
+                .setCreator(account.address()).setLayerId("game-l2")
+                .setDescription("game sidechain").build());
+
+// Read layer / rollup / bridge state (over the ABCI query transport).
+var ml = new MultilayerQueryClient("http://localhost:26657");
+var layer = ml.layer("game-l2");
+var layers = ml.layers();
+var stats = ml.routingStats();
+
+var rdk = new RdkQueryClient("http://localhost:26657");
+var rollup = rdk.rollup("r1");
+var batch = rdk.latestBatch("r1");
+
+var bridge = new BridgeQueryClient("http://localhost:26657");
+var chains = bridge.chainConfigs();
+```
+
+See the [multilayer](../../docs/docs/guides/multilayer.md) and
+[rollups](../../docs/docs/guides/rollups.md) guides.
+
+## AI pre-flight risk scoring (v0.5.0)
+
+`EvmPrecompiles` exposes QoreChain's on-chain AI risk/anomaly model over two EVM
+precompiles, so you get an advisory verdict on a transaction before broadcasting
+it. `simulateWithRiskScore` bundles a gas estimate, the `aiRiskScore` precompile
+(`AI_RISK_SCORE_ADDRESS`, `0x…0B01`), and the `aiAnomalyCheck` precompile
+(`AI_ANOMALY_CHECK_ADDRESS`, `0x…0B02`) into one `Preflight`.
+
+```java
+import io.github.qorechain.evm.EvmPrecompiles;
+import io.github.qorechain.query.JsonRpcClient;
+
+JsonRpcClient rpc = new JsonRpcClient("https://evm.example");
+
+EvmPrecompiles.PreflightTx tx = new EvmPrecompiles.PreflightTx();
+tx.from = "0xSender";
+tx.to = "0xContract";
+tx.data = "0x...";
+EvmPrecompiles.Preflight verdict = EvmPrecompiles.simulateWithRiskScore(rpc, tx);
+if (!verdict.safe) { /* AI pre-flight flagged the transaction */ }
+
+// Or call the precompiles individually.
+EvmPrecompiles.RiskScore risk = EvmPrecompiles.aiRiskScore(rpc, new byte[]{(byte) 0xde});
+EvmPrecompiles.Anomaly anomaly =
+        EvmPrecompiles.aiAnomalyCheck(rpc, "0xSender", java.math.BigInteger.valueOf(1_000_000));
+```
+
+See the [AI pre-flight](../../docs/docs/guides/ai-preflight.md) guide.
+
+## Unified cross-VM calls (v0.5.0)
+
+`CrossVMClient` wraps `MsgCrossVMCall` so you can route a single call — or several
+atomically in **one** transaction (`callAtomic`) — across the EVM, CosmWasm, and
+SVM VMs (`CrossVMClient.VMType.EVM` / `.COSMWASM` / `.SVM`). The payload is raw
+bytes (`payload`) or a JSON-serializable CosmWasm object (`cosmwasm`, which is
+serialized to UTF-8 JSON via Jackson).
+
+```java
+import io.github.qorechain.crossvm.CrossVMClient;
+import java.util.List;
+import java.util.Map;
+
+CrossVMClient xvm = new CrossVMClient(signer, broadcaster, qor);
+
+// Single call into a CosmWasm contract (cosmwasm is JSON-encoded).
+CrossVMClient.CallOptions cw = new CrossVMClient.CallOptions();
+cw.targetVm = CrossVMClient.VMType.COSMWASM;
+cw.targetContract = "qor1contract…";
+cw.cosmwasm = Map.of("increment", Map.of());
+var res = xvm.call(cw);
+
+// Atomic triple-VM batch in ONE tx.
+CrossVMClient.CallOptions evm = new CrossVMClient.CallOptions();
+evm.targetVm = CrossVMClient.VMType.EVM;
+evm.targetContract = "0xC…";
+evm.payload = abiCalldata;
+var atomic = xvm.callAtomic(List.of(evm, cw));
+
+var msg = xvm.buildCall(evm);     // build-only TypedMessage
+var status = xvm.getMessage("42"); // read a routed message's status
+```
+
+See the [cross-VM](../../docs/docs/guides/cross-vm.md) guide.
+
+## Quantum-safe DX (v0.5.0)
+
+`PqcDx` makes a dApp PQC-protected in one idempotent call: check whether the
+signer's Dilithium key is registered, register it if not, then sign hybrid
+(ML-DSA-87 + secp256k1).
+
+```java
+import io.github.qorechain.pqc.PqcDx;
+import io.github.qorechain.query.QorClient;
+
+QorClient qor = new QorClient("https://evm.example");
+
+// Read-only status (over the qor_ namespace).
+boolean registered = PqcDx.isPqcRegistered(qor, account.address());
+PqcDx.PqcStatus status = PqcDx.getPqcStatus(qor, account.address());
+
+// Idempotent: registers the signer's Dilithium key only if it isn't already.
+PqcDx.EnsureResult ensure =
+        PqcDx.ensurePqcRegistered(signer, broadcaster, qor, new PqcDx.EnsureOptions());
+
+// Migrate a classical account to hybrid signing, then sign hybrid.
+PqcDx.HybridSendPath path =
+        PqcDx.migrateToHybrid(signer, broadcaster, qor, new PqcDx.EnsureOptions());
+
+// Rotate an account's on-chain PQC key (MsgMigratePQCKey).
+PqcDx.migratePqcKey(signer, broadcaster, new PqcDx.MigrateOptions());
+```
+
+See the [quantum-safe](../../docs/docs/guides/quantum-safe.md) guide.
 
 ## Regenerating the protobuf classes
 

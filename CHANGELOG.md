@@ -5,6 +5,50 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.5.0]
+
+### Added
+
+- **AI pre-flight risk scoring** — `simulateWithRiskScore`, `aiRiskScore`, and
+  `aiAnomalyCheck` call the on-chain AI EVM precompiles (`aiRiskScore(bytes)` at
+  `0x…0B01`, `aiAnomalyCheck(address,uint256)` at `0x…0B02`) via `eth_call` to
+  return gas plus a risk score/level and an anomaly score/flag, with an advisory
+  `safe` verdict. Available across TypeScript, Python, Go, Rust, and Java.
+- **Unified cross-VM calls + atomic triple-VM transactions** — a high-level
+  cross-VM client (`call` / `buildCall` / `callAtomic` / `getMessage`) over
+  `MsgCrossVMCall`, targeting any VM (`evm` | `cosmwasm` | `svm`) from one account
+  and one signature; `callAtomic` packs multiple cross-VM calls into a single
+  transaction. TypeScript encodes payloads per VM (EVM ABI, CosmWasm JSON, raw);
+  the other languages accept raw payloads and CosmWasm JSON.
+- **Quantum-safe DX** — `isPqcRegistered` / `getPqcStatus` /
+  `ensurePqcRegistered` (idempotent, via `qor_getPQCKeyStatus` +
+  `MsgRegisterPQCKey`) and `migrateToHybrid` (+ `MsgMigratePQCKey`), across all
+  five languages.
+- **`@qorechain/react`** (new package) — `QoreChainProvider`, hooks
+  (`useQoreClient`, `useAccount`, `useBalance`, `useConnect`/`useWallet`,
+  `useTx`, `usePqcStatus`), and `ConnectButton` / `QuantumSafeBadge` components.
+- Docs guides for AI pre-flight, cross-VM, quantum-safe, and React; runnable
+  `ai-preflight`, `cross-vm-call`, and `react-dapp` examples.
+
+## [0.4.0]
+
+### Added
+
+- Rollup withdrawals — `MsgExecuteWithdrawal` (the L2→L1 rollup exit path) is now
+  exposed across all five SDKs, with the rollup batch `withdrawals_root` field.
+- Typed query clients for the `multilayer`, `rdk`, and `bridge` modules.
+- Bridge admin messages — `MsgUpdateEthLightClient`, `MsgUpdateChainConfig`,
+  `MsgSetVerifierBootstrap`.
+- High-level sidechain/paychain (`multilayer`) and rollup (`rdk`) helpers, with
+  `register-sidechain` and `rollup-lifecycle` examples, a `rollup-app` CLI
+  template, and docs guides for multilayer and rollups.
+
+### Fixed
+
+- Re-synced the vendored protobuf definitions for the `rdk`, `multilayer`, and
+  `bridge` modules with the chain (the rollup withdrawal message and the module
+  query services were previously missing from codegen).
+
 ## [0.3.0]
 
 ### Changed

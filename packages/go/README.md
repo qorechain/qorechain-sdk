@@ -42,6 +42,9 @@ Requires Go 1.23+.
 | `qorechain/proto` | Generated gogoproto Go types for every chain module (committed; regenerate with `scripts/codegen-go.sh`). |
 | `qorechain/utils` | Hashing (sha256/keccak256/ripemd160), unit conversion, EVM/SVM address validation + EIP-55. |
 | `qorechain/subscribe` | WebSocket client for the chain RPC `/websocket` (new blocks, transactions). |
+| `qorechain/crossvm` | Unified cross-VM call helper over `MsgCrossVMCall` (single + atomic triple-VM). |
+| `qorechain/evm` | AI pre-flight risk/anomaly scoring over the EVM precompiles (`eth_call`). |
+| `qorechain/pqcdx` | Quantum-safe DX: idempotent PQC-key registration + classical→hybrid migration. |
 
 ## Quickstart
 
@@ -146,6 +149,126 @@ fmt.Println(res.Height)
 For a quantum-safe transaction over the same messages, use
 `tx.BuildHybridMessages` with an ML-DSA-87 keypair — it preserves the
 exclude-extension hybrid contract the chain's ante handler verifies.
+
+### Sidechains, paychains & rollups (v0.4.0)
+
+The multilayer (sidechains/paychains) and `rdk` (rollup) modules are covered by
+the typed composers in `qorechain/messages` and the typed gRPC query clients on
+`query.GRPCClient`. Compose a write with `messages.Multilayer.*` /
+`messages.Rdk.*`, broadcast it like any other message, and read layer/rollup
+state through the query clients.
+
+```go
+import (
+    "github.com/qorechain/qorechain-sdk/packages/go/qorechain/messages"
+    "github.com/qorechain/qorechain-sdk/packages/go/qorechain/query"
+)
+
+// Multilayer: register a sidechain / paychain, anchor state, route a tx.
+register := messages.Multilayer.RegisterSidechain(
+    acc.Address, "game-l2", "game sidechain", 0, 0, 0, 0, nil, nil)
+route := messages.Multilayer.RouteTransaction(acc.Address, payload, "game-l2", 0, "")
+
+// Rollups (rdk): create a rollup, submit a batch, execute a withdrawal.
+create := messages.Rdk.CreateRollup(acc.Address, "r1", "default", "evm", 1)
+withdraw := messages.Rdk.ExecuteWithdrawal(
+    acc.Address, "r1", 0, 0, "qor1rcpt", "uqor", 100, [][]byte{{0x01}})
+
+// Sign + broadcast them with tx.SendMessages (see above), then read state:
+g, _ := query.NewGRPCClient("grpc.example:443")
+defer g.Close()
+layer, _ := g.Multilayer().Layer(ctx, &multilayerv1.QueryLayerRequest{LayerId: "game-l2"})
+rollup, _ := g.Rdk().Rollup(ctx, &rdkv1.QueryRollupRequest{RollupId: "r1"})
+chains, _ := g.Bridge().ChainConfigs(ctx, &bridgev1.QueryChainConfigsRequest{})
+```
+
+See the [multilayer](../../docs/docs/guides/multilayer.md) and
+[rollups](../../docs/docs/guides/rollups.md) guides.
+
+### AI pre-flight risk scoring (v0.5.0)
+
+The `qorechain/evm` package exposes QoreChain's on-chain AI risk/anomaly model
+over two EVM precompiles, so you get an advisory verdict on a transaction before
+broadcasting it. `Client.SimulateWithRiskScore` bundles a gas estimate, the
+`aiRiskScore` precompile (`0x…0B01`), and the `aiAnomalyCheck` precompile
+(`0x…0B02`) into one `SimulateResult`.
+
+```go
+import "github.com/qorechain/qorechain-sdk/packages/go/qorechain/evm"
+
+ec := evm.NewClient("https://evm.example", nil)
+
+res, err := ec.SimulateWithRiskScore(evm.SimulateTx{
+    From: "0xSender", To: "0xContract", Data: calldata, Value: nil,
+})
+if err == nil && !res.Safe {
+    // AI pre-flight flagged the transaction
+}
+
+// Or call the precompiles individually.
+score, level, _ := ec.AIRiskScore(calldata)
+anomalyScore, flagged, _ := ec.AIAnomalyCheck("0xSender", big.NewInt(1_000_000))
+```
+
+See the [AI pre-flight](../../docs/docs/guides/ai-preflight.md) guide.
+
+### Unified cross-VM calls (v0.5.0)
+
+The `qorechain/crossvm` package wraps `MsgCrossVMCall` so you can route a single
+call — or several atomically in **one** transaction (`CallAtomic`) — across the
+EVM, CosmWasm, and SVM VMs (`VMTypeEVM` / `VMTypeCosmWasm` / `VMTypeSVM`). The
+payload is raw bytes (`Payload`) or a JSON-serializable CosmWasm message
+(`Cosmwasm`, which is `json.Marshal`'d to UTF-8).
+
+```go
+import "github.com/qorechain/qorechain-sdk/packages/go/qorechain/crossvm"
+
+xvm := crossvm.New(crossvm.Signer{
+    Account: acc, ChainID: "qorechain-vladi", RestURL: "https://rest.example",
+    AccountNumber: accountNumber, Sequence: sequence, Fee: fee,
+}, crossvm.Options{Query: g.CrossVM()})
+
+// Single call into a CosmWasm contract (Cosmwasm is JSON-encoded).
+res, _ := xvm.Call(crossvm.CallOptions{
+    TargetVM: crossvm.VMTypeCosmWasm, TargetContract: "qor1contract…",
+    Cosmwasm: map[string]any{"increment": map[string]any{}},
+})
+
+// Atomic triple-VM batch in ONE tx.
+atomic, _ := xvm.CallAtomic([]crossvm.CallOptions{
+    {TargetVM: crossvm.VMTypeEVM, TargetContract: "0xC…", Payload: abiCalldata},
+    {TargetVM: crossvm.VMTypeSVM, TargetContract: "Prog…", Payload: rawBytes},
+    {TargetVM: crossvm.VMTypeCosmWasm, TargetContract: "qor1…", Cosmwasm: map[string]any{"stake": map[string]any{}}},
+})
+
+built, _ := xvm.BuildCall(crossvm.CallOptions{TargetVM: crossvm.VMTypeEVM, TargetContract: "0xC…", Payload: rawBytes})
+status, _ := xvm.GetMessage("42") // read a routed message's status
+_ = (res, atomic, built, status)
+```
+
+See the [cross-VM](../../docs/docs/guides/cross-vm.md) guide.
+
+### Quantum-safe DX (v0.5.0)
+
+The `qorechain/pqcdx` package makes a dApp PQC-protected in one idempotent call:
+check whether the signer's Dilithium key is registered, register it if not, then
+sign hybrid (ML-DSA-87 + secp256k1).
+
+```go
+import "github.com/qorechain/qorechain-sdk/packages/go/qorechain/pqcdx"
+
+// Read-only status (over the qor_ namespace).
+registered, _ := pqcdx.IsPQCRegistered(c.Qor, acc.Address)
+status, _ := pqcdx.GetPQCStatus(c.Qor, acc.Address)
+
+pdx := pqcdx.New(pqcdx.Signer{ /* account + key material + ctx */ }, pqcdx.Options{Qor: c.Qor})
+ensure, _ := pdx.EnsurePQCRegistered(pqcdx.RegisterOptions{}) // registers only if missing
+hybrid, _ := pdx.MigrateToHybrid(messages, pqcdx.MigrateToHybridOptions{})
+rotate, _ := pdx.MigratePQCKey(pqcdx.MigrateOptions{ /* new key */ })
+_ = (registered, status, ensure, hybrid, rotate)
+```
+
+See the [quantum-safe](../../docs/docs/guides/quantum-safe.md) guide.
 
 ## Development
 

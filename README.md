@@ -160,7 +160,9 @@ const ok = pqcVerify(keypair.publicKey, message, signature);
 The Python, Go, Rust, and Java SDKs mirror the TypeScript native-chain surface —
 networks, accounts (native/EVM/SVM + PQC), typed messages for every module,
 typed queries, the tx lifecycle (auto-gas, error decoding, tracking, search),
-and WebSocket subscriptions.
+WebSocket subscriptions, plus AI pre-flight risk scoring, unified cross-VM calls
+(with atomic triple-VM batching), and the quantum-safe DX helpers. React hooks
+and the viem / `@solana/web3.js` adapters are TypeScript-only.
 
 - **Python** — `pip install qorechain-sdk`, then `import qorsdk`. See [packages/py](./packages/py/README.md).
 - **Go** — `go get github.com/qorechain/qorechain-sdk/packages/go`. See [packages/go](./packages/go/README.md).
@@ -196,6 +198,15 @@ native-chain parts. Highlights:
   helpers to register a sidechain/paychain, anchor state, route transactions,
   and run a full rollup lifecycle (create → submit batch → execute withdrawal),
   with typed `multilayer` and `rdk` query clients.
+- **AI pre-flight risk scoring** — `simulateWithRiskScore` runs the on-chain AI
+  precompiles to return gas plus a risk/anomaly verdict before you broadcast.
+- **Unified cross-VM calls** — call a contract on any VM (CosmWasm/EVM/SVM) from
+  one account, and batch calls across all three VMs into one atomic transaction.
+- **Quantum-safe by default** — `ensurePqcRegistered` / `migrateToHybrid` make a
+  signer post-quantum protected in one call.
+- **React kit** (`@qorechain/react`) — `QoreChainProvider`, hooks
+  (`useAccount`, `useBalance`, `useTx`, `useConnect`, `usePqcStatus`), and
+  `ConnectButton` / `QuantumSafeBadge` components.
 
 See the [docs](./docs) and [examples](./examples) for runnable usage.
 

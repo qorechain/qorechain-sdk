@@ -35,6 +35,9 @@ Requires Rust 1.74+.
 | `tx` | `bank_send`, `send_messages`, `build_hybrid_tx`, `broadcast`, auto-gas, error decoding, tracking, and search. |
 | `subscribe` | WebSocket new-block / tx subscriptions over the chain RPC `/websocket`. |
 | `utils` | Hashing (sha256/keccak256/ripemd160), exact unit math, EVM/SVM address validators. |
+| `ai` | AI pre-flight risk/anomaly scoring over the EVM precompiles (`simulate_with_risk_score`). |
+| `cross_vm` | Unified cross-VM call helper over `MsgCrossVMCall` (single + atomic triple-VM). |
+| `pqc_dx` | Quantum-safe DX: idempotent PQC-key registration + classical→hybrid migration. |
 
 ### Typed messages and composers
 
@@ -235,6 +238,141 @@ let _ = (acct.found, slot.slot);
 # Ok(())
 # }
 ```
+
+### Sidechains, paychains & rollups (v0.4.0)
+
+The multilayer (sidechains/paychains) and `rdk` (rollup) modules have typed
+composers under `msg` and typed reads on `TypedQueryClient`. Compose a write with
+`msg::multilayer::*_any` / `msg::rdk::*_any` (the `_any` variants pack the message
+into a `cosmrs::Any`) and sign it with `tx::send_messages`; read layer and rollup
+state through the typed query client.
+
+```rust,no_run
+use qorechain::{msg, TypedQueryClient};
+
+# async fn run() -> qorechain::Result<()> {
+// Multilayer: register a sidechain / paychain, anchor state, route a tx.
+let register = msg::multilayer::register_sidechain_any(
+    "qor1creator", "game-l2", "game sidechain", 0, 0, 0, 0, vec![], vec![]);
+let route = msg::multilayer::route_transaction_any(
+    "qor1sender", b"...".to_vec(), "game-l2", 0, "");
+
+// Rollups (rdk): create a rollup, submit a batch, execute a withdrawal.
+let create = msg::rdk::create_rollup_any("qor1creator", "r1", "default", "evm", 1);
+let withdraw = msg::rdk::execute_withdrawal_any(
+    "qor1submitter", "r1", 0, 0, "qor1rcpt", "uqor", 100, vec![vec![0x01]]);
+
+// Typed reads.
+let q = TypedQueryClient::new("http://localhost:26657");
+let layer = q.multilayer_layer("game-l2").await?;
+let layers = q.multilayer_layers().await?;
+let stats = q.multilayer_routing_stats().await?;
+let rollup = q.rdk_rollup("r1").await?;
+let _ = (register, route, create, withdraw, layer, layers, stats, rollup);
+# Ok(())
+# }
+```
+
+See the [multilayer](../../docs/docs/guides/multilayer.md) and
+[rollups](../../docs/docs/guides/rollups.md) guides.
+
+### AI pre-flight risk scoring (v0.5.0)
+
+The `ai` module exposes QoreChain's on-chain AI risk/anomaly model over two EVM
+precompiles, so you get an advisory verdict on a transaction before broadcasting
+it. `AiClient::simulate_with_risk_score` bundles a gas estimate, the
+`aiRiskScore` precompile (`AI_RISK_SCORE_PRECOMPILE`, `0x…0B01`), and the
+`aiAnomalyCheck` precompile (`AI_ANOMALY_CHECK_PRECOMPILE`, `0x…0B02`) into one
+`Preflight`.
+
+```rust,no_run
+use qorechain::{AiClient, PreflightTx};
+
+# async fn run() -> qorechain::Result<()> {
+let ai = AiClient::new("https://evm.example");
+
+let verdict = ai.simulate_with_risk_score(PreflightTx {
+    from: "0xSender".into(),
+    to: "0xContract".into(),
+    data: vec![0xde, 0xad, 0xbe, 0xef],
+    value: "0".into(),
+}).await?;
+if !verdict.safe { /* AI pre-flight flagged the transaction */ }
+
+// Or call the precompiles individually.
+let risk = ai.ai_risk_score(b"\xde\xad\xbe\xef").await?;
+let anomaly = ai.ai_anomaly_check("0xSender", 1_000_000).await?;
+let _ = (risk, anomaly);
+# Ok(())
+# }
+```
+
+See the [AI pre-flight](../../docs/docs/guides/ai-preflight.md) guide.
+
+### Unified cross-VM calls (v0.5.0)
+
+The `cross_vm` module wraps `MsgCrossVMCall` so you can route a single call — or
+several atomically in **one** transaction (`call_atomic`) — across the EVM,
+CosmWasm, and SVM VMs (`VM_TYPES`). A `Payload::Raw(bytes)` is sent as-is (the
+EVM form: ABI-encoded calldata); a `Payload::CosmWasm(json)` is serialized to
+compact UTF-8 JSON.
+
+```rust,no_run
+use qorechain::{cross_vm::CrossVm, CallOptions, Payload, VM_TYPE_COSMWASM, VM_TYPE_EVM, VM_TYPE_SVM};
+use serde_json::json;
+
+# async fn run(xvm: CrossVm) -> qorechain::Result<()> {
+// Single call into a CosmWasm contract (payload JSON-encoded).
+let res = xvm.call(&CallOptions::new(
+    VM_TYPE_COSMWASM, "qor1contract…", Payload::CosmWasm(json!({ "increment": {} })),
+)).await?;
+
+// Atomic triple-VM batch in ONE tx.
+let atomic = xvm.call_atomic(&[
+    CallOptions::new(VM_TYPE_EVM, "0xC…", Payload::Raw(abi_calldata)),
+    CallOptions::new(VM_TYPE_SVM, "Prog…", Payload::Raw(raw_bytes)),
+    CallOptions::new(VM_TYPE_COSMWASM, "qor1…", Payload::CosmWasm(json!({ "stake": {} }))),
+]).await?;
+
+let built = xvm.build_call(&CallOptions::new(VM_TYPE_EVM, "0xC…", Payload::Raw(raw_bytes)))?;
+let status = xvm.get_message("42").await?; // read a routed message's status
+let _ = (res, atomic, built, status);
+# Ok(())
+# }
+```
+
+A `CrossVm` is a struct literal carrying the signer's key material, chain id,
+account number / sequence, fee, REST URL, and an optional `QorClient` for
+`get_message`. See the [cross-VM](../../docs/docs/guides/cross-vm.md) guide.
+
+### Quantum-safe DX (v0.5.0)
+
+The `pqc_dx` module makes a dApp PQC-protected in one idempotent call: check
+whether the signer's Dilithium key is registered, register it if not, then sign
+hybrid (ML-DSA-87 + secp256k1).
+
+```rust,no_run
+use qorechain::pqc_dx::PqcDx;
+use cosmrs::Any;
+
+# async fn run(pdx: PqcDx, messages: Vec<Any>) -> qorechain::Result<()> {
+// Read-only status (over the qor_ namespace).
+let registered = pdx.is_pqc_registered(&pdx.sender).await?;
+let status = pdx.get_pqc_status(&pdx.sender).await?;
+
+// Idempotent: registers the signer's Dilithium key only if it isn't already.
+let ensure = pdx.ensure_pqc_registered().await?;
+
+// Migrate a classical account to hybrid signing, then sign hybrid.
+let path = pdx.migrate_to_hybrid().await?;
+let sent = path.send_hybrid(messages).await?;
+let _ = (registered, status, ensure, sent);
+# Ok(())
+# }
+```
+
+`migrate_pqc_key` rotates an account's on-chain PQC key (`MsgMigratePQCKey`). See
+the [quantum-safe](../../docs/docs/guides/quantum-safe.md) guide.
 
 ### WebSocket subscriptions
 

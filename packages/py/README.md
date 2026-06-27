@@ -180,6 +180,133 @@ with connect_query_clients("localhost:9090") as q:
     acct = q.pqc.account(native.address)
 ```
 
+### Sidechains, paychains & rollups (v0.4.0)
+
+The multilayer (sidechains/paychains) and `rdk` (rollup) modules are covered by
+typed message composers and typed query clients. Compose a write with
+`msg.multilayer.*` / `msg.rdk.*` and broadcast it like any other message; read
+layer and rollup state through the typed gRPC clients.
+
+```python
+from qorsdk import msg, send_messages, connect_query_clients
+
+# Multilayer: register a sidechain / paychain, anchor state, route a tx.
+register = msg.multilayer.register_sidechain(
+    creator=native.address, layer_id="game-l2", description="game sidechain",
+)
+route = msg.multilayer.route_transaction(
+    sender=native.address, transaction_payload=b"...", preferred_layer="game-l2",
+)
+
+# Rollups (rdk): create a rollup, submit a batch, execute a withdrawal.
+create = msg.rdk.create_rollup(
+    creator=native.address, rollup_id="r1", profile="default", vm_type="evm",
+)
+withdraw = msg.rdk.execute_withdrawal(
+    submitter=native.address, rollup_id="r1", batch_index=0, withdrawal_index=0,
+    recipient="qor1rcpt", denom="uqor", amount=100, proof=[b"\x01"],
+)
+
+# Typed reads over gRPC (multilayer / rdk / bridge / crossvm query services).
+with connect_query_clients("localhost:9090") as q:
+    layer = q.multilayer.layer("game-l2")
+    layers = q.multilayer.layers()
+    stats = q.multilayer.routing_stats()
+    rollup = q.rdk.rollup("r1")
+    batch = q.rdk.latest_batch("r1")
+```
+
+See the [multilayer](../../docs/docs/guides/multilayer.md) and
+[rollups](../../docs/docs/guides/rollups.md) guides.
+
+### AI pre-flight risk scoring (v0.5.0)
+
+QoreChain exposes an on-chain AI risk/anomaly model over two EVM precompiles, so
+you can get an advisory verdict on a transaction before broadcasting it. The
+helpers in `qorsdk.precompiles` issue plain `eth_call`s through any
+`eth_call`-capable client (e.g. a [web3.py](https://web3py.readthedocs.io) provider
+pointed at the network's `evm_rpc`).
+
+```python
+from qorsdk import (
+    simulate_with_risk_score, ai_risk_score, ai_anomaly_check,
+    PRECOMPILE_AI_RISK_SCORE,     # 0x…0B01
+    PRECOMPILE_AI_ANOMALY_CHECK,  # 0x…0B02
+)
+
+# Combined gas + risk + anomaly pre-flight.
+verdict = simulate_with_risk_score(eth_client, {
+    "from": "0xSender", "to": "0xContract", "data": "0x…", "value": 0,
+})
+if not verdict["safe"]:
+    raise RuntimeError("AI pre-flight flagged this transaction")
+
+# Or call the precompiles individually.
+risk = ai_risk_score(eth_client, b"\xde\xad\xbe\xef")  # {"score", "level"}
+anomaly = ai_anomaly_check(eth_client, "0xSender", 1_000_000)  # {"anomaly_score", "flagged"}
+```
+
+See the [AI pre-flight](../../docs/docs/guides/ai-preflight.md) guide.
+
+### Unified cross-VM calls (v0.5.0)
+
+`CrossVmClient` wraps `MsgCrossVMCall` so you can route a single call — or
+several atomically in **one** transaction — across the EVM, CosmWasm, and SVM
+VMs (`VM_TYPES`). The payload is raw bytes (`payload=`), a CosmWasm JSON message
+(`cosmwasm=` is `json.dumps`'d to UTF-8), or SVM bytes (`svm=`).
+
+```python
+from qorsdk import create_cross_vm_client, build_cross_vm_call
+
+xvm = create_cross_vm_client(account=native, ...)  # see docstring for context args
+
+# Single call into a CosmWasm contract.
+res = xvm.call(target_vm="cosmwasm", target_contract="qor1contract…",
+               cosmwasm={"increment": {}})
+
+# Atomic triple-VM batch in ONE tx.
+atomic = xvm.call_atomic([
+    xvm.build_call(target_vm="evm", target_contract="0xC…", payload=abi_calldata),
+    xvm.build_call(target_vm="svm", target_contract="Prog…", payload=raw_bytes),
+    xvm.build_call(target_vm="cosmwasm", target_contract="qor1…", cosmwasm={"stake": {}}),
+])
+
+status = xvm.get_message("42")  # read a routed message's status
+```
+
+`build_cross_vm_call(...)` is also available as a free function for hand-building
+the message. See the [cross-VM](../../docs/docs/guides/cross-vm.md) guide.
+
+### Quantum-safe DX (v0.5.0)
+
+QoreChain enforces hybrid post-quantum signatures (ML-DSA-87 + secp256k1) by
+default. `qorsdk.pqc_dx` makes a dApp PQC-protected in one idempotent call.
+
+```python
+from qorsdk import (
+    is_pqc_registered, get_pqc_status,
+    ensure_pqc_registered, migrate_to_hybrid, migrate_pqc_key,
+    generate_pqc_keypair,
+)
+
+# Read-only status (over the qor_ namespace).
+registered = is_pqc_registered(client.qor, native.address)
+status = get_pqc_status(client.qor, native.address)
+
+# Idempotent: registers the signer's Dilithium key only if it isn't already.
+result = ensure_pqc_registered(account=native, pqc_keypair=generate_pqc_keypair(), ...)
+
+# Migrate a classical account to hybrid signing, then sign hybrid.
+path = migrate_to_hybrid(account=native, pqc_keypair=generate_pqc_keypair(), ...)
+
+# Rotate an account's on-chain PQC key (MsgMigratePQCKey).
+migrate_pqc_key(account=native, ...)
+```
+
+Async status reads are available as `is_pqc_registered_async` /
+`get_pqc_status_async`. See the
+[quantum-safe](../../docs/docs/guides/quantum-safe.md) guide.
+
 ### Auto-gas, errors, tracking, search
 
 ```python
