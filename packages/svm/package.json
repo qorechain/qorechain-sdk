@@ -1,6 +1,6 @@
 {
   "name": "@qorechain/svm",
-  "version": "0.4.0",
+  "version": "0.5.0",
   "description": "QoreChain SVM adapter: thin, type-safe conveniences over @solana/web3.js for QoreChain's Solana-compatible JSON-RPC, including SOL transfers, native program IDs, and SPL-Token/Memo instruction helpers.",
   "license": "Apache-2.0",
   "author": "QoreChain",

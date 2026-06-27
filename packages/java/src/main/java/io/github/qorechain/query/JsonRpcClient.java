@@ -80,6 +80,51 @@ public class JsonRpcClient {
         return ethGetBalance(address, "latest");
     }
 
+    /**
+     * {@code eth_call} — execute a read-only call against {@code to} with hex
+     * call {@code data} at the given block tag (default {@code "latest"}).
+     *
+     * @return the {@code 0x}-prefixed hex result string node.
+     */
+    public JsonNode ethCall(String to, String data, String block) {
+        Map<String, Object> callObj = new LinkedHashMap<>();
+        callObj.put("to", to);
+        callObj.put("data", data);
+        return call("eth_call", List.of(callObj, block == null ? "latest" : block));
+    }
+
+    public JsonNode ethCall(String to, String data) {
+        return ethCall(to, data, "latest");
+    }
+
+    /**
+     * {@code eth_estimateGas} — estimate gas for a call to {@code to} with the
+     * given hex {@code data}, optionally from {@code from} and carrying
+     * {@code value} (0x-hex wei). Null fields are omitted.
+     *
+     * @return the {@code 0x}-prefixed hex gas result node.
+     */
+    public JsonNode ethEstimateGas(String to, String data, String from, String value) {
+        Map<String, Object> callObj = new LinkedHashMap<>();
+        if (from != null) {
+            callObj.put("from", from);
+        }
+        if (to != null) {
+            callObj.put("to", to);
+        }
+        if (data != null) {
+            callObj.put("data", data);
+        }
+        if (value != null) {
+            callObj.put("value", value);
+        }
+        return call("eth_estimateGas", List.of(callObj));
+    }
+
+    public JsonNode ethEstimateGas(String to, String data) {
+        return ethEstimateGas(to, data, null, null);
+    }
+
     /** {@code net_version}. */
     public JsonNode netVersion() {
         return call("net_version", List.of());

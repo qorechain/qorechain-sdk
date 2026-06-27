@@ -11,6 +11,8 @@ via `workspace:*`, with its own `README.md`, `.env.example`, and a single
 | [`send-qor`](./send-qor) | derive a native account, sign, broadcast a QOR transfer | Yes (+ funded account) |
 | [`pqc-hybrid-sign`](./pqc-hybrid-sign) | ML-DSA-87 sign/verify + build a hybrid tx | **No — runs offline** |
 | [`evm-precompile`](./evm-precompile) | EVM precompiles + ERC-20 `balanceOf` | Yes |
+| [`ai-preflight`](./ai-preflight) | `simulateWithRiskScore`: on-chain AI risk + anomaly + gas estimate for a sample EVM tx | Yes |
+| [`cross-vm-call`](./cross-vm-call) | `createCrossVMClient`: call an EVM contract from a native account, then an atomic batch across two VMs | No to build; yes to send |
 | [`svm-transfer`](./svm-transfer) | build a SOL transfer + memo instruction | No to build; yes to send |
 | [`cosmwasm-query`](./cosmwasm-query) | smart-query a CosmWasm contract | Yes (+ deployed contract) |
 | [`read-tokenomics`](./read-tokenomics) | `qor_getBurnStats` / `qor_getXQOREPosition` / `qor_getInflationRate` | Yes |

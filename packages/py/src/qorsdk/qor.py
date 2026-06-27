@@ -15,6 +15,16 @@ from __future__ import annotations
 from typing import Any
 
 from .jsonrpc import AsyncJsonRpcClient, JsonRpcClient
+from .precompiles import (
+    PRECOMPILE_AI_ANOMALY_CHECK,
+    PRECOMPILE_AI_RISK_SCORE,
+    _result_words,
+    ai_anomaly_check,
+    ai_risk_score,
+    encode_ai_anomaly_check,
+    encode_ai_risk_score,
+    simulate_with_risk_score,
+)
 
 #: Authoritative map of snake_case Python method name -> exact wire method name.
 #: The sync and async clients are both generated from this single table.
@@ -138,6 +148,28 @@ class QorClient(JsonRpcClient):
     def get_lane_configuration(self) -> Any:
         return self.call("qor_getLaneConfiguration", [])
 
+    # --- AI pre-flight (EVM precompiles via eth_call) ---
+    def ai_risk_score(self, tx_data: bytes) -> dict[str, int]:
+        """Score raw tx calldata via the ``aiRiskScore`` precompile.
+
+        :returns: ``{"score": int, "level": int}``.
+        """
+        return ai_risk_score(self, tx_data)
+
+    def ai_anomaly_check(self, sender: str, amount: int) -> dict[str, Any]:
+        """Check ``(sender, amount)`` via the ``aiAnomalyCheck`` precompile.
+
+        :returns: ``{"anomaly_score": int, "flagged": bool}``.
+        """
+        return ai_anomaly_check(self, sender, amount)
+
+    def simulate_with_risk_score(self, tx: dict[str, Any]) -> dict[str, Any]:
+        """Estimate gas plus AI risk/anomaly for a tx (advisory ``safe`` flag).
+
+        :returns: ``{"gas": int, "risk": {...}, "anomaly": {...}, "safe": bool}``.
+        """
+        return simulate_with_risk_score(self, tx)
+
 
 class AsyncQorClient(AsyncJsonRpcClient):
     """Asynchronous mirror of :class:`QorClient`."""
@@ -216,3 +248,43 @@ class AsyncQorClient(AsyncJsonRpcClient):
 
     async def get_lane_configuration(self) -> Any:
         return await self.call("qor_getLaneConfiguration", [])
+
+    # --- AI pre-flight (EVM precompiles via eth_call) ---
+    async def _eth_call(self, to: str, data: str) -> str:
+        result = await self.call("eth_call", [{"to": to, "data": data}, "latest"])
+        return result if isinstance(result, str) else "0x"
+
+    async def ai_risk_score(self, tx_data: bytes) -> dict[str, int]:
+        """Score raw tx calldata via the ``aiRiskScore`` precompile."""
+        result = await self._eth_call(
+            PRECOMPILE_AI_RISK_SCORE, encode_ai_risk_score(tx_data)
+        )
+        words = _result_words(result, 2)
+        return {"score": words[0], "level": words[1] & 0xFF}
+
+    async def ai_anomaly_check(self, sender: str, amount: int) -> dict[str, Any]:
+        """Check ``(sender, amount)`` via the ``aiAnomalyCheck`` precompile."""
+        result = await self._eth_call(
+            PRECOMPILE_AI_ANOMALY_CHECK, encode_ai_anomaly_check(sender, amount)
+        )
+        words = _result_words(result, 2)
+        return {"anomaly_score": words[0], "flagged": bool(words[1])}
+
+    async def simulate_with_risk_score(self, tx: dict[str, Any]) -> dict[str, Any]:
+        """Estimate gas plus AI risk/anomaly for a tx (advisory ``safe`` flag)."""
+        sender = tx["from"]
+        data_hex = tx.get("data") or "0x"
+        value = tx.get("value", 0)
+        amount = int(value, 16) if isinstance(value, str) else int(value)
+
+        call_obj = {
+            k: tx[k] for k in ("from", "to", "data", "value") if tx.get(k) is not None
+        }
+        gas_hex = await self.call("eth_estimateGas", [call_obj])
+        gas = int(gas_hex, 16) if isinstance(gas_hex, str) else int(gas_hex)
+
+        tx_data = bytes.fromhex(data_hex[2:]) if data_hex != "0x" else b""
+        risk = await self.ai_risk_score(tx_data)
+        anomaly = await self.ai_anomaly_check(sender, amount)
+        safe = risk["level"] < 3 and not anomaly["flagged"]
+        return {"gas": gas, "risk": risk, "anomaly": anomaly, "safe": safe}

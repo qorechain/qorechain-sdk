@@ -8,7 +8,13 @@
  * a thrown error from any of these helpers as "feature not present on this node".
  */
 
-import { getAddress, type Address, type Hex, type PublicClient } from "viem";
+import {
+  getAddress,
+  toHex,
+  type Address,
+  type Hex,
+  type PublicClient,
+} from "viem";
 import { IQORE_PQC_ABI, IQORE_AI_ABI, IQORE_CONSENSUS_ABI } from "./abi";
 
 /**
@@ -29,6 +35,27 @@ export const PRECOMPILE_ADDRESSES = {
   /** Consensus parameters (`IQoreConsensus.rlConsensusParams`). */
   rlConsensusParams: "0x0000000000000000000000000000000000000C01",
 } as const satisfies Record<string, Address>;
+
+/**
+ * Fixed address of the AI transaction risk-score precompile (`IQoreAI.aiRiskScore`).
+ *
+ * Convenience alias of {@link PRECOMPILE_ADDRESSES.aiRiskScore}.
+ */
+export const AI_RISK_SCORE_ADDRESS: Address =
+  PRECOMPILE_ADDRESSES.aiRiskScore;
+
+/**
+ * Fixed address of the AI anomaly-check precompile (`IQoreAI.aiAnomalyCheck`).
+ *
+ * Convenience alias of {@link PRECOMPILE_ADDRESSES.aiAnomalyCheck}.
+ */
+export const AI_ANOMALY_CHECK_ADDRESS: Address =
+  PRECOMPILE_ADDRESSES.aiAnomalyCheck;
+
+/** Coerce raw bytes input to a `0x`-prefixed hex string for the `bytes` ABI type. */
+function toHexData(data: Hex | Uint8Array): Hex {
+  return typeof data === "string" ? data : toHex(data);
+}
 
 /**
  * Normalize a precompile address to its EIP-55 checksummed form.
@@ -89,13 +116,13 @@ export interface AiRiskScore {
 /** Compute an on-chain risk score for raw transaction data. */
 export async function aiRiskScore(
   client: PublicClient,
-  txData: Hex,
+  txData: Hex | Uint8Array,
 ): Promise<AiRiskScore> {
   const [score, level] = await client.readContract({
     address: addr(PRECOMPILE_ADDRESSES.aiRiskScore),
     abi: IQORE_AI_ABI,
     functionName: "aiRiskScore",
-    args: [txData],
+    args: [toHexData(txData)],
   });
   return { score, level };
 }

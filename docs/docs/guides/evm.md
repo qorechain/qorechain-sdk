@@ -143,7 +143,12 @@ exported.
 | Consensus params | `rlConsensusParams` | `0x0000000000000000000000000000000000000C01` |
 
 ```ts
-import { precompiles, PRECOMPILE_ADDRESSES } from "@qorechain/evm";
+import {
+  precompiles,
+  PRECOMPILE_ADDRESSES,
+  aiRiskScore,
+  aiAnomalyCheck,
+} from "@qorechain/evm";
 
 // Read live consensus parameters.
 const params = await precompiles.rlConsensusParams(client.publicClient);
@@ -151,12 +156,15 @@ const params = await precompiles.rlConsensusParams(client.publicClient);
 // Check whether an address has a registered PQC key.
 const status = await precompiles.pqcKeyStatus(client.publicClient, account);
 
-// QCAI helpers.
-const score = await precompiles.aiRiskScore(client.publicClient, /* args */);
-const anomaly = await precompiles.aiAnomalyCheck(client.publicClient, /* args */);
+// On-chain AI helpers: score raw calldata, and check a (sender, amount) pair.
+const score = await aiRiskScore(client.publicClient, "0xa9059cbb...");
+const anomaly = await aiAnomalyCheck(client.publicClient, account, 0n);
 
 console.log(PRECOMPILE_ADDRESSES.crossVmBridge);
 ```
+
+For a one-call pre-flight that bundles a gas estimate with the risk and anomaly
+checks (`simulateWithRiskScore`), see the [AI pre-flight guide](ai-preflight.md).
 
 The precompile ABIs are exported as `IQORE_PQC_ABI`, `IQORE_AI_ABI`, and
 `IQORE_CONSENSUS_ABI`.

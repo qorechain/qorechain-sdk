@@ -23,6 +23,13 @@ from .address import (
     is_valid_bech32,
 )
 from .client import QoreChainClient, create_client
+from .cross_vm import (
+    VM_TYPES,
+    CrossVmCallOptions,
+    CrossVmClient,
+    build_cross_vm_call,
+    create_cross_vm_client,
+)
 from .denom import from_base, to_base
 from .errors import (
     DecodedTxError,
@@ -76,6 +83,29 @@ from .pqc import (
     is_signature_algorithm,
     pqc_sign,
     pqc_verify,
+)
+from .pqc_dx import (
+    DILITHIUM5_KEY_TYPE,
+    EnsureResult,
+    PqcStatus,
+    build_migrate_pqc_key,
+    build_register_pqc_key,
+    ensure_pqc_registered,
+    get_pqc_status,
+    get_pqc_status_async,
+    is_pqc_registered,
+    is_pqc_registered_async,
+    migrate_pqc_key,
+    migrate_to_hybrid,
+)
+from .precompiles import (
+    PRECOMPILE_AI_ANOMALY_CHECK,
+    PRECOMPILE_AI_RISK_SCORE,
+    ai_anomaly_check,
+    ai_risk_score,
+    encode_ai_anomaly_check,
+    encode_ai_risk_score,
+    simulate_with_risk_score,
 )
 from .qor import QOR_METHODS, AsyncQorClient, QorClient
 from .query import QueryClients, connect_query_clients
@@ -161,6 +191,19 @@ __all__ = [
     "pqc_sign",
     "pqc_verify",
     "build_hybrid_signature_extension",
+    # quantum-safe DX (x/pqc key registry)
+    "DILITHIUM5_KEY_TYPE",
+    "PqcStatus",
+    "EnsureResult",
+    "get_pqc_status",
+    "is_pqc_registered",
+    "get_pqc_status_async",
+    "is_pqc_registered_async",
+    "build_register_pqc_key",
+    "build_migrate_pqc_key",
+    "ensure_pqc_registered",
+    "migrate_to_hybrid",
+    "migrate_pqc_key",
     # query
     "RestClient",
     "AsyncRestClient",
@@ -236,4 +279,18 @@ __all__ = [
     # client
     "QoreChainClient",
     "create_client",
+    # AI pre-flight (EVM precompiles)
+    "PRECOMPILE_AI_RISK_SCORE",
+    "PRECOMPILE_AI_ANOMALY_CHECK",
+    "ai_risk_score",
+    "ai_anomaly_check",
+    "simulate_with_risk_score",
+    "encode_ai_risk_score",
+    "encode_ai_anomaly_check",
+    # unified cross-VM call
+    "VM_TYPES",
+    "CrossVmCallOptions",
+    "CrossVmClient",
+    "build_cross_vm_call",
+    "create_cross_vm_client",
 ]

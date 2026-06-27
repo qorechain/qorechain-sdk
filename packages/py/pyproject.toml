@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "qorechain-sdk"
-version = "0.4.0"
+version = "0.5.0"
 description = "Python SDK for QoreChain — typed messages for every module, queries, auto-gas, tx tracking, subscriptions, accounts (native/EVM/SVM), and post-quantum signing."
 readme = "README.md"
 requires-python = ">=3.10"

@@ -8,7 +8,7 @@
  */
 
 /** SDK version. */
-export const VERSION = "0.3.0";
+export const VERSION = "0.5.0";
 
 // Top-level factory: the recommended entrypoint that resolves a network and
 // composes the read clients, fee helper, and a lazy signing entrypoint.
@@ -159,6 +159,26 @@ export type {
   CrossVmParamsResponse,
 } from "./query/crossvm";
 
+// AI pre-flight risk scoring — QoreChain-unique on-chain AI risk/anomaly scoring
+// over the EVM precompiles. The implementation lives in `@qorechain/evm` (which
+// owns viem); it is re-exported here for discovery. `@qorechain/evm` is an
+// OPTIONAL peer dependency — install it (and viem) to use these helpers.
+export {
+  ai,
+  aiRiskScore,
+  aiAnomalyCheck,
+  simulateWithRiskScore,
+  RISK_LEVEL_UNSAFE_THRESHOLD,
+  AI_RISK_SCORE_ADDRESS,
+  AI_ANOMALY_CHECK_ADDRESS,
+} from "./evm/ai-preflight";
+export type {
+  AiRiskScore,
+  AiAnomalyCheck,
+  PreflightTx,
+  PreflightResult,
+} from "./evm/ai-preflight";
+
 // CosmWasm: read/signing client constructors plus thin typed wrappers over
 // `@cosmjs/cosmwasm-stargate` (query/instantiate/execute/upload).
 export {
@@ -292,6 +312,10 @@ export {
   qorechainRegistry,
   qorechainRegistryTypes,
 } from "./messages";
+// The cosmjs `{ typeUrl, value }` message shape returned by the composers and
+// accepted by `TxClient.signAndBroadcast`. Re-exported so callers (and the React
+// kit) can type message arrays without importing from `@cosmjs/proto-signing`.
+export type { EncodeObject } from "@cosmjs/proto-signing";
 // Per-module composer groups, also re-exported for tree-shakeable named imports.
 export {
   bank,
@@ -357,6 +381,8 @@ export type {
 export {
   createMultilayerClient,
   createRollupClient,
+  createCrossVMClient,
+  VM_TYPES,
 } from "./helpers";
 export type {
   MultilayerClient,
@@ -375,4 +401,39 @@ export type {
   ResolveChallengeOptions,
   RollupLifecycleOptions,
   ExecuteWithdrawalOptions,
+  VMType,
+  CrossVMClient,
+  CreateCrossVMClientOptions,
+  CrossVMWriteOptions,
+  CrossVMCallBase,
+  CrossVMCallOptions,
+  CallOptions,
+  CrossVMCallResult,
+  CrossVMAtomicResult,
+  PayloadInput,
+  RawPayload,
+  EvmPayload,
+  CosmWasmPayload,
+  SvmPayload,
+} from "./helpers";
+// Quantum-safe DX: make a dApp PQC-protected (register the signer's Dilithium
+// key, then sign hybrid) in one idempotent call. See ./helpers/pqc for the full
+// docs, including the EVM `pqcKeyStatus` precompile alternative.
+export {
+  isPqcRegistered,
+  getPqcStatus,
+  ensurePqcRegistered,
+  buildRegisterPqcKeyMsg,
+  migratePqcKey,
+  migrateToHybrid,
+  PQC_KEY_STATUS_PRECOMPILE_ADDRESS,
+} from "./helpers";
+export type {
+  PqcStatus,
+  PqcStatusSource,
+  EnsurePqcRegisteredOptions,
+  EnsurePqcRegisteredResult,
+  MigratePqcKeyOptions,
+  MigrateToHybridOptions,
+  HybridSendPath,
 } from "./helpers";

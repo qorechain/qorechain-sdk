@@ -1,0 +1,20 @@
+{
+  "name": "@qorechain/example-ai-preflight",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "description": "AI pre-flight: estimate gas + on-chain risk + anomaly for a sample EVM tx and print a verdict.",
+  "scripts": {
+    "start": "tsx index.ts",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@qorechain/evm": "workspace:*",
+    "viem": "^2.0.0"
+  },
+  "devDependencies": {
+    "@types/node": "^22.7.5",
+    "tsx": "^4.19.0",
+    "typescript": "^5.6.3"
+  }
+}

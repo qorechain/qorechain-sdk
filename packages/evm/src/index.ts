@@ -9,7 +9,7 @@
  */
 
 /** Package version. */
-export const VERSION = "0.3.0";
+export const VERSION = "0.5.0";
 
 export {
   createEvmClient,
@@ -55,10 +55,10 @@ export {
   precompiles,
   pqcVerify,
   pqcKeyStatus,
-  aiRiskScore,
-  aiAnomalyCheck,
   rlConsensusParams,
   PRECOMPILE_ADDRESSES,
+  AI_RISK_SCORE_ADDRESS,
+  AI_ANOMALY_CHECK_ADDRESS,
   type PqcVerifyArgs,
   type PqcKeyStatus,
   type AiRiskScore,
@@ -66,6 +66,18 @@ export {
   type AiAnomalyCheck,
   type ConsensusParams,
 } from "./precompiles";
+
+// AI pre-flight risk scoring — the high-level, positional-argument surface for
+// QoreChain's on-chain AI precompiles (score + anomaly + a bundled simulate).
+export {
+  ai,
+  aiRiskScore,
+  aiAnomalyCheck,
+  simulateWithRiskScore,
+  RISK_LEVEL_UNSAFE_THRESHOLD,
+  type PreflightTx,
+  type PreflightResult,
+} from "./ai";
 
 export {
   ERC20_ABI,
