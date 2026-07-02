@@ -86,6 +86,12 @@ func GeneratePQCKeypair() (Keypair, error) {
 }
 
 // PQCSign signs a message with an ML-DSA-87 (Dilithium-5) secret key.
+//
+// Signing is DETERMINISTIC (FIPS-204 §3.4, rnd = 32 zero bytes): the same
+// (secretKey, message) always yields the same signature. The chain's on-chain
+// PQC verifier accepts ONLY deterministic ML-DSA-87 signatures (hedged
+// signatures are rejected with codespace "pqc"), so this is
+// consensus-critical — do not switch to randomized signing.
 func PQCSign(secretKey, message []byte) ([]byte, error) {
 	var priv mldsa87.PrivateKey
 	if err := priv.UnmarshalBinary(secretKey); err != nil {

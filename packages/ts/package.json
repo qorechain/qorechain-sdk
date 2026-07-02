@@ -1,6 +1,6 @@
 {
   "name": "@qorechain/sdk",
-  "version": "0.5.0",
+  "version": "0.5.1",
   "description": "Official TypeScript SDK for building decentralized applications on the QoreChain network.",
   "license": "Apache-2.0",
   "author": "QoreChain",
@@ -61,7 +61,7 @@
     "@cosmjs/tendermint-rpc": "^0.39.0",
     "@noble/curves": "^1.9.0",
     "@noble/hashes": "^1.8.0",
-    "@noble/post-quantum": "0.4.1",
+    "@qorechain/pqc": "^0.1.1",
     "@scure/base": "^1.2.0",
     "@scure/bip32": "^1.7.0",
     "@scure/bip39": "^1.6.0",

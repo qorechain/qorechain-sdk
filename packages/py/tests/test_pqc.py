@@ -1,4 +1,6 @@
 import base64
+import json
+from pathlib import Path
 
 import pytest
 
@@ -104,3 +106,42 @@ def test_build_extension_rejects_wrong_signature_length():
 def test_build_extension_rejects_wrong_public_key_length():
     with pytest.raises(ValueError, match="public key must be 2592"):
         build_hybrid_signature_extension(ALGORITHM_DILITHIUM5, b"x" * 4627, b"y" * 10)
+
+
+# --- deterministic signing (chain requirement) --------------------------------
+
+# The chain's PQC verifier accepts ONLY deterministic (FIPS-204 §3.4,
+# rnd = 32 zero bytes) ML-DSA-87 signatures; hedged signing is rejected with
+# codespace "pqc". These tests pin the deterministic default.
+
+_VECTORS_PATH = Path(__file__).parent / "fixtures" / "ml_dsa_87_deterministic.json"
+
+
+def _vectors() -> list[dict]:
+    return json.loads(_VECTORS_PATH.read_text())["cases"]
+
+
+def test_pqc_sign_is_deterministic():
+    kp = generate_pqc_keypair()
+    message = b"deterministic ML-DSA-87 required by the chain"
+    assert pqc_sign(kp.secret_key, message) == pqc_sign(kp.secret_key, message)
+
+
+def test_pqc_sign_matches_shared_deterministic_vectors():
+    for case in _vectors():
+        secret_key = bytes.fromhex(case["secretKey"])
+        public_key = bytes.fromhex(case["publicKey"])
+        message = bytes.fromhex(case["message"])
+        expected = bytes.fromhex(case["signature"])
+        signature = pqc_sign(secret_key, message)
+        assert signature == expected
+        assert pqc_verify(public_key, message, signature)
+
+
+def test_pqc_sign_hedged_opt_in_differs_but_verifies():
+    kp = generate_pqc_keypair()
+    message = b"hedged signatures are NOT accepted by the chain"
+    det = pqc_sign(kp.secret_key, message)
+    hedged = pqc_sign(kp.secret_key, message, hedged=True)
+    assert hedged != det
+    assert pqc_verify(kp.public_key, message, hedged)

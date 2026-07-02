@@ -15,11 +15,18 @@
  * assemble or broadcast transactions — the tx-builder attaches the extension
  * the {@link buildHybridSignatureExtension} result describes.
  *
- * Crypto is delegated entirely to the audited, pure-TS `@noble/post-quantum`
- * (`ml_dsa87`). No primitives are reimplemented here.
+ * Crypto is delegated entirely to `@qorechain/pqc` (`mldsa87`, wrapping the
+ * audited, pure-TS `@noble/post-quantum`). No primitives are reimplemented
+ * here.
+ *
+ * Signing is DETERMINISTIC (FIPS-204 §3.4, rnd = 32 zero bytes) by default:
+ * the chain's on-chain PQC verifier accepts ONLY deterministic ML-DSA-87
+ * signatures (hedged signatures are rejected with codespace `pqc`), so this
+ * default is consensus-critical. Pass `{ hedged: true }` to {@link pqcSign}
+ * only for off-chain uses that want side-channel hedging.
  */
 
-import { ml_dsa87 } from "@noble/post-quantum/ml-dsa.js";
+import { mldsa87 } from "@qorechain/pqc";
 import { randomBytes } from "@noble/hashes/utils";
 import {
   AlgorithmDilithium5,
@@ -48,10 +55,9 @@ export type {
  * ML-DSA-87 (Dilithium-5) byte lengths.
  *
  * These are fixed by NIST FIPS 204 and match the chain's `x/pqc` constants
- * exactly. The installed `@noble/post-quantum` `ml_dsa87` does not expose these
- * as runtime properties, so we encode the standard's values directly; the test
- * suite asserts that the library actually produces keys/signatures of these
- * lengths, guarding against any future library drift.
+ * exactly. We encode the standard's values directly; the test suite asserts
+ * that the library actually produces keys/signatures of these lengths,
+ * guarding against any future library drift.
  */
 /** ML-DSA-87 public-key length, in bytes (FIPS 204 / core: 2592). */
 export const ML_DSA_87_PUBLIC_KEY_LENGTH = 2592;
@@ -94,13 +100,24 @@ export function generatePqcKeypair(seed?: Uint8Array): PqcKeypair {
   // When no seed is supplied, draw a fresh random 32-byte seed so keygen always
   // receives one explicitly (a random seed yields a random keypair).
   const xi = seed ?? randomBytes(ML_DSA_87_SEED_LENGTH);
-  const kp = ml_dsa87.keygen(xi);
+  const kp = mldsa87.keygen(xi);
   return { publicKey: kp.publicKey, secretKey: kp.secretKey };
 }
 
-/** Sign a message with an ML-DSA-87 (Dilithium-5) secret key. */
-export function pqcSign(secretKey: Uint8Array, message: Uint8Array): Uint8Array {
-  return ml_dsa87.sign(secretKey, message);
+/**
+ * Sign a message with an ML-DSA-87 (Dilithium-5) secret key.
+ *
+ * DETERMINISTIC (FIPS-204 §3.4, rnd = 32 zero bytes) by default — the same
+ * `(secretKey, message)` always yields the same signature. The chain's PQC
+ * verifier accepts ONLY deterministic signatures, so do not pass
+ * `{ hedged: true }` for anything that goes on-chain.
+ */
+export function pqcSign(
+  secretKey: Uint8Array,
+  message: Uint8Array,
+  opts?: { hedged?: boolean },
+): Uint8Array {
+  return mldsa87.sign(secretKey, message, opts);
 }
 
 /** Verify an ML-DSA-87 (Dilithium-5) signature over a message. */
@@ -109,7 +126,7 @@ export function pqcVerify(
   message: Uint8Array,
   signature: Uint8Array,
 ): boolean {
-  return ml_dsa87.verify(publicKey, message, signature);
+  return mldsa87.verify(publicKey, message, signature);
 }
 
 /**

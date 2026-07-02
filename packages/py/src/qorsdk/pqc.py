@@ -68,9 +68,17 @@ def generate_pqc_keypair() -> PqcKeypair:
     return PqcKeypair(public_key=bytes(public_key), secret_key=bytes(secret_key))
 
 
-def pqc_sign(secret_key: bytes, message: bytes) -> bytes:
-    """Sign a message with an ML-DSA-87 (Dilithium-5) secret key."""
-    return bytes(ML_DSA_87.sign(secret_key, message))
+def pqc_sign(secret_key: bytes, message: bytes, *, hedged: bool = False) -> bytes:
+    """Sign a message with an ML-DSA-87 (Dilithium-5) secret key.
+
+    DETERMINISTIC (FIPS-204 §3.4, ``rnd`` = 32 zero bytes) by default: the same
+    ``(secret_key, message)`` always yields the same signature. The chain's
+    on-chain PQC verifier accepts ONLY deterministic ML-DSA-87 signatures
+    (hedged signatures are rejected with codespace ``pqc``), so this default is
+    consensus-critical — do not pass ``hedged=True`` for anything that goes
+    on-chain.
+    """
+    return bytes(ML_DSA_87.sign(secret_key, message, deterministic=not hedged))
 
 
 def pqc_verify(public_key: bytes, message: bytes, signature: bytes) -> bool:

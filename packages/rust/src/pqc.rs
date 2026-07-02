@@ -72,20 +72,47 @@ pub fn generate_pqc_keypair() -> Result<PqcKeypair> {
 }
 
 /// Signs a message with an ML-DSA-87 (Dilithium-5) secret key.
+///
+/// Signing is DETERMINISTIC (FIPS-204 §3.4, `rnd` = 32 zero bytes): the same
+/// `(secret_key, message)` always yields the same signature. The chain's
+/// on-chain PQC verifier accepts ONLY deterministic ML-DSA-87 signatures
+/// (hedged signatures are rejected with codespace `pqc`), so this default is
+/// consensus-critical. Use [`pqc_sign_hedged`] only for off-chain uses that
+/// want side-channel hedging.
 pub fn pqc_sign(secret_key: &[u8], message: &[u8]) -> Result<Vec<u8>> {
+    let sk = decode_secret_key(secret_key)?;
+    // Deterministic variant: fixed all-zero 32-byte rnd, empty context (the
+    // chain's hybrid scheme convention).
+    let sig = sk
+        .try_sign_with_seed(&[0u8; 32], message, &[])
+        .map_err(|e| Error::Pqc(format!("signing failed: {e}")))?;
+    Ok(sig.to_vec())
+}
+
+/// Signs a message with an ML-DSA-87 secret key using the RANDOMIZED (hedged)
+/// FIPS-204 variant.
+///
+/// NOT accepted by the chain's PQC verifier — use [`pqc_sign`] for anything
+/// that goes on-chain.
+pub fn pqc_sign_hedged(secret_key: &[u8], message: &[u8]) -> Result<Vec<u8>> {
+    let sk = decode_secret_key(secret_key)?;
+    // Empty context, the chain's hybrid scheme convention.
+    let sig = sk
+        .try_sign(message, &[])
+        .map_err(|e| Error::Pqc(format!("signing failed: {e}")))?;
+    Ok(sig.to_vec())
+}
+
+/// Decodes and validates a raw ML-DSA-87 secret key.
+fn decode_secret_key(secret_key: &[u8]) -> Result<ml_dsa_87::PrivateKey> {
     let bytes: [u8; MLDSA87_SECRET_KEY_LEN] = secret_key.try_into().map_err(|_| {
         Error::Pqc(format!(
             "invalid PQC secret key length: {}",
             secret_key.len()
         ))
     })?;
-    let sk = ml_dsa_87::PrivateKey::try_from_bytes(bytes)
-        .map_err(|e| Error::Pqc(format!("invalid PQC secret key: {e}")))?;
-    // Empty context, the chain's hybrid scheme convention.
-    let sig = sk
-        .try_sign(message, &[])
-        .map_err(|e| Error::Pqc(format!("signing failed: {e}")))?;
-    Ok(sig.to_vec())
+    ml_dsa_87::PrivateKey::try_from_bytes(bytes)
+        .map_err(|e| Error::Pqc(format!("invalid PQC secret key: {e}")))
 }
 
 /// Verifies an ML-DSA-87 (Dilithium-5) signature over a message.

@@ -99,3 +99,61 @@ fn extension_rejects_invalid_input() {
             .is_err()
     );
 }
+
+// --- deterministic signing (chain requirement) -------------------------------
+//
+// The chain's PQC verifier accepts ONLY deterministic (FIPS-204 §3.4,
+// rnd = 32 zero bytes) ML-DSA-87 signatures; hedged signing is rejected with
+// codespace "pqc". These tests pin the deterministic default against the
+// shared qorechain-pqc vectors.
+
+fn from_hex(s: &str) -> Vec<u8> {
+    assert!(s.len() % 2 == 0, "odd-length hex");
+    (0..s.len())
+        .step_by(2)
+        .map(|i| u8::from_str_radix(&s[i..i + 2], 16).expect("bad hex"))
+        .collect()
+}
+
+fn vector_cases() -> Vec<serde_json::Value> {
+    let raw = std::fs::read_to_string(concat!(
+        env!("CARGO_MANIFEST_DIR"),
+        "/tests/fixtures/ml-dsa-87-deterministic.json"
+    ))
+    .expect("read vectors");
+    let v: serde_json::Value = serde_json::from_str(&raw).expect("parse vectors");
+    v["cases"].as_array().expect("cases").clone()
+}
+
+#[test]
+fn pqc_sign_is_deterministic() {
+    let kp = generate_pqc_keypair().unwrap();
+    let msg = b"deterministic ML-DSA-87 required by the chain";
+    let a = pqc_sign(&kp.secret_key, msg).unwrap();
+    let b = pqc_sign(&kp.secret_key, msg).unwrap();
+    assert_eq!(a, b, "two signatures over the same input must be identical");
+}
+
+#[test]
+fn pqc_sign_matches_shared_deterministic_vectors() {
+    for case in vector_cases() {
+        let secret_key = from_hex(case["secretKey"].as_str().unwrap());
+        let public_key = from_hex(case["publicKey"].as_str().unwrap());
+        let message = from_hex(case["message"].as_str().unwrap());
+        let expected = from_hex(case["signature"].as_str().unwrap());
+
+        let sig = pqc_sign(&secret_key, &message).unwrap();
+        assert_eq!(sig, expected, "signature must match the shared vector");
+        assert!(pqc_verify(&public_key, &message, &sig));
+    }
+}
+
+#[test]
+fn pqc_sign_hedged_opt_in_differs_but_verifies() {
+    let kp = generate_pqc_keypair().unwrap();
+    let msg = b"hedged signatures are NOT accepted by the chain";
+    let det = pqc_sign(&kp.secret_key, msg).unwrap();
+    let hedged = qorechain::pqc::pqc_sign_hedged(&kp.secret_key, msg).unwrap();
+    assert_ne!(det, hedged);
+    assert!(pqc_verify(&kp.public_key, msg, &hedged));
+}

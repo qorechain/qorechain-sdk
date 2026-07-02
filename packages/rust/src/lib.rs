@@ -60,7 +60,7 @@ pub use accounts::{
 };
 
 pub use pqc::{
-    build_hybrid_signature_extension, generate_pqc_keypair, pqc_sign, pqc_verify,
+    build_hybrid_signature_extension, generate_pqc_keypair, pqc_sign, pqc_sign_hedged, pqc_verify,
     HybridSignatureExtension, PqcKeypair, ALGORITHM_DILITHIUM5, ALGORITHM_MLKEM1024,
     HYBRID_SIG_TYPE_URL, MLDSA87_PUBLIC_KEY_LEN, MLDSA87_SECRET_KEY_LEN, MLDSA87_SIGNATURE_LEN,
 };

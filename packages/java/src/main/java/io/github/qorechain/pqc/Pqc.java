@@ -66,8 +66,38 @@ public final class Pqc {
         return new PqcKeypair(pub, sec);
     }
 
-    /** Sign a message with an ML-DSA-87 secret key (pure mode, empty context). */
+    /**
+     * Sign a message with an ML-DSA-87 secret key (pure mode, empty context).
+     *
+     * <p>Signing is DETERMINISTIC (FIPS-204 §3.4, {@code rnd} = 32 zero bytes):
+     * the same {@code (secretKey, message)} always yields the same signature.
+     * The chain's on-chain PQC verifier accepts ONLY deterministic ML-DSA-87
+     * signatures (hedged signatures are rejected with codespace {@code pqc}),
+     * so this default is consensus-critical. Use {@link #pqcSignHedged} only
+     * for off-chain uses that want side-channel hedging.
+     */
     public static byte[] pqcSign(byte[] secretKey, byte[] message) {
+        MLDSAPrivateKeyParameters priv =
+                new MLDSAPrivateKeyParameters(MLDSAParameters.ml_dsa_87, secretKey);
+        MLDSASigner signer = new MLDSASigner();
+        // No ParametersWithRandom: BouncyCastle then signs deterministically.
+        signer.init(true, priv);
+        signer.update(message, 0, message.length);
+        try {
+            return signer.generateSignature();
+        } catch (org.bouncycastle.crypto.CryptoException e) {
+            throw new IllegalStateException("ML-DSA-87 signing failed", e);
+        }
+    }
+
+    /**
+     * Sign a message with an ML-DSA-87 secret key using the RANDOMIZED (hedged)
+     * FIPS-204 variant.
+     *
+     * <p>NOT accepted by the chain's PQC verifier — use {@link #pqcSign} for
+     * anything that goes on-chain.
+     */
+    public static byte[] pqcSignHedged(byte[] secretKey, byte[] message) {
         MLDSAPrivateKeyParameters priv =
                 new MLDSAPrivateKeyParameters(MLDSAParameters.ml_dsa_87, secretKey);
         MLDSASigner signer = new MLDSASigner();

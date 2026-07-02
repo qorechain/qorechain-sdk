@@ -1,4 +1,5 @@
 import { describe, it, expect } from "vitest";
+import { readFileSync } from "node:fs";
 import { secp256k1 } from "@noble/curves/secp256k1";
 import { sha256 } from "@noble/hashes/sha256";
 import {
@@ -223,6 +224,68 @@ describe("HybridSigner (hybrid mode)", () => {
     };
     expect(() => new HybridSigner(stub, kp)).toThrow(
       "HybridSigner requires a classical-mode signer",
+    );
+  });
+});
+
+describe("ML-DSA-87 deterministic signing (chain requirement)", () => {
+  // The chain's PQC verifier accepts ONLY deterministic (FIPS-204 §3.4,
+  // rnd = 32 zero bytes) ML-DSA-87 signatures; hedged signing is rejected
+  // with codespace "pqc". These tests pin the deterministic default.
+  interface VectorCase {
+    seed: string;
+    publicKey: string;
+    secretKey: string;
+    message: string;
+    signature: string;
+  }
+  interface VectorFile {
+    sizes: { publicKey: number; signature: number };
+    cases: VectorCase[];
+  }
+  const vectors: VectorFile = JSON.parse(
+    readFileSync(
+      new URL("./fixtures/ml-dsa-87-deterministic.json", import.meta.url),
+      "utf8",
+    ),
+  );
+  const fromHex = (h: string): Uint8Array =>
+    Uint8Array.from((h.match(/../g) ?? []).map((b) => parseInt(b, 16)));
+
+  it("sign(sk, msg) twice yields byte-identical signatures", () => {
+    const kp = generatePqcKeypair();
+    const a = pqcSign(kp.secretKey, msg);
+    const b = pqcSign(kp.secretKey, msg);
+    expect(Buffer.from(a).toString("hex")).toBe(Buffer.from(b).toString("hex"));
+  });
+
+  it("matches the shared qorechain-pqc deterministic signature vectors", () => {
+    for (const c of vectors.cases) {
+      const secretKey = fromHex(c.secretKey);
+      const publicKey = fromHex(c.publicKey);
+      const message = fromHex(c.message);
+      const expected = c.signature;
+      const sig = pqcSign(secretKey, message);
+      expect(Buffer.from(sig).toString("hex")).toBe(expected);
+      expect(pqcVerify(publicKey, message, sig)).toBe(true);
+    }
+  });
+
+  it("keygen from a vector seed reproduces the vector keypair", () => {
+    for (const c of vectors.cases) {
+      const kp = generatePqcKeypair(fromHex(c.seed));
+      expect(Buffer.from(kp.publicKey).toString("hex")).toBe(c.publicKey);
+      expect(Buffer.from(kp.secretKey).toString("hex")).toBe(c.secretKey);
+    }
+  });
+
+  it("hedged opt-in produces a different, still-valid signature", () => {
+    const kp = generatePqcKeypair();
+    const det = pqcSign(kp.secretKey, msg);
+    const hedged = pqcSign(kp.secretKey, msg, { hedged: true });
+    expect(pqcVerify(kp.publicKey, msg, hedged)).toBe(true);
+    expect(Buffer.from(hedged).toString("hex")).not.toBe(
+      Buffer.from(det).toString("hex"),
     );
   });
 });
