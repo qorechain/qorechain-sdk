@@ -1,6 +1,6 @@
 {
   "name": "@qorechain/evm",
-  "version": "0.5.1",
+  "version": "0.5.2",
   "description": "QoreChain EVM adapter: thin, type-safe conveniences over viem for the QoreChain EVM Engine, including ERC-20 helpers and bindings for QoreChain precompiles.",
   "license": "Apache-2.0",
   "author": "QoreChain",

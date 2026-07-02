@@ -4,11 +4,11 @@
  * The implementation lives in the EVM adapter (`@qorechain/evm`), which owns the
  * viem/JSON-RPC surface. It is re-exported here so it is discoverable from the
  * umbrella `@qorechain/sdk` package — `import { simulateWithRiskScore } from
- * "@qorechain/sdk"` works once `@qorechain/evm` (and its viem peer) are installed.
+ * "@qorechain/sdk"` works out of the box (`@qorechain/evm` is a regular
+ * dependency; it imports cleanly without viem).
  *
- * `@qorechain/evm` is an **optional peer dependency** of this package: it is not
- * bundled and is not required unless you use these EVM-side helpers. The core
- * cosmos-side SDK does not depend on viem.
+ * `viem` remains an **optional peer**: it is only needed for the viem-typed
+ * helpers in `@qorechain/evm`. The core cosmos-side SDK does not depend on it.
  *
  * QoreChain is the first network to expose an on-chain AI risk/anomaly model to
  * any dApp through plain `eth_call`s. Use {@link simulateWithRiskScore} to bundle

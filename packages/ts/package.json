@@ -1,6 +1,6 @@
 {
   "name": "@qorechain/sdk",
-  "version": "0.5.1",
+  "version": "0.5.2",
   "description": "Official TypeScript SDK for building decentralized applications on the QoreChain network.",
   "license": "Apache-2.0",
   "author": "QoreChain",
@@ -41,13 +41,9 @@
     "access": "public"
   },
   "peerDependencies": {
-    "@qorechain/evm": "workspace:*",
     "viem": "^2.0.0"
   },
   "peerDependenciesMeta": {
-    "@qorechain/evm": {
-      "optional": true
-    },
     "viem": {
       "optional": true
     }
@@ -67,7 +63,8 @@
     "@scure/bip39": "^1.6.0",
     "bech32": "^2.0.0",
     "cosmjs-types": "^0.11.0",
-    "micro-key-producer": "^0.9.0"
+    "micro-key-producer": "^0.9.0",
+    "@qorechain/evm": "^0.5.1"
   },
   "devDependencies": {
     "@cosmjs/crypto": "^0.39.0",

@@ -5,6 +5,13 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## 0.5.2 — 2026-07-02
+
+### Fixed
+- `@qorechain/sdk` no longer crashes on bare import: `@qorechain/evm` (statically
+  re-exported for the AI pre-flight helpers) moved from optional peer to a regular
+  dependency — it imports cleanly without viem. `viem` stays an optional peer.
+
 ## [0.5.1]
 
 ### Fixed

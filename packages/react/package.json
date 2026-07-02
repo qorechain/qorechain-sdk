@@ -1,6 +1,6 @@
 {
   "name": "@qorechain/react",
-  "version": "0.5.1",
+  "version": "0.5.2",
   "description": "Official React hooks and components for building quantum-safe QoreChain dApps.",
   "license": "Apache-2.0",
   "author": "QoreChain",
