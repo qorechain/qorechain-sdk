@@ -72,7 +72,7 @@ mavenPublishing {
         signAllPublications()
     }
 
-    coordinates("io.github.qorechain", "qorechain-sdk", "0.5.0")
+    coordinates("io.github.qorechain", "qorechain-sdk", "0.5.1")
 
     pom {
         name.set("QoreChain Java SDK")
