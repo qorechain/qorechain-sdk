@@ -46,9 +46,9 @@ export default function App() {
       config={{
         network: "testnet",
         endpoints: {
-          rpc: "https://rpc.testnet.example",
-          rest: "https://rest.testnet.example",
-          evmRpc: "https://evm.testnet.example",
+          rpc: "https://rpc-testnet.qore.host",
+          rest: "https://api-testnet.qore.host",
+          evmRpc: "https://evm-testnet.qore.host",
         },
       }}
     >

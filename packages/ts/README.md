@@ -49,9 +49,9 @@ const client = createClient(); // testnet, localhost defaults
 
 const remote = createClient({
   endpoints: {
-    rest: "https://rest.testnet.example", // Cosmos REST (LCD)
-    rpc: "https://rpc.testnet.example",    // consensus RPC (for signing)
-    evmRpc: "https://evm.testnet.example", // EVM + qor_ JSON-RPC
+    rest: "https://api-testnet.qore.host", // Cosmos REST (LCD)
+    rpc: "https://rpc-testnet.qore.host",    // consensus RPC (for signing)
+    evmRpc: "https://evm-testnet.qore.host", // EVM + qor_ JSON-RPC
   },
 });
 ```
@@ -142,7 +142,7 @@ const info = await getContractInfo(cw, "qor1contract...");
 const state = await queryContractSmart(cw, "qor1contract...", { get_count: {} });
 
 // Writes
-const signing = await connectCosmWasmSigner("https://rpc.testnet.example", signer);
+const signing = await connectCosmWasmSigner("https://rpc-testnet.qore.host", signer);
 const inst = await instantiate(signing, sender, codeId, { count: 0 }, "my-contract", {
   fee: "auto",
 });
