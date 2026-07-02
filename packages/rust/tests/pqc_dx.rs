@@ -1,7 +1,7 @@
 //! Quantum-safe DX helper tests: `is_pqc_registered` / `get_pqc_status` against
 //! a mocked `qor_getPQCKeyStatus` JSON-RPC endpoint, and `ensure_pqc_registered`
 //! on both paths (already-registered → no broadcast; missing → builds, signs and
-//! broadcasts `MsgRegisterPQCKey`).
+//! broadcasts `MsgRegisterPQCKeyV2`).
 //!
 //! A single tiny hyper mock server dispatches by request path: the REST broadcast
 //! POST (`/cosmos/tx/v1beta1/txs`) returns a tx-hash body, and every other path
@@ -27,7 +27,7 @@ use cosmrs::proto::traits::Message as ProstMessage;
 
 use qorechain::accounts::derive_native_account;
 use qorechain::pqc_dx::PqcDx;
-use qorechain::proto::qorechain::pqc::v1::MsgRegisterPqcKey;
+use qorechain::proto::qorechain::pqc::v1::MsgRegisterPqcKeyV2;
 use qorechain::query::QorClient;
 use qorechain::tx::{BroadcastMode, Coin, Fee};
 
@@ -134,7 +134,7 @@ fn make_pqc_dx(url: String, qor: Option<QorClient>) -> PqcDx {
     }
 }
 
-fn decode_register_msg(server: &MockServer) -> MsgRegisterPqcKey {
+fn decode_register_msg(server: &MockServer) -> MsgRegisterPqcKeyV2 {
     let last = server
         .recorded()
         .into_iter()
@@ -146,8 +146,11 @@ fn decode_register_msg(server: &MockServer) -> MsgRegisterPqcKey {
     let tx_raw = TxRaw::decode(tx_bytes.as_slice()).unwrap();
     let body = TxBody::decode(tx_raw.body_bytes.as_slice()).unwrap();
     assert_eq!(body.messages.len(), 1);
-    assert_eq!(body.messages[0].type_url, "/qorechain.pqc.v1.MsgRegisterPQCKey");
-    MsgRegisterPqcKey::decode(body.messages[0].value.as_slice()).unwrap()
+    assert_eq!(
+        body.messages[0].type_url,
+        "/qorechain.pqc.v1.MsgRegisterPQCKeyV2"
+    );
+    MsgRegisterPqcKeyV2::decode(body.messages[0].value.as_slice()).unwrap()
 }
 
 #[tokio::test]
@@ -238,7 +241,7 @@ async fn ensure_pqc_registered_broadcasts_when_missing() {
     assert!(!res.already_registered);
     assert_eq!(res.tx_hash, Some("REG_TX_HASH".to_string()));
 
-    // Exactly one broadcast carrying MsgRegisterPQCKey with the signer's keys.
+    // Exactly one broadcast carrying MsgRegisterPQCKeyV2 with the signer's keys.
     let broadcasts = server
         .recorded()
         .into_iter()
@@ -248,7 +251,8 @@ async fn ensure_pqc_registered_broadcasts_when_missing() {
 
     let msg = decode_register_msg(&server);
     assert_eq!(msg.sender, dx.sender);
-    assert_eq!(msg.dilithium_pubkey, dx.pqc_public_key);
+    assert_eq!(msg.public_key, dx.pqc_public_key);
+    assert_eq!(msg.algorithm_id, 1); // ALGORITHM_DILITHIUM5 (ML-DSA-87)
     assert_eq!(msg.ecdsa_pubkey, dx.public_key);
     assert_eq!(msg.key_type, "hybrid"); // default applied for empty key_type
 }

@@ -5,7 +5,7 @@
 //   - reading whether an address has a PQC key registered (IsPQCRegistered /
 //     GetPQCStatus, via the qor_getPQCKeyStatus JSON-RPC method);
 //   - idempotently registering the signer's PQC key if it is missing
-//     (EnsurePQCRegistered, which builds and broadcasts a MsgRegisterPQCKey only
+//     (EnsurePQCRegistered, which builds and broadcasts a MsgRegisterPQCKeyV2 only
 //     when needed); and
 //   - migrating an account to hybrid (classical + ML-DSA-87) signing once the key
 //     is registered (MigrateToHybrid / MigratePQCKey).
@@ -15,8 +15,9 @@
 // and fee — the Go SDK never simulates or auto-fetches these — and the high-level
 // methods build, sign, and broadcast using that context.
 //
-// On-chain mapping: MsgRegisterPQCKey { sender, dilithium_pubkey, ecdsa_pubkey,
-// key_type } at /qorechain.pqc.v1.MsgRegisterPQCKey, and MsgMigratePQCKey at
+// On-chain mapping: MsgRegisterPQCKeyV2 { sender, public_key, algorithm_id,
+// ecdsa_pubkey, key_type } at /qorechain.pqc.v1.MsgRegisterPQCKeyV2 (the chain's
+// classical-exempt bootstrap path), and MsgMigratePQCKey at
 // /qorechain.pqc.v1.MsgMigratePQCKey. Registration status is read via
 // qor_getPQCKeyStatus.
 package pqcdx
@@ -39,13 +40,18 @@ const (
 	// MsgRegisterPQCKeyTypeURL is the type URL of the legacy (v1) PQC key
 	// registration message.
 	MsgRegisterPQCKeyTypeURL = "/qorechain.pqc.v1.MsgRegisterPQCKey"
+	// MsgRegisterPQCKeyV2TypeURL is the type URL of the current PQC key
+	// registration message (explicit algorithm_id; the chain's classical-exempt
+	// bootstrap path). This is what the helpers in this package broadcast.
+	MsgRegisterPQCKeyV2TypeURL = "/qorechain.pqc.v1.MsgRegisterPQCKeyV2"
 	// MsgMigratePQCKeyTypeURL is the type URL of the PQC key migration message.
 	MsgMigratePQCKeyTypeURL = "/qorechain.pqc.v1.MsgMigratePQCKey"
 )
 
-// DefaultKeyType is the key_type recorded on MsgRegisterPQCKey when the caller
-// does not set RegisterOptions.KeyType. It names the default signature scheme.
-const DefaultKeyType = "dilithium5"
+// DefaultKeyType is the key_type recorded on MsgRegisterPQCKeyV2 when the
+// caller does not set RegisterOptions.KeyType. "hybrid" (classical + PQC) is
+// what the chain's bootstrap registration path expects.
+const DefaultKeyType = "hybrid"
 
 // QorRPC is the subset of query.QorClient used to read PQC key status. The
 // concrete *query.QorClient satisfies it.
@@ -189,7 +195,7 @@ func (c *Client) Status() (Status, error) {
 
 // RegisterOptions tune EnsurePQCRegistered.
 type RegisterOptions struct {
-	// KeyType is the key_type recorded on MsgRegisterPQCKey. Empty uses
+	// KeyType is the key_type recorded on MsgRegisterPQCKeyV2. Empty uses
 	// DefaultKeyType.
 	KeyType string
 	// Force skips the qor_getPQCKeyStatus pre-check and always broadcasts the
@@ -206,8 +212,8 @@ type EnsureResult struct {
 	TxHash string
 }
 
-// registerMessage builds the MsgRegisterPQCKey for the signer.
-func (c *Client) registerMessage(keyType string) (*pqcv1.MsgRegisterPQCKey, error) {
+// registerMessage builds the MsgRegisterPQCKeyV2 for the signer.
+func (c *Client) registerMessage(keyType string) (*pqcv1.MsgRegisterPQCKeyV2, error) {
 	if len(c.signer.PQCKeypair.PublicKey) == 0 {
 		return nil, fmt.Errorf("pqcdx: Signer.PQCKeypair.PublicKey is required to register")
 	}
@@ -217,9 +223,10 @@ func (c *Client) registerMessage(keyType string) (*pqcv1.MsgRegisterPQCKey, erro
 	if keyType == "" {
 		keyType = DefaultKeyType
 	}
-	return messages.Pqc.RegisterKey(
+	return messages.Pqc.RegisterKeyV2(
 		c.signer.Account.Address,
 		c.signer.PQCKeypair.PublicKey,
+		pqcv1.AlgorithmID(pqc.AlgorithmDilithium5),
 		c.signer.Account.PublicKey,
 		keyType,
 	), nil
@@ -228,8 +235,8 @@ func (c *Client) registerMessage(keyType string) (*pqcv1.MsgRegisterPQCKey, erro
 // EnsurePQCRegistered ensures the signer's PQC key is registered on chain. It is
 // idempotent: unless RegisterOptions.Force is set, it first checks
 // qor_getPQCKeyStatus and returns AlreadyRegistered without broadcasting when a
-// key is present; otherwise it builds and broadcasts a MsgRegisterPQCKey carrying
-// the signer's Dilithium and ECDSA public keys.
+// key is present; otherwise it builds and broadcasts a MsgRegisterPQCKeyV2
+// carrying the signer's Dilithium and ECDSA public keys.
 func (c *Client) EnsurePQCRegistered(opts RegisterOptions) (EnsureResult, error) {
 	if !opts.Force {
 		s, err := c.Status()
@@ -251,7 +258,7 @@ func (c *Client) EnsurePQCRegistered(opts RegisterOptions) (EnsureResult, error)
 	return EnsureResult{TxHash: res.TxHash}, nil
 }
 
-// BuildRegister builds and signs the MsgRegisterPQCKey WITHOUT broadcasting,
+// BuildRegister builds and signs the MsgRegisterPQCKeyV2 WITHOUT broadcasting,
 // returning the BuiltTx. It does not check current status.
 func (c *Client) BuildRegister(opts RegisterOptions) (*tx.BuiltTx, error) {
 	msg, err := c.registerMessage(opts.KeyType)

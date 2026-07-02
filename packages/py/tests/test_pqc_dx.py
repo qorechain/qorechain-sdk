@@ -2,7 +2,7 @@
 
 Status queries are mocked at the ``QorClient.get_pqc_key_status`` level (the
 ``qor_getPQCKeyStatus`` JSON-RPC method). Registration / migration are built,
-signed, and broadcast as ``MsgRegisterPQCKey`` / ``MsgMigratePQCKey``; the node
+signed, and broadcast as ``MsgRegisterPQCKeyV2`` / ``MsgMigratePQCKey``; the node
 is mocked with respx and the broadcast ``TxRaw`` is decoded back into messages to
 assert field values and that ``ensure_pqc_registered`` is idempotent.
 """
@@ -39,7 +39,7 @@ TEST_MNEMONIC = (
 CHAIN_ID = "qorechain-diana"
 REST = "http://localhost:1317"
 FEE = {"amount": [{"denom": "uqor", "amount": "5000"}], "gas": "200000"}
-REGISTER_TYPE_URL = "/qorechain.pqc.v1.MsgRegisterPQCKey"
+REGISTER_TYPE_URL = "/qorechain.pqc.v1.MsgRegisterPQCKeyV2"
 MIGRATE_TYPE_URL = "/qorechain.pqc.v1.MsgMigratePQCKey"
 
 
@@ -150,9 +150,10 @@ def test_build_register_pqc_key_sets_fields():
     assert m.type_url == REGISTER_TYPE_URL
     decoded = decode_any(m.type_url, m.value.SerializeToString())
     assert decoded.sender == account.address
-    assert decoded.dilithium_pubkey == keypair.public_key
+    assert decoded.public_key == keypair.public_key
+    assert decoded.algorithm_id == 1  # ALGORITHM_DILITHIUM5 (ML-DSA-87)
     assert decoded.ecdsa_pubkey == account.public_key
-    assert decoded.key_type == "dilithium5"
+    assert decoded.key_type == "hybrid"
 
 
 # --- ensure_pqc_registered (idempotent) --------------------------------------
@@ -184,9 +185,10 @@ def test_ensure_pqc_registered_missing_broadcasts_register_msg():
     msgs = _decoded_messages(route, REGISTER_TYPE_URL)
     assert len(msgs) == 1
     assert msgs[0].sender == account.address
-    assert msgs[0].dilithium_pubkey == keypair.public_key
+    assert msgs[0].public_key == keypair.public_key
+    assert msgs[0].algorithm_id == 1  # ALGORITHM_DILITHIUM5 (ML-DSA-87)
     assert msgs[0].ecdsa_pubkey == account.public_key
-    assert msgs[0].key_type == "dilithium5"
+    assert msgs[0].key_type == "hybrid"
 
 
 @respx.mock

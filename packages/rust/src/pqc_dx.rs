@@ -3,7 +3,7 @@
 //!
 //! QoreChain treats post-quantum cryptography (PQC) as a first-class signature
 //! scheme: an account registers an ML-DSA-87 (Dilithium-5) key on-chain
-//! (`MsgRegisterPQCKey`), after which its transactions can carry a hybrid
+//! (`MsgRegisterPQCKeyV2`), after which its transactions can carry a hybrid
 //! (classical secp256k1 + ML-DSA-87) signature that the ante handler verifies in
 //! full. The low-level primitives already exist — [`generate_pqc_keypair`](crate::pqc::generate_pqc_keypair),
 //! [`build_hybrid_tx`](crate::tx::build_hybrid_tx), the `msg::pqc` composers, and
@@ -38,7 +38,7 @@
 //! alternative for callers already on the EVM side.
 
 use crate::error::{Error, Result};
-use crate::msg::pqc::{migrate_pqc_key_any, register_pqc_key_any};
+use crate::msg::pqc::{migrate_pqc_key_any, register_pqc_key_v2_any};
 use crate::pqc::ALGORITHM_DILITHIUM5;
 use crate::query::QorClient;
 use crate::tx::{
@@ -51,7 +51,7 @@ use serde_json::Value;
 /// the `qor_getPQCKeyStatus` JSON-RPC method used by this module).
 pub const PQC_KEY_STATUS_PRECOMPILE: &str = "0x0000000000000000000000000000000000000A02";
 
-/// The default key-type tag forwarded to `MsgRegisterPQCKey`.
+/// The default key-type tag forwarded to `MsgRegisterPQCKeyV2`.
 pub const DEFAULT_KEY_TYPE: &str = "hybrid";
 
 /// Normalized PQC registration status for an address, decoded from the rich JSON
@@ -106,7 +106,7 @@ pub struct PqcDx {
     pub sequence: u64,
     /// The fee to pay.
     pub fee: Fee,
-    /// The key-type tag forwarded to `MsgRegisterPQCKey`. Defaults to
+    /// The key-type tag forwarded to `MsgRegisterPQCKeyV2`. Defaults to
     /// [`DEFAULT_KEY_TYPE`] when empty.
     pub key_type: String,
     /// The REST (LCD) URL used to broadcast (`/cosmos/tx/v1beta1/txs`).
@@ -146,7 +146,7 @@ impl PqcDx {
     ///
     /// When a [`QorClient`] is configured and the key is already registered, this
     /// returns `EnsureResult { already_registered: true, tx_hash: None }` WITHOUT
-    /// broadcasting. Otherwise it builds and broadcasts `MsgRegisterPQCKey` with
+    /// broadcasting. Otherwise it builds and broadcasts `MsgRegisterPQCKeyV2` with
     /// the signer's Dilithium public key plus its classical ECDSA public key.
     ///
     /// This is the single call that makes a dApp quantum-safe: run it once at
@@ -172,15 +172,20 @@ impl PqcDx {
         })
     }
 
-    /// Builds + signs (but does not broadcast) the `MsgRegisterPQCKey` for the
+    /// Builds + signs (but does not broadcast) the `MsgRegisterPQCKeyV2` for the
     /// signer.
+    ///
+    /// Uses `/qorechain.pqc.v1.MsgRegisterPQCKeyV2` — the chain's current
+    /// (classical-exempt bootstrap) registration path — with an explicit
+    /// `algorithm_id` (ML-DSA-87 / Dilithium-5).
     ///
     /// Useful for inspection, packing into a larger tx, or a deferred-broadcast
     /// flow.
     pub fn build_register(&self) -> Result<BuiltTx> {
-        let msg = register_pqc_key_any(
+        let msg = register_pqc_key_v2_any(
             self.sender.clone(),
             self.pqc_public_key.clone(),
+            ALGORITHM_DILITHIUM5,
             self.public_key.clone(),
             self.key_type(),
         );

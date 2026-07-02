@@ -12,7 +12,7 @@ import {
 import { generatePqcKeypair } from "../../src/accounts/pqc";
 import type { TxClient } from "../../src/tx/builder";
 import type { QorClient } from "../../src/query/qor";
-import { MsgRegisterPQCKey, MsgMigratePQCKey } from "../../src/codegen/qorechain/pqc/v1/tx";
+import { MsgRegisterPQCKeyV2, MsgMigratePQCKey } from "../../src/codegen/qorechain/pqc/v1/tx";
 
 const ADDR = "qor15yk64u7zc9g9k2yr2wmzeva5qgwxps6yjecvvu";
 
@@ -79,17 +79,18 @@ describe("getPqcStatus / isPqcRegistered", () => {
 });
 
 describe("buildRegisterPqcKeyMsg", () => {
-  it("builds MsgRegisterPQCKey with the signer's Dilithium pubkey", () => {
+  it("builds MsgRegisterPQCKeyV2 with the signer's ML-DSA-87 pubkey", () => {
     const kp = generatePqcKeypair();
     const ecdsa = new Uint8Array([1, 2, 3]);
     const m = buildRegisterPqcKeyMsg(ADDR, {
       pqcKeypair: kp,
       ecdsaPubkey: ecdsa,
     });
-    expect(m.typeUrl).toBe("/qorechain.pqc.v1.MsgRegisterPQCKey");
-    const v = m.value as MsgRegisterPQCKey;
+    expect(m.typeUrl).toBe("/qorechain.pqc.v1.MsgRegisterPQCKeyV2");
+    const v = m.value as MsgRegisterPQCKeyV2;
     expect(v.sender).toBe(ADDR);
-    expect(v.dilithiumPubkey).toEqual(kp.publicKey);
+    expect(v.publicKey).toEqual(kp.publicKey);
+    expect(v.algorithmId).toBe(1); // AlgorithmDilithium5 (ML-DSA-87)
     expect(v.ecdsaPubkey).toEqual(ecdsa);
     expect(v.keyType).toBe("hybrid"); // default
   });
@@ -97,7 +98,7 @@ describe("buildRegisterPqcKeyMsg", () => {
   it("defaults the ecdsa pubkey to empty when omitted", () => {
     const kp = generatePqcKeypair();
     const m = buildRegisterPqcKeyMsg(ADDR, { pqcKeypair: kp, keyType: "pqc" });
-    const v = m.value as MsgRegisterPQCKey;
+    const v = m.value as MsgRegisterPQCKeyV2;
     expect(v.ecdsaPubkey).toEqual(new Uint8Array(0));
     expect(v.keyType).toBe("pqc");
   });
@@ -130,8 +131,8 @@ describe("ensurePqcRegistered", () => {
     expect(res.txHash).toBe("DEADBEEF");
     expect(signAndBroadcast).toHaveBeenCalledOnce();
     const [messages] = signAndBroadcast.mock.calls[0];
-    const v = (messages as { value: MsgRegisterPQCKey }[])[0].value;
-    expect(v.dilithiumPubkey).toEqual(kp.publicKey);
+    const v = (messages as { value: MsgRegisterPQCKeyV2 }[])[0].value;
+    expect(v.publicKey).toEqual(kp.publicKey);
   });
 
   it("broadcasts unconditionally when no status source is provided", async () => {

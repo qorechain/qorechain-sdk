@@ -16,7 +16,7 @@ import java.util.List;
  *
  * <p>QoreChain treats post-quantum cryptography (PQC) as a first-class signature
  * scheme: an account registers an ML-DSA-87 (Dilithium-5) key on-chain
- * ({@code MsgRegisterPQCKey}), after which its transactions can carry a hybrid
+ * ({@code MsgRegisterPQCKeyV2}), after which its transactions can carry a hybrid
  * (classical secp256k1 + ML-DSA-87) signature that the ante handler verifies in
  * full. The low-level primitives already exist — {@link Pqc#generatePqcKeypair()},
  * {@link HybridTx#buildHybridTx}, the {@code QorechainMessages.pqc.registerPqcKey}
@@ -56,7 +56,7 @@ public final class PqcDx {
     public static final String PQC_KEY_STATUS_PRECOMPILE_ADDRESS =
             "0x0000000000000000000000000000000000000A02";
 
-    /** Default key-type tag forwarded to {@code MsgRegisterPQCKey}. */
+    /** Default key-type tag forwarded to {@code MsgRegisterPQCKeyV2}. */
     public static final String DEFAULT_KEY_TYPE = "hybrid";
 
     /** Normalized PQC registration status for an address. */
@@ -105,7 +105,7 @@ public final class PqcDx {
          * is used; pass an explicit value to override.
          */
         public byte[] ecdsaPubkey;
-        /** Key-type tag forwarded to {@code MsgRegisterPQCKey} (default {@link #DEFAULT_KEY_TYPE}). */
+        /** Key-type tag forwarded to {@code MsgRegisterPQCKeyV2} (default {@link #DEFAULT_KEY_TYPE}). */
         public String keyType = DEFAULT_KEY_TYPE;
         /**
          * A pre-read status to avoid a redundant {@code qor_getPQCKeyStatus} round-trip.
@@ -166,23 +166,28 @@ public final class PqcDx {
     // ---- Writes ----
 
     /**
-     * Build the {@code MsgRegisterPQCKey} {@link TypedMessage} for a signer (no
+     * Build the {@code MsgRegisterPQCKeyV2} {@link TypedMessage} for a signer (no
      * broadcasting). Useful for packing registration into a larger transaction body.
+     *
+     * <p>Uses {@code /qorechain.pqc.v1.MsgRegisterPQCKeyV2} — the chain's current
+     * (classical-exempt bootstrap) registration path — with an explicit
+     * {@code algorithm_id} (ML-DSA-87 / Dilithium-5).
      */
     public static TypedMessage buildRegisterPqcKeyMsg(Signer signer, EnsureOptions opts) {
         EnsureOptions o = opts != null ? opts : new EnsureOptions();
         byte[] ecdsaPubkey = o.ecdsaPubkey != null ? o.ecdsaPubkey : signer.secp256k1PublicKey;
         String keyType = o.keyType != null ? o.keyType : DEFAULT_KEY_TYPE;
 
-        qorechain.pqc.v1.Tx.MsgRegisterPQCKey.Builder msg =
-                qorechain.pqc.v1.Tx.MsgRegisterPQCKey.newBuilder()
+        qorechain.pqc.v1.Tx.MsgRegisterPQCKeyV2.Builder msg =
+                qorechain.pqc.v1.Tx.MsgRegisterPQCKeyV2.newBuilder()
                         .setSender(signer.sender == null ? "" : signer.sender)
-                        .setDilithiumPubkey(
+                        .setPublicKey(
                                 ByteString.copyFrom(signer.pqcKeypair.publicKey))
+                        .setAlgorithmId(PqcAlgorithm.ALGORITHM_DILITHIUM5)
                         .setEcdsaPubkey(
                                 ByteString.copyFrom(ecdsaPubkey == null ? new byte[0] : ecdsaPubkey))
                         .setKeyType(keyType);
-        return QorechainMessages.pqc.registerPqcKey(msg.build());
+        return QorechainMessages.pqc.registerPqcKeyV2(msg.build());
     }
 
     /**
@@ -191,7 +196,7 @@ public final class PqcDx {
      * <p>If {@code qor} is non-null (or a pre-read {@code opts.status} is supplied)
      * and the key is already registered, this returns
      * {@code EnsureResult{alreadyRegistered=true}} WITHOUT broadcasting. Otherwise
-     * it builds, signs, and broadcasts {@code MsgRegisterPQCKey} with the signer's
+     * it builds, signs, and broadcasts {@code MsgRegisterPQCKeyV2} with the signer's
      * Dilithium public key (from {@code signer.pqcKeypair}) plus the supplied (or
      * signer's) ECDSA public key.
      *

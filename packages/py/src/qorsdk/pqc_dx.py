@@ -17,14 +17,15 @@ Status is read via the ``qor_getPQCKeyStatus`` JSON-RPC method (exposed as
         "created_at_height": 1234           # omitted when not registered
     }
 
-Registration is done with ``MsgRegisterPQCKey``
-(``/qorechain.pqc.v1.MsgRegisterPQCKey``), which carries the signer's Dilithium
-(ML-DSA-87) public key plus its classical ECDSA (secp256k1) public key. Once
+Registration is done with ``MsgRegisterPQCKeyV2``
+(``/qorechain.pqc.v1.MsgRegisterPQCKeyV2``, the chain's classical-exempt
+bootstrap path), which carries the signer's ML-DSA-87 public key with an
+explicit ``algorithm_id`` plus its classical ECDSA (secp256k1) public key. Once
 registered, send transactions through the hybrid signing path
 (:func:`qorsdk.tx.build_hybrid_tx`) so every tx is quantum-safe.
 
 This helper mirrors the ergonomic cross-VM / rollup helpers: it wraps the typed
-``msg.pqc.register_pqc_key`` / ``msg.pqc.migrate_pqc_key`` composers and the
+``msg.pqc.register_pqc_key_v2`` / ``msg.pqc.migrate_pqc_key`` composers and the
 SDK's tx surface (:func:`~qorsdk.tx.send_messages` /
 :func:`~qorsdk.tx.build_hybrid_tx` + :func:`~qorsdk.tx.broadcast`) so an app can
 check status and register/migrate keys without touching raw messages.
@@ -41,8 +42,13 @@ from .pqc import ALGORITHM_DILITHIUM5, PqcKeypair
 from .tx import broadcast, build_hybrid_tx, send_messages
 
 #: The default ``key_type`` registered for an ML-DSA-87 (Dilithium-5) key,
-#: matching the chain's ``x/pqc`` account ``KeyType`` string.
-DILITHIUM5_KEY_TYPE = "dilithium5"
+#: matching the chain's ``x/pqc`` account ``KeyType`` string for hybrid
+#: (classical + PQC) accounts.
+HYBRID_KEY_TYPE = "hybrid"
+
+#: Deprecated alias kept for backwards compatibility; the chain's bootstrap
+#: registration path expects ``"hybrid"``.
+DILITHIUM5_KEY_TYPE = HYBRID_KEY_TYPE
 
 #: A Cosmos ``StdFee``-shaped dict (as produced by :func:`qorsdk.fees.estimate_fee`).
 FeeDict = dict[str, Any]
@@ -65,7 +71,7 @@ class EnsureResult(TypedDict, total=False):
     """Result of :func:`ensure_pqc_registered`.
 
     ``already_registered`` is always present. ``tx_hash`` is set only when a
-    ``MsgRegisterPQCKey`` was broadcast (i.e. the key was missing before).
+    ``MsgRegisterPQCKeyV2`` was broadcast (i.e. the key was missing before).
     """
 
     already_registered: bool
@@ -130,12 +136,18 @@ def build_register_pqc_key(
     sender: str,
     dilithium_pubkey: bytes,
     ecdsa_pubkey: bytes,
-    key_type: str = DILITHIUM5_KEY_TYPE,
+    key_type: str = HYBRID_KEY_TYPE,
 ) -> Msg:
-    """Build a ``MsgRegisterPQCKey`` :class:`~qorsdk.messages.Msg` (no signing)."""
-    message: Msg = msg.pqc.register_pqc_key(
+    """Build a ``MsgRegisterPQCKeyV2`` :class:`~qorsdk.messages.Msg` (no signing).
+
+    Uses ``/qorechain.pqc.v1.MsgRegisterPQCKeyV2`` — the chain's current
+    (classical-exempt bootstrap) registration path — with an explicit
+    ``algorithm_id`` (ML-DSA-87 / Dilithium-5).
+    """
+    message: Msg = msg.pqc.register_pqc_key_v2(
         sender=sender,
-        dilithium_pubkey=dilithium_pubkey,
+        public_key=dilithium_pubkey,
+        algorithm_id=ALGORITHM_DILITHIUM5,
         ecdsa_pubkey=ecdsa_pubkey,
         key_type=key_type,
     )
@@ -227,7 +239,7 @@ def ensure_pqc_registered(
     fee: FeeDict,
     sequence: int = 0,
     qor: Any,
-    key_type: str = DILITHIUM5_KEY_TYPE,
+    key_type: str = HYBRID_KEY_TYPE,
     memo: str = "",
     mode: str = "sync",
 ) -> EnsureResult:
@@ -236,7 +248,7 @@ def ensure_pqc_registered(
     Idempotent: queries ``qor_getPQCKeyStatus`` first via ``qor`` (a
     :class:`~qorsdk.qor.QorClient`). If already registered, returns
     ``{"already_registered": True}`` with no transaction. Otherwise builds and
-    broadcasts a ``MsgRegisterPQCKey`` carrying the signer's Dilithium public key
+    broadcasts a ``MsgRegisterPQCKeyV2`` carrying the signer's Dilithium public key
     (``pqc_keypair.public_key``) and classical ECDSA public key
     (``account.public_key``), returning
     ``{"already_registered": False, "tx_hash": ...}``.
@@ -284,7 +296,7 @@ def migrate_to_hybrid(
     fee: FeeDict,
     sequence: int = 0,
     qor: Any,
-    key_type: str = DILITHIUM5_KEY_TYPE,
+    key_type: str = HYBRID_KEY_TYPE,
     register_sequence: int | None = None,
     memo: str = "",
     mode: str = "sync",
@@ -292,7 +304,7 @@ def migrate_to_hybrid(
     """Ensure ``account`` is PQC-registered, then send ``messages`` quantum-safe.
 
     This is the "go quantum-safe" path: it calls :func:`ensure_pqc_registered`
-    (broadcasting a ``MsgRegisterPQCKey`` if needed, signed classically at
+    (broadcasting a ``MsgRegisterPQCKeyV2`` if needed, signed classically at
     ``register_sequence`` — defaulting to ``sequence``), then signs and
     broadcasts ``messages`` through the hybrid path
     (:func:`qorsdk.tx.build_hybrid_tx`) so the transaction carries both a
@@ -382,6 +394,7 @@ def migrate_pqc_key(
 
 
 __all__ = [
+    "HYBRID_KEY_TYPE",
     "DILITHIUM5_KEY_TYPE",
     "PqcStatus",
     "EnsureResult",

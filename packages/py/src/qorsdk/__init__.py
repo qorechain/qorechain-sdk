@@ -86,6 +86,7 @@ from .pqc import (
 )
 from .pqc_dx import (
     DILITHIUM5_KEY_TYPE,
+    HYBRID_KEY_TYPE,
     EnsureResult,
     PqcStatus,
     build_migrate_pqc_key,
@@ -148,7 +149,7 @@ from .utils import (
     to_checksum_address,
 )
 
-__version__ = "0.3.1"
+__version__ = "0.5.1"
 
 __all__ = [
     "__version__",
@@ -193,6 +194,7 @@ __all__ = [
     "build_hybrid_signature_extension",
     # quantum-safe DX (x/pqc key registry)
     "DILITHIUM5_KEY_TYPE",
+    "HYBRID_KEY_TYPE",
     "PqcStatus",
     "EnsureResult",
     "get_pqc_status",

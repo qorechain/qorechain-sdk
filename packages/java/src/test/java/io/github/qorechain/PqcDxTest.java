@@ -167,10 +167,11 @@ class PqcDxTest {
         assertEquals("DEADBEEF", r.txHash);
         assertEquals(1, broadcastTxs.size());
 
-        // Decode the broadcast tx and verify the single MsgRegisterPQCKey + fields.
-        qorechain.pqc.v1.Tx.MsgRegisterPQCKey msg = soleRegisterMsg(broadcastTxs.get(0));
+        // Decode the broadcast tx and verify the single MsgRegisterPQCKeyV2 + fields.
+        qorechain.pqc.v1.Tx.MsgRegisterPQCKeyV2 msg = soleRegisterMsg(broadcastTxs.get(0));
         assertEquals(acct.address, msg.getSender());
-        assertArrayEquals(kp.publicKey, msg.getDilithiumPubkey().toByteArray());
+        assertArrayEquals(kp.publicKey, msg.getPublicKey().toByteArray());
+        assertEquals(PqcAlgorithm.ALGORITHM_DILITHIUM5, msg.getAlgorithmId());
         assertArrayEquals(acct.publicKey, msg.getEcdsaPubkey().toByteArray());
         assertEquals("hybrid", msg.getKeyType());
     }
@@ -196,7 +197,7 @@ class PqcDxTest {
 
         PqcDx.ensurePqcRegistered(signer(kp), new Broadcaster(baseUrl), qor(), opts);
 
-        qorechain.pqc.v1.Tx.MsgRegisterPQCKey msg = soleRegisterMsg(broadcastTxs.get(0));
+        qorechain.pqc.v1.Tx.MsgRegisterPQCKeyV2 msg = soleRegisterMsg(broadcastTxs.get(0));
         assertArrayEquals(new byte[] {0x11, 0x22}, msg.getEcdsaPubkey().toByteArray());
         assertEquals("pqc-only", msg.getKeyType());
     }
@@ -275,11 +276,11 @@ class PqcDxTest {
         return bodyMsg.getMessages(0);
     }
 
-    private static qorechain.pqc.v1.Tx.MsgRegisterPQCKey soleRegisterMsg(byte[] txRawBytes)
+    private static qorechain.pqc.v1.Tx.MsgRegisterPQCKeyV2 soleRegisterMsg(byte[] txRawBytes)
             throws Exception {
         Any only = soleMessage(txRawBytes);
-        assertTrue(only.getTypeUrl().endsWith("MsgRegisterPQCKey"));
-        return (qorechain.pqc.v1.Tx.MsgRegisterPQCKey) Messages.unpack(only);
+        assertTrue(only.getTypeUrl().endsWith("MsgRegisterPQCKeyV2"));
+        return (qorechain.pqc.v1.Tx.MsgRegisterPQCKeyV2) Messages.unpack(only);
     }
 
     private static boolean hasPqcExtension(byte[] txRawBytes) throws Exception {

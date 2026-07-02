@@ -59,8 +59,8 @@ func testSigner(t *testing.T) Signer {
 	}
 }
 
-// decodeRegisterMsg decodes the single MsgRegisterPQCKey from a BuiltTx.
-func decodeRegisterMsg(t *testing.T, built *tx.BuiltTx) *pqcv1.MsgRegisterPQCKey {
+// decodeRegisterMsg decodes the single MsgRegisterPQCKeyV2 from a BuiltTx.
+func decodeRegisterMsg(t *testing.T, built *tx.BuiltTx) *pqcv1.MsgRegisterPQCKeyV2 {
 	t.Helper()
 	var body sdktx.TxBody
 	if err := proto.Unmarshal(built.TxRaw.BodyBytes, &body); err != nil {
@@ -70,12 +70,12 @@ func decodeRegisterMsg(t *testing.T, built *tx.BuiltTx) *pqcv1.MsgRegisterPQCKey
 		t.Fatalf("expected 1 message, got %d", len(body.Messages))
 	}
 	any := body.Messages[0]
-	if any.TypeUrl != MsgRegisterPQCKeyTypeURL {
-		t.Fatalf("type url = %q, want %q", any.TypeUrl, MsgRegisterPQCKeyTypeURL)
+	if any.TypeUrl != MsgRegisterPQCKeyV2TypeURL {
+		t.Fatalf("type url = %q, want %q", any.TypeUrl, MsgRegisterPQCKeyV2TypeURL)
 	}
-	var m pqcv1.MsgRegisterPQCKey
+	var m pqcv1.MsgRegisterPQCKeyV2
 	if err := proto.Unmarshal(any.Value, &m); err != nil {
-		t.Fatalf("unmarshal MsgRegisterPQCKey: %v", err)
+		t.Fatalf("unmarshal MsgRegisterPQCKeyV2: %v", err)
 	}
 	return &m
 }
@@ -257,8 +257,11 @@ func TestEnsureMissingBroadcasts(t *testing.T) {
 	if m.Sender != signer.Account.Address {
 		t.Errorf("sender = %q, want %q", m.Sender, signer.Account.Address)
 	}
-	if string(m.DilithiumPubkey) != string(signer.PQCKeypair.PublicKey) {
-		t.Error("dilithium_pubkey does not match signer PQC public key")
+	if string(m.PublicKey) != string(signer.PQCKeypair.PublicKey) {
+		t.Error("public_key does not match signer PQC public key")
+	}
+	if m.AlgorithmID != pqcv1.AlgorithmID(pqc.AlgorithmDilithium5) {
+		t.Errorf("algorithm_id = %d, want %d (ML-DSA-87)", m.AlgorithmID, pqc.AlgorithmDilithium5)
 	}
 	if string(m.ECDSAPubkey) != string(signer.Account.PublicKey) {
 		t.Error("ecdsa_pubkey does not match signer secp256k1 public key")
@@ -451,6 +454,9 @@ func TestMigrateToHybridRequiresSecretKey(t *testing.T) {
 func TestTypeURLConstants(t *testing.T) {
 	if MsgRegisterPQCKeyTypeURL != "/qorechain.pqc.v1.MsgRegisterPQCKey" {
 		t.Errorf("register type url = %q", MsgRegisterPQCKeyTypeURL)
+	}
+	if MsgRegisterPQCKeyV2TypeURL != "/qorechain.pqc.v1.MsgRegisterPQCKeyV2" {
+		t.Errorf("register v2 type url = %q", MsgRegisterPQCKeyV2TypeURL)
 	}
 	if MsgMigratePQCKeyTypeURL != "/qorechain.pqc.v1.MsgMigratePQCKey" {
 		t.Errorf("migrate type url = %q", MsgMigratePQCKeyTypeURL)

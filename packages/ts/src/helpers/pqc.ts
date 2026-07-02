@@ -3,7 +3,7 @@
  *
  * QoreChain treats post-quantum cryptography (PQC) as a first-class signature
  * scheme: an account registers an ML-DSA-87 (Dilithium-5) key on-chain
- * (`MsgRegisterPQCKey`), after which its transactions can carry a hybrid
+ * (`MsgRegisterPQCKeyV2`), after which its transactions can carry a hybrid
  * (classical secp256k1 + ML-DSA-87) signature that the ante handler verifies in
  * full. The low-level primitives already exist — {@link generatePqcKeypair},
  * {@link buildHybridTx}, {@link signAndBroadcastHybrid}, the
@@ -159,7 +159,7 @@ export interface EnsurePqcRegisteredOptions {
    * whose classical key is already known on-chain.
    */
   ecdsaPubkey?: Uint8Array;
-  /** Key-type tag forwarded to `MsgRegisterPQCKey` (default `"hybrid"`). */
+  /** Key-type tag forwarded to `MsgRegisterPQCKeyV2` (default `"hybrid"`). */
   keyType?: string;
   /** Fee: explicit `StdFee` or `"auto"` (simulate + price). Default `"auto"`. */
   fee?: FeeInput;
@@ -191,18 +191,21 @@ export interface EnsurePqcRegisteredResult {
 }
 
 /**
- * Build the `MsgRegisterPQCKey` for a signer without broadcasting.
+ * Build the `MsgRegisterPQCKeyV2` for a signer without broadcasting.
  *
  * Useful for packing registration into a larger transaction body, or for the
- * offline build path.
+ * offline build path. Uses `/qorechain.pqc.v1.MsgRegisterPQCKeyV2` — the
+ * chain's current (classical-exempt bootstrap) registration path — with an
+ * explicit `algorithmId` (ML-DSA-87 / Dilithium-5).
  */
 export function buildRegisterPqcKeyMsg(
   sender: string,
   opts: Pick<EnsurePqcRegisteredOptions, "pqcKeypair" | "ecdsaPubkey" | "keyType">,
 ): EncodeObject {
-  return pqcMsg.registerPqcKey({
+  return pqcMsg.registerPqcKeyV2({
     sender,
-    dilithiumPubkey: opts.pqcKeypair.publicKey,
+    publicKey: opts.pqcKeypair.publicKey,
+    algorithmId: AlgorithmDilithium5,
     ecdsaPubkey: opts.ecdsaPubkey ?? new Uint8Array(0),
     keyType: opts.keyType ?? "hybrid",
   });
@@ -214,7 +217,7 @@ export function buildRegisterPqcKeyMsg(
  * If a {@link EnsurePqcRegisteredOptions.statusSource} (or pre-read `status`) is
  * supplied and the key is already registered, this returns
  * `{ alreadyRegistered: true }` WITHOUT broadcasting. Otherwise it builds and
- * broadcasts `MsgRegisterPQCKey` with the signer's Dilithium public key (from
+ * broadcasts `MsgRegisterPQCKeyV2` with the signer's Dilithium public key (from
  * `pqcKeypair`) plus the supplied ECDSA public key.
  *
  * This is the single call that makes a dApp quantum-safe: run it once at startup
