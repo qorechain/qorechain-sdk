@@ -32,7 +32,7 @@ pnpm install
 pnpm start
 
 # Broadcast + read against a live node:
-QORE_RPC_URL=https://rpc.testnet.example QORE_REST_URL=https://rest.testnet.example \
+QORE_RPC_URL=https://rpc-testnet.qore.host QORE_REST_URL=https://api-testnet.qore.host \
   QORE_MNEMONIC="<your funded testnet mnemonic>" QORE_BROADCAST=1 pnpm start
 ```
 

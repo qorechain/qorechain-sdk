@@ -24,7 +24,7 @@ import {
 
 const client = createClient({
   network: "testnet",
-  endpoints: { rpc: "https://rpc.testnet.example" },
+  endpoints: { rpc: "https://rpc-testnet.qore.host" },
 });
 
 const cw = await client.cosmwasm(); // read-only CosmWasmReadClient

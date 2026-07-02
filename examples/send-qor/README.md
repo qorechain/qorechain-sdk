@@ -28,7 +28,7 @@ Copy `.env.example` to `.env` and edit.
 
 ```bash
 pnpm install
-QORE_RPC_URL=https://rpc.testnet.example QORE_REST_URL=https://rest.testnet.example \
+QORE_RPC_URL=https://rpc-testnet.qore.host QORE_REST_URL=https://api-testnet.qore.host \
   QORE_MNEMONIC="<your funded testnet mnemonic>" QORE_RECIPIENT=qor1... pnpm start
 ```
 

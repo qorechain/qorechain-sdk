@@ -58,9 +58,18 @@ const res = await ensurePqcRegistered(tx, {
 // res: { alreadyRegistered: boolean; txHash?: string }
 ```
 
-Under the hood it builds and broadcasts `MsgRegisterPQCKey` with the signer's
-Dilithium public key (from `pqcKeypair`) plus, optionally, the account's ECDSA
-public key.
+Under the hood it builds and broadcasts `MsgRegisterPQCKeyV2` (the chain's
+classical-exempt bootstrap path, with an explicit ML-DSA-87 `algorithmId`)
+carrying the signer's Dilithium public key (from `pqcKeypair`) plus, optionally,
+the account's ECDSA public key.
+
+:::note Deterministic signing
+ML-DSA-87 signing in every SDK language is **deterministic** (FIPS-204 §3.4,
+`rnd` = 32 zero bytes). The chain's verifier accepts only deterministic
+signatures — randomized ("hedged") signatures are rejected with codespace
+`pqc`. The SDK signs deterministically by default; the hedged variants are
+opt-in and for off-chain use only.
+:::
 
 ## Sign hybrid
 

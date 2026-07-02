@@ -24,7 +24,7 @@ All calls are read-only `eth_call`s.
 
 ```bash
 pnpm install
-QORE_EVM_RPC_URL=https://evm.testnet.example QORE_EVM_ADDRESS=0xYourAddress pnpm start
+QORE_EVM_RPC_URL=https://evm-testnet.qore.host QORE_EVM_ADDRESS=0xYourAddress pnpm start
 ```
 
 Needs a live EVM endpoint to produce meaningful output.

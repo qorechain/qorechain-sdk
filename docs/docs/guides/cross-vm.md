@@ -117,7 +117,7 @@ import {
 } from "@qorechain/sdk";
 
 const client = createClient({
-  endpoints: { rest: "https://rest.testnet.example" },
+  endpoints: { rest: "https://api-testnet.qore.host" },
 });
 
 // A single message by id.

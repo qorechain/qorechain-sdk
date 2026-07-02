@@ -20,7 +20,7 @@ unavailable on the node.
 
 ```bash
 pnpm install
-QORE_EVM_RPC_URL=https://evm.testnet.example QORE_ADDRESS=qor1... pnpm start
+QORE_EVM_RPC_URL=https://evm-testnet.qore.host QORE_ADDRESS=qor1... pnpm start
 ```
 
 Needs a live node to produce output.

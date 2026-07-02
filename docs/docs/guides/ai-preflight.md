@@ -30,7 +30,7 @@ check into a single advisory verdict:
 import { createEvmClient, simulateWithRiskScore } from "@qorechain/evm";
 
 const { publicClient } = await createEvmClient({
-  endpoints: { evmRpc: "https://evm.testnet.example" },
+  endpoints: { evmRpc: "https://evm-testnet.qore.host" },
 });
 
 const preflight = await simulateWithRiskScore(publicClient, {

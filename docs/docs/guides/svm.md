@@ -23,7 +23,7 @@ npm i @qorechain/svm @solana/web3.js
 import { createSvmClient } from "@qorechain/svm";
 
 const client = createSvmClient({
-  endpoints: { svmRpc: "https://svm.testnet.example" },
+  endpoints: { svmRpc: "https://svm-testnet.qore.host" },
 });
 ```
 

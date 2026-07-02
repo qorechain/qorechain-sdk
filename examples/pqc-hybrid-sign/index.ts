@@ -11,7 +11,7 @@
  *    PQCHybridSignature extension.
  *
  * On-chain prerequisite for hybrid txs: the signer's PQC public key must be
- * registered via the chain's MsgRegisterPQCKey before a hybrid tx will
+ * registered via the chain's MsgRegisterPQCKeyV2 before a hybrid tx will
  * PQC-verify — UNLESS you set `includePqcPublicKey: true`, which embeds the key
  * in the extension for auto-registration on first use. This example just builds
  * the signed bytes locally; broadcasting them needs a reachable node and a

@@ -118,7 +118,7 @@ const signer = await directSignerFromPrivateKey(account.privateKey, "qor");
 ### On-chain prerequisite
 
 Before a hybrid transaction will PQC-verify on-chain, the signer's PQC public
-key must be **registered** via the chain's `MsgRegisterPQCKey` — *unless* you set
+key must be **registered** via the chain's `MsgRegisterPQCKeyV2` — *unless* you set
 `includePqcPublicKey: true`, which embeds the key in the extension so the chain
 can auto-register it on first use.
 

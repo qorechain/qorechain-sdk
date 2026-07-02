@@ -40,13 +40,13 @@ import {
 
 const client = createClient({
   network: "testnet",
-  endpoints: { rpc: "https://rpc.testnet.example", rest: "https://rest.testnet.example" },
+  endpoints: { rpc: "https://rpc-testnet.qore.host", rest: "https://api-testnet.qore.host" },
 });
 
 const tx = await client.connectTx(signer); // an OfflineSigner
 
 // Reads go over the consensus RPC's ABCI query path.
-const comet = await connectComet("https://rpc.testnet.example");
+const comet = await connectComet("https://rpc-testnet.qore.host");
 const queries = connectQueryClients(comet);
 
 const multilayer = createMultilayerClient(tx, { query: queries.multilayer });

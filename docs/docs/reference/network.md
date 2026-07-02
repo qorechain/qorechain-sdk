@@ -51,10 +51,10 @@ import { createClient } from "@qorechain/sdk";
 
 const client = createClient({
   endpoints: {
-    rest: "https://rest.testnet.example",   // REST (LCD)
-    rpc: "https://rpc.testnet.example",      // consensus RPC
-    evmRpc: "https://evm.testnet.example",   // EVM + qor_ JSON-RPC
-    evmWs: "wss://evm.testnet.example",      // EVM WebSocket
+    rest: "https://api-testnet.qore.host",   // REST (LCD)
+    rpc: "https://rpc-testnet.qore.host",      // consensus RPC
+    evmRpc: "https://evm-testnet.qore.host",   // EVM + qor_ JSON-RPC
+    evmWs: "wss://evm-ws-testnet.qore.host",      // EVM WebSocket
   },
 });
 ```
@@ -73,19 +73,35 @@ endpoints with your node URLs:
 const main = createClient({
   network: "mainnet",       // chain id qorechain-vladi
   endpoints: {
-    rest: "https://rest.mainnet.example",
-    rpc: "https://rpc.mainnet.example",
-    evmRpc: "https://evm.mainnet.example",
+    rest: "https://api.qore.host",
+    rpc: "https://rpc.qore.host",
+    evmRpc: "https://evm.qore.host",
   },
 });
 ```
+
+## Public endpoints
+
+Live public endpoints (override the localhost defaults with these, or with your
+own node URLs):
+
+| Service | Mainnet (`qorechain-vladi`) | Testnet (`qorechain-diana`) |
+| --- | --- | --- |
+| Consensus RPC | `https://rpc.qore.host` | `https://rpc-testnet.qore.host` |
+| Cosmos REST (LCD) | `https://api.qore.host` | `https://api-testnet.qore.host` |
+| EVM JSON-RPC | `https://evm.qore.host` | `https://evm-testnet.qore.host` |
+| EVM WebSocket | — | `wss://evm-ws-testnet.qore.host` |
+| SVM JSON-RPC | `https://svm.qore.host` | `https://svm-testnet.qore.host` |
+| Consensus WebSocket | `wss://rpc.qore.host/websocket` | `wss://rpc-testnet.qore.host/websocket` |
+
+The public explorer is at [explore.qore.network](https://explore.qore.network).
 
 ## Explorer & faucet URLs (config-driven)
 
 `NetworkConfig` has two optional fields — `explorerUrl` and `faucetUrl` — that
 are **undefined by default** on both presets. No public explorer or faucet
-hostname is baked into the SDK; supply them through a network override when you
-have confirmed URLs:
+hostname is baked into the SDK; supply them through a network override. The
+public explorer lives at **https://explore.qore.network**:
 
 ```ts
 import {
@@ -96,11 +112,11 @@ import {
 
 const network = {
   ...getNetwork("testnet"),
-  explorerUrl: "https://explorer.example",
-  faucetUrl: "https://faucet.example",
+  explorerUrl: "https://explore.qore.network",
+  faucetUrl: "https://faucet.example", // supply your confirmed faucet URL
 };
 
-const url = explorerTxUrl(network, txHash);      // https://explorer.example/tx/<hash>
+const url = explorerTxUrl(network, txHash);      // https://explore.qore.network/tx/<hash>
 await requestFaucet(network, "qor1...");          // POSTs to the faucet URL
 ```
 

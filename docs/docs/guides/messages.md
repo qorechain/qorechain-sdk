@@ -56,7 +56,7 @@ care about. For the raw encode/decode types, import from `qorechainTypes`.
 import { TxClient } from "@qorechain/sdk";
 
 const tx = await TxClient.connect({
-  rpcEndpoint: "https://rpc.testnet.example",
+  rpcEndpoint: "https://rpc-testnet.qore.host",
   signer, // an OfflineSigner (private-key adapter or a browser wallet)
 });
 

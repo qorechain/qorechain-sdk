@@ -19,7 +19,7 @@ Shows:
 
 ```bash
 pnpm install
-QORE_RPC_URL=https://rpc.testnet.example \
+QORE_RPC_URL=https://rpc-testnet.qore.host \
   QORE_CONTRACT=qor1...contract... \
   QORE_QUERY_MSG='{"balance":{"address":"qor1..."}}' \
   pnpm start

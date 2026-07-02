@@ -22,9 +22,9 @@ pass an `endpoints` object:
 ```ts
 const client = createClient({
   endpoints: {
-    rest: "https://rest.testnet.example",
-    rpc: "https://rpc.testnet.example",
-    evmRpc: "https://evm.testnet.example",
+    rest: "https://api-testnet.qore.host",
+    rpc: "https://rpc-testnet.qore.host",
+    evmRpc: "https://evm-testnet.qore.host",
   },
 });
 ```
@@ -78,7 +78,7 @@ account. Re-check the words; use `validateMnemonic` to test a phrase.
 
 Local ML-DSA-87 sign/verify and the hybrid tx-building helpers are available
 today. Before a hybrid tx PQC-verifies on-chain, the signer's PQC public key
-must be registered (`MsgRegisterPQCKey`), or you must set
+must be registered (`MsgRegisterPQCKeyV2`), or you must set
 `includePqcPublicKey: true` to embed it for auto-registration. Full hybrid
 submission is being finalized for the live network. See
 [Accounts & PQC signing](concepts/accounts-pqc.md).

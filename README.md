@@ -18,7 +18,7 @@ available for **TypeScript, Python, Go, Rust, and Java** — all published at
 | `qorechain-sdk` | Python | `pip install qorechain-sdk` | `import qorsdk` |
 | `qorechain-sdk` | Rust | `cargo add qorechain-sdk` | `use qorechain` |
 | Go module | Go | `go get github.com/qorechain/qorechain-sdk/packages/go` | `.../packages/go` |
-| `io.github.qorechain:qorechain-sdk` | Java | `implementation("io.github.qorechain:qorechain-sdk:0.5.0")` | `io.github.qorechain` |
+| `io.github.qorechain:qorechain-sdk` | Java | `implementation("io.github.qorechain:qorechain-sdk:0.5.1")` | `io.github.qorechain` |
 | `create-qorechain-dapp` | CLI scaffolder | `npm create qorechain-dapp@latest` | — |
 
 > **Import names:** the Python distribution `qorechain-sdk` imports as `qorsdk`;
@@ -45,9 +45,9 @@ const client = createClient();
 // Point at a real node by overriding endpoints.
 const remote = createClient({
   endpoints: {
-    rest: "https://rest.testnet.example",   // Cosmos REST (LCD)
-    rpc: "https://rpc.testnet.example",      // consensus RPC (for signing)
-    evmRpc: "https://evm.testnet.example",   // EVM + qor_ JSON-RPC
+    rest: "https://api-testnet.qore.host",   // Cosmos REST (LCD)
+    rpc: "https://rpc-testnet.qore.host",      // consensus RPC (for signing)
+    evmRpc: "https://evm-testnet.qore.host",   // EVM + qor_ JSON-RPC
   },
 });
 
@@ -55,9 +55,9 @@ const remote = createClient({
 const main = createClient({
   network: "mainnet",
   endpoints: {
-    rest: "https://rest.mainnet.example",
-    rpc: "https://rpc.mainnet.example",
-    evmRpc: "https://evm.mainnet.example",
+    rest: "https://api.qore.host",
+    rpc: "https://rpc.qore.host",
+    evmRpc: "https://evm.qore.host",
   },
 });
 ```
@@ -112,8 +112,8 @@ import {
 
 const client = createClient({
   endpoints: {
-    rpc: "https://rpc.testnet.example",
-    rest: "https://rest.testnet.example",
+    rpc: "https://rpc-testnet.qore.host",
+    rest: "https://api-testnet.qore.host",
   },
 });
 
@@ -144,7 +144,7 @@ PQC key generation, signing, and verification are available through
 `generatePqcKeypair`, `pqcSign`, `pqcVerify`, and the pluggable
 `PqcSigner` / `HybridSigner`. Hybrid transactions are supported end-to-end via
 `buildHybridTx` / `signAndBroadcastHybrid` (the signer's PQC key must first be
-registered on-chain with `MsgRegisterPQCKey`).
+registered on-chain with `MsgRegisterPQCKeyV2`).
 
 ```ts
 import { generatePqcKeypair, pqcSign, pqcVerify } from "@qorechain/sdk";
@@ -167,7 +167,7 @@ and the viem / `@solana/web3.js` adapters are TypeScript-only.
 - **Python** — `pip install qorechain-sdk`, then `import qorsdk`. See [packages/py](./packages/py/README.md).
 - **Go** — `go get github.com/qorechain/qorechain-sdk/packages/go`. See [packages/go](./packages/go/README.md).
 - **Rust** — `cargo add qorechain-sdk`, then `use qorechain;`. See [packages/rust](./packages/rust/README.md).
-- **Java** — `io.github.qorechain:qorechain-sdk:0.5.0` (Maven Central), package `io.github.qorechain`. See [packages/java](./packages/java/README.md).
+- **Java** — `io.github.qorechain:qorechain-sdk:0.5.1` (Maven Central), package `io.github.qorechain`. See [packages/java](./packages/java/README.md).
 
 > Browser wallets and the viem / `@solana/web3.js` EVM/SVM adapters are
 > TypeScript-only; in Python/Go/Rust use that ecosystem's standard libraries for

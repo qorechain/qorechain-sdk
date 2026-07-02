@@ -25,7 +25,7 @@ EVM chain id via `eth_chainId` unless you pass `chainId`.
 import { createEvmClient } from "@qorechain/evm";
 
 const client = await createEvmClient({
-  endpoints: { evmRpc: "https://evm.testnet.example" },
+  endpoints: { evmRpc: "https://evm-testnet.qore.host" },
 });
 
 console.log(await client.getChainId());

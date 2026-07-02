@@ -23,7 +23,7 @@ import {
   buildTxQuery,
 } from "@qorechain/sdk";
 
-const sub = await createSubscriptionClient("https://rpc.testnet.example");
+const sub = await createSubscriptionClient("https://rpc-testnet.qore.host");
 
 const stopBlocks = subscribeNewBlocks(sub, (block) => {
   console.log("new block", block);
@@ -57,7 +57,7 @@ import {
   watchPendingTransactions,
 } from "@qorechain/evm";
 
-const ws = await createEvmSubscriptionClient({ endpoints: { evmWs: "wss://evm-ws.example" } });
+const ws = await createEvmSubscriptionClient({ endpoints: { evmWs: "wss://evm-ws-testnet.qore.host" } });
 
 const unwatch = watchBlocks(ws, (block) => console.log(block.number));
 // watchContractEvent(ws, { address, abi, eventName, onLogs });

@@ -19,7 +19,7 @@ Copy `.env.example` to `.env` and edit, or export the variables in your shell.
 
 ```bash
 pnpm install
-QORE_REST_URL=https://rest.testnet.example QORE_EVM_RPC_URL=https://evm.testnet.example \
+QORE_REST_URL=https://api-testnet.qore.host QORE_EVM_RPC_URL=https://evm-testnet.qore.host \
   QORE_ADDRESS=qor1... pnpm start
 ```
 

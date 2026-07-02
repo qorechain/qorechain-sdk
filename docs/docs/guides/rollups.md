@@ -36,15 +36,15 @@ import {
 const client = createClient({
   network: "testnet",
   endpoints: {
-    rpc: "https://rpc.testnet.example",
-    rest: "https://rest.testnet.example",
-    evmRpc: "https://evm.testnet.example", // for the qor_* reads
+    rpc: "https://rpc-testnet.qore.host",
+    rest: "https://api-testnet.qore.host",
+    evmRpc: "https://evm-testnet.qore.host", // for the qor_* reads
   },
 });
 
 const tx = await client.connectTx(signer);
 
-const comet = await connectComet("https://rpc.testnet.example");
+const comet = await connectComet("https://rpc-testnet.qore.host");
 const queries = connectQueryClients(comet);
 
 const rollup = createRollupClient(tx, {
