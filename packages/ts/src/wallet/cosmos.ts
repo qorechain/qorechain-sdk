@@ -135,7 +135,7 @@ export function suggestChainInfo(network: NetworkConfig): KeplrChainInfo {
   };
   const feeCurrency: KeplrFeeCurrency = {
     ...currency,
-    gasPriceStep: { low: 0.01, average: 0.025, high: 0.04 },
+    gasPriceStep: { low: 0.1, average: 0.15, high: 0.25 },
   };
 
   return {

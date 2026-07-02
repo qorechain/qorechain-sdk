@@ -161,7 +161,8 @@ pub struct Fees {
 }
 
 // Static-fallback parameters used when the AI fee oracle is unavailable.
-const STATIC_FALLBACK_GAS_PRICE: &str = "0.025";
+// Above the 0.1uqor/gas genesis min-gas-price (BaseFee) enforced on both networks.
+const STATIC_FALLBACK_GAS_PRICE: &str = "0.15";
 const STATIC_FALLBACK_DENOM: &str = "uqor";
 const STATIC_FALLBACK_GAS: &str = "200000";
 

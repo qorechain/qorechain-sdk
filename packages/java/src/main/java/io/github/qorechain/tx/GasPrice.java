@@ -19,8 +19,12 @@ public final class GasPrice {
     private static final Pattern PATTERN =
             Pattern.compile("^([0-9]+(?:\\.[0-9]+)?)\\s*([a-zA-Z][a-zA-Z0-9/:._-]*)$");
 
-    /** The default gas price for QoreChain. */
-    public static final String DEFAULT_GAS_PRICE = "0.025uqor";
+    /**
+     * The default gas price for QoreChain. The chain enforces a genesis
+     * min-gas-price (BaseFee) of {@code 0.1uqor}/gas on both networks; the
+     * default sits above the floor for headroom.
+     */
+    public static final String DEFAULT_GAS_PRICE = "0.15uqor";
     /** The default gas multiplier applied to a simulated gas estimate. */
     public static final double DEFAULT_GAS_MULTIPLIER = 1.4;
 

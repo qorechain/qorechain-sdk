@@ -174,7 +174,7 @@ end-to-end hybrid (classical secp256k1 + post-quantum ML-DSA-87) signing:
   `PQCHybridSignature` extension. The PQC half signs
   `BE32(len(B0)) || B0 || BE32(len(A)) || A` (body without the extension, then
   authInfo); the classical half signs the final body. The signer's PQC key must
-  be registered on-chain (`MsgRegisterPQCKey`) — or pass `include_pqc_public_key`
+  be registered on-chain (`MsgRegisterPQCKeyV2`) — or pass `include_pqc_public_key`
   to embed it for auto-registration.
 
 Transaction proto encoding/signing is delegated to the `cosmrs` crate; no
@@ -205,7 +205,7 @@ let built = tx::send_messages(tx::SendMessagesParams {
     chain_id: "qorechain-diana".into(),
     account_number: 1,
     sequence: 0,
-    fee: tx::estimate_fee(rest, &[], 1.4, "0.025uqor").await?, // auto-gas via simulate
+    fee: tx::estimate_fee(rest, &[], 1.4, "0.15uqor").await?, // auto-gas via simulate
     memo: String::new(),
     timeout_height: 0,
 })?;

@@ -52,7 +52,7 @@ type Fees struct {
 
 // Static-fallback parameters used when the AI fee oracle is unavailable.
 const (
-	staticFallbackGasPrice = "0.025"
+	staticFallbackGasPrice = "0.15" // above the 0.1uqor/gas genesis min-gas-price (BaseFee)
 	staticFallbackDenom    = "uqor"
 	staticFallbackGas      = "200000"
 )

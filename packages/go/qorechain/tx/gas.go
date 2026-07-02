@@ -17,8 +17,10 @@ import (
 const (
 	// DefaultGasMultiplier scales simulated gas to absorb estimation variance.
 	DefaultGasMultiplier = 1.4
-	// DefaultGasPrice is the default price per gas unit, in uqor.
-	DefaultGasPrice = "0.025uqor"
+	// DefaultGasPrice is the default price per gas unit, in uqor. The chain
+	// enforces a genesis min-gas-price (BaseFee) of 0.1uqor/gas on both
+	// networks; the default sits above the floor for headroom.
+	DefaultGasPrice = "0.15uqor"
 	// GasAuto is the sentinel Fee.Gas value that requests gas simulation.
 	GasAuto = "auto"
 )

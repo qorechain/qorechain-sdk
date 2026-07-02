@@ -18,7 +18,9 @@ from typing import Any
 from .rest import FeeUrgency, RestClient
 
 #: Default static-fallback parameters used when the AI fee oracle is unavailable.
-STATIC_FALLBACK_GAS_PRICE = "0.025"
+#: Sits above the chain's genesis min-gas-price (BaseFee) of ``0.1uqor``/gas,
+#: which is enforced on both networks.
+STATIC_FALLBACK_GAS_PRICE = "0.15"
 STATIC_FALLBACK_DENOM = "uqor"
 STATIC_FALLBACK_GAS = "200000"
 

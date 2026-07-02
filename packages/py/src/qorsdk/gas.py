@@ -27,8 +27,10 @@ from .tx import BuiltTx
 
 #: Default gas-used safety multiplier applied to a simulation result.
 DEFAULT_GAS_MULTIPLIER = 1.4
-#: Default gas price (base denom per unit of gas).
-DEFAULT_GAS_PRICE = "0.025uqor"
+#: Default gas price (base denom per unit of gas). The chain enforces a genesis
+#: min-gas-price (BaseFee) of ``0.1uqor``/gas on both networks; the default sits
+#: above the floor for headroom.
+DEFAULT_GAS_PRICE = "0.15uqor"
 
 _GAS_PRICE_RE = re.compile(r"^([0-9]+(?:\.[0-9]+)?)\s*([a-zA-Z][a-zA-Z0-9/:._-]*)$")
 

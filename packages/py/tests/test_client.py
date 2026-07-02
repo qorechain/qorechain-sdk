@@ -35,12 +35,12 @@ def test_mainnet_default():
 def test_mainnet_with_endpoints():
     client = create_client(
         network="mainnet",
-        endpoints={"rest": "https://rest.qore.network", "evm_rpc": "https://evm.qore.network"},
+        endpoints={"rest": "https://api.qore.host", "evm_rpc": "https://evm.qore.host"},
         chain_id="qorechain-1",
     )
     assert client.network.name == "mainnet"
     assert client.network.chain_id == "qorechain-1"
-    assert client.rest.base_url == "https://rest.qore.network"
+    assert client.rest.base_url == "https://api.qore.host"
     client.close()
 
 
@@ -67,6 +67,6 @@ def test_fees_estimate_static_fallback_on_error():
     )
     client = create_client()
     fee = client.fees.estimate()
-    # ceil(200000 * 0.025) = 5000
-    assert fee == {"amount": [{"denom": "uqor", "amount": "5000"}], "gas": "200000"}
+    # ceil(200000 * 0.15) = 30000
+    assert fee == {"amount": [{"denom": "uqor", "amount": "30000"}], "gas": "200000"}
     client.close()

@@ -22,9 +22,16 @@ also exposed directly:
 ```ts
 import { GasPrice, calculateFee, estimateFee } from "@qorechain/sdk";
 
-const gasPrice = GasPrice.fromString("0.025uqor");
+const gasPrice = GasPrice.fromString("0.15uqor");
 const fee = calculateFee(200_000, gasPrice); // ceil(gas * price)
 ```
+
+:::note Fee floor
+Both networks enforce a genesis min-gas-price (BaseFee) of **`0.1uqor` per unit
+of gas** — transactions priced below the floor are rejected. The SDK default
+(`0.15uqor`) sits above the floor for headroom; do not lower a custom gas price
+below `0.1uqor`.
+:::
 
 ## EVM fees
 

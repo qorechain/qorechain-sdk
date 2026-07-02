@@ -102,10 +102,10 @@ describe("TxClient auto-gas", () => {
     const msgs = [{ typeUrl: "/x", value: {} }];
     await client.signAndBroadcast(msgs, "auto", "");
     const fee = sg.signAndBroadcast.mock.calls[0][2];
-    // gas = ceil(123456 * 1.4) = 172839; fee = ceil(172839 * 0.025) = 4321
+    // gas = ceil(123456 * 1.4) = 172839; fee = ceil(172839 * 0.15) = 25926
     expect(fee).toEqual({
       gas: "172839",
-      amount: [{ denom: "uqor", amount: "4321" }],
+      amount: [{ denom: "uqor", amount: "25926" }],
     });
   });
 

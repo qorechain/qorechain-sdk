@@ -62,9 +62,9 @@ describe("estimateFee", () => {
       retries: 0,
     });
     const fee = await estimateFee(rest, { gas: 200000 });
-    // 200000 gas * 0.025 uqor/gas = 5000 uqor (ceil).
+    // 200000 gas * 0.15 uqor/gas = 30000 uqor (ceil).
     expect(fee.gas).toBe("200000");
-    expect(fee.amount).toEqual([{ denom: "uqor", amount: "5000" }]);
+    expect(fee.amount).toEqual([{ denom: "uqor", amount: "30000" }]);
   });
 
   it("honours a custom static fallback gas price and denom", async () => {
@@ -82,7 +82,7 @@ describe("estimateFee", () => {
   });
 
   it("exposes the default static fallback constants", () => {
-    expect(STATIC_FALLBACK.gasPrice).toBe("0.025");
+    expect(STATIC_FALLBACK.gasPrice).toBe("0.15");
     expect(STATIC_FALLBACK.denom).toBe("uqor");
     expect(STATIC_FALLBACK.gas).toBe("200000");
   });

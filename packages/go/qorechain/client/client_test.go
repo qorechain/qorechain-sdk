@@ -141,9 +141,9 @@ func TestFeesEstimateFallback(t *testing.T) {
 	if err := json.Unmarshal(raw, &fee); err != nil {
 		t.Fatal(err)
 	}
-	// ceil(200000 * 0.025) = 5000
-	if fee.Amount[0].Amount != "5000" {
-		t.Errorf("fallback fee = %q, want 5000", fee.Amount[0].Amount)
+	// ceil(200000 * 0.15) = 30000
+	if fee.Amount[0].Amount != "30000" {
+		t.Errorf("fallback fee = %q, want 30000", fee.Amount[0].Amount)
 	}
 }
 

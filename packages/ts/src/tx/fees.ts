@@ -28,13 +28,13 @@ export type { StdFee };
 
 /**
  * Default static-fallback parameters, used when the AI fee oracle is
- * unavailable. The gas price (`uqor` per unit of gas) is intentionally
- * conservative and matches the relayer default in the core repo
- * (`gas_price = 0.025 uqor`).
+ * unavailable. The gas price (`uqor` per unit of gas) sits above the chain's
+ * genesis min-gas-price (BaseFee) of `0.1uqor` per unit of gas, which is
+ * enforced on both networks.
  */
 export const STATIC_FALLBACK = {
   /** Fallback gas price, in base denom per unit of gas. */
-  gasPrice: "0.025",
+  gasPrice: "0.15",
   /** Base denomination fees are paid in. */
   denom: "uqor",
   /** Default gas limit when the caller does not supply one. */

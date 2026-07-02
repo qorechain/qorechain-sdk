@@ -48,8 +48,13 @@ export const MSG_SEND_TYPE_URL = "/cosmos.bank.v1beta1.MsgSend";
 /** Default gas-used safety multiplier applied to a simulation result. */
 export const DEFAULT_GAS_MULTIPLIER = 1.4;
 
-/** Default gas price for the auto-fee path (conservative, matches `tx/fees`). */
-export const DEFAULT_GAS_PRICE = "0.025uqor";
+/**
+ * Default gas price for the auto-fee path (matches `tx/fees`).
+ *
+ * The chain enforces a genesis min-gas-price (BaseFee) of `0.1uqor` per unit
+ * of gas on both networks; the default sits above the floor for headroom.
+ */
+export const DEFAULT_GAS_PRICE = "0.15uqor";
 
 /**
  * A fee that is either an explicit {@link StdFee} or the literal `"auto"`, which
@@ -293,7 +298,7 @@ export class TxClient {
    *
    * `fee` may be an explicit {@link StdFee} or the literal `"auto"`, which
    * simulates the tx to estimate gas and computes the fee from a gas
-   * multiplier (default 1.4) and gas price (default `0.025uqor`); tune both via
+   * multiplier (default 1.4) and gas price (default `0.15uqor`); tune both via
    * `opts.autoFee`.
    *
    * Broadcast mode maps onto cosmjs transports:

@@ -14,7 +14,9 @@ use serde_json::Value;
 /// Scales simulated gas to absorb estimation variance.
 pub const DEFAULT_GAS_MULTIPLIER: f64 = 1.4;
 /// The default price per gas unit, in uqor.
-pub const DEFAULT_GAS_PRICE: &str = "0.025uqor";
+/// The chain enforces a genesis min-gas-price (BaseFee) of `0.1uqor`/gas on
+/// both networks; the default sits above the floor for headroom.
+pub const DEFAULT_GAS_PRICE: &str = "0.15uqor";
 /// The sentinel `Fee.gas` value that requests gas simulation.
 pub const GAS_AUTO: &str = "auto";
 

@@ -80,8 +80,8 @@ func TestEstimateFeeFromSimulate(t *testing.T) {
 	if err != nil {
 		t.Fatalf("estimate: %v", err)
 	}
-	// 80000 × 1.4 = 112000 feeGas; × 0.025 = 2800 uqor.
-	if fee.Gas != "112000" || fee.Amount[0].Amount != "2800" {
+	// 80000 × 1.4 = 112000 feeGas; × 0.15 = 16800 uqor.
+	if fee.Gas != "112000" || fee.Amount[0].Amount != "16800" {
 		t.Fatalf("estimated fee mismatch: %+v", fee)
 	}
 }

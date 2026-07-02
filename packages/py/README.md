@@ -45,8 +45,8 @@ localhost defaults with your node URLs:
 client = create_client(
     network="mainnet",
     endpoints={
-        "rest": "https://rest.qore.network",
-        "evm_rpc": "https://evm.qore.network",
+        "rest": "https://api.qore.host",
+        "evm_rpc": "https://evm.qore.host",
     },
 )
 print(client.network.chain_id)  # "qorechain-vladi"
@@ -317,9 +317,9 @@ from qorsdk import (
     get_tx, get_block, search_txs, build_events_query,  # search
 )
 
-# Simulate -> gas_used x 1.4 x 0.025uqor.
+# Simulate -> gas_used x 1.4 x 0.15uqor.
 fee = auto_fee("http://localhost:1317", built)
-calculate_fee(200000, GasPrice.from_string("0.025uqor"))
+calculate_fee(200000, GasPrice.from_string("0.15uqor"))
 
 # Wait for inclusion; raises a typed QoreTxError on a non-zero code.
 included = wait_for_tx(client.rest, "TXHASH")
