@@ -5,6 +5,35 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.5.1]
+
+### Fixed
+
+- **Deterministic ML-DSA-87 signing (consensus-critical)** — the chain's PQC
+  verifier accepts ONLY deterministic (FIPS-204 §3.4, `rnd` = 32 zero bytes)
+  ML-DSA-87 signatures; hedged/randomized signing is rejected with codespace
+  `pqc`. All language bindings now sign deterministically by default
+  (TypeScript via `@qorechain/pqc`; Python via `dilithium-py`
+  `deterministic=True`; Rust via `fips204` `try_sign_with_seed`; Java via
+  BouncyCastle's deterministic path; Go already used circl's deterministic
+  mode), with explicit hedged opt-ins for off-chain use, and regression tests
+  pinned to the shared `qorechain-pqc` deterministic signature vectors.
+- **PQC key registration** — the quantum-safe DX helpers now broadcast
+  `/qorechain.pqc.v1.MsgRegisterPQCKeyV2` (explicit `algorithm_id`; the chain's
+  classical-exempt bootstrap path) instead of the legacy `MsgRegisterPQCKey`,
+  with `key_type` defaulting to `"hybrid"` in every language.
+
+### Changed
+
+- **Fee-floor defaults** — default/fallback gas prices raised from `0.025uqor`
+  to `0.15uqor` per unit of gas, above the genesis min-gas-price (BaseFee) of
+  `0.1uqor`/gas enforced on both networks. User-supplied gas prices are
+  untouched.
+- **Docs & examples** — READMEs, guides, and example configs now show the live
+  public endpoints (`rpc`/`api`/`evm`/`svm.qore.host`,
+  `*-testnet.qore.host`, `wss://rpc.qore.host/websocket`) and the public
+  explorer at `explore.qore.network`.
+
 ## [0.5.0]
 
 ### Added
