@@ -50,17 +50,31 @@ class SvmAccountMeta(_message.Message):
     is_writable: bool
     def __init__(self, address: _Optional[bytes] = ..., is_signer: bool = ..., is_writable: bool = ...) -> None: ...
 
+class SVMAuth(_message.Message):
+    __slots__ = ("scheme", "pubkey", "signature", "recent_blockhash")
+    SCHEME_FIELD_NUMBER: _ClassVar[int]
+    PUBKEY_FIELD_NUMBER: _ClassVar[int]
+    SIGNATURE_FIELD_NUMBER: _ClassVar[int]
+    RECENT_BLOCKHASH_FIELD_NUMBER: _ClassVar[int]
+    scheme: str
+    pubkey: bytes
+    signature: bytes
+    recent_blockhash: bytes
+    def __init__(self, scheme: _Optional[str] = ..., pubkey: _Optional[bytes] = ..., signature: _Optional[bytes] = ..., recent_blockhash: _Optional[bytes] = ...) -> None: ...
+
 class MsgExecuteProgram(_message.Message):
-    __slots__ = ("sender", "program_id", "accounts", "data")
+    __slots__ = ("sender", "program_id", "accounts", "data", "auth")
     SENDER_FIELD_NUMBER: _ClassVar[int]
     PROGRAM_ID_FIELD_NUMBER: _ClassVar[int]
     ACCOUNTS_FIELD_NUMBER: _ClassVar[int]
     DATA_FIELD_NUMBER: _ClassVar[int]
+    AUTH_FIELD_NUMBER: _ClassVar[int]
     sender: str
     program_id: bytes
     accounts: _containers.RepeatedCompositeFieldContainer[SvmAccountMeta]
     data: bytes
-    def __init__(self, sender: _Optional[str] = ..., program_id: _Optional[bytes] = ..., accounts: _Optional[_Iterable[_Union[SvmAccountMeta, _Mapping]]] = ..., data: _Optional[bytes] = ...) -> None: ...
+    auth: SVMAuth
+    def __init__(self, sender: _Optional[str] = ..., program_id: _Optional[bytes] = ..., accounts: _Optional[_Iterable[_Union[SvmAccountMeta, _Mapping]]] = ..., data: _Optional[bytes] = ..., auth: _Optional[_Union[SVMAuth, _Mapping]] = ...) -> None: ...
 
 class MsgExecuteProgramResponse(_message.Message):
     __slots__ = ("result",)

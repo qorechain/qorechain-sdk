@@ -37,7 +37,7 @@ point at a real node.
 
 | Endpoint | Port | Purpose |
 | --- | --- | --- |
-| Cosmos REST (LCD) | `1317` | bank balances, account info, module queries |
+| Native REST (LCD) | `1317` | bank balances, account info, module queries |
 | gRPC | `9090` | gRPC queries |
 | Consensus RPC | `26657` | signing/broadcasting native txs, CosmWasm reads |
 | EVM JSON-RPC | `8545` | `eth_*`, `qor_*`, precompiles |
@@ -88,7 +88,7 @@ own node URLs):
 | Service | Mainnet (`qorechain-vladi`) | Testnet (`qorechain-diana`) |
 | --- | --- | --- |
 | Consensus RPC | `https://rpc.qore.host` | `https://rpc-testnet.qore.host` |
-| Cosmos REST (LCD) | `https://api.qore.host` | `https://api-testnet.qore.host` |
+| Native REST (LCD) | `https://api.qore.host` | `https://api-testnet.qore.host` |
 | EVM JSON-RPC | `https://evm.qore.host` | `https://evm-testnet.qore.host` |
 | EVM WebSocket | — | `wss://evm-ws-testnet.qore.host` |
 | SVM JSON-RPC | `https://svm.qore.host` | `https://svm-testnet.qore.host` |

@@ -2,7 +2,7 @@
 
 The :data:`msg` namespace groups composers by module so callers write
 ``msg.amm.swap_exact_in(...)``, ``msg.staking.delegate(...)``,
-``msg.pqc.register_pqc_key(...)``, etc. Standard Cosmos SDK modules
+``msg.pqc.register_pqc_key(...)``, etc. Standard Native modules
 (bank/staking/distribution/gov/authz/feegrant/ibc) sit alongside the QoreChain
 custom modules (amm/bridge/rdk/multilayer/pqc/svm/lightnode/license/
 abstractaccount/crossvm/rlconsensus).
@@ -43,7 +43,7 @@ from .registry import (
 #:     from qorsdk import msg
 #:     m = msg.amm.swap_exact_in(sender=addr, pool_id=1, denom_out="uqor", min_out="100")
 msg = SimpleNamespace(
-    # standard cosmos
+    # standard native
     bank=bank,
     staking=staking,
     distribution=distribution,

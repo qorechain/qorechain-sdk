@@ -7,7 +7,7 @@ use crate::msg::to_any;
 use crate::proto::qorechain::svm::v1 as pb;
 use cosmrs::Any;
 
-pub use pb::SvmAccountMeta;
+pub use pb::{SvmAccountMeta, SvmAuth};
 
 /// `/qorechain.svm.v1.MsgDeployProgram` type URL.
 pub const DEPLOY_PROGRAM: &str = "/qorechain.svm.v1.MsgDeployProgram";
@@ -62,7 +62,8 @@ pub fn create_account_any(
     )
 }
 
-/// Builds `MsgExecuteProgram`.
+/// Builds `MsgExecuteProgram` with no foreign-scheme authorization (`auth` is
+/// `None`).
 pub fn execute_program(
     sender: impl Into<String>,
     program_id: Vec<u8>,
@@ -74,6 +75,26 @@ pub fn execute_program(
         program_id,
         accounts,
         data,
+        auth: None,
+    }
+}
+
+/// Builds `MsgExecuteProgram` carrying a foreign-scheme (e.g. Phantom ed25519)
+/// authorization, so any funded `sender` may relay the action while the linked
+/// key remains the effective SVM signer.
+pub fn execute_program_with_auth(
+    sender: impl Into<String>,
+    program_id: Vec<u8>,
+    accounts: Vec<SvmAccountMeta>,
+    data: Vec<u8>,
+    auth: SvmAuth,
+) -> pb::MsgExecuteProgram {
+    pb::MsgExecuteProgram {
+        sender: sender.into(),
+        program_id,
+        accounts,
+        data,
+        auth: Some(auth),
     }
 }
 
@@ -88,6 +109,35 @@ pub fn execute_program_any(
         &execute_program(sender, program_id, accounts, data),
         EXECUTE_PROGRAM,
     )
+}
+
+/// Builds `MsgExecuteProgram` (with foreign-scheme `auth`) packed into an `Any`.
+pub fn execute_program_with_auth_any(
+    sender: impl Into<String>,
+    program_id: Vec<u8>,
+    accounts: Vec<SvmAccountMeta>,
+    data: Vec<u8>,
+    auth: SvmAuth,
+) -> Any {
+    to_any(
+        &execute_program_with_auth(sender, program_id, accounts, data, auth),
+        EXECUTE_PROGRAM,
+    )
+}
+
+/// Builds an [`SvmAuth`] foreign-scheme authorization for [`execute_program_with_auth`].
+pub fn svm_auth(
+    scheme: impl Into<String>,
+    pubkey: Vec<u8>,
+    signature: Vec<u8>,
+    recent_blockhash: Vec<u8>,
+) -> SvmAuth {
+    SvmAuth {
+        scheme: scheme.into(),
+        pubkey,
+        signature,
+        recent_blockhash,
+    }
 }
 
 /// Builds `MsgRegisterSVMPQCKey`.

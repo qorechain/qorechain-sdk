@@ -19,9 +19,9 @@ use serde_json::{json, Value};
 /// Optional per-endpoint URL overrides. `None` fields keep their preset defaults.
 #[derive(Debug, Clone, Default)]
 pub struct EndpointOverrides {
-    /// Cosmos REST (LCD) endpoint.
+    /// Native REST (LCD) endpoint.
     pub rest: Option<String>,
-    /// Cosmos gRPC endpoint.
+    /// Native gRPC endpoint.
     pub grpc: Option<String>,
     /// Consensus RPC endpoint.
     pub rpc: Option<String>,
@@ -169,7 +169,7 @@ const STATIC_FALLBACK_GAS: &str = "200000";
 impl Fees {
     /// Estimates a fee for the given urgency via the AI fee oracle, falling back
     /// to a deterministic static fee when the oracle is unavailable. The returned
-    /// value is a Cosmos `StdFee`-shaped JSON document
+    /// value is a Native `StdFee`-shaped JSON document
     /// (`{"amount":[...],"gas":...}`).
     pub async fn estimate(&self, urgency: &str) -> Result<Value> {
         let urgency = if urgency.is_empty() {

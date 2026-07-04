@@ -7,7 +7,7 @@ Create a `@qorechain/sdk` client and read public chain state:
 
 ## Prerequisites
 
-- A reachable QoreChain node. Set `QORE_REST_URL` (Cosmos REST/LCD) and
+- A reachable QoreChain node. Set `QORE_REST_URL` (Native REST/LCD) and
   `QORE_EVM_RPC_URL` (EVM JSON-RPC, which serves the `qor_*` namespace). With no
   env vars set, the example targets the testnet localhost defaults
   (`:1317` and `:8545`).

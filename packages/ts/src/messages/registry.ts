@@ -2,7 +2,7 @@
  * Message registry for QoreChain transactions.
  *
  * {@link qorechainRegistry} returns a cosmjs {@link Registry} seeded with the
- * standard Cosmos SDK message types ({@link defaultRegistryTypes}: bank,
+ * standard Native message types ({@link defaultRegistryTypes}: bank,
  * staking, distribution, gov, authz, feegrant, IBC transfer, …) plus every
  * QoreChain custom module message, keyed by its on-chain `typeUrl`. This is the
  * registry {@link TxClient} uses by default, so `signAndBroadcast` — and the
@@ -123,6 +123,14 @@ export const qorechainRegistryTypes: ReadonlyArray<[string, GeneratedType]> = [
     "/qorechain.abstractaccount.v1.MsgUpdateSpendingRules",
     abstractaccount.MsgUpdateSpendingRules,
   ],
+  [
+    "/qorechain.abstractaccount.v1.MsgRegisterAuthenticator",
+    abstractaccount.MsgRegisterAuthenticator,
+  ],
+  [
+    "/qorechain.abstractaccount.v1.MsgRevokeAuthenticator",
+    abstractaccount.MsgRevokeAuthenticator,
+  ],
   // crossvm
   ["/qorechain.crossvm.v1.MsgCrossVMCall", crossvm.MsgCrossVMCall],
   ["/qorechain.crossvm.v1.MsgProcessQueue", crossvm.MsgProcessQueue],
@@ -137,7 +145,7 @@ export const qorechainRegistryTypes: ReadonlyArray<[string, GeneratedType]> = [
 ].map(([typeUrl, type]) => [typeUrl as string, type as unknown as GeneratedType]);
 
 /**
- * Build a cosmjs {@link Registry} covering the standard Cosmos SDK messages plus
+ * Build a cosmjs {@link Registry} covering the standard Native messages plus
  * every QoreChain custom-module message.
  *
  * @param extraTypes - Optional additional `[typeUrl, GeneratedType]` pairs to

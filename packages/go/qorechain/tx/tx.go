@@ -86,7 +86,7 @@ var broadcastModeMap = map[BroadcastMode]string{
 	BroadcastBlock: "BROADCAST_MODE_BLOCK",
 }
 
-// Coin is a Cosmos coin amount (denom + integer base amount as a string).
+// Coin is a Native coin amount (denom + integer base amount as a string).
 type Coin struct {
 	Denom  string
 	Amount string

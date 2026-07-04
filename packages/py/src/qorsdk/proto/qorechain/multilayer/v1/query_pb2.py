@@ -22,9 +22,10 @@ _runtime_version.ValidateProtobufRuntimeVersion(
 _sym_db = _symbol_database.Default()
 
 
+from google.api import annotations_pb2 as google_dot_api_dot_annotations__pb2
 
 
-DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n#qorechain/multilayer/v1/query.proto\x12\x17qorechain.multilayer.v1\"\xf4\x03\n\nParamsView\x12%\n\x0emax_sidechains\x18\x01 \x01(\x04R\rmaxSidechains\x12#\n\rmax_paychains\x18\x02 \x01(\x04R\x0cmaxPaychains\x12.\n\x13min_anchor_interval\x18\x03 \x01(\x04R\x11minAnchorInterval\x12.\n\x13max_anchor_interval\x18\x04 \x01(\x04R\x11maxAnchorInterval\x12\x38\n\x18\x64\x65\x66\x61ult_challenge_period\x18\x05 \x01(\x04R\x16\x64\x65\x66\x61ultChallengePeriod\x12.\n\x13min_sidechain_stake\x18\x06 \x01(\tR\x11minSidechainStake\x12,\n\x12min_paychain_stake\x18\x07 \x01(\tR\x10minPaychainStake\x12\'\n\x0frouting_enabled\x18\x08 \x01(\x08R\x0eroutingEnabled\x12@\n\x1crouting_confidence_threshold\x18\t \x01(\tR\x1aroutingConfidenceThreshold\x12\x37\n\x18\x63ross_layer_fee_bundling\x18\n \x01(\x08R\x15\x63rossLayerFeeBundling\"\xa7\x03\n\tLayerView\x12\x19\n\x08layer_id\x18\x01 \x01(\tR\x07layerId\x12\x1d\n\nlayer_type\x18\x02 \x01(\tR\tlayerType\x12\x16\n\x06status\x18\x03 \x01(\tR\x06status\x12\x19\n\x08\x63hain_id\x18\x04 \x01(\tR\x07\x63hainId\x12 \n\x0b\x64\x65scription\x18\x05 \x01(\tR\x0b\x64\x65scription\x12/\n\x14target_block_time_ms\x18\x06 \x01(\x04R\x11targetBlockTimeMs\x12;\n\x1amax_transactions_per_block\x18\x07 \x01(\x04R\x17maxTransactionsPerBlock\x12%\n\x0emin_validators\x18\x08 \x01(\rR\rminValidators\x12<\n\x1asettlement_interval_blocks\x18\t \x01(\x04R\x18settlementIntervalBlocks\x12\x38\n\x18\x63hallenge_period_seconds\x18\n \x01(\x04R\x16\x63hallengePeriodSeconds\"\xcb\x02\n\x10RoutingStatsView\x12!\n\x0ctotal_routed\x18\x01 \x01(\x04R\x0btotalRouted\x12$\n\x0erouted_to_main\x18\x02 \x01(\x04R\x0croutedToMain\x12\x30\n\x14routed_to_sidechains\x18\x03 \x01(\x04R\x12routedToSidechains\x12.\n\x13routed_to_paychains\x18\x04 \x01(\x04R\x11routedToPaychains\x12=\n\x1b\x61verage_gas_savings_percent\x18\x05 \x01(\tR\x18\x61verageGasSavingsPercent\x12M\n#average_latency_improvement_percent\x18\x06 \x01(\tR averageLatencyImprovementPercent\"\x14\n\x12QueryParamsRequest\"R\n\x13QueryParamsResponse\x12;\n\x06params\x18\x01 \x01(\x0b\x32#.qorechain.multilayer.v1.ParamsViewR\x06params\".\n\x11QueryLayerRequest\x12\x19\n\x08layer_id\x18\x01 \x01(\tR\x07layerId\"N\n\x12QueryLayerResponse\x12\x38\n\x05layer\x18\x01 \x01(\x0b\x32\".qorechain.multilayer.v1.LayerViewR\x05layer\"\x14\n\x12QueryLayersRequest\"Q\n\x13QueryLayersResponse\x12:\n\x06layers\x18\x01 \x03(\x0b\x32\".qorechain.multilayer.v1.LayerViewR\x06layers\"\x1a\n\x18QueryRoutingStatsRequest\"X\n\x15QueryRoutingStatsView\x12?\n\x05stats\x18\x01 \x01(\x0b\x32).qorechain.multilayer.v1.RoutingStatsViewR\x05stats2\xa6\x03\n\x05Query\x12\x63\n\x06Params\x12+.qorechain.multilayer.v1.QueryParamsRequest\x1a,.qorechain.multilayer.v1.QueryParamsResponse\x12`\n\x05Layer\x12*.qorechain.multilayer.v1.QueryLayerRequest\x1a+.qorechain.multilayer.v1.QueryLayerResponse\x12\x63\n\x06Layers\x12+.qorechain.multilayer.v1.QueryLayersRequest\x1a,.qorechain.multilayer.v1.QueryLayersResponse\x12q\n\x0cRoutingStats\x12\x31.qorechain.multilayer.v1.QueryRoutingStatsRequest\x1a..qorechain.multilayer.v1.QueryRoutingStatsViewB\xdf\x01\n\x1b\x63om.qorechain.multilayer.v1B\nQueryProtoP\x01Z6github.com/qorechain/qorechain-core/x/multilayer/types\xa2\x02\x03QMX\xaa\x02\x17Qorechain.Multilayer.V1\xca\x02\x17Qorechain\\Multilayer\\V1\xe2\x02#Qorechain\\Multilayer\\V1\\GPBMetadata\xea\x02\x19Qorechain::Multilayer::V1b\x06proto3')
+DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n#qorechain/multilayer/v1/query.proto\x12\x17qorechain.multilayer.v1\x1a\x1cgoogle/api/annotations.proto\"\xf4\x03\n\nParamsView\x12%\n\x0emax_sidechains\x18\x01 \x01(\x04R\rmaxSidechains\x12#\n\rmax_paychains\x18\x02 \x01(\x04R\x0cmaxPaychains\x12.\n\x13min_anchor_interval\x18\x03 \x01(\x04R\x11minAnchorInterval\x12.\n\x13max_anchor_interval\x18\x04 \x01(\x04R\x11maxAnchorInterval\x12\x38\n\x18\x64\x65\x66\x61ult_challenge_period\x18\x05 \x01(\x04R\x16\x64\x65\x66\x61ultChallengePeriod\x12.\n\x13min_sidechain_stake\x18\x06 \x01(\tR\x11minSidechainStake\x12,\n\x12min_paychain_stake\x18\x07 \x01(\tR\x10minPaychainStake\x12\'\n\x0frouting_enabled\x18\x08 \x01(\x08R\x0eroutingEnabled\x12@\n\x1crouting_confidence_threshold\x18\t \x01(\tR\x1aroutingConfidenceThreshold\x12\x37\n\x18\x63ross_layer_fee_bundling\x18\n \x01(\x08R\x15\x63rossLayerFeeBundling\"\xa7\x03\n\tLayerView\x12\x19\n\x08layer_id\x18\x01 \x01(\tR\x07layerId\x12\x1d\n\nlayer_type\x18\x02 \x01(\tR\tlayerType\x12\x16\n\x06status\x18\x03 \x01(\tR\x06status\x12\x19\n\x08\x63hain_id\x18\x04 \x01(\tR\x07\x63hainId\x12 \n\x0b\x64\x65scription\x18\x05 \x01(\tR\x0b\x64\x65scription\x12/\n\x14target_block_time_ms\x18\x06 \x01(\x04R\x11targetBlockTimeMs\x12;\n\x1amax_transactions_per_block\x18\x07 \x01(\x04R\x17maxTransactionsPerBlock\x12%\n\x0emin_validators\x18\x08 \x01(\rR\rminValidators\x12<\n\x1asettlement_interval_blocks\x18\t \x01(\x04R\x18settlementIntervalBlocks\x12\x38\n\x18\x63hallenge_period_seconds\x18\n \x01(\x04R\x16\x63hallengePeriodSeconds\"\xcb\x02\n\x10RoutingStatsView\x12!\n\x0ctotal_routed\x18\x01 \x01(\x04R\x0btotalRouted\x12$\n\x0erouted_to_main\x18\x02 \x01(\x04R\x0croutedToMain\x12\x30\n\x14routed_to_sidechains\x18\x03 \x01(\x04R\x12routedToSidechains\x12.\n\x13routed_to_paychains\x18\x04 \x01(\x04R\x11routedToPaychains\x12=\n\x1b\x61verage_gas_savings_percent\x18\x05 \x01(\tR\x18\x61verageGasSavingsPercent\x12M\n#average_latency_improvement_percent\x18\x06 \x01(\tR averageLatencyImprovementPercent\"\x14\n\x12QueryParamsRequest\"R\n\x13QueryParamsResponse\x12;\n\x06params\x18\x01 \x01(\x0b\x32#.qorechain.multilayer.v1.ParamsViewR\x06params\".\n\x11QueryLayerRequest\x12\x19\n\x08layer_id\x18\x01 \x01(\tR\x07layerId\"N\n\x12QueryLayerResponse\x12\x38\n\x05layer\x18\x01 \x01(\x0b\x32\".qorechain.multilayer.v1.LayerViewR\x05layer\"\x14\n\x12QueryLayersRequest\"Q\n\x13QueryLayersResponse\x12:\n\x06layers\x18\x01 \x03(\x0b\x32\".qorechain.multilayer.v1.LayerViewR\x06layers\"\x84\x03\n\x0fStateAnchorView\x12\x19\n\x08layer_id\x18\x01 \x01(\tR\x07layerId\x12!\n\x0clayer_height\x18\x02 \x01(\x04R\x0blayerHeight\x12\x1d\n\nstate_root\x18\x03 \x01(\x0cR\tstateRoot\x12,\n\x12validator_set_hash\x18\x04 \x01(\x0cR\x10validatorSetHash\x12*\n\x11main_chain_height\x18\x05 \x01(\x04R\x0fmainChainHeight\x12\x1f\n\x0b\x61nchored_at\x18\x06 \x01(\x03R\nanchoredAt\x12\x36\n\x17pqc_aggregate_signature\x18\x07 \x01(\x0cR\x15pqcAggregateSignature\x12+\n\x11transaction_count\x18\x08 \x01(\x04R\x10transactionCount\x12\x34\n\x16\x63ompressed_state_proof\x18\t \x01(\x0cR\x14\x63ompressedStateProof\"/\n\x12QueryAnchorRequest\x12\x19\n\x08layer_id\x18\x01 \x01(\tR\x07layerId\"W\n\x13QueryAnchorResponse\x12@\n\x06\x61nchor\x18\x01 \x01(\x0b\x32(.qorechain.multilayer.v1.StateAnchorViewR\x06\x61nchor\"0\n\x13QueryAnchorsRequest\x12\x19\n\x08layer_id\x18\x01 \x01(\tR\x07layerId\"Z\n\x14QueryAnchorsResponse\x12\x42\n\x07\x61nchors\x18\x01 \x03(\x0b\x32(.qorechain.multilayer.v1.StateAnchorViewR\x07\x61nchors\"\x1a\n\x18QueryRoutingStatsRequest\"X\n\x15QueryRoutingStatsView\x12?\n\x05stats\x18\x01 \x01(\x0b\x32).qorechain.multilayer.v1.RoutingStatsViewR\x05stats2\x98\x07\n\x05Query\x12\x8c\x01\n\x06Params\x12+.qorechain.multilayer.v1.QueryParamsRequest\x1a,.qorechain.multilayer.v1.QueryParamsResponse\"\'\x82\xd3\xe4\x93\x02!\x12\x1f/qorechain/multilayer/v1/params\x12\x94\x01\n\x05Layer\x12*.qorechain.multilayer.v1.QueryLayerRequest\x1a+.qorechain.multilayer.v1.QueryLayerResponse\"2\x82\xd3\xe4\x93\x02,\x12*/qorechain/multilayer/v1/layers/{layer_id}\x12\x8c\x01\n\x06Layers\x12+.qorechain.multilayer.v1.QueryLayersRequest\x1a,.qorechain.multilayer.v1.QueryLayersResponse\"\'\x82\xd3\xe4\x93\x02!\x12\x1f/qorechain/multilayer/v1/layers\x12\x97\x01\n\x06\x41nchor\x12+.qorechain.multilayer.v1.QueryAnchorRequest\x1a,.qorechain.multilayer.v1.QueryAnchorResponse\"2\x82\xd3\xe4\x93\x02,\x12*/qorechain/multilayer/v1/anchor/{layer_id}\x12\x9b\x01\n\x07\x41nchors\x12,.qorechain.multilayer.v1.QueryAnchorsRequest\x1a-.qorechain.multilayer.v1.QueryAnchorsResponse\"3\x82\xd3\xe4\x93\x02-\x12+/qorechain/multilayer/v1/anchors/{layer_id}\x12\xa1\x01\n\x0cRoutingStats\x12\x31.qorechain.multilayer.v1.QueryRoutingStatsRequest\x1a..qorechain.multilayer.v1.QueryRoutingStatsView\".\x82\xd3\xe4\x93\x02(\x12&/qorechain/multilayer/v1/routing-statsB\xdf\x01\n\x1b\x63om.qorechain.multilayer.v1B\nQueryProtoP\x01Z6github.com/qorechain/qorechain-core/x/multilayer/types\xa2\x02\x03QMX\xaa\x02\x17Qorechain.Multilayer.V1\xca\x02\x17Qorechain\\Multilayer\\V1\xe2\x02#Qorechain\\Multilayer\\V1\\GPBMetadata\xea\x02\x19Qorechain::Multilayer::V1b\x06proto3')
 
 _globals = globals()
 _builder.BuildMessageAndEnumDescriptors(DESCRIPTOR, _globals)
@@ -32,28 +33,50 @@ _builder.BuildTopDescriptorsAndMessages(DESCRIPTOR, 'qorechain.multilayer.v1.que
 if not _descriptor._USE_C_DESCRIPTORS:
   _globals['DESCRIPTOR']._loaded_options = None
   _globals['DESCRIPTOR']._serialized_options = b'\n\033com.qorechain.multilayer.v1B\nQueryProtoP\001Z6github.com/qorechain/qorechain-core/x/multilayer/types\242\002\003QMX\252\002\027Qorechain.Multilayer.V1\312\002\027Qorechain\\Multilayer\\V1\342\002#Qorechain\\Multilayer\\V1\\GPBMetadata\352\002\031Qorechain::Multilayer::V1'
-  _globals['_PARAMSVIEW']._serialized_start=65
-  _globals['_PARAMSVIEW']._serialized_end=565
-  _globals['_LAYERVIEW']._serialized_start=568
-  _globals['_LAYERVIEW']._serialized_end=991
-  _globals['_ROUTINGSTATSVIEW']._serialized_start=994
-  _globals['_ROUTINGSTATSVIEW']._serialized_end=1325
-  _globals['_QUERYPARAMSREQUEST']._serialized_start=1327
-  _globals['_QUERYPARAMSREQUEST']._serialized_end=1347
-  _globals['_QUERYPARAMSRESPONSE']._serialized_start=1349
-  _globals['_QUERYPARAMSRESPONSE']._serialized_end=1431
-  _globals['_QUERYLAYERREQUEST']._serialized_start=1433
-  _globals['_QUERYLAYERREQUEST']._serialized_end=1479
-  _globals['_QUERYLAYERRESPONSE']._serialized_start=1481
-  _globals['_QUERYLAYERRESPONSE']._serialized_end=1559
-  _globals['_QUERYLAYERSREQUEST']._serialized_start=1561
-  _globals['_QUERYLAYERSREQUEST']._serialized_end=1581
-  _globals['_QUERYLAYERSRESPONSE']._serialized_start=1583
-  _globals['_QUERYLAYERSRESPONSE']._serialized_end=1664
-  _globals['_QUERYROUTINGSTATSREQUEST']._serialized_start=1666
-  _globals['_QUERYROUTINGSTATSREQUEST']._serialized_end=1692
-  _globals['_QUERYROUTINGSTATSVIEW']._serialized_start=1694
-  _globals['_QUERYROUTINGSTATSVIEW']._serialized_end=1782
-  _globals['_QUERY']._serialized_start=1785
-  _globals['_QUERY']._serialized_end=2207
+  _globals['_QUERY'].methods_by_name['Params']._loaded_options = None
+  _globals['_QUERY'].methods_by_name['Params']._serialized_options = b'\202\323\344\223\002!\022\037/qorechain/multilayer/v1/params'
+  _globals['_QUERY'].methods_by_name['Layer']._loaded_options = None
+  _globals['_QUERY'].methods_by_name['Layer']._serialized_options = b'\202\323\344\223\002,\022*/qorechain/multilayer/v1/layers/{layer_id}'
+  _globals['_QUERY'].methods_by_name['Layers']._loaded_options = None
+  _globals['_QUERY'].methods_by_name['Layers']._serialized_options = b'\202\323\344\223\002!\022\037/qorechain/multilayer/v1/layers'
+  _globals['_QUERY'].methods_by_name['Anchor']._loaded_options = None
+  _globals['_QUERY'].methods_by_name['Anchor']._serialized_options = b'\202\323\344\223\002,\022*/qorechain/multilayer/v1/anchor/{layer_id}'
+  _globals['_QUERY'].methods_by_name['Anchors']._loaded_options = None
+  _globals['_QUERY'].methods_by_name['Anchors']._serialized_options = b'\202\323\344\223\002-\022+/qorechain/multilayer/v1/anchors/{layer_id}'
+  _globals['_QUERY'].methods_by_name['RoutingStats']._loaded_options = None
+  _globals['_QUERY'].methods_by_name['RoutingStats']._serialized_options = b'\202\323\344\223\002(\022&/qorechain/multilayer/v1/routing-stats'
+  _globals['_PARAMSVIEW']._serialized_start=95
+  _globals['_PARAMSVIEW']._serialized_end=595
+  _globals['_LAYERVIEW']._serialized_start=598
+  _globals['_LAYERVIEW']._serialized_end=1021
+  _globals['_ROUTINGSTATSVIEW']._serialized_start=1024
+  _globals['_ROUTINGSTATSVIEW']._serialized_end=1355
+  _globals['_QUERYPARAMSREQUEST']._serialized_start=1357
+  _globals['_QUERYPARAMSREQUEST']._serialized_end=1377
+  _globals['_QUERYPARAMSRESPONSE']._serialized_start=1379
+  _globals['_QUERYPARAMSRESPONSE']._serialized_end=1461
+  _globals['_QUERYLAYERREQUEST']._serialized_start=1463
+  _globals['_QUERYLAYERREQUEST']._serialized_end=1509
+  _globals['_QUERYLAYERRESPONSE']._serialized_start=1511
+  _globals['_QUERYLAYERRESPONSE']._serialized_end=1589
+  _globals['_QUERYLAYERSREQUEST']._serialized_start=1591
+  _globals['_QUERYLAYERSREQUEST']._serialized_end=1611
+  _globals['_QUERYLAYERSRESPONSE']._serialized_start=1613
+  _globals['_QUERYLAYERSRESPONSE']._serialized_end=1694
+  _globals['_STATEANCHORVIEW']._serialized_start=1697
+  _globals['_STATEANCHORVIEW']._serialized_end=2085
+  _globals['_QUERYANCHORREQUEST']._serialized_start=2087
+  _globals['_QUERYANCHORREQUEST']._serialized_end=2134
+  _globals['_QUERYANCHORRESPONSE']._serialized_start=2136
+  _globals['_QUERYANCHORRESPONSE']._serialized_end=2223
+  _globals['_QUERYANCHORSREQUEST']._serialized_start=2225
+  _globals['_QUERYANCHORSREQUEST']._serialized_end=2273
+  _globals['_QUERYANCHORSRESPONSE']._serialized_start=2275
+  _globals['_QUERYANCHORSRESPONSE']._serialized_end=2365
+  _globals['_QUERYROUTINGSTATSREQUEST']._serialized_start=2367
+  _globals['_QUERYROUTINGSTATSREQUEST']._serialized_end=2393
+  _globals['_QUERYROUTINGSTATSVIEW']._serialized_start=2395
+  _globals['_QUERYROUTINGSTATSVIEW']._serialized_end=2483
+  _globals['_QUERY']._serialized_start=2486
+  _globals['_QUERY']._serialized_end=3406
 # @@protoc_insertion_point(module_scope)

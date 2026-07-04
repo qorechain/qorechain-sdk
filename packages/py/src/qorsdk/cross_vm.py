@@ -48,9 +48,9 @@ VM_TYPES: tuple[str, ...] = ("evm", "cosmwasm", "svm")
 #: A cross-VM VM type: ``"evm"`` | ``"cosmwasm"`` | ``"svm"``.
 VmType = Literal["evm", "cosmwasm", "svm"]
 
-#: A Cosmos coin as a plain dict, e.g. ``{"denom": "uqor", "amount": "1000"}``.
+#: A Native coin as a plain dict, e.g. ``{"denom": "uqor", "amount": "1000"}``.
 CoinDict = dict[str, str]
-#: A Cosmos ``StdFee``-shaped dict (as produced by :func:`qorsdk.fees.estimate_fee`).
+#: A Native ``StdFee``-shaped dict (as produced by :func:`qorsdk.fees.estimate_fee`).
 FeeDict = dict[str, Any]
 
 

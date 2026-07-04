@@ -32,9 +32,9 @@ pub struct CoinInfo {
 /// Service endpoints for talking to a network across its supported VMs.
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct Endpoints {
-    /// Cosmos REST (LCD) endpoint.
+    /// Native REST (LCD) endpoint.
     pub rest: String,
-    /// Cosmos gRPC endpoint.
+    /// Native gRPC endpoint.
     pub grpc: String,
     /// Consensus RPC endpoint.
     pub rpc: String,

@@ -2,7 +2,7 @@
  * Mnemonic generation/validation and hierarchical-deterministic (HD) derivation
  * of QoreChain accounts in all three supported schemes:
  *
- * 1. native — Cosmos-style secp256k1, BIP-44 path `m/44'/118'/0'/0/{index}`,
+ * 1. native — Native secp256k1, BIP-44 path `m/44'/118'/0'/0/{index}`,
  *    address = bech32(`qor`, ripemd160(sha256(compressedPubkey))).
  * 2. evm    — secp256k1, BIP-44 path `m/44'/60'/0'/0/{index}`,
  *    address = `0x` + last 20 bytes of keccak256(uncompressedPubkey[1:]),
@@ -140,7 +140,7 @@ function toEip55Checksum(addressBytes: Uint8Array): string {
 }
 
 /**
- * Derive a native QoreChain account (Cosmos-style secp256k1) from a mnemonic.
+ * Derive a native QoreChain account (Native secp256k1) from a mnemonic.
  *
  * Path: `m/44'/118'/0'/0/{accountIndex}`. The address is the bech32 (`qor`)
  * encoding of `ripemd160(sha256(compressedPublicKey))`.

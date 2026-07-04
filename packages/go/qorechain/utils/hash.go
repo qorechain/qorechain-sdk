@@ -5,7 +5,7 @@ package utils
 import (
 	"crypto/sha256"
 
-	"golang.org/x/crypto/ripemd160" //nolint:staticcheck // ripemd160 is required by the Cosmos address derivation scheme.
+	"golang.org/x/crypto/ripemd160" //nolint:staticcheck // ripemd160 is required by the QoreChain Native address derivation scheme.
 	"golang.org/x/crypto/sha3"
 )
 
@@ -32,7 +32,7 @@ func RIPEMD160(data []byte) []byte {
 	return h.Sum(nil)
 }
 
-// Hash160 returns RIPEMD160(SHA256(data)) — the Cosmos account-address hash of a
+// Hash160 returns RIPEMD160(SHA256(data)) — the Native account-address hash of a
 // public key.
 func Hash160(data []byte) []byte {
 	return RIPEMD160(SHA256(data))

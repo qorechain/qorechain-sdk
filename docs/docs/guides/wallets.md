@@ -9,9 +9,9 @@ sidebar_position: 5
 The SDK connects to the major browser wallets across all three runtimes. Each
 connector returns a signer that plugs directly into the relevant tx path.
 
-## Cosmos wallets (Keplr / Leap)
+## Native wallets (Keplr / Leap)
 
-`getCosmosWallet` connects an injected Cosmos wallet and returns an
+`getCosmosWallet` connects an injected Native wallet and returns an
 `OfflineSigner` plus account info. The signer goes straight into
 `TxClient.connect`.
 

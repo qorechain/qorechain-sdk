@@ -57,7 +57,7 @@ public final class Pqc {
             throw new IllegalArgumentException(
                     "ML-DSA-87 seed must be " + ML_DSA_87_SEED_LENGTH + " bytes, got " + seed.length);
         }
-        SecureRandom random = (seed != null) ? deterministicRandom(seed) : new SecureRandom();
+        SecureRandom random = (seed != null) ? new FixedSeedRandom(seed) : new SecureRandom();
         MLDSAKeyPairGenerator gen = new MLDSAKeyPairGenerator();
         gen.init(new MLDSAKeyGenerationParameters(random, MLDSAParameters.ml_dsa_87));
         AsymmetricCipherKeyPair kp = gen.generateKeyPair();
@@ -163,18 +163,34 @@ public final class Pqc {
     }
 
     /**
-     * A {@link SecureRandom} whose stream is fully determined by the supplied
-     * seed, so seeded keygen is reproducible. Uses SHA1PRNG with
-     * {@link SecureRandom#setSeed(byte[])} replacing (not augmenting) the state by
-     * being applied before any output is drawn.
+     * A {@link SecureRandom} that hands the ML-DSA-87 key generator the supplied
+     * 32-byte seed VERBATIM as the FIPS-204 keygen randomness ξ.
+     *
+     * <p>BouncyCastle's {@code MLDSAKeyPairGenerator} draws ξ with a single
+     * {@code nextBytes(new byte[32])} call and then runs the standard FIPS-204
+     * {@code H(ξ ‖ K ‖ L, 128)} expansion internally. Returning the seed unchanged
+     * on that first draw makes the keypair byte-identical to
+     * {@code @noble/post-quantum}'s {@code mldsa87.keygen(seed)} (verified: same
+     * public-key bytes for the same seed), so a wallet's deterministic PQC key is
+     * portable across the QoreChain SDKs. Any subsequent draw yields zeros (unused
+     * by ml_dsa keygen).
      */
-    private static SecureRandom deterministicRandom(byte[] seed) {
-        try {
-            SecureRandom sr = SecureRandom.getInstance("SHA1PRNG");
-            sr.setSeed(seed);
-            return sr;
-        } catch (java.security.NoSuchAlgorithmException e) {
-            throw new IllegalStateException("SHA1PRNG unavailable", e);
+    private static final class FixedSeedRandom extends SecureRandom {
+        private final byte[] seed;
+        private boolean consumed = false;
+
+        FixedSeedRandom(byte[] seed) {
+            this.seed = seed.clone();
+        }
+
+        @Override
+        public void nextBytes(byte[] bytes) {
+            if (!consumed && bytes.length == seed.length) {
+                System.arraycopy(seed, 0, bytes, 0, seed.length);
+                consumed = true;
+            } else {
+                java.util.Arrays.fill(bytes, (byte) 0);
+            }
         }
     }
 }

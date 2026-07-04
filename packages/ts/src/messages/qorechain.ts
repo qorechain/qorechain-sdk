@@ -286,6 +286,20 @@ export const abstractaccount = {
     "/qorechain.abstractaccount.v1.MsgUpdateSpendingRules",
     abstractaccountTx.MsgUpdateSpendingRules,
   ),
+  /**
+   * Link a foreign-scheme wallet key (e.g. a Phantom ed25519 key) to an account
+   * so it may act for that account under least-privilege, time-bounded, revocable
+   * terms. Owner-signed.
+   */
+  registerAuthenticator: composer(
+    "/qorechain.abstractaccount.v1.MsgRegisterAuthenticator",
+    abstractaccountTx.MsgRegisterAuthenticator,
+  ),
+  /** Instantly disable a previously linked wallet key. Owner-signed. */
+  revokeAuthenticator: composer(
+    "/qorechain.abstractaccount.v1.MsgRevokeAuthenticator",
+    abstractaccountTx.MsgRevokeAuthenticator,
+  ),
 };
 
 /** Cross-VM message composers. */

@@ -22,7 +22,7 @@ function calledUrl(fetchMock: ReturnType<typeof vi.fn>): string {
 }
 
 describe("RestClient bank endpoints", () => {
-  it("getAllBalances hits the standard Cosmos path", async () => {
+  it("getAllBalances hits the standard Native path", async () => {
     const { fetchMock, client } = setup({ balances: [] });
     await client.getAllBalances("qor1abc");
     expect(calledUrl(fetchMock)).toBe(
@@ -46,7 +46,7 @@ describe("RestClient bank endpoints", () => {
     );
   });
 
-  it("applies Cosmos-style pagination params", async () => {
+  it("applies Native-style pagination params", async () => {
     const { fetchMock, client } = setup({ balances: [] });
     await client.getAllBalances("qor1abc", { pagination: { key: "abc", limit: 50 } });
     const url = calledUrl(fetchMock);

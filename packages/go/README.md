@@ -3,7 +3,7 @@
 Idiomatic Go SDK for QoreChain — network presets, denomination/address utilities,
 HD account derivation (native / EVM / SVM), post-quantum (ML-DSA-87) signing, read
 clients for the REST (LCD) and `qor_*` JSON-RPC surfaces, the full native-chain
-message set (49 custom messages across 11 modules + the standard Cosmos modules),
+message set (49 custom messages across 11 modules + the standard Native modules),
 typed gRPC query clients, complete transaction lifecycle (auto-gas, error
 decoding, tracking, search), utilities, and WebSocket subscriptions.
 
@@ -16,7 +16,7 @@ Browser-wallet integrations and the EVM/SVM execution adapters are intentionally
 not part of the Go SDK — Go services talk to the EVM and SVM layers with the
 established libraries ([go-ethereum](https://github.com/ethereum/go-ethereum) and
 [solana-go](https://github.com/gagliardetto/solana-go)). The Go SDK focuses on the
-native (Cosmos SDK) chain surface, including hybrid post-quantum transactions.
+native chain surface, including hybrid post-quantum transactions.
 
 ## Install
 
@@ -37,7 +37,7 @@ Requires Go 1.23+.
 | `qorechain/pqc` | ML-DSA-87 (FIPS 204) keygen / sign / verify + hybrid extension. |
 | `qorechain/query` | REST client, JSON-RPC client, `qor_*` typed client, typed gRPC query clients. |
 | `qorechain/client` | `CreateClient` factory composing the read clients + fees. |
-| `qorechain/messages` | Interface registry/codec + typed composers for all 49 custom messages and the standard Cosmos modules. |
+| `qorechain/messages` | Interface registry/codec + typed composers for all 49 custom messages and the standard Native modules. |
 | `qorechain/tx` | Build/sign/broadcast (classical + hybrid PQC), auto-gas, error decoding, tracking/retry, tx & block search. |
 | `qorechain/proto` | Generated gogoproto Go types for every chain module (committed; regenerate with `scripts/codegen-go.sh`). |
 | `qorechain/utils` | Hashing (sha256/keccak256/ripemd160), unit conversion, EVM/SVM address validation + EIP-55. |
@@ -127,7 +127,7 @@ import (
 
 acc, _ := accounts.DeriveNativeAccount(mnemonic, 0)
 
-// Compose any message (custom or standard Cosmos) with the typed composers.
+// Compose any message (custom or standard Native) with the typed composers.
 swap := messages.Amm.SwapExactIn(acc.Address, 1,
     sdk.NewCoin("uqor", math.NewInt(1_000_000)), "uusdc", math.NewInt(990_000))
 
@@ -181,6 +181,10 @@ layer, _ := g.Multilayer().Layer(ctx, &multilayerv1.QueryLayerRequest{LayerId: "
 rollup, _ := g.Rdk().Rollup(ctx, &rdkv1.QueryRollupRequest{RollupId: "r1"})
 chains, _ := g.Bridge().ChainConfigs(ctx, &bridgev1.QueryChainConfigsRequest{})
 ```
+
+Chain v3.1.83 adds `Amm()`, `License()`, and `AbstractAccount()` typed query
+clients, the `multilayer` `Anchor` / `Anchors` state-anchor queries, and
+abstractaccount `RegisterAuthenticator` / `RevokeAuthenticator` message composers.
 
 See the [multilayer](../../docs/docs/guides/multilayer.md) and
 [rollups](../../docs/docs/guides/rollups.md) guides.
@@ -269,6 +273,47 @@ _ = (registered, status, ensure, hybrid, rotate)
 ```
 
 See the [quantum-safe](../../docs/docs/guides/quantum-safe.md) guide.
+
+### Unified eth-native wallet (v0.6.0)
+
+One `eth_secp256k1` key = ONE 20-byte identity rendered three ways — `qor1…`
+(bech32), `0x…` (EIP-55), and SVM base58 (the 20 bytes right-padded with 12 zero
+bytes to 32). A deposit to any of the three lands in the **same** balance, and the
+key spends on **all** lanes. `unified.DeriveUnifiedAccount` uses the Ethereum HD
+path (`m/44'/60'/0'/0/{index}`); `unified.UnifiedAccountFromSeed` builds one
+directly from a 32-byte secret. `unified.AddressesFrom20` / `unified.QoreAddresses`
+convert between the three encodings. The legacy coin-type-118
+`accounts.DeriveNativeAccount` still works (additive).
+
+Native-lane signing over the eth key: `unified.SignClassicalEth` is a classical
+secp256k1 signature over `keccak256(SignDoc)` with pubkey type
+`/cosmos.evm.crypto.v1.ethsecp256k1.PubKey`; `unified.SignHybridEth` adds the
+ML-DSA-87 post-quantum signature. Account parsing accepts eth_secp256k1 public keys.
+
+```go
+import "github.com/qorechain/qorechain-sdk/packages/go/qorechain/unified"
+
+account, _ := unified.DeriveUnifiedAccount(mnemonic, 0)
+account.Cosmos // "qor1…"    — QoreChain Native lane
+account.Evm    // "0x…"      — EIP-55 checksummed
+account.Svm    // "<base58>" — 20 bytes + 12 zero pad
+
+// Sign a QoreChain Native tx from the unified eth key (hybrid PQC path).
+txBytes, _ := unified.SignHybridEth(unified.EthSignParams{
+    Account:       account,
+    ChainID:       "qorechain-vladi",
+    AccountNumber: accountNumber,
+    Sequence:      sequence,
+    Messages:      messages,
+    Fee:           fee,
+})
+
+// Derive a canonical, non-custodial unified account from a deterministic
+// Phantom signature (shake256(signature, 32)).
+fromPhantom, _ := unified.UnifiedAccountFromPhantomSignature(phantomSignature)
+```
+
+See the [unified-wallet](../../docs/docs/guides/unified-wallet.md) guide.
 
 ## Development
 

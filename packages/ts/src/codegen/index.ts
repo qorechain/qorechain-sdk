@@ -22,9 +22,17 @@ export * as abstractaccount from "./qorechain/abstractaccount/v1/tx";
 export * as crossvm from "./qorechain/crossvm/v1/tx";
 export * as rlconsensus from "./qorechain/rlconsensus/v1/tx";
 
+// The generated protobuf `PQCHybridSignature` message (pqc/v1/hybrid.proto).
+// Exposed for callers who read the hybrid extension back off-chain and want the
+// generated encode/decode.
+export * as pqcHybrid from "./qorechain/pqc/v1/hybrid";
+
 // Query types (request/response) for modules that expose a query service.
+export * as abstractaccountQuery from "./qorechain/abstractaccount/v1/query";
+export * as ammQuery from "./qorechain/amm/v1/query";
 export * as bridgeQuery from "./qorechain/bridge/v1/query";
 export * as crossvmQuery from "./qorechain/crossvm/v1/query";
+export * as licenseQuery from "./qorechain/license/v1/query";
 export * as lightnodeQuery from "./qorechain/lightnode/v1/query";
 export * as multilayerQuery from "./qorechain/multilayer/v1/query";
 export * as pqcQuery from "./qorechain/pqc/v1/query";

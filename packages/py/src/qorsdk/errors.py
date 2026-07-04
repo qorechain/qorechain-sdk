@@ -1,4 +1,4 @@
-"""Structured decoding of failed Cosmos SDK transaction results.
+"""Structured decoding of failed QoreChain Native transaction results.
 
 When a transaction fails, the node returns an ABCI result with a non-zero
 ``code``, a ``codespace`` naming the module that rejected it, and a ``raw_log``
@@ -21,7 +21,7 @@ from dataclasses import dataclass
 DEFAULT_CODESPACE = "sdk"
 
 #: Known error codes in the core ``sdk`` codespace, mirroring the canonical
-#: Cosmos SDK error registry. Only the codes a dApp commonly hits get friendly
+#: QoreChain Native error registry. Only the codes a dApp commonly hits get friendly
 #: text; any other ``sdk`` code still decodes (with the raw log) generically.
 SDK_CODES: dict[int, tuple[str, str]] = {
     2: ("tx_decode_error", "failed to decode the transaction"),

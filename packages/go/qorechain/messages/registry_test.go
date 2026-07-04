@@ -70,9 +70,11 @@ var allCustomTypeURLs = []string{
 	"/qorechain.license.v1.MsgRevokeLicense",
 	"/qorechain.license.v1.MsgSuspendLicense",
 	"/qorechain.license.v1.MsgResumeLicense",
-	// abstractaccount (2)
+	// abstractaccount (4)
 	"/qorechain.abstractaccount.v1.MsgCreateAbstractAccount",
 	"/qorechain.abstractaccount.v1.MsgUpdateSpendingRules",
+	"/qorechain.abstractaccount.v1.MsgRegisterAuthenticator",
+	"/qorechain.abstractaccount.v1.MsgRevokeAuthenticator",
 	// crossvm (2)
 	"/qorechain.crossvm.v1.MsgCrossVMCall",
 	"/qorechain.crossvm.v1.MsgProcessQueue",
@@ -84,8 +86,8 @@ var allCustomTypeURLs = []string{
 }
 
 func TestAllCustomTypeURLsCount(t *testing.T) {
-	if got := len(allCustomTypeURLs); got != 53 {
-		t.Fatalf("expected 53 custom type URLs, got %d", got)
+	if got := len(allCustomTypeURLs); got != 55 {
+		t.Fatalf("expected 55 custom type URLs, got %d", got)
 	}
 }
 

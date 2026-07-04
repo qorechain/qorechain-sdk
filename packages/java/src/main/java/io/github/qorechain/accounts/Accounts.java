@@ -55,7 +55,7 @@ public final class Accounts {
     }
 
     /**
-     * Derive a native QoreChain account (Cosmos-style secp256k1) from a mnemonic.
+     * Derive a native QoreChain account (Native secp256k1) from a mnemonic.
      * Path {@code m/44'/118'/0'/0/{index}}.
      */
     public static Account deriveNativeAccount(String mnemonic, int index) {

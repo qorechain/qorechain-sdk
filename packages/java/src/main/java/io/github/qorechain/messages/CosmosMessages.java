@@ -3,14 +3,14 @@ package io.github.qorechain.messages;
 import com.google.protobuf.Message;
 
 /**
- * Composers for standard Cosmos SDK messages.
+ * Composers for standard QoreChain Native messages.
  *
  * <p>The bank messages ship as typed composers backed by generated protobuf
  * classes (the workhorses used by the tx builder's {@code bankSend}). The other
  * standard modules (staking, distribution, gov, authz, feegrant, IBC transfer)
  * expose their canonical type-URL constants plus a generic {@link #custom}
  * composer, so any message built from its own protobuf class can be wrapped with
- * the right type URL without this module re-vendoring every Cosmos proto.
+ * the right type URL without this module re-vendoring every Native proto.
  */
 public final class CosmosMessages {
 
@@ -60,7 +60,7 @@ public final class CosmosMessages {
 
     /**
      * Wrap any protobuf message with an explicit type URL. Use this for standard
-     * Cosmos messages whose protobuf class you build yourself (staking,
+     * Native messages whose protobuf class you build yourself (staking,
      * distribution, gov, authz, feegrant, IBC), e.g.
      * {@code CosmosMessages.custom(CosmosMessages.MSG_DELEGATE, msgDelegate)}.
      */

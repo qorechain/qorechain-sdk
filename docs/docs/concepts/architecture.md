@@ -17,14 +17,14 @@ machines side by side, with shared accounts and a shared token.
 | **QoreChain EVM Engine** | Solidity / Vyper | `@qorechain/evm` (a viem adapter) |
 | **SVM** | Solana programs | `@qorechain/svm` (a `@solana/web3.js` adapter) |
 
-The native (Cosmos) layer handles bank transfers, staking, governance, and the
+The Native lane handles bank transfers, staking, governance, and the
 `x/crossvm` module that routes messages between runtimes.
 
 ## Read surfaces
 
 The SDK talks to a node through several endpoints:
 
-- **Cosmos REST (LCD)** — bank balances, account info, module queries.
+- **Native REST (LCD)** — bank balances, account info, module queries.
 - **Consensus RPC** — used for signing/broadcasting native transactions and for
   the CosmWasm read client.
 - **EVM JSON-RPC** — standard `eth_*` calls plus the QoreChain `qor_*`
@@ -52,7 +52,7 @@ fromBase("1500000");  // "1.5"      (uqor -> QOR)
 ```
 
 > Note: the EVM runtime represents QOR with 18 decimals (the EVM convention),
-> which is distinct from the Cosmos `uqor` base of 10^6. The `@qorechain/evm`
+> which is distinct from the Native `uqor` base of 10^6. The `@qorechain/evm`
 > client defaults to 18 decimals for display. Confirm the value for your target
 > network.
 

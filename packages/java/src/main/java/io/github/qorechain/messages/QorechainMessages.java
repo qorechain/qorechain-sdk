@@ -1,7 +1,7 @@
 package io.github.qorechain.messages;
 
 /**
- * Typed composers for every QoreChain custom-module {@code Msg} (53 total).
+ * Typed composers for every QoreChain custom-module {@code Msg} (55 total).
  *
  * <p>Each method wraps an already-built protobuf message in a {@link TypedMessage}
  * carrying the correct on-chain type URL, ready to feed into the tx builder. The
@@ -258,6 +258,16 @@ public final class QorechainMessages {
         public static TypedMessage updateSpendingRules(
                 qorechain.abstractaccount.v1.Tx.MsgUpdateSpendingRules m) {
             return new TypedMessage("/qorechain.abstractaccount.v1.MsgUpdateSpendingRules", m);
+        }
+
+        public static TypedMessage registerAuthenticator(
+                qorechain.abstractaccount.v1.Tx.MsgRegisterAuthenticator m) {
+            return new TypedMessage("/qorechain.abstractaccount.v1.MsgRegisterAuthenticator", m);
+        }
+
+        public static TypedMessage revokeAuthenticator(
+                qorechain.abstractaccount.v1.Tx.MsgRevokeAuthenticator m) {
+            return new TypedMessage("/qorechain.abstractaccount.v1.MsgRevokeAuthenticator", m);
         }
     }
 

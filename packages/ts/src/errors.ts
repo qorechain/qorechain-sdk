@@ -1,5 +1,5 @@
 /**
- * Structured decoding of failed Cosmos SDK transaction results.
+ * Structured decoding of failed QoreChain Native transaction results.
  *
  * When a transaction fails, the node returns an ABCI result with a non-zero
  * `code`, a `codespace` naming the module that rejected it, and a `rawLog`
@@ -43,7 +43,7 @@ export interface DecodedTxError {
 /**
  * Known error codes in the core `sdk` codespace.
  *
- * These mirror the canonical Cosmos SDK error registry. Only the codes a dApp
+ * These mirror the canonical QoreChain Native error registry. Only the codes a dApp
  * commonly hits are mapped to friendly text; any other `sdk` code still decodes
  * (with the raw log) but uses a generic message.
  */

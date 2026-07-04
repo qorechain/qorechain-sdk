@@ -82,7 +82,7 @@ use serde_json::Value;
 /// The `/cosmos.bank.v1beta1.MsgSend` type URL.
 pub const MSG_SEND_TYPE_URL: &str = "/cosmos.bank.v1beta1.MsgSend";
 
-/// A Cosmos coin amount: a denom plus an integer base amount (as a string).
+/// A Native coin amount: a denom plus an integer base amount (as a string).
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct Coin {
     /// The coin denomination (e.g. `"uqor"`).
@@ -301,7 +301,7 @@ pub struct SendMessagesParams {
 /// carrying a single classical secp256k1 `SIGN_MODE_DIRECT` signature.
 ///
 /// This is the generic counterpart of [`bank_send`]: pass any messages produced
-/// by the [`crate::msg`] composers (custom QoreChain modules or standard Cosmos
+/// by the [`crate::msg`] composers (custom QoreChain modules or standard Native
 /// modules). Use [`build_hybrid_tx`] when a post-quantum signature is also
 /// required. This does not broadcast — pass [`BuiltTx::tx_raw_bytes`] to
 /// [`broadcast`].
@@ -607,6 +607,6 @@ fn sign_direct(
     let sig = signing
         .sign(&sign_bytes)
         .map_err(|e| Error::Derivation(format!("secp256k1 sign: {e}")))?;
-    // k256 normalizes to low-S; the compact 64-byte form is the Cosmos wire form.
+    // k256 normalizes to low-S; the compact 64-byte form is the Native wire form.
     Ok(sig.to_bytes().to_vec())
 }

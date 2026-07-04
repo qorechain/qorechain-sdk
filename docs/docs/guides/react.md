@@ -65,7 +65,7 @@ const { connect } = useConnect();
 await connect({ kind: "keplr" }); // or "leap" | "evm" | "svm"
 ```
 
-- **keplr / leap** — Cosmos wallets via `getCosmosWallet`. Suggests and enables
+- **keplr / leap** — Native wallets via `getCosmosWallet`. Suggests and enables
   the chain, returns a CosmJS signer that is wired into a `TxClient`, so `useTx`
   can sign immediately. Sets `addresses.native`.
 - **evm** — any injected EIP-1193 provider (`window.ethereum`, e.g. MetaMask) via

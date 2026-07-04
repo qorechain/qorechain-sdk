@@ -6,7 +6,7 @@ proto's snake_case field names) into a :class:`Msg` — a ``{type_url, value}``
 pair where ``value`` is a populated protobuf message instance.
 
 The :class:`Msg` shape is exactly what :func:`qorechain.tx.send_messages` and
-the hybrid PQC tx path consume: it packs ``value`` into a Cosmos ``Any`` under
+the hybrid PQC tx path consume: it packs ``value`` into a Native ``Any`` under
 ``type_url``. This mirrors the TypeScript SDK's ``{ typeUrl, value }``
 ``EncodeObject`` so the two SDKs compose transactions identically.
 """
@@ -29,7 +29,7 @@ class Msg:
     """A transaction message: a ``type_url`` plus a populated protobuf ``value``.
 
     Ready to pass (in a list) to :func:`qorechain.tx.send_messages` /
-    :func:`qorechain.tx.build_hybrid_tx`, which pack ``value`` into a Cosmos
+    :func:`qorechain.tx.build_hybrid_tx`, which pack ``value`` into a Native
     ``Any`` under ``type_url``.
     """
 

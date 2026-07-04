@@ -22,9 +22,10 @@ _runtime_version.ValidateProtobufRuntimeVersion(
 _sym_db = _symbol_database.Default()
 
 
+from google.api import annotations_pb2 as google_dot_api_dot_annotations__pb2
 
 
-DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\x1cqorechain/pqc/v1/query.proto\x12\x10qorechain.pqc.v1\"/\n\x13QueryAccountRequest\x12\x18\n\x07\x61\x64\x64ress\x18\x01 \x01(\tR\x07\x61\x64\x64ress\"h\n\x14QueryAccountResponse\x12\x14\n\x05\x66ound\x18\x01 \x01(\x08R\x05\x66ound\x12:\n\x07\x61\x63\x63ount\x18\x02 \x01(\x0b\x32 .qorechain.pqc.v1.PQCAccountViewR\x07\x61\x63\x63ount\"\xe5\x02\n\x0ePQCAccountView\x12\x18\n\x07\x61\x64\x64ress\x18\x01 \x01(\tR\x07\x61\x64\x64ress\x12\x1d\n\npublic_key\x18\x02 \x01(\x0cR\tpublicKey\x12!\n\x0c\x61lgorithm_id\x18\x03 \x01(\rR\x0b\x61lgorithmId\x12%\n\x0e\x61lgorithm_name\x18\x04 \x01(\tR\ralgorithmName\x12!\n\x0c\x65\x63\x64sa_pubkey\x18\x05 \x01(\x0cR\x0b\x65\x63\x64saPubkey\x12\x19\n\x08key_type\x18\x06 \x01(\tR\x07keyType\x12*\n\x11\x63reated_at_height\x18\x07 \x01(\x03R\x0f\x63reatedAtHeight\x12\x30\n\x14migration_public_key\x18\x08 \x01(\x0cR\x12migrationPublicKey\x12\x34\n\x16migration_algorithm_id\x18\t \x01(\rR\x14migrationAlgorithmId2a\n\x05Query\x12X\n\x07\x41\x63\x63ount\x12%.qorechain.pqc.v1.QueryAccountRequest\x1a&.qorechain.pqc.v1.QueryAccountResponseB\xb5\x01\n\x14\x63om.qorechain.pqc.v1B\nQueryProtoP\x01Z/github.com/qorechain/qorechain-core/x/pqc/types\xa2\x02\x03QPX\xaa\x02\x10Qorechain.Pqc.V1\xca\x02\x10Qorechain\\Pqc\\V1\xe2\x02\x1cQorechain\\Pqc\\V1\\GPBMetadata\xea\x02\x12Qorechain::Pqc::V1b\x06proto3')
+DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\x1cqorechain/pqc/v1/query.proto\x12\x10qorechain.pqc.v1\x1a\x1cgoogle/api/annotations.proto\"/\n\x13QueryAccountRequest\x12\x18\n\x07\x61\x64\x64ress\x18\x01 \x01(\tR\x07\x61\x64\x64ress\"h\n\x14QueryAccountResponse\x12\x14\n\x05\x66ound\x18\x01 \x01(\x08R\x05\x66ound\x12:\n\x07\x61\x63\x63ount\x18\x02 \x01(\x0b\x32 .qorechain.pqc.v1.PQCAccountViewR\x07\x61\x63\x63ount\"\xe5\x02\n\x0ePQCAccountView\x12\x18\n\x07\x61\x64\x64ress\x18\x01 \x01(\tR\x07\x61\x64\x64ress\x12\x1d\n\npublic_key\x18\x02 \x01(\x0cR\tpublicKey\x12!\n\x0c\x61lgorithm_id\x18\x03 \x01(\rR\x0b\x61lgorithmId\x12%\n\x0e\x61lgorithm_name\x18\x04 \x01(\tR\ralgorithmName\x12!\n\x0c\x65\x63\x64sa_pubkey\x18\x05 \x01(\x0cR\x0b\x65\x63\x64saPubkey\x12\x19\n\x08key_type\x18\x06 \x01(\tR\x07keyType\x12*\n\x11\x63reated_at_height\x18\x07 \x01(\x03R\x0f\x63reatedAtHeight\x12\x30\n\x14migration_public_key\x18\x08 \x01(\x0cR\x12migrationPublicKey\x12\x34\n\x16migration_algorithm_id\x18\t \x01(\rR\x14migrationAlgorithmId2\x8f\x01\n\x05Query\x12\x85\x01\n\x07\x41\x63\x63ount\x12%.qorechain.pqc.v1.QueryAccountRequest\x1a&.qorechain.pqc.v1.QueryAccountResponse\"+\x82\xd3\xe4\x93\x02%\x12#/qorechain/pqc/v1/account/{address}B\xb5\x01\n\x14\x63om.qorechain.pqc.v1B\nQueryProtoP\x01Z/github.com/qorechain/qorechain-core/x/pqc/types\xa2\x02\x03QPX\xaa\x02\x10Qorechain.Pqc.V1\xca\x02\x10Qorechain\\Pqc\\V1\xe2\x02\x1cQorechain\\Pqc\\V1\\GPBMetadata\xea\x02\x12Qorechain::Pqc::V1b\x06proto3')
 
 _globals = globals()
 _builder.BuildMessageAndEnumDescriptors(DESCRIPTOR, _globals)
@@ -32,12 +33,14 @@ _builder.BuildTopDescriptorsAndMessages(DESCRIPTOR, 'qorechain.pqc.v1.query_pb2'
 if not _descriptor._USE_C_DESCRIPTORS:
   _globals['DESCRIPTOR']._loaded_options = None
   _globals['DESCRIPTOR']._serialized_options = b'\n\024com.qorechain.pqc.v1B\nQueryProtoP\001Z/github.com/qorechain/qorechain-core/x/pqc/types\242\002\003QPX\252\002\020Qorechain.Pqc.V1\312\002\020Qorechain\\Pqc\\V1\342\002\034Qorechain\\Pqc\\V1\\GPBMetadata\352\002\022Qorechain::Pqc::V1'
-  _globals['_QUERYACCOUNTREQUEST']._serialized_start=50
-  _globals['_QUERYACCOUNTREQUEST']._serialized_end=97
-  _globals['_QUERYACCOUNTRESPONSE']._serialized_start=99
-  _globals['_QUERYACCOUNTRESPONSE']._serialized_end=203
-  _globals['_PQCACCOUNTVIEW']._serialized_start=206
-  _globals['_PQCACCOUNTVIEW']._serialized_end=563
-  _globals['_QUERY']._serialized_start=565
-  _globals['_QUERY']._serialized_end=662
+  _globals['_QUERY'].methods_by_name['Account']._loaded_options = None
+  _globals['_QUERY'].methods_by_name['Account']._serialized_options = b'\202\323\344\223\002%\022#/qorechain/pqc/v1/account/{address}'
+  _globals['_QUERYACCOUNTREQUEST']._serialized_start=80
+  _globals['_QUERYACCOUNTREQUEST']._serialized_end=127
+  _globals['_QUERYACCOUNTRESPONSE']._serialized_start=129
+  _globals['_QUERYACCOUNTRESPONSE']._serialized_end=233
+  _globals['_PQCACCOUNTVIEW']._serialized_start=236
+  _globals['_PQCACCOUNTVIEW']._serialized_end=593
+  _globals['_QUERY']._serialized_start=596
+  _globals['_QUERY']._serialized_end=739
 # @@protoc_insertion_point(module_scope)

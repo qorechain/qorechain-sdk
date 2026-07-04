@@ -3580,6 +3580,3100 @@ public final class Tx extends com.google.protobuf.GeneratedFile {
 
   }
 
+  public interface MsgRegisterAuthenticatorOrBuilder extends
+      // @@protoc_insertion_point(interface_extends:qorechain.abstractaccount.v1.MsgRegisterAuthenticator)
+      com.google.protobuf.MessageOrBuilder {
+
+    /**
+     * <code>string owner = 1 [json_name = "owner", (.cosmos_proto.scalar) = "cosmos.AddressString"];</code>
+     * @return The owner.
+     */
+    java.lang.String getOwner();
+    /**
+     * <code>string owner = 1 [json_name = "owner", (.cosmos_proto.scalar) = "cosmos.AddressString"];</code>
+     * @return The bytes for owner.
+     */
+    com.google.protobuf.ByteString
+        getOwnerBytes();
+
+    /**
+     * <code>string account_address = 2 [json_name = "accountAddress"];</code>
+     * @return The accountAddress.
+     */
+    java.lang.String getAccountAddress();
+    /**
+     * <code>string account_address = 2 [json_name = "accountAddress"];</code>
+     * @return The bytes for accountAddress.
+     */
+    com.google.protobuf.ByteString
+        getAccountAddressBytes();
+
+    /**
+     * <pre>
+     * "ed25519" | "secp256k1"
+     * </pre>
+     *
+     * <code>string scheme = 3 [json_name = "scheme"];</code>
+     * @return The scheme.
+     */
+    java.lang.String getScheme();
+    /**
+     * <pre>
+     * "ed25519" | "secp256k1"
+     * </pre>
+     *
+     * <code>string scheme = 3 [json_name = "scheme"];</code>
+     * @return The bytes for scheme.
+     */
+    com.google.protobuf.ByteString
+        getSchemeBytes();
+
+    /**
+     * <pre>
+     * raw public key bytes
+     * </pre>
+     *
+     * <code>bytes pubkey = 4 [json_name = "pubkey"];</code>
+     * @return The pubkey.
+     */
+    com.google.protobuf.ByteString getPubkey();
+
+    /**
+     * <pre>
+     * e.g. "svm", "send"
+     * </pre>
+     *
+     * <code>repeated string permissions = 5 [json_name = "permissions"];</code>
+     * @return A list containing the permissions.
+     */
+    java.util.List<java.lang.String>
+        getPermissionsList();
+    /**
+     * <pre>
+     * e.g. "svm", "send"
+     * </pre>
+     *
+     * <code>repeated string permissions = 5 [json_name = "permissions"];</code>
+     * @return The count of permissions.
+     */
+    int getPermissionsCount();
+    /**
+     * <pre>
+     * e.g. "svm", "send"
+     * </pre>
+     *
+     * <code>repeated string permissions = 5 [json_name = "permissions"];</code>
+     * @param index The index of the element to return.
+     * @return The permissions at the given index.
+     */
+    java.lang.String getPermissions(int index);
+    /**
+     * <pre>
+     * e.g. "svm", "send"
+     * </pre>
+     *
+     * <code>repeated string permissions = 5 [json_name = "permissions"];</code>
+     * @param index The index of the value to return.
+     * @return The bytes of the permissions at the given index.
+     */
+    com.google.protobuf.ByteString
+        getPermissionsBytes(int index);
+
+    /**
+     * <pre>
+     * unix seconds; must be within MaxSessionTTL
+     * </pre>
+     *
+     * <code>int64 expiry_unix = 6 [json_name = "expiryUnix"];</code>
+     * @return The expiryUnix.
+     */
+    long getExpiryUnix();
+
+    /**
+     * <code>string label = 7 [json_name = "label"];</code>
+     * @return The label.
+     */
+    java.lang.String getLabel();
+    /**
+     * <code>string label = 7 [json_name = "label"];</code>
+     * @return The bytes for label.
+     */
+    com.google.protobuf.ByteString
+        getLabelBytes();
+  }
+  /**
+   * <pre>
+   * MsgRegisterAuthenticator links a foreign-scheme wallet key (e.g. a Phantom
+   * ed25519 key) to an account so it may act for that account under least-privilege,
+   * time-bounded, revocable terms. Only the account owner (root key) may call it.
+   * </pre>
+   *
+   * Protobuf type {@code qorechain.abstractaccount.v1.MsgRegisterAuthenticator}
+   */
+  public static final class MsgRegisterAuthenticator extends
+      com.google.protobuf.GeneratedMessage implements
+      // @@protoc_insertion_point(message_implements:qorechain.abstractaccount.v1.MsgRegisterAuthenticator)
+      MsgRegisterAuthenticatorOrBuilder {
+  private static final long serialVersionUID = 0L;
+    static {
+      com.google.protobuf.RuntimeVersion.validateProtobufGencodeVersion(
+        com.google.protobuf.RuntimeVersion.RuntimeDomain.PUBLIC,
+        /* major= */ 4,
+        /* minor= */ 35,
+        /* patch= */ 1,
+        /* suffix= */ "",
+        "MsgRegisterAuthenticator");
+    }
+    // Use MsgRegisterAuthenticator.newBuilder() to construct.
+    private MsgRegisterAuthenticator(com.google.protobuf.GeneratedMessage.Builder<?> builder) {
+      super(builder);
+    }
+    private MsgRegisterAuthenticator() {
+      owner_ = "";
+      accountAddress_ = "";
+      scheme_ = "";
+      pubkey_ = com.google.protobuf.ByteString.EMPTY;
+      permissions_ =
+          com.google.protobuf.LazyStringArrayList.emptyList();
+      label_ = "";
+    }
+
+    public static final com.google.protobuf.Descriptors.Descriptor
+        getDescriptor() {
+      return qorechain.abstractaccount.v1.Tx.internal_static_qorechain_abstractaccount_v1_MsgRegisterAuthenticator_descriptor;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Descriptors.Descriptor getDescriptorForType() {
+      return qorechain.abstractaccount.v1.Tx.internal_static_qorechain_abstractaccount_v1_MsgRegisterAuthenticator_descriptor;
+    }
+
+    @java.lang.Override
+    protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+        internalGetFieldAccessorTable() {
+      return qorechain.abstractaccount.v1.Tx.internal_static_qorechain_abstractaccount_v1_MsgRegisterAuthenticator_fieldAccessorTable
+          .ensureFieldAccessorsInitialized(
+              qorechain.abstractaccount.v1.Tx.MsgRegisterAuthenticator.class, qorechain.abstractaccount.v1.Tx.MsgRegisterAuthenticator.Builder.class);
+    }
+
+    public static final int OWNER_FIELD_NUMBER = 1;
+    @SuppressWarnings("serial")
+    private volatile java.lang.Object owner_ = "";
+    /**
+     * <code>string owner = 1 [json_name = "owner", (.cosmos_proto.scalar) = "cosmos.AddressString"];</code>
+     * @return The owner.
+     */
+    @java.lang.Override
+    public java.lang.String getOwner() {
+      java.lang.Object ref = owner_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        owner_ = s;
+        return s;
+      }
+    }
+    /**
+     * <code>string owner = 1 [json_name = "owner", (.cosmos_proto.scalar) = "cosmos.AddressString"];</code>
+     * @return The bytes for owner.
+     */
+    @java.lang.Override
+    public com.google.protobuf.ByteString
+        getOwnerBytes() {
+      java.lang.Object ref = owner_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        owner_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
+    public static final int ACCOUNT_ADDRESS_FIELD_NUMBER = 2;
+    @SuppressWarnings("serial")
+    private volatile java.lang.Object accountAddress_ = "";
+    /**
+     * <code>string account_address = 2 [json_name = "accountAddress"];</code>
+     * @return The accountAddress.
+     */
+    @java.lang.Override
+    public java.lang.String getAccountAddress() {
+      java.lang.Object ref = accountAddress_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        accountAddress_ = s;
+        return s;
+      }
+    }
+    /**
+     * <code>string account_address = 2 [json_name = "accountAddress"];</code>
+     * @return The bytes for accountAddress.
+     */
+    @java.lang.Override
+    public com.google.protobuf.ByteString
+        getAccountAddressBytes() {
+      java.lang.Object ref = accountAddress_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        accountAddress_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
+    public static final int SCHEME_FIELD_NUMBER = 3;
+    @SuppressWarnings("serial")
+    private volatile java.lang.Object scheme_ = "";
+    /**
+     * <pre>
+     * "ed25519" | "secp256k1"
+     * </pre>
+     *
+     * <code>string scheme = 3 [json_name = "scheme"];</code>
+     * @return The scheme.
+     */
+    @java.lang.Override
+    public java.lang.String getScheme() {
+      java.lang.Object ref = scheme_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        scheme_ = s;
+        return s;
+      }
+    }
+    /**
+     * <pre>
+     * "ed25519" | "secp256k1"
+     * </pre>
+     *
+     * <code>string scheme = 3 [json_name = "scheme"];</code>
+     * @return The bytes for scheme.
+     */
+    @java.lang.Override
+    public com.google.protobuf.ByteString
+        getSchemeBytes() {
+      java.lang.Object ref = scheme_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        scheme_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
+    public static final int PUBKEY_FIELD_NUMBER = 4;
+    private com.google.protobuf.ByteString pubkey_ = com.google.protobuf.ByteString.EMPTY;
+    /**
+     * <pre>
+     * raw public key bytes
+     * </pre>
+     *
+     * <code>bytes pubkey = 4 [json_name = "pubkey"];</code>
+     * @return The pubkey.
+     */
+    @java.lang.Override
+    public com.google.protobuf.ByteString getPubkey() {
+      return pubkey_;
+    }
+
+    public static final int PERMISSIONS_FIELD_NUMBER = 5;
+    @SuppressWarnings("serial")
+    private com.google.protobuf.LazyStringArrayList permissions_ =
+        com.google.protobuf.LazyStringArrayList.emptyList();
+    /**
+     * <pre>
+     * e.g. "svm", "send"
+     * </pre>
+     *
+     * <code>repeated string permissions = 5 [json_name = "permissions"];</code>
+     * @return A list containing the permissions.
+     */
+    public com.google.protobuf.ProtocolStringList
+        getPermissionsList() {
+      return permissions_;
+    }
+    /**
+     * <pre>
+     * e.g. "svm", "send"
+     * </pre>
+     *
+     * <code>repeated string permissions = 5 [json_name = "permissions"];</code>
+     * @return The count of permissions.
+     */
+    public int getPermissionsCount() {
+      return permissions_.size();
+    }
+    /**
+     * <pre>
+     * e.g. "svm", "send"
+     * </pre>
+     *
+     * <code>repeated string permissions = 5 [json_name = "permissions"];</code>
+     * @param index The index of the element to return.
+     * @return The permissions at the given index.
+     */
+    public java.lang.String getPermissions(int index) {
+      return permissions_.get(index);
+    }
+    /**
+     * <pre>
+     * e.g. "svm", "send"
+     * </pre>
+     *
+     * <code>repeated string permissions = 5 [json_name = "permissions"];</code>
+     * @param index The index of the value to return.
+     * @return The bytes of the permissions at the given index.
+     */
+    public com.google.protobuf.ByteString
+        getPermissionsBytes(int index) {
+      return permissions_.getByteString(index);
+    }
+
+    public static final int EXPIRY_UNIX_FIELD_NUMBER = 6;
+    private long expiryUnix_ = 0L;
+    /**
+     * <pre>
+     * unix seconds; must be within MaxSessionTTL
+     * </pre>
+     *
+     * <code>int64 expiry_unix = 6 [json_name = "expiryUnix"];</code>
+     * @return The expiryUnix.
+     */
+    @java.lang.Override
+    public long getExpiryUnix() {
+      return expiryUnix_;
+    }
+
+    public static final int LABEL_FIELD_NUMBER = 7;
+    @SuppressWarnings("serial")
+    private volatile java.lang.Object label_ = "";
+    /**
+     * <code>string label = 7 [json_name = "label"];</code>
+     * @return The label.
+     */
+    @java.lang.Override
+    public java.lang.String getLabel() {
+      java.lang.Object ref = label_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        label_ = s;
+        return s;
+      }
+    }
+    /**
+     * <code>string label = 7 [json_name = "label"];</code>
+     * @return The bytes for label.
+     */
+    @java.lang.Override
+    public com.google.protobuf.ByteString
+        getLabelBytes() {
+      java.lang.Object ref = label_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        label_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
+    private byte memoizedIsInitialized = -1;
+    @java.lang.Override
+    public final boolean isInitialized() {
+      byte isInitialized = memoizedIsInitialized;
+      if (isInitialized == 1) return true;
+      if (isInitialized == 0) return false;
+
+      memoizedIsInitialized = 1;
+      return true;
+    }
+
+    @java.lang.Override
+    public void writeTo(com.google.protobuf.CodedOutputStream output)
+                        throws java.io.IOException {
+      if (!com.google.protobuf.GeneratedMessage.isStringEmpty(owner_)) {
+        com.google.protobuf.GeneratedMessage.writeString(output, 1, owner_);
+      }
+      if (!com.google.protobuf.GeneratedMessage.isStringEmpty(accountAddress_)) {
+        com.google.protobuf.GeneratedMessage.writeString(output, 2, accountAddress_);
+      }
+      if (!com.google.protobuf.GeneratedMessage.isStringEmpty(scheme_)) {
+        com.google.protobuf.GeneratedMessage.writeString(output, 3, scheme_);
+      }
+      if (!pubkey_.isEmpty()) {
+        output.writeBytes(4, pubkey_);
+      }
+      for (int i = 0; i < permissions_.size(); i++) {
+        com.google.protobuf.GeneratedMessage.writeString(output, 5, permissions_.getRaw(i));
+      }
+      if (expiryUnix_ != 0L) {
+        output.writeInt64(6, expiryUnix_);
+      }
+      if (!com.google.protobuf.GeneratedMessage.isStringEmpty(label_)) {
+        com.google.protobuf.GeneratedMessage.writeString(output, 7, label_);
+      }
+      getUnknownFields().writeTo(output);
+    }
+    private int computeSerializedSize_0() {
+      int size = 0;
+      if (!com.google.protobuf.GeneratedMessage.isStringEmpty(owner_)) {
+        size += com.google.protobuf.GeneratedMessage.computeStringSize(1, owner_);
+      }
+      if (!com.google.protobuf.GeneratedMessage.isStringEmpty(accountAddress_)) {
+        size += com.google.protobuf.GeneratedMessage.computeStringSize(2, accountAddress_);
+      }
+      if (!com.google.protobuf.GeneratedMessage.isStringEmpty(scheme_)) {
+        size += com.google.protobuf.GeneratedMessage.computeStringSize(3, scheme_);
+      }
+      if (!pubkey_.isEmpty()) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeBytesSize(4, pubkey_);
+      }
+      {
+        int dataSize = 0;
+        for (int i = 0; i < permissions_.size(); i++) {
+          dataSize += computeStringSizeNoTag(permissions_.getRaw(i));
+        }
+        size += dataSize;
+        size += 1 * getPermissionsList().size();
+      }
+      if (expiryUnix_ != 0L) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeInt64Size(6, expiryUnix_);
+      }
+      if (!com.google.protobuf.GeneratedMessage.isStringEmpty(label_)) {
+        size += com.google.protobuf.GeneratedMessage.computeStringSize(7, label_);
+      }
+      return size;
+    }
+    @java.lang.Override
+    public int getSerializedSize() {
+      int size = memoizedSize;
+      if (size != -1) return size;
+
+      size = 0;
+      size += computeSerializedSize_0();
+      size += getUnknownFields().getSerializedSize();
+      memoizedSize = size;
+      return size;
+    }
+
+    @java.lang.Override
+    public boolean equals(final java.lang.Object obj) {
+      if (obj == this) {
+       return true;
+      }
+      if (!(obj instanceof qorechain.abstractaccount.v1.Tx.MsgRegisterAuthenticator)) {
+        return super.equals(obj);
+      }
+      qorechain.abstractaccount.v1.Tx.MsgRegisterAuthenticator other = (qorechain.abstractaccount.v1.Tx.MsgRegisterAuthenticator) obj;
+
+      if (!getOwner()
+          .equals(other.getOwner())) return false;
+      if (!getAccountAddress()
+          .equals(other.getAccountAddress())) return false;
+      if (!getScheme()
+          .equals(other.getScheme())) return false;
+      if (!getPubkey()
+          .equals(other.getPubkey())) return false;
+      if (!getPermissionsList()
+          .equals(other.getPermissionsList())) return false;
+      if (getExpiryUnix()
+          != other.getExpiryUnix()) return false;
+      if (!getLabel()
+          .equals(other.getLabel())) return false;
+      if (!getUnknownFields().equals(other.getUnknownFields())) return false;
+      return true;
+    }
+
+    @java.lang.Override
+    public int hashCode() {
+      if (memoizedHashCode != 0) {
+        return memoizedHashCode;
+      }
+      int hash = 41;
+      hash = (19 * hash) + getDescriptor().hashCode();
+      hash = (37 * hash) + OWNER_FIELD_NUMBER;
+      hash = (53 * hash) + getOwner().hashCode();
+      hash = (37 * hash) + ACCOUNT_ADDRESS_FIELD_NUMBER;
+      hash = (53 * hash) + getAccountAddress().hashCode();
+      hash = (37 * hash) + SCHEME_FIELD_NUMBER;
+      hash = (53 * hash) + getScheme().hashCode();
+      hash = (37 * hash) + PUBKEY_FIELD_NUMBER;
+      hash = (53 * hash) + getPubkey().hashCode();
+      if (getPermissionsCount() > 0) {
+        hash = (37 * hash) + PERMISSIONS_FIELD_NUMBER;
+        hash = (53 * hash) + getPermissionsList().hashCode();
+      }
+      hash = (37 * hash) + EXPIRY_UNIX_FIELD_NUMBER;
+      hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
+          getExpiryUnix());
+      hash = (37 * hash) + LABEL_FIELD_NUMBER;
+      hash = (53 * hash) + getLabel().hashCode();
+      hash = (29 * hash) + getUnknownFields().hashCode();
+      memoizedHashCode = hash;
+      return hash;
+    }
+
+    public static qorechain.abstractaccount.v1.Tx.MsgRegisterAuthenticator parseFrom(
+        java.nio.ByteBuffer data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static qorechain.abstractaccount.v1.Tx.MsgRegisterAuthenticator parseFrom(
+        java.nio.ByteBuffer data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static qorechain.abstractaccount.v1.Tx.MsgRegisterAuthenticator parseFrom(
+        com.google.protobuf.ByteString data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static qorechain.abstractaccount.v1.Tx.MsgRegisterAuthenticator parseFrom(
+        com.google.protobuf.ByteString data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static qorechain.abstractaccount.v1.Tx.MsgRegisterAuthenticator parseFrom(byte[] data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static qorechain.abstractaccount.v1.Tx.MsgRegisterAuthenticator parseFrom(
+        byte[] data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static qorechain.abstractaccount.v1.Tx.MsgRegisterAuthenticator parseFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input);
+    }
+    public static qorechain.abstractaccount.v1.Tx.MsgRegisterAuthenticator parseFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    public static qorechain.abstractaccount.v1.Tx.MsgRegisterAuthenticator parseDelimitedFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseDelimitedWithIOException(PARSER, input);
+    }
+
+    public static qorechain.abstractaccount.v1.Tx.MsgRegisterAuthenticator parseDelimitedFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static qorechain.abstractaccount.v1.Tx.MsgRegisterAuthenticator parseFrom(
+        com.google.protobuf.CodedInputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input);
+    }
+    public static qorechain.abstractaccount.v1.Tx.MsgRegisterAuthenticator parseFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    @java.lang.Override
+    public Builder newBuilderForType() { return newBuilder(); }
+    public static Builder newBuilder() {
+      return DEFAULT_INSTANCE.toBuilder();
+    }
+    public static Builder newBuilder(qorechain.abstractaccount.v1.Tx.MsgRegisterAuthenticator prototype) {
+      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+    }
+    @java.lang.Override
+    public Builder toBuilder() {
+      return this == DEFAULT_INSTANCE
+          ? new Builder() : new Builder().mergeFrom(this);
+    }
+
+    @java.lang.Override
+    protected Builder newBuilderForType(
+        com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+      Builder builder = new Builder(parent);
+      return builder;
+    }
+    /**
+     * <pre>
+     * MsgRegisterAuthenticator links a foreign-scheme wallet key (e.g. a Phantom
+     * ed25519 key) to an account so it may act for that account under least-privilege,
+     * time-bounded, revocable terms. Only the account owner (root key) may call it.
+     * </pre>
+     *
+     * Protobuf type {@code qorechain.abstractaccount.v1.MsgRegisterAuthenticator}
+     */
+    public static final class Builder extends
+        com.google.protobuf.GeneratedMessage.Builder<Builder> implements
+        // @@protoc_insertion_point(builder_implements:qorechain.abstractaccount.v1.MsgRegisterAuthenticator)
+        qorechain.abstractaccount.v1.Tx.MsgRegisterAuthenticatorOrBuilder {
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return qorechain.abstractaccount.v1.Tx.internal_static_qorechain_abstractaccount_v1_MsgRegisterAuthenticator_descriptor;
+      }
+
+      @java.lang.Override
+      protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return qorechain.abstractaccount.v1.Tx.internal_static_qorechain_abstractaccount_v1_MsgRegisterAuthenticator_fieldAccessorTable
+            .ensureFieldAccessorsInitialized(
+                qorechain.abstractaccount.v1.Tx.MsgRegisterAuthenticator.class, qorechain.abstractaccount.v1.Tx.MsgRegisterAuthenticator.Builder.class);
+      }
+
+      // Construct using qorechain.abstractaccount.v1.Tx.MsgRegisterAuthenticator.newBuilder()
+      private Builder() {
+
+      }
+
+      private Builder(
+          com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+        super(parent);
+
+      }
+      @java.lang.Override
+      public Builder clear() {
+        super.clear();
+        bitField0_ = 0;
+        owner_ = "";
+        accountAddress_ = "";
+        scheme_ = "";
+        pubkey_ = com.google.protobuf.ByteString.EMPTY;
+        permissions_ =
+            com.google.protobuf.LazyStringArrayList.emptyList();
+        expiryUnix_ = 0L;
+        label_ = "";
+        return this;
+      }
+
+      @java.lang.Override
+      public com.google.protobuf.Descriptors.Descriptor
+          getDescriptorForType() {
+        return qorechain.abstractaccount.v1.Tx.internal_static_qorechain_abstractaccount_v1_MsgRegisterAuthenticator_descriptor;
+      }
+
+      @java.lang.Override
+      public qorechain.abstractaccount.v1.Tx.MsgRegisterAuthenticator getDefaultInstanceForType() {
+        return qorechain.abstractaccount.v1.Tx.MsgRegisterAuthenticator.getDefaultInstance();
+      }
+
+      @java.lang.Override
+      public qorechain.abstractaccount.v1.Tx.MsgRegisterAuthenticator build() {
+        qorechain.abstractaccount.v1.Tx.MsgRegisterAuthenticator result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(result);
+        }
+        return result;
+      }
+
+      @java.lang.Override
+      public qorechain.abstractaccount.v1.Tx.MsgRegisterAuthenticator buildPartial() {
+        qorechain.abstractaccount.v1.Tx.MsgRegisterAuthenticator result = new qorechain.abstractaccount.v1.Tx.MsgRegisterAuthenticator(this);
+        if (bitField0_ != 0) { buildPartial0(result); }
+        onBuilt();
+        return result;
+      }
+
+      private void buildPartial0(qorechain.abstractaccount.v1.Tx.MsgRegisterAuthenticator result) {
+        int from_bitField0_ = bitField0_;
+        if (((from_bitField0_ & 0x00000001) != 0)) {
+          result.owner_ = owner_;
+        }
+        if (((from_bitField0_ & 0x00000002) != 0)) {
+          result.accountAddress_ = accountAddress_;
+        }
+        if (((from_bitField0_ & 0x00000004) != 0)) {
+          result.scheme_ = scheme_;
+        }
+        if (((from_bitField0_ & 0x00000008) != 0)) {
+          result.pubkey_ = pubkey_;
+        }
+        if (((from_bitField0_ & 0x00000010) != 0)) {
+          permissions_.makeImmutable();
+          result.permissions_ = permissions_;
+        }
+        if (((from_bitField0_ & 0x00000020) != 0)) {
+          result.expiryUnix_ = expiryUnix_;
+        }
+        if (((from_bitField0_ & 0x00000040) != 0)) {
+          result.label_ = label_;
+        }
+      }
+
+      @java.lang.Override
+      public Builder mergeFrom(com.google.protobuf.Message other) {
+        if (other instanceof qorechain.abstractaccount.v1.Tx.MsgRegisterAuthenticator) {
+          return mergeFrom((qorechain.abstractaccount.v1.Tx.MsgRegisterAuthenticator)other);
+        } else {
+          super.mergeFrom(other);
+          return this;
+        }
+      }
+
+      public Builder mergeFrom(qorechain.abstractaccount.v1.Tx.MsgRegisterAuthenticator other) {
+        if (other == qorechain.abstractaccount.v1.Tx.MsgRegisterAuthenticator.getDefaultInstance()) return this;
+        if (!other.getOwner().isEmpty()) {
+          owner_ = other.owner_;
+          bitField0_ |= 0x00000001;
+          onChanged();
+        }
+        if (!other.getAccountAddress().isEmpty()) {
+          accountAddress_ = other.accountAddress_;
+          bitField0_ |= 0x00000002;
+          onChanged();
+        }
+        if (!other.getScheme().isEmpty()) {
+          scheme_ = other.scheme_;
+          bitField0_ |= 0x00000004;
+          onChanged();
+        }
+        if (!other.getPubkey().isEmpty()) {
+          setPubkey(other.getPubkey());
+        }
+        if (!other.permissions_.isEmpty()) {
+          if (permissions_.isEmpty()) {
+            permissions_ = other.permissions_;
+            bitField0_ |= 0x00000010;
+          } else {
+            ensurePermissionsIsMutable();
+            permissions_.addAll(other.permissions_);
+          }
+          onChanged();
+        }
+        if (other.getExpiryUnix() != 0L) {
+          setExpiryUnix(other.getExpiryUnix());
+        }
+        if (!other.getLabel().isEmpty()) {
+          label_ = other.label_;
+          bitField0_ |= 0x00000040;
+          onChanged();
+        }
+        this.mergeUnknownFields(other.getUnknownFields());
+        onChanged();
+        return this;
+      }
+
+      @java.lang.Override
+      public final boolean isInitialized() {
+        return true;
+      }
+
+      @java.lang.Override
+      public Builder mergeFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        if (extensionRegistry == null) {
+          throw new java.lang.NullPointerException();
+        }
+        try {
+          boolean done = false;
+          while (!done) {
+            int tag = input.readTag();
+            switch (tag) {
+              case 0:
+                done = true;
+                break;
+              case 10: {
+                owner_ = input.readStringRequireUtf8();
+                bitField0_ |= 0x00000001;
+                break;
+              } // case 10
+              case 18: {
+                accountAddress_ = input.readStringRequireUtf8();
+                bitField0_ |= 0x00000002;
+                break;
+              } // case 18
+              case 26: {
+                scheme_ = input.readStringRequireUtf8();
+                bitField0_ |= 0x00000004;
+                break;
+              } // case 26
+              case 34: {
+                pubkey_ = input.readBytes();
+                bitField0_ |= 0x00000008;
+                break;
+              } // case 34
+              case 42: {
+                ensurePermissionsIsMutable();
+                permissions_.add(input.readStringRequireUtf8());
+                break;
+              } // case 42
+              case 48: {
+                expiryUnix_ = input.readInt64();
+                bitField0_ |= 0x00000020;
+                break;
+              } // case 48
+              case 58: {
+                label_ = input.readStringRequireUtf8();
+                bitField0_ |= 0x00000040;
+                break;
+              } // case 58
+              default: {
+                if (!super.parseUnknownField(input, extensionRegistry, tag)) {
+                  done = true; // was an endgroup tag
+                }
+                break;
+              } // default:
+            } // switch (tag)
+          } // while (!done)
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          throw e.unwrapIOException();
+        } finally {
+          onChanged();
+        } // finally
+        return this;
+      }
+      private int bitField0_;
+
+      private java.lang.Object owner_ = "";
+      /**
+       * <code>string owner = 1 [json_name = "owner", (.cosmos_proto.scalar) = "cosmos.AddressString"];</code>
+       * @return The owner.
+       */
+      public java.lang.String getOwner() {
+        java.lang.Object ref = owner_;
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          owner_ = s;
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
+      }
+      /**
+       * <code>string owner = 1 [json_name = "owner", (.cosmos_proto.scalar) = "cosmos.AddressString"];</code>
+       * @return The bytes for owner.
+       */
+      public com.google.protobuf.ByteString
+          getOwnerBytes() {
+        java.lang.Object ref = owner_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          owner_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <code>string owner = 1 [json_name = "owner", (.cosmos_proto.scalar) = "cosmos.AddressString"];</code>
+       * @param value The owner to set.
+       * @return This builder for chaining.
+       */
+      public Builder setOwner(
+          java.lang.String value) {
+        if (value == null) { throw new NullPointerException(); }
+        owner_ = value;
+        bitField0_ |= 0x00000001;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>string owner = 1 [json_name = "owner", (.cosmos_proto.scalar) = "cosmos.AddressString"];</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearOwner() {
+        owner_ = getDefaultInstance().getOwner();
+        bitField0_ = (bitField0_ & ~0x00000001);
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>string owner = 1 [json_name = "owner", (.cosmos_proto.scalar) = "cosmos.AddressString"];</code>
+       * @param value The bytes for owner to set.
+       * @return This builder for chaining.
+       */
+      public Builder setOwnerBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) { throw new NullPointerException(); }
+        checkByteStringIsUtf8(value);
+        owner_ = value;
+        bitField0_ |= 0x00000001;
+        onChanged();
+        return this;
+      }
+
+      private java.lang.Object accountAddress_ = "";
+      /**
+       * <code>string account_address = 2 [json_name = "accountAddress"];</code>
+       * @return The accountAddress.
+       */
+      public java.lang.String getAccountAddress() {
+        java.lang.Object ref = accountAddress_;
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          accountAddress_ = s;
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
+      }
+      /**
+       * <code>string account_address = 2 [json_name = "accountAddress"];</code>
+       * @return The bytes for accountAddress.
+       */
+      public com.google.protobuf.ByteString
+          getAccountAddressBytes() {
+        java.lang.Object ref = accountAddress_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          accountAddress_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <code>string account_address = 2 [json_name = "accountAddress"];</code>
+       * @param value The accountAddress to set.
+       * @return This builder for chaining.
+       */
+      public Builder setAccountAddress(
+          java.lang.String value) {
+        if (value == null) { throw new NullPointerException(); }
+        accountAddress_ = value;
+        bitField0_ |= 0x00000002;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>string account_address = 2 [json_name = "accountAddress"];</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearAccountAddress() {
+        accountAddress_ = getDefaultInstance().getAccountAddress();
+        bitField0_ = (bitField0_ & ~0x00000002);
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>string account_address = 2 [json_name = "accountAddress"];</code>
+       * @param value The bytes for accountAddress to set.
+       * @return This builder for chaining.
+       */
+      public Builder setAccountAddressBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) { throw new NullPointerException(); }
+        checkByteStringIsUtf8(value);
+        accountAddress_ = value;
+        bitField0_ |= 0x00000002;
+        onChanged();
+        return this;
+      }
+
+      private java.lang.Object scheme_ = "";
+      /**
+       * <pre>
+       * "ed25519" | "secp256k1"
+       * </pre>
+       *
+       * <code>string scheme = 3 [json_name = "scheme"];</code>
+       * @return The scheme.
+       */
+      public java.lang.String getScheme() {
+        java.lang.Object ref = scheme_;
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          scheme_ = s;
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
+      }
+      /**
+       * <pre>
+       * "ed25519" | "secp256k1"
+       * </pre>
+       *
+       * <code>string scheme = 3 [json_name = "scheme"];</code>
+       * @return The bytes for scheme.
+       */
+      public com.google.protobuf.ByteString
+          getSchemeBytes() {
+        java.lang.Object ref = scheme_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          scheme_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <pre>
+       * "ed25519" | "secp256k1"
+       * </pre>
+       *
+       * <code>string scheme = 3 [json_name = "scheme"];</code>
+       * @param value The scheme to set.
+       * @return This builder for chaining.
+       */
+      public Builder setScheme(
+          java.lang.String value) {
+        if (value == null) { throw new NullPointerException(); }
+        scheme_ = value;
+        bitField0_ |= 0x00000004;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * "ed25519" | "secp256k1"
+       * </pre>
+       *
+       * <code>string scheme = 3 [json_name = "scheme"];</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearScheme() {
+        scheme_ = getDefaultInstance().getScheme();
+        bitField0_ = (bitField0_ & ~0x00000004);
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * "ed25519" | "secp256k1"
+       * </pre>
+       *
+       * <code>string scheme = 3 [json_name = "scheme"];</code>
+       * @param value The bytes for scheme to set.
+       * @return This builder for chaining.
+       */
+      public Builder setSchemeBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) { throw new NullPointerException(); }
+        checkByteStringIsUtf8(value);
+        scheme_ = value;
+        bitField0_ |= 0x00000004;
+        onChanged();
+        return this;
+      }
+
+      private com.google.protobuf.ByteString pubkey_ = com.google.protobuf.ByteString.EMPTY;
+      /**
+       * <pre>
+       * raw public key bytes
+       * </pre>
+       *
+       * <code>bytes pubkey = 4 [json_name = "pubkey"];</code>
+       * @return The pubkey.
+       */
+      @java.lang.Override
+      public com.google.protobuf.ByteString getPubkey() {
+        return pubkey_;
+      }
+      /**
+       * <pre>
+       * raw public key bytes
+       * </pre>
+       *
+       * <code>bytes pubkey = 4 [json_name = "pubkey"];</code>
+       * @param value The pubkey to set.
+       * @return This builder for chaining.
+       */
+      public Builder setPubkey(com.google.protobuf.ByteString value) {
+        if (value == null) { throw new NullPointerException(); }
+        pubkey_ = value;
+        bitField0_ |= 0x00000008;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * raw public key bytes
+       * </pre>
+       *
+       * <code>bytes pubkey = 4 [json_name = "pubkey"];</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearPubkey() {
+        bitField0_ = (bitField0_ & ~0x00000008);
+        pubkey_ = getDefaultInstance().getPubkey();
+        onChanged();
+        return this;
+      }
+
+      private com.google.protobuf.LazyStringArrayList permissions_ =
+          com.google.protobuf.LazyStringArrayList.emptyList();
+      private void ensurePermissionsIsMutable() {
+        if (!permissions_.isModifiable()) {
+          permissions_ = new com.google.protobuf.LazyStringArrayList(permissions_);
+        }
+        bitField0_ |= 0x00000010;
+      }
+      /**
+       * <pre>
+       * e.g. "svm", "send"
+       * </pre>
+       *
+       * <code>repeated string permissions = 5 [json_name = "permissions"];</code>
+       * @return A list containing the permissions.
+       */
+      public com.google.protobuf.ProtocolStringList
+          getPermissionsList() {
+        permissions_.makeImmutable();
+        return permissions_;
+      }
+      /**
+       * <pre>
+       * e.g. "svm", "send"
+       * </pre>
+       *
+       * <code>repeated string permissions = 5 [json_name = "permissions"];</code>
+       * @return The count of permissions.
+       */
+      public int getPermissionsCount() {
+        return permissions_.size();
+      }
+      /**
+       * <pre>
+       * e.g. "svm", "send"
+       * </pre>
+       *
+       * <code>repeated string permissions = 5 [json_name = "permissions"];</code>
+       * @param index The index of the element to return.
+       * @return The permissions at the given index.
+       */
+      public java.lang.String getPermissions(int index) {
+        return permissions_.get(index);
+      }
+      /**
+       * <pre>
+       * e.g. "svm", "send"
+       * </pre>
+       *
+       * <code>repeated string permissions = 5 [json_name = "permissions"];</code>
+       * @param index The index of the value to return.
+       * @return The bytes of the permissions at the given index.
+       */
+      public com.google.protobuf.ByteString
+          getPermissionsBytes(int index) {
+        return permissions_.getByteString(index);
+      }
+      /**
+       * <pre>
+       * e.g. "svm", "send"
+       * </pre>
+       *
+       * <code>repeated string permissions = 5 [json_name = "permissions"];</code>
+       * @param index The index to set the value at.
+       * @param value The permissions to set.
+       * @return This builder for chaining.
+       */
+      public Builder setPermissions(
+          int index, java.lang.String value) {
+        if (value == null) { throw new NullPointerException(); }
+        ensurePermissionsIsMutable();
+        permissions_.set(index, value);
+        bitField0_ |= 0x00000010;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * e.g. "svm", "send"
+       * </pre>
+       *
+       * <code>repeated string permissions = 5 [json_name = "permissions"];</code>
+       * @param value The permissions to add.
+       * @return This builder for chaining.
+       */
+      public Builder addPermissions(
+          java.lang.String value) {
+        if (value == null) { throw new NullPointerException(); }
+        ensurePermissionsIsMutable();
+        permissions_.add(value);
+        bitField0_ |= 0x00000010;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * e.g. "svm", "send"
+       * </pre>
+       *
+       * <code>repeated string permissions = 5 [json_name = "permissions"];</code>
+       * @param values The permissions to add.
+       * @return This builder for chaining.
+       */
+      public Builder addAllPermissions(
+          java.lang.Iterable<java.lang.String> values) {
+        ensurePermissionsIsMutable();
+        com.google.protobuf.AbstractMessageLite.Builder.addAll(
+            values, permissions_);
+        bitField0_ |= 0x00000010;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * e.g. "svm", "send"
+       * </pre>
+       *
+       * <code>repeated string permissions = 5 [json_name = "permissions"];</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearPermissions() {
+        permissions_ =
+          com.google.protobuf.LazyStringArrayList.emptyList();
+        bitField0_ = (bitField0_ & ~0x00000010);;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * e.g. "svm", "send"
+       * </pre>
+       *
+       * <code>repeated string permissions = 5 [json_name = "permissions"];</code>
+       * @param value The bytes of the permissions to add.
+       * @return This builder for chaining.
+       */
+      public Builder addPermissionsBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) { throw new NullPointerException(); }
+        checkByteStringIsUtf8(value);
+        ensurePermissionsIsMutable();
+        permissions_.add(value);
+        bitField0_ |= 0x00000010;
+        onChanged();
+        return this;
+      }
+
+      private long expiryUnix_ ;
+      /**
+       * <pre>
+       * unix seconds; must be within MaxSessionTTL
+       * </pre>
+       *
+       * <code>int64 expiry_unix = 6 [json_name = "expiryUnix"];</code>
+       * @return The expiryUnix.
+       */
+      @java.lang.Override
+      public long getExpiryUnix() {
+        return expiryUnix_;
+      }
+      /**
+       * <pre>
+       * unix seconds; must be within MaxSessionTTL
+       * </pre>
+       *
+       * <code>int64 expiry_unix = 6 [json_name = "expiryUnix"];</code>
+       * @param value The expiryUnix to set.
+       * @return This builder for chaining.
+       */
+      public Builder setExpiryUnix(long value) {
+
+        expiryUnix_ = value;
+        bitField0_ |= 0x00000020;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * unix seconds; must be within MaxSessionTTL
+       * </pre>
+       *
+       * <code>int64 expiry_unix = 6 [json_name = "expiryUnix"];</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearExpiryUnix() {
+        bitField0_ = (bitField0_ & ~0x00000020);
+        expiryUnix_ = 0L;
+        onChanged();
+        return this;
+      }
+
+      private java.lang.Object label_ = "";
+      /**
+       * <code>string label = 7 [json_name = "label"];</code>
+       * @return The label.
+       */
+      public java.lang.String getLabel() {
+        java.lang.Object ref = label_;
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          label_ = s;
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
+      }
+      /**
+       * <code>string label = 7 [json_name = "label"];</code>
+       * @return The bytes for label.
+       */
+      public com.google.protobuf.ByteString
+          getLabelBytes() {
+        java.lang.Object ref = label_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          label_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <code>string label = 7 [json_name = "label"];</code>
+       * @param value The label to set.
+       * @return This builder for chaining.
+       */
+      public Builder setLabel(
+          java.lang.String value) {
+        if (value == null) { throw new NullPointerException(); }
+        label_ = value;
+        bitField0_ |= 0x00000040;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>string label = 7 [json_name = "label"];</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearLabel() {
+        label_ = getDefaultInstance().getLabel();
+        bitField0_ = (bitField0_ & ~0x00000040);
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>string label = 7 [json_name = "label"];</code>
+       * @param value The bytes for label to set.
+       * @return This builder for chaining.
+       */
+      public Builder setLabelBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) { throw new NullPointerException(); }
+        checkByteStringIsUtf8(value);
+        label_ = value;
+        bitField0_ |= 0x00000040;
+        onChanged();
+        return this;
+      }
+
+      // @@protoc_insertion_point(builder_scope:qorechain.abstractaccount.v1.MsgRegisterAuthenticator)
+    }
+
+    // @@protoc_insertion_point(class_scope:qorechain.abstractaccount.v1.MsgRegisterAuthenticator)
+    private static final qorechain.abstractaccount.v1.Tx.MsgRegisterAuthenticator DEFAULT_INSTANCE;
+    static {
+      DEFAULT_INSTANCE = new qorechain.abstractaccount.v1.Tx.MsgRegisterAuthenticator();
+    }
+
+    public static qorechain.abstractaccount.v1.Tx.MsgRegisterAuthenticator getDefaultInstance() {
+      return DEFAULT_INSTANCE;
+    }
+
+    private static final com.google.protobuf.Parser<MsgRegisterAuthenticator>
+        PARSER = new com.google.protobuf.AbstractParser<MsgRegisterAuthenticator>() {
+      @java.lang.Override
+      public MsgRegisterAuthenticator parsePartialFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        Builder builder = newBuilder();
+        try {
+          builder.mergeFrom(input, extensionRegistry);
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          throw e.setUnfinishedMessage(builder.buildPartial());
+        } catch (com.google.protobuf.UninitializedMessageException e) {
+          throw e.asInvalidProtocolBufferException().setUnfinishedMessage(builder.buildPartial());
+        } catch (java.io.IOException e) {
+          throw new com.google.protobuf.InvalidProtocolBufferException(e)
+              .setUnfinishedMessage(builder.buildPartial());
+        }
+        return builder.buildPartial();
+      }
+    };
+
+    public static com.google.protobuf.Parser<MsgRegisterAuthenticator> parser() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Parser<MsgRegisterAuthenticator> getParserForType() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public qorechain.abstractaccount.v1.Tx.MsgRegisterAuthenticator getDefaultInstanceForType() {
+      return DEFAULT_INSTANCE;
+    }
+
+  }
+
+  public interface MsgRegisterAuthenticatorResponseOrBuilder extends
+      // @@protoc_insertion_point(interface_extends:qorechain.abstractaccount.v1.MsgRegisterAuthenticatorResponse)
+      com.google.protobuf.MessageOrBuilder {
+  }
+  /**
+   * Protobuf type {@code qorechain.abstractaccount.v1.MsgRegisterAuthenticatorResponse}
+   */
+  public static final class MsgRegisterAuthenticatorResponse extends
+      com.google.protobuf.GeneratedMessage implements
+      // @@protoc_insertion_point(message_implements:qorechain.abstractaccount.v1.MsgRegisterAuthenticatorResponse)
+      MsgRegisterAuthenticatorResponseOrBuilder {
+  private static final long serialVersionUID = 0L;
+    static {
+      com.google.protobuf.RuntimeVersion.validateProtobufGencodeVersion(
+        com.google.protobuf.RuntimeVersion.RuntimeDomain.PUBLIC,
+        /* major= */ 4,
+        /* minor= */ 35,
+        /* patch= */ 1,
+        /* suffix= */ "",
+        "MsgRegisterAuthenticatorResponse");
+    }
+    // Use MsgRegisterAuthenticatorResponse.newBuilder() to construct.
+    private MsgRegisterAuthenticatorResponse(com.google.protobuf.GeneratedMessage.Builder<?> builder) {
+      super(builder);
+    }
+    private MsgRegisterAuthenticatorResponse() {
+    }
+
+    public static final com.google.protobuf.Descriptors.Descriptor
+        getDescriptor() {
+      return qorechain.abstractaccount.v1.Tx.internal_static_qorechain_abstractaccount_v1_MsgRegisterAuthenticatorResponse_descriptor;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Descriptors.Descriptor getDescriptorForType() {
+      return qorechain.abstractaccount.v1.Tx.internal_static_qorechain_abstractaccount_v1_MsgRegisterAuthenticatorResponse_descriptor;
+    }
+
+    @java.lang.Override
+    protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+        internalGetFieldAccessorTable() {
+      return qorechain.abstractaccount.v1.Tx.internal_static_qorechain_abstractaccount_v1_MsgRegisterAuthenticatorResponse_fieldAccessorTable
+          .ensureFieldAccessorsInitialized(
+              qorechain.abstractaccount.v1.Tx.MsgRegisterAuthenticatorResponse.class, qorechain.abstractaccount.v1.Tx.MsgRegisterAuthenticatorResponse.Builder.class);
+    }
+
+    private byte memoizedIsInitialized = -1;
+    @java.lang.Override
+    public final boolean isInitialized() {
+      byte isInitialized = memoizedIsInitialized;
+      if (isInitialized == 1) return true;
+      if (isInitialized == 0) return false;
+
+      memoizedIsInitialized = 1;
+      return true;
+    }
+
+    @java.lang.Override
+    public void writeTo(com.google.protobuf.CodedOutputStream output)
+                        throws java.io.IOException {
+      getUnknownFields().writeTo(output);
+    }
+    @java.lang.Override
+    public int getSerializedSize() {
+      int size = memoizedSize;
+      if (size != -1) return size;
+
+      size = 0;
+      size += getUnknownFields().getSerializedSize();
+      memoizedSize = size;
+      return size;
+    }
+
+    @java.lang.Override
+    public boolean equals(final java.lang.Object obj) {
+      if (obj == this) {
+       return true;
+      }
+      if (!(obj instanceof qorechain.abstractaccount.v1.Tx.MsgRegisterAuthenticatorResponse)) {
+        return super.equals(obj);
+      }
+      qorechain.abstractaccount.v1.Tx.MsgRegisterAuthenticatorResponse other = (qorechain.abstractaccount.v1.Tx.MsgRegisterAuthenticatorResponse) obj;
+
+      if (!getUnknownFields().equals(other.getUnknownFields())) return false;
+      return true;
+    }
+
+    @java.lang.Override
+    public int hashCode() {
+      if (memoizedHashCode != 0) {
+        return memoizedHashCode;
+      }
+      int hash = 41;
+      hash = (19 * hash) + getDescriptor().hashCode();
+      hash = (29 * hash) + getUnknownFields().hashCode();
+      memoizedHashCode = hash;
+      return hash;
+    }
+
+    public static qorechain.abstractaccount.v1.Tx.MsgRegisterAuthenticatorResponse parseFrom(
+        java.nio.ByteBuffer data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static qorechain.abstractaccount.v1.Tx.MsgRegisterAuthenticatorResponse parseFrom(
+        java.nio.ByteBuffer data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static qorechain.abstractaccount.v1.Tx.MsgRegisterAuthenticatorResponse parseFrom(
+        com.google.protobuf.ByteString data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static qorechain.abstractaccount.v1.Tx.MsgRegisterAuthenticatorResponse parseFrom(
+        com.google.protobuf.ByteString data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static qorechain.abstractaccount.v1.Tx.MsgRegisterAuthenticatorResponse parseFrom(byte[] data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static qorechain.abstractaccount.v1.Tx.MsgRegisterAuthenticatorResponse parseFrom(
+        byte[] data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static qorechain.abstractaccount.v1.Tx.MsgRegisterAuthenticatorResponse parseFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input);
+    }
+    public static qorechain.abstractaccount.v1.Tx.MsgRegisterAuthenticatorResponse parseFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    public static qorechain.abstractaccount.v1.Tx.MsgRegisterAuthenticatorResponse parseDelimitedFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseDelimitedWithIOException(PARSER, input);
+    }
+
+    public static qorechain.abstractaccount.v1.Tx.MsgRegisterAuthenticatorResponse parseDelimitedFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static qorechain.abstractaccount.v1.Tx.MsgRegisterAuthenticatorResponse parseFrom(
+        com.google.protobuf.CodedInputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input);
+    }
+    public static qorechain.abstractaccount.v1.Tx.MsgRegisterAuthenticatorResponse parseFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    @java.lang.Override
+    public Builder newBuilderForType() { return newBuilder(); }
+    public static Builder newBuilder() {
+      return DEFAULT_INSTANCE.toBuilder();
+    }
+    public static Builder newBuilder(qorechain.abstractaccount.v1.Tx.MsgRegisterAuthenticatorResponse prototype) {
+      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+    }
+    @java.lang.Override
+    public Builder toBuilder() {
+      return this == DEFAULT_INSTANCE
+          ? new Builder() : new Builder().mergeFrom(this);
+    }
+
+    @java.lang.Override
+    protected Builder newBuilderForType(
+        com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+      Builder builder = new Builder(parent);
+      return builder;
+    }
+    /**
+     * Protobuf type {@code qorechain.abstractaccount.v1.MsgRegisterAuthenticatorResponse}
+     */
+    public static final class Builder extends
+        com.google.protobuf.GeneratedMessage.Builder<Builder> implements
+        // @@protoc_insertion_point(builder_implements:qorechain.abstractaccount.v1.MsgRegisterAuthenticatorResponse)
+        qorechain.abstractaccount.v1.Tx.MsgRegisterAuthenticatorResponseOrBuilder {
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return qorechain.abstractaccount.v1.Tx.internal_static_qorechain_abstractaccount_v1_MsgRegisterAuthenticatorResponse_descriptor;
+      }
+
+      @java.lang.Override
+      protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return qorechain.abstractaccount.v1.Tx.internal_static_qorechain_abstractaccount_v1_MsgRegisterAuthenticatorResponse_fieldAccessorTable
+            .ensureFieldAccessorsInitialized(
+                qorechain.abstractaccount.v1.Tx.MsgRegisterAuthenticatorResponse.class, qorechain.abstractaccount.v1.Tx.MsgRegisterAuthenticatorResponse.Builder.class);
+      }
+
+      // Construct using qorechain.abstractaccount.v1.Tx.MsgRegisterAuthenticatorResponse.newBuilder()
+      private Builder() {
+
+      }
+
+      private Builder(
+          com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+        super(parent);
+
+      }
+      @java.lang.Override
+      public Builder clear() {
+        super.clear();
+        return this;
+      }
+
+      @java.lang.Override
+      public com.google.protobuf.Descriptors.Descriptor
+          getDescriptorForType() {
+        return qorechain.abstractaccount.v1.Tx.internal_static_qorechain_abstractaccount_v1_MsgRegisterAuthenticatorResponse_descriptor;
+      }
+
+      @java.lang.Override
+      public qorechain.abstractaccount.v1.Tx.MsgRegisterAuthenticatorResponse getDefaultInstanceForType() {
+        return qorechain.abstractaccount.v1.Tx.MsgRegisterAuthenticatorResponse.getDefaultInstance();
+      }
+
+      @java.lang.Override
+      public qorechain.abstractaccount.v1.Tx.MsgRegisterAuthenticatorResponse build() {
+        qorechain.abstractaccount.v1.Tx.MsgRegisterAuthenticatorResponse result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(result);
+        }
+        return result;
+      }
+
+      @java.lang.Override
+      public qorechain.abstractaccount.v1.Tx.MsgRegisterAuthenticatorResponse buildPartial() {
+        qorechain.abstractaccount.v1.Tx.MsgRegisterAuthenticatorResponse result = new qorechain.abstractaccount.v1.Tx.MsgRegisterAuthenticatorResponse(this);
+        onBuilt();
+        return result;
+      }
+
+      @java.lang.Override
+      public Builder mergeFrom(com.google.protobuf.Message other) {
+        if (other instanceof qorechain.abstractaccount.v1.Tx.MsgRegisterAuthenticatorResponse) {
+          return mergeFrom((qorechain.abstractaccount.v1.Tx.MsgRegisterAuthenticatorResponse)other);
+        } else {
+          super.mergeFrom(other);
+          return this;
+        }
+      }
+
+      public Builder mergeFrom(qorechain.abstractaccount.v1.Tx.MsgRegisterAuthenticatorResponse other) {
+        if (other == qorechain.abstractaccount.v1.Tx.MsgRegisterAuthenticatorResponse.getDefaultInstance()) return this;
+        this.mergeUnknownFields(other.getUnknownFields());
+        onChanged();
+        return this;
+      }
+
+      @java.lang.Override
+      public final boolean isInitialized() {
+        return true;
+      }
+
+      @java.lang.Override
+      public Builder mergeFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        if (extensionRegistry == null) {
+          throw new java.lang.NullPointerException();
+        }
+        try {
+          boolean done = false;
+          while (!done) {
+            int tag = input.readTag();
+            switch (tag) {
+              case 0:
+                done = true;
+                break;
+              default: {
+                if (!super.parseUnknownField(input, extensionRegistry, tag)) {
+                  done = true; // was an endgroup tag
+                }
+                break;
+              } // default:
+            } // switch (tag)
+          } // while (!done)
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          throw e.unwrapIOException();
+        } finally {
+          onChanged();
+        } // finally
+        return this;
+      }
+
+      // @@protoc_insertion_point(builder_scope:qorechain.abstractaccount.v1.MsgRegisterAuthenticatorResponse)
+    }
+
+    // @@protoc_insertion_point(class_scope:qorechain.abstractaccount.v1.MsgRegisterAuthenticatorResponse)
+    private static final qorechain.abstractaccount.v1.Tx.MsgRegisterAuthenticatorResponse DEFAULT_INSTANCE;
+    static {
+      DEFAULT_INSTANCE = new qorechain.abstractaccount.v1.Tx.MsgRegisterAuthenticatorResponse();
+    }
+
+    public static qorechain.abstractaccount.v1.Tx.MsgRegisterAuthenticatorResponse getDefaultInstance() {
+      return DEFAULT_INSTANCE;
+    }
+
+    private static final com.google.protobuf.Parser<MsgRegisterAuthenticatorResponse>
+        PARSER = new com.google.protobuf.AbstractParser<MsgRegisterAuthenticatorResponse>() {
+      @java.lang.Override
+      public MsgRegisterAuthenticatorResponse parsePartialFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        Builder builder = newBuilder();
+        try {
+          builder.mergeFrom(input, extensionRegistry);
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          throw e.setUnfinishedMessage(builder.buildPartial());
+        } catch (com.google.protobuf.UninitializedMessageException e) {
+          throw e.asInvalidProtocolBufferException().setUnfinishedMessage(builder.buildPartial());
+        } catch (java.io.IOException e) {
+          throw new com.google.protobuf.InvalidProtocolBufferException(e)
+              .setUnfinishedMessage(builder.buildPartial());
+        }
+        return builder.buildPartial();
+      }
+    };
+
+    public static com.google.protobuf.Parser<MsgRegisterAuthenticatorResponse> parser() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Parser<MsgRegisterAuthenticatorResponse> getParserForType() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public qorechain.abstractaccount.v1.Tx.MsgRegisterAuthenticatorResponse getDefaultInstanceForType() {
+      return DEFAULT_INSTANCE;
+    }
+
+  }
+
+  public interface MsgRevokeAuthenticatorOrBuilder extends
+      // @@protoc_insertion_point(interface_extends:qorechain.abstractaccount.v1.MsgRevokeAuthenticator)
+      com.google.protobuf.MessageOrBuilder {
+
+    /**
+     * <code>string owner = 1 [json_name = "owner", (.cosmos_proto.scalar) = "cosmos.AddressString"];</code>
+     * @return The owner.
+     */
+    java.lang.String getOwner();
+    /**
+     * <code>string owner = 1 [json_name = "owner", (.cosmos_proto.scalar) = "cosmos.AddressString"];</code>
+     * @return The bytes for owner.
+     */
+    com.google.protobuf.ByteString
+        getOwnerBytes();
+
+    /**
+     * <code>string account_address = 2 [json_name = "accountAddress"];</code>
+     * @return The accountAddress.
+     */
+    java.lang.String getAccountAddress();
+    /**
+     * <code>string account_address = 2 [json_name = "accountAddress"];</code>
+     * @return The bytes for accountAddress.
+     */
+    com.google.protobuf.ByteString
+        getAccountAddressBytes();
+
+    /**
+     * <code>string scheme = 3 [json_name = "scheme"];</code>
+     * @return The scheme.
+     */
+    java.lang.String getScheme();
+    /**
+     * <code>string scheme = 3 [json_name = "scheme"];</code>
+     * @return The bytes for scheme.
+     */
+    com.google.protobuf.ByteString
+        getSchemeBytes();
+
+    /**
+     * <code>bytes pubkey = 4 [json_name = "pubkey"];</code>
+     * @return The pubkey.
+     */
+    com.google.protobuf.ByteString getPubkey();
+  }
+  /**
+   * <pre>
+   * MsgRevokeAuthenticator instantly disables a previously linked wallet key.
+   * Only the account owner (root key) may call it.
+   * </pre>
+   *
+   * Protobuf type {@code qorechain.abstractaccount.v1.MsgRevokeAuthenticator}
+   */
+  public static final class MsgRevokeAuthenticator extends
+      com.google.protobuf.GeneratedMessage implements
+      // @@protoc_insertion_point(message_implements:qorechain.abstractaccount.v1.MsgRevokeAuthenticator)
+      MsgRevokeAuthenticatorOrBuilder {
+  private static final long serialVersionUID = 0L;
+    static {
+      com.google.protobuf.RuntimeVersion.validateProtobufGencodeVersion(
+        com.google.protobuf.RuntimeVersion.RuntimeDomain.PUBLIC,
+        /* major= */ 4,
+        /* minor= */ 35,
+        /* patch= */ 1,
+        /* suffix= */ "",
+        "MsgRevokeAuthenticator");
+    }
+    // Use MsgRevokeAuthenticator.newBuilder() to construct.
+    private MsgRevokeAuthenticator(com.google.protobuf.GeneratedMessage.Builder<?> builder) {
+      super(builder);
+    }
+    private MsgRevokeAuthenticator() {
+      owner_ = "";
+      accountAddress_ = "";
+      scheme_ = "";
+      pubkey_ = com.google.protobuf.ByteString.EMPTY;
+    }
+
+    public static final com.google.protobuf.Descriptors.Descriptor
+        getDescriptor() {
+      return qorechain.abstractaccount.v1.Tx.internal_static_qorechain_abstractaccount_v1_MsgRevokeAuthenticator_descriptor;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Descriptors.Descriptor getDescriptorForType() {
+      return qorechain.abstractaccount.v1.Tx.internal_static_qorechain_abstractaccount_v1_MsgRevokeAuthenticator_descriptor;
+    }
+
+    @java.lang.Override
+    protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+        internalGetFieldAccessorTable() {
+      return qorechain.abstractaccount.v1.Tx.internal_static_qorechain_abstractaccount_v1_MsgRevokeAuthenticator_fieldAccessorTable
+          .ensureFieldAccessorsInitialized(
+              qorechain.abstractaccount.v1.Tx.MsgRevokeAuthenticator.class, qorechain.abstractaccount.v1.Tx.MsgRevokeAuthenticator.Builder.class);
+    }
+
+    public static final int OWNER_FIELD_NUMBER = 1;
+    @SuppressWarnings("serial")
+    private volatile java.lang.Object owner_ = "";
+    /**
+     * <code>string owner = 1 [json_name = "owner", (.cosmos_proto.scalar) = "cosmos.AddressString"];</code>
+     * @return The owner.
+     */
+    @java.lang.Override
+    public java.lang.String getOwner() {
+      java.lang.Object ref = owner_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        owner_ = s;
+        return s;
+      }
+    }
+    /**
+     * <code>string owner = 1 [json_name = "owner", (.cosmos_proto.scalar) = "cosmos.AddressString"];</code>
+     * @return The bytes for owner.
+     */
+    @java.lang.Override
+    public com.google.protobuf.ByteString
+        getOwnerBytes() {
+      java.lang.Object ref = owner_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        owner_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
+    public static final int ACCOUNT_ADDRESS_FIELD_NUMBER = 2;
+    @SuppressWarnings("serial")
+    private volatile java.lang.Object accountAddress_ = "";
+    /**
+     * <code>string account_address = 2 [json_name = "accountAddress"];</code>
+     * @return The accountAddress.
+     */
+    @java.lang.Override
+    public java.lang.String getAccountAddress() {
+      java.lang.Object ref = accountAddress_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        accountAddress_ = s;
+        return s;
+      }
+    }
+    /**
+     * <code>string account_address = 2 [json_name = "accountAddress"];</code>
+     * @return The bytes for accountAddress.
+     */
+    @java.lang.Override
+    public com.google.protobuf.ByteString
+        getAccountAddressBytes() {
+      java.lang.Object ref = accountAddress_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        accountAddress_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
+    public static final int SCHEME_FIELD_NUMBER = 3;
+    @SuppressWarnings("serial")
+    private volatile java.lang.Object scheme_ = "";
+    /**
+     * <code>string scheme = 3 [json_name = "scheme"];</code>
+     * @return The scheme.
+     */
+    @java.lang.Override
+    public java.lang.String getScheme() {
+      java.lang.Object ref = scheme_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        scheme_ = s;
+        return s;
+      }
+    }
+    /**
+     * <code>string scheme = 3 [json_name = "scheme"];</code>
+     * @return The bytes for scheme.
+     */
+    @java.lang.Override
+    public com.google.protobuf.ByteString
+        getSchemeBytes() {
+      java.lang.Object ref = scheme_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        scheme_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
+    public static final int PUBKEY_FIELD_NUMBER = 4;
+    private com.google.protobuf.ByteString pubkey_ = com.google.protobuf.ByteString.EMPTY;
+    /**
+     * <code>bytes pubkey = 4 [json_name = "pubkey"];</code>
+     * @return The pubkey.
+     */
+    @java.lang.Override
+    public com.google.protobuf.ByteString getPubkey() {
+      return pubkey_;
+    }
+
+    private byte memoizedIsInitialized = -1;
+    @java.lang.Override
+    public final boolean isInitialized() {
+      byte isInitialized = memoizedIsInitialized;
+      if (isInitialized == 1) return true;
+      if (isInitialized == 0) return false;
+
+      memoizedIsInitialized = 1;
+      return true;
+    }
+
+    @java.lang.Override
+    public void writeTo(com.google.protobuf.CodedOutputStream output)
+                        throws java.io.IOException {
+      if (!com.google.protobuf.GeneratedMessage.isStringEmpty(owner_)) {
+        com.google.protobuf.GeneratedMessage.writeString(output, 1, owner_);
+      }
+      if (!com.google.protobuf.GeneratedMessage.isStringEmpty(accountAddress_)) {
+        com.google.protobuf.GeneratedMessage.writeString(output, 2, accountAddress_);
+      }
+      if (!com.google.protobuf.GeneratedMessage.isStringEmpty(scheme_)) {
+        com.google.protobuf.GeneratedMessage.writeString(output, 3, scheme_);
+      }
+      if (!pubkey_.isEmpty()) {
+        output.writeBytes(4, pubkey_);
+      }
+      getUnknownFields().writeTo(output);
+    }
+    private int computeSerializedSize_0() {
+      int size = 0;
+      if (!com.google.protobuf.GeneratedMessage.isStringEmpty(owner_)) {
+        size += com.google.protobuf.GeneratedMessage.computeStringSize(1, owner_);
+      }
+      if (!com.google.protobuf.GeneratedMessage.isStringEmpty(accountAddress_)) {
+        size += com.google.protobuf.GeneratedMessage.computeStringSize(2, accountAddress_);
+      }
+      if (!com.google.protobuf.GeneratedMessage.isStringEmpty(scheme_)) {
+        size += com.google.protobuf.GeneratedMessage.computeStringSize(3, scheme_);
+      }
+      if (!pubkey_.isEmpty()) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeBytesSize(4, pubkey_);
+      }
+      return size;
+    }
+    @java.lang.Override
+    public int getSerializedSize() {
+      int size = memoizedSize;
+      if (size != -1) return size;
+
+      size = 0;
+      size += computeSerializedSize_0();
+      size += getUnknownFields().getSerializedSize();
+      memoizedSize = size;
+      return size;
+    }
+
+    @java.lang.Override
+    public boolean equals(final java.lang.Object obj) {
+      if (obj == this) {
+       return true;
+      }
+      if (!(obj instanceof qorechain.abstractaccount.v1.Tx.MsgRevokeAuthenticator)) {
+        return super.equals(obj);
+      }
+      qorechain.abstractaccount.v1.Tx.MsgRevokeAuthenticator other = (qorechain.abstractaccount.v1.Tx.MsgRevokeAuthenticator) obj;
+
+      if (!getOwner()
+          .equals(other.getOwner())) return false;
+      if (!getAccountAddress()
+          .equals(other.getAccountAddress())) return false;
+      if (!getScheme()
+          .equals(other.getScheme())) return false;
+      if (!getPubkey()
+          .equals(other.getPubkey())) return false;
+      if (!getUnknownFields().equals(other.getUnknownFields())) return false;
+      return true;
+    }
+
+    @java.lang.Override
+    public int hashCode() {
+      if (memoizedHashCode != 0) {
+        return memoizedHashCode;
+      }
+      int hash = 41;
+      hash = (19 * hash) + getDescriptor().hashCode();
+      hash = (37 * hash) + OWNER_FIELD_NUMBER;
+      hash = (53 * hash) + getOwner().hashCode();
+      hash = (37 * hash) + ACCOUNT_ADDRESS_FIELD_NUMBER;
+      hash = (53 * hash) + getAccountAddress().hashCode();
+      hash = (37 * hash) + SCHEME_FIELD_NUMBER;
+      hash = (53 * hash) + getScheme().hashCode();
+      hash = (37 * hash) + PUBKEY_FIELD_NUMBER;
+      hash = (53 * hash) + getPubkey().hashCode();
+      hash = (29 * hash) + getUnknownFields().hashCode();
+      memoizedHashCode = hash;
+      return hash;
+    }
+
+    public static qorechain.abstractaccount.v1.Tx.MsgRevokeAuthenticator parseFrom(
+        java.nio.ByteBuffer data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static qorechain.abstractaccount.v1.Tx.MsgRevokeAuthenticator parseFrom(
+        java.nio.ByteBuffer data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static qorechain.abstractaccount.v1.Tx.MsgRevokeAuthenticator parseFrom(
+        com.google.protobuf.ByteString data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static qorechain.abstractaccount.v1.Tx.MsgRevokeAuthenticator parseFrom(
+        com.google.protobuf.ByteString data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static qorechain.abstractaccount.v1.Tx.MsgRevokeAuthenticator parseFrom(byte[] data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static qorechain.abstractaccount.v1.Tx.MsgRevokeAuthenticator parseFrom(
+        byte[] data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static qorechain.abstractaccount.v1.Tx.MsgRevokeAuthenticator parseFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input);
+    }
+    public static qorechain.abstractaccount.v1.Tx.MsgRevokeAuthenticator parseFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    public static qorechain.abstractaccount.v1.Tx.MsgRevokeAuthenticator parseDelimitedFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseDelimitedWithIOException(PARSER, input);
+    }
+
+    public static qorechain.abstractaccount.v1.Tx.MsgRevokeAuthenticator parseDelimitedFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static qorechain.abstractaccount.v1.Tx.MsgRevokeAuthenticator parseFrom(
+        com.google.protobuf.CodedInputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input);
+    }
+    public static qorechain.abstractaccount.v1.Tx.MsgRevokeAuthenticator parseFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    @java.lang.Override
+    public Builder newBuilderForType() { return newBuilder(); }
+    public static Builder newBuilder() {
+      return DEFAULT_INSTANCE.toBuilder();
+    }
+    public static Builder newBuilder(qorechain.abstractaccount.v1.Tx.MsgRevokeAuthenticator prototype) {
+      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+    }
+    @java.lang.Override
+    public Builder toBuilder() {
+      return this == DEFAULT_INSTANCE
+          ? new Builder() : new Builder().mergeFrom(this);
+    }
+
+    @java.lang.Override
+    protected Builder newBuilderForType(
+        com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+      Builder builder = new Builder(parent);
+      return builder;
+    }
+    /**
+     * <pre>
+     * MsgRevokeAuthenticator instantly disables a previously linked wallet key.
+     * Only the account owner (root key) may call it.
+     * </pre>
+     *
+     * Protobuf type {@code qorechain.abstractaccount.v1.MsgRevokeAuthenticator}
+     */
+    public static final class Builder extends
+        com.google.protobuf.GeneratedMessage.Builder<Builder> implements
+        // @@protoc_insertion_point(builder_implements:qorechain.abstractaccount.v1.MsgRevokeAuthenticator)
+        qorechain.abstractaccount.v1.Tx.MsgRevokeAuthenticatorOrBuilder {
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return qorechain.abstractaccount.v1.Tx.internal_static_qorechain_abstractaccount_v1_MsgRevokeAuthenticator_descriptor;
+      }
+
+      @java.lang.Override
+      protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return qorechain.abstractaccount.v1.Tx.internal_static_qorechain_abstractaccount_v1_MsgRevokeAuthenticator_fieldAccessorTable
+            .ensureFieldAccessorsInitialized(
+                qorechain.abstractaccount.v1.Tx.MsgRevokeAuthenticator.class, qorechain.abstractaccount.v1.Tx.MsgRevokeAuthenticator.Builder.class);
+      }
+
+      // Construct using qorechain.abstractaccount.v1.Tx.MsgRevokeAuthenticator.newBuilder()
+      private Builder() {
+
+      }
+
+      private Builder(
+          com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+        super(parent);
+
+      }
+      @java.lang.Override
+      public Builder clear() {
+        super.clear();
+        bitField0_ = 0;
+        owner_ = "";
+        accountAddress_ = "";
+        scheme_ = "";
+        pubkey_ = com.google.protobuf.ByteString.EMPTY;
+        return this;
+      }
+
+      @java.lang.Override
+      public com.google.protobuf.Descriptors.Descriptor
+          getDescriptorForType() {
+        return qorechain.abstractaccount.v1.Tx.internal_static_qorechain_abstractaccount_v1_MsgRevokeAuthenticator_descriptor;
+      }
+
+      @java.lang.Override
+      public qorechain.abstractaccount.v1.Tx.MsgRevokeAuthenticator getDefaultInstanceForType() {
+        return qorechain.abstractaccount.v1.Tx.MsgRevokeAuthenticator.getDefaultInstance();
+      }
+
+      @java.lang.Override
+      public qorechain.abstractaccount.v1.Tx.MsgRevokeAuthenticator build() {
+        qorechain.abstractaccount.v1.Tx.MsgRevokeAuthenticator result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(result);
+        }
+        return result;
+      }
+
+      @java.lang.Override
+      public qorechain.abstractaccount.v1.Tx.MsgRevokeAuthenticator buildPartial() {
+        qorechain.abstractaccount.v1.Tx.MsgRevokeAuthenticator result = new qorechain.abstractaccount.v1.Tx.MsgRevokeAuthenticator(this);
+        if (bitField0_ != 0) { buildPartial0(result); }
+        onBuilt();
+        return result;
+      }
+
+      private void buildPartial0(qorechain.abstractaccount.v1.Tx.MsgRevokeAuthenticator result) {
+        int from_bitField0_ = bitField0_;
+        if (((from_bitField0_ & 0x00000001) != 0)) {
+          result.owner_ = owner_;
+        }
+        if (((from_bitField0_ & 0x00000002) != 0)) {
+          result.accountAddress_ = accountAddress_;
+        }
+        if (((from_bitField0_ & 0x00000004) != 0)) {
+          result.scheme_ = scheme_;
+        }
+        if (((from_bitField0_ & 0x00000008) != 0)) {
+          result.pubkey_ = pubkey_;
+        }
+      }
+
+      @java.lang.Override
+      public Builder mergeFrom(com.google.protobuf.Message other) {
+        if (other instanceof qorechain.abstractaccount.v1.Tx.MsgRevokeAuthenticator) {
+          return mergeFrom((qorechain.abstractaccount.v1.Tx.MsgRevokeAuthenticator)other);
+        } else {
+          super.mergeFrom(other);
+          return this;
+        }
+      }
+
+      public Builder mergeFrom(qorechain.abstractaccount.v1.Tx.MsgRevokeAuthenticator other) {
+        if (other == qorechain.abstractaccount.v1.Tx.MsgRevokeAuthenticator.getDefaultInstance()) return this;
+        if (!other.getOwner().isEmpty()) {
+          owner_ = other.owner_;
+          bitField0_ |= 0x00000001;
+          onChanged();
+        }
+        if (!other.getAccountAddress().isEmpty()) {
+          accountAddress_ = other.accountAddress_;
+          bitField0_ |= 0x00000002;
+          onChanged();
+        }
+        if (!other.getScheme().isEmpty()) {
+          scheme_ = other.scheme_;
+          bitField0_ |= 0x00000004;
+          onChanged();
+        }
+        if (!other.getPubkey().isEmpty()) {
+          setPubkey(other.getPubkey());
+        }
+        this.mergeUnknownFields(other.getUnknownFields());
+        onChanged();
+        return this;
+      }
+
+      @java.lang.Override
+      public final boolean isInitialized() {
+        return true;
+      }
+
+      @java.lang.Override
+      public Builder mergeFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        if (extensionRegistry == null) {
+          throw new java.lang.NullPointerException();
+        }
+        try {
+          boolean done = false;
+          while (!done) {
+            int tag = input.readTag();
+            switch (tag) {
+              case 0:
+                done = true;
+                break;
+              case 10: {
+                owner_ = input.readStringRequireUtf8();
+                bitField0_ |= 0x00000001;
+                break;
+              } // case 10
+              case 18: {
+                accountAddress_ = input.readStringRequireUtf8();
+                bitField0_ |= 0x00000002;
+                break;
+              } // case 18
+              case 26: {
+                scheme_ = input.readStringRequireUtf8();
+                bitField0_ |= 0x00000004;
+                break;
+              } // case 26
+              case 34: {
+                pubkey_ = input.readBytes();
+                bitField0_ |= 0x00000008;
+                break;
+              } // case 34
+              default: {
+                if (!super.parseUnknownField(input, extensionRegistry, tag)) {
+                  done = true; // was an endgroup tag
+                }
+                break;
+              } // default:
+            } // switch (tag)
+          } // while (!done)
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          throw e.unwrapIOException();
+        } finally {
+          onChanged();
+        } // finally
+        return this;
+      }
+      private int bitField0_;
+
+      private java.lang.Object owner_ = "";
+      /**
+       * <code>string owner = 1 [json_name = "owner", (.cosmos_proto.scalar) = "cosmos.AddressString"];</code>
+       * @return The owner.
+       */
+      public java.lang.String getOwner() {
+        java.lang.Object ref = owner_;
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          owner_ = s;
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
+      }
+      /**
+       * <code>string owner = 1 [json_name = "owner", (.cosmos_proto.scalar) = "cosmos.AddressString"];</code>
+       * @return The bytes for owner.
+       */
+      public com.google.protobuf.ByteString
+          getOwnerBytes() {
+        java.lang.Object ref = owner_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          owner_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <code>string owner = 1 [json_name = "owner", (.cosmos_proto.scalar) = "cosmos.AddressString"];</code>
+       * @param value The owner to set.
+       * @return This builder for chaining.
+       */
+      public Builder setOwner(
+          java.lang.String value) {
+        if (value == null) { throw new NullPointerException(); }
+        owner_ = value;
+        bitField0_ |= 0x00000001;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>string owner = 1 [json_name = "owner", (.cosmos_proto.scalar) = "cosmos.AddressString"];</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearOwner() {
+        owner_ = getDefaultInstance().getOwner();
+        bitField0_ = (bitField0_ & ~0x00000001);
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>string owner = 1 [json_name = "owner", (.cosmos_proto.scalar) = "cosmos.AddressString"];</code>
+       * @param value The bytes for owner to set.
+       * @return This builder for chaining.
+       */
+      public Builder setOwnerBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) { throw new NullPointerException(); }
+        checkByteStringIsUtf8(value);
+        owner_ = value;
+        bitField0_ |= 0x00000001;
+        onChanged();
+        return this;
+      }
+
+      private java.lang.Object accountAddress_ = "";
+      /**
+       * <code>string account_address = 2 [json_name = "accountAddress"];</code>
+       * @return The accountAddress.
+       */
+      public java.lang.String getAccountAddress() {
+        java.lang.Object ref = accountAddress_;
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          accountAddress_ = s;
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
+      }
+      /**
+       * <code>string account_address = 2 [json_name = "accountAddress"];</code>
+       * @return The bytes for accountAddress.
+       */
+      public com.google.protobuf.ByteString
+          getAccountAddressBytes() {
+        java.lang.Object ref = accountAddress_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          accountAddress_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <code>string account_address = 2 [json_name = "accountAddress"];</code>
+       * @param value The accountAddress to set.
+       * @return This builder for chaining.
+       */
+      public Builder setAccountAddress(
+          java.lang.String value) {
+        if (value == null) { throw new NullPointerException(); }
+        accountAddress_ = value;
+        bitField0_ |= 0x00000002;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>string account_address = 2 [json_name = "accountAddress"];</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearAccountAddress() {
+        accountAddress_ = getDefaultInstance().getAccountAddress();
+        bitField0_ = (bitField0_ & ~0x00000002);
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>string account_address = 2 [json_name = "accountAddress"];</code>
+       * @param value The bytes for accountAddress to set.
+       * @return This builder for chaining.
+       */
+      public Builder setAccountAddressBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) { throw new NullPointerException(); }
+        checkByteStringIsUtf8(value);
+        accountAddress_ = value;
+        bitField0_ |= 0x00000002;
+        onChanged();
+        return this;
+      }
+
+      private java.lang.Object scheme_ = "";
+      /**
+       * <code>string scheme = 3 [json_name = "scheme"];</code>
+       * @return The scheme.
+       */
+      public java.lang.String getScheme() {
+        java.lang.Object ref = scheme_;
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          scheme_ = s;
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
+      }
+      /**
+       * <code>string scheme = 3 [json_name = "scheme"];</code>
+       * @return The bytes for scheme.
+       */
+      public com.google.protobuf.ByteString
+          getSchemeBytes() {
+        java.lang.Object ref = scheme_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          scheme_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <code>string scheme = 3 [json_name = "scheme"];</code>
+       * @param value The scheme to set.
+       * @return This builder for chaining.
+       */
+      public Builder setScheme(
+          java.lang.String value) {
+        if (value == null) { throw new NullPointerException(); }
+        scheme_ = value;
+        bitField0_ |= 0x00000004;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>string scheme = 3 [json_name = "scheme"];</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearScheme() {
+        scheme_ = getDefaultInstance().getScheme();
+        bitField0_ = (bitField0_ & ~0x00000004);
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>string scheme = 3 [json_name = "scheme"];</code>
+       * @param value The bytes for scheme to set.
+       * @return This builder for chaining.
+       */
+      public Builder setSchemeBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) { throw new NullPointerException(); }
+        checkByteStringIsUtf8(value);
+        scheme_ = value;
+        bitField0_ |= 0x00000004;
+        onChanged();
+        return this;
+      }
+
+      private com.google.protobuf.ByteString pubkey_ = com.google.protobuf.ByteString.EMPTY;
+      /**
+       * <code>bytes pubkey = 4 [json_name = "pubkey"];</code>
+       * @return The pubkey.
+       */
+      @java.lang.Override
+      public com.google.protobuf.ByteString getPubkey() {
+        return pubkey_;
+      }
+      /**
+       * <code>bytes pubkey = 4 [json_name = "pubkey"];</code>
+       * @param value The pubkey to set.
+       * @return This builder for chaining.
+       */
+      public Builder setPubkey(com.google.protobuf.ByteString value) {
+        if (value == null) { throw new NullPointerException(); }
+        pubkey_ = value;
+        bitField0_ |= 0x00000008;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>bytes pubkey = 4 [json_name = "pubkey"];</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearPubkey() {
+        bitField0_ = (bitField0_ & ~0x00000008);
+        pubkey_ = getDefaultInstance().getPubkey();
+        onChanged();
+        return this;
+      }
+
+      // @@protoc_insertion_point(builder_scope:qorechain.abstractaccount.v1.MsgRevokeAuthenticator)
+    }
+
+    // @@protoc_insertion_point(class_scope:qorechain.abstractaccount.v1.MsgRevokeAuthenticator)
+    private static final qorechain.abstractaccount.v1.Tx.MsgRevokeAuthenticator DEFAULT_INSTANCE;
+    static {
+      DEFAULT_INSTANCE = new qorechain.abstractaccount.v1.Tx.MsgRevokeAuthenticator();
+    }
+
+    public static qorechain.abstractaccount.v1.Tx.MsgRevokeAuthenticator getDefaultInstance() {
+      return DEFAULT_INSTANCE;
+    }
+
+    private static final com.google.protobuf.Parser<MsgRevokeAuthenticator>
+        PARSER = new com.google.protobuf.AbstractParser<MsgRevokeAuthenticator>() {
+      @java.lang.Override
+      public MsgRevokeAuthenticator parsePartialFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        Builder builder = newBuilder();
+        try {
+          builder.mergeFrom(input, extensionRegistry);
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          throw e.setUnfinishedMessage(builder.buildPartial());
+        } catch (com.google.protobuf.UninitializedMessageException e) {
+          throw e.asInvalidProtocolBufferException().setUnfinishedMessage(builder.buildPartial());
+        } catch (java.io.IOException e) {
+          throw new com.google.protobuf.InvalidProtocolBufferException(e)
+              .setUnfinishedMessage(builder.buildPartial());
+        }
+        return builder.buildPartial();
+      }
+    };
+
+    public static com.google.protobuf.Parser<MsgRevokeAuthenticator> parser() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Parser<MsgRevokeAuthenticator> getParserForType() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public qorechain.abstractaccount.v1.Tx.MsgRevokeAuthenticator getDefaultInstanceForType() {
+      return DEFAULT_INSTANCE;
+    }
+
+  }
+
+  public interface MsgRevokeAuthenticatorResponseOrBuilder extends
+      // @@protoc_insertion_point(interface_extends:qorechain.abstractaccount.v1.MsgRevokeAuthenticatorResponse)
+      com.google.protobuf.MessageOrBuilder {
+  }
+  /**
+   * Protobuf type {@code qorechain.abstractaccount.v1.MsgRevokeAuthenticatorResponse}
+   */
+  public static final class MsgRevokeAuthenticatorResponse extends
+      com.google.protobuf.GeneratedMessage implements
+      // @@protoc_insertion_point(message_implements:qorechain.abstractaccount.v1.MsgRevokeAuthenticatorResponse)
+      MsgRevokeAuthenticatorResponseOrBuilder {
+  private static final long serialVersionUID = 0L;
+    static {
+      com.google.protobuf.RuntimeVersion.validateProtobufGencodeVersion(
+        com.google.protobuf.RuntimeVersion.RuntimeDomain.PUBLIC,
+        /* major= */ 4,
+        /* minor= */ 35,
+        /* patch= */ 1,
+        /* suffix= */ "",
+        "MsgRevokeAuthenticatorResponse");
+    }
+    // Use MsgRevokeAuthenticatorResponse.newBuilder() to construct.
+    private MsgRevokeAuthenticatorResponse(com.google.protobuf.GeneratedMessage.Builder<?> builder) {
+      super(builder);
+    }
+    private MsgRevokeAuthenticatorResponse() {
+    }
+
+    public static final com.google.protobuf.Descriptors.Descriptor
+        getDescriptor() {
+      return qorechain.abstractaccount.v1.Tx.internal_static_qorechain_abstractaccount_v1_MsgRevokeAuthenticatorResponse_descriptor;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Descriptors.Descriptor getDescriptorForType() {
+      return qorechain.abstractaccount.v1.Tx.internal_static_qorechain_abstractaccount_v1_MsgRevokeAuthenticatorResponse_descriptor;
+    }
+
+    @java.lang.Override
+    protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+        internalGetFieldAccessorTable() {
+      return qorechain.abstractaccount.v1.Tx.internal_static_qorechain_abstractaccount_v1_MsgRevokeAuthenticatorResponse_fieldAccessorTable
+          .ensureFieldAccessorsInitialized(
+              qorechain.abstractaccount.v1.Tx.MsgRevokeAuthenticatorResponse.class, qorechain.abstractaccount.v1.Tx.MsgRevokeAuthenticatorResponse.Builder.class);
+    }
+
+    private byte memoizedIsInitialized = -1;
+    @java.lang.Override
+    public final boolean isInitialized() {
+      byte isInitialized = memoizedIsInitialized;
+      if (isInitialized == 1) return true;
+      if (isInitialized == 0) return false;
+
+      memoizedIsInitialized = 1;
+      return true;
+    }
+
+    @java.lang.Override
+    public void writeTo(com.google.protobuf.CodedOutputStream output)
+                        throws java.io.IOException {
+      getUnknownFields().writeTo(output);
+    }
+    @java.lang.Override
+    public int getSerializedSize() {
+      int size = memoizedSize;
+      if (size != -1) return size;
+
+      size = 0;
+      size += getUnknownFields().getSerializedSize();
+      memoizedSize = size;
+      return size;
+    }
+
+    @java.lang.Override
+    public boolean equals(final java.lang.Object obj) {
+      if (obj == this) {
+       return true;
+      }
+      if (!(obj instanceof qorechain.abstractaccount.v1.Tx.MsgRevokeAuthenticatorResponse)) {
+        return super.equals(obj);
+      }
+      qorechain.abstractaccount.v1.Tx.MsgRevokeAuthenticatorResponse other = (qorechain.abstractaccount.v1.Tx.MsgRevokeAuthenticatorResponse) obj;
+
+      if (!getUnknownFields().equals(other.getUnknownFields())) return false;
+      return true;
+    }
+
+    @java.lang.Override
+    public int hashCode() {
+      if (memoizedHashCode != 0) {
+        return memoizedHashCode;
+      }
+      int hash = 41;
+      hash = (19 * hash) + getDescriptor().hashCode();
+      hash = (29 * hash) + getUnknownFields().hashCode();
+      memoizedHashCode = hash;
+      return hash;
+    }
+
+    public static qorechain.abstractaccount.v1.Tx.MsgRevokeAuthenticatorResponse parseFrom(
+        java.nio.ByteBuffer data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static qorechain.abstractaccount.v1.Tx.MsgRevokeAuthenticatorResponse parseFrom(
+        java.nio.ByteBuffer data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static qorechain.abstractaccount.v1.Tx.MsgRevokeAuthenticatorResponse parseFrom(
+        com.google.protobuf.ByteString data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static qorechain.abstractaccount.v1.Tx.MsgRevokeAuthenticatorResponse parseFrom(
+        com.google.protobuf.ByteString data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static qorechain.abstractaccount.v1.Tx.MsgRevokeAuthenticatorResponse parseFrom(byte[] data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static qorechain.abstractaccount.v1.Tx.MsgRevokeAuthenticatorResponse parseFrom(
+        byte[] data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static qorechain.abstractaccount.v1.Tx.MsgRevokeAuthenticatorResponse parseFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input);
+    }
+    public static qorechain.abstractaccount.v1.Tx.MsgRevokeAuthenticatorResponse parseFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    public static qorechain.abstractaccount.v1.Tx.MsgRevokeAuthenticatorResponse parseDelimitedFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseDelimitedWithIOException(PARSER, input);
+    }
+
+    public static qorechain.abstractaccount.v1.Tx.MsgRevokeAuthenticatorResponse parseDelimitedFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static qorechain.abstractaccount.v1.Tx.MsgRevokeAuthenticatorResponse parseFrom(
+        com.google.protobuf.CodedInputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input);
+    }
+    public static qorechain.abstractaccount.v1.Tx.MsgRevokeAuthenticatorResponse parseFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    @java.lang.Override
+    public Builder newBuilderForType() { return newBuilder(); }
+    public static Builder newBuilder() {
+      return DEFAULT_INSTANCE.toBuilder();
+    }
+    public static Builder newBuilder(qorechain.abstractaccount.v1.Tx.MsgRevokeAuthenticatorResponse prototype) {
+      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+    }
+    @java.lang.Override
+    public Builder toBuilder() {
+      return this == DEFAULT_INSTANCE
+          ? new Builder() : new Builder().mergeFrom(this);
+    }
+
+    @java.lang.Override
+    protected Builder newBuilderForType(
+        com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+      Builder builder = new Builder(parent);
+      return builder;
+    }
+    /**
+     * Protobuf type {@code qorechain.abstractaccount.v1.MsgRevokeAuthenticatorResponse}
+     */
+    public static final class Builder extends
+        com.google.protobuf.GeneratedMessage.Builder<Builder> implements
+        // @@protoc_insertion_point(builder_implements:qorechain.abstractaccount.v1.MsgRevokeAuthenticatorResponse)
+        qorechain.abstractaccount.v1.Tx.MsgRevokeAuthenticatorResponseOrBuilder {
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return qorechain.abstractaccount.v1.Tx.internal_static_qorechain_abstractaccount_v1_MsgRevokeAuthenticatorResponse_descriptor;
+      }
+
+      @java.lang.Override
+      protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return qorechain.abstractaccount.v1.Tx.internal_static_qorechain_abstractaccount_v1_MsgRevokeAuthenticatorResponse_fieldAccessorTable
+            .ensureFieldAccessorsInitialized(
+                qorechain.abstractaccount.v1.Tx.MsgRevokeAuthenticatorResponse.class, qorechain.abstractaccount.v1.Tx.MsgRevokeAuthenticatorResponse.Builder.class);
+      }
+
+      // Construct using qorechain.abstractaccount.v1.Tx.MsgRevokeAuthenticatorResponse.newBuilder()
+      private Builder() {
+
+      }
+
+      private Builder(
+          com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+        super(parent);
+
+      }
+      @java.lang.Override
+      public Builder clear() {
+        super.clear();
+        return this;
+      }
+
+      @java.lang.Override
+      public com.google.protobuf.Descriptors.Descriptor
+          getDescriptorForType() {
+        return qorechain.abstractaccount.v1.Tx.internal_static_qorechain_abstractaccount_v1_MsgRevokeAuthenticatorResponse_descriptor;
+      }
+
+      @java.lang.Override
+      public qorechain.abstractaccount.v1.Tx.MsgRevokeAuthenticatorResponse getDefaultInstanceForType() {
+        return qorechain.abstractaccount.v1.Tx.MsgRevokeAuthenticatorResponse.getDefaultInstance();
+      }
+
+      @java.lang.Override
+      public qorechain.abstractaccount.v1.Tx.MsgRevokeAuthenticatorResponse build() {
+        qorechain.abstractaccount.v1.Tx.MsgRevokeAuthenticatorResponse result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(result);
+        }
+        return result;
+      }
+
+      @java.lang.Override
+      public qorechain.abstractaccount.v1.Tx.MsgRevokeAuthenticatorResponse buildPartial() {
+        qorechain.abstractaccount.v1.Tx.MsgRevokeAuthenticatorResponse result = new qorechain.abstractaccount.v1.Tx.MsgRevokeAuthenticatorResponse(this);
+        onBuilt();
+        return result;
+      }
+
+      @java.lang.Override
+      public Builder mergeFrom(com.google.protobuf.Message other) {
+        if (other instanceof qorechain.abstractaccount.v1.Tx.MsgRevokeAuthenticatorResponse) {
+          return mergeFrom((qorechain.abstractaccount.v1.Tx.MsgRevokeAuthenticatorResponse)other);
+        } else {
+          super.mergeFrom(other);
+          return this;
+        }
+      }
+
+      public Builder mergeFrom(qorechain.abstractaccount.v1.Tx.MsgRevokeAuthenticatorResponse other) {
+        if (other == qorechain.abstractaccount.v1.Tx.MsgRevokeAuthenticatorResponse.getDefaultInstance()) return this;
+        this.mergeUnknownFields(other.getUnknownFields());
+        onChanged();
+        return this;
+      }
+
+      @java.lang.Override
+      public final boolean isInitialized() {
+        return true;
+      }
+
+      @java.lang.Override
+      public Builder mergeFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        if (extensionRegistry == null) {
+          throw new java.lang.NullPointerException();
+        }
+        try {
+          boolean done = false;
+          while (!done) {
+            int tag = input.readTag();
+            switch (tag) {
+              case 0:
+                done = true;
+                break;
+              default: {
+                if (!super.parseUnknownField(input, extensionRegistry, tag)) {
+                  done = true; // was an endgroup tag
+                }
+                break;
+              } // default:
+            } // switch (tag)
+          } // while (!done)
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          throw e.unwrapIOException();
+        } finally {
+          onChanged();
+        } // finally
+        return this;
+      }
+
+      // @@protoc_insertion_point(builder_scope:qorechain.abstractaccount.v1.MsgRevokeAuthenticatorResponse)
+    }
+
+    // @@protoc_insertion_point(class_scope:qorechain.abstractaccount.v1.MsgRevokeAuthenticatorResponse)
+    private static final qorechain.abstractaccount.v1.Tx.MsgRevokeAuthenticatorResponse DEFAULT_INSTANCE;
+    static {
+      DEFAULT_INSTANCE = new qorechain.abstractaccount.v1.Tx.MsgRevokeAuthenticatorResponse();
+    }
+
+    public static qorechain.abstractaccount.v1.Tx.MsgRevokeAuthenticatorResponse getDefaultInstance() {
+      return DEFAULT_INSTANCE;
+    }
+
+    private static final com.google.protobuf.Parser<MsgRevokeAuthenticatorResponse>
+        PARSER = new com.google.protobuf.AbstractParser<MsgRevokeAuthenticatorResponse>() {
+      @java.lang.Override
+      public MsgRevokeAuthenticatorResponse parsePartialFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        Builder builder = newBuilder();
+        try {
+          builder.mergeFrom(input, extensionRegistry);
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          throw e.setUnfinishedMessage(builder.buildPartial());
+        } catch (com.google.protobuf.UninitializedMessageException e) {
+          throw e.asInvalidProtocolBufferException().setUnfinishedMessage(builder.buildPartial());
+        } catch (java.io.IOException e) {
+          throw new com.google.protobuf.InvalidProtocolBufferException(e)
+              .setUnfinishedMessage(builder.buildPartial());
+        }
+        return builder.buildPartial();
+      }
+    };
+
+    public static com.google.protobuf.Parser<MsgRevokeAuthenticatorResponse> parser() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Parser<MsgRevokeAuthenticatorResponse> getParserForType() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public qorechain.abstractaccount.v1.Tx.MsgRevokeAuthenticatorResponse getDefaultInstanceForType() {
+      return DEFAULT_INSTANCE;
+    }
+
+  }
+
   private static final com.google.protobuf.Descriptors.Descriptor
     internal_static_qorechain_abstractaccount_v1_SpendingRule_descriptor;
   private static final 
@@ -3605,6 +6699,26 @@ public final class Tx extends com.google.protobuf.GeneratedFile {
   private static final 
     com.google.protobuf.GeneratedMessage.FieldAccessorTable
       internal_static_qorechain_abstractaccount_v1_MsgUpdateSpendingRulesResponse_fieldAccessorTable;
+  private static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_qorechain_abstractaccount_v1_MsgRegisterAuthenticator_descriptor;
+  private static final 
+    com.google.protobuf.GeneratedMessage.FieldAccessorTable
+      internal_static_qorechain_abstractaccount_v1_MsgRegisterAuthenticator_fieldAccessorTable;
+  private static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_qorechain_abstractaccount_v1_MsgRegisterAuthenticatorResponse_descriptor;
+  private static final 
+    com.google.protobuf.GeneratedMessage.FieldAccessorTable
+      internal_static_qorechain_abstractaccount_v1_MsgRegisterAuthenticatorResponse_fieldAccessorTable;
+  private static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_qorechain_abstractaccount_v1_MsgRevokeAuthenticator_descriptor;
+  private static final 
+    com.google.protobuf.GeneratedMessage.FieldAccessorTable
+      internal_static_qorechain_abstractaccount_v1_MsgRevokeAuthenticator_fieldAccessorTable;
+  private static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_qorechain_abstractaccount_v1_MsgRevokeAuthenticatorResponse_descriptor;
+  private static final 
+    com.google.protobuf.GeneratedMessage.FieldAccessorTable
+      internal_static_qorechain_abstractaccount_v1_MsgRevokeAuthenticatorResponse_fieldAccessorTable;
 
   public static com.google.protobuf.Descriptors.FileDescriptor
       getDescriptor() {
@@ -3632,16 +6746,36 @@ public final class Tx extends com.google.protobuf.GeneratedFile {
       "\tR\016accountAddress\022F\n\005rules\030\003 \003(\0132*.qorec" +
       "hain.abstractaccount.v1.SpendingRuleB\004\310\336" +
       "\037\000R\005rules:\n\202\347\260*\005owner\" \n\036MsgUpdateSpendi" +
-      "ngRulesResponse2\252\002\n\003Msg\022\217\001\n\025CreateAbstra" +
-      "ctAccount\0226.qorechain.abstractaccount.v1" +
-      ".MsgCreateAbstractAccount\032>.qorechain.ab" +
-      "stractaccount.v1.MsgCreateAbstractAccoun" +
-      "tResponse\022\211\001\n\023UpdateSpendingRules\0224.qore" +
-      "chain.abstractaccount.v1.MsgUpdateSpendi" +
-      "ngRules\032<.qorechain.abstractaccount.v1.M" +
-      "sgUpdateSpendingRulesResponse\032\005\200\347\260*\001B=Z;" +
-      "github.com/qorechain/qorechain-core/x/ab" +
-      "stractaccount/typesb\006proto3"
+      "ngRulesResponse\"\210\002\n\030MsgRegisterAuthentic" +
+      "ator\022.\n\005owner\030\001 \001(\tB\030\322\264-\024cosmos.AddressS" +
+      "tringR\005owner\022\'\n\017account_address\030\002 \001(\tR\016a" +
+      "ccountAddress\022\026\n\006scheme\030\003 \001(\tR\006scheme\022\026\n" +
+      "\006pubkey\030\004 \001(\014R\006pubkey\022 \n\013permissions\030\005 \003" +
+      "(\tR\013permissions\022\037\n\013expiry_unix\030\006 \001(\003R\nex" +
+      "piryUnix\022\024\n\005label\030\007 \001(\tR\005label:\n\202\347\260*\005own" +
+      "er\"\"\n MsgRegisterAuthenticatorResponse\"\255" +
+      "\001\n\026MsgRevokeAuthenticator\022.\n\005owner\030\001 \001(\t" +
+      "B\030\322\264-\024cosmos.AddressStringR\005owner\022\'\n\017acc" +
+      "ount_address\030\002 \001(\tR\016accountAddress\022\026\n\006sc" +
+      "heme\030\003 \001(\tR\006scheme\022\026\n\006pubkey\030\004 \001(\014R\006pubk" +
+      "ey:\n\202\347\260*\005owner\" \n\036MsgRevokeAuthenticator" +
+      "Response2\310\004\n\003Msg\022\217\001\n\025CreateAbstractAccou" +
+      "nt\0226.qorechain.abstractaccount.v1.MsgCre" +
+      "ateAbstractAccount\032>.qorechain.abstracta" +
+      "ccount.v1.MsgCreateAbstractAccountRespon" +
+      "se\022\211\001\n\023UpdateSpendingRules\0224.qorechain.a" +
+      "bstractaccount.v1.MsgUpdateSpendingRules" +
+      "\032<.qorechain.abstractaccount.v1.MsgUpdat" +
+      "eSpendingRulesResponse\022\217\001\n\025RegisterAuthe" +
+      "nticator\0226.qorechain.abstractaccount.v1." +
+      "MsgRegisterAuthenticator\032>.qorechain.abs" +
+      "tractaccount.v1.MsgRegisterAuthenticator" +
+      "Response\022\211\001\n\023RevokeAuthenticator\0224.qorec" +
+      "hain.abstractaccount.v1.MsgRevokeAuthent" +
+      "icator\032<.qorechain.abstractaccount.v1.Ms" +
+      "gRevokeAuthenticatorResponse\032\005\200\347\260*\001B=Z;g" +
+      "ithub.com/qorechain/qorechain-core/x/abs" +
+      "tractaccount/typesb\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
@@ -3679,6 +6813,30 @@ public final class Tx extends com.google.protobuf.GeneratedFile {
     internal_static_qorechain_abstractaccount_v1_MsgUpdateSpendingRulesResponse_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_qorechain_abstractaccount_v1_MsgUpdateSpendingRulesResponse_descriptor,
+        new java.lang.String[] { });
+    internal_static_qorechain_abstractaccount_v1_MsgRegisterAuthenticator_descriptor =
+      getDescriptor().getMessageType(5);
+    internal_static_qorechain_abstractaccount_v1_MsgRegisterAuthenticator_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessage.FieldAccessorTable(
+        internal_static_qorechain_abstractaccount_v1_MsgRegisterAuthenticator_descriptor,
+        new java.lang.String[] { "Owner", "AccountAddress", "Scheme", "Pubkey", "Permissions", "ExpiryUnix", "Label", });
+    internal_static_qorechain_abstractaccount_v1_MsgRegisterAuthenticatorResponse_descriptor =
+      getDescriptor().getMessageType(6);
+    internal_static_qorechain_abstractaccount_v1_MsgRegisterAuthenticatorResponse_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessage.FieldAccessorTable(
+        internal_static_qorechain_abstractaccount_v1_MsgRegisterAuthenticatorResponse_descriptor,
+        new java.lang.String[] { });
+    internal_static_qorechain_abstractaccount_v1_MsgRevokeAuthenticator_descriptor =
+      getDescriptor().getMessageType(7);
+    internal_static_qorechain_abstractaccount_v1_MsgRevokeAuthenticator_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessage.FieldAccessorTable(
+        internal_static_qorechain_abstractaccount_v1_MsgRevokeAuthenticator_descriptor,
+        new java.lang.String[] { "Owner", "AccountAddress", "Scheme", "Pubkey", });
+    internal_static_qorechain_abstractaccount_v1_MsgRevokeAuthenticatorResponse_descriptor =
+      getDescriptor().getMessageType(8);
+    internal_static_qorechain_abstractaccount_v1_MsgRevokeAuthenticatorResponse_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessage.FieldAccessorTable(
+        internal_static_qorechain_abstractaccount_v1_MsgRevokeAuthenticatorResponse_descriptor,
         new java.lang.String[] { });
     descriptor.resolveAllFeaturesImmutable();
     cosmos.msg.v1.Msg.getDescriptor();

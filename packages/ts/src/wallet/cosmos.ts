@@ -1,5 +1,5 @@
 /**
- * Cosmos browser-wallet integration for QoreChain (Keplr and Leap).
+ * Native browser-wallet integration for QoreChain (Keplr and Leap).
  *
  * Keplr and Leap inject the same API shape under `window.keplr` / `window.leap`,
  * so this module targets both through a light structural interface — it does not
@@ -15,14 +15,14 @@
  * const { signer } = await getCosmosWallet({ wallet: "keplr", network });
  * const tx = await TxClient.connect({ rpcEndpoint: network.endpoints.rpc, signer });
  * // `signer` plugs straight into TxClient and can carry any registered message
- * // (standard Cosmos + QoreChain custom) via DIRECT signing.
+ * // (standard Native + QoreChain custom) via DIRECT signing.
  * ```
  */
 
 import type { OfflineSigner } from "@cosmjs/proto-signing";
 import type { NetworkConfig } from "../config/networks";
 
-/** Supported Cosmos wallet providers (same injected API shape). */
+/** Supported Native wallet providers (same injected API shape). */
 export type CosmosWalletName = "keplr" | "leap";
 
 /**
@@ -81,7 +81,7 @@ export interface InjectedCosmosWallet {
   getOfflineSignerAuto(chainId: string): Promise<OfflineSigner>;
 }
 
-/** Window augmentation for the injected Cosmos wallets. */
+/** Window augmentation for the injected Native wallets. */
 interface CosmosWalletWindow {
   keplr?: InjectedCosmosWallet;
   leap?: InjectedCosmosWallet;
@@ -186,7 +186,7 @@ function resolveProvider(
  *
  * The returned `signer` plugs straight into
  * `TxClient.connect(network.endpoints.rpc, signer)` and can send any registered
- * message — standard Cosmos *and* QoreChain custom messages — via DIRECT mode,
+ * message — standard Native *and* QoreChain custom messages — via DIRECT mode,
  * which both Keplr and Leap support. (Amino mode covers standard messages only
  * until custom-module Amino converters land; see `TxClient` `aminoTypes`.)
  *

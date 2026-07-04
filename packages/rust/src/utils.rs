@@ -2,7 +2,7 @@
 //! QoreChain SDK, mirroring the TypeScript / Python / Go `utils` surface.
 //!
 //! - [`sha256`] / [`keccak256`] / [`ripemd160`] / [`hash160`] — the hashes used
-//!   by Cosmos address derivation and by the EVM.
+//!   by QoreChain Native address derivation and by the EVM.
 //! - [`parse_units`] / [`format_units`] — exact (big-integer) conversion between
 //!   a human display amount and its integer base amount; no floating point.
 //! - [`is_valid_evm_address`] / [`is_valid_svm_address`] /
@@ -29,7 +29,7 @@ pub fn ripemd160(data: &[u8]) -> Vec<u8> {
     Ripemd160::digest(data).to_vec()
 }
 
-/// Returns `RIPEMD160(SHA256(data))` — the Cosmos account-address hash of a
+/// Returns `RIPEMD160(SHA256(data))` — the QoreChain Native account-address hash of a
 /// public key.
 pub fn hash160(data: &[u8]) -> Vec<u8> {
     ripemd160(&sha256(data))

@@ -26,7 +26,7 @@ const client = createClient();
 // Point at a real node by overriding endpoints.
 const remote = createClient({
   endpoints: {
-    rest: "https://api-testnet.qore.host",   // Cosmos REST (LCD)
+    rest: "https://api-testnet.qore.host",   // Native REST (LCD)
     rpc: "https://rpc-testnet.qore.host",      // consensus RPC (for signing)
     evmRpc: "https://evm-testnet.qore.host",   // EVM + qor_ JSON-RPC
   },
@@ -61,7 +61,7 @@ import {
 const mnemonic = generateMnemonic(); // 12 words (pass 256 for 24 words)
 
 const native = await deriveNativeAccount(mnemonic);
-console.log(native.address); // "qor1..."  (Cosmos-style secp256k1)
+console.log(native.address); // "qor1..."  (Native secp256k1)
 ```
 
 See [Accounts & PQC signing](concepts/accounts-pqc.md) for EVM/SVM derivation
@@ -70,7 +70,7 @@ and the full derivation table.
 ## 3. Read a balance
 
 ```ts
-// Cosmos bank balances over REST.
+// Native bank balances over REST.
 const balances = await client.rest.getAllBalances(native.address);
 
 // A typed qor_ JSON-RPC call.

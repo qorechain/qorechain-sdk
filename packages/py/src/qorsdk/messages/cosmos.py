@@ -1,4 +1,4 @@
-"""Convenience message composers for the standard Cosmos SDK modules.
+"""Convenience message composers for the standard Native modules.
 
 These wrap the message types cosmpy bundles (``cosmpy.protos.cosmos.*`` and
 ``cosmpy.protos.ibc.*``) and return :class:`~qorechain.messages._composer.Msg`

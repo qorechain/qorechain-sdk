@@ -4,6 +4,7 @@ import java.nio.charset.StandardCharsets;
 import org.bouncycastle.crypto.digests.KeccakDigest;
 import org.bouncycastle.crypto.digests.RIPEMD160Digest;
 import org.bouncycastle.crypto.digests.SHA256Digest;
+import org.bouncycastle.crypto.digests.SHAKEDigest;
 
 /**
  * Hash helpers built on BouncyCastle: SHA-256, keccak-256 (the EVM hashing
@@ -61,6 +62,23 @@ public final class Hashing {
 
     public static String keccak256Hex(String input) {
         return Hex.encodePrefixed(keccak256(input));
+    }
+
+    /**
+     * SHAKE-256 (FIPS 202) extendable-output digest of {@code input}, squeezed to
+     * {@code outLen} bytes. Matches {@code @noble/hashes} {@code shake256} and the
+     * chain's SHAKE-256 default hash.
+     */
+    public static byte[] shake256(byte[] input, int outLen) {
+        SHAKEDigest d = new SHAKEDigest(256);
+        d.update(input, 0, input.length);
+        byte[] out = new byte[outLen];
+        d.doFinal(out, 0, outLen);
+        return out;
+    }
+
+    public static byte[] shake256(String input, int outLen) {
+        return shake256(toBytes(input), outLen);
     }
 
     /** RIPEMD-160 digest of {@code input}. */

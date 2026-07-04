@@ -16,7 +16,7 @@ import (
 	ibcclienttypes "github.com/cosmos/ibc-go/v8/modules/core/02-client/types"
 )
 
-// The composers below build the standard Cosmos SDK messages QoreChain inherits.
+// The composers below build the standard Native messages QoreChain inherits.
 // They reuse the upstream sdk types directly so the type URLs are exactly the
 // canonical /cosmos.* and /ibc.* values the chain expects.
 

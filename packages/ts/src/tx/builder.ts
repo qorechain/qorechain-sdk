@@ -2,7 +2,7 @@
  * Native transaction builder and broadcaster for QoreChain.
  *
  * {@link TxClient} wraps cosmjs's `SigningStargateClient` to simulate, sign, and
- * broadcast native (Cosmos SDK) transactions, with a `bankSend` convenience for
+ * broadcast native (QoreChain Native) transactions, with a `bankSend` convenience for
  * the common transfer case. It is constructed in two ways:
  *
  *  - {@link TxClient.connect} — the production path: connect to the network's
@@ -76,7 +76,7 @@ export interface AutoFeeOptions {
 /**
  * Build the {@link AminoTypes} used for Amino-mode signing.
  *
- * Seeds cosmjs's `createDefaultAminoConverters()` (standard Cosmos modules:
+ * Seeds cosmjs's `createDefaultAminoConverters()` (standard Native modules:
  * bank, staking, gov, distribution, IBC, etc.) and merges any `extra`
  * converters on top — e.g. for QoreChain custom modules to support Ledger.
  *
@@ -133,14 +133,14 @@ export interface TxConnectOptions {
    * {@link directSignerFromPrivateKey}) or an Amino signer — including the
    * `OfflineSigner` returned by a browser wallet's `getOfflineSignerAuto`
    * (Keplr/Leap), which picks DIRECT or Amino automatically. Custom QoreChain
-   * messages sign via DIRECT mode; Amino mode covers standard Cosmos messages
+   * messages sign via DIRECT mode; Amino mode covers standard Native messages
    * (see `aminoTypes`).
    */
   signer: OfflineSigner;
   /**
    * Extra protobuf message types to register, as `[typeUrl, GeneratedType]`
    * pairs. Added on top of the default {@link qorechainRegistry} (standard
-   * Cosmos types + all QoreChain custom-module messages). Use this for messages
+   * Native types + all QoreChain custom-module messages). Use this for messages
    * the SDK does not ship, e.g. from a private module. Ignored if `registry`
    * is supplied.
    */
@@ -153,7 +153,7 @@ export interface TxConnectOptions {
   /**
    * Amino converters for Amino-mode signing (Ledger and some hardware/mobile
    * wallets sign Amino). Defaults to cosmjs's `createDefaultAminoConverters()`,
-   * which covers the standard Cosmos modules (bank, staking, gov, distribution,
+   * which covers the standard Native modules (bank, staking, gov, distribution,
    * etc.). When set, this replaces the defaults entirely — to add converters on
    * top of the defaults use {@link extraAminoConverters} instead.
    *
@@ -164,7 +164,7 @@ export interface TxConnectOptions {
   /**
    * Extra Amino converters merged on top of the default converters. Use this to
    * register converters for custom modules (e.g. for Ledger support) without
-   * losing the standard Cosmos converters. Ignored if `aminoTypes` is supplied.
+   * losing the standard Native converters. Ignored if `aminoTypes` is supplied.
    */
   extraAminoConverters?: AminoConverters;
   /** Additional cosmjs `SigningStargateClientOptions` (gas price, etc.). */

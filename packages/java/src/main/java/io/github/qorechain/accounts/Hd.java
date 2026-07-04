@@ -13,7 +13,7 @@ import org.bouncycastle.math.ec.rfc8032.Ed25519;
  * Hierarchical-deterministic key derivation.
  *
  * <ul>
- *   <li>BIP-32 over secp256k1 (for native Cosmos and EVM accounts), supporting
+ *   <li>BIP-32 over secp256k1 (for QoreChain Native and EVM accounts), supporting
  *       both hardened and non-hardened child derivation.
  *   <li>SLIP-0010 over ed25519 (for SVM accounts), hardened-only as the standard
  *       requires.

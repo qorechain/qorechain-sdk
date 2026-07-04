@@ -87,6 +87,53 @@ pub struct QueryLayersResponse {
     #[prost(message, repeated, tag="1")]
     pub layers: ::prost::alloc::vec::Vec<LayerView>,
 }
+/// StateAnchorView is the queryable view of a subsidiary-layer state anchor
+/// committed to the Main Chain. The PQC (Dilithium-5) signature covers the
+/// canonical message: layer_id || layer_height(8-byte big-endian) ||
+/// state_root || validator_set_hash, signed by the layer creator's registered
+/// post-quantum key. This lets clients verify settlement anchors offline.
+#[derive(Clone, PartialEq, ::prost::Message)]
+pub struct StateAnchorView {
+    #[prost(string, tag="1")]
+    pub layer_id: ::prost::alloc::string::String,
+    #[prost(uint64, tag="2")]
+    pub layer_height: u64,
+    #[prost(bytes="vec", tag="3")]
+    pub state_root: ::prost::alloc::vec::Vec<u8>,
+    #[prost(bytes="vec", tag="4")]
+    pub validator_set_hash: ::prost::alloc::vec::Vec<u8>,
+    #[prost(uint64, tag="5")]
+    pub main_chain_height: u64,
+    /// unix seconds
+    #[prost(int64, tag="6")]
+    pub anchored_at: i64,
+    #[prost(bytes="vec", tag="7")]
+    pub pqc_aggregate_signature: ::prost::alloc::vec::Vec<u8>,
+    #[prost(uint64, tag="8")]
+    pub transaction_count: u64,
+    #[prost(bytes="vec", tag="9")]
+    pub compressed_state_proof: ::prost::alloc::vec::Vec<u8>,
+}
+#[derive(Clone, PartialEq, ::prost::Message)]
+pub struct QueryAnchorRequest {
+    #[prost(string, tag="1")]
+    pub layer_id: ::prost::alloc::string::String,
+}
+#[derive(Clone, PartialEq, ::prost::Message)]
+pub struct QueryAnchorResponse {
+    #[prost(message, optional, tag="1")]
+    pub anchor: ::core::option::Option<StateAnchorView>,
+}
+#[derive(Clone, PartialEq, ::prost::Message)]
+pub struct QueryAnchorsRequest {
+    #[prost(string, tag="1")]
+    pub layer_id: ::prost::alloc::string::String,
+}
+#[derive(Clone, PartialEq, ::prost::Message)]
+pub struct QueryAnchorsResponse {
+    #[prost(message, repeated, tag="1")]
+    pub anchors: ::prost::alloc::vec::Vec<StateAnchorView>,
+}
 #[derive(Clone, Copy, PartialEq, ::prost::Message)]
 pub struct QueryRoutingStatsRequest {
 }

@@ -102,7 +102,7 @@ fn sdk_reason(code: u32) -> Option<&'static str> {
     })
 }
 
-/// The per-module codespace tables (Cosmos + QoreChain). Only the commonly
+/// The per-module codespace tables (Native + QoreChain). Only the commonly
 /// surfaced codes are enumerated; unmapped codes fall back to a generic message.
 fn module_reason(codespace: &str, code: u32) -> Option<&'static str> {
     let reason = match (codespace, code) {

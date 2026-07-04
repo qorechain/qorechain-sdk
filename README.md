@@ -5,7 +5,7 @@ Official multi-language SDK and developer kit for building decentralized applica
 QoreChain is a triple-VM Layer 1 with first-class support for CosmWasm,
 EVM/Solidity, and SVM smart contracts, plus IBC interoperability. SDKs are
 available for **TypeScript, Python, Go, Rust, and Java** — all published at
-`0.5.x`.
+`0.6.x`.
 
 ## Packages
 
@@ -18,7 +18,7 @@ available for **TypeScript, Python, Go, Rust, and Java** — all published at
 | `qorechain-sdk` | Python | `pip install qorechain-sdk` | `import qorsdk` |
 | `qorechain-sdk` | Rust | `cargo add qorechain-sdk` | `use qorechain` |
 | Go module | Go | `go get github.com/qorechain/qorechain-sdk/packages/go` | `.../packages/go` |
-| `io.github.qorechain:qorechain-sdk` | Java | `implementation("io.github.qorechain:qorechain-sdk:0.5.1")` | `io.github.qorechain` |
+| `io.github.qorechain:qorechain-sdk` | Java | `implementation("io.github.qorechain:qorechain-sdk:0.6.0")` | `io.github.qorechain` |
 | `create-qorechain-dapp` | CLI scaffolder | `npm create qorechain-dapp@latest` | — |
 
 > **Import names:** the Python distribution `qorechain-sdk` imports as `qorsdk`;
@@ -45,7 +45,7 @@ const client = createClient();
 // Point at a real node by overriding endpoints.
 const remote = createClient({
   endpoints: {
-    rest: "https://api-testnet.qore.host",   // Cosmos REST (LCD)
+    rest: "https://api-testnet.qore.host",   // Native REST (LCD)
     rpc: "https://rpc-testnet.qore.host",      // consensus RPC (for signing)
     evmRpc: "https://evm-testnet.qore.host",   // EVM + qor_ JSON-RPC
   },
@@ -78,7 +78,7 @@ import {
 const mnemonic = generateMnemonic(); // 12 words (pass 256 for 24 words)
 
 const native = await deriveNativeAccount(mnemonic);
-console.log(native.address); // "qor1..."  (Cosmos-style secp256k1)
+console.log(native.address); // "qor1..."  (Native secp256k1)
 
 const evm = await deriveEvmAccount(mnemonic);
 console.log(evm.address); // "0x..."   (EIP-55 checksummed)
@@ -90,7 +90,7 @@ console.log(svm.address); // base58 ed25519 public key
 ### Read on-chain state
 
 ```ts
-// Cosmos bank balances over REST.
+// Native bank balances over REST.
 const balances = await client.rest.getAllBalances(native.address);
 
 // A typed qor_ JSON-RPC call.
@@ -167,7 +167,7 @@ and the viem / `@solana/web3.js` adapters are TypeScript-only.
 - **Python** — `pip install qorechain-sdk`, then `import qorsdk`. See [packages/py](./packages/py/README.md).
 - **Go** — `go get github.com/qorechain/qorechain-sdk/packages/go`. See [packages/go](./packages/go/README.md).
 - **Rust** — `cargo add qorechain-sdk`, then `use qorechain;`. See [packages/rust](./packages/rust/README.md).
-- **Java** — `io.github.qorechain:qorechain-sdk:0.5.1` (Maven Central), package `io.github.qorechain`. See [packages/java](./packages/java/README.md).
+- **Java** — `io.github.qorechain:qorechain-sdk:0.6.0` (Maven Central), package `io.github.qorechain`. See [packages/java](./packages/java/README.md).
 
 > Browser wallets and the viem / `@solana/web3.js` EVM/SVM adapters are
 > TypeScript-only; in Python/Go/Rust use that ecosystem's standard libraries for
@@ -183,11 +183,11 @@ native-chain parts. Highlights:
   staking, distribution, gov, authz, feegrant, IBC, and the QoreChain custom
   modules: AMM, bridge, RDK, multilayer, PQC, SVM, lightnode, license,
   abstract-account, cross-VM, RL consensus), resolved through a message registry.
-- **Browser wallets** — Keplr/Leap (Cosmos), MetaMask/EIP-1193 (EVM), and
+- **Browser wallets** — Keplr/Leap (Native), MetaMask/EIP-1193 (EVM), and
   Phantom/Wallet-Standard (SVM).
 - **Auto-gas** — simulation-based fee estimation, plus EVM EIP-1559 helpers and
   SVM compute-budget / priority-fee helpers.
-- **Subscriptions** — new-block and tx event streams (Cosmos), block/event/log
+- **Subscriptions** — new-block and tx event streams (Native), block/event/log
   watchers (EVM), and logs/account/slot subscriptions (SVM).
 - **Error decoding** — structured, human-readable errors across all three VMs.
 - **NFT helpers** — typed ERC-721 and ERC-1155 read/write wrappers.
@@ -207,6 +207,10 @@ native-chain parts. Highlights:
 - **React kit** (`@qorechain/react`) — `QoreChainProvider`, hooks
   (`useAccount`, `useBalance`, `useTx`, `useConnect`, `usePqcStatus`), and
   `ConnectButton` / `QuantumSafeBadge` components.
+- **Unified eth-native wallet** — `deriveUnifiedAccount` gives one key three
+  addresses (`qor1…`/`0x…`/SVM) that share one balance and spend on every lane;
+  `signClassicalEth` / `signHybridEth` sign Native-lane txs with the same key,
+  and `connectPhantomUnified` derives a unified account from a Phantom signature.
 
 See the [docs](./docs) and [examples](./examples) for runnable usage.
 

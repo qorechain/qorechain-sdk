@@ -47,6 +47,29 @@ public final class MultilayerQueryClient {
         return decode(abci.request(SERVICE, "Layers", req), QueryOuterClass.QueryLayersResponse.parser());
     }
 
+    /** {@code Anchor} — the latest state anchor for a layer. */
+    public QueryOuterClass.QueryAnchorResponse anchor(String layerId) {
+        ByteString req =
+                QueryOuterClass.QueryAnchorRequest.newBuilder()
+                        .setLayerId(layerId)
+                        .build()
+                        .toByteString();
+        return decode(
+                abci.request(SERVICE, "Anchor", req), QueryOuterClass.QueryAnchorResponse.parser());
+    }
+
+    /** {@code Anchors} — all state anchors for a layer. */
+    public QueryOuterClass.QueryAnchorsResponse anchors(String layerId) {
+        ByteString req =
+                QueryOuterClass.QueryAnchorsRequest.newBuilder()
+                        .setLayerId(layerId)
+                        .build()
+                        .toByteString();
+        return decode(
+                abci.request(SERVICE, "Anchors", req),
+                QueryOuterClass.QueryAnchorsResponse.parser());
+    }
+
     /** {@code RoutingStats} — the cross-layer routing statistics. */
     public QueryOuterClass.QueryRoutingStatsView routingStats() {
         ByteString req =

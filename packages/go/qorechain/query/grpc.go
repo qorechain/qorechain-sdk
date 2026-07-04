@@ -8,8 +8,11 @@ import (
 	"google.golang.org/grpc/credentials"
 	"google.golang.org/grpc/credentials/insecure"
 
+	abstractaccountv1 "github.com/qorechain/qorechain-sdk/packages/go/qorechain/proto/qorechain/abstractaccount/v1"
+	ammv1 "github.com/qorechain/qorechain-sdk/packages/go/qorechain/proto/qorechain/amm/v1"
 	bridgev1 "github.com/qorechain/qorechain-sdk/packages/go/qorechain/proto/qorechain/bridge/v1"
 	crossvmv1 "github.com/qorechain/qorechain-sdk/packages/go/qorechain/proto/qorechain/crossvm/v1"
+	licensev1 "github.com/qorechain/qorechain-sdk/packages/go/qorechain/proto/qorechain/license/v1"
 	lightnodev1 "github.com/qorechain/qorechain-sdk/packages/go/qorechain/proto/qorechain/lightnode/v1"
 	multilayerv1 "github.com/qorechain/qorechain-sdk/packages/go/qorechain/proto/qorechain/multilayer/v1"
 	pqcv1 "github.com/qorechain/qorechain-sdk/packages/go/qorechain/proto/qorechain/pqc/v1"
@@ -22,8 +25,8 @@ import (
 
 // GRPCClient holds a gRPC connection to a QoreChain node and exposes the typed
 // Query service clients for every module that defines a gRPC query service
-// (bridge, crossvm, lightnode, multilayer, pqc, qca, rdk, reputation,
-// rlconsensus, svm).
+// (abstractaccount, amm, bridge, crossvm, license, lightnode, multilayer, pqc,
+// qca, rdk, reputation, rlconsensus, svm).
 //
 // The underlying *grpc.ClientConn satisfies the gogoproto grpc.ClientConn
 // interface the generated clients require, so each accessor returns the
@@ -96,9 +99,22 @@ func (c *GRPCClient) RLConsensus() rlconsensusv1.QueryClient {
 func (c *GRPCClient) SVM() svmv1.QueryClient { return svmv1.NewQueryClient(c.conn) }
 
 // Multilayer returns the typed multilayer Query client (Params, Layer, Layers,
-// RoutingStats).
+// Anchor, Anchors, RoutingStats).
 func (c *GRPCClient) Multilayer() multilayerv1.QueryClient {
 	return multilayerv1.NewQueryClient(c.conn)
+}
+
+// Amm returns the typed amm Query client (Params, Pool, Pools, PoolByDenoms,
+// LPBalance, QuoteExactIn, QuoteExactOut).
+func (c *GRPCClient) Amm() ammv1.QueryClient { return ammv1.NewQueryClient(c.conn) }
+
+// License returns the typed license Query client (Check, Holders, List).
+func (c *GRPCClient) License() licensev1.QueryClient { return licensev1.NewQueryClient(c.conn) }
+
+// AbstractAccount returns the typed abstractaccount Query client (Config,
+// Account, Accounts).
+func (c *GRPCClient) AbstractAccount() abstractaccountv1.QueryClient {
+	return abstractaccountv1.NewQueryClient(c.conn)
 }
 
 // Rdk returns the typed rdk Query client (Params, Rollup, Rollups, Batch,

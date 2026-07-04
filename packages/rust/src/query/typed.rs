@@ -338,6 +338,36 @@ impl TypedQueryClient {
         .await
     }
 
+    /// Queries `qorechain.multilayer.v1.Query/Anchor` — the latest state anchor
+    /// for a layer.
+    pub async fn multilayer_anchor(
+        &self,
+        layer_id: impl Into<String>,
+    ) -> Result<qorechain::multilayer::v1::QueryAnchorResponse> {
+        self.grpc_query(
+            "/qorechain.multilayer.v1.Query/Anchor",
+            &qorechain::multilayer::v1::QueryAnchorRequest {
+                layer_id: layer_id.into(),
+            },
+        )
+        .await
+    }
+
+    /// Queries `qorechain.multilayer.v1.Query/Anchors` — all state anchors for a
+    /// layer (newest first).
+    pub async fn multilayer_anchors(
+        &self,
+        layer_id: impl Into<String>,
+    ) -> Result<qorechain::multilayer::v1::QueryAnchorsResponse> {
+        self.grpc_query(
+            "/qorechain.multilayer.v1.Query/Anchors",
+            &qorechain::multilayer::v1::QueryAnchorsRequest {
+                layer_id: layer_id.into(),
+            },
+        )
+        .await
+    }
+
     /// Queries `qorechain.multilayer.v1.Query/RoutingStats`.
     pub async fn multilayer_routing_stats(
         &self,
@@ -345,6 +375,187 @@ impl TypedQueryClient {
         self.grpc_query(
             "/qorechain.multilayer.v1.Query/RoutingStats",
             &qorechain::multilayer::v1::QueryRoutingStatsRequest {},
+        )
+        .await
+    }
+
+    // --- amm ---
+
+    /// Queries `qorechain.amm.v1.Query/Params`.
+    pub async fn amm_params(&self) -> Result<qorechain::amm::v1::QueryParamsResponse> {
+        self.grpc_query(
+            "/qorechain.amm.v1.Query/Params",
+            &qorechain::amm::v1::QueryParamsRequest {},
+        )
+        .await
+    }
+
+    /// Queries `qorechain.amm.v1.Query/Pool`.
+    pub async fn amm_pool(&self, pool_id: u64) -> Result<qorechain::amm::v1::QueryPoolResponse> {
+        self.grpc_query(
+            "/qorechain.amm.v1.Query/Pool",
+            &qorechain::amm::v1::QueryPoolRequest { pool_id },
+        )
+        .await
+    }
+
+    /// Queries `qorechain.amm.v1.Query/Pools`.
+    pub async fn amm_pools(&self) -> Result<qorechain::amm::v1::QueryPoolsResponse> {
+        self.grpc_query(
+            "/qorechain.amm.v1.Query/Pools",
+            &qorechain::amm::v1::QueryPoolsRequest {},
+        )
+        .await
+    }
+
+    /// Queries `qorechain.amm.v1.Query/PoolByDenoms`.
+    pub async fn amm_pool_by_denoms(
+        &self,
+        denom_a: impl Into<String>,
+        denom_b: impl Into<String>,
+    ) -> Result<qorechain::amm::v1::QueryPoolByDenomsResponse> {
+        self.grpc_query(
+            "/qorechain.amm.v1.Query/PoolByDenoms",
+            &qorechain::amm::v1::QueryPoolByDenomsRequest {
+                denom_a: denom_a.into(),
+                denom_b: denom_b.into(),
+            },
+        )
+        .await
+    }
+
+    /// Queries `qorechain.amm.v1.Query/LPBalance`.
+    pub async fn amm_lp_balance(
+        &self,
+        pool_id: u64,
+        address: impl Into<String>,
+    ) -> Result<qorechain::amm::v1::QueryLpBalanceResponse> {
+        self.grpc_query(
+            "/qorechain.amm.v1.Query/LPBalance",
+            &qorechain::amm::v1::QueryLpBalanceRequest {
+                pool_id,
+                address: address.into(),
+            },
+        )
+        .await
+    }
+
+    /// Queries `qorechain.amm.v1.Query/QuoteExactIn`.
+    pub async fn amm_quote_exact_in(
+        &self,
+        pool_id: u64,
+        denom_in: impl Into<String>,
+        amount_in: impl Into<String>,
+    ) -> Result<qorechain::amm::v1::QueryQuoteExactInResponse> {
+        self.grpc_query(
+            "/qorechain.amm.v1.Query/QuoteExactIn",
+            &qorechain::amm::v1::QueryQuoteExactInRequest {
+                pool_id,
+                denom_in: denom_in.into(),
+                amount_in: amount_in.into(),
+            },
+        )
+        .await
+    }
+
+    /// Queries `qorechain.amm.v1.Query/QuoteExactOut`.
+    pub async fn amm_quote_exact_out(
+        &self,
+        pool_id: u64,
+        denom_out: impl Into<String>,
+        amount_out: impl Into<String>,
+    ) -> Result<qorechain::amm::v1::QueryQuoteExactOutResponse> {
+        self.grpc_query(
+            "/qorechain.amm.v1.Query/QuoteExactOut",
+            &qorechain::amm::v1::QueryQuoteExactOutRequest {
+                pool_id,
+                denom_out: denom_out.into(),
+                amount_out: amount_out.into(),
+            },
+        )
+        .await
+    }
+
+    // --- license ---
+
+    /// Queries `qorechain.license.v1.Query/Check`.
+    pub async fn license_check(
+        &self,
+        grantee: impl Into<String>,
+        feature_id: impl Into<String>,
+    ) -> Result<qorechain::license::v1::QueryCheckResponse> {
+        self.grpc_query(
+            "/qorechain.license.v1.Query/Check",
+            &qorechain::license::v1::QueryCheckRequest {
+                grantee: grantee.into(),
+                feature_id: feature_id.into(),
+            },
+        )
+        .await
+    }
+
+    /// Queries `qorechain.license.v1.Query/Holders`.
+    pub async fn license_holders(
+        &self,
+        feature_id: impl Into<String>,
+    ) -> Result<qorechain::license::v1::QueryHoldersResponse> {
+        self.grpc_query(
+            "/qorechain.license.v1.Query/Holders",
+            &qorechain::license::v1::QueryHoldersRequest {
+                feature_id: feature_id.into(),
+            },
+        )
+        .await
+    }
+
+    /// Queries `qorechain.license.v1.Query/List`.
+    pub async fn license_list(
+        &self,
+        grantee: impl Into<String>,
+    ) -> Result<qorechain::license::v1::QueryListResponse> {
+        self.grpc_query(
+            "/qorechain.license.v1.Query/List",
+            &qorechain::license::v1::QueryListRequest {
+                grantee: grantee.into(),
+            },
+        )
+        .await
+    }
+
+    // --- abstractaccount ---
+
+    /// Queries `qorechain.abstractaccount.v1.Query/Config`.
+    pub async fn abstractaccount_config(
+        &self,
+    ) -> Result<qorechain::abstractaccount::v1::QueryConfigResponse> {
+        self.grpc_query(
+            "/qorechain.abstractaccount.v1.Query/Config",
+            &qorechain::abstractaccount::v1::QueryConfigRequest {},
+        )
+        .await
+    }
+
+    /// Queries `qorechain.abstractaccount.v1.Query/Account`.
+    pub async fn abstractaccount_account(
+        &self,
+        address: impl Into<String>,
+    ) -> Result<qorechain::abstractaccount::v1::QueryAccountResponse> {
+        self.grpc_query(
+            "/qorechain.abstractaccount.v1.Query/Account",
+            &qorechain::abstractaccount::v1::QueryAccountRequest {
+                address: address.into(),
+            },
+        )
+        .await
+    }
+
+    /// Queries `qorechain.abstractaccount.v1.Query/Accounts`.
+    pub async fn abstractaccount_accounts(
+        &self,
+    ) -> Result<qorechain::abstractaccount::v1::QueryAccountsResponse> {
+        self.grpc_query(
+            "/qorechain.abstractaccount.v1.Query/Accounts",
+            &qorechain::abstractaccount::v1::QueryAccountsRequest {},
         )
         .await
     }

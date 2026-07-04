@@ -50,7 +50,7 @@ HYBRID_KEY_TYPE = "hybrid"
 #: registration path expects ``"hybrid"``.
 DILITHIUM5_KEY_TYPE = HYBRID_KEY_TYPE
 
-#: A Cosmos ``StdFee``-shaped dict (as produced by :func:`qorsdk.fees.estimate_fee`).
+#: A Native ``StdFee``-shaped dict (as produced by :func:`qorsdk.fees.estimate_fee`).
 FeeDict = dict[str, Any]
 
 

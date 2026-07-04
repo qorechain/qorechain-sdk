@@ -21,7 +21,7 @@ const (
 )
 
 // NewInterfaceRegistry builds an InterfaceRegistry with the QoreChain bech32
-// address codecs and registers every QoreChain + standard Cosmos Msg
+// address codecs and registers every QoreChain + standard Native Msg
 // implementation into it.
 func NewInterfaceRegistry() codectypes.InterfaceRegistry {
 	reg, err := codectypes.NewInterfaceRegistryWithOptions(codectypes.InterfaceRegistryOptions{
@@ -47,7 +47,7 @@ func NewProtoCodec() *codec.ProtoCodec {
 
 // defaultRegistry is the process-wide default registry used by the convenience
 // helpers (PackAny / UnpackAny) and by the tx package. It carries every
-// registered QoreChain and Cosmos message.
+// registered QoreChain and Native message.
 var defaultRegistry = NewInterfaceRegistry()
 
 // DefaultInterfaceRegistry returns the process-wide default InterfaceRegistry.

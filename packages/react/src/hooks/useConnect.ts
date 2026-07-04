@@ -3,7 +3,7 @@
  *
  * Wraps the EXISTING wallet adapters so a component connects with one call and
  * the resolved signer + addresses land in the provider's connection state:
- *  - Keplr / Leap (Cosmos) via `@qorechain/sdk`'s {@link getCosmosWallet}, which
+ *  - Keplr / Leap (Native) via `@qorechain/sdk`'s {@link getCosmosWallet}, which
  *    suggests + enables the chain and returns a CosmJS signer; the signer is
  *    connected through `client.connectTx` so `useTx` can sign.
  *  - MetaMask / any EIP-1193 wallet (EVM) via `eth_requestAccounts` on the
@@ -48,7 +48,7 @@ export interface ConnectOptions {
    * (primarily for tests). The accepted shape depends on `kind`.
    */
   provider?: unknown;
-  /** Use Amino signing for the Cosmos path (forwarded to `getCosmosWallet`). */
+  /** Use Amino signing for the Native path (forwarded to `getCosmosWallet`). */
   preferAmino?: boolean;
 }
 
@@ -76,7 +76,7 @@ function getWindow(): Record<string, unknown> | undefined {
  * Multi-wallet connect bound to the {@link QoreChainProvider}.
  *
  * On success the provider's connection state holds the resolved addresses, the
- * connected wallet kind, and (for Cosmos) a `TxClient` for signing.
+ * connected wallet kind, and (for Native) a `TxClient` for signing.
  */
 export function useConnect(): UseConnectResult {
   const ctx = useQoreContext();

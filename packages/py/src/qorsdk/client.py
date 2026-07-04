@@ -34,7 +34,7 @@ class _Fees:
         """Estimate a fee for the given urgency via the AI fee oracle.
 
         Falls back to a deterministic static fee when the oracle is unavailable.
-        Returns a Cosmos ``StdFee``-shaped dict: ``{"amount": [...], "gas": ...}``.
+        Returns a Native ``StdFee``-shaped dict: ``{"amount": [...], "gas": ...}``.
         """
         return estimate_fee(self._rest, urgency=urgency)
 

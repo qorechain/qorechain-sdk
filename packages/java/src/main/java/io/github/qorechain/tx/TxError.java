@@ -4,7 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * ABCI transaction-error decoding, mirroring the Cosmos SDK's {@code sdk}
+ * ABCI transaction-error decoding, mirroring QoreChain Native's {@code sdk}
  * codespace error codes. {@link #decode} turns a {@code (code, codespace,
  * rawLog)} triple into a {@link QoreTxException} with a stable {@code kind} and a
  * human message.

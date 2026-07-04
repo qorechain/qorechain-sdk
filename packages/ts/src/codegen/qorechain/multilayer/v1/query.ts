@@ -66,6 +66,42 @@ export interface QueryLayersResponse {
   layers: LayerView[];
 }
 
+/**
+ * StateAnchorView is the queryable view of a subsidiary-layer state anchor
+ * committed to the Main Chain. The PQC (Dilithium-5) signature covers the
+ * canonical message: layer_id || layer_height(8-byte big-endian) ||
+ * state_root || validator_set_hash, signed by the layer creator's registered
+ * post-quantum key. This lets clients verify settlement anchors offline.
+ */
+export interface StateAnchorView {
+  layerId: string;
+  layerHeight: string;
+  stateRoot: Uint8Array;
+  validatorSetHash: Uint8Array;
+  mainChainHeight: string;
+  /** unix seconds */
+  anchoredAt: string;
+  pqcAggregateSignature: Uint8Array;
+  transactionCount: string;
+  compressedStateProof: Uint8Array;
+}
+
+export interface QueryAnchorRequest {
+  layerId: string;
+}
+
+export interface QueryAnchorResponse {
+  anchor?: StateAnchorView | undefined;
+}
+
+export interface QueryAnchorsRequest {
+  layerId: string;
+}
+
+export interface QueryAnchorsResponse {
+  anchors: StateAnchorView[];
+}
+
 export interface QueryRoutingStatsRequest {
 }
 
@@ -1076,6 +1112,490 @@ export const QueryLayersResponse: MessageFns<QueryLayersResponse> = {
   },
 };
 
+function createBaseStateAnchorView(): StateAnchorView {
+  return {
+    layerId: "",
+    layerHeight: "0",
+    stateRoot: new Uint8Array(0),
+    validatorSetHash: new Uint8Array(0),
+    mainChainHeight: "0",
+    anchoredAt: "0",
+    pqcAggregateSignature: new Uint8Array(0),
+    transactionCount: "0",
+    compressedStateProof: new Uint8Array(0),
+  };
+}
+
+export const StateAnchorView: MessageFns<StateAnchorView> = {
+  encode(message: StateAnchorView, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.layerId !== "") {
+      writer.uint32(10).string(message.layerId);
+    }
+    if (message.layerHeight !== "0") {
+      writer.uint32(16).uint64(message.layerHeight);
+    }
+    if (message.stateRoot.length !== 0) {
+      writer.uint32(26).bytes(message.stateRoot);
+    }
+    if (message.validatorSetHash.length !== 0) {
+      writer.uint32(34).bytes(message.validatorSetHash);
+    }
+    if (message.mainChainHeight !== "0") {
+      writer.uint32(40).uint64(message.mainChainHeight);
+    }
+    if (message.anchoredAt !== "0") {
+      writer.uint32(48).int64(message.anchoredAt);
+    }
+    if (message.pqcAggregateSignature.length !== 0) {
+      writer.uint32(58).bytes(message.pqcAggregateSignature);
+    }
+    if (message.transactionCount !== "0") {
+      writer.uint32(64).uint64(message.transactionCount);
+    }
+    if (message.compressedStateProof.length !== 0) {
+      writer.uint32(74).bytes(message.compressedStateProof);
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): StateAnchorView {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseStateAnchorView();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.layerId = reader.string();
+          continue;
+        }
+        case 2: {
+          if (tag !== 16) {
+            break;
+          }
+
+          message.layerHeight = reader.uint64().toString();
+          continue;
+        }
+        case 3: {
+          if (tag !== 26) {
+            break;
+          }
+
+          message.stateRoot = reader.bytes();
+          continue;
+        }
+        case 4: {
+          if (tag !== 34) {
+            break;
+          }
+
+          message.validatorSetHash = reader.bytes();
+          continue;
+        }
+        case 5: {
+          if (tag !== 40) {
+            break;
+          }
+
+          message.mainChainHeight = reader.uint64().toString();
+          continue;
+        }
+        case 6: {
+          if (tag !== 48) {
+            break;
+          }
+
+          message.anchoredAt = reader.int64().toString();
+          continue;
+        }
+        case 7: {
+          if (tag !== 58) {
+            break;
+          }
+
+          message.pqcAggregateSignature = reader.bytes();
+          continue;
+        }
+        case 8: {
+          if (tag !== 64) {
+            break;
+          }
+
+          message.transactionCount = reader.uint64().toString();
+          continue;
+        }
+        case 9: {
+          if (tag !== 74) {
+            break;
+          }
+
+          message.compressedStateProof = reader.bytes();
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(object: any): StateAnchorView {
+    return {
+      layerId: isSet(object.layerId)
+        ? globalThis.String(object.layerId)
+        : isSet(object.layer_id)
+        ? globalThis.String(object.layer_id)
+        : "",
+      layerHeight: isSet(object.layerHeight)
+        ? globalThis.String(object.layerHeight)
+        : isSet(object.layer_height)
+        ? globalThis.String(object.layer_height)
+        : "0",
+      stateRoot: isSet(object.stateRoot)
+        ? bytesFromBase64(object.stateRoot)
+        : isSet(object.state_root)
+        ? bytesFromBase64(object.state_root)
+        : new Uint8Array(0),
+      validatorSetHash: isSet(object.validatorSetHash)
+        ? bytesFromBase64(object.validatorSetHash)
+        : isSet(object.validator_set_hash)
+        ? bytesFromBase64(object.validator_set_hash)
+        : new Uint8Array(0),
+      mainChainHeight: isSet(object.mainChainHeight)
+        ? globalThis.String(object.mainChainHeight)
+        : isSet(object.main_chain_height)
+        ? globalThis.String(object.main_chain_height)
+        : "0",
+      anchoredAt: isSet(object.anchoredAt)
+        ? globalThis.String(object.anchoredAt)
+        : isSet(object.anchored_at)
+        ? globalThis.String(object.anchored_at)
+        : "0",
+      pqcAggregateSignature: isSet(object.pqcAggregateSignature)
+        ? bytesFromBase64(object.pqcAggregateSignature)
+        : isSet(object.pqc_aggregate_signature)
+        ? bytesFromBase64(object.pqc_aggregate_signature)
+        : new Uint8Array(0),
+      transactionCount: isSet(object.transactionCount)
+        ? globalThis.String(object.transactionCount)
+        : isSet(object.transaction_count)
+        ? globalThis.String(object.transaction_count)
+        : "0",
+      compressedStateProof: isSet(object.compressedStateProof)
+        ? bytesFromBase64(object.compressedStateProof)
+        : isSet(object.compressed_state_proof)
+        ? bytesFromBase64(object.compressed_state_proof)
+        : new Uint8Array(0),
+    };
+  },
+
+  toJSON(message: StateAnchorView): unknown {
+    const obj: any = {};
+    if (message.layerId !== "") {
+      obj.layerId = message.layerId;
+    }
+    if (message.layerHeight !== "0") {
+      obj.layerHeight = message.layerHeight;
+    }
+    if (message.stateRoot.length !== 0) {
+      obj.stateRoot = base64FromBytes(message.stateRoot);
+    }
+    if (message.validatorSetHash.length !== 0) {
+      obj.validatorSetHash = base64FromBytes(message.validatorSetHash);
+    }
+    if (message.mainChainHeight !== "0") {
+      obj.mainChainHeight = message.mainChainHeight;
+    }
+    if (message.anchoredAt !== "0") {
+      obj.anchoredAt = message.anchoredAt;
+    }
+    if (message.pqcAggregateSignature.length !== 0) {
+      obj.pqcAggregateSignature = base64FromBytes(message.pqcAggregateSignature);
+    }
+    if (message.transactionCount !== "0") {
+      obj.transactionCount = message.transactionCount;
+    }
+    if (message.compressedStateProof.length !== 0) {
+      obj.compressedStateProof = base64FromBytes(message.compressedStateProof);
+    }
+    return obj;
+  },
+
+  create(base?: DeepPartial<StateAnchorView>): StateAnchorView {
+    return StateAnchorView.fromPartial(base ?? {});
+  },
+  fromPartial(object: DeepPartial<StateAnchorView>): StateAnchorView {
+    const message = createBaseStateAnchorView();
+    message.layerId = object.layerId ?? "";
+    message.layerHeight = object.layerHeight ?? "0";
+    message.stateRoot = object.stateRoot ?? new Uint8Array(0);
+    message.validatorSetHash = object.validatorSetHash ?? new Uint8Array(0);
+    message.mainChainHeight = object.mainChainHeight ?? "0";
+    message.anchoredAt = object.anchoredAt ?? "0";
+    message.pqcAggregateSignature = object.pqcAggregateSignature ?? new Uint8Array(0);
+    message.transactionCount = object.transactionCount ?? "0";
+    message.compressedStateProof = object.compressedStateProof ?? new Uint8Array(0);
+    return message;
+  },
+};
+
+function createBaseQueryAnchorRequest(): QueryAnchorRequest {
+  return { layerId: "" };
+}
+
+export const QueryAnchorRequest: MessageFns<QueryAnchorRequest> = {
+  encode(message: QueryAnchorRequest, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.layerId !== "") {
+      writer.uint32(10).string(message.layerId);
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): QueryAnchorRequest {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseQueryAnchorRequest();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.layerId = reader.string();
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(object: any): QueryAnchorRequest {
+    return {
+      layerId: isSet(object.layerId)
+        ? globalThis.String(object.layerId)
+        : isSet(object.layer_id)
+        ? globalThis.String(object.layer_id)
+        : "",
+    };
+  },
+
+  toJSON(message: QueryAnchorRequest): unknown {
+    const obj: any = {};
+    if (message.layerId !== "") {
+      obj.layerId = message.layerId;
+    }
+    return obj;
+  },
+
+  create(base?: DeepPartial<QueryAnchorRequest>): QueryAnchorRequest {
+    return QueryAnchorRequest.fromPartial(base ?? {});
+  },
+  fromPartial(object: DeepPartial<QueryAnchorRequest>): QueryAnchorRequest {
+    const message = createBaseQueryAnchorRequest();
+    message.layerId = object.layerId ?? "";
+    return message;
+  },
+};
+
+function createBaseQueryAnchorResponse(): QueryAnchorResponse {
+  return { anchor: undefined };
+}
+
+export const QueryAnchorResponse: MessageFns<QueryAnchorResponse> = {
+  encode(message: QueryAnchorResponse, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.anchor !== undefined) {
+      StateAnchorView.encode(message.anchor, writer.uint32(10).fork()).join();
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): QueryAnchorResponse {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseQueryAnchorResponse();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.anchor = StateAnchorView.decode(reader, reader.uint32());
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(object: any): QueryAnchorResponse {
+    return { anchor: isSet(object.anchor) ? StateAnchorView.fromJSON(object.anchor) : undefined };
+  },
+
+  toJSON(message: QueryAnchorResponse): unknown {
+    const obj: any = {};
+    if (message.anchor !== undefined) {
+      obj.anchor = StateAnchorView.toJSON(message.anchor);
+    }
+    return obj;
+  },
+
+  create(base?: DeepPartial<QueryAnchorResponse>): QueryAnchorResponse {
+    return QueryAnchorResponse.fromPartial(base ?? {});
+  },
+  fromPartial(object: DeepPartial<QueryAnchorResponse>): QueryAnchorResponse {
+    const message = createBaseQueryAnchorResponse();
+    message.anchor = (object.anchor !== undefined && object.anchor !== null)
+      ? StateAnchorView.fromPartial(object.anchor)
+      : undefined;
+    return message;
+  },
+};
+
+function createBaseQueryAnchorsRequest(): QueryAnchorsRequest {
+  return { layerId: "" };
+}
+
+export const QueryAnchorsRequest: MessageFns<QueryAnchorsRequest> = {
+  encode(message: QueryAnchorsRequest, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.layerId !== "") {
+      writer.uint32(10).string(message.layerId);
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): QueryAnchorsRequest {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseQueryAnchorsRequest();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.layerId = reader.string();
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(object: any): QueryAnchorsRequest {
+    return {
+      layerId: isSet(object.layerId)
+        ? globalThis.String(object.layerId)
+        : isSet(object.layer_id)
+        ? globalThis.String(object.layer_id)
+        : "",
+    };
+  },
+
+  toJSON(message: QueryAnchorsRequest): unknown {
+    const obj: any = {};
+    if (message.layerId !== "") {
+      obj.layerId = message.layerId;
+    }
+    return obj;
+  },
+
+  create(base?: DeepPartial<QueryAnchorsRequest>): QueryAnchorsRequest {
+    return QueryAnchorsRequest.fromPartial(base ?? {});
+  },
+  fromPartial(object: DeepPartial<QueryAnchorsRequest>): QueryAnchorsRequest {
+    const message = createBaseQueryAnchorsRequest();
+    message.layerId = object.layerId ?? "";
+    return message;
+  },
+};
+
+function createBaseQueryAnchorsResponse(): QueryAnchorsResponse {
+  return { anchors: [] };
+}
+
+export const QueryAnchorsResponse: MessageFns<QueryAnchorsResponse> = {
+  encode(message: QueryAnchorsResponse, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    for (const v of message.anchors) {
+      StateAnchorView.encode(v!, writer.uint32(10).fork()).join();
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): QueryAnchorsResponse {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseQueryAnchorsResponse();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.anchors.push(StateAnchorView.decode(reader, reader.uint32()));
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(object: any): QueryAnchorsResponse {
+    return {
+      anchors: globalThis.Array.isArray(object?.anchors)
+        ? object.anchors.map((e: any) => StateAnchorView.fromJSON(e))
+        : [],
+    };
+  },
+
+  toJSON(message: QueryAnchorsResponse): unknown {
+    const obj: any = {};
+    if (message.anchors?.length) {
+      obj.anchors = message.anchors.map((e) => StateAnchorView.toJSON(e));
+    }
+    return obj;
+  },
+
+  create(base?: DeepPartial<QueryAnchorsResponse>): QueryAnchorsResponse {
+    return QueryAnchorsResponse.fromPartial(base ?? {});
+  },
+  fromPartial(object: DeepPartial<QueryAnchorsResponse>): QueryAnchorsResponse {
+    const message = createBaseQueryAnchorsResponse();
+    message.anchors = object.anchors?.map((e) => StateAnchorView.fromPartial(e)) || [];
+    return message;
+  },
+};
+
 function createBaseQueryRoutingStatsRequest(): QueryRoutingStatsRequest {
   return {};
 }
@@ -1192,7 +1712,48 @@ export const QueryDefinition = {
       requestStream: false,
       responseType: QueryParamsResponse as typeof QueryParamsResponse,
       responseStream: false,
-      options: {},
+      options: {
+        _unknownFields: {
+          578365826: [
+            new Uint8Array([
+              33,
+              18,
+              31,
+              47,
+              113,
+              111,
+              114,
+              101,
+              99,
+              104,
+              97,
+              105,
+              110,
+              47,
+              109,
+              117,
+              108,
+              116,
+              105,
+              108,
+              97,
+              121,
+              101,
+              114,
+              47,
+              118,
+              49,
+              47,
+              112,
+              97,
+              114,
+              97,
+              109,
+              115,
+            ]) as Uint8Array,
+          ],
+        },
+      },
     },
     /** Layer returns a single layer config by ID. */
     layer: {
@@ -1201,7 +1762,59 @@ export const QueryDefinition = {
       requestStream: false,
       responseType: QueryLayerResponse as typeof QueryLayerResponse,
       responseStream: false,
-      options: {},
+      options: {
+        _unknownFields: {
+          578365826: [
+            new Uint8Array([
+              44,
+              18,
+              42,
+              47,
+              113,
+              111,
+              114,
+              101,
+              99,
+              104,
+              97,
+              105,
+              110,
+              47,
+              109,
+              117,
+              108,
+              116,
+              105,
+              108,
+              97,
+              121,
+              101,
+              114,
+              47,
+              118,
+              49,
+              47,
+              108,
+              97,
+              121,
+              101,
+              114,
+              115,
+              47,
+              123,
+              108,
+              97,
+              121,
+              101,
+              114,
+              95,
+              105,
+              100,
+              125,
+            ]) as Uint8Array,
+          ],
+        },
+      },
     },
     /** Layers lists all layers. */
     layers: {
@@ -1210,7 +1823,171 @@ export const QueryDefinition = {
       requestStream: false,
       responseType: QueryLayersResponse as typeof QueryLayersResponse,
       responseStream: false,
-      options: {},
+      options: {
+        _unknownFields: {
+          578365826: [
+            new Uint8Array([
+              33,
+              18,
+              31,
+              47,
+              113,
+              111,
+              114,
+              101,
+              99,
+              104,
+              97,
+              105,
+              110,
+              47,
+              109,
+              117,
+              108,
+              116,
+              105,
+              108,
+              97,
+              121,
+              101,
+              114,
+              47,
+              118,
+              49,
+              47,
+              108,
+              97,
+              121,
+              101,
+              114,
+              115,
+            ]) as Uint8Array,
+          ],
+        },
+      },
+    },
+    /** Anchor returns the latest state anchor for a layer. */
+    anchor: {
+      name: "Anchor",
+      requestType: QueryAnchorRequest as typeof QueryAnchorRequest,
+      requestStream: false,
+      responseType: QueryAnchorResponse as typeof QueryAnchorResponse,
+      responseStream: false,
+      options: {
+        _unknownFields: {
+          578365826: [
+            new Uint8Array([
+              44,
+              18,
+              42,
+              47,
+              113,
+              111,
+              114,
+              101,
+              99,
+              104,
+              97,
+              105,
+              110,
+              47,
+              109,
+              117,
+              108,
+              116,
+              105,
+              108,
+              97,
+              121,
+              101,
+              114,
+              47,
+              118,
+              49,
+              47,
+              97,
+              110,
+              99,
+              104,
+              111,
+              114,
+              47,
+              123,
+              108,
+              97,
+              121,
+              101,
+              114,
+              95,
+              105,
+              100,
+              125,
+            ]) as Uint8Array,
+          ],
+        },
+      },
+    },
+    /** Anchors returns all state anchors for a layer (newest first). */
+    anchors: {
+      name: "Anchors",
+      requestType: QueryAnchorsRequest as typeof QueryAnchorsRequest,
+      requestStream: false,
+      responseType: QueryAnchorsResponse as typeof QueryAnchorsResponse,
+      responseStream: false,
+      options: {
+        _unknownFields: {
+          578365826: [
+            new Uint8Array([
+              45,
+              18,
+              43,
+              47,
+              113,
+              111,
+              114,
+              101,
+              99,
+              104,
+              97,
+              105,
+              110,
+              47,
+              109,
+              117,
+              108,
+              116,
+              105,
+              108,
+              97,
+              121,
+              101,
+              114,
+              47,
+              118,
+              49,
+              47,
+              97,
+              110,
+              99,
+              104,
+              111,
+              114,
+              115,
+              47,
+              123,
+              108,
+              97,
+              121,
+              101,
+              114,
+              95,
+              105,
+              100,
+              125,
+            ]) as Uint8Array,
+          ],
+        },
+      },
     },
     /** RoutingStats returns the cross-layer routing statistics. */
     routingStats: {
@@ -1219,10 +1996,83 @@ export const QueryDefinition = {
       requestStream: false,
       responseType: QueryRoutingStatsView as typeof QueryRoutingStatsView,
       responseStream: false,
-      options: {},
+      options: {
+        _unknownFields: {
+          578365826: [
+            new Uint8Array([
+              40,
+              18,
+              38,
+              47,
+              113,
+              111,
+              114,
+              101,
+              99,
+              104,
+              97,
+              105,
+              110,
+              47,
+              109,
+              117,
+              108,
+              116,
+              105,
+              108,
+              97,
+              121,
+              101,
+              114,
+              47,
+              118,
+              49,
+              47,
+              114,
+              111,
+              117,
+              116,
+              105,
+              110,
+              103,
+              45,
+              115,
+              116,
+              97,
+              116,
+              115,
+            ]) as Uint8Array,
+          ],
+        },
+      },
     },
   },
 } as const;
+
+function bytesFromBase64(b64: string): Uint8Array {
+  if ((globalThis as any).Buffer) {
+    return Uint8Array.from((globalThis as any).Buffer.from(b64, "base64"));
+  } else {
+    const bin = globalThis.atob(b64);
+    const arr = new Uint8Array(bin.length);
+    for (let i = 0; i < bin.length; ++i) {
+      arr[i] = bin.charCodeAt(i);
+    }
+    return arr;
+  }
+}
+
+function base64FromBytes(arr: Uint8Array): string {
+  if ((globalThis as any).Buffer) {
+    return (globalThis as any).Buffer.from(arr).toString("base64");
+  } else {
+    const bin: string[] = [];
+    arr.forEach((byte) => {
+      bin.push(globalThis.String.fromCharCode(byte));
+    });
+    return globalThis.btoa(bin.join(""));
+  }
+}
 
 type Builtin = Date | Function | Uint8Array | string | number | boolean | undefined;
 

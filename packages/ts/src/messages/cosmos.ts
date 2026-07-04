@@ -1,5 +1,5 @@
 /**
- * Convenience message builders for the standard Cosmos SDK modules.
+ * Convenience message builders for the standard Native modules.
  *
  * These wrap `cosmjs-types` message types and return cosmjs
  * {@link EncodeObject}s with the correct on-chain `typeUrl`. The matching types

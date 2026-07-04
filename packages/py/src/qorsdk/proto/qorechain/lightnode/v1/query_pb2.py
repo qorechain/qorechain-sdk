@@ -22,9 +22,10 @@ _runtime_version.ValidateProtobufRuntimeVersion(
 _sym_db = _symbol_database.Default()
 
 
+from google.api import annotations_pb2 as google_dot_api_dot_annotations__pb2
 
 
-DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\"qorechain/lightnode/v1/query.proto\x12\x16qorechain.lightnode.v1\"\xdc\x03\n\rLightNodeView\x12\x18\n\x07\x61\x64\x64ress\x18\x01 \x01(\tR\x07\x61\x64\x64ress\x12\x1b\n\tnode_type\x18\x02 \x01(\tR\x08nodeType\x12\x18\n\x07version\x18\x03 \x01(\tR\x07version\x12\"\n\x0c\x63\x61pabilities\x18\x04 \x03(\tR\x0c\x63\x61pabilities\x12\x16\n\x06status\x18\x05 \x01(\tR\x06status\x12#\n\rregistered_at\x18\x06 \x01(\x03R\x0cregisteredAt\x12%\n\x0elast_heartbeat\x18\x07 \x01(\x03R\rlastHeartbeat\x12)\n\x10total_heartbeats\x18\x08 \x01(\x04R\x0ftotalHeartbeats\x12/\n\x13\x65xpected_heartbeats\x18\t \x01(\x04R\x12\x65xpectedHeartbeats\x12\'\n\x0f\x64\x65legated_stake\x18\n \x01(\tR\x0e\x64\x65legatedStake\x12/\n\x13\x61\x63\x63umulated_rewards\x18\x0b \x01(\tR\x12\x61\x63\x63umulatedRewards\x12<\n\x1ainitial_heartbeat_interval\x18\x0c \x01(\x03R\x18initialHeartbeatInterval\"1\n\x15QueryLightNodeRequest\x12\x18\n\x07\x61\x64\x64ress\x18\x01 \x01(\tR\x07\x61\x64\x64ress\"i\n\x16QueryLightNodeResponse\x12\x39\n\x04node\x18\x01 \x01(\x0b\x32%.qorechain.lightnode.v1.LightNodeViewR\x04node\x12\x14\n\x05\x66ound\x18\x02 \x01(\x08R\x05\x66ound\"\x18\n\x16QueryLightNodesRequest\"V\n\x17QueryLightNodesResponse\x12;\n\x05nodes\x18\x01 \x03(\x0b\x32%.qorechain.lightnode.v1.LightNodeViewR\x05nodes\"\x14\n\x12QueryParamsRequest\"\xd5\x02\n\x13QueryParamsResponse\x12)\n\x10registration_fee\x18\x01 \x01(\tR\x0fregistrationFee\x12-\n\x12heartbeat_interval\x18\x02 \x01(\x03R\x11heartbeatInterval\x12.\n\x13min_delegated_stake\x18\x03 \x01(\tR\x11minDelegatedStake\x12!\n\x0creward_share\x18\x04 \x01(\tR\x0brewardShare\x12\x33\n\x16min_uptime_for_rewards\x18\x05 \x01(\tR\x13minUptimeForRewards\x12&\n\x0fmax_light_nodes\x18\x06 \x01(\x04R\rmaxLightNodes\x12\x34\n\x16heartbeat_grace_period\x18\x07 \x01(\x03R\x14heartbeatGracePeriod\"/\n\x13QueryRewardsRequest\x12\x18\n\x07\x61\x64\x64ress\x18\x01 \x01(\tR\x07\x61\x64\x64ress\"G\n\x14QueryRewardsResponse\x12/\n\x13\x61\x63\x63umulated_rewards\x18\x01 \x01(\tR\x12\x61\x63\x63umulatedRewards\"\x13\n\x11QueryStatsRequest\"\xb5\x01\n\x12QueryStatsResponse\x12)\n\x10total_registered\x18\x01 \x01(\x04R\x0ftotalRegistered\x12!\n\x0ctotal_active\x18\x02 \x01(\x04R\x0btotalActive\x12#\n\rtotal_rewards\x18\x03 \x01(\tR\x0ctotalRewards\x12,\n\x12last_reward_height\x18\x04 \x01(\x03R\x10lastRewardHeight2\x8b\x04\n\x05Query\x12j\n\tLightNode\x12-.qorechain.lightnode.v1.QueryLightNodeRequest\x1a..qorechain.lightnode.v1.QueryLightNodeResponse\x12m\n\nLightNodes\x12..qorechain.lightnode.v1.QueryLightNodesRequest\x1a/.qorechain.lightnode.v1.QueryLightNodesResponse\x12\x61\n\x06Params\x12*.qorechain.lightnode.v1.QueryParamsRequest\x1a+.qorechain.lightnode.v1.QueryParamsResponse\x12\x64\n\x07Rewards\x12+.qorechain.lightnode.v1.QueryRewardsRequest\x1a,.qorechain.lightnode.v1.QueryRewardsResponse\x12^\n\x05Stats\x12).qorechain.lightnode.v1.QueryStatsRequest\x1a*.qorechain.lightnode.v1.QueryStatsResponseB\xd9\x01\n\x1a\x63om.qorechain.lightnode.v1B\nQueryProtoP\x01Z5github.com/qorechain/qorechain-core/x/lightnode/types\xa2\x02\x03QLX\xaa\x02\x16Qorechain.Lightnode.V1\xca\x02\x16Qorechain\\Lightnode\\V1\xe2\x02\"Qorechain\\Lightnode\\V1\\GPBMetadata\xea\x02\x18Qorechain::Lightnode::V1b\x06proto3')
+DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\"qorechain/lightnode/v1/query.proto\x12\x16qorechain.lightnode.v1\x1a\x1cgoogle/api/annotations.proto\"\xdc\x03\n\rLightNodeView\x12\x18\n\x07\x61\x64\x64ress\x18\x01 \x01(\tR\x07\x61\x64\x64ress\x12\x1b\n\tnode_type\x18\x02 \x01(\tR\x08nodeType\x12\x18\n\x07version\x18\x03 \x01(\tR\x07version\x12\"\n\x0c\x63\x61pabilities\x18\x04 \x03(\tR\x0c\x63\x61pabilities\x12\x16\n\x06status\x18\x05 \x01(\tR\x06status\x12#\n\rregistered_at\x18\x06 \x01(\x03R\x0cregisteredAt\x12%\n\x0elast_heartbeat\x18\x07 \x01(\x03R\rlastHeartbeat\x12)\n\x10total_heartbeats\x18\x08 \x01(\x04R\x0ftotalHeartbeats\x12/\n\x13\x65xpected_heartbeats\x18\t \x01(\x04R\x12\x65xpectedHeartbeats\x12\'\n\x0f\x64\x65legated_stake\x18\n \x01(\tR\x0e\x64\x65legatedStake\x12/\n\x13\x61\x63\x63umulated_rewards\x18\x0b \x01(\tR\x12\x61\x63\x63umulatedRewards\x12<\n\x1ainitial_heartbeat_interval\x18\x0c \x01(\x03R\x18initialHeartbeatInterval\"1\n\x15QueryLightNodeRequest\x12\x18\n\x07\x61\x64\x64ress\x18\x01 \x01(\tR\x07\x61\x64\x64ress\"i\n\x16QueryLightNodeResponse\x12\x39\n\x04node\x18\x01 \x01(\x0b\x32%.qorechain.lightnode.v1.LightNodeViewR\x04node\x12\x14\n\x05\x66ound\x18\x02 \x01(\x08R\x05\x66ound\"\x18\n\x16QueryLightNodesRequest\"V\n\x17QueryLightNodesResponse\x12;\n\x05nodes\x18\x01 \x03(\x0b\x32%.qorechain.lightnode.v1.LightNodeViewR\x05nodes\"\x14\n\x12QueryParamsRequest\"\xd5\x02\n\x13QueryParamsResponse\x12)\n\x10registration_fee\x18\x01 \x01(\tR\x0fregistrationFee\x12-\n\x12heartbeat_interval\x18\x02 \x01(\x03R\x11heartbeatInterval\x12.\n\x13min_delegated_stake\x18\x03 \x01(\tR\x11minDelegatedStake\x12!\n\x0creward_share\x18\x04 \x01(\tR\x0brewardShare\x12\x33\n\x16min_uptime_for_rewards\x18\x05 \x01(\tR\x13minUptimeForRewards\x12&\n\x0fmax_light_nodes\x18\x06 \x01(\x04R\rmaxLightNodes\x12\x34\n\x16heartbeat_grace_period\x18\x07 \x01(\x03R\x14heartbeatGracePeriod\"/\n\x13QueryRewardsRequest\x12\x18\n\x07\x61\x64\x64ress\x18\x01 \x01(\tR\x07\x61\x64\x64ress\"G\n\x14QueryRewardsResponse\x12/\n\x13\x61\x63\x63umulated_rewards\x18\x01 \x01(\tR\x12\x61\x63\x63umulatedRewards\"\x13\n\x11QueryStatsRequest\"\xb5\x01\n\x12QueryStatsResponse\x12)\n\x10total_registered\x18\x01 \x01(\x04R\x0ftotalRegistered\x12!\n\x0ctotal_active\x18\x02 \x01(\x04R\x0btotalActive\x12#\n\rtotal_rewards\x18\x03 \x01(\tR\x0ctotalRewards\x12,\n\x12last_reward_height\x18\x04 \x01(\x03R\x10lastRewardHeight2\xe9\x05\n\x05Query\x12\x9a\x01\n\tLightNode\x12-.qorechain.lightnode.v1.QueryLightNodeRequest\x1a..qorechain.lightnode.v1.QueryLightNodeResponse\".\x82\xd3\xe4\x93\x02(\x12&/qorechain/lightnode/v1/node/{address}\x12\x94\x01\n\nLightNodes\x12..qorechain.lightnode.v1.QueryLightNodesRequest\x1a/.qorechain.lightnode.v1.QueryLightNodesResponse\"%\x82\xd3\xe4\x93\x02\x1f\x12\x1d/qorechain/lightnode/v1/nodes\x12\x89\x01\n\x06Params\x12*.qorechain.lightnode.v1.QueryParamsRequest\x1a+.qorechain.lightnode.v1.QueryParamsResponse\"&\x82\xd3\xe4\x93\x02 \x12\x1e/qorechain/lightnode/v1/params\x12\x97\x01\n\x07Rewards\x12+.qorechain.lightnode.v1.QueryRewardsRequest\x1a,.qorechain.lightnode.v1.QueryRewardsResponse\"1\x82\xd3\xe4\x93\x02+\x12)/qorechain/lightnode/v1/rewards/{address}\x12\x85\x01\n\x05Stats\x12).qorechain.lightnode.v1.QueryStatsRequest\x1a*.qorechain.lightnode.v1.QueryStatsResponse\"%\x82\xd3\xe4\x93\x02\x1f\x12\x1d/qorechain/lightnode/v1/statsB\xd9\x01\n\x1a\x63om.qorechain.lightnode.v1B\nQueryProtoP\x01Z5github.com/qorechain/qorechain-core/x/lightnode/types\xa2\x02\x03QLX\xaa\x02\x16Qorechain.Lightnode.V1\xca\x02\x16Qorechain\\Lightnode\\V1\xe2\x02\"Qorechain\\Lightnode\\V1\\GPBMetadata\xea\x02\x18Qorechain::Lightnode::V1b\x06proto3')
 
 _globals = globals()
 _builder.BuildMessageAndEnumDescriptors(DESCRIPTOR, _globals)
@@ -32,28 +33,38 @@ _builder.BuildTopDescriptorsAndMessages(DESCRIPTOR, 'qorechain.lightnode.v1.quer
 if not _descriptor._USE_C_DESCRIPTORS:
   _globals['DESCRIPTOR']._loaded_options = None
   _globals['DESCRIPTOR']._serialized_options = b'\n\032com.qorechain.lightnode.v1B\nQueryProtoP\001Z5github.com/qorechain/qorechain-core/x/lightnode/types\242\002\003QLX\252\002\026Qorechain.Lightnode.V1\312\002\026Qorechain\\Lightnode\\V1\342\002\"Qorechain\\Lightnode\\V1\\GPBMetadata\352\002\030Qorechain::Lightnode::V1'
-  _globals['_LIGHTNODEVIEW']._serialized_start=63
-  _globals['_LIGHTNODEVIEW']._serialized_end=539
-  _globals['_QUERYLIGHTNODEREQUEST']._serialized_start=541
-  _globals['_QUERYLIGHTNODEREQUEST']._serialized_end=590
-  _globals['_QUERYLIGHTNODERESPONSE']._serialized_start=592
-  _globals['_QUERYLIGHTNODERESPONSE']._serialized_end=697
-  _globals['_QUERYLIGHTNODESREQUEST']._serialized_start=699
-  _globals['_QUERYLIGHTNODESREQUEST']._serialized_end=723
-  _globals['_QUERYLIGHTNODESRESPONSE']._serialized_start=725
-  _globals['_QUERYLIGHTNODESRESPONSE']._serialized_end=811
-  _globals['_QUERYPARAMSREQUEST']._serialized_start=813
-  _globals['_QUERYPARAMSREQUEST']._serialized_end=833
-  _globals['_QUERYPARAMSRESPONSE']._serialized_start=836
-  _globals['_QUERYPARAMSRESPONSE']._serialized_end=1177
-  _globals['_QUERYREWARDSREQUEST']._serialized_start=1179
-  _globals['_QUERYREWARDSREQUEST']._serialized_end=1226
-  _globals['_QUERYREWARDSRESPONSE']._serialized_start=1228
-  _globals['_QUERYREWARDSRESPONSE']._serialized_end=1299
-  _globals['_QUERYSTATSREQUEST']._serialized_start=1301
-  _globals['_QUERYSTATSREQUEST']._serialized_end=1320
-  _globals['_QUERYSTATSRESPONSE']._serialized_start=1323
-  _globals['_QUERYSTATSRESPONSE']._serialized_end=1504
-  _globals['_QUERY']._serialized_start=1507
-  _globals['_QUERY']._serialized_end=2030
+  _globals['_QUERY'].methods_by_name['LightNode']._loaded_options = None
+  _globals['_QUERY'].methods_by_name['LightNode']._serialized_options = b'\202\323\344\223\002(\022&/qorechain/lightnode/v1/node/{address}'
+  _globals['_QUERY'].methods_by_name['LightNodes']._loaded_options = None
+  _globals['_QUERY'].methods_by_name['LightNodes']._serialized_options = b'\202\323\344\223\002\037\022\035/qorechain/lightnode/v1/nodes'
+  _globals['_QUERY'].methods_by_name['Params']._loaded_options = None
+  _globals['_QUERY'].methods_by_name['Params']._serialized_options = b'\202\323\344\223\002 \022\036/qorechain/lightnode/v1/params'
+  _globals['_QUERY'].methods_by_name['Rewards']._loaded_options = None
+  _globals['_QUERY'].methods_by_name['Rewards']._serialized_options = b'\202\323\344\223\002+\022)/qorechain/lightnode/v1/rewards/{address}'
+  _globals['_QUERY'].methods_by_name['Stats']._loaded_options = None
+  _globals['_QUERY'].methods_by_name['Stats']._serialized_options = b'\202\323\344\223\002\037\022\035/qorechain/lightnode/v1/stats'
+  _globals['_LIGHTNODEVIEW']._serialized_start=93
+  _globals['_LIGHTNODEVIEW']._serialized_end=569
+  _globals['_QUERYLIGHTNODEREQUEST']._serialized_start=571
+  _globals['_QUERYLIGHTNODEREQUEST']._serialized_end=620
+  _globals['_QUERYLIGHTNODERESPONSE']._serialized_start=622
+  _globals['_QUERYLIGHTNODERESPONSE']._serialized_end=727
+  _globals['_QUERYLIGHTNODESREQUEST']._serialized_start=729
+  _globals['_QUERYLIGHTNODESREQUEST']._serialized_end=753
+  _globals['_QUERYLIGHTNODESRESPONSE']._serialized_start=755
+  _globals['_QUERYLIGHTNODESRESPONSE']._serialized_end=841
+  _globals['_QUERYPARAMSREQUEST']._serialized_start=843
+  _globals['_QUERYPARAMSREQUEST']._serialized_end=863
+  _globals['_QUERYPARAMSRESPONSE']._serialized_start=866
+  _globals['_QUERYPARAMSRESPONSE']._serialized_end=1207
+  _globals['_QUERYREWARDSREQUEST']._serialized_start=1209
+  _globals['_QUERYREWARDSREQUEST']._serialized_end=1256
+  _globals['_QUERYREWARDSRESPONSE']._serialized_start=1258
+  _globals['_QUERYREWARDSRESPONSE']._serialized_end=1329
+  _globals['_QUERYSTATSREQUEST']._serialized_start=1331
+  _globals['_QUERYSTATSREQUEST']._serialized_end=1350
+  _globals['_QUERYSTATSRESPONSE']._serialized_start=1353
+  _globals['_QUERYSTATSRESPONSE']._serialized_end=1534
+  _globals['_QUERY']._serialized_start=1537
+  _globals['_QUERY']._serialized_end=2282
 # @@protoc_insertion_point(module_scope)

@@ -1,14 +1,14 @@
 """A type-URL → protobuf-class registry for QoreChain messages.
 
 Building a transaction does not need a registry — a :class:`Msg`'s ``value`` is a
-populated protobuf instance that packs directly into a Cosmos ``Any`` under its
+populated protobuf instance that packs directly into a Native ``Any`` under its
 ``type_url`` (see :func:`qorechain.tx.send_messages`). The registry is the
 *inverse*: it maps a ``type_url`` back to the generated class so a message pulled
 off-chain (e.g. from a decoded ``TxBody``) can be parsed into a typed object,
 and so callers can introspect the supported surface.
 
 :data:`QORECHAIN_REGISTRY_TYPES` covers every QoreChain custom-module message;
-the standard Cosmos SDK message classes cosmpy bundles are merged in by
+the standard Native message classes cosmpy bundles are merged in by
 :func:`qorechain_registry`. The ``type_url`` strings are the canonical on-chain
 identifiers (``/qorechain.<module>.v1.Msg*`` and ``/cosmos.*``).
 """
@@ -135,6 +135,12 @@ QORECHAIN_REGISTRY_TYPES: dict[str, ProtoType] = {
     "/qorechain.abstractaccount.v1.MsgUpdateSpendingRules": (
         abstractaccount_tx.MsgUpdateSpendingRules
     ),
+    "/qorechain.abstractaccount.v1.MsgRegisterAuthenticator": (
+        abstractaccount_tx.MsgRegisterAuthenticator
+    ),
+    "/qorechain.abstractaccount.v1.MsgRevokeAuthenticator": (
+        abstractaccount_tx.MsgRevokeAuthenticator
+    ),
     # crossvm
     "/qorechain.crossvm.v1.MsgCrossVMCall": crossvm_tx.MsgCrossVMCall,
     "/qorechain.crossvm.v1.MsgProcessQueue": crossvm_tx.MsgProcessQueue,
@@ -147,7 +153,7 @@ QORECHAIN_REGISTRY_TYPES: dict[str, ProtoType] = {
     ),
 }
 
-#: The standard Cosmos SDK + IBC messages this SDK composes, keyed by type URL.
+#: The standard Native + IBC messages this SDK composes, keyed by type URL.
 COSMOS_REGISTRY_TYPES: dict[str, ProtoType] = {
     "/cosmos.bank.v1beta1.MsgSend": MsgSend,
     "/cosmos.bank.v1beta1.MsgMultiSend": MsgMultiSend,
@@ -177,7 +183,7 @@ def qorechain_registry(
 ) -> dict[str, ProtoType]:
     """Build the full type-URL → protobuf-class map.
 
-    Merges the standard Cosmos SDK / IBC messages and every QoreChain custom
+    Merges the standard Native / IBC messages and every QoreChain custom
     message. ``extra_types`` (e.g. private-module messages) is applied last and
     overrides any colliding built-in entry.
 

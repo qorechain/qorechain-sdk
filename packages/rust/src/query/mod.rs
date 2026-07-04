@@ -1,6 +1,6 @@
 //! Async REST (LCD) and JSON-RPC read clients for QoreChain.
 //!
-//! [`RestClient`] wraps the standard Cosmos SDK bank endpoint plus QoreChain's
+//! [`RestClient`] wraps the standard QoreChain Native bank endpoint plus QoreChain's
 //! custom module read routes under `/qorechain/<module>/v1/...`.
 //! [`JsonRpcClient`] is a generic JSON-RPC 2.0 transport, and [`QorClient`]
 //! layers the typed `qor_*` namespace on top of it. All HTTP is performed

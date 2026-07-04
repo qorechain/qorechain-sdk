@@ -186,3 +186,91 @@ def test_bridge_chain_config_and_operation_route():
     clients.bridge.operation("op-1")
     mc_op = channel.calls["/qorechain.bridge.v1.Query/Operation"]
     assert mc_op.last_request.id == "op-1"
+
+
+def test_multilayer_anchor_and_anchors_route():
+    from qorsdk.proto.qorechain.multilayer.v1 import query_pb2 as ml_q
+
+    channel = FakeChannel(
+        {
+            "/qorechain.multilayer.v1.Query/Anchor": (
+                ml_q.QueryAnchorResponse().SerializeToString()
+            ),
+            "/qorechain.multilayer.v1.Query/Anchors": (
+                ml_q.QueryAnchorsResponse().SerializeToString()
+            ),
+        }
+    )
+    clients = connect_query_clients("localhost:9090", channel=channel)
+
+    clients.multilayer.anchor("l-9")
+    mc = channel.calls["/qorechain.multilayer.v1.Query/Anchor"]
+    assert isinstance(mc.last_request, ml_q.QueryAnchorRequest)
+    assert mc.last_request.layer_id == "l-9"
+
+    out = clients.multilayer.anchors("l-9")
+    mc2 = channel.calls["/qorechain.multilayer.v1.Query/Anchors"]
+    assert mc2.last_request.layer_id == "l-9"
+    assert isinstance(out, ml_q.QueryAnchorsResponse)
+
+
+def test_amm_query_client_routes_and_types():
+    from qorsdk.proto.qorechain.amm.v1 import query_pb2 as amm_q
+
+    channel = FakeChannel(
+        {
+            "/qorechain.amm.v1.Query/Pool": amm_q.QueryPoolResponse().SerializeToString(),
+            "/qorechain.amm.v1.Query/QuoteExactIn": (
+                amm_q.QueryQuoteExactInResponse().SerializeToString()
+            ),
+        }
+    )
+    clients = connect_query_clients("localhost:9090", channel=channel)
+
+    clients.amm.pool(5)
+    mc = channel.calls["/qorechain.amm.v1.Query/Pool"]
+    assert isinstance(mc.last_request, amm_q.QueryPoolRequest)
+    assert mc.last_request.pool_id == 5
+
+    out = clients.amm.quote_exact_in(5, "uqor", "1000")
+    mcq = channel.calls["/qorechain.amm.v1.Query/QuoteExactIn"]
+    assert mcq.last_request.pool_id == 5
+    assert mcq.last_request.denom_in == "uqor"
+    assert mcq.last_request.amount_in == "1000"
+    assert isinstance(out, amm_q.QueryQuoteExactInResponse)
+
+
+def test_license_query_client_routes():
+    from qorsdk.proto.qorechain.license.v1 import query_pb2 as lic_q
+
+    channel = FakeChannel(
+        {
+            "/qorechain.license.v1.Query/Check": (
+                lic_q.QueryCheckResponse().SerializeToString()
+            ),
+        }
+    )
+    clients = connect_query_clients("localhost:9090", channel=channel)
+    clients.license.check("qor1grantee", "feature-x")
+    mc = channel.calls["/qorechain.license.v1.Query/Check"]
+    assert isinstance(mc.last_request, lic_q.QueryCheckRequest)
+    assert mc.last_request.grantee == "qor1grantee"
+    assert mc.last_request.feature_id == "feature-x"
+
+
+def test_abstractaccount_query_client_routes():
+    from qorsdk.proto.qorechain.abstractaccount.v1 import query_pb2 as aa_q
+
+    channel = FakeChannel(
+        {
+            "/qorechain.abstractaccount.v1.Query/Account": (
+                aa_q.QueryAccountResponse().SerializeToString()
+            ),
+        }
+    )
+    clients = connect_query_clients("localhost:9090", channel=channel)
+    out = clients.abstractaccount.account("qor1acct")
+    mc = channel.calls["/qorechain.abstractaccount.v1.Query/Account"]
+    assert isinstance(mc.last_request, aa_q.QueryAccountRequest)
+    assert mc.last_request.address == "qor1acct"
+    assert isinstance(out, aa_q.QueryAccountResponse)

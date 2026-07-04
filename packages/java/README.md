@@ -14,15 +14,18 @@ Go, and Rust SDKs:
   the hybrid-signature extension builder.
 - **messages** — committed `protobuf-java` classes for all QoreChain modules, a
   `typeUrl → parser` registry covering all 49 custom `Msg` types, typed composers,
-  and Cosmos-style `Any` pack/unpack.
+  and Native `Any` pack/unpack.
 - **tx** — native `bankSend` builder, hybrid (classical + PQC) transaction
   signing, gas/fee helpers, ABCI error decoding, broadcast, and `waitForTx`.
-- **query** — `RestClient` (Cosmos + 8 custom routes), `JsonRpcClient`
+- **query** — `RestClient` (Native + 8 custom routes), `JsonRpcClient`
   (EVM `eth_*`), `QorClient` (25 `qor_*` methods).
 - **subscribe** — WebSocket `subscribeNewBlocks` / `subscribeTx`.
 - **multilayer / rdk** — typed composers and `MultilayerQueryClient` /
   `RdkQueryClient` / `BridgeQueryClient` for sidechains, paychains, and rollups
-  (v0.4.0).
+  (v0.4.0). Chain v3.1.83 adds `AmmQueryClient` / `LicenseQueryClient` /
+  `AbstractAccountQueryClient`, the `multilayer` `anchor` / `anchors` state-anchor
+  queries, and abstractaccount `registerAuthenticator` / `revokeAuthenticator`
+  composers.
 - **crossvm** — `CrossVMClient`: unified cross-VM calls (single + atomic
   triple-VM) over `MsgCrossVMCall` (v0.5.0).
 - **evm** — `EvmPrecompiles`: AI pre-flight risk/anomaly scoring (v0.5.0).
@@ -185,6 +188,52 @@ PqcDx.migratePqcKey(signer, broadcaster, new PqcDx.MigrateOptions());
 ```
 
 See the [quantum-safe](../../docs/docs/guides/quantum-safe.md) guide.
+
+## Unified eth-native wallet (v0.6.0)
+
+One `eth_secp256k1` key = ONE 20-byte identity rendered three ways — `qor1…`
+(bech32), `0x…` (EIP-55), and SVM base58 (the 20 bytes right-padded with 12 zero
+bytes to 32). A deposit to any of the three lands in the **same** balance, and the
+key spends on **all** lanes. `UnifiedAccounts.deriveUnifiedAccount` uses the
+Ethereum HD path (`m/44'/60'/0'/0/{index}`); `UnifiedAccounts.unifiedAccountFromSeed`
+builds one directly from a 32-byte secret. `UnifiedAccounts.addressesFrom20` /
+`UnifiedAccounts.qoreAddresses` convert between the three encodings. The legacy
+coin-type-118 `Accounts.deriveNativeAccount` still works (additive).
+
+Native-lane signing over the eth key: `SignEth.signClassicalEth` is a classical
+secp256k1 signature over `keccak256(SignDoc)` with pubkey type
+`/cosmos.evm.crypto.v1.ethsecp256k1.PubKey`; `SignEth.signHybridEth` adds the
+ML-DSA-87 post-quantum signature. Account parsing accepts eth_secp256k1 public keys.
+
+```java
+import io.github.qorechain.accounts.UnifiedAccounts;
+import io.github.qorechain.accounts.UnifiedAccounts.UnifiedAccount;
+import io.github.qorechain.tx.SignEth;
+
+UnifiedAccount account = UnifiedAccounts.deriveUnifiedAccount(mnemonic, 0);
+account.cosmos; // "qor1…"    — QoreChain Native lane
+account.evm;    // "0x…"      — EIP-55 checksummed
+account.svm;    // "<base58>" — 20 bytes + 12 zero pad
+
+// Sign a QoreChain Native tx from the unified eth key (hybrid PQC path).
+SignEth.Options opts = new SignEth.Options();
+opts.messages = messages;
+opts.secp256k1PrivateKey = account.privateKey;
+opts.secp256k1PublicKey = account.publicKey;
+opts.pqcKeypair = account.pqc;
+opts.chainId = "qorechain-vladi";
+opts.accountNumber = accountNumber;
+opts.sequence = sequence;
+opts.fee = fee;
+SignEth.Built built = SignEth.signHybridEth(opts);
+
+// Derive a canonical, non-custodial unified account from a deterministic
+// Phantom signature (shake256(signature, 32)).
+UnifiedAccount fromPhantom =
+        UnifiedAccounts.unifiedAccountFromPhantomSignature(phantomSignature);
+```
+
+See the [unified-wallet](../../docs/docs/guides/unified-wallet.md) guide.
 
 ## Regenerating the protobuf classes
 

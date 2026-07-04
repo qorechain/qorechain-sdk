@@ -104,6 +104,15 @@ public final class HybridTx {
         };
     }
 
+    /**
+     * The chain-contract PQC signing frame: {@code BE32(len b0) ‖ b0 ‖ BE32(len
+     * auth) ‖ auth}. No hashing, no domain prefix. Shared with the eth-native lane
+     * ({@link SignEth}).
+     */
+    public static byte[] frame(byte[] b0, byte[] auth) {
+        return concat(be32(b0.length), b0, be32(auth.length), auth);
+    }
+
     private static byte[] concat(byte[]... parts) {
         int total = 0;
         for (byte[] p : parts) {
@@ -187,7 +196,7 @@ public final class HybridTx {
                 .toByteArray();
     }
 
-    /** Encode the {@code PQCHybridSignature} extension as a Cosmos {@code Any} (Go-JSON value). */
+    /** Encode the {@code PQCHybridSignature} extension as a Native {@code Any} (Go-JSON value). */
     public static Any encodeHybridExtension(HybridSignatureExtension ext) {
         return Any.newBuilder()
                 .setTypeUrl(Pqc.HYBRID_SIG_TYPE_URL)
@@ -207,8 +216,7 @@ public final class HybridTx {
         byte[] authInfoBytes = buildAuthInfoBytes(opts);
 
         // 3. PQC framing + ML-DSA-87 signature over B0 + A (NOT the final body).
-        byte[] pqcSignedMessage =
-                concat(be32(b0.length), b0, be32(authInfoBytes.length), authInfoBytes);
+        byte[] pqcSignedMessage = frame(b0, authInfoBytes);
         byte[] pqcSignature = Pqc.pqcSign(opts.pqcKeypair.secretKey, pqcSignedMessage);
 
         // 4. Build the PQC extension Any and attach it to the FINAL body (CRITICAL slot).

@@ -255,9 +255,12 @@ func (SvmComposers) CreateAccount(sender string, owner svmv1.Bytes32, space, lam
 	return &svmv1.MsgCreateAccount{Sender: sender, Owner: owner, Space: space, Lamports: lamports, Salt: salt}
 }
 
-// ExecuteProgram builds MsgExecuteProgram.
-func (SvmComposers) ExecuteProgram(sender string, programID svmv1.Bytes32, accounts []svmv1.SvmAccountMeta, data []byte) *svmv1.MsgExecuteProgram {
-	return &svmv1.MsgExecuteProgram{Sender: sender, ProgramID: programID, Accounts: accounts, Data: data}
+// ExecuteProgram builds MsgExecuteProgram. auth optionally carries a
+// foreign-scheme (e.g. Phantom ed25519) authorization: when set, any funded
+// account may relay the action while the foreign key remains the authority. Pass
+// nil for a directly-signed execution.
+func (SvmComposers) ExecuteProgram(sender string, programID svmv1.Bytes32, accounts []svmv1.SvmAccountMeta, data []byte, auth *svmv1.SVMAuth) *svmv1.MsgExecuteProgram {
+	return &svmv1.MsgExecuteProgram{Sender: sender, ProgramID: programID, Accounts: accounts, Data: data, Auth: auth}
 }
 
 // RegisterPQCKey builds MsgRegisterSVMPQCKey.
@@ -337,6 +340,19 @@ func (AbstractAccountComposers) Create(owner, accountType string) *abstractaccou
 // UpdateSpendingRules builds MsgUpdateSpendingRules.
 func (AbstractAccountComposers) UpdateSpendingRules(owner, accountAddress string, rules []abstractaccountv1.SpendingRule) *abstractaccountv1.MsgUpdateSpendingRules {
 	return &abstractaccountv1.MsgUpdateSpendingRules{Owner: owner, AccountAddress: accountAddress, Rules: rules}
+}
+
+// RegisterAuthenticator builds MsgRegisterAuthenticator, adding a signing
+// authenticator (scheme + pubkey) to an abstract account with optional
+// permissions, an expiry (unix seconds; 0 = none), and a label.
+func (AbstractAccountComposers) RegisterAuthenticator(owner, accountAddress, scheme string, pubkey []byte, permissions []string, expiryUnix int64, label string) *abstractaccountv1.MsgRegisterAuthenticator {
+	return &abstractaccountv1.MsgRegisterAuthenticator{Owner: owner, AccountAddress: accountAddress, Scheme: scheme, Pubkey: pubkey, Permissions: permissions, ExpiryUnix: expiryUnix, Label: label}
+}
+
+// RevokeAuthenticator builds MsgRevokeAuthenticator, removing the authenticator
+// identified by (scheme, pubkey) from an abstract account.
+func (AbstractAccountComposers) RevokeAuthenticator(owner, accountAddress, scheme string, pubkey []byte) *abstractaccountv1.MsgRevokeAuthenticator {
+	return &abstractaccountv1.MsgRevokeAuthenticator{Owner: owner, AccountAddress: accountAddress, Scheme: scheme, Pubkey: pubkey}
 }
 
 // ---- crossvm ----

@@ -27,7 +27,7 @@ import {
 
 /** A connected wallet's resolved addresses, by VM family. */
 export interface ConnectedAddresses {
-  /** Native bech32 (`qor1...`) address, when a Cosmos wallet is connected. */
+  /** Native bech32 (`qor1...`) address, when a Native wallet is connected. */
   native?: string;
   /** EVM (`0x...`) address, when an EVM wallet is connected. */
   evm?: string;

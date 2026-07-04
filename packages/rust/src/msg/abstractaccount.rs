@@ -10,6 +10,10 @@ pub use pb::SpendingRule;
 pub const CREATE_ABSTRACT_ACCOUNT: &str = "/qorechain.abstractaccount.v1.MsgCreateAbstractAccount";
 /// `/qorechain.abstractaccount.v1.MsgUpdateSpendingRules` type URL.
 pub const UPDATE_SPENDING_RULES: &str = "/qorechain.abstractaccount.v1.MsgUpdateSpendingRules";
+/// `/qorechain.abstractaccount.v1.MsgRegisterAuthenticator` type URL.
+pub const REGISTER_AUTHENTICATOR: &str = "/qorechain.abstractaccount.v1.MsgRegisterAuthenticator";
+/// `/qorechain.abstractaccount.v1.MsgRevokeAuthenticator` type URL.
+pub const REVOKE_AUTHENTICATOR: &str = "/qorechain.abstractaccount.v1.MsgRevokeAuthenticator";
 
 /// Builds `MsgCreateAbstractAccount`.
 pub fn create_abstract_account(
@@ -55,5 +59,83 @@ pub fn update_spending_rules_any(
     to_any(
         &update_spending_rules(owner, account_address, rules),
         UPDATE_SPENDING_RULES,
+    )
+}
+
+/// Builds `MsgRegisterAuthenticator`, linking a foreign-scheme wallet key (e.g. a
+/// Phantom ed25519 key) to `account_address` under time-bounded, revocable terms.
+/// Only the account owner (root key) may call it.
+#[allow(clippy::too_many_arguments)]
+pub fn register_authenticator(
+    owner: impl Into<String>,
+    account_address: impl Into<String>,
+    scheme: impl Into<String>,
+    pubkey: Vec<u8>,
+    permissions: Vec<String>,
+    expiry_unix: i64,
+    label: impl Into<String>,
+) -> pb::MsgRegisterAuthenticator {
+    pb::MsgRegisterAuthenticator {
+        owner: owner.into(),
+        account_address: account_address.into(),
+        scheme: scheme.into(),
+        pubkey,
+        permissions,
+        expiry_unix,
+        label: label.into(),
+    }
+}
+
+/// Builds `MsgRegisterAuthenticator` packed into an `Any`.
+#[allow(clippy::too_many_arguments)]
+pub fn register_authenticator_any(
+    owner: impl Into<String>,
+    account_address: impl Into<String>,
+    scheme: impl Into<String>,
+    pubkey: Vec<u8>,
+    permissions: Vec<String>,
+    expiry_unix: i64,
+    label: impl Into<String>,
+) -> Any {
+    to_any(
+        &register_authenticator(
+            owner,
+            account_address,
+            scheme,
+            pubkey,
+            permissions,
+            expiry_unix,
+            label,
+        ),
+        REGISTER_AUTHENTICATOR,
+    )
+}
+
+/// Builds `MsgRevokeAuthenticator`, instantly disabling a previously linked wallet
+/// key. Only the account owner (root key) may call it.
+pub fn revoke_authenticator(
+    owner: impl Into<String>,
+    account_address: impl Into<String>,
+    scheme: impl Into<String>,
+    pubkey: Vec<u8>,
+) -> pb::MsgRevokeAuthenticator {
+    pb::MsgRevokeAuthenticator {
+        owner: owner.into(),
+        account_address: account_address.into(),
+        scheme: scheme.into(),
+        pubkey,
+    }
+}
+
+/// Builds `MsgRevokeAuthenticator` packed into an `Any`.
+pub fn revoke_authenticator_any(
+    owner: impl Into<String>,
+    account_address: impl Into<String>,
+    scheme: impl Into<String>,
+    pubkey: Vec<u8>,
+) -> Any {
+    to_any(
+        &revoke_authenticator(owner, account_address, scheme, pubkey),
+        REVOKE_AUTHENTICATOR,
     )
 }

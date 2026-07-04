@@ -1,7 +1,7 @@
 """Mnemonic generation/validation and hierarchical-deterministic (HD) derivation
 of QoreChain accounts in all three supported schemes:
 
-1. native — Cosmos-style secp256k1, BIP-44 path ``m/44'/118'/0'/0/{index}``,
+1. native — Native secp256k1, BIP-44 path ``m/44'/118'/0'/0/{index}``,
    address = bech32(``qor``, ripemd160(sha256(compressed_pubkey))).
 2. evm    — secp256k1, BIP-44 path ``m/44'/60'/0'/0/{index}``,
    address = ``0x`` + last 20 bytes of keccak256(uncompressed_pubkey[1:]),
@@ -108,7 +108,7 @@ def _seed_from_mnemonic(mnemonic: str) -> bytes:
 
 
 def derive_native_account(mnemonic: str, account_index: int = 0) -> Secp256k1Account:
-    """Derive a native QoreChain account (Cosmos-style secp256k1).
+    """Derive a native QoreChain account (Native secp256k1).
 
     Path: ``m/44'/118'/0'/0/{account_index}``. The address is the bech32
     (``qor``) encoding of ``ripemd160(sha256(compressed_public_key))``.

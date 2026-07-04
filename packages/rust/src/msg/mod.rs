@@ -1,5 +1,5 @@
 //! Typed message constructors (composers) for every QoreChain custom-module
-//! message and the standard Cosmos message types, plus the [`to_any`] helper
+//! message and the standard Native message types, plus the [`to_any`] helper
 //! that packs any prost message into a `cosmrs::Any` with the correct
 //! `type_url`.
 //!

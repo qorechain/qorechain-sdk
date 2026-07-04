@@ -8,7 +8,7 @@ network — a quantum-safe, triple-VM Layer 1 with native, EVM, and SVM accounts
 - **Full message coverage** — typed composers for every chain message (bank,
   staking, distribution, gov, authz, feegrant, IBC, and the QoreChain custom
   modules), resolved through a message registry.
-- **Browser wallets** — Keplr/Leap (Cosmos); MetaMask/EIP-1193 and
+- **Browser wallets** — Keplr/Leap (Native); MetaMask/EIP-1193 and
   Phantom/Wallet-Standard via the `@qorechain/evm` and `@qorechain/svm` adapters.
 - **Auto-gas** — simulation-based fee estimation, with EVM EIP-1559 and SVM
   compute-budget helpers in the adapters.
@@ -49,7 +49,7 @@ const client = createClient(); // testnet, localhost defaults
 
 const remote = createClient({
   endpoints: {
-    rest: "https://api-testnet.qore.host", // Cosmos REST (LCD)
+    rest: "https://api-testnet.qore.host", // Native REST (LCD)
     rpc: "https://rpc-testnet.qore.host",    // consensus RPC (for signing)
     evmRpc: "https://evm-testnet.qore.host", // EVM + qor_ JSON-RPC
   },
@@ -206,6 +206,10 @@ const rollups = await query.rdk.rollups({});
 const bridgeChains = await query.bridge.chainConfigs({});
 ```
 
+New in chain v3.1.83: `amm`, `license`, and `abstractaccount` typed query clients;
+the `multilayer` `anchor` / `anchors` state-anchor queries; and abstractaccount
+`registerAuthenticator` / `revokeAuthenticator` message composers.
+
 See the [multilayer](../../docs/docs/guides/multilayer.md) and
 [rollups](../../docs/docs/guides/rollups.md) guides.
 
@@ -312,6 +316,53 @@ await migratePqcKey({ tx, /* new key material … */ });
 ```
 
 See the [quantum-safe](../../docs/docs/guides/quantum-safe.md) guide.
+
+### Unified eth-native wallet (v0.6.0)
+
+One `eth_secp256k1` key = ONE 20-byte identity rendered three ways — `qor1…`
+(bech32), `0x…` (EIP-55), and SVM base58 (the 20 bytes right-padded with 12 zero
+bytes to 32). A deposit to any of the three lands in the **same** balance, and the
+key spends on **all** lanes. `deriveUnifiedAccount` uses the Ethereum HD path
+(`m/44'/60'/0'/0/{index}`); `unifiedAccountFromSeed` builds one directly from a
+32-byte secret. `addressesFrom20` / `qoreAddresses` convert between the three
+encodings. The legacy coin-type-118 `deriveNativeAccount` still works (additive).
+
+Native-lane signing over the eth key: `signClassicalEth` is a classical secp256k1
+signature over `keccak256(SignDoc)` with pubkey type
+`/cosmos.evm.crypto.v1.ethsecp256k1.PubKey`; `signHybridEth` adds the ML-DSA-87
+post-quantum signature. The account parser (`parseEthPubkeyAny`) reads
+account number / sequence from an eth_secp256k1 on-chain pubkey.
+
+```ts
+import {
+  deriveUnifiedAccount,
+  unifiedAccountFromPhantomSignature,
+  signHybridEth,
+} from "@qorechain/sdk";
+
+const account = await deriveUnifiedAccount(mnemonic);
+account.cosmos; // "qor1…"  — QoreChain Native lane
+account.evm; //    "0x…"   — EIP-55 checksummed
+account.svm; //    "<base58>" — 20 bytes + 12 zero pad
+
+// Sign a QoreChain Native tx from the unified eth key (hybrid PQC path).
+const signed = signHybridEth({
+  signingKey: { privateKey: account.privateKey, publicKey: account.publicKey },
+  pqc: account.pqc,
+  messages: [msg.cosmos.send(/* … */)],
+  chainId: "qorechain-vladi",
+  accountNumber,
+  sequence,
+  fee,
+});
+
+// Phantom P1a: derive a canonical, non-custodial unified account from a
+// deterministic Phantom signature (shake256(signature, 32)).
+const fromPhantom = unifiedAccountFromPhantomSignature(phantomSignature);
+// or connectPhantomUnified(provider) to run the connect → sign → derive flow.
+```
+
+See the [unified-wallet](../../docs/docs/guides/unified-wallet.md) guide.
 
 ### Cross-VM message reads
 

@@ -8,7 +8,7 @@
  */
 
 /** SDK version. */
-export const VERSION = "0.5.0";
+export const VERSION = "0.6.0";
 
 // Top-level factory: the recommended entrypoint that resolves a network and
 // composes the read clients, fee helper, and a lazy signing entrypoint.
@@ -80,6 +80,32 @@ export type {
   Ed25519Account,
 } from "./accounts/types";
 
+// Unified eth-native accounts: ONE eth_secp256k1 key = ONE 20-byte identity
+// rendered as all three QoreChain encodings (qor1… / 0x… / base58) sharing one
+// balance, plus a deterministic ML-DSA-87 PQC key for the hybrid ante. Additive
+// to the legacy coin-118 `deriveNativeAccount` (still supported).
+export {
+  deriveUnifiedAccount,
+  unifiedAccountFromSeed,
+  addressesFrom20,
+  qoreAddresses,
+} from "./accounts/unified";
+export type {
+  UnifiedAccount,
+  UnifiedAddresses,
+} from "./accounts/unified";
+// Phantom P1a: derive the unified account from a Phantom (ed25519) signature —
+// non-custodial, a separate canonical key from the Phantom key.
+export {
+  unifiedAccountFromPhantomSignature,
+  connectPhantomUnified,
+  PHANTOM_DERIVATION_DOMAIN,
+} from "./accounts/phantom";
+export type {
+  PhantomProvider,
+  ConnectPhantomUnifiedOptions,
+} from "./accounts/phantom";
+
 // Post-quantum (PQC) signing: ML-DSA-87 (Dilithium-5) primitives, the pluggable
 // Signer abstraction, and the on-chain hybrid-signature extension builder.
 export {
@@ -110,7 +136,7 @@ export type {
   PqcSignaturePart,
 } from "./accounts/pqc";
 
-// Read/query clients: shared HTTP transport, Cosmos+custom REST, the generic
+// Read/query clients: shared HTTP transport, Native+custom REST, the generic
 // JSON-RPC 2.0 client (with thin EVM helpers), and the typed `qor_` namespace.
 export {
   getJson,
@@ -302,10 +328,37 @@ export type {
   SignAndBroadcastHybridOptions,
 } from "./tx/hybrid-tx";
 
+// Eth-native (eth_secp256k1) signing: sign QoreChain native txs from a unified
+// account with keccak256 hashing + the ethsecp256k1 pubkey type URL, classical or
+// ML-DSA-87 hybrid. Plus the `EthNativeSigner` tx lane and the account parser that
+// reads account_number/sequence from an eth_secp256k1 on-chain pubkey.
+export {
+  signClassicalEth,
+  signHybridEth,
+  ETHSECP256K1_PUBKEY_TYPE,
+} from "./tx/sign-eth";
+export type {
+  EthSigningKey,
+  EthSignParams,
+  SignedEthTx,
+} from "./tx/sign-eth";
+export {
+  EthNativeSigner,
+  parseEthPubkeyAny,
+  accountAuthInfo,
+} from "./tx/eth-native";
+export type {
+  EthBroadcaster,
+  EthNativeSignerOptions,
+  EthTxParams,
+  AccountSequence,
+  ParsedAccountAuth,
+} from "./tx/eth-native";
+
 // Messages: typed composers for every transaction the chain supports, plus the
 // message registry that resolves them. `msg.<module>.<message>(value)` returns a
 // cosmjs `{ typeUrl, value }` ready for `TxClient.signAndBroadcast` or the hybrid
-// tx path; `qorechainRegistry()` seeds a cosmjs Registry with the standard Cosmos
+// tx path; `qorechainRegistry()` seeds a cosmjs Registry with the standard Native
 // types and all QoreChain custom-module messages (the default for `TxClient`).
 export {
   msg,
@@ -362,8 +415,11 @@ export type {
 export { createQueryClients, connectQueryClients } from "./query/grpc";
 export type {
   QoreChainQueryClients,
+  AbstractAccountQueryClient,
+  AmmQueryClient,
   BridgeQueryClient,
   CrossVmQueryClient,
+  LicenseQueryClient,
   LightNodeQueryClient,
   MultilayerQueryClient,
   PqcQueryClient,

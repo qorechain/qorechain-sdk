@@ -1,7 +1,7 @@
 /**
  * REST (LCD) read client for QoreChain.
  *
- * Wraps the standard Cosmos SDK bank endpoints plus QoreChain's custom module
+ * Wraps the standard Native bank endpoints plus QoreChain's custom module
  * read routes under `/qorechain/<module>/v1/...`. All requests go through the
  * shared {@link getJson} helper, so `fetch` is injectable and failures surface
  * as {@link QoreHttpError}.
@@ -21,13 +21,13 @@ import {
 } from "./http";
 
 /**
- * A Cosmos coin amount. Re-exported from `@cosmjs/amino` so the SDK has a single
+ * A Native coin amount. Re-exported from `@cosmjs/amino` so the SDK has a single
  * canonical `Coin` type shared across query, fee, and tx code (no duplicated
  * structural definition).
  */
 export type { Coin };
 
-/** Cosmos pagination response metadata. */
+/** Native pagination response metadata. */
 export interface PageResponse {
   next_key: string | null;
   total?: string;
@@ -44,7 +44,7 @@ export interface BalanceResponse {
   balance: Coin;
 }
 
-/** Cosmos-style key/limit pagination input. */
+/** Native key/limit pagination input. */
 export interface Pagination {
   key?: string;
   limit?: number;
@@ -61,7 +61,7 @@ export type RestClientOptions = HttpOptions;
 /** Relative urgency of a fee estimate. */
 export type FeeUrgency = "fast" | "normal" | "slow";
 
-/** Map a {@link Pagination} into Cosmos `pagination.*` query params. */
+/** Map a {@link Pagination} into Native `pagination.*` query params. */
 function paginationQuery(p?: Pagination): Record<string, QueryValue> {
   const q: Record<string, QueryValue> = {};
   if (p?.key !== undefined) q["pagination.key"] = p.key;
@@ -69,7 +69,7 @@ function paginationQuery(p?: Pagination): Record<string, QueryValue> {
   return q;
 }
 
-/** Cosmos + QoreChain REST read client. */
+/** Native + QoreChain REST read client. */
 export class RestClient {
   private readonly baseUrl: string;
   private readonly opts: RestClientOptions;
@@ -105,7 +105,7 @@ export class RestClient {
     });
   }
 
-  // --- Standard Cosmos bank ------------------------------------------------
+  // --- Standard Native bank ------------------------------------------------
 
   /** All balances of `address` (`/cosmos/bank/v1beta1/balances/{address}`). */
   getAllBalances(

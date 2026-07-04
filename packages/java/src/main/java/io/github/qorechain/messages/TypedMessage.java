@@ -3,7 +3,7 @@ package io.github.qorechain.messages;
 import com.google.protobuf.Message;
 
 /**
- * A protobuf message paired with its Cosmos type URL — the unit transactions are
+ * A protobuf message paired with its Native type URL — the unit transactions are
  * built from. Produced by the typed composers in {@link QorechainMessages} and
  * {@link CosmosMessages}, and packed into an {@code Any} by {@link Messages#pack}.
  */

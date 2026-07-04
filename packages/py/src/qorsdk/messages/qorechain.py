@@ -209,6 +209,14 @@ abstractaccount = SimpleNamespace(
         "/qorechain.abstractaccount.v1.MsgUpdateSpendingRules",
         abstractaccount_tx.MsgUpdateSpendingRules,
     ),
+    register_authenticator=composer(
+        "/qorechain.abstractaccount.v1.MsgRegisterAuthenticator",
+        abstractaccount_tx.MsgRegisterAuthenticator,
+    ),
+    revoke_authenticator=composer(
+        "/qorechain.abstractaccount.v1.MsgRevokeAuthenticator",
+        abstractaccount_tx.MsgRevokeAuthenticator,
+    ),
 )
 
 # --------------------------------------------------------------------------- #

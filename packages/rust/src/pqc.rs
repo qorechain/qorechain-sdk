@@ -16,7 +16,7 @@ use crate::error::{Error, Result};
 use base64::engine::general_purpose::STANDARD as BASE64;
 use base64::Engine;
 use fips204::ml_dsa_87;
-use fips204::traits::{SerDes, Signer, Verifier};
+use fips204::traits::{KeyGen, SerDes, Signer, Verifier};
 use serde::{Deserialize, Serialize};
 
 /// ML-DSA-87 public-key length, in bytes (FIPS 204).
@@ -69,6 +69,19 @@ pub fn generate_pqc_keypair() -> Result<PqcKeypair> {
         public_key: pk.into_bytes().to_vec(),
         secret_key: sk.into_bytes().to_vec(),
     })
+}
+
+/// Deterministically derives an ML-DSA-87 (Dilithium-5) keypair from a 32-byte
+/// seed (FIPS 204 `KeyGen_internal` with the given `xi`).
+///
+/// This is the seeded keygen used by the unified wallet's PQC derivation, so a
+/// `(seed)` always yields the same recoverable keypair.
+pub fn pqc_keypair_from_seed(seed: &[u8; 32]) -> PqcKeypair {
+    let (pk, sk) = ml_dsa_87::KG::keygen_from_seed(seed);
+    PqcKeypair {
+        public_key: pk.into_bytes().to_vec(),
+        secret_key: sk.into_bytes().to_vec(),
+    }
 }
 
 /// Signs a message with an ML-DSA-87 (Dilithium-5) secret key.

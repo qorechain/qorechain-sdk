@@ -73,7 +73,7 @@ var sdkErrorReasons = map[uint32]string{
 	35: "invalid gas limit",
 }
 
-// moduleCodespaceReasons maps non-root module codespaces (Cosmos + QoreChain) to
+// moduleCodespaceReasons maps non-root module codespaces (Native + QoreChain) to
 // their per-module code descriptions. Only codes the SDK surfaces commonly are
 // enumerated; unmapped codes fall back to "unknown <codespace> error".
 var moduleCodespaceReasons = map[string]map[uint32]string{

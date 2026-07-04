@@ -11,7 +11,7 @@ import java.util.regex.Pattern;
  * integer-only fee calculation.
  *
  * <p>{@link #calculateFee} computes {@code ceil(gasLimit * price)} with
- * {@link BigInteger} math — no floating point — matching the Cosmos
+ * {@link BigInteger} math — no floating point — matching the QoreChain Native
  * {@code GasPrice}/{@code calculateFee} semantics.
  */
 public final class GasPrice {

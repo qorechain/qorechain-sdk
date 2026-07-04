@@ -47,7 +47,7 @@ export interface UseTxResult {
 /**
  * Send transactions with the connected signer and track `{ status, data, error }`.
  *
- * Requires a connected wallet that produced a `TxClient` (the Cosmos path of
+ * Requires a connected wallet that produced a `TxClient` (the Native path of
  * {@link useConnect}). `send` takes raw `{ typeUrl, value }` messages (use the
  * `msg.*` composers from `@qorechain/sdk`); `sendTokens` is a bank-transfer
  * shortcut.
@@ -61,7 +61,7 @@ export function useTx(): UseTxResult {
   const requireTx = useCallback(() => {
     if (!tx) {
       throw new Error(
-        "useTx: no connected signer. Connect a Cosmos wallet (Keplr/Leap) via useConnect() first.",
+        "useTx: no connected signer. Connect a Native wallet (Keplr/Leap) via useConnect() first.",
       );
     }
     return tx;

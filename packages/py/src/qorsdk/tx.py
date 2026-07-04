@@ -96,9 +96,9 @@ _BROADCAST_MODE_MAP: dict[str, str] = {
     "block": "BROADCAST_MODE_BLOCK",
 }
 
-#: A Cosmos coin as a plain dict, e.g. ``{"denom": "uqor", "amount": "1000"}``.
+#: A Native coin as a plain dict, e.g. ``{"denom": "uqor", "amount": "1000"}``.
 CoinDict = dict[str, str]
-#: A Cosmos ``StdFee``-shaped dict (as produced by :func:`~qorechain.fees.estimate_fee`).
+#: A Native ``StdFee``-shaped dict (as produced by :func:`~qorechain.fees.estimate_fee`).
 FeeDict = dict[str, TypingAny]
 
 
@@ -142,7 +142,7 @@ def _fee_to_proto(fee: FeeDict) -> Fee:
 
 
 def _encode_pubkey_any(compressed_pubkey: bytes) -> ProtoAny:
-    """Pack a compressed secp256k1 pubkey into a Cosmos ``Any``."""
+    """Pack a compressed secp256k1 pubkey into a Native ``Any``."""
     any_pub = ProtoAny()
     any_pub.Pack(Secp256k1PubKey(key=compressed_pubkey), type_url_prefix="/")
     return any_pub
@@ -193,7 +193,7 @@ def _sign_direct(private_key: bytes, sign_doc: SignDoc) -> bytes:
     """Produce a 64-byte canonical secp256k1 SIGN_MODE_DIRECT signature.
 
     cosmpy's ``PrivateKey.sign`` signs ``sha256(message)`` deterministically and
-    returns the canonical 64-byte ``r || s`` encoding — exactly what Cosmos
+    returns the canonical 64-byte ``r || s`` encoding — exactly what the Native lane
     SIGN_MODE_DIRECT expects over the serialized ``SignDoc``.
     """
     priv = PrivateKey(private_key)
@@ -216,7 +216,7 @@ def send_messages(
 
     This is the generic counterpart to :func:`bank_send`: it accepts a list of
     composer-produced :class:`~qorechain.messages.Msg` objects (or ``{"type_url",
-    "value"}`` dicts), packs each into a Cosmos ``Any``, builds the single-signer
+    "value"}`` dicts), packs each into a Native ``Any``, builds the single-signer
     SIGN_MODE_DIRECT ``AuthInfo`` from the account's compressed secp256k1 pubkey,
     signs the ``SignDoc``, and assembles the ``TxRaw``. It does not broadcast —
     pass :attr:`BuiltTx.tx_raw_bytes` to :func:`broadcast`.

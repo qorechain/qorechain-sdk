@@ -1,6 +1,6 @@
 // Package query provides REST (LCD) and JSON-RPC read clients for QoreChain.
 //
-// RestClient wraps the standard Cosmos SDK bank endpoints plus QoreChain's
+// RestClient wraps the standard QoreChain Native bank endpoints plus QoreChain's
 // custom module read routes under /qorechain/<module>/v1/.... JSONRPCClient is
 // a generic JSON-RPC 2.0 transport, and QorClient layers the typed qor_*
 // namespace on top of it. All HTTP is performed through an injectable
@@ -29,7 +29,7 @@ func (e *HTTPError) Error() string {
 	return fmt.Sprintf("HTTP %d for %s", e.Status, e.URL)
 }
 
-// RestClient is a Cosmos + QoreChain REST read client. The zero value is not
+// RestClient is a QoreChain Native REST read client. The zero value is not
 // usable; construct it with NewRestClient.
 type RestClient struct {
 	baseURL string
@@ -85,7 +85,7 @@ func (c *RestClient) Get(path string, query map[string]string) (json.RawMessage,
 	return json.RawMessage(body), nil
 }
 
-// GetAllBalances returns all balances for a Cosmos account.
+// GetAllBalances returns all balances for a Native account.
 func (c *RestClient) GetAllBalances(address string) (json.RawMessage, error) {
 	return c.Get("/cosmos/bank/v1beta1/balances/"+url.PathEscape(address), nil)
 }

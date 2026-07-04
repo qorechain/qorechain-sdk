@@ -1,8 +1,8 @@
 // Package messages provides the interface registry, codec, and typed message
 // composers for every transaction QoreChain supports.
 //
-// The registry registers all 53 custom QoreChain Msg implementations (across the
-// 11 custom modules) plus the standard Cosmos SDK modules under their type URLs,
+// The registry registers all 55 custom QoreChain Msg implementations (across the
+// 11 custom modules) plus the standard Native modules under their type URLs,
 // so a custom Msg can be packed into a tx Any and decoded back through the codec
 // exactly like the chain does. RegisterInterfaces mirrors each module's
 // RegisterInterfaces on the chain.
@@ -37,14 +37,14 @@ import (
 )
 
 // RegisterInterfaces registers every QoreChain custom Msg implementation plus the
-// standard Cosmos SDK message and crypto interfaces into reg. After this call,
+// standard Native message and crypto interfaces into reg. After this call,
 // the codec can pack any of these messages into an Any and unpack them back.
 func RegisterInterfaces(reg codectypes.InterfaceRegistry) {
 	registerQoreChainInterfaces(reg)
 	registerCosmosInterfaces(reg)
 }
 
-// registerQoreChainInterfaces registers all 53 custom QoreChain Msg
+// registerQoreChainInterfaces registers all 55 custom QoreChain Msg
 // implementations under the sdk.Msg interface.
 func registerQoreChainInterfaces(reg codectypes.InterfaceRegistry) {
 	reg.RegisterImplementations((*sdk.Msg)(nil),
@@ -101,9 +101,11 @@ func registerQoreChainInterfaces(reg codectypes.InterfaceRegistry) {
 		&licensev1.MsgRevokeLicense{},
 		&licensev1.MsgSuspendLicense{},
 		&licensev1.MsgResumeLicense{},
-		// abstractaccount (2)
+		// abstractaccount (4)
 		&abstractaccountv1.MsgCreateAbstractAccount{},
 		&abstractaccountv1.MsgUpdateSpendingRules{},
+		&abstractaccountv1.MsgRegisterAuthenticator{},
+		&abstractaccountv1.MsgRevokeAuthenticator{},
 		// crossvm (2)
 		&crossvmv1.MsgCrossVMCall{},
 		&crossvmv1.MsgProcessQueue{},
@@ -115,7 +117,7 @@ func registerQoreChainInterfaces(reg codectypes.InterfaceRegistry) {
 	)
 }
 
-// registerCosmosInterfaces registers the standard Cosmos SDK message, account,
+// registerCosmosInterfaces registers the standard Native message, account,
 // and crypto interfaces so the SDK can build bank/staking/distribution/gov/
 // authz/feegrant transactions and resolve public keys in tx AuthInfo.
 func registerCosmosInterfaces(reg codectypes.InterfaceRegistry) {

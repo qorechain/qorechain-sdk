@@ -9,7 +9,7 @@ sidebar_position: 6
 The SDK exposes real-time subscriptions for each runtime over the respective
 websocket endpoints. Every subscribe helper returns an unsubscribe function.
 
-## Cosmos: new blocks & transactions
+## Native: new blocks & transactions
 
 `createSubscriptionClient(rpcUrl)` connects a websocket-capable consensus RPC
 client (an `http(s)://` URL is accepted and upgraded internally). Then subscribe

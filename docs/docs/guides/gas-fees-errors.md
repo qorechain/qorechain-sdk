@@ -6,7 +6,7 @@ sidebar_position: 7
 
 # Gas, fees & errors
 
-## Native (Cosmos) auto-gas
+## Native auto-gas
 
 `TxClient.signAndBroadcast` accepts `"auto"` as the fee, which simulates the
 transaction to estimate gas, then applies a gas price and multiplier:
@@ -68,7 +68,7 @@ transaction, as the runtime requires.
 Each package decodes its native error format into a structured, human-readable
 shape.
 
-### Native (Cosmos)
+### Native
 
 A non-zero ABCI delivery code throws a typed `QoreTxError`. You can also decode
 results manually:

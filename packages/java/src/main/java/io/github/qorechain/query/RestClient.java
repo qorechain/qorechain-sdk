@@ -6,7 +6,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.Map;
 
 /**
- * REST (LCD) client for the Cosmos SDK routes plus QoreChain's custom REST
+ * REST (LCD) client for the Native routes plus QoreChain's custom REST
  * routes. Point it at the network's {@code rest} endpoint.
  *
  * <p>Covers the standard bank balance routes, the 8 custom QoreChain routes, the
@@ -39,7 +39,7 @@ public final class RestClient {
         return get(path, null);
     }
 
-    // ---- standard Cosmos bank ----
+    // ---- standard Native bank ----
 
     /** {@code /cosmos/bank/v1beta1/balances/{address}}. */
     public JsonNode getAllBalances(String address) {

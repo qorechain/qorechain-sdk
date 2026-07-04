@@ -99,6 +99,24 @@ pub struct SvmAccountMeta {
     #[prost(bool, tag="3")]
     pub is_writable: bool,
 }
+/// SVMAuth carries a foreign-scheme (e.g. Phantom ed25519) authorization for an
+/// SVM action. When present on MsgExecuteProgram, the EFFECTIVE SVM signer is the
+/// canonical account this key authenticates (verified on-chain), NOT the Native
+/// `sender` — so any funded account may relay a Phantom-authorized action through
+/// consensus while the foreign key remains the authority.
+#[derive(Clone, PartialEq, ::prost::Message)]
+pub struct SvmAuth {
+    /// "ed25519" | "secp256k1"
+    #[prost(string, tag="1")]
+    pub scheme: ::prost::alloc::string::String,
+    #[prost(bytes="vec", tag="2")]
+    pub pubkey: ::prost::alloc::vec::Vec<u8>,
+    #[prost(bytes="vec", tag="3")]
+    pub signature: ::prost::alloc::vec::Vec<u8>,
+    /// raw 32-byte recent blockhash
+    #[prost(bytes="vec", tag="4")]
+    pub recent_blockhash: ::prost::alloc::vec::Vec<u8>,
+}
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct MsgExecuteProgram {
     #[prost(string, tag="1")]
@@ -109,6 +127,9 @@ pub struct MsgExecuteProgram {
     pub accounts: ::prost::alloc::vec::Vec<SvmAccountMeta>,
     #[prost(bytes="vec", tag="4")]
     pub data: ::prost::alloc::vec::Vec<u8>,
+    /// optional foreign-scheme authorization (relayed)
+    #[prost(message, optional, tag="5")]
+    pub auth: ::core::option::Option<SvmAuth>,
 }
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct MsgExecuteProgramResponse {

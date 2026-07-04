@@ -58,6 +58,8 @@ func TestQoreChainComposerTypeURLs(t *testing.T) {
 		"/qorechain.lightnode.v1.MsgHeartbeat":                   Lightnode.Heartbeat("s"),
 		"/qorechain.license.v1.MsgGrantLicense":                  License.Grant("a", "g", "f", 0, ""),
 		"/qorechain.abstractaccount.v1.MsgCreateAbstractAccount": AbstractAccount.Create("o", "smart"),
+		"/qorechain.abstractaccount.v1.MsgRegisterAuthenticator": AbstractAccount.RegisterAuthenticator("o", "qor1acct", "ed25519", []byte{0x01}, []string{"send"}, 0, "phantom"),
+		"/qorechain.abstractaccount.v1.MsgRevokeAuthenticator":   AbstractAccount.RevokeAuthenticator("o", "qor1acct", "ed25519", []byte{0x01}),
 		"/qorechain.crossvm.v1.MsgProcessQueue":                  CrossVM.ProcessQueue("a"),
 		"/qorechain.rlconsensus.v1.MsgSetAgentMode":              RlConsensus.SetAgentMode("a", 1),
 	}

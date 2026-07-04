@@ -147,7 +147,7 @@ QORECHAIN_COMPOSER_CASES = [
         "/qorechain.license.v1.MsgSuspendLicense",
     ),
     (license.resume_license(authority="qor1"), "/qorechain.license.v1.MsgResumeLicense"),
-    # abstractaccount (2)
+    # abstractaccount (4)
     (
         abstractaccount.create_abstract_account(owner="qor1"),
         "/qorechain.abstractaccount.v1.MsgCreateAbstractAccount",
@@ -155,6 +155,14 @@ QORECHAIN_COMPOSER_CASES = [
     (
         abstractaccount.update_spending_rules(owner="qor1"),
         "/qorechain.abstractaccount.v1.MsgUpdateSpendingRules",
+    ),
+    (
+        abstractaccount.register_authenticator(owner="qor1"),
+        "/qorechain.abstractaccount.v1.MsgRegisterAuthenticator",
+    ),
+    (
+        abstractaccount.revoke_authenticator(owner="qor1"),
+        "/qorechain.abstractaccount.v1.MsgRevokeAuthenticator",
     ),
     # crossvm (2)
     (crossvm.cross_vm_call(sender="qor1"), "/qorechain.crossvm.v1.MsgCrossVMCall"),
@@ -179,10 +187,10 @@ QORECHAIN_COMPOSER_CASES = [
 ]
 
 
-def test_all_53_qorechain_composers_covered():
-    assert len(QORECHAIN_COMPOSER_CASES) == 53
+def test_all_55_qorechain_composers_covered():
+    assert len(QORECHAIN_COMPOSER_CASES) == 55
     type_urls = {tu for _m, tu in QORECHAIN_COMPOSER_CASES}
-    assert len(type_urls) == 53
+    assert len(type_urls) == 55
 
 
 @pytest.mark.parametrize("built_msg,type_url", QORECHAIN_COMPOSER_CASES)
@@ -222,11 +230,11 @@ def test_cosmos_composer_returns_exact_type_url(built_msg, type_url):
     assert built_msg.type_url == type_url
 
 
-def test_registry_covers_all_53_qorechain_and_18_cosmos():
+def test_registry_covers_all_55_qorechain_and_18_cosmos():
     reg = qorechain_registry()
     qc = [k for k in reg if k.startswith("/qorechain.")]
-    assert len(qc) == 53
-    assert len(reg) == 53 + 18
+    assert len(qc) == 55
+    assert len(reg) == 55 + 18
 
 
 def test_registry_extra_types_override():

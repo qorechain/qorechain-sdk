@@ -111,7 +111,7 @@ await connect({ kind: "keplr" }); // or "leap" | "evm" | "svm"
 
 | Wallet kind | Adapter | Result |
 | --- | --- | --- |
-| `keplr` / `leap` | `getCosmosWallet` (Cosmos) — suggests + enables the chain, returns a CosmJS signer wired into a `TxClient` | `addresses.native`, signing enabled |
+| `keplr` / `leap` | `getCosmosWallet` (Native) — suggests + enables the chain, returns a CosmJS signer wired into a `TxClient` | `addresses.native`, signing enabled |
 | `evm` | injected EIP-1193 provider (`window.ethereum`, e.g. MetaMask) via `eth_requestAccounts` | `addresses.evm` |
 | `svm` | injected Wallet-Standard provider (`window.solana`, e.g. Phantom) via `connect()` | `addresses.svm` |
 
@@ -122,7 +122,7 @@ EVM/SVM tooling pair this with `@qorechain/evm` / `@qorechain/svm`.
 
 ### `useTx()`
 
-Sign + broadcast with the connected Cosmos signer. Returns
+Sign + broadcast with the connected Native signer. Returns
 `{ send, sendTokens, status, data, error, isPending, reset }`.
 
 ```ts

@@ -5,6 +5,38 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.6.0]
+
+### Added
+
+- **Unified eth-native wallet** — `deriveUnifiedAccount` / `unifiedAccountFromSeed`
+  (plus `addressesFrom20` / `qoreAddresses`) across all five languages: one
+  `eth_secp256k1` key is one 20-byte identity rendered three ways — `qor1…`
+  (bech32), `0x…` (EIP-55), and SVM base58 (the 20 bytes right-padded with 12 zero
+  bytes to 32). A deposit to any of the three lands in one balance, and the key
+  spends on every lane. The legacy coin-type-118 `deriveNativeAccount` remains
+  supported (additive).
+- **eth_secp256k1 Native-lane signing** — `signClassicalEth` / `signHybridEth`:
+  the classical signature is secp256k1 over `keccak256(SignDoc)` and the signer
+  public key is `/cosmos.evm.crypto.v1.ethsecp256k1.PubKey`; the hybrid path adds
+  the ML-DSA-87 post-quantum signature. Account parsing accepts eth_secp256k1
+  public keys. (Chain v3.1.83.)
+- **Phantom P1a** — `unifiedAccountFromPhantomSignature` / `connectPhantomUnified`
+  (TypeScript): derive a canonical, non-custodial unified account from a
+  deterministic Phantom signature (`shake256(signature, 32)`), so a Phantom user
+  gets all three QoreChain addresses and can spend on every lane.
+- **New chain surface (v3.1.83)** — abstractaccount `MsgRegisterAuthenticator` /
+  `MsgRevokeAuthenticator` composers; typed query clients for `amm`, `license`,
+  and `abstractaccount`; and the `multilayer` `Anchor` / `Anchors` state-anchor
+  queries.
+
+### Changed
+
+- **Documentation terminology** — the native lane (formerly described as the
+  "Cosmos-SDK" lane) is now referred to as **QoreChain Native** (or "Native")
+  throughout the docs, guides, and package manuals. Dependency names, on-chain
+  type URLs, and the CosmWasm VM name are unchanged.
+
 ## 0.5.2 — 2026-07-02
 
 ### Fixed
@@ -99,23 +131,23 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Full transaction-message coverage (TypeScript): `qorechainRegistry` plus typed
   message composers for every custom module (amm, bridge, rdk, multilayer, pqc,
   svm, lightnode, license, abstractaccount, crossvm, rlconsensus) and standard
-  Cosmos modules (bank, staking, distribution, gov, ibc, authz, feegrant),
+  Native modules (bank, staking, distribution, gov, ibc, authz, feegrant),
   generated from protobuf via a reproducible `pnpm codegen` pipeline; typed query
   clients for all query modules.
 - Browser wallet integration: Keplr/Leap (`@qorechain/sdk`), MetaMask/EIP-1193 +
   EIP-6963 discovery (`@qorechain/evm`), and Phantom/Wallet-Standard
   (`@qorechain/svm`); Amino signing for standard messages.
 - Transaction lifecycle: auto-gas via simulation, structured error decoding
-  (Cosmos ABCI / EVM reverts / SVM program errors), tx tracking with
+  (Native ABCI / EVM reverts / SVM program errors), tx tracking with
   confirmation polling and retry, and block/tx search.
-- Event subscriptions over websockets: new blocks and tx events (Cosmos),
+- Event subscriptions over websockets: new blocks and tx events (Native),
   `watchEvent`/`watchBlocks` (EVM), `onLogs`/`onAccountChange` (SVM).
 - EVM ERC-721 / ERC-1155 helpers and EIP-1559 fee estimation; SVM
   compute-budget / priority-fee helpers; full CosmWasm lifecycle (`instantiate2`,
   `migrate`, `updateAdmin`, `clearAdmin`, code reads); address/hash/unit
   utilities; config-driven explorer and faucet helpers.
 - Full native-chain parity across the Python, Go, and Rust SDKs: protobuf codegen
-  for all custom modules, typed message composers + standard Cosmos builders,
+  for all custom modules, typed message composers + standard Native builders,
   typed query clients, generic message broadcast + hybrid PQC transactions,
   auto-gas, error decoding, tx tracking, block/tx search, utilities, and
   websocket subscriptions — matching the TypeScript native-chain surface.
@@ -131,7 +163,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Post-quantum cryptography: ML-DSA-87 (Dilithium-5) key generation, signing,
     and verification, with a pluggable `PqcSigner` / `HybridSigner` and a
     hybrid-signature extension builder.
-  - Read clients: Cosmos + QoreChain `RestClient`, EVM `JsonRpcClient`, and the
+  - Read clients: Native + QoreChain `RestClient`, EVM `JsonRpcClient`, and the
     typed `qor_` namespace `QorClient`.
   - Native transactions: `TxClient` builder/broadcaster with a `bankSend`
     convenience, fee estimation (`estimateFee`), and a `directSignerFromPrivateKey`

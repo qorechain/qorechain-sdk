@@ -1,4 +1,4 @@
-"""Block and transaction lookup/search over the Cosmos REST (LCD) endpoints.
+"""Block and transaction lookup/search over the Native REST (LCD) endpoints.
 
 Wraps the standard ``/cosmos/tx/v1beta1`` and consensus block routes: fetch a
 single transaction by hash, fetch a block by height (or the latest), and search

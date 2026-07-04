@@ -5,7 +5,7 @@
  * single token like `"0.025uqor"`. {@link GasPrice.fromString} parses that into
  * an exact fraction (numerator / denominator) so fee math stays integer-exact
  * with no floating-point drift, and {@link calculateFee} turns a gas limit plus
- * a gas price into a Cosmos {@link StdFee}.
+ * a gas price into a Native {@link StdFee}.
  *
  * This mirrors the cosmjs `GasPrice`/`calculateFee` concept but is reimplemented
  * here so the SDK does not depend on cosmjs's internal fee module and so the

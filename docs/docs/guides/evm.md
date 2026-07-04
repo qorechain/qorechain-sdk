@@ -34,7 +34,7 @@ console.log(await client.getChainId());
 
 You can also pass `rpcUrl` directly (mutually exclusive with `endpoints`), a
 `wsUrl` / `endpoints.evmWs` for WebSocket, an explicit `chainId`, and `decimals`
-(defaults to 18, the EVM convention for QOR — distinct from the Cosmos `uqor`
+(defaults to 18, the EVM convention for QOR — distinct from the Native `uqor`
 base of 10^6).
 
 Derive an EVM signing account from a private key:

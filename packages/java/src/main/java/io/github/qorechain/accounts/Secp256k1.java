@@ -10,9 +10,9 @@ import org.bouncycastle.crypto.signers.ECDSASigner;
 import org.bouncycastle.crypto.signers.HMacDSAKCalculator;
 
 /**
- * secp256k1 ECDSA signing for Cosmos SIGN_MODE_DIRECT classical signatures.
+ * secp256k1 ECDSA signing for Native SIGN_MODE_DIRECT classical signatures.
  *
- * <p>Cosmos signs {@code sha256(signDocBytes)} with RFC-6979 deterministic
+ * <p>The Native lane signs {@code sha256(signDocBytes)} with RFC-6979 deterministic
  * ECDSA, normalizes to low-S, and serializes the signature as the raw 64-byte
  * {@code r || s} (each 32 bytes big-endian) — NOT DER.
  */
@@ -34,7 +34,26 @@ public final class Secp256k1 {
      * secp256k1 private key, returning the 64-byte {@code r || s} low-S signature.
      */
     public static byte[] signCosmos(byte[] privateKey, byte[] message) {
-        byte[] hash = Hashing.sha256(message);
+        return signHash(privateKey, Hashing.sha256(message));
+    }
+
+    /**
+     * Sign an eth-native ({@code eth_secp256k1}) SignDoc: RFC-6979 deterministic
+     * ECDSA over {@code keccak256(message)}, returning the 64-byte {@code r || s}
+     * low-S signature. This is the classical half of the eth-native Native lane
+     * (the address is {@code keccak(pubkey)[12:]}), where the SignDoc is hashed
+     * with keccak-256 — NOT sha256.
+     */
+    public static byte[] signEth(byte[] privateKey, byte[] message) {
+        return signHash(privateKey, Hashing.keccak256(message));
+    }
+
+    /**
+     * Sign a pre-computed 32-byte {@code hash} with a 32-byte secp256k1 private key
+     * using RFC-6979 deterministic ECDSA, returning the 64-byte {@code r || s}
+     * low-S signature.
+     */
+    public static byte[] signHash(byte[] privateKey, byte[] hash) {
         ECDSASigner signer = new ECDSASigner(new HMacDSAKCalculator(new org.bouncycastle.crypto.digests.SHA256Digest()));
         signer.init(true, new ECPrivateKeyParameters(new BigInteger(1, privateKey), DOMAIN));
         BigInteger[] sig = signer.generateSignature(hash);

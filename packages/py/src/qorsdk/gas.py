@@ -4,7 +4,7 @@ A gas price is a decimal amount of a base denom per unit of gas, written as a
 single token like ``"0.025uqor"``. :meth:`GasPrice.from_string` parses that into
 an exact fraction (numerator / 10^scale) so fee math stays integer-exact with no
 floating-point drift, and :func:`calculate_fee` turns a gas limit plus a gas
-price into a Cosmos ``StdFee``-shaped dict.
+price into a Native ``StdFee``-shaped dict.
 
 The auto-gas path simulates a transaction against the REST
 ``/cosmos/tx/v1beta1/simulate`` endpoint to discover ``gas_used``, applies a
@@ -34,7 +34,7 @@ DEFAULT_GAS_PRICE = "0.15uqor"
 
 _GAS_PRICE_RE = re.compile(r"^([0-9]+(?:\.[0-9]+)?)\s*([a-zA-Z][a-zA-Z0-9/:._-]*)$")
 
-#: A Cosmos ``StdFee``-shaped dict (``{"amount": [...], "gas": "..."}``).
+#: A Native ``StdFee``-shaped dict (``{"amount": [...], "gas": "..."}``).
 FeeDict = dict[str, Any]
 
 
@@ -84,7 +84,7 @@ class GasPrice:
 
 
 def calculate_fee(gas: int | str, gas_price: GasPrice | str) -> FeeDict:
-    """Compute a Cosmos ``StdFee``-shaped dict for ``gas`` at ``gas_price``.
+    """Compute a Native ``StdFee``-shaped dict for ``gas`` at ``gas_price``.
 
     The fee amount is ``ceil(gas * price)`` in the price's denom, computed with
     integer math: ``ceil(gas * numerator / 10^scale)``. Ceil rounding ensures
@@ -177,7 +177,7 @@ def auto_fee(
     timeout: float = 30.0,
     client: httpx.Client | None = None,
 ) -> FeeDict:
-    """Simulate, multiply the gas, and price it into a Cosmos ``StdFee`` dict.
+    """Simulate, multiply the gas, and price it into a Native ``StdFee`` dict.
 
     Mirrors the ``fee="auto"`` path: simulate ``built`` to discover ``gas_used``,
     apply ``gas_multiplier``, and compute ``ceil(gas * gas_price)``.

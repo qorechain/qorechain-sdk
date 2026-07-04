@@ -17,6 +17,7 @@ const sidebars: SidebarsConfig = {
       items: [
         "guides/messages",
         "guides/wallets",
+        "guides/unified-wallet",
         "guides/events",
         "guides/gas-fees-errors",
         "guides/evm",

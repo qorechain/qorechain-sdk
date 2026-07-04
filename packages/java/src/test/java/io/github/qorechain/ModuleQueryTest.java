@@ -172,12 +172,77 @@ class ModuleQueryTest {
                         .build();
         assertEquals(123, ml.routingStats().getStats().getTotalRouted());
 
+        responseMessage =
+                qorechain.multilayer.v1.QueryOuterClass.QueryAnchorResponse.newBuilder()
+                        .setAnchor(
+                                qorechain.multilayer.v1.QueryOuterClass.StateAnchorView.newBuilder()
+                                        .setLayerId("L1")
+                                        .setLayerHeight(100))
+                        .build();
+        assertEquals(100, ml.anchor("L1").getAnchor().getLayerHeight());
+
+        responseMessage =
+                qorechain.multilayer.v1.QueryOuterClass.QueryAnchorsResponse.newBuilder()
+                        .addAnchors(
+                                qorechain.multilayer.v1.QueryOuterClass.StateAnchorView.newBuilder()
+                                        .setLayerId("L1"))
+                        .build();
+        assertEquals(1, ml.anchors("L1").getAnchorsCount());
+
         assertEquals(
                 List.of(
                         "/qorechain.multilayer.v1.Query/Params",
                         "/qorechain.multilayer.v1.Query/Layer",
                         "/qorechain.multilayer.v1.Query/Layers",
-                        "/qorechain.multilayer.v1.Query/RoutingStats"),
+                        "/qorechain.multilayer.v1.Query/RoutingStats",
+                        "/qorechain.multilayer.v1.Query/Anchor",
+                        "/qorechain.multilayer.v1.Query/Anchors"),
+                abciPaths);
+    }
+
+    @Test
+    void newModuleQueryClientsPathsAndDecode() {
+        io.github.qorechain.query.AmmQueryClient amm =
+                new io.github.qorechain.query.AmmQueryClient(baseUrl);
+        responseMessage =
+                qorechain.amm.v1.QueryOuterClass.QueryPoolResponse.newBuilder()
+                        .setPool(
+                                qorechain.amm.v1.QueryOuterClass.PoolView.newBuilder()
+                                        .setId(7)
+                                        .setStatus("active"))
+                        .build();
+        assertEquals(7, amm.pool(7).getPool().getId());
+
+        responseMessage =
+                qorechain.amm.v1.QueryOuterClass.QueryQuoteExactInResponse.newBuilder()
+                        .setAmountOut("999")
+                        .build();
+        assertEquals("999", amm.quoteExactIn(7, "uqor", "1000").getAmountOut());
+
+        io.github.qorechain.query.LicenseQueryClient lic =
+                new io.github.qorechain.query.LicenseQueryClient(baseUrl);
+        responseMessage =
+                qorechain.license.v1.QueryOuterClass.QueryCheckResponse.newBuilder()
+                        .setActive(true)
+                        .build();
+        assertTrue(lic.check("qor1grantee", "feat-1").getActive());
+
+        io.github.qorechain.query.AbstractAccountQueryClient aa =
+                new io.github.qorechain.query.AbstractAccountQueryClient(baseUrl);
+        responseMessage =
+                qorechain.abstractaccount.v1.QueryOuterClass.QueryAccountResponse.newBuilder()
+                        .setAccount(
+                                qorechain.abstractaccount.v1.QueryOuterClass.AccountView.newBuilder()
+                                        .setAddress("qor1abstract"))
+                        .build();
+        assertEquals("qor1abstract", aa.account("qor1abstract").getAccount().getAddress());
+
+        assertEquals(
+                List.of(
+                        "/qorechain.amm.v1.Query/Pool",
+                        "/qorechain.amm.v1.Query/QuoteExactIn",
+                        "/qorechain.license.v1.Query/Check",
+                        "/qorechain.abstractaccount.v1.Query/Account"),
                 abciPaths);
     }
 

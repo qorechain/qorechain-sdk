@@ -3,7 +3,7 @@
 QoreChain exposes an AI-assisted fee oracle at the REST route
 ``/qorechain/ai/v1/fee-estimate?urgency=fast|normal|slow``. :func:`estimate_fee`
 queries it via the shared :class:`~qorechain.rest.RestClient` and shapes the
-answer as a Cosmos ``StdFee``-style dict (``{"amount": [...], "gas": ...}``).
+answer as a Native ``StdFee``-style dict (``{"amount": [...], "gas": ...}``).
 
 The oracle can be unavailable, so this falls back to a deterministic static fee
 computed from a configurable gas price in the base denom — ``ceil(gas *
@@ -49,7 +49,7 @@ def estimate_fee(
 ) -> dict[str, Any]:
     """Estimate a transaction fee for the given urgency.
 
-    Queries the QoreChain AI fee oracle and returns a Cosmos ``StdFee``-shaped
+    Queries the QoreChain AI fee oracle and returns a Native ``StdFee``-shaped
     dict. Falls back to a deterministic static fee when the oracle is
     unavailable or returns no usable amount.
     """

@@ -7,7 +7,7 @@ sidebar_position: 0
 # Messages & transactions
 
 `@qorechain/sdk` ships typed composers for **every** transaction message the
-chain supports — standard Cosmos modules (bank, staking, distribution, gov,
+chain supports — standard Native modules (bank, staking, distribution, gov,
 authz, feegrant, IBC) and QoreChain custom modules (AMM, bridge, RDK,
 multilayer, PQC, SVM, lightnode, license, abstract-account, cross-VM, RL
 consensus). A message registry resolves these for signing and decoding.
@@ -78,7 +78,7 @@ await tx.bankSend("qor1...", [{ denom: "uqor", amount: "1000000" }]);
 ## The registry
 
 `qorechainRegistry(extraTypes?)` returns a cosmjs `Registry` seeded with the
-standard Cosmos types plus all QoreChain custom-module messages — this is what
+standard Native types plus all QoreChain custom-module messages — this is what
 `TxClient` uses by default. Use `qorechainRegistryTypes` if you need the raw
 `[typeUrl, type]` pairs (e.g. to extend another client's registry).
 

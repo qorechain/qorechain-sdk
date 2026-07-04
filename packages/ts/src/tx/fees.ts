@@ -4,7 +4,7 @@
  * QoreChain exposes an AI-assisted fee oracle at the REST route
  * `/qorechain/ai/v1/fee-estimate?urgency=fast|normal|slow` (see the core
  * `AI_ENGINE.md` / `API_REFERENCE.md`). {@link estimateFee} queries it via the
- * shared {@link RestClient} and shapes the answer as a Cosmos `StdFee`
+ * shared {@link RestClient} and shapes the answer as a Native `StdFee`
  * (`{ amount: Coin[]; gas: string }`).
  *
  * The oracle can be unavailable (node still syncing, sidecar down, custom RPC
@@ -101,7 +101,7 @@ function staticFee(gas: string, gasPrice: string, denom: string): StdFee {
 /**
  * Estimate a transaction fee for the given urgency.
  *
- * Queries the QoreChain AI fee oracle and returns a Cosmos `StdFee`. If the
+ * Queries the QoreChain AI fee oracle and returns a Native `StdFee`. If the
  * oracle is unavailable or returns no usable fee, falls back to a deterministic
  * static fee computed from {@link EstimateFeeOptions.fallbackGasPrice}.
  *

@@ -19,8 +19,11 @@ import {
   type ProtobufRpcClient,
 } from "@cosmjs/stargate";
 
+import * as abstractaccount from "../codegen/qorechain/abstractaccount/v1/query";
+import * as amm from "../codegen/qorechain/amm/v1/query";
 import * as bridge from "../codegen/qorechain/bridge/v1/query";
 import * as crossvm from "../codegen/qorechain/crossvm/v1/query";
+import * as license from "../codegen/qorechain/license/v1/query";
 import * as lightnode from "../codegen/qorechain/lightnode/v1/query";
 import * as multilayer from "../codegen/qorechain/multilayer/v1/query";
 import * as pqc from "../codegen/qorechain/pqc/v1/query";
@@ -78,6 +81,72 @@ export interface LightNodeQueryClient {
   lightNodes(
     req?: lightnode.QueryLightNodesRequest,
   ): Promise<lightnode.QueryLightNodesResponse>;
+  /** Module parameters (reward rates, heartbeat window, minimums). */
+  params(
+    req?: lightnode.QueryParamsRequest,
+  ): Promise<lightnode.QueryParamsResponse>;
+  /** Accrued, unclaimed rewards for a light node. */
+  rewards(
+    req: lightnode.QueryRewardsRequest,
+  ): Promise<lightnode.QueryRewardsResponse>;
+  /** Network-wide light-node statistics. */
+  stats(
+    req?: lightnode.QueryStatsRequest,
+  ): Promise<lightnode.QueryStatsResponse>;
+}
+
+/** Automated market maker (AMM) module query client. */
+export interface AmmQueryClient {
+  /** Module parameters (fees, limits). */
+  params(req?: amm.QueryParamsRequest): Promise<amm.QueryParamsResponse>;
+  /** A single pool by ID. */
+  pool(req: amm.QueryPoolRequest): Promise<amm.QueryPoolResponse>;
+  /** All pools. */
+  pools(req?: amm.QueryPoolsRequest): Promise<amm.QueryPoolsResponse>;
+  /** A pool resolved by its two denoms. */
+  poolByDenoms(
+    req: amm.QueryPoolByDenomsRequest,
+  ): Promise<amm.QueryPoolByDenomsResponse>;
+  /** An address's LP-token balance in a pool. */
+  lpBalance(
+    req: amm.QueryLPBalanceRequest,
+  ): Promise<amm.QueryLPBalanceResponse>;
+  /** Quote an exact-in swap. */
+  quoteExactIn(
+    req: amm.QueryQuoteExactInRequest,
+  ): Promise<amm.QueryQuoteExactInResponse>;
+  /** Quote an exact-out swap. */
+  quoteExactOut(
+    req: amm.QueryQuoteExactOutRequest,
+  ): Promise<amm.QueryQuoteExactOutResponse>;
+}
+
+/** Feature-license module query client. */
+export interface LicenseQueryClient {
+  /** Check whether a grantee holds a license for a feature. */
+  check(req: license.QueryCheckRequest): Promise<license.QueryCheckResponse>;
+  /** All holders of a feature's licenses. */
+  holders(
+    req: license.QueryHoldersRequest,
+  ): Promise<license.QueryHoldersResponse>;
+  /** All licenses held by a grantee. */
+  list(req: license.QueryListRequest): Promise<license.QueryListResponse>;
+}
+
+/** Abstract-account module query client. */
+export interface AbstractAccountQueryClient {
+  /** Module config (max session TTL, allowed schemes, etc.). */
+  config(
+    req?: abstractaccount.QueryConfigRequest,
+  ): Promise<abstractaccount.QueryConfigResponse>;
+  /** A single abstract account by address. */
+  account(
+    req: abstractaccount.QueryAccountRequest,
+  ): Promise<abstractaccount.QueryAccountResponse>;
+  /** All abstract accounts. */
+  accounts(
+    req?: abstractaccount.QueryAccountsRequest,
+  ): Promise<abstractaccount.QueryAccountsResponse>;
 }
 
 /** Multilayer (sidechain / paychain) module query client. */
@@ -94,6 +163,14 @@ export interface MultilayerQueryClient {
   layers(
     req?: multilayer.QueryLayersRequest,
   ): Promise<multilayer.QueryLayersResponse>;
+  /** The latest state anchor for a layer. */
+  anchor(
+    req: multilayer.QueryAnchorRequest,
+  ): Promise<multilayer.QueryAnchorResponse>;
+  /** All state anchors for a layer (newest first). */
+  anchors(
+    req: multilayer.QueryAnchorsRequest,
+  ): Promise<multilayer.QueryAnchorsResponse>;
   /** Cross-layer routing statistics (gas savings, latency, counts). */
   routingStats(
     req?: multilayer.QueryRoutingStatsRequest,
@@ -178,8 +255,11 @@ export interface SvmQueryClient {
 
 /** All typed module query clients, grouped by module. */
 export interface QoreChainQueryClients {
+  abstractaccount: AbstractAccountQueryClient;
+  amm: AmmQueryClient;
   bridge: BridgeQueryClient;
   crossvm: CrossVmQueryClient;
+  license: LicenseQueryClient;
   lightnode: LightNodeQueryClient;
   multilayer: MultilayerQueryClient;
   pqc: PqcQueryClient;
@@ -200,6 +280,103 @@ export function createQueryClients(
   rpc: ProtobufRpcClient,
 ): QoreChainQueryClients {
   return {
+    abstractaccount: {
+      config: unary(
+        rpc,
+        "qorechain.abstractaccount.v1.Query",
+        "Config",
+        abstractaccount.QueryConfigRequest,
+        abstractaccount.QueryConfigResponse,
+      ),
+      account: unary(
+        rpc,
+        "qorechain.abstractaccount.v1.Query",
+        "Account",
+        abstractaccount.QueryAccountRequest,
+        abstractaccount.QueryAccountResponse,
+      ),
+      accounts: unary(
+        rpc,
+        "qorechain.abstractaccount.v1.Query",
+        "Accounts",
+        abstractaccount.QueryAccountsRequest,
+        abstractaccount.QueryAccountsResponse,
+      ),
+    },
+    amm: {
+      params: unary(
+        rpc,
+        "qorechain.amm.v1.Query",
+        "Params",
+        amm.QueryParamsRequest,
+        amm.QueryParamsResponse,
+      ),
+      pool: unary(
+        rpc,
+        "qorechain.amm.v1.Query",
+        "Pool",
+        amm.QueryPoolRequest,
+        amm.QueryPoolResponse,
+      ),
+      pools: unary(
+        rpc,
+        "qorechain.amm.v1.Query",
+        "Pools",
+        amm.QueryPoolsRequest,
+        amm.QueryPoolsResponse,
+      ),
+      poolByDenoms: unary(
+        rpc,
+        "qorechain.amm.v1.Query",
+        "PoolByDenoms",
+        amm.QueryPoolByDenomsRequest,
+        amm.QueryPoolByDenomsResponse,
+      ),
+      lpBalance: unary(
+        rpc,
+        "qorechain.amm.v1.Query",
+        "LPBalance",
+        amm.QueryLPBalanceRequest,
+        amm.QueryLPBalanceResponse,
+      ),
+      quoteExactIn: unary(
+        rpc,
+        "qorechain.amm.v1.Query",
+        "QuoteExactIn",
+        amm.QueryQuoteExactInRequest,
+        amm.QueryQuoteExactInResponse,
+      ),
+      quoteExactOut: unary(
+        rpc,
+        "qorechain.amm.v1.Query",
+        "QuoteExactOut",
+        amm.QueryQuoteExactOutRequest,
+        amm.QueryQuoteExactOutResponse,
+      ),
+    },
+    license: {
+      check: unary(
+        rpc,
+        "qorechain.license.v1.Query",
+        "Check",
+        license.QueryCheckRequest,
+        license.QueryCheckResponse,
+      ),
+      holders: unary(
+        rpc,
+        "qorechain.license.v1.Query",
+        "Holders",
+        license.QueryHoldersRequest,
+        license.QueryHoldersResponse,
+      ),
+      list: unary(
+        rpc,
+        "qorechain.license.v1.Query",
+        "List",
+        license.QueryListRequest,
+        license.QueryListResponse,
+      ),
+    },
     bridge: {
       config: unary(
         rpc,
@@ -289,6 +466,27 @@ export function createQueryClients(
         lightnode.QueryLightNodesRequest,
         lightnode.QueryLightNodesResponse,
       ),
+      params: unary(
+        rpc,
+        "qorechain.lightnode.v1.Query",
+        "Params",
+        lightnode.QueryParamsRequest,
+        lightnode.QueryParamsResponse,
+      ),
+      rewards: unary(
+        rpc,
+        "qorechain.lightnode.v1.Query",
+        "Rewards",
+        lightnode.QueryRewardsRequest,
+        lightnode.QueryRewardsResponse,
+      ),
+      stats: unary(
+        rpc,
+        "qorechain.lightnode.v1.Query",
+        "Stats",
+        lightnode.QueryStatsRequest,
+        lightnode.QueryStatsResponse,
+      ),
     },
     multilayer: {
       params: unary(
@@ -311,6 +509,20 @@ export function createQueryClients(
         "Layers",
         multilayer.QueryLayersRequest,
         multilayer.QueryLayersResponse,
+      ),
+      anchor: unary(
+        rpc,
+        "qorechain.multilayer.v1.Query",
+        "Anchor",
+        multilayer.QueryAnchorRequest,
+        multilayer.QueryAnchorResponse,
+      ),
+      anchors: unary(
+        rpc,
+        "qorechain.multilayer.v1.Query",
+        "Anchors",
+        multilayer.QueryAnchorsRequest,
+        multilayer.QueryAnchorsResponse,
       ),
       routingStats: unary(
         rpc,

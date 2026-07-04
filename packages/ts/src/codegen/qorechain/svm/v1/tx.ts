@@ -35,11 +35,29 @@ export interface SvmAccountMeta {
   isWritable: boolean;
 }
 
+/**
+ * SVMAuth carries a foreign-scheme (e.g. Phantom ed25519) authorization for an
+ * SVM action. When present on MsgExecuteProgram, the EFFECTIVE SVM signer is the
+ * canonical account this key authenticates (verified on-chain), NOT the Native
+ * `sender` — so any funded account may relay a Phantom-authorized action through
+ * consensus while the foreign key remains the authority.
+ */
+export interface SVMAuth {
+  /** "ed25519" | "secp256k1" */
+  scheme: string;
+  pubkey: Uint8Array;
+  signature: Uint8Array;
+  /** raw 32-byte recent blockhash */
+  recentBlockhash: Uint8Array;
+}
+
 export interface MsgExecuteProgram {
   sender: string;
   programId: Uint8Array;
   accounts: SvmAccountMeta[];
   data: Uint8Array;
+  /** optional foreign-scheme authorization (relayed) */
+  auth?: SVMAuth | undefined;
 }
 
 export interface MsgExecuteProgramResponse {
@@ -462,8 +480,120 @@ export const SvmAccountMeta: MessageFns<SvmAccountMeta> = {
   },
 };
 
+function createBaseSVMAuth(): SVMAuth {
+  return { scheme: "", pubkey: new Uint8Array(0), signature: new Uint8Array(0), recentBlockhash: new Uint8Array(0) };
+}
+
+export const SVMAuth: MessageFns<SVMAuth> = {
+  encode(message: SVMAuth, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.scheme !== "") {
+      writer.uint32(10).string(message.scheme);
+    }
+    if (message.pubkey.length !== 0) {
+      writer.uint32(18).bytes(message.pubkey);
+    }
+    if (message.signature.length !== 0) {
+      writer.uint32(26).bytes(message.signature);
+    }
+    if (message.recentBlockhash.length !== 0) {
+      writer.uint32(34).bytes(message.recentBlockhash);
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): SVMAuth {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseSVMAuth();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.scheme = reader.string();
+          continue;
+        }
+        case 2: {
+          if (tag !== 18) {
+            break;
+          }
+
+          message.pubkey = reader.bytes();
+          continue;
+        }
+        case 3: {
+          if (tag !== 26) {
+            break;
+          }
+
+          message.signature = reader.bytes();
+          continue;
+        }
+        case 4: {
+          if (tag !== 34) {
+            break;
+          }
+
+          message.recentBlockhash = reader.bytes();
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(object: any): SVMAuth {
+    return {
+      scheme: isSet(object.scheme) ? globalThis.String(object.scheme) : "",
+      pubkey: isSet(object.pubkey) ? bytesFromBase64(object.pubkey) : new Uint8Array(0),
+      signature: isSet(object.signature) ? bytesFromBase64(object.signature) : new Uint8Array(0),
+      recentBlockhash: isSet(object.recentBlockhash)
+        ? bytesFromBase64(object.recentBlockhash)
+        : isSet(object.recent_blockhash)
+        ? bytesFromBase64(object.recent_blockhash)
+        : new Uint8Array(0),
+    };
+  },
+
+  toJSON(message: SVMAuth): unknown {
+    const obj: any = {};
+    if (message.scheme !== "") {
+      obj.scheme = message.scheme;
+    }
+    if (message.pubkey.length !== 0) {
+      obj.pubkey = base64FromBytes(message.pubkey);
+    }
+    if (message.signature.length !== 0) {
+      obj.signature = base64FromBytes(message.signature);
+    }
+    if (message.recentBlockhash.length !== 0) {
+      obj.recentBlockhash = base64FromBytes(message.recentBlockhash);
+    }
+    return obj;
+  },
+
+  create(base?: DeepPartial<SVMAuth>): SVMAuth {
+    return SVMAuth.fromPartial(base ?? {});
+  },
+  fromPartial(object: DeepPartial<SVMAuth>): SVMAuth {
+    const message = createBaseSVMAuth();
+    message.scheme = object.scheme ?? "";
+    message.pubkey = object.pubkey ?? new Uint8Array(0);
+    message.signature = object.signature ?? new Uint8Array(0);
+    message.recentBlockhash = object.recentBlockhash ?? new Uint8Array(0);
+    return message;
+  },
+};
+
 function createBaseMsgExecuteProgram(): MsgExecuteProgram {
-  return { sender: "", programId: new Uint8Array(0), accounts: [], data: new Uint8Array(0) };
+  return { sender: "", programId: new Uint8Array(0), accounts: [], data: new Uint8Array(0), auth: undefined };
 }
 
 export const MsgExecuteProgram: MessageFns<MsgExecuteProgram> = {
@@ -479,6 +609,9 @@ export const MsgExecuteProgram: MessageFns<MsgExecuteProgram> = {
     }
     if (message.data.length !== 0) {
       writer.uint32(34).bytes(message.data);
+    }
+    if (message.auth !== undefined) {
+      SVMAuth.encode(message.auth, writer.uint32(42).fork()).join();
     }
     return writer;
   },
@@ -522,6 +655,14 @@ export const MsgExecuteProgram: MessageFns<MsgExecuteProgram> = {
           message.data = reader.bytes();
           continue;
         }
+        case 5: {
+          if (tag !== 42) {
+            break;
+          }
+
+          message.auth = SVMAuth.decode(reader, reader.uint32());
+          continue;
+        }
       }
       if ((tag & 7) === 4 || tag === 0) {
         break;
@@ -543,6 +684,7 @@ export const MsgExecuteProgram: MessageFns<MsgExecuteProgram> = {
         ? object.accounts.map((e: any) => SvmAccountMeta.fromJSON(e))
         : [],
       data: isSet(object.data) ? bytesFromBase64(object.data) : new Uint8Array(0),
+      auth: isSet(object.auth) ? SVMAuth.fromJSON(object.auth) : undefined,
     };
   },
 
@@ -560,6 +702,9 @@ export const MsgExecuteProgram: MessageFns<MsgExecuteProgram> = {
     if (message.data.length !== 0) {
       obj.data = base64FromBytes(message.data);
     }
+    if (message.auth !== undefined) {
+      obj.auth = SVMAuth.toJSON(message.auth);
+    }
     return obj;
   },
 
@@ -572,6 +717,7 @@ export const MsgExecuteProgram: MessageFns<MsgExecuteProgram> = {
     message.programId = object.programId ?? new Uint8Array(0);
     message.accounts = object.accounts?.map((e) => SvmAccountMeta.fromPartial(e)) || [];
     message.data = object.data ?? new Uint8Array(0);
+    message.auth = (object.auth !== undefined && object.auth !== null) ? SVMAuth.fromPartial(object.auth) : undefined;
     return message;
   },
 };

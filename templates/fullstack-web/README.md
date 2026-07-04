@@ -28,7 +28,7 @@ browser):
 
 | Variable               | Purpose                | Default                 |
 | ---------------------- | ---------------------- | ----------------------- |
-| `VITE_QORE_REST_URL`     | Cosmos REST (balances) | `http://localhost:1317` |
+| `VITE_QORE_REST_URL`     | Native REST (balances) | `http://localhost:1317` |
 | `VITE_QORE_EVM_RPC_URL`  | EVM JSON-RPC (`qor_*`) | `http://localhost:8545` |
 
 ## Build / type-check

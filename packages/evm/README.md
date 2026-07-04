@@ -33,7 +33,7 @@ console.log("chain id:", await client.getChainId());
 ```
 
 The native currency defaults to `QOR` with **18 decimals** (the EVM convention).
-This is the EVM-side representation and is distinct from the Cosmos `uqor` base
+This is the EVM-side representation and is distinct from the Native `uqor` base
 denomination (10^6). Override with `{ decimals }` if your node differs; confirm
 the canonical value against your target node.
 

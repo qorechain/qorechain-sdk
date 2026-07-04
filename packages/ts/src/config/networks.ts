@@ -29,9 +29,9 @@ export interface CoinInfo {
 
 /** Service endpoints for talking to a network across its supported VMs. */
 export interface NetworkEndpoints {
-  /** Cosmos SDK REST (LCD) endpoint. */
+  /** Native REST (LCD) endpoint. */
   rest: string;
-  /** Cosmos SDK gRPC endpoint. */
+  /** Native gRPC endpoint. */
   grpc: string;
   /** Consensus RPC endpoint. */
   rpc: string;

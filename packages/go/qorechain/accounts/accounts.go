@@ -2,7 +2,7 @@
 // hierarchical-deterministic (HD) derivation of QoreChain accounts in all three
 // supported schemes:
 //
-//  1. native — Cosmos-style secp256k1, BIP-44 path m/44'/118'/0'/0/{index},
+//  1. native — QoreChain Native secp256k1, BIP-44 path m/44'/118'/0'/0/{index},
 //     address = bech32("qor", ripemd160(sha256(compressedPubKey))).
 //  2. evm    — secp256k1, BIP-44 path m/44'/60'/0'/0/{index},
 //     address = "0x" + last 20 bytes of keccak256(uncompressedPubKey[1:]),
@@ -24,7 +24,7 @@ import (
 	"github.com/btcsuite/btcd/btcutil/bech32"
 	"github.com/cosmos/go-bip39"
 	"github.com/mr-tron/base58"
-	"golang.org/x/crypto/ripemd160" //nolint:staticcheck // ripemd160 is required by the Cosmos address scheme.
+	"golang.org/x/crypto/ripemd160" //nolint:staticcheck // ripemd160 is required by the QoreChain Native address scheme.
 	"golang.org/x/crypto/sha3"
 )
 
@@ -100,7 +100,7 @@ func seedFromMnemonic(mnemonic string) ([]byte, error) {
 	return bip39.NewSeedWithErrorChecking(mnemonic, "")
 }
 
-// DeriveNativeAccount derives a native QoreChain account (Cosmos-style
+// DeriveNativeAccount derives a native QoreChain account (QoreChain Native
 // secp256k1).
 //
 // Path: m/44'/118'/0'/0/{index}. The address is the bech32 ("qor") encoding of

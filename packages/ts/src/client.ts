@@ -102,7 +102,7 @@ export interface ClientCrossVm {
 export interface QoreChainClient {
   /** The resolved network config (with any endpoint/chain-id overrides applied). */
   readonly network: NetworkConfig;
-  /** Cosmos + QoreChain REST read client (uses `endpoints.rest`). */
+  /** Native + QoreChain REST read client (uses `endpoints.rest`). */
   readonly rest: RestClient;
   /** EVM JSON-RPC client (uses `endpoints.evmRpc`). */
   readonly evm: JsonRpcClient;

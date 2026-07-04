@@ -12,13 +12,13 @@ import java.util.Set;
 
 /**
  * The QoreChain message registry: a {@code typeUrl → protobuf Parser} map plus
- * Cosmos-style {@link Any} pack/unpack.
+ * Native {@link Any} pack/unpack.
  *
- * <p>Covers all 53 QoreChain custom-module {@code Msg} types (amm, bridge, rdk,
+ * <p>Covers all 55 QoreChain custom-module {@code Msg} types (amm, bridge, rdk,
  * multilayer, pqc, svm, lightnode, license, abstractaccount, crossvm,
- * rlconsensus) and the standard Cosmos messages exposed by {@link CosmosMessages}.
+ * rlconsensus) and the standard Native messages exposed by {@link CosmosMessages}.
  *
- * <p>Cosmos packs messages into {@code Any} with a bare leading-slash type URL
+ * <p>The Native lane packs messages into {@code Any} with a bare leading-slash type URL
  * (e.g. {@code /qorechain.amm.v1.MsgCreatePool}) — NOT protobuf-java's default
  * {@code type.googleapis.com/} prefix — so {@link #pack} and {@link #unpack}
  * build/read the {@code Any} fields directly.
@@ -32,7 +32,7 @@ public final class Messages {
     static {
         Map<String, Parser<? extends Message>> m = new LinkedHashMap<>();
 
-        // ---- Standard Cosmos messages ----
+        // ---- Standard Native messages ----
         m.put("/cosmos.bank.v1beta1.MsgSend", cosmos.bank.v1beta1.Tx.MsgSend.parser());
         m.put("/cosmos.bank.v1beta1.MsgMultiSend", cosmos.bank.v1beta1.Tx.MsgMultiSend.parser());
 
@@ -97,9 +97,11 @@ public final class Messages {
         m.put("/qorechain.license.v1.MsgSuspendLicense", qorechain.license.v1.Tx.MsgSuspendLicense.parser());
         m.put("/qorechain.license.v1.MsgResumeLicense", qorechain.license.v1.Tx.MsgResumeLicense.parser());
 
-        // ---- abstractaccount (2) ----
+        // ---- abstractaccount (4) ----
         m.put("/qorechain.abstractaccount.v1.MsgCreateAbstractAccount", qorechain.abstractaccount.v1.Tx.MsgCreateAbstractAccount.parser());
         m.put("/qorechain.abstractaccount.v1.MsgUpdateSpendingRules", qorechain.abstractaccount.v1.Tx.MsgUpdateSpendingRules.parser());
+        m.put("/qorechain.abstractaccount.v1.MsgRegisterAuthenticator", qorechain.abstractaccount.v1.Tx.MsgRegisterAuthenticator.parser());
+        m.put("/qorechain.abstractaccount.v1.MsgRevokeAuthenticator", qorechain.abstractaccount.v1.Tx.MsgRevokeAuthenticator.parser());
 
         // ---- crossvm (2) ----
         m.put("/qorechain.crossvm.v1.MsgCrossVMCall", qorechain.crossvm.v1.Tx.MsgCrossVMCall.parser());
@@ -114,7 +116,7 @@ public final class Messages {
         REGISTRY = Collections.unmodifiableMap(m);
     }
 
-    /** All registered type URLs (Cosmos standard + 53 QoreChain customs). */
+    /** All registered type URLs (Native standard + 55 QoreChain customs). */
     public static Set<String> typeUrls() {
         return REGISTRY.keySet();
     }
@@ -129,7 +131,7 @@ public final class Messages {
         return REGISTRY.get(typeUrl);
     }
 
-    /** Pack a message into a Cosmos-style {@link Any} with a bare leading-slash type URL. */
+    /** Pack a message into a Native {@link Any} with a bare leading-slash type URL. */
     public static Any pack(String typeUrl, Message message) {
         return Any.newBuilder()
                 .setTypeUrl(typeUrl)
@@ -137,13 +139,13 @@ public final class Messages {
                 .build();
     }
 
-    /** Pack a {@link TypedMessage} into a Cosmos-style {@link Any}. */
+    /** Pack a {@link TypedMessage} into a Native {@link Any}. */
     public static Any pack(TypedMessage tm) {
         return pack(tm.typeUrl, tm.message);
     }
 
     /**
-     * Unpack a Cosmos-style {@link Any} into its concrete message via the registry.
+     * Unpack a Native {@link Any} into its concrete message via the registry.
      *
      * @throws IllegalArgumentException if the type URL is not registered.
      * @throws InvalidProtocolBufferException if the bytes do not decode.

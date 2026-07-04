@@ -1,7 +1,7 @@
 //! BIP-39 mnemonics and hierarchical-deterministic (HD) derivation of QoreChain
 //! accounts in all three supported schemes:
 //!
-//! 1. native — Cosmos-style secp256k1, BIP-44 path `m/44'/118'/0'/0/{index}`,
+//! 1. native — QoreChain Native secp256k1, BIP-44 path `m/44'/118'/0'/0/{index}`,
 //!    address = `bech32("qor", ripemd160(sha256(compressed_pubkey)))`.
 //! 2. evm — secp256k1, BIP-44 path `m/44'/60'/0'/0/{index}`, address =
 //!    `"0x"` + last 20 bytes of `keccak256(uncompressed_pubkey[1..])`, rendered
@@ -33,7 +33,7 @@ pub const NATIVE_PREFIX: &str = "qor";
 const HARDENED_OFFSET: u32 = 0x8000_0000;
 
 // SLIP-0044 coin types.
-const COIN_TYPE_NATIVE: u32 = 118; // Cosmos
+const COIN_TYPE_NATIVE: u32 = 118; // QoreChain Native
 const COIN_TYPE_EVM: u32 = 60; // Ethereum
 const COIN_TYPE_SVM: u32 = 501; // Solana
 
@@ -247,7 +247,7 @@ impl Ed25519Node {
     }
 }
 
-/// Derives a native QoreChain account (Cosmos-style secp256k1).
+/// Derives a native QoreChain account (QoreChain Native secp256k1).
 ///
 /// Path: `m/44'/118'/0'/0/{index}`. The address is the bech32 (`qor`) encoding
 /// of `ripemd160(sha256(compressed_public_key))`.
@@ -273,6 +273,28 @@ pub fn derive_native_account(mnemonic: &str, index: u32) -> Result<Secp256k1Acco
         public_key: compressed,
         private_key: node.key.to_vec(),
     })
+}
+
+/// Derives the raw secp256k1 key material at the Ethereum HD path
+/// `m/44'/60'/0'/0/{index}` from a mnemonic. Returns
+/// `(private_key32, compressed_pubkey33, uncompressed_pubkey65)`.
+///
+/// Shared by [`derive_evm_account`] and the unified eth-native wallet
+/// ([`crate::unified`]) so both derive the identical key from a phrase.
+pub(crate) fn derive_eth_key(
+    mnemonic: &str,
+    index: u32,
+) -> Result<([u8; 32], Vec<u8>, Vec<u8>)> {
+    let seed = seed_from_mnemonic(mnemonic)?;
+    let master = Secp256k1Node::master(&seed)?;
+    let node = master.derive_path(&[
+        44 + HARDENED_OFFSET,
+        COIN_TYPE_EVM + HARDENED_OFFSET,
+        HARDENED_OFFSET,
+        0,
+        index,
+    ])?;
+    Ok((node.key, node.compressed_pubkey(), node.uncompressed_pubkey()))
 }
 
 /// Derives an EVM account from a mnemonic.

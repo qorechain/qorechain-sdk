@@ -36,6 +36,42 @@ export interface MsgUpdateSpendingRules {
 export interface MsgUpdateSpendingRulesResponse {
 }
 
+/**
+ * MsgRegisterAuthenticator links a foreign-scheme wallet key (e.g. a Phantom
+ * ed25519 key) to an account so it may act for that account under least-privilege,
+ * time-bounded, revocable terms. Only the account owner (root key) may call it.
+ */
+export interface MsgRegisterAuthenticator {
+  owner: string;
+  accountAddress: string;
+  /** "ed25519" | "secp256k1" */
+  scheme: string;
+  /** raw public key bytes */
+  pubkey: Uint8Array;
+  /** e.g. "svm", "send" */
+  permissions: string[];
+  /** unix seconds; must be within MaxSessionTTL */
+  expiryUnix: string;
+  label: string;
+}
+
+export interface MsgRegisterAuthenticatorResponse {
+}
+
+/**
+ * MsgRevokeAuthenticator instantly disables a previously linked wallet key.
+ * Only the account owner (root key) may call it.
+ */
+export interface MsgRevokeAuthenticator {
+  owner: string;
+  accountAddress: string;
+  scheme: string;
+  pubkey: Uint8Array;
+}
+
+export interface MsgRevokeAuthenticatorResponse {
+}
+
 function createBaseSpendingRule(): SpendingRule {
   return { id: "", dailyLimit: "0", perTxLimit: "0", allowedDenoms: [], enabled: false };
 }
@@ -449,6 +485,378 @@ export const MsgUpdateSpendingRulesResponse: MessageFns<MsgUpdateSpendingRulesRe
   },
 };
 
+function createBaseMsgRegisterAuthenticator(): MsgRegisterAuthenticator {
+  return {
+    owner: "",
+    accountAddress: "",
+    scheme: "",
+    pubkey: new Uint8Array(0),
+    permissions: [],
+    expiryUnix: "0",
+    label: "",
+  };
+}
+
+export const MsgRegisterAuthenticator: MessageFns<MsgRegisterAuthenticator> = {
+  encode(message: MsgRegisterAuthenticator, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.owner !== "") {
+      writer.uint32(10).string(message.owner);
+    }
+    if (message.accountAddress !== "") {
+      writer.uint32(18).string(message.accountAddress);
+    }
+    if (message.scheme !== "") {
+      writer.uint32(26).string(message.scheme);
+    }
+    if (message.pubkey.length !== 0) {
+      writer.uint32(34).bytes(message.pubkey);
+    }
+    for (const v of message.permissions) {
+      writer.uint32(42).string(v!);
+    }
+    if (message.expiryUnix !== "0") {
+      writer.uint32(48).int64(message.expiryUnix);
+    }
+    if (message.label !== "") {
+      writer.uint32(58).string(message.label);
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): MsgRegisterAuthenticator {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseMsgRegisterAuthenticator();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.owner = reader.string();
+          continue;
+        }
+        case 2: {
+          if (tag !== 18) {
+            break;
+          }
+
+          message.accountAddress = reader.string();
+          continue;
+        }
+        case 3: {
+          if (tag !== 26) {
+            break;
+          }
+
+          message.scheme = reader.string();
+          continue;
+        }
+        case 4: {
+          if (tag !== 34) {
+            break;
+          }
+
+          message.pubkey = reader.bytes();
+          continue;
+        }
+        case 5: {
+          if (tag !== 42) {
+            break;
+          }
+
+          message.permissions.push(reader.string());
+          continue;
+        }
+        case 6: {
+          if (tag !== 48) {
+            break;
+          }
+
+          message.expiryUnix = reader.int64().toString();
+          continue;
+        }
+        case 7: {
+          if (tag !== 58) {
+            break;
+          }
+
+          message.label = reader.string();
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(object: any): MsgRegisterAuthenticator {
+    return {
+      owner: isSet(object.owner) ? globalThis.String(object.owner) : "",
+      accountAddress: isSet(object.accountAddress)
+        ? globalThis.String(object.accountAddress)
+        : isSet(object.account_address)
+        ? globalThis.String(object.account_address)
+        : "",
+      scheme: isSet(object.scheme) ? globalThis.String(object.scheme) : "",
+      pubkey: isSet(object.pubkey) ? bytesFromBase64(object.pubkey) : new Uint8Array(0),
+      permissions: globalThis.Array.isArray(object?.permissions)
+        ? object.permissions.map((e: any) => globalThis.String(e))
+        : [],
+      expiryUnix: isSet(object.expiryUnix)
+        ? globalThis.String(object.expiryUnix)
+        : isSet(object.expiry_unix)
+        ? globalThis.String(object.expiry_unix)
+        : "0",
+      label: isSet(object.label) ? globalThis.String(object.label) : "",
+    };
+  },
+
+  toJSON(message: MsgRegisterAuthenticator): unknown {
+    const obj: any = {};
+    if (message.owner !== "") {
+      obj.owner = message.owner;
+    }
+    if (message.accountAddress !== "") {
+      obj.accountAddress = message.accountAddress;
+    }
+    if (message.scheme !== "") {
+      obj.scheme = message.scheme;
+    }
+    if (message.pubkey.length !== 0) {
+      obj.pubkey = base64FromBytes(message.pubkey);
+    }
+    if (message.permissions?.length) {
+      obj.permissions = message.permissions;
+    }
+    if (message.expiryUnix !== "0") {
+      obj.expiryUnix = message.expiryUnix;
+    }
+    if (message.label !== "") {
+      obj.label = message.label;
+    }
+    return obj;
+  },
+
+  create(base?: DeepPartial<MsgRegisterAuthenticator>): MsgRegisterAuthenticator {
+    return MsgRegisterAuthenticator.fromPartial(base ?? {});
+  },
+  fromPartial(object: DeepPartial<MsgRegisterAuthenticator>): MsgRegisterAuthenticator {
+    const message = createBaseMsgRegisterAuthenticator();
+    message.owner = object.owner ?? "";
+    message.accountAddress = object.accountAddress ?? "";
+    message.scheme = object.scheme ?? "";
+    message.pubkey = object.pubkey ?? new Uint8Array(0);
+    message.permissions = object.permissions?.map((e) => e) || [];
+    message.expiryUnix = object.expiryUnix ?? "0";
+    message.label = object.label ?? "";
+    return message;
+  },
+};
+
+function createBaseMsgRegisterAuthenticatorResponse(): MsgRegisterAuthenticatorResponse {
+  return {};
+}
+
+export const MsgRegisterAuthenticatorResponse: MessageFns<MsgRegisterAuthenticatorResponse> = {
+  encode(_: MsgRegisterAuthenticatorResponse, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): MsgRegisterAuthenticatorResponse {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseMsgRegisterAuthenticatorResponse();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(_: any): MsgRegisterAuthenticatorResponse {
+    return {};
+  },
+
+  toJSON(_: MsgRegisterAuthenticatorResponse): unknown {
+    const obj: any = {};
+    return obj;
+  },
+
+  create(base?: DeepPartial<MsgRegisterAuthenticatorResponse>): MsgRegisterAuthenticatorResponse {
+    return MsgRegisterAuthenticatorResponse.fromPartial(base ?? {});
+  },
+  fromPartial(_: DeepPartial<MsgRegisterAuthenticatorResponse>): MsgRegisterAuthenticatorResponse {
+    const message = createBaseMsgRegisterAuthenticatorResponse();
+    return message;
+  },
+};
+
+function createBaseMsgRevokeAuthenticator(): MsgRevokeAuthenticator {
+  return { owner: "", accountAddress: "", scheme: "", pubkey: new Uint8Array(0) };
+}
+
+export const MsgRevokeAuthenticator: MessageFns<MsgRevokeAuthenticator> = {
+  encode(message: MsgRevokeAuthenticator, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.owner !== "") {
+      writer.uint32(10).string(message.owner);
+    }
+    if (message.accountAddress !== "") {
+      writer.uint32(18).string(message.accountAddress);
+    }
+    if (message.scheme !== "") {
+      writer.uint32(26).string(message.scheme);
+    }
+    if (message.pubkey.length !== 0) {
+      writer.uint32(34).bytes(message.pubkey);
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): MsgRevokeAuthenticator {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseMsgRevokeAuthenticator();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.owner = reader.string();
+          continue;
+        }
+        case 2: {
+          if (tag !== 18) {
+            break;
+          }
+
+          message.accountAddress = reader.string();
+          continue;
+        }
+        case 3: {
+          if (tag !== 26) {
+            break;
+          }
+
+          message.scheme = reader.string();
+          continue;
+        }
+        case 4: {
+          if (tag !== 34) {
+            break;
+          }
+
+          message.pubkey = reader.bytes();
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(object: any): MsgRevokeAuthenticator {
+    return {
+      owner: isSet(object.owner) ? globalThis.String(object.owner) : "",
+      accountAddress: isSet(object.accountAddress)
+        ? globalThis.String(object.accountAddress)
+        : isSet(object.account_address)
+        ? globalThis.String(object.account_address)
+        : "",
+      scheme: isSet(object.scheme) ? globalThis.String(object.scheme) : "",
+      pubkey: isSet(object.pubkey) ? bytesFromBase64(object.pubkey) : new Uint8Array(0),
+    };
+  },
+
+  toJSON(message: MsgRevokeAuthenticator): unknown {
+    const obj: any = {};
+    if (message.owner !== "") {
+      obj.owner = message.owner;
+    }
+    if (message.accountAddress !== "") {
+      obj.accountAddress = message.accountAddress;
+    }
+    if (message.scheme !== "") {
+      obj.scheme = message.scheme;
+    }
+    if (message.pubkey.length !== 0) {
+      obj.pubkey = base64FromBytes(message.pubkey);
+    }
+    return obj;
+  },
+
+  create(base?: DeepPartial<MsgRevokeAuthenticator>): MsgRevokeAuthenticator {
+    return MsgRevokeAuthenticator.fromPartial(base ?? {});
+  },
+  fromPartial(object: DeepPartial<MsgRevokeAuthenticator>): MsgRevokeAuthenticator {
+    const message = createBaseMsgRevokeAuthenticator();
+    message.owner = object.owner ?? "";
+    message.accountAddress = object.accountAddress ?? "";
+    message.scheme = object.scheme ?? "";
+    message.pubkey = object.pubkey ?? new Uint8Array(0);
+    return message;
+  },
+};
+
+function createBaseMsgRevokeAuthenticatorResponse(): MsgRevokeAuthenticatorResponse {
+  return {};
+}
+
+export const MsgRevokeAuthenticatorResponse: MessageFns<MsgRevokeAuthenticatorResponse> = {
+  encode(_: MsgRevokeAuthenticatorResponse, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): MsgRevokeAuthenticatorResponse {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseMsgRevokeAuthenticatorResponse();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(_: any): MsgRevokeAuthenticatorResponse {
+    return {};
+  },
+
+  toJSON(_: MsgRevokeAuthenticatorResponse): unknown {
+    const obj: any = {};
+    return obj;
+  },
+
+  create(base?: DeepPartial<MsgRevokeAuthenticatorResponse>): MsgRevokeAuthenticatorResponse {
+    return MsgRevokeAuthenticatorResponse.fromPartial(base ?? {});
+  },
+  fromPartial(_: DeepPartial<MsgRevokeAuthenticatorResponse>): MsgRevokeAuthenticatorResponse {
+    const message = createBaseMsgRevokeAuthenticatorResponse();
+    return message;
+  },
+};
+
 /** Msg defines the abstractaccount module's transaction service. */
 export type MsgDefinition = typeof MsgDefinition;
 export const MsgDefinition = {
@@ -471,8 +879,49 @@ export const MsgDefinition = {
       responseStream: false,
       options: {},
     },
+    registerAuthenticator: {
+      name: "RegisterAuthenticator",
+      requestType: MsgRegisterAuthenticator as typeof MsgRegisterAuthenticator,
+      requestStream: false,
+      responseType: MsgRegisterAuthenticatorResponse as typeof MsgRegisterAuthenticatorResponse,
+      responseStream: false,
+      options: {},
+    },
+    revokeAuthenticator: {
+      name: "RevokeAuthenticator",
+      requestType: MsgRevokeAuthenticator as typeof MsgRevokeAuthenticator,
+      requestStream: false,
+      responseType: MsgRevokeAuthenticatorResponse as typeof MsgRevokeAuthenticatorResponse,
+      responseStream: false,
+      options: {},
+    },
   },
 } as const;
+
+function bytesFromBase64(b64: string): Uint8Array {
+  if ((globalThis as any).Buffer) {
+    return Uint8Array.from((globalThis as any).Buffer.from(b64, "base64"));
+  } else {
+    const bin = globalThis.atob(b64);
+    const arr = new Uint8Array(bin.length);
+    for (let i = 0; i < bin.length; ++i) {
+      arr[i] = bin.charCodeAt(i);
+    }
+    return arr;
+  }
+}
+
+function base64FromBytes(arr: Uint8Array): string {
+  if ((globalThis as any).Buffer) {
+    return (globalThis as any).Buffer.from(arr).toString("base64");
+  } else {
+    const bin: string[] = [];
+    arr.forEach((byte) => {
+      bin.push(globalThis.String.fromCharCode(byte));
+    });
+    return globalThis.btoa(bin.join(""));
+  }
+}
 
 type Builtin = Date | Function | Uint8Array | string | number | boolean | undefined;
 

@@ -48,7 +48,7 @@ export interface CreateEvmClientOptions {
   /**
    * Native currency decimals for EVM display. Defaults to 18 (the EVM
    * convention). Note: this is the EVM-side representation of QOR and is
-   * distinct from the Cosmos `uqor` base denomination (10^6). Confirm the
+   * distinct from the Native `uqor` base denomination (10^6). Confirm the
    * canonical wrapped/native EVM decimals against your target node.
    */
   decimals?: number;

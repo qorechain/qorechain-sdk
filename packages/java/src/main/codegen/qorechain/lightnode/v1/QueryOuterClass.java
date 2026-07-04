@@ -7896,62 +7896,69 @@ public final class QueryOuterClass extends com.google.protobuf.GeneratedFile {
   static {
     java.lang.String[] descriptorData = {
       "\n\"qorechain/lightnode/v1/query.proto\022\026qo" +
-      "rechain.lightnode.v1\"\334\003\n\rLightNodeView\022\030" +
-      "\n\007address\030\001 \001(\tR\007address\022\033\n\tnode_type\030\002 " +
-      "\001(\tR\010nodeType\022\030\n\007version\030\003 \001(\tR\007version\022" +
-      "\"\n\014capabilities\030\004 \003(\tR\014capabilities\022\026\n\006s" +
-      "tatus\030\005 \001(\tR\006status\022#\n\rregistered_at\030\006 \001" +
-      "(\003R\014registeredAt\022%\n\016last_heartbeat\030\007 \001(\003" +
-      "R\rlastHeartbeat\022)\n\020total_heartbeats\030\010 \001(" +
-      "\004R\017totalHeartbeats\022/\n\023expected_heartbeat" +
-      "s\030\t \001(\004R\022expectedHeartbeats\022\'\n\017delegated" +
-      "_stake\030\n \001(\tR\016delegatedStake\022/\n\023accumula" +
-      "ted_rewards\030\013 \001(\tR\022accumulatedRewards\022<\n" +
-      "\032initial_heartbeat_interval\030\014 \001(\003R\030initi" +
-      "alHeartbeatInterval\"1\n\025QueryLightNodeReq" +
-      "uest\022\030\n\007address\030\001 \001(\tR\007address\"i\n\026QueryL" +
-      "ightNodeResponse\0229\n\004node\030\001 \001(\0132%.qorecha" +
-      "in.lightnode.v1.LightNodeViewR\004node\022\024\n\005f" +
-      "ound\030\002 \001(\010R\005found\"\030\n\026QueryLightNodesRequ" +
-      "est\"V\n\027QueryLightNodesResponse\022;\n\005nodes\030" +
-      "\001 \003(\0132%.qorechain.lightnode.v1.LightNode" +
-      "ViewR\005nodes\"\024\n\022QueryParamsRequest\"\325\002\n\023Qu" +
-      "eryParamsResponse\022)\n\020registration_fee\030\001 " +
-      "\001(\tR\017registrationFee\022-\n\022heartbeat_interv" +
-      "al\030\002 \001(\003R\021heartbeatInterval\022.\n\023min_deleg" +
-      "ated_stake\030\003 \001(\tR\021minDelegatedStake\022!\n\014r" +
-      "eward_share\030\004 \001(\tR\013rewardShare\0223\n\026min_up" +
-      "time_for_rewards\030\005 \001(\tR\023minUptimeForRewa" +
-      "rds\022&\n\017max_light_nodes\030\006 \001(\004R\rmaxLightNo" +
-      "des\0224\n\026heartbeat_grace_period\030\007 \001(\003R\024hea" +
-      "rtbeatGracePeriod\"/\n\023QueryRewardsRequest" +
-      "\022\030\n\007address\030\001 \001(\tR\007address\"G\n\024QueryRewar" +
-      "dsResponse\022/\n\023accumulated_rewards\030\001 \001(\tR" +
-      "\022accumulatedRewards\"\023\n\021QueryStatsRequest" +
-      "\"\265\001\n\022QueryStatsResponse\022)\n\020total_registe" +
-      "red\030\001 \001(\004R\017totalRegistered\022!\n\014total_acti" +
-      "ve\030\002 \001(\004R\013totalActive\022#\n\rtotal_rewards\030\003" +
-      " \001(\tR\014totalRewards\022,\n\022last_reward_height" +
-      "\030\004 \001(\003R\020lastRewardHeight2\213\004\n\005Query\022j\n\tLi" +
-      "ghtNode\022-.qorechain.lightnode.v1.QueryLi" +
-      "ghtNodeRequest\032..qorechain.lightnode.v1." +
-      "QueryLightNodeResponse\022m\n\nLightNodes\022..q" +
+      "rechain.lightnode.v1\032\034google/api/annotat" +
+      "ions.proto\"\334\003\n\rLightNodeView\022\030\n\007address\030" +
+      "\001 \001(\tR\007address\022\033\n\tnode_type\030\002 \001(\tR\010nodeT" +
+      "ype\022\030\n\007version\030\003 \001(\tR\007version\022\"\n\014capabil" +
+      "ities\030\004 \003(\tR\014capabilities\022\026\n\006status\030\005 \001(" +
+      "\tR\006status\022#\n\rregistered_at\030\006 \001(\003R\014regist" +
+      "eredAt\022%\n\016last_heartbeat\030\007 \001(\003R\rlastHear" +
+      "tbeat\022)\n\020total_heartbeats\030\010 \001(\004R\017totalHe" +
+      "artbeats\022/\n\023expected_heartbeats\030\t \001(\004R\022e" +
+      "xpectedHeartbeats\022\'\n\017delegated_stake\030\n \001" +
+      "(\tR\016delegatedStake\022/\n\023accumulated_reward" +
+      "s\030\013 \001(\tR\022accumulatedRewards\022<\n\032initial_h" +
+      "eartbeat_interval\030\014 \001(\003R\030initialHeartbea" +
+      "tInterval\"1\n\025QueryLightNodeRequest\022\030\n\007ad" +
+      "dress\030\001 \001(\tR\007address\"i\n\026QueryLightNodeRe" +
+      "sponse\0229\n\004node\030\001 \001(\0132%.qorechain.lightno" +
+      "de.v1.LightNodeViewR\004node\022\024\n\005found\030\002 \001(\010" +
+      "R\005found\"\030\n\026QueryLightNodesRequest\"V\n\027Que" +
+      "ryLightNodesResponse\022;\n\005nodes\030\001 \003(\0132%.qo" +
+      "rechain.lightnode.v1.LightNodeViewR\005node" +
+      "s\"\024\n\022QueryParamsRequest\"\325\002\n\023QueryParamsR" +
+      "esponse\022)\n\020registration_fee\030\001 \001(\tR\017regis" +
+      "trationFee\022-\n\022heartbeat_interval\030\002 \001(\003R\021" +
+      "heartbeatInterval\022.\n\023min_delegated_stake" +
+      "\030\003 \001(\tR\021minDelegatedStake\022!\n\014reward_shar" +
+      "e\030\004 \001(\tR\013rewardShare\0223\n\026min_uptime_for_r" +
+      "ewards\030\005 \001(\tR\023minUptimeForRewards\022&\n\017max" +
+      "_light_nodes\030\006 \001(\004R\rmaxLightNodes\0224\n\026hea" +
+      "rtbeat_grace_period\030\007 \001(\003R\024heartbeatGrac" +
+      "ePeriod\"/\n\023QueryRewardsRequest\022\030\n\007addres" +
+      "s\030\001 \001(\tR\007address\"G\n\024QueryRewardsResponse" +
+      "\022/\n\023accumulated_rewards\030\001 \001(\tR\022accumulat" +
+      "edRewards\"\023\n\021QueryStatsRequest\"\265\001\n\022Query" +
+      "StatsResponse\022)\n\020total_registered\030\001 \001(\004R" +
+      "\017totalRegistered\022!\n\014total_active\030\002 \001(\004R\013" +
+      "totalActive\022#\n\rtotal_rewards\030\003 \001(\tR\014tota" +
+      "lRewards\022,\n\022last_reward_height\030\004 \001(\003R\020la" +
+      "stRewardHeight2\351\005\n\005Query\022\232\001\n\tLightNode\022-" +
+      ".qorechain.lightnode.v1.QueryLightNodeRe" +
+      "quest\032..qorechain.lightnode.v1.QueryLigh" +
+      "tNodeResponse\".\202\323\344\223\002(\022&/qorechain/lightn" +
+      "ode/v1/node/{address}\022\224\001\n\nLightNodes\022..q" +
       "orechain.lightnode.v1.QueryLightNodesReq" +
       "uest\032/.qorechain.lightnode.v1.QueryLight" +
-      "NodesResponse\022a\n\006Params\022*.qorechain.ligh" +
+      "NodesResponse\"%\202\323\344\223\002\037\022\035/qorechain/lightn" +
+      "ode/v1/nodes\022\211\001\n\006Params\022*.qorechain.ligh" +
       "tnode.v1.QueryParamsRequest\032+.qorechain." +
-      "lightnode.v1.QueryParamsResponse\022d\n\007Rewa" +
-      "rds\022+.qorechain.lightnode.v1.QueryReward" +
-      "sRequest\032,.qorechain.lightnode.v1.QueryR" +
-      "ewardsResponse\022^\n\005Stats\022).qorechain.ligh" +
-      "tnode.v1.QueryStatsRequest\032*.qorechain.l" +
-      "ightnode.v1.QueryStatsResponseB7Z5github" +
-      ".com/qorechain/qorechain-core/x/lightnod" +
-      "e/typesb\006proto3"
+      "lightnode.v1.QueryParamsResponse\"&\202\323\344\223\002 " +
+      "\022\036/qorechain/lightnode/v1/params\022\227\001\n\007Rew" +
+      "ards\022+.qorechain.lightnode.v1.QueryRewar" +
+      "dsRequest\032,.qorechain.lightnode.v1.Query" +
+      "RewardsResponse\"1\202\323\344\223\002+\022)/qorechain/ligh" +
+      "tnode/v1/rewards/{address}\022\205\001\n\005Stats\022).q" +
+      "orechain.lightnode.v1.QueryStatsRequest\032" +
+      "*.qorechain.lightnode.v1.QueryStatsRespo" +
+      "nse\"%\202\323\344\223\002\037\022\035/qorechain/lightnode/v1/sta" +
+      "tsB7Z5github.com/qorechain/qorechain-cor" +
+      "e/x/lightnode/typesb\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
         new com.google.protobuf.Descriptors.FileDescriptor[] {
+          com.google.api.AnnotationsProto.getDescriptor(),
         });
     internal_static_qorechain_lightnode_v1_LightNodeView_descriptor =
       getDescriptor().getMessageType(0);
@@ -8020,6 +8027,12 @@ public final class QueryOuterClass extends com.google.protobuf.GeneratedFile {
         internal_static_qorechain_lightnode_v1_QueryStatsResponse_descriptor,
         new java.lang.String[] { "TotalRegistered", "TotalActive", "TotalRewards", "LastRewardHeight", });
     descriptor.resolveAllFeaturesImmutable();
+    com.google.api.AnnotationsProto.getDescriptor();
+    com.google.protobuf.ExtensionRegistry registry =
+        com.google.protobuf.ExtensionRegistry.newInstance();
+    registry.add(com.google.api.AnnotationsProto.http);
+    com.google.protobuf.Descriptors.FileDescriptor
+        .internalUpdateFileDescriptor(descriptor, registry);
   }
 
   // @@protoc_insertion_point(outer_class_scope)

@@ -20,7 +20,7 @@ of QoreChain's virtual machines.
 QoreChain is a Layer 1 blockchain with three first-class smart-contract
 runtimes on a single chain:
 
-- **CosmWasm** — Wasm smart contracts via the Cosmos SDK.
+- **CosmWasm** — Wasm smart contracts on the Native lane.
 - **QoreChain EVM Engine** — Ethereum-compatible execution (Solidity, viem,
   standard JSON-RPC).
 - **SVM** — a Solana-compatible runtime with a Solana-style JSON-RPC.

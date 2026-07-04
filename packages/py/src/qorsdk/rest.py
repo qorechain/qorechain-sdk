@@ -1,6 +1,6 @@
 """REST (LCD) read clients for QoreChain (sync + async).
 
-Wraps the standard Cosmos SDK bank endpoints plus QoreChain's custom module read
+Wraps the standard Native bank endpoints plus QoreChain's custom module read
 routes under ``/qorechain/<module>/v1/...``. Both :class:`RestClient` and
 :class:`AsyncRestClient` share the same path-building logic; only the transport
 (``httpx.Client`` vs ``httpx.AsyncClient``) differs.
@@ -91,7 +91,7 @@ class _RestPaths:
 
 
 class RestClient:
-    """Synchronous Cosmos + QoreChain REST read client."""
+    """Synchronous Native + QoreChain REST read client."""
 
     def __init__(
         self,
@@ -127,7 +127,7 @@ class RestClient:
         path, params = built
         return self.get(path, params)
 
-    # --- Standard Cosmos bank ---
+    # --- Standard Native bank ---
     def get_all_balances(self, address: str) -> Any:
         return self._get_built(_RestPaths.all_balances(address))
 

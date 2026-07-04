@@ -118,6 +118,12 @@ from .search import (
     get_tx,
     search_txs,
 )
+from .sign_eth import (
+    ETHSECP256K1_PUBKEY_TYPE,
+    parse_eth_account_pubkey,
+    sign_classical_eth,
+    sign_hybrid_eth,
+)
 from .subscribe import SubscriptionClient, build_tx_query
 from .track import (
     IncludedTx,
@@ -133,6 +139,14 @@ from .tx import (
     broadcast,
     build_hybrid_tx,
     send_messages,
+)
+from .unified import (
+    UnifiedAccount,
+    addresses_from_20,
+    derive_unified_account,
+    qore_addresses,
+    unified_account_from_phantom_signature,
+    unified_account_from_seed,
 )
 from .utils import (
     format_units,
@@ -177,6 +191,18 @@ __all__ = [
     "derive_native_account",
     "derive_evm_account",
     "derive_svm_account",
+    # unified eth-native wallet
+    "UnifiedAccount",
+    "derive_unified_account",
+    "unified_account_from_seed",
+    "unified_account_from_phantom_signature",
+    "addresses_from_20",
+    "qore_addresses",
+    # eth_secp256k1 Native-lane signing
+    "ETHSECP256K1_PUBKEY_TYPE",
+    "sign_classical_eth",
+    "sign_hybrid_eth",
+    "parse_eth_account_pubkey",
     # pqc
     "ALGORITHM_UNSPECIFIED",
     "ALGORITHM_DILITHIUM5",

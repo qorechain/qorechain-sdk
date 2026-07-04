@@ -131,7 +131,7 @@ asyncio.run(main())
 
 `msg.<module>.<name>(...)` builds any of the chain's 49 custom messages (across
 amm / bridge / rdk / multilayer / pqc / svm / lightnode / license /
-abstractaccount / crossvm / rlconsensus) plus the standard Cosmos modules
+abstractaccount / crossvm / rlconsensus) plus the standard Native modules
 (bank / staking / distribution / gov / authz / feegrant / ibc). Each returns a
 `Msg` (`{type_url, value}`) you pass to `send_messages` or the hybrid PQC path.
 
@@ -169,7 +169,10 @@ let you parse any supported message back into a typed object.
 ### Typed query clients (gRPC)
 
 Modules with a `Query` service (crossvm, lightnode, pqc, qca, reputation,
-rlconsensus, svm) expose typed callers over a gRPC channel:
+rlconsensus, svm) expose typed callers over a gRPC channel. Chain v3.1.83 adds
+`amm`, `license`, and `abstractaccount` typed query clients, the `multilayer`
+`anchor` / `anchors` state-anchor queries, and abstractaccount
+`register_authenticator` / `revoke_authenticator` message composers:
 
 ```python
 from qorsdk import connect_query_clients
@@ -307,6 +310,50 @@ Async status reads are available as `is_pqc_registered_async` /
 `get_pqc_status_async`. See the
 [quantum-safe](../../docs/docs/guides/quantum-safe.md) guide.
 
+### Unified eth-native wallet (v0.6.0)
+
+One `eth_secp256k1` key = ONE 20-byte identity rendered three ways — `qor1…`
+(bech32), `0x…` (EIP-55), and SVM base58 (the 20 bytes right-padded with 12 zero
+bytes to 32). A deposit to any of the three lands in the **same** balance, and the
+key spends on **all** lanes. `derive_unified_account` uses the Ethereum HD path
+(`m/44'/60'/0'/0/{index}`); `unified_account_from_seed` builds one directly from a
+32-byte secret. `addresses_from_20` / `qore_addresses` convert between the three
+encodings. The legacy coin-type-118 `derive_native_account` still works (additive).
+
+Native-lane signing over the eth key: `sign_classical_eth` is a classical
+secp256k1 signature over `keccak256(SignDoc)` with pubkey type
+`/cosmos.evm.crypto.v1.ethsecp256k1.PubKey`; `sign_hybrid_eth` adds the ML-DSA-87
+post-quantum signature. Account parsing accepts eth_secp256k1 public keys.
+
+```python
+from qorsdk import (
+    derive_unified_account, unified_account_from_seed,
+    unified_account_from_phantom_signature,
+    sign_hybrid_eth,
+)
+
+account = derive_unified_account(mnemonic)
+account.cosmos  # "qor1…"    — QoreChain Native lane
+account.evm     # "0x…"      — EIP-55 checksummed
+account.svm     # "<base58>" — 20 bytes + 12 zero pad
+
+# Sign a QoreChain Native tx from the unified eth key (hybrid PQC path).
+built = sign_hybrid_eth(
+    account=account,
+    chain_id="qorechain-vladi",
+    account_number=account_number,
+    messages=[msg.cosmos.send(...)],
+    fee=fee,
+    sequence=sequence,
+)
+
+# Derive a canonical, non-custodial unified account from a deterministic
+# Phantom signature (shake256(signature, 32)).
+from_phantom = unified_account_from_phantom_signature(phantom_signature)
+```
+
+See the [unified-wallet](../../docs/docs/guides/unified-wallet.md) guide.
+
 ### Auto-gas, errors, tracking, search
 
 ```python
@@ -377,7 +424,7 @@ Browser-wallet adapters (Keplr / MetaMask / Phantom) and viem / `@solana/web3.js
 JS/browser-specific. In Python, talk to the EVM with [web3.py](https://web3py.readthedocs.io)
 and to the SVM with [solana-py](https://michaelhly.github.io/solana-py/), pointing
 them at the network's `evm_rpc` / `svm_rpc` endpoints. This SDK covers the native
-(Cosmos-SDK) chain surface end to end.
+Native chain surface end to end.
 
 ## Development
 

@@ -44,9 +44,9 @@ public final class NetworkConfig {
 
     /** Service endpoints for talking to a network across its supported VMs. */
     public static final class NetworkEndpoints {
-        /** Cosmos SDK REST (LCD) endpoint. */
+        /** Native REST (LCD) endpoint. */
         public final String rest;
-        /** Cosmos SDK gRPC endpoint. */
+        /** Native gRPC endpoint. */
         public final String grpc;
         /** Consensus RPC endpoint. */
         public final String rpc;

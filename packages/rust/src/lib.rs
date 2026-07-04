@@ -7,7 +7,7 @@
 //! - [`networks`] — built-in network presets (testnet and mainnet, both live).
 //! - [`denom`] — exact integer conversion between display and base amounts.
 //! - [`address`] — bech32 / hex address conversion and validation.
-//! - [`accounts`] — BIP-39 mnemonics and HD derivation of native (Cosmos-style
+//! - [`accounts`] — BIP-39 mnemonics and HD derivation of native (QoreChain Native
 //!   secp256k1), EVM (secp256k1), and SVM (ed25519) accounts.
 //! - [`pqc`] — post-quantum ML-DSA-87 (FIPS 204) keygen / sign / verify and the
 //!   on-chain hybrid-signature extension builder.
@@ -23,6 +23,12 @@
 //!   broadcast `MsgCrossVMCall`, including atomic multi-call txs).
 //! - [`pqc_dx`] — high-level quantum-safe DX helper (idempotent PQC-key
 //!   registration, status reads, key rotation, and a bound hybrid send path).
+//! - [`unified`] — the unified eth-native wallet: one secp256k1 key rendered as
+//!   all three address encodings (native/EVM/SVM) plus a deterministic ML-DSA-87
+//!   keypair, so a single identity shares one balance across all lanes.
+//! - [`sign_eth`] — `eth_secp256k1` native-lane signing (classical + hybrid) for
+//!   the unified account: secp256k1 over `keccak256(SignDoc)` with the
+//!   `eth_secp256k1` pubkey type.
 
 #![forbid(unsafe_code)]
 #![warn(missing_docs)]
@@ -40,8 +46,10 @@ pub mod pqc;
 pub mod pqc_dx;
 pub mod proto;
 pub mod query;
+pub mod sign_eth;
 pub mod subscribe;
 pub mod tx;
+pub mod unified;
 pub mod utils;
 
 pub use error::{Error, Result};
@@ -60,9 +68,21 @@ pub use accounts::{
 };
 
 pub use pqc::{
-    build_hybrid_signature_extension, generate_pqc_keypair, pqc_sign, pqc_sign_hedged, pqc_verify,
-    HybridSignatureExtension, PqcKeypair, ALGORITHM_DILITHIUM5, ALGORITHM_MLKEM1024,
-    HYBRID_SIG_TYPE_URL, MLDSA87_PUBLIC_KEY_LEN, MLDSA87_SECRET_KEY_LEN, MLDSA87_SIGNATURE_LEN,
+    build_hybrid_signature_extension, generate_pqc_keypair, pqc_keypair_from_seed, pqc_sign,
+    pqc_sign_hedged, pqc_verify, HybridSignatureExtension, PqcKeypair, ALGORITHM_DILITHIUM5,
+    ALGORITHM_MLKEM1024, HYBRID_SIG_TYPE_URL, MLDSA87_PUBLIC_KEY_LEN, MLDSA87_SECRET_KEY_LEN,
+    MLDSA87_SIGNATURE_LEN,
+};
+
+pub use unified::{
+    addresses_from_20, derive_unified_account, qore_addresses, unified_account_from_seed,
+    UnifiedAccount, UnifiedAddresses,
+};
+
+pub use sign_eth::{
+    parse_ethsecp256k1_pubkey, sign_classical_eth, sign_hybrid_eth,
+    unified_account_from_phantom_signature, EthBuiltTx, EthSignParams,
+    ETHSECP256K1_PUBKEY_TYPE,
 };
 
 pub use query::{JsonRpcClient, QorClient, RestClient, TypedQueryClient, QOR_METHODS};

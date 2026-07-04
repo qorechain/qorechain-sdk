@@ -132,4 +132,9 @@ Beyond the three differentiators, the SDK covers the full chain surface across
 queries, the tx lifecycle, subscriptions, browser wallets, and the
 [`@qorechain/react`](./guides/react.md) hooks kit.
 
+It also ships a **unified eth-native wallet**: one key is one identity rendered
+as `qor1…`, `0x…`, and an SVM address that all share a single balance — so a
+wallet is never "funded on one lane but not another," and the same key signs on
+every lane. See [Unified wallet](./guides/unified-wallet.md).
+
 Ready to build? Start with the [Quickstart](./quickstart.md).

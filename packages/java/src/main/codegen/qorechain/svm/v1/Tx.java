@@ -2822,6 +2822,816 @@ public final class Tx extends com.google.protobuf.GeneratedFile {
 
   }
 
+  public interface SVMAuthOrBuilder extends
+      // @@protoc_insertion_point(interface_extends:qorechain.svm.v1.SVMAuth)
+      com.google.protobuf.MessageOrBuilder {
+
+    /**
+     * <pre>
+     * "ed25519" | "secp256k1"
+     * </pre>
+     *
+     * <code>string scheme = 1 [json_name = "scheme"];</code>
+     * @return The scheme.
+     */
+    java.lang.String getScheme();
+    /**
+     * <pre>
+     * "ed25519" | "secp256k1"
+     * </pre>
+     *
+     * <code>string scheme = 1 [json_name = "scheme"];</code>
+     * @return The bytes for scheme.
+     */
+    com.google.protobuf.ByteString
+        getSchemeBytes();
+
+    /**
+     * <code>bytes pubkey = 2 [json_name = "pubkey"];</code>
+     * @return The pubkey.
+     */
+    com.google.protobuf.ByteString getPubkey();
+
+    /**
+     * <code>bytes signature = 3 [json_name = "signature"];</code>
+     * @return The signature.
+     */
+    com.google.protobuf.ByteString getSignature();
+
+    /**
+     * <pre>
+     * raw 32-byte recent blockhash
+     * </pre>
+     *
+     * <code>bytes recent_blockhash = 4 [json_name = "recentBlockhash"];</code>
+     * @return The recentBlockhash.
+     */
+    com.google.protobuf.ByteString getRecentBlockhash();
+  }
+  /**
+   * <pre>
+   * SVMAuth carries a foreign-scheme (e.g. Phantom ed25519) authorization for an
+   * SVM action. When present on MsgExecuteProgram, the EFFECTIVE SVM signer is the
+   * canonical account this key authenticates (verified on-chain), NOT the Cosmos
+   * `sender` — so any funded account may relay a Phantom-authorized action through
+   * consensus while the foreign key remains the authority.
+   * </pre>
+   *
+   * Protobuf type {@code qorechain.svm.v1.SVMAuth}
+   */
+  public static final class SVMAuth extends
+      com.google.protobuf.GeneratedMessage implements
+      // @@protoc_insertion_point(message_implements:qorechain.svm.v1.SVMAuth)
+      SVMAuthOrBuilder {
+  private static final long serialVersionUID = 0L;
+    static {
+      com.google.protobuf.RuntimeVersion.validateProtobufGencodeVersion(
+        com.google.protobuf.RuntimeVersion.RuntimeDomain.PUBLIC,
+        /* major= */ 4,
+        /* minor= */ 35,
+        /* patch= */ 1,
+        /* suffix= */ "",
+        "SVMAuth");
+    }
+    // Use SVMAuth.newBuilder() to construct.
+    private SVMAuth(com.google.protobuf.GeneratedMessage.Builder<?> builder) {
+      super(builder);
+    }
+    private SVMAuth() {
+      scheme_ = "";
+      pubkey_ = com.google.protobuf.ByteString.EMPTY;
+      signature_ = com.google.protobuf.ByteString.EMPTY;
+      recentBlockhash_ = com.google.protobuf.ByteString.EMPTY;
+    }
+
+    public static final com.google.protobuf.Descriptors.Descriptor
+        getDescriptor() {
+      return qorechain.svm.v1.Tx.internal_static_qorechain_svm_v1_SVMAuth_descriptor;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Descriptors.Descriptor getDescriptorForType() {
+      return qorechain.svm.v1.Tx.internal_static_qorechain_svm_v1_SVMAuth_descriptor;
+    }
+
+    @java.lang.Override
+    protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+        internalGetFieldAccessorTable() {
+      return qorechain.svm.v1.Tx.internal_static_qorechain_svm_v1_SVMAuth_fieldAccessorTable
+          .ensureFieldAccessorsInitialized(
+              qorechain.svm.v1.Tx.SVMAuth.class, qorechain.svm.v1.Tx.SVMAuth.Builder.class);
+    }
+
+    public static final int SCHEME_FIELD_NUMBER = 1;
+    @SuppressWarnings("serial")
+    private volatile java.lang.Object scheme_ = "";
+    /**
+     * <pre>
+     * "ed25519" | "secp256k1"
+     * </pre>
+     *
+     * <code>string scheme = 1 [json_name = "scheme"];</code>
+     * @return The scheme.
+     */
+    @java.lang.Override
+    public java.lang.String getScheme() {
+      java.lang.Object ref = scheme_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        scheme_ = s;
+        return s;
+      }
+    }
+    /**
+     * <pre>
+     * "ed25519" | "secp256k1"
+     * </pre>
+     *
+     * <code>string scheme = 1 [json_name = "scheme"];</code>
+     * @return The bytes for scheme.
+     */
+    @java.lang.Override
+    public com.google.protobuf.ByteString
+        getSchemeBytes() {
+      java.lang.Object ref = scheme_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        scheme_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
+    public static final int PUBKEY_FIELD_NUMBER = 2;
+    private com.google.protobuf.ByteString pubkey_ = com.google.protobuf.ByteString.EMPTY;
+    /**
+     * <code>bytes pubkey = 2 [json_name = "pubkey"];</code>
+     * @return The pubkey.
+     */
+    @java.lang.Override
+    public com.google.protobuf.ByteString getPubkey() {
+      return pubkey_;
+    }
+
+    public static final int SIGNATURE_FIELD_NUMBER = 3;
+    private com.google.protobuf.ByteString signature_ = com.google.protobuf.ByteString.EMPTY;
+    /**
+     * <code>bytes signature = 3 [json_name = "signature"];</code>
+     * @return The signature.
+     */
+    @java.lang.Override
+    public com.google.protobuf.ByteString getSignature() {
+      return signature_;
+    }
+
+    public static final int RECENT_BLOCKHASH_FIELD_NUMBER = 4;
+    private com.google.protobuf.ByteString recentBlockhash_ = com.google.protobuf.ByteString.EMPTY;
+    /**
+     * <pre>
+     * raw 32-byte recent blockhash
+     * </pre>
+     *
+     * <code>bytes recent_blockhash = 4 [json_name = "recentBlockhash"];</code>
+     * @return The recentBlockhash.
+     */
+    @java.lang.Override
+    public com.google.protobuf.ByteString getRecentBlockhash() {
+      return recentBlockhash_;
+    }
+
+    private byte memoizedIsInitialized = -1;
+    @java.lang.Override
+    public final boolean isInitialized() {
+      byte isInitialized = memoizedIsInitialized;
+      if (isInitialized == 1) return true;
+      if (isInitialized == 0) return false;
+
+      memoizedIsInitialized = 1;
+      return true;
+    }
+
+    @java.lang.Override
+    public void writeTo(com.google.protobuf.CodedOutputStream output)
+                        throws java.io.IOException {
+      if (!com.google.protobuf.GeneratedMessage.isStringEmpty(scheme_)) {
+        com.google.protobuf.GeneratedMessage.writeString(output, 1, scheme_);
+      }
+      if (!pubkey_.isEmpty()) {
+        output.writeBytes(2, pubkey_);
+      }
+      if (!signature_.isEmpty()) {
+        output.writeBytes(3, signature_);
+      }
+      if (!recentBlockhash_.isEmpty()) {
+        output.writeBytes(4, recentBlockhash_);
+      }
+      getUnknownFields().writeTo(output);
+    }
+    private int computeSerializedSize_0() {
+      int size = 0;
+      if (!com.google.protobuf.GeneratedMessage.isStringEmpty(scheme_)) {
+        size += com.google.protobuf.GeneratedMessage.computeStringSize(1, scheme_);
+      }
+      if (!pubkey_.isEmpty()) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeBytesSize(2, pubkey_);
+      }
+      if (!signature_.isEmpty()) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeBytesSize(3, signature_);
+      }
+      if (!recentBlockhash_.isEmpty()) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeBytesSize(4, recentBlockhash_);
+      }
+      return size;
+    }
+    @java.lang.Override
+    public int getSerializedSize() {
+      int size = memoizedSize;
+      if (size != -1) return size;
+
+      size = 0;
+      size += computeSerializedSize_0();
+      size += getUnknownFields().getSerializedSize();
+      memoizedSize = size;
+      return size;
+    }
+
+    @java.lang.Override
+    public boolean equals(final java.lang.Object obj) {
+      if (obj == this) {
+       return true;
+      }
+      if (!(obj instanceof qorechain.svm.v1.Tx.SVMAuth)) {
+        return super.equals(obj);
+      }
+      qorechain.svm.v1.Tx.SVMAuth other = (qorechain.svm.v1.Tx.SVMAuth) obj;
+
+      if (!getScheme()
+          .equals(other.getScheme())) return false;
+      if (!getPubkey()
+          .equals(other.getPubkey())) return false;
+      if (!getSignature()
+          .equals(other.getSignature())) return false;
+      if (!getRecentBlockhash()
+          .equals(other.getRecentBlockhash())) return false;
+      if (!getUnknownFields().equals(other.getUnknownFields())) return false;
+      return true;
+    }
+
+    @java.lang.Override
+    public int hashCode() {
+      if (memoizedHashCode != 0) {
+        return memoizedHashCode;
+      }
+      int hash = 41;
+      hash = (19 * hash) + getDescriptor().hashCode();
+      hash = (37 * hash) + SCHEME_FIELD_NUMBER;
+      hash = (53 * hash) + getScheme().hashCode();
+      hash = (37 * hash) + PUBKEY_FIELD_NUMBER;
+      hash = (53 * hash) + getPubkey().hashCode();
+      hash = (37 * hash) + SIGNATURE_FIELD_NUMBER;
+      hash = (53 * hash) + getSignature().hashCode();
+      hash = (37 * hash) + RECENT_BLOCKHASH_FIELD_NUMBER;
+      hash = (53 * hash) + getRecentBlockhash().hashCode();
+      hash = (29 * hash) + getUnknownFields().hashCode();
+      memoizedHashCode = hash;
+      return hash;
+    }
+
+    public static qorechain.svm.v1.Tx.SVMAuth parseFrom(
+        java.nio.ByteBuffer data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static qorechain.svm.v1.Tx.SVMAuth parseFrom(
+        java.nio.ByteBuffer data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static qorechain.svm.v1.Tx.SVMAuth parseFrom(
+        com.google.protobuf.ByteString data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static qorechain.svm.v1.Tx.SVMAuth parseFrom(
+        com.google.protobuf.ByteString data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static qorechain.svm.v1.Tx.SVMAuth parseFrom(byte[] data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static qorechain.svm.v1.Tx.SVMAuth parseFrom(
+        byte[] data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static qorechain.svm.v1.Tx.SVMAuth parseFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input);
+    }
+    public static qorechain.svm.v1.Tx.SVMAuth parseFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    public static qorechain.svm.v1.Tx.SVMAuth parseDelimitedFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseDelimitedWithIOException(PARSER, input);
+    }
+
+    public static qorechain.svm.v1.Tx.SVMAuth parseDelimitedFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static qorechain.svm.v1.Tx.SVMAuth parseFrom(
+        com.google.protobuf.CodedInputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input);
+    }
+    public static qorechain.svm.v1.Tx.SVMAuth parseFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    @java.lang.Override
+    public Builder newBuilderForType() { return newBuilder(); }
+    public static Builder newBuilder() {
+      return DEFAULT_INSTANCE.toBuilder();
+    }
+    public static Builder newBuilder(qorechain.svm.v1.Tx.SVMAuth prototype) {
+      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+    }
+    @java.lang.Override
+    public Builder toBuilder() {
+      return this == DEFAULT_INSTANCE
+          ? new Builder() : new Builder().mergeFrom(this);
+    }
+
+    @java.lang.Override
+    protected Builder newBuilderForType(
+        com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+      Builder builder = new Builder(parent);
+      return builder;
+    }
+    /**
+     * <pre>
+     * SVMAuth carries a foreign-scheme (e.g. Phantom ed25519) authorization for an
+     * SVM action. When present on MsgExecuteProgram, the EFFECTIVE SVM signer is the
+     * canonical account this key authenticates (verified on-chain), NOT the Cosmos
+     * `sender` — so any funded account may relay a Phantom-authorized action through
+     * consensus while the foreign key remains the authority.
+     * </pre>
+     *
+     * Protobuf type {@code qorechain.svm.v1.SVMAuth}
+     */
+    public static final class Builder extends
+        com.google.protobuf.GeneratedMessage.Builder<Builder> implements
+        // @@protoc_insertion_point(builder_implements:qorechain.svm.v1.SVMAuth)
+        qorechain.svm.v1.Tx.SVMAuthOrBuilder {
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return qorechain.svm.v1.Tx.internal_static_qorechain_svm_v1_SVMAuth_descriptor;
+      }
+
+      @java.lang.Override
+      protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return qorechain.svm.v1.Tx.internal_static_qorechain_svm_v1_SVMAuth_fieldAccessorTable
+            .ensureFieldAccessorsInitialized(
+                qorechain.svm.v1.Tx.SVMAuth.class, qorechain.svm.v1.Tx.SVMAuth.Builder.class);
+      }
+
+      // Construct using qorechain.svm.v1.Tx.SVMAuth.newBuilder()
+      private Builder() {
+
+      }
+
+      private Builder(
+          com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+        super(parent);
+
+      }
+      @java.lang.Override
+      public Builder clear() {
+        super.clear();
+        bitField0_ = 0;
+        scheme_ = "";
+        pubkey_ = com.google.protobuf.ByteString.EMPTY;
+        signature_ = com.google.protobuf.ByteString.EMPTY;
+        recentBlockhash_ = com.google.protobuf.ByteString.EMPTY;
+        return this;
+      }
+
+      @java.lang.Override
+      public com.google.protobuf.Descriptors.Descriptor
+          getDescriptorForType() {
+        return qorechain.svm.v1.Tx.internal_static_qorechain_svm_v1_SVMAuth_descriptor;
+      }
+
+      @java.lang.Override
+      public qorechain.svm.v1.Tx.SVMAuth getDefaultInstanceForType() {
+        return qorechain.svm.v1.Tx.SVMAuth.getDefaultInstance();
+      }
+
+      @java.lang.Override
+      public qorechain.svm.v1.Tx.SVMAuth build() {
+        qorechain.svm.v1.Tx.SVMAuth result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(result);
+        }
+        return result;
+      }
+
+      @java.lang.Override
+      public qorechain.svm.v1.Tx.SVMAuth buildPartial() {
+        qorechain.svm.v1.Tx.SVMAuth result = new qorechain.svm.v1.Tx.SVMAuth(this);
+        if (bitField0_ != 0) { buildPartial0(result); }
+        onBuilt();
+        return result;
+      }
+
+      private void buildPartial0(qorechain.svm.v1.Tx.SVMAuth result) {
+        int from_bitField0_ = bitField0_;
+        if (((from_bitField0_ & 0x00000001) != 0)) {
+          result.scheme_ = scheme_;
+        }
+        if (((from_bitField0_ & 0x00000002) != 0)) {
+          result.pubkey_ = pubkey_;
+        }
+        if (((from_bitField0_ & 0x00000004) != 0)) {
+          result.signature_ = signature_;
+        }
+        if (((from_bitField0_ & 0x00000008) != 0)) {
+          result.recentBlockhash_ = recentBlockhash_;
+        }
+      }
+
+      @java.lang.Override
+      public Builder mergeFrom(com.google.protobuf.Message other) {
+        if (other instanceof qorechain.svm.v1.Tx.SVMAuth) {
+          return mergeFrom((qorechain.svm.v1.Tx.SVMAuth)other);
+        } else {
+          super.mergeFrom(other);
+          return this;
+        }
+      }
+
+      public Builder mergeFrom(qorechain.svm.v1.Tx.SVMAuth other) {
+        if (other == qorechain.svm.v1.Tx.SVMAuth.getDefaultInstance()) return this;
+        if (!other.getScheme().isEmpty()) {
+          scheme_ = other.scheme_;
+          bitField0_ |= 0x00000001;
+          onChanged();
+        }
+        if (!other.getPubkey().isEmpty()) {
+          setPubkey(other.getPubkey());
+        }
+        if (!other.getSignature().isEmpty()) {
+          setSignature(other.getSignature());
+        }
+        if (!other.getRecentBlockhash().isEmpty()) {
+          setRecentBlockhash(other.getRecentBlockhash());
+        }
+        this.mergeUnknownFields(other.getUnknownFields());
+        onChanged();
+        return this;
+      }
+
+      @java.lang.Override
+      public final boolean isInitialized() {
+        return true;
+      }
+
+      @java.lang.Override
+      public Builder mergeFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        if (extensionRegistry == null) {
+          throw new java.lang.NullPointerException();
+        }
+        try {
+          boolean done = false;
+          while (!done) {
+            int tag = input.readTag();
+            switch (tag) {
+              case 0:
+                done = true;
+                break;
+              case 10: {
+                scheme_ = input.readStringRequireUtf8();
+                bitField0_ |= 0x00000001;
+                break;
+              } // case 10
+              case 18: {
+                pubkey_ = input.readBytes();
+                bitField0_ |= 0x00000002;
+                break;
+              } // case 18
+              case 26: {
+                signature_ = input.readBytes();
+                bitField0_ |= 0x00000004;
+                break;
+              } // case 26
+              case 34: {
+                recentBlockhash_ = input.readBytes();
+                bitField0_ |= 0x00000008;
+                break;
+              } // case 34
+              default: {
+                if (!super.parseUnknownField(input, extensionRegistry, tag)) {
+                  done = true; // was an endgroup tag
+                }
+                break;
+              } // default:
+            } // switch (tag)
+          } // while (!done)
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          throw e.unwrapIOException();
+        } finally {
+          onChanged();
+        } // finally
+        return this;
+      }
+      private int bitField0_;
+
+      private java.lang.Object scheme_ = "";
+      /**
+       * <pre>
+       * "ed25519" | "secp256k1"
+       * </pre>
+       *
+       * <code>string scheme = 1 [json_name = "scheme"];</code>
+       * @return The scheme.
+       */
+      public java.lang.String getScheme() {
+        java.lang.Object ref = scheme_;
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          scheme_ = s;
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
+      }
+      /**
+       * <pre>
+       * "ed25519" | "secp256k1"
+       * </pre>
+       *
+       * <code>string scheme = 1 [json_name = "scheme"];</code>
+       * @return The bytes for scheme.
+       */
+      public com.google.protobuf.ByteString
+          getSchemeBytes() {
+        java.lang.Object ref = scheme_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          scheme_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <pre>
+       * "ed25519" | "secp256k1"
+       * </pre>
+       *
+       * <code>string scheme = 1 [json_name = "scheme"];</code>
+       * @param value The scheme to set.
+       * @return This builder for chaining.
+       */
+      public Builder setScheme(
+          java.lang.String value) {
+        if (value == null) { throw new NullPointerException(); }
+        scheme_ = value;
+        bitField0_ |= 0x00000001;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * "ed25519" | "secp256k1"
+       * </pre>
+       *
+       * <code>string scheme = 1 [json_name = "scheme"];</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearScheme() {
+        scheme_ = getDefaultInstance().getScheme();
+        bitField0_ = (bitField0_ & ~0x00000001);
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * "ed25519" | "secp256k1"
+       * </pre>
+       *
+       * <code>string scheme = 1 [json_name = "scheme"];</code>
+       * @param value The bytes for scheme to set.
+       * @return This builder for chaining.
+       */
+      public Builder setSchemeBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) { throw new NullPointerException(); }
+        checkByteStringIsUtf8(value);
+        scheme_ = value;
+        bitField0_ |= 0x00000001;
+        onChanged();
+        return this;
+      }
+
+      private com.google.protobuf.ByteString pubkey_ = com.google.protobuf.ByteString.EMPTY;
+      /**
+       * <code>bytes pubkey = 2 [json_name = "pubkey"];</code>
+       * @return The pubkey.
+       */
+      @java.lang.Override
+      public com.google.protobuf.ByteString getPubkey() {
+        return pubkey_;
+      }
+      /**
+       * <code>bytes pubkey = 2 [json_name = "pubkey"];</code>
+       * @param value The pubkey to set.
+       * @return This builder for chaining.
+       */
+      public Builder setPubkey(com.google.protobuf.ByteString value) {
+        if (value == null) { throw new NullPointerException(); }
+        pubkey_ = value;
+        bitField0_ |= 0x00000002;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>bytes pubkey = 2 [json_name = "pubkey"];</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearPubkey() {
+        bitField0_ = (bitField0_ & ~0x00000002);
+        pubkey_ = getDefaultInstance().getPubkey();
+        onChanged();
+        return this;
+      }
+
+      private com.google.protobuf.ByteString signature_ = com.google.protobuf.ByteString.EMPTY;
+      /**
+       * <code>bytes signature = 3 [json_name = "signature"];</code>
+       * @return The signature.
+       */
+      @java.lang.Override
+      public com.google.protobuf.ByteString getSignature() {
+        return signature_;
+      }
+      /**
+       * <code>bytes signature = 3 [json_name = "signature"];</code>
+       * @param value The signature to set.
+       * @return This builder for chaining.
+       */
+      public Builder setSignature(com.google.protobuf.ByteString value) {
+        if (value == null) { throw new NullPointerException(); }
+        signature_ = value;
+        bitField0_ |= 0x00000004;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>bytes signature = 3 [json_name = "signature"];</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearSignature() {
+        bitField0_ = (bitField0_ & ~0x00000004);
+        signature_ = getDefaultInstance().getSignature();
+        onChanged();
+        return this;
+      }
+
+      private com.google.protobuf.ByteString recentBlockhash_ = com.google.protobuf.ByteString.EMPTY;
+      /**
+       * <pre>
+       * raw 32-byte recent blockhash
+       * </pre>
+       *
+       * <code>bytes recent_blockhash = 4 [json_name = "recentBlockhash"];</code>
+       * @return The recentBlockhash.
+       */
+      @java.lang.Override
+      public com.google.protobuf.ByteString getRecentBlockhash() {
+        return recentBlockhash_;
+      }
+      /**
+       * <pre>
+       * raw 32-byte recent blockhash
+       * </pre>
+       *
+       * <code>bytes recent_blockhash = 4 [json_name = "recentBlockhash"];</code>
+       * @param value The recentBlockhash to set.
+       * @return This builder for chaining.
+       */
+      public Builder setRecentBlockhash(com.google.protobuf.ByteString value) {
+        if (value == null) { throw new NullPointerException(); }
+        recentBlockhash_ = value;
+        bitField0_ |= 0x00000008;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * raw 32-byte recent blockhash
+       * </pre>
+       *
+       * <code>bytes recent_blockhash = 4 [json_name = "recentBlockhash"];</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearRecentBlockhash() {
+        bitField0_ = (bitField0_ & ~0x00000008);
+        recentBlockhash_ = getDefaultInstance().getRecentBlockhash();
+        onChanged();
+        return this;
+      }
+
+      // @@protoc_insertion_point(builder_scope:qorechain.svm.v1.SVMAuth)
+    }
+
+    // @@protoc_insertion_point(class_scope:qorechain.svm.v1.SVMAuth)
+    private static final qorechain.svm.v1.Tx.SVMAuth DEFAULT_INSTANCE;
+    static {
+      DEFAULT_INSTANCE = new qorechain.svm.v1.Tx.SVMAuth();
+    }
+
+    public static qorechain.svm.v1.Tx.SVMAuth getDefaultInstance() {
+      return DEFAULT_INSTANCE;
+    }
+
+    private static final com.google.protobuf.Parser<SVMAuth>
+        PARSER = new com.google.protobuf.AbstractParser<SVMAuth>() {
+      @java.lang.Override
+      public SVMAuth parsePartialFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        Builder builder = newBuilder();
+        try {
+          builder.mergeFrom(input, extensionRegistry);
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          throw e.setUnfinishedMessage(builder.buildPartial());
+        } catch (com.google.protobuf.UninitializedMessageException e) {
+          throw e.asInvalidProtocolBufferException().setUnfinishedMessage(builder.buildPartial());
+        } catch (java.io.IOException e) {
+          throw new com.google.protobuf.InvalidProtocolBufferException(e)
+              .setUnfinishedMessage(builder.buildPartial());
+        }
+        return builder.buildPartial();
+      }
+    };
+
+    public static com.google.protobuf.Parser<SVMAuth> parser() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Parser<SVMAuth> getParserForType() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public qorechain.svm.v1.Tx.SVMAuth getDefaultInstanceForType() {
+      return DEFAULT_INSTANCE;
+    }
+
+  }
+
   public interface MsgExecuteProgramOrBuilder extends
       // @@protoc_insertion_point(interface_extends:qorechain.svm.v1.MsgExecuteProgram)
       com.google.protobuf.MessageOrBuilder {
@@ -2873,6 +3683,33 @@ public final class Tx extends com.google.protobuf.GeneratedFile {
      * @return The data.
      */
     com.google.protobuf.ByteString getData();
+
+    /**
+     * <pre>
+     * optional foreign-scheme authorization (relayed)
+     * </pre>
+     *
+     * <code>.qorechain.svm.v1.SVMAuth auth = 5 [json_name = "auth"];</code>
+     * @return Whether the auth field is set.
+     */
+    boolean hasAuth();
+    /**
+     * <pre>
+     * optional foreign-scheme authorization (relayed)
+     * </pre>
+     *
+     * <code>.qorechain.svm.v1.SVMAuth auth = 5 [json_name = "auth"];</code>
+     * @return The auth.
+     */
+    qorechain.svm.v1.Tx.SVMAuth getAuth();
+    /**
+     * <pre>
+     * optional foreign-scheme authorization (relayed)
+     * </pre>
+     *
+     * <code>.qorechain.svm.v1.SVMAuth auth = 5 [json_name = "auth"];</code>
+     */
+    qorechain.svm.v1.Tx.SVMAuthOrBuilder getAuthOrBuilder();
   }
   /**
    * Protobuf type {@code qorechain.svm.v1.MsgExecuteProgram}
@@ -2920,6 +3757,7 @@ public final class Tx extends com.google.protobuf.GeneratedFile {
               qorechain.svm.v1.Tx.MsgExecuteProgram.class, qorechain.svm.v1.Tx.MsgExecuteProgram.Builder.class);
     }
 
+    private int bitField0_;
     public static final int SENDER_FIELD_NUMBER = 1;
     @SuppressWarnings("serial")
     private volatile java.lang.Object sender_ = "";
@@ -3022,6 +3860,44 @@ public final class Tx extends com.google.protobuf.GeneratedFile {
       return data_;
     }
 
+    public static final int AUTH_FIELD_NUMBER = 5;
+    private qorechain.svm.v1.Tx.SVMAuth auth_;
+    /**
+     * <pre>
+     * optional foreign-scheme authorization (relayed)
+     * </pre>
+     *
+     * <code>.qorechain.svm.v1.SVMAuth auth = 5 [json_name = "auth"];</code>
+     * @return Whether the auth field is set.
+     */
+    @java.lang.Override
+    public boolean hasAuth() {
+      return ((bitField0_ & 0x00000001) != 0);
+    }
+    /**
+     * <pre>
+     * optional foreign-scheme authorization (relayed)
+     * </pre>
+     *
+     * <code>.qorechain.svm.v1.SVMAuth auth = 5 [json_name = "auth"];</code>
+     * @return The auth.
+     */
+    @java.lang.Override
+    public qorechain.svm.v1.Tx.SVMAuth getAuth() {
+      return auth_ == null ? qorechain.svm.v1.Tx.SVMAuth.getDefaultInstance() : auth_;
+    }
+    /**
+     * <pre>
+     * optional foreign-scheme authorization (relayed)
+     * </pre>
+     *
+     * <code>.qorechain.svm.v1.SVMAuth auth = 5 [json_name = "auth"];</code>
+     */
+    @java.lang.Override
+    public qorechain.svm.v1.Tx.SVMAuthOrBuilder getAuthOrBuilder() {
+      return auth_ == null ? qorechain.svm.v1.Tx.SVMAuth.getDefaultInstance() : auth_;
+    }
+
     private byte memoizedIsInitialized = -1;
     @java.lang.Override
     public final boolean isInitialized() {
@@ -3048,6 +3924,9 @@ public final class Tx extends com.google.protobuf.GeneratedFile {
       if (!data_.isEmpty()) {
         output.writeBytes(4, data_);
       }
+      if (((bitField0_ & 0x00000001) != 0)) {
+        output.writeMessage(5, getAuth());
+      }
       getUnknownFields().writeTo(output);
     }
     private int computeSerializedSize_0() {
@@ -3071,6 +3950,10 @@ public final class Tx extends com.google.protobuf.GeneratedFile {
       if (!data_.isEmpty()) {
         size += com.google.protobuf.CodedOutputStream
           .computeBytesSize(4, data_);
+      }
+      if (((bitField0_ & 0x00000001) != 0)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeMessageSize(5, getAuth());
       }
       return size;
     }
@@ -3104,6 +3987,11 @@ public final class Tx extends com.google.protobuf.GeneratedFile {
           .equals(other.getAccountsList())) return false;
       if (!getData()
           .equals(other.getData())) return false;
+      if (hasAuth() != other.hasAuth()) return false;
+      if (hasAuth()) {
+        if (!getAuth()
+            .equals(other.getAuth())) return false;
+      }
       if (!getUnknownFields().equals(other.getUnknownFields())) return false;
       return true;
     }
@@ -3125,6 +4013,10 @@ public final class Tx extends com.google.protobuf.GeneratedFile {
       }
       hash = (37 * hash) + DATA_FIELD_NUMBER;
       hash = (53 * hash) + getData().hashCode();
+      if (hasAuth()) {
+        hash = (37 * hash) + AUTH_FIELD_NUMBER;
+        hash = (53 * hash) + getAuth().hashCode();
+      }
       hash = (29 * hash) + getUnknownFields().hashCode();
       memoizedHashCode = hash;
       return hash;
@@ -3244,13 +4136,20 @@ public final class Tx extends com.google.protobuf.GeneratedFile {
 
       // Construct using qorechain.svm.v1.Tx.MsgExecuteProgram.newBuilder()
       private Builder() {
-
+        maybeForceBuilderInitialization();
       }
 
       private Builder(
           com.google.protobuf.GeneratedMessage.BuilderParent parent) {
         super(parent);
-
+        maybeForceBuilderInitialization();
+      }
+      private void maybeForceBuilderInitialization() {
+        if (com.google.protobuf.GeneratedMessage
+                .alwaysUseFieldBuilders) {
+          internalGetAccountsFieldBuilder();
+          internalGetAuthFieldBuilder();
+        }
       }
       @java.lang.Override
       public Builder clear() {
@@ -3266,6 +4165,11 @@ public final class Tx extends com.google.protobuf.GeneratedFile {
         }
         bitField0_ = (bitField0_ & ~0x00000004);
         data_ = com.google.protobuf.ByteString.EMPTY;
+        auth_ = null;
+        if (authBuilder_ != null) {
+          authBuilder_.dispose();
+          authBuilder_ = null;
+        }
         return this;
       }
 
@@ -3321,6 +4225,14 @@ public final class Tx extends com.google.protobuf.GeneratedFile {
         if (((from_bitField0_ & 0x00000008) != 0)) {
           result.data_ = data_;
         }
+        int to_bitField0_ = 0;
+        if (((from_bitField0_ & 0x00000010) != 0)) {
+          result.auth_ = authBuilder_ == null
+              ? auth_
+              : authBuilder_.build();
+          to_bitField0_ |= 0x00000001;
+        }
+        result.bitField0_ |= to_bitField0_;
       }
 
       @java.lang.Override
@@ -3371,6 +4283,9 @@ public final class Tx extends com.google.protobuf.GeneratedFile {
         }
         if (!other.getData().isEmpty()) {
           setData(other.getData());
+        }
+        if (other.hasAuth()) {
+          mergeAuth(other.getAuth());
         }
         this.mergeUnknownFields(other.getUnknownFields());
         onChanged();
@@ -3426,6 +4341,13 @@ public final class Tx extends com.google.protobuf.GeneratedFile {
                 bitField0_ |= 0x00000008;
                 break;
               } // case 34
+              case 42: {
+                input.readMessage(
+                    internalGetAuthFieldBuilder().getBuilder(),
+                    extensionRegistry);
+                bitField0_ |= 0x00000010;
+                break;
+              } // case 42
               default: {
                 if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                   done = true; // was an endgroup tag
@@ -3817,6 +4739,163 @@ public final class Tx extends com.google.protobuf.GeneratedFile {
         data_ = getDefaultInstance().getData();
         onChanged();
         return this;
+      }
+
+      private qorechain.svm.v1.Tx.SVMAuth auth_;
+      private com.google.protobuf.SingleFieldBuilder<
+          qorechain.svm.v1.Tx.SVMAuth, qorechain.svm.v1.Tx.SVMAuth.Builder, qorechain.svm.v1.Tx.SVMAuthOrBuilder> authBuilder_;
+      /**
+       * <pre>
+       * optional foreign-scheme authorization (relayed)
+       * </pre>
+       *
+       * <code>.qorechain.svm.v1.SVMAuth auth = 5 [json_name = "auth"];</code>
+       * @return Whether the auth field is set.
+       */
+      public boolean hasAuth() {
+        return ((bitField0_ & 0x00000010) != 0);
+      }
+      /**
+       * <pre>
+       * optional foreign-scheme authorization (relayed)
+       * </pre>
+       *
+       * <code>.qorechain.svm.v1.SVMAuth auth = 5 [json_name = "auth"];</code>
+       * @return The auth.
+       */
+      public qorechain.svm.v1.Tx.SVMAuth getAuth() {
+        if (authBuilder_ == null) {
+          return auth_ == null ? qorechain.svm.v1.Tx.SVMAuth.getDefaultInstance() : auth_;
+        } else {
+          return authBuilder_.getMessage();
+        }
+      }
+      /**
+       * <pre>
+       * optional foreign-scheme authorization (relayed)
+       * </pre>
+       *
+       * <code>.qorechain.svm.v1.SVMAuth auth = 5 [json_name = "auth"];</code>
+       */
+      public Builder setAuth(qorechain.svm.v1.Tx.SVMAuth value) {
+        if (authBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          auth_ = value;
+        } else {
+          authBuilder_.setMessage(value);
+        }
+        bitField0_ |= 0x00000010;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * optional foreign-scheme authorization (relayed)
+       * </pre>
+       *
+       * <code>.qorechain.svm.v1.SVMAuth auth = 5 [json_name = "auth"];</code>
+       */
+      public Builder setAuth(
+          qorechain.svm.v1.Tx.SVMAuth.Builder builderForValue) {
+        if (authBuilder_ == null) {
+          auth_ = builderForValue.build();
+        } else {
+          authBuilder_.setMessage(builderForValue.build());
+        }
+        bitField0_ |= 0x00000010;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * optional foreign-scheme authorization (relayed)
+       * </pre>
+       *
+       * <code>.qorechain.svm.v1.SVMAuth auth = 5 [json_name = "auth"];</code>
+       */
+      public Builder mergeAuth(qorechain.svm.v1.Tx.SVMAuth value) {
+        if (authBuilder_ == null) {
+          if (((bitField0_ & 0x00000010) != 0) &&
+            auth_ != null &&
+            auth_ != qorechain.svm.v1.Tx.SVMAuth.getDefaultInstance()) {
+            getAuthBuilder().mergeFrom(value);
+          } else {
+            auth_ = value;
+          }
+        } else {
+          authBuilder_.mergeFrom(value);
+        }
+        if (auth_ != null) {
+          bitField0_ |= 0x00000010;
+          onChanged();
+        }
+        return this;
+      }
+      /**
+       * <pre>
+       * optional foreign-scheme authorization (relayed)
+       * </pre>
+       *
+       * <code>.qorechain.svm.v1.SVMAuth auth = 5 [json_name = "auth"];</code>
+       */
+      public Builder clearAuth() {
+        bitField0_ = (bitField0_ & ~0x00000010);
+        auth_ = null;
+        if (authBuilder_ != null) {
+          authBuilder_.dispose();
+          authBuilder_ = null;
+        }
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * optional foreign-scheme authorization (relayed)
+       * </pre>
+       *
+       * <code>.qorechain.svm.v1.SVMAuth auth = 5 [json_name = "auth"];</code>
+       */
+      public qorechain.svm.v1.Tx.SVMAuth.Builder getAuthBuilder() {
+        bitField0_ |= 0x00000010;
+        onChanged();
+        return internalGetAuthFieldBuilder().getBuilder();
+      }
+      /**
+       * <pre>
+       * optional foreign-scheme authorization (relayed)
+       * </pre>
+       *
+       * <code>.qorechain.svm.v1.SVMAuth auth = 5 [json_name = "auth"];</code>
+       */
+      public qorechain.svm.v1.Tx.SVMAuthOrBuilder getAuthOrBuilder() {
+        if (authBuilder_ != null) {
+          return authBuilder_.getMessageOrBuilder();
+        } else {
+          return auth_ == null ?
+              qorechain.svm.v1.Tx.SVMAuth.getDefaultInstance() : auth_;
+        }
+      }
+      /**
+       * <pre>
+       * optional foreign-scheme authorization (relayed)
+       * </pre>
+       *
+       * <code>.qorechain.svm.v1.SVMAuth auth = 5 [json_name = "auth"];</code>
+       */
+      private com.google.protobuf.SingleFieldBuilder<
+          qorechain.svm.v1.Tx.SVMAuth, qorechain.svm.v1.Tx.SVMAuth.Builder, qorechain.svm.v1.Tx.SVMAuthOrBuilder> 
+          internalGetAuthFieldBuilder() {
+        if (authBuilder_ == null) {
+          authBuilder_ = new com.google.protobuf.SingleFieldBuilder<
+              qorechain.svm.v1.Tx.SVMAuth, qorechain.svm.v1.Tx.SVMAuth.Builder, qorechain.svm.v1.Tx.SVMAuthOrBuilder>(
+                  getAuth(),
+                  getParentForChildren(),
+                  isClean());
+          auth_ = null;
+        }
+        return authBuilder_;
       }
 
       // @@protoc_insertion_point(builder_scope:qorechain.svm.v1.MsgExecuteProgram)
@@ -5364,6 +6443,11 @@ public final class Tx extends com.google.protobuf.GeneratedFile {
     com.google.protobuf.GeneratedMessage.FieldAccessorTable
       internal_static_qorechain_svm_v1_SvmAccountMeta_fieldAccessorTable;
   private static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_qorechain_svm_v1_SVMAuth_descriptor;
+  private static final 
+    com.google.protobuf.GeneratedMessage.FieldAccessorTable
+      internal_static_qorechain_svm_v1_SVMAuth_fieldAccessorTable;
+  private static final com.google.protobuf.Descriptors.Descriptor
     internal_static_qorechain_svm_v1_MsgExecuteProgram_descriptor;
   private static final 
     com.google.protobuf.GeneratedMessage.FieldAccessorTable
@@ -5408,32 +6492,36 @@ public final class Tx extends com.google.protobuf.GeneratedFile {
       "reateAccountResponse\"y\n\016SvmAccountMeta\022)" +
       "\n\007address\030\001 \001(\014B\017\310\336\037\000\332\336\037\007Bytes32R\007addres" +
       "s\022\033\n\tis_signer\030\002 \001(\010R\010isSigner\022\037\n\013is_wri" +
-      "table\030\003 \001(\010R\nisWritable\"\347\001\n\021MsgExecutePr" +
-      "ogram\0220\n\006sender\030\001 \001(\tB\030\322\264-\024cosmos.Addres" +
-      "sStringR\006sender\022;\n\nprogram_id\030\002 \001(\014B\034\310\336\037" +
-      "\000\332\336\037\007Bytes32\342\336\037\tProgramIDR\tprogramId\022B\n\010" +
-      "accounts\030\003 \003(\0132 .qorechain.svm.v1.SvmAcc" +
-      "ountMetaB\004\310\336\037\000R\010accounts\022\022\n\004data\030\004 \001(\014R\004" +
-      "data:\013\202\347\260*\006sender\"3\n\031MsgExecuteProgramRe" +
-      "sponse\022\026\n\006result\030\001 \001(\014R\006result\"\273\001\n\024MsgRe" +
-      "gisterSVMPQCKey\0220\n\006sender\030\001 \001(\tB\030\322\264-\024cos" +
-      "mos.AddressStringR\006sender\0225\n\010svm_addr\030\002 " +
-      "\001(\014B\032\310\336\037\000\332\336\037\007Bytes32\342\336\037\007SVMAddrR\007svmAddr" +
-      "\022-\n\013pqc_pub_key\030\003 \001(\014B\r\342\336\037\tPQCPubKeyR\tpq" +
-      "cPubKey:\013\202\347\260*\006sender\"\036\n\034MsgRegisterSVMPQ" +
-      "CKeyResponse2\237\003\n\003Msg\022_\n\rDeployProgram\022\"." +
-      "qorechain.svm.v1.MsgDeployProgram\032*.qore" +
-      "chain.svm.v1.MsgDeployProgramResponse\022_\n" +
-      "\rCreateAccount\022\".qorechain.svm.v1.MsgCre" +
-      "ateAccount\032*.qorechain.svm.v1.MsgCreateA" +
-      "ccountResponse\022b\n\016ExecuteProgram\022#.qorec" +
-      "hain.svm.v1.MsgExecuteProgram\032+.qorechai" +
-      "n.svm.v1.MsgExecuteProgramResponse\022k\n\021Re" +
-      "gisterSVMPQCKey\022&.qorechain.svm.v1.MsgRe" +
-      "gisterSVMPQCKey\032..qorechain.svm.v1.MsgRe" +
-      "gisterSVMPQCKeyResponse\032\005\200\347\260*\001B1Z/github" +
-      ".com/qorechain/qorechain-core/x/svm/type" +
-      "sb\006proto3"
+      "table\030\003 \001(\010R\nisWritable\"\202\001\n\007SVMAuth\022\026\n\006s" +
+      "cheme\030\001 \001(\tR\006scheme\022\026\n\006pubkey\030\002 \001(\014R\006pub" +
+      "key\022\034\n\tsignature\030\003 \001(\014R\tsignature\022)\n\020rec" +
+      "ent_blockhash\030\004 \001(\014R\017recentBlockhash\"\226\002\n" +
+      "\021MsgExecuteProgram\0220\n\006sender\030\001 \001(\tB\030\322\264-\024" +
+      "cosmos.AddressStringR\006sender\022;\n\nprogram_" +
+      "id\030\002 \001(\014B\034\310\336\037\000\332\336\037\007Bytes32\342\336\037\tProgramIDR\t" +
+      "programId\022B\n\010accounts\030\003 \003(\0132 .qorechain." +
+      "svm.v1.SvmAccountMetaB\004\310\336\037\000R\010accounts\022\022\n" +
+      "\004data\030\004 \001(\014R\004data\022-\n\004auth\030\005 \001(\0132\031.qorech" +
+      "ain.svm.v1.SVMAuthR\004auth:\013\202\347\260*\006sender\"3\n" +
+      "\031MsgExecuteProgramResponse\022\026\n\006result\030\001 \001" +
+      "(\014R\006result\"\273\001\n\024MsgRegisterSVMPQCKey\0220\n\006s" +
+      "ender\030\001 \001(\tB\030\322\264-\024cosmos.AddressStringR\006s" +
+      "ender\0225\n\010svm_addr\030\002 \001(\014B\032\310\336\037\000\332\336\037\007Bytes32" +
+      "\342\336\037\007SVMAddrR\007svmAddr\022-\n\013pqc_pub_key\030\003 \001(" +
+      "\014B\r\342\336\037\tPQCPubKeyR\tpqcPubKey:\013\202\347\260*\006sender" +
+      "\"\036\n\034MsgRegisterSVMPQCKeyResponse2\237\003\n\003Msg" +
+      "\022_\n\rDeployProgram\022\".qorechain.svm.v1.Msg" +
+      "DeployProgram\032*.qorechain.svm.v1.MsgDepl" +
+      "oyProgramResponse\022_\n\rCreateAccount\022\".qor" +
+      "echain.svm.v1.MsgCreateAccount\032*.qorecha" +
+      "in.svm.v1.MsgCreateAccountResponse\022b\n\016Ex" +
+      "ecuteProgram\022#.qorechain.svm.v1.MsgExecu" +
+      "teProgram\032+.qorechain.svm.v1.MsgExecuteP" +
+      "rogramResponse\022k\n\021RegisterSVMPQCKey\022&.qo" +
+      "rechain.svm.v1.MsgRegisterSVMPQCKey\032..qo" +
+      "rechain.svm.v1.MsgRegisterSVMPQCKeyRespo" +
+      "nse\032\005\200\347\260*\001B1Z/github.com/qorechain/qorec" +
+      "hain-core/x/svm/typesb\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
@@ -5472,26 +6560,32 @@ public final class Tx extends com.google.protobuf.GeneratedFile {
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_qorechain_svm_v1_SvmAccountMeta_descriptor,
         new java.lang.String[] { "Address", "IsSigner", "IsWritable", });
-    internal_static_qorechain_svm_v1_MsgExecuteProgram_descriptor =
+    internal_static_qorechain_svm_v1_SVMAuth_descriptor =
       getDescriptor().getMessageType(5);
+    internal_static_qorechain_svm_v1_SVMAuth_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessage.FieldAccessorTable(
+        internal_static_qorechain_svm_v1_SVMAuth_descriptor,
+        new java.lang.String[] { "Scheme", "Pubkey", "Signature", "RecentBlockhash", });
+    internal_static_qorechain_svm_v1_MsgExecuteProgram_descriptor =
+      getDescriptor().getMessageType(6);
     internal_static_qorechain_svm_v1_MsgExecuteProgram_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_qorechain_svm_v1_MsgExecuteProgram_descriptor,
-        new java.lang.String[] { "Sender", "ProgramId", "Accounts", "Data", });
+        new java.lang.String[] { "Sender", "ProgramId", "Accounts", "Data", "Auth", });
     internal_static_qorechain_svm_v1_MsgExecuteProgramResponse_descriptor =
-      getDescriptor().getMessageType(6);
+      getDescriptor().getMessageType(7);
     internal_static_qorechain_svm_v1_MsgExecuteProgramResponse_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_qorechain_svm_v1_MsgExecuteProgramResponse_descriptor,
         new java.lang.String[] { "Result", });
     internal_static_qorechain_svm_v1_MsgRegisterSVMPQCKey_descriptor =
-      getDescriptor().getMessageType(7);
+      getDescriptor().getMessageType(8);
     internal_static_qorechain_svm_v1_MsgRegisterSVMPQCKey_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_qorechain_svm_v1_MsgRegisterSVMPQCKey_descriptor,
         new java.lang.String[] { "Sender", "SvmAddr", "PqcPubKey", });
     internal_static_qorechain_svm_v1_MsgRegisterSVMPQCKeyResponse_descriptor =
-      getDescriptor().getMessageType(8);
+      getDescriptor().getMessageType(9);
     internal_static_qorechain_svm_v1_MsgRegisterSVMPQCKeyResponse_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_qorechain_svm_v1_MsgRegisterSVMPQCKeyResponse_descriptor,

@@ -2537,28 +2537,30 @@ public final class QueryOuterClass extends com.google.protobuf.GeneratedFile {
   static {
     java.lang.String[] descriptorData = {
       "\n\034qorechain/pqc/v1/query.proto\022\020qorechai" +
-      "n.pqc.v1\"/\n\023QueryAccountRequest\022\030\n\007addre" +
-      "ss\030\001 \001(\tR\007address\"h\n\024QueryAccountRespons" +
-      "e\022\024\n\005found\030\001 \001(\010R\005found\022:\n\007account\030\002 \001(\013" +
-      "2 .qorechain.pqc.v1.PQCAccountViewR\007acco" +
-      "unt\"\345\002\n\016PQCAccountView\022\030\n\007address\030\001 \001(\tR" +
-      "\007address\022\035\n\npublic_key\030\002 \001(\014R\tpublicKey\022" +
-      "!\n\014algorithm_id\030\003 \001(\rR\013algorithmId\022%\n\016al" +
-      "gorithm_name\030\004 \001(\tR\ralgorithmName\022!\n\014ecd" +
-      "sa_pubkey\030\005 \001(\014R\013ecdsaPubkey\022\031\n\010key_type" +
-      "\030\006 \001(\tR\007keyType\022*\n\021created_at_height\030\007 \001" +
-      "(\003R\017createdAtHeight\0220\n\024migration_public_" +
-      "key\030\010 \001(\014R\022migrationPublicKey\0224\n\026migrati" +
-      "on_algorithm_id\030\t \001(\rR\024migrationAlgorith" +
-      "mId2a\n\005Query\022X\n\007Account\022%.qorechain.pqc." +
-      "v1.QueryAccountRequest\032&.qorechain.pqc.v" +
-      "1.QueryAccountResponseB1Z/github.com/qor" +
-      "echain/qorechain-core/x/pqc/typesb\006proto" +
-      "3"
+      "n.pqc.v1\032\034google/api/annotations.proto\"/" +
+      "\n\023QueryAccountRequest\022\030\n\007address\030\001 \001(\tR\007" +
+      "address\"h\n\024QueryAccountResponse\022\024\n\005found" +
+      "\030\001 \001(\010R\005found\022:\n\007account\030\002 \001(\0132 .qorecha" +
+      "in.pqc.v1.PQCAccountViewR\007account\"\345\002\n\016PQ" +
+      "CAccountView\022\030\n\007address\030\001 \001(\tR\007address\022\035" +
+      "\n\npublic_key\030\002 \001(\014R\tpublicKey\022!\n\014algorit" +
+      "hm_id\030\003 \001(\rR\013algorithmId\022%\n\016algorithm_na" +
+      "me\030\004 \001(\tR\ralgorithmName\022!\n\014ecdsa_pubkey\030" +
+      "\005 \001(\014R\013ecdsaPubkey\022\031\n\010key_type\030\006 \001(\tR\007ke" +
+      "yType\022*\n\021created_at_height\030\007 \001(\003R\017create" +
+      "dAtHeight\0220\n\024migration_public_key\030\010 \001(\014R" +
+      "\022migrationPublicKey\0224\n\026migration_algorit" +
+      "hm_id\030\t \001(\rR\024migrationAlgorithmId2\217\001\n\005Qu" +
+      "ery\022\205\001\n\007Account\022%.qorechain.pqc.v1.Query" +
+      "AccountRequest\032&.qorechain.pqc.v1.QueryA" +
+      "ccountResponse\"+\202\323\344\223\002%\022#/qorechain/pqc/v" +
+      "1/account/{address}B1Z/github.com/qorech" +
+      "ain/qorechain-core/x/pqc/typesb\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
         new com.google.protobuf.Descriptors.FileDescriptor[] {
+          com.google.api.AnnotationsProto.getDescriptor(),
         });
     internal_static_qorechain_pqc_v1_QueryAccountRequest_descriptor =
       getDescriptor().getMessageType(0);
@@ -2579,6 +2581,12 @@ public final class QueryOuterClass extends com.google.protobuf.GeneratedFile {
         internal_static_qorechain_pqc_v1_PQCAccountView_descriptor,
         new java.lang.String[] { "Address", "PublicKey", "AlgorithmId", "AlgorithmName", "EcdsaPubkey", "KeyType", "CreatedAtHeight", "MigrationPublicKey", "MigrationAlgorithmId", });
     descriptor.resolveAllFeaturesImmutable();
+    com.google.api.AnnotationsProto.getDescriptor();
+    com.google.protobuf.ExtensionRegistry registry =
+        com.google.protobuf.ExtensionRegistry.newInstance();
+    registry.add(com.google.api.AnnotationsProto.http);
+    com.google.protobuf.Descriptors.FileDescriptor
+        .internalUpdateFileDescriptor(descriptor, registry);
   }
 
   // @@protoc_insertion_point(outer_class_scope)

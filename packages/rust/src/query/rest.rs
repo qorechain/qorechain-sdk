@@ -1,10 +1,10 @@
-//! Cosmos + QoreChain REST (LCD) read client.
+//! Native + QoreChain REST (LCD) read client.
 
 use crate::error::{Error, Result};
 use crate::query::DEFAULT_USER_AGENT;
 use serde_json::Value;
 
-/// A Cosmos + QoreChain REST read client.
+/// A Native + QoreChain REST read client.
 #[derive(Debug, Clone)]
 pub struct RestClient {
     base_url: String,
@@ -66,7 +66,7 @@ impl RestClient {
         serde_json::from_str(&body).map_err(|e| Error::InvalidResponse(e.to_string()))
     }
 
-    /// Returns all balances for a Cosmos account.
+    /// Returns all balances for a Native account.
     pub async fn get_all_balances(&self, address: &str) -> Result<Value> {
         self.get(&format!("/cosmos/bank/v1beta1/balances/{address}"), &[])
             .await

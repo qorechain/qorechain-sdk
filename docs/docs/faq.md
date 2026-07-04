@@ -59,7 +59,7 @@ fromBase("1500000"); // "1.5"
 ```
 
 Note the EVM runtime represents QOR with **18** decimals (EVM convention), which
-is distinct from the Cosmos `uqor` base of 10^6.
+is distinct from the Native `uqor` base of 10^6.
 
 ## A package isn't on npm / PyPI / crates.io yet
 

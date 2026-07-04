@@ -1,3 +1,4 @@
+from google.api import annotations_pb2 as _annotations_pb2
 from google.protobuf.internal import containers as _containers
 from google.protobuf import descriptor as _descriptor
 from google.protobuf import message as _message
@@ -100,6 +101,52 @@ class QueryLayersResponse(_message.Message):
     LAYERS_FIELD_NUMBER: _ClassVar[int]
     layers: _containers.RepeatedCompositeFieldContainer[LayerView]
     def __init__(self, layers: _Optional[_Iterable[_Union[LayerView, _Mapping]]] = ...) -> None: ...
+
+class StateAnchorView(_message.Message):
+    __slots__ = ("layer_id", "layer_height", "state_root", "validator_set_hash", "main_chain_height", "anchored_at", "pqc_aggregate_signature", "transaction_count", "compressed_state_proof")
+    LAYER_ID_FIELD_NUMBER: _ClassVar[int]
+    LAYER_HEIGHT_FIELD_NUMBER: _ClassVar[int]
+    STATE_ROOT_FIELD_NUMBER: _ClassVar[int]
+    VALIDATOR_SET_HASH_FIELD_NUMBER: _ClassVar[int]
+    MAIN_CHAIN_HEIGHT_FIELD_NUMBER: _ClassVar[int]
+    ANCHORED_AT_FIELD_NUMBER: _ClassVar[int]
+    PQC_AGGREGATE_SIGNATURE_FIELD_NUMBER: _ClassVar[int]
+    TRANSACTION_COUNT_FIELD_NUMBER: _ClassVar[int]
+    COMPRESSED_STATE_PROOF_FIELD_NUMBER: _ClassVar[int]
+    layer_id: str
+    layer_height: int
+    state_root: bytes
+    validator_set_hash: bytes
+    main_chain_height: int
+    anchored_at: int
+    pqc_aggregate_signature: bytes
+    transaction_count: int
+    compressed_state_proof: bytes
+    def __init__(self, layer_id: _Optional[str] = ..., layer_height: _Optional[int] = ..., state_root: _Optional[bytes] = ..., validator_set_hash: _Optional[bytes] = ..., main_chain_height: _Optional[int] = ..., anchored_at: _Optional[int] = ..., pqc_aggregate_signature: _Optional[bytes] = ..., transaction_count: _Optional[int] = ..., compressed_state_proof: _Optional[bytes] = ...) -> None: ...
+
+class QueryAnchorRequest(_message.Message):
+    __slots__ = ("layer_id",)
+    LAYER_ID_FIELD_NUMBER: _ClassVar[int]
+    layer_id: str
+    def __init__(self, layer_id: _Optional[str] = ...) -> None: ...
+
+class QueryAnchorResponse(_message.Message):
+    __slots__ = ("anchor",)
+    ANCHOR_FIELD_NUMBER: _ClassVar[int]
+    anchor: StateAnchorView
+    def __init__(self, anchor: _Optional[_Union[StateAnchorView, _Mapping]] = ...) -> None: ...
+
+class QueryAnchorsRequest(_message.Message):
+    __slots__ = ("layer_id",)
+    LAYER_ID_FIELD_NUMBER: _ClassVar[int]
+    layer_id: str
+    def __init__(self, layer_id: _Optional[str] = ...) -> None: ...
+
+class QueryAnchorsResponse(_message.Message):
+    __slots__ = ("anchors",)
+    ANCHORS_FIELD_NUMBER: _ClassVar[int]
+    anchors: _containers.RepeatedCompositeFieldContainer[StateAnchorView]
+    def __init__(self, anchors: _Optional[_Iterable[_Union[StateAnchorView, _Mapping]]] = ...) -> None: ...
 
 class QueryRoutingStatsRequest(_message.Message):
     __slots__ = ()

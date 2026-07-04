@@ -1,4 +1,4 @@
-//! Standard Cosmos SDK message composers (bank, staking, distribution, gov,
+//! Standard QoreChain Native message composers (bank, staking, distribution, gov,
 //! authz, feegrant, ibc) built from the `cosmrs`/`cosmos-sdk-proto` types, with
 //! the canonical type URLs.
 //!

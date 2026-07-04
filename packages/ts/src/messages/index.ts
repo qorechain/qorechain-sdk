@@ -3,7 +3,7 @@
  *
  * The default export shape is a single grouped object so callers can write
  * `msg.amm.swapExactIn({ ... })`, `msg.staking.delegate({ ... })`,
- * `msg.pqc.registerPqcKey({ ... })`, etc. Standard Cosmos SDK modules
+ * `msg.pqc.registerPqcKey({ ... })`, etc. Standard Native modules
  * (bank/staking/distribution/gov/authz/feegrant/ibc) sit alongside the
  * QoreChain custom modules (amm/bridge/rdk/multilayer/pqc/svm/lightnode/
  * license/abstractaccount/crossvm/rlconsensus).
@@ -13,7 +13,7 @@
  * `TxClient.signAndBroadcast` or the hybrid PQC tx path.
  */
 
-// Standard Cosmos SDK modules.
+// Standard Native modules.
 import {
   bank,
   staking,
@@ -48,7 +48,7 @@ import {
  * ```
  */
 export const msg = {
-  // standard cosmos
+  // standard native
   bank,
   staking,
   distribution,

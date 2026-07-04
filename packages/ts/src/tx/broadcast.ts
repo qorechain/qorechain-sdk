@@ -1,7 +1,7 @@
 /**
  * Broadcast-mode definitions and the broadcast result shape for native txs.
  *
- * Cosmos nodes accept transactions in three modes:
+ * QoreChain Native nodes accept transactions in three modes:
  * - `sync`  — return after `CheckTx` (mempool admission); you get a tx hash but
  *   not an on-chain result.
  * - `async` — return immediately after submission, without waiting for

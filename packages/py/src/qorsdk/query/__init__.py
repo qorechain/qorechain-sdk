@@ -3,8 +3,11 @@
 from __future__ import annotations
 
 from .grpc import (
+    AbstractAccountQueryClient,
+    AmmQueryClient,
     BridgeQueryClient,
     CrossVmQueryClient,
+    LicenseQueryClient,
     LightnodeQueryClient,
     MultilayerQueryClient,
     PqcQueryClient,
@@ -30,4 +33,7 @@ __all__ = [
     "MultilayerQueryClient",
     "RdkQueryClient",
     "BridgeQueryClient",
+    "AmmQueryClient",
+    "LicenseQueryClient",
+    "AbstractAccountQueryClient",
 ]

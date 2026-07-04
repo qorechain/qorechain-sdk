@@ -49,3 +49,41 @@ class MsgUpdateSpendingRules(_message.Message):
 class MsgUpdateSpendingRulesResponse(_message.Message):
     __slots__ = ()
     def __init__(self) -> None: ...
+
+class MsgRegisterAuthenticator(_message.Message):
+    __slots__ = ("owner", "account_address", "scheme", "pubkey", "permissions", "expiry_unix", "label")
+    OWNER_FIELD_NUMBER: _ClassVar[int]
+    ACCOUNT_ADDRESS_FIELD_NUMBER: _ClassVar[int]
+    SCHEME_FIELD_NUMBER: _ClassVar[int]
+    PUBKEY_FIELD_NUMBER: _ClassVar[int]
+    PERMISSIONS_FIELD_NUMBER: _ClassVar[int]
+    EXPIRY_UNIX_FIELD_NUMBER: _ClassVar[int]
+    LABEL_FIELD_NUMBER: _ClassVar[int]
+    owner: str
+    account_address: str
+    scheme: str
+    pubkey: bytes
+    permissions: _containers.RepeatedScalarFieldContainer[str]
+    expiry_unix: int
+    label: str
+    def __init__(self, owner: _Optional[str] = ..., account_address: _Optional[str] = ..., scheme: _Optional[str] = ..., pubkey: _Optional[bytes] = ..., permissions: _Optional[_Iterable[str]] = ..., expiry_unix: _Optional[int] = ..., label: _Optional[str] = ...) -> None: ...
+
+class MsgRegisterAuthenticatorResponse(_message.Message):
+    __slots__ = ()
+    def __init__(self) -> None: ...
+
+class MsgRevokeAuthenticator(_message.Message):
+    __slots__ = ("owner", "account_address", "scheme", "pubkey")
+    OWNER_FIELD_NUMBER: _ClassVar[int]
+    ACCOUNT_ADDRESS_FIELD_NUMBER: _ClassVar[int]
+    SCHEME_FIELD_NUMBER: _ClassVar[int]
+    PUBKEY_FIELD_NUMBER: _ClassVar[int]
+    owner: str
+    account_address: str
+    scheme: str
+    pubkey: bytes
+    def __init__(self, owner: _Optional[str] = ..., account_address: _Optional[str] = ..., scheme: _Optional[str] = ..., pubkey: _Optional[bytes] = ...) -> None: ...
+
+class MsgRevokeAuthenticatorResponse(_message.Message):
+    __slots__ = ()
+    def __init__(self) -> None: ...

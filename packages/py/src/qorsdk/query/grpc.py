@@ -1,9 +1,10 @@
 """Typed gRPC query clients for the QoreChain modules with a query service.
 
 Each module that defines a ``Query`` service (crossvm, lightnode, pqc, qca,
-reputation, rlconsensus, svm, multilayer, rdk, bridge) gets a typed client whose
-methods take the generated ``Query*Request`` and return the decoded
-``Query*Response`` protobuf message — fully typed, no hand-rolled paths.
+reputation, rlconsensus, svm, multilayer, rdk, bridge, amm, license,
+abstractaccount) gets a typed client whose methods take the generated
+``Query*Request`` and return the decoded ``Query*Response`` protobuf message —
+fully typed, no hand-rolled paths.
 
 The transport is a gRPC channel (cosmpy bundles ``grpcio``). Service stubs are
 not generated; instead each call uses the channel's generic ``unary_unary`` with
@@ -20,8 +21,11 @@ from typing import Any
 
 import grpc
 
+from ..proto.qorechain.abstractaccount.v1 import query_pb2 as abstractaccount_q
+from ..proto.qorechain.amm.v1 import query_pb2 as amm_q
 from ..proto.qorechain.bridge.v1 import query_pb2 as bridge_q
 from ..proto.qorechain.crossvm.v1 import query_pb2 as crossvm_q
+from ..proto.qorechain.license.v1 import query_pb2 as license_q
 from ..proto.qorechain.lightnode.v1 import query_pb2 as lightnode_q
 from ..proto.qorechain.multilayer.v1 import query_pb2 as multilayer_q
 from ..proto.qorechain.pqc.v1 import query_pb2 as pqc_q
@@ -276,6 +280,14 @@ class MultilayerQueryClient:
             channel, self._SERVICE, "Layers",
             multilayer_q.QueryLayersRequest, multilayer_q.QueryLayersResponse,
         )
+        self._anchor = _unary(
+            channel, self._SERVICE, "Anchor",
+            multilayer_q.QueryAnchorRequest, multilayer_q.QueryAnchorResponse,
+        )
+        self._anchors = _unary(
+            channel, self._SERVICE, "Anchors",
+            multilayer_q.QueryAnchorsRequest, multilayer_q.QueryAnchorsResponse,
+        )
         self._routing_stats = _unary(
             channel, self._SERVICE, "RoutingStats",
             multilayer_q.QueryRoutingStatsRequest,
@@ -290,6 +302,12 @@ class MultilayerQueryClient:
 
     def layers(self) -> Any:
         return self._layers(multilayer_q.QueryLayersRequest())
+
+    def anchor(self, layer_id: str) -> Any:
+        return self._anchor(multilayer_q.QueryAnchorRequest(layer_id=layer_id))
+
+    def anchors(self, layer_id: str) -> Any:
+        return self._anchors(multilayer_q.QueryAnchorsRequest(layer_id=layer_id))
 
     def routing_stats(self) -> Any:
         return self._routing_stats(multilayer_q.QueryRoutingStatsRequest())
@@ -397,6 +415,137 @@ class BridgeQueryClient:
         return self._operations(bridge_q.QueryOperationsRequest())
 
 
+class AmmQueryClient:
+    """Typed query client for ``x/amm`` (automated market maker)."""
+
+    _SERVICE = "qorechain.amm.v1.Query"
+
+    def __init__(self, channel: grpc.Channel) -> None:
+        self._params = _unary(
+            channel, self._SERVICE, "Params",
+            amm_q.QueryParamsRequest, amm_q.QueryParamsResponse,
+        )
+        self._pool = _unary(
+            channel, self._SERVICE, "Pool",
+            amm_q.QueryPoolRequest, amm_q.QueryPoolResponse,
+        )
+        self._pools = _unary(
+            channel, self._SERVICE, "Pools",
+            amm_q.QueryPoolsRequest, amm_q.QueryPoolsResponse,
+        )
+        self._pool_by_denoms = _unary(
+            channel, self._SERVICE, "PoolByDenoms",
+            amm_q.QueryPoolByDenomsRequest, amm_q.QueryPoolByDenomsResponse,
+        )
+        self._lp_balance = _unary(
+            channel, self._SERVICE, "LPBalance",
+            amm_q.QueryLPBalanceRequest, amm_q.QueryLPBalanceResponse,
+        )
+        self._quote_exact_in = _unary(
+            channel, self._SERVICE, "QuoteExactIn",
+            amm_q.QueryQuoteExactInRequest, amm_q.QueryQuoteExactInResponse,
+        )
+        self._quote_exact_out = _unary(
+            channel, self._SERVICE, "QuoteExactOut",
+            amm_q.QueryQuoteExactOutRequest, amm_q.QueryQuoteExactOutResponse,
+        )
+
+    def params(self) -> Any:
+        return self._params(amm_q.QueryParamsRequest())
+
+    def pool(self, pool_id: int) -> Any:
+        return self._pool(amm_q.QueryPoolRequest(pool_id=int(pool_id)))
+
+    def pools(self) -> Any:
+        return self._pools(amm_q.QueryPoolsRequest())
+
+    def pool_by_denoms(self, denom_a: str, denom_b: str) -> Any:
+        return self._pool_by_denoms(
+            amm_q.QueryPoolByDenomsRequest(denom_a=denom_a, denom_b=denom_b)
+        )
+
+    def lp_balance(self, pool_id: int, address: str) -> Any:
+        return self._lp_balance(
+            amm_q.QueryLPBalanceRequest(pool_id=int(pool_id), address=address)
+        )
+
+    def quote_exact_in(self, pool_id: int, denom_in: str, amount_in: str) -> Any:
+        return self._quote_exact_in(
+            amm_q.QueryQuoteExactInRequest(
+                pool_id=int(pool_id), denom_in=denom_in, amount_in=amount_in
+            )
+        )
+
+    def quote_exact_out(self, pool_id: int, denom_out: str, amount_out: str) -> Any:
+        return self._quote_exact_out(
+            amm_q.QueryQuoteExactOutRequest(
+                pool_id=int(pool_id), denom_out=denom_out, amount_out=amount_out
+            )
+        )
+
+
+class LicenseQueryClient:
+    """Typed query client for ``x/license`` (feature licensing)."""
+
+    _SERVICE = "qorechain.license.v1.Query"
+
+    def __init__(self, channel: grpc.Channel) -> None:
+        self._check = _unary(
+            channel, self._SERVICE, "Check",
+            license_q.QueryCheckRequest, license_q.QueryCheckResponse,
+        )
+        self._holders = _unary(
+            channel, self._SERVICE, "Holders",
+            license_q.QueryHoldersRequest, license_q.QueryHoldersResponse,
+        )
+        self._list = _unary(
+            channel, self._SERVICE, "List",
+            license_q.QueryListRequest, license_q.QueryListResponse,
+        )
+
+    def check(self, grantee: str, feature_id: str) -> Any:
+        return self._check(
+            license_q.QueryCheckRequest(grantee=grantee, feature_id=feature_id)
+        )
+
+    def holders(self, feature_id: str) -> Any:
+        return self._holders(license_q.QueryHoldersRequest(feature_id=feature_id))
+
+    def list(self, grantee: str) -> Any:
+        return self._list(license_q.QueryListRequest(grantee=grantee))
+
+
+class AbstractAccountQueryClient:
+    """Typed query client for ``x/abstractaccount`` (programmable accounts)."""
+
+    _SERVICE = "qorechain.abstractaccount.v1.Query"
+
+    def __init__(self, channel: grpc.Channel) -> None:
+        self._config = _unary(
+            channel, self._SERVICE, "Config",
+            abstractaccount_q.QueryConfigRequest, abstractaccount_q.QueryConfigResponse,
+        )
+        self._account = _unary(
+            channel, self._SERVICE, "Account",
+            abstractaccount_q.QueryAccountRequest,
+            abstractaccount_q.QueryAccountResponse,
+        )
+        self._accounts = _unary(
+            channel, self._SERVICE, "Accounts",
+            abstractaccount_q.QueryAccountsRequest,
+            abstractaccount_q.QueryAccountsResponse,
+        )
+
+    def config(self) -> Any:
+        return self._config(abstractaccount_q.QueryConfigRequest())
+
+    def account(self, address: str) -> Any:
+        return self._account(abstractaccount_q.QueryAccountRequest(address=address))
+
+    def accounts(self) -> Any:
+        return self._accounts(abstractaccount_q.QueryAccountsRequest())
+
+
 class QueryClients:
     """A bundle of every module query client over one shared gRPC channel.
 
@@ -416,6 +565,9 @@ class QueryClients:
         self.multilayer = MultilayerQueryClient(channel)
         self.rdk = RdkQueryClient(channel)
         self.bridge = BridgeQueryClient(channel)
+        self.amm = AmmQueryClient(channel)
+        self.license = LicenseQueryClient(channel)
+        self.abstractaccount = AbstractAccountQueryClient(channel)
 
     def close(self) -> None:
         self._channel.close()
