@@ -79,6 +79,7 @@ from .pqc import (
     PqcKeypair,
     algorithm_name,
     build_hybrid_signature_extension,
+    encode_hybrid_signature_extension,
     generate_pqc_keypair,
     is_signature_algorithm,
     pqc_sign,
@@ -218,6 +219,7 @@ __all__ = [
     "pqc_sign",
     "pqc_verify",
     "build_hybrid_signature_extension",
+    "encode_hybrid_signature_extension",
     # quantum-safe DX (x/pqc key registry)
     "DILITHIUM5_KEY_TYPE",
     "HYBRID_KEY_TYPE",

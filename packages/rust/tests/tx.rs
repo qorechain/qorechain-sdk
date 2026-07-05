@@ -24,6 +24,7 @@ use qorechain::accounts::derive_native_account;
 use qorechain::pqc::{
     generate_pqc_keypair, pqc_verify, HYBRID_SIG_TYPE_URL, MLDSA87_SIGNATURE_LEN,
 };
+use qorechain::proto::qorechain::pqc::v1::PqcHybridSignature;
 use qorechain::tx::{
     bank_send, broadcast, build_hybrid_tx, fee_from_estimate, BankSendParams, BroadcastMode,
     BuildHybridTxParams, Coin, Fee, Message as TxMessage,
@@ -303,14 +304,17 @@ fn build_hybrid_tx_contract() {
     let ext = &final_body.extension_options[0];
     assert_eq!(ext.type_url, HYBRID_SIG_TYPE_URL);
 
-    // The Any.value must be the JSON shape.
-    let ext_json: serde_json::Value = serde_json::from_slice(&ext.value).unwrap();
-    assert_eq!(ext_json["algorithm_id"], 1);
-    let sig_b64 = ext_json["pqc_signature"].as_str().unwrap();
-    let sig_bytes = BASE64.decode(sig_b64).unwrap();
-    assert_eq!(sig_bytes.len(), MLDSA87_SIGNATURE_LEN);
-    // pqc_public_key omitted when not requested.
-    assert!(ext_json.get("pqc_public_key").is_none());
+    // The Any.value must be PROTOBUF, not JSON: it begins with the field-1 varint
+    // tag 0x08 and never with 0x7b (`{`), which the chain's tx decoder rejects at
+    // CheckTx (misread as protobuf field 15 `start_group`).
+    assert_eq!(ext.value[0], 0x08);
+    assert_ne!(ext.value[0], 0x7b);
+    let ext_msg = PqcHybridSignature::decode(ext.value.as_slice()).unwrap();
+    assert_eq!(ext_msg.algorithm_id, 1);
+    assert_eq!(ext_msg.pqc_signature.len(), MLDSA87_SIGNATURE_LEN);
+    assert_eq!(ext_msg.pqc_signature, built.pqc_signature);
+    // pqc_public_key omitted (empty) when not requested.
+    assert!(ext_msg.pqc_public_key.is_empty());
 
     // KEY PROPERTY: strip the PQC ext from the final body, re-encode (B0'),
     // re-frame, and assert it equals the signed message.
@@ -375,8 +379,10 @@ fn build_hybrid_tx_includes_public_key_when_requested() {
 
     let tx_raw = TxRaw::decode(built.tx_raw_bytes.as_slice()).unwrap();
     let final_body = TxBody::decode(tx_raw.body_bytes.as_slice()).unwrap();
-    let ext_json: serde_json::Value =
-        serde_json::from_slice(&final_body.extension_options[0].value).unwrap();
-    let pk_b64 = ext_json["pqc_public_key"].as_str().unwrap();
-    assert_eq!(BASE64.decode(pk_b64).unwrap(), kp.public_key);
+    let ext_value = &final_body.extension_options[0].value;
+    // Protobuf, not JSON.
+    assert_eq!(ext_value[0], 0x08);
+    assert_ne!(ext_value[0], 0x7b);
+    let ext_msg = PqcHybridSignature::decode(ext_value.as_slice()).unwrap();
+    assert_eq!(ext_msg.pqc_public_key, kp.public_key);
 }

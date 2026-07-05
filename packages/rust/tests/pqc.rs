@@ -1,7 +1,7 @@
 //! ML-DSA-87 PQC primitive and hybrid-extension tests.
 
-use base64::engine::general_purpose::STANDARD as BASE64;
-use base64::Engine;
+use cosmrs::proto::traits::Message;
+use qorechain::proto::qorechain::pqc::v1::PqcHybridSignature;
 use qorechain::pqc::{
     build_hybrid_signature_extension, generate_pqc_keypair, pqc_sign, pqc_verify,
     ALGORITHM_DILITHIUM5, ALGORITHM_MLKEM1024, HYBRID_SIG_TYPE_URL, MLDSA87_PUBLIC_KEY_LEN,
@@ -54,22 +54,24 @@ fn tampered_message_fails_verification() {
 }
 
 #[test]
-fn extension_json_shape_with_public_key() {
+fn extension_proto_shape_with_public_key() {
     let kp = generate_pqc_keypair().unwrap();
     let sig = pqc_sign(&kp.secret_key, b"tx bytes").unwrap();
 
     let ext =
         build_hybrid_signature_extension(ALGORITHM_DILITHIUM5, &sig, Some(&kp.public_key)).unwrap();
-    let v: serde_json::Value = serde_json::to_value(&ext).unwrap();
+    let value = ext.encode_to_vec();
 
-    assert_eq!(v["algorithm_id"], 1);
-    let sig_b64 = v["pqc_signature"].as_str().unwrap();
-    let pk_b64 = v["pqc_public_key"].as_str().unwrap();
+    // The Any.value is protobuf, NOT JSON: it begins with the field-1 varint tag
+    // 0x08 and never with 0x7b (`{`), which the chain misreads as `start_group`.
+    assert_eq!(value[0], 0x08);
+    assert_ne!(value[0], 0x7b);
 
-    // Standard (padded) base64 that decodes back to the exact bytes.
-    assert_eq!(BASE64.decode(sig_b64).unwrap(), sig);
-    assert_eq!(BASE64.decode(pk_b64).unwrap(), kp.public_key);
-    assert_eq!(sig_b64, BASE64.encode(&sig));
+    // Round-trips through the generated prost message with the exact raw bytes.
+    let decoded = PqcHybridSignature::decode(value.as_slice()).unwrap();
+    assert_eq!(decoded.algorithm_id, 1);
+    assert_eq!(decoded.pqc_signature, sig);
+    assert_eq!(decoded.pqc_public_key, kp.public_key);
 }
 
 #[test]
@@ -78,11 +80,16 @@ fn extension_omits_public_key_when_absent() {
     let sig = pqc_sign(&kp.secret_key, b"tx bytes").unwrap();
 
     let ext = build_hybrid_signature_extension(ALGORITHM_DILITHIUM5, &sig, None).unwrap();
-    let v: serde_json::Value = serde_json::to_value(&ext).unwrap();
+    let value = ext.encode_to_vec();
 
-    assert_eq!(v["algorithm_id"], 1);
-    assert!(v.get("pqc_public_key").is_none());
-    assert!(v.get("pqc_signature").is_some());
+    assert_eq!(value[0], 0x08);
+    assert_ne!(value[0], 0x7b);
+
+    let decoded = PqcHybridSignature::decode(value.as_slice()).unwrap();
+    assert_eq!(decoded.algorithm_id, 1);
+    assert_eq!(decoded.pqc_signature, sig);
+    // An absent public key is the empty (default) field on the wire.
+    assert!(decoded.pqc_public_key.is_empty());
 }
 
 #[test]

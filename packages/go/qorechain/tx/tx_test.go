@@ -20,6 +20,7 @@ import (
 
 	"github.com/qorechain/qorechain-sdk/packages/go/qorechain/accounts"
 	"github.com/qorechain/qorechain-sdk/packages/go/qorechain/pqc"
+	pqcv1 "github.com/qorechain/qorechain-sdk/packages/go/qorechain/proto/qorechain/pqc/v1"
 )
 
 // Public test mnemonic only (never a real secret).
@@ -257,26 +258,29 @@ func TestBuildHybridTxContract(t *testing.T) {
 	if ext.TypeUrl != pqc.HybridSigTypeURL {
 		t.Errorf("ext type URL = %q, want %q", ext.TypeUrl, pqc.HybridSigTypeURL)
 	}
-	// The Any.value must be the Go-JSON shape.
-	var extJSON struct {
-		AlgorithmID  int    `json:"algorithm_id"`
-		PqcSignature string `json:"pqc_signature"`
-		PqcPublicKey string `json:"pqc_public_key"`
+	// CONSENSUS-CRITICAL: the Any.value must be PROTOBUF, not Go-JSON. Its first
+	// byte is the field-1 varint tag 0x08, NEVER '{' (0x7b) — the chain's tx
+	// decoder rejected the old 0x7b-leading JSON value at CheckTx.
+	if len(ext.Value) == 0 {
+		t.Fatal("extension value is empty")
 	}
-	if err := json.Unmarshal(ext.Value, &extJSON); err != nil {
-		t.Fatalf("ext value not JSON: %v", err)
+	if ext.Value[0] != 0x08 {
+		t.Errorf("ext value[0] = 0x%02x, want 0x08 (proto field-1 tag)", ext.Value[0])
 	}
-	if extJSON.AlgorithmID != pqc.AlgorithmDilithium5 {
-		t.Errorf("algorithm_id = %d, want %d", extJSON.AlgorithmID, pqc.AlgorithmDilithium5)
+	if ext.Value[0] == 0x7b {
+		t.Error("ext value is Go-JSON ('{' = 0x7b); it must be protobuf")
 	}
-	sigBytes, err := base64.StdEncoding.DecodeString(extJSON.PqcSignature)
-	if err != nil {
-		t.Fatalf("pqc_signature not std-base64: %v", err)
+	var extProto pqcv1.PQCHybridSignature
+	if err := extProto.Unmarshal(ext.Value); err != nil {
+		t.Fatalf("ext value not protobuf: %v", err)
 	}
-	if len(sigBytes) != pqc.MLDSA87SignatureLength {
-		t.Errorf("decoded pqc sig len = %d, want %d", len(sigBytes), pqc.MLDSA87SignatureLength)
+	if int(extProto.AlgorithmID) != pqc.AlgorithmDilithium5 {
+		t.Errorf("algorithm_id = %d, want %d", extProto.AlgorithmID, pqc.AlgorithmDilithium5)
 	}
-	if extJSON.PqcPublicKey != "" {
+	if len(extProto.PQCSignature) != pqc.MLDSA87SignatureLength {
+		t.Errorf("decoded pqc sig len = %d, want %d", len(extProto.PQCSignature), pqc.MLDSA87SignatureLength)
+	}
+	if len(extProto.PQCPublicKey) != 0 {
 		t.Error("pqc_public_key should be omitted when not requested")
 	}
 
@@ -353,19 +357,24 @@ func TestBuildHybridTxIncludesPublicKey(t *testing.T) {
 	if err := proto.Unmarshal(txRaw.BodyBytes, &finalBody); err != nil {
 		t.Fatalf("unmarshal body: %v", err)
 	}
-	var extJSON struct {
-		PqcPublicKey string `json:"pqc_public_key"`
+	extValue := finalBody.ExtensionOptions[0].Value
+	if len(extValue) == 0 || extValue[0] != 0x08 {
+		t.Fatalf("ext value must be proto-encoded starting with 0x08, got 0x%02x", firstByte(extValue))
 	}
-	if err := json.Unmarshal(finalBody.ExtensionOptions[0].Value, &extJSON); err != nil {
-		t.Fatalf("ext value not JSON: %v", err)
+	var extProto pqcv1.PQCHybridSignature
+	if err := extProto.Unmarshal(extValue); err != nil {
+		t.Fatalf("ext value not protobuf: %v", err)
 	}
-	pkBytes, err := base64.StdEncoding.DecodeString(extJSON.PqcPublicKey)
-	if err != nil {
-		t.Fatalf("pqc_public_key not std-base64: %v", err)
+	if len(extProto.PQCPublicKey) != pqc.MLDSA87PublicKeyLength {
+		t.Errorf("pubkey len = %d, want %d", len(extProto.PQCPublicKey), pqc.MLDSA87PublicKeyLength)
 	}
-	if len(pkBytes) != pqc.MLDSA87PublicKeyLength {
-		t.Errorf("pubkey len = %d, want %d", len(pkBytes), pqc.MLDSA87PublicKeyLength)
+}
+
+func firstByte(b []byte) byte {
+	if len(b) == 0 {
+		return 0
 	}
+	return b[0]
 }
 
 // helpers shared with the implementation's test only.

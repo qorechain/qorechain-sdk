@@ -14,14 +14,13 @@ package unified
 // adds it. SignClassicalEth omits it (used for the one-time PQC key
 // registration, which is bootstrap-exempt from the hybrid requirement).
 //
-// The hybrid framing (BE32(len B0)||B0||BE32(len A)||A, then the JSON-encoded
+// The hybrid framing (BE32(len B0)||B0||BE32(len A)||A, then the protobuf-encoded
 // PQCHybridSignature extension Any) is IDENTICAL to the native-derivation hybrid
 // tx in the tx package; only the classical hash (keccak vs sha256) and the
 // pubkey typeUrl change here.
 
 import (
 	"encoding/binary"
-	"encoding/json"
 	"fmt"
 
 	codectypes "github.com/cosmos/cosmos-sdk/codec/types"
@@ -115,7 +114,7 @@ func SignClassicalEth(params EthSignParams) ([]byte, error) {
 //  1. B0 — body WITHOUT the PQC extension.
 //  2. A  — single-signer eth_secp256k1 SIGN_MODE_DIRECT AuthInfo.
 //  3. ML-DSA-87 sign over frame(B0, A) = BE32(len B0)||B0||BE32(len A)||A.
-//  4. Attach the PQCHybridSignature extension Any → final body.
+//  4. Attach the protobuf-encoded PQCHybridSignature extension Any → final body.
 //  5. Classical eth_secp256k1 signature over SignDoc(finalBody, A, …) — secp256k1
 //     of keccak256(SignDoc).
 //  6. Assemble TxRaw(finalBody, A, [classicalSig]).
@@ -144,14 +143,11 @@ func SignHybridEth(params EthSignParams) ([]byte, error) {
 	if err != nil {
 		return nil, fmt.Errorf("PQC sign: %w", err)
 	}
-	// 4. Build the extension Any (Go-JSON value) and attach to the final body.
-	ext, err := pqc.BuildHybridSignatureExtension(pqc.AlgorithmDilithium5, pqcSig, nil)
+	// 4. Build the extension Any (protobuf-encoded PQCHybridSignature value) and
+	//    attach to the final body.
+	extValue, err := pqc.EncodeHybridSignatureExtension(pqc.AlgorithmDilithium5, pqcSig, nil)
 	if err != nil {
 		return nil, fmt.Errorf("build hybrid extension: %w", err)
-	}
-	extValue, err := json.Marshal(ext)
-	if err != nil {
-		return nil, fmt.Errorf("marshal hybrid extension JSON: %w", err)
 	}
 	extAny := &codectypes.Any{TypeUrl: pqc.HybridSigTypeURL, Value: extValue}
 	bodyWithExt, err := proto.Marshal(&sdktx.TxBody{

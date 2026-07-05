@@ -5,6 +5,22 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.6.1]
+
+### Fixed
+
+- **Hybrid-signature tx extension encoding (consensus-critical)** — the
+  `/qorechain.pqc.v1.PQCHybridSignature` tx-body extension was serialized as
+  Go-JSON into `Any.value`, which the chain's tx decoder rejected at CheckTx (the
+  leading `0x7b` `{` was misread as protobuf field 15 `start_group`, giving a tx
+  parse error). It is now protobuf-encoded via the generated `PQCHybridSignature`
+  codec (`algorithm_id` = 1, `pqc_signature` = 2, `pqc_public_key` = 3; the value
+  begins with `0x08`) in **all five languages**, so every hybrid (PQC + classical,
+  including the eth-native lane) transaction is accepted. Fixed in TypeScript,
+  Python, Go, Rust, and Java; verified live on testnet. Regression tests assert the
+  extension value begins with `0x08` and never `0x7b`, and round-trips through the
+  generated codec.
+
 ## [0.6.0]
 
 ### Added

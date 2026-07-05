@@ -24,10 +24,14 @@
 //   - PQC signature = PQCSign(pqcSecret, message) — pure ML-DSA-87, 4627 bytes.
 //   - The PQCHybridSignature extension is then added to TxBody.ExtensionOptions
 //     (the CRITICAL extension-options slot) as an Any whose TypeUrl is
-//     "/qorechain.pqc.v1.PQCHybridSignature" and whose Value is the UTF-8 bytes
-//     of the Go-JSON {"algorithm_id","pqc_signature","pqc_public_key"?}
-//     (standard padded base64; pqc_public_key omitted when not supplied) → the
-//     final body bytes.
+//     "/qorechain.pqc.v1.PQCHybridSignature" and whose Value is the PROTOBUF
+//     encoding of the generated PQCHybridSignature message (fields algorithm_id=1,
+//     pqc_signature=2, pqc_public_key=3; the public key is omitted when not
+//     supplied). The encoded value always begins with byte 0x08 (the field-1
+//     varint tag), NEVER 0x7b. A prior release Go-JSON-encoded this value; the
+//     chain's tx decoder rejected every such tx at CheckTx (the leading 0x7b =
+//     '{' was misread as protobuf field 15 start_group). Verified live on testnet
+//     2026-07-05. This yields the final body bytes.
 //   - The CLASSICAL secp256k1 SIGN_MODE_DIRECT signature is computed over
 //     SignDoc(finalBody, A, chainID, accountNumber) and goes in TxRaw.Signatures
 //     (outside the body). The classical signature never signs itself.
@@ -312,19 +316,15 @@ func BuildHybridTx(params BuildHybridTxParams) (*BuiltTx, error) {
 		return nil, fmt.Errorf("PQC sign: %w", err)
 	}
 
-	// 4. Build the PQC extension Any (Go-JSON value) and attach it to the FINAL
-	//    body as a CRITICAL extension option.
+	// 4. Build the PQC extension Any (protobuf-encoded PQCHybridSignature value)
+	//    and attach it to the FINAL body as a CRITICAL extension option.
 	var publicKey []byte
 	if params.IncludePQCPublicKey {
 		publicKey = params.PQCKeypair.PublicKey
 	}
-	ext, err := pqc.BuildHybridSignatureExtension(pqc.AlgorithmDilithium5, pqcSignature, publicKey)
+	extValue, err := pqc.EncodeHybridSignatureExtension(pqc.AlgorithmDilithium5, pqcSignature, publicKey)
 	if err != nil {
 		return nil, fmt.Errorf("build hybrid extension: %w", err)
-	}
-	extValue, err := json.Marshal(ext)
-	if err != nil {
-		return nil, fmt.Errorf("marshal hybrid extension JSON: %w", err)
 	}
 	extAny := &codectypes.Any{TypeUrl: pqc.HybridSigTypeURL, Value: extValue}
 	finalBody := &sdktx.TxBody{

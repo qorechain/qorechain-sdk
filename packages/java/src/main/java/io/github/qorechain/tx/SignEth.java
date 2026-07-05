@@ -267,7 +267,7 @@ public final class SignEth {
                 HybridTx.frame(b0, authInfoBytes);
         byte[] pqcSignature = Pqc.pqcSign(opts.pqcKeypair.secretKey, pqcSignedMessage);
 
-        // 4. Attach the PQC extension (Go-JSON) to the FINAL body.
+        // 4. Attach the PQC extension (protobuf-encoded, leading 0x08) to the FINAL body.
         HybridSignatureExtension ext =
                 Pqc.buildHybridSignatureExtension(
                         PqcAlgorithm.ALGORITHM_DILITHIUM5,

@@ -15,6 +15,7 @@ import {
   HYBRID_SIG_TYPE_URL,
   ML_DSA_87_SIGNATURE_LENGTH,
 } from "../../src/accounts/pqc";
+import { PQCHybridSignature as PQCHybridSignatureProto } from "../../src/codegen/qorechain/pqc/v1/hybrid";
 
 const PREFIX = "qor";
 const CHAIN_ID = "qorechain-diana";
@@ -120,7 +121,7 @@ describe("buildHybridTx", () => {
     ).toBe(true);
   });
 
-  it("attaches exactly one critical extension Any with the correct type URL and JSON payload", async () => {
+  it("attaches exactly one critical extension Any with the correct type URL and protobuf payload", async () => {
     const { signer, pqc, msg } = await fixtures();
     const built = await buildHybridTx({
       registry: registry(),
@@ -138,12 +139,15 @@ describe("buildHybridTx", () => {
     const ext = body.extensionOptions[0];
     expect(ext.typeUrl).toBe(HYBRID_SIG_TYPE_URL);
 
-    const decoded = JSON.parse(new TextDecoder().decode(ext.value));
-    expect(decoded.algorithm_id).toBe(AlgorithmDilithium5);
-    // Standard padded base64 of the 4627-byte signature.
-    const expectedSig = Buffer.from(built.pqcSignature).toString("base64");
-    expect(decoded.pqc_signature).toBe(expectedSig);
-    expect(expectedSig.endsWith("=") || expectedSig.length % 4 === 0).toBe(true);
+    // The extension value is PROTOBUF (starts with 0x08 field-1 tag), never
+    // JSON (0x7b '{') which the chain's tx decoder rejects at CheckTx.
+    expect(ext.value[0]).toBe(0x08);
+    expect(ext.value[0]).not.toBe(0x7b);
+    const decoded = PQCHybridSignatureProto.decode(ext.value);
+    expect(decoded.algorithmId).toBe(AlgorithmDilithium5);
+    expect(Array.from(decoded.pqcSignature)).toEqual(
+      Array.from(built.pqcSignature),
+    );
   });
 
   it("includes the PQC public key in the extension when requested", async () => {
@@ -160,11 +164,11 @@ describe("buildHybridTx", () => {
       includePqcPublicKey: true,
     });
     const body = TxBody.decode(built.txRaw.bodyBytes);
-    const decoded = JSON.parse(
-      new TextDecoder().decode(body.extensionOptions[0].value),
+    const decoded = PQCHybridSignatureProto.decode(
+      body.extensionOptions[0].value,
     );
-    expect(decoded.pqc_public_key).toBe(
-      Buffer.from(pqc.publicKey).toString("base64"),
+    expect(Array.from(decoded.pqcPublicKey)).toEqual(
+      Array.from(pqc.publicKey),
     );
   });
 

@@ -13,11 +13,10 @@
 //! reimplemented here.
 
 use crate::error::{Error, Result};
-use base64::engine::general_purpose::STANDARD as BASE64;
-use base64::Engine;
+use crate::proto::qorechain::pqc::v1::PqcHybridSignature;
+use cosmrs::proto::traits::Message as ProstMessage;
 use fips204::ml_dsa_87;
 use fips204::traits::{KeyGen, SerDes, Signer, Verifier};
-use serde::{Deserialize, Serialize};
 
 /// ML-DSA-87 public-key length, in bytes (FIPS 204).
 pub const MLDSA87_PUBLIC_KEY_LEN: usize = ml_dsa_87::PK_LEN;
@@ -147,19 +146,43 @@ pub fn pqc_verify(public_key: &[u8], message: &[u8], signature: &[u8]) -> bool {
 
 /// The on-chain `PQCHybridSignature` transaction extension.
 ///
-/// Serializes to JSON exactly as the chain expects:
-/// `{"algorithm_id":1,"pqc_signature":"<std-base64>","pqc_public_key":"<std-base64>"}`.
-/// `pqc_signature` and `pqc_public_key` use standard (padded) base64; the public
-/// key is omitted entirely when no key is supplied.
-#[derive(Debug, Clone, Serialize, Deserialize)]
+/// This is the validated, raw-byte form of the extension. It is carried in
+/// `TxBody.extension_options` as a `cosmos.tx.v1beta1.Any` whose `value` is the
+/// PROTOBUF encoding of the generated [`PqcHybridSignature`] message (fields
+/// `algorithm_id` = 1, `pqc_signature` = 2, `pqc_public_key` = 3), produced by
+/// [`HybridSignatureExtension::encode_to_vec`]. The chain's ante handler
+/// protobuf-decodes this extension, so the encoded `Any.value` always begins
+/// with `0x08` (the field-1 varint tag).
+///
+/// NOTE: a prior release JSON-encoded this value; the chain's tx decoder
+/// rejected every such tx at CheckTx (the leading `0x7b` = `{` was misread as
+/// protobuf field 15 `start_group`). Verified live on testnet 2026-07-05.
+#[derive(Debug, Clone)]
 pub struct HybridSignatureExtension {
     /// PQC algorithm identifier (1 = Dilithium-5 / ML-DSA-87).
     pub algorithm_id: u32,
-    /// Standard (padded) base64 of the PQC signature.
-    pub pqc_signature: String,
-    /// Standard (padded) base64 of the PQC public key; omitted when absent.
-    #[serde(skip_serializing_if = "Option::is_none", default)]
-    pub pqc_public_key: Option<String>,
+    /// The raw PQC signature bytes (Dilithium-5: 4627 bytes).
+    pub pqc_signature: Vec<u8>,
+    /// The raw PQC public-key bytes (Dilithium-5: 2592 bytes); omitted when absent.
+    pub pqc_public_key: Option<Vec<u8>>,
+}
+
+impl HybridSignatureExtension {
+    /// PROTOBUF-encodes this extension into the bytes that go into the
+    /// `Any.value` of the `TxBody.extension_options` entry.
+    ///
+    /// Builds the generated [`PqcHybridSignature`] prost message and returns
+    /// `Message::encode_to_vec`. An absent public key is encoded as an empty
+    /// field (the default), which prost omits from the wire — matching the
+    /// other SDKs. The result always begins with byte `0x08`, never `0x7b`.
+    pub fn encode_to_vec(&self) -> Vec<u8> {
+        let msg = PqcHybridSignature {
+            algorithm_id: self.algorithm_id,
+            pqc_signature: self.pqc_signature.clone(),
+            pqc_public_key: self.pqc_public_key.clone().unwrap_or_default(),
+        };
+        msg.encode_to_vec()
+    }
 }
 
 /// Builds the on-chain `PQCHybridSignature` extension object.
@@ -167,7 +190,8 @@ pub struct HybridSignatureExtension {
 /// Validation mirrors the core `PQCHybridSignature.Validate()`: the algorithm
 /// must be a signature scheme, the signature must be non-empty, and for
 /// Dilithium-5 the signature / public-key lengths are enforced. The public key
-/// is omitted when `public_key` is `None`.
+/// is omitted when `public_key` is `None`. Use
+/// [`HybridSignatureExtension::encode_to_vec`] to obtain the protobuf `Any.value`.
 pub fn build_hybrid_signature_extension(
     algorithm_id: u32,
     signature: &[u8],
@@ -200,7 +224,7 @@ pub fn build_hybrid_signature_extension(
     }
     Ok(HybridSignatureExtension {
         algorithm_id,
-        pqc_signature: BASE64.encode(signature),
-        pqc_public_key: public_key.map(|pk| BASE64.encode(pk)),
+        pqc_signature: signature.to_vec(),
+        pqc_public_key: public_key.map(|pk| pk.to_vec()),
     })
 }

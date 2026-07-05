@@ -24,6 +24,7 @@ from qorsdk import (
     generate_pqc_keypair,
     pqc_verify,
 )
+from qorsdk.proto.qorechain.pqc.v1.hybrid_pb2 import PQCHybridSignature
 from qorsdk.tx import MSG_SEND_TYPE_URL, bank_send, broadcast
 
 # Public test mnemonic only — never a real one.
@@ -240,14 +241,18 @@ def test_hybrid_extension_any_shape(native, pqc):
     ext = body.extension_options[0]
     assert ext.type_url == HYBRID_SIG_TYPE_URL
 
-    decoded = json.loads(ext.value.decode("utf-8"))
-    assert decoded["algorithm_id"] == ALGORITHM_DILITHIUM5
-    # Standard padded base64 of the 4627-byte signature.
-    expected_sig = base64.b64encode(built.pqc_signature).decode("ascii")
-    assert decoded["pqc_signature"] == expected_sig
-    assert len(expected_sig) % 4 == 0
-    # No public key by default (omitempty contract).
-    assert "pqc_public_key" not in decoded
+    # The Any.value is PROTOBUF, not Go-JSON: it starts with the field-1 varint
+    # tag 0x08, NEVER 0x7b ('{'). A 0x7b leading byte is misread by the chain's
+    # tx decoder as field 15 start_group and rejected at CheckTx.
+    assert ext.value[0] == 0x08
+    assert ext.value[0] != 0x7B
+
+    # Round-trip via the generated codec.
+    decoded = PQCHybridSignature.FromString(ext.value)
+    assert decoded.algorithm_id == ALGORITHM_DILITHIUM5
+    assert decoded.pqc_signature == built.pqc_signature
+    # No public key by default (empty proto field).
+    assert decoded.pqc_public_key == b""
 
 
 def test_hybrid_includes_public_key_when_requested(native, pqc):
@@ -263,8 +268,45 @@ def test_hybrid_includes_public_key_when_requested(native, pqc):
     )
     body = TxBody()
     body.ParseFromString(built.tx_raw.body_bytes)
-    decoded = json.loads(body.extension_options[0].value.decode("utf-8"))
-    assert decoded["pqc_public_key"] == base64.b64encode(pqc.public_key).decode("ascii")
+    ext = body.extension_options[0]
+    assert ext.value[0] == 0x08
+    decoded = PQCHybridSignature.FromString(ext.value)
+    assert decoded.pqc_public_key == pqc.public_key
+    assert decoded.pqc_signature == built.pqc_signature
+
+
+def test_hybrid_extension_value_is_protobuf_not_json(native, pqc):
+    """Regression: the extension value MUST be protobuf (leading 0x08), not the
+    Go-JSON that the chain's tx decoder rejects at CheckTx (leading 0x7b '{').
+
+    Proven live on testnet 2026-07-05: the JSON tx was rejected
+    (errUnknownField "*types.PQCHybridSignature"), the proto-encoded identical
+    tx succeeded (code 0).
+    """
+    built = build_hybrid_tx(
+        account=native,
+        pqc_keypair=pqc,
+        messages=[_msg(native)],
+        fee=FEE,
+        chain_id=CHAIN_ID,
+        account_number=4,
+        sequence=2,
+        include_pqc_public_key=True,
+    )
+    # Decode the broadcast TxBody straight off the wire.
+    body = TxBody()
+    body.ParseFromString(built.tx_raw.body_bytes)
+    value = body.extension_options[0].value
+
+    # It is protobuf, not JSON.
+    assert value[0] == 0x08
+    assert value[0] != 0x7B
+
+    # Full round-trip through the generated codec returns identical fields.
+    decoded = PQCHybridSignature.FromString(value)
+    assert decoded.algorithm_id == ALGORITHM_DILITHIUM5
+    assert decoded.pqc_signature == built.pqc_signature
+    assert decoded.pqc_public_key == pqc.public_key
 
 
 def test_hybrid_classical_signature_in_txraw_over_final_body(native, pqc):

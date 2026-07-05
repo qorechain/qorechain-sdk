@@ -21,6 +21,8 @@ from typing import TypedDict
 
 from dilithium_py.ml_dsa import ML_DSA_87
 
+from .proto.qorechain.pqc.v1.hybrid_pb2 import PQCHybridSignature
+
 #: ML-DSA-87 public-key length, in bytes (FIPS 204 / core: 2592).
 ML_DSA_87_PUBLIC_KEY_LENGTH = 2592
 #: ML-DSA-87 secret-key length, in bytes (FIPS 204 / core: 4896).
@@ -87,12 +89,14 @@ def pqc_verify(public_key: bytes, message: bytes, signature: bytes) -> bool:
 
 
 class HybridSignatureExtension(TypedDict, total=False):
-    """The on-chain ``PQCHybridSignature`` TX extension, as a plain dict whose
-    keys mirror the core struct's JSON field tags exactly.
+    """The on-chain ``PQCHybridSignature`` TX extension, as a plain dict.
 
-    ``pqc_signature`` and ``pqc_public_key`` are standard base64 strings (with
-    padding) matching Go's ``[]byte`` JSON encoding; ``pqc_public_key`` is
-    omitted entirely when no public key is supplied (``omitempty``).
+    This is a convenience/inspection view of the extension's fields. It is NOT
+    the on-wire encoding: the chain reads the extension as a PROTOBUF-encoded
+    ``PQCHybridSignature`` message (see :func:`encode_hybrid_signature_extension`),
+    not JSON. ``pqc_signature`` / ``pqc_public_key`` are standard padded base64
+    strings here purely for readability; ``pqc_public_key`` is omitted entirely
+    when no public key is supplied (``omitempty``).
     """
 
     algorithm_id: int
@@ -140,3 +144,43 @@ def build_hybrid_signature_extension(
     if public_key is not None:
         ext["pqc_public_key"] = base64.b64encode(public_key).decode("ascii")
     return ext
+
+
+def encode_hybrid_signature_extension(
+    algorithm_id: int,
+    signature: bytes,
+    public_key: bytes | None = None,
+) -> bytes:
+    """Protobuf-encode the on-chain ``PQCHybridSignature`` extension value.
+
+    Returns the wire bytes that go in the ``Any.value`` of the ``TxBody``
+    extension option (``type_url`` :data:`HYBRID_SIG_TYPE_URL`). This is the
+    generated ``PQCHybridSignature`` codec's serialization (fields
+    ``algorithm_id`` = 1, ``pqc_signature`` = 2, ``pqc_public_key`` = 3), so the
+    result ALWAYS begins with byte ``0x08`` (field-1 varint tag) — never
+    ``0x7b`` (``{``).
+
+    The chain's ante handler extracts the extension by type URL and
+    protobuf-decodes it. A prior release encoded this value as Go-JSON; the
+    chain's tx decoder rejected every such tx at CheckTx because the leading
+    ``0x7b`` was misread as protobuf field 15 ``start_group``. Verified live on
+    testnet 2026-07-05: the JSON tx was rejected, the proto-encoded identical tx
+    succeeded (code 0). This matches the TypeScript SDK's ``encodeHybridExtension``.
+
+    Validation mirrors :func:`build_hybrid_signature_extension` (algorithm must be
+    a signature scheme, signature non-empty, Dilithium-5 lengths enforced).
+    ``pqc_public_key`` is left unset (empty proto field) when ``public_key`` is
+    ``None``.
+
+    :raises ValueError: On an invalid algorithm, empty signature, or wrong
+        Dilithium-5 lengths.
+    """
+    # Reuse the shared validation (raises on invalid algorithm / lengths).
+    build_hybrid_signature_extension(algorithm_id, signature, public_key)
+    message = PQCHybridSignature(
+        algorithm_id=algorithm_id,
+        pqc_signature=signature,
+        pqc_public_key=public_key if public_key is not None else b"",
+    )
+    serialized: bytes = message.SerializeToString()
+    return serialized

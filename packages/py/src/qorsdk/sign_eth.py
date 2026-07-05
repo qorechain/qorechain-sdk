@@ -24,7 +24,6 @@ natively here. Only two things change relative to the standard Native signing in
 from __future__ import annotations
 
 import hashlib
-import json
 from typing import Any
 
 from cosmpy.protos.cosmos.crypto.secp256k1.keys_pb2 import PubKey as Secp256k1PubKey
@@ -44,7 +43,7 @@ from google.protobuf.any_pb2 import Any as ProtoAny
 from .pqc import (
     ALGORITHM_DILITHIUM5,
     HYBRID_SIG_TYPE_URL,
-    build_hybrid_signature_extension,
+    encode_hybrid_signature_extension,
     pqc_sign,
 )
 from .tx import BuiltTx, FeeDict, _encode_message, _fee_to_proto
@@ -187,16 +186,15 @@ def sign_hybrid_eth(
     pqc_signed_message = _be32(len(b0)) + b0 + _be32(len(auth_info_bytes)) + auth_info_bytes
     pqc_signature = pqc_sign(account.pqc.secret_key, pqc_signed_message)
 
-    # 4. Build the extension Any and attach it to the FINAL body.
-    ext = build_hybrid_signature_extension(
+    # 4. Build the extension Any and attach it to the FINAL body. The Any.value
+    #    is the PROTOBUF encoding of the PQCHybridSignature message (starts with
+    #    0x08); the chain protobuf-decodes it and rejects a JSON value (0x7b).
+    ext_value = encode_hybrid_signature_extension(
         ALGORITHM_DILITHIUM5,
         pqc_signature,
         account.pqc.public_key if include_pqc_public_key else None,
     )
-    ext_any = ProtoAny(
-        type_url=HYBRID_SIG_TYPE_URL,
-        value=json.dumps(ext, separators=(",", ":")).encode("utf-8"),
-    )
+    ext_any = ProtoAny(type_url=HYBRID_SIG_TYPE_URL, value=ext_value)
     body_bytes_final = TxBody(
         messages=encoded,
         memo=memo,

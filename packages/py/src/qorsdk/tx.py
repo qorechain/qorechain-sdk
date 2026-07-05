@@ -30,9 +30,14 @@ extension REMOVED:
 - The ``PQCHybridSignature`` extension is then added to
   ``TxBody.extension_options`` (the CRITICAL extension-options slot) as an
   ``Any`` whose ``type_url`` is ``/qorechain.pqc.v1.PQCHybridSignature`` and
-  whose ``value`` is the UTF-8 bytes of the Go-JSON
-  ``{"algorithm_id", "pqc_signature", "pqc_public_key"?}`` (standard padded
-  base64; ``pqc_public_key`` omitted when not supplied) → final body bytes.
+  whose ``value`` is the PROTOBUF encoding of the ``PQCHybridSignature`` message
+  (generated codec; fields ``algorithm_id`` = 1, ``pqc_signature`` = 2,
+  ``pqc_public_key`` = 3; the ``pqc_public_key`` field is left empty when not
+  supplied) → final body bytes. The chain protobuf-decodes this extension, so
+  the ``value`` always starts with byte ``0x08`` (field-1 varint tag). A prior
+  release Go-JSON-encoded the ``value``; the chain's tx decoder rejected every
+  such tx at CheckTx (the leading ``0x7b`` = ``{`` was misread as protobuf field
+  15 ``start_group``). Verified live on testnet 2026-07-05.
 - The CLASSICAL secp256k1 SIGN_MODE_DIRECT signature is computed over
   ``SignDoc(final_body, A, chain_id, account_number)`` and goes in
   ``TxRaw.signatures`` (outside the body). The classical signature never signs
@@ -53,7 +58,6 @@ with non-canonical field ordering must ensure their encoding is canonical.
 from __future__ import annotations
 
 import base64
-import json
 from dataclasses import dataclass
 from typing import Any as TypingAny
 from typing import Literal
@@ -80,7 +84,7 @@ from .pqc import (
     ALGORITHM_DILITHIUM5,
     HYBRID_SIG_TYPE_URL,
     PqcKeypair,
-    build_hybrid_signature_extension,
+    encode_hybrid_signature_extension,
     pqc_sign,
 )
 
@@ -349,17 +353,16 @@ def build_hybrid_tx(
     pqc_signature = pqc_sign(pqc_keypair.secret_key, pqc_signed_message)
 
     # 4. Build the PQC extension Any and attach it to the FINAL body as a
-    #    CRITICAL extension option. The Any.value is the Go-JSON of the extension
-    #    (standard padded base64; pqc_public_key omitted unless requested).
-    ext = build_hybrid_signature_extension(
+    #    CRITICAL extension option. The Any.value is the PROTOBUF encoding of the
+    #    PQCHybridSignature message (starts with 0x08; pqc_public_key omitted
+    #    unless requested). The chain protobuf-decodes this — a JSON value (0x7b)
+    #    is rejected at CheckTx.
+    ext_value = encode_hybrid_signature_extension(
         ALGORITHM_DILITHIUM5,
         pqc_signature,
         pqc_keypair.public_key if include_pqc_public_key else None,
     )
-    ext_any = ProtoAny(
-        type_url=HYBRID_SIG_TYPE_URL,
-        value=json.dumps(ext, separators=(",", ":")).encode("utf-8"),
-    )
+    ext_any = ProtoAny(type_url=HYBRID_SIG_TYPE_URL, value=ext_value)
     final_body = TxBody(
         messages=encoded_messages,
         memo=memo,

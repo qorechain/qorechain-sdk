@@ -3,6 +3,7 @@ package io.github.qorechain;
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import com.google.protobuf.ByteString;
@@ -106,9 +107,44 @@ class HybridTxTest {
                 cosmos.tx.v1beta1.TxOuterClass.TxBody.parseFrom(built.txRaw.getBodyBytes());
         com.google.protobuf.Any ext = body.getExtensionOptions(0);
         assertEquals(Pqc.HYBRID_SIG_TYPE_URL, ext.getTypeUrl());
-        // The extension value is Go-JSON, not protobuf.
-        String json = ext.getValue().toStringUtf8();
-        assertTrue(json.startsWith("{\"algorithm_id\":1"));
+        // The extension value is PROTOBUF, not Go-JSON: it begins with the field-1
+        // varint tag 0x08, NEVER the JSON '{' byte 0x7b (which the chain's tx
+        // decoder misreads as field 15 start_group and rejects at CheckTx).
+        com.google.protobuf.ByteString value = ext.getValue();
+        assertEquals((byte) 0x08, value.byteAt(0));
+        assertNotEquals((byte) 0x7b, value.byteAt(0));
+    }
+
+    /**
+     * Consensus-level regression: the PQC extension {@code Any.value} MUST be the
+     * protobuf encoding of {@code PQCHybridSignature} (leading 0x08), and must
+     * round-trip back to the same algorithmId / pqcSignature / pqcPublicKey. A
+     * JSON-encoded value (leading 0x7b) is rejected by the chain at CheckTx.
+     */
+    @Test
+    void extensionValueIsProtobufAndRoundTrips() throws Exception {
+        HybridTx.Options opts = baseOptions();
+        opts.includePqcPublicKey = true; // exercise the optional pqc_public_key field too.
+        HybridTx.Built built = HybridTx.buildHybridTx(opts);
+
+        cosmos.tx.v1beta1.TxOuterClass.TxBody body =
+                cosmos.tx.v1beta1.TxOuterClass.TxBody.parseFrom(built.txRaw.getBodyBytes());
+        com.google.protobuf.ByteString value = body.getExtensionOptions(0).getValue();
+
+        // Leading byte proves protobuf, not JSON.
+        assertEquals((byte) 0x08, value.byteAt(0));
+        assertNotEquals((byte) 0x7b, value.byteAt(0));
+
+        // Round-trip: decode via the generated codec and compare every field.
+        qorechain.pqc.v1.Hybrid.PQCHybridSignature decoded =
+                qorechain.pqc.v1.Hybrid.PQCHybridSignature.parseFrom(value);
+        assertEquals(1, decoded.getAlgorithmId());
+        assertArrayEquals(built.pqcSignature, decoded.getPqcSignature().toByteArray());
+
+        byte[] seed = new byte[32];
+        Arrays.fill(seed, (byte) 9);
+        PqcKeypair pqc = Pqc.generatePqcKeypair(seed);
+        assertArrayEquals(pqc.publicKey, decoded.getPqcPublicKey().toByteArray());
     }
 
     @Test

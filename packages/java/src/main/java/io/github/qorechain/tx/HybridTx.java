@@ -9,7 +9,6 @@ import io.github.qorechain.pqc.HybridSignatureExtension;
 import io.github.qorechain.pqc.Pqc;
 import io.github.qorechain.pqc.PqcAlgorithm;
 import io.github.qorechain.pqc.PqcKeypair;
-import java.nio.charset.StandardCharsets;
 import java.util.List;
 
 /**
@@ -32,9 +31,10 @@ import java.util.List;
  *
  * No hashing, no domain prefix. The extension is then attached to
  * {@code TxBody.extension_options} (CRITICAL) as an {@code Any} with
- * {@code type_url = /qorechain.pqc.v1.PQCHybridSignature} and value = UTF-8
- * Go-JSON. The CLASSICAL signature is SIGN_MODE_DIRECT over the FINAL body (the
- * one WITH the extension) + authInfo + chainId + accountNumber, in
+ * {@code type_url = /qorechain.pqc.v1.PQCHybridSignature} and value = the
+ * PROTOBUF encoding of the {@code PQCHybridSignature} message (leading byte
+ * {@code 0x08}). The CLASSICAL signature is SIGN_MODE_DIRECT over the FINAL body
+ * (the one WITH the extension) + authInfo + chainId + accountNumber, in
  * {@code TxRaw.signatures}.
  */
 public final class HybridTx {
@@ -196,11 +196,29 @@ public final class HybridTx {
                 .toByteArray();
     }
 
-    /** Encode the {@code PQCHybridSignature} extension as a Native {@code Any} (Go-JSON value). */
+    /**
+     * Encode the {@code PQCHybridSignature} extension as a protobuf {@code Any}.
+     *
+     * <p>The {@code Any.value} is the PROTOBUF encoding of the generated
+     * {@code qorechain.pqc.v1.Hybrid.PQCHybridSignature} message (fields
+     * {@code algorithm_id} = 1, {@code pqc_signature} = 2, {@code pqc_public_key} = 3),
+     * so the encoded value always begins with byte {@code 0x08} (the field-1 varint
+     * tag), NEVER the JSON open-brace byte {@code 0x7b}. The chain's ante handler
+     * protobuf-decodes this extension; a prior release JSON-encoded the value and the
+     * tx decoder rejected every such tx at CheckTx (the leading {@code 0x7b} was
+     * misread as field 15 {@code start_group}). Verified live on testnet 2026-07-05.
+     */
     public static Any encodeHybridExtension(HybridSignatureExtension ext) {
+        qorechain.pqc.v1.Hybrid.PQCHybridSignature.Builder msg =
+                qorechain.pqc.v1.Hybrid.PQCHybridSignature.newBuilder()
+                        .setAlgorithmId(ext.algorithmId)
+                        .setPqcSignature(ByteString.copyFrom(ext.pqcSignature));
+        if (ext.pqcPublicKey != null && ext.pqcPublicKey.length > 0) {
+            msg.setPqcPublicKey(ByteString.copyFrom(ext.pqcPublicKey));
+        }
         return Any.newBuilder()
                 .setTypeUrl(Pqc.HYBRID_SIG_TYPE_URL)
-                .setValue(ByteString.copyFrom(ext.toJson().getBytes(StandardCharsets.UTF_8)))
+                .setValue(msg.build().toByteString())
                 .build();
     }
 

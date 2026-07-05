@@ -24,9 +24,11 @@
  *    ML-DSA-87, empty context) — 4627 bytes for Dilithium-5.
  *  - The `PQCHybridSignature` extension is then added to
  *    `TxBody.extension_options` (CRITICAL extension options) as an `Any` with
- *    `type_url = "/qorechain.pqc.v1.PQCHybridSignature"` and `value` = UTF-8
- *    bytes of the Go-JSON `{ "algorithm_id", "pqc_signature", "pqc_public_key"? }`
- *    (standard padded base64; `pqc_public_key` omitted when not provided).
+ *    `type_url = "/qorechain.pqc.v1.PQCHybridSignature"` and `value` = the
+ *    PROTOBUF encoding of the `PQCHybridSignature` message (fields
+ *    `algorithm_id` = 1, `pqc_signature` = 2, `pqc_public_key` = 3; the encoded
+ *    value begins with `0x08`). The chain protobuf-decodes it — a JSON value is
+ *    rejected by the tx decoder.
  *  - The CLASSICAL signature is computed normally (SIGN_MODE_DIRECT) over the
  *    FINAL body (the one WITH the PQC extension) + authInfo + chainId +
  *    accountNumber, and goes in `TxRaw.signatures` (outside the body). There is

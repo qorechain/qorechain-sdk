@@ -3,6 +3,7 @@ package io.github.qorechain;
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -10,11 +11,15 @@ import io.github.qorechain.pqc.HybridSignatureExtension;
 import io.github.qorechain.pqc.Pqc;
 import io.github.qorechain.pqc.PqcAlgorithm;
 import io.github.qorechain.pqc.PqcKeypair;
+import io.github.qorechain.tx.HybridTx;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import org.junit.jupiter.api.Test;
 
-/** ML-DSA-87 sizes, sign/verify/tamper, deterministic keygen, and extension JSON. */
+/**
+ * ML-DSA-87 sizes, sign/verify/tamper, deterministic keygen, and protobuf encoding
+ * of the hybrid-signature extension.
+ */
 class PqcTest {
 
     @Test
@@ -60,25 +65,35 @@ class PqcTest {
     }
 
     @Test
-    void extensionJsonOmitsPublicKeyWhenAbsent() {
+    void extensionProtoOmitsPublicKeyWhenAbsent() throws Exception {
         PqcKeypair kp = Pqc.generatePqcKeypair();
         byte[] sig = Pqc.pqcSign(kp.secretKey, "m".getBytes(StandardCharsets.UTF_8));
         HybridSignatureExtension ext =
                 Pqc.buildHybridSignatureExtension(PqcAlgorithm.ALGORITHM_DILITHIUM5, sig, null);
-        String json = ext.toJson();
-        assertTrue(json.contains("\"algorithm_id\":1"));
-        assertTrue(json.contains("\"pqc_signature\":\""));
-        assertFalse(json.contains("pqc_public_key"));
+        com.google.protobuf.Any any = HybridTx.encodeHybridExtension(ext);
+        // Protobuf-encoded: leading field-1 varint tag 0x08, NEVER JSON 0x7b ('{').
+        assertEquals((byte) 0x08, any.getValue().byteAt(0));
+        assertNotEquals((byte) 0x7b, any.getValue().byteAt(0));
+        qorechain.pqc.v1.Hybrid.PQCHybridSignature decoded =
+                qorechain.pqc.v1.Hybrid.PQCHybridSignature.parseFrom(any.getValue());
+        assertEquals(1, decoded.getAlgorithmId());
+        assertArrayEquals(sig, decoded.getPqcSignature().toByteArray());
+        assertEquals(0, decoded.getPqcPublicKey().size());
     }
 
     @Test
-    void extensionJsonIncludesPublicKeyWhenPresent() {
+    void extensionProtoIncludesPublicKeyWhenPresent() throws Exception {
         PqcKeypair kp = Pqc.generatePqcKeypair();
         byte[] sig = Pqc.pqcSign(kp.secretKey, "m".getBytes(StandardCharsets.UTF_8));
         HybridSignatureExtension ext =
                 Pqc.buildHybridSignatureExtension(
                         PqcAlgorithm.ALGORITHM_DILITHIUM5, sig, kp.publicKey);
-        assertTrue(ext.toJson().contains("\"pqc_public_key\":\""));
+        com.google.protobuf.Any any = HybridTx.encodeHybridExtension(ext);
+        assertEquals((byte) 0x08, any.getValue().byteAt(0));
+        qorechain.pqc.v1.Hybrid.PQCHybridSignature decoded =
+                qorechain.pqc.v1.Hybrid.PQCHybridSignature.parseFrom(any.getValue());
+        assertEquals(1, decoded.getAlgorithmId());
+        assertArrayEquals(kp.publicKey, decoded.getPqcPublicKey().toByteArray());
         assertEquals(1, ext.algorithmId);
     }
 

@@ -24,9 +24,13 @@
 //!   - The `PQCHybridSignature` extension is then added to
 //!     `TxBody.extension_options` (the CRITICAL extension-options slot) as an
 //!     `Any` whose `type_url` is `"/qorechain.pqc.v1.PQCHybridSignature"` and
-//!     whose `value` is the UTF-8 bytes of the JSON
-//!     `{"algorithm_id","pqc_signature","pqc_public_key"?}` (standard padded
-//!     base64; `pqc_public_key` omitted when not supplied) → the final body bytes.
+//!     whose `value` is the PROTOBUF encoding of the `PQCHybridSignature` message
+//!     (fields `algorithm_id` = 1, `pqc_signature` = 2, `pqc_public_key` = 3;
+//!     `pqc_public_key` omitted when not supplied) → the final body bytes. The
+//!     chain protobuf-decodes this extension, so the value always begins with
+//!     `0x08` (the field-1 varint tag), NOT `0x7b` (`{`) — a JSON value was
+//!     rejected by the chain's tx decoder at CheckTx (verified on testnet
+//!     2026-07-05).
 //!   - The CLASSICAL secp256k1 `SIGN_MODE_DIRECT` signature is computed over
 //!     `SignDoc(finalBody, A, chainId, accountNumber)` and goes in
 //!     `TxRaw.signatures` (outside the body). The classical signature never signs
@@ -76,7 +80,6 @@ use cosmrs::proto::cosmos::tx::v1beta1::{
 };
 use cosmrs::proto::traits::Message as ProstMessage;
 use cosmrs::Any;
-use serde::Serialize;
 use serde_json::Value;
 
 /// The `/cosmos.bank.v1beta1.MsgSend` type URL.
@@ -408,15 +411,17 @@ pub fn build_hybrid_tx(params: BuildHybridTxParams) -> Result<BuiltTx> {
     let pqc_signed_message = frame_sign_bytes(&b0, &auth_info_bytes);
     let pqc_signature = pqc_sign(&params.pqc_secret_key, &pqc_signed_message)?;
 
-    // 4. Build the PQC extension Any (JSON value) and attach it to the FINAL body
-    //    as a CRITICAL extension option.
+    // 4. Build the PQC extension Any (PROTOBUF value) and attach it to the FINAL
+    //    body as a CRITICAL extension option. The chain's ante handler
+    //    protobuf-decodes the extension, so the Any.value is the encoded
+    //    PQCHybridSignature message (first byte 0x08), NOT JSON.
     let public_key: Option<&[u8]> = if params.include_pqc_public_key {
         Some(params.pqc_public_key.as_slice())
     } else {
         None
     };
     let ext = build_hybrid_signature_extension(ALGORITHM_DILITHIUM5, &pqc_signature, public_key)?;
-    let ext_value = to_canonical_json(&ext)?;
+    let ext_value = ext.encode_to_vec();
     let ext_any = Any {
         type_url: HYBRID_SIG_TYPE_URL.to_string(),
         value: ext_value,
@@ -499,13 +504,6 @@ fn frame_sign_bytes(b0: &[u8], a: &[u8]) -> Vec<u8> {
     out.extend_from_slice(&be32(a.len() as u32));
     out.extend_from_slice(a);
     out
-}
-
-/// Serializes the hybrid extension to canonical JSON: field order
-/// `algorithm_id`, `pqc_signature`, then `pqc_public_key` (omitted when absent),
-/// with no extra whitespace — matching the other SDKs' wire bytes.
-fn to_canonical_json<T: Serialize>(value: &T) -> Result<Vec<u8>> {
-    serde_json::to_vec(value).map_err(|e| Error::Pqc(format!("serialize hybrid extension: {e}")))
 }
 
 fn to_proto_coins(coins: &[Coin]) -> Result<Vec<ProtoCoin>> {

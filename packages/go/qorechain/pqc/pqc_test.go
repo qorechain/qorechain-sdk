@@ -2,9 +2,9 @@ package pqc
 
 import (
 	"bytes"
-	"encoding/base64"
-	"encoding/json"
 	"testing"
+
+	pqcv1 "github.com/qorechain/qorechain-sdk/packages/go/qorechain/proto/qorechain/pqc/v1"
 )
 
 func TestKeypairSizes(t *testing.T) {
@@ -79,85 +79,81 @@ func TestAlgorithmHelpers(t *testing.T) {
 	}
 }
 
-func TestBuildHybridSignatureExtensionJSON(t *testing.T) {
+func TestEncodeHybridSignatureExtensionProto(t *testing.T) {
 	kp, _ := GeneratePQCKeypair()
 	sig, _ := PQCSign(kp.SecretKey, []byte("m"))
 
-	ext, err := BuildHybridSignatureExtension(AlgorithmDilithium5, sig, kp.PublicKey)
+	value, err := EncodeHybridSignatureExtension(AlgorithmDilithium5, sig, kp.PublicKey)
 	if err != nil {
 		t.Fatal(err)
-	}
-	raw, err := json.Marshal(ext)
-	if err != nil {
-		t.Fatal(err)
-	}
-	var decoded map[string]json.RawMessage
-	if err := json.Unmarshal(raw, &decoded); err != nil {
-		t.Fatal(err)
-	}
-	if _, ok := decoded["algorithm_id"]; !ok {
-		t.Error("missing algorithm_id field")
-	}
-	if string(decoded["algorithm_id"]) != "1" {
-		t.Errorf("algorithm_id = %s", decoded["algorithm_id"])
 	}
 
-	// pqc_signature must be standard base64 decoding back to sig.
-	var sigB64 string
-	if err := json.Unmarshal(decoded["pqc_signature"], &sigB64); err != nil {
-		t.Fatal(err)
+	// CONSENSUS-CRITICAL: the extension value must be protobuf, not Go-JSON. Its
+	// first byte is the field-1 varint tag 0x08, NEVER '{' (0x7b) — the chain's
+	// tx decoder rejects a 0x7b-leading value (misread as field 15 start_group).
+	if len(value) == 0 {
+		t.Fatal("encoded extension value is empty")
 	}
-	gotSig, err := base64.StdEncoding.DecodeString(sigB64)
-	if err != nil {
-		t.Fatalf("pqc_signature is not std base64: %v", err)
+	if value[0] != 0x08 {
+		t.Errorf("extension value[0] = 0x%02x, want 0x08 (proto field-1 tag)", value[0])
 	}
-	if !bytes.Equal(gotSig, sig) {
-		t.Error("pqc_signature did not round-trip")
+	if value[0] == 0x7b {
+		t.Error("extension value is Go-JSON ('{' = 0x7b); it must be protobuf")
 	}
 
-	var pkB64 string
-	if err := json.Unmarshal(decoded["pqc_public_key"], &pkB64); err != nil {
-		t.Fatal(err)
+	// Round-trip: unmarshal into the generated PQCHybridSignature message.
+	var decoded pqcv1.PQCHybridSignature
+	if err := decoded.Unmarshal(value); err != nil {
+		t.Fatalf("proto unmarshal failed: %v", err)
 	}
-	gotPk, _ := base64.StdEncoding.DecodeString(pkB64)
-	if !bytes.Equal(gotPk, kp.PublicKey) {
-		t.Error("pqc_public_key did not round-trip")
+	if int(decoded.AlgorithmID) != AlgorithmDilithium5 {
+		t.Errorf("AlgorithmID = %d, want %d", decoded.AlgorithmID, AlgorithmDilithium5)
+	}
+	if !bytes.Equal(decoded.PQCSignature, sig) {
+		t.Error("PqcSignature did not round-trip")
+	}
+	if !bytes.Equal(decoded.PQCPublicKey, kp.PublicKey) {
+		t.Error("PqcPublicKey did not round-trip")
 	}
 }
 
-func TestBuildHybridSignatureExtensionOmitsPublicKey(t *testing.T) {
+func TestEncodeHybridSignatureExtensionOmitsPublicKey(t *testing.T) {
 	kp, _ := GeneratePQCKeypair()
 	sig, _ := PQCSign(kp.SecretKey, []byte("m"))
-	ext, err := BuildHybridSignatureExtension(AlgorithmDilithium5, sig, nil)
+	value, err := EncodeHybridSignatureExtension(AlgorithmDilithium5, sig, nil)
 	if err != nil {
 		t.Fatal(err)
 	}
-	raw, _ := json.Marshal(ext)
-	var decoded map[string]json.RawMessage
-	_ = json.Unmarshal(raw, &decoded)
-	if _, ok := decoded["pqc_public_key"]; ok {
-		t.Error("pqc_public_key should be omitted when public key is nil")
+	if len(value) == 0 || value[0] != 0x08 {
+		t.Fatalf("extension value must be proto-encoded starting with 0x08")
+	}
+	var decoded pqcv1.PQCHybridSignature
+	if err := decoded.Unmarshal(value); err != nil {
+		t.Fatalf("proto unmarshal failed: %v", err)
+	}
+	if len(decoded.PQCPublicKey) != 0 {
+		t.Error("PqcPublicKey should be empty when public key is nil")
 	}
 }
 
-func TestBuildHybridSignatureExtensionValidation(t *testing.T) {
+func TestEncodeHybridSignatureExtensionValidation(t *testing.T) {
 	kp, _ := GeneratePQCKeypair()
 	sig, _ := PQCSign(kp.SecretKey, []byte("m"))
 
 	// Non-signature algorithm.
-	if _, err := BuildHybridSignatureExtension(AlgorithmMLKEM1024, sig, nil); err == nil {
+	if _, err := EncodeHybridSignatureExtension(AlgorithmMLKEM1024, sig, nil); err == nil {
 		t.Error("expected error for non-signature algorithm")
 	}
 	// Empty signature.
-	if _, err := BuildHybridSignatureExtension(AlgorithmDilithium5, nil, nil); err == nil {
+	if _, err := EncodeHybridSignatureExtension(AlgorithmDilithium5, nil, nil); err == nil {
 		t.Error("expected error for empty signature")
 	}
 	// Wrong signature length.
-	if _, err := BuildHybridSignatureExtension(AlgorithmDilithium5, sig[:10], nil); err == nil {
+	if _, err := EncodeHybridSignatureExtension(AlgorithmDilithium5, sig[:10], nil); err == nil {
 		t.Error("expected error for wrong signature length")
 	}
 	// Wrong public key length.
-	if _, err := BuildHybridSignatureExtension(AlgorithmDilithium5, sig, []byte{1, 2, 3}); err == nil {
+	if _, err := EncodeHybridSignatureExtension(AlgorithmDilithium5, sig, []byte{1, 2, 3}); err == nil {
 		t.Error("expected error for wrong public key length")
 	}
 }

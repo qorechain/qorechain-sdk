@@ -26,6 +26,7 @@ from qorsdk import (
     sign_hybrid_eth,
     unified_account_from_seed,
 )
+from qorsdk.proto.qorechain.pqc.v1.hybrid_pb2 import PQCHybridSignature
 from qorsdk.utils.hash import keccak256
 
 CHAIN_ID = "qorechain-vladi"
@@ -121,6 +122,15 @@ def test_hybrid_signature_verifies_and_body_carries_extension():
     body.ParseFromString(built.tx_raw.body_bytes)
     assert len(body.extension_options) == 1
     assert len(built.pqc_signature) == 4627  # ML-DSA-87
+
+    # The extension value is PROTOBUF (leading 0x08), not the Go-JSON (0x7b)
+    # that the chain rejects at CheckTx. Round-trips through the generated codec.
+    ext_value = body.extension_options[0].value
+    assert ext_value[0] == 0x08
+    assert ext_value[0] != 0x7B
+    decoded = PQCHybridSignature.FromString(ext_value)
+    assert decoded.algorithm_id == 1  # Dilithium-5
+    assert decoded.pqc_signature == built.pqc_signature
 
 
 def test_hybrid_b0_frame_excludes_extension():

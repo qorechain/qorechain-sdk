@@ -18,6 +18,8 @@ import (
 	"fmt"
 
 	"github.com/cloudflare/circl/sign/mldsa/mldsa87"
+
+	pqcv1 "github.com/qorechain/qorechain-sdk/packages/go/qorechain/proto/qorechain/pqc/v1"
 )
 
 // ML-DSA-87 key and signature lengths, in bytes (FIPS 204 / core).
@@ -114,44 +116,42 @@ func PQCVerify(publicKey, message, signature []byte) bool {
 	return mldsa87.Verify(&pub, message, nil, signature)
 }
 
-// HybridSignatureExtension is the on-chain PQCHybridSignature TX extension. Its
-// JSON field tags mirror the core struct exactly. PqcSignature and
-// PqcPublicKey marshal to standard (padded) base64 via Go's []byte JSON
-// encoding; PqcPublicKey is omitted entirely when no public key is supplied.
-type HybridSignatureExtension struct {
-	AlgorithmID  int    `json:"algorithm_id"`
-	PqcSignature []byte `json:"pqc_signature"`
-	PqcPublicKey []byte `json:"pqc_public_key,omitempty"`
-}
-
-// BuildHybridSignatureExtension builds the on-chain PQCHybridSignature
-// extension object.
+// EncodeHybridSignatureExtension builds the on-chain PQCHybridSignature TX
+// extension and returns its PROTOBUF encoding, ready to place in
+// codectypes.Any.Value with TypeUrl HybridSigTypeURL.
+//
+// The value is the gogoproto Marshal() of the generated PQCHybridSignature
+// message (fields algorithm_id=1, pqc_signature=2, pqc_public_key=3), so it
+// ALWAYS begins with byte 0x08 (the field-1 varint tag), never 0x7b. The chain's
+// ante handler protobuf-decodes this extension; a Go-JSON value (leading 0x7b =
+// '{') is rejected by the tx decoder at CheckTx. Verified live on testnet
+// 2026-07-05.
 //
 // Validation mirrors the core PQCHybridSignature.Validate(): the algorithm must
 // be a signature scheme, the signature must be non-empty, and for Dilithium-5
-// the signature/public-key lengths are enforced. PqcPublicKey is omitted when
-// publicKey is nil.
-func BuildHybridSignatureExtension(algorithmID int, signature, publicKey []byte) (HybridSignatureExtension, error) {
+// the signature/public-key lengths are enforced. The public key is omitted from
+// the message (proto field left empty) when publicKey is nil.
+func EncodeHybridSignatureExtension(algorithmID int, signature, publicKey []byte) ([]byte, error) {
 	if !IsSignatureAlgorithm(algorithmID) {
-		return HybridSignatureExtension{}, fmt.Errorf("algorithm %s is not a PQC signature algorithm", AlgorithmName(algorithmID))
+		return nil, fmt.Errorf("algorithm %s is not a PQC signature algorithm", AlgorithmName(algorithmID))
 	}
 	if len(signature) == 0 {
-		return HybridSignatureExtension{}, errors.New("PQC signature cannot be empty")
+		return nil, errors.New("PQC signature cannot be empty")
 	}
 	if algorithmID == AlgorithmDilithium5 {
 		if len(signature) != MLDSA87SignatureLength {
-			return HybridSignatureExtension{}, fmt.Errorf("dilithium5 signature must be %d bytes, got %d", MLDSA87SignatureLength, len(signature))
+			return nil, fmt.Errorf("dilithium5 signature must be %d bytes, got %d", MLDSA87SignatureLength, len(signature))
 		}
 		if publicKey != nil && len(publicKey) != MLDSA87PublicKeyLength {
-			return HybridSignatureExtension{}, fmt.Errorf("dilithium5 public key must be %d bytes, got %d", MLDSA87PublicKeyLength, len(publicKey))
+			return nil, fmt.Errorf("dilithium5 public key must be %d bytes, got %d", MLDSA87PublicKeyLength, len(publicKey))
 		}
 	}
-	ext := HybridSignatureExtension{
-		AlgorithmID:  algorithmID,
-		PqcSignature: signature,
+	msg := &pqcv1.PQCHybridSignature{
+		AlgorithmID:  pqcv1.AlgorithmID(algorithmID),
+		PQCSignature: signature,
 	}
 	if publicKey != nil {
-		ext.PqcPublicKey = publicKey
+		msg.PQCPublicKey = publicKey
 	}
-	return ext, nil
+	return msg.Marshal()
 }

@@ -149,9 +149,10 @@ pub fn sign_hybrid_eth(
     } else {
         None
     };
+    // The chain protobuf-decodes the extension, so the Any.value is the encoded
+    // PQCHybridSignature message (first byte 0x08), NOT JSON.
     let ext = build_hybrid_signature_extension(ALGORITHM_DILITHIUM5, &pqc_signature, public_key)?;
-    let ext_value = serde_json::to_vec(&ext)
-        .map_err(|e| Error::Pqc(format!("serialize hybrid extension: {e}")))?;
+    let ext_value = ext.encode_to_vec();
     let ext_any = Any {
         type_url: HYBRID_SIG_TYPE_URL.to_string(),
         value: ext_value,
@@ -387,6 +388,18 @@ mod tests {
         assert!(!built.pqc_signature.is_empty());
         let final_body = TxBody::decode(built.body_bytes.as_slice()).unwrap();
         assert_eq!(final_body.extension_options.len(), 1);
+        // The extension Any.value is PROTOBUF (first byte 0x08), NOT JSON (0x7b),
+        // and round-trips through the generated PQCHybridSignature message.
+        let ext_value = &final_body.extension_options[0].value;
+        assert_eq!(ext_value[0], 0x08);
+        assert_ne!(ext_value[0], 0x7b);
+        let ext_msg = crate::proto::qorechain::pqc::v1::PqcHybridSignature::decode(
+            ext_value.as_slice(),
+        )
+        .unwrap();
+        assert_eq!(ext_msg.algorithm_id, ALGORITHM_DILITHIUM5);
+        assert_eq!(ext_msg.pqc_signature, built.pqc_signature);
+        assert!(ext_msg.pqc_public_key.is_empty());
         // Reconstruct B0 from the frame and confirm it has NO extension.
         let b0_len =
             u32::from_be_bytes(built.pqc_signed_message[0..4].try_into().unwrap()) as usize;

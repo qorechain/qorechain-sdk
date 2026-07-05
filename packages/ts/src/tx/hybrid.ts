@@ -10,13 +10,15 @@
  * / {@link signAndBroadcastHybrid}) — prefer those for end-to-end signing. This
  * module documents the on-wire encoding the chain reads:
  *
- *  - `PQCHybridSignature` struct, JSON field tags (`algorithm_id`,
- *    `pqc_signature`, `pqc_public_key,omitempty`), and type URL
+ *  - `PQCHybridSignature` protobuf message (fields `algorithm_id` = 1,
+ *    `pqc_signature` = 2, `pqc_public_key` = 3) and type URL
  *    `/qorechain.pqc.v1.PQCHybridSignature`.
- *  - The ante handler extracts the extension by type URL and JSON-decodes it, so
- *    the `Any.value` carries the struct's Go-JSON encoding (Go marshals
- *    `[]byte` as standard padded base64 strings), NOT a protobuf message. This
- *    module encodes accordingly (see {@link toGoJson}).
+ *  - The ante handler extracts the extension by type URL and PROTOBUF-decodes it,
+ *    so the `Any.value` carries the message's protobuf encoding (via the
+ *    generated `PQCHybridSignature` codec), NOT JSON. Its first byte is `0x08`
+ *    (field-1 varint tag). A prior release JSON-encoded this value; the chain's
+ *    tx decoder rejected every such tx at CheckTx (the leading `0x7b` = `{` was
+ *    misread as field 15 `start_group`). Verified live on testnet 2026-07-05.
  *  - PLACEMENT: the extension is a CRITICAL extension option — it goes in
  *    `TxBody.extension_options`. {@link buildHybridTx} always uses this slot.
  *    This module additionally exposes `non_critical_extension_options` via
@@ -39,6 +41,7 @@ import {
   HYBRID_SIG_TYPE_URL,
   type PQCHybridSignature,
 } from "../accounts/pqc";
+import { PQCHybridSignature as PQCHybridSignatureProto } from "../codegen/qorechain/pqc/v1/hybrid";
 
 /** Where the hybrid-signature extension is placed within the `TxBody`. */
 export type HybridPlacement =
@@ -57,47 +60,24 @@ export interface AttachHybridOptions {
 }
 
 /**
- * Serialize a {@link PQCHybridSignature} the way Go's `encoding/json` would
- * marshal the core struct, so the node's JSON-decoding ante handler can read it.
- *
- * Go marshals `[]byte` fields as standard (padded) base64 strings, and omits
- * `pqc_public_key` entirely when empty (`omitempty`). The numeric `algorithm_id`
- * is emitted as a JSON number.
- */
-function toGoJson(ext: PQCHybridSignature): string {
-  const obj: {
-    algorithm_id: number;
-    pqc_signature: string;
-    pqc_public_key?: string;
-  } = {
-    algorithm_id: ext.algorithm_id,
-    pqc_signature: base64(ext.pqc_signature),
-  };
-  if (ext.pqc_public_key !== undefined && ext.pqc_public_key.length > 0) {
-    obj.pqc_public_key = base64(ext.pqc_public_key);
-  }
-  return JSON.stringify(obj);
-}
-
-/** Standard base64 (padded) encoding of bytes, matching Go's `[]byte` marshal. */
-function base64(bytes: Uint8Array): string {
-  let binary = "";
-  for (const b of bytes) binary += String.fromCharCode(b);
-  // btoa is available in Node 16+ and all SDK target runtimes.
-  return btoa(binary);
-}
-
-/**
  * Encode a {@link PQCHybridSignature} into a protobuf `Any` for use as a
  * `TxBody` extension option.
  *
  * The `Any.typeUrl` is the core {@link HYBRID_SIG_TYPE_URL}; the `Any.value` is
- * the UTF-8 bytes of the struct's Go-JSON encoding (see {@link toGoJson} and the
- * module header — the chain reads this extension by type URL + JSON decoding,
- * not protobuf).
+ * the PROTOBUF encoding of the `PQCHybridSignature` message (via the generated
+ * codec — fields `algorithmId` = 1, `pqcSignature` = 2, `pqcPublicKey` = 3), so
+ * the encoded value always begins with `0x08` (field-1 varint tag). The chain's
+ * ante handler protobuf-decodes this extension; a JSON-encoded value is rejected
+ * by the tx decoder at CheckTx.
  */
 export function encodeHybridExtension(ext: PQCHybridSignature): Any {
-  const value = new TextEncoder().encode(toGoJson(ext));
+  const value = PQCHybridSignatureProto.encode(
+    PQCHybridSignatureProto.fromPartial({
+      algorithmId: ext.algorithm_id,
+      pqcSignature: ext.pqc_signature,
+      pqcPublicKey: ext.pqc_public_key ?? new Uint8Array(0),
+    }),
+  ).finish();
   return Any.fromPartial({ typeUrl: HYBRID_SIG_TYPE_URL, value });
 }
 

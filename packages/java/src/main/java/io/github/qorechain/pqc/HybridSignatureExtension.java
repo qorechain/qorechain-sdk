@@ -1,21 +1,20 @@
 package io.github.qorechain.pqc;
 
-import java.util.Base64;
-
 /**
  * The on-chain {@code PQCHybridSignature} TX extension.
  *
- * <p>Serializes to the exact Go-JSON the chain's ante handler decodes:
+ * <p>A plain value object holding the extension's three fields. It is serialized
+ * onto the wire as PROTOBUF (via the generated {@code qorechain.pqc.v1.Hybrid.PQCHybridSignature}
+ * codec — fields {@code algorithm_id} = 1, {@code pqc_signature} = 2,
+ * {@code pqc_public_key} = 3) by
+ * {@link io.github.qorechain.tx.HybridTx#encodeHybridExtension}; the encoded
+ * {@code Any.value} always begins with byte {@code 0x08}. The chain's ante handler
+ * protobuf-decodes this extension. (A prior release JSON-encoded the value, which
+ * the chain's tx decoder rejected at CheckTx — the leading JSON open-brace byte
+ * {@code 0x7b} was misread as protobuf field 15 {@code start_group}.)
  *
- * <pre>{@code
- * { "algorithm_id": 1,
- *   "pqc_signature": "<std-base64>",
- *   "pqc_public_key"?: "<std-base64>" }
- * }</pre>
- *
- * Go marshals {@code []byte} fields as standard (padded) base64 strings, emits
- * {@code algorithm_id} as a JSON number, and omits {@code pqc_public_key}
- * entirely when empty ({@code omitempty}).
+ * <p>{@code pqcPublicKey} is optional (auto-registration on first use) and is
+ * omitted from the protobuf message when null or empty.
  */
 public final class HybridSignatureExtension {
 
@@ -28,21 +27,5 @@ public final class HybridSignatureExtension {
         this.algorithmId = algorithmId;
         this.pqcSignature = pqcSignature;
         this.pqcPublicKey = pqcPublicKey;
-    }
-
-    /** Serialize to the Go-JSON the chain reads. Field order matches Go's struct order. */
-    public String toJson() {
-        StringBuilder sb = new StringBuilder();
-        sb.append("{\"algorithm_id\":").append(algorithmId);
-        sb.append(",\"pqc_signature\":\"").append(base64(pqcSignature)).append('"');
-        if (pqcPublicKey != null && pqcPublicKey.length > 0) {
-            sb.append(",\"pqc_public_key\":\"").append(base64(pqcPublicKey)).append('"');
-        }
-        sb.append('}');
-        return sb.toString();
-    }
-
-    private static String base64(byte[] bytes) {
-        return Base64.getEncoder().encodeToString(bytes);
     }
 }
