@@ -108,7 +108,7 @@ kp = generate_pqc_keypair()           # public 2592 B, secret 4896 B
 sig = pqc_sign(kp.secret_key, b"msg") # signature 4627 B
 assert pqc_verify(kp.public_key, b"msg", sig)
 
-# Build the on-chain hybrid-signature extension (base64-encoded, Go-JSON shape).
+# Build the on-chain hybrid-signature extension (protobuf-encoded into Any.value).
 ext = build_hybrid_signature_extension(ALGORITHM_DILITHIUM5, sig, kp.public_key)
 ```
 
