@@ -54,6 +54,25 @@ pub struct QueryAccountsResponse {
     #[prost(message, repeated, tag="1")]
     pub accounts: ::prost::alloc::vec::Vec<AccountView>,
 }
+#[derive(Clone, Copy, PartialEq, ::prost::Message)]
+pub struct QueryPermissionSchemaRequest {
+}
+#[derive(Clone, PartialEq, ::prost::Message)]
+pub struct QueryPermissionSchemaResponse {
+    /// schema_version bumps whenever the taxonomy or the mapping changes; clients
+    /// compare it to their embedded copy to detect drift.
+    #[prost(string, tag="1")]
+    pub schema_version: ::prost::alloc::string::String,
+    /// permissions is every valid permission string (e.g. send, evm, svm, all).
+    #[prost(string, repeated, tag="2")]
+    pub permissions: ::prost::alloc::vec::Vec<::prost::alloc::string::String>,
+    /// msg_permissions maps a message typeURL to the permission it requires.
+    #[prost(map="string, string", tag="3")]
+    pub msg_permissions: ::std::collections::HashMap<::prost::alloc::string::String, ::prost::alloc::string::String>,
+    /// key_management_msgs are typeURLs that are NEVER delegable to a linked key.
+    #[prost(string, repeated, tag="4")]
+    pub key_management_msgs: ::prost::alloc::vec::Vec<::prost::alloc::string::String>,
+}
 /// SpendingRule defines spending limits for an abstract account.
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct SpendingRule {
@@ -134,5 +153,97 @@ pub struct MsgRevokeAuthenticator {
 }
 #[derive(Clone, Copy, PartialEq, ::prost::Message)]
 pub struct MsgRevokeAuthenticatorResponse {
+}
+/// MsgExecuteEVM executes an EVM call/transfer authorized by a linked
+/// authenticator (v3.1.85). The relayer submits + pays fees; the authenticator
+/// (scheme,pubkey) signs the domain-separated sign-bytes binding chain-id, the
+/// canonical account, the pubkey, to/value/data and the account's expected EVM
+/// nonce (replay protection — the nonce must equal the account's current EVM
+/// nonce, and executing the call increments it, so a signature cannot be replayed).
+/// The chain resolves the authenticator, checks the "evm" permission + SpendingRule
+/// against `value`, then executes the call FROM the canonical account's EVM address.
+#[derive(Clone, PartialEq, ::prost::Message)]
+pub struct MsgExecuteEvm {
+    #[prost(string, tag="1")]
+    pub relayer: ::prost::alloc::string::String,
+    /// bech32 canonical account (the authenticator's owner)
+    #[prost(string, tag="2")]
+    pub account: ::prost::alloc::string::String,
+    /// "ed25519" | "secp256k1"
+    #[prost(string, tag="3")]
+    pub scheme: ::prost::alloc::string::String,
+    /// authenticator public key
+    #[prost(bytes="vec", tag="4")]
+    pub pubkey: ::prost::alloc::vec::Vec<u8>,
+    /// authenticator signature over the EVM auth sign-bytes
+    #[prost(bytes="vec", tag="5")]
+    pub signature: ::prost::alloc::vec::Vec<u8>,
+    /// 0x-hex recipient/contract; empty = contract create
+    #[prost(string, tag="6")]
+    pub to: ::prost::alloc::string::String,
+    /// native QOR amount in wei (aqor), decimal string
+    #[prost(string, tag="7")]
+    pub value: ::prost::alloc::string::String,
+    /// EVM calldata
+    #[prost(bytes="vec", tag="8")]
+    pub data: ::prost::alloc::vec::Vec<u8>,
+    #[prost(uint64, tag="9")]
+    pub gas_limit: u64,
+    /// MUST equal the account's current EVM nonce
+    #[prost(uint64, tag="10")]
+    pub nonce: u64,
+}
+#[derive(Clone, PartialEq, ::prost::Message)]
+pub struct MsgExecuteEvmResponse {
+    #[prost(bool, tag="1")]
+    pub success: bool,
+    #[prost(bytes="vec", tag="2")]
+    pub ret: ::prost::alloc::vec::Vec<u8>,
+    #[prost(uint64, tag="3")]
+    pub gas_used: u64,
+    #[prost(string, tag="4")]
+    pub vm_error: ::prost::alloc::string::String,
+}
+/// MsgExecuteCosmos executes a Native-lane (Cosmos) bank transfer authorized by a
+/// linked authenticator (v3.1.85). It is the Native counterpart of MsgExecuteEVM:
+/// the relayer submits + pays fees and signs the outer tx (so the account's own
+/// PQC-required signature is not needed — the relayer's hybrid-PQC signature
+/// satisfies the ante on the envelope), while the authenticator (scheme,pubkey)
+/// signs the domain-separated sign-bytes binding chain-id, the canonical account,
+/// the pubkey, the recipient, the amount and a per-authenticator sequence (replay:
+/// nonce must equal the account+key's current sequence, incremented on success).
+/// The chain resolves the authenticator, checks the "send" permission + SpendingRule
+/// against `amount`, then moves the coins FROM the canonical account via x/bank.
+/// This lets an external key (Phantom ed25519 / EVM secp256k1) spend native QOR from
+/// a PQC-required account under least-privilege, spend-limited, revocable terms.
+#[derive(Clone, PartialEq, ::prost::Message)]
+pub struct MsgExecuteCosmos {
+    #[prost(string, tag="1")]
+    pub relayer: ::prost::alloc::string::String,
+    /// bech32 canonical account (the authenticator's owner)
+    #[prost(string, tag="2")]
+    pub account: ::prost::alloc::string::String,
+    /// "ed25519" | "secp256k1"
+    #[prost(string, tag="3")]
+    pub scheme: ::prost::alloc::string::String,
+    /// authenticator public key
+    #[prost(bytes="vec", tag="4")]
+    pub pubkey: ::prost::alloc::vec::Vec<u8>,
+    /// authenticator signature over the Cosmos auth sign-bytes
+    #[prost(bytes="vec", tag="5")]
+    pub signature: ::prost::alloc::vec::Vec<u8>,
+    /// bech32 recipient
+    #[prost(string, tag="6")]
+    pub to: ::prost::alloc::string::String,
+    #[prost(message, repeated, tag="7")]
+    pub amount: ::prost::alloc::vec::Vec<::cosmrs::proto::cosmos::base::v1beta1::Coin>,
+    /// MUST equal the account+key's current authenticator sequence
+    #[prost(uint64, tag="8")]
+    pub nonce: u64,
+}
+#[derive(Clone, Copy, PartialEq, ::prost::Message)]
+pub struct MsgExecuteCosmosResponse {
+    #[prost(bool, tag="1")]
+    pub success: bool,
 }
 // @@protoc_insertion_point(module)

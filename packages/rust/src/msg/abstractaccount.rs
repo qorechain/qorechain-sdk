@@ -2,6 +2,7 @@
 
 use crate::msg::to_any;
 use crate::proto::qorechain::abstractaccount::v1 as pb;
+use cosmrs::proto::cosmos::base::v1beta1::Coin;
 use cosmrs::Any;
 
 pub use pb::SpendingRule;
@@ -14,6 +15,10 @@ pub const UPDATE_SPENDING_RULES: &str = "/qorechain.abstractaccount.v1.MsgUpdate
 pub const REGISTER_AUTHENTICATOR: &str = "/qorechain.abstractaccount.v1.MsgRegisterAuthenticator";
 /// `/qorechain.abstractaccount.v1.MsgRevokeAuthenticator` type URL.
 pub const REVOKE_AUTHENTICATOR: &str = "/qorechain.abstractaccount.v1.MsgRevokeAuthenticator";
+/// `/qorechain.abstractaccount.v1.MsgExecuteEVM` type URL.
+pub const EXECUTE_EVM: &str = "/qorechain.abstractaccount.v1.MsgExecuteEVM";
+/// `/qorechain.abstractaccount.v1.MsgExecuteCosmos` type URL.
+pub const EXECUTE_COSMOS: &str = "/qorechain.abstractaccount.v1.MsgExecuteCosmos";
 
 /// Builds `MsgCreateAbstractAccount`.
 pub fn create_abstract_account(
@@ -137,5 +142,109 @@ pub fn revoke_authenticator_any(
     to_any(
         &revoke_authenticator(owner, account_address, scheme, pubkey),
         REVOKE_AUTHENTICATOR,
+    )
+}
+
+/// Builds `MsgExecuteEVM` (v3.1.85 EVM authenticator lane): an EVM call/transfer
+/// executed FROM the canonical `account`'s EVM address, authorized by a linked
+/// authenticator `(scheme, pubkey, signature)` and broadcast by `relayer` (the
+/// fee payer / message signer). `signature` is over the EVM auth sign-bytes (see
+/// [`crate::authenticator::evm_auth_sign_bytes`]); `to` is the 0x-hex recipient
+/// (empty = contract create), `value` the decimal wei (aqor) string, `data` the
+/// calldata, and `nonce` MUST equal the account's current EVM nonce.
+#[allow(clippy::too_many_arguments)]
+pub fn execute_evm(
+    relayer: impl Into<String>,
+    account: impl Into<String>,
+    scheme: impl Into<String>,
+    pubkey: Vec<u8>,
+    signature: Vec<u8>,
+    to: impl Into<String>,
+    value: impl Into<String>,
+    data: Vec<u8>,
+    gas_limit: u64,
+    nonce: u64,
+) -> pb::MsgExecuteEvm {
+    pb::MsgExecuteEvm {
+        relayer: relayer.into(),
+        account: account.into(),
+        scheme: scheme.into(),
+        pubkey,
+        signature,
+        to: to.into(),
+        value: value.into(),
+        data,
+        gas_limit,
+        nonce,
+    }
+}
+
+/// Builds `MsgExecuteEVM` packed into an `Any`.
+#[allow(clippy::too_many_arguments)]
+pub fn execute_evm_any(
+    relayer: impl Into<String>,
+    account: impl Into<String>,
+    scheme: impl Into<String>,
+    pubkey: Vec<u8>,
+    signature: Vec<u8>,
+    to: impl Into<String>,
+    value: impl Into<String>,
+    data: Vec<u8>,
+    gas_limit: u64,
+    nonce: u64,
+) -> Any {
+    to_any(
+        &execute_evm(
+            relayer, account, scheme, pubkey, signature, to, value, data, gas_limit, nonce,
+        ),
+        EXECUTE_EVM,
+    )
+}
+
+/// Builds `MsgExecuteCosmos` (v3.1.85 Native authenticator lane): a bank send
+/// executed FROM the canonical `account`, authorized by a linked authenticator
+/// `(scheme, pubkey, signature)` and broadcast by `relayer` (the fee payer /
+/// message signer). `signature` is over the Cosmos auth sign-bytes (see
+/// [`crate::authenticator::cosmos_auth_sign_bytes`]); `amount` is the coins to
+/// move (canonical `sdk.Coins`, e.g. one `uqor` coin), and `nonce` MUST equal the
+/// account+key's current per-authenticator sequence.
+#[allow(clippy::too_many_arguments)]
+pub fn execute_cosmos(
+    relayer: impl Into<String>,
+    account: impl Into<String>,
+    scheme: impl Into<String>,
+    pubkey: Vec<u8>,
+    signature: Vec<u8>,
+    to: impl Into<String>,
+    amount: Vec<Coin>,
+    nonce: u64,
+) -> pb::MsgExecuteCosmos {
+    pb::MsgExecuteCosmos {
+        relayer: relayer.into(),
+        account: account.into(),
+        scheme: scheme.into(),
+        pubkey,
+        signature,
+        to: to.into(),
+        amount,
+        nonce,
+    }
+}
+
+/// Builds `MsgExecuteCosmos` packed into an `Any`.
+#[allow(clippy::too_many_arguments)]
+pub fn execute_cosmos_any(
+    relayer: impl Into<String>,
+    account: impl Into<String>,
+    scheme: impl Into<String>,
+    pubkey: Vec<u8>,
+    signature: Vec<u8>,
+    to: impl Into<String>,
+    amount: Vec<Coin>,
+    nonce: u64,
+) -> Any {
+    to_any(
+        &execute_cosmos(relayer, account, scheme, pubkey, signature, to, amount, nonce),
+        EXECUTE_COSMOS,
     )
 }

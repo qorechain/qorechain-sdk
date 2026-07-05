@@ -126,6 +126,15 @@ fn module_reason(codespace: &str, code: u32) -> Option<&'static str> {
         ("feegrant", 2) => "fee limit exceeded",
         ("feegrant", 3) => "fee allowance already exists",
         ("feegrant", 4) => "fee allowance expired",
+        // abstractaccount authenticator-lane errors (v3.1.84 / v3.1.85). The
+        // relayer-authorized MsgExecuteEVM / MsgExecuteCosmos fail-closed on these.
+        ("abstractaccount", 5) => "spending limit exceeded",
+        ("abstractaccount", 6) => "session key expired",
+        ("abstractaccount", 10) => "authenticator not permitted for this action",
+        ("abstractaccount", 11) => "authenticator signature replay binding mismatch",
+        // pqc hybrid-signature verification (surfaced on a MsgRotatePQCKey whose
+        // dual signatures or hybrid cosignature do not verify).
+        ("pqc", 21) => "hybrid PQC signature verification failed",
         _ => return None,
     };
     Some(reason)

@@ -109,18 +109,27 @@ var moduleCodespaceReasons = map[string]map[uint32]string{
 		3: "fee allowance already exists",
 		4: "fee allowance expired",
 	},
-	// QoreChain custom modules — generic per-module fallbacks.
-	"pqc":             {},
-	"amm":             {},
-	"bridge":          {},
-	"rdk":             {},
-	"multilayer":      {},
-	"svm":             {},
-	"lightnode":       {},
-	"license":         {},
-	"abstractaccount": {},
-	"crossvm":         {},
-	"rlconsensus":     {},
+	// QoreChain custom modules — enumerated codes plus generic per-module fallbacks.
+	"pqc": {
+		// 21: hybrid (classical + ML-DSA) signature verification failed.
+		21: "hybrid verify failed",
+	},
+	"amm":        {},
+	"bridge":     {},
+	"rdk":        {},
+	"multilayer": {},
+	"svm":        {},
+	"lightnode":  {},
+	"license":    {},
+	"abstractaccount": {
+		// v3.1.85 authenticator-lane failures (MsgExecuteEVM / MsgExecuteCosmos).
+		5:  "spending limit exceeded",
+		6:  "session key expired",
+		10: "permission denied",
+		11: "authenticator replay",
+	},
+	"crossvm":     {},
+	"rlconsensus": {},
 }
 
 // DecodeTxError maps an ABCI (code, codespace, rawLog) triple to a *QoreTxError.

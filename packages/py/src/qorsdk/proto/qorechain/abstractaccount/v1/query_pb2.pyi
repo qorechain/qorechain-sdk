@@ -1,3 +1,4 @@
+from google.api import annotations_pb2 as _annotations_pb2
 from google.protobuf.internal import containers as _containers
 from google.protobuf import descriptor as _descriptor
 from google.protobuf import message as _message
@@ -66,3 +67,26 @@ class QueryAccountsResponse(_message.Message):
     ACCOUNTS_FIELD_NUMBER: _ClassVar[int]
     accounts: _containers.RepeatedCompositeFieldContainer[AccountView]
     def __init__(self, accounts: _Optional[_Iterable[_Union[AccountView, _Mapping]]] = ...) -> None: ...
+
+class QueryPermissionSchemaRequest(_message.Message):
+    __slots__ = ()
+    def __init__(self) -> None: ...
+
+class QueryPermissionSchemaResponse(_message.Message):
+    __slots__ = ("schema_version", "permissions", "msg_permissions", "key_management_msgs")
+    class MsgPermissionsEntry(_message.Message):
+        __slots__ = ("key", "value")
+        KEY_FIELD_NUMBER: _ClassVar[int]
+        VALUE_FIELD_NUMBER: _ClassVar[int]
+        key: str
+        value: str
+        def __init__(self, key: _Optional[str] = ..., value: _Optional[str] = ...) -> None: ...
+    SCHEMA_VERSION_FIELD_NUMBER: _ClassVar[int]
+    PERMISSIONS_FIELD_NUMBER: _ClassVar[int]
+    MSG_PERMISSIONS_FIELD_NUMBER: _ClassVar[int]
+    KEY_MANAGEMENT_MSGS_FIELD_NUMBER: _ClassVar[int]
+    schema_version: str
+    permissions: _containers.RepeatedScalarFieldContainer[str]
+    msg_permissions: _containers.ScalarMap[str, str]
+    key_management_msgs: _containers.RepeatedScalarFieldContainer[str]
+    def __init__(self, schema_version: _Optional[str] = ..., permissions: _Optional[_Iterable[str]] = ..., msg_permissions: _Optional[_Mapping[str, str]] = ..., key_management_msgs: _Optional[_Iterable[str]] = ...) -> None: ...

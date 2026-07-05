@@ -36,6 +36,7 @@
 pub mod accounts;
 pub mod address;
 pub mod ai;
+pub mod authenticator;
 pub mod client;
 pub mod cross_vm;
 pub mod denom;
@@ -72,6 +73,12 @@ pub use pqc::{
     pqc_sign_hedged, pqc_verify, HybridSignatureExtension, PqcKeypair, ALGORITHM_DILITHIUM5,
     ALGORITHM_MLKEM1024, HYBRID_SIG_TYPE_URL, MLDSA87_PUBLIC_KEY_LEN, MLDSA87_SECRET_KEY_LEN,
     MLDSA87_SIGNATURE_LEN,
+};
+
+pub use authenticator::{
+    cosmos_auth_sign_bytes, derive_pqc_canonical, derive_pqc_legacy, evm_auth_sign_bytes,
+    rotate_pqc_key_msg_from_mnemonic, rotation_sign_bytes, RotateFromMnemonic,
+    RotateFromMnemonicOptions, DERIVATION_CANONICAL, DERIVATION_LEGACY,
 };
 
 pub use unified::{

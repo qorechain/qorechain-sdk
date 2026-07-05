@@ -28,6 +28,7 @@ const sidebars: SidebarsConfig = {
         "guides/multilayer",
         "guides/rollups",
         "guides/quantum-safe",
+        "guides/authenticators",
         "guides/react",
       ],
     },

@@ -560,6 +560,19 @@ impl TypedQueryClient {
         .await
     }
 
+    /// Queries `qorechain.abstractaccount.v1.Query/PermissionSchema` — the
+    /// canonical authenticator permission taxonomy (v3.1.85), so clients validate
+    /// scopes without hardcoding strings and detect drift via `schema_version`.
+    pub async fn abstractaccount_permission_schema(
+        &self,
+    ) -> Result<qorechain::abstractaccount::v1::QueryPermissionSchemaResponse> {
+        self.grpc_query(
+            "/qorechain.abstractaccount.v1.Query/PermissionSchema",
+            &qorechain::abstractaccount::v1::QueryPermissionSchemaRequest {},
+        )
+        .await
+    }
+
     // --- rdk ---
 
     /// Queries `qorechain.rdk.v1.Query/Params`.

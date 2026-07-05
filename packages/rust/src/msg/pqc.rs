@@ -19,6 +19,8 @@ pub const MIGRATE_PQC_KEY: &str = "/qorechain.pqc.v1.MsgMigratePQCKey";
 pub const DEPRECATE_ALGORITHM: &str = "/qorechain.pqc.v1.MsgDeprecateAlgorithm";
 /// `/qorechain.pqc.v1.MsgDisableAlgorithm` type URL.
 pub const DISABLE_ALGORITHM: &str = "/qorechain.pqc.v1.MsgDisableAlgorithm";
+/// `/qorechain.pqc.v1.MsgRotatePQCKey` type URL.
+pub const ROTATE_PQC_KEY: &str = "/qorechain.pqc.v1.MsgRotatePQCKey";
 
 /// Builds `MsgRegisterPQCKey` (legacy v1, defaults to Dilithium-5).
 pub fn register_pqc_key(
@@ -175,5 +177,47 @@ pub fn disable_algorithm_any(
     to_any(
         &disable_algorithm(authority, algorithm_id, reason),
         DISABLE_ALGORITHM,
+    )
+}
+
+/// Builds `MsgRotatePQCKey` (v3.1.85): rotates an account's PQC key to a NEW key
+/// of the SAME algorithm. Both `old_signature` and `new_signature` are ML-DSA-87
+/// signatures over the domain-separated rotation string (see
+/// [`crate::authenticator::rotation_sign_bytes`]). The message is `sender`-signed
+/// and must be broadcast hybrid-cosigned with the OLD key (still the registered
+/// key until the rotation lands).
+pub fn rotate_pqc_key(
+    sender: impl Into<String>,
+    old_public_key: Vec<u8>,
+    new_public_key: Vec<u8>,
+    old_signature: Vec<u8>,
+    new_signature: Vec<u8>,
+) -> pb::MsgRotatePqcKey {
+    pb::MsgRotatePqcKey {
+        sender: sender.into(),
+        old_public_key,
+        new_public_key,
+        old_signature,
+        new_signature,
+    }
+}
+
+/// Builds `MsgRotatePQCKey` packed into an `Any`.
+pub fn rotate_pqc_key_any(
+    sender: impl Into<String>,
+    old_public_key: Vec<u8>,
+    new_public_key: Vec<u8>,
+    old_signature: Vec<u8>,
+    new_signature: Vec<u8>,
+) -> Any {
+    to_any(
+        &rotate_pqc_key(
+            sender,
+            old_public_key,
+            new_public_key,
+            old_signature,
+            new_signature,
+        ),
+        ROTATE_PQC_KEY,
     )
 }

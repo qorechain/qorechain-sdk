@@ -49,6 +49,21 @@ public final class AbstractAccountQueryClient {
                 QueryOuterClass.QueryAccountsResponse.parser());
     }
 
+    /**
+     * {@code PermissionSchema} — the canonical authenticator permission taxonomy
+     * (v3.1.85). Returns the schema version, the valid permission strings, the
+     * message-typeURL → required-permission map, and the never-delegable
+     * key-management message typeURLs, so clients validate scopes without
+     * hardcoding strings and detect drift via {@code schema_version}.
+     */
+    public QueryOuterClass.QueryPermissionSchemaResponse permissionSchema() {
+        ByteString req =
+                QueryOuterClass.QueryPermissionSchemaRequest.newBuilder().build().toByteString();
+        return decode(
+                abci.request(SERVICE, "PermissionSchema", req),
+                QueryOuterClass.QueryPermissionSchemaResponse.parser());
+    }
+
     private static <T extends com.google.protobuf.Message> T decode(
             ByteString bytes, com.google.protobuf.Parser<T> parser) {
         try {

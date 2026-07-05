@@ -48,6 +48,24 @@ export interface MsgMigratePQCKey {
 export interface MsgMigratePQCKeyResponse {
 }
 
+/**
+ * MsgRotatePQCKey replaces an account's PQC key with a new key of the SAME
+ * algorithm. Both signatures are over the domain-separated bytes
+ * "qorechain-pqc-rotate-v1|chainid|algo|account|oldkey|newkey" (no block height —
+ * the signer cannot predict it; replay is prevented because after the rotation
+ * the old key no longer matches the registered key).
+ */
+export interface MsgRotatePQCKey {
+  sender: string;
+  oldPublicKey: Uint8Array;
+  newPublicKey: Uint8Array;
+  oldSignature: Uint8Array;
+  newSignature: Uint8Array;
+}
+
+export interface MsgRotatePQCKeyResponse {
+}
+
 /** MsgDeprecateAlgorithm proposes deprecating an algorithm (starts migration period). */
 export interface MsgDeprecateAlgorithm {
   authority: string;
@@ -625,6 +643,195 @@ export const MsgMigratePQCKeyResponse: MessageFns<MsgMigratePQCKeyResponse> = {
   },
 };
 
+function createBaseMsgRotatePQCKey(): MsgRotatePQCKey {
+  return {
+    sender: "",
+    oldPublicKey: new Uint8Array(0),
+    newPublicKey: new Uint8Array(0),
+    oldSignature: new Uint8Array(0),
+    newSignature: new Uint8Array(0),
+  };
+}
+
+export const MsgRotatePQCKey: MessageFns<MsgRotatePQCKey> = {
+  encode(message: MsgRotatePQCKey, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.sender !== "") {
+      writer.uint32(10).string(message.sender);
+    }
+    if (message.oldPublicKey.length !== 0) {
+      writer.uint32(18).bytes(message.oldPublicKey);
+    }
+    if (message.newPublicKey.length !== 0) {
+      writer.uint32(26).bytes(message.newPublicKey);
+    }
+    if (message.oldSignature.length !== 0) {
+      writer.uint32(34).bytes(message.oldSignature);
+    }
+    if (message.newSignature.length !== 0) {
+      writer.uint32(42).bytes(message.newSignature);
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): MsgRotatePQCKey {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseMsgRotatePQCKey();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.sender = reader.string();
+          continue;
+        }
+        case 2: {
+          if (tag !== 18) {
+            break;
+          }
+
+          message.oldPublicKey = reader.bytes();
+          continue;
+        }
+        case 3: {
+          if (tag !== 26) {
+            break;
+          }
+
+          message.newPublicKey = reader.bytes();
+          continue;
+        }
+        case 4: {
+          if (tag !== 34) {
+            break;
+          }
+
+          message.oldSignature = reader.bytes();
+          continue;
+        }
+        case 5: {
+          if (tag !== 42) {
+            break;
+          }
+
+          message.newSignature = reader.bytes();
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(object: any): MsgRotatePQCKey {
+    return {
+      sender: isSet(object.sender) ? globalThis.String(object.sender) : "",
+      oldPublicKey: isSet(object.oldPublicKey)
+        ? bytesFromBase64(object.oldPublicKey)
+        : isSet(object.old_public_key)
+        ? bytesFromBase64(object.old_public_key)
+        : new Uint8Array(0),
+      newPublicKey: isSet(object.newPublicKey)
+        ? bytesFromBase64(object.newPublicKey)
+        : isSet(object.new_public_key)
+        ? bytesFromBase64(object.new_public_key)
+        : new Uint8Array(0),
+      oldSignature: isSet(object.oldSignature)
+        ? bytesFromBase64(object.oldSignature)
+        : isSet(object.old_signature)
+        ? bytesFromBase64(object.old_signature)
+        : new Uint8Array(0),
+      newSignature: isSet(object.newSignature)
+        ? bytesFromBase64(object.newSignature)
+        : isSet(object.new_signature)
+        ? bytesFromBase64(object.new_signature)
+        : new Uint8Array(0),
+    };
+  },
+
+  toJSON(message: MsgRotatePQCKey): unknown {
+    const obj: any = {};
+    if (message.sender !== "") {
+      obj.sender = message.sender;
+    }
+    if (message.oldPublicKey.length !== 0) {
+      obj.oldPublicKey = base64FromBytes(message.oldPublicKey);
+    }
+    if (message.newPublicKey.length !== 0) {
+      obj.newPublicKey = base64FromBytes(message.newPublicKey);
+    }
+    if (message.oldSignature.length !== 0) {
+      obj.oldSignature = base64FromBytes(message.oldSignature);
+    }
+    if (message.newSignature.length !== 0) {
+      obj.newSignature = base64FromBytes(message.newSignature);
+    }
+    return obj;
+  },
+
+  create(base?: DeepPartial<MsgRotatePQCKey>): MsgRotatePQCKey {
+    return MsgRotatePQCKey.fromPartial(base ?? {});
+  },
+  fromPartial(object: DeepPartial<MsgRotatePQCKey>): MsgRotatePQCKey {
+    const message = createBaseMsgRotatePQCKey();
+    message.sender = object.sender ?? "";
+    message.oldPublicKey = object.oldPublicKey ?? new Uint8Array(0);
+    message.newPublicKey = object.newPublicKey ?? new Uint8Array(0);
+    message.oldSignature = object.oldSignature ?? new Uint8Array(0);
+    message.newSignature = object.newSignature ?? new Uint8Array(0);
+    return message;
+  },
+};
+
+function createBaseMsgRotatePQCKeyResponse(): MsgRotatePQCKeyResponse {
+  return {};
+}
+
+export const MsgRotatePQCKeyResponse: MessageFns<MsgRotatePQCKeyResponse> = {
+  encode(_: MsgRotatePQCKeyResponse, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): MsgRotatePQCKeyResponse {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseMsgRotatePQCKeyResponse();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(_: any): MsgRotatePQCKeyResponse {
+    return {};
+  },
+
+  toJSON(_: MsgRotatePQCKeyResponse): unknown {
+    const obj: any = {};
+    return obj;
+  },
+
+  create(base?: DeepPartial<MsgRotatePQCKeyResponse>): MsgRotatePQCKeyResponse {
+    return MsgRotatePQCKeyResponse.fromPartial(base ?? {});
+  },
+  fromPartial(_: DeepPartial<MsgRotatePQCKeyResponse>): MsgRotatePQCKeyResponse {
+    const message = createBaseMsgRotatePQCKeyResponse();
+    return message;
+  },
+};
+
 function createBaseMsgDeprecateAlgorithm(): MsgDeprecateAlgorithm {
   return { authority: "", algorithmId: 0, migrationBlocks: "0", replacementAlgorithmId: 0 };
 }
@@ -957,6 +1164,20 @@ export const MsgDefinition = {
       requestType: MsgMigratePQCKey as typeof MsgMigratePQCKey,
       requestStream: false,
       responseType: MsgMigratePQCKeyResponse as typeof MsgMigratePQCKeyResponse,
+      responseStream: false,
+      options: {},
+    },
+    /**
+     * RotatePQCKey replaces an account's PQC key with a NEW key of the SAME
+     * algorithm — for rotating a compromised key or moving a legacy-derived key to
+     * the canonical derivation. Dual-signed (old proves ownership, new proves
+     * control); needs no active algorithm migration.
+     */
+    rotatePQCKey: {
+      name: "RotatePQCKey",
+      requestType: MsgRotatePQCKey as typeof MsgRotatePQCKey,
+      requestStream: false,
+      responseType: MsgRotatePQCKeyResponse as typeof MsgRotatePQCKeyResponse,
       responseStream: false,
       options: {},
     },

@@ -5,6 +5,37 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.7.0]
+
+### Added
+
+- **Authenticator lanes (chain v3.1.85)** — a linked external key (Phantom
+  ed25519, or a MetaMask/secp256k1 key by its 20-byte address) can spend from the
+  one canonical PQC-required account through a **relayer**, under least-privilege,
+  spending-limited, revocable terms — without the external key ever producing an
+  ML-DSA co-signature. Added across all five languages:
+  - New messages + composers: `MsgExecuteEVM`, `MsgExecuteCosmos`
+    (`/qorechain.abstractaccount.v1.*`), and `MsgRotatePQCKey`
+    (`/qorechain.pqc.v1.*`).
+  - Byte-exact sign-bytes helpers — `evmAuthSignBytes`
+    (`sha256("qorechain-evm-auth-v1" ‖ …)`), `cosmosAuthSignBytes`
+    (`"qorechain-cosmos-auth-v1"`), and `rotationSignBytes`
+    (`qorechain-pqc-rotate-v1|…`) — the digest an authenticator signs.
+  - `permissionSchema` query (the on-chain permission taxonomy) and new decoded
+    error codes: abstractaccount `5` SpendingLimitExceeded, `6` SessionKeyExpired,
+    `10` PermissionDenied, `11` AuthenticatorReplay; pqc `21` HybridVerifyFailed.
+  - Same-algorithm PQC key rotation — `rotatePqcKeyMsgFromMnemonic` +
+    `derivePqcLegacy` migrate a legacy `shake256(mnemonic)` key to the canonical
+    address-bound key (dual-signed with both keys).
+  - TypeScript wallet builders: `buildPhantomExecuteEvm` / `buildPhantomExecuteCosmos`
+    (ed25519), `buildMetaMaskExecuteEvm` / `buildMetaMaskExecuteCosmos` (EIP-191
+    `personal_sign`), and `registerEthAuthenticatorMsg`; plus an
+    `authenticator-spend` example and an Authenticators docs guide.
+
+  Note on nonces: `MsgExecuteEVM.nonce` is the account's current EVM nonce (the
+  relayer is a different account, so it does not bump the account's nonce);
+  `MsgExecuteCosmos.nonce` is the per-authenticator sequence.
+
 ## [0.6.1]
 
 ### Fixed

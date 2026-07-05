@@ -72,6 +72,55 @@ const SDK_CODES: Record<number, { kind: string; message: string }> = {
   30: { kind: "tx_timeout_height", message: "transaction timeout height exceeded" },
 };
 
+/**
+ * Known error codes in the `abstractaccount` codespace (v3.1.85 authenticator
+ * lanes). These are raised when a relayer-submitted `MsgExecuteEVM` /
+ * `MsgExecuteCosmos` fails authorization: the authenticator's scope, its
+ * spending rule, its session TTL, or its replay-protecting nonce.
+ */
+const ABSTRACTACCOUNT_CODES: Record<number, { kind: string; message: string }> = {
+  5: {
+    kind: "spending_limit_exceeded",
+    message:
+      "spending limit exceeded — the amount is over the authenticator's per-tx or daily SpendingRule",
+  },
+  6: {
+    kind: "session_key_expired",
+    message:
+      "session key expired — the authenticator's expiry_unix has passed; re-register the key",
+  },
+  10: {
+    kind: "permission_denied",
+    message:
+      "permission denied — the authenticator lacks the permission this message requires (check the permission_schema)",
+  },
+  11: {
+    kind: "authenticator_replay",
+    message:
+      "authenticator replay — the nonce does not match the account's expected value; refetch the current nonce/sequence and re-sign",
+  },
+};
+
+/**
+ * Known error codes in the `pqc` codespace surfaced to dApps. Code 21 is raised
+ * when a hybrid (classical + ML-DSA-87) signature fails verification — most
+ * commonly a hedged (non-deterministic) ML-DSA signature, which the chain
+ * rejects (it accepts ONLY deterministic signatures).
+ */
+const PQC_CODES: Record<number, { kind: string; message: string }> = {
+  21: {
+    kind: "hybrid_verify_failed",
+    message:
+      "hybrid signature verification failed — the ML-DSA-87 signature did not verify (ensure deterministic signing; hedged signatures are rejected)",
+  },
+};
+
+/** Per-codespace code maps for QoreChain custom modules. */
+const MODULE_CODES: Record<number | string, Record<number, { kind: string; message: string }>> = {
+  abstractaccount: ABSTRACTACCOUNT_CODES,
+  pqc: PQC_CODES,
+};
+
 const DEFAULT_CODESPACE = "sdk";
 
 /**
@@ -90,6 +139,18 @@ export function decodeTxError(input: TxErrorInput): DecodedTxError {
 
   if (codespace === DEFAULT_CODESPACE) {
     const known = SDK_CODES[input.code];
+    if (known) {
+      return {
+        code: input.code,
+        codespace,
+        kind: known.kind,
+        message: rawLog ? `${known.message} (${rawLog})` : known.message,
+        rawLog,
+      };
+    }
+  } else {
+    // Known QoreChain custom-module codespace (abstractaccount, pqc, …).
+    const known = MODULE_CODES[codespace]?.[input.code];
     if (known) {
       return {
         code: input.code,

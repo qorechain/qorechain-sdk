@@ -34,6 +34,24 @@ public final class TxError {
 
     private static final Map<Integer, String[]> SDK_CODES = new HashMap<>();
 
+    /** Per-codespace maps for QoreChain module errors (codespace → code → [kind, msg]). */
+    private static final Map<String, Map<Integer, String[]>> MODULE_CODES = new HashMap<>();
+
+    static {
+        // ---- abstractaccount (v3.1.85 authenticator lanes) ----
+        Map<Integer, String[]> aa = new HashMap<>();
+        aa.put(5, new String[] {"spending_limit_exceeded", "authenticator spending limit exceeded"});
+        aa.put(6, new String[] {"session_expired", "authenticator session expired"});
+        aa.put(10, new String[] {"permission_denied", "authenticator permission denied"});
+        aa.put(11, new String[] {"replay_detected", "authenticator nonce replay detected"});
+        MODULE_CODES.put("abstractaccount", aa);
+
+        // ---- pqc ----
+        Map<Integer, String[]> pqc = new HashMap<>();
+        pqc.put(21, new String[] {"pqc_signature_invalid", "invalid PQC signature"});
+        MODULE_CODES.put("pqc", pqc);
+    }
+
     static {
         put(2, "tx_decode_error", "tx parse error");
         put(3, "invalid_sequence", "invalid sequence");
@@ -68,7 +86,13 @@ public final class TxError {
         String cs = (codespace == null || codespace.isEmpty()) ? "sdk" : codespace;
         String kind;
         String message;
-        String[] known = "sdk".equals(cs) ? SDK_CODES.get(code) : null;
+        String[] known;
+        if ("sdk".equals(cs)) {
+            known = SDK_CODES.get(code);
+        } else {
+            Map<Integer, String[]> module = MODULE_CODES.get(cs);
+            known = module != null ? module.get(code) : null;
+        }
         if (known != null) {
             kind = known[0];
             message = known[1];

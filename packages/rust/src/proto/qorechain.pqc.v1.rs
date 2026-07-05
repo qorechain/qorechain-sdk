@@ -3,7 +3,7 @@
 /// PQCHybridSignature is a transaction extension option carried in
 /// TxBody.extension_options. It pairs a post-quantum (Dilithium-5) signature with
 /// the account's classical secp256k1 signature so every transaction can be
-/// quantum-safe while remaining compatible with the standard QoreChain Native auth
+/// quantum-safe while remaining compatible with the standard Cosmos SDK auth
 /// path. It is registered as a cosmos.tx.v1beta1.TxExtensionOptionI.
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct PqcHybridSignature {
@@ -105,6 +105,27 @@ pub struct MsgMigratePqcKey {
 }
 #[derive(Clone, Copy, PartialEq, ::prost::Message)]
 pub struct MsgMigratePqcKeyResponse {
+}
+/// MsgRotatePQCKey replaces an account's PQC key with a new key of the SAME
+/// algorithm. Both signatures are over the domain-separated bytes
+/// "qorechain-pqc-rotate-v1|chainid|algo|account|oldkey|newkey" (no block height —
+/// the signer cannot predict it; replay is prevented because after the rotation
+/// the old key no longer matches the registered key).
+#[derive(Clone, PartialEq, ::prost::Message)]
+pub struct MsgRotatePqcKey {
+    #[prost(string, tag="1")]
+    pub sender: ::prost::alloc::string::String,
+    #[prost(bytes="vec", tag="2")]
+    pub old_public_key: ::prost::alloc::vec::Vec<u8>,
+    #[prost(bytes="vec", tag="3")]
+    pub new_public_key: ::prost::alloc::vec::Vec<u8>,
+    #[prost(bytes="vec", tag="4")]
+    pub old_signature: ::prost::alloc::vec::Vec<u8>,
+    #[prost(bytes="vec", tag="5")]
+    pub new_signature: ::prost::alloc::vec::Vec<u8>,
+}
+#[derive(Clone, Copy, PartialEq, ::prost::Message)]
+pub struct MsgRotatePqcKeyResponse {
 }
 /// MsgDeprecateAlgorithm proposes deprecating an algorithm (starts migration period).
 #[derive(Clone, PartialEq, ::prost::Message)]

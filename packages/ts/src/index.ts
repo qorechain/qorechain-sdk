@@ -8,7 +8,7 @@
  */
 
 /** SDK version. */
-export const VERSION = "0.6.1";
+export const VERSION = "0.7.0";
 
 // Top-level factory: the recommended entrypoint that resolves a network and
 // composes the read clients, fee helper, and a lazy signing entrypoint.
@@ -167,6 +167,9 @@ export type {
   Pagination,
   PaginatedOptions,
   FeeUrgency,
+  PermissionSchemaResponse,
+  AbstractAccountView,
+  AbstractAccountConfigView,
 } from "./query/rest";
 export { QorClient } from "./query/qor";
 
@@ -318,6 +321,21 @@ export type {
   SearchTxsOptions,
   EventFilters,
 } from "./search";
+// Authenticator lanes (v3.1.85): byte-exact sign-bytes builders for the EVM
+// and Native (Cosmos) spend lanes and the PQC key-rotation payload. Pure byte
+// math — no wallet, no network. The DX builders that sign them are exported
+// below from ./wallet/authenticator.
+export {
+  evmAuthSignBytes,
+  cosmosAuthSignBytes,
+  rotationSignBytes,
+  be64,
+  lengthPrefixed,
+} from "./tx/authenticator";
+export type {
+  EvmAuthSignBytesInput,
+  CosmosAuthSignBytesInput,
+} from "./tx/authenticator";
 export { encodeHybridExtension, attachHybridExtension } from "./tx/hybrid";
 export type { HybridPlacement, AttachHybridOptions } from "./tx/hybrid";
 export { buildHybridTx, signAndBroadcastHybrid } from "./tx/hybrid-tx";
@@ -393,6 +411,42 @@ export {
 // Generated message types, namespaced by module, for callers who want the raw
 // encode/decode/interface types (e.g. to decode a message read back from chain).
 export * as qorechainTypes from "./codegen";
+
+// Authenticator-lane wallet DX (v3.1.85): mirror the reference wallet-adapter —
+// link a Phantom (ed25519) or MetaMask (secp256k1) key and build a relayer-ready
+// MsgExecuteEVM / MsgExecuteCosmos, plus the low-level composers, the ETH
+// authenticator registration, revoke, and mnemonic-based PQC key rotation
+// (legacy→canonical migration).
+export {
+  executeEvmMsg,
+  executeCosmosMsg,
+  revokeAuthenticatorMsg,
+  registerEthAuthenticatorMsg,
+  rotatePqcKeyMsg,
+  buildPhantomExecuteEvm,
+  buildPhantomExecuteCosmos,
+  buildMetaMaskExecuteEvm,
+  buildMetaMaskExecuteCosmos,
+  rotatePqcKeyMsgFromMnemonic,
+  derivePqcLegacy,
+  CANONICAL_DERIVATION,
+  LEGACY_DERIVATION,
+} from "./wallet/authenticator";
+export type {
+  AuthenticatorWallet,
+  Eip1193Provider,
+  ExecuteEvmMsgInput,
+  ExecuteCosmosMsgInput,
+  RevokeAuthenticatorMsgInput,
+  RegisterEthAuthenticatorMsgInput,
+  RotatePqcKeyMsgInput,
+  BuildPhantomExecuteEvmOptions,
+  BuildPhantomExecuteCosmosOptions,
+  BuildMetaMaskExecuteEvmOptions,
+  BuildMetaMaskExecuteCosmosOptions,
+  RotatePqcKeyMsgFromMnemonicOptions,
+  RotatePqcKeyMsgFromMnemonicResult,
+} from "./wallet/authenticator";
 
 // Browser wallets: Keplr/Leap connection + chain-suggestion helper. The
 // returned signer plugs straight into `TxClient.connect` and can carry standard

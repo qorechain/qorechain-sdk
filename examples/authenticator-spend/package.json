@@ -1,0 +1,21 @@
+{
+  "name": "@qorechain/example-authenticator-spend",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Link a Phantom key and build a relayer-submitted MsgExecuteCosmos (authenticator lane).",
+  "scripts": {
+    "start": "tsx index.ts",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@qorechain/sdk": "workspace:*",
+    "@noble/curves": "^1.9.0",
+    "@noble/hashes": "^1.8.0"
+  },
+  "devDependencies": {
+    "@types/node": "^22.7.5",
+    "tsx": "^4.19.0",
+    "typescript": "^5.6.3"
+  }
+}

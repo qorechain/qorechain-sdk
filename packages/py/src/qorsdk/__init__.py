@@ -22,6 +22,24 @@ from .address import (
     hex_to_bech32,
     is_valid_bech32,
 )
+from .authenticator import (
+    CANONICAL_DERIVATION,
+    EXECUTE_COSMOS_TYPE_URL,
+    EXECUTE_EVM_TYPE_URL,
+    LEGACY_DERIVATION,
+    ROTATE_PQC_KEY_TYPE_URL,
+    RotationBuild,
+    be64,
+    cosmos_auth_sign_bytes,
+    derive_pqc_legacy,
+    evm_auth_sign_bytes,
+    execute_cosmos_msg,
+    execute_evm_msg,
+    lp,
+    rotate_pqc_key_msg,
+    rotate_pqc_key_msg_from_mnemonic,
+    rotation_sign_bytes,
+)
 from .client import QoreChainClient, create_client
 from .cross_vm import (
     VM_TYPES,
@@ -199,6 +217,23 @@ __all__ = [
     "unified_account_from_phantom_signature",
     "addresses_from_20",
     "qore_addresses",
+    # v3.1.85 authenticator lanes (EVM + Native) + PQC key rotation
+    "EXECUTE_EVM_TYPE_URL",
+    "EXECUTE_COSMOS_TYPE_URL",
+    "ROTATE_PQC_KEY_TYPE_URL",
+    "CANONICAL_DERIVATION",
+    "LEGACY_DERIVATION",
+    "RotationBuild",
+    "be64",
+    "lp",
+    "evm_auth_sign_bytes",
+    "cosmos_auth_sign_bytes",
+    "rotation_sign_bytes",
+    "execute_evm_msg",
+    "execute_cosmos_msg",
+    "rotate_pqc_key_msg",
+    "derive_pqc_legacy",
+    "rotate_pqc_key_msg_from_mnemonic",
     # eth_secp256k1 Native-lane signing
     "ETHSECP256K1_PUBKEY_TYPE",
     "sign_classical_eth",

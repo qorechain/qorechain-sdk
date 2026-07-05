@@ -377,6 +377,83 @@ const params = await client.crossvm.params();
 const status = await client.qor.getCrossVmMessage("42");
 ```
 
+## Authenticator lanes (v0.7.0 / chain v3.1.85)
+
+A linked external key — a Phantom **ed25519** key, or a MetaMask **secp256k1**
+key bound **by address** — can spend from the ONE canonical PQC account through
+a **relayer** that submits the tx and pays the fee (its own hybrid-PQC signature
+satisfies the ante). The external key **never produces an ML-DSA co-signature**;
+its signature over the domain-separated, replay-bound sign-bytes **is** the
+authorization. Every lane runs under least-privilege, spending-limit and
+revocable terms enforced on-chain.
+
+Three messages carry the lanes:
+
+| Message | Type URL | Composer |
+|---|---|---|
+| `MsgExecuteEVM` | `/qorechain.abstractaccount.v1.MsgExecuteEVM` | `msg.abstractaccount.executeEvm` |
+| `MsgExecuteCosmos` | `/qorechain.abstractaccount.v1.MsgExecuteCosmos` | `msg.abstractaccount.executeCosmos` |
+| `MsgRotatePQCKey` | `/qorechain.pqc.v1.MsgRotatePQCKey` | `msg.pqc.rotatePqcKey` |
+
+**Sign-bytes helpers** rebuild the exact digest the chain re-derives, so you can
+verify byte-for-byte before signing: `evmAuthSignBytes` / `cosmosAuthSignBytes`
+(32-byte SHA-256 digests) and `rotationSignBytes` (the domain-separated string
+both keys sign).
+
+**NONCE semantics:**
+
+- `MsgExecuteEVM.nonce` = the account's **current EVM nonce** (the relayer is a
+  different account than the owner, so its envelope does **not** bump the
+  account's nonce — pass the value as-is, do **not** `+1`).
+- `MsgExecuteCosmos.nonce` = the **per-authenticator sequence** for
+  `(account, pubkey)`, a store counter distinct from the account's own sequence.
+
+**Wallet builders** sign the digest and return a ready-to-broadcast message:
+`buildPhantomExecuteEvm` / `buildPhantomExecuteCosmos` (ed25519),
+`buildMetaMaskExecuteEvm` / `buildMetaMaskExecuteCosmos` (secp256k1-by-address),
+and `registerEthAuthenticatorMsg` to link an EVM key first.
+
+**Permission taxonomy & errors.** Query the on-chain permission schema with
+`client.query.getPermissionSchema()` (REST) / `client.grpc.permissionSchema()`
+(gRPC) and compare a candidate action against it before submitting. Failed lanes
+surface structured codes via `decodeTxError` — codespace `abstractaccount`: `5`
+SpendingLimitExceeded, `6` SessionKeyExpired, `10` PermissionDenied, `11`
+AuthenticatorReplay; codespace `pqc`: `21` HybridVerifyFailed.
+
+**Key rotation.** Migrate a legacy `shake256(mnemonic)` key to the canonical,
+address-bound key with `rotatePqcKeyMsgFromMnemonic` (dual-signs over
+`rotationSignBytes`); `derivePqcLegacy` re-derives the old key for the old-key
+half of the signature.
+
+```ts
+import {
+  buildPhantomExecuteEvm,
+  rotatePqcKeyMsgFromMnemonic,
+} from "@qorechain/sdk";
+
+// Phantom ed25519 authenticator spends from the canonical account; the relayer
+// broadcasts and pays. `nonce` is the account's CURRENT EVM nonce (no +1).
+const execMsg = await buildPhantomExecuteEvm({
+  wallet, // { publicKey, signMessage }
+  relayer: "qor1relayer…",
+  chainId: "qorechain-diana",
+  account: "qor1canonical…",
+  to: "0xRecipient…",
+  value: "1000000000000000000", // 1 QOR in aqor (wei)
+  nonce: await client.qor.getTransactionCount("0xAccount…"),
+});
+
+// One-shot: migrate a legacy shake256(mnemonic) key to the address-bound key.
+const { msg: rotateMsg } = rotatePqcKeyMsgFromMnemonic({
+  account: "qor1canonical…",
+  mnemonic,
+  chainId: "qorechain-diana",
+});
+```
+
+See the [Authenticators guide](../../docs/docs/guides/authenticators.md) for the
+full lifecycle (register → spend → rotate → revoke).
+
 ## Network reference
 
 - Mainnet chain id: `qorechain-vladi` (live).

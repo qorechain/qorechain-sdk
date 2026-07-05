@@ -61,6 +61,24 @@ class MsgMigratePQCKeyResponse(_message.Message):
     __slots__ = ()
     def __init__(self) -> None: ...
 
+class MsgRotatePQCKey(_message.Message):
+    __slots__ = ("sender", "old_public_key", "new_public_key", "old_signature", "new_signature")
+    SENDER_FIELD_NUMBER: _ClassVar[int]
+    OLD_PUBLIC_KEY_FIELD_NUMBER: _ClassVar[int]
+    NEW_PUBLIC_KEY_FIELD_NUMBER: _ClassVar[int]
+    OLD_SIGNATURE_FIELD_NUMBER: _ClassVar[int]
+    NEW_SIGNATURE_FIELD_NUMBER: _ClassVar[int]
+    sender: str
+    old_public_key: bytes
+    new_public_key: bytes
+    old_signature: bytes
+    new_signature: bytes
+    def __init__(self, sender: _Optional[str] = ..., old_public_key: _Optional[bytes] = ..., new_public_key: _Optional[bytes] = ..., old_signature: _Optional[bytes] = ..., new_signature: _Optional[bytes] = ...) -> None: ...
+
+class MsgRotatePQCKeyResponse(_message.Message):
+    __slots__ = ()
+    def __init__(self) -> None: ...
+
 class MsgDeprecateAlgorithm(_message.Message):
     __slots__ = ("authority", "algorithm_id", "migration_blocks", "replacement_algorithm_id")
     AUTHORITY_FIELD_NUMBER: _ClassVar[int]

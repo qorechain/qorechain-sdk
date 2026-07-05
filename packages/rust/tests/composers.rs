@@ -39,7 +39,7 @@ fn sample_fee() -> Fee {
     }
 }
 
-/// The full set of 53 custom-module type URLs, paired with an `Any` produced by
+/// The full set of 56 custom-module type URLs, paired with an `Any` produced by
 /// the matching `*_any` composer. Asserts every exact string AND that the
 /// composer emits it.
 #[test]
@@ -193,7 +193,7 @@ fn all_custom_type_urls_are_produced() {
             "/qorechain.multilayer.v1.MsgChallengeAnchor",
             msg::multilayer::challenge_anchor_any(addr, "l1", 0, vec![], "r"),
         ),
-        // pqc (5)
+        // pqc (6)
         (
             "/qorechain.pqc.v1.MsgRegisterPQCKey",
             msg::pqc::register_pqc_key_any(addr, vec![], vec![], "dilithium5"),
@@ -213,6 +213,10 @@ fn all_custom_type_urls_are_produced() {
         (
             "/qorechain.pqc.v1.MsgDisableAlgorithm",
             msg::pqc::disable_algorithm_any(addr, 1, "r"),
+        ),
+        (
+            "/qorechain.pqc.v1.MsgRotatePQCKey",
+            msg::pqc::rotate_pqc_key_any(addr, vec![1u8; 4], vec![2u8; 4], vec![3u8; 4], vec![4u8; 4]),
         ),
         // svm (4)
         (
@@ -265,7 +269,7 @@ fn all_custom_type_urls_are_produced() {
             "/qorechain.license.v1.MsgResumeLicense",
             msg::license::resume_license_any(addr, addr, "f"),
         ),
-        // abstractaccount (2)
+        // abstractaccount (4)
         (
             "/qorechain.abstractaccount.v1.MsgCreateAbstractAccount",
             msg::abstractaccount::create_abstract_account_any(addr, "smart"),
@@ -273,6 +277,34 @@ fn all_custom_type_urls_are_produced() {
         (
             "/qorechain.abstractaccount.v1.MsgUpdateSpendingRules",
             msg::abstractaccount::update_spending_rules_any(addr, addr, vec![]),
+        ),
+        (
+            "/qorechain.abstractaccount.v1.MsgExecuteEVM",
+            msg::abstractaccount::execute_evm_any(
+                addr,
+                addr,
+                "ed25519",
+                vec![1u8; 32],
+                vec![9u8; 64],
+                "0xabc",
+                "1000",
+                vec![2, 2, 2],
+                100_000,
+                5,
+            ),
+        ),
+        (
+            "/qorechain.abstractaccount.v1.MsgExecuteCosmos",
+            msg::abstractaccount::execute_cosmos_any(
+                addr,
+                addr,
+                "ed25519",
+                vec![1u8; 32],
+                vec![9u8; 64],
+                addr,
+                vec![coin("100")],
+                3,
+            ),
         ),
         // crossvm (2)
         (
@@ -311,8 +343,8 @@ fn all_custom_type_urls_are_produced() {
 
     assert_eq!(
         cases.len(),
-        53,
-        "exactly 53 custom messages must be covered"
+        56,
+        "exactly 56 custom messages must be covered"
     );
     for (want_url, any) in &cases {
         assert_eq!(&any.type_url, want_url, "type URL mismatch");
@@ -385,6 +417,92 @@ fn execute_withdrawal_round_trips_through_any() {
     assert_eq!(decoded.denom, "uqor");
     assert_eq!(decoded.amount, 12345);
     assert_eq!(decoded.proof, proof);
+}
+
+/// `MsgExecuteEVM` round-trips through `Any`, preserving the authenticator lane
+/// fields (scheme/pubkey/signature/to/value/data/gas/nonce).
+#[test]
+fn execute_evm_round_trips_through_any() {
+    let m = msg::abstractaccount::execute_evm(
+        "qor1relayer00000000000000000000000000000000",
+        "qor1account00000000000000000000000000000000",
+        "ed25519",
+        vec![1u8; 32],
+        vec![9u8; 64],
+        "0xdeadbeef",
+        "1000",
+        vec![2, 2, 2],
+        100_000,
+        5,
+    );
+    let any = msg::to_any(&m, msg::abstractaccount::EXECUTE_EVM);
+    assert_eq!(any.type_url, "/qorechain.abstractaccount.v1.MsgExecuteEVM");
+
+    let decoded: qorechain::proto::qorechain::abstractaccount::v1::MsgExecuteEvm =
+        msg::from_any(&any).expect("decode");
+    assert_eq!(decoded.relayer, m.relayer);
+    assert_eq!(decoded.account, m.account);
+    assert_eq!(decoded.scheme, "ed25519");
+    assert_eq!(decoded.pubkey, vec![1u8; 32]);
+    assert_eq!(decoded.signature, vec![9u8; 64]);
+    assert_eq!(decoded.to, "0xdeadbeef");
+    assert_eq!(decoded.value, "1000");
+    assert_eq!(decoded.data, vec![2, 2, 2]);
+    assert_eq!(decoded.gas_limit, 100_000);
+    assert_eq!(decoded.nonce, 5);
+}
+
+/// `MsgExecuteCosmos` round-trips through `Any`, including the repeated `Coin`
+/// `amount` field.
+#[test]
+fn execute_cosmos_round_trips_through_any() {
+    let m = msg::abstractaccount::execute_cosmos(
+        "qor1relayer00000000000000000000000000000000",
+        "qor1account00000000000000000000000000000000",
+        "secp256k1",
+        vec![7u8; 20],
+        vec![8u8; 65],
+        "qor1recipient00000000000000000000000000000",
+        vec![coin("100")],
+        3,
+    );
+    let any = msg::to_any(&m, msg::abstractaccount::EXECUTE_COSMOS);
+    assert_eq!(any.type_url, "/qorechain.abstractaccount.v1.MsgExecuteCosmos");
+
+    let decoded: qorechain::proto::qorechain::abstractaccount::v1::MsgExecuteCosmos =
+        msg::from_any(&any).expect("decode");
+    assert_eq!(decoded.relayer, m.relayer);
+    assert_eq!(decoded.account, m.account);
+    assert_eq!(decoded.scheme, "secp256k1");
+    assert_eq!(decoded.pubkey, vec![7u8; 20]);
+    assert_eq!(decoded.signature, vec![8u8; 65]);
+    assert_eq!(decoded.to, m.to);
+    assert_eq!(decoded.amount.len(), 1);
+    assert_eq!(decoded.amount[0].denom, "uqor");
+    assert_eq!(decoded.amount[0].amount, "100");
+    assert_eq!(decoded.nonce, 3);
+}
+
+/// `MsgRotatePQCKey` round-trips through `Any`, preserving both key/signature pairs.
+#[test]
+fn rotate_pqc_key_round_trips_through_any() {
+    let m = msg::pqc::rotate_pqc_key(
+        "qor1sender0000000000000000000000000000000000",
+        vec![0xaa; 8],
+        vec![0xbb; 8],
+        vec![0xcc; 16],
+        vec![0xdd; 16],
+    );
+    let any = msg::to_any(&m, msg::pqc::ROTATE_PQC_KEY);
+    assert_eq!(any.type_url, "/qorechain.pqc.v1.MsgRotatePQCKey");
+
+    let decoded: qorechain::proto::qorechain::pqc::v1::MsgRotatePqcKey =
+        msg::from_any(&any).expect("decode");
+    assert_eq!(decoded.sender, m.sender);
+    assert_eq!(decoded.old_public_key, vec![0xaa; 8]);
+    assert_eq!(decoded.new_public_key, vec![0xbb; 8]);
+    assert_eq!(decoded.old_signature, vec![0xcc; 16]);
+    assert_eq!(decoded.new_signature, vec![0xdd; 16]);
 }
 
 /// `MsgUpdateEthLightClient` round-trips through `Any`.

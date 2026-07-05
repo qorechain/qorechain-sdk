@@ -25,9 +25,10 @@ _sym_db = _symbol_database.Default()
 from cosmpy.protos.cosmos.msg.v1 import msg_pb2 as cosmos_dot_msg_dot_v1_dot_msg__pb2
 from cosmpy.protos.cosmos_proto import cosmos_pb2 as cosmos__proto_dot_cosmos__pb2
 from cosmpy.protos.gogoproto import gogo_pb2 as gogoproto_dot_gogo__pb2
+from cosmpy.protos.cosmos.base.v1beta1 import coin_pb2 as cosmos_dot_base_dot_v1beta1_dot_coin__pb2
 
 
-DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n%qorechain/abstractaccount/v1/tx.proto\x12\x1cqorechain.abstractaccount.v1\x1a\x17\x63osmos/msg/v1/msg.proto\x1a\x19\x63osmos_proto/cosmos.proto\x1a\x14gogoproto/gogo.proto\"\xaa\x01\n\x0cSpendingRule\x12\x16\n\x02id\x18\x01 \x01(\tB\x06\xe2\xde\x1f\x02IDR\x02id\x12\x1f\n\x0b\x64\x61ily_limit\x18\x02 \x01(\x03R\ndailyLimit\x12 \n\x0cper_tx_limit\x18\x03 \x01(\x03R\nperTxLimit\x12%\n\x0e\x61llowed_denoms\x18\x04 \x03(\tR\rallowedDenoms\x12\x18\n\x07\x65nabled\x18\x05 \x01(\x08R\x07\x65nabled\"y\n\x18MsgCreateAbstractAccount\x12.\n\x05owner\x18\x01 \x01(\tB\x18\xd2\xb4-\x14\x63osmos.AddressStringR\x05owner\x12!\n\x0c\x61\x63\x63ount_type\x18\x02 \x01(\tR\x0b\x61\x63\x63ountType:\n\x82\xe7\xb0*\x05owner\"<\n MsgCreateAbstractAccountResponse\x12\x18\n\x07\x61\x64\x64ress\x18\x01 \x01(\tR\x07\x61\x64\x64ress\"\xc5\x01\n\x16MsgUpdateSpendingRules\x12.\n\x05owner\x18\x01 \x01(\tB\x18\xd2\xb4-\x14\x63osmos.AddressStringR\x05owner\x12\'\n\x0f\x61\x63\x63ount_address\x18\x02 \x01(\tR\x0e\x61\x63\x63ountAddress\x12\x46\n\x05rules\x18\x03 \x03(\x0b\x32*.qorechain.abstractaccount.v1.SpendingRuleB\x04\xc8\xde\x1f\x00R\x05rules:\n\x82\xe7\xb0*\x05owner\" \n\x1eMsgUpdateSpendingRulesResponse\"\x88\x02\n\x18MsgRegisterAuthenticator\x12.\n\x05owner\x18\x01 \x01(\tB\x18\xd2\xb4-\x14\x63osmos.AddressStringR\x05owner\x12\'\n\x0f\x61\x63\x63ount_address\x18\x02 \x01(\tR\x0e\x61\x63\x63ountAddress\x12\x16\n\x06scheme\x18\x03 \x01(\tR\x06scheme\x12\x16\n\x06pubkey\x18\x04 \x01(\x0cR\x06pubkey\x12 \n\x0bpermissions\x18\x05 \x03(\tR\x0bpermissions\x12\x1f\n\x0b\x65xpiry_unix\x18\x06 \x01(\x03R\nexpiryUnix\x12\x14\n\x05label\x18\x07 \x01(\tR\x05label:\n\x82\xe7\xb0*\x05owner\"\"\n MsgRegisterAuthenticatorResponse\"\xad\x01\n\x16MsgRevokeAuthenticator\x12.\n\x05owner\x18\x01 \x01(\tB\x18\xd2\xb4-\x14\x63osmos.AddressStringR\x05owner\x12\'\n\x0f\x61\x63\x63ount_address\x18\x02 \x01(\tR\x0e\x61\x63\x63ountAddress\x12\x16\n\x06scheme\x18\x03 \x01(\tR\x06scheme\x12\x16\n\x06pubkey\x18\x04 \x01(\x0cR\x06pubkey:\n\x82\xe7\xb0*\x05owner\" \n\x1eMsgRevokeAuthenticatorResponse2\xc8\x04\n\x03Msg\x12\x8f\x01\n\x15\x43reateAbstractAccount\x12\x36.qorechain.abstractaccount.v1.MsgCreateAbstractAccount\x1a>.qorechain.abstractaccount.v1.MsgCreateAbstractAccountResponse\x12\x89\x01\n\x13UpdateSpendingRules\x12\x34.qorechain.abstractaccount.v1.MsgUpdateSpendingRules\x1a<.qorechain.abstractaccount.v1.MsgUpdateSpendingRulesResponse\x12\x8f\x01\n\x15RegisterAuthenticator\x12\x36.qorechain.abstractaccount.v1.MsgRegisterAuthenticator\x1a>.qorechain.abstractaccount.v1.MsgRegisterAuthenticatorResponse\x12\x89\x01\n\x13RevokeAuthenticator\x12\x34.qorechain.abstractaccount.v1.MsgRevokeAuthenticator\x1a<.qorechain.abstractaccount.v1.MsgRevokeAuthenticatorResponse\x1a\x05\x80\xe7\xb0*\x01\x42\xfa\x01\n com.qorechain.abstractaccount.v1B\x07TxProtoP\x01Z;github.com/qorechain/qorechain-core/x/abstractaccount/types\xa2\x02\x03QAX\xaa\x02\x1cQorechain.Abstractaccount.V1\xca\x02\x1cQorechain\\Abstractaccount\\V1\xe2\x02(Qorechain\\Abstractaccount\\V1\\GPBMetadata\xea\x02\x1eQorechain::Abstractaccount::V1b\x06proto3')
+DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n%qorechain/abstractaccount/v1/tx.proto\x12\x1cqorechain.abstractaccount.v1\x1a\x17\x63osmos/msg/v1/msg.proto\x1a\x19\x63osmos_proto/cosmos.proto\x1a\x14gogoproto/gogo.proto\x1a\x1e\x63osmos/base/v1beta1/coin.proto\"\xaa\x01\n\x0cSpendingRule\x12\x16\n\x02id\x18\x01 \x01(\tB\x06\xe2\xde\x1f\x02IDR\x02id\x12\x1f\n\x0b\x64\x61ily_limit\x18\x02 \x01(\x03R\ndailyLimit\x12 \n\x0cper_tx_limit\x18\x03 \x01(\x03R\nperTxLimit\x12%\n\x0e\x61llowed_denoms\x18\x04 \x03(\tR\rallowedDenoms\x12\x18\n\x07\x65nabled\x18\x05 \x01(\x08R\x07\x65nabled\"y\n\x18MsgCreateAbstractAccount\x12.\n\x05owner\x18\x01 \x01(\tB\x18\xd2\xb4-\x14\x63osmos.AddressStringR\x05owner\x12!\n\x0c\x61\x63\x63ount_type\x18\x02 \x01(\tR\x0b\x61\x63\x63ountType:\n\x82\xe7\xb0*\x05owner\"<\n MsgCreateAbstractAccountResponse\x12\x18\n\x07\x61\x64\x64ress\x18\x01 \x01(\tR\x07\x61\x64\x64ress\"\xc5\x01\n\x16MsgUpdateSpendingRules\x12.\n\x05owner\x18\x01 \x01(\tB\x18\xd2\xb4-\x14\x63osmos.AddressStringR\x05owner\x12\'\n\x0f\x61\x63\x63ount_address\x18\x02 \x01(\tR\x0e\x61\x63\x63ountAddress\x12\x46\n\x05rules\x18\x03 \x03(\x0b\x32*.qorechain.abstractaccount.v1.SpendingRuleB\x04\xc8\xde\x1f\x00R\x05rules:\n\x82\xe7\xb0*\x05owner\" \n\x1eMsgUpdateSpendingRulesResponse\"\x88\x02\n\x18MsgRegisterAuthenticator\x12.\n\x05owner\x18\x01 \x01(\tB\x18\xd2\xb4-\x14\x63osmos.AddressStringR\x05owner\x12\'\n\x0f\x61\x63\x63ount_address\x18\x02 \x01(\tR\x0e\x61\x63\x63ountAddress\x12\x16\n\x06scheme\x18\x03 \x01(\tR\x06scheme\x12\x16\n\x06pubkey\x18\x04 \x01(\x0cR\x06pubkey\x12 \n\x0bpermissions\x18\x05 \x03(\tR\x0bpermissions\x12\x1f\n\x0b\x65xpiry_unix\x18\x06 \x01(\x03R\nexpiryUnix\x12\x14\n\x05label\x18\x07 \x01(\tR\x05label:\n\x82\xe7\xb0*\x05owner\"\"\n MsgRegisterAuthenticatorResponse\"\xad\x01\n\x16MsgRevokeAuthenticator\x12.\n\x05owner\x18\x01 \x01(\tB\x18\xd2\xb4-\x14\x63osmos.AddressStringR\x05owner\x12\'\n\x0f\x61\x63\x63ount_address\x18\x02 \x01(\tR\x0e\x61\x63\x63ountAddress\x12\x16\n\x06scheme\x18\x03 \x01(\tR\x06scheme\x12\x16\n\x06pubkey\x18\x04 \x01(\x0cR\x06pubkey:\n\x82\xe7\xb0*\x05owner\" \n\x1eMsgRevokeAuthenticatorResponse\"\xa6\x02\n\rMsgExecuteEVM\x12\x32\n\x07relayer\x18\x01 \x01(\tB\x18\xd2\xb4-\x14\x63osmos.AddressStringR\x07relayer\x12\x18\n\x07\x61\x63\x63ount\x18\x02 \x01(\tR\x07\x61\x63\x63ount\x12\x16\n\x06scheme\x18\x03 \x01(\tR\x06scheme\x12\x16\n\x06pubkey\x18\x04 \x01(\x0cR\x06pubkey\x12\x1c\n\tsignature\x18\x05 \x01(\x0cR\tsignature\x12\x0e\n\x02to\x18\x06 \x01(\tR\x02to\x12\x14\n\x05value\x18\x07 \x01(\tR\x05value\x12\x12\n\x04\x64\x61ta\x18\x08 \x01(\x0cR\x04\x64\x61ta\x12\x1b\n\tgas_limit\x18\t \x01(\x04R\x08gasLimit\x12\x14\n\x05nonce\x18\n \x01(\x04R\x05nonce:\x0c\x82\xe7\xb0*\x07relayer\"y\n\x15MsgExecuteEVMResponse\x12\x18\n\x07success\x18\x01 \x01(\x08R\x07success\x12\x10\n\x03ret\x18\x02 \x01(\x0cR\x03ret\x12\x19\n\x08gas_used\x18\x03 \x01(\x04R\x07gasUsed\x12\x19\n\x08vm_error\x18\x04 \x01(\tR\x07vmError\"\xe1\x02\n\x10MsgExecuteCosmos\x12\x32\n\x07relayer\x18\x01 \x01(\tB\x18\xd2\xb4-\x14\x63osmos.AddressStringR\x07relayer\x12\x18\n\x07\x61\x63\x63ount\x18\x02 \x01(\tR\x07\x61\x63\x63ount\x12\x16\n\x06scheme\x18\x03 \x01(\tR\x06scheme\x12\x16\n\x06pubkey\x18\x04 \x01(\x0cR\x06pubkey\x12\x1c\n\tsignature\x18\x05 \x01(\x0cR\tsignature\x12(\n\x02to\x18\x06 \x01(\tB\x18\xd2\xb4-\x14\x63osmos.AddressStringR\x02to\x12\x63\n\x06\x61mount\x18\x07 \x03(\x0b\x32\x19.cosmos.base.v1beta1.CoinB0\xc8\xde\x1f\x00\xaa\xdf\x1f(github.com/cosmos/cosmos-sdk/types.CoinsR\x06\x61mount\x12\x14\n\x05nonce\x18\x08 \x01(\x04R\x05nonce:\x0c\x82\xe7\xb0*\x07relayer\"4\n\x18MsgExecuteCosmosResponse\x12\x18\n\x07success\x18\x01 \x01(\x08R\x07success2\xb1\x06\n\x03Msg\x12\x8f\x01\n\x15\x43reateAbstractAccount\x12\x36.qorechain.abstractaccount.v1.MsgCreateAbstractAccount\x1a>.qorechain.abstractaccount.v1.MsgCreateAbstractAccountResponse\x12\x89\x01\n\x13UpdateSpendingRules\x12\x34.qorechain.abstractaccount.v1.MsgUpdateSpendingRules\x1a<.qorechain.abstractaccount.v1.MsgUpdateSpendingRulesResponse\x12\x8f\x01\n\x15RegisterAuthenticator\x12\x36.qorechain.abstractaccount.v1.MsgRegisterAuthenticator\x1a>.qorechain.abstractaccount.v1.MsgRegisterAuthenticatorResponse\x12\x89\x01\n\x13RevokeAuthenticator\x12\x34.qorechain.abstractaccount.v1.MsgRevokeAuthenticator\x1a<.qorechain.abstractaccount.v1.MsgRevokeAuthenticatorResponse\x12n\n\nExecuteEVM\x12+.qorechain.abstractaccount.v1.MsgExecuteEVM\x1a\x33.qorechain.abstractaccount.v1.MsgExecuteEVMResponse\x12w\n\rExecuteCosmos\x12..qorechain.abstractaccount.v1.MsgExecuteCosmos\x1a\x36.qorechain.abstractaccount.v1.MsgExecuteCosmosResponse\x1a\x05\x80\xe7\xb0*\x01\x42\xfa\x01\n com.qorechain.abstractaccount.v1B\x07TxProtoP\x01Z;github.com/qorechain/qorechain-core/x/abstractaccount/types\xa2\x02\x03QAX\xaa\x02\x1cQorechain.Abstractaccount.V1\xca\x02\x1cQorechain\\Abstractaccount\\V1\xe2\x02(Qorechain\\Abstractaccount\\V1\\GPBMetadata\xea\x02\x1eQorechain::Abstractaccount::V1b\x06proto3')
 
 _globals = globals()
 _builder.BuildMessageAndEnumDescriptors(DESCRIPTOR, _globals)
@@ -55,26 +56,46 @@ if not _descriptor._USE_C_DESCRIPTORS:
   _globals['_MSGREVOKEAUTHENTICATOR'].fields_by_name['owner']._serialized_options = b'\322\264-\024cosmos.AddressString'
   _globals['_MSGREVOKEAUTHENTICATOR']._loaded_options = None
   _globals['_MSGREVOKEAUTHENTICATOR']._serialized_options = b'\202\347\260*\005owner'
+  _globals['_MSGEXECUTEEVM'].fields_by_name['relayer']._loaded_options = None
+  _globals['_MSGEXECUTEEVM'].fields_by_name['relayer']._serialized_options = b'\322\264-\024cosmos.AddressString'
+  _globals['_MSGEXECUTEEVM']._loaded_options = None
+  _globals['_MSGEXECUTEEVM']._serialized_options = b'\202\347\260*\007relayer'
+  _globals['_MSGEXECUTECOSMOS'].fields_by_name['relayer']._loaded_options = None
+  _globals['_MSGEXECUTECOSMOS'].fields_by_name['relayer']._serialized_options = b'\322\264-\024cosmos.AddressString'
+  _globals['_MSGEXECUTECOSMOS'].fields_by_name['to']._loaded_options = None
+  _globals['_MSGEXECUTECOSMOS'].fields_by_name['to']._serialized_options = b'\322\264-\024cosmos.AddressString'
+  _globals['_MSGEXECUTECOSMOS'].fields_by_name['amount']._loaded_options = None
+  _globals['_MSGEXECUTECOSMOS'].fields_by_name['amount']._serialized_options = b'\310\336\037\000\252\337\037(github.com/cosmos/cosmos-sdk/types.Coins'
+  _globals['_MSGEXECUTECOSMOS']._loaded_options = None
+  _globals['_MSGEXECUTECOSMOS']._serialized_options = b'\202\347\260*\007relayer'
   _globals['_MSG']._loaded_options = None
   _globals['_MSG']._serialized_options = b'\200\347\260*\001'
-  _globals['_SPENDINGRULE']._serialized_start=146
-  _globals['_SPENDINGRULE']._serialized_end=316
-  _globals['_MSGCREATEABSTRACTACCOUNT']._serialized_start=318
-  _globals['_MSGCREATEABSTRACTACCOUNT']._serialized_end=439
-  _globals['_MSGCREATEABSTRACTACCOUNTRESPONSE']._serialized_start=441
-  _globals['_MSGCREATEABSTRACTACCOUNTRESPONSE']._serialized_end=501
-  _globals['_MSGUPDATESPENDINGRULES']._serialized_start=504
-  _globals['_MSGUPDATESPENDINGRULES']._serialized_end=701
-  _globals['_MSGUPDATESPENDINGRULESRESPONSE']._serialized_start=703
-  _globals['_MSGUPDATESPENDINGRULESRESPONSE']._serialized_end=735
-  _globals['_MSGREGISTERAUTHENTICATOR']._serialized_start=738
-  _globals['_MSGREGISTERAUTHENTICATOR']._serialized_end=1002
-  _globals['_MSGREGISTERAUTHENTICATORRESPONSE']._serialized_start=1004
-  _globals['_MSGREGISTERAUTHENTICATORRESPONSE']._serialized_end=1038
-  _globals['_MSGREVOKEAUTHENTICATOR']._serialized_start=1041
-  _globals['_MSGREVOKEAUTHENTICATOR']._serialized_end=1214
-  _globals['_MSGREVOKEAUTHENTICATORRESPONSE']._serialized_start=1216
-  _globals['_MSGREVOKEAUTHENTICATORRESPONSE']._serialized_end=1248
-  _globals['_MSG']._serialized_start=1251
-  _globals['_MSG']._serialized_end=1835
+  _globals['_SPENDINGRULE']._serialized_start=178
+  _globals['_SPENDINGRULE']._serialized_end=348
+  _globals['_MSGCREATEABSTRACTACCOUNT']._serialized_start=350
+  _globals['_MSGCREATEABSTRACTACCOUNT']._serialized_end=471
+  _globals['_MSGCREATEABSTRACTACCOUNTRESPONSE']._serialized_start=473
+  _globals['_MSGCREATEABSTRACTACCOUNTRESPONSE']._serialized_end=533
+  _globals['_MSGUPDATESPENDINGRULES']._serialized_start=536
+  _globals['_MSGUPDATESPENDINGRULES']._serialized_end=733
+  _globals['_MSGUPDATESPENDINGRULESRESPONSE']._serialized_start=735
+  _globals['_MSGUPDATESPENDINGRULESRESPONSE']._serialized_end=767
+  _globals['_MSGREGISTERAUTHENTICATOR']._serialized_start=770
+  _globals['_MSGREGISTERAUTHENTICATOR']._serialized_end=1034
+  _globals['_MSGREGISTERAUTHENTICATORRESPONSE']._serialized_start=1036
+  _globals['_MSGREGISTERAUTHENTICATORRESPONSE']._serialized_end=1070
+  _globals['_MSGREVOKEAUTHENTICATOR']._serialized_start=1073
+  _globals['_MSGREVOKEAUTHENTICATOR']._serialized_end=1246
+  _globals['_MSGREVOKEAUTHENTICATORRESPONSE']._serialized_start=1248
+  _globals['_MSGREVOKEAUTHENTICATORRESPONSE']._serialized_end=1280
+  _globals['_MSGEXECUTEEVM']._serialized_start=1283
+  _globals['_MSGEXECUTEEVM']._serialized_end=1577
+  _globals['_MSGEXECUTEEVMRESPONSE']._serialized_start=1579
+  _globals['_MSGEXECUTEEVMRESPONSE']._serialized_end=1700
+  _globals['_MSGEXECUTECOSMOS']._serialized_start=1703
+  _globals['_MSGEXECUTECOSMOS']._serialized_end=2056
+  _globals['_MSGEXECUTECOSMOSRESPONSE']._serialized_start=2058
+  _globals['_MSGEXECUTECOSMOSRESPONSE']._serialized_end=2110
+  _globals['_MSG']._serialized_start=2113
+  _globals['_MSG']._serialized_end=2930
 # @@protoc_insertion_point(module_scope)

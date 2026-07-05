@@ -111,10 +111,11 @@ QORECHAIN_COMPOSER_CASES = [
         multilayer.challenge_anchor(challenger="qor1"),
         "/qorechain.multilayer.v1.MsgChallengeAnchor",
     ),
-    # pqc (5)
+    # pqc (6)
     (pqc.register_pqc_key(sender="qor1"), "/qorechain.pqc.v1.MsgRegisterPQCKey"),
     (pqc.register_pqc_key_v2(sender="qor1"), "/qorechain.pqc.v1.MsgRegisterPQCKeyV2"),
     (pqc.migrate_pqc_key(sender="qor1"), "/qorechain.pqc.v1.MsgMigratePQCKey"),
+    (pqc.rotate_pqc_key(sender="qor1"), "/qorechain.pqc.v1.MsgRotatePQCKey"),
     (
         pqc.deprecate_algorithm(authority="qor1"),
         "/qorechain.pqc.v1.MsgDeprecateAlgorithm",
@@ -147,7 +148,7 @@ QORECHAIN_COMPOSER_CASES = [
         "/qorechain.license.v1.MsgSuspendLicense",
     ),
     (license.resume_license(authority="qor1"), "/qorechain.license.v1.MsgResumeLicense"),
-    # abstractaccount (4)
+    # abstractaccount (6)
     (
         abstractaccount.create_abstract_account(owner="qor1"),
         "/qorechain.abstractaccount.v1.MsgCreateAbstractAccount",
@@ -163,6 +164,14 @@ QORECHAIN_COMPOSER_CASES = [
     (
         abstractaccount.revoke_authenticator(owner="qor1"),
         "/qorechain.abstractaccount.v1.MsgRevokeAuthenticator",
+    ),
+    (
+        abstractaccount.execute_evm(relayer="qor1"),
+        "/qorechain.abstractaccount.v1.MsgExecuteEVM",
+    ),
+    (
+        abstractaccount.execute_cosmos(relayer="qor1"),
+        "/qorechain.abstractaccount.v1.MsgExecuteCosmos",
     ),
     # crossvm (2)
     (crossvm.cross_vm_call(sender="qor1"), "/qorechain.crossvm.v1.MsgCrossVMCall"),
@@ -187,10 +196,10 @@ QORECHAIN_COMPOSER_CASES = [
 ]
 
 
-def test_all_55_qorechain_composers_covered():
-    assert len(QORECHAIN_COMPOSER_CASES) == 55
+def test_all_58_qorechain_composers_covered():
+    assert len(QORECHAIN_COMPOSER_CASES) == 58
     type_urls = {tu for _m, tu in QORECHAIN_COMPOSER_CASES}
-    assert len(type_urls) == 55
+    assert len(type_urls) == 58
 
 
 @pytest.mark.parametrize("built_msg,type_url", QORECHAIN_COMPOSER_CASES)
@@ -230,11 +239,11 @@ def test_cosmos_composer_returns_exact_type_url(built_msg, type_url):
     assert built_msg.type_url == type_url
 
 
-def test_registry_covers_all_55_qorechain_and_18_cosmos():
+def test_registry_covers_all_58_qorechain_and_18_cosmos():
     reg = qorechain_registry()
     qc = [k for k in reg if k.startswith("/qorechain.")]
-    assert len(qc) == 55
-    assert len(reg) == 55 + 18
+    assert len(qc) == 58
+    assert len(reg) == 58 + 18
 
 
 def test_registry_extra_types_override():

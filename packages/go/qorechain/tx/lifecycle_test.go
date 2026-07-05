@@ -39,6 +39,25 @@ func TestDecodeTxError(t *testing.T) {
 	if unknownCs.Reason != "unknown mystery error" {
 		t.Fatalf("unknown codespace fallback mismatch: %+v", unknownCs)
 	}
+	// v3.1.85 authenticator-lane codes (abstractaccount) + pqc hybrid verify.
+	aaCases := map[uint32]string{
+		5:  "spending limit exceeded",
+		6:  "session key expired",
+		10: "permission denied",
+		11: "authenticator replay",
+	}
+	for code, want := range aaCases {
+		if got := DecodeTxError(code, "abstractaccount", ""); got.Reason != want {
+			t.Fatalf("abstractaccount code %d: want %q, got %q", code, want, got.Reason)
+		}
+	}
+	if got := DecodeTxError(21, "pqc", ""); got.Reason != "hybrid verify failed" {
+		t.Fatalf("pqc code 21: want %q, got %q", "hybrid verify failed", got.Reason)
+	}
+	// Unmapped code in an enumerated custom codespace still falls back.
+	if got := DecodeTxError(99, "abstractaccount", ""); got.Reason != "unknown abstractaccount error" {
+		t.Fatalf("abstractaccount fallback mismatch: %+v", got)
+	}
 	if !errors.Is(error(root), error(root)) {
 		t.Fatal("QoreTxError should satisfy error")
 	}

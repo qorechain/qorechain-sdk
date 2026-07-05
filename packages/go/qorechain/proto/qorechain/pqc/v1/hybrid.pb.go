@@ -26,7 +26,7 @@ const _ = proto.GoGoProtoPackageIsVersion3 // please upgrade the proto package
 // PQCHybridSignature is a transaction extension option carried in
 // TxBody.extension_options. It pairs a post-quantum (Dilithium-5) signature with
 // the account's classical secp256k1 signature so every transaction can be
-// quantum-safe while remaining compatible with the standard Native auth
+// quantum-safe while remaining compatible with the standard Cosmos SDK auth
 // path. It is registered as a cosmos.tx.v1beta1.TxExtensionOptionI.
 type PQCHybridSignature struct {
 	// algorithm_id identifies the PQC signature algorithm (e.g. Dilithium-5 = 1).

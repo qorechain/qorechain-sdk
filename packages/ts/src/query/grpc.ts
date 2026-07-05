@@ -147,6 +147,15 @@ export interface AbstractAccountQueryClient {
   accounts(
     req?: abstractaccount.QueryAccountsRequest,
   ): Promise<abstractaccount.QueryAccountsResponse>;
+  /**
+   * The canonical authenticator permission taxonomy (v3.1.85): the valid
+   * permission strings, the message-typeURL→permission mapping, the
+   * never-delegable key-management typeURLs, and a `schema_version` clients
+   * compare against their embedded copy to detect drift.
+   */
+  permissionSchema(
+    req?: abstractaccount.QueryPermissionSchemaRequest,
+  ): Promise<abstractaccount.QueryPermissionSchemaResponse>;
 }
 
 /** Multilayer (sidechain / paychain) module query client. */
@@ -301,6 +310,13 @@ export function createQueryClients(
         "Accounts",
         abstractaccount.QueryAccountsRequest,
         abstractaccount.QueryAccountsResponse,
+      ),
+      permissionSchema: unary(
+        rpc,
+        "qorechain.abstractaccount.v1.Query",
+        "PermissionSchema",
+        abstractaccount.QueryPermissionSchemaRequest,
+        abstractaccount.QueryPermissionSchemaResponse,
       ),
     },
     amm: {

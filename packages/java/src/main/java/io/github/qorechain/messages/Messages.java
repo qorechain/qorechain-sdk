@@ -14,7 +14,7 @@ import java.util.Set;
  * The QoreChain message registry: a {@code typeUrl → protobuf Parser} map plus
  * Native {@link Any} pack/unpack.
  *
- * <p>Covers all 55 QoreChain custom-module {@code Msg} types (amm, bridge, rdk,
+ * <p>Covers all 58 QoreChain custom-module {@code Msg} types (amm, bridge, rdk,
  * multilayer, pqc, svm, lightnode, license, abstractaccount, crossvm,
  * rlconsensus) and the standard Native messages exposed by {@link CosmosMessages}.
  *
@@ -76,6 +76,7 @@ public final class Messages {
         m.put("/qorechain.pqc.v1.MsgRegisterPQCKey", qorechain.pqc.v1.Tx.MsgRegisterPQCKey.parser());
         m.put("/qorechain.pqc.v1.MsgRegisterPQCKeyV2", qorechain.pqc.v1.Tx.MsgRegisterPQCKeyV2.parser());
         m.put("/qorechain.pqc.v1.MsgMigratePQCKey", qorechain.pqc.v1.Tx.MsgMigratePQCKey.parser());
+        m.put("/qorechain.pqc.v1.MsgRotatePQCKey", qorechain.pqc.v1.Tx.MsgRotatePQCKey.parser());
         m.put("/qorechain.pqc.v1.MsgDeprecateAlgorithm", qorechain.pqc.v1.Tx.MsgDeprecateAlgorithm.parser());
         m.put("/qorechain.pqc.v1.MsgDisableAlgorithm", qorechain.pqc.v1.Tx.MsgDisableAlgorithm.parser());
 
@@ -102,6 +103,8 @@ public final class Messages {
         m.put("/qorechain.abstractaccount.v1.MsgUpdateSpendingRules", qorechain.abstractaccount.v1.Tx.MsgUpdateSpendingRules.parser());
         m.put("/qorechain.abstractaccount.v1.MsgRegisterAuthenticator", qorechain.abstractaccount.v1.Tx.MsgRegisterAuthenticator.parser());
         m.put("/qorechain.abstractaccount.v1.MsgRevokeAuthenticator", qorechain.abstractaccount.v1.Tx.MsgRevokeAuthenticator.parser());
+        m.put("/qorechain.abstractaccount.v1.MsgExecuteEVM", qorechain.abstractaccount.v1.Tx.MsgExecuteEVM.parser());
+        m.put("/qorechain.abstractaccount.v1.MsgExecuteCosmos", qorechain.abstractaccount.v1.Tx.MsgExecuteCosmos.parser());
 
         // ---- crossvm (2) ----
         m.put("/qorechain.crossvm.v1.MsgCrossVMCall", qorechain.crossvm.v1.Tx.MsgCrossVMCall.parser());
@@ -116,7 +119,7 @@ public final class Messages {
         REGISTRY = Collections.unmodifiableMap(m);
     }
 
-    /** All registered type URLs (Native standard + 55 QoreChain customs). */
+    /** All registered type URLs (Native standard + 58 QoreChain customs). */
     public static Set<String> typeUrls() {
         return REGISTRY.keySet();
     }

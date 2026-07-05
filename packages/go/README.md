@@ -315,6 +315,80 @@ fromPhantom, _ := unified.UnifiedAccountFromPhantomSignature(phantomSignature)
 
 See the [unified-wallet](../../docs/docs/guides/unified-wallet.md) guide.
 
+## Authenticator lanes (v0.7.0 / chain v3.1.85)
+
+A linked external key — a Phantom **ed25519** key, or a MetaMask **secp256k1**
+key bound **by address** — spends from the ONE canonical PQC account through a
+**relayer** that submits the tx and pays the fee (its own hybrid-PQC signature
+satisfies the ante). The external key **never produces an ML-DSA co-signature**;
+its signature over the domain-separated, replay-bound sign-bytes **is** the
+authorization, under least-privilege, spending-limit and revocable terms
+enforced on-chain.
+
+Three messages carry the lanes, each with a composer in the `messages` package:
+
+- `MsgExecuteEVM` (`/qorechain.abstractaccount.v1.MsgExecuteEVM`) —
+  `messages.AbstractAccount.ExecuteEVM`
+- `MsgExecuteCosmos` (`/qorechain.abstractaccount.v1.MsgExecuteCosmos`) —
+  `messages.AbstractAccount.ExecuteCosmos`
+- `MsgRotatePQCKey` (`/qorechain.pqc.v1.MsgRotatePQCKey`) —
+  `messages.Pqc.RotatePQCKey`
+
+**Sign-bytes helpers** (`authenticator` package) rebuild the exact digest the
+chain re-derives: `authenticator.EVMAuthSignBytes` / `CosmosAuthSignBytes`
+(32-byte SHA-256 digests) and `RotationSignBytes` (the domain-separated string
+both keys sign).
+
+**NONCE semantics:**
+
+- `MsgExecuteEVM.Nonce` = the account's **current EVM nonce** (the relayer is a
+  different account than the owner, so its envelope does **not** bump the
+  account's nonce — pass it as-is, do **not** `+1`).
+- `MsgExecuteCosmos.Nonce` = the **per-authenticator sequence** for
+  `(account, pubkey)`, a store counter distinct from the account's own sequence.
+
+**Permission taxonomy & errors.** Query the on-chain permission schema via
+`client.AbstractAccount().PermissionSchema(ctx, &QueryPermissionSchemaRequest{})`
+and compare an action to it before submitting. `tx.DecodeTxError` surfaces the
+lane failures — codespace `abstractaccount`: `5` SpendingLimitExceeded, `6`
+SessionKeyExpired, `10` PermissionDenied, `11` AuthenticatorReplay; codespace
+`pqc`: `21` HybridVerifyFailed.
+
+**Key rotation.** `authenticator.RotatePQCKeyMsgFromMnemonic` migrates a legacy
+`shake256(mnemonic)` key to the canonical, address-bound key (dual-signs over
+`RotationSignBytes`); `authenticator.DerivePQCLegacy` re-derives the old key for
+the old-key half.
+
+```go
+import (
+    "github.com/qorechain/qorechain-sdk/packages/go/qorechain/authenticator"
+    "github.com/qorechain/qorechain-sdk/packages/go/qorechain/messages"
+)
+
+// Phantom ed25519 authenticator authorizes an EVM spend from the canonical
+// account; the relayer broadcasts and pays. nonce = the account's CURRENT EVM
+// nonce (relayer != owner -> no +1).
+digest := authenticator.EVMAuthSignBytes(
+    "qorechain-diana", "qor1canonical…", phantomPubkey, // 32-byte ed25519
+    "0xRecipient…", "1000000000000000000",              // 1 QOR in aqor (wei)
+    nil, currentEVMNonce,
+)
+signature := phantomSign(digest[:]) // your wallet signs the raw 32 bytes
+execMsg := messages.AbstractAccount.ExecuteEVM(
+    "qor1relayer…", "qor1canonical…", "ed25519", phantomPubkey, signature,
+    "0xRecipient…", "1000000000000000000", nil, 100000, currentEVMNonce,
+)
+
+// Migrate a legacy shake256(mnemonic) key to the address-bound key.
+res, _ := authenticator.RotatePQCKeyMsgFromMnemonic(
+    "qor1canonical…", mnemonic, "qorechain-diana", 1,
+    authenticator.DerivationLegacy, authenticator.DerivationCanonical,
+)
+_ = res.Msg // *pqcv1.MsgRotatePQCKey, broadcast BY the account, hybrid-cosigned
+```
+
+See the [authenticators](../../docs/docs/guides/authenticators.md) guide.
+
 ## Development
 
 ```sh

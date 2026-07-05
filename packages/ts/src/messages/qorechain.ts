@@ -214,6 +214,17 @@ export const pqc = {
     "/qorechain.pqc.v1.MsgDisableAlgorithm",
     pqcTx.MsgDisableAlgorithm,
   ),
+  /**
+   * Replace an account's PQC key with a NEW key of the SAME algorithm (rotate a
+   * compromised key, or migrate a legacy-derived key to the canonical
+   * derivation). Dual-signed over the domain-separated rotation bytes (the old
+   * key proves ownership, the new key proves control). Sender-signed; broadcast
+   * BY the account, cosigned (hybrid) with the OLD key.
+   */
+  rotatePqcKey: composer(
+    "/qorechain.pqc.v1.MsgRotatePQCKey",
+    pqcTx.MsgRotatePQCKey,
+  ),
 };
 
 /** SVM (virtual machine programs/accounts) message composers. */
@@ -299,6 +310,26 @@ export const abstractaccount = {
   revokeAuthenticator: composer(
     "/qorechain.abstractaccount.v1.MsgRevokeAuthenticator",
     abstractaccountTx.MsgRevokeAuthenticator,
+  ),
+  /**
+   * EVM-lane spend: execute an EVM call/transfer FROM the canonical account's
+   * 0x address, authorized by a linked authenticator's signature over the EVM
+   * auth sign-bytes. Relayer-signed (it submits + pays fees). See
+   * {@link ../tx/authenticator.evmAuthSignBytes}.
+   */
+  executeEvm: composer(
+    "/qorechain.abstractaccount.v1.MsgExecuteEVM",
+    abstractaccountTx.MsgExecuteEVM,
+  ),
+  /**
+   * Native-lane spend: move native QOR FROM the canonical account via x/bank,
+   * authorized by a linked authenticator's signature over the Cosmos auth
+   * sign-bytes. Relayer-signed (it submits + pays fees). See
+   * {@link ../tx/authenticator.cosmosAuthSignBytes}.
+   */
+  executeCosmos: composer(
+    "/qorechain.abstractaccount.v1.MsgExecuteCosmos",
+    abstractaccountTx.MsgExecuteCosmos,
   ),
 };
 

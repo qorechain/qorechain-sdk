@@ -22,9 +22,10 @@ _runtime_version.ValidateProtobufRuntimeVersion(
 _sym_db = _symbol_database.Default()
 
 
+from google.api import annotations_pb2 as google_dot_api_dot_annotations__pb2
 
 
-DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n(qorechain/abstractaccount/v1/query.proto\x12\x1cqorechain.abstractaccount.v1\"\xae\x01\n\nConfigView\x12\x18\n\x07\x65nabled\x18\x01 \x01(\x08R\x07\x65nabled\x12(\n\x10max_session_keys\x18\x02 \x01(\x05R\x0emaxSessionKeys\x12,\n\x12max_spending_rules\x18\x03 \x01(\x05R\x10maxSpendingRules\x12.\n\x13\x64\x65\x66\x61ult_session_ttl\x18\x04 \x01(\x03R\x11\x64\x65\x66\x61ultSessionTtl\"\x8a\x02\n\x0b\x41\x63\x63ountView\x12\x18\n\x07\x61\x64\x64ress\x18\x01 \x01(\tR\x07\x61\x64\x64ress\x12)\n\x10\x63ontract_address\x18\x02 \x01(\tR\x0f\x63ontractAddress\x12!\n\x0c\x61\x63\x63ount_type\x18\x03 \x01(\tR\x0b\x61\x63\x63ountType\x12\x30\n\x14spending_rules_count\x18\x04 \x01(\rR\x12spendingRulesCount\x12,\n\x12session_keys_count\x18\x05 \x01(\rR\x10sessionKeysCount\x12\x1d\n\ncreated_at\x18\x06 \x01(\x03R\tcreatedAt\x12\x14\n\x05owner\x18\x07 \x01(\tR\x05owner\"\x14\n\x12QueryConfigRequest\"W\n\x13QueryConfigResponse\x12@\n\x06\x63onfig\x18\x01 \x01(\x0b\x32(.qorechain.abstractaccount.v1.ConfigViewR\x06\x63onfig\"/\n\x13QueryAccountRequest\x12\x18\n\x07\x61\x64\x64ress\x18\x01 \x01(\tR\x07\x61\x64\x64ress\"[\n\x14QueryAccountResponse\x12\x43\n\x07\x61\x63\x63ount\x18\x01 \x01(\x0b\x32).qorechain.abstractaccount.v1.AccountViewR\x07\x61\x63\x63ount\"\x16\n\x14QueryAccountsRequest\"^\n\x15QueryAccountsResponse\x12\x45\n\x08\x61\x63\x63ounts\x18\x01 \x03(\x0b\x32).qorechain.abstractaccount.v1.AccountViewR\x08\x61\x63\x63ounts2\xdd\x02\n\x05Query\x12m\n\x06\x43onfig\x12\x30.qorechain.abstractaccount.v1.QueryConfigRequest\x1a\x31.qorechain.abstractaccount.v1.QueryConfigResponse\x12p\n\x07\x41\x63\x63ount\x12\x31.qorechain.abstractaccount.v1.QueryAccountRequest\x1a\x32.qorechain.abstractaccount.v1.QueryAccountResponse\x12s\n\x08\x41\x63\x63ounts\x12\x32.qorechain.abstractaccount.v1.QueryAccountsRequest\x1a\x33.qorechain.abstractaccount.v1.QueryAccountsResponseB\xfd\x01\n com.qorechain.abstractaccount.v1B\nQueryProtoP\x01Z;github.com/qorechain/qorechain-core/x/abstractaccount/types\xa2\x02\x03QAX\xaa\x02\x1cQorechain.Abstractaccount.V1\xca\x02\x1cQorechain\\Abstractaccount\\V1\xe2\x02(Qorechain\\Abstractaccount\\V1\\GPBMetadata\xea\x02\x1eQorechain::Abstractaccount::V1b\x06proto3')
+DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n(qorechain/abstractaccount/v1/query.proto\x12\x1cqorechain.abstractaccount.v1\x1a\x1cgoogle/api/annotations.proto\"\xae\x01\n\nConfigView\x12\x18\n\x07\x65nabled\x18\x01 \x01(\x08R\x07\x65nabled\x12(\n\x10max_session_keys\x18\x02 \x01(\x05R\x0emaxSessionKeys\x12,\n\x12max_spending_rules\x18\x03 \x01(\x05R\x10maxSpendingRules\x12.\n\x13\x64\x65\x66\x61ult_session_ttl\x18\x04 \x01(\x03R\x11\x64\x65\x66\x61ultSessionTtl\"\x8a\x02\n\x0b\x41\x63\x63ountView\x12\x18\n\x07\x61\x64\x64ress\x18\x01 \x01(\tR\x07\x61\x64\x64ress\x12)\n\x10\x63ontract_address\x18\x02 \x01(\tR\x0f\x63ontractAddress\x12!\n\x0c\x61\x63\x63ount_type\x18\x03 \x01(\tR\x0b\x61\x63\x63ountType\x12\x30\n\x14spending_rules_count\x18\x04 \x01(\rR\x12spendingRulesCount\x12,\n\x12session_keys_count\x18\x05 \x01(\rR\x10sessionKeysCount\x12\x1d\n\ncreated_at\x18\x06 \x01(\x03R\tcreatedAt\x12\x14\n\x05owner\x18\x07 \x01(\tR\x05owner\"\x14\n\x12QueryConfigRequest\"W\n\x13QueryConfigResponse\x12@\n\x06\x63onfig\x18\x01 \x01(\x0b\x32(.qorechain.abstractaccount.v1.ConfigViewR\x06\x63onfig\"/\n\x13QueryAccountRequest\x12\x18\n\x07\x61\x64\x64ress\x18\x01 \x01(\tR\x07\x61\x64\x64ress\"[\n\x14QueryAccountResponse\x12\x43\n\x07\x61\x63\x63ount\x18\x01 \x01(\x0b\x32).qorechain.abstractaccount.v1.AccountViewR\x07\x61\x63\x63ount\"\x16\n\x14QueryAccountsRequest\"^\n\x15QueryAccountsResponse\x12\x45\n\x08\x61\x63\x63ounts\x18\x01 \x03(\x0b\x32).qorechain.abstractaccount.v1.AccountViewR\x08\x61\x63\x63ounts\"\x1e\n\x1cQueryPermissionSchemaRequest\"\xd5\x02\n\x1dQueryPermissionSchemaResponse\x12%\n\x0eschema_version\x18\x01 \x01(\tR\rschemaVersion\x12 \n\x0bpermissions\x18\x02 \x03(\tR\x0bpermissions\x12x\n\x0fmsg_permissions\x18\x03 \x03(\x0b\x32O.qorechain.abstractaccount.v1.QueryPermissionSchemaResponse.MsgPermissionsEntryR\x0emsgPermissions\x12.\n\x13key_management_msgs\x18\x04 \x03(\tR\x11keyManagementMsgs\x1a\x41\n\x13MsgPermissionsEntry\x12\x10\n\x03key\x18\x01 \x01(\tR\x03key\x12\x14\n\x05value\x18\x02 \x01(\tR\x05value:\x02\x38\x01\x32\xbf\x05\n\x05Query\x12\x9b\x01\n\x06\x43onfig\x12\x30.qorechain.abstractaccount.v1.QueryConfigRequest\x1a\x31.qorechain.abstractaccount.v1.QueryConfigResponse\",\x82\xd3\xe4\x93\x02&\x12$/qorechain/abstractaccount/v1/config\x12\xaa\x01\n\x07\x41\x63\x63ount\x12\x31.qorechain.abstractaccount.v1.QueryAccountRequest\x1a\x32.qorechain.abstractaccount.v1.QueryAccountResponse\"8\x82\xd3\xe4\x93\x02\x32\x12\x30/qorechain/abstractaccount/v1/accounts/{address}\x12\xa3\x01\n\x08\x41\x63\x63ounts\x12\x32.qorechain.abstractaccount.v1.QueryAccountsRequest\x1a\x33.qorechain.abstractaccount.v1.QueryAccountsResponse\".\x82\xd3\xe4\x93\x02(\x12&/qorechain/abstractaccount/v1/accounts\x12\xc4\x01\n\x10PermissionSchema\x12:.qorechain.abstractaccount.v1.QueryPermissionSchemaRequest\x1a;.qorechain.abstractaccount.v1.QueryPermissionSchemaResponse\"7\x82\xd3\xe4\x93\x02\x31\x12//qorechain/abstractaccount/v1/permission_schemaB\xfd\x01\n com.qorechain.abstractaccount.v1B\nQueryProtoP\x01Z;github.com/qorechain/qorechain-core/x/abstractaccount/types\xa2\x02\x03QAX\xaa\x02\x1cQorechain.Abstractaccount.V1\xca\x02\x1cQorechain\\Abstractaccount\\V1\xe2\x02(Qorechain\\Abstractaccount\\V1\\GPBMetadata\xea\x02\x1eQorechain::Abstractaccount::V1b\x06proto3')
 
 _globals = globals()
 _builder.BuildMessageAndEnumDescriptors(DESCRIPTOR, _globals)
@@ -32,22 +33,38 @@ _builder.BuildTopDescriptorsAndMessages(DESCRIPTOR, 'qorechain.abstractaccount.v
 if not _descriptor._USE_C_DESCRIPTORS:
   _globals['DESCRIPTOR']._loaded_options = None
   _globals['DESCRIPTOR']._serialized_options = b'\n com.qorechain.abstractaccount.v1B\nQueryProtoP\001Z;github.com/qorechain/qorechain-core/x/abstractaccount/types\242\002\003QAX\252\002\034Qorechain.Abstractaccount.V1\312\002\034Qorechain\\Abstractaccount\\V1\342\002(Qorechain\\Abstractaccount\\V1\\GPBMetadata\352\002\036Qorechain::Abstractaccount::V1'
-  _globals['_CONFIGVIEW']._serialized_start=75
-  _globals['_CONFIGVIEW']._serialized_end=249
-  _globals['_ACCOUNTVIEW']._serialized_start=252
-  _globals['_ACCOUNTVIEW']._serialized_end=518
-  _globals['_QUERYCONFIGREQUEST']._serialized_start=520
-  _globals['_QUERYCONFIGREQUEST']._serialized_end=540
-  _globals['_QUERYCONFIGRESPONSE']._serialized_start=542
-  _globals['_QUERYCONFIGRESPONSE']._serialized_end=629
-  _globals['_QUERYACCOUNTREQUEST']._serialized_start=631
-  _globals['_QUERYACCOUNTREQUEST']._serialized_end=678
-  _globals['_QUERYACCOUNTRESPONSE']._serialized_start=680
-  _globals['_QUERYACCOUNTRESPONSE']._serialized_end=771
-  _globals['_QUERYACCOUNTSREQUEST']._serialized_start=773
-  _globals['_QUERYACCOUNTSREQUEST']._serialized_end=795
-  _globals['_QUERYACCOUNTSRESPONSE']._serialized_start=797
-  _globals['_QUERYACCOUNTSRESPONSE']._serialized_end=891
-  _globals['_QUERY']._serialized_start=894
-  _globals['_QUERY']._serialized_end=1243
+  _globals['_QUERYPERMISSIONSCHEMARESPONSE_MSGPERMISSIONSENTRY']._loaded_options = None
+  _globals['_QUERYPERMISSIONSCHEMARESPONSE_MSGPERMISSIONSENTRY']._serialized_options = b'8\001'
+  _globals['_QUERY'].methods_by_name['Config']._loaded_options = None
+  _globals['_QUERY'].methods_by_name['Config']._serialized_options = b'\202\323\344\223\002&\022$/qorechain/abstractaccount/v1/config'
+  _globals['_QUERY'].methods_by_name['Account']._loaded_options = None
+  _globals['_QUERY'].methods_by_name['Account']._serialized_options = b'\202\323\344\223\0022\0220/qorechain/abstractaccount/v1/accounts/{address}'
+  _globals['_QUERY'].methods_by_name['Accounts']._loaded_options = None
+  _globals['_QUERY'].methods_by_name['Accounts']._serialized_options = b'\202\323\344\223\002(\022&/qorechain/abstractaccount/v1/accounts'
+  _globals['_QUERY'].methods_by_name['PermissionSchema']._loaded_options = None
+  _globals['_QUERY'].methods_by_name['PermissionSchema']._serialized_options = b'\202\323\344\223\0021\022//qorechain/abstractaccount/v1/permission_schema'
+  _globals['_CONFIGVIEW']._serialized_start=105
+  _globals['_CONFIGVIEW']._serialized_end=279
+  _globals['_ACCOUNTVIEW']._serialized_start=282
+  _globals['_ACCOUNTVIEW']._serialized_end=548
+  _globals['_QUERYCONFIGREQUEST']._serialized_start=550
+  _globals['_QUERYCONFIGREQUEST']._serialized_end=570
+  _globals['_QUERYCONFIGRESPONSE']._serialized_start=572
+  _globals['_QUERYCONFIGRESPONSE']._serialized_end=659
+  _globals['_QUERYACCOUNTREQUEST']._serialized_start=661
+  _globals['_QUERYACCOUNTREQUEST']._serialized_end=708
+  _globals['_QUERYACCOUNTRESPONSE']._serialized_start=710
+  _globals['_QUERYACCOUNTRESPONSE']._serialized_end=801
+  _globals['_QUERYACCOUNTSREQUEST']._serialized_start=803
+  _globals['_QUERYACCOUNTSREQUEST']._serialized_end=825
+  _globals['_QUERYACCOUNTSRESPONSE']._serialized_start=827
+  _globals['_QUERYACCOUNTSRESPONSE']._serialized_end=921
+  _globals['_QUERYPERMISSIONSCHEMAREQUEST']._serialized_start=923
+  _globals['_QUERYPERMISSIONSCHEMAREQUEST']._serialized_end=953
+  _globals['_QUERYPERMISSIONSCHEMARESPONSE']._serialized_start=956
+  _globals['_QUERYPERMISSIONSCHEMARESPONSE']._serialized_end=1297
+  _globals['_QUERYPERMISSIONSCHEMARESPONSE_MSGPERMISSIONSENTRY']._serialized_start=1232
+  _globals['_QUERYPERMISSIONSCHEMARESPONSE_MSGPERMISSIONSENTRY']._serialized_end=1297
+  _globals['_QUERY']._serialized_start=1300
+  _globals['_QUERY']._serialized_end=2003
 # @@protoc_insertion_point(module_scope)

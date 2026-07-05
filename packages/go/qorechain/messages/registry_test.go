@@ -8,14 +8,16 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/gogoproto/proto"
 
+	abstractaccountv1 "github.com/qorechain/qorechain-sdk/packages/go/qorechain/proto/qorechain/abstractaccount/v1"
 	ammv1 "github.com/qorechain/qorechain-sdk/packages/go/qorechain/proto/qorechain/amm/v1"
 	bridgev1 "github.com/qorechain/qorechain-sdk/packages/go/qorechain/proto/qorechain/bridge/v1"
+	pqcv1 "github.com/qorechain/qorechain-sdk/packages/go/qorechain/proto/qorechain/pqc/v1"
 	rdkv1 "github.com/qorechain/qorechain-sdk/packages/go/qorechain/proto/qorechain/rdk/v1"
 	svmv1 "github.com/qorechain/qorechain-sdk/packages/go/qorechain/proto/qorechain/svm/v1"
 )
 
 // allCustomTypeURLs is every custom QoreChain Msg type URL the registry must
-// resolve. The 53 entries match the chain's tx services across all 11 modules.
+// resolve. The 58 entries match the chain's tx services across all 11 modules.
 var allCustomTypeURLs = []string{
 	// amm (7)
 	"/qorechain.amm.v1.MsgCreatePool",
@@ -49,10 +51,11 @@ var allCustomTypeURLs = []string{
 	"/qorechain.multilayer.v1.MsgRouteTransaction",
 	"/qorechain.multilayer.v1.MsgUpdateLayerStatus",
 	"/qorechain.multilayer.v1.MsgChallengeAnchor",
-	// pqc (5)
+	// pqc (6)
 	"/qorechain.pqc.v1.MsgRegisterPQCKey",
 	"/qorechain.pqc.v1.MsgRegisterPQCKeyV2",
 	"/qorechain.pqc.v1.MsgMigratePQCKey",
+	"/qorechain.pqc.v1.MsgRotatePQCKey",
 	"/qorechain.pqc.v1.MsgDeprecateAlgorithm",
 	"/qorechain.pqc.v1.MsgDisableAlgorithm",
 	// svm (4)
@@ -70,11 +73,13 @@ var allCustomTypeURLs = []string{
 	"/qorechain.license.v1.MsgRevokeLicense",
 	"/qorechain.license.v1.MsgSuspendLicense",
 	"/qorechain.license.v1.MsgResumeLicense",
-	// abstractaccount (4)
+	// abstractaccount (6)
 	"/qorechain.abstractaccount.v1.MsgCreateAbstractAccount",
 	"/qorechain.abstractaccount.v1.MsgUpdateSpendingRules",
 	"/qorechain.abstractaccount.v1.MsgRegisterAuthenticator",
 	"/qorechain.abstractaccount.v1.MsgRevokeAuthenticator",
+	"/qorechain.abstractaccount.v1.MsgExecuteEVM",
+	"/qorechain.abstractaccount.v1.MsgExecuteCosmos",
 	// crossvm (2)
 	"/qorechain.crossvm.v1.MsgCrossVMCall",
 	"/qorechain.crossvm.v1.MsgProcessQueue",
@@ -86,8 +91,8 @@ var allCustomTypeURLs = []string{
 }
 
 func TestAllCustomTypeURLsCount(t *testing.T) {
-	if got := len(allCustomTypeURLs); got != 55 {
-		t.Fatalf("expected 55 custom type URLs, got %d", got)
+	if got := len(allCustomTypeURLs); got != 58 {
+		t.Fatalf("expected 58 custom type URLs, got %d", got)
 	}
 }
 
@@ -256,6 +261,108 @@ func TestSetVerifierBootstrapRoundTrip(t *testing.T) {
 	}
 	if decoded.Wormhole == nil || decoded.Wormhole.Quorum != 2 || len(decoded.Wormhole.Addresses) != 2 {
 		t.Fatalf("wormhole mismatch: %+v", decoded.Wormhole)
+	}
+}
+
+// TestExecuteEVMRoundTrip exercises the v3.1.85 MsgExecuteEVM (bytes pubkey/
+// signature/data + scalar value/nonce) through the codec Any.
+func TestExecuteEVMRoundTrip(t *testing.T) {
+	original := &abstractaccountv1.MsgExecuteEVM{
+		Relayer:   "qor1relayer",
+		Account:   "qor1acct",
+		Scheme:    "ed25519",
+		Pubkey:    []byte{0x01, 0x02},
+		Signature: []byte{0x03, 0x04, 0x05},
+		To:        "0xabc",
+		Value:     "1000",
+		Data:      []byte{0x02, 0x02, 0x02},
+		GasLimit:  100000,
+		Nonce:     5,
+	}
+	any, err := PackAny(original)
+	if err != nil {
+		t.Fatalf("pack any: %v", err)
+	}
+	if any.TypeUrl != "/qorechain.abstractaccount.v1.MsgExecuteEVM" {
+		t.Fatalf("unexpected type URL: %s", any.TypeUrl)
+	}
+	var decodedMsg sdk.Msg
+	if err := DefaultProtoCodec().UnpackAny(any, &decodedMsg); err != nil {
+		t.Fatalf("unpack any: %v", err)
+	}
+	decoded := decodedMsg.(*abstractaccountv1.MsgExecuteEVM)
+	if decoded.Relayer != original.Relayer || decoded.Account != original.Account ||
+		decoded.Scheme != original.Scheme || decoded.To != original.To ||
+		decoded.Value != original.Value || decoded.GasLimit != original.GasLimit || decoded.Nonce != original.Nonce {
+		t.Fatalf("scalar field mismatch: %+v", decoded)
+	}
+	if string(decoded.Pubkey) != string(original.Pubkey) || string(decoded.Signature) != string(original.Signature) ||
+		string(decoded.Data) != string(original.Data) {
+		t.Fatalf("bytes field mismatch: %+v", decoded)
+	}
+}
+
+// TestExecuteCosmosRoundTrip exercises the v3.1.85 MsgExecuteCosmos (sdk.Coins
+// castrepeated amount) through the codec Any.
+func TestExecuteCosmosRoundTrip(t *testing.T) {
+	original := &abstractaccountv1.MsgExecuteCosmos{
+		Relayer:   "qor1relayer",
+		Account:   "qor1acct",
+		Scheme:    "secp256k1",
+		Pubkey:    []byte{0xaa},
+		Signature: []byte{0xbb, 0xcc},
+		To:        "qor1recv",
+		Amount:    sdk.NewCoins(sdk.NewCoin("uqor", math.NewInt(100))),
+		Nonce:     3,
+	}
+	any, err := PackAny(original)
+	if err != nil {
+		t.Fatalf("pack any: %v", err)
+	}
+	if any.TypeUrl != "/qorechain.abstractaccount.v1.MsgExecuteCosmos" {
+		t.Fatalf("unexpected type URL: %s", any.TypeUrl)
+	}
+	var decodedMsg sdk.Msg
+	if err := DefaultProtoCodec().UnpackAny(any, &decodedMsg); err != nil {
+		t.Fatalf("unpack any: %v", err)
+	}
+	decoded := decodedMsg.(*abstractaccountv1.MsgExecuteCosmos)
+	if decoded.To != original.To || decoded.Nonce != original.Nonce || decoded.Scheme != original.Scheme {
+		t.Fatalf("scalar field mismatch: %+v", decoded)
+	}
+	if !decoded.Amount.Equal(original.Amount) {
+		t.Fatalf("amount mismatch: want %s, got %s", original.Amount, decoded.Amount)
+	}
+}
+
+// TestRotatePQCKeyRoundTrip exercises the pqc MsgRotatePQCKey (dual-signed
+// old/new key + signature bytes) through the codec Any.
+func TestRotatePQCKeyRoundTrip(t *testing.T) {
+	original := &pqcv1.MsgRotatePQCKey{
+		Sender:       "qor1acct",
+		OldPublicKey: []byte{0xaa, 0xaa},
+		NewPublicKey: []byte{0xbb, 0xbb},
+		OldSignature: []byte{0x01},
+		NewSignature: []byte{0x02},
+	}
+	any, err := PackAny(original)
+	if err != nil {
+		t.Fatalf("pack any: %v", err)
+	}
+	if any.TypeUrl != "/qorechain.pqc.v1.MsgRotatePQCKey" {
+		t.Fatalf("unexpected type URL: %s", any.TypeUrl)
+	}
+	var decodedMsg sdk.Msg
+	if err := DefaultProtoCodec().UnpackAny(any, &decodedMsg); err != nil {
+		t.Fatalf("unpack any: %v", err)
+	}
+	decoded := decodedMsg.(*pqcv1.MsgRotatePQCKey)
+	if decoded.Sender != original.Sender ||
+		string(decoded.OldPublicKey) != string(original.OldPublicKey) ||
+		string(decoded.NewPublicKey) != string(original.NewPublicKey) ||
+		string(decoded.OldSignature) != string(original.OldSignature) ||
+		string(decoded.NewSignature) != string(original.NewSignature) {
+		t.Fatalf("field mismatch: %+v", decoded)
 	}
 }
 

@@ -3710,6 +3710,1192 @@ public final class Tx extends com.google.protobuf.GeneratedFile {
 
   }
 
+  public interface MsgRotatePQCKeyOrBuilder extends
+      // @@protoc_insertion_point(interface_extends:qorechain.pqc.v1.MsgRotatePQCKey)
+      com.google.protobuf.MessageOrBuilder {
+
+    /**
+     * <code>string sender = 1 [json_name = "sender", (.cosmos_proto.scalar) = "cosmos.AddressString"];</code>
+     * @return The sender.
+     */
+    java.lang.String getSender();
+    /**
+     * <code>string sender = 1 [json_name = "sender", (.cosmos_proto.scalar) = "cosmos.AddressString"];</code>
+     * @return The bytes for sender.
+     */
+    com.google.protobuf.ByteString
+        getSenderBytes();
+
+    /**
+     * <code>bytes old_public_key = 2 [json_name = "oldPublicKey"];</code>
+     * @return The oldPublicKey.
+     */
+    com.google.protobuf.ByteString getOldPublicKey();
+
+    /**
+     * <code>bytes new_public_key = 3 [json_name = "newPublicKey"];</code>
+     * @return The newPublicKey.
+     */
+    com.google.protobuf.ByteString getNewPublicKey();
+
+    /**
+     * <code>bytes old_signature = 4 [json_name = "oldSignature"];</code>
+     * @return The oldSignature.
+     */
+    com.google.protobuf.ByteString getOldSignature();
+
+    /**
+     * <code>bytes new_signature = 5 [json_name = "newSignature"];</code>
+     * @return The newSignature.
+     */
+    com.google.protobuf.ByteString getNewSignature();
+  }
+  /**
+   * <pre>
+   * MsgRotatePQCKey replaces an account's PQC key with a new key of the SAME
+   * algorithm. Both signatures are over the domain-separated bytes
+   * "qorechain-pqc-rotate-v1|chainid|algo|account|oldkey|newkey" (no block height —
+   * the signer cannot predict it; replay is prevented because after the rotation
+   * the old key no longer matches the registered key).
+   * </pre>
+   *
+   * Protobuf type {@code qorechain.pqc.v1.MsgRotatePQCKey}
+   */
+  public static final class MsgRotatePQCKey extends
+      com.google.protobuf.GeneratedMessage implements
+      // @@protoc_insertion_point(message_implements:qorechain.pqc.v1.MsgRotatePQCKey)
+      MsgRotatePQCKeyOrBuilder {
+  private static final long serialVersionUID = 0L;
+    static {
+      com.google.protobuf.RuntimeVersion.validateProtobufGencodeVersion(
+        com.google.protobuf.RuntimeVersion.RuntimeDomain.PUBLIC,
+        /* major= */ 4,
+        /* minor= */ 35,
+        /* patch= */ 1,
+        /* suffix= */ "",
+        "MsgRotatePQCKey");
+    }
+    // Use MsgRotatePQCKey.newBuilder() to construct.
+    private MsgRotatePQCKey(com.google.protobuf.GeneratedMessage.Builder<?> builder) {
+      super(builder);
+    }
+    private MsgRotatePQCKey() {
+      sender_ = "";
+      oldPublicKey_ = com.google.protobuf.ByteString.EMPTY;
+      newPublicKey_ = com.google.protobuf.ByteString.EMPTY;
+      oldSignature_ = com.google.protobuf.ByteString.EMPTY;
+      newSignature_ = com.google.protobuf.ByteString.EMPTY;
+    }
+
+    public static final com.google.protobuf.Descriptors.Descriptor
+        getDescriptor() {
+      return qorechain.pqc.v1.Tx.internal_static_qorechain_pqc_v1_MsgRotatePQCKey_descriptor;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Descriptors.Descriptor getDescriptorForType() {
+      return qorechain.pqc.v1.Tx.internal_static_qorechain_pqc_v1_MsgRotatePQCKey_descriptor;
+    }
+
+    @java.lang.Override
+    protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+        internalGetFieldAccessorTable() {
+      return qorechain.pqc.v1.Tx.internal_static_qorechain_pqc_v1_MsgRotatePQCKey_fieldAccessorTable
+          .ensureFieldAccessorsInitialized(
+              qorechain.pqc.v1.Tx.MsgRotatePQCKey.class, qorechain.pqc.v1.Tx.MsgRotatePQCKey.Builder.class);
+    }
+
+    public static final int SENDER_FIELD_NUMBER = 1;
+    @SuppressWarnings("serial")
+    private volatile java.lang.Object sender_ = "";
+    /**
+     * <code>string sender = 1 [json_name = "sender", (.cosmos_proto.scalar) = "cosmos.AddressString"];</code>
+     * @return The sender.
+     */
+    @java.lang.Override
+    public java.lang.String getSender() {
+      java.lang.Object ref = sender_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        sender_ = s;
+        return s;
+      }
+    }
+    /**
+     * <code>string sender = 1 [json_name = "sender", (.cosmos_proto.scalar) = "cosmos.AddressString"];</code>
+     * @return The bytes for sender.
+     */
+    @java.lang.Override
+    public com.google.protobuf.ByteString
+        getSenderBytes() {
+      java.lang.Object ref = sender_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        sender_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
+    public static final int OLD_PUBLIC_KEY_FIELD_NUMBER = 2;
+    private com.google.protobuf.ByteString oldPublicKey_ = com.google.protobuf.ByteString.EMPTY;
+    /**
+     * <code>bytes old_public_key = 2 [json_name = "oldPublicKey"];</code>
+     * @return The oldPublicKey.
+     */
+    @java.lang.Override
+    public com.google.protobuf.ByteString getOldPublicKey() {
+      return oldPublicKey_;
+    }
+
+    public static final int NEW_PUBLIC_KEY_FIELD_NUMBER = 3;
+    private com.google.protobuf.ByteString newPublicKey_ = com.google.protobuf.ByteString.EMPTY;
+    /**
+     * <code>bytes new_public_key = 3 [json_name = "newPublicKey"];</code>
+     * @return The newPublicKey.
+     */
+    @java.lang.Override
+    public com.google.protobuf.ByteString getNewPublicKey() {
+      return newPublicKey_;
+    }
+
+    public static final int OLD_SIGNATURE_FIELD_NUMBER = 4;
+    private com.google.protobuf.ByteString oldSignature_ = com.google.protobuf.ByteString.EMPTY;
+    /**
+     * <code>bytes old_signature = 4 [json_name = "oldSignature"];</code>
+     * @return The oldSignature.
+     */
+    @java.lang.Override
+    public com.google.protobuf.ByteString getOldSignature() {
+      return oldSignature_;
+    }
+
+    public static final int NEW_SIGNATURE_FIELD_NUMBER = 5;
+    private com.google.protobuf.ByteString newSignature_ = com.google.protobuf.ByteString.EMPTY;
+    /**
+     * <code>bytes new_signature = 5 [json_name = "newSignature"];</code>
+     * @return The newSignature.
+     */
+    @java.lang.Override
+    public com.google.protobuf.ByteString getNewSignature() {
+      return newSignature_;
+    }
+
+    private byte memoizedIsInitialized = -1;
+    @java.lang.Override
+    public final boolean isInitialized() {
+      byte isInitialized = memoizedIsInitialized;
+      if (isInitialized == 1) return true;
+      if (isInitialized == 0) return false;
+
+      memoizedIsInitialized = 1;
+      return true;
+    }
+
+    @java.lang.Override
+    public void writeTo(com.google.protobuf.CodedOutputStream output)
+                        throws java.io.IOException {
+      if (!com.google.protobuf.GeneratedMessage.isStringEmpty(sender_)) {
+        com.google.protobuf.GeneratedMessage.writeString(output, 1, sender_);
+      }
+      if (!oldPublicKey_.isEmpty()) {
+        output.writeBytes(2, oldPublicKey_);
+      }
+      if (!newPublicKey_.isEmpty()) {
+        output.writeBytes(3, newPublicKey_);
+      }
+      if (!oldSignature_.isEmpty()) {
+        output.writeBytes(4, oldSignature_);
+      }
+      if (!newSignature_.isEmpty()) {
+        output.writeBytes(5, newSignature_);
+      }
+      getUnknownFields().writeTo(output);
+    }
+    private int computeSerializedSize_0() {
+      int size = 0;
+      if (!com.google.protobuf.GeneratedMessage.isStringEmpty(sender_)) {
+        size += com.google.protobuf.GeneratedMessage.computeStringSize(1, sender_);
+      }
+      if (!oldPublicKey_.isEmpty()) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeBytesSize(2, oldPublicKey_);
+      }
+      if (!newPublicKey_.isEmpty()) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeBytesSize(3, newPublicKey_);
+      }
+      if (!oldSignature_.isEmpty()) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeBytesSize(4, oldSignature_);
+      }
+      if (!newSignature_.isEmpty()) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeBytesSize(5, newSignature_);
+      }
+      return size;
+    }
+    @java.lang.Override
+    public int getSerializedSize() {
+      int size = memoizedSize;
+      if (size != -1) return size;
+
+      size = 0;
+      size += computeSerializedSize_0();
+      size += getUnknownFields().getSerializedSize();
+      memoizedSize = size;
+      return size;
+    }
+
+    @java.lang.Override
+    public boolean equals(final java.lang.Object obj) {
+      if (obj == this) {
+       return true;
+      }
+      if (!(obj instanceof qorechain.pqc.v1.Tx.MsgRotatePQCKey)) {
+        return super.equals(obj);
+      }
+      qorechain.pqc.v1.Tx.MsgRotatePQCKey other = (qorechain.pqc.v1.Tx.MsgRotatePQCKey) obj;
+
+      if (!getSender()
+          .equals(other.getSender())) return false;
+      if (!getOldPublicKey()
+          .equals(other.getOldPublicKey())) return false;
+      if (!getNewPublicKey()
+          .equals(other.getNewPublicKey())) return false;
+      if (!getOldSignature()
+          .equals(other.getOldSignature())) return false;
+      if (!getNewSignature()
+          .equals(other.getNewSignature())) return false;
+      if (!getUnknownFields().equals(other.getUnknownFields())) return false;
+      return true;
+    }
+
+    @java.lang.Override
+    public int hashCode() {
+      if (memoizedHashCode != 0) {
+        return memoizedHashCode;
+      }
+      int hash = 41;
+      hash = (19 * hash) + getDescriptor().hashCode();
+      hash = (37 * hash) + SENDER_FIELD_NUMBER;
+      hash = (53 * hash) + getSender().hashCode();
+      hash = (37 * hash) + OLD_PUBLIC_KEY_FIELD_NUMBER;
+      hash = (53 * hash) + getOldPublicKey().hashCode();
+      hash = (37 * hash) + NEW_PUBLIC_KEY_FIELD_NUMBER;
+      hash = (53 * hash) + getNewPublicKey().hashCode();
+      hash = (37 * hash) + OLD_SIGNATURE_FIELD_NUMBER;
+      hash = (53 * hash) + getOldSignature().hashCode();
+      hash = (37 * hash) + NEW_SIGNATURE_FIELD_NUMBER;
+      hash = (53 * hash) + getNewSignature().hashCode();
+      hash = (29 * hash) + getUnknownFields().hashCode();
+      memoizedHashCode = hash;
+      return hash;
+    }
+
+    public static qorechain.pqc.v1.Tx.MsgRotatePQCKey parseFrom(
+        java.nio.ByteBuffer data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static qorechain.pqc.v1.Tx.MsgRotatePQCKey parseFrom(
+        java.nio.ByteBuffer data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static qorechain.pqc.v1.Tx.MsgRotatePQCKey parseFrom(
+        com.google.protobuf.ByteString data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static qorechain.pqc.v1.Tx.MsgRotatePQCKey parseFrom(
+        com.google.protobuf.ByteString data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static qorechain.pqc.v1.Tx.MsgRotatePQCKey parseFrom(byte[] data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static qorechain.pqc.v1.Tx.MsgRotatePQCKey parseFrom(
+        byte[] data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static qorechain.pqc.v1.Tx.MsgRotatePQCKey parseFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input);
+    }
+    public static qorechain.pqc.v1.Tx.MsgRotatePQCKey parseFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    public static qorechain.pqc.v1.Tx.MsgRotatePQCKey parseDelimitedFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseDelimitedWithIOException(PARSER, input);
+    }
+
+    public static qorechain.pqc.v1.Tx.MsgRotatePQCKey parseDelimitedFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static qorechain.pqc.v1.Tx.MsgRotatePQCKey parseFrom(
+        com.google.protobuf.CodedInputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input);
+    }
+    public static qorechain.pqc.v1.Tx.MsgRotatePQCKey parseFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    @java.lang.Override
+    public Builder newBuilderForType() { return newBuilder(); }
+    public static Builder newBuilder() {
+      return DEFAULT_INSTANCE.toBuilder();
+    }
+    public static Builder newBuilder(qorechain.pqc.v1.Tx.MsgRotatePQCKey prototype) {
+      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+    }
+    @java.lang.Override
+    public Builder toBuilder() {
+      return this == DEFAULT_INSTANCE
+          ? new Builder() : new Builder().mergeFrom(this);
+    }
+
+    @java.lang.Override
+    protected Builder newBuilderForType(
+        com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+      Builder builder = new Builder(parent);
+      return builder;
+    }
+    /**
+     * <pre>
+     * MsgRotatePQCKey replaces an account's PQC key with a new key of the SAME
+     * algorithm. Both signatures are over the domain-separated bytes
+     * "qorechain-pqc-rotate-v1|chainid|algo|account|oldkey|newkey" (no block height —
+     * the signer cannot predict it; replay is prevented because after the rotation
+     * the old key no longer matches the registered key).
+     * </pre>
+     *
+     * Protobuf type {@code qorechain.pqc.v1.MsgRotatePQCKey}
+     */
+    public static final class Builder extends
+        com.google.protobuf.GeneratedMessage.Builder<Builder> implements
+        // @@protoc_insertion_point(builder_implements:qorechain.pqc.v1.MsgRotatePQCKey)
+        qorechain.pqc.v1.Tx.MsgRotatePQCKeyOrBuilder {
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return qorechain.pqc.v1.Tx.internal_static_qorechain_pqc_v1_MsgRotatePQCKey_descriptor;
+      }
+
+      @java.lang.Override
+      protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return qorechain.pqc.v1.Tx.internal_static_qorechain_pqc_v1_MsgRotatePQCKey_fieldAccessorTable
+            .ensureFieldAccessorsInitialized(
+                qorechain.pqc.v1.Tx.MsgRotatePQCKey.class, qorechain.pqc.v1.Tx.MsgRotatePQCKey.Builder.class);
+      }
+
+      // Construct using qorechain.pqc.v1.Tx.MsgRotatePQCKey.newBuilder()
+      private Builder() {
+
+      }
+
+      private Builder(
+          com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+        super(parent);
+
+      }
+      @java.lang.Override
+      public Builder clear() {
+        super.clear();
+        bitField0_ = 0;
+        sender_ = "";
+        oldPublicKey_ = com.google.protobuf.ByteString.EMPTY;
+        newPublicKey_ = com.google.protobuf.ByteString.EMPTY;
+        oldSignature_ = com.google.protobuf.ByteString.EMPTY;
+        newSignature_ = com.google.protobuf.ByteString.EMPTY;
+        return this;
+      }
+
+      @java.lang.Override
+      public com.google.protobuf.Descriptors.Descriptor
+          getDescriptorForType() {
+        return qorechain.pqc.v1.Tx.internal_static_qorechain_pqc_v1_MsgRotatePQCKey_descriptor;
+      }
+
+      @java.lang.Override
+      public qorechain.pqc.v1.Tx.MsgRotatePQCKey getDefaultInstanceForType() {
+        return qorechain.pqc.v1.Tx.MsgRotatePQCKey.getDefaultInstance();
+      }
+
+      @java.lang.Override
+      public qorechain.pqc.v1.Tx.MsgRotatePQCKey build() {
+        qorechain.pqc.v1.Tx.MsgRotatePQCKey result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(result);
+        }
+        return result;
+      }
+
+      @java.lang.Override
+      public qorechain.pqc.v1.Tx.MsgRotatePQCKey buildPartial() {
+        qorechain.pqc.v1.Tx.MsgRotatePQCKey result = new qorechain.pqc.v1.Tx.MsgRotatePQCKey(this);
+        if (bitField0_ != 0) { buildPartial0(result); }
+        onBuilt();
+        return result;
+      }
+
+      private void buildPartial0(qorechain.pqc.v1.Tx.MsgRotatePQCKey result) {
+        int from_bitField0_ = bitField0_;
+        if (((from_bitField0_ & 0x00000001) != 0)) {
+          result.sender_ = sender_;
+        }
+        if (((from_bitField0_ & 0x00000002) != 0)) {
+          result.oldPublicKey_ = oldPublicKey_;
+        }
+        if (((from_bitField0_ & 0x00000004) != 0)) {
+          result.newPublicKey_ = newPublicKey_;
+        }
+        if (((from_bitField0_ & 0x00000008) != 0)) {
+          result.oldSignature_ = oldSignature_;
+        }
+        if (((from_bitField0_ & 0x00000010) != 0)) {
+          result.newSignature_ = newSignature_;
+        }
+      }
+
+      @java.lang.Override
+      public Builder mergeFrom(com.google.protobuf.Message other) {
+        if (other instanceof qorechain.pqc.v1.Tx.MsgRotatePQCKey) {
+          return mergeFrom((qorechain.pqc.v1.Tx.MsgRotatePQCKey)other);
+        } else {
+          super.mergeFrom(other);
+          return this;
+        }
+      }
+
+      public Builder mergeFrom(qorechain.pqc.v1.Tx.MsgRotatePQCKey other) {
+        if (other == qorechain.pqc.v1.Tx.MsgRotatePQCKey.getDefaultInstance()) return this;
+        if (!other.getSender().isEmpty()) {
+          sender_ = other.sender_;
+          bitField0_ |= 0x00000001;
+          onChanged();
+        }
+        if (!other.getOldPublicKey().isEmpty()) {
+          setOldPublicKey(other.getOldPublicKey());
+        }
+        if (!other.getNewPublicKey().isEmpty()) {
+          setNewPublicKey(other.getNewPublicKey());
+        }
+        if (!other.getOldSignature().isEmpty()) {
+          setOldSignature(other.getOldSignature());
+        }
+        if (!other.getNewSignature().isEmpty()) {
+          setNewSignature(other.getNewSignature());
+        }
+        this.mergeUnknownFields(other.getUnknownFields());
+        onChanged();
+        return this;
+      }
+
+      @java.lang.Override
+      public final boolean isInitialized() {
+        return true;
+      }
+
+      @java.lang.Override
+      public Builder mergeFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        if (extensionRegistry == null) {
+          throw new java.lang.NullPointerException();
+        }
+        try {
+          boolean done = false;
+          while (!done) {
+            int tag = input.readTag();
+            switch (tag) {
+              case 0:
+                done = true;
+                break;
+              case 10: {
+                sender_ = input.readStringRequireUtf8();
+                bitField0_ |= 0x00000001;
+                break;
+              } // case 10
+              case 18: {
+                oldPublicKey_ = input.readBytes();
+                bitField0_ |= 0x00000002;
+                break;
+              } // case 18
+              case 26: {
+                newPublicKey_ = input.readBytes();
+                bitField0_ |= 0x00000004;
+                break;
+              } // case 26
+              case 34: {
+                oldSignature_ = input.readBytes();
+                bitField0_ |= 0x00000008;
+                break;
+              } // case 34
+              case 42: {
+                newSignature_ = input.readBytes();
+                bitField0_ |= 0x00000010;
+                break;
+              } // case 42
+              default: {
+                if (!super.parseUnknownField(input, extensionRegistry, tag)) {
+                  done = true; // was an endgroup tag
+                }
+                break;
+              } // default:
+            } // switch (tag)
+          } // while (!done)
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          throw e.unwrapIOException();
+        } finally {
+          onChanged();
+        } // finally
+        return this;
+      }
+      private int bitField0_;
+
+      private java.lang.Object sender_ = "";
+      /**
+       * <code>string sender = 1 [json_name = "sender", (.cosmos_proto.scalar) = "cosmos.AddressString"];</code>
+       * @return The sender.
+       */
+      public java.lang.String getSender() {
+        java.lang.Object ref = sender_;
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          sender_ = s;
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
+      }
+      /**
+       * <code>string sender = 1 [json_name = "sender", (.cosmos_proto.scalar) = "cosmos.AddressString"];</code>
+       * @return The bytes for sender.
+       */
+      public com.google.protobuf.ByteString
+          getSenderBytes() {
+        java.lang.Object ref = sender_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          sender_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <code>string sender = 1 [json_name = "sender", (.cosmos_proto.scalar) = "cosmos.AddressString"];</code>
+       * @param value The sender to set.
+       * @return This builder for chaining.
+       */
+      public Builder setSender(
+          java.lang.String value) {
+        if (value == null) { throw new NullPointerException(); }
+        sender_ = value;
+        bitField0_ |= 0x00000001;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>string sender = 1 [json_name = "sender", (.cosmos_proto.scalar) = "cosmos.AddressString"];</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearSender() {
+        sender_ = getDefaultInstance().getSender();
+        bitField0_ = (bitField0_ & ~0x00000001);
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>string sender = 1 [json_name = "sender", (.cosmos_proto.scalar) = "cosmos.AddressString"];</code>
+       * @param value The bytes for sender to set.
+       * @return This builder for chaining.
+       */
+      public Builder setSenderBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) { throw new NullPointerException(); }
+        checkByteStringIsUtf8(value);
+        sender_ = value;
+        bitField0_ |= 0x00000001;
+        onChanged();
+        return this;
+      }
+
+      private com.google.protobuf.ByteString oldPublicKey_ = com.google.protobuf.ByteString.EMPTY;
+      /**
+       * <code>bytes old_public_key = 2 [json_name = "oldPublicKey"];</code>
+       * @return The oldPublicKey.
+       */
+      @java.lang.Override
+      public com.google.protobuf.ByteString getOldPublicKey() {
+        return oldPublicKey_;
+      }
+      /**
+       * <code>bytes old_public_key = 2 [json_name = "oldPublicKey"];</code>
+       * @param value The oldPublicKey to set.
+       * @return This builder for chaining.
+       */
+      public Builder setOldPublicKey(com.google.protobuf.ByteString value) {
+        if (value == null) { throw new NullPointerException(); }
+        oldPublicKey_ = value;
+        bitField0_ |= 0x00000002;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>bytes old_public_key = 2 [json_name = "oldPublicKey"];</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearOldPublicKey() {
+        bitField0_ = (bitField0_ & ~0x00000002);
+        oldPublicKey_ = getDefaultInstance().getOldPublicKey();
+        onChanged();
+        return this;
+      }
+
+      private com.google.protobuf.ByteString newPublicKey_ = com.google.protobuf.ByteString.EMPTY;
+      /**
+       * <code>bytes new_public_key = 3 [json_name = "newPublicKey"];</code>
+       * @return The newPublicKey.
+       */
+      @java.lang.Override
+      public com.google.protobuf.ByteString getNewPublicKey() {
+        return newPublicKey_;
+      }
+      /**
+       * <code>bytes new_public_key = 3 [json_name = "newPublicKey"];</code>
+       * @param value The newPublicKey to set.
+       * @return This builder for chaining.
+       */
+      public Builder setNewPublicKey(com.google.protobuf.ByteString value) {
+        if (value == null) { throw new NullPointerException(); }
+        newPublicKey_ = value;
+        bitField0_ |= 0x00000004;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>bytes new_public_key = 3 [json_name = "newPublicKey"];</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearNewPublicKey() {
+        bitField0_ = (bitField0_ & ~0x00000004);
+        newPublicKey_ = getDefaultInstance().getNewPublicKey();
+        onChanged();
+        return this;
+      }
+
+      private com.google.protobuf.ByteString oldSignature_ = com.google.protobuf.ByteString.EMPTY;
+      /**
+       * <code>bytes old_signature = 4 [json_name = "oldSignature"];</code>
+       * @return The oldSignature.
+       */
+      @java.lang.Override
+      public com.google.protobuf.ByteString getOldSignature() {
+        return oldSignature_;
+      }
+      /**
+       * <code>bytes old_signature = 4 [json_name = "oldSignature"];</code>
+       * @param value The oldSignature to set.
+       * @return This builder for chaining.
+       */
+      public Builder setOldSignature(com.google.protobuf.ByteString value) {
+        if (value == null) { throw new NullPointerException(); }
+        oldSignature_ = value;
+        bitField0_ |= 0x00000008;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>bytes old_signature = 4 [json_name = "oldSignature"];</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearOldSignature() {
+        bitField0_ = (bitField0_ & ~0x00000008);
+        oldSignature_ = getDefaultInstance().getOldSignature();
+        onChanged();
+        return this;
+      }
+
+      private com.google.protobuf.ByteString newSignature_ = com.google.protobuf.ByteString.EMPTY;
+      /**
+       * <code>bytes new_signature = 5 [json_name = "newSignature"];</code>
+       * @return The newSignature.
+       */
+      @java.lang.Override
+      public com.google.protobuf.ByteString getNewSignature() {
+        return newSignature_;
+      }
+      /**
+       * <code>bytes new_signature = 5 [json_name = "newSignature"];</code>
+       * @param value The newSignature to set.
+       * @return This builder for chaining.
+       */
+      public Builder setNewSignature(com.google.protobuf.ByteString value) {
+        if (value == null) { throw new NullPointerException(); }
+        newSignature_ = value;
+        bitField0_ |= 0x00000010;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>bytes new_signature = 5 [json_name = "newSignature"];</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearNewSignature() {
+        bitField0_ = (bitField0_ & ~0x00000010);
+        newSignature_ = getDefaultInstance().getNewSignature();
+        onChanged();
+        return this;
+      }
+
+      // @@protoc_insertion_point(builder_scope:qorechain.pqc.v1.MsgRotatePQCKey)
+    }
+
+    // @@protoc_insertion_point(class_scope:qorechain.pqc.v1.MsgRotatePQCKey)
+    private static final qorechain.pqc.v1.Tx.MsgRotatePQCKey DEFAULT_INSTANCE;
+    static {
+      DEFAULT_INSTANCE = new qorechain.pqc.v1.Tx.MsgRotatePQCKey();
+    }
+
+    public static qorechain.pqc.v1.Tx.MsgRotatePQCKey getDefaultInstance() {
+      return DEFAULT_INSTANCE;
+    }
+
+    private static final com.google.protobuf.Parser<MsgRotatePQCKey>
+        PARSER = new com.google.protobuf.AbstractParser<MsgRotatePQCKey>() {
+      @java.lang.Override
+      public MsgRotatePQCKey parsePartialFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        Builder builder = newBuilder();
+        try {
+          builder.mergeFrom(input, extensionRegistry);
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          throw e.setUnfinishedMessage(builder.buildPartial());
+        } catch (com.google.protobuf.UninitializedMessageException e) {
+          throw e.asInvalidProtocolBufferException().setUnfinishedMessage(builder.buildPartial());
+        } catch (java.io.IOException e) {
+          throw new com.google.protobuf.InvalidProtocolBufferException(e)
+              .setUnfinishedMessage(builder.buildPartial());
+        }
+        return builder.buildPartial();
+      }
+    };
+
+    public static com.google.protobuf.Parser<MsgRotatePQCKey> parser() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Parser<MsgRotatePQCKey> getParserForType() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public qorechain.pqc.v1.Tx.MsgRotatePQCKey getDefaultInstanceForType() {
+      return DEFAULT_INSTANCE;
+    }
+
+  }
+
+  public interface MsgRotatePQCKeyResponseOrBuilder extends
+      // @@protoc_insertion_point(interface_extends:qorechain.pqc.v1.MsgRotatePQCKeyResponse)
+      com.google.protobuf.MessageOrBuilder {
+  }
+  /**
+   * Protobuf type {@code qorechain.pqc.v1.MsgRotatePQCKeyResponse}
+   */
+  public static final class MsgRotatePQCKeyResponse extends
+      com.google.protobuf.GeneratedMessage implements
+      // @@protoc_insertion_point(message_implements:qorechain.pqc.v1.MsgRotatePQCKeyResponse)
+      MsgRotatePQCKeyResponseOrBuilder {
+  private static final long serialVersionUID = 0L;
+    static {
+      com.google.protobuf.RuntimeVersion.validateProtobufGencodeVersion(
+        com.google.protobuf.RuntimeVersion.RuntimeDomain.PUBLIC,
+        /* major= */ 4,
+        /* minor= */ 35,
+        /* patch= */ 1,
+        /* suffix= */ "",
+        "MsgRotatePQCKeyResponse");
+    }
+    // Use MsgRotatePQCKeyResponse.newBuilder() to construct.
+    private MsgRotatePQCKeyResponse(com.google.protobuf.GeneratedMessage.Builder<?> builder) {
+      super(builder);
+    }
+    private MsgRotatePQCKeyResponse() {
+    }
+
+    public static final com.google.protobuf.Descriptors.Descriptor
+        getDescriptor() {
+      return qorechain.pqc.v1.Tx.internal_static_qorechain_pqc_v1_MsgRotatePQCKeyResponse_descriptor;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Descriptors.Descriptor getDescriptorForType() {
+      return qorechain.pqc.v1.Tx.internal_static_qorechain_pqc_v1_MsgRotatePQCKeyResponse_descriptor;
+    }
+
+    @java.lang.Override
+    protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+        internalGetFieldAccessorTable() {
+      return qorechain.pqc.v1.Tx.internal_static_qorechain_pqc_v1_MsgRotatePQCKeyResponse_fieldAccessorTable
+          .ensureFieldAccessorsInitialized(
+              qorechain.pqc.v1.Tx.MsgRotatePQCKeyResponse.class, qorechain.pqc.v1.Tx.MsgRotatePQCKeyResponse.Builder.class);
+    }
+
+    private byte memoizedIsInitialized = -1;
+    @java.lang.Override
+    public final boolean isInitialized() {
+      byte isInitialized = memoizedIsInitialized;
+      if (isInitialized == 1) return true;
+      if (isInitialized == 0) return false;
+
+      memoizedIsInitialized = 1;
+      return true;
+    }
+
+    @java.lang.Override
+    public void writeTo(com.google.protobuf.CodedOutputStream output)
+                        throws java.io.IOException {
+      getUnknownFields().writeTo(output);
+    }
+    @java.lang.Override
+    public int getSerializedSize() {
+      int size = memoizedSize;
+      if (size != -1) return size;
+
+      size = 0;
+      size += getUnknownFields().getSerializedSize();
+      memoizedSize = size;
+      return size;
+    }
+
+    @java.lang.Override
+    public boolean equals(final java.lang.Object obj) {
+      if (obj == this) {
+       return true;
+      }
+      if (!(obj instanceof qorechain.pqc.v1.Tx.MsgRotatePQCKeyResponse)) {
+        return super.equals(obj);
+      }
+      qorechain.pqc.v1.Tx.MsgRotatePQCKeyResponse other = (qorechain.pqc.v1.Tx.MsgRotatePQCKeyResponse) obj;
+
+      if (!getUnknownFields().equals(other.getUnknownFields())) return false;
+      return true;
+    }
+
+    @java.lang.Override
+    public int hashCode() {
+      if (memoizedHashCode != 0) {
+        return memoizedHashCode;
+      }
+      int hash = 41;
+      hash = (19 * hash) + getDescriptor().hashCode();
+      hash = (29 * hash) + getUnknownFields().hashCode();
+      memoizedHashCode = hash;
+      return hash;
+    }
+
+    public static qorechain.pqc.v1.Tx.MsgRotatePQCKeyResponse parseFrom(
+        java.nio.ByteBuffer data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static qorechain.pqc.v1.Tx.MsgRotatePQCKeyResponse parseFrom(
+        java.nio.ByteBuffer data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static qorechain.pqc.v1.Tx.MsgRotatePQCKeyResponse parseFrom(
+        com.google.protobuf.ByteString data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static qorechain.pqc.v1.Tx.MsgRotatePQCKeyResponse parseFrom(
+        com.google.protobuf.ByteString data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static qorechain.pqc.v1.Tx.MsgRotatePQCKeyResponse parseFrom(byte[] data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static qorechain.pqc.v1.Tx.MsgRotatePQCKeyResponse parseFrom(
+        byte[] data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static qorechain.pqc.v1.Tx.MsgRotatePQCKeyResponse parseFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input);
+    }
+    public static qorechain.pqc.v1.Tx.MsgRotatePQCKeyResponse parseFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    public static qorechain.pqc.v1.Tx.MsgRotatePQCKeyResponse parseDelimitedFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseDelimitedWithIOException(PARSER, input);
+    }
+
+    public static qorechain.pqc.v1.Tx.MsgRotatePQCKeyResponse parseDelimitedFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static qorechain.pqc.v1.Tx.MsgRotatePQCKeyResponse parseFrom(
+        com.google.protobuf.CodedInputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input);
+    }
+    public static qorechain.pqc.v1.Tx.MsgRotatePQCKeyResponse parseFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    @java.lang.Override
+    public Builder newBuilderForType() { return newBuilder(); }
+    public static Builder newBuilder() {
+      return DEFAULT_INSTANCE.toBuilder();
+    }
+    public static Builder newBuilder(qorechain.pqc.v1.Tx.MsgRotatePQCKeyResponse prototype) {
+      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+    }
+    @java.lang.Override
+    public Builder toBuilder() {
+      return this == DEFAULT_INSTANCE
+          ? new Builder() : new Builder().mergeFrom(this);
+    }
+
+    @java.lang.Override
+    protected Builder newBuilderForType(
+        com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+      Builder builder = new Builder(parent);
+      return builder;
+    }
+    /**
+     * Protobuf type {@code qorechain.pqc.v1.MsgRotatePQCKeyResponse}
+     */
+    public static final class Builder extends
+        com.google.protobuf.GeneratedMessage.Builder<Builder> implements
+        // @@protoc_insertion_point(builder_implements:qorechain.pqc.v1.MsgRotatePQCKeyResponse)
+        qorechain.pqc.v1.Tx.MsgRotatePQCKeyResponseOrBuilder {
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return qorechain.pqc.v1.Tx.internal_static_qorechain_pqc_v1_MsgRotatePQCKeyResponse_descriptor;
+      }
+
+      @java.lang.Override
+      protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return qorechain.pqc.v1.Tx.internal_static_qorechain_pqc_v1_MsgRotatePQCKeyResponse_fieldAccessorTable
+            .ensureFieldAccessorsInitialized(
+                qorechain.pqc.v1.Tx.MsgRotatePQCKeyResponse.class, qorechain.pqc.v1.Tx.MsgRotatePQCKeyResponse.Builder.class);
+      }
+
+      // Construct using qorechain.pqc.v1.Tx.MsgRotatePQCKeyResponse.newBuilder()
+      private Builder() {
+
+      }
+
+      private Builder(
+          com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+        super(parent);
+
+      }
+      @java.lang.Override
+      public Builder clear() {
+        super.clear();
+        return this;
+      }
+
+      @java.lang.Override
+      public com.google.protobuf.Descriptors.Descriptor
+          getDescriptorForType() {
+        return qorechain.pqc.v1.Tx.internal_static_qorechain_pqc_v1_MsgRotatePQCKeyResponse_descriptor;
+      }
+
+      @java.lang.Override
+      public qorechain.pqc.v1.Tx.MsgRotatePQCKeyResponse getDefaultInstanceForType() {
+        return qorechain.pqc.v1.Tx.MsgRotatePQCKeyResponse.getDefaultInstance();
+      }
+
+      @java.lang.Override
+      public qorechain.pqc.v1.Tx.MsgRotatePQCKeyResponse build() {
+        qorechain.pqc.v1.Tx.MsgRotatePQCKeyResponse result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(result);
+        }
+        return result;
+      }
+
+      @java.lang.Override
+      public qorechain.pqc.v1.Tx.MsgRotatePQCKeyResponse buildPartial() {
+        qorechain.pqc.v1.Tx.MsgRotatePQCKeyResponse result = new qorechain.pqc.v1.Tx.MsgRotatePQCKeyResponse(this);
+        onBuilt();
+        return result;
+      }
+
+      @java.lang.Override
+      public Builder mergeFrom(com.google.protobuf.Message other) {
+        if (other instanceof qorechain.pqc.v1.Tx.MsgRotatePQCKeyResponse) {
+          return mergeFrom((qorechain.pqc.v1.Tx.MsgRotatePQCKeyResponse)other);
+        } else {
+          super.mergeFrom(other);
+          return this;
+        }
+      }
+
+      public Builder mergeFrom(qorechain.pqc.v1.Tx.MsgRotatePQCKeyResponse other) {
+        if (other == qorechain.pqc.v1.Tx.MsgRotatePQCKeyResponse.getDefaultInstance()) return this;
+        this.mergeUnknownFields(other.getUnknownFields());
+        onChanged();
+        return this;
+      }
+
+      @java.lang.Override
+      public final boolean isInitialized() {
+        return true;
+      }
+
+      @java.lang.Override
+      public Builder mergeFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        if (extensionRegistry == null) {
+          throw new java.lang.NullPointerException();
+        }
+        try {
+          boolean done = false;
+          while (!done) {
+            int tag = input.readTag();
+            switch (tag) {
+              case 0:
+                done = true;
+                break;
+              default: {
+                if (!super.parseUnknownField(input, extensionRegistry, tag)) {
+                  done = true; // was an endgroup tag
+                }
+                break;
+              } // default:
+            } // switch (tag)
+          } // while (!done)
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          throw e.unwrapIOException();
+        } finally {
+          onChanged();
+        } // finally
+        return this;
+      }
+
+      // @@protoc_insertion_point(builder_scope:qorechain.pqc.v1.MsgRotatePQCKeyResponse)
+    }
+
+    // @@protoc_insertion_point(class_scope:qorechain.pqc.v1.MsgRotatePQCKeyResponse)
+    private static final qorechain.pqc.v1.Tx.MsgRotatePQCKeyResponse DEFAULT_INSTANCE;
+    static {
+      DEFAULT_INSTANCE = new qorechain.pqc.v1.Tx.MsgRotatePQCKeyResponse();
+    }
+
+    public static qorechain.pqc.v1.Tx.MsgRotatePQCKeyResponse getDefaultInstance() {
+      return DEFAULT_INSTANCE;
+    }
+
+    private static final com.google.protobuf.Parser<MsgRotatePQCKeyResponse>
+        PARSER = new com.google.protobuf.AbstractParser<MsgRotatePQCKeyResponse>() {
+      @java.lang.Override
+      public MsgRotatePQCKeyResponse parsePartialFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        Builder builder = newBuilder();
+        try {
+          builder.mergeFrom(input, extensionRegistry);
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          throw e.setUnfinishedMessage(builder.buildPartial());
+        } catch (com.google.protobuf.UninitializedMessageException e) {
+          throw e.asInvalidProtocolBufferException().setUnfinishedMessage(builder.buildPartial());
+        } catch (java.io.IOException e) {
+          throw new com.google.protobuf.InvalidProtocolBufferException(e)
+              .setUnfinishedMessage(builder.buildPartial());
+        }
+        return builder.buildPartial();
+      }
+    };
+
+    public static com.google.protobuf.Parser<MsgRotatePQCKeyResponse> parser() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Parser<MsgRotatePQCKeyResponse> getParserForType() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public qorechain.pqc.v1.Tx.MsgRotatePQCKeyResponse getDefaultInstanceForType() {
+      return DEFAULT_INSTANCE;
+    }
+
+  }
+
   public interface MsgDeprecateAlgorithmOrBuilder extends
       // @@protoc_insertion_point(interface_extends:qorechain.pqc.v1.MsgDeprecateAlgorithm)
       com.google.protobuf.MessageOrBuilder {
@@ -5950,6 +7136,16 @@ public final class Tx extends com.google.protobuf.GeneratedFile {
     com.google.protobuf.GeneratedMessage.FieldAccessorTable
       internal_static_qorechain_pqc_v1_MsgMigratePQCKeyResponse_fieldAccessorTable;
   private static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_qorechain_pqc_v1_MsgRotatePQCKey_descriptor;
+  private static final 
+    com.google.protobuf.GeneratedMessage.FieldAccessorTable
+      internal_static_qorechain_pqc_v1_MsgRotatePQCKey_fieldAccessorTable;
+  private static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_qorechain_pqc_v1_MsgRotatePQCKeyResponse_descriptor;
+  private static final 
+    com.google.protobuf.GeneratedMessage.FieldAccessorTable
+      internal_static_qorechain_pqc_v1_MsgRotatePQCKeyResponse_fieldAccessorTable;
+  private static final com.google.protobuf.Descriptors.Descriptor
     internal_static_qorechain_pqc_v1_MsgDeprecateAlgorithm_descriptor;
   private static final 
     com.google.protobuf.GeneratedMessage.FieldAccessorTable
@@ -6002,36 +7198,45 @@ public final class Tx extends com.google.protobuf.GeneratedFile {
       "mID\372\336\037\013AlgorithmIDR\016newAlgorithmId\022#\n\rol" +
       "d_signature\030\005 \001(\014R\014oldSignature\022#\n\rnew_s" +
       "ignature\030\006 \001(\014R\014newSignature:\013\202\347\260*\006sende" +
-      "r\"\032\n\030MsgMigratePQCKeyResponse\"\254\002\n\025MsgDep" +
-      "recateAlgorithm\0226\n\tauthority\030\001 \001(\tB\030\322\264-\024" +
-      "cosmos.AddressStringR\tauthority\022A\n\014algor" +
-      "ithm_id\030\002 \001(\rB\036\342\336\037\013AlgorithmID\372\336\037\013Algori" +
-      "thmIDR\013algorithmId\022)\n\020migration_blocks\030\003" +
-      " \001(\003R\017migrationBlocks\022]\n\030replacement_alg" +
-      "orithm_id\030\004 \001(\rB#\342\336\037\020ReplacementAlgID\372\336\037" +
-      "\013AlgorithmIDR\026replacementAlgorithmId:\016\202\347" +
-      "\260*\tauthority\"\037\n\035MsgDeprecateAlgorithmRes" +
-      "ponse\"\270\001\n\023MsgDisableAlgorithm\0226\n\tauthori" +
-      "ty\030\001 \001(\tB\030\322\264-\024cosmos.AddressStringR\tauth" +
-      "ority\022A\n\014algorithm_id\030\002 \001(\rB\036\342\336\037\013Algorit" +
-      "hmID\372\336\037\013AlgorithmIDR\013algorithmId\022\026\n\006reas" +
-      "on\030\003 \001(\tR\006reason:\016\202\347\260*\tauthority\"\035\n\033MsgD" +
-      "isableAlgorithmResponse2\225\004\n\003Msg\022b\n\016Regis" +
-      "terPQCKey\022#.qorechain.pqc.v1.MsgRegister" +
-      "PQCKey\032+.qorechain.pqc.v1.MsgRegisterPQC" +
-      "KeyResponse\022h\n\020RegisterPQCKeyV2\022%.qorech" +
-      "ain.pqc.v1.MsgRegisterPQCKeyV2\032-.qorecha" +
-      "in.pqc.v1.MsgRegisterPQCKeyV2Response\022_\n" +
-      "\rMigratePQCKey\022\".qorechain.pqc.v1.MsgMig" +
-      "ratePQCKey\032*.qorechain.pqc.v1.MsgMigrate" +
-      "PQCKeyResponse\022n\n\022DeprecateAlgorithm\022\'.q" +
-      "orechain.pqc.v1.MsgDeprecateAlgorithm\032/." +
-      "qorechain.pqc.v1.MsgDeprecateAlgorithmRe" +
-      "sponse\022h\n\020DisableAlgorithm\022%.qorechain.p" +
-      "qc.v1.MsgDisableAlgorithm\032-.qorechain.pq" +
-      "c.v1.MsgDisableAlgorithmResponse\032\005\200\347\260*\001B" +
-      "1Z/github.com/qorechain/qorechain-core/x" +
-      "/pqc/typesb\006proto3"
+      "r\"\032\n\030MsgMigratePQCKeyResponse\"\346\001\n\017MsgRot" +
+      "atePQCKey\0220\n\006sender\030\001 \001(\tB\030\322\264-\024cosmos.Ad" +
+      "dressStringR\006sender\022$\n\016old_public_key\030\002 " +
+      "\001(\014R\014oldPublicKey\022$\n\016new_public_key\030\003 \001(" +
+      "\014R\014newPublicKey\022#\n\rold_signature\030\004 \001(\014R\014" +
+      "oldSignature\022#\n\rnew_signature\030\005 \001(\014R\014new" +
+      "Signature:\013\202\347\260*\006sender\"\031\n\027MsgRotatePQCKe" +
+      "yResponse\"\254\002\n\025MsgDeprecateAlgorithm\0226\n\ta" +
+      "uthority\030\001 \001(\tB\030\322\264-\024cosmos.AddressString" +
+      "R\tauthority\022A\n\014algorithm_id\030\002 \001(\rB\036\342\336\037\013A" +
+      "lgorithmID\372\336\037\013AlgorithmIDR\013algorithmId\022)" +
+      "\n\020migration_blocks\030\003 \001(\003R\017migrationBlock" +
+      "s\022]\n\030replacement_algorithm_id\030\004 \001(\rB#\342\336\037" +
+      "\020ReplacementAlgID\372\336\037\013AlgorithmIDR\026replac" +
+      "ementAlgorithmId:\016\202\347\260*\tauthority\"\037\n\035MsgD" +
+      "eprecateAlgorithmResponse\"\270\001\n\023MsgDisable" +
+      "Algorithm\0226\n\tauthority\030\001 \001(\tB\030\322\264-\024cosmos" +
+      ".AddressStringR\tauthority\022A\n\014algorithm_i" +
+      "d\030\002 \001(\rB\036\342\336\037\013AlgorithmID\372\336\037\013AlgorithmIDR" +
+      "\013algorithmId\022\026\n\006reason\030\003 \001(\tR\006reason:\016\202\347" +
+      "\260*\tauthority\"\035\n\033MsgDisableAlgorithmRespo" +
+      "nse2\363\004\n\003Msg\022b\n\016RegisterPQCKey\022#.qorechai" +
+      "n.pqc.v1.MsgRegisterPQCKey\032+.qorechain.p" +
+      "qc.v1.MsgRegisterPQCKeyResponse\022h\n\020Regis" +
+      "terPQCKeyV2\022%.qorechain.pqc.v1.MsgRegist" +
+      "erPQCKeyV2\032-.qorechain.pqc.v1.MsgRegiste" +
+      "rPQCKeyV2Response\022_\n\rMigratePQCKey\022\".qor" +
+      "echain.pqc.v1.MsgMigratePQCKey\032*.qorecha" +
+      "in.pqc.v1.MsgMigratePQCKeyResponse\022\\\n\014Ro" +
+      "tatePQCKey\022!.qorechain.pqc.v1.MsgRotateP" +
+      "QCKey\032).qorechain.pqc.v1.MsgRotatePQCKey" +
+      "Response\022n\n\022DeprecateAlgorithm\022\'.qorecha" +
+      "in.pqc.v1.MsgDeprecateAlgorithm\032/.qorech" +
+      "ain.pqc.v1.MsgDeprecateAlgorithmResponse" +
+      "\022h\n\020DisableAlgorithm\022%.qorechain.pqc.v1." +
+      "MsgDisableAlgorithm\032-.qorechain.pqc.v1.M" +
+      "sgDisableAlgorithmResponse\032\005\200\347\260*\001B1Z/git" +
+      "hub.com/qorechain/qorechain-core/x/pqc/t" +
+      "ypesb\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
@@ -6076,26 +7281,38 @@ public final class Tx extends com.google.protobuf.GeneratedFile {
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_qorechain_pqc_v1_MsgMigratePQCKeyResponse_descriptor,
         new java.lang.String[] { });
-    internal_static_qorechain_pqc_v1_MsgDeprecateAlgorithm_descriptor =
+    internal_static_qorechain_pqc_v1_MsgRotatePQCKey_descriptor =
       getDescriptor().getMessageType(6);
+    internal_static_qorechain_pqc_v1_MsgRotatePQCKey_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessage.FieldAccessorTable(
+        internal_static_qorechain_pqc_v1_MsgRotatePQCKey_descriptor,
+        new java.lang.String[] { "Sender", "OldPublicKey", "NewPublicKey", "OldSignature", "NewSignature", });
+    internal_static_qorechain_pqc_v1_MsgRotatePQCKeyResponse_descriptor =
+      getDescriptor().getMessageType(7);
+    internal_static_qorechain_pqc_v1_MsgRotatePQCKeyResponse_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessage.FieldAccessorTable(
+        internal_static_qorechain_pqc_v1_MsgRotatePQCKeyResponse_descriptor,
+        new java.lang.String[] { });
+    internal_static_qorechain_pqc_v1_MsgDeprecateAlgorithm_descriptor =
+      getDescriptor().getMessageType(8);
     internal_static_qorechain_pqc_v1_MsgDeprecateAlgorithm_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_qorechain_pqc_v1_MsgDeprecateAlgorithm_descriptor,
         new java.lang.String[] { "Authority", "AlgorithmId", "MigrationBlocks", "ReplacementAlgorithmId", });
     internal_static_qorechain_pqc_v1_MsgDeprecateAlgorithmResponse_descriptor =
-      getDescriptor().getMessageType(7);
+      getDescriptor().getMessageType(9);
     internal_static_qorechain_pqc_v1_MsgDeprecateAlgorithmResponse_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_qorechain_pqc_v1_MsgDeprecateAlgorithmResponse_descriptor,
         new java.lang.String[] { });
     internal_static_qorechain_pqc_v1_MsgDisableAlgorithm_descriptor =
-      getDescriptor().getMessageType(8);
+      getDescriptor().getMessageType(10);
     internal_static_qorechain_pqc_v1_MsgDisableAlgorithm_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_qorechain_pqc_v1_MsgDisableAlgorithm_descriptor,
         new java.lang.String[] { "Authority", "AlgorithmId", "Reason", });
     internal_static_qorechain_pqc_v1_MsgDisableAlgorithmResponse_descriptor =
-      getDescriptor().getMessageType(9);
+      getDescriptor().getMessageType(11);
     internal_static_qorechain_pqc_v1_MsgDisableAlgorithmResponse_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_qorechain_pqc_v1_MsgDisableAlgorithmResponse_descriptor,

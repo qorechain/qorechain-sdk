@@ -267,3 +267,46 @@ async fn typed_bridge_chain_config_query_decodes_response() {
     let v: serde_json::Value = serde_json::from_str(&body).unwrap();
     assert_eq!(v["params"]["path"], "/qorechain.bridge.v1.Query/ChainConfig");
 }
+
+#[tokio::test]
+async fn typed_abstractaccount_permission_schema_query_decodes_response() {
+    let mut msg_permissions = std::collections::HashMap::new();
+    msg_permissions.insert(
+        "/qorechain.abstractaccount.v1.MsgExecuteEVM".to_string(),
+        "evm".to_string(),
+    );
+    msg_permissions.insert(
+        "/qorechain.abstractaccount.v1.MsgExecuteCosmos".to_string(),
+        "send".to_string(),
+    );
+    let resp = pb::abstractaccount::v1::QueryPermissionSchemaResponse {
+        schema_version: "v3.1.85".into(),
+        permissions: vec!["send".into(), "evm".into(), "svm".into(), "all".into()],
+        msg_permissions,
+        key_management_msgs: vec![
+            "/qorechain.abstractaccount.v1.MsgRegisterAuthenticator".into(),
+            "/qorechain.abstractaccount.v1.MsgRevokeAuthenticator".into(),
+        ],
+    };
+    let value_b64 = BASE64.encode(prost::Message::encode_to_vec(&resp));
+    let server = MockServer::start(value_b64).await;
+
+    let client = TypedQueryClient::new(server.base_url.clone());
+    let got = client.abstractaccount_permission_schema().await.unwrap();
+    assert_eq!(got.schema_version, "v3.1.85");
+    assert!(got.permissions.contains(&"evm".to_string()));
+    assert_eq!(
+        got.msg_permissions
+            .get("/qorechain.abstractaccount.v1.MsgExecuteEVM"),
+        Some(&"evm".to_string())
+    );
+    assert_eq!(got.key_management_msgs.len(), 2);
+
+    let body = server.last_body.lock().unwrap().clone().unwrap();
+    let v: serde_json::Value = serde_json::from_str(&body).unwrap();
+    assert_eq!(v["method"], "abci_query");
+    assert_eq!(
+        v["params"]["path"],
+        "/qorechain.abstractaccount.v1.Query/PermissionSchema"
+    );
+}

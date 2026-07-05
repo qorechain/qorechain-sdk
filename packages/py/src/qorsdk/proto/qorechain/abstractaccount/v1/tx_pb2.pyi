@@ -1,6 +1,7 @@
 from cosmos.msg.v1 import msg_pb2 as _msg_pb2
 from cosmos_proto import cosmos_pb2 as _cosmos_pb2
 from gogoproto import gogo_pb2 as _gogo_pb2
+from cosmos.base.v1beta1 import coin_pb2 as _coin_pb2
 from google.protobuf.internal import containers as _containers
 from google.protobuf import descriptor as _descriptor
 from google.protobuf import message as _message
@@ -87,3 +88,65 @@ class MsgRevokeAuthenticator(_message.Message):
 class MsgRevokeAuthenticatorResponse(_message.Message):
     __slots__ = ()
     def __init__(self) -> None: ...
+
+class MsgExecuteEVM(_message.Message):
+    __slots__ = ("relayer", "account", "scheme", "pubkey", "signature", "to", "value", "data", "gas_limit", "nonce")
+    RELAYER_FIELD_NUMBER: _ClassVar[int]
+    ACCOUNT_FIELD_NUMBER: _ClassVar[int]
+    SCHEME_FIELD_NUMBER: _ClassVar[int]
+    PUBKEY_FIELD_NUMBER: _ClassVar[int]
+    SIGNATURE_FIELD_NUMBER: _ClassVar[int]
+    TO_FIELD_NUMBER: _ClassVar[int]
+    VALUE_FIELD_NUMBER: _ClassVar[int]
+    DATA_FIELD_NUMBER: _ClassVar[int]
+    GAS_LIMIT_FIELD_NUMBER: _ClassVar[int]
+    NONCE_FIELD_NUMBER: _ClassVar[int]
+    relayer: str
+    account: str
+    scheme: str
+    pubkey: bytes
+    signature: bytes
+    to: str
+    value: str
+    data: bytes
+    gas_limit: int
+    nonce: int
+    def __init__(self, relayer: _Optional[str] = ..., account: _Optional[str] = ..., scheme: _Optional[str] = ..., pubkey: _Optional[bytes] = ..., signature: _Optional[bytes] = ..., to: _Optional[str] = ..., value: _Optional[str] = ..., data: _Optional[bytes] = ..., gas_limit: _Optional[int] = ..., nonce: _Optional[int] = ...) -> None: ...
+
+class MsgExecuteEVMResponse(_message.Message):
+    __slots__ = ("success", "ret", "gas_used", "vm_error")
+    SUCCESS_FIELD_NUMBER: _ClassVar[int]
+    RET_FIELD_NUMBER: _ClassVar[int]
+    GAS_USED_FIELD_NUMBER: _ClassVar[int]
+    VM_ERROR_FIELD_NUMBER: _ClassVar[int]
+    success: bool
+    ret: bytes
+    gas_used: int
+    vm_error: str
+    def __init__(self, success: bool = ..., ret: _Optional[bytes] = ..., gas_used: _Optional[int] = ..., vm_error: _Optional[str] = ...) -> None: ...
+
+class MsgExecuteCosmos(_message.Message):
+    __slots__ = ("relayer", "account", "scheme", "pubkey", "signature", "to", "amount", "nonce")
+    RELAYER_FIELD_NUMBER: _ClassVar[int]
+    ACCOUNT_FIELD_NUMBER: _ClassVar[int]
+    SCHEME_FIELD_NUMBER: _ClassVar[int]
+    PUBKEY_FIELD_NUMBER: _ClassVar[int]
+    SIGNATURE_FIELD_NUMBER: _ClassVar[int]
+    TO_FIELD_NUMBER: _ClassVar[int]
+    AMOUNT_FIELD_NUMBER: _ClassVar[int]
+    NONCE_FIELD_NUMBER: _ClassVar[int]
+    relayer: str
+    account: str
+    scheme: str
+    pubkey: bytes
+    signature: bytes
+    to: str
+    amount: _containers.RepeatedCompositeFieldContainer[_coin_pb2.Coin]
+    nonce: int
+    def __init__(self, relayer: _Optional[str] = ..., account: _Optional[str] = ..., scheme: _Optional[str] = ..., pubkey: _Optional[bytes] = ..., signature: _Optional[bytes] = ..., to: _Optional[str] = ..., amount: _Optional[_Iterable[_Union[_coin_pb2.Coin, _Mapping]]] = ..., nonce: _Optional[int] = ...) -> None: ...
+
+class MsgExecuteCosmosResponse(_message.Message):
+    __slots__ = ("success",)
+    SUCCESS_FIELD_NUMBER: _ClassVar[int]
+    success: bool
+    def __init__(self, success: bool = ...) -> None: ...

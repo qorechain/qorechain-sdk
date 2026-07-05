@@ -5016,6 +5016,1868 @@ public final class QueryOuterClass extends com.google.protobuf.GeneratedFile {
 
   }
 
+  public interface QueryPermissionSchemaRequestOrBuilder extends
+      // @@protoc_insertion_point(interface_extends:qorechain.abstractaccount.v1.QueryPermissionSchemaRequest)
+      com.google.protobuf.MessageOrBuilder {
+  }
+  /**
+   * Protobuf type {@code qorechain.abstractaccount.v1.QueryPermissionSchemaRequest}
+   */
+  public static final class QueryPermissionSchemaRequest extends
+      com.google.protobuf.GeneratedMessage implements
+      // @@protoc_insertion_point(message_implements:qorechain.abstractaccount.v1.QueryPermissionSchemaRequest)
+      QueryPermissionSchemaRequestOrBuilder {
+  private static final long serialVersionUID = 0L;
+    static {
+      com.google.protobuf.RuntimeVersion.validateProtobufGencodeVersion(
+        com.google.protobuf.RuntimeVersion.RuntimeDomain.PUBLIC,
+        /* major= */ 4,
+        /* minor= */ 35,
+        /* patch= */ 1,
+        /* suffix= */ "",
+        "QueryPermissionSchemaRequest");
+    }
+    // Use QueryPermissionSchemaRequest.newBuilder() to construct.
+    private QueryPermissionSchemaRequest(com.google.protobuf.GeneratedMessage.Builder<?> builder) {
+      super(builder);
+    }
+    private QueryPermissionSchemaRequest() {
+    }
+
+    public static final com.google.protobuf.Descriptors.Descriptor
+        getDescriptor() {
+      return qorechain.abstractaccount.v1.QueryOuterClass.internal_static_qorechain_abstractaccount_v1_QueryPermissionSchemaRequest_descriptor;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Descriptors.Descriptor getDescriptorForType() {
+      return qorechain.abstractaccount.v1.QueryOuterClass.internal_static_qorechain_abstractaccount_v1_QueryPermissionSchemaRequest_descriptor;
+    }
+
+    @java.lang.Override
+    protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+        internalGetFieldAccessorTable() {
+      return qorechain.abstractaccount.v1.QueryOuterClass.internal_static_qorechain_abstractaccount_v1_QueryPermissionSchemaRequest_fieldAccessorTable
+          .ensureFieldAccessorsInitialized(
+              qorechain.abstractaccount.v1.QueryOuterClass.QueryPermissionSchemaRequest.class, qorechain.abstractaccount.v1.QueryOuterClass.QueryPermissionSchemaRequest.Builder.class);
+    }
+
+    private byte memoizedIsInitialized = -1;
+    @java.lang.Override
+    public final boolean isInitialized() {
+      byte isInitialized = memoizedIsInitialized;
+      if (isInitialized == 1) return true;
+      if (isInitialized == 0) return false;
+
+      memoizedIsInitialized = 1;
+      return true;
+    }
+
+    @java.lang.Override
+    public void writeTo(com.google.protobuf.CodedOutputStream output)
+                        throws java.io.IOException {
+      getUnknownFields().writeTo(output);
+    }
+    @java.lang.Override
+    public int getSerializedSize() {
+      int size = memoizedSize;
+      if (size != -1) return size;
+
+      size = 0;
+      size += getUnknownFields().getSerializedSize();
+      memoizedSize = size;
+      return size;
+    }
+
+    @java.lang.Override
+    public boolean equals(final java.lang.Object obj) {
+      if (obj == this) {
+       return true;
+      }
+      if (!(obj instanceof qorechain.abstractaccount.v1.QueryOuterClass.QueryPermissionSchemaRequest)) {
+        return super.equals(obj);
+      }
+      qorechain.abstractaccount.v1.QueryOuterClass.QueryPermissionSchemaRequest other = (qorechain.abstractaccount.v1.QueryOuterClass.QueryPermissionSchemaRequest) obj;
+
+      if (!getUnknownFields().equals(other.getUnknownFields())) return false;
+      return true;
+    }
+
+    @java.lang.Override
+    public int hashCode() {
+      if (memoizedHashCode != 0) {
+        return memoizedHashCode;
+      }
+      int hash = 41;
+      hash = (19 * hash) + getDescriptor().hashCode();
+      hash = (29 * hash) + getUnknownFields().hashCode();
+      memoizedHashCode = hash;
+      return hash;
+    }
+
+    public static qorechain.abstractaccount.v1.QueryOuterClass.QueryPermissionSchemaRequest parseFrom(
+        java.nio.ByteBuffer data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static qorechain.abstractaccount.v1.QueryOuterClass.QueryPermissionSchemaRequest parseFrom(
+        java.nio.ByteBuffer data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static qorechain.abstractaccount.v1.QueryOuterClass.QueryPermissionSchemaRequest parseFrom(
+        com.google.protobuf.ByteString data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static qorechain.abstractaccount.v1.QueryOuterClass.QueryPermissionSchemaRequest parseFrom(
+        com.google.protobuf.ByteString data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static qorechain.abstractaccount.v1.QueryOuterClass.QueryPermissionSchemaRequest parseFrom(byte[] data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static qorechain.abstractaccount.v1.QueryOuterClass.QueryPermissionSchemaRequest parseFrom(
+        byte[] data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static qorechain.abstractaccount.v1.QueryOuterClass.QueryPermissionSchemaRequest parseFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input);
+    }
+    public static qorechain.abstractaccount.v1.QueryOuterClass.QueryPermissionSchemaRequest parseFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    public static qorechain.abstractaccount.v1.QueryOuterClass.QueryPermissionSchemaRequest parseDelimitedFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseDelimitedWithIOException(PARSER, input);
+    }
+
+    public static qorechain.abstractaccount.v1.QueryOuterClass.QueryPermissionSchemaRequest parseDelimitedFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static qorechain.abstractaccount.v1.QueryOuterClass.QueryPermissionSchemaRequest parseFrom(
+        com.google.protobuf.CodedInputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input);
+    }
+    public static qorechain.abstractaccount.v1.QueryOuterClass.QueryPermissionSchemaRequest parseFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    @java.lang.Override
+    public Builder newBuilderForType() { return newBuilder(); }
+    public static Builder newBuilder() {
+      return DEFAULT_INSTANCE.toBuilder();
+    }
+    public static Builder newBuilder(qorechain.abstractaccount.v1.QueryOuterClass.QueryPermissionSchemaRequest prototype) {
+      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+    }
+    @java.lang.Override
+    public Builder toBuilder() {
+      return this == DEFAULT_INSTANCE
+          ? new Builder() : new Builder().mergeFrom(this);
+    }
+
+    @java.lang.Override
+    protected Builder newBuilderForType(
+        com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+      Builder builder = new Builder(parent);
+      return builder;
+    }
+    /**
+     * Protobuf type {@code qorechain.abstractaccount.v1.QueryPermissionSchemaRequest}
+     */
+    public static final class Builder extends
+        com.google.protobuf.GeneratedMessage.Builder<Builder> implements
+        // @@protoc_insertion_point(builder_implements:qorechain.abstractaccount.v1.QueryPermissionSchemaRequest)
+        qorechain.abstractaccount.v1.QueryOuterClass.QueryPermissionSchemaRequestOrBuilder {
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return qorechain.abstractaccount.v1.QueryOuterClass.internal_static_qorechain_abstractaccount_v1_QueryPermissionSchemaRequest_descriptor;
+      }
+
+      @java.lang.Override
+      protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return qorechain.abstractaccount.v1.QueryOuterClass.internal_static_qorechain_abstractaccount_v1_QueryPermissionSchemaRequest_fieldAccessorTable
+            .ensureFieldAccessorsInitialized(
+                qorechain.abstractaccount.v1.QueryOuterClass.QueryPermissionSchemaRequest.class, qorechain.abstractaccount.v1.QueryOuterClass.QueryPermissionSchemaRequest.Builder.class);
+      }
+
+      // Construct using qorechain.abstractaccount.v1.QueryOuterClass.QueryPermissionSchemaRequest.newBuilder()
+      private Builder() {
+
+      }
+
+      private Builder(
+          com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+        super(parent);
+
+      }
+      @java.lang.Override
+      public Builder clear() {
+        super.clear();
+        return this;
+      }
+
+      @java.lang.Override
+      public com.google.protobuf.Descriptors.Descriptor
+          getDescriptorForType() {
+        return qorechain.abstractaccount.v1.QueryOuterClass.internal_static_qorechain_abstractaccount_v1_QueryPermissionSchemaRequest_descriptor;
+      }
+
+      @java.lang.Override
+      public qorechain.abstractaccount.v1.QueryOuterClass.QueryPermissionSchemaRequest getDefaultInstanceForType() {
+        return qorechain.abstractaccount.v1.QueryOuterClass.QueryPermissionSchemaRequest.getDefaultInstance();
+      }
+
+      @java.lang.Override
+      public qorechain.abstractaccount.v1.QueryOuterClass.QueryPermissionSchemaRequest build() {
+        qorechain.abstractaccount.v1.QueryOuterClass.QueryPermissionSchemaRequest result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(result);
+        }
+        return result;
+      }
+
+      @java.lang.Override
+      public qorechain.abstractaccount.v1.QueryOuterClass.QueryPermissionSchemaRequest buildPartial() {
+        qorechain.abstractaccount.v1.QueryOuterClass.QueryPermissionSchemaRequest result = new qorechain.abstractaccount.v1.QueryOuterClass.QueryPermissionSchemaRequest(this);
+        onBuilt();
+        return result;
+      }
+
+      @java.lang.Override
+      public Builder mergeFrom(com.google.protobuf.Message other) {
+        if (other instanceof qorechain.abstractaccount.v1.QueryOuterClass.QueryPermissionSchemaRequest) {
+          return mergeFrom((qorechain.abstractaccount.v1.QueryOuterClass.QueryPermissionSchemaRequest)other);
+        } else {
+          super.mergeFrom(other);
+          return this;
+        }
+      }
+
+      public Builder mergeFrom(qorechain.abstractaccount.v1.QueryOuterClass.QueryPermissionSchemaRequest other) {
+        if (other == qorechain.abstractaccount.v1.QueryOuterClass.QueryPermissionSchemaRequest.getDefaultInstance()) return this;
+        this.mergeUnknownFields(other.getUnknownFields());
+        onChanged();
+        return this;
+      }
+
+      @java.lang.Override
+      public final boolean isInitialized() {
+        return true;
+      }
+
+      @java.lang.Override
+      public Builder mergeFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        if (extensionRegistry == null) {
+          throw new java.lang.NullPointerException();
+        }
+        try {
+          boolean done = false;
+          while (!done) {
+            int tag = input.readTag();
+            switch (tag) {
+              case 0:
+                done = true;
+                break;
+              default: {
+                if (!super.parseUnknownField(input, extensionRegistry, tag)) {
+                  done = true; // was an endgroup tag
+                }
+                break;
+              } // default:
+            } // switch (tag)
+          } // while (!done)
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          throw e.unwrapIOException();
+        } finally {
+          onChanged();
+        } // finally
+        return this;
+      }
+
+      // @@protoc_insertion_point(builder_scope:qorechain.abstractaccount.v1.QueryPermissionSchemaRequest)
+    }
+
+    // @@protoc_insertion_point(class_scope:qorechain.abstractaccount.v1.QueryPermissionSchemaRequest)
+    private static final qorechain.abstractaccount.v1.QueryOuterClass.QueryPermissionSchemaRequest DEFAULT_INSTANCE;
+    static {
+      DEFAULT_INSTANCE = new qorechain.abstractaccount.v1.QueryOuterClass.QueryPermissionSchemaRequest();
+    }
+
+    public static qorechain.abstractaccount.v1.QueryOuterClass.QueryPermissionSchemaRequest getDefaultInstance() {
+      return DEFAULT_INSTANCE;
+    }
+
+    private static final com.google.protobuf.Parser<QueryPermissionSchemaRequest>
+        PARSER = new com.google.protobuf.AbstractParser<QueryPermissionSchemaRequest>() {
+      @java.lang.Override
+      public QueryPermissionSchemaRequest parsePartialFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        Builder builder = newBuilder();
+        try {
+          builder.mergeFrom(input, extensionRegistry);
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          throw e.setUnfinishedMessage(builder.buildPartial());
+        } catch (com.google.protobuf.UninitializedMessageException e) {
+          throw e.asInvalidProtocolBufferException().setUnfinishedMessage(builder.buildPartial());
+        } catch (java.io.IOException e) {
+          throw new com.google.protobuf.InvalidProtocolBufferException(e)
+              .setUnfinishedMessage(builder.buildPartial());
+        }
+        return builder.buildPartial();
+      }
+    };
+
+    public static com.google.protobuf.Parser<QueryPermissionSchemaRequest> parser() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Parser<QueryPermissionSchemaRequest> getParserForType() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public qorechain.abstractaccount.v1.QueryOuterClass.QueryPermissionSchemaRequest getDefaultInstanceForType() {
+      return DEFAULT_INSTANCE;
+    }
+
+  }
+
+  public interface QueryPermissionSchemaResponseOrBuilder extends
+      // @@protoc_insertion_point(interface_extends:qorechain.abstractaccount.v1.QueryPermissionSchemaResponse)
+      com.google.protobuf.MessageOrBuilder {
+
+    /**
+     * <pre>
+     * schema_version bumps whenever the taxonomy or the mapping changes; clients
+     * compare it to their embedded copy to detect drift.
+     * </pre>
+     *
+     * <code>string schema_version = 1 [json_name = "schemaVersion"];</code>
+     * @return The schemaVersion.
+     */
+    java.lang.String getSchemaVersion();
+    /**
+     * <pre>
+     * schema_version bumps whenever the taxonomy or the mapping changes; clients
+     * compare it to their embedded copy to detect drift.
+     * </pre>
+     *
+     * <code>string schema_version = 1 [json_name = "schemaVersion"];</code>
+     * @return The bytes for schemaVersion.
+     */
+    com.google.protobuf.ByteString
+        getSchemaVersionBytes();
+
+    /**
+     * <pre>
+     * permissions is every valid permission string (e.g. send, evm, svm, all).
+     * </pre>
+     *
+     * <code>repeated string permissions = 2 [json_name = "permissions"];</code>
+     * @return A list containing the permissions.
+     */
+    java.util.List<java.lang.String>
+        getPermissionsList();
+    /**
+     * <pre>
+     * permissions is every valid permission string (e.g. send, evm, svm, all).
+     * </pre>
+     *
+     * <code>repeated string permissions = 2 [json_name = "permissions"];</code>
+     * @return The count of permissions.
+     */
+    int getPermissionsCount();
+    /**
+     * <pre>
+     * permissions is every valid permission string (e.g. send, evm, svm, all).
+     * </pre>
+     *
+     * <code>repeated string permissions = 2 [json_name = "permissions"];</code>
+     * @param index The index of the element to return.
+     * @return The permissions at the given index.
+     */
+    java.lang.String getPermissions(int index);
+    /**
+     * <pre>
+     * permissions is every valid permission string (e.g. send, evm, svm, all).
+     * </pre>
+     *
+     * <code>repeated string permissions = 2 [json_name = "permissions"];</code>
+     * @param index The index of the value to return.
+     * @return The bytes of the permissions at the given index.
+     */
+    com.google.protobuf.ByteString
+        getPermissionsBytes(int index);
+
+    /**
+     * <pre>
+     * msg_permissions maps a message typeURL to the permission it requires.
+     * </pre>
+     *
+     * <code>map&lt;string, string&gt; msg_permissions = 3 [json_name = "msgPermissions"];</code>
+     */
+    int getMsgPermissionsCount();
+    /**
+     * <pre>
+     * msg_permissions maps a message typeURL to the permission it requires.
+     * </pre>
+     *
+     * <code>map&lt;string, string&gt; msg_permissions = 3 [json_name = "msgPermissions"];</code>
+     */
+    boolean containsMsgPermissions(
+        java.lang.String key);
+    /**
+     * Use {@link #getMsgPermissionsMap()} instead.
+     */
+    @java.lang.Deprecated
+    java.util.Map<java.lang.String, java.lang.String>
+    getMsgPermissions();
+    /**
+     * <pre>
+     * msg_permissions maps a message typeURL to the permission it requires.
+     * </pre>
+     *
+     * <code>map&lt;string, string&gt; msg_permissions = 3 [json_name = "msgPermissions"];</code>
+     */
+    java.util.Map<java.lang.String, java.lang.String>
+    getMsgPermissionsMap();
+    /**
+     * <pre>
+     * msg_permissions maps a message typeURL to the permission it requires.
+     * </pre>
+     *
+     * <code>map&lt;string, string&gt; msg_permissions = 3 [json_name = "msgPermissions"];</code>
+     */
+    /* nullable */
+java.lang.String getMsgPermissionsOrDefault(
+        java.lang.String key,
+        /* nullable */
+java.lang.String defaultValue);
+    /**
+     * <pre>
+     * msg_permissions maps a message typeURL to the permission it requires.
+     * </pre>
+     *
+     * <code>map&lt;string, string&gt; msg_permissions = 3 [json_name = "msgPermissions"];</code>
+     */
+    java.lang.String getMsgPermissionsOrThrow(
+        java.lang.String key);
+
+    /**
+     * <pre>
+     * key_management_msgs are typeURLs that are NEVER delegable to a linked key.
+     * </pre>
+     *
+     * <code>repeated string key_management_msgs = 4 [json_name = "keyManagementMsgs"];</code>
+     * @return A list containing the keyManagementMsgs.
+     */
+    java.util.List<java.lang.String>
+        getKeyManagementMsgsList();
+    /**
+     * <pre>
+     * key_management_msgs are typeURLs that are NEVER delegable to a linked key.
+     * </pre>
+     *
+     * <code>repeated string key_management_msgs = 4 [json_name = "keyManagementMsgs"];</code>
+     * @return The count of keyManagementMsgs.
+     */
+    int getKeyManagementMsgsCount();
+    /**
+     * <pre>
+     * key_management_msgs are typeURLs that are NEVER delegable to a linked key.
+     * </pre>
+     *
+     * <code>repeated string key_management_msgs = 4 [json_name = "keyManagementMsgs"];</code>
+     * @param index The index of the element to return.
+     * @return The keyManagementMsgs at the given index.
+     */
+    java.lang.String getKeyManagementMsgs(int index);
+    /**
+     * <pre>
+     * key_management_msgs are typeURLs that are NEVER delegable to a linked key.
+     * </pre>
+     *
+     * <code>repeated string key_management_msgs = 4 [json_name = "keyManagementMsgs"];</code>
+     * @param index The index of the value to return.
+     * @return The bytes of the keyManagementMsgs at the given index.
+     */
+    com.google.protobuf.ByteString
+        getKeyManagementMsgsBytes(int index);
+  }
+  /**
+   * Protobuf type {@code qorechain.abstractaccount.v1.QueryPermissionSchemaResponse}
+   */
+  public static final class QueryPermissionSchemaResponse extends
+      com.google.protobuf.GeneratedMessage implements
+      // @@protoc_insertion_point(message_implements:qorechain.abstractaccount.v1.QueryPermissionSchemaResponse)
+      QueryPermissionSchemaResponseOrBuilder {
+  private static final long serialVersionUID = 0L;
+    static {
+      com.google.protobuf.RuntimeVersion.validateProtobufGencodeVersion(
+        com.google.protobuf.RuntimeVersion.RuntimeDomain.PUBLIC,
+        /* major= */ 4,
+        /* minor= */ 35,
+        /* patch= */ 1,
+        /* suffix= */ "",
+        "QueryPermissionSchemaResponse");
+    }
+    // Use QueryPermissionSchemaResponse.newBuilder() to construct.
+    private QueryPermissionSchemaResponse(com.google.protobuf.GeneratedMessage.Builder<?> builder) {
+      super(builder);
+    }
+    private QueryPermissionSchemaResponse() {
+      schemaVersion_ = "";
+      permissions_ =
+          com.google.protobuf.LazyStringArrayList.emptyList();
+      keyManagementMsgs_ =
+          com.google.protobuf.LazyStringArrayList.emptyList();
+    }
+
+    public static final com.google.protobuf.Descriptors.Descriptor
+        getDescriptor() {
+      return qorechain.abstractaccount.v1.QueryOuterClass.internal_static_qorechain_abstractaccount_v1_QueryPermissionSchemaResponse_descriptor;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Descriptors.Descriptor getDescriptorForType() {
+      return qorechain.abstractaccount.v1.QueryOuterClass.internal_static_qorechain_abstractaccount_v1_QueryPermissionSchemaResponse_descriptor;
+    }
+
+    @SuppressWarnings({"rawtypes"})
+    @java.lang.Override
+    protected com.google.protobuf.MapFieldReflectionAccessor internalGetMapFieldReflection(
+        int number) {
+      switch (number) {
+        case 3:
+          return internalGetMsgPermissions();
+        default:
+          throw new RuntimeException(
+              "Invalid map field number: " + number);
+      }
+    }
+    @java.lang.Override
+    protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+        internalGetFieldAccessorTable() {
+      return qorechain.abstractaccount.v1.QueryOuterClass.internal_static_qorechain_abstractaccount_v1_QueryPermissionSchemaResponse_fieldAccessorTable
+          .ensureFieldAccessorsInitialized(
+              qorechain.abstractaccount.v1.QueryOuterClass.QueryPermissionSchemaResponse.class, qorechain.abstractaccount.v1.QueryOuterClass.QueryPermissionSchemaResponse.Builder.class);
+    }
+
+    public static final int SCHEMA_VERSION_FIELD_NUMBER = 1;
+    @SuppressWarnings("serial")
+    private volatile java.lang.Object schemaVersion_ = "";
+    /**
+     * <pre>
+     * schema_version bumps whenever the taxonomy or the mapping changes; clients
+     * compare it to their embedded copy to detect drift.
+     * </pre>
+     *
+     * <code>string schema_version = 1 [json_name = "schemaVersion"];</code>
+     * @return The schemaVersion.
+     */
+    @java.lang.Override
+    public java.lang.String getSchemaVersion() {
+      java.lang.Object ref = schemaVersion_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        schemaVersion_ = s;
+        return s;
+      }
+    }
+    /**
+     * <pre>
+     * schema_version bumps whenever the taxonomy or the mapping changes; clients
+     * compare it to their embedded copy to detect drift.
+     * </pre>
+     *
+     * <code>string schema_version = 1 [json_name = "schemaVersion"];</code>
+     * @return The bytes for schemaVersion.
+     */
+    @java.lang.Override
+    public com.google.protobuf.ByteString
+        getSchemaVersionBytes() {
+      java.lang.Object ref = schemaVersion_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        schemaVersion_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
+    public static final int PERMISSIONS_FIELD_NUMBER = 2;
+    @SuppressWarnings("serial")
+    private com.google.protobuf.LazyStringArrayList permissions_ =
+        com.google.protobuf.LazyStringArrayList.emptyList();
+    /**
+     * <pre>
+     * permissions is every valid permission string (e.g. send, evm, svm, all).
+     * </pre>
+     *
+     * <code>repeated string permissions = 2 [json_name = "permissions"];</code>
+     * @return A list containing the permissions.
+     */
+    public com.google.protobuf.ProtocolStringList
+        getPermissionsList() {
+      return permissions_;
+    }
+    /**
+     * <pre>
+     * permissions is every valid permission string (e.g. send, evm, svm, all).
+     * </pre>
+     *
+     * <code>repeated string permissions = 2 [json_name = "permissions"];</code>
+     * @return The count of permissions.
+     */
+    public int getPermissionsCount() {
+      return permissions_.size();
+    }
+    /**
+     * <pre>
+     * permissions is every valid permission string (e.g. send, evm, svm, all).
+     * </pre>
+     *
+     * <code>repeated string permissions = 2 [json_name = "permissions"];</code>
+     * @param index The index of the element to return.
+     * @return The permissions at the given index.
+     */
+    public java.lang.String getPermissions(int index) {
+      return permissions_.get(index);
+    }
+    /**
+     * <pre>
+     * permissions is every valid permission string (e.g. send, evm, svm, all).
+     * </pre>
+     *
+     * <code>repeated string permissions = 2 [json_name = "permissions"];</code>
+     * @param index The index of the value to return.
+     * @return The bytes of the permissions at the given index.
+     */
+    public com.google.protobuf.ByteString
+        getPermissionsBytes(int index) {
+      return permissions_.getByteString(index);
+    }
+
+    public static final int MSG_PERMISSIONS_FIELD_NUMBER = 3;
+    private static final class MsgPermissionsDefaultEntryHolder {
+      static final com.google.protobuf.MapEntry<
+          java.lang.String, java.lang.String> defaultEntry =
+              com.google.protobuf.MapEntry
+              .<java.lang.String, java.lang.String>newDefaultInstance(
+                  qorechain.abstractaccount.v1.QueryOuterClass.internal_static_qorechain_abstractaccount_v1_QueryPermissionSchemaResponse_MsgPermissionsEntry_descriptor, 
+                  com.google.protobuf.WireFormat.FieldType.STRING,
+                  "",
+                  com.google.protobuf.WireFormat.FieldType.STRING,
+                  "");
+    }
+    @SuppressWarnings("serial")
+    private com.google.protobuf.MapField<
+        java.lang.String, java.lang.String> msgPermissions_;
+    private com.google.protobuf.MapField<java.lang.String, java.lang.String>
+    internalGetMsgPermissions() {
+      if (msgPermissions_ == null) {
+        return com.google.protobuf.MapField.emptyMapField(
+            MsgPermissionsDefaultEntryHolder.defaultEntry);
+      }
+      return msgPermissions_;
+    }
+    public int getMsgPermissionsCount() {
+      return internalGetMsgPermissions().getMap().size();
+    }
+    /**
+     * <pre>
+     * msg_permissions maps a message typeURL to the permission it requires.
+     * </pre>
+     *
+     * <code>map&lt;string, string&gt; msg_permissions = 3 [json_name = "msgPermissions"];</code>
+     */
+    @java.lang.Override
+    public boolean containsMsgPermissions(
+        java.lang.String key) {
+      if (key == null) { throw new NullPointerException("map key"); }
+      return internalGetMsgPermissions().getMap().containsKey(key);
+    }
+    /**
+     * Use {@link #getMsgPermissionsMap()} instead.
+     */
+    @java.lang.Override
+    @java.lang.Deprecated
+    public java.util.Map<java.lang.String, java.lang.String> getMsgPermissions() {
+      return getMsgPermissionsMap();
+    }
+    /**
+     * <pre>
+     * msg_permissions maps a message typeURL to the permission it requires.
+     * </pre>
+     *
+     * <code>map&lt;string, string&gt; msg_permissions = 3 [json_name = "msgPermissions"];</code>
+     */
+    @java.lang.Override
+    public java.util.Map<java.lang.String, java.lang.String> getMsgPermissionsMap() {
+      return internalGetMsgPermissions().getMap();
+    }
+    /**
+     * <pre>
+     * msg_permissions maps a message typeURL to the permission it requires.
+     * </pre>
+     *
+     * <code>map&lt;string, string&gt; msg_permissions = 3 [json_name = "msgPermissions"];</code>
+     */
+    @java.lang.Override
+    public /* nullable */
+java.lang.String getMsgPermissionsOrDefault(
+        java.lang.String key,
+        /* nullable */
+java.lang.String defaultValue) {
+      if (key == null) { throw new NullPointerException("map key"); }
+      java.util.Map<java.lang.String, java.lang.String> map =
+          internalGetMsgPermissions().getMap();
+      return map.containsKey(key) ? map.get(key) : defaultValue;
+    }
+    /**
+     * <pre>
+     * msg_permissions maps a message typeURL to the permission it requires.
+     * </pre>
+     *
+     * <code>map&lt;string, string&gt; msg_permissions = 3 [json_name = "msgPermissions"];</code>
+     */
+    @java.lang.Override
+    public java.lang.String getMsgPermissionsOrThrow(
+        java.lang.String key) {
+      if (key == null) { throw new NullPointerException("map key"); }
+      java.util.Map<java.lang.String, java.lang.String> map =
+          internalGetMsgPermissions().getMap();
+      if (!map.containsKey(key)) {
+        throw new java.lang.IllegalArgumentException();
+      }
+      return map.get(key);
+    }
+
+    public static final int KEY_MANAGEMENT_MSGS_FIELD_NUMBER = 4;
+    @SuppressWarnings("serial")
+    private com.google.protobuf.LazyStringArrayList keyManagementMsgs_ =
+        com.google.protobuf.LazyStringArrayList.emptyList();
+    /**
+     * <pre>
+     * key_management_msgs are typeURLs that are NEVER delegable to a linked key.
+     * </pre>
+     *
+     * <code>repeated string key_management_msgs = 4 [json_name = "keyManagementMsgs"];</code>
+     * @return A list containing the keyManagementMsgs.
+     */
+    public com.google.protobuf.ProtocolStringList
+        getKeyManagementMsgsList() {
+      return keyManagementMsgs_;
+    }
+    /**
+     * <pre>
+     * key_management_msgs are typeURLs that are NEVER delegable to a linked key.
+     * </pre>
+     *
+     * <code>repeated string key_management_msgs = 4 [json_name = "keyManagementMsgs"];</code>
+     * @return The count of keyManagementMsgs.
+     */
+    public int getKeyManagementMsgsCount() {
+      return keyManagementMsgs_.size();
+    }
+    /**
+     * <pre>
+     * key_management_msgs are typeURLs that are NEVER delegable to a linked key.
+     * </pre>
+     *
+     * <code>repeated string key_management_msgs = 4 [json_name = "keyManagementMsgs"];</code>
+     * @param index The index of the element to return.
+     * @return The keyManagementMsgs at the given index.
+     */
+    public java.lang.String getKeyManagementMsgs(int index) {
+      return keyManagementMsgs_.get(index);
+    }
+    /**
+     * <pre>
+     * key_management_msgs are typeURLs that are NEVER delegable to a linked key.
+     * </pre>
+     *
+     * <code>repeated string key_management_msgs = 4 [json_name = "keyManagementMsgs"];</code>
+     * @param index The index of the value to return.
+     * @return The bytes of the keyManagementMsgs at the given index.
+     */
+    public com.google.protobuf.ByteString
+        getKeyManagementMsgsBytes(int index) {
+      return keyManagementMsgs_.getByteString(index);
+    }
+
+    private byte memoizedIsInitialized = -1;
+    @java.lang.Override
+    public final boolean isInitialized() {
+      byte isInitialized = memoizedIsInitialized;
+      if (isInitialized == 1) return true;
+      if (isInitialized == 0) return false;
+
+      memoizedIsInitialized = 1;
+      return true;
+    }
+
+    @java.lang.Override
+    public void writeTo(com.google.protobuf.CodedOutputStream output)
+                        throws java.io.IOException {
+      if (!com.google.protobuf.GeneratedMessage.isStringEmpty(schemaVersion_)) {
+        com.google.protobuf.GeneratedMessage.writeString(output, 1, schemaVersion_);
+      }
+      for (int i = 0; i < permissions_.size(); i++) {
+        com.google.protobuf.GeneratedMessage.writeString(output, 2, permissions_.getRaw(i));
+      }
+      com.google.protobuf.GeneratedMessage
+        .serializeStringMapTo(
+          output,
+          internalGetMsgPermissions(),
+          MsgPermissionsDefaultEntryHolder.defaultEntry,
+          3);
+      for (int i = 0; i < keyManagementMsgs_.size(); i++) {
+        com.google.protobuf.GeneratedMessage.writeString(output, 4, keyManagementMsgs_.getRaw(i));
+      }
+      getUnknownFields().writeTo(output);
+    }
+    private int computeSerializedSize_0() {
+      int size = 0;
+      if (!com.google.protobuf.GeneratedMessage.isStringEmpty(schemaVersion_)) {
+        size += com.google.protobuf.GeneratedMessage.computeStringSize(1, schemaVersion_);
+      }
+      {
+        int dataSize = 0;
+        for (int i = 0; i < permissions_.size(); i++) {
+          dataSize += computeStringSizeNoTag(permissions_.getRaw(i));
+        }
+        size += dataSize;
+        size += 1 * getPermissionsList().size();
+      }
+      for (java.util.Map.Entry<java.lang.String, java.lang.String> entry
+           : internalGetMsgPermissions().getMap().entrySet()) {
+        com.google.protobuf.MapEntry<java.lang.String, java.lang.String>
+        msgPermissions__ = MsgPermissionsDefaultEntryHolder.defaultEntry.newBuilderForType()
+            .setKey(entry.getKey())
+            .setValue(entry.getValue())
+            .buildPartial();
+        size += com.google.protobuf.CodedOutputStream
+            .computeMessageSize(3, msgPermissions__);
+      }
+      {
+        int dataSize = 0;
+        for (int i = 0; i < keyManagementMsgs_.size(); i++) {
+          dataSize += computeStringSizeNoTag(keyManagementMsgs_.getRaw(i));
+        }
+        size += dataSize;
+        size += 1 * getKeyManagementMsgsList().size();
+      }
+      return size;
+    }
+    @java.lang.Override
+    public int getSerializedSize() {
+      int size = memoizedSize;
+      if (size != -1) return size;
+
+      size = 0;
+      size += computeSerializedSize_0();
+      size += getUnknownFields().getSerializedSize();
+      memoizedSize = size;
+      return size;
+    }
+
+    @java.lang.Override
+    public boolean equals(final java.lang.Object obj) {
+      if (obj == this) {
+       return true;
+      }
+      if (!(obj instanceof qorechain.abstractaccount.v1.QueryOuterClass.QueryPermissionSchemaResponse)) {
+        return super.equals(obj);
+      }
+      qorechain.abstractaccount.v1.QueryOuterClass.QueryPermissionSchemaResponse other = (qorechain.abstractaccount.v1.QueryOuterClass.QueryPermissionSchemaResponse) obj;
+
+      if (!getSchemaVersion()
+          .equals(other.getSchemaVersion())) return false;
+      if (!getPermissionsList()
+          .equals(other.getPermissionsList())) return false;
+      if (!internalGetMsgPermissions().equals(
+          other.internalGetMsgPermissions())) return false;
+      if (!getKeyManagementMsgsList()
+          .equals(other.getKeyManagementMsgsList())) return false;
+      if (!getUnknownFields().equals(other.getUnknownFields())) return false;
+      return true;
+    }
+
+    @java.lang.Override
+    public int hashCode() {
+      if (memoizedHashCode != 0) {
+        return memoizedHashCode;
+      }
+      int hash = 41;
+      hash = (19 * hash) + getDescriptor().hashCode();
+      hash = (37 * hash) + SCHEMA_VERSION_FIELD_NUMBER;
+      hash = (53 * hash) + getSchemaVersion().hashCode();
+      if (getPermissionsCount() > 0) {
+        hash = (37 * hash) + PERMISSIONS_FIELD_NUMBER;
+        hash = (53 * hash) + getPermissionsList().hashCode();
+      }
+      if (!internalGetMsgPermissions().getMap().isEmpty()) {
+        hash = (37 * hash) + MSG_PERMISSIONS_FIELD_NUMBER;
+        hash = (53 * hash) + internalGetMsgPermissions().hashCode();
+      }
+      if (getKeyManagementMsgsCount() > 0) {
+        hash = (37 * hash) + KEY_MANAGEMENT_MSGS_FIELD_NUMBER;
+        hash = (53 * hash) + getKeyManagementMsgsList().hashCode();
+      }
+      hash = (29 * hash) + getUnknownFields().hashCode();
+      memoizedHashCode = hash;
+      return hash;
+    }
+
+    public static qorechain.abstractaccount.v1.QueryOuterClass.QueryPermissionSchemaResponse parseFrom(
+        java.nio.ByteBuffer data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static qorechain.abstractaccount.v1.QueryOuterClass.QueryPermissionSchemaResponse parseFrom(
+        java.nio.ByteBuffer data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static qorechain.abstractaccount.v1.QueryOuterClass.QueryPermissionSchemaResponse parseFrom(
+        com.google.protobuf.ByteString data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static qorechain.abstractaccount.v1.QueryOuterClass.QueryPermissionSchemaResponse parseFrom(
+        com.google.protobuf.ByteString data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static qorechain.abstractaccount.v1.QueryOuterClass.QueryPermissionSchemaResponse parseFrom(byte[] data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static qorechain.abstractaccount.v1.QueryOuterClass.QueryPermissionSchemaResponse parseFrom(
+        byte[] data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static qorechain.abstractaccount.v1.QueryOuterClass.QueryPermissionSchemaResponse parseFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input);
+    }
+    public static qorechain.abstractaccount.v1.QueryOuterClass.QueryPermissionSchemaResponse parseFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    public static qorechain.abstractaccount.v1.QueryOuterClass.QueryPermissionSchemaResponse parseDelimitedFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseDelimitedWithIOException(PARSER, input);
+    }
+
+    public static qorechain.abstractaccount.v1.QueryOuterClass.QueryPermissionSchemaResponse parseDelimitedFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static qorechain.abstractaccount.v1.QueryOuterClass.QueryPermissionSchemaResponse parseFrom(
+        com.google.protobuf.CodedInputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input);
+    }
+    public static qorechain.abstractaccount.v1.QueryOuterClass.QueryPermissionSchemaResponse parseFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    @java.lang.Override
+    public Builder newBuilderForType() { return newBuilder(); }
+    public static Builder newBuilder() {
+      return DEFAULT_INSTANCE.toBuilder();
+    }
+    public static Builder newBuilder(qorechain.abstractaccount.v1.QueryOuterClass.QueryPermissionSchemaResponse prototype) {
+      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+    }
+    @java.lang.Override
+    public Builder toBuilder() {
+      return this == DEFAULT_INSTANCE
+          ? new Builder() : new Builder().mergeFrom(this);
+    }
+
+    @java.lang.Override
+    protected Builder newBuilderForType(
+        com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+      Builder builder = new Builder(parent);
+      return builder;
+    }
+    /**
+     * Protobuf type {@code qorechain.abstractaccount.v1.QueryPermissionSchemaResponse}
+     */
+    public static final class Builder extends
+        com.google.protobuf.GeneratedMessage.Builder<Builder> implements
+        // @@protoc_insertion_point(builder_implements:qorechain.abstractaccount.v1.QueryPermissionSchemaResponse)
+        qorechain.abstractaccount.v1.QueryOuterClass.QueryPermissionSchemaResponseOrBuilder {
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return qorechain.abstractaccount.v1.QueryOuterClass.internal_static_qorechain_abstractaccount_v1_QueryPermissionSchemaResponse_descriptor;
+      }
+
+      @SuppressWarnings({"rawtypes"})
+      protected com.google.protobuf.MapFieldReflectionAccessor internalGetMapFieldReflection(
+          int number) {
+        switch (number) {
+          case 3:
+            return internalGetMsgPermissions();
+          default:
+            throw new RuntimeException(
+                "Invalid map field number: " + number);
+        }
+      }
+      @SuppressWarnings({"rawtypes"})
+      protected com.google.protobuf.MapFieldReflectionAccessor internalGetMutableMapFieldReflection(
+          int number) {
+        switch (number) {
+          case 3:
+            return internalGetMutableMsgPermissions();
+          default:
+            throw new RuntimeException(
+                "Invalid map field number: " + number);
+        }
+      }
+      @java.lang.Override
+      protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return qorechain.abstractaccount.v1.QueryOuterClass.internal_static_qorechain_abstractaccount_v1_QueryPermissionSchemaResponse_fieldAccessorTable
+            .ensureFieldAccessorsInitialized(
+                qorechain.abstractaccount.v1.QueryOuterClass.QueryPermissionSchemaResponse.class, qorechain.abstractaccount.v1.QueryOuterClass.QueryPermissionSchemaResponse.Builder.class);
+      }
+
+      // Construct using qorechain.abstractaccount.v1.QueryOuterClass.QueryPermissionSchemaResponse.newBuilder()
+      private Builder() {
+
+      }
+
+      private Builder(
+          com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+        super(parent);
+
+      }
+      @java.lang.Override
+      public Builder clear() {
+        super.clear();
+        bitField0_ = 0;
+        schemaVersion_ = "";
+        permissions_ =
+            com.google.protobuf.LazyStringArrayList.emptyList();
+        internalGetMutableMsgPermissions().clear();
+        keyManagementMsgs_ =
+            com.google.protobuf.LazyStringArrayList.emptyList();
+        return this;
+      }
+
+      @java.lang.Override
+      public com.google.protobuf.Descriptors.Descriptor
+          getDescriptorForType() {
+        return qorechain.abstractaccount.v1.QueryOuterClass.internal_static_qorechain_abstractaccount_v1_QueryPermissionSchemaResponse_descriptor;
+      }
+
+      @java.lang.Override
+      public qorechain.abstractaccount.v1.QueryOuterClass.QueryPermissionSchemaResponse getDefaultInstanceForType() {
+        return qorechain.abstractaccount.v1.QueryOuterClass.QueryPermissionSchemaResponse.getDefaultInstance();
+      }
+
+      @java.lang.Override
+      public qorechain.abstractaccount.v1.QueryOuterClass.QueryPermissionSchemaResponse build() {
+        qorechain.abstractaccount.v1.QueryOuterClass.QueryPermissionSchemaResponse result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(result);
+        }
+        return result;
+      }
+
+      @java.lang.Override
+      public qorechain.abstractaccount.v1.QueryOuterClass.QueryPermissionSchemaResponse buildPartial() {
+        qorechain.abstractaccount.v1.QueryOuterClass.QueryPermissionSchemaResponse result = new qorechain.abstractaccount.v1.QueryOuterClass.QueryPermissionSchemaResponse(this);
+        if (bitField0_ != 0) { buildPartial0(result); }
+        onBuilt();
+        return result;
+      }
+
+      private void buildPartial0(qorechain.abstractaccount.v1.QueryOuterClass.QueryPermissionSchemaResponse result) {
+        int from_bitField0_ = bitField0_;
+        if (((from_bitField0_ & 0x00000001) != 0)) {
+          result.schemaVersion_ = schemaVersion_;
+        }
+        if (((from_bitField0_ & 0x00000002) != 0)) {
+          permissions_.makeImmutable();
+          result.permissions_ = permissions_;
+        }
+        if (((from_bitField0_ & 0x00000004) != 0)) {
+          result.msgPermissions_ = internalGetMsgPermissions();
+          result.msgPermissions_.makeImmutable();
+        }
+        if (((from_bitField0_ & 0x00000008) != 0)) {
+          keyManagementMsgs_.makeImmutable();
+          result.keyManagementMsgs_ = keyManagementMsgs_;
+        }
+      }
+
+      @java.lang.Override
+      public Builder mergeFrom(com.google.protobuf.Message other) {
+        if (other instanceof qorechain.abstractaccount.v1.QueryOuterClass.QueryPermissionSchemaResponse) {
+          return mergeFrom((qorechain.abstractaccount.v1.QueryOuterClass.QueryPermissionSchemaResponse)other);
+        } else {
+          super.mergeFrom(other);
+          return this;
+        }
+      }
+
+      public Builder mergeFrom(qorechain.abstractaccount.v1.QueryOuterClass.QueryPermissionSchemaResponse other) {
+        if (other == qorechain.abstractaccount.v1.QueryOuterClass.QueryPermissionSchemaResponse.getDefaultInstance()) return this;
+        if (!other.getSchemaVersion().isEmpty()) {
+          schemaVersion_ = other.schemaVersion_;
+          bitField0_ |= 0x00000001;
+          onChanged();
+        }
+        if (!other.permissions_.isEmpty()) {
+          if (permissions_.isEmpty()) {
+            permissions_ = other.permissions_;
+            bitField0_ |= 0x00000002;
+          } else {
+            ensurePermissionsIsMutable();
+            permissions_.addAll(other.permissions_);
+          }
+          onChanged();
+        }
+        internalGetMutableMsgPermissions().mergeFrom(
+            other.internalGetMsgPermissions());
+        bitField0_ |= 0x00000004;
+        if (!other.keyManagementMsgs_.isEmpty()) {
+          if (keyManagementMsgs_.isEmpty()) {
+            keyManagementMsgs_ = other.keyManagementMsgs_;
+            bitField0_ |= 0x00000008;
+          } else {
+            ensureKeyManagementMsgsIsMutable();
+            keyManagementMsgs_.addAll(other.keyManagementMsgs_);
+          }
+          onChanged();
+        }
+        this.mergeUnknownFields(other.getUnknownFields());
+        onChanged();
+        return this;
+      }
+
+      @java.lang.Override
+      public final boolean isInitialized() {
+        return true;
+      }
+
+      @java.lang.Override
+      public Builder mergeFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        if (extensionRegistry == null) {
+          throw new java.lang.NullPointerException();
+        }
+        try {
+          boolean done = false;
+          while (!done) {
+            int tag = input.readTag();
+            switch (tag) {
+              case 0:
+                done = true;
+                break;
+              case 10: {
+                schemaVersion_ = input.readStringRequireUtf8();
+                bitField0_ |= 0x00000001;
+                break;
+              } // case 10
+              case 18: {
+                ensurePermissionsIsMutable();
+                permissions_.add(input.readStringRequireUtf8());
+                break;
+              } // case 18
+              case 26: {
+                com.google.protobuf.MapEntry<java.lang.String, java.lang.String>
+                msgPermissions__ = input.readMessage(
+                    MsgPermissionsDefaultEntryHolder.defaultEntry.getParserForType(), extensionRegistry);
+                internalGetMutableMsgPermissions().getMutableMap().put(
+                    msgPermissions__.getKey(), msgPermissions__.getValue());
+                bitField0_ |= 0x00000004;
+                break;
+              } // case 26
+              case 34: {
+                ensureKeyManagementMsgsIsMutable();
+                keyManagementMsgs_.add(input.readStringRequireUtf8());
+                break;
+              } // case 34
+              default: {
+                if (!super.parseUnknownField(input, extensionRegistry, tag)) {
+                  done = true; // was an endgroup tag
+                }
+                break;
+              } // default:
+            } // switch (tag)
+          } // while (!done)
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          throw e.unwrapIOException();
+        } finally {
+          onChanged();
+        } // finally
+        return this;
+      }
+      private int bitField0_;
+
+      private java.lang.Object schemaVersion_ = "";
+      /**
+       * <pre>
+       * schema_version bumps whenever the taxonomy or the mapping changes; clients
+       * compare it to their embedded copy to detect drift.
+       * </pre>
+       *
+       * <code>string schema_version = 1 [json_name = "schemaVersion"];</code>
+       * @return The schemaVersion.
+       */
+      public java.lang.String getSchemaVersion() {
+        java.lang.Object ref = schemaVersion_;
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          schemaVersion_ = s;
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
+      }
+      /**
+       * <pre>
+       * schema_version bumps whenever the taxonomy or the mapping changes; clients
+       * compare it to their embedded copy to detect drift.
+       * </pre>
+       *
+       * <code>string schema_version = 1 [json_name = "schemaVersion"];</code>
+       * @return The bytes for schemaVersion.
+       */
+      public com.google.protobuf.ByteString
+          getSchemaVersionBytes() {
+        java.lang.Object ref = schemaVersion_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          schemaVersion_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <pre>
+       * schema_version bumps whenever the taxonomy or the mapping changes; clients
+       * compare it to their embedded copy to detect drift.
+       * </pre>
+       *
+       * <code>string schema_version = 1 [json_name = "schemaVersion"];</code>
+       * @param value The schemaVersion to set.
+       * @return This builder for chaining.
+       */
+      public Builder setSchemaVersion(
+          java.lang.String value) {
+        if (value == null) { throw new NullPointerException(); }
+        schemaVersion_ = value;
+        bitField0_ |= 0x00000001;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * schema_version bumps whenever the taxonomy or the mapping changes; clients
+       * compare it to their embedded copy to detect drift.
+       * </pre>
+       *
+       * <code>string schema_version = 1 [json_name = "schemaVersion"];</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearSchemaVersion() {
+        schemaVersion_ = getDefaultInstance().getSchemaVersion();
+        bitField0_ = (bitField0_ & ~0x00000001);
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * schema_version bumps whenever the taxonomy or the mapping changes; clients
+       * compare it to their embedded copy to detect drift.
+       * </pre>
+       *
+       * <code>string schema_version = 1 [json_name = "schemaVersion"];</code>
+       * @param value The bytes for schemaVersion to set.
+       * @return This builder for chaining.
+       */
+      public Builder setSchemaVersionBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) { throw new NullPointerException(); }
+        checkByteStringIsUtf8(value);
+        schemaVersion_ = value;
+        bitField0_ |= 0x00000001;
+        onChanged();
+        return this;
+      }
+
+      private com.google.protobuf.LazyStringArrayList permissions_ =
+          com.google.protobuf.LazyStringArrayList.emptyList();
+      private void ensurePermissionsIsMutable() {
+        if (!permissions_.isModifiable()) {
+          permissions_ = new com.google.protobuf.LazyStringArrayList(permissions_);
+        }
+        bitField0_ |= 0x00000002;
+      }
+      /**
+       * <pre>
+       * permissions is every valid permission string (e.g. send, evm, svm, all).
+       * </pre>
+       *
+       * <code>repeated string permissions = 2 [json_name = "permissions"];</code>
+       * @return A list containing the permissions.
+       */
+      public com.google.protobuf.ProtocolStringList
+          getPermissionsList() {
+        permissions_.makeImmutable();
+        return permissions_;
+      }
+      /**
+       * <pre>
+       * permissions is every valid permission string (e.g. send, evm, svm, all).
+       * </pre>
+       *
+       * <code>repeated string permissions = 2 [json_name = "permissions"];</code>
+       * @return The count of permissions.
+       */
+      public int getPermissionsCount() {
+        return permissions_.size();
+      }
+      /**
+       * <pre>
+       * permissions is every valid permission string (e.g. send, evm, svm, all).
+       * </pre>
+       *
+       * <code>repeated string permissions = 2 [json_name = "permissions"];</code>
+       * @param index The index of the element to return.
+       * @return The permissions at the given index.
+       */
+      public java.lang.String getPermissions(int index) {
+        return permissions_.get(index);
+      }
+      /**
+       * <pre>
+       * permissions is every valid permission string (e.g. send, evm, svm, all).
+       * </pre>
+       *
+       * <code>repeated string permissions = 2 [json_name = "permissions"];</code>
+       * @param index The index of the value to return.
+       * @return The bytes of the permissions at the given index.
+       */
+      public com.google.protobuf.ByteString
+          getPermissionsBytes(int index) {
+        return permissions_.getByteString(index);
+      }
+      /**
+       * <pre>
+       * permissions is every valid permission string (e.g. send, evm, svm, all).
+       * </pre>
+       *
+       * <code>repeated string permissions = 2 [json_name = "permissions"];</code>
+       * @param index The index to set the value at.
+       * @param value The permissions to set.
+       * @return This builder for chaining.
+       */
+      public Builder setPermissions(
+          int index, java.lang.String value) {
+        if (value == null) { throw new NullPointerException(); }
+        ensurePermissionsIsMutable();
+        permissions_.set(index, value);
+        bitField0_ |= 0x00000002;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * permissions is every valid permission string (e.g. send, evm, svm, all).
+       * </pre>
+       *
+       * <code>repeated string permissions = 2 [json_name = "permissions"];</code>
+       * @param value The permissions to add.
+       * @return This builder for chaining.
+       */
+      public Builder addPermissions(
+          java.lang.String value) {
+        if (value == null) { throw new NullPointerException(); }
+        ensurePermissionsIsMutable();
+        permissions_.add(value);
+        bitField0_ |= 0x00000002;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * permissions is every valid permission string (e.g. send, evm, svm, all).
+       * </pre>
+       *
+       * <code>repeated string permissions = 2 [json_name = "permissions"];</code>
+       * @param values The permissions to add.
+       * @return This builder for chaining.
+       */
+      public Builder addAllPermissions(
+          java.lang.Iterable<java.lang.String> values) {
+        ensurePermissionsIsMutable();
+        com.google.protobuf.AbstractMessageLite.Builder.addAll(
+            values, permissions_);
+        bitField0_ |= 0x00000002;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * permissions is every valid permission string (e.g. send, evm, svm, all).
+       * </pre>
+       *
+       * <code>repeated string permissions = 2 [json_name = "permissions"];</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearPermissions() {
+        permissions_ =
+          com.google.protobuf.LazyStringArrayList.emptyList();
+        bitField0_ = (bitField0_ & ~0x00000002);;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * permissions is every valid permission string (e.g. send, evm, svm, all).
+       * </pre>
+       *
+       * <code>repeated string permissions = 2 [json_name = "permissions"];</code>
+       * @param value The bytes of the permissions to add.
+       * @return This builder for chaining.
+       */
+      public Builder addPermissionsBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) { throw new NullPointerException(); }
+        checkByteStringIsUtf8(value);
+        ensurePermissionsIsMutable();
+        permissions_.add(value);
+        bitField0_ |= 0x00000002;
+        onChanged();
+        return this;
+      }
+
+      private com.google.protobuf.MapField<
+          java.lang.String, java.lang.String> msgPermissions_;
+      private com.google.protobuf.MapField<java.lang.String, java.lang.String>
+          internalGetMsgPermissions() {
+        if (msgPermissions_ == null) {
+          return com.google.protobuf.MapField.emptyMapField(
+              MsgPermissionsDefaultEntryHolder.defaultEntry);
+        }
+        return msgPermissions_;
+      }
+      private com.google.protobuf.MapField<java.lang.String, java.lang.String>
+          internalGetMutableMsgPermissions() {
+        if (msgPermissions_ == null) {
+          msgPermissions_ = com.google.protobuf.MapField.newMapField(
+              MsgPermissionsDefaultEntryHolder.defaultEntry);
+        }
+        if (!msgPermissions_.isMutable()) {
+          msgPermissions_ = msgPermissions_.copy();
+        }
+        bitField0_ |= 0x00000004;
+        onChanged();
+        return msgPermissions_;
+      }
+      public int getMsgPermissionsCount() {
+        return internalGetMsgPermissions().getMap().size();
+      }
+      /**
+       * <pre>
+       * msg_permissions maps a message typeURL to the permission it requires.
+       * </pre>
+       *
+       * <code>map&lt;string, string&gt; msg_permissions = 3 [json_name = "msgPermissions"];</code>
+       */
+      @java.lang.Override
+      public boolean containsMsgPermissions(
+          java.lang.String key) {
+        if (key == null) { throw new NullPointerException("map key"); }
+        return internalGetMsgPermissions().getMap().containsKey(key);
+      }
+      /**
+       * Use {@link #getMsgPermissionsMap()} instead.
+       */
+      @java.lang.Override
+      @java.lang.Deprecated
+      public java.util.Map<java.lang.String, java.lang.String> getMsgPermissions() {
+        return getMsgPermissionsMap();
+      }
+      /**
+       * <pre>
+       * msg_permissions maps a message typeURL to the permission it requires.
+       * </pre>
+       *
+       * <code>map&lt;string, string&gt; msg_permissions = 3 [json_name = "msgPermissions"];</code>
+       */
+      @java.lang.Override
+      public java.util.Map<java.lang.String, java.lang.String> getMsgPermissionsMap() {
+        return internalGetMsgPermissions().getMap();
+      }
+      /**
+       * <pre>
+       * msg_permissions maps a message typeURL to the permission it requires.
+       * </pre>
+       *
+       * <code>map&lt;string, string&gt; msg_permissions = 3 [json_name = "msgPermissions"];</code>
+       */
+      @java.lang.Override
+      public /* nullable */
+java.lang.String getMsgPermissionsOrDefault(
+          java.lang.String key,
+          /* nullable */
+java.lang.String defaultValue) {
+        if (key == null) { throw new NullPointerException("map key"); }
+        java.util.Map<java.lang.String, java.lang.String> map =
+            internalGetMsgPermissions().getMap();
+        return map.containsKey(key) ? map.get(key) : defaultValue;
+      }
+      /**
+       * <pre>
+       * msg_permissions maps a message typeURL to the permission it requires.
+       * </pre>
+       *
+       * <code>map&lt;string, string&gt; msg_permissions = 3 [json_name = "msgPermissions"];</code>
+       */
+      @java.lang.Override
+      public java.lang.String getMsgPermissionsOrThrow(
+          java.lang.String key) {
+        if (key == null) { throw new NullPointerException("map key"); }
+        java.util.Map<java.lang.String, java.lang.String> map =
+            internalGetMsgPermissions().getMap();
+        if (!map.containsKey(key)) {
+          throw new java.lang.IllegalArgumentException();
+        }
+        return map.get(key);
+      }
+      public Builder clearMsgPermissions() {
+        bitField0_ = (bitField0_ & ~0x00000004);
+        internalGetMutableMsgPermissions().getMutableMap()
+            .clear();
+        return this;
+      }
+      /**
+       * <pre>
+       * msg_permissions maps a message typeURL to the permission it requires.
+       * </pre>
+       *
+       * <code>map&lt;string, string&gt; msg_permissions = 3 [json_name = "msgPermissions"];</code>
+       */
+      public Builder removeMsgPermissions(
+          java.lang.String key) {
+        if (key == null) { throw new NullPointerException("map key"); }
+        internalGetMutableMsgPermissions().getMutableMap()
+            .remove(key);
+        return this;
+      }
+      /**
+       * Use alternate mutation accessors instead.
+       */
+      @java.lang.Deprecated
+      public java.util.Map<java.lang.String, java.lang.String>
+          getMutableMsgPermissions() {
+        bitField0_ |= 0x00000004;
+        return internalGetMutableMsgPermissions().getMutableMap();
+      }
+      /**
+       * <pre>
+       * msg_permissions maps a message typeURL to the permission it requires.
+       * </pre>
+       *
+       * <code>map&lt;string, string&gt; msg_permissions = 3 [json_name = "msgPermissions"];</code>
+       */
+      public Builder putMsgPermissions(
+          java.lang.String key,
+          java.lang.String value) {
+        if (key == null) { throw new NullPointerException("map key"); }
+        if (value == null) { throw new NullPointerException("map value"); }
+        internalGetMutableMsgPermissions().getMutableMap()
+            .put(key, value);
+        bitField0_ |= 0x00000004;
+        return this;
+      }
+      /**
+       * <pre>
+       * msg_permissions maps a message typeURL to the permission it requires.
+       * </pre>
+       *
+       * <code>map&lt;string, string&gt; msg_permissions = 3 [json_name = "msgPermissions"];</code>
+       */
+      public Builder putAllMsgPermissions(
+          java.util.Map<java.lang.String, java.lang.String> values) {
+        internalGetMutableMsgPermissions().getMutableMap()
+            .putAll(values);
+        bitField0_ |= 0x00000004;
+        return this;
+      }
+
+      private com.google.protobuf.LazyStringArrayList keyManagementMsgs_ =
+          com.google.protobuf.LazyStringArrayList.emptyList();
+      private void ensureKeyManagementMsgsIsMutable() {
+        if (!keyManagementMsgs_.isModifiable()) {
+          keyManagementMsgs_ = new com.google.protobuf.LazyStringArrayList(keyManagementMsgs_);
+        }
+        bitField0_ |= 0x00000008;
+      }
+      /**
+       * <pre>
+       * key_management_msgs are typeURLs that are NEVER delegable to a linked key.
+       * </pre>
+       *
+       * <code>repeated string key_management_msgs = 4 [json_name = "keyManagementMsgs"];</code>
+       * @return A list containing the keyManagementMsgs.
+       */
+      public com.google.protobuf.ProtocolStringList
+          getKeyManagementMsgsList() {
+        keyManagementMsgs_.makeImmutable();
+        return keyManagementMsgs_;
+      }
+      /**
+       * <pre>
+       * key_management_msgs are typeURLs that are NEVER delegable to a linked key.
+       * </pre>
+       *
+       * <code>repeated string key_management_msgs = 4 [json_name = "keyManagementMsgs"];</code>
+       * @return The count of keyManagementMsgs.
+       */
+      public int getKeyManagementMsgsCount() {
+        return keyManagementMsgs_.size();
+      }
+      /**
+       * <pre>
+       * key_management_msgs are typeURLs that are NEVER delegable to a linked key.
+       * </pre>
+       *
+       * <code>repeated string key_management_msgs = 4 [json_name = "keyManagementMsgs"];</code>
+       * @param index The index of the element to return.
+       * @return The keyManagementMsgs at the given index.
+       */
+      public java.lang.String getKeyManagementMsgs(int index) {
+        return keyManagementMsgs_.get(index);
+      }
+      /**
+       * <pre>
+       * key_management_msgs are typeURLs that are NEVER delegable to a linked key.
+       * </pre>
+       *
+       * <code>repeated string key_management_msgs = 4 [json_name = "keyManagementMsgs"];</code>
+       * @param index The index of the value to return.
+       * @return The bytes of the keyManagementMsgs at the given index.
+       */
+      public com.google.protobuf.ByteString
+          getKeyManagementMsgsBytes(int index) {
+        return keyManagementMsgs_.getByteString(index);
+      }
+      /**
+       * <pre>
+       * key_management_msgs are typeURLs that are NEVER delegable to a linked key.
+       * </pre>
+       *
+       * <code>repeated string key_management_msgs = 4 [json_name = "keyManagementMsgs"];</code>
+       * @param index The index to set the value at.
+       * @param value The keyManagementMsgs to set.
+       * @return This builder for chaining.
+       */
+      public Builder setKeyManagementMsgs(
+          int index, java.lang.String value) {
+        if (value == null) { throw new NullPointerException(); }
+        ensureKeyManagementMsgsIsMutable();
+        keyManagementMsgs_.set(index, value);
+        bitField0_ |= 0x00000008;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * key_management_msgs are typeURLs that are NEVER delegable to a linked key.
+       * </pre>
+       *
+       * <code>repeated string key_management_msgs = 4 [json_name = "keyManagementMsgs"];</code>
+       * @param value The keyManagementMsgs to add.
+       * @return This builder for chaining.
+       */
+      public Builder addKeyManagementMsgs(
+          java.lang.String value) {
+        if (value == null) { throw new NullPointerException(); }
+        ensureKeyManagementMsgsIsMutable();
+        keyManagementMsgs_.add(value);
+        bitField0_ |= 0x00000008;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * key_management_msgs are typeURLs that are NEVER delegable to a linked key.
+       * </pre>
+       *
+       * <code>repeated string key_management_msgs = 4 [json_name = "keyManagementMsgs"];</code>
+       * @param values The keyManagementMsgs to add.
+       * @return This builder for chaining.
+       */
+      public Builder addAllKeyManagementMsgs(
+          java.lang.Iterable<java.lang.String> values) {
+        ensureKeyManagementMsgsIsMutable();
+        com.google.protobuf.AbstractMessageLite.Builder.addAll(
+            values, keyManagementMsgs_);
+        bitField0_ |= 0x00000008;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * key_management_msgs are typeURLs that are NEVER delegable to a linked key.
+       * </pre>
+       *
+       * <code>repeated string key_management_msgs = 4 [json_name = "keyManagementMsgs"];</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearKeyManagementMsgs() {
+        keyManagementMsgs_ =
+          com.google.protobuf.LazyStringArrayList.emptyList();
+        bitField0_ = (bitField0_ & ~0x00000008);;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * key_management_msgs are typeURLs that are NEVER delegable to a linked key.
+       * </pre>
+       *
+       * <code>repeated string key_management_msgs = 4 [json_name = "keyManagementMsgs"];</code>
+       * @param value The bytes of the keyManagementMsgs to add.
+       * @return This builder for chaining.
+       */
+      public Builder addKeyManagementMsgsBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) { throw new NullPointerException(); }
+        checkByteStringIsUtf8(value);
+        ensureKeyManagementMsgsIsMutable();
+        keyManagementMsgs_.add(value);
+        bitField0_ |= 0x00000008;
+        onChanged();
+        return this;
+      }
+
+      // @@protoc_insertion_point(builder_scope:qorechain.abstractaccount.v1.QueryPermissionSchemaResponse)
+    }
+
+    // @@protoc_insertion_point(class_scope:qorechain.abstractaccount.v1.QueryPermissionSchemaResponse)
+    private static final qorechain.abstractaccount.v1.QueryOuterClass.QueryPermissionSchemaResponse DEFAULT_INSTANCE;
+    static {
+      DEFAULT_INSTANCE = new qorechain.abstractaccount.v1.QueryOuterClass.QueryPermissionSchemaResponse();
+    }
+
+    public static qorechain.abstractaccount.v1.QueryOuterClass.QueryPermissionSchemaResponse getDefaultInstance() {
+      return DEFAULT_INSTANCE;
+    }
+
+    private static final com.google.protobuf.Parser<QueryPermissionSchemaResponse>
+        PARSER = new com.google.protobuf.AbstractParser<QueryPermissionSchemaResponse>() {
+      @java.lang.Override
+      public QueryPermissionSchemaResponse parsePartialFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        Builder builder = newBuilder();
+        try {
+          builder.mergeFrom(input, extensionRegistry);
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          throw e.setUnfinishedMessage(builder.buildPartial());
+        } catch (com.google.protobuf.UninitializedMessageException e) {
+          throw e.asInvalidProtocolBufferException().setUnfinishedMessage(builder.buildPartial());
+        } catch (java.io.IOException e) {
+          throw new com.google.protobuf.InvalidProtocolBufferException(e)
+              .setUnfinishedMessage(builder.buildPartial());
+        }
+        return builder.buildPartial();
+      }
+    };
+
+    public static com.google.protobuf.Parser<QueryPermissionSchemaResponse> parser() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Parser<QueryPermissionSchemaResponse> getParserForType() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public qorechain.abstractaccount.v1.QueryOuterClass.QueryPermissionSchemaResponse getDefaultInstanceForType() {
+      return DEFAULT_INSTANCE;
+    }
+
+  }
+
   private static final com.google.protobuf.Descriptors.Descriptor
     internal_static_qorechain_abstractaccount_v1_ConfigView_descriptor;
   private static final 
@@ -5056,6 +6918,21 @@ public final class QueryOuterClass extends com.google.protobuf.GeneratedFile {
   private static final 
     com.google.protobuf.GeneratedMessage.FieldAccessorTable
       internal_static_qorechain_abstractaccount_v1_QueryAccountsResponse_fieldAccessorTable;
+  private static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_qorechain_abstractaccount_v1_QueryPermissionSchemaRequest_descriptor;
+  private static final 
+    com.google.protobuf.GeneratedMessage.FieldAccessorTable
+      internal_static_qorechain_abstractaccount_v1_QueryPermissionSchemaRequest_fieldAccessorTable;
+  private static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_qorechain_abstractaccount_v1_QueryPermissionSchemaResponse_descriptor;
+  private static final 
+    com.google.protobuf.GeneratedMessage.FieldAccessorTable
+      internal_static_qorechain_abstractaccount_v1_QueryPermissionSchemaResponse_fieldAccessorTable;
+  private static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_qorechain_abstractaccount_v1_QueryPermissionSchemaResponse_MsgPermissionsEntry_descriptor;
+  private static final 
+    com.google.protobuf.GeneratedMessage.FieldAccessorTable
+      internal_static_qorechain_abstractaccount_v1_QueryPermissionSchemaResponse_MsgPermissionsEntry_fieldAccessorTable;
 
   public static com.google.protobuf.Descriptors.FileDescriptor
       getDescriptor() {
@@ -5066,42 +6943,62 @@ public final class QueryOuterClass extends com.google.protobuf.GeneratedFile {
   static {
     java.lang.String[] descriptorData = {
       "\n(qorechain/abstractaccount/v1/query.pro" +
-      "to\022\034qorechain.abstractaccount.v1\"\256\001\n\nCon" +
-      "figView\022\030\n\007enabled\030\001 \001(\010R\007enabled\022(\n\020max" +
-      "_session_keys\030\002 \001(\005R\016maxSessionKeys\022,\n\022m" +
-      "ax_spending_rules\030\003 \001(\005R\020maxSpendingRule" +
-      "s\022.\n\023default_session_ttl\030\004 \001(\003R\021defaultS" +
-      "essionTtl\"\212\002\n\013AccountView\022\030\n\007address\030\001 \001" +
-      "(\tR\007address\022)\n\020contract_address\030\002 \001(\tR\017c" +
-      "ontractAddress\022!\n\014account_type\030\003 \001(\tR\013ac" +
-      "countType\0220\n\024spending_rules_count\030\004 \001(\rR" +
-      "\022spendingRulesCount\022,\n\022session_keys_coun" +
-      "t\030\005 \001(\rR\020sessionKeysCount\022\035\n\ncreated_at\030" +
-      "\006 \001(\003R\tcreatedAt\022\024\n\005owner\030\007 \001(\tR\005owner\"\024" +
-      "\n\022QueryConfigRequest\"W\n\023QueryConfigRespo" +
-      "nse\022@\n\006config\030\001 \001(\0132(.qorechain.abstract" +
-      "account.v1.ConfigViewR\006config\"/\n\023QueryAc" +
-      "countRequest\022\030\n\007address\030\001 \001(\tR\007address\"[" +
-      "\n\024QueryAccountResponse\022C\n\007account\030\001 \001(\0132" +
-      ").qorechain.abstractaccount.v1.AccountVi" +
-      "ewR\007account\"\026\n\024QueryAccountsRequest\"^\n\025Q" +
-      "ueryAccountsResponse\022E\n\010accounts\030\001 \003(\0132)" +
-      ".qorechain.abstractaccount.v1.AccountVie" +
-      "wR\010accounts2\335\002\n\005Query\022m\n\006Config\0220.qorech" +
-      "ain.abstractaccount.v1.QueryConfigReques" +
-      "t\0321.qorechain.abstractaccount.v1.QueryCo" +
-      "nfigResponse\022p\n\007Account\0221.qorechain.abst" +
-      "ractaccount.v1.QueryAccountRequest\0322.qor" +
-      "echain.abstractaccount.v1.QueryAccountRe" +
-      "sponse\022s\n\010Accounts\0222.qorechain.abstracta" +
-      "ccount.v1.QueryAccountsRequest\0323.qorecha" +
-      "in.abstractaccount.v1.QueryAccountsRespo" +
-      "nseB=Z;github.com/qorechain/qorechain-co" +
+      "to\022\034qorechain.abstractaccount.v1\032\034google" +
+      "/api/annotations.proto\"\256\001\n\nConfigView\022\030\n" +
+      "\007enabled\030\001 \001(\010R\007enabled\022(\n\020max_session_k" +
+      "eys\030\002 \001(\005R\016maxSessionKeys\022,\n\022max_spendin" +
+      "g_rules\030\003 \001(\005R\020maxSpendingRules\022.\n\023defau" +
+      "lt_session_ttl\030\004 \001(\003R\021defaultSessionTtl\"" +
+      "\212\002\n\013AccountView\022\030\n\007address\030\001 \001(\tR\007addres" +
+      "s\022)\n\020contract_address\030\002 \001(\tR\017contractAdd" +
+      "ress\022!\n\014account_type\030\003 \001(\tR\013accountType\022" +
+      "0\n\024spending_rules_count\030\004 \001(\rR\022spendingR" +
+      "ulesCount\022,\n\022session_keys_count\030\005 \001(\rR\020s" +
+      "essionKeysCount\022\035\n\ncreated_at\030\006 \001(\003R\tcre" +
+      "atedAt\022\024\n\005owner\030\007 \001(\tR\005owner\"\024\n\022QueryCon" +
+      "figRequest\"W\n\023QueryConfigResponse\022@\n\006con" +
+      "fig\030\001 \001(\0132(.qorechain.abstractaccount.v1" +
+      ".ConfigViewR\006config\"/\n\023QueryAccountReque" +
+      "st\022\030\n\007address\030\001 \001(\tR\007address\"[\n\024QueryAcc" +
+      "ountResponse\022C\n\007account\030\001 \001(\0132).qorechai" +
+      "n.abstractaccount.v1.AccountViewR\007accoun" +
+      "t\"\026\n\024QueryAccountsRequest\"^\n\025QueryAccoun" +
+      "tsResponse\022E\n\010accounts\030\001 \003(\0132).qorechain" +
+      ".abstractaccount.v1.AccountViewR\010account" +
+      "s\"\036\n\034QueryPermissionSchemaRequest\"\325\002\n\035Qu" +
+      "eryPermissionSchemaResponse\022%\n\016schema_ve" +
+      "rsion\030\001 \001(\tR\rschemaVersion\022 \n\013permission" +
+      "s\030\002 \003(\tR\013permissions\022x\n\017msg_permissions\030" +
+      "\003 \003(\0132O.qorechain.abstractaccount.v1.Que" +
+      "ryPermissionSchemaResponse.MsgPermission" +
+      "sEntryR\016msgPermissions\022.\n\023key_management" +
+      "_msgs\030\004 \003(\tR\021keyManagementMsgs\032A\n\023MsgPer" +
+      "missionsEntry\022\020\n\003key\030\001 \001(\tR\003key\022\024\n\005value" +
+      "\030\002 \001(\tR\005value:\0028\0012\277\005\n\005Query\022\233\001\n\006Config\0220" +
+      ".qorechain.abstractaccount.v1.QueryConfi" +
+      "gRequest\0321.qorechain.abstractaccount.v1." +
+      "QueryConfigResponse\",\202\323\344\223\002&\022$/qorechain/" +
+      "abstractaccount/v1/config\022\252\001\n\007Account\0221." +
+      "qorechain.abstractaccount.v1.QueryAccoun" +
+      "tRequest\0322.qorechain.abstractaccount.v1." +
+      "QueryAccountResponse\"8\202\323\344\223\0022\0220/qorechain" +
+      "/abstractaccount/v1/accounts/{address}\022\243" +
+      "\001\n\010Accounts\0222.qorechain.abstractaccount." +
+      "v1.QueryAccountsRequest\0323.qorechain.abst" +
+      "ractaccount.v1.QueryAccountsResponse\".\202\323" +
+      "\344\223\002(\022&/qorechain/abstractaccount/v1/acco" +
+      "unts\022\304\001\n\020PermissionSchema\022:.qorechain.ab" +
+      "stractaccount.v1.QueryPermissionSchemaRe" +
+      "quest\032;.qorechain.abstractaccount.v1.Que" +
+      "ryPermissionSchemaResponse\"7\202\323\344\223\0021\022//qor" +
+      "echain/abstractaccount/v1/permission_sch" +
+      "emaB=Z;github.com/qorechain/qorechain-co" +
       "re/x/abstractaccount/typesb\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
         new com.google.protobuf.Descriptors.FileDescriptor[] {
+          com.google.api.AnnotationsProto.getDescriptor(),
         });
     internal_static_qorechain_abstractaccount_v1_ConfigView_descriptor =
       getDescriptor().getMessageType(0);
@@ -5151,7 +7048,31 @@ public final class QueryOuterClass extends com.google.protobuf.GeneratedFile {
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_qorechain_abstractaccount_v1_QueryAccountsResponse_descriptor,
         new java.lang.String[] { "Accounts", });
+    internal_static_qorechain_abstractaccount_v1_QueryPermissionSchemaRequest_descriptor =
+      getDescriptor().getMessageType(8);
+    internal_static_qorechain_abstractaccount_v1_QueryPermissionSchemaRequest_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessage.FieldAccessorTable(
+        internal_static_qorechain_abstractaccount_v1_QueryPermissionSchemaRequest_descriptor,
+        new java.lang.String[] { });
+    internal_static_qorechain_abstractaccount_v1_QueryPermissionSchemaResponse_descriptor =
+      getDescriptor().getMessageType(9);
+    internal_static_qorechain_abstractaccount_v1_QueryPermissionSchemaResponse_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessage.FieldAccessorTable(
+        internal_static_qorechain_abstractaccount_v1_QueryPermissionSchemaResponse_descriptor,
+        new java.lang.String[] { "SchemaVersion", "Permissions", "MsgPermissions", "KeyManagementMsgs", });
+    internal_static_qorechain_abstractaccount_v1_QueryPermissionSchemaResponse_MsgPermissionsEntry_descriptor =
+      internal_static_qorechain_abstractaccount_v1_QueryPermissionSchemaResponse_descriptor.getNestedType(0);
+    internal_static_qorechain_abstractaccount_v1_QueryPermissionSchemaResponse_MsgPermissionsEntry_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessage.FieldAccessorTable(
+        internal_static_qorechain_abstractaccount_v1_QueryPermissionSchemaResponse_MsgPermissionsEntry_descriptor,
+        new java.lang.String[] { "Key", "Value", });
     descriptor.resolveAllFeaturesImmutable();
+    com.google.api.AnnotationsProto.getDescriptor();
+    com.google.protobuf.ExtensionRegistry registry =
+        com.google.protobuf.ExtensionRegistry.newInstance();
+    registry.add(com.google.api.AnnotationsProto.http);
+    com.google.protobuf.Descriptors.FileDescriptor
+        .internalUpdateFileDescriptor(descriptor, registry);
   }
 
   // @@protoc_insertion_point(outer_class_scope)

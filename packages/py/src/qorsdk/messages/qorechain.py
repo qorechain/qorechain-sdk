@@ -134,6 +134,9 @@ pqc = SimpleNamespace(
     migrate_pqc_key=composer(
         "/qorechain.pqc.v1.MsgMigratePQCKey", pqc_tx.MsgMigratePQCKey
     ),
+    rotate_pqc_key=composer(
+        "/qorechain.pqc.v1.MsgRotatePQCKey", pqc_tx.MsgRotatePQCKey
+    ),
     deprecate_algorithm=composer(
         "/qorechain.pqc.v1.MsgDeprecateAlgorithm", pqc_tx.MsgDeprecateAlgorithm
     ),
@@ -216,6 +219,14 @@ abstractaccount = SimpleNamespace(
     revoke_authenticator=composer(
         "/qorechain.abstractaccount.v1.MsgRevokeAuthenticator",
         abstractaccount_tx.MsgRevokeAuthenticator,
+    ),
+    execute_evm=composer(
+        "/qorechain.abstractaccount.v1.MsgExecuteEVM",
+        abstractaccount_tx.MsgExecuteEVM,
+    ),
+    execute_cosmos=composer(
+        "/qorechain.abstractaccount.v1.MsgExecuteCosmos",
+        abstractaccount_tx.MsgExecuteCosmos,
     ),
 )
 

@@ -13,11 +13,11 @@ import java.util.List;
 import java.util.Set;
 import org.junit.jupiter.api.Test;
 
-/** Registry coverage of all 55 QoreChain custom messages + Any pack/unpack round-trip. */
+/** Registry coverage of all 58 QoreChain custom messages + Any pack/unpack round-trip. */
 class MessagesTest {
 
-    /** The 55 QoreChain custom Msg type URLs (amm 7, bridge 7, rdk 8, multilayer 6, pqc 5,
-     * svm 4, lightnode 4, license 4, abstractaccount 4, crossvm 2, rlconsensus 4). */
+    /** The 58 QoreChain custom Msg type URLs (amm 7, bridge 7, rdk 8, multilayer 6, pqc 6,
+     * svm 4, lightnode 4, license 4, abstractaccount 6, crossvm 2, rlconsensus 4). */
     private static final List<String> QORECHAIN_TYPE_URLS =
             List.of(
                     "/qorechain.amm.v1.MsgCreatePool",
@@ -51,6 +51,7 @@ class MessagesTest {
                     "/qorechain.pqc.v1.MsgRegisterPQCKey",
                     "/qorechain.pqc.v1.MsgRegisterPQCKeyV2",
                     "/qorechain.pqc.v1.MsgMigratePQCKey",
+                    "/qorechain.pqc.v1.MsgRotatePQCKey",
                     "/qorechain.pqc.v1.MsgDeprecateAlgorithm",
                     "/qorechain.pqc.v1.MsgDisableAlgorithm",
                     "/qorechain.svm.v1.MsgDeployProgram",
@@ -69,6 +70,8 @@ class MessagesTest {
                     "/qorechain.abstractaccount.v1.MsgUpdateSpendingRules",
                     "/qorechain.abstractaccount.v1.MsgRegisterAuthenticator",
                     "/qorechain.abstractaccount.v1.MsgRevokeAuthenticator",
+                    "/qorechain.abstractaccount.v1.MsgExecuteEVM",
+                    "/qorechain.abstractaccount.v1.MsgExecuteCosmos",
                     "/qorechain.crossvm.v1.MsgCrossVMCall",
                     "/qorechain.crossvm.v1.MsgProcessQueue",
                     "/qorechain.rlconsensus.v1.MsgSetAgentMode",
@@ -78,7 +81,7 @@ class MessagesTest {
 
     @Test
     void allCustomTypeUrlsRegistered() {
-        assertEquals(55, QORECHAIN_TYPE_URLS.size());
+        assertEquals(58, QORECHAIN_TYPE_URLS.size());
         Set<String> registered = Messages.typeUrls();
         for (String url : QORECHAIN_TYPE_URLS) {
             assertTrue(registered.contains(url), "missing registry entry: " + url);

@@ -105,6 +105,7 @@ QORECHAIN_REGISTRY_TYPES: dict[str, ProtoType] = {
     "/qorechain.pqc.v1.MsgRegisterPQCKey": pqc_tx.MsgRegisterPQCKey,
     "/qorechain.pqc.v1.MsgRegisterPQCKeyV2": pqc_tx.MsgRegisterPQCKeyV2,
     "/qorechain.pqc.v1.MsgMigratePQCKey": pqc_tx.MsgMigratePQCKey,
+    "/qorechain.pqc.v1.MsgRotatePQCKey": pqc_tx.MsgRotatePQCKey,
     "/qorechain.pqc.v1.MsgDeprecateAlgorithm": pqc_tx.MsgDeprecateAlgorithm,
     "/qorechain.pqc.v1.MsgDisableAlgorithm": pqc_tx.MsgDisableAlgorithm,
     # svm
@@ -140,6 +141,10 @@ QORECHAIN_REGISTRY_TYPES: dict[str, ProtoType] = {
     ),
     "/qorechain.abstractaccount.v1.MsgRevokeAuthenticator": (
         abstractaccount_tx.MsgRevokeAuthenticator
+    ),
+    "/qorechain.abstractaccount.v1.MsgExecuteEVM": abstractaccount_tx.MsgExecuteEVM,
+    "/qorechain.abstractaccount.v1.MsgExecuteCosmos": (
+        abstractaccount_tx.MsgExecuteCosmos
     ),
     # crossvm
     "/qorechain.crossvm.v1.MsgCrossVMCall": crossvm_tx.MsgCrossVMCall,

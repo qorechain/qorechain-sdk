@@ -6,6 +6,7 @@
 
 /* eslint-disable */
 import { BinaryReader, BinaryWriter } from "@bufbuild/protobuf/wire";
+import { Coin } from "../../../cosmos/base/v1beta1/coin";
 
 export const protobufPackage = "qorechain.abstractaccount.v1";
 
@@ -70,6 +71,79 @@ export interface MsgRevokeAuthenticator {
 }
 
 export interface MsgRevokeAuthenticatorResponse {
+}
+
+/**
+ * MsgExecuteEVM executes an EVM call/transfer authorized by a linked
+ * authenticator (v3.1.85). The relayer submits + pays fees; the authenticator
+ * (scheme,pubkey) signs the domain-separated sign-bytes binding chain-id, the
+ * canonical account, the pubkey, to/value/data and the account's expected EVM
+ * nonce (replay protection — the nonce must equal the account's current EVM
+ * nonce, and executing the call increments it, so a signature cannot be replayed).
+ * The chain resolves the authenticator, checks the "evm" permission + SpendingRule
+ * against `value`, then executes the call FROM the canonical account's EVM address.
+ */
+export interface MsgExecuteEVM {
+  relayer: string;
+  /** bech32 canonical account (the authenticator's owner) */
+  account: string;
+  /** "ed25519" | "secp256k1" */
+  scheme: string;
+  /** authenticator public key */
+  pubkey: Uint8Array;
+  /** authenticator signature over the EVM auth sign-bytes */
+  signature: Uint8Array;
+  /** 0x-hex recipient/contract; empty = contract create */
+  to: string;
+  /** native QOR amount in wei (aqor), decimal string */
+  value: string;
+  /** EVM calldata */
+  data: Uint8Array;
+  gasLimit: string;
+  /** MUST equal the account's current EVM nonce */
+  nonce: string;
+}
+
+export interface MsgExecuteEVMResponse {
+  success: boolean;
+  ret: Uint8Array;
+  gasUsed: string;
+  vmError: string;
+}
+
+/**
+ * MsgExecuteCosmos executes a Native-lane (Cosmos) bank transfer authorized by a
+ * linked authenticator (v3.1.85). It is the Native counterpart of MsgExecuteEVM:
+ * the relayer submits + pays fees and signs the outer tx (so the account's own
+ * PQC-required signature is not needed — the relayer's hybrid-PQC signature
+ * satisfies the ante on the envelope), while the authenticator (scheme,pubkey)
+ * signs the domain-separated sign-bytes binding chain-id, the canonical account,
+ * the pubkey, the recipient, the amount and a per-authenticator sequence (replay:
+ * nonce must equal the account+key's current sequence, incremented on success).
+ * The chain resolves the authenticator, checks the "send" permission + SpendingRule
+ * against `amount`, then moves the coins FROM the canonical account via x/bank.
+ * This lets an external key (Phantom ed25519 / EVM secp256k1) spend native QOR from
+ * a PQC-required account under least-privilege, spend-limited, revocable terms.
+ */
+export interface MsgExecuteCosmos {
+  relayer: string;
+  /** bech32 canonical account (the authenticator's owner) */
+  account: string;
+  /** "ed25519" | "secp256k1" */
+  scheme: string;
+  /** authenticator public key */
+  pubkey: Uint8Array;
+  /** authenticator signature over the Cosmos auth sign-bytes */
+  signature: Uint8Array;
+  /** bech32 recipient */
+  to: string;
+  amount: Coin[];
+  /** MUST equal the account+key's current authenticator sequence */
+  nonce: string;
+}
+
+export interface MsgExecuteCosmosResponse {
+  success: boolean;
 }
 
 function createBaseSpendingRule(): SpendingRule {
@@ -857,6 +931,580 @@ export const MsgRevokeAuthenticatorResponse: MessageFns<MsgRevokeAuthenticatorRe
   },
 };
 
+function createBaseMsgExecuteEVM(): MsgExecuteEVM {
+  return {
+    relayer: "",
+    account: "",
+    scheme: "",
+    pubkey: new Uint8Array(0),
+    signature: new Uint8Array(0),
+    to: "",
+    value: "",
+    data: new Uint8Array(0),
+    gasLimit: "0",
+    nonce: "0",
+  };
+}
+
+export const MsgExecuteEVM: MessageFns<MsgExecuteEVM> = {
+  encode(message: MsgExecuteEVM, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.relayer !== "") {
+      writer.uint32(10).string(message.relayer);
+    }
+    if (message.account !== "") {
+      writer.uint32(18).string(message.account);
+    }
+    if (message.scheme !== "") {
+      writer.uint32(26).string(message.scheme);
+    }
+    if (message.pubkey.length !== 0) {
+      writer.uint32(34).bytes(message.pubkey);
+    }
+    if (message.signature.length !== 0) {
+      writer.uint32(42).bytes(message.signature);
+    }
+    if (message.to !== "") {
+      writer.uint32(50).string(message.to);
+    }
+    if (message.value !== "") {
+      writer.uint32(58).string(message.value);
+    }
+    if (message.data.length !== 0) {
+      writer.uint32(66).bytes(message.data);
+    }
+    if (message.gasLimit !== "0") {
+      writer.uint32(72).uint64(message.gasLimit);
+    }
+    if (message.nonce !== "0") {
+      writer.uint32(80).uint64(message.nonce);
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): MsgExecuteEVM {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseMsgExecuteEVM();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.relayer = reader.string();
+          continue;
+        }
+        case 2: {
+          if (tag !== 18) {
+            break;
+          }
+
+          message.account = reader.string();
+          continue;
+        }
+        case 3: {
+          if (tag !== 26) {
+            break;
+          }
+
+          message.scheme = reader.string();
+          continue;
+        }
+        case 4: {
+          if (tag !== 34) {
+            break;
+          }
+
+          message.pubkey = reader.bytes();
+          continue;
+        }
+        case 5: {
+          if (tag !== 42) {
+            break;
+          }
+
+          message.signature = reader.bytes();
+          continue;
+        }
+        case 6: {
+          if (tag !== 50) {
+            break;
+          }
+
+          message.to = reader.string();
+          continue;
+        }
+        case 7: {
+          if (tag !== 58) {
+            break;
+          }
+
+          message.value = reader.string();
+          continue;
+        }
+        case 8: {
+          if (tag !== 66) {
+            break;
+          }
+
+          message.data = reader.bytes();
+          continue;
+        }
+        case 9: {
+          if (tag !== 72) {
+            break;
+          }
+
+          message.gasLimit = reader.uint64().toString();
+          continue;
+        }
+        case 10: {
+          if (tag !== 80) {
+            break;
+          }
+
+          message.nonce = reader.uint64().toString();
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(object: any): MsgExecuteEVM {
+    return {
+      relayer: isSet(object.relayer) ? globalThis.String(object.relayer) : "",
+      account: isSet(object.account) ? globalThis.String(object.account) : "",
+      scheme: isSet(object.scheme) ? globalThis.String(object.scheme) : "",
+      pubkey: isSet(object.pubkey) ? bytesFromBase64(object.pubkey) : new Uint8Array(0),
+      signature: isSet(object.signature) ? bytesFromBase64(object.signature) : new Uint8Array(0),
+      to: isSet(object.to) ? globalThis.String(object.to) : "",
+      value: isSet(object.value) ? globalThis.String(object.value) : "",
+      data: isSet(object.data) ? bytesFromBase64(object.data) : new Uint8Array(0),
+      gasLimit: isSet(object.gasLimit)
+        ? globalThis.String(object.gasLimit)
+        : isSet(object.gas_limit)
+        ? globalThis.String(object.gas_limit)
+        : "0",
+      nonce: isSet(object.nonce) ? globalThis.String(object.nonce) : "0",
+    };
+  },
+
+  toJSON(message: MsgExecuteEVM): unknown {
+    const obj: any = {};
+    if (message.relayer !== "") {
+      obj.relayer = message.relayer;
+    }
+    if (message.account !== "") {
+      obj.account = message.account;
+    }
+    if (message.scheme !== "") {
+      obj.scheme = message.scheme;
+    }
+    if (message.pubkey.length !== 0) {
+      obj.pubkey = base64FromBytes(message.pubkey);
+    }
+    if (message.signature.length !== 0) {
+      obj.signature = base64FromBytes(message.signature);
+    }
+    if (message.to !== "") {
+      obj.to = message.to;
+    }
+    if (message.value !== "") {
+      obj.value = message.value;
+    }
+    if (message.data.length !== 0) {
+      obj.data = base64FromBytes(message.data);
+    }
+    if (message.gasLimit !== "0") {
+      obj.gasLimit = message.gasLimit;
+    }
+    if (message.nonce !== "0") {
+      obj.nonce = message.nonce;
+    }
+    return obj;
+  },
+
+  create(base?: DeepPartial<MsgExecuteEVM>): MsgExecuteEVM {
+    return MsgExecuteEVM.fromPartial(base ?? {});
+  },
+  fromPartial(object: DeepPartial<MsgExecuteEVM>): MsgExecuteEVM {
+    const message = createBaseMsgExecuteEVM();
+    message.relayer = object.relayer ?? "";
+    message.account = object.account ?? "";
+    message.scheme = object.scheme ?? "";
+    message.pubkey = object.pubkey ?? new Uint8Array(0);
+    message.signature = object.signature ?? new Uint8Array(0);
+    message.to = object.to ?? "";
+    message.value = object.value ?? "";
+    message.data = object.data ?? new Uint8Array(0);
+    message.gasLimit = object.gasLimit ?? "0";
+    message.nonce = object.nonce ?? "0";
+    return message;
+  },
+};
+
+function createBaseMsgExecuteEVMResponse(): MsgExecuteEVMResponse {
+  return { success: false, ret: new Uint8Array(0), gasUsed: "0", vmError: "" };
+}
+
+export const MsgExecuteEVMResponse: MessageFns<MsgExecuteEVMResponse> = {
+  encode(message: MsgExecuteEVMResponse, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.success !== false) {
+      writer.uint32(8).bool(message.success);
+    }
+    if (message.ret.length !== 0) {
+      writer.uint32(18).bytes(message.ret);
+    }
+    if (message.gasUsed !== "0") {
+      writer.uint32(24).uint64(message.gasUsed);
+    }
+    if (message.vmError !== "") {
+      writer.uint32(34).string(message.vmError);
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): MsgExecuteEVMResponse {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseMsgExecuteEVMResponse();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 8) {
+            break;
+          }
+
+          message.success = reader.bool();
+          continue;
+        }
+        case 2: {
+          if (tag !== 18) {
+            break;
+          }
+
+          message.ret = reader.bytes();
+          continue;
+        }
+        case 3: {
+          if (tag !== 24) {
+            break;
+          }
+
+          message.gasUsed = reader.uint64().toString();
+          continue;
+        }
+        case 4: {
+          if (tag !== 34) {
+            break;
+          }
+
+          message.vmError = reader.string();
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(object: any): MsgExecuteEVMResponse {
+    return {
+      success: isSet(object.success) ? globalThis.Boolean(object.success) : false,
+      ret: isSet(object.ret) ? bytesFromBase64(object.ret) : new Uint8Array(0),
+      gasUsed: isSet(object.gasUsed)
+        ? globalThis.String(object.gasUsed)
+        : isSet(object.gas_used)
+        ? globalThis.String(object.gas_used)
+        : "0",
+      vmError: isSet(object.vmError)
+        ? globalThis.String(object.vmError)
+        : isSet(object.vm_error)
+        ? globalThis.String(object.vm_error)
+        : "",
+    };
+  },
+
+  toJSON(message: MsgExecuteEVMResponse): unknown {
+    const obj: any = {};
+    if (message.success !== false) {
+      obj.success = message.success;
+    }
+    if (message.ret.length !== 0) {
+      obj.ret = base64FromBytes(message.ret);
+    }
+    if (message.gasUsed !== "0") {
+      obj.gasUsed = message.gasUsed;
+    }
+    if (message.vmError !== "") {
+      obj.vmError = message.vmError;
+    }
+    return obj;
+  },
+
+  create(base?: DeepPartial<MsgExecuteEVMResponse>): MsgExecuteEVMResponse {
+    return MsgExecuteEVMResponse.fromPartial(base ?? {});
+  },
+  fromPartial(object: DeepPartial<MsgExecuteEVMResponse>): MsgExecuteEVMResponse {
+    const message = createBaseMsgExecuteEVMResponse();
+    message.success = object.success ?? false;
+    message.ret = object.ret ?? new Uint8Array(0);
+    message.gasUsed = object.gasUsed ?? "0";
+    message.vmError = object.vmError ?? "";
+    return message;
+  },
+};
+
+function createBaseMsgExecuteCosmos(): MsgExecuteCosmos {
+  return {
+    relayer: "",
+    account: "",
+    scheme: "",
+    pubkey: new Uint8Array(0),
+    signature: new Uint8Array(0),
+    to: "",
+    amount: [],
+    nonce: "0",
+  };
+}
+
+export const MsgExecuteCosmos: MessageFns<MsgExecuteCosmos> = {
+  encode(message: MsgExecuteCosmos, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.relayer !== "") {
+      writer.uint32(10).string(message.relayer);
+    }
+    if (message.account !== "") {
+      writer.uint32(18).string(message.account);
+    }
+    if (message.scheme !== "") {
+      writer.uint32(26).string(message.scheme);
+    }
+    if (message.pubkey.length !== 0) {
+      writer.uint32(34).bytes(message.pubkey);
+    }
+    if (message.signature.length !== 0) {
+      writer.uint32(42).bytes(message.signature);
+    }
+    if (message.to !== "") {
+      writer.uint32(50).string(message.to);
+    }
+    for (const v of message.amount) {
+      Coin.encode(v!, writer.uint32(58).fork()).join();
+    }
+    if (message.nonce !== "0") {
+      writer.uint32(64).uint64(message.nonce);
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): MsgExecuteCosmos {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseMsgExecuteCosmos();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.relayer = reader.string();
+          continue;
+        }
+        case 2: {
+          if (tag !== 18) {
+            break;
+          }
+
+          message.account = reader.string();
+          continue;
+        }
+        case 3: {
+          if (tag !== 26) {
+            break;
+          }
+
+          message.scheme = reader.string();
+          continue;
+        }
+        case 4: {
+          if (tag !== 34) {
+            break;
+          }
+
+          message.pubkey = reader.bytes();
+          continue;
+        }
+        case 5: {
+          if (tag !== 42) {
+            break;
+          }
+
+          message.signature = reader.bytes();
+          continue;
+        }
+        case 6: {
+          if (tag !== 50) {
+            break;
+          }
+
+          message.to = reader.string();
+          continue;
+        }
+        case 7: {
+          if (tag !== 58) {
+            break;
+          }
+
+          message.amount.push(Coin.decode(reader, reader.uint32()));
+          continue;
+        }
+        case 8: {
+          if (tag !== 64) {
+            break;
+          }
+
+          message.nonce = reader.uint64().toString();
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(object: any): MsgExecuteCosmos {
+    return {
+      relayer: isSet(object.relayer) ? globalThis.String(object.relayer) : "",
+      account: isSet(object.account) ? globalThis.String(object.account) : "",
+      scheme: isSet(object.scheme) ? globalThis.String(object.scheme) : "",
+      pubkey: isSet(object.pubkey) ? bytesFromBase64(object.pubkey) : new Uint8Array(0),
+      signature: isSet(object.signature) ? bytesFromBase64(object.signature) : new Uint8Array(0),
+      to: isSet(object.to) ? globalThis.String(object.to) : "",
+      amount: globalThis.Array.isArray(object?.amount) ? object.amount.map((e: any) => Coin.fromJSON(e)) : [],
+      nonce: isSet(object.nonce) ? globalThis.String(object.nonce) : "0",
+    };
+  },
+
+  toJSON(message: MsgExecuteCosmos): unknown {
+    const obj: any = {};
+    if (message.relayer !== "") {
+      obj.relayer = message.relayer;
+    }
+    if (message.account !== "") {
+      obj.account = message.account;
+    }
+    if (message.scheme !== "") {
+      obj.scheme = message.scheme;
+    }
+    if (message.pubkey.length !== 0) {
+      obj.pubkey = base64FromBytes(message.pubkey);
+    }
+    if (message.signature.length !== 0) {
+      obj.signature = base64FromBytes(message.signature);
+    }
+    if (message.to !== "") {
+      obj.to = message.to;
+    }
+    if (message.amount?.length) {
+      obj.amount = message.amount.map((e) => Coin.toJSON(e));
+    }
+    if (message.nonce !== "0") {
+      obj.nonce = message.nonce;
+    }
+    return obj;
+  },
+
+  create(base?: DeepPartial<MsgExecuteCosmos>): MsgExecuteCosmos {
+    return MsgExecuteCosmos.fromPartial(base ?? {});
+  },
+  fromPartial(object: DeepPartial<MsgExecuteCosmos>): MsgExecuteCosmos {
+    const message = createBaseMsgExecuteCosmos();
+    message.relayer = object.relayer ?? "";
+    message.account = object.account ?? "";
+    message.scheme = object.scheme ?? "";
+    message.pubkey = object.pubkey ?? new Uint8Array(0);
+    message.signature = object.signature ?? new Uint8Array(0);
+    message.to = object.to ?? "";
+    message.amount = object.amount?.map((e) => Coin.fromPartial(e)) || [];
+    message.nonce = object.nonce ?? "0";
+    return message;
+  },
+};
+
+function createBaseMsgExecuteCosmosResponse(): MsgExecuteCosmosResponse {
+  return { success: false };
+}
+
+export const MsgExecuteCosmosResponse: MessageFns<MsgExecuteCosmosResponse> = {
+  encode(message: MsgExecuteCosmosResponse, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.success !== false) {
+      writer.uint32(8).bool(message.success);
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): MsgExecuteCosmosResponse {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseMsgExecuteCosmosResponse();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 8) {
+            break;
+          }
+
+          message.success = reader.bool();
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(object: any): MsgExecuteCosmosResponse {
+    return { success: isSet(object.success) ? globalThis.Boolean(object.success) : false };
+  },
+
+  toJSON(message: MsgExecuteCosmosResponse): unknown {
+    const obj: any = {};
+    if (message.success !== false) {
+      obj.success = message.success;
+    }
+    return obj;
+  },
+
+  create(base?: DeepPartial<MsgExecuteCosmosResponse>): MsgExecuteCosmosResponse {
+    return MsgExecuteCosmosResponse.fromPartial(base ?? {});
+  },
+  fromPartial(object: DeepPartial<MsgExecuteCosmosResponse>): MsgExecuteCosmosResponse {
+    const message = createBaseMsgExecuteCosmosResponse();
+    message.success = object.success ?? false;
+    return message;
+  },
+};
+
 /** Msg defines the abstractaccount module's transaction service. */
 export type MsgDefinition = typeof MsgDefinition;
 export const MsgDefinition = {
@@ -892,6 +1540,22 @@ export const MsgDefinition = {
       requestType: MsgRevokeAuthenticator as typeof MsgRevokeAuthenticator,
       requestStream: false,
       responseType: MsgRevokeAuthenticatorResponse as typeof MsgRevokeAuthenticatorResponse,
+      responseStream: false,
+      options: {},
+    },
+    executeEVM: {
+      name: "ExecuteEVM",
+      requestType: MsgExecuteEVM as typeof MsgExecuteEVM,
+      requestStream: false,
+      responseType: MsgExecuteEVMResponse as typeof MsgExecuteEVMResponse,
+      responseStream: false,
+      options: {},
+    },
+    executeCosmos: {
+      name: "ExecuteCosmos",
+      requestType: MsgExecuteCosmos as typeof MsgExecuteCosmos,
+      requestStream: false,
+      responseType: MsgExecuteCosmosResponse as typeof MsgExecuteCosmosResponse,
       responseStream: false,
       options: {},
     },

@@ -58,6 +58,43 @@ SDK_CODES: dict[int, tuple[str, str]] = {
     30: ("tx_timeout_height", "transaction timeout height exceeded"),
 }
 
+#: Known error codes in QoreChain custom-module codespaces (v3.1.85). Only the
+#: codes a dApp / relayer commonly branches on get friendly text; any other code
+#: in these codespaces still decodes generically (with the raw log). The
+#: ``abstractaccount`` codes cover the authenticator lanes (EVM + Native); the
+#: ``pqc`` code covers hybrid verification.
+MODULE_CODES: dict[str, dict[int, tuple[str, str]]] = {
+    "abstractaccount": {
+        5: (
+            "spending_limit_exceeded",
+            "authenticator spending limit exceeded — the value/amount is over the "
+            "linked key's SpendingRule",
+        ),
+        6: (
+            "session_key_expired",
+            "authenticator session key expired — re-register the linked key with a "
+            "fresh expiry",
+        ),
+        10: (
+            "permission_denied",
+            "authenticator permission denied — the linked key lacks the required "
+            "permission for this message",
+        ),
+        11: (
+            "authenticator_replay",
+            "authenticator replay — the nonce does not match the account/key's "
+            "current sequence (refetch and retry)",
+        ),
+    },
+    "pqc": {
+        21: (
+            "hybrid_verify_failed",
+            "hybrid PQC verification failed — the ML-DSA signature did not verify "
+            "against the registered key",
+        ),
+    },
+}
+
 
 @dataclass(frozen=True)
 class DecodedTxError:
@@ -97,6 +134,14 @@ def decode_tx_error(
 
     if space == DEFAULT_CODESPACE and code in SDK_CODES:
         kind, base_message = SDK_CODES[code]
+        message = f"{base_message} ({raw_log})" if raw_log else base_message
+        return DecodedTxError(
+            code=code, codespace=space, message=message, kind=kind, raw_log=raw_log
+        )
+
+    module_codes = MODULE_CODES.get(space)
+    if module_codes is not None and code in module_codes:
+        kind, base_message = module_codes[code]
         message = f"{base_message} ({raw_log})" if raw_log else base_message
         return DecodedTxError(
             code=code, codespace=space, message=message, kind=kind, raw_log=raw_log

@@ -61,6 +61,42 @@ export type RestClientOptions = HttpOptions;
 /** Relative urgency of a fee estimate. */
 export type FeeUrgency = "fast" | "normal" | "slow";
 
+/**
+ * REST shape of `GET /qorechain/abstractaccount/v1/permission_schema` — the
+ * canonical authenticator permission taxonomy (v3.1.85). `schema_version` bumps
+ * whenever the taxonomy or the mapping changes, so clients compare it to their
+ * embedded copy to detect drift.
+ */
+export interface PermissionSchemaResponse {
+  /** Version tag that bumps on any taxonomy/mapping change. */
+  schema_version: string;
+  /** Every valid permission string (e.g. `send`, `evm`, `svm`, `all`). */
+  permissions: string[];
+  /** Maps a message typeURL to the permission it requires. */
+  msg_permissions: Record<string, string>;
+  /** TypeURLs that are NEVER delegable to a linked authenticator key. */
+  key_management_msgs: string[];
+}
+
+/** REST shape of an abstract-account view (subset of `AccountView`). */
+export interface AbstractAccountView {
+  address: string;
+  contract_address?: string;
+  account_type?: string;
+  spending_rules_count?: number;
+  session_keys_count?: number;
+  created_at?: string;
+  owner?: string;
+}
+
+/** REST shape of the abstractaccount module config view. */
+export interface AbstractAccountConfigView {
+  enabled: boolean;
+  max_session_keys?: number;
+  max_spending_rules?: number;
+  default_session_ttl?: string;
+}
+
 /** Map a {@link Pagination} into Native `pagination.*` query params. */
 function paginationQuery(p?: Pagination): Record<string, QueryValue> {
   const q: Record<string, QueryValue> = {};
@@ -170,5 +206,41 @@ export class RestClient {
   /** Current inflation rate (`/qorechain/inflation/v1/rate`). */
   getInflationRate<T = Record<string, unknown>>(): Promise<T> {
     return this.get<T>("/qorechain/inflation/v1/rate");
+  }
+
+  // --- Abstract-account authenticator lanes (v3.1.85) ----------------------
+
+  /**
+   * The canonical authenticator permission taxonomy
+   * (`/qorechain/abstractaccount/v1/permission_schema`): the valid permission
+   * strings, the message-typeURL→permission mapping, the never-delegable
+   * key-management typeURLs, and a `schema_version` for drift detection.
+   */
+  getPermissionSchema(): Promise<PermissionSchemaResponse> {
+    return this.get<PermissionSchemaResponse>(
+      "/qorechain/abstractaccount/v1/permission_schema",
+    );
+  }
+
+  /** Abstract-account module config (`/qorechain/abstractaccount/v1/config`). */
+  getAbstractAccountConfig<T = { config: AbstractAccountConfigView }>(): Promise<T> {
+    return this.get<T>("/qorechain/abstractaccount/v1/config");
+  }
+
+  /** All abstract accounts (`/qorechain/abstractaccount/v1/accounts`). */
+  getAbstractAccounts<T = { accounts: AbstractAccountView[] }>(): Promise<T> {
+    return this.get<T>("/qorechain/abstractaccount/v1/accounts");
+  }
+
+  /**
+   * A single abstract account by address
+   * (`/qorechain/abstractaccount/v1/accounts/{address}`).
+   */
+  getAbstractAccount<T = { account: AbstractAccountView }>(
+    address: string,
+  ): Promise<T> {
+    return this.get<T>(
+      `/qorechain/abstractaccount/v1/accounts/${encodeURIComponent(address)}`,
+    );
   }
 }

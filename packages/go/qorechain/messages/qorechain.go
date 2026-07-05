@@ -227,6 +227,17 @@ func (PqcComposers) MigrateKey(sender string, oldPublicKey, newPublicKey []byte,
 	return &pqcv1.MsgMigratePQCKey{Sender: sender, OldPublicKey: oldPublicKey, NewPublicKey: newPublicKey, NewAlgorithmID: newAlgorithmID, OldSignature: oldSignature, NewSignature: newSignature}
 }
 
+// RotatePQCKey builds MsgRotatePQCKey. It replaces an account's PQC key with a
+// NEW key of the SAME algorithm — the canonical use is migrating a legacy-derived
+// key to the canonical address-bound derivation. Dual-signed: oldSignature proves
+// ownership of the current key, newSignature proves control of the replacement;
+// both sign the domain-separated rotation bytes (see
+// qorechain/authenticator.RotationSignBytes). The message must be broadcast BY the
+// account, hybrid-cosigned with the OLD key (still registered until it lands).
+func (PqcComposers) RotatePQCKey(sender string, oldPublicKey, newPublicKey, oldSignature, newSignature []byte) *pqcv1.MsgRotatePQCKey {
+	return &pqcv1.MsgRotatePQCKey{Sender: sender, OldPublicKey: oldPublicKey, NewPublicKey: newPublicKey, OldSignature: oldSignature, NewSignature: newSignature}
+}
+
 // DeprecateAlgorithm builds MsgDeprecateAlgorithm.
 func (PqcComposers) DeprecateAlgorithm(authority string, algorithmID pqcv1.AlgorithmID, migrationBlocks int64, replacementAlgID pqcv1.AlgorithmID) *pqcv1.MsgDeprecateAlgorithm {
 	return &pqcv1.MsgDeprecateAlgorithm{Authority: authority, AlgorithmID: algorithmID, MigrationBlocks: migrationBlocks, ReplacementAlgID: replacementAlgID}
@@ -353,6 +364,24 @@ func (AbstractAccountComposers) RegisterAuthenticator(owner, accountAddress, sch
 // identified by (scheme, pubkey) from an abstract account.
 func (AbstractAccountComposers) RevokeAuthenticator(owner, accountAddress, scheme string, pubkey []byte) *abstractaccountv1.MsgRevokeAuthenticator {
 	return &abstractaccountv1.MsgRevokeAuthenticator{Owner: owner, AccountAddress: accountAddress, Scheme: scheme, Pubkey: pubkey}
+}
+
+// ExecuteEVM builds MsgExecuteEVM (v3.1.85 EVM authenticator lane). The relayer
+// submits + pays fees; the authenticator (scheme, pubkey) signature authorizes an
+// EVM call/transfer FROM the canonical account's 0x address. signature is over the
+// EVM auth sign-bytes (see qorechain/authenticator.EVMAuthSignBytes); nonce MUST
+// equal the account's current EVM nonce. Empty to = contract create.
+func (AbstractAccountComposers) ExecuteEVM(relayer, account, scheme string, pubkey, signature []byte, to, value string, data []byte, gasLimit, nonce uint64) *abstractaccountv1.MsgExecuteEVM {
+	return &abstractaccountv1.MsgExecuteEVM{Relayer: relayer, Account: account, Scheme: scheme, Pubkey: pubkey, Signature: signature, To: to, Value: value, Data: data, GasLimit: gasLimit, Nonce: nonce}
+}
+
+// ExecuteCosmos builds MsgExecuteCosmos (v3.1.85 Native authenticator lane). The
+// relayer submits + pays fees; the authenticator (scheme, pubkey) signature
+// authorizes a bank send FROM the canonical account. signature is over the Cosmos
+// auth sign-bytes (see qorechain/authenticator.CosmosAuthSignBytes); nonce MUST
+// equal the account+key's current per-authenticator sequence.
+func (AbstractAccountComposers) ExecuteCosmos(relayer, account, scheme string, pubkey, signature []byte, to string, amount sdk.Coins, nonce uint64) *abstractaccountv1.MsgExecuteCosmos {
+	return &abstractaccountv1.MsgExecuteCosmos{Relayer: relayer, Account: account, Scheme: scheme, Pubkey: pubkey, Signature: signature, To: to, Amount: amount, Nonce: nonce}
 }
 
 // ---- crossvm ----

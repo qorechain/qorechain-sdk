@@ -9,6 +9,7 @@ import (
 	"google.golang.org/grpc/credentials/insecure"
 	"google.golang.org/grpc/test/bufconn"
 
+	abstractaccountv1 "github.com/qorechain/qorechain-sdk/packages/go/qorechain/proto/qorechain/abstractaccount/v1"
 	bridgev1 "github.com/qorechain/qorechain-sdk/packages/go/qorechain/proto/qorechain/bridge/v1"
 	crossvmv1 "github.com/qorechain/qorechain-sdk/packages/go/qorechain/proto/qorechain/crossvm/v1"
 	multilayerv1 "github.com/qorechain/qorechain-sdk/packages/go/qorechain/proto/qorechain/multilayer/v1"
@@ -68,6 +69,75 @@ func TestGRPCClientTypedQuery(t *testing.T) {
 	}
 	if !msg.Found || msg.Message.Id != "msg-1" || msg.Message.Status != "executed" {
 		t.Fatalf("unexpected message response: %+v", msg)
+	}
+}
+
+// fakeAbstractAccountServer is an in-memory abstractaccount Query service used to
+// prove the typed client resolves Config, Accounts, and the v3.1.85
+// PermissionSchema RPC over a real gRPC transport.
+type fakeAbstractAccountServer struct {
+	abstractaccountv1.UnimplementedQueryServer
+}
+
+func (*fakeAbstractAccountServer) Config(context.Context, *abstractaccountv1.QueryConfigRequest) (*abstractaccountv1.QueryConfigResponse, error) {
+	return &abstractaccountv1.QueryConfigResponse{Config: &abstractaccountv1.ConfigView{Enabled: true, MaxSessionKeys: 5, MaxSpendingRules: 3, DefaultSessionTtl: 86400}}, nil
+}
+
+func (*fakeAbstractAccountServer) Account(_ context.Context, req *abstractaccountv1.QueryAccountRequest) (*abstractaccountv1.QueryAccountResponse, error) {
+	return &abstractaccountv1.QueryAccountResponse{Account: &abstractaccountv1.AccountView{Address: req.Address, AccountType: "smart", Owner: "qor1owner"}}, nil
+}
+
+func (*fakeAbstractAccountServer) Accounts(context.Context, *abstractaccountv1.QueryAccountsRequest) (*abstractaccountv1.QueryAccountsResponse, error) {
+	return &abstractaccountv1.QueryAccountsResponse{Accounts: []*abstractaccountv1.AccountView{{Address: "qor1a"}, {Address: "qor1b"}}}, nil
+}
+
+func (*fakeAbstractAccountServer) PermissionSchema(context.Context, *abstractaccountv1.QueryPermissionSchemaRequest) (*abstractaccountv1.QueryPermissionSchemaResponse, error) {
+	return &abstractaccountv1.QueryPermissionSchemaResponse{
+		SchemaVersion: "v3.1.85",
+		Permissions:   []string{"send", "evm", "svm", "all"},
+		MsgPermissions: map[string]string{
+			"/qorechain.abstractaccount.v1.MsgExecuteEVM":    "evm",
+			"/qorechain.abstractaccount.v1.MsgExecuteCosmos": "send",
+		},
+		KeyManagementMsgs: []string{"/qorechain.abstractaccount.v1.MsgRegisterAuthenticator"},
+	}, nil
+}
+
+func TestGRPCAbstractAccountQuery(t *testing.T) {
+	c, cleanup := dialBufconn(t, func(s *grpc.Server) {
+		abstractaccountv1.RegisterQueryServer(s, &fakeAbstractAccountServer{})
+	})
+	defer cleanup()
+	ctx := context.Background()
+
+	cfg, err := c.AbstractAccount().Config(ctx, &abstractaccountv1.QueryConfigRequest{})
+	if err != nil {
+		t.Fatalf("Config: %v", err)
+	}
+	if !cfg.Config.Enabled || cfg.Config.MaxSessionKeys != 5 {
+		t.Fatalf("unexpected config: %+v", cfg.Config)
+	}
+
+	accts, err := c.AbstractAccount().Accounts(ctx, &abstractaccountv1.QueryAccountsRequest{})
+	if err != nil {
+		t.Fatalf("Accounts: %v", err)
+	}
+	if len(accts.Accounts) != 2 {
+		t.Fatalf("unexpected accounts: %+v", accts.Accounts)
+	}
+
+	schema, err := c.AbstractAccount().PermissionSchema(ctx, &abstractaccountv1.QueryPermissionSchemaRequest{})
+	if err != nil {
+		t.Fatalf("PermissionSchema: %v", err)
+	}
+	if schema.SchemaVersion != "v3.1.85" {
+		t.Fatalf("unexpected schema_version: %s", schema.SchemaVersion)
+	}
+	if len(schema.Permissions) != 4 || schema.MsgPermissions["/qorechain.abstractaccount.v1.MsgExecuteEVM"] != "evm" {
+		t.Fatalf("unexpected permission schema: %+v", schema)
+	}
+	if len(schema.KeyManagementMsgs) != 1 {
+		t.Fatalf("unexpected key_management_msgs: %+v", schema.KeyManagementMsgs)
 	}
 }
 

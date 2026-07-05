@@ -535,6 +535,11 @@ class AbstractAccountQueryClient:
             abstractaccount_q.QueryAccountsRequest,
             abstractaccount_q.QueryAccountsResponse,
         )
+        self._permission_schema = _unary(
+            channel, self._SERVICE, "PermissionSchema",
+            abstractaccount_q.QueryPermissionSchemaRequest,
+            abstractaccount_q.QueryPermissionSchemaResponse,
+        )
 
     def config(self) -> Any:
         return self._config(abstractaccount_q.QueryConfigRequest())
@@ -544,6 +549,19 @@ class AbstractAccountQueryClient:
 
     def accounts(self) -> Any:
         return self._accounts(abstractaccount_q.QueryAccountsRequest())
+
+    def permission_schema(self) -> Any:
+        """Return the canonical authenticator permission taxonomy (v3.1.85).
+
+        The REST equivalent is
+        ``GET /qorechain/abstractaccount/v1/permission_schema``. Clients compare
+        ``schema_version`` to their embedded copy to detect drift, and use
+        ``msg_permissions`` / ``key_management_msgs`` to validate scopes without
+        hardcoding permission strings.
+        """
+        return self._permission_schema(
+            abstractaccount_q.QueryPermissionSchemaRequest()
+        )
 
 
 class QueryClients:

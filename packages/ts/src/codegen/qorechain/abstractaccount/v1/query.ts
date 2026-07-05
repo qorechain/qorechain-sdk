@@ -48,6 +48,28 @@ export interface QueryAccountsResponse {
   accounts: AccountView[];
 }
 
+export interface QueryPermissionSchemaRequest {
+}
+
+export interface QueryPermissionSchemaResponse {
+  /**
+   * schema_version bumps whenever the taxonomy or the mapping changes; clients
+   * compare it to their embedded copy to detect drift.
+   */
+  schemaVersion: string;
+  /** permissions is every valid permission string (e.g. send, evm, svm, all). */
+  permissions: string[];
+  /** msg_permissions maps a message typeURL to the permission it requires. */
+  msgPermissions: { [key: string]: string };
+  /** key_management_msgs are typeURLs that are NEVER delegable to a linked key. */
+  keyManagementMsgs: string[];
+}
+
+export interface QueryPermissionSchemaResponse_MsgPermissionsEntry {
+  key: string;
+  value: string;
+}
+
 function createBaseConfigView(): ConfigView {
   return { enabled: false, maxSessionKeys: 0, maxSpendingRules: 0, defaultSessionTtl: "0" };
 }
@@ -678,6 +700,286 @@ export const QueryAccountsResponse: MessageFns<QueryAccountsResponse> = {
   },
 };
 
+function createBaseQueryPermissionSchemaRequest(): QueryPermissionSchemaRequest {
+  return {};
+}
+
+export const QueryPermissionSchemaRequest: MessageFns<QueryPermissionSchemaRequest> = {
+  encode(_: QueryPermissionSchemaRequest, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): QueryPermissionSchemaRequest {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseQueryPermissionSchemaRequest();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(_: any): QueryPermissionSchemaRequest {
+    return {};
+  },
+
+  toJSON(_: QueryPermissionSchemaRequest): unknown {
+    const obj: any = {};
+    return obj;
+  },
+
+  create(base?: DeepPartial<QueryPermissionSchemaRequest>): QueryPermissionSchemaRequest {
+    return QueryPermissionSchemaRequest.fromPartial(base ?? {});
+  },
+  fromPartial(_: DeepPartial<QueryPermissionSchemaRequest>): QueryPermissionSchemaRequest {
+    const message = createBaseQueryPermissionSchemaRequest();
+    return message;
+  },
+};
+
+function createBaseQueryPermissionSchemaResponse(): QueryPermissionSchemaResponse {
+  return { schemaVersion: "", permissions: [], msgPermissions: {}, keyManagementMsgs: [] };
+}
+
+export const QueryPermissionSchemaResponse: MessageFns<QueryPermissionSchemaResponse> = {
+  encode(message: QueryPermissionSchemaResponse, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.schemaVersion !== "") {
+      writer.uint32(10).string(message.schemaVersion);
+    }
+    for (const v of message.permissions) {
+      writer.uint32(18).string(v!);
+    }
+    globalThis.Object.entries(message.msgPermissions).forEach(([key, value]: [string, string]) => {
+      QueryPermissionSchemaResponse_MsgPermissionsEntry.encode({ key: key as any, value }, writer.uint32(26).fork())
+        .join();
+    });
+    for (const v of message.keyManagementMsgs) {
+      writer.uint32(34).string(v!);
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): QueryPermissionSchemaResponse {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseQueryPermissionSchemaResponse();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.schemaVersion = reader.string();
+          continue;
+        }
+        case 2: {
+          if (tag !== 18) {
+            break;
+          }
+
+          message.permissions.push(reader.string());
+          continue;
+        }
+        case 3: {
+          if (tag !== 26) {
+            break;
+          }
+
+          const entry3 = QueryPermissionSchemaResponse_MsgPermissionsEntry.decode(reader, reader.uint32());
+          if (entry3.value !== undefined) {
+            message.msgPermissions[entry3.key] = entry3.value;
+          }
+          continue;
+        }
+        case 4: {
+          if (tag !== 34) {
+            break;
+          }
+
+          message.keyManagementMsgs.push(reader.string());
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(object: any): QueryPermissionSchemaResponse {
+    return {
+      schemaVersion: isSet(object.schemaVersion)
+        ? globalThis.String(object.schemaVersion)
+        : isSet(object.schema_version)
+        ? globalThis.String(object.schema_version)
+        : "",
+      permissions: globalThis.Array.isArray(object?.permissions)
+        ? object.permissions.map((e: any) => globalThis.String(e))
+        : [],
+      msgPermissions: isObject(object.msgPermissions)
+        ? (globalThis.Object.entries(object.msgPermissions) as [string, any][]).reduce(
+          (acc: { [key: string]: string }, [key, value]: [string, any]) => {
+            acc[key] = globalThis.String(value);
+            return acc;
+          },
+          {},
+        )
+        : isObject(object.msg_permissions)
+        ? (globalThis.Object.entries(object.msg_permissions) as [string, any][]).reduce(
+          (acc: { [key: string]: string }, [key, value]: [string, any]) => {
+            acc[key] = globalThis.String(value);
+            return acc;
+          },
+          {},
+        )
+        : {},
+      keyManagementMsgs: globalThis.Array.isArray(object?.keyManagementMsgs)
+        ? object.keyManagementMsgs.map((e: any) => globalThis.String(e))
+        : globalThis.Array.isArray(object?.key_management_msgs)
+        ? object.key_management_msgs.map((e: any) => globalThis.String(e))
+        : [],
+    };
+  },
+
+  toJSON(message: QueryPermissionSchemaResponse): unknown {
+    const obj: any = {};
+    if (message.schemaVersion !== "") {
+      obj.schemaVersion = message.schemaVersion;
+    }
+    if (message.permissions?.length) {
+      obj.permissions = message.permissions;
+    }
+    if (message.msgPermissions) {
+      const entries = globalThis.Object.entries(message.msgPermissions) as [string, string][];
+      if (entries.length > 0) {
+        obj.msgPermissions = {};
+        entries.forEach(([k, v]) => {
+          obj.msgPermissions[k] = v;
+        });
+      }
+    }
+    if (message.keyManagementMsgs?.length) {
+      obj.keyManagementMsgs = message.keyManagementMsgs;
+    }
+    return obj;
+  },
+
+  create(base?: DeepPartial<QueryPermissionSchemaResponse>): QueryPermissionSchemaResponse {
+    return QueryPermissionSchemaResponse.fromPartial(base ?? {});
+  },
+  fromPartial(object: DeepPartial<QueryPermissionSchemaResponse>): QueryPermissionSchemaResponse {
+    const message = createBaseQueryPermissionSchemaResponse();
+    message.schemaVersion = object.schemaVersion ?? "";
+    message.permissions = object.permissions?.map((e) => e) || [];
+    message.msgPermissions = (globalThis.Object.entries(object.msgPermissions ?? {}) as [string, string][]).reduce(
+      (acc: { [key: string]: string }, [key, value]: [string, string]) => {
+        if (value !== undefined) {
+          acc[key] = globalThis.String(value);
+        }
+        return acc;
+      },
+      {},
+    );
+    message.keyManagementMsgs = object.keyManagementMsgs?.map((e) => e) || [];
+    return message;
+  },
+};
+
+function createBaseQueryPermissionSchemaResponse_MsgPermissionsEntry(): QueryPermissionSchemaResponse_MsgPermissionsEntry {
+  return { key: "", value: "" };
+}
+
+export const QueryPermissionSchemaResponse_MsgPermissionsEntry: MessageFns<
+  QueryPermissionSchemaResponse_MsgPermissionsEntry
+> = {
+  encode(
+    message: QueryPermissionSchemaResponse_MsgPermissionsEntry,
+    writer: BinaryWriter = new BinaryWriter(),
+  ): BinaryWriter {
+    if (message.key !== "") {
+      writer.uint32(10).string(message.key);
+    }
+    if (message.value !== "") {
+      writer.uint32(18).string(message.value);
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): QueryPermissionSchemaResponse_MsgPermissionsEntry {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseQueryPermissionSchemaResponse_MsgPermissionsEntry();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.key = reader.string();
+          continue;
+        }
+        case 2: {
+          if (tag !== 18) {
+            break;
+          }
+
+          message.value = reader.string();
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(object: any): QueryPermissionSchemaResponse_MsgPermissionsEntry {
+    return {
+      key: isSet(object.key) ? globalThis.String(object.key) : "",
+      value: isSet(object.value) ? globalThis.String(object.value) : "",
+    };
+  },
+
+  toJSON(message: QueryPermissionSchemaResponse_MsgPermissionsEntry): unknown {
+    const obj: any = {};
+    if (message.key !== "") {
+      obj.key = message.key;
+    }
+    if (message.value !== "") {
+      obj.value = message.value;
+    }
+    return obj;
+  },
+
+  create(
+    base?: DeepPartial<QueryPermissionSchemaResponse_MsgPermissionsEntry>,
+  ): QueryPermissionSchemaResponse_MsgPermissionsEntry {
+    return QueryPermissionSchemaResponse_MsgPermissionsEntry.fromPartial(base ?? {});
+  },
+  fromPartial(
+    object: DeepPartial<QueryPermissionSchemaResponse_MsgPermissionsEntry>,
+  ): QueryPermissionSchemaResponse_MsgPermissionsEntry {
+    const message = createBaseQueryPermissionSchemaResponse_MsgPermissionsEntry();
+    message.key = object.key ?? "";
+    message.value = object.value ?? "";
+    return message;
+  },
+};
+
 /** Query defines the gRPC query service for the abstractaccount module. */
 export type QueryDefinition = typeof QueryDefinition;
 export const QueryDefinition = {
@@ -691,7 +993,53 @@ export const QueryDefinition = {
       requestStream: false,
       responseType: QueryConfigResponse as typeof QueryConfigResponse,
       responseStream: false,
-      options: {},
+      options: {
+        _unknownFields: {
+          578365826: [
+            new Uint8Array([
+              38,
+              18,
+              36,
+              47,
+              113,
+              111,
+              114,
+              101,
+              99,
+              104,
+              97,
+              105,
+              110,
+              47,
+              97,
+              98,
+              115,
+              116,
+              114,
+              97,
+              99,
+              116,
+              97,
+              99,
+              99,
+              111,
+              117,
+              110,
+              116,
+              47,
+              118,
+              49,
+              47,
+              99,
+              111,
+              110,
+              102,
+              105,
+              103,
+            ]) as Uint8Array,
+          ],
+        },
+      },
     },
     /** Account returns a single abstract account by address. */
     account: {
@@ -700,7 +1048,65 @@ export const QueryDefinition = {
       requestStream: false,
       responseType: QueryAccountResponse as typeof QueryAccountResponse,
       responseStream: false,
-      options: {},
+      options: {
+        _unknownFields: {
+          578365826: [
+            new Uint8Array([
+              50,
+              18,
+              48,
+              47,
+              113,
+              111,
+              114,
+              101,
+              99,
+              104,
+              97,
+              105,
+              110,
+              47,
+              97,
+              98,
+              115,
+              116,
+              114,
+              97,
+              99,
+              116,
+              97,
+              99,
+              99,
+              111,
+              117,
+              110,
+              116,
+              47,
+              118,
+              49,
+              47,
+              97,
+              99,
+              99,
+              111,
+              117,
+              110,
+              116,
+              115,
+              47,
+              123,
+              97,
+              100,
+              100,
+              114,
+              101,
+              115,
+              115,
+              125,
+            ]) as Uint8Array,
+          ],
+        },
+      },
     },
     /** Accounts lists all abstract accounts. */
     accounts: {
@@ -709,7 +1115,125 @@ export const QueryDefinition = {
       requestStream: false,
       responseType: QueryAccountsResponse as typeof QueryAccountsResponse,
       responseStream: false,
-      options: {},
+      options: {
+        _unknownFields: {
+          578365826: [
+            new Uint8Array([
+              40,
+              18,
+              38,
+              47,
+              113,
+              111,
+              114,
+              101,
+              99,
+              104,
+              97,
+              105,
+              110,
+              47,
+              97,
+              98,
+              115,
+              116,
+              114,
+              97,
+              99,
+              116,
+              97,
+              99,
+              99,
+              111,
+              117,
+              110,
+              116,
+              47,
+              118,
+              49,
+              47,
+              97,
+              99,
+              99,
+              111,
+              117,
+              110,
+              116,
+              115,
+            ]) as Uint8Array,
+          ],
+        },
+      },
+    },
+    /**
+     * PermissionSchema returns the canonical authenticator permission taxonomy so
+     * clients (QoreX/dashboard/relayer) validate scopes without hardcoding strings
+     * and detect drift via schema_version (v3.1.85).
+     */
+    permissionSchema: {
+      name: "PermissionSchema",
+      requestType: QueryPermissionSchemaRequest as typeof QueryPermissionSchemaRequest,
+      requestStream: false,
+      responseType: QueryPermissionSchemaResponse as typeof QueryPermissionSchemaResponse,
+      responseStream: false,
+      options: {
+        _unknownFields: {
+          578365826: [
+            new Uint8Array([
+              49,
+              18,
+              47,
+              47,
+              113,
+              111,
+              114,
+              101,
+              99,
+              104,
+              97,
+              105,
+              110,
+              47,
+              97,
+              98,
+              115,
+              116,
+              114,
+              97,
+              99,
+              116,
+              97,
+              99,
+              99,
+              111,
+              117,
+              110,
+              116,
+              47,
+              118,
+              49,
+              47,
+              112,
+              101,
+              114,
+              109,
+              105,
+              115,
+              115,
+              105,
+              111,
+              110,
+              95,
+              115,
+              99,
+              104,
+              101,
+              109,
+              97,
+            ]) as Uint8Array,
+          ],
+        },
+      },
     },
   },
 } as const;
@@ -721,6 +1245,10 @@ export type DeepPartial<T> = T extends Builtin ? T
   : T extends ReadonlyArray<infer U> ? ReadonlyArray<DeepPartial<U>>
   : T extends {} ? { [K in keyof T]?: DeepPartial<T[K]> }
   : Partial<T>;
+
+function isObject(value: any): boolean {
+  return typeof value === "object" && value !== null;
+}
 
 function isSet(value: any): boolean {
   return value !== null && value !== undefined;

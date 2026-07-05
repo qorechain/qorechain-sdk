@@ -279,7 +279,7 @@ func (m *SvmAccountMeta) GetIsWritable() bool {
 
 // SVMAuth carries a foreign-scheme (e.g. Phantom ed25519) authorization for an
 // SVM action. When present on MsgExecuteProgram, the EFFECTIVE SVM signer is the
-// canonical account this key authenticates (verified on-chain), NOT the Native
+// canonical account this key authenticates (verified on-chain), NOT the Cosmos
 // `sender` — so any funded account may relay a Phantom-authorized action through
 // consensus while the foreign key remains the authority.
 type SVMAuth struct {

@@ -91,6 +91,7 @@ export const qorechainRegistryTypes: ReadonlyArray<[string, GeneratedType]> = [
   ["/qorechain.pqc.v1.MsgRegisterPQCKey", pqc.MsgRegisterPQCKey],
   ["/qorechain.pqc.v1.MsgRegisterPQCKeyV2", pqc.MsgRegisterPQCKeyV2],
   ["/qorechain.pqc.v1.MsgMigratePQCKey", pqc.MsgMigratePQCKey],
+  ["/qorechain.pqc.v1.MsgRotatePQCKey", pqc.MsgRotatePQCKey],
   ["/qorechain.pqc.v1.MsgDeprecateAlgorithm", pqc.MsgDeprecateAlgorithm],
   ["/qorechain.pqc.v1.MsgDisableAlgorithm", pqc.MsgDisableAlgorithm],
   // svm
@@ -130,6 +131,11 @@ export const qorechainRegistryTypes: ReadonlyArray<[string, GeneratedType]> = [
   [
     "/qorechain.abstractaccount.v1.MsgRevokeAuthenticator",
     abstractaccount.MsgRevokeAuthenticator,
+  ],
+  ["/qorechain.abstractaccount.v1.MsgExecuteEVM", abstractaccount.MsgExecuteEVM],
+  [
+    "/qorechain.abstractaccount.v1.MsgExecuteCosmos",
+    abstractaccount.MsgExecuteCosmos,
   ],
   // crossvm
   ["/qorechain.crossvm.v1.MsgCrossVMCall", crossvm.MsgCrossVMCall],

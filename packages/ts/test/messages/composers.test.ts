@@ -282,6 +282,28 @@ const cases: Array<{ name: string; obj: { typeUrl: string }; typeUrl: string }> 
       typeUrl: "/qorechain.abstractaccount.v1.MsgUpdateSpendingRules",
       obj: msg.abstractaccount.updateSpendingRules({ owner: ADDR, rules: [] }),
     },
+    {
+      name: "abstractaccount.executeEvm",
+      typeUrl: "/qorechain.abstractaccount.v1.MsgExecuteEVM",
+      obj: msg.abstractaccount.executeEvm({
+        relayer: ADDR,
+        account: ADDR,
+        scheme: "ed25519",
+        gasLimit: 100000n,
+        nonce: 0n,
+      }),
+    },
+    {
+      name: "abstractaccount.executeCosmos",
+      typeUrl: "/qorechain.abstractaccount.v1.MsgExecuteCosmos",
+      obj: msg.abstractaccount.executeCosmos({
+        relayer: ADDR,
+        account: ADDR,
+        scheme: "ed25519",
+        to: ADDR,
+        nonce: 0n,
+      }),
+    },
     // crossvm
     {
       name: "crossvm.crossVmCall",
@@ -314,11 +336,17 @@ const cases: Array<{ name: string; obj: { typeUrl: string }; typeUrl: string }> 
       typeUrl: "/qorechain.rlconsensus.v1.MsgUpdateRewardWeights",
       obj: msg.rlconsensus.updateRewardWeights({ authority: ADDR }),
     },
+    // pqc key rotation (v3.1.85)
+    {
+      name: "pqc.rotatePqcKey",
+      typeUrl: "/qorechain.pqc.v1.MsgRotatePQCKey",
+      obj: msg.pqc.rotatePqcKey({ sender: ADDR }),
+    },
   ];
 
 describe("qorechain custom-module composers", () => {
-  it("covers all 53 custom Msg types", () => {
-    expect(cases).toHaveLength(53);
+  it("covers all 56 custom Msg types", () => {
+    expect(cases).toHaveLength(56);
   });
 
   for (const c of cases) {

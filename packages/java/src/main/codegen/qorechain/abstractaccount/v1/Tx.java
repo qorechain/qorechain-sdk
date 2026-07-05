@@ -6674,6 +6674,4673 @@ public final class Tx extends com.google.protobuf.GeneratedFile {
 
   }
 
+  public interface MsgExecuteEVMOrBuilder extends
+      // @@protoc_insertion_point(interface_extends:qorechain.abstractaccount.v1.MsgExecuteEVM)
+      com.google.protobuf.MessageOrBuilder {
+
+    /**
+     * <code>string relayer = 1 [json_name = "relayer", (.cosmos_proto.scalar) = "cosmos.AddressString"];</code>
+     * @return The relayer.
+     */
+    java.lang.String getRelayer();
+    /**
+     * <code>string relayer = 1 [json_name = "relayer", (.cosmos_proto.scalar) = "cosmos.AddressString"];</code>
+     * @return The bytes for relayer.
+     */
+    com.google.protobuf.ByteString
+        getRelayerBytes();
+
+    /**
+     * <pre>
+     * bech32 canonical account (the authenticator's owner)
+     * </pre>
+     *
+     * <code>string account = 2 [json_name = "account"];</code>
+     * @return The account.
+     */
+    java.lang.String getAccount();
+    /**
+     * <pre>
+     * bech32 canonical account (the authenticator's owner)
+     * </pre>
+     *
+     * <code>string account = 2 [json_name = "account"];</code>
+     * @return The bytes for account.
+     */
+    com.google.protobuf.ByteString
+        getAccountBytes();
+
+    /**
+     * <pre>
+     * "ed25519" | "secp256k1"
+     * </pre>
+     *
+     * <code>string scheme = 3 [json_name = "scheme"];</code>
+     * @return The scheme.
+     */
+    java.lang.String getScheme();
+    /**
+     * <pre>
+     * "ed25519" | "secp256k1"
+     * </pre>
+     *
+     * <code>string scheme = 3 [json_name = "scheme"];</code>
+     * @return The bytes for scheme.
+     */
+    com.google.protobuf.ByteString
+        getSchemeBytes();
+
+    /**
+     * <pre>
+     * authenticator public key
+     * </pre>
+     *
+     * <code>bytes pubkey = 4 [json_name = "pubkey"];</code>
+     * @return The pubkey.
+     */
+    com.google.protobuf.ByteString getPubkey();
+
+    /**
+     * <pre>
+     * authenticator signature over the EVM auth sign-bytes
+     * </pre>
+     *
+     * <code>bytes signature = 5 [json_name = "signature"];</code>
+     * @return The signature.
+     */
+    com.google.protobuf.ByteString getSignature();
+
+    /**
+     * <pre>
+     * 0x-hex recipient/contract; empty = contract create
+     * </pre>
+     *
+     * <code>string to = 6 [json_name = "to"];</code>
+     * @return The to.
+     */
+    java.lang.String getTo();
+    /**
+     * <pre>
+     * 0x-hex recipient/contract; empty = contract create
+     * </pre>
+     *
+     * <code>string to = 6 [json_name = "to"];</code>
+     * @return The bytes for to.
+     */
+    com.google.protobuf.ByteString
+        getToBytes();
+
+    /**
+     * <pre>
+     * native QOR amount in wei (aqor), decimal string
+     * </pre>
+     *
+     * <code>string value = 7 [json_name = "value"];</code>
+     * @return The value.
+     */
+    java.lang.String getValue();
+    /**
+     * <pre>
+     * native QOR amount in wei (aqor), decimal string
+     * </pre>
+     *
+     * <code>string value = 7 [json_name = "value"];</code>
+     * @return The bytes for value.
+     */
+    com.google.protobuf.ByteString
+        getValueBytes();
+
+    /**
+     * <pre>
+     * EVM calldata
+     * </pre>
+     *
+     * <code>bytes data = 8 [json_name = "data"];</code>
+     * @return The data.
+     */
+    com.google.protobuf.ByteString getData();
+
+    /**
+     * <code>uint64 gas_limit = 9 [json_name = "gasLimit"];</code>
+     * @return The gasLimit.
+     */
+    long getGasLimit();
+
+    /**
+     * <pre>
+     * MUST equal the account's current EVM nonce
+     * </pre>
+     *
+     * <code>uint64 nonce = 10 [json_name = "nonce"];</code>
+     * @return The nonce.
+     */
+    long getNonce();
+  }
+  /**
+   * <pre>
+   * MsgExecuteEVM executes an EVM call/transfer authorized by a linked
+   * authenticator (v3.1.85). The relayer submits + pays fees; the authenticator
+   * (scheme,pubkey) signs the domain-separated sign-bytes binding chain-id, the
+   * canonical account, the pubkey, to/value/data and the account's expected EVM
+   * nonce (replay protection — the nonce must equal the account's current EVM
+   * nonce, and executing the call increments it, so a signature cannot be replayed).
+   * The chain resolves the authenticator, checks the "evm" permission + SpendingRule
+   * against `value`, then executes the call FROM the canonical account's EVM address.
+   * </pre>
+   *
+   * Protobuf type {@code qorechain.abstractaccount.v1.MsgExecuteEVM}
+   */
+  public static final class MsgExecuteEVM extends
+      com.google.protobuf.GeneratedMessage implements
+      // @@protoc_insertion_point(message_implements:qorechain.abstractaccount.v1.MsgExecuteEVM)
+      MsgExecuteEVMOrBuilder {
+  private static final long serialVersionUID = 0L;
+    static {
+      com.google.protobuf.RuntimeVersion.validateProtobufGencodeVersion(
+        com.google.protobuf.RuntimeVersion.RuntimeDomain.PUBLIC,
+        /* major= */ 4,
+        /* minor= */ 35,
+        /* patch= */ 1,
+        /* suffix= */ "",
+        "MsgExecuteEVM");
+    }
+    // Use MsgExecuteEVM.newBuilder() to construct.
+    private MsgExecuteEVM(com.google.protobuf.GeneratedMessage.Builder<?> builder) {
+      super(builder);
+    }
+    private MsgExecuteEVM() {
+      relayer_ = "";
+      account_ = "";
+      scheme_ = "";
+      pubkey_ = com.google.protobuf.ByteString.EMPTY;
+      signature_ = com.google.protobuf.ByteString.EMPTY;
+      to_ = "";
+      value_ = "";
+      data_ = com.google.protobuf.ByteString.EMPTY;
+    }
+
+    public static final com.google.protobuf.Descriptors.Descriptor
+        getDescriptor() {
+      return qorechain.abstractaccount.v1.Tx.internal_static_qorechain_abstractaccount_v1_MsgExecuteEVM_descriptor;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Descriptors.Descriptor getDescriptorForType() {
+      return qorechain.abstractaccount.v1.Tx.internal_static_qorechain_abstractaccount_v1_MsgExecuteEVM_descriptor;
+    }
+
+    @java.lang.Override
+    protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+        internalGetFieldAccessorTable() {
+      return qorechain.abstractaccount.v1.Tx.internal_static_qorechain_abstractaccount_v1_MsgExecuteEVM_fieldAccessorTable
+          .ensureFieldAccessorsInitialized(
+              qorechain.abstractaccount.v1.Tx.MsgExecuteEVM.class, qorechain.abstractaccount.v1.Tx.MsgExecuteEVM.Builder.class);
+    }
+
+    public static final int RELAYER_FIELD_NUMBER = 1;
+    @SuppressWarnings("serial")
+    private volatile java.lang.Object relayer_ = "";
+    /**
+     * <code>string relayer = 1 [json_name = "relayer", (.cosmos_proto.scalar) = "cosmos.AddressString"];</code>
+     * @return The relayer.
+     */
+    @java.lang.Override
+    public java.lang.String getRelayer() {
+      java.lang.Object ref = relayer_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        relayer_ = s;
+        return s;
+      }
+    }
+    /**
+     * <code>string relayer = 1 [json_name = "relayer", (.cosmos_proto.scalar) = "cosmos.AddressString"];</code>
+     * @return The bytes for relayer.
+     */
+    @java.lang.Override
+    public com.google.protobuf.ByteString
+        getRelayerBytes() {
+      java.lang.Object ref = relayer_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        relayer_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
+    public static final int ACCOUNT_FIELD_NUMBER = 2;
+    @SuppressWarnings("serial")
+    private volatile java.lang.Object account_ = "";
+    /**
+     * <pre>
+     * bech32 canonical account (the authenticator's owner)
+     * </pre>
+     *
+     * <code>string account = 2 [json_name = "account"];</code>
+     * @return The account.
+     */
+    @java.lang.Override
+    public java.lang.String getAccount() {
+      java.lang.Object ref = account_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        account_ = s;
+        return s;
+      }
+    }
+    /**
+     * <pre>
+     * bech32 canonical account (the authenticator's owner)
+     * </pre>
+     *
+     * <code>string account = 2 [json_name = "account"];</code>
+     * @return The bytes for account.
+     */
+    @java.lang.Override
+    public com.google.protobuf.ByteString
+        getAccountBytes() {
+      java.lang.Object ref = account_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        account_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
+    public static final int SCHEME_FIELD_NUMBER = 3;
+    @SuppressWarnings("serial")
+    private volatile java.lang.Object scheme_ = "";
+    /**
+     * <pre>
+     * "ed25519" | "secp256k1"
+     * </pre>
+     *
+     * <code>string scheme = 3 [json_name = "scheme"];</code>
+     * @return The scheme.
+     */
+    @java.lang.Override
+    public java.lang.String getScheme() {
+      java.lang.Object ref = scheme_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        scheme_ = s;
+        return s;
+      }
+    }
+    /**
+     * <pre>
+     * "ed25519" | "secp256k1"
+     * </pre>
+     *
+     * <code>string scheme = 3 [json_name = "scheme"];</code>
+     * @return The bytes for scheme.
+     */
+    @java.lang.Override
+    public com.google.protobuf.ByteString
+        getSchemeBytes() {
+      java.lang.Object ref = scheme_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        scheme_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
+    public static final int PUBKEY_FIELD_NUMBER = 4;
+    private com.google.protobuf.ByteString pubkey_ = com.google.protobuf.ByteString.EMPTY;
+    /**
+     * <pre>
+     * authenticator public key
+     * </pre>
+     *
+     * <code>bytes pubkey = 4 [json_name = "pubkey"];</code>
+     * @return The pubkey.
+     */
+    @java.lang.Override
+    public com.google.protobuf.ByteString getPubkey() {
+      return pubkey_;
+    }
+
+    public static final int SIGNATURE_FIELD_NUMBER = 5;
+    private com.google.protobuf.ByteString signature_ = com.google.protobuf.ByteString.EMPTY;
+    /**
+     * <pre>
+     * authenticator signature over the EVM auth sign-bytes
+     * </pre>
+     *
+     * <code>bytes signature = 5 [json_name = "signature"];</code>
+     * @return The signature.
+     */
+    @java.lang.Override
+    public com.google.protobuf.ByteString getSignature() {
+      return signature_;
+    }
+
+    public static final int TO_FIELD_NUMBER = 6;
+    @SuppressWarnings("serial")
+    private volatile java.lang.Object to_ = "";
+    /**
+     * <pre>
+     * 0x-hex recipient/contract; empty = contract create
+     * </pre>
+     *
+     * <code>string to = 6 [json_name = "to"];</code>
+     * @return The to.
+     */
+    @java.lang.Override
+    public java.lang.String getTo() {
+      java.lang.Object ref = to_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        to_ = s;
+        return s;
+      }
+    }
+    /**
+     * <pre>
+     * 0x-hex recipient/contract; empty = contract create
+     * </pre>
+     *
+     * <code>string to = 6 [json_name = "to"];</code>
+     * @return The bytes for to.
+     */
+    @java.lang.Override
+    public com.google.protobuf.ByteString
+        getToBytes() {
+      java.lang.Object ref = to_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        to_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
+    public static final int VALUE_FIELD_NUMBER = 7;
+    @SuppressWarnings("serial")
+    private volatile java.lang.Object value_ = "";
+    /**
+     * <pre>
+     * native QOR amount in wei (aqor), decimal string
+     * </pre>
+     *
+     * <code>string value = 7 [json_name = "value"];</code>
+     * @return The value.
+     */
+    @java.lang.Override
+    public java.lang.String getValue() {
+      java.lang.Object ref = value_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        value_ = s;
+        return s;
+      }
+    }
+    /**
+     * <pre>
+     * native QOR amount in wei (aqor), decimal string
+     * </pre>
+     *
+     * <code>string value = 7 [json_name = "value"];</code>
+     * @return The bytes for value.
+     */
+    @java.lang.Override
+    public com.google.protobuf.ByteString
+        getValueBytes() {
+      java.lang.Object ref = value_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        value_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
+    public static final int DATA_FIELD_NUMBER = 8;
+    private com.google.protobuf.ByteString data_ = com.google.protobuf.ByteString.EMPTY;
+    /**
+     * <pre>
+     * EVM calldata
+     * </pre>
+     *
+     * <code>bytes data = 8 [json_name = "data"];</code>
+     * @return The data.
+     */
+    @java.lang.Override
+    public com.google.protobuf.ByteString getData() {
+      return data_;
+    }
+
+    public static final int GAS_LIMIT_FIELD_NUMBER = 9;
+    private long gasLimit_ = 0L;
+    /**
+     * <code>uint64 gas_limit = 9 [json_name = "gasLimit"];</code>
+     * @return The gasLimit.
+     */
+    @java.lang.Override
+    public long getGasLimit() {
+      return gasLimit_;
+    }
+
+    public static final int NONCE_FIELD_NUMBER = 10;
+    private long nonce_ = 0L;
+    /**
+     * <pre>
+     * MUST equal the account's current EVM nonce
+     * </pre>
+     *
+     * <code>uint64 nonce = 10 [json_name = "nonce"];</code>
+     * @return The nonce.
+     */
+    @java.lang.Override
+    public long getNonce() {
+      return nonce_;
+    }
+
+    private byte memoizedIsInitialized = -1;
+    @java.lang.Override
+    public final boolean isInitialized() {
+      byte isInitialized = memoizedIsInitialized;
+      if (isInitialized == 1) return true;
+      if (isInitialized == 0) return false;
+
+      memoizedIsInitialized = 1;
+      return true;
+    }
+
+    @java.lang.Override
+    public void writeTo(com.google.protobuf.CodedOutputStream output)
+                        throws java.io.IOException {
+      if (!com.google.protobuf.GeneratedMessage.isStringEmpty(relayer_)) {
+        com.google.protobuf.GeneratedMessage.writeString(output, 1, relayer_);
+      }
+      if (!com.google.protobuf.GeneratedMessage.isStringEmpty(account_)) {
+        com.google.protobuf.GeneratedMessage.writeString(output, 2, account_);
+      }
+      if (!com.google.protobuf.GeneratedMessage.isStringEmpty(scheme_)) {
+        com.google.protobuf.GeneratedMessage.writeString(output, 3, scheme_);
+      }
+      if (!pubkey_.isEmpty()) {
+        output.writeBytes(4, pubkey_);
+      }
+      if (!signature_.isEmpty()) {
+        output.writeBytes(5, signature_);
+      }
+      if (!com.google.protobuf.GeneratedMessage.isStringEmpty(to_)) {
+        com.google.protobuf.GeneratedMessage.writeString(output, 6, to_);
+      }
+      if (!com.google.protobuf.GeneratedMessage.isStringEmpty(value_)) {
+        com.google.protobuf.GeneratedMessage.writeString(output, 7, value_);
+      }
+      if (!data_.isEmpty()) {
+        output.writeBytes(8, data_);
+      }
+      if (gasLimit_ != 0L) {
+        output.writeUInt64(9, gasLimit_);
+      }
+      if (nonce_ != 0L) {
+        output.writeUInt64(10, nonce_);
+      }
+      getUnknownFields().writeTo(output);
+    }
+    private int computeSerializedSize_0() {
+      int size = 0;
+      if (!com.google.protobuf.GeneratedMessage.isStringEmpty(relayer_)) {
+        size += com.google.protobuf.GeneratedMessage.computeStringSize(1, relayer_);
+      }
+      if (!com.google.protobuf.GeneratedMessage.isStringEmpty(account_)) {
+        size += com.google.protobuf.GeneratedMessage.computeStringSize(2, account_);
+      }
+      if (!com.google.protobuf.GeneratedMessage.isStringEmpty(scheme_)) {
+        size += com.google.protobuf.GeneratedMessage.computeStringSize(3, scheme_);
+      }
+      if (!pubkey_.isEmpty()) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeBytesSize(4, pubkey_);
+      }
+      if (!signature_.isEmpty()) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeBytesSize(5, signature_);
+      }
+      if (!com.google.protobuf.GeneratedMessage.isStringEmpty(to_)) {
+        size += com.google.protobuf.GeneratedMessage.computeStringSize(6, to_);
+      }
+      if (!com.google.protobuf.GeneratedMessage.isStringEmpty(value_)) {
+        size += com.google.protobuf.GeneratedMessage.computeStringSize(7, value_);
+      }
+      if (!data_.isEmpty()) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeBytesSize(8, data_);
+      }
+      if (gasLimit_ != 0L) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeUInt64Size(9, gasLimit_);
+      }
+      if (nonce_ != 0L) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeUInt64Size(10, nonce_);
+      }
+      return size;
+    }
+    @java.lang.Override
+    public int getSerializedSize() {
+      int size = memoizedSize;
+      if (size != -1) return size;
+
+      size = 0;
+      size += computeSerializedSize_0();
+      size += getUnknownFields().getSerializedSize();
+      memoizedSize = size;
+      return size;
+    }
+
+    @java.lang.Override
+    public boolean equals(final java.lang.Object obj) {
+      if (obj == this) {
+       return true;
+      }
+      if (!(obj instanceof qorechain.abstractaccount.v1.Tx.MsgExecuteEVM)) {
+        return super.equals(obj);
+      }
+      qorechain.abstractaccount.v1.Tx.MsgExecuteEVM other = (qorechain.abstractaccount.v1.Tx.MsgExecuteEVM) obj;
+
+      if (!getRelayer()
+          .equals(other.getRelayer())) return false;
+      if (!getAccount()
+          .equals(other.getAccount())) return false;
+      if (!getScheme()
+          .equals(other.getScheme())) return false;
+      if (!getPubkey()
+          .equals(other.getPubkey())) return false;
+      if (!getSignature()
+          .equals(other.getSignature())) return false;
+      if (!getTo()
+          .equals(other.getTo())) return false;
+      if (!getValue()
+          .equals(other.getValue())) return false;
+      if (!getData()
+          .equals(other.getData())) return false;
+      if (getGasLimit()
+          != other.getGasLimit()) return false;
+      if (getNonce()
+          != other.getNonce()) return false;
+      if (!getUnknownFields().equals(other.getUnknownFields())) return false;
+      return true;
+    }
+
+    @java.lang.Override
+    public int hashCode() {
+      if (memoizedHashCode != 0) {
+        return memoizedHashCode;
+      }
+      int hash = 41;
+      hash = (19 * hash) + getDescriptor().hashCode();
+      hash = (37 * hash) + RELAYER_FIELD_NUMBER;
+      hash = (53 * hash) + getRelayer().hashCode();
+      hash = (37 * hash) + ACCOUNT_FIELD_NUMBER;
+      hash = (53 * hash) + getAccount().hashCode();
+      hash = (37 * hash) + SCHEME_FIELD_NUMBER;
+      hash = (53 * hash) + getScheme().hashCode();
+      hash = (37 * hash) + PUBKEY_FIELD_NUMBER;
+      hash = (53 * hash) + getPubkey().hashCode();
+      hash = (37 * hash) + SIGNATURE_FIELD_NUMBER;
+      hash = (53 * hash) + getSignature().hashCode();
+      hash = (37 * hash) + TO_FIELD_NUMBER;
+      hash = (53 * hash) + getTo().hashCode();
+      hash = (37 * hash) + VALUE_FIELD_NUMBER;
+      hash = (53 * hash) + getValue().hashCode();
+      hash = (37 * hash) + DATA_FIELD_NUMBER;
+      hash = (53 * hash) + getData().hashCode();
+      hash = (37 * hash) + GAS_LIMIT_FIELD_NUMBER;
+      hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
+          getGasLimit());
+      hash = (37 * hash) + NONCE_FIELD_NUMBER;
+      hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
+          getNonce());
+      hash = (29 * hash) + getUnknownFields().hashCode();
+      memoizedHashCode = hash;
+      return hash;
+    }
+
+    public static qorechain.abstractaccount.v1.Tx.MsgExecuteEVM parseFrom(
+        java.nio.ByteBuffer data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static qorechain.abstractaccount.v1.Tx.MsgExecuteEVM parseFrom(
+        java.nio.ByteBuffer data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static qorechain.abstractaccount.v1.Tx.MsgExecuteEVM parseFrom(
+        com.google.protobuf.ByteString data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static qorechain.abstractaccount.v1.Tx.MsgExecuteEVM parseFrom(
+        com.google.protobuf.ByteString data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static qorechain.abstractaccount.v1.Tx.MsgExecuteEVM parseFrom(byte[] data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static qorechain.abstractaccount.v1.Tx.MsgExecuteEVM parseFrom(
+        byte[] data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static qorechain.abstractaccount.v1.Tx.MsgExecuteEVM parseFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input);
+    }
+    public static qorechain.abstractaccount.v1.Tx.MsgExecuteEVM parseFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    public static qorechain.abstractaccount.v1.Tx.MsgExecuteEVM parseDelimitedFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseDelimitedWithIOException(PARSER, input);
+    }
+
+    public static qorechain.abstractaccount.v1.Tx.MsgExecuteEVM parseDelimitedFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static qorechain.abstractaccount.v1.Tx.MsgExecuteEVM parseFrom(
+        com.google.protobuf.CodedInputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input);
+    }
+    public static qorechain.abstractaccount.v1.Tx.MsgExecuteEVM parseFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    @java.lang.Override
+    public Builder newBuilderForType() { return newBuilder(); }
+    public static Builder newBuilder() {
+      return DEFAULT_INSTANCE.toBuilder();
+    }
+    public static Builder newBuilder(qorechain.abstractaccount.v1.Tx.MsgExecuteEVM prototype) {
+      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+    }
+    @java.lang.Override
+    public Builder toBuilder() {
+      return this == DEFAULT_INSTANCE
+          ? new Builder() : new Builder().mergeFrom(this);
+    }
+
+    @java.lang.Override
+    protected Builder newBuilderForType(
+        com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+      Builder builder = new Builder(parent);
+      return builder;
+    }
+    /**
+     * <pre>
+     * MsgExecuteEVM executes an EVM call/transfer authorized by a linked
+     * authenticator (v3.1.85). The relayer submits + pays fees; the authenticator
+     * (scheme,pubkey) signs the domain-separated sign-bytes binding chain-id, the
+     * canonical account, the pubkey, to/value/data and the account's expected EVM
+     * nonce (replay protection — the nonce must equal the account's current EVM
+     * nonce, and executing the call increments it, so a signature cannot be replayed).
+     * The chain resolves the authenticator, checks the "evm" permission + SpendingRule
+     * against `value`, then executes the call FROM the canonical account's EVM address.
+     * </pre>
+     *
+     * Protobuf type {@code qorechain.abstractaccount.v1.MsgExecuteEVM}
+     */
+    public static final class Builder extends
+        com.google.protobuf.GeneratedMessage.Builder<Builder> implements
+        // @@protoc_insertion_point(builder_implements:qorechain.abstractaccount.v1.MsgExecuteEVM)
+        qorechain.abstractaccount.v1.Tx.MsgExecuteEVMOrBuilder {
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return qorechain.abstractaccount.v1.Tx.internal_static_qorechain_abstractaccount_v1_MsgExecuteEVM_descriptor;
+      }
+
+      @java.lang.Override
+      protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return qorechain.abstractaccount.v1.Tx.internal_static_qorechain_abstractaccount_v1_MsgExecuteEVM_fieldAccessorTable
+            .ensureFieldAccessorsInitialized(
+                qorechain.abstractaccount.v1.Tx.MsgExecuteEVM.class, qorechain.abstractaccount.v1.Tx.MsgExecuteEVM.Builder.class);
+      }
+
+      // Construct using qorechain.abstractaccount.v1.Tx.MsgExecuteEVM.newBuilder()
+      private Builder() {
+
+      }
+
+      private Builder(
+          com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+        super(parent);
+
+      }
+      @java.lang.Override
+      public Builder clear() {
+        super.clear();
+        bitField0_ = 0;
+        relayer_ = "";
+        account_ = "";
+        scheme_ = "";
+        pubkey_ = com.google.protobuf.ByteString.EMPTY;
+        signature_ = com.google.protobuf.ByteString.EMPTY;
+        to_ = "";
+        value_ = "";
+        data_ = com.google.protobuf.ByteString.EMPTY;
+        gasLimit_ = 0L;
+        nonce_ = 0L;
+        return this;
+      }
+
+      @java.lang.Override
+      public com.google.protobuf.Descriptors.Descriptor
+          getDescriptorForType() {
+        return qorechain.abstractaccount.v1.Tx.internal_static_qorechain_abstractaccount_v1_MsgExecuteEVM_descriptor;
+      }
+
+      @java.lang.Override
+      public qorechain.abstractaccount.v1.Tx.MsgExecuteEVM getDefaultInstanceForType() {
+        return qorechain.abstractaccount.v1.Tx.MsgExecuteEVM.getDefaultInstance();
+      }
+
+      @java.lang.Override
+      public qorechain.abstractaccount.v1.Tx.MsgExecuteEVM build() {
+        qorechain.abstractaccount.v1.Tx.MsgExecuteEVM result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(result);
+        }
+        return result;
+      }
+
+      @java.lang.Override
+      public qorechain.abstractaccount.v1.Tx.MsgExecuteEVM buildPartial() {
+        qorechain.abstractaccount.v1.Tx.MsgExecuteEVM result = new qorechain.abstractaccount.v1.Tx.MsgExecuteEVM(this);
+        if (bitField0_ != 0) { buildPartial0(result); }
+        onBuilt();
+        return result;
+      }
+
+      private void buildPartial0(qorechain.abstractaccount.v1.Tx.MsgExecuteEVM result) {
+        int from_bitField0_ = bitField0_;
+        if (((from_bitField0_ & 0x00000001) != 0)) {
+          result.relayer_ = relayer_;
+        }
+        if (((from_bitField0_ & 0x00000002) != 0)) {
+          result.account_ = account_;
+        }
+        if (((from_bitField0_ & 0x00000004) != 0)) {
+          result.scheme_ = scheme_;
+        }
+        if (((from_bitField0_ & 0x00000008) != 0)) {
+          result.pubkey_ = pubkey_;
+        }
+        if (((from_bitField0_ & 0x00000010) != 0)) {
+          result.signature_ = signature_;
+        }
+        if (((from_bitField0_ & 0x00000020) != 0)) {
+          result.to_ = to_;
+        }
+        if (((from_bitField0_ & 0x00000040) != 0)) {
+          result.value_ = value_;
+        }
+        if (((from_bitField0_ & 0x00000080) != 0)) {
+          result.data_ = data_;
+        }
+        if (((from_bitField0_ & 0x00000100) != 0)) {
+          result.gasLimit_ = gasLimit_;
+        }
+        if (((from_bitField0_ & 0x00000200) != 0)) {
+          result.nonce_ = nonce_;
+        }
+      }
+
+      @java.lang.Override
+      public Builder mergeFrom(com.google.protobuf.Message other) {
+        if (other instanceof qorechain.abstractaccount.v1.Tx.MsgExecuteEVM) {
+          return mergeFrom((qorechain.abstractaccount.v1.Tx.MsgExecuteEVM)other);
+        } else {
+          super.mergeFrom(other);
+          return this;
+        }
+      }
+
+      public Builder mergeFrom(qorechain.abstractaccount.v1.Tx.MsgExecuteEVM other) {
+        if (other == qorechain.abstractaccount.v1.Tx.MsgExecuteEVM.getDefaultInstance()) return this;
+        if (!other.getRelayer().isEmpty()) {
+          relayer_ = other.relayer_;
+          bitField0_ |= 0x00000001;
+          onChanged();
+        }
+        if (!other.getAccount().isEmpty()) {
+          account_ = other.account_;
+          bitField0_ |= 0x00000002;
+          onChanged();
+        }
+        if (!other.getScheme().isEmpty()) {
+          scheme_ = other.scheme_;
+          bitField0_ |= 0x00000004;
+          onChanged();
+        }
+        if (!other.getPubkey().isEmpty()) {
+          setPubkey(other.getPubkey());
+        }
+        if (!other.getSignature().isEmpty()) {
+          setSignature(other.getSignature());
+        }
+        if (!other.getTo().isEmpty()) {
+          to_ = other.to_;
+          bitField0_ |= 0x00000020;
+          onChanged();
+        }
+        if (!other.getValue().isEmpty()) {
+          value_ = other.value_;
+          bitField0_ |= 0x00000040;
+          onChanged();
+        }
+        if (!other.getData().isEmpty()) {
+          setData(other.getData());
+        }
+        if (other.getGasLimit() != 0L) {
+          setGasLimit(other.getGasLimit());
+        }
+        if (other.getNonce() != 0L) {
+          setNonce(other.getNonce());
+        }
+        this.mergeUnknownFields(other.getUnknownFields());
+        onChanged();
+        return this;
+      }
+
+      @java.lang.Override
+      public final boolean isInitialized() {
+        return true;
+      }
+
+      @java.lang.Override
+      public Builder mergeFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        if (extensionRegistry == null) {
+          throw new java.lang.NullPointerException();
+        }
+        try {
+          boolean done = false;
+          while (!done) {
+            int tag = input.readTag();
+            switch (tag) {
+              case 0:
+                done = true;
+                break;
+              case 10: {
+                relayer_ = input.readStringRequireUtf8();
+                bitField0_ |= 0x00000001;
+                break;
+              } // case 10
+              case 18: {
+                account_ = input.readStringRequireUtf8();
+                bitField0_ |= 0x00000002;
+                break;
+              } // case 18
+              case 26: {
+                scheme_ = input.readStringRequireUtf8();
+                bitField0_ |= 0x00000004;
+                break;
+              } // case 26
+              case 34: {
+                pubkey_ = input.readBytes();
+                bitField0_ |= 0x00000008;
+                break;
+              } // case 34
+              case 42: {
+                signature_ = input.readBytes();
+                bitField0_ |= 0x00000010;
+                break;
+              } // case 42
+              case 50: {
+                to_ = input.readStringRequireUtf8();
+                bitField0_ |= 0x00000020;
+                break;
+              } // case 50
+              case 58: {
+                value_ = input.readStringRequireUtf8();
+                bitField0_ |= 0x00000040;
+                break;
+              } // case 58
+              case 66: {
+                data_ = input.readBytes();
+                bitField0_ |= 0x00000080;
+                break;
+              } // case 66
+              case 72: {
+                gasLimit_ = input.readUInt64();
+                bitField0_ |= 0x00000100;
+                break;
+              } // case 72
+              case 80: {
+                nonce_ = input.readUInt64();
+                bitField0_ |= 0x00000200;
+                break;
+              } // case 80
+              default: {
+                if (!super.parseUnknownField(input, extensionRegistry, tag)) {
+                  done = true; // was an endgroup tag
+                }
+                break;
+              } // default:
+            } // switch (tag)
+          } // while (!done)
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          throw e.unwrapIOException();
+        } finally {
+          onChanged();
+        } // finally
+        return this;
+      }
+      private int bitField0_;
+
+      private java.lang.Object relayer_ = "";
+      /**
+       * <code>string relayer = 1 [json_name = "relayer", (.cosmos_proto.scalar) = "cosmos.AddressString"];</code>
+       * @return The relayer.
+       */
+      public java.lang.String getRelayer() {
+        java.lang.Object ref = relayer_;
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          relayer_ = s;
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
+      }
+      /**
+       * <code>string relayer = 1 [json_name = "relayer", (.cosmos_proto.scalar) = "cosmos.AddressString"];</code>
+       * @return The bytes for relayer.
+       */
+      public com.google.protobuf.ByteString
+          getRelayerBytes() {
+        java.lang.Object ref = relayer_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          relayer_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <code>string relayer = 1 [json_name = "relayer", (.cosmos_proto.scalar) = "cosmos.AddressString"];</code>
+       * @param value The relayer to set.
+       * @return This builder for chaining.
+       */
+      public Builder setRelayer(
+          java.lang.String value) {
+        if (value == null) { throw new NullPointerException(); }
+        relayer_ = value;
+        bitField0_ |= 0x00000001;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>string relayer = 1 [json_name = "relayer", (.cosmos_proto.scalar) = "cosmos.AddressString"];</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearRelayer() {
+        relayer_ = getDefaultInstance().getRelayer();
+        bitField0_ = (bitField0_ & ~0x00000001);
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>string relayer = 1 [json_name = "relayer", (.cosmos_proto.scalar) = "cosmos.AddressString"];</code>
+       * @param value The bytes for relayer to set.
+       * @return This builder for chaining.
+       */
+      public Builder setRelayerBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) { throw new NullPointerException(); }
+        checkByteStringIsUtf8(value);
+        relayer_ = value;
+        bitField0_ |= 0x00000001;
+        onChanged();
+        return this;
+      }
+
+      private java.lang.Object account_ = "";
+      /**
+       * <pre>
+       * bech32 canonical account (the authenticator's owner)
+       * </pre>
+       *
+       * <code>string account = 2 [json_name = "account"];</code>
+       * @return The account.
+       */
+      public java.lang.String getAccount() {
+        java.lang.Object ref = account_;
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          account_ = s;
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
+      }
+      /**
+       * <pre>
+       * bech32 canonical account (the authenticator's owner)
+       * </pre>
+       *
+       * <code>string account = 2 [json_name = "account"];</code>
+       * @return The bytes for account.
+       */
+      public com.google.protobuf.ByteString
+          getAccountBytes() {
+        java.lang.Object ref = account_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          account_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <pre>
+       * bech32 canonical account (the authenticator's owner)
+       * </pre>
+       *
+       * <code>string account = 2 [json_name = "account"];</code>
+       * @param value The account to set.
+       * @return This builder for chaining.
+       */
+      public Builder setAccount(
+          java.lang.String value) {
+        if (value == null) { throw new NullPointerException(); }
+        account_ = value;
+        bitField0_ |= 0x00000002;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * bech32 canonical account (the authenticator's owner)
+       * </pre>
+       *
+       * <code>string account = 2 [json_name = "account"];</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearAccount() {
+        account_ = getDefaultInstance().getAccount();
+        bitField0_ = (bitField0_ & ~0x00000002);
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * bech32 canonical account (the authenticator's owner)
+       * </pre>
+       *
+       * <code>string account = 2 [json_name = "account"];</code>
+       * @param value The bytes for account to set.
+       * @return This builder for chaining.
+       */
+      public Builder setAccountBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) { throw new NullPointerException(); }
+        checkByteStringIsUtf8(value);
+        account_ = value;
+        bitField0_ |= 0x00000002;
+        onChanged();
+        return this;
+      }
+
+      private java.lang.Object scheme_ = "";
+      /**
+       * <pre>
+       * "ed25519" | "secp256k1"
+       * </pre>
+       *
+       * <code>string scheme = 3 [json_name = "scheme"];</code>
+       * @return The scheme.
+       */
+      public java.lang.String getScheme() {
+        java.lang.Object ref = scheme_;
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          scheme_ = s;
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
+      }
+      /**
+       * <pre>
+       * "ed25519" | "secp256k1"
+       * </pre>
+       *
+       * <code>string scheme = 3 [json_name = "scheme"];</code>
+       * @return The bytes for scheme.
+       */
+      public com.google.protobuf.ByteString
+          getSchemeBytes() {
+        java.lang.Object ref = scheme_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          scheme_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <pre>
+       * "ed25519" | "secp256k1"
+       * </pre>
+       *
+       * <code>string scheme = 3 [json_name = "scheme"];</code>
+       * @param value The scheme to set.
+       * @return This builder for chaining.
+       */
+      public Builder setScheme(
+          java.lang.String value) {
+        if (value == null) { throw new NullPointerException(); }
+        scheme_ = value;
+        bitField0_ |= 0x00000004;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * "ed25519" | "secp256k1"
+       * </pre>
+       *
+       * <code>string scheme = 3 [json_name = "scheme"];</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearScheme() {
+        scheme_ = getDefaultInstance().getScheme();
+        bitField0_ = (bitField0_ & ~0x00000004);
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * "ed25519" | "secp256k1"
+       * </pre>
+       *
+       * <code>string scheme = 3 [json_name = "scheme"];</code>
+       * @param value The bytes for scheme to set.
+       * @return This builder for chaining.
+       */
+      public Builder setSchemeBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) { throw new NullPointerException(); }
+        checkByteStringIsUtf8(value);
+        scheme_ = value;
+        bitField0_ |= 0x00000004;
+        onChanged();
+        return this;
+      }
+
+      private com.google.protobuf.ByteString pubkey_ = com.google.protobuf.ByteString.EMPTY;
+      /**
+       * <pre>
+       * authenticator public key
+       * </pre>
+       *
+       * <code>bytes pubkey = 4 [json_name = "pubkey"];</code>
+       * @return The pubkey.
+       */
+      @java.lang.Override
+      public com.google.protobuf.ByteString getPubkey() {
+        return pubkey_;
+      }
+      /**
+       * <pre>
+       * authenticator public key
+       * </pre>
+       *
+       * <code>bytes pubkey = 4 [json_name = "pubkey"];</code>
+       * @param value The pubkey to set.
+       * @return This builder for chaining.
+       */
+      public Builder setPubkey(com.google.protobuf.ByteString value) {
+        if (value == null) { throw new NullPointerException(); }
+        pubkey_ = value;
+        bitField0_ |= 0x00000008;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * authenticator public key
+       * </pre>
+       *
+       * <code>bytes pubkey = 4 [json_name = "pubkey"];</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearPubkey() {
+        bitField0_ = (bitField0_ & ~0x00000008);
+        pubkey_ = getDefaultInstance().getPubkey();
+        onChanged();
+        return this;
+      }
+
+      private com.google.protobuf.ByteString signature_ = com.google.protobuf.ByteString.EMPTY;
+      /**
+       * <pre>
+       * authenticator signature over the EVM auth sign-bytes
+       * </pre>
+       *
+       * <code>bytes signature = 5 [json_name = "signature"];</code>
+       * @return The signature.
+       */
+      @java.lang.Override
+      public com.google.protobuf.ByteString getSignature() {
+        return signature_;
+      }
+      /**
+       * <pre>
+       * authenticator signature over the EVM auth sign-bytes
+       * </pre>
+       *
+       * <code>bytes signature = 5 [json_name = "signature"];</code>
+       * @param value The signature to set.
+       * @return This builder for chaining.
+       */
+      public Builder setSignature(com.google.protobuf.ByteString value) {
+        if (value == null) { throw new NullPointerException(); }
+        signature_ = value;
+        bitField0_ |= 0x00000010;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * authenticator signature over the EVM auth sign-bytes
+       * </pre>
+       *
+       * <code>bytes signature = 5 [json_name = "signature"];</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearSignature() {
+        bitField0_ = (bitField0_ & ~0x00000010);
+        signature_ = getDefaultInstance().getSignature();
+        onChanged();
+        return this;
+      }
+
+      private java.lang.Object to_ = "";
+      /**
+       * <pre>
+       * 0x-hex recipient/contract; empty = contract create
+       * </pre>
+       *
+       * <code>string to = 6 [json_name = "to"];</code>
+       * @return The to.
+       */
+      public java.lang.String getTo() {
+        java.lang.Object ref = to_;
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          to_ = s;
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
+      }
+      /**
+       * <pre>
+       * 0x-hex recipient/contract; empty = contract create
+       * </pre>
+       *
+       * <code>string to = 6 [json_name = "to"];</code>
+       * @return The bytes for to.
+       */
+      public com.google.protobuf.ByteString
+          getToBytes() {
+        java.lang.Object ref = to_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          to_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <pre>
+       * 0x-hex recipient/contract; empty = contract create
+       * </pre>
+       *
+       * <code>string to = 6 [json_name = "to"];</code>
+       * @param value The to to set.
+       * @return This builder for chaining.
+       */
+      public Builder setTo(
+          java.lang.String value) {
+        if (value == null) { throw new NullPointerException(); }
+        to_ = value;
+        bitField0_ |= 0x00000020;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * 0x-hex recipient/contract; empty = contract create
+       * </pre>
+       *
+       * <code>string to = 6 [json_name = "to"];</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearTo() {
+        to_ = getDefaultInstance().getTo();
+        bitField0_ = (bitField0_ & ~0x00000020);
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * 0x-hex recipient/contract; empty = contract create
+       * </pre>
+       *
+       * <code>string to = 6 [json_name = "to"];</code>
+       * @param value The bytes for to to set.
+       * @return This builder for chaining.
+       */
+      public Builder setToBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) { throw new NullPointerException(); }
+        checkByteStringIsUtf8(value);
+        to_ = value;
+        bitField0_ |= 0x00000020;
+        onChanged();
+        return this;
+      }
+
+      private java.lang.Object value_ = "";
+      /**
+       * <pre>
+       * native QOR amount in wei (aqor), decimal string
+       * </pre>
+       *
+       * <code>string value = 7 [json_name = "value"];</code>
+       * @return The value.
+       */
+      public java.lang.String getValue() {
+        java.lang.Object ref = value_;
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          value_ = s;
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
+      }
+      /**
+       * <pre>
+       * native QOR amount in wei (aqor), decimal string
+       * </pre>
+       *
+       * <code>string value = 7 [json_name = "value"];</code>
+       * @return The bytes for value.
+       */
+      public com.google.protobuf.ByteString
+          getValueBytes() {
+        java.lang.Object ref = value_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          value_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <pre>
+       * native QOR amount in wei (aqor), decimal string
+       * </pre>
+       *
+       * <code>string value = 7 [json_name = "value"];</code>
+       * @param value The value to set.
+       * @return This builder for chaining.
+       */
+      public Builder setValue(
+          java.lang.String value) {
+        if (value == null) { throw new NullPointerException(); }
+        value_ = value;
+        bitField0_ |= 0x00000040;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * native QOR amount in wei (aqor), decimal string
+       * </pre>
+       *
+       * <code>string value = 7 [json_name = "value"];</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearValue() {
+        value_ = getDefaultInstance().getValue();
+        bitField0_ = (bitField0_ & ~0x00000040);
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * native QOR amount in wei (aqor), decimal string
+       * </pre>
+       *
+       * <code>string value = 7 [json_name = "value"];</code>
+       * @param value The bytes for value to set.
+       * @return This builder for chaining.
+       */
+      public Builder setValueBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) { throw new NullPointerException(); }
+        checkByteStringIsUtf8(value);
+        value_ = value;
+        bitField0_ |= 0x00000040;
+        onChanged();
+        return this;
+      }
+
+      private com.google.protobuf.ByteString data_ = com.google.protobuf.ByteString.EMPTY;
+      /**
+       * <pre>
+       * EVM calldata
+       * </pre>
+       *
+       * <code>bytes data = 8 [json_name = "data"];</code>
+       * @return The data.
+       */
+      @java.lang.Override
+      public com.google.protobuf.ByteString getData() {
+        return data_;
+      }
+      /**
+       * <pre>
+       * EVM calldata
+       * </pre>
+       *
+       * <code>bytes data = 8 [json_name = "data"];</code>
+       * @param value The data to set.
+       * @return This builder for chaining.
+       */
+      public Builder setData(com.google.protobuf.ByteString value) {
+        if (value == null) { throw new NullPointerException(); }
+        data_ = value;
+        bitField0_ |= 0x00000080;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * EVM calldata
+       * </pre>
+       *
+       * <code>bytes data = 8 [json_name = "data"];</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearData() {
+        bitField0_ = (bitField0_ & ~0x00000080);
+        data_ = getDefaultInstance().getData();
+        onChanged();
+        return this;
+      }
+
+      private long gasLimit_ ;
+      /**
+       * <code>uint64 gas_limit = 9 [json_name = "gasLimit"];</code>
+       * @return The gasLimit.
+       */
+      @java.lang.Override
+      public long getGasLimit() {
+        return gasLimit_;
+      }
+      /**
+       * <code>uint64 gas_limit = 9 [json_name = "gasLimit"];</code>
+       * @param value The gasLimit to set.
+       * @return This builder for chaining.
+       */
+      public Builder setGasLimit(long value) {
+
+        gasLimit_ = value;
+        bitField0_ |= 0x00000100;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>uint64 gas_limit = 9 [json_name = "gasLimit"];</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearGasLimit() {
+        bitField0_ = (bitField0_ & ~0x00000100);
+        gasLimit_ = 0L;
+        onChanged();
+        return this;
+      }
+
+      private long nonce_ ;
+      /**
+       * <pre>
+       * MUST equal the account's current EVM nonce
+       * </pre>
+       *
+       * <code>uint64 nonce = 10 [json_name = "nonce"];</code>
+       * @return The nonce.
+       */
+      @java.lang.Override
+      public long getNonce() {
+        return nonce_;
+      }
+      /**
+       * <pre>
+       * MUST equal the account's current EVM nonce
+       * </pre>
+       *
+       * <code>uint64 nonce = 10 [json_name = "nonce"];</code>
+       * @param value The nonce to set.
+       * @return This builder for chaining.
+       */
+      public Builder setNonce(long value) {
+
+        nonce_ = value;
+        bitField0_ |= 0x00000200;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * MUST equal the account's current EVM nonce
+       * </pre>
+       *
+       * <code>uint64 nonce = 10 [json_name = "nonce"];</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearNonce() {
+        bitField0_ = (bitField0_ & ~0x00000200);
+        nonce_ = 0L;
+        onChanged();
+        return this;
+      }
+
+      // @@protoc_insertion_point(builder_scope:qorechain.abstractaccount.v1.MsgExecuteEVM)
+    }
+
+    // @@protoc_insertion_point(class_scope:qorechain.abstractaccount.v1.MsgExecuteEVM)
+    private static final qorechain.abstractaccount.v1.Tx.MsgExecuteEVM DEFAULT_INSTANCE;
+    static {
+      DEFAULT_INSTANCE = new qorechain.abstractaccount.v1.Tx.MsgExecuteEVM();
+    }
+
+    public static qorechain.abstractaccount.v1.Tx.MsgExecuteEVM getDefaultInstance() {
+      return DEFAULT_INSTANCE;
+    }
+
+    private static final com.google.protobuf.Parser<MsgExecuteEVM>
+        PARSER = new com.google.protobuf.AbstractParser<MsgExecuteEVM>() {
+      @java.lang.Override
+      public MsgExecuteEVM parsePartialFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        Builder builder = newBuilder();
+        try {
+          builder.mergeFrom(input, extensionRegistry);
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          throw e.setUnfinishedMessage(builder.buildPartial());
+        } catch (com.google.protobuf.UninitializedMessageException e) {
+          throw e.asInvalidProtocolBufferException().setUnfinishedMessage(builder.buildPartial());
+        } catch (java.io.IOException e) {
+          throw new com.google.protobuf.InvalidProtocolBufferException(e)
+              .setUnfinishedMessage(builder.buildPartial());
+        }
+        return builder.buildPartial();
+      }
+    };
+
+    public static com.google.protobuf.Parser<MsgExecuteEVM> parser() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Parser<MsgExecuteEVM> getParserForType() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public qorechain.abstractaccount.v1.Tx.MsgExecuteEVM getDefaultInstanceForType() {
+      return DEFAULT_INSTANCE;
+    }
+
+  }
+
+  public interface MsgExecuteEVMResponseOrBuilder extends
+      // @@protoc_insertion_point(interface_extends:qorechain.abstractaccount.v1.MsgExecuteEVMResponse)
+      com.google.protobuf.MessageOrBuilder {
+
+    /**
+     * <code>bool success = 1 [json_name = "success"];</code>
+     * @return The success.
+     */
+    boolean getSuccess();
+
+    /**
+     * <code>bytes ret = 2 [json_name = "ret"];</code>
+     * @return The ret.
+     */
+    com.google.protobuf.ByteString getRet();
+
+    /**
+     * <code>uint64 gas_used = 3 [json_name = "gasUsed"];</code>
+     * @return The gasUsed.
+     */
+    long getGasUsed();
+
+    /**
+     * <code>string vm_error = 4 [json_name = "vmError"];</code>
+     * @return The vmError.
+     */
+    java.lang.String getVmError();
+    /**
+     * <code>string vm_error = 4 [json_name = "vmError"];</code>
+     * @return The bytes for vmError.
+     */
+    com.google.protobuf.ByteString
+        getVmErrorBytes();
+  }
+  /**
+   * Protobuf type {@code qorechain.abstractaccount.v1.MsgExecuteEVMResponse}
+   */
+  public static final class MsgExecuteEVMResponse extends
+      com.google.protobuf.GeneratedMessage implements
+      // @@protoc_insertion_point(message_implements:qorechain.abstractaccount.v1.MsgExecuteEVMResponse)
+      MsgExecuteEVMResponseOrBuilder {
+  private static final long serialVersionUID = 0L;
+    static {
+      com.google.protobuf.RuntimeVersion.validateProtobufGencodeVersion(
+        com.google.protobuf.RuntimeVersion.RuntimeDomain.PUBLIC,
+        /* major= */ 4,
+        /* minor= */ 35,
+        /* patch= */ 1,
+        /* suffix= */ "",
+        "MsgExecuteEVMResponse");
+    }
+    // Use MsgExecuteEVMResponse.newBuilder() to construct.
+    private MsgExecuteEVMResponse(com.google.protobuf.GeneratedMessage.Builder<?> builder) {
+      super(builder);
+    }
+    private MsgExecuteEVMResponse() {
+      ret_ = com.google.protobuf.ByteString.EMPTY;
+      vmError_ = "";
+    }
+
+    public static final com.google.protobuf.Descriptors.Descriptor
+        getDescriptor() {
+      return qorechain.abstractaccount.v1.Tx.internal_static_qorechain_abstractaccount_v1_MsgExecuteEVMResponse_descriptor;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Descriptors.Descriptor getDescriptorForType() {
+      return qorechain.abstractaccount.v1.Tx.internal_static_qorechain_abstractaccount_v1_MsgExecuteEVMResponse_descriptor;
+    }
+
+    @java.lang.Override
+    protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+        internalGetFieldAccessorTable() {
+      return qorechain.abstractaccount.v1.Tx.internal_static_qorechain_abstractaccount_v1_MsgExecuteEVMResponse_fieldAccessorTable
+          .ensureFieldAccessorsInitialized(
+              qorechain.abstractaccount.v1.Tx.MsgExecuteEVMResponse.class, qorechain.abstractaccount.v1.Tx.MsgExecuteEVMResponse.Builder.class);
+    }
+
+    public static final int SUCCESS_FIELD_NUMBER = 1;
+    private boolean success_ = false;
+    /**
+     * <code>bool success = 1 [json_name = "success"];</code>
+     * @return The success.
+     */
+    @java.lang.Override
+    public boolean getSuccess() {
+      return success_;
+    }
+
+    public static final int RET_FIELD_NUMBER = 2;
+    private com.google.protobuf.ByteString ret_ = com.google.protobuf.ByteString.EMPTY;
+    /**
+     * <code>bytes ret = 2 [json_name = "ret"];</code>
+     * @return The ret.
+     */
+    @java.lang.Override
+    public com.google.protobuf.ByteString getRet() {
+      return ret_;
+    }
+
+    public static final int GAS_USED_FIELD_NUMBER = 3;
+    private long gasUsed_ = 0L;
+    /**
+     * <code>uint64 gas_used = 3 [json_name = "gasUsed"];</code>
+     * @return The gasUsed.
+     */
+    @java.lang.Override
+    public long getGasUsed() {
+      return gasUsed_;
+    }
+
+    public static final int VM_ERROR_FIELD_NUMBER = 4;
+    @SuppressWarnings("serial")
+    private volatile java.lang.Object vmError_ = "";
+    /**
+     * <code>string vm_error = 4 [json_name = "vmError"];</code>
+     * @return The vmError.
+     */
+    @java.lang.Override
+    public java.lang.String getVmError() {
+      java.lang.Object ref = vmError_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        vmError_ = s;
+        return s;
+      }
+    }
+    /**
+     * <code>string vm_error = 4 [json_name = "vmError"];</code>
+     * @return The bytes for vmError.
+     */
+    @java.lang.Override
+    public com.google.protobuf.ByteString
+        getVmErrorBytes() {
+      java.lang.Object ref = vmError_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        vmError_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
+    private byte memoizedIsInitialized = -1;
+    @java.lang.Override
+    public final boolean isInitialized() {
+      byte isInitialized = memoizedIsInitialized;
+      if (isInitialized == 1) return true;
+      if (isInitialized == 0) return false;
+
+      memoizedIsInitialized = 1;
+      return true;
+    }
+
+    @java.lang.Override
+    public void writeTo(com.google.protobuf.CodedOutputStream output)
+                        throws java.io.IOException {
+      if (success_ != false) {
+        output.writeBool(1, success_);
+      }
+      if (!ret_.isEmpty()) {
+        output.writeBytes(2, ret_);
+      }
+      if (gasUsed_ != 0L) {
+        output.writeUInt64(3, gasUsed_);
+      }
+      if (!com.google.protobuf.GeneratedMessage.isStringEmpty(vmError_)) {
+        com.google.protobuf.GeneratedMessage.writeString(output, 4, vmError_);
+      }
+      getUnknownFields().writeTo(output);
+    }
+    private int computeSerializedSize_0() {
+      int size = 0;
+      if (success_ != false) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeBoolSize(1, success_);
+      }
+      if (!ret_.isEmpty()) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeBytesSize(2, ret_);
+      }
+      if (gasUsed_ != 0L) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeUInt64Size(3, gasUsed_);
+      }
+      if (!com.google.protobuf.GeneratedMessage.isStringEmpty(vmError_)) {
+        size += com.google.protobuf.GeneratedMessage.computeStringSize(4, vmError_);
+      }
+      return size;
+    }
+    @java.lang.Override
+    public int getSerializedSize() {
+      int size = memoizedSize;
+      if (size != -1) return size;
+
+      size = 0;
+      size += computeSerializedSize_0();
+      size += getUnknownFields().getSerializedSize();
+      memoizedSize = size;
+      return size;
+    }
+
+    @java.lang.Override
+    public boolean equals(final java.lang.Object obj) {
+      if (obj == this) {
+       return true;
+      }
+      if (!(obj instanceof qorechain.abstractaccount.v1.Tx.MsgExecuteEVMResponse)) {
+        return super.equals(obj);
+      }
+      qorechain.abstractaccount.v1.Tx.MsgExecuteEVMResponse other = (qorechain.abstractaccount.v1.Tx.MsgExecuteEVMResponse) obj;
+
+      if (getSuccess()
+          != other.getSuccess()) return false;
+      if (!getRet()
+          .equals(other.getRet())) return false;
+      if (getGasUsed()
+          != other.getGasUsed()) return false;
+      if (!getVmError()
+          .equals(other.getVmError())) return false;
+      if (!getUnknownFields().equals(other.getUnknownFields())) return false;
+      return true;
+    }
+
+    @java.lang.Override
+    public int hashCode() {
+      if (memoizedHashCode != 0) {
+        return memoizedHashCode;
+      }
+      int hash = 41;
+      hash = (19 * hash) + getDescriptor().hashCode();
+      hash = (37 * hash) + SUCCESS_FIELD_NUMBER;
+      hash = (53 * hash) + com.google.protobuf.Internal.hashBoolean(
+          getSuccess());
+      hash = (37 * hash) + RET_FIELD_NUMBER;
+      hash = (53 * hash) + getRet().hashCode();
+      hash = (37 * hash) + GAS_USED_FIELD_NUMBER;
+      hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
+          getGasUsed());
+      hash = (37 * hash) + VM_ERROR_FIELD_NUMBER;
+      hash = (53 * hash) + getVmError().hashCode();
+      hash = (29 * hash) + getUnknownFields().hashCode();
+      memoizedHashCode = hash;
+      return hash;
+    }
+
+    public static qorechain.abstractaccount.v1.Tx.MsgExecuteEVMResponse parseFrom(
+        java.nio.ByteBuffer data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static qorechain.abstractaccount.v1.Tx.MsgExecuteEVMResponse parseFrom(
+        java.nio.ByteBuffer data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static qorechain.abstractaccount.v1.Tx.MsgExecuteEVMResponse parseFrom(
+        com.google.protobuf.ByteString data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static qorechain.abstractaccount.v1.Tx.MsgExecuteEVMResponse parseFrom(
+        com.google.protobuf.ByteString data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static qorechain.abstractaccount.v1.Tx.MsgExecuteEVMResponse parseFrom(byte[] data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static qorechain.abstractaccount.v1.Tx.MsgExecuteEVMResponse parseFrom(
+        byte[] data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static qorechain.abstractaccount.v1.Tx.MsgExecuteEVMResponse parseFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input);
+    }
+    public static qorechain.abstractaccount.v1.Tx.MsgExecuteEVMResponse parseFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    public static qorechain.abstractaccount.v1.Tx.MsgExecuteEVMResponse parseDelimitedFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseDelimitedWithIOException(PARSER, input);
+    }
+
+    public static qorechain.abstractaccount.v1.Tx.MsgExecuteEVMResponse parseDelimitedFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static qorechain.abstractaccount.v1.Tx.MsgExecuteEVMResponse parseFrom(
+        com.google.protobuf.CodedInputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input);
+    }
+    public static qorechain.abstractaccount.v1.Tx.MsgExecuteEVMResponse parseFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    @java.lang.Override
+    public Builder newBuilderForType() { return newBuilder(); }
+    public static Builder newBuilder() {
+      return DEFAULT_INSTANCE.toBuilder();
+    }
+    public static Builder newBuilder(qorechain.abstractaccount.v1.Tx.MsgExecuteEVMResponse prototype) {
+      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+    }
+    @java.lang.Override
+    public Builder toBuilder() {
+      return this == DEFAULT_INSTANCE
+          ? new Builder() : new Builder().mergeFrom(this);
+    }
+
+    @java.lang.Override
+    protected Builder newBuilderForType(
+        com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+      Builder builder = new Builder(parent);
+      return builder;
+    }
+    /**
+     * Protobuf type {@code qorechain.abstractaccount.v1.MsgExecuteEVMResponse}
+     */
+    public static final class Builder extends
+        com.google.protobuf.GeneratedMessage.Builder<Builder> implements
+        // @@protoc_insertion_point(builder_implements:qorechain.abstractaccount.v1.MsgExecuteEVMResponse)
+        qorechain.abstractaccount.v1.Tx.MsgExecuteEVMResponseOrBuilder {
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return qorechain.abstractaccount.v1.Tx.internal_static_qorechain_abstractaccount_v1_MsgExecuteEVMResponse_descriptor;
+      }
+
+      @java.lang.Override
+      protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return qorechain.abstractaccount.v1.Tx.internal_static_qorechain_abstractaccount_v1_MsgExecuteEVMResponse_fieldAccessorTable
+            .ensureFieldAccessorsInitialized(
+                qorechain.abstractaccount.v1.Tx.MsgExecuteEVMResponse.class, qorechain.abstractaccount.v1.Tx.MsgExecuteEVMResponse.Builder.class);
+      }
+
+      // Construct using qorechain.abstractaccount.v1.Tx.MsgExecuteEVMResponse.newBuilder()
+      private Builder() {
+
+      }
+
+      private Builder(
+          com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+        super(parent);
+
+      }
+      @java.lang.Override
+      public Builder clear() {
+        super.clear();
+        bitField0_ = 0;
+        success_ = false;
+        ret_ = com.google.protobuf.ByteString.EMPTY;
+        gasUsed_ = 0L;
+        vmError_ = "";
+        return this;
+      }
+
+      @java.lang.Override
+      public com.google.protobuf.Descriptors.Descriptor
+          getDescriptorForType() {
+        return qorechain.abstractaccount.v1.Tx.internal_static_qorechain_abstractaccount_v1_MsgExecuteEVMResponse_descriptor;
+      }
+
+      @java.lang.Override
+      public qorechain.abstractaccount.v1.Tx.MsgExecuteEVMResponse getDefaultInstanceForType() {
+        return qorechain.abstractaccount.v1.Tx.MsgExecuteEVMResponse.getDefaultInstance();
+      }
+
+      @java.lang.Override
+      public qorechain.abstractaccount.v1.Tx.MsgExecuteEVMResponse build() {
+        qorechain.abstractaccount.v1.Tx.MsgExecuteEVMResponse result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(result);
+        }
+        return result;
+      }
+
+      @java.lang.Override
+      public qorechain.abstractaccount.v1.Tx.MsgExecuteEVMResponse buildPartial() {
+        qorechain.abstractaccount.v1.Tx.MsgExecuteEVMResponse result = new qorechain.abstractaccount.v1.Tx.MsgExecuteEVMResponse(this);
+        if (bitField0_ != 0) { buildPartial0(result); }
+        onBuilt();
+        return result;
+      }
+
+      private void buildPartial0(qorechain.abstractaccount.v1.Tx.MsgExecuteEVMResponse result) {
+        int from_bitField0_ = bitField0_;
+        if (((from_bitField0_ & 0x00000001) != 0)) {
+          result.success_ = success_;
+        }
+        if (((from_bitField0_ & 0x00000002) != 0)) {
+          result.ret_ = ret_;
+        }
+        if (((from_bitField0_ & 0x00000004) != 0)) {
+          result.gasUsed_ = gasUsed_;
+        }
+        if (((from_bitField0_ & 0x00000008) != 0)) {
+          result.vmError_ = vmError_;
+        }
+      }
+
+      @java.lang.Override
+      public Builder mergeFrom(com.google.protobuf.Message other) {
+        if (other instanceof qorechain.abstractaccount.v1.Tx.MsgExecuteEVMResponse) {
+          return mergeFrom((qorechain.abstractaccount.v1.Tx.MsgExecuteEVMResponse)other);
+        } else {
+          super.mergeFrom(other);
+          return this;
+        }
+      }
+
+      public Builder mergeFrom(qorechain.abstractaccount.v1.Tx.MsgExecuteEVMResponse other) {
+        if (other == qorechain.abstractaccount.v1.Tx.MsgExecuteEVMResponse.getDefaultInstance()) return this;
+        if (other.getSuccess() != false) {
+          setSuccess(other.getSuccess());
+        }
+        if (!other.getRet().isEmpty()) {
+          setRet(other.getRet());
+        }
+        if (other.getGasUsed() != 0L) {
+          setGasUsed(other.getGasUsed());
+        }
+        if (!other.getVmError().isEmpty()) {
+          vmError_ = other.vmError_;
+          bitField0_ |= 0x00000008;
+          onChanged();
+        }
+        this.mergeUnknownFields(other.getUnknownFields());
+        onChanged();
+        return this;
+      }
+
+      @java.lang.Override
+      public final boolean isInitialized() {
+        return true;
+      }
+
+      @java.lang.Override
+      public Builder mergeFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        if (extensionRegistry == null) {
+          throw new java.lang.NullPointerException();
+        }
+        try {
+          boolean done = false;
+          while (!done) {
+            int tag = input.readTag();
+            switch (tag) {
+              case 0:
+                done = true;
+                break;
+              case 8: {
+                success_ = input.readBool();
+                bitField0_ |= 0x00000001;
+                break;
+              } // case 8
+              case 18: {
+                ret_ = input.readBytes();
+                bitField0_ |= 0x00000002;
+                break;
+              } // case 18
+              case 24: {
+                gasUsed_ = input.readUInt64();
+                bitField0_ |= 0x00000004;
+                break;
+              } // case 24
+              case 34: {
+                vmError_ = input.readStringRequireUtf8();
+                bitField0_ |= 0x00000008;
+                break;
+              } // case 34
+              default: {
+                if (!super.parseUnknownField(input, extensionRegistry, tag)) {
+                  done = true; // was an endgroup tag
+                }
+                break;
+              } // default:
+            } // switch (tag)
+          } // while (!done)
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          throw e.unwrapIOException();
+        } finally {
+          onChanged();
+        } // finally
+        return this;
+      }
+      private int bitField0_;
+
+      private boolean success_ ;
+      /**
+       * <code>bool success = 1 [json_name = "success"];</code>
+       * @return The success.
+       */
+      @java.lang.Override
+      public boolean getSuccess() {
+        return success_;
+      }
+      /**
+       * <code>bool success = 1 [json_name = "success"];</code>
+       * @param value The success to set.
+       * @return This builder for chaining.
+       */
+      public Builder setSuccess(boolean value) {
+
+        success_ = value;
+        bitField0_ |= 0x00000001;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>bool success = 1 [json_name = "success"];</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearSuccess() {
+        bitField0_ = (bitField0_ & ~0x00000001);
+        success_ = false;
+        onChanged();
+        return this;
+      }
+
+      private com.google.protobuf.ByteString ret_ = com.google.protobuf.ByteString.EMPTY;
+      /**
+       * <code>bytes ret = 2 [json_name = "ret"];</code>
+       * @return The ret.
+       */
+      @java.lang.Override
+      public com.google.protobuf.ByteString getRet() {
+        return ret_;
+      }
+      /**
+       * <code>bytes ret = 2 [json_name = "ret"];</code>
+       * @param value The ret to set.
+       * @return This builder for chaining.
+       */
+      public Builder setRet(com.google.protobuf.ByteString value) {
+        if (value == null) { throw new NullPointerException(); }
+        ret_ = value;
+        bitField0_ |= 0x00000002;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>bytes ret = 2 [json_name = "ret"];</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearRet() {
+        bitField0_ = (bitField0_ & ~0x00000002);
+        ret_ = getDefaultInstance().getRet();
+        onChanged();
+        return this;
+      }
+
+      private long gasUsed_ ;
+      /**
+       * <code>uint64 gas_used = 3 [json_name = "gasUsed"];</code>
+       * @return The gasUsed.
+       */
+      @java.lang.Override
+      public long getGasUsed() {
+        return gasUsed_;
+      }
+      /**
+       * <code>uint64 gas_used = 3 [json_name = "gasUsed"];</code>
+       * @param value The gasUsed to set.
+       * @return This builder for chaining.
+       */
+      public Builder setGasUsed(long value) {
+
+        gasUsed_ = value;
+        bitField0_ |= 0x00000004;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>uint64 gas_used = 3 [json_name = "gasUsed"];</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearGasUsed() {
+        bitField0_ = (bitField0_ & ~0x00000004);
+        gasUsed_ = 0L;
+        onChanged();
+        return this;
+      }
+
+      private java.lang.Object vmError_ = "";
+      /**
+       * <code>string vm_error = 4 [json_name = "vmError"];</code>
+       * @return The vmError.
+       */
+      public java.lang.String getVmError() {
+        java.lang.Object ref = vmError_;
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          vmError_ = s;
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
+      }
+      /**
+       * <code>string vm_error = 4 [json_name = "vmError"];</code>
+       * @return The bytes for vmError.
+       */
+      public com.google.protobuf.ByteString
+          getVmErrorBytes() {
+        java.lang.Object ref = vmError_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          vmError_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <code>string vm_error = 4 [json_name = "vmError"];</code>
+       * @param value The vmError to set.
+       * @return This builder for chaining.
+       */
+      public Builder setVmError(
+          java.lang.String value) {
+        if (value == null) { throw new NullPointerException(); }
+        vmError_ = value;
+        bitField0_ |= 0x00000008;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>string vm_error = 4 [json_name = "vmError"];</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearVmError() {
+        vmError_ = getDefaultInstance().getVmError();
+        bitField0_ = (bitField0_ & ~0x00000008);
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>string vm_error = 4 [json_name = "vmError"];</code>
+       * @param value The bytes for vmError to set.
+       * @return This builder for chaining.
+       */
+      public Builder setVmErrorBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) { throw new NullPointerException(); }
+        checkByteStringIsUtf8(value);
+        vmError_ = value;
+        bitField0_ |= 0x00000008;
+        onChanged();
+        return this;
+      }
+
+      // @@protoc_insertion_point(builder_scope:qorechain.abstractaccount.v1.MsgExecuteEVMResponse)
+    }
+
+    // @@protoc_insertion_point(class_scope:qorechain.abstractaccount.v1.MsgExecuteEVMResponse)
+    private static final qorechain.abstractaccount.v1.Tx.MsgExecuteEVMResponse DEFAULT_INSTANCE;
+    static {
+      DEFAULT_INSTANCE = new qorechain.abstractaccount.v1.Tx.MsgExecuteEVMResponse();
+    }
+
+    public static qorechain.abstractaccount.v1.Tx.MsgExecuteEVMResponse getDefaultInstance() {
+      return DEFAULT_INSTANCE;
+    }
+
+    private static final com.google.protobuf.Parser<MsgExecuteEVMResponse>
+        PARSER = new com.google.protobuf.AbstractParser<MsgExecuteEVMResponse>() {
+      @java.lang.Override
+      public MsgExecuteEVMResponse parsePartialFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        Builder builder = newBuilder();
+        try {
+          builder.mergeFrom(input, extensionRegistry);
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          throw e.setUnfinishedMessage(builder.buildPartial());
+        } catch (com.google.protobuf.UninitializedMessageException e) {
+          throw e.asInvalidProtocolBufferException().setUnfinishedMessage(builder.buildPartial());
+        } catch (java.io.IOException e) {
+          throw new com.google.protobuf.InvalidProtocolBufferException(e)
+              .setUnfinishedMessage(builder.buildPartial());
+        }
+        return builder.buildPartial();
+      }
+    };
+
+    public static com.google.protobuf.Parser<MsgExecuteEVMResponse> parser() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Parser<MsgExecuteEVMResponse> getParserForType() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public qorechain.abstractaccount.v1.Tx.MsgExecuteEVMResponse getDefaultInstanceForType() {
+      return DEFAULT_INSTANCE;
+    }
+
+  }
+
+  public interface MsgExecuteCosmosOrBuilder extends
+      // @@protoc_insertion_point(interface_extends:qorechain.abstractaccount.v1.MsgExecuteCosmos)
+      com.google.protobuf.MessageOrBuilder {
+
+    /**
+     * <code>string relayer = 1 [json_name = "relayer", (.cosmos_proto.scalar) = "cosmos.AddressString"];</code>
+     * @return The relayer.
+     */
+    java.lang.String getRelayer();
+    /**
+     * <code>string relayer = 1 [json_name = "relayer", (.cosmos_proto.scalar) = "cosmos.AddressString"];</code>
+     * @return The bytes for relayer.
+     */
+    com.google.protobuf.ByteString
+        getRelayerBytes();
+
+    /**
+     * <pre>
+     * bech32 canonical account (the authenticator's owner)
+     * </pre>
+     *
+     * <code>string account = 2 [json_name = "account"];</code>
+     * @return The account.
+     */
+    java.lang.String getAccount();
+    /**
+     * <pre>
+     * bech32 canonical account (the authenticator's owner)
+     * </pre>
+     *
+     * <code>string account = 2 [json_name = "account"];</code>
+     * @return The bytes for account.
+     */
+    com.google.protobuf.ByteString
+        getAccountBytes();
+
+    /**
+     * <pre>
+     * "ed25519" | "secp256k1"
+     * </pre>
+     *
+     * <code>string scheme = 3 [json_name = "scheme"];</code>
+     * @return The scheme.
+     */
+    java.lang.String getScheme();
+    /**
+     * <pre>
+     * "ed25519" | "secp256k1"
+     * </pre>
+     *
+     * <code>string scheme = 3 [json_name = "scheme"];</code>
+     * @return The bytes for scheme.
+     */
+    com.google.protobuf.ByteString
+        getSchemeBytes();
+
+    /**
+     * <pre>
+     * authenticator public key
+     * </pre>
+     *
+     * <code>bytes pubkey = 4 [json_name = "pubkey"];</code>
+     * @return The pubkey.
+     */
+    com.google.protobuf.ByteString getPubkey();
+
+    /**
+     * <pre>
+     * authenticator signature over the Cosmos auth sign-bytes
+     * </pre>
+     *
+     * <code>bytes signature = 5 [json_name = "signature"];</code>
+     * @return The signature.
+     */
+    com.google.protobuf.ByteString getSignature();
+
+    /**
+     * <pre>
+     * bech32 recipient
+     * </pre>
+     *
+     * <code>string to = 6 [json_name = "to", (.cosmos_proto.scalar) = "cosmos.AddressString"];</code>
+     * @return The to.
+     */
+    java.lang.String getTo();
+    /**
+     * <pre>
+     * bech32 recipient
+     * </pre>
+     *
+     * <code>string to = 6 [json_name = "to", (.cosmos_proto.scalar) = "cosmos.AddressString"];</code>
+     * @return The bytes for to.
+     */
+    com.google.protobuf.ByteString
+        getToBytes();
+
+    /**
+     * <code>repeated .cosmos.base.v1beta1.Coin amount = 7 [json_name = "amount", (.gogoproto.nullable) = false, (.gogoproto.castrepeated) = "github.com/cosmos/cosmos-sdk/types.Coins"];</code>
+     */
+    java.util.List<cosmos.base.v1beta1.CoinOuterClass.Coin> 
+        getAmountList();
+    /**
+     * <code>repeated .cosmos.base.v1beta1.Coin amount = 7 [json_name = "amount", (.gogoproto.nullable) = false, (.gogoproto.castrepeated) = "github.com/cosmos/cosmos-sdk/types.Coins"];</code>
+     */
+    cosmos.base.v1beta1.CoinOuterClass.Coin getAmount(int index);
+    /**
+     * <code>repeated .cosmos.base.v1beta1.Coin amount = 7 [json_name = "amount", (.gogoproto.nullable) = false, (.gogoproto.castrepeated) = "github.com/cosmos/cosmos-sdk/types.Coins"];</code>
+     */
+    int getAmountCount();
+    /**
+     * <code>repeated .cosmos.base.v1beta1.Coin amount = 7 [json_name = "amount", (.gogoproto.nullable) = false, (.gogoproto.castrepeated) = "github.com/cosmos/cosmos-sdk/types.Coins"];</code>
+     */
+    java.util.List<? extends cosmos.base.v1beta1.CoinOuterClass.CoinOrBuilder> 
+        getAmountOrBuilderList();
+    /**
+     * <code>repeated .cosmos.base.v1beta1.Coin amount = 7 [json_name = "amount", (.gogoproto.nullable) = false, (.gogoproto.castrepeated) = "github.com/cosmos/cosmos-sdk/types.Coins"];</code>
+     */
+    cosmos.base.v1beta1.CoinOuterClass.CoinOrBuilder getAmountOrBuilder(
+        int index);
+
+    /**
+     * <pre>
+     * MUST equal the account+key's current authenticator sequence
+     * </pre>
+     *
+     * <code>uint64 nonce = 8 [json_name = "nonce"];</code>
+     * @return The nonce.
+     */
+    long getNonce();
+  }
+  /**
+   * <pre>
+   * MsgExecuteCosmos executes a Native-lane (Cosmos) bank transfer authorized by a
+   * linked authenticator (v3.1.85). It is the Native counterpart of MsgExecuteEVM:
+   * the relayer submits + pays fees and signs the outer tx (so the account's own
+   * PQC-required signature is not needed — the relayer's hybrid-PQC signature
+   * satisfies the ante on the envelope), while the authenticator (scheme,pubkey)
+   * signs the domain-separated sign-bytes binding chain-id, the canonical account,
+   * the pubkey, the recipient, the amount and a per-authenticator sequence (replay:
+   * nonce must equal the account+key's current sequence, incremented on success).
+   * The chain resolves the authenticator, checks the "send" permission + SpendingRule
+   * against `amount`, then moves the coins FROM the canonical account via x/bank.
+   * This lets an external key (Phantom ed25519 / EVM secp256k1) spend native QOR from
+   * a PQC-required account under least-privilege, spend-limited, revocable terms.
+   * </pre>
+   *
+   * Protobuf type {@code qorechain.abstractaccount.v1.MsgExecuteCosmos}
+   */
+  public static final class MsgExecuteCosmos extends
+      com.google.protobuf.GeneratedMessage implements
+      // @@protoc_insertion_point(message_implements:qorechain.abstractaccount.v1.MsgExecuteCosmos)
+      MsgExecuteCosmosOrBuilder {
+  private static final long serialVersionUID = 0L;
+    static {
+      com.google.protobuf.RuntimeVersion.validateProtobufGencodeVersion(
+        com.google.protobuf.RuntimeVersion.RuntimeDomain.PUBLIC,
+        /* major= */ 4,
+        /* minor= */ 35,
+        /* patch= */ 1,
+        /* suffix= */ "",
+        "MsgExecuteCosmos");
+    }
+    // Use MsgExecuteCosmos.newBuilder() to construct.
+    private MsgExecuteCosmos(com.google.protobuf.GeneratedMessage.Builder<?> builder) {
+      super(builder);
+    }
+    private MsgExecuteCosmos() {
+      relayer_ = "";
+      account_ = "";
+      scheme_ = "";
+      pubkey_ = com.google.protobuf.ByteString.EMPTY;
+      signature_ = com.google.protobuf.ByteString.EMPTY;
+      to_ = "";
+      amount_ = java.util.Collections.emptyList();
+    }
+
+    public static final com.google.protobuf.Descriptors.Descriptor
+        getDescriptor() {
+      return qorechain.abstractaccount.v1.Tx.internal_static_qorechain_abstractaccount_v1_MsgExecuteCosmos_descriptor;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Descriptors.Descriptor getDescriptorForType() {
+      return qorechain.abstractaccount.v1.Tx.internal_static_qorechain_abstractaccount_v1_MsgExecuteCosmos_descriptor;
+    }
+
+    @java.lang.Override
+    protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+        internalGetFieldAccessorTable() {
+      return qorechain.abstractaccount.v1.Tx.internal_static_qorechain_abstractaccount_v1_MsgExecuteCosmos_fieldAccessorTable
+          .ensureFieldAccessorsInitialized(
+              qorechain.abstractaccount.v1.Tx.MsgExecuteCosmos.class, qorechain.abstractaccount.v1.Tx.MsgExecuteCosmos.Builder.class);
+    }
+
+    public static final int RELAYER_FIELD_NUMBER = 1;
+    @SuppressWarnings("serial")
+    private volatile java.lang.Object relayer_ = "";
+    /**
+     * <code>string relayer = 1 [json_name = "relayer", (.cosmos_proto.scalar) = "cosmos.AddressString"];</code>
+     * @return The relayer.
+     */
+    @java.lang.Override
+    public java.lang.String getRelayer() {
+      java.lang.Object ref = relayer_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        relayer_ = s;
+        return s;
+      }
+    }
+    /**
+     * <code>string relayer = 1 [json_name = "relayer", (.cosmos_proto.scalar) = "cosmos.AddressString"];</code>
+     * @return The bytes for relayer.
+     */
+    @java.lang.Override
+    public com.google.protobuf.ByteString
+        getRelayerBytes() {
+      java.lang.Object ref = relayer_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        relayer_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
+    public static final int ACCOUNT_FIELD_NUMBER = 2;
+    @SuppressWarnings("serial")
+    private volatile java.lang.Object account_ = "";
+    /**
+     * <pre>
+     * bech32 canonical account (the authenticator's owner)
+     * </pre>
+     *
+     * <code>string account = 2 [json_name = "account"];</code>
+     * @return The account.
+     */
+    @java.lang.Override
+    public java.lang.String getAccount() {
+      java.lang.Object ref = account_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        account_ = s;
+        return s;
+      }
+    }
+    /**
+     * <pre>
+     * bech32 canonical account (the authenticator's owner)
+     * </pre>
+     *
+     * <code>string account = 2 [json_name = "account"];</code>
+     * @return The bytes for account.
+     */
+    @java.lang.Override
+    public com.google.protobuf.ByteString
+        getAccountBytes() {
+      java.lang.Object ref = account_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        account_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
+    public static final int SCHEME_FIELD_NUMBER = 3;
+    @SuppressWarnings("serial")
+    private volatile java.lang.Object scheme_ = "";
+    /**
+     * <pre>
+     * "ed25519" | "secp256k1"
+     * </pre>
+     *
+     * <code>string scheme = 3 [json_name = "scheme"];</code>
+     * @return The scheme.
+     */
+    @java.lang.Override
+    public java.lang.String getScheme() {
+      java.lang.Object ref = scheme_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        scheme_ = s;
+        return s;
+      }
+    }
+    /**
+     * <pre>
+     * "ed25519" | "secp256k1"
+     * </pre>
+     *
+     * <code>string scheme = 3 [json_name = "scheme"];</code>
+     * @return The bytes for scheme.
+     */
+    @java.lang.Override
+    public com.google.protobuf.ByteString
+        getSchemeBytes() {
+      java.lang.Object ref = scheme_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        scheme_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
+    public static final int PUBKEY_FIELD_NUMBER = 4;
+    private com.google.protobuf.ByteString pubkey_ = com.google.protobuf.ByteString.EMPTY;
+    /**
+     * <pre>
+     * authenticator public key
+     * </pre>
+     *
+     * <code>bytes pubkey = 4 [json_name = "pubkey"];</code>
+     * @return The pubkey.
+     */
+    @java.lang.Override
+    public com.google.protobuf.ByteString getPubkey() {
+      return pubkey_;
+    }
+
+    public static final int SIGNATURE_FIELD_NUMBER = 5;
+    private com.google.protobuf.ByteString signature_ = com.google.protobuf.ByteString.EMPTY;
+    /**
+     * <pre>
+     * authenticator signature over the Cosmos auth sign-bytes
+     * </pre>
+     *
+     * <code>bytes signature = 5 [json_name = "signature"];</code>
+     * @return The signature.
+     */
+    @java.lang.Override
+    public com.google.protobuf.ByteString getSignature() {
+      return signature_;
+    }
+
+    public static final int TO_FIELD_NUMBER = 6;
+    @SuppressWarnings("serial")
+    private volatile java.lang.Object to_ = "";
+    /**
+     * <pre>
+     * bech32 recipient
+     * </pre>
+     *
+     * <code>string to = 6 [json_name = "to", (.cosmos_proto.scalar) = "cosmos.AddressString"];</code>
+     * @return The to.
+     */
+    @java.lang.Override
+    public java.lang.String getTo() {
+      java.lang.Object ref = to_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        to_ = s;
+        return s;
+      }
+    }
+    /**
+     * <pre>
+     * bech32 recipient
+     * </pre>
+     *
+     * <code>string to = 6 [json_name = "to", (.cosmos_proto.scalar) = "cosmos.AddressString"];</code>
+     * @return The bytes for to.
+     */
+    @java.lang.Override
+    public com.google.protobuf.ByteString
+        getToBytes() {
+      java.lang.Object ref = to_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        to_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
+    public static final int AMOUNT_FIELD_NUMBER = 7;
+    @SuppressWarnings("serial")
+    private java.util.List<cosmos.base.v1beta1.CoinOuterClass.Coin> amount_;
+    /**
+     * <code>repeated .cosmos.base.v1beta1.Coin amount = 7 [json_name = "amount", (.gogoproto.nullable) = false, (.gogoproto.castrepeated) = "github.com/cosmos/cosmos-sdk/types.Coins"];</code>
+     */
+    @java.lang.Override
+    public java.util.List<cosmos.base.v1beta1.CoinOuterClass.Coin> getAmountList() {
+      return amount_;
+    }
+    /**
+     * <code>repeated .cosmos.base.v1beta1.Coin amount = 7 [json_name = "amount", (.gogoproto.nullable) = false, (.gogoproto.castrepeated) = "github.com/cosmos/cosmos-sdk/types.Coins"];</code>
+     */
+    @java.lang.Override
+    public java.util.List<? extends cosmos.base.v1beta1.CoinOuterClass.CoinOrBuilder> 
+        getAmountOrBuilderList() {
+      return amount_;
+    }
+    /**
+     * <code>repeated .cosmos.base.v1beta1.Coin amount = 7 [json_name = "amount", (.gogoproto.nullable) = false, (.gogoproto.castrepeated) = "github.com/cosmos/cosmos-sdk/types.Coins"];</code>
+     */
+    @java.lang.Override
+    public int getAmountCount() {
+      return amount_.size();
+    }
+    /**
+     * <code>repeated .cosmos.base.v1beta1.Coin amount = 7 [json_name = "amount", (.gogoproto.nullable) = false, (.gogoproto.castrepeated) = "github.com/cosmos/cosmos-sdk/types.Coins"];</code>
+     */
+    @java.lang.Override
+    public cosmos.base.v1beta1.CoinOuterClass.Coin getAmount(int index) {
+      return amount_.get(index);
+    }
+    /**
+     * <code>repeated .cosmos.base.v1beta1.Coin amount = 7 [json_name = "amount", (.gogoproto.nullable) = false, (.gogoproto.castrepeated) = "github.com/cosmos/cosmos-sdk/types.Coins"];</code>
+     */
+    @java.lang.Override
+    public cosmos.base.v1beta1.CoinOuterClass.CoinOrBuilder getAmountOrBuilder(
+        int index) {
+      return amount_.get(index);
+    }
+
+    public static final int NONCE_FIELD_NUMBER = 8;
+    private long nonce_ = 0L;
+    /**
+     * <pre>
+     * MUST equal the account+key's current authenticator sequence
+     * </pre>
+     *
+     * <code>uint64 nonce = 8 [json_name = "nonce"];</code>
+     * @return The nonce.
+     */
+    @java.lang.Override
+    public long getNonce() {
+      return nonce_;
+    }
+
+    private byte memoizedIsInitialized = -1;
+    @java.lang.Override
+    public final boolean isInitialized() {
+      byte isInitialized = memoizedIsInitialized;
+      if (isInitialized == 1) return true;
+      if (isInitialized == 0) return false;
+
+      memoizedIsInitialized = 1;
+      return true;
+    }
+
+    @java.lang.Override
+    public void writeTo(com.google.protobuf.CodedOutputStream output)
+                        throws java.io.IOException {
+      if (!com.google.protobuf.GeneratedMessage.isStringEmpty(relayer_)) {
+        com.google.protobuf.GeneratedMessage.writeString(output, 1, relayer_);
+      }
+      if (!com.google.protobuf.GeneratedMessage.isStringEmpty(account_)) {
+        com.google.protobuf.GeneratedMessage.writeString(output, 2, account_);
+      }
+      if (!com.google.protobuf.GeneratedMessage.isStringEmpty(scheme_)) {
+        com.google.protobuf.GeneratedMessage.writeString(output, 3, scheme_);
+      }
+      if (!pubkey_.isEmpty()) {
+        output.writeBytes(4, pubkey_);
+      }
+      if (!signature_.isEmpty()) {
+        output.writeBytes(5, signature_);
+      }
+      if (!com.google.protobuf.GeneratedMessage.isStringEmpty(to_)) {
+        com.google.protobuf.GeneratedMessage.writeString(output, 6, to_);
+      }
+      for (int i = 0; i < amount_.size(); i++) {
+        output.writeMessage(7, amount_.get(i));
+      }
+      if (nonce_ != 0L) {
+        output.writeUInt64(8, nonce_);
+      }
+      getUnknownFields().writeTo(output);
+    }
+    private int computeSerializedSize_0() {
+      int size = 0;
+      if (!com.google.protobuf.GeneratedMessage.isStringEmpty(relayer_)) {
+        size += com.google.protobuf.GeneratedMessage.computeStringSize(1, relayer_);
+      }
+      if (!com.google.protobuf.GeneratedMessage.isStringEmpty(account_)) {
+        size += com.google.protobuf.GeneratedMessage.computeStringSize(2, account_);
+      }
+      if (!com.google.protobuf.GeneratedMessage.isStringEmpty(scheme_)) {
+        size += com.google.protobuf.GeneratedMessage.computeStringSize(3, scheme_);
+      }
+      if (!pubkey_.isEmpty()) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeBytesSize(4, pubkey_);
+      }
+      if (!signature_.isEmpty()) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeBytesSize(5, signature_);
+      }
+      if (!com.google.protobuf.GeneratedMessage.isStringEmpty(to_)) {
+        size += com.google.protobuf.GeneratedMessage.computeStringSize(6, to_);
+      }
+
+          {
+            final int count = amount_.size();
+            for (int i = 0; i < count; i++) {
+              size += com.google.protobuf.CodedOutputStream
+                .computeMessageSizeNoTag(amount_.get(i));
+            }
+            size += 1 * count;
+          }
+      if (nonce_ != 0L) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeUInt64Size(8, nonce_);
+      }
+      return size;
+    }
+    @java.lang.Override
+    public int getSerializedSize() {
+      int size = memoizedSize;
+      if (size != -1) return size;
+
+      size = 0;
+      size += computeSerializedSize_0();
+      size += getUnknownFields().getSerializedSize();
+      memoizedSize = size;
+      return size;
+    }
+
+    @java.lang.Override
+    public boolean equals(final java.lang.Object obj) {
+      if (obj == this) {
+       return true;
+      }
+      if (!(obj instanceof qorechain.abstractaccount.v1.Tx.MsgExecuteCosmos)) {
+        return super.equals(obj);
+      }
+      qorechain.abstractaccount.v1.Tx.MsgExecuteCosmos other = (qorechain.abstractaccount.v1.Tx.MsgExecuteCosmos) obj;
+
+      if (!getRelayer()
+          .equals(other.getRelayer())) return false;
+      if (!getAccount()
+          .equals(other.getAccount())) return false;
+      if (!getScheme()
+          .equals(other.getScheme())) return false;
+      if (!getPubkey()
+          .equals(other.getPubkey())) return false;
+      if (!getSignature()
+          .equals(other.getSignature())) return false;
+      if (!getTo()
+          .equals(other.getTo())) return false;
+      if (!getAmountList()
+          .equals(other.getAmountList())) return false;
+      if (getNonce()
+          != other.getNonce()) return false;
+      if (!getUnknownFields().equals(other.getUnknownFields())) return false;
+      return true;
+    }
+
+    @java.lang.Override
+    public int hashCode() {
+      if (memoizedHashCode != 0) {
+        return memoizedHashCode;
+      }
+      int hash = 41;
+      hash = (19 * hash) + getDescriptor().hashCode();
+      hash = (37 * hash) + RELAYER_FIELD_NUMBER;
+      hash = (53 * hash) + getRelayer().hashCode();
+      hash = (37 * hash) + ACCOUNT_FIELD_NUMBER;
+      hash = (53 * hash) + getAccount().hashCode();
+      hash = (37 * hash) + SCHEME_FIELD_NUMBER;
+      hash = (53 * hash) + getScheme().hashCode();
+      hash = (37 * hash) + PUBKEY_FIELD_NUMBER;
+      hash = (53 * hash) + getPubkey().hashCode();
+      hash = (37 * hash) + SIGNATURE_FIELD_NUMBER;
+      hash = (53 * hash) + getSignature().hashCode();
+      hash = (37 * hash) + TO_FIELD_NUMBER;
+      hash = (53 * hash) + getTo().hashCode();
+      if (getAmountCount() > 0) {
+        hash = (37 * hash) + AMOUNT_FIELD_NUMBER;
+        hash = (53 * hash) + getAmountList().hashCode();
+      }
+      hash = (37 * hash) + NONCE_FIELD_NUMBER;
+      hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
+          getNonce());
+      hash = (29 * hash) + getUnknownFields().hashCode();
+      memoizedHashCode = hash;
+      return hash;
+    }
+
+    public static qorechain.abstractaccount.v1.Tx.MsgExecuteCosmos parseFrom(
+        java.nio.ByteBuffer data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static qorechain.abstractaccount.v1.Tx.MsgExecuteCosmos parseFrom(
+        java.nio.ByteBuffer data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static qorechain.abstractaccount.v1.Tx.MsgExecuteCosmos parseFrom(
+        com.google.protobuf.ByteString data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static qorechain.abstractaccount.v1.Tx.MsgExecuteCosmos parseFrom(
+        com.google.protobuf.ByteString data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static qorechain.abstractaccount.v1.Tx.MsgExecuteCosmos parseFrom(byte[] data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static qorechain.abstractaccount.v1.Tx.MsgExecuteCosmos parseFrom(
+        byte[] data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static qorechain.abstractaccount.v1.Tx.MsgExecuteCosmos parseFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input);
+    }
+    public static qorechain.abstractaccount.v1.Tx.MsgExecuteCosmos parseFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    public static qorechain.abstractaccount.v1.Tx.MsgExecuteCosmos parseDelimitedFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseDelimitedWithIOException(PARSER, input);
+    }
+
+    public static qorechain.abstractaccount.v1.Tx.MsgExecuteCosmos parseDelimitedFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static qorechain.abstractaccount.v1.Tx.MsgExecuteCosmos parseFrom(
+        com.google.protobuf.CodedInputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input);
+    }
+    public static qorechain.abstractaccount.v1.Tx.MsgExecuteCosmos parseFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    @java.lang.Override
+    public Builder newBuilderForType() { return newBuilder(); }
+    public static Builder newBuilder() {
+      return DEFAULT_INSTANCE.toBuilder();
+    }
+    public static Builder newBuilder(qorechain.abstractaccount.v1.Tx.MsgExecuteCosmos prototype) {
+      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+    }
+    @java.lang.Override
+    public Builder toBuilder() {
+      return this == DEFAULT_INSTANCE
+          ? new Builder() : new Builder().mergeFrom(this);
+    }
+
+    @java.lang.Override
+    protected Builder newBuilderForType(
+        com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+      Builder builder = new Builder(parent);
+      return builder;
+    }
+    /**
+     * <pre>
+     * MsgExecuteCosmos executes a Native-lane (Cosmos) bank transfer authorized by a
+     * linked authenticator (v3.1.85). It is the Native counterpart of MsgExecuteEVM:
+     * the relayer submits + pays fees and signs the outer tx (so the account's own
+     * PQC-required signature is not needed — the relayer's hybrid-PQC signature
+     * satisfies the ante on the envelope), while the authenticator (scheme,pubkey)
+     * signs the domain-separated sign-bytes binding chain-id, the canonical account,
+     * the pubkey, the recipient, the amount and a per-authenticator sequence (replay:
+     * nonce must equal the account+key's current sequence, incremented on success).
+     * The chain resolves the authenticator, checks the "send" permission + SpendingRule
+     * against `amount`, then moves the coins FROM the canonical account via x/bank.
+     * This lets an external key (Phantom ed25519 / EVM secp256k1) spend native QOR from
+     * a PQC-required account under least-privilege, spend-limited, revocable terms.
+     * </pre>
+     *
+     * Protobuf type {@code qorechain.abstractaccount.v1.MsgExecuteCosmos}
+     */
+    public static final class Builder extends
+        com.google.protobuf.GeneratedMessage.Builder<Builder> implements
+        // @@protoc_insertion_point(builder_implements:qorechain.abstractaccount.v1.MsgExecuteCosmos)
+        qorechain.abstractaccount.v1.Tx.MsgExecuteCosmosOrBuilder {
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return qorechain.abstractaccount.v1.Tx.internal_static_qorechain_abstractaccount_v1_MsgExecuteCosmos_descriptor;
+      }
+
+      @java.lang.Override
+      protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return qorechain.abstractaccount.v1.Tx.internal_static_qorechain_abstractaccount_v1_MsgExecuteCosmos_fieldAccessorTable
+            .ensureFieldAccessorsInitialized(
+                qorechain.abstractaccount.v1.Tx.MsgExecuteCosmos.class, qorechain.abstractaccount.v1.Tx.MsgExecuteCosmos.Builder.class);
+      }
+
+      // Construct using qorechain.abstractaccount.v1.Tx.MsgExecuteCosmos.newBuilder()
+      private Builder() {
+
+      }
+
+      private Builder(
+          com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+        super(parent);
+
+      }
+      @java.lang.Override
+      public Builder clear() {
+        super.clear();
+        bitField0_ = 0;
+        relayer_ = "";
+        account_ = "";
+        scheme_ = "";
+        pubkey_ = com.google.protobuf.ByteString.EMPTY;
+        signature_ = com.google.protobuf.ByteString.EMPTY;
+        to_ = "";
+        if (amountBuilder_ == null) {
+          amount_ = java.util.Collections.emptyList();
+        } else {
+          amount_ = null;
+          amountBuilder_.clear();
+        }
+        bitField0_ = (bitField0_ & ~0x00000040);
+        nonce_ = 0L;
+        return this;
+      }
+
+      @java.lang.Override
+      public com.google.protobuf.Descriptors.Descriptor
+          getDescriptorForType() {
+        return qorechain.abstractaccount.v1.Tx.internal_static_qorechain_abstractaccount_v1_MsgExecuteCosmos_descriptor;
+      }
+
+      @java.lang.Override
+      public qorechain.abstractaccount.v1.Tx.MsgExecuteCosmos getDefaultInstanceForType() {
+        return qorechain.abstractaccount.v1.Tx.MsgExecuteCosmos.getDefaultInstance();
+      }
+
+      @java.lang.Override
+      public qorechain.abstractaccount.v1.Tx.MsgExecuteCosmos build() {
+        qorechain.abstractaccount.v1.Tx.MsgExecuteCosmos result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(result);
+        }
+        return result;
+      }
+
+      @java.lang.Override
+      public qorechain.abstractaccount.v1.Tx.MsgExecuteCosmos buildPartial() {
+        qorechain.abstractaccount.v1.Tx.MsgExecuteCosmos result = new qorechain.abstractaccount.v1.Tx.MsgExecuteCosmos(this);
+        buildPartialRepeatedFields(result);
+        if (bitField0_ != 0) { buildPartial0(result); }
+        onBuilt();
+        return result;
+      }
+
+      private void buildPartialRepeatedFields(qorechain.abstractaccount.v1.Tx.MsgExecuteCosmos result) {
+        if (amountBuilder_ == null) {
+          if (((bitField0_ & 0x00000040) != 0)) {
+            amount_ = java.util.Collections.unmodifiableList(amount_);
+            bitField0_ = (bitField0_ & ~0x00000040);
+          }
+          result.amount_ = amount_;
+        } else {
+          result.amount_ = amountBuilder_.build();
+        }
+      }
+
+      private void buildPartial0(qorechain.abstractaccount.v1.Tx.MsgExecuteCosmos result) {
+        int from_bitField0_ = bitField0_;
+        if (((from_bitField0_ & 0x00000001) != 0)) {
+          result.relayer_ = relayer_;
+        }
+        if (((from_bitField0_ & 0x00000002) != 0)) {
+          result.account_ = account_;
+        }
+        if (((from_bitField0_ & 0x00000004) != 0)) {
+          result.scheme_ = scheme_;
+        }
+        if (((from_bitField0_ & 0x00000008) != 0)) {
+          result.pubkey_ = pubkey_;
+        }
+        if (((from_bitField0_ & 0x00000010) != 0)) {
+          result.signature_ = signature_;
+        }
+        if (((from_bitField0_ & 0x00000020) != 0)) {
+          result.to_ = to_;
+        }
+        if (((from_bitField0_ & 0x00000080) != 0)) {
+          result.nonce_ = nonce_;
+        }
+      }
+
+      @java.lang.Override
+      public Builder mergeFrom(com.google.protobuf.Message other) {
+        if (other instanceof qorechain.abstractaccount.v1.Tx.MsgExecuteCosmos) {
+          return mergeFrom((qorechain.abstractaccount.v1.Tx.MsgExecuteCosmos)other);
+        } else {
+          super.mergeFrom(other);
+          return this;
+        }
+      }
+
+      public Builder mergeFrom(qorechain.abstractaccount.v1.Tx.MsgExecuteCosmos other) {
+        if (other == qorechain.abstractaccount.v1.Tx.MsgExecuteCosmos.getDefaultInstance()) return this;
+        if (!other.getRelayer().isEmpty()) {
+          relayer_ = other.relayer_;
+          bitField0_ |= 0x00000001;
+          onChanged();
+        }
+        if (!other.getAccount().isEmpty()) {
+          account_ = other.account_;
+          bitField0_ |= 0x00000002;
+          onChanged();
+        }
+        if (!other.getScheme().isEmpty()) {
+          scheme_ = other.scheme_;
+          bitField0_ |= 0x00000004;
+          onChanged();
+        }
+        if (!other.getPubkey().isEmpty()) {
+          setPubkey(other.getPubkey());
+        }
+        if (!other.getSignature().isEmpty()) {
+          setSignature(other.getSignature());
+        }
+        if (!other.getTo().isEmpty()) {
+          to_ = other.to_;
+          bitField0_ |= 0x00000020;
+          onChanged();
+        }
+        if (amountBuilder_ == null) {
+          if (!other.amount_.isEmpty()) {
+            if (amount_.isEmpty()) {
+              amount_ = other.amount_;
+              bitField0_ = (bitField0_ & ~0x00000040);
+            } else {
+              ensureAmountIsMutable();
+              amount_.addAll(other.amount_);
+            }
+            onChanged();
+          }
+        } else {
+          if (!other.amount_.isEmpty()) {
+            if (amountBuilder_.isEmpty()) {
+              amountBuilder_.dispose();
+              amountBuilder_ = null;
+              amount_ = other.amount_;
+              bitField0_ = (bitField0_ & ~0x00000040);
+              amountBuilder_ = 
+                com.google.protobuf.GeneratedMessage.alwaysUseFieldBuilders ?
+                   internalGetAmountFieldBuilder() : null;
+            } else {
+              amountBuilder_.addAllMessages(other.amount_);
+            }
+          }
+        }
+        if (other.getNonce() != 0L) {
+          setNonce(other.getNonce());
+        }
+        this.mergeUnknownFields(other.getUnknownFields());
+        onChanged();
+        return this;
+      }
+
+      @java.lang.Override
+      public final boolean isInitialized() {
+        return true;
+      }
+
+      @java.lang.Override
+      public Builder mergeFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        if (extensionRegistry == null) {
+          throw new java.lang.NullPointerException();
+        }
+        try {
+          boolean done = false;
+          while (!done) {
+            int tag = input.readTag();
+            switch (tag) {
+              case 0:
+                done = true;
+                break;
+              case 10: {
+                relayer_ = input.readStringRequireUtf8();
+                bitField0_ |= 0x00000001;
+                break;
+              } // case 10
+              case 18: {
+                account_ = input.readStringRequireUtf8();
+                bitField0_ |= 0x00000002;
+                break;
+              } // case 18
+              case 26: {
+                scheme_ = input.readStringRequireUtf8();
+                bitField0_ |= 0x00000004;
+                break;
+              } // case 26
+              case 34: {
+                pubkey_ = input.readBytes();
+                bitField0_ |= 0x00000008;
+                break;
+              } // case 34
+              case 42: {
+                signature_ = input.readBytes();
+                bitField0_ |= 0x00000010;
+                break;
+              } // case 42
+              case 50: {
+                to_ = input.readStringRequireUtf8();
+                bitField0_ |= 0x00000020;
+                break;
+              } // case 50
+              case 58: {
+                cosmos.base.v1beta1.CoinOuterClass.Coin m =
+                    input.readMessage(
+                        cosmos.base.v1beta1.CoinOuterClass.Coin.parser(),
+                        extensionRegistry);
+                if (amountBuilder_ == null) {
+                  ensureAmountIsMutable();
+                  amount_.add(m);
+                } else {
+                  amountBuilder_.addMessage(m);
+                }
+                break;
+              } // case 58
+              case 64: {
+                nonce_ = input.readUInt64();
+                bitField0_ |= 0x00000080;
+                break;
+              } // case 64
+              default: {
+                if (!super.parseUnknownField(input, extensionRegistry, tag)) {
+                  done = true; // was an endgroup tag
+                }
+                break;
+              } // default:
+            } // switch (tag)
+          } // while (!done)
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          throw e.unwrapIOException();
+        } finally {
+          onChanged();
+        } // finally
+        return this;
+      }
+      private int bitField0_;
+
+      private java.lang.Object relayer_ = "";
+      /**
+       * <code>string relayer = 1 [json_name = "relayer", (.cosmos_proto.scalar) = "cosmos.AddressString"];</code>
+       * @return The relayer.
+       */
+      public java.lang.String getRelayer() {
+        java.lang.Object ref = relayer_;
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          relayer_ = s;
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
+      }
+      /**
+       * <code>string relayer = 1 [json_name = "relayer", (.cosmos_proto.scalar) = "cosmos.AddressString"];</code>
+       * @return The bytes for relayer.
+       */
+      public com.google.protobuf.ByteString
+          getRelayerBytes() {
+        java.lang.Object ref = relayer_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          relayer_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <code>string relayer = 1 [json_name = "relayer", (.cosmos_proto.scalar) = "cosmos.AddressString"];</code>
+       * @param value The relayer to set.
+       * @return This builder for chaining.
+       */
+      public Builder setRelayer(
+          java.lang.String value) {
+        if (value == null) { throw new NullPointerException(); }
+        relayer_ = value;
+        bitField0_ |= 0x00000001;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>string relayer = 1 [json_name = "relayer", (.cosmos_proto.scalar) = "cosmos.AddressString"];</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearRelayer() {
+        relayer_ = getDefaultInstance().getRelayer();
+        bitField0_ = (bitField0_ & ~0x00000001);
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>string relayer = 1 [json_name = "relayer", (.cosmos_proto.scalar) = "cosmos.AddressString"];</code>
+       * @param value The bytes for relayer to set.
+       * @return This builder for chaining.
+       */
+      public Builder setRelayerBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) { throw new NullPointerException(); }
+        checkByteStringIsUtf8(value);
+        relayer_ = value;
+        bitField0_ |= 0x00000001;
+        onChanged();
+        return this;
+      }
+
+      private java.lang.Object account_ = "";
+      /**
+       * <pre>
+       * bech32 canonical account (the authenticator's owner)
+       * </pre>
+       *
+       * <code>string account = 2 [json_name = "account"];</code>
+       * @return The account.
+       */
+      public java.lang.String getAccount() {
+        java.lang.Object ref = account_;
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          account_ = s;
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
+      }
+      /**
+       * <pre>
+       * bech32 canonical account (the authenticator's owner)
+       * </pre>
+       *
+       * <code>string account = 2 [json_name = "account"];</code>
+       * @return The bytes for account.
+       */
+      public com.google.protobuf.ByteString
+          getAccountBytes() {
+        java.lang.Object ref = account_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          account_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <pre>
+       * bech32 canonical account (the authenticator's owner)
+       * </pre>
+       *
+       * <code>string account = 2 [json_name = "account"];</code>
+       * @param value The account to set.
+       * @return This builder for chaining.
+       */
+      public Builder setAccount(
+          java.lang.String value) {
+        if (value == null) { throw new NullPointerException(); }
+        account_ = value;
+        bitField0_ |= 0x00000002;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * bech32 canonical account (the authenticator's owner)
+       * </pre>
+       *
+       * <code>string account = 2 [json_name = "account"];</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearAccount() {
+        account_ = getDefaultInstance().getAccount();
+        bitField0_ = (bitField0_ & ~0x00000002);
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * bech32 canonical account (the authenticator's owner)
+       * </pre>
+       *
+       * <code>string account = 2 [json_name = "account"];</code>
+       * @param value The bytes for account to set.
+       * @return This builder for chaining.
+       */
+      public Builder setAccountBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) { throw new NullPointerException(); }
+        checkByteStringIsUtf8(value);
+        account_ = value;
+        bitField0_ |= 0x00000002;
+        onChanged();
+        return this;
+      }
+
+      private java.lang.Object scheme_ = "";
+      /**
+       * <pre>
+       * "ed25519" | "secp256k1"
+       * </pre>
+       *
+       * <code>string scheme = 3 [json_name = "scheme"];</code>
+       * @return The scheme.
+       */
+      public java.lang.String getScheme() {
+        java.lang.Object ref = scheme_;
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          scheme_ = s;
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
+      }
+      /**
+       * <pre>
+       * "ed25519" | "secp256k1"
+       * </pre>
+       *
+       * <code>string scheme = 3 [json_name = "scheme"];</code>
+       * @return The bytes for scheme.
+       */
+      public com.google.protobuf.ByteString
+          getSchemeBytes() {
+        java.lang.Object ref = scheme_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          scheme_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <pre>
+       * "ed25519" | "secp256k1"
+       * </pre>
+       *
+       * <code>string scheme = 3 [json_name = "scheme"];</code>
+       * @param value The scheme to set.
+       * @return This builder for chaining.
+       */
+      public Builder setScheme(
+          java.lang.String value) {
+        if (value == null) { throw new NullPointerException(); }
+        scheme_ = value;
+        bitField0_ |= 0x00000004;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * "ed25519" | "secp256k1"
+       * </pre>
+       *
+       * <code>string scheme = 3 [json_name = "scheme"];</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearScheme() {
+        scheme_ = getDefaultInstance().getScheme();
+        bitField0_ = (bitField0_ & ~0x00000004);
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * "ed25519" | "secp256k1"
+       * </pre>
+       *
+       * <code>string scheme = 3 [json_name = "scheme"];</code>
+       * @param value The bytes for scheme to set.
+       * @return This builder for chaining.
+       */
+      public Builder setSchemeBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) { throw new NullPointerException(); }
+        checkByteStringIsUtf8(value);
+        scheme_ = value;
+        bitField0_ |= 0x00000004;
+        onChanged();
+        return this;
+      }
+
+      private com.google.protobuf.ByteString pubkey_ = com.google.protobuf.ByteString.EMPTY;
+      /**
+       * <pre>
+       * authenticator public key
+       * </pre>
+       *
+       * <code>bytes pubkey = 4 [json_name = "pubkey"];</code>
+       * @return The pubkey.
+       */
+      @java.lang.Override
+      public com.google.protobuf.ByteString getPubkey() {
+        return pubkey_;
+      }
+      /**
+       * <pre>
+       * authenticator public key
+       * </pre>
+       *
+       * <code>bytes pubkey = 4 [json_name = "pubkey"];</code>
+       * @param value The pubkey to set.
+       * @return This builder for chaining.
+       */
+      public Builder setPubkey(com.google.protobuf.ByteString value) {
+        if (value == null) { throw new NullPointerException(); }
+        pubkey_ = value;
+        bitField0_ |= 0x00000008;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * authenticator public key
+       * </pre>
+       *
+       * <code>bytes pubkey = 4 [json_name = "pubkey"];</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearPubkey() {
+        bitField0_ = (bitField0_ & ~0x00000008);
+        pubkey_ = getDefaultInstance().getPubkey();
+        onChanged();
+        return this;
+      }
+
+      private com.google.protobuf.ByteString signature_ = com.google.protobuf.ByteString.EMPTY;
+      /**
+       * <pre>
+       * authenticator signature over the Cosmos auth sign-bytes
+       * </pre>
+       *
+       * <code>bytes signature = 5 [json_name = "signature"];</code>
+       * @return The signature.
+       */
+      @java.lang.Override
+      public com.google.protobuf.ByteString getSignature() {
+        return signature_;
+      }
+      /**
+       * <pre>
+       * authenticator signature over the Cosmos auth sign-bytes
+       * </pre>
+       *
+       * <code>bytes signature = 5 [json_name = "signature"];</code>
+       * @param value The signature to set.
+       * @return This builder for chaining.
+       */
+      public Builder setSignature(com.google.protobuf.ByteString value) {
+        if (value == null) { throw new NullPointerException(); }
+        signature_ = value;
+        bitField0_ |= 0x00000010;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * authenticator signature over the Cosmos auth sign-bytes
+       * </pre>
+       *
+       * <code>bytes signature = 5 [json_name = "signature"];</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearSignature() {
+        bitField0_ = (bitField0_ & ~0x00000010);
+        signature_ = getDefaultInstance().getSignature();
+        onChanged();
+        return this;
+      }
+
+      private java.lang.Object to_ = "";
+      /**
+       * <pre>
+       * bech32 recipient
+       * </pre>
+       *
+       * <code>string to = 6 [json_name = "to", (.cosmos_proto.scalar) = "cosmos.AddressString"];</code>
+       * @return The to.
+       */
+      public java.lang.String getTo() {
+        java.lang.Object ref = to_;
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          to_ = s;
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
+      }
+      /**
+       * <pre>
+       * bech32 recipient
+       * </pre>
+       *
+       * <code>string to = 6 [json_name = "to", (.cosmos_proto.scalar) = "cosmos.AddressString"];</code>
+       * @return The bytes for to.
+       */
+      public com.google.protobuf.ByteString
+          getToBytes() {
+        java.lang.Object ref = to_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          to_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <pre>
+       * bech32 recipient
+       * </pre>
+       *
+       * <code>string to = 6 [json_name = "to", (.cosmos_proto.scalar) = "cosmos.AddressString"];</code>
+       * @param value The to to set.
+       * @return This builder for chaining.
+       */
+      public Builder setTo(
+          java.lang.String value) {
+        if (value == null) { throw new NullPointerException(); }
+        to_ = value;
+        bitField0_ |= 0x00000020;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * bech32 recipient
+       * </pre>
+       *
+       * <code>string to = 6 [json_name = "to", (.cosmos_proto.scalar) = "cosmos.AddressString"];</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearTo() {
+        to_ = getDefaultInstance().getTo();
+        bitField0_ = (bitField0_ & ~0x00000020);
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * bech32 recipient
+       * </pre>
+       *
+       * <code>string to = 6 [json_name = "to", (.cosmos_proto.scalar) = "cosmos.AddressString"];</code>
+       * @param value The bytes for to to set.
+       * @return This builder for chaining.
+       */
+      public Builder setToBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) { throw new NullPointerException(); }
+        checkByteStringIsUtf8(value);
+        to_ = value;
+        bitField0_ |= 0x00000020;
+        onChanged();
+        return this;
+      }
+
+      private java.util.List<cosmos.base.v1beta1.CoinOuterClass.Coin> amount_ =
+        java.util.Collections.emptyList();
+      private void ensureAmountIsMutable() {
+        if (!((bitField0_ & 0x00000040) != 0)) {
+          amount_ = new java.util.ArrayList<cosmos.base.v1beta1.CoinOuterClass.Coin>(amount_);
+          bitField0_ |= 0x00000040;
+         }
+      }
+
+      private com.google.protobuf.RepeatedFieldBuilder<
+          cosmos.base.v1beta1.CoinOuterClass.Coin, cosmos.base.v1beta1.CoinOuterClass.Coin.Builder, cosmos.base.v1beta1.CoinOuterClass.CoinOrBuilder> amountBuilder_;
+
+      /**
+       * <code>repeated .cosmos.base.v1beta1.Coin amount = 7 [json_name = "amount", (.gogoproto.nullable) = false, (.gogoproto.castrepeated) = "github.com/cosmos/cosmos-sdk/types.Coins"];</code>
+       */
+      public java.util.List<cosmos.base.v1beta1.CoinOuterClass.Coin> getAmountList() {
+        if (amountBuilder_ == null) {
+          return java.util.Collections.unmodifiableList(amount_);
+        } else {
+          return amountBuilder_.getMessageList();
+        }
+      }
+      /**
+       * <code>repeated .cosmos.base.v1beta1.Coin amount = 7 [json_name = "amount", (.gogoproto.nullable) = false, (.gogoproto.castrepeated) = "github.com/cosmos/cosmos-sdk/types.Coins"];</code>
+       */
+      public int getAmountCount() {
+        if (amountBuilder_ == null) {
+          return amount_.size();
+        } else {
+          return amountBuilder_.getCount();
+        }
+      }
+      /**
+       * <code>repeated .cosmos.base.v1beta1.Coin amount = 7 [json_name = "amount", (.gogoproto.nullable) = false, (.gogoproto.castrepeated) = "github.com/cosmos/cosmos-sdk/types.Coins"];</code>
+       */
+      public cosmos.base.v1beta1.CoinOuterClass.Coin getAmount(int index) {
+        if (amountBuilder_ == null) {
+          return amount_.get(index);
+        } else {
+          return amountBuilder_.getMessage(index);
+        }
+      }
+      /**
+       * <code>repeated .cosmos.base.v1beta1.Coin amount = 7 [json_name = "amount", (.gogoproto.nullable) = false, (.gogoproto.castrepeated) = "github.com/cosmos/cosmos-sdk/types.Coins"];</code>
+       */
+      public Builder setAmount(
+          int index, cosmos.base.v1beta1.CoinOuterClass.Coin value) {
+        if (amountBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          ensureAmountIsMutable();
+          amount_.set(index, value);
+          onChanged();
+        } else {
+          amountBuilder_.setMessage(index, value);
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .cosmos.base.v1beta1.Coin amount = 7 [json_name = "amount", (.gogoproto.nullable) = false, (.gogoproto.castrepeated) = "github.com/cosmos/cosmos-sdk/types.Coins"];</code>
+       */
+      public Builder setAmount(
+          int index, cosmos.base.v1beta1.CoinOuterClass.Coin.Builder builderForValue) {
+        if (amountBuilder_ == null) {
+          ensureAmountIsMutable();
+          amount_.set(index, builderForValue.build());
+          onChanged();
+        } else {
+          amountBuilder_.setMessage(index, builderForValue.build());
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .cosmos.base.v1beta1.Coin amount = 7 [json_name = "amount", (.gogoproto.nullable) = false, (.gogoproto.castrepeated) = "github.com/cosmos/cosmos-sdk/types.Coins"];</code>
+       */
+      public Builder addAmount(cosmos.base.v1beta1.CoinOuterClass.Coin value) {
+        if (amountBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          ensureAmountIsMutable();
+          amount_.add(value);
+          onChanged();
+        } else {
+          amountBuilder_.addMessage(value);
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .cosmos.base.v1beta1.Coin amount = 7 [json_name = "amount", (.gogoproto.nullable) = false, (.gogoproto.castrepeated) = "github.com/cosmos/cosmos-sdk/types.Coins"];</code>
+       */
+      public Builder addAmount(
+          int index, cosmos.base.v1beta1.CoinOuterClass.Coin value) {
+        if (amountBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          ensureAmountIsMutable();
+          amount_.add(index, value);
+          onChanged();
+        } else {
+          amountBuilder_.addMessage(index, value);
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .cosmos.base.v1beta1.Coin amount = 7 [json_name = "amount", (.gogoproto.nullable) = false, (.gogoproto.castrepeated) = "github.com/cosmos/cosmos-sdk/types.Coins"];</code>
+       */
+      public Builder addAmount(
+          cosmos.base.v1beta1.CoinOuterClass.Coin.Builder builderForValue) {
+        if (amountBuilder_ == null) {
+          ensureAmountIsMutable();
+          amount_.add(builderForValue.build());
+          onChanged();
+        } else {
+          amountBuilder_.addMessage(builderForValue.build());
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .cosmos.base.v1beta1.Coin amount = 7 [json_name = "amount", (.gogoproto.nullable) = false, (.gogoproto.castrepeated) = "github.com/cosmos/cosmos-sdk/types.Coins"];</code>
+       */
+      public Builder addAmount(
+          int index, cosmos.base.v1beta1.CoinOuterClass.Coin.Builder builderForValue) {
+        if (amountBuilder_ == null) {
+          ensureAmountIsMutable();
+          amount_.add(index, builderForValue.build());
+          onChanged();
+        } else {
+          amountBuilder_.addMessage(index, builderForValue.build());
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .cosmos.base.v1beta1.Coin amount = 7 [json_name = "amount", (.gogoproto.nullable) = false, (.gogoproto.castrepeated) = "github.com/cosmos/cosmos-sdk/types.Coins"];</code>
+       */
+      public Builder addAllAmount(
+          java.lang.Iterable<? extends cosmos.base.v1beta1.CoinOuterClass.Coin> values) {
+        if (amountBuilder_ == null) {
+          ensureAmountIsMutable();
+          com.google.protobuf.AbstractMessageLite.Builder.addAll(
+              values, amount_);
+          onChanged();
+        } else {
+          amountBuilder_.addAllMessages(values);
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .cosmos.base.v1beta1.Coin amount = 7 [json_name = "amount", (.gogoproto.nullable) = false, (.gogoproto.castrepeated) = "github.com/cosmos/cosmos-sdk/types.Coins"];</code>
+       */
+      public Builder clearAmount() {
+        if (amountBuilder_ == null) {
+          amount_ = java.util.Collections.emptyList();
+          bitField0_ = (bitField0_ & ~0x00000040);
+          onChanged();
+        } else {
+          amountBuilder_.clear();
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .cosmos.base.v1beta1.Coin amount = 7 [json_name = "amount", (.gogoproto.nullable) = false, (.gogoproto.castrepeated) = "github.com/cosmos/cosmos-sdk/types.Coins"];</code>
+       */
+      public Builder removeAmount(int index) {
+        if (amountBuilder_ == null) {
+          ensureAmountIsMutable();
+          amount_.remove(index);
+          onChanged();
+        } else {
+          amountBuilder_.remove(index);
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .cosmos.base.v1beta1.Coin amount = 7 [json_name = "amount", (.gogoproto.nullable) = false, (.gogoproto.castrepeated) = "github.com/cosmos/cosmos-sdk/types.Coins"];</code>
+       */
+      public cosmos.base.v1beta1.CoinOuterClass.Coin.Builder getAmountBuilder(
+          int index) {
+        return internalGetAmountFieldBuilder().getBuilder(index);
+      }
+      /**
+       * <code>repeated .cosmos.base.v1beta1.Coin amount = 7 [json_name = "amount", (.gogoproto.nullable) = false, (.gogoproto.castrepeated) = "github.com/cosmos/cosmos-sdk/types.Coins"];</code>
+       */
+      public cosmos.base.v1beta1.CoinOuterClass.CoinOrBuilder getAmountOrBuilder(
+          int index) {
+        if (amountBuilder_ == null) {
+          return amount_.get(index);  } else {
+          return amountBuilder_.getMessageOrBuilder(index);
+        }
+      }
+      /**
+       * <code>repeated .cosmos.base.v1beta1.Coin amount = 7 [json_name = "amount", (.gogoproto.nullable) = false, (.gogoproto.castrepeated) = "github.com/cosmos/cosmos-sdk/types.Coins"];</code>
+       */
+      public java.util.List<? extends cosmos.base.v1beta1.CoinOuterClass.CoinOrBuilder> 
+           getAmountOrBuilderList() {
+        if (amountBuilder_ != null) {
+          return amountBuilder_.getMessageOrBuilderList();
+        } else {
+          return java.util.Collections.unmodifiableList(amount_);
+        }
+      }
+      /**
+       * <code>repeated .cosmos.base.v1beta1.Coin amount = 7 [json_name = "amount", (.gogoproto.nullable) = false, (.gogoproto.castrepeated) = "github.com/cosmos/cosmos-sdk/types.Coins"];</code>
+       */
+      public cosmos.base.v1beta1.CoinOuterClass.Coin.Builder addAmountBuilder() {
+        return internalGetAmountFieldBuilder().addBuilder(
+            cosmos.base.v1beta1.CoinOuterClass.Coin.getDefaultInstance());
+      }
+      /**
+       * <code>repeated .cosmos.base.v1beta1.Coin amount = 7 [json_name = "amount", (.gogoproto.nullable) = false, (.gogoproto.castrepeated) = "github.com/cosmos/cosmos-sdk/types.Coins"];</code>
+       */
+      public cosmos.base.v1beta1.CoinOuterClass.Coin.Builder addAmountBuilder(
+          int index) {
+        return internalGetAmountFieldBuilder().addBuilder(
+            index, cosmos.base.v1beta1.CoinOuterClass.Coin.getDefaultInstance());
+      }
+      /**
+       * <code>repeated .cosmos.base.v1beta1.Coin amount = 7 [json_name = "amount", (.gogoproto.nullable) = false, (.gogoproto.castrepeated) = "github.com/cosmos/cosmos-sdk/types.Coins"];</code>
+       */
+      public java.util.List<cosmos.base.v1beta1.CoinOuterClass.Coin.Builder> 
+           getAmountBuilderList() {
+        return internalGetAmountFieldBuilder().getBuilderList();
+      }
+      private com.google.protobuf.RepeatedFieldBuilder<
+          cosmos.base.v1beta1.CoinOuterClass.Coin, cosmos.base.v1beta1.CoinOuterClass.Coin.Builder, cosmos.base.v1beta1.CoinOuterClass.CoinOrBuilder> 
+          internalGetAmountFieldBuilder() {
+        if (amountBuilder_ == null) {
+          amountBuilder_ = new com.google.protobuf.RepeatedFieldBuilder<
+              cosmos.base.v1beta1.CoinOuterClass.Coin, cosmos.base.v1beta1.CoinOuterClass.Coin.Builder, cosmos.base.v1beta1.CoinOuterClass.CoinOrBuilder>(
+                  amount_,
+                  ((bitField0_ & 0x00000040) != 0),
+                  getParentForChildren(),
+                  isClean());
+          amount_ = null;
+        }
+        return amountBuilder_;
+      }
+
+      private long nonce_ ;
+      /**
+       * <pre>
+       * MUST equal the account+key's current authenticator sequence
+       * </pre>
+       *
+       * <code>uint64 nonce = 8 [json_name = "nonce"];</code>
+       * @return The nonce.
+       */
+      @java.lang.Override
+      public long getNonce() {
+        return nonce_;
+      }
+      /**
+       * <pre>
+       * MUST equal the account+key's current authenticator sequence
+       * </pre>
+       *
+       * <code>uint64 nonce = 8 [json_name = "nonce"];</code>
+       * @param value The nonce to set.
+       * @return This builder for chaining.
+       */
+      public Builder setNonce(long value) {
+
+        nonce_ = value;
+        bitField0_ |= 0x00000080;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * MUST equal the account+key's current authenticator sequence
+       * </pre>
+       *
+       * <code>uint64 nonce = 8 [json_name = "nonce"];</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearNonce() {
+        bitField0_ = (bitField0_ & ~0x00000080);
+        nonce_ = 0L;
+        onChanged();
+        return this;
+      }
+
+      // @@protoc_insertion_point(builder_scope:qorechain.abstractaccount.v1.MsgExecuteCosmos)
+    }
+
+    // @@protoc_insertion_point(class_scope:qorechain.abstractaccount.v1.MsgExecuteCosmos)
+    private static final qorechain.abstractaccount.v1.Tx.MsgExecuteCosmos DEFAULT_INSTANCE;
+    static {
+      DEFAULT_INSTANCE = new qorechain.abstractaccount.v1.Tx.MsgExecuteCosmos();
+    }
+
+    public static qorechain.abstractaccount.v1.Tx.MsgExecuteCosmos getDefaultInstance() {
+      return DEFAULT_INSTANCE;
+    }
+
+    private static final com.google.protobuf.Parser<MsgExecuteCosmos>
+        PARSER = new com.google.protobuf.AbstractParser<MsgExecuteCosmos>() {
+      @java.lang.Override
+      public MsgExecuteCosmos parsePartialFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        Builder builder = newBuilder();
+        try {
+          builder.mergeFrom(input, extensionRegistry);
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          throw e.setUnfinishedMessage(builder.buildPartial());
+        } catch (com.google.protobuf.UninitializedMessageException e) {
+          throw e.asInvalidProtocolBufferException().setUnfinishedMessage(builder.buildPartial());
+        } catch (java.io.IOException e) {
+          throw new com.google.protobuf.InvalidProtocolBufferException(e)
+              .setUnfinishedMessage(builder.buildPartial());
+        }
+        return builder.buildPartial();
+      }
+    };
+
+    public static com.google.protobuf.Parser<MsgExecuteCosmos> parser() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Parser<MsgExecuteCosmos> getParserForType() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public qorechain.abstractaccount.v1.Tx.MsgExecuteCosmos getDefaultInstanceForType() {
+      return DEFAULT_INSTANCE;
+    }
+
+  }
+
+  public interface MsgExecuteCosmosResponseOrBuilder extends
+      // @@protoc_insertion_point(interface_extends:qorechain.abstractaccount.v1.MsgExecuteCosmosResponse)
+      com.google.protobuf.MessageOrBuilder {
+
+    /**
+     * <code>bool success = 1 [json_name = "success"];</code>
+     * @return The success.
+     */
+    boolean getSuccess();
+  }
+  /**
+   * Protobuf type {@code qorechain.abstractaccount.v1.MsgExecuteCosmosResponse}
+   */
+  public static final class MsgExecuteCosmosResponse extends
+      com.google.protobuf.GeneratedMessage implements
+      // @@protoc_insertion_point(message_implements:qorechain.abstractaccount.v1.MsgExecuteCosmosResponse)
+      MsgExecuteCosmosResponseOrBuilder {
+  private static final long serialVersionUID = 0L;
+    static {
+      com.google.protobuf.RuntimeVersion.validateProtobufGencodeVersion(
+        com.google.protobuf.RuntimeVersion.RuntimeDomain.PUBLIC,
+        /* major= */ 4,
+        /* minor= */ 35,
+        /* patch= */ 1,
+        /* suffix= */ "",
+        "MsgExecuteCosmosResponse");
+    }
+    // Use MsgExecuteCosmosResponse.newBuilder() to construct.
+    private MsgExecuteCosmosResponse(com.google.protobuf.GeneratedMessage.Builder<?> builder) {
+      super(builder);
+    }
+    private MsgExecuteCosmosResponse() {
+    }
+
+    public static final com.google.protobuf.Descriptors.Descriptor
+        getDescriptor() {
+      return qorechain.abstractaccount.v1.Tx.internal_static_qorechain_abstractaccount_v1_MsgExecuteCosmosResponse_descriptor;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Descriptors.Descriptor getDescriptorForType() {
+      return qorechain.abstractaccount.v1.Tx.internal_static_qorechain_abstractaccount_v1_MsgExecuteCosmosResponse_descriptor;
+    }
+
+    @java.lang.Override
+    protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+        internalGetFieldAccessorTable() {
+      return qorechain.abstractaccount.v1.Tx.internal_static_qorechain_abstractaccount_v1_MsgExecuteCosmosResponse_fieldAccessorTable
+          .ensureFieldAccessorsInitialized(
+              qorechain.abstractaccount.v1.Tx.MsgExecuteCosmosResponse.class, qorechain.abstractaccount.v1.Tx.MsgExecuteCosmosResponse.Builder.class);
+    }
+
+    public static final int SUCCESS_FIELD_NUMBER = 1;
+    private boolean success_ = false;
+    /**
+     * <code>bool success = 1 [json_name = "success"];</code>
+     * @return The success.
+     */
+    @java.lang.Override
+    public boolean getSuccess() {
+      return success_;
+    }
+
+    private byte memoizedIsInitialized = -1;
+    @java.lang.Override
+    public final boolean isInitialized() {
+      byte isInitialized = memoizedIsInitialized;
+      if (isInitialized == 1) return true;
+      if (isInitialized == 0) return false;
+
+      memoizedIsInitialized = 1;
+      return true;
+    }
+
+    @java.lang.Override
+    public void writeTo(com.google.protobuf.CodedOutputStream output)
+                        throws java.io.IOException {
+      if (success_ != false) {
+        output.writeBool(1, success_);
+      }
+      getUnknownFields().writeTo(output);
+    }
+    private int computeSerializedSize_0() {
+      int size = 0;
+      if (success_ != false) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeBoolSize(1, success_);
+      }
+      return size;
+    }
+    @java.lang.Override
+    public int getSerializedSize() {
+      int size = memoizedSize;
+      if (size != -1) return size;
+
+      size = 0;
+      size += computeSerializedSize_0();
+      size += getUnknownFields().getSerializedSize();
+      memoizedSize = size;
+      return size;
+    }
+
+    @java.lang.Override
+    public boolean equals(final java.lang.Object obj) {
+      if (obj == this) {
+       return true;
+      }
+      if (!(obj instanceof qorechain.abstractaccount.v1.Tx.MsgExecuteCosmosResponse)) {
+        return super.equals(obj);
+      }
+      qorechain.abstractaccount.v1.Tx.MsgExecuteCosmosResponse other = (qorechain.abstractaccount.v1.Tx.MsgExecuteCosmosResponse) obj;
+
+      if (getSuccess()
+          != other.getSuccess()) return false;
+      if (!getUnknownFields().equals(other.getUnknownFields())) return false;
+      return true;
+    }
+
+    @java.lang.Override
+    public int hashCode() {
+      if (memoizedHashCode != 0) {
+        return memoizedHashCode;
+      }
+      int hash = 41;
+      hash = (19 * hash) + getDescriptor().hashCode();
+      hash = (37 * hash) + SUCCESS_FIELD_NUMBER;
+      hash = (53 * hash) + com.google.protobuf.Internal.hashBoolean(
+          getSuccess());
+      hash = (29 * hash) + getUnknownFields().hashCode();
+      memoizedHashCode = hash;
+      return hash;
+    }
+
+    public static qorechain.abstractaccount.v1.Tx.MsgExecuteCosmosResponse parseFrom(
+        java.nio.ByteBuffer data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static qorechain.abstractaccount.v1.Tx.MsgExecuteCosmosResponse parseFrom(
+        java.nio.ByteBuffer data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static qorechain.abstractaccount.v1.Tx.MsgExecuteCosmosResponse parseFrom(
+        com.google.protobuf.ByteString data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static qorechain.abstractaccount.v1.Tx.MsgExecuteCosmosResponse parseFrom(
+        com.google.protobuf.ByteString data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static qorechain.abstractaccount.v1.Tx.MsgExecuteCosmosResponse parseFrom(byte[] data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static qorechain.abstractaccount.v1.Tx.MsgExecuteCosmosResponse parseFrom(
+        byte[] data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static qorechain.abstractaccount.v1.Tx.MsgExecuteCosmosResponse parseFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input);
+    }
+    public static qorechain.abstractaccount.v1.Tx.MsgExecuteCosmosResponse parseFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    public static qorechain.abstractaccount.v1.Tx.MsgExecuteCosmosResponse parseDelimitedFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseDelimitedWithIOException(PARSER, input);
+    }
+
+    public static qorechain.abstractaccount.v1.Tx.MsgExecuteCosmosResponse parseDelimitedFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static qorechain.abstractaccount.v1.Tx.MsgExecuteCosmosResponse parseFrom(
+        com.google.protobuf.CodedInputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input);
+    }
+    public static qorechain.abstractaccount.v1.Tx.MsgExecuteCosmosResponse parseFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    @java.lang.Override
+    public Builder newBuilderForType() { return newBuilder(); }
+    public static Builder newBuilder() {
+      return DEFAULT_INSTANCE.toBuilder();
+    }
+    public static Builder newBuilder(qorechain.abstractaccount.v1.Tx.MsgExecuteCosmosResponse prototype) {
+      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+    }
+    @java.lang.Override
+    public Builder toBuilder() {
+      return this == DEFAULT_INSTANCE
+          ? new Builder() : new Builder().mergeFrom(this);
+    }
+
+    @java.lang.Override
+    protected Builder newBuilderForType(
+        com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+      Builder builder = new Builder(parent);
+      return builder;
+    }
+    /**
+     * Protobuf type {@code qorechain.abstractaccount.v1.MsgExecuteCosmosResponse}
+     */
+    public static final class Builder extends
+        com.google.protobuf.GeneratedMessage.Builder<Builder> implements
+        // @@protoc_insertion_point(builder_implements:qorechain.abstractaccount.v1.MsgExecuteCosmosResponse)
+        qorechain.abstractaccount.v1.Tx.MsgExecuteCosmosResponseOrBuilder {
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return qorechain.abstractaccount.v1.Tx.internal_static_qorechain_abstractaccount_v1_MsgExecuteCosmosResponse_descriptor;
+      }
+
+      @java.lang.Override
+      protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return qorechain.abstractaccount.v1.Tx.internal_static_qorechain_abstractaccount_v1_MsgExecuteCosmosResponse_fieldAccessorTable
+            .ensureFieldAccessorsInitialized(
+                qorechain.abstractaccount.v1.Tx.MsgExecuteCosmosResponse.class, qorechain.abstractaccount.v1.Tx.MsgExecuteCosmosResponse.Builder.class);
+      }
+
+      // Construct using qorechain.abstractaccount.v1.Tx.MsgExecuteCosmosResponse.newBuilder()
+      private Builder() {
+
+      }
+
+      private Builder(
+          com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+        super(parent);
+
+      }
+      @java.lang.Override
+      public Builder clear() {
+        super.clear();
+        bitField0_ = 0;
+        success_ = false;
+        return this;
+      }
+
+      @java.lang.Override
+      public com.google.protobuf.Descriptors.Descriptor
+          getDescriptorForType() {
+        return qorechain.abstractaccount.v1.Tx.internal_static_qorechain_abstractaccount_v1_MsgExecuteCosmosResponse_descriptor;
+      }
+
+      @java.lang.Override
+      public qorechain.abstractaccount.v1.Tx.MsgExecuteCosmosResponse getDefaultInstanceForType() {
+        return qorechain.abstractaccount.v1.Tx.MsgExecuteCosmosResponse.getDefaultInstance();
+      }
+
+      @java.lang.Override
+      public qorechain.abstractaccount.v1.Tx.MsgExecuteCosmosResponse build() {
+        qorechain.abstractaccount.v1.Tx.MsgExecuteCosmosResponse result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(result);
+        }
+        return result;
+      }
+
+      @java.lang.Override
+      public qorechain.abstractaccount.v1.Tx.MsgExecuteCosmosResponse buildPartial() {
+        qorechain.abstractaccount.v1.Tx.MsgExecuteCosmosResponse result = new qorechain.abstractaccount.v1.Tx.MsgExecuteCosmosResponse(this);
+        if (bitField0_ != 0) { buildPartial0(result); }
+        onBuilt();
+        return result;
+      }
+
+      private void buildPartial0(qorechain.abstractaccount.v1.Tx.MsgExecuteCosmosResponse result) {
+        int from_bitField0_ = bitField0_;
+        if (((from_bitField0_ & 0x00000001) != 0)) {
+          result.success_ = success_;
+        }
+      }
+
+      @java.lang.Override
+      public Builder mergeFrom(com.google.protobuf.Message other) {
+        if (other instanceof qorechain.abstractaccount.v1.Tx.MsgExecuteCosmosResponse) {
+          return mergeFrom((qorechain.abstractaccount.v1.Tx.MsgExecuteCosmosResponse)other);
+        } else {
+          super.mergeFrom(other);
+          return this;
+        }
+      }
+
+      public Builder mergeFrom(qorechain.abstractaccount.v1.Tx.MsgExecuteCosmosResponse other) {
+        if (other == qorechain.abstractaccount.v1.Tx.MsgExecuteCosmosResponse.getDefaultInstance()) return this;
+        if (other.getSuccess() != false) {
+          setSuccess(other.getSuccess());
+        }
+        this.mergeUnknownFields(other.getUnknownFields());
+        onChanged();
+        return this;
+      }
+
+      @java.lang.Override
+      public final boolean isInitialized() {
+        return true;
+      }
+
+      @java.lang.Override
+      public Builder mergeFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        if (extensionRegistry == null) {
+          throw new java.lang.NullPointerException();
+        }
+        try {
+          boolean done = false;
+          while (!done) {
+            int tag = input.readTag();
+            switch (tag) {
+              case 0:
+                done = true;
+                break;
+              case 8: {
+                success_ = input.readBool();
+                bitField0_ |= 0x00000001;
+                break;
+              } // case 8
+              default: {
+                if (!super.parseUnknownField(input, extensionRegistry, tag)) {
+                  done = true; // was an endgroup tag
+                }
+                break;
+              } // default:
+            } // switch (tag)
+          } // while (!done)
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          throw e.unwrapIOException();
+        } finally {
+          onChanged();
+        } // finally
+        return this;
+      }
+      private int bitField0_;
+
+      private boolean success_ ;
+      /**
+       * <code>bool success = 1 [json_name = "success"];</code>
+       * @return The success.
+       */
+      @java.lang.Override
+      public boolean getSuccess() {
+        return success_;
+      }
+      /**
+       * <code>bool success = 1 [json_name = "success"];</code>
+       * @param value The success to set.
+       * @return This builder for chaining.
+       */
+      public Builder setSuccess(boolean value) {
+
+        success_ = value;
+        bitField0_ |= 0x00000001;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>bool success = 1 [json_name = "success"];</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearSuccess() {
+        bitField0_ = (bitField0_ & ~0x00000001);
+        success_ = false;
+        onChanged();
+        return this;
+      }
+
+      // @@protoc_insertion_point(builder_scope:qorechain.abstractaccount.v1.MsgExecuteCosmosResponse)
+    }
+
+    // @@protoc_insertion_point(class_scope:qorechain.abstractaccount.v1.MsgExecuteCosmosResponse)
+    private static final qorechain.abstractaccount.v1.Tx.MsgExecuteCosmosResponse DEFAULT_INSTANCE;
+    static {
+      DEFAULT_INSTANCE = new qorechain.abstractaccount.v1.Tx.MsgExecuteCosmosResponse();
+    }
+
+    public static qorechain.abstractaccount.v1.Tx.MsgExecuteCosmosResponse getDefaultInstance() {
+      return DEFAULT_INSTANCE;
+    }
+
+    private static final com.google.protobuf.Parser<MsgExecuteCosmosResponse>
+        PARSER = new com.google.protobuf.AbstractParser<MsgExecuteCosmosResponse>() {
+      @java.lang.Override
+      public MsgExecuteCosmosResponse parsePartialFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        Builder builder = newBuilder();
+        try {
+          builder.mergeFrom(input, extensionRegistry);
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          throw e.setUnfinishedMessage(builder.buildPartial());
+        } catch (com.google.protobuf.UninitializedMessageException e) {
+          throw e.asInvalidProtocolBufferException().setUnfinishedMessage(builder.buildPartial());
+        } catch (java.io.IOException e) {
+          throw new com.google.protobuf.InvalidProtocolBufferException(e)
+              .setUnfinishedMessage(builder.buildPartial());
+        }
+        return builder.buildPartial();
+      }
+    };
+
+    public static com.google.protobuf.Parser<MsgExecuteCosmosResponse> parser() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Parser<MsgExecuteCosmosResponse> getParserForType() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public qorechain.abstractaccount.v1.Tx.MsgExecuteCosmosResponse getDefaultInstanceForType() {
+      return DEFAULT_INSTANCE;
+    }
+
+  }
+
   private static final com.google.protobuf.Descriptors.Descriptor
     internal_static_qorechain_abstractaccount_v1_SpendingRule_descriptor;
   private static final 
@@ -6719,6 +11386,26 @@ public final class Tx extends com.google.protobuf.GeneratedFile {
   private static final 
     com.google.protobuf.GeneratedMessage.FieldAccessorTable
       internal_static_qorechain_abstractaccount_v1_MsgRevokeAuthenticatorResponse_fieldAccessorTable;
+  private static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_qorechain_abstractaccount_v1_MsgExecuteEVM_descriptor;
+  private static final 
+    com.google.protobuf.GeneratedMessage.FieldAccessorTable
+      internal_static_qorechain_abstractaccount_v1_MsgExecuteEVM_fieldAccessorTable;
+  private static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_qorechain_abstractaccount_v1_MsgExecuteEVMResponse_descriptor;
+  private static final 
+    com.google.protobuf.GeneratedMessage.FieldAccessorTable
+      internal_static_qorechain_abstractaccount_v1_MsgExecuteEVMResponse_fieldAccessorTable;
+  private static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_qorechain_abstractaccount_v1_MsgExecuteCosmos_descriptor;
+  private static final 
+    com.google.protobuf.GeneratedMessage.FieldAccessorTable
+      internal_static_qorechain_abstractaccount_v1_MsgExecuteCosmos_fieldAccessorTable;
+  private static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_qorechain_abstractaccount_v1_MsgExecuteCosmosResponse_descriptor;
+  private static final 
+    com.google.protobuf.GeneratedMessage.FieldAccessorTable
+      internal_static_qorechain_abstractaccount_v1_MsgExecuteCosmosResponse_fieldAccessorTable;
 
   public static com.google.protobuf.Descriptors.FileDescriptor
       getDescriptor() {
@@ -6731,51 +11418,79 @@ public final class Tx extends com.google.protobuf.GeneratedFile {
       "\n%qorechain/abstractaccount/v1/tx.proto\022" +
       "\034qorechain.abstractaccount.v1\032\027cosmos/ms" +
       "g/v1/msg.proto\032\031cosmos_proto/cosmos.prot" +
-      "o\032\024gogoproto/gogo.proto\"\252\001\n\014SpendingRule" +
-      "\022\026\n\002id\030\001 \001(\tB\006\342\336\037\002IDR\002id\022\037\n\013daily_limit\030" +
-      "\002 \001(\003R\ndailyLimit\022 \n\014per_tx_limit\030\003 \001(\003R" +
-      "\nperTxLimit\022%\n\016allowed_denoms\030\004 \003(\tR\rall" +
-      "owedDenoms\022\030\n\007enabled\030\005 \001(\010R\007enabled\"y\n\030" +
-      "MsgCreateAbstractAccount\022.\n\005owner\030\001 \001(\tB" +
-      "\030\322\264-\024cosmos.AddressStringR\005owner\022!\n\014acco" +
-      "unt_type\030\002 \001(\tR\013accountType:\n\202\347\260*\005owner\"" +
-      "<\n MsgCreateAbstractAccountResponse\022\030\n\007a" +
-      "ddress\030\001 \001(\tR\007address\"\305\001\n\026MsgUpdateSpend" +
-      "ingRules\022.\n\005owner\030\001 \001(\tB\030\322\264-\024cosmos.Addr" +
-      "essStringR\005owner\022\'\n\017account_address\030\002 \001(" +
-      "\tR\016accountAddress\022F\n\005rules\030\003 \003(\0132*.qorec" +
-      "hain.abstractaccount.v1.SpendingRuleB\004\310\336" +
-      "\037\000R\005rules:\n\202\347\260*\005owner\" \n\036MsgUpdateSpendi" +
-      "ngRulesResponse\"\210\002\n\030MsgRegisterAuthentic" +
-      "ator\022.\n\005owner\030\001 \001(\tB\030\322\264-\024cosmos.AddressS" +
-      "tringR\005owner\022\'\n\017account_address\030\002 \001(\tR\016a" +
-      "ccountAddress\022\026\n\006scheme\030\003 \001(\tR\006scheme\022\026\n" +
-      "\006pubkey\030\004 \001(\014R\006pubkey\022 \n\013permissions\030\005 \003" +
-      "(\tR\013permissions\022\037\n\013expiry_unix\030\006 \001(\003R\nex" +
-      "piryUnix\022\024\n\005label\030\007 \001(\tR\005label:\n\202\347\260*\005own" +
-      "er\"\"\n MsgRegisterAuthenticatorResponse\"\255" +
-      "\001\n\026MsgRevokeAuthenticator\022.\n\005owner\030\001 \001(\t" +
-      "B\030\322\264-\024cosmos.AddressStringR\005owner\022\'\n\017acc" +
-      "ount_address\030\002 \001(\tR\016accountAddress\022\026\n\006sc" +
-      "heme\030\003 \001(\tR\006scheme\022\026\n\006pubkey\030\004 \001(\014R\006pubk" +
-      "ey:\n\202\347\260*\005owner\" \n\036MsgRevokeAuthenticator" +
-      "Response2\310\004\n\003Msg\022\217\001\n\025CreateAbstractAccou" +
-      "nt\0226.qorechain.abstractaccount.v1.MsgCre" +
-      "ateAbstractAccount\032>.qorechain.abstracta" +
-      "ccount.v1.MsgCreateAbstractAccountRespon" +
-      "se\022\211\001\n\023UpdateSpendingRules\0224.qorechain.a" +
-      "bstractaccount.v1.MsgUpdateSpendingRules" +
-      "\032<.qorechain.abstractaccount.v1.MsgUpdat" +
-      "eSpendingRulesResponse\022\217\001\n\025RegisterAuthe" +
-      "nticator\0226.qorechain.abstractaccount.v1." +
-      "MsgRegisterAuthenticator\032>.qorechain.abs" +
-      "tractaccount.v1.MsgRegisterAuthenticator" +
-      "Response\022\211\001\n\023RevokeAuthenticator\0224.qorec" +
-      "hain.abstractaccount.v1.MsgRevokeAuthent" +
-      "icator\032<.qorechain.abstractaccount.v1.Ms" +
-      "gRevokeAuthenticatorResponse\032\005\200\347\260*\001B=Z;g" +
-      "ithub.com/qorechain/qorechain-core/x/abs" +
-      "tractaccount/typesb\006proto3"
+      "o\032\024gogoproto/gogo.proto\032\036cosmos/base/v1b" +
+      "eta1/coin.proto\"\252\001\n\014SpendingRule\022\026\n\002id\030\001" +
+      " \001(\tB\006\342\336\037\002IDR\002id\022\037\n\013daily_limit\030\002 \001(\003R\nd" +
+      "ailyLimit\022 \n\014per_tx_limit\030\003 \001(\003R\nperTxLi" +
+      "mit\022%\n\016allowed_denoms\030\004 \003(\tR\rallowedDeno" +
+      "ms\022\030\n\007enabled\030\005 \001(\010R\007enabled\"y\n\030MsgCreat" +
+      "eAbstractAccount\022.\n\005owner\030\001 \001(\tB\030\322\264-\024cos" +
+      "mos.AddressStringR\005owner\022!\n\014account_type" +
+      "\030\002 \001(\tR\013accountType:\n\202\347\260*\005owner\"<\n MsgCr" +
+      "eateAbstractAccountResponse\022\030\n\007address\030\001" +
+      " \001(\tR\007address\"\305\001\n\026MsgUpdateSpendingRules" +
+      "\022.\n\005owner\030\001 \001(\tB\030\322\264-\024cosmos.AddressStrin" +
+      "gR\005owner\022\'\n\017account_address\030\002 \001(\tR\016accou" +
+      "ntAddress\022F\n\005rules\030\003 \003(\0132*.qorechain.abs" +
+      "tractaccount.v1.SpendingRuleB\004\310\336\037\000R\005rule" +
+      "s:\n\202\347\260*\005owner\" \n\036MsgUpdateSpendingRulesR" +
+      "esponse\"\210\002\n\030MsgRegisterAuthenticator\022.\n\005" +
+      "owner\030\001 \001(\tB\030\322\264-\024cosmos.AddressStringR\005o" +
+      "wner\022\'\n\017account_address\030\002 \001(\tR\016accountAd" +
+      "dress\022\026\n\006scheme\030\003 \001(\tR\006scheme\022\026\n\006pubkey\030" +
+      "\004 \001(\014R\006pubkey\022 \n\013permissions\030\005 \003(\tR\013perm" +
+      "issions\022\037\n\013expiry_unix\030\006 \001(\003R\nexpiryUnix" +
+      "\022\024\n\005label\030\007 \001(\tR\005label:\n\202\347\260*\005owner\"\"\n Ms" +
+      "gRegisterAuthenticatorResponse\"\255\001\n\026MsgRe" +
+      "vokeAuthenticator\022.\n\005owner\030\001 \001(\tB\030\322\264-\024co" +
+      "smos.AddressStringR\005owner\022\'\n\017account_add" +
+      "ress\030\002 \001(\tR\016accountAddress\022\026\n\006scheme\030\003 \001" +
+      "(\tR\006scheme\022\026\n\006pubkey\030\004 \001(\014R\006pubkey:\n\202\347\260*" +
+      "\005owner\" \n\036MsgRevokeAuthenticatorResponse" +
+      "\"\246\002\n\rMsgExecuteEVM\0222\n\007relayer\030\001 \001(\tB\030\322\264-" +
+      "\024cosmos.AddressStringR\007relayer\022\030\n\007accoun" +
+      "t\030\002 \001(\tR\007account\022\026\n\006scheme\030\003 \001(\tR\006scheme" +
+      "\022\026\n\006pubkey\030\004 \001(\014R\006pubkey\022\034\n\tsignature\030\005 " +
+      "\001(\014R\tsignature\022\016\n\002to\030\006 \001(\tR\002to\022\024\n\005value\030" +
+      "\007 \001(\tR\005value\022\022\n\004data\030\010 \001(\014R\004data\022\033\n\tgas_" +
+      "limit\030\t \001(\004R\010gasLimit\022\024\n\005nonce\030\n \001(\004R\005no" +
+      "nce:\014\202\347\260*\007relayer\"y\n\025MsgExecuteEVMRespon" +
+      "se\022\030\n\007success\030\001 \001(\010R\007success\022\020\n\003ret\030\002 \001(" +
+      "\014R\003ret\022\031\n\010gas_used\030\003 \001(\004R\007gasUsed\022\031\n\010vm_" +
+      "error\030\004 \001(\tR\007vmError\"\341\002\n\020MsgExecuteCosmo" +
+      "s\0222\n\007relayer\030\001 \001(\tB\030\322\264-\024cosmos.AddressSt" +
+      "ringR\007relayer\022\030\n\007account\030\002 \001(\tR\007account\022" +
+      "\026\n\006scheme\030\003 \001(\tR\006scheme\022\026\n\006pubkey\030\004 \001(\014R" +
+      "\006pubkey\022\034\n\tsignature\030\005 \001(\014R\tsignature\022(\n" +
+      "\002to\030\006 \001(\tB\030\322\264-\024cosmos.AddressStringR\002to\022" +
+      "c\n\006amount\030\007 \003(\0132\031.cosmos.base.v1beta1.Co" +
+      "inB0\310\336\037\000\252\337\037(github.com/cosmos/cosmos-sdk" +
+      "/types.CoinsR\006amount\022\024\n\005nonce\030\010 \001(\004R\005non" +
+      "ce:\014\202\347\260*\007relayer\"4\n\030MsgExecuteCosmosResp" +
+      "onse\022\030\n\007success\030\001 \001(\010R\007success2\261\006\n\003Msg\022\217" +
+      "\001\n\025CreateAbstractAccount\0226.qorechain.abs" +
+      "tractaccount.v1.MsgCreateAbstractAccount" +
+      "\032>.qorechain.abstractaccount.v1.MsgCreat" +
+      "eAbstractAccountResponse\022\211\001\n\023UpdateSpend" +
+      "ingRules\0224.qorechain.abstractaccount.v1." +
+      "MsgUpdateSpendingRules\032<.qorechain.abstr" +
+      "actaccount.v1.MsgUpdateSpendingRulesResp" +
+      "onse\022\217\001\n\025RegisterAuthenticator\0226.qorecha" +
+      "in.abstractaccount.v1.MsgRegisterAuthent" +
+      "icator\032>.qorechain.abstractaccount.v1.Ms" +
+      "gRegisterAuthenticatorResponse\022\211\001\n\023Revok" +
+      "eAuthenticator\0224.qorechain.abstractaccou" +
+      "nt.v1.MsgRevokeAuthenticator\032<.qorechain" +
+      ".abstractaccount.v1.MsgRevokeAuthenticat" +
+      "orResponse\022n\n\nExecuteEVM\022+.qorechain.abs" +
+      "tractaccount.v1.MsgExecuteEVM\0323.qorechai" +
+      "n.abstractaccount.v1.MsgExecuteEVMRespon" +
+      "se\022w\n\rExecuteCosmos\022..qorechain.abstract" +
+      "account.v1.MsgExecuteCosmos\0326.qorechain." +
+      "abstractaccount.v1.MsgExecuteCosmosRespo" +
+      "nse\032\005\200\347\260*\001B=Z;github.com/qorechain/qorec" +
+      "hain-core/x/abstractaccount/typesb\006proto" +
+      "3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
@@ -6783,6 +11498,7 @@ public final class Tx extends com.google.protobuf.GeneratedFile {
           cosmos.msg.v1.Msg.getDescriptor(),
           cosmos_proto.Cosmos.getDescriptor(),
           com.google.protobuf.GoGoProtos.getDescriptor(),
+          cosmos.base.v1beta1.CoinOuterClass.getDescriptor(),
         });
     internal_static_qorechain_abstractaccount_v1_SpendingRule_descriptor =
       getDescriptor().getMessageType(0);
@@ -6838,15 +11554,41 @@ public final class Tx extends com.google.protobuf.GeneratedFile {
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_qorechain_abstractaccount_v1_MsgRevokeAuthenticatorResponse_descriptor,
         new java.lang.String[] { });
+    internal_static_qorechain_abstractaccount_v1_MsgExecuteEVM_descriptor =
+      getDescriptor().getMessageType(9);
+    internal_static_qorechain_abstractaccount_v1_MsgExecuteEVM_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessage.FieldAccessorTable(
+        internal_static_qorechain_abstractaccount_v1_MsgExecuteEVM_descriptor,
+        new java.lang.String[] { "Relayer", "Account", "Scheme", "Pubkey", "Signature", "To", "Value", "Data", "GasLimit", "Nonce", });
+    internal_static_qorechain_abstractaccount_v1_MsgExecuteEVMResponse_descriptor =
+      getDescriptor().getMessageType(10);
+    internal_static_qorechain_abstractaccount_v1_MsgExecuteEVMResponse_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessage.FieldAccessorTable(
+        internal_static_qorechain_abstractaccount_v1_MsgExecuteEVMResponse_descriptor,
+        new java.lang.String[] { "Success", "Ret", "GasUsed", "VmError", });
+    internal_static_qorechain_abstractaccount_v1_MsgExecuteCosmos_descriptor =
+      getDescriptor().getMessageType(11);
+    internal_static_qorechain_abstractaccount_v1_MsgExecuteCosmos_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessage.FieldAccessorTable(
+        internal_static_qorechain_abstractaccount_v1_MsgExecuteCosmos_descriptor,
+        new java.lang.String[] { "Relayer", "Account", "Scheme", "Pubkey", "Signature", "To", "Amount", "Nonce", });
+    internal_static_qorechain_abstractaccount_v1_MsgExecuteCosmosResponse_descriptor =
+      getDescriptor().getMessageType(12);
+    internal_static_qorechain_abstractaccount_v1_MsgExecuteCosmosResponse_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessage.FieldAccessorTable(
+        internal_static_qorechain_abstractaccount_v1_MsgExecuteCosmosResponse_descriptor,
+        new java.lang.String[] { "Success", });
     descriptor.resolveAllFeaturesImmutable();
     cosmos.msg.v1.Msg.getDescriptor();
     cosmos_proto.Cosmos.getDescriptor();
     com.google.protobuf.GoGoProtos.getDescriptor();
+    cosmos.base.v1beta1.CoinOuterClass.getDescriptor();
     com.google.protobuf.ExtensionRegistry registry =
         com.google.protobuf.ExtensionRegistry.newInstance();
     registry.add(cosmos.msg.v1.Msg.service);
     registry.add(cosmos.msg.v1.Msg.signer);
     registry.add(cosmos_proto.Cosmos.scalar);
+    registry.add(com.google.protobuf.GoGoProtos.castrepeated);
     registry.add(com.google.protobuf.GoGoProtos.customname);
     registry.add(com.google.protobuf.GoGoProtos.nullable);
     com.google.protobuf.Descriptors.FileDescriptor

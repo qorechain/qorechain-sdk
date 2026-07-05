@@ -82,6 +82,39 @@ fn decode_tx_error_module_codespaces() {
 }
 
 #[test]
+fn decode_tx_error_authenticator_lane_codes() {
+    // abstractaccount v3.1.84/v3.1.85 authenticator-lane codes map to the exact
+    // core error strings (x/abstractaccount/types/errors.go).
+    assert_eq!(
+        decode_tx_error(5, "abstractaccount", "").unwrap().reason,
+        "spending limit exceeded"
+    );
+    assert_eq!(
+        decode_tx_error(6, "abstractaccount", "").unwrap().reason,
+        "session key expired"
+    );
+    assert_eq!(
+        decode_tx_error(10, "abstractaccount", "").unwrap().reason,
+        "authenticator not permitted for this action"
+    );
+    assert_eq!(
+        decode_tx_error(11, "abstractaccount", "").unwrap().reason,
+        "authenticator signature replay binding mismatch"
+    );
+    // Unmapped abstractaccount code → per-module generic fallback.
+    assert_eq!(
+        decode_tx_error(99, "abstractaccount", "").unwrap().reason,
+        "unknown abstractaccount error"
+    );
+
+    // pqc hybrid-signature verification failure (MsgRotatePQCKey dual-sign).
+    assert_eq!(
+        decode_tx_error(21, "pqc", "").unwrap().reason,
+        "hybrid PQC signature verification failed"
+    );
+}
+
+#[test]
 fn qore_tx_error_display() {
     let mut e = decode_tx_error(5, "bank", "log here").unwrap();
     e.tx_hash = "ABC".into();

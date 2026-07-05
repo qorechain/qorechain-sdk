@@ -44,6 +44,7 @@ func TestStandardCosmosComposerTypeURLs(t *testing.T) {
 // each module produces the expected custom type URL.
 func TestQoreChainComposerTypeURLs(t *testing.T) {
 	coin := sdk.NewCoin("uqor", math.NewInt(1))
+	coins := sdk.NewCoins(coin)
 	cases := map[string]proto.Message{
 		"/qorechain.amm.v1.MsgSwapExactIn":                       Amm.SwapExactIn("s", 1, coin, "uusdc", math.NewInt(1)),
 		"/qorechain.bridge.v1.MsgBridgeWithdraw":                 Bridge.Withdraw("s", "eth", "0xabc", "uqor", "1"),
@@ -60,6 +61,9 @@ func TestQoreChainComposerTypeURLs(t *testing.T) {
 		"/qorechain.abstractaccount.v1.MsgCreateAbstractAccount": AbstractAccount.Create("o", "smart"),
 		"/qorechain.abstractaccount.v1.MsgRegisterAuthenticator": AbstractAccount.RegisterAuthenticator("o", "qor1acct", "ed25519", []byte{0x01}, []string{"send"}, 0, "phantom"),
 		"/qorechain.abstractaccount.v1.MsgRevokeAuthenticator":   AbstractAccount.RevokeAuthenticator("o", "qor1acct", "ed25519", []byte{0x01}),
+		"/qorechain.abstractaccount.v1.MsgExecuteEVM":            AbstractAccount.ExecuteEVM("qor1relayer", "qor1acct", "ed25519", []byte{0x01}, []byte{0x02}, "0xabc", "1000", []byte{0x02, 0x02}, 100000, 5),
+		"/qorechain.abstractaccount.v1.MsgExecuteCosmos":         AbstractAccount.ExecuteCosmos("qor1relayer", "qor1acct", "ed25519", []byte{0x01}, []byte{0x02}, "qor1recv", coins, 3),
+		"/qorechain.pqc.v1.MsgRotatePQCKey":                      Pqc.RotatePQCKey("qor1acct", []byte{0xaa}, []byte{0xbb}, []byte{0x01}, []byte{0x02}),
 		"/qorechain.crossvm.v1.MsgProcessQueue":                  CrossVM.ProcessQueue("a"),
 		"/qorechain.rlconsensus.v1.MsgSetAgentMode":              RlConsensus.SetAgentMode("a", 1),
 	}

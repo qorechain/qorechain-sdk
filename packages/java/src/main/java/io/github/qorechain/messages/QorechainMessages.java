@@ -1,7 +1,7 @@
 package io.github.qorechain.messages;
 
 /**
- * Typed composers for every QoreChain custom-module {@code Msg} (55 total).
+ * Typed composers for every QoreChain custom-module {@code Msg} (58 total).
  *
  * <p>Each method wraps an already-built protobuf message in a {@link TypedMessage}
  * carrying the correct on-chain type URL, ready to feed into the tx builder. The
@@ -170,6 +170,10 @@ public final class QorechainMessages {
             return new TypedMessage("/qorechain.pqc.v1.MsgMigratePQCKey", m);
         }
 
+        public static TypedMessage rotatePqcKey(qorechain.pqc.v1.Tx.MsgRotatePQCKey m) {
+            return new TypedMessage("/qorechain.pqc.v1.MsgRotatePQCKey", m);
+        }
+
         public static TypedMessage deprecateAlgorithm(
                 qorechain.pqc.v1.Tx.MsgDeprecateAlgorithm m) {
             return new TypedMessage("/qorechain.pqc.v1.MsgDeprecateAlgorithm", m);
@@ -268,6 +272,15 @@ public final class QorechainMessages {
         public static TypedMessage revokeAuthenticator(
                 qorechain.abstractaccount.v1.Tx.MsgRevokeAuthenticator m) {
             return new TypedMessage("/qorechain.abstractaccount.v1.MsgRevokeAuthenticator", m);
+        }
+
+        public static TypedMessage executeEvm(qorechain.abstractaccount.v1.Tx.MsgExecuteEVM m) {
+            return new TypedMessage("/qorechain.abstractaccount.v1.MsgExecuteEVM", m);
+        }
+
+        public static TypedMessage executeCosmos(
+                qorechain.abstractaccount.v1.Tx.MsgExecuteCosmos m) {
+            return new TypedMessage("/qorechain.abstractaccount.v1.MsgExecuteCosmos", m);
         }
     }
 
