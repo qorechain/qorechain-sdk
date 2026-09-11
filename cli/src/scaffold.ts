@@ -2,11 +2,11 @@
  * Core scaffolding logic — pure and unit-testable, with no prompt I/O.
  *
  * `scaffold(...)` copies a template into a target directory, rewrites the
- * template's package.json name, generates `.env` from `.env.example`, optionally
- * rewrites `@qorechain/*` deps to local `file:` links, and optionally runs a
- * package-manager install. All side effects are confined to the target dir
- * (plus an optional `spawn` for install), so tests can drive it against a temp
- * dir with `install: false`.
+ * template's package.json name, generates `.env` from `.env.example` with the
+ * selected network preset, optionally rewrites `@qorechain/*` deps to local
+ * `file:` links, and optionally runs a package-manager install. All side
+ * effects are confined to the target dir (plus an optional `spawn` for
+ * install), so tests can drive it against a temp dir with `install: false`.
  */
 import { spawnSync } from "node:child_process";
 import {
@@ -150,6 +150,17 @@ function installCommand(pm: PackageManager): { cmd: string; args: string[] } {
   return { cmd: pm, args: ["install"] };
 }
 
+/** Set an existing key in an env file while preserving comments and ordering. */
+function setEnvValue(contents: string, key: string, value: string): string {
+  const lines = contents.split("\n");
+  const index = lines.findIndex((line) => line.startsWith(`${key}=`));
+  if (index === -1) {
+    throw new Error(`Template env file is missing required variable ${key}.`);
+  }
+  lines[index] = `${key}=${value}`;
+  return lines.join("\n");
+}
+
 /**
  * Scaffold a project. Pure with respect to everything except the target dir
  * (and the optional install subprocess).
@@ -162,6 +173,7 @@ export function scaffold(options: ScaffoldOptions): ScaffoldResult {
     template,
     projectName,
     packageManager = "pnpm",
+    network = "testnet",
     install = false,
     local = false,
   } = options;
@@ -220,7 +232,11 @@ export function scaffold(options: ScaffoldOptions): ScaffoldResult {
   const envExample = join(targetDir, ".env.example");
   const envPath = join(targetDir, ".env");
   if (existsSync(envExample) && !existsSync(envPath)) {
-    writeFileSync(envPath, readFileSync(envExample, "utf8"));
+    const exampleContents = readFileSync(envExample, "utf8");
+    const envContents = info.networkEnvVar
+      ? setEnvValue(exampleContents, info.networkEnvVar, network)
+      : exampleContents;
+    writeFileSync(envPath, envContents);
   }
 
   let installed = false;
