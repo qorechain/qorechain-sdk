@@ -109,6 +109,60 @@ class PqcTest {
                         PqcAlgorithm.ALGORITHM_DILITHIUM5, new byte[10], null));
     }
 
+    /**
+     * The FIPS-204 encodings are fixed-length, and the five official QoreChain
+     * bindings must agree on that: an ML-DSA-87 signature is 4627 bytes, not 4628
+     * with a byte of trailing garbage. (A probe found the Go binding accepting the
+     * over-long form while Rust rejected it — a disagreement the chain cannot
+     * afford.) Verification therefore rejects on length, before the library runs.
+     */
+    @Test
+    void verifyRejectsSignaturesThatAreNotExactlySpecLength() {
+        PqcKeypair kp = Pqc.generatePqcKeypair();
+        byte[] msg = "transaction body bytes".getBytes(StandardCharsets.UTF_8);
+        byte[] sig = Pqc.pqcSign(kp.secretKey, msg);
+        assertEquals(Pqc.ML_DSA_87_SIGNATURE_LENGTH, sig.length);
+        // The exact-length signature still verifies.
+        assertTrue(Pqc.pqcVerify(kp.publicKey, msg, sig));
+
+        // One extra trailing byte: same 4627-byte prefix, still rejected.
+        byte[] tooLong = Arrays.copyOf(sig, sig.length + 1);
+        assertEquals(Pqc.ML_DSA_87_SIGNATURE_LENGTH + 1, tooLong.length);
+        assertFalse(Pqc.pqcVerify(kp.publicKey, msg, tooLong));
+
+        // Truncated by one byte: rejected.
+        byte[] truncated = Arrays.copyOf(sig, sig.length - 1);
+        assertFalse(Pqc.pqcVerify(kp.publicKey, msg, truncated));
+
+        // Null / empty are rejected as failures, not crashes.
+        assertFalse(Pqc.pqcVerify(kp.publicKey, msg, null));
+        assertFalse(Pqc.pqcVerify(kp.publicKey, msg, new byte[0]));
+    }
+
+    @Test
+    void verifyRejectsPublicKeysThatAreNotExactlySpecLength() {
+        PqcKeypair kp = Pqc.generatePqcKeypair();
+        byte[] msg = "transaction body bytes".getBytes(StandardCharsets.UTF_8);
+        byte[] sig = Pqc.pqcSign(kp.secretKey, msg);
+
+        assertFalse(Pqc.pqcVerify(Arrays.copyOf(kp.publicKey, kp.publicKey.length + 1), msg, sig));
+        assertFalse(Pqc.pqcVerify(Arrays.copyOf(kp.publicKey, kp.publicKey.length - 1), msg, sig));
+        assertFalse(Pqc.pqcVerify(null, msg, sig));
+    }
+
+    @Test
+    void signRejectsSecretKeysThatAreNotExactlySpecLength() {
+        PqcKeypair kp = Pqc.generatePqcKeypair();
+        byte[] msg = "m".getBytes(StandardCharsets.UTF_8);
+        byte[] tooLong = Arrays.copyOf(kp.secretKey, kp.secretKey.length + 1);
+        byte[] truncated = Arrays.copyOf(kp.secretKey, kp.secretKey.length - 1);
+
+        assertThrows(IllegalArgumentException.class, () -> Pqc.pqcSign(tooLong, msg));
+        assertThrows(IllegalArgumentException.class, () -> Pqc.pqcSign(truncated, msg));
+        assertThrows(IllegalArgumentException.class, () -> Pqc.pqcSign(null, msg));
+        assertThrows(IllegalArgumentException.class, () -> Pqc.pqcSignHedged(tooLong, msg));
+    }
+
     @Test
     void algorithmConstants() {
         assertEquals(1, PqcAlgorithm.ALGORITHM_DILITHIUM5);

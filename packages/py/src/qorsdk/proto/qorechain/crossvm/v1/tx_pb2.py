@@ -28,7 +28,7 @@ from cosmpy.protos.cosmos.base.v1beta1 import coin_pb2 as cosmos_dot_base_dot_v1
 from cosmpy.protos.gogoproto import gogo_pb2 as gogoproto_dot_gogo__pb2
 
 
-DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\x1dqorechain/crossvm/v1/tx.proto\x12\x14qorechain.crossvm.v1\x1a\x17\x63osmos/msg/v1/msg.proto\x1a\x19\x63osmos_proto/cosmos.proto\x1a\x1e\x63osmos/base/v1beta1/coin.proto\x1a\x14gogoproto/gogo.proto\"\xdf\x02\n\x0eMsgCrossVMCall\x12\x30\n\x06sender\x18\x01 \x01(\tB\x18\xd2\xb4-\x14\x63osmos.AddressStringR\x06sender\x12\x33\n\tsource_vm\x18\x02 \x01(\tB\x16\xe2\xde\x1f\x08SourceVM\xfa\xde\x1f\x06VMTypeR\x08sourceVm\x12\x33\n\ttarget_vm\x18\x03 \x01(\tB\x16\xe2\xde\x1f\x08TargetVM\xfa\xde\x1f\x06VMTypeR\x08targetVm\x12\'\n\x0ftarget_contract\x18\x04 \x01(\tR\x0etargetContract\x12\x18\n\x07payload\x18\x05 \x01(\x0cR\x07payload\x12\x61\n\x05\x66unds\x18\x06 \x03(\x0b\x32\x19.cosmos.base.v1beta1.CoinB0\xc8\xde\x1f\x00\xaa\xdf\x1f(github.com/cosmos/cosmos-sdk/types.CoinsR\x05\x66unds:\x0b\x82\xe7\xb0*\x06sender\"F\n\x16MsgCrossVMCallResponse\x12,\n\nmessage_id\x18\x01 \x01(\tB\r\xe2\xde\x1f\tMessageIDR\tmessageId\"Y\n\x0fMsgProcessQueue\x12\x36\n\tauthority\x18\x01 \x01(\tB\x18\xd2\xb4-\x14\x63osmos.AddressStringR\tauthority:\x0e\x82\xe7\xb0*\tauthority\"\x19\n\x17MsgProcessQueueResponse2\xd5\x01\n\x03Msg\x12\x61\n\x0b\x43rossVMCall\x12$.qorechain.crossvm.v1.MsgCrossVMCall\x1a,.qorechain.crossvm.v1.MsgCrossVMCallResponse\x12\x64\n\x0cProcessQueue\x12%.qorechain.crossvm.v1.MsgProcessQueue\x1a-.qorechain.crossvm.v1.MsgProcessQueueResponse\x1a\x05\x80\xe7\xb0*\x01\x42\xca\x01\n\x18\x63om.qorechain.crossvm.v1B\x07TxProtoP\x01Z3github.com/qorechain/qorechain-core/x/crossvm/types\xa2\x02\x03QCX\xaa\x02\x14Qorechain.Crossvm.V1\xca\x02\x14Qorechain\\Crossvm\\V1\xe2\x02 Qorechain\\Crossvm\\V1\\GPBMetadata\xea\x02\x16Qorechain::Crossvm::V1b\x06proto3')
+DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\x1dqorechain/crossvm/v1/tx.proto\x12\x14qorechain.crossvm.v1\x1a\x17\x63osmos/msg/v1/msg.proto\x1a\x19\x63osmos_proto/cosmos.proto\x1a\x1e\x63osmos/base/v1beta1/coin.proto\x1a\x14gogoproto/gogo.proto\"\xf5\x02\n\x0eMsgCrossVMCall\x12\x30\n\x06sender\x18\x01 \x01(\tB\x18\xd2\xb4-\x14\x63osmos.AddressStringR\x06sender\x12\x33\n\tsource_vm\x18\x02 \x01(\tB\x16\xe2\xde\x1f\x08SourceVM\xfa\xde\x1f\x06VMTypeR\x08sourceVm\x12\x33\n\ttarget_vm\x18\x03 \x01(\tB\x16\xe2\xde\x1f\x08TargetVM\xfa\xde\x1f\x06VMTypeR\x08targetVm\x12\'\n\x0ftarget_contract\x18\x04 \x01(\tR\x0etargetContract\x12\x18\n\x07payload\x18\x05 \x01(\x0cR\x07payload\x12\x61\n\x05\x66unds\x18\x06 \x03(\x0b\x32\x19.cosmos.base.v1beta1.CoinB0\xc8\xde\x1f\x00\xaa\xdf\x1f(github.com/cosmos/cosmos-sdk/types.CoinsR\x05\x66unds\x12\x14\n\x05\x61sync\x18\x07 \x01(\x08R\x05\x61sync:\x0b\x82\xe7\xb0*\x06sender\"\x91\x01\n\x16MsgCrossVMCallResponse\x12,\n\nmessage_id\x18\x01 \x01(\tB\r\xe2\xde\x1f\tMessageIDR\tmessageId\x12\x1a\n\x08\x65xecuted\x18\x02 \x01(\x08R\x08\x65xecuted\x12\x12\n\x04\x64\x61ta\x18\x03 \x01(\x0cR\x04\x64\x61ta\x12\x19\n\x08gas_used\x18\x04 \x01(\x04R\x07gasUsed\"Y\n\x0fMsgProcessQueue\x12\x36\n\tauthority\x18\x01 \x01(\tB\x18\xd2\xb4-\x14\x63osmos.AddressStringR\tauthority:\x0e\x82\xe7\xb0*\tauthority\"\x19\n\x17MsgProcessQueueResponse2\xd5\x01\n\x03Msg\x12\x61\n\x0b\x43rossVMCall\x12$.qorechain.crossvm.v1.MsgCrossVMCall\x1a,.qorechain.crossvm.v1.MsgCrossVMCallResponse\x12\x64\n\x0cProcessQueue\x12%.qorechain.crossvm.v1.MsgProcessQueue\x1a-.qorechain.crossvm.v1.MsgProcessQueueResponse\x1a\x05\x80\xe7\xb0*\x01\x42\xca\x01\n\x18\x63om.qorechain.crossvm.v1B\x07TxProtoP\x01Z3github.com/qorechain/qorechain-core/x/crossvm/types\xa2\x02\x03QCX\xaa\x02\x14Qorechain.Crossvm.V1\xca\x02\x14Qorechain\\Crossvm\\V1\xe2\x02 Qorechain\\Crossvm\\V1\\GPBMetadata\xea\x02\x16Qorechain::Crossvm::V1b\x06proto3')
 
 _globals = globals()
 _builder.BuildMessageAndEnumDescriptors(DESCRIPTOR, _globals)
@@ -55,13 +55,13 @@ if not _descriptor._USE_C_DESCRIPTORS:
   _globals['_MSG']._loaded_options = None
   _globals['_MSG']._serialized_options = b'\200\347\260*\001'
   _globals['_MSGCROSSVMCALL']._serialized_start=162
-  _globals['_MSGCROSSVMCALL']._serialized_end=513
-  _globals['_MSGCROSSVMCALLRESPONSE']._serialized_start=515
-  _globals['_MSGCROSSVMCALLRESPONSE']._serialized_end=585
-  _globals['_MSGPROCESSQUEUE']._serialized_start=587
-  _globals['_MSGPROCESSQUEUE']._serialized_end=676
-  _globals['_MSGPROCESSQUEUERESPONSE']._serialized_start=678
-  _globals['_MSGPROCESSQUEUERESPONSE']._serialized_end=703
-  _globals['_MSG']._serialized_start=706
-  _globals['_MSG']._serialized_end=919
+  _globals['_MSGCROSSVMCALL']._serialized_end=535
+  _globals['_MSGCROSSVMCALLRESPONSE']._serialized_start=538
+  _globals['_MSGCROSSVMCALLRESPONSE']._serialized_end=683
+  _globals['_MSGPROCESSQUEUE']._serialized_start=685
+  _globals['_MSGPROCESSQUEUE']._serialized_end=774
+  _globals['_MSGPROCESSQUEUERESPONSE']._serialized_start=776
+  _globals['_MSGPROCESSQUEUERESPONSE']._serialized_end=801
+  _globals['_MSG']._serialized_start=804
+  _globals['_MSG']._serialized_end=1017
 # @@protoc_insertion_point(module_scope)

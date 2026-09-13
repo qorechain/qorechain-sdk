@@ -9,7 +9,6 @@ import io.github.qorechain.accounts.UnifiedAccounts;
 import io.github.qorechain.accounts.UnifiedAccounts.AddressTriple;
 import io.github.qorechain.accounts.UnifiedAccounts.UnifiedAccount;
 import io.github.qorechain.pqc.Pqc;
-import io.github.qorechain.utils.Hashing;
 import io.github.qorechain.utils.Hex;
 import java.util.Arrays;
 import org.junit.jupiter.api.Test;
@@ -81,19 +80,29 @@ class UnifiedAccountsTest {
         }
     }
 
+    /**
+     * Deriving the spend key from a wallet signature was removed in v0.8.0: the
+     * signature is a bearer secret any page can request, so it cannot be a key.
+     * The call must fail loudly and point at the authenticator lanes.
+     */
     @Test
-    void phantomSignatureAnchorsAccount() {
+    void signatureDerivedAccountIsRemovedAndThrows() {
         byte[] sig = new byte[64];
         for (int i = 0; i < 64; i++) {
             sig[i] = (byte) i;
         }
-        UnifiedAccount a = UnifiedAccounts.unifiedAccountFromPhantomSignature(sig);
-        // Equivalent to unifiedAccountFromSeed(shake256(sig, 32)).
-        UnifiedAccount b = UnifiedAccounts.unifiedAccountFromSeed(Hashing.shake256(sig, 32));
-        assertEquals(b.cosmos, a.cosmos);
-        assertEquals(b.evm, a.evm);
-        assertEquals(b.svm, a.svm);
-        assertEquals("qor1kllqspj45exs08eml8v4lgnlyh4g8urzwj27v4", a.cosmos);
+        UnsupportedOperationException ex =
+                assertThrows(
+                        UnsupportedOperationException.class,
+                        () -> UnifiedAccounts.unifiedAccountFromPhantomSignature(sig));
+        String msg = ex.getMessage();
+        assertTrue(msg.contains("removed in v0.8.0"), msg);
+        // Points the caller at the replacement lanes.
+        assertTrue(msg.contains("MsgRegisterAuthenticator"), msg);
+        assertTrue(msg.contains("MsgExecuteCosmos"), msg);
+        assertTrue(msg.contains("MsgExecuteEVM"), msg);
+        // Tells the holder of an old account what to do about it.
+        assertTrue(msg.contains("must be treated as exposed"), msg);
     }
 
     @Test

@@ -11,6 +11,17 @@
 //! builder for the on-chain hybrid-signature extension object. The cryptography
 //! is delegated to the FIPS-204 ML-DSA-87 implementation; no primitives are
 //! reimplemented here.
+//!
+//! # Length strictness
+//!
+//! Every entry point validates its key and signature lengths **exactly** —
+//! [`MLDSA87_SIGNATURE_LEN`] (4627), [`MLDSA87_PUBLIC_KEY_LEN`] (2592),
+//! [`MLDSA87_SECRET_KEY_LEN`] (4896) — before handing anything to the underlying
+//! library, and rejects everything else. This is the SDK's own guarantee, not an
+//! inherited one: ML-DSA implementations disagree about trailing bytes (the Go
+//! binding over CIRCL v1.6.1 accepts a 4628-byte signature as valid, `fips204`
+//! does not), so the check is stated and tested here to keep every language
+//! binding on the strict side.
 
 use crate::error::{Error, Result};
 use crate::proto::qorechain::pqc::v1::PqcHybridSignature;
@@ -115,20 +126,62 @@ pub fn pqc_sign_hedged(secret_key: &[u8], message: &[u8]) -> Result<Vec<u8>> {
     Ok(sig.to_vec())
 }
 
-/// Decodes and validates a raw ML-DSA-87 secret key.
+/// Reports whether `signature` is exactly [`MLDSA87_SIGNATURE_LEN`] (4627) bytes.
+///
+/// Length is checked in full — a signature carrying even one extra trailing byte
+/// is **not** a valid ML-DSA-87 signature, however the trailing byte was acquired.
+pub fn is_valid_pqc_signature_len(signature: &[u8]) -> bool {
+    signature.len() == MLDSA87_SIGNATURE_LEN
+}
+
+/// Reports whether `public_key` is exactly [`MLDSA87_PUBLIC_KEY_LEN`] (2592) bytes.
+pub fn is_valid_pqc_public_key_len(public_key: &[u8]) -> bool {
+    public_key.len() == MLDSA87_PUBLIC_KEY_LEN
+}
+
+/// Reports whether `secret_key` is exactly [`MLDSA87_SECRET_KEY_LEN`] (4896) bytes.
+pub fn is_valid_pqc_secret_key_len(secret_key: &[u8]) -> bool {
+    secret_key.len() == MLDSA87_SECRET_KEY_LEN
+}
+
+/// Enforces an exact FIPS 204 byte length, naming what was measured.
+///
+/// The SDK checks this itself rather than inheriting whatever the underlying
+/// library happens to do, because implementations disagree: the Go binding
+/// (CIRCL v1.6.1) accepts a 4628-byte signature — the 4627-byte signature with
+/// one extra trailing byte — as valid, while `fips204` rejects it. Strict is the
+/// correct side, and stating it here makes the guarantee the SDK's own, testable
+/// and identical in every language binding.
+fn check_exact_len(what: &str, got: usize, want: usize) -> Result<()> {
+    if got != want {
+        return Err(Error::Pqc(format!(
+            "invalid ML-DSA-87 {what} length: expected exactly {want} bytes, got {got}"
+        )));
+    }
+    Ok(())
+}
+
+/// Decodes and validates a raw ML-DSA-87 secret key (exactly 4896 bytes).
 fn decode_secret_key(secret_key: &[u8]) -> Result<ml_dsa_87::PrivateKey> {
-    let bytes: [u8; MLDSA87_SECRET_KEY_LEN] = secret_key.try_into().map_err(|_| {
-        Error::Pqc(format!(
-            "invalid PQC secret key length: {}",
-            secret_key.len()
-        ))
-    })?;
+    check_exact_len("secret key", secret_key.len(), MLDSA87_SECRET_KEY_LEN)?;
+    let bytes: [u8; MLDSA87_SECRET_KEY_LEN] = secret_key
+        .try_into()
+        .map_err(|_| Error::Pqc("invalid PQC secret key length".to_string()))?;
     ml_dsa_87::PrivateKey::try_from_bytes(bytes)
         .map_err(|e| Error::Pqc(format!("invalid PQC secret key: {e}")))
 }
 
 /// Verifies an ML-DSA-87 (Dilithium-5) signature over a message.
+///
+/// Both inputs must be **exactly** their FIPS 204 sizes — 2592 bytes of public
+/// key, 4627 bytes of signature. A signature that is otherwise valid but carries
+/// extra trailing bytes, or one that is truncated, returns `false`; the length
+/// check happens here, before the underlying library is consulted, so the rule
+/// does not depend on that library's own tolerance.
 pub fn pqc_verify(public_key: &[u8], message: &[u8], signature: &[u8]) -> bool {
+    if !is_valid_pqc_public_key_len(public_key) || !is_valid_pqc_signature_len(signature) {
+        return false;
+    }
     let pk_bytes: [u8; MLDSA87_PUBLIC_KEY_LEN] = match public_key.try_into() {
         Ok(b) => b,
         Err(_) => return false,

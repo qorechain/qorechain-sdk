@@ -11,6 +11,11 @@ This module provides the signing PRIMITIVES (keygen / sign / verify) and a
 builder for the on-chain hybrid-signature extension object. Crypto is delegated
 to the audited, pure-Python ``dilithium-py`` (``ML_DSA_87``); no primitives are
 reimplemented here.
+
+Key and signature SIZES, however, are enforced here rather than left to the
+library: :func:`pqc_sign` and :func:`pqc_verify` require the exact FIPS 204
+lengths, so this SDK cannot disagree with QoreChain's other official bindings
+about whether an over-long or truncated signature is acceptable.
 """
 
 from __future__ import annotations
@@ -79,12 +84,42 @@ def pqc_sign(secret_key: bytes, message: bytes, *, hedged: bool = False) -> byte
     (hedged signatures are rejected with codespace ``pqc``), so this default is
     consensus-critical — do not pass ``hedged=True`` for anything that goes
     on-chain.
+
+    ``secret_key`` must be EXACTLY :data:`ML_DSA_87_SECRET_KEY_LENGTH` bytes
+    (see :func:`pqc_verify` for why the SDK checks sizes itself).
+
+    :raises ValueError: If ``secret_key`` is not exactly the ML-DSA-87 length.
     """
+    if len(secret_key) != ML_DSA_87_SECRET_KEY_LENGTH:
+        raise ValueError(
+            f"ML-DSA-87 secret key must be exactly {ML_DSA_87_SECRET_KEY_LENGTH} bytes, "
+            f"got {len(secret_key)}"
+        )
     return bytes(ML_DSA_87.sign(secret_key, message, deterministic=not hedged))
 
 
 def pqc_verify(public_key: bytes, message: bytes, signature: bytes) -> bool:
-    """Verify an ML-DSA-87 (Dilithium-5) signature over a message."""
+    """Verify an ML-DSA-87 (Dilithium-5) signature over a message.
+
+    STRICT about sizes: the public key must be exactly
+    :data:`ML_DSA_87_PUBLIC_KEY_LENGTH` bytes and the signature exactly
+    :data:`ML_DSA_87_SIGNATURE_LENGTH` bytes. Anything else — a truncated
+    signature, or one carrying extra trailing bytes — returns ``False`` without
+    reaching the underlying library.
+
+    The SDK enforces this itself rather than trusting the library, because the
+    ML-DSA implementations behind QoreChain's official bindings do NOT agree on
+    it: at least one accepts a signature with an extra trailing byte as valid
+    while others reject it. A signature that one binding accepts and another
+    refuses is a consensus hazard and a malleability surface (the same signature
+    re-encoded N ways), so every binding pins the exact FIPS 204 sizes.
+
+    :returns: ``True`` only for an exactly-sized, valid signature.
+    """
+    if len(public_key) != ML_DSA_87_PUBLIC_KEY_LENGTH:
+        return False
+    if len(signature) != ML_DSA_87_SIGNATURE_LENGTH:
+        return False
     return bool(ML_DSA_87.verify(public_key, message, signature))
 
 

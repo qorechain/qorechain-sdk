@@ -113,6 +113,7 @@ QORECHAIN_REGISTRY_TYPES: dict[str, ProtoType] = {
     "/qorechain.svm.v1.MsgCreateAccount": svm_tx.MsgCreateAccount,
     "/qorechain.svm.v1.MsgExecuteProgram": svm_tx.MsgExecuteProgram,
     "/qorechain.svm.v1.MsgRegisterSVMPQCKey": svm_tx.MsgRegisterSVMPQCKey,
+    "/qorechain.svm.v1.MsgUpdateParams": svm_tx.MsgUpdateParams,
     # lightnode
     "/qorechain.lightnode.v1.MsgRegisterLightNode": (
         lightnode_tx.MsgRegisterLightNode

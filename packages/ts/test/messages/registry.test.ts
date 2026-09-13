@@ -36,6 +36,20 @@ const samples = [
     sender: SENDER,
     bytecode: new Uint8Array([9, 9, 9]),
   }),
+  msg.svm.updateParams({
+    authority: SENDER,
+    params: {
+      maxProgramSize: "1048576",
+      maxAccountDataSize: "10485760",
+      computeBudgetMax: "1400000",
+      lamportsPerByte: "6960",
+      rentExemptionMulti: "2.000000000000000000",
+      enabled: false,
+      svmSlotOffset: "100",
+      defaultSigScheme: 1,
+      maxCpi: 4,
+    },
+  }),
   msg.rdk.createRollup({
     creator: SENDER,
     rollupId: "rollup-1",
@@ -63,6 +77,7 @@ describe("qorechainRegistry", () => {
       "/qorechain.bridge.v1.MsgBridgeDeposit",
       "/qorechain.pqc.v1.MsgRegisterPQCKey",
       "/qorechain.svm.v1.MsgDeployProgram",
+      "/qorechain.svm.v1.MsgUpdateParams",
       "/cosmos.staking.v1beta1.MsgDelegate",
       "/cosmos.gov.v1.MsgVote",
     ];
@@ -84,6 +99,47 @@ describe("qorechainRegistry", () => {
         sample.value as Record<string, unknown>,
       );
     }
+  });
+
+  it("packs svm.MsgUpdateParams into an Any and back (governance message)", () => {
+    // MsgUpdateParams is submitted inside a gov proposal, so it travels as an
+    // Any: the packed typeUrl and every SVMParams field must survive the trip.
+    const m = msg.svm.updateParams({
+      authority: SENDER,
+      params: {
+        maxProgramSize: "1048576",
+        maxAccountDataSize: "10485760",
+        computeBudgetMax: "1400000",
+        lamportsPerByte: "6960",
+        rentExemptionMulti: "2.000000000000000000",
+        enabled: false,
+        svmSlotOffset: "100",
+        defaultSigScheme: 1,
+        maxCpi: 4,
+      },
+    });
+    const any = registry.encodeAsAny(m);
+    expect(any.typeUrl).toBe("/qorechain.svm.v1.MsgUpdateParams");
+
+    const decoded = registry.decode({
+      typeUrl: any.typeUrl,
+      value: any.value,
+    }) as {
+      authority: string;
+      params?: Record<string, unknown>;
+    };
+    expect(decoded.authority).toBe(SENDER);
+    expect(decoded.params).toMatchObject({
+      maxProgramSize: "1048576",
+      maxAccountDataSize: "10485760",
+      computeBudgetMax: "1400000",
+      lamportsPerByte: "6960",
+      rentExemptionMulti: "2.000000000000000000",
+      enabled: false,
+      svmSlotOffset: "100",
+      defaultSigScheme: 1,
+      maxCpi: 4,
+    });
   });
 
   it("registers extra types on top of the defaults", () => {

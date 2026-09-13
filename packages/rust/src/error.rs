@@ -64,6 +64,11 @@ pub enum Error {
     /// A broadcast/confirmed transaction returned a non-zero ABCI result code.
     #[error(transparent)]
     Tx(#[from] crate::tx::QoreTxError),
+
+    /// An API was removed because it was unsafe. The message names the
+    /// replacement and, where funds may be at risk, what the caller must do.
+    #[error("{0}")]
+    Removed(String),
 }
 
 /// Convenience result type used throughout the crate.

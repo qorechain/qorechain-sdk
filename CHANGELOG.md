@@ -5,6 +5,64 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.8.0]
+
+### Removed — security
+
+- **Wallet-signature account derivation is gone.** The Phantom "P1a" helpers —
+  `unifiedAccountFromPhantomSignature` (all languages) and `connectPhantomUnified`
+  (TypeScript) — derived an account's **spend key** from a wallet signature over a
+  fixed, public message. That is unsafe by construction: a wallet signature is a
+  bearer secret, wallets return it to whatever page requests it, and the signature
+  over a fixed message is reproducible — so whoever obtains it controls the
+  account. No in-message binding (origin, nonce) can fix this, because the page
+  supplies the bytes the wallet signs and the derivation has to stay reproducible.
+
+  The functions now raise an error pointing at the supported design. **Use the
+  authenticator lanes instead** (shipped in 0.7.0, chain v3.1.85): register the
+  external key with `MsgRegisterAuthenticator` and spend via `MsgExecuteCosmos` /
+  `MsgExecuteEVM`. There the external key only ever *authorises* a spend under a
+  permission scope, and can be revoked — it never becomes the spend key.
+
+  > **Do not rely on `SpendingRule` as a security control.** A per-authenticator
+  > spending limit can be expressed on-chain, but it is **not currently enforced
+  > on the `ExecuteCosmos` / `ExecuteEVM` lanes**. Treat a linked authenticator as
+  > able to spend the account's full balance, and scope it accordingly (register
+  > only the permissions it needs, and revoke it when done).
+
+  > **If you created an account with these helpers, treat it as exposed and move
+  > its funds.** Its private key is recoverable by anyone who ever obtained that
+  > wallet signature. See the Authenticators guide for the supported flow.
+
+- `unifiedAccountFromSeed` now documents that the seed must be real secret entropy
+  and must never be derived from a wallet signature or any value a third party can
+  request.
+
+### Added
+
+- **Cross-VM calls carry the callee's answer.** `MsgCrossVMCall` gained `async`
+  and `MsgCrossVMCallResponse` gained `executed`, `data` and `gas_used` (chain
+  v3.1.97). The cross-VM helpers now accept an async/queue option and surface the
+  callee's return value, execution flag and gas used. The default is unchanged in
+  effect: the call executes within the transaction and returns its answer; set the
+  async option to queue it for later dispatch instead.
+- `MsgUpdateParams` composer for the `svm` module (`/qorechain.svm.v1.MsgUpdateParams`),
+  the governance message that replaces the SVM runtime parameters.
+
+### Changed
+
+- `sourceVm` on a cross-VM call is **ignored by the chain**, which derives the
+  origin lane from the execution context. The field is still accepted for wire
+  compatibility and is now documented as advisory only.
+- **Strict ML-DSA-87 sizes in every binding.** The bindings disagreed on what
+  counts as a valid signature: a Go binding (CIRCL v1.6.1) accepted a 4628-byte
+  signature — the FIPS 204 size 4627 plus one trailing byte — as VALID, while
+  Rust `fips204` rejected it. A signature one binding accepts and another refuses
+  is a consensus hazard and a malleability surface, so the SDKs now check the
+  exact sizes themselves before calling the library underneath: signature 4627,
+  public key 2592, secret key 4896. Verification returns false for a wrong-sized
+  signature or public key; signing raises on a wrong-sized secret key.
+
 ## [0.7.0]
 
 ### Added
@@ -12,8 +70,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Authenticator lanes (chain v3.1.85)** — a linked external key (Phantom
   ed25519, or a MetaMask/secp256k1 key by its 20-byte address) can spend from the
   one canonical PQC-required account through a **relayer**, under least-privilege,
-  spending-limited, revocable terms — without the external key ever producing an
-  ML-DSA co-signature. Added across all five languages:
+  revocable terms — without the external key ever producing an ML-DSA
+  co-signature. (A spending limit can be expressed but is **not enforced** on
+  these lanes — see the 0.8.0 note; do not rely on it as a security control.)
+  Added across all five languages:
   - New messages + composers: `MsgExecuteEVM`, `MsgExecuteCosmos`
     (`/qorechain.abstractaccount.v1.*`), and `MsgRotatePQCKey`
     (`/qorechain.pqc.v1.*`).
@@ -72,6 +132,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   (TypeScript): derive a canonical, non-custodial unified account from a
   deterministic Phantom signature (`shake256(signature, 32)`), so a Phantom user
   gets all three QoreChain addresses and can spend on every lane.
+  > **Removed in 0.8.0 — do not use.** Deriving a spend key from a wallet
+  > signature is unsafe; see the 0.8.0 entry. Accounts created this way must be
+  > treated as exposed.
 - **New chain surface (v3.1.83)** — abstractaccount `MsgRegisterAuthenticator` /
   `MsgRevokeAuthenticator` composers; typed query clients for `amm`, `license`,
   and `abstractaccount`; and the `multilayer` `Anchor` / `Anchors` state-anchor

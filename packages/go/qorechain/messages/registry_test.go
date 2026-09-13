@@ -17,7 +17,7 @@ import (
 )
 
 // allCustomTypeURLs is every custom QoreChain Msg type URL the registry must
-// resolve. The 58 entries match the chain's tx services across all 11 modules.
+// resolve. The 59 entries match the chain's tx services across all 11 modules.
 var allCustomTypeURLs = []string{
 	// amm (7)
 	"/qorechain.amm.v1.MsgCreatePool",
@@ -58,11 +58,12 @@ var allCustomTypeURLs = []string{
 	"/qorechain.pqc.v1.MsgRotatePQCKey",
 	"/qorechain.pqc.v1.MsgDeprecateAlgorithm",
 	"/qorechain.pqc.v1.MsgDisableAlgorithm",
-	// svm (4)
+	// svm (5)
 	"/qorechain.svm.v1.MsgDeployProgram",
 	"/qorechain.svm.v1.MsgCreateAccount",
 	"/qorechain.svm.v1.MsgExecuteProgram",
 	"/qorechain.svm.v1.MsgRegisterSVMPQCKey",
+	"/qorechain.svm.v1.MsgUpdateParams",
 	// lightnode (4)
 	"/qorechain.lightnode.v1.MsgRegisterLightNode",
 	"/qorechain.lightnode.v1.MsgHeartbeat",
@@ -91,8 +92,8 @@ var allCustomTypeURLs = []string{
 }
 
 func TestAllCustomTypeURLsCount(t *testing.T) {
-	if got := len(allCustomTypeURLs); got != 58 {
-		t.Fatalf("expected 58 custom type URLs, got %d", got)
+	if got := len(allCustomTypeURLs); got != 59 {
+		t.Fatalf("expected 59 custom type URLs, got %d", got)
 	}
 }
 

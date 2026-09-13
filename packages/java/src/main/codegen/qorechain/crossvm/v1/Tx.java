@@ -43,11 +43,25 @@ public final class Tx extends com.google.protobuf.GeneratedFile {
         getSenderBytes();
 
     /**
+     * <pre>
+     * source_vm is IGNORED on input. The chain derives the origin lane from the
+     * execution context, because a caller describing itself cannot be evidence of
+     * what it is. Retained so the field number stays taken and older clients that
+     * still set it are accepted rather than rejected.
+     * </pre>
+     *
      * <code>string source_vm = 2 [json_name = "sourceVm", (.gogoproto.customname) = "SourceVM", (.gogoproto.casttype) = "VMType"];</code>
      * @return The sourceVm.
      */
     java.lang.String getSourceVm();
     /**
+     * <pre>
+     * source_vm is IGNORED on input. The chain derives the origin lane from the
+     * execution context, because a caller describing itself cannot be evidence of
+     * what it is. Retained so the field number stays taken and older clients that
+     * still set it are accepted rather than rejected.
+     * </pre>
+     *
      * <code>string source_vm = 2 [json_name = "sourceVm", (.gogoproto.customname) = "SourceVM", (.gogoproto.casttype) = "VMType"];</code>
      * @return The bytes for sourceVm.
      */
@@ -107,6 +121,18 @@ public final class Tx extends com.google.protobuf.GeneratedFile {
      */
     cosmos.base.v1beta1.CoinOuterClass.CoinOrBuilder getFundsOrBuilder(
         int index);
+
+    /**
+     * <pre>
+     * async queues the call instead of executing it, to be dispatched later by
+     * ProcessQueue. The default is to execute now and return the answer, which is
+     * what a caller that needs the result requires.
+     * </pre>
+     *
+     * <code>bool async = 7 [json_name = "async"];</code>
+     * @return The async.
+     */
+    boolean getAsync();
   }
   /**
    * Protobuf type {@code qorechain.crossvm.v1.MsgCrossVMCall}
@@ -199,6 +225,13 @@ public final class Tx extends com.google.protobuf.GeneratedFile {
     @SuppressWarnings("serial")
     private volatile java.lang.Object sourceVm_ = "";
     /**
+     * <pre>
+     * source_vm is IGNORED on input. The chain derives the origin lane from the
+     * execution context, because a caller describing itself cannot be evidence of
+     * what it is. Retained so the field number stays taken and older clients that
+     * still set it are accepted rather than rejected.
+     * </pre>
+     *
      * <code>string source_vm = 2 [json_name = "sourceVm", (.gogoproto.customname) = "SourceVM", (.gogoproto.casttype) = "VMType"];</code>
      * @return The sourceVm.
      */
@@ -216,6 +249,13 @@ public final class Tx extends com.google.protobuf.GeneratedFile {
       }
     }
     /**
+     * <pre>
+     * source_vm is IGNORED on input. The chain derives the origin lane from the
+     * execution context, because a caller describing itself cannot be evidence of
+     * what it is. Retained so the field number stays taken and older clients that
+     * still set it are accepted rather than rejected.
+     * </pre>
+     *
      * <code>string source_vm = 2 [json_name = "sourceVm", (.gogoproto.customname) = "SourceVM", (.gogoproto.casttype) = "VMType"];</code>
      * @return The bytes for sourceVm.
      */
@@ -364,6 +404,23 @@ public final class Tx extends com.google.protobuf.GeneratedFile {
       return funds_.get(index);
     }
 
+    public static final int ASYNC_FIELD_NUMBER = 7;
+    private boolean async_ = false;
+    /**
+     * <pre>
+     * async queues the call instead of executing it, to be dispatched later by
+     * ProcessQueue. The default is to execute now and return the answer, which is
+     * what a caller that needs the result requires.
+     * </pre>
+     *
+     * <code>bool async = 7 [json_name = "async"];</code>
+     * @return The async.
+     */
+    @java.lang.Override
+    public boolean getAsync() {
+      return async_;
+    }
+
     private byte memoizedIsInitialized = -1;
     @java.lang.Override
     public final boolean isInitialized() {
@@ -396,6 +453,9 @@ public final class Tx extends com.google.protobuf.GeneratedFile {
       for (int i = 0; i < funds_.size(); i++) {
         output.writeMessage(6, funds_.get(i));
       }
+      if (async_ != false) {
+        output.writeBool(7, async_);
+      }
       getUnknownFields().writeTo(output);
     }
     private int computeSerializedSize_0() {
@@ -425,6 +485,10 @@ public final class Tx extends com.google.protobuf.GeneratedFile {
             }
             size += 1 * count;
           }
+      if (async_ != false) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeBoolSize(7, async_);
+      }
       return size;
     }
     @java.lang.Override
@@ -461,6 +525,8 @@ public final class Tx extends com.google.protobuf.GeneratedFile {
           .equals(other.getPayload())) return false;
       if (!getFundsList()
           .equals(other.getFundsList())) return false;
+      if (getAsync()
+          != other.getAsync()) return false;
       if (!getUnknownFields().equals(other.getUnknownFields())) return false;
       return true;
     }
@@ -486,6 +552,9 @@ public final class Tx extends com.google.protobuf.GeneratedFile {
         hash = (37 * hash) + FUNDS_FIELD_NUMBER;
         hash = (53 * hash) + getFundsList().hashCode();
       }
+      hash = (37 * hash) + ASYNC_FIELD_NUMBER;
+      hash = (53 * hash) + com.google.protobuf.Internal.hashBoolean(
+          getAsync());
       hash = (29 * hash) + getUnknownFields().hashCode();
       memoizedHashCode = hash;
       return hash;
@@ -629,6 +698,7 @@ public final class Tx extends com.google.protobuf.GeneratedFile {
           fundsBuilder_.clear();
         }
         bitField0_ = (bitField0_ & ~0x00000020);
+        async_ = false;
         return this;
       }
 
@@ -689,6 +759,9 @@ public final class Tx extends com.google.protobuf.GeneratedFile {
         }
         if (((from_bitField0_ & 0x00000010) != 0)) {
           result.payload_ = payload_;
+        }
+        if (((from_bitField0_ & 0x00000040) != 0)) {
+          result.async_ = async_;
         }
       }
 
@@ -752,6 +825,9 @@ public final class Tx extends com.google.protobuf.GeneratedFile {
               fundsBuilder_.addAllMessages(other.funds_);
             }
           }
+        }
+        if (other.getAsync() != false) {
+          setAsync(other.getAsync());
         }
         this.mergeUnknownFields(other.getUnknownFields());
         onChanged();
@@ -817,6 +893,11 @@ public final class Tx extends com.google.protobuf.GeneratedFile {
                 }
                 break;
               } // case 50
+              case 56: {
+                async_ = input.readBool();
+                bitField0_ |= 0x00000040;
+                break;
+              } // case 56
               default: {
                 if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                   done = true; // was an endgroup tag
@@ -908,6 +989,13 @@ public final class Tx extends com.google.protobuf.GeneratedFile {
 
       private java.lang.Object sourceVm_ = "";
       /**
+       * <pre>
+       * source_vm is IGNORED on input. The chain derives the origin lane from the
+       * execution context, because a caller describing itself cannot be evidence of
+       * what it is. Retained so the field number stays taken and older clients that
+       * still set it are accepted rather than rejected.
+       * </pre>
+       *
        * <code>string source_vm = 2 [json_name = "sourceVm", (.gogoproto.customname) = "SourceVM", (.gogoproto.casttype) = "VMType"];</code>
        * @return The sourceVm.
        */
@@ -924,6 +1012,13 @@ public final class Tx extends com.google.protobuf.GeneratedFile {
         }
       }
       /**
+       * <pre>
+       * source_vm is IGNORED on input. The chain derives the origin lane from the
+       * execution context, because a caller describing itself cannot be evidence of
+       * what it is. Retained so the field number stays taken and older clients that
+       * still set it are accepted rather than rejected.
+       * </pre>
+       *
        * <code>string source_vm = 2 [json_name = "sourceVm", (.gogoproto.customname) = "SourceVM", (.gogoproto.casttype) = "VMType"];</code>
        * @return The bytes for sourceVm.
        */
@@ -941,6 +1036,13 @@ public final class Tx extends com.google.protobuf.GeneratedFile {
         }
       }
       /**
+       * <pre>
+       * source_vm is IGNORED on input. The chain derives the origin lane from the
+       * execution context, because a caller describing itself cannot be evidence of
+       * what it is. Retained so the field number stays taken and older clients that
+       * still set it are accepted rather than rejected.
+       * </pre>
+       *
        * <code>string source_vm = 2 [json_name = "sourceVm", (.gogoproto.customname) = "SourceVM", (.gogoproto.casttype) = "VMType"];</code>
        * @param value The sourceVm to set.
        * @return This builder for chaining.
@@ -954,6 +1056,13 @@ public final class Tx extends com.google.protobuf.GeneratedFile {
         return this;
       }
       /**
+       * <pre>
+       * source_vm is IGNORED on input. The chain derives the origin lane from the
+       * execution context, because a caller describing itself cannot be evidence of
+       * what it is. Retained so the field number stays taken and older clients that
+       * still set it are accepted rather than rejected.
+       * </pre>
+       *
        * <code>string source_vm = 2 [json_name = "sourceVm", (.gogoproto.customname) = "SourceVM", (.gogoproto.casttype) = "VMType"];</code>
        * @return This builder for chaining.
        */
@@ -964,6 +1073,13 @@ public final class Tx extends com.google.protobuf.GeneratedFile {
         return this;
       }
       /**
+       * <pre>
+       * source_vm is IGNORED on input. The chain derives the origin lane from the
+       * execution context, because a caller describing itself cannot be evidence of
+       * what it is. Retained so the field number stays taken and older clients that
+       * still set it are accepted rather than rejected.
+       * </pre>
+       *
        * <code>string source_vm = 2 [json_name = "sourceVm", (.gogoproto.customname) = "SourceVM", (.gogoproto.casttype) = "VMType"];</code>
        * @param value The bytes for sourceVm to set.
        * @return This builder for chaining.
@@ -1394,6 +1510,56 @@ public final class Tx extends com.google.protobuf.GeneratedFile {
         return fundsBuilder_;
       }
 
+      private boolean async_ ;
+      /**
+       * <pre>
+       * async queues the call instead of executing it, to be dispatched later by
+       * ProcessQueue. The default is to execute now and return the answer, which is
+       * what a caller that needs the result requires.
+       * </pre>
+       *
+       * <code>bool async = 7 [json_name = "async"];</code>
+       * @return The async.
+       */
+      @java.lang.Override
+      public boolean getAsync() {
+        return async_;
+      }
+      /**
+       * <pre>
+       * async queues the call instead of executing it, to be dispatched later by
+       * ProcessQueue. The default is to execute now and return the answer, which is
+       * what a caller that needs the result requires.
+       * </pre>
+       *
+       * <code>bool async = 7 [json_name = "async"];</code>
+       * @param value The async to set.
+       * @return This builder for chaining.
+       */
+      public Builder setAsync(boolean value) {
+
+        async_ = value;
+        bitField0_ |= 0x00000040;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * async queues the call instead of executing it, to be dispatched later by
+       * ProcessQueue. The default is to execute now and return the answer, which is
+       * what a caller that needs the result requires.
+       * </pre>
+       *
+       * <code>bool async = 7 [json_name = "async"];</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearAsync() {
+        bitField0_ = (bitField0_ & ~0x00000040);
+        async_ = false;
+        onChanged();
+        return this;
+      }
+
       // @@protoc_insertion_point(builder_scope:qorechain.crossvm.v1.MsgCrossVMCall)
     }
 
@@ -1460,6 +1626,33 @@ public final class Tx extends com.google.protobuf.GeneratedFile {
      */
     com.google.protobuf.ByteString
         getMessageIdBytes();
+
+    /**
+     * <pre>
+     * executed is false for a queued call, whose result is not known yet.
+     * </pre>
+     *
+     * <code>bool executed = 2 [json_name = "executed"];</code>
+     * @return The executed.
+     */
+    boolean getExecuted();
+
+    /**
+     * <pre>
+     * data is the callee's return value, carried back to the caller. A CosmWasm
+     * contract reads it from the submessage reply.
+     * </pre>
+     *
+     * <code>bytes data = 3 [json_name = "data"];</code>
+     * @return The data.
+     */
+    com.google.protobuf.ByteString getData();
+
+    /**
+     * <code>uint64 gas_used = 4 [json_name = "gasUsed"];</code>
+     * @return The gasUsed.
+     */
+    long getGasUsed();
   }
   /**
    * Protobuf type {@code qorechain.crossvm.v1.MsgCrossVMCallResponse}
@@ -1484,6 +1677,7 @@ public final class Tx extends com.google.protobuf.GeneratedFile {
     }
     private MsgCrossVMCallResponse() {
       messageId_ = "";
+      data_ = com.google.protobuf.ByteString.EMPTY;
     }
 
     public static final com.google.protobuf.Descriptors.Descriptor
@@ -1543,6 +1737,48 @@ public final class Tx extends com.google.protobuf.GeneratedFile {
       }
     }
 
+    public static final int EXECUTED_FIELD_NUMBER = 2;
+    private boolean executed_ = false;
+    /**
+     * <pre>
+     * executed is false for a queued call, whose result is not known yet.
+     * </pre>
+     *
+     * <code>bool executed = 2 [json_name = "executed"];</code>
+     * @return The executed.
+     */
+    @java.lang.Override
+    public boolean getExecuted() {
+      return executed_;
+    }
+
+    public static final int DATA_FIELD_NUMBER = 3;
+    private com.google.protobuf.ByteString data_ = com.google.protobuf.ByteString.EMPTY;
+    /**
+     * <pre>
+     * data is the callee's return value, carried back to the caller. A CosmWasm
+     * contract reads it from the submessage reply.
+     * </pre>
+     *
+     * <code>bytes data = 3 [json_name = "data"];</code>
+     * @return The data.
+     */
+    @java.lang.Override
+    public com.google.protobuf.ByteString getData() {
+      return data_;
+    }
+
+    public static final int GAS_USED_FIELD_NUMBER = 4;
+    private long gasUsed_ = 0L;
+    /**
+     * <code>uint64 gas_used = 4 [json_name = "gasUsed"];</code>
+     * @return The gasUsed.
+     */
+    @java.lang.Override
+    public long getGasUsed() {
+      return gasUsed_;
+    }
+
     private byte memoizedIsInitialized = -1;
     @java.lang.Override
     public final boolean isInitialized() {
@@ -1560,12 +1796,33 @@ public final class Tx extends com.google.protobuf.GeneratedFile {
       if (!com.google.protobuf.GeneratedMessage.isStringEmpty(messageId_)) {
         com.google.protobuf.GeneratedMessage.writeString(output, 1, messageId_);
       }
+      if (executed_ != false) {
+        output.writeBool(2, executed_);
+      }
+      if (!data_.isEmpty()) {
+        output.writeBytes(3, data_);
+      }
+      if (gasUsed_ != 0L) {
+        output.writeUInt64(4, gasUsed_);
+      }
       getUnknownFields().writeTo(output);
     }
     private int computeSerializedSize_0() {
       int size = 0;
       if (!com.google.protobuf.GeneratedMessage.isStringEmpty(messageId_)) {
         size += com.google.protobuf.GeneratedMessage.computeStringSize(1, messageId_);
+      }
+      if (executed_ != false) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeBoolSize(2, executed_);
+      }
+      if (!data_.isEmpty()) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeBytesSize(3, data_);
+      }
+      if (gasUsed_ != 0L) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeUInt64Size(4, gasUsed_);
       }
       return size;
     }
@@ -1593,6 +1850,12 @@ public final class Tx extends com.google.protobuf.GeneratedFile {
 
       if (!getMessageId()
           .equals(other.getMessageId())) return false;
+      if (getExecuted()
+          != other.getExecuted()) return false;
+      if (!getData()
+          .equals(other.getData())) return false;
+      if (getGasUsed()
+          != other.getGasUsed()) return false;
       if (!getUnknownFields().equals(other.getUnknownFields())) return false;
       return true;
     }
@@ -1606,6 +1869,14 @@ public final class Tx extends com.google.protobuf.GeneratedFile {
       hash = (19 * hash) + getDescriptor().hashCode();
       hash = (37 * hash) + MESSAGE_ID_FIELD_NUMBER;
       hash = (53 * hash) + getMessageId().hashCode();
+      hash = (37 * hash) + EXECUTED_FIELD_NUMBER;
+      hash = (53 * hash) + com.google.protobuf.Internal.hashBoolean(
+          getExecuted());
+      hash = (37 * hash) + DATA_FIELD_NUMBER;
+      hash = (53 * hash) + getData().hashCode();
+      hash = (37 * hash) + GAS_USED_FIELD_NUMBER;
+      hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
+          getGasUsed());
       hash = (29 * hash) + getUnknownFields().hashCode();
       memoizedHashCode = hash;
       return hash;
@@ -1738,6 +2009,9 @@ public final class Tx extends com.google.protobuf.GeneratedFile {
         super.clear();
         bitField0_ = 0;
         messageId_ = "";
+        executed_ = false;
+        data_ = com.google.protobuf.ByteString.EMPTY;
+        gasUsed_ = 0L;
         return this;
       }
 
@@ -1774,6 +2048,15 @@ public final class Tx extends com.google.protobuf.GeneratedFile {
         if (((from_bitField0_ & 0x00000001) != 0)) {
           result.messageId_ = messageId_;
         }
+        if (((from_bitField0_ & 0x00000002) != 0)) {
+          result.executed_ = executed_;
+        }
+        if (((from_bitField0_ & 0x00000004) != 0)) {
+          result.data_ = data_;
+        }
+        if (((from_bitField0_ & 0x00000008) != 0)) {
+          result.gasUsed_ = gasUsed_;
+        }
       }
 
       @java.lang.Override
@@ -1792,6 +2075,15 @@ public final class Tx extends com.google.protobuf.GeneratedFile {
           messageId_ = other.messageId_;
           bitField0_ |= 0x00000001;
           onChanged();
+        }
+        if (other.getExecuted() != false) {
+          setExecuted(other.getExecuted());
+        }
+        if (!other.getData().isEmpty()) {
+          setData(other.getData());
+        }
+        if (other.getGasUsed() != 0L) {
+          setGasUsed(other.getGasUsed());
         }
         this.mergeUnknownFields(other.getUnknownFields());
         onChanged();
@@ -1824,6 +2116,21 @@ public final class Tx extends com.google.protobuf.GeneratedFile {
                 bitField0_ |= 0x00000001;
                 break;
               } // case 10
+              case 16: {
+                executed_ = input.readBool();
+                bitField0_ |= 0x00000002;
+                break;
+              } // case 16
+              case 26: {
+                data_ = input.readBytes();
+                bitField0_ |= 0x00000004;
+                break;
+              } // case 26
+              case 32: {
+                gasUsed_ = input.readUInt64();
+                bitField0_ |= 0x00000008;
+                break;
+              } // case 32
               default: {
                 if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                   done = true; // was an endgroup tag
@@ -1909,6 +2216,129 @@ public final class Tx extends com.google.protobuf.GeneratedFile {
         checkByteStringIsUtf8(value);
         messageId_ = value;
         bitField0_ |= 0x00000001;
+        onChanged();
+        return this;
+      }
+
+      private boolean executed_ ;
+      /**
+       * <pre>
+       * executed is false for a queued call, whose result is not known yet.
+       * </pre>
+       *
+       * <code>bool executed = 2 [json_name = "executed"];</code>
+       * @return The executed.
+       */
+      @java.lang.Override
+      public boolean getExecuted() {
+        return executed_;
+      }
+      /**
+       * <pre>
+       * executed is false for a queued call, whose result is not known yet.
+       * </pre>
+       *
+       * <code>bool executed = 2 [json_name = "executed"];</code>
+       * @param value The executed to set.
+       * @return This builder for chaining.
+       */
+      public Builder setExecuted(boolean value) {
+
+        executed_ = value;
+        bitField0_ |= 0x00000002;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * executed is false for a queued call, whose result is not known yet.
+       * </pre>
+       *
+       * <code>bool executed = 2 [json_name = "executed"];</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearExecuted() {
+        bitField0_ = (bitField0_ & ~0x00000002);
+        executed_ = false;
+        onChanged();
+        return this;
+      }
+
+      private com.google.protobuf.ByteString data_ = com.google.protobuf.ByteString.EMPTY;
+      /**
+       * <pre>
+       * data is the callee's return value, carried back to the caller. A CosmWasm
+       * contract reads it from the submessage reply.
+       * </pre>
+       *
+       * <code>bytes data = 3 [json_name = "data"];</code>
+       * @return The data.
+       */
+      @java.lang.Override
+      public com.google.protobuf.ByteString getData() {
+        return data_;
+      }
+      /**
+       * <pre>
+       * data is the callee's return value, carried back to the caller. A CosmWasm
+       * contract reads it from the submessage reply.
+       * </pre>
+       *
+       * <code>bytes data = 3 [json_name = "data"];</code>
+       * @param value The data to set.
+       * @return This builder for chaining.
+       */
+      public Builder setData(com.google.protobuf.ByteString value) {
+        if (value == null) { throw new NullPointerException(); }
+        data_ = value;
+        bitField0_ |= 0x00000004;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * data is the callee's return value, carried back to the caller. A CosmWasm
+       * contract reads it from the submessage reply.
+       * </pre>
+       *
+       * <code>bytes data = 3 [json_name = "data"];</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearData() {
+        bitField0_ = (bitField0_ & ~0x00000004);
+        data_ = getDefaultInstance().getData();
+        onChanged();
+        return this;
+      }
+
+      private long gasUsed_ ;
+      /**
+       * <code>uint64 gas_used = 4 [json_name = "gasUsed"];</code>
+       * @return The gasUsed.
+       */
+      @java.lang.Override
+      public long getGasUsed() {
+        return gasUsed_;
+      }
+      /**
+       * <code>uint64 gas_used = 4 [json_name = "gasUsed"];</code>
+       * @param value The gasUsed to set.
+       * @return This builder for chaining.
+       */
+      public Builder setGasUsed(long value) {
+
+        gasUsed_ = value;
+        bitField0_ |= 0x00000008;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>uint64 gas_used = 4 [json_name = "gasUsed"];</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearGasUsed() {
+        bitField0_ = (bitField0_ & ~0x00000008);
+        gasUsed_ = 0L;
         onChanged();
         return this;
       }
@@ -2875,7 +3305,7 @@ public final class Tx extends com.google.protobuf.GeneratedFile {
       "in.crossvm.v1\032\027cosmos/msg/v1/msg.proto\032\031" +
       "cosmos_proto/cosmos.proto\032\036cosmos/base/v" +
       "1beta1/coin.proto\032\024gogoproto/gogo.proto\"" +
-      "\337\002\n\016MsgCrossVMCall\0220\n\006sender\030\001 \001(\tB\030\322\264-\024" +
+      "\365\002\n\016MsgCrossVMCall\0220\n\006sender\030\001 \001(\tB\030\322\264-\024" +
       "cosmos.AddressStringR\006sender\0223\n\tsource_v" +
       "m\030\002 \001(\tB\026\342\336\037\010SourceVM\372\336\037\006VMTypeR\010sourceV" +
       "m\0223\n\ttarget_vm\030\003 \001(\tB\026\342\336\037\010TargetVM\372\336\037\006VM" +
@@ -2883,19 +3313,21 @@ public final class Tx extends com.google.protobuf.GeneratedFile {
       "\016targetContract\022\030\n\007payload\030\005 \001(\014R\007payloa" +
       "d\022a\n\005funds\030\006 \003(\0132\031.cosmos.base.v1beta1.C" +
       "oinB0\310\336\037\000\252\337\037(github.com/cosmos/cosmos-sd" +
-      "k/types.CoinsR\005funds:\013\202\347\260*\006sender\"F\n\026Msg" +
-      "CrossVMCallResponse\022,\n\nmessage_id\030\001 \001(\tB" +
-      "\r\342\336\037\tMessageIDR\tmessageId\"Y\n\017MsgProcessQ" +
-      "ueue\0226\n\tauthority\030\001 \001(\tB\030\322\264-\024cosmos.Addr" +
-      "essStringR\tauthority:\016\202\347\260*\tauthority\"\031\n\027" +
-      "MsgProcessQueueResponse2\325\001\n\003Msg\022a\n\013Cross" +
-      "VMCall\022$.qorechain.crossvm.v1.MsgCrossVM" +
-      "Call\032,.qorechain.crossvm.v1.MsgCrossVMCa" +
-      "llResponse\022d\n\014ProcessQueue\022%.qorechain.c" +
-      "rossvm.v1.MsgProcessQueue\032-.qorechain.cr" +
-      "ossvm.v1.MsgProcessQueueResponse\032\005\200\347\260*\001B" +
-      "5Z3github.com/qorechain/qorechain-core/x" +
-      "/crossvm/typesb\006proto3"
+      "k/types.CoinsR\005funds\022\024\n\005async\030\007 \001(\010R\005asy" +
+      "nc:\013\202\347\260*\006sender\"\221\001\n\026MsgCrossVMCallRespon" +
+      "se\022,\n\nmessage_id\030\001 \001(\tB\r\342\336\037\tMessageIDR\tm" +
+      "essageId\022\032\n\010executed\030\002 \001(\010R\010executed\022\022\n\004" +
+      "data\030\003 \001(\014R\004data\022\031\n\010gas_used\030\004 \001(\004R\007gasU" +
+      "sed\"Y\n\017MsgProcessQueue\0226\n\tauthority\030\001 \001(" +
+      "\tB\030\322\264-\024cosmos.AddressStringR\tauthority:\016" +
+      "\202\347\260*\tauthority\"\031\n\027MsgProcessQueueRespons" +
+      "e2\325\001\n\003Msg\022a\n\013CrossVMCall\022$.qorechain.cro" +
+      "ssvm.v1.MsgCrossVMCall\032,.qorechain.cross" +
+      "vm.v1.MsgCrossVMCallResponse\022d\n\014ProcessQ" +
+      "ueue\022%.qorechain.crossvm.v1.MsgProcessQu" +
+      "eue\032-.qorechain.crossvm.v1.MsgProcessQue" +
+      "ueResponse\032\005\200\347\260*\001B5Z3github.com/qorechai" +
+      "n/qorechain-core/x/crossvm/typesb\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
@@ -2910,13 +3342,13 @@ public final class Tx extends com.google.protobuf.GeneratedFile {
     internal_static_qorechain_crossvm_v1_MsgCrossVMCall_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_qorechain_crossvm_v1_MsgCrossVMCall_descriptor,
-        new java.lang.String[] { "Sender", "SourceVm", "TargetVm", "TargetContract", "Payload", "Funds", });
+        new java.lang.String[] { "Sender", "SourceVm", "TargetVm", "TargetContract", "Payload", "Funds", "Async", });
     internal_static_qorechain_crossvm_v1_MsgCrossVMCallResponse_descriptor =
       getDescriptor().getMessageType(1);
     internal_static_qorechain_crossvm_v1_MsgCrossVMCallResponse_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_qorechain_crossvm_v1_MsgCrossVMCallResponse_descriptor,
-        new java.lang.String[] { "MessageId", });
+        new java.lang.String[] { "MessageId", "Executed", "Data", "GasUsed", });
     internal_static_qorechain_crossvm_v1_MsgProcessQueue_descriptor =
       getDescriptor().getMessageType(2);
     internal_static_qorechain_crossvm_v1_MsgProcessQueue_fieldAccessorTable = new

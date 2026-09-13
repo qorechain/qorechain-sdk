@@ -69,7 +69,8 @@ pub use accounts::{
 };
 
 pub use pqc::{
-    build_hybrid_signature_extension, generate_pqc_keypair, pqc_keypair_from_seed, pqc_sign,
+    build_hybrid_signature_extension, generate_pqc_keypair, is_valid_pqc_public_key_len,
+    is_valid_pqc_secret_key_len, is_valid_pqc_signature_len, pqc_keypair_from_seed, pqc_sign,
     pqc_sign_hedged, pqc_verify, HybridSignatureExtension, PqcKeypair, ALGORITHM_DILITHIUM5,
     ALGORITHM_MLKEM1024, HYBRID_SIG_TYPE_URL, MLDSA87_PUBLIC_KEY_LEN, MLDSA87_SECRET_KEY_LEN,
     MLDSA87_SIGNATURE_LEN,
@@ -112,7 +113,8 @@ pub use ai::{
 };
 
 pub use cross_vm::{
-    CallOptions, CrossVm, Payload, VM_TYPES, VM_TYPE_COSMWASM, VM_TYPE_EVM, VM_TYPE_SVM,
+    CallOptions, CrossVm, CrossVmCallResponse, Payload, VM_TYPES, VM_TYPE_COSMWASM, VM_TYPE_EVM,
+    VM_TYPE_SVM,
 };
 
 pub use pqc_dx::{

@@ -6417,6 +6417,2261 @@ public final class Tx extends com.google.protobuf.GeneratedFile {
 
   }
 
+  public interface SVMParamsOrBuilder extends
+      // @@protoc_insertion_point(interface_extends:qorechain.svm.v1.SVMParams)
+      com.google.protobuf.MessageOrBuilder {
+
+    /**
+     * <code>uint64 max_program_size = 1 [json_name = "maxProgramSize"];</code>
+     * @return The maxProgramSize.
+     */
+    long getMaxProgramSize();
+
+    /**
+     * <code>uint64 max_account_data_size = 2 [json_name = "maxAccountDataSize"];</code>
+     * @return The maxAccountDataSize.
+     */
+    long getMaxAccountDataSize();
+
+    /**
+     * <code>uint64 compute_budget_max = 3 [json_name = "computeBudgetMax"];</code>
+     * @return The computeBudgetMax.
+     */
+    long getComputeBudgetMax();
+
+    /**
+     * <code>uint64 lamports_per_byte = 4 [json_name = "lamportsPerByte"];</code>
+     * @return The lamportsPerByte.
+     */
+    long getLamportsPerByte();
+
+    /**
+     * <code>string rent_exemption_multi = 5 [json_name = "rentExemptionMulti", (.gogoproto.nullable) = false, (.gogoproto.customtype) = "cosmossdk.io/math.LegacyDec"];</code>
+     * @return The rentExemptionMulti.
+     */
+    java.lang.String getRentExemptionMulti();
+    /**
+     * <code>string rent_exemption_multi = 5 [json_name = "rentExemptionMulti", (.gogoproto.nullable) = false, (.gogoproto.customtype) = "cosmossdk.io/math.LegacyDec"];</code>
+     * @return The bytes for rentExemptionMulti.
+     */
+    com.google.protobuf.ByteString
+        getRentExemptionMultiBytes();
+
+    /**
+     * <code>bool enabled = 6 [json_name = "enabled"];</code>
+     * @return The enabled.
+     */
+    boolean getEnabled();
+
+    /**
+     * <code>int64 svm_slot_offset = 7 [json_name = "svmSlotOffset"];</code>
+     * @return The svmSlotOffset.
+     */
+    long getSvmSlotOffset();
+
+    /**
+     * <code>uint32 default_sig_scheme = 8 [json_name = "defaultSigScheme"];</code>
+     * @return The defaultSigScheme.
+     */
+    int getDefaultSigScheme();
+
+    /**
+     * <code>uint32 max_cpi = 9 [json_name = "maxCpi"];</code>
+     * @return The maxCpi.
+     */
+    int getMaxCpi();
+  }
+  /**
+   * <pre>
+   * SVMParams mirrors the module's runtime parameters so governance can replace
+   * them wholesale. The store keeps them as JSON, so the handler converts.
+   * </pre>
+   *
+   * Protobuf type {@code qorechain.svm.v1.SVMParams}
+   */
+  public static final class SVMParams extends
+      com.google.protobuf.GeneratedMessage implements
+      // @@protoc_insertion_point(message_implements:qorechain.svm.v1.SVMParams)
+      SVMParamsOrBuilder {
+  private static final long serialVersionUID = 0L;
+    static {
+      com.google.protobuf.RuntimeVersion.validateProtobufGencodeVersion(
+        com.google.protobuf.RuntimeVersion.RuntimeDomain.PUBLIC,
+        /* major= */ 4,
+        /* minor= */ 35,
+        /* patch= */ 1,
+        /* suffix= */ "",
+        "SVMParams");
+    }
+    // Use SVMParams.newBuilder() to construct.
+    private SVMParams(com.google.protobuf.GeneratedMessage.Builder<?> builder) {
+      super(builder);
+    }
+    private SVMParams() {
+      rentExemptionMulti_ = "";
+    }
+
+    public static final com.google.protobuf.Descriptors.Descriptor
+        getDescriptor() {
+      return qorechain.svm.v1.Tx.internal_static_qorechain_svm_v1_SVMParams_descriptor;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Descriptors.Descriptor getDescriptorForType() {
+      return qorechain.svm.v1.Tx.internal_static_qorechain_svm_v1_SVMParams_descriptor;
+    }
+
+    @java.lang.Override
+    protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+        internalGetFieldAccessorTable() {
+      return qorechain.svm.v1.Tx.internal_static_qorechain_svm_v1_SVMParams_fieldAccessorTable
+          .ensureFieldAccessorsInitialized(
+              qorechain.svm.v1.Tx.SVMParams.class, qorechain.svm.v1.Tx.SVMParams.Builder.class);
+    }
+
+    public static final int MAX_PROGRAM_SIZE_FIELD_NUMBER = 1;
+    private long maxProgramSize_ = 0L;
+    /**
+     * <code>uint64 max_program_size = 1 [json_name = "maxProgramSize"];</code>
+     * @return The maxProgramSize.
+     */
+    @java.lang.Override
+    public long getMaxProgramSize() {
+      return maxProgramSize_;
+    }
+
+    public static final int MAX_ACCOUNT_DATA_SIZE_FIELD_NUMBER = 2;
+    private long maxAccountDataSize_ = 0L;
+    /**
+     * <code>uint64 max_account_data_size = 2 [json_name = "maxAccountDataSize"];</code>
+     * @return The maxAccountDataSize.
+     */
+    @java.lang.Override
+    public long getMaxAccountDataSize() {
+      return maxAccountDataSize_;
+    }
+
+    public static final int COMPUTE_BUDGET_MAX_FIELD_NUMBER = 3;
+    private long computeBudgetMax_ = 0L;
+    /**
+     * <code>uint64 compute_budget_max = 3 [json_name = "computeBudgetMax"];</code>
+     * @return The computeBudgetMax.
+     */
+    @java.lang.Override
+    public long getComputeBudgetMax() {
+      return computeBudgetMax_;
+    }
+
+    public static final int LAMPORTS_PER_BYTE_FIELD_NUMBER = 4;
+    private long lamportsPerByte_ = 0L;
+    /**
+     * <code>uint64 lamports_per_byte = 4 [json_name = "lamportsPerByte"];</code>
+     * @return The lamportsPerByte.
+     */
+    @java.lang.Override
+    public long getLamportsPerByte() {
+      return lamportsPerByte_;
+    }
+
+    public static final int RENT_EXEMPTION_MULTI_FIELD_NUMBER = 5;
+    @SuppressWarnings("serial")
+    private volatile java.lang.Object rentExemptionMulti_ = "";
+    /**
+     * <code>string rent_exemption_multi = 5 [json_name = "rentExemptionMulti", (.gogoproto.nullable) = false, (.gogoproto.customtype) = "cosmossdk.io/math.LegacyDec"];</code>
+     * @return The rentExemptionMulti.
+     */
+    @java.lang.Override
+    public java.lang.String getRentExemptionMulti() {
+      java.lang.Object ref = rentExemptionMulti_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        rentExemptionMulti_ = s;
+        return s;
+      }
+    }
+    /**
+     * <code>string rent_exemption_multi = 5 [json_name = "rentExemptionMulti", (.gogoproto.nullable) = false, (.gogoproto.customtype) = "cosmossdk.io/math.LegacyDec"];</code>
+     * @return The bytes for rentExemptionMulti.
+     */
+    @java.lang.Override
+    public com.google.protobuf.ByteString
+        getRentExemptionMultiBytes() {
+      java.lang.Object ref = rentExemptionMulti_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        rentExemptionMulti_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
+    public static final int ENABLED_FIELD_NUMBER = 6;
+    private boolean enabled_ = false;
+    /**
+     * <code>bool enabled = 6 [json_name = "enabled"];</code>
+     * @return The enabled.
+     */
+    @java.lang.Override
+    public boolean getEnabled() {
+      return enabled_;
+    }
+
+    public static final int SVM_SLOT_OFFSET_FIELD_NUMBER = 7;
+    private long svmSlotOffset_ = 0L;
+    /**
+     * <code>int64 svm_slot_offset = 7 [json_name = "svmSlotOffset"];</code>
+     * @return The svmSlotOffset.
+     */
+    @java.lang.Override
+    public long getSvmSlotOffset() {
+      return svmSlotOffset_;
+    }
+
+    public static final int DEFAULT_SIG_SCHEME_FIELD_NUMBER = 8;
+    private int defaultSigScheme_ = 0;
+    /**
+     * <code>uint32 default_sig_scheme = 8 [json_name = "defaultSigScheme"];</code>
+     * @return The defaultSigScheme.
+     */
+    @java.lang.Override
+    public int getDefaultSigScheme() {
+      return defaultSigScheme_;
+    }
+
+    public static final int MAX_CPI_FIELD_NUMBER = 9;
+    private int maxCpi_ = 0;
+    /**
+     * <code>uint32 max_cpi = 9 [json_name = "maxCpi"];</code>
+     * @return The maxCpi.
+     */
+    @java.lang.Override
+    public int getMaxCpi() {
+      return maxCpi_;
+    }
+
+    private byte memoizedIsInitialized = -1;
+    @java.lang.Override
+    public final boolean isInitialized() {
+      byte isInitialized = memoizedIsInitialized;
+      if (isInitialized == 1) return true;
+      if (isInitialized == 0) return false;
+
+      memoizedIsInitialized = 1;
+      return true;
+    }
+
+    @java.lang.Override
+    public void writeTo(com.google.protobuf.CodedOutputStream output)
+                        throws java.io.IOException {
+      if (maxProgramSize_ != 0L) {
+        output.writeUInt64(1, maxProgramSize_);
+      }
+      if (maxAccountDataSize_ != 0L) {
+        output.writeUInt64(2, maxAccountDataSize_);
+      }
+      if (computeBudgetMax_ != 0L) {
+        output.writeUInt64(3, computeBudgetMax_);
+      }
+      if (lamportsPerByte_ != 0L) {
+        output.writeUInt64(4, lamportsPerByte_);
+      }
+      if (!com.google.protobuf.GeneratedMessage.isStringEmpty(rentExemptionMulti_)) {
+        com.google.protobuf.GeneratedMessage.writeString(output, 5, rentExemptionMulti_);
+      }
+      if (enabled_ != false) {
+        output.writeBool(6, enabled_);
+      }
+      if (svmSlotOffset_ != 0L) {
+        output.writeInt64(7, svmSlotOffset_);
+      }
+      if (defaultSigScheme_ != 0) {
+        output.writeUInt32(8, defaultSigScheme_);
+      }
+      if (maxCpi_ != 0) {
+        output.writeUInt32(9, maxCpi_);
+      }
+      getUnknownFields().writeTo(output);
+    }
+    private int computeSerializedSize_0() {
+      int size = 0;
+      if (maxProgramSize_ != 0L) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeUInt64Size(1, maxProgramSize_);
+      }
+      if (maxAccountDataSize_ != 0L) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeUInt64Size(2, maxAccountDataSize_);
+      }
+      if (computeBudgetMax_ != 0L) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeUInt64Size(3, computeBudgetMax_);
+      }
+      if (lamportsPerByte_ != 0L) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeUInt64Size(4, lamportsPerByte_);
+      }
+      if (!com.google.protobuf.GeneratedMessage.isStringEmpty(rentExemptionMulti_)) {
+        size += com.google.protobuf.GeneratedMessage.computeStringSize(5, rentExemptionMulti_);
+      }
+      if (enabled_ != false) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeBoolSize(6, enabled_);
+      }
+      if (svmSlotOffset_ != 0L) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeInt64Size(7, svmSlotOffset_);
+      }
+      if (defaultSigScheme_ != 0) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeUInt32Size(8, defaultSigScheme_);
+      }
+      if (maxCpi_ != 0) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeUInt32Size(9, maxCpi_);
+      }
+      return size;
+    }
+    @java.lang.Override
+    public int getSerializedSize() {
+      int size = memoizedSize;
+      if (size != -1) return size;
+
+      size = 0;
+      size += computeSerializedSize_0();
+      size += getUnknownFields().getSerializedSize();
+      memoizedSize = size;
+      return size;
+    }
+
+    @java.lang.Override
+    public boolean equals(final java.lang.Object obj) {
+      if (obj == this) {
+       return true;
+      }
+      if (!(obj instanceof qorechain.svm.v1.Tx.SVMParams)) {
+        return super.equals(obj);
+      }
+      qorechain.svm.v1.Tx.SVMParams other = (qorechain.svm.v1.Tx.SVMParams) obj;
+
+      if (getMaxProgramSize()
+          != other.getMaxProgramSize()) return false;
+      if (getMaxAccountDataSize()
+          != other.getMaxAccountDataSize()) return false;
+      if (getComputeBudgetMax()
+          != other.getComputeBudgetMax()) return false;
+      if (getLamportsPerByte()
+          != other.getLamportsPerByte()) return false;
+      if (!getRentExemptionMulti()
+          .equals(other.getRentExemptionMulti())) return false;
+      if (getEnabled()
+          != other.getEnabled()) return false;
+      if (getSvmSlotOffset()
+          != other.getSvmSlotOffset()) return false;
+      if (getDefaultSigScheme()
+          != other.getDefaultSigScheme()) return false;
+      if (getMaxCpi()
+          != other.getMaxCpi()) return false;
+      if (!getUnknownFields().equals(other.getUnknownFields())) return false;
+      return true;
+    }
+
+    @java.lang.Override
+    public int hashCode() {
+      if (memoizedHashCode != 0) {
+        return memoizedHashCode;
+      }
+      int hash = 41;
+      hash = (19 * hash) + getDescriptor().hashCode();
+      hash = (37 * hash) + MAX_PROGRAM_SIZE_FIELD_NUMBER;
+      hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
+          getMaxProgramSize());
+      hash = (37 * hash) + MAX_ACCOUNT_DATA_SIZE_FIELD_NUMBER;
+      hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
+          getMaxAccountDataSize());
+      hash = (37 * hash) + COMPUTE_BUDGET_MAX_FIELD_NUMBER;
+      hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
+          getComputeBudgetMax());
+      hash = (37 * hash) + LAMPORTS_PER_BYTE_FIELD_NUMBER;
+      hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
+          getLamportsPerByte());
+      hash = (37 * hash) + RENT_EXEMPTION_MULTI_FIELD_NUMBER;
+      hash = (53 * hash) + getRentExemptionMulti().hashCode();
+      hash = (37 * hash) + ENABLED_FIELD_NUMBER;
+      hash = (53 * hash) + com.google.protobuf.Internal.hashBoolean(
+          getEnabled());
+      hash = (37 * hash) + SVM_SLOT_OFFSET_FIELD_NUMBER;
+      hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
+          getSvmSlotOffset());
+      hash = (37 * hash) + DEFAULT_SIG_SCHEME_FIELD_NUMBER;
+      hash = (53 * hash) + getDefaultSigScheme();
+      hash = (37 * hash) + MAX_CPI_FIELD_NUMBER;
+      hash = (53 * hash) + getMaxCpi();
+      hash = (29 * hash) + getUnknownFields().hashCode();
+      memoizedHashCode = hash;
+      return hash;
+    }
+
+    public static qorechain.svm.v1.Tx.SVMParams parseFrom(
+        java.nio.ByteBuffer data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static qorechain.svm.v1.Tx.SVMParams parseFrom(
+        java.nio.ByteBuffer data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static qorechain.svm.v1.Tx.SVMParams parseFrom(
+        com.google.protobuf.ByteString data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static qorechain.svm.v1.Tx.SVMParams parseFrom(
+        com.google.protobuf.ByteString data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static qorechain.svm.v1.Tx.SVMParams parseFrom(byte[] data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static qorechain.svm.v1.Tx.SVMParams parseFrom(
+        byte[] data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static qorechain.svm.v1.Tx.SVMParams parseFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input);
+    }
+    public static qorechain.svm.v1.Tx.SVMParams parseFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    public static qorechain.svm.v1.Tx.SVMParams parseDelimitedFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseDelimitedWithIOException(PARSER, input);
+    }
+
+    public static qorechain.svm.v1.Tx.SVMParams parseDelimitedFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static qorechain.svm.v1.Tx.SVMParams parseFrom(
+        com.google.protobuf.CodedInputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input);
+    }
+    public static qorechain.svm.v1.Tx.SVMParams parseFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    @java.lang.Override
+    public Builder newBuilderForType() { return newBuilder(); }
+    public static Builder newBuilder() {
+      return DEFAULT_INSTANCE.toBuilder();
+    }
+    public static Builder newBuilder(qorechain.svm.v1.Tx.SVMParams prototype) {
+      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+    }
+    @java.lang.Override
+    public Builder toBuilder() {
+      return this == DEFAULT_INSTANCE
+          ? new Builder() : new Builder().mergeFrom(this);
+    }
+
+    @java.lang.Override
+    protected Builder newBuilderForType(
+        com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+      Builder builder = new Builder(parent);
+      return builder;
+    }
+    /**
+     * <pre>
+     * SVMParams mirrors the module's runtime parameters so governance can replace
+     * them wholesale. The store keeps them as JSON, so the handler converts.
+     * </pre>
+     *
+     * Protobuf type {@code qorechain.svm.v1.SVMParams}
+     */
+    public static final class Builder extends
+        com.google.protobuf.GeneratedMessage.Builder<Builder> implements
+        // @@protoc_insertion_point(builder_implements:qorechain.svm.v1.SVMParams)
+        qorechain.svm.v1.Tx.SVMParamsOrBuilder {
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return qorechain.svm.v1.Tx.internal_static_qorechain_svm_v1_SVMParams_descriptor;
+      }
+
+      @java.lang.Override
+      protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return qorechain.svm.v1.Tx.internal_static_qorechain_svm_v1_SVMParams_fieldAccessorTable
+            .ensureFieldAccessorsInitialized(
+                qorechain.svm.v1.Tx.SVMParams.class, qorechain.svm.v1.Tx.SVMParams.Builder.class);
+      }
+
+      // Construct using qorechain.svm.v1.Tx.SVMParams.newBuilder()
+      private Builder() {
+
+      }
+
+      private Builder(
+          com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+        super(parent);
+
+      }
+      @java.lang.Override
+      public Builder clear() {
+        super.clear();
+        bitField0_ = 0;
+        maxProgramSize_ = 0L;
+        maxAccountDataSize_ = 0L;
+        computeBudgetMax_ = 0L;
+        lamportsPerByte_ = 0L;
+        rentExemptionMulti_ = "";
+        enabled_ = false;
+        svmSlotOffset_ = 0L;
+        defaultSigScheme_ = 0;
+        maxCpi_ = 0;
+        return this;
+      }
+
+      @java.lang.Override
+      public com.google.protobuf.Descriptors.Descriptor
+          getDescriptorForType() {
+        return qorechain.svm.v1.Tx.internal_static_qorechain_svm_v1_SVMParams_descriptor;
+      }
+
+      @java.lang.Override
+      public qorechain.svm.v1.Tx.SVMParams getDefaultInstanceForType() {
+        return qorechain.svm.v1.Tx.SVMParams.getDefaultInstance();
+      }
+
+      @java.lang.Override
+      public qorechain.svm.v1.Tx.SVMParams build() {
+        qorechain.svm.v1.Tx.SVMParams result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(result);
+        }
+        return result;
+      }
+
+      @java.lang.Override
+      public qorechain.svm.v1.Tx.SVMParams buildPartial() {
+        qorechain.svm.v1.Tx.SVMParams result = new qorechain.svm.v1.Tx.SVMParams(this);
+        if (bitField0_ != 0) { buildPartial0(result); }
+        onBuilt();
+        return result;
+      }
+
+      private void buildPartial0(qorechain.svm.v1.Tx.SVMParams result) {
+        int from_bitField0_ = bitField0_;
+        if (((from_bitField0_ & 0x00000001) != 0)) {
+          result.maxProgramSize_ = maxProgramSize_;
+        }
+        if (((from_bitField0_ & 0x00000002) != 0)) {
+          result.maxAccountDataSize_ = maxAccountDataSize_;
+        }
+        if (((from_bitField0_ & 0x00000004) != 0)) {
+          result.computeBudgetMax_ = computeBudgetMax_;
+        }
+        if (((from_bitField0_ & 0x00000008) != 0)) {
+          result.lamportsPerByte_ = lamportsPerByte_;
+        }
+        if (((from_bitField0_ & 0x00000010) != 0)) {
+          result.rentExemptionMulti_ = rentExemptionMulti_;
+        }
+        if (((from_bitField0_ & 0x00000020) != 0)) {
+          result.enabled_ = enabled_;
+        }
+        if (((from_bitField0_ & 0x00000040) != 0)) {
+          result.svmSlotOffset_ = svmSlotOffset_;
+        }
+        if (((from_bitField0_ & 0x00000080) != 0)) {
+          result.defaultSigScheme_ = defaultSigScheme_;
+        }
+        if (((from_bitField0_ & 0x00000100) != 0)) {
+          result.maxCpi_ = maxCpi_;
+        }
+      }
+
+      @java.lang.Override
+      public Builder mergeFrom(com.google.protobuf.Message other) {
+        if (other instanceof qorechain.svm.v1.Tx.SVMParams) {
+          return mergeFrom((qorechain.svm.v1.Tx.SVMParams)other);
+        } else {
+          super.mergeFrom(other);
+          return this;
+        }
+      }
+
+      public Builder mergeFrom(qorechain.svm.v1.Tx.SVMParams other) {
+        if (other == qorechain.svm.v1.Tx.SVMParams.getDefaultInstance()) return this;
+        if (other.getMaxProgramSize() != 0L) {
+          setMaxProgramSize(other.getMaxProgramSize());
+        }
+        if (other.getMaxAccountDataSize() != 0L) {
+          setMaxAccountDataSize(other.getMaxAccountDataSize());
+        }
+        if (other.getComputeBudgetMax() != 0L) {
+          setComputeBudgetMax(other.getComputeBudgetMax());
+        }
+        if (other.getLamportsPerByte() != 0L) {
+          setLamportsPerByte(other.getLamportsPerByte());
+        }
+        if (!other.getRentExemptionMulti().isEmpty()) {
+          rentExemptionMulti_ = other.rentExemptionMulti_;
+          bitField0_ |= 0x00000010;
+          onChanged();
+        }
+        if (other.getEnabled() != false) {
+          setEnabled(other.getEnabled());
+        }
+        if (other.getSvmSlotOffset() != 0L) {
+          setSvmSlotOffset(other.getSvmSlotOffset());
+        }
+        if (other.getDefaultSigScheme() != 0) {
+          setDefaultSigScheme(other.getDefaultSigScheme());
+        }
+        if (other.getMaxCpi() != 0) {
+          setMaxCpi(other.getMaxCpi());
+        }
+        this.mergeUnknownFields(other.getUnknownFields());
+        onChanged();
+        return this;
+      }
+
+      @java.lang.Override
+      public final boolean isInitialized() {
+        return true;
+      }
+
+      @java.lang.Override
+      public Builder mergeFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        if (extensionRegistry == null) {
+          throw new java.lang.NullPointerException();
+        }
+        try {
+          boolean done = false;
+          while (!done) {
+            int tag = input.readTag();
+            switch (tag) {
+              case 0:
+                done = true;
+                break;
+              case 8: {
+                maxProgramSize_ = input.readUInt64();
+                bitField0_ |= 0x00000001;
+                break;
+              } // case 8
+              case 16: {
+                maxAccountDataSize_ = input.readUInt64();
+                bitField0_ |= 0x00000002;
+                break;
+              } // case 16
+              case 24: {
+                computeBudgetMax_ = input.readUInt64();
+                bitField0_ |= 0x00000004;
+                break;
+              } // case 24
+              case 32: {
+                lamportsPerByte_ = input.readUInt64();
+                bitField0_ |= 0x00000008;
+                break;
+              } // case 32
+              case 42: {
+                rentExemptionMulti_ = input.readStringRequireUtf8();
+                bitField0_ |= 0x00000010;
+                break;
+              } // case 42
+              case 48: {
+                enabled_ = input.readBool();
+                bitField0_ |= 0x00000020;
+                break;
+              } // case 48
+              case 56: {
+                svmSlotOffset_ = input.readInt64();
+                bitField0_ |= 0x00000040;
+                break;
+              } // case 56
+              case 64: {
+                defaultSigScheme_ = input.readUInt32();
+                bitField0_ |= 0x00000080;
+                break;
+              } // case 64
+              case 72: {
+                maxCpi_ = input.readUInt32();
+                bitField0_ |= 0x00000100;
+                break;
+              } // case 72
+              default: {
+                if (!super.parseUnknownField(input, extensionRegistry, tag)) {
+                  done = true; // was an endgroup tag
+                }
+                break;
+              } // default:
+            } // switch (tag)
+          } // while (!done)
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          throw e.unwrapIOException();
+        } finally {
+          onChanged();
+        } // finally
+        return this;
+      }
+      private int bitField0_;
+
+      private long maxProgramSize_ ;
+      /**
+       * <code>uint64 max_program_size = 1 [json_name = "maxProgramSize"];</code>
+       * @return The maxProgramSize.
+       */
+      @java.lang.Override
+      public long getMaxProgramSize() {
+        return maxProgramSize_;
+      }
+      /**
+       * <code>uint64 max_program_size = 1 [json_name = "maxProgramSize"];</code>
+       * @param value The maxProgramSize to set.
+       * @return This builder for chaining.
+       */
+      public Builder setMaxProgramSize(long value) {
+
+        maxProgramSize_ = value;
+        bitField0_ |= 0x00000001;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>uint64 max_program_size = 1 [json_name = "maxProgramSize"];</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearMaxProgramSize() {
+        bitField0_ = (bitField0_ & ~0x00000001);
+        maxProgramSize_ = 0L;
+        onChanged();
+        return this;
+      }
+
+      private long maxAccountDataSize_ ;
+      /**
+       * <code>uint64 max_account_data_size = 2 [json_name = "maxAccountDataSize"];</code>
+       * @return The maxAccountDataSize.
+       */
+      @java.lang.Override
+      public long getMaxAccountDataSize() {
+        return maxAccountDataSize_;
+      }
+      /**
+       * <code>uint64 max_account_data_size = 2 [json_name = "maxAccountDataSize"];</code>
+       * @param value The maxAccountDataSize to set.
+       * @return This builder for chaining.
+       */
+      public Builder setMaxAccountDataSize(long value) {
+
+        maxAccountDataSize_ = value;
+        bitField0_ |= 0x00000002;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>uint64 max_account_data_size = 2 [json_name = "maxAccountDataSize"];</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearMaxAccountDataSize() {
+        bitField0_ = (bitField0_ & ~0x00000002);
+        maxAccountDataSize_ = 0L;
+        onChanged();
+        return this;
+      }
+
+      private long computeBudgetMax_ ;
+      /**
+       * <code>uint64 compute_budget_max = 3 [json_name = "computeBudgetMax"];</code>
+       * @return The computeBudgetMax.
+       */
+      @java.lang.Override
+      public long getComputeBudgetMax() {
+        return computeBudgetMax_;
+      }
+      /**
+       * <code>uint64 compute_budget_max = 3 [json_name = "computeBudgetMax"];</code>
+       * @param value The computeBudgetMax to set.
+       * @return This builder for chaining.
+       */
+      public Builder setComputeBudgetMax(long value) {
+
+        computeBudgetMax_ = value;
+        bitField0_ |= 0x00000004;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>uint64 compute_budget_max = 3 [json_name = "computeBudgetMax"];</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearComputeBudgetMax() {
+        bitField0_ = (bitField0_ & ~0x00000004);
+        computeBudgetMax_ = 0L;
+        onChanged();
+        return this;
+      }
+
+      private long lamportsPerByte_ ;
+      /**
+       * <code>uint64 lamports_per_byte = 4 [json_name = "lamportsPerByte"];</code>
+       * @return The lamportsPerByte.
+       */
+      @java.lang.Override
+      public long getLamportsPerByte() {
+        return lamportsPerByte_;
+      }
+      /**
+       * <code>uint64 lamports_per_byte = 4 [json_name = "lamportsPerByte"];</code>
+       * @param value The lamportsPerByte to set.
+       * @return This builder for chaining.
+       */
+      public Builder setLamportsPerByte(long value) {
+
+        lamportsPerByte_ = value;
+        bitField0_ |= 0x00000008;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>uint64 lamports_per_byte = 4 [json_name = "lamportsPerByte"];</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearLamportsPerByte() {
+        bitField0_ = (bitField0_ & ~0x00000008);
+        lamportsPerByte_ = 0L;
+        onChanged();
+        return this;
+      }
+
+      private java.lang.Object rentExemptionMulti_ = "";
+      /**
+       * <code>string rent_exemption_multi = 5 [json_name = "rentExemptionMulti", (.gogoproto.nullable) = false, (.gogoproto.customtype) = "cosmossdk.io/math.LegacyDec"];</code>
+       * @return The rentExemptionMulti.
+       */
+      public java.lang.String getRentExemptionMulti() {
+        java.lang.Object ref = rentExemptionMulti_;
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          rentExemptionMulti_ = s;
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
+      }
+      /**
+       * <code>string rent_exemption_multi = 5 [json_name = "rentExemptionMulti", (.gogoproto.nullable) = false, (.gogoproto.customtype) = "cosmossdk.io/math.LegacyDec"];</code>
+       * @return The bytes for rentExemptionMulti.
+       */
+      public com.google.protobuf.ByteString
+          getRentExemptionMultiBytes() {
+        java.lang.Object ref = rentExemptionMulti_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          rentExemptionMulti_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <code>string rent_exemption_multi = 5 [json_name = "rentExemptionMulti", (.gogoproto.nullable) = false, (.gogoproto.customtype) = "cosmossdk.io/math.LegacyDec"];</code>
+       * @param value The rentExemptionMulti to set.
+       * @return This builder for chaining.
+       */
+      public Builder setRentExemptionMulti(
+          java.lang.String value) {
+        if (value == null) { throw new NullPointerException(); }
+        rentExemptionMulti_ = value;
+        bitField0_ |= 0x00000010;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>string rent_exemption_multi = 5 [json_name = "rentExemptionMulti", (.gogoproto.nullable) = false, (.gogoproto.customtype) = "cosmossdk.io/math.LegacyDec"];</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearRentExemptionMulti() {
+        rentExemptionMulti_ = getDefaultInstance().getRentExemptionMulti();
+        bitField0_ = (bitField0_ & ~0x00000010);
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>string rent_exemption_multi = 5 [json_name = "rentExemptionMulti", (.gogoproto.nullable) = false, (.gogoproto.customtype) = "cosmossdk.io/math.LegacyDec"];</code>
+       * @param value The bytes for rentExemptionMulti to set.
+       * @return This builder for chaining.
+       */
+      public Builder setRentExemptionMultiBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) { throw new NullPointerException(); }
+        checkByteStringIsUtf8(value);
+        rentExemptionMulti_ = value;
+        bitField0_ |= 0x00000010;
+        onChanged();
+        return this;
+      }
+
+      private boolean enabled_ ;
+      /**
+       * <code>bool enabled = 6 [json_name = "enabled"];</code>
+       * @return The enabled.
+       */
+      @java.lang.Override
+      public boolean getEnabled() {
+        return enabled_;
+      }
+      /**
+       * <code>bool enabled = 6 [json_name = "enabled"];</code>
+       * @param value The enabled to set.
+       * @return This builder for chaining.
+       */
+      public Builder setEnabled(boolean value) {
+
+        enabled_ = value;
+        bitField0_ |= 0x00000020;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>bool enabled = 6 [json_name = "enabled"];</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearEnabled() {
+        bitField0_ = (bitField0_ & ~0x00000020);
+        enabled_ = false;
+        onChanged();
+        return this;
+      }
+
+      private long svmSlotOffset_ ;
+      /**
+       * <code>int64 svm_slot_offset = 7 [json_name = "svmSlotOffset"];</code>
+       * @return The svmSlotOffset.
+       */
+      @java.lang.Override
+      public long getSvmSlotOffset() {
+        return svmSlotOffset_;
+      }
+      /**
+       * <code>int64 svm_slot_offset = 7 [json_name = "svmSlotOffset"];</code>
+       * @param value The svmSlotOffset to set.
+       * @return This builder for chaining.
+       */
+      public Builder setSvmSlotOffset(long value) {
+
+        svmSlotOffset_ = value;
+        bitField0_ |= 0x00000040;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>int64 svm_slot_offset = 7 [json_name = "svmSlotOffset"];</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearSvmSlotOffset() {
+        bitField0_ = (bitField0_ & ~0x00000040);
+        svmSlotOffset_ = 0L;
+        onChanged();
+        return this;
+      }
+
+      private int defaultSigScheme_ ;
+      /**
+       * <code>uint32 default_sig_scheme = 8 [json_name = "defaultSigScheme"];</code>
+       * @return The defaultSigScheme.
+       */
+      @java.lang.Override
+      public int getDefaultSigScheme() {
+        return defaultSigScheme_;
+      }
+      /**
+       * <code>uint32 default_sig_scheme = 8 [json_name = "defaultSigScheme"];</code>
+       * @param value The defaultSigScheme to set.
+       * @return This builder for chaining.
+       */
+      public Builder setDefaultSigScheme(int value) {
+
+        defaultSigScheme_ = value;
+        bitField0_ |= 0x00000080;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>uint32 default_sig_scheme = 8 [json_name = "defaultSigScheme"];</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearDefaultSigScheme() {
+        bitField0_ = (bitField0_ & ~0x00000080);
+        defaultSigScheme_ = 0;
+        onChanged();
+        return this;
+      }
+
+      private int maxCpi_ ;
+      /**
+       * <code>uint32 max_cpi = 9 [json_name = "maxCpi"];</code>
+       * @return The maxCpi.
+       */
+      @java.lang.Override
+      public int getMaxCpi() {
+        return maxCpi_;
+      }
+      /**
+       * <code>uint32 max_cpi = 9 [json_name = "maxCpi"];</code>
+       * @param value The maxCpi to set.
+       * @return This builder for chaining.
+       */
+      public Builder setMaxCpi(int value) {
+
+        maxCpi_ = value;
+        bitField0_ |= 0x00000100;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>uint32 max_cpi = 9 [json_name = "maxCpi"];</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearMaxCpi() {
+        bitField0_ = (bitField0_ & ~0x00000100);
+        maxCpi_ = 0;
+        onChanged();
+        return this;
+      }
+
+      // @@protoc_insertion_point(builder_scope:qorechain.svm.v1.SVMParams)
+    }
+
+    // @@protoc_insertion_point(class_scope:qorechain.svm.v1.SVMParams)
+    private static final qorechain.svm.v1.Tx.SVMParams DEFAULT_INSTANCE;
+    static {
+      DEFAULT_INSTANCE = new qorechain.svm.v1.Tx.SVMParams();
+    }
+
+    public static qorechain.svm.v1.Tx.SVMParams getDefaultInstance() {
+      return DEFAULT_INSTANCE;
+    }
+
+    private static final com.google.protobuf.Parser<SVMParams>
+        PARSER = new com.google.protobuf.AbstractParser<SVMParams>() {
+      @java.lang.Override
+      public SVMParams parsePartialFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        Builder builder = newBuilder();
+        try {
+          builder.mergeFrom(input, extensionRegistry);
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          throw e.setUnfinishedMessage(builder.buildPartial());
+        } catch (com.google.protobuf.UninitializedMessageException e) {
+          throw e.asInvalidProtocolBufferException().setUnfinishedMessage(builder.buildPartial());
+        } catch (java.io.IOException e) {
+          throw new com.google.protobuf.InvalidProtocolBufferException(e)
+              .setUnfinishedMessage(builder.buildPartial());
+        }
+        return builder.buildPartial();
+      }
+    };
+
+    public static com.google.protobuf.Parser<SVMParams> parser() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Parser<SVMParams> getParserForType() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public qorechain.svm.v1.Tx.SVMParams getDefaultInstanceForType() {
+      return DEFAULT_INSTANCE;
+    }
+
+  }
+
+  public interface MsgUpdateParamsOrBuilder extends
+      // @@protoc_insertion_point(interface_extends:qorechain.svm.v1.MsgUpdateParams)
+      com.google.protobuf.MessageOrBuilder {
+
+    /**
+     * <pre>
+     * authority must be the governance module account.
+     * </pre>
+     *
+     * <code>string authority = 1 [json_name = "authority", (.cosmos_proto.scalar) = "cosmos.AddressString"];</code>
+     * @return The authority.
+     */
+    java.lang.String getAuthority();
+    /**
+     * <pre>
+     * authority must be the governance module account.
+     * </pre>
+     *
+     * <code>string authority = 1 [json_name = "authority", (.cosmos_proto.scalar) = "cosmos.AddressString"];</code>
+     * @return The bytes for authority.
+     */
+    com.google.protobuf.ByteString
+        getAuthorityBytes();
+
+    /**
+     * <code>.qorechain.svm.v1.SVMParams params = 2 [json_name = "params", (.gogoproto.nullable) = false];</code>
+     * @return Whether the params field is set.
+     */
+    boolean hasParams();
+    /**
+     * <code>.qorechain.svm.v1.SVMParams params = 2 [json_name = "params", (.gogoproto.nullable) = false];</code>
+     * @return The params.
+     */
+    qorechain.svm.v1.Tx.SVMParams getParams();
+    /**
+     * <code>.qorechain.svm.v1.SVMParams params = 2 [json_name = "params", (.gogoproto.nullable) = false];</code>
+     */
+    qorechain.svm.v1.Tx.SVMParamsOrBuilder getParamsOrBuilder();
+  }
+  /**
+   * <pre>
+   * MsgUpdateParams replaces the SVM runtime parameters wholesale.
+   *
+   * WHY THIS EXISTS. Until now x/svm had no governance message at all, so there was
+   * no transaction that could turn the lane off. When the August 2026 incident
+   * required closing it, the only available guarantee was a compile-time constant
+   * (SVMLaneHardDisabled), which means every later change of mind costs a binary
+   * release and a coordinated upgrade. With this message, disabling the lane is a
+   * governance proposal like any other.
+   * </pre>
+   *
+   * Protobuf type {@code qorechain.svm.v1.MsgUpdateParams}
+   */
+  public static final class MsgUpdateParams extends
+      com.google.protobuf.GeneratedMessage implements
+      // @@protoc_insertion_point(message_implements:qorechain.svm.v1.MsgUpdateParams)
+      MsgUpdateParamsOrBuilder {
+  private static final long serialVersionUID = 0L;
+    static {
+      com.google.protobuf.RuntimeVersion.validateProtobufGencodeVersion(
+        com.google.protobuf.RuntimeVersion.RuntimeDomain.PUBLIC,
+        /* major= */ 4,
+        /* minor= */ 35,
+        /* patch= */ 1,
+        /* suffix= */ "",
+        "MsgUpdateParams");
+    }
+    // Use MsgUpdateParams.newBuilder() to construct.
+    private MsgUpdateParams(com.google.protobuf.GeneratedMessage.Builder<?> builder) {
+      super(builder);
+    }
+    private MsgUpdateParams() {
+      authority_ = "";
+    }
+
+    public static final com.google.protobuf.Descriptors.Descriptor
+        getDescriptor() {
+      return qorechain.svm.v1.Tx.internal_static_qorechain_svm_v1_MsgUpdateParams_descriptor;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Descriptors.Descriptor getDescriptorForType() {
+      return qorechain.svm.v1.Tx.internal_static_qorechain_svm_v1_MsgUpdateParams_descriptor;
+    }
+
+    @java.lang.Override
+    protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+        internalGetFieldAccessorTable() {
+      return qorechain.svm.v1.Tx.internal_static_qorechain_svm_v1_MsgUpdateParams_fieldAccessorTable
+          .ensureFieldAccessorsInitialized(
+              qorechain.svm.v1.Tx.MsgUpdateParams.class, qorechain.svm.v1.Tx.MsgUpdateParams.Builder.class);
+    }
+
+    private int bitField0_;
+    public static final int AUTHORITY_FIELD_NUMBER = 1;
+    @SuppressWarnings("serial")
+    private volatile java.lang.Object authority_ = "";
+    /**
+     * <pre>
+     * authority must be the governance module account.
+     * </pre>
+     *
+     * <code>string authority = 1 [json_name = "authority", (.cosmos_proto.scalar) = "cosmos.AddressString"];</code>
+     * @return The authority.
+     */
+    @java.lang.Override
+    public java.lang.String getAuthority() {
+      java.lang.Object ref = authority_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        authority_ = s;
+        return s;
+      }
+    }
+    /**
+     * <pre>
+     * authority must be the governance module account.
+     * </pre>
+     *
+     * <code>string authority = 1 [json_name = "authority", (.cosmos_proto.scalar) = "cosmos.AddressString"];</code>
+     * @return The bytes for authority.
+     */
+    @java.lang.Override
+    public com.google.protobuf.ByteString
+        getAuthorityBytes() {
+      java.lang.Object ref = authority_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        authority_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
+    public static final int PARAMS_FIELD_NUMBER = 2;
+    private qorechain.svm.v1.Tx.SVMParams params_;
+    /**
+     * <code>.qorechain.svm.v1.SVMParams params = 2 [json_name = "params", (.gogoproto.nullable) = false];</code>
+     * @return Whether the params field is set.
+     */
+    @java.lang.Override
+    public boolean hasParams() {
+      return ((bitField0_ & 0x00000001) != 0);
+    }
+    /**
+     * <code>.qorechain.svm.v1.SVMParams params = 2 [json_name = "params", (.gogoproto.nullable) = false];</code>
+     * @return The params.
+     */
+    @java.lang.Override
+    public qorechain.svm.v1.Tx.SVMParams getParams() {
+      return params_ == null ? qorechain.svm.v1.Tx.SVMParams.getDefaultInstance() : params_;
+    }
+    /**
+     * <code>.qorechain.svm.v1.SVMParams params = 2 [json_name = "params", (.gogoproto.nullable) = false];</code>
+     */
+    @java.lang.Override
+    public qorechain.svm.v1.Tx.SVMParamsOrBuilder getParamsOrBuilder() {
+      return params_ == null ? qorechain.svm.v1.Tx.SVMParams.getDefaultInstance() : params_;
+    }
+
+    private byte memoizedIsInitialized = -1;
+    @java.lang.Override
+    public final boolean isInitialized() {
+      byte isInitialized = memoizedIsInitialized;
+      if (isInitialized == 1) return true;
+      if (isInitialized == 0) return false;
+
+      memoizedIsInitialized = 1;
+      return true;
+    }
+
+    @java.lang.Override
+    public void writeTo(com.google.protobuf.CodedOutputStream output)
+                        throws java.io.IOException {
+      if (!com.google.protobuf.GeneratedMessage.isStringEmpty(authority_)) {
+        com.google.protobuf.GeneratedMessage.writeString(output, 1, authority_);
+      }
+      if (((bitField0_ & 0x00000001) != 0)) {
+        output.writeMessage(2, getParams());
+      }
+      getUnknownFields().writeTo(output);
+    }
+    private int computeSerializedSize_0() {
+      int size = 0;
+      if (!com.google.protobuf.GeneratedMessage.isStringEmpty(authority_)) {
+        size += com.google.protobuf.GeneratedMessage.computeStringSize(1, authority_);
+      }
+      if (((bitField0_ & 0x00000001) != 0)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeMessageSize(2, getParams());
+      }
+      return size;
+    }
+    @java.lang.Override
+    public int getSerializedSize() {
+      int size = memoizedSize;
+      if (size != -1) return size;
+
+      size = 0;
+      size += computeSerializedSize_0();
+      size += getUnknownFields().getSerializedSize();
+      memoizedSize = size;
+      return size;
+    }
+
+    @java.lang.Override
+    public boolean equals(final java.lang.Object obj) {
+      if (obj == this) {
+       return true;
+      }
+      if (!(obj instanceof qorechain.svm.v1.Tx.MsgUpdateParams)) {
+        return super.equals(obj);
+      }
+      qorechain.svm.v1.Tx.MsgUpdateParams other = (qorechain.svm.v1.Tx.MsgUpdateParams) obj;
+
+      if (!getAuthority()
+          .equals(other.getAuthority())) return false;
+      if (hasParams() != other.hasParams()) return false;
+      if (hasParams()) {
+        if (!getParams()
+            .equals(other.getParams())) return false;
+      }
+      if (!getUnknownFields().equals(other.getUnknownFields())) return false;
+      return true;
+    }
+
+    @java.lang.Override
+    public int hashCode() {
+      if (memoizedHashCode != 0) {
+        return memoizedHashCode;
+      }
+      int hash = 41;
+      hash = (19 * hash) + getDescriptor().hashCode();
+      hash = (37 * hash) + AUTHORITY_FIELD_NUMBER;
+      hash = (53 * hash) + getAuthority().hashCode();
+      if (hasParams()) {
+        hash = (37 * hash) + PARAMS_FIELD_NUMBER;
+        hash = (53 * hash) + getParams().hashCode();
+      }
+      hash = (29 * hash) + getUnknownFields().hashCode();
+      memoizedHashCode = hash;
+      return hash;
+    }
+
+    public static qorechain.svm.v1.Tx.MsgUpdateParams parseFrom(
+        java.nio.ByteBuffer data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static qorechain.svm.v1.Tx.MsgUpdateParams parseFrom(
+        java.nio.ByteBuffer data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static qorechain.svm.v1.Tx.MsgUpdateParams parseFrom(
+        com.google.protobuf.ByteString data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static qorechain.svm.v1.Tx.MsgUpdateParams parseFrom(
+        com.google.protobuf.ByteString data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static qorechain.svm.v1.Tx.MsgUpdateParams parseFrom(byte[] data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static qorechain.svm.v1.Tx.MsgUpdateParams parseFrom(
+        byte[] data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static qorechain.svm.v1.Tx.MsgUpdateParams parseFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input);
+    }
+    public static qorechain.svm.v1.Tx.MsgUpdateParams parseFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    public static qorechain.svm.v1.Tx.MsgUpdateParams parseDelimitedFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseDelimitedWithIOException(PARSER, input);
+    }
+
+    public static qorechain.svm.v1.Tx.MsgUpdateParams parseDelimitedFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static qorechain.svm.v1.Tx.MsgUpdateParams parseFrom(
+        com.google.protobuf.CodedInputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input);
+    }
+    public static qorechain.svm.v1.Tx.MsgUpdateParams parseFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    @java.lang.Override
+    public Builder newBuilderForType() { return newBuilder(); }
+    public static Builder newBuilder() {
+      return DEFAULT_INSTANCE.toBuilder();
+    }
+    public static Builder newBuilder(qorechain.svm.v1.Tx.MsgUpdateParams prototype) {
+      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+    }
+    @java.lang.Override
+    public Builder toBuilder() {
+      return this == DEFAULT_INSTANCE
+          ? new Builder() : new Builder().mergeFrom(this);
+    }
+
+    @java.lang.Override
+    protected Builder newBuilderForType(
+        com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+      Builder builder = new Builder(parent);
+      return builder;
+    }
+    /**
+     * <pre>
+     * MsgUpdateParams replaces the SVM runtime parameters wholesale.
+     *
+     * WHY THIS EXISTS. Until now x/svm had no governance message at all, so there was
+     * no transaction that could turn the lane off. When the August 2026 incident
+     * required closing it, the only available guarantee was a compile-time constant
+     * (SVMLaneHardDisabled), which means every later change of mind costs a binary
+     * release and a coordinated upgrade. With this message, disabling the lane is a
+     * governance proposal like any other.
+     * </pre>
+     *
+     * Protobuf type {@code qorechain.svm.v1.MsgUpdateParams}
+     */
+    public static final class Builder extends
+        com.google.protobuf.GeneratedMessage.Builder<Builder> implements
+        // @@protoc_insertion_point(builder_implements:qorechain.svm.v1.MsgUpdateParams)
+        qorechain.svm.v1.Tx.MsgUpdateParamsOrBuilder {
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return qorechain.svm.v1.Tx.internal_static_qorechain_svm_v1_MsgUpdateParams_descriptor;
+      }
+
+      @java.lang.Override
+      protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return qorechain.svm.v1.Tx.internal_static_qorechain_svm_v1_MsgUpdateParams_fieldAccessorTable
+            .ensureFieldAccessorsInitialized(
+                qorechain.svm.v1.Tx.MsgUpdateParams.class, qorechain.svm.v1.Tx.MsgUpdateParams.Builder.class);
+      }
+
+      // Construct using qorechain.svm.v1.Tx.MsgUpdateParams.newBuilder()
+      private Builder() {
+        maybeForceBuilderInitialization();
+      }
+
+      private Builder(
+          com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+        super(parent);
+        maybeForceBuilderInitialization();
+      }
+      private void maybeForceBuilderInitialization() {
+        if (com.google.protobuf.GeneratedMessage
+                .alwaysUseFieldBuilders) {
+          internalGetParamsFieldBuilder();
+        }
+      }
+      @java.lang.Override
+      public Builder clear() {
+        super.clear();
+        bitField0_ = 0;
+        authority_ = "";
+        params_ = null;
+        if (paramsBuilder_ != null) {
+          paramsBuilder_.dispose();
+          paramsBuilder_ = null;
+        }
+        return this;
+      }
+
+      @java.lang.Override
+      public com.google.protobuf.Descriptors.Descriptor
+          getDescriptorForType() {
+        return qorechain.svm.v1.Tx.internal_static_qorechain_svm_v1_MsgUpdateParams_descriptor;
+      }
+
+      @java.lang.Override
+      public qorechain.svm.v1.Tx.MsgUpdateParams getDefaultInstanceForType() {
+        return qorechain.svm.v1.Tx.MsgUpdateParams.getDefaultInstance();
+      }
+
+      @java.lang.Override
+      public qorechain.svm.v1.Tx.MsgUpdateParams build() {
+        qorechain.svm.v1.Tx.MsgUpdateParams result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(result);
+        }
+        return result;
+      }
+
+      @java.lang.Override
+      public qorechain.svm.v1.Tx.MsgUpdateParams buildPartial() {
+        qorechain.svm.v1.Tx.MsgUpdateParams result = new qorechain.svm.v1.Tx.MsgUpdateParams(this);
+        if (bitField0_ != 0) { buildPartial0(result); }
+        onBuilt();
+        return result;
+      }
+
+      private void buildPartial0(qorechain.svm.v1.Tx.MsgUpdateParams result) {
+        int from_bitField0_ = bitField0_;
+        if (((from_bitField0_ & 0x00000001) != 0)) {
+          result.authority_ = authority_;
+        }
+        int to_bitField0_ = 0;
+        if (((from_bitField0_ & 0x00000002) != 0)) {
+          result.params_ = paramsBuilder_ == null
+              ? params_
+              : paramsBuilder_.build();
+          to_bitField0_ |= 0x00000001;
+        }
+        result.bitField0_ |= to_bitField0_;
+      }
+
+      @java.lang.Override
+      public Builder mergeFrom(com.google.protobuf.Message other) {
+        if (other instanceof qorechain.svm.v1.Tx.MsgUpdateParams) {
+          return mergeFrom((qorechain.svm.v1.Tx.MsgUpdateParams)other);
+        } else {
+          super.mergeFrom(other);
+          return this;
+        }
+      }
+
+      public Builder mergeFrom(qorechain.svm.v1.Tx.MsgUpdateParams other) {
+        if (other == qorechain.svm.v1.Tx.MsgUpdateParams.getDefaultInstance()) return this;
+        if (!other.getAuthority().isEmpty()) {
+          authority_ = other.authority_;
+          bitField0_ |= 0x00000001;
+          onChanged();
+        }
+        if (other.hasParams()) {
+          mergeParams(other.getParams());
+        }
+        this.mergeUnknownFields(other.getUnknownFields());
+        onChanged();
+        return this;
+      }
+
+      @java.lang.Override
+      public final boolean isInitialized() {
+        return true;
+      }
+
+      @java.lang.Override
+      public Builder mergeFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        if (extensionRegistry == null) {
+          throw new java.lang.NullPointerException();
+        }
+        try {
+          boolean done = false;
+          while (!done) {
+            int tag = input.readTag();
+            switch (tag) {
+              case 0:
+                done = true;
+                break;
+              case 10: {
+                authority_ = input.readStringRequireUtf8();
+                bitField0_ |= 0x00000001;
+                break;
+              } // case 10
+              case 18: {
+                input.readMessage(
+                    internalGetParamsFieldBuilder().getBuilder(),
+                    extensionRegistry);
+                bitField0_ |= 0x00000002;
+                break;
+              } // case 18
+              default: {
+                if (!super.parseUnknownField(input, extensionRegistry, tag)) {
+                  done = true; // was an endgroup tag
+                }
+                break;
+              } // default:
+            } // switch (tag)
+          } // while (!done)
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          throw e.unwrapIOException();
+        } finally {
+          onChanged();
+        } // finally
+        return this;
+      }
+      private int bitField0_;
+
+      private java.lang.Object authority_ = "";
+      /**
+       * <pre>
+       * authority must be the governance module account.
+       * </pre>
+       *
+       * <code>string authority = 1 [json_name = "authority", (.cosmos_proto.scalar) = "cosmos.AddressString"];</code>
+       * @return The authority.
+       */
+      public java.lang.String getAuthority() {
+        java.lang.Object ref = authority_;
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          authority_ = s;
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
+      }
+      /**
+       * <pre>
+       * authority must be the governance module account.
+       * </pre>
+       *
+       * <code>string authority = 1 [json_name = "authority", (.cosmos_proto.scalar) = "cosmos.AddressString"];</code>
+       * @return The bytes for authority.
+       */
+      public com.google.protobuf.ByteString
+          getAuthorityBytes() {
+        java.lang.Object ref = authority_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          authority_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <pre>
+       * authority must be the governance module account.
+       * </pre>
+       *
+       * <code>string authority = 1 [json_name = "authority", (.cosmos_proto.scalar) = "cosmos.AddressString"];</code>
+       * @param value The authority to set.
+       * @return This builder for chaining.
+       */
+      public Builder setAuthority(
+          java.lang.String value) {
+        if (value == null) { throw new NullPointerException(); }
+        authority_ = value;
+        bitField0_ |= 0x00000001;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * authority must be the governance module account.
+       * </pre>
+       *
+       * <code>string authority = 1 [json_name = "authority", (.cosmos_proto.scalar) = "cosmos.AddressString"];</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearAuthority() {
+        authority_ = getDefaultInstance().getAuthority();
+        bitField0_ = (bitField0_ & ~0x00000001);
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * authority must be the governance module account.
+       * </pre>
+       *
+       * <code>string authority = 1 [json_name = "authority", (.cosmos_proto.scalar) = "cosmos.AddressString"];</code>
+       * @param value The bytes for authority to set.
+       * @return This builder for chaining.
+       */
+      public Builder setAuthorityBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) { throw new NullPointerException(); }
+        checkByteStringIsUtf8(value);
+        authority_ = value;
+        bitField0_ |= 0x00000001;
+        onChanged();
+        return this;
+      }
+
+      private qorechain.svm.v1.Tx.SVMParams params_;
+      private com.google.protobuf.SingleFieldBuilder<
+          qorechain.svm.v1.Tx.SVMParams, qorechain.svm.v1.Tx.SVMParams.Builder, qorechain.svm.v1.Tx.SVMParamsOrBuilder> paramsBuilder_;
+      /**
+       * <code>.qorechain.svm.v1.SVMParams params = 2 [json_name = "params", (.gogoproto.nullable) = false];</code>
+       * @return Whether the params field is set.
+       */
+      public boolean hasParams() {
+        return ((bitField0_ & 0x00000002) != 0);
+      }
+      /**
+       * <code>.qorechain.svm.v1.SVMParams params = 2 [json_name = "params", (.gogoproto.nullable) = false];</code>
+       * @return The params.
+       */
+      public qorechain.svm.v1.Tx.SVMParams getParams() {
+        if (paramsBuilder_ == null) {
+          return params_ == null ? qorechain.svm.v1.Tx.SVMParams.getDefaultInstance() : params_;
+        } else {
+          return paramsBuilder_.getMessage();
+        }
+      }
+      /**
+       * <code>.qorechain.svm.v1.SVMParams params = 2 [json_name = "params", (.gogoproto.nullable) = false];</code>
+       */
+      public Builder setParams(qorechain.svm.v1.Tx.SVMParams value) {
+        if (paramsBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          params_ = value;
+        } else {
+          paramsBuilder_.setMessage(value);
+        }
+        bitField0_ |= 0x00000002;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>.qorechain.svm.v1.SVMParams params = 2 [json_name = "params", (.gogoproto.nullable) = false];</code>
+       */
+      public Builder setParams(
+          qorechain.svm.v1.Tx.SVMParams.Builder builderForValue) {
+        if (paramsBuilder_ == null) {
+          params_ = builderForValue.build();
+        } else {
+          paramsBuilder_.setMessage(builderForValue.build());
+        }
+        bitField0_ |= 0x00000002;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>.qorechain.svm.v1.SVMParams params = 2 [json_name = "params", (.gogoproto.nullable) = false];</code>
+       */
+      public Builder mergeParams(qorechain.svm.v1.Tx.SVMParams value) {
+        if (paramsBuilder_ == null) {
+          if (((bitField0_ & 0x00000002) != 0) &&
+            params_ != null &&
+            params_ != qorechain.svm.v1.Tx.SVMParams.getDefaultInstance()) {
+            getParamsBuilder().mergeFrom(value);
+          } else {
+            params_ = value;
+          }
+        } else {
+          paramsBuilder_.mergeFrom(value);
+        }
+        if (params_ != null) {
+          bitField0_ |= 0x00000002;
+          onChanged();
+        }
+        return this;
+      }
+      /**
+       * <code>.qorechain.svm.v1.SVMParams params = 2 [json_name = "params", (.gogoproto.nullable) = false];</code>
+       */
+      public Builder clearParams() {
+        bitField0_ = (bitField0_ & ~0x00000002);
+        params_ = null;
+        if (paramsBuilder_ != null) {
+          paramsBuilder_.dispose();
+          paramsBuilder_ = null;
+        }
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>.qorechain.svm.v1.SVMParams params = 2 [json_name = "params", (.gogoproto.nullable) = false];</code>
+       */
+      public qorechain.svm.v1.Tx.SVMParams.Builder getParamsBuilder() {
+        bitField0_ |= 0x00000002;
+        onChanged();
+        return internalGetParamsFieldBuilder().getBuilder();
+      }
+      /**
+       * <code>.qorechain.svm.v1.SVMParams params = 2 [json_name = "params", (.gogoproto.nullable) = false];</code>
+       */
+      public qorechain.svm.v1.Tx.SVMParamsOrBuilder getParamsOrBuilder() {
+        if (paramsBuilder_ != null) {
+          return paramsBuilder_.getMessageOrBuilder();
+        } else {
+          return params_ == null ?
+              qorechain.svm.v1.Tx.SVMParams.getDefaultInstance() : params_;
+        }
+      }
+      /**
+       * <code>.qorechain.svm.v1.SVMParams params = 2 [json_name = "params", (.gogoproto.nullable) = false];</code>
+       */
+      private com.google.protobuf.SingleFieldBuilder<
+          qorechain.svm.v1.Tx.SVMParams, qorechain.svm.v1.Tx.SVMParams.Builder, qorechain.svm.v1.Tx.SVMParamsOrBuilder> 
+          internalGetParamsFieldBuilder() {
+        if (paramsBuilder_ == null) {
+          paramsBuilder_ = new com.google.protobuf.SingleFieldBuilder<
+              qorechain.svm.v1.Tx.SVMParams, qorechain.svm.v1.Tx.SVMParams.Builder, qorechain.svm.v1.Tx.SVMParamsOrBuilder>(
+                  getParams(),
+                  getParentForChildren(),
+                  isClean());
+          params_ = null;
+        }
+        return paramsBuilder_;
+      }
+
+      // @@protoc_insertion_point(builder_scope:qorechain.svm.v1.MsgUpdateParams)
+    }
+
+    // @@protoc_insertion_point(class_scope:qorechain.svm.v1.MsgUpdateParams)
+    private static final qorechain.svm.v1.Tx.MsgUpdateParams DEFAULT_INSTANCE;
+    static {
+      DEFAULT_INSTANCE = new qorechain.svm.v1.Tx.MsgUpdateParams();
+    }
+
+    public static qorechain.svm.v1.Tx.MsgUpdateParams getDefaultInstance() {
+      return DEFAULT_INSTANCE;
+    }
+
+    private static final com.google.protobuf.Parser<MsgUpdateParams>
+        PARSER = new com.google.protobuf.AbstractParser<MsgUpdateParams>() {
+      @java.lang.Override
+      public MsgUpdateParams parsePartialFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        Builder builder = newBuilder();
+        try {
+          builder.mergeFrom(input, extensionRegistry);
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          throw e.setUnfinishedMessage(builder.buildPartial());
+        } catch (com.google.protobuf.UninitializedMessageException e) {
+          throw e.asInvalidProtocolBufferException().setUnfinishedMessage(builder.buildPartial());
+        } catch (java.io.IOException e) {
+          throw new com.google.protobuf.InvalidProtocolBufferException(e)
+              .setUnfinishedMessage(builder.buildPartial());
+        }
+        return builder.buildPartial();
+      }
+    };
+
+    public static com.google.protobuf.Parser<MsgUpdateParams> parser() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Parser<MsgUpdateParams> getParserForType() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public qorechain.svm.v1.Tx.MsgUpdateParams getDefaultInstanceForType() {
+      return DEFAULT_INSTANCE;
+    }
+
+  }
+
+  public interface MsgUpdateParamsResponseOrBuilder extends
+      // @@protoc_insertion_point(interface_extends:qorechain.svm.v1.MsgUpdateParamsResponse)
+      com.google.protobuf.MessageOrBuilder {
+  }
+  /**
+   * Protobuf type {@code qorechain.svm.v1.MsgUpdateParamsResponse}
+   */
+  public static final class MsgUpdateParamsResponse extends
+      com.google.protobuf.GeneratedMessage implements
+      // @@protoc_insertion_point(message_implements:qorechain.svm.v1.MsgUpdateParamsResponse)
+      MsgUpdateParamsResponseOrBuilder {
+  private static final long serialVersionUID = 0L;
+    static {
+      com.google.protobuf.RuntimeVersion.validateProtobufGencodeVersion(
+        com.google.protobuf.RuntimeVersion.RuntimeDomain.PUBLIC,
+        /* major= */ 4,
+        /* minor= */ 35,
+        /* patch= */ 1,
+        /* suffix= */ "",
+        "MsgUpdateParamsResponse");
+    }
+    // Use MsgUpdateParamsResponse.newBuilder() to construct.
+    private MsgUpdateParamsResponse(com.google.protobuf.GeneratedMessage.Builder<?> builder) {
+      super(builder);
+    }
+    private MsgUpdateParamsResponse() {
+    }
+
+    public static final com.google.protobuf.Descriptors.Descriptor
+        getDescriptor() {
+      return qorechain.svm.v1.Tx.internal_static_qorechain_svm_v1_MsgUpdateParamsResponse_descriptor;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Descriptors.Descriptor getDescriptorForType() {
+      return qorechain.svm.v1.Tx.internal_static_qorechain_svm_v1_MsgUpdateParamsResponse_descriptor;
+    }
+
+    @java.lang.Override
+    protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+        internalGetFieldAccessorTable() {
+      return qorechain.svm.v1.Tx.internal_static_qorechain_svm_v1_MsgUpdateParamsResponse_fieldAccessorTable
+          .ensureFieldAccessorsInitialized(
+              qorechain.svm.v1.Tx.MsgUpdateParamsResponse.class, qorechain.svm.v1.Tx.MsgUpdateParamsResponse.Builder.class);
+    }
+
+    private byte memoizedIsInitialized = -1;
+    @java.lang.Override
+    public final boolean isInitialized() {
+      byte isInitialized = memoizedIsInitialized;
+      if (isInitialized == 1) return true;
+      if (isInitialized == 0) return false;
+
+      memoizedIsInitialized = 1;
+      return true;
+    }
+
+    @java.lang.Override
+    public void writeTo(com.google.protobuf.CodedOutputStream output)
+                        throws java.io.IOException {
+      getUnknownFields().writeTo(output);
+    }
+    @java.lang.Override
+    public int getSerializedSize() {
+      int size = memoizedSize;
+      if (size != -1) return size;
+
+      size = 0;
+      size += getUnknownFields().getSerializedSize();
+      memoizedSize = size;
+      return size;
+    }
+
+    @java.lang.Override
+    public boolean equals(final java.lang.Object obj) {
+      if (obj == this) {
+       return true;
+      }
+      if (!(obj instanceof qorechain.svm.v1.Tx.MsgUpdateParamsResponse)) {
+        return super.equals(obj);
+      }
+      qorechain.svm.v1.Tx.MsgUpdateParamsResponse other = (qorechain.svm.v1.Tx.MsgUpdateParamsResponse) obj;
+
+      if (!getUnknownFields().equals(other.getUnknownFields())) return false;
+      return true;
+    }
+
+    @java.lang.Override
+    public int hashCode() {
+      if (memoizedHashCode != 0) {
+        return memoizedHashCode;
+      }
+      int hash = 41;
+      hash = (19 * hash) + getDescriptor().hashCode();
+      hash = (29 * hash) + getUnknownFields().hashCode();
+      memoizedHashCode = hash;
+      return hash;
+    }
+
+    public static qorechain.svm.v1.Tx.MsgUpdateParamsResponse parseFrom(
+        java.nio.ByteBuffer data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static qorechain.svm.v1.Tx.MsgUpdateParamsResponse parseFrom(
+        java.nio.ByteBuffer data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static qorechain.svm.v1.Tx.MsgUpdateParamsResponse parseFrom(
+        com.google.protobuf.ByteString data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static qorechain.svm.v1.Tx.MsgUpdateParamsResponse parseFrom(
+        com.google.protobuf.ByteString data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static qorechain.svm.v1.Tx.MsgUpdateParamsResponse parseFrom(byte[] data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static qorechain.svm.v1.Tx.MsgUpdateParamsResponse parseFrom(
+        byte[] data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static qorechain.svm.v1.Tx.MsgUpdateParamsResponse parseFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input);
+    }
+    public static qorechain.svm.v1.Tx.MsgUpdateParamsResponse parseFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    public static qorechain.svm.v1.Tx.MsgUpdateParamsResponse parseDelimitedFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseDelimitedWithIOException(PARSER, input);
+    }
+
+    public static qorechain.svm.v1.Tx.MsgUpdateParamsResponse parseDelimitedFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static qorechain.svm.v1.Tx.MsgUpdateParamsResponse parseFrom(
+        com.google.protobuf.CodedInputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input);
+    }
+    public static qorechain.svm.v1.Tx.MsgUpdateParamsResponse parseFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    @java.lang.Override
+    public Builder newBuilderForType() { return newBuilder(); }
+    public static Builder newBuilder() {
+      return DEFAULT_INSTANCE.toBuilder();
+    }
+    public static Builder newBuilder(qorechain.svm.v1.Tx.MsgUpdateParamsResponse prototype) {
+      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+    }
+    @java.lang.Override
+    public Builder toBuilder() {
+      return this == DEFAULT_INSTANCE
+          ? new Builder() : new Builder().mergeFrom(this);
+    }
+
+    @java.lang.Override
+    protected Builder newBuilderForType(
+        com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+      Builder builder = new Builder(parent);
+      return builder;
+    }
+    /**
+     * Protobuf type {@code qorechain.svm.v1.MsgUpdateParamsResponse}
+     */
+    public static final class Builder extends
+        com.google.protobuf.GeneratedMessage.Builder<Builder> implements
+        // @@protoc_insertion_point(builder_implements:qorechain.svm.v1.MsgUpdateParamsResponse)
+        qorechain.svm.v1.Tx.MsgUpdateParamsResponseOrBuilder {
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return qorechain.svm.v1.Tx.internal_static_qorechain_svm_v1_MsgUpdateParamsResponse_descriptor;
+      }
+
+      @java.lang.Override
+      protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return qorechain.svm.v1.Tx.internal_static_qorechain_svm_v1_MsgUpdateParamsResponse_fieldAccessorTable
+            .ensureFieldAccessorsInitialized(
+                qorechain.svm.v1.Tx.MsgUpdateParamsResponse.class, qorechain.svm.v1.Tx.MsgUpdateParamsResponse.Builder.class);
+      }
+
+      // Construct using qorechain.svm.v1.Tx.MsgUpdateParamsResponse.newBuilder()
+      private Builder() {
+
+      }
+
+      private Builder(
+          com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+        super(parent);
+
+      }
+      @java.lang.Override
+      public Builder clear() {
+        super.clear();
+        return this;
+      }
+
+      @java.lang.Override
+      public com.google.protobuf.Descriptors.Descriptor
+          getDescriptorForType() {
+        return qorechain.svm.v1.Tx.internal_static_qorechain_svm_v1_MsgUpdateParamsResponse_descriptor;
+      }
+
+      @java.lang.Override
+      public qorechain.svm.v1.Tx.MsgUpdateParamsResponse getDefaultInstanceForType() {
+        return qorechain.svm.v1.Tx.MsgUpdateParamsResponse.getDefaultInstance();
+      }
+
+      @java.lang.Override
+      public qorechain.svm.v1.Tx.MsgUpdateParamsResponse build() {
+        qorechain.svm.v1.Tx.MsgUpdateParamsResponse result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(result);
+        }
+        return result;
+      }
+
+      @java.lang.Override
+      public qorechain.svm.v1.Tx.MsgUpdateParamsResponse buildPartial() {
+        qorechain.svm.v1.Tx.MsgUpdateParamsResponse result = new qorechain.svm.v1.Tx.MsgUpdateParamsResponse(this);
+        onBuilt();
+        return result;
+      }
+
+      @java.lang.Override
+      public Builder mergeFrom(com.google.protobuf.Message other) {
+        if (other instanceof qorechain.svm.v1.Tx.MsgUpdateParamsResponse) {
+          return mergeFrom((qorechain.svm.v1.Tx.MsgUpdateParamsResponse)other);
+        } else {
+          super.mergeFrom(other);
+          return this;
+        }
+      }
+
+      public Builder mergeFrom(qorechain.svm.v1.Tx.MsgUpdateParamsResponse other) {
+        if (other == qorechain.svm.v1.Tx.MsgUpdateParamsResponse.getDefaultInstance()) return this;
+        this.mergeUnknownFields(other.getUnknownFields());
+        onChanged();
+        return this;
+      }
+
+      @java.lang.Override
+      public final boolean isInitialized() {
+        return true;
+      }
+
+      @java.lang.Override
+      public Builder mergeFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        if (extensionRegistry == null) {
+          throw new java.lang.NullPointerException();
+        }
+        try {
+          boolean done = false;
+          while (!done) {
+            int tag = input.readTag();
+            switch (tag) {
+              case 0:
+                done = true;
+                break;
+              default: {
+                if (!super.parseUnknownField(input, extensionRegistry, tag)) {
+                  done = true; // was an endgroup tag
+                }
+                break;
+              } // default:
+            } // switch (tag)
+          } // while (!done)
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          throw e.unwrapIOException();
+        } finally {
+          onChanged();
+        } // finally
+        return this;
+      }
+
+      // @@protoc_insertion_point(builder_scope:qorechain.svm.v1.MsgUpdateParamsResponse)
+    }
+
+    // @@protoc_insertion_point(class_scope:qorechain.svm.v1.MsgUpdateParamsResponse)
+    private static final qorechain.svm.v1.Tx.MsgUpdateParamsResponse DEFAULT_INSTANCE;
+    static {
+      DEFAULT_INSTANCE = new qorechain.svm.v1.Tx.MsgUpdateParamsResponse();
+    }
+
+    public static qorechain.svm.v1.Tx.MsgUpdateParamsResponse getDefaultInstance() {
+      return DEFAULT_INSTANCE;
+    }
+
+    private static final com.google.protobuf.Parser<MsgUpdateParamsResponse>
+        PARSER = new com.google.protobuf.AbstractParser<MsgUpdateParamsResponse>() {
+      @java.lang.Override
+      public MsgUpdateParamsResponse parsePartialFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        Builder builder = newBuilder();
+        try {
+          builder.mergeFrom(input, extensionRegistry);
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          throw e.setUnfinishedMessage(builder.buildPartial());
+        } catch (com.google.protobuf.UninitializedMessageException e) {
+          throw e.asInvalidProtocolBufferException().setUnfinishedMessage(builder.buildPartial());
+        } catch (java.io.IOException e) {
+          throw new com.google.protobuf.InvalidProtocolBufferException(e)
+              .setUnfinishedMessage(builder.buildPartial());
+        }
+        return builder.buildPartial();
+      }
+    };
+
+    public static com.google.protobuf.Parser<MsgUpdateParamsResponse> parser() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Parser<MsgUpdateParamsResponse> getParserForType() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public qorechain.svm.v1.Tx.MsgUpdateParamsResponse getDefaultInstanceForType() {
+      return DEFAULT_INSTANCE;
+    }
+
+  }
+
   private static final com.google.protobuf.Descriptors.Descriptor
     internal_static_qorechain_svm_v1_MsgDeployProgram_descriptor;
   private static final 
@@ -6467,6 +8722,21 @@ public final class Tx extends com.google.protobuf.GeneratedFile {
   private static final 
     com.google.protobuf.GeneratedMessage.FieldAccessorTable
       internal_static_qorechain_svm_v1_MsgRegisterSVMPQCKeyResponse_fieldAccessorTable;
+  private static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_qorechain_svm_v1_SVMParams_descriptor;
+  private static final 
+    com.google.protobuf.GeneratedMessage.FieldAccessorTable
+      internal_static_qorechain_svm_v1_SVMParams_fieldAccessorTable;
+  private static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_qorechain_svm_v1_MsgUpdateParams_descriptor;
+  private static final 
+    com.google.protobuf.GeneratedMessage.FieldAccessorTable
+      internal_static_qorechain_svm_v1_MsgUpdateParams_fieldAccessorTable;
+  private static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_qorechain_svm_v1_MsgUpdateParamsResponse_descriptor;
+  private static final 
+    com.google.protobuf.GeneratedMessage.FieldAccessorTable
+      internal_static_qorechain_svm_v1_MsgUpdateParamsResponse_fieldAccessorTable;
 
   public static com.google.protobuf.Descriptors.FileDescriptor
       getDescriptor() {
@@ -6509,19 +8779,37 @@ public final class Tx extends com.google.protobuf.GeneratedFile {
       "ender\0225\n\010svm_addr\030\002 \001(\014B\032\310\336\037\000\332\336\037\007Bytes32" +
       "\342\336\037\007SVMAddrR\007svmAddr\022-\n\013pqc_pub_key\030\003 \001(" +
       "\014B\r\342\336\037\tPQCPubKeyR\tpqcPubKey:\013\202\347\260*\006sender" +
-      "\"\036\n\034MsgRegisterSVMPQCKeyResponse2\237\003\n\003Msg" +
-      "\022_\n\rDeployProgram\022\".qorechain.svm.v1.Msg" +
-      "DeployProgram\032*.qorechain.svm.v1.MsgDepl" +
-      "oyProgramResponse\022_\n\rCreateAccount\022\".qor" +
-      "echain.svm.v1.MsgCreateAccount\032*.qorecha" +
-      "in.svm.v1.MsgCreateAccountResponse\022b\n\016Ex" +
-      "ecuteProgram\022#.qorechain.svm.v1.MsgExecu" +
-      "teProgram\032+.qorechain.svm.v1.MsgExecuteP" +
-      "rogramResponse\022k\n\021RegisterSVMPQCKey\022&.qo" +
-      "rechain.svm.v1.MsgRegisterSVMPQCKey\032..qo" +
-      "rechain.svm.v1.MsgRegisterSVMPQCKeyRespo" +
-      "nse\032\005\200\347\260*\001B1Z/github.com/qorechain/qorec" +
-      "hain-core/x/svm/typesb\006proto3"
+      "\"\036\n\034MsgRegisterSVMPQCKeyResponse\"\242\003\n\tSVM" +
+      "Params\022(\n\020max_program_size\030\001 \001(\004R\016maxPro" +
+      "gramSize\0221\n\025max_account_data_size\030\002 \001(\004R" +
+      "\022maxAccountDataSize\022,\n\022compute_budget_ma" +
+      "x\030\003 \001(\004R\020computeBudgetMax\022*\n\021lamports_pe" +
+      "r_byte\030\004 \001(\004R\017lamportsPerByte\022U\n\024rent_ex" +
+      "emption_multi\030\005 \001(\tB#\310\336\037\000\332\336\037\033cosmossdk.i" +
+      "o/math.LegacyDecR\022rentExemptionMulti\022\030\n\007" +
+      "enabled\030\006 \001(\010R\007enabled\022&\n\017svm_slot_offse" +
+      "t\030\007 \001(\003R\rsvmSlotOffset\022,\n\022default_sig_sc" +
+      "heme\030\010 \001(\rR\020defaultSigScheme\022\027\n\007max_cpi\030" +
+      "\t \001(\rR\006maxCpi\"\224\001\n\017MsgUpdateParams\0226\n\taut" +
+      "hority\030\001 \001(\tB\030\322\264-\024cosmos.AddressStringR\t" +
+      "authority\0229\n\006params\030\002 \001(\0132\033.qorechain.sv" +
+      "m.v1.SVMParamsB\004\310\336\037\000R\006params:\016\202\347\260*\tautho" +
+      "rity\"\031\n\027MsgUpdateParamsResponse2\375\003\n\003Msg\022" +
+      "_\n\rDeployProgram\022\".qorechain.svm.v1.MsgD" +
+      "eployProgram\032*.qorechain.svm.v1.MsgDeplo" +
+      "yProgramResponse\022_\n\rCreateAccount\022\".qore" +
+      "chain.svm.v1.MsgCreateAccount\032*.qorechai" +
+      "n.svm.v1.MsgCreateAccountResponse\022b\n\016Exe" +
+      "cuteProgram\022#.qorechain.svm.v1.MsgExecut" +
+      "eProgram\032+.qorechain.svm.v1.MsgExecutePr" +
+      "ogramResponse\022k\n\021RegisterSVMPQCKey\022&.qor" +
+      "echain.svm.v1.MsgRegisterSVMPQCKey\032..qor" +
+      "echain.svm.v1.MsgRegisterSVMPQCKeyRespon" +
+      "se\022\\\n\014UpdateParams\022!.qorechain.svm.v1.Ms" +
+      "gUpdateParams\032).qorechain.svm.v1.MsgUpda" +
+      "teParamsResponse\032\005\200\347\260*\001B1Z/github.com/qo" +
+      "rechain/qorechain-core/x/svm/typesb\006prot" +
+      "o3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
@@ -6589,6 +8877,24 @@ public final class Tx extends com.google.protobuf.GeneratedFile {
     internal_static_qorechain_svm_v1_MsgRegisterSVMPQCKeyResponse_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_qorechain_svm_v1_MsgRegisterSVMPQCKeyResponse_descriptor,
+        new java.lang.String[] { });
+    internal_static_qorechain_svm_v1_SVMParams_descriptor =
+      getDescriptor().getMessageType(10);
+    internal_static_qorechain_svm_v1_SVMParams_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessage.FieldAccessorTable(
+        internal_static_qorechain_svm_v1_SVMParams_descriptor,
+        new java.lang.String[] { "MaxProgramSize", "MaxAccountDataSize", "ComputeBudgetMax", "LamportsPerByte", "RentExemptionMulti", "Enabled", "SvmSlotOffset", "DefaultSigScheme", "MaxCpi", });
+    internal_static_qorechain_svm_v1_MsgUpdateParams_descriptor =
+      getDescriptor().getMessageType(11);
+    internal_static_qorechain_svm_v1_MsgUpdateParams_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessage.FieldAccessorTable(
+        internal_static_qorechain_svm_v1_MsgUpdateParams_descriptor,
+        new java.lang.String[] { "Authority", "Params", });
+    internal_static_qorechain_svm_v1_MsgUpdateParamsResponse_descriptor =
+      getDescriptor().getMessageType(12);
+    internal_static_qorechain_svm_v1_MsgUpdateParamsResponse_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessage.FieldAccessorTable(
+        internal_static_qorechain_svm_v1_MsgUpdateParamsResponse_descriptor,
         new java.lang.String[] { });
     descriptor.resolveAllFeaturesImmutable();
     cosmos.msg.v1.Msg.getDescriptor();

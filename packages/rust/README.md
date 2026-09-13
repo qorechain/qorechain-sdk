@@ -41,11 +41,18 @@ Requires Rust 1.74+.
 
 ### Typed messages and composers
 
-Every QoreChain custom-module message (49 across amm, bridge, rdk, multilayer,
+Every QoreChain custom-module message (57 across amm, bridge, rdk, multilayer,
 pqc, svm, lightnode, license, abstractaccount, crossvm, rlconsensus) plus the
 common standard Native messages have typed composers under `msg`. Each returns a
 prost message; the `*_any` variants pack it into a `cosmrs::Any` with the correct
-type URL, ready for `tx::send_messages` or `tx::build_hybrid_tx`:
+type URL, ready for `tx::send_messages` or `tx::build_hybrid_tx`.
+
+New in chain v3.1.97: `msg::svm::update_params` builds
+`/qorechain.svm.v1.MsgUpdateParams`, the governance message that replaces the SVM
+module's runtime `SVMParams` wholesale (so `enabled` — and therefore closing the
+SVM lane — is an ordinary proposal rather than a binary release). The replacement
+is wholesale, so pass every field at its intended value, not only the ones being
+changed.
 
 ```rust
 use qorechain::msg;
@@ -146,6 +153,17 @@ let ext =
 // serializes to {"algorithm_id":1,"pqc_signature":"<base64>","pqc_public_key":"<base64>"}
 let _ = ext;
 ```
+
+**Lengths are exact.** Every entry point validates its inputs against the FIPS
+204 sizes — signature 4627, public key 2592, secret key 4896 — before touching
+the underlying library, and rejects anything else (`pqc_verify` returns `false`,
+the signing paths return `Err`). A signature carrying even one extra trailing
+byte is not valid. This is the SDK's own guarantee rather than an inherited one:
+ML-DSA implementations disagree about trailing bytes (the Go binding over CIRCL
+v1.6.1 accepts a 4628-byte signature; `fips204` does not), so the strict rule is
+stated and tested here to keep every language binding on the same side.
+`is_valid_pqc_signature_len` / `is_valid_pqc_public_key_len` /
+`is_valid_pqc_secret_key_len` expose the check.
 
 ### Denomination math
 
@@ -349,6 +367,20 @@ A `CrossVm` is a struct literal carrying the signer's key material, chain id,
 account number / sequence, fee, REST URL, and an optional `QorClient` for
 `get_message`. See the [cross-VM](../../docs/docs/guides/cross-vm.md) guide.
 
+**Immediate vs queued (chain v3.1.97).** A call now executes **inside the
+transaction** by default and the chain returns the callee's answer.
+`call_with_responses` / `call_atomic_with_responses` decode it into
+`CrossVmCallResponse { message_id, executed, data, gas_used }`. Set
+`CallOptions::queue(true)` (the proto's `async` field) to only enqueue the
+message for a later `MsgProcessQueue` dispatch — the response then carries just
+the id with `executed == false`, and the outcome is read afterwards with
+`get_message`.
+
+`CallOptions::source_vm` is **ignored by the chain** from v3.1.97: the origin
+lane is derived from the execution context rather than from the caller's own
+description of itself. The SDK still sends the field so older nodes keep
+accepting the message.
+
 ### Quantum-safe DX (v0.5.0)
 
 The `pqc_dx` module makes a dApp PQC-protected in one idempotent call: check
@@ -395,22 +427,33 @@ classical secp256k1 signature over `keccak256(SignDoc)` with pubkey type
 ML-DSA-87 post-quantum signature. Account parsing accepts eth_secp256k1 public keys.
 
 ```rust,no_run
-use qorechain::unified::{derive_unified_account, unified_account_from_phantom_signature};
+use qorechain::unified::{derive_unified_account, unified_account_from_seed};
 use qorechain::sign_eth::{sign_hybrid_eth, EthSignParams};
 
-# fn run(mnemonic: &str, phantom_signature: &[u8]) -> qorechain::Result<()> {
+# fn run(mnemonic: &str, secret_entropy: [u8; 32]) -> qorechain::Result<()> {
 let account = derive_unified_account(mnemonic, 0)?;
 account.cosmos; // "qor1…"    — QoreChain Native lane
 account.evm;    // "0x…"      — EIP-55 checksummed
 account.svm;    // "<base58>" — 20 bytes + 12 zero pad
 
-// Derive a canonical, non-custodial unified account from a deterministic
-// Phantom signature (shake256(signature, 32)).
-let from_phantom = unified_account_from_phantom_signature(phantom_signature)?;
-let _ = (account, from_phantom);
+// Or build one directly from a 32-byte seed. The seed IS the spend key, so it
+// must be real secret entropy (CSPRNG / HSM / a mnemonic), never a wallet
+// signature or anything else a third party can ask a wallet to produce.
+let from_seed = unified_account_from_seed(secret_entropy)?;
+let _ = (account, from_seed);
 # Ok(())
 # }
 ```
+
+> **Removed in v0.8.0 (security).** `unified_account_from_phantom_signature`
+> derived an account's spend key from an external wallet's signature over a fixed
+> public message. That is unsafe: the signature is a bearer secret any page can
+> request from the wallet, and it is deterministic, so whoever obtains it controls
+> the account. The function now always returns an error. To let an external wallet
+> key move funds, use the **authenticator lanes** below
+> (`MsgRegisterAuthenticator` + `MsgExecuteCosmos` / `MsgExecuteEVM`), where the
+> external signature authorizes a spend instead of becoming key material. Any
+> account previously derived this way must be treated as exposed — move its funds.
 
 See the [unified-wallet](../../docs/docs/guides/unified-wallet.md) guide.
 

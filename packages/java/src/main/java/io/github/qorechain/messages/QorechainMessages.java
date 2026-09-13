@@ -1,7 +1,7 @@
 package io.github.qorechain.messages;
 
 /**
- * Typed composers for every QoreChain custom-module {@code Msg} (58 total).
+ * Typed composers for every QoreChain custom-module {@code Msg} (59 total).
  *
  * <p>Each method wraps an already-built protobuf message in a {@link TypedMessage}
  * carrying the correct on-chain type URL, ready to feed into the tx builder. The
@@ -202,6 +202,19 @@ public final class QorechainMessages {
 
         public static TypedMessage registerSvmPqcKey(qorechain.svm.v1.Tx.MsgRegisterSVMPQCKey m) {
             return new TypedMessage("/qorechain.svm.v1.MsgRegisterSVMPQCKey", m);
+        }
+
+        /**
+         * {@code MsgUpdateParams} — replace the SVM runtime parameters wholesale
+         * (chain v3.1.97).
+         *
+         * <p>A GOVERNANCE message: {@code authority} must be the governance module
+         * account, so it only lands through a passed proposal. It is the transaction that
+         * can turn the SVM lane on or off ({@code params.enabled}) without a binary
+         * release.
+         */
+        public static TypedMessage updateParams(qorechain.svm.v1.Tx.MsgUpdateParams m) {
+            return new TypedMessage("/qorechain.svm.v1.MsgUpdateParams", m);
         }
     }
 

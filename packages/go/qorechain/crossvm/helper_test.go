@@ -2,13 +2,16 @@ package crossvm
 
 import (
 	"context"
+	"encoding/hex"
 	"encoding/json"
 	"io"
 	"net"
 	"net/http"
 	"net/http/httptest"
+	"strings"
 	"testing"
 
+	codectypes "github.com/cosmos/cosmos-sdk/codec/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdktx "github.com/cosmos/cosmos-sdk/types/tx"
 	"github.com/cosmos/gogoproto/proto"
@@ -273,5 +276,200 @@ func TestVMTypeConstants(t *testing.T) {
 	}
 	if MsgCrossVMCallTypeURL != "/qorechain.crossvm.v1.MsgCrossVMCall" {
 		t.Errorf("type url = %q", MsgCrossVMCallTypeURL)
+	}
+}
+
+// ---- async ----
+
+// TestBuildCallAsyncDefaultsToSynchronous asserts the default is "execute now
+// and return the answer": a caller that does not ask for async must not get a
+// queued call.
+func TestBuildCallAsyncDefaultsToSynchronous(t *testing.T) {
+	c := New(testSigner(t), Options{})
+	built, err := c.BuildCall(CallOptions{
+		TargetVM:       VMTypeEVM,
+		TargetContract: "0xdead",
+		Payload:        []byte{0x01},
+	})
+	if err != nil {
+		t.Fatalf("BuildCall: %v", err)
+	}
+	if decodeMsgs(t, built)[0].Async {
+		t.Error("async must default to false (execute now)")
+	}
+}
+
+// TestBuildCallAsyncRoundTrips asserts Async=true reaches the encoded message.
+func TestBuildCallAsyncRoundTrips(t *testing.T) {
+	c := New(testSigner(t), Options{})
+	built, err := c.BuildCall(CallOptions{
+		TargetVM:       VMTypeCosmWasm,
+		TargetContract: "qor1contract",
+		Cosmwasm:       map[string]any{"ping": map[string]any{}},
+		Async:          true,
+	})
+	if err != nil {
+		t.Fatalf("BuildCall async: %v", err)
+	}
+	m := decodeMsgs(t, built)[0]
+	if !m.Async {
+		t.Fatal("async did not survive encoding into the tx body")
+	}
+	if m.TargetContract != "qor1contract" {
+		t.Errorf("targetContract = %q", m.TargetContract)
+	}
+}
+
+// TestBuildCallAtomicPerCallAsync asserts async is per-call, not per-tx: one
+// transaction may mix a queued call with one that executes inline.
+func TestBuildCallAtomicPerCallAsync(t *testing.T) {
+	c := New(testSigner(t), Options{})
+	built, err := c.BuildCallAtomic([]CallOptions{
+		{TargetVM: VMTypeEVM, TargetContract: "0xaaa", Payload: []byte{0x01}, Async: true},
+		{TargetVM: VMTypeSVM, TargetContract: "prog", Payload: []byte{0x02}},
+	})
+	if err != nil {
+		t.Fatalf("BuildCallAtomic: %v", err)
+	}
+	msgs := decodeMsgs(t, built)
+	if !msgs[0].Async {
+		t.Error("msg[0] should be async")
+	}
+	if msgs[1].Async {
+		t.Error("msg[1] should be synchronous")
+	}
+}
+
+// ---- response decoding ----
+
+// txResultWithResponses builds a tx.TxResult whose Raw carries the given
+// cross-VM responses, encoded exactly as the chain does: TxResponse.data is the
+// hex of the protobuf sdk.TxMsgData.
+func txResultWithResponses(t *testing.T, responses ...*crossvmv1.MsgCrossVMCallResponse) *tx.TxResult {
+	t.Helper()
+	msgData := &sdk.TxMsgData{}
+	for _, r := range responses {
+		value, err := proto.Marshal(r)
+		if err != nil {
+			t.Fatalf("marshal response: %v", err)
+		}
+		msgData.MsgResponses = append(msgData.MsgResponses, &codectypes.Any{
+			TypeUrl: MsgCrossVMCallResponseTypeURL,
+			Value:   value,
+		})
+	}
+	encoded, err := proto.Marshal(msgData)
+	if err != nil {
+		t.Fatalf("marshal TxMsgData: %v", err)
+	}
+	body, err := json.Marshal(map[string]any{
+		"tx_response": map[string]any{
+			"txhash": "ABC123",
+			"code":   0,
+			"data":   strings.ToUpper(hex.EncodeToString(encoded)),
+		},
+	})
+	if err != nil {
+		t.Fatalf("marshal body: %v", err)
+	}
+	return &tx.TxResult{TxHash: "ABC123", Raw: body}
+}
+
+// TestDecodeCallResultSynchronous asserts the executed call's answer — Data,
+// GasUsed and Executed — is surfaced alongside the message id.
+func TestDecodeCallResultSynchronous(t *testing.T) {
+	res := txResultWithResponses(t, &crossvmv1.MsgCrossVMCallResponse{
+		MessageID: "msg-7",
+		Executed:  true,
+		Data:      []byte{0xca, 0xfe},
+		GasUsed:   42_000,
+	})
+
+	got, err := DecodeCallResult(res)
+	if err != nil {
+		t.Fatalf("DecodeCallResult: %v", err)
+	}
+	if got.MessageID != "msg-7" {
+		t.Errorf("MessageID = %q, want msg-7", got.MessageID)
+	}
+	if !got.Executed {
+		t.Error("Executed = false, want true for a synchronous call")
+	}
+	if string(got.Data) != string([]byte{0xca, 0xfe}) {
+		t.Errorf("Data = %x, want cafe", got.Data)
+	}
+	if got.GasUsed != 42_000 {
+		t.Errorf("GasUsed = %d, want 42000", got.GasUsed)
+	}
+}
+
+// TestDecodeCallResultQueued asserts a queued (async) call reports Executed
+// false with no data — the id is all the caller gets until ProcessQueue runs.
+func TestDecodeCallResultQueued(t *testing.T) {
+	res := txResultWithResponses(t, &crossvmv1.MsgCrossVMCallResponse{MessageID: "msg-8"})
+
+	got, err := DecodeCallResult(res)
+	if err != nil {
+		t.Fatalf("DecodeCallResult: %v", err)
+	}
+	if got.MessageID != "msg-8" || got.Executed || len(got.Data) != 0 || got.GasUsed != 0 {
+		t.Errorf("queued result = %+v", got)
+	}
+}
+
+// TestDecodeCallResultsOrder asserts results come back in message order, so
+// result[i] belongs to the i-th CallAtomic option.
+func TestDecodeCallResultsOrder(t *testing.T) {
+	res := txResultWithResponses(t,
+		&crossvmv1.MsgCrossVMCallResponse{MessageID: "a", Executed: true, Data: []byte{0x01}, GasUsed: 1},
+		&crossvmv1.MsgCrossVMCallResponse{MessageID: "b"},
+		&crossvmv1.MsgCrossVMCallResponse{MessageID: "c", Executed: true, Data: []byte{0x03}, GasUsed: 3},
+	)
+
+	all, err := DecodeCallResults(res)
+	if err != nil {
+		t.Fatalf("DecodeCallResults: %v", err)
+	}
+	if len(all) != 3 {
+		t.Fatalf("expected 3 results, got %d", len(all))
+	}
+	for i, want := range []string{"a", "b", "c"} {
+		if all[i].MessageID != want {
+			t.Errorf("result[%d] id = %q, want %q", i, all[i].MessageID, want)
+		}
+	}
+	if all[1].Executed || all[2].GasUsed != 3 {
+		t.Errorf("results = %+v", all)
+	}
+}
+
+// TestDecodeCallResultsEventFallback covers a node that leaves TxResponse.data
+// empty: the ids are still recovered from the events, with the other fields
+// zero.
+func TestDecodeCallResultsEventFallback(t *testing.T) {
+	body := []byte(`{"tx_response":{"txhash":"ABC","code":0,"data":"","events":[
+		{"type":"crossvm_call","attributes":[{"key":"message_id","value":"evt-1"}]},
+		{"type":"crossvm_call","attributes":[{"key":"message_id","value":"evt-2"}]}
+	]}}`)
+	all, err := DecodeCallResults(&tx.TxResult{TxHash: "ABC", Raw: body})
+	if err != nil {
+		t.Fatalf("DecodeCallResults: %v", err)
+	}
+	if len(all) != 2 || all[0].MessageID != "evt-1" || all[1].MessageID != "evt-2" {
+		t.Fatalf("event fallback = %+v", all)
+	}
+}
+
+// TestDecodeCallResultErrors covers the inputs that carry no response at all.
+func TestDecodeCallResultErrors(t *testing.T) {
+	if _, err := DecodeCallResults(nil); err == nil {
+		t.Error("expected an error for a nil tx result")
+	}
+	if _, err := DecodeCallResults(&tx.TxResult{TxHash: "X"}); err == nil {
+		t.Error("expected an error when the tx result carries no raw body")
+	}
+	empty := []byte(`{"tx_response":{"txhash":"X","code":0,"data":""}}`)
+	if _, err := DecodeCallResult(&tx.TxResult{TxHash: "X", Raw: empty}); err == nil {
+		t.Error("expected an error when the tx carries no cross-VM response")
 	}
 }

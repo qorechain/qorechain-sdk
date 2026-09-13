@@ -17,19 +17,26 @@ class MsgCrossVMCall(_message.Message):
     TARGET_CONTRACT_FIELD_NUMBER: _ClassVar[int]
     PAYLOAD_FIELD_NUMBER: _ClassVar[int]
     FUNDS_FIELD_NUMBER: _ClassVar[int]
+    ASYNC_FIELD_NUMBER: _ClassVar[int]
     sender: str
     source_vm: str
     target_vm: str
     target_contract: str
     payload: bytes
     funds: _containers.RepeatedCompositeFieldContainer[_coin_pb2.Coin]
-    def __init__(self, sender: _Optional[str] = ..., source_vm: _Optional[str] = ..., target_vm: _Optional[str] = ..., target_contract: _Optional[str] = ..., payload: _Optional[bytes] = ..., funds: _Optional[_Iterable[_Union[_coin_pb2.Coin, _Mapping]]] = ...) -> None: ...
+    def __init__(self, sender: _Optional[str] = ..., source_vm: _Optional[str] = ..., target_vm: _Optional[str] = ..., target_contract: _Optional[str] = ..., payload: _Optional[bytes] = ..., funds: _Optional[_Iterable[_Union[_coin_pb2.Coin, _Mapping]]] = ..., **kwargs) -> None: ...
 
 class MsgCrossVMCallResponse(_message.Message):
-    __slots__ = ("message_id",)
+    __slots__ = ("message_id", "executed", "data", "gas_used")
     MESSAGE_ID_FIELD_NUMBER: _ClassVar[int]
+    EXECUTED_FIELD_NUMBER: _ClassVar[int]
+    DATA_FIELD_NUMBER: _ClassVar[int]
+    GAS_USED_FIELD_NUMBER: _ClassVar[int]
     message_id: str
-    def __init__(self, message_id: _Optional[str] = ...) -> None: ...
+    executed: bool
+    data: bytes
+    gas_used: int
+    def __init__(self, message_id: _Optional[str] = ..., executed: bool = ..., data: _Optional[bytes] = ..., gas_used: _Optional[int] = ...) -> None: ...
 
 class MsgProcessQueue(_message.Message):
     __slots__ = ("authority",)

@@ -229,6 +229,11 @@ const cases: Array<{ name: string; obj: { typeUrl: string }; typeUrl: string }> 
       typeUrl: "/qorechain.svm.v1.MsgRegisterSVMPQCKey",
       obj: msg.svm.registerSvmPqcKey({ sender: ADDR }),
     },
+    {
+      name: "svm.updateParams",
+      typeUrl: "/qorechain.svm.v1.MsgUpdateParams",
+      obj: msg.svm.updateParams({ authority: ADDR }),
+    },
     // lightnode
     {
       name: "lightnode.registerLightNode",
@@ -345,8 +350,8 @@ const cases: Array<{ name: string; obj: { typeUrl: string }; typeUrl: string }> 
   ];
 
 describe("qorechain custom-module composers", () => {
-  it("covers all 56 custom Msg types", () => {
-    expect(cases).toHaveLength(56);
+  it("covers all 57 custom Msg types", () => {
+    expect(cases).toHaveLength(57);
   });
 
   for (const c of cases) {
@@ -394,6 +399,22 @@ describe("new composers round-trip through the registry (Any encode/decode)", ()
       admin: ADDR,
       chainId: "solana",
       ed25519: { pubkeys: [new Uint8Array(32).fill(2)], threshold: 1 },
+    }),
+    // Governance-only SVM params replacement (chain v3.1.97). Every SVMParams
+    // field is set, since the message replaces the params wholesale.
+    msg.svm.updateParams({
+      authority: ADDR,
+      params: {
+        maxProgramSize: "1048576",
+        maxAccountDataSize: "10485760",
+        computeBudgetMax: "1400000",
+        lamportsPerByte: "6960",
+        rentExemptionMulti: "2.000000000000000000",
+        enabled: false,
+        svmSlotOffset: "100",
+        defaultSigScheme: 1,
+        maxCpi: 4,
+      },
     }),
   ];
 

@@ -18,6 +18,17 @@
 //!   atomically (all-or-nothing in a single block).
 //! - [`CrossVm::get_message`] — read a routed message's status via
 //!   `qor_getCrossVMMessage`.
+//! - [`CrossVm::call_with_responses`] / [`CrossVm::call_atomic_with_responses`] —
+//!   the same writes, with the chain's [`CrossVmCallResponse`] decoded.
+//!
+//! ## Immediate vs queued (chain v3.1.97)
+//!
+//! A call executes **inside the transaction** by default and the chain returns
+//! the callee's answer: [`CrossVmCallResponse::data`] carries the return value,
+//! with `executed = true` and the `gas_used` it cost. Set
+//! [`CallOptions::queue`] (the proto's `async` field) to only enqueue the message
+//! for a later `MsgProcessQueue` dispatch; the response then carries just the
+//! message id, and the outcome is read afterwards with [`CrossVm::get_message`].
 //!
 //! ## Payload
 //!
@@ -32,14 +43,23 @@
 //!
 //! [`CallOptions::source_vm`] defaults to [`VM_TYPE_EVM`]. The accepted target
 //! VM strings are [`VM_TYPE_EVM`], [`VM_TYPE_COSMWASM`], and [`VM_TYPE_SVM`].
+//!
+//! From chain v3.1.97 the **source** VM is ignored on input: the chain derives
+//! the origin lane from the execution context instead of trusting the caller's
+//! self-description. The field is still sent so older nodes keep accepting the
+//! message, but setting it changes nothing on a current chain.
 
 use crate::error::{Error, Result};
-use crate::msg::crossvm::cross_vm_call_any;
+use crate::msg::crossvm::{cross_vm_call_any, CROSS_VM_CALL_RESPONSE};
+use crate::proto::qorechain::crossvm::v1 as pb;
 use crate::query::QorClient;
 use crate::tx::{
     broadcast, send_messages, BroadcastMode, BuiltTx, Coin as TxCoin, Fee, SendMessagesParams,
 };
+use base64::engine::general_purpose::STANDARD as BASE64;
+use base64::Engine;
 use cosmrs::proto::cosmos::base::v1beta1::Coin as ProtoCoin;
+use prost::Message;
 use serde_json::Value;
 
 /// The EVM VM-type string.
@@ -90,6 +110,12 @@ impl From<Value> for Payload {
 #[derive(Debug, Clone)]
 pub struct CallOptions {
     /// Source VM type. Defaults to [`VM_TYPE_EVM`] when empty.
+    ///
+    /// **The chain ignores this field** (chain v3.1.97 and later): it derives the
+    /// origin lane from the execution context rather than from the caller's own
+    /// description of itself. It is still sent, so a node running an older build
+    /// accepts the message; setting it cannot change where the call is credited
+    /// from.
     pub source_vm: String,
     /// Target VM type (e.g. [`VM_TYPE_COSMWASM`]).
     pub target_vm: String,
@@ -99,11 +125,20 @@ pub struct CallOptions {
     pub payload: Payload,
     /// Funds to send with the call.
     pub funds: Vec<TxCoin>,
+    /// Queue the call instead of executing it now (the proto's `async` field).
+    ///
+    /// `false` (the default) executes the call within this transaction and returns
+    /// the callee's answer in [`CrossVmCallResponse::data`]. `true` only enqueues
+    /// the message for a later `MsgProcessQueue` dispatch, so the response carries
+    /// `executed == false` and no data — read the outcome later with
+    /// [`CrossVm::get_message`].
+    pub queue: bool,
 }
 
 impl CallOptions {
     /// Creates options with the given target VM, contract, and payload, defaulting
-    /// `source_vm` to [`VM_TYPE_EVM`] and no funds.
+    /// `source_vm` to [`VM_TYPE_EVM`], no funds, and immediate (non-queued)
+    /// execution.
     pub fn new(
         target_vm: impl Into<String>,
         target_contract: impl Into<String>,
@@ -115,10 +150,14 @@ impl CallOptions {
             target_contract: target_contract.into(),
             payload: payload.into(),
             funds: Vec::new(),
+            queue: false,
         }
     }
 
     /// Overrides the source VM.
+    ///
+    /// Kept for compatibility with older nodes; see [`CallOptions::source_vm`] —
+    /// the chain ignores the value.
     pub fn source_vm(mut self, vm: impl Into<String>) -> Self {
         self.source_vm = vm.into();
         self
@@ -128,6 +167,78 @@ impl CallOptions {
     pub fn funds(mut self, funds: Vec<TxCoin>) -> Self {
         self.funds = funds;
         self
+    }
+
+    /// Queues the call for later `MsgProcessQueue` dispatch instead of executing
+    /// it now (the proto's `async` field).
+    pub fn queue(mut self, queue: bool) -> Self {
+        self.queue = queue;
+        self
+    }
+}
+
+/// A decoded `MsgCrossVMCallResponse` — what the chain answers for one
+/// `MsgCrossVMCall` in the transaction.
+#[derive(Debug, Clone, Default, PartialEq, Eq)]
+pub struct CrossVmCallResponse {
+    /// The cross-VM message id assigned by the chain.
+    pub message_id: String,
+    /// Whether the call already ran. `false` for a queued
+    /// ([`CallOptions::queue`]) call, whose result is not known yet.
+    pub executed: bool,
+    /// The callee's return value. Empty for a queued call.
+    pub data: Vec<u8>,
+    /// Gas consumed by the callee. `0` for a queued call.
+    pub gas_used: u64,
+}
+
+impl CrossVmCallResponse {
+    /// Decodes one `MsgCrossVMCallResponse` from its protobuf bytes.
+    pub fn decode(bytes: &[u8]) -> Result<Self> {
+        let pb = pb::MsgCrossVmCallResponse::decode(bytes)
+            .map_err(|e| Error::InvalidResponse(format!("decode MsgCrossVMCallResponse: {e}")))?;
+        Ok(Self {
+            message_id: pb.message_id,
+            executed: pb.executed,
+            data: pb.data,
+            gas_used: pb.gas_used,
+        })
+    }
+
+    /// Extracts every `MsgCrossVMCallResponse` from a REST broadcast response
+    /// (the JSON returned by [`crate::tx::broadcast`] / [`CrossVm::call`]).
+    ///
+    /// Reads `tx_response.msg_responses[]`, keeping the entries whose `type_url`
+    /// is [`CROSS_VM_CALL_RESPONSE`] and base64-decoding their `value`. Returns an
+    /// empty vector when the node did not include `msg_responses` — a `sync`
+    /// broadcast answers before execution, so the results are only present once
+    /// the tx is confirmed (see [`crate::tx::broadcast_and_wait`]).
+    pub fn list_from_broadcast(resp: &Value) -> Result<Vec<Self>> {
+        let responses = resp
+            .get("tx_response")
+            .and_then(|r| r.get("msg_responses"))
+            .or_else(|| resp.get("msg_responses"))
+            .and_then(|m| m.as_array());
+        let Some(responses) = responses else {
+            return Ok(Vec::new());
+        };
+        let mut out = Vec::new();
+        for entry in responses {
+            let type_url = entry
+                .get("type_url")
+                .or_else(|| entry.get("@type"))
+                .and_then(|t| t.as_str())
+                .unwrap_or_default();
+            if type_url != CROSS_VM_CALL_RESPONSE {
+                continue;
+            }
+            let value = entry.get("value").and_then(|v| v.as_str()).unwrap_or("");
+            let bytes = BASE64.decode(value).map_err(|e| {
+                Error::InvalidResponse(format!("decode MsgCrossVMCallResponse base64: {e}"))
+            })?;
+            out.push(Self::decode(&bytes)?);
+        }
+        Ok(out)
     }
 }
 
@@ -182,6 +293,34 @@ impl CrossVm {
         broadcast(&self.rest_url, &built.tx_raw_bytes, self.mode).await
     }
 
+    /// Like [`CrossVm::call`], but also decodes the chain's
+    /// `MsgCrossVMCallResponse`s — the message id plus, for a call that executed
+    /// inline, the callee's `data`, the `executed` flag, and `gas_used`.
+    ///
+    /// The decoded vector is empty when the node's answer carried no
+    /// `msg_responses` (a [`BroadcastMode::Sync`] broadcast returns before
+    /// execution); the raw JSON is always returned so the caller can still read
+    /// the tx hash and poll.
+    pub async fn call_with_responses(
+        &self,
+        opts: &CallOptions,
+    ) -> Result<(Value, Vec<CrossVmCallResponse>)> {
+        let raw = self.call(opts).await?;
+        let decoded = CrossVmCallResponse::list_from_broadcast(&raw)?;
+        Ok((raw, decoded))
+    }
+
+    /// Like [`CrossVm::call_atomic`], but also decodes one
+    /// [`CrossVmCallResponse`] per packed `MsgCrossVMCall`, in message order.
+    pub async fn call_atomic_with_responses(
+        &self,
+        opts: &[CallOptions],
+    ) -> Result<(Value, Vec<CrossVmCallResponse>)> {
+        let raw = self.call_atomic(opts).await?;
+        let decoded = CrossVmCallResponse::list_from_broadcast(&raw)?;
+        Ok((raw, decoded))
+    }
+
     /// Builds + signs one tx containing N `MsgCrossVMCall` messages (does not
     /// broadcast). Returns an error if `opts` is empty.
     pub fn build_atomic(&self, opts: &[CallOptions]) -> Result<BuiltTx> {
@@ -205,6 +344,7 @@ impl CrossVm {
                 o.target_contract.clone(),
                 payload,
                 to_proto_coins(&o.funds),
+                o.queue,
             ));
         }
 

@@ -7,7 +7,7 @@ use crate::msg::to_any;
 use crate::proto::qorechain::svm::v1 as pb;
 use cosmrs::Any;
 
-pub use pb::{SvmAccountMeta, SvmAuth};
+pub use pb::{SvmAccountMeta, SvmAuth, SvmParams};
 
 /// `/qorechain.svm.v1.MsgDeployProgram` type URL.
 pub const DEPLOY_PROGRAM: &str = "/qorechain.svm.v1.MsgDeployProgram";
@@ -17,6 +17,8 @@ pub const CREATE_ACCOUNT: &str = "/qorechain.svm.v1.MsgCreateAccount";
 pub const EXECUTE_PROGRAM: &str = "/qorechain.svm.v1.MsgExecuteProgram";
 /// `/qorechain.svm.v1.MsgRegisterSVMPQCKey` type URL.
 pub const REGISTER_SVM_PQC_KEY: &str = "/qorechain.svm.v1.MsgRegisterSVMPQCKey";
+/// `/qorechain.svm.v1.MsgUpdateParams` type URL (governance).
+pub const UPDATE_PARAMS: &str = "/qorechain.svm.v1.MsgUpdateParams";
 
 /// Builds `MsgDeployProgram`.
 pub fn deploy_program(sender: impl Into<String>, bytecode: Vec<u8>) -> pb::MsgDeployProgram {
@@ -163,4 +165,26 @@ pub fn register_svm_pqc_key_any(
         &register_svm_pqc_key(sender, svm_addr, pqc_pub_key),
         REGISTER_SVM_PQC_KEY,
     )
+}
+
+/// Builds `MsgUpdateParams` — the **governance** message that replaces the SVM
+/// module's runtime parameters wholesale (chain v3.1.97).
+///
+/// `authority` must be the governance module account; a transaction signed by
+/// anyone else is rejected by the chain. Because the replacement is wholesale,
+/// `params` must carry **every** field at its intended value, not only the ones
+/// being changed — read the current parameters first and edit the struct.
+///
+/// `SVMParams::enabled` is what turns the SVM lane on or off, so disabling the
+/// lane is now an ordinary governance proposal rather than a binary release.
+pub fn update_params(authority: impl Into<String>, params: SvmParams) -> pb::MsgUpdateParams {
+    pb::MsgUpdateParams {
+        authority: authority.into(),
+        params: Some(params),
+    }
+}
+
+/// Builds `MsgUpdateParams` packed into an `Any`.
+pub fn update_params_any(authority: impl Into<String>, params: SvmParams) -> Any {
+    to_any(&update_params(authority, params), UPDATE_PARAMS)
 }

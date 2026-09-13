@@ -157,3 +157,102 @@ func TestEncodeHybridSignatureExtensionValidation(t *testing.T) {
 		t.Error("expected error for wrong public key length")
 	}
 }
+
+// TestPQCVerifyRejectsWrongSignatureLength is a regression test for a real
+// cross-binding malleability: the underlying CIRCL implementation verifies a
+// 4627-byte signature with one extra trailing byte as TRUE, while the Rust
+// fips204 binding rejects it — so the same bytes were valid to the Go SDK and
+// invalid to the Rust SDK. PQCVerify must enforce the exact size itself.
+func TestPQCVerifyRejectsWrongSignatureLength(t *testing.T) {
+	kp, err := GeneratePQCKeypair()
+	if err != nil {
+		t.Fatal(err)
+	}
+	msg := []byte("length strictness is consensus-critical")
+	sig, err := PQCSign(kp.SecretKey, msg)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if len(sig) != MLDSA87SignatureLength {
+		t.Fatalf("signature len = %d, want %d", len(sig), MLDSA87SignatureLength)
+	}
+
+	// The exact-length signature must still verify.
+	if !PQCVerify(kp.PublicKey, msg, sig) {
+		t.Fatal("a valid exact-length signature must verify")
+	}
+
+	// One extra trailing byte — the case the library accepts on its own.
+	padded := make([]byte, 0, len(sig)+1)
+	padded = append(padded, sig...)
+	padded = append(padded, 0x00)
+	if PQCVerify(kp.PublicKey, msg, padded) {
+		t.Errorf("signature of %d bytes (one extra trailing byte) must be rejected", len(padded))
+	}
+
+	// Truncated by one byte.
+	if PQCVerify(kp.PublicKey, msg, sig[:len(sig)-1]) {
+		t.Errorf("signature of %d bytes (truncated) must be rejected", len(sig)-1)
+	}
+
+	// Empty and nil signatures.
+	if PQCVerify(kp.PublicKey, msg, nil) || PQCVerify(kp.PublicKey, msg, []byte{}) {
+		t.Error("an empty signature must be rejected")
+	}
+}
+
+// TestPQCVerifyRejectsWrongPublicKeyLength asserts the public key is held to its
+// exact size too, on both sides of the correct length.
+func TestPQCVerifyRejectsWrongPublicKeyLength(t *testing.T) {
+	kp, err := GeneratePQCKeypair()
+	if err != nil {
+		t.Fatal(err)
+	}
+	msg := []byte("public keys are exact-sized")
+	sig, err := PQCSign(kp.SecretKey, msg)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	padded := make([]byte, 0, len(kp.PublicKey)+1)
+	padded = append(padded, kp.PublicKey...)
+	padded = append(padded, 0x00)
+
+	for name, pub := range map[string][]byte{
+		"one extra trailing byte": padded,
+		"truncated":               kp.PublicKey[:len(kp.PublicKey)-1],
+		"empty":                   {},
+		"nil":                     nil,
+	} {
+		if PQCVerify(pub, msg, sig) {
+			t.Errorf("public key (%s, %d bytes) must be rejected", name, len(pub))
+		}
+	}
+}
+
+// TestPQCSignRejectsWrongSecretKeyLength asserts signing refuses a secret key
+// that is not exactly MLDSA87SecretKeyLength bytes, before the library sees it.
+func TestPQCSignRejectsWrongSecretKeyLength(t *testing.T) {
+	kp, err := GeneratePQCKeypair()
+	if err != nil {
+		t.Fatal(err)
+	}
+	padded := make([]byte, 0, len(kp.SecretKey)+1)
+	padded = append(padded, kp.SecretKey...)
+	padded = append(padded, 0x00)
+
+	for name, sec := range map[string][]byte{
+		"one extra trailing byte": padded,
+		"truncated":               kp.SecretKey[:len(kp.SecretKey)-1],
+		"empty":                   {},
+		"nil":                     nil,
+	} {
+		if _, err := PQCSign(sec, []byte("m")); err == nil {
+			t.Errorf("secret key (%s, %d bytes) must be rejected", name, len(sec))
+		}
+	}
+	// The exact-length key still signs.
+	if _, err := PQCSign(kp.SecretKey, []byte("m")); err != nil {
+		t.Fatalf("exact-length secret key must sign: %v", err)
+	}
+}

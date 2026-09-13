@@ -44,7 +44,7 @@ TEST_MNEMONIC = (
 CHAIN_ID = "qorechain-diana"
 FEE = {"amount": [{"denom": "uqor", "amount": "5000"}], "gas": "200000"}
 
-# Every QoreChain composer call -> the exact typeUrl it must emit. Covers all 53.
+# Every QoreChain composer call -> the exact typeUrl it must emit. Covers all 59.
 QORECHAIN_COMPOSER_CASES = [
     # amm (7)
     (amm.create_pool(creator="qor1"), "/qorechain.amm.v1.MsgCreatePool"),
@@ -121,11 +121,12 @@ QORECHAIN_COMPOSER_CASES = [
         "/qorechain.pqc.v1.MsgDeprecateAlgorithm",
     ),
     (pqc.disable_algorithm(authority="qor1"), "/qorechain.pqc.v1.MsgDisableAlgorithm"),
-    # svm (4)
+    # svm (5)
     (svm.deploy_program(sender="qor1"), "/qorechain.svm.v1.MsgDeployProgram"),
     (svm.create_account(sender="qor1"), "/qorechain.svm.v1.MsgCreateAccount"),
     (svm.execute_program(sender="qor1"), "/qorechain.svm.v1.MsgExecuteProgram"),
     (svm.register_svm_pqc_key(sender="qor1"), "/qorechain.svm.v1.MsgRegisterSVMPQCKey"),
+    (svm.update_params(authority="qor1"), "/qorechain.svm.v1.MsgUpdateParams"),
     # lightnode (4)
     (
         lightnode.register_light_node(operator="qor1"),
@@ -196,10 +197,10 @@ QORECHAIN_COMPOSER_CASES = [
 ]
 
 
-def test_all_58_qorechain_composers_covered():
-    assert len(QORECHAIN_COMPOSER_CASES) == 58
+def test_all_59_qorechain_composers_covered():
+    assert len(QORECHAIN_COMPOSER_CASES) == 59
     type_urls = {tu for _m, tu in QORECHAIN_COMPOSER_CASES}
-    assert len(type_urls) == 58
+    assert len(type_urls) == 59
 
 
 @pytest.mark.parametrize("built_msg,type_url", QORECHAIN_COMPOSER_CASES)
@@ -239,11 +240,11 @@ def test_cosmos_composer_returns_exact_type_url(built_msg, type_url):
     assert built_msg.type_url == type_url
 
 
-def test_registry_covers_all_58_qorechain_and_18_cosmos():
+def test_registry_covers_all_59_qorechain_and_18_cosmos():
     reg = qorechain_registry()
     qc = [k for k in reg if k.startswith("/qorechain.")]
-    assert len(qc) == 58
-    assert len(reg) == 58 + 18
+    assert len(qc) == 59
+    assert len(reg) == 59 + 18
 
 
 def test_registry_extra_types_override():
@@ -289,6 +290,43 @@ def test_rdk_execute_withdrawal_round_trip():
     assert decoded.denom == "uqor"
     assert decoded.amount == 1000
     assert list(decoded.proof) == [b"\x01\x02", b"\x03\x04"]
+
+
+def test_svm_update_params_round_trip():
+    """The v3.1.97 governance message that replaces SVMParams wholesale."""
+    m = svm.update_params(
+        authority="qor1gov",
+        params={
+            "max_program_size": 1024,
+            "max_account_data_size": 2048,
+            "compute_budget_max": 1_400_000,
+            "lamports_per_byte": 7,
+            "rent_exemption_multi": "2.000000000000000000",
+            "enabled": False,
+            "svm_slot_offset": -3,
+            "default_sig_scheme": 1,
+            "max_cpi": 4,
+        },
+    )
+    assert m.type_url == "/qorechain.svm.v1.MsgUpdateParams"
+    decoded = decode_any(m.type_url, m.value.SerializeToString())
+    assert decoded.authority == "qor1gov"
+    assert decoded.params.max_program_size == 1024
+    assert decoded.params.max_account_data_size == 2048
+    assert decoded.params.compute_budget_max == 1_400_000
+    assert decoded.params.lamports_per_byte == 7
+    assert decoded.params.rent_exemption_multi == "2.000000000000000000"
+    assert decoded.params.enabled is False
+    assert decoded.params.svm_slot_offset == -3
+    assert decoded.params.default_sig_scheme == 1
+    assert decoded.params.max_cpi == 4
+
+
+def test_svm_update_params_resolves_through_registry():
+    assert (
+        resolve_message_type("/qorechain.svm.v1.MsgUpdateParams").DESCRIPTOR.full_name
+        == "qorechain.svm.v1.MsgUpdateParams"
+    )
 
 
 def test_rdk_submit_batch_carries_withdrawals_root():

@@ -12,15 +12,35 @@ export const protobufPackage = "qorechain.crossvm.v1";
 
 export interface MsgCrossVMCall {
   sender: string;
+  /**
+   * source_vm is IGNORED on input. The chain derives the origin lane from the
+   * execution context, because a caller describing itself cannot be evidence of
+   * what it is. Retained so the field number stays taken and older clients that
+   * still set it are accepted rather than rejected.
+   */
   sourceVm: string;
   targetVm: string;
   targetContract: string;
   payload: Uint8Array;
   funds: Coin[];
+  /**
+   * async queues the call instead of executing it, to be dispatched later by
+   * ProcessQueue. The default is to execute now and return the answer, which is
+   * what a caller that needs the result requires.
+   */
+  async: boolean;
 }
 
 export interface MsgCrossVMCallResponse {
   messageId: string;
+  /** executed is false for a queued call, whose result is not known yet. */
+  executed: boolean;
+  /**
+   * data is the callee's return value, carried back to the caller. A CosmWasm
+   * contract reads it from the submessage reply.
+   */
+  data: Uint8Array;
+  gasUsed: string;
 }
 
 export interface MsgProcessQueue {
@@ -31,7 +51,15 @@ export interface MsgProcessQueueResponse {
 }
 
 function createBaseMsgCrossVMCall(): MsgCrossVMCall {
-  return { sender: "", sourceVm: "", targetVm: "", targetContract: "", payload: new Uint8Array(0), funds: [] };
+  return {
+    sender: "",
+    sourceVm: "",
+    targetVm: "",
+    targetContract: "",
+    payload: new Uint8Array(0),
+    funds: [],
+    async: false,
+  };
 }
 
 export const MsgCrossVMCall: MessageFns<MsgCrossVMCall> = {
@@ -53,6 +81,9 @@ export const MsgCrossVMCall: MessageFns<MsgCrossVMCall> = {
     }
     for (const v of message.funds) {
       Coin.encode(v!, writer.uint32(50).fork()).join();
+    }
+    if (message.async !== false) {
+      writer.uint32(56).bool(message.async);
     }
     return writer;
   },
@@ -112,6 +143,14 @@ export const MsgCrossVMCall: MessageFns<MsgCrossVMCall> = {
           message.funds.push(Coin.decode(reader, reader.uint32()));
           continue;
         }
+        case 7: {
+          if (tag !== 56) {
+            break;
+          }
+
+          message.async = reader.bool();
+          continue;
+        }
       }
       if ((tag & 7) === 4 || tag === 0) {
         break;
@@ -143,6 +182,7 @@ export const MsgCrossVMCall: MessageFns<MsgCrossVMCall> = {
       funds: globalThis.Array.isArray(object?.funds)
         ? object.funds.map((e: any) => Coin.fromJSON(e))
         : [],
+      async: isSet(object.async) ? globalThis.Boolean(object.async) : false,
     };
   },
 
@@ -166,6 +206,9 @@ export const MsgCrossVMCall: MessageFns<MsgCrossVMCall> = {
     if (message.funds?.length) {
       obj.funds = message.funds.map((e) => Coin.toJSON(e));
     }
+    if (message.async !== false) {
+      obj.async = message.async;
+    }
     return obj;
   },
 
@@ -180,18 +223,28 @@ export const MsgCrossVMCall: MessageFns<MsgCrossVMCall> = {
     message.targetContract = object.targetContract ?? "";
     message.payload = object.payload ?? new Uint8Array(0);
     message.funds = object.funds?.map((e) => Coin.fromPartial(e)) || [];
+    message.async = object.async ?? false;
     return message;
   },
 };
 
 function createBaseMsgCrossVMCallResponse(): MsgCrossVMCallResponse {
-  return { messageId: "" };
+  return { messageId: "", executed: false, data: new Uint8Array(0), gasUsed: "0" };
 }
 
 export const MsgCrossVMCallResponse: MessageFns<MsgCrossVMCallResponse> = {
   encode(message: MsgCrossVMCallResponse, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
     if (message.messageId !== "") {
       writer.uint32(10).string(message.messageId);
+    }
+    if (message.executed !== false) {
+      writer.uint32(16).bool(message.executed);
+    }
+    if (message.data.length !== 0) {
+      writer.uint32(26).bytes(message.data);
+    }
+    if (message.gasUsed !== "0") {
+      writer.uint32(32).uint64(message.gasUsed);
     }
     return writer;
   },
@@ -211,6 +264,30 @@ export const MsgCrossVMCallResponse: MessageFns<MsgCrossVMCallResponse> = {
           message.messageId = reader.string();
           continue;
         }
+        case 2: {
+          if (tag !== 16) {
+            break;
+          }
+
+          message.executed = reader.bool();
+          continue;
+        }
+        case 3: {
+          if (tag !== 26) {
+            break;
+          }
+
+          message.data = reader.bytes();
+          continue;
+        }
+        case 4: {
+          if (tag !== 32) {
+            break;
+          }
+
+          message.gasUsed = reader.uint64().toString();
+          continue;
+        }
       }
       if ((tag & 7) === 4 || tag === 0) {
         break;
@@ -227,6 +304,13 @@ export const MsgCrossVMCallResponse: MessageFns<MsgCrossVMCallResponse> = {
         : isSet(object.message_id)
         ? globalThis.String(object.message_id)
         : "",
+      executed: isSet(object.executed) ? globalThis.Boolean(object.executed) : false,
+      data: isSet(object.data) ? bytesFromBase64(object.data) : new Uint8Array(0),
+      gasUsed: isSet(object.gasUsed)
+        ? globalThis.String(object.gasUsed)
+        : isSet(object.gas_used)
+        ? globalThis.String(object.gas_used)
+        : "0",
     };
   },
 
@@ -234,6 +318,15 @@ export const MsgCrossVMCallResponse: MessageFns<MsgCrossVMCallResponse> = {
     const obj: any = {};
     if (message.messageId !== "") {
       obj.messageId = message.messageId;
+    }
+    if (message.executed !== false) {
+      obj.executed = message.executed;
+    }
+    if (message.data.length !== 0) {
+      obj.data = base64FromBytes(message.data);
+    }
+    if (message.gasUsed !== "0") {
+      obj.gasUsed = message.gasUsed;
     }
     return obj;
   },
@@ -244,6 +337,9 @@ export const MsgCrossVMCallResponse: MessageFns<MsgCrossVMCallResponse> = {
   fromPartial(object: DeepPartial<MsgCrossVMCallResponse>): MsgCrossVMCallResponse {
     const message = createBaseMsgCrossVMCallResponse();
     message.messageId = object.messageId ?? "";
+    message.executed = object.executed ?? false;
+    message.data = object.data ?? new Uint8Array(0);
+    message.gasUsed = object.gasUsed ?? "0";
     return message;
   },
 };
@@ -355,7 +451,11 @@ export const MsgDefinition = {
   name: "Msg",
   fullName: "qorechain.crossvm.v1.Msg",
   methods: {
-    /** CrossVMCall submits a cross-VM message to the queue. */
+    /**
+     * CrossVMCall invokes a contract on another VM. It executes within the
+     * transaction and returns the callee's answer, unless async is set, in which
+     * case it is queued for ProcessQueue to dispatch later.
+     */
     crossVMCall: {
       name: "CrossVMCall",
       requestType: MsgCrossVMCall as typeof MsgCrossVMCall,

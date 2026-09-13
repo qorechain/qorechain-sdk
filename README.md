@@ -5,7 +5,7 @@ Official multi-language SDK and developer kit for building decentralized applica
 QoreChain is a triple-VM Layer 1 with first-class support for CosmWasm,
 EVM/Solidity, and SVM smart contracts, plus IBC interoperability. SDKs are
 available for **TypeScript, Python, Go, Rust, and Java** — all published at
-`0.7.x`.
+`0.8.x`.
 
 ## Packages
 
@@ -18,7 +18,7 @@ available for **TypeScript, Python, Go, Rust, and Java** — all published at
 | `qorechain-sdk` | Python | `pip install qorechain-sdk` | `import qorsdk` |
 | `qorechain-sdk` | Rust | `cargo add qorechain-sdk` | `use qorechain` |
 | Go module | Go | `go get github.com/qorechain/qorechain-sdk/packages/go` | `.../packages/go` |
-| `io.github.qorechain:qorechain-sdk` | Java | `implementation("io.github.qorechain:qorechain-sdk:0.7.0")` | `io.github.qorechain` |
+| `io.github.qorechain:qorechain-sdk` | Java | `implementation("io.github.qorechain:qorechain-sdk:0.8.0")` | `io.github.qorechain` |
 | `create-qorechain-dapp` | CLI scaffolder | `npm create qorechain-dapp@latest` | — |
 
 > **Import names:** the Python distribution `qorechain-sdk` imports as `qorsdk`;
@@ -167,7 +167,7 @@ and the viem / `@solana/web3.js` adapters are TypeScript-only.
 - **Python** — `pip install qorechain-sdk`, then `import qorsdk`. See [packages/py](./packages/py/README.md).
 - **Go** — `go get github.com/qorechain/qorechain-sdk/packages/go`. See [packages/go](./packages/go/README.md).
 - **Rust** — `cargo add qorechain-sdk`, then `use qorechain;`. See [packages/rust](./packages/rust/README.md).
-- **Java** — `io.github.qorechain:qorechain-sdk:0.7.0` (Maven Central), package `io.github.qorechain`. See [packages/java](./packages/java/README.md).
+- **Java** — `io.github.qorechain:qorechain-sdk:0.8.0` (Maven Central), package `io.github.qorechain`. See [packages/java](./packages/java/README.md).
 
 > Browser wallets and the viem / `@solana/web3.js` EVM/SVM adapters are
 > TypeScript-only; in Python/Go/Rust use that ecosystem's standard libraries for
@@ -208,12 +208,15 @@ native-chain parts. Highlights:
   (`useAccount`, `useBalance`, `useTx`, `useConnect`, `usePqcStatus`), and
   `ConnectButton` / `QuantumSafeBadge` components.
 - **Unified eth-native wallet** — `deriveUnifiedAccount` gives one key three
-  addresses (`qor1…`/`0x…`/SVM) that share one balance and spend on every lane;
-  `signClassicalEth` / `signHybridEth` sign Native-lane txs with the same key,
-  and `connectPhantomUnified` derives a unified account from a Phantom signature.
+  addresses (`qor1…`/`0x…`/SVM) that share one balance and spend on every lane,
+  and `signClassicalEth` / `signHybridEth` sign Native-lane txs with the same key.
+  To let an *external* wallet (Phantom / MetaMask) spend from such an account, use
+  the authenticator lanes below — never derive a spend key from a wallet signature.
 - **Authenticator lanes** — link an external key (Phantom / MetaMask) to a
   canonical PQC account and let it spend via a relayer under least-privilege,
-  spend-limited terms: `MsgExecuteEVM` / `MsgExecuteCosmos`, byte-exact
+  revocable terms (note: a `SpendingRule` is **not enforced** on these lanes —
+  assume a linked key can spend the full balance): `MsgExecuteEVM` /
+  `MsgExecuteCosmos`, byte-exact
   `evmAuthSignBytes` / `cosmosAuthSignBytes`, `permissionSchema`, and
   same-algorithm PQC key rotation (`rotatePqcKeyMsgFromMnemonic`).
 

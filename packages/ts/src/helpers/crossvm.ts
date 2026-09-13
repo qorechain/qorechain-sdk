@@ -12,6 +12,12 @@
  * under a single signature — e.g. an EVM call, an SVM call, and a CosmWasm call
  * that all land together or not at all.
  *
+ * A call executes inside the transaction and returns the callee's answer: the
+ * result carries `executed`, `data` (the return value) and `gasUsed`, decoded
+ * from `MsgCrossVMCallResponse`. Pass `async: true` to queue the call for a
+ * later `ProcessQueue` dispatch instead, in which case nothing has run yet and
+ * only the message id is meaningful.
+ *
  * Per-VM payload encoding (pick exactly one shape per call):
  *  - `{ payload }` — raw bytes / hex, passed through unchanged.
  *  - `{ evm: { abi, functionName, args } }` — ABI-encoded with viem's
@@ -28,6 +34,7 @@
 import type { EncodeObject } from "@cosmjs/proto-signing";
 
 import { crossvm as crossvmMsg } from "../messages/qorechain";
+import * as crossvmTx from "../codegen/qorechain/crossvm/v1/tx";
 import type { TxClient, FeeInput, AutoFeeOptions } from "../tx/builder";
 import type { BroadcastResult } from "../tx/broadcast";
 import type { CrossVmQueryClient } from "../query/grpc";
@@ -95,7 +102,15 @@ export interface CrossVMWriteOptions {
 
 /** Common cross-VM call fields (without the payload or write options). */
 export interface CrossVMCallBase {
-  /** The VM the call originates from. Defaults to `"evm"`. */
+  /**
+   * The VM the call claims to originate from.
+   *
+   * IGNORED BY THE CHAIN (v3.1.97). The chain derives the origin lane from the
+   * execution context rather than trusting the caller's self-description, so
+   * setting this changes nothing about how the call is handled. The field is
+   * retained — and still sent, defaulting to `"evm"` — purely for wire
+   * compatibility, so older nodes and clients keep accepting the message.
+   */
   sourceVm?: VMType;
   /** The VM the call targets. */
   targetVm: VMType;
@@ -103,6 +118,16 @@ export interface CrossVMCallBase {
   targetContract: string;
   /** Optional funds (coins) to forward with the call. */
   funds?: Coin[];
+  /**
+   * Queue the call for a later `ProcessQueue` dispatch instead of executing it
+   * inside this transaction.
+   *
+   * Defaults to `false`, matching the chain's default: execute now and return
+   * the callee's answer (see {@link CrossVMCallResult.data}). With `async: true`
+   * the call is only enqueued, so the response carries `executed: false` and no
+   * `data` — use it when you do not need the result in this transaction.
+   */
+  async?: boolean;
 }
 
 /** Options for a single cross-VM call (base + payload). */
@@ -111,8 +136,28 @@ export type CrossVMCallOptions = CrossVMCallBase & PayloadInput;
 /** Options for {@link CrossVMClient.call} (adds write-path options). */
 export type CallOptions = CrossVMCallOptions & CrossVMWriteOptions;
 
+/**
+ * The decoded `MsgCrossVMCallResponse` fields for one cross-VM call.
+ *
+ * Populated from the tx's per-message responses when the node returns them
+ * (`commit` broadcasts). When they are absent — a `sync`/`async` broadcast, or
+ * an older node — `executed` is `false`, `data` is empty and `gasUsed` is `0n`;
+ * read the result with {@link CrossVMClient.getMessage} instead.
+ */
+export interface CrossVMCallOutcome {
+  /**
+   * Whether the callee actually ran inside this transaction. `false` for a
+   * queued (`async: true`) call, whose result is not known yet.
+   */
+  executed: boolean;
+  /** The callee's return value. Empty when the call was queued. */
+  data: Uint8Array;
+  /** Gas consumed by the callee. `0n` when the call was queued. */
+  gasUsed: bigint;
+}
+
 /** Result of a single {@link CrossVMClient.call}. */
-export interface CrossVMCallResult {
+export interface CrossVMCallResult extends CrossVMCallOutcome {
   /** The cross-VM message id assigned by the chain (parsed from tx events). */
   messageId: string;
   /** The raw broadcast result. */
@@ -123,6 +168,13 @@ export interface CrossVMCallResult {
 export interface CrossVMAtomicResult {
   /** The cross-VM message ids assigned by the chain (best-effort, from events). */
   messageIds: string[];
+  /**
+   * The decoded per-call outcomes, in the order the calls were passed.
+   *
+   * Empty when the node returned no per-message responses (see
+   * {@link CrossVMCallOutcome}).
+   */
+  outcomes: CrossVMCallOutcome[];
   /** The raw broadcast result for the single packing transaction. */
   result: BroadcastResult;
 }
@@ -255,11 +307,53 @@ function extractMessageIds(result: BroadcastResult): string[] {
   return ids;
 }
 
+/** The response type URL emitted for a `MsgCrossVMCall`. */
+const CROSSVM_CALL_RESPONSE_TYPE_URL =
+  "/qorechain.crossvm.v1.MsgCrossVMCallResponse";
+
+/** The outcome reported when the node returned no decodable response. */
+function unknownOutcome(): CrossVMCallOutcome {
+  return { executed: false, data: new Uint8Array(0), gasUsed: 0n };
+}
+
+/**
+ * Decode the `MsgCrossVMCallResponse` entries from a broadcast result.
+ *
+ * Only `commit` broadcasts carry per-message responses; anything else (or an
+ * older node) yields an empty list, and callers fall back to
+ * {@link CrossVMClient.getMessage}. Entries whose type URL is not a cross-VM
+ * call response are skipped, so a mixed transaction body still lines up.
+ */
+function decodeCallOutcomes(result: BroadcastResult): CrossVMCallOutcome[] {
+  const responses = result.msgResponses;
+  if (!Array.isArray(responses)) return [];
+  const out: CrossVMCallOutcome[] = [];
+  for (const r of responses) {
+    if (r?.typeUrl !== CROSSVM_CALL_RESPONSE_TYPE_URL) continue;
+    try {
+      const decoded = crossvmTx.MsgCrossVMCallResponse.decode(r.value);
+      out.push({
+        executed: decoded.executed,
+        data: decoded.data,
+        // uint64 is generated as a decimal string; surface it as a bigint.
+        gasUsed: BigInt(decoded.gasUsed ?? 0),
+      });
+    } catch {
+      // A response we cannot decode is reported as "unknown" rather than
+      // dropped, so positional alignment with the calls is preserved.
+      out.push(unknownOutcome());
+    }
+  }
+  return out;
+}
+
 /**
  * Create a {@link CrossVMClient} bound to a connected {@link TxClient}.
  *
  * The `TxClient`'s sender address is used as the message `sender`, so the caller
- * never repeats their address. `sourceVm` defaults to `"evm"`.
+ * never repeats their address. `sourceVm` still defaults to `"evm"` on the wire
+ * but is ignored by the chain (see {@link CrossVMCallBase.sourceVm}); `async`
+ * defaults to `false`, i.e. execute now and return the callee's answer.
  *
  * @param tx - A connected signing client (from `client.connectTx(signer)`).
  * @param opts - Optional typed query client and/or `qor_` client for reads.
@@ -280,6 +374,7 @@ export function createCrossVMClient(
       targetContract: o.targetContract,
       payload,
       funds: o.funds ?? [],
+      async: o.async ?? false,
     });
 
   // Synchronous build-only path. Raw / svm / cosmwasm payloads need no async; the
@@ -312,7 +407,8 @@ export function createCrossVMClient(
       { autoFee: o.autoFee },
     );
     const [messageId = ""] = extractMessageIds(result);
-    return { messageId, result };
+    const [outcome = unknownOutcome()] = decodeCallOutcomes(result);
+    return { messageId, ...outcome, result };
   };
 
   const callAtomic = async (
@@ -331,7 +427,11 @@ export function createCrossVMClient(
       w.memo ?? "",
       { autoFee: w.autoFee },
     );
-    return { messageIds: extractMessageIds(result), result };
+    return {
+      messageIds: extractMessageIds(result),
+      outcomes: decodeCallOutcomes(result),
+      result,
+    };
   };
 
   const getMessage = (

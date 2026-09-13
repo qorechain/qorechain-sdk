@@ -191,6 +191,15 @@ public final class UnifiedAccounts {
      * <p>Same address derivation as {@link #deriveUnifiedAccount}; the PQC key is
      * derived from {@code shake256("qorechain:pqc:v1|" + cosmos + "|" + hex(seed32), 32)}.
      *
+     * <p><b>SAFETY — the seed IS the private key.</b> {@code seed32} MUST be real
+     * secret entropy: a CSPRNG draw, or a seed derived from a secret only the owner
+     * holds. It must NEVER be a wallet signature, a hash of one, or any other value a
+     * third party can ask a wallet, a server, or the user's browser to produce —
+     * anyone who can obtain that value reconstructs this account and can spend from
+     * it. To let an external wallet key act for an account, register it with
+     * {@code MsgRegisterAuthenticator} and spend via {@code MsgExecuteCosmos} /
+     * {@code MsgExecuteEVM} instead of turning it into a seed.
+     *
      * @throws IllegalArgumentException if {@code seed32} is not 32 bytes or is not a
      *     valid secp256k1 scalar.
      */
@@ -210,13 +219,35 @@ public final class UnifiedAccounts {
     }
 
     /**
-     * Derive a unified eth-native account anchored to a foreign-wallet signature
-     * (e.g. Phantom's "connect → 3 addresses" flow): the account is
-     * {@link #unifiedAccountFromSeed}{@code (shake256(signature, 32))}.
+     * REMOVED in v0.8.0 — always throws {@link UnsupportedOperationException}.
+     *
+     * <p>This derived the account's spend key from a wallet signature. A wallet
+     * signature is a bearer secret: any page can ask the wallet for it, so whoever
+     * obtains it controls the account. There is no safe way to keep the behaviour,
+     * so the call now fails loudly instead of silently producing an exposed account.
+     *
+     * <p>Use the authenticator lanes instead: register the external key with
+     * {@code MsgRegisterAuthenticator} and spend via {@code MsgExecuteCosmos} /
+     * {@code MsgExecuteEVM} (see {@link io.github.qorechain.tx.Authenticator}). The
+     * external key authorizes actions under on-chain, revocable terms; it never
+     * becomes the account's spend key.
+     *
+     * @param signature ignored.
+     * @throws UnsupportedOperationException always.
      */
     public static UnifiedAccount unifiedAccountFromPhantomSignature(byte[] signature) {
-        return unifiedAccountFromSeed(Hashing.shake256(signature, 32));
+        throw new UnsupportedOperationException(REMOVED_SIGNATURE_DERIVATION);
     }
+
+    /** The removal notice thrown by {@link #unifiedAccountFromPhantomSignature}. */
+    private static final String REMOVED_SIGNATURE_DERIVATION =
+            "unifiedAccountFromPhantomSignature was removed in v0.8.0: deriving a spend key"
+                    + " from a wallet signature is unsafe — the signature is a bearer secret"
+                    + " that any page can request from the wallet, so whoever obtains it"
+                    + " controls the account. Use the authenticator lanes instead: register"
+                    + " the external key with MsgRegisterAuthenticator and spend via"
+                    + " MsgExecuteCosmos / MsgExecuteEVM. Any account previously derived this"
+                    + " way must be treated as exposed — move its funds.";
 
     /** Build the address + PQC bundle from a 32-byte secp256k1 private key + PQC secret. */
     private static UnifiedAccount build(

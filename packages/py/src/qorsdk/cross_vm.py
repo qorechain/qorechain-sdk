@@ -4,11 +4,28 @@ QoreChain runs several execution VMs side by side — the EVM, a CosmWasm VM, an
 an SVM (Solana-style) VM. The ``x/crossvm`` module routes a call from one VM to a
 contract on another as a single message, ``MsgCrossVMCall``:
 
-    MsgCrossVMCall { sender, source_vm, target_vm, target_contract, payload, funds }
+    MsgCrossVMCall { sender, source_vm, target_vm, target_contract, payload,
+                     funds, async }
 
 with type URL ``/qorechain.crossvm.v1.MsgCrossVMCall`` and
 ``source_vm`` / ``target_vm`` drawn from :data:`VM_TYPES` (``"evm"``,
 ``"cosmwasm"``, ``"svm"``).
+
+**``source_vm`` is IGNORED by the chain (v3.1.97).** The origin lane is derived
+from the execution context — a caller describing itself is not evidence of what
+it is — and the field is retained only so the field number stays taken and older
+clients that still set it are accepted rather than rejected. The SDK still
+accepts and sends it (default ``"evm"``), but setting it has no on-chain effect.
+
+``async_`` (proto field ``async``, 7) queues the call for a later
+``MsgProcessQueue`` dispatch instead of running it. The default, ``False``,
+executes the call inside the transaction and returns the callee's answer — which
+is what a caller that needs the result requires. A queued call's
+``MsgCrossVMCallResponse`` carries ``executed=False`` and no ``data`` yet.
+
+:func:`decode_cross_vm_responses` decodes the ``MsgCrossVMCallResponse`` entries
+out of a committed transaction's result, surfacing ``message_id`` together with
+``executed`` / ``data`` / ``gas_used``.
 
 This helper mirrors the ergonomic rollup/multilayer helpers: it wraps the typed
 :func:`qorsdk.messages.qorechain.crossvm.cross_vm_call` composer and the SDK's
@@ -53,6 +70,13 @@ CoinDict = dict[str, str]
 #: A Native ``StdFee``-shaped dict (as produced by :func:`qorsdk.fees.estimate_fee`).
 FeeDict = dict[str, Any]
 
+#: The ``MsgCrossVMCall`` field name for the queue flag. ``async`` is a Python
+#: keyword, so the generated protobuf class only accepts it through ``**kwargs``.
+_ASYNC_FIELD = "async"
+
+#: Type URL of the response the chain returns for each ``MsgCrossVMCall``.
+CROSS_VM_CALL_RESPONSE_TYPE_URL = "/qorechain.crossvm.v1.MsgCrossVMCallResponse"
+
 
 @dataclass(frozen=True)
 class CrossVmCallOptions:
@@ -66,7 +90,9 @@ class CrossVmCallOptions:
     target_vm: VmType
     #: The contract/program address on the target VM.
     target_contract: str
-    #: The originating VM. Defaults to ``"evm"``.
+    #: The originating VM. Defaults to ``"evm"``. **Ignored by the chain** since
+    #: v3.1.97 (the origin lane is derived from the execution context); still
+    #: sent so older nodes keep accepting the message.
     source_vm: VmType = "evm"
     #: Funds to attach, as ``{"denom", "amount"}`` dicts.
     funds: list[CoinDict] | None = None
@@ -76,6 +102,29 @@ class CrossVmCallOptions:
     cosmwasm: dict[str, Any] | None = None
     #: Raw SVM instruction data (used verbatim).
     svm: bytes | None = None
+    #: Queue the call for a later ``MsgProcessQueue`` dispatch instead of
+    #: executing it now. Default ``False`` — execute now and return the answer.
+    async_: bool = False
+
+
+@dataclass(frozen=True)
+class CrossVmCallResult:
+    """One decoded ``MsgCrossVMCallResponse``.
+
+    Produced by :func:`decode_cross_vm_responses` from a committed transaction's
+    result. A queued (``async_=True``) call comes back with ``executed=False``,
+    empty ``data`` and ``gas_used=0`` — its answer is only known once
+    ``MsgProcessQueue`` dispatches it.
+    """
+
+    #: The cross-VM message id, usable with :meth:`CrossVmClient.get_message`.
+    message_id: str
+    #: ``False`` for a queued call, whose result is not known yet.
+    executed: bool
+    #: The callee's return value (empty until the call executes).
+    data: bytes
+    #: Gas the cross-VM execution consumed (``0`` for a queued call).
+    gas_used: int
 
 
 def _validate_vm(vm: str, field: str) -> None:
@@ -117,11 +166,18 @@ def build_cross_vm_call(
     payload: bytes | None = None,
     cosmwasm: dict[str, Any] | None = None,
     svm: bytes | None = None,
+    async_: bool = False,
 ) -> Msg:
     """Build a ``MsgCrossVMCall`` :class:`~qorsdk.messages.Msg` (no signing).
 
     See the module docstring for payload-source resolution. ``source_vm`` and
     ``target_vm`` are validated against :data:`VM_TYPES`.
+
+    :param source_vm: Retained for older nodes; the chain **ignores** it and
+        derives the origin lane from the execution context.
+    :param async_: Queue the call for ``MsgProcessQueue`` instead of executing
+        it in this transaction. Default ``False`` (execute now, return the
+        answer).
     """
     _validate_vm(source_vm, "source_vm")
     _validate_vm(target_vm, "target_vm")
@@ -133,8 +189,90 @@ def build_cross_vm_call(
         target_contract=target_contract,
         payload=resolved,
         funds=_to_coins(funds),
+        **{_ASYNC_FIELD: bool(async_)},
     )
     return message
+
+
+def _result_data_hex(response: Any) -> str:
+    """Pull the hex-encoded ``TxMsgData`` out of whatever tx result was passed.
+
+    Accepts a REST broadcast body (``{"tx_response": {...}}``), a bare
+    ``tx_response`` dict, an :class:`~qorsdk.track.IncludedTx` (via its ``raw``),
+    or the hex string itself. Returns ``""`` when the result carries no data —
+    a ``sync``-mode broadcast has not executed yet, so there is nothing to
+    decode.
+    """
+    if response is None:
+        return ""
+    if isinstance(response, str):
+        return response
+    raw = getattr(response, "raw", None)
+    if raw is not None and not isinstance(response, dict):
+        return _result_data_hex(raw)
+    if isinstance(response, dict):
+        if "tx_response" in response:
+            return _result_data_hex(response["tx_response"])
+        data = response.get("data")
+        if isinstance(data, str):
+            return data
+    return ""
+
+
+def decode_cross_vm_responses(response: Any) -> list[CrossVmCallResult]:
+    """Decode every ``MsgCrossVMCallResponse`` in a committed tx's result.
+
+    The chain returns the responses in the tx result's ``data`` field, a
+    hex-encoded ``TxMsgData`` whose ``msg_responses`` hold one ``Any`` per
+    message. Non-cross-VM responses (e.g. from other messages in the same tx)
+    are skipped, so an atomic call's results come back in message order.
+
+    Pass the REST broadcast body, a bare ``tx_response`` dict, or an
+    :class:`~qorsdk.track.IncludedTx` from :func:`~qorsdk.track.wait_for_tx`.
+    A ``sync``-mode broadcast response carries no result yet and yields ``[]``;
+    wait for inclusion first.
+
+    :returns: A :class:`CrossVmCallResult` per cross-VM call, in message order.
+    """
+    from cosmpy.protos.cosmos.base.abci.v1beta1.abci_pb2 import TxMsgData
+
+    from .proto.qorechain.crossvm.v1 import tx_pb2 as crossvm_tx
+
+    data_hex = _result_data_hex(response)
+    if not data_hex:
+        return []
+    try:
+        raw = bytes.fromhex(data_hex)
+    except ValueError as exc:
+        raise ValueError("tx result data is not hex-encoded TxMsgData") from exc
+    tx_msg_data = TxMsgData()
+    tx_msg_data.ParseFromString(raw)
+
+    results: list[CrossVmCallResult] = []
+    for any_msg in tx_msg_data.msg_responses:
+        if any_msg.type_url != CROSS_VM_CALL_RESPONSE_TYPE_URL:
+            continue
+        decoded = crossvm_tx.MsgCrossVMCallResponse()
+        decoded.ParseFromString(any_msg.value)
+        results.append(
+            CrossVmCallResult(
+                message_id=decoded.message_id,
+                executed=decoded.executed,
+                data=bytes(decoded.data),
+                gas_used=decoded.gas_used,
+            )
+        )
+    return results
+
+
+def decode_cross_vm_response(response: Any) -> CrossVmCallResult | None:
+    """Decode the FIRST ``MsgCrossVMCallResponse`` in a tx result, if any.
+
+    The single-call companion to :func:`decode_cross_vm_responses`; returns
+    ``None`` when the result carries no cross-VM response.
+    """
+    results = decode_cross_vm_responses(response)
+    return results[0] if results else None
 
 
 class CrossVmClient:
@@ -188,6 +326,7 @@ class CrossVmClient:
         payload: bytes | None = None,
         cosmwasm: dict[str, Any] | None = None,
         svm: bytes | None = None,
+        async_: bool = False,
     ) -> Msg:
         """Build a ``MsgCrossVMCall`` for the bound sender, without broadcasting."""
         return build_cross_vm_call(
@@ -199,6 +338,7 @@ class CrossVmClient:
             payload=payload,
             cosmwasm=cosmwasm,
             svm=svm,
+            async_=async_,
         )
 
     def _build_msg_from_options(self, opts: CrossVmCallOptions) -> Msg:
@@ -211,6 +351,7 @@ class CrossVmClient:
             payload=opts.payload,
             cosmwasm=opts.cosmwasm,
             svm=opts.svm,
+            async_=opts.async_,
         )
 
     def _sign_and_broadcast(
@@ -255,6 +396,7 @@ class CrossVmClient:
         payload: bytes | None = None,
         cosmwasm: dict[str, Any] | None = None,
         svm: bytes | None = None,
+        async_: bool = False,
         sequence: int | None = None,
         memo: str = "",
         mode: str = "sync",
@@ -262,7 +404,13 @@ class CrossVmClient:
         """Build, sign, and broadcast a single ``MsgCrossVMCall``.
 
         Returns the decoded broadcast response. See the module docstring for how
-        ``payload`` / ``cosmwasm`` / ``svm`` select the payload bytes.
+        ``payload`` / ``cosmwasm`` / ``svm`` select the payload bytes. Set
+        ``async_=True`` to queue the call instead of executing it now.
+
+        Pass the result (or the :class:`~qorsdk.track.IncludedTx` from
+        :func:`~qorsdk.track.wait_for_tx`) to
+        :func:`decode_cross_vm_response` for the ``message_id`` / ``executed`` /
+        ``data`` / ``gas_used`` the chain returned.
         """
         message = self.build_call(
             target_vm=target_vm,
@@ -272,6 +420,7 @@ class CrossVmClient:
             payload=payload,
             cosmwasm=cosmwasm,
             svm=svm,
+            async_=async_,
         )
         return self._sign_and_broadcast(
             [message], sequence=sequence, memo=memo, mode=mode
@@ -288,7 +437,9 @@ class CrossVmClient:
         """Broadcast N cross-VM calls atomically in ONE transaction.
 
         All ``MsgCrossVMCall`` messages share a single tx, so they succeed or
-        fail together. Returns the decoded broadcast response.
+        fail together. Returns the decoded broadcast response;
+        :func:`decode_cross_vm_responses` turns the committed result into one
+        :class:`CrossVmCallResult` per call, in message order.
 
         :raises ValueError: If ``options`` is empty.
         """
@@ -345,9 +496,13 @@ def create_cross_vm_client(
 
 __all__ = [
     "VM_TYPES",
+    "CROSS_VM_CALL_RESPONSE_TYPE_URL",
     "VmType",
     "CrossVmCallOptions",
+    "CrossVmCallResult",
     "CrossVmClient",
     "build_cross_vm_call",
     "create_cross_vm_client",
+    "decode_cross_vm_response",
+    "decode_cross_vm_responses",
 ]

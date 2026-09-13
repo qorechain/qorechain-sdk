@@ -65,6 +65,10 @@ pub struct QueryMessageResponse {
 pub struct MsgCrossVmCall {
     #[prost(string, tag="1")]
     pub sender: ::prost::alloc::string::String,
+    /// source_vm is IGNORED on input. The chain derives the origin lane from the
+    /// execution context, because a caller describing itself cannot be evidence of
+    /// what it is. Retained so the field number stays taken and older clients that
+    /// still set it are accepted rather than rejected.
     #[prost(string, tag="2")]
     pub source_vm: ::prost::alloc::string::String,
     #[prost(string, tag="3")]
@@ -75,11 +79,25 @@ pub struct MsgCrossVmCall {
     pub payload: ::prost::alloc::vec::Vec<u8>,
     #[prost(message, repeated, tag="6")]
     pub funds: ::prost::alloc::vec::Vec<::cosmrs::proto::cosmos::base::v1beta1::Coin>,
+    /// async queues the call instead of executing it, to be dispatched later by
+    /// ProcessQueue. The default is to execute now and return the answer, which is
+    /// what a caller that needs the result requires.
+    #[prost(bool, tag="7")]
+    pub r#async: bool,
 }
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct MsgCrossVmCallResponse {
     #[prost(string, tag="1")]
     pub message_id: ::prost::alloc::string::String,
+    /// executed is false for a queued call, whose result is not known yet.
+    #[prost(bool, tag="2")]
+    pub executed: bool,
+    /// data is the callee's return value, carried back to the caller. A CosmWasm
+    /// contract reads it from the submessage reply.
+    #[prost(bytes="vec", tag="3")]
+    pub data: ::prost::alloc::vec::Vec<u8>,
+    #[prost(uint64, tag="4")]
+    pub gas_used: u64,
 }
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct MsgProcessQueue {

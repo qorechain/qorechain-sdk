@@ -99,6 +99,7 @@ export const qorechainRegistryTypes: ReadonlyArray<[string, GeneratedType]> = [
   ["/qorechain.svm.v1.MsgCreateAccount", svm.MsgCreateAccount],
   ["/qorechain.svm.v1.MsgExecuteProgram", svm.MsgExecuteProgram],
   ["/qorechain.svm.v1.MsgRegisterSVMPQCKey", svm.MsgRegisterSVMPQCKey],
+  ["/qorechain.svm.v1.MsgUpdateParams", svm.MsgUpdateParams],
   // lightnode
   ["/qorechain.lightnode.v1.MsgRegisterLightNode", lightnode.MsgRegisterLightNode],
   ["/qorechain.lightnode.v1.MsgHeartbeat", lightnode.MsgHeartbeat],

@@ -222,6 +222,22 @@ pub fn derive_unified_account(mnemonic: &str, index: u32) -> Result<UnifiedAccou
 /// The PQC seed mixes the derived `cosmos` address with the `"seed:"`-prefixed
 /// lowercase-hex encoding of the 32-byte private key (so a raw-seed account's PQC
 /// key is still deterministic and recoverable from the seed alone).
+///
+/// # Safety of the seed
+///
+/// `seed32` **is** the account's spend key — everything else here is a rendering
+/// of it. It MUST be real secret entropy: a CSPRNG draw, or a value derived from
+/// one (a BIP-39 mnemonic via [`derive_unified_account`], an HSM, a KDF over a
+/// secret the user alone holds).
+///
+/// It must NEVER be a wallet signature, or a hash of one, or any other value a
+/// third party can ask a wallet, a service, or the user's browser to produce. A
+/// wallet signature is a bearer secret: it is deterministic for a given message,
+/// and any page that gets the wallet to sign that message receives the same bytes
+/// — so whoever obtains them would hold this account's spend key. Link external
+/// wallet keys through the authenticator lanes (`MsgRegisterAuthenticator` +
+/// `MsgExecuteCosmos` / `MsgExecuteEVM`) instead, where an external signature
+/// authorizes a spend but never becomes key material.
 pub fn unified_account_from_seed(seed32: [u8; 32]) -> Result<UnifiedAccount> {
     let (compressed, uncompressed) = pubkeys_from_private(&seed32)?;
     build_account(

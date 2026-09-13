@@ -32,6 +32,16 @@ public final class Broadcaster {
         public final int code;
         public Long height;
         public String rawLog;
+        /**
+         * The tx result's {@code data} field — a protobuf {@code TxMsgData} carrying the
+         * per-message responses, or {@code null} when the node returned none.
+         *
+         * <p>Only a {@link Mode#COMMIT} broadcast waits long enough to have it: a
+         * {@code sync}/{@code async} broadcast returns after CheckTx, before the messages
+         * have run. Decoders for typed responses live with their module helper (e.g.
+         * {@code CrossVMClient.decodeCallResponses}).
+         */
+        public byte[] data;
 
         public Result(String transactionHash, int code) {
             this.transactionHash = transactionHash;
@@ -87,7 +97,21 @@ public final class Broadcaster {
     private Result resultFromCheck(JsonNode res) {
         Result r = new Result(text(res, "hash"), intOf(res, "code"));
         r.rawLog = text(res, "log");
+        r.data = dataOf(res);
         return r;
+    }
+
+    /** Base64-decode a tx result's {@code data} field, or null when absent/unreadable. */
+    private static byte[] dataOf(JsonNode n) {
+        String b64 = text(n, "data");
+        if (b64 == null || b64.isEmpty()) {
+            return null;
+        }
+        try {
+            return Base64.getDecoder().decode(b64);
+        } catch (IllegalArgumentException e) {
+            return null;
+        }
     }
 
     private String codespace(JsonNode res) {
@@ -108,6 +132,7 @@ public final class Broadcaster {
                     deliverCode, text(deliverTx, "codespace"), text(deliverTx, "log"), hash);
         }
         Result r = new Result(hash, 0);
+        r.data = dataOf(deliverTx);
         JsonNode height = res == null ? null : res.get("height");
         if (height != null && !height.isNull()) {
             r.height = height.asLong();

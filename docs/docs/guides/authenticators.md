@@ -8,9 +8,27 @@ sidebar_position: 13
 
 **Authenticator lanes** (chain v3.1.85) let a linked external key — a Phantom
 **ed25519** key, or a MetaMask / EVM **secp256k1** key — spend from the ONE
-canonical **PQC-required** account under least-privilege, spend-limited,
-revocable terms, **without the external key ever producing an ML-DSA
-co-signature**.
+canonical **PQC-required** account under least-privilege, revocable terms,
+**without the external key ever producing an ML-DSA co-signature**.
+
+:::danger A linked key can spend the whole balance
+
+A per-authenticator **`SpendingRule` is not currently enforced** on the
+`ExecuteCosmos` / `ExecuteEVM` lanes. A limit can be expressed on-chain, but do
+**not** rely on it as a security control: assume any key you link can move the
+account's entire balance until you revoke it. Register only the permissions the
+key actually needs, and revoke it as soon as it is no longer required.
+
+:::
+
+:::warning Never derive a spend key from a wallet signature
+
+Do not seed an account from a wallet signature (the removed "Phantom P1a"
+pattern). A wallet signature is a bearer secret that any page can request, so
+anyone who obtains it controls the derived account. Link the external key as an
+**authenticator** instead — that is what this guide describes.
+
+:::
 
 ## The relayer model
 

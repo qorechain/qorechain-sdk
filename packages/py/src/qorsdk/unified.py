@@ -186,6 +186,19 @@ def unified_account_from_seed(seed32: bytes) -> UnifiedAccount:
     ``0x``) in place of the mnemonic, so the account is fully recoverable from the
     32-byte seed alone.
 
+    .. warning::
+
+       ``seed32`` MUST be real secret entropy — a CSPRNG draw
+       (``secrets.token_bytes(32)``) or key material the user already keeps
+       secret. It becomes the account's spend key verbatim, so anyone who learns
+       it controls the account. It must NEVER be derived from a wallet
+       signature, nor from any other value a third party can ask the user's
+       wallet (or the user) to produce: such a value is a bearer secret handed
+       out on request, so the account it derives is only as private as the party
+       that asked for it. To spend from an existing external key, link it with
+       ``MsgRegisterAuthenticator`` and use the authenticator lanes
+       (``MsgExecuteCosmos`` / ``MsgExecuteEVM``) instead of deriving a new key.
+
     :raises ValueError: If ``seed32`` is not exactly 32 bytes.
     """
     if len(seed32) != 32:
@@ -193,16 +206,36 @@ def unified_account_from_seed(seed32: bytes) -> UnifiedAccount:
     return _account_from_privkey(bytes(seed32), "seed:" + seed32.hex())
 
 
-def unified_account_from_phantom_signature(sig_bytes: bytes) -> UnifiedAccount:
-    """Derive a unified account from a Phantom (or any) wallet signature.
+#: The error raised by the removed signature-derivation entry point.
+_SIGNATURE_DERIVATION_REMOVED = (
+    "unified_account_from_phantom_signature was removed in v0.8.0: deriving a "
+    "spend key from a wallet signature is unsafe — the signature is a bearer "
+    "secret that any page can request from the wallet, so whoever obtains it "
+    "controls the account. Use the authenticator lanes instead: register the "
+    "external key with MsgRegisterAuthenticator and spend via MsgExecuteCosmos "
+    "/ MsgExecuteEVM. Any account previously derived this way must be treated "
+    "as exposed — move its funds."
+)
 
-    Deterministically maps an opaque signature to a unified account via
-    ``unified_account_from_seed(shake256(sig_bytes, 32))`` — so a dApp can mint a
-    stable QoreChain identity from a user's off-chain signature without ever
-    seeing a private key.
+
+def unified_account_from_phantom_signature(sig_bytes: bytes) -> UnifiedAccount:
+    """REMOVED in v0.8.0 — always raises :class:`NotImplementedError`.
+
+    This used to derive a unified account's spend key from a wallet signature.
+    That is unsafe: the signature is a bearer secret the wallet will hand to any
+    page that asks for it, so anyone who obtains it controls the derived
+    account. The symbol is retained only so existing callers fail loudly instead
+    of silently keeping an exposed account.
+
+    Use the authenticator lanes instead — register the external key with
+    ``MsgRegisterAuthenticator`` (see :mod:`qorsdk.authenticator`) and spend from
+    the canonical account via ``MsgExecuteCosmos`` / ``MsgExecuteEVM``. Any
+    account previously derived this way must be treated as exposed: move its
+    funds.
+
+    :raises NotImplementedError: Always.
     """
-    seed = hashlib.shake_256(bytes(sig_bytes)).digest(32)
-    return unified_account_from_seed(seed)
+    raise NotImplementedError(_SIGNATURE_DERIVATION_REMOVED)
 
 
 def qore_addresses(

@@ -42,4 +42,23 @@ export interface BroadcastResult {
   gasWanted?: bigint;
   /** Raw ABCI log, when present. */
   rawLog?: string;
+  /**
+   * The ABCI events emitted by the tx (only for `commit`).
+   *
+   * Helpers that read typed attributes out of a delivery — e.g. the cross-VM
+   * client's message-id extraction — read them from here.
+   */
+  events?: ReadonlyArray<{
+    type: string;
+    attributes: ReadonlyArray<{ key: string; value: string }>;
+  }>;
+  /**
+   * The protobuf-encoded `Msg*Response` for each message in the tx, in order
+   * (only for `commit`).
+   *
+   * Each entry is the response's `typeUrl` plus its encoded bytes, so a caller
+   * can decode the typed response — e.g. `MsgCrossVMCallResponse` to read a
+   * cross-VM callee's return value — without a second round-trip.
+   */
+  msgResponses?: ReadonlyArray<{ typeUrl: string; value: Uint8Array }>;
 }

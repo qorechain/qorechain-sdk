@@ -124,29 +124,21 @@ import { accountAuthInfo } from "@qorechain/sdk";
 const { accountNumber, sequence, publicKey } = accountAuthInfo(baseAccount);
 ```
 
-## Phantom (P1a)
+## Linking an external wallet (Phantom / MetaMask)
 
-A user can bootstrap ONE canonical QoreChain identity from Phantom without
-exporting any key: they sign a fixed, domain-separated message with Phantom's
-ed25519 key, and the 32-byte SHAKE-256 of that signature seeds a unified account.
+An earlier API derived a unified account from a Phantom signature. It was
+**removed in v0.8.0**: a wallet signature is a bearer secret that any page can
+ask the wallet to produce, so it must never be used as the secret entropy of a
+spend key. `unifiedAccountFromPhantomSignature` and `connectPhantomUnified` now
+throw, and any account previously derived that way must be treated as exposed —
+move its funds.
 
-```ts
-import { connectPhantomUnified } from "@qorechain/sdk";
+To let an external wallet key act for an account, use the **authenticator
+lanes**: register the key with `MsgRegisterAuthenticator`, then spend from the
+canonical PQC account via `MsgExecuteCosmos` / `MsgExecuteEVM` under a
+permission and a `SpendingRule`. See the
+[Authenticators guide](./authenticators.md).
 
-// In the browser (uses window.solana):
-const account = await connectPhantomUnified();
-```
-
-The signed message is
-`"QoreChain unified account derivation v1\n<phantom-pubkey-base58>"`. This is
-**non-custodial**: the derived account is a SEPARATE canonical key from the
-Phantom ed25519 key — Phantom never sees the derived secp256k1/PQC secrets, and
-the derived account is a distinct on-chain identity, not the Phantom address.
-
-Given a raw signature you already have, derive directly:
-
-```ts
-import { unifiedAccountFromPhantomSignature } from "@qorechain/sdk";
-
-const account = unifiedAccountFromPhantomSignature(signatureBytes);
-```
+Relatedly, `unifiedAccountFromSeed` takes the 32 bytes it is given as the spend
+key, so pass real secret entropy — a CSPRNG seed or a mnemonic-derived key —
+never a wallet signature.

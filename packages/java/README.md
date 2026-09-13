@@ -157,6 +157,26 @@ var msg = xvm.buildCall(evm);     // build-only TypedMessage
 var status = xvm.getMessage("42"); // read a routed message's status
 ```
 
+**Sync by default, async on request (chain v3.1.97).** A call executes inside the
+transaction and returns the callee's answer. Set `opts.async = true` to queue it for
+a later `ProcessQueue` dispatch instead — nothing has run yet then, and only the
+message id is meaningful. The decoded `MsgCrossVMCallResponse` carries `executed`,
+`data` (the callee's return value) and `gasUsed` alongside `messageId`:
+
+```java
+// Per-message responses only come back from a COMMIT broadcast — a sync broadcast
+// returns before the messages have run.
+signer.broadcastMode = Broadcaster.Mode.COMMIT;
+var result = xvm.call(cw);
+for (CrossVMClient.CallResponse r : CrossVMClient.decodeCallResponses(result)) {
+    r.messageId; r.executed; r.data; r.gasUsed;
+}
+```
+
+`sourceVm` is still accepted but the chain **ignores** it: the origin lane is derived
+from the execution context, not from what the caller claims to be. It is retained so
+older clients are not rejected.
+
 See the [cross-VM](../../docs/docs/guides/cross-vm.md) guide.
 
 ## Quantum-safe DX (v0.5.0)
@@ -226,12 +246,19 @@ opts.accountNumber = accountNumber;
 opts.sequence = sequence;
 opts.fee = fee;
 SignEth.Built built = SignEth.signHybridEth(opts);
-
-// Derive a canonical, non-custodial unified account from a deterministic
-// Phantom signature (shake256(signature, 32)).
-UnifiedAccount fromPhantom =
-        UnifiedAccounts.unifiedAccountFromPhantomSignature(phantomSignature);
 ```
+
+> **Removed in v0.8.0 — `unifiedAccountFromPhantomSignature` now throws.** It
+> derived the account's spend key from a wallet signature. A wallet signature is a
+> bearer secret — any page can ask the wallet for it — so whoever obtained it
+> controlled the account. To let an external wallet key act for an account, use the
+> **authenticator lanes** below: register the key with `MsgRegisterAuthenticator`
+> and spend via `MsgExecuteCosmos` / `MsgExecuteEVM`. Any account previously
+> derived this way must be treated as exposed — move its funds.
+>
+> The seed passed to `UnifiedAccounts.unifiedAccountFromSeed` **is** the private
+> key: it must be real secret entropy, never a wallet signature or any value a
+> third party can request.
 
 See the [unified-wallet](../../docs/docs/guides/unified-wallet.md) guide.
 

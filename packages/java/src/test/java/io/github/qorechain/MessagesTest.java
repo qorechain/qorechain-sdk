@@ -13,11 +13,11 @@ import java.util.List;
 import java.util.Set;
 import org.junit.jupiter.api.Test;
 
-/** Registry coverage of all 58 QoreChain custom messages + Any pack/unpack round-trip. */
+/** Registry coverage of all 59 QoreChain custom messages + Any pack/unpack round-trip. */
 class MessagesTest {
 
-    /** The 58 QoreChain custom Msg type URLs (amm 7, bridge 7, rdk 8, multilayer 6, pqc 6,
-     * svm 4, lightnode 4, license 4, abstractaccount 6, crossvm 2, rlconsensus 4). */
+    /** The 59 QoreChain custom Msg type URLs (amm 7, bridge 7, rdk 8, multilayer 6, pqc 6,
+     * svm 5, lightnode 4, license 4, abstractaccount 6, crossvm 2, rlconsensus 4). */
     private static final List<String> QORECHAIN_TYPE_URLS =
             List.of(
                     "/qorechain.amm.v1.MsgCreatePool",
@@ -58,6 +58,7 @@ class MessagesTest {
                     "/qorechain.svm.v1.MsgCreateAccount",
                     "/qorechain.svm.v1.MsgExecuteProgram",
                     "/qorechain.svm.v1.MsgRegisterSVMPQCKey",
+                    "/qorechain.svm.v1.MsgUpdateParams",
                     "/qorechain.lightnode.v1.MsgRegisterLightNode",
                     "/qorechain.lightnode.v1.MsgHeartbeat",
                     "/qorechain.lightnode.v1.MsgDeregisterLightNode",
@@ -81,7 +82,7 @@ class MessagesTest {
 
     @Test
     void allCustomTypeUrlsRegistered() {
-        assertEquals(58, QORECHAIN_TYPE_URLS.size());
+        assertEquals(59, QORECHAIN_TYPE_URLS.size());
         Set<String> registered = Messages.typeUrls();
         for (String url : QORECHAIN_TYPE_URLS) {
             assertTrue(registered.contains(url), "missing registry entry: " + url);
@@ -183,6 +184,47 @@ class MessagesTest {
         assertEquals(
                 "qor1admin",
                 ((qorechain.bridge.v1.Tx.MsgSetVerifierBootstrap) bsBack).getAdmin());
+    }
+
+    /**
+     * {@code MsgUpdateParams} (chain v3.1.97) is the governance message that can turn
+     * the SVM lane on or off without a binary release — composer, registry entry, and
+     * {@code Any} round-trip must all carry {@code params.enabled} intact.
+     */
+    @Test
+    void svmUpdateParamsTypeUrlAndRoundTrip() throws Exception {
+        qorechain.svm.v1.Tx.SVMParams params =
+                qorechain.svm.v1.Tx.SVMParams.newBuilder()
+                        .setMaxProgramSize(1024)
+                        .setMaxAccountDataSize(2048)
+                        .setComputeBudgetMax(200000)
+                        .setLamportsPerByte(7)
+                        .setRentExemptionMulti("2.000000000000000000")
+                        .setEnabled(false)
+                        .setSvmSlotOffset(42)
+                        .setDefaultSigScheme(1)
+                        .setMaxCpi(4)
+                        .build();
+        qorechain.svm.v1.Tx.MsgUpdateParams msg =
+                qorechain.svm.v1.Tx.MsgUpdateParams.newBuilder()
+                        .setAuthority("qor1gov")
+                        .setParams(params)
+                        .build();
+
+        TypedMessage tm = QorechainMessages.svm.updateParams(msg);
+        assertEquals("/qorechain.svm.v1.MsgUpdateParams", tm.typeUrl);
+
+        Any any = Messages.pack(tm);
+        assertEquals("/qorechain.svm.v1.MsgUpdateParams", any.getTypeUrl());
+
+        Message decoded = Messages.unpack(any);
+        assertTrue(decoded instanceof qorechain.svm.v1.Tx.MsgUpdateParams);
+        qorechain.svm.v1.Tx.MsgUpdateParams back = (qorechain.svm.v1.Tx.MsgUpdateParams) decoded;
+        assertEquals("qor1gov", back.getAuthority());
+        assertEquals(false, back.getParams().getEnabled());
+        assertEquals(1024, back.getParams().getMaxProgramSize());
+        assertEquals("2.000000000000000000", back.getParams().getRentExemptionMulti());
+        assertEquals(42, back.getParams().getSvmSlotOffset());
     }
 
     @Test

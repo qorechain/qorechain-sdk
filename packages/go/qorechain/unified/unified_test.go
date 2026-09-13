@@ -3,6 +3,7 @@ package unified
 import (
 	"bytes"
 	"encoding/hex"
+	"strings"
 	"testing"
 
 	sdktx "github.com/cosmos/cosmos-sdk/types/tx"
@@ -122,19 +123,28 @@ func TestAddressesFrom20AndQoreAddresses(t *testing.T) {
 	}
 }
 
-func TestUnifiedAccountFromPhantomSignature(t *testing.T) {
+// TestUnifiedAccountFromPhantomSignatureRemoved asserts the signature-derived
+// account constructor is gone: it returns an error and no account, and the error
+// points callers at the authenticator lanes.
+func TestUnifiedAccountFromPhantomSignatureRemoved(t *testing.T) {
 	sig := bytes.Repeat([]byte{0xAB}, 64)
-	a, err := UnifiedAccountFromPhantomSignature(sig)
-	if err != nil {
-		t.Fatal(err)
+	acc, err := UnifiedAccountFromPhantomSignature(sig)
+	if err == nil {
+		t.Fatal("expected an error: deriving a spend key from a wallet signature must not be possible")
 	}
-	// Equivalent to UnifiedAccountFromSeed(shake256(sig, 32)).
-	b, err := UnifiedAccountFromSeed(shake256(sig, 32))
-	if err != nil {
-		t.Fatal(err)
+	if acc.PrivateKey != nil || acc.Cosmos != "" || acc.Evm != "" || acc.Svm != "" {
+		t.Fatalf("expected the zero account, got %+v", acc)
 	}
-	if a.Cosmos != b.Cosmos || a.Evm != b.Evm {
-		t.Fatal("phantom-signature account does not match seed derivation")
+	for _, want := range []string{
+		"removed in v0.8.0",
+		"MsgRegisterAuthenticator",
+		"MsgExecuteCosmos",
+		"MsgExecuteEVM",
+		"treated as exposed",
+	} {
+		if !strings.Contains(err.Error(), want) {
+			t.Fatalf("error message must mention %q, got: %s", want, err.Error())
+		}
 	}
 }
 

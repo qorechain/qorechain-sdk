@@ -21,6 +21,7 @@ package unified
 
 import (
 	"encoding/binary"
+	"errors"
 	"fmt"
 
 	codectypes "github.com/cosmos/cosmos-sdk/codec/types"
@@ -167,15 +168,32 @@ func SignHybridEth(params EthSignParams) ([]byte, error) {
 	return marshalTxRaw(bodyWithExt, authInfoBytes, sig)
 }
 
-// UnifiedAccountFromPhantomSignature derives a unified account from an opaque
-// wallet signature: UnifiedAccountFromSeed(shake256(sig, 32)).
+// UnifiedAccountFromPhantomSignature is REMOVED as of v0.8.0 and always returns
+// an error; it derives no account.
 //
-// This mirrors the wallet adapter's fromPhantomSignature: a deterministic
-// account bootstrapped from any external wallet's signature over a fixed
-// challenge, with no separate seed to store.
-func UnifiedAccountFromPhantomSignature(sig []byte) (UnifiedAccount, error) {
-	return UnifiedAccountFromSeed(shake256(sig, 32))
+// It used to turn an external wallet's signature into the account's spend key.
+// That is not a key-derivation input: the signature is a bearer secret the
+// wallet hands to any page that asks for it, so anyone who obtains it controls
+// the account.
+//
+// Replacement: keep the external wallet key external. Register it with
+// MsgRegisterAuthenticator and spend from the canonical PQC account through
+// MsgExecuteCosmos / MsgExecuteEVM (see the authenticator package), where the
+// chain enforces the permission set and the SpendingRule.
+//
+// Deprecated: removed in v0.8.0; always returns an error. Use the authenticator
+// lanes instead.
+func UnifiedAccountFromPhantomSignature(_ []byte) (UnifiedAccount, error) {
+	return UnifiedAccount{}, errors.New(removedPhantomDerivationMsg)
 }
+
+// removedPhantomDerivationMsg is the error returned by the removed
+// signature-derived account constructor.
+const removedPhantomDerivationMsg = "UnifiedAccountFromPhantomSignature was removed in v0.8.0: " +
+	"deriving a spend key from a wallet signature is unsafe — the signature is a bearer secret that any page " +
+	"can request from the wallet, so whoever obtains it controls the account. Use the authenticator lanes " +
+	"instead: register the external key with MsgRegisterAuthenticator and spend via MsgExecuteCosmos / " +
+	"MsgExecuteEVM. Any account previously derived this way must be treated as exposed — move its funds."
 
 // --- internal helpers ---
 

@@ -245,6 +245,20 @@ export const svm = {
     "/qorechain.svm.v1.MsgRegisterSVMPQCKey",
     svmTx.MsgRegisterSVMPQCKey,
   ),
+  /**
+   * Replace the x/svm runtime parameters wholesale (chain v3.1.97).
+   *
+   * GOVERNANCE ONLY: `authority` must be the governance module account, so this
+   * message is submitted inside a gov proposal, not signed by a user. It is what
+   * makes enabling/disabling the SVM lane a proposal rather than a binary
+   * release. `params` is replaced in full — send every field, not just the ones
+   * you mean to change. `rentExemptionMulti` is a `LegacyDec` string (e.g.
+   * `"2.000000000000000000"`).
+   */
+  updateParams: composer(
+    "/qorechain.svm.v1.MsgUpdateParams",
+    svmTx.MsgUpdateParams,
+  ),
 };
 
 /** Light-node lifecycle message composers. */

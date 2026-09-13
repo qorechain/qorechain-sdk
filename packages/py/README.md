@@ -112,6 +112,13 @@ assert pqc_verify(kp.public_key, b"msg", sig)
 ext = build_hybrid_signature_extension(ALGORITHM_DILITHIUM5, sig, kp.public_key)
 ```
 
+Sizes are **strict**: `pqc_verify` returns `False` for any signature that is not
+exactly 4627 bytes or any public key that is not exactly 2592 bytes (a truncated
+signature and one with an extra trailing byte are both rejected), and `pqc_sign`
+raises on a secret key that is not exactly 4896 bytes. The SDK checks this itself
+rather than trusting the library underneath, so QoreChain's bindings cannot
+disagree about whether an over-long signature is valid.
+
 ### Async clients
 
 ```python
@@ -129,7 +136,7 @@ asyncio.run(main())
 
 ### Typed messages for every module
 
-`msg.<module>.<name>(...)` builds any of the chain's 49 custom messages (across
+`msg.<module>.<name>(...)` builds any of the chain's 59 custom messages (across
 amm / bridge / rdk / multilayer / pqc / svm / lightnode / license /
 abstractaccount / crossvm / rlconsensus) plus the standard Native modules
 (bank / staking / distribution / gov / authz / feegrant / ibc). Each returns a
@@ -259,7 +266,10 @@ VMs (`VM_TYPES`). The payload is raw bytes (`payload=`), a CosmWasm JSON message
 (`cosmwasm=` is `json.dumps`'d to UTF-8), or SVM bytes (`svm=`).
 
 ```python
-from qorsdk import create_cross_vm_client, build_cross_vm_call
+from qorsdk import (
+    CrossVmCallOptions, create_cross_vm_client, build_cross_vm_call,
+    decode_cross_vm_response, decode_cross_vm_responses,
+)
 
 xvm = create_cross_vm_client(account=native, ...)  # see docstring for context args
 
@@ -269,13 +279,31 @@ res = xvm.call(target_vm="cosmwasm", target_contract="qor1contract…",
 
 # Atomic triple-VM batch in ONE tx.
 atomic = xvm.call_atomic([
-    xvm.build_call(target_vm="evm", target_contract="0xC…", payload=abi_calldata),
-    xvm.build_call(target_vm="svm", target_contract="Prog…", payload=raw_bytes),
-    xvm.build_call(target_vm="cosmwasm", target_contract="qor1…", cosmwasm={"stake": {}}),
+    CrossVmCallOptions(target_vm="evm", target_contract="0xC…", payload=abi_calldata),
+    CrossVmCallOptions(target_vm="svm", target_contract="Prog…", svm=raw_bytes),
+    CrossVmCallOptions(target_vm="cosmwasm", target_contract="qor1…",
+                       cosmwasm={"stake": {}}),
 ])
 
 status = xvm.get_message("42")  # read a routed message's status
 ```
+
+**The callee's answer (chain v3.1.97).** A call executes inside the transaction
+and returns its result; `decode_cross_vm_response` (or `…_responses`, one per
+call, in message order) reads the `MsgCrossVMCallResponse` out of the committed
+tx and gives you `message_id`, `executed`, `data` (the callee's return value) and
+`gas_used`. Pass `async_=True` to queue the call for a later `MsgProcessQueue`
+dispatch instead — a queued call comes back `executed=False` with no `data` yet.
+
+```python
+included = wait_for_tx(client.rest, res["tx_response"]["txhash"])
+answer = decode_cross_vm_response(included)
+answer.message_id, answer.executed, answer.data, answer.gas_used
+```
+
+`source_vm` is **ignored by the chain**, which derives the origin lane from the
+execution context; it is still accepted (and sent, default `"evm"`) so older
+nodes keep taking the message, but setting it has no on-chain effect.
 
 `build_cross_vm_call(...)` is also available as a free function for hand-building
 the message. See the [cross-VM](../../docs/docs/guides/cross-vm.md) guide.
@@ -328,7 +356,6 @@ post-quantum signature. Account parsing accepts eth_secp256k1 public keys.
 ```python
 from qorsdk import (
     derive_unified_account, unified_account_from_seed,
-    unified_account_from_phantom_signature,
     sign_hybrid_eth,
 )
 
@@ -347,10 +374,20 @@ built = sign_hybrid_eth(
     sequence=sequence,
 )
 
-# Derive a canonical, non-custodial unified account from a deterministic
-# Phantom signature (shake256(signature, 32)).
-from_phantom = unified_account_from_phantom_signature(phantom_signature)
+# A unified account's seed MUST be real secret entropy.
+import secrets
+fresh = unified_account_from_seed(secrets.token_bytes(32))
 ```
+
+`unified_account_from_seed` uses its seed verbatim as the spend key, so the seed
+must be a CSPRNG draw or key material the user already keeps secret. Never derive
+it from a wallet signature or any other value a third party can ask the wallet
+(or the user) to produce — such a value is a bearer secret handed out on request.
+Deriving an account from a wallet signature was removed in **v0.8.0**
+(`unified_account_from_phantom_signature` now raises); to spend from an existing
+external key, register it with `MsgRegisterAuthenticator` and use the
+authenticator lanes (`MsgExecuteCosmos` / `MsgExecuteEVM`) below. Any account
+previously derived from a signature must be treated as exposed — move its funds.
 
 See the [unified-wallet](../../docs/docs/guides/unified-wallet.md) guide.
 

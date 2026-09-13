@@ -279,6 +279,17 @@ func (SvmComposers) RegisterPQCKey(sender string, svmAddr svmv1.Bytes32, pqcPubK
 	return &svmv1.MsgRegisterSVMPQCKey{Sender: sender, SVMAddr: svmAddr, PQCPubKey: pqcPubKey}
 }
 
+// UpdateParams builds MsgUpdateParams, the svm module's governance message
+// (chain v3.1.97+). It replaces the SVM runtime parameters WHOLESALE, so params
+// must carry every field — including Enabled, which is how the lane is turned on
+// or off by proposal rather than by a binary release.
+//
+// authority must be the governance module account; a tx signed by anyone else is
+// rejected on-chain. Submit it as the content of a gov proposal.
+func (SvmComposers) UpdateParams(authority string, params svmv1.SVMParams) *svmv1.MsgUpdateParams {
+	return &svmv1.MsgUpdateParams{Authority: authority, Params: params}
+}
+
 // ---- lightnode ----
 
 // LightnodeComposers builds lightnode module messages.
@@ -393,8 +404,18 @@ type CrossVMComposers struct{}
 var CrossVM CrossVMComposers
 
 // Call builds MsgCrossVMCall.
-func (CrossVMComposers) Call(sender string, sourceVM, targetVM crossvmv1.VMType, targetContract string, payload []byte, funds sdk.Coins) *crossvmv1.MsgCrossVMCall {
-	return &crossvmv1.MsgCrossVMCall{Sender: sender, SourceVM: sourceVM, TargetVM: targetVM, TargetContract: targetContract, Payload: payload, Funds: funds}
+//
+// sourceVM is IGNORED by the chain (chain v3.1.97+): the origin lane is derived
+// from the execution context, since a caller naming its own lane is not evidence
+// of it. The field is still accepted so older clients that set it are not
+// rejected.
+//
+// async=false (the default behaviour) executes the call inside this transaction
+// and returns the callee's answer in MsgCrossVMCallResponse; async=true queues
+// the call for a later ProcessQueue dispatch, so the response carries only the
+// message id (Executed=false, no Data).
+func (CrossVMComposers) Call(sender string, sourceVM, targetVM crossvmv1.VMType, targetContract string, payload []byte, funds sdk.Coins, async bool) *crossvmv1.MsgCrossVMCall {
+	return &crossvmv1.MsgCrossVMCall{Sender: sender, SourceVM: sourceVM, TargetVM: targetVM, TargetContract: targetContract, Payload: payload, Funds: funds, Async: async}
 }
 
 // ProcessQueue builds MsgProcessQueue.

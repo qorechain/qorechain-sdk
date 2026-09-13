@@ -1,6 +1,8 @@
 package io.github.qorechain;
 
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -115,6 +117,144 @@ class CrossVMClientTest {
         assertEquals("uqor", msg.getFunds(0).getDenom());
         assertEquals("100", msg.getFunds(0).getAmount());
         assertEquals(2, msg.getPayload().size());
+        // Default: execute now and return the answer, not queue it.
+        assertFalse(msg.getAsync());
+    }
+
+    /**
+     * {@code async} queues the call for a later {@code ProcessQueue} dispatch instead of
+     * executing it inside the tx. It must survive the round-trip through the packed
+     * {@code Any}, since the chain reads it from the wire, not from our builder.
+     */
+    @Test
+    void asyncOptionRoundTripsThroughTheWire() throws Exception {
+        CrossVMClient.CallOptions o = new CrossVMClient.CallOptions();
+        o.sender = "qor1sender";
+        o.targetVm = CrossVMClient.VMType.COSMWASM;
+        o.targetContract = "qor1contract";
+        o.payload = new byte[] {0x01};
+        o.async = true;
+
+        TypedMessage tm = client().buildCall(o);
+        assertTrue(((qorechain.crossvm.v1.Tx.MsgCrossVMCall) tm.message).getAsync());
+
+        Any any = Messages.pack(tm);
+        qorechain.crossvm.v1.Tx.MsgCrossVMCall back =
+                (qorechain.crossvm.v1.Tx.MsgCrossVMCall) Messages.unpack(any);
+        assertTrue(back.getAsync());
+        assertEquals("qor1contract", back.getTargetContract());
+    }
+
+    /**
+     * {@code sourceVm} is ignored by the chain (it derives the origin lane from the
+     * execution context), but it is still sent and still accepted, so an older client
+     * that sets it keeps working.
+     */
+    @Test
+    void sourceVmStillTravelsEvenThoughTheChainIgnoresIt() {
+        CrossVMClient.CallOptions o = new CrossVMClient.CallOptions();
+        o.targetVm = CrossVMClient.VMType.EVM;
+        o.targetContract = "0xc0ffee";
+        o.sourceVm = CrossVMClient.VMType.SVM;
+        o.payload = new byte[] {0x01};
+
+        qorechain.crossvm.v1.Tx.MsgCrossVMCall msg =
+                (qorechain.crossvm.v1.Tx.MsgCrossVMCall) client().buildCall(o).message;
+        assertEquals("svm", msg.getSourceVm());
+    }
+
+    /** The decoded response surfaces executed / data / gasUsed next to the message id. */
+    @Test
+    void decodeCallResponseSurfacesExecutedDataAndGasUsed() {
+        byte[] encoded =
+                qorechain.crossvm.v1.Tx.MsgCrossVMCallResponse.newBuilder()
+                        .setMessageId("xvm-7")
+                        .setExecuted(true)
+                        .setData(com.google.protobuf.ByteString.copyFrom(new byte[] {0x0a, 0x0b}))
+                        .setGasUsed(123456L)
+                        .build()
+                        .toByteArray();
+
+        CrossVMClient.CallResponse r = CrossVMClient.decodeCallResponse(encoded);
+        assertEquals("xvm-7", r.messageId);
+        assertTrue(r.executed);
+        assertArrayEquals(new byte[] {0x0a, 0x0b}, r.data);
+        assertEquals(123456L, r.gasUsed);
+    }
+
+    /**
+     * A queued call has not run: the response carries the id but {@code executed=false},
+     * no data and no gas — the caller must not read an answer that does not exist yet.
+     */
+    @Test
+    void decodeCallResponsesReadsTxMsgDataAndSkipsOtherResponses() {
+        byte[] executed =
+                qorechain.crossvm.v1.Tx.MsgCrossVMCallResponse.newBuilder()
+                        .setMessageId("xvm-1")
+                        .setExecuted(true)
+                        .setData(com.google.protobuf.ByteString.copyFromUtf8("ok"))
+                        .setGasUsed(21000L)
+                        .build()
+                        .toByteArray();
+        byte[] queued =
+                qorechain.crossvm.v1.Tx.MsgCrossVMCallResponse.newBuilder()
+                        .setMessageId("xvm-2")
+                        .build()
+                        .toByteArray();
+
+        // TxMsgData { repeated Any msg_responses = 2 } — built by hand, since the SDK
+        // does not vendor cosmos.base.abci.
+        byte[] txMsgData =
+                txMsgData(
+                        Any.newBuilder()
+                                .setTypeUrl(CrossVMClient.CALL_RESPONSE_TYPE_URL)
+                                .setValue(com.google.protobuf.ByteString.copyFrom(executed))
+                                .build(),
+                        // A foreign response in the same tx body must be skipped, not decoded.
+                        Any.newBuilder()
+                                .setTypeUrl("/cosmos.bank.v1beta1.MsgSendResponse")
+                                .setValue(com.google.protobuf.ByteString.EMPTY)
+                                .build(),
+                        Any.newBuilder()
+                                .setTypeUrl(CrossVMClient.CALL_RESPONSE_TYPE_URL)
+                                .setValue(com.google.protobuf.ByteString.copyFrom(queued))
+                                .build());
+
+        List<CrossVMClient.CallResponse> out = CrossVMClient.decodeCallResponses(txMsgData);
+        assertEquals(2, out.size());
+        assertEquals("xvm-1", out.get(0).messageId);
+        assertTrue(out.get(0).executed);
+        assertEquals("ok", new String(out.get(0).data, StandardCharsets.UTF_8));
+        assertEquals(21000L, out.get(0).gasUsed);
+        // The queued call has not run yet.
+        assertEquals("xvm-2", out.get(1).messageId);
+        assertFalse(out.get(1).executed);
+        assertEquals(0, out.get(1).data.length);
+        assertEquals(0L, out.get(1).gasUsed);
+    }
+
+    /** No responses at all (a sync broadcast, or an older node) decodes to an empty list. */
+    @Test
+    void decodeCallResponsesIsEmptyWithoutData() {
+        assertTrue(CrossVMClient.decodeCallResponses((byte[]) null).isEmpty());
+        assertTrue(CrossVMClient.decodeCallResponses(new byte[0]).isEmpty());
+        assertTrue(CrossVMClient.decodeCallResponses(new Broadcaster.Result("ABCD", 0)).isEmpty());
+    }
+
+    /** Encode a {@code TxMsgData} carrying the given responses in field 2. */
+    private static byte[] txMsgData(Any... responses) {
+        java.io.ByteArrayOutputStream out = new java.io.ByteArrayOutputStream();
+        try {
+            com.google.protobuf.CodedOutputStream cos =
+                    com.google.protobuf.CodedOutputStream.newInstance(out);
+            for (Any a : responses) {
+                cos.writeMessage(2, a);
+            }
+            cos.flush();
+        } catch (java.io.IOException e) {
+            throw new IllegalStateException(e);
+        }
+        return out.toByteArray();
     }
 
     @Test

@@ -31,4 +31,8 @@ const (
 )
 
 // DefaultSourceVM is the source VM assumed when CallOptions.SourceVM is empty.
+//
+// The chain IGNORES the source_vm field (chain v3.1.97+) — it derives the origin
+// lane from the execution context. The default is kept only so older nodes that
+// still read the field receive a well-formed message.
 const DefaultSourceVM = VMTypeEVM

@@ -3,7 +3,7 @@
 Idiomatic Go SDK for QoreChain — network presets, denomination/address utilities,
 HD account derivation (native / EVM / SVM), post-quantum (ML-DSA-87) signing, read
 clients for the REST (LCD) and `qor_*` JSON-RPC surfaces, the full native-chain
-message set (49 custom messages across 11 modules + the standard Native modules),
+message set (59 custom messages across 11 modules + the standard Native modules),
 typed gRPC query clients, complete transaction lifecycle (auto-gas, error
 decoding, tracking, search), utilities, and WebSocket subscriptions.
 
@@ -37,7 +37,7 @@ Requires Go 1.23+.
 | `qorechain/pqc` | ML-DSA-87 (FIPS 204) keygen / sign / verify + hybrid extension. |
 | `qorechain/query` | REST client, JSON-RPC client, `qor_*` typed client, typed gRPC query clients. |
 | `qorechain/client` | `CreateClient` factory composing the read clients + fees. |
-| `qorechain/messages` | Interface registry/codec + typed composers for all 49 custom messages and the standard Native modules. |
+| `qorechain/messages` | Interface registry/codec + typed composers for all 59 custom messages and the standard Native modules. |
 | `qorechain/tx` | Build/sign/broadcast (classical + hybrid PQC), auto-gas, error decoding, tracking/retry, tx & block search. |
 | `qorechain/proto` | Generated gogoproto Go types for every chain module (committed; regenerate with `scripts/codegen-go.sh`). |
 | `qorechain/utils` | Hashing (sha256/keccak256/ripemd160), unit conversion, EVM/SVM address validation + EIP-55. |
@@ -102,8 +102,10 @@ kp, _ := pqc.GeneratePQCKeypair()                 // ML-DSA-87: 2592 / 4896
 sig, _ := pqc.PQCSign(kp.SecretKey, []byte("..."))// 4627-byte signature
 ok := pqc.PQCVerify(kp.PublicKey, []byte("..."), sig)
 
-ext, _ := pqc.BuildHybridSignatureExtension(pqc.AlgorithmDilithium5, sig, kp.PublicKey)
-// ext marshals to {"algorithm_id":1,"pqc_signature":"<base64>","pqc_public_key":"<base64>"}
+ext, _ := pqc.EncodeHybridSignatureExtension(pqc.AlgorithmDilithium5, sig, kp.PublicKey)
+// ext is the PROTOBUF encoding of PQCHybridSignature (algorithm_id=1,
+// pqc_signature=2, pqc_public_key=3), ready for Any.Value — it begins with 0x08.
+// It is NOT JSON: a leading 0x7b ('{') is rejected by the tx decoder at CheckTx.
 ```
 
 ### Denomination math
@@ -250,6 +252,34 @@ status, _ := xvm.GetMessage("42") // read a routed message's status
 _ = (res, atomic, built, status)
 ```
 
+**The callee's answer (chain v3.1.97).** A call executes inside the transaction
+by default and returns its result in the Msg response; decode it from the
+confirmed tx:
+
+```go
+out, _ := crossvm.DecodeCallResult(res)
+out.MessageID // the chain's id for the cross-VM message
+out.Executed  // false for a queued (async) call — the result is not known yet
+out.Data      // the callee's return value
+out.GasUsed   // gas the callee's execution consumed
+
+// N calls in one tx: results come back in message order.
+all, _ := crossvm.DecodeCallResults(atomic)
+```
+
+**`Async`.** `CallOptions.Async` queues the call for a later `ProcessQueue`
+dispatch instead of running it now. The default (`false`) executes it in this
+transaction and returns the answer, which is what a caller that needs the result
+wants; with `Async: true` the response carries only the message id (`Executed`
+false, no `Data`) and the outcome is polled with `GetMessage`. It is per call, so
+one `CallAtomic` batch may mix queued and inline calls.
+
+**`SourceVM` is ignored by the chain.** The origin lane is derived from the
+execution context — a caller naming its own lane is not evidence of what it is.
+The field is still sent and still defaults to `evm` so older nodes keep working;
+setting it changes nothing on a current chain and can never claim a lane the
+caller is not on.
+
 See the [cross-VM](../../docs/docs/guides/cross-vm.md) guide.
 
 ### Quantum-safe DX (v0.5.0)
@@ -307,11 +337,20 @@ txBytes, _ := unified.SignHybridEth(unified.EthSignParams{
     Messages:      messages,
     Fee:           fee,
 })
-
-// Derive a canonical, non-custodial unified account from a deterministic
-// Phantom signature (shake256(signature, 32)).
-fromPhantom, _ := unified.UnifiedAccountFromPhantomSignature(phantomSignature)
 ```
+
+`UnifiedAccountFromSeed` takes the account's **private key**: pass real secret
+entropy (32 CSPRNG bytes, or a secret only the owner holds). Never derive that
+seed from a wallet signature or any other value a third party can request.
+
+> **Removed in v0.8.0 — `unified.UnifiedAccountFromPhantomSignature`.** It now
+> returns an error and derives no account. Turning a browser-wallet signature
+> into a spend key is unsafe: the signature is a bearer secret any page can ask
+> the wallet for, so whoever obtains it controls the account. To spend with an
+> external wallet key, keep the key external and use the **authenticator lanes**
+> below — register it with `MsgRegisterAuthenticator`, then spend via
+> `MsgExecuteCosmos` / `MsgExecuteEVM`. Any account previously derived this way
+> must be treated as exposed: move its funds.
 
 See the [unified-wallet](../../docs/docs/guides/unified-wallet.md) guide.
 

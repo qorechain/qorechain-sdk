@@ -111,21 +111,46 @@ export function generatePqcKeypair(seed?: Uint8Array): PqcKeypair {
  * `(secretKey, message)` always yields the same signature. The chain's PQC
  * verifier accepts ONLY deterministic signatures, so do not pass
  * `{ hedged: true }` for anything that goes on-chain.
+ *
+ * The secret key length is checked explicitly before the library is called (see
+ * {@link pqcVerify} for why the bindings validate sizes themselves).
+ *
+ * @throws if `secretKey` is not exactly {@link ML_DSA_87_SECRET_KEY_LENGTH} bytes.
  */
 export function pqcSign(
   secretKey: Uint8Array,
   message: Uint8Array,
   opts?: { hedged?: boolean },
 ): Uint8Array {
+  if (secretKey.length !== ML_DSA_87_SECRET_KEY_LENGTH) {
+    throw new Error(
+      `ML-DSA-87 secret key must be ${ML_DSA_87_SECRET_KEY_LENGTH} bytes, got ${secretKey.length}`,
+    );
+  }
   return mldsa87.sign(secretKey, message, opts);
 }
 
-/** Verify an ML-DSA-87 (Dilithium-5) signature over a message. */
+/**
+ * Verify an ML-DSA-87 (Dilithium-5) signature over a message.
+ *
+ * STRICT SIZES. The public key and signature must be EXACTLY
+ * {@link ML_DSA_87_PUBLIC_KEY_LENGTH} and {@link ML_DSA_87_SIGNATURE_LENGTH}
+ * bytes; anything else returns `false` without reaching the library. This is
+ * enforced here, not left to the underlying implementation, because ML-DSA
+ * libraries disagree about trailing garbage: some accept a signature with extra
+ * bytes appended as valid while others reject it. A signature that one official
+ * binding accepts and another rejects is a consensus hazard, so every QoreChain
+ * binding applies the same exact-length rule before verifying.
+ *
+ * @returns `false` for a malformed input, exactly as for a bad signature.
+ */
 export function pqcVerify(
   publicKey: Uint8Array,
   message: Uint8Array,
   signature: Uint8Array,
 ): boolean {
+  if (publicKey.length !== ML_DSA_87_PUBLIC_KEY_LENGTH) return false;
+  if (signature.length !== ML_DSA_87_SIGNATURE_LENGTH) return false;
   return mldsa87.verify(publicKey, message, signature);
 }
 

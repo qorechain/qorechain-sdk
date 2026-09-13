@@ -4,16 +4,20 @@ import { createCrossVMClient, VM_TYPES } from "../../src/helpers";
 import type { TxClient } from "../../src/tx/builder";
 import type { CrossVmQueryClient } from "../../src/query/grpc";
 import type { QorClient } from "../../src/query/qor";
-import { MsgCrossVMCall } from "../../src/codegen/qorechain/crossvm/v1/tx";
+import {
+  MsgCrossVMCall,
+  MsgCrossVMCallResponse,
+} from "../../src/codegen/qorechain/crossvm/v1/tx";
 
 const ADDR = "qor15yk64u7zc9g9k2yr2wmzeva5qgwxps6yjecvvu";
 
 /** A fake TxClient capturing the messages handed to signAndBroadcast. */
-function fakeTx(events?: unknown) {
+function fakeTx(events?: unknown, msgResponses?: unknown) {
   const signAndBroadcast = vi.fn(async () => ({
     transactionHash: "DEADBEEF",
     code: 0,
     ...(events ? { events } : {}),
+    ...(msgResponses ? { msgResponses } : {}),
   }));
   const tx = {
     senderAddress: ADDR,
@@ -267,5 +271,178 @@ describe("createCrossVMClient.getMessage", () => {
     const { tx } = fakeTx();
     const xvm = createCrossVMClient(tx);
     expect(() => xvm.getMessage("z")).toThrow(/query client or a qor client/);
+  });
+});
+
+// ---- chain v3.1.97: async flag + decoded MsgCrossVMCallResponse -----------
+
+/** Encode a MsgCrossVMCallResponse the way the node returns it in msgResponses. */
+function callResponse(fields: {
+  messageId?: string;
+  executed?: boolean;
+  data?: Uint8Array;
+  gasUsed?: string;
+}) {
+  return {
+    typeUrl: "/qorechain.crossvm.v1.MsgCrossVMCallResponse",
+    value: MsgCrossVMCallResponse.encode(
+      MsgCrossVMCallResponse.fromPartial({
+        messageId: fields.messageId ?? "",
+        executed: fields.executed ?? false,
+        data: fields.data ?? new Uint8Array(0),
+        gasUsed: fields.gasUsed ?? "0",
+      }),
+    ).finish(),
+  };
+}
+
+describe("crossvm async flag", () => {
+  it("defaults async to false (execute now and return the answer)", () => {
+    const { tx } = fakeTx();
+    const xvm = createCrossVMClient(tx);
+    const m = xvm.buildCall({
+      targetVm: "svm",
+      targetContract: "P",
+      payload: "0x01",
+    });
+    expect(decodeMsg(m.value).async).toBe(false);
+  });
+
+  it("round-trips async: true into the message", () => {
+    const { tx } = fakeTx();
+    const xvm = createCrossVMClient(tx);
+    const m = xvm.buildCall({
+      targetVm: "svm",
+      targetContract: "P",
+      payload: "0x01",
+      async: true,
+    });
+    expect(decodeMsg(m.value).async).toBe(true);
+  });
+
+  it("survives a registry encode -> decode round-trip", () => {
+    const { tx } = fakeTx();
+    const xvm = createCrossVMClient(tx);
+    const m = xvm.buildCall({
+      targetVm: "cosmwasm",
+      targetContract: "qor1c",
+      cosmwasm: { ping: {} },
+      async: true,
+    });
+    const bytes = MsgCrossVMCall.encode(decodeMsg(m.value)).finish();
+    expect(MsgCrossVMCall.decode(bytes).async).toBe(true);
+  });
+
+  it("carries async through call() and callAtomic() per message", async () => {
+    const { tx, signAndBroadcast } = fakeTx();
+    const xvm = createCrossVMClient(tx);
+    await xvm.call({
+      targetVm: "svm",
+      targetContract: "P",
+      payload: "0x01",
+      async: true,
+    });
+    expect(decodeMsg(signAndBroadcast.mock.calls[0][0][0].value).async).toBe(
+      true,
+    );
+
+    const { tx: tx2, signAndBroadcast: sab2 } = fakeTx();
+    const xvm2 = createCrossVMClient(tx2);
+    await xvm2.callAtomic([
+      { targetVm: "svm", targetContract: "P", payload: "0x01", async: true },
+      { targetVm: "svm", targetContract: "Q", payload: "0x02" },
+    ]);
+    const msgs = sab2.mock.calls[0][0];
+    expect(msgs.map((m: { value: unknown }) => decodeMsg(m.value).async)).toEqual(
+      [true, false],
+    );
+  });
+});
+
+describe("crossvm response decoding", () => {
+  it("surfaces executed / data / gasUsed from MsgCrossVMCallResponse", async () => {
+    const data = new Uint8Array([0xca, 0xfe]);
+    const { tx } = fakeTx(undefined, [
+      callResponse({
+        messageId: "m1",
+        executed: true,
+        data,
+        gasUsed: "21000",
+      }),
+    ]);
+    const xvm = createCrossVMClient(tx);
+    const res = await xvm.call({
+      targetVm: "evm",
+      targetContract: "0xabc",
+      payload: "0x01",
+    });
+    expect(res.executed).toBe(true);
+    expect(res.data).toEqual(data);
+    expect(res.gasUsed).toBe(21000n);
+  });
+
+  it("reports a queued (async) call as not executed with no data", async () => {
+    const { tx } = fakeTx(undefined, [
+      callResponse({ messageId: "m1", executed: false }),
+    ]);
+    const xvm = createCrossVMClient(tx);
+    const res = await xvm.call({
+      targetVm: "svm",
+      targetContract: "P",
+      payload: "0x01",
+      async: true,
+    });
+    expect(res.executed).toBe(false);
+    expect(res.data).toEqual(new Uint8Array(0));
+    expect(res.gasUsed).toBe(0n);
+  });
+
+  it("falls back to an unknown outcome when the node returned no responses", async () => {
+    const { tx } = fakeTx();
+    const xvm = createCrossVMClient(tx);
+    const res = await xvm.call({
+      targetVm: "svm",
+      targetContract: "P",
+      payload: "0x01",
+    });
+    expect(res.executed).toBe(false);
+    expect(res.data).toEqual(new Uint8Array(0));
+    expect(res.gasUsed).toBe(0n);
+    // The raw broadcast result is still returned untouched.
+    expect(res.result.transactionHash).toBe("DEADBEEF");
+  });
+
+  it("decodes one outcome per call in callAtomic, in order", async () => {
+    const { tx } = fakeTx(undefined, [
+      callResponse({ executed: true, data: new Uint8Array([1]), gasUsed: "10" }),
+      callResponse({ executed: true, data: new Uint8Array([2]), gasUsed: "20" }),
+    ]);
+    const xvm = createCrossVMClient(tx);
+    const res = await xvm.callAtomic([
+      { targetVm: "svm", targetContract: "P", payload: "0x01" },
+      { targetVm: "svm", targetContract: "Q", payload: "0x02" },
+    ]);
+    expect(res.outcomes).toHaveLength(2);
+    expect(res.outcomes.map((o) => o.data)).toEqual([
+      new Uint8Array([1]),
+      new Uint8Array([2]),
+    ]);
+    expect(res.outcomes.map((o) => o.gasUsed)).toEqual([10n, 20n]);
+  });
+
+  it("ignores non-crossvm responses in a mixed transaction body", async () => {
+    const { tx } = fakeTx(undefined, [
+      { typeUrl: "/cosmos.bank.v1beta1.MsgSendResponse", value: new Uint8Array() },
+      callResponse({ executed: true, data: new Uint8Array([7]), gasUsed: "5" }),
+    ]);
+    const xvm = createCrossVMClient(tx);
+    const res = await xvm.call({
+      targetVm: "svm",
+      targetContract: "P",
+      payload: "0x01",
+    });
+    expect(res.executed).toBe(true);
+    expect(res.data).toEqual(new Uint8Array([7]));
+    expect(res.gasUsed).toBe(5n);
   });
 });

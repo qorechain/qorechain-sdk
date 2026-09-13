@@ -14,7 +14,7 @@ import java.util.Set;
  * The QoreChain message registry: a {@code typeUrl → protobuf Parser} map plus
  * Native {@link Any} pack/unpack.
  *
- * <p>Covers all 58 QoreChain custom-module {@code Msg} types (amm, bridge, rdk,
+ * <p>Covers all 59 QoreChain custom-module {@code Msg} types (amm, bridge, rdk,
  * multilayer, pqc, svm, lightnode, license, abstractaccount, crossvm,
  * rlconsensus) and the standard Native messages exposed by {@link CosmosMessages}.
  *
@@ -80,11 +80,13 @@ public final class Messages {
         m.put("/qorechain.pqc.v1.MsgDeprecateAlgorithm", qorechain.pqc.v1.Tx.MsgDeprecateAlgorithm.parser());
         m.put("/qorechain.pqc.v1.MsgDisableAlgorithm", qorechain.pqc.v1.Tx.MsgDisableAlgorithm.parser());
 
-        // ---- svm (4) ----
+        // ---- svm (5) ----
         m.put("/qorechain.svm.v1.MsgDeployProgram", qorechain.svm.v1.Tx.MsgDeployProgram.parser());
         m.put("/qorechain.svm.v1.MsgCreateAccount", qorechain.svm.v1.Tx.MsgCreateAccount.parser());
         m.put("/qorechain.svm.v1.MsgExecuteProgram", qorechain.svm.v1.Tx.MsgExecuteProgram.parser());
         m.put("/qorechain.svm.v1.MsgRegisterSVMPQCKey", qorechain.svm.v1.Tx.MsgRegisterSVMPQCKey.parser());
+        // Governance: replaces the SVM runtime params wholesale (incl. `enabled`).
+        m.put("/qorechain.svm.v1.MsgUpdateParams", qorechain.svm.v1.Tx.MsgUpdateParams.parser());
 
         // ---- lightnode (4) ----
         m.put("/qorechain.lightnode.v1.MsgRegisterLightNode", qorechain.lightnode.v1.Tx.MsgRegisterLightNode.parser());
@@ -119,7 +121,7 @@ public final class Messages {
         REGISTRY = Collections.unmodifiableMap(m);
     }
 
-    /** All registered type URLs (Native standard + 58 QoreChain customs). */
+    /** All registered type URLs (Native standard + 59 QoreChain customs). */
     public static Set<String> typeUrls() {
         return REGISTRY.keySet();
     }

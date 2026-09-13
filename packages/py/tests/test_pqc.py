@@ -50,6 +50,49 @@ def test_verify_fails_on_tampered_signature():
     assert pqc_verify(kp.public_key, MSG, bytes(sig)) is False
 
 
+# --- strict FIPS 204 sizes ----------------------------------------------------
+#
+# QoreChain's official ML-DSA bindings must agree byte-for-byte on what is a
+# valid signature. They did not: a Go binding accepted a 4628-byte signature
+# (spec size 4627, one extra trailing byte) as VALID while Rust `fips204`
+# rejected it. A signature one binding accepts and another refuses is a
+# consensus hazard, so every binding — this SDK included — now checks the exact
+# sizes itself instead of trusting the library underneath.
+
+
+def test_signature_with_one_extra_trailing_byte_is_rejected():
+    kp = generate_pqc_keypair()
+    sig = pqc_sign(kp.secret_key, MSG)
+    assert pqc_verify(kp.public_key, MSG, sig) is True  # the exact-length original
+    over_long = sig + b"\x00"
+    assert len(over_long) == ML_DSA_87_SIGNATURE_LENGTH + 1
+    assert pqc_verify(kp.public_key, MSG, over_long) is False
+
+
+def test_truncated_signature_is_rejected():
+    kp = generate_pqc_keypair()
+    sig = pqc_sign(kp.secret_key, MSG)
+    assert pqc_verify(kp.public_key, MSG, sig[:-1]) is False
+    assert pqc_verify(kp.public_key, MSG, b"") is False
+
+
+def test_wrong_length_public_key_is_rejected():
+    kp = generate_pqc_keypair()
+    sig = pqc_sign(kp.secret_key, MSG)
+    assert pqc_verify(kp.public_key + b"\x00", MSG, sig) is False
+    assert pqc_verify(kp.public_key[:-1], MSG, sig) is False
+    assert pqc_verify(b"", MSG, sig) is False
+
+
+@pytest.mark.parametrize("delta", [-1, 1])
+def test_wrong_length_secret_key_raises_on_sign(delta):
+    kp = generate_pqc_keypair()
+    secret = kp.secret_key + b"\x00" if delta > 0 else kp.secret_key[:-1]
+    with pytest.raises(ValueError) as excinfo:
+        pqc_sign(secret, MSG)
+    assert str(ML_DSA_87_SECRET_KEY_LENGTH) in str(excinfo.value)
+
+
 def test_distinct_keypairs():
     assert generate_pqc_keypair().public_key != generate_pqc_keypair().public_key
 

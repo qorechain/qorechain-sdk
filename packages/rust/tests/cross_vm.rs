@@ -23,8 +23,10 @@ use cosmrs::proto::cosmos::tx::v1beta1::{TxBody, TxRaw};
 use cosmrs::proto::traits::Message as ProstMessage;
 
 use qorechain::accounts::derive_native_account;
-use qorechain::cross_vm::{CallOptions, CrossVm, Payload, VM_TYPE_COSMWASM, VM_TYPE_EVM, VM_TYPE_SVM};
-use qorechain::proto::qorechain::crossvm::v1::MsgCrossVmCall;
+use qorechain::cross_vm::{
+    CallOptions, CrossVm, CrossVmCallResponse, Payload, VM_TYPE_COSMWASM, VM_TYPE_EVM, VM_TYPE_SVM,
+};
+use qorechain::proto::qorechain::crossvm::v1::{MsgCrossVmCall, MsgCrossVmCallResponse};
 use qorechain::query::QorClient;
 use qorechain::tx::{BroadcastMode, Coin, Fee};
 
@@ -220,6 +222,194 @@ async fn call_atomic_packs_n_messages_into_one_tx() {
 async fn call_atomic_rejects_empty() {
     let cv = make_cross_vm("http://127.0.0.1:0".into(), None);
     assert!(cv.build_atomic(&[]).is_err());
+}
+
+// --- async / queue flag (chain v3.1.97) --------------------------------------
+
+#[tokio::test]
+async fn call_executes_inline_by_default() {
+    let server = MockServer::start(r#"{"tx_response":{"code":0}}"#).await;
+    let cv = make_cross_vm(server.base_url.clone(), None);
+
+    // No .queue(..) call: the default must be inline execution, because a caller
+    // that needs the callee's answer gets it only that way.
+    let opts = CallOptions::new(VM_TYPE_COSMWASM, "qor1cw", vec![7u8]);
+    assert!(!opts.queue);
+    cv.call(&opts).await.unwrap();
+
+    let msgs = decode_broadcast_messages(&server);
+    assert!(!msgs[0].r#async, "async must default to false");
+}
+
+#[tokio::test]
+async fn queue_flag_round_trips_to_the_async_field() {
+    let server = MockServer::start(r#"{"tx_response":{"code":0}}"#).await;
+    let cv = make_cross_vm(server.base_url.clone(), None);
+
+    let opts = CallOptions::new(VM_TYPE_COSMWASM, "qor1cw", vec![7u8]).queue(true);
+    assert!(opts.queue);
+    cv.call(&opts).await.unwrap();
+
+    let msgs = decode_broadcast_messages(&server);
+    assert_eq!(msgs.len(), 1);
+    assert!(msgs[0].r#async, "queue(true) must set the proto async field");
+
+    // And the builder is reversible.
+    let back = CallOptions::new(VM_TYPE_COSMWASM, "qor1cw", vec![7u8])
+        .queue(true)
+        .queue(false);
+    assert!(!back.queue);
+}
+
+#[tokio::test]
+async fn atomic_calls_keep_their_own_queue_flags() {
+    let server = MockServer::start(r#"{"tx_response":{"code":0}}"#).await;
+    let cv = make_cross_vm(server.base_url.clone(), None);
+
+    let calls = vec![
+        CallOptions::new(VM_TYPE_COSMWASM, "c1", vec![1]).queue(true),
+        CallOptions::new(VM_TYPE_SVM, "c2", vec![2]),
+        CallOptions::new(VM_TYPE_EVM, "c3", vec![3]).queue(true),
+    ];
+    cv.call_atomic(&calls).await.unwrap();
+
+    let msgs = decode_broadcast_messages(&server);
+    assert_eq!(msgs.len(), 3);
+    assert!(msgs[0].r#async);
+    assert!(!msgs[1].r#async);
+    assert!(msgs[2].r#async);
+}
+
+// --- MsgCrossVMCallResponse decoding -----------------------------------------
+
+/// Encode a `MsgCrossVMCallResponse` the way the chain would, then wrap it in the
+/// `msg_responses` shape a REST broadcast returns.
+fn broadcast_json_with(responses: Vec<MsgCrossVmCallResponse>) -> Value {
+    let entries: Vec<Value> = responses
+        .iter()
+        .map(|r| {
+            serde_json::json!({
+                "type_url": "/qorechain.crossvm.v1.MsgCrossVMCallResponse",
+                "value": BASE64.encode(r.encode_to_vec()),
+            })
+        })
+        .collect();
+    serde_json::json!({ "tx_response": { "code": 0, "msg_responses": entries } })
+}
+
+#[test]
+fn response_decodes_executed_data_and_gas_used() {
+    let raw = MsgCrossVmCallResponse {
+        message_id: "xvm-42".into(),
+        executed: true,
+        data: vec![0xde, 0xad, 0xbe, 0xef],
+        gas_used: 123_456,
+    };
+    let decoded = CrossVmCallResponse::decode(&raw.encode_to_vec()).unwrap();
+    assert_eq!(decoded.message_id, "xvm-42");
+    assert!(decoded.executed);
+    assert_eq!(decoded.data, vec![0xde, 0xad, 0xbe, 0xef]);
+    assert_eq!(decoded.gas_used, 123_456);
+}
+
+#[test]
+fn queued_response_carries_only_the_message_id() {
+    // A queued call has not run: executed = false, no data, no gas. Those are
+    // proto defaults, so they are absent from the wire and must decode back.
+    let raw = MsgCrossVmCallResponse {
+        message_id: "xvm-queued".into(),
+        executed: false,
+        data: vec![],
+        gas_used: 0,
+    };
+    let decoded = CrossVmCallResponse::decode(&raw.encode_to_vec()).unwrap();
+    assert_eq!(decoded.message_id, "xvm-queued");
+    assert!(!decoded.executed);
+    assert!(decoded.data.is_empty());
+    assert_eq!(decoded.gas_used, 0);
+}
+
+#[test]
+fn responses_are_extracted_from_a_broadcast_result_in_order() {
+    let json = broadcast_json_with(vec![
+        MsgCrossVmCallResponse {
+            message_id: "a".into(),
+            executed: true,
+            data: b"first".to_vec(),
+            gas_used: 10,
+        },
+        MsgCrossVmCallResponse {
+            message_id: "b".into(),
+            executed: false,
+            data: vec![],
+            gas_used: 0,
+        },
+    ]);
+    let got = CrossVmCallResponse::list_from_broadcast(&json).unwrap();
+    assert_eq!(got.len(), 2);
+    assert_eq!(got[0].message_id, "a");
+    assert_eq!(got[0].data, b"first".to_vec());
+    assert_eq!(got[0].gas_used, 10);
+    assert_eq!(got[1].message_id, "b");
+    assert!(!got[1].executed);
+}
+
+#[test]
+fn unrelated_msg_responses_are_ignored_and_absence_is_not_an_error() {
+    // A tx can pack messages from other modules; only crossvm responses count.
+    let json = serde_json::json!({
+        "tx_response": { "msg_responses": [
+            { "type_url": "/cosmos.bank.v1beta1.MsgSendResponse", "value": "" },
+        ]}
+    });
+    assert!(CrossVmCallResponse::list_from_broadcast(&json)
+        .unwrap()
+        .is_empty());
+
+    // A sync broadcast answers before execution, so there are no msg_responses
+    // at all. That is a normal outcome, not a decode failure.
+    let sync = serde_json::json!({ "tx_response": { "code": 0, "txhash": "ABC" } });
+    assert!(CrossVmCallResponse::list_from_broadcast(&sync)
+        .unwrap()
+        .is_empty());
+}
+
+#[tokio::test]
+async fn call_with_responses_surfaces_the_decoded_answer() {
+    let body = broadcast_json_with(vec![MsgCrossVmCallResponse {
+        message_id: "xvm-7".into(),
+        executed: true,
+        data: b"{\"ok\":true}".to_vec(),
+        gas_used: 4_242,
+    }])
+    .to_string();
+    let leaked: &'static str = Box::leak(body.into_boxed_str());
+    let server = MockServer::start(leaked).await;
+    let cv = make_cross_vm(server.base_url.clone(), None);
+
+    let opts = CallOptions::new(VM_TYPE_COSMWASM, "qor1cw", vec![1u8]);
+    let (raw, decoded) = cv.call_with_responses(&opts).await.unwrap();
+
+    assert_eq!(raw["tx_response"]["code"], 0);
+    assert_eq!(decoded.len(), 1);
+    assert_eq!(decoded[0].message_id, "xvm-7");
+    assert!(decoded[0].executed);
+    assert_eq!(decoded[0].data, b"{\"ok\":true}".to_vec());
+    assert_eq!(decoded[0].gas_used, 4_242);
+}
+
+#[tokio::test]
+async fn source_vm_is_still_sent_for_older_nodes() {
+    // The chain ignores source_vm, but the SDK keeps sending it so a node on an
+    // older build still accepts the message.
+    let server = MockServer::start(r#"{"tx_response":{"code":0}}"#).await;
+    let cv = make_cross_vm(server.base_url.clone(), None);
+
+    let opts = CallOptions::new(VM_TYPE_COSMWASM, "qor1cw", vec![1u8]).source_vm(VM_TYPE_SVM);
+    cv.call(&opts).await.unwrap();
+
+    let msgs = decode_broadcast_messages(&server);
+    assert_eq!(msgs[0].source_vm, "svm");
 }
 
 #[tokio::test]

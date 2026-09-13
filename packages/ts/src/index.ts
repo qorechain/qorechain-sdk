@@ -8,7 +8,7 @@
  */
 
 /** SDK version. */
-export const VERSION = "0.7.0";
+export const VERSION = "0.8.0";
 
 // Top-level factory: the recommended entrypoint that resolves a network and
 // composes the read clients, fee helper, and a lazy signing entrypoint.
@@ -94,12 +94,12 @@ export type {
   UnifiedAccount,
   UnifiedAddresses,
 } from "./accounts/unified";
-// Phantom P1a: derive the unified account from a Phantom (ed25519) signature —
-// non-custodial, a separate canonical key from the Phantom key.
+// REMOVED in v0.8.0: deriving a spend key from a wallet signature is unsafe.
+// Both functions are retained as throwing stubs so existing imports fail loudly.
+// Link an external wallet key through the authenticator lanes instead.
 export {
   unifiedAccountFromPhantomSignature,
   connectPhantomUnified,
-  PHANTOM_DERIVATION_DOMAIN,
 } from "./accounts/phantom";
 export type {
   PhantomProvider,

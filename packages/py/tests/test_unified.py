@@ -112,14 +112,18 @@ def test_seed_must_be_32_bytes():
         unified_account_from_seed(bytes(31))
 
 
-def test_from_phantom_signature_is_deterministic_and_seed_based():
-    import hashlib
+def test_from_wallet_signature_derivation_is_removed():
+    """The signature-derived account is gone: the symbol stays, but it raises.
 
-    sig = b"\xaa" * 65
-    a = unified_account_from_phantom_signature(sig)
-    b = unified_account_from_phantom_signature(sig)
-    assert a == b  # deterministic
-    # Equivalent to unified_account_from_seed(shake256(sig, 32)).
-    expected = unified_account_from_seed(hashlib.shake_256(sig).digest(32))
-    assert a.cosmos == expected.cosmos
-    assert a.pqc.public_key == expected.pqc.public_key
+    A wallet signature is a bearer secret any page can request, so a spend key
+    derived from one is controlled by whoever obtains it. The error must send
+    callers to the authenticator lanes instead.
+    """
+    with pytest.raises(NotImplementedError) as excinfo:
+        unified_account_from_phantom_signature(b"\xaa" * 65)
+    message = str(excinfo.value)
+    assert "removed in v0.8.0" in message
+    assert "MsgRegisterAuthenticator" in message
+    assert "MsgExecuteCosmos" in message
+    assert "MsgExecuteEVM" in message
+    assert "move its funds" in message

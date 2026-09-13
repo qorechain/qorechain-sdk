@@ -75,8 +75,12 @@ public final class Pqc {
      * signatures (hedged signatures are rejected with codespace {@code pqc}),
      * so this default is consensus-critical. Use {@link #pqcSignHedged} only
      * for off-chain uses that want side-channel hedging.
+     *
+     * @throws IllegalArgumentException if {@code secretKey} is not exactly
+     *     {@link #ML_DSA_87_SECRET_KEY_LENGTH} bytes.
      */
     public static byte[] pqcSign(byte[] secretKey, byte[] message) {
+        requireSecretKeyLength(secretKey);
         MLDSAPrivateKeyParameters priv =
                 new MLDSAPrivateKeyParameters(MLDSAParameters.ml_dsa_87, secretKey);
         MLDSASigner signer = new MLDSASigner();
@@ -96,8 +100,12 @@ public final class Pqc {
      *
      * <p>NOT accepted by the chain's PQC verifier — use {@link #pqcSign} for
      * anything that goes on-chain.
+     *
+     * @throws IllegalArgumentException if {@code secretKey} is not exactly
+     *     {@link #ML_DSA_87_SECRET_KEY_LENGTH} bytes.
      */
     public static byte[] pqcSignHedged(byte[] secretKey, byte[] message) {
+        requireSecretKeyLength(secretKey);
         MLDSAPrivateKeyParameters priv =
                 new MLDSAPrivateKeyParameters(MLDSAParameters.ml_dsa_87, secretKey);
         MLDSASigner signer = new MLDSASigner();
@@ -110,14 +118,49 @@ public final class Pqc {
         }
     }
 
-    /** Verify an ML-DSA-87 signature over a message. */
+    /**
+     * Verify an ML-DSA-87 signature over a message.
+     *
+     * <p>STRICT about sizes: the public key must be exactly
+     * {@link #ML_DSA_87_PUBLIC_KEY_LENGTH} bytes and the signature exactly
+     * {@link #ML_DSA_87_SIGNATURE_LENGTH} bytes; anything else is rejected here,
+     * before the library sees it. ML-DSA implementations disagree about trailing
+     * garbage — some accept a signature with an extra byte appended, others reject
+     * it — and a signature the five official QoreChain bindings do not agree on is a
+     * consensus hazard. The FIPS-204 encoding is fixed-length, so a length that is
+     * not exactly right is not a valid signature, and every binding must say so.
+     *
+     * @return {@code false} for a null, over-long, or short signature or public key,
+     *     as for any other verification failure.
+     */
     public static boolean pqcVerify(byte[] publicKey, byte[] message, byte[] signature) {
+        if (publicKey == null || publicKey.length != ML_DSA_87_PUBLIC_KEY_LENGTH) {
+            return false;
+        }
+        if (signature == null || signature.length != ML_DSA_87_SIGNATURE_LENGTH) {
+            return false;
+        }
         MLDSAPublicKeyParameters pub =
                 new MLDSAPublicKeyParameters(MLDSAParameters.ml_dsa_87, publicKey);
         MLDSASigner verifier = new MLDSASigner();
         verifier.init(false, pub);
         verifier.update(message, 0, message.length);
         return verifier.verifySignature(signature);
+    }
+
+    /**
+     * Enforce the exact FIPS-204 ML-DSA-87 secret-key length before the library sees
+     * the bytes — the same strictness {@link #pqcVerify} applies to signatures and
+     * public keys, so the five official bindings cannot disagree about what is a key.
+     */
+    private static void requireSecretKeyLength(byte[] secretKey) {
+        if (secretKey == null || secretKey.length != ML_DSA_87_SECRET_KEY_LENGTH) {
+            throw new IllegalArgumentException(
+                    "ML-DSA-87 secret key must be "
+                            + ML_DSA_87_SECRET_KEY_LENGTH
+                            + " bytes, got "
+                            + (secretKey == null ? "null" : secretKey.length));
+        }
     }
 
     /**

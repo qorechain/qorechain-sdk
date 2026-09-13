@@ -148,4 +148,46 @@ pub struct MsgRegisterSvmpqcKey {
 #[derive(Clone, Copy, PartialEq, ::prost::Message)]
 pub struct MsgRegisterSvmpqcKeyResponse {
 }
+/// SVMParams mirrors the module's runtime parameters so governance can replace
+/// them wholesale. The store keeps them as JSON, so the handler converts.
+#[derive(Clone, PartialEq, ::prost::Message)]
+pub struct SvmParams {
+    #[prost(uint64, tag="1")]
+    pub max_program_size: u64,
+    #[prost(uint64, tag="2")]
+    pub max_account_data_size: u64,
+    #[prost(uint64, tag="3")]
+    pub compute_budget_max: u64,
+    #[prost(uint64, tag="4")]
+    pub lamports_per_byte: u64,
+    #[prost(string, tag="5")]
+    pub rent_exemption_multi: ::prost::alloc::string::String,
+    #[prost(bool, tag="6")]
+    pub enabled: bool,
+    #[prost(int64, tag="7")]
+    pub svm_slot_offset: i64,
+    #[prost(uint32, tag="8")]
+    pub default_sig_scheme: u32,
+    #[prost(uint32, tag="9")]
+    pub max_cpi: u32,
+}
+/// MsgUpdateParams replaces the SVM runtime parameters wholesale.
+///
+/// WHY THIS EXISTS. Until now x/svm had no governance message at all, so there was
+/// no transaction that could turn the lane off. When the August 2026 incident
+/// required closing it, the only available guarantee was a compile-time constant
+/// (SVMLaneHardDisabled), which means every later change of mind costs a binary
+/// release and a coordinated upgrade. With this message, disabling the lane is a
+/// governance proposal like any other.
+#[derive(Clone, PartialEq, ::prost::Message)]
+pub struct MsgUpdateParams {
+    /// authority must be the governance module account.
+    #[prost(string, tag="1")]
+    pub authority: ::prost::alloc::string::String,
+    #[prost(message, optional, tag="2")]
+    pub params: ::core::option::Option<SvmParams>,
+}
+#[derive(Clone, Copy, PartialEq, ::prost::Message)]
+pub struct MsgUpdateParamsResponse {
+}
 // @@protoc_insertion_point(module)

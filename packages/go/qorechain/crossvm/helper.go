@@ -80,6 +80,12 @@ func New(signer Signer, opts Options) *Client {
 //     for CosmWasm execute messages).
 type CallOptions struct {
 	// SourceVM is the calling VM. Empty defaults to DefaultSourceVM ("evm").
+	//
+	// The chain IGNORES this field (chain v3.1.97+): it derives the origin lane
+	// from the execution context, because a caller naming its own lane is not
+	// evidence of what it is. It is still sent — and still defaulted — so older
+	// nodes that read it keep working; setting it changes nothing on a current
+	// chain, and it can never be used to claim a lane the caller is not on.
 	SourceVM crossvmv1.VMType
 	// TargetVM is the VM hosting the target contract (required).
 	TargetVM crossvmv1.VMType
@@ -92,6 +98,15 @@ type CallOptions struct {
 	// Cosmwasm is a JSON-serializable CosmWasm message. Mutually exclusive with
 	// Payload; it is json.Marshal'd to UTF-8 payload bytes.
 	Cosmwasm any
+	// Async queues the call instead of executing it, leaving it for a later
+	// ProcessQueue dispatch.
+	//
+	// The default (false) executes the call inside this transaction and returns
+	// the callee's answer in CallResult.Data — which is what a caller that needs
+	// the result requires. With Async=true the response carries only the message
+	// id: Executed is false, Data is empty, and the outcome must be polled with
+	// GetMessage.
+	Async bool
 }
 
 // resolvePayload returns the payload bytes implied by the options, enforcing the
@@ -139,6 +154,7 @@ func (c *Client) message(o CallOptions) (*crossvmv1.MsgCrossVMCall, error) {
 		o.TargetContract,
 		payload,
 		o.Funds,
+		o.Async,
 	), nil
 }
 

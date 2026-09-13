@@ -22,7 +22,7 @@ use crate::pqc::{
     build_hybrid_signature_extension, pqc_keypair_from_seed, pqc_sign, PqcKeypair,
     ALGORITHM_DILITHIUM5, HYBRID_SIG_TYPE_URL,
 };
-use crate::unified::{unified_account_from_seed, UnifiedAccount};
+use crate::unified::UnifiedAccount;
 use cosmrs::proto::cosmos::tx::signing::v1beta1::SignMode;
 use cosmrs::proto::cosmos::tx::v1beta1::{
     mode_info::{Single, Sum},
@@ -32,7 +32,7 @@ use cosmrs::proto::traits::Message as ProstMessage;
 use cosmrs::Any;
 use k256::ecdsa::signature::hazmat::PrehashSigner;
 use k256::ecdsa::{Signature, SigningKey};
-use sha3::{Digest, Keccak256, Shake256};
+use sha3::{Digest, Keccak256};
 
 pub use crate::tx::{Coin, Fee};
 
@@ -187,19 +187,38 @@ pub fn sign_hybrid_eth(
     })
 }
 
-/// Derives a unified account from an ed25519 wallet signature (e.g. a Phantom
-/// `signMessage` result): `unified_account_from_seed(shake256(sig, 32))`.
+/// REMOVED in v0.8.0 — always returns [`Error::Removed`].
 ///
-/// This gives a deterministic, seed-recoverable QoreChain account bound to the
-/// external wallet's signature over an agreed message.
-pub fn unified_account_from_phantom_signature(sig: &[u8]) -> Result<UnifiedAccount> {
-    let mut hasher = Shake256::default();
-    sha3::digest::Update::update(&mut hasher, sig);
-    let mut reader = sha3::digest::ExtendableOutput::finalize_xof(hasher);
-    let mut seed = [0u8; 32];
-    sha3::digest::XofReader::read(&mut reader, &mut seed);
-    unified_account_from_seed(seed)
+/// This function used to derive a spend key from a wallet signature over a fixed
+/// public message. That is not a key-derivation input: a wallet signature is a
+/// bearer secret the wallet will hand to any page that asks for it, and the
+/// signature is deterministic, so the same bytes come back every time. Anyone who
+/// obtains them controls the account.
+///
+/// Use the authenticator lanes instead: register the external key with
+/// `MsgRegisterAuthenticator` (see [`crate::msg::abstractaccount`]) and spend via
+/// `MsgExecuteCosmos` / `MsgExecuteEVM`, which keep the spend key on the
+/// canonical PQC account and treat the external signature as an *authorization*
+/// under revocable, least-privilege terms — never as key material.
+///
+/// Any account previously derived through this function must be treated as
+/// exposed; move its funds.
+///
+/// The signature is kept (rather than deleted outright) so existing call sites
+/// fail loudly at run time with an explanation instead of silently resolving to
+/// some other overload.
+pub fn unified_account_from_phantom_signature(_sig: &[u8]) -> Result<UnifiedAccount> {
+    Err(Error::Removed(REMOVED_MESSAGE.to_string()))
 }
+
+/// The exact text of the [`Error::Removed`] returned by
+/// [`unified_account_from_phantom_signature`].
+const REMOVED_MESSAGE: &str = "unified_account_from_phantom_signature was removed in v0.8.0: \
+deriving a spend key from a wallet signature is unsafe — the signature is a bearer secret that any \
+page can request from the wallet, so whoever obtains it controls the account. Use the authenticator \
+lanes instead: register the external key with MsgRegisterAuthenticator and spend via \
+MsgExecuteCosmos / MsgExecuteEVM. Any account previously derived this way must be treated as \
+exposed — move its funds.";
 
 /// Reports whether an on-chain pubkey `Any` type URL is the `eth_secp256k1`
 /// scheme accepted by this module's signer.
@@ -432,11 +451,24 @@ mod tests {
     }
 
     #[test]
-    fn phantom_signature_account_is_deterministic() {
-        let sig = b"phantom-ed25519-signature-bytes";
-        let a = unified_account_from_phantom_signature(sig).unwrap();
-        let b = unified_account_from_phantom_signature(sig).unwrap();
-        assert_eq!(a.cosmos, b.cosmos);
-        assert_eq!(a.address_bytes, b.address_bytes);
+    fn wallet_signature_account_derivation_is_removed() {
+        let err = unified_account_from_phantom_signature(b"any-wallet-signature-bytes")
+            .expect_err("deriving a spend key from a wallet signature must not be possible");
+        assert!(matches!(err, Error::Removed(_)), "got {err:?}");
+        let msg = err.to_string();
+        assert!(msg.contains("removed in v0.8.0"), "{msg}");
+        assert!(msg.contains("authenticator lanes"), "{msg}");
+        assert!(msg.contains("MsgRegisterAuthenticator"), "{msg}");
+        assert!(msg.contains("MsgExecuteCosmos"), "{msg}");
+        assert!(msg.contains("MsgExecuteEVM"), "{msg}");
+        assert!(msg.contains("move its funds"), "{msg}");
+    }
+
+    #[test]
+    fn wallet_signature_account_derivation_returns_no_key_material() {
+        // Two different signatures, one shared outcome: an error, never an account.
+        for sig in [&b"sig-a"[..], &b"sig-b"[..], &b""[..]] {
+            assert!(unified_account_from_phantom_signature(sig).is_err());
+        }
     }
 }

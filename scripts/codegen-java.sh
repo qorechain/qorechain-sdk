@@ -50,7 +50,7 @@ cat > "$WORK/buf.gen.yaml" <<'EOF'
 version: v2
 clean: false
 plugins:
-  - remote: buf.build/protocolbuffers/java
+  - remote: buf.build/protocolbuffers/java:v35.1
     out: gen
 EOF
 

@@ -39,7 +39,22 @@ fn sample_fee() -> Fee {
     }
 }
 
-/// The full set of 56 custom-module type URLs, paired with an `Any` produced by
+/// A fully-populated `SVMParams` for the governance `MsgUpdateParams` composer.
+fn sample_svm_params() -> msg::svm::SvmParams {
+    msg::svm::SvmParams {
+        max_program_size: 1_048_576,
+        max_account_data_size: 10_485_760,
+        compute_budget_max: 1_400_000,
+        lamports_per_byte: 6_960,
+        rent_exemption_multi: "2.0".into(),
+        enabled: true,
+        svm_slot_offset: 0,
+        default_sig_scheme: 1,
+        max_cpi: 4,
+    }
+}
+
+/// The full set of 57 custom-module type URLs, paired with an `Any` produced by
 /// the matching `*_any` composer. Asserts every exact string AND that the
 /// composer emits it.
 #[test]
@@ -218,7 +233,7 @@ fn all_custom_type_urls_are_produced() {
             "/qorechain.pqc.v1.MsgRotatePQCKey",
             msg::pqc::rotate_pqc_key_any(addr, vec![1u8; 4], vec![2u8; 4], vec![3u8; 4], vec![4u8; 4]),
         ),
-        // svm (4)
+        // svm (5)
         (
             "/qorechain.svm.v1.MsgDeployProgram",
             msg::svm::deploy_program_any(addr, vec![]),
@@ -234,6 +249,10 @@ fn all_custom_type_urls_are_produced() {
         (
             "/qorechain.svm.v1.MsgRegisterSVMPQCKey",
             msg::svm::register_svm_pqc_key_any(addr, vec![0u8; 32], vec![]),
+        ),
+        (
+            "/qorechain.svm.v1.MsgUpdateParams",
+            msg::svm::update_params_any(addr, sample_svm_params()),
         ),
         // lightnode (4)
         (
@@ -316,6 +335,7 @@ fn all_custom_type_urls_are_produced() {
                 "c",
                 vec![],
                 vec![],
+                false,
             ),
         ),
         (
@@ -343,8 +363,8 @@ fn all_custom_type_urls_are_produced() {
 
     assert_eq!(
         cases.len(),
-        56,
-        "exactly 56 custom messages must be covered"
+        57,
+        "exactly 57 custom messages must be covered"
     );
     for (want_url, any) in &cases {
         assert_eq!(&any.type_url, want_url, "type URL mismatch");
@@ -503,6 +523,47 @@ fn rotate_pqc_key_round_trips_through_any() {
     assert_eq!(decoded.new_public_key, vec![0xbb; 8]);
     assert_eq!(decoded.old_signature, vec![0xcc; 16]);
     assert_eq!(decoded.new_signature, vec![0xdd; 16]);
+}
+
+/// `MsgUpdateParams` (svm governance) round-trips through `Any`, preserving every
+/// `SVMParams` field — the message replaces the parameters wholesale, so a field
+/// lost in transit would silently reset a runtime limit.
+#[test]
+fn svm_update_params_round_trips_through_any() {
+    const GOV: &str = "qor10d07y265gmmuvt4z0w9aw880jnsr700j6z2nqt";
+    let params = sample_svm_params();
+    let m = msg::svm::update_params(GOV, params.clone());
+    let any = msg::to_any(&m, msg::svm::UPDATE_PARAMS);
+    assert_eq!(any.type_url, "/qorechain.svm.v1.MsgUpdateParams");
+    assert_eq!(msg::svm::UPDATE_PARAMS, "/qorechain.svm.v1.MsgUpdateParams");
+
+    let decoded: qorechain::proto::qorechain::svm::v1::MsgUpdateParams =
+        msg::from_any(&any).expect("decode");
+    assert_eq!(decoded.authority, GOV);
+    let got = decoded.params.expect("params must be present");
+    assert_eq!(got.max_program_size, params.max_program_size);
+    assert_eq!(got.max_account_data_size, params.max_account_data_size);
+    assert_eq!(got.compute_budget_max, params.compute_budget_max);
+    assert_eq!(got.lamports_per_byte, params.lamports_per_byte);
+    assert_eq!(got.rent_exemption_multi, params.rent_exemption_multi);
+    assert!(got.enabled);
+    assert_eq!(got.svm_slot_offset, params.svm_slot_offset);
+    assert_eq!(got.default_sig_scheme, params.default_sig_scheme);
+    assert_eq!(got.max_cpi, params.max_cpi);
+
+    // `enabled = false` is what closes the SVM lane by governance; it must
+    // survive the round-trip even though `false` is the proto default and is
+    // therefore absent from the wire.
+    let off = msg::svm::update_params_any(
+        GOV,
+        msg::svm::SvmParams {
+            enabled: false,
+            ..sample_svm_params()
+        },
+    );
+    let decoded_off: qorechain::proto::qorechain::svm::v1::MsgUpdateParams =
+        msg::from_any(&off).expect("decode");
+    assert!(!decoded_off.params.expect("params").enabled);
 }
 
 /// `MsgUpdateEthLightClient` round-trips through `Any`.

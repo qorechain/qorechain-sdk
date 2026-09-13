@@ -59,8 +59,13 @@ async function main(): Promise<void> {
   console.log("  cosmos :", fromEvm.cosmos);
   console.log("  svm    :", fromEvm.svm);
 
-  // 3) A seed-derived unified account (32 bytes used AS the secp256k1 key). This
-  //    is how the Phantom P1a flow anchors an account to a signature.
+  // 3) A seed-derived unified account (32 bytes used AS the secp256k1 key).
+  //    The seed IS the spend key, so in a real app it must be secret entropy —
+  //    a CSPRNG seed or a mnemonic-derived key — never a wallet signature or any
+  //    other value a third party can ask for. (The fixed 0x01 × 32 below is a
+  //    printable demo constant, not a usable key.) To let an external wallet key
+  //    act for an account, use the authenticator lanes instead — see the
+  //    authenticator-spend example.
   const seedAccount = unifiedAccountFromSeed(new Uint8Array(32).fill(1));
   console.log();
   console.log("Seed-derived account (0x01 × 32):");

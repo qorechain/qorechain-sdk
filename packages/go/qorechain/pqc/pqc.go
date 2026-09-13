@@ -22,7 +22,9 @@ import (
 	pqcv1 "github.com/qorechain/qorechain-sdk/packages/go/qorechain/proto/qorechain/pqc/v1"
 )
 
-// ML-DSA-87 key and signature lengths, in bytes (FIPS 204 / core).
+// ML-DSA-87 key and signature lengths, in bytes (FIPS 204 / core). These are
+// EXACT sizes, not lower bounds: every key and signature this package accepts
+// must match them byte for byte (see PQCVerify).
 const (
 	MLDSA87PublicKeyLength = 2592
 	MLDSA87SecretKeyLength = 4896
@@ -95,6 +97,9 @@ func GeneratePQCKeypair() (Keypair, error) {
 // signatures are rejected with codespace "pqc"), so this is
 // consensus-critical — do not switch to randomized signing.
 func PQCSign(secretKey, message []byte) ([]byte, error) {
+	if len(secretKey) != MLDSA87SecretKeyLength {
+		return nil, fmt.Errorf("ML-DSA-87 secret key must be exactly %d bytes, got %d", MLDSA87SecretKeyLength, len(secretKey))
+	}
 	var priv mldsa87.PrivateKey
 	if err := priv.UnmarshalBinary(secretKey); err != nil {
 		return nil, fmt.Errorf("invalid PQC secret key: %w", err)
@@ -108,7 +113,20 @@ func PQCSign(secretKey, message []byte) ([]byte, error) {
 }
 
 // PQCVerify verifies an ML-DSA-87 (Dilithium-5) signature over a message.
+//
+// SIZES ARE EXACT, and are checked HERE, before the library is called. The
+// underlying implementation accepts an over-long signature — a valid 4627-byte
+// signature with extra bytes appended verifies as true — while other FIPS-204
+// bindings (the Rust `fips204` one, for instance) reject it. That difference is
+// signature malleability: the same transaction bytes would be valid to one
+// binding and invalid to another, so two SDKs could disagree about whether a tx
+// is signed. Enforcing the exact lengths in every binding removes the
+// disagreement, and no correct caller is affected: a signature ML-DSA-87
+// produces is always exactly MLDSA87SignatureLength bytes.
 func PQCVerify(publicKey, message, signature []byte) bool {
+	if len(publicKey) != MLDSA87PublicKeyLength || len(signature) != MLDSA87SignatureLength {
+		return false
+	}
 	var pub mldsa87.PublicKey
 	if err := pub.UnmarshalBinary(publicKey); err != nil {
 		return false

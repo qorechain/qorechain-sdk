@@ -95,3 +95,37 @@ class MsgRegisterSVMPQCKey(_message.Message):
 class MsgRegisterSVMPQCKeyResponse(_message.Message):
     __slots__ = ()
     def __init__(self) -> None: ...
+
+class SVMParams(_message.Message):
+    __slots__ = ("max_program_size", "max_account_data_size", "compute_budget_max", "lamports_per_byte", "rent_exemption_multi", "enabled", "svm_slot_offset", "default_sig_scheme", "max_cpi")
+    MAX_PROGRAM_SIZE_FIELD_NUMBER: _ClassVar[int]
+    MAX_ACCOUNT_DATA_SIZE_FIELD_NUMBER: _ClassVar[int]
+    COMPUTE_BUDGET_MAX_FIELD_NUMBER: _ClassVar[int]
+    LAMPORTS_PER_BYTE_FIELD_NUMBER: _ClassVar[int]
+    RENT_EXEMPTION_MULTI_FIELD_NUMBER: _ClassVar[int]
+    ENABLED_FIELD_NUMBER: _ClassVar[int]
+    SVM_SLOT_OFFSET_FIELD_NUMBER: _ClassVar[int]
+    DEFAULT_SIG_SCHEME_FIELD_NUMBER: _ClassVar[int]
+    MAX_CPI_FIELD_NUMBER: _ClassVar[int]
+    max_program_size: int
+    max_account_data_size: int
+    compute_budget_max: int
+    lamports_per_byte: int
+    rent_exemption_multi: str
+    enabled: bool
+    svm_slot_offset: int
+    default_sig_scheme: int
+    max_cpi: int
+    def __init__(self, max_program_size: _Optional[int] = ..., max_account_data_size: _Optional[int] = ..., compute_budget_max: _Optional[int] = ..., lamports_per_byte: _Optional[int] = ..., rent_exemption_multi: _Optional[str] = ..., enabled: bool = ..., svm_slot_offset: _Optional[int] = ..., default_sig_scheme: _Optional[int] = ..., max_cpi: _Optional[int] = ...) -> None: ...
+
+class MsgUpdateParams(_message.Message):
+    __slots__ = ("authority", "params")
+    AUTHORITY_FIELD_NUMBER: _ClassVar[int]
+    PARAMS_FIELD_NUMBER: _ClassVar[int]
+    authority: str
+    params: SVMParams
+    def __init__(self, authority: _Optional[str] = ..., params: _Optional[_Union[SVMParams, _Mapping]] = ...) -> None: ...
+
+class MsgUpdateParamsResponse(_message.Message):
+    __slots__ = ()
+    def __init__(self) -> None: ...

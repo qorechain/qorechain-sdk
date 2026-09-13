@@ -42,11 +42,15 @@ from .authenticator import (
 )
 from .client import QoreChainClient, create_client
 from .cross_vm import (
+    CROSS_VM_CALL_RESPONSE_TYPE_URL,
     VM_TYPES,
     CrossVmCallOptions,
+    CrossVmCallResult,
     CrossVmClient,
     build_cross_vm_call,
     create_cross_vm_client,
+    decode_cross_vm_response,
+    decode_cross_vm_responses,
 )
 from .denom import from_base, to_base
 from .errors import (
@@ -214,6 +218,7 @@ __all__ = [
     "UnifiedAccount",
     "derive_unified_account",
     "unified_account_from_seed",
+    # REMOVED in v0.8.0 (unsafe signature-derived spend key) — raises when called.
     "unified_account_from_phantom_signature",
     "addresses_from_20",
     "qore_addresses",
@@ -354,8 +359,12 @@ __all__ = [
     "encode_ai_anomaly_check",
     # unified cross-VM call
     "VM_TYPES",
+    "CROSS_VM_CALL_RESPONSE_TYPE_URL",
     "CrossVmCallOptions",
+    "CrossVmCallResult",
     "CrossVmClient",
     "build_cross_vm_call",
     "create_cross_vm_client",
+    "decode_cross_vm_response",
+    "decode_cross_vm_responses",
 ]

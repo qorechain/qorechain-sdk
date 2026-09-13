@@ -1,64 +1,58 @@
 import { describe, it, expect } from "vitest";
-import { base58 } from "@scure/base";
 import {
   unifiedAccountFromPhantomSignature,
   connectPhantomUnified,
-  PHANTOM_DERIVATION_DOMAIN,
-  type PhantomProvider,
 } from "../../src/accounts/phantom";
-import { unifiedAccountFromSeed } from "../../src/accounts/unified";
-import { shake256 } from "@qorechain/pqc";
 
-describe("unifiedAccountFromPhantomSignature", () => {
-  it("derives unifiedAccountFromSeed(shake256(sig, 32))", () => {
-    const sig = new Uint8Array(64).fill(7);
-    const acct = unifiedAccountFromPhantomSignature(sig);
-    const expected = unifiedAccountFromSeed(shake256(sig, 32));
-    expect(acct.cosmos).toBe(expected.cosmos);
-    expect(acct.evm).toBe(expected.evm);
-    expect(acct.svm).toBe(expected.svm);
+// The signature-derived account API was removed in v0.8.0: a wallet signature is
+// a bearer secret, so it can never stand in for the secret entropy of a spend
+// key. Both entry points must fail loudly and point at the authenticator lanes.
+
+describe("unifiedAccountFromPhantomSignature (removed)", () => {
+  it("throws instead of deriving an account", () => {
+    expect(() =>
+      unifiedAccountFromPhantomSignature(new Uint8Array(64).fill(7)),
+    ).toThrow(/removed in v0\.8\.0/);
   });
 
-  it("is deterministic for the same signature", () => {
-    const sig = new Uint8Array(64).fill(3);
-    expect(unifiedAccountFromPhantomSignature(sig).cosmos).toBe(
-      unifiedAccountFromPhantomSignature(sig).cosmos,
-    );
+  it("points at the authenticator lanes", () => {
+    expect(() =>
+      unifiedAccountFromPhantomSignature(new Uint8Array(64).fill(7)),
+    ).toThrow(/MsgRegisterAuthenticator/);
+    expect(() =>
+      unifiedAccountFromPhantomSignature(new Uint8Array(64).fill(7)),
+    ).toThrow(/MsgExecuteCosmos \/ MsgExecuteEVM/);
   });
 });
 
-describe("connectPhantomUnified", () => {
-  it("signs the fixed domain-separated message and derives the account", async () => {
-    const phantomPub = new Uint8Array(32).fill(9);
-    let signedMessage: string | undefined;
-    const fixedSignature = new Uint8Array(64).fill(11);
-
-    const provider: PhantomProvider = {
-      publicKey: phantomPub,
-      async connect() {
-        return { publicKey: phantomPub };
-      },
-      async signMessage(message: Uint8Array) {
-        signedMessage = new TextDecoder().decode(message);
-        return { signature: fixedSignature };
-      },
-    };
-
-    const acct = await connectPhantomUnified({ provider });
-
-    // The signed message is the domain line + newline + base58 pubkey.
-    expect(signedMessage).toBe(
-      `${PHANTOM_DERIVATION_DOMAIN}\n${base58.encode(phantomPub)}`,
-    );
-    // The derived account matches deriving directly from the signature.
-    expect(acct.cosmos).toBe(
-      unifiedAccountFromPhantomSignature(fixedSignature).cosmos,
+describe("connectPhantomUnified (removed)", () => {
+  it("rejects instead of connecting", async () => {
+    await expect(connectPhantomUnified({})).rejects.toThrow(
+      /removed in v0\.8\.0/,
     );
   });
 
-  it("throws when no provider is available", async () => {
+  it("points at the authenticator lanes", async () => {
     await expect(connectPhantomUnified({})).rejects.toThrow(
-      /no Phantom provider/,
+      /MsgRegisterAuthenticator/,
+    );
+    await expect(connectPhantomUnified({})).rejects.toThrow(
+      /MsgExecuteCosmos \/ MsgExecuteEVM/,
+    );
+  });
+
+  it("rejects even when a working provider is supplied", async () => {
+    const provider = {
+      async connect() {
+        return { publicKey: new Uint8Array(32).fill(9) };
+      },
+      publicKey: new Uint8Array(32).fill(9),
+      async signMessage() {
+        return { signature: new Uint8Array(64).fill(11) };
+      },
+    };
+    await expect(connectPhantomUnified({ provider })).rejects.toThrow(
+      /removed in v0\.8\.0/,
     );
   });
 });

@@ -1,53 +1,48 @@
 /**
- * Phantom P1a — derive a unified QoreChain account from a Phantom signature.
+ * REMOVED in v0.8.0 — the Phantom signature-derived account API.
  *
- * A user can bootstrap ONE canonical QoreChain identity (native / EVM / SVM, one
- * balance) from their Phantom wallet WITHOUT exporting any key: they sign a fixed,
- * domain-separated message with Phantom's ed25519 key, and the 32-byte SHAKE-256
- * of that signature seeds a unified eth-native secp256k1 account
- * ({@link ../accounts/unified.unifiedAccountFromSeed}).
- *
- * This is NON-CUSTODIAL and produces a SEPARATE canonical key from the Phantom
- * ed25519 key — Phantom never sees the derived secp256k1/PQC secrets, and the
- * derived account is a distinct on-chain identity, not the Phantom address. As
- * long as the same Phantom key signs the same fixed message, the same QoreChain
- * account is reproduced deterministically.
+ * This module used to turn a wallet signature into a spend key. That is unsafe:
+ * a wallet signature is a bearer secret that any page can ask the wallet to
+ * produce, so it cannot stand in for secret entropy, and anyone who obtains it
+ * controls the resulting account. The exported functions remain so existing
+ * imports fail loudly with an explanation instead of silently changing meaning;
+ * both throw as soon as they are called. Link an external wallet key through the
+ * authenticator lanes instead — register it with `MsgRegisterAuthenticator` and
+ * spend via `MsgExecuteCosmos` / `MsgExecuteEVM`, which keeps the canonical
+ * account's own key the only thing that can move funds. See the Authenticators
+ * guide (`docs/docs/guides/authenticators.md`). Any account previously derived
+ * through this API must be treated as exposed — move its funds.
  */
 
-import { shake256 } from "@qorechain/pqc";
-import { base58 } from "@scure/base";
-import {
-  unifiedAccountFromSeed,
-  type UnifiedAccount,
-} from "./unified";
+import type { UnifiedAccount } from "./unified";
 
 /**
- * The fixed domain-separation prefix signed by Phantom. The full signed message
- * is this line, a newline, and the signer's base58 public key — binding the
- * derivation to the specific Phantom key.
- */
-export const PHANTOM_DERIVATION_DOMAIN =
-  "QoreChain unified account derivation v1";
-
-/**
- * Derive a unified QoreChain account from a raw Phantom (ed25519) signature.
+ * REMOVED in v0.8.0. Always throws.
  *
- * The account seed is `shake256(signatureBytes, 32)`, used directly as the
- * eth-native secp256k1 private key. Deterministic: the same signature always
- * yields the same account.
+ * Use the authenticator lanes instead — see the module doc-comment and the
+ * Authenticators guide.
  *
- * @param signatureBytes - The raw ed25519 signature bytes returned by the wallet.
+ * @throws always.
  */
 export function unifiedAccountFromPhantomSignature(
-  signatureBytes: Uint8Array,
+  _signatureBytes: Uint8Array,
 ): UnifiedAccount {
-  const seed = shake256(signatureBytes, 32);
-  return unifiedAccountFromSeed(seed);
+  throw new Error(
+    "unifiedAccountFromPhantomSignature was removed in v0.8.0: deriving a spend key " +
+      "from a wallet signature is unsafe — the signature is a bearer secret that any " +
+      "page can request from the wallet, so whoever obtains it controls the account. " +
+      "Use the authenticator lanes instead: register the external key with " +
+      "MsgRegisterAuthenticator and spend via MsgExecuteCosmos / MsgExecuteEVM (see the " +
+      "Authenticators guide). Any account previously derived this way must be treated " +
+      "as exposed — move its funds.",
+  );
 }
 
 /**
- * The minimal shape of an injected Phantom-style provider used here: `connect`
- * to obtain the public key and `signMessage` to sign the derivation message.
+ * The minimal shape of an injected Phantom-style provider this module once used.
+ *
+ * Retained only so the removed {@link connectPhantomUnified} signature still
+ * type-checks for existing callers; nothing here is called any more.
  */
 export interface PhantomProvider {
   connect(): Promise<{ publicKey: { toBytes(): Uint8Array } | Uint8Array }>;
@@ -58,66 +53,29 @@ export interface PhantomProvider {
   ): Promise<{ signature: Uint8Array } | Uint8Array>;
 }
 
-/** Normalize a provider public key (object with `toBytes` or raw bytes) to bytes. */
-function pubkeyBytes(
-  pk: { toBytes(): Uint8Array } | Uint8Array | null | undefined,
-): Uint8Array {
-  if (!pk) throw new Error("Phantom provider exposed no public key");
-  if (pk instanceof Uint8Array) return pk;
-  return pk.toBytes();
-}
-
-/** Normalize a `signMessage` result (object with `.signature` or raw bytes) to bytes. */
-function signatureBytes(
-  res: { signature: Uint8Array } | Uint8Array,
-): Uint8Array {
-  return res instanceof Uint8Array ? res : res.signature;
-}
-
-/** Options for {@link connectPhantomUnified}. */
+/** Options for the removed {@link connectPhantomUnified}. */
 export interface ConnectPhantomUnifiedOptions {
-  /**
-   * The Phantom-style provider. Defaults to `window.solana` in a browser. Pass an
-   * explicit provider in tests or non-`window.solana` environments.
-   */
+  /** The Phantom-style provider. Unused: the function always throws. */
   provider?: PhantomProvider;
 }
 
 /**
- * Connect Phantom in the browser and derive the user's unified QoreChain account.
+ * REMOVED in v0.8.0. Always throws.
  *
- * Flow: `connect()` → sign the fixed domain-separated message
- * `"QoreChain unified account derivation v1\n<phantom-pubkey-base58>"` → derive the
- * unified account from the signature via
- * {@link unifiedAccountFromPhantomSignature}.
+ * Use the authenticator lanes instead — see the module doc-comment and the
+ * Authenticators guide.
  *
- * NON-CUSTODIAL: the returned account is a separate canonical key from the Phantom
- * ed25519 key; Phantom never handles the derived secp256k1/PQC secrets.
- *
- * @throws if no provider is available or the wallet returns no public key.
+ * @throws always.
  */
 export async function connectPhantomUnified(
-  opts: ConnectPhantomUnifiedOptions = {},
+  _opts: ConnectPhantomUnifiedOptions = {},
 ): Promise<UnifiedAccount> {
-  const provider =
-    opts.provider ??
-    (globalThis as { solana?: PhantomProvider }).solana ??
-    undefined;
-  if (!provider) {
-    throw new Error(
-      "no Phantom provider found (window.solana); pass opts.provider",
-    );
-  }
-
-  const conn = await provider.connect();
-  const pk = pubkeyBytes(
-    provider.publicKey ??
-      (conn as { publicKey?: { toBytes(): Uint8Array } | Uint8Array }).publicKey,
+  throw new Error(
+    "connectPhantomUnified was removed in v0.8.0: deriving a spend key from a wallet " +
+      "signature is unsafe — the signature is a bearer secret that any page can request " +
+      "from the wallet, so whoever obtains it controls the account. Use the authenticator " +
+      "lanes instead: register the external key with MsgRegisterAuthenticator and spend " +
+      "via MsgExecuteCosmos / MsgExecuteEVM (see the Authenticators guide). Any account " +
+      "previously derived this way must be treated as exposed — move its funds.",
   );
-  const message = `${PHANTOM_DERIVATION_DOMAIN}\n${base58.encode(pk)}`;
-  const signed = await provider.signMessage(
-    new TextEncoder().encode(message),
-    "utf8",
-  );
-  return unifiedAccountFromPhantomSignature(signatureBytes(signed));
 }

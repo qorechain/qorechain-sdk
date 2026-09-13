@@ -15,14 +15,19 @@ import json
 import httpx
 import pytest
 import respx
+from cosmpy.protos.cosmos.base.abci.v1beta1.abci_pb2 import TxMsgData
 from cosmpy.protos.cosmos.tx.v1beta1.tx_pb2 import TxBody, TxRaw
 
 from qorsdk import (
+    CROSS_VM_CALL_RESPONSE_TYPE_URL,
     VM_TYPES,
     CrossVmCallOptions,
+    CrossVmCallResult,
     build_cross_vm_call,
     create_cross_vm_client,
     decode_any,
+    decode_cross_vm_response,
+    decode_cross_vm_responses,
     derive_native_account,
     generate_pqc_keypair,
 )
@@ -235,6 +240,162 @@ def test_call_atomic_rejects_empty():
     client = _client()
     with pytest.raises(ValueError):
         client.call_atomic([])
+
+
+# --- async (v3.1.97 field 7) --------------------------------------------------
+
+
+def test_build_call_defaults_to_synchronous_execution():
+    m = build_cross_vm_call(sender="qor1s", target_vm="evm", target_contract="0xabc")
+    decoded = decode_any(m.type_url, m.value.SerializeToString())
+    # `async` is a Python keyword: the generated class exposes it via getattr.
+    assert getattr(decoded, "async") is False
+
+
+def test_build_call_async_round_trips_through_the_wire():
+    m = build_cross_vm_call(
+        sender="qor1s", target_vm="evm", target_contract="0xabc", async_=True
+    )
+    decoded = decode_any(m.type_url, m.value.SerializeToString())
+    assert getattr(decoded, "async") is True
+
+
+@respx.mock
+def test_call_async_reaches_the_broadcast_message():
+    route = _mock_broadcast()
+    client = _client()
+    client.call(target_vm="svm", target_contract="prog", svm=b"\x01", async_=True)
+    msgs = _decoded_messages(route)
+    assert getattr(msgs[0], "async") is True
+
+
+@respx.mock
+def test_call_atomic_carries_per_call_async_flags():
+    route = _mock_broadcast()
+    client = _client()
+    client.call_atomic(
+        [
+            CrossVmCallOptions(target_vm="evm", target_contract="0xa", payload=b"\x01"),
+            CrossVmCallOptions(
+                target_vm="evm", target_contract="0xb", payload=b"\x02", async_=True
+            ),
+        ]
+    )
+    msgs = _decoded_messages(route)
+    assert [getattr(m, "async") for m in msgs] == [False, True]
+
+
+def test_source_vm_still_accepted_though_the_chain_ignores_it():
+    """The chain derives the origin lane itself; the field is kept for old nodes."""
+    m = build_cross_vm_call(
+        sender="qor1s", target_vm="evm", target_contract="0xabc", source_vm="svm"
+    )
+    decoded = decode_any(m.type_url, m.value.SerializeToString())
+    assert decoded.source_vm == "svm"
+
+
+# --- response decoding (message_id / executed / data / gas_used) --------------
+
+
+def _tx_result(*responses) -> dict:
+    """A REST broadcast body whose tx_response.data packs the given responses."""
+    tx_msg_data = TxMsgData()
+    for r in responses:
+        tx_msg_data.msg_responses.add(
+            type_url=CROSS_VM_CALL_RESPONSE_TYPE_URL, value=r.SerializeToString()
+        )
+    return {
+        "tx_response": {
+            "code": 0,
+            "txhash": "ABC",
+            "data": tx_msg_data.SerializeToString().hex(),
+        }
+    }
+
+
+def _response(**fields):
+    from qorsdk.proto.qorechain.crossvm.v1.tx_pb2 import MsgCrossVMCallResponse
+
+    return MsgCrossVMCallResponse(**fields)
+
+
+def test_decode_cross_vm_response_surfaces_all_four_fields():
+    result = decode_cross_vm_response(
+        _tx_result(
+            _response(
+                message_id="xvm-1", executed=True, data=b"\xde\xad", gas_used=21_000
+            )
+        )
+    )
+    assert result == CrossVmCallResult(
+        message_id="xvm-1", executed=True, data=b"\xde\xad", gas_used=21_000
+    )
+
+
+def test_decode_queued_call_reports_not_executed():
+    result = decode_cross_vm_response(_tx_result(_response(message_id="xvm-2")))
+    assert result is not None
+    assert result.message_id == "xvm-2"
+    assert result.executed is False
+    assert result.data == b""
+    assert result.gas_used == 0
+
+
+def test_decode_cross_vm_responses_keeps_message_order():
+    results = decode_cross_vm_responses(
+        _tx_result(
+            _response(message_id="a", executed=True, data=b"\x01", gas_used=1),
+            _response(message_id="b", executed=True, data=b"\x02", gas_used=2),
+        )
+    )
+    assert [r.message_id for r in results] == ["a", "b"]
+    assert [r.data for r in results] == [b"\x01", b"\x02"]
+    assert [r.gas_used for r in results] == [1, 2]
+
+
+def test_decode_skips_responses_from_other_messages():
+    tx_msg_data = TxMsgData()
+    tx_msg_data.msg_responses.add(
+        type_url="/cosmos.bank.v1beta1.MsgSendResponse", value=b""
+    )
+    tx_msg_data.msg_responses.add(
+        type_url=CROSS_VM_CALL_RESPONSE_TYPE_URL,
+        value=_response(message_id="only-me", executed=True).SerializeToString(),
+    )
+    body = {"tx_response": {"data": tx_msg_data.SerializeToString().hex()}}
+    results = decode_cross_vm_responses(body)
+    assert [r.message_id for r in results] == ["only-me"]
+
+
+def test_decode_accepts_a_bare_tx_response_dict():
+    body = _tx_result(_response(message_id="bare", executed=True))["tx_response"]
+    assert decode_cross_vm_responses(body)[0].message_id == "bare"
+
+
+def test_decode_of_a_sync_broadcast_without_data_is_empty():
+    # A sync broadcast has not executed yet — nothing to decode, and no raise.
+    assert decode_cross_vm_responses({"tx_response": {"code": 0, "txhash": "ABC"}}) == []
+    assert decode_cross_vm_response(None) is None
+
+
+@respx.mock
+def test_call_result_decodes_end_to_end():
+    responses = _tx_result(
+        _response(message_id="xvm-9", executed=True, data=b"ok", gas_used=5)
+    )
+    respx.post(f"{REST}/cosmos/tx/v1beta1/txs").mock(
+        return_value=httpx.Response(200, json=responses)
+    )
+    client = _client()
+    result = client.call(target_vm="evm", target_contract="0xabc", payload=b"\x00")
+    decoded = decode_cross_vm_response(result)
+    assert decoded is not None
+    assert (decoded.message_id, decoded.executed, decoded.data, decoded.gas_used) == (
+        "xvm-9",
+        True,
+        b"ok",
+        5,
+    )
 
 
 # --- get_message --------------------------------------------------------------

@@ -334,11 +334,7 @@ post-quantum signature. The account parser (`parseEthPubkeyAny`) reads
 account number / sequence from an eth_secp256k1 on-chain pubkey.
 
 ```ts
-import {
-  deriveUnifiedAccount,
-  unifiedAccountFromPhantomSignature,
-  signHybridEth,
-} from "@qorechain/sdk";
+import { deriveUnifiedAccount, signHybridEth } from "@qorechain/sdk";
 
 const account = await deriveUnifiedAccount(mnemonic);
 account.cosmos; // "qor1…"  — QoreChain Native lane
@@ -355,12 +351,14 @@ const signed = signHybridEth({
   sequence,
   fee,
 });
-
-// Phantom P1a: derive a canonical, non-custodial unified account from a
-// deterministic Phantom signature (shake256(signature, 32)).
-const fromPhantom = unifiedAccountFromPhantomSignature(phantomSignature);
-// or connectPhantomUnified(provider) to run the connect → sign → derive flow.
 ```
+
+`unifiedAccountFromSeed` uses the 32 bytes it is given **as** the spend key, so
+pass real secret entropy — a CSPRNG seed or a mnemonic-derived key — never a
+wallet signature or any other value a third party can request. (The signature-
+derived helpers `unifiedAccountFromPhantomSignature` / `connectPhantomUnified`
+were removed in v0.8.0 for exactly that reason and now throw.) To let an
+external wallet key act for an account, use the authenticator lanes below.
 
 See the [unified-wallet](../../docs/docs/guides/unified-wallet.md) guide.
 

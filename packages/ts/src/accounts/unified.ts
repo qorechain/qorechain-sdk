@@ -267,10 +267,18 @@ export async function deriveUnifiedAccount(
  * Same address derivation as {@link deriveUnifiedAccount}; the PQC key is derived
  * from `shake256("qorechain:pqc:v1|" + cosmos + "|seed:" + hex(seed32), 32)` (note
  * the literal `"seed:"` prefix, so a seed-derived PQC key never collides with a
- * mnemonic-derived one). Use this for accounts anchored to a signature or an
- * externally supplied secret (see the Phantom P1a helper).
+ * mnemonic-derived one).
  *
- * @param seed32 - Exactly 32 bytes, used directly as the secp256k1 private key.
+ * SAFETY: `seed32` becomes the account's spend key, so it MUST be real secret
+ * entropy — a CSPRNG seed (`crypto.getRandomValues`) or a key derived from a
+ * BIP-39 mnemonic. NEVER derive it from a wallet signature, or from any other
+ * value a third party can ask the wallet (or the user) to produce: such a value
+ * is a bearer secret, and whoever obtains it controls the account. To let an
+ * external wallet key act for an account, use the authenticator lanes
+ * (`MsgRegisterAuthenticator` + `MsgExecuteCosmos` / `MsgExecuteEVM`) instead.
+ *
+ * @param seed32 - Exactly 32 bytes of secret entropy, used directly as the
+ *   secp256k1 private key.
  * @throws if `seed32` is not 32 bytes or is not a valid secp256k1 scalar.
  */
 export function unifiedAccountFromSeed(seed32: Uint8Array): UnifiedAccount {

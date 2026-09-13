@@ -337,6 +337,11 @@ export class TxClient {
         gasUsed: res.gasUsed,
         gasWanted: res.gasWanted,
         rawLog: res.rawLog,
+        // Carried through so callers can read typed attributes / decode the
+        // per-message responses (e.g. MsgCrossVMCallResponse) without a
+        // second round-trip.
+        events: res.events,
+        msgResponses: res.msgResponses,
       };
     }
 

@@ -155,6 +155,146 @@ fn pqc_sign_matches_shared_deterministic_vectors() {
     }
 }
 
+// --- length strictness (cross-language invariant) ----------------------------
+//
+// ML-DSA implementations disagree about trailing bytes: the Go binding over
+// CIRCL v1.6.1 accepts a 4628-byte signature — the 4627-byte signature with one
+// extra byte appended — as VALID, while Rust's fips204 rejects it. Strict is the
+// correct side. These tests pin the strict behaviour as this SDK's own
+// guarantee, so the divergence cannot come back through a library change.
+
+#[test]
+fn signature_with_one_extra_trailing_byte_is_rejected() {
+    let kp = generate_pqc_keypair().unwrap();
+    let msg = b"length strictness is consensus-critical";
+    let sig = pqc_sign(&kp.secret_key, msg).unwrap();
+
+    // The exact-length signature still verifies.
+    assert_eq!(sig.len(), MLDSA87_SIGNATURE_LEN);
+    assert!(pqc_verify(&kp.public_key, msg, &sig));
+
+    // One extra trailing byte — the exact case Go/CIRCL accepts — must NOT.
+    for extra in [0x00u8, 0x01, 0xff] {
+        let mut padded = sig.clone();
+        padded.push(extra);
+        assert_eq!(padded.len(), MLDSA87_SIGNATURE_LEN + 1);
+        assert!(
+            !pqc_verify(&kp.public_key, msg, &padded),
+            "a {}-byte signature must be rejected (trailing 0x{extra:02x})",
+            padded.len()
+        );
+    }
+}
+
+#[test]
+fn truncated_signature_is_rejected() {
+    let kp = generate_pqc_keypair().unwrap();
+    let msg = b"truncation must not verify either";
+    let sig = pqc_sign(&kp.secret_key, msg).unwrap();
+
+    for drop in [1usize, 2, 100] {
+        let short = &sig[..sig.len() - drop];
+        assert!(
+            !pqc_verify(&kp.public_key, msg, short),
+            "a {}-byte signature must be rejected",
+            short.len()
+        );
+    }
+    assert!(!pqc_verify(&kp.public_key, msg, &[]));
+}
+
+#[test]
+fn public_key_length_is_exact() {
+    let kp = generate_pqc_keypair().unwrap();
+    let msg = b"public keys are exactly 2592 bytes";
+    let sig = pqc_sign(&kp.secret_key, msg).unwrap();
+    assert!(pqc_verify(&kp.public_key, msg, &sig));
+
+    let mut padded = kp.public_key.clone();
+    padded.push(0);
+    assert!(!pqc_verify(&padded, msg, &sig));
+
+    let truncated = &kp.public_key[..kp.public_key.len() - 1];
+    assert!(!pqc_verify(truncated, msg, &sig));
+    assert!(!pqc_verify(&[], msg, &sig));
+}
+
+#[test]
+fn secret_key_length_is_exact() {
+    let kp = generate_pqc_keypair().unwrap();
+    assert_eq!(kp.secret_key.len(), MLDSA87_SECRET_KEY_LEN);
+    assert!(pqc_sign(&kp.secret_key, b"m").is_ok());
+
+    let mut padded = kp.secret_key.clone();
+    padded.push(0);
+    let err = pqc_sign(&padded, b"m").expect_err("4897-byte secret key must be rejected");
+    assert!(err.to_string().contains("4896"), "{err}");
+
+    let truncated = &kp.secret_key[..kp.secret_key.len() - 1];
+    assert!(pqc_sign(truncated, b"m").is_err());
+    assert!(pqc_sign(&[], b"m").is_err());
+    assert!(qorechain::pqc::pqc_sign_hedged(&padded, b"m").is_err());
+}
+
+#[test]
+fn length_predicates_accept_only_the_exact_sizes() {
+    use qorechain::pqc::{
+        is_valid_pqc_public_key_len, is_valid_pqc_secret_key_len, is_valid_pqc_signature_len,
+    };
+
+    assert!(is_valid_pqc_signature_len(&vec![0u8; MLDSA87_SIGNATURE_LEN]));
+    assert!(!is_valid_pqc_signature_len(&vec![
+        0u8;
+        MLDSA87_SIGNATURE_LEN + 1
+    ]));
+    assert!(!is_valid_pqc_signature_len(&vec![
+        0u8;
+        MLDSA87_SIGNATURE_LEN - 1
+    ]));
+
+    assert!(is_valid_pqc_public_key_len(&vec![
+        0u8;
+        MLDSA87_PUBLIC_KEY_LEN
+    ]));
+    assert!(!is_valid_pqc_public_key_len(&vec![
+        0u8;
+        MLDSA87_PUBLIC_KEY_LEN + 1
+    ]));
+
+    assert!(is_valid_pqc_secret_key_len(&vec![
+        0u8;
+        MLDSA87_SECRET_KEY_LEN
+    ]));
+    assert!(!is_valid_pqc_secret_key_len(&vec![
+        0u8;
+        MLDSA87_SECRET_KEY_LEN + 1
+    ]));
+}
+
+#[test]
+fn hybrid_extension_rejects_off_by_one_lengths() {
+    // The extension builder is the on-chain path; it must be exactly as strict.
+    assert!(
+        build_hybrid_signature_extension(ALGORITHM_DILITHIUM5, &[1u8; 4628], None).is_err(),
+        "4628-byte signature must be rejected in the hybrid extension too"
+    );
+    assert!(
+        build_hybrid_signature_extension(ALGORITHM_DILITHIUM5, &[1u8; 4626], None).is_err()
+    );
+    assert!(build_hybrid_signature_extension(
+        ALGORITHM_DILITHIUM5,
+        &[1u8; 4627],
+        Some(&[1u8; 2593])
+    )
+    .is_err());
+    assert!(build_hybrid_signature_extension(
+        ALGORITHM_DILITHIUM5,
+        &[1u8; 4627],
+        Some(&[1u8; 2592])
+    )
+    .is_ok());
+}
+
 #[test]
 fn pqc_sign_hedged_opt_in_differs_but_verifies() {
     let kp = generate_pqc_keypair().unwrap();

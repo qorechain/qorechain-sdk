@@ -94,6 +94,57 @@ describe("ML-DSA-87 sign / verify", () => {
   });
 });
 
+/**
+ * Strict length enforcement.
+ *
+ * ML-DSA implementations disagree about trailing garbage — some accept a valid
+ * signature with an extra byte appended, others reject it. A signature that one
+ * official binding accepts and another rejects is a consensus hazard, so every
+ * binding enforces the exact FIPS-204 sizes itself before verifying.
+ */
+describe("ML-DSA-87 strict size enforcement", () => {
+  const kp = generatePqcKeypair(new Uint8Array(32).fill(5));
+  const sig = pqcSign(kp.secretKey, msg);
+
+  it("accepts the exact-length signature (the baseline)", () => {
+    expect(sig.length).toBe(ML_DSA_87_SIGNATURE_LENGTH);
+    expect(pqcVerify(kp.publicKey, msg, sig)).toBe(true);
+  });
+
+  it("rejects a valid signature with ONE extra trailing byte", () => {
+    const padded = new Uint8Array(ML_DSA_87_SIGNATURE_LENGTH + 1);
+    padded.set(sig, 0); // identical bytes, plus a trailing 0x00
+    expect(padded.length).toBe(4628);
+    expect(pqcVerify(kp.publicKey, msg, padded)).toBe(false);
+  });
+
+  it("rejects a truncated signature", () => {
+    expect(
+      pqcVerify(kp.publicKey, msg, sig.slice(0, ML_DSA_87_SIGNATURE_LENGTH - 1)),
+    ).toBe(false);
+    expect(pqcVerify(kp.publicKey, msg, sig.slice(0, 1))).toBe(false);
+    expect(pqcVerify(kp.publicKey, msg, new Uint8Array(0))).toBe(false);
+  });
+
+  it("rejects a public key that is not exactly 2592 bytes", () => {
+    const long = new Uint8Array(ML_DSA_87_PUBLIC_KEY_LENGTH + 1);
+    long.set(kp.publicKey, 0);
+    expect(pqcVerify(long, msg, sig)).toBe(false);
+    expect(
+      pqcVerify(kp.publicKey.slice(0, ML_DSA_87_PUBLIC_KEY_LENGTH - 1), msg, sig),
+    ).toBe(false);
+  });
+
+  it("throws when signing with a secret key that is not exactly 4896 bytes", () => {
+    const long = new Uint8Array(ML_DSA_87_SECRET_KEY_LENGTH + 1);
+    long.set(kp.secretKey, 0);
+    expect(() => pqcSign(long, msg)).toThrow(/4896 bytes, got 4897/);
+    expect(() =>
+      pqcSign(kp.secretKey.slice(0, ML_DSA_87_SECRET_KEY_LENGTH - 1), msg),
+    ).toThrow(/4896 bytes, got 4895/);
+  });
+});
+
 describe("buildHybridSignatureExtension", () => {
   it("produces an object whose fields match the proto/core struct exactly", () => {
     const kp = generatePqcKeypair();

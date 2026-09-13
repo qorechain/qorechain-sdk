@@ -73,6 +73,41 @@ export interface MsgRegisterSVMPQCKey {
 export interface MsgRegisterSVMPQCKeyResponse {
 }
 
+/**
+ * SVMParams mirrors the module's runtime parameters so governance can replace
+ * them wholesale. The store keeps them as JSON, so the handler converts.
+ */
+export interface SVMParams {
+  maxProgramSize: string;
+  maxAccountDataSize: string;
+  computeBudgetMax: string;
+  lamportsPerByte: string;
+  rentExemptionMulti: string;
+  enabled: boolean;
+  svmSlotOffset: string;
+  defaultSigScheme: number;
+  maxCpi: number;
+}
+
+/**
+ * MsgUpdateParams replaces the SVM runtime parameters wholesale.
+ *
+ * WHY THIS EXISTS. Until now x/svm had no governance message at all, so there was
+ * no transaction that could turn the lane off. When the August 2026 incident
+ * required closing it, the only available guarantee was a compile-time constant
+ * (SVMLaneHardDisabled), which means every later change of mind costs a binary
+ * release and a coordinated upgrade. With this message, disabling the lane is a
+ * governance proposal like any other.
+ */
+export interface MsgUpdateParams {
+  /** authority must be the governance module account. */
+  authority: string;
+  params?: SVMParams | undefined;
+}
+
+export interface MsgUpdateParamsResponse {
+}
+
 function createBaseMsgDeployProgram(): MsgDeployProgram {
   return { sender: "", bytecode: new Uint8Array(0) };
 }
@@ -923,6 +958,357 @@ export const MsgRegisterSVMPQCKeyResponse: MessageFns<MsgRegisterSVMPQCKeyRespon
   },
 };
 
+function createBaseSVMParams(): SVMParams {
+  return {
+    maxProgramSize: "0",
+    maxAccountDataSize: "0",
+    computeBudgetMax: "0",
+    lamportsPerByte: "0",
+    rentExemptionMulti: "",
+    enabled: false,
+    svmSlotOffset: "0",
+    defaultSigScheme: 0,
+    maxCpi: 0,
+  };
+}
+
+export const SVMParams: MessageFns<SVMParams> = {
+  encode(message: SVMParams, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.maxProgramSize !== "0") {
+      writer.uint32(8).uint64(message.maxProgramSize);
+    }
+    if (message.maxAccountDataSize !== "0") {
+      writer.uint32(16).uint64(message.maxAccountDataSize);
+    }
+    if (message.computeBudgetMax !== "0") {
+      writer.uint32(24).uint64(message.computeBudgetMax);
+    }
+    if (message.lamportsPerByte !== "0") {
+      writer.uint32(32).uint64(message.lamportsPerByte);
+    }
+    if (message.rentExemptionMulti !== "") {
+      writer.uint32(42).string(message.rentExemptionMulti);
+    }
+    if (message.enabled !== false) {
+      writer.uint32(48).bool(message.enabled);
+    }
+    if (message.svmSlotOffset !== "0") {
+      writer.uint32(56).int64(message.svmSlotOffset);
+    }
+    if (message.defaultSigScheme !== 0) {
+      writer.uint32(64).uint32(message.defaultSigScheme);
+    }
+    if (message.maxCpi !== 0) {
+      writer.uint32(72).uint32(message.maxCpi);
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): SVMParams {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseSVMParams();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 8) {
+            break;
+          }
+
+          message.maxProgramSize = reader.uint64().toString();
+          continue;
+        }
+        case 2: {
+          if (tag !== 16) {
+            break;
+          }
+
+          message.maxAccountDataSize = reader.uint64().toString();
+          continue;
+        }
+        case 3: {
+          if (tag !== 24) {
+            break;
+          }
+
+          message.computeBudgetMax = reader.uint64().toString();
+          continue;
+        }
+        case 4: {
+          if (tag !== 32) {
+            break;
+          }
+
+          message.lamportsPerByte = reader.uint64().toString();
+          continue;
+        }
+        case 5: {
+          if (tag !== 42) {
+            break;
+          }
+
+          message.rentExemptionMulti = reader.string();
+          continue;
+        }
+        case 6: {
+          if (tag !== 48) {
+            break;
+          }
+
+          message.enabled = reader.bool();
+          continue;
+        }
+        case 7: {
+          if (tag !== 56) {
+            break;
+          }
+
+          message.svmSlotOffset = reader.int64().toString();
+          continue;
+        }
+        case 8: {
+          if (tag !== 64) {
+            break;
+          }
+
+          message.defaultSigScheme = reader.uint32();
+          continue;
+        }
+        case 9: {
+          if (tag !== 72) {
+            break;
+          }
+
+          message.maxCpi = reader.uint32();
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(object: any): SVMParams {
+    return {
+      maxProgramSize: isSet(object.maxProgramSize)
+        ? globalThis.String(object.maxProgramSize)
+        : isSet(object.max_program_size)
+        ? globalThis.String(object.max_program_size)
+        : "0",
+      maxAccountDataSize: isSet(object.maxAccountDataSize)
+        ? globalThis.String(object.maxAccountDataSize)
+        : isSet(object.max_account_data_size)
+        ? globalThis.String(object.max_account_data_size)
+        : "0",
+      computeBudgetMax: isSet(object.computeBudgetMax)
+        ? globalThis.String(object.computeBudgetMax)
+        : isSet(object.compute_budget_max)
+        ? globalThis.String(object.compute_budget_max)
+        : "0",
+      lamportsPerByte: isSet(object.lamportsPerByte)
+        ? globalThis.String(object.lamportsPerByte)
+        : isSet(object.lamports_per_byte)
+        ? globalThis.String(object.lamports_per_byte)
+        : "0",
+      rentExemptionMulti: isSet(object.rentExemptionMulti)
+        ? globalThis.String(object.rentExemptionMulti)
+        : isSet(object.rent_exemption_multi)
+        ? globalThis.String(object.rent_exemption_multi)
+        : "",
+      enabled: isSet(object.enabled) ? globalThis.Boolean(object.enabled) : false,
+      svmSlotOffset: isSet(object.svmSlotOffset)
+        ? globalThis.String(object.svmSlotOffset)
+        : isSet(object.svm_slot_offset)
+        ? globalThis.String(object.svm_slot_offset)
+        : "0",
+      defaultSigScheme: isSet(object.defaultSigScheme)
+        ? globalThis.Number(object.defaultSigScheme)
+        : isSet(object.default_sig_scheme)
+        ? globalThis.Number(object.default_sig_scheme)
+        : 0,
+      maxCpi: isSet(object.maxCpi)
+        ? globalThis.Number(object.maxCpi)
+        : isSet(object.max_cpi)
+        ? globalThis.Number(object.max_cpi)
+        : 0,
+    };
+  },
+
+  toJSON(message: SVMParams): unknown {
+    const obj: any = {};
+    if (message.maxProgramSize !== "0") {
+      obj.maxProgramSize = message.maxProgramSize;
+    }
+    if (message.maxAccountDataSize !== "0") {
+      obj.maxAccountDataSize = message.maxAccountDataSize;
+    }
+    if (message.computeBudgetMax !== "0") {
+      obj.computeBudgetMax = message.computeBudgetMax;
+    }
+    if (message.lamportsPerByte !== "0") {
+      obj.lamportsPerByte = message.lamportsPerByte;
+    }
+    if (message.rentExemptionMulti !== "") {
+      obj.rentExemptionMulti = message.rentExemptionMulti;
+    }
+    if (message.enabled !== false) {
+      obj.enabled = message.enabled;
+    }
+    if (message.svmSlotOffset !== "0") {
+      obj.svmSlotOffset = message.svmSlotOffset;
+    }
+    if (message.defaultSigScheme !== 0) {
+      obj.defaultSigScheme = Math.round(message.defaultSigScheme);
+    }
+    if (message.maxCpi !== 0) {
+      obj.maxCpi = Math.round(message.maxCpi);
+    }
+    return obj;
+  },
+
+  create(base?: DeepPartial<SVMParams>): SVMParams {
+    return SVMParams.fromPartial(base ?? {});
+  },
+  fromPartial(object: DeepPartial<SVMParams>): SVMParams {
+    const message = createBaseSVMParams();
+    message.maxProgramSize = object.maxProgramSize ?? "0";
+    message.maxAccountDataSize = object.maxAccountDataSize ?? "0";
+    message.computeBudgetMax = object.computeBudgetMax ?? "0";
+    message.lamportsPerByte = object.lamportsPerByte ?? "0";
+    message.rentExemptionMulti = object.rentExemptionMulti ?? "";
+    message.enabled = object.enabled ?? false;
+    message.svmSlotOffset = object.svmSlotOffset ?? "0";
+    message.defaultSigScheme = object.defaultSigScheme ?? 0;
+    message.maxCpi = object.maxCpi ?? 0;
+    return message;
+  },
+};
+
+function createBaseMsgUpdateParams(): MsgUpdateParams {
+  return { authority: "", params: undefined };
+}
+
+export const MsgUpdateParams: MessageFns<MsgUpdateParams> = {
+  encode(message: MsgUpdateParams, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.authority !== "") {
+      writer.uint32(10).string(message.authority);
+    }
+    if (message.params !== undefined) {
+      SVMParams.encode(message.params, writer.uint32(18).fork()).join();
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): MsgUpdateParams {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseMsgUpdateParams();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.authority = reader.string();
+          continue;
+        }
+        case 2: {
+          if (tag !== 18) {
+            break;
+          }
+
+          message.params = SVMParams.decode(reader, reader.uint32());
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(object: any): MsgUpdateParams {
+    return {
+      authority: isSet(object.authority) ? globalThis.String(object.authority) : "",
+      params: isSet(object.params) ? SVMParams.fromJSON(object.params) : undefined,
+    };
+  },
+
+  toJSON(message: MsgUpdateParams): unknown {
+    const obj: any = {};
+    if (message.authority !== "") {
+      obj.authority = message.authority;
+    }
+    if (message.params !== undefined) {
+      obj.params = SVMParams.toJSON(message.params);
+    }
+    return obj;
+  },
+
+  create(base?: DeepPartial<MsgUpdateParams>): MsgUpdateParams {
+    return MsgUpdateParams.fromPartial(base ?? {});
+  },
+  fromPartial(object: DeepPartial<MsgUpdateParams>): MsgUpdateParams {
+    const message = createBaseMsgUpdateParams();
+    message.authority = object.authority ?? "";
+    message.params = (object.params !== undefined && object.params !== null)
+      ? SVMParams.fromPartial(object.params)
+      : undefined;
+    return message;
+  },
+};
+
+function createBaseMsgUpdateParamsResponse(): MsgUpdateParamsResponse {
+  return {};
+}
+
+export const MsgUpdateParamsResponse: MessageFns<MsgUpdateParamsResponse> = {
+  encode(_: MsgUpdateParamsResponse, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): MsgUpdateParamsResponse {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseMsgUpdateParamsResponse();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(_: any): MsgUpdateParamsResponse {
+    return {};
+  },
+
+  toJSON(_: MsgUpdateParamsResponse): unknown {
+    const obj: any = {};
+    return obj;
+  },
+
+  create(base?: DeepPartial<MsgUpdateParamsResponse>): MsgUpdateParamsResponse {
+    return MsgUpdateParamsResponse.fromPartial(base ?? {});
+  },
+  fromPartial(_: DeepPartial<MsgUpdateParamsResponse>): MsgUpdateParamsResponse {
+    const message = createBaseMsgUpdateParamsResponse();
+    return message;
+  },
+};
+
 export type MsgDefinition = typeof MsgDefinition;
 export const MsgDefinition = {
   name: "Msg",
@@ -957,6 +1343,14 @@ export const MsgDefinition = {
       requestType: MsgRegisterSVMPQCKey as typeof MsgRegisterSVMPQCKey,
       requestStream: false,
       responseType: MsgRegisterSVMPQCKeyResponse as typeof MsgRegisterSVMPQCKeyResponse,
+      responseStream: false,
+      options: {},
+    },
+    updateParams: {
+      name: "UpdateParams",
+      requestType: MsgUpdateParams as typeof MsgUpdateParams,
+      requestStream: false,
+      responseType: MsgUpdateParamsResponse as typeof MsgUpdateParamsResponse,
       responseStream: false,
       options: {},
     },

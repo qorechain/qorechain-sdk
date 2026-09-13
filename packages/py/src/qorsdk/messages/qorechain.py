@@ -161,6 +161,12 @@ svm = SimpleNamespace(
     register_svm_pqc_key=composer(
         "/qorechain.svm.v1.MsgRegisterSVMPQCKey", svm_tx.MsgRegisterSVMPQCKey
     ),
+    # Governance-only (authority = the gov module account): replaces the SVM
+    # runtime parameters (``SVMParams``) wholesale, so the lane's limits — and
+    # whether it is enabled at all — are a proposal rather than a binary release.
+    update_params=composer(
+        "/qorechain.svm.v1.MsgUpdateParams", svm_tx.MsgUpdateParams
+    ),
 )
 
 # --------------------------------------------------------------------------- #
