@@ -116,8 +116,25 @@ func (r *Resolver) resolve(ctx context.Context, restURL, chainID string, request
 	if !requested.IsAuto() {
 		return requested, nil
 	}
+	// Guard the argument order. restURL and chainID are adjacent strings, and the
+	// other language bindings take (chainID, restURL), so a caller porting code
+	// can swap them. Swapped, chainID would hold a URL, which is not a legacy
+	// chain, and this would quietly answer V2 — the form mainnet refuses — with
+	// no request made and no error raised. Fail loudly instead.
+	if strings.Contains(chainID, "://") {
+		return "", fmt.Errorf("%w: chainID %q looks like a URL; the argument order here is "+
+			"(ctx, restURL, chainID, version)", ErrUnresolvedVersion, chainID)
+	}
+	if strings.TrimSpace(chainID) == "" {
+		return "", fmt.Errorf("%w: chainID is empty; pass the target network's chain id, "+
+			"or signbytes.V1 / signbytes.V2 explicitly", ErrUnresolvedVersion)
+	}
 	if !IsLegacyChain(chainID) {
 		return V2, nil
+	}
+	if u := strings.TrimSpace(restURL); u != "" && !strings.Contains(u, "://") {
+		return "", fmt.Errorf("%w: restURL %q is not a URL; the argument order here is "+
+			"(ctx, restURL, chainID, version)", ErrUnresolvedVersion, restURL)
 	}
 	base := strings.TrimRight(strings.TrimSpace(restURL), "/")
 	if base == "" {

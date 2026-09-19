@@ -430,3 +430,27 @@ func TestIsHybridRejection(t *testing.T) {
 		}
 	}
 }
+
+// A swapped (restURL, chainID) pair must fail loudly. Swapped, chainID holds a
+// URL, which is not a legacy chain, so without the guard this would answer V2 —
+// the form mainnet refuses — with no request made and no error.
+func TestResolveRejectsSwappedArguments(t *testing.T) {
+	r := NewResolver(ResolverOptions{})
+	for _, tc := range []struct {
+		name, restURL, chainID string
+	}{
+		{"swapped", "qorechain-vladi", "https://api.qore.host"},
+		{"empty chain id", "https://api.qore.host", ""},
+		{"rest url is not a url", "qorechain-vladi", "qorechain-vladi"},
+	} {
+		t.Run(tc.name, func(t *testing.T) {
+			v, err := r.Resolve(context.Background(), tc.restURL, tc.chainID, Auto)
+			if err == nil {
+				t.Fatalf("expected an error, got version %q", v)
+			}
+			if !errors.Is(err, ErrUnresolvedVersion) {
+				t.Fatalf("expected ErrUnresolvedVersion, got %v", err)
+			}
+		})
+	}
+}

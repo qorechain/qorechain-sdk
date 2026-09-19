@@ -205,6 +205,9 @@ import "github.com/qorechain/qorechain-sdk/packages/go/qorechain/signbytes"
 
 // Resolve, then build (pure).
 v, err := signbytes.Resolve(ctx, "https://api.qore.host", "qorechain-vladi", signbytes.Auto) // v1 today
+// Note the order: restURL FIRST, then chainID. The other language bindings take
+// (chainId, rest). Swapping them is refused with ErrUnresolvedVersion rather
+// than silently answering v2 — the form mainnet refuses.
 built, err := tx.BuildHybridMessages(tx.BuildHybridMessagesParams{
     /* account, keypair, messages, fee, chain id, account number, sequence */
     SignBytesVersion: v,
