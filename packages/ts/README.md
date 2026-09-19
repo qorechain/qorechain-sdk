@@ -160,6 +160,8 @@ const res = await signAndBroadcastHybrid({
 - `built.signBytesVersion` reports the form a built transaction used.
 - The same rule covers the PQC key-migration payload (`migrationSignBytes`) and
   the bridge attestation payload (`bridgeAttestationSignBytes`).
+- `rest` is optional in the TypeScript types, so a caller that forgets it compiles cleanly and only fails at runtime on `qorechain-vladi` / `qorechain-diana`. Cover your wiring with a runtime test, not just a type check.
+- In unit tests, pass `signBytesVersion: "v1"` or `"v2"` explicitly (or inject `fetch`): `"auto"` asks the network, so a test that omits it silently depends on a live node.
 
 ### CosmWasm contracts
 
