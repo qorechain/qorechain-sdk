@@ -19,8 +19,18 @@
 //     NOT the PQCHybridSignature extension.
 //   - A  = the AuthInfo bytes (signer secp256k1 pubkey, SIGN_MODE_DIRECT,
 //     sequence, fee) — the exact bytes that are broadcast.
-//   - PQC signed message = BE32(len(B0)) || B0 || BE32(len(A)) || A (4-byte
-//     big-endian length prefixes; NO hashing, NO domain prefix).
+//   - PQC signed message = the hybrid sign-bytes in the form the TARGET
+//     network verifies (see package signbytes; NO hashing in either form):
+//     v1 = BE32(len(B0)) || B0 || BE32(len(A)) || A
+//     v2 = "qorechain-pqc-hybrid-v2" || BE64(len(chainID)) || chainID ||
+//     BE32(len(B0)) || B0 || BE32(len(A)) || A
+//     Chain v3.1.98 introduced v2. A network that existed before it
+//     (qorechain-vladi, qorechain-diana) verifies v1 until the v3.1.98 upgrade
+//     is applied on it and ONLY v2 afterwards; any other chain id verifies v2
+//     from genesis. There is no overlap window: the wrong form is refused with
+//     pqc code 21. The testnet is on v2 (from height 5,746,000); mainnet stays
+//     on v1 until its own upgrade. BuildHybridTx therefore takes a
+//     SignBytesVersion; BroadcastHybridAndWait resolves it against the node.
 //   - PQC signature = PQCSign(pqcSecret, message) — pure ML-DSA-87, 4627 bytes.
 //   - The PQCHybridSignature extension is then added to TxBody.ExtensionOptions
 //     (the CRITICAL extension-options slot) as an Any whose TypeUrl is
@@ -41,7 +51,7 @@
 // the key for auto-registration on first use. Registering the key is the
 // caller's responsibility.
 //
-// Determinism note (same caveat as the TS SDK): the BE32 framing is
+// Determinism note (same caveat as the TS SDK): the sign-bytes framing is
 // byte-for-byte deterministic on the wallet side. Cross-implementation
 // determinism (this gogoproto encoding vs. the chain's re-marshal of the same
 // TxBody) is confirmed for the default bank message types; callers using custom
@@ -51,7 +61,6 @@ package tx
 
 import (
 	"encoding/base64"
-	"encoding/binary"
 	"encoding/json"
 	"fmt"
 	"io"
@@ -69,6 +78,7 @@ import (
 
 	"github.com/qorechain/qorechain-sdk/packages/go/qorechain/accounts"
 	"github.com/qorechain/qorechain-sdk/packages/go/qorechain/pqc"
+	"github.com/qorechain/qorechain-sdk/packages/go/qorechain/signbytes"
 )
 
 // MsgSendTypeURL is the /cosmos.bank.v1beta1.MsgSend type URL.
@@ -132,6 +142,9 @@ type BuiltTx struct {
 	// PQCSignature is the raw ML-DSA-87 signature (Dilithium-5: 4627 bytes; nil
 	// for a non-hybrid tx).
 	PQCSignature []byte
+	// SignBytesVersion is the hybrid sign-bytes form PQCSignedMessage uses
+	// (signbytes.V1 or signbytes.V2; empty for a non-hybrid tx).
+	SignBytesVersion signbytes.Version
 }
 
 // feeEstimateResponse mirrors the AI fee-oracle REST response. suggested_fee_uqor
@@ -269,6 +282,14 @@ type BuildHybridTxParams struct {
 	// extension for auto-registration on first use. Defaults to false (the key
 	// is expected to be registered already via MsgRegisterPQCKey).
 	IncludePQCPublicKey bool
+	// SignBytesVersion is the hybrid sign-bytes form to sign (see package
+	// signbytes). signbytes.V1 / signbytes.V2 are used as given. Empty or
+	// signbytes.Auto is decided offline from ChainID alone: a non-legacy chain is
+	// V2, while a legacy network (qorechain-vladi, qorechain-diana) makes
+	// BuildHybridTx FAIL, because its form depends on whether the v3.1.98
+	// upgrade is applied there. Resolve it first (signbytes.Resolver) or use
+	// BroadcastHybridAndWait, which resolves against the node.
+	SignBytesVersion signbytes.Version
 }
 
 // BuildHybridTx builds a fully signed hybrid (classical + PQC) transaction
@@ -277,16 +298,21 @@ type BuildHybridTxParams struct {
 // The build sequence:
 //  1. Encode B0 — the TxBody WITHOUT the PQC extension.
 //  2. Encode A  — the single-signer SIGN_MODE_DIRECT AuthInfo.
-//  3. message = BE32(len B0) || B0 || BE32(len A) || A; ML-DSA-87 sign it.
+//  3. message = signbytes.Hybrid(version, ChainID, B0, A) (v1 or v2, see
+//     SignBytesVersion); ML-DSA-87 sign it.
 //  4. Build the PQCHybridSignature extension Any and attach it to a new body
 //     identical to step 1 but with ExtensionOptions = [ext] → final body bytes.
 //  5. Classical SIGN_MODE_DIRECT signature over SignDoc(finalBody, A, chainID,
 //     accountNumber).
 //  6. Assemble TxRaw(finalBody, A, [classicalSig]).
 //
-// The returned BuiltTx exposes PQCSignedMessage and PQCSignature so the contract
-// can be asserted/audited.
+// The returned BuiltTx exposes PQCSignedMessage, PQCSignature and
+// SignBytesVersion so the contract can be asserted/audited.
 func BuildHybridTx(params BuildHybridTxParams) (*BuiltTx, error) {
+	version, err := signbytes.ResolveOffline(params.ChainID, params.SignBytesVersion)
+	if err != nil {
+		return nil, fmt.Errorf("BuildHybridTx: %w", err)
+	}
 	encoded, err := encodeMessages(params.Messages)
 	if err != nil {
 		return nil, err
@@ -310,7 +336,10 @@ func BuildHybridTx(params BuildHybridTxParams) (*BuiltTx, error) {
 	}
 
 	// 3. PQC framing + ML-DSA-87 signature over B0 + A (NOT the final body).
-	pqcSignedMessage := frameSignBytes(b0, authInfoBytes)
+	pqcSignedMessage, err := signbytes.Hybrid(version, params.ChainID, b0, authInfoBytes)
+	if err != nil {
+		return nil, err
+	}
 	pqcSignature, err := pqc.PQCSign(params.PQCKeypair.SecretKey, pqcSignedMessage)
 	if err != nil {
 		return nil, fmt.Errorf("PQC sign: %w", err)
@@ -361,6 +390,7 @@ func BuildHybridTx(params BuildHybridTxParams) (*BuiltTx, error) {
 		AuthInfoBytes:    authInfoBytes,
 		PQCSignedMessage: pqcSignedMessage,
 		PQCSignature:     pqcSignature,
+		SignBytesVersion: version,
 	}, nil
 }
 
@@ -407,18 +437,6 @@ func Broadcast(restURL string, txBytes []byte, mode BroadcastMode, httpClient *h
 }
 
 // --- internal helpers ---
-
-func frameSignBytes(b0, a []byte) []byte {
-	out := make([]byte, 0, 8+len(b0)+len(a))
-	var p [4]byte
-	binary.BigEndian.PutUint32(p[:], uint32(len(b0)))
-	out = append(out, p[:]...)
-	out = append(out, b0...)
-	binary.BigEndian.PutUint32(p[:], uint32(len(a)))
-	out = append(out, p[:]...)
-	out = append(out, a...)
-	return out
-}
 
 func toCoins(coins []Coin) (sdktypes.Coins, error) {
 	out := make(sdktypes.Coins, 0, len(coins))

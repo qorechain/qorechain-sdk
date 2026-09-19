@@ -26,6 +26,17 @@
 //! - [`PqcDx::migrate_pqc_key`] — rotate an account's PQC key
 //!   (`MsgMigratePQCKey`).
 //!
+//! ## Sign-bytes version
+//!
+//! The hybrid ML-DSA-87 signature covers the per-network sign-bytes (v1 or v2,
+//! see [`crate::signbytes`]). [`PqcDx::sign_bytes`] defaults to
+//! [`SignBytesMode::Auto`]: the async send paths ask [`PqcDx::rest_url`] whether
+//! the `v3.1.98` upgrade is applied (cached ~60 s) and, if the chain refuses the
+//! tx with `pqc` code 21, re-resolve and retry exactly once. The sync
+//! [`PqcDx::build_hybrid`] cannot ask the node, so on `qorechain-vladi` /
+//! `qorechain-diana` it needs an explicit `V1` / `V2` (or use
+//! [`PqcDx::build_hybrid_with_version`] after [`PqcDx::resolve_sign_bytes_version`]).
+//!
 //! Reads go through an optional [`QorClient`]; writes use the signer key material
 //! carried by [`PqcDx`] and broadcast over its REST URL.
 //!
@@ -41,6 +52,10 @@ use crate::error::{Error, Result};
 use crate::msg::pqc::{migrate_pqc_key_any, register_pqc_key_v2_any};
 use crate::pqc::ALGORITHM_DILITHIUM5;
 use crate::query::QorClient;
+use crate::signbytes::{
+    broadcast_with_sign_bytes_retry, default_sign_bytes_resolver, require_sign_bytes_version,
+    HybridBroadcast, SignBytesMode, SignBytesVersion,
+};
 use crate::tx::{
     broadcast, build_hybrid_tx, send_messages, BroadcastMode, BuildHybridTxParams, BuiltTx, Fee,
     Message, SendMessagesParams,
@@ -115,6 +130,10 @@ pub struct PqcDx {
     pub mode: BroadcastMode,
     /// Optional `qor_*` client for the status reads / idempotency check.
     pub qor: Option<QorClient>,
+    /// Which hybrid sign-bytes form to sign: `Auto` (default; resolved per
+    /// network from `rest_url`), or a fixed `V1` / `V2`. See
+    /// [`crate::signbytes`].
+    pub sign_bytes: SignBytesMode,
 }
 
 impl PqcDx {
@@ -221,10 +240,27 @@ impl PqcDx {
     /// Builds + signs (but does not broadcast) a hybrid (classical + ML-DSA-87)
     /// transaction over the given messages, using the bound PQC key material.
     ///
+    /// The sign-bytes version comes from [`PqcDx::sign_bytes`]. This is a sync,
+    /// network-free build, so `Auto` resolves only where no node is needed (v2 on
+    /// a chain born with v2); on `qorechain-vladi` / `qorechain-diana` it is an
+    /// error — use [`PqcDx::send_hybrid`], or
+    /// [`PqcDx::resolve_sign_bytes_version`] + [`PqcDx::build_hybrid_with_version`].
+    ///
     /// On-chain prerequisite: the signer's PQC key must already be registered
     /// (call [`PqcDx::ensure_pqc_registered`] first, or use
     /// [`PqcDx::migrate_to_hybrid`]).
     pub fn build_hybrid(&self, messages: Vec<Message>) -> Result<BuiltTx> {
+        let version = require_sign_bytes_version(&self.chain_id, self.sign_bytes.fixed())?;
+        self.build_hybrid_with_version(messages, version)
+    }
+
+    /// Builds + signs (but does not broadcast) a hybrid transaction framed with
+    /// the given sign-bytes `version`.
+    pub fn build_hybrid_with_version(
+        &self,
+        messages: Vec<Message>,
+        version: SignBytesVersion,
+    ) -> Result<BuiltTx> {
         build_hybrid_tx(BuildHybridTxParams {
             private_key: self.private_key.clone(),
             public_key: self.public_key.clone(),
@@ -238,14 +274,50 @@ impl PqcDx {
             memo: String::new(),
             timeout_height: 0,
             include_pqc_public_key: false,
+            sign_bytes_version: Some(version),
         })
+    }
+
+    /// Resolves [`PqcDx::sign_bytes`] for this chain (asking [`PqcDx::rest_url`]
+    /// when `Auto` on a legacy chain; cached by the process-wide resolver).
+    pub async fn resolve_sign_bytes_version(&self) -> Result<SignBytesVersion> {
+        default_sign_bytes_resolver()
+            .resolve(self.sign_bytes, &self.chain_id, Some(&self.rest_url))
+            .await
     }
 
     /// Builds, signs, and broadcasts a hybrid transaction over the given messages,
     /// returning the REST broadcast response JSON.
+    ///
+    /// See [`PqcDx::send_hybrid_detailed`] for the version resolution and the
+    /// one-shot retry on a `pqc` code-21 refusal.
     pub async fn send_hybrid(&self, messages: Vec<Message>) -> Result<Value> {
-        let built = self.build_hybrid(messages)?;
-        broadcast(&self.rest_url, &built.tx_raw_bytes, self.mode).await
+        Ok(self.send_hybrid_detailed(messages).await?.response)
+    }
+
+    /// Builds, signs, and broadcasts a hybrid transaction, returning the
+    /// response together with the sign-bytes version used.
+    ///
+    /// With [`SignBytesMode::Auto`] the version is resolved from
+    /// [`PqcDx::rest_url`]; if the broadcast is refused as "hybrid PQC signature
+    /// verification failed" (`pqc` code 21), the version is force-refreshed and
+    /// the tx re-signed and broadcast exactly once more. A fixed `V1` / `V2` is
+    /// never retried.
+    pub async fn send_hybrid_detailed(&self, messages: Vec<Message>) -> Result<HybridBroadcast> {
+        let rest_url = self.rest_url.as_str();
+        let mode = self.mode;
+        broadcast_with_sign_bytes_retry(
+            default_sign_bytes_resolver(),
+            self.sign_bytes,
+            &self.chain_id,
+            Some(rest_url),
+            |version| {
+                self.build_hybrid_with_version(messages.clone(), version)
+                    .map(|b| b.tx_raw_bytes)
+            },
+            |tx| async move { broadcast(rest_url, &tx, mode).await },
+        )
+        .await
     }
 
     /// Rotates the account's PQC key via `MsgMigratePQCKey`, broadcasting the tx
@@ -305,6 +377,11 @@ impl PqcDx {
 }
 
 /// Options for [`PqcDx::migrate_pqc_key`] (PQC key rotation, `MsgMigratePQCKey`).
+///
+/// `old_signature` / `new_signature` are ML-DSA signatures over the per-network
+/// migration sign-bytes — build them with
+/// [`crate::signbytes::migration_sign_bytes`] using the version the chain
+/// verifies (v1 binds no public keys; v2 binds both).
 #[derive(Debug, Clone, Default)]
 pub struct MigrateKeyOptions {
     /// The current (old) PQC public key being rotated out.
@@ -334,8 +411,15 @@ pub struct HybridSendPath {
 
 impl HybridSendPath {
     /// Builds + signs a hybrid tx over the given messages (PQC key pre-bound).
+    /// See [`PqcDx::build_hybrid`] for the sign-bytes version rule.
     pub fn build_hybrid(&self, messages: Vec<Message>) -> Result<BuiltTx> {
         self.dx.build_hybrid(messages)
+    }
+
+    /// Builds, signs, and broadcasts a hybrid tx, returning the response and the
+    /// sign-bytes version used (see [`PqcDx::send_hybrid_detailed`]).
+    pub async fn send_hybrid_detailed(&self, messages: Vec<Message>) -> Result<HybridBroadcast> {
+        self.dx.send_hybrid_detailed(messages).await
     }
 
     /// Builds, signs, and broadcasts a hybrid tx over the given messages (PQC key
@@ -475,7 +559,10 @@ mod tests {
             extract_tx_hash(&json!({ "tx_response": { "txhash": "ABC123" } })),
             Some("ABC123".to_string())
         );
-        assert_eq!(extract_tx_hash(&json!({ "tx_response": { "txhash": "" } })), None);
+        assert_eq!(
+            extract_tx_hash(&json!({ "tx_response": { "txhash": "" } })),
+            None
+        );
         assert_eq!(extract_tx_hash(&json!({})), None);
     }
 }

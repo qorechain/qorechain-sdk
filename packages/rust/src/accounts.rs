@@ -281,10 +281,7 @@ pub fn derive_native_account(mnemonic: &str, index: u32) -> Result<Secp256k1Acco
 ///
 /// Shared by [`derive_evm_account`] and the unified eth-native wallet
 /// ([`crate::unified`]) so both derive the identical key from a phrase.
-pub(crate) fn derive_eth_key(
-    mnemonic: &str,
-    index: u32,
-) -> Result<([u8; 32], Vec<u8>, Vec<u8>)> {
+pub(crate) fn derive_eth_key(mnemonic: &str, index: u32) -> Result<([u8; 32], Vec<u8>, Vec<u8>)> {
     let seed = seed_from_mnemonic(mnemonic)?;
     let master = Secp256k1Node::master(&seed)?;
     let node = master.derive_path(&[
@@ -294,7 +291,11 @@ pub(crate) fn derive_eth_key(
         0,
         index,
     ])?;
-    Ok((node.key, node.compressed_pubkey(), node.uncompressed_pubkey()))
+    Ok((
+        node.key,
+        node.compressed_pubkey(),
+        node.uncompressed_pubkey(),
+    ))
 }
 
 /// Derives an EVM account from a mnemonic.

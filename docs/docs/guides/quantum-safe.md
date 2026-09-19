@@ -88,11 +88,27 @@ await hybrid.signAndBroadcastHybrid({
   messages,
   fee,
   chainId,
+  rest,            // the network's REST (LCD) URL — picks the sign-bytes form
   accountNumber,
   sequence,
   transport,       // a connected broadcast transport (e.g. StargateClient)
 });
 ```
+
+:::caution The sign-bytes form depends on the network
+Chain v3.1.98 introduced a v2 form of the hybrid sign-bytes that binds a domain
+tag and the chain id. A network verifies exactly **one** form at any height: the
+testnet (`qorechain-diana`) switched to v2 at its v3.1.98 upgrade, mainnet
+(`qorechain-vladi`) stays on v1 until its own. Pass `rest` and the SDK asks the
+network (`signBytesVersion: "auto"`, the default), caching the answer for about a
+minute. Without `rest` on those two networks the SDK throws rather than guess —
+a wrong guess is refused on-chain with `pqc` code 21. Force a form with
+`signBytesVersion: "v1"` or `"v2"`.
+
+`signAndBroadcastHybrid` re-resolves and retries once on a `pqc` code 21
+refusal. If you broadcast yourself, detect it with `isHybridSignBytesRejection`
+and rebuild with `forceRefreshSignBytesVersion: true`.
+:::
 
 ## Rotate a key
 

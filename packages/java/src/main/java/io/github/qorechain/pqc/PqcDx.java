@@ -8,7 +8,10 @@ import io.github.qorechain.query.QorClient;
 import io.github.qorechain.tx.Broadcaster;
 import io.github.qorechain.tx.HybridTx;
 import io.github.qorechain.tx.NativeTx;
+import io.github.qorechain.tx.SignBytes;
+import io.github.qorechain.tx.SignBytesResolver;
 import io.github.qorechain.tx.StdFee;
+import io.github.qorechain.tx.TxError;
 import java.util.List;
 
 /**
@@ -95,6 +98,20 @@ public final class PqcDx {
         public long accountNumber;
         public long sequence;
         public long timeoutHeight = 0L;
+        /**
+         * Hybrid sign-bytes form: {@link SignBytes.Mode#AUTO} (default) asks the
+         * network via {@link #restUrl}; {@code V1}/{@code V2} force a form with no
+         * network call and disable the one-shot retry.
+         */
+        public SignBytes.Mode signBytesMode = SignBytes.Mode.AUTO;
+        /**
+         * The network's REST (LCD) endpoint, used by {@link SignBytes.Mode#AUTO} on
+         * {@code qorechain-vladi}/{@code qorechain-diana} to read whether v3.1.98 is
+         * applied. Not needed for other chain ids or an explicit mode.
+         */
+        public String restUrl;
+        /** The resolver (and its cache) to use; {@code null} = {@link SignBytesResolver#shared()}. */
+        public SignBytesResolver signBytesResolver;
     }
 
     /** Options for {@link #ensurePqcRegistered}. */
@@ -334,8 +351,32 @@ public final class PqcDx {
             this.broadcaster = broadcaster;
         }
 
-        /** Build a fully signed hybrid tx for {@code messages} (PQC keypair pre-bound). */
+        private SignBytesResolver resolver() {
+            return signer.signBytesResolver != null
+                    ? signer.signBytesResolver
+                    : SignBytesResolver.shared();
+        }
+
+        /**
+         * Resolve the hybrid sign-bytes form for the signer's chain (see
+         * {@link Signer#signBytesMode}). May perform one cached REST query.
+         */
+        public SignBytes.Version resolveSignBytesVersion(boolean forceRefresh) {
+            return resolver()
+                    .resolve(signer.signBytesMode, signer.chainId, signer.restUrl, forceRefresh);
+        }
+
+        /**
+         * Build a fully signed hybrid tx for {@code messages} (PQC keypair pre-bound),
+         * resolving the sign-bytes form per {@link Signer#signBytesMode}.
+         */
         public HybridTx.Built buildHybridTx(List<TypedMessage> messages) {
+            return buildHybridTx(messages, resolveSignBytesVersion(false));
+        }
+
+        /** Build a fully signed hybrid tx for {@code messages} in an explicit sign-bytes form. */
+        public HybridTx.Built buildHybridTx(
+                List<TypedMessage> messages, SignBytes.Version signBytesVersion) {
             HybridTx.Options opts = new HybridTx.Options();
             opts.messages = messages;
             opts.secp256k1PrivateKey = signer.secp256k1PrivateKey;
@@ -347,13 +388,35 @@ public final class PqcDx {
             opts.accountNumber = signer.accountNumber;
             opts.sequence = signer.sequence;
             opts.timeoutHeight = signer.timeoutHeight;
+            opts.signBytesVersion = signBytesVersion;
             return HybridTx.buildHybridTx(opts);
         }
 
-        /** Build, sign, and broadcast a hybrid tx for {@code messages} (SYNC mode). */
+        /**
+         * Build, sign, and broadcast a hybrid tx for {@code messages} (SYNC mode).
+         *
+         * <p>With {@link SignBytes.Mode#AUTO}, if the network refuses the tx because
+         * the hybrid PQC signature does not verify ({@code pqc} code 21 — the network
+         * may have upgraded since the version was cached), the version is re-resolved
+         * with a forced refresh, the tx is rebuilt and re-signed ONCE, and broadcast
+         * ONCE more; any error from that second attempt is surfaced. An explicit
+         * {@code V1}/{@code V2} mode never retries.
+         */
         public Broadcaster.Result send(List<TypedMessage> messages) {
-            HybridTx.Built built = buildHybridTx(messages);
-            return broadcaster.broadcast(built.txRawBytes, Broadcaster.Mode.SYNC);
+            SignBytes.Version version = resolveSignBytesVersion(false);
+            HybridTx.Built built = buildHybridTx(messages, version);
+            try {
+                return broadcaster.broadcast(built.txRawBytes, Broadcaster.Mode.SYNC);
+            } catch (TxError.QoreTxException e) {
+                boolean auto =
+                        signer.signBytesMode == null || signer.signBytesMode == SignBytes.Mode.AUTO;
+                if (!auto || !SignBytes.isHybridVerifyRejection(e)) {
+                    throw e;
+                }
+                SignBytes.Version fresh = resolveSignBytesVersion(true);
+                HybridTx.Built rebuilt = buildHybridTx(messages, fresh);
+                return broadcaster.broadcast(rebuilt.txRawBytes, Broadcaster.Mode.SYNC);
+            }
         }
     }
 

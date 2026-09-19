@@ -265,7 +265,10 @@ async fn typed_bridge_chain_config_query_decodes_response() {
 
     let body = server.last_body.lock().unwrap().clone().unwrap();
     let v: serde_json::Value = serde_json::from_str(&body).unwrap();
-    assert_eq!(v["params"]["path"], "/qorechain.bridge.v1.Query/ChainConfig");
+    assert_eq!(
+        v["params"]["path"],
+        "/qorechain.bridge.v1.Query/ChainConfig"
+    );
 }
 
 #[tokio::test]

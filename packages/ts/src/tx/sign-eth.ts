@@ -19,8 +19,8 @@
  * only for the one-time, bootstrap-exempt `MsgRegisterPQCKeyV2`).
  *
  * The hybrid PQC framing/extension reuse the SDK's existing, live-testnet-verified
- * helpers ({@link ../tx/hybrid.encodeHybridExtension}, the `BE32(len)`-prefixed
- * frame, and {@link ../accounts/pqc.buildHybridSignatureExtension}); only the
+ * helpers ({@link ../tx/hybrid.encodeHybridExtension}, the per-network hybrid
+ * sign-bytes ({@link ./signbytes.hybridSignBytes}), and {@link ../accounts/pqc.buildHybridSignatureExtension}); only the
  * classical hash (keccak vs sha256) and the pubkey type URL change here.
  */
 
@@ -47,6 +47,11 @@ import {
   type PqcKeypair,
 } from "../accounts/pqc";
 import { encodeHybridExtension } from "./hybrid";
+import {
+  hybridSignBytes,
+  isLegacySignBytesChain,
+  type SignBytesVersion,
+} from "./signbytes";
 import type { StdFee } from "./fees";
 
 /**
@@ -91,6 +96,13 @@ export interface EthSignParams {
    * `value` is already a `Uint8Array`) are accepted.
    */
   encodeMessage?: (m: EncodeObject) => Any;
+  /**
+   * The hybrid sign-bytes form (hybrid signing only). Resolve it with
+   * {@link resolveSignBytesVersion} for the target network. When omitted, a
+   * chain born on v2 gets `"v2"`; on `qorechain-vladi` / `qorechain-diana`
+   * (which switch at their own upgrade heights) omitting it throws.
+   */
+  signBytesVersion?: SignBytesVersion;
 }
 
 /** The result of an eth-native sign: the broadcastable `TxRaw` and artifacts. */
@@ -117,27 +129,16 @@ function fromHex(hex: string): Uint8Array {
   return bytes;
 }
 
-/** A big-endian 4-byte length prefix, matching the chain's hybrid framing. */
-function be32(n: number): Uint8Array {
-  const b = new Uint8Array(4);
-  b[0] = (n >>> 24) & 0xff;
-  b[1] = (n >>> 16) & 0xff;
-  b[2] = (n >>> 8) & 0xff;
-  b[3] = n & 0xff;
-  return b;
-}
-
-/** Concatenate byte arrays. */
-function concatBytes(...parts: Uint8Array[]): Uint8Array {
-  let total = 0;
-  for (const p of parts) total += p.length;
-  const out = new Uint8Array(total);
-  let off = 0;
-  for (const p of parts) {
-    out.set(p, off);
-    off += p.length;
-  }
-  return out;
+/**
+ * The form to use when the caller gave none: only a chain born on v2 has a
+ * version that does not depend on its current height.
+ */
+function defaultSignBytesVersion(chainId: string): SignBytesVersion {
+  if (!isLegacySignBytesChain(chainId)) return "v2";
+  throw new Error(
+    `signHybridEth on ${chainId} needs signBytesVersion: resolve it with ` +
+      `resolveSignBytesVersion({ chainId, rest }) — the network switches from v1 to v2 at its own upgrade height`,
+  );
 }
 
 /** Encode the messages into protobuf `Any` values, resolving via the encoder. */
@@ -237,7 +238,8 @@ export function signClassicalEth(params: EthSignParams): SignedEthTx {
  * Sign a native tx with the eth_secp256k1 + ML-DSA-87 HYBRID scheme.
  *
  * The chain verifies the PQC signature over the tx body WITHOUT the PQC extension
- * (`B0`), framed with `authInfoBytes`: `BE32(len B0) || B0 || BE32(len A) || A`.
+ * (`B0`) and `authInfoBytes`, in the hybrid sign-bytes form the network verifies
+ * (`params.signBytesVersion`, see ./signbytes).
  * The classical signature then covers the FINAL body (with the extension) via
  * SIGN_MODE_DIRECT (keccak256 hash). This mirrors the SDK's existing hybrid path
  * ({@link ../tx/hybrid-tx.buildHybridTx}); only the classical hash and the pubkey
@@ -259,13 +261,9 @@ export function signHybridEth(params: EthSignParams): SignedEthTx {
     TxBody.fromPartial({ messages: encodedMessages, memo, timeoutHeight }),
   ).finish();
 
-  // ML-DSA-87 over the framed (B0, authInfo).
-  const pqcSignedMessage = concatBytes(
-    be32(b0.length),
-    b0,
-    be32(authInfoBytes.length),
-    authInfoBytes,
-  );
+  // ML-DSA-87 over (B0, authInfo) in the network's sign-bytes form.
+  const version = params.signBytesVersion ?? defaultSignBytesVersion(params.chainId);
+  const pqcSignedMessage = hybridSignBytes(version, params.chainId, b0, authInfoBytes);
   const pqcSignature = pqcSign(params.account.pqc.secretKey, pqcSignedMessage);
 
   // Attach the PQC extension to the FINAL body and encode it.

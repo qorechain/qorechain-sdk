@@ -57,7 +57,8 @@ from .accounts import Secp256k1Account
 from .messages._composer import Msg
 from .messages.qorechain import crossvm as crossvm_msg
 from .pqc import PqcKeypair
-from .tx import broadcast, build_hybrid_tx, send_messages
+from .signbytes import SignBytesVersion
+from .tx import broadcast, build_hybrid_tx, hybrid_sign_and_broadcast, send_messages
 
 #: The valid cross-VM target/source VM identifiers.
 VM_TYPES: tuple[str, ...] = ("evm", "cosmwasm", "svm")
@@ -283,7 +284,10 @@ class CrossVmClient:
     address is used as the message ``sender``, so callers never repeat it.
 
     Provide a ``pqc_keypair`` to sign quantum-safe hybrid transactions; otherwise
-    a classical secp256k1 tx is built. Pass a ``query`` (a
+    a classical secp256k1 tx is built. ``sign_bytes_version`` (``"auto"`` |
+    ``"v1"`` | ``"v2"``, default ``"auto"``) picks the hybrid sign-bytes form;
+    ``"auto"`` asks ``rest_url`` and retries once on a ``pqc`` code 21 refusal.
+    Pass a ``query`` (a
     :class:`~qorsdk.query.grpc.CrossVmQueryClient`) and/or a ``qor``
     (:class:`~qorsdk.qor.QorClient`) to enable :meth:`get_message`.
     """
@@ -300,6 +304,7 @@ class CrossVmClient:
         pqc_keypair: PqcKeypair | None = None,
         query: Any | None = None,
         qor: Any | None = None,
+        sign_bytes_version: str = "auto",
     ) -> None:
         self._account = account
         self._chain_id = chain_id
@@ -310,6 +315,7 @@ class CrossVmClient:
         self._pqc_keypair = pqc_keypair
         self._query = query
         self._qor = qor
+        self._sign_bytes_version = sign_bytes_version
 
     @property
     def sender(self) -> str:
@@ -364,15 +370,27 @@ class CrossVmClient:
     ) -> Any:
         seq = self._sequence if sequence is None else sequence
         if self._pqc_keypair is not None:
-            built = build_hybrid_tx(
-                account=self._account,
-                pqc_keypair=self._pqc_keypair,
-                messages=messages,
-                fee=self._fee,
+            keypair = self._pqc_keypair
+
+            def build(version: SignBytesVersion) -> Any:
+                return build_hybrid_tx(
+                    account=self._account,
+                    pqc_keypair=keypair,
+                    messages=messages,
+                    fee=self._fee,
+                    chain_id=self._chain_id,
+                    account_number=self._account_number,
+                    sequence=seq,
+                    memo=memo,
+                    sign_bytes_version=version,
+                )
+
+            return hybrid_sign_and_broadcast(
+                build,
                 chain_id=self._chain_id,
-                account_number=self._account_number,
-                sequence=seq,
-                memo=memo,
+                rest_url=self._rest_url,
+                sign_bytes_version=self._sign_bytes_version,
+                mode=mode,  # type: ignore[arg-type]
             )
         else:
             built = send_messages(
@@ -479,6 +497,7 @@ def create_cross_vm_client(
     pqc_keypair: PqcKeypair | None = None,
     query: Any | None = None,
     qor: Any | None = None,
+    sign_bytes_version: str = "auto",
 ) -> CrossVmClient:
     """Create a :class:`CrossVmClient` bound to a signing account and tx context."""
     return CrossVmClient(
@@ -491,6 +510,7 @@ def create_cross_vm_client(
         pqc_keypair=pqc_keypair,
         query=query,
         qor=qor,
+        sign_bytes_version=sign_bytes_version,
     )
 
 

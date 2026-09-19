@@ -122,6 +122,24 @@ key must be **registered** via the chain's `MsgRegisterPQCKeyV2` — *unless* yo
 `includePqcPublicKey: true`, which embeds the key in the extension so the chain
 can auto-register it on first use.
 
+### Which sign-bytes the PQC key signs
+
+The ML-DSA-87 signature covers the transaction body *without* the PQC extension
+and the AuthInfo bytes, in one of two forms:
+
+```
+v1: BE32(len B0) ‖ B0 ‖ BE32(len A) ‖ A
+v2: "qorechain-pqc-hybrid-v2" ‖ BE64(len chainId) ‖ chainId ‖ BE32(len B0) ‖ B0 ‖ BE32(len A) ‖ A
+```
+
+v2 (chain v3.1.98) binds a domain tag, so a signature made for something else
+cannot pass as a transaction signature, and the chain id, so the post-quantum
+signature itself refuses to verify on another network. A network verifies exactly
+one form at any height: `qorechain-diana` switched to v2 at its v3.1.98 upgrade,
+`qorechain-vladi` stays on v1 until its own upgrade, and chains born later are v2
+from genesis. The SDK picks the form per network (`signBytesVersion: "auto"`,
+with the network's REST endpoint) — see the Quantum-safe guide.
+
 ### Hybrid tx contract (high level)
 
 The transaction is signed classically over the standard sign bytes (which

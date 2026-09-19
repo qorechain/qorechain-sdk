@@ -113,8 +113,10 @@ def test_signer_pubkey_uses_ethsecp256k1_type_url():
 def test_hybrid_signature_verifies_and_body_carries_extension():
     acct = _account()
     built = sign_hybrid_eth(
-        acct, CHAIN_ID, ACCOUNT_NUMBER, [_msg(acct)], FEE, SEQUENCE
+        acct, CHAIN_ID, ACCOUNT_NUMBER, [_msg(acct)], FEE, SEQUENCE,
+        sign_bytes_version="v1",
     )
+    assert built.sign_bytes_version == "v1"
     # classical over keccak(final body incl. ext).
     assert _verifies_over_keccak(built.tx_raw_bytes, acct.public_key)
     # final body carries exactly one extension option.
@@ -136,9 +138,11 @@ def test_hybrid_signature_verifies_and_body_carries_extension():
 def test_hybrid_b0_frame_excludes_extension():
     acct = _account()
     built = sign_hybrid_eth(
-        acct, CHAIN_ID, ACCOUNT_NUMBER, [_msg(acct)], FEE, SEQUENCE
+        acct, CHAIN_ID, ACCOUNT_NUMBER, [_msg(acct)], FEE, SEQUENCE,
+        sign_bytes_version="v1",
     )
-    # Reconstruct B0 (body WITHOUT ext) and the expected BE32 frame.
+    # Reconstruct B0 (body WITHOUT ext) and the expected v1 BE32 frame
+    # (mainnet vladi stays on v1 until its own v3.1.98 upgrade).
     msg = _msg(acct)["value"]
     b0 = TxBody(
         messages=[ProtoAny(type_url=MSG_SEND_TYPE_URL, value=msg.SerializeToString())]

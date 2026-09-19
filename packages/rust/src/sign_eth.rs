@@ -12,7 +12,8 @@
 //! [`sign_hybrid_eth`] adds it. [`sign_classical_eth`] omits it (used for the
 //! one-time PQC-key registration, which is bootstrap-exempt from the hybrid
 //! requirement). The hybrid framing (`B0` without the extension, ML-DSA-87 over
-//! `frame(B0, authInfo)`, extension added to the final body, classical signature
+//! the per-network hybrid sign-bytes of `(chainId, B0, authInfo)` — v1 or v2, see
+//! [`crate::signbytes`] — extension added to the final body, classical signature
 //! over the final body) is identical to [`crate::tx::build_hybrid_tx`]; only the
 //! classical hash (keccak256, not the k256 default sha256) and the pubkey type
 //! URL change.
@@ -22,6 +23,7 @@ use crate::pqc::{
     build_hybrid_signature_extension, pqc_keypair_from_seed, pqc_sign, PqcKeypair,
     ALGORITHM_DILITHIUM5, HYBRID_SIG_TYPE_URL,
 };
+use crate::signbytes::{hybrid_sign_bytes, require_sign_bytes_version, SignBytesVersion};
 use crate::unified::UnifiedAccount;
 use cosmrs::proto::cosmos::tx::signing::v1beta1::SignMode;
 use cosmrs::proto::cosmos::tx::v1beta1::{
@@ -61,6 +63,12 @@ pub struct EthSignParams {
     pub memo: String,
     /// An optional tx timeout height (`0` = none).
     pub timeout_height: u64,
+    /// The hybrid sign-bytes version [`sign_hybrid_eth`] frames (ignored by
+    /// [`sign_classical_eth`]). `None` means v2 on a chain born with v2 and an
+    /// ERROR on `qorechain-vladi` / `qorechain-diana`, whose form depends on
+    /// whether the `v3.1.98` upgrade is applied there — resolve it with
+    /// [`crate::signbytes::SignBytesResolver`]. Never silently v1.
+    pub sign_bytes_version: Option<SignBytesVersion>,
 }
 
 /// A built, signed eth-native transaction plus its intermediate artifacts.
@@ -76,6 +84,8 @@ pub struct EthBuiltTx {
     pub pqc_signed_message: Vec<u8>,
     /// The raw ML-DSA-87 signature (empty for a classical tx).
     pub pqc_signature: Vec<u8>,
+    /// The hybrid sign-bytes version used (`None` for a classical tx).
+    pub sign_bytes_version: Option<SignBytesVersion>,
 }
 
 /// Builds a classical-only `eth_secp256k1` native-lane tx (no PQC extension).
@@ -112,21 +122,28 @@ pub fn sign_classical_eth(params: EthSignParams) -> Result<EthBuiltTx> {
         body_bytes,
         pqc_signed_message: vec![],
         pqc_signature: vec![],
+        sign_bytes_version: None,
     })
 }
 
 /// Builds a hybrid `eth_secp256k1` + ML-DSA-87 native-lane tx.
 ///
-/// The `B0` body (WITHOUT the PQC extension) is framed with the `AuthInfo` and
-/// signed by ML-DSA-87; the extension is then attached to the final body, and the
+/// The `B0` body (WITHOUT the PQC extension) is framed with the `AuthInfo` (and,
+/// for v2, the chain id) per `params.sign_bytes_version` and signed by
+/// ML-DSA-87; the extension is then attached to the final body, and the
 /// classical `eth_secp256k1` signature covers `SignDoc(finalBody, A, chainId,
 /// accountNumber)`. `include_pqc_public_key` embeds the 2592-byte ML-DSA-87
-/// public key for auto-registration on first use.
+/// public key for auto-registration on first use. The returned
+/// [`EthBuiltTx::sign_bytes_version`] records the form used.
+///
+/// Fails when `params.sign_bytes_version` is `None` on a legacy chain (see
+/// [`EthSignParams::sign_bytes_version`]).
 pub fn sign_hybrid_eth(
     params: EthSignParams,
     pqc: &PqcKeypair,
     include_pqc_public_key: bool,
 ) -> Result<EthBuiltTx> {
+    let version = require_sign_bytes_version(&params.chain_id, params.sign_bytes_version)?;
     let auth_info_bytes =
         build_eth_auth_info_bytes(&params.public_key, params.sequence, &params.fee)?;
 
@@ -140,8 +157,8 @@ pub fn sign_hybrid_eth(
     };
     let b0 = b0_body.encode_to_vec();
 
-    // ML-DSA-87 over frame(B0, authInfo).
-    let pqc_signed_message = frame_sign_bytes(&b0, &auth_info_bytes);
+    // ML-DSA-87 over the per-network hybrid sign-bytes of (chainId, B0, authInfo).
+    let pqc_signed_message = hybrid_sign_bytes(version, &params.chain_id, &b0, &auth_info_bytes);
     let pqc_signature = pqc_sign(&pqc.secret_key, &pqc_signed_message)?;
 
     let public_key: Option<&[u8]> = if include_pqc_public_key {
@@ -184,6 +201,7 @@ pub fn sign_hybrid_eth(
         body_bytes,
         pqc_signed_message,
         pqc_signature,
+        sign_bytes_version: Some(version),
     })
 }
 
@@ -249,15 +267,6 @@ pub fn parse_ethsecp256k1_pubkey(any: &Any) -> Result<Vec<u8>> {
 /// in [`crate::pqc`] directly).
 pub fn pqc_from_seed(seed: &[u8; 32]) -> PqcKeypair {
     pqc_keypair_from_seed(seed)
-}
-
-fn frame_sign_bytes(b0: &[u8], a: &[u8]) -> Vec<u8> {
-    let mut out = Vec::with_capacity(8 + b0.len() + a.len());
-    out.extend_from_slice(&(b0.len() as u32).to_be_bytes());
-    out.extend_from_slice(b0);
-    out.extend_from_slice(&(a.len() as u32).to_be_bytes());
-    out.extend_from_slice(a);
-    out
 }
 
 /// Builds the eth_secp256k1 pubkey `Any` from a 33-byte compressed public key.
@@ -367,6 +376,7 @@ mod tests {
             },
             memo: String::new(),
             timeout_height: 0,
+            sign_bytes_version: Some(SignBytesVersion::V1),
         }
     }
 
@@ -412,20 +422,20 @@ mod tests {
         let ext_value = &final_body.extension_options[0].value;
         assert_eq!(ext_value[0], 0x08);
         assert_ne!(ext_value[0], 0x7b);
-        let ext_msg = crate::proto::qorechain::pqc::v1::PqcHybridSignature::decode(
-            ext_value.as_slice(),
-        )
-        .unwrap();
+        let ext_msg =
+            crate::proto::qorechain::pqc::v1::PqcHybridSignature::decode(ext_value.as_slice())
+                .unwrap();
         assert_eq!(ext_msg.algorithm_id, ALGORITHM_DILITHIUM5);
         assert_eq!(ext_msg.pqc_signature, built.pqc_signature);
         assert!(ext_msg.pqc_public_key.is_empty());
-        // Reconstruct B0 from the frame and confirm it has NO extension.
+        assert_eq!(built.sign_bytes_version, Some(SignBytesVersion::V1));
+        // Reconstruct B0 from the (v1) frame and confirm it has NO extension.
         let b0_len =
             u32::from_be_bytes(built.pqc_signed_message[0..4].try_into().unwrap()) as usize;
         let b0 = &built.pqc_signed_message[4..4 + b0_len];
         let b0_body = TxBody::decode(b0).unwrap();
         assert_eq!(b0_body.extension_options.len(), 0);
-        // The ML-DSA-87 signature verifies over frame(B0, authInfo).
+        // The ML-DSA-87 signature verifies over the v1 sign-bytes of (B0, authInfo).
         assert!(crate::pqc::pqc_verify(
             &acct.pqc.public_key,
             &built.pqc_signed_message,

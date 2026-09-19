@@ -252,8 +252,7 @@ pub fn unified_account_from_seed(seed32: [u8; 32]) -> Result<UnifiedAccount> {
 mod tests {
     use super::*;
 
-    const TEST_MNEMONIC: &str =
-        "test test test test test test test test test test test junk";
+    const TEST_MNEMONIC: &str = "test test test test test test test test test test test junk";
 
     #[test]
     fn kat_mnemonic_index0() {

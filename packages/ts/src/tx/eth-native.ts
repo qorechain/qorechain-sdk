@@ -34,6 +34,13 @@ import {
   type EthSigningKey,
   type SignedEthTx,
 } from "./sign-eth";
+import {
+  isHybridSignBytesRejection,
+  resolveSignBytesVersion,
+  type SignBytesVersion,
+  type SignBytesVersionOption,
+} from "./signbytes";
+import type { FetchLike } from "../query/http";
 
 export { ETHSECP256K1_PUBKEY_TYPE } from "./sign-eth";
 
@@ -73,6 +80,15 @@ export interface EthNativeSignerOptions {
    * `MsgRegisterPQCKeyV2`).
    */
   signMode?: "hybrid" | "classical";
+  /**
+   * Hybrid sign-bytes form. `"auto"` (default) asks the network via `rest` in
+   * {@link EthNativeSigner.signAndBroadcast}; `"v1"` / `"v2"` force a form.
+   */
+  signBytesVersion?: SignBytesVersionOption;
+  /** The network's REST (LCD) base URL, used by `signBytesVersion: "auto"`. */
+  rest?: string;
+  /** Injectable `fetch` for the `"auto"` lookup. */
+  fetch?: FetchLike;
 }
 
 /** Params for building/broadcasting a tx with {@link EthNativeSigner}. */
@@ -82,6 +98,11 @@ export interface EthTxParams extends AccountSequence {
   fee: StdFee;
   memo?: string;
   timeoutHeight?: bigint;
+  /**
+   * The resolved hybrid sign-bytes form for {@link EthNativeSigner.sign}.
+   * {@link EthNativeSigner.signAndBroadcast} resolves it when omitted.
+   */
+  signBytesVersion?: SignBytesVersion;
 }
 
 /**
@@ -97,6 +118,9 @@ export class EthNativeSigner {
   private readonly key: EthSigningKey;
   private readonly registry: Registry;
   private readonly signMode: "hybrid" | "classical";
+  private readonly signBytesVersion: SignBytesVersionOption;
+  private readonly rest?: string;
+  private readonly fetchImpl?: FetchLike;
 
   constructor(account: UnifiedAccount, opts: EthNativeSignerOptions = {}) {
     this.address = account.cosmos;
@@ -107,6 +131,23 @@ export class EthNativeSigner {
     };
     this.registry = opts.registry ?? qorechainRegistry();
     this.signMode = opts.signMode ?? "hybrid";
+    this.signBytesVersion = opts.signBytesVersion ?? "auto";
+    this.rest = opts.rest;
+    this.fetchImpl = opts.fetch;
+  }
+
+  /**
+   * The hybrid sign-bytes form for `chainId` under this signer's settings.
+   * Pass `forceRefresh` to bypass the cached answer.
+   */
+  resolveSignBytesVersion(chainId: string, forceRefresh = false): Promise<SignBytesVersion> {
+    return resolveSignBytesVersion({
+      chainId,
+      rest: this.rest,
+      signBytesVersion: this.signBytesVersion,
+      fetch: this.fetchImpl,
+      forceRefresh,
+    });
   }
 
   /** Encode a message to `Any` via the bound registry. */
@@ -124,6 +165,9 @@ export class EthNativeSigner {
       memo: params.memo,
       timeoutHeight: params.timeoutHeight,
       encodeMessage: this.encode,
+      signBytesVersion:
+        params.signBytesVersion ??
+        (this.signBytesVersion === "auto" ? undefined : this.signBytesVersion),
     };
     return this.signMode === "classical"
       ? signClassicalEth(signParams)
@@ -142,14 +186,36 @@ export class EthNativeSigner {
     gasWanted?: bigint;
     rawLog?: string;
   }> {
-    const { txRawBytes } = this.sign(params);
-    const res = await transport.broadcastTx(txRawBytes);
-    if (res.code !== 0) {
-      throw new Error(
-        `eth-native tx failed with code ${res.code}: ${res.rawLog ?? "(no log)"} (hash ${res.transactionHash})`,
-      );
+    const once = async (forceRefresh: boolean) => {
+      const signBytesVersion =
+        this.signMode === "hybrid"
+          ? (params.signBytesVersion ??
+            (await this.resolveSignBytesVersion(params.chainId, forceRefresh)))
+          : undefined;
+      const { txRawBytes } = this.sign({ ...params, signBytesVersion });
+      const res = await transport.broadcastTx(txRawBytes);
+      if (res.code !== 0) {
+        throw Object.assign(
+          new Error(
+            `eth-native tx failed with code ${res.code}: ${res.rawLog ?? "(no log)"} (hash ${res.transactionHash})`,
+          ),
+          { code: res.code, rawLog: res.rawLog, transactionHash: res.transactionHash },
+        );
+      }
+      return res;
+    };
+    const auto =
+      this.signMode === "hybrid" &&
+      params.signBytesVersion === undefined &&
+      this.signBytesVersion === "auto";
+    try {
+      return await once(false);
+    } catch (e) {
+      // Wrong form for this network (answer cached across an upgrade): ask
+      // again once and resend once.
+      if (!auto || !isHybridSignBytesRejection(e)) throw e;
+      return once(true);
     }
-    return res;
   }
 
   /** Send `amount` to `toAddress` via a bank `MsgSend`, signed eth-native. */

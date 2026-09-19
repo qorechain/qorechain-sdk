@@ -32,6 +32,7 @@ import (
 	"github.com/qorechain/qorechain-sdk/packages/go/qorechain/messages"
 	"github.com/qorechain/qorechain-sdk/packages/go/qorechain/pqc"
 	pqcv1 "github.com/qorechain/qorechain-sdk/packages/go/qorechain/proto/qorechain/pqc/v1"
+	"github.com/qorechain/qorechain-sdk/packages/go/qorechain/signbytes"
 	"github.com/qorechain/qorechain-sdk/packages/go/qorechain/tx"
 )
 
@@ -165,6 +166,15 @@ type Signer struct {
 	Mode tx.BroadcastMode
 	// Wait configures post-broadcast polling (zero values use sensible defaults).
 	Wait tx.WaitOptions
+	// SignBytesVersion selects the hybrid sign-bytes form MigrateToHybrid signs
+	// (see package signbytes). Empty / signbytes.Auto (the default) resolves it
+	// per network against RestURL and re-signs once if the chain refuses the
+	// hybrid signature (pqc code 21); signbytes.V1 / signbytes.V2 force a form
+	// and are never retried.
+	SignBytesVersion signbytes.Version
+	// SignBytesResolver resolves SignBytesVersion when it is Auto. Nil uses
+	// signbytes.DefaultResolver.
+	SignBytesResolver *signbytes.Resolver
 }
 
 // Client is the high-level PQC DX helper bound to a Signer and a status reader.
@@ -277,11 +287,13 @@ type MigrateOptions struct {
 	// NewAlgorithmID is the replacement algorithm identifier (e.g.
 	// pqc.AlgorithmDilithium5).
 	NewAlgorithmID uint8
-	// OldSignature proves control of the old key (signature over the migration
-	// challenge with the old secret key).
+	// OldSignature proves control of the old key: the old secret key's signature
+	// over the migration sign-bytes, built with signbytes.Migration in the form
+	// the target network verifies (v2 binds chain id, account, algorithms,
+	// execution height and BOTH public keys; v1 is the legacy ASCII string).
 	OldSignature []byte
-	// NewSignature proves control of the new key (signature over the migration
-	// challenge with the new secret key).
+	// NewSignature proves control of the new key: the new secret key's
+	// signature over the same migration sign-bytes.
 	NewSignature []byte
 }
 
@@ -342,6 +354,11 @@ type MigrateToHybridResult struct {
 	RegisterTxHash string
 	// Result is the confirmed hybrid transaction result.
 	Result *tx.TxResult
+	// SignBytesVersion is the hybrid sign-bytes form the accepted tx used.
+	SignBytesVersion signbytes.Version
+	// Retried is true when the first hybrid attempt was refused (pqc code 21)
+	// and the tx was re-signed under a freshly resolved version.
+	Retried bool
 }
 
 // MigrateToHybrid is the one-call "go quantum-safe" path: it ensures the signer's
@@ -351,6 +368,11 @@ type MigrateToHybridResult struct {
 // The messages are any module messages (e.g. a bank send from the composers);
 // they are sent under the hybrid signature so the account's first hybrid tx and
 // its registration can be sequenced without hand-wiring tx.BuildHybridMessages.
+//
+// The hybrid half goes through tx.BroadcastHybridAndWait: the sign-bytes form
+// (v1/v2) is resolved per network from Signer.SignBytesVersion (default auto,
+// asked of Signer.RestURL), and an auto-resolved tx refused with pqc code 21 is
+// re-signed once under a freshly resolved version.
 func (c *Client) MigrateToHybrid(msgs []sdk.Msg, opts MigrateToHybridOptions) (*MigrateToHybridResult, error) {
 	if len(msgs) == 0 {
 		return nil, fmt.Errorf("pqcdx: MigrateToHybrid requires at least one message")
@@ -368,27 +390,32 @@ func (c *Client) MigrateToHybrid(msgs []sdk.Msg, opts MigrateToHybridOptions) (*
 	if !ensure.AlreadyRegistered {
 		sequence++
 	}
-	built, err := tx.BuildHybridMessages(tx.BuildHybridMessagesParams{
-		Account:             c.signer.Account,
-		PQCKeypair:          c.signer.PQCKeypair,
-		Messages:            msgs,
-		Fee:                 c.signer.Fee,
-		ChainID:             c.signer.ChainID,
-		AccountNumber:       c.signer.AccountNumber,
-		Sequence:            sequence,
-		IncludePQCPublicKey: opts.IncludePQCPublicKey,
+	out, err := tx.BroadcastHybridAndWait(tx.BroadcastHybridParams{
+		Build: tx.BuildHybridMessagesParams{
+			Account:             c.signer.Account,
+			PQCKeypair:          c.signer.PQCKeypair,
+			Messages:            msgs,
+			Fee:                 c.signer.Fee,
+			ChainID:             c.signer.ChainID,
+			AccountNumber:       c.signer.AccountNumber,
+			Sequence:            sequence,
+			IncludePQCPublicKey: opts.IncludePQCPublicKey,
+			SignBytesVersion:    c.signer.SignBytesVersion,
+		},
+		RestURL:  c.signer.RestURL,
+		Mode:     c.signer.Mode,
+		Wait:     c.signer.Wait,
+		Resolver: c.signer.SignBytesResolver,
 	})
-	if err != nil {
-		return nil, err
-	}
-	res, err := c.broadcastBuilt(built)
 	if err != nil {
 		return nil, err
 	}
 	return &MigrateToHybridResult{
 		AlreadyRegistered: ensure.AlreadyRegistered,
 		RegisterTxHash:    ensure.TxHash,
-		Result:            res,
+		Result:            out.Result,
+		SignBytesVersion:  out.Built.SignBytesVersion,
+		Retried:           out.Retried,
 	}, nil
 }
 

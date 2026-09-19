@@ -244,7 +244,9 @@ pub fn execute_cosmos_any(
     nonce: u64,
 ) -> Any {
     to_any(
-        &execute_cosmos(relayer, account, scheme, pubkey, signature, to, amount, nonce),
+        &execute_cosmos(
+            relayer, account, scheme, pubkey, signature, to, amount, nonce,
+        ),
         EXECUTE_COSMOS,
     )
 }

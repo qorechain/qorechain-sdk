@@ -54,6 +54,12 @@ function be32(n: number): Uint8Array {
   return b;
 }
 
+function be64(n: number): Uint8Array {
+  const b = new Uint8Array(8);
+  new DataView(b.buffer).setBigUint64(0, BigInt(n), false);
+  return b;
+}
+
 function concat(...parts: Uint8Array[]): Uint8Array {
   const len = parts.reduce((a, p) => a + p.length, 0);
   const out = new Uint8Array(len);
@@ -76,6 +82,7 @@ describe("buildHybridTx", () => {
       fee: FEE,
       memo: "hi",
       chainId: CHAIN_ID,
+      signBytesVersion: "v2",
       accountNumber: 7,
       sequence: 3,
     });
@@ -94,7 +101,16 @@ describe("buildHybridTx", () => {
     });
     const b0 = TxBody.encode(stripped).finish();
     const a = built.authInfoBytes;
-    const expectedMessage = concat(be32(b0.length), b0, be32(a.length), a);
+    // qorechain-diana verifies the v2 form since its v3.1.98 upgrade.
+    const expectedMessage = concat(
+      new TextEncoder().encode("qorechain-pqc-hybrid-v2"),
+      be64(CHAIN_ID.length),
+      new TextEncoder().encode(CHAIN_ID),
+      be32(b0.length),
+      b0,
+      be32(a.length),
+      a,
+    );
 
     expect(built.pqcSignedMessage).toEqual(expectedMessage);
     // The framing must NOT include the final (with-ext) body bytes.
@@ -112,6 +128,7 @@ describe("buildHybridTx", () => {
       messages: [msg],
       fee: FEE,
       chainId: CHAIN_ID,
+      signBytesVersion: "v2",
       accountNumber: 0,
       sequence: 0,
     });
@@ -130,6 +147,7 @@ describe("buildHybridTx", () => {
       messages: [msg],
       fee: FEE,
       chainId: CHAIN_ID,
+      signBytesVersion: "v2",
       accountNumber: 0,
       sequence: 0,
     });
@@ -159,6 +177,7 @@ describe("buildHybridTx", () => {
       messages: [msg],
       fee: FEE,
       chainId: CHAIN_ID,
+      signBytesVersion: "v2",
       accountNumber: 0,
       sequence: 0,
       includePqcPublicKey: true,
@@ -181,6 +200,7 @@ describe("buildHybridTx", () => {
       messages: [msg],
       fee: FEE,
       chainId: CHAIN_ID,
+      signBytesVersion: "v2",
       accountNumber: 7,
       sequence: 3,
     });
@@ -212,6 +232,7 @@ describe("buildHybridTx", () => {
       messages: [msg],
       fee: FEE,
       chainId: CHAIN_ID,
+      signBytesVersion: "v2",
       accountNumber: 0,
       sequence: 0,
     });
@@ -245,6 +266,7 @@ describe("signAndBroadcastHybrid", () => {
       messages: [msg],
       fee: FEE,
       chainId: CHAIN_ID,
+      signBytesVersion: "v2",
       accountNumber: 0,
       sequence: 0,
     });
@@ -259,6 +281,7 @@ describe("signAndBroadcastHybrid", () => {
       messages: [msg],
       fee: FEE,
       chainId: CHAIN_ID,
+      signBytesVersion: "v2",
       accountNumber: 0,
       sequence: 0,
     });
@@ -278,6 +301,7 @@ describe("signAndBroadcastHybrid", () => {
       messages: [msg],
       fee: FEE,
       chainId: CHAIN_ID,
+      signBytesVersion: "v2",
       accountNumber: 0,
       sequence: 0,
       mode: "sync",
@@ -298,6 +322,7 @@ describe("signAndBroadcastHybrid", () => {
       messages: [msg],
       fee: FEE,
       chainId: CHAIN_ID,
+      signBytesVersion: "v2",
       accountNumber: 0,
       sequence: 0,
       mode: "async",
@@ -322,6 +347,7 @@ describe("signAndBroadcastHybrid", () => {
         messages: [msg],
         fee: FEE,
         chainId: CHAIN_ID,
+        signBytesVersion: "v2",
         accountNumber: 0,
         sequence: 0,
       }),

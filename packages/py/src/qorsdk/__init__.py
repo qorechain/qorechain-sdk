@@ -147,6 +147,33 @@ from .sign_eth import (
     sign_classical_eth,
     sign_hybrid_eth,
 )
+from .signbytes import (
+    BRIDGE_ATTESTATION_SIGN_BYTES_DOMAIN,
+    HYBRID_SIGN_BYTES_DOMAIN,
+    LEGACY_SIGN_BYTES_CHAINS,
+    MIGRATION_SIGN_BYTES_DOMAIN,
+    SIGN_BYTES_V2_UPGRADE,
+    SignBytesOption,
+    SignBytesResolver,
+    SignBytesVersion,
+    SignBytesVersionError,
+    bridge_attestation_sign_bytes,
+    bridge_attestation_sign_bytes_v1,
+    bridge_attestation_sign_bytes_v2,
+    clear_sign_bytes_cache,
+    default_sign_bytes_resolver,
+    hybrid_sign_bytes,
+    hybrid_sign_bytes_v1,
+    hybrid_sign_bytes_v2,
+    is_hybrid_signature_rejection,
+    is_legacy_sign_bytes_chain,
+    migration_sign_bytes,
+    migration_sign_bytes_v1,
+    migration_sign_bytes_v2,
+    resolve_sign_bytes_version,
+    resolve_sign_bytes_version_async,
+    sign_bytes_version_for,
+)
 from .subscribe import SubscriptionClient, build_tx_query
 from .track import (
     IncludedTx,
@@ -161,6 +188,7 @@ from .tx import (
     bank_send,
     broadcast,
     build_hybrid_tx,
+    hybrid_sign_and_broadcast,
     send_messages,
 )
 from .unified import (
@@ -186,7 +214,7 @@ from .utils import (
     to_checksum_address,
 )
 
-__version__ = "0.5.1"
+__version__ = "0.8.0"
 
 __all__ = [
     "__version__",
@@ -292,7 +320,34 @@ __all__ = [
     "bank_send",
     "send_messages",
     "build_hybrid_tx",
+    "hybrid_sign_and_broadcast",
     "broadcast",
+    # per-network hybrid sign-bytes (v1 / v2, chain v3.1.98)
+    "HYBRID_SIGN_BYTES_DOMAIN",
+    "MIGRATION_SIGN_BYTES_DOMAIN",
+    "BRIDGE_ATTESTATION_SIGN_BYTES_DOMAIN",
+    "SIGN_BYTES_V2_UPGRADE",
+    "LEGACY_SIGN_BYTES_CHAINS",
+    "SignBytesVersion",
+    "SignBytesOption",
+    "SignBytesVersionError",
+    "SignBytesResolver",
+    "default_sign_bytes_resolver",
+    "hybrid_sign_bytes",
+    "hybrid_sign_bytes_v1",
+    "hybrid_sign_bytes_v2",
+    "migration_sign_bytes",
+    "migration_sign_bytes_v1",
+    "migration_sign_bytes_v2",
+    "bridge_attestation_sign_bytes",
+    "bridge_attestation_sign_bytes_v1",
+    "bridge_attestation_sign_bytes_v2",
+    "is_legacy_sign_bytes_chain",
+    "sign_bytes_version_for",
+    "resolve_sign_bytes_version",
+    "resolve_sign_bytes_version_async",
+    "clear_sign_bytes_cache",
+    "is_hybrid_signature_rejection",
     # messages
     "Msg",
     "composer",

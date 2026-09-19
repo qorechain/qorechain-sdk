@@ -29,6 +29,7 @@ use qorechain::accounts::derive_native_account;
 use qorechain::pqc_dx::PqcDx;
 use qorechain::proto::qorechain::pqc::v1::MsgRegisterPqcKeyV2;
 use qorechain::query::QorClient;
+use qorechain::signbytes::SignBytesMode;
 use qorechain::tx::{BroadcastMode, Coin, Fee};
 
 const TEST_MNEMONIC: &str =
@@ -96,7 +97,11 @@ impl MockServer {
             }
         });
 
-        MockServer { base_url, recorded, _shutdown: tx }
+        MockServer {
+            base_url,
+            recorded,
+            _shutdown: tx,
+        }
     }
 
     fn recorded(&self) -> Vec<Recorded> {
@@ -106,7 +111,10 @@ impl MockServer {
 
 fn sample_fee() -> Fee {
     Fee {
-        amount: vec![Coin { denom: "uqor".into(), amount: "5000".into() }],
+        amount: vec![Coin {
+            denom: "uqor".into(),
+            amount: "5000".into(),
+        }],
         gas: "200000".into(),
         granter: String::new(),
         payer: String::new(),
@@ -131,6 +139,7 @@ fn make_pqc_dx(url: String, qor: Option<QorClient>) -> PqcDx {
         rest_url: url,
         mode: BroadcastMode::Sync,
         qor,
+        sign_bytes: SignBytesMode::Auto,
     }
 }
 
@@ -177,22 +186,16 @@ async fn get_pqc_status_normalizes_chain_response() {
 
 #[tokio::test]
 async fn is_pqc_registered_true_and_false() {
-    let server_yes = MockServer::start(
-        r#"{"registered":true}"#,
-        r#"{"tx_response":{"code":0}}"#,
-    )
-    .await;
+    let server_yes =
+        MockServer::start(r#"{"registered":true}"#, r#"{"tx_response":{"code":0}}"#).await;
     let dx_yes = make_pqc_dx(
         server_yes.base_url.clone(),
         Some(QorClient::new(server_yes.base_url.clone())),
     );
     assert!(dx_yes.is_pqc_registered(&dx_yes.sender).await.unwrap());
 
-    let server_no = MockServer::start(
-        r#"{"registered":false}"#,
-        r#"{"tx_response":{"code":0}}"#,
-    )
-    .await;
+    let server_no =
+        MockServer::start(r#"{"registered":false}"#, r#"{"tx_response":{"code":0}}"#).await;
     let dx_no = make_pqc_dx(
         server_no.base_url.clone(),
         Some(QorClient::new(server_no.base_url.clone())),

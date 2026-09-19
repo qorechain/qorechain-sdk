@@ -25,8 +25,9 @@ import type { UnifiedAccount } from "./unified";
  * @throws always.
  */
 export function unifiedAccountFromPhantomSignature(
-  _signatureBytes: Uint8Array,
+  signatureBytes: Uint8Array,
 ): UnifiedAccount {
+  void signatureBytes; // kept in the signature so existing callers still type-check
   throw new Error(
     "unifiedAccountFromPhantomSignature was removed in v0.8.0: deriving a spend key " +
       "from a wallet signature is unsafe — the signature is a bearer secret that any " +
@@ -68,8 +69,9 @@ export interface ConnectPhantomUnifiedOptions {
  * @throws always.
  */
 export async function connectPhantomUnified(
-  _opts: ConnectPhantomUnifiedOptions = {},
+  opts: ConnectPhantomUnifiedOptions = {},
 ): Promise<UnifiedAccount> {
+  void opts; // kept in the signature so existing callers still type-check
   throw new Error(
     "connectPhantomUnified was removed in v0.8.0: deriving a spend key from a wallet " +
       "signature is unsafe — the signature is a bearer secret that any page can request " +

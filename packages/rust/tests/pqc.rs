@@ -1,12 +1,12 @@
 //! ML-DSA-87 PQC primitive and hybrid-extension tests.
 
 use cosmrs::proto::traits::Message;
-use qorechain::proto::qorechain::pqc::v1::PqcHybridSignature;
 use qorechain::pqc::{
     build_hybrid_signature_extension, generate_pqc_keypair, pqc_sign, pqc_verify,
     ALGORITHM_DILITHIUM5, ALGORITHM_MLKEM1024, HYBRID_SIG_TYPE_URL, MLDSA87_PUBLIC_KEY_LEN,
     MLDSA87_SECRET_KEY_LEN, MLDSA87_SIGNATURE_LEN,
 };
+use qorechain::proto::qorechain::pqc::v1::PqcHybridSignature;
 
 #[test]
 fn algorithm_constants() {
@@ -242,7 +242,10 @@ fn length_predicates_accept_only_the_exact_sizes() {
         is_valid_pqc_public_key_len, is_valid_pqc_secret_key_len, is_valid_pqc_signature_len,
     };
 
-    assert!(is_valid_pqc_signature_len(&vec![0u8; MLDSA87_SIGNATURE_LEN]));
+    assert!(is_valid_pqc_signature_len(&vec![
+        0u8;
+        MLDSA87_SIGNATURE_LEN
+    ]));
     assert!(!is_valid_pqc_signature_len(&vec![
         0u8;
         MLDSA87_SIGNATURE_LEN + 1
@@ -258,7 +261,8 @@ fn length_predicates_accept_only_the_exact_sizes() {
     ]));
     assert!(!is_valid_pqc_public_key_len(&vec![
         0u8;
-        MLDSA87_PUBLIC_KEY_LEN + 1
+        MLDSA87_PUBLIC_KEY_LEN
+            + 1
     ]));
 
     assert!(is_valid_pqc_secret_key_len(&vec![
@@ -267,7 +271,8 @@ fn length_predicates_accept_only_the_exact_sizes() {
     ]));
     assert!(!is_valid_pqc_secret_key_len(&vec![
         0u8;
-        MLDSA87_SECRET_KEY_LEN + 1
+        MLDSA87_SECRET_KEY_LEN
+            + 1
     ]));
 }
 
@@ -278,9 +283,7 @@ fn hybrid_extension_rejects_off_by_one_lengths() {
         build_hybrid_signature_extension(ALGORITHM_DILITHIUM5, &[1u8; 4628], None).is_err(),
         "4628-byte signature must be rejected in the hybrid extension too"
     );
-    assert!(
-        build_hybrid_signature_extension(ALGORITHM_DILITHIUM5, &[1u8; 4626], None).is_err()
-    );
+    assert!(build_hybrid_signature_extension(ALGORITHM_DILITHIUM5, &[1u8; 4626], None).is_err());
     assert!(build_hybrid_signature_extension(
         ALGORITHM_DILITHIUM5,
         &[1u8; 4627],

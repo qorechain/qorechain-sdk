@@ -154,9 +154,7 @@ impl AiClient {
     /// Returns the raw `uint256 score` and the `uint8 level` bucket.
     pub async fn ai_risk_score(&self, tx_data: &[u8]) -> Result<RiskScore> {
         let calldata = encode_risk_score_call(tx_data);
-        let ret = self
-            .eth_call(AI_RISK_SCORE_PRECOMPILE, &calldata)
-            .await?;
+        let ret = self.eth_call(AI_RISK_SCORE_PRECOMPILE, &calldata).await?;
         let (w0, w1) = decode_two_words(&ret)?;
         Ok(RiskScore {
             score: Score::from_word(w0),
@@ -328,8 +326,12 @@ fn hex_value_to_bytes(v: &Value) -> Result<Vec<u8>> {
     let s = v
         .as_str()
         .ok_or_else(|| Error::InvalidResponse(format!("expected hex string, got {v}")))?;
-    let body = s.strip_prefix("0x").or_else(|| s.strip_prefix("0X")).unwrap_or(s);
-    hex::decode(body).map_err(|e| Error::InvalidResponse(format!("invalid hex in eth_call result: {e}")))
+    let body = s
+        .strip_prefix("0x")
+        .or_else(|| s.strip_prefix("0X"))
+        .unwrap_or(s);
+    hex::decode(body)
+        .map_err(|e| Error::InvalidResponse(format!("invalid hex in eth_call result: {e}")))
 }
 
 /// Parses an `eth_estimateGas` `0x`-prefixed hex quantity into a `u64`.
@@ -337,7 +339,10 @@ fn parse_hex_quantity(v: &Value) -> Result<u64> {
     let s = v
         .as_str()
         .ok_or_else(|| Error::InvalidResponse(format!("expected hex quantity, got {v}")))?;
-    let body = s.strip_prefix("0x").or_else(|| s.strip_prefix("0X")).unwrap_or(s);
+    let body = s
+        .strip_prefix("0x")
+        .or_else(|| s.strip_prefix("0X"))
+        .unwrap_or(s);
     if body.is_empty() {
         return Err(Error::InvalidResponse("empty hex quantity".into()));
     }
@@ -356,7 +361,8 @@ fn parse_address_20(s: &str) -> Result<[u8; 20]> {
             "EVM address must be 20 bytes (40 hex chars): {s}"
         )));
     }
-    let raw = hex::decode(body).map_err(|e| Error::Address(format!("invalid EVM address {s}: {e}")))?;
+    let raw =
+        hex::decode(body).map_err(|e| Error::Address(format!("invalid EVM address {s}: {e}")))?;
     let mut out = [0u8; 20];
     out.copy_from_slice(&raw);
     Ok(out)

@@ -16,7 +16,8 @@ Go, and Rust SDKs:
   `typeUrl → parser` registry covering all 49 custom `Msg` types, typed composers,
   and Native `Any` pack/unpack.
 - **tx** — native `bankSend` builder, hybrid (classical + PQC) transaction
-  signing, gas/fee helpers, ABCI error decoding, broadcast, and `waitForTx`.
+  signing with per-network sign-bytes v1/v2 (`SignBytes`, `SignBytesResolver`),
+  gas/fee helpers, ABCI error decoding, broadcast, and `waitForTx`.
 - **query** — `RestClient` (Native + 8 custom routes), `JsonRpcClient`
   (EVM `eth_*`), `QorClient` (25 `qor_*` methods).
 - **subscribe** — WebSocket `subscribeNewBlocks` / `subscribeTx`.
@@ -35,7 +36,7 @@ Go, and Rust SDKs:
 ## Coordinates
 
 ```
-io.github.qorechain:qorechain-sdk:0.3.0
+io.github.qorechain:qorechain-sdk:0.8.0
 ```
 
 Base Java package: `io.github.qorechain` (sub-packages `networks`, `accounts`,
@@ -209,6 +210,77 @@ PqcDx.migratePqcKey(signer, broadcaster, new PqcDx.MigrateOptions());
 
 See the [quantum-safe](../../docs/docs/guides/quantum-safe.md) guide.
 
+## Hybrid sign-bytes v1 / v2 (v0.8.0 / chain v3.1.98)
+
+The ML-DSA-87 half of a hybrid transaction signs a byte string built from `B0`
+(the tx body WITHOUT the PQC extension) and `A` (the auth-info bytes). There are
+two forms, and **each network verifies exactly one at any height** (no overlap):
+
+| Form | Bytes | Verified by |
+|---|---|---|
+| v1 | `BE32(len B0) ‖ B0 ‖ BE32(len A) ‖ A` | a network that has not applied `v3.1.98` — **mainnet `qorechain-vladi` today** |
+| v2 | `"qorechain-pqc-hybrid-v2" ‖ BE64(len chainId) ‖ chainId ‖ BE32(len B0) ‖ B0 ‖ BE32(len A) ‖ A` | testnet `qorechain-diana` (since height 5,746,000) and every network born on v3.1.98+ |
+
+v2 adds a domain tag (so a signature made in another context can never pass as a
+transaction signature) and binds the chain id (so the post-quantum signature
+itself refuses to verify on another network). Mainnet stays on v1 until its own
+governance upgrade to v3.1.98; after that the same code signs v2 automatically.
+
+**The auto rule** (`SignBytes.Mode.AUTO`, the default in `PqcDx`):
+
+1. chain id not `qorechain-vladi` / `qorechain-diana` → v2, no network call;
+2. otherwise `GET {restUrl}/cosmos/upgrade/v1beta1/applied_plan/v3.1.98` →
+   `{"height":"<n>"}`: `n > 0` → v2, `"0"` or no height → v1;
+3. no `restUrl`, or the query fails → `SignBytesResolutionException` (it never
+   guesses; pass a `restUrl` or an explicit version).
+
+Answers are cached per `(restUrl, chainId)` for 60 s (`new SignBytesResolver(ttlMs)`
+to change; `resolve(..., true)` forces a refresh; `clearCache()` empties it).
+
+**Override:** `SignBytes.Mode.V1` / `V2` (or `HybridTx.Options.signBytesVersion` /
+`SignEth.Options.signBytesVersion`) forces a form with no network call.
+
+The pure builders `HybridTx.buildHybridTx` and `SignEth.signHybridEth` never touch
+the network: set `signBytesVersion` explicitly. If it is left `null` on a legacy
+chain id they throw `IllegalStateException` instead of silently signing v1; on any
+other chain id they use v2. The form used is reported on `Built.signBytesVersion`.
+
+`PqcDx.HybridSendPath.send` resolves the version per `Signer.signBytesMode` /
+`Signer.restUrl`. In AUTO mode, if the network refuses the tx with `pqc` code 21
+(`hybrid PQC signature verification failed` — e.g. the network upgraded while the
+answer was cached), it force-refreshes the version, re-signs **once** and
+re-broadcasts **once**, then surfaces any error. An explicit V1/V2 never retries.
+
+```java
+import io.github.qorechain.tx.HybridTx;
+import io.github.qorechain.tx.SignBytes;
+import io.github.qorechain.tx.SignBytesResolver;
+
+// Low level: resolve, then build.
+HybridTx.Options opts = /* messages, keys, fee, chainId, accountNumber, sequence */;
+opts.signBytesVersion = SignBytesResolver.shared()
+        .resolve(SignBytes.Mode.AUTO, opts.chainId, "https://api-testnet.qore.host");
+HybridTx.Built built = HybridTx.buildHybridTx(opts);
+built.signBytesVersion; // V2 on testnet today, V1 on mainnet
+
+// High level: PqcDx resolves (and retries once on pqc code 21) for you.
+signer.signBytesMode = SignBytes.Mode.AUTO;           // default
+signer.restUrl = "https://api.qore.host";             // needed for vladi / diana
+PqcDx.migrateToHybrid(signer, broadcaster, qor, null).send(messages);
+```
+
+The same per-network rule applies to the other two post-quantum payloads, which
+`SignBytes` also builds: key migration (`SignBytes.migration`, v1 ASCII
+`qorechain-key-migration:chain=…:from=…:to=…:account=…:height=…` / v2
+`"qorechain-key-migration-v2"` binding both public keys) and bridge attestations
+(`SignBytes.bridge`, v1 `chain|eventType|operationId|txHash|amount|asset` / v2
+`"qorechain-bridge-attestation-v2"` with BE64-length-prefixed fields led by the
+chain id). `SignBytes.versionFor(chainId, appliedHeight)` is the pure decision
+function; `SignBytes.isHybridVerifyRejection` detects the refusal.
+
+`HybridTx.frame(b0, auth)` (which always built v1) is removed in v0.8.0; use
+`HybridTx.frame(version, chainId, b0, auth)`.
+
 ## Unified eth-native wallet (v0.6.0)
 
 One `eth_secp256k1` key = ONE 20-byte identity rendered three ways — `qor1…`
@@ -228,6 +300,8 @@ ML-DSA-87 post-quantum signature. Account parsing accepts eth_secp256k1 public k
 ```java
 import io.github.qorechain.accounts.UnifiedAccounts;
 import io.github.qorechain.accounts.UnifiedAccounts.UnifiedAccount;
+import io.github.qorechain.tx.SignBytes;
+import io.github.qorechain.tx.SignBytesResolver;
 import io.github.qorechain.tx.SignEth;
 
 UnifiedAccount account = UnifiedAccounts.deriveUnifiedAccount(mnemonic, 0);
@@ -245,6 +319,9 @@ opts.chainId = "qorechain-vladi";
 opts.accountNumber = accountNumber;
 opts.sequence = sequence;
 opts.fee = fee;
+// The form this network verifies (see "Hybrid sign-bytes v1 / v2" above).
+opts.signBytesVersion =
+        SignBytesResolver.shared().resolve(SignBytes.Mode.AUTO, opts.chainId, "https://api.qore.host");
 SignEth.Built built = SignEth.signHybridEth(opts);
 ```
 

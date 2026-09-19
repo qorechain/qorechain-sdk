@@ -101,7 +101,11 @@ normal txs; the classical-only path is for the one-time, bootstrap-exempt
 import { EthNativeSigner, deriveUnifiedAccount } from "@qorechain/sdk";
 
 const account = await deriveUnifiedAccount(mnemonic, 0);
-const signer = new EthNativeSigner(account); // signMode: "hybrid" by default
+// signMode: "hybrid" by default. `rest` lets the signer ask the network which
+// hybrid sign-bytes form it verifies (v1 on mainnet until its v3.1.98 upgrade,
+// v2 on the testnet since its upgrade); without it, hybrid signing on those
+// networks throws rather than guess.
+const signer = new EthNativeSigner(account, { rest: "https://api.qore.host" });
 
 // `transport` is a connected StargateClient (or anything with broadcastTx).
 await signer.bankSend(
@@ -113,7 +117,10 @@ await signer.bankSend(
 ```
 
 For lower-level control, `signHybridEth(params)` / `signClassicalEth(params)`
-return the assembled `TxRaw` bytes and the signing artifacts.
+return the assembled `TxRaw` bytes and the signing artifacts. `signHybridEth` is
+synchronous, so on `qorechain-vladi` / `qorechain-diana` it needs the form passed
+in: resolve it first with `resolveSignBytesVersion({ chainId, rest })` and pass it
+as `signBytesVersion`.
 
 Reading an eth-native account's `account_number` / `sequence` from a
 `BaseAccount` whose on-chain pubkey uses the `eth_secp256k1` type URL:

@@ -39,7 +39,8 @@ from .accounts import Secp256k1Account
 from .messages import msg
 from .messages._composer import Msg
 from .pqc import ALGORITHM_DILITHIUM5, PqcKeypair
-from .tx import broadcast, build_hybrid_tx, send_messages
+from .signbytes import SignBytesVersion
+from .tx import broadcast, build_hybrid_tx, hybrid_sign_and_broadcast, send_messages
 
 #: The default ``key_type`` registered for an ML-DSA-87 (Dilithium-5) key,
 #: matching the chain's ``x/pqc`` account ``KeyType`` string for hybrid
@@ -192,18 +193,36 @@ def _broadcast_messages(
     pqc_keypair: PqcKeypair | None,
     memo: str,
     mode: str,
+    sign_bytes_version: str = "auto",
 ) -> Any:
-    """Sign (hybrid when ``pqc_keypair`` given, else classical) and broadcast."""
+    """Sign (hybrid when ``pqc_keypair`` given, else classical) and broadcast.
+
+    The hybrid path resolves the per-network sign-bytes form (``"auto"`` asks the
+    node) and retries once on a ``pqc`` code 21 refusal — see
+    :func:`qorsdk.tx.hybrid_sign_and_broadcast`.
+    """
     if pqc_keypair is not None:
-        built = build_hybrid_tx(
-            account=account,
-            pqc_keypair=pqc_keypair,
-            messages=messages,
-            fee=fee,
+        keypair = pqc_keypair
+
+        def build(version: SignBytesVersion) -> Any:
+            return build_hybrid_tx(
+                account=account,
+                pqc_keypair=keypair,
+                messages=messages,
+                fee=fee,
+                chain_id=chain_id,
+                account_number=account_number,
+                sequence=sequence,
+                memo=memo,
+                sign_bytes_version=version,
+            )
+
+        return hybrid_sign_and_broadcast(
+            build,
             chain_id=chain_id,
-            account_number=account_number,
-            sequence=sequence,
-            memo=memo,
+            rest_url=rest_url,
+            sign_bytes_version=sign_bytes_version,
+            mode=mode,  # type: ignore[arg-type]
         )
     else:
         built = send_messages(
@@ -300,6 +319,7 @@ def migrate_to_hybrid(
     register_sequence: int | None = None,
     memo: str = "",
     mode: str = "sync",
+    sign_bytes_version: str = "auto",
 ) -> Any:
     """Ensure ``account`` is PQC-registered, then send ``messages`` quantum-safe.
 
@@ -309,6 +329,10 @@ def migrate_to_hybrid(
     broadcasts ``messages`` through the hybrid path
     (:func:`qorsdk.tx.build_hybrid_tx`) so the transaction carries both a
     classical and an ML-DSA-87 signature.
+
+    ``sign_bytes_version`` (``"auto"`` | ``"v1"`` | ``"v2"``) picks the hybrid
+    sign-bytes form; ``"auto"`` asks ``rest_url`` which form the network verifies
+    and retries once on a ``pqc`` code 21 refusal.
 
     Returns the decoded broadcast response for the hybrid ``messages`` tx. If a
     registration tx was broadcast first, advance ``sequence`` accordingly (pass
@@ -344,6 +368,7 @@ def migrate_to_hybrid(
         pqc_keypair=pqc_keypair,
         memo=memo,
         mode=mode,
+        sign_bytes_version=sign_bytes_version,
     )
 
 
@@ -363,13 +388,19 @@ def migrate_pqc_key(
     pqc_keypair: PqcKeypair | None = None,
     memo: str = "",
     mode: str = "sync",
+    sign_bytes_version: str = "auto",
 ) -> Any:
     """Build, sign, and broadcast a ``MsgMigratePQCKey`` (rotate the PQC key).
 
     Rotates ``old_public_key`` to ``new_public_key`` under ``new_algorithm_id``,
     with ``old_signature`` / ``new_signature`` proving control of both keys. The
-    tx is hybrid-signed when ``pqc_keypair`` is supplied, else classical.
+    tx is hybrid-signed when ``pqc_keypair`` is supplied (sign-bytes form per
+    ``sign_bytes_version``, default ``"auto"``), else classical.
     Returns the decoded broadcast response.
+
+    ``old_signature`` / ``new_signature`` are signatures over the key-migration
+    sign-bytes; build those with :func:`qorsdk.signbytes.migration_sign_bytes`
+    in the form the network verifies.
     """
     migrate = build_migrate_pqc_key(
         sender=account.address,
@@ -390,6 +421,7 @@ def migrate_pqc_key(
         pqc_keypair=pqc_keypair,
         memo=memo,
         mode=mode,
+        sign_bytes_version=sign_bytes_version,
     )
 
 

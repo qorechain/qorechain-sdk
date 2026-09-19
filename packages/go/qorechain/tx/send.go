@@ -10,6 +10,7 @@ import (
 
 	"github.com/qorechain/qorechain-sdk/packages/go/qorechain/accounts"
 	"github.com/qorechain/qorechain-sdk/packages/go/qorechain/pqc"
+	"github.com/qorechain/qorechain-sdk/packages/go/qorechain/signbytes"
 )
 
 // MessagesFromSDK converts a slice of sdk.Msg into the tx package's
@@ -88,6 +89,10 @@ type BuildHybridMessagesParams struct {
 	Memo                string
 	TimeoutHeight       uint64
 	IncludePQCPublicKey bool
+	// SignBytesVersion is the hybrid sign-bytes form (see
+	// BuildHybridTxParams.SignBytesVersion). Legacy networks need an explicit
+	// signbytes.V1 / signbytes.V2 here; BroadcastHybridAndWait resolves it.
+	SignBytesVersion signbytes.Version
 }
 
 // BuildHybridMessages is the sdk.Msg-typed entry point to BuildHybridTx: it
@@ -106,6 +111,7 @@ func BuildHybridMessages(params BuildHybridMessagesParams) (*BuiltTx, error) {
 		Memo:                params.Memo,
 		TimeoutHeight:       params.TimeoutHeight,
 		IncludePQCPublicKey: params.IncludePQCPublicKey,
+		SignBytesVersion:    params.SignBytesVersion,
 	})
 }
 

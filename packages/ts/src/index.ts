@@ -339,6 +339,40 @@ export type {
 export { encodeHybridExtension, attachHybridExtension } from "./tx/hybrid";
 export type { HybridPlacement, AttachHybridOptions } from "./tx/hybrid";
 export { buildHybridTx, signAndBroadcastHybrid } from "./tx/hybrid-tx";
+
+// Hybrid / key-migration / bridge-attestation sign-bytes in both forms, and the
+// per-network choice between them (chain v3.1.98 switches legacy networks from
+// v1 to v2 at their own upgrade heights).
+export {
+  SIGN_BYTES_V2_UPGRADE,
+  LEGACY_SIGN_BYTES_CHAINS,
+  HYBRID_SIGN_BYTES_V2_DOMAIN,
+  MIGRATION_SIGN_BYTES_V2_DOMAIN,
+  BRIDGE_ATTESTATION_V2_DOMAIN,
+  HYBRID_SIGN_BYTES_REJECTION_LOG,
+  hybridSignBytes,
+  hybridSignBytesV1,
+  hybridSignBytesV2,
+  migrationSignBytes,
+  migrationSignBytesV1,
+  migrationSignBytesV2,
+  bridgeAttestationSignBytes,
+  bridgeAttestationSignBytesV1,
+  bridgeAttestationSignBytesV2,
+  isLegacySignBytesChain,
+  signBytesVersionFor,
+  fetchSignBytesV2AppliedHeight,
+  resolveSignBytesVersion,
+  clearSignBytesCache,
+  isHybridSignBytesRejection,
+} from "./tx/signbytes";
+export type {
+  SignBytesVersion,
+  SignBytesVersionOption,
+  MigrationSignBytesInput,
+  BridgeAttestationSignBytesInput,
+  ResolveSignBytesVersionOptions,
+} from "./tx/signbytes";
 export type {
   BuildHybridTxOptions,
   BuiltHybridTx,

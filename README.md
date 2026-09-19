@@ -144,7 +144,11 @@ PQC key generation, signing, and verification are available through
 `generatePqcKeypair`, `pqcSign`, `pqcVerify`, and the pluggable
 `PqcSigner` / `HybridSigner`. Hybrid transactions are supported end-to-end via
 `buildHybridTx` / `signAndBroadcastHybrid` (the signer's PQC key must first be
-registered on-chain with `MsgRegisterPQCKeyV2`).
+registered on-chain with `MsgRegisterPQCKeyV2`). The post-quantum signature is
+computed over the sign-bytes form the target network verifies — v1 on mainnet
+until its v3.1.98 upgrade, v2 on the testnet since its upgrade — so pass the
+network's REST endpoint (`rest`) and the SDK picks the form (see the
+[TypeScript guide](./packages/ts/README.md)).
 
 ```ts
 import { generatePqcKeypair, pqcSign, pqcVerify } from "@qorechain/sdk";
@@ -193,7 +197,8 @@ native-chain parts. Highlights:
 - **NFT helpers** — typed ERC-721 and ERC-1155 read/write wrappers.
 - **CosmWasm lifecycle** — query, upload, instantiate/instantiate2, execute,
   migrate, and admin management.
-- **PQC** — ML-DSA-87 (Dilithium-5) signing and hybrid-signature transactions.
+- **PQC** — ML-DSA-87 (Dilithium-5) signing and hybrid-signature transactions,
+  with the sign-bytes form (v1 / v2) chosen per network.
 - **Sidechains, paychains & rollups** — high-level `multilayer` and rollup
   helpers to register a sidechain/paychain, anchor state, route transactions,
   and run a full rollup lifecycle (create → submit batch → execute withdrawal),

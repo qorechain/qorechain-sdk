@@ -15,6 +15,7 @@ import io.github.qorechain.pqc.Pqc;
 import io.github.qorechain.pqc.PqcKeypair;
 import io.github.qorechain.tx.HybridTx;
 import io.github.qorechain.tx.NativeTx;
+import io.github.qorechain.tx.SignBytes;
 import io.github.qorechain.tx.StdFee;
 import java.io.ByteArrayOutputStream;
 import java.util.Arrays;
@@ -53,6 +54,8 @@ class HybridTxTest {
         opts.chainId = "qorechain-diana";
         opts.accountNumber = 7;
         opts.sequence = 3;
+        // The layout assertions below are the v1 form (BE32-framed, no domain tag).
+        opts.signBytesVersion = SignBytes.Version.V1;
         return opts;
     }
 

@@ -163,10 +163,12 @@ built = send_messages(
 )
 
 # Or a quantum-safe hybrid (classical + ML-DSA-87) tx over the same messages.
+# The testnet verifies the v2 sign-bytes form (see "Hybrid sign-bytes v1 / v2").
 hybrid = build_hybrid_tx(
     account=native, pqc_keypair=generate_pqc_keypair(), messages=[swap],
     fee={"amount": [{"denom": "uqor", "amount": "5000"}], "gas": "200000"},
     chain_id="qorechain-diana", account_number=0, sequence=0,
+    sign_bytes_version="v2",
 )
 ```
 
@@ -338,6 +340,88 @@ Async status reads are available as `is_pqc_registered_async` /
 `get_pqc_status_async`. See the
 [quantum-safe](../../docs/docs/guides/quantum-safe.md) guide.
 
+### Hybrid sign-bytes v1 / v2 (v0.8.0 / chain v3.1.98)
+
+A hybrid transaction's ML-DSA-87 signature covers `B0` (the `TxBody` without the
+PQC extension) and `A` (the `AuthInfo` bytes). Chain release **v3.1.98** changed
+the exact bytes that are signed:
+
+| Form | Signed bytes |
+|---|---|
+| v1 | `BE32(len B0) ‖ B0 ‖ BE32(len A) ‖ A` |
+| v2 | `"qorechain-pqc-hybrid-v2" ‖ BE64(len chainID) ‖ chainID ‖ BE32(len B0) ‖ B0 ‖ BE32(len A) ‖ A` |
+
+v2 adds a domain tag (a signature made in any other context can never pass as a
+tx signature) and binds the chain-id (the post-quantum signature itself refuses
+to verify on another network). Each network verifies **exactly one** form at any
+height, with no overlap window, so the SDK must sign the form of the *target*
+network:
+
+- **Testnet** (`qorechain-diana`) applied v3.1.98 at height 5,746,000 and now
+  accepts **only v2**.
+- **Mainnet** (`qorechain-vladi`) stays on **v1** until its own v3.1.98 upgrade,
+  at a height chosen by governance. Nothing changes for mainnet until then.
+- Any chain started on v3.1.98 or later is v2 from its first block.
+
+The `"auto"` rule (the chain's own `SignBytesVersionFor`): ask the node
+`GET {rest}/cosmos/upgrade/v1beta1/applied_plan/v3.1.98`. If the height is above
+0 → v2; else if the chain is `qorechain-vladi` / `qorechain-diana` → v1; else → v2.
+The answer is cached per `(rest_url, chain_id)` for 60 s (a network can upgrade
+while an app is running). If the node cannot be asked for one of those two
+networks, the SDK raises `SignBytesVersionError` instead of guessing.
+
+```python
+from qorsdk import (
+    build_hybrid_tx, hybrid_sign_and_broadcast, resolve_sign_bytes_version,
+    SignBytesResolver, clear_sign_bytes_cache,
+)
+
+# 1. Resolve explicitly, then build (the builders are pure: no network).
+version = resolve_sign_bytes_version("qorechain-diana", rest_url="https://api-testnet.qore.host")
+built = build_hybrid_tx(..., chain_id="qorechain-diana", sign_bytes_version=version)
+built.sign_bytes_version  # "v2"
+
+# 2. Or let the SDK resolve, broadcast, and recover from a stale answer: on a
+#    `pqc` code 21 refusal ("hybrid PQC signature verification failed") it
+#    re-resolves ONCE, re-signs ONCE, and broadcasts ONCE more.
+resp = hybrid_sign_and_broadcast(
+    lambda v: build_hybrid_tx(..., chain_id="qorechain-diana", sign_bytes_version=v),
+    chain_id="qorechain-diana",
+    rest_url="https://api-testnet.qore.host",
+    sign_bytes_version="auto",   # or "v1" / "v2" to override (no lookup, no retry)
+)
+
+# Cache control.
+resolve_sign_bytes_version("qorechain-vladi", rest_url=..., force_refresh=True)
+clear_sign_bytes_cache()
+resolver = SignBytesResolver(ttl=15)  # a private resolver with its own TTL
+```
+
+`build_hybrid_tx` and `sign_hybrid_eth` take `sign_bytes_version="v1" | "v2"`.
+When it is omitted they use v2 for a chain started on v3.1.98+, and **raise** for
+`qorechain-vladi` / `qorechain-diana` (never a silent v1 default). The high-level
+paths (`migrate_to_hybrid`, `migrate_pqc_key`, `CrossVmClient` /
+`create_cross_vm_client`) take `sign_bytes_version="auto" | "v1" | "v2"` (default
+`"auto"`) and use `hybrid_sign_and_broadcast` internally.
+
+The same release changed the **PQC key-migration** and **bridge-attestation**
+payloads. Builders for both forms are provided and reproduce the chain's
+known-answer vectors byte-for-byte:
+
+- `migration_sign_bytes(version, chain_id, account, from_algorithm_id,
+  to_algorithm_id, execution_height, old_public_key, new_public_key)`: v1 is
+  the ASCII
+  `qorechain-key-migration:chain=…:from=…:to=…:account=…:height=…`; v2 is
+  `"qorechain-key-migration-v2"` followed by length-prefixed fields and both
+  public keys.
+- `bridge_attestation_sign_bytes(version, chain_id, chain, event_type,
+  operation_id, tx_hash, amount, asset)`: v1 is the pipe-joined fields with no
+  chain-id; v2 is `"qorechain-bridge-attestation-v2"` then `BE64(len f) ‖ f` for
+  chain-id and each field.
+
+`is_hybrid_signature_rejection(resp_or_error)` detects the `pqc` code-21 refusal
+(code 21 from any other codespace, such as `sdk` "tx too large", does not match).
+
 ### Unified eth-native wallet (v0.6.0)
 
 One `eth_secp256k1` key = ONE 20-byte identity rendered three ways — `qor1…`
@@ -356,7 +440,7 @@ post-quantum signature. Account parsing accepts eth_secp256k1 public keys.
 ```python
 from qorsdk import (
     derive_unified_account, unified_account_from_seed,
-    sign_hybrid_eth,
+    sign_hybrid_eth, resolve_sign_bytes_version,
 )
 
 account = derive_unified_account(mnemonic)
@@ -372,6 +456,9 @@ built = sign_hybrid_eth(
     messages=[msg.cosmos.send(...)],
     fee=fee,
     sequence=sequence,
+    sign_bytes_version=resolve_sign_bytes_version(
+        "qorechain-vladi", rest_url="https://api.qore.host"
+    ),
 )
 
 # A unified account's seed MUST be real secret entropy.

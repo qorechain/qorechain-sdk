@@ -51,7 +51,13 @@ fn cosmos_auth_sign_bytes_kat() {
 /// Rotation sign-bytes string matches the adapter KAT exactly.
 #[test]
 fn rotation_sign_bytes_kat() {
-    let s = rotation_sign_bytes("qorechain-diana", 1, "qor1test", &[0xaa, 0xaa], &[0xbb, 0xbb]);
+    let s = rotation_sign_bytes(
+        "qorechain-diana",
+        1,
+        "qor1test",
+        &[0xaa, 0xaa],
+        &[0xbb, 0xbb],
+    );
     assert_eq!(
         s,
         "qorechain-pqc-rotate-v1|qorechain-diana|1|qor1test|aaaa|bbbb"
@@ -116,7 +122,10 @@ fn rotate_from_mnemonic_is_dual_signed() {
     assert_eq!(rot.msg.sender, account);
     assert_eq!(rot.msg.old_public_key, rot.old_keypair.public_key);
     assert_eq!(rot.msg.new_public_key, rot.new_keypair.public_key);
-    assert_eq!(rot.old_keypair.public_key, derive_pqc_legacy(mnemonic).public_key);
+    assert_eq!(
+        rot.old_keypair.public_key,
+        derive_pqc_legacy(mnemonic).public_key
+    );
     assert_eq!(
         rot.new_keypair.public_key,
         derive_pqc_canonical(account, mnemonic).public_key

@@ -25,6 +25,7 @@ use qorechain::pqc::{
     generate_pqc_keypair, pqc_verify, HYBRID_SIG_TYPE_URL, MLDSA87_SIGNATURE_LEN,
 };
 use qorechain::proto::qorechain::pqc::v1::PqcHybridSignature;
+use qorechain::signbytes::SignBytesVersion;
 use qorechain::tx::{
     bank_send, broadcast, build_hybrid_tx, fee_from_estimate, BankSendParams, BroadcastMode,
     BuildHybridTxParams, Coin, Fee, Message as TxMessage,
@@ -279,6 +280,7 @@ fn build_hybrid_tx_contract() {
         memo: "pqc".into(),
         timeout_height: 0,
         include_pqc_public_key: false,
+        sign_bytes_version: Some(SignBytesVersion::V1),
     })
     .unwrap();
 
@@ -374,6 +376,7 @@ fn build_hybrid_tx_includes_public_key_when_requested() {
         memo: String::new(),
         timeout_height: 0,
         include_pqc_public_key: true,
+        sign_bytes_version: Some(SignBytesVersion::V1),
     })
     .unwrap();
 

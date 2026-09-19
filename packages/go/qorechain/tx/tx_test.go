@@ -21,6 +21,7 @@ import (
 	"github.com/qorechain/qorechain-sdk/packages/go/qorechain/accounts"
 	"github.com/qorechain/qorechain-sdk/packages/go/qorechain/pqc"
 	pqcv1 "github.com/qorechain/qorechain-sdk/packages/go/qorechain/proto/qorechain/pqc/v1"
+	"github.com/qorechain/qorechain-sdk/packages/go/qorechain/signbytes"
 )
 
 // Public test mnemonic only (never a real secret).
@@ -215,14 +216,15 @@ func TestBuildHybridTxContract(t *testing.T) {
 		Amount:      coins("uqor", "2500"),
 	}
 	built, err := BuildHybridTx(BuildHybridTxParams{
-		Account:       acc,
-		PQCKeypair:    kp,
-		Messages:      []Message{{TypeURL: MsgSendTypeURL, Value: msg}},
-		Fee:           sampleFee(),
-		ChainID:       testChainID,
-		AccountNumber: 11,
-		Sequence:      5,
-		Memo:          "pqc",
+		Account:          acc,
+		PQCKeypair:       kp,
+		Messages:         []Message{{TypeURL: MsgSendTypeURL, Value: msg}},
+		Fee:              sampleFee(),
+		ChainID:          testChainID,
+		AccountNumber:    11,
+		Sequence:         5,
+		Memo:             "pqc",
+		SignBytesVersion: signbytes.V1,
 	})
 	if err != nil {
 		t.Fatalf("BuildHybridTx: %v", err)
@@ -303,7 +305,7 @@ func TestBuildHybridTxContract(t *testing.T) {
 		t.Error("framing over with-ext body unexpectedly equals signed message")
 	}
 
-	// The signed message framing must be BE32(len)||B0||BE32(len)||A.
+	// The signed message framing (v1, pinned above) must be BE32(len)||B0||BE32(len)||A.
 	if got := binary.BigEndian.Uint32(built.PQCSignedMessage[:4]); int(got) != len(b0prime) {
 		t.Errorf("BE32 length prefix = %d, want %d", got, len(b0prime))
 	}
@@ -345,6 +347,7 @@ func TestBuildHybridTxIncludesPublicKey(t *testing.T) {
 		AccountNumber:       1,
 		Sequence:            0,
 		IncludePQCPublicKey: true,
+		SignBytesVersion:    signbytes.V2,
 	})
 	if err != nil {
 		t.Fatalf("BuildHybridTx: %v", err)

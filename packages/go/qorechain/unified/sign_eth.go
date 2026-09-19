@@ -14,13 +14,13 @@ package unified
 // adds it. SignClassicalEth omits it (used for the one-time PQC key
 // registration, which is bootstrap-exempt from the hybrid requirement).
 //
-// The hybrid framing (BE32(len B0)||B0||BE32(len A)||A, then the protobuf-encoded
-// PQCHybridSignature extension Any) is IDENTICAL to the native-derivation hybrid
-// tx in the tx package; only the classical hash (keccak vs sha256) and the
-// pubkey typeUrl change here.
+// The hybrid sign-bytes (package signbytes: v1 = BE32(len B0)||B0||BE32(len A)||A,
+// v2 = "qorechain-pqc-hybrid-v2"||BE64(len chainID)||chainID||v1-body, chosen
+// per network) and the protobuf-encoded PQCHybridSignature extension Any are
+// IDENTICAL to the native-derivation hybrid tx in the tx package; only the
+// classical hash (keccak vs sha256) and the pubkey typeUrl change here.
 
 import (
-	"encoding/binary"
 	"errors"
 	"fmt"
 
@@ -33,6 +33,7 @@ import (
 	dcrecdsa "github.com/decred/dcrd/dcrec/secp256k1/v4/ecdsa"
 
 	"github.com/qorechain/qorechain-sdk/packages/go/qorechain/pqc"
+	"github.com/qorechain/qorechain-sdk/packages/go/qorechain/signbytes"
 )
 
 // ETHSECP256K1PubKeyType is the cosmos/evm eth_secp256k1 pubkey type URL. Its
@@ -79,6 +80,14 @@ type EthSignParams struct {
 	Memo string
 	// TimeoutHeight is an optional tx timeout height (0 = none).
 	TimeoutHeight uint64
+	// SignBytesVersion is the hybrid sign-bytes form SignHybridEth signs (see
+	// package signbytes). signbytes.V1 / signbytes.V2 are used as given. Empty
+	// or signbytes.Auto is decided from ChainID alone: a non-legacy chain is
+	// V2, while a legacy network (qorechain-vladi, qorechain-diana) makes
+	// SignHybridEth FAIL, because its form depends on whether the v3.1.98
+	// upgrade is applied there; resolve it first with a signbytes.Resolver.
+	// Ignored by SignClassicalEth.
+	SignBytesVersion signbytes.Version
 }
 
 // SignClassicalEth builds a classical-only eth_secp256k1 native tx (no PQC
@@ -114,7 +123,8 @@ func SignClassicalEth(params EthSignParams) ([]byte, error) {
 // Sequence:
 //  1. B0 — body WITHOUT the PQC extension.
 //  2. A  — single-signer eth_secp256k1 SIGN_MODE_DIRECT AuthInfo.
-//  3. ML-DSA-87 sign over frame(B0, A) = BE32(len B0)||B0||BE32(len A)||A.
+//  3. ML-DSA-87 sign over signbytes.Hybrid(version, ChainID, B0, A) — v1 or
+//     v2 per SignBytesVersion (see EthSignParams).
 //  4. Attach the protobuf-encoded PQCHybridSignature extension Any → final body.
 //  5. Classical eth_secp256k1 signature over SignDoc(finalBody, A, …) — secp256k1
 //     of keccak256(SignDoc).
@@ -122,6 +132,10 @@ func SignClassicalEth(params EthSignParams) ([]byte, error) {
 //
 // Returns the broadcast-ready TxRaw bytes.
 func SignHybridEth(params EthSignParams) ([]byte, error) {
+	version, err := signbytes.ResolveOffline(params.ChainID, params.SignBytesVersion)
+	if err != nil {
+		return nil, fmt.Errorf("SignHybridEth: %w", err)
+	}
 	authInfoBytes, err := buildEthAuthInfoBytes(params.Account.PublicKey, params.Sequence, params.Fee)
 	if err != nil {
 		return nil, err
@@ -139,8 +153,12 @@ func SignHybridEth(params EthSignParams) ([]byte, error) {
 	if err != nil {
 		return nil, fmt.Errorf("marshal base TxBody: %w", err)
 	}
-	// 3. ML-DSA-87 over frame(B0, A).
-	pqcSig, err := pqc.PQCSign(params.Account.Pqc.SecretKey, frame(b0, authInfoBytes))
+	// 3. ML-DSA-87 over the hybrid sign-bytes of the resolved version.
+	msg, err := signbytes.Hybrid(version, params.ChainID, b0, authInfoBytes)
+	if err != nil {
+		return nil, err
+	}
+	pqcSig, err := pqc.PQCSign(params.Account.Pqc.SecretKey, msg)
 	if err != nil {
 		return nil, fmt.Errorf("PQC sign: %w", err)
 	}
@@ -196,20 +214,6 @@ const removedPhantomDerivationMsg = "UnifiedAccountFromPhantomSignature was remo
 	"MsgExecuteEVM. Any account previously derived this way must be treated as exposed — move its funds."
 
 // --- internal helpers ---
-
-// frame builds the PQC-framed sign bytes: BE32(len b0)||b0||BE32(len a)||a
-// (4-byte big-endian length prefixes; no hashing, no domain prefix).
-func frame(b0, a []byte) []byte {
-	out := make([]byte, 0, 8+len(b0)+len(a))
-	var p [4]byte
-	binary.BigEndian.PutUint32(p[:], uint32(len(b0)))
-	out = append(out, p[:]...)
-	out = append(out, b0...)
-	binary.BigEndian.PutUint32(p[:], uint32(len(a)))
-	out = append(out, p[:]...)
-	out = append(out, a...)
-	return out
-}
 
 // buildEthAuthInfoBytes encodes a single-signer eth_secp256k1 SIGN_MODE_DIRECT
 // AuthInfo. The pubkey Any uses ETHSECP256K1PubKeyType with the standard

@@ -24,8 +24,15 @@ extension REMOVED:
   messages/memo/timeout but NOT the ``PQCHybridSignature`` extension.
 - ``A``  = the ``AuthInfo`` bytes (signer secp256k1 pubkey, SIGN_MODE_DIRECT,
   sequence, fee) — the exact bytes that are broadcast.
-- PQC signed message = ``BE32(len(B0)) || B0 || BE32(len(A)) || A`` (4-byte
-  big-endian length prefixes; NO hashing, NO domain prefix).
+- PQC signed message = the per-network sign-bytes form (NO hashing):
+
+  - v1: ``BE32(len(B0)) || B0 || BE32(len(A)) || A``
+  - v2 (chain v3.1.98+): ``"qorechain-pqc-hybrid-v2" || BE64(len(chain_id)) ||
+    chain_id || BE32(len(B0)) || B0 || BE32(len(A)) || A``
+
+  Each network verifies exactly one form at any height: a chain born on
+  v3.1.98+ is always v2; ``qorechain-vladi`` / ``qorechain-diana`` are v1 until
+  their ``v3.1.98`` upgrade is applied, then v2. See :mod:`qorsdk.signbytes`.
 - PQC signature = ``pqc_sign(pqc_secret, message)`` — pure ML-DSA-87, 4627 bytes.
 - The ``PQCHybridSignature`` extension is then added to
   ``TxBody.extension_options`` (the CRITICAL extension-options slot) as an
@@ -48,7 +55,7 @@ before hybrid txs PQC-verify — unless ``include_pqc_public_key`` is set, which
 embeds the key for auto-registration on first use. Registering the key is the
 caller's responsibility.
 
-Determinism note (same caveat as the TS SDK): the BE32 framing is byte-for-byte
+Determinism note (same caveat as the TS SDK): the sign-bytes framing is byte-for-byte
 deterministic on the wallet side. Cross-implementation determinism (this
 ``cosmpy`` proto encoding vs. the chain's re-marshal of the same ``TxBody``) is
 confirmed for the default bank message types; callers using custom message types
@@ -58,6 +65,7 @@ with non-canonical field ordering must ensure their encoding is canonical.
 from __future__ import annotations
 
 import base64
+from collections.abc import Callable
 from dataclasses import dataclass
 from typing import Any as TypingAny
 from typing import Literal
@@ -86,6 +94,14 @@ from .pqc import (
     PqcKeypair,
     encode_hybrid_signature_extension,
     pqc_sign,
+)
+from .signbytes import (
+    SignBytesResolver,
+    SignBytesVersion,
+    default_sign_bytes_resolver,
+    hybrid_sign_bytes,
+    is_hybrid_signature_rejection,
+    pick_build_sign_bytes_version,
 )
 
 #: The ``/cosmos.bank.v1beta1.MsgSend`` type URL.
@@ -125,11 +141,8 @@ class BuiltTx:
     pqc_signed_message: bytes = b""
     #: The raw ML-DSA-87 signature (Dilithium-5: 4627 bytes; empty if non-hybrid).
     pqc_signature: bytes = b""
-
-
-def _be32(n: int) -> bytes:
-    """A big-endian 4-byte length prefix, matching the chain contract framing."""
-    return n.to_bytes(4, "big")
+    #: The hybrid sign-bytes form used (``"v1"`` / ``"v2"``; empty if non-hybrid).
+    sign_bytes_version: str = ""
 
 
 def _to_coins(amount: list[CoinDict]) -> list[Coin]:
@@ -310,6 +323,7 @@ def build_hybrid_tx(
     memo: str = "",
     timeout_height: int = 0,
     include_pqc_public_key: bool = False,
+    sign_bytes_version: SignBytesVersion | None = None,
 ) -> BuiltTx:
     """Build a fully signed hybrid (classical + PQC) transaction.
 
@@ -317,7 +331,8 @@ def build_hybrid_tx(
 
     1. Encode ``B0`` — the ``TxBody`` WITHOUT the PQC extension.
     2. Encode ``A`` — the single-signer SIGN_MODE_DIRECT ``AuthInfo``.
-    3. ``message = BE32(len B0) || B0 || BE32(len A) || A``; ML-DSA-87 sign it.
+    3. ``message = hybrid_sign_bytes(version, chain_id, B0, A)`` (v1 or v2, see
+       :mod:`qorsdk.signbytes`); ML-DSA-87 sign it.
     4. Build the ``PQCHybridSignature`` extension ``Any`` and attach it to a new
        body identical to step 1 but with ``extension_options = [ext]`` → final
        body bytes.
@@ -332,9 +347,19 @@ def build_hybrid_tx(
     registered on-chain via ``MsgRegisterPQCKey`` unless
     ``include_pqc_public_key`` is ``True``.
 
-    :returns: A :class:`BuiltTx` exposing ``pqc_signed_message`` and
-        ``pqc_signature`` so the contract can be asserted/audited.
+    This builder is pure (no network). ``sign_bytes_version`` selects the form
+    the TARGET network verifies: ``"v1"`` or ``"v2"``. When omitted, a chain that
+    is not ``qorechain-vladi`` / ``qorechain-diana`` is v2; for those two it
+    raises :class:`~qorsdk.signbytes.SignBytesVersionError` rather than guess —
+    resolve it with :func:`~qorsdk.signbytes.resolve_sign_bytes_version` or use
+    :func:`hybrid_sign_and_broadcast`, which resolves ``"auto"`` for you.
+
+    :returns: A :class:`BuiltTx` exposing ``pqc_signed_message``,
+        ``pqc_signature`` and ``sign_bytes_version`` so the contract can be
+        asserted/audited.
+    :raises SignBytesVersionError: Legacy chain and no ``sign_bytes_version``.
     """
+    version = pick_build_sign_bytes_version(chain_id, sign_bytes_version)
     encoded_messages = [_encode_message(m) for m in messages]
 
     # 1. B0 — body WITHOUT the PQC extension.
@@ -346,10 +371,9 @@ def build_hybrid_tx(
     # 2. A — single-signer AuthInfo (SIGN_MODE_DIRECT).
     auth_info_bytes = _build_auth_info_bytes(account.public_key, sequence, fee)
 
-    # 3. PQC framing + ML-DSA-87 signature over B0 + A (NOT the final body).
-    pqc_signed_message = (
-        _be32(len(b0)) + b0 + _be32(len(auth_info_bytes)) + auth_info_bytes
-    )
+    # 3. PQC sign-bytes (per-network form) + ML-DSA-87 signature over B0 + A
+    #    (NOT the final body).
+    pqc_signed_message = hybrid_sign_bytes(version, chain_id, b0, auth_info_bytes)
     pqc_signature = pqc_sign(pqc_keypair.secret_key, pqc_signed_message)
 
     # 4. Build the PQC extension Any and attach it to the FINAL body as a
@@ -392,6 +416,7 @@ def build_hybrid_tx(
         auth_info_bytes=auth_info_bytes,
         pqc_signed_message=pqc_signed_message,
         pqc_signature=pqc_signature,
+        sign_bytes_version=version,
     )
 
 
@@ -428,3 +453,52 @@ def broadcast(
     finally:
         if owns_client:
             http.close()
+
+
+def hybrid_sign_and_broadcast(
+    build: Callable[[SignBytesVersion], BuiltTx],
+    *,
+    chain_id: str,
+    rest_url: str,
+    sign_bytes_version: str = "auto",
+    mode: BroadcastMode = "sync",
+    client: httpx.Client | None = None,
+    resolver: SignBytesResolver | None = None,
+) -> TypingAny:
+    """Resolve the sign-bytes form, build via ``build(version)``, and broadcast.
+
+    ``build`` receives the resolved ``"v1"`` / ``"v2"`` and returns a
+    :class:`BuiltTx` (e.g. a closure over :func:`build_hybrid_tx` or
+    :func:`~qorsdk.sign_eth.sign_hybrid_eth`).
+
+    With ``sign_bytes_version="auto"`` (default) the form is read from the node
+    (cached briefly). If the broadcast is then refused because the hybrid PQC
+    signature failed (``pqc`` code 21), the resolver is force-refreshed, the tx is
+    rebuilt and re-signed ONCE with the fresh answer and broadcast ONCE more;
+    any error after that is surfaced. An explicit ``"v1"`` / ``"v2"`` never
+    touches the network for resolution and is never retried.
+
+    :returns: The decoded broadcast response of the final attempt.
+    :raises SignBytesVersionError: If ``"auto"`` cannot be resolved.
+    """
+    res = resolver or default_sign_bytes_resolver
+    version = res.resolve(
+        chain_id, rest_url=rest_url, sign_bytes_version=sign_bytes_version, client=client
+    )
+    auto = sign_bytes_version == "auto"
+    try:
+        response = broadcast(rest_url, build(version).tx_raw_bytes, mode=mode, client=client)
+    except httpx.HTTPStatusError as err:
+        if not (auto and is_hybrid_signature_rejection(err)):
+            raise
+    else:
+        if not (auto and is_hybrid_signature_rejection(response)):
+            return response
+    version = res.resolve(
+        chain_id,
+        rest_url=rest_url,
+        sign_bytes_version="auto",
+        force_refresh=True,
+        client=client,
+    )
+    return broadcast(rest_url, build(version).tx_raw_bytes, mode=mode, client=client)

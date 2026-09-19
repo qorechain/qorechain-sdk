@@ -18,8 +18,14 @@
  *    messages/memo/timeoutHeight but NOT the `PQCHybridSignature` extension.
  *  - `A`  = the tx `authInfoBytes`, verbatim — the same bytes that are
  *    broadcast.
- *  - PQC signed message = `BE32(len(B0)) || B0 || BE32(len(A)) || A`
- *    (4-byte big-endian length prefixes; NO hashing, NO domain prefix).
+ *  - PQC signed message = the hybrid sign-bytes in the form the TARGET network
+ *    verifies (see ./signbytes):
+ *      v1: `BE32(len(B0)) || B0 || BE32(len(A)) || A`
+ *      v2: `"qorechain-pqc-hybrid-v2" || BE64(len chainId) || chainId || v1-body`
+ *    A network verifies exactly one form at any height. `qorechain-vladi` and
+ *    `qorechain-diana` switch from v1 to v2 when their v3.1.98 upgrade is
+ *    applied (at different heights); other chains are v2 from genesis. The
+ *    default `signBytesVersion: "auto"` asks the network (needs `rest`).
  *  - PQC signature       = `ml_dsa87.sign(pqcSecretKey, message)` (pure
  *    ML-DSA-87, empty context) — 4627 bytes for Dilithium-5.
  *  - The `PQCHybridSignature` extension is then added to
@@ -67,6 +73,14 @@ import {
   type PqcKeypair,
 } from "../accounts/pqc";
 import { encodeHybridExtension } from "./hybrid";
+import {
+  hybridSignBytes,
+  isHybridSignBytesRejection,
+  resolveSignBytesVersion,
+  type SignBytesVersion,
+  type SignBytesVersionOption,
+} from "./signbytes";
+import type { FetchLike } from "../query/http";
 import type { StdFee } from "./fees";
 import type { BroadcastMode, BroadcastResult } from "./broadcast";
 
@@ -106,6 +120,19 @@ export interface BuildHybridTxOptions {
    * is expected to already be registered via `MsgRegisterPQCKey`).
    */
   includePqcPublicKey?: boolean;
+  /**
+   * Which hybrid sign-bytes form to sign. `"auto"` (default) asks the network
+   * via `rest` (see {@link resolveSignBytesVersion}); `"v1"` / `"v2"` force a
+   * form. On `qorechain-vladi` / `qorechain-diana`, `"auto"` without `rest`
+   * throws rather than guess.
+   */
+  signBytesVersion?: SignBytesVersionOption;
+  /** The network's REST (LCD) base URL, used by `signBytesVersion: "auto"`. */
+  rest?: string;
+  /** Injectable `fetch` for the `"auto"` lookup. Defaults to `globalThis.fetch`. */
+  fetch?: FetchLike;
+  /** Bypass the cached `"auto"` answer. */
+  forceRefreshSignBytesVersion?: boolean;
 }
 
 /** The fully assembled hybrid transaction and the intermediate artifacts. */
@@ -120,16 +147,8 @@ export interface BuiltHybridTx {
   pqcSignedMessage: Uint8Array;
   /** The raw ML-DSA-87 signature (Dilithium-5: 4627 bytes). */
   pqcSignature: Uint8Array;
-}
-
-/** A big-endian 4-byte length prefix, matching the chain contract framing. */
-function be32(n: number): Uint8Array {
-  const b = new Uint8Array(4);
-  b[0] = (n >>> 24) & 0xff;
-  b[1] = (n >>> 16) & 0xff;
-  b[2] = (n >>> 8) & 0xff;
-  b[3] = n & 0xff;
-  return b;
+  /** The sign-bytes form the PQC signature was computed over. */
+  signBytesVersion: SignBytesVersion;
 }
 
 /** Decode a standard base64 string to bytes (no extra deps; atob is universal). */
@@ -137,19 +156,6 @@ function fromBase64(b64: string): Uint8Array {
   const binary = atob(b64);
   const out = new Uint8Array(binary.length);
   for (let i = 0; i < binary.length; i++) out[i] = binary.charCodeAt(i);
-  return out;
-}
-
-/** Concatenate byte arrays. */
-function concatBytes(...parts: Uint8Array[]): Uint8Array {
-  let total = 0;
-  for (const p of parts) total += p.length;
-  const out = new Uint8Array(total);
-  let off = 0;
-  for (const p of parts) {
-    out.set(p, off);
-    off += p.length;
-  }
   return out;
 }
 
@@ -214,13 +220,16 @@ export async function buildHybridTx(
     SignMode.SIGN_MODE_DIRECT,
   );
 
-  // 3. PQC framing + ML-DSA-87 signature over B0 + A (NOT the final body).
-  const pqcSignedMessage = concatBytes(
-    be32(b0.length),
-    b0,
-    be32(authInfoBytes.length),
-    authInfoBytes,
-  );
+  // 3. PQC sign-bytes, in the form this network verifies, + ML-DSA-87 over
+  //    B0 + A (NOT the final body).
+  const signBytesVersion = await resolveSignBytesVersion({
+    chainId,
+    rest: opts.rest,
+    signBytesVersion: opts.signBytesVersion,
+    fetch: opts.fetch,
+    forceRefresh: opts.forceRefreshSignBytesVersion,
+  });
+  const pqcSignedMessage = hybridSignBytes(signBytesVersion, chainId, b0, authInfoBytes);
   const pqcSignature = pqcSign(pqcKeypair.secretKey, pqcSignedMessage);
 
   // 4. Build the PQC extension Any and attach it to the FINAL body as a
@@ -263,6 +272,7 @@ export async function buildHybridTx(
     authInfoBytes,
     pqcSignedMessage,
     pqcSignature,
+    signBytesVersion,
   };
 }
 
@@ -309,15 +319,36 @@ export interface SignAndBroadcastHybridOptions extends BuildHybridTxOptions {
 export async function signAndBroadcastHybrid(
   opts: SignAndBroadcastHybridOptions,
 ): Promise<BroadcastResult> {
+  const auto = (opts.signBytesVersion ?? "auto") === "auto";
+  try {
+    return await broadcastHybridOnce(opts, false);
+  } catch (e) {
+    // Signed the form the network no longer (or not yet) verifies: the answer
+    // was cached across an upgrade. Ask again once and resend once.
+    if (!auto || !isHybridSignBytesRejection(e)) throw e;
+    return broadcastHybridOnce(opts, true);
+  }
+}
+
+async function broadcastHybridOnce(
+  opts: SignAndBroadcastHybridOptions,
+  forceRefresh: boolean,
+): Promise<BroadcastResult> {
   const { transport } = opts;
   const mode: BroadcastMode = opts.mode ?? "commit";
-  const built = await buildHybridTx(opts);
+  const built = await buildHybridTx({
+    ...opts,
+    forceRefreshSignBytesVersion: forceRefresh || opts.forceRefreshSignBytesVersion,
+  });
 
   if (mode === "commit") {
     const res = await transport.broadcastTx(built.txRawBytes);
     if (res.code !== 0) {
-      throw new Error(
-        `hybrid transaction failed with code ${res.code}: ${res.rawLog ?? "(no log)"} (hash ${res.transactionHash})`,
+      throw Object.assign(
+        new Error(
+          `hybrid transaction failed with code ${res.code}: ${res.rawLog ?? "(no log)"} (hash ${res.transactionHash})`,
+        ),
+        { code: res.code, rawLog: res.rawLog, transactionHash: res.transactionHash },
       );
     }
     return {

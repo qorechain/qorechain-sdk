@@ -108,8 +108,8 @@ console.log(result.transactionHash);
 QoreChain supports post-quantum cryptography via ML-DSA-87 (Dilithium-5) and a
 hybrid posture. The key/sign/verify primitives are available today through
 `generatePqcKeypair`, `pqcSign`, `pqcVerify`, and the pluggable `PqcSigner` /
-`HybridSigner`. Hybrid transaction submission is being finalized for the live
-network.
+`HybridSigner`, and hybrid transactions end-to-end through `buildHybridTx` /
+`signAndBroadcastHybrid`.
 
 ```ts
 import { generatePqcKeypair, pqcSign, pqcVerify } from "@qorechain/sdk";
@@ -119,6 +119,47 @@ const message = new TextEncoder().encode("hello");
 const signature = pqcSign(keypair.secretKey, message);
 const ok = pqcVerify(keypair.publicKey, message, signature);
 ```
+
+#### Hybrid sign-bytes: v1 / v2 per network (v0.8.0)
+
+The ML-DSA-87 half of a hybrid transaction signs the body *without* the PQC
+extension (`B0`) and the AuthInfo bytes (`A`), in one of two forms:
+
+```
+v1: BE32(len B0) ‖ B0 ‖ BE32(len A) ‖ A
+v2: "qorechain-pqc-hybrid-v2" ‖ BE64(len chainId) ‖ chainId ‖ BE32(len B0) ‖ B0 ‖ BE32(len A) ‖ A
+```
+
+A network verifies exactly **one** form at any height. `qorechain-diana`
+(testnet) switched to v2 at its v3.1.98 upgrade; `qorechain-vladi` (mainnet)
+stays on v1 until its own upgrade; chains born later are v2 from genesis. So pass
+the network's REST endpoint and let the SDK ask (`signBytesVersion: "auto"`, the
+default):
+
+```ts
+import { signAndBroadcastHybrid, isHybridSignBytesRejection } from "@qorechain/sdk";
+
+const res = await signAndBroadcastHybrid({
+  registry, signer, pqcKeypair, messages, fee,
+  chainId: "qorechain-diana",
+  rest: "https://api-testnet.qore.host", // picks v1 or v2 for this network
+  accountNumber, sequence,
+  transport, // e.g. a connected StargateClient
+});
+```
+
+- `"auto"` reads `GET {rest}/cosmos/upgrade/v1beta1/applied_plan/v3.1.98` (v2 when
+  the applied height is above 0) and caches the answer for about a minute.
+- On `qorechain-vladi` / `qorechain-diana`, `"auto"` without `rest` — or with a
+  node that cannot be asked — **throws** rather than guess. Force a form with
+  `signBytesVersion: "v1"` or `"v2"`.
+- `signAndBroadcastHybrid` and `EthNativeSigner.signAndBroadcast` re-resolve and
+  retry once on a `pqc` code 21 refusal. If you broadcast yourself, catch the
+  refusal with `isHybridSignBytesRejection(err)` and rebuild with
+  `buildHybridTx({ ..., forceRefreshSignBytesVersion: true })`.
+- `built.signBytesVersion` reports the form a built transaction used.
+- The same rule covers the PQC key-migration payload (`migrationSignBytes`) and
+  the bridge attestation payload (`bridgeAttestationSignBytes`).
 
 ### CosmWasm contracts
 
@@ -334,7 +375,7 @@ post-quantum signature. The account parser (`parseEthPubkeyAny`) reads
 account number / sequence from an eth_secp256k1 on-chain pubkey.
 
 ```ts
-import { deriveUnifiedAccount, signHybridEth } from "@qorechain/sdk";
+import { deriveUnifiedAccount, resolveSignBytesVersion, signHybridEth } from "@qorechain/sdk";
 
 const account = await deriveUnifiedAccount(mnemonic);
 account.cosmos; // "qor1…"  — QoreChain Native lane
@@ -342,15 +383,25 @@ account.evm; //    "0x…"   — EIP-55 checksummed
 account.svm; //    "<base58>" — 20 bytes + 12 zero pad
 
 // Sign a QoreChain Native tx from the unified eth key (hybrid PQC path).
+// signHybridEth is synchronous: resolve the sign-bytes form for the network
+// first (v1 on mainnet until its v3.1.98 upgrade, v2 after).
+const signBytesVersion = await resolveSignBytesVersion({
+  chainId: "qorechain-vladi",
+  rest: "https://api.qore.host",
+});
 const signed = signHybridEth({
-  signingKey: { privateKey: account.privateKey, publicKey: account.publicKey },
-  pqc: account.pqc,
+  account, // privateKey, publicKey and the pqc keypair
   messages: [msg.cosmos.send(/* … */)],
   chainId: "qorechain-vladi",
   accountNumber,
   sequence,
   fee,
+  signBytesVersion,
+  encodeMessage: (m) => registry.encodeAsAny(m),
 });
+
+// Or let EthNativeSigner resolve and retry for you:
+// new EthNativeSigner(account, { rest: "https://api.qore.host" }).signAndBroadcast(transport, params)
 ```
 
 `unifiedAccountFromSeed` uses the 32 bytes it is given **as** the spend key, so

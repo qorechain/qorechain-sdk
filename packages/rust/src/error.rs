@@ -65,6 +65,12 @@ pub enum Error {
     #[error(transparent)]
     Tx(#[from] crate::tx::QoreTxError),
 
+    /// The post-quantum sign-bytes version (v1 / v2) could not be chosen or
+    /// parsed. The message says what to pass instead (a REST URL, or an explicit
+    /// version). See [`crate::signbytes`].
+    #[error("sign-bytes: {0}")]
+    SignBytes(String),
+
     /// An API was removed because it was unsafe. The message names the
     /// replacement and, where funds may be at risk, what the caller must do.
     #[error("{0}")]

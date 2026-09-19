@@ -11,6 +11,7 @@ use qorechain::msg;
 use qorechain::pqc::{
     generate_pqc_keypair, pqc_verify, HYBRID_SIG_TYPE_URL, MLDSA87_SIGNATURE_LEN,
 };
+use qorechain::signbytes::SignBytesVersion;
 use qorechain::tx::{
     bank_send, build_hybrid_tx, send_messages, BuildHybridTxParams, Coin, Fee,
     Message as TxMessage, SendMessagesParams,
@@ -181,7 +182,16 @@ fn all_custom_type_urls_are_produced() {
         ),
         (
             "/qorechain.rdk.v1.MsgExecuteWithdrawal",
-            msg::rdk::execute_withdrawal_any(addr, "r1", 0, 0, addr, "uqor", 1, vec![vec![0u8; 32]]),
+            msg::rdk::execute_withdrawal_any(
+                addr,
+                "r1",
+                0,
+                0,
+                addr,
+                "uqor",
+                1,
+                vec![vec![0u8; 32]],
+            ),
         ),
         // multilayer (6)
         (
@@ -231,7 +241,13 @@ fn all_custom_type_urls_are_produced() {
         ),
         (
             "/qorechain.pqc.v1.MsgRotatePQCKey",
-            msg::pqc::rotate_pqc_key_any(addr, vec![1u8; 4], vec![2u8; 4], vec![3u8; 4], vec![4u8; 4]),
+            msg::pqc::rotate_pqc_key_any(
+                addr,
+                vec![1u8; 4],
+                vec![2u8; 4],
+                vec![3u8; 4],
+                vec![4u8; 4],
+            ),
         ),
         // svm (5)
         (
@@ -487,7 +503,10 @@ fn execute_cosmos_round_trips_through_any() {
         3,
     );
     let any = msg::to_any(&m, msg::abstractaccount::EXECUTE_COSMOS);
-    assert_eq!(any.type_url, "/qorechain.abstractaccount.v1.MsgExecuteCosmos");
+    assert_eq!(
+        any.type_url,
+        "/qorechain.abstractaccount.v1.MsgExecuteCosmos"
+    );
 
     let decoded: qorechain::proto::qorechain::abstractaccount::v1::MsgExecuteCosmos =
         msg::from_any(&any).expect("decode");
@@ -700,6 +719,7 @@ fn hybrid_tx_b0_excludes_extension_with_custom_message() {
         memo: String::new(),
         timeout_height: 0,
         include_pqc_public_key: false,
+        sign_bytes_version: Some(SignBytesVersion::V1),
     })
     .unwrap();
 

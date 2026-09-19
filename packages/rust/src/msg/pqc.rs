@@ -81,7 +81,9 @@ pub fn register_pqc_key_v2_any(
     )
 }
 
-/// Builds `MsgMigratePQCKey`.
+/// Builds `MsgMigratePQCKey`. `old_signature` / `new_signature` cover the
+/// per-network migration sign-bytes ([`crate::signbytes::migration_sign_bytes`],
+/// v1 or v2 as the chain verifies).
 pub fn migrate_pqc_key(
     sender: impl Into<String>,
     old_public_key: Vec<u8>,

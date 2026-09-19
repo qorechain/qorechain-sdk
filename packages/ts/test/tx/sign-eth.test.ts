@@ -1,4 +1,4 @@
-import { describe, it, expect } from "vitest";
+import { describe, it, expect, vi, beforeEach } from "vitest";
 import { secp256k1 } from "@noble/curves/secp256k1";
 import { keccak_256 } from "@noble/hashes/sha3";
 import { TxRaw, TxBody, SignDoc } from "cosmjs-types/cosmos/tx/v1beta1/tx";
@@ -14,7 +14,8 @@ import {
 } from "../../src/tx/sign-eth";
 import { EthNativeSigner, accountAuthInfo } from "../../src/tx/eth-native";
 import { qorechainRegistry } from "../../src/messages/registry";
-import { HYBRID_SIG_TYPE_URL } from "../../src/accounts/pqc";
+import { HYBRID_SIG_TYPE_URL, pqcVerify } from "../../src/accounts/pqc";
+import { clearSignBytesCache, hybridSignBytesV1, hybridSignBytesV2 } from "../../src/tx/signbytes";
 import { BaseAccount } from "cosmjs-types/cosmos/auth/v1beta1/auth";
 import { Any } from "cosmjs-types/google/protobuf/any";
 
@@ -77,6 +78,7 @@ describe("signClassicalEth", () => {
       fee: FEE,
       sequence: 3,
       encodeMessage,
+      signBytesVersion: "v2",
     });
     const raw = TxRaw.decode(signed.txRawBytes);
     const { AuthInfo } = await import("cosmjs-types/cosmos/tx/v1beta1/tx");
@@ -109,6 +111,7 @@ describe("signHybridEth", () => {
       fee: FEE,
       sequence: 3,
       encodeMessage,
+      signBytesVersion: "v2",
     });
     const raw = TxRaw.decode(signed.txRawBytes);
     const body = TxBody.decode(raw.bodyBytes);
@@ -150,7 +153,7 @@ describe("signHybridEth", () => {
 describe("EthNativeSigner", () => {
   it("bankSend builds a hybrid eth-native tx and broadcasts via transport", async () => {
     const acct = await katAccount();
-    const signer = new EthNativeSigner(acct);
+    const signer = new EthNativeSigner(acct, { signBytesVersion: "v2" });
     let broadcasted: Uint8Array | undefined;
     const transport = {
       broadcastTx: async (tx: Uint8Array) => {
@@ -204,5 +207,113 @@ describe("accountAuthInfo", () => {
     expect(Array.from(parsed.publicKey!)).toEqual(
       Array.from(fromHex(acct.publicKey)),
     );
+  });
+});
+
+describe("eth-native hybrid sign-bytes form", () => {
+  beforeEach(() => clearSignBytesCache());
+
+  const plan = (height: string) =>
+    vi.fn(async () => new Response(JSON.stringify({ height })));
+
+  function b0And(signed: { bodyBytes: Uint8Array }) {
+    const body = TxBody.decode(signed.bodyBytes);
+    return TxBody.encode(TxBody.fromPartial({ ...body, extensionOptions: [] })).finish();
+  }
+
+  it("signHybridEth refuses to guess the form on a legacy network", async () => {
+    const acct = await katAccount();
+    expect(() =>
+      signHybridEth({
+        account: acct,
+        chainId: "qorechain-vladi",
+        accountNumber: 7,
+        messages: [bankMsg(acct.cosmos)],
+        fee: FEE,
+        sequence: 3,
+        encodeMessage,
+      }),
+    ).toThrow(/needs signBytesVersion/);
+  });
+
+  it("signHybridEth signs v2 by default on a chain born on v2", async () => {
+    const acct = await katAccount();
+    const signed = signHybridEth({
+      account: acct,
+      chainId: "my-rollup-1",
+      accountNumber: 7,
+      messages: [bankMsg(acct.cosmos)],
+      fee: FEE,
+      sequence: 3,
+      encodeMessage,
+    });
+    const ext = TxBody.decode(signed.bodyBytes).extensionOptions[0];
+    expect(ext).toBeDefined();
+  });
+
+  it("signHybridEth v1 and v2 sign different bytes; each verifies only over its own form", async () => {
+    const acct = await katAccount();
+    const base = {
+      account: acct,
+      chainId: CHAIN_ID,
+      accountNumber: 7,
+      messages: [bankMsg(acct.cosmos)],
+      fee: FEE,
+      sequence: 3,
+      encodeMessage,
+    };
+    for (const version of ["v1", "v2"] as const) {
+      const signed = signHybridEth({ ...base, signBytesVersion: version });
+      const b0 = b0And(signed);
+      const ext = TxBody.decode(signed.bodyBytes).extensionOptions[0];
+      const { PQCHybridSignature } = await import("../../src/codegen/qorechain/pqc/v1/hybrid");
+      const sig = PQCHybridSignature.decode(ext.value).pqcSignature;
+      const v1 = hybridSignBytesV1(b0, signed.authInfoBytes);
+      const v2 = hybridSignBytesV2(CHAIN_ID, b0, signed.authInfoBytes);
+      expect(pqcVerify(acct.pqc!.publicKey, version === "v1" ? v1 : v2, sig)).toBe(true);
+      expect(pqcVerify(acct.pqc!.publicKey, version === "v1" ? v2 : v1, sig)).toBe(false);
+    }
+  });
+
+  it("EthNativeSigner auto asks the network and retries once on a pqc code-21 refusal", async () => {
+    const acct = await katAccount();
+    const f = vi
+      .fn()
+      .mockResolvedValueOnce(new Response(JSON.stringify({ height: "0" })))
+      .mockResolvedValue(new Response(JSON.stringify({ height: "5746000" })));
+    const signer = new EthNativeSigner(acct, { rest: "https://lcd.example", fetch: f });
+    const transport = {
+      broadcastTx: vi
+        .fn()
+        .mockResolvedValueOnce({ code: 21, transactionHash: "X", rawLog: "hybrid PQC signature verification failed" })
+        .mockResolvedValue({ code: 0, transactionHash: "OK" }),
+    };
+    const res = await signer.signAndBroadcast(transport, {
+      chainId: CHAIN_ID,
+      accountNumber: 7,
+      sequence: 3,
+      fee: FEE,
+      messages: [bankMsg(acct.cosmos)],
+    });
+    expect(res.transactionHash).toBe("OK");
+    expect(transport.broadcastTx).toHaveBeenCalledTimes(2);
+    expect(f).toHaveBeenCalledTimes(2);
+  });
+
+  it("EthNativeSigner auto without rest on a legacy network throws", async () => {
+    const acct = await katAccount();
+    const signer = new EthNativeSigner(acct);
+    const transport = { broadcastTx: vi.fn() };
+    await expect(
+      signer.signAndBroadcast(transport, {
+        chainId: CHAIN_ID,
+        accountNumber: 7,
+        sequence: 3,
+        fee: FEE,
+        messages: [bankMsg(acct.cosmos)],
+      }),
+    ).rejects.toThrow(/REST endpoint/);
+    expect(transport.broadcastTx).not.toHaveBeenCalled();
+    void plan;
   });
 });

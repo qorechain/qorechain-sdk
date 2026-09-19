@@ -12,6 +12,8 @@ import (
 	dcrecdsa "github.com/decred/dcrd/dcrec/secp256k1/v4/ecdsa"
 
 	banktypes "github.com/cosmos/cosmos-sdk/x/bank/types"
+
+	"github.com/qorechain/qorechain-sdk/packages/go/qorechain/signbytes"
 )
 
 const katMnemonic = "test test test test test test test test test test test junk"
@@ -235,12 +237,13 @@ func TestSignHybridEthVerifiesAndFrames(t *testing.T) {
 	}
 	msg := &banktypes.MsgSend{FromAddress: acc.Cosmos, ToAddress: acc.Cosmos}
 	raw, err := SignHybridEth(EthSignParams{
-		Account:       acc,
-		ChainID:       "qorechain-vladi",
-		AccountNumber: 7,
-		Sequence:      3,
-		Messages:      []Message{{TypeURL: "/cosmos.bank.v1beta1.MsgSend", Value: msg}},
-		Fee:           Fee{Amount: []Coin{{Denom: "uqor", Amount: "100"}}, Gas: 200000},
+		SignBytesVersion: signbytes.V1,
+		Account:          acc,
+		ChainID:          "qorechain-vladi",
+		AccountNumber:    7,
+		Sequence:         3,
+		Messages:         []Message{{TypeURL: "/cosmos.bank.v1beta1.MsgSend", Value: msg}},
+		Fee:              Fee{Amount: []Coin{{Denom: "uqor", Amount: "100"}}, Gas: 200000},
 	})
 	if err != nil {
 		t.Fatalf("sign hybrid: %v", err)

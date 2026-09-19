@@ -83,7 +83,11 @@ impl MockServer {
             }
         });
 
-        MockServer { base_url, recorded, _shutdown: tx }
+        MockServer {
+            base_url,
+            recorded,
+            _shutdown: tx,
+        }
     }
 
     fn last(&self) -> Recorded {
@@ -93,7 +97,10 @@ impl MockServer {
 
 fn sample_fee() -> Fee {
     Fee {
-        amount: vec![Coin { denom: "uqor".into(), amount: "5000".into() }],
+        amount: vec![Coin {
+            denom: "uqor".into(),
+            amount: "5000".into(),
+        }],
         gas: "200000".into(),
         granter: String::new(),
         payer: String::new(),
@@ -140,7 +147,10 @@ async fn call_builds_signs_and_broadcasts_one_message() {
 
     let opts = CallOptions::new(VM_TYPE_COSMWASM, "qor1contract", vec![0xaa, 0xbb])
         .source_vm(VM_TYPE_EVM)
-        .funds(vec![Coin { denom: "uqor".into(), amount: "100".into() }]);
+        .funds(vec![Coin {
+            denom: "uqor".into(),
+            amount: "100".into(),
+        }]);
 
     let resp = cv.call(&opts).await.unwrap();
     assert_eq!(resp["tx_response"]["code"], 0);
@@ -252,7 +262,10 @@ async fn queue_flag_round_trips_to_the_async_field() {
 
     let msgs = decode_broadcast_messages(&server);
     assert_eq!(msgs.len(), 1);
-    assert!(msgs[0].r#async, "queue(true) must set the proto async field");
+    assert!(
+        msgs[0].r#async,
+        "queue(true) must set the proto async field"
+    );
 
     // And the builder is reversible.
     let back = CallOptions::new(VM_TYPE_COSMWASM, "qor1cw", vec![7u8])
@@ -414,7 +427,8 @@ async fn source_vm_is_still_sent_for_older_nodes() {
 
 #[tokio::test]
 async fn get_message_uses_qor_method() {
-    let server = MockServer::start(r#"{"jsonrpc":"2.0","id":1,"result":{"status":"executed"}}"#).await;
+    let server =
+        MockServer::start(r#"{"jsonrpc":"2.0","id":1,"result":{"status":"executed"}}"#).await;
     let qor = QorClient::new(server.base_url.clone());
     let cv = make_cross_vm(server.base_url.clone(), Some(qor));
 

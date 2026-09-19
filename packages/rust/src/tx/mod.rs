@@ -17,8 +17,18 @@
 //!     but NOT the `PQCHybridSignature` extension.
 //!   - `A`  = the `AuthInfo` bytes (signer secp256k1 pubkey, `SIGN_MODE_DIRECT`,
 //!     sequence, fee) — the exact bytes that are broadcast.
-//!   - PQC signed message = `BE32(len(B0)) || B0 || BE32(len(A)) || A` (4-byte
-//!     big-endian length prefixes; NO hashing, NO domain prefix).
+//!   - PQC signed message = the per-network hybrid sign-bytes (see
+//!     [`crate::signbytes`]):
+//!       - v1 (legacy): `BE32(len(B0)) || B0 || BE32(len(A)) || A`
+//!       - v2 (chain `v3.1.98`+): `"qorechain-pqc-hybrid-v2" || BE64(len(chainId))
+//!         || chainId || BE32(len(B0)) || B0 || BE32(len(A)) || A`
+//!
+//!     No hashing. A network verifies exactly one form: `qorechain-vladi` and
+//!     `qorechain-diana` verify v1 until the `v3.1.98` upgrade is applied on them
+//!     and v2 after it; every other chain verifies v2. [`build_hybrid_tx`] is pure,
+//!     so for those two chains it needs an explicit
+//!     [`BuildHybridTxParams::sign_bytes_version`]; [`broadcast_hybrid_tx`]
+//!     resolves it from the node and retries once on a `pqc` code-21 refusal.
 //!   - PQC signature = `pqc_sign(pqc_secret, message)` — pure ML-DSA-87 (4627
 //!     bytes for Dilithium-5).
 //!   - The `PQCHybridSignature` extension is then added to
@@ -41,7 +51,7 @@
 //! embeds the key for auto-registration on first use. Registering the key is the
 //! caller's responsibility.
 //!
-//! Determinism note (same caveat as the other SDKs): the `BE32` framing is
+//! Determinism note (same caveat as the other SDKs): the sign-bytes framing is
 //! byte-for-byte deterministic on the wallet side. Cross-implementation
 //! determinism (this `prost` encoding vs. the chain's re-marshal of the same
 //! `TxBody`) is confirmed for the default bank message types; callers using
@@ -66,6 +76,10 @@ pub use track::{broadcast_and_wait, wait_for_tx, with_retry, TxResult, WaitOptio
 use crate::error::{Error, Result};
 use crate::pqc::{
     build_hybrid_signature_extension, pqc_sign, ALGORITHM_DILITHIUM5, HYBRID_SIG_TYPE_URL,
+};
+use crate::signbytes::{
+    broadcast_with_sign_bytes_retry, default_sign_bytes_resolver, hybrid_sign_bytes,
+    require_sign_bytes_version, HybridBroadcast, SignBytesMode, SignBytesVersion,
 };
 
 use base64::engine::general_purpose::STANDARD as BASE64;
@@ -133,6 +147,9 @@ pub struct BuiltTx {
     pub pqc_signed_message: Vec<u8>,
     /// The raw ML-DSA-87 signature (Dilithium-5: 4627 bytes; empty for non-hybrid).
     pub pqc_signature: Vec<u8>,
+    /// The hybrid sign-bytes version `pqc_signed_message` was framed with
+    /// (`None` for a non-hybrid tx).
+    pub sign_bytes_version: Option<SignBytesVersion>,
 }
 
 /// The REST `/cosmos/tx/v1beta1/txs` broadcast behavior.
@@ -273,6 +290,7 @@ pub fn bank_send(params: BankSendParams) -> Result<BuiltTx> {
         body_bytes,
         pqc_signed_message: vec![],
         pqc_signature: vec![],
+        sign_bytes_version: None,
     })
 }
 
@@ -338,6 +356,7 @@ pub fn send_messages(params: SendMessagesParams) -> Result<BuiltTx> {
         body_bytes,
         pqc_signed_message: vec![],
         pqc_signature: vec![],
+        sign_bytes_version: None,
     })
 }
 
@@ -370,6 +389,14 @@ pub struct BuildHybridTxParams {
     /// auto-registration on first use. Defaults to `false` (the key is expected
     /// to be registered already via `MsgRegisterPQCKey`).
     pub include_pqc_public_key: bool,
+    /// The hybrid sign-bytes version to frame (see [`crate::signbytes`]).
+    ///
+    /// `None` means v2 on a chain born with v2, and an ERROR on
+    /// `qorechain-vladi` / `qorechain-diana`, whose form depends on whether the
+    /// `v3.1.98` upgrade is applied there (resolve it with
+    /// [`crate::signbytes::SignBytesResolver`], or use [`broadcast_hybrid_tx`]).
+    /// The builder never falls back to v1 silently.
+    pub sign_bytes_version: Option<SignBytesVersion>,
 }
 
 /// Builds a fully signed hybrid (classical + PQC) transaction following the chain
@@ -378,20 +405,25 @@ pub struct BuildHybridTxParams {
 /// The build sequence:
 ///  1. Encode `B0` — the `TxBody` WITHOUT the PQC extension.
 ///  2. Encode `A`  — the single-signer `SIGN_MODE_DIRECT` `AuthInfo`.
-///  3. `message = BE32(len B0) || B0 || BE32(len A) || A`; ML-DSA-87 sign it.
+///  3. `message = hybrid_sign_bytes(version, chainId, B0, A)` (v1 or v2, see
+///     [`crate::signbytes`]); ML-DSA-87 sign it.
 ///  4. Build the `PQCHybridSignature` extension `Any` and attach it to a new body
 ///     identical to step 1 but with `extension_options = [ext]` → final body bytes.
 ///  5. Classical `SIGN_MODE_DIRECT` signature over `SignDoc(finalBody, A, chainId,
 ///     accountNumber)`.
 ///  6. Assemble `TxRaw(finalBody, A, [classicalSig])`.
 ///
-/// The returned [`BuiltTx`] exposes `pqc_signed_message` and `pqc_signature` so
-/// the contract can be asserted/audited.
+/// The returned [`BuiltTx`] exposes `pqc_signed_message`, `pqc_signature` and
+/// `sign_bytes_version` so the contract can be asserted/audited.
+///
+/// Fails when `sign_bytes_version` is `None` on a legacy chain (see
+/// [`BuildHybridTxParams::sign_bytes_version`]).
 ///
 /// On-chain prerequisite: the signer's PQC key must already be registered via
 /// `MsgRegisterPQCKey` for the chain to PQC-verify the tx, unless
 /// `include_pqc_public_key` is set to embed the key for auto-registration.
 pub fn build_hybrid_tx(params: BuildHybridTxParams) -> Result<BuiltTx> {
+    let version = require_sign_bytes_version(&params.chain_id, params.sign_bytes_version)?;
     let messages = encode_messages(&params.messages);
 
     // 1. B0 — body WITHOUT the PQC extension.
@@ -407,8 +439,9 @@ pub fn build_hybrid_tx(params: BuildHybridTxParams) -> Result<BuiltTx> {
     // 2. A — single-signer AuthInfo (SIGN_MODE_DIRECT).
     let auth_info_bytes = build_auth_info_bytes(&params.public_key, params.sequence, &params.fee)?;
 
-    // 3. PQC framing + ML-DSA-87 signature over B0 + A (NOT the final body).
-    let pqc_signed_message = frame_sign_bytes(&b0, &auth_info_bytes);
+    // 3. PQC sign-bytes (per-network v1/v2) + ML-DSA-87 signature over B0 + A
+    //    (NOT the final body).
+    let pqc_signed_message = hybrid_sign_bytes(version, &params.chain_id, &b0, &auth_info_bytes);
     let pqc_signature = pqc_sign(&params.pqc_secret_key, &pqc_signed_message)?;
 
     // 4. Build the PQC extension Any (PROTOBUF value) and attach it to the FINAL
@@ -456,7 +489,40 @@ pub fn build_hybrid_tx(params: BuildHybridTxParams) -> Result<BuiltTx> {
         body_bytes,
         pqc_signed_message,
         pqc_signature,
+        sign_bytes_version: Some(version),
     })
+}
+
+/// Builds, signs and broadcasts a hybrid tx, choosing the sign-bytes version per
+/// network.
+///
+/// `sign_bytes` overrides `params.sign_bytes_version`: `V1` / `V2` are used
+/// as-is; `Auto` asks `rest_url` (via the process-wide
+/// [`crate::signbytes::default_sign_bytes_resolver`], cached ~60 s) whether the
+/// `v3.1.98` upgrade is applied. When `Auto` and the broadcast is refused with
+/// `pqc` code 21 ("hybrid PQC signature verification failed"), the version is
+/// re-resolved, the tx re-signed and broadcast exactly once more; the second
+/// outcome is returned as-is. An explicit version is never retried.
+pub async fn broadcast_hybrid_tx(
+    params: BuildHybridTxParams,
+    sign_bytes: SignBytesMode,
+    rest_url: &str,
+    mode: BroadcastMode,
+) -> Result<HybridBroadcast> {
+    let chain_id = params.chain_id.clone();
+    broadcast_with_sign_bytes_retry(
+        default_sign_bytes_resolver(),
+        sign_bytes,
+        &chain_id,
+        Some(rest_url),
+        |version| {
+            let mut p = params.clone();
+            p.sign_bytes_version = Some(version);
+            build_hybrid_tx(p).map(|b| b.tx_raw_bytes)
+        },
+        |tx| async move { broadcast(rest_url, &tx, mode).await },
+    )
+    .await
 }
 
 /// POSTs signed `TxRaw` bytes to the REST `/cosmos/tx/v1beta1/txs` endpoint.
@@ -490,21 +556,6 @@ pub async fn broadcast(rest_url: &str, tx_bytes: &[u8], mode: BroadcastMode) -> 
 }
 
 // --- internal helpers ---
-
-/// A big-endian 4-byte length prefix, matching the chain contract framing.
-fn be32(n: u32) -> [u8; 4] {
-    n.to_be_bytes()
-}
-
-/// Frames the PQC sign-bytes as `BE32(len(b0)) || b0 || BE32(len(a)) || a`.
-fn frame_sign_bytes(b0: &[u8], a: &[u8]) -> Vec<u8> {
-    let mut out = Vec::with_capacity(8 + b0.len() + a.len());
-    out.extend_from_slice(&be32(b0.len() as u32));
-    out.extend_from_slice(b0);
-    out.extend_from_slice(&be32(a.len() as u32));
-    out.extend_from_slice(a);
-    out
-}
 
 fn to_proto_coins(coins: &[Coin]) -> Result<Vec<ProtoCoin>> {
     for c in coins {

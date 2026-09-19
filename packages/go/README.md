@@ -45,6 +45,7 @@ Requires Go 1.23+.
 | `qorechain/crossvm` | Unified cross-VM call helper over `MsgCrossVMCall` (single + atomic triple-VM). |
 | `qorechain/evm` | AI pre-flight risk/anomaly scoring over the EVM precompiles (`eth_call`). |
 | `qorechain/pqcdx` | Quantum-safe DX: idempotent PQC-key registration + classical→hybrid migration. |
+| `qorechain/signbytes` | Hybrid / key-migration / bridge-attestation sign-bytes (v1 + v2), per-network version resolution. |
 
 ## Quickstart
 
@@ -150,7 +151,82 @@ fmt.Println(res.Height)
 
 For a quantum-safe transaction over the same messages, use
 `tx.BuildHybridMessages` with an ML-DSA-87 keypair — it preserves the
-exclude-extension hybrid contract the chain's ante handler verifies.
+exclude-extension hybrid contract the chain's ante handler verifies — or
+`tx.BroadcastHybridAndWait`, which also picks the sign-bytes form for the
+target network (next section).
+
+### Hybrid sign-bytes v1 / v2 (v0.8.0 / chain v3.1.98)
+
+The ML-DSA-87 half of a hybrid tx signs B0 (the TxBody **without** the PQC
+extension) and A (the AuthInfo bytes). Chain v3.1.98 added a second form of
+those sign-bytes:
+
+```text
+v1: BE32(len B0) ‖ B0 ‖ BE32(len A) ‖ A
+v2: "qorechain-pqc-hybrid-v2" ‖ BE64(len chainID) ‖ chainID ‖ BE32(len B0) ‖ B0 ‖ BE32(len A) ‖ A
+```
+
+v2 adds a domain tag and binds the chain id, so the post-quantum signature
+itself refuses to verify in any other context or on any other network. **Each
+network verifies exactly one form at a time — there is no overlap window**; the
+wrong form is refused with codespace `pqc` code `21` (`hybrid PQC signature
+verification failed`).
+
+- **Testnet** (`qorechain-diana`) runs v3.1.98 since height 5,746,000 and
+  verifies **only v2**.
+- **Mainnet** (`qorechain-vladi`) verifies **only v1** and stays on v1 until its
+  own governance upgrade to v3.1.98; the SDK follows it automatically when that
+  happens.
+- Any other chain id starts on v3.1.98+ and verifies v2 from genesis.
+
+**The auto rule** (`signbytes.Auto`, the default): an explicit `signbytes.V1` /
+`signbytes.V2` is used as given; otherwise a non-legacy chain id is v2 with no
+network call, and for `qorechain-vladi` / `qorechain-diana` the SDK asks the node
+`GET {rest}/cosmos/upgrade/v1beta1/applied_plan/v3.1.98` — `height > 0` means v2,
+`"0"` or a missing height means v1. The answer is cached per (REST URL, chain
+id) for 60 s (`signbytes.ResolverOptions.TTL`; `Refresh` forces a new query,
+`ClearCache` drops the cache). If a legacy chain has no REST URL, or the query
+fails, resolution returns an error wrapping `signbytes.ErrUnresolvedVersion` —
+it never guesses.
+
+- The pure builders (`tx.BuildHybridTx`, `tx.BuildHybridMessages`,
+  `unified.SignHybridEth`) take a `SignBytesVersion` field. Left empty on a
+  legacy chain they **fail** rather than silently signing v1: resolve first.
+- `tx.BroadcastHybridAndWait` (and `pqcdx.Client.MigrateToHybrid`) accept
+  `Auto` + the REST URL and resolve for you. If an auto-resolved tx is refused
+  with `pqc` code 21, the resolver is force-refreshed and, when it names the
+  other form, the tx is re-signed and broadcast **once** more. An explicit
+  version is never retried, and code 21 from another codespace (e.g. `sdk`
+  "tx too large") is not treated as this case.
+- `BuiltTx.SignBytesVersion` records the form a built tx used.
+
+```go
+import "github.com/qorechain/qorechain-sdk/packages/go/qorechain/signbytes"
+
+// Resolve, then build (pure).
+v, err := signbytes.Resolve(ctx, "https://api.qore.host", "qorechain-vladi", signbytes.Auto) // v1 today
+built, err := tx.BuildHybridMessages(tx.BuildHybridMessagesParams{
+    /* account, keypair, messages, fee, chain id, account number, sequence */
+    SignBytesVersion: v,
+})
+
+// Or resolve + sign + broadcast + one retry on a pqc 21 refusal.
+out, err := tx.BroadcastHybridAndWait(tx.BroadcastHybridParams{
+    Build:   tx.BuildHybridMessagesParams{ /* … SignBytesVersion left empty = auto */ },
+    RestURL: "https://api-testnet.qore.host", // testnet → v2
+})
+fmt.Println(out.Built.SignBytesVersion, out.Retried)
+
+// Override: force a form (no network call, no retry).
+_ = signbytes.V1
+```
+
+The same package builds the other two sign-bytes that changed in v3.1.98, with
+v1/v2 builders and a version dispatcher each: `signbytes.Migration` (both keys
+of a `MsgMigratePQCKey` sign it; v2 binds the chain id, account, algorithms,
+execution height and **both public keys**) and `signbytes.Bridge` (bridge
+validator attestations; v2 adds the chain id). `signbytes.VersionFor(chainID,
+appliedHeight)` mirrors the chain's own switch.
 
 ### Sidechains, paychains & rollups (v0.4.0)
 
@@ -329,13 +405,16 @@ account.Evm    // "0x…"      — EIP-55 checksummed
 account.Svm    // "<base58>" — 20 bytes + 12 zero pad
 
 // Sign a QoreChain Native tx from the unified eth key (hybrid PQC path).
+// The sign-bytes form is per network (see "Hybrid sign-bytes v1 / v2").
+v, _ := signbytes.Resolve(ctx, "https://api.qore.host", "qorechain-vladi", signbytes.Auto)
 txBytes, _ := unified.SignHybridEth(unified.EthSignParams{
-    Account:       account,
-    ChainID:       "qorechain-vladi",
-    AccountNumber: accountNumber,
-    Sequence:      sequence,
-    Messages:      messages,
-    Fee:           fee,
+    Account:          account,
+    ChainID:          "qorechain-vladi",
+    AccountNumber:    accountNumber,
+    Sequence:         sequence,
+    Messages:         messages,
+    Fee:              fee,
+    SignBytesVersion: v,
 })
 ```
 

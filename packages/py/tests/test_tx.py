@@ -186,6 +186,7 @@ def test_hybrid_pqc_message_is_over_b0_not_final_body(native, pqc):
         messages=[_msg(native)],
         fee=FEE,
         chain_id=CHAIN_ID,
+        sign_bytes_version="v2",
         account_number=7,
         sequence=3,
         memo="hi",
@@ -201,13 +202,24 @@ def test_hybrid_pqc_message_is_over_b0_not_final_body(native, pqc):
     del stripped.extension_options[:]
     b0 = stripped.SerializeToString()
     a = built.auth_info_bytes
-    expected = _be32(len(b0)) + b0 + _be32(len(a)) + a
+    cid = CHAIN_ID.encode()
+    expected = (
+        b"qorechain-pqc-hybrid-v2"
+        + len(cid).to_bytes(8, "big")
+        + cid
+        + _be32(len(b0))
+        + b0
+        + _be32(len(a))
+        + a
+    )
     assert built.pqc_signed_message == expected
+    assert built.sign_bytes_version == "v2"
 
     # It must NOT be a framing over the with-ext (final) body.
     final_bytes = built.tx_raw.body_bytes
     wrong = _be32(len(final_bytes)) + final_bytes + _be32(len(a)) + a
     assert built.pqc_signed_message != wrong
+    assert not built.pqc_signed_message.endswith(wrong)
 
 
 def test_hybrid_pqc_signature_size_and_verifies(native, pqc):
@@ -217,6 +229,7 @@ def test_hybrid_pqc_signature_size_and_verifies(native, pqc):
         messages=[_msg(native)],
         fee=FEE,
         chain_id=CHAIN_ID,
+        sign_bytes_version="v2",
         account_number=0,
         sequence=0,
     )
@@ -231,6 +244,7 @@ def test_hybrid_extension_any_shape(native, pqc):
         messages=[_msg(native)],
         fee=FEE,
         chain_id=CHAIN_ID,
+        sign_bytes_version="v2",
         account_number=0,
         sequence=0,
     )
@@ -262,6 +276,7 @@ def test_hybrid_includes_public_key_when_requested(native, pqc):
         messages=[_msg(native)],
         fee=FEE,
         chain_id=CHAIN_ID,
+        sign_bytes_version="v2",
         account_number=0,
         sequence=0,
         include_pqc_public_key=True,
@@ -289,6 +304,7 @@ def test_hybrid_extension_value_is_protobuf_not_json(native, pqc):
         messages=[_msg(native)],
         fee=FEE,
         chain_id=CHAIN_ID,
+        sign_bytes_version="v2",
         account_number=4,
         sequence=2,
         include_pqc_public_key=True,
@@ -316,6 +332,7 @@ def test_hybrid_classical_signature_in_txraw_over_final_body(native, pqc):
         messages=[_msg(native)],
         fee=FEE,
         chain_id=CHAIN_ID,
+        sign_bytes_version="v2",
         account_number=7,
         sequence=3,
     )

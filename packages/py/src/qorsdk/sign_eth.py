@@ -10,10 +10,10 @@ differs). This is the SAME account that spends on the EVM lane, so its
 ``qor1``/``0x``/svm forms are one identity.
 
 Mainnet requires the ML-DSA-87 hybrid extension in the tx body:
-:func:`sign_hybrid_eth` adds it (reusing the exact hybrid framing / extension
-encoding from :mod:`qorsdk.tx`). :func:`sign_classical_eth` omits it — used for
-the one-time PQC key registration, which is bootstrap-exempt from the hybrid
-requirement.
+:func:`sign_hybrid_eth` adds it (reusing the per-network hybrid sign-bytes from
+:mod:`qorsdk.signbytes` and the extension encoding from :mod:`qorsdk.pqc`).
+:func:`sign_classical_eth` omits it — used for the one-time PQC key
+registration, which is bootstrap-exempt from the hybrid requirement.
 
 This mirrors ``@qorechain/wallet-adapter`` (``sign-eth.js``) but is reimplemented
 natively here. Only two things change relative to the standard Native signing in
@@ -46,6 +46,7 @@ from .pqc import (
     encode_hybrid_signature_extension,
     pqc_sign,
 )
+from .signbytes import SignBytesVersion, hybrid_sign_bytes, pick_build_sign_bytes_version
 from .tx import BuiltTx, FeeDict, _encode_message, _fee_to_proto
 from .unified import UnifiedAccount
 from .utils.hash import keccak256
@@ -53,10 +54,6 @@ from .utils.hash import keccak256
 #: cosmos/evm ``eth_secp256k1`` pubkey type URL. Wire shape is identical to the
 #: cosmos secp256k1 ``PubKey`` (``{1: bytes key}``); only the type URL differs.
 ETHSECP256K1_PUBKEY_TYPE = "/cosmos.evm.crypto.v1.ethsecp256k1.PubKey"
-
-
-def _be32(n: int) -> bytes:
-    return n.to_bytes(4, "big")
 
 
 def _eth_pubkey_any(compressed_pubkey: bytes) -> ProtoAny:
@@ -152,6 +149,7 @@ def sign_hybrid_eth(
     memo: str = "",
     timeout_height: int = 0,
     include_pqc_public_key: bool = False,
+    sign_bytes_version: SignBytesVersion | None = None,
 ) -> BuiltTx:
     """Hybrid ``eth_secp256k1`` + ML-DSA-87 Native tx.
 
@@ -163,15 +161,23 @@ def sign_hybrid_eth(
 
     1. ``B0`` — the ``TxBody`` WITHOUT the PQC extension.
     2. ``A``  — the single-signer SIGN_MODE_DIRECT ``AuthInfo`` (eth pubkey).
-    3. ``pqc_sig = mldsa_sign(secret, frame(B0, A))`` where
-       ``frame = BE32(len B0) ‖ B0 ‖ BE32(len A) ‖ A``.
+    3. ``pqc_sig = mldsa_sign(secret, hybrid_sign_bytes(version, chain_id, B0, A))``
+       — v1 ``BE32(len B0) ‖ B0 ‖ BE32(len A) ‖ A``, or v2 which prefixes
+       ``"qorechain-pqc-hybrid-v2" ‖ BE64(len chainID) ‖ chainID``.
     4. Attach the ``PQCHybridSignature`` extension to the final body.
     5. Classical secp256k1 signature over ``keccak256(SignDoc(final_body, A))``.
 
     :param account: A :class:`~qorsdk.unified.UnifiedAccount` (carries the PQC key).
+    :param sign_bytes_version: ``"v1"`` / ``"v2"`` — the form the target network
+        verifies. Omitted: v2 for a chain born on v3.1.98+; for
+        ``qorechain-vladi`` / ``qorechain-diana`` it raises
+        :class:`~qorsdk.signbytes.SignBytesVersionError` (resolve it first with
+        :func:`~qorsdk.signbytes.resolve_sign_bytes_version`).
     :returns: A :class:`~qorsdk.tx.BuiltTx` exposing ``pqc_signed_message`` /
-        ``pqc_signature`` so the contract can be asserted/audited.
+        ``pqc_signature`` / ``sign_bytes_version`` so the contract can be
+        asserted/audited.
     """
+    version = pick_build_sign_bytes_version(chain_id, sign_bytes_version)
     encoded = [_encode_message(m) for m in messages]
 
     # 1. B0 — body without the PQC extension.
@@ -182,8 +188,8 @@ def sign_hybrid_eth(
     # 2. A — single-signer AuthInfo with the eth_secp256k1 pubkey.
     auth_info_bytes = _build_eth_auth_info_bytes(account.public_key, sequence, fee)
 
-    # 3. ML-DSA-87 over frame(B0, A).
-    pqc_signed_message = _be32(len(b0)) + b0 + _be32(len(auth_info_bytes)) + auth_info_bytes
+    # 3. ML-DSA-87 over the per-network sign-bytes of (B0, A).
+    pqc_signed_message = hybrid_sign_bytes(version, chain_id, b0, auth_info_bytes)
     pqc_signature = pqc_sign(account.pqc.secret_key, pqc_signed_message)
 
     # 4. Build the extension Any and attach it to the FINAL body. The Any.value
@@ -222,6 +228,7 @@ def sign_hybrid_eth(
         auth_info_bytes=auth_info_bytes,
         pqc_signed_message=pqc_signed_message,
         pqc_signature=pqc_signature,
+        sign_bytes_version=version,
     )
 
 

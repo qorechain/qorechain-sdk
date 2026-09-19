@@ -102,6 +102,7 @@ class PqcDxTest {
         s.chainId = "qorechain-diana";
         s.accountNumber = 7;
         s.sequence = 3;
+        s.signBytesMode = io.github.qorechain.tx.SignBytes.Mode.V2;
         return s;
     }
 

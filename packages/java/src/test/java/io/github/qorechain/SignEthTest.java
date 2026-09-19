@@ -12,6 +12,7 @@ import io.github.qorechain.messages.TypedMessage;
 import io.github.qorechain.pqc.Pqc;
 import io.github.qorechain.tx.HybridTx;
 import io.github.qorechain.tx.NativeTx;
+import io.github.qorechain.tx.SignBytes;
 import io.github.qorechain.tx.SignEth;
 import io.github.qorechain.tx.StdFee;
 import io.github.qorechain.utils.Hashing;
@@ -55,6 +56,7 @@ class SignEthTest {
         opts.chainId = "qorechain-diana";
         opts.accountNumber = 7;
         opts.sequence = 3;
+        opts.signBytesVersion = SignBytes.Version.V2;
         return opts;
     }
 
@@ -136,9 +138,12 @@ class SignEthTest {
         }
         assertArrayEquals(stripped.build().toByteArray(), built.b0Bytes);
 
-        // PQC signature is over frame(B0, authInfo) and verifies.
+        // PQC signature is over the v2 frame(chainId, B0, authInfo) and verifies.
         assertArrayEquals(
-                HybridTx.frame(built.b0Bytes, built.authInfoBytes), built.pqcSignedMessage);
+                HybridTx.frame(
+                        SignBytes.Version.V2, opts.chainId, built.b0Bytes, built.authInfoBytes),
+                built.pqcSignedMessage);
+        assertEquals(SignBytes.Version.V2, built.signBytesVersion);
         assertEquals(Pqc.ML_DSA_87_SIGNATURE_LENGTH, built.pqcSignature.length);
         assertTrue(Pqc.pqcVerify(acct.pqc.publicKey, built.pqcSignedMessage, built.pqcSignature));
 

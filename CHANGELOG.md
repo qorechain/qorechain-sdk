@@ -7,6 +7,44 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [0.8.0]
 
+### Breaking — hybrid sign-bytes follow the network (chain v3.1.98)
+
+- **The post-quantum half of a hybrid transaction is now signed in the form the
+  target network verifies.** Chain v3.1.98 introduced a v2 sign-bytes form that
+  binds a domain tag and the chain id:
+
+      v1: BE32(len B0) ‖ B0 ‖ BE32(len A) ‖ A
+      v2: "qorechain-pqc-hybrid-v2" ‖ BE64(len chainId) ‖ chainId ‖ BE32(len B0) ‖ B0 ‖ BE32(len A) ‖ A
+
+  A network verifies exactly one form at any height, with no overlap. The testnet
+  (`qorechain-diana`) switched to v2 at its v3.1.98 upgrade (height 5,746,000);
+  mainnet (`qorechain-vladi`) stays on v1 until its own upgrade. **Every earlier
+  SDK release signs v1 and is refused on the testnet with `pqc` code 21.**
+- New `signBytesVersion` option (`"auto"` | `"v1"` | `"v2"`, default `"auto"`) on
+  every hybrid path in all five languages. `"auto"` asks the network
+  (`GET {rest}/cosmos/upgrade/v1beta1/applied_plan/v3.1.98`: v2 when the applied
+  height is above 0), caches the answer for about a minute, and never guesses: on
+  `qorechain-vladi` / `qorechain-diana` it needs the REST endpoint, and it raises
+  if the node cannot be asked. Chains born on v3.1.98 or later are v2 without a
+  lookup.
+- **Low-level builders no longer have an implicit form.** `buildHybridTx` /
+  `signHybridEth` (and their Python, Go, Rust and Java counterparts) raise on
+  `qorechain-vladi` / `qorechain-diana` unless given a version or, where the
+  builder is asynchronous, a REST endpoint to resolve one. Pass `rest` (or an
+  explicit version) when you upgrade. The built result reports the form used.
+- The high-level sign-and-broadcast paths re-resolve and retry **once** when a
+  broadcast is refused with `pqc` code 21, so a wallet left open across a network
+  upgrade recovers on its own. Callers that broadcast separately can detect the
+  refusal with `isHybridSignBytesRejection` and rebuild with a forced refresh.
+- Builders for the other two payloads that gained a v2 form in the same release,
+  with the same per-network rule: the PQC key-migration message
+  (`"qorechain-key-migration-v2"`, replacing the ASCII
+  `qorechain-key-migration:chain=…` form) and the bridge attestation
+  (`"qorechain-bridge-attestation-v2"`, replacing the pipe-joined form; bridge
+  validator signers only).
+- All three v2 layouts are checked against known-answer vectors generated from the
+  chain's own implementation, byte for byte, in every language.
+
 ### Removed — security
 
 - **Wallet-signature account derivation is gone.** The Phantom "P1a" helpers —
@@ -40,14 +78,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
-- **Cross-VM calls carry the callee's answer.** `MsgCrossVMCall` gained `async`
-  and `MsgCrossVMCallResponse` gained `executed`, `data` and `gas_used` (chain
-  v3.1.97). The cross-VM helpers now accept an async/queue option and surface the
-  callee's return value, execution flag and gas used. The default is unchanged in
-  effect: the call executes within the transaction and returns its answer; set the
-  async option to queue it for later dispatch instead.
+- **Cross-VM calls carry the callee's answer** (chain v3.1.98). `MsgCrossVMCall`
+  gained `async` and `MsgCrossVMCallResponse` gained `executed`, `data` and
+  `gas_used`. From v3.1.98 the call executes within the transaction and returns
+  its answer; the async option queues it for later dispatch instead. The helpers
+  surface the callee's return value, execution flag and gas used.
+  **Requires a network on v3.1.98.** Before its upgrade a network queues every
+  call, does not know the `async` field (a transaction that sets it is rejected),
+  and returns none of the new response fields — mainnet is in that state until
+  its v3.1.98 upgrade.
 - `MsgUpdateParams` composer for the `svm` module (`/qorechain.svm.v1.MsgUpdateParams`),
-  the governance message that replaces the SVM runtime parameters.
+  the governance message that replaces the SVM runtime parameters. Also chain
+  v3.1.98; not recognised by a network before its upgrade.
 
 ### Changed
 

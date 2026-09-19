@@ -13,7 +13,7 @@ Python, and Go SDK surfaces for the native chain.
 
 ```toml
 [dependencies]
-qorechain = "0.2"
+qorechain-sdk = "0.8" # imported as `qorechain`
 tokio = { version = "1", features = ["macros", "rt-multi-thread"] }
 ```
 
@@ -189,11 +189,82 @@ end-to-end hybrid (classical secp256k1 + post-quantum ML-DSA-87) signing:
 - `fee_from_estimate` turns an AI fee-oracle response into a `Fee`.
 - `build_hybrid_tx` produces a tx carrying the classical signature in
   `TxRaw.signatures` PLUS an ML-DSA-87 signature in the `TxBody`
-  `PQCHybridSignature` extension. The PQC half signs
-  `BE32(len(B0)) || B0 || BE32(len(A)) || A` (body without the extension, then
-  authInfo); the classical half signs the final body. The signer's PQC key must
+  `PQCHybridSignature` extension. The PQC half signs the per-network hybrid
+  sign-bytes of `B0` (the body without the extension) and `A` (authInfo) — see
+  below; the classical half signs the final body. The signer's PQC key must
   be registered on-chain (`MsgRegisterPQCKeyV2`) — or pass `include_pqc_public_key`
   to embed it for auto-registration.
+- `broadcast_hybrid_tx` builds, signs and broadcasts a hybrid tx, choosing the
+  sign-bytes version per network and retrying once on a version mismatch.
+
+### Hybrid sign-bytes v1 / v2 (chain v3.1.98)
+
+Chain release `v3.1.98` changed the bytes the ML-DSA-87 key signs. Each network
+verifies exactly **one** form:
+
+| form | bytes |
+|---|---|
+| v1 (legacy) | `BE32(len B0) ‖ B0 ‖ BE32(len A) ‖ A` |
+| v2 | `"qorechain-pqc-hybrid-v2" ‖ BE64(len chainId) ‖ chainId ‖ BE32(len B0) ‖ B0 ‖ BE32(len A) ‖ A` |
+
+v2 adds a domain tag and binds the chain id, so a PQC signature made for one
+network never verifies on another. The key-migration (`MsgMigratePQCKey`) and
+bridge-attestation payloads changed in the same release; the `signbytes` module
+has v1/v2 builders and a version-dispatching builder for all three
+(`hybrid_sign_bytes`, `migration_sign_bytes`, `bridge_attestation_sign_bytes`).
+
+**Which form (the `auto` rule).** `qorechain-vladi` (mainnet) and
+`qorechain-diana` (testnet) existed before v2: they verify v1 until the
+`v3.1.98` upgrade plan is applied on them, and v2 after. Any other chain verifies
+v2 from its first block. With `SignBytesMode::Auto` (the default on the async
+paths) the SDK asks the node
+
+    GET {rest}/cosmos/upgrade/v1beta1/applied_plan/v3.1.98  ->  {"height":"<n>"}
+
+and signs v2 when `n > 0` (a missing height counts as 0), caching the answer per
+`(rest URL, chain id)` for about a minute (`SignBytesResolver::with_ttl`,
+`force_refresh`, `clear_cache`). If the chain still refuses the tx with `pqc`
+code 21 ("hybrid PQC signature verification failed"), the SDK re-asks the node,
+re-signs and broadcasts **once** more. A legacy chain with no REST URL, or a
+failed query, is an error — the SDK never guesses.
+
+**Today:** the testnet has applied `v3.1.98` and verifies **v2 only**; the
+mainnet has not, and stays on **v1** until its own `v3.1.98` upgrade is applied
+(the `auto` rule then switches automatically).
+
+**Override.** Pass an explicit version to pin the form with no network call:
+`SignBytesMode::V1` / `V2` on the async paths (never retried), or
+`sign_bytes_version: Some(SignBytesVersion::V1 | V2)` on the pure builders.
+`build_hybrid_tx` and `sign_eth::sign_hybrid_eth` are synchronous and
+network-free: with `sign_bytes_version: None` they sign v2 on a chain born with
+v2 and **fail** on `qorechain-vladi` / `qorechain-diana` rather than silently
+picking v1. The version used is reported on `BuiltTx::sign_bytes_version` /
+`EthBuiltTx::sign_bytes_version`.
+
+```rust,no_run
+use qorechain::signbytes::{SignBytesMode, SignBytesResolver, SignBytesVersion};
+use qorechain::tx::{broadcast_hybrid_tx, build_hybrid_tx, BroadcastMode, BuildHybridTxParams};
+
+# async fn run(mut params: BuildHybridTxParams) -> qorechain::Result<()> {
+let rest = "https://api-testnet.qore.host";
+
+// Resolve once, then build offline.
+let version = SignBytesResolver::new()
+    .resolve(SignBytesMode::Auto, &params.chain_id, Some(rest))
+    .await?;
+params.sign_bytes_version = Some(version);
+let built = build_hybrid_tx(params.clone())?;
+assert_eq!(built.sign_bytes_version, Some(version));
+
+// Or let the SDK resolve, sign, broadcast and retry once on a pqc/21 refusal.
+let sent = broadcast_hybrid_tx(params, SignBytesMode::Auto, rest, BroadcastMode::Sync).await?;
+println!("{} (retried: {})", sent.sign_bytes_version, sent.retried);
+
+// Pin the form explicitly (no network call, no retry).
+let _ = SignBytesVersion::V1;
+# Ok(())
+# }
+```
 
 Transaction proto encoding/signing is delegated to the `cosmrs` crate; no
 proto/crypto primitives are reimplemented here.
@@ -389,9 +460,9 @@ hybrid (ML-DSA-87 + secp256k1).
 
 ```rust,no_run
 use qorechain::pqc_dx::PqcDx;
-use cosmrs::Any;
+use qorechain::tx::Message;
 
-# async fn run(pdx: PqcDx, messages: Vec<Any>) -> qorechain::Result<()> {
+# async fn run(pdx: PqcDx, messages: Vec<Message>) -> qorechain::Result<()> {
 // Read-only status (over the qor_ namespace).
 let registered = pdx.is_pqc_registered(&pdx.sender).await?;
 let status = pdx.get_pqc_status(&pdx.sender).await?;
@@ -399,15 +470,25 @@ let status = pdx.get_pqc_status(&pdx.sender).await?;
 // Idempotent: registers the signer's Dilithium key only if it isn't already.
 let ensure = pdx.ensure_pqc_registered().await?;
 
-// Migrate a classical account to hybrid signing, then sign hybrid.
+// Migrate a classical account to hybrid signing, then sign hybrid. The
+// sign-bytes form follows `pdx.sign_bytes` (default Auto: resolved from
+// `pdx.rest_url`, one retry on a pqc/21 refusal).
 let path = pdx.migrate_to_hybrid().await?;
-let sent = path.send_hybrid(messages).await?;
-let _ = (registered, status, ensure, sent);
+let sent = path.send_hybrid_detailed(messages).await?;
+println!("signed {}", sent.sign_bytes_version);
+let _ = (registered, status, ensure);
 # Ok(())
 # }
 ```
 
-`migrate_pqc_key` rotates an account's on-chain PQC key (`MsgMigratePQCKey`). See
+`PqcDx::sign_bytes` (`SignBytesMode`, default `Auto`) selects the hybrid
+sign-bytes form; the sync `build_hybrid` needs an explicit `V1`/`V2` on
+`qorechain-vladi` / `qorechain-diana` (or use `resolve_sign_bytes_version` +
+`build_hybrid_with_version`).
+
+`migrate_pqc_key` rotates an account's on-chain PQC key (`MsgMigratePQCKey`);
+both key signatures cover `signbytes::migration_sign_bytes` in the form the chain
+verifies (v1 binds no public keys, v2 binds both). See
 the [quantum-safe](../../docs/docs/guides/quantum-safe.md) guide.
 
 ### Unified eth-native wallet (v0.6.0)
@@ -424,7 +505,8 @@ coin-type-118 `derive_native_account` still works (additive).
 Native-lane signing over the eth key: `sign_eth::sign_classical_eth` is a
 classical secp256k1 signature over `keccak256(SignDoc)` with pubkey type
 `/cosmos.evm.crypto.v1.ethsecp256k1.PubKey`; `sign_eth::sign_hybrid_eth` adds the
-ML-DSA-87 post-quantum signature. Account parsing accepts eth_secp256k1 public keys.
+ML-DSA-87 post-quantum signature over the hybrid sign-bytes in
+`EthSignParams::sign_bytes_version` (v1 / v2, see above). Account parsing accepts eth_secp256k1 public keys.
 
 ```rust,no_run
 use qorechain::unified::{derive_unified_account, unified_account_from_seed};

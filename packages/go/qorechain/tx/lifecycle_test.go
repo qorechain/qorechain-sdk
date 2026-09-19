@@ -15,6 +15,7 @@ import (
 	"github.com/qorechain/qorechain-sdk/packages/go/qorechain/accounts"
 	"github.com/qorechain/qorechain-sdk/packages/go/qorechain/pqc"
 	ammv1 "github.com/qorechain/qorechain-sdk/packages/go/qorechain/proto/qorechain/amm/v1"
+	"github.com/qorechain/qorechain-sdk/packages/go/qorechain/signbytes"
 )
 
 // ---- errors ----
@@ -263,13 +264,14 @@ func TestHybridB0ExcludesExtensionWithCustomMessage(t *testing.T) {
 		t.Fatalf("pqc keygen: %v", err)
 	}
 	built, err := BuildHybridMessages(BuildHybridMessagesParams{
-		Account:       acc,
-		PQCKeypair:    kp,
-		Messages:      []sdk.Msg{customSwapMsg(acc.Address)},
-		Fee:           Fee{Amount: []Coin{{Denom: "uqor", Amount: "3500"}}, Gas: "140000"},
-		ChainID:       "qorechain-diana",
-		AccountNumber: 1,
-		Sequence:      0,
+		Account:          acc,
+		PQCKeypair:       kp,
+		Messages:         []sdk.Msg{customSwapMsg(acc.Address)},
+		Fee:              Fee{Amount: []Coin{{Denom: "uqor", Amount: "3500"}}, Gas: "140000"},
+		ChainID:          "qorechain-diana",
+		AccountNumber:    1,
+		Sequence:         0,
+		SignBytesVersion: signbytes.V1,
 	})
 	if err != nil {
 		t.Fatalf("build hybrid: %v", err)

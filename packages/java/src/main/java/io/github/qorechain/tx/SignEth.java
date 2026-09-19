@@ -27,9 +27,12 @@ import java.util.List;
  * requirement).
  *
  * <p>The hybrid framing is identical to {@link HybridTx}: {@code B0} = body WITHOUT
- * the PQC extension, and the ML-DSA-87 signature is over
- * {@code BE32(len B0) ‖ B0 ‖ BE32(len A) ‖ A}. Only the classical hash (keccak vs
- * sha256) and the SignerInfo pubkey typeUrl change.
+ * the PQC extension, and the ML-DSA-87 signature is over the per-network
+ * {@link SignBytes#hybrid} form of {@code (chainId, B0, A)} — v1
+ * {@code BE32(len B0) ‖ B0 ‖ BE32(len A) ‖ A} on networks that have not applied
+ * v3.1.98, v2 {@code "qorechain-pqc-hybrid-v2" ‖ BE64(len chainId) ‖ chainId ‖ ...}
+ * after. Only the classical hash (keccak vs sha256) and the SignerInfo pubkey
+ * typeUrl change.
  */
 public final class SignEth {
 
@@ -86,6 +89,13 @@ public final class SignEth {
         public long timeoutHeight = 0L;
         /** When true, embed the PQC public key for auto-registration on first use. */
         public boolean includePqcPublicKey = false;
+        /**
+         * The hybrid sign-bytes form the target network verifies (used only by
+         * {@link #signHybridEth}). {@code null}: v2 for a non-legacy chain id; for
+         * {@code qorechain-vladi}/{@code qorechain-diana} the build throws (resolve it
+         * with {@link SignBytesResolver} or set it).
+         */
+        public SignBytes.Version signBytesVersion;
     }
 
     /** The assembled eth-native transaction and its intermediate artifacts. */
@@ -106,6 +116,8 @@ public final class SignEth {
         public final byte[] pqcSignature;
         /** The 64-byte {@code r‖s} classical eth_secp256k1 signature over keccak256(SignDoc). */
         public final byte[] classicalSignature;
+        /** The sign-bytes form of {@link #pqcSignedMessage}; {@code null} for classical. */
+        public final SignBytes.Version signBytesVersion;
 
         Built(
                 cosmos.tx.v1beta1.TxOuterClass.TxRaw txRaw,
@@ -115,7 +127,8 @@ public final class SignEth {
                 byte[] b0Bytes,
                 byte[] pqcSignedMessage,
                 byte[] pqcSignature,
-                byte[] classicalSignature) {
+                byte[] classicalSignature,
+                SignBytes.Version signBytesVersion) {
             this.txRaw = txRaw;
             this.txRawBytes = txRawBytes;
             this.authInfoBytes = authInfoBytes;
@@ -124,6 +137,7 @@ public final class SignEth {
             this.pqcSignedMessage = pqcSignedMessage;
             this.pqcSignature = pqcSignature;
             this.classicalSignature = classicalSignature;
+            this.signBytesVersion = signBytesVersion;
         }
     }
 
@@ -215,6 +229,7 @@ public final class SignEth {
             byte[] b0Bytes,
             byte[] pqcSignedMessage,
             byte[] pqcSignature,
+            SignBytes.Version signBytesVersion,
             Options opts) {
         // Classical eth_secp256k1 SIGN_MODE_DIRECT signature over keccak256(SignDoc).
         byte[] signBytes = signDocBytes(bodyBytes, authInfoBytes, opts);
@@ -235,7 +250,8 @@ public final class SignEth {
                 b0Bytes,
                 pqcSignedMessage,
                 pqcSignature,
-                classicalSig);
+                classicalSig,
+                signBytesVersion);
     }
 
     /**
@@ -246,25 +262,30 @@ public final class SignEth {
     public static Built signClassicalEth(Options opts) {
         byte[] b0 = buildBody(opts, null).toByteArray();
         byte[] authInfoBytes = buildAuthInfoBytes(opts);
-        return assemble(b0, authInfoBytes, b0, null, null, opts);
+        return assemble(b0, authInfoBytes, b0, null, null, null, opts);
     }
 
     /**
      * Hybrid eth_secp256k1 + ML-DSA-87 Native tx. The ML-DSA-87 signature is over
-     * {@code frame(B0, authInfo)} (B0 = body WITHOUT the extension); the hybrid
-     * extension is then attached to the body, and the classical signature is over
-     * the FINAL (with-extension) SignDoc.
+     * {@code SignBytes.hybrid(version, chainId, B0, authInfo)} (B0 = body WITHOUT the
+     * extension); the hybrid extension is then attached to the body, and the
+     * classical signature is over the FINAL (with-extension) SignDoc.
+     *
+     * @throws IllegalStateException when {@code opts.signBytesVersion} is unset and
+     *     the chain id is a legacy network (the form cannot be known offline).
      */
     public static Built signHybridEth(Options opts) {
+        SignBytes.Version version = SignBytes.requireVersion(opts.chainId, opts.signBytesVersion);
+
         // 1. B0 — body WITHOUT the PQC extension.
         byte[] b0 = buildBody(opts, null).toByteArray();
 
         // 2. A — single-signer eth_secp256k1 AuthInfo (SIGN_MODE_DIRECT).
         byte[] authInfoBytes = buildAuthInfoBytes(opts);
 
-        // 3. PQC framing + ML-DSA-87 signature over B0 + A (identical to HybridTx).
-        byte[] pqcSignedMessage =
-                HybridTx.frame(b0, authInfoBytes);
+        // 3. PQC framing (per-network form) + ML-DSA-87 signature over B0 + A
+        //    (identical to HybridTx).
+        byte[] pqcSignedMessage = HybridTx.frame(version, opts.chainId, b0, authInfoBytes);
         byte[] pqcSignature = Pqc.pqcSign(opts.pqcKeypair.secretKey, pqcSignedMessage);
 
         // 4. Attach the PQC extension (protobuf-encoded, leading 0x08) to the FINAL body.
@@ -277,6 +298,7 @@ public final class SignEth {
         byte[] finalBodyBytes = buildBody(opts, extAny).toByteArray();
 
         // 5. Classical eth_secp256k1 signature over the FINAL body + A.
-        return assemble(finalBodyBytes, authInfoBytes, b0, pqcSignedMessage, pqcSignature, opts);
+        return assemble(
+                finalBodyBytes, authInfoBytes, b0, pqcSignedMessage, pqcSignature, version, opts);
     }
 }

@@ -427,6 +427,7 @@ def test_hybrid_tx_with_custom_message_preserves_b0_exclude_extension():
         messages=[m],
         fee=FEE,
         chain_id=CHAIN_ID,
+        sign_bytes_version="v2",
         account_number=8,
         sequence=1,
     )
@@ -448,8 +449,15 @@ def test_hybrid_tx_with_custom_message_preserves_b0_exclude_extension():
     )
     b0 = b0_body.SerializeToString()
     a = built.auth_info_bytes
+    cid = CHAIN_ID.encode()
     expected = (
-        len(b0).to_bytes(4, "big") + b0 + len(a).to_bytes(4, "big") + a
+        b"qorechain-pqc-hybrid-v2"
+        + len(cid).to_bytes(8, "big")
+        + cid
+        + len(b0).to_bytes(4, "big")
+        + b0
+        + len(a).to_bytes(4, "big")
+        + a
     )
     assert built.pqc_signed_message == expected
     assert pqc_verify(keypair.public_key, built.pqc_signed_message, built.pqc_signature)

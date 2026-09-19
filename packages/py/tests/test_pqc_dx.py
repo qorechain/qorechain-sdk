@@ -56,6 +56,11 @@ class _FakeQor:
 
 
 def _mock_broadcast():
+    # The hybrid path resolves the sign-bytes form ("auto") from the node first;
+    # the testnet has applied v3.1.98, so it answers v2.
+    respx.get(f"{REST}/cosmos/upgrade/v1beta1/applied_plan/v3.1.98").mock(
+        return_value=httpx.Response(200, json={"height": "5746000"})
+    )
     return respx.post(f"{REST}/cosmos/tx/v1beta1/txs").mock(
         return_value=httpx.Response(
             200, json={"tx_response": {"code": 0, "txhash": "DEADBEEF"}}

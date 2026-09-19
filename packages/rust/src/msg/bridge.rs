@@ -132,7 +132,10 @@ pub fn register_bridge_validator_any(
     )
 }
 
-/// Builds `MsgBridgeAttestation`.
+/// Builds `MsgBridgeAttestation`. `pqc_signature` covers the per-network
+/// attestation sign-bytes
+/// ([`crate::signbytes::bridge_attestation_sign_bytes`], v1 or v2 as the chain
+/// verifies).
 #[allow(clippy::too_many_arguments)]
 pub fn bridge_attestation(
     validator: impl Into<String>,

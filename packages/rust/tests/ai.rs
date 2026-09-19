@@ -45,7 +45,13 @@ impl MockServer {
     /// - `eth_call` to the risk precompile -> two words (`risk_score`, `level`)
     /// - `eth_call` to the anomaly precompile -> two words (`anomaly_score`,
     ///   `flagged`)
-    async fn start(gas: u64, risk_score: u128, level: u8, anomaly_score: u128, flagged: bool) -> Self {
+    async fn start(
+        gas: u64,
+        risk_score: u128,
+        level: u8,
+        anomaly_score: u128,
+        flagged: bool,
+    ) -> Self {
         let listener = TcpListener::bind("127.0.0.1:0").await.unwrap();
         let addr = listener.local_addr().unwrap();
         let base_url = format!("http://{addr}");
@@ -111,7 +117,11 @@ impl MockServer {
             }
         });
 
-        MockServer { base_url, recorded, _shutdown: tx }
+        MockServer {
+            base_url,
+            recorded,
+            _shutdown: tx,
+        }
     }
 
     fn bodies(&self) -> Vec<Recorded> {
@@ -124,7 +134,10 @@ async fn ai_risk_score_encodes_and_decodes() {
     let server = MockServer::start(21_000, 7, 2, 0, false).await;
     let client = AiClient::new(server.base_url.clone());
 
-    let res = client.ai_risk_score(&[0xde, 0xad, 0xbe, 0xef]).await.unwrap();
+    let res = client
+        .ai_risk_score(&[0xde, 0xad, 0xbe, 0xef])
+        .await
+        .unwrap();
     assert_eq!(res.score.as_u128(), Some(7));
     assert_eq!(res.level, 2);
 

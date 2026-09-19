@@ -87,6 +87,9 @@ async function buildHybrid(): Promise<void> {
     ],
     fee: { amount: [{ denom: "uqor", amount: "5000" }], gas: "200000" },
     chainId: "qorechain-diana",
+    // The testnet verifies the v2 hybrid sign-bytes since its v3.1.98 upgrade.
+    // A live build passes `rest` instead and lets "auto" ask the network.
+    signBytesVersion: "v2",
     // Offline demo values: a live build would read these from the chain.
     accountNumber: 0,
     sequence: 0,

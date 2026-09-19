@@ -29,6 +29,9 @@
 //! - [`sign_eth`] — `eth_secp256k1` native-lane signing (classical + hybrid) for
 //!   the unified account: secp256k1 over `keccak256(SignDoc)` with the
 //!   `eth_secp256k1` pubkey type.
+//! - [`signbytes`] — the per-network post-quantum sign-bytes forms (v1 / v2)
+//!   for hybrid txs, key migrations and bridge attestations, the rule that
+//!   picks one per chain, and a cached resolver that asks the node.
 
 #![forbid(unsafe_code)]
 #![warn(missing_docs)]
@@ -48,6 +51,7 @@ pub mod pqc_dx;
 pub mod proto;
 pub mod query;
 pub mod sign_eth;
+pub mod signbytes;
 pub mod subscribe;
 pub mod tx;
 pub mod unified;
@@ -89,8 +93,15 @@ pub use unified::{
 
 pub use sign_eth::{
     parse_ethsecp256k1_pubkey, sign_classical_eth, sign_hybrid_eth,
-    unified_account_from_phantom_signature, EthBuiltTx, EthSignParams,
-    ETHSECP256K1_PUBKEY_TYPE,
+    unified_account_from_phantom_signature, EthBuiltTx, EthSignParams, ETHSECP256K1_PUBKEY_TYPE,
+};
+
+pub use signbytes::{
+    bridge_attestation_sign_bytes, broadcast_with_sign_bytes_retry, clear_sign_bytes_cache,
+    default_sign_bytes_resolver, hybrid_sign_bytes, is_hybrid_sign_bytes_rejection,
+    is_legacy_sign_bytes_chain, migration_sign_bytes, resolve_sign_bytes_version,
+    sign_bytes_version_for, BridgeAttestationSignFields, HybridBroadcast, MigrationSignFields,
+    SignBytesMode, SignBytesResolver, SignBytesVersion, SIGN_BYTES_V2_UPGRADE,
 };
 
 pub use query::{JsonRpcClient, QorClient, RestClient, TypedQueryClient, QOR_METHODS};
@@ -98,11 +109,11 @@ pub use query::{JsonRpcClient, QorClient, RestClient, TypedQueryClient, QOR_METH
 pub use client::{create_client, Client, ClientBuilder, Fees};
 
 pub use tx::{
-    bank_send, broadcast, broadcast_and_wait, build_hybrid_tx, calculate_fee, decode_tx_error,
-    estimate_fee, estimate_gas, fee_from_estimate, get_block, get_latest_block, get_tx, search_txs,
-    send_messages, wait_for_tx, with_retry, BankSendParams, BroadcastMode, BuildHybridTxParams,
-    BuiltTx, Coin, Fee, GasPrice, Message, QoreTxError, SendMessagesParams, TxResult,
-    TxSearchResult, WaitOptions, MSG_SEND_TYPE_URL,
+    bank_send, broadcast, broadcast_and_wait, broadcast_hybrid_tx, build_hybrid_tx, calculate_fee,
+    decode_tx_error, estimate_fee, estimate_gas, fee_from_estimate, get_block, get_latest_block,
+    get_tx, search_txs, send_messages, wait_for_tx, with_retry, BankSendParams, BroadcastMode,
+    BuildHybridTxParams, BuiltTx, Coin, Fee, GasPrice, Message, QoreTxError, SendMessagesParams,
+    TxResult, TxSearchResult, WaitOptions, MSG_SEND_TYPE_URL,
 };
 
 pub use subscribe::{Event, SubscribeClient, Subscription};
