@@ -58,7 +58,11 @@ class SignBytesRetryTest {
     private String baseUrl;
     private final List<byte[]> broadcastTxs = new ArrayList<>();
     private final Deque<String> broadcastReplies = new ArrayDeque<>();
+    /** Resolve ROUNDS: one per applied-plan lookup, whatever the number of names. */
     private final AtomicInteger planCalls = new AtomicInteger();
+
+    /** Individual applied-plan requests, one per name in each round. */
+    private final AtomicInteger planRequests = new AtomicInteger();
     /** The applied height the fake REST endpoint reports. */
     private volatile String appliedHeight = "0";
     /** When set, the first broadcast flips the network to v2 (simulating an upgrade). */
@@ -67,11 +71,26 @@ class SignBytesRetryTest {
     @BeforeEach
     void start() throws IOException {
         server = HttpServer.create(new InetSocketAddress("127.0.0.1", 0), 0);
+        // This node is a network that took the LAST of the upgrade plan names (as
+        // diana did): the earlier names answer "not applied", so a resolver that asks
+        // only the first would read v1 here and be refused with pqc 21.
+        String prefix = "/cosmos/upgrade/v1beta1/applied_plan/";
+        String recordedUnder =
+                SignBytes.SIGN_BYTES_V2_UPGRADES.get(
+                        SignBytes.SIGN_BYTES_V2_UPGRADES.size() - 1);
         server.createContext(
-                "/cosmos/upgrade/v1beta1/applied_plan/",
+                prefix,
                 ex -> {
-                    planCalls.incrementAndGet();
-                    respond(ex, "{\"height\":\"" + appliedHeight + "\"}");
+                    String name = ex.getRequestURI().getPath().substring(prefix.length());
+                    planRequests.incrementAndGet();
+                    if (name.equals(SignBytes.SIGN_BYTES_V2_UPGRADES.get(0))) {
+                        planCalls.incrementAndGet();
+                    }
+                    respond(
+                            ex,
+                            name.equals(recordedUnder)
+                                    ? "{\"height\":\"" + appliedHeight + "\"}"
+                                    : "{}");
                 });
         server.createContext(
                 "/",
@@ -165,6 +184,9 @@ class SignBytesRetryTest {
         assertEquals("OKHASH", r.transactionHash);
         assertEquals(2, broadcastTxs.size());
         assertEquals(2, planCalls.get(), "the retry must force-refresh the resolver");
+        // Each round asks for every plan name, so the record under the later name is
+        // found on whichever network the client is talking to.
+        assertEquals(2 * SignBytes.SIGN_BYTES_V2_UPGRADES.size(), planRequests.get());
         assertEquals(SignBytes.Version.V1, signedForm(broadcastTxs.get(0), p.pqcKeypair));
         assertEquals(SignBytes.Version.V2, signedForm(broadcastTxs.get(1), p.pqcKeypair));
     }
@@ -191,6 +213,7 @@ class SignBytesRetryTest {
         assertThrows(TxError.QoreTxException.class, () -> p.send(msgs()));
         assertEquals(1, broadcastTxs.size());
         assertEquals(0, planCalls.get(), "an explicit version needs no network lookup");
+        assertEquals(0, planRequests.get());
         assertEquals(SignBytes.Version.V2, signedForm(broadcastTxs.get(0), p.pqcKeypair));
     }
 

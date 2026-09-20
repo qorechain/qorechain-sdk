@@ -27,12 +27,13 @@ extension REMOVED:
 - PQC signed message = the per-network sign-bytes form (NO hashing):
 
   - v1: ``BE32(len(B0)) || B0 || BE32(len(A)) || A``
-  - v2 (chain v3.1.98+): ``"qorechain-pqc-hybrid-v2" || BE64(len(chain_id)) ||
+  - v2 (chain v3.2.0+): ``"qorechain-pqc-hybrid-v2" || BE64(len(chain_id)) ||
     chain_id || BE32(len(B0)) || B0 || BE32(len(A)) || A``
 
   Each network verifies exactly one form at any height: a chain born on
-  v3.1.98+ is always v2; ``qorechain-vladi`` / ``qorechain-diana`` are v1 until
-  their ``v3.1.98`` upgrade is applied, then v2. See :mod:`qorsdk.signbytes`.
+  v3.2.0+ is always v2; ``qorechain-vladi`` / ``qorechain-diana`` are v1 until
+  the v2 upgrade is applied on them (mainnet as ``v3.2.0``, the testnet as
+  ``v3.1.98``), then v2. See :mod:`qorsdk.signbytes`.
 - PQC signature = ``pqc_sign(pqc_secret, message)`` — pure ML-DSA-87, 4627 bytes.
 - The ``PQCHybridSignature`` extension is then added to
   ``TxBody.extension_options`` (the CRITICAL extension-options slot) as an

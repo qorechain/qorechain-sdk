@@ -102,7 +102,7 @@ import { EthNativeSigner, deriveUnifiedAccount } from "@qorechain/sdk";
 
 const account = await deriveUnifiedAccount(mnemonic, 0);
 // signMode: "hybrid" by default. `rest` lets the signer ask the network which
-// hybrid sign-bytes form it verifies (v1 on mainnet until its v3.1.98 upgrade,
+// hybrid sign-bytes form it verifies (v1 on mainnet until its v3.2.0 upgrade,
 // v2 on the testnet since its upgrade); without it, hybrid signing on those
 // networks throws rather than guess.
 const signer = new EthNativeSigner(account, { rest: "https://api.qore.host" });

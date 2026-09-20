@@ -29,6 +29,8 @@ import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicLong;
 import org.junit.jupiter.api.Test;
 
@@ -225,47 +227,156 @@ class SignBytesTest {
 
     // ---- resolver ----
 
-    /** A fake applied-plan endpoint that counts calls. */
+    /**
+     * A fake applied-plan endpoint that answers per PLAN NAME and records every call. A
+     * name with no body configured answers {@code {}} — the plan was never applied on
+     * this network, which is what each real network answers for the name it did not
+     * take.
+     */
     private static final class FakeFetcher implements SignBytesResolver.PlanFetcher {
-        volatile String body = "{\"height\":\"0\"}";
+        final Map<String, String> plans = new ConcurrentHashMap<>();
         volatile boolean fail = false;
+        /** When set, only this plan name fails; null fails every name. */
+        volatile String failFor = null;
+
         final List<String> calls = new ArrayList<>();
+
+        /** diana today: the record lives under the name the testnet actually took. */
+        static FakeFetcher legacyName(String body) {
+            FakeFetcher f = new FakeFetcher();
+            f.plans.put(LEGACY_NAME, body);
+            return f;
+        }
 
         @Override
         public JsonNode get(String restUrl, String path) throws Exception {
             calls.add(restUrl + path);
-            if (fail) {
+            String name = path.substring(path.lastIndexOf('/') + 1);
+            if (fail && (failFor == null || failFor.equals(name))) {
                 throw new java.io.IOException("connection refused");
             }
-            return MAPPER.readTree(body);
+            return MAPPER.readTree(plans.getOrDefault(name, "{}"));
+        }
+
+        /** How many resolve rounds happened (one request for the first name each). */
+        int rounds() {
+            int n = 0;
+            for (String c : calls) {
+                if (c.endsWith("/" + PRIMARY_NAME)) {
+                    n++;
+                }
+            }
+            return n;
         }
     }
 
+    private static final String PRIMARY_NAME = "v3.2.0";
+    private static final String LEGACY_NAME = "v3.1.98";
+
+    /**
+     * The names the resolver walks must match the chain's own
+     * {@code x/pqc/types.SignBytesV2Upgrades}: the mainnet name first, and the singular
+     * constant pointing at it.
+     */
     @Test
-    void resolverAppliedHeightPositiveIsV2() {
+    void upgradePlanNames() {
+        assertEquals(List.of(PRIMARY_NAME, LEGACY_NAME), SignBytes.SIGN_BYTES_V2_UPGRADES);
+        assertEquals(PRIMARY_NAME, SignBytes.SIGN_BYTES_V2_UPGRADE);
+        assertEquals(
+                SignBytes.SIGN_BYTES_V2_UPGRADES.get(0), SignBytes.SIGN_BYTES_V2_UPGRADE);
+        assertEquals(
+                "/cosmos/upgrade/v1beta1/applied_plan/" + PRIMARY_NAME,
+                SignBytesResolver.APPLIED_PLAN_PATH);
+        assertEquals(
+                "/cosmos/upgrade/v1beta1/applied_plan/" + LEGACY_NAME,
+                SignBytesResolver.appliedPlanPath(LEGACY_NAME));
+    }
+
+    /**
+     * Mainnet after its own upgrade: the FIRST name answers a positive height, so the
+     * resolver answers v2 after exactly ONE request and never asks the second.
+     */
+    @Test
+    void resolverFirstNameAppliedCostsOneRequest() {
         FakeFetcher f = new FakeFetcher();
-        f.body = "{\"height\":\"5746000\"}";
+        f.plans.put(PRIMARY_NAME, "{\"height\":\"7000000\"}");
+        SignBytesResolver r = new SignBytesResolver(f, 60_000, () -> 0L);
+        assertEquals(
+                Version.V2, r.resolve(SignBytes.Mode.AUTO, "qorechain-vladi", "http://rest"));
+        assertEquals(
+                List.of("http://rest/cosmos/upgrade/v1beta1/applied_plan/" + PRIMARY_NAME),
+                f.calls);
+    }
+
+    /**
+     * Diana today: the first name is not applied, the second is — v2 after two requests.
+     * Asking only the first name (what published clients up to 0.8.0 did) would resolve
+     * v1 here and every hybrid transaction would be refused with pqc code 21.
+     */
+    @Test
+    void resolverSecondNameAppliedCostsTwoRequests() {
+        FakeFetcher f = FakeFetcher.legacyName("{\"height\":\"5746000\"}");
         SignBytesResolver r = new SignBytesResolver(f, 60_000, () -> 0L);
         assertEquals(
                 Version.V2, r.resolve(SignBytes.Mode.AUTO, "qorechain-diana", "http://rest"));
         assertEquals(
-                List.of("http://rest/cosmos/upgrade/v1beta1/applied_plan/v3.1.98"), f.calls);
+                List.of(
+                        "http://rest/cosmos/upgrade/v1beta1/applied_plan/" + PRIMARY_NAME,
+                        "http://rest/cosmos/upgrade/v1beta1/applied_plan/" + LEGACY_NAME),
+                f.calls);
+    }
+
+    /** Mainnet before its upgrade: every name answers zero, so and only so, v1. */
+    @Test
+    void resolverNoNameAppliedIsV1() {
+        FakeFetcher zeros = new FakeFetcher();
+        zeros.plans.put(PRIMARY_NAME, "{\"height\":\"0\"}");
+        zeros.plans.put(LEGACY_NAME, "{\"height\":\"0\"}");
+        SignBytesResolver r1 = new SignBytesResolver(zeros, 60_000, () -> 0L);
+        assertEquals(
+                Version.V1, r1.resolve(SignBytes.Mode.AUTO, "qorechain-vladi", "http://rest"));
+        assertEquals(2, zeros.calls.size(), "every name is asked before answering v1");
+
+        // Empty objects (the gRPC/CLI rendering of "not applied") count as zero too.
+        FakeFetcher empties = new FakeFetcher();
+        empties.plans.put(PRIMARY_NAME, "{}");
+        empties.plans.put(LEGACY_NAME, "{}");
+        SignBytesResolver r2 = new SignBytesResolver(empties, 60_000, () -> 0L);
+        assertEquals(
+                Version.V1, r2.resolve(SignBytes.Mode.AUTO, "qorechain-vladi", "http://rest"));
+        assertEquals(2, empties.calls.size());
+    }
+
+    @Test
+    void resolverAppliedHeightPositiveIsV2() {
+        FakeFetcher f = FakeFetcher.legacyName("{\"height\":\"5746000\"}");
+        SignBytesResolver r = new SignBytesResolver(f, 60_000, () -> 0L);
+        assertEquals(
+                Version.V2, r.resolve(SignBytes.Mode.AUTO, "qorechain-diana", "http://rest"));
+        assertEquals(2, f.calls.size());
+        assertEquals(1, f.rounds());
     }
 
     @Test
     void resolverHeightZeroIsV1() {
-        FakeFetcher f = new FakeFetcher();
-        f.body = "{\"height\":\"0\"}";
+        FakeFetcher f = FakeFetcher.legacyName("{\"height\":\"0\"}");
         SignBytesResolver r = new SignBytesResolver(f, 60_000, () -> 0L);
         assertEquals(Version.V1, r.resolve(SignBytes.Mode.AUTO, "qorechain-vladi", "http://rest"));
     }
 
     @Test
     void resolverEmptyObjectIsV1() {
-        FakeFetcher f = new FakeFetcher();
-        f.body = "{}";
+        FakeFetcher f = FakeFetcher.legacyName("{}");
         SignBytesResolver r = new SignBytesResolver(f, 60_000, () -> 0L);
         assertEquals(Version.V1, r.resolve(SignBytes.Mode.AUTO, "qorechain-vladi", "http://rest"));
+    }
+
+    /** A numeric (not string) height is accepted, on either name. */
+    @Test
+    void resolverNumericHeightIsV2() {
+        FakeFetcher f = FakeFetcher.legacyName("{\"height\":5746000}");
+        SignBytesResolver r = new SignBytesResolver(f, 60_000, () -> 0L);
+        assertEquals(Version.V2, r.resolve(SignBytes.Mode.AUTO, "qorechain-diana", "http://rest"));
     }
 
     @Test
@@ -279,10 +390,12 @@ class SignBytesTest {
 
     @Test
     void resolverExplicitVersionNeedsNoHttp() {
-        FakeFetcher f = new FakeFetcher();
+        FakeFetcher f = FakeFetcher.legacyName("{\"height\":\"5746000\"}");
         SignBytesResolver r = new SignBytesResolver(f, 60_000, () -> 0L);
         assertEquals(Version.V1, r.resolve(SignBytes.Mode.V1, "qorechain-diana", null));
         assertEquals(Version.V2, r.resolve(SignBytes.Mode.V2, "qorechain-vladi", null));
+        // Explicit still skips the network even when a REST URL is at hand.
+        assertEquals(Version.V1, r.resolve(SignBytes.Mode.V1, "qorechain-diana", "http://rest"));
         assertTrue(f.calls.isEmpty());
     }
 
@@ -294,12 +407,48 @@ class SignBytesTest {
                         SignBytesResolver.SignBytesResolutionException.class,
                         () -> r.resolve(SignBytes.Mode.AUTO, "qorechain-vladi", null));
         assertTrue(e.getMessage().contains("restUrl"));
+        for (String name : SignBytes.SIGN_BYTES_V2_UPGRADES) {
+            assertTrue(e.getMessage().contains(name), "message must name " + name);
+        }
     }
 
     @Test
     void resolverHttpFailureThrows() {
         FakeFetcher f = new FakeFetcher();
         f.fail = true;
+        SignBytesResolver r = new SignBytesResolver(f, 60_000, () -> 0L);
+        SignBytesResolver.SignBytesResolutionException e =
+                assertThrows(
+                        SignBytesResolver.SignBytesResolutionException.class,
+                        () -> r.resolve(SignBytes.Mode.AUTO, "qorechain-diana", "http://rest"));
+        for (String name : SignBytes.SIGN_BYTES_V2_UPGRADES) {
+            assertTrue(e.getMessage().contains(name), "message must name " + name);
+        }
+    }
+
+    /**
+     * A failure on the SECOND name is a failure too: the first answering zero must never
+     * be read as "not applied anywhere".
+     */
+    @Test
+    void resolverFailureOnSecondNameThrows() {
+        FakeFetcher f = new FakeFetcher();
+        f.plans.put(PRIMARY_NAME, "{\"height\":\"0\"}");
+        f.fail = true;
+        f.failFor = LEGACY_NAME;
+        SignBytesResolver r = new SignBytesResolver(f, 60_000, () -> 0L);
+        SignBytesResolver.SignBytesResolutionException e =
+                assertThrows(
+                        SignBytesResolver.SignBytesResolutionException.class,
+                        () -> r.resolve(SignBytes.Mode.AUTO, "qorechain-diana", "http://rest"));
+        assertTrue(e.getMessage().contains(LEGACY_NAME), "message must say which plan failed");
+        assertEquals(2, f.calls.size());
+    }
+
+    /** An unparsable height is a failure, never a guess. */
+    @Test
+    void resolverUnparsableHeightThrows() {
+        FakeFetcher f = FakeFetcher.legacyName("{\"height\":\"not-a-number\"}");
         SignBytesResolver r = new SignBytesResolver(f, 60_000, () -> 0L);
         assertThrows(
                 SignBytesResolver.SignBytesResolutionException.class,
@@ -308,40 +457,41 @@ class SignBytesTest {
 
     @Test
     void resolverCachesWithinTtlAndRefreshes() {
-        FakeFetcher f = new FakeFetcher();
+        FakeFetcher f = FakeFetcher.legacyName("{\"height\":\"0\"}");
         AtomicLong now = new AtomicLong(1_000);
         SignBytesResolver r = new SignBytesResolver(f, 60_000, now::get);
 
-        f.body = "{\"height\":\"0\"}";
         assertEquals(Version.V1, r.resolve(SignBytes.Mode.AUTO, "qorechain-diana", "http://rest"));
         // The network upgrades; within the TTL the cached answer is served.
-        f.body = "{\"height\":\"5746000\"}";
+        f.plans.put(LEGACY_NAME, "{\"height\":\"5746000\"}");
         now.addAndGet(30_000);
         assertEquals(Version.V1, r.resolve(SignBytes.Mode.AUTO, "qorechain-diana", "http://rest"));
-        assertEquals(1, f.calls.size());
+        assertEquals(1, f.rounds());
+        // One cached answer covers BOTH names, not one cache entry per name.
+        assertEquals(2, f.calls.size());
 
         // A forced refresh bypasses the cache and replaces it.
         assertEquals(
                 Version.V2,
                 r.resolve(SignBytes.Mode.AUTO, "qorechain-diana", "http://rest", true));
-        assertEquals(2, f.calls.size());
+        assertEquals(2, f.rounds());
         assertEquals(Version.V2, r.resolve(SignBytes.Mode.AUTO, "qorechain-diana", "http://rest"));
-        assertEquals(2, f.calls.size());
+        assertEquals(2, f.rounds());
 
         // Past the TTL the network is asked again.
         now.addAndGet(60_001);
         r.resolve(SignBytes.Mode.AUTO, "qorechain-diana", "http://rest");
-        assertEquals(3, f.calls.size());
+        assertEquals(3, f.rounds());
 
         // The cache is keyed per (restUrl, chainId).
         r.resolve(SignBytes.Mode.AUTO, "qorechain-vladi", "http://rest");
         r.resolve(SignBytes.Mode.AUTO, "qorechain-diana", "http://other");
-        assertEquals(5, f.calls.size());
+        assertEquals(5, f.rounds());
 
         // clearCache drops everything.
         r.clearCache();
         r.resolve(SignBytes.Mode.AUTO, "qorechain-diana", "http://rest");
-        assertEquals(6, f.calls.size());
+        assertEquals(6, f.rounds());
     }
 
     // ---- rejection detection ----

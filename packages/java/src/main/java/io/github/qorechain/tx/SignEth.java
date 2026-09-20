@@ -29,9 +29,9 @@ import java.util.List;
  * <p>The hybrid framing is identical to {@link HybridTx}: {@code B0} = body WITHOUT
  * the PQC extension, and the ML-DSA-87 signature is over the per-network
  * {@link SignBytes#hybrid} form of {@code (chainId, B0, A)} — v1
- * {@code BE32(len B0) ‖ B0 ‖ BE32(len A) ‖ A} on networks that have not applied
- * v3.1.98, v2 {@code "qorechain-pqc-hybrid-v2" ‖ BE64(len chainId) ‖ chainId ‖ ...}
- * after. Only the classical hash (keccak vs sha256) and the SignerInfo pubkey
+ * {@code BE32(len B0) ‖ B0 ‖ BE32(len A) ‖ A} on networks that have applied none of
+ * {@link SignBytes#SIGN_BYTES_V2_UPGRADES}, v2
+ * {@code "qorechain-pqc-hybrid-v2" ‖ BE64(len chainId) ‖ chainId ‖ ...} after. Only the classical hash (keccak vs sha256) and the SignerInfo pubkey
  * typeUrl change.
  */
 public final class SignEth {

@@ -1,7 +1,8 @@
 //! Per-network post-quantum sign-bytes: the v1 / v2 forms, the rule that picks
 //! one for a chain, and a cached resolver that asks the node.
 //!
-//! Chain release `v3.1.98` changed three payloads an ML-DSA key signs:
+//! Chain release `v3.2.0` (taken by the testnet under the earlier name
+//! `v3.1.98`) changed three payloads an ML-DSA key signs:
 //!
 //! | payload | v1 (legacy) | v2 |
 //! |---|---|---|
@@ -13,14 +14,21 @@
 //! is the `TxBody` WITHOUT the PQC extension; `A` is the `AuthInfo` bytes.
 //!
 //! A network verifies exactly ONE form. The networks that existed before v2
-//! (`qorechain-vladi`, `qorechain-diana`) keep verifying v1 until the
-//! [`SIGN_BYTES_V2_UPGRADE`] plan is applied on them; any other chain verifies
-//! v2 from its first block. Today the testnet has applied the upgrade (v2) and
-//! the mainnet has not (v1). [`sign_bytes_version_for`] is the client-side
-//! mirror of the chain's switch, and [`SignBytesResolver`] asks a node's REST
-//! endpoint (`/cosmos/upgrade/v1beta1/applied_plan/v3.1.98`) for the height it
-//! needs, caching the answer briefly because a network can upgrade while a
-//! wallet is open.
+//! (`qorechain-vladi`, `qorechain-diana`) keep verifying v1 until the v2
+//! upgrade plan is applied on them; any other chain verifies v2 from its first
+//! block. Today the testnet has applied the upgrade (v2) and the mainnet has
+//! not (v1). [`sign_bytes_version_for`] is the client-side mirror of the
+//! chain's switch.
+//!
+//! The switch ships under TWO plan names ([`SIGN_BYTES_V2_UPGRADES`]): the
+//! testnet took it as `v3.1.98` and keeps that record forever, while mainnet
+//! takes it as `v3.2.0`. Both names run the same handler, so
+//! [`SignBytesResolver`] asks a node's REST endpoint
+//! (`/cosmos/upgrade/v1beta1/applied_plan/{name}`) for EVERY name, in order,
+//! stopping at the first height above zero — asking one name only would read
+//! height 0 on the other network, sign v1, and have every hybrid transaction
+//! refused with `pqc` code 21. The answer is cached briefly, because a network
+//! can upgrade while a wallet is open.
 //!
 //! The resolver never guesses: a legacy chain with no REST URL, or a failed
 //! query, is an error that asks for a REST URL or an explicit
@@ -47,11 +55,19 @@ pub const MIGRATION_SIGN_BYTES_DOMAIN: &str = "qorechain-key-migration-v2";
 /// Domain tag that opens the v2 bridge-attestation sign-bytes.
 pub const BRIDGE_ATTESTATION_SIGN_BYTES_DOMAIN: &str = "qorechain-bridge-attestation-v2";
 
-/// The upgrade plan whose application switches a legacy chain from v1 to v2.
-pub const SIGN_BYTES_V2_UPGRADE: &str = "v3.1.98";
+/// The upgrade plan whose application switches a legacy chain from v1 to v2,
+/// under its primary (mainnet) name. See [`SIGN_BYTES_V2_UPGRADES`].
+pub const SIGN_BYTES_V2_UPGRADE: &str = "v3.2.0";
+
+/// EVERY upgrade name that switches a network to v2, in query order. The same
+/// handler ships under both: mainnet applies `v3.2.0`, the testnet already
+/// applied `v3.1.98` and keeps that record forever. A client must ask
+/// `applied_plan` for each name and use v2 if ANY of them answers a height
+/// above zero.
+pub const SIGN_BYTES_V2_UPGRADES: &[&str] = &["v3.2.0", "v3.1.98"];
 
 /// The chains that were running before v2 existed; they switch to v2 only once
-/// [`SIGN_BYTES_V2_UPGRADE`] is applied on them.
+/// one of [`SIGN_BYTES_V2_UPGRADES`] is applied on them.
 pub const LEGACY_SIGN_BYTES_CHAINS: &[&str] = &["qorechain-vladi", "qorechain-diana"];
 
 /// How long a resolved version is cached per `(rest_url, chain_id)` by default.
@@ -71,7 +87,7 @@ pub const PQC_HYBRID_VERIFY_FAILED_MESSAGE: &str = "hybrid PQC signature verific
 pub enum SignBytesVersion {
     /// The legacy form (no domain tag, no chain id).
     V1,
-    /// The domain-tagged, chain-bound form introduced by `v3.1.98`.
+    /// The domain-tagged, chain-bound form introduced by the v2 upgrade.
     V2,
 }
 
@@ -181,8 +197,9 @@ pub fn is_legacy_sign_bytes_chain(chain_id: &str) -> bool {
     LEGACY_SIGN_BYTES_CHAINS.contains(&chain_id)
 }
 
-/// The form a client must sign for `chain_id`, given the height at which
-/// [`SIGN_BYTES_V2_UPGRADE`] was applied there (`0` when it has not been).
+/// The form a client must sign for `chain_id`, given the height at which the v2
+/// upgrade was applied there (`0` when it has not been under any of
+/// [`SIGN_BYTES_V2_UPGRADES`]).
 ///
 /// Mirrors the chain's `SignBytesVersionFor`: v2 when the upgrade is applied or
 /// the chain is not a legacy chain, v1 otherwise.
@@ -206,10 +223,11 @@ pub fn require_sign_bytes_version(
         Some(v) => Ok(v),
         None if !is_legacy_sign_bytes_chain(chain_id) => Ok(SignBytesVersion::V2),
         None => Err(Error::SignBytes(format!(
-            "chain {chain_id:?} verifies hybrid sign-bytes v1 until upgrade \
-             {SIGN_BYTES_V2_UPGRADE} is applied and v2 after it, so the version cannot be \
-             chosen offline: pass an explicit sign-bytes version (v1 or v2), or resolve one \
-             with SignBytesResolver / an async sign-and-broadcast path given a REST URL"
+            "chain {chain_id:?} verifies hybrid sign-bytes v1 until upgrade {} is applied \
+             and v2 after it, so the version cannot be chosen offline: pass an explicit \
+             sign-bytes version (v1 or v2), or resolve one with SignBytesResolver / an async \
+             sign-and-broadcast path given a REST URL",
+            upgrade_names()
         ))),
     }
 }
@@ -409,9 +427,11 @@ pub fn bridge_attestation_sign_bytes(
 /// [`DEFAULT_SIGN_BYTES_CACHE_TTL`]).
 ///
 /// For a non-legacy chain the answer is v2 with no network call. For a legacy
-/// chain it asks `GET {rest_url}/cosmos/upgrade/v1beta1/applied_plan/v3.1.98`
-/// (`{"height":"<n>"}`; a missing height means `0`) and applies
-/// [`sign_bytes_version_for`].
+/// chain it asks `GET {rest_url}/cosmos/upgrade/v1beta1/applied_plan/{name}`
+/// (`{"height":"<n>"}`; a missing height means `0`) for every name in
+/// [`SIGN_BYTES_V2_UPGRADES`], stopping at the first positive height, and
+/// applies [`sign_bytes_version_for`]. Mainnet therefore costs one request once
+/// it has upgraded, and the testnet two.
 #[derive(Debug)]
 pub struct SignBytesResolver {
     http: reqwest::Client,
@@ -502,22 +522,51 @@ impl SignBytesResolver {
         self.lock_cache().clear();
     }
 
-    /// Asks `rest_url` for the height at which [`SIGN_BYTES_V2_UPGRADE`] was
-    /// applied (`0` when it has not been, or when the node answers `{}`).
-    pub async fn fetch_v2_applied_height(&self, rest_url: &str) -> Result<i64> {
+    /// Asks `rest_url` for the height at which ONE upgrade name was applied
+    /// (`0` when it has not been, or when the node answers `{}`).
+    ///
+    /// `plan_name` defaults to [`SIGN_BYTES_V2_UPGRADE`] when `None`. The
+    /// resolver itself uses [`SignBytesResolver::fetch_v2_applied_height_any`],
+    /// which covers every name the switch shipped under.
+    pub async fn fetch_v2_applied_height(
+        &self,
+        rest_url: &str,
+        plan_name: Option<&str>,
+    ) -> Result<i64> {
+        let plan_name = plan_name.unwrap_or(SIGN_BYTES_V2_UPGRADE);
         let rest = RestClient::with_client(rest_url, self.http.clone());
-        let path = format!("/cosmos/upgrade/v1beta1/applied_plan/{SIGN_BYTES_V2_UPGRADE}");
+        let path = format!("/cosmos/upgrade/v1beta1/applied_plan/{plan_name}");
         let body = rest.get(&path, &[]).await.map_err(|e| {
             Error::SignBytes(format!(
-                "cannot ask {rest_url} whether upgrade {SIGN_BYTES_V2_UPGRADE} is applied ({e}); \
-                 pass an explicit sign-bytes version (v1 or v2)"
+                "cannot ask {rest_url} whether upgrade {plan_name} is applied (the v2 \
+                 sign-bytes upgrade ships as {}) ({e}); pass an explicit sign-bytes version \
+                 (v1 or v2)",
+                upgrade_names()
             ))
         })?;
         parse_applied_height(&body)
     }
 
+    /// The height at which the v2 switch was applied on `rest_url`'s chain,
+    /// under ANY of [`SIGN_BYTES_V2_UPGRADES`] (`0` when under none of them).
+    ///
+    /// The names are asked in order and the first positive height is returned
+    /// without asking the rest, so a network that upgraded under the primary
+    /// name costs a single request. Any failed query is an error, never a guess.
+    pub async fn fetch_v2_applied_height_any(&self, rest_url: &str) -> Result<i64> {
+        for plan_name in SIGN_BYTES_V2_UPGRADES {
+            let height = self
+                .fetch_v2_applied_height(rest_url, Some(plan_name))
+                .await?;
+            if height > 0 {
+                return Ok(height);
+            }
+        }
+        Ok(0)
+    }
+
     async fn fetch_and_store(&self, chain_id: &str, rest_url: &str) -> Result<SignBytesVersion> {
-        let height = self.fetch_v2_applied_height(rest_url).await?;
+        let height = self.fetch_v2_applied_height_any(rest_url).await?;
         let v = sign_bytes_version_for(chain_id, height);
         if !self.ttl.is_zero() {
             self.lock_cache()
@@ -720,11 +769,17 @@ fn require_rest_url<'a>(chain_id: &str, rest_url: Option<&'a str>) -> Result<&'a
     match rest_url {
         Some(u) if !u.trim().is_empty() => Ok(u),
         _ => Err(Error::SignBytes(format!(
-            "chain {chain_id:?} verifies hybrid sign-bytes v1 until upgrade \
-             {SIGN_BYTES_V2_UPGRADE} is applied and v2 after it; to choose, the SDK must ask \
-             a node — pass a REST URL, or an explicit sign-bytes version (v1 or v2)"
+            "chain {chain_id:?} verifies hybrid sign-bytes v1 until upgrade {} is applied \
+             and v2 after it; to choose, the SDK must ask a node — pass a REST URL, or an \
+             explicit sign-bytes version (v1 or v2)",
+            upgrade_names()
         ))),
     }
+}
+
+/// [`SIGN_BYTES_V2_UPGRADES`] as `"v3.2.0 or v3.1.98"`, for error messages.
+fn upgrade_names() -> String {
+    SIGN_BYTES_V2_UPGRADES.join(" or ")
 }
 
 #[cfg(test)]

@@ -13,7 +13,8 @@ import (
 )
 
 // DefaultTTL is how long a Resolver trusts a node's answer. It is short on
-// purpose: a network can apply V2Upgrade while a wallet or service is running.
+// purpose: a network can apply one of V2Upgrades while a wallet or service is
+// running.
 const DefaultTTL = 60 * time.Second
 
 // defaultHTTPTimeout bounds the applied-plan query when the Resolver builds its
@@ -33,8 +34,8 @@ type ResolverOptions struct {
 }
 
 // Resolver decides the sign-bytes version per network, asking the node whether
-// V2Upgrade has been applied when the chain id alone is not enough, and caching
-// the answer per (REST URL, chain id) for a short TTL. It is safe for
+// any of V2Upgrades has been applied when the chain id alone is not enough, and
+// caching the answer per (REST URL, chain id) for a short TTL. It is safe for
 // concurrent use.
 type Resolver struct {
 	httpClient *http.Client
@@ -84,9 +85,10 @@ var DefaultResolver = NewResolver(ResolverOptions{})
 //
 //   - An explicit V1 / V2 is returned as-is, with no network access.
 //   - Auto (or ""): a non-legacy chain is V2 with no network access; a legacy
-//     chain is decided by GET {restURL}/cosmos/upgrade/v1beta1/applied_plan/v3.1.98
-//     (V2 iff the returned height > 0; a missing height counts as 0), cached for
-//     the TTL.
+//     chain is decided by GET {restURL}/cosmos/upgrade/v1beta1/applied_plan/{name}
+//     for every name in V2Upgrades, in order, stopping at the first that answers
+//     a height greater than zero (V2). A missing height counts as 0; V1 only when
+//     every name answers 0. The answer is cached for the TTL.
 //
 // A legacy chain with an empty restURL, or a failed query, returns an error
 // wrapping ErrUnresolvedVersion: pass a REST URL or an explicit V1 / V2. The
@@ -139,7 +141,7 @@ func (r *Resolver) resolve(ctx context.Context, restURL, chainID string, request
 	base := strings.TrimRight(strings.TrimSpace(restURL), "/")
 	if base == "" {
 		return "", fmt.Errorf("%w for chain %q: no REST URL to ask whether upgrade %s is applied; "+
-			"pass a REST URL or signbytes.V1 / signbytes.V2 explicitly", ErrUnresolvedVersion, chainID, V2Upgrade)
+			"pass a REST URL or signbytes.V1 / signbytes.V2 explicitly", ErrUnresolvedVersion, chainID, v2UpgradeNames())
 	}
 	key := cacheKey{restURL: base, chainID: chainID}
 	if !force && r.ttl > 0 {
@@ -153,7 +155,7 @@ func (r *Resolver) resolve(ctx context.Context, restURL, chainID string, request
 	height, err := r.appliedPlanHeight(ctx, base)
 	if err != nil {
 		return "", fmt.Errorf("%w for chain %q: cannot ask %s whether upgrade %s is applied (%v); "+
-			"pass signbytes.V1 or signbytes.V2 explicitly", ErrUnresolvedVersion, chainID, base, V2Upgrade, err)
+			"pass signbytes.V1 or signbytes.V2 explicitly", ErrUnresolvedVersion, chainID, base, v2UpgradeNames(), err)
 	}
 	v := VersionFor(chainID, height)
 	if r.ttl > 0 {
@@ -164,13 +166,35 @@ func (r *Resolver) resolve(ctx context.Context, restURL, chainID string, request
 	return v, nil
 }
 
-// appliedPlanHeight queries the applied-plan endpoint and returns the height (0
-// when the plan is not applied or the field is absent).
+// appliedPlanHeight asks the node about EVERY name in V2Upgrades and returns the
+// first height greater than zero, or 0 when none of the plans is applied.
+//
+// The switch to v2 ships under two plan names and each network applies only one
+// of them (mainnet "v3.2.0", the testnet already "v3.1.98"), so asking a single
+// name answers height 0 on the other network and would resolve v1 there — the
+// form it refuses with pqc code 21. Names are ordered most likely first and the
+// loop short-circuits: a network that took the first name costs one request.
+// A failed query is returned as an error, never treated as "not applied".
 func (r *Resolver) appliedPlanHeight(ctx context.Context, base string) (int64, error) {
+	for _, name := range V2Upgrades {
+		h, err := r.appliedPlanHeightFor(ctx, base, name)
+		if err != nil {
+			return 0, fmt.Errorf("plan %s: %w", name, err)
+		}
+		if h > 0 {
+			return h, nil
+		}
+	}
+	return 0, nil
+}
+
+// appliedPlanHeightFor queries the applied-plan endpoint for one plan name and
+// returns the height (0 when that plan is not applied or the field is absent).
+func (r *Resolver) appliedPlanHeightFor(ctx context.Context, base, name string) (int64, error) {
 	if ctx == nil {
 		ctx = context.Background()
 	}
-	u := base + "/cosmos/upgrade/v1beta1/applied_plan/" + V2Upgrade
+	u := base + "/cosmos/upgrade/v1beta1/applied_plan/" + name
 	req, err := http.NewRequestWithContext(ctx, http.MethodGet, u, nil)
 	if err != nil {
 		return 0, err

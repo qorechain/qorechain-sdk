@@ -155,11 +155,12 @@ exclude-extension hybrid contract the chain's ante handler verifies — or
 `tx.BroadcastHybridAndWait`, which also picks the sign-bytes form for the
 target network (next section).
 
-### Hybrid sign-bytes v1 / v2 (v0.8.0 / chain v3.1.98)
+### Hybrid sign-bytes v1 / v2 (v0.8.2 / chain v3.2.0, testnet v3.1.98)
 
 The ML-DSA-87 half of a hybrid tx signs B0 (the TxBody **without** the PQC
-extension) and A (the AuthInfo bytes). Chain v3.1.98 added a second form of
-those sign-bytes:
+extension) and A (the AuthInfo bytes). The chain release that ships as
+**v3.2.0** on mainnet (and was taken by the testnet under the earlier name
+**v3.1.98**) added a second form of those sign-bytes:
 
 ```text
 v1: BE32(len B0) ‖ B0 ‖ BE32(len A) ‖ A
@@ -172,19 +173,32 @@ network verifies exactly one form at a time — there is no overlap window**; th
 wrong form is refused with codespace `pqc` code `21` (`hybrid PQC signature
 verification failed`).
 
-- **Testnet** (`qorechain-diana`) runs v3.1.98 since height 5,746,000 and
-  verifies **only v2**.
+- **Testnet** (`qorechain-diana`) applied the upgrade under the plan name
+  `v3.1.98` at height 5,746,000 and verifies **only v2**.
 - **Mainnet** (`qorechain-vladi`) verifies **only v1** and stays on v1 until its
-  own governance upgrade to v3.1.98; the SDK follows it automatically when that
-  happens.
-- Any other chain id starts on v3.1.98+ and verifies v2 from genesis.
+  own governance upgrade, which applies the plan under the name `v3.2.0`; the
+  SDK follows it automatically when that happens.
+- Any other chain id starts on that release or later and verifies v2 from genesis.
+
+**The switch has TWO plan names.** The chain registers one handler under both
+(`x/pqc/types.SignBytesV2Upgrades`), and each network keeps the record of the
+name it actually took: diana answers under `v3.1.98` forever, mainnet will
+answer under `v3.2.0`. `signbytes.V2Upgrades` is that list, primary name first,
+and `signbytes.V2Upgrade` is the primary name `"v3.2.0"` alone. A client that
+asks for one name only resolves v1 on the other network, and every hybrid
+transaction there is refused with `pqc` code 21 — which is exactly what
+published clients up to v0.8.1 do.
 
 **The auto rule** (`signbytes.Auto`, the default): an explicit `signbytes.V1` /
 `signbytes.V2` is used as given; otherwise a non-legacy chain id is v2 with no
 network call, and for `qorechain-vladi` / `qorechain-diana` the SDK asks the node
-`GET {rest}/cosmos/upgrade/v1beta1/applied_plan/v3.1.98` — `height > 0` means v2,
-`"0"` or a missing height means v1. The answer is cached per (REST URL, chain
-id) for 60 s (`signbytes.ResolverOptions.TTL`; `Refresh` forces a new query,
+`GET {rest}/cosmos/upgrade/v1beta1/applied_plan/{name}` **for every name in
+`signbytes.V2Upgrades`** (`v3.2.0`, then `v3.1.98`), stopping at the first whose
+**numeric** `height` is greater than 0 — that means v2. `"0"`, `{}` or a missing
+height counts as 0, and v1 is answered only when every name answers 0. Mainnet
+after its own upgrade therefore costs one request and diana two. The answer (one
+per resolve, not one per name) is cached per (REST URL, chain id) for 60 s
+(`signbytes.ResolverOptions.TTL`; `Refresh` forces a new query,
 `ClearCache` drops the cache). If a legacy chain has no REST URL, or the query
 fails, resolution returns an error wrapping `signbytes.ErrUnresolvedVersion` —
 it never guesses.
@@ -224,12 +238,14 @@ fmt.Println(out.Built.SignBytesVersion, out.Retried)
 _ = signbytes.V1
 ```
 
-The same package builds the other two sign-bytes that changed in v3.1.98, with
+The same package builds the other two sign-bytes that changed in the same
+release, with
 v1/v2 builders and a version dispatcher each: `signbytes.Migration` (both keys
 of a `MsgMigratePQCKey` sign it; v2 binds the chain id, account, algorithms,
 execution height and **both public keys**) and `signbytes.Bridge` (bridge
 validator attestations; v2 adds the chain id). `signbytes.VersionFor(chainID,
-appliedHeight)` mirrors the chain's own switch.
+appliedHeight)` mirrors the chain's own switch (pass the greatest height any of
+`signbytes.V2Upgrades` answered).
 
 ### Sidechains, paychains & rollups (v0.4.0)
 

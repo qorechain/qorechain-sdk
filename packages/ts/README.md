@@ -131,8 +131,8 @@ v2: "qorechain-pqc-hybrid-v2" ‖ BE64(len chainId) ‖ chainId ‖ BE32(len B0)
 ```
 
 A network verifies exactly **one** form at any height. `qorechain-diana`
-(testnet) switched to v2 at its v3.1.98 upgrade; `qorechain-vladi` (mainnet)
-stays on v1 until its own upgrade; chains born later are v2 from genesis. So pass
+(testnet) switched to v2 at its `v3.1.98` upgrade; `qorechain-vladi` (mainnet)
+stays on v1 until its own, named `v3.2.0`; chains born later are v2 from genesis. So pass
 the network's REST endpoint and let the SDK ask (`signBytesVersion: "auto"`, the
 default):
 
@@ -148,8 +148,12 @@ const res = await signAndBroadcastHybrid({
 });
 ```
 
-- `"auto"` reads `GET {rest}/cosmos/upgrade/v1beta1/applied_plan/v3.1.98` (v2 when
-  the applied height is above 0) and caches the answer for about a minute.
+- `"auto"` reads `GET {rest}/cosmos/upgrade/v1beta1/applied_plan/<name>` for each
+  name in `SIGN_BYTES_V2_UPGRADES` (`"v3.2.0"`, then `"v3.1.98"`), stopping at the
+  first applied height above 0, and caches the answer for about a minute. Both
+  names matter: the testnet switched under `v3.1.98` and keeps that record,
+  mainnet switches under `v3.2.0`. A client that asks for only one answers v1 on
+  the other network, and the chain then refuses every hybrid tx with `pqc` code 21.
 - On `qorechain-vladi` / `qorechain-diana`, `"auto"` without `rest` — or with a
   node that cannot be asked — **throws** rather than guess. Force a form with
   `signBytesVersion: "v1"` or `"v2"`.

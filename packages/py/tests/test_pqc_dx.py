@@ -56,8 +56,12 @@ class _FakeQor:
 
 
 def _mock_broadcast():
-    # The hybrid path resolves the sign-bytes form ("auto") from the node first;
-    # the testnet has applied v3.1.98, so it answers v2.
+    # The hybrid path resolves the sign-bytes form ("auto") from the node first,
+    # asking every upgrade name in turn. The testnet took the switch under the
+    # earlier name only, so v3.2.0 answers 0 and v3.1.98 answers its height: v2.
+    respx.get(f"{REST}/cosmos/upgrade/v1beta1/applied_plan/v3.2.0").mock(
+        return_value=httpx.Response(200, json={"height": "0"})
+    )
     respx.get(f"{REST}/cosmos/upgrade/v1beta1/applied_plan/v3.1.98").mock(
         return_value=httpx.Response(200, json={"height": "5746000"})
     )

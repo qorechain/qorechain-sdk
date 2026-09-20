@@ -63,22 +63,41 @@ func pqcSigFromTx(t *testing.T, txBytes []byte) (sig, b0, authInfo []byte) {
 // (verifies), while its applied-plan endpoint answers planBodies in turn (the
 // last one repeats) — modelling a node whose first answer was stale.
 type fakeChain struct {
-	pub        []byte
-	chainID    string
-	verifies   signbytes.Version
-	rejectCS   string // codespace used when refusing
-	rejectCode uint32
-	rejectLog  string
-	planBodies []string
-	planHits   atomic.Int32
-	broadcasts atomic.Int32
+	pub          []byte
+	chainID      string
+	verifies     signbytes.Version
+	rejectCS     string // codespace used when refusing
+	rejectCode   uint32
+	rejectLog    string
+	planBodies   []string
+	planHits     atomic.Int32 // resolve ROUNDS (one per applied-plan lookup)
+	planRequests atomic.Int32 // individual applied-plan requests, one per name
+	broadcasts   atomic.Int32
 }
+
+// appliedPlanPrefix is the REST path of the upgrade applied-plan query; the plan
+// name follows it.
+const appliedPlanPrefix = "/cosmos/upgrade/v1beta1/applied_plan/"
 
 func (f *fakeChain) server() *httptest.Server {
 	return httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		switch {
-		case r.URL.Path == "/cosmos/upgrade/v1beta1/applied_plan/v3.1.98":
-			i := int(f.planHits.Add(1)) - 1
+		case strings.HasPrefix(r.URL.Path, appliedPlanPrefix):
+			// The switch to v2 ships under several plan names and this network,
+			// like diana, took the LAST one: the earlier names answer "not
+			// applied", so a client that asks only for the first resolves v1 and
+			// is refused with pqc 21. One resolve round asks every name in turn.
+			name := strings.TrimPrefix(r.URL.Path, appliedPlanPrefix)
+			f.planRequests.Add(1)
+			if name != signbytes.V2Upgrades[len(signbytes.V2Upgrades)-1] {
+				f.planHits.Add(1)
+				_, _ = w.Write([]byte(`{}`))
+				return
+			}
+			i := int(f.planHits.Load()) - 1
+			if i < 0 {
+				i = 0
+			}
 			if i >= len(f.planBodies) {
 				i = len(f.planBodies) - 1
 			}
@@ -155,6 +174,10 @@ func TestBroadcastHybridRetriesOnceAfterPQC21(t *testing.T) {
 	}
 	if b, p := fc.broadcasts.Load(), fc.planHits.Load(); b != 2 || p != 2 {
 		t.Fatalf("broadcasts %d plan queries %d, want 2 and 2", b, p)
+	}
+	// Each round asks for every name, so the record under the later name is found.
+	if got, want := fc.planRequests.Load(), int32(2*len(signbytes.V2Upgrades)); got != want {
+		t.Fatalf("applied-plan requests = %d, want %d (every name, both rounds)", got, want)
 	}
 }
 

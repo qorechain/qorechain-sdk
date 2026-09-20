@@ -10,6 +10,7 @@
 //! - The one-shot retry on a `pqc` code-21 refusal runs over a fake transport.
 //! - A hybrid tx signed with v2 verifies over the v2 bytes and NOT the v1 bytes.
 
+use std::collections::HashMap;
 use std::convert::Infallible;
 use std::sync::{Arc, Mutex};
 use std::time::Duration;
@@ -36,7 +37,7 @@ use qorechain::signbytes::{
     is_hybrid_sign_bytes_rejection_error, is_hybrid_sign_bytes_rejection_response,
     migration_sign_bytes, migration_sign_bytes_v1, migration_sign_bytes_v2, sign_bytes_version_for,
     BridgeAttestationSignFields, MigrationSignFields, SignBytesMode, SignBytesResolver,
-    SignBytesVersion, HYBRID_SIGN_BYTES_DOMAIN,
+    SignBytesVersion, HYBRID_SIGN_BYTES_DOMAIN, SIGN_BYTES_V2_UPGRADE, SIGN_BYTES_V2_UPGRADES,
 };
 use qorechain::tx::{
     build_hybrid_tx, BroadcastMode, BuildHybridTxParams, Coin, Fee, Message as TxMessage,
@@ -48,7 +49,11 @@ use qorechain::Error;
 /// Public test mnemonic only (BIP-39 test vector); never a real secret.
 const TEST_MNEMONIC: &str =
     "abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon about";
-const APPLIED_PLAN_PATH: &str = "/cosmos/upgrade/v1beta1/applied_plan/v3.1.98";
+const APPLIED_PLAN_PREFIX: &str = "/cosmos/upgrade/v1beta1/applied_plan/";
+/// The primary (mainnet) plan name: asked first by the resolver.
+const PLAN_PATH_PRIMARY: &str = "/cosmos/upgrade/v1beta1/applied_plan/v3.2.0";
+/// The name the testnet took the same switch under: asked second.
+const PLAN_PATH_LEGACY: &str = "/cosmos/upgrade/v1beta1/applied_plan/v3.1.98";
 const BROADCAST_PATH: &str = "/cosmos/tx/v1beta1/txs";
 
 // ---------------------------------------------------------------------------
@@ -258,11 +263,13 @@ fn version_for_truth_table() {
 // Mock HTTP server
 // ---------------------------------------------------------------------------
 
-/// A mock node: `applied_plan` answers `(status, plan_body)` (both mutable),
-/// and each broadcast POST pops the next queued response (the last one repeats).
+/// A mock node: every `applied_plan` name answers `(status, plan_body)` (both
+/// mutable), unless `set_plan_for` overrides one name; each broadcast POST pops
+/// the next queued response (the last one repeats).
 struct MockNode {
     base_url: String,
     plan: Arc<Mutex<(u16, String)>>,
+    plan_overrides: Arc<Mutex<HashMap<String, (u16, String)>>>,
     hits: Arc<Mutex<Vec<(String, String)>>>,
     _shutdown: tokio::sync::oneshot::Sender<()>,
 }
@@ -272,30 +279,45 @@ impl MockNode {
         let listener = TcpListener::bind("127.0.0.1:0").await.unwrap();
         let base_url = format!("http://{}", listener.local_addr().unwrap());
         let plan = Arc::new(Mutex::new((200u16, plan_body.to_string())));
+        let plan_overrides: Arc<Mutex<HashMap<String, (u16, String)>>> =
+            Arc::new(Mutex::new(HashMap::new()));
         let queued = Arc::new(Mutex::new(
             broadcasts.iter().map(|b| b.to_string()).collect::<Vec<_>>(),
         ));
         let hits: Arc<Mutex<Vec<(String, String)>>> = Arc::new(Mutex::new(Vec::new()));
         let (tx, mut rx) = tokio::sync::oneshot::channel::<()>();
 
-        let (plan_c, queued_c, hits_c) = (plan.clone(), queued.clone(), hits.clone());
+        let (plan_c, over_c, queued_c, hits_c) = (
+            plan.clone(),
+            plan_overrides.clone(),
+            queued.clone(),
+            hits.clone(),
+        );
         tokio::spawn(async move {
             loop {
                 tokio::select! {
                     _ = &mut rx => break,
                     accepted = listener.accept() => {
                         let Ok((stream, _)) = accepted else { continue };
-                        let (plan, queued, hits) = (plan_c.clone(), queued_c.clone(), hits_c.clone());
+                        let (plan, over, queued, hits) =
+                            (plan_c.clone(), over_c.clone(), queued_c.clone(), hits_c.clone());
                         tokio::spawn(async move {
                             let svc = service_fn(move |req: Request<hyper::body::Incoming>| {
-                                let (plan, queued, hits) = (plan.clone(), queued.clone(), hits.clone());
+                                let (plan, over, queued, hits) =
+                                    (plan.clone(), over.clone(), queued.clone(), hits.clone());
                                 async move {
                                     let path = req.uri().path().to_string();
                                     let bytes = req.into_body().collect().await.unwrap().to_bytes();
                                     let body = String::from_utf8_lossy(&bytes).to_string();
                                     hits.lock().unwrap().push((path.clone(), body));
-                                    let (status, resp) = if path == APPLIED_PLAN_PATH {
-                                        plan.lock().unwrap().clone()
+                                    let (status, resp) = if let Some(name) =
+                                        path.strip_prefix(APPLIED_PLAN_PREFIX)
+                                    {
+                                        over.lock()
+                                            .unwrap()
+                                            .get(name)
+                                            .cloned()
+                                            .unwrap_or_else(|| plan.lock().unwrap().clone())
                                     } else if path == BROADCAST_PATH {
                                         let mut q = queued.lock().unwrap();
                                         let next = if q.len() > 1 { q.remove(0) } else { q[0].clone() };
@@ -320,13 +342,23 @@ impl MockNode {
         MockNode {
             base_url,
             plan,
+            plan_overrides,
             hits,
             _shutdown: tx,
         }
     }
 
+    /// The answer every `applied_plan` name gives (unless overridden).
     fn set_plan(&self, status: u16, body: &str) {
         *self.plan.lock().unwrap() = (status, body.to_string());
+    }
+
+    /// The answer ONE plan name gives, e.g. only `v3.1.98` (as on the testnet).
+    fn set_plan_for(&self, plan_name: &str, status: u16, body: &str) {
+        self.plan_overrides
+            .lock()
+            .unwrap()
+            .insert(plan_name.to_string(), (status, body.to_string()));
     }
 
     fn hits_on(&self, path: &str) -> Vec<String> {
@@ -338,11 +370,29 @@ impl MockNode {
             .map(|(_, b)| b.clone())
             .collect()
     }
+
+    /// Every `applied_plan` path requested, in order.
+    fn plan_hits(&self) -> Vec<String> {
+        self.hits
+            .lock()
+            .unwrap()
+            .iter()
+            .map(|(p, _)| p.clone())
+            .filter(|p| p.starts_with(APPLIED_PLAN_PREFIX))
+            .collect()
+    }
 }
 
 // ---------------------------------------------------------------------------
 // Resolver
 // ---------------------------------------------------------------------------
+
+#[test]
+fn upgrade_names_are_ordered_and_primary_is_first() {
+    // The mainnet name leads, so mainnet costs ONE request once it has upgraded.
+    assert_eq!(SIGN_BYTES_V2_UPGRADES, &["v3.2.0", "v3.1.98"]);
+    assert_eq!(SIGN_BYTES_V2_UPGRADE, SIGN_BYTES_V2_UPGRADES[0]);
+}
 
 #[tokio::test]
 async fn resolver_height_above_zero_is_v2() {
@@ -353,27 +403,104 @@ async fn resolver_height_above_zero_is_v2() {
         .await
         .unwrap();
     assert_eq!(v, SignBytesVersion::V2);
-    assert_eq!(node.hits_on(APPLIED_PLAN_PATH).len(), 1);
+    assert_eq!(node.plan_hits(), vec![PLAN_PATH_PRIMARY.to_string()]);
 }
 
+/// Mainnet after its own upgrade: the first name answers, nothing else is asked.
+#[tokio::test]
+async fn resolver_first_name_applied_is_v2_in_one_request() {
+    let node = MockNode::start(r#"{"height":"0"}"#, &["{}"]).await;
+    node.set_plan_for("v3.2.0", 200, r#"{"height":"9100000"}"#);
+    let v = SignBytesResolver::new()
+        .resolve(SignBytesMode::Auto, "qorechain-vladi", Some(&node.base_url))
+        .await
+        .unwrap();
+    assert_eq!(v, SignBytesVersion::V2);
+    assert_eq!(node.plan_hits(), vec![PLAN_PATH_PRIMARY.to_string()]);
+}
+
+/// The testnet took the switch as `v3.1.98` only: the second name decides.
+#[tokio::test]
+async fn resolver_second_name_applied_is_v2_in_two_requests() {
+    let node = MockNode::start(r#"{"height":"0"}"#, &["{}"]).await;
+    node.set_plan_for("v3.1.98", 200, r#"{"height":"5746000"}"#);
+    let v = SignBytesResolver::new()
+        .resolve(SignBytesMode::Auto, "qorechain-diana", Some(&node.base_url))
+        .await
+        .unwrap();
+    assert_eq!(v, SignBytesVersion::V2);
+    assert_eq!(
+        node.plan_hits(),
+        vec![PLAN_PATH_PRIMARY.to_string(), PLAN_PATH_LEGACY.to_string()]
+    );
+}
+
+/// Mainnet before its upgrade: every name answers 0 (or `{}`), so v1 — and only
+/// after ALL of them were asked.
 #[tokio::test]
 async fn resolver_height_zero_is_v1() {
-    let node = MockNode::start(r#"{"height":"0"}"#, &["{}"]).await;
-    let v = SignBytesResolver::new()
-        .resolve(SignBytesMode::Auto, "qorechain-vladi", Some(&node.base_url))
-        .await
-        .unwrap();
-    assert_eq!(v, SignBytesVersion::V1);
+    for body in [r#"{"height":"0"}"#, "{}"] {
+        let node = MockNode::start(body, &["{}"]).await;
+        let v = SignBytesResolver::new()
+            .resolve(SignBytesMode::Auto, "qorechain-vladi", Some(&node.base_url))
+            .await
+            .unwrap();
+        assert_eq!(v, SignBytesVersion::V1, "body {body}");
+        assert_eq!(
+            node.plan_hits(),
+            vec![PLAN_PATH_PRIMARY.to_string(), PLAN_PATH_LEGACY.to_string()],
+            "body {body}"
+        );
+    }
 }
 
+/// A failing query still raises, even when an earlier name already answered 0.
 #[tokio::test]
-async fn resolver_empty_object_is_v1() {
-    let node = MockNode::start("{}", &["{}"]).await;
-    let v = SignBytesResolver::new()
+async fn resolver_error_when_a_later_name_fails() {
+    let node = MockNode::start(r#"{"height":"0"}"#, &["{}"]).await;
+    node.set_plan_for("v3.1.98", 500, r#"{"message":"boom"}"#);
+    let err = SignBytesResolver::new()
         .resolve(SignBytesMode::Auto, "qorechain-vladi", Some(&node.base_url))
         .await
-        .unwrap();
-    assert_eq!(v, SignBytesVersion::V1);
+        .unwrap_err();
+    assert!(matches!(err, Error::SignBytes(_)), "{err:?}");
+    let msg = err.to_string();
+    // The message names both plan names, so the reader knows what was asked.
+    for name in SIGN_BYTES_V2_UPGRADES {
+        assert!(msg.contains(name), "{msg}");
+    }
+}
+
+/// The single-name fetch helper defaults to the primary name.
+#[tokio::test]
+async fn fetch_helper_defaults_to_the_primary_name() {
+    let node = MockNode::start(r#"{"height":"0"}"#, &["{}"]).await;
+    node.set_plan_for("v3.2.0", 200, r#"{"height":"7"}"#);
+    let r = SignBytesResolver::new();
+    assert_eq!(
+        r.fetch_v2_applied_height(&node.base_url, None)
+            .await
+            .unwrap(),
+        7
+    );
+    assert_eq!(
+        r.fetch_v2_applied_height(&node.base_url, Some("v3.1.98"))
+            .await
+            .unwrap(),
+        0
+    );
+    assert_eq!(
+        r.fetch_v2_applied_height_any(&node.base_url).await.unwrap(),
+        7
+    );
+    assert_eq!(
+        node.plan_hits(),
+        vec![
+            PLAN_PATH_PRIMARY.to_string(),
+            PLAN_PATH_LEGACY.to_string(),
+            PLAN_PATH_PRIMARY.to_string()
+        ]
+    );
 }
 
 #[tokio::test]
@@ -395,7 +522,7 @@ async fn resolver_non_legacy_chain_is_v2_without_http() {
         .await
         .unwrap();
     assert_eq!(v, SignBytesVersion::V2);
-    assert!(node.hits_on(APPLIED_PLAN_PATH).is_empty());
+    assert!(node.plan_hits().is_empty());
 }
 
 #[tokio::test]
@@ -415,7 +542,7 @@ async fn resolver_explicit_versions_skip_http() {
             .unwrap(),
         SignBytesVersion::V2
     );
-    assert!(node.hits_on(APPLIED_PLAN_PATH).is_empty());
+    assert!(node.plan_hits().is_empty());
 }
 
 #[tokio::test]
@@ -485,9 +612,10 @@ async fn resolver_caches_within_ttl_and_force_refresh_bypasses() {
             .unwrap(),
         SignBytesVersion::V1
     );
+    // Not applied under EITHER name, so the first lookup asked both.
     assert_eq!(
-        node.hits_on(APPLIED_PLAN_PATH).len(),
-        1,
+        node.plan_hits(),
+        vec![PLAN_PATH_PRIMARY.to_string(), PLAN_PATH_LEGACY.to_string()],
         "second call is a cache hit"
     );
 
@@ -499,28 +627,29 @@ async fn resolver_caches_within_ttl_and_force_refresh_bypasses() {
             .unwrap(),
         SignBytesVersion::V1
     );
-    assert_eq!(node.hits_on(APPLIED_PLAN_PATH).len(), 1);
+    assert_eq!(node.plan_hits().len(), 2);
 
-    // Force refresh re-asks and updates the cache.
+    // Force refresh re-asks and updates the cache; the first name now answers a
+    // height, so it short-circuits after ONE request.
     assert_eq!(
         r.force_refresh("qorechain-diana", url).await.unwrap(),
         SignBytesVersion::V2
     );
-    assert_eq!(node.hits_on(APPLIED_PLAN_PATH).len(), 2);
+    assert_eq!(node.plan_hits().len(), 3);
     assert_eq!(
         r.resolve(SignBytesMode::Auto, "qorechain-diana", url)
             .await
             .unwrap(),
         SignBytesVersion::V2
     );
-    assert_eq!(node.hits_on(APPLIED_PLAN_PATH).len(), 2);
+    assert_eq!(node.plan_hits().len(), 3);
 
     // Clearing the cache forces a new query.
     r.clear_cache();
     r.resolve(SignBytesMode::Auto, "qorechain-diana", url)
         .await
         .unwrap();
-    assert_eq!(node.hits_on(APPLIED_PLAN_PATH).len(), 3);
+    assert_eq!(node.plan_hits().len(), 4);
 }
 
 #[tokio::test]
@@ -539,7 +668,8 @@ async fn resolver_expired_ttl_requeries() {
             .unwrap(),
         SignBytesVersion::V2
     );
-    assert_eq!(node.hits_on(APPLIED_PLAN_PATH).len(), 2);
+    // Two requests for the first (unapplied) lookup, one for the re-query.
+    assert_eq!(node.plan_hits().len(), 3);
 }
 
 // ---------------------------------------------------------------------------
@@ -659,7 +789,8 @@ async fn auto_retries_once_after_pqc_21_with_re_resolved_version() {
     assert_eq!(out.sign_bytes_version, SignBytesVersion::V2);
     assert_eq!(out.response["tx_response"]["txhash"], "OK");
     assert_eq!(t.built(), vec![SignBytesVersion::V1, SignBytesVersion::V2]);
-    assert_eq!(node.hits_on(APPLIED_PLAN_PATH).len(), 2, "re-resolved once");
+    // First lookup asked both names (neither applied); the refresh short-circuits.
+    assert_eq!(node.plan_hits().len(), 3, "re-resolved once");
 }
 
 #[tokio::test]

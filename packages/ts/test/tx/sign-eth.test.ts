@@ -277,10 +277,13 @@ describe("eth-native hybrid sign-bytes form", () => {
 
   it("EthNativeSigner auto asks the network and retries once on a pqc code-21 refusal", async () => {
     const acct = await katAccount();
-    const f = vi
-      .fn()
-      .mockResolvedValueOnce(new Response(JSON.stringify({ height: "0" })))
-      .mockResolvedValue(new Response(JSON.stringify({ height: "5746000" })));
+    // Neither plan applied on the first resolve (both names asked), then the
+    // network upgrades, so the forced re-resolve sees it.
+    let asked = 0;
+    const f = vi.fn(async () => {
+      asked += 1;
+      return new Response(JSON.stringify({ height: asked <= 2 ? "0" : "5746000" }));
+    });
     const signer = new EthNativeSigner(acct, { rest: "https://lcd.example", fetch: f });
     const transport = {
       broadcastTx: vi
@@ -297,7 +300,7 @@ describe("eth-native hybrid sign-bytes form", () => {
     });
     expect(res.transactionHash).toBe("OK");
     expect(transport.broadcastTx).toHaveBeenCalledTimes(2);
-    expect(f).toHaveBeenCalledTimes(2);
+    expect(f).toHaveBeenCalledTimes(3); // 2 plan names, then the refresh
   });
 
   it("EthNativeSigner auto without rest on a legacy network throws", async () => {

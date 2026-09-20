@@ -102,6 +102,7 @@ pub use signbytes::{
     is_legacy_sign_bytes_chain, migration_sign_bytes, resolve_sign_bytes_version,
     sign_bytes_version_for, BridgeAttestationSignFields, HybridBroadcast, MigrationSignFields,
     SignBytesMode, SignBytesResolver, SignBytesVersion, SIGN_BYTES_V2_UPGRADE,
+    SIGN_BYTES_V2_UPGRADES,
 };
 
 pub use query::{JsonRpcClient, QorClient, RestClient, TypedQueryClient, QOR_METHODS};

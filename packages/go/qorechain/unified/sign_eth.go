@@ -84,8 +84,8 @@ type EthSignParams struct {
 	// package signbytes). signbytes.V1 / signbytes.V2 are used as given. Empty
 	// or signbytes.Auto is decided from ChainID alone: a non-legacy chain is
 	// V2, while a legacy network (qorechain-vladi, qorechain-diana) makes
-	// SignHybridEth FAIL, because its form depends on whether the v3.1.98
-	// upgrade is applied there; resolve it first with a signbytes.Resolver.
+	// SignHybridEth FAIL, because its form depends on whether one of the
+	// signbytes.V2Upgrades plans is applied there; resolve it first with a signbytes.Resolver.
 	// Ignored by SignClassicalEth.
 	SignBytesVersion signbytes.Version
 }

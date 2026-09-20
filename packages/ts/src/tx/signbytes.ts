@@ -9,13 +9,18 @@
  * ──────────────────────────────────────────────────────────────────────────
  * Chain release v3.1.98 introduced the v2 forms, which bind a domain tag and
  * the chain id. Networks that existed before it (`qorechain-vladi`,
- * `qorechain-diana`) verify v1 until the `v3.1.98` upgrade plan is applied on
- * that network, and v2 from then on. Any other chain verifies v2 from its first
+ * `qorechain-diana`) verify v1 until a v2 upgrade plan is applied on that
+ * network, and v2 from then on. Any other chain verifies v2 from its first
  * block. The testnet and mainnet switch at different heights, so a client must
  * ask the target network rather than hardcode either form:
  *
- *     GET {rest}/cosmos/upgrade/v1beta1/applied_plan/v3.1.98 -> {"height":"<n>"}
- *     v2 iff n > 0, or the chain is not one of the legacy networks.
+ *     GET {rest}/cosmos/upgrade/v1beta1/applied_plan/<name> -> {"height":"<n>"}
+ *     for each name in SIGN_BYTES_V2_UPGRADES ("v3.2.0", then "v3.1.98")
+ *     v2 iff any n > 0, or the chain is not one of the legacy networks.
+ *
+ * Both names must be asked: the testnet switched under "v3.1.98" and keeps that
+ * record, mainnet switches under "v3.2.0". Asking only one answers v1 on the
+ * other network, and the chain then refuses every hybrid tx with `pqc` code 21.
  *
  * The height is an int64 and crosses the REST gateway as a STRING; a network
  * that has not upgraded answers `{"height":"0"}` (or `{}` on older nodes), so
@@ -34,8 +39,23 @@ export type SignBytesVersion = "v1" | "v2";
 /** A form, or `"auto"` to ask the target network. */
 export type SignBytesVersionOption = SignBytesVersion | "auto";
 
-/** The upgrade plan whose application switches a legacy network to v2. */
-export const SIGN_BYTES_V2_UPGRADE = "v3.1.98";
+/**
+ * The upgrade plan whose application switches a legacy network to v2 — the
+ * name used from the v3.2.0 release onward. See {@link SIGN_BYTES_V2_UPGRADES}:
+ * a client must accept either name, because the testnet took the switch under
+ * the earlier one and keeps that record.
+ */
+export const SIGN_BYTES_V2_UPGRADE = "v3.2.0";
+
+/**
+ * Every upgrade name that has switched a network to the v2 sign-bytes, most
+ * recent first. The testnet applied `"v3.1.98"` and its record stays in state
+ * forever; mainnet applies `"v3.2.0"`. A network is on v2 if ANY of these is
+ * applied, so a client asks for each in turn and stops at the first positive
+ * height — querying only one name answers v1 on the other network and every
+ * hybrid transaction is then refused with `pqc` code 21.
+ */
+export const SIGN_BYTES_V2_UPGRADES: readonly string[] = ["v3.2.0", "v3.1.98"];
 
 /** Networks that ran before v2 existed and switch only at {@link SIGN_BYTES_V2_UPGRADE}. */
 export const LEGACY_SIGN_BYTES_CHAINS: readonly string[] = [
@@ -273,19 +293,37 @@ function parseAppliedHeight(body: unknown): bigint {
 }
 
 /**
- * Ask a node at which height the v3.1.98 plan was applied (0 when not).
+ * Ask a node at which height an upgrade plan was applied (0 when it has not
+ * been). Defaults to {@link SIGN_BYTES_V2_UPGRADE}; pass a name from
+ * {@link SIGN_BYTES_V2_UPGRADES} to ask for an earlier one.
  * @throws on a transport or parse failure — the caller must not guess.
  */
 export async function fetchSignBytesV2AppliedHeight(
   rest: string,
   fetchImpl: FetchLike = globalThis.fetch as FetchLike,
+  upgradeName: string = SIGN_BYTES_V2_UPGRADE,
 ): Promise<bigint> {
-  const url = `${rest.replace(/\/+$/, "")}/cosmos/upgrade/v1beta1/applied_plan/${SIGN_BYTES_V2_UPGRADE}`;
+  const url = `${rest.replace(/\/+$/, "")}/cosmos/upgrade/v1beta1/applied_plan/${upgradeName}`;
   const res = await fetchImpl(url);
   if (!res.ok) {
     throw new Error(`applied_plan query failed: HTTP ${res.status} from ${url}`);
   }
   return parseAppliedHeight(await res.json());
+}
+
+/**
+ * The greatest applied height across {@link SIGN_BYTES_V2_UPGRADES}, stopping
+ * at the first positive one. 0 means no v2 upgrade has been applied.
+ */
+export async function fetchSignBytesV2AppliedHeightAny(
+  rest: string,
+  fetchImpl: FetchLike = globalThis.fetch as FetchLike,
+): Promise<bigint> {
+  for (const name of SIGN_BYTES_V2_UPGRADES) {
+    const height = await fetchSignBytesV2AppliedHeight(rest, fetchImpl, name);
+    if (height > 0n) return height;
+  }
+  return 0n;
 }
 
 /** Options for {@link resolveSignBytesVersion}. */
@@ -334,7 +372,7 @@ export async function resolveSignBytesVersion(
   if (!opts.rest) {
     throw new Error(
       `cannot choose the hybrid sign-bytes form for ${opts.chainId} without its REST endpoint: ` +
-        `pass rest, or signBytesVersion "v1" (before the ${SIGN_BYTES_V2_UPGRADE} upgrade) or "v2" (after)`,
+        `pass rest, or signBytesVersion "v1" (before the ${SIGN_BYTES_V2_UPGRADES.join(" / ")} upgrade) or "v2" (after)`,
     );
   }
   const key = `${opts.rest} ${opts.chainId}`;
@@ -344,11 +382,11 @@ export async function resolveSignBytesVersion(
 
   let height: bigint;
   try {
-    height = await fetchSignBytesV2AppliedHeight(opts.rest, opts.fetch);
+    height = await fetchSignBytesV2AppliedHeightAny(opts.rest, opts.fetch);
   } catch (e) {
     throw new Error(
-      `cannot ask ${opts.rest} whether ${SIGN_BYTES_V2_UPGRADE} is applied (${(e as Error).message}); ` +
-        `pass signBytesVersion "v1" or "v2"`,
+      `cannot ask ${opts.rest} whether any of ${SIGN_BYTES_V2_UPGRADES.join(", ")} is applied ` +
+        `(${(e as Error).message}); pass signBytesVersion "v1" or "v2"`,
     );
   }
   const version = signBytesVersionFor(opts.chainId, height);

@@ -146,7 +146,7 @@ PQC key generation, signing, and verification are available through
 `buildHybridTx` / `signAndBroadcastHybrid` (the signer's PQC key must first be
 registered on-chain with `MsgRegisterPQCKeyV2`). The post-quantum signature is
 computed over the sign-bytes form the target network verifies — v1 on mainnet
-until its v3.1.98 upgrade, v2 on the testnet since its upgrade — so pass the
+until its own upgrade, v2 on the testnet since its upgrade — so pass the
 network's REST endpoint (`rest`) and the SDK picks the form (see the
 [TypeScript guide](./packages/ts/README.md)).
 

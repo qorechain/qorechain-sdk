@@ -32,8 +32,10 @@ import java.util.List;
  *        || BE32(len A) || A
  * </pre>
  *
- * A network verifies exactly one form: v1 until it applies the v3.1.98 upgrade
- * (mainnet today), v2 after (testnet today) and on every network born on v3.1.98+.
+ * A network verifies exactly one form: v1 until it applies the upgrade under one of
+ * the names in {@link SignBytes#SIGN_BYTES_V2_UPGRADES} ({@code v3.2.0} on mainnet,
+ * {@code v3.1.98} already on the testnet), v2 after, and on every network born on that
+ * release or later.
  * {@link Options#signBytesVersion} selects it; when unset, a non-legacy chain uses
  * v2 and a legacy chain ({@code qorechain-vladi}/{@code qorechain-diana}) fails
  * loudly rather than guessing. Resolve it with {@link SignBytesResolver}.

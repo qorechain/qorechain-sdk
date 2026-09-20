@@ -11,6 +11,8 @@ import (
 	"os"
 	"path/filepath"
 	"strconv"
+	"strings"
+	"sync"
 	"sync/atomic"
 	"testing"
 	"time"
@@ -270,29 +272,151 @@ func TestParseVersion(t *testing.T) {
 
 // ---- resolver ----
 
+// planServer is an applied-plan endpoint that answers per PLAN NAME. A name with
+// no body configured answers `{}` (the plan was never applied on this network),
+// which is what each real network answers for the name it did not take.
 type planServer struct {
 	*httptest.Server
-	hits   atomic.Int32
-	body   atomic.Value // string
-	status atomic.Int32
+	requests atomic.Int32 // every applied-plan request
+	rounds   atomic.Int32 // requests for V2Upgrades[0] — one per resolve round
+	status   atomic.Int32
+
+	mu    sync.Mutex
+	plans map[string]string
+	asked []string
 }
 
-func newPlanServer(t *testing.T, body string) *planServer {
+func newPlanServer(t *testing.T, plans map[string]string) *planServer {
 	t.Helper()
-	ps := &planServer{}
-	ps.body.Store(body)
+	ps := &planServer{plans: map[string]string{}}
+	for k, v := range plans {
+		ps.plans[k] = v
+	}
 	ps.status.Store(http.StatusOK)
+	const prefix = "/cosmos/upgrade/v1beta1/applied_plan/"
 	ps.Server = httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		if r.URL.Path != "/cosmos/upgrade/v1beta1/applied_plan/v3.1.98" {
+		if !strings.HasPrefix(r.URL.Path, prefix) {
 			http.NotFound(w, r)
 			return
 		}
-		ps.hits.Add(1)
+		name := strings.TrimPrefix(r.URL.Path, prefix)
+		ps.requests.Add(1)
+		if name == V2Upgrades[0] {
+			ps.rounds.Add(1)
+		}
+		ps.mu.Lock()
+		ps.asked = append(ps.asked, name)
+		body, ok := ps.plans[name]
+		ps.mu.Unlock()
+		if !ok {
+			body = `{}`
+		}
 		w.WriteHeader(int(ps.status.Load()))
-		_, _ = w.Write([]byte(ps.body.Load().(string)))
+		_, _ = w.Write([]byte(body))
 	}))
 	t.Cleanup(ps.Close)
 	return ps
+}
+
+// newLegacyPlanServer models diana today: the mainnet plan name v3.2.0 is not
+// applied, and the record lives under the name the testnet took, v3.1.98.
+func newLegacyPlanServer(t *testing.T, legacyBody string) *planServer {
+	t.Helper()
+	return newPlanServer(t, map[string]string{"v3.1.98": legacyBody})
+}
+
+func (ps *planServer) setPlan(name, body string) {
+	ps.mu.Lock()
+	ps.plans[name] = body
+	ps.mu.Unlock()
+}
+
+func (ps *planServer) askedNames() []string {
+	ps.mu.Lock()
+	defer ps.mu.Unlock()
+	return append([]string(nil), ps.asked...)
+}
+
+// The list the resolver walks must match the chain's own
+// x/pqc/types.SignBytesV2Upgrades, with the mainnet name first and the singular
+// constant pointing at it.
+func TestV2UpgradeNames(t *testing.T) {
+	if want := []string{"v3.2.0", "v3.1.98"}; len(V2Upgrades) != len(want) {
+		t.Fatalf("V2Upgrades = %v, want %v", V2Upgrades, want)
+	} else {
+		for i := range want {
+			if V2Upgrades[i] != want[i] {
+				t.Fatalf("V2Upgrades = %v, want %v", V2Upgrades, want)
+			}
+		}
+	}
+	if V2Upgrade != "v3.2.0" {
+		t.Errorf("V2Upgrade = %q, want the primary name %q", V2Upgrade, "v3.2.0")
+	}
+	if V2Upgrades[0] != V2Upgrade {
+		t.Errorf("V2Upgrades[0] = %q, want V2Upgrade %q", V2Upgrades[0], V2Upgrade)
+	}
+}
+
+// Mainnet after its own upgrade: the FIRST name answers a positive height, so
+// the resolver answers v2 after exactly ONE request and never asks the second.
+func TestResolverFirstNameAppliedCostsOneRequest(t *testing.T) {
+	ps := newPlanServer(t, map[string]string{"v3.2.0": `{"height":"7000000"}`})
+	r := NewResolver(ResolverOptions{})
+	got, err := r.Resolve(context.Background(), ps.URL, "qorechain-vladi", Auto)
+	if err != nil || got != V2 {
+		t.Fatalf("got %s, %v; want v2", got, err)
+	}
+	if n := ps.requests.Load(); n != 1 {
+		t.Fatalf("requests = %d, want 1 (short-circuit on the first name)", n)
+	}
+	if asked := ps.askedNames(); len(asked) != 1 || asked[0] != "v3.2.0" {
+		t.Fatalf("asked %v, want [v3.2.0]", asked)
+	}
+}
+
+// Diana today: the first name is not applied, the second is. Two requests, v2.
+// Before this fix the client asked v3.1.98 only, so mainnet (which applies
+// v3.2.0) resolved v1 and every hybrid transaction was refused with pqc 21.
+func TestResolverSecondNameAppliedCostsTwoRequests(t *testing.T) {
+	ps := newLegacyPlanServer(t, `{"height":"5746000"}`)
+	r := NewResolver(ResolverOptions{})
+	got, err := r.Resolve(context.Background(), ps.URL, "qorechain-diana", Auto)
+	if err != nil || got != V2 {
+		t.Fatalf("got %s, %v; want v2", got, err)
+	}
+	if n := ps.requests.Load(); n != 2 {
+		t.Fatalf("requests = %d, want 2", n)
+	}
+	asked := ps.askedNames()
+	if len(asked) != 2 || asked[0] != "v3.2.0" || asked[1] != "v3.1.98" {
+		t.Fatalf("asked %v, want [v3.2.0 v3.1.98]", asked)
+	}
+}
+
+// Mainnet before its upgrade: every name answers zero (as "0" or as {}), so the
+// resolver answers v1 — and only then.
+func TestResolverNoNameAppliedIsV1(t *testing.T) {
+	for _, c := range []struct {
+		name  string
+		plans map[string]string
+	}{
+		{"both zero", map[string]string{"v3.2.0": `{"height":"0"}`, "v3.1.98": `{"height":"0"}`}},
+		{"both empty objects", map[string]string{"v3.2.0": `{}`, "v3.1.98": `{}`}},
+		{"zero and empty", map[string]string{"v3.2.0": `{"height":"0"}`, "v3.1.98": `{}`}},
+	} {
+		t.Run(c.name, func(t *testing.T) {
+			ps := newPlanServer(t, c.plans)
+			r := NewResolver(ResolverOptions{})
+			got, err := r.Resolve(context.Background(), ps.URL, "qorechain-vladi", Auto)
+			if err != nil || got != V1 {
+				t.Fatalf("got %s, %v; want v1", got, err)
+			}
+			if n := ps.requests.Load(); n != 2 {
+				t.Fatalf("requests = %d, want 2 (every name asked before answering v1)", n)
+			}
+		})
+	}
 }
 
 func TestResolverAppliedPlanAnswers(t *testing.T) {
@@ -306,7 +430,7 @@ func TestResolverAppliedPlanAnswers(t *testing.T) {
 		{`{}`, V1},
 		{`{"height":5746000}`, V2},
 	} {
-		ps := newPlanServer(t, c.body)
+		ps := newLegacyPlanServer(t, c.body)
 		r := NewResolver(ResolverOptions{})
 		got, err := r.Resolve(ctx, ps.URL+"/", "qorechain-diana", Auto)
 		if err != nil || got != c.want {
@@ -316,7 +440,7 @@ func TestResolverAppliedPlanAnswers(t *testing.T) {
 }
 
 func TestResolverNonLegacyAndExplicitSkipNetwork(t *testing.T) {
-	ps := newPlanServer(t, `{"height":"0"}`)
+	ps := newLegacyPlanServer(t, `{"height":"0"}`)
 	r := NewResolver(ResolverOptions{})
 	if v, err := r.Resolve(context.Background(), ps.URL, "qorechain-future", Auto); err != nil || v != V2 {
 		t.Fatalf("non-legacy auto = %s, %v; want v2", v, err)
@@ -327,30 +451,64 @@ func TestResolverNonLegacyAndExplicitSkipNetwork(t *testing.T) {
 	if v, err := r.Resolve(context.Background(), "", "qorechain-vladi", V2); err != nil || v != V2 {
 		t.Fatalf("explicit v2 = %s, %v", v, err)
 	}
-	if n := ps.hits.Load(); n != 0 {
+	// An explicit version skips the network even when a REST URL is at hand.
+	if v, err := r.Resolve(context.Background(), ps.URL, "qorechain-vladi", V1); err != nil || v != V1 {
+		t.Fatalf("explicit v1 with a rest url = %s, %v", v, err)
+	}
+	if n := ps.requests.Load(); n != 0 {
 		t.Fatalf("expected no HTTP calls, got %d", n)
 	}
 }
 
 func TestResolverLegacyWithoutRestURLErrors(t *testing.T) {
 	r := NewResolver(ResolverOptions{})
-	if _, err := r.Resolve(context.Background(), "", "qorechain-vladi", Auto); !errors.Is(err, ErrUnresolvedVersion) {
+	_, err := r.Resolve(context.Background(), "", "qorechain-vladi", Auto)
+	if !errors.Is(err, ErrUnresolvedVersion) {
 		t.Fatalf("err = %v, want ErrUnresolvedVersion", err)
+	}
+	for _, name := range V2Upgrades {
+		if !strings.Contains(err.Error(), name) {
+			t.Errorf("error %q does not name upgrade %s", err, name)
+		}
 	}
 }
 
 func TestResolverHTTPFailureErrors(t *testing.T) {
-	ps := newPlanServer(t, `upstream down`)
+	ps := newLegacyPlanServer(t, `upstream down`)
+	ps.setPlan("v3.2.0", `upstream down`)
 	ps.status.Store(http.StatusBadGateway)
 	r := NewResolver(ResolverOptions{})
-	if _, err := r.Resolve(context.Background(), ps.URL, "qorechain-diana", Auto); !errors.Is(err, ErrUnresolvedVersion) {
+	err := func() error {
+		_, err := r.Resolve(context.Background(), ps.URL, "qorechain-diana", Auto)
+		return err
+	}()
+	if !errors.Is(err, ErrUnresolvedVersion) {
 		t.Fatalf("HTTP 502 err = %v, want ErrUnresolvedVersion", err)
+	}
+	for _, name := range V2Upgrades {
+		if !strings.Contains(err.Error(), name) {
+			t.Errorf("error %q does not name upgrade %s", err, name)
+		}
 	}
 	// Malformed JSON is a failure too, never a guess.
 	ps.status.Store(http.StatusOK)
-	ps.body.Store(`not json`)
+	ps.setPlan("v3.2.0", `not json`)
 	if _, err := r.Resolve(context.Background(), ps.URL, "qorechain-diana", Auto); !errors.Is(err, ErrUnresolvedVersion) {
 		t.Fatalf("bad JSON err = %v", err)
+	}
+	// A failure on the SECOND name is a failure too: the first answering zero
+	// must never be read as "not applied anywhere".
+	ps.setPlan("v3.2.0", `{"height":"0"}`)
+	ps.setPlan("v3.1.98", `not json`)
+	err2 := func() error {
+		_, err := r.Resolve(context.Background(), ps.URL, "qorechain-diana", Auto)
+		return err
+	}()
+	if !errors.Is(err2, ErrUnresolvedVersion) {
+		t.Fatalf("bad JSON on the second name err = %v", err2)
+	}
+	if !strings.Contains(err2.Error(), "v3.1.98") {
+		t.Errorf("error %q does not say which plan failed", err2)
 	}
 	// Unreachable host.
 	dead := httptest.NewServer(http.NotFoundHandler())
@@ -362,7 +520,7 @@ func TestResolverHTTPFailureErrors(t *testing.T) {
 }
 
 func TestResolverCacheTTLRefreshAndClear(t *testing.T) {
-	ps := newPlanServer(t, `{"height":"0"}`)
+	ps := newLegacyPlanServer(t, `{"height":"0"}`)
 	now := time.Unix(1_000_000, 0)
 	r := NewResolver(ResolverOptions{TTL: time.Minute, Now: func() time.Time { return now }})
 	ctx := context.Background()
@@ -371,13 +529,17 @@ func TestResolverCacheTTLRefreshAndClear(t *testing.T) {
 		t.Fatalf("first = %s", v)
 	}
 	// The network upgrades; within the TTL the cached answer is served.
-	ps.body.Store(`{"height":"5746000"}`)
+	ps.setPlan("v3.1.98", `{"height":"5746000"}`)
 	now = now.Add(30 * time.Second)
 	if v, _ := r.Resolve(ctx, ps.URL, "qorechain-diana", Auto); v != V1 {
 		t.Fatalf("cached = %s, want v1", v)
 	}
-	if n := ps.hits.Load(); n != 1 {
-		t.Fatalf("cache hit should not query: hits %d", n)
+	if n := ps.rounds.Load(); n != 1 {
+		t.Fatalf("cache hit should not query: rounds %d", n)
+	}
+	// One cached answer covers BOTH names, not one request each.
+	if n := ps.requests.Load(); n != 2 {
+		t.Fatalf("requests = %d, want 2 (one round of two names)", n)
 	}
 	// Force refresh bypasses the cache and replaces the entry.
 	if v, _ := r.Refresh(ctx, ps.URL, "qorechain-diana", Auto); v != V2 {
@@ -386,27 +548,27 @@ func TestResolverCacheTTLRefreshAndClear(t *testing.T) {
 	if v, _ := r.Resolve(ctx, ps.URL, "qorechain-diana", Auto); v != V2 {
 		t.Fatalf("after refresh = %s, want v2", v)
 	}
-	if n := ps.hits.Load(); n != 2 {
-		t.Fatalf("hits = %d, want 2", n)
+	if n := ps.rounds.Load(); n != 2 {
+		t.Fatalf("rounds = %d, want 2", n)
 	}
 	// Cache is keyed per chain id: another legacy chain queries separately.
 	if _, err := r.Resolve(ctx, ps.URL, "qorechain-vladi", Auto); err != nil {
 		t.Fatal(err)
 	}
-	if n := ps.hits.Load(); n != 3 {
-		t.Fatalf("hits = %d, want 3", n)
+	if n := ps.rounds.Load(); n != 3 {
+		t.Fatalf("rounds = %d, want 3", n)
 	}
 	// Expiry after the TTL.
 	now = now.Add(2 * time.Minute)
 	_, _ = r.Resolve(ctx, ps.URL, "qorechain-diana", Auto)
-	if n := ps.hits.Load(); n != 4 {
-		t.Fatalf("hits after expiry = %d, want 4", n)
+	if n := ps.rounds.Load(); n != 4 {
+		t.Fatalf("rounds after expiry = %d, want 4", n)
 	}
 	// ClearCache forces the next call to ask again.
 	r.ClearCache()
 	_, _ = r.Resolve(ctx, ps.URL, "qorechain-diana", Auto)
-	if n := ps.hits.Load(); n != 5 {
-		t.Fatalf("hits after clear = %d, want 5", n)
+	if n := ps.rounds.Load(); n != 5 {
+		t.Fatalf("rounds after clear = %d, want 5", n)
 	}
 }
 

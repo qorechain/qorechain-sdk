@@ -66,7 +66,7 @@ pub struct EthSignParams {
     /// The hybrid sign-bytes version [`sign_hybrid_eth`] frames (ignored by
     /// [`sign_classical_eth`]). `None` means v2 on a chain born with v2 and an
     /// ERROR on `qorechain-vladi` / `qorechain-diana`, whose form depends on
-    /// whether the `v3.1.98` upgrade is applied there — resolve it with
+    /// whether the v2 upgrade (`v3.2.0` / `v3.1.98`) is applied there — resolve it with
     /// [`crate::signbytes::SignBytesResolver`]. Never silently v1.
     pub sign_bytes_version: Option<SignBytesVersion>,
 }

@@ -13,13 +13,16 @@
 // exactly ONE form at any height, with no overlap window:
 //
 //   - a network that existed before v3.1.98 ("qorechain-vladi" mainnet,
-//     "qorechain-diana" testnet) verifies v1 until the v3.1.98 upgrade plan is
-//     applied on it, and v2 from then on;
+//     "qorechain-diana" testnet) verifies v1 until the upgrade plan is applied
+//     on it, and v2 from then on;
 //   - any other chain id starts on a binary that verifies v2 from block one.
 //
-// The testnet applied v3.1.98 at height 5,746,000; mainnet stays on v1 until its
-// own governance upgrade. Clients therefore must not hardcode a form: use
-// VersionFor, or a Resolver that asks the node whether the plan is applied.
+// The switch ships under TWO plan names, both listed in V2Upgrades: the testnet
+// applied it as "v3.1.98" at height 5,746,000, and mainnet applies it as
+// "v3.2.0". The chain registers one handler under both, so a client must ask
+// applied_plan for every name and take v2 when any of them answers a height
+// greater than zero. Clients must not hardcode a form: use VersionFor, or a
+// Resolver that asks the node whether one of the plans is applied.
 //
 // Byte layouts (all lengths big-endian, strings UTF-8, no terminators):
 //
@@ -57,24 +60,41 @@ const (
 	MigrationDomain = "qorechain-key-migration-v2"
 	// BridgeDomain prefixes the v2 bridge-attestation sign-bytes.
 	BridgeDomain = "qorechain-bridge-attestation-v2"
-	// V2Upgrade is the upgrade plan whose application switches a legacy network
-	// from v1 to v2. Resolvers query /cosmos/upgrade/v1beta1/applied_plan/{V2Upgrade}.
-	V2Upgrade = "v3.1.98"
+	// V2Upgrade is the PRIMARY name of the upgrade plan whose application
+	// switches a legacy network from v1 to v2 — the name mainnet
+	// ("qorechain-vladi") takes. It is not the only one: the testnet took the
+	// same batch under the earlier name "v3.1.98" and keeps that record forever,
+	// so a client must ask for every name in V2Upgrades, not this one alone.
+	V2Upgrade = "v3.2.0"
 )
+
+// V2Upgrades lists every upgrade plan name whose application switches a legacy
+// network from v1 to v2, most likely first. The chain registers ONE handler
+// under all of these names (qorechain-core x/pqc/types.SignBytesV2Upgrades):
+// mainnet applies "v3.2.0", while the testnet already applied "v3.1.98" and
+// keeps answering under it. A resolver must query
+// /cosmos/upgrade/v1beta1/applied_plan/{name} for each name and use v2 as soon
+// as one answers a height greater than zero; asking for a single name resolves
+// v1 on the other network and every hybrid transaction is then refused with pqc
+// code 21.
+var V2Upgrades = []string{"v3.2.0", "v3.1.98"}
+
+// v2UpgradeNames renders V2Upgrades for an error message ("v3.2.0 / v3.1.98").
+func v2UpgradeNames() string { return strings.Join(V2Upgrades, " / ") }
 
 // Version selects a sign-bytes form.
 //
 // V1 and V2 are resolved versions. Auto (or the zero value "") asks the SDK to
 // decide: offline builders decide only when the chain id alone is enough (a
 // non-legacy chain is always V2) and fail otherwise; a Resolver additionally
-// asks the node whether V2Upgrade has been applied.
+// asks the node whether one of V2Upgrades has been applied.
 type Version string
 
 // Sign-bytes versions.
 const (
 	// Auto resolves the version per network (the default).
 	Auto Version = "auto"
-	// V1 is the original form, verified by legacy networks before V2Upgrade.
+	// V1 is the original form, verified by legacy networks before the upgrade.
 	V1 Version = "v1"
 	// V2 is the domain-tagged, chain-bound form.
 	V2 Version = "v2"
@@ -87,23 +107,23 @@ const (
 var ErrUnresolvedVersion = errors.New("signbytes: cannot decide the hybrid sign-bytes version")
 
 // legacyChains are the networks that ran before v2 existed and switch to it only
-// when V2Upgrade is applied on them.
+// when one of V2Upgrades is applied on them.
 var legacyChains = map[string]bool{
 	"qorechain-vladi": true,
 	"qorechain-diana": true,
 }
 
-// LegacyChains returns the chain ids that start on v1 and switch to v2 only at
-// V2Upgrade.
+// LegacyChains returns the chain ids that start on v1 and switch to v2 only
+// when one of V2Upgrades is applied.
 func LegacyChains() []string { return []string{"qorechain-vladi", "qorechain-diana"} }
 
-// IsLegacyChain reports whether chainID is a network that verifies v1 until
-// V2Upgrade is applied on it.
+// IsLegacyChain reports whether chainID is a network that verifies v1 until one
+// of V2Upgrades is applied on it.
 func IsLegacyChain(chainID string) bool { return legacyChains[chainID] }
 
-// VersionFor mirrors the chain's own switch: V2 once V2Upgrade has been applied
-// (v2AppliedHeight > 0) or for any chain that is not a legacy network; V1
-// otherwise.
+// VersionFor mirrors the chain's own switch: V2 once one of V2Upgrades has been
+// applied (v2AppliedHeight > 0 — the greatest height answered by any of the
+// names) or for any chain that is not a legacy network; V1 otherwise.
 func VersionFor(chainID string, v2AppliedHeight int64) Version {
 	if v2AppliedHeight > 0 || !IsLegacyChain(chainID) {
 		return V2
@@ -154,7 +174,7 @@ func ResolveOffline(chainID string, requested Version) (Version, error) {
 	}
 	return "", fmt.Errorf("%w for chain %q: it verifies v1 or v2 depending on whether upgrade %s is applied; "+
 		"resolve it with a signbytes.Resolver (REST URL) or pass signbytes.V1 / signbytes.V2 explicitly",
-		ErrUnresolvedVersion, chainID, V2Upgrade)
+		ErrUnresolvedVersion, chainID, v2UpgradeNames())
 }
 
 // --- hybrid tx ---

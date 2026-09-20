@@ -345,6 +345,7 @@ export { buildHybridTx, signAndBroadcastHybrid } from "./tx/hybrid-tx";
 // v1 to v2 at their own upgrade heights).
 export {
   SIGN_BYTES_V2_UPGRADE,
+  SIGN_BYTES_V2_UPGRADES,
   LEGACY_SIGN_BYTES_CHAINS,
   HYBRID_SIGN_BYTES_V2_DOMAIN,
   MIGRATION_SIGN_BYTES_V2_DOMAIN,
@@ -362,6 +363,7 @@ export {
   isLegacySignBytesChain,
   signBytesVersionFor,
   fetchSignBytesV2AppliedHeight,
+  fetchSignBytesV2AppliedHeightAny,
   resolveSignBytesVersion,
   clearSignBytesCache,
   isHybridSignBytesRejection,

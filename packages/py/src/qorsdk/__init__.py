@@ -153,6 +153,7 @@ from .signbytes import (
     LEGACY_SIGN_BYTES_CHAINS,
     MIGRATION_SIGN_BYTES_DOMAIN,
     SIGN_BYTES_V2_UPGRADE,
+    SIGN_BYTES_V2_UPGRADES,
     SignBytesOption,
     SignBytesResolver,
     SignBytesVersion,
@@ -214,7 +215,7 @@ from .utils import (
     to_checksum_address,
 )
 
-__version__ = "0.8.0"
+__version__ = "0.8.1"
 
 __all__ = [
     "__version__",
@@ -322,11 +323,12 @@ __all__ = [
     "build_hybrid_tx",
     "hybrid_sign_and_broadcast",
     "broadcast",
-    # per-network hybrid sign-bytes (v1 / v2, chain v3.1.98)
+    # per-network hybrid sign-bytes (v1 / v2, chain v3.2.0 / testnet v3.1.98)
     "HYBRID_SIGN_BYTES_DOMAIN",
     "MIGRATION_SIGN_BYTES_DOMAIN",
     "BRIDGE_ATTESTATION_SIGN_BYTES_DOMAIN",
     "SIGN_BYTES_V2_UPGRADE",
+    "SIGN_BYTES_V2_UPGRADES",
     "LEGACY_SIGN_BYTES_CHAINS",
     "SignBytesVersion",
     "SignBytesOption",

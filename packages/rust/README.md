@@ -197,10 +197,11 @@ end-to-end hybrid (classical secp256k1 + post-quantum ML-DSA-87) signing:
 - `broadcast_hybrid_tx` builds, signs and broadcasts a hybrid tx, choosing the
   sign-bytes version per network and retrying once on a version mismatch.
 
-### Hybrid sign-bytes v1 / v2 (chain v3.1.98)
+### Hybrid sign-bytes v1 / v2 (chain v3.2.0, testnet v3.1.98)
 
-Chain release `v3.1.98` changed the bytes the ML-DSA-87 key signs. Each network
-verifies exactly **one** form:
+Chain release `v3.2.0` — which the testnet already took under the earlier name
+`v3.1.98` — changed the bytes the ML-DSA-87 key signs. Each network verifies
+exactly **one** form:
 
 | form | bytes |
 |---|---|
@@ -214,23 +215,35 @@ has v1/v2 builders and a version-dispatching builder for all three
 (`hybrid_sign_bytes`, `migration_sign_bytes`, `bridge_attestation_sign_bytes`).
 
 **Which form (the `auto` rule).** `qorechain-vladi` (mainnet) and
-`qorechain-diana` (testnet) existed before v2: they verify v1 until the
-`v3.1.98` upgrade plan is applied on them, and v2 after. Any other chain verifies
-v2 from its first block. With `SignBytesMode::Auto` (the default on the async
-paths) the SDK asks the node
+`qorechain-diana` (testnet) existed before v2: they verify v1 until the v2
+upgrade plan is applied on them, and v2 after. Any other chain verifies v2 from
+its first block.
 
-    GET {rest}/cosmos/upgrade/v1beta1/applied_plan/v3.1.98  ->  {"height":"<n>"}
+**The switch has two plan names, so ask for both.** `SIGN_BYTES_V2_UPGRADES ==
+["v3.2.0", "v3.1.98"]` (`SIGN_BYTES_V2_UPGRADE` is the primary, `"v3.2.0"`):
+mainnet applies `v3.2.0`, the testnet already applied `v3.1.98` and keeps that
+record forever. A client that asks one name only reads height 0 on the other
+network, signs v1, and has every hybrid transaction there refused with `pqc`
+code 21.
 
-and signs v2 when `n > 0` (a missing height counts as 0), caching the answer per
-`(rest URL, chain id)` for about a minute (`SignBytesResolver::with_ttl`,
-`force_refresh`, `clear_cache`). If the chain still refuses the tx with `pqc`
-code 21 ("hybrid PQC signature verification failed"), the SDK re-asks the node,
-re-signs and broadcasts **once** more. A legacy chain with no REST URL, or a
-failed query, is an error — the SDK never guesses.
+With `SignBytesMode::Auto` (the default on the async paths) the SDK asks the
+node, for each name in order,
+
+    GET {rest}/cosmos/upgrade/v1beta1/applied_plan/{name}  ->  {"height":"<n>"}
+
+and signs v2 when **any** `n > 0` (compared numerically — the height is a
+string, and a missing one counts as 0). The lookup stops at the first positive
+height, so mainnet costs one request after its upgrade and the testnet two. The
+answer is cached per `(rest URL, chain id)` for about a minute
+(`SignBytesResolver::with_ttl`, `force_refresh`, `clear_cache`). If the chain
+still refuses the tx with `pqc` code 21 ("hybrid PQC signature verification
+failed"), the SDK re-asks the node, re-signs and broadcasts **once** more. A
+legacy chain with no REST URL, or a failed query, is an error — the SDK never
+guesses.
 
 **Today:** the testnet has applied `v3.1.98` and verifies **v2 only**; the
-mainnet has not, and stays on **v1** until its own `v3.1.98` upgrade is applied
-(the `auto` rule then switches automatically).
+mainnet has not, and stays on **v1** until it applies `v3.2.0` (the `auto` rule
+then switches automatically).
 
 **Override.** Pass an explicit version to pin the form with no network call:
 `SignBytesMode::V1` / `V2` on the async paths (never retried), or

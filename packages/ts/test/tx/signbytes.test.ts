@@ -18,6 +18,8 @@ import {
   resolveSignBytesVersion,
   clearSignBytesCache,
   isHybridSignBytesRejection,
+  SIGN_BYTES_V2_UPGRADE,
+  SIGN_BYTES_V2_UPGRADES,
 } from "../../src/tx/signbytes";
 import { buildHybridTx, signAndBroadcastHybrid } from "../../src/tx/hybrid-tx";
 import { directSignerFromPrivateKey } from "../../src/tx/signer-adapter";
@@ -184,7 +186,37 @@ describe("resolveSignBytesVersion", () => {
     await expect(
       resolveSignBytesVersion({ chainId: "qorechain-vladi", rest: REST, fetch: f }),
     ).resolves.toBe("v1");
+    // Both plan names are asked before concluding v1.
+    expect(f).toHaveBeenCalledWith(`${REST}/cosmos/upgrade/v1beta1/applied_plan/v3.2.0`);
     expect(f).toHaveBeenCalledWith(`${REST}/cosmos/upgrade/v1beta1/applied_plan/v3.1.98`);
+  });
+
+  // The chain recognises two plan names: the testnet switched under "v3.1.98"
+  // and keeps that record, mainnet switches under "v3.2.0". Asking only one
+  // answers v1 on the other network, and every hybrid tx is then refused with
+  // pqc code 21.
+  it("uses v2 when the CURRENT plan name is applied, asking once", async () => {
+    const f = vi.fn(async (url: string) =>
+      new Response(JSON.stringify({ height: url.endsWith("v3.2.0") ? "9000000" : "0" })));
+    await expect(
+      resolveSignBytesVersion({ chainId: "qorechain-vladi", rest: REST, fetch: f }),
+    ).resolves.toBe("v2");
+    expect(f).toHaveBeenCalledTimes(1);
+    expect(f).toHaveBeenCalledWith(`${REST}/cosmos/upgrade/v1beta1/applied_plan/v3.2.0`);
+  });
+
+  it("uses v2 when only the EARLIER plan name is applied (the testnet today)", async () => {
+    const f = vi.fn(async (url: string) =>
+      new Response(JSON.stringify({ height: url.endsWith("v3.1.98") ? "5746000" : "0" })));
+    await expect(
+      resolveSignBytesVersion({ chainId: "qorechain-diana", rest: REST, fetch: f }),
+    ).resolves.toBe("v2");
+    expect(f).toHaveBeenCalledTimes(2);
+  });
+
+  it("exposes both names, newest first", () => {
+    expect(SIGN_BYTES_V2_UPGRADES).toEqual(["v3.2.0", "v3.1.98"]);
+    expect(SIGN_BYTES_V2_UPGRADE).toBe("v3.2.0");
   });
 
   it("reads an empty {} as not upgraded", async () => {
@@ -206,7 +238,7 @@ describe("resolveSignBytesVersion", () => {
   it("strips a trailing slash from rest", async () => {
     const f = planFetch({ height: "1" });
     await resolveSignBytesVersion({ chainId: "qorechain-diana", rest: `${REST}/`, fetch: f });
-    expect(f).toHaveBeenCalledWith(`${REST}/cosmos/upgrade/v1beta1/applied_plan/v3.1.98`);
+    expect(f).toHaveBeenCalledWith(`${REST}/cosmos/upgrade/v1beta1/applied_plan/v3.2.0`);
   });
 
   it("answers v2 for a chain born on v2 without any network call", async () => {
@@ -244,13 +276,14 @@ describe("resolveSignBytesVersion", () => {
   it("caches per (rest, chainId) within the TTL and re-asks on forceRefresh", async () => {
     const f = planFetch({ height: "0" });
     const o = { chainId: "qorechain-vladi", rest: REST, fetch: f };
+    // Not upgraded: both plan names are asked, so each resolve costs 2 requests.
     await resolveSignBytesVersion(o);
     await resolveSignBytesVersion(o);
-    expect(f).toHaveBeenCalledTimes(1);
-    await resolveSignBytesVersion({ ...o, forceRefresh: true });
     expect(f).toHaveBeenCalledTimes(2);
+    await resolveSignBytesVersion({ ...o, forceRefresh: true });
+    expect(f).toHaveBeenCalledTimes(4);
     await resolveSignBytesVersion({ ...o, rest: "https://other.example" });
-    expect(f).toHaveBeenCalledTimes(3);
+    expect(f).toHaveBeenCalledTimes(6);
   });
 
   it("re-asks once the TTL has passed", async () => {
@@ -258,7 +291,7 @@ describe("resolveSignBytesVersion", () => {
     const o = { chainId: "qorechain-vladi", rest: REST, fetch: f, ttlMs: 0 };
     await resolveSignBytesVersion(o);
     await resolveSignBytesVersion(o);
-    expect(f).toHaveBeenCalledTimes(2);
+    expect(f).toHaveBeenCalledTimes(4); // 2 plan names per resolve
   });
 });
 
@@ -362,11 +395,13 @@ describe("signAndBroadcastHybrid retries once on a pqc code-21 refusal", () => {
 
   it("re-resolves past the cache and resends with the new form", async () => {
     const fx = await hybridFixture();
-    // First answer: not upgraded (cached). The network then upgrades.
-    const f = vi
-      .fn()
-      .mockResolvedValueOnce(new Response(JSON.stringify({ height: "0" })))
-      .mockResolvedValue(new Response(JSON.stringify({ height: "5746000" })));
+    // First resolve: neither plan applied (2 requests, cached as v1). The
+    // network then upgrades, so the re-resolve sees the current plan applied.
+    let asked = 0;
+    const f = vi.fn(async () => {
+      asked += 1;
+      return new Response(JSON.stringify({ height: asked <= 2 ? "0" : "5746000" }));
+    });
     const transport = transportRefusingFirst({ code: 21, codespace: "pqc", log: "hybrid PQC signature verification failed" });
     const res = await signAndBroadcastHybrid({
       ...fx,
@@ -377,7 +412,7 @@ describe("signAndBroadcastHybrid retries once on a pqc code-21 refusal", () => {
     });
     expect(res.transactionHash).toBe("OK");
     expect(transport.broadcastTx).toHaveBeenCalledTimes(2);
-    expect(f).toHaveBeenCalledTimes(2);
+    expect(f).toHaveBeenCalledTimes(3); // 2 for the first resolve, 1 for the refresh
     const [first] = transport.broadcastTx.mock.calls[0] as [Uint8Array];
     const [second] = transport.broadcastTx.mock.calls[1] as [Uint8Array];
     expect(toHex(first)).not.toBe(toHex(second));

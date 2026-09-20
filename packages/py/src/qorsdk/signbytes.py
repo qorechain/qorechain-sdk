@@ -1,9 +1,10 @@
 """Per-network post-quantum sign-bytes (v1 / v2) for QoreChain.
 
-Chain release ``v3.1.98`` changed the exact bytes an ML-DSA-87 key signs for
-three payloads. Each network verifies exactly ONE form at any height (there is
-no overlap window, by design), and the two public networks switch at different
-times, so a client must sign the form the TARGET network verifies right now.
+Chain release ``v3.2.0`` (taken by the testnet under the earlier name
+``v3.1.98``) changed the exact bytes an ML-DSA-87 key signs for three payloads.
+Each network verifies exactly ONE form at any height (there is no overlap
+window, by design), and the two public networks switch at different times, so a
+client must sign the form the TARGET network verifies right now.
 
 Byte layouts (all lengths big-endian, strings UTF-8, no terminators):
 
@@ -31,13 +32,19 @@ challenge, can never be valid as a tx signature) and binds the chain-id (so the
 post-quantum signature itself refuses to verify on another network).
 
 Choosing the form (:func:`sign_bytes_version_for`, mirroring the chain's
-``SignBytesVersionFor``): v2 if the ``v3.1.98`` upgrade plan has been applied
+``SignBytesVersionFor``): v2 if the v2 upgrade plan has been applied
 (height > 0) OR the chain is not one of the networks that existed before v2
-(``qorechain-vladi`` / ``qorechain-diana``); otherwise v1. The applied height is
-read from ``GET {rest}/cosmos/upgrade/v1beta1/applied_plan/v3.1.98``;
-:class:`SignBytesResolver` does that lookup with a short cache (a network can
-upgrade while a wallet is open). If the answer cannot be obtained for a legacy
-network, resolution fails loudly: the SDK never guesses.
+(``qorechain-vladi`` / ``qorechain-diana``); otherwise v1.
+
+The switch shipped under TWO plan names (:data:`SIGN_BYTES_V2_UPGRADES`): the
+testnet took it as ``v3.1.98`` and keeps that record forever, while mainnet
+takes it as ``v3.2.0``. Both names run the same handler, so a client must ask
+``GET {rest}/cosmos/upgrade/v1beta1/applied_plan/{name}`` for EVERY name and use
+v2 when the numeric height of ANY of them is above 0. :class:`SignBytesResolver`
+does that (in the order of :data:`SIGN_BYTES_V2_UPGRADES`, stopping at the first
+positive height) with a short cache, because a network can upgrade while a
+wallet is open. If the answer cannot be obtained for a legacy network,
+resolution fails loudly: the SDK never guesses.
 """
 
 from __future__ import annotations
@@ -55,11 +62,20 @@ MIGRATION_SIGN_BYTES_DOMAIN = "qorechain-key-migration-v2"
 #: Domain tag prefixed to the v2 bridge-attestation sign-bytes.
 BRIDGE_ATTESTATION_SIGN_BYTES_DOMAIN = "qorechain-bridge-attestation-v2"
 
-#: The coordinated upgrade whose handler switches a pre-existing chain to v2.
-SIGN_BYTES_V2_UPGRADE = "v3.1.98"
+#: The coordinated upgrade whose handler switches a pre-existing chain to v2,
+#: under its primary (mainnet) name. See :data:`SIGN_BYTES_V2_UPGRADES`.
+SIGN_BYTES_V2_UPGRADE = "v3.2.0"
 
-#: Networks that existed before v2 and switch to it only at
-#: :data:`SIGN_BYTES_V2_UPGRADE`. Every other chain verifies v2 from block one.
+#: EVERY upgrade name that switches a network to v2, in query order. The same
+#: handler ships under both: mainnet applies ``v3.2.0``, the testnet already
+#: applied ``v3.1.98`` and keeps that record forever. A client must ask
+#: ``applied_plan`` for each name and use v2 if ANY of them has a height above
+#: 0; asking for one name only picks v1 on the other network and every hybrid
+#: transaction is then refused with ``pqc`` code 21.
+SIGN_BYTES_V2_UPGRADES: tuple[str, ...] = ("v3.2.0", "v3.1.98")
+
+#: Networks that existed before v2 and switch to it only at one of
+#: :data:`SIGN_BYTES_V2_UPGRADES`. Every other chain verifies v2 from block one.
 LEGACY_SIGN_BYTES_CHAINS: frozenset[str] = frozenset({"qorechain-vladi", "qorechain-diana"})
 
 #: Default resolver cache lifetime, in seconds.
@@ -292,11 +308,17 @@ def is_legacy_sign_bytes_chain(chain_id: str) -> bool:
     return chain_id in LEGACY_SIGN_BYTES_CHAINS
 
 
+def _upgrade_names() -> str:
+    """``SIGN_BYTES_V2_UPGRADES`` as ``"v3.2.0 or v3.1.98"``, for error messages."""
+    return " or ".join(SIGN_BYTES_V2_UPGRADES)
+
+
 def sign_bytes_version_for(chain_id: str, v2_applied_height: int) -> SignBytesVersion:
-    """The form ``chain_id`` verifies, given the height ``v3.1.98`` was applied at.
+    """The form ``chain_id`` verifies, given the height the v2 upgrade was applied at.
 
     Mirror of the chain's ``SignBytesVersionFor``: v2 if the upgrade has been
-    applied (height > 0) or the chain is not a legacy network; else v1.
+    applied (height > 0) or the chain is not a legacy network; else v1. The
+    height is the greatest one any of :data:`SIGN_BYTES_V2_UPGRADES` answers.
     """
     if int(v2_applied_height) > 0 or not is_legacy_sign_bytes_chain(chain_id):
         return "v2"
@@ -319,7 +341,7 @@ def pick_build_sign_bytes_version(
         return "v2"
     raise SignBytesVersionError(
         f"{chain_id} verifies either v1 or v2 hybrid sign-bytes depending on whether "
-        f"upgrade {SIGN_BYTES_V2_UPGRADE} has been applied; pass sign_bytes_version='v1' "
+        f"upgrade {_upgrade_names()} has been applied; pass sign_bytes_version='v1' "
         "or 'v2' (resolve it first with resolve_sign_bytes_version(chain_id, rest_url=...))"
     )
 
@@ -333,8 +355,12 @@ def _parse_applied_height(data: Any) -> int:
     return int(raw)
 
 
-def _applied_plan_url(rest_url: str) -> str:
-    return f"{rest_url.rstrip('/')}/cosmos/upgrade/v1beta1/applied_plan/{SIGN_BYTES_V2_UPGRADE}"
+def applied_plan_url(rest_url: str, plan_name: str = SIGN_BYTES_V2_UPGRADE) -> str:
+    """The ``applied_plan`` endpoint for one upgrade name (default: the primary).
+
+    The resolver asks this for every name in :data:`SIGN_BYTES_V2_UPGRADES`.
+    """
+    return f"{rest_url.rstrip('/')}/cosmos/upgrade/v1beta1/applied_plan/{plan_name}"
 
 
 def _missing_rest_url_error(chain_id: str) -> SignBytesVersionError:
@@ -344,15 +370,23 @@ def _missing_rest_url_error(chain_id: str) -> SignBytesVersionError:
     )
 
 
-def _query_failed_error(chain_id: str, rest_url: str, err: BaseException) -> SignBytesVersionError:
+def _query_failed_error(
+    chain_id: str, rest_url: str, plan_name: str, err: BaseException
+) -> SignBytesVersionError:
     return SignBytesVersionError(
-        f"cannot ask {rest_url} whether {SIGN_BYTES_V2_UPGRADE} is applied on {chain_id} "
-        f"({err}); pass an explicit sign_bytes_version='v1' / 'v2'"
+        f"cannot ask {rest_url} whether {plan_name} is applied on {chain_id} "
+        f"(the v2 sign-bytes upgrade ships as {_upgrade_names()}) ({err}); "
+        "pass an explicit sign_bytes_version='v1' / 'v2'"
     )
 
 
 class SignBytesResolver:
     """Resolves ``"auto"`` to the form a network verifies, with a short cache.
+
+    A lookup asks ``applied_plan`` for every name in
+    :data:`SIGN_BYTES_V2_UPGRADES`, in order, and stops at the first positive
+    height: mainnet (``v3.2.0``) costs one request, the testnet (``v3.1.98``)
+    two, and a chain on neither name two.
 
     Answers are cached per ``(rest_url, chain_id)`` for ``ttl`` seconds (default
     60), not for a whole session, because a network can upgrade while a wallet
@@ -421,11 +455,17 @@ class SignBytesResolver:
         owns = client is None
         http = client or httpx.Client(timeout=self._timeout)
         try:
-            resp = http.get(_applied_plan_url(rest_url))
-            resp.raise_for_status()
-            height = _parse_applied_height(resp.json())
-        except Exception as err:  # noqa: BLE001 - any failure means "unknown"
-            raise _query_failed_error(chain_id, rest_url, err) from err
+            height = 0
+            # Every name that switched a network to v2; any positive height wins.
+            for plan_name in SIGN_BYTES_V2_UPGRADES:
+                try:
+                    resp = http.get(applied_plan_url(rest_url, plan_name))
+                    resp.raise_for_status()
+                    height = _parse_applied_height(resp.json())
+                except Exception as err:  # noqa: BLE001 - any failure means "unknown"
+                    raise _query_failed_error(chain_id, rest_url, plan_name, err) from err
+                if height > 0:
+                    break
         finally:
             if owns:
                 http.close()
@@ -448,11 +488,17 @@ class SignBytesResolver:
         owns = client is None
         http = client or httpx.AsyncClient(timeout=self._timeout)
         try:
-            resp = await http.get(_applied_plan_url(rest_url))
-            resp.raise_for_status()
-            height = _parse_applied_height(resp.json())
-        except Exception as err:  # noqa: BLE001 - any failure means "unknown"
-            raise _query_failed_error(chain_id, rest_url, err) from err
+            height = 0
+            # Every name that switched a network to v2; any positive height wins.
+            for plan_name in SIGN_BYTES_V2_UPGRADES:
+                try:
+                    resp = await http.get(applied_plan_url(rest_url, plan_name))
+                    resp.raise_for_status()
+                    height = _parse_applied_height(resp.json())
+                except Exception as err:  # noqa: BLE001 - any failure means "unknown"
+                    raise _query_failed_error(chain_id, rest_url, plan_name, err) from err
+                if height > 0:
+                    break
         finally:
             if owns:
                 await http.aclose()
@@ -574,6 +620,7 @@ __all__ = [
     "MIGRATION_SIGN_BYTES_DOMAIN",
     "BRIDGE_ATTESTATION_SIGN_BYTES_DOMAIN",
     "SIGN_BYTES_V2_UPGRADE",
+    "SIGN_BYTES_V2_UPGRADES",
     "LEGACY_SIGN_BYTES_CHAINS",
     "DEFAULT_SIGN_BYTES_CACHE_TTL",
     "HYBRID_REJECTION_CODESPACE",
@@ -592,6 +639,7 @@ __all__ = [
     "bridge_attestation_sign_bytes_v2",
     "bridge_attestation_sign_bytes",
     "is_legacy_sign_bytes_chain",
+    "applied_plan_url",
     "sign_bytes_version_for",
     "pick_build_sign_bytes_version",
     "SignBytesResolver",

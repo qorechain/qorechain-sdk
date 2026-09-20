@@ -36,7 +36,7 @@ Go, and Rust SDKs:
 ## Coordinates
 
 ```
-io.github.qorechain:qorechain-sdk:0.8.0
+io.github.qorechain:qorechain-sdk:0.8.1
 ```
 
 Base Java package: `io.github.qorechain` (sub-packages `networks`, `accounts`,
@@ -210,7 +210,7 @@ PqcDx.migratePqcKey(signer, broadcaster, new PqcDx.MigrateOptions());
 
 See the [quantum-safe](../../docs/docs/guides/quantum-safe.md) guide.
 
-## Hybrid sign-bytes v1 / v2 (v0.8.0 / chain v3.1.98)
+## Hybrid sign-bytes v1 / v2 (v0.8.1 / chain v3.2.0, testnet v3.1.98)
 
 The ML-DSA-87 half of a hybrid transaction signs a byte string built from `B0`
 (the tx body WITHOUT the PQC extension) and `A` (the auth-info bytes). There are
@@ -218,23 +218,36 @@ two forms, and **each network verifies exactly one at any height** (no overlap):
 
 | Form | Bytes | Verified by |
 |---|---|---|
-| v1 | `BE32(len B0) ‖ B0 ‖ BE32(len A) ‖ A` | a network that has not applied `v3.1.98` — **mainnet `qorechain-vladi` today** |
-| v2 | `"qorechain-pqc-hybrid-v2" ‖ BE64(len chainId) ‖ chainId ‖ BE32(len B0) ‖ B0 ‖ BE32(len A) ‖ A` | testnet `qorechain-diana` (since height 5,746,000) and every network born on v3.1.98+ |
+| v1 | `BE32(len B0) ‖ B0 ‖ BE32(len A) ‖ A` | a network that has applied neither `v3.2.0` nor `v3.1.98` — **mainnet `qorechain-vladi` today** |
+| v2 | `"qorechain-pqc-hybrid-v2" ‖ BE64(len chainId) ‖ chainId ‖ BE32(len B0) ‖ B0 ‖ BE32(len A) ‖ A` | testnet `qorechain-diana` (which applied `v3.1.98` at height 5,746,000) and every network born on that release or later |
 
 v2 adds a domain tag (so a signature made in another context can never pass as a
 transaction signature) and binds the chain id (so the post-quantum signature
 itself refuses to verify on another network). Mainnet stays on v1 until its own
-governance upgrade to v3.1.98; after that the same code signs v2 automatically.
+governance upgrade, which applies the plan under the name `v3.2.0`; after that
+the same code signs v2 automatically.
+
+**The switch has TWO plan names.** The chain registers one handler under both
+(`x/pqc/types.SignBytesV2Upgrades`) and each network keeps the record of the
+name it actually took: diana answers under `v3.1.98` forever, mainnet will answer
+under `v3.2.0`. `SignBytes.SIGN_BYTES_V2_UPGRADES` is that list (primary name
+first) and `SignBytes.SIGN_BYTES_V2_UPGRADE` is the primary name `"v3.2.0"`
+alone. A client that asks for one name only resolves v1 on the other network,
+and every hybrid transaction there is refused with `pqc` code 21 — which is what
+published clients up to 0.8.0 do.
 
 **The auto rule** (`SignBytes.Mode.AUTO`, the default in `PqcDx`):
 
 1. chain id not `qorechain-vladi` / `qorechain-diana` → v2, no network call;
-2. otherwise `GET {restUrl}/cosmos/upgrade/v1beta1/applied_plan/v3.1.98` →
-   `{"height":"<n>"}`: `n > 0` → v2, `"0"` or no height → v1;
-3. no `restUrl`, or the query fails → `SignBytesResolutionException` (it never
+2. otherwise `GET {restUrl}/cosmos/upgrade/v1beta1/applied_plan/{name}` for
+   **every** name in `SignBytes.SIGN_BYTES_V2_UPGRADES` (`v3.2.0`, then
+   `v3.1.98`), stopping at the first whose **numeric** `height` is `> 0` → v2;
+   `"0"`, `{}` or no height counts as 0, and v1 only when every name answers 0.
+   Mainnet after its own upgrade therefore costs one request and diana two;
+3. no `restUrl`, or any query fails → `SignBytesResolutionException` (it never
    guesses; pass a `restUrl` or an explicit version).
 
-Answers are cached per `(restUrl, chainId)` for 60 s (`new SignBytesResolver(ttlMs)`
+One answer per resolve (not per name) is cached per `(restUrl, chainId)` for 60 s (`new SignBytesResolver(ttlMs)`
 to change; `resolve(..., true)` forces a refresh; `clearCache()` empties it).
 
 **Override:** `SignBytes.Mode.V1` / `V2` (or `HybridTx.Options.signBytesVersion` /

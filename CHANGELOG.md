@@ -5,6 +5,28 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.8.1]
+
+### Fixed — required before the mainnet upgrade
+
+- **The sign-bytes resolver now asks for every v2 upgrade plan name.** 0.8.0 asked
+  only `applied_plan/v3.1.98`. The chain recognises two names: the testnet took
+  the switch under `v3.1.98` and keeps that record, while **mainnet applies
+  `v3.2.0`**. So 0.8.0 is correct on the testnet today and would have answered v1
+  on mainnet after its upgrade — and the chain refuses a v1 hybrid signature with
+  `pqc` code 21. `"auto"` now queries `SIGN_BYTES_V2_UPGRADES` (`"v3.2.0"`, then
+  `"v3.1.98"`) in order and uses v2 if any applied height is above 0, stopping at
+  the first. `SIGN_BYTES_V2_UPGRADE` is now the current name, `"v3.2.0"`, and the
+  new `SIGN_BYTES_V2_UPGRADES` lists both; `fetchSignBytesV2AppliedHeight` takes
+  an optional plan name and `fetchSignBytesV2AppliedHeightAny` returns the first
+  positive height across the list.
+- **Go only (`packages/go/v0.8.1`):** `signbytes.Resolve` takes
+  `(ctx, restURL, chainID, version)` — the URL first, the opposite of the other
+  bindings. A swapped pair put a URL in `chainID`, which is not a legacy network,
+  so the resolver answered v2 with no request and no error — the form mainnet
+  refuses. A swapped pair, an empty `chainID`, and a `restURL` that is not a URL
+  are now refused with `ErrUnresolvedVersion`.
+
 ## [0.8.0]
 
 ### Breaking — hybrid sign-bytes follow the network (chain v3.1.98)

@@ -98,8 +98,9 @@ await hybrid.signAndBroadcastHybrid({
 :::caution The sign-bytes form depends on the network
 Chain v3.1.98 introduced a v2 form of the hybrid sign-bytes that binds a domain
 tag and the chain id. A network verifies exactly **one** form at any height: the
-testnet (`qorechain-diana`) switched to v2 at its v3.1.98 upgrade, mainnet
-(`qorechain-vladi`) stays on v1 until its own. Pass `rest` and the SDK asks the
+testnet (`qorechain-diana`) switched to v2 at its `v3.1.98` upgrade, mainnet
+(`qorechain-vladi`) stays on v1 until its own, which is named `v3.2.0`. The SDK
+asks for both plan names, so it follows either network. Pass `rest` and the SDK asks the
 network (`signBytesVersion: "auto"`, the default), caching the answer for about a
 minute. Without `rest` on those two networks the SDK throws rather than guess —
 a wrong guess is refused on-chain with `pqc` code 21. Force a form with

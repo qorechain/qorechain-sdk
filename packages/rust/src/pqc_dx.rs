@@ -31,7 +31,7 @@
 //! The hybrid ML-DSA-87 signature covers the per-network sign-bytes (v1 or v2,
 //! see [`crate::signbytes`]). [`PqcDx::sign_bytes`] defaults to
 //! [`SignBytesMode::Auto`]: the async send paths ask [`PqcDx::rest_url`] whether
-//! the `v3.1.98` upgrade is applied (cached ~60 s) and, if the chain refuses the
+//! the v2 upgrade (`v3.2.0` / `v3.1.98`) is applied (cached ~60 s) and, if the chain refuses the
 //! tx with `pqc` code 21, re-resolve and retry exactly once. The sync
 //! [`PqcDx::build_hybrid`] cannot ask the node, so on `qorechain-vladi` /
 //! `qorechain-diana` it needs an explicit `V1` / `V2` (or use

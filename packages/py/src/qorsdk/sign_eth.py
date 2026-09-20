@@ -169,7 +169,7 @@ def sign_hybrid_eth(
 
     :param account: A :class:`~qorsdk.unified.UnifiedAccount` (carries the PQC key).
     :param sign_bytes_version: ``"v1"`` / ``"v2"`` — the form the target network
-        verifies. Omitted: v2 for a chain born on v3.1.98+; for
+        verifies. Omitted: v2 for a chain born on v3.2.0+; for
         ``qorechain-vladi`` / ``qorechain-diana`` it raises
         :class:`~qorsdk.signbytes.SignBytesVersionError` (resolve it first with
         :func:`~qorsdk.signbytes.resolve_sign_bytes_version`).

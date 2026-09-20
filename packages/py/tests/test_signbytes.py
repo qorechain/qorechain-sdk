@@ -1,7 +1,11 @@
-"""Per-network hybrid sign-bytes v1/v2 (chain v3.1.98).
+"""Per-network hybrid sign-bytes v1/v2 (chain v3.2.0, testnet v3.1.98).
 
 KAT vectors in ``fixtures/signbytes-kat-v3.1.98.json`` are generated from the
 chain's own ``x/pqc`` / ``x/bridge`` functions and must reproduce byte-exact.
+
+The v2 switch ships under TWO plan names, so the resolver must ask
+``applied_plan`` for every one of them (mainnet applies ``v3.2.0``, the testnet
+already applied ``v3.1.98``) and pick v2 if any answers a height above 0.
 """
 
 from __future__ import annotations
@@ -20,8 +24,11 @@ from qorsdk.pqc import generate_pqc_keypair, pqc_verify
 from qorsdk.sign_eth import sign_hybrid_eth
 from qorsdk.signbytes import (
     HYBRID_SIGN_BYTES_DOMAIN,
+    SIGN_BYTES_V2_UPGRADE,
+    SIGN_BYTES_V2_UPGRADES,
     SignBytesResolver,
     SignBytesVersionError,
+    applied_plan_url,
     bridge_attestation_sign_bytes,
     bridge_attestation_sign_bytes_v1,
     bridge_attestation_sign_bytes_v2,
@@ -50,7 +57,7 @@ TEST_MNEMONIC = (
 )
 FEE = {"amount": [{"denom": "uqor", "amount": "5000"}], "gas": "200000"}
 REST = "http://node.test:1317"
-PLAN_URL = f"{REST}/cosmos/upgrade/v1beta1/applied_plan/v3.1.98"
+PLAN_PREFIX = f"{REST}/cosmos/upgrade/v1beta1/applied_plan/"
 TXS_URL = f"{REST}/cosmos/tx/v1beta1/txs"
 
 
@@ -194,33 +201,101 @@ def test_pick_build_version():
 # resolver (fake HTTP)
 # --------------------------------------------------------------------------- #
 class _Plan:
-    """A fake node answering applied_plan with a mutable body, counting calls."""
+    """A fake node answering applied_plan with a mutable body, counting calls.
 
-    def __init__(self, body=None, status=200):
+    ``body`` answers EVERY upgrade name; ``bodies`` overrides it per name (so a
+    test can make one name answer 0 and another a real height). Every requested
+    plan name is recorded in order in ``names``.
+    """
+
+    def __init__(self, body=None, status=200, bodies=None):
         self.body = {"height": "5746000"} if body is None else body
+        self.bodies = dict(bodies or {})
         self.status = status
         self.calls = 0
+        self.names: list[str] = []
 
     def handler(self, request: httpx.Request) -> httpx.Response:
-        assert str(request.url) == PLAN_URL
+        url = str(request.url)
+        assert url.startswith(PLAN_PREFIX), url
+        name = url[len(PLAN_PREFIX) :]
+        assert name in SIGN_BYTES_V2_UPGRADES, f"unknown plan name {name!r}"
         self.calls += 1
-        return httpx.Response(self.status, json=self.body)
+        self.names.append(name)
+        return httpx.Response(self.status, json=self.bodies.get(name, self.body))
 
     def client(self) -> httpx.Client:
         return httpx.Client(transport=httpx.MockTransport(self.handler))
 
 
+def test_upgrade_names_are_ordered_and_primary_is_first():
+    # The mainnet plan name leads, so mainnet costs ONE request after upgrading.
+    assert SIGN_BYTES_V2_UPGRADES == ("v3.2.0", "v3.1.98")
+    assert SIGN_BYTES_V2_UPGRADE == SIGN_BYTES_V2_UPGRADES[0]
+    assert applied_plan_url(REST) == f"{PLAN_PREFIX}v3.2.0"
+    assert applied_plan_url(REST + "/", "v3.1.98") == f"{PLAN_PREFIX}v3.1.98"
+
+
 @pytest.mark.parametrize(
-    ("body", "want"),
-    [({"height": "5746000"}, "v2"), ({"height": "0"}, "v1"), ({}, "v1"), ({"height": 12}, "v2")],
+    ("body", "want", "calls"),
+    [
+        ({"height": "5746000"}, "v2", 1),
+        ({"height": "0"}, "v1", 2),
+        ({}, "v1", 2),
+        ({"height": 12}, "v2", 1),
+    ],
 )
-def test_resolver_reads_applied_height(body, want):
+def test_resolver_reads_applied_height(body, want, calls):
     plan = _Plan(body)
     got = SignBytesResolver().resolve(
         "qorechain-vladi", rest_url=REST, client=plan.client()
     )
     assert got == want
-    assert plan.calls == 1
+    assert plan.calls == calls
+
+
+def test_resolver_first_name_applied_is_v2_in_one_request():
+    """Mainnet after its own upgrade: v3.2.0 answers a height, nothing else is asked."""
+    plan = _Plan(bodies={"v3.2.0": {"height": "9100000"}, "v3.1.98": {"height": "0"}})
+    got = SignBytesResolver().resolve("qorechain-vladi", rest_url=REST, client=plan.client())
+    assert got == "v2"
+    assert plan.names == ["v3.2.0"]
+
+
+def test_resolver_second_name_applied_is_v2_in_two_requests():
+    """The testnet took the switch as v3.1.98 only: the second name decides."""
+    plan = _Plan(bodies={"v3.2.0": {"height": "0"}, "v3.1.98": {"height": "5746000"}})
+    got = SignBytesResolver().resolve("qorechain-diana", rest_url=REST, client=plan.client())
+    assert got == "v2"
+    assert plan.names == ["v3.2.0", "v3.1.98"]
+
+
+def test_resolver_no_name_applied_is_v1_after_asking_every_name():
+    """Mainnet before its upgrade: both names answer 0 (or {}) -> v1, not a guess."""
+    for bodies in (
+        {"v3.2.0": {"height": "0"}, "v3.1.98": {"height": "0"}},
+        {"v3.2.0": {}, "v3.1.98": {}},
+    ):
+        plan = _Plan(bodies=bodies)
+        got = SignBytesResolver().resolve("qorechain-vladi", rest_url=REST, client=plan.client())
+        assert got == "v1"
+        assert plan.names == ["v3.2.0", "v3.1.98"]
+
+
+def test_resolver_error_when_a_later_name_fails():
+    """A failing query still raises even though an earlier name answered 0."""
+
+    def handler(request: httpx.Request) -> httpx.Response:
+        if str(request.url).endswith("/v3.1.98"):
+            return httpx.Response(500, json={"message": "boom"})
+        return httpx.Response(200, json={"height": "0"})
+
+    client = httpx.Client(transport=httpx.MockTransport(handler))
+    with pytest.raises(SignBytesVersionError) as excinfo:
+        SignBytesResolver().resolve("qorechain-vladi", rest_url=REST, client=client)
+    # The message names both plan names, so the reader knows what was asked.
+    for name in SIGN_BYTES_V2_UPGRADES:
+        assert name in str(excinfo.value)
 
 
 def test_resolver_non_legacy_is_v2_without_http():
@@ -269,15 +344,18 @@ def test_resolver_cache_hit_within_ttl_and_expiry():
     plan = _Plan({"height": "0"})
     client = plan.client()
     r = SignBytesResolver(ttl=60, clock=lambda: now[0])
+    # Not applied under either name: both are asked (2 requests) and the answer is v1.
     assert r.resolve("qorechain-vladi", rest_url=REST, client=client) == "v1"
+    assert plan.calls == 2
     plan.body = {"height": "777"}
     now[0] += 30
-    # Within the TTL: cached answer, no second request (trailing slash is the same key).
+    # Within the TTL: cached answer, no further request (trailing slash is the same key).
     assert r.resolve("qorechain-vladi", rest_url=REST + "/", client=client) == "v1"
-    assert plan.calls == 1
-    now[0] += 31
-    assert r.resolve("qorechain-vladi", rest_url=REST, client=client) == "v2"
     assert plan.calls == 2
+    now[0] += 31
+    # Expired: re-asked, and the first name now answers a height (one request).
+    assert r.resolve("qorechain-vladi", rest_url=REST, client=client) == "v2"
+    assert plan.calls == 3
 
 
 def test_resolver_force_refresh_and_clear():
@@ -285,15 +363,16 @@ def test_resolver_force_refresh_and_clear():
     client = plan.client()
     r = SignBytesResolver()
     assert r.resolve("qorechain-vladi", rest_url=REST, client=client) == "v1"
+    assert plan.calls == 2  # both names asked
     plan.body = {"height": "5"}
     assert r.resolve("qorechain-vladi", rest_url=REST, client=client, force_refresh=True) == "v2"
-    assert plan.calls == 2
+    assert plan.calls == 3  # first name now answers a height
     r.clear()
     r.resolve("qorechain-vladi", rest_url=REST, client=client)
-    assert plan.calls == 3
+    assert plan.calls == 4
     r.invalidate(REST, "qorechain-vladi")
     r.resolve("qorechain-vladi", rest_url=REST, client=client)
-    assert plan.calls == 4
+    assert plan.calls == 5
 
 
 def test_resolver_cache_is_per_chain_and_url():
@@ -302,7 +381,9 @@ def test_resolver_cache_is_per_chain_and_url():
     r = SignBytesResolver()
     r.resolve("qorechain-vladi", rest_url=REST, client=client)
     r.resolve("qorechain-diana", rest_url=REST, client=client)
-    assert plan.calls == 2
+    # One lookup per chain; each asks both names because neither answers a height.
+    assert plan.calls == 4
+    assert plan.names == ["v3.2.0", "v3.1.98", "v3.2.0", "v3.1.98"]
 
 
 def test_module_level_resolver_uses_default_cache():
@@ -319,10 +400,20 @@ async def test_resolver_async():
     r = SignBytesResolver()
     assert await r.resolve_async("qorechain-vladi", rest_url=REST, client=client) == "v1"
     assert await r.resolve_async("qorechain-vladi", rest_url=REST, client=client) == "v1"
-    assert plan.calls == 1
+    assert plan.calls == 2  # both names once; the second resolve is a cache hit
+    assert plan.names == ["v3.2.0", "v3.1.98"]
     assert await r.resolve_async("new-chain") == "v2"
     with pytest.raises(SignBytesVersionError):
         await r.resolve_async("qorechain-vladi")
+    await client.aclose()
+
+
+async def test_resolver_async_second_name_applied_is_v2():
+    plan = _Plan(bodies={"v3.2.0": {"height": "0"}, "v3.1.98": {"height": "5746000"}})
+    client = httpx.AsyncClient(transport=httpx.MockTransport(plan.handler))
+    r = SignBytesResolver()
+    assert await r.resolve_async("qorechain-diana", rest_url=REST, client=client) == "v2"
+    assert plan.names == ["v3.2.0", "v3.1.98"]
     await client.aclose()
 
 
@@ -473,17 +564,28 @@ def test_sign_hybrid_eth_v2_and_legacy_guard():
 # retry once on pqc code 21 (fake transport)
 # --------------------------------------------------------------------------- #
 class _Node:
-    """Fake node: applied_plan answers from ``heights`` in turn; txs from ``results``."""
+    """Fake node: each resolution answers from ``heights``; txs from ``results``.
+
+    A resolution asks every name in ``SIGN_BYTES_V2_UPGRADES``; like the testnet,
+    only the LAST name carries a height, so ``plan_calls`` counts resolutions
+    (``plan_requests`` counts the individual applied_plan requests).
+    """
 
     def __init__(self, heights, results):
         self.heights = list(heights)
         self.results = list(results)
         self.plan_calls = 0
+        self.plan_requests = 0
         self.broadcasts: list[bytes] = []
 
     def handler(self, request: httpx.Request) -> httpx.Response:
-        if request.url.path.endswith("/applied_plan/v3.1.98"):
-            self.plan_calls += 1
+        if "/applied_plan/" in request.url.path:
+            name = request.url.path.rsplit("/", 1)[-1]
+            assert name in SIGN_BYTES_V2_UPGRADES, f"unknown plan name {name!r}"
+            self.plan_requests += 1
+            if name == SIGN_BYTES_V2_UPGRADES[0]:
+                self.plan_calls += 1
+                return httpx.Response(200, json={"height": "0"})
             h = self.heights[min(self.plan_calls, len(self.heights)) - 1]
             return httpx.Response(200, json={"height": str(h)})
         assert str(request.url) == TXS_URL
@@ -534,6 +636,7 @@ def test_retry_on_pqc_21_re_resolves_and_succeeds(native, pqc):
     assert resp["tx_response"]["code"] == 0
     assert seen == ["v1", "v2"]
     assert node.plan_calls == 2  # initial resolve + forced refresh
+    assert node.plan_requests == 4  # each resolution asks both upgrade names
     assert len(node.broadcasts) == 2
     assert node.broadcasts[0] != node.broadcasts[1]
 
@@ -596,3 +699,4 @@ def test_no_retry_on_success(native, pqc):
     )
     assert seen == ["v2"]
     assert node.plan_calls == 1
+    assert node.plan_requests == 2

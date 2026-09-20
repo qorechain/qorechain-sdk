@@ -5,20 +5,29 @@ import (
 	"errors"
 	"net/http"
 	"net/http/httptest"
+	"strings"
 	"testing"
 
 	"github.com/qorechain/qorechain-sdk/packages/go/qorechain/signbytes"
 )
 
 // planServer answers the applied-plan query with planBody and accepts every
-// broadcast / poll.
+// broadcast / poll. The switch to v2 ships under two plan names; this node is a
+// network that took the LAST one (as diana did), so the earlier names in
+// signbytes.V2Upgrades answer "not applied" and the resolver must walk on to
+// find the record.
 func planServer(t *testing.T, planBody string) *httptest.Server {
 	t.Helper()
+	last := signbytes.V2Upgrades[len(signbytes.V2Upgrades)-1]
 	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		switch r.URL.Path {
-		case "/cosmos/upgrade/v1beta1/applied_plan/v3.1.98":
-			_, _ = w.Write([]byte(planBody))
-		case "/cosmos/tx/v1beta1/txs":
+		switch {
+		case strings.HasPrefix(r.URL.Path, "/cosmos/upgrade/v1beta1/applied_plan/"):
+			if strings.TrimPrefix(r.URL.Path, "/cosmos/upgrade/v1beta1/applied_plan/") == last {
+				_, _ = w.Write([]byte(planBody))
+				return
+			}
+			_, _ = w.Write([]byte(`{}`))
+		case r.URL.Path == "/cosmos/tx/v1beta1/txs":
 			_, _ = w.Write([]byte(`{"tx_response":{"txhash":"ABC123","code":0}}`))
 		default:
 			_, _ = w.Write([]byte(`{"tx_response":{"txhash":"ABC123","code":0,"height":"10"}}`))

@@ -20,11 +20,12 @@
 //!   - PQC signed message = the per-network hybrid sign-bytes (see
 //!     [`crate::signbytes`]):
 //!       - v1 (legacy): `BE32(len(B0)) || B0 || BE32(len(A)) || A`
-//!       - v2 (chain `v3.1.98`+): `"qorechain-pqc-hybrid-v2" || BE64(len(chainId))
+//!       - v2 (chain `v3.2.0`+): `"qorechain-pqc-hybrid-v2" || BE64(len(chainId))
 //!         || chainId || BE32(len(B0)) || B0 || BE32(len(A)) || A`
 //!
 //!     No hashing. A network verifies exactly one form: `qorechain-vladi` and
-//!     `qorechain-diana` verify v1 until the `v3.1.98` upgrade is applied on them
+//!     `qorechain-diana` verify v1 until the v2 upgrade (`v3.2.0` on mainnet,
+//!     `v3.1.98` on the testnet) is applied on them
 //!     and v2 after it; every other chain verifies v2. [`build_hybrid_tx`] is pure,
 //!     so for those two chains it needs an explicit
 //!     [`BuildHybridTxParams::sign_bytes_version`]; [`broadcast_hybrid_tx`]
@@ -393,7 +394,7 @@ pub struct BuildHybridTxParams {
     ///
     /// `None` means v2 on a chain born with v2, and an ERROR on
     /// `qorechain-vladi` / `qorechain-diana`, whose form depends on whether the
-    /// `v3.1.98` upgrade is applied there (resolve it with
+    /// v2 upgrade (`v3.2.0` / `v3.1.98`) is applied there (resolve it with
     /// [`crate::signbytes::SignBytesResolver`], or use [`broadcast_hybrid_tx`]).
     /// The builder never falls back to v1 silently.
     pub sign_bytes_version: Option<SignBytesVersion>,
@@ -499,7 +500,8 @@ pub fn build_hybrid_tx(params: BuildHybridTxParams) -> Result<BuiltTx> {
 /// `sign_bytes` overrides `params.sign_bytes_version`: `V1` / `V2` are used
 /// as-is; `Auto` asks `rest_url` (via the process-wide
 /// [`crate::signbytes::default_sign_bytes_resolver`], cached ~60 s) whether the
-/// `v3.1.98` upgrade is applied. When `Auto` and the broadcast is refused with
+/// v2 upgrade (`v3.2.0` / `v3.1.98`) is applied. When `Auto` and the broadcast is
+/// refused with
 /// `pqc` code 21 ("hybrid PQC signature verification failed"), the version is
 /// re-resolved, the tx re-signed and broadcast exactly once more; the second
 /// outcome is returned as-is. An explicit version is never retried.

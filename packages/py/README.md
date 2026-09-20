@@ -340,11 +340,12 @@ Async status reads are available as `is_pqc_registered_async` /
 `get_pqc_status_async`. See the
 [quantum-safe](../../docs/docs/guides/quantum-safe.md) guide.
 
-### Hybrid sign-bytes v1 / v2 (v0.8.0 / chain v3.1.98)
+### Hybrid sign-bytes v1 / v2 (v0.8.1 / chain v3.2.0, testnet v3.1.98)
 
 A hybrid transaction's ML-DSA-87 signature covers `B0` (the `TxBody` without the
-PQC extension) and `A` (the `AuthInfo` bytes). Chain release **v3.1.98** changed
-the exact bytes that are signed:
+PQC extension) and `A` (the `AuthInfo` bytes). Chain release **v3.2.0** — which
+the testnet already took under the earlier name **v3.1.98** — changed the exact
+bytes that are signed:
 
 | Form | Signed bytes |
 |---|---|
@@ -357,18 +358,27 @@ to verify on another network). Each network verifies **exactly one** form at any
 height, with no overlap window, so the SDK must sign the form of the *target*
 network:
 
-- **Testnet** (`qorechain-diana`) applied v3.1.98 at height 5,746,000 and now
-  accepts **only v2**.
-- **Mainnet** (`qorechain-vladi`) stays on **v1** until its own v3.1.98 upgrade,
-  at a height chosen by governance. Nothing changes for mainnet until then.
-- Any chain started on v3.1.98 or later is v2 from its first block.
+- **Testnet** (`qorechain-diana`) applied the upgrade as **`v3.1.98`** at height
+  5,746,000 and now accepts **only v2**.
+- **Mainnet** (`qorechain-vladi`) applies the same handler as **`v3.2.0`**, at a
+  height chosen by governance, and stays on **v1** until then.
+- Any chain started on that release or later is v2 from its first block.
 
-The `"auto"` rule (the chain's own `SignBytesVersionFor`): ask the node
-`GET {rest}/cosmos/upgrade/v1beta1/applied_plan/v3.1.98`. If the height is above
-0 → v2; else if the chain is `qorechain-vladi` / `qorechain-diana` → v1; else → v2.
-The answer is cached per `(rest_url, chain_id)` for 60 s (a network can upgrade
-while an app is running). If the node cannot be asked for one of those two
-networks, the SDK raises `SignBytesVersionError` instead of guessing.
+**The switch has two plan names, so ask for both.** `SIGN_BYTES_V2_UPGRADES ==
+("v3.2.0", "v3.1.98")` (`SIGN_BYTES_V2_UPGRADE` is the primary, `"v3.2.0"`).
+A client that asks only one name reads height 0 on the other network, signs v1,
+and every hybrid transaction there is refused with `pqc` code 21.
+
+The `"auto"` rule (the chain's own `SignBytesVersionFor`): for EVERY name in
+`SIGN_BYTES_V2_UPGRADES`, ask the node
+`GET {rest}/cosmos/upgrade/v1beta1/applied_plan/{name}` and compare the height
+**numerically** (it is a string, and `{"height":"0"}` is truthy). If ANY of them
+is above 0 → v2; else if the chain is `qorechain-vladi` / `qorechain-diana` → v1;
+else → v2. The names are asked in order and the lookup stops at the first
+positive height, so mainnet costs one request after its upgrade and the testnet
+two. The answer is cached per `(rest_url, chain_id)` for 60 s (a network can
+upgrade while an app is running). If the node cannot be asked for one of those
+two networks, the SDK raises `SignBytesVersionError` instead of guessing.
 
 ```python
 from qorsdk import (
@@ -398,7 +408,7 @@ resolver = SignBytesResolver(ttl=15)  # a private resolver with its own TTL
 ```
 
 `build_hybrid_tx` and `sign_hybrid_eth` take `sign_bytes_version="v1" | "v2"`.
-When it is omitted they use v2 for a chain started on v3.1.98+, and **raise** for
+When it is omitted they use v2 for a chain started on v3.2.0+, and **raise** for
 `qorechain-vladi` / `qorechain-diana` (never a silent v1 default). The high-level
 paths (`migrate_to_hybrid`, `migrate_pqc_key`, `CrossVmClient` /
 `create_cross_vm_client`) take `sign_bytes_version="auto" | "v1" | "v2"` (default

@@ -106,8 +106,8 @@ public final class PqcDx {
         public SignBytes.Mode signBytesMode = SignBytes.Mode.AUTO;
         /**
          * The network's REST (LCD) endpoint, used by {@link SignBytes.Mode#AUTO} on
-         * {@code qorechain-vladi}/{@code qorechain-diana} to read whether v3.1.98 is
-         * applied. Not needed for other chain ids or an explicit mode.
+         * {@code qorechain-vladi}/{@code qorechain-diana} to read whether one of the
+         * {@code SignBytes.SIGN_BYTES_V2_UPGRADES} plans is applied. Not needed for other chain ids or an explicit mode.
          */
         public String restUrl;
         /** The resolver (and its cache) to use; {@code null} = {@link SignBytesResolver#shared()}. */

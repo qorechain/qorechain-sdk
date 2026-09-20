@@ -24,9 +24,10 @@
 //     v1 = BE32(len(B0)) || B0 || BE32(len(A)) || A
 //     v2 = "qorechain-pqc-hybrid-v2" || BE64(len(chainID)) || chainID ||
 //     BE32(len(B0)) || B0 || BE32(len(A)) || A
-//     Chain v3.1.98 introduced v2. A network that existed before it
-//     (qorechain-vladi, qorechain-diana) verifies v1 until the v3.1.98 upgrade
-//     is applied on it and ONLY v2 afterwards; any other chain id verifies v2
+//     Chain v3.2.0 (taken by the testnet under the earlier name v3.1.98)
+//     introduced v2. A network that existed before it (qorechain-vladi,
+//     qorechain-diana) verifies v1 until the upgrade is applied on it under one
+//     of signbytes.V2Upgrades, and ONLY v2 afterwards; any other chain id verifies v2
 //     from genesis. There is no overlap window: the wrong form is refused with
 //     pqc code 21. The testnet is on v2 (from height 5,746,000); mainnet stays
 //     on v1 until its own upgrade. BuildHybridTx therefore takes a
@@ -286,8 +287,8 @@ type BuildHybridTxParams struct {
 	// signbytes). signbytes.V1 / signbytes.V2 are used as given. Empty or
 	// signbytes.Auto is decided offline from ChainID alone: a non-legacy chain is
 	// V2, while a legacy network (qorechain-vladi, qorechain-diana) makes
-	// BuildHybridTx FAIL, because its form depends on whether the v3.1.98
-	// upgrade is applied there. Resolve it first (signbytes.Resolver) or use
+	// BuildHybridTx FAIL, because its form depends on whether one of the
+	// signbytes.V2Upgrades plans is applied there. Resolve it first (signbytes.Resolver) or use
 	// BroadcastHybridAndWait, which resolves against the node.
 	SignBytesVersion signbytes.Version
 }
