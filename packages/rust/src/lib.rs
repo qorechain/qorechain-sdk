@@ -32,6 +32,9 @@
 //! - [`signbytes`] — the per-network post-quantum sign-bytes forms (v1 / v2)
 //!   for hybrid txs, key migrations and bridge attestations, the rule that
 //!   picks one per chain, and a cached resolver that asks the node.
+//! - [`evm_window`] — the v3.2.0 EVM authorisation window: the bounds the chain
+//!   enforces, the `evm_window` status query, and the classifier that turns an
+//!   EVM-lane refusal into a state plus a remedy.
 
 #![forbid(unsafe_code)]
 #![warn(missing_docs)]
@@ -44,6 +47,7 @@ pub mod client;
 pub mod cross_vm;
 pub mod denom;
 pub mod error;
+pub mod evm_window;
 pub mod msg;
 pub mod networks;
 pub mod pqc;
@@ -103,6 +107,14 @@ pub use signbytes::{
     sign_bytes_version_for, BridgeAttestationSignFields, HybridBroadcast, MigrationSignFields,
     SignBytesMode, SignBytesResolver, SignBytesVersion, SIGN_BYTES_V2_UPGRADE,
     SIGN_BYTES_V2_UPGRADES,
+};
+
+pub use evm_window::{
+    classify_evm_window_error, classify_tx_error, evm_window_path, get_evm_window,
+    parse_evm_window, validate_evm_window_blocks, validate_evm_window_max_txs,
+    validate_evm_window_max_value, validate_evm_window_params, EvmWindowParams, EvmWindowRefusal,
+    EvmWindowStatus, ERR_EVM_WINDOW_EXHAUSTED, ERR_INVALID_EVM_WINDOW, ERR_NO_EVM_WINDOW,
+    EVM_WINDOW_CODESPACE, EVM_WINDOW_QUERY_PATH, MAX_EVM_WINDOW_BLOCKS, MAX_EVM_WINDOW_TXS,
 };
 
 pub use query::{JsonRpcClient, QorClient, RestClient, TypedQueryClient, QOR_METHODS};

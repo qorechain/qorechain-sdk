@@ -225,6 +225,30 @@ export const pqc = {
     "/qorechain.pqc.v1.MsgRotatePQCKey",
     pqcTx.MsgRotatePQCKey,
   ),
+  /**
+   * Open a bounded authorisation window for the sender's EVM lane (chain
+   * v3.2.0). From that release an EVM transaction is admitted only from an
+   * account that holds a registered PQC key AND has a live window, so the
+   * classical key alone can never move value.
+   *
+   * A Cosmos-lane message carrying the usual hybrid signature. Every field is
+   * required; the chain refuses a missing one rather than defaulting it. Use
+   * {@link ../pqc/evm-window.openEvmWindowMsg} to get the bounds checked before
+   * you broadcast.
+   *
+   * NOTE: the identity is unified, so the Cosmos sequence IS the EVM nonce and
+   * broadcasting this ADVANCES it. Open the window, then read the nonce, then
+   * sign the EVM transaction.
+   */
+  openEvmWindow: composer(
+    "/qorechain.pqc.v1.MsgOpenEVMWindow",
+    pqcTx.MsgOpenEVMWindow,
+  ),
+  /** Revoke the sender's EVM authorisation window; effective in the same block. */
+  closeEvmWindow: composer(
+    "/qorechain.pqc.v1.MsgCloseEVMWindow",
+    pqcTx.MsgCloseEVMWindow,
+  ),
 };
 
 /** SVM (virtual machine programs/accounts) message composers. */

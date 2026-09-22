@@ -19,6 +19,42 @@ pub struct PqcHybridSignature {
     pub pqc_public_key: ::prost::alloc::vec::Vec<u8>,
 }
 #[derive(Clone, PartialEq, ::prost::Message)]
+pub struct QueryEvmWindowRequest {
+    #[prost(string, tag="1")]
+    pub address: ::prost::alloc::string::String,
+}
+#[derive(Clone, PartialEq, ::prost::Message)]
+pub struct QueryEvmWindowResponse {
+    /// found reports whether a window is stored. A stored window may still be
+    /// exhausted or expired; check live.
+    #[prost(bool, tag="1")]
+    pub found: bool,
+    /// live reports whether the window admits at least one more transaction of
+    /// zero value at the current height.
+    #[prost(bool, tag="2")]
+    pub live: bool,
+    #[prost(uint64, tag="3")]
+    pub opened_height: u64,
+    #[prost(uint64, tag="4")]
+    pub expiry_height: u64,
+    #[prost(uint64, tag="5")]
+    pub max_txs: u64,
+    #[prost(uint64, tag="6")]
+    pub used_txs: u64,
+    #[prost(string, tag="7")]
+    pub max_value: ::prost::alloc::string::String,
+    #[prost(string, tag="8")]
+    pub used_value: ::prost::alloc::string::String,
+    /// remaining_blocks, remaining_txs and remaining_value say which bound is
+    /// closest to running out, so a refused caller can tell why.
+    #[prost(uint64, tag="9")]
+    pub remaining_blocks: u64,
+    #[prost(uint64, tag="10")]
+    pub remaining_txs: u64,
+    #[prost(string, tag="11")]
+    pub remaining_value: ::prost::alloc::string::String,
+}
+#[derive(Clone, PartialEq, ::prost::Message)]
 pub struct QueryAccountRequest {
     /// address is the bech32 account address whose PQC key is requested.
     #[prost(string, tag="1")]
@@ -154,5 +190,39 @@ pub struct MsgDisableAlgorithm {
 }
 #[derive(Clone, Copy, PartialEq, ::prost::Message)]
 pub struct MsgDisableAlgorithmResponse {
+}
+/// MsgOpenEVMWindow authorises EVM-lane transactions from the sender for a
+/// bounded number of transactions, a bounded total outflow, and a bounded number
+/// of blocks. Opening replaces any existing window rather than adding to it.
+#[derive(Clone, PartialEq, ::prost::Message)]
+pub struct MsgOpenEvmWindow {
+    #[prost(string, tag="1")]
+    pub sender: ::prost::alloc::string::String,
+    /// blocks is how long the window stays open, counted from the block that
+    /// opens it. Bounded by the module's maximum.
+    #[prost(uint64, tag="2")]
+    pub blocks: u64,
+    /// max_txs is how many EVM transactions the window admits. Zero is rejected:
+    /// a window that admits nothing is a mistake, not a policy.
+    #[prost(uint64, tag="3")]
+    pub max_txs: u64,
+    /// max_value is the total the window admits, in uqor, counting transferred
+    /// value AND the maximum fee each transaction could pay. Both drain the
+    /// account, so both are bounded.
+    #[prost(string, tag="4")]
+    pub max_value: ::prost::alloc::string::String,
+}
+#[derive(Clone, Copy, PartialEq, ::prost::Message)]
+pub struct MsgOpenEvmWindowResponse {
+    #[prost(uint64, tag="1")]
+    pub expiry_height: u64,
+}
+#[derive(Clone, PartialEq, ::prost::Message)]
+pub struct MsgCloseEvmWindow {
+    #[prost(string, tag="1")]
+    pub sender: ::prost::alloc::string::String,
+}
+#[derive(Clone, Copy, PartialEq, ::prost::Message)]
+pub struct MsgCloseEvmWindowResponse {
 }
 // @@protoc_insertion_point(module)

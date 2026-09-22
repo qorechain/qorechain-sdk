@@ -71,6 +71,10 @@ class _RestPaths:
         return f"/qorechain/pqc/v1/accounts/{quote(address, safe='')}", None
 
     @staticmethod
+    def pqc_evm_window(address: str) -> tuple[str, dict[str, Any] | None]:
+        return f"/qorechain/pqc/v1/evm_window/{quote(address, safe='')}", None
+
+    @staticmethod
     def reputation(validator_address: str) -> tuple[str, dict[str, Any] | None]:
         return (
             f"/qorechain/reputation/v1/validators/{quote(validator_address, safe='')}",
@@ -144,6 +148,16 @@ class RestClient:
     def get_pqc_account(self, address: str) -> Any:
         return self._get_built(_RestPaths.pqc_account(address))
 
+    def get_pqc_evm_window(self, address: str) -> Any:
+        """Raw ``evm_window`` status (chain v3.2.0).
+
+        Answers ``200`` with ``found: false`` when no window is stored, so it is
+        safe to poll. :func:`qorsdk.evm_window.get_evm_window` parses the payload
+        into a typed :class:`~qorsdk.evm_window.EVMWindowStatus` with exact
+        integers.
+        """
+        return self._get_built(_RestPaths.pqc_evm_window(address))
+
     def get_reputation(self, validator_address: str) -> Any:
         return self._get_built(_RestPaths.reputation(validator_address))
 
@@ -208,6 +222,10 @@ class AsyncRestClient:
 
     async def get_pqc_account(self, address: str) -> Any:
         return await self._get_built(_RestPaths.pqc_account(address))
+
+    async def get_pqc_evm_window(self, address: str) -> Any:
+        """Asynchronous mirror of :meth:`RestClient.get_pqc_evm_window`."""
+        return await self._get_built(_RestPaths.pqc_evm_window(address))
 
     async def get_reputation(self, validator_address: str) -> Any:
         return await self._get_built(_RestPaths.reputation(validator_address))

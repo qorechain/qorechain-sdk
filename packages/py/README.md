@@ -136,7 +136,7 @@ asyncio.run(main())
 
 ### Typed messages for every module
 
-`msg.<module>.<name>(...)` builds any of the chain's 59 custom messages (across
+`msg.<module>.<name>(...)` builds any of the chain's 61 custom messages (across
 amm / bridge / rdk / multilayer / pqc / svm / lightnode / license /
 abstractaccount / crossvm / rlconsensus) plus the standard Native modules
 (bank / staking / distribution / gov / authz / feegrant / ibc). Each returns a
@@ -614,6 +614,112 @@ build = rotate_pqc_key_msg_from_mnemonic(
 ```
 
 See the [authenticators](../../docs/docs/guides/authenticators.md) guide.
+
+### EVM authorisation window (v0.8.2 / chain v3.2.0)
+
+From chain v3.2.0 an **EVM-lane transaction is admitted only** from an account
+that (a) has a **registered post-quantum key** and (b) has an **open,
+unexhausted authorisation window**. The testnet (`qorechain-diana`) enforces this
+today; mainnet enforces it from its upgrade height. A plain transfer from an
+account with no window is refused with:
+
+```
+account qor1… has no open EVM authorisation window; open one with
+MsgOpenEVMWindow, signed on the Cosmos lane with the account's post-quantum key
+```
+
+Opening a window is an ordinary **Cosmos-lane** message, so it carries the
+account's hybrid (classical + ML-DSA-87) signature: the classical key alone can
+never open a window. MetaMask and any other EVM client keep working unmodified
+*inside* a window.
+
+```python
+from qorsdk import (
+    RestClient, msg, get_evm_window, describe_evm_window_error,
+    MAX_EVM_WINDOW_BLOCKS, MAX_EVM_WINDOW_TXS,
+)
+
+# 1. Check what the account has. 200 with found:false when absent — safe to poll.
+rest = RestClient("https://api.qore.host")
+status = get_evm_window(rest, "qor1…")
+status.found, status.live          # bool
+status.remaining_blocks            # int
+status.remaining_txs               # int
+status.remaining_value             # int (uqor, exact — never a float)
+
+# 2. Open one. Every field is REQUIRED; the bounds mirror the chain's
+#    ValidateBasic and are checked locally, so a bad call raises before it
+#    costs a fee.
+open_msg = msg.pqc.open_evm_window(
+    sender="qor1…",
+    blocks=300,             # 1..17280 (MAX_EVM_WINDOW_BLOCKS)
+    max_txs=5,              # 1..1000  (MAX_EVM_WINDOW_TXS)
+    max_value="2000000",    # > 0, uqor, integer string (cosmos.Int)
+)
+# …broadcast it through the usual hybrid path (build_hybrid_tx / send_messages).
+
+# 3. Done early? Closing takes effect in the same block.
+close_msg = msg.pqc.close_evm_window(sender="qor1…")
+
+# 4. Decode a refusal into a state + remedy. Matches the `pqc` codes (26 no
+#    window, 27 exhausted, 28 invalid / no PQC key) AND the chain's text, since
+#    over EVM JSON-RPC the refusal arrives as a broadcast error with no codespace.
+refusal = describe_evm_window_error(code=26, codespace="pqc", message=err_text)
+if refusal:
+    refusal.kind      # "no_window" | "window_exhausted" | "invalid_window" | "no_pqc_key"
+    refusal.remedy    # what the user must do
+```
+
+Opening replaces any existing window rather than adding to it.
+
+**The SDK never opens a window for you.** There is no implicit "open before
+send": a window authorises spending, so the step must be explicit and visible to
+the user. The SDK gives you the status query, the two composers, the local bounds
+check, and the classifier — the wallet decides.
+
+#### Three traps
+
+1. **Ordering — open, then read the nonce, then sign.** QoreChain unifies the
+   identity, so the Cosmos sequence **is** the EVM nonce, and
+   `MsgOpenEVMWindow` is a Cosmos transaction from the same account: opening a
+   window **advances the nonce** (measured on the testnet: 2 before, 3 after). A
+   wallet that prepares or signs the EVM transaction first gets `nonce too low`.
+
+2. **`max_value` bounds value *plus* the maximum fee.** It counts the
+   transferred value **and** the largest fee each admitted transaction could pay
+   (gas limit × gas fee cap), because the holder of the classical key sets the
+   gas price and a value-only bound would leave the account drainable through
+   fees. Measured on the testnet: a **1,000 uqor** transfer with a 21,000 gas
+   limit at 112.5 gwei consumed **3,363 uqor** of the window. Wei→uqor rounds
+   **up**, so a series of sub-uqor transfers cannot drain a window that never
+   appears to move.
+
+3. **Do not print "about 24 hours" for 17280 blocks.** The chain constant says
+   that at 5-second blocks, but **no QoreChain network runs at 5 s**: the testnet
+   is at ~1.03 s (17280 blocks ≈ **5 hours**) and mainnet at ~3.1 s (≈ **15
+   hours**). Show "up to 17280 blocks", or compute the duration from the chain's
+   recent block time.
+
+### Other v3.2.0 behaviour worth knowing
+
+Nothing to call in the SDK, but these change when an existing call is refused:
+
+- **`msg.rdk.submit_batch` — settle only as the rollup's sequencer.** From
+  v3.2.0 `MsgSubmitBatch` is accepted **only** from the rollup's
+  `SequencerConfig.SequencerAddress`, falling back to `Creator` when no sequencer
+  is set; anyone else gets `ErrUnauthorized`
+  (`"%s may not settle batches for rollup %s"`). Batches must also **extend the
+  chain by index** and cannot overwrite an existing one. `msg.rdk.pause_rollup`,
+  `msg.rdk.resume_rollup` and `msg.rdk.stop_rollup` now require the **creator**.
+
+- **`x/ai` enforces its per-sender rate limit.** The limit was declared but never
+  enforced; from v3.2.0 it is. The window is **30 BLOCKS**, not a minute, despite
+  the field being named `max_tx_per_minute` (~31 s on the testnet, ~93 s on
+  mainnet). A network born on this binary starts at the genesis default **10**;
+  the upgrade handler raises an upgraded chain to **600**, and no message can
+  change it on a running chain. **Read it** via `qorechain.ai.v1.Query/Config` —
+  never assume either value. Batch senders (faucets, relayers, exchange hot
+  wallets) that exceed it get `ai` `ErrTxRejected`.
 
 ## Regenerating protobuf code (maintainers)
 

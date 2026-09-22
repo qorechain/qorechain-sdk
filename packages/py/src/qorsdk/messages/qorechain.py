@@ -13,6 +13,11 @@ from __future__ import annotations
 
 from types import SimpleNamespace
 
+from ..evm_window import (
+    CLOSE_EVM_WINDOW_TYPE_URL,
+    OPEN_EVM_WINDOW_TYPE_URL,
+    validate_evm_window_params,
+)
 from ..proto.qorechain.abstractaccount.v1 import tx_pb2 as abstractaccount_tx
 from ..proto.qorechain.amm.v1 import tx_pb2 as amm_tx
 from ..proto.qorechain.bridge.v1 import tx_pb2 as bridge_tx
@@ -24,7 +29,7 @@ from ..proto.qorechain.pqc.v1 import tx_pb2 as pqc_tx
 from ..proto.qorechain.rdk.v1 import tx_pb2 as rdk_tx
 from ..proto.qorechain.rlconsensus.v1 import tx_pb2 as rlconsensus_tx
 from ..proto.qorechain.svm.v1 import tx_pb2 as svm_tx
-from ._composer import composer
+from ._composer import Msg, composer
 
 # --------------------------------------------------------------------------- #
 # AMM (automated market maker)
@@ -122,8 +127,61 @@ multilayer = SimpleNamespace(
 )
 
 # --------------------------------------------------------------------------- #
-# PQC (post-quantum key registry / algorithm governance)
+# PQC (post-quantum key registry / algorithm governance / EVM window)
 # --------------------------------------------------------------------------- #
+
+
+def _open_evm_window(
+    *, sender: str, blocks: int, max_txs: int, max_value: str | int
+) -> Msg:
+    """Build ``MsgOpenEVMWindow`` (chain v3.2.0), validating the chain's bounds.
+
+    An EVM-lane transaction is admitted only from an account that has a
+    registered post-quantum key AND an open, unexhausted window. This message
+    travels the Cosmos lane, so it carries the account's hybrid signature — the
+    classical key alone can never open a window.
+
+    Every field is required: the chain refuses an omitted field rather than
+    defaulting it. ``blocks`` must be in ``1..17280``, ``max_txs`` in ``1..1000``
+    and ``max_value`` a positive integer uqor amount that covers the transferred
+    value PLUS the maximum fee (gas limit x gas fee cap) of every admitted
+    transaction. Opening replaces any existing window.
+
+    Three traps, in full in :mod:`qorsdk.evm_window`: opening ADVANCES the
+    account's sequence, which is also the EVM nonce (open, then read the nonce,
+    then sign the EVM transaction); ``max_value`` covers fees as well as value;
+    and 17280 blocks is NOT "about 24 hours" on any live QoreChain network —
+    quote blocks, or compute from the chain's recent block time.
+
+    :raises ValueError: If a bound is violated, naming the bound.
+    """
+    params = validate_evm_window_params(
+        blocks=blocks, max_txs=max_txs, max_value=max_value
+    )
+    return Msg(
+        type_url=OPEN_EVM_WINDOW_TYPE_URL,
+        value=pqc_tx.MsgOpenEVMWindow(
+            sender=sender,
+            blocks=params.blocks,
+            max_txs=params.max_txs,
+            max_value=params.max_value,
+        ),
+    )
+
+
+def _close_evm_window(*, sender: str) -> Msg:
+    """Build ``MsgCloseEVMWindow``: closes the sender's window in the same block."""
+    return Msg(
+        type_url=CLOSE_EVM_WINDOW_TYPE_URL,
+        value=pqc_tx.MsgCloseEVMWindow(sender=sender),
+    )
+
+
+_open_evm_window.__name__ = "MsgOpenEVMWindow"
+_open_evm_window.__qualname__ = "MsgOpenEVMWindow"
+_close_evm_window.__name__ = "MsgCloseEVMWindow"
+_close_evm_window.__qualname__ = "MsgCloseEVMWindow"
+
 pqc = SimpleNamespace(
     register_pqc_key=composer(
         "/qorechain.pqc.v1.MsgRegisterPQCKey", pqc_tx.MsgRegisterPQCKey
@@ -143,6 +201,11 @@ pqc = SimpleNamespace(
     disable_algorithm=composer(
         "/qorechain.pqc.v1.MsgDisableAlgorithm", pqc_tx.MsgDisableAlgorithm
     ),
+    # v3.2.0 EVM authorisation window. Validating composers: the bounds the
+    # chain enforces in ValidateBasic are checked here so a caller fails fast
+    # instead of paying for a refused transaction.
+    open_evm_window=_open_evm_window,
+    close_evm_window=_close_evm_window,
 )
 
 # --------------------------------------------------------------------------- #

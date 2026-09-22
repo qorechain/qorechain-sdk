@@ -1,7 +1,7 @@
 package io.github.qorechain.messages;
 
 /**
- * Typed composers for every QoreChain custom-module {@code Msg} (59 total).
+ * Typed composers for every QoreChain custom-module {@code Msg} (61 total).
  *
  * <p>Each method wraps an already-built protobuf message in a {@link TypedMessage}
  * carrying the correct on-chain type URL, ready to feed into the tx builder. The
@@ -90,6 +90,14 @@ public final class QorechainMessages {
             return new TypedMessage("/qorechain.rdk.v1.MsgCreateRollup", m);
         }
 
+        /**
+         * {@code MsgSubmitBatch}. From chain v3.2.0 only the rollup's own sequencer may
+         * settle: the sender must be {@code SequencerConfig.SequencerAddress}, falling
+         * back to the rollup's {@code Creator} when no sequencer is configured. Anyone
+         * else is refused with {@code ErrUnauthorized} ("%s may not settle batches for
+         * rollup %s"). Batches must also extend the chain by index — an existing index
+         * cannot be overwritten.
+         */
         public static TypedMessage submitBatch(qorechain.rdk.v1.Tx.MsgSubmitBatch m) {
             return new TypedMessage("/qorechain.rdk.v1.MsgSubmitBatch", m);
         }
@@ -102,14 +110,26 @@ public final class QorechainMessages {
             return new TypedMessage("/qorechain.rdk.v1.MsgResolveChallenge", m);
         }
 
+        /**
+         * {@code MsgPauseRollup}. From chain v3.2.0 the chain enforces what the field name
+         * always implied: only the rollup's creator may send it.
+         */
         public static TypedMessage pauseRollup(qorechain.rdk.v1.Tx.MsgPauseRollup m) {
             return new TypedMessage("/qorechain.rdk.v1.MsgPauseRollup", m);
         }
 
+        /**
+         * {@code MsgResumeRollup}. From chain v3.2.0 the chain enforces what the field name
+         * always implied: only the rollup's creator may send it.
+         */
         public static TypedMessage resumeRollup(qorechain.rdk.v1.Tx.MsgResumeRollup m) {
             return new TypedMessage("/qorechain.rdk.v1.MsgResumeRollup", m);
         }
 
+        /**
+         * {@code MsgStopRollup}. From chain v3.2.0 the chain enforces what the field name
+         * always implied: only the rollup's creator may send it.
+         */
         public static TypedMessage stopRollup(qorechain.rdk.v1.Tx.MsgStopRollup m) {
             return new TypedMessage("/qorechain.rdk.v1.MsgStopRollup", m);
         }
@@ -181,6 +201,26 @@ public final class QorechainMessages {
 
         public static TypedMessage disableAlgorithm(qorechain.pqc.v1.Tx.MsgDisableAlgorithm m) {
             return new TypedMessage("/qorechain.pqc.v1.MsgDisableAlgorithm", m);
+        }
+
+        /**
+         * {@code MsgOpenEVMWindow} — the Cosmos-lane authorisation an account needs
+         * before the chain admits any EVM transaction from it (chain v3.2.0). It is
+         * an ordinary protobuf message travelling the normal hybrid signing path, so
+         * the classical key alone can never open a window.
+         *
+         * <p>Prefer {@link io.github.qorechain.evm.EvmWindow#open} , which checks the
+         * chain's {@code ValidateBasic} bounds locally. Opening replaces any existing
+         * window and advances the account sequence — which on QoreChain is also the
+         * EVM nonce: open the window, THEN read the nonce, THEN sign the EVM tx.
+         */
+        public static TypedMessage openEvmWindow(qorechain.pqc.v1.Tx.MsgOpenEVMWindow m) {
+            return new TypedMessage("/qorechain.pqc.v1.MsgOpenEVMWindow", m);
+        }
+
+        /** {@code MsgCloseEVMWindow} — revokes the sender's window in the same block. */
+        public static TypedMessage closeEvmWindow(qorechain.pqc.v1.Tx.MsgCloseEVMWindow m) {
+            return new TypedMessage("/qorechain.pqc.v1.MsgCloseEVMWindow", m);
         }
     }
 

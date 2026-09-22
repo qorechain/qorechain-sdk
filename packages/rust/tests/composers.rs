@@ -55,7 +55,7 @@ fn sample_svm_params() -> msg::svm::SvmParams {
     }
 }
 
-/// The full set of 57 custom-module type URLs, paired with an `Any` produced by
+/// The full set of 59 custom-module type URLs, paired with an `Any` produced by
 /// the matching `*_any` composer. Asserts every exact string AND that the
 /// composer emits it.
 #[test]
@@ -249,6 +249,14 @@ fn all_custom_type_urls_are_produced() {
                 vec![4u8; 4],
             ),
         ),
+        (
+            "/qorechain.pqc.v1.MsgOpenEVMWindow",
+            msg::pqc::open_evm_window_any(addr, 300, 5, "2000000").unwrap(),
+        ),
+        (
+            "/qorechain.pqc.v1.MsgCloseEVMWindow",
+            msg::pqc::close_evm_window_any(addr),
+        ),
         // svm (5)
         (
             "/qorechain.svm.v1.MsgDeployProgram",
@@ -379,8 +387,8 @@ fn all_custom_type_urls_are_produced() {
 
     assert_eq!(
         cases.len(),
-        57,
-        "exactly 57 custom messages must be covered"
+        59,
+        "exactly 59 custom messages must be covered"
     );
     for (want_url, any) in &cases {
         assert_eq!(&any.type_url, want_url, "type URL mismatch");

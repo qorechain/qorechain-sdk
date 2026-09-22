@@ -131,6 +131,12 @@ func (RdkComposers) CreateRollup(creator, rollupID, profile, vmType string, stak
 // SubmitBatch builds MsgSubmitBatch. withdrawalsRoot commits the batch's L2->L1
 // messages (withdrawals) as a binary-Merkle root; pass nil when the batch
 // carries no cross-layer messages.
+//
+// From chain v3.2.0 only the rollup's own sequencer may settle: the sender must
+// be SequencerConfig.SequencerAddress, falling back to the rollup's Creator when
+// no sequencer is configured. Anyone else is refused with the rdk codespace's
+// ErrUnauthorized ("%s may not settle batches for rollup %s"). Batches must also
+// extend the chain by index — an existing index cannot be overwritten.
 func (RdkComposers) SubmitBatch(sequencer, rollupID string, batchIndex uint64, stateRoot, prevStateRoot []byte, txCount uint64, dataHash, proof, withdrawalsRoot []byte) *rdkv1.MsgSubmitBatch {
 	return &rdkv1.MsgSubmitBatch{Sequencer: sequencer, RollupID: rollupID, BatchIndex: batchIndex, StateRoot: stateRoot, PrevStateRoot: prevStateRoot, TxCount: txCount, DataHash: dataHash, Proof: proof, WithdrawalsRoot: withdrawalsRoot}
 }
@@ -145,17 +151,20 @@ func (RdkComposers) ResolveChallenge(resolver, rollupID string, batchIndex uint6
 	return &rdkv1.MsgResolveChallenge{Resolver: resolver, RollupID: rollupID, BatchIndex: batchIndex, FraudUpheld: fraudUpheld}
 }
 
-// PauseRollup builds MsgPauseRollup.
+// PauseRollup builds MsgPauseRollup. From chain v3.2.0 the chain enforces what
+// the field name always implied: only the rollup's creator may send it.
 func (RdkComposers) PauseRollup(creator, rollupID, reason string) *rdkv1.MsgPauseRollup {
 	return &rdkv1.MsgPauseRollup{Creator: creator, RollupID: rollupID, Reason: reason}
 }
 
-// ResumeRollup builds MsgResumeRollup.
+// ResumeRollup builds MsgResumeRollup. From chain v3.2.0 the chain enforces what
+// the field name always implied: only the rollup's creator may send it.
 func (RdkComposers) ResumeRollup(creator, rollupID string) *rdkv1.MsgResumeRollup {
 	return &rdkv1.MsgResumeRollup{Creator: creator, RollupID: rollupID}
 }
 
-// StopRollup builds MsgStopRollup.
+// StopRollup builds MsgStopRollup. From chain v3.2.0 the chain enforces what
+// the field name always implied: only the rollup's creator may send it.
 func (RdkComposers) StopRollup(creator, rollupID string) *rdkv1.MsgStopRollup {
 	return &rdkv1.MsgStopRollup{Creator: creator, RollupID: rollupID}
 }
@@ -236,6 +245,28 @@ func (PqcComposers) MigrateKey(sender string, oldPublicKey, newPublicKey []byte,
 // account, hybrid-cosigned with the OLD key (still registered until it lands).
 func (PqcComposers) RotatePQCKey(sender string, oldPublicKey, newPublicKey, oldSignature, newSignature []byte) *pqcv1.MsgRotatePQCKey {
 	return &pqcv1.MsgRotatePQCKey{Sender: sender, OldPublicKey: oldPublicKey, NewPublicKey: newPublicKey, OldSignature: oldSignature, NewSignature: newSignature}
+}
+
+// OpenEVMWindow builds MsgOpenEVMWindow — the Cosmos-lane authorisation an
+// account needs before the chain admits any EVM transaction from it (chain
+// v3.2.0). It is an ordinary protobuf message travelling the normal hybrid
+// signing path: the classical key alone can never open a window.
+//
+// blocks (1..MaxEVMWindowBlocks), maxTxs (1..MaxEVMWindowTxs) and maxValue
+// (uqor, > 0) are all required. Use NewOpenEVMWindow for the same message with
+// the chain's ValidateBasic bounds checked locally.
+//
+// Opening replaces any existing window and advances the account sequence, which
+// on QoreChain is also the EVM nonce: open the window, THEN read the nonce,
+// THEN sign the EVM transaction.
+func (PqcComposers) OpenEVMWindow(sender string, blocks, maxTxs uint64, maxValue math.Int) *pqcv1.MsgOpenEVMWindow {
+	return &pqcv1.MsgOpenEVMWindow{Sender: sender, Blocks: blocks, MaxTxs: maxTxs, MaxValue: maxValue}
+}
+
+// CloseEVMWindow builds MsgCloseEVMWindow, which revokes the sender's EVM
+// authorisation window in the same block.
+func (PqcComposers) CloseEVMWindow(sender string) *pqcv1.MsgCloseEVMWindow {
+	return &pqcv1.MsgCloseEVMWindow{Sender: sender}
 }
 
 // DeprecateAlgorithm builds MsgDeprecateAlgorithm.

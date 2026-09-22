@@ -17,7 +17,7 @@ import (
 )
 
 // allCustomTypeURLs is every custom QoreChain Msg type URL the registry must
-// resolve. The 59 entries match the chain's tx services across all 11 modules.
+// resolve. The 61 entries match the chain's tx services across all 11 modules.
 var allCustomTypeURLs = []string{
 	// amm (7)
 	"/qorechain.amm.v1.MsgCreatePool",
@@ -51,13 +51,15 @@ var allCustomTypeURLs = []string{
 	"/qorechain.multilayer.v1.MsgRouteTransaction",
 	"/qorechain.multilayer.v1.MsgUpdateLayerStatus",
 	"/qorechain.multilayer.v1.MsgChallengeAnchor",
-	// pqc (6)
+	// pqc (8)
 	"/qorechain.pqc.v1.MsgRegisterPQCKey",
 	"/qorechain.pqc.v1.MsgRegisterPQCKeyV2",
 	"/qorechain.pqc.v1.MsgMigratePQCKey",
 	"/qorechain.pqc.v1.MsgRotatePQCKey",
 	"/qorechain.pqc.v1.MsgDeprecateAlgorithm",
 	"/qorechain.pqc.v1.MsgDisableAlgorithm",
+	"/qorechain.pqc.v1.MsgOpenEVMWindow",
+	"/qorechain.pqc.v1.MsgCloseEVMWindow",
 	// svm (5)
 	"/qorechain.svm.v1.MsgDeployProgram",
 	"/qorechain.svm.v1.MsgCreateAccount",
@@ -92,8 +94,8 @@ var allCustomTypeURLs = []string{
 }
 
 func TestAllCustomTypeURLsCount(t *testing.T) {
-	if got := len(allCustomTypeURLs); got != 59 {
-		t.Fatalf("expected 59 custom type URLs, got %d", got)
+	if got := len(allCustomTypeURLs); got != 61 {
+		t.Fatalf("expected 61 custom type URLs, got %d", got)
 	}
 }
 

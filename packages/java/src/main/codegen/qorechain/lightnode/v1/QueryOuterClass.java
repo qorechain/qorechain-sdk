@@ -7831,6 +7831,1980 @@ public final class QueryOuterClass extends com.google.protobuf.GeneratedFile {
 
   }
 
+  public interface QueryRewardPoolRequestOrBuilder extends
+      // @@protoc_insertion_point(interface_extends:qorechain.lightnode.v1.QueryRewardPoolRequest)
+      com.google.protobuf.MessageOrBuilder {
+  }
+  /**
+   * Protobuf type {@code qorechain.lightnode.v1.QueryRewardPoolRequest}
+   */
+  public static final class QueryRewardPoolRequest extends
+      com.google.protobuf.GeneratedMessage implements
+      // @@protoc_insertion_point(message_implements:qorechain.lightnode.v1.QueryRewardPoolRequest)
+      QueryRewardPoolRequestOrBuilder {
+  private static final long serialVersionUID = 0L;
+    static {
+      com.google.protobuf.RuntimeVersion.validateProtobufGencodeVersion(
+        com.google.protobuf.RuntimeVersion.RuntimeDomain.PUBLIC,
+        /* major= */ 4,
+        /* minor= */ 35,
+        /* patch= */ 1,
+        /* suffix= */ "",
+        "QueryRewardPoolRequest");
+    }
+    // Use QueryRewardPoolRequest.newBuilder() to construct.
+    private QueryRewardPoolRequest(com.google.protobuf.GeneratedMessage.Builder<?> builder) {
+      super(builder);
+    }
+    private QueryRewardPoolRequest() {
+    }
+
+    public static final com.google.protobuf.Descriptors.Descriptor
+        getDescriptor() {
+      return qorechain.lightnode.v1.QueryOuterClass.internal_static_qorechain_lightnode_v1_QueryRewardPoolRequest_descriptor;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Descriptors.Descriptor getDescriptorForType() {
+      return qorechain.lightnode.v1.QueryOuterClass.internal_static_qorechain_lightnode_v1_QueryRewardPoolRequest_descriptor;
+    }
+
+    @java.lang.Override
+    protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+        internalGetFieldAccessorTable() {
+      return qorechain.lightnode.v1.QueryOuterClass.internal_static_qorechain_lightnode_v1_QueryRewardPoolRequest_fieldAccessorTable
+          .ensureFieldAccessorsInitialized(
+              qorechain.lightnode.v1.QueryOuterClass.QueryRewardPoolRequest.class, qorechain.lightnode.v1.QueryOuterClass.QueryRewardPoolRequest.Builder.class);
+    }
+
+    private byte memoizedIsInitialized = -1;
+    @java.lang.Override
+    public final boolean isInitialized() {
+      byte isInitialized = memoizedIsInitialized;
+      if (isInitialized == 1) return true;
+      if (isInitialized == 0) return false;
+
+      memoizedIsInitialized = 1;
+      return true;
+    }
+
+    @java.lang.Override
+    public void writeTo(com.google.protobuf.CodedOutputStream output)
+                        throws java.io.IOException {
+      getUnknownFields().writeTo(output);
+    }
+    @java.lang.Override
+    public int getSerializedSize() {
+      int size = memoizedSize;
+      if (size != -1) return size;
+
+      size = 0;
+      size += getUnknownFields().getSerializedSize();
+      memoizedSize = size;
+      return size;
+    }
+
+    @java.lang.Override
+    public boolean equals(final java.lang.Object obj) {
+      if (obj == this) {
+       return true;
+      }
+      if (!(obj instanceof qorechain.lightnode.v1.QueryOuterClass.QueryRewardPoolRequest)) {
+        return super.equals(obj);
+      }
+      qorechain.lightnode.v1.QueryOuterClass.QueryRewardPoolRequest other = (qorechain.lightnode.v1.QueryOuterClass.QueryRewardPoolRequest) obj;
+
+      if (!getUnknownFields().equals(other.getUnknownFields())) return false;
+      return true;
+    }
+
+    @java.lang.Override
+    public int hashCode() {
+      if (memoizedHashCode != 0) {
+        return memoizedHashCode;
+      }
+      int hash = 41;
+      hash = (19 * hash) + getDescriptor().hashCode();
+      hash = (29 * hash) + getUnknownFields().hashCode();
+      memoizedHashCode = hash;
+      return hash;
+    }
+
+    public static qorechain.lightnode.v1.QueryOuterClass.QueryRewardPoolRequest parseFrom(
+        java.nio.ByteBuffer data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static qorechain.lightnode.v1.QueryOuterClass.QueryRewardPoolRequest parseFrom(
+        java.nio.ByteBuffer data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static qorechain.lightnode.v1.QueryOuterClass.QueryRewardPoolRequest parseFrom(
+        com.google.protobuf.ByteString data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static qorechain.lightnode.v1.QueryOuterClass.QueryRewardPoolRequest parseFrom(
+        com.google.protobuf.ByteString data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static qorechain.lightnode.v1.QueryOuterClass.QueryRewardPoolRequest parseFrom(byte[] data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static qorechain.lightnode.v1.QueryOuterClass.QueryRewardPoolRequest parseFrom(
+        byte[] data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static qorechain.lightnode.v1.QueryOuterClass.QueryRewardPoolRequest parseFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input);
+    }
+    public static qorechain.lightnode.v1.QueryOuterClass.QueryRewardPoolRequest parseFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    public static qorechain.lightnode.v1.QueryOuterClass.QueryRewardPoolRequest parseDelimitedFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseDelimitedWithIOException(PARSER, input);
+    }
+
+    public static qorechain.lightnode.v1.QueryOuterClass.QueryRewardPoolRequest parseDelimitedFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static qorechain.lightnode.v1.QueryOuterClass.QueryRewardPoolRequest parseFrom(
+        com.google.protobuf.CodedInputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input);
+    }
+    public static qorechain.lightnode.v1.QueryOuterClass.QueryRewardPoolRequest parseFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    @java.lang.Override
+    public Builder newBuilderForType() { return newBuilder(); }
+    public static Builder newBuilder() {
+      return DEFAULT_INSTANCE.toBuilder();
+    }
+    public static Builder newBuilder(qorechain.lightnode.v1.QueryOuterClass.QueryRewardPoolRequest prototype) {
+      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+    }
+    @java.lang.Override
+    public Builder toBuilder() {
+      return this == DEFAULT_INSTANCE
+          ? new Builder() : new Builder().mergeFrom(this);
+    }
+
+    @java.lang.Override
+    protected Builder newBuilderForType(
+        com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+      Builder builder = new Builder(parent);
+      return builder;
+    }
+    /**
+     * Protobuf type {@code qorechain.lightnode.v1.QueryRewardPoolRequest}
+     */
+    public static final class Builder extends
+        com.google.protobuf.GeneratedMessage.Builder<Builder> implements
+        // @@protoc_insertion_point(builder_implements:qorechain.lightnode.v1.QueryRewardPoolRequest)
+        qorechain.lightnode.v1.QueryOuterClass.QueryRewardPoolRequestOrBuilder {
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return qorechain.lightnode.v1.QueryOuterClass.internal_static_qorechain_lightnode_v1_QueryRewardPoolRequest_descriptor;
+      }
+
+      @java.lang.Override
+      protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return qorechain.lightnode.v1.QueryOuterClass.internal_static_qorechain_lightnode_v1_QueryRewardPoolRequest_fieldAccessorTable
+            .ensureFieldAccessorsInitialized(
+                qorechain.lightnode.v1.QueryOuterClass.QueryRewardPoolRequest.class, qorechain.lightnode.v1.QueryOuterClass.QueryRewardPoolRequest.Builder.class);
+      }
+
+      // Construct using qorechain.lightnode.v1.QueryOuterClass.QueryRewardPoolRequest.newBuilder()
+      private Builder() {
+
+      }
+
+      private Builder(
+          com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+        super(parent);
+
+      }
+      @java.lang.Override
+      public Builder clear() {
+        super.clear();
+        return this;
+      }
+
+      @java.lang.Override
+      public com.google.protobuf.Descriptors.Descriptor
+          getDescriptorForType() {
+        return qorechain.lightnode.v1.QueryOuterClass.internal_static_qorechain_lightnode_v1_QueryRewardPoolRequest_descriptor;
+      }
+
+      @java.lang.Override
+      public qorechain.lightnode.v1.QueryOuterClass.QueryRewardPoolRequest getDefaultInstanceForType() {
+        return qorechain.lightnode.v1.QueryOuterClass.QueryRewardPoolRequest.getDefaultInstance();
+      }
+
+      @java.lang.Override
+      public qorechain.lightnode.v1.QueryOuterClass.QueryRewardPoolRequest build() {
+        qorechain.lightnode.v1.QueryOuterClass.QueryRewardPoolRequest result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(result);
+        }
+        return result;
+      }
+
+      @java.lang.Override
+      public qorechain.lightnode.v1.QueryOuterClass.QueryRewardPoolRequest buildPartial() {
+        qorechain.lightnode.v1.QueryOuterClass.QueryRewardPoolRequest result = new qorechain.lightnode.v1.QueryOuterClass.QueryRewardPoolRequest(this);
+        onBuilt();
+        return result;
+      }
+
+      @java.lang.Override
+      public Builder mergeFrom(com.google.protobuf.Message other) {
+        if (other instanceof qorechain.lightnode.v1.QueryOuterClass.QueryRewardPoolRequest) {
+          return mergeFrom((qorechain.lightnode.v1.QueryOuterClass.QueryRewardPoolRequest)other);
+        } else {
+          super.mergeFrom(other);
+          return this;
+        }
+      }
+
+      public Builder mergeFrom(qorechain.lightnode.v1.QueryOuterClass.QueryRewardPoolRequest other) {
+        if (other == qorechain.lightnode.v1.QueryOuterClass.QueryRewardPoolRequest.getDefaultInstance()) return this;
+        this.mergeUnknownFields(other.getUnknownFields());
+        onChanged();
+        return this;
+      }
+
+      @java.lang.Override
+      public final boolean isInitialized() {
+        return true;
+      }
+
+      @java.lang.Override
+      public Builder mergeFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        if (extensionRegistry == null) {
+          throw new java.lang.NullPointerException();
+        }
+        try {
+          boolean done = false;
+          while (!done) {
+            int tag = input.readTag();
+            switch (tag) {
+              case 0:
+                done = true;
+                break;
+              default: {
+                if (!super.parseUnknownField(input, extensionRegistry, tag)) {
+                  done = true; // was an endgroup tag
+                }
+                break;
+              } // default:
+            } // switch (tag)
+          } // while (!done)
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          throw e.unwrapIOException();
+        } finally {
+          onChanged();
+        } // finally
+        return this;
+      }
+
+      // @@protoc_insertion_point(builder_scope:qorechain.lightnode.v1.QueryRewardPoolRequest)
+    }
+
+    // @@protoc_insertion_point(class_scope:qorechain.lightnode.v1.QueryRewardPoolRequest)
+    private static final qorechain.lightnode.v1.QueryOuterClass.QueryRewardPoolRequest DEFAULT_INSTANCE;
+    static {
+      DEFAULT_INSTANCE = new qorechain.lightnode.v1.QueryOuterClass.QueryRewardPoolRequest();
+    }
+
+    public static qorechain.lightnode.v1.QueryOuterClass.QueryRewardPoolRequest getDefaultInstance() {
+      return DEFAULT_INSTANCE;
+    }
+
+    private static final com.google.protobuf.Parser<QueryRewardPoolRequest>
+        PARSER = new com.google.protobuf.AbstractParser<QueryRewardPoolRequest>() {
+      @java.lang.Override
+      public QueryRewardPoolRequest parsePartialFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        Builder builder = newBuilder();
+        try {
+          builder.mergeFrom(input, extensionRegistry);
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          throw e.setUnfinishedMessage(builder.buildPartial());
+        } catch (com.google.protobuf.UninitializedMessageException e) {
+          throw e.asInvalidProtocolBufferException().setUnfinishedMessage(builder.buildPartial());
+        } catch (java.io.IOException e) {
+          throw new com.google.protobuf.InvalidProtocolBufferException(e)
+              .setUnfinishedMessage(builder.buildPartial());
+        }
+        return builder.buildPartial();
+      }
+    };
+
+    public static com.google.protobuf.Parser<QueryRewardPoolRequest> parser() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Parser<QueryRewardPoolRequest> getParserForType() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public qorechain.lightnode.v1.QueryOuterClass.QueryRewardPoolRequest getDefaultInstanceForType() {
+      return DEFAULT_INSTANCE;
+    }
+
+  }
+
+  public interface QueryRewardPoolResponseOrBuilder extends
+      // @@protoc_insertion_point(interface_extends:qorechain.lightnode.v1.QueryRewardPoolResponse)
+      com.google.protobuf.MessageOrBuilder {
+
+    /**
+     * <pre>
+     * balance is the module account's total uqor holding.
+     * </pre>
+     *
+     * <code>string balance = 1 [json_name = "balance"];</code>
+     * @return The balance.
+     */
+    java.lang.String getBalance();
+    /**
+     * <pre>
+     * balance is the module account's total uqor holding.
+     * </pre>
+     *
+     * <code>string balance = 1 [json_name = "balance"];</code>
+     * @return The bytes for balance.
+     */
+    com.google.protobuf.ByteString
+        getBalanceBytes();
+
+    /**
+     * <pre>
+     * reserved accumulated while no node was eligible; it is excluded from
+     * distribution and moves only by governance.
+     * </pre>
+     *
+     * <code>string reserved = 2 [json_name = "reserved"];</code>
+     * @return The reserved.
+     */
+    java.lang.String getReserved();
+    /**
+     * <pre>
+     * reserved accumulated while no node was eligible; it is excluded from
+     * distribution and moves only by governance.
+     * </pre>
+     *
+     * <code>string reserved = 2 [json_name = "reserved"];</code>
+     * @return The bytes for reserved.
+     */
+    com.google.protobuf.ByteString
+        getReservedBytes();
+
+    /**
+     * <pre>
+     * outstanding is credited to operators but not yet claimed.
+     * </pre>
+     *
+     * <code>string outstanding = 3 [json_name = "outstanding"];</code>
+     * @return The outstanding.
+     */
+    java.lang.String getOutstanding();
+    /**
+     * <pre>
+     * outstanding is credited to operators but not yet claimed.
+     * </pre>
+     *
+     * <code>string outstanding = 3 [json_name = "outstanding"];</code>
+     * @return The bytes for outstanding.
+     */
+    com.google.protobuf.ByteString
+        getOutstandingBytes();
+
+    /**
+     * <pre>
+     * payable is reserve that governance released back into distribution; it
+     * drains to operators over time at the capped rate.
+     * </pre>
+     *
+     * <code>string payable = 5 [json_name = "payable"];</code>
+     * @return The payable.
+     */
+    java.lang.String getPayable();
+    /**
+     * <pre>
+     * payable is reserve that governance released back into distribution; it
+     * drains to operators over time at the capped rate.
+     * </pre>
+     *
+     * <code>string payable = 5 [json_name = "payable"];</code>
+     * @return The bytes for payable.
+     */
+    com.google.protobuf.ByteString
+        getPayableBytes();
+
+    /**
+     * <pre>
+     * max_reward_per_block_per_node bounds what one node may be credited per block.
+     * </pre>
+     *
+     * <code>string max_reward_per_block_per_node = 6 [json_name = "maxRewardPerBlockPerNode"];</code>
+     * @return The maxRewardPerBlockPerNode.
+     */
+    java.lang.String getMaxRewardPerBlockPerNode();
+    /**
+     * <pre>
+     * max_reward_per_block_per_node bounds what one node may be credited per block.
+     * </pre>
+     *
+     * <code>string max_reward_per_block_per_node = 6 [json_name = "maxRewardPerBlockPerNode"];</code>
+     * @return The bytes for maxRewardPerBlockPerNode.
+     */
+    com.google.protobuf.ByteString
+        getMaxRewardPerBlockPerNodeBytes();
+
+    /**
+     * <pre>
+     * distributable is what the next distribution run may hand out:
+     * balance - reserved - outstanding.
+     * </pre>
+     *
+     * <code>string distributable = 4 [json_name = "distributable"];</code>
+     * @return The distributable.
+     */
+    java.lang.String getDistributable();
+    /**
+     * <pre>
+     * distributable is what the next distribution run may hand out:
+     * balance - reserved - outstanding.
+     * </pre>
+     *
+     * <code>string distributable = 4 [json_name = "distributable"];</code>
+     * @return The bytes for distributable.
+     */
+    com.google.protobuf.ByteString
+        getDistributableBytes();
+
+    /**
+     * <pre>
+     * initialized reports whether the split has been established by the
+     * coordinated upgrade handler. Until it is, the figures above describe a raw
+     * balance that the module does not yet account for, and clients that gate on
+     * the accounting being live (the licence batch tool) must treat the pool as
+     * not ready.
+     * </pre>
+     *
+     * <code>bool initialized = 7 [json_name = "initialized"];</code>
+     * @return The initialized.
+     */
+    boolean getInitialized();
+  }
+  /**
+   * Protobuf type {@code qorechain.lightnode.v1.QueryRewardPoolResponse}
+   */
+  public static final class QueryRewardPoolResponse extends
+      com.google.protobuf.GeneratedMessage implements
+      // @@protoc_insertion_point(message_implements:qorechain.lightnode.v1.QueryRewardPoolResponse)
+      QueryRewardPoolResponseOrBuilder {
+  private static final long serialVersionUID = 0L;
+    static {
+      com.google.protobuf.RuntimeVersion.validateProtobufGencodeVersion(
+        com.google.protobuf.RuntimeVersion.RuntimeDomain.PUBLIC,
+        /* major= */ 4,
+        /* minor= */ 35,
+        /* patch= */ 1,
+        /* suffix= */ "",
+        "QueryRewardPoolResponse");
+    }
+    // Use QueryRewardPoolResponse.newBuilder() to construct.
+    private QueryRewardPoolResponse(com.google.protobuf.GeneratedMessage.Builder<?> builder) {
+      super(builder);
+    }
+    private QueryRewardPoolResponse() {
+      balance_ = "";
+      reserved_ = "";
+      outstanding_ = "";
+      payable_ = "";
+      maxRewardPerBlockPerNode_ = "";
+      distributable_ = "";
+    }
+
+    public static final com.google.protobuf.Descriptors.Descriptor
+        getDescriptor() {
+      return qorechain.lightnode.v1.QueryOuterClass.internal_static_qorechain_lightnode_v1_QueryRewardPoolResponse_descriptor;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Descriptors.Descriptor getDescriptorForType() {
+      return qorechain.lightnode.v1.QueryOuterClass.internal_static_qorechain_lightnode_v1_QueryRewardPoolResponse_descriptor;
+    }
+
+    @java.lang.Override
+    protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+        internalGetFieldAccessorTable() {
+      return qorechain.lightnode.v1.QueryOuterClass.internal_static_qorechain_lightnode_v1_QueryRewardPoolResponse_fieldAccessorTable
+          .ensureFieldAccessorsInitialized(
+              qorechain.lightnode.v1.QueryOuterClass.QueryRewardPoolResponse.class, qorechain.lightnode.v1.QueryOuterClass.QueryRewardPoolResponse.Builder.class);
+    }
+
+    public static final int BALANCE_FIELD_NUMBER = 1;
+    @SuppressWarnings("serial")
+    private volatile java.lang.Object balance_ = "";
+    /**
+     * <pre>
+     * balance is the module account's total uqor holding.
+     * </pre>
+     *
+     * <code>string balance = 1 [json_name = "balance"];</code>
+     * @return The balance.
+     */
+    @java.lang.Override
+    public java.lang.String getBalance() {
+      java.lang.Object ref = balance_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        balance_ = s;
+        return s;
+      }
+    }
+    /**
+     * <pre>
+     * balance is the module account's total uqor holding.
+     * </pre>
+     *
+     * <code>string balance = 1 [json_name = "balance"];</code>
+     * @return The bytes for balance.
+     */
+    @java.lang.Override
+    public com.google.protobuf.ByteString
+        getBalanceBytes() {
+      java.lang.Object ref = balance_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        balance_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
+    public static final int RESERVED_FIELD_NUMBER = 2;
+    @SuppressWarnings("serial")
+    private volatile java.lang.Object reserved_ = "";
+    /**
+     * <pre>
+     * reserved accumulated while no node was eligible; it is excluded from
+     * distribution and moves only by governance.
+     * </pre>
+     *
+     * <code>string reserved = 2 [json_name = "reserved"];</code>
+     * @return The reserved.
+     */
+    @java.lang.Override
+    public java.lang.String getReserved() {
+      java.lang.Object ref = reserved_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        reserved_ = s;
+        return s;
+      }
+    }
+    /**
+     * <pre>
+     * reserved accumulated while no node was eligible; it is excluded from
+     * distribution and moves only by governance.
+     * </pre>
+     *
+     * <code>string reserved = 2 [json_name = "reserved"];</code>
+     * @return The bytes for reserved.
+     */
+    @java.lang.Override
+    public com.google.protobuf.ByteString
+        getReservedBytes() {
+      java.lang.Object ref = reserved_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        reserved_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
+    public static final int OUTSTANDING_FIELD_NUMBER = 3;
+    @SuppressWarnings("serial")
+    private volatile java.lang.Object outstanding_ = "";
+    /**
+     * <pre>
+     * outstanding is credited to operators but not yet claimed.
+     * </pre>
+     *
+     * <code>string outstanding = 3 [json_name = "outstanding"];</code>
+     * @return The outstanding.
+     */
+    @java.lang.Override
+    public java.lang.String getOutstanding() {
+      java.lang.Object ref = outstanding_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        outstanding_ = s;
+        return s;
+      }
+    }
+    /**
+     * <pre>
+     * outstanding is credited to operators but not yet claimed.
+     * </pre>
+     *
+     * <code>string outstanding = 3 [json_name = "outstanding"];</code>
+     * @return The bytes for outstanding.
+     */
+    @java.lang.Override
+    public com.google.protobuf.ByteString
+        getOutstandingBytes() {
+      java.lang.Object ref = outstanding_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        outstanding_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
+    public static final int PAYABLE_FIELD_NUMBER = 5;
+    @SuppressWarnings("serial")
+    private volatile java.lang.Object payable_ = "";
+    /**
+     * <pre>
+     * payable is reserve that governance released back into distribution; it
+     * drains to operators over time at the capped rate.
+     * </pre>
+     *
+     * <code>string payable = 5 [json_name = "payable"];</code>
+     * @return The payable.
+     */
+    @java.lang.Override
+    public java.lang.String getPayable() {
+      java.lang.Object ref = payable_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        payable_ = s;
+        return s;
+      }
+    }
+    /**
+     * <pre>
+     * payable is reserve that governance released back into distribution; it
+     * drains to operators over time at the capped rate.
+     * </pre>
+     *
+     * <code>string payable = 5 [json_name = "payable"];</code>
+     * @return The bytes for payable.
+     */
+    @java.lang.Override
+    public com.google.protobuf.ByteString
+        getPayableBytes() {
+      java.lang.Object ref = payable_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        payable_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
+    public static final int MAX_REWARD_PER_BLOCK_PER_NODE_FIELD_NUMBER = 6;
+    @SuppressWarnings("serial")
+    private volatile java.lang.Object maxRewardPerBlockPerNode_ = "";
+    /**
+     * <pre>
+     * max_reward_per_block_per_node bounds what one node may be credited per block.
+     * </pre>
+     *
+     * <code>string max_reward_per_block_per_node = 6 [json_name = "maxRewardPerBlockPerNode"];</code>
+     * @return The maxRewardPerBlockPerNode.
+     */
+    @java.lang.Override
+    public java.lang.String getMaxRewardPerBlockPerNode() {
+      java.lang.Object ref = maxRewardPerBlockPerNode_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        maxRewardPerBlockPerNode_ = s;
+        return s;
+      }
+    }
+    /**
+     * <pre>
+     * max_reward_per_block_per_node bounds what one node may be credited per block.
+     * </pre>
+     *
+     * <code>string max_reward_per_block_per_node = 6 [json_name = "maxRewardPerBlockPerNode"];</code>
+     * @return The bytes for maxRewardPerBlockPerNode.
+     */
+    @java.lang.Override
+    public com.google.protobuf.ByteString
+        getMaxRewardPerBlockPerNodeBytes() {
+      java.lang.Object ref = maxRewardPerBlockPerNode_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        maxRewardPerBlockPerNode_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
+    public static final int DISTRIBUTABLE_FIELD_NUMBER = 4;
+    @SuppressWarnings("serial")
+    private volatile java.lang.Object distributable_ = "";
+    /**
+     * <pre>
+     * distributable is what the next distribution run may hand out:
+     * balance - reserved - outstanding.
+     * </pre>
+     *
+     * <code>string distributable = 4 [json_name = "distributable"];</code>
+     * @return The distributable.
+     */
+    @java.lang.Override
+    public java.lang.String getDistributable() {
+      java.lang.Object ref = distributable_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        distributable_ = s;
+        return s;
+      }
+    }
+    /**
+     * <pre>
+     * distributable is what the next distribution run may hand out:
+     * balance - reserved - outstanding.
+     * </pre>
+     *
+     * <code>string distributable = 4 [json_name = "distributable"];</code>
+     * @return The bytes for distributable.
+     */
+    @java.lang.Override
+    public com.google.protobuf.ByteString
+        getDistributableBytes() {
+      java.lang.Object ref = distributable_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        distributable_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
+    public static final int INITIALIZED_FIELD_NUMBER = 7;
+    private boolean initialized_ = false;
+    /**
+     * <pre>
+     * initialized reports whether the split has been established by the
+     * coordinated upgrade handler. Until it is, the figures above describe a raw
+     * balance that the module does not yet account for, and clients that gate on
+     * the accounting being live (the licence batch tool) must treat the pool as
+     * not ready.
+     * </pre>
+     *
+     * <code>bool initialized = 7 [json_name = "initialized"];</code>
+     * @return The initialized.
+     */
+    @java.lang.Override
+    public boolean getInitialized() {
+      return initialized_;
+    }
+
+    private byte memoizedIsInitialized = -1;
+    @java.lang.Override
+    public final boolean isInitialized() {
+      byte isInitialized = memoizedIsInitialized;
+      if (isInitialized == 1) return true;
+      if (isInitialized == 0) return false;
+
+      memoizedIsInitialized = 1;
+      return true;
+    }
+
+    @java.lang.Override
+    public void writeTo(com.google.protobuf.CodedOutputStream output)
+                        throws java.io.IOException {
+      if (!com.google.protobuf.GeneratedMessage.isStringEmpty(balance_)) {
+        com.google.protobuf.GeneratedMessage.writeString(output, 1, balance_);
+      }
+      if (!com.google.protobuf.GeneratedMessage.isStringEmpty(reserved_)) {
+        com.google.protobuf.GeneratedMessage.writeString(output, 2, reserved_);
+      }
+      if (!com.google.protobuf.GeneratedMessage.isStringEmpty(outstanding_)) {
+        com.google.protobuf.GeneratedMessage.writeString(output, 3, outstanding_);
+      }
+      if (!com.google.protobuf.GeneratedMessage.isStringEmpty(distributable_)) {
+        com.google.protobuf.GeneratedMessage.writeString(output, 4, distributable_);
+      }
+      if (!com.google.protobuf.GeneratedMessage.isStringEmpty(payable_)) {
+        com.google.protobuf.GeneratedMessage.writeString(output, 5, payable_);
+      }
+      if (!com.google.protobuf.GeneratedMessage.isStringEmpty(maxRewardPerBlockPerNode_)) {
+        com.google.protobuf.GeneratedMessage.writeString(output, 6, maxRewardPerBlockPerNode_);
+      }
+      if (initialized_ != false) {
+        output.writeBool(7, initialized_);
+      }
+      getUnknownFields().writeTo(output);
+    }
+    private int computeSerializedSize_0() {
+      int size = 0;
+      if (!com.google.protobuf.GeneratedMessage.isStringEmpty(balance_)) {
+        size += com.google.protobuf.GeneratedMessage.computeStringSize(1, balance_);
+      }
+      if (!com.google.protobuf.GeneratedMessage.isStringEmpty(reserved_)) {
+        size += com.google.protobuf.GeneratedMessage.computeStringSize(2, reserved_);
+      }
+      if (!com.google.protobuf.GeneratedMessage.isStringEmpty(outstanding_)) {
+        size += com.google.protobuf.GeneratedMessage.computeStringSize(3, outstanding_);
+      }
+      if (!com.google.protobuf.GeneratedMessage.isStringEmpty(distributable_)) {
+        size += com.google.protobuf.GeneratedMessage.computeStringSize(4, distributable_);
+      }
+      if (!com.google.protobuf.GeneratedMessage.isStringEmpty(payable_)) {
+        size += com.google.protobuf.GeneratedMessage.computeStringSize(5, payable_);
+      }
+      if (!com.google.protobuf.GeneratedMessage.isStringEmpty(maxRewardPerBlockPerNode_)) {
+        size += com.google.protobuf.GeneratedMessage.computeStringSize(6, maxRewardPerBlockPerNode_);
+      }
+      if (initialized_ != false) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeBoolSize(7, initialized_);
+      }
+      return size;
+    }
+    @java.lang.Override
+    public int getSerializedSize() {
+      int size = memoizedSize;
+      if (size != -1) return size;
+
+      size = 0;
+      size += computeSerializedSize_0();
+      size += getUnknownFields().getSerializedSize();
+      memoizedSize = size;
+      return size;
+    }
+
+    @java.lang.Override
+    public boolean equals(final java.lang.Object obj) {
+      if (obj == this) {
+       return true;
+      }
+      if (!(obj instanceof qorechain.lightnode.v1.QueryOuterClass.QueryRewardPoolResponse)) {
+        return super.equals(obj);
+      }
+      qorechain.lightnode.v1.QueryOuterClass.QueryRewardPoolResponse other = (qorechain.lightnode.v1.QueryOuterClass.QueryRewardPoolResponse) obj;
+
+      if (!getBalance()
+          .equals(other.getBalance())) return false;
+      if (!getReserved()
+          .equals(other.getReserved())) return false;
+      if (!getOutstanding()
+          .equals(other.getOutstanding())) return false;
+      if (!getPayable()
+          .equals(other.getPayable())) return false;
+      if (!getMaxRewardPerBlockPerNode()
+          .equals(other.getMaxRewardPerBlockPerNode())) return false;
+      if (!getDistributable()
+          .equals(other.getDistributable())) return false;
+      if (getInitialized()
+          != other.getInitialized()) return false;
+      if (!getUnknownFields().equals(other.getUnknownFields())) return false;
+      return true;
+    }
+
+    @java.lang.Override
+    public int hashCode() {
+      if (memoizedHashCode != 0) {
+        return memoizedHashCode;
+      }
+      int hash = 41;
+      hash = (19 * hash) + getDescriptor().hashCode();
+      hash = (37 * hash) + BALANCE_FIELD_NUMBER;
+      hash = (53 * hash) + getBalance().hashCode();
+      hash = (37 * hash) + RESERVED_FIELD_NUMBER;
+      hash = (53 * hash) + getReserved().hashCode();
+      hash = (37 * hash) + OUTSTANDING_FIELD_NUMBER;
+      hash = (53 * hash) + getOutstanding().hashCode();
+      hash = (37 * hash) + PAYABLE_FIELD_NUMBER;
+      hash = (53 * hash) + getPayable().hashCode();
+      hash = (37 * hash) + MAX_REWARD_PER_BLOCK_PER_NODE_FIELD_NUMBER;
+      hash = (53 * hash) + getMaxRewardPerBlockPerNode().hashCode();
+      hash = (37 * hash) + DISTRIBUTABLE_FIELD_NUMBER;
+      hash = (53 * hash) + getDistributable().hashCode();
+      hash = (37 * hash) + INITIALIZED_FIELD_NUMBER;
+      hash = (53 * hash) + com.google.protobuf.Internal.hashBoolean(
+          getInitialized());
+      hash = (29 * hash) + getUnknownFields().hashCode();
+      memoizedHashCode = hash;
+      return hash;
+    }
+
+    public static qorechain.lightnode.v1.QueryOuterClass.QueryRewardPoolResponse parseFrom(
+        java.nio.ByteBuffer data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static qorechain.lightnode.v1.QueryOuterClass.QueryRewardPoolResponse parseFrom(
+        java.nio.ByteBuffer data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static qorechain.lightnode.v1.QueryOuterClass.QueryRewardPoolResponse parseFrom(
+        com.google.protobuf.ByteString data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static qorechain.lightnode.v1.QueryOuterClass.QueryRewardPoolResponse parseFrom(
+        com.google.protobuf.ByteString data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static qorechain.lightnode.v1.QueryOuterClass.QueryRewardPoolResponse parseFrom(byte[] data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static qorechain.lightnode.v1.QueryOuterClass.QueryRewardPoolResponse parseFrom(
+        byte[] data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static qorechain.lightnode.v1.QueryOuterClass.QueryRewardPoolResponse parseFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input);
+    }
+    public static qorechain.lightnode.v1.QueryOuterClass.QueryRewardPoolResponse parseFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    public static qorechain.lightnode.v1.QueryOuterClass.QueryRewardPoolResponse parseDelimitedFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseDelimitedWithIOException(PARSER, input);
+    }
+
+    public static qorechain.lightnode.v1.QueryOuterClass.QueryRewardPoolResponse parseDelimitedFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static qorechain.lightnode.v1.QueryOuterClass.QueryRewardPoolResponse parseFrom(
+        com.google.protobuf.CodedInputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input);
+    }
+    public static qorechain.lightnode.v1.QueryOuterClass.QueryRewardPoolResponse parseFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    @java.lang.Override
+    public Builder newBuilderForType() { return newBuilder(); }
+    public static Builder newBuilder() {
+      return DEFAULT_INSTANCE.toBuilder();
+    }
+    public static Builder newBuilder(qorechain.lightnode.v1.QueryOuterClass.QueryRewardPoolResponse prototype) {
+      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+    }
+    @java.lang.Override
+    public Builder toBuilder() {
+      return this == DEFAULT_INSTANCE
+          ? new Builder() : new Builder().mergeFrom(this);
+    }
+
+    @java.lang.Override
+    protected Builder newBuilderForType(
+        com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+      Builder builder = new Builder(parent);
+      return builder;
+    }
+    /**
+     * Protobuf type {@code qorechain.lightnode.v1.QueryRewardPoolResponse}
+     */
+    public static final class Builder extends
+        com.google.protobuf.GeneratedMessage.Builder<Builder> implements
+        // @@protoc_insertion_point(builder_implements:qorechain.lightnode.v1.QueryRewardPoolResponse)
+        qorechain.lightnode.v1.QueryOuterClass.QueryRewardPoolResponseOrBuilder {
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return qorechain.lightnode.v1.QueryOuterClass.internal_static_qorechain_lightnode_v1_QueryRewardPoolResponse_descriptor;
+      }
+
+      @java.lang.Override
+      protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return qorechain.lightnode.v1.QueryOuterClass.internal_static_qorechain_lightnode_v1_QueryRewardPoolResponse_fieldAccessorTable
+            .ensureFieldAccessorsInitialized(
+                qorechain.lightnode.v1.QueryOuterClass.QueryRewardPoolResponse.class, qorechain.lightnode.v1.QueryOuterClass.QueryRewardPoolResponse.Builder.class);
+      }
+
+      // Construct using qorechain.lightnode.v1.QueryOuterClass.QueryRewardPoolResponse.newBuilder()
+      private Builder() {
+
+      }
+
+      private Builder(
+          com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+        super(parent);
+
+      }
+      @java.lang.Override
+      public Builder clear() {
+        super.clear();
+        bitField0_ = 0;
+        balance_ = "";
+        reserved_ = "";
+        outstanding_ = "";
+        payable_ = "";
+        maxRewardPerBlockPerNode_ = "";
+        distributable_ = "";
+        initialized_ = false;
+        return this;
+      }
+
+      @java.lang.Override
+      public com.google.protobuf.Descriptors.Descriptor
+          getDescriptorForType() {
+        return qorechain.lightnode.v1.QueryOuterClass.internal_static_qorechain_lightnode_v1_QueryRewardPoolResponse_descriptor;
+      }
+
+      @java.lang.Override
+      public qorechain.lightnode.v1.QueryOuterClass.QueryRewardPoolResponse getDefaultInstanceForType() {
+        return qorechain.lightnode.v1.QueryOuterClass.QueryRewardPoolResponse.getDefaultInstance();
+      }
+
+      @java.lang.Override
+      public qorechain.lightnode.v1.QueryOuterClass.QueryRewardPoolResponse build() {
+        qorechain.lightnode.v1.QueryOuterClass.QueryRewardPoolResponse result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(result);
+        }
+        return result;
+      }
+
+      @java.lang.Override
+      public qorechain.lightnode.v1.QueryOuterClass.QueryRewardPoolResponse buildPartial() {
+        qorechain.lightnode.v1.QueryOuterClass.QueryRewardPoolResponse result = new qorechain.lightnode.v1.QueryOuterClass.QueryRewardPoolResponse(this);
+        if (bitField0_ != 0) { buildPartial0(result); }
+        onBuilt();
+        return result;
+      }
+
+      private void buildPartial0(qorechain.lightnode.v1.QueryOuterClass.QueryRewardPoolResponse result) {
+        int from_bitField0_ = bitField0_;
+        if (((from_bitField0_ & 0x00000001) != 0)) {
+          result.balance_ = balance_;
+        }
+        if (((from_bitField0_ & 0x00000002) != 0)) {
+          result.reserved_ = reserved_;
+        }
+        if (((from_bitField0_ & 0x00000004) != 0)) {
+          result.outstanding_ = outstanding_;
+        }
+        if (((from_bitField0_ & 0x00000008) != 0)) {
+          result.payable_ = payable_;
+        }
+        if (((from_bitField0_ & 0x00000010) != 0)) {
+          result.maxRewardPerBlockPerNode_ = maxRewardPerBlockPerNode_;
+        }
+        if (((from_bitField0_ & 0x00000020) != 0)) {
+          result.distributable_ = distributable_;
+        }
+        if (((from_bitField0_ & 0x00000040) != 0)) {
+          result.initialized_ = initialized_;
+        }
+      }
+
+      @java.lang.Override
+      public Builder mergeFrom(com.google.protobuf.Message other) {
+        if (other instanceof qorechain.lightnode.v1.QueryOuterClass.QueryRewardPoolResponse) {
+          return mergeFrom((qorechain.lightnode.v1.QueryOuterClass.QueryRewardPoolResponse)other);
+        } else {
+          super.mergeFrom(other);
+          return this;
+        }
+      }
+
+      public Builder mergeFrom(qorechain.lightnode.v1.QueryOuterClass.QueryRewardPoolResponse other) {
+        if (other == qorechain.lightnode.v1.QueryOuterClass.QueryRewardPoolResponse.getDefaultInstance()) return this;
+        if (!other.getBalance().isEmpty()) {
+          balance_ = other.balance_;
+          bitField0_ |= 0x00000001;
+          onChanged();
+        }
+        if (!other.getReserved().isEmpty()) {
+          reserved_ = other.reserved_;
+          bitField0_ |= 0x00000002;
+          onChanged();
+        }
+        if (!other.getOutstanding().isEmpty()) {
+          outstanding_ = other.outstanding_;
+          bitField0_ |= 0x00000004;
+          onChanged();
+        }
+        if (!other.getPayable().isEmpty()) {
+          payable_ = other.payable_;
+          bitField0_ |= 0x00000008;
+          onChanged();
+        }
+        if (!other.getMaxRewardPerBlockPerNode().isEmpty()) {
+          maxRewardPerBlockPerNode_ = other.maxRewardPerBlockPerNode_;
+          bitField0_ |= 0x00000010;
+          onChanged();
+        }
+        if (!other.getDistributable().isEmpty()) {
+          distributable_ = other.distributable_;
+          bitField0_ |= 0x00000020;
+          onChanged();
+        }
+        if (other.getInitialized() != false) {
+          setInitialized(other.getInitialized());
+        }
+        this.mergeUnknownFields(other.getUnknownFields());
+        onChanged();
+        return this;
+      }
+
+      @java.lang.Override
+      public final boolean isInitialized() {
+        return true;
+      }
+
+      @java.lang.Override
+      public Builder mergeFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        if (extensionRegistry == null) {
+          throw new java.lang.NullPointerException();
+        }
+        try {
+          boolean done = false;
+          while (!done) {
+            int tag = input.readTag();
+            switch (tag) {
+              case 0:
+                done = true;
+                break;
+              case 10: {
+                balance_ = input.readStringRequireUtf8();
+                bitField0_ |= 0x00000001;
+                break;
+              } // case 10
+              case 18: {
+                reserved_ = input.readStringRequireUtf8();
+                bitField0_ |= 0x00000002;
+                break;
+              } // case 18
+              case 26: {
+                outstanding_ = input.readStringRequireUtf8();
+                bitField0_ |= 0x00000004;
+                break;
+              } // case 26
+              case 34: {
+                distributable_ = input.readStringRequireUtf8();
+                bitField0_ |= 0x00000020;
+                break;
+              } // case 34
+              case 42: {
+                payable_ = input.readStringRequireUtf8();
+                bitField0_ |= 0x00000008;
+                break;
+              } // case 42
+              case 50: {
+                maxRewardPerBlockPerNode_ = input.readStringRequireUtf8();
+                bitField0_ |= 0x00000010;
+                break;
+              } // case 50
+              case 56: {
+                initialized_ = input.readBool();
+                bitField0_ |= 0x00000040;
+                break;
+              } // case 56
+              default: {
+                if (!super.parseUnknownField(input, extensionRegistry, tag)) {
+                  done = true; // was an endgroup tag
+                }
+                break;
+              } // default:
+            } // switch (tag)
+          } // while (!done)
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          throw e.unwrapIOException();
+        } finally {
+          onChanged();
+        } // finally
+        return this;
+      }
+      private int bitField0_;
+
+      private java.lang.Object balance_ = "";
+      /**
+       * <pre>
+       * balance is the module account's total uqor holding.
+       * </pre>
+       *
+       * <code>string balance = 1 [json_name = "balance"];</code>
+       * @return The balance.
+       */
+      public java.lang.String getBalance() {
+        java.lang.Object ref = balance_;
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          balance_ = s;
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
+      }
+      /**
+       * <pre>
+       * balance is the module account's total uqor holding.
+       * </pre>
+       *
+       * <code>string balance = 1 [json_name = "balance"];</code>
+       * @return The bytes for balance.
+       */
+      public com.google.protobuf.ByteString
+          getBalanceBytes() {
+        java.lang.Object ref = balance_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          balance_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <pre>
+       * balance is the module account's total uqor holding.
+       * </pre>
+       *
+       * <code>string balance = 1 [json_name = "balance"];</code>
+       * @param value The balance to set.
+       * @return This builder for chaining.
+       */
+      public Builder setBalance(
+          java.lang.String value) {
+        if (value == null) { throw new NullPointerException(); }
+        balance_ = value;
+        bitField0_ |= 0x00000001;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * balance is the module account's total uqor holding.
+       * </pre>
+       *
+       * <code>string balance = 1 [json_name = "balance"];</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearBalance() {
+        balance_ = getDefaultInstance().getBalance();
+        bitField0_ = (bitField0_ & ~0x00000001);
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * balance is the module account's total uqor holding.
+       * </pre>
+       *
+       * <code>string balance = 1 [json_name = "balance"];</code>
+       * @param value The bytes for balance to set.
+       * @return This builder for chaining.
+       */
+      public Builder setBalanceBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) { throw new NullPointerException(); }
+        checkByteStringIsUtf8(value);
+        balance_ = value;
+        bitField0_ |= 0x00000001;
+        onChanged();
+        return this;
+      }
+
+      private java.lang.Object reserved_ = "";
+      /**
+       * <pre>
+       * reserved accumulated while no node was eligible; it is excluded from
+       * distribution and moves only by governance.
+       * </pre>
+       *
+       * <code>string reserved = 2 [json_name = "reserved"];</code>
+       * @return The reserved.
+       */
+      public java.lang.String getReserved() {
+        java.lang.Object ref = reserved_;
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          reserved_ = s;
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
+      }
+      /**
+       * <pre>
+       * reserved accumulated while no node was eligible; it is excluded from
+       * distribution and moves only by governance.
+       * </pre>
+       *
+       * <code>string reserved = 2 [json_name = "reserved"];</code>
+       * @return The bytes for reserved.
+       */
+      public com.google.protobuf.ByteString
+          getReservedBytes() {
+        java.lang.Object ref = reserved_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          reserved_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <pre>
+       * reserved accumulated while no node was eligible; it is excluded from
+       * distribution and moves only by governance.
+       * </pre>
+       *
+       * <code>string reserved = 2 [json_name = "reserved"];</code>
+       * @param value The reserved to set.
+       * @return This builder for chaining.
+       */
+      public Builder setReserved(
+          java.lang.String value) {
+        if (value == null) { throw new NullPointerException(); }
+        reserved_ = value;
+        bitField0_ |= 0x00000002;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * reserved accumulated while no node was eligible; it is excluded from
+       * distribution and moves only by governance.
+       * </pre>
+       *
+       * <code>string reserved = 2 [json_name = "reserved"];</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearReserved() {
+        reserved_ = getDefaultInstance().getReserved();
+        bitField0_ = (bitField0_ & ~0x00000002);
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * reserved accumulated while no node was eligible; it is excluded from
+       * distribution and moves only by governance.
+       * </pre>
+       *
+       * <code>string reserved = 2 [json_name = "reserved"];</code>
+       * @param value The bytes for reserved to set.
+       * @return This builder for chaining.
+       */
+      public Builder setReservedBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) { throw new NullPointerException(); }
+        checkByteStringIsUtf8(value);
+        reserved_ = value;
+        bitField0_ |= 0x00000002;
+        onChanged();
+        return this;
+      }
+
+      private java.lang.Object outstanding_ = "";
+      /**
+       * <pre>
+       * outstanding is credited to operators but not yet claimed.
+       * </pre>
+       *
+       * <code>string outstanding = 3 [json_name = "outstanding"];</code>
+       * @return The outstanding.
+       */
+      public java.lang.String getOutstanding() {
+        java.lang.Object ref = outstanding_;
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          outstanding_ = s;
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
+      }
+      /**
+       * <pre>
+       * outstanding is credited to operators but not yet claimed.
+       * </pre>
+       *
+       * <code>string outstanding = 3 [json_name = "outstanding"];</code>
+       * @return The bytes for outstanding.
+       */
+      public com.google.protobuf.ByteString
+          getOutstandingBytes() {
+        java.lang.Object ref = outstanding_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          outstanding_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <pre>
+       * outstanding is credited to operators but not yet claimed.
+       * </pre>
+       *
+       * <code>string outstanding = 3 [json_name = "outstanding"];</code>
+       * @param value The outstanding to set.
+       * @return This builder for chaining.
+       */
+      public Builder setOutstanding(
+          java.lang.String value) {
+        if (value == null) { throw new NullPointerException(); }
+        outstanding_ = value;
+        bitField0_ |= 0x00000004;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * outstanding is credited to operators but not yet claimed.
+       * </pre>
+       *
+       * <code>string outstanding = 3 [json_name = "outstanding"];</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearOutstanding() {
+        outstanding_ = getDefaultInstance().getOutstanding();
+        bitField0_ = (bitField0_ & ~0x00000004);
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * outstanding is credited to operators but not yet claimed.
+       * </pre>
+       *
+       * <code>string outstanding = 3 [json_name = "outstanding"];</code>
+       * @param value The bytes for outstanding to set.
+       * @return This builder for chaining.
+       */
+      public Builder setOutstandingBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) { throw new NullPointerException(); }
+        checkByteStringIsUtf8(value);
+        outstanding_ = value;
+        bitField0_ |= 0x00000004;
+        onChanged();
+        return this;
+      }
+
+      private java.lang.Object payable_ = "";
+      /**
+       * <pre>
+       * payable is reserve that governance released back into distribution; it
+       * drains to operators over time at the capped rate.
+       * </pre>
+       *
+       * <code>string payable = 5 [json_name = "payable"];</code>
+       * @return The payable.
+       */
+      public java.lang.String getPayable() {
+        java.lang.Object ref = payable_;
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          payable_ = s;
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
+      }
+      /**
+       * <pre>
+       * payable is reserve that governance released back into distribution; it
+       * drains to operators over time at the capped rate.
+       * </pre>
+       *
+       * <code>string payable = 5 [json_name = "payable"];</code>
+       * @return The bytes for payable.
+       */
+      public com.google.protobuf.ByteString
+          getPayableBytes() {
+        java.lang.Object ref = payable_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          payable_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <pre>
+       * payable is reserve that governance released back into distribution; it
+       * drains to operators over time at the capped rate.
+       * </pre>
+       *
+       * <code>string payable = 5 [json_name = "payable"];</code>
+       * @param value The payable to set.
+       * @return This builder for chaining.
+       */
+      public Builder setPayable(
+          java.lang.String value) {
+        if (value == null) { throw new NullPointerException(); }
+        payable_ = value;
+        bitField0_ |= 0x00000008;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * payable is reserve that governance released back into distribution; it
+       * drains to operators over time at the capped rate.
+       * </pre>
+       *
+       * <code>string payable = 5 [json_name = "payable"];</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearPayable() {
+        payable_ = getDefaultInstance().getPayable();
+        bitField0_ = (bitField0_ & ~0x00000008);
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * payable is reserve that governance released back into distribution; it
+       * drains to operators over time at the capped rate.
+       * </pre>
+       *
+       * <code>string payable = 5 [json_name = "payable"];</code>
+       * @param value The bytes for payable to set.
+       * @return This builder for chaining.
+       */
+      public Builder setPayableBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) { throw new NullPointerException(); }
+        checkByteStringIsUtf8(value);
+        payable_ = value;
+        bitField0_ |= 0x00000008;
+        onChanged();
+        return this;
+      }
+
+      private java.lang.Object maxRewardPerBlockPerNode_ = "";
+      /**
+       * <pre>
+       * max_reward_per_block_per_node bounds what one node may be credited per block.
+       * </pre>
+       *
+       * <code>string max_reward_per_block_per_node = 6 [json_name = "maxRewardPerBlockPerNode"];</code>
+       * @return The maxRewardPerBlockPerNode.
+       */
+      public java.lang.String getMaxRewardPerBlockPerNode() {
+        java.lang.Object ref = maxRewardPerBlockPerNode_;
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          maxRewardPerBlockPerNode_ = s;
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
+      }
+      /**
+       * <pre>
+       * max_reward_per_block_per_node bounds what one node may be credited per block.
+       * </pre>
+       *
+       * <code>string max_reward_per_block_per_node = 6 [json_name = "maxRewardPerBlockPerNode"];</code>
+       * @return The bytes for maxRewardPerBlockPerNode.
+       */
+      public com.google.protobuf.ByteString
+          getMaxRewardPerBlockPerNodeBytes() {
+        java.lang.Object ref = maxRewardPerBlockPerNode_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          maxRewardPerBlockPerNode_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <pre>
+       * max_reward_per_block_per_node bounds what one node may be credited per block.
+       * </pre>
+       *
+       * <code>string max_reward_per_block_per_node = 6 [json_name = "maxRewardPerBlockPerNode"];</code>
+       * @param value The maxRewardPerBlockPerNode to set.
+       * @return This builder for chaining.
+       */
+      public Builder setMaxRewardPerBlockPerNode(
+          java.lang.String value) {
+        if (value == null) { throw new NullPointerException(); }
+        maxRewardPerBlockPerNode_ = value;
+        bitField0_ |= 0x00000010;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * max_reward_per_block_per_node bounds what one node may be credited per block.
+       * </pre>
+       *
+       * <code>string max_reward_per_block_per_node = 6 [json_name = "maxRewardPerBlockPerNode"];</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearMaxRewardPerBlockPerNode() {
+        maxRewardPerBlockPerNode_ = getDefaultInstance().getMaxRewardPerBlockPerNode();
+        bitField0_ = (bitField0_ & ~0x00000010);
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * max_reward_per_block_per_node bounds what one node may be credited per block.
+       * </pre>
+       *
+       * <code>string max_reward_per_block_per_node = 6 [json_name = "maxRewardPerBlockPerNode"];</code>
+       * @param value The bytes for maxRewardPerBlockPerNode to set.
+       * @return This builder for chaining.
+       */
+      public Builder setMaxRewardPerBlockPerNodeBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) { throw new NullPointerException(); }
+        checkByteStringIsUtf8(value);
+        maxRewardPerBlockPerNode_ = value;
+        bitField0_ |= 0x00000010;
+        onChanged();
+        return this;
+      }
+
+      private java.lang.Object distributable_ = "";
+      /**
+       * <pre>
+       * distributable is what the next distribution run may hand out:
+       * balance - reserved - outstanding.
+       * </pre>
+       *
+       * <code>string distributable = 4 [json_name = "distributable"];</code>
+       * @return The distributable.
+       */
+      public java.lang.String getDistributable() {
+        java.lang.Object ref = distributable_;
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          distributable_ = s;
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
+      }
+      /**
+       * <pre>
+       * distributable is what the next distribution run may hand out:
+       * balance - reserved - outstanding.
+       * </pre>
+       *
+       * <code>string distributable = 4 [json_name = "distributable"];</code>
+       * @return The bytes for distributable.
+       */
+      public com.google.protobuf.ByteString
+          getDistributableBytes() {
+        java.lang.Object ref = distributable_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          distributable_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <pre>
+       * distributable is what the next distribution run may hand out:
+       * balance - reserved - outstanding.
+       * </pre>
+       *
+       * <code>string distributable = 4 [json_name = "distributable"];</code>
+       * @param value The distributable to set.
+       * @return This builder for chaining.
+       */
+      public Builder setDistributable(
+          java.lang.String value) {
+        if (value == null) { throw new NullPointerException(); }
+        distributable_ = value;
+        bitField0_ |= 0x00000020;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * distributable is what the next distribution run may hand out:
+       * balance - reserved - outstanding.
+       * </pre>
+       *
+       * <code>string distributable = 4 [json_name = "distributable"];</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearDistributable() {
+        distributable_ = getDefaultInstance().getDistributable();
+        bitField0_ = (bitField0_ & ~0x00000020);
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * distributable is what the next distribution run may hand out:
+       * balance - reserved - outstanding.
+       * </pre>
+       *
+       * <code>string distributable = 4 [json_name = "distributable"];</code>
+       * @param value The bytes for distributable to set.
+       * @return This builder for chaining.
+       */
+      public Builder setDistributableBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) { throw new NullPointerException(); }
+        checkByteStringIsUtf8(value);
+        distributable_ = value;
+        bitField0_ |= 0x00000020;
+        onChanged();
+        return this;
+      }
+
+      private boolean initialized_ ;
+      /**
+       * <pre>
+       * initialized reports whether the split has been established by the
+       * coordinated upgrade handler. Until it is, the figures above describe a raw
+       * balance that the module does not yet account for, and clients that gate on
+       * the accounting being live (the licence batch tool) must treat the pool as
+       * not ready.
+       * </pre>
+       *
+       * <code>bool initialized = 7 [json_name = "initialized"];</code>
+       * @return The initialized.
+       */
+      @java.lang.Override
+      public boolean getInitialized() {
+        return initialized_;
+      }
+      /**
+       * <pre>
+       * initialized reports whether the split has been established by the
+       * coordinated upgrade handler. Until it is, the figures above describe a raw
+       * balance that the module does not yet account for, and clients that gate on
+       * the accounting being live (the licence batch tool) must treat the pool as
+       * not ready.
+       * </pre>
+       *
+       * <code>bool initialized = 7 [json_name = "initialized"];</code>
+       * @param value The initialized to set.
+       * @return This builder for chaining.
+       */
+      public Builder setInitialized(boolean value) {
+
+        initialized_ = value;
+        bitField0_ |= 0x00000040;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * initialized reports whether the split has been established by the
+       * coordinated upgrade handler. Until it is, the figures above describe a raw
+       * balance that the module does not yet account for, and clients that gate on
+       * the accounting being live (the licence batch tool) must treat the pool as
+       * not ready.
+       * </pre>
+       *
+       * <code>bool initialized = 7 [json_name = "initialized"];</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearInitialized() {
+        bitField0_ = (bitField0_ & ~0x00000040);
+        initialized_ = false;
+        onChanged();
+        return this;
+      }
+
+      // @@protoc_insertion_point(builder_scope:qorechain.lightnode.v1.QueryRewardPoolResponse)
+    }
+
+    // @@protoc_insertion_point(class_scope:qorechain.lightnode.v1.QueryRewardPoolResponse)
+    private static final qorechain.lightnode.v1.QueryOuterClass.QueryRewardPoolResponse DEFAULT_INSTANCE;
+    static {
+      DEFAULT_INSTANCE = new qorechain.lightnode.v1.QueryOuterClass.QueryRewardPoolResponse();
+    }
+
+    public static qorechain.lightnode.v1.QueryOuterClass.QueryRewardPoolResponse getDefaultInstance() {
+      return DEFAULT_INSTANCE;
+    }
+
+    private static final com.google.protobuf.Parser<QueryRewardPoolResponse>
+        PARSER = new com.google.protobuf.AbstractParser<QueryRewardPoolResponse>() {
+      @java.lang.Override
+      public QueryRewardPoolResponse parsePartialFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        Builder builder = newBuilder();
+        try {
+          builder.mergeFrom(input, extensionRegistry);
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          throw e.setUnfinishedMessage(builder.buildPartial());
+        } catch (com.google.protobuf.UninitializedMessageException e) {
+          throw e.asInvalidProtocolBufferException().setUnfinishedMessage(builder.buildPartial());
+        } catch (java.io.IOException e) {
+          throw new com.google.protobuf.InvalidProtocolBufferException(e)
+              .setUnfinishedMessage(builder.buildPartial());
+        }
+        return builder.buildPartial();
+      }
+    };
+
+    public static com.google.protobuf.Parser<QueryRewardPoolResponse> parser() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Parser<QueryRewardPoolResponse> getParserForType() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public qorechain.lightnode.v1.QueryOuterClass.QueryRewardPoolResponse getDefaultInstanceForType() {
+      return DEFAULT_INSTANCE;
+    }
+
+  }
+
   private static final com.google.protobuf.Descriptors.Descriptor
     internal_static_qorechain_lightnode_v1_LightNodeView_descriptor;
   private static final 
@@ -7886,6 +9860,16 @@ public final class QueryOuterClass extends com.google.protobuf.GeneratedFile {
   private static final 
     com.google.protobuf.GeneratedMessage.FieldAccessorTable
       internal_static_qorechain_lightnode_v1_QueryStatsResponse_fieldAccessorTable;
+  private static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_qorechain_lightnode_v1_QueryRewardPoolRequest_descriptor;
+  private static final 
+    com.google.protobuf.GeneratedMessage.FieldAccessorTable
+      internal_static_qorechain_lightnode_v1_QueryRewardPoolRequest_fieldAccessorTable;
+  private static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_qorechain_lightnode_v1_QueryRewardPoolResponse_descriptor;
+  private static final 
+    com.google.protobuf.GeneratedMessage.FieldAccessorTable
+      internal_static_qorechain_lightnode_v1_QueryRewardPoolResponse_fieldAccessorTable;
 
   public static com.google.protobuf.Descriptors.FileDescriptor
       getDescriptor() {
@@ -7933,27 +9917,39 @@ public final class QueryOuterClass extends com.google.protobuf.GeneratedFile {
       "\017totalRegistered\022!\n\014total_active\030\002 \001(\004R\013" +
       "totalActive\022#\n\rtotal_rewards\030\003 \001(\tR\014tota" +
       "lRewards\022,\n\022last_reward_height\030\004 \001(\003R\020la" +
-      "stRewardHeight2\351\005\n\005Query\022\232\001\n\tLightNode\022-" +
-      ".qorechain.lightnode.v1.QueryLightNodeRe" +
-      "quest\032..qorechain.lightnode.v1.QueryLigh" +
-      "tNodeResponse\".\202\323\344\223\002(\022&/qorechain/lightn" +
-      "ode/v1/node/{address}\022\224\001\n\nLightNodes\022..q" +
-      "orechain.lightnode.v1.QueryLightNodesReq" +
-      "uest\032/.qorechain.lightnode.v1.QueryLight" +
-      "NodesResponse\"%\202\323\344\223\002\037\022\035/qorechain/lightn" +
-      "ode/v1/nodes\022\211\001\n\006Params\022*.qorechain.ligh" +
-      "tnode.v1.QueryParamsRequest\032+.qorechain." +
-      "lightnode.v1.QueryParamsResponse\"&\202\323\344\223\002 " +
-      "\022\036/qorechain/lightnode/v1/params\022\227\001\n\007Rew" +
-      "ards\022+.qorechain.lightnode.v1.QueryRewar" +
-      "dsRequest\032,.qorechain.lightnode.v1.Query" +
-      "RewardsResponse\"1\202\323\344\223\002+\022)/qorechain/ligh" +
-      "tnode/v1/rewards/{address}\022\205\001\n\005Stats\022).q" +
-      "orechain.lightnode.v1.QueryStatsRequest\032" +
-      "*.qorechain.lightnode.v1.QueryStatsRespo" +
-      "nse\"%\202\323\344\223\002\037\022\035/qorechain/lightnode/v1/sta" +
-      "tsB7Z5github.com/qorechain/qorechain-cor" +
-      "e/x/lightnode/typesb\006proto3"
+      "stRewardHeight\"\030\n\026QueryRewardPoolRequest" +
+      "\"\224\002\n\027QueryRewardPoolResponse\022\030\n\007balance\030" +
+      "\001 \001(\tR\007balance\022\032\n\010reserved\030\002 \001(\tR\010reserv" +
+      "ed\022 \n\013outstanding\030\003 \001(\tR\013outstanding\022\030\n\007" +
+      "payable\030\005 \001(\tR\007payable\022?\n\035max_reward_per" +
+      "_block_per_node\030\006 \001(\tR\030maxRewardPerBlock" +
+      "PerNode\022$\n\rdistributable\030\004 \001(\tR\rdistribu" +
+      "table\022 \n\013initialized\030\007 \001(\010R\013initialized2" +
+      "\206\007\n\005Query\022\232\001\n\tLightNode\022-.qorechain.ligh" +
+      "tnode.v1.QueryLightNodeRequest\032..qorecha" +
+      "in.lightnode.v1.QueryLightNodeResponse\"." +
+      "\202\323\344\223\002(\022&/qorechain/lightnode/v1/node/{ad" +
+      "dress}\022\224\001\n\nLightNodes\022..qorechain.lightn" +
+      "ode.v1.QueryLightNodesRequest\032/.qorechai" +
+      "n.lightnode.v1.QueryLightNodesResponse\"%" +
+      "\202\323\344\223\002\037\022\035/qorechain/lightnode/v1/nodes\022\211\001" +
+      "\n\006Params\022*.qorechain.lightnode.v1.QueryP" +
+      "aramsRequest\032+.qorechain.lightnode.v1.Qu" +
+      "eryParamsResponse\"&\202\323\344\223\002 \022\036/qorechain/li" +
+      "ghtnode/v1/params\022\227\001\n\007Rewards\022+.qorechai" +
+      "n.lightnode.v1.QueryRewardsRequest\032,.qor" +
+      "echain.lightnode.v1.QueryRewardsResponse" +
+      "\"1\202\323\344\223\002+\022)/qorechain/lightnode/v1/reward" +
+      "s/{address}\022\205\001\n\005Stats\022).qorechain.lightn" +
+      "ode.v1.QueryStatsRequest\032*.qorechain.lig" +
+      "htnode.v1.QueryStatsResponse\"%\202\323\344\223\002\037\022\035/q" +
+      "orechain/lightnode/v1/stats\022\232\001\n\nRewardPo" +
+      "ol\022..qorechain.lightnode.v1.QueryRewardP" +
+      "oolRequest\032/.qorechain.lightnode.v1.Quer" +
+      "yRewardPoolResponse\"+\202\323\344\223\002%\022#/qorechain/" +
+      "lightnode/v1/reward_poolB7Z5github.com/q" +
+      "orechain/qorechain-core/x/lightnode/type" +
+      "sb\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
@@ -8026,6 +10022,18 @@ public final class QueryOuterClass extends com.google.protobuf.GeneratedFile {
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_qorechain_lightnode_v1_QueryStatsResponse_descriptor,
         new java.lang.String[] { "TotalRegistered", "TotalActive", "TotalRewards", "LastRewardHeight", });
+    internal_static_qorechain_lightnode_v1_QueryRewardPoolRequest_descriptor =
+      getDescriptor().getMessageType(11);
+    internal_static_qorechain_lightnode_v1_QueryRewardPoolRequest_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessage.FieldAccessorTable(
+        internal_static_qorechain_lightnode_v1_QueryRewardPoolRequest_descriptor,
+        new java.lang.String[] { });
+    internal_static_qorechain_lightnode_v1_QueryRewardPoolResponse_descriptor =
+      getDescriptor().getMessageType(12);
+    internal_static_qorechain_lightnode_v1_QueryRewardPoolResponse_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessage.FieldAccessorTable(
+        internal_static_qorechain_lightnode_v1_QueryRewardPoolResponse_descriptor,
+        new java.lang.String[] { "Balance", "Reserved", "Outstanding", "Payable", "MaxRewardPerBlockPerNode", "Distributable", "Initialized", });
     descriptor.resolveAllFeaturesImmutable();
     com.google.api.AnnotationsProto.getDescriptor();
     com.google.protobuf.ExtensionRegistry registry =

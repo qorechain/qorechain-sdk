@@ -7105,6 +7105,2257 @@ public final class Tx extends com.google.protobuf.GeneratedFile {
 
   }
 
+  public interface MsgOpenEVMWindowOrBuilder extends
+      // @@protoc_insertion_point(interface_extends:qorechain.pqc.v1.MsgOpenEVMWindow)
+      com.google.protobuf.MessageOrBuilder {
+
+    /**
+     * <code>string sender = 1 [json_name = "sender", (.cosmos_proto.scalar) = "cosmos.AddressString"];</code>
+     * @return The sender.
+     */
+    java.lang.String getSender();
+    /**
+     * <code>string sender = 1 [json_name = "sender", (.cosmos_proto.scalar) = "cosmos.AddressString"];</code>
+     * @return The bytes for sender.
+     */
+    com.google.protobuf.ByteString
+        getSenderBytes();
+
+    /**
+     * <pre>
+     * blocks is how long the window stays open, counted from the block that
+     * opens it. Bounded by the module's maximum.
+     * </pre>
+     *
+     * <code>uint64 blocks = 2 [json_name = "blocks"];</code>
+     * @return The blocks.
+     */
+    long getBlocks();
+
+    /**
+     * <pre>
+     * max_txs is how many EVM transactions the window admits. Zero is rejected:
+     * a window that admits nothing is a mistake, not a policy.
+     * </pre>
+     *
+     * <code>uint64 max_txs = 3 [json_name = "maxTxs"];</code>
+     * @return The maxTxs.
+     */
+    long getMaxTxs();
+
+    /**
+     * <pre>
+     * max_value is the total the window admits, in uqor, counting transferred
+     * value AND the maximum fee each transaction could pay. Both drain the
+     * account, so both are bounded.
+     * </pre>
+     *
+     * <code>string max_value = 4 [json_name = "maxValue", (.gogoproto.nullable) = false, (.gogoproto.customtype) = "cosmossdk.io/math.Int", (.cosmos_proto.scalar) = "cosmos.Int"];</code>
+     * @return The maxValue.
+     */
+    java.lang.String getMaxValue();
+    /**
+     * <pre>
+     * max_value is the total the window admits, in uqor, counting transferred
+     * value AND the maximum fee each transaction could pay. Both drain the
+     * account, so both are bounded.
+     * </pre>
+     *
+     * <code>string max_value = 4 [json_name = "maxValue", (.gogoproto.nullable) = false, (.gogoproto.customtype) = "cosmossdk.io/math.Int", (.cosmos_proto.scalar) = "cosmos.Int"];</code>
+     * @return The bytes for maxValue.
+     */
+    com.google.protobuf.ByteString
+        getMaxValueBytes();
+  }
+  /**
+   * <pre>
+   * MsgOpenEVMWindow authorises EVM-lane transactions from the sender for a
+   * bounded number of transactions, a bounded total outflow, and a bounded number
+   * of blocks. Opening replaces any existing window rather than adding to it.
+   * </pre>
+   *
+   * Protobuf type {@code qorechain.pqc.v1.MsgOpenEVMWindow}
+   */
+  public static final class MsgOpenEVMWindow extends
+      com.google.protobuf.GeneratedMessage implements
+      // @@protoc_insertion_point(message_implements:qorechain.pqc.v1.MsgOpenEVMWindow)
+      MsgOpenEVMWindowOrBuilder {
+  private static final long serialVersionUID = 0L;
+    static {
+      com.google.protobuf.RuntimeVersion.validateProtobufGencodeVersion(
+        com.google.protobuf.RuntimeVersion.RuntimeDomain.PUBLIC,
+        /* major= */ 4,
+        /* minor= */ 35,
+        /* patch= */ 1,
+        /* suffix= */ "",
+        "MsgOpenEVMWindow");
+    }
+    // Use MsgOpenEVMWindow.newBuilder() to construct.
+    private MsgOpenEVMWindow(com.google.protobuf.GeneratedMessage.Builder<?> builder) {
+      super(builder);
+    }
+    private MsgOpenEVMWindow() {
+      sender_ = "";
+      maxValue_ = "";
+    }
+
+    public static final com.google.protobuf.Descriptors.Descriptor
+        getDescriptor() {
+      return qorechain.pqc.v1.Tx.internal_static_qorechain_pqc_v1_MsgOpenEVMWindow_descriptor;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Descriptors.Descriptor getDescriptorForType() {
+      return qorechain.pqc.v1.Tx.internal_static_qorechain_pqc_v1_MsgOpenEVMWindow_descriptor;
+    }
+
+    @java.lang.Override
+    protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+        internalGetFieldAccessorTable() {
+      return qorechain.pqc.v1.Tx.internal_static_qorechain_pqc_v1_MsgOpenEVMWindow_fieldAccessorTable
+          .ensureFieldAccessorsInitialized(
+              qorechain.pqc.v1.Tx.MsgOpenEVMWindow.class, qorechain.pqc.v1.Tx.MsgOpenEVMWindow.Builder.class);
+    }
+
+    public static final int SENDER_FIELD_NUMBER = 1;
+    @SuppressWarnings("serial")
+    private volatile java.lang.Object sender_ = "";
+    /**
+     * <code>string sender = 1 [json_name = "sender", (.cosmos_proto.scalar) = "cosmos.AddressString"];</code>
+     * @return The sender.
+     */
+    @java.lang.Override
+    public java.lang.String getSender() {
+      java.lang.Object ref = sender_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        sender_ = s;
+        return s;
+      }
+    }
+    /**
+     * <code>string sender = 1 [json_name = "sender", (.cosmos_proto.scalar) = "cosmos.AddressString"];</code>
+     * @return The bytes for sender.
+     */
+    @java.lang.Override
+    public com.google.protobuf.ByteString
+        getSenderBytes() {
+      java.lang.Object ref = sender_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        sender_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
+    public static final int BLOCKS_FIELD_NUMBER = 2;
+    private long blocks_ = 0L;
+    /**
+     * <pre>
+     * blocks is how long the window stays open, counted from the block that
+     * opens it. Bounded by the module's maximum.
+     * </pre>
+     *
+     * <code>uint64 blocks = 2 [json_name = "blocks"];</code>
+     * @return The blocks.
+     */
+    @java.lang.Override
+    public long getBlocks() {
+      return blocks_;
+    }
+
+    public static final int MAX_TXS_FIELD_NUMBER = 3;
+    private long maxTxs_ = 0L;
+    /**
+     * <pre>
+     * max_txs is how many EVM transactions the window admits. Zero is rejected:
+     * a window that admits nothing is a mistake, not a policy.
+     * </pre>
+     *
+     * <code>uint64 max_txs = 3 [json_name = "maxTxs"];</code>
+     * @return The maxTxs.
+     */
+    @java.lang.Override
+    public long getMaxTxs() {
+      return maxTxs_;
+    }
+
+    public static final int MAX_VALUE_FIELD_NUMBER = 4;
+    @SuppressWarnings("serial")
+    private volatile java.lang.Object maxValue_ = "";
+    /**
+     * <pre>
+     * max_value is the total the window admits, in uqor, counting transferred
+     * value AND the maximum fee each transaction could pay. Both drain the
+     * account, so both are bounded.
+     * </pre>
+     *
+     * <code>string max_value = 4 [json_name = "maxValue", (.gogoproto.nullable) = false, (.gogoproto.customtype) = "cosmossdk.io/math.Int", (.cosmos_proto.scalar) = "cosmos.Int"];</code>
+     * @return The maxValue.
+     */
+    @java.lang.Override
+    public java.lang.String getMaxValue() {
+      java.lang.Object ref = maxValue_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        maxValue_ = s;
+        return s;
+      }
+    }
+    /**
+     * <pre>
+     * max_value is the total the window admits, in uqor, counting transferred
+     * value AND the maximum fee each transaction could pay. Both drain the
+     * account, so both are bounded.
+     * </pre>
+     *
+     * <code>string max_value = 4 [json_name = "maxValue", (.gogoproto.nullable) = false, (.gogoproto.customtype) = "cosmossdk.io/math.Int", (.cosmos_proto.scalar) = "cosmos.Int"];</code>
+     * @return The bytes for maxValue.
+     */
+    @java.lang.Override
+    public com.google.protobuf.ByteString
+        getMaxValueBytes() {
+      java.lang.Object ref = maxValue_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        maxValue_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
+    private byte memoizedIsInitialized = -1;
+    @java.lang.Override
+    public final boolean isInitialized() {
+      byte isInitialized = memoizedIsInitialized;
+      if (isInitialized == 1) return true;
+      if (isInitialized == 0) return false;
+
+      memoizedIsInitialized = 1;
+      return true;
+    }
+
+    @java.lang.Override
+    public void writeTo(com.google.protobuf.CodedOutputStream output)
+                        throws java.io.IOException {
+      if (!com.google.protobuf.GeneratedMessage.isStringEmpty(sender_)) {
+        com.google.protobuf.GeneratedMessage.writeString(output, 1, sender_);
+      }
+      if (blocks_ != 0L) {
+        output.writeUInt64(2, blocks_);
+      }
+      if (maxTxs_ != 0L) {
+        output.writeUInt64(3, maxTxs_);
+      }
+      if (!com.google.protobuf.GeneratedMessage.isStringEmpty(maxValue_)) {
+        com.google.protobuf.GeneratedMessage.writeString(output, 4, maxValue_);
+      }
+      getUnknownFields().writeTo(output);
+    }
+    private int computeSerializedSize_0() {
+      int size = 0;
+      if (!com.google.protobuf.GeneratedMessage.isStringEmpty(sender_)) {
+        size += com.google.protobuf.GeneratedMessage.computeStringSize(1, sender_);
+      }
+      if (blocks_ != 0L) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeUInt64Size(2, blocks_);
+      }
+      if (maxTxs_ != 0L) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeUInt64Size(3, maxTxs_);
+      }
+      if (!com.google.protobuf.GeneratedMessage.isStringEmpty(maxValue_)) {
+        size += com.google.protobuf.GeneratedMessage.computeStringSize(4, maxValue_);
+      }
+      return size;
+    }
+    @java.lang.Override
+    public int getSerializedSize() {
+      int size = memoizedSize;
+      if (size != -1) return size;
+
+      size = 0;
+      size += computeSerializedSize_0();
+      size += getUnknownFields().getSerializedSize();
+      memoizedSize = size;
+      return size;
+    }
+
+    @java.lang.Override
+    public boolean equals(final java.lang.Object obj) {
+      if (obj == this) {
+       return true;
+      }
+      if (!(obj instanceof qorechain.pqc.v1.Tx.MsgOpenEVMWindow)) {
+        return super.equals(obj);
+      }
+      qorechain.pqc.v1.Tx.MsgOpenEVMWindow other = (qorechain.pqc.v1.Tx.MsgOpenEVMWindow) obj;
+
+      if (!getSender()
+          .equals(other.getSender())) return false;
+      if (getBlocks()
+          != other.getBlocks()) return false;
+      if (getMaxTxs()
+          != other.getMaxTxs()) return false;
+      if (!getMaxValue()
+          .equals(other.getMaxValue())) return false;
+      if (!getUnknownFields().equals(other.getUnknownFields())) return false;
+      return true;
+    }
+
+    @java.lang.Override
+    public int hashCode() {
+      if (memoizedHashCode != 0) {
+        return memoizedHashCode;
+      }
+      int hash = 41;
+      hash = (19 * hash) + getDescriptor().hashCode();
+      hash = (37 * hash) + SENDER_FIELD_NUMBER;
+      hash = (53 * hash) + getSender().hashCode();
+      hash = (37 * hash) + BLOCKS_FIELD_NUMBER;
+      hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
+          getBlocks());
+      hash = (37 * hash) + MAX_TXS_FIELD_NUMBER;
+      hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
+          getMaxTxs());
+      hash = (37 * hash) + MAX_VALUE_FIELD_NUMBER;
+      hash = (53 * hash) + getMaxValue().hashCode();
+      hash = (29 * hash) + getUnknownFields().hashCode();
+      memoizedHashCode = hash;
+      return hash;
+    }
+
+    public static qorechain.pqc.v1.Tx.MsgOpenEVMWindow parseFrom(
+        java.nio.ByteBuffer data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static qorechain.pqc.v1.Tx.MsgOpenEVMWindow parseFrom(
+        java.nio.ByteBuffer data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static qorechain.pqc.v1.Tx.MsgOpenEVMWindow parseFrom(
+        com.google.protobuf.ByteString data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static qorechain.pqc.v1.Tx.MsgOpenEVMWindow parseFrom(
+        com.google.protobuf.ByteString data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static qorechain.pqc.v1.Tx.MsgOpenEVMWindow parseFrom(byte[] data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static qorechain.pqc.v1.Tx.MsgOpenEVMWindow parseFrom(
+        byte[] data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static qorechain.pqc.v1.Tx.MsgOpenEVMWindow parseFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input);
+    }
+    public static qorechain.pqc.v1.Tx.MsgOpenEVMWindow parseFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    public static qorechain.pqc.v1.Tx.MsgOpenEVMWindow parseDelimitedFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseDelimitedWithIOException(PARSER, input);
+    }
+
+    public static qorechain.pqc.v1.Tx.MsgOpenEVMWindow parseDelimitedFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static qorechain.pqc.v1.Tx.MsgOpenEVMWindow parseFrom(
+        com.google.protobuf.CodedInputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input);
+    }
+    public static qorechain.pqc.v1.Tx.MsgOpenEVMWindow parseFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    @java.lang.Override
+    public Builder newBuilderForType() { return newBuilder(); }
+    public static Builder newBuilder() {
+      return DEFAULT_INSTANCE.toBuilder();
+    }
+    public static Builder newBuilder(qorechain.pqc.v1.Tx.MsgOpenEVMWindow prototype) {
+      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+    }
+    @java.lang.Override
+    public Builder toBuilder() {
+      return this == DEFAULT_INSTANCE
+          ? new Builder() : new Builder().mergeFrom(this);
+    }
+
+    @java.lang.Override
+    protected Builder newBuilderForType(
+        com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+      Builder builder = new Builder(parent);
+      return builder;
+    }
+    /**
+     * <pre>
+     * MsgOpenEVMWindow authorises EVM-lane transactions from the sender for a
+     * bounded number of transactions, a bounded total outflow, and a bounded number
+     * of blocks. Opening replaces any existing window rather than adding to it.
+     * </pre>
+     *
+     * Protobuf type {@code qorechain.pqc.v1.MsgOpenEVMWindow}
+     */
+    public static final class Builder extends
+        com.google.protobuf.GeneratedMessage.Builder<Builder> implements
+        // @@protoc_insertion_point(builder_implements:qorechain.pqc.v1.MsgOpenEVMWindow)
+        qorechain.pqc.v1.Tx.MsgOpenEVMWindowOrBuilder {
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return qorechain.pqc.v1.Tx.internal_static_qorechain_pqc_v1_MsgOpenEVMWindow_descriptor;
+      }
+
+      @java.lang.Override
+      protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return qorechain.pqc.v1.Tx.internal_static_qorechain_pqc_v1_MsgOpenEVMWindow_fieldAccessorTable
+            .ensureFieldAccessorsInitialized(
+                qorechain.pqc.v1.Tx.MsgOpenEVMWindow.class, qorechain.pqc.v1.Tx.MsgOpenEVMWindow.Builder.class);
+      }
+
+      // Construct using qorechain.pqc.v1.Tx.MsgOpenEVMWindow.newBuilder()
+      private Builder() {
+
+      }
+
+      private Builder(
+          com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+        super(parent);
+
+      }
+      @java.lang.Override
+      public Builder clear() {
+        super.clear();
+        bitField0_ = 0;
+        sender_ = "";
+        blocks_ = 0L;
+        maxTxs_ = 0L;
+        maxValue_ = "";
+        return this;
+      }
+
+      @java.lang.Override
+      public com.google.protobuf.Descriptors.Descriptor
+          getDescriptorForType() {
+        return qorechain.pqc.v1.Tx.internal_static_qorechain_pqc_v1_MsgOpenEVMWindow_descriptor;
+      }
+
+      @java.lang.Override
+      public qorechain.pqc.v1.Tx.MsgOpenEVMWindow getDefaultInstanceForType() {
+        return qorechain.pqc.v1.Tx.MsgOpenEVMWindow.getDefaultInstance();
+      }
+
+      @java.lang.Override
+      public qorechain.pqc.v1.Tx.MsgOpenEVMWindow build() {
+        qorechain.pqc.v1.Tx.MsgOpenEVMWindow result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(result);
+        }
+        return result;
+      }
+
+      @java.lang.Override
+      public qorechain.pqc.v1.Tx.MsgOpenEVMWindow buildPartial() {
+        qorechain.pqc.v1.Tx.MsgOpenEVMWindow result = new qorechain.pqc.v1.Tx.MsgOpenEVMWindow(this);
+        if (bitField0_ != 0) { buildPartial0(result); }
+        onBuilt();
+        return result;
+      }
+
+      private void buildPartial0(qorechain.pqc.v1.Tx.MsgOpenEVMWindow result) {
+        int from_bitField0_ = bitField0_;
+        if (((from_bitField0_ & 0x00000001) != 0)) {
+          result.sender_ = sender_;
+        }
+        if (((from_bitField0_ & 0x00000002) != 0)) {
+          result.blocks_ = blocks_;
+        }
+        if (((from_bitField0_ & 0x00000004) != 0)) {
+          result.maxTxs_ = maxTxs_;
+        }
+        if (((from_bitField0_ & 0x00000008) != 0)) {
+          result.maxValue_ = maxValue_;
+        }
+      }
+
+      @java.lang.Override
+      public Builder mergeFrom(com.google.protobuf.Message other) {
+        if (other instanceof qorechain.pqc.v1.Tx.MsgOpenEVMWindow) {
+          return mergeFrom((qorechain.pqc.v1.Tx.MsgOpenEVMWindow)other);
+        } else {
+          super.mergeFrom(other);
+          return this;
+        }
+      }
+
+      public Builder mergeFrom(qorechain.pqc.v1.Tx.MsgOpenEVMWindow other) {
+        if (other == qorechain.pqc.v1.Tx.MsgOpenEVMWindow.getDefaultInstance()) return this;
+        if (!other.getSender().isEmpty()) {
+          sender_ = other.sender_;
+          bitField0_ |= 0x00000001;
+          onChanged();
+        }
+        if (other.getBlocks() != 0L) {
+          setBlocks(other.getBlocks());
+        }
+        if (other.getMaxTxs() != 0L) {
+          setMaxTxs(other.getMaxTxs());
+        }
+        if (!other.getMaxValue().isEmpty()) {
+          maxValue_ = other.maxValue_;
+          bitField0_ |= 0x00000008;
+          onChanged();
+        }
+        this.mergeUnknownFields(other.getUnknownFields());
+        onChanged();
+        return this;
+      }
+
+      @java.lang.Override
+      public final boolean isInitialized() {
+        return true;
+      }
+
+      @java.lang.Override
+      public Builder mergeFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        if (extensionRegistry == null) {
+          throw new java.lang.NullPointerException();
+        }
+        try {
+          boolean done = false;
+          while (!done) {
+            int tag = input.readTag();
+            switch (tag) {
+              case 0:
+                done = true;
+                break;
+              case 10: {
+                sender_ = input.readStringRequireUtf8();
+                bitField0_ |= 0x00000001;
+                break;
+              } // case 10
+              case 16: {
+                blocks_ = input.readUInt64();
+                bitField0_ |= 0x00000002;
+                break;
+              } // case 16
+              case 24: {
+                maxTxs_ = input.readUInt64();
+                bitField0_ |= 0x00000004;
+                break;
+              } // case 24
+              case 34: {
+                maxValue_ = input.readStringRequireUtf8();
+                bitField0_ |= 0x00000008;
+                break;
+              } // case 34
+              default: {
+                if (!super.parseUnknownField(input, extensionRegistry, tag)) {
+                  done = true; // was an endgroup tag
+                }
+                break;
+              } // default:
+            } // switch (tag)
+          } // while (!done)
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          throw e.unwrapIOException();
+        } finally {
+          onChanged();
+        } // finally
+        return this;
+      }
+      private int bitField0_;
+
+      private java.lang.Object sender_ = "";
+      /**
+       * <code>string sender = 1 [json_name = "sender", (.cosmos_proto.scalar) = "cosmos.AddressString"];</code>
+       * @return The sender.
+       */
+      public java.lang.String getSender() {
+        java.lang.Object ref = sender_;
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          sender_ = s;
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
+      }
+      /**
+       * <code>string sender = 1 [json_name = "sender", (.cosmos_proto.scalar) = "cosmos.AddressString"];</code>
+       * @return The bytes for sender.
+       */
+      public com.google.protobuf.ByteString
+          getSenderBytes() {
+        java.lang.Object ref = sender_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          sender_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <code>string sender = 1 [json_name = "sender", (.cosmos_proto.scalar) = "cosmos.AddressString"];</code>
+       * @param value The sender to set.
+       * @return This builder for chaining.
+       */
+      public Builder setSender(
+          java.lang.String value) {
+        if (value == null) { throw new NullPointerException(); }
+        sender_ = value;
+        bitField0_ |= 0x00000001;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>string sender = 1 [json_name = "sender", (.cosmos_proto.scalar) = "cosmos.AddressString"];</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearSender() {
+        sender_ = getDefaultInstance().getSender();
+        bitField0_ = (bitField0_ & ~0x00000001);
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>string sender = 1 [json_name = "sender", (.cosmos_proto.scalar) = "cosmos.AddressString"];</code>
+       * @param value The bytes for sender to set.
+       * @return This builder for chaining.
+       */
+      public Builder setSenderBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) { throw new NullPointerException(); }
+        checkByteStringIsUtf8(value);
+        sender_ = value;
+        bitField0_ |= 0x00000001;
+        onChanged();
+        return this;
+      }
+
+      private long blocks_ ;
+      /**
+       * <pre>
+       * blocks is how long the window stays open, counted from the block that
+       * opens it. Bounded by the module's maximum.
+       * </pre>
+       *
+       * <code>uint64 blocks = 2 [json_name = "blocks"];</code>
+       * @return The blocks.
+       */
+      @java.lang.Override
+      public long getBlocks() {
+        return blocks_;
+      }
+      /**
+       * <pre>
+       * blocks is how long the window stays open, counted from the block that
+       * opens it. Bounded by the module's maximum.
+       * </pre>
+       *
+       * <code>uint64 blocks = 2 [json_name = "blocks"];</code>
+       * @param value The blocks to set.
+       * @return This builder for chaining.
+       */
+      public Builder setBlocks(long value) {
+
+        blocks_ = value;
+        bitField0_ |= 0x00000002;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * blocks is how long the window stays open, counted from the block that
+       * opens it. Bounded by the module's maximum.
+       * </pre>
+       *
+       * <code>uint64 blocks = 2 [json_name = "blocks"];</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearBlocks() {
+        bitField0_ = (bitField0_ & ~0x00000002);
+        blocks_ = 0L;
+        onChanged();
+        return this;
+      }
+
+      private long maxTxs_ ;
+      /**
+       * <pre>
+       * max_txs is how many EVM transactions the window admits. Zero is rejected:
+       * a window that admits nothing is a mistake, not a policy.
+       * </pre>
+       *
+       * <code>uint64 max_txs = 3 [json_name = "maxTxs"];</code>
+       * @return The maxTxs.
+       */
+      @java.lang.Override
+      public long getMaxTxs() {
+        return maxTxs_;
+      }
+      /**
+       * <pre>
+       * max_txs is how many EVM transactions the window admits. Zero is rejected:
+       * a window that admits nothing is a mistake, not a policy.
+       * </pre>
+       *
+       * <code>uint64 max_txs = 3 [json_name = "maxTxs"];</code>
+       * @param value The maxTxs to set.
+       * @return This builder for chaining.
+       */
+      public Builder setMaxTxs(long value) {
+
+        maxTxs_ = value;
+        bitField0_ |= 0x00000004;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * max_txs is how many EVM transactions the window admits. Zero is rejected:
+       * a window that admits nothing is a mistake, not a policy.
+       * </pre>
+       *
+       * <code>uint64 max_txs = 3 [json_name = "maxTxs"];</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearMaxTxs() {
+        bitField0_ = (bitField0_ & ~0x00000004);
+        maxTxs_ = 0L;
+        onChanged();
+        return this;
+      }
+
+      private java.lang.Object maxValue_ = "";
+      /**
+       * <pre>
+       * max_value is the total the window admits, in uqor, counting transferred
+       * value AND the maximum fee each transaction could pay. Both drain the
+       * account, so both are bounded.
+       * </pre>
+       *
+       * <code>string max_value = 4 [json_name = "maxValue", (.gogoproto.nullable) = false, (.gogoproto.customtype) = "cosmossdk.io/math.Int", (.cosmos_proto.scalar) = "cosmos.Int"];</code>
+       * @return The maxValue.
+       */
+      public java.lang.String getMaxValue() {
+        java.lang.Object ref = maxValue_;
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          maxValue_ = s;
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
+      }
+      /**
+       * <pre>
+       * max_value is the total the window admits, in uqor, counting transferred
+       * value AND the maximum fee each transaction could pay. Both drain the
+       * account, so both are bounded.
+       * </pre>
+       *
+       * <code>string max_value = 4 [json_name = "maxValue", (.gogoproto.nullable) = false, (.gogoproto.customtype) = "cosmossdk.io/math.Int", (.cosmos_proto.scalar) = "cosmos.Int"];</code>
+       * @return The bytes for maxValue.
+       */
+      public com.google.protobuf.ByteString
+          getMaxValueBytes() {
+        java.lang.Object ref = maxValue_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          maxValue_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <pre>
+       * max_value is the total the window admits, in uqor, counting transferred
+       * value AND the maximum fee each transaction could pay. Both drain the
+       * account, so both are bounded.
+       * </pre>
+       *
+       * <code>string max_value = 4 [json_name = "maxValue", (.gogoproto.nullable) = false, (.gogoproto.customtype) = "cosmossdk.io/math.Int", (.cosmos_proto.scalar) = "cosmos.Int"];</code>
+       * @param value The maxValue to set.
+       * @return This builder for chaining.
+       */
+      public Builder setMaxValue(
+          java.lang.String value) {
+        if (value == null) { throw new NullPointerException(); }
+        maxValue_ = value;
+        bitField0_ |= 0x00000008;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * max_value is the total the window admits, in uqor, counting transferred
+       * value AND the maximum fee each transaction could pay. Both drain the
+       * account, so both are bounded.
+       * </pre>
+       *
+       * <code>string max_value = 4 [json_name = "maxValue", (.gogoproto.nullable) = false, (.gogoproto.customtype) = "cosmossdk.io/math.Int", (.cosmos_proto.scalar) = "cosmos.Int"];</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearMaxValue() {
+        maxValue_ = getDefaultInstance().getMaxValue();
+        bitField0_ = (bitField0_ & ~0x00000008);
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * max_value is the total the window admits, in uqor, counting transferred
+       * value AND the maximum fee each transaction could pay. Both drain the
+       * account, so both are bounded.
+       * </pre>
+       *
+       * <code>string max_value = 4 [json_name = "maxValue", (.gogoproto.nullable) = false, (.gogoproto.customtype) = "cosmossdk.io/math.Int", (.cosmos_proto.scalar) = "cosmos.Int"];</code>
+       * @param value The bytes for maxValue to set.
+       * @return This builder for chaining.
+       */
+      public Builder setMaxValueBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) { throw new NullPointerException(); }
+        checkByteStringIsUtf8(value);
+        maxValue_ = value;
+        bitField0_ |= 0x00000008;
+        onChanged();
+        return this;
+      }
+
+      // @@protoc_insertion_point(builder_scope:qorechain.pqc.v1.MsgOpenEVMWindow)
+    }
+
+    // @@protoc_insertion_point(class_scope:qorechain.pqc.v1.MsgOpenEVMWindow)
+    private static final qorechain.pqc.v1.Tx.MsgOpenEVMWindow DEFAULT_INSTANCE;
+    static {
+      DEFAULT_INSTANCE = new qorechain.pqc.v1.Tx.MsgOpenEVMWindow();
+    }
+
+    public static qorechain.pqc.v1.Tx.MsgOpenEVMWindow getDefaultInstance() {
+      return DEFAULT_INSTANCE;
+    }
+
+    private static final com.google.protobuf.Parser<MsgOpenEVMWindow>
+        PARSER = new com.google.protobuf.AbstractParser<MsgOpenEVMWindow>() {
+      @java.lang.Override
+      public MsgOpenEVMWindow parsePartialFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        Builder builder = newBuilder();
+        try {
+          builder.mergeFrom(input, extensionRegistry);
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          throw e.setUnfinishedMessage(builder.buildPartial());
+        } catch (com.google.protobuf.UninitializedMessageException e) {
+          throw e.asInvalidProtocolBufferException().setUnfinishedMessage(builder.buildPartial());
+        } catch (java.io.IOException e) {
+          throw new com.google.protobuf.InvalidProtocolBufferException(e)
+              .setUnfinishedMessage(builder.buildPartial());
+        }
+        return builder.buildPartial();
+      }
+    };
+
+    public static com.google.protobuf.Parser<MsgOpenEVMWindow> parser() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Parser<MsgOpenEVMWindow> getParserForType() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public qorechain.pqc.v1.Tx.MsgOpenEVMWindow getDefaultInstanceForType() {
+      return DEFAULT_INSTANCE;
+    }
+
+  }
+
+  public interface MsgOpenEVMWindowResponseOrBuilder extends
+      // @@protoc_insertion_point(interface_extends:qorechain.pqc.v1.MsgOpenEVMWindowResponse)
+      com.google.protobuf.MessageOrBuilder {
+
+    /**
+     * <code>uint64 expiry_height = 1 [json_name = "expiryHeight"];</code>
+     * @return The expiryHeight.
+     */
+    long getExpiryHeight();
+  }
+  /**
+   * Protobuf type {@code qorechain.pqc.v1.MsgOpenEVMWindowResponse}
+   */
+  public static final class MsgOpenEVMWindowResponse extends
+      com.google.protobuf.GeneratedMessage implements
+      // @@protoc_insertion_point(message_implements:qorechain.pqc.v1.MsgOpenEVMWindowResponse)
+      MsgOpenEVMWindowResponseOrBuilder {
+  private static final long serialVersionUID = 0L;
+    static {
+      com.google.protobuf.RuntimeVersion.validateProtobufGencodeVersion(
+        com.google.protobuf.RuntimeVersion.RuntimeDomain.PUBLIC,
+        /* major= */ 4,
+        /* minor= */ 35,
+        /* patch= */ 1,
+        /* suffix= */ "",
+        "MsgOpenEVMWindowResponse");
+    }
+    // Use MsgOpenEVMWindowResponse.newBuilder() to construct.
+    private MsgOpenEVMWindowResponse(com.google.protobuf.GeneratedMessage.Builder<?> builder) {
+      super(builder);
+    }
+    private MsgOpenEVMWindowResponse() {
+    }
+
+    public static final com.google.protobuf.Descriptors.Descriptor
+        getDescriptor() {
+      return qorechain.pqc.v1.Tx.internal_static_qorechain_pqc_v1_MsgOpenEVMWindowResponse_descriptor;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Descriptors.Descriptor getDescriptorForType() {
+      return qorechain.pqc.v1.Tx.internal_static_qorechain_pqc_v1_MsgOpenEVMWindowResponse_descriptor;
+    }
+
+    @java.lang.Override
+    protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+        internalGetFieldAccessorTable() {
+      return qorechain.pqc.v1.Tx.internal_static_qorechain_pqc_v1_MsgOpenEVMWindowResponse_fieldAccessorTable
+          .ensureFieldAccessorsInitialized(
+              qorechain.pqc.v1.Tx.MsgOpenEVMWindowResponse.class, qorechain.pqc.v1.Tx.MsgOpenEVMWindowResponse.Builder.class);
+    }
+
+    public static final int EXPIRY_HEIGHT_FIELD_NUMBER = 1;
+    private long expiryHeight_ = 0L;
+    /**
+     * <code>uint64 expiry_height = 1 [json_name = "expiryHeight"];</code>
+     * @return The expiryHeight.
+     */
+    @java.lang.Override
+    public long getExpiryHeight() {
+      return expiryHeight_;
+    }
+
+    private byte memoizedIsInitialized = -1;
+    @java.lang.Override
+    public final boolean isInitialized() {
+      byte isInitialized = memoizedIsInitialized;
+      if (isInitialized == 1) return true;
+      if (isInitialized == 0) return false;
+
+      memoizedIsInitialized = 1;
+      return true;
+    }
+
+    @java.lang.Override
+    public void writeTo(com.google.protobuf.CodedOutputStream output)
+                        throws java.io.IOException {
+      if (expiryHeight_ != 0L) {
+        output.writeUInt64(1, expiryHeight_);
+      }
+      getUnknownFields().writeTo(output);
+    }
+    private int computeSerializedSize_0() {
+      int size = 0;
+      if (expiryHeight_ != 0L) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeUInt64Size(1, expiryHeight_);
+      }
+      return size;
+    }
+    @java.lang.Override
+    public int getSerializedSize() {
+      int size = memoizedSize;
+      if (size != -1) return size;
+
+      size = 0;
+      size += computeSerializedSize_0();
+      size += getUnknownFields().getSerializedSize();
+      memoizedSize = size;
+      return size;
+    }
+
+    @java.lang.Override
+    public boolean equals(final java.lang.Object obj) {
+      if (obj == this) {
+       return true;
+      }
+      if (!(obj instanceof qorechain.pqc.v1.Tx.MsgOpenEVMWindowResponse)) {
+        return super.equals(obj);
+      }
+      qorechain.pqc.v1.Tx.MsgOpenEVMWindowResponse other = (qorechain.pqc.v1.Tx.MsgOpenEVMWindowResponse) obj;
+
+      if (getExpiryHeight()
+          != other.getExpiryHeight()) return false;
+      if (!getUnknownFields().equals(other.getUnknownFields())) return false;
+      return true;
+    }
+
+    @java.lang.Override
+    public int hashCode() {
+      if (memoizedHashCode != 0) {
+        return memoizedHashCode;
+      }
+      int hash = 41;
+      hash = (19 * hash) + getDescriptor().hashCode();
+      hash = (37 * hash) + EXPIRY_HEIGHT_FIELD_NUMBER;
+      hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
+          getExpiryHeight());
+      hash = (29 * hash) + getUnknownFields().hashCode();
+      memoizedHashCode = hash;
+      return hash;
+    }
+
+    public static qorechain.pqc.v1.Tx.MsgOpenEVMWindowResponse parseFrom(
+        java.nio.ByteBuffer data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static qorechain.pqc.v1.Tx.MsgOpenEVMWindowResponse parseFrom(
+        java.nio.ByteBuffer data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static qorechain.pqc.v1.Tx.MsgOpenEVMWindowResponse parseFrom(
+        com.google.protobuf.ByteString data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static qorechain.pqc.v1.Tx.MsgOpenEVMWindowResponse parseFrom(
+        com.google.protobuf.ByteString data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static qorechain.pqc.v1.Tx.MsgOpenEVMWindowResponse parseFrom(byte[] data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static qorechain.pqc.v1.Tx.MsgOpenEVMWindowResponse parseFrom(
+        byte[] data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static qorechain.pqc.v1.Tx.MsgOpenEVMWindowResponse parseFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input);
+    }
+    public static qorechain.pqc.v1.Tx.MsgOpenEVMWindowResponse parseFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    public static qorechain.pqc.v1.Tx.MsgOpenEVMWindowResponse parseDelimitedFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseDelimitedWithIOException(PARSER, input);
+    }
+
+    public static qorechain.pqc.v1.Tx.MsgOpenEVMWindowResponse parseDelimitedFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static qorechain.pqc.v1.Tx.MsgOpenEVMWindowResponse parseFrom(
+        com.google.protobuf.CodedInputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input);
+    }
+    public static qorechain.pqc.v1.Tx.MsgOpenEVMWindowResponse parseFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    @java.lang.Override
+    public Builder newBuilderForType() { return newBuilder(); }
+    public static Builder newBuilder() {
+      return DEFAULT_INSTANCE.toBuilder();
+    }
+    public static Builder newBuilder(qorechain.pqc.v1.Tx.MsgOpenEVMWindowResponse prototype) {
+      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+    }
+    @java.lang.Override
+    public Builder toBuilder() {
+      return this == DEFAULT_INSTANCE
+          ? new Builder() : new Builder().mergeFrom(this);
+    }
+
+    @java.lang.Override
+    protected Builder newBuilderForType(
+        com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+      Builder builder = new Builder(parent);
+      return builder;
+    }
+    /**
+     * Protobuf type {@code qorechain.pqc.v1.MsgOpenEVMWindowResponse}
+     */
+    public static final class Builder extends
+        com.google.protobuf.GeneratedMessage.Builder<Builder> implements
+        // @@protoc_insertion_point(builder_implements:qorechain.pqc.v1.MsgOpenEVMWindowResponse)
+        qorechain.pqc.v1.Tx.MsgOpenEVMWindowResponseOrBuilder {
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return qorechain.pqc.v1.Tx.internal_static_qorechain_pqc_v1_MsgOpenEVMWindowResponse_descriptor;
+      }
+
+      @java.lang.Override
+      protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return qorechain.pqc.v1.Tx.internal_static_qorechain_pqc_v1_MsgOpenEVMWindowResponse_fieldAccessorTable
+            .ensureFieldAccessorsInitialized(
+                qorechain.pqc.v1.Tx.MsgOpenEVMWindowResponse.class, qorechain.pqc.v1.Tx.MsgOpenEVMWindowResponse.Builder.class);
+      }
+
+      // Construct using qorechain.pqc.v1.Tx.MsgOpenEVMWindowResponse.newBuilder()
+      private Builder() {
+
+      }
+
+      private Builder(
+          com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+        super(parent);
+
+      }
+      @java.lang.Override
+      public Builder clear() {
+        super.clear();
+        bitField0_ = 0;
+        expiryHeight_ = 0L;
+        return this;
+      }
+
+      @java.lang.Override
+      public com.google.protobuf.Descriptors.Descriptor
+          getDescriptorForType() {
+        return qorechain.pqc.v1.Tx.internal_static_qorechain_pqc_v1_MsgOpenEVMWindowResponse_descriptor;
+      }
+
+      @java.lang.Override
+      public qorechain.pqc.v1.Tx.MsgOpenEVMWindowResponse getDefaultInstanceForType() {
+        return qorechain.pqc.v1.Tx.MsgOpenEVMWindowResponse.getDefaultInstance();
+      }
+
+      @java.lang.Override
+      public qorechain.pqc.v1.Tx.MsgOpenEVMWindowResponse build() {
+        qorechain.pqc.v1.Tx.MsgOpenEVMWindowResponse result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(result);
+        }
+        return result;
+      }
+
+      @java.lang.Override
+      public qorechain.pqc.v1.Tx.MsgOpenEVMWindowResponse buildPartial() {
+        qorechain.pqc.v1.Tx.MsgOpenEVMWindowResponse result = new qorechain.pqc.v1.Tx.MsgOpenEVMWindowResponse(this);
+        if (bitField0_ != 0) { buildPartial0(result); }
+        onBuilt();
+        return result;
+      }
+
+      private void buildPartial0(qorechain.pqc.v1.Tx.MsgOpenEVMWindowResponse result) {
+        int from_bitField0_ = bitField0_;
+        if (((from_bitField0_ & 0x00000001) != 0)) {
+          result.expiryHeight_ = expiryHeight_;
+        }
+      }
+
+      @java.lang.Override
+      public Builder mergeFrom(com.google.protobuf.Message other) {
+        if (other instanceof qorechain.pqc.v1.Tx.MsgOpenEVMWindowResponse) {
+          return mergeFrom((qorechain.pqc.v1.Tx.MsgOpenEVMWindowResponse)other);
+        } else {
+          super.mergeFrom(other);
+          return this;
+        }
+      }
+
+      public Builder mergeFrom(qorechain.pqc.v1.Tx.MsgOpenEVMWindowResponse other) {
+        if (other == qorechain.pqc.v1.Tx.MsgOpenEVMWindowResponse.getDefaultInstance()) return this;
+        if (other.getExpiryHeight() != 0L) {
+          setExpiryHeight(other.getExpiryHeight());
+        }
+        this.mergeUnknownFields(other.getUnknownFields());
+        onChanged();
+        return this;
+      }
+
+      @java.lang.Override
+      public final boolean isInitialized() {
+        return true;
+      }
+
+      @java.lang.Override
+      public Builder mergeFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        if (extensionRegistry == null) {
+          throw new java.lang.NullPointerException();
+        }
+        try {
+          boolean done = false;
+          while (!done) {
+            int tag = input.readTag();
+            switch (tag) {
+              case 0:
+                done = true;
+                break;
+              case 8: {
+                expiryHeight_ = input.readUInt64();
+                bitField0_ |= 0x00000001;
+                break;
+              } // case 8
+              default: {
+                if (!super.parseUnknownField(input, extensionRegistry, tag)) {
+                  done = true; // was an endgroup tag
+                }
+                break;
+              } // default:
+            } // switch (tag)
+          } // while (!done)
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          throw e.unwrapIOException();
+        } finally {
+          onChanged();
+        } // finally
+        return this;
+      }
+      private int bitField0_;
+
+      private long expiryHeight_ ;
+      /**
+       * <code>uint64 expiry_height = 1 [json_name = "expiryHeight"];</code>
+       * @return The expiryHeight.
+       */
+      @java.lang.Override
+      public long getExpiryHeight() {
+        return expiryHeight_;
+      }
+      /**
+       * <code>uint64 expiry_height = 1 [json_name = "expiryHeight"];</code>
+       * @param value The expiryHeight to set.
+       * @return This builder for chaining.
+       */
+      public Builder setExpiryHeight(long value) {
+
+        expiryHeight_ = value;
+        bitField0_ |= 0x00000001;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>uint64 expiry_height = 1 [json_name = "expiryHeight"];</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearExpiryHeight() {
+        bitField0_ = (bitField0_ & ~0x00000001);
+        expiryHeight_ = 0L;
+        onChanged();
+        return this;
+      }
+
+      // @@protoc_insertion_point(builder_scope:qorechain.pqc.v1.MsgOpenEVMWindowResponse)
+    }
+
+    // @@protoc_insertion_point(class_scope:qorechain.pqc.v1.MsgOpenEVMWindowResponse)
+    private static final qorechain.pqc.v1.Tx.MsgOpenEVMWindowResponse DEFAULT_INSTANCE;
+    static {
+      DEFAULT_INSTANCE = new qorechain.pqc.v1.Tx.MsgOpenEVMWindowResponse();
+    }
+
+    public static qorechain.pqc.v1.Tx.MsgOpenEVMWindowResponse getDefaultInstance() {
+      return DEFAULT_INSTANCE;
+    }
+
+    private static final com.google.protobuf.Parser<MsgOpenEVMWindowResponse>
+        PARSER = new com.google.protobuf.AbstractParser<MsgOpenEVMWindowResponse>() {
+      @java.lang.Override
+      public MsgOpenEVMWindowResponse parsePartialFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        Builder builder = newBuilder();
+        try {
+          builder.mergeFrom(input, extensionRegistry);
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          throw e.setUnfinishedMessage(builder.buildPartial());
+        } catch (com.google.protobuf.UninitializedMessageException e) {
+          throw e.asInvalidProtocolBufferException().setUnfinishedMessage(builder.buildPartial());
+        } catch (java.io.IOException e) {
+          throw new com.google.protobuf.InvalidProtocolBufferException(e)
+              .setUnfinishedMessage(builder.buildPartial());
+        }
+        return builder.buildPartial();
+      }
+    };
+
+    public static com.google.protobuf.Parser<MsgOpenEVMWindowResponse> parser() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Parser<MsgOpenEVMWindowResponse> getParserForType() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public qorechain.pqc.v1.Tx.MsgOpenEVMWindowResponse getDefaultInstanceForType() {
+      return DEFAULT_INSTANCE;
+    }
+
+  }
+
+  public interface MsgCloseEVMWindowOrBuilder extends
+      // @@protoc_insertion_point(interface_extends:qorechain.pqc.v1.MsgCloseEVMWindow)
+      com.google.protobuf.MessageOrBuilder {
+
+    /**
+     * <code>string sender = 1 [json_name = "sender", (.cosmos_proto.scalar) = "cosmos.AddressString"];</code>
+     * @return The sender.
+     */
+    java.lang.String getSender();
+    /**
+     * <code>string sender = 1 [json_name = "sender", (.cosmos_proto.scalar) = "cosmos.AddressString"];</code>
+     * @return The bytes for sender.
+     */
+    com.google.protobuf.ByteString
+        getSenderBytes();
+  }
+  /**
+   * Protobuf type {@code qorechain.pqc.v1.MsgCloseEVMWindow}
+   */
+  public static final class MsgCloseEVMWindow extends
+      com.google.protobuf.GeneratedMessage implements
+      // @@protoc_insertion_point(message_implements:qorechain.pqc.v1.MsgCloseEVMWindow)
+      MsgCloseEVMWindowOrBuilder {
+  private static final long serialVersionUID = 0L;
+    static {
+      com.google.protobuf.RuntimeVersion.validateProtobufGencodeVersion(
+        com.google.protobuf.RuntimeVersion.RuntimeDomain.PUBLIC,
+        /* major= */ 4,
+        /* minor= */ 35,
+        /* patch= */ 1,
+        /* suffix= */ "",
+        "MsgCloseEVMWindow");
+    }
+    // Use MsgCloseEVMWindow.newBuilder() to construct.
+    private MsgCloseEVMWindow(com.google.protobuf.GeneratedMessage.Builder<?> builder) {
+      super(builder);
+    }
+    private MsgCloseEVMWindow() {
+      sender_ = "";
+    }
+
+    public static final com.google.protobuf.Descriptors.Descriptor
+        getDescriptor() {
+      return qorechain.pqc.v1.Tx.internal_static_qorechain_pqc_v1_MsgCloseEVMWindow_descriptor;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Descriptors.Descriptor getDescriptorForType() {
+      return qorechain.pqc.v1.Tx.internal_static_qorechain_pqc_v1_MsgCloseEVMWindow_descriptor;
+    }
+
+    @java.lang.Override
+    protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+        internalGetFieldAccessorTable() {
+      return qorechain.pqc.v1.Tx.internal_static_qorechain_pqc_v1_MsgCloseEVMWindow_fieldAccessorTable
+          .ensureFieldAccessorsInitialized(
+              qorechain.pqc.v1.Tx.MsgCloseEVMWindow.class, qorechain.pqc.v1.Tx.MsgCloseEVMWindow.Builder.class);
+    }
+
+    public static final int SENDER_FIELD_NUMBER = 1;
+    @SuppressWarnings("serial")
+    private volatile java.lang.Object sender_ = "";
+    /**
+     * <code>string sender = 1 [json_name = "sender", (.cosmos_proto.scalar) = "cosmos.AddressString"];</code>
+     * @return The sender.
+     */
+    @java.lang.Override
+    public java.lang.String getSender() {
+      java.lang.Object ref = sender_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        sender_ = s;
+        return s;
+      }
+    }
+    /**
+     * <code>string sender = 1 [json_name = "sender", (.cosmos_proto.scalar) = "cosmos.AddressString"];</code>
+     * @return The bytes for sender.
+     */
+    @java.lang.Override
+    public com.google.protobuf.ByteString
+        getSenderBytes() {
+      java.lang.Object ref = sender_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        sender_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
+    private byte memoizedIsInitialized = -1;
+    @java.lang.Override
+    public final boolean isInitialized() {
+      byte isInitialized = memoizedIsInitialized;
+      if (isInitialized == 1) return true;
+      if (isInitialized == 0) return false;
+
+      memoizedIsInitialized = 1;
+      return true;
+    }
+
+    @java.lang.Override
+    public void writeTo(com.google.protobuf.CodedOutputStream output)
+                        throws java.io.IOException {
+      if (!com.google.protobuf.GeneratedMessage.isStringEmpty(sender_)) {
+        com.google.protobuf.GeneratedMessage.writeString(output, 1, sender_);
+      }
+      getUnknownFields().writeTo(output);
+    }
+    private int computeSerializedSize_0() {
+      int size = 0;
+      if (!com.google.protobuf.GeneratedMessage.isStringEmpty(sender_)) {
+        size += com.google.protobuf.GeneratedMessage.computeStringSize(1, sender_);
+      }
+      return size;
+    }
+    @java.lang.Override
+    public int getSerializedSize() {
+      int size = memoizedSize;
+      if (size != -1) return size;
+
+      size = 0;
+      size += computeSerializedSize_0();
+      size += getUnknownFields().getSerializedSize();
+      memoizedSize = size;
+      return size;
+    }
+
+    @java.lang.Override
+    public boolean equals(final java.lang.Object obj) {
+      if (obj == this) {
+       return true;
+      }
+      if (!(obj instanceof qorechain.pqc.v1.Tx.MsgCloseEVMWindow)) {
+        return super.equals(obj);
+      }
+      qorechain.pqc.v1.Tx.MsgCloseEVMWindow other = (qorechain.pqc.v1.Tx.MsgCloseEVMWindow) obj;
+
+      if (!getSender()
+          .equals(other.getSender())) return false;
+      if (!getUnknownFields().equals(other.getUnknownFields())) return false;
+      return true;
+    }
+
+    @java.lang.Override
+    public int hashCode() {
+      if (memoizedHashCode != 0) {
+        return memoizedHashCode;
+      }
+      int hash = 41;
+      hash = (19 * hash) + getDescriptor().hashCode();
+      hash = (37 * hash) + SENDER_FIELD_NUMBER;
+      hash = (53 * hash) + getSender().hashCode();
+      hash = (29 * hash) + getUnknownFields().hashCode();
+      memoizedHashCode = hash;
+      return hash;
+    }
+
+    public static qorechain.pqc.v1.Tx.MsgCloseEVMWindow parseFrom(
+        java.nio.ByteBuffer data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static qorechain.pqc.v1.Tx.MsgCloseEVMWindow parseFrom(
+        java.nio.ByteBuffer data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static qorechain.pqc.v1.Tx.MsgCloseEVMWindow parseFrom(
+        com.google.protobuf.ByteString data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static qorechain.pqc.v1.Tx.MsgCloseEVMWindow parseFrom(
+        com.google.protobuf.ByteString data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static qorechain.pqc.v1.Tx.MsgCloseEVMWindow parseFrom(byte[] data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static qorechain.pqc.v1.Tx.MsgCloseEVMWindow parseFrom(
+        byte[] data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static qorechain.pqc.v1.Tx.MsgCloseEVMWindow parseFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input);
+    }
+    public static qorechain.pqc.v1.Tx.MsgCloseEVMWindow parseFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    public static qorechain.pqc.v1.Tx.MsgCloseEVMWindow parseDelimitedFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseDelimitedWithIOException(PARSER, input);
+    }
+
+    public static qorechain.pqc.v1.Tx.MsgCloseEVMWindow parseDelimitedFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static qorechain.pqc.v1.Tx.MsgCloseEVMWindow parseFrom(
+        com.google.protobuf.CodedInputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input);
+    }
+    public static qorechain.pqc.v1.Tx.MsgCloseEVMWindow parseFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    @java.lang.Override
+    public Builder newBuilderForType() { return newBuilder(); }
+    public static Builder newBuilder() {
+      return DEFAULT_INSTANCE.toBuilder();
+    }
+    public static Builder newBuilder(qorechain.pqc.v1.Tx.MsgCloseEVMWindow prototype) {
+      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+    }
+    @java.lang.Override
+    public Builder toBuilder() {
+      return this == DEFAULT_INSTANCE
+          ? new Builder() : new Builder().mergeFrom(this);
+    }
+
+    @java.lang.Override
+    protected Builder newBuilderForType(
+        com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+      Builder builder = new Builder(parent);
+      return builder;
+    }
+    /**
+     * Protobuf type {@code qorechain.pqc.v1.MsgCloseEVMWindow}
+     */
+    public static final class Builder extends
+        com.google.protobuf.GeneratedMessage.Builder<Builder> implements
+        // @@protoc_insertion_point(builder_implements:qorechain.pqc.v1.MsgCloseEVMWindow)
+        qorechain.pqc.v1.Tx.MsgCloseEVMWindowOrBuilder {
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return qorechain.pqc.v1.Tx.internal_static_qorechain_pqc_v1_MsgCloseEVMWindow_descriptor;
+      }
+
+      @java.lang.Override
+      protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return qorechain.pqc.v1.Tx.internal_static_qorechain_pqc_v1_MsgCloseEVMWindow_fieldAccessorTable
+            .ensureFieldAccessorsInitialized(
+                qorechain.pqc.v1.Tx.MsgCloseEVMWindow.class, qorechain.pqc.v1.Tx.MsgCloseEVMWindow.Builder.class);
+      }
+
+      // Construct using qorechain.pqc.v1.Tx.MsgCloseEVMWindow.newBuilder()
+      private Builder() {
+
+      }
+
+      private Builder(
+          com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+        super(parent);
+
+      }
+      @java.lang.Override
+      public Builder clear() {
+        super.clear();
+        bitField0_ = 0;
+        sender_ = "";
+        return this;
+      }
+
+      @java.lang.Override
+      public com.google.protobuf.Descriptors.Descriptor
+          getDescriptorForType() {
+        return qorechain.pqc.v1.Tx.internal_static_qorechain_pqc_v1_MsgCloseEVMWindow_descriptor;
+      }
+
+      @java.lang.Override
+      public qorechain.pqc.v1.Tx.MsgCloseEVMWindow getDefaultInstanceForType() {
+        return qorechain.pqc.v1.Tx.MsgCloseEVMWindow.getDefaultInstance();
+      }
+
+      @java.lang.Override
+      public qorechain.pqc.v1.Tx.MsgCloseEVMWindow build() {
+        qorechain.pqc.v1.Tx.MsgCloseEVMWindow result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(result);
+        }
+        return result;
+      }
+
+      @java.lang.Override
+      public qorechain.pqc.v1.Tx.MsgCloseEVMWindow buildPartial() {
+        qorechain.pqc.v1.Tx.MsgCloseEVMWindow result = new qorechain.pqc.v1.Tx.MsgCloseEVMWindow(this);
+        if (bitField0_ != 0) { buildPartial0(result); }
+        onBuilt();
+        return result;
+      }
+
+      private void buildPartial0(qorechain.pqc.v1.Tx.MsgCloseEVMWindow result) {
+        int from_bitField0_ = bitField0_;
+        if (((from_bitField0_ & 0x00000001) != 0)) {
+          result.sender_ = sender_;
+        }
+      }
+
+      @java.lang.Override
+      public Builder mergeFrom(com.google.protobuf.Message other) {
+        if (other instanceof qorechain.pqc.v1.Tx.MsgCloseEVMWindow) {
+          return mergeFrom((qorechain.pqc.v1.Tx.MsgCloseEVMWindow)other);
+        } else {
+          super.mergeFrom(other);
+          return this;
+        }
+      }
+
+      public Builder mergeFrom(qorechain.pqc.v1.Tx.MsgCloseEVMWindow other) {
+        if (other == qorechain.pqc.v1.Tx.MsgCloseEVMWindow.getDefaultInstance()) return this;
+        if (!other.getSender().isEmpty()) {
+          sender_ = other.sender_;
+          bitField0_ |= 0x00000001;
+          onChanged();
+        }
+        this.mergeUnknownFields(other.getUnknownFields());
+        onChanged();
+        return this;
+      }
+
+      @java.lang.Override
+      public final boolean isInitialized() {
+        return true;
+      }
+
+      @java.lang.Override
+      public Builder mergeFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        if (extensionRegistry == null) {
+          throw new java.lang.NullPointerException();
+        }
+        try {
+          boolean done = false;
+          while (!done) {
+            int tag = input.readTag();
+            switch (tag) {
+              case 0:
+                done = true;
+                break;
+              case 10: {
+                sender_ = input.readStringRequireUtf8();
+                bitField0_ |= 0x00000001;
+                break;
+              } // case 10
+              default: {
+                if (!super.parseUnknownField(input, extensionRegistry, tag)) {
+                  done = true; // was an endgroup tag
+                }
+                break;
+              } // default:
+            } // switch (tag)
+          } // while (!done)
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          throw e.unwrapIOException();
+        } finally {
+          onChanged();
+        } // finally
+        return this;
+      }
+      private int bitField0_;
+
+      private java.lang.Object sender_ = "";
+      /**
+       * <code>string sender = 1 [json_name = "sender", (.cosmos_proto.scalar) = "cosmos.AddressString"];</code>
+       * @return The sender.
+       */
+      public java.lang.String getSender() {
+        java.lang.Object ref = sender_;
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          sender_ = s;
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
+      }
+      /**
+       * <code>string sender = 1 [json_name = "sender", (.cosmos_proto.scalar) = "cosmos.AddressString"];</code>
+       * @return The bytes for sender.
+       */
+      public com.google.protobuf.ByteString
+          getSenderBytes() {
+        java.lang.Object ref = sender_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          sender_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <code>string sender = 1 [json_name = "sender", (.cosmos_proto.scalar) = "cosmos.AddressString"];</code>
+       * @param value The sender to set.
+       * @return This builder for chaining.
+       */
+      public Builder setSender(
+          java.lang.String value) {
+        if (value == null) { throw new NullPointerException(); }
+        sender_ = value;
+        bitField0_ |= 0x00000001;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>string sender = 1 [json_name = "sender", (.cosmos_proto.scalar) = "cosmos.AddressString"];</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearSender() {
+        sender_ = getDefaultInstance().getSender();
+        bitField0_ = (bitField0_ & ~0x00000001);
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>string sender = 1 [json_name = "sender", (.cosmos_proto.scalar) = "cosmos.AddressString"];</code>
+       * @param value The bytes for sender to set.
+       * @return This builder for chaining.
+       */
+      public Builder setSenderBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) { throw new NullPointerException(); }
+        checkByteStringIsUtf8(value);
+        sender_ = value;
+        bitField0_ |= 0x00000001;
+        onChanged();
+        return this;
+      }
+
+      // @@protoc_insertion_point(builder_scope:qorechain.pqc.v1.MsgCloseEVMWindow)
+    }
+
+    // @@protoc_insertion_point(class_scope:qorechain.pqc.v1.MsgCloseEVMWindow)
+    private static final qorechain.pqc.v1.Tx.MsgCloseEVMWindow DEFAULT_INSTANCE;
+    static {
+      DEFAULT_INSTANCE = new qorechain.pqc.v1.Tx.MsgCloseEVMWindow();
+    }
+
+    public static qorechain.pqc.v1.Tx.MsgCloseEVMWindow getDefaultInstance() {
+      return DEFAULT_INSTANCE;
+    }
+
+    private static final com.google.protobuf.Parser<MsgCloseEVMWindow>
+        PARSER = new com.google.protobuf.AbstractParser<MsgCloseEVMWindow>() {
+      @java.lang.Override
+      public MsgCloseEVMWindow parsePartialFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        Builder builder = newBuilder();
+        try {
+          builder.mergeFrom(input, extensionRegistry);
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          throw e.setUnfinishedMessage(builder.buildPartial());
+        } catch (com.google.protobuf.UninitializedMessageException e) {
+          throw e.asInvalidProtocolBufferException().setUnfinishedMessage(builder.buildPartial());
+        } catch (java.io.IOException e) {
+          throw new com.google.protobuf.InvalidProtocolBufferException(e)
+              .setUnfinishedMessage(builder.buildPartial());
+        }
+        return builder.buildPartial();
+      }
+    };
+
+    public static com.google.protobuf.Parser<MsgCloseEVMWindow> parser() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Parser<MsgCloseEVMWindow> getParserForType() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public qorechain.pqc.v1.Tx.MsgCloseEVMWindow getDefaultInstanceForType() {
+      return DEFAULT_INSTANCE;
+    }
+
+  }
+
+  public interface MsgCloseEVMWindowResponseOrBuilder extends
+      // @@protoc_insertion_point(interface_extends:qorechain.pqc.v1.MsgCloseEVMWindowResponse)
+      com.google.protobuf.MessageOrBuilder {
+  }
+  /**
+   * Protobuf type {@code qorechain.pqc.v1.MsgCloseEVMWindowResponse}
+   */
+  public static final class MsgCloseEVMWindowResponse extends
+      com.google.protobuf.GeneratedMessage implements
+      // @@protoc_insertion_point(message_implements:qorechain.pqc.v1.MsgCloseEVMWindowResponse)
+      MsgCloseEVMWindowResponseOrBuilder {
+  private static final long serialVersionUID = 0L;
+    static {
+      com.google.protobuf.RuntimeVersion.validateProtobufGencodeVersion(
+        com.google.protobuf.RuntimeVersion.RuntimeDomain.PUBLIC,
+        /* major= */ 4,
+        /* minor= */ 35,
+        /* patch= */ 1,
+        /* suffix= */ "",
+        "MsgCloseEVMWindowResponse");
+    }
+    // Use MsgCloseEVMWindowResponse.newBuilder() to construct.
+    private MsgCloseEVMWindowResponse(com.google.protobuf.GeneratedMessage.Builder<?> builder) {
+      super(builder);
+    }
+    private MsgCloseEVMWindowResponse() {
+    }
+
+    public static final com.google.protobuf.Descriptors.Descriptor
+        getDescriptor() {
+      return qorechain.pqc.v1.Tx.internal_static_qorechain_pqc_v1_MsgCloseEVMWindowResponse_descriptor;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Descriptors.Descriptor getDescriptorForType() {
+      return qorechain.pqc.v1.Tx.internal_static_qorechain_pqc_v1_MsgCloseEVMWindowResponse_descriptor;
+    }
+
+    @java.lang.Override
+    protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+        internalGetFieldAccessorTable() {
+      return qorechain.pqc.v1.Tx.internal_static_qorechain_pqc_v1_MsgCloseEVMWindowResponse_fieldAccessorTable
+          .ensureFieldAccessorsInitialized(
+              qorechain.pqc.v1.Tx.MsgCloseEVMWindowResponse.class, qorechain.pqc.v1.Tx.MsgCloseEVMWindowResponse.Builder.class);
+    }
+
+    private byte memoizedIsInitialized = -1;
+    @java.lang.Override
+    public final boolean isInitialized() {
+      byte isInitialized = memoizedIsInitialized;
+      if (isInitialized == 1) return true;
+      if (isInitialized == 0) return false;
+
+      memoizedIsInitialized = 1;
+      return true;
+    }
+
+    @java.lang.Override
+    public void writeTo(com.google.protobuf.CodedOutputStream output)
+                        throws java.io.IOException {
+      getUnknownFields().writeTo(output);
+    }
+    @java.lang.Override
+    public int getSerializedSize() {
+      int size = memoizedSize;
+      if (size != -1) return size;
+
+      size = 0;
+      size += getUnknownFields().getSerializedSize();
+      memoizedSize = size;
+      return size;
+    }
+
+    @java.lang.Override
+    public boolean equals(final java.lang.Object obj) {
+      if (obj == this) {
+       return true;
+      }
+      if (!(obj instanceof qorechain.pqc.v1.Tx.MsgCloseEVMWindowResponse)) {
+        return super.equals(obj);
+      }
+      qorechain.pqc.v1.Tx.MsgCloseEVMWindowResponse other = (qorechain.pqc.v1.Tx.MsgCloseEVMWindowResponse) obj;
+
+      if (!getUnknownFields().equals(other.getUnknownFields())) return false;
+      return true;
+    }
+
+    @java.lang.Override
+    public int hashCode() {
+      if (memoizedHashCode != 0) {
+        return memoizedHashCode;
+      }
+      int hash = 41;
+      hash = (19 * hash) + getDescriptor().hashCode();
+      hash = (29 * hash) + getUnknownFields().hashCode();
+      memoizedHashCode = hash;
+      return hash;
+    }
+
+    public static qorechain.pqc.v1.Tx.MsgCloseEVMWindowResponse parseFrom(
+        java.nio.ByteBuffer data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static qorechain.pqc.v1.Tx.MsgCloseEVMWindowResponse parseFrom(
+        java.nio.ByteBuffer data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static qorechain.pqc.v1.Tx.MsgCloseEVMWindowResponse parseFrom(
+        com.google.protobuf.ByteString data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static qorechain.pqc.v1.Tx.MsgCloseEVMWindowResponse parseFrom(
+        com.google.protobuf.ByteString data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static qorechain.pqc.v1.Tx.MsgCloseEVMWindowResponse parseFrom(byte[] data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static qorechain.pqc.v1.Tx.MsgCloseEVMWindowResponse parseFrom(
+        byte[] data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static qorechain.pqc.v1.Tx.MsgCloseEVMWindowResponse parseFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input);
+    }
+    public static qorechain.pqc.v1.Tx.MsgCloseEVMWindowResponse parseFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    public static qorechain.pqc.v1.Tx.MsgCloseEVMWindowResponse parseDelimitedFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseDelimitedWithIOException(PARSER, input);
+    }
+
+    public static qorechain.pqc.v1.Tx.MsgCloseEVMWindowResponse parseDelimitedFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static qorechain.pqc.v1.Tx.MsgCloseEVMWindowResponse parseFrom(
+        com.google.protobuf.CodedInputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input);
+    }
+    public static qorechain.pqc.v1.Tx.MsgCloseEVMWindowResponse parseFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    @java.lang.Override
+    public Builder newBuilderForType() { return newBuilder(); }
+    public static Builder newBuilder() {
+      return DEFAULT_INSTANCE.toBuilder();
+    }
+    public static Builder newBuilder(qorechain.pqc.v1.Tx.MsgCloseEVMWindowResponse prototype) {
+      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+    }
+    @java.lang.Override
+    public Builder toBuilder() {
+      return this == DEFAULT_INSTANCE
+          ? new Builder() : new Builder().mergeFrom(this);
+    }
+
+    @java.lang.Override
+    protected Builder newBuilderForType(
+        com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+      Builder builder = new Builder(parent);
+      return builder;
+    }
+    /**
+     * Protobuf type {@code qorechain.pqc.v1.MsgCloseEVMWindowResponse}
+     */
+    public static final class Builder extends
+        com.google.protobuf.GeneratedMessage.Builder<Builder> implements
+        // @@protoc_insertion_point(builder_implements:qorechain.pqc.v1.MsgCloseEVMWindowResponse)
+        qorechain.pqc.v1.Tx.MsgCloseEVMWindowResponseOrBuilder {
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return qorechain.pqc.v1.Tx.internal_static_qorechain_pqc_v1_MsgCloseEVMWindowResponse_descriptor;
+      }
+
+      @java.lang.Override
+      protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return qorechain.pqc.v1.Tx.internal_static_qorechain_pqc_v1_MsgCloseEVMWindowResponse_fieldAccessorTable
+            .ensureFieldAccessorsInitialized(
+                qorechain.pqc.v1.Tx.MsgCloseEVMWindowResponse.class, qorechain.pqc.v1.Tx.MsgCloseEVMWindowResponse.Builder.class);
+      }
+
+      // Construct using qorechain.pqc.v1.Tx.MsgCloseEVMWindowResponse.newBuilder()
+      private Builder() {
+
+      }
+
+      private Builder(
+          com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+        super(parent);
+
+      }
+      @java.lang.Override
+      public Builder clear() {
+        super.clear();
+        return this;
+      }
+
+      @java.lang.Override
+      public com.google.protobuf.Descriptors.Descriptor
+          getDescriptorForType() {
+        return qorechain.pqc.v1.Tx.internal_static_qorechain_pqc_v1_MsgCloseEVMWindowResponse_descriptor;
+      }
+
+      @java.lang.Override
+      public qorechain.pqc.v1.Tx.MsgCloseEVMWindowResponse getDefaultInstanceForType() {
+        return qorechain.pqc.v1.Tx.MsgCloseEVMWindowResponse.getDefaultInstance();
+      }
+
+      @java.lang.Override
+      public qorechain.pqc.v1.Tx.MsgCloseEVMWindowResponse build() {
+        qorechain.pqc.v1.Tx.MsgCloseEVMWindowResponse result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(result);
+        }
+        return result;
+      }
+
+      @java.lang.Override
+      public qorechain.pqc.v1.Tx.MsgCloseEVMWindowResponse buildPartial() {
+        qorechain.pqc.v1.Tx.MsgCloseEVMWindowResponse result = new qorechain.pqc.v1.Tx.MsgCloseEVMWindowResponse(this);
+        onBuilt();
+        return result;
+      }
+
+      @java.lang.Override
+      public Builder mergeFrom(com.google.protobuf.Message other) {
+        if (other instanceof qorechain.pqc.v1.Tx.MsgCloseEVMWindowResponse) {
+          return mergeFrom((qorechain.pqc.v1.Tx.MsgCloseEVMWindowResponse)other);
+        } else {
+          super.mergeFrom(other);
+          return this;
+        }
+      }
+
+      public Builder mergeFrom(qorechain.pqc.v1.Tx.MsgCloseEVMWindowResponse other) {
+        if (other == qorechain.pqc.v1.Tx.MsgCloseEVMWindowResponse.getDefaultInstance()) return this;
+        this.mergeUnknownFields(other.getUnknownFields());
+        onChanged();
+        return this;
+      }
+
+      @java.lang.Override
+      public final boolean isInitialized() {
+        return true;
+      }
+
+      @java.lang.Override
+      public Builder mergeFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        if (extensionRegistry == null) {
+          throw new java.lang.NullPointerException();
+        }
+        try {
+          boolean done = false;
+          while (!done) {
+            int tag = input.readTag();
+            switch (tag) {
+              case 0:
+                done = true;
+                break;
+              default: {
+                if (!super.parseUnknownField(input, extensionRegistry, tag)) {
+                  done = true; // was an endgroup tag
+                }
+                break;
+              } // default:
+            } // switch (tag)
+          } // while (!done)
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          throw e.unwrapIOException();
+        } finally {
+          onChanged();
+        } // finally
+        return this;
+      }
+
+      // @@protoc_insertion_point(builder_scope:qorechain.pqc.v1.MsgCloseEVMWindowResponse)
+    }
+
+    // @@protoc_insertion_point(class_scope:qorechain.pqc.v1.MsgCloseEVMWindowResponse)
+    private static final qorechain.pqc.v1.Tx.MsgCloseEVMWindowResponse DEFAULT_INSTANCE;
+    static {
+      DEFAULT_INSTANCE = new qorechain.pqc.v1.Tx.MsgCloseEVMWindowResponse();
+    }
+
+    public static qorechain.pqc.v1.Tx.MsgCloseEVMWindowResponse getDefaultInstance() {
+      return DEFAULT_INSTANCE;
+    }
+
+    private static final com.google.protobuf.Parser<MsgCloseEVMWindowResponse>
+        PARSER = new com.google.protobuf.AbstractParser<MsgCloseEVMWindowResponse>() {
+      @java.lang.Override
+      public MsgCloseEVMWindowResponse parsePartialFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        Builder builder = newBuilder();
+        try {
+          builder.mergeFrom(input, extensionRegistry);
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          throw e.setUnfinishedMessage(builder.buildPartial());
+        } catch (com.google.protobuf.UninitializedMessageException e) {
+          throw e.asInvalidProtocolBufferException().setUnfinishedMessage(builder.buildPartial());
+        } catch (java.io.IOException e) {
+          throw new com.google.protobuf.InvalidProtocolBufferException(e)
+              .setUnfinishedMessage(builder.buildPartial());
+        }
+        return builder.buildPartial();
+      }
+    };
+
+    public static com.google.protobuf.Parser<MsgCloseEVMWindowResponse> parser() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Parser<MsgCloseEVMWindowResponse> getParserForType() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public qorechain.pqc.v1.Tx.MsgCloseEVMWindowResponse getDefaultInstanceForType() {
+      return DEFAULT_INSTANCE;
+    }
+
+  }
+
   private static final com.google.protobuf.Descriptors.Descriptor
     internal_static_qorechain_pqc_v1_MsgRegisterPQCKey_descriptor;
   private static final 
@@ -7165,6 +9416,26 @@ public final class Tx extends com.google.protobuf.GeneratedFile {
   private static final 
     com.google.protobuf.GeneratedMessage.FieldAccessorTable
       internal_static_qorechain_pqc_v1_MsgDisableAlgorithmResponse_fieldAccessorTable;
+  private static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_qorechain_pqc_v1_MsgOpenEVMWindow_descriptor;
+  private static final 
+    com.google.protobuf.GeneratedMessage.FieldAccessorTable
+      internal_static_qorechain_pqc_v1_MsgOpenEVMWindow_fieldAccessorTable;
+  private static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_qorechain_pqc_v1_MsgOpenEVMWindowResponse_descriptor;
+  private static final 
+    com.google.protobuf.GeneratedMessage.FieldAccessorTable
+      internal_static_qorechain_pqc_v1_MsgOpenEVMWindowResponse_fieldAccessorTable;
+  private static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_qorechain_pqc_v1_MsgCloseEVMWindow_descriptor;
+  private static final 
+    com.google.protobuf.GeneratedMessage.FieldAccessorTable
+      internal_static_qorechain_pqc_v1_MsgCloseEVMWindow_fieldAccessorTable;
+  private static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_qorechain_pqc_v1_MsgCloseEVMWindowResponse_descriptor;
+  private static final 
+    com.google.protobuf.GeneratedMessage.FieldAccessorTable
+      internal_static_qorechain_pqc_v1_MsgCloseEVMWindowResponse_fieldAccessorTable;
 
   public static com.google.protobuf.Descriptors.FileDescriptor
       getDescriptor() {
@@ -7219,24 +9490,38 @@ public final class Tx extends com.google.protobuf.GeneratedFile {
       "d\030\002 \001(\rB\036\342\336\037\013AlgorithmID\372\336\037\013AlgorithmIDR" +
       "\013algorithmId\022\026\n\006reason\030\003 \001(\tR\006reason:\016\202\347" +
       "\260*\tauthority\"\035\n\033MsgDisableAlgorithmRespo" +
-      "nse2\363\004\n\003Msg\022b\n\016RegisterPQCKey\022#.qorechai" +
-      "n.pqc.v1.MsgRegisterPQCKey\032+.qorechain.p" +
-      "qc.v1.MsgRegisterPQCKeyResponse\022h\n\020Regis" +
-      "terPQCKeyV2\022%.qorechain.pqc.v1.MsgRegist" +
-      "erPQCKeyV2\032-.qorechain.pqc.v1.MsgRegiste" +
-      "rPQCKeyV2Response\022_\n\rMigratePQCKey\022\".qor" +
-      "echain.pqc.v1.MsgMigratePQCKey\032*.qorecha" +
-      "in.pqc.v1.MsgMigratePQCKeyResponse\022\\\n\014Ro" +
-      "tatePQCKey\022!.qorechain.pqc.v1.MsgRotateP" +
-      "QCKey\032).qorechain.pqc.v1.MsgRotatePQCKey" +
-      "Response\022n\n\022DeprecateAlgorithm\022\'.qorecha" +
-      "in.pqc.v1.MsgDeprecateAlgorithm\032/.qorech" +
-      "ain.pqc.v1.MsgDeprecateAlgorithmResponse" +
-      "\022h\n\020DisableAlgorithm\022%.qorechain.pqc.v1." +
-      "MsgDisableAlgorithm\032-.qorechain.pqc.v1.M" +
-      "sgDisableAlgorithmResponse\032\005\200\347\260*\001B1Z/git" +
-      "hub.com/qorechain/qorechain-core/x/pqc/t" +
-      "ypesb\006proto3"
+      "nse\"\314\001\n\020MsgOpenEVMWindow\0220\n\006sender\030\001 \001(\t" +
+      "B\030\322\264-\024cosmos.AddressStringR\006sender\022\026\n\006bl" +
+      "ocks\030\002 \001(\004R\006blocks\022\027\n\007max_txs\030\003 \001(\004R\006max" +
+      "Txs\022H\n\tmax_value\030\004 \001(\tB+\310\336\037\000\332\336\037\025cosmossd" +
+      "k.io/math.Int\322\264-\ncosmos.IntR\010maxValue:\013\202" +
+      "\347\260*\006sender\"?\n\030MsgOpenEVMWindowResponse\022#" +
+      "\n\rexpiry_height\030\001 \001(\004R\014expiryHeight\"R\n\021M" +
+      "sgCloseEVMWindow\0220\n\006sender\030\001 \001(\tB\030\322\264-\024co" +
+      "smos.AddressStringR\006sender:\013\202\347\260*\006sender\"" +
+      "\033\n\031MsgCloseEVMWindowResponse2\270\006\n\003Msg\022b\n\016" +
+      "RegisterPQCKey\022#.qorechain.pqc.v1.MsgReg" +
+      "isterPQCKey\032+.qorechain.pqc.v1.MsgRegist" +
+      "erPQCKeyResponse\022h\n\020RegisterPQCKeyV2\022%.q" +
+      "orechain.pqc.v1.MsgRegisterPQCKeyV2\032-.qo" +
+      "rechain.pqc.v1.MsgRegisterPQCKeyV2Respon" +
+      "se\022_\n\rMigratePQCKey\022\".qorechain.pqc.v1.M" +
+      "sgMigratePQCKey\032*.qorechain.pqc.v1.MsgMi" +
+      "gratePQCKeyResponse\022\\\n\014RotatePQCKey\022!.qo" +
+      "rechain.pqc.v1.MsgRotatePQCKey\032).qorecha" +
+      "in.pqc.v1.MsgRotatePQCKeyResponse\022n\n\022Dep" +
+      "recateAlgorithm\022\'.qorechain.pqc.v1.MsgDe" +
+      "precateAlgorithm\032/.qorechain.pqc.v1.MsgD" +
+      "eprecateAlgorithmResponse\022h\n\020DisableAlgo" +
+      "rithm\022%.qorechain.pqc.v1.MsgDisableAlgor" +
+      "ithm\032-.qorechain.pqc.v1.MsgDisableAlgori" +
+      "thmResponse\022_\n\rOpenEVMWindow\022\".qorechain" +
+      ".pqc.v1.MsgOpenEVMWindow\032*.qorechain.pqc" +
+      ".v1.MsgOpenEVMWindowResponse\022b\n\016CloseEVM" +
+      "Window\022#.qorechain.pqc.v1.MsgCloseEVMWin" +
+      "dow\032+.qorechain.pqc.v1.MsgCloseEVMWindow" +
+      "Response\032\005\200\347\260*\001B1Z/github.com/qorechain/" +
+      "qorechain-core/x/pqc/typesb\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
@@ -7317,6 +9602,30 @@ public final class Tx extends com.google.protobuf.GeneratedFile {
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_qorechain_pqc_v1_MsgDisableAlgorithmResponse_descriptor,
         new java.lang.String[] { });
+    internal_static_qorechain_pqc_v1_MsgOpenEVMWindow_descriptor =
+      getDescriptor().getMessageType(12);
+    internal_static_qorechain_pqc_v1_MsgOpenEVMWindow_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessage.FieldAccessorTable(
+        internal_static_qorechain_pqc_v1_MsgOpenEVMWindow_descriptor,
+        new java.lang.String[] { "Sender", "Blocks", "MaxTxs", "MaxValue", });
+    internal_static_qorechain_pqc_v1_MsgOpenEVMWindowResponse_descriptor =
+      getDescriptor().getMessageType(13);
+    internal_static_qorechain_pqc_v1_MsgOpenEVMWindowResponse_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessage.FieldAccessorTable(
+        internal_static_qorechain_pqc_v1_MsgOpenEVMWindowResponse_descriptor,
+        new java.lang.String[] { "ExpiryHeight", });
+    internal_static_qorechain_pqc_v1_MsgCloseEVMWindow_descriptor =
+      getDescriptor().getMessageType(14);
+    internal_static_qorechain_pqc_v1_MsgCloseEVMWindow_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessage.FieldAccessorTable(
+        internal_static_qorechain_pqc_v1_MsgCloseEVMWindow_descriptor,
+        new java.lang.String[] { "Sender", });
+    internal_static_qorechain_pqc_v1_MsgCloseEVMWindowResponse_descriptor =
+      getDescriptor().getMessageType(15);
+    internal_static_qorechain_pqc_v1_MsgCloseEVMWindowResponse_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessage.FieldAccessorTable(
+        internal_static_qorechain_pqc_v1_MsgCloseEVMWindowResponse_descriptor,
+        new java.lang.String[] { });
     descriptor.resolveAllFeaturesImmutable();
     cosmos.msg.v1.Msg.getDescriptor();
     cosmos_proto.Cosmos.getDescriptor();
@@ -7328,6 +9637,8 @@ public final class Tx extends com.google.protobuf.GeneratedFile {
     registry.add(cosmos_proto.Cosmos.scalar);
     registry.add(com.google.protobuf.GoGoProtos.casttype);
     registry.add(com.google.protobuf.GoGoProtos.customname);
+    registry.add(com.google.protobuf.GoGoProtos.customtype);
+    registry.add(com.google.protobuf.GoGoProtos.nullable);
     com.google.protobuf.Descriptors.FileDescriptor
         .internalUpdateFileDescriptor(descriptor, registry);
   }

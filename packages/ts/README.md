@@ -167,6 +167,67 @@ const res = await signAndBroadcastHybrid({
 - `rest` is optional in the TypeScript types, so a caller that forgets it compiles cleanly and only fails at runtime on `qorechain-vladi` / `qorechain-diana`. Cover your wiring with a runtime test, not just a type check.
 - In unit tests, pass `signBytesVersion: "v1"` or `"v2"` explicitly (or inject `fetch`): `"auto"` asks the network, so a test that omits it silently depends on a live node.
 
+### EVM authorisation window (v0.8.2, chain v3.2.0)
+
+From chain v3.2.0 an EVM transaction is admitted only from an account that has a
+registered PQC key **and** an open authorisation window. The window is opened by
+a Cosmos-lane message, so the classical secp256k1 key can never authorise
+spending on its own. The testnet enforces it since its v3.2.0 upgrade; mainnet
+from its own.
+
+```ts
+import {
+  openEvmWindowMsg,
+  fetchEvmWindow,
+  classifyEvmWindowRejection,
+} from "@qorechain/sdk";
+
+// 1. The refusal tells you which state you are in.
+try {
+  await walletClient.sendTransaction({ to, value });
+} catch (err) {
+  switch (classifyEvmWindowRejection(err)) {
+    case "no-pqc-key": /* register a PQC key first */ break;
+    case "no-window":  /* ask the user to authorise, below */ break;
+    case "exhausted":  /* the window ran out — open a new one */ break;
+    case "invalid":    /* the bounds were refused */ break;
+    default: throw err; // not a window problem
+  }
+}
+
+// 2. Open one on the Cosmos lane (hybrid-signed, like any other message).
+await signer.signAndBroadcast(transport, {
+  chainId, accountNumber, sequence, fee,
+  messages: [openEvmWindowMsg({
+    sender: account.cosmos,
+    blocks: 300,        // 1…17280
+    maxTxs: 5,          // 1…1000
+    maxValue: "2000000" // uqor: value PLUS the maximum fee
+  })],
+});
+
+// 3. THEN read the nonce, because opening advanced it, and send.
+const nonce = await publicClient.getTransactionCount({ address: account.evm });
+await walletClient.sendTransaction({ to, value, nonce });
+
+// Whatever remains of the window, at any time:
+const w = await fetchEvmWindow({ rest, address: account.cosmos });
+// w.live, w.remainingTxs, w.remainingValue, w.remainingBlocks — all bigint
+```
+
+- **Opening advances the EVM nonce.** The identity is unified, so the Cosmos
+  sequence is the EVM nonce. Signing the EVM transaction first gives "nonce too
+  low". Order: open, read the nonce, sign.
+- **`maxValue` covers value plus the maximum fee** (gas limit × gas fee cap): a
+  1,000 uqor transfer with 21,000 gas at 112.5 gwei consumes 3,363 uqor. Wei to
+  uqor rounds up.
+- **`blocks` is a block count.** 17,280 is roughly 5 hours on the testnet
+  (~1.03 s blocks) and 15 on mainnet (~3.1 s) — not the "24 hours" the chain
+  constant's comment suggests. Show blocks, or compute from recent block time.
+- There is no "open automatically before sending" helper, on purpose: a window
+  opened on every send is a click nobody reads. Show the limits and let the user
+  authorise, then reuse the live window until it is exhausted.
+
 ### CosmWasm contracts
 
 Interact with CosmWasm contracts via thin wrappers over

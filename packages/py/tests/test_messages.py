@@ -44,7 +44,7 @@ TEST_MNEMONIC = (
 CHAIN_ID = "qorechain-diana"
 FEE = {"amount": [{"denom": "uqor", "amount": "5000"}], "gas": "200000"}
 
-# Every QoreChain composer call -> the exact typeUrl it must emit. Covers all 59.
+# Every QoreChain composer call -> the exact typeUrl it must emit. Covers all 61.
 QORECHAIN_COMPOSER_CASES = [
     # amm (7)
     (amm.create_pool(creator="qor1"), "/qorechain.amm.v1.MsgCreatePool"),
@@ -111,7 +111,7 @@ QORECHAIN_COMPOSER_CASES = [
         multilayer.challenge_anchor(challenger="qor1"),
         "/qorechain.multilayer.v1.MsgChallengeAnchor",
     ),
-    # pqc (6)
+    # pqc (8)
     (pqc.register_pqc_key(sender="qor1"), "/qorechain.pqc.v1.MsgRegisterPQCKey"),
     (pqc.register_pqc_key_v2(sender="qor1"), "/qorechain.pqc.v1.MsgRegisterPQCKeyV2"),
     (pqc.migrate_pqc_key(sender="qor1"), "/qorechain.pqc.v1.MsgMigratePQCKey"),
@@ -121,6 +121,11 @@ QORECHAIN_COMPOSER_CASES = [
         "/qorechain.pqc.v1.MsgDeprecateAlgorithm",
     ),
     (pqc.disable_algorithm(authority="qor1"), "/qorechain.pqc.v1.MsgDisableAlgorithm"),
+    (
+        pqc.open_evm_window(sender="qor1", blocks=300, max_txs=5, max_value="2000000"),
+        "/qorechain.pqc.v1.MsgOpenEVMWindow",
+    ),
+    (pqc.close_evm_window(sender="qor1"), "/qorechain.pqc.v1.MsgCloseEVMWindow"),
     # svm (5)
     (svm.deploy_program(sender="qor1"), "/qorechain.svm.v1.MsgDeployProgram"),
     (svm.create_account(sender="qor1"), "/qorechain.svm.v1.MsgCreateAccount"),
@@ -197,10 +202,10 @@ QORECHAIN_COMPOSER_CASES = [
 ]
 
 
-def test_all_59_qorechain_composers_covered():
-    assert len(QORECHAIN_COMPOSER_CASES) == 59
+def test_all_61_qorechain_composers_covered():
+    assert len(QORECHAIN_COMPOSER_CASES) == 61
     type_urls = {tu for _m, tu in QORECHAIN_COMPOSER_CASES}
-    assert len(type_urls) == 59
+    assert len(type_urls) == 61
 
 
 @pytest.mark.parametrize("built_msg,type_url", QORECHAIN_COMPOSER_CASES)
@@ -240,11 +245,11 @@ def test_cosmos_composer_returns_exact_type_url(built_msg, type_url):
     assert built_msg.type_url == type_url
 
 
-def test_registry_covers_all_59_qorechain_and_18_cosmos():
+def test_registry_covers_all_61_qorechain_and_18_cosmos():
     reg = qorechain_registry()
     qc = [k for k in reg if k.startswith("/qorechain.")]
-    assert len(qc) == 59
-    assert len(reg) == 59 + 18
+    assert len(qc) == 61
+    assert len(reg) == 61 + 18
 
 
 def test_registry_extra_types_override():

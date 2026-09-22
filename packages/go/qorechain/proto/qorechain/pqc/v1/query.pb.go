@@ -28,6 +28,180 @@ var _ = math.Inf
 // proto package needs to be updated.
 const _ = proto.GoGoProtoPackageIsVersion3 // please upgrade the proto package
 
+type QueryEVMWindowRequest struct {
+	Address string `protobuf:"bytes,1,opt,name=address,proto3" json:"address,omitempty"`
+}
+
+func (m *QueryEVMWindowRequest) Reset()         { *m = QueryEVMWindowRequest{} }
+func (m *QueryEVMWindowRequest) String() string { return proto.CompactTextString(m) }
+func (*QueryEVMWindowRequest) ProtoMessage()    {}
+func (*QueryEVMWindowRequest) Descriptor() ([]byte, []int) {
+	return fileDescriptor_0f221b60dbf809b5, []int{0}
+}
+func (m *QueryEVMWindowRequest) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *QueryEVMWindowRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_QueryEVMWindowRequest.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *QueryEVMWindowRequest) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_QueryEVMWindowRequest.Merge(m, src)
+}
+func (m *QueryEVMWindowRequest) XXX_Size() int {
+	return m.Size()
+}
+func (m *QueryEVMWindowRequest) XXX_DiscardUnknown() {
+	xxx_messageInfo_QueryEVMWindowRequest.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_QueryEVMWindowRequest proto.InternalMessageInfo
+
+func (m *QueryEVMWindowRequest) GetAddress() string {
+	if m != nil {
+		return m.Address
+	}
+	return ""
+}
+
+type QueryEVMWindowResponse struct {
+	// found reports whether a window is stored. A stored window may still be
+	// exhausted or expired; check live.
+	Found bool `protobuf:"varint,1,opt,name=found,proto3" json:"found,omitempty"`
+	// live reports whether the window admits at least one more transaction of
+	// zero value at the current height.
+	Live         bool   `protobuf:"varint,2,opt,name=live,proto3" json:"live,omitempty"`
+	OpenedHeight uint64 `protobuf:"varint,3,opt,name=opened_height,json=openedHeight,proto3" json:"opened_height,omitempty"`
+	ExpiryHeight uint64 `protobuf:"varint,4,opt,name=expiry_height,json=expiryHeight,proto3" json:"expiry_height,omitempty"`
+	MaxTxs       uint64 `protobuf:"varint,5,opt,name=max_txs,json=maxTxs,proto3" json:"max_txs,omitempty"`
+	UsedTxs      uint64 `protobuf:"varint,6,opt,name=used_txs,json=usedTxs,proto3" json:"used_txs,omitempty"`
+	MaxValue     string `protobuf:"bytes,7,opt,name=max_value,json=maxValue,proto3" json:"max_value,omitempty"`
+	UsedValue    string `protobuf:"bytes,8,opt,name=used_value,json=usedValue,proto3" json:"used_value,omitempty"`
+	// remaining_blocks, remaining_txs and remaining_value say which bound is
+	// closest to running out, so a refused caller can tell why.
+	RemainingBlocks uint64 `protobuf:"varint,9,opt,name=remaining_blocks,json=remainingBlocks,proto3" json:"remaining_blocks,omitempty"`
+	RemainingTxs    uint64 `protobuf:"varint,10,opt,name=remaining_txs,json=remainingTxs,proto3" json:"remaining_txs,omitempty"`
+	RemainingValue  string `protobuf:"bytes,11,opt,name=remaining_value,json=remainingValue,proto3" json:"remaining_value,omitempty"`
+}
+
+func (m *QueryEVMWindowResponse) Reset()         { *m = QueryEVMWindowResponse{} }
+func (m *QueryEVMWindowResponse) String() string { return proto.CompactTextString(m) }
+func (*QueryEVMWindowResponse) ProtoMessage()    {}
+func (*QueryEVMWindowResponse) Descriptor() ([]byte, []int) {
+	return fileDescriptor_0f221b60dbf809b5, []int{1}
+}
+func (m *QueryEVMWindowResponse) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *QueryEVMWindowResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_QueryEVMWindowResponse.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *QueryEVMWindowResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_QueryEVMWindowResponse.Merge(m, src)
+}
+func (m *QueryEVMWindowResponse) XXX_Size() int {
+	return m.Size()
+}
+func (m *QueryEVMWindowResponse) XXX_DiscardUnknown() {
+	xxx_messageInfo_QueryEVMWindowResponse.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_QueryEVMWindowResponse proto.InternalMessageInfo
+
+func (m *QueryEVMWindowResponse) GetFound() bool {
+	if m != nil {
+		return m.Found
+	}
+	return false
+}
+
+func (m *QueryEVMWindowResponse) GetLive() bool {
+	if m != nil {
+		return m.Live
+	}
+	return false
+}
+
+func (m *QueryEVMWindowResponse) GetOpenedHeight() uint64 {
+	if m != nil {
+		return m.OpenedHeight
+	}
+	return 0
+}
+
+func (m *QueryEVMWindowResponse) GetExpiryHeight() uint64 {
+	if m != nil {
+		return m.ExpiryHeight
+	}
+	return 0
+}
+
+func (m *QueryEVMWindowResponse) GetMaxTxs() uint64 {
+	if m != nil {
+		return m.MaxTxs
+	}
+	return 0
+}
+
+func (m *QueryEVMWindowResponse) GetUsedTxs() uint64 {
+	if m != nil {
+		return m.UsedTxs
+	}
+	return 0
+}
+
+func (m *QueryEVMWindowResponse) GetMaxValue() string {
+	if m != nil {
+		return m.MaxValue
+	}
+	return ""
+}
+
+func (m *QueryEVMWindowResponse) GetUsedValue() string {
+	if m != nil {
+		return m.UsedValue
+	}
+	return ""
+}
+
+func (m *QueryEVMWindowResponse) GetRemainingBlocks() uint64 {
+	if m != nil {
+		return m.RemainingBlocks
+	}
+	return 0
+}
+
+func (m *QueryEVMWindowResponse) GetRemainingTxs() uint64 {
+	if m != nil {
+		return m.RemainingTxs
+	}
+	return 0
+}
+
+func (m *QueryEVMWindowResponse) GetRemainingValue() string {
+	if m != nil {
+		return m.RemainingValue
+	}
+	return ""
+}
+
 type QueryAccountRequest struct {
 	// address is the bech32 account address whose PQC key is requested.
 	Address string `protobuf:"bytes,1,opt,name=address,proto3" json:"address,omitempty"`
@@ -37,7 +211,7 @@ func (m *QueryAccountRequest) Reset()         { *m = QueryAccountRequest{} }
 func (m *QueryAccountRequest) String() string { return proto.CompactTextString(m) }
 func (*QueryAccountRequest) ProtoMessage()    {}
 func (*QueryAccountRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_0f221b60dbf809b5, []int{0}
+	return fileDescriptor_0f221b60dbf809b5, []int{2}
 }
 func (m *QueryAccountRequest) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -83,7 +257,7 @@ func (m *QueryAccountResponse) Reset()         { *m = QueryAccountResponse{} }
 func (m *QueryAccountResponse) String() string { return proto.CompactTextString(m) }
 func (*QueryAccountResponse) ProtoMessage()    {}
 func (*QueryAccountResponse) Descriptor() ([]byte, []int) {
-	return fileDescriptor_0f221b60dbf809b5, []int{1}
+	return fileDescriptor_0f221b60dbf809b5, []int{3}
 }
 func (m *QueryAccountResponse) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -143,7 +317,7 @@ func (m *PQCAccountView) Reset()         { *m = PQCAccountView{} }
 func (m *PQCAccountView) String() string { return proto.CompactTextString(m) }
 func (*PQCAccountView) ProtoMessage()    {}
 func (*PQCAccountView) Descriptor() ([]byte, []int) {
-	return fileDescriptor_0f221b60dbf809b5, []int{2}
+	return fileDescriptor_0f221b60dbf809b5, []int{4}
 }
 func (m *PQCAccountView) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -236,6 +410,8 @@ func (m *PQCAccountView) GetMigrationAlgorithmId() uint32 {
 }
 
 func init() {
+	proto.RegisterType((*QueryEVMWindowRequest)(nil), "qorechain.pqc.v1.QueryEVMWindowRequest")
+	proto.RegisterType((*QueryEVMWindowResponse)(nil), "qorechain.pqc.v1.QueryEVMWindowResponse")
 	proto.RegisterType((*QueryAccountRequest)(nil), "qorechain.pqc.v1.QueryAccountRequest")
 	proto.RegisterType((*QueryAccountResponse)(nil), "qorechain.pqc.v1.QueryAccountResponse")
 	proto.RegisterType((*PQCAccountView)(nil), "qorechain.pqc.v1.PQCAccountView")
@@ -244,43 +420,57 @@ func init() {
 func init() { proto.RegisterFile("qorechain/pqc/v1/query.proto", fileDescriptor_0f221b60dbf809b5) }
 
 var fileDescriptor_0f221b60dbf809b5 = []byte{
-	// 571 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x84, 0x92, 0x4d, 0x8b, 0xd3, 0x40,
-	0x18, 0xc7, 0x77, 0xb2, 0xee, 0x76, 0x77, 0xf6, 0xc5, 0x75, 0x2c, 0x12, 0x97, 0x1a, 0x6a, 0xa5,
-	0x52, 0x14, 0x13, 0xb3, 0x7a, 0xaa, 0xa7, 0xd6, 0x83, 0x8a, 0x28, 0x69, 0xd0, 0x22, 0x52, 0x08,
-	0xd3, 0xc9, 0x98, 0x84, 0x36, 0x99, 0xbc, 0x4c, 0x2a, 0x41, 0xbc, 0x08, 0x9e, 0x15, 0xfc, 0x06,
-	0x1e, 0xfd, 0x24, 0xe2, 0x69, 0xc1, 0x8b, 0x47, 0x69, 0xf5, 0xe2, 0xd5, 0x2f, 0x20, 0x9d, 0x74,
-	0xd3, 0x76, 0xab, 0x78, 0xcb, 0xfc, 0x9f, 0x97, 0xdf, 0xf3, 0xe4, 0xff, 0xc0, 0x4a, 0xc4, 0x62,
-	0x4a, 0x5c, 0xec, 0x05, 0x5a, 0x18, 0x11, 0x6d, 0xa4, 0x6b, 0x51, 0x4a, 0xe3, 0x4c, 0x0d, 0x63,
-	0xc6, 0x19, 0x3a, 0x28, 0xa2, 0x6a, 0x18, 0x11, 0x75, 0xa4, 0x1f, 0x56, 0x1c, 0xc6, 0x9c, 0x21,
-	0xd5, 0x70, 0xe8, 0x69, 0x38, 0x08, 0x18, 0xc7, 0xdc, 0x63, 0x41, 0x92, 0xe7, 0xd7, 0x34, 0x78,
-	0xbe, 0x33, 0x2d, 0x6f, 0x11, 0xc2, 0xd2, 0x80, 0x9b, 0x34, 0x4a, 0x69, 0xc2, 0x91, 0x0c, 0x4b,
-	0xd8, 0xb6, 0x63, 0x9a, 0x24, 0x32, 0xa8, 0x82, 0xc6, 0xb6, 0x79, 0xf2, 0xac, 0xb9, 0xb0, 0xbc,
-	0x5c, 0x90, 0x84, 0x2c, 0x48, 0x28, 0x2a, 0xc3, 0x8d, 0x17, 0x2c, 0x0d, 0x6c, 0x91, 0xbf, 0x65,
-	0xe6, 0x0f, 0xd4, 0x84, 0x25, 0x9c, 0x27, 0xca, 0x52, 0x15, 0x34, 0x76, 0x8e, 0xaa, 0xea, 0xe9,
-	0x01, 0x55, 0xa3, 0x73, 0x77, 0xd6, 0xac, 0xeb, 0xd1, 0x97, 0xe6, 0x49, 0x41, 0xed, 0xa7, 0x04,
-	0xf7, 0x97, 0x63, 0xff, 0x1e, 0x0b, 0x5d, 0x82, 0x30, 0x4c, 0xfb, 0x43, 0x8f, 0x58, 0x03, 0x9a,
-	0x09, 0xd6, 0xae, 0xb9, 0x9d, 0x2b, 0x0f, 0x69, 0x86, 0x2e, 0xc3, 0x5d, 0x3c, 0x74, 0x58, 0xec,
-	0x71, 0xd7, 0xb7, 0x3c, 0x5b, 0x5e, 0xaf, 0x82, 0xc6, 0x9e, 0xb9, 0x53, 0x68, 0x0f, 0x6c, 0x54,
-	0x87, 0xfb, 0xf3, 0x94, 0x00, 0xfb, 0x54, 0x3e, 0x23, 0x10, 0x7b, 0x85, 0xfa, 0x18, 0xfb, 0x74,
-	0xda, 0x89, 0x12, 0x3b, 0xc1, 0x56, 0x98, 0xf6, 0xa7, 0xa8, 0x0d, 0x81, 0xda, 0x11, 0x9a, 0x21,
-	0x24, 0x74, 0x11, 0x6e, 0x0d, 0x68, 0x66, 0xf1, 0x2c, 0xa4, 0xf2, 0x66, 0x3e, 0xe6, 0x80, 0x66,
-	0x4f, 0xb2, 0x90, 0xa2, 0x6b, 0xf0, 0x1c, 0x89, 0x29, 0xe6, 0xd4, 0xb6, 0x30, 0xb7, 0x5c, 0xea,
-	0x39, 0x2e, 0x97, 0x4b, 0x55, 0xd0, 0x58, 0x37, 0xcf, 0xce, 0x02, 0x2d, 0x7e, 0x5f, 0xc8, 0xe8,
-	0x26, 0x2c, 0xfb, 0x9e, 0x13, 0x0b, 0xbb, 0xac, 0x85, 0xe5, 0xb6, 0x04, 0x11, 0x15, 0x31, 0xa3,
-	0xd8, 0xf2, 0x36, 0xbc, 0x30, 0xaf, 0x58, 0xda, 0x77, 0x5b, 0xec, 0x3b, 0xef, 0xd7, 0x9a, 0x2f,
-	0x7e, 0xf4, 0x0e, 0xc0, 0x0d, 0x61, 0x29, 0x7a, 0x0b, 0x60, 0x69, 0xf6, 0xbb, 0x51, 0x7d, 0xd5,
-	0xa8, 0xbf, 0x1c, 0xca, 0xe1, 0xd5, 0xff, 0xa5, 0xe5, 0xe7, 0x51, 0xbb, 0xfe, 0xe6, 0xeb, 0x8f,
-	0x0f, 0x52, 0x1d, 0x5d, 0xd1, 0x56, 0xce, 0x77, 0xe6, 0xb7, 0xf6, 0x6a, 0xe6, 0xe5, 0xeb, 0xf6,
-	0x6f, 0xf0, 0x79, 0xac, 0x80, 0xe3, 0xb1, 0x02, 0xbe, 0x8f, 0x15, 0xf0, 0x7e, 0xa2, 0xac, 0x1d,
-	0x4f, 0x94, 0xb5, 0x6f, 0x13, 0x65, 0x0d, 0x96, 0x09, 0xf3, 0x57, 0x90, 0x6d, 0x28, 0x98, 0xc6,
-	0xf4, 0xa2, 0x0d, 0xf0, 0xfc, 0xa9, 0xe3, 0x71, 0x37, 0xed, 0xab, 0x84, 0xf9, 0x0b, 0xb4, 0xe2,
-	0xeb, 0x46, 0x62, 0x0f, 0xb4, 0x10, 0x93, 0x01, 0x76, 0x68, 0xa2, 0x39, 0x6c, 0x71, 0xa2, 0x69,
-	0x87, 0x95, 0x09, 0xef, 0x84, 0x11, 0x19, 0xe9, 0x1f, 0xa5, 0xf5, 0x8e, 0xf1, 0xec, 0x93, 0x74,
-	0xd0, 0x29, 0xe8, 0x46, 0x44, 0xd4, 0xae, 0xfe, 0x65, 0x41, 0xea, 0x19, 0x11, 0xe9, 0x75, 0xf5,
-	0xb1, 0x54, 0x39, 0x2d, 0xf5, 0xee, 0x19, 0xed, 0x47, 0x94, 0x63, 0x1b, 0x73, 0xfc, 0x4b, 0x42,
-	0x45, 0xb8, 0xd9, 0x34, 0x22, 0xd2, 0x6c, 0x76, 0xf5, 0xfe, 0xa6, 0xa0, 0xdf, 0xfa, 0x13, 0x00,
-	0x00, 0xff, 0xff, 0x22, 0xf1, 0x39, 0x6e, 0xe1, 0x03, 0x00, 0x00,
+	// 787 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x84, 0x54, 0x4d, 0x6f, 0xdb, 0x46,
+	0x14, 0x34, 0x69, 0xcb, 0x12, 0x57, 0xfe, 0xea, 0x56, 0x75, 0x55, 0xd7, 0x15, 0x5c, 0x19, 0xb6,
+	0xd5, 0x16, 0x25, 0x2b, 0xb7, 0x27, 0xf5, 0x64, 0x15, 0x45, 0x5b, 0x14, 0x0e, 0x28, 0xc2, 0x51,
+	0x82, 0xc0, 0x00, 0xb1, 0x5a, 0x6e, 0x28, 0x42, 0x22, 0x97, 0x9f, 0xb2, 0x88, 0x20, 0x97, 0x00,
+	0xb9, 0x06, 0x01, 0xf2, 0x07, 0x82, 0x1c, 0xf3, 0x4b, 0x82, 0x9c, 0x0c, 0xe4, 0x92, 0x63, 0x20,
+	0x27, 0x97, 0x5c, 0x83, 0xdc, 0x83, 0x5d, 0x52, 0x94, 0x2c, 0xc5, 0xf1, 0x4d, 0x3b, 0x33, 0x6f,
+	0x67, 0x1e, 0xdf, 0xd3, 0x82, 0x6d, 0x8f, 0xfa, 0x04, 0x77, 0x91, 0xe5, 0x28, 0xae, 0x87, 0x95,
+	0x41, 0x5d, 0xf1, 0x22, 0xe2, 0xc7, 0xb2, 0xeb, 0xd3, 0x90, 0xc2, 0x8d, 0x8c, 0x95, 0x5d, 0x0f,
+	0xcb, 0x83, 0xfa, 0xd6, 0xb6, 0x49, 0xa9, 0xd9, 0x27, 0x0a, 0x72, 0x2d, 0x05, 0x39, 0x0e, 0x0d,
+	0x51, 0x68, 0x51, 0x27, 0x48, 0xf4, 0xd5, 0x3a, 0xf8, 0xa6, 0xc5, 0xca, 0xff, 0x6e, 0x1f, 0xdf,
+	0xb2, 0x1c, 0x83, 0x9e, 0x69, 0xc4, 0x8b, 0x48, 0x10, 0xc2, 0x32, 0xc8, 0x23, 0xc3, 0xf0, 0x49,
+	0x10, 0x94, 0x85, 0x1d, 0xa1, 0x26, 0x69, 0xe3, 0x63, 0xf5, 0xa3, 0x08, 0x36, 0x67, 0x6b, 0x02,
+	0x97, 0x3a, 0x01, 0x81, 0x25, 0x90, 0xbb, 0x4b, 0x23, 0xc7, 0xe0, 0x25, 0x05, 0x2d, 0x39, 0x40,
+	0x08, 0x96, 0xfa, 0xd6, 0x80, 0x94, 0x45, 0x0e, 0xf2, 0xdf, 0x70, 0x17, 0xac, 0x52, 0x97, 0x38,
+	0xc4, 0xd0, 0xbb, 0xc4, 0x32, 0xbb, 0x61, 0x79, 0x71, 0x47, 0xa8, 0x2d, 0x69, 0x2b, 0x09, 0xf8,
+	0x2f, 0xc7, 0x98, 0x88, 0x0c, 0x5d, 0xcb, 0x8f, 0xc7, 0xa2, 0xa5, 0x44, 0x94, 0x80, 0xa9, 0xe8,
+	0x5b, 0x90, 0xb7, 0xd1, 0x50, 0x0f, 0x87, 0x41, 0x39, 0xc7, 0xe9, 0x65, 0x1b, 0x0d, 0x4f, 0x86,
+	0x01, 0xfc, 0x0e, 0x14, 0xa2, 0x80, 0x18, 0x9c, 0x59, 0xe6, 0x4c, 0x9e, 0x9d, 0x19, 0xf5, 0x3d,
+	0x90, 0x58, 0xcd, 0x00, 0xf5, 0x23, 0x52, 0xce, 0xf3, 0xf6, 0x0a, 0x36, 0x1a, 0xb6, 0xd9, 0x19,
+	0xfe, 0x00, 0x00, 0xaf, 0x4b, 0xd8, 0x02, 0x67, 0x25, 0x86, 0x24, 0xf4, 0x4f, 0x60, 0xc3, 0x27,
+	0x36, 0xb2, 0x1c, 0xcb, 0x31, 0xf5, 0x4e, 0x9f, 0xe2, 0x5e, 0x50, 0x96, 0xf8, 0xf5, 0xeb, 0x19,
+	0xde, 0xe4, 0x30, 0xcb, 0x3f, 0x91, 0xb2, 0x18, 0x20, 0xc9, 0x9f, 0x81, 0x2c, 0xcb, 0x01, 0x98,
+	0xd4, 0xa5, 0x9e, 0x45, 0xee, 0xb9, 0x96, 0xc1, 0xdc, 0xb8, 0xaa, 0x80, 0xaf, 0xf9, 0x67, 0x3f,
+	0xc2, 0x98, 0x46, 0x4e, 0x78, 0xfd, 0xa0, 0xba, 0xa0, 0x74, 0xb9, 0xe0, 0x8b, 0x53, 0x6a, 0x80,
+	0x3c, 0x4a, 0x84, 0x7c, 0x50, 0xc5, 0xc3, 0x1d, 0x79, 0x76, 0x97, 0x64, 0xb5, 0xf5, 0x57, 0x7a,
+	0x59, 0xdb, 0x22, 0x67, 0xda, 0xb8, 0xa0, 0xfa, 0x4e, 0x04, 0x6b, 0x97, 0xb9, 0xab, 0x63, 0xb1,
+	0xef, 0xeb, 0x46, 0x9d, 0xbe, 0x85, 0xf5, 0x1e, 0x89, 0xb9, 0xd7, 0x8a, 0x26, 0x25, 0xc8, 0xff,
+	0x24, 0x86, 0x3f, 0x82, 0x15, 0xd4, 0x37, 0xa9, 0x6f, 0x85, 0x5d, 0x5b, 0xb7, 0x0c, 0xbe, 0x18,
+	0xab, 0x5a, 0x31, 0xc3, 0xfe, 0x33, 0xe0, 0x1e, 0x58, 0x9b, 0x48, 0x1c, 0x64, 0x13, 0xbe, 0x18,
+	0x92, 0xb6, 0x9a, 0xa1, 0x37, 0x90, 0x4d, 0xd8, 0x4d, 0x04, 0x1b, 0x01, 0xd2, 0xdd, 0xa8, 0xc3,
+	0xac, 0x72, 0xdc, 0xaa, 0xc8, 0x31, 0x95, 0x43, 0x6c, 0x47, 0x7a, 0x24, 0xd6, 0xc3, 0xd8, 0x25,
+	0x7c, 0x47, 0x24, 0x2d, 0xdf, 0x23, 0xf1, 0x49, 0xec, 0x12, 0xf8, 0x33, 0xf8, 0x0a, 0xfb, 0x04,
+	0x85, 0xc4, 0xd0, 0x51, 0x38, 0x5e, 0x40, 0xb6, 0x2b, 0x8b, 0xda, 0x7a, 0x4a, 0x1c, 0x85, 0xe9,
+	0x0e, 0xfe, 0x06, 0x4a, 0xb6, 0x65, 0xfa, 0xfc, 0x9f, 0xa5, 0x4f, 0x35, 0x57, 0xe0, 0x8e, 0x30,
+	0xe3, 0xd4, 0xac, 0xcb, 0x3f, 0xc0, 0xe6, 0xa4, 0xe2, 0x52, 0xbf, 0x12, 0xef, 0x77, 0x72, 0xdf,
+	0xd1, 0xa4, 0xf1, 0xc3, 0xa7, 0x22, 0xc8, 0xf1, 0x91, 0xc2, 0x87, 0x02, 0xc8, 0xa7, 0x9f, 0x1b,
+	0xee, 0xcd, 0x0f, 0xea, 0x33, 0x8b, 0xb2, 0xb5, 0x7f, 0x9d, 0x2c, 0x59, 0x8f, 0xea, 0x2f, 0x0f,
+	0x5e, 0xbd, 0x7d, 0x22, 0xee, 0xc1, 0x5d, 0x65, 0xee, 0xa5, 0x49, 0xe7, 0xad, 0xdc, 0x4b, 0x67,
+	0x79, 0x1f, 0x3e, 0x12, 0x80, 0x94, 0xbd, 0x03, 0xf0, 0xe0, 0x0a, 0x8b, 0xd9, 0xd7, 0x65, 0xab,
+	0x76, 0xbd, 0x30, 0x4d, 0x23, 0xf3, 0x34, 0x35, 0xb8, 0x3f, 0x9f, 0x86, 0x0c, 0x6c, 0xfd, 0x8c,
+	0xab, 0x27, 0x81, 0x9a, 0x1f, 0x84, 0x17, 0xa3, 0x8a, 0x70, 0x3e, 0xaa, 0x08, 0x6f, 0x46, 0x15,
+	0xe1, 0xf1, 0x45, 0x65, 0xe1, 0xfc, 0xa2, 0xb2, 0xf0, 0xfa, 0xa2, 0xb2, 0x00, 0x4a, 0x98, 0xda,
+	0x73, 0xbe, 0x4d, 0xc0, 0x8d, 0x55, 0xf6, 0x1a, 0xaa, 0xc2, 0x9d, 0x9b, 0xa6, 0x15, 0x76, 0xa3,
+	0x8e, 0x8c, 0xa9, 0x3d, 0x65, 0x98, 0xfd, 0xfa, 0x35, 0x30, 0x7a, 0x8a, 0x8b, 0x70, 0x0f, 0x99,
+	0x24, 0x50, 0x4c, 0x3a, 0x1d, 0x8a, 0xdd, 0x30, 0x17, 0xf2, 0x4f, 0xd7, 0xc3, 0x83, 0xfa, 0x33,
+	0x71, 0xb1, 0xa5, 0xde, 0x7e, 0x2e, 0x6e, 0xb4, 0x32, 0x77, 0xd5, 0xc3, 0x72, 0xbb, 0xfe, 0x72,
+	0x0a, 0x3a, 0x55, 0x3d, 0x7c, 0xda, 0xae, 0x8f, 0xc4, 0xed, 0x59, 0xe8, 0xf4, 0x1f, 0xb5, 0x79,
+	0x4c, 0x42, 0x64, 0xa0, 0x10, 0xbd, 0x17, 0x61, 0x46, 0x37, 0x1a, 0xaa, 0x87, 0x1b, 0x8d, 0x76,
+	0xbd, 0xb3, 0xcc, 0xdd, 0x7f, 0xff, 0x14, 0x00, 0x00, 0xff, 0xff, 0xe0, 0x8a, 0x5d, 0x65, 0x1d,
+	0x06, 0x00, 0x00,
 }
 
 // Reference imports to suppress errors if they are not otherwise used.
@@ -297,6 +487,9 @@ const _ = grpc.SupportPackageIsVersion4
 type QueryClient interface {
 	// Account returns the registered PQC key information for an address.
 	Account(ctx context.Context, in *QueryAccountRequest, opts ...grpc.CallOption) (*QueryAccountResponse, error)
+	// EVMWindow returns an address's open EVM-lane authorisation window, if any,
+	// with what remains of it at the current height.
+	EVMWindow(ctx context.Context, in *QueryEVMWindowRequest, opts ...grpc.CallOption) (*QueryEVMWindowResponse, error)
 }
 
 type queryClient struct {
@@ -316,10 +509,22 @@ func (c *queryClient) Account(ctx context.Context, in *QueryAccountRequest, opts
 	return out, nil
 }
 
+func (c *queryClient) EVMWindow(ctx context.Context, in *QueryEVMWindowRequest, opts ...grpc.CallOption) (*QueryEVMWindowResponse, error) {
+	out := new(QueryEVMWindowResponse)
+	err := c.cc.Invoke(ctx, "/qorechain.pqc.v1.Query/EVMWindow", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // QueryServer is the server API for Query service.
 type QueryServer interface {
 	// Account returns the registered PQC key information for an address.
 	Account(context.Context, *QueryAccountRequest) (*QueryAccountResponse, error)
+	// EVMWindow returns an address's open EVM-lane authorisation window, if any,
+	// with what remains of it at the current height.
+	EVMWindow(context.Context, *QueryEVMWindowRequest) (*QueryEVMWindowResponse, error)
 }
 
 // UnimplementedQueryServer can be embedded to have forward compatible implementations.
@@ -328,6 +533,9 @@ type UnimplementedQueryServer struct {
 
 func (*UnimplementedQueryServer) Account(ctx context.Context, req *QueryAccountRequest) (*QueryAccountResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Account not implemented")
+}
+func (*UnimplementedQueryServer) EVMWindow(ctx context.Context, req *QueryEVMWindowRequest) (*QueryEVMWindowResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method EVMWindow not implemented")
 }
 
 func RegisterQueryServer(s grpc1.Server, srv QueryServer) {
@@ -352,6 +560,24 @@ func _Query_Account_Handler(srv interface{}, ctx context.Context, dec func(inter
 	return interceptor(ctx, in, info, handler)
 }
 
+func _Query_EVMWindow_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(QueryEVMWindowRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(QueryServer).EVMWindow(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/qorechain.pqc.v1.Query/EVMWindow",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(QueryServer).EVMWindow(ctx, req.(*QueryEVMWindowRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 var Query_serviceDesc = _Query_serviceDesc
 var _Query_serviceDesc = grpc.ServiceDesc{
 	ServiceName: "qorechain.pqc.v1.Query",
@@ -361,9 +587,137 @@ var _Query_serviceDesc = grpc.ServiceDesc{
 			MethodName: "Account",
 			Handler:    _Query_Account_Handler,
 		},
+		{
+			MethodName: "EVMWindow",
+			Handler:    _Query_EVMWindow_Handler,
+		},
 	},
 	Streams:  []grpc.StreamDesc{},
 	Metadata: "qorechain/pqc/v1/query.proto",
+}
+
+func (m *QueryEVMWindowRequest) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *QueryEVMWindowRequest) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *QueryEVMWindowRequest) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if len(m.Address) > 0 {
+		i -= len(m.Address)
+		copy(dAtA[i:], m.Address)
+		i = encodeVarintQuery(dAtA, i, uint64(len(m.Address)))
+		i--
+		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *QueryEVMWindowResponse) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *QueryEVMWindowResponse) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *QueryEVMWindowResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if len(m.RemainingValue) > 0 {
+		i -= len(m.RemainingValue)
+		copy(dAtA[i:], m.RemainingValue)
+		i = encodeVarintQuery(dAtA, i, uint64(len(m.RemainingValue)))
+		i--
+		dAtA[i] = 0x5a
+	}
+	if m.RemainingTxs != 0 {
+		i = encodeVarintQuery(dAtA, i, uint64(m.RemainingTxs))
+		i--
+		dAtA[i] = 0x50
+	}
+	if m.RemainingBlocks != 0 {
+		i = encodeVarintQuery(dAtA, i, uint64(m.RemainingBlocks))
+		i--
+		dAtA[i] = 0x48
+	}
+	if len(m.UsedValue) > 0 {
+		i -= len(m.UsedValue)
+		copy(dAtA[i:], m.UsedValue)
+		i = encodeVarintQuery(dAtA, i, uint64(len(m.UsedValue)))
+		i--
+		dAtA[i] = 0x42
+	}
+	if len(m.MaxValue) > 0 {
+		i -= len(m.MaxValue)
+		copy(dAtA[i:], m.MaxValue)
+		i = encodeVarintQuery(dAtA, i, uint64(len(m.MaxValue)))
+		i--
+		dAtA[i] = 0x3a
+	}
+	if m.UsedTxs != 0 {
+		i = encodeVarintQuery(dAtA, i, uint64(m.UsedTxs))
+		i--
+		dAtA[i] = 0x30
+	}
+	if m.MaxTxs != 0 {
+		i = encodeVarintQuery(dAtA, i, uint64(m.MaxTxs))
+		i--
+		dAtA[i] = 0x28
+	}
+	if m.ExpiryHeight != 0 {
+		i = encodeVarintQuery(dAtA, i, uint64(m.ExpiryHeight))
+		i--
+		dAtA[i] = 0x20
+	}
+	if m.OpenedHeight != 0 {
+		i = encodeVarintQuery(dAtA, i, uint64(m.OpenedHeight))
+		i--
+		dAtA[i] = 0x18
+	}
+	if m.Live {
+		i--
+		if m.Live {
+			dAtA[i] = 1
+		} else {
+			dAtA[i] = 0
+		}
+		i--
+		dAtA[i] = 0x10
+	}
+	if m.Found {
+		i--
+		if m.Found {
+			dAtA[i] = 1
+		} else {
+			dAtA[i] = 0
+		}
+		i--
+		dAtA[i] = 0x8
+	}
+	return len(dAtA) - i, nil
 }
 
 func (m *QueryAccountRequest) Marshal() (dAtA []byte, err error) {
@@ -532,6 +886,64 @@ func encodeVarintQuery(dAtA []byte, offset int, v uint64) int {
 	dAtA[offset] = uint8(v)
 	return base
 }
+func (m *QueryEVMWindowRequest) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	l = len(m.Address)
+	if l > 0 {
+		n += 1 + l + sovQuery(uint64(l))
+	}
+	return n
+}
+
+func (m *QueryEVMWindowResponse) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	if m.Found {
+		n += 2
+	}
+	if m.Live {
+		n += 2
+	}
+	if m.OpenedHeight != 0 {
+		n += 1 + sovQuery(uint64(m.OpenedHeight))
+	}
+	if m.ExpiryHeight != 0 {
+		n += 1 + sovQuery(uint64(m.ExpiryHeight))
+	}
+	if m.MaxTxs != 0 {
+		n += 1 + sovQuery(uint64(m.MaxTxs))
+	}
+	if m.UsedTxs != 0 {
+		n += 1 + sovQuery(uint64(m.UsedTxs))
+	}
+	l = len(m.MaxValue)
+	if l > 0 {
+		n += 1 + l + sovQuery(uint64(l))
+	}
+	l = len(m.UsedValue)
+	if l > 0 {
+		n += 1 + l + sovQuery(uint64(l))
+	}
+	if m.RemainingBlocks != 0 {
+		n += 1 + sovQuery(uint64(m.RemainingBlocks))
+	}
+	if m.RemainingTxs != 0 {
+		n += 1 + sovQuery(uint64(m.RemainingTxs))
+	}
+	l = len(m.RemainingValue)
+	if l > 0 {
+		n += 1 + l + sovQuery(uint64(l))
+	}
+	return n
+}
+
 func (m *QueryAccountRequest) Size() (n int) {
 	if m == nil {
 		return 0
@@ -608,6 +1020,388 @@ func sovQuery(x uint64) (n int) {
 }
 func sozQuery(x uint64) (n int) {
 	return sovQuery(uint64((x << 1) ^ uint64((int64(x) >> 63))))
+}
+func (m *QueryEVMWindowRequest) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowQuery
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: QueryEVMWindowRequest: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: QueryEVMWindowRequest: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Address", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuery
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthQuery
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Address = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipQuery(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *QueryEVMWindowResponse) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowQuery
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: QueryEVMWindowResponse: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: QueryEVMWindowResponse: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Found", wireType)
+			}
+			var v int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuery
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				v |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			m.Found = bool(v != 0)
+		case 2:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Live", wireType)
+			}
+			var v int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuery
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				v |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			m.Live = bool(v != 0)
+		case 3:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field OpenedHeight", wireType)
+			}
+			m.OpenedHeight = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuery
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.OpenedHeight |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		case 4:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field ExpiryHeight", wireType)
+			}
+			m.ExpiryHeight = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuery
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.ExpiryHeight |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		case 5:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field MaxTxs", wireType)
+			}
+			m.MaxTxs = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuery
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.MaxTxs |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		case 6:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field UsedTxs", wireType)
+			}
+			m.UsedTxs = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuery
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.UsedTxs |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		case 7:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field MaxValue", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuery
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthQuery
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.MaxValue = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 8:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field UsedValue", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuery
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthQuery
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.UsedValue = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 9:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field RemainingBlocks", wireType)
+			}
+			m.RemainingBlocks = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuery
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.RemainingBlocks |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		case 10:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field RemainingTxs", wireType)
+			}
+			m.RemainingTxs = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuery
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.RemainingTxs |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		case 11:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field RemainingValue", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuery
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthQuery
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.RemainingValue = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipQuery(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
 }
 func (m *QueryAccountRequest) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)

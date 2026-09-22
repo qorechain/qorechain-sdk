@@ -108,6 +108,8 @@ QORECHAIN_REGISTRY_TYPES: dict[str, ProtoType] = {
     "/qorechain.pqc.v1.MsgRotatePQCKey": pqc_tx.MsgRotatePQCKey,
     "/qorechain.pqc.v1.MsgDeprecateAlgorithm": pqc_tx.MsgDeprecateAlgorithm,
     "/qorechain.pqc.v1.MsgDisableAlgorithm": pqc_tx.MsgDisableAlgorithm,
+    "/qorechain.pqc.v1.MsgOpenEVMWindow": pqc_tx.MsgOpenEVMWindow,
+    "/qorechain.pqc.v1.MsgCloseEVMWindow": pqc_tx.MsgCloseEVMWindow,
     # svm
     "/qorechain.svm.v1.MsgDeployProgram": svm_tx.MsgDeployProgram,
     "/qorechain.svm.v1.MsgCreateAccount": svm_tx.MsgCreateAccount,

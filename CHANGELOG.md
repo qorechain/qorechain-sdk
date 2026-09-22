@@ -5,6 +5,83 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.8.2]
+
+### Added — required by chain v3.2.0: the EVM authorisation window
+
+From v3.2.0 an EVM transaction is admitted only from an account that holds a
+registered PQC key **and** has an open, unexhausted authorisation window, opened
+by a Cosmos-lane message. The window is what keeps the classical secp256k1 key
+from moving value on its own. The testnet enforces this from its v3.2.0 upgrade
+(height 5,920,000); mainnet from its own. Until this release the SDK had no way
+to open one, so every EVM transaction it sent was refused.
+
+- `openEvmWindowMsg` / `closeEvmWindowMsg` compose `MsgOpenEVMWindow` /
+  `MsgCloseEVMWindow`, checking the chain's bounds client-side first: `blocks`
+  1…17280, `maxTxs` 1…1000, `maxValue` above 0. Every field is required — the
+  chain refuses a missing one rather than defaulting it — and opening replaces
+  any existing window.
+- `fetchEvmWindow` reads `/qorechain/pqc/v1/evm_window/{address}`, which answers
+  `found: false` instead of failing when there is none, so it is safe to poll.
+  Every number is a `bigint`: the values are `cosmos.Int` and do not fit a float.
+- `classifyEvmWindowRejection` / `isEvmWindowRejection` name the refusal:
+  `no-window`, `exhausted`, `invalid`, or `no-pqc-key`. They read the chain's
+  codespace and code (`pqc` 26/27/28) when those survive the transport, and the
+  chain's message text otherwise, which is what arrives over EVM JSON-RPC. A
+  missing PQC key is reported separately from a missing window because the
+  remedy differs: register a key first. The chain raises both under code 26, so
+  the text is matched first and the code is only a fallback.
+- The message composers and the registry gained both messages, so any signing
+  path already in the SDK can carry them.
+- The same surface lands in all five languages (TypeScript, Python, Rust, Go and
+  Java) and in `@qorechain/wallet-adapter` 0.2.2, which the wallets build on.
+  Neither the Go nor the Java SDK has a high-level EVM send path, so there the
+  classifier and its remedy text are the surface.
+- The chain raises "no registered post-quantum key" under **code 26** on the EVM
+  lane and **code 28** on the Cosmos lane, with different wording on each, so a
+  client cannot tell the two states apart by code. Every binding matches the
+  chain's text first and falls back to the code; both lanes' exact texts are
+  pinned in tests.
+
+**Three things worth knowing before you build a wallet flow on this:**
+
+- **Opening a window advances the EVM nonce.** The identity is unified, so the
+  account's Cosmos sequence *is* its EVM nonce. Sign the EVM transaction after
+  opening, or it is refused with "nonce too low". Order: open, read the nonce,
+  sign.
+- **`maxValue` bounds value plus the maximum fee** (gas limit × gas fee cap),
+  because the holder of the classical key sets the gas price. A 1,000 uqor
+  transfer with 21,000 gas at 112.5 gwei consumes 3,363 uqor of the window.
+  Wei-to-uqor rounds up.
+- **`blocks` is a block count, not a duration.** The chain's constant is
+  commented "about 24 hours at 5s blocks", but no QoreChain network runs at 5s:
+  17,280 blocks is roughly 5 hours on the testnet and 15 on mainnet. Say "up to
+  17,280 blocks", or compute from the chain's recent block time.
+
+There is deliberately no helper that opens a window automatically before a send.
+The window exists so spending is authorised deliberately; opening one on every
+send turns that into a click nobody reads. Surface the refusal, then let the
+user authorise.
+
+### Changed
+
+- The vendored protos are re-synced from chain tag `v3.2.0` (`pqc` and
+  `lightnode` gained RPCs) and the generated code regenerated in all five
+  languages.
+
+### Notes on two chain changes that need no SDK code
+
+- `MsgSubmitBatch` is now accepted only from the rollup's configured sequencer,
+  falling back to the creator when none is set; anyone else is refused with
+  `ErrUnauthorized`. Batches must extend the chain by index and cannot overwrite
+  an existing one, and `MsgPauseRollup` / `MsgResumeRollup` / `MsgStopRollup` now
+  require the creator. A caller that worked before can start failing.
+- `x/ai`'s per-sender rate limit was declared but never enforced; it is enforced
+  from v3.2.0. Its window is 30 **blocks** despite the field being named
+  `max_tx_per_minute`. A network born on this release starts at 10, while one
+  that upgraded sits at 600, so read the value from `qorechain.ai.v1.Query/Config`
+  rather than assuming either.
+
 ## [0.8.1]
 
 ### Fixed — required before the mainnet upgrade

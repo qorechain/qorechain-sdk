@@ -113,6 +113,12 @@ var moduleCodespaceReasons = map[string]map[uint32]string{
 	"pqc": {
 		// 21: hybrid (classical + ML-DSA) signature verification failed.
 		21: "hybrid verify failed",
+		// 26-28: the EVM authorisation window (chain v3.2.0). Code 28 carries
+		// two states — an unusable window and an account with no registered
+		// post-quantum key; ClassifyEVMWindowError separates them on the text.
+		26: "no open EVM authorisation window",
+		27: "EVM authorisation window exhausted",
+		28: "invalid EVM authorisation window, or no registered post-quantum key",
 	},
 	"amm":        {},
 	"bridge":     {},

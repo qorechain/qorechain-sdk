@@ -9,6 +9,36 @@ import { BinaryReader, BinaryWriter } from "@bufbuild/protobuf/wire";
 
 export const protobufPackage = "qorechain.pqc.v1";
 
+export interface QueryEVMWindowRequest {
+  address: string;
+}
+
+export interface QueryEVMWindowResponse {
+  /**
+   * found reports whether a window is stored. A stored window may still be
+   * exhausted or expired; check live.
+   */
+  found: boolean;
+  /**
+   * live reports whether the window admits at least one more transaction of
+   * zero value at the current height.
+   */
+  live: boolean;
+  openedHeight: string;
+  expiryHeight: string;
+  maxTxs: string;
+  usedTxs: string;
+  maxValue: string;
+  usedValue: string;
+  /**
+   * remaining_blocks, remaining_txs and remaining_value say which bound is
+   * closest to running out, so a refused caller can tell why.
+   */
+  remainingBlocks: string;
+  remainingTxs: string;
+  remainingValue: string;
+}
+
 export interface QueryAccountRequest {
   /** address is the bech32 account address whose PQC key is requested. */
   address: string;
@@ -32,6 +62,332 @@ export interface PQCAccountView {
   migrationPublicKey: Uint8Array;
   migrationAlgorithmId: number;
 }
+
+function createBaseQueryEVMWindowRequest(): QueryEVMWindowRequest {
+  return { address: "" };
+}
+
+export const QueryEVMWindowRequest: MessageFns<QueryEVMWindowRequest> = {
+  encode(message: QueryEVMWindowRequest, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.address !== "") {
+      writer.uint32(10).string(message.address);
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): QueryEVMWindowRequest {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseQueryEVMWindowRequest();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.address = reader.string();
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(object: any): QueryEVMWindowRequest {
+    return { address: isSet(object.address) ? globalThis.String(object.address) : "" };
+  },
+
+  toJSON(message: QueryEVMWindowRequest): unknown {
+    const obj: any = {};
+    if (message.address !== "") {
+      obj.address = message.address;
+    }
+    return obj;
+  },
+
+  create(base?: DeepPartial<QueryEVMWindowRequest>): QueryEVMWindowRequest {
+    return QueryEVMWindowRequest.fromPartial(base ?? {});
+  },
+  fromPartial(object: DeepPartial<QueryEVMWindowRequest>): QueryEVMWindowRequest {
+    const message = createBaseQueryEVMWindowRequest();
+    message.address = object.address ?? "";
+    return message;
+  },
+};
+
+function createBaseQueryEVMWindowResponse(): QueryEVMWindowResponse {
+  return {
+    found: false,
+    live: false,
+    openedHeight: "0",
+    expiryHeight: "0",
+    maxTxs: "0",
+    usedTxs: "0",
+    maxValue: "",
+    usedValue: "",
+    remainingBlocks: "0",
+    remainingTxs: "0",
+    remainingValue: "",
+  };
+}
+
+export const QueryEVMWindowResponse: MessageFns<QueryEVMWindowResponse> = {
+  encode(message: QueryEVMWindowResponse, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.found !== false) {
+      writer.uint32(8).bool(message.found);
+    }
+    if (message.live !== false) {
+      writer.uint32(16).bool(message.live);
+    }
+    if (message.openedHeight !== "0") {
+      writer.uint32(24).uint64(message.openedHeight);
+    }
+    if (message.expiryHeight !== "0") {
+      writer.uint32(32).uint64(message.expiryHeight);
+    }
+    if (message.maxTxs !== "0") {
+      writer.uint32(40).uint64(message.maxTxs);
+    }
+    if (message.usedTxs !== "0") {
+      writer.uint32(48).uint64(message.usedTxs);
+    }
+    if (message.maxValue !== "") {
+      writer.uint32(58).string(message.maxValue);
+    }
+    if (message.usedValue !== "") {
+      writer.uint32(66).string(message.usedValue);
+    }
+    if (message.remainingBlocks !== "0") {
+      writer.uint32(72).uint64(message.remainingBlocks);
+    }
+    if (message.remainingTxs !== "0") {
+      writer.uint32(80).uint64(message.remainingTxs);
+    }
+    if (message.remainingValue !== "") {
+      writer.uint32(90).string(message.remainingValue);
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): QueryEVMWindowResponse {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseQueryEVMWindowResponse();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 8) {
+            break;
+          }
+
+          message.found = reader.bool();
+          continue;
+        }
+        case 2: {
+          if (tag !== 16) {
+            break;
+          }
+
+          message.live = reader.bool();
+          continue;
+        }
+        case 3: {
+          if (tag !== 24) {
+            break;
+          }
+
+          message.openedHeight = reader.uint64().toString();
+          continue;
+        }
+        case 4: {
+          if (tag !== 32) {
+            break;
+          }
+
+          message.expiryHeight = reader.uint64().toString();
+          continue;
+        }
+        case 5: {
+          if (tag !== 40) {
+            break;
+          }
+
+          message.maxTxs = reader.uint64().toString();
+          continue;
+        }
+        case 6: {
+          if (tag !== 48) {
+            break;
+          }
+
+          message.usedTxs = reader.uint64().toString();
+          continue;
+        }
+        case 7: {
+          if (tag !== 58) {
+            break;
+          }
+
+          message.maxValue = reader.string();
+          continue;
+        }
+        case 8: {
+          if (tag !== 66) {
+            break;
+          }
+
+          message.usedValue = reader.string();
+          continue;
+        }
+        case 9: {
+          if (tag !== 72) {
+            break;
+          }
+
+          message.remainingBlocks = reader.uint64().toString();
+          continue;
+        }
+        case 10: {
+          if (tag !== 80) {
+            break;
+          }
+
+          message.remainingTxs = reader.uint64().toString();
+          continue;
+        }
+        case 11: {
+          if (tag !== 90) {
+            break;
+          }
+
+          message.remainingValue = reader.string();
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(object: any): QueryEVMWindowResponse {
+    return {
+      found: isSet(object.found) ? globalThis.Boolean(object.found) : false,
+      live: isSet(object.live) ? globalThis.Boolean(object.live) : false,
+      openedHeight: isSet(object.openedHeight)
+        ? globalThis.String(object.openedHeight)
+        : isSet(object.opened_height)
+        ? globalThis.String(object.opened_height)
+        : "0",
+      expiryHeight: isSet(object.expiryHeight)
+        ? globalThis.String(object.expiryHeight)
+        : isSet(object.expiry_height)
+        ? globalThis.String(object.expiry_height)
+        : "0",
+      maxTxs: isSet(object.maxTxs)
+        ? globalThis.String(object.maxTxs)
+        : isSet(object.max_txs)
+        ? globalThis.String(object.max_txs)
+        : "0",
+      usedTxs: isSet(object.usedTxs)
+        ? globalThis.String(object.usedTxs)
+        : isSet(object.used_txs)
+        ? globalThis.String(object.used_txs)
+        : "0",
+      maxValue: isSet(object.maxValue)
+        ? globalThis.String(object.maxValue)
+        : isSet(object.max_value)
+        ? globalThis.String(object.max_value)
+        : "",
+      usedValue: isSet(object.usedValue)
+        ? globalThis.String(object.usedValue)
+        : isSet(object.used_value)
+        ? globalThis.String(object.used_value)
+        : "",
+      remainingBlocks: isSet(object.remainingBlocks)
+        ? globalThis.String(object.remainingBlocks)
+        : isSet(object.remaining_blocks)
+        ? globalThis.String(object.remaining_blocks)
+        : "0",
+      remainingTxs: isSet(object.remainingTxs)
+        ? globalThis.String(object.remainingTxs)
+        : isSet(object.remaining_txs)
+        ? globalThis.String(object.remaining_txs)
+        : "0",
+      remainingValue: isSet(object.remainingValue)
+        ? globalThis.String(object.remainingValue)
+        : isSet(object.remaining_value)
+        ? globalThis.String(object.remaining_value)
+        : "",
+    };
+  },
+
+  toJSON(message: QueryEVMWindowResponse): unknown {
+    const obj: any = {};
+    if (message.found !== false) {
+      obj.found = message.found;
+    }
+    if (message.live !== false) {
+      obj.live = message.live;
+    }
+    if (message.openedHeight !== "0") {
+      obj.openedHeight = message.openedHeight;
+    }
+    if (message.expiryHeight !== "0") {
+      obj.expiryHeight = message.expiryHeight;
+    }
+    if (message.maxTxs !== "0") {
+      obj.maxTxs = message.maxTxs;
+    }
+    if (message.usedTxs !== "0") {
+      obj.usedTxs = message.usedTxs;
+    }
+    if (message.maxValue !== "") {
+      obj.maxValue = message.maxValue;
+    }
+    if (message.usedValue !== "") {
+      obj.usedValue = message.usedValue;
+    }
+    if (message.remainingBlocks !== "0") {
+      obj.remainingBlocks = message.remainingBlocks;
+    }
+    if (message.remainingTxs !== "0") {
+      obj.remainingTxs = message.remainingTxs;
+    }
+    if (message.remainingValue !== "") {
+      obj.remainingValue = message.remainingValue;
+    }
+    return obj;
+  },
+
+  create(base?: DeepPartial<QueryEVMWindowResponse>): QueryEVMWindowResponse {
+    return QueryEVMWindowResponse.fromPartial(base ?? {});
+  },
+  fromPartial(object: DeepPartial<QueryEVMWindowResponse>): QueryEVMWindowResponse {
+    const message = createBaseQueryEVMWindowResponse();
+    message.found = object.found ?? false;
+    message.live = object.live ?? false;
+    message.openedHeight = object.openedHeight ?? "0";
+    message.expiryHeight = object.expiryHeight ?? "0";
+    message.maxTxs = object.maxTxs ?? "0";
+    message.usedTxs = object.usedTxs ?? "0";
+    message.maxValue = object.maxValue ?? "";
+    message.usedValue = object.usedValue ?? "";
+    message.remainingBlocks = object.remainingBlocks ?? "0";
+    message.remainingTxs = object.remainingTxs ?? "0";
+    message.remainingValue = object.remainingValue ?? "";
+    return message;
+  },
+};
 
 function createBaseQueryAccountRequest(): QueryAccountRequest {
   return { address: "" };
@@ -444,6 +800,66 @@ export const QueryDefinition = {
               117,
               110,
               116,
+              47,
+              123,
+              97,
+              100,
+              100,
+              114,
+              101,
+              115,
+              115,
+              125,
+            ]) as Uint8Array,
+          ],
+        },
+      },
+    },
+    /**
+     * EVMWindow returns an address's open EVM-lane authorisation window, if any,
+     * with what remains of it at the current height.
+     */
+    eVMWindow: {
+      name: "EVMWindow",
+      requestType: QueryEVMWindowRequest as typeof QueryEVMWindowRequest,
+      requestStream: false,
+      responseType: QueryEVMWindowResponse as typeof QueryEVMWindowResponse,
+      responseStream: false,
+      options: {
+        _unknownFields: {
+          578365826: [
+            new Uint8Array([
+              40,
+              18,
+              38,
+              47,
+              113,
+              111,
+              114,
+              101,
+              99,
+              104,
+              97,
+              105,
+              110,
+              47,
+              112,
+              113,
+              99,
+              47,
+              118,
+              49,
+              47,
+              101,
+              118,
+              109,
+              95,
+              119,
+              105,
+              110,
+              100,
+              111,
+              119,
               47,
               123,
               97,

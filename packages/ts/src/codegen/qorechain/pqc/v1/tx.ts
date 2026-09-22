@@ -87,6 +87,42 @@ export interface MsgDisableAlgorithm {
 export interface MsgDisableAlgorithmResponse {
 }
 
+/**
+ * MsgOpenEVMWindow authorises EVM-lane transactions from the sender for a
+ * bounded number of transactions, a bounded total outflow, and a bounded number
+ * of blocks. Opening replaces any existing window rather than adding to it.
+ */
+export interface MsgOpenEVMWindow {
+  sender: string;
+  /**
+   * blocks is how long the window stays open, counted from the block that
+   * opens it. Bounded by the module's maximum.
+   */
+  blocks: string;
+  /**
+   * max_txs is how many EVM transactions the window admits. Zero is rejected:
+   * a window that admits nothing is a mistake, not a policy.
+   */
+  maxTxs: string;
+  /**
+   * max_value is the total the window admits, in uqor, counting transferred
+   * value AND the maximum fee each transaction could pay. Both drain the
+   * account, so both are bounded.
+   */
+  maxValue: string;
+}
+
+export interface MsgOpenEVMWindowResponse {
+  expiryHeight: string;
+}
+
+export interface MsgCloseEVMWindow {
+  sender: string;
+}
+
+export interface MsgCloseEVMWindowResponse {
+}
+
 function createBaseMsgRegisterPQCKey(): MsgRegisterPQCKey {
   return { sender: "", dilithiumPubkey: new Uint8Array(0), ecdsaPubkey: new Uint8Array(0), keyType: "" };
 }
@@ -1134,6 +1170,287 @@ export const MsgDisableAlgorithmResponse: MessageFns<MsgDisableAlgorithmResponse
   },
 };
 
+function createBaseMsgOpenEVMWindow(): MsgOpenEVMWindow {
+  return { sender: "", blocks: "0", maxTxs: "0", maxValue: "" };
+}
+
+export const MsgOpenEVMWindow: MessageFns<MsgOpenEVMWindow> = {
+  encode(message: MsgOpenEVMWindow, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.sender !== "") {
+      writer.uint32(10).string(message.sender);
+    }
+    if (message.blocks !== "0") {
+      writer.uint32(16).uint64(message.blocks);
+    }
+    if (message.maxTxs !== "0") {
+      writer.uint32(24).uint64(message.maxTxs);
+    }
+    if (message.maxValue !== "") {
+      writer.uint32(34).string(message.maxValue);
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): MsgOpenEVMWindow {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseMsgOpenEVMWindow();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.sender = reader.string();
+          continue;
+        }
+        case 2: {
+          if (tag !== 16) {
+            break;
+          }
+
+          message.blocks = reader.uint64().toString();
+          continue;
+        }
+        case 3: {
+          if (tag !== 24) {
+            break;
+          }
+
+          message.maxTxs = reader.uint64().toString();
+          continue;
+        }
+        case 4: {
+          if (tag !== 34) {
+            break;
+          }
+
+          message.maxValue = reader.string();
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(object: any): MsgOpenEVMWindow {
+    return {
+      sender: isSet(object.sender) ? globalThis.String(object.sender) : "",
+      blocks: isSet(object.blocks) ? globalThis.String(object.blocks) : "0",
+      maxTxs: isSet(object.maxTxs)
+        ? globalThis.String(object.maxTxs)
+        : isSet(object.max_txs)
+        ? globalThis.String(object.max_txs)
+        : "0",
+      maxValue: isSet(object.maxValue)
+        ? globalThis.String(object.maxValue)
+        : isSet(object.max_value)
+        ? globalThis.String(object.max_value)
+        : "",
+    };
+  },
+
+  toJSON(message: MsgOpenEVMWindow): unknown {
+    const obj: any = {};
+    if (message.sender !== "") {
+      obj.sender = message.sender;
+    }
+    if (message.blocks !== "0") {
+      obj.blocks = message.blocks;
+    }
+    if (message.maxTxs !== "0") {
+      obj.maxTxs = message.maxTxs;
+    }
+    if (message.maxValue !== "") {
+      obj.maxValue = message.maxValue;
+    }
+    return obj;
+  },
+
+  create(base?: DeepPartial<MsgOpenEVMWindow>): MsgOpenEVMWindow {
+    return MsgOpenEVMWindow.fromPartial(base ?? {});
+  },
+  fromPartial(object: DeepPartial<MsgOpenEVMWindow>): MsgOpenEVMWindow {
+    const message = createBaseMsgOpenEVMWindow();
+    message.sender = object.sender ?? "";
+    message.blocks = object.blocks ?? "0";
+    message.maxTxs = object.maxTxs ?? "0";
+    message.maxValue = object.maxValue ?? "";
+    return message;
+  },
+};
+
+function createBaseMsgOpenEVMWindowResponse(): MsgOpenEVMWindowResponse {
+  return { expiryHeight: "0" };
+}
+
+export const MsgOpenEVMWindowResponse: MessageFns<MsgOpenEVMWindowResponse> = {
+  encode(message: MsgOpenEVMWindowResponse, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.expiryHeight !== "0") {
+      writer.uint32(8).uint64(message.expiryHeight);
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): MsgOpenEVMWindowResponse {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseMsgOpenEVMWindowResponse();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 8) {
+            break;
+          }
+
+          message.expiryHeight = reader.uint64().toString();
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(object: any): MsgOpenEVMWindowResponse {
+    return {
+      expiryHeight: isSet(object.expiryHeight)
+        ? globalThis.String(object.expiryHeight)
+        : isSet(object.expiry_height)
+        ? globalThis.String(object.expiry_height)
+        : "0",
+    };
+  },
+
+  toJSON(message: MsgOpenEVMWindowResponse): unknown {
+    const obj: any = {};
+    if (message.expiryHeight !== "0") {
+      obj.expiryHeight = message.expiryHeight;
+    }
+    return obj;
+  },
+
+  create(base?: DeepPartial<MsgOpenEVMWindowResponse>): MsgOpenEVMWindowResponse {
+    return MsgOpenEVMWindowResponse.fromPartial(base ?? {});
+  },
+  fromPartial(object: DeepPartial<MsgOpenEVMWindowResponse>): MsgOpenEVMWindowResponse {
+    const message = createBaseMsgOpenEVMWindowResponse();
+    message.expiryHeight = object.expiryHeight ?? "0";
+    return message;
+  },
+};
+
+function createBaseMsgCloseEVMWindow(): MsgCloseEVMWindow {
+  return { sender: "" };
+}
+
+export const MsgCloseEVMWindow: MessageFns<MsgCloseEVMWindow> = {
+  encode(message: MsgCloseEVMWindow, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.sender !== "") {
+      writer.uint32(10).string(message.sender);
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): MsgCloseEVMWindow {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseMsgCloseEVMWindow();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.sender = reader.string();
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(object: any): MsgCloseEVMWindow {
+    return { sender: isSet(object.sender) ? globalThis.String(object.sender) : "" };
+  },
+
+  toJSON(message: MsgCloseEVMWindow): unknown {
+    const obj: any = {};
+    if (message.sender !== "") {
+      obj.sender = message.sender;
+    }
+    return obj;
+  },
+
+  create(base?: DeepPartial<MsgCloseEVMWindow>): MsgCloseEVMWindow {
+    return MsgCloseEVMWindow.fromPartial(base ?? {});
+  },
+  fromPartial(object: DeepPartial<MsgCloseEVMWindow>): MsgCloseEVMWindow {
+    const message = createBaseMsgCloseEVMWindow();
+    message.sender = object.sender ?? "";
+    return message;
+  },
+};
+
+function createBaseMsgCloseEVMWindowResponse(): MsgCloseEVMWindowResponse {
+  return {};
+}
+
+export const MsgCloseEVMWindowResponse: MessageFns<MsgCloseEVMWindowResponse> = {
+  encode(_: MsgCloseEVMWindowResponse, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): MsgCloseEVMWindowResponse {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseMsgCloseEVMWindowResponse();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(_: any): MsgCloseEVMWindowResponse {
+    return {};
+  },
+
+  toJSON(_: MsgCloseEVMWindowResponse): unknown {
+    const obj: any = {};
+    return obj;
+  },
+
+  create(base?: DeepPartial<MsgCloseEVMWindowResponse>): MsgCloseEVMWindowResponse {
+    return MsgCloseEVMWindowResponse.fromPartial(base ?? {});
+  },
+  fromPartial(_: DeepPartial<MsgCloseEVMWindowResponse>): MsgCloseEVMWindowResponse {
+    const message = createBaseMsgCloseEVMWindowResponse();
+    return message;
+  },
+};
+
 /** Msg defines the PQC module's transaction service. */
 export type MsgDefinition = typeof MsgDefinition;
 export const MsgDefinition = {
@@ -1196,6 +1513,30 @@ export const MsgDefinition = {
       requestType: MsgDisableAlgorithm as typeof MsgDisableAlgorithm,
       requestStream: false,
       responseType: MsgDisableAlgorithmResponse as typeof MsgDisableAlgorithmResponse,
+      responseStream: false,
+      options: {},
+    },
+    /**
+     * OpenEVMWindow authorises the sender's EVM lane for a bounded period.
+     * It is a Cosmos-lane message, so it inherits the chain's post-quantum
+     * signature requirement: opening a window is impossible without the ML-DSA
+     * key, which is what makes the classical key alone insufficient to move funds
+     * on the EVM lane.
+     */
+    openEVMWindow: {
+      name: "OpenEVMWindow",
+      requestType: MsgOpenEVMWindow as typeof MsgOpenEVMWindow,
+      requestStream: false,
+      responseType: MsgOpenEVMWindowResponse as typeof MsgOpenEVMWindowResponse,
+      responseStream: false,
+      options: {},
+    },
+    /** CloseEVMWindow revokes the sender's window immediately. */
+    closeEVMWindow: {
+      name: "CloseEVMWindow",
+      requestType: MsgCloseEVMWindow as typeof MsgCloseEVMWindow,
+      requestStream: false,
+      responseType: MsgCloseEVMWindowResponse as typeof MsgCloseEVMWindowResponse,
       responseStream: false,
       options: {},
     },

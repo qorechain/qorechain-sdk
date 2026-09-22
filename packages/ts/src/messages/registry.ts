@@ -92,6 +92,8 @@ export const qorechainRegistryTypes: ReadonlyArray<[string, GeneratedType]> = [
   ["/qorechain.pqc.v1.MsgRegisterPQCKeyV2", pqc.MsgRegisterPQCKeyV2],
   ["/qorechain.pqc.v1.MsgMigratePQCKey", pqc.MsgMigratePQCKey],
   ["/qorechain.pqc.v1.MsgRotatePQCKey", pqc.MsgRotatePQCKey],
+  ["/qorechain.pqc.v1.MsgOpenEVMWindow", pqc.MsgOpenEVMWindow],
+  ["/qorechain.pqc.v1.MsgCloseEVMWindow", pqc.MsgCloseEVMWindow],
   ["/qorechain.pqc.v1.MsgDeprecateAlgorithm", pqc.MsgDeprecateAlgorithm],
   ["/qorechain.pqc.v1.MsgDisableAlgorithm", pqc.MsgDisableAlgorithm],
   // svm

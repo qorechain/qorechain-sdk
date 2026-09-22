@@ -95,6 +95,17 @@ impl RestClient {
             .await
     }
 
+    /// Returns the raw `evm_window` status for an address (chain v3.2.0).
+    ///
+    /// Answers `200` with `found: false` when no window is stored, so it is safe
+    /// to poll. [`crate::evm_window::get_evm_window`] parses the payload into a
+    /// typed [`EvmWindowStatus`](crate::evm_window::EvmWindowStatus) with exact
+    /// integers.
+    pub async fn get_pqc_evm_window(&self, address: &str) -> Result<Value> {
+        self.get(&format!("/qorechain/pqc/v1/evm_window/{address}"), &[])
+            .await
+    }
+
     /// Returns the reputation record for a validator address.
     pub async fn get_reputation(&self, validator_address: &str) -> Result<Value> {
         self.get(

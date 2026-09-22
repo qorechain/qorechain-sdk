@@ -14,7 +14,7 @@ import java.util.Set;
  * The QoreChain message registry: a {@code typeUrl → protobuf Parser} map plus
  * Native {@link Any} pack/unpack.
  *
- * <p>Covers all 59 QoreChain custom-module {@code Msg} types (amm, bridge, rdk,
+ * <p>Covers all 61 QoreChain custom-module {@code Msg} types (amm, bridge, rdk,
  * multilayer, pqc, svm, lightnode, license, abstractaccount, crossvm,
  * rlconsensus) and the standard Native messages exposed by {@link CosmosMessages}.
  *
@@ -72,13 +72,16 @@ public final class Messages {
         m.put("/qorechain.multilayer.v1.MsgUpdateLayerStatus", qorechain.multilayer.v1.Tx.MsgUpdateLayerStatus.parser());
         m.put("/qorechain.multilayer.v1.MsgChallengeAnchor", qorechain.multilayer.v1.Tx.MsgChallengeAnchor.parser());
 
-        // ---- pqc (5) ----
+        // ---- pqc (8) ----
         m.put("/qorechain.pqc.v1.MsgRegisterPQCKey", qorechain.pqc.v1.Tx.MsgRegisterPQCKey.parser());
         m.put("/qorechain.pqc.v1.MsgRegisterPQCKeyV2", qorechain.pqc.v1.Tx.MsgRegisterPQCKeyV2.parser());
         m.put("/qorechain.pqc.v1.MsgMigratePQCKey", qorechain.pqc.v1.Tx.MsgMigratePQCKey.parser());
         m.put("/qorechain.pqc.v1.MsgRotatePQCKey", qorechain.pqc.v1.Tx.MsgRotatePQCKey.parser());
         m.put("/qorechain.pqc.v1.MsgDeprecateAlgorithm", qorechain.pqc.v1.Tx.MsgDeprecateAlgorithm.parser());
         m.put("/qorechain.pqc.v1.MsgDisableAlgorithm", qorechain.pqc.v1.Tx.MsgDisableAlgorithm.parser());
+        // The EVM authorisation window (chain v3.2.0): ordinary Cosmos-lane messages.
+        m.put("/qorechain.pqc.v1.MsgOpenEVMWindow", qorechain.pqc.v1.Tx.MsgOpenEVMWindow.parser());
+        m.put("/qorechain.pqc.v1.MsgCloseEVMWindow", qorechain.pqc.v1.Tx.MsgCloseEVMWindow.parser());
 
         // ---- svm (5) ----
         m.put("/qorechain.svm.v1.MsgDeployProgram", qorechain.svm.v1.Tx.MsgDeployProgram.parser());
@@ -121,7 +124,7 @@ public final class Messages {
         REGISTRY = Collections.unmodifiableMap(m);
     }
 
-    /** All registered type URLs (Native standard + 59 QoreChain customs). */
+    /** All registered type URLs (Native standard + 61 QoreChain customs). */
     public static Set<String> typeUrls() {
         return REGISTRY.keySet();
     }

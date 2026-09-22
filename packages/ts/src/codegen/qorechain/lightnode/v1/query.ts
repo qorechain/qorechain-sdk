@@ -72,6 +72,41 @@ export interface QueryStatsResponse {
   lastRewardHeight: string;
 }
 
+export interface QueryRewardPoolRequest {
+}
+
+export interface QueryRewardPoolResponse {
+  /** balance is the module account's total uqor holding. */
+  balance: string;
+  /**
+   * reserved accumulated while no node was eligible; it is excluded from
+   * distribution and moves only by governance.
+   */
+  reserved: string;
+  /** outstanding is credited to operators but not yet claimed. */
+  outstanding: string;
+  /**
+   * payable is reserve that governance released back into distribution; it
+   * drains to operators over time at the capped rate.
+   */
+  payable: string;
+  /** max_reward_per_block_per_node bounds what one node may be credited per block. */
+  maxRewardPerBlockPerNode: string;
+  /**
+   * distributable is what the next distribution run may hand out:
+   * balance - reserved - outstanding.
+   */
+  distributable: string;
+  /**
+   * initialized reports whether the split has been established by the
+   * coordinated upgrade handler. Until it is, the figures above describe a raw
+   * balance that the module does not yet account for, and clients that gate on
+   * the accounting being live (the licence batch tool) must treat the pool as
+   * not ready.
+   */
+  initialized: boolean;
+}
+
 function createBaseLightNodeView(): LightNodeView {
   return {
     address: "",
@@ -1118,6 +1153,217 @@ export const QueryStatsResponse: MessageFns<QueryStatsResponse> = {
   },
 };
 
+function createBaseQueryRewardPoolRequest(): QueryRewardPoolRequest {
+  return {};
+}
+
+export const QueryRewardPoolRequest: MessageFns<QueryRewardPoolRequest> = {
+  encode(_: QueryRewardPoolRequest, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): QueryRewardPoolRequest {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseQueryRewardPoolRequest();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(_: any): QueryRewardPoolRequest {
+    return {};
+  },
+
+  toJSON(_: QueryRewardPoolRequest): unknown {
+    const obj: any = {};
+    return obj;
+  },
+
+  create(base?: DeepPartial<QueryRewardPoolRequest>): QueryRewardPoolRequest {
+    return QueryRewardPoolRequest.fromPartial(base ?? {});
+  },
+  fromPartial(_: DeepPartial<QueryRewardPoolRequest>): QueryRewardPoolRequest {
+    const message = createBaseQueryRewardPoolRequest();
+    return message;
+  },
+};
+
+function createBaseQueryRewardPoolResponse(): QueryRewardPoolResponse {
+  return {
+    balance: "",
+    reserved: "",
+    outstanding: "",
+    payable: "",
+    maxRewardPerBlockPerNode: "",
+    distributable: "",
+    initialized: false,
+  };
+}
+
+export const QueryRewardPoolResponse: MessageFns<QueryRewardPoolResponse> = {
+  encode(message: QueryRewardPoolResponse, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.balance !== "") {
+      writer.uint32(10).string(message.balance);
+    }
+    if (message.reserved !== "") {
+      writer.uint32(18).string(message.reserved);
+    }
+    if (message.outstanding !== "") {
+      writer.uint32(26).string(message.outstanding);
+    }
+    if (message.payable !== "") {
+      writer.uint32(42).string(message.payable);
+    }
+    if (message.maxRewardPerBlockPerNode !== "") {
+      writer.uint32(50).string(message.maxRewardPerBlockPerNode);
+    }
+    if (message.distributable !== "") {
+      writer.uint32(34).string(message.distributable);
+    }
+    if (message.initialized !== false) {
+      writer.uint32(56).bool(message.initialized);
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): QueryRewardPoolResponse {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseQueryRewardPoolResponse();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.balance = reader.string();
+          continue;
+        }
+        case 2: {
+          if (tag !== 18) {
+            break;
+          }
+
+          message.reserved = reader.string();
+          continue;
+        }
+        case 3: {
+          if (tag !== 26) {
+            break;
+          }
+
+          message.outstanding = reader.string();
+          continue;
+        }
+        case 5: {
+          if (tag !== 42) {
+            break;
+          }
+
+          message.payable = reader.string();
+          continue;
+        }
+        case 6: {
+          if (tag !== 50) {
+            break;
+          }
+
+          message.maxRewardPerBlockPerNode = reader.string();
+          continue;
+        }
+        case 4: {
+          if (tag !== 34) {
+            break;
+          }
+
+          message.distributable = reader.string();
+          continue;
+        }
+        case 7: {
+          if (tag !== 56) {
+            break;
+          }
+
+          message.initialized = reader.bool();
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(object: any): QueryRewardPoolResponse {
+    return {
+      balance: isSet(object.balance) ? globalThis.String(object.balance) : "",
+      reserved: isSet(object.reserved) ? globalThis.String(object.reserved) : "",
+      outstanding: isSet(object.outstanding) ? globalThis.String(object.outstanding) : "",
+      payable: isSet(object.payable) ? globalThis.String(object.payable) : "",
+      maxRewardPerBlockPerNode: isSet(object.maxRewardPerBlockPerNode)
+        ? globalThis.String(object.maxRewardPerBlockPerNode)
+        : isSet(object.max_reward_per_block_per_node)
+        ? globalThis.String(object.max_reward_per_block_per_node)
+        : "",
+      distributable: isSet(object.distributable) ? globalThis.String(object.distributable) : "",
+      initialized: isSet(object.initialized) ? globalThis.Boolean(object.initialized) : false,
+    };
+  },
+
+  toJSON(message: QueryRewardPoolResponse): unknown {
+    const obj: any = {};
+    if (message.balance !== "") {
+      obj.balance = message.balance;
+    }
+    if (message.reserved !== "") {
+      obj.reserved = message.reserved;
+    }
+    if (message.outstanding !== "") {
+      obj.outstanding = message.outstanding;
+    }
+    if (message.payable !== "") {
+      obj.payable = message.payable;
+    }
+    if (message.maxRewardPerBlockPerNode !== "") {
+      obj.maxRewardPerBlockPerNode = message.maxRewardPerBlockPerNode;
+    }
+    if (message.distributable !== "") {
+      obj.distributable = message.distributable;
+    }
+    if (message.initialized !== false) {
+      obj.initialized = message.initialized;
+    }
+    return obj;
+  },
+
+  create(base?: DeepPartial<QueryRewardPoolResponse>): QueryRewardPoolResponse {
+    return QueryRewardPoolResponse.fromPartial(base ?? {});
+  },
+  fromPartial(object: DeepPartial<QueryRewardPoolResponse>): QueryRewardPoolResponse {
+    const message = createBaseQueryRewardPoolResponse();
+    message.balance = object.balance ?? "";
+    message.reserved = object.reserved ?? "";
+    message.outstanding = object.outstanding ?? "";
+    message.payable = object.payable ?? "";
+    message.maxRewardPerBlockPerNode = object.maxRewardPerBlockPerNode ?? "";
+    message.distributable = object.distributable ?? "";
+    message.initialized = object.initialized ?? false;
+    return message;
+  },
+};
+
 /** Query defines the lightnode module's gRPC query service. */
 export type QueryDefinition = typeof QueryDefinition;
 export const QueryDefinition = {
@@ -1381,6 +1627,63 @@ export const QueryDefinition = {
               97,
               116,
               115,
+            ]) as Uint8Array,
+          ],
+        },
+      },
+    },
+    /**
+     * RewardPool returns how the module account balance is split between the
+     * reserved pool, rewards owed to operators, and what is distributable.
+     */
+    rewardPool: {
+      name: "RewardPool",
+      requestType: QueryRewardPoolRequest as typeof QueryRewardPoolRequest,
+      requestStream: false,
+      responseType: QueryRewardPoolResponse as typeof QueryRewardPoolResponse,
+      responseStream: false,
+      options: {
+        _unknownFields: {
+          578365826: [
+            new Uint8Array([
+              37,
+              18,
+              35,
+              47,
+              113,
+              111,
+              114,
+              101,
+              99,
+              104,
+              97,
+              105,
+              110,
+              47,
+              108,
+              105,
+              103,
+              104,
+              116,
+              110,
+              111,
+              100,
+              101,
+              47,
+              118,
+              49,
+              47,
+              114,
+              101,
+              119,
+              97,
+              114,
+              100,
+              95,
+              112,
+              111,
+              111,
+              108,
             ]) as Uint8Array,
           ],
         },

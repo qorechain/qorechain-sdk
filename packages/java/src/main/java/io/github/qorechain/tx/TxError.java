@@ -49,6 +49,17 @@ public final class TxError {
         // ---- pqc ----
         Map<Integer, String[]> pqc = new HashMap<>();
         pqc.put(21, new String[] {"pqc_signature_invalid", "invalid PQC signature"});
+        // The EVM authorisation window (chain v3.2.0). Code 28 carries two states —
+        // an unusable window and an account with no registered post-quantum key;
+        // EvmWindowIssue.classify separates them on the message text.
+        pqc.put(26, new String[] {"evm_window_missing", "no open EVM authorisation window"});
+        pqc.put(27, new String[] {"evm_window_exhausted", "EVM authorisation window exhausted"});
+        pqc.put(
+                28,
+                new String[] {
+                    "evm_window_invalid",
+                    "invalid EVM authorisation window, or no registered post-quantum key"
+                });
         MODULE_CODES.put("pqc", pqc);
     }
 

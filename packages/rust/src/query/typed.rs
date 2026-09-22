@@ -89,6 +89,22 @@ impl TypedQueryClient {
         .await
     }
 
+    /// Queries `qorechain.pqc.v1.Query/EVMWindow` (chain v3.2.0): the EVM
+    /// authorisation window status for an address. A stored window may still be
+    /// expired or exhausted, so read `live` as well as `found`.
+    pub async fn pqc_evm_window(
+        &self,
+        address: impl Into<String>,
+    ) -> Result<qorechain::pqc::v1::QueryEvmWindowResponse> {
+        self.grpc_query(
+            crate::evm_window::EVM_WINDOW_QUERY_PATH,
+            &qorechain::pqc::v1::QueryEvmWindowRequest {
+                address: address.into(),
+            },
+        )
+        .await
+    }
+
     // --- crossvm ---
 
     /// Queries `qorechain.crossvm.v1.Query/Params`.

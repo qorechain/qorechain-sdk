@@ -338,6 +338,24 @@ export type {
 } from "./tx/authenticator";
 export { encodeHybridExtension, attachHybridExtension } from "./tx/hybrid";
 export type { HybridPlacement, AttachHybridOptions } from "./tx/hybrid";
+// The EVM-lane post-quantum authorisation window (chain v3.2.0): an EVM tx is
+// admitted only from an account with a registered PQC key AND a live window,
+// opened by a Cosmos-lane message. Opening one ADVANCES the EVM nonce.
+export {
+  MAX_EVM_WINDOW_BLOCKS,
+  MAX_EVM_WINDOW_TXS,
+  openEvmWindowMsg,
+  closeEvmWindowMsg,
+  fetchEvmWindow,
+  classifyEvmWindowRejection,
+  isEvmWindowRejection,
+} from "./pqc/evm-window";
+export type {
+  OpenEvmWindowParams,
+  EvmWindow,
+  EvmWindowRejection,
+} from "./pqc/evm-window";
+
 export { buildHybridTx, signAndBroadcastHybrid } from "./tx/hybrid-tx";
 
 // Hybrid / key-migration / bridge-attestation sign-bytes in both forms, and the

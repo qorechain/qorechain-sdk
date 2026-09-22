@@ -52,3 +52,17 @@ class MsgClaimLightNodeRewards(_message.Message):
 class MsgClaimLightNodeRewardsResponse(_message.Message):
     __slots__ = ()
     def __init__(self) -> None: ...
+
+class MsgReleaseLightNodeReserve(_message.Message):
+    __slots__ = ("authority", "amount", "destination")
+    AUTHORITY_FIELD_NUMBER: _ClassVar[int]
+    AMOUNT_FIELD_NUMBER: _ClassVar[int]
+    DESTINATION_FIELD_NUMBER: _ClassVar[int]
+    authority: str
+    amount: str
+    destination: str
+    def __init__(self, authority: _Optional[str] = ..., amount: _Optional[str] = ..., destination: _Optional[str] = ...) -> None: ...
+
+class MsgReleaseLightNodeReserveResponse(_message.Message):
+    __slots__ = ()
+    def __init__(self) -> None: ...

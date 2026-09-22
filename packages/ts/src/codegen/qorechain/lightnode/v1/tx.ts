@@ -40,6 +40,27 @@ export interface MsgClaimLightNodeRewards {
 export interface MsgClaimLightNodeRewardsResponse {
 }
 
+/**
+ * MsgReleaseLightNodeReserve releases part of the reserved light-node reward
+ * pool: the balance that accumulated in the module account while no node was
+ * eligible to receive it. Nobody earned it, so it is excluded from the ordinary
+ * proportional distribution and moves only by a governance vote.
+ */
+export interface MsgReleaseLightNodeReserve {
+  /** authority must be the governance module account. */
+  authority: string;
+  /** amount is the uqor to release from the reserved pool. */
+  amount: string;
+  /**
+   * destination receives the coins. Leave empty to release the amount into the
+   * ordinary light-node reward distribution instead of sending it anywhere.
+   */
+  destination: string;
+}
+
+export interface MsgReleaseLightNodeReserveResponse {
+}
+
 function createBaseMsgRegisterLightNode(): MsgRegisterLightNode {
   return { operator: "", nodeType: "", version: "", capabilities: [] };
 }
@@ -500,6 +521,141 @@ export const MsgClaimLightNodeRewardsResponse: MessageFns<MsgClaimLightNodeRewar
   },
 };
 
+function createBaseMsgReleaseLightNodeReserve(): MsgReleaseLightNodeReserve {
+  return { authority: "", amount: "", destination: "" };
+}
+
+export const MsgReleaseLightNodeReserve: MessageFns<MsgReleaseLightNodeReserve> = {
+  encode(message: MsgReleaseLightNodeReserve, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.authority !== "") {
+      writer.uint32(10).string(message.authority);
+    }
+    if (message.amount !== "") {
+      writer.uint32(18).string(message.amount);
+    }
+    if (message.destination !== "") {
+      writer.uint32(26).string(message.destination);
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): MsgReleaseLightNodeReserve {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseMsgReleaseLightNodeReserve();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.authority = reader.string();
+          continue;
+        }
+        case 2: {
+          if (tag !== 18) {
+            break;
+          }
+
+          message.amount = reader.string();
+          continue;
+        }
+        case 3: {
+          if (tag !== 26) {
+            break;
+          }
+
+          message.destination = reader.string();
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(object: any): MsgReleaseLightNodeReserve {
+    return {
+      authority: isSet(object.authority) ? globalThis.String(object.authority) : "",
+      amount: isSet(object.amount) ? globalThis.String(object.amount) : "",
+      destination: isSet(object.destination) ? globalThis.String(object.destination) : "",
+    };
+  },
+
+  toJSON(message: MsgReleaseLightNodeReserve): unknown {
+    const obj: any = {};
+    if (message.authority !== "") {
+      obj.authority = message.authority;
+    }
+    if (message.amount !== "") {
+      obj.amount = message.amount;
+    }
+    if (message.destination !== "") {
+      obj.destination = message.destination;
+    }
+    return obj;
+  },
+
+  create(base?: DeepPartial<MsgReleaseLightNodeReserve>): MsgReleaseLightNodeReserve {
+    return MsgReleaseLightNodeReserve.fromPartial(base ?? {});
+  },
+  fromPartial(object: DeepPartial<MsgReleaseLightNodeReserve>): MsgReleaseLightNodeReserve {
+    const message = createBaseMsgReleaseLightNodeReserve();
+    message.authority = object.authority ?? "";
+    message.amount = object.amount ?? "";
+    message.destination = object.destination ?? "";
+    return message;
+  },
+};
+
+function createBaseMsgReleaseLightNodeReserveResponse(): MsgReleaseLightNodeReserveResponse {
+  return {};
+}
+
+export const MsgReleaseLightNodeReserveResponse: MessageFns<MsgReleaseLightNodeReserveResponse> = {
+  encode(_: MsgReleaseLightNodeReserveResponse, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): MsgReleaseLightNodeReserveResponse {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseMsgReleaseLightNodeReserveResponse();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(_: any): MsgReleaseLightNodeReserveResponse {
+    return {};
+  },
+
+  toJSON(_: MsgReleaseLightNodeReserveResponse): unknown {
+    const obj: any = {};
+    return obj;
+  },
+
+  create(base?: DeepPartial<MsgReleaseLightNodeReserveResponse>): MsgReleaseLightNodeReserveResponse {
+    return MsgReleaseLightNodeReserveResponse.fromPartial(base ?? {});
+  },
+  fromPartial(_: DeepPartial<MsgReleaseLightNodeReserveResponse>): MsgReleaseLightNodeReserveResponse {
+    const message = createBaseMsgReleaseLightNodeReserveResponse();
+    return message;
+  },
+};
+
 /** Msg defines the lightnode module's transaction service. */
 export type MsgDefinition = typeof MsgDefinition;
 export const MsgDefinition = {
@@ -535,6 +691,15 @@ export const MsgDefinition = {
       requestType: MsgClaimLightNodeRewards as typeof MsgClaimLightNodeRewards,
       requestStream: false,
       responseType: MsgClaimLightNodeRewardsResponse as typeof MsgClaimLightNodeRewardsResponse,
+      responseStream: false,
+      options: {},
+    },
+    /** ReleaseReserve moves part of the reserved reward pool. Governance-only. */
+    releaseReserve: {
+      name: "ReleaseReserve",
+      requestType: MsgReleaseLightNodeReserve as typeof MsgReleaseLightNodeReserve,
+      requestStream: false,
+      responseType: MsgReleaseLightNodeReserveResponse as typeof MsgReleaseLightNodeReserveResponse,
       responseStream: false,
       options: {},
     },

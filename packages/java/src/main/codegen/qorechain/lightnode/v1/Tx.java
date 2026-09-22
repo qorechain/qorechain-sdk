@@ -4047,6 +4047,1311 @@ public final class Tx extends com.google.protobuf.GeneratedFile {
 
   }
 
+  public interface MsgReleaseLightNodeReserveOrBuilder extends
+      // @@protoc_insertion_point(interface_extends:qorechain.lightnode.v1.MsgReleaseLightNodeReserve)
+      com.google.protobuf.MessageOrBuilder {
+
+    /**
+     * <pre>
+     * authority must be the governance module account.
+     * </pre>
+     *
+     * <code>string authority = 1 [json_name = "authority", (.cosmos_proto.scalar) = "cosmos.AddressString"];</code>
+     * @return The authority.
+     */
+    java.lang.String getAuthority();
+    /**
+     * <pre>
+     * authority must be the governance module account.
+     * </pre>
+     *
+     * <code>string authority = 1 [json_name = "authority", (.cosmos_proto.scalar) = "cosmos.AddressString"];</code>
+     * @return The bytes for authority.
+     */
+    com.google.protobuf.ByteString
+        getAuthorityBytes();
+
+    /**
+     * <pre>
+     * amount is the uqor to release from the reserved pool.
+     * </pre>
+     *
+     * <code>string amount = 2 [json_name = "amount"];</code>
+     * @return The amount.
+     */
+    java.lang.String getAmount();
+    /**
+     * <pre>
+     * amount is the uqor to release from the reserved pool.
+     * </pre>
+     *
+     * <code>string amount = 2 [json_name = "amount"];</code>
+     * @return The bytes for amount.
+     */
+    com.google.protobuf.ByteString
+        getAmountBytes();
+
+    /**
+     * <pre>
+     * destination receives the coins. Leave empty to release the amount into the
+     * ordinary light-node reward distribution instead of sending it anywhere.
+     * </pre>
+     *
+     * <code>string destination = 3 [json_name = "destination", (.cosmos_proto.scalar) = "cosmos.AddressString"];</code>
+     * @return The destination.
+     */
+    java.lang.String getDestination();
+    /**
+     * <pre>
+     * destination receives the coins. Leave empty to release the amount into the
+     * ordinary light-node reward distribution instead of sending it anywhere.
+     * </pre>
+     *
+     * <code>string destination = 3 [json_name = "destination", (.cosmos_proto.scalar) = "cosmos.AddressString"];</code>
+     * @return The bytes for destination.
+     */
+    com.google.protobuf.ByteString
+        getDestinationBytes();
+  }
+  /**
+   * <pre>
+   * MsgReleaseLightNodeReserve releases part of the reserved light-node reward
+   * pool: the balance that accumulated in the module account while no node was
+   * eligible to receive it. Nobody earned it, so it is excluded from the ordinary
+   * proportional distribution and moves only by a governance vote.
+   * </pre>
+   *
+   * Protobuf type {@code qorechain.lightnode.v1.MsgReleaseLightNodeReserve}
+   */
+  public static final class MsgReleaseLightNodeReserve extends
+      com.google.protobuf.GeneratedMessage implements
+      // @@protoc_insertion_point(message_implements:qorechain.lightnode.v1.MsgReleaseLightNodeReserve)
+      MsgReleaseLightNodeReserveOrBuilder {
+  private static final long serialVersionUID = 0L;
+    static {
+      com.google.protobuf.RuntimeVersion.validateProtobufGencodeVersion(
+        com.google.protobuf.RuntimeVersion.RuntimeDomain.PUBLIC,
+        /* major= */ 4,
+        /* minor= */ 35,
+        /* patch= */ 1,
+        /* suffix= */ "",
+        "MsgReleaseLightNodeReserve");
+    }
+    // Use MsgReleaseLightNodeReserve.newBuilder() to construct.
+    private MsgReleaseLightNodeReserve(com.google.protobuf.GeneratedMessage.Builder<?> builder) {
+      super(builder);
+    }
+    private MsgReleaseLightNodeReserve() {
+      authority_ = "";
+      amount_ = "";
+      destination_ = "";
+    }
+
+    public static final com.google.protobuf.Descriptors.Descriptor
+        getDescriptor() {
+      return qorechain.lightnode.v1.Tx.internal_static_qorechain_lightnode_v1_MsgReleaseLightNodeReserve_descriptor;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Descriptors.Descriptor getDescriptorForType() {
+      return qorechain.lightnode.v1.Tx.internal_static_qorechain_lightnode_v1_MsgReleaseLightNodeReserve_descriptor;
+    }
+
+    @java.lang.Override
+    protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+        internalGetFieldAccessorTable() {
+      return qorechain.lightnode.v1.Tx.internal_static_qorechain_lightnode_v1_MsgReleaseLightNodeReserve_fieldAccessorTable
+          .ensureFieldAccessorsInitialized(
+              qorechain.lightnode.v1.Tx.MsgReleaseLightNodeReserve.class, qorechain.lightnode.v1.Tx.MsgReleaseLightNodeReserve.Builder.class);
+    }
+
+    public static final int AUTHORITY_FIELD_NUMBER = 1;
+    @SuppressWarnings("serial")
+    private volatile java.lang.Object authority_ = "";
+    /**
+     * <pre>
+     * authority must be the governance module account.
+     * </pre>
+     *
+     * <code>string authority = 1 [json_name = "authority", (.cosmos_proto.scalar) = "cosmos.AddressString"];</code>
+     * @return The authority.
+     */
+    @java.lang.Override
+    public java.lang.String getAuthority() {
+      java.lang.Object ref = authority_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        authority_ = s;
+        return s;
+      }
+    }
+    /**
+     * <pre>
+     * authority must be the governance module account.
+     * </pre>
+     *
+     * <code>string authority = 1 [json_name = "authority", (.cosmos_proto.scalar) = "cosmos.AddressString"];</code>
+     * @return The bytes for authority.
+     */
+    @java.lang.Override
+    public com.google.protobuf.ByteString
+        getAuthorityBytes() {
+      java.lang.Object ref = authority_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        authority_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
+    public static final int AMOUNT_FIELD_NUMBER = 2;
+    @SuppressWarnings("serial")
+    private volatile java.lang.Object amount_ = "";
+    /**
+     * <pre>
+     * amount is the uqor to release from the reserved pool.
+     * </pre>
+     *
+     * <code>string amount = 2 [json_name = "amount"];</code>
+     * @return The amount.
+     */
+    @java.lang.Override
+    public java.lang.String getAmount() {
+      java.lang.Object ref = amount_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        amount_ = s;
+        return s;
+      }
+    }
+    /**
+     * <pre>
+     * amount is the uqor to release from the reserved pool.
+     * </pre>
+     *
+     * <code>string amount = 2 [json_name = "amount"];</code>
+     * @return The bytes for amount.
+     */
+    @java.lang.Override
+    public com.google.protobuf.ByteString
+        getAmountBytes() {
+      java.lang.Object ref = amount_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        amount_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
+    public static final int DESTINATION_FIELD_NUMBER = 3;
+    @SuppressWarnings("serial")
+    private volatile java.lang.Object destination_ = "";
+    /**
+     * <pre>
+     * destination receives the coins. Leave empty to release the amount into the
+     * ordinary light-node reward distribution instead of sending it anywhere.
+     * </pre>
+     *
+     * <code>string destination = 3 [json_name = "destination", (.cosmos_proto.scalar) = "cosmos.AddressString"];</code>
+     * @return The destination.
+     */
+    @java.lang.Override
+    public java.lang.String getDestination() {
+      java.lang.Object ref = destination_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        destination_ = s;
+        return s;
+      }
+    }
+    /**
+     * <pre>
+     * destination receives the coins. Leave empty to release the amount into the
+     * ordinary light-node reward distribution instead of sending it anywhere.
+     * </pre>
+     *
+     * <code>string destination = 3 [json_name = "destination", (.cosmos_proto.scalar) = "cosmos.AddressString"];</code>
+     * @return The bytes for destination.
+     */
+    @java.lang.Override
+    public com.google.protobuf.ByteString
+        getDestinationBytes() {
+      java.lang.Object ref = destination_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        destination_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
+    private byte memoizedIsInitialized = -1;
+    @java.lang.Override
+    public final boolean isInitialized() {
+      byte isInitialized = memoizedIsInitialized;
+      if (isInitialized == 1) return true;
+      if (isInitialized == 0) return false;
+
+      memoizedIsInitialized = 1;
+      return true;
+    }
+
+    @java.lang.Override
+    public void writeTo(com.google.protobuf.CodedOutputStream output)
+                        throws java.io.IOException {
+      if (!com.google.protobuf.GeneratedMessage.isStringEmpty(authority_)) {
+        com.google.protobuf.GeneratedMessage.writeString(output, 1, authority_);
+      }
+      if (!com.google.protobuf.GeneratedMessage.isStringEmpty(amount_)) {
+        com.google.protobuf.GeneratedMessage.writeString(output, 2, amount_);
+      }
+      if (!com.google.protobuf.GeneratedMessage.isStringEmpty(destination_)) {
+        com.google.protobuf.GeneratedMessage.writeString(output, 3, destination_);
+      }
+      getUnknownFields().writeTo(output);
+    }
+    private int computeSerializedSize_0() {
+      int size = 0;
+      if (!com.google.protobuf.GeneratedMessage.isStringEmpty(authority_)) {
+        size += com.google.protobuf.GeneratedMessage.computeStringSize(1, authority_);
+      }
+      if (!com.google.protobuf.GeneratedMessage.isStringEmpty(amount_)) {
+        size += com.google.protobuf.GeneratedMessage.computeStringSize(2, amount_);
+      }
+      if (!com.google.protobuf.GeneratedMessage.isStringEmpty(destination_)) {
+        size += com.google.protobuf.GeneratedMessage.computeStringSize(3, destination_);
+      }
+      return size;
+    }
+    @java.lang.Override
+    public int getSerializedSize() {
+      int size = memoizedSize;
+      if (size != -1) return size;
+
+      size = 0;
+      size += computeSerializedSize_0();
+      size += getUnknownFields().getSerializedSize();
+      memoizedSize = size;
+      return size;
+    }
+
+    @java.lang.Override
+    public boolean equals(final java.lang.Object obj) {
+      if (obj == this) {
+       return true;
+      }
+      if (!(obj instanceof qorechain.lightnode.v1.Tx.MsgReleaseLightNodeReserve)) {
+        return super.equals(obj);
+      }
+      qorechain.lightnode.v1.Tx.MsgReleaseLightNodeReserve other = (qorechain.lightnode.v1.Tx.MsgReleaseLightNodeReserve) obj;
+
+      if (!getAuthority()
+          .equals(other.getAuthority())) return false;
+      if (!getAmount()
+          .equals(other.getAmount())) return false;
+      if (!getDestination()
+          .equals(other.getDestination())) return false;
+      if (!getUnknownFields().equals(other.getUnknownFields())) return false;
+      return true;
+    }
+
+    @java.lang.Override
+    public int hashCode() {
+      if (memoizedHashCode != 0) {
+        return memoizedHashCode;
+      }
+      int hash = 41;
+      hash = (19 * hash) + getDescriptor().hashCode();
+      hash = (37 * hash) + AUTHORITY_FIELD_NUMBER;
+      hash = (53 * hash) + getAuthority().hashCode();
+      hash = (37 * hash) + AMOUNT_FIELD_NUMBER;
+      hash = (53 * hash) + getAmount().hashCode();
+      hash = (37 * hash) + DESTINATION_FIELD_NUMBER;
+      hash = (53 * hash) + getDestination().hashCode();
+      hash = (29 * hash) + getUnknownFields().hashCode();
+      memoizedHashCode = hash;
+      return hash;
+    }
+
+    public static qorechain.lightnode.v1.Tx.MsgReleaseLightNodeReserve parseFrom(
+        java.nio.ByteBuffer data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static qorechain.lightnode.v1.Tx.MsgReleaseLightNodeReserve parseFrom(
+        java.nio.ByteBuffer data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static qorechain.lightnode.v1.Tx.MsgReleaseLightNodeReserve parseFrom(
+        com.google.protobuf.ByteString data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static qorechain.lightnode.v1.Tx.MsgReleaseLightNodeReserve parseFrom(
+        com.google.protobuf.ByteString data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static qorechain.lightnode.v1.Tx.MsgReleaseLightNodeReserve parseFrom(byte[] data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static qorechain.lightnode.v1.Tx.MsgReleaseLightNodeReserve parseFrom(
+        byte[] data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static qorechain.lightnode.v1.Tx.MsgReleaseLightNodeReserve parseFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input);
+    }
+    public static qorechain.lightnode.v1.Tx.MsgReleaseLightNodeReserve parseFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    public static qorechain.lightnode.v1.Tx.MsgReleaseLightNodeReserve parseDelimitedFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseDelimitedWithIOException(PARSER, input);
+    }
+
+    public static qorechain.lightnode.v1.Tx.MsgReleaseLightNodeReserve parseDelimitedFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static qorechain.lightnode.v1.Tx.MsgReleaseLightNodeReserve parseFrom(
+        com.google.protobuf.CodedInputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input);
+    }
+    public static qorechain.lightnode.v1.Tx.MsgReleaseLightNodeReserve parseFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    @java.lang.Override
+    public Builder newBuilderForType() { return newBuilder(); }
+    public static Builder newBuilder() {
+      return DEFAULT_INSTANCE.toBuilder();
+    }
+    public static Builder newBuilder(qorechain.lightnode.v1.Tx.MsgReleaseLightNodeReserve prototype) {
+      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+    }
+    @java.lang.Override
+    public Builder toBuilder() {
+      return this == DEFAULT_INSTANCE
+          ? new Builder() : new Builder().mergeFrom(this);
+    }
+
+    @java.lang.Override
+    protected Builder newBuilderForType(
+        com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+      Builder builder = new Builder(parent);
+      return builder;
+    }
+    /**
+     * <pre>
+     * MsgReleaseLightNodeReserve releases part of the reserved light-node reward
+     * pool: the balance that accumulated in the module account while no node was
+     * eligible to receive it. Nobody earned it, so it is excluded from the ordinary
+     * proportional distribution and moves only by a governance vote.
+     * </pre>
+     *
+     * Protobuf type {@code qorechain.lightnode.v1.MsgReleaseLightNodeReserve}
+     */
+    public static final class Builder extends
+        com.google.protobuf.GeneratedMessage.Builder<Builder> implements
+        // @@protoc_insertion_point(builder_implements:qorechain.lightnode.v1.MsgReleaseLightNodeReserve)
+        qorechain.lightnode.v1.Tx.MsgReleaseLightNodeReserveOrBuilder {
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return qorechain.lightnode.v1.Tx.internal_static_qorechain_lightnode_v1_MsgReleaseLightNodeReserve_descriptor;
+      }
+
+      @java.lang.Override
+      protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return qorechain.lightnode.v1.Tx.internal_static_qorechain_lightnode_v1_MsgReleaseLightNodeReserve_fieldAccessorTable
+            .ensureFieldAccessorsInitialized(
+                qorechain.lightnode.v1.Tx.MsgReleaseLightNodeReserve.class, qorechain.lightnode.v1.Tx.MsgReleaseLightNodeReserve.Builder.class);
+      }
+
+      // Construct using qorechain.lightnode.v1.Tx.MsgReleaseLightNodeReserve.newBuilder()
+      private Builder() {
+
+      }
+
+      private Builder(
+          com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+        super(parent);
+
+      }
+      @java.lang.Override
+      public Builder clear() {
+        super.clear();
+        bitField0_ = 0;
+        authority_ = "";
+        amount_ = "";
+        destination_ = "";
+        return this;
+      }
+
+      @java.lang.Override
+      public com.google.protobuf.Descriptors.Descriptor
+          getDescriptorForType() {
+        return qorechain.lightnode.v1.Tx.internal_static_qorechain_lightnode_v1_MsgReleaseLightNodeReserve_descriptor;
+      }
+
+      @java.lang.Override
+      public qorechain.lightnode.v1.Tx.MsgReleaseLightNodeReserve getDefaultInstanceForType() {
+        return qorechain.lightnode.v1.Tx.MsgReleaseLightNodeReserve.getDefaultInstance();
+      }
+
+      @java.lang.Override
+      public qorechain.lightnode.v1.Tx.MsgReleaseLightNodeReserve build() {
+        qorechain.lightnode.v1.Tx.MsgReleaseLightNodeReserve result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(result);
+        }
+        return result;
+      }
+
+      @java.lang.Override
+      public qorechain.lightnode.v1.Tx.MsgReleaseLightNodeReserve buildPartial() {
+        qorechain.lightnode.v1.Tx.MsgReleaseLightNodeReserve result = new qorechain.lightnode.v1.Tx.MsgReleaseLightNodeReserve(this);
+        if (bitField0_ != 0) { buildPartial0(result); }
+        onBuilt();
+        return result;
+      }
+
+      private void buildPartial0(qorechain.lightnode.v1.Tx.MsgReleaseLightNodeReserve result) {
+        int from_bitField0_ = bitField0_;
+        if (((from_bitField0_ & 0x00000001) != 0)) {
+          result.authority_ = authority_;
+        }
+        if (((from_bitField0_ & 0x00000002) != 0)) {
+          result.amount_ = amount_;
+        }
+        if (((from_bitField0_ & 0x00000004) != 0)) {
+          result.destination_ = destination_;
+        }
+      }
+
+      @java.lang.Override
+      public Builder mergeFrom(com.google.protobuf.Message other) {
+        if (other instanceof qorechain.lightnode.v1.Tx.MsgReleaseLightNodeReserve) {
+          return mergeFrom((qorechain.lightnode.v1.Tx.MsgReleaseLightNodeReserve)other);
+        } else {
+          super.mergeFrom(other);
+          return this;
+        }
+      }
+
+      public Builder mergeFrom(qorechain.lightnode.v1.Tx.MsgReleaseLightNodeReserve other) {
+        if (other == qorechain.lightnode.v1.Tx.MsgReleaseLightNodeReserve.getDefaultInstance()) return this;
+        if (!other.getAuthority().isEmpty()) {
+          authority_ = other.authority_;
+          bitField0_ |= 0x00000001;
+          onChanged();
+        }
+        if (!other.getAmount().isEmpty()) {
+          amount_ = other.amount_;
+          bitField0_ |= 0x00000002;
+          onChanged();
+        }
+        if (!other.getDestination().isEmpty()) {
+          destination_ = other.destination_;
+          bitField0_ |= 0x00000004;
+          onChanged();
+        }
+        this.mergeUnknownFields(other.getUnknownFields());
+        onChanged();
+        return this;
+      }
+
+      @java.lang.Override
+      public final boolean isInitialized() {
+        return true;
+      }
+
+      @java.lang.Override
+      public Builder mergeFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        if (extensionRegistry == null) {
+          throw new java.lang.NullPointerException();
+        }
+        try {
+          boolean done = false;
+          while (!done) {
+            int tag = input.readTag();
+            switch (tag) {
+              case 0:
+                done = true;
+                break;
+              case 10: {
+                authority_ = input.readStringRequireUtf8();
+                bitField0_ |= 0x00000001;
+                break;
+              } // case 10
+              case 18: {
+                amount_ = input.readStringRequireUtf8();
+                bitField0_ |= 0x00000002;
+                break;
+              } // case 18
+              case 26: {
+                destination_ = input.readStringRequireUtf8();
+                bitField0_ |= 0x00000004;
+                break;
+              } // case 26
+              default: {
+                if (!super.parseUnknownField(input, extensionRegistry, tag)) {
+                  done = true; // was an endgroup tag
+                }
+                break;
+              } // default:
+            } // switch (tag)
+          } // while (!done)
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          throw e.unwrapIOException();
+        } finally {
+          onChanged();
+        } // finally
+        return this;
+      }
+      private int bitField0_;
+
+      private java.lang.Object authority_ = "";
+      /**
+       * <pre>
+       * authority must be the governance module account.
+       * </pre>
+       *
+       * <code>string authority = 1 [json_name = "authority", (.cosmos_proto.scalar) = "cosmos.AddressString"];</code>
+       * @return The authority.
+       */
+      public java.lang.String getAuthority() {
+        java.lang.Object ref = authority_;
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          authority_ = s;
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
+      }
+      /**
+       * <pre>
+       * authority must be the governance module account.
+       * </pre>
+       *
+       * <code>string authority = 1 [json_name = "authority", (.cosmos_proto.scalar) = "cosmos.AddressString"];</code>
+       * @return The bytes for authority.
+       */
+      public com.google.protobuf.ByteString
+          getAuthorityBytes() {
+        java.lang.Object ref = authority_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          authority_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <pre>
+       * authority must be the governance module account.
+       * </pre>
+       *
+       * <code>string authority = 1 [json_name = "authority", (.cosmos_proto.scalar) = "cosmos.AddressString"];</code>
+       * @param value The authority to set.
+       * @return This builder for chaining.
+       */
+      public Builder setAuthority(
+          java.lang.String value) {
+        if (value == null) { throw new NullPointerException(); }
+        authority_ = value;
+        bitField0_ |= 0x00000001;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * authority must be the governance module account.
+       * </pre>
+       *
+       * <code>string authority = 1 [json_name = "authority", (.cosmos_proto.scalar) = "cosmos.AddressString"];</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearAuthority() {
+        authority_ = getDefaultInstance().getAuthority();
+        bitField0_ = (bitField0_ & ~0x00000001);
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * authority must be the governance module account.
+       * </pre>
+       *
+       * <code>string authority = 1 [json_name = "authority", (.cosmos_proto.scalar) = "cosmos.AddressString"];</code>
+       * @param value The bytes for authority to set.
+       * @return This builder for chaining.
+       */
+      public Builder setAuthorityBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) { throw new NullPointerException(); }
+        checkByteStringIsUtf8(value);
+        authority_ = value;
+        bitField0_ |= 0x00000001;
+        onChanged();
+        return this;
+      }
+
+      private java.lang.Object amount_ = "";
+      /**
+       * <pre>
+       * amount is the uqor to release from the reserved pool.
+       * </pre>
+       *
+       * <code>string amount = 2 [json_name = "amount"];</code>
+       * @return The amount.
+       */
+      public java.lang.String getAmount() {
+        java.lang.Object ref = amount_;
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          amount_ = s;
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
+      }
+      /**
+       * <pre>
+       * amount is the uqor to release from the reserved pool.
+       * </pre>
+       *
+       * <code>string amount = 2 [json_name = "amount"];</code>
+       * @return The bytes for amount.
+       */
+      public com.google.protobuf.ByteString
+          getAmountBytes() {
+        java.lang.Object ref = amount_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          amount_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <pre>
+       * amount is the uqor to release from the reserved pool.
+       * </pre>
+       *
+       * <code>string amount = 2 [json_name = "amount"];</code>
+       * @param value The amount to set.
+       * @return This builder for chaining.
+       */
+      public Builder setAmount(
+          java.lang.String value) {
+        if (value == null) { throw new NullPointerException(); }
+        amount_ = value;
+        bitField0_ |= 0x00000002;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * amount is the uqor to release from the reserved pool.
+       * </pre>
+       *
+       * <code>string amount = 2 [json_name = "amount"];</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearAmount() {
+        amount_ = getDefaultInstance().getAmount();
+        bitField0_ = (bitField0_ & ~0x00000002);
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * amount is the uqor to release from the reserved pool.
+       * </pre>
+       *
+       * <code>string amount = 2 [json_name = "amount"];</code>
+       * @param value The bytes for amount to set.
+       * @return This builder for chaining.
+       */
+      public Builder setAmountBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) { throw new NullPointerException(); }
+        checkByteStringIsUtf8(value);
+        amount_ = value;
+        bitField0_ |= 0x00000002;
+        onChanged();
+        return this;
+      }
+
+      private java.lang.Object destination_ = "";
+      /**
+       * <pre>
+       * destination receives the coins. Leave empty to release the amount into the
+       * ordinary light-node reward distribution instead of sending it anywhere.
+       * </pre>
+       *
+       * <code>string destination = 3 [json_name = "destination", (.cosmos_proto.scalar) = "cosmos.AddressString"];</code>
+       * @return The destination.
+       */
+      public java.lang.String getDestination() {
+        java.lang.Object ref = destination_;
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          destination_ = s;
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
+      }
+      /**
+       * <pre>
+       * destination receives the coins. Leave empty to release the amount into the
+       * ordinary light-node reward distribution instead of sending it anywhere.
+       * </pre>
+       *
+       * <code>string destination = 3 [json_name = "destination", (.cosmos_proto.scalar) = "cosmos.AddressString"];</code>
+       * @return The bytes for destination.
+       */
+      public com.google.protobuf.ByteString
+          getDestinationBytes() {
+        java.lang.Object ref = destination_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          destination_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <pre>
+       * destination receives the coins. Leave empty to release the amount into the
+       * ordinary light-node reward distribution instead of sending it anywhere.
+       * </pre>
+       *
+       * <code>string destination = 3 [json_name = "destination", (.cosmos_proto.scalar) = "cosmos.AddressString"];</code>
+       * @param value The destination to set.
+       * @return This builder for chaining.
+       */
+      public Builder setDestination(
+          java.lang.String value) {
+        if (value == null) { throw new NullPointerException(); }
+        destination_ = value;
+        bitField0_ |= 0x00000004;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * destination receives the coins. Leave empty to release the amount into the
+       * ordinary light-node reward distribution instead of sending it anywhere.
+       * </pre>
+       *
+       * <code>string destination = 3 [json_name = "destination", (.cosmos_proto.scalar) = "cosmos.AddressString"];</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearDestination() {
+        destination_ = getDefaultInstance().getDestination();
+        bitField0_ = (bitField0_ & ~0x00000004);
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * destination receives the coins. Leave empty to release the amount into the
+       * ordinary light-node reward distribution instead of sending it anywhere.
+       * </pre>
+       *
+       * <code>string destination = 3 [json_name = "destination", (.cosmos_proto.scalar) = "cosmos.AddressString"];</code>
+       * @param value The bytes for destination to set.
+       * @return This builder for chaining.
+       */
+      public Builder setDestinationBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) { throw new NullPointerException(); }
+        checkByteStringIsUtf8(value);
+        destination_ = value;
+        bitField0_ |= 0x00000004;
+        onChanged();
+        return this;
+      }
+
+      // @@protoc_insertion_point(builder_scope:qorechain.lightnode.v1.MsgReleaseLightNodeReserve)
+    }
+
+    // @@protoc_insertion_point(class_scope:qorechain.lightnode.v1.MsgReleaseLightNodeReserve)
+    private static final qorechain.lightnode.v1.Tx.MsgReleaseLightNodeReserve DEFAULT_INSTANCE;
+    static {
+      DEFAULT_INSTANCE = new qorechain.lightnode.v1.Tx.MsgReleaseLightNodeReserve();
+    }
+
+    public static qorechain.lightnode.v1.Tx.MsgReleaseLightNodeReserve getDefaultInstance() {
+      return DEFAULT_INSTANCE;
+    }
+
+    private static final com.google.protobuf.Parser<MsgReleaseLightNodeReserve>
+        PARSER = new com.google.protobuf.AbstractParser<MsgReleaseLightNodeReserve>() {
+      @java.lang.Override
+      public MsgReleaseLightNodeReserve parsePartialFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        Builder builder = newBuilder();
+        try {
+          builder.mergeFrom(input, extensionRegistry);
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          throw e.setUnfinishedMessage(builder.buildPartial());
+        } catch (com.google.protobuf.UninitializedMessageException e) {
+          throw e.asInvalidProtocolBufferException().setUnfinishedMessage(builder.buildPartial());
+        } catch (java.io.IOException e) {
+          throw new com.google.protobuf.InvalidProtocolBufferException(e)
+              .setUnfinishedMessage(builder.buildPartial());
+        }
+        return builder.buildPartial();
+      }
+    };
+
+    public static com.google.protobuf.Parser<MsgReleaseLightNodeReserve> parser() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Parser<MsgReleaseLightNodeReserve> getParserForType() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public qorechain.lightnode.v1.Tx.MsgReleaseLightNodeReserve getDefaultInstanceForType() {
+      return DEFAULT_INSTANCE;
+    }
+
+  }
+
+  public interface MsgReleaseLightNodeReserveResponseOrBuilder extends
+      // @@protoc_insertion_point(interface_extends:qorechain.lightnode.v1.MsgReleaseLightNodeReserveResponse)
+      com.google.protobuf.MessageOrBuilder {
+  }
+  /**
+   * Protobuf type {@code qorechain.lightnode.v1.MsgReleaseLightNodeReserveResponse}
+   */
+  public static final class MsgReleaseLightNodeReserveResponse extends
+      com.google.protobuf.GeneratedMessage implements
+      // @@protoc_insertion_point(message_implements:qorechain.lightnode.v1.MsgReleaseLightNodeReserveResponse)
+      MsgReleaseLightNodeReserveResponseOrBuilder {
+  private static final long serialVersionUID = 0L;
+    static {
+      com.google.protobuf.RuntimeVersion.validateProtobufGencodeVersion(
+        com.google.protobuf.RuntimeVersion.RuntimeDomain.PUBLIC,
+        /* major= */ 4,
+        /* minor= */ 35,
+        /* patch= */ 1,
+        /* suffix= */ "",
+        "MsgReleaseLightNodeReserveResponse");
+    }
+    // Use MsgReleaseLightNodeReserveResponse.newBuilder() to construct.
+    private MsgReleaseLightNodeReserveResponse(com.google.protobuf.GeneratedMessage.Builder<?> builder) {
+      super(builder);
+    }
+    private MsgReleaseLightNodeReserveResponse() {
+    }
+
+    public static final com.google.protobuf.Descriptors.Descriptor
+        getDescriptor() {
+      return qorechain.lightnode.v1.Tx.internal_static_qorechain_lightnode_v1_MsgReleaseLightNodeReserveResponse_descriptor;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Descriptors.Descriptor getDescriptorForType() {
+      return qorechain.lightnode.v1.Tx.internal_static_qorechain_lightnode_v1_MsgReleaseLightNodeReserveResponse_descriptor;
+    }
+
+    @java.lang.Override
+    protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+        internalGetFieldAccessorTable() {
+      return qorechain.lightnode.v1.Tx.internal_static_qorechain_lightnode_v1_MsgReleaseLightNodeReserveResponse_fieldAccessorTable
+          .ensureFieldAccessorsInitialized(
+              qorechain.lightnode.v1.Tx.MsgReleaseLightNodeReserveResponse.class, qorechain.lightnode.v1.Tx.MsgReleaseLightNodeReserveResponse.Builder.class);
+    }
+
+    private byte memoizedIsInitialized = -1;
+    @java.lang.Override
+    public final boolean isInitialized() {
+      byte isInitialized = memoizedIsInitialized;
+      if (isInitialized == 1) return true;
+      if (isInitialized == 0) return false;
+
+      memoizedIsInitialized = 1;
+      return true;
+    }
+
+    @java.lang.Override
+    public void writeTo(com.google.protobuf.CodedOutputStream output)
+                        throws java.io.IOException {
+      getUnknownFields().writeTo(output);
+    }
+    @java.lang.Override
+    public int getSerializedSize() {
+      int size = memoizedSize;
+      if (size != -1) return size;
+
+      size = 0;
+      size += getUnknownFields().getSerializedSize();
+      memoizedSize = size;
+      return size;
+    }
+
+    @java.lang.Override
+    public boolean equals(final java.lang.Object obj) {
+      if (obj == this) {
+       return true;
+      }
+      if (!(obj instanceof qorechain.lightnode.v1.Tx.MsgReleaseLightNodeReserveResponse)) {
+        return super.equals(obj);
+      }
+      qorechain.lightnode.v1.Tx.MsgReleaseLightNodeReserveResponse other = (qorechain.lightnode.v1.Tx.MsgReleaseLightNodeReserveResponse) obj;
+
+      if (!getUnknownFields().equals(other.getUnknownFields())) return false;
+      return true;
+    }
+
+    @java.lang.Override
+    public int hashCode() {
+      if (memoizedHashCode != 0) {
+        return memoizedHashCode;
+      }
+      int hash = 41;
+      hash = (19 * hash) + getDescriptor().hashCode();
+      hash = (29 * hash) + getUnknownFields().hashCode();
+      memoizedHashCode = hash;
+      return hash;
+    }
+
+    public static qorechain.lightnode.v1.Tx.MsgReleaseLightNodeReserveResponse parseFrom(
+        java.nio.ByteBuffer data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static qorechain.lightnode.v1.Tx.MsgReleaseLightNodeReserveResponse parseFrom(
+        java.nio.ByteBuffer data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static qorechain.lightnode.v1.Tx.MsgReleaseLightNodeReserveResponse parseFrom(
+        com.google.protobuf.ByteString data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static qorechain.lightnode.v1.Tx.MsgReleaseLightNodeReserveResponse parseFrom(
+        com.google.protobuf.ByteString data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static qorechain.lightnode.v1.Tx.MsgReleaseLightNodeReserveResponse parseFrom(byte[] data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static qorechain.lightnode.v1.Tx.MsgReleaseLightNodeReserveResponse parseFrom(
+        byte[] data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static qorechain.lightnode.v1.Tx.MsgReleaseLightNodeReserveResponse parseFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input);
+    }
+    public static qorechain.lightnode.v1.Tx.MsgReleaseLightNodeReserveResponse parseFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    public static qorechain.lightnode.v1.Tx.MsgReleaseLightNodeReserveResponse parseDelimitedFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseDelimitedWithIOException(PARSER, input);
+    }
+
+    public static qorechain.lightnode.v1.Tx.MsgReleaseLightNodeReserveResponse parseDelimitedFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static qorechain.lightnode.v1.Tx.MsgReleaseLightNodeReserveResponse parseFrom(
+        com.google.protobuf.CodedInputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input);
+    }
+    public static qorechain.lightnode.v1.Tx.MsgReleaseLightNodeReserveResponse parseFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    @java.lang.Override
+    public Builder newBuilderForType() { return newBuilder(); }
+    public static Builder newBuilder() {
+      return DEFAULT_INSTANCE.toBuilder();
+    }
+    public static Builder newBuilder(qorechain.lightnode.v1.Tx.MsgReleaseLightNodeReserveResponse prototype) {
+      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+    }
+    @java.lang.Override
+    public Builder toBuilder() {
+      return this == DEFAULT_INSTANCE
+          ? new Builder() : new Builder().mergeFrom(this);
+    }
+
+    @java.lang.Override
+    protected Builder newBuilderForType(
+        com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+      Builder builder = new Builder(parent);
+      return builder;
+    }
+    /**
+     * Protobuf type {@code qorechain.lightnode.v1.MsgReleaseLightNodeReserveResponse}
+     */
+    public static final class Builder extends
+        com.google.protobuf.GeneratedMessage.Builder<Builder> implements
+        // @@protoc_insertion_point(builder_implements:qorechain.lightnode.v1.MsgReleaseLightNodeReserveResponse)
+        qorechain.lightnode.v1.Tx.MsgReleaseLightNodeReserveResponseOrBuilder {
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return qorechain.lightnode.v1.Tx.internal_static_qorechain_lightnode_v1_MsgReleaseLightNodeReserveResponse_descriptor;
+      }
+
+      @java.lang.Override
+      protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return qorechain.lightnode.v1.Tx.internal_static_qorechain_lightnode_v1_MsgReleaseLightNodeReserveResponse_fieldAccessorTable
+            .ensureFieldAccessorsInitialized(
+                qorechain.lightnode.v1.Tx.MsgReleaseLightNodeReserveResponse.class, qorechain.lightnode.v1.Tx.MsgReleaseLightNodeReserveResponse.Builder.class);
+      }
+
+      // Construct using qorechain.lightnode.v1.Tx.MsgReleaseLightNodeReserveResponse.newBuilder()
+      private Builder() {
+
+      }
+
+      private Builder(
+          com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+        super(parent);
+
+      }
+      @java.lang.Override
+      public Builder clear() {
+        super.clear();
+        return this;
+      }
+
+      @java.lang.Override
+      public com.google.protobuf.Descriptors.Descriptor
+          getDescriptorForType() {
+        return qorechain.lightnode.v1.Tx.internal_static_qorechain_lightnode_v1_MsgReleaseLightNodeReserveResponse_descriptor;
+      }
+
+      @java.lang.Override
+      public qorechain.lightnode.v1.Tx.MsgReleaseLightNodeReserveResponse getDefaultInstanceForType() {
+        return qorechain.lightnode.v1.Tx.MsgReleaseLightNodeReserveResponse.getDefaultInstance();
+      }
+
+      @java.lang.Override
+      public qorechain.lightnode.v1.Tx.MsgReleaseLightNodeReserveResponse build() {
+        qorechain.lightnode.v1.Tx.MsgReleaseLightNodeReserveResponse result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(result);
+        }
+        return result;
+      }
+
+      @java.lang.Override
+      public qorechain.lightnode.v1.Tx.MsgReleaseLightNodeReserveResponse buildPartial() {
+        qorechain.lightnode.v1.Tx.MsgReleaseLightNodeReserveResponse result = new qorechain.lightnode.v1.Tx.MsgReleaseLightNodeReserveResponse(this);
+        onBuilt();
+        return result;
+      }
+
+      @java.lang.Override
+      public Builder mergeFrom(com.google.protobuf.Message other) {
+        if (other instanceof qorechain.lightnode.v1.Tx.MsgReleaseLightNodeReserveResponse) {
+          return mergeFrom((qorechain.lightnode.v1.Tx.MsgReleaseLightNodeReserveResponse)other);
+        } else {
+          super.mergeFrom(other);
+          return this;
+        }
+      }
+
+      public Builder mergeFrom(qorechain.lightnode.v1.Tx.MsgReleaseLightNodeReserveResponse other) {
+        if (other == qorechain.lightnode.v1.Tx.MsgReleaseLightNodeReserveResponse.getDefaultInstance()) return this;
+        this.mergeUnknownFields(other.getUnknownFields());
+        onChanged();
+        return this;
+      }
+
+      @java.lang.Override
+      public final boolean isInitialized() {
+        return true;
+      }
+
+      @java.lang.Override
+      public Builder mergeFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        if (extensionRegistry == null) {
+          throw new java.lang.NullPointerException();
+        }
+        try {
+          boolean done = false;
+          while (!done) {
+            int tag = input.readTag();
+            switch (tag) {
+              case 0:
+                done = true;
+                break;
+              default: {
+                if (!super.parseUnknownField(input, extensionRegistry, tag)) {
+                  done = true; // was an endgroup tag
+                }
+                break;
+              } // default:
+            } // switch (tag)
+          } // while (!done)
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          throw e.unwrapIOException();
+        } finally {
+          onChanged();
+        } // finally
+        return this;
+      }
+
+      // @@protoc_insertion_point(builder_scope:qorechain.lightnode.v1.MsgReleaseLightNodeReserveResponse)
+    }
+
+    // @@protoc_insertion_point(class_scope:qorechain.lightnode.v1.MsgReleaseLightNodeReserveResponse)
+    private static final qorechain.lightnode.v1.Tx.MsgReleaseLightNodeReserveResponse DEFAULT_INSTANCE;
+    static {
+      DEFAULT_INSTANCE = new qorechain.lightnode.v1.Tx.MsgReleaseLightNodeReserveResponse();
+    }
+
+    public static qorechain.lightnode.v1.Tx.MsgReleaseLightNodeReserveResponse getDefaultInstance() {
+      return DEFAULT_INSTANCE;
+    }
+
+    private static final com.google.protobuf.Parser<MsgReleaseLightNodeReserveResponse>
+        PARSER = new com.google.protobuf.AbstractParser<MsgReleaseLightNodeReserveResponse>() {
+      @java.lang.Override
+      public MsgReleaseLightNodeReserveResponse parsePartialFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        Builder builder = newBuilder();
+        try {
+          builder.mergeFrom(input, extensionRegistry);
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          throw e.setUnfinishedMessage(builder.buildPartial());
+        } catch (com.google.protobuf.UninitializedMessageException e) {
+          throw e.asInvalidProtocolBufferException().setUnfinishedMessage(builder.buildPartial());
+        } catch (java.io.IOException e) {
+          throw new com.google.protobuf.InvalidProtocolBufferException(e)
+              .setUnfinishedMessage(builder.buildPartial());
+        }
+        return builder.buildPartial();
+      }
+    };
+
+    public static com.google.protobuf.Parser<MsgReleaseLightNodeReserveResponse> parser() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Parser<MsgReleaseLightNodeReserveResponse> getParserForType() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public qorechain.lightnode.v1.Tx.MsgReleaseLightNodeReserveResponse getDefaultInstanceForType() {
+      return DEFAULT_INSTANCE;
+    }
+
+  }
+
   private static final com.google.protobuf.Descriptors.Descriptor
     internal_static_qorechain_lightnode_v1_MsgRegisterLightNode_descriptor;
   private static final 
@@ -4087,6 +5392,16 @@ public final class Tx extends com.google.protobuf.GeneratedFile {
   private static final 
     com.google.protobuf.GeneratedMessage.FieldAccessorTable
       internal_static_qorechain_lightnode_v1_MsgClaimLightNodeRewardsResponse_fieldAccessorTable;
+  private static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_qorechain_lightnode_v1_MsgReleaseLightNodeReserve_descriptor;
+  private static final 
+    com.google.protobuf.GeneratedMessage.FieldAccessorTable
+      internal_static_qorechain_lightnode_v1_MsgReleaseLightNodeReserve_fieldAccessorTable;
+  private static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_qorechain_lightnode_v1_MsgReleaseLightNodeReserveResponse_descriptor;
+  private static final 
+    com.google.protobuf.GeneratedMessage.FieldAccessorTable
+      internal_static_qorechain_lightnode_v1_MsgReleaseLightNodeReserveResponse_fieldAccessorTable;
 
   public static com.google.protobuf.Descriptors.FileDescriptor
       getDescriptor() {
@@ -4113,21 +5428,30 @@ public final class Tx extends com.google.protobuf.GeneratedFile {
       "onse\"_\n\030MsgClaimLightNodeRewards\0224\n\010oper" +
       "ator\030\001 \001(\tB\030\322\264-\024cosmos.AddressStringR\010op" +
       "erator:\r\202\347\260*\010operator\"\"\n MsgClaimLightNo" +
-      "deRewardsResponse2\353\003\n\003Msg\022w\n\021RegisterLig" +
-      "htNode\022,.qorechain.lightnode.v1.MsgRegis" +
-      "terLightNode\0324.qorechain.lightnode.v1.Ms" +
-      "gRegisterLightNodeResponse\022_\n\tHeartbeat\022" +
-      "$.qorechain.lightnode.v1.MsgHeartbeat\032,." +
-      "qorechain.lightnode.v1.MsgHeartbeatRespo" +
-      "nse\022}\n\023DeregisterLightNode\022..qorechain.l" +
-      "ightnode.v1.MsgDeregisterLightNode\0326.qor" +
-      "echain.lightnode.v1.MsgDeregisterLightNo" +
-      "deResponse\022\203\001\n\025ClaimLightNodeRewards\0220.q" +
-      "orechain.lightnode.v1.MsgClaimLightNodeR" +
-      "ewards\0328.qorechain.lightnode.v1.MsgClaim" +
-      "LightNodeRewardsResponse\032\005\200\347\260*\001B7Z5githu" +
-      "b.com/qorechain/qorechain-core/x/lightno" +
-      "de/typesb\006proto3"
+      "deRewardsResponse\"\270\001\n\032MsgReleaseLightNod" +
+      "eReserve\0226\n\tauthority\030\001 \001(\tB\030\322\264-\024cosmos." +
+      "AddressStringR\tauthority\022\026\n\006amount\030\002 \001(\t" +
+      "R\006amount\022:\n\013destination\030\003 \001(\tB\030\322\264-\024cosmo" +
+      "s.AddressStringR\013destination:\016\202\347\260*\tautho" +
+      "rity\"$\n\"MsgReleaseLightNodeReserveRespon" +
+      "se2\356\004\n\003Msg\022w\n\021RegisterLightNode\022,.qorech" +
+      "ain.lightnode.v1.MsgRegisterLightNode\0324." +
+      "qorechain.lightnode.v1.MsgRegisterLightN" +
+      "odeResponse\022_\n\tHeartbeat\022$.qorechain.lig" +
+      "htnode.v1.MsgHeartbeat\032,.qorechain.light" +
+      "node.v1.MsgHeartbeatResponse\022}\n\023Deregist" +
+      "erLightNode\022..qorechain.lightnode.v1.Msg" +
+      "DeregisterLightNode\0326.qorechain.lightnod" +
+      "e.v1.MsgDeregisterLightNodeResponse\022\203\001\n\025" +
+      "ClaimLightNodeRewards\0220.qorechain.lightn" +
+      "ode.v1.MsgClaimLightNodeRewards\0328.qorech" +
+      "ain.lightnode.v1.MsgClaimLightNodeReward" +
+      "sResponse\022\200\001\n\016ReleaseReserve\0222.qorechain" +
+      ".lightnode.v1.MsgReleaseLightNodeReserve" +
+      "\032:.qorechain.lightnode.v1.MsgReleaseLigh" +
+      "tNodeReserveResponse\032\005\200\347\260*\001B7Z5github.co" +
+      "m/qorechain/qorechain-core/x/lightnode/t" +
+      "ypesb\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
@@ -4182,6 +5506,18 @@ public final class Tx extends com.google.protobuf.GeneratedFile {
     internal_static_qorechain_lightnode_v1_MsgClaimLightNodeRewardsResponse_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_qorechain_lightnode_v1_MsgClaimLightNodeRewardsResponse_descriptor,
+        new java.lang.String[] { });
+    internal_static_qorechain_lightnode_v1_MsgReleaseLightNodeReserve_descriptor =
+      getDescriptor().getMessageType(8);
+    internal_static_qorechain_lightnode_v1_MsgReleaseLightNodeReserve_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessage.FieldAccessorTable(
+        internal_static_qorechain_lightnode_v1_MsgReleaseLightNodeReserve_descriptor,
+        new java.lang.String[] { "Authority", "Amount", "Destination", });
+    internal_static_qorechain_lightnode_v1_MsgReleaseLightNodeReserveResponse_descriptor =
+      getDescriptor().getMessageType(9);
+    internal_static_qorechain_lightnode_v1_MsgReleaseLightNodeReserveResponse_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessage.FieldAccessorTable(
+        internal_static_qorechain_lightnode_v1_MsgReleaseLightNodeReserveResponse_descriptor,
         new java.lang.String[] { });
     descriptor.resolveAllFeaturesImmutable();
     cosmos.msg.v1.Msg.getDescriptor();

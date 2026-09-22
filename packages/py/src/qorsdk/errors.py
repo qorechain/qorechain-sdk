@@ -92,6 +92,26 @@ MODULE_CODES: dict[str, dict[int, tuple[str, str]]] = {
             "hybrid PQC verification failed — the ML-DSA signature did not verify "
             "against the registered key",
         ),
+        # v3.2.0 EVM authorisation window. Code 28 covers two states with
+        # different remedies (invalid window vs. no registered post-quantum key);
+        # qorsdk.evm_window.classify_evm_window_error reads the message text to
+        # tell them apart.
+        26: (
+            "no_evm_window",
+            "no open EVM authorisation window — open one with MsgOpenEVMWindow "
+            "(msg.pqc.open_evm_window) on the Cosmos lane, THEN read the nonce, "
+            "THEN sign the EVM transaction",
+        ),
+        27: (
+            "evm_window_exhausted",
+            "EVM authorisation window exhausted — it ran out of blocks, "
+            "transactions or value; open a new one with MsgOpenEVMWindow",
+        ),
+        28: (
+            "invalid_evm_window",
+            "invalid EVM authorisation window, or the account has no registered "
+            "post-quantum key — check the log text to tell the two apart",
+        ),
     },
 }
 

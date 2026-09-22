@@ -108,3 +108,31 @@ class MsgDisableAlgorithm(_message.Message):
 class MsgDisableAlgorithmResponse(_message.Message):
     __slots__ = ()
     def __init__(self) -> None: ...
+
+class MsgOpenEVMWindow(_message.Message):
+    __slots__ = ("sender", "blocks", "max_txs", "max_value")
+    SENDER_FIELD_NUMBER: _ClassVar[int]
+    BLOCKS_FIELD_NUMBER: _ClassVar[int]
+    MAX_TXS_FIELD_NUMBER: _ClassVar[int]
+    MAX_VALUE_FIELD_NUMBER: _ClassVar[int]
+    sender: str
+    blocks: int
+    max_txs: int
+    max_value: str
+    def __init__(self, sender: _Optional[str] = ..., blocks: _Optional[int] = ..., max_txs: _Optional[int] = ..., max_value: _Optional[str] = ...) -> None: ...
+
+class MsgOpenEVMWindowResponse(_message.Message):
+    __slots__ = ("expiry_height",)
+    EXPIRY_HEIGHT_FIELD_NUMBER: _ClassVar[int]
+    expiry_height: int
+    def __init__(self, expiry_height: _Optional[int] = ...) -> None: ...
+
+class MsgCloseEVMWindow(_message.Message):
+    __slots__ = ("sender",)
+    SENDER_FIELD_NUMBER: _ClassVar[int]
+    sender: str
+    def __init__(self, sender: _Optional[str] = ...) -> None: ...
+
+class MsgCloseEVMWindowResponse(_message.Message):
+    __slots__ = ()
+    def __init__(self) -> None: ...

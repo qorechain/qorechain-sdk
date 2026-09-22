@@ -33,6 +33,12 @@ pub enum Error {
     #[error("PQC error: {0}")]
     Pqc(String),
 
+    /// An EVM authorisation window bound was violated client-side, or a window
+    /// status could not be parsed. The message names the bound. See
+    /// [`crate::evm_window`].
+    #[error("evm window: {0}")]
+    EvmWindow(String),
+
     /// A non-2xx HTTP response was received.
     #[error("HTTP {status} for {url}")]
     Http {

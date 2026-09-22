@@ -6,7 +6,7 @@ plugins {
 }
 
 group = "io.github.qorechain"
-version = "0.8.1"
+version = "0.8.2"
 
 repositories {
     mavenCentral()
@@ -72,7 +72,7 @@ mavenPublishing {
         signAllPublications()
     }
 
-    coordinates("io.github.qorechain", "qorechain-sdk", "0.8.1")
+    coordinates("io.github.qorechain", "qorechain-sdk", "0.8.2")
 
     pom {
         name.set("QoreChain Java SDK")

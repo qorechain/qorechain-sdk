@@ -26,7 +26,7 @@ from cosmpy.protos.cosmos.msg.v1 import msg_pb2 as cosmos_dot_msg_dot_v1_dot_msg
 from cosmpy.protos.cosmos_proto import cosmos_pb2 as cosmos__proto_dot_cosmos__pb2
 
 
-DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\x1fqorechain/lightnode/v1/tx.proto\x12\x16qorechain.lightnode.v1\x1a\x17\x63osmos/msg/v1/msg.proto\x1a\x19\x63osmos_proto/cosmos.proto\"\xb6\x01\n\x14MsgRegisterLightNode\x12\x34\n\x08operator\x18\x01 \x01(\tB\x18\xd2\xb4-\x14\x63osmos.AddressStringR\x08operator\x12\x1b\n\tnode_type\x18\x02 \x01(\tR\x08nodeType\x12\x18\n\x07version\x18\x03 \x01(\tR\x07version\x12\"\n\x0c\x63\x61pabilities\x18\x04 \x03(\tR\x0c\x63\x61pabilities:\r\x82\xe7\xb0*\x08operator\"\x1e\n\x1cMsgRegisterLightNodeResponse\"S\n\x0cMsgHeartbeat\x12\x34\n\x08operator\x18\x01 \x01(\tB\x18\xd2\xb4-\x14\x63osmos.AddressStringR\x08operator:\r\x82\xe7\xb0*\x08operator\"\x16\n\x14MsgHeartbeatResponse\"]\n\x16MsgDeregisterLightNode\x12\x34\n\x08operator\x18\x01 \x01(\tB\x18\xd2\xb4-\x14\x63osmos.AddressStringR\x08operator:\r\x82\xe7\xb0*\x08operator\" \n\x1eMsgDeregisterLightNodeResponse\"_\n\x18MsgClaimLightNodeRewards\x12\x34\n\x08operator\x18\x01 \x01(\tB\x18\xd2\xb4-\x14\x63osmos.AddressStringR\x08operator:\r\x82\xe7\xb0*\x08operator\"\"\n MsgClaimLightNodeRewardsResponse2\xeb\x03\n\x03Msg\x12w\n\x11RegisterLightNode\x12,.qorechain.lightnode.v1.MsgRegisterLightNode\x1a\x34.qorechain.lightnode.v1.MsgRegisterLightNodeResponse\x12_\n\tHeartbeat\x12$.qorechain.lightnode.v1.MsgHeartbeat\x1a,.qorechain.lightnode.v1.MsgHeartbeatResponse\x12}\n\x13\x44\x65registerLightNode\x12..qorechain.lightnode.v1.MsgDeregisterLightNode\x1a\x36.qorechain.lightnode.v1.MsgDeregisterLightNodeResponse\x12\x83\x01\n\x15\x43laimLightNodeRewards\x12\x30.qorechain.lightnode.v1.MsgClaimLightNodeRewards\x1a\x38.qorechain.lightnode.v1.MsgClaimLightNodeRewardsResponse\x1a\x05\x80\xe7\xb0*\x01\x42\xd6\x01\n\x1a\x63om.qorechain.lightnode.v1B\x07TxProtoP\x01Z5github.com/qorechain/qorechain-core/x/lightnode/types\xa2\x02\x03QLX\xaa\x02\x16Qorechain.Lightnode.V1\xca\x02\x16Qorechain\\Lightnode\\V1\xe2\x02\"Qorechain\\Lightnode\\V1\\GPBMetadata\xea\x02\x18Qorechain::Lightnode::V1b\x06proto3')
+DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\x1fqorechain/lightnode/v1/tx.proto\x12\x16qorechain.lightnode.v1\x1a\x17\x63osmos/msg/v1/msg.proto\x1a\x19\x63osmos_proto/cosmos.proto\"\xb6\x01\n\x14MsgRegisterLightNode\x12\x34\n\x08operator\x18\x01 \x01(\tB\x18\xd2\xb4-\x14\x63osmos.AddressStringR\x08operator\x12\x1b\n\tnode_type\x18\x02 \x01(\tR\x08nodeType\x12\x18\n\x07version\x18\x03 \x01(\tR\x07version\x12\"\n\x0c\x63\x61pabilities\x18\x04 \x03(\tR\x0c\x63\x61pabilities:\r\x82\xe7\xb0*\x08operator\"\x1e\n\x1cMsgRegisterLightNodeResponse\"S\n\x0cMsgHeartbeat\x12\x34\n\x08operator\x18\x01 \x01(\tB\x18\xd2\xb4-\x14\x63osmos.AddressStringR\x08operator:\r\x82\xe7\xb0*\x08operator\"\x16\n\x14MsgHeartbeatResponse\"]\n\x16MsgDeregisterLightNode\x12\x34\n\x08operator\x18\x01 \x01(\tB\x18\xd2\xb4-\x14\x63osmos.AddressStringR\x08operator:\r\x82\xe7\xb0*\x08operator\" \n\x1eMsgDeregisterLightNodeResponse\"_\n\x18MsgClaimLightNodeRewards\x12\x34\n\x08operator\x18\x01 \x01(\tB\x18\xd2\xb4-\x14\x63osmos.AddressStringR\x08operator:\r\x82\xe7\xb0*\x08operator\"\"\n MsgClaimLightNodeRewardsResponse\"\xb8\x01\n\x1aMsgReleaseLightNodeReserve\x12\x36\n\tauthority\x18\x01 \x01(\tB\x18\xd2\xb4-\x14\x63osmos.AddressStringR\tauthority\x12\x16\n\x06\x61mount\x18\x02 \x01(\tR\x06\x61mount\x12:\n\x0b\x64\x65stination\x18\x03 \x01(\tB\x18\xd2\xb4-\x14\x63osmos.AddressStringR\x0b\x64\x65stination:\x0e\x82\xe7\xb0*\tauthority\"$\n\"MsgReleaseLightNodeReserveResponse2\xee\x04\n\x03Msg\x12w\n\x11RegisterLightNode\x12,.qorechain.lightnode.v1.MsgRegisterLightNode\x1a\x34.qorechain.lightnode.v1.MsgRegisterLightNodeResponse\x12_\n\tHeartbeat\x12$.qorechain.lightnode.v1.MsgHeartbeat\x1a,.qorechain.lightnode.v1.MsgHeartbeatResponse\x12}\n\x13\x44\x65registerLightNode\x12..qorechain.lightnode.v1.MsgDeregisterLightNode\x1a\x36.qorechain.lightnode.v1.MsgDeregisterLightNodeResponse\x12\x83\x01\n\x15\x43laimLightNodeRewards\x12\x30.qorechain.lightnode.v1.MsgClaimLightNodeRewards\x1a\x38.qorechain.lightnode.v1.MsgClaimLightNodeRewardsResponse\x12\x80\x01\n\x0eReleaseReserve\x12\x32.qorechain.lightnode.v1.MsgReleaseLightNodeReserve\x1a:.qorechain.lightnode.v1.MsgReleaseLightNodeReserveResponse\x1a\x05\x80\xe7\xb0*\x01\x42\xd6\x01\n\x1a\x63om.qorechain.lightnode.v1B\x07TxProtoP\x01Z5github.com/qorechain/qorechain-core/x/lightnode/types\xa2\x02\x03QLX\xaa\x02\x16Qorechain.Lightnode.V1\xca\x02\x16Qorechain\\Lightnode\\V1\xe2\x02\"Qorechain\\Lightnode\\V1\\GPBMetadata\xea\x02\x18Qorechain::Lightnode::V1b\x06proto3')
 
 _globals = globals()
 _builder.BuildMessageAndEnumDescriptors(DESCRIPTOR, _globals)
@@ -50,6 +50,12 @@ if not _descriptor._USE_C_DESCRIPTORS:
   _globals['_MSGCLAIMLIGHTNODEREWARDS'].fields_by_name['operator']._serialized_options = b'\322\264-\024cosmos.AddressString'
   _globals['_MSGCLAIMLIGHTNODEREWARDS']._loaded_options = None
   _globals['_MSGCLAIMLIGHTNODEREWARDS']._serialized_options = b'\202\347\260*\010operator'
+  _globals['_MSGRELEASELIGHTNODERESERVE'].fields_by_name['authority']._loaded_options = None
+  _globals['_MSGRELEASELIGHTNODERESERVE'].fields_by_name['authority']._serialized_options = b'\322\264-\024cosmos.AddressString'
+  _globals['_MSGRELEASELIGHTNODERESERVE'].fields_by_name['destination']._loaded_options = None
+  _globals['_MSGRELEASELIGHTNODERESERVE'].fields_by_name['destination']._serialized_options = b'\322\264-\024cosmos.AddressString'
+  _globals['_MSGRELEASELIGHTNODERESERVE']._loaded_options = None
+  _globals['_MSGRELEASELIGHTNODERESERVE']._serialized_options = b'\202\347\260*\tauthority'
   _globals['_MSG']._loaded_options = None
   _globals['_MSG']._serialized_options = b'\200\347\260*\001'
   _globals['_MSGREGISTERLIGHTNODE']._serialized_start=112
@@ -68,6 +74,10 @@ if not _descriptor._USE_C_DESCRIPTORS:
   _globals['_MSGCLAIMLIGHTNODEREWARDS']._serialized_end=661
   _globals['_MSGCLAIMLIGHTNODEREWARDSRESPONSE']._serialized_start=663
   _globals['_MSGCLAIMLIGHTNODEREWARDSRESPONSE']._serialized_end=697
-  _globals['_MSG']._serialized_start=700
-  _globals['_MSG']._serialized_end=1191
+  _globals['_MSGRELEASELIGHTNODERESERVE']._serialized_start=700
+  _globals['_MSGRELEASELIGHTNODERESERVE']._serialized_end=884
+  _globals['_MSGRELEASELIGHTNODERESERVERESPONSE']._serialized_start=886
+  _globals['_MSGRELEASELIGHTNODERESERVERESPONSE']._serialized_end=922
+  _globals['_MSG']._serialized_start=925
+  _globals['_MSG']._serialized_end=1547
 # @@protoc_insertion_point(module_scope)

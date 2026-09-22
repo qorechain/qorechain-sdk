@@ -223,3 +223,85 @@ pub fn rotate_pqc_key_any(
         ROTATE_PQC_KEY,
     )
 }
+
+// --------------------------------------------------------------------------- //
+// v3.2.0: the EVM authorisation window
+// --------------------------------------------------------------------------- //
+
+/// `/qorechain.pqc.v1.MsgOpenEVMWindow` type URL (chain v3.2.0).
+pub const OPEN_EVM_WINDOW: &str = "/qorechain.pqc.v1.MsgOpenEVMWindow";
+/// `/qorechain.pqc.v1.MsgCloseEVMWindow` type URL (chain v3.2.0).
+pub const CLOSE_EVM_WINDOW: &str = "/qorechain.pqc.v1.MsgCloseEVMWindow";
+
+/// Builds `MsgOpenEVMWindow`, validating the bounds the chain enforces in
+/// `ValidateBasic` so a caller fails fast instead of paying for a refused
+/// transaction.
+///
+/// From chain v3.2.0 an EVM-lane transaction is admitted only from an account
+/// that has a registered post-quantum key AND an open, unexhausted window. This
+/// message travels the **Cosmos lane**, so it carries the account's hybrid
+/// signature — the classical key alone can never open a window. Opening
+/// **replaces** any existing window rather than adding to it.
+///
+/// Every field is required: the chain refuses an omitted field rather than
+/// defaulting it. `blocks` must be in `1..=17280`
+/// ([`MAX_EVM_WINDOW_BLOCKS`](crate::evm_window::MAX_EVM_WINDOW_BLOCKS)),
+/// `max_txs` in `1..=1000`
+/// ([`MAX_EVM_WINDOW_TXS`](crate::evm_window::MAX_EVM_WINDOW_TXS)), and
+/// `max_value` a positive integer uqor amount (`cosmos.Int`).
+///
+/// Three traps, in full in [`crate::evm_window`]: opening **advances** the
+/// account's sequence, which is also the EVM nonce (open, then read the nonce,
+/// then sign the EVM transaction); `max_value` bounds the transferred value
+/// **plus** the maximum fee (gas limit × gas fee cap); and 17280 blocks is NOT
+/// "about 24 hours" on any live QoreChain network.
+///
+/// # Errors
+///
+/// Returns [`Error::EvmWindow`](crate::Error::EvmWindow) naming the bound that
+/// was violated.
+pub fn open_evm_window(
+    sender: impl Into<String>,
+    blocks: u64,
+    max_txs: u64,
+    max_value: &str,
+) -> crate::Result<pb::MsgOpenEvmWindow> {
+    let params = crate::evm_window::validate_evm_window_params(blocks, max_txs, max_value)?;
+    Ok(pb::MsgOpenEvmWindow {
+        sender: sender.into(),
+        blocks: params.blocks,
+        max_txs: params.max_txs,
+        max_value: params.max_value,
+    })
+}
+
+/// Builds `MsgOpenEVMWindow` packed into an `Any`.
+///
+/// # Errors
+///
+/// Returns [`Error::EvmWindow`](crate::Error::EvmWindow) naming the violated
+/// bound, exactly as [`open_evm_window`].
+pub fn open_evm_window_any(
+    sender: impl Into<String>,
+    blocks: u64,
+    max_txs: u64,
+    max_value: &str,
+) -> crate::Result<Any> {
+    Ok(to_any(
+        &open_evm_window(sender, blocks, max_txs, max_value)?,
+        OPEN_EVM_WINDOW,
+    ))
+}
+
+/// Builds `MsgCloseEVMWindow`: closes the sender's window, effective in the same
+/// block.
+pub fn close_evm_window(sender: impl Into<String>) -> pb::MsgCloseEvmWindow {
+    pb::MsgCloseEvmWindow {
+        sender: sender.into(),
+    }
+}
+
+/// Builds `MsgCloseEVMWindow` packed into an `Any`.
+pub fn close_evm_window_any(sender: impl Into<String>) -> Any {
+    to_any(&close_evm_window(sender), CLOSE_EVM_WINDOW)
+}

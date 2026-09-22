@@ -135,6 +135,22 @@ fn module_reason(codespace: &str, code: u32) -> Option<&'static str> {
         // pqc hybrid-signature verification (surfaced on a MsgRotatePQCKey whose
         // dual signatures or hybrid cosignature do not verify).
         ("pqc", 21) => "hybrid PQC signature verification failed",
+        // v3.2.0 EVM authorisation window. Code 28 covers two states with
+        // different remedies (invalid window vs. no registered post-quantum
+        // key); crate::evm_window::classify_evm_window_error reads the message
+        // text to tell them apart.
+        ("pqc", 26) => {
+            "no open EVM authorisation window — open one with MsgOpenEVMWindow on the \
+             Cosmos lane, THEN read the nonce, THEN sign the EVM transaction"
+        }
+        ("pqc", 27) => {
+            "EVM authorisation window exhausted — it ran out of blocks, transactions or \
+             value; open a new one with MsgOpenEVMWindow"
+        }
+        ("pqc", 28) => {
+            "invalid EVM authorisation window, or the account has no registered \
+             post-quantum key — check the log text to tell the two apart"
+        }
         _ => return None,
     };
     Some(reason)

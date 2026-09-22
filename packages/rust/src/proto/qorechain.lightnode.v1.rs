@@ -92,6 +92,40 @@ pub struct QueryStatsResponse {
     #[prost(int64, tag="4")]
     pub last_reward_height: i64,
 }
+#[derive(Clone, Copy, PartialEq, ::prost::Message)]
+pub struct QueryRewardPoolRequest {
+}
+#[derive(Clone, PartialEq, ::prost::Message)]
+pub struct QueryRewardPoolResponse {
+    /// balance is the module account's total uqor holding.
+    #[prost(string, tag="1")]
+    pub balance: ::prost::alloc::string::String,
+    /// reserved accumulated while no node was eligible; it is excluded from
+    /// distribution and moves only by governance.
+    #[prost(string, tag="2")]
+    pub reserved: ::prost::alloc::string::String,
+    /// outstanding is credited to operators but not yet claimed.
+    #[prost(string, tag="3")]
+    pub outstanding: ::prost::alloc::string::String,
+    /// payable is reserve that governance released back into distribution; it
+    /// drains to operators over time at the capped rate.
+    #[prost(string, tag="5")]
+    pub payable: ::prost::alloc::string::String,
+    /// max_reward_per_block_per_node bounds what one node may be credited per block.
+    #[prost(string, tag="6")]
+    pub max_reward_per_block_per_node: ::prost::alloc::string::String,
+    /// distributable is what the next distribution run may hand out:
+    /// balance - reserved - outstanding.
+    #[prost(string, tag="4")]
+    pub distributable: ::prost::alloc::string::String,
+    /// initialized reports whether the split has been established by the
+    /// coordinated upgrade handler. Until it is, the figures above describe a raw
+    /// balance that the module does not yet account for, and clients that gate on
+    /// the accounting being live (the licence batch tool) must treat the pool as
+    /// not ready.
+    #[prost(bool, tag="7")]
+    pub initialized: bool,
+}
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct MsgRegisterLightNode {
     #[prost(string, tag="1")]
@@ -129,5 +163,25 @@ pub struct MsgClaimLightNodeRewards {
 }
 #[derive(Clone, Copy, PartialEq, ::prost::Message)]
 pub struct MsgClaimLightNodeRewardsResponse {
+}
+/// MsgReleaseLightNodeReserve releases part of the reserved light-node reward
+/// pool: the balance that accumulated in the module account while no node was
+/// eligible to receive it. Nobody earned it, so it is excluded from the ordinary
+/// proportional distribution and moves only by a governance vote.
+#[derive(Clone, PartialEq, ::prost::Message)]
+pub struct MsgReleaseLightNodeReserve {
+    /// authority must be the governance module account.
+    #[prost(string, tag="1")]
+    pub authority: ::prost::alloc::string::String,
+    /// amount is the uqor to release from the reserved pool.
+    #[prost(string, tag="2")]
+    pub amount: ::prost::alloc::string::String,
+    /// destination receives the coins. Leave empty to release the amount into the
+    /// ordinary light-node reward distribution instead of sending it anywhere.
+    #[prost(string, tag="3")]
+    pub destination: ::prost::alloc::string::String,
+}
+#[derive(Clone, Copy, PartialEq, ::prost::Message)]
+pub struct MsgReleaseLightNodeReserveResponse {
 }
 // @@protoc_insertion_point(module)

@@ -13,12 +13,12 @@ Go, and Rust SDKs:
 - **pqc** — ML-DSA-87 (FIPS-204) keygen / sign / verify via BouncyCastle, plus
   the hybrid-signature extension builder.
 - **messages** — committed `protobuf-java` classes for all QoreChain modules, a
-  `typeUrl → parser` registry covering all 49 custom `Msg` types, typed composers,
+  `typeUrl → parser` registry covering all 61 custom `Msg` types, typed composers,
   and Native `Any` pack/unpack.
 - **tx** — native `bankSend` builder, hybrid (classical + PQC) transaction
   signing with per-network sign-bytes v1/v2 (`SignBytes`, `SignBytesResolver`),
   gas/fee helpers, ABCI error decoding, broadcast, and `waitForTx`.
-- **query** — `RestClient` (Native + 8 custom routes), `JsonRpcClient`
+- **query** — `RestClient` (Native + 9 custom routes, incl. `evmWindow`), `JsonRpcClient`
   (EVM `eth_*`), `QorClient` (25 `qor_*` methods).
 - **subscribe** — WebSocket `subscribeNewBlocks` / `subscribeTx`.
 - **multilayer / rdk** — typed composers and `MultilayerQueryClient` /
@@ -29,14 +29,16 @@ Go, and Rust SDKs:
   composers.
 - **crossvm** — `CrossVMClient`: unified cross-VM calls (single + atomic
   triple-VM) over `MsgCrossVMCall` (v0.5.0).
-- **evm** — `EvmPrecompiles`: AI pre-flight risk/anomaly scoring (v0.5.0).
+- **evm** — `EvmPrecompiles`: AI pre-flight risk/anomaly scoring (v0.5.0), and
+  `EvmWindow` / `EvmWindowStatus` / `EvmWindowIssue`: the EVM authorisation
+  window the chain requires from v3.2.0 (0.8.2).
 - **pqc** — `PqcDx`: quantum-safe DX (idempotent registration + classical→hybrid
   migration) (v0.5.0).
 
 ## Coordinates
 
 ```
-io.github.qorechain:qorechain-sdk:0.8.1
+io.github.qorechain:qorechain-sdk:0.8.2
 ```
 
 Base Java package: `io.github.qorechain` (sub-packages `networks`, `accounts`,
@@ -293,6 +295,104 @@ function; `SignBytes.isHybridVerifyRejection` detects the refusal.
 
 `HybridTx.frame(b0, auth)` (which always built v1) is removed in v0.8.0; use
 `HybridTx.frame(version, chainId, b0, auth)`.
+
+## EVM authorisation window (0.8.2 / chain v3.2.0)
+
+From chain **v3.2.0** the EVM lane is no longer open by default. An EVM
+transaction is admitted only from an account that has **both** a registered
+post-quantum key **and** an open, unexhausted authorisation window. The testnet
+(`qorechain-diana`) applied v3.2.0 at height 5,920,000, so the requirement is
+live there now; mainnet gets it at its own upgrade height. Without a window the
+chain refuses the transaction with
+
+```text
+account qor1… has no open EVM authorisation window; open one with
+MsgOpenEVMWindow, signed on the Cosmos lane with the account's post-quantum key
+```
+
+A window is opened by an ordinary Cosmos-lane message travelling the normal
+hybrid signing path, so the classical key alone can never open one. That is the
+point of the design: an EVM wallet keeps working unmodified *inside* a window.
+
+```java
+import io.github.qorechain.evm.EvmWindow;
+import io.github.qorechain.evm.EvmWindowIssue;
+import io.github.qorechain.evm.EvmWindowStatus;
+import io.github.qorechain.messages.TypedMessage;
+import io.github.qorechain.query.RestClient;
+
+// 1. Authorise: 300 blocks, at most 5 transactions, at most 2,000,000 uqor.
+TypedMessage open = EvmWindow.open(sender, 300, 5, "2000000");
+// … hybrid-sign and broadcast `open` like any other message …
+
+// 2. Read the status (200 with found:false when there is none, so polling is safe).
+RestClient rest = new RestClient("https://api-testnet.qore.host");
+EvmWindowStatus status = rest.evmWindow(sender);
+System.out.println(status.found + " " + status.live + " " + status.remainingValue);
+
+// 3. Revoke early (takes effect in the same block).
+TypedMessage close = EvmWindow.close(sender);
+```
+
+`EvmWindow.open` / `close` check the chain's `ValidateBasic` bounds locally and
+throw `IllegalArgumentException` naming the bound, so a wrong value costs
+nothing: `blocks` in 1..`EvmWindow.MAX_BLOCKS` (17280), `maxTxs` in
+1..`EvmWindow.MAX_TXS` (1000), `maxValue` a positive integer amount of uqor.
+**Every field is required** — the chain refuses a missing one rather than
+defaulting it. `QorechainMessages.pqc.openEvmWindow` / `closeEvmWindow` are the
+plain composers for a message you built yourself, and both type URLs are in the
+registry like every other pqc message.
+
+`EvmWindowStatus` keeps every number exact: counters are `long`, and
+`maxValue` / `usedValue` / `remainingValue` are `BigInteger` (`cosmos.Int`) —
+never `double`, which truncates above 2^53. `EvmWindowStatus.parse(json)` decodes
+a body you fetched yourself, and `EvmWindowStatus.of(QueryEVMWindowResponse)`
+adapts the protobuf answer.
+
+Refusals are classified by `EvmWindowIssue.classify(throwable)` (or
+`classify(code, codespace, text)`), which returns `NO_WINDOW` (`pqc` 26),
+`EXHAUSTED` (27), `INVALID` (28) or `NO_PQC_KEY` — the *other* state code 28
+carries, kept separate because the remedy differs: register a key first, rather
+than open a window. Over the EVM JSON-RPC the refusal arrives as a broadcast
+error carrying the chain's text and no codespace, so the classifier matches on
+the text too. `issue.remedy()` is the line a wallet can show.
+
+**There is deliberately no automatic opening.** Nothing in the SDK silently
+opens a window before a send: a window is an explicit authorisation the user
+makes.
+
+### Three traps
+
+1. **Ordering.** QoreChain unifies the identity, so the Cosmos sequence **is**
+   the EVM nonce — and opening a window advances it (measured: nonce 2 before,
+   3 after). The order is: **open the window, then read the nonce, then sign the
+   EVM transaction.** Signing first gives `nonce too low`.
+2. **`maxValue` bounds value *plus* fees.** It counts the transferred value AND
+   the maximum fee each admitted transaction could pay (gas limit × gas fee
+   cap), because the holder of the classical key sets the gas price and a
+   value-only bound would leave the account drainable through fees. Measured on
+   the testnet: a 1,000 uqor transfer with a 21,000 gas limit at 112.5 gwei
+   consumed **3,363 uqor** of the window. wei→uqor rounds **up**, so a series of
+   sub-uqor transfers cannot drain a window that never appears to move.
+3. **Never print "about 24 hours" for 17280 blocks.** The chain constant says so
+   at 5s blocks, but no QoreChain network runs at 5s: the testnet is at ~1.03 s
+   (≈ 5 hours) and mainnet at ~3.1 s (≈ 15 hours). Say "up to 17280 blocks", or
+   compute the duration from the chain's recent block time.
+
+### Two other v3.2.0 rules worth knowing
+
+- **`MsgSubmitBatch` settles only as the rollup's sequencer.** The sender must be
+  `SequencerConfig.SequencerAddress`, falling back to the rollup's `Creator` when
+  no sequencer is set; anyone else is refused with `ErrUnauthorized` ("%s may not
+  settle batches for rollup %s"). Batches must extend the chain by index and
+  cannot overwrite an existing one. `MsgPauseRollup`, `MsgResumeRollup` and
+  `MsgStopRollup` now require the creator.
+- **The x/ai per-sender rate limit is enforced.** It was declared but never
+  applied before v3.2.0. Despite the field name `max_tx_per_minute`, the window
+  is **30 blocks** (~31 s on the testnet, ~93 s on mainnet). A network born on
+  this binary starts at the genesis default of 10; an upgraded one sits at 600,
+  because the upgrade handler raises it so a relayer does not stall. Read the
+  value from `qorechain.ai.v1.Query/Config` — never assume either number.
 
 ## Unified eth-native wallet (v0.6.0)
 

@@ -60,6 +60,33 @@ from .errors import (
     is_tx_failure,
     tx_error_from,
 )
+from .evm_window import (
+    CLOSE_EVM_WINDOW_TYPE_URL,
+    ERR_EVM_WINDOW_EXHAUSTED,
+    ERR_INVALID_EVM_WINDOW,
+    ERR_NO_EVM_WINDOW,
+    EVM_WINDOW_CODESPACE,
+    EVM_WINDOW_QUERY_PATH,
+    EVM_WINDOW_REMEDIES,
+    MAX_EVM_WINDOW_BLOCKS,
+    MAX_EVM_WINDOW_TXS,
+    OPEN_EVM_WINDOW_TYPE_URL,
+    EVMWindowErrorKind,
+    EVMWindowParams,
+    EVMWindowRefusal,
+    EVMWindowStatus,
+    classify_evm_window_error,
+    describe_evm_window_error,
+    evm_window_path,
+    evm_window_remedy,
+    get_evm_window,
+    get_evm_window_async,
+    parse_evm_window,
+    validate_evm_window_blocks,
+    validate_evm_window_max_txs,
+    validate_evm_window_max_value,
+    validate_evm_window_params,
+)
 from .fees import estimate_fee
 from .gas import (
     DEFAULT_GAS_MULTIPLIER,
@@ -215,7 +242,7 @@ from .utils import (
     to_checksum_address,
 )
 
-__version__ = "0.8.1"
+__version__ = "0.8.2"
 
 __all__ = [
     "__version__",
@@ -370,6 +397,32 @@ __all__ = [
     "auto_fee",
     "DEFAULT_GAS_MULTIPLIER",
     "DEFAULT_GAS_PRICE",
+    # v3.2.0 EVM authorisation window (x/pqc)
+    "OPEN_EVM_WINDOW_TYPE_URL",
+    "CLOSE_EVM_WINDOW_TYPE_URL",
+    "MAX_EVM_WINDOW_BLOCKS",
+    "MAX_EVM_WINDOW_TXS",
+    "EVM_WINDOW_CODESPACE",
+    "EVM_WINDOW_QUERY_PATH",
+    "EVM_WINDOW_REMEDIES",
+    "ERR_NO_EVM_WINDOW",
+    "ERR_EVM_WINDOW_EXHAUSTED",
+    "ERR_INVALID_EVM_WINDOW",
+    "EVMWindowErrorKind",
+    "EVMWindowParams",
+    "EVMWindowStatus",
+    "EVMWindowRefusal",
+    "evm_window_path",
+    "evm_window_remedy",
+    "validate_evm_window_blocks",
+    "validate_evm_window_max_txs",
+    "validate_evm_window_max_value",
+    "validate_evm_window_params",
+    "parse_evm_window",
+    "get_evm_window",
+    "get_evm_window_async",
+    "classify_evm_window_error",
+    "describe_evm_window_error",
     # errors
     "DecodedTxError",
     "QoreTxError",

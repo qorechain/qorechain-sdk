@@ -26,6 +26,1999 @@ public final class QueryOuterClass extends com.google.protobuf.GeneratedFile {
     registerAllExtensions(
         (com.google.protobuf.ExtensionRegistryLite) registry);
   }
+  public interface QueryEVMWindowRequestOrBuilder extends
+      // @@protoc_insertion_point(interface_extends:qorechain.pqc.v1.QueryEVMWindowRequest)
+      com.google.protobuf.MessageOrBuilder {
+
+    /**
+     * <code>string address = 1 [json_name = "address"];</code>
+     * @return The address.
+     */
+    java.lang.String getAddress();
+    /**
+     * <code>string address = 1 [json_name = "address"];</code>
+     * @return The bytes for address.
+     */
+    com.google.protobuf.ByteString
+        getAddressBytes();
+  }
+  /**
+   * Protobuf type {@code qorechain.pqc.v1.QueryEVMWindowRequest}
+   */
+  public static final class QueryEVMWindowRequest extends
+      com.google.protobuf.GeneratedMessage implements
+      // @@protoc_insertion_point(message_implements:qorechain.pqc.v1.QueryEVMWindowRequest)
+      QueryEVMWindowRequestOrBuilder {
+  private static final long serialVersionUID = 0L;
+    static {
+      com.google.protobuf.RuntimeVersion.validateProtobufGencodeVersion(
+        com.google.protobuf.RuntimeVersion.RuntimeDomain.PUBLIC,
+        /* major= */ 4,
+        /* minor= */ 35,
+        /* patch= */ 1,
+        /* suffix= */ "",
+        "QueryEVMWindowRequest");
+    }
+    // Use QueryEVMWindowRequest.newBuilder() to construct.
+    private QueryEVMWindowRequest(com.google.protobuf.GeneratedMessage.Builder<?> builder) {
+      super(builder);
+    }
+    private QueryEVMWindowRequest() {
+      address_ = "";
+    }
+
+    public static final com.google.protobuf.Descriptors.Descriptor
+        getDescriptor() {
+      return qorechain.pqc.v1.QueryOuterClass.internal_static_qorechain_pqc_v1_QueryEVMWindowRequest_descriptor;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Descriptors.Descriptor getDescriptorForType() {
+      return qorechain.pqc.v1.QueryOuterClass.internal_static_qorechain_pqc_v1_QueryEVMWindowRequest_descriptor;
+    }
+
+    @java.lang.Override
+    protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+        internalGetFieldAccessorTable() {
+      return qorechain.pqc.v1.QueryOuterClass.internal_static_qorechain_pqc_v1_QueryEVMWindowRequest_fieldAccessorTable
+          .ensureFieldAccessorsInitialized(
+              qorechain.pqc.v1.QueryOuterClass.QueryEVMWindowRequest.class, qorechain.pqc.v1.QueryOuterClass.QueryEVMWindowRequest.Builder.class);
+    }
+
+    public static final int ADDRESS_FIELD_NUMBER = 1;
+    @SuppressWarnings("serial")
+    private volatile java.lang.Object address_ = "";
+    /**
+     * <code>string address = 1 [json_name = "address"];</code>
+     * @return The address.
+     */
+    @java.lang.Override
+    public java.lang.String getAddress() {
+      java.lang.Object ref = address_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        address_ = s;
+        return s;
+      }
+    }
+    /**
+     * <code>string address = 1 [json_name = "address"];</code>
+     * @return The bytes for address.
+     */
+    @java.lang.Override
+    public com.google.protobuf.ByteString
+        getAddressBytes() {
+      java.lang.Object ref = address_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        address_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
+    private byte memoizedIsInitialized = -1;
+    @java.lang.Override
+    public final boolean isInitialized() {
+      byte isInitialized = memoizedIsInitialized;
+      if (isInitialized == 1) return true;
+      if (isInitialized == 0) return false;
+
+      memoizedIsInitialized = 1;
+      return true;
+    }
+
+    @java.lang.Override
+    public void writeTo(com.google.protobuf.CodedOutputStream output)
+                        throws java.io.IOException {
+      if (!com.google.protobuf.GeneratedMessage.isStringEmpty(address_)) {
+        com.google.protobuf.GeneratedMessage.writeString(output, 1, address_);
+      }
+      getUnknownFields().writeTo(output);
+    }
+    private int computeSerializedSize_0() {
+      int size = 0;
+      if (!com.google.protobuf.GeneratedMessage.isStringEmpty(address_)) {
+        size += com.google.protobuf.GeneratedMessage.computeStringSize(1, address_);
+      }
+      return size;
+    }
+    @java.lang.Override
+    public int getSerializedSize() {
+      int size = memoizedSize;
+      if (size != -1) return size;
+
+      size = 0;
+      size += computeSerializedSize_0();
+      size += getUnknownFields().getSerializedSize();
+      memoizedSize = size;
+      return size;
+    }
+
+    @java.lang.Override
+    public boolean equals(final java.lang.Object obj) {
+      if (obj == this) {
+       return true;
+      }
+      if (!(obj instanceof qorechain.pqc.v1.QueryOuterClass.QueryEVMWindowRequest)) {
+        return super.equals(obj);
+      }
+      qorechain.pqc.v1.QueryOuterClass.QueryEVMWindowRequest other = (qorechain.pqc.v1.QueryOuterClass.QueryEVMWindowRequest) obj;
+
+      if (!getAddress()
+          .equals(other.getAddress())) return false;
+      if (!getUnknownFields().equals(other.getUnknownFields())) return false;
+      return true;
+    }
+
+    @java.lang.Override
+    public int hashCode() {
+      if (memoizedHashCode != 0) {
+        return memoizedHashCode;
+      }
+      int hash = 41;
+      hash = (19 * hash) + getDescriptor().hashCode();
+      hash = (37 * hash) + ADDRESS_FIELD_NUMBER;
+      hash = (53 * hash) + getAddress().hashCode();
+      hash = (29 * hash) + getUnknownFields().hashCode();
+      memoizedHashCode = hash;
+      return hash;
+    }
+
+    public static qorechain.pqc.v1.QueryOuterClass.QueryEVMWindowRequest parseFrom(
+        java.nio.ByteBuffer data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static qorechain.pqc.v1.QueryOuterClass.QueryEVMWindowRequest parseFrom(
+        java.nio.ByteBuffer data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static qorechain.pqc.v1.QueryOuterClass.QueryEVMWindowRequest parseFrom(
+        com.google.protobuf.ByteString data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static qorechain.pqc.v1.QueryOuterClass.QueryEVMWindowRequest parseFrom(
+        com.google.protobuf.ByteString data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static qorechain.pqc.v1.QueryOuterClass.QueryEVMWindowRequest parseFrom(byte[] data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static qorechain.pqc.v1.QueryOuterClass.QueryEVMWindowRequest parseFrom(
+        byte[] data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static qorechain.pqc.v1.QueryOuterClass.QueryEVMWindowRequest parseFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input);
+    }
+    public static qorechain.pqc.v1.QueryOuterClass.QueryEVMWindowRequest parseFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    public static qorechain.pqc.v1.QueryOuterClass.QueryEVMWindowRequest parseDelimitedFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseDelimitedWithIOException(PARSER, input);
+    }
+
+    public static qorechain.pqc.v1.QueryOuterClass.QueryEVMWindowRequest parseDelimitedFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static qorechain.pqc.v1.QueryOuterClass.QueryEVMWindowRequest parseFrom(
+        com.google.protobuf.CodedInputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input);
+    }
+    public static qorechain.pqc.v1.QueryOuterClass.QueryEVMWindowRequest parseFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    @java.lang.Override
+    public Builder newBuilderForType() { return newBuilder(); }
+    public static Builder newBuilder() {
+      return DEFAULT_INSTANCE.toBuilder();
+    }
+    public static Builder newBuilder(qorechain.pqc.v1.QueryOuterClass.QueryEVMWindowRequest prototype) {
+      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+    }
+    @java.lang.Override
+    public Builder toBuilder() {
+      return this == DEFAULT_INSTANCE
+          ? new Builder() : new Builder().mergeFrom(this);
+    }
+
+    @java.lang.Override
+    protected Builder newBuilderForType(
+        com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+      Builder builder = new Builder(parent);
+      return builder;
+    }
+    /**
+     * Protobuf type {@code qorechain.pqc.v1.QueryEVMWindowRequest}
+     */
+    public static final class Builder extends
+        com.google.protobuf.GeneratedMessage.Builder<Builder> implements
+        // @@protoc_insertion_point(builder_implements:qorechain.pqc.v1.QueryEVMWindowRequest)
+        qorechain.pqc.v1.QueryOuterClass.QueryEVMWindowRequestOrBuilder {
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return qorechain.pqc.v1.QueryOuterClass.internal_static_qorechain_pqc_v1_QueryEVMWindowRequest_descriptor;
+      }
+
+      @java.lang.Override
+      protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return qorechain.pqc.v1.QueryOuterClass.internal_static_qorechain_pqc_v1_QueryEVMWindowRequest_fieldAccessorTable
+            .ensureFieldAccessorsInitialized(
+                qorechain.pqc.v1.QueryOuterClass.QueryEVMWindowRequest.class, qorechain.pqc.v1.QueryOuterClass.QueryEVMWindowRequest.Builder.class);
+      }
+
+      // Construct using qorechain.pqc.v1.QueryOuterClass.QueryEVMWindowRequest.newBuilder()
+      private Builder() {
+
+      }
+
+      private Builder(
+          com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+        super(parent);
+
+      }
+      @java.lang.Override
+      public Builder clear() {
+        super.clear();
+        bitField0_ = 0;
+        address_ = "";
+        return this;
+      }
+
+      @java.lang.Override
+      public com.google.protobuf.Descriptors.Descriptor
+          getDescriptorForType() {
+        return qorechain.pqc.v1.QueryOuterClass.internal_static_qorechain_pqc_v1_QueryEVMWindowRequest_descriptor;
+      }
+
+      @java.lang.Override
+      public qorechain.pqc.v1.QueryOuterClass.QueryEVMWindowRequest getDefaultInstanceForType() {
+        return qorechain.pqc.v1.QueryOuterClass.QueryEVMWindowRequest.getDefaultInstance();
+      }
+
+      @java.lang.Override
+      public qorechain.pqc.v1.QueryOuterClass.QueryEVMWindowRequest build() {
+        qorechain.pqc.v1.QueryOuterClass.QueryEVMWindowRequest result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(result);
+        }
+        return result;
+      }
+
+      @java.lang.Override
+      public qorechain.pqc.v1.QueryOuterClass.QueryEVMWindowRequest buildPartial() {
+        qorechain.pqc.v1.QueryOuterClass.QueryEVMWindowRequest result = new qorechain.pqc.v1.QueryOuterClass.QueryEVMWindowRequest(this);
+        if (bitField0_ != 0) { buildPartial0(result); }
+        onBuilt();
+        return result;
+      }
+
+      private void buildPartial0(qorechain.pqc.v1.QueryOuterClass.QueryEVMWindowRequest result) {
+        int from_bitField0_ = bitField0_;
+        if (((from_bitField0_ & 0x00000001) != 0)) {
+          result.address_ = address_;
+        }
+      }
+
+      @java.lang.Override
+      public Builder mergeFrom(com.google.protobuf.Message other) {
+        if (other instanceof qorechain.pqc.v1.QueryOuterClass.QueryEVMWindowRequest) {
+          return mergeFrom((qorechain.pqc.v1.QueryOuterClass.QueryEVMWindowRequest)other);
+        } else {
+          super.mergeFrom(other);
+          return this;
+        }
+      }
+
+      public Builder mergeFrom(qorechain.pqc.v1.QueryOuterClass.QueryEVMWindowRequest other) {
+        if (other == qorechain.pqc.v1.QueryOuterClass.QueryEVMWindowRequest.getDefaultInstance()) return this;
+        if (!other.getAddress().isEmpty()) {
+          address_ = other.address_;
+          bitField0_ |= 0x00000001;
+          onChanged();
+        }
+        this.mergeUnknownFields(other.getUnknownFields());
+        onChanged();
+        return this;
+      }
+
+      @java.lang.Override
+      public final boolean isInitialized() {
+        return true;
+      }
+
+      @java.lang.Override
+      public Builder mergeFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        if (extensionRegistry == null) {
+          throw new java.lang.NullPointerException();
+        }
+        try {
+          boolean done = false;
+          while (!done) {
+            int tag = input.readTag();
+            switch (tag) {
+              case 0:
+                done = true;
+                break;
+              case 10: {
+                address_ = input.readStringRequireUtf8();
+                bitField0_ |= 0x00000001;
+                break;
+              } // case 10
+              default: {
+                if (!super.parseUnknownField(input, extensionRegistry, tag)) {
+                  done = true; // was an endgroup tag
+                }
+                break;
+              } // default:
+            } // switch (tag)
+          } // while (!done)
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          throw e.unwrapIOException();
+        } finally {
+          onChanged();
+        } // finally
+        return this;
+      }
+      private int bitField0_;
+
+      private java.lang.Object address_ = "";
+      /**
+       * <code>string address = 1 [json_name = "address"];</code>
+       * @return The address.
+       */
+      public java.lang.String getAddress() {
+        java.lang.Object ref = address_;
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          address_ = s;
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
+      }
+      /**
+       * <code>string address = 1 [json_name = "address"];</code>
+       * @return The bytes for address.
+       */
+      public com.google.protobuf.ByteString
+          getAddressBytes() {
+        java.lang.Object ref = address_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          address_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <code>string address = 1 [json_name = "address"];</code>
+       * @param value The address to set.
+       * @return This builder for chaining.
+       */
+      public Builder setAddress(
+          java.lang.String value) {
+        if (value == null) { throw new NullPointerException(); }
+        address_ = value;
+        bitField0_ |= 0x00000001;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>string address = 1 [json_name = "address"];</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearAddress() {
+        address_ = getDefaultInstance().getAddress();
+        bitField0_ = (bitField0_ & ~0x00000001);
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>string address = 1 [json_name = "address"];</code>
+       * @param value The bytes for address to set.
+       * @return This builder for chaining.
+       */
+      public Builder setAddressBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) { throw new NullPointerException(); }
+        checkByteStringIsUtf8(value);
+        address_ = value;
+        bitField0_ |= 0x00000001;
+        onChanged();
+        return this;
+      }
+
+      // @@protoc_insertion_point(builder_scope:qorechain.pqc.v1.QueryEVMWindowRequest)
+    }
+
+    // @@protoc_insertion_point(class_scope:qorechain.pqc.v1.QueryEVMWindowRequest)
+    private static final qorechain.pqc.v1.QueryOuterClass.QueryEVMWindowRequest DEFAULT_INSTANCE;
+    static {
+      DEFAULT_INSTANCE = new qorechain.pqc.v1.QueryOuterClass.QueryEVMWindowRequest();
+    }
+
+    public static qorechain.pqc.v1.QueryOuterClass.QueryEVMWindowRequest getDefaultInstance() {
+      return DEFAULT_INSTANCE;
+    }
+
+    private static final com.google.protobuf.Parser<QueryEVMWindowRequest>
+        PARSER = new com.google.protobuf.AbstractParser<QueryEVMWindowRequest>() {
+      @java.lang.Override
+      public QueryEVMWindowRequest parsePartialFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        Builder builder = newBuilder();
+        try {
+          builder.mergeFrom(input, extensionRegistry);
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          throw e.setUnfinishedMessage(builder.buildPartial());
+        } catch (com.google.protobuf.UninitializedMessageException e) {
+          throw e.asInvalidProtocolBufferException().setUnfinishedMessage(builder.buildPartial());
+        } catch (java.io.IOException e) {
+          throw new com.google.protobuf.InvalidProtocolBufferException(e)
+              .setUnfinishedMessage(builder.buildPartial());
+        }
+        return builder.buildPartial();
+      }
+    };
+
+    public static com.google.protobuf.Parser<QueryEVMWindowRequest> parser() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Parser<QueryEVMWindowRequest> getParserForType() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public qorechain.pqc.v1.QueryOuterClass.QueryEVMWindowRequest getDefaultInstanceForType() {
+      return DEFAULT_INSTANCE;
+    }
+
+  }
+
+  public interface QueryEVMWindowResponseOrBuilder extends
+      // @@protoc_insertion_point(interface_extends:qorechain.pqc.v1.QueryEVMWindowResponse)
+      com.google.protobuf.MessageOrBuilder {
+
+    /**
+     * <pre>
+     * found reports whether a window is stored. A stored window may still be
+     * exhausted or expired; check live.
+     * </pre>
+     *
+     * <code>bool found = 1 [json_name = "found"];</code>
+     * @return The found.
+     */
+    boolean getFound();
+
+    /**
+     * <pre>
+     * live reports whether the window admits at least one more transaction of
+     * zero value at the current height.
+     * </pre>
+     *
+     * <code>bool live = 2 [json_name = "live"];</code>
+     * @return The live.
+     */
+    boolean getLive();
+
+    /**
+     * <code>uint64 opened_height = 3 [json_name = "openedHeight"];</code>
+     * @return The openedHeight.
+     */
+    long getOpenedHeight();
+
+    /**
+     * <code>uint64 expiry_height = 4 [json_name = "expiryHeight"];</code>
+     * @return The expiryHeight.
+     */
+    long getExpiryHeight();
+
+    /**
+     * <code>uint64 max_txs = 5 [json_name = "maxTxs"];</code>
+     * @return The maxTxs.
+     */
+    long getMaxTxs();
+
+    /**
+     * <code>uint64 used_txs = 6 [json_name = "usedTxs"];</code>
+     * @return The usedTxs.
+     */
+    long getUsedTxs();
+
+    /**
+     * <code>string max_value = 7 [json_name = "maxValue"];</code>
+     * @return The maxValue.
+     */
+    java.lang.String getMaxValue();
+    /**
+     * <code>string max_value = 7 [json_name = "maxValue"];</code>
+     * @return The bytes for maxValue.
+     */
+    com.google.protobuf.ByteString
+        getMaxValueBytes();
+
+    /**
+     * <code>string used_value = 8 [json_name = "usedValue"];</code>
+     * @return The usedValue.
+     */
+    java.lang.String getUsedValue();
+    /**
+     * <code>string used_value = 8 [json_name = "usedValue"];</code>
+     * @return The bytes for usedValue.
+     */
+    com.google.protobuf.ByteString
+        getUsedValueBytes();
+
+    /**
+     * <pre>
+     * remaining_blocks, remaining_txs and remaining_value say which bound is
+     * closest to running out, so a refused caller can tell why.
+     * </pre>
+     *
+     * <code>uint64 remaining_blocks = 9 [json_name = "remainingBlocks"];</code>
+     * @return The remainingBlocks.
+     */
+    long getRemainingBlocks();
+
+    /**
+     * <code>uint64 remaining_txs = 10 [json_name = "remainingTxs"];</code>
+     * @return The remainingTxs.
+     */
+    long getRemainingTxs();
+
+    /**
+     * <code>string remaining_value = 11 [json_name = "remainingValue"];</code>
+     * @return The remainingValue.
+     */
+    java.lang.String getRemainingValue();
+    /**
+     * <code>string remaining_value = 11 [json_name = "remainingValue"];</code>
+     * @return The bytes for remainingValue.
+     */
+    com.google.protobuf.ByteString
+        getRemainingValueBytes();
+  }
+  /**
+   * Protobuf type {@code qorechain.pqc.v1.QueryEVMWindowResponse}
+   */
+  public static final class QueryEVMWindowResponse extends
+      com.google.protobuf.GeneratedMessage implements
+      // @@protoc_insertion_point(message_implements:qorechain.pqc.v1.QueryEVMWindowResponse)
+      QueryEVMWindowResponseOrBuilder {
+  private static final long serialVersionUID = 0L;
+    static {
+      com.google.protobuf.RuntimeVersion.validateProtobufGencodeVersion(
+        com.google.protobuf.RuntimeVersion.RuntimeDomain.PUBLIC,
+        /* major= */ 4,
+        /* minor= */ 35,
+        /* patch= */ 1,
+        /* suffix= */ "",
+        "QueryEVMWindowResponse");
+    }
+    // Use QueryEVMWindowResponse.newBuilder() to construct.
+    private QueryEVMWindowResponse(com.google.protobuf.GeneratedMessage.Builder<?> builder) {
+      super(builder);
+    }
+    private QueryEVMWindowResponse() {
+      maxValue_ = "";
+      usedValue_ = "";
+      remainingValue_ = "";
+    }
+
+    public static final com.google.protobuf.Descriptors.Descriptor
+        getDescriptor() {
+      return qorechain.pqc.v1.QueryOuterClass.internal_static_qorechain_pqc_v1_QueryEVMWindowResponse_descriptor;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Descriptors.Descriptor getDescriptorForType() {
+      return qorechain.pqc.v1.QueryOuterClass.internal_static_qorechain_pqc_v1_QueryEVMWindowResponse_descriptor;
+    }
+
+    @java.lang.Override
+    protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+        internalGetFieldAccessorTable() {
+      return qorechain.pqc.v1.QueryOuterClass.internal_static_qorechain_pqc_v1_QueryEVMWindowResponse_fieldAccessorTable
+          .ensureFieldAccessorsInitialized(
+              qorechain.pqc.v1.QueryOuterClass.QueryEVMWindowResponse.class, qorechain.pqc.v1.QueryOuterClass.QueryEVMWindowResponse.Builder.class);
+    }
+
+    public static final int FOUND_FIELD_NUMBER = 1;
+    private boolean found_ = false;
+    /**
+     * <pre>
+     * found reports whether a window is stored. A stored window may still be
+     * exhausted or expired; check live.
+     * </pre>
+     *
+     * <code>bool found = 1 [json_name = "found"];</code>
+     * @return The found.
+     */
+    @java.lang.Override
+    public boolean getFound() {
+      return found_;
+    }
+
+    public static final int LIVE_FIELD_NUMBER = 2;
+    private boolean live_ = false;
+    /**
+     * <pre>
+     * live reports whether the window admits at least one more transaction of
+     * zero value at the current height.
+     * </pre>
+     *
+     * <code>bool live = 2 [json_name = "live"];</code>
+     * @return The live.
+     */
+    @java.lang.Override
+    public boolean getLive() {
+      return live_;
+    }
+
+    public static final int OPENED_HEIGHT_FIELD_NUMBER = 3;
+    private long openedHeight_ = 0L;
+    /**
+     * <code>uint64 opened_height = 3 [json_name = "openedHeight"];</code>
+     * @return The openedHeight.
+     */
+    @java.lang.Override
+    public long getOpenedHeight() {
+      return openedHeight_;
+    }
+
+    public static final int EXPIRY_HEIGHT_FIELD_NUMBER = 4;
+    private long expiryHeight_ = 0L;
+    /**
+     * <code>uint64 expiry_height = 4 [json_name = "expiryHeight"];</code>
+     * @return The expiryHeight.
+     */
+    @java.lang.Override
+    public long getExpiryHeight() {
+      return expiryHeight_;
+    }
+
+    public static final int MAX_TXS_FIELD_NUMBER = 5;
+    private long maxTxs_ = 0L;
+    /**
+     * <code>uint64 max_txs = 5 [json_name = "maxTxs"];</code>
+     * @return The maxTxs.
+     */
+    @java.lang.Override
+    public long getMaxTxs() {
+      return maxTxs_;
+    }
+
+    public static final int USED_TXS_FIELD_NUMBER = 6;
+    private long usedTxs_ = 0L;
+    /**
+     * <code>uint64 used_txs = 6 [json_name = "usedTxs"];</code>
+     * @return The usedTxs.
+     */
+    @java.lang.Override
+    public long getUsedTxs() {
+      return usedTxs_;
+    }
+
+    public static final int MAX_VALUE_FIELD_NUMBER = 7;
+    @SuppressWarnings("serial")
+    private volatile java.lang.Object maxValue_ = "";
+    /**
+     * <code>string max_value = 7 [json_name = "maxValue"];</code>
+     * @return The maxValue.
+     */
+    @java.lang.Override
+    public java.lang.String getMaxValue() {
+      java.lang.Object ref = maxValue_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        maxValue_ = s;
+        return s;
+      }
+    }
+    /**
+     * <code>string max_value = 7 [json_name = "maxValue"];</code>
+     * @return The bytes for maxValue.
+     */
+    @java.lang.Override
+    public com.google.protobuf.ByteString
+        getMaxValueBytes() {
+      java.lang.Object ref = maxValue_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        maxValue_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
+    public static final int USED_VALUE_FIELD_NUMBER = 8;
+    @SuppressWarnings("serial")
+    private volatile java.lang.Object usedValue_ = "";
+    /**
+     * <code>string used_value = 8 [json_name = "usedValue"];</code>
+     * @return The usedValue.
+     */
+    @java.lang.Override
+    public java.lang.String getUsedValue() {
+      java.lang.Object ref = usedValue_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        usedValue_ = s;
+        return s;
+      }
+    }
+    /**
+     * <code>string used_value = 8 [json_name = "usedValue"];</code>
+     * @return The bytes for usedValue.
+     */
+    @java.lang.Override
+    public com.google.protobuf.ByteString
+        getUsedValueBytes() {
+      java.lang.Object ref = usedValue_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        usedValue_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
+    public static final int REMAINING_BLOCKS_FIELD_NUMBER = 9;
+    private long remainingBlocks_ = 0L;
+    /**
+     * <pre>
+     * remaining_blocks, remaining_txs and remaining_value say which bound is
+     * closest to running out, so a refused caller can tell why.
+     * </pre>
+     *
+     * <code>uint64 remaining_blocks = 9 [json_name = "remainingBlocks"];</code>
+     * @return The remainingBlocks.
+     */
+    @java.lang.Override
+    public long getRemainingBlocks() {
+      return remainingBlocks_;
+    }
+
+    public static final int REMAINING_TXS_FIELD_NUMBER = 10;
+    private long remainingTxs_ = 0L;
+    /**
+     * <code>uint64 remaining_txs = 10 [json_name = "remainingTxs"];</code>
+     * @return The remainingTxs.
+     */
+    @java.lang.Override
+    public long getRemainingTxs() {
+      return remainingTxs_;
+    }
+
+    public static final int REMAINING_VALUE_FIELD_NUMBER = 11;
+    @SuppressWarnings("serial")
+    private volatile java.lang.Object remainingValue_ = "";
+    /**
+     * <code>string remaining_value = 11 [json_name = "remainingValue"];</code>
+     * @return The remainingValue.
+     */
+    @java.lang.Override
+    public java.lang.String getRemainingValue() {
+      java.lang.Object ref = remainingValue_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        remainingValue_ = s;
+        return s;
+      }
+    }
+    /**
+     * <code>string remaining_value = 11 [json_name = "remainingValue"];</code>
+     * @return The bytes for remainingValue.
+     */
+    @java.lang.Override
+    public com.google.protobuf.ByteString
+        getRemainingValueBytes() {
+      java.lang.Object ref = remainingValue_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        remainingValue_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
+    private byte memoizedIsInitialized = -1;
+    @java.lang.Override
+    public final boolean isInitialized() {
+      byte isInitialized = memoizedIsInitialized;
+      if (isInitialized == 1) return true;
+      if (isInitialized == 0) return false;
+
+      memoizedIsInitialized = 1;
+      return true;
+    }
+
+    @java.lang.Override
+    public void writeTo(com.google.protobuf.CodedOutputStream output)
+                        throws java.io.IOException {
+      if (found_ != false) {
+        output.writeBool(1, found_);
+      }
+      if (live_ != false) {
+        output.writeBool(2, live_);
+      }
+      if (openedHeight_ != 0L) {
+        output.writeUInt64(3, openedHeight_);
+      }
+      if (expiryHeight_ != 0L) {
+        output.writeUInt64(4, expiryHeight_);
+      }
+      if (maxTxs_ != 0L) {
+        output.writeUInt64(5, maxTxs_);
+      }
+      if (usedTxs_ != 0L) {
+        output.writeUInt64(6, usedTxs_);
+      }
+      if (!com.google.protobuf.GeneratedMessage.isStringEmpty(maxValue_)) {
+        com.google.protobuf.GeneratedMessage.writeString(output, 7, maxValue_);
+      }
+      if (!com.google.protobuf.GeneratedMessage.isStringEmpty(usedValue_)) {
+        com.google.protobuf.GeneratedMessage.writeString(output, 8, usedValue_);
+      }
+      if (remainingBlocks_ != 0L) {
+        output.writeUInt64(9, remainingBlocks_);
+      }
+      if (remainingTxs_ != 0L) {
+        output.writeUInt64(10, remainingTxs_);
+      }
+      if (!com.google.protobuf.GeneratedMessage.isStringEmpty(remainingValue_)) {
+        com.google.protobuf.GeneratedMessage.writeString(output, 11, remainingValue_);
+      }
+      getUnknownFields().writeTo(output);
+    }
+    private int computeSerializedSize_0() {
+      int size = 0;
+      if (found_ != false) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeBoolSize(1, found_);
+      }
+      if (live_ != false) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeBoolSize(2, live_);
+      }
+      if (openedHeight_ != 0L) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeUInt64Size(3, openedHeight_);
+      }
+      if (expiryHeight_ != 0L) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeUInt64Size(4, expiryHeight_);
+      }
+      if (maxTxs_ != 0L) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeUInt64Size(5, maxTxs_);
+      }
+      if (usedTxs_ != 0L) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeUInt64Size(6, usedTxs_);
+      }
+      if (!com.google.protobuf.GeneratedMessage.isStringEmpty(maxValue_)) {
+        size += com.google.protobuf.GeneratedMessage.computeStringSize(7, maxValue_);
+      }
+      if (!com.google.protobuf.GeneratedMessage.isStringEmpty(usedValue_)) {
+        size += com.google.protobuf.GeneratedMessage.computeStringSize(8, usedValue_);
+      }
+      if (remainingBlocks_ != 0L) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeUInt64Size(9, remainingBlocks_);
+      }
+      if (remainingTxs_ != 0L) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeUInt64Size(10, remainingTxs_);
+      }
+      if (!com.google.protobuf.GeneratedMessage.isStringEmpty(remainingValue_)) {
+        size += com.google.protobuf.GeneratedMessage.computeStringSize(11, remainingValue_);
+      }
+      return size;
+    }
+    @java.lang.Override
+    public int getSerializedSize() {
+      int size = memoizedSize;
+      if (size != -1) return size;
+
+      size = 0;
+      size += computeSerializedSize_0();
+      size += getUnknownFields().getSerializedSize();
+      memoizedSize = size;
+      return size;
+    }
+
+    @java.lang.Override
+    public boolean equals(final java.lang.Object obj) {
+      if (obj == this) {
+       return true;
+      }
+      if (!(obj instanceof qorechain.pqc.v1.QueryOuterClass.QueryEVMWindowResponse)) {
+        return super.equals(obj);
+      }
+      qorechain.pqc.v1.QueryOuterClass.QueryEVMWindowResponse other = (qorechain.pqc.v1.QueryOuterClass.QueryEVMWindowResponse) obj;
+
+      if (getFound()
+          != other.getFound()) return false;
+      if (getLive()
+          != other.getLive()) return false;
+      if (getOpenedHeight()
+          != other.getOpenedHeight()) return false;
+      if (getExpiryHeight()
+          != other.getExpiryHeight()) return false;
+      if (getMaxTxs()
+          != other.getMaxTxs()) return false;
+      if (getUsedTxs()
+          != other.getUsedTxs()) return false;
+      if (!getMaxValue()
+          .equals(other.getMaxValue())) return false;
+      if (!getUsedValue()
+          .equals(other.getUsedValue())) return false;
+      if (getRemainingBlocks()
+          != other.getRemainingBlocks()) return false;
+      if (getRemainingTxs()
+          != other.getRemainingTxs()) return false;
+      if (!getRemainingValue()
+          .equals(other.getRemainingValue())) return false;
+      if (!getUnknownFields().equals(other.getUnknownFields())) return false;
+      return true;
+    }
+
+    @java.lang.Override
+    public int hashCode() {
+      if (memoizedHashCode != 0) {
+        return memoizedHashCode;
+      }
+      int hash = 41;
+      hash = (19 * hash) + getDescriptor().hashCode();
+      hash = (37 * hash) + FOUND_FIELD_NUMBER;
+      hash = (53 * hash) + com.google.protobuf.Internal.hashBoolean(
+          getFound());
+      hash = (37 * hash) + LIVE_FIELD_NUMBER;
+      hash = (53 * hash) + com.google.protobuf.Internal.hashBoolean(
+          getLive());
+      hash = (37 * hash) + OPENED_HEIGHT_FIELD_NUMBER;
+      hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
+          getOpenedHeight());
+      hash = (37 * hash) + EXPIRY_HEIGHT_FIELD_NUMBER;
+      hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
+          getExpiryHeight());
+      hash = (37 * hash) + MAX_TXS_FIELD_NUMBER;
+      hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
+          getMaxTxs());
+      hash = (37 * hash) + USED_TXS_FIELD_NUMBER;
+      hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
+          getUsedTxs());
+      hash = (37 * hash) + MAX_VALUE_FIELD_NUMBER;
+      hash = (53 * hash) + getMaxValue().hashCode();
+      hash = (37 * hash) + USED_VALUE_FIELD_NUMBER;
+      hash = (53 * hash) + getUsedValue().hashCode();
+      hash = (37 * hash) + REMAINING_BLOCKS_FIELD_NUMBER;
+      hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
+          getRemainingBlocks());
+      hash = (37 * hash) + REMAINING_TXS_FIELD_NUMBER;
+      hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
+          getRemainingTxs());
+      hash = (37 * hash) + REMAINING_VALUE_FIELD_NUMBER;
+      hash = (53 * hash) + getRemainingValue().hashCode();
+      hash = (29 * hash) + getUnknownFields().hashCode();
+      memoizedHashCode = hash;
+      return hash;
+    }
+
+    public static qorechain.pqc.v1.QueryOuterClass.QueryEVMWindowResponse parseFrom(
+        java.nio.ByteBuffer data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static qorechain.pqc.v1.QueryOuterClass.QueryEVMWindowResponse parseFrom(
+        java.nio.ByteBuffer data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static qorechain.pqc.v1.QueryOuterClass.QueryEVMWindowResponse parseFrom(
+        com.google.protobuf.ByteString data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static qorechain.pqc.v1.QueryOuterClass.QueryEVMWindowResponse parseFrom(
+        com.google.protobuf.ByteString data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static qorechain.pqc.v1.QueryOuterClass.QueryEVMWindowResponse parseFrom(byte[] data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static qorechain.pqc.v1.QueryOuterClass.QueryEVMWindowResponse parseFrom(
+        byte[] data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static qorechain.pqc.v1.QueryOuterClass.QueryEVMWindowResponse parseFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input);
+    }
+    public static qorechain.pqc.v1.QueryOuterClass.QueryEVMWindowResponse parseFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    public static qorechain.pqc.v1.QueryOuterClass.QueryEVMWindowResponse parseDelimitedFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseDelimitedWithIOException(PARSER, input);
+    }
+
+    public static qorechain.pqc.v1.QueryOuterClass.QueryEVMWindowResponse parseDelimitedFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static qorechain.pqc.v1.QueryOuterClass.QueryEVMWindowResponse parseFrom(
+        com.google.protobuf.CodedInputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input);
+    }
+    public static qorechain.pqc.v1.QueryOuterClass.QueryEVMWindowResponse parseFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    @java.lang.Override
+    public Builder newBuilderForType() { return newBuilder(); }
+    public static Builder newBuilder() {
+      return DEFAULT_INSTANCE.toBuilder();
+    }
+    public static Builder newBuilder(qorechain.pqc.v1.QueryOuterClass.QueryEVMWindowResponse prototype) {
+      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+    }
+    @java.lang.Override
+    public Builder toBuilder() {
+      return this == DEFAULT_INSTANCE
+          ? new Builder() : new Builder().mergeFrom(this);
+    }
+
+    @java.lang.Override
+    protected Builder newBuilderForType(
+        com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+      Builder builder = new Builder(parent);
+      return builder;
+    }
+    /**
+     * Protobuf type {@code qorechain.pqc.v1.QueryEVMWindowResponse}
+     */
+    public static final class Builder extends
+        com.google.protobuf.GeneratedMessage.Builder<Builder> implements
+        // @@protoc_insertion_point(builder_implements:qorechain.pqc.v1.QueryEVMWindowResponse)
+        qorechain.pqc.v1.QueryOuterClass.QueryEVMWindowResponseOrBuilder {
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return qorechain.pqc.v1.QueryOuterClass.internal_static_qorechain_pqc_v1_QueryEVMWindowResponse_descriptor;
+      }
+
+      @java.lang.Override
+      protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return qorechain.pqc.v1.QueryOuterClass.internal_static_qorechain_pqc_v1_QueryEVMWindowResponse_fieldAccessorTable
+            .ensureFieldAccessorsInitialized(
+                qorechain.pqc.v1.QueryOuterClass.QueryEVMWindowResponse.class, qorechain.pqc.v1.QueryOuterClass.QueryEVMWindowResponse.Builder.class);
+      }
+
+      // Construct using qorechain.pqc.v1.QueryOuterClass.QueryEVMWindowResponse.newBuilder()
+      private Builder() {
+
+      }
+
+      private Builder(
+          com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+        super(parent);
+
+      }
+      @java.lang.Override
+      public Builder clear() {
+        super.clear();
+        bitField0_ = 0;
+        found_ = false;
+        live_ = false;
+        openedHeight_ = 0L;
+        expiryHeight_ = 0L;
+        maxTxs_ = 0L;
+        usedTxs_ = 0L;
+        maxValue_ = "";
+        usedValue_ = "";
+        remainingBlocks_ = 0L;
+        remainingTxs_ = 0L;
+        remainingValue_ = "";
+        return this;
+      }
+
+      @java.lang.Override
+      public com.google.protobuf.Descriptors.Descriptor
+          getDescriptorForType() {
+        return qorechain.pqc.v1.QueryOuterClass.internal_static_qorechain_pqc_v1_QueryEVMWindowResponse_descriptor;
+      }
+
+      @java.lang.Override
+      public qorechain.pqc.v1.QueryOuterClass.QueryEVMWindowResponse getDefaultInstanceForType() {
+        return qorechain.pqc.v1.QueryOuterClass.QueryEVMWindowResponse.getDefaultInstance();
+      }
+
+      @java.lang.Override
+      public qorechain.pqc.v1.QueryOuterClass.QueryEVMWindowResponse build() {
+        qorechain.pqc.v1.QueryOuterClass.QueryEVMWindowResponse result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(result);
+        }
+        return result;
+      }
+
+      @java.lang.Override
+      public qorechain.pqc.v1.QueryOuterClass.QueryEVMWindowResponse buildPartial() {
+        qorechain.pqc.v1.QueryOuterClass.QueryEVMWindowResponse result = new qorechain.pqc.v1.QueryOuterClass.QueryEVMWindowResponse(this);
+        if (bitField0_ != 0) { buildPartial0(result); }
+        onBuilt();
+        return result;
+      }
+
+      private void buildPartial0(qorechain.pqc.v1.QueryOuterClass.QueryEVMWindowResponse result) {
+        int from_bitField0_ = bitField0_;
+        if (((from_bitField0_ & 0x00000001) != 0)) {
+          result.found_ = found_;
+        }
+        if (((from_bitField0_ & 0x00000002) != 0)) {
+          result.live_ = live_;
+        }
+        if (((from_bitField0_ & 0x00000004) != 0)) {
+          result.openedHeight_ = openedHeight_;
+        }
+        if (((from_bitField0_ & 0x00000008) != 0)) {
+          result.expiryHeight_ = expiryHeight_;
+        }
+        if (((from_bitField0_ & 0x00000010) != 0)) {
+          result.maxTxs_ = maxTxs_;
+        }
+        if (((from_bitField0_ & 0x00000020) != 0)) {
+          result.usedTxs_ = usedTxs_;
+        }
+        if (((from_bitField0_ & 0x00000040) != 0)) {
+          result.maxValue_ = maxValue_;
+        }
+        if (((from_bitField0_ & 0x00000080) != 0)) {
+          result.usedValue_ = usedValue_;
+        }
+        if (((from_bitField0_ & 0x00000100) != 0)) {
+          result.remainingBlocks_ = remainingBlocks_;
+        }
+        if (((from_bitField0_ & 0x00000200) != 0)) {
+          result.remainingTxs_ = remainingTxs_;
+        }
+        if (((from_bitField0_ & 0x00000400) != 0)) {
+          result.remainingValue_ = remainingValue_;
+        }
+      }
+
+      @java.lang.Override
+      public Builder mergeFrom(com.google.protobuf.Message other) {
+        if (other instanceof qorechain.pqc.v1.QueryOuterClass.QueryEVMWindowResponse) {
+          return mergeFrom((qorechain.pqc.v1.QueryOuterClass.QueryEVMWindowResponse)other);
+        } else {
+          super.mergeFrom(other);
+          return this;
+        }
+      }
+
+      public Builder mergeFrom(qorechain.pqc.v1.QueryOuterClass.QueryEVMWindowResponse other) {
+        if (other == qorechain.pqc.v1.QueryOuterClass.QueryEVMWindowResponse.getDefaultInstance()) return this;
+        if (other.getFound() != false) {
+          setFound(other.getFound());
+        }
+        if (other.getLive() != false) {
+          setLive(other.getLive());
+        }
+        if (other.getOpenedHeight() != 0L) {
+          setOpenedHeight(other.getOpenedHeight());
+        }
+        if (other.getExpiryHeight() != 0L) {
+          setExpiryHeight(other.getExpiryHeight());
+        }
+        if (other.getMaxTxs() != 0L) {
+          setMaxTxs(other.getMaxTxs());
+        }
+        if (other.getUsedTxs() != 0L) {
+          setUsedTxs(other.getUsedTxs());
+        }
+        if (!other.getMaxValue().isEmpty()) {
+          maxValue_ = other.maxValue_;
+          bitField0_ |= 0x00000040;
+          onChanged();
+        }
+        if (!other.getUsedValue().isEmpty()) {
+          usedValue_ = other.usedValue_;
+          bitField0_ |= 0x00000080;
+          onChanged();
+        }
+        if (other.getRemainingBlocks() != 0L) {
+          setRemainingBlocks(other.getRemainingBlocks());
+        }
+        if (other.getRemainingTxs() != 0L) {
+          setRemainingTxs(other.getRemainingTxs());
+        }
+        if (!other.getRemainingValue().isEmpty()) {
+          remainingValue_ = other.remainingValue_;
+          bitField0_ |= 0x00000400;
+          onChanged();
+        }
+        this.mergeUnknownFields(other.getUnknownFields());
+        onChanged();
+        return this;
+      }
+
+      @java.lang.Override
+      public final boolean isInitialized() {
+        return true;
+      }
+
+      @java.lang.Override
+      public Builder mergeFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        if (extensionRegistry == null) {
+          throw new java.lang.NullPointerException();
+        }
+        try {
+          boolean done = false;
+          while (!done) {
+            int tag = input.readTag();
+            switch (tag) {
+              case 0:
+                done = true;
+                break;
+              case 8: {
+                found_ = input.readBool();
+                bitField0_ |= 0x00000001;
+                break;
+              } // case 8
+              case 16: {
+                live_ = input.readBool();
+                bitField0_ |= 0x00000002;
+                break;
+              } // case 16
+              case 24: {
+                openedHeight_ = input.readUInt64();
+                bitField0_ |= 0x00000004;
+                break;
+              } // case 24
+              case 32: {
+                expiryHeight_ = input.readUInt64();
+                bitField0_ |= 0x00000008;
+                break;
+              } // case 32
+              case 40: {
+                maxTxs_ = input.readUInt64();
+                bitField0_ |= 0x00000010;
+                break;
+              } // case 40
+              case 48: {
+                usedTxs_ = input.readUInt64();
+                bitField0_ |= 0x00000020;
+                break;
+              } // case 48
+              case 58: {
+                maxValue_ = input.readStringRequireUtf8();
+                bitField0_ |= 0x00000040;
+                break;
+              } // case 58
+              case 66: {
+                usedValue_ = input.readStringRequireUtf8();
+                bitField0_ |= 0x00000080;
+                break;
+              } // case 66
+              case 72: {
+                remainingBlocks_ = input.readUInt64();
+                bitField0_ |= 0x00000100;
+                break;
+              } // case 72
+              case 80: {
+                remainingTxs_ = input.readUInt64();
+                bitField0_ |= 0x00000200;
+                break;
+              } // case 80
+              case 90: {
+                remainingValue_ = input.readStringRequireUtf8();
+                bitField0_ |= 0x00000400;
+                break;
+              } // case 90
+              default: {
+                if (!super.parseUnknownField(input, extensionRegistry, tag)) {
+                  done = true; // was an endgroup tag
+                }
+                break;
+              } // default:
+            } // switch (tag)
+          } // while (!done)
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          throw e.unwrapIOException();
+        } finally {
+          onChanged();
+        } // finally
+        return this;
+      }
+      private int bitField0_;
+
+      private boolean found_ ;
+      /**
+       * <pre>
+       * found reports whether a window is stored. A stored window may still be
+       * exhausted or expired; check live.
+       * </pre>
+       *
+       * <code>bool found = 1 [json_name = "found"];</code>
+       * @return The found.
+       */
+      @java.lang.Override
+      public boolean getFound() {
+        return found_;
+      }
+      /**
+       * <pre>
+       * found reports whether a window is stored. A stored window may still be
+       * exhausted or expired; check live.
+       * </pre>
+       *
+       * <code>bool found = 1 [json_name = "found"];</code>
+       * @param value The found to set.
+       * @return This builder for chaining.
+       */
+      public Builder setFound(boolean value) {
+
+        found_ = value;
+        bitField0_ |= 0x00000001;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * found reports whether a window is stored. A stored window may still be
+       * exhausted or expired; check live.
+       * </pre>
+       *
+       * <code>bool found = 1 [json_name = "found"];</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearFound() {
+        bitField0_ = (bitField0_ & ~0x00000001);
+        found_ = false;
+        onChanged();
+        return this;
+      }
+
+      private boolean live_ ;
+      /**
+       * <pre>
+       * live reports whether the window admits at least one more transaction of
+       * zero value at the current height.
+       * </pre>
+       *
+       * <code>bool live = 2 [json_name = "live"];</code>
+       * @return The live.
+       */
+      @java.lang.Override
+      public boolean getLive() {
+        return live_;
+      }
+      /**
+       * <pre>
+       * live reports whether the window admits at least one more transaction of
+       * zero value at the current height.
+       * </pre>
+       *
+       * <code>bool live = 2 [json_name = "live"];</code>
+       * @param value The live to set.
+       * @return This builder for chaining.
+       */
+      public Builder setLive(boolean value) {
+
+        live_ = value;
+        bitField0_ |= 0x00000002;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * live reports whether the window admits at least one more transaction of
+       * zero value at the current height.
+       * </pre>
+       *
+       * <code>bool live = 2 [json_name = "live"];</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearLive() {
+        bitField0_ = (bitField0_ & ~0x00000002);
+        live_ = false;
+        onChanged();
+        return this;
+      }
+
+      private long openedHeight_ ;
+      /**
+       * <code>uint64 opened_height = 3 [json_name = "openedHeight"];</code>
+       * @return The openedHeight.
+       */
+      @java.lang.Override
+      public long getOpenedHeight() {
+        return openedHeight_;
+      }
+      /**
+       * <code>uint64 opened_height = 3 [json_name = "openedHeight"];</code>
+       * @param value The openedHeight to set.
+       * @return This builder for chaining.
+       */
+      public Builder setOpenedHeight(long value) {
+
+        openedHeight_ = value;
+        bitField0_ |= 0x00000004;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>uint64 opened_height = 3 [json_name = "openedHeight"];</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearOpenedHeight() {
+        bitField0_ = (bitField0_ & ~0x00000004);
+        openedHeight_ = 0L;
+        onChanged();
+        return this;
+      }
+
+      private long expiryHeight_ ;
+      /**
+       * <code>uint64 expiry_height = 4 [json_name = "expiryHeight"];</code>
+       * @return The expiryHeight.
+       */
+      @java.lang.Override
+      public long getExpiryHeight() {
+        return expiryHeight_;
+      }
+      /**
+       * <code>uint64 expiry_height = 4 [json_name = "expiryHeight"];</code>
+       * @param value The expiryHeight to set.
+       * @return This builder for chaining.
+       */
+      public Builder setExpiryHeight(long value) {
+
+        expiryHeight_ = value;
+        bitField0_ |= 0x00000008;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>uint64 expiry_height = 4 [json_name = "expiryHeight"];</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearExpiryHeight() {
+        bitField0_ = (bitField0_ & ~0x00000008);
+        expiryHeight_ = 0L;
+        onChanged();
+        return this;
+      }
+
+      private long maxTxs_ ;
+      /**
+       * <code>uint64 max_txs = 5 [json_name = "maxTxs"];</code>
+       * @return The maxTxs.
+       */
+      @java.lang.Override
+      public long getMaxTxs() {
+        return maxTxs_;
+      }
+      /**
+       * <code>uint64 max_txs = 5 [json_name = "maxTxs"];</code>
+       * @param value The maxTxs to set.
+       * @return This builder for chaining.
+       */
+      public Builder setMaxTxs(long value) {
+
+        maxTxs_ = value;
+        bitField0_ |= 0x00000010;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>uint64 max_txs = 5 [json_name = "maxTxs"];</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearMaxTxs() {
+        bitField0_ = (bitField0_ & ~0x00000010);
+        maxTxs_ = 0L;
+        onChanged();
+        return this;
+      }
+
+      private long usedTxs_ ;
+      /**
+       * <code>uint64 used_txs = 6 [json_name = "usedTxs"];</code>
+       * @return The usedTxs.
+       */
+      @java.lang.Override
+      public long getUsedTxs() {
+        return usedTxs_;
+      }
+      /**
+       * <code>uint64 used_txs = 6 [json_name = "usedTxs"];</code>
+       * @param value The usedTxs to set.
+       * @return This builder for chaining.
+       */
+      public Builder setUsedTxs(long value) {
+
+        usedTxs_ = value;
+        bitField0_ |= 0x00000020;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>uint64 used_txs = 6 [json_name = "usedTxs"];</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearUsedTxs() {
+        bitField0_ = (bitField0_ & ~0x00000020);
+        usedTxs_ = 0L;
+        onChanged();
+        return this;
+      }
+
+      private java.lang.Object maxValue_ = "";
+      /**
+       * <code>string max_value = 7 [json_name = "maxValue"];</code>
+       * @return The maxValue.
+       */
+      public java.lang.String getMaxValue() {
+        java.lang.Object ref = maxValue_;
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          maxValue_ = s;
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
+      }
+      /**
+       * <code>string max_value = 7 [json_name = "maxValue"];</code>
+       * @return The bytes for maxValue.
+       */
+      public com.google.protobuf.ByteString
+          getMaxValueBytes() {
+        java.lang.Object ref = maxValue_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          maxValue_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <code>string max_value = 7 [json_name = "maxValue"];</code>
+       * @param value The maxValue to set.
+       * @return This builder for chaining.
+       */
+      public Builder setMaxValue(
+          java.lang.String value) {
+        if (value == null) { throw new NullPointerException(); }
+        maxValue_ = value;
+        bitField0_ |= 0x00000040;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>string max_value = 7 [json_name = "maxValue"];</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearMaxValue() {
+        maxValue_ = getDefaultInstance().getMaxValue();
+        bitField0_ = (bitField0_ & ~0x00000040);
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>string max_value = 7 [json_name = "maxValue"];</code>
+       * @param value The bytes for maxValue to set.
+       * @return This builder for chaining.
+       */
+      public Builder setMaxValueBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) { throw new NullPointerException(); }
+        checkByteStringIsUtf8(value);
+        maxValue_ = value;
+        bitField0_ |= 0x00000040;
+        onChanged();
+        return this;
+      }
+
+      private java.lang.Object usedValue_ = "";
+      /**
+       * <code>string used_value = 8 [json_name = "usedValue"];</code>
+       * @return The usedValue.
+       */
+      public java.lang.String getUsedValue() {
+        java.lang.Object ref = usedValue_;
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          usedValue_ = s;
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
+      }
+      /**
+       * <code>string used_value = 8 [json_name = "usedValue"];</code>
+       * @return The bytes for usedValue.
+       */
+      public com.google.protobuf.ByteString
+          getUsedValueBytes() {
+        java.lang.Object ref = usedValue_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          usedValue_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <code>string used_value = 8 [json_name = "usedValue"];</code>
+       * @param value The usedValue to set.
+       * @return This builder for chaining.
+       */
+      public Builder setUsedValue(
+          java.lang.String value) {
+        if (value == null) { throw new NullPointerException(); }
+        usedValue_ = value;
+        bitField0_ |= 0x00000080;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>string used_value = 8 [json_name = "usedValue"];</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearUsedValue() {
+        usedValue_ = getDefaultInstance().getUsedValue();
+        bitField0_ = (bitField0_ & ~0x00000080);
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>string used_value = 8 [json_name = "usedValue"];</code>
+       * @param value The bytes for usedValue to set.
+       * @return This builder for chaining.
+       */
+      public Builder setUsedValueBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) { throw new NullPointerException(); }
+        checkByteStringIsUtf8(value);
+        usedValue_ = value;
+        bitField0_ |= 0x00000080;
+        onChanged();
+        return this;
+      }
+
+      private long remainingBlocks_ ;
+      /**
+       * <pre>
+       * remaining_blocks, remaining_txs and remaining_value say which bound is
+       * closest to running out, so a refused caller can tell why.
+       * </pre>
+       *
+       * <code>uint64 remaining_blocks = 9 [json_name = "remainingBlocks"];</code>
+       * @return The remainingBlocks.
+       */
+      @java.lang.Override
+      public long getRemainingBlocks() {
+        return remainingBlocks_;
+      }
+      /**
+       * <pre>
+       * remaining_blocks, remaining_txs and remaining_value say which bound is
+       * closest to running out, so a refused caller can tell why.
+       * </pre>
+       *
+       * <code>uint64 remaining_blocks = 9 [json_name = "remainingBlocks"];</code>
+       * @param value The remainingBlocks to set.
+       * @return This builder for chaining.
+       */
+      public Builder setRemainingBlocks(long value) {
+
+        remainingBlocks_ = value;
+        bitField0_ |= 0x00000100;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * remaining_blocks, remaining_txs and remaining_value say which bound is
+       * closest to running out, so a refused caller can tell why.
+       * </pre>
+       *
+       * <code>uint64 remaining_blocks = 9 [json_name = "remainingBlocks"];</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearRemainingBlocks() {
+        bitField0_ = (bitField0_ & ~0x00000100);
+        remainingBlocks_ = 0L;
+        onChanged();
+        return this;
+      }
+
+      private long remainingTxs_ ;
+      /**
+       * <code>uint64 remaining_txs = 10 [json_name = "remainingTxs"];</code>
+       * @return The remainingTxs.
+       */
+      @java.lang.Override
+      public long getRemainingTxs() {
+        return remainingTxs_;
+      }
+      /**
+       * <code>uint64 remaining_txs = 10 [json_name = "remainingTxs"];</code>
+       * @param value The remainingTxs to set.
+       * @return This builder for chaining.
+       */
+      public Builder setRemainingTxs(long value) {
+
+        remainingTxs_ = value;
+        bitField0_ |= 0x00000200;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>uint64 remaining_txs = 10 [json_name = "remainingTxs"];</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearRemainingTxs() {
+        bitField0_ = (bitField0_ & ~0x00000200);
+        remainingTxs_ = 0L;
+        onChanged();
+        return this;
+      }
+
+      private java.lang.Object remainingValue_ = "";
+      /**
+       * <code>string remaining_value = 11 [json_name = "remainingValue"];</code>
+       * @return The remainingValue.
+       */
+      public java.lang.String getRemainingValue() {
+        java.lang.Object ref = remainingValue_;
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          remainingValue_ = s;
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
+      }
+      /**
+       * <code>string remaining_value = 11 [json_name = "remainingValue"];</code>
+       * @return The bytes for remainingValue.
+       */
+      public com.google.protobuf.ByteString
+          getRemainingValueBytes() {
+        java.lang.Object ref = remainingValue_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          remainingValue_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <code>string remaining_value = 11 [json_name = "remainingValue"];</code>
+       * @param value The remainingValue to set.
+       * @return This builder for chaining.
+       */
+      public Builder setRemainingValue(
+          java.lang.String value) {
+        if (value == null) { throw new NullPointerException(); }
+        remainingValue_ = value;
+        bitField0_ |= 0x00000400;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>string remaining_value = 11 [json_name = "remainingValue"];</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearRemainingValue() {
+        remainingValue_ = getDefaultInstance().getRemainingValue();
+        bitField0_ = (bitField0_ & ~0x00000400);
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>string remaining_value = 11 [json_name = "remainingValue"];</code>
+       * @param value The bytes for remainingValue to set.
+       * @return This builder for chaining.
+       */
+      public Builder setRemainingValueBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) { throw new NullPointerException(); }
+        checkByteStringIsUtf8(value);
+        remainingValue_ = value;
+        bitField0_ |= 0x00000400;
+        onChanged();
+        return this;
+      }
+
+      // @@protoc_insertion_point(builder_scope:qorechain.pqc.v1.QueryEVMWindowResponse)
+    }
+
+    // @@protoc_insertion_point(class_scope:qorechain.pqc.v1.QueryEVMWindowResponse)
+    private static final qorechain.pqc.v1.QueryOuterClass.QueryEVMWindowResponse DEFAULT_INSTANCE;
+    static {
+      DEFAULT_INSTANCE = new qorechain.pqc.v1.QueryOuterClass.QueryEVMWindowResponse();
+    }
+
+    public static qorechain.pqc.v1.QueryOuterClass.QueryEVMWindowResponse getDefaultInstance() {
+      return DEFAULT_INSTANCE;
+    }
+
+    private static final com.google.protobuf.Parser<QueryEVMWindowResponse>
+        PARSER = new com.google.protobuf.AbstractParser<QueryEVMWindowResponse>() {
+      @java.lang.Override
+      public QueryEVMWindowResponse parsePartialFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        Builder builder = newBuilder();
+        try {
+          builder.mergeFrom(input, extensionRegistry);
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          throw e.setUnfinishedMessage(builder.buildPartial());
+        } catch (com.google.protobuf.UninitializedMessageException e) {
+          throw e.asInvalidProtocolBufferException().setUnfinishedMessage(builder.buildPartial());
+        } catch (java.io.IOException e) {
+          throw new com.google.protobuf.InvalidProtocolBufferException(e)
+              .setUnfinishedMessage(builder.buildPartial());
+        }
+        return builder.buildPartial();
+      }
+    };
+
+    public static com.google.protobuf.Parser<QueryEVMWindowResponse> parser() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Parser<QueryEVMWindowResponse> getParserForType() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public qorechain.pqc.v1.QueryOuterClass.QueryEVMWindowResponse getDefaultInstanceForType() {
+      return DEFAULT_INSTANCE;
+    }
+
+  }
+
   public interface QueryAccountRequestOrBuilder extends
       // @@protoc_insertion_point(interface_extends:qorechain.pqc.v1.QueryAccountRequest)
       com.google.protobuf.MessageOrBuilder {
@@ -2513,6 +4506,16 @@ public final class QueryOuterClass extends com.google.protobuf.GeneratedFile {
   }
 
   private static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_qorechain_pqc_v1_QueryEVMWindowRequest_descriptor;
+  private static final 
+    com.google.protobuf.GeneratedMessage.FieldAccessorTable
+      internal_static_qorechain_pqc_v1_QueryEVMWindowRequest_fieldAccessorTable;
+  private static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_qorechain_pqc_v1_QueryEVMWindowResponse_descriptor;
+  private static final 
+    com.google.protobuf.GeneratedMessage.FieldAccessorTable
+      internal_static_qorechain_pqc_v1_QueryEVMWindowResponse_fieldAccessorTable;
+  private static final com.google.protobuf.Descriptors.Descriptor
     internal_static_qorechain_pqc_v1_QueryAccountRequest_descriptor;
   private static final 
     com.google.protobuf.GeneratedMessage.FieldAccessorTable
@@ -2537,45 +4540,72 @@ public final class QueryOuterClass extends com.google.protobuf.GeneratedFile {
   static {
     java.lang.String[] descriptorData = {
       "\n\034qorechain/pqc/v1/query.proto\022\020qorechai" +
-      "n.pqc.v1\032\034google/api/annotations.proto\"/" +
-      "\n\023QueryAccountRequest\022\030\n\007address\030\001 \001(\tR\007" +
-      "address\"h\n\024QueryAccountResponse\022\024\n\005found" +
-      "\030\001 \001(\010R\005found\022:\n\007account\030\002 \001(\0132 .qorecha" +
-      "in.pqc.v1.PQCAccountViewR\007account\"\345\002\n\016PQ" +
-      "CAccountView\022\030\n\007address\030\001 \001(\tR\007address\022\035" +
-      "\n\npublic_key\030\002 \001(\014R\tpublicKey\022!\n\014algorit" +
-      "hm_id\030\003 \001(\rR\013algorithmId\022%\n\016algorithm_na" +
-      "me\030\004 \001(\tR\ralgorithmName\022!\n\014ecdsa_pubkey\030" +
-      "\005 \001(\014R\013ecdsaPubkey\022\031\n\010key_type\030\006 \001(\tR\007ke" +
-      "yType\022*\n\021created_at_height\030\007 \001(\003R\017create" +
-      "dAtHeight\0220\n\024migration_public_key\030\010 \001(\014R" +
-      "\022migrationPublicKey\0224\n\026migration_algorit" +
-      "hm_id\030\t \001(\rR\024migrationAlgorithmId2\217\001\n\005Qu" +
-      "ery\022\205\001\n\007Account\022%.qorechain.pqc.v1.Query" +
-      "AccountRequest\032&.qorechain.pqc.v1.QueryA" +
-      "ccountResponse\"+\202\323\344\223\002%\022#/qorechain/pqc/v" +
-      "1/account/{address}B1Z/github.com/qorech" +
-      "ain/qorechain-core/x/pqc/typesb\006proto3"
+      "n.pqc.v1\032\034google/api/annotations.proto\"1" +
+      "\n\025QueryEVMWindowRequest\022\030\n\007address\030\001 \001(\t" +
+      "R\007address\"\365\002\n\026QueryEVMWindowResponse\022\024\n\005" +
+      "found\030\001 \001(\010R\005found\022\022\n\004live\030\002 \001(\010R\004live\022#" +
+      "\n\ropened_height\030\003 \001(\004R\014openedHeight\022#\n\re" +
+      "xpiry_height\030\004 \001(\004R\014expiryHeight\022\027\n\007max_" +
+      "txs\030\005 \001(\004R\006maxTxs\022\031\n\010used_txs\030\006 \001(\004R\007use" +
+      "dTxs\022\033\n\tmax_value\030\007 \001(\tR\010maxValue\022\035\n\nuse" +
+      "d_value\030\010 \001(\tR\tusedValue\022)\n\020remaining_bl" +
+      "ocks\030\t \001(\004R\017remainingBlocks\022#\n\rremaining" +
+      "_txs\030\n \001(\004R\014remainingTxs\022\'\n\017remaining_va" +
+      "lue\030\013 \001(\tR\016remainingValue\"/\n\023QueryAccoun" +
+      "tRequest\022\030\n\007address\030\001 \001(\tR\007address\"h\n\024Qu" +
+      "eryAccountResponse\022\024\n\005found\030\001 \001(\010R\005found" +
+      "\022:\n\007account\030\002 \001(\0132 .qorechain.pqc.v1.PQC" +
+      "AccountViewR\007account\"\345\002\n\016PQCAccountView\022" +
+      "\030\n\007address\030\001 \001(\tR\007address\022\035\n\npublic_key\030" +
+      "\002 \001(\014R\tpublicKey\022!\n\014algorithm_id\030\003 \001(\rR\013" +
+      "algorithmId\022%\n\016algorithm_name\030\004 \001(\tR\ralg" +
+      "orithmName\022!\n\014ecdsa_pubkey\030\005 \001(\014R\013ecdsaP" +
+      "ubkey\022\031\n\010key_type\030\006 \001(\tR\007keyType\022*\n\021crea" +
+      "ted_at_height\030\007 \001(\003R\017createdAtHeight\0220\n\024" +
+      "migration_public_key\030\010 \001(\014R\022migrationPub" +
+      "licKey\0224\n\026migration_algorithm_id\030\t \001(\rR\024" +
+      "migrationAlgorithmId2\240\002\n\005Query\022\205\001\n\007Accou" +
+      "nt\022%.qorechain.pqc.v1.QueryAccountReques" +
+      "t\032&.qorechain.pqc.v1.QueryAccountRespons" +
+      "e\"+\202\323\344\223\002%\022#/qorechain/pqc/v1/account/{ad" +
+      "dress}\022\216\001\n\tEVMWindow\022\'.qorechain.pqc.v1." +
+      "QueryEVMWindowRequest\032(.qorechain.pqc.v1" +
+      ".QueryEVMWindowResponse\".\202\323\344\223\002(\022&/qorech" +
+      "ain/pqc/v1/evm_window/{address}B1Z/githu" +
+      "b.com/qorechain/qorechain-core/x/pqc/typ" +
+      "esb\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
         new com.google.protobuf.Descriptors.FileDescriptor[] {
           com.google.api.AnnotationsProto.getDescriptor(),
         });
-    internal_static_qorechain_pqc_v1_QueryAccountRequest_descriptor =
+    internal_static_qorechain_pqc_v1_QueryEVMWindowRequest_descriptor =
       getDescriptor().getMessageType(0);
+    internal_static_qorechain_pqc_v1_QueryEVMWindowRequest_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessage.FieldAccessorTable(
+        internal_static_qorechain_pqc_v1_QueryEVMWindowRequest_descriptor,
+        new java.lang.String[] { "Address", });
+    internal_static_qorechain_pqc_v1_QueryEVMWindowResponse_descriptor =
+      getDescriptor().getMessageType(1);
+    internal_static_qorechain_pqc_v1_QueryEVMWindowResponse_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessage.FieldAccessorTable(
+        internal_static_qorechain_pqc_v1_QueryEVMWindowResponse_descriptor,
+        new java.lang.String[] { "Found", "Live", "OpenedHeight", "ExpiryHeight", "MaxTxs", "UsedTxs", "MaxValue", "UsedValue", "RemainingBlocks", "RemainingTxs", "RemainingValue", });
+    internal_static_qorechain_pqc_v1_QueryAccountRequest_descriptor =
+      getDescriptor().getMessageType(2);
     internal_static_qorechain_pqc_v1_QueryAccountRequest_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_qorechain_pqc_v1_QueryAccountRequest_descriptor,
         new java.lang.String[] { "Address", });
     internal_static_qorechain_pqc_v1_QueryAccountResponse_descriptor =
-      getDescriptor().getMessageType(1);
+      getDescriptor().getMessageType(3);
     internal_static_qorechain_pqc_v1_QueryAccountResponse_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_qorechain_pqc_v1_QueryAccountResponse_descriptor,
         new java.lang.String[] { "Found", "Account", });
     internal_static_qorechain_pqc_v1_PQCAccountView_descriptor =
-      getDescriptor().getMessageType(2);
+      getDescriptor().getMessageType(4);
     internal_static_qorechain_pqc_v1_PQCAccountView_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_qorechain_pqc_v1_PQCAccountView_descriptor,

@@ -5,6 +5,38 @@ from typing import ClassVar as _ClassVar, Mapping as _Mapping, Optional as _Opti
 
 DESCRIPTOR: _descriptor.FileDescriptor
 
+class QueryEVMWindowRequest(_message.Message):
+    __slots__ = ("address",)
+    ADDRESS_FIELD_NUMBER: _ClassVar[int]
+    address: str
+    def __init__(self, address: _Optional[str] = ...) -> None: ...
+
+class QueryEVMWindowResponse(_message.Message):
+    __slots__ = ("found", "live", "opened_height", "expiry_height", "max_txs", "used_txs", "max_value", "used_value", "remaining_blocks", "remaining_txs", "remaining_value")
+    FOUND_FIELD_NUMBER: _ClassVar[int]
+    LIVE_FIELD_NUMBER: _ClassVar[int]
+    OPENED_HEIGHT_FIELD_NUMBER: _ClassVar[int]
+    EXPIRY_HEIGHT_FIELD_NUMBER: _ClassVar[int]
+    MAX_TXS_FIELD_NUMBER: _ClassVar[int]
+    USED_TXS_FIELD_NUMBER: _ClassVar[int]
+    MAX_VALUE_FIELD_NUMBER: _ClassVar[int]
+    USED_VALUE_FIELD_NUMBER: _ClassVar[int]
+    REMAINING_BLOCKS_FIELD_NUMBER: _ClassVar[int]
+    REMAINING_TXS_FIELD_NUMBER: _ClassVar[int]
+    REMAINING_VALUE_FIELD_NUMBER: _ClassVar[int]
+    found: bool
+    live: bool
+    opened_height: int
+    expiry_height: int
+    max_txs: int
+    used_txs: int
+    max_value: str
+    used_value: str
+    remaining_blocks: int
+    remaining_txs: int
+    remaining_value: str
+    def __init__(self, found: bool = ..., live: bool = ..., opened_height: _Optional[int] = ..., expiry_height: _Optional[int] = ..., max_txs: _Optional[int] = ..., used_txs: _Optional[int] = ..., max_value: _Optional[str] = ..., used_value: _Optional[str] = ..., remaining_blocks: _Optional[int] = ..., remaining_txs: _Optional[int] = ..., remaining_value: _Optional[str] = ...) -> None: ...
+
 class QueryAccountRequest(_message.Message):
     __slots__ = ("address",)
     ADDRESS_FIELD_NUMBER: _ClassVar[int]

@@ -9,7 +9,7 @@ import java.util.Map;
  * REST (LCD) client for the Native routes plus QoreChain's custom REST
  * routes. Point it at the network's {@code rest} endpoint.
  *
- * <p>Covers the standard bank balance routes, the 8 custom QoreChain routes, the
+ * <p>Covers the standard bank balance routes, the 9 custom QoreChain routes, the
  * tx/block lookup routes, and a generic {@link #get} escape hatch for any path.
  */
 public final class RestClient {
@@ -53,7 +53,7 @@ public final class RestClient {
         return get("/cosmos/bank/v1beta1/balances/" + enc(address) + "/by_denom", q);
     }
 
-    // ---- 8 custom QoreChain routes ----
+    // ---- 9 custom QoreChain routes ----
 
     /** {@code /qorechain/ai/v1/stats}. */
     public JsonNode getAiStats() {
@@ -75,6 +75,20 @@ public final class RestClient {
     /** {@code /qorechain/pqc/v1/accounts/{address}}. */
     public JsonNode getPqcAccount(String address) {
         return get("/qorechain/pqc/v1/accounts/" + enc(address));
+    }
+
+    /**
+     * {@code /qorechain/pqc/v1/evm_window/{address}} — the account's EVM
+     * authorisation window (chain v3.2.0), raw. The route answers 200 with
+     * {@code found:false} when there is no window, so it is safe to poll.
+     */
+    public JsonNode getEvmWindow(String address) {
+        return get("/qorechain/pqc/v1/evm_window/" + enc(address));
+    }
+
+    /** The same route, decoded into {@link io.github.qorechain.evm.EvmWindowStatus}. */
+    public io.github.qorechain.evm.EvmWindowStatus evmWindow(String address) {
+        return io.github.qorechain.evm.EvmWindowStatus.of(getEvmWindow(address));
     }
 
     /** {@code /qorechain/reputation/v1/validators/{address}}. */
