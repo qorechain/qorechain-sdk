@@ -51,6 +51,21 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   A limit bounds the damage a linked key can do; it does not remove the need to
   register only the permissions that key needs and to revoke it when it is done.
 
+- **The `abstractaccount` module is disabled on both networks, and from the
+  v3.2.0 upgrade that flag is enforced on every path** — account creation, key
+  linking, and both execution lanes — so on mainnet a linked key cannot be
+  registered or spend, refused with `abstract account module is disabled`
+  (code 9). No message can switch it on: there is no `MsgUpdateConfig`, and
+  `SetConfig` is reachable only from genesis and upgrade handlers. Check
+  `GET {lcd}/qorechain/abstractaccount/v1/config` before offering a linking flow.
+
+  The enforcement behaviour above is proven on a chain with the module on:
+  a 60,000,000 uqor spend against an enabled 5,000,000 per-transaction rule is
+  refused with `per-tx limit 5000000uqor exceeded (attempted 60000000)`
+  (codespace `abstractaccount`), 1,000,000 passes, and the same 60,000,000 spend
+  passes when the rule is **disabled** — with the account reporting
+  `spending_rules_count: 1` either way.
+
 This is a documentation correction only: no code changed, and the published
 packages are unaffected, so there is no new release. The text lived in the root
 README, the Authenticators guide and these notes.

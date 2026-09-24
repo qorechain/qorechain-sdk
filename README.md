@@ -217,7 +217,8 @@ native-chain parts. Highlights:
   and `signClassicalEth` / `signHybridEth` sign Native-lane txs with the same key.
   To let an *external* wallet (Phantom / MetaMask) spend from such an account, use
   the authenticator lanes below — never derive a spend key from a wallet signature.
-- **Authenticator lanes** — link an external key (Phantom / MetaMask) to a
+- **Authenticator lanes** (module currently **disabled on mainnet** — see the
+  Authenticators guide) — link an external key (Phantom / MetaMask) to a
   canonical PQC account and let it spend via a relayer under least-privilege,
   revocable terms. A `SpendingRule` — allowed denoms, per-transaction and daily
   limits — is enforced by the chain on both lanes, fail-closed, **when a rule is

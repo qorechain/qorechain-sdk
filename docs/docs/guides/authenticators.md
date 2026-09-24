@@ -11,6 +11,26 @@ sidebar_position: 13
 canonical **PQC-required** account under least-privilege, revocable terms,
 **without the external key ever producing an ML-DSA co-signature**.
 
+:::danger The module is switched off on mainnet
+
+`abstractaccount` carries an `enabled` flag, and it is **false on both networks**
+today (`GET {lcd}/qorechain/abstractaccount/v1/config`). From the v3.2.0 upgrade
+that flag gates every path — creating an abstract account, linking a key, and
+both execution lanes — so on mainnet **linking a key and spending through a
+linked key are refused**, with `abstract account module is disabled` (code 9).
+
+Nothing in use breaks, because mainnet has no abstract accounts. But there is no
+message that can switch it on: the `Msg` service has create, update-rules,
+register, revoke and the two executes, and **no `MsgUpdateConfig`**. `SetConfig`
+is reachable only from `InitGenesis` and upgrade handlers, and the v3.2.0 handler
+does not touch it. Turning the module on for mainnet needs a future release and
+an explicit decision.
+
+So treat everything below as the mechanism, not as something you can ship to
+mainnet users today. Check the config flag before offering a linking flow.
+
+:::
+
 :::warning A limit applies only if you set one
 
 A `SpendingRule` — allowed denominations, a per-transaction limit and a daily
