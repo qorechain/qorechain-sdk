@@ -11,13 +11,32 @@ sidebar_position: 13
 canonical **PQC-required** account under least-privilege, revocable terms,
 **without the external key ever producing an ML-DSA co-signature**.
 
-:::danger A linked key can spend the whole balance
+:::warning A limit applies only if you set one
 
-A per-authenticator **`SpendingRule` is not currently enforced** on the
-`ExecuteCosmos` / `ExecuteEVM` lanes. A limit can be expressed on-chain, but do
-**not** rely on it as a security control: assume any key you link can move the
-account's entire balance until you revoke it. Register only the permissions the
-key actually needs, and revoke it as soon as it is no longer required.
+A `SpendingRule` — allowed denominations, a per-transaction limit and a daily
+limit — **is** enforced by the chain on both the `ExecuteCosmos` and
+`ExecuteEVM` lanes, fail-closed: the spend is checked before it happens, and the
+daily accumulator is credited only once the check passes.
+
+But it applies only when a rule exists. The chain resolves, in order:
+
+1. the authenticator's own rule, if it is set **and** `Enabled`;
+2. otherwise the first `Enabled` rule on the **account**;
+3. otherwise **no rule — and no limit**.
+
+`MsgRegisterAuthenticator` carries no rule field, so a key linked with that
+message alone falls to step 2 or 3. **If nobody set an account-level rule, that
+key can move the whole balance.** Set a rule deliberately with
+`MsgUpdateSpendingRules`; do not assume a default.
+
+Two details worth knowing when you do. An account-level rule accumulates
+account-wide, while a per-authenticator rule accumulates per key — otherwise
+three linked keys would each get the owner's full daily allowance. And a rule
+that is `Enabled` must constrain something: the chain refuses one with no
+per-transaction limit, no daily limit and no denomination list.
+
+A limit bounds the damage a linked key can do; it does not remove the need to
+register only the permissions that key needs, and to revoke it when it is done.
 
 :::
 

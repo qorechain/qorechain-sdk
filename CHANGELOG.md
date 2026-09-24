@@ -5,6 +5,47 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## Unreleased
+
+### Fixed — documentation, and it was wrong in the dangerous direction
+
+- **A `SpendingRule` on a linked authenticator IS enforced by the chain — when
+  one exists.** The
+  0.8.0 release notes, the root README and the Authenticators guide all said it
+  was "not currently enforced" on the `ExecuteCosmos` / `ExecuteEVM` lanes and
+  told readers to assume a linked key could spend the account's full balance.
+  That was wrong. Allowed denominations, the per-transaction limit and the daily
+  limit are all checked before the spend, fail-closed, on both lanes, and the
+  daily accumulator is credited only once the check passes.
+
+  How the error happened, because it is worth knowing if you audit this yourself:
+  the claim was written from a security report and never re-checked after the fix
+  landed one day later. It survived because `x/abstractaccount` in the public
+  `qorechain-core` repository ships as `keeper_stub.go` / `module_stub.go`, with
+  the spend-accumulator store key defined, documented — and read by nothing. The
+  enforcement lives in the private tree behind `//go:build full`. Absence of the
+  logic in the public repository is how the split is designed, not evidence that
+  a rule goes unenforced.
+
+  The condition matters as much as the correction. The chain resolves the rule in
+  order: the authenticator's own rule if set and `Enabled`; otherwise the first
+  `Enabled` rule on the account; otherwise **none, and then there is no limit**.
+  `MsgRegisterAuthenticator` has no rule field, so a key linked with that message
+  alone is bounded only by an account-level rule, and is unbounded if nobody set
+  one. Set a rule deliberately with `MsgUpdateSpendingRules`.
+
+  Two details when you do: an account-level rule accumulates account-wide while a
+  per-authenticator rule accumulates per key (otherwise three linked keys would
+  each get the owner's whole daily allowance), and a rule that is `Enabled` must
+  constrain something — the chain refuses one with no per-transaction limit, no
+  daily limit and no denomination list. A limit bounds the damage a linked key
+  can do; it does not remove the need to register only the permissions that key
+  needs and to revoke it when it is done.
+
+This is a documentation correction only: no code changed, and the published
+packages are unaffected, so there is no new release. The text lived in the root
+README, the Authenticators guide and these notes.
+
 ## [0.8.2]
 
 ### Added — required by chain v3.2.0: the EVM authorisation window
@@ -162,11 +203,12 @@ user authorise.
   `MsgExecuteEVM`. There the external key only ever *authorises* a spend under a
   permission scope, and can be revoked — it never becomes the spend key.
 
-  > **Do not rely on `SpendingRule` as a security control.** A per-authenticator
-  > spending limit can be expressed on-chain, but it is **not currently enforced
-  > on the `ExecuteCosmos` / `ExecuteEVM` lanes**. Treat a linked authenticator as
-  > able to spend the account's full balance, and scope it accordingly (register
-  > only the permissions it needs, and revoke it when done).
+  > **CORRECTED — the paragraph this note replaces was wrong.** It said
+  > a `SpendingRule` was not enforced on the `ExecuteCosmos` / `ExecuteEVM` lanes
+  > and that a linked key should be assumed able to spend the full balance. It
+  > **is** enforced, fail-closed, on both lanes. Scope a linked key deliberately
+  > anyway: a key linked with no rule is unconstrained, and a limit bounds the
+  > damage rather than preventing it.
 
   > **If you created an account with these helpers, treat it as exposed and move
   > its funds.** Its private key is recoverable by anyone who ever obtained that
@@ -213,8 +255,10 @@ user authorise.
   ed25519, or a MetaMask/secp256k1 key by its 20-byte address) can spend from the
   one canonical PQC-required account through a **relayer**, under least-privilege,
   revocable terms — without the external key ever producing an ML-DSA
-  co-signature. (A spending limit can be expressed but is **not enforced** on
-  these lanes — see the 0.8.0 note; do not rely on it as a security control.)
+  co-signature. (A `SpendingRule` on a linked key **is** enforced by the chain on
+  both lanes when one is set — see the correction at the top of this file; the
+  caveat printed here and in 0.8.0
+  was wrong.)
   Added across all five languages:
   - New messages + composers: `MsgExecuteEVM`, `MsgExecuteCosmos`
     (`/qorechain.abstractaccount.v1.*`), and `MsgRotatePQCKey`
