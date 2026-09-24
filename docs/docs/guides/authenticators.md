@@ -18,22 +18,46 @@ limit — **is** enforced by the chain on both the `ExecuteCosmos` and
 `ExecuteEVM` lanes, fail-closed: the spend is checked before it happens, and the
 daily accumulator is credited only once the check passes.
 
-But it applies only when a rule exists. The chain resolves, in order:
+But it applies only when a rule exists **and is `Enabled`**. The chain resolves,
+in order:
 
 1. the authenticator's own rule, if it is set **and** `Enabled`;
 2. otherwise the first `Enabled` rule on the **account**;
-3. otherwise **no rule — and no limit**.
+3. otherwise **no rule — and no limit at all**.
 
 `MsgRegisterAuthenticator` carries no rule field, so a key linked with that
 message alone falls to step 2 or 3. **If nobody set an account-level rule, that
 key can move the whole balance.** Set a rule deliberately with
 `MsgUpdateSpendingRules`; do not assume a default.
 
-Two details worth knowing when you do. An account-level rule accumulates
-account-wide, while a per-authenticator rule accumulates per key — otherwise
-three linked keys would each get the owner's full daily allowance. And a rule
-that is `Enabled` must constrain something: the chain refuses one with no
-per-transaction limit, no daily limit and no denomination list.
+**A disabled rule is not a zero limit — it is no limit.** A rule stored with
+`Enabled` false resolves to nothing, and the spend check returns immediately
+without looking at it. The account still reports it in its rule count, because
+that counts stored rules rather than active ones. If you show rules in a UI,
+show the enabled state too: a user looking at "2 spending rules" on an account
+whose rules are both disabled is looking at an unbounded key.
+
+### What a rule does not cover
+
+- **Its daily cap is scoped to where it is set.** An account-level rule counts
+  account-wide; a per-authenticator rule counts against that key alone. Ten keys
+  with their own enabled rules get ten independent daily allowances, by design.
+  For a single budget across an account, set the rule on the account.
+- **ERC-20 movement on the EVM lane is only partly covered.** The amount checked
+  against the limits comes from `msg.Value` alone, because a token balance is not
+  denominated in uqor and cannot be counted against a uqor cap without inventing
+  a rate. What the rule does bound is *which* tokens a key may touch: list them
+  as `erc20/<contract>` in the allowed denominations, and `transfer`,
+  `transferFrom` and `approve` are guarded. **Other methods that move tokens are
+  not guarded** — a known gap.
+- **Dust below 1 uqor on the EVM lane records zero.** The outflow truncates
+  down, so a transfer under one uqor adds nothing to the daily accumulator. It
+  is economically self-defeating, since the fee exceeds the amount, but it is
+  true. (The EVM authorisation window rounds *up* for exactly this reason; the
+  two are being aligned.)
+
+The SVM lane is checked by the same code, after execution, and a refusal reverts
+the transaction.
 
 A limit bounds the damage a linked key can do; it does not remove the need to
 register only the permissions that key needs, and to revoke it when it is done.

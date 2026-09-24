@@ -30,17 +30,26 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   The condition matters as much as the correction. The chain resolves the rule in
   order: the authenticator's own rule if set and `Enabled`; otherwise the first
   `Enabled` rule on the account; otherwise **none, and then there is no limit**.
+  A rule stored with `Enabled` false is **no limit, not a zero limit** — it
+  resolves to nothing and the check returns immediately, while the account still
+  reports it in its rule count, which counts stored rules rather than active
+  ones. Anything that displays rules should display the enabled state.
   `MsgRegisterAuthenticator` has no rule field, so a key linked with that message
   alone is bounded only by an account-level rule, and is unbounded if nobody set
   one. Set a rule deliberately with `MsgUpdateSpendingRules`.
 
-  Two details when you do: an account-level rule accumulates account-wide while a
-  per-authenticator rule accumulates per key (otherwise three linked keys would
-  each get the owner's whole daily allowance), and a rule that is `Enabled` must
+  Three limits stay in the guide because they are real: the daily cap is scoped
+  to where the rule is set (an account rule counts account-wide, a per-key rule
+  counts per key, so N keys with their own rules get N allowances by design);
+  ERC-20 movement on the EVM lane is bounded only by which tokens are listed as
+  `erc20/<contract>`, guarding `transfer`, `transferFrom` and `approve` but not
+  other methods that move tokens; and an EVM outflow below 1 uqor truncates down,
+  adding nothing to the daily accumulator. A rule that is `Enabled` must also
   constrain something — the chain refuses one with no per-transaction limit, no
-  daily limit and no denomination list. A limit bounds the damage a linked key
-  can do; it does not remove the need to register only the permissions that key
-  needs and to revoke it when it is done.
+  daily limit and no denomination list.
+
+  A limit bounds the damage a linked key can do; it does not remove the need to
+  register only the permissions that key needs and to revoke it when it is done.
 
 This is a documentation correction only: no code changed, and the published
 packages are unaffected, so there is no new release. The text lived in the root

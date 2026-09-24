@@ -220,8 +220,10 @@ native-chain parts. Highlights:
 - **Authenticator lanes** — link an external key (Phantom / MetaMask) to a
   canonical PQC account and let it spend via a relayer under least-privilege,
   revocable terms. A `SpendingRule` — allowed denoms, per-transaction and daily
-  limits — is enforced by the chain on both lanes, fail-closed, **when one
-  exists**; a key linked without any rule is unbounded, so set one deliberately:
+  limits — is enforced by the chain on both lanes, fail-closed, **when a rule is
+  set and `Enabled`**; a key with no enabled rule is unbounded, and a disabled
+  rule means no limit rather than a zero one, so set one deliberately (see the
+  Authenticators guide for what a rule does and does not cover):
   `MsgExecuteEVM` /
   `MsgExecuteCosmos`, byte-exact
   `evmAuthSignBytes` / `cosmosAuthSignBytes`, `permissionSchema`, and
