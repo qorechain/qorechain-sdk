@@ -90,6 +90,18 @@ public final class TxError {
                     "evm_delegation_no_consent", "no post-quantum consent for this EIP-7702 delegation"
                 });
         pqc.put(61, new String[] {"evm_delegation_invalid", "invalid EIP-7702 delegation request"});
+        // Registration integrity and key maintenance (chain v3.2.3).
+        pqc.put(230, new String[] {"pqc_key_weak", "PQC public key gives no post-quantum protection"});
+        pqc.put(231, new String[] {"pqc_proof_of_possession_invalid", "PQC proof of possession does not verify"});
+        pqc.put(232, new String[] {"pqc_key_reused", "PQC key was used by this account before"});
+        pqc.put(233, new String[] {"pqc_last_signature_algorithm", "no active PQC signature algorithm would remain"});
+        pqc.put(
+                234,
+                new String[] {
+                    "pqc_maintenance_needs_hybrid",
+                    "PQC key maintenance from a keyed account needs the hybrid signature"
+                        + " (PqcDx.migratePqcKeyHybrid)"
+                });
         MODULE_CODES.put("pqc", pqc);
     }
 

@@ -45,6 +45,10 @@ public final class EvmWindowStatus {
     public final long remainingTxs;
     /** uqor left. */
     public final BigInteger remainingValue;
+    /** The window admits only plain native transfers (chain v3.2.3; false before). */
+    public final boolean nativeOnly;
+    /** The recipients the window is narrowed to; empty = any (chain v3.2.3). */
+    public final java.util.List<String> allowedTargets;
 
     public EvmWindowStatus(
             boolean found,
@@ -58,6 +62,26 @@ public final class EvmWindowStatus {
             long remainingBlocks,
             long remainingTxs,
             BigInteger remainingValue) {
+        this(found, live, openedHeight, expiryHeight, maxTxs, usedTxs, maxValue, usedValue,
+                remainingBlocks, remainingTxs, remainingValue, false, java.util.List.of());
+    }
+
+    public EvmWindowStatus(
+            boolean found,
+            boolean live,
+            long openedHeight,
+            long expiryHeight,
+            long maxTxs,
+            long usedTxs,
+            BigInteger maxValue,
+            BigInteger usedValue,
+            long remainingBlocks,
+            long remainingTxs,
+            BigInteger remainingValue,
+            boolean nativeOnly,
+            java.util.List<String> allowedTargets) {
+        this.nativeOnly = nativeOnly;
+        this.allowedTargets = java.util.List.copyOf(allowedTargets);
         this.found = found;
         this.live = live;
         this.openedHeight = openedHeight;
@@ -96,7 +120,9 @@ public final class EvmWindowStatus {
                 amount(node, "used_value"),
                 number(node, "remaining_blocks"),
                 number(node, "remaining_txs"),
-                amount(node, "remaining_value"));
+                amount(node, "remaining_value"),
+                bool(node, "native_only"),
+                targets(node));
     }
 
     /** Decode a REST body supplied as a JSON string. */
@@ -122,6 +148,19 @@ public final class EvmWindowStatus {
                 res.getRemainingBlocks(),
                 res.getRemainingTxs(),
                 bigInteger("remaining_value", res.getRemainingValue()));
+    }
+
+    private static java.util.List<String> targets(JsonNode node) {
+        JsonNode a = node.get("allowed_targets");
+        java.util.List<String> out = new java.util.ArrayList<>();
+        if (a != null && a.isArray()) {
+            for (JsonNode t : a) {
+                if (t.isTextual()) {
+                    out.add(t.asText());
+                }
+            }
+        }
+        return out;
     }
 
     /** Reads a field spelled as a JSON string or as a bare token. */

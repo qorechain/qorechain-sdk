@@ -102,11 +102,12 @@ public final class Messages {
         m.put("/qorechain.lightnode.v1.MsgDeregisterLightNode", qorechain.lightnode.v1.Tx.MsgDeregisterLightNode.parser());
         m.put("/qorechain.lightnode.v1.MsgClaimLightNodeRewards", qorechain.lightnode.v1.Tx.MsgClaimLightNodeRewards.parser());
 
-        // ---- license (4) ----
+        // ---- license (5) ----
         m.put("/qorechain.license.v1.MsgGrantLicense", qorechain.license.v1.Tx.MsgGrantLicense.parser());
         m.put("/qorechain.license.v1.MsgRevokeLicense", qorechain.license.v1.Tx.MsgRevokeLicense.parser());
         m.put("/qorechain.license.v1.MsgSuspendLicense", qorechain.license.v1.Tx.MsgSuspendLicense.parser());
         m.put("/qorechain.license.v1.MsgResumeLicense", qorechain.license.v1.Tx.MsgResumeLicense.parser());
+        m.put("/qorechain.license.v1.MsgUpdateAuthority", qorechain.license.v1.Tx.MsgUpdateAuthority.parser());
 
         // ---- abstractaccount (4) ----
         m.put("/qorechain.abstractaccount.v1.MsgCreateAbstractAccount", qorechain.abstractaccount.v1.Tx.MsgCreateAbstractAccount.parser());

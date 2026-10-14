@@ -45,6 +45,7 @@ public final class Authenticator {
     private Authenticator() {}
 
     private static final String EVM_DOMAIN = "qorechain-evm-auth-v1";
+    private static final String EVM_DOMAIN_V2 = "qorechain-evm-auth-v2";
     private static final String COSMOS_DOMAIN = "qorechain-cosmos-auth-v1";
     private static final String ROTATE_DOMAIN = "qorechain-pqc-rotate-v1";
 
@@ -115,6 +116,54 @@ public final class Authenticator {
         write(body, lp(nz(data)));
         write(body, be64(nonce));
         return Hashing.sha256(body.toByteArray());
+    }
+
+    /**
+     * The v2 digest of a {@code MsgExecuteEVM} (chain v3.2.3,
+     * {@code abstractaccount-hardening}): {@code sha256("qorechain-evm-auth-v2" ‖
+     * LP(chainId) ‖ LP(account) ‖ LP(pubkey) ‖ LP(to) ‖ LP(value) ‖ LP(data) ‖
+     * BE64(nonce) ‖ BE64(gasLimit))}. v1 left the gas limit to whoever relayed the
+     * message. The chain verifies exactly one form per block: v1 below the v3.2.3
+     * upgrade, v2 from it — pick with {@link #evmAuthDigestVersion}.
+     *
+     * @throws IllegalArgumentException if {@code gasLimit} is zero; the chain refuses it
+     */
+    public static byte[] evmAuthSignBytesV2(
+            String chainId,
+            String account,
+            byte[] pubkey,
+            String to,
+            String value,
+            byte[] data,
+            long nonce,
+            long gasLimit) {
+        if (gasLimit == 0) {
+            throw new IllegalArgumentException(
+                    "gasLimit must be set (non-zero): the v2 digest binds it and the chain refuses 0");
+        }
+        ByteArrayOutputStream body = new ByteArrayOutputStream();
+        write(body, utf8(EVM_DOMAIN_V2));
+        write(body, lp(utf8(chainId)));
+        write(body, lp(utf8(account)));
+        write(body, lp(nz(pubkey)));
+        write(body, lp(utf8(to == null ? "" : to)));
+        write(body, lp(utf8(value == null ? "0" : value)));
+        write(body, lp(nz(data)));
+        write(body, be64(nonce));
+        write(body, be64(gasLimit));
+        return Hashing.sha256(body.toByteArray());
+    }
+
+    /**
+     * The {@code MsgExecuteEVM} digest the network verifies now: {@code "v2"} once
+     * it has applied v3.2.3, {@code "v1"} before. A transport failure propagates —
+     * never guess, the other form is refused.
+     */
+    public static String evmAuthDigestVersion(io.github.qorechain.query.RestClient rest, String cacheKey) {
+        return io.github.qorechain.query.ChainUpgrades.isApplied(
+                        rest, io.github.qorechain.query.ChainUpgrades.V3_2_3, cacheKey)
+                ? "v2"
+                : "v1";
     }
 
     /**

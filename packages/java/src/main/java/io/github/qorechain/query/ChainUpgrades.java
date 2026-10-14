@@ -24,6 +24,14 @@ public final class ChainUpgrades {
      */
     public static final String V3_2_2 = "v3.2.2";
 
+    /**
+     * PQC registration integrity and {@code proof_of_possession}, hybrid-only key
+     * maintenance for keyed accounts, the EVM window scope ({@code native_only},
+     * {@code allowed_targets}), the abstract-account v2 digest and
+     * {@code MsgUpdateAuthority}.
+     */
+    public static final String V3_2_3 = "v3.2.3";
+
     /** How long a "not applied yet" answer is trusted, in milliseconds. */
     static final long NOT_APPLIED_TTL_MS = 60_000L;
 

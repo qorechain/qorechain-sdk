@@ -122,8 +122,19 @@ public final class PqcDx {
          * is used; pass an explicit value to override.
          */
         public byte[] ecdsaPubkey;
-        /** Key-type tag forwarded to {@code MsgRegisterPQCKeyV2} (default {@link #DEFAULT_KEY_TYPE}). */
+        /**
+         * Key-type tag forwarded to {@code MsgRegisterPQCKeyV2} (default {@link #DEFAULT_KEY_TYPE}).
+         * {@code "classical_only"} is refused: it registers no post-quantum key and
+         * leaves the account unable to sign (the chain refuses it from v3.2.3).
+         */
         public String keyType = DEFAULT_KEY_TYPE;
+        /**
+         * The key's proof of possession (chain v3.2.3), from
+         * {@link KeyIntegrity#signProofOfPossession}. Optional on the chain today and
+         * due to become mandatory. A node below v3.2.3 refuses the whole transaction
+         * when it is set, so set it only once the network has applied v3.2.3.
+         */
+        public byte[] proofOfPossession;
         /**
          * A pre-read status to avoid a redundant {@code qor_getPQCKeyStatus} round-trip.
          * When provided and {@code registered}, the registration is skipped.
@@ -198,6 +209,7 @@ public final class PqcDx {
         // after the fee is charged; catch it here. Not network-gated: such a key
         // is wrong anywhere.
         ClassicalKey.validateForSender(signer.sender, ecdsaPubkey);
+        KeyIntegrity.validateRegisteredKey(keyType, signer.pqcKeypair.publicKey);
 
         qorechain.pqc.v1.Tx.MsgRegisterPQCKeyV2.Builder msg =
                 qorechain.pqc.v1.Tx.MsgRegisterPQCKeyV2.newBuilder()
@@ -208,6 +220,9 @@ public final class PqcDx {
                         .setEcdsaPubkey(
                                 ByteString.copyFrom(ecdsaPubkey == null ? new byte[0] : ecdsaPubkey))
                         .setKeyType(keyType);
+        if (o.proofOfPossession != null && o.proofOfPossession.length > 0) {
+            msg.setProofOfPossession(ByteString.copyFrom(o.proofOfPossession));
+        }
         return QorechainMessages.pqc.registerPqcKeyV2(msg.build());
     }
 
@@ -298,13 +313,19 @@ public final class PqcDx {
     }
 
     /**
-     * Rotate an account's PQC key via {@code MsgMigratePQCKey}.
+     * Rotate an account's PQC key via {@code MsgMigratePQCKey}, signed CLASSICALLY.
      *
      * <p>The chain proves ownership of BOTH the old and new keys (the caller
      * supplies {@code oldSignature} / {@code newSignature} per the chain's
      * migration contract), so key rotation never strands an account. Use this when
      * upgrading algorithms or rolling a compromised key.
+     *
+     * @deprecated From chain v3.2.3 (and in the mempool of every v3.2.3 node) an
+     *     account that has a PQC key must send {@code MsgMigratePQCKey} with the
+     *     hybrid signature; a classical one is refused (pqc 234). Use {@link
+     *     #migratePqcKeyHybrid}.
      */
+    @Deprecated
     public static Broadcaster.Result migratePqcKey(
             Signer signer, Broadcaster bc, MigrateOptions opts) {
         TypedMessage message = buildMigratePqcKeyMsg(signer, opts);
@@ -322,6 +343,22 @@ public final class PqcDx {
 
         NativeTx.Built built = NativeTx.buildAndSign(txOpts);
         return bc.broadcast(built.txRawBytes, Broadcaster.Mode.SYNC);
+    }
+
+    /**
+     * Rotate an account's PQC key with the hybrid signature the chain requires
+     * from v3.2.3 for an account that has a key. {@code signer.pqcKeypair} must be
+     * the CURRENTLY registered key (the one being rotated out): the transaction's
+     * hybrid signature is verified against it. Works on every network, before and
+     * after v3.2.3.
+     */
+    public static Broadcaster.Result migratePqcKeyHybrid(
+            Signer signer, Broadcaster bc, MigrateOptions opts) {
+        TypedMessage message = buildMigratePqcKeyMsg(signer, opts);
+        // The account is keyed by definition: skip the registration pre-flight.
+        EnsureOptions ensure = new EnsureOptions();
+        ensure.status = new PqcStatus(true, PqcAlgorithm.ALGORITHM_DILITHIUM5, null);
+        return migrateToHybrid(signer, bc, null, ensure).send(List.of(message));
     }
 
     /**

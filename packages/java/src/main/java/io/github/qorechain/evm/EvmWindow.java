@@ -77,6 +77,35 @@ public final class EvmWindow {
         return QorechainMessages.pqc.openEvmWindow(openMessage(sender, blocks, maxTxs, maxValueUqor));
     }
 
+    /**
+     * The most {@code allowed_targets} one window may list ({@code MaxEVMWindowTargets},
+     * chain v3.2.3).
+     */
+    public static final int MAX_TARGETS = 16;
+
+    /**
+     * Build a validated {@code MsgOpenEVMWindow} narrowed to plain native transfers
+     * ({@code nativeOnly}) and/or to the recipients in {@code allowedTargets} (at
+     * most 16), chain v3.2.3. Both are new fields: a node below v3.2.3 refuses the
+     * whole transaction when either is set, so use this only once the network has
+     * applied v3.2.3 ({@code ChainUpgrades.requireApplied}).
+     */
+    public static TypedMessage openScoped(
+            String sender,
+            long blocks,
+            long maxTxs,
+            String maxValueUqor,
+            boolean nativeOnly,
+            java.util.List<String> allowedTargets) {
+        Tx.MsgOpenEVMWindow msg =
+                openMessage(sender, blocks, maxTxs, maxValueUqor).toBuilder()
+                        .setNativeOnly(nativeOnly)
+                        .addAllAllowedTargets(allowedTargets == null ? java.util.List.of() : allowedTargets)
+                        .build();
+        validateOpen(msg);
+        return QorechainMessages.pqc.openEvmWindow(msg);
+    }
+
     /** The same as {@link #open} , returning the bare protobuf message. */
     public static Tx.MsgOpenEVMWindow openMessage(
             String sender, long blocks, long maxTxs, String maxValueUqor) {
@@ -152,6 +181,21 @@ public final class EvmWindow {
         if (value.signum() <= 0) {
             throw new IllegalArgumentException(
                     "open evm window: max_value must be greater than 0 uqor, got " + value);
+        }
+        if (msg.getAllowedTargetsCount() > MAX_TARGETS) {
+            throw new IllegalArgumentException(
+                    "open evm window: allowed_targets lists " + msg.getAllowedTargetsCount()
+                            + " addresses, the maximum is " + MAX_TARGETS);
+        }
+        java.util.Set<String> seen = new java.util.HashSet<>();
+        for (String t : msg.getAllowedTargetsList()) {
+            if (!t.matches("^0x[0-9a-fA-F]{40}$")) {
+                throw new IllegalArgumentException(
+                        "open evm window: allowed_targets: \"" + t + "\" is not a 0x-prefixed 20-byte address");
+            }
+            if (!seen.add(t.toLowerCase(java.util.Locale.ROOT))) {
+                throw new IllegalArgumentException("open evm window: allowed_targets lists " + t + " more than once");
+            }
         }
     }
 

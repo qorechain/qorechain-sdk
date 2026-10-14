@@ -332,6 +332,11 @@ public final class QorechainMessages {
         public static TypedMessage resumeLicense(qorechain.license.v1.Tx.MsgResumeLicense m) {
             return new TypedMessage("/qorechain.license.v1.MsgResumeLicense", m);
         }
+
+        /** {@code MsgUpdateAuthority} (chain v3.2.3) — replaces the licence grant authority. Governance only. */
+        public static TypedMessage updateAuthority(qorechain.license.v1.Tx.MsgUpdateAuthority m) {
+            return new TypedMessage("/qorechain.license.v1.MsgUpdateAuthority", m);
+        }
     }
 
     /** Abstract-account module composers. */
