@@ -5,6 +5,39 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+Client support for chain v3.2.2, in all five SDKs. To be released after the
+network release is tagged.
+
+### Added
+
+- **EIP-7702 delegation consent** (`MsgAuthorizeEVMDelegation`,
+  `MsgClearEVMDelegation`). From v3.2.2 a type-4 transaction is admitted only
+  when every account whose authorization takes effect has consented, with its
+  post-quantum key, to exactly that delegate. Builders check the bounds
+  (`blocks` 1–17,280, a 0x 20-byte delegate). The consent query is
+  `evm_delegation_consent`. A helper gives the nonce the tuple must carry:
+  the account's nonce for a sponsored transaction, nonce + 1 for its own. A
+  classifier covers `pqc` 60/61.
+- **Upgrade detection** (`isUpgradeApplied` / `requireUpgradeApplied` and their
+  equivalents). A node that has not applied a release refuses the whole
+  transaction when one of that release's new optional fields is set, so those
+  fields are set only after `applied_plan` reports the release.
+- **`ecdsa_pubkey` check on PQC registration.** The registration builders
+  refuse a classical key that is not empty and does not belong to the sender
+  (by either address derivation), the rule the chain enforces from v3.2.2.
+- Builders for `MsgUpdateCircuitBreakerLimits` (bridge) and `MsgUpdateParams`
+  (multilayer); types regenerated for v3.2.2.
+- Error decoding: `rate_limited` (recognised by its text) and the delegation
+  codes.
+
+### Fixed
+
+- **Documentation of `MsgExecuteEVM.nonce`.** It is the linked key's
+  authenticator sequence (a per-key counter), not the account's EVM nonce. The
+  chain has checked the per-key counter since v3.2.0.
+
 ## [0.8.3]
 
 ### Fixed
