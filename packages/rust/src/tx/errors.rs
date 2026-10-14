@@ -42,9 +42,22 @@ impl fmt::Display for QoreTxError {
 
 impl std::error::Error for QoreTxError {}
 
-/// The `reason` of a refusal from the per-sender transaction rate limit (chain
-/// v3.2.2). Wait and retry.
+/// The `reason` of a refusal from the per-sender transaction rate limit. Wait
+/// and retry.
 pub const RATE_LIMITED_REASON: &str = "rate limited";
+
+/// Recognises the per-sender rate limit (both lanes' ante handler): codespace
+/// `ai`, code 3, text "sender <addr> has sent <n> transactions in the last 30
+/// blocks, at the configured limit of <limit> per minute". Code 3 also carries
+/// other AI-engine rejections, so the text decides; a transport that drops the
+/// codespace (EVM JSON-RPC) is matched on the text alone.
+fn is_rate_limit_log(codespace: &str, code: u32, raw_log: &str) -> bool {
+    let lower = raw_log.to_ascii_lowercase();
+    if !lower.contains("transactions in the last") || !lower.contains("per minute") {
+        return false;
+    }
+    codespace.is_empty() || (codespace == "ai" && code == 3)
+}
 
 /// Maps an ABCI `(code, codespace, raw_log)` triple to a [`QoreTxError`].
 ///
@@ -56,10 +69,7 @@ pub fn decode_tx_error(code: u32, codespace: &str, raw_log: &str) -> Option<Qore
     if code == 0 {
         return None;
     }
-    // The per-sender transaction rate limit (chain v3.2.2) is raised by an ante
-    // handler whose codespace and code are not fixed yet, so it is recognised
-    // by its text, whatever code carries it.
-    let reason = if raw_log.to_ascii_lowercase().contains("rate limit") {
+    let reason = if is_rate_limit_log(codespace, code, raw_log) {
         RATE_LIMITED_REASON.to_string()
     } else {
         reason_for(code, codespace).to_string()

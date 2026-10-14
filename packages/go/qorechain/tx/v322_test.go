@@ -6,8 +6,18 @@ import (
 )
 
 func TestDecodeTxErrorV322(t *testing.T) {
-	if e := DecodeTxError(7, "ai", "sender exceeded the rate limit"); e.Reason != RateLimitedReason {
+	log := "sender qor1abc has sent 600 transactions in the last 30 blocks, at the configured limit of 600 per minute"
+	if e := DecodeTxError(3, "ai", log); e.Reason != RateLimitedReason {
 		t.Fatalf("rate limit: %q", e.Reason)
+	}
+	if e := DecodeTxError(3, "", log); e.Reason != RateLimitedReason {
+		t.Fatalf("rate limit without codespace: %q", e.Reason)
+	}
+	if e := DecodeTxError(3, "ai", "transaction rejected by AI engine"); e.Reason == RateLimitedReason {
+		t.Fatal("other ai 3 rejection classified as rate limit")
+	}
+	if e := DecodeTxError(2, "ai", log); e.Reason == RateLimitedReason {
+		t.Fatal("ai 2 (anomaly) classified as rate limit")
 	}
 	if e := DecodeTxError(60, "pqc", ""); e.Reason != "no post-quantum consent for this EIP-7702 delegation" {
 		t.Fatalf("60: %q", e.Reason)

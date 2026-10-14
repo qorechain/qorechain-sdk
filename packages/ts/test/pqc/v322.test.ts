@@ -213,8 +213,14 @@ describe("upgrade detection", () => {
 });
 
 describe("decodeTxError: chain v3.2.2", () => {
-  it("recognises the per-sender rate limit by its text, whatever the code", () => {
-    expect(decodeTxError({ code: 7, codespace: "ai", rawLog: "sender exceeded the rate limit" }).kind).toBe("rate_limited");
+  it("recognises the per-sender rate limit (ai 3 + the chain's text)", () => {
+    const log = "sender qor1abc has sent 600 transactions in the last 30 blocks, at the configured limit of 600 per minute";
+    expect(decodeTxError({ code: 3, codespace: "ai", rawLog: log }).kind).toBe("rate_limited");
+    // Transport without a codespace (EVM JSON-RPC): the text alone decides.
+    expect(decodeTxError({ code: 3, codespace: "", rawLog: log }).kind).toBe("rate_limited");
+    // Code 3 carries other AI-engine rejections; code 2 is the anomaly flag.
+    expect(decodeTxError({ code: 3, codespace: "ai", rawLog: "transaction rejected by AI engine" }).kind).not.toBe("rate_limited");
+    expect(decodeTxError({ code: 2, codespace: "ai", rawLog: log }).kind).not.toBe("rate_limited");
   });
 
   it("maps the delegation codes", () => {

@@ -156,10 +156,7 @@ func DecodeTxError(code uint32, codespace, rawLog string) *QoreTxError {
 		return nil
 	}
 	reason := reasonFor(code, codespace)
-	// The per-sender transaction rate limit (chain v3.2.2) is raised by an ante
-	// handler whose codespace and code are not fixed yet, so it is recognised
-	// by its text, whatever code carries it.
-	if strings.Contains(strings.ToLower(rawLog), "rate limit") {
+	if isRateLimitLog(codespace, code, rawLog) {
 		reason = RateLimitedReason
 	}
 	return &QoreTxError{
@@ -171,8 +168,21 @@ func DecodeTxError(code uint32, codespace, rawLog string) *QoreTxError {
 }
 
 // RateLimitedReason is the Reason of a refusal from the per-sender
-// transaction rate limit (chain v3.2.2). Wait and retry.
+// transaction rate limit. Wait and retry.
 const RateLimitedReason = "rate limited"
+
+// isRateLimitLog recognises the per-sender rate limit (both lanes' ante
+// handler): codespace "ai", code 3, text "sender <addr> has sent <n>
+// transactions in the last 30 blocks, at the configured limit of <limit> per
+// minute". Code 3 also carries other AI-engine rejections, so the text decides;
+// a transport that drops the codespace (EVM JSON-RPC) is matched on the text.
+func isRateLimitLog(codespace string, code uint32, rawLog string) bool {
+	lower := strings.ToLower(rawLog)
+	if !strings.Contains(lower, "transactions in the last") || !strings.Contains(lower, "per minute") {
+		return false
+	}
+	return codespace == "" || (codespace == "ai" && code == 3)
+}
 
 func reasonFor(code uint32, codespace string) string {
 	if codespace == "" || codespace == "sdk" {

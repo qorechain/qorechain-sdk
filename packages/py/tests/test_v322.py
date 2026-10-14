@@ -172,6 +172,13 @@ def test_upgrade_detection() -> None:
 
 
 def test_decode_tx_error_v322() -> None:
-    assert decode_tx_error(7, "ai", "sender exceeded the rate limit").kind == "rate_limited"
+    log = (
+        "sender qor1abc has sent 600 transactions in the last 30 blocks, "
+        "at the configured limit of 600 per minute"
+    )
+    assert decode_tx_error(3, "ai", log).kind == "rate_limited"
+    assert decode_tx_error(3, None, log).kind == "rate_limited"
+    assert decode_tx_error(3, "ai", "transaction rejected by AI engine").kind != "rate_limited"
+    assert decode_tx_error(2, "ai", log).kind != "rate_limited"
     assert decode_tx_error(60, "pqc").kind == "evm_delegation_no_consent"
     assert decode_tx_error(61, "pqc").kind == "evm_delegation_invalid"

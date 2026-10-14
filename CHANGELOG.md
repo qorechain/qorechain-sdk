@@ -29,8 +29,9 @@ network release is tagged.
   (by either address derivation), the rule the chain enforces from v3.2.2.
 - Builders for `MsgUpdateCircuitBreakerLimits` (bridge) and `MsgUpdateParams`
   (multilayer); types regenerated for v3.2.2.
-- Error decoding: `rate_limited` (recognised by its text) and the delegation
-  codes.
+- Error decoding: `rate_limited` for the per-sender transaction rate limit
+  (codespace `ai`, code 3, recognised by its text because code 3 also carries
+  other rejections) and the delegation codes.
 
 ### Fixed
 

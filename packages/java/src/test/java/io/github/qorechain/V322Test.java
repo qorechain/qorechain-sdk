@@ -1,6 +1,7 @@
 package io.github.qorechain;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -113,7 +114,11 @@ class V322Test {
 
     @Test
     void decodeTxErrorV322() {
-        assertEquals(TxError.RATE_LIMITED, TxError.decode(7, "ai", "sender exceeded the rate limit", "").kind);
+        String log = "sender qor1abc has sent 600 transactions in the last 30 blocks, at the configured limit of 600 per minute";
+        assertEquals(TxError.RATE_LIMITED, TxError.decode(3, "ai", log, "").kind);
+        assertEquals(TxError.RATE_LIMITED, TxError.decode(3, "", log, "").kind);
+        assertNotEquals(TxError.RATE_LIMITED, TxError.decode(3, "ai", "transaction rejected by AI engine", "").kind);
+        assertNotEquals(TxError.RATE_LIMITED, TxError.decode(2, "ai", log, "").kind);
         assertEquals("evm_delegation_no_consent", TxError.decode(60, "pqc", "", "").kind);
         assertEquals("evm_delegation_invalid", TxError.decode(61, "pqc", "", "").kind);
     }

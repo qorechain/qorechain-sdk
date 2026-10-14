@@ -127,10 +127,20 @@ MODULE_CODES: dict[str, dict[int, tuple[str, str]]] = {
     },
 }
 
-# The per-sender transaction rate limit (chain v3.2.2) is raised by an ante
-# handler whose codespace and code are not fixed yet, so it is recognised by its
-# text, whatever code carries it.
-_RATE_LIMIT_TEXT = "rate limit"
+# The per-sender transaction rate limit (both lanes' ante handler) is codespace
+# "ai", code 3, with the text "sender <addr> has sent <n> transactions in the
+# last 30 blocks, at the configured limit of <limit> per minute". Code 3 also
+# carries other AI-engine rejections, so the text decides; a transport that drops
+# the codespace (EVM JSON-RPC) is matched on the text alone.
+
+
+def _is_rate_limit_log(codespace: str | None, code: int, raw_log: str | None) -> bool:
+    if not raw_log:
+        return False
+    low = raw_log.lower()
+    if "transactions in the last" not in low or "per minute" not in low:
+        return False
+    return not codespace or (codespace == "ai" and code == 3)
 
 
 @dataclass(frozen=True)
@@ -169,7 +179,7 @@ def decode_tx_error(
     """
     space = codespace or DEFAULT_CODESPACE
 
-    if raw_log and _RATE_LIMIT_TEXT in raw_log.lower():
+    if _is_rate_limit_log(codespace, code, raw_log):
         return DecodedTxError(
             code=code,
             codespace=space,

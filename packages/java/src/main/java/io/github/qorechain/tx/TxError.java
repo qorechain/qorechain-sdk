@@ -32,8 +32,26 @@ public final class TxError {
         }
     }
 
-    /** The kind of a refusal from the per-sender transaction rate limit (chain v3.2.2). */
+    /** The kind of a refusal from the per-sender transaction rate limit. */
     public static final String RATE_LIMITED = "rate_limited";
+
+    /**
+     * The per-sender rate limit (both lanes' ante handler): codespace {@code ai},
+     * code 3, text "sender &lt;addr&gt; has sent &lt;n&gt; transactions in the last 30
+     * blocks, at the configured limit of &lt;limit&gt; per minute". Code 3 also
+     * carries other AI-engine rejections, so the text decides; a transport that
+     * drops the codespace (EVM JSON-RPC) is matched on the text alone.
+     */
+    static boolean isRateLimitLog(String codespace, int code, String rawLog) {
+        if (rawLog == null) {
+            return false;
+        }
+        String lower = rawLog.toLowerCase(java.util.Locale.ROOT);
+        if (!lower.contains("transactions in the last") || !lower.contains("per minute")) {
+            return false;
+        }
+        return codespace == null || codespace.isEmpty() || ("ai".equals(codespace) && code == 3);
+    }
 
     private static final Map<Integer, String[]> SDK_CODES = new HashMap<>();
 
@@ -110,10 +128,7 @@ public final class TxError {
         String kind;
         String message;
         String[] known;
-        // The per-sender transaction rate limit (chain v3.2.2) is raised by an ante
-        // handler whose codespace and code are not fixed yet, so it is recognised
-        // by its text, whatever code carries it.
-        if (rawLog != null && rawLog.toLowerCase(java.util.Locale.ROOT).contains("rate limit")) {
+        if (isRateLimitLog(codespace, code, rawLog)) {
             known = new String[] {RATE_LIMITED, "the network is limiting this sender's transaction rate"};
         } else if ("sdk".equals(cs)) {
             known = SDK_CODES.get(code);

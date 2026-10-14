@@ -156,12 +156,17 @@ fn applied_height_parsing() {
 
 #[test]
 fn decode_tx_error_v322() {
-    assert_eq!(
-        decode_tx_error(7, "ai", "sender exceeded the rate limit")
+    let log = "sender qor1abc has sent 600 transactions in the last 30 blocks, at the configured limit of 600 per minute";
+    let rl = qorechain::tx::errors::RATE_LIMITED_REASON;
+    assert_eq!(decode_tx_error(3, "ai", log).unwrap().reason, rl);
+    assert_eq!(decode_tx_error(3, "", log).unwrap().reason, rl);
+    assert_ne!(
+        decode_tx_error(3, "ai", "transaction rejected by AI engine")
             .unwrap()
             .reason,
-        qorechain::tx::errors::RATE_LIMITED_REASON
+        rl
     );
+    assert_ne!(decode_tx_error(2, "ai", log).unwrap().reason, rl);
     assert!(decode_tx_error(60, "pqc", "")
         .unwrap()
         .reason

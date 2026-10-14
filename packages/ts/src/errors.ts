@@ -125,10 +125,15 @@ const PQC_CODES: Record<number, { kind: string; message: string }> = {
   },
 };
 
-// The per-sender transaction rate limit (chain v3.2.2) is raised by an ante
-// handler whose codespace and code are not fixed yet, so it is recognised by
-// its text, whatever code carries it.
-const RATE_LIMIT_TEXT = /rate limit/i;
+// The per-sender transaction rate limit (both lanes' ante handler) is
+// codespace "ai", code 3, with the text "sender <addr> has sent <n> transactions
+// in the last 30 blocks, at the configured limit of <limit> per minute". Code 3
+// also carries other AI-engine rejections, so the text decides; a transport
+// that drops the codespace (EVM JSON-RPC) is matched on the text alone.
+function isRateLimitLog(codespace: string | undefined, code: number, rawLog: string | undefined): boolean {
+  if (!rawLog || !/transactions in the last/i.test(rawLog) || !/per minute/i.test(rawLog)) return false;
+  return !codespace || (codespace === "ai" && code === 3);
+}
 
 /** Per-codespace code maps for QoreChain custom modules. */
 const MODULE_CODES: Record<number | string, Record<number, { kind: string; message: string }>> = {
@@ -152,7 +157,7 @@ export function decodeTxError(input: TxErrorInput): DecodedTxError {
   const codespace = input.codespace || DEFAULT_CODESPACE;
   const rawLog = input.rawLog;
 
-  if (rawLog && RATE_LIMIT_TEXT.test(rawLog)) {
+  if (isRateLimitLog(input.codespace, input.code, rawLog)) {
     return {
       code: input.code,
       codespace,
