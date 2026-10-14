@@ -25,7 +25,7 @@ class ParamsView(_message.Message):
     def __init__(self, max_rollups: _Optional[int] = ..., min_stake_for_rollup: _Optional[int] = ..., rollup_creation_burn_rate: _Optional[str] = ..., default_challenge_window: _Optional[int] = ..., max_da_blob_size: _Optional[int] = ..., blob_retention_blocks: _Optional[int] = ..., max_batches_per_block: _Optional[int] = ...) -> None: ...
 
 class RollupView(_message.Message):
-    __slots__ = ("rollup_id", "creator", "profile", "settlement_mode", "da_backend", "block_time_ms", "max_tx_per_block", "vm_type", "status", "stake_amount", "layer_id", "created_height")
+    __slots__ = ("rollup_id", "creator", "profile", "settlement_mode", "da_backend", "block_time_ms", "max_tx_per_block", "vm_type", "status", "stake_amount", "layer_id", "created_height", "escrow_balance")
     ROLLUP_ID_FIELD_NUMBER: _ClassVar[int]
     CREATOR_FIELD_NUMBER: _ClassVar[int]
     PROFILE_FIELD_NUMBER: _ClassVar[int]
@@ -38,6 +38,7 @@ class RollupView(_message.Message):
     STAKE_AMOUNT_FIELD_NUMBER: _ClassVar[int]
     LAYER_ID_FIELD_NUMBER: _ClassVar[int]
     CREATED_HEIGHT_FIELD_NUMBER: _ClassVar[int]
+    ESCROW_BALANCE_FIELD_NUMBER: _ClassVar[int]
     rollup_id: str
     creator: str
     profile: str
@@ -50,7 +51,8 @@ class RollupView(_message.Message):
     stake_amount: int
     layer_id: str
     created_height: int
-    def __init__(self, rollup_id: _Optional[str] = ..., creator: _Optional[str] = ..., profile: _Optional[str] = ..., settlement_mode: _Optional[str] = ..., da_backend: _Optional[str] = ..., block_time_ms: _Optional[int] = ..., max_tx_per_block: _Optional[int] = ..., vm_type: _Optional[str] = ..., status: _Optional[str] = ..., stake_amount: _Optional[int] = ..., layer_id: _Optional[str] = ..., created_height: _Optional[int] = ...) -> None: ...
+    escrow_balance: int
+    def __init__(self, rollup_id: _Optional[str] = ..., creator: _Optional[str] = ..., profile: _Optional[str] = ..., settlement_mode: _Optional[str] = ..., da_backend: _Optional[str] = ..., block_time_ms: _Optional[int] = ..., max_tx_per_block: _Optional[int] = ..., vm_type: _Optional[str] = ..., status: _Optional[str] = ..., stake_amount: _Optional[int] = ..., layer_id: _Optional[str] = ..., created_height: _Optional[int] = ..., escrow_balance: _Optional[int] = ...) -> None: ...
 
 class BatchView(_message.Message):
     __slots__ = ("rollup_id", "batch_index", "state_root", "prev_state_root", "tx_count", "data_hash", "proof_type", "status", "submitted_at", "finalized_at", "withdrawals_root")

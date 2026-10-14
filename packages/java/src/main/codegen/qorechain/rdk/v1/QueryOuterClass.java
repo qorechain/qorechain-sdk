@@ -1112,6 +1112,18 @@ public final class QueryOuterClass extends com.google.protobuf.GeneratedFile {
      * @return The createdHeight.
      */
     long getCreatedHeight();
+
+    /**
+     * <pre>
+     * escrow_balance is what the rollup still holds in the pooled module
+     * escrow, in uqor: what its withdrawals can still pay and what stopping it
+     * refunds. It is read from the per-rollup escrow ledger (from v3.2.3).
+     * </pre>
+     *
+     * <code>uint64 escrow_balance = 13 [json_name = "escrowBalance"];</code>
+     * @return The escrowBalance.
+     */
+    long getEscrowBalance();
   }
   /**
    * <pre>
@@ -1523,6 +1535,23 @@ public final class QueryOuterClass extends com.google.protobuf.GeneratedFile {
       return createdHeight_;
     }
 
+    public static final int ESCROW_BALANCE_FIELD_NUMBER = 13;
+    private long escrowBalance_ = 0L;
+    /**
+     * <pre>
+     * escrow_balance is what the rollup still holds in the pooled module
+     * escrow, in uqor: what its withdrawals can still pay and what stopping it
+     * refunds. It is read from the per-rollup escrow ledger (from v3.2.3).
+     * </pre>
+     *
+     * <code>uint64 escrow_balance = 13 [json_name = "escrowBalance"];</code>
+     * @return The escrowBalance.
+     */
+    @java.lang.Override
+    public long getEscrowBalance() {
+      return escrowBalance_;
+    }
+
     private byte memoizedIsInitialized = -1;
     @java.lang.Override
     public final boolean isInitialized() {
@@ -1573,6 +1602,9 @@ public final class QueryOuterClass extends com.google.protobuf.GeneratedFile {
       if (createdHeight_ != 0L) {
         output.writeInt64(12, createdHeight_);
       }
+      if (escrowBalance_ != 0L) {
+        output.writeUInt64(13, escrowBalance_);
+      }
       getUnknownFields().writeTo(output);
     }
     private int computeSerializedSize_0() {
@@ -1616,6 +1648,10 @@ public final class QueryOuterClass extends com.google.protobuf.GeneratedFile {
       if (createdHeight_ != 0L) {
         size += com.google.protobuf.CodedOutputStream
           .computeInt64Size(12, createdHeight_);
+      }
+      if (escrowBalance_ != 0L) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeUInt64Size(13, escrowBalance_);
       }
       return size;
     }
@@ -1665,6 +1701,8 @@ public final class QueryOuterClass extends com.google.protobuf.GeneratedFile {
           .equals(other.getLayerId())) return false;
       if (getCreatedHeight()
           != other.getCreatedHeight()) return false;
+      if (getEscrowBalance()
+          != other.getEscrowBalance()) return false;
       if (!getUnknownFields().equals(other.getUnknownFields())) return false;
       return true;
     }
@@ -1704,6 +1742,9 @@ public final class QueryOuterClass extends com.google.protobuf.GeneratedFile {
       hash = (37 * hash) + CREATED_HEIGHT_FIELD_NUMBER;
       hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
           getCreatedHeight());
+      hash = (37 * hash) + ESCROW_BALANCE_FIELD_NUMBER;
+      hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
+          getEscrowBalance());
       hash = (29 * hash) + getUnknownFields().hashCode();
       memoizedHashCode = hash;
       return hash;
@@ -1851,6 +1892,7 @@ public final class QueryOuterClass extends com.google.protobuf.GeneratedFile {
         stakeAmount_ = 0L;
         layerId_ = "";
         createdHeight_ = 0L;
+        escrowBalance_ = 0L;
         return this;
       }
 
@@ -1920,6 +1962,9 @@ public final class QueryOuterClass extends com.google.protobuf.GeneratedFile {
         if (((from_bitField0_ & 0x00000800) != 0)) {
           result.createdHeight_ = createdHeight_;
         }
+        if (((from_bitField0_ & 0x00001000) != 0)) {
+          result.escrowBalance_ = escrowBalance_;
+        }
       }
 
       @java.lang.Override
@@ -1985,6 +2030,9 @@ public final class QueryOuterClass extends com.google.protobuf.GeneratedFile {
         }
         if (other.getCreatedHeight() != 0L) {
           setCreatedHeight(other.getCreatedHeight());
+        }
+        if (other.getEscrowBalance() != 0L) {
+          setEscrowBalance(other.getEscrowBalance());
         }
         this.mergeUnknownFields(other.getUnknownFields());
         onChanged();
@@ -2072,6 +2120,11 @@ public final class QueryOuterClass extends com.google.protobuf.GeneratedFile {
                 bitField0_ |= 0x00000800;
                 break;
               } // case 96
+              case 104: {
+                escrowBalance_ = input.readUInt64();
+                bitField0_ |= 0x00001000;
+                break;
+              } // case 104
               default: {
                 if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                   done = true; // was an endgroup tag
@@ -2789,6 +2842,56 @@ public final class QueryOuterClass extends com.google.protobuf.GeneratedFile {
       public Builder clearCreatedHeight() {
         bitField0_ = (bitField0_ & ~0x00000800);
         createdHeight_ = 0L;
+        onChanged();
+        return this;
+      }
+
+      private long escrowBalance_ ;
+      /**
+       * <pre>
+       * escrow_balance is what the rollup still holds in the pooled module
+       * escrow, in uqor: what its withdrawals can still pay and what stopping it
+       * refunds. It is read from the per-rollup escrow ledger (from v3.2.3).
+       * </pre>
+       *
+       * <code>uint64 escrow_balance = 13 [json_name = "escrowBalance"];</code>
+       * @return The escrowBalance.
+       */
+      @java.lang.Override
+      public long getEscrowBalance() {
+        return escrowBalance_;
+      }
+      /**
+       * <pre>
+       * escrow_balance is what the rollup still holds in the pooled module
+       * escrow, in uqor: what its withdrawals can still pay and what stopping it
+       * refunds. It is read from the per-rollup escrow ledger (from v3.2.3).
+       * </pre>
+       *
+       * <code>uint64 escrow_balance = 13 [json_name = "escrowBalance"];</code>
+       * @param value The escrowBalance to set.
+       * @return This builder for chaining.
+       */
+      public Builder setEscrowBalance(long value) {
+
+        escrowBalance_ = value;
+        bitField0_ |= 0x00001000;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * escrow_balance is what the rollup still holds in the pooled module
+       * escrow, in uqor: what its withdrawals can still pay and what stopping it
+       * refunds. It is read from the per-rollup escrow ledger (from v3.2.3).
+       * </pre>
+       *
+       * <code>uint64 escrow_balance = 13 [json_name = "escrowBalance"];</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearEscrowBalance() {
+        bitField0_ = (bitField0_ & ~0x00001000);
+        escrowBalance_ = 0L;
         onChanged();
         return this;
       }
@@ -14015,7 +14118,7 @@ public final class QueryOuterClass extends com.google.protobuf.GeneratedFile {
       "llengeWindow\022\'\n\020max_da_blob_size\030\005 \001(\004R\r" +
       "maxDaBlobSize\0222\n\025blob_retention_blocks\030\006" +
       " \001(\004R\023blobRetentionBlocks\0221\n\025max_batches" +
-      "_per_block\030\007 \001(\rR\022maxBatchesPerBlock\"\210\003\n" +
+      "_per_block\030\007 \001(\rR\022maxBatchesPerBlock\"\257\003\n" +
       "\nRollupView\022\033\n\trollup_id\030\001 \001(\tR\010rollupId" +
       "\022\030\n\007creator\030\002 \001(\tR\007creator\022\030\n\007profile\030\003 " +
       "\001(\tR\007profile\022\'\n\017settlement_mode\030\004 \001(\tR\016s" +
@@ -14025,73 +14128,74 @@ public final class QueryOuterClass extends com.google.protobuf.GeneratedFile {
       "k\022\027\n\007vm_type\030\010 \001(\tR\006vmType\022\026\n\006status\030\t \001" +
       "(\tR\006status\022!\n\014stake_amount\030\n \001(\003R\013stakeA" +
       "mount\022\031\n\010layer_id\030\013 \001(\tR\007layerId\022%\n\016crea" +
-      "ted_height\030\014 \001(\003R\rcreatedHeight\"\360\002\n\tBatc" +
-      "hView\022\033\n\trollup_id\030\001 \001(\tR\010rollupId\022\037\n\013ba" +
-      "tch_index\030\002 \001(\004R\nbatchIndex\022\035\n\nstate_roo" +
-      "t\030\003 \001(\tR\tstateRoot\022&\n\017prev_state_root\030\004 " +
-      "\001(\tR\rprevStateRoot\022\031\n\010tx_count\030\005 \001(\004R\007tx" +
-      "Count\022\033\n\tdata_hash\030\006 \001(\tR\010dataHash\022\035\n\npr" +
-      "oof_type\030\007 \001(\tR\tproofType\022\026\n\006status\030\010 \001(" +
-      "\tR\006status\022!\n\014submitted_at\030\t \001(\003R\013submitt" +
-      "edAt\022!\n\014finalized_at\030\n \001(\003R\013finalizedAt\022" +
-      ")\n\020withdrawals_root\030\013 \001(\tR\017withdrawalsRo" +
-      "ot\"\024\n\022QueryParamsRequest\"K\n\023QueryParamsR" +
-      "esponse\0224\n\006params\030\001 \001(\0132\034.qorechain.rdk." +
-      "v1.ParamsViewR\006params\"1\n\022QueryRollupRequ" +
-      "est\022\033\n\trollup_id\030\001 \001(\tR\010rollupId\"K\n\023Quer" +
-      "yRollupResponse\0224\n\006rollup\030\001 \001(\0132\034.qorech" +
-      "ain.rdk.v1.RollupViewR\006rollup\"\025\n\023QueryRo" +
-      "llupsRequest\"N\n\024QueryRollupsResponse\0226\n\007" +
-      "rollups\030\001 \003(\0132\034.qorechain.rdk.v1.RollupV" +
-      "iewR\007rollups\"Q\n\021QueryBatchRequest\022\033\n\trol" +
-      "lup_id\030\001 \001(\tR\010rollupId\022\037\n\013batch_index\030\002 " +
-      "\001(\004R\nbatchIndex\"G\n\022QueryBatchResponse\0221\n" +
-      "\005batch\030\001 \001(\0132\033.qorechain.rdk.v1.BatchVie" +
-      "wR\005batch\"6\n\027QueryLatestBatchRequest\022\033\n\tr" +
-      "ollup_id\030\001 \001(\tR\010rollupId\"M\n\030QueryLatestB" +
-      "atchResponse\0221\n\005batch\030\001 \001(\0132\033.qorechain." +
-      "rdk.v1.BatchViewR\005batch\"i\n\023QueryBatchesR" +
-      "equest\022\033\n\trollup_id\030\001 \001(\tR\010rollupId\022\037\n\013s" +
-      "tart_index\030\002 \001(\004R\nstartIndex\022\024\n\005limit\030\003 " +
-      "\001(\rR\005limit\"l\n\024QueryBatchesResponse\0225\n\007ba" +
-      "tches\030\001 \003(\0132\033.qorechain.rdk.v1.BatchView" +
-      "R\007batches\022\035\n\nnext_index\030\002 \001(\004R\tnextIndex" +
-      "\"\374\001\n\010BlobView\022\033\n\trollup_id\030\001 \001(\tR\010rollup" +
-      "Id\022\035\n\nblob_index\030\002 \001(\004R\tblobIndex\022\036\n\ncom" +
-      "mitment\030\003 \001(\tR\ncommitment\022\033\n\tdata_size\030\004" +
-      " \001(\004R\010dataSize\022\026\n\006height\030\005 \001(\003R\006height\022\033" +
-      "\n\tstored_at\030\006 \001(\tR\010storedAt\022\026\n\006pruned\030\007 " +
-      "\001(\010R\006pruned\022*\n\021expires_at_height\030\010 \001(\003R\017" +
-      "expiresAtHeight\"N\n\020QueryBlobRequest\022\033\n\tr" +
-      "ollup_id\030\001 \001(\tR\010rollupId\022\035\n\nblob_index\030\002" +
-      " \001(\004R\tblobIndex\"C\n\021QueryBlobResponse\022.\n\004" +
-      "blob\030\001 \001(\0132\032.qorechain.rdk.v1.BlobViewR\004" +
-      "blob2\303\007\n\005Query\022w\n\006Params\022$.qorechain.rdk" +
-      ".v1.QueryParamsRequest\032%.qorechain.rdk.v" +
-      "1.QueryParamsResponse\" \202\323\344\223\002\032\022\030/qorechai" +
-      "n/rdk/v1/params\022\203\001\n\006Rollup\022$.qorechain.r" +
-      "dk.v1.QueryRollupRequest\032%.qorechain.rdk" +
-      ".v1.QueryRollupResponse\",\202\323\344\223\002&\022$/qorech" +
-      "ain/rdk/v1/rollup/{rollup_id}\022{\n\007Rollups" +
-      "\022%.qorechain.rdk.v1.QueryRollupsRequest\032" +
-      "&.qorechain.rdk.v1.QueryRollupsResponse\"" +
-      "!\202\323\344\223\002\033\022\031/qorechain/rdk/v1/rollups\022\215\001\n\005B" +
-      "atch\022#.qorechain.rdk.v1.QueryBatchReques" +
-      "t\032$.qorechain.rdk.v1.QueryBatchResponse\"" +
-      "9\202\323\344\223\0023\0221/qorechain/rdk/v1/batch/{rollup" +
-      "_id}/{batch_index}\022\230\001\n\013LatestBatch\022).qor" +
-      "echain.rdk.v1.QueryLatestBatchRequest\032*." +
-      "qorechain.rdk.v1.QueryLatestBatchRespons" +
-      "e\"2\202\323\344\223\002,\022*/qorechain/rdk/v1/latest_batc" +
-      "h/{rollup_id}\022\207\001\n\007Batches\022%.qorechain.rd" +
-      "k.v1.QueryBatchesRequest\032&.qorechain.rdk" +
-      ".v1.QueryBatchesResponse\"-\202\323\344\223\002\'\022%/qorec" +
-      "hain/rdk/v1/batches/{rollup_id}\022\210\001\n\004Blob" +
-      "\022\".qorechain.rdk.v1.QueryBlobRequest\032#.q" +
-      "orechain.rdk.v1.QueryBlobResponse\"7\202\323\344\223\002" +
-      "1\022//qorechain/rdk/v1/blob/{rollup_id}/{b" +
-      "lob_index}B1Z/github.com/qorechain/qorec" +
-      "hain-core/x/rdk/typesb\006proto3"
+      "ted_height\030\014 \001(\003R\rcreatedHeight\022%\n\016escro" +
+      "w_balance\030\r \001(\004R\rescrowBalance\"\360\002\n\tBatch" +
+      "View\022\033\n\trollup_id\030\001 \001(\tR\010rollupId\022\037\n\013bat" +
+      "ch_index\030\002 \001(\004R\nbatchIndex\022\035\n\nstate_root" +
+      "\030\003 \001(\tR\tstateRoot\022&\n\017prev_state_root\030\004 \001" +
+      "(\tR\rprevStateRoot\022\031\n\010tx_count\030\005 \001(\004R\007txC" +
+      "ount\022\033\n\tdata_hash\030\006 \001(\tR\010dataHash\022\035\n\npro" +
+      "of_type\030\007 \001(\tR\tproofType\022\026\n\006status\030\010 \001(\t" +
+      "R\006status\022!\n\014submitted_at\030\t \001(\003R\013submitte" +
+      "dAt\022!\n\014finalized_at\030\n \001(\003R\013finalizedAt\022)" +
+      "\n\020withdrawals_root\030\013 \001(\tR\017withdrawalsRoo" +
+      "t\"\024\n\022QueryParamsRequest\"K\n\023QueryParamsRe" +
+      "sponse\0224\n\006params\030\001 \001(\0132\034.qorechain.rdk.v" +
+      "1.ParamsViewR\006params\"1\n\022QueryRollupReque" +
+      "st\022\033\n\trollup_id\030\001 \001(\tR\010rollupId\"K\n\023Query" +
+      "RollupResponse\0224\n\006rollup\030\001 \001(\0132\034.qorecha" +
+      "in.rdk.v1.RollupViewR\006rollup\"\025\n\023QueryRol" +
+      "lupsRequest\"N\n\024QueryRollupsResponse\0226\n\007r" +
+      "ollups\030\001 \003(\0132\034.qorechain.rdk.v1.RollupVi" +
+      "ewR\007rollups\"Q\n\021QueryBatchRequest\022\033\n\troll" +
+      "up_id\030\001 \001(\tR\010rollupId\022\037\n\013batch_index\030\002 \001" +
+      "(\004R\nbatchIndex\"G\n\022QueryBatchResponse\0221\n\005" +
+      "batch\030\001 \001(\0132\033.qorechain.rdk.v1.BatchView" +
+      "R\005batch\"6\n\027QueryLatestBatchRequest\022\033\n\tro" +
+      "llup_id\030\001 \001(\tR\010rollupId\"M\n\030QueryLatestBa" +
+      "tchResponse\0221\n\005batch\030\001 \001(\0132\033.qorechain.r" +
+      "dk.v1.BatchViewR\005batch\"i\n\023QueryBatchesRe" +
+      "quest\022\033\n\trollup_id\030\001 \001(\tR\010rollupId\022\037\n\013st" +
+      "art_index\030\002 \001(\004R\nstartIndex\022\024\n\005limit\030\003 \001" +
+      "(\rR\005limit\"l\n\024QueryBatchesResponse\0225\n\007bat" +
+      "ches\030\001 \003(\0132\033.qorechain.rdk.v1.BatchViewR" +
+      "\007batches\022\035\n\nnext_index\030\002 \001(\004R\tnextIndex\"" +
+      "\374\001\n\010BlobView\022\033\n\trollup_id\030\001 \001(\tR\010rollupI" +
+      "d\022\035\n\nblob_index\030\002 \001(\004R\tblobIndex\022\036\n\ncomm" +
+      "itment\030\003 \001(\tR\ncommitment\022\033\n\tdata_size\030\004 " +
+      "\001(\004R\010dataSize\022\026\n\006height\030\005 \001(\003R\006height\022\033\n" +
+      "\tstored_at\030\006 \001(\tR\010storedAt\022\026\n\006pruned\030\007 \001" +
+      "(\010R\006pruned\022*\n\021expires_at_height\030\010 \001(\003R\017e" +
+      "xpiresAtHeight\"N\n\020QueryBlobRequest\022\033\n\tro" +
+      "llup_id\030\001 \001(\tR\010rollupId\022\035\n\nblob_index\030\002 " +
+      "\001(\004R\tblobIndex\"C\n\021QueryBlobResponse\022.\n\004b" +
+      "lob\030\001 \001(\0132\032.qorechain.rdk.v1.BlobViewR\004b" +
+      "lob2\303\007\n\005Query\022w\n\006Params\022$.qorechain.rdk." +
+      "v1.QueryParamsRequest\032%.qorechain.rdk.v1" +
+      ".QueryParamsResponse\" \202\323\344\223\002\032\022\030/qorechain" +
+      "/rdk/v1/params\022\203\001\n\006Rollup\022$.qorechain.rd" +
+      "k.v1.QueryRollupRequest\032%.qorechain.rdk." +
+      "v1.QueryRollupResponse\",\202\323\344\223\002&\022$/qorecha" +
+      "in/rdk/v1/rollup/{rollup_id}\022{\n\007Rollups\022" +
+      "%.qorechain.rdk.v1.QueryRollupsRequest\032&" +
+      ".qorechain.rdk.v1.QueryRollupsResponse\"!" +
+      "\202\323\344\223\002\033\022\031/qorechain/rdk/v1/rollups\022\215\001\n\005Ba" +
+      "tch\022#.qorechain.rdk.v1.QueryBatchRequest" +
+      "\032$.qorechain.rdk.v1.QueryBatchResponse\"9" +
+      "\202\323\344\223\0023\0221/qorechain/rdk/v1/batch/{rollup_" +
+      "id}/{batch_index}\022\230\001\n\013LatestBatch\022).qore" +
+      "chain.rdk.v1.QueryLatestBatchRequest\032*.q" +
+      "orechain.rdk.v1.QueryLatestBatchResponse" +
+      "\"2\202\323\344\223\002,\022*/qorechain/rdk/v1/latest_batch" +
+      "/{rollup_id}\022\207\001\n\007Batches\022%.qorechain.rdk" +
+      ".v1.QueryBatchesRequest\032&.qorechain.rdk." +
+      "v1.QueryBatchesResponse\"-\202\323\344\223\002\'\022%/qorech" +
+      "ain/rdk/v1/batches/{rollup_id}\022\210\001\n\004Blob\022" +
+      "\".qorechain.rdk.v1.QueryBlobRequest\032#.qo" +
+      "rechain.rdk.v1.QueryBlobResponse\"7\202\323\344\223\0021" +
+      "\022//qorechain/rdk/v1/blob/{rollup_id}/{bl" +
+      "ob_index}B1Z/github.com/qorechain/qorech" +
+      "ain-core/x/rdk/typesb\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
@@ -14109,7 +14213,7 @@ public final class QueryOuterClass extends com.google.protobuf.GeneratedFile {
     internal_static_qorechain_rdk_v1_RollupView_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_qorechain_rdk_v1_RollupView_descriptor,
-        new java.lang.String[] { "RollupId", "Creator", "Profile", "SettlementMode", "DaBackend", "BlockTimeMs", "MaxTxPerBlock", "VmType", "Status", "StakeAmount", "LayerId", "CreatedHeight", });
+        new java.lang.String[] { "RollupId", "Creator", "Profile", "SettlementMode", "DaBackend", "BlockTimeMs", "MaxTxPerBlock", "VmType", "Status", "StakeAmount", "LayerId", "CreatedHeight", "EscrowBalance", });
     internal_static_qorechain_rdk_v1_BatchView_descriptor =
       getDescriptor().getMessageType(2);
     internal_static_qorechain_rdk_v1_BatchView_fieldAccessorTable = new

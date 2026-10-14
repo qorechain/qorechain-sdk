@@ -8333,6 +8333,32 @@ public final class QueryOuterClass extends com.google.protobuf.GeneratedFile {
      * @return The initialized.
      */
     boolean getInitialized();
+
+    /**
+     * <pre>
+     * max_reward_per_month_per_node is the monthly per-node bound in uqor
+     * (2,000 QOR by decision). From the lightnode-monthly-cap switch it is the
+     * bound in force, prorated over block time; max_reward_per_block_per_node is
+     * then informational only.
+     * </pre>
+     *
+     * <code>string max_reward_per_month_per_node = 8 [json_name = "maxRewardPerMonthPerNode"];</code>
+     * @return The maxRewardPerMonthPerNode.
+     */
+    java.lang.String getMaxRewardPerMonthPerNode();
+    /**
+     * <pre>
+     * max_reward_per_month_per_node is the monthly per-node bound in uqor
+     * (2,000 QOR by decision). From the lightnode-monthly-cap switch it is the
+     * bound in force, prorated over block time; max_reward_per_block_per_node is
+     * then informational only.
+     * </pre>
+     *
+     * <code>string max_reward_per_month_per_node = 8 [json_name = "maxRewardPerMonthPerNode"];</code>
+     * @return The bytes for maxRewardPerMonthPerNode.
+     */
+    com.google.protobuf.ByteString
+        getMaxRewardPerMonthPerNodeBytes();
   }
   /**
    * Protobuf type {@code qorechain.lightnode.v1.QueryRewardPoolResponse}
@@ -8362,6 +8388,7 @@ public final class QueryOuterClass extends com.google.protobuf.GeneratedFile {
       payable_ = "";
       maxRewardPerBlockPerNode_ = "";
       distributable_ = "";
+      maxRewardPerMonthPerNode_ = "";
     }
 
     public static final com.google.protobuf.Descriptors.Descriptor
@@ -8689,6 +8716,59 @@ public final class QueryOuterClass extends com.google.protobuf.GeneratedFile {
       return initialized_;
     }
 
+    public static final int MAX_REWARD_PER_MONTH_PER_NODE_FIELD_NUMBER = 8;
+    @SuppressWarnings("serial")
+    private volatile java.lang.Object maxRewardPerMonthPerNode_ = "";
+    /**
+     * <pre>
+     * max_reward_per_month_per_node is the monthly per-node bound in uqor
+     * (2,000 QOR by decision). From the lightnode-monthly-cap switch it is the
+     * bound in force, prorated over block time; max_reward_per_block_per_node is
+     * then informational only.
+     * </pre>
+     *
+     * <code>string max_reward_per_month_per_node = 8 [json_name = "maxRewardPerMonthPerNode"];</code>
+     * @return The maxRewardPerMonthPerNode.
+     */
+    @java.lang.Override
+    public java.lang.String getMaxRewardPerMonthPerNode() {
+      java.lang.Object ref = maxRewardPerMonthPerNode_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        maxRewardPerMonthPerNode_ = s;
+        return s;
+      }
+    }
+    /**
+     * <pre>
+     * max_reward_per_month_per_node is the monthly per-node bound in uqor
+     * (2,000 QOR by decision). From the lightnode-monthly-cap switch it is the
+     * bound in force, prorated over block time; max_reward_per_block_per_node is
+     * then informational only.
+     * </pre>
+     *
+     * <code>string max_reward_per_month_per_node = 8 [json_name = "maxRewardPerMonthPerNode"];</code>
+     * @return The bytes for maxRewardPerMonthPerNode.
+     */
+    @java.lang.Override
+    public com.google.protobuf.ByteString
+        getMaxRewardPerMonthPerNodeBytes() {
+      java.lang.Object ref = maxRewardPerMonthPerNode_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        maxRewardPerMonthPerNode_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
     private byte memoizedIsInitialized = -1;
     @java.lang.Override
     public final boolean isInitialized() {
@@ -8724,6 +8804,9 @@ public final class QueryOuterClass extends com.google.protobuf.GeneratedFile {
       if (initialized_ != false) {
         output.writeBool(7, initialized_);
       }
+      if (!com.google.protobuf.GeneratedMessage.isStringEmpty(maxRewardPerMonthPerNode_)) {
+        com.google.protobuf.GeneratedMessage.writeString(output, 8, maxRewardPerMonthPerNode_);
+      }
       getUnknownFields().writeTo(output);
     }
     private int computeSerializedSize_0() {
@@ -8749,6 +8832,9 @@ public final class QueryOuterClass extends com.google.protobuf.GeneratedFile {
       if (initialized_ != false) {
         size += com.google.protobuf.CodedOutputStream
           .computeBoolSize(7, initialized_);
+      }
+      if (!com.google.protobuf.GeneratedMessage.isStringEmpty(maxRewardPerMonthPerNode_)) {
+        size += com.google.protobuf.GeneratedMessage.computeStringSize(8, maxRewardPerMonthPerNode_);
       }
       return size;
     }
@@ -8788,6 +8874,8 @@ public final class QueryOuterClass extends com.google.protobuf.GeneratedFile {
           .equals(other.getDistributable())) return false;
       if (getInitialized()
           != other.getInitialized()) return false;
+      if (!getMaxRewardPerMonthPerNode()
+          .equals(other.getMaxRewardPerMonthPerNode())) return false;
       if (!getUnknownFields().equals(other.getUnknownFields())) return false;
       return true;
     }
@@ -8814,6 +8902,8 @@ public final class QueryOuterClass extends com.google.protobuf.GeneratedFile {
       hash = (37 * hash) + INITIALIZED_FIELD_NUMBER;
       hash = (53 * hash) + com.google.protobuf.Internal.hashBoolean(
           getInitialized());
+      hash = (37 * hash) + MAX_REWARD_PER_MONTH_PER_NODE_FIELD_NUMBER;
+      hash = (53 * hash) + getMaxRewardPerMonthPerNode().hashCode();
       hash = (29 * hash) + getUnknownFields().hashCode();
       memoizedHashCode = hash;
       return hash;
@@ -8952,6 +9042,7 @@ public final class QueryOuterClass extends com.google.protobuf.GeneratedFile {
         maxRewardPerBlockPerNode_ = "";
         distributable_ = "";
         initialized_ = false;
+        maxRewardPerMonthPerNode_ = "";
         return this;
       }
 
@@ -9006,6 +9097,9 @@ public final class QueryOuterClass extends com.google.protobuf.GeneratedFile {
         if (((from_bitField0_ & 0x00000040) != 0)) {
           result.initialized_ = initialized_;
         }
+        if (((from_bitField0_ & 0x00000080) != 0)) {
+          result.maxRewardPerMonthPerNode_ = maxRewardPerMonthPerNode_;
+        }
       }
 
       @java.lang.Override
@@ -9052,6 +9146,11 @@ public final class QueryOuterClass extends com.google.protobuf.GeneratedFile {
         }
         if (other.getInitialized() != false) {
           setInitialized(other.getInitialized());
+        }
+        if (!other.getMaxRewardPerMonthPerNode().isEmpty()) {
+          maxRewardPerMonthPerNode_ = other.maxRewardPerMonthPerNode_;
+          bitField0_ |= 0x00000080;
+          onChanged();
         }
         this.mergeUnknownFields(other.getUnknownFields());
         onChanged();
@@ -9114,6 +9213,11 @@ public final class QueryOuterClass extends com.google.protobuf.GeneratedFile {
                 bitField0_ |= 0x00000040;
                 break;
               } // case 56
+              case 66: {
+                maxRewardPerMonthPerNode_ = input.readStringRequireUtf8();
+                bitField0_ |= 0x00000080;
+                break;
+              } // case 66
               default: {
                 if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                   done = true; // was an endgroup tag
@@ -9754,6 +9858,113 @@ public final class QueryOuterClass extends com.google.protobuf.GeneratedFile {
         return this;
       }
 
+      private java.lang.Object maxRewardPerMonthPerNode_ = "";
+      /**
+       * <pre>
+       * max_reward_per_month_per_node is the monthly per-node bound in uqor
+       * (2,000 QOR by decision). From the lightnode-monthly-cap switch it is the
+       * bound in force, prorated over block time; max_reward_per_block_per_node is
+       * then informational only.
+       * </pre>
+       *
+       * <code>string max_reward_per_month_per_node = 8 [json_name = "maxRewardPerMonthPerNode"];</code>
+       * @return The maxRewardPerMonthPerNode.
+       */
+      public java.lang.String getMaxRewardPerMonthPerNode() {
+        java.lang.Object ref = maxRewardPerMonthPerNode_;
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          maxRewardPerMonthPerNode_ = s;
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
+      }
+      /**
+       * <pre>
+       * max_reward_per_month_per_node is the monthly per-node bound in uqor
+       * (2,000 QOR by decision). From the lightnode-monthly-cap switch it is the
+       * bound in force, prorated over block time; max_reward_per_block_per_node is
+       * then informational only.
+       * </pre>
+       *
+       * <code>string max_reward_per_month_per_node = 8 [json_name = "maxRewardPerMonthPerNode"];</code>
+       * @return The bytes for maxRewardPerMonthPerNode.
+       */
+      public com.google.protobuf.ByteString
+          getMaxRewardPerMonthPerNodeBytes() {
+        java.lang.Object ref = maxRewardPerMonthPerNode_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          maxRewardPerMonthPerNode_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <pre>
+       * max_reward_per_month_per_node is the monthly per-node bound in uqor
+       * (2,000 QOR by decision). From the lightnode-monthly-cap switch it is the
+       * bound in force, prorated over block time; max_reward_per_block_per_node is
+       * then informational only.
+       * </pre>
+       *
+       * <code>string max_reward_per_month_per_node = 8 [json_name = "maxRewardPerMonthPerNode"];</code>
+       * @param value The maxRewardPerMonthPerNode to set.
+       * @return This builder for chaining.
+       */
+      public Builder setMaxRewardPerMonthPerNode(
+          java.lang.String value) {
+        if (value == null) { throw new NullPointerException(); }
+        maxRewardPerMonthPerNode_ = value;
+        bitField0_ |= 0x00000080;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * max_reward_per_month_per_node is the monthly per-node bound in uqor
+       * (2,000 QOR by decision). From the lightnode-monthly-cap switch it is the
+       * bound in force, prorated over block time; max_reward_per_block_per_node is
+       * then informational only.
+       * </pre>
+       *
+       * <code>string max_reward_per_month_per_node = 8 [json_name = "maxRewardPerMonthPerNode"];</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearMaxRewardPerMonthPerNode() {
+        maxRewardPerMonthPerNode_ = getDefaultInstance().getMaxRewardPerMonthPerNode();
+        bitField0_ = (bitField0_ & ~0x00000080);
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * max_reward_per_month_per_node is the monthly per-node bound in uqor
+       * (2,000 QOR by decision). From the lightnode-monthly-cap switch it is the
+       * bound in force, prorated over block time; max_reward_per_block_per_node is
+       * then informational only.
+       * </pre>
+       *
+       * <code>string max_reward_per_month_per_node = 8 [json_name = "maxRewardPerMonthPerNode"];</code>
+       * @param value The bytes for maxRewardPerMonthPerNode to set.
+       * @return This builder for chaining.
+       */
+      public Builder setMaxRewardPerMonthPerNodeBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) { throw new NullPointerException(); }
+        checkByteStringIsUtf8(value);
+        maxRewardPerMonthPerNode_ = value;
+        bitField0_ |= 0x00000080;
+        onChanged();
+        return this;
+      }
+
       // @@protoc_insertion_point(builder_scope:qorechain.lightnode.v1.QueryRewardPoolResponse)
     }
 
@@ -9918,38 +10129,39 @@ public final class QueryOuterClass extends com.google.protobuf.GeneratedFile {
       "totalActive\022#\n\rtotal_rewards\030\003 \001(\tR\014tota" +
       "lRewards\022,\n\022last_reward_height\030\004 \001(\003R\020la" +
       "stRewardHeight\"\030\n\026QueryRewardPoolRequest" +
-      "\"\224\002\n\027QueryRewardPoolResponse\022\030\n\007balance\030" +
+      "\"\325\002\n\027QueryRewardPoolResponse\022\030\n\007balance\030" +
       "\001 \001(\tR\007balance\022\032\n\010reserved\030\002 \001(\tR\010reserv" +
       "ed\022 \n\013outstanding\030\003 \001(\tR\013outstanding\022\030\n\007" +
       "payable\030\005 \001(\tR\007payable\022?\n\035max_reward_per" +
       "_block_per_node\030\006 \001(\tR\030maxRewardPerBlock" +
       "PerNode\022$\n\rdistributable\030\004 \001(\tR\rdistribu" +
-      "table\022 \n\013initialized\030\007 \001(\010R\013initialized2" +
-      "\206\007\n\005Query\022\232\001\n\tLightNode\022-.qorechain.ligh" +
-      "tnode.v1.QueryLightNodeRequest\032..qorecha" +
-      "in.lightnode.v1.QueryLightNodeResponse\"." +
-      "\202\323\344\223\002(\022&/qorechain/lightnode/v1/node/{ad" +
-      "dress}\022\224\001\n\nLightNodes\022..qorechain.lightn" +
-      "ode.v1.QueryLightNodesRequest\032/.qorechai" +
-      "n.lightnode.v1.QueryLightNodesResponse\"%" +
-      "\202\323\344\223\002\037\022\035/qorechain/lightnode/v1/nodes\022\211\001" +
-      "\n\006Params\022*.qorechain.lightnode.v1.QueryP" +
-      "aramsRequest\032+.qorechain.lightnode.v1.Qu" +
-      "eryParamsResponse\"&\202\323\344\223\002 \022\036/qorechain/li" +
-      "ghtnode/v1/params\022\227\001\n\007Rewards\022+.qorechai" +
-      "n.lightnode.v1.QueryRewardsRequest\032,.qor" +
-      "echain.lightnode.v1.QueryRewardsResponse" +
-      "\"1\202\323\344\223\002+\022)/qorechain/lightnode/v1/reward" +
-      "s/{address}\022\205\001\n\005Stats\022).qorechain.lightn" +
-      "ode.v1.QueryStatsRequest\032*.qorechain.lig" +
-      "htnode.v1.QueryStatsResponse\"%\202\323\344\223\002\037\022\035/q" +
-      "orechain/lightnode/v1/stats\022\232\001\n\nRewardPo" +
-      "ol\022..qorechain.lightnode.v1.QueryRewardP" +
-      "oolRequest\032/.qorechain.lightnode.v1.Quer" +
-      "yRewardPoolResponse\"+\202\323\344\223\002%\022#/qorechain/" +
-      "lightnode/v1/reward_poolB7Z5github.com/q" +
-      "orechain/qorechain-core/x/lightnode/type" +
-      "sb\006proto3"
+      "table\022 \n\013initialized\030\007 \001(\010R\013initialized\022" +
+      "?\n\035max_reward_per_month_per_node\030\010 \001(\tR\030" +
+      "maxRewardPerMonthPerNode2\206\007\n\005Query\022\232\001\n\tL" +
+      "ightNode\022-.qorechain.lightnode.v1.QueryL" +
+      "ightNodeRequest\032..qorechain.lightnode.v1" +
+      ".QueryLightNodeResponse\".\202\323\344\223\002(\022&/qorech" +
+      "ain/lightnode/v1/node/{address}\022\224\001\n\nLigh" +
+      "tNodes\022..qorechain.lightnode.v1.QueryLig" +
+      "htNodesRequest\032/.qorechain.lightnode.v1." +
+      "QueryLightNodesResponse\"%\202\323\344\223\002\037\022\035/qorech" +
+      "ain/lightnode/v1/nodes\022\211\001\n\006Params\022*.qore" +
+      "chain.lightnode.v1.QueryParamsRequest\032+." +
+      "qorechain.lightnode.v1.QueryParamsRespon" +
+      "se\"&\202\323\344\223\002 \022\036/qorechain/lightnode/v1/para" +
+      "ms\022\227\001\n\007Rewards\022+.qorechain.lightnode.v1." +
+      "QueryRewardsRequest\032,.qorechain.lightnod" +
+      "e.v1.QueryRewardsResponse\"1\202\323\344\223\002+\022)/qore" +
+      "chain/lightnode/v1/rewards/{address}\022\205\001\n" +
+      "\005Stats\022).qorechain.lightnode.v1.QuerySta" +
+      "tsRequest\032*.qorechain.lightnode.v1.Query" +
+      "StatsResponse\"%\202\323\344\223\002\037\022\035/qorechain/lightn" +
+      "ode/v1/stats\022\232\001\n\nRewardPool\022..qorechain." +
+      "lightnode.v1.QueryRewardPoolRequest\032/.qo" +
+      "rechain.lightnode.v1.QueryRewardPoolResp" +
+      "onse\"+\202\323\344\223\002%\022#/qorechain/lightnode/v1/re" +
+      "ward_poolB7Z5github.com/qorechain/qorech" +
+      "ain-core/x/lightnode/typesb\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
@@ -10033,7 +10245,7 @@ public final class QueryOuterClass extends com.google.protobuf.GeneratedFile {
     internal_static_qorechain_lightnode_v1_QueryRewardPoolResponse_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_qorechain_lightnode_v1_QueryRewardPoolResponse_descriptor,
-        new java.lang.String[] { "Balance", "Reserved", "Outstanding", "Payable", "MaxRewardPerBlockPerNode", "Distributable", "Initialized", });
+        new java.lang.String[] { "Balance", "Reserved", "Outstanding", "Payable", "MaxRewardPerBlockPerNode", "Distributable", "Initialized", "MaxRewardPerMonthPerNode", });
     descriptor.resolveAllFeaturesImmutable();
     com.google.api.AnnotationsProto.getDescriptor();
     com.google.protobuf.ExtensionRegistry registry =

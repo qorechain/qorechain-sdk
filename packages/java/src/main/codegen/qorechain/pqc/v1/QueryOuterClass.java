@@ -2384,6 +2384,41 @@ public final class QueryOuterClass extends com.google.protobuf.GeneratedFile {
      */
     com.google.protobuf.ByteString
         getRemainingValueBytes();
+
+    /**
+     * <pre>
+     * native_only and allowed_targets report the window's scope, as opened.
+     * </pre>
+     *
+     * <code>bool native_only = 12 [json_name = "nativeOnly"];</code>
+     * @return The nativeOnly.
+     */
+    boolean getNativeOnly();
+
+    /**
+     * <code>repeated string allowed_targets = 13 [json_name = "allowedTargets"];</code>
+     * @return A list containing the allowedTargets.
+     */
+    java.util.List<java.lang.String>
+        getAllowedTargetsList();
+    /**
+     * <code>repeated string allowed_targets = 13 [json_name = "allowedTargets"];</code>
+     * @return The count of allowedTargets.
+     */
+    int getAllowedTargetsCount();
+    /**
+     * <code>repeated string allowed_targets = 13 [json_name = "allowedTargets"];</code>
+     * @param index The index of the element to return.
+     * @return The allowedTargets at the given index.
+     */
+    java.lang.String getAllowedTargets(int index);
+    /**
+     * <code>repeated string allowed_targets = 13 [json_name = "allowedTargets"];</code>
+     * @param index The index of the value to return.
+     * @return The bytes of the allowedTargets at the given index.
+     */
+    com.google.protobuf.ByteString
+        getAllowedTargetsBytes(int index);
   }
   /**
    * Protobuf type {@code qorechain.pqc.v1.QueryEVMWindowResponse}
@@ -2410,6 +2445,8 @@ public final class QueryOuterClass extends com.google.protobuf.GeneratedFile {
       maxValue_ = "";
       usedValue_ = "";
       remainingValue_ = "";
+      allowedTargets_ =
+          com.google.protobuf.LazyStringArrayList.emptyList();
     }
 
     public static final com.google.protobuf.Descriptors.Descriptor
@@ -2650,6 +2687,58 @@ public final class QueryOuterClass extends com.google.protobuf.GeneratedFile {
       }
     }
 
+    public static final int NATIVE_ONLY_FIELD_NUMBER = 12;
+    private boolean nativeOnly_ = false;
+    /**
+     * <pre>
+     * native_only and allowed_targets report the window's scope, as opened.
+     * </pre>
+     *
+     * <code>bool native_only = 12 [json_name = "nativeOnly"];</code>
+     * @return The nativeOnly.
+     */
+    @java.lang.Override
+    public boolean getNativeOnly() {
+      return nativeOnly_;
+    }
+
+    public static final int ALLOWED_TARGETS_FIELD_NUMBER = 13;
+    @SuppressWarnings("serial")
+    private com.google.protobuf.LazyStringArrayList allowedTargets_ =
+        com.google.protobuf.LazyStringArrayList.emptyList();
+    /**
+     * <code>repeated string allowed_targets = 13 [json_name = "allowedTargets"];</code>
+     * @return A list containing the allowedTargets.
+     */
+    public com.google.protobuf.ProtocolStringList
+        getAllowedTargetsList() {
+      return allowedTargets_;
+    }
+    /**
+     * <code>repeated string allowed_targets = 13 [json_name = "allowedTargets"];</code>
+     * @return The count of allowedTargets.
+     */
+    public int getAllowedTargetsCount() {
+      return allowedTargets_.size();
+    }
+    /**
+     * <code>repeated string allowed_targets = 13 [json_name = "allowedTargets"];</code>
+     * @param index The index of the element to return.
+     * @return The allowedTargets at the given index.
+     */
+    public java.lang.String getAllowedTargets(int index) {
+      return allowedTargets_.get(index);
+    }
+    /**
+     * <code>repeated string allowed_targets = 13 [json_name = "allowedTargets"];</code>
+     * @param index The index of the value to return.
+     * @return The bytes of the allowedTargets at the given index.
+     */
+    public com.google.protobuf.ByteString
+        getAllowedTargetsBytes(int index) {
+      return allowedTargets_.getByteString(index);
+    }
+
     private byte memoizedIsInitialized = -1;
     @java.lang.Override
     public final boolean isInitialized() {
@@ -2697,6 +2786,12 @@ public final class QueryOuterClass extends com.google.protobuf.GeneratedFile {
       if (!com.google.protobuf.GeneratedMessage.isStringEmpty(remainingValue_)) {
         com.google.protobuf.GeneratedMessage.writeString(output, 11, remainingValue_);
       }
+      if (nativeOnly_ != false) {
+        output.writeBool(12, nativeOnly_);
+      }
+      for (int i = 0; i < allowedTargets_.size(); i++) {
+        com.google.protobuf.GeneratedMessage.writeString(output, 13, allowedTargets_.getRaw(i));
+      }
       getUnknownFields().writeTo(output);
     }
     private int computeSerializedSize_0() {
@@ -2741,6 +2836,18 @@ public final class QueryOuterClass extends com.google.protobuf.GeneratedFile {
       }
       if (!com.google.protobuf.GeneratedMessage.isStringEmpty(remainingValue_)) {
         size += com.google.protobuf.GeneratedMessage.computeStringSize(11, remainingValue_);
+      }
+      if (nativeOnly_ != false) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeBoolSize(12, nativeOnly_);
+      }
+      {
+        int dataSize = 0;
+        for (int i = 0; i < allowedTargets_.size(); i++) {
+          dataSize += computeStringSizeNoTag(allowedTargets_.getRaw(i));
+        }
+        size += dataSize;
+        size += 1 * getAllowedTargetsList().size();
       }
       return size;
     }
@@ -2788,6 +2895,10 @@ public final class QueryOuterClass extends com.google.protobuf.GeneratedFile {
           != other.getRemainingTxs()) return false;
       if (!getRemainingValue()
           .equals(other.getRemainingValue())) return false;
+      if (getNativeOnly()
+          != other.getNativeOnly()) return false;
+      if (!getAllowedTargetsList()
+          .equals(other.getAllowedTargetsList())) return false;
       if (!getUnknownFields().equals(other.getUnknownFields())) return false;
       return true;
     }
@@ -2829,6 +2940,13 @@ public final class QueryOuterClass extends com.google.protobuf.GeneratedFile {
           getRemainingTxs());
       hash = (37 * hash) + REMAINING_VALUE_FIELD_NUMBER;
       hash = (53 * hash) + getRemainingValue().hashCode();
+      hash = (37 * hash) + NATIVE_ONLY_FIELD_NUMBER;
+      hash = (53 * hash) + com.google.protobuf.Internal.hashBoolean(
+          getNativeOnly());
+      if (getAllowedTargetsCount() > 0) {
+        hash = (37 * hash) + ALLOWED_TARGETS_FIELD_NUMBER;
+        hash = (53 * hash) + getAllowedTargetsList().hashCode();
+      }
       hash = (29 * hash) + getUnknownFields().hashCode();
       memoizedHashCode = hash;
       return hash;
@@ -2971,6 +3089,9 @@ public final class QueryOuterClass extends com.google.protobuf.GeneratedFile {
         remainingBlocks_ = 0L;
         remainingTxs_ = 0L;
         remainingValue_ = "";
+        nativeOnly_ = false;
+        allowedTargets_ =
+            com.google.protobuf.LazyStringArrayList.emptyList();
         return this;
       }
 
@@ -3037,6 +3158,13 @@ public final class QueryOuterClass extends com.google.protobuf.GeneratedFile {
         if (((from_bitField0_ & 0x00000400) != 0)) {
           result.remainingValue_ = remainingValue_;
         }
+        if (((from_bitField0_ & 0x00000800) != 0)) {
+          result.nativeOnly_ = nativeOnly_;
+        }
+        if (((from_bitField0_ & 0x00001000) != 0)) {
+          allowedTargets_.makeImmutable();
+          result.allowedTargets_ = allowedTargets_;
+        }
       }
 
       @java.lang.Override
@@ -3088,6 +3216,19 @@ public final class QueryOuterClass extends com.google.protobuf.GeneratedFile {
         if (!other.getRemainingValue().isEmpty()) {
           remainingValue_ = other.remainingValue_;
           bitField0_ |= 0x00000400;
+          onChanged();
+        }
+        if (other.getNativeOnly() != false) {
+          setNativeOnly(other.getNativeOnly());
+        }
+        if (!other.allowedTargets_.isEmpty()) {
+          if (allowedTargets_.isEmpty()) {
+            allowedTargets_ = other.allowedTargets_;
+            bitField0_ |= 0x00001000;
+          } else {
+            ensureAllowedTargetsIsMutable();
+            allowedTargets_.addAll(other.allowedTargets_);
+          }
           onChanged();
         }
         this.mergeUnknownFields(other.getUnknownFields());
@@ -3171,6 +3312,16 @@ public final class QueryOuterClass extends com.google.protobuf.GeneratedFile {
                 bitField0_ |= 0x00000400;
                 break;
               } // case 90
+              case 96: {
+                nativeOnly_ = input.readBool();
+                bitField0_ |= 0x00000800;
+                break;
+              } // case 96
+              case 106: {
+                ensureAllowedTargetsIsMutable();
+                allowedTargets_.add(input.readStringRequireUtf8());
+                break;
+              } // case 106
               default: {
                 if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                   done = true; // was an endgroup tag
@@ -3701,6 +3852,161 @@ public final class QueryOuterClass extends com.google.protobuf.GeneratedFile {
         checkByteStringIsUtf8(value);
         remainingValue_ = value;
         bitField0_ |= 0x00000400;
+        onChanged();
+        return this;
+      }
+
+      private boolean nativeOnly_ ;
+      /**
+       * <pre>
+       * native_only and allowed_targets report the window's scope, as opened.
+       * </pre>
+       *
+       * <code>bool native_only = 12 [json_name = "nativeOnly"];</code>
+       * @return The nativeOnly.
+       */
+      @java.lang.Override
+      public boolean getNativeOnly() {
+        return nativeOnly_;
+      }
+      /**
+       * <pre>
+       * native_only and allowed_targets report the window's scope, as opened.
+       * </pre>
+       *
+       * <code>bool native_only = 12 [json_name = "nativeOnly"];</code>
+       * @param value The nativeOnly to set.
+       * @return This builder for chaining.
+       */
+      public Builder setNativeOnly(boolean value) {
+
+        nativeOnly_ = value;
+        bitField0_ |= 0x00000800;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * native_only and allowed_targets report the window's scope, as opened.
+       * </pre>
+       *
+       * <code>bool native_only = 12 [json_name = "nativeOnly"];</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearNativeOnly() {
+        bitField0_ = (bitField0_ & ~0x00000800);
+        nativeOnly_ = false;
+        onChanged();
+        return this;
+      }
+
+      private com.google.protobuf.LazyStringArrayList allowedTargets_ =
+          com.google.protobuf.LazyStringArrayList.emptyList();
+      private void ensureAllowedTargetsIsMutable() {
+        if (!allowedTargets_.isModifiable()) {
+          allowedTargets_ = new com.google.protobuf.LazyStringArrayList(allowedTargets_);
+        }
+        bitField0_ |= 0x00001000;
+      }
+      /**
+       * <code>repeated string allowed_targets = 13 [json_name = "allowedTargets"];</code>
+       * @return A list containing the allowedTargets.
+       */
+      public com.google.protobuf.ProtocolStringList
+          getAllowedTargetsList() {
+        allowedTargets_.makeImmutable();
+        return allowedTargets_;
+      }
+      /**
+       * <code>repeated string allowed_targets = 13 [json_name = "allowedTargets"];</code>
+       * @return The count of allowedTargets.
+       */
+      public int getAllowedTargetsCount() {
+        return allowedTargets_.size();
+      }
+      /**
+       * <code>repeated string allowed_targets = 13 [json_name = "allowedTargets"];</code>
+       * @param index The index of the element to return.
+       * @return The allowedTargets at the given index.
+       */
+      public java.lang.String getAllowedTargets(int index) {
+        return allowedTargets_.get(index);
+      }
+      /**
+       * <code>repeated string allowed_targets = 13 [json_name = "allowedTargets"];</code>
+       * @param index The index of the value to return.
+       * @return The bytes of the allowedTargets at the given index.
+       */
+      public com.google.protobuf.ByteString
+          getAllowedTargetsBytes(int index) {
+        return allowedTargets_.getByteString(index);
+      }
+      /**
+       * <code>repeated string allowed_targets = 13 [json_name = "allowedTargets"];</code>
+       * @param index The index to set the value at.
+       * @param value The allowedTargets to set.
+       * @return This builder for chaining.
+       */
+      public Builder setAllowedTargets(
+          int index, java.lang.String value) {
+        if (value == null) { throw new NullPointerException(); }
+        ensureAllowedTargetsIsMutable();
+        allowedTargets_.set(index, value);
+        bitField0_ |= 0x00001000;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>repeated string allowed_targets = 13 [json_name = "allowedTargets"];</code>
+       * @param value The allowedTargets to add.
+       * @return This builder for chaining.
+       */
+      public Builder addAllowedTargets(
+          java.lang.String value) {
+        if (value == null) { throw new NullPointerException(); }
+        ensureAllowedTargetsIsMutable();
+        allowedTargets_.add(value);
+        bitField0_ |= 0x00001000;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>repeated string allowed_targets = 13 [json_name = "allowedTargets"];</code>
+       * @param values The allowedTargets to add.
+       * @return This builder for chaining.
+       */
+      public Builder addAllAllowedTargets(
+          java.lang.Iterable<java.lang.String> values) {
+        ensureAllowedTargetsIsMutable();
+        com.google.protobuf.AbstractMessageLite.Builder.addAll(
+            values, allowedTargets_);
+        bitField0_ |= 0x00001000;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>repeated string allowed_targets = 13 [json_name = "allowedTargets"];</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearAllowedTargets() {
+        allowedTargets_ =
+          com.google.protobuf.LazyStringArrayList.emptyList();
+        bitField0_ = (bitField0_ & ~0x00001000);;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>repeated string allowed_targets = 13 [json_name = "allowedTargets"];</code>
+       * @param value The bytes of the allowedTargets to add.
+       * @return This builder for chaining.
+       */
+      public Builder addAllowedTargetsBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) { throw new NullPointerException(); }
+        checkByteStringIsUtf8(value);
+        ensureAllowedTargetsIsMutable();
+        allowedTargets_.add(value);
+        bitField0_ |= 0x00001000;
         onChanged();
         return this;
       }
@@ -6499,7 +6805,7 @@ public final class QueryOuterClass extends com.google.protobuf.GeneratedFile {
       "ight\022)\n\020current_delegate\030\006 \001(\tR\017currentD" +
       "elegate\022\024\n\005nonce\030\007 \001(\004R\005nonce\"1\n\025QueryEV" +
       "MWindowRequest\022\030\n\007address\030\001 \001(\tR\007address" +
-      "\"\365\002\n\026QueryEVMWindowResponse\022\024\n\005found\030\001 \001" +
+      "\"\277\003\n\026QueryEVMWindowResponse\022\024\n\005found\030\001 \001" +
       "(\010R\005found\022\022\n\004live\030\002 \001(\010R\004live\022#\n\ropened_" +
       "height\030\003 \001(\004R\014openedHeight\022#\n\rexpiry_hei" +
       "ght\030\004 \001(\004R\014expiryHeight\022\027\n\007max_txs\030\005 \001(\004" +
@@ -6508,35 +6814,36 @@ public final class QueryOuterClass extends com.google.protobuf.GeneratedFile {
       " \001(\tR\tusedValue\022)\n\020remaining_blocks\030\t \001(" +
       "\004R\017remainingBlocks\022#\n\rremaining_txs\030\n \001(" +
       "\004R\014remainingTxs\022\'\n\017remaining_value\030\013 \001(\t" +
-      "R\016remainingValue\"/\n\023QueryAccountRequest\022" +
-      "\030\n\007address\030\001 \001(\tR\007address\"h\n\024QueryAccoun" +
-      "tResponse\022\024\n\005found\030\001 \001(\010R\005found\022:\n\007accou" +
-      "nt\030\002 \001(\0132 .qorechain.pqc.v1.PQCAccountVi" +
-      "ewR\007account\"\227\003\n\016PQCAccountView\022\030\n\007addres" +
-      "s\030\001 \001(\tR\007address\022\035\n\npublic_key\030\002 \001(\014R\tpu" +
-      "blicKey\022!\n\014algorithm_id\030\003 \001(\rR\013algorithm" +
-      "Id\022%\n\016algorithm_name\030\004 \001(\tR\ralgorithmNam" +
-      "e\022!\n\014ecdsa_pubkey\030\005 \001(\014R\013ecdsaPubkey\022\031\n\010" +
-      "key_type\030\006 \001(\tR\007keyType\022*\n\021created_at_he" +
-      "ight\030\007 \001(\003R\017createdAtHeight\0220\n\024migration" +
-      "_public_key\030\010 \001(\014R\022migrationPublicKey\0224\n" +
-      "\026migration_algorithm_id\030\t \001(\rR\024migration" +
-      "AlgorithmId\0220\n\024classical_key_source\030\n \001(" +
-      "\tR\022classicalKeySource2\336\003\n\005Query\022\205\001\n\007Acco" +
-      "unt\022%.qorechain.pqc.v1.QueryAccountReque" +
-      "st\032&.qorechain.pqc.v1.QueryAccountRespon" +
-      "se\"+\202\323\344\223\002%\022#/qorechain/pqc/v1/account/{a" +
-      "ddress}\022\216\001\n\tEVMWindow\022\'.qorechain.pqc.v1" +
-      ".QueryEVMWindowRequest\032(.qorechain.pqc.v" +
-      "1.QueryEVMWindowResponse\".\202\323\344\223\002(\022&/qorec" +
-      "hain/pqc/v1/evm_window/{address}\022\273\001\n\024EVM" +
-      "DelegationConsent\0222.qorechain.pqc.v1.Que" +
-      "ryEVMDelegationConsentRequest\0323.qorechai" +
-      "n.pqc.v1.QueryEVMDelegationConsentRespon" +
-      "se\":\202\323\344\223\0024\0222/qorechain/pqc/v1/evm_delega" +
-      "tion_consent/{address}B1Z/github.com/qor" +
-      "echain/qorechain-core/x/pqc/typesb\006proto" +
-      "3"
+      "R\016remainingValue\022\037\n\013native_only\030\014 \001(\010R\nn" +
+      "ativeOnly\022\'\n\017allowed_targets\030\r \003(\tR\016allo" +
+      "wedTargets\"/\n\023QueryAccountRequest\022\030\n\007add" +
+      "ress\030\001 \001(\tR\007address\"h\n\024QueryAccountRespo" +
+      "nse\022\024\n\005found\030\001 \001(\010R\005found\022:\n\007account\030\002 \001" +
+      "(\0132 .qorechain.pqc.v1.PQCAccountViewR\007ac" +
+      "count\"\227\003\n\016PQCAccountView\022\030\n\007address\030\001 \001(" +
+      "\tR\007address\022\035\n\npublic_key\030\002 \001(\014R\tpublicKe" +
+      "y\022!\n\014algorithm_id\030\003 \001(\rR\013algorithmId\022%\n\016" +
+      "algorithm_name\030\004 \001(\tR\ralgorithmName\022!\n\014e" +
+      "cdsa_pubkey\030\005 \001(\014R\013ecdsaPubkey\022\031\n\010key_ty" +
+      "pe\030\006 \001(\tR\007keyType\022*\n\021created_at_height\030\007" +
+      " \001(\003R\017createdAtHeight\0220\n\024migration_publi" +
+      "c_key\030\010 \001(\014R\022migrationPublicKey\0224\n\026migra" +
+      "tion_algorithm_id\030\t \001(\rR\024migrationAlgori" +
+      "thmId\0220\n\024classical_key_source\030\n \001(\tR\022cla" +
+      "ssicalKeySource2\336\003\n\005Query\022\205\001\n\007Account\022%." +
+      "qorechain.pqc.v1.QueryAccountRequest\032&.q" +
+      "orechain.pqc.v1.QueryAccountResponse\"+\202\323" +
+      "\344\223\002%\022#/qorechain/pqc/v1/account/{address" +
+      "}\022\216\001\n\tEVMWindow\022\'.qorechain.pqc.v1.Query" +
+      "EVMWindowRequest\032(.qorechain.pqc.v1.Quer" +
+      "yEVMWindowResponse\".\202\323\344\223\002(\022&/qorechain/p" +
+      "qc/v1/evm_window/{address}\022\273\001\n\024EVMDelega" +
+      "tionConsent\0222.qorechain.pqc.v1.QueryEVMD" +
+      "elegationConsentRequest\0323.qorechain.pqc." +
+      "v1.QueryEVMDelegationConsentResponse\":\202\323" +
+      "\344\223\0024\0222/qorechain/pqc/v1/evm_delegation_c" +
+      "onsent/{address}B1Z/github.com/qorechain" +
+      "/qorechain-core/x/pqc/typesb\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
@@ -6566,7 +6873,7 @@ public final class QueryOuterClass extends com.google.protobuf.GeneratedFile {
     internal_static_qorechain_pqc_v1_QueryEVMWindowResponse_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_qorechain_pqc_v1_QueryEVMWindowResponse_descriptor,
-        new java.lang.String[] { "Found", "Live", "OpenedHeight", "ExpiryHeight", "MaxTxs", "UsedTxs", "MaxValue", "UsedValue", "RemainingBlocks", "RemainingTxs", "RemainingValue", });
+        new java.lang.String[] { "Found", "Live", "OpenedHeight", "ExpiryHeight", "MaxTxs", "UsedTxs", "MaxValue", "UsedValue", "RemainingBlocks", "RemainingTxs", "RemainingValue", "NativeOnly", "AllowedTargets", });
     internal_static_qorechain_pqc_v1_QueryAccountRequest_descriptor =
       getDescriptor().getMessageType(4);
     internal_static_qorechain_pqc_v1_QueryAccountRequest_fieldAccessorTable = new

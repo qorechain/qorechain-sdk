@@ -70,6 +70,9 @@ export interface QueryEVMWindowResponse {
   remainingBlocks: string;
   remainingTxs: string;
   remainingValue: string;
+  /** native_only and allowed_targets report the window's scope, as opened. */
+  nativeOnly: boolean;
+  allowedTargets: string[];
 }
 
 export interface QueryAccountRequest {
@@ -407,6 +410,8 @@ function createBaseQueryEVMWindowResponse(): QueryEVMWindowResponse {
     remainingBlocks: "0",
     remainingTxs: "0",
     remainingValue: "",
+    nativeOnly: false,
+    allowedTargets: [],
   };
 }
 
@@ -444,6 +449,12 @@ export const QueryEVMWindowResponse: MessageFns<QueryEVMWindowResponse> = {
     }
     if (message.remainingValue !== "") {
       writer.uint32(90).string(message.remainingValue);
+    }
+    if (message.nativeOnly !== false) {
+      writer.uint32(96).bool(message.nativeOnly);
+    }
+    for (const v of message.allowedTargets) {
+      writer.uint32(106).string(v!);
     }
     return writer;
   },
@@ -543,6 +554,22 @@ export const QueryEVMWindowResponse: MessageFns<QueryEVMWindowResponse> = {
           message.remainingValue = reader.string();
           continue;
         }
+        case 12: {
+          if (tag !== 96) {
+            break;
+          }
+
+          message.nativeOnly = reader.bool();
+          continue;
+        }
+        case 13: {
+          if (tag !== 106) {
+            break;
+          }
+
+          message.allowedTargets.push(reader.string());
+          continue;
+        }
       }
       if ((tag & 7) === 4 || tag === 0) {
         break;
@@ -601,6 +628,16 @@ export const QueryEVMWindowResponse: MessageFns<QueryEVMWindowResponse> = {
         : isSet(object.remaining_value)
         ? globalThis.String(object.remaining_value)
         : "",
+      nativeOnly: isSet(object.nativeOnly)
+        ? globalThis.Boolean(object.nativeOnly)
+        : isSet(object.native_only)
+        ? globalThis.Boolean(object.native_only)
+        : false,
+      allowedTargets: globalThis.Array.isArray(object?.allowedTargets)
+        ? object.allowedTargets.map((e: any) => globalThis.String(e))
+        : globalThis.Array.isArray(object?.allowed_targets)
+        ? object.allowed_targets.map((e: any) => globalThis.String(e))
+        : [],
     };
   },
 
@@ -639,6 +676,12 @@ export const QueryEVMWindowResponse: MessageFns<QueryEVMWindowResponse> = {
     if (message.remainingValue !== "") {
       obj.remainingValue = message.remainingValue;
     }
+    if (message.nativeOnly !== false) {
+      obj.nativeOnly = message.nativeOnly;
+    }
+    if (message.allowedTargets?.length) {
+      obj.allowedTargets = message.allowedTargets;
+    }
     return obj;
   },
 
@@ -658,6 +701,8 @@ export const QueryEVMWindowResponse: MessageFns<QueryEVMWindowResponse> = {
     message.remainingBlocks = object.remainingBlocks ?? "0";
     message.remainingTxs = object.remainingTxs ?? "0";
     message.remainingValue = object.remainingValue ?? "";
+    message.nativeOnly = object.nativeOnly ?? false;
+    message.allowedTargets = object.allowedTargets?.map((e) => e) || [];
     return message;
   },
 };

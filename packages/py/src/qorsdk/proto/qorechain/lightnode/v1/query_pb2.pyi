@@ -113,7 +113,7 @@ class QueryRewardPoolRequest(_message.Message):
     def __init__(self) -> None: ...
 
 class QueryRewardPoolResponse(_message.Message):
-    __slots__ = ("balance", "reserved", "outstanding", "payable", "max_reward_per_block_per_node", "distributable", "initialized")
+    __slots__ = ("balance", "reserved", "outstanding", "payable", "max_reward_per_block_per_node", "distributable", "initialized", "max_reward_per_month_per_node")
     BALANCE_FIELD_NUMBER: _ClassVar[int]
     RESERVED_FIELD_NUMBER: _ClassVar[int]
     OUTSTANDING_FIELD_NUMBER: _ClassVar[int]
@@ -121,6 +121,7 @@ class QueryRewardPoolResponse(_message.Message):
     MAX_REWARD_PER_BLOCK_PER_NODE_FIELD_NUMBER: _ClassVar[int]
     DISTRIBUTABLE_FIELD_NUMBER: _ClassVar[int]
     INITIALIZED_FIELD_NUMBER: _ClassVar[int]
+    MAX_REWARD_PER_MONTH_PER_NODE_FIELD_NUMBER: _ClassVar[int]
     balance: str
     reserved: str
     outstanding: str
@@ -128,4 +129,5 @@ class QueryRewardPoolResponse(_message.Message):
     max_reward_per_block_per_node: str
     distributable: str
     initialized: bool
-    def __init__(self, balance: _Optional[str] = ..., reserved: _Optional[str] = ..., outstanding: _Optional[str] = ..., payable: _Optional[str] = ..., max_reward_per_block_per_node: _Optional[str] = ..., distributable: _Optional[str] = ..., initialized: bool = ...) -> None: ...
+    max_reward_per_month_per_node: str
+    def __init__(self, balance: _Optional[str] = ..., reserved: _Optional[str] = ..., outstanding: _Optional[str] = ..., payable: _Optional[str] = ..., max_reward_per_block_per_node: _Optional[str] = ..., distributable: _Optional[str] = ..., initialized: bool = ..., max_reward_per_month_per_node: _Optional[str] = ...) -> None: ...

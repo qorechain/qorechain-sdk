@@ -47,6 +47,20 @@ export interface MsgResumeLicense {
 export interface MsgResumeLicenseResponse {
 }
 
+/**
+ * MsgUpdateAuthority replaces the licence grant authority. Signed by the
+ * governance module account, so it only ever executes from a passed proposal.
+ */
+export interface MsgUpdateAuthority {
+  /** authority is the governance module account. */
+  authority: string;
+  /** new_authority becomes the licence grant authority. */
+  newAuthority: string;
+}
+
+export interface MsgUpdateAuthorityResponse {
+}
+
 function createBaseMsgGrantLicense(): MsgGrantLicense {
   return { authority: "", grantee: "", featureId: "", expiresAt: "0", metadata: "" };
 }
@@ -639,6 +653,129 @@ export const MsgResumeLicenseResponse: MessageFns<MsgResumeLicenseResponse> = {
   },
 };
 
+function createBaseMsgUpdateAuthority(): MsgUpdateAuthority {
+  return { authority: "", newAuthority: "" };
+}
+
+export const MsgUpdateAuthority: MessageFns<MsgUpdateAuthority> = {
+  encode(message: MsgUpdateAuthority, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.authority !== "") {
+      writer.uint32(10).string(message.authority);
+    }
+    if (message.newAuthority !== "") {
+      writer.uint32(18).string(message.newAuthority);
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): MsgUpdateAuthority {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseMsgUpdateAuthority();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.authority = reader.string();
+          continue;
+        }
+        case 2: {
+          if (tag !== 18) {
+            break;
+          }
+
+          message.newAuthority = reader.string();
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(object: any): MsgUpdateAuthority {
+    return {
+      authority: isSet(object.authority) ? globalThis.String(object.authority) : "",
+      newAuthority: isSet(object.newAuthority)
+        ? globalThis.String(object.newAuthority)
+        : isSet(object.new_authority)
+        ? globalThis.String(object.new_authority)
+        : "",
+    };
+  },
+
+  toJSON(message: MsgUpdateAuthority): unknown {
+    const obj: any = {};
+    if (message.authority !== "") {
+      obj.authority = message.authority;
+    }
+    if (message.newAuthority !== "") {
+      obj.newAuthority = message.newAuthority;
+    }
+    return obj;
+  },
+
+  create(base?: DeepPartial<MsgUpdateAuthority>): MsgUpdateAuthority {
+    return MsgUpdateAuthority.fromPartial(base ?? {});
+  },
+  fromPartial(object: DeepPartial<MsgUpdateAuthority>): MsgUpdateAuthority {
+    const message = createBaseMsgUpdateAuthority();
+    message.authority = object.authority ?? "";
+    message.newAuthority = object.newAuthority ?? "";
+    return message;
+  },
+};
+
+function createBaseMsgUpdateAuthorityResponse(): MsgUpdateAuthorityResponse {
+  return {};
+}
+
+export const MsgUpdateAuthorityResponse: MessageFns<MsgUpdateAuthorityResponse> = {
+  encode(_: MsgUpdateAuthorityResponse, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): MsgUpdateAuthorityResponse {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseMsgUpdateAuthorityResponse();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(_: any): MsgUpdateAuthorityResponse {
+    return {};
+  },
+
+  toJSON(_: MsgUpdateAuthorityResponse): unknown {
+    const obj: any = {};
+    return obj;
+  },
+
+  create(base?: DeepPartial<MsgUpdateAuthorityResponse>): MsgUpdateAuthorityResponse {
+    return MsgUpdateAuthorityResponse.fromPartial(base ?? {});
+  },
+  fromPartial(_: DeepPartial<MsgUpdateAuthorityResponse>): MsgUpdateAuthorityResponse {
+    const message = createBaseMsgUpdateAuthorityResponse();
+    return message;
+  },
+};
+
 /** Msg defines the license module's transaction service. */
 export type MsgDefinition = typeof MsgDefinition;
 export const MsgDefinition = {
@@ -674,6 +811,18 @@ export const MsgDefinition = {
       requestType: MsgResumeLicense as typeof MsgResumeLicense,
       requestStream: false,
       responseType: MsgResumeLicenseResponse as typeof MsgResumeLicenseResponse,
+      responseStream: false,
+      options: {},
+    },
+    /**
+     * UpdateAuthority replaces the account allowed to grant, revoke, suspend and
+     * resume licences. Only the governance module may call it.
+     */
+    updateAuthority: {
+      name: "UpdateAuthority",
+      requestType: MsgUpdateAuthority as typeof MsgUpdateAuthority,
+      requestStream: false,
+      responseType: MsgUpdateAuthorityResponse as typeof MsgUpdateAuthorityResponse,
       responseStream: false,
       options: {},
     },

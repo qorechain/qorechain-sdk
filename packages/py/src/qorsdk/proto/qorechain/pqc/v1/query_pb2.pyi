@@ -1,7 +1,8 @@
 from google.api import annotations_pb2 as _annotations_pb2
+from google.protobuf.internal import containers as _containers
 from google.protobuf import descriptor as _descriptor
 from google.protobuf import message as _message
-from typing import ClassVar as _ClassVar, Mapping as _Mapping, Optional as _Optional, Union as _Union
+from typing import ClassVar as _ClassVar, Iterable as _Iterable, Mapping as _Mapping, Optional as _Optional, Union as _Union
 
 DESCRIPTOR: _descriptor.FileDescriptor
 
@@ -36,7 +37,7 @@ class QueryEVMWindowRequest(_message.Message):
     def __init__(self, address: _Optional[str] = ...) -> None: ...
 
 class QueryEVMWindowResponse(_message.Message):
-    __slots__ = ("found", "live", "opened_height", "expiry_height", "max_txs", "used_txs", "max_value", "used_value", "remaining_blocks", "remaining_txs", "remaining_value")
+    __slots__ = ("found", "live", "opened_height", "expiry_height", "max_txs", "used_txs", "max_value", "used_value", "remaining_blocks", "remaining_txs", "remaining_value", "native_only", "allowed_targets")
     FOUND_FIELD_NUMBER: _ClassVar[int]
     LIVE_FIELD_NUMBER: _ClassVar[int]
     OPENED_HEIGHT_FIELD_NUMBER: _ClassVar[int]
@@ -48,6 +49,8 @@ class QueryEVMWindowResponse(_message.Message):
     REMAINING_BLOCKS_FIELD_NUMBER: _ClassVar[int]
     REMAINING_TXS_FIELD_NUMBER: _ClassVar[int]
     REMAINING_VALUE_FIELD_NUMBER: _ClassVar[int]
+    NATIVE_ONLY_FIELD_NUMBER: _ClassVar[int]
+    ALLOWED_TARGETS_FIELD_NUMBER: _ClassVar[int]
     found: bool
     live: bool
     opened_height: int
@@ -59,7 +62,9 @@ class QueryEVMWindowResponse(_message.Message):
     remaining_blocks: int
     remaining_txs: int
     remaining_value: str
-    def __init__(self, found: bool = ..., live: bool = ..., opened_height: _Optional[int] = ..., expiry_height: _Optional[int] = ..., max_txs: _Optional[int] = ..., used_txs: _Optional[int] = ..., max_value: _Optional[str] = ..., used_value: _Optional[str] = ..., remaining_blocks: _Optional[int] = ..., remaining_txs: _Optional[int] = ..., remaining_value: _Optional[str] = ...) -> None: ...
+    native_only: bool
+    allowed_targets: _containers.RepeatedScalarFieldContainer[str]
+    def __init__(self, found: bool = ..., live: bool = ..., opened_height: _Optional[int] = ..., expiry_height: _Optional[int] = ..., max_txs: _Optional[int] = ..., used_txs: _Optional[int] = ..., max_value: _Optional[str] = ..., used_value: _Optional[str] = ..., remaining_blocks: _Optional[int] = ..., remaining_txs: _Optional[int] = ..., remaining_value: _Optional[str] = ..., native_only: bool = ..., allowed_targets: _Optional[_Iterable[str]] = ...) -> None: ...
 
 class QueryAccountRequest(_message.Message):
     __slots__ = ("address",)

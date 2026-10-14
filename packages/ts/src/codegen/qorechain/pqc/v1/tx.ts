@@ -30,6 +30,12 @@ export interface MsgRegisterPQCKeyV2 {
   algorithmId: number;
   ecdsaPubkey: Uint8Array;
   keyType: string;
+  /**
+   * Optional (v3.2.3): the key's signature over
+   * "qorechain-pqc-pop-v1|chainid|algo|account|hex(public_key)", proving the
+   * owner holds its secret. Verified when present; not required yet.
+   */
+  proofOfPossession: Uint8Array;
 }
 
 export interface MsgRegisterPQCKeyV2Response {
@@ -52,8 +58,10 @@ export interface MsgMigratePQCKeyResponse {
  * MsgRotatePQCKey replaces an account's PQC key with a new key of the SAME
  * algorithm. Both signatures are over the domain-separated bytes
  * "qorechain-pqc-rotate-v1|chainid|algo|account|oldkey|newkey" (no block height —
- * the signer cannot predict it; replay is prevented because after the rotation
- * the old key no longer matches the registered key).
+ * the signer cannot predict it). The bytes carry no nonce, so the old key no
+ * longer matching is NOT enough once a key is reused (A->B->A makes the A->B
+ * message valid again). From v3.2.3 the chain refuses any rotation or migration
+ * to a key the account used before, which closes that replay.
  */
 export interface MsgRotatePQCKey {
   sender: string;
@@ -110,6 +118,20 @@ export interface MsgOpenEVMWindow {
    * account, so both are bounded.
    */
   maxValue: string;
+  /**
+   * native_only, when true, narrows the window to plain transfers of native
+   * QOR: it refuses calldata, contract creation, a recipient that carries
+   * code, and EIP-7702 authorizations. Optional; absent keeps the window's
+   * original scope. Honoured from the evm-pqc-window-targets feature on.
+   */
+  nativeOnly: boolean;
+  /**
+   * allowed_targets, when non-empty, narrows the window to transactions whose
+   * recipient is one of these 0x-prefixed 20-byte addresses; contract
+   * creation is refused. Optional; absent keeps the window's original scope.
+   * Honoured from the evm-pqc-window-targets feature on.
+   */
+  allowedTargets: string[];
 }
 
 export interface MsgOpenEVMWindowResponse {
@@ -318,7 +340,14 @@ export const MsgRegisterPQCKeyResponse: MessageFns<MsgRegisterPQCKeyResponse> = 
 };
 
 function createBaseMsgRegisterPQCKeyV2(): MsgRegisterPQCKeyV2 {
-  return { sender: "", publicKey: new Uint8Array(0), algorithmId: 0, ecdsaPubkey: new Uint8Array(0), keyType: "" };
+  return {
+    sender: "",
+    publicKey: new Uint8Array(0),
+    algorithmId: 0,
+    ecdsaPubkey: new Uint8Array(0),
+    keyType: "",
+    proofOfPossession: new Uint8Array(0),
+  };
 }
 
 export const MsgRegisterPQCKeyV2: MessageFns<MsgRegisterPQCKeyV2> = {
@@ -337,6 +366,9 @@ export const MsgRegisterPQCKeyV2: MessageFns<MsgRegisterPQCKeyV2> = {
     }
     if (message.keyType !== "") {
       writer.uint32(42).string(message.keyType);
+    }
+    if (message.proofOfPossession.length !== 0) {
+      writer.uint32(50).bytes(message.proofOfPossession);
     }
     return writer;
   },
@@ -388,6 +420,14 @@ export const MsgRegisterPQCKeyV2: MessageFns<MsgRegisterPQCKeyV2> = {
           message.keyType = reader.string();
           continue;
         }
+        case 6: {
+          if (tag !== 50) {
+            break;
+          }
+
+          message.proofOfPossession = reader.bytes();
+          continue;
+        }
       }
       if ((tag & 7) === 4 || tag === 0) {
         break;
@@ -420,6 +460,11 @@ export const MsgRegisterPQCKeyV2: MessageFns<MsgRegisterPQCKeyV2> = {
         : isSet(object.key_type)
         ? globalThis.String(object.key_type)
         : "",
+      proofOfPossession: isSet(object.proofOfPossession)
+        ? bytesFromBase64(object.proofOfPossession)
+        : isSet(object.proof_of_possession)
+        ? bytesFromBase64(object.proof_of_possession)
+        : new Uint8Array(0),
     };
   },
 
@@ -440,6 +485,9 @@ export const MsgRegisterPQCKeyV2: MessageFns<MsgRegisterPQCKeyV2> = {
     if (message.keyType !== "") {
       obj.keyType = message.keyType;
     }
+    if (message.proofOfPossession.length !== 0) {
+      obj.proofOfPossession = base64FromBytes(message.proofOfPossession);
+    }
     return obj;
   },
 
@@ -453,6 +501,7 @@ export const MsgRegisterPQCKeyV2: MessageFns<MsgRegisterPQCKeyV2> = {
     message.algorithmId = object.algorithmId ?? 0;
     message.ecdsaPubkey = object.ecdsaPubkey ?? new Uint8Array(0);
     message.keyType = object.keyType ?? "";
+    message.proofOfPossession = object.proofOfPossession ?? new Uint8Array(0);
     return message;
   },
 };
@@ -1202,7 +1251,7 @@ export const MsgDisableAlgorithmResponse: MessageFns<MsgDisableAlgorithmResponse
 };
 
 function createBaseMsgOpenEVMWindow(): MsgOpenEVMWindow {
-  return { sender: "", blocks: "0", maxTxs: "0", maxValue: "" };
+  return { sender: "", blocks: "0", maxTxs: "0", maxValue: "", nativeOnly: false, allowedTargets: [] };
 }
 
 export const MsgOpenEVMWindow: MessageFns<MsgOpenEVMWindow> = {
@@ -1218,6 +1267,12 @@ export const MsgOpenEVMWindow: MessageFns<MsgOpenEVMWindow> = {
     }
     if (message.maxValue !== "") {
       writer.uint32(34).string(message.maxValue);
+    }
+    if (message.nativeOnly !== false) {
+      writer.uint32(40).bool(message.nativeOnly);
+    }
+    for (const v of message.allowedTargets) {
+      writer.uint32(50).string(v!);
     }
     return writer;
   },
@@ -1261,6 +1316,22 @@ export const MsgOpenEVMWindow: MessageFns<MsgOpenEVMWindow> = {
           message.maxValue = reader.string();
           continue;
         }
+        case 5: {
+          if (tag !== 40) {
+            break;
+          }
+
+          message.nativeOnly = reader.bool();
+          continue;
+        }
+        case 6: {
+          if (tag !== 50) {
+            break;
+          }
+
+          message.allowedTargets.push(reader.string());
+          continue;
+        }
       }
       if ((tag & 7) === 4 || tag === 0) {
         break;
@@ -1284,6 +1355,16 @@ export const MsgOpenEVMWindow: MessageFns<MsgOpenEVMWindow> = {
         : isSet(object.max_value)
         ? globalThis.String(object.max_value)
         : "",
+      nativeOnly: isSet(object.nativeOnly)
+        ? globalThis.Boolean(object.nativeOnly)
+        : isSet(object.native_only)
+        ? globalThis.Boolean(object.native_only)
+        : false,
+      allowedTargets: globalThis.Array.isArray(object?.allowedTargets)
+        ? object.allowedTargets.map((e: any) => globalThis.String(e))
+        : globalThis.Array.isArray(object?.allowed_targets)
+        ? object.allowed_targets.map((e: any) => globalThis.String(e))
+        : [],
     };
   },
 
@@ -1301,6 +1382,12 @@ export const MsgOpenEVMWindow: MessageFns<MsgOpenEVMWindow> = {
     if (message.maxValue !== "") {
       obj.maxValue = message.maxValue;
     }
+    if (message.nativeOnly !== false) {
+      obj.nativeOnly = message.nativeOnly;
+    }
+    if (message.allowedTargets?.length) {
+      obj.allowedTargets = message.allowedTargets;
+    }
     return obj;
   },
 
@@ -1313,6 +1400,8 @@ export const MsgOpenEVMWindow: MessageFns<MsgOpenEVMWindow> = {
     message.blocks = object.blocks ?? "0";
     message.maxTxs = object.maxTxs ?? "0";
     message.maxValue = object.maxValue ?? "";
+    message.nativeOnly = object.nativeOnly ?? false;
+    message.allowedTargets = object.allowedTargets?.map((e) => e) || [];
     return message;
   },
 };

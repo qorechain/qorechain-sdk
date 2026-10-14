@@ -86,6 +86,11 @@ pub struct QueryEvmWindowResponse {
     pub remaining_txs: u64,
     #[prost(string, tag="11")]
     pub remaining_value: ::prost::alloc::string::String,
+    /// native_only and allowed_targets report the window's scope, as opened.
+    #[prost(bool, tag="12")]
+    pub native_only: bool,
+    #[prost(string, repeated, tag="13")]
+    pub allowed_targets: ::prost::alloc::vec::Vec<::prost::alloc::string::String>,
 }
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct QueryAccountRequest {
@@ -157,6 +162,11 @@ pub struct MsgRegisterPqcKeyV2 {
     pub ecdsa_pubkey: ::prost::alloc::vec::Vec<u8>,
     #[prost(string, tag="5")]
     pub key_type: ::prost::alloc::string::String,
+    /// Optional (v3.2.3): the key's signature over
+    /// "qorechain-pqc-pop-v1|chainid|algo|account|hex(public_key)", proving the
+    /// owner holds its secret. Verified when present; not required yet.
+    #[prost(bytes="vec", tag="6")]
+    pub proof_of_possession: ::prost::alloc::vec::Vec<u8>,
 }
 #[derive(Clone, Copy, PartialEq, ::prost::Message)]
 pub struct MsgRegisterPqcKeyV2Response {
@@ -183,8 +193,10 @@ pub struct MsgMigratePqcKeyResponse {
 /// MsgRotatePQCKey replaces an account's PQC key with a new key of the SAME
 /// algorithm. Both signatures are over the domain-separated bytes
 /// "qorechain-pqc-rotate-v1|chainid|algo|account|oldkey|newkey" (no block height —
-/// the signer cannot predict it; replay is prevented because after the rotation
-/// the old key no longer matches the registered key).
+/// the signer cannot predict it). The bytes carry no nonce, so the old key no
+/// longer matching is NOT enough once a key is reused (A->B->A makes the A->B
+/// message valid again). From v3.2.3 the chain refuses any rotation or migration
+/// to a key the account used before, which closes that replay.
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct MsgRotatePqcKey {
     #[prost(string, tag="1")]
@@ -249,6 +261,18 @@ pub struct MsgOpenEvmWindow {
     /// account, so both are bounded.
     #[prost(string, tag="4")]
     pub max_value: ::prost::alloc::string::String,
+    /// native_only, when true, narrows the window to plain transfers of native
+    /// QOR: it refuses calldata, contract creation, a recipient that carries
+    /// code, and EIP-7702 authorizations. Optional; absent keeps the window's
+    /// original scope. Honoured from the evm-pqc-window-targets feature on.
+    #[prost(bool, tag="5")]
+    pub native_only: bool,
+    /// allowed_targets, when non-empty, narrows the window to transactions whose
+    /// recipient is one of these 0x-prefixed 20-byte addresses; contract
+    /// creation is refused. Optional; absent keeps the window's original scope.
+    /// Honoured from the evm-pqc-window-targets feature on.
+    #[prost(string, repeated, tag="6")]
+    pub allowed_targets: ::prost::alloc::vec::Vec<::prost::alloc::string::String>,
 }
 #[derive(Clone, Copy, PartialEq, ::prost::Message)]
 pub struct MsgOpenEvmWindowResponse {

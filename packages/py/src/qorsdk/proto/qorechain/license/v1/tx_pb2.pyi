@@ -66,3 +66,15 @@ class MsgResumeLicense(_message.Message):
 class MsgResumeLicenseResponse(_message.Message):
     __slots__ = ()
     def __init__(self) -> None: ...
+
+class MsgUpdateAuthority(_message.Message):
+    __slots__ = ("authority", "new_authority")
+    AUTHORITY_FIELD_NUMBER: _ClassVar[int]
+    NEW_AUTHORITY_FIELD_NUMBER: _ClassVar[int]
+    authority: str
+    new_authority: str
+    def __init__(self, authority: _Optional[str] = ..., new_authority: _Optional[str] = ...) -> None: ...
+
+class MsgUpdateAuthorityResponse(_message.Message):
+    __slots__ = ()
+    def __init__(self) -> None: ...

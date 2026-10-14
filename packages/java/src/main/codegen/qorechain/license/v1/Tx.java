@@ -4943,6 +4943,1114 @@ public final class Tx extends com.google.protobuf.GeneratedFile {
 
   }
 
+  public interface MsgUpdateAuthorityOrBuilder extends
+      // @@protoc_insertion_point(interface_extends:qorechain.license.v1.MsgUpdateAuthority)
+      com.google.protobuf.MessageOrBuilder {
+
+    /**
+     * <pre>
+     * authority is the governance module account.
+     * </pre>
+     *
+     * <code>string authority = 1 [json_name = "authority", (.cosmos_proto.scalar) = "cosmos.AddressString"];</code>
+     * @return The authority.
+     */
+    java.lang.String getAuthority();
+    /**
+     * <pre>
+     * authority is the governance module account.
+     * </pre>
+     *
+     * <code>string authority = 1 [json_name = "authority", (.cosmos_proto.scalar) = "cosmos.AddressString"];</code>
+     * @return The bytes for authority.
+     */
+    com.google.protobuf.ByteString
+        getAuthorityBytes();
+
+    /**
+     * <pre>
+     * new_authority becomes the licence grant authority.
+     * </pre>
+     *
+     * <code>string new_authority = 2 [json_name = "newAuthority", (.cosmos_proto.scalar) = "cosmos.AddressString"];</code>
+     * @return The newAuthority.
+     */
+    java.lang.String getNewAuthority();
+    /**
+     * <pre>
+     * new_authority becomes the licence grant authority.
+     * </pre>
+     *
+     * <code>string new_authority = 2 [json_name = "newAuthority", (.cosmos_proto.scalar) = "cosmos.AddressString"];</code>
+     * @return The bytes for newAuthority.
+     */
+    com.google.protobuf.ByteString
+        getNewAuthorityBytes();
+  }
+  /**
+   * <pre>
+   * MsgUpdateAuthority replaces the licence grant authority. Signed by the
+   * governance module account, so it only ever executes from a passed proposal.
+   * </pre>
+   *
+   * Protobuf type {@code qorechain.license.v1.MsgUpdateAuthority}
+   */
+  public static final class MsgUpdateAuthority extends
+      com.google.protobuf.GeneratedMessage implements
+      // @@protoc_insertion_point(message_implements:qorechain.license.v1.MsgUpdateAuthority)
+      MsgUpdateAuthorityOrBuilder {
+  private static final long serialVersionUID = 0L;
+    static {
+      com.google.protobuf.RuntimeVersion.validateProtobufGencodeVersion(
+        com.google.protobuf.RuntimeVersion.RuntimeDomain.PUBLIC,
+        /* major= */ 4,
+        /* minor= */ 35,
+        /* patch= */ 1,
+        /* suffix= */ "",
+        "MsgUpdateAuthority");
+    }
+    // Use MsgUpdateAuthority.newBuilder() to construct.
+    private MsgUpdateAuthority(com.google.protobuf.GeneratedMessage.Builder<?> builder) {
+      super(builder);
+    }
+    private MsgUpdateAuthority() {
+      authority_ = "";
+      newAuthority_ = "";
+    }
+
+    public static final com.google.protobuf.Descriptors.Descriptor
+        getDescriptor() {
+      return qorechain.license.v1.Tx.internal_static_qorechain_license_v1_MsgUpdateAuthority_descriptor;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Descriptors.Descriptor getDescriptorForType() {
+      return qorechain.license.v1.Tx.internal_static_qorechain_license_v1_MsgUpdateAuthority_descriptor;
+    }
+
+    @java.lang.Override
+    protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+        internalGetFieldAccessorTable() {
+      return qorechain.license.v1.Tx.internal_static_qorechain_license_v1_MsgUpdateAuthority_fieldAccessorTable
+          .ensureFieldAccessorsInitialized(
+              qorechain.license.v1.Tx.MsgUpdateAuthority.class, qorechain.license.v1.Tx.MsgUpdateAuthority.Builder.class);
+    }
+
+    public static final int AUTHORITY_FIELD_NUMBER = 1;
+    @SuppressWarnings("serial")
+    private volatile java.lang.Object authority_ = "";
+    /**
+     * <pre>
+     * authority is the governance module account.
+     * </pre>
+     *
+     * <code>string authority = 1 [json_name = "authority", (.cosmos_proto.scalar) = "cosmos.AddressString"];</code>
+     * @return The authority.
+     */
+    @java.lang.Override
+    public java.lang.String getAuthority() {
+      java.lang.Object ref = authority_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        authority_ = s;
+        return s;
+      }
+    }
+    /**
+     * <pre>
+     * authority is the governance module account.
+     * </pre>
+     *
+     * <code>string authority = 1 [json_name = "authority", (.cosmos_proto.scalar) = "cosmos.AddressString"];</code>
+     * @return The bytes for authority.
+     */
+    @java.lang.Override
+    public com.google.protobuf.ByteString
+        getAuthorityBytes() {
+      java.lang.Object ref = authority_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        authority_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
+    public static final int NEW_AUTHORITY_FIELD_NUMBER = 2;
+    @SuppressWarnings("serial")
+    private volatile java.lang.Object newAuthority_ = "";
+    /**
+     * <pre>
+     * new_authority becomes the licence grant authority.
+     * </pre>
+     *
+     * <code>string new_authority = 2 [json_name = "newAuthority", (.cosmos_proto.scalar) = "cosmos.AddressString"];</code>
+     * @return The newAuthority.
+     */
+    @java.lang.Override
+    public java.lang.String getNewAuthority() {
+      java.lang.Object ref = newAuthority_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        newAuthority_ = s;
+        return s;
+      }
+    }
+    /**
+     * <pre>
+     * new_authority becomes the licence grant authority.
+     * </pre>
+     *
+     * <code>string new_authority = 2 [json_name = "newAuthority", (.cosmos_proto.scalar) = "cosmos.AddressString"];</code>
+     * @return The bytes for newAuthority.
+     */
+    @java.lang.Override
+    public com.google.protobuf.ByteString
+        getNewAuthorityBytes() {
+      java.lang.Object ref = newAuthority_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        newAuthority_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
+    private byte memoizedIsInitialized = -1;
+    @java.lang.Override
+    public final boolean isInitialized() {
+      byte isInitialized = memoizedIsInitialized;
+      if (isInitialized == 1) return true;
+      if (isInitialized == 0) return false;
+
+      memoizedIsInitialized = 1;
+      return true;
+    }
+
+    @java.lang.Override
+    public void writeTo(com.google.protobuf.CodedOutputStream output)
+                        throws java.io.IOException {
+      if (!com.google.protobuf.GeneratedMessage.isStringEmpty(authority_)) {
+        com.google.protobuf.GeneratedMessage.writeString(output, 1, authority_);
+      }
+      if (!com.google.protobuf.GeneratedMessage.isStringEmpty(newAuthority_)) {
+        com.google.protobuf.GeneratedMessage.writeString(output, 2, newAuthority_);
+      }
+      getUnknownFields().writeTo(output);
+    }
+    private int computeSerializedSize_0() {
+      int size = 0;
+      if (!com.google.protobuf.GeneratedMessage.isStringEmpty(authority_)) {
+        size += com.google.protobuf.GeneratedMessage.computeStringSize(1, authority_);
+      }
+      if (!com.google.protobuf.GeneratedMessage.isStringEmpty(newAuthority_)) {
+        size += com.google.protobuf.GeneratedMessage.computeStringSize(2, newAuthority_);
+      }
+      return size;
+    }
+    @java.lang.Override
+    public int getSerializedSize() {
+      int size = memoizedSize;
+      if (size != -1) return size;
+
+      size = 0;
+      size += computeSerializedSize_0();
+      size += getUnknownFields().getSerializedSize();
+      memoizedSize = size;
+      return size;
+    }
+
+    @java.lang.Override
+    public boolean equals(final java.lang.Object obj) {
+      if (obj == this) {
+       return true;
+      }
+      if (!(obj instanceof qorechain.license.v1.Tx.MsgUpdateAuthority)) {
+        return super.equals(obj);
+      }
+      qorechain.license.v1.Tx.MsgUpdateAuthority other = (qorechain.license.v1.Tx.MsgUpdateAuthority) obj;
+
+      if (!getAuthority()
+          .equals(other.getAuthority())) return false;
+      if (!getNewAuthority()
+          .equals(other.getNewAuthority())) return false;
+      if (!getUnknownFields().equals(other.getUnknownFields())) return false;
+      return true;
+    }
+
+    @java.lang.Override
+    public int hashCode() {
+      if (memoizedHashCode != 0) {
+        return memoizedHashCode;
+      }
+      int hash = 41;
+      hash = (19 * hash) + getDescriptor().hashCode();
+      hash = (37 * hash) + AUTHORITY_FIELD_NUMBER;
+      hash = (53 * hash) + getAuthority().hashCode();
+      hash = (37 * hash) + NEW_AUTHORITY_FIELD_NUMBER;
+      hash = (53 * hash) + getNewAuthority().hashCode();
+      hash = (29 * hash) + getUnknownFields().hashCode();
+      memoizedHashCode = hash;
+      return hash;
+    }
+
+    public static qorechain.license.v1.Tx.MsgUpdateAuthority parseFrom(
+        java.nio.ByteBuffer data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static qorechain.license.v1.Tx.MsgUpdateAuthority parseFrom(
+        java.nio.ByteBuffer data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static qorechain.license.v1.Tx.MsgUpdateAuthority parseFrom(
+        com.google.protobuf.ByteString data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static qorechain.license.v1.Tx.MsgUpdateAuthority parseFrom(
+        com.google.protobuf.ByteString data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static qorechain.license.v1.Tx.MsgUpdateAuthority parseFrom(byte[] data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static qorechain.license.v1.Tx.MsgUpdateAuthority parseFrom(
+        byte[] data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static qorechain.license.v1.Tx.MsgUpdateAuthority parseFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input);
+    }
+    public static qorechain.license.v1.Tx.MsgUpdateAuthority parseFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    public static qorechain.license.v1.Tx.MsgUpdateAuthority parseDelimitedFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseDelimitedWithIOException(PARSER, input);
+    }
+
+    public static qorechain.license.v1.Tx.MsgUpdateAuthority parseDelimitedFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static qorechain.license.v1.Tx.MsgUpdateAuthority parseFrom(
+        com.google.protobuf.CodedInputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input);
+    }
+    public static qorechain.license.v1.Tx.MsgUpdateAuthority parseFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    @java.lang.Override
+    public Builder newBuilderForType() { return newBuilder(); }
+    public static Builder newBuilder() {
+      return DEFAULT_INSTANCE.toBuilder();
+    }
+    public static Builder newBuilder(qorechain.license.v1.Tx.MsgUpdateAuthority prototype) {
+      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+    }
+    @java.lang.Override
+    public Builder toBuilder() {
+      return this == DEFAULT_INSTANCE
+          ? new Builder() : new Builder().mergeFrom(this);
+    }
+
+    @java.lang.Override
+    protected Builder newBuilderForType(
+        com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+      Builder builder = new Builder(parent);
+      return builder;
+    }
+    /**
+     * <pre>
+     * MsgUpdateAuthority replaces the licence grant authority. Signed by the
+     * governance module account, so it only ever executes from a passed proposal.
+     * </pre>
+     *
+     * Protobuf type {@code qorechain.license.v1.MsgUpdateAuthority}
+     */
+    public static final class Builder extends
+        com.google.protobuf.GeneratedMessage.Builder<Builder> implements
+        // @@protoc_insertion_point(builder_implements:qorechain.license.v1.MsgUpdateAuthority)
+        qorechain.license.v1.Tx.MsgUpdateAuthorityOrBuilder {
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return qorechain.license.v1.Tx.internal_static_qorechain_license_v1_MsgUpdateAuthority_descriptor;
+      }
+
+      @java.lang.Override
+      protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return qorechain.license.v1.Tx.internal_static_qorechain_license_v1_MsgUpdateAuthority_fieldAccessorTable
+            .ensureFieldAccessorsInitialized(
+                qorechain.license.v1.Tx.MsgUpdateAuthority.class, qorechain.license.v1.Tx.MsgUpdateAuthority.Builder.class);
+      }
+
+      // Construct using qorechain.license.v1.Tx.MsgUpdateAuthority.newBuilder()
+      private Builder() {
+
+      }
+
+      private Builder(
+          com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+        super(parent);
+
+      }
+      @java.lang.Override
+      public Builder clear() {
+        super.clear();
+        bitField0_ = 0;
+        authority_ = "";
+        newAuthority_ = "";
+        return this;
+      }
+
+      @java.lang.Override
+      public com.google.protobuf.Descriptors.Descriptor
+          getDescriptorForType() {
+        return qorechain.license.v1.Tx.internal_static_qorechain_license_v1_MsgUpdateAuthority_descriptor;
+      }
+
+      @java.lang.Override
+      public qorechain.license.v1.Tx.MsgUpdateAuthority getDefaultInstanceForType() {
+        return qorechain.license.v1.Tx.MsgUpdateAuthority.getDefaultInstance();
+      }
+
+      @java.lang.Override
+      public qorechain.license.v1.Tx.MsgUpdateAuthority build() {
+        qorechain.license.v1.Tx.MsgUpdateAuthority result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(result);
+        }
+        return result;
+      }
+
+      @java.lang.Override
+      public qorechain.license.v1.Tx.MsgUpdateAuthority buildPartial() {
+        qorechain.license.v1.Tx.MsgUpdateAuthority result = new qorechain.license.v1.Tx.MsgUpdateAuthority(this);
+        if (bitField0_ != 0) { buildPartial0(result); }
+        onBuilt();
+        return result;
+      }
+
+      private void buildPartial0(qorechain.license.v1.Tx.MsgUpdateAuthority result) {
+        int from_bitField0_ = bitField0_;
+        if (((from_bitField0_ & 0x00000001) != 0)) {
+          result.authority_ = authority_;
+        }
+        if (((from_bitField0_ & 0x00000002) != 0)) {
+          result.newAuthority_ = newAuthority_;
+        }
+      }
+
+      @java.lang.Override
+      public Builder mergeFrom(com.google.protobuf.Message other) {
+        if (other instanceof qorechain.license.v1.Tx.MsgUpdateAuthority) {
+          return mergeFrom((qorechain.license.v1.Tx.MsgUpdateAuthority)other);
+        } else {
+          super.mergeFrom(other);
+          return this;
+        }
+      }
+
+      public Builder mergeFrom(qorechain.license.v1.Tx.MsgUpdateAuthority other) {
+        if (other == qorechain.license.v1.Tx.MsgUpdateAuthority.getDefaultInstance()) return this;
+        if (!other.getAuthority().isEmpty()) {
+          authority_ = other.authority_;
+          bitField0_ |= 0x00000001;
+          onChanged();
+        }
+        if (!other.getNewAuthority().isEmpty()) {
+          newAuthority_ = other.newAuthority_;
+          bitField0_ |= 0x00000002;
+          onChanged();
+        }
+        this.mergeUnknownFields(other.getUnknownFields());
+        onChanged();
+        return this;
+      }
+
+      @java.lang.Override
+      public final boolean isInitialized() {
+        return true;
+      }
+
+      @java.lang.Override
+      public Builder mergeFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        if (extensionRegistry == null) {
+          throw new java.lang.NullPointerException();
+        }
+        try {
+          boolean done = false;
+          while (!done) {
+            int tag = input.readTag();
+            switch (tag) {
+              case 0:
+                done = true;
+                break;
+              case 10: {
+                authority_ = input.readStringRequireUtf8();
+                bitField0_ |= 0x00000001;
+                break;
+              } // case 10
+              case 18: {
+                newAuthority_ = input.readStringRequireUtf8();
+                bitField0_ |= 0x00000002;
+                break;
+              } // case 18
+              default: {
+                if (!super.parseUnknownField(input, extensionRegistry, tag)) {
+                  done = true; // was an endgroup tag
+                }
+                break;
+              } // default:
+            } // switch (tag)
+          } // while (!done)
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          throw e.unwrapIOException();
+        } finally {
+          onChanged();
+        } // finally
+        return this;
+      }
+      private int bitField0_;
+
+      private java.lang.Object authority_ = "";
+      /**
+       * <pre>
+       * authority is the governance module account.
+       * </pre>
+       *
+       * <code>string authority = 1 [json_name = "authority", (.cosmos_proto.scalar) = "cosmos.AddressString"];</code>
+       * @return The authority.
+       */
+      public java.lang.String getAuthority() {
+        java.lang.Object ref = authority_;
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          authority_ = s;
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
+      }
+      /**
+       * <pre>
+       * authority is the governance module account.
+       * </pre>
+       *
+       * <code>string authority = 1 [json_name = "authority", (.cosmos_proto.scalar) = "cosmos.AddressString"];</code>
+       * @return The bytes for authority.
+       */
+      public com.google.protobuf.ByteString
+          getAuthorityBytes() {
+        java.lang.Object ref = authority_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          authority_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <pre>
+       * authority is the governance module account.
+       * </pre>
+       *
+       * <code>string authority = 1 [json_name = "authority", (.cosmos_proto.scalar) = "cosmos.AddressString"];</code>
+       * @param value The authority to set.
+       * @return This builder for chaining.
+       */
+      public Builder setAuthority(
+          java.lang.String value) {
+        if (value == null) { throw new NullPointerException(); }
+        authority_ = value;
+        bitField0_ |= 0x00000001;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * authority is the governance module account.
+       * </pre>
+       *
+       * <code>string authority = 1 [json_name = "authority", (.cosmos_proto.scalar) = "cosmos.AddressString"];</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearAuthority() {
+        authority_ = getDefaultInstance().getAuthority();
+        bitField0_ = (bitField0_ & ~0x00000001);
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * authority is the governance module account.
+       * </pre>
+       *
+       * <code>string authority = 1 [json_name = "authority", (.cosmos_proto.scalar) = "cosmos.AddressString"];</code>
+       * @param value The bytes for authority to set.
+       * @return This builder for chaining.
+       */
+      public Builder setAuthorityBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) { throw new NullPointerException(); }
+        checkByteStringIsUtf8(value);
+        authority_ = value;
+        bitField0_ |= 0x00000001;
+        onChanged();
+        return this;
+      }
+
+      private java.lang.Object newAuthority_ = "";
+      /**
+       * <pre>
+       * new_authority becomes the licence grant authority.
+       * </pre>
+       *
+       * <code>string new_authority = 2 [json_name = "newAuthority", (.cosmos_proto.scalar) = "cosmos.AddressString"];</code>
+       * @return The newAuthority.
+       */
+      public java.lang.String getNewAuthority() {
+        java.lang.Object ref = newAuthority_;
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          newAuthority_ = s;
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
+      }
+      /**
+       * <pre>
+       * new_authority becomes the licence grant authority.
+       * </pre>
+       *
+       * <code>string new_authority = 2 [json_name = "newAuthority", (.cosmos_proto.scalar) = "cosmos.AddressString"];</code>
+       * @return The bytes for newAuthority.
+       */
+      public com.google.protobuf.ByteString
+          getNewAuthorityBytes() {
+        java.lang.Object ref = newAuthority_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          newAuthority_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <pre>
+       * new_authority becomes the licence grant authority.
+       * </pre>
+       *
+       * <code>string new_authority = 2 [json_name = "newAuthority", (.cosmos_proto.scalar) = "cosmos.AddressString"];</code>
+       * @param value The newAuthority to set.
+       * @return This builder for chaining.
+       */
+      public Builder setNewAuthority(
+          java.lang.String value) {
+        if (value == null) { throw new NullPointerException(); }
+        newAuthority_ = value;
+        bitField0_ |= 0x00000002;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * new_authority becomes the licence grant authority.
+       * </pre>
+       *
+       * <code>string new_authority = 2 [json_name = "newAuthority", (.cosmos_proto.scalar) = "cosmos.AddressString"];</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearNewAuthority() {
+        newAuthority_ = getDefaultInstance().getNewAuthority();
+        bitField0_ = (bitField0_ & ~0x00000002);
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * new_authority becomes the licence grant authority.
+       * </pre>
+       *
+       * <code>string new_authority = 2 [json_name = "newAuthority", (.cosmos_proto.scalar) = "cosmos.AddressString"];</code>
+       * @param value The bytes for newAuthority to set.
+       * @return This builder for chaining.
+       */
+      public Builder setNewAuthorityBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) { throw new NullPointerException(); }
+        checkByteStringIsUtf8(value);
+        newAuthority_ = value;
+        bitField0_ |= 0x00000002;
+        onChanged();
+        return this;
+      }
+
+      // @@protoc_insertion_point(builder_scope:qorechain.license.v1.MsgUpdateAuthority)
+    }
+
+    // @@protoc_insertion_point(class_scope:qorechain.license.v1.MsgUpdateAuthority)
+    private static final qorechain.license.v1.Tx.MsgUpdateAuthority DEFAULT_INSTANCE;
+    static {
+      DEFAULT_INSTANCE = new qorechain.license.v1.Tx.MsgUpdateAuthority();
+    }
+
+    public static qorechain.license.v1.Tx.MsgUpdateAuthority getDefaultInstance() {
+      return DEFAULT_INSTANCE;
+    }
+
+    private static final com.google.protobuf.Parser<MsgUpdateAuthority>
+        PARSER = new com.google.protobuf.AbstractParser<MsgUpdateAuthority>() {
+      @java.lang.Override
+      public MsgUpdateAuthority parsePartialFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        Builder builder = newBuilder();
+        try {
+          builder.mergeFrom(input, extensionRegistry);
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          throw e.setUnfinishedMessage(builder.buildPartial());
+        } catch (com.google.protobuf.UninitializedMessageException e) {
+          throw e.asInvalidProtocolBufferException().setUnfinishedMessage(builder.buildPartial());
+        } catch (java.io.IOException e) {
+          throw new com.google.protobuf.InvalidProtocolBufferException(e)
+              .setUnfinishedMessage(builder.buildPartial());
+        }
+        return builder.buildPartial();
+      }
+    };
+
+    public static com.google.protobuf.Parser<MsgUpdateAuthority> parser() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Parser<MsgUpdateAuthority> getParserForType() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public qorechain.license.v1.Tx.MsgUpdateAuthority getDefaultInstanceForType() {
+      return DEFAULT_INSTANCE;
+    }
+
+  }
+
+  public interface MsgUpdateAuthorityResponseOrBuilder extends
+      // @@protoc_insertion_point(interface_extends:qorechain.license.v1.MsgUpdateAuthorityResponse)
+      com.google.protobuf.MessageOrBuilder {
+  }
+  /**
+   * Protobuf type {@code qorechain.license.v1.MsgUpdateAuthorityResponse}
+   */
+  public static final class MsgUpdateAuthorityResponse extends
+      com.google.protobuf.GeneratedMessage implements
+      // @@protoc_insertion_point(message_implements:qorechain.license.v1.MsgUpdateAuthorityResponse)
+      MsgUpdateAuthorityResponseOrBuilder {
+  private static final long serialVersionUID = 0L;
+    static {
+      com.google.protobuf.RuntimeVersion.validateProtobufGencodeVersion(
+        com.google.protobuf.RuntimeVersion.RuntimeDomain.PUBLIC,
+        /* major= */ 4,
+        /* minor= */ 35,
+        /* patch= */ 1,
+        /* suffix= */ "",
+        "MsgUpdateAuthorityResponse");
+    }
+    // Use MsgUpdateAuthorityResponse.newBuilder() to construct.
+    private MsgUpdateAuthorityResponse(com.google.protobuf.GeneratedMessage.Builder<?> builder) {
+      super(builder);
+    }
+    private MsgUpdateAuthorityResponse() {
+    }
+
+    public static final com.google.protobuf.Descriptors.Descriptor
+        getDescriptor() {
+      return qorechain.license.v1.Tx.internal_static_qorechain_license_v1_MsgUpdateAuthorityResponse_descriptor;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Descriptors.Descriptor getDescriptorForType() {
+      return qorechain.license.v1.Tx.internal_static_qorechain_license_v1_MsgUpdateAuthorityResponse_descriptor;
+    }
+
+    @java.lang.Override
+    protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+        internalGetFieldAccessorTable() {
+      return qorechain.license.v1.Tx.internal_static_qorechain_license_v1_MsgUpdateAuthorityResponse_fieldAccessorTable
+          .ensureFieldAccessorsInitialized(
+              qorechain.license.v1.Tx.MsgUpdateAuthorityResponse.class, qorechain.license.v1.Tx.MsgUpdateAuthorityResponse.Builder.class);
+    }
+
+    private byte memoizedIsInitialized = -1;
+    @java.lang.Override
+    public final boolean isInitialized() {
+      byte isInitialized = memoizedIsInitialized;
+      if (isInitialized == 1) return true;
+      if (isInitialized == 0) return false;
+
+      memoizedIsInitialized = 1;
+      return true;
+    }
+
+    @java.lang.Override
+    public void writeTo(com.google.protobuf.CodedOutputStream output)
+                        throws java.io.IOException {
+      getUnknownFields().writeTo(output);
+    }
+    @java.lang.Override
+    public int getSerializedSize() {
+      int size = memoizedSize;
+      if (size != -1) return size;
+
+      size = 0;
+      size += getUnknownFields().getSerializedSize();
+      memoizedSize = size;
+      return size;
+    }
+
+    @java.lang.Override
+    public boolean equals(final java.lang.Object obj) {
+      if (obj == this) {
+       return true;
+      }
+      if (!(obj instanceof qorechain.license.v1.Tx.MsgUpdateAuthorityResponse)) {
+        return super.equals(obj);
+      }
+      qorechain.license.v1.Tx.MsgUpdateAuthorityResponse other = (qorechain.license.v1.Tx.MsgUpdateAuthorityResponse) obj;
+
+      if (!getUnknownFields().equals(other.getUnknownFields())) return false;
+      return true;
+    }
+
+    @java.lang.Override
+    public int hashCode() {
+      if (memoizedHashCode != 0) {
+        return memoizedHashCode;
+      }
+      int hash = 41;
+      hash = (19 * hash) + getDescriptor().hashCode();
+      hash = (29 * hash) + getUnknownFields().hashCode();
+      memoizedHashCode = hash;
+      return hash;
+    }
+
+    public static qorechain.license.v1.Tx.MsgUpdateAuthorityResponse parseFrom(
+        java.nio.ByteBuffer data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static qorechain.license.v1.Tx.MsgUpdateAuthorityResponse parseFrom(
+        java.nio.ByteBuffer data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static qorechain.license.v1.Tx.MsgUpdateAuthorityResponse parseFrom(
+        com.google.protobuf.ByteString data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static qorechain.license.v1.Tx.MsgUpdateAuthorityResponse parseFrom(
+        com.google.protobuf.ByteString data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static qorechain.license.v1.Tx.MsgUpdateAuthorityResponse parseFrom(byte[] data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static qorechain.license.v1.Tx.MsgUpdateAuthorityResponse parseFrom(
+        byte[] data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static qorechain.license.v1.Tx.MsgUpdateAuthorityResponse parseFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input);
+    }
+    public static qorechain.license.v1.Tx.MsgUpdateAuthorityResponse parseFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    public static qorechain.license.v1.Tx.MsgUpdateAuthorityResponse parseDelimitedFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseDelimitedWithIOException(PARSER, input);
+    }
+
+    public static qorechain.license.v1.Tx.MsgUpdateAuthorityResponse parseDelimitedFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static qorechain.license.v1.Tx.MsgUpdateAuthorityResponse parseFrom(
+        com.google.protobuf.CodedInputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input);
+    }
+    public static qorechain.license.v1.Tx.MsgUpdateAuthorityResponse parseFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    @java.lang.Override
+    public Builder newBuilderForType() { return newBuilder(); }
+    public static Builder newBuilder() {
+      return DEFAULT_INSTANCE.toBuilder();
+    }
+    public static Builder newBuilder(qorechain.license.v1.Tx.MsgUpdateAuthorityResponse prototype) {
+      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+    }
+    @java.lang.Override
+    public Builder toBuilder() {
+      return this == DEFAULT_INSTANCE
+          ? new Builder() : new Builder().mergeFrom(this);
+    }
+
+    @java.lang.Override
+    protected Builder newBuilderForType(
+        com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+      Builder builder = new Builder(parent);
+      return builder;
+    }
+    /**
+     * Protobuf type {@code qorechain.license.v1.MsgUpdateAuthorityResponse}
+     */
+    public static final class Builder extends
+        com.google.protobuf.GeneratedMessage.Builder<Builder> implements
+        // @@protoc_insertion_point(builder_implements:qorechain.license.v1.MsgUpdateAuthorityResponse)
+        qorechain.license.v1.Tx.MsgUpdateAuthorityResponseOrBuilder {
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return qorechain.license.v1.Tx.internal_static_qorechain_license_v1_MsgUpdateAuthorityResponse_descriptor;
+      }
+
+      @java.lang.Override
+      protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return qorechain.license.v1.Tx.internal_static_qorechain_license_v1_MsgUpdateAuthorityResponse_fieldAccessorTable
+            .ensureFieldAccessorsInitialized(
+                qorechain.license.v1.Tx.MsgUpdateAuthorityResponse.class, qorechain.license.v1.Tx.MsgUpdateAuthorityResponse.Builder.class);
+      }
+
+      // Construct using qorechain.license.v1.Tx.MsgUpdateAuthorityResponse.newBuilder()
+      private Builder() {
+
+      }
+
+      private Builder(
+          com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+        super(parent);
+
+      }
+      @java.lang.Override
+      public Builder clear() {
+        super.clear();
+        return this;
+      }
+
+      @java.lang.Override
+      public com.google.protobuf.Descriptors.Descriptor
+          getDescriptorForType() {
+        return qorechain.license.v1.Tx.internal_static_qorechain_license_v1_MsgUpdateAuthorityResponse_descriptor;
+      }
+
+      @java.lang.Override
+      public qorechain.license.v1.Tx.MsgUpdateAuthorityResponse getDefaultInstanceForType() {
+        return qorechain.license.v1.Tx.MsgUpdateAuthorityResponse.getDefaultInstance();
+      }
+
+      @java.lang.Override
+      public qorechain.license.v1.Tx.MsgUpdateAuthorityResponse build() {
+        qorechain.license.v1.Tx.MsgUpdateAuthorityResponse result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(result);
+        }
+        return result;
+      }
+
+      @java.lang.Override
+      public qorechain.license.v1.Tx.MsgUpdateAuthorityResponse buildPartial() {
+        qorechain.license.v1.Tx.MsgUpdateAuthorityResponse result = new qorechain.license.v1.Tx.MsgUpdateAuthorityResponse(this);
+        onBuilt();
+        return result;
+      }
+
+      @java.lang.Override
+      public Builder mergeFrom(com.google.protobuf.Message other) {
+        if (other instanceof qorechain.license.v1.Tx.MsgUpdateAuthorityResponse) {
+          return mergeFrom((qorechain.license.v1.Tx.MsgUpdateAuthorityResponse)other);
+        } else {
+          super.mergeFrom(other);
+          return this;
+        }
+      }
+
+      public Builder mergeFrom(qorechain.license.v1.Tx.MsgUpdateAuthorityResponse other) {
+        if (other == qorechain.license.v1.Tx.MsgUpdateAuthorityResponse.getDefaultInstance()) return this;
+        this.mergeUnknownFields(other.getUnknownFields());
+        onChanged();
+        return this;
+      }
+
+      @java.lang.Override
+      public final boolean isInitialized() {
+        return true;
+      }
+
+      @java.lang.Override
+      public Builder mergeFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        if (extensionRegistry == null) {
+          throw new java.lang.NullPointerException();
+        }
+        try {
+          boolean done = false;
+          while (!done) {
+            int tag = input.readTag();
+            switch (tag) {
+              case 0:
+                done = true;
+                break;
+              default: {
+                if (!super.parseUnknownField(input, extensionRegistry, tag)) {
+                  done = true; // was an endgroup tag
+                }
+                break;
+              } // default:
+            } // switch (tag)
+          } // while (!done)
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          throw e.unwrapIOException();
+        } finally {
+          onChanged();
+        } // finally
+        return this;
+      }
+
+      // @@protoc_insertion_point(builder_scope:qorechain.license.v1.MsgUpdateAuthorityResponse)
+    }
+
+    // @@protoc_insertion_point(class_scope:qorechain.license.v1.MsgUpdateAuthorityResponse)
+    private static final qorechain.license.v1.Tx.MsgUpdateAuthorityResponse DEFAULT_INSTANCE;
+    static {
+      DEFAULT_INSTANCE = new qorechain.license.v1.Tx.MsgUpdateAuthorityResponse();
+    }
+
+    public static qorechain.license.v1.Tx.MsgUpdateAuthorityResponse getDefaultInstance() {
+      return DEFAULT_INSTANCE;
+    }
+
+    private static final com.google.protobuf.Parser<MsgUpdateAuthorityResponse>
+        PARSER = new com.google.protobuf.AbstractParser<MsgUpdateAuthorityResponse>() {
+      @java.lang.Override
+      public MsgUpdateAuthorityResponse parsePartialFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        Builder builder = newBuilder();
+        try {
+          builder.mergeFrom(input, extensionRegistry);
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          throw e.setUnfinishedMessage(builder.buildPartial());
+        } catch (com.google.protobuf.UninitializedMessageException e) {
+          throw e.asInvalidProtocolBufferException().setUnfinishedMessage(builder.buildPartial());
+        } catch (java.io.IOException e) {
+          throw new com.google.protobuf.InvalidProtocolBufferException(e)
+              .setUnfinishedMessage(builder.buildPartial());
+        }
+        return builder.buildPartial();
+      }
+    };
+
+    public static com.google.protobuf.Parser<MsgUpdateAuthorityResponse> parser() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Parser<MsgUpdateAuthorityResponse> getParserForType() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public qorechain.license.v1.Tx.MsgUpdateAuthorityResponse getDefaultInstanceForType() {
+      return DEFAULT_INSTANCE;
+    }
+
+  }
+
   private static final com.google.protobuf.Descriptors.Descriptor
     internal_static_qorechain_license_v1_MsgGrantLicense_descriptor;
   private static final 
@@ -4983,6 +6091,16 @@ public final class Tx extends com.google.protobuf.GeneratedFile {
   private static final 
     com.google.protobuf.GeneratedMessage.FieldAccessorTable
       internal_static_qorechain_license_v1_MsgResumeLicenseResponse_fieldAccessorTable;
+  private static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_qorechain_license_v1_MsgUpdateAuthority_descriptor;
+  private static final 
+    com.google.protobuf.GeneratedMessage.FieldAccessorTable
+      internal_static_qorechain_license_v1_MsgUpdateAuthority_fieldAccessorTable;
+  private static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_qorechain_license_v1_MsgUpdateAuthorityResponse_descriptor;
+  private static final 
+    com.google.protobuf.GeneratedMessage.FieldAccessorTable
+      internal_static_qorechain_license_v1_MsgUpdateAuthorityResponse_fieldAccessorTable;
 
   public static com.google.protobuf.Descriptors.FileDescriptor
       getDescriptor() {
@@ -5018,19 +6136,27 @@ public final class Tx extends com.google.protobuf.GeneratedFile {
       "\0222\n\007grantee\030\002 \001(\tB\030\322\264-\024cosmos.AddressStr" +
       "ingR\007grantee\022,\n\nfeature_id\030\003 \001(\tB\r\342\336\037\tFe" +
       "atureIDR\tfeatureId:\016\202\347\260*\tauthority\"\032\n\030Ms" +
-      "gResumeLicenseResponse2\260\003\n\003Msg\022d\n\014GrantL" +
-      "icense\022%.qorechain.license.v1.MsgGrantLi" +
-      "cense\032-.qorechain.license.v1.MsgGrantLic" +
-      "enseResponse\022g\n\rRevokeLicense\022&.qorechai" +
-      "n.license.v1.MsgRevokeLicense\032..qorechai" +
-      "n.license.v1.MsgRevokeLicenseResponse\022j\n" +
-      "\016SuspendLicense\022\'.qorechain.license.v1.M" +
-      "sgSuspendLicense\032/.qorechain.license.v1." +
-      "MsgSuspendLicenseResponse\022g\n\rResumeLicen" +
-      "se\022&.qorechain.license.v1.MsgResumeLicen" +
-      "se\032..qorechain.license.v1.MsgResumeLicen" +
-      "seResponse\032\005\200\347\260*\001B5Z3github.com/qorechai" +
-      "n/qorechain-core/x/license/typesb\006proto3"
+      "gResumeLicenseResponse\"\233\001\n\022MsgUpdateAuth" +
+      "ority\0226\n\tauthority\030\001 \001(\tB\030\322\264-\024cosmos.Add" +
+      "ressStringR\tauthority\022=\n\rnew_authority\030\002" +
+      " \001(\tB\030\322\264-\024cosmos.AddressStringR\014newAutho" +
+      "rity:\016\202\347\260*\tauthority\"\034\n\032MsgUpdateAuthori" +
+      "tyResponse2\237\004\n\003Msg\022d\n\014GrantLicense\022%.qor" +
+      "echain.license.v1.MsgGrantLicense\032-.qore" +
+      "chain.license.v1.MsgGrantLicenseResponse" +
+      "\022g\n\rRevokeLicense\022&.qorechain.license.v1" +
+      ".MsgRevokeLicense\032..qorechain.license.v1" +
+      ".MsgRevokeLicenseResponse\022j\n\016SuspendLice" +
+      "nse\022\'.qorechain.license.v1.MsgSuspendLic" +
+      "ense\032/.qorechain.license.v1.MsgSuspendLi" +
+      "censeResponse\022g\n\rResumeLicense\022&.qorecha" +
+      "in.license.v1.MsgResumeLicense\032..qorecha" +
+      "in.license.v1.MsgResumeLicenseResponse\022m" +
+      "\n\017UpdateAuthority\022(.qorechain.license.v1" +
+      ".MsgUpdateAuthority\0320.qorechain.license." +
+      "v1.MsgUpdateAuthorityResponse\032\005\200\347\260*\001B5Z3" +
+      "github.com/qorechain/qorechain-core/x/li" +
+      "cense/typesb\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
@@ -5086,6 +6212,18 @@ public final class Tx extends com.google.protobuf.GeneratedFile {
     internal_static_qorechain_license_v1_MsgResumeLicenseResponse_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_qorechain_license_v1_MsgResumeLicenseResponse_descriptor,
+        new java.lang.String[] { });
+    internal_static_qorechain_license_v1_MsgUpdateAuthority_descriptor =
+      getDescriptor().getMessageType(8);
+    internal_static_qorechain_license_v1_MsgUpdateAuthority_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessage.FieldAccessorTable(
+        internal_static_qorechain_license_v1_MsgUpdateAuthority_descriptor,
+        new java.lang.String[] { "Authority", "NewAuthority", });
+    internal_static_qorechain_license_v1_MsgUpdateAuthorityResponse_descriptor =
+      getDescriptor().getMessageType(9);
+    internal_static_qorechain_license_v1_MsgUpdateAuthorityResponse_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessage.FieldAccessorTable(
+        internal_static_qorechain_license_v1_MsgUpdateAuthorityResponse_descriptor,
         new java.lang.String[] { });
     descriptor.resolveAllFeaturesImmutable();
     cosmos.msg.v1.Msg.getDescriptor();

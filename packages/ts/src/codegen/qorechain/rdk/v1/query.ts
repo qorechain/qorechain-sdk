@@ -34,6 +34,12 @@ export interface RollupView {
   stakeAmount: string;
   layerId: string;
   createdHeight: string;
+  /**
+   * escrow_balance is what the rollup still holds in the pooled module
+   * escrow, in uqor: what its withdrawals can still pay and what stopping it
+   * refunds. It is read from the per-rollup escrow ledger (from v3.2.3).
+   */
+  escrowBalance: string;
 }
 
 /** BatchView is the query-facing view of a settlement batch. */
@@ -338,6 +344,7 @@ function createBaseRollupView(): RollupView {
     stakeAmount: "0",
     layerId: "",
     createdHeight: "0",
+    escrowBalance: "0",
   };
 }
 
@@ -378,6 +385,9 @@ export const RollupView: MessageFns<RollupView> = {
     }
     if (message.createdHeight !== "0") {
       writer.uint32(96).int64(message.createdHeight);
+    }
+    if (message.escrowBalance !== "0") {
+      writer.uint32(104).uint64(message.escrowBalance);
     }
     return writer;
   },
@@ -485,6 +495,14 @@ export const RollupView: MessageFns<RollupView> = {
           message.createdHeight = reader.int64().toString();
           continue;
         }
+        case 13: {
+          if (tag !== 104) {
+            break;
+          }
+
+          message.escrowBalance = reader.uint64().toString();
+          continue;
+        }
       }
       if ((tag & 7) === 4 || tag === 0) {
         break;
@@ -544,6 +562,11 @@ export const RollupView: MessageFns<RollupView> = {
         : isSet(object.created_height)
         ? globalThis.String(object.created_height)
         : "0",
+      escrowBalance: isSet(object.escrowBalance)
+        ? globalThis.String(object.escrowBalance)
+        : isSet(object.escrow_balance)
+        ? globalThis.String(object.escrow_balance)
+        : "0",
     };
   },
 
@@ -585,6 +608,9 @@ export const RollupView: MessageFns<RollupView> = {
     if (message.createdHeight !== "0") {
       obj.createdHeight = message.createdHeight;
     }
+    if (message.escrowBalance !== "0") {
+      obj.escrowBalance = message.escrowBalance;
+    }
     return obj;
   },
 
@@ -605,6 +631,7 @@ export const RollupView: MessageFns<RollupView> = {
     message.stakeAmount = object.stakeAmount ?? "0";
     message.layerId = object.layerId ?? "";
     message.createdHeight = object.createdHeight ?? "0";
+    message.escrowBalance = object.escrowBalance ?? "0";
     return message;
   },
 };

@@ -1,9 +1,10 @@
 from cosmos.msg.v1 import msg_pb2 as _msg_pb2
 from cosmos_proto import cosmos_pb2 as _cosmos_pb2
 from gogoproto import gogo_pb2 as _gogo_pb2
+from google.protobuf.internal import containers as _containers
 from google.protobuf import descriptor as _descriptor
 from google.protobuf import message as _message
-from typing import ClassVar as _ClassVar, Optional as _Optional
+from typing import ClassVar as _ClassVar, Iterable as _Iterable, Optional as _Optional
 
 DESCRIPTOR: _descriptor.FileDescriptor
 
@@ -24,18 +25,20 @@ class MsgRegisterPQCKeyResponse(_message.Message):
     def __init__(self) -> None: ...
 
 class MsgRegisterPQCKeyV2(_message.Message):
-    __slots__ = ("sender", "public_key", "algorithm_id", "ecdsa_pubkey", "key_type")
+    __slots__ = ("sender", "public_key", "algorithm_id", "ecdsa_pubkey", "key_type", "proof_of_possession")
     SENDER_FIELD_NUMBER: _ClassVar[int]
     PUBLIC_KEY_FIELD_NUMBER: _ClassVar[int]
     ALGORITHM_ID_FIELD_NUMBER: _ClassVar[int]
     ECDSA_PUBKEY_FIELD_NUMBER: _ClassVar[int]
     KEY_TYPE_FIELD_NUMBER: _ClassVar[int]
+    PROOF_OF_POSSESSION_FIELD_NUMBER: _ClassVar[int]
     sender: str
     public_key: bytes
     algorithm_id: int
     ecdsa_pubkey: bytes
     key_type: str
-    def __init__(self, sender: _Optional[str] = ..., public_key: _Optional[bytes] = ..., algorithm_id: _Optional[int] = ..., ecdsa_pubkey: _Optional[bytes] = ..., key_type: _Optional[str] = ...) -> None: ...
+    proof_of_possession: bytes
+    def __init__(self, sender: _Optional[str] = ..., public_key: _Optional[bytes] = ..., algorithm_id: _Optional[int] = ..., ecdsa_pubkey: _Optional[bytes] = ..., key_type: _Optional[str] = ..., proof_of_possession: _Optional[bytes] = ...) -> None: ...
 
 class MsgRegisterPQCKeyV2Response(_message.Message):
     __slots__ = ()
@@ -110,16 +113,20 @@ class MsgDisableAlgorithmResponse(_message.Message):
     def __init__(self) -> None: ...
 
 class MsgOpenEVMWindow(_message.Message):
-    __slots__ = ("sender", "blocks", "max_txs", "max_value")
+    __slots__ = ("sender", "blocks", "max_txs", "max_value", "native_only", "allowed_targets")
     SENDER_FIELD_NUMBER: _ClassVar[int]
     BLOCKS_FIELD_NUMBER: _ClassVar[int]
     MAX_TXS_FIELD_NUMBER: _ClassVar[int]
     MAX_VALUE_FIELD_NUMBER: _ClassVar[int]
+    NATIVE_ONLY_FIELD_NUMBER: _ClassVar[int]
+    ALLOWED_TARGETS_FIELD_NUMBER: _ClassVar[int]
     sender: str
     blocks: int
     max_txs: int
     max_value: str
-    def __init__(self, sender: _Optional[str] = ..., blocks: _Optional[int] = ..., max_txs: _Optional[int] = ..., max_value: _Optional[str] = ...) -> None: ...
+    native_only: bool
+    allowed_targets: _containers.RepeatedScalarFieldContainer[str]
+    def __init__(self, sender: _Optional[str] = ..., blocks: _Optional[int] = ..., max_txs: _Optional[int] = ..., max_value: _Optional[str] = ..., native_only: bool = ..., allowed_targets: _Optional[_Iterable[str]] = ...) -> None: ...
 
 class MsgOpenEVMWindowResponse(_message.Message):
     __slots__ = ("expiry_height",)

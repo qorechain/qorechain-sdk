@@ -491,9 +491,11 @@ type RlConsensusComposers struct{}
 // RlConsensus is the rlconsensus message composer group.
 var RlConsensus RlConsensusComposers
 
-// SetAgentMode builds MsgSetAgentMode.
+// SetAgentMode builds MsgSetAgentMode. The wire field is a plain uint32 from
+// chain v3.2.3 (the chain range-checks the value as sent); the AgentMode
+// parameter keeps this signature unchanged.
 func (RlConsensusComposers) SetAgentMode(authority string, mode rlconsensusv1.AgentMode) *rlconsensusv1.MsgSetAgentMode {
-	return &rlconsensusv1.MsgSetAgentMode{Authority: authority, Mode: mode}
+	return &rlconsensusv1.MsgSetAgentMode{Authority: authority, Mode: uint32(mode)}
 }
 
 // ResumeAgent builds MsgResumeAgent.

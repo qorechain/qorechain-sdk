@@ -105,6 +105,13 @@ export interface QueryRewardPoolResponse {
    * not ready.
    */
   initialized: boolean;
+  /**
+   * max_reward_per_month_per_node is the monthly per-node bound in uqor
+   * (2,000 QOR by decision). From the lightnode-monthly-cap switch it is the
+   * bound in force, prorated over block time; max_reward_per_block_per_node is
+   * then informational only.
+   */
+  maxRewardPerMonthPerNode: string;
 }
 
 function createBaseLightNodeView(): LightNodeView {
@@ -1205,6 +1212,7 @@ function createBaseQueryRewardPoolResponse(): QueryRewardPoolResponse {
     maxRewardPerBlockPerNode: "",
     distributable: "",
     initialized: false,
+    maxRewardPerMonthPerNode: "",
   };
 }
 
@@ -1230,6 +1238,9 @@ export const QueryRewardPoolResponse: MessageFns<QueryRewardPoolResponse> = {
     }
     if (message.initialized !== false) {
       writer.uint32(56).bool(message.initialized);
+    }
+    if (message.maxRewardPerMonthPerNode !== "") {
+      writer.uint32(66).string(message.maxRewardPerMonthPerNode);
     }
     return writer;
   },
@@ -1297,6 +1308,14 @@ export const QueryRewardPoolResponse: MessageFns<QueryRewardPoolResponse> = {
           message.initialized = reader.bool();
           continue;
         }
+        case 8: {
+          if (tag !== 66) {
+            break;
+          }
+
+          message.maxRewardPerMonthPerNode = reader.string();
+          continue;
+        }
       }
       if ((tag & 7) === 4 || tag === 0) {
         break;
@@ -1319,6 +1338,11 @@ export const QueryRewardPoolResponse: MessageFns<QueryRewardPoolResponse> = {
         : "",
       distributable: isSet(object.distributable) ? globalThis.String(object.distributable) : "",
       initialized: isSet(object.initialized) ? globalThis.Boolean(object.initialized) : false,
+      maxRewardPerMonthPerNode: isSet(object.maxRewardPerMonthPerNode)
+        ? globalThis.String(object.maxRewardPerMonthPerNode)
+        : isSet(object.max_reward_per_month_per_node)
+        ? globalThis.String(object.max_reward_per_month_per_node)
+        : "",
     };
   },
 
@@ -1345,6 +1369,9 @@ export const QueryRewardPoolResponse: MessageFns<QueryRewardPoolResponse> = {
     if (message.initialized !== false) {
       obj.initialized = message.initialized;
     }
+    if (message.maxRewardPerMonthPerNode !== "") {
+      obj.maxRewardPerMonthPerNode = message.maxRewardPerMonthPerNode;
+    }
     return obj;
   },
 
@@ -1360,6 +1387,7 @@ export const QueryRewardPoolResponse: MessageFns<QueryRewardPoolResponse> = {
     message.maxRewardPerBlockPerNode = object.maxRewardPerBlockPerNode ?? "";
     message.distributable = object.distributable ?? "";
     message.initialized = object.initialized ?? false;
+    message.maxRewardPerMonthPerNode = object.maxRewardPerMonthPerNode ?? "";
     return message;
   },
 };

@@ -64,6 +64,9 @@ pub fn register_pqc_key_v2(
         algorithm_id,
         ecdsa_pubkey,
         key_type: key_type.into(),
+        // Optional from chain v3.2.3. Left empty it stays off the wire, so a
+        // node below v3.2.3 accepts the message; see `pqc_dx` for attaching it.
+        proof_of_possession: Vec::new(),
     }
 }
 
@@ -272,6 +275,10 @@ pub fn open_evm_window(
         blocks: params.blocks,
         max_txs: params.max_txs,
         max_value: params.max_value,
+        // The optional scope (chain v3.2.3) stays off the wire unless set with
+        // `open_evm_window_scoped`, so a node below v3.2.3 accepts the message.
+        native_only: false,
+        allowed_targets: Vec::new(),
     })
 }
 

@@ -125,6 +125,12 @@ pub struct QueryRewardPoolResponse {
     /// not ready.
     #[prost(bool, tag="7")]
     pub initialized: bool,
+    /// max_reward_per_month_per_node is the monthly per-node bound in uqor
+    /// (2,000 QOR by decision). From the lightnode-monthly-cap switch it is the
+    /// bound in force, prorated over block time; max_reward_per_block_per_node is
+    /// then informational only.
+    #[prost(string, tag="8")]
+    pub max_reward_per_month_per_node: ::prost::alloc::string::String,
 }
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct MsgRegisterLightNode {

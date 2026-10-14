@@ -44,10 +44,13 @@ public final class Tx extends com.google.protobuf.GeneratedFile {
 
     /**
      * <pre>
-     * mode cast to the named AgentMode (uint8) Go type.
+     * mode is one of the AgentMode values (0 shadow, 1 conservative,
+     * 2 autonomous, 3 paused). It stays a uint32 in Go: casting it to the uint8
+     * AgentMode at decode time wrapped 256 to 0 and 257 to 1 before any check
+     * could see the value that was sent (QSR-2026-0434).
      * </pre>
      *
-     * <code>uint32 mode = 2 [json_name = "mode", (.gogoproto.customname) = "Mode", (.gogoproto.casttype) = "AgentMode"];</code>
+     * <code>uint32 mode = 2 [json_name = "mode", (.gogoproto.customname) = "Mode"];</code>
      * @return The mode.
      */
     int getMode();
@@ -138,10 +141,13 @@ public final class Tx extends com.google.protobuf.GeneratedFile {
     private int mode_ = 0;
     /**
      * <pre>
-     * mode cast to the named AgentMode (uint8) Go type.
+     * mode is one of the AgentMode values (0 shadow, 1 conservative,
+     * 2 autonomous, 3 paused). It stays a uint32 in Go: casting it to the uint8
+     * AgentMode at decode time wrapped 256 to 0 and 257 to 1 before any check
+     * could see the value that was sent (QSR-2026-0434).
      * </pre>
      *
-     * <code>uint32 mode = 2 [json_name = "mode", (.gogoproto.customname) = "Mode", (.gogoproto.casttype) = "AgentMode"];</code>
+     * <code>uint32 mode = 2 [json_name = "mode", (.gogoproto.customname) = "Mode"];</code>
      * @return The mode.
      */
     @java.lang.Override
@@ -545,10 +551,13 @@ public final class Tx extends com.google.protobuf.GeneratedFile {
       private int mode_ ;
       /**
        * <pre>
-       * mode cast to the named AgentMode (uint8) Go type.
+       * mode is one of the AgentMode values (0 shadow, 1 conservative,
+       * 2 autonomous, 3 paused). It stays a uint32 in Go: casting it to the uint8
+       * AgentMode at decode time wrapped 256 to 0 and 257 to 1 before any check
+       * could see the value that was sent (QSR-2026-0434).
        * </pre>
        *
-       * <code>uint32 mode = 2 [json_name = "mode", (.gogoproto.customname) = "Mode", (.gogoproto.casttype) = "AgentMode"];</code>
+       * <code>uint32 mode = 2 [json_name = "mode", (.gogoproto.customname) = "Mode"];</code>
        * @return The mode.
        */
       @java.lang.Override
@@ -557,10 +566,13 @@ public final class Tx extends com.google.protobuf.GeneratedFile {
       }
       /**
        * <pre>
-       * mode cast to the named AgentMode (uint8) Go type.
+       * mode is one of the AgentMode values (0 shadow, 1 conservative,
+       * 2 autonomous, 3 paused). It stays a uint32 in Go: casting it to the uint8
+       * AgentMode at decode time wrapped 256 to 0 and 257 to 1 before any check
+       * could see the value that was sent (QSR-2026-0434).
        * </pre>
        *
-       * <code>uint32 mode = 2 [json_name = "mode", (.gogoproto.customname) = "Mode", (.gogoproto.casttype) = "AgentMode"];</code>
+       * <code>uint32 mode = 2 [json_name = "mode", (.gogoproto.customname) = "Mode"];</code>
        * @param value The mode to set.
        * @return This builder for chaining.
        */
@@ -573,10 +585,13 @@ public final class Tx extends com.google.protobuf.GeneratedFile {
       }
       /**
        * <pre>
-       * mode cast to the named AgentMode (uint8) Go type.
+       * mode is one of the AgentMode values (0 shadow, 1 conservative,
+       * 2 autonomous, 3 paused). It stays a uint32 in Go: casting it to the uint8
+       * AgentMode at decode time wrapped 256 to 0 and 257 to 1 before any check
+       * could see the value that was sent (QSR-2026-0434).
        * </pre>
        *
-       * <code>uint32 mode = 2 [json_name = "mode", (.gogoproto.customname) = "Mode", (.gogoproto.casttype) = "AgentMode"];</code>
+       * <code>uint32 mode = 2 [json_name = "mode", (.gogoproto.customname) = "Mode"];</code>
        * @return This builder for chaining.
        */
       public Builder clearMode() {
@@ -4605,36 +4620,36 @@ public final class Tx extends com.google.protobuf.GeneratedFile {
     java.lang.String[] descriptorData = {
       "\n!qorechain/rlconsensus/v1/tx.proto\022\030qor" +
       "echain.rlconsensus.v1\032\027cosmos/msg/v1/msg" +
-      ".proto\032\024gogoproto/gogo.proto\"j\n\017MsgSetAg" +
-      "entMode\022\034\n\tauthority\030\001 \001(\tR\tauthority\022)\n" +
-      "\004mode\030\002 \001(\rB\025\342\336\037\004Mode\372\336\037\tAgentModeR\004mode" +
-      ":\016\202\347\260*\tauthority\"\031\n\027MsgSetAgentModeRespo" +
-      "nse\">\n\016MsgResumeAgent\022\034\n\tauthority\030\001 \001(\t" +
-      "R\tauthority:\016\202\347\260*\tauthority\"\030\n\026MsgResume" +
-      "AgentResponse\"b\n\017MsgUpdatePolicy\022\034\n\tauth" +
-      "ority\030\001 \001(\tR\tauthority\022!\n\014weights_json\030\002" +
-      " \001(\tR\013weightsJson:\016\202\347\260*\tauthority\"\031\n\027Msg" +
-      "UpdatePolicyResponse\"\350\001\n\026MsgUpdateReward" +
-      "Weights\022\034\n\tauthority\030\001 \001(\tR\tauthority\022\036\n" +
-      "\nthroughput\030\002 \001(\tR\nthroughput\022\032\n\010finalit" +
-      "y\030\003 \001(\tR\010finality\022*\n\020decentralization\030\004 " +
-      "\001(\tR\020decentralization\022\031\n\003mev\030\005 \001(\tB\007\342\336\037\003" +
-      "MEVR\003mev\022\035\n\nfailed_txs\030\006 \001(\tR\tfailedTxs:" +
-      "\016\202\347\260*\tauthority\" \n\036MsgUpdateRewardWeight" +
-      "sResponse2\327\003\n\003Msg\022l\n\014SetAgentMode\022).qore" +
-      "chain.rlconsensus.v1.MsgSetAgentMode\0321.q" +
-      "orechain.rlconsensus.v1.MsgSetAgentModeR" +
-      "esponse\022i\n\013ResumeAgent\022(.qorechain.rlcon" +
-      "sensus.v1.MsgResumeAgent\0320.qorechain.rlc" +
-      "onsensus.v1.MsgResumeAgentResponse\022l\n\014Up" +
-      "datePolicy\022).qorechain.rlconsensus.v1.Ms" +
-      "gUpdatePolicy\0321.qorechain.rlconsensus.v1" +
-      ".MsgUpdatePolicyResponse\022\201\001\n\023UpdateRewar" +
-      "dWeights\0220.qorechain.rlconsensus.v1.MsgU" +
-      "pdateRewardWeights\0328.qorechain.rlconsens" +
-      "us.v1.MsgUpdateRewardWeightsResponse\032\005\200\347" +
-      "\260*\001B9Z7github.com/qorechain/qorechain-co" +
-      "re/x/rlconsensus/typesb\006proto3"
+      ".proto\032\024gogoproto/gogo.proto\"]\n\017MsgSetAg" +
+      "entMode\022\034\n\tauthority\030\001 \001(\tR\tauthority\022\034\n" +
+      "\004mode\030\002 \001(\rB\010\342\336\037\004ModeR\004mode:\016\202\347\260*\tauthor" +
+      "ity\"\031\n\027MsgSetAgentModeResponse\">\n\016MsgRes" +
+      "umeAgent\022\034\n\tauthority\030\001 \001(\tR\tauthority:\016" +
+      "\202\347\260*\tauthority\"\030\n\026MsgResumeAgentResponse" +
+      "\"b\n\017MsgUpdatePolicy\022\034\n\tauthority\030\001 \001(\tR\t" +
+      "authority\022!\n\014weights_json\030\002 \001(\tR\013weights" +
+      "Json:\016\202\347\260*\tauthority\"\031\n\027MsgUpdatePolicyR" +
+      "esponse\"\350\001\n\026MsgUpdateRewardWeights\022\034\n\tau" +
+      "thority\030\001 \001(\tR\tauthority\022\036\n\nthroughput\030\002" +
+      " \001(\tR\nthroughput\022\032\n\010finality\030\003 \001(\tR\010fina" +
+      "lity\022*\n\020decentralization\030\004 \001(\tR\020decentra" +
+      "lization\022\031\n\003mev\030\005 \001(\tB\007\342\336\037\003MEVR\003mev\022\035\n\nf" +
+      "ailed_txs\030\006 \001(\tR\tfailedTxs:\016\202\347\260*\tauthori" +
+      "ty\" \n\036MsgUpdateRewardWeightsResponse2\327\003\n" +
+      "\003Msg\022l\n\014SetAgentMode\022).qorechain.rlconse" +
+      "nsus.v1.MsgSetAgentMode\0321.qorechain.rlco" +
+      "nsensus.v1.MsgSetAgentModeResponse\022i\n\013Re" +
+      "sumeAgent\022(.qorechain.rlconsensus.v1.Msg" +
+      "ResumeAgent\0320.qorechain.rlconsensus.v1.M" +
+      "sgResumeAgentResponse\022l\n\014UpdatePolicy\022)." +
+      "qorechain.rlconsensus.v1.MsgUpdatePolicy" +
+      "\0321.qorechain.rlconsensus.v1.MsgUpdatePol" +
+      "icyResponse\022\201\001\n\023UpdateRewardWeights\0220.qo" +
+      "rechain.rlconsensus.v1.MsgUpdateRewardWe" +
+      "ights\0328.qorechain.rlconsensus.v1.MsgUpda" +
+      "teRewardWeightsResponse\032\005\200\347\260*\001B9Z7github" +
+      ".com/qorechain/qorechain-core/x/rlconsen" +
+      "sus/typesb\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
@@ -4697,7 +4712,6 @@ public final class Tx extends com.google.protobuf.GeneratedFile {
         com.google.protobuf.ExtensionRegistry.newInstance();
     registry.add(cosmos.msg.v1.Msg.service);
     registry.add(cosmos.msg.v1.Msg.signer);
-    registry.add(com.google.protobuf.GoGoProtos.casttype);
     registry.add(com.google.protobuf.GoGoProtos.customname);
     com.google.protobuf.Descriptors.FileDescriptor
         .internalUpdateFileDescriptor(descriptor, registry);

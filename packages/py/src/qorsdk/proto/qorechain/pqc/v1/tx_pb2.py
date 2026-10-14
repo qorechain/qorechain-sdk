@@ -27,7 +27,7 @@ from cosmpy.protos.cosmos_proto import cosmos_pb2 as cosmos__proto_dot_cosmos__p
 from cosmpy.protos.gogoproto import gogo_pb2 as gogoproto_dot_gogo__pb2
 
 
-DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\x19qorechain/pqc/v1/tx.proto\x12\x10qorechain.pqc.v1\x1a\x17\x63osmos/msg/v1/msg.proto\x1a\x19\x63osmos_proto/cosmos.proto\x1a\x14gogoproto/gogo.proto\"\xcc\x01\n\x11MsgRegisterPQCKey\x12\x30\n\x06sender\x18\x01 \x01(\tB\x18\xd2\xb4-\x14\x63osmos.AddressStringR\x06sender\x12)\n\x10\x64ilithium_pubkey\x18\x02 \x01(\x0cR\x0f\x64ilithiumPubkey\x12\x32\n\x0c\x65\x63\x64sa_pubkey\x18\x03 \x01(\x0c\x42\x0f\xe2\xde\x1f\x0b\x45\x43\x44SAPubkeyR\x0b\x65\x63\x64saPubkey\x12\x19\n\x08key_type\x18\x04 \x01(\tR\x07keyType:\x0b\x82\xe7\xb0*\x06sender\"\x1b\n\x19MsgRegisterPQCKeyResponse\"\x85\x02\n\x13MsgRegisterPQCKeyV2\x12\x30\n\x06sender\x18\x01 \x01(\tB\x18\xd2\xb4-\x14\x63osmos.AddressStringR\x06sender\x12\x1d\n\npublic_key\x18\x02 \x01(\x0cR\tpublicKey\x12\x41\n\x0c\x61lgorithm_id\x18\x03 \x01(\rB\x1e\xe2\xde\x1f\x0b\x41lgorithmID\xfa\xde\x1f\x0b\x41lgorithmIDR\x0b\x61lgorithmId\x12\x32\n\x0c\x65\x63\x64sa_pubkey\x18\x04 \x01(\x0c\x42\x0f\xe2\xde\x1f\x0b\x45\x43\x44SAPubkeyR\x0b\x65\x63\x64saPubkey\x12\x19\n\x08key_type\x18\x05 \x01(\tR\x07keyType:\x0b\x82\xe7\xb0*\x06sender\"\x1d\n\x1bMsgRegisterPQCKeyV2Response\"\xb4\x02\n\x10MsgMigratePQCKey\x12\x30\n\x06sender\x18\x01 \x01(\tB\x18\xd2\xb4-\x14\x63osmos.AddressStringR\x06sender\x12$\n\x0eold_public_key\x18\x02 \x01(\x0cR\x0coldPublicKey\x12$\n\x0enew_public_key\x18\x03 \x01(\x0cR\x0cnewPublicKey\x12K\n\x10new_algorithm_id\x18\x04 \x01(\rB!\xe2\xde\x1f\x0eNewAlgorithmID\xfa\xde\x1f\x0b\x41lgorithmIDR\x0enewAlgorithmId\x12#\n\rold_signature\x18\x05 \x01(\x0cR\x0coldSignature\x12#\n\rnew_signature\x18\x06 \x01(\x0cR\x0cnewSignature:\x0b\x82\xe7\xb0*\x06sender\"\x1a\n\x18MsgMigratePQCKeyResponse\"\xe6\x01\n\x0fMsgRotatePQCKey\x12\x30\n\x06sender\x18\x01 \x01(\tB\x18\xd2\xb4-\x14\x63osmos.AddressStringR\x06sender\x12$\n\x0eold_public_key\x18\x02 \x01(\x0cR\x0coldPublicKey\x12$\n\x0enew_public_key\x18\x03 \x01(\x0cR\x0cnewPublicKey\x12#\n\rold_signature\x18\x04 \x01(\x0cR\x0coldSignature\x12#\n\rnew_signature\x18\x05 \x01(\x0cR\x0cnewSignature:\x0b\x82\xe7\xb0*\x06sender\"\x19\n\x17MsgRotatePQCKeyResponse\"\xac\x02\n\x15MsgDeprecateAlgorithm\x12\x36\n\tauthority\x18\x01 \x01(\tB\x18\xd2\xb4-\x14\x63osmos.AddressStringR\tauthority\x12\x41\n\x0c\x61lgorithm_id\x18\x02 \x01(\rB\x1e\xe2\xde\x1f\x0b\x41lgorithmID\xfa\xde\x1f\x0b\x41lgorithmIDR\x0b\x61lgorithmId\x12)\n\x10migration_blocks\x18\x03 \x01(\x03R\x0fmigrationBlocks\x12]\n\x18replacement_algorithm_id\x18\x04 \x01(\rB#\xe2\xde\x1f\x10ReplacementAlgID\xfa\xde\x1f\x0b\x41lgorithmIDR\x16replacementAlgorithmId:\x0e\x82\xe7\xb0*\tauthority\"\x1f\n\x1dMsgDeprecateAlgorithmResponse\"\xb8\x01\n\x13MsgDisableAlgorithm\x12\x36\n\tauthority\x18\x01 \x01(\tB\x18\xd2\xb4-\x14\x63osmos.AddressStringR\tauthority\x12\x41\n\x0c\x61lgorithm_id\x18\x02 \x01(\rB\x1e\xe2\xde\x1f\x0b\x41lgorithmID\xfa\xde\x1f\x0b\x41lgorithmIDR\x0b\x61lgorithmId\x12\x16\n\x06reason\x18\x03 \x01(\tR\x06reason:\x0e\x82\xe7\xb0*\tauthority\"\x1d\n\x1bMsgDisableAlgorithmResponse\"\xcc\x01\n\x10MsgOpenEVMWindow\x12\x30\n\x06sender\x18\x01 \x01(\tB\x18\xd2\xb4-\x14\x63osmos.AddressStringR\x06sender\x12\x16\n\x06\x62locks\x18\x02 \x01(\x04R\x06\x62locks\x12\x17\n\x07max_txs\x18\x03 \x01(\x04R\x06maxTxs\x12H\n\tmax_value\x18\x04 \x01(\tB+\xc8\xde\x1f\x00\xda\xde\x1f\x15\x63osmossdk.io/math.Int\xd2\xb4-\ncosmos.IntR\x08maxValue:\x0b\x82\xe7\xb0*\x06sender\"?\n\x18MsgOpenEVMWindowResponse\x12#\n\rexpiry_height\x18\x01 \x01(\x04R\x0c\x65xpiryHeight\"R\n\x11MsgCloseEVMWindow\x12\x30\n\x06sender\x18\x01 \x01(\tB\x18\xd2\xb4-\x14\x63osmos.AddressStringR\x06sender:\x0b\x82\xe7\xb0*\x06sender\"\x1b\n\x19MsgCloseEVMWindowResponse\"\x8e\x01\n\x19MsgAuthorizeEVMDelegation\x12\x30\n\x06sender\x18\x01 \x01(\tB\x18\xd2\xb4-\x14\x63osmos.AddressStringR\x06sender\x12\x1a\n\x08\x64\x65legate\x18\x02 \x01(\tR\x08\x64\x65legate\x12\x16\n\x06\x62locks\x18\x03 \x01(\x04R\x06\x62locks:\x0b\x82\xe7\xb0*\x06sender\"H\n!MsgAuthorizeEVMDelegationResponse\x12#\n\rexpiry_height\x18\x01 \x01(\x04R\x0c\x65xpiryHeight\"V\n\x15MsgClearEVMDelegation\x12\x30\n\x06sender\x18\x01 \x01(\tB\x18\xd2\xb4-\x14\x63osmos.AddressStringR\x06sender:\x0b\x82\xe7\xb0*\x06sender\"\x1f\n\x1dMsgClearEVMDelegationResponse2\xa4\x08\n\x03Msg\x12\x62\n\x0eRegisterPQCKey\x12#.qorechain.pqc.v1.MsgRegisterPQCKey\x1a+.qorechain.pqc.v1.MsgRegisterPQCKeyResponse\x12h\n\x10RegisterPQCKeyV2\x12%.qorechain.pqc.v1.MsgRegisterPQCKeyV2\x1a-.qorechain.pqc.v1.MsgRegisterPQCKeyV2Response\x12_\n\rMigratePQCKey\x12\".qorechain.pqc.v1.MsgMigratePQCKey\x1a*.qorechain.pqc.v1.MsgMigratePQCKeyResponse\x12\\\n\x0cRotatePQCKey\x12!.qorechain.pqc.v1.MsgRotatePQCKey\x1a).qorechain.pqc.v1.MsgRotatePQCKeyResponse\x12n\n\x12\x44\x65precateAlgorithm\x12\'.qorechain.pqc.v1.MsgDeprecateAlgorithm\x1a/.qorechain.pqc.v1.MsgDeprecateAlgorithmResponse\x12h\n\x10\x44isableAlgorithm\x12%.qorechain.pqc.v1.MsgDisableAlgorithm\x1a-.qorechain.pqc.v1.MsgDisableAlgorithmResponse\x12_\n\rOpenEVMWindow\x12\".qorechain.pqc.v1.MsgOpenEVMWindow\x1a*.qorechain.pqc.v1.MsgOpenEVMWindowResponse\x12\x62\n\x0e\x43loseEVMWindow\x12#.qorechain.pqc.v1.MsgCloseEVMWindow\x1a+.qorechain.pqc.v1.MsgCloseEVMWindowResponse\x12z\n\x16\x41uthorizeEVMDelegation\x12+.qorechain.pqc.v1.MsgAuthorizeEVMDelegation\x1a\x33.qorechain.pqc.v1.MsgAuthorizeEVMDelegationResponse\x12n\n\x12\x43learEVMDelegation\x12\'.qorechain.pqc.v1.MsgClearEVMDelegation\x1a/.qorechain.pqc.v1.MsgClearEVMDelegationResponse\x1a\x05\x80\xe7\xb0*\x01\x42\xb2\x01\n\x14\x63om.qorechain.pqc.v1B\x07TxProtoP\x01Z/github.com/qorechain/qorechain-core/x/pqc/types\xa2\x02\x03QPX\xaa\x02\x10Qorechain.Pqc.V1\xca\x02\x10Qorechain\\Pqc\\V1\xe2\x02\x1cQorechain\\Pqc\\V1\\GPBMetadata\xea\x02\x12Qorechain::Pqc::V1b\x06proto3')
+DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\x19qorechain/pqc/v1/tx.proto\x12\x10qorechain.pqc.v1\x1a\x17\x63osmos/msg/v1/msg.proto\x1a\x19\x63osmos_proto/cosmos.proto\x1a\x14gogoproto/gogo.proto\"\xcc\x01\n\x11MsgRegisterPQCKey\x12\x30\n\x06sender\x18\x01 \x01(\tB\x18\xd2\xb4-\x14\x63osmos.AddressStringR\x06sender\x12)\n\x10\x64ilithium_pubkey\x18\x02 \x01(\x0cR\x0f\x64ilithiumPubkey\x12\x32\n\x0c\x65\x63\x64sa_pubkey\x18\x03 \x01(\x0c\x42\x0f\xe2\xde\x1f\x0b\x45\x43\x44SAPubkeyR\x0b\x65\x63\x64saPubkey\x12\x19\n\x08key_type\x18\x04 \x01(\tR\x07keyType:\x0b\x82\xe7\xb0*\x06sender\"\x1b\n\x19MsgRegisterPQCKeyResponse\"\xb5\x02\n\x13MsgRegisterPQCKeyV2\x12\x30\n\x06sender\x18\x01 \x01(\tB\x18\xd2\xb4-\x14\x63osmos.AddressStringR\x06sender\x12\x1d\n\npublic_key\x18\x02 \x01(\x0cR\tpublicKey\x12\x41\n\x0c\x61lgorithm_id\x18\x03 \x01(\rB\x1e\xe2\xde\x1f\x0b\x41lgorithmID\xfa\xde\x1f\x0b\x41lgorithmIDR\x0b\x61lgorithmId\x12\x32\n\x0c\x65\x63\x64sa_pubkey\x18\x04 \x01(\x0c\x42\x0f\xe2\xde\x1f\x0b\x45\x43\x44SAPubkeyR\x0b\x65\x63\x64saPubkey\x12\x19\n\x08key_type\x18\x05 \x01(\tR\x07keyType\x12.\n\x13proof_of_possession\x18\x06 \x01(\x0cR\x11proofOfPossession:\x0b\x82\xe7\xb0*\x06sender\"\x1d\n\x1bMsgRegisterPQCKeyV2Response\"\xb4\x02\n\x10MsgMigratePQCKey\x12\x30\n\x06sender\x18\x01 \x01(\tB\x18\xd2\xb4-\x14\x63osmos.AddressStringR\x06sender\x12$\n\x0eold_public_key\x18\x02 \x01(\x0cR\x0coldPublicKey\x12$\n\x0enew_public_key\x18\x03 \x01(\x0cR\x0cnewPublicKey\x12K\n\x10new_algorithm_id\x18\x04 \x01(\rB!\xe2\xde\x1f\x0eNewAlgorithmID\xfa\xde\x1f\x0b\x41lgorithmIDR\x0enewAlgorithmId\x12#\n\rold_signature\x18\x05 \x01(\x0cR\x0coldSignature\x12#\n\rnew_signature\x18\x06 \x01(\x0cR\x0cnewSignature:\x0b\x82\xe7\xb0*\x06sender\"\x1a\n\x18MsgMigratePQCKeyResponse\"\xe6\x01\n\x0fMsgRotatePQCKey\x12\x30\n\x06sender\x18\x01 \x01(\tB\x18\xd2\xb4-\x14\x63osmos.AddressStringR\x06sender\x12$\n\x0eold_public_key\x18\x02 \x01(\x0cR\x0coldPublicKey\x12$\n\x0enew_public_key\x18\x03 \x01(\x0cR\x0cnewPublicKey\x12#\n\rold_signature\x18\x04 \x01(\x0cR\x0coldSignature\x12#\n\rnew_signature\x18\x05 \x01(\x0cR\x0cnewSignature:\x0b\x82\xe7\xb0*\x06sender\"\x19\n\x17MsgRotatePQCKeyResponse\"\xac\x02\n\x15MsgDeprecateAlgorithm\x12\x36\n\tauthority\x18\x01 \x01(\tB\x18\xd2\xb4-\x14\x63osmos.AddressStringR\tauthority\x12\x41\n\x0c\x61lgorithm_id\x18\x02 \x01(\rB\x1e\xe2\xde\x1f\x0b\x41lgorithmID\xfa\xde\x1f\x0b\x41lgorithmIDR\x0b\x61lgorithmId\x12)\n\x10migration_blocks\x18\x03 \x01(\x03R\x0fmigrationBlocks\x12]\n\x18replacement_algorithm_id\x18\x04 \x01(\rB#\xe2\xde\x1f\x10ReplacementAlgID\xfa\xde\x1f\x0b\x41lgorithmIDR\x16replacementAlgorithmId:\x0e\x82\xe7\xb0*\tauthority\"\x1f\n\x1dMsgDeprecateAlgorithmResponse\"\xb8\x01\n\x13MsgDisableAlgorithm\x12\x36\n\tauthority\x18\x01 \x01(\tB\x18\xd2\xb4-\x14\x63osmos.AddressStringR\tauthority\x12\x41\n\x0c\x61lgorithm_id\x18\x02 \x01(\rB\x1e\xe2\xde\x1f\x0b\x41lgorithmID\xfa\xde\x1f\x0b\x41lgorithmIDR\x0b\x61lgorithmId\x12\x16\n\x06reason\x18\x03 \x01(\tR\x06reason:\x0e\x82\xe7\xb0*\tauthority\"\x1d\n\x1bMsgDisableAlgorithmResponse\"\x96\x02\n\x10MsgOpenEVMWindow\x12\x30\n\x06sender\x18\x01 \x01(\tB\x18\xd2\xb4-\x14\x63osmos.AddressStringR\x06sender\x12\x16\n\x06\x62locks\x18\x02 \x01(\x04R\x06\x62locks\x12\x17\n\x07max_txs\x18\x03 \x01(\x04R\x06maxTxs\x12H\n\tmax_value\x18\x04 \x01(\tB+\xc8\xde\x1f\x00\xda\xde\x1f\x15\x63osmossdk.io/math.Int\xd2\xb4-\ncosmos.IntR\x08maxValue\x12\x1f\n\x0bnative_only\x18\x05 \x01(\x08R\nnativeOnly\x12\'\n\x0f\x61llowed_targets\x18\x06 \x03(\tR\x0e\x61llowedTargets:\x0b\x82\xe7\xb0*\x06sender\"?\n\x18MsgOpenEVMWindowResponse\x12#\n\rexpiry_height\x18\x01 \x01(\x04R\x0c\x65xpiryHeight\"R\n\x11MsgCloseEVMWindow\x12\x30\n\x06sender\x18\x01 \x01(\tB\x18\xd2\xb4-\x14\x63osmos.AddressStringR\x06sender:\x0b\x82\xe7\xb0*\x06sender\"\x1b\n\x19MsgCloseEVMWindowResponse\"\x8e\x01\n\x19MsgAuthorizeEVMDelegation\x12\x30\n\x06sender\x18\x01 \x01(\tB\x18\xd2\xb4-\x14\x63osmos.AddressStringR\x06sender\x12\x1a\n\x08\x64\x65legate\x18\x02 \x01(\tR\x08\x64\x65legate\x12\x16\n\x06\x62locks\x18\x03 \x01(\x04R\x06\x62locks:\x0b\x82\xe7\xb0*\x06sender\"H\n!MsgAuthorizeEVMDelegationResponse\x12#\n\rexpiry_height\x18\x01 \x01(\x04R\x0c\x65xpiryHeight\"V\n\x15MsgClearEVMDelegation\x12\x30\n\x06sender\x18\x01 \x01(\tB\x18\xd2\xb4-\x14\x63osmos.AddressStringR\x06sender:\x0b\x82\xe7\xb0*\x06sender\"\x1f\n\x1dMsgClearEVMDelegationResponse2\xa4\x08\n\x03Msg\x12\x62\n\x0eRegisterPQCKey\x12#.qorechain.pqc.v1.MsgRegisterPQCKey\x1a+.qorechain.pqc.v1.MsgRegisterPQCKeyResponse\x12h\n\x10RegisterPQCKeyV2\x12%.qorechain.pqc.v1.MsgRegisterPQCKeyV2\x1a-.qorechain.pqc.v1.MsgRegisterPQCKeyV2Response\x12_\n\rMigratePQCKey\x12\".qorechain.pqc.v1.MsgMigratePQCKey\x1a*.qorechain.pqc.v1.MsgMigratePQCKeyResponse\x12\\\n\x0cRotatePQCKey\x12!.qorechain.pqc.v1.MsgRotatePQCKey\x1a).qorechain.pqc.v1.MsgRotatePQCKeyResponse\x12n\n\x12\x44\x65precateAlgorithm\x12\'.qorechain.pqc.v1.MsgDeprecateAlgorithm\x1a/.qorechain.pqc.v1.MsgDeprecateAlgorithmResponse\x12h\n\x10\x44isableAlgorithm\x12%.qorechain.pqc.v1.MsgDisableAlgorithm\x1a-.qorechain.pqc.v1.MsgDisableAlgorithmResponse\x12_\n\rOpenEVMWindow\x12\".qorechain.pqc.v1.MsgOpenEVMWindow\x1a*.qorechain.pqc.v1.MsgOpenEVMWindowResponse\x12\x62\n\x0e\x43loseEVMWindow\x12#.qorechain.pqc.v1.MsgCloseEVMWindow\x1a+.qorechain.pqc.v1.MsgCloseEVMWindowResponse\x12z\n\x16\x41uthorizeEVMDelegation\x12+.qorechain.pqc.v1.MsgAuthorizeEVMDelegation\x1a\x33.qorechain.pqc.v1.MsgAuthorizeEVMDelegationResponse\x12n\n\x12\x43learEVMDelegation\x12\'.qorechain.pqc.v1.MsgClearEVMDelegation\x1a/.qorechain.pqc.v1.MsgClearEVMDelegationResponse\x1a\x05\x80\xe7\xb0*\x01\x42\xb2\x01\n\x14\x63om.qorechain.pqc.v1B\x07TxProtoP\x01Z/github.com/qorechain/qorechain-core/x/pqc/types\xa2\x02\x03QPX\xaa\x02\x10Qorechain.Pqc.V1\xca\x02\x10Qorechain\\Pqc\\V1\xe2\x02\x1cQorechain\\Pqc\\V1\\GPBMetadata\xea\x02\x12Qorechain::Pqc::V1b\x06proto3')
 
 _globals = globals()
 _builder.BuildMessageAndEnumDescriptors(DESCRIPTOR, _globals)
@@ -98,41 +98,41 @@ if not _descriptor._USE_C_DESCRIPTORS:
   _globals['_MSGREGISTERPQCKEYRESPONSE']._serialized_start=328
   _globals['_MSGREGISTERPQCKEYRESPONSE']._serialized_end=355
   _globals['_MSGREGISTERPQCKEYV2']._serialized_start=358
-  _globals['_MSGREGISTERPQCKEYV2']._serialized_end=619
-  _globals['_MSGREGISTERPQCKEYV2RESPONSE']._serialized_start=621
-  _globals['_MSGREGISTERPQCKEYV2RESPONSE']._serialized_end=650
-  _globals['_MSGMIGRATEPQCKEY']._serialized_start=653
-  _globals['_MSGMIGRATEPQCKEY']._serialized_end=961
-  _globals['_MSGMIGRATEPQCKEYRESPONSE']._serialized_start=963
-  _globals['_MSGMIGRATEPQCKEYRESPONSE']._serialized_end=989
-  _globals['_MSGROTATEPQCKEY']._serialized_start=992
-  _globals['_MSGROTATEPQCKEY']._serialized_end=1222
-  _globals['_MSGROTATEPQCKEYRESPONSE']._serialized_start=1224
-  _globals['_MSGROTATEPQCKEYRESPONSE']._serialized_end=1249
-  _globals['_MSGDEPRECATEALGORITHM']._serialized_start=1252
-  _globals['_MSGDEPRECATEALGORITHM']._serialized_end=1552
-  _globals['_MSGDEPRECATEALGORITHMRESPONSE']._serialized_start=1554
-  _globals['_MSGDEPRECATEALGORITHMRESPONSE']._serialized_end=1585
-  _globals['_MSGDISABLEALGORITHM']._serialized_start=1588
-  _globals['_MSGDISABLEALGORITHM']._serialized_end=1772
-  _globals['_MSGDISABLEALGORITHMRESPONSE']._serialized_start=1774
-  _globals['_MSGDISABLEALGORITHMRESPONSE']._serialized_end=1803
-  _globals['_MSGOPENEVMWINDOW']._serialized_start=1806
-  _globals['_MSGOPENEVMWINDOW']._serialized_end=2010
-  _globals['_MSGOPENEVMWINDOWRESPONSE']._serialized_start=2012
-  _globals['_MSGOPENEVMWINDOWRESPONSE']._serialized_end=2075
-  _globals['_MSGCLOSEEVMWINDOW']._serialized_start=2077
-  _globals['_MSGCLOSEEVMWINDOW']._serialized_end=2159
-  _globals['_MSGCLOSEEVMWINDOWRESPONSE']._serialized_start=2161
-  _globals['_MSGCLOSEEVMWINDOWRESPONSE']._serialized_end=2188
-  _globals['_MSGAUTHORIZEEVMDELEGATION']._serialized_start=2191
-  _globals['_MSGAUTHORIZEEVMDELEGATION']._serialized_end=2333
-  _globals['_MSGAUTHORIZEEVMDELEGATIONRESPONSE']._serialized_start=2335
-  _globals['_MSGAUTHORIZEEVMDELEGATIONRESPONSE']._serialized_end=2407
-  _globals['_MSGCLEAREVMDELEGATION']._serialized_start=2409
-  _globals['_MSGCLEAREVMDELEGATION']._serialized_end=2495
-  _globals['_MSGCLEAREVMDELEGATIONRESPONSE']._serialized_start=2497
-  _globals['_MSGCLEAREVMDELEGATIONRESPONSE']._serialized_end=2528
-  _globals['_MSG']._serialized_start=2531
-  _globals['_MSG']._serialized_end=3591
+  _globals['_MSGREGISTERPQCKEYV2']._serialized_end=667
+  _globals['_MSGREGISTERPQCKEYV2RESPONSE']._serialized_start=669
+  _globals['_MSGREGISTERPQCKEYV2RESPONSE']._serialized_end=698
+  _globals['_MSGMIGRATEPQCKEY']._serialized_start=701
+  _globals['_MSGMIGRATEPQCKEY']._serialized_end=1009
+  _globals['_MSGMIGRATEPQCKEYRESPONSE']._serialized_start=1011
+  _globals['_MSGMIGRATEPQCKEYRESPONSE']._serialized_end=1037
+  _globals['_MSGROTATEPQCKEY']._serialized_start=1040
+  _globals['_MSGROTATEPQCKEY']._serialized_end=1270
+  _globals['_MSGROTATEPQCKEYRESPONSE']._serialized_start=1272
+  _globals['_MSGROTATEPQCKEYRESPONSE']._serialized_end=1297
+  _globals['_MSGDEPRECATEALGORITHM']._serialized_start=1300
+  _globals['_MSGDEPRECATEALGORITHM']._serialized_end=1600
+  _globals['_MSGDEPRECATEALGORITHMRESPONSE']._serialized_start=1602
+  _globals['_MSGDEPRECATEALGORITHMRESPONSE']._serialized_end=1633
+  _globals['_MSGDISABLEALGORITHM']._serialized_start=1636
+  _globals['_MSGDISABLEALGORITHM']._serialized_end=1820
+  _globals['_MSGDISABLEALGORITHMRESPONSE']._serialized_start=1822
+  _globals['_MSGDISABLEALGORITHMRESPONSE']._serialized_end=1851
+  _globals['_MSGOPENEVMWINDOW']._serialized_start=1854
+  _globals['_MSGOPENEVMWINDOW']._serialized_end=2132
+  _globals['_MSGOPENEVMWINDOWRESPONSE']._serialized_start=2134
+  _globals['_MSGOPENEVMWINDOWRESPONSE']._serialized_end=2197
+  _globals['_MSGCLOSEEVMWINDOW']._serialized_start=2199
+  _globals['_MSGCLOSEEVMWINDOW']._serialized_end=2281
+  _globals['_MSGCLOSEEVMWINDOWRESPONSE']._serialized_start=2283
+  _globals['_MSGCLOSEEVMWINDOWRESPONSE']._serialized_end=2310
+  _globals['_MSGAUTHORIZEEVMDELEGATION']._serialized_start=2313
+  _globals['_MSGAUTHORIZEEVMDELEGATION']._serialized_end=2455
+  _globals['_MSGAUTHORIZEEVMDELEGATIONRESPONSE']._serialized_start=2457
+  _globals['_MSGAUTHORIZEEVMDELEGATIONRESPONSE']._serialized_end=2529
+  _globals['_MSGCLEAREVMDELEGATION']._serialized_start=2531
+  _globals['_MSGCLEAREVMDELEGATION']._serialized_end=2617
+  _globals['_MSGCLEAREVMDELEGATIONRESPONSE']._serialized_start=2619
+  _globals['_MSGCLEAREVMDELEGATIONRESPONSE']._serialized_end=2650
+  _globals['_MSG']._serialized_start=2653
+  _globals['_MSG']._serialized_end=3713
 # @@protoc_insertion_point(module_scope)

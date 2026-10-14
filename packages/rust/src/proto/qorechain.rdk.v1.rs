@@ -45,6 +45,11 @@ pub struct RollupView {
     pub layer_id: ::prost::alloc::string::String,
     #[prost(int64, tag="12")]
     pub created_height: i64,
+    /// escrow_balance is what the rollup still holds in the pooled module
+    /// escrow, in uqor: what its withdrawals can still pay and what stopping it
+    /// refunds. It is read from the per-rollup escrow ledger (from v3.2.3).
+    #[prost(uint64, tag="13")]
+    pub escrow_balance: u64,
 }
 /// BatchView is the query-facing view of a settlement batch.
 #[derive(Clone, PartialEq, ::prost::Message)]

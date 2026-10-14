@@ -104,7 +104,10 @@ pub struct QueryParamsResponse {
 pub struct MsgSetAgentMode {
     #[prost(string, tag="1")]
     pub authority: ::prost::alloc::string::String,
-    /// mode cast to the named AgentMode (uint8) Go type.
+    /// mode is one of the AgentMode values (0 shadow, 1 conservative,
+    /// 2 autonomous, 3 paused). It stays a uint32 in Go: casting it to the uint8
+    /// AgentMode at decode time wrapped 256 to 0 and 257 to 1 before any check
+    /// could see the value that was sent (QSR-2026-0434).
     #[prost(uint32, tag="2")]
     pub mode: u32,
 }

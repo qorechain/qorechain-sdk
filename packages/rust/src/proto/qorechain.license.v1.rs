@@ -112,4 +112,18 @@ pub struct MsgResumeLicense {
 #[derive(Clone, Copy, PartialEq, ::prost::Message)]
 pub struct MsgResumeLicenseResponse {
 }
+/// MsgUpdateAuthority replaces the licence grant authority. Signed by the
+/// governance module account, so it only ever executes from a passed proposal.
+#[derive(Clone, PartialEq, ::prost::Message)]
+pub struct MsgUpdateAuthority {
+    /// authority is the governance module account.
+    #[prost(string, tag="1")]
+    pub authority: ::prost::alloc::string::String,
+    /// new_authority becomes the licence grant authority.
+    #[prost(string, tag="2")]
+    pub new_authority: ::prost::alloc::string::String,
+}
+#[derive(Clone, Copy, PartialEq, ::prost::Message)]
+pub struct MsgUpdateAuthorityResponse {
+}
 // @@protoc_insertion_point(module)

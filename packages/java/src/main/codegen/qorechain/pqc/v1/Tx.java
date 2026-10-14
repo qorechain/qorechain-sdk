@@ -1253,6 +1253,18 @@ public final class Tx extends com.google.protobuf.GeneratedFile {
      */
     com.google.protobuf.ByteString
         getKeyTypeBytes();
+
+    /**
+     * <pre>
+     * Optional (v3.2.3): the key's signature over
+     * "qorechain-pqc-pop-v1|chainid|algo|account|hex(public_key)", proving the
+     * owner holds its secret. Verified when present; not required yet.
+     * </pre>
+     *
+     * <code>bytes proof_of_possession = 6 [json_name = "proofOfPossession"];</code>
+     * @return The proofOfPossession.
+     */
+    com.google.protobuf.ByteString getProofOfPossession();
   }
   /**
    * <pre>
@@ -1284,6 +1296,7 @@ public final class Tx extends com.google.protobuf.GeneratedFile {
       publicKey_ = com.google.protobuf.ByteString.EMPTY;
       ecdsaPubkey_ = com.google.protobuf.ByteString.EMPTY;
       keyType_ = "";
+      proofOfPossession_ = com.google.protobuf.ByteString.EMPTY;
     }
 
     public static final com.google.protobuf.Descriptors.Descriptor
@@ -1415,6 +1428,23 @@ public final class Tx extends com.google.protobuf.GeneratedFile {
       }
     }
 
+    public static final int PROOF_OF_POSSESSION_FIELD_NUMBER = 6;
+    private com.google.protobuf.ByteString proofOfPossession_ = com.google.protobuf.ByteString.EMPTY;
+    /**
+     * <pre>
+     * Optional (v3.2.3): the key's signature over
+     * "qorechain-pqc-pop-v1|chainid|algo|account|hex(public_key)", proving the
+     * owner holds its secret. Verified when present; not required yet.
+     * </pre>
+     *
+     * <code>bytes proof_of_possession = 6 [json_name = "proofOfPossession"];</code>
+     * @return The proofOfPossession.
+     */
+    @java.lang.Override
+    public com.google.protobuf.ByteString getProofOfPossession() {
+      return proofOfPossession_;
+    }
+
     private byte memoizedIsInitialized = -1;
     @java.lang.Override
     public final boolean isInitialized() {
@@ -1444,6 +1474,9 @@ public final class Tx extends com.google.protobuf.GeneratedFile {
       if (!com.google.protobuf.GeneratedMessage.isStringEmpty(keyType_)) {
         com.google.protobuf.GeneratedMessage.writeString(output, 5, keyType_);
       }
+      if (!proofOfPossession_.isEmpty()) {
+        output.writeBytes(6, proofOfPossession_);
+      }
       getUnknownFields().writeTo(output);
     }
     private int computeSerializedSize_0() {
@@ -1465,6 +1498,10 @@ public final class Tx extends com.google.protobuf.GeneratedFile {
       }
       if (!com.google.protobuf.GeneratedMessage.isStringEmpty(keyType_)) {
         size += com.google.protobuf.GeneratedMessage.computeStringSize(5, keyType_);
+      }
+      if (!proofOfPossession_.isEmpty()) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeBytesSize(6, proofOfPossession_);
       }
       return size;
     }
@@ -1500,6 +1537,8 @@ public final class Tx extends com.google.protobuf.GeneratedFile {
           .equals(other.getEcdsaPubkey())) return false;
       if (!getKeyType()
           .equals(other.getKeyType())) return false;
+      if (!getProofOfPossession()
+          .equals(other.getProofOfPossession())) return false;
       if (!getUnknownFields().equals(other.getUnknownFields())) return false;
       return true;
     }
@@ -1521,6 +1560,8 @@ public final class Tx extends com.google.protobuf.GeneratedFile {
       hash = (53 * hash) + getEcdsaPubkey().hashCode();
       hash = (37 * hash) + KEY_TYPE_FIELD_NUMBER;
       hash = (53 * hash) + getKeyType().hashCode();
+      hash = (37 * hash) + PROOF_OF_POSSESSION_FIELD_NUMBER;
+      hash = (53 * hash) + getProofOfPossession().hashCode();
       hash = (29 * hash) + getUnknownFields().hashCode();
       memoizedHashCode = hash;
       return hash;
@@ -1661,6 +1702,7 @@ public final class Tx extends com.google.protobuf.GeneratedFile {
         algorithmId_ = 0;
         ecdsaPubkey_ = com.google.protobuf.ByteString.EMPTY;
         keyType_ = "";
+        proofOfPossession_ = com.google.protobuf.ByteString.EMPTY;
         return this;
       }
 
@@ -1709,6 +1751,9 @@ public final class Tx extends com.google.protobuf.GeneratedFile {
         if (((from_bitField0_ & 0x00000010) != 0)) {
           result.keyType_ = keyType_;
         }
+        if (((from_bitField0_ & 0x00000020) != 0)) {
+          result.proofOfPossession_ = proofOfPossession_;
+        }
       }
 
       @java.lang.Override
@@ -1741,6 +1786,9 @@ public final class Tx extends com.google.protobuf.GeneratedFile {
           keyType_ = other.keyType_;
           bitField0_ |= 0x00000010;
           onChanged();
+        }
+        if (!other.getProofOfPossession().isEmpty()) {
+          setProofOfPossession(other.getProofOfPossession());
         }
         this.mergeUnknownFields(other.getUnknownFields());
         onChanged();
@@ -1793,6 +1841,11 @@ public final class Tx extends com.google.protobuf.GeneratedFile {
                 bitField0_ |= 0x00000010;
                 break;
               } // case 42
+              case 50: {
+                proofOfPossession_ = input.readBytes();
+                bitField0_ |= 0x00000020;
+                break;
+              } // case 50
               default: {
                 if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                   done = true; // was an endgroup tag
@@ -2046,6 +2099,56 @@ public final class Tx extends com.google.protobuf.GeneratedFile {
         checkByteStringIsUtf8(value);
         keyType_ = value;
         bitField0_ |= 0x00000010;
+        onChanged();
+        return this;
+      }
+
+      private com.google.protobuf.ByteString proofOfPossession_ = com.google.protobuf.ByteString.EMPTY;
+      /**
+       * <pre>
+       * Optional (v3.2.3): the key's signature over
+       * "qorechain-pqc-pop-v1|chainid|algo|account|hex(public_key)", proving the
+       * owner holds its secret. Verified when present; not required yet.
+       * </pre>
+       *
+       * <code>bytes proof_of_possession = 6 [json_name = "proofOfPossession"];</code>
+       * @return The proofOfPossession.
+       */
+      @java.lang.Override
+      public com.google.protobuf.ByteString getProofOfPossession() {
+        return proofOfPossession_;
+      }
+      /**
+       * <pre>
+       * Optional (v3.2.3): the key's signature over
+       * "qorechain-pqc-pop-v1|chainid|algo|account|hex(public_key)", proving the
+       * owner holds its secret. Verified when present; not required yet.
+       * </pre>
+       *
+       * <code>bytes proof_of_possession = 6 [json_name = "proofOfPossession"];</code>
+       * @param value The proofOfPossession to set.
+       * @return This builder for chaining.
+       */
+      public Builder setProofOfPossession(com.google.protobuf.ByteString value) {
+        if (value == null) { throw new NullPointerException(); }
+        proofOfPossession_ = value;
+        bitField0_ |= 0x00000020;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * Optional (v3.2.3): the key's signature over
+       * "qorechain-pqc-pop-v1|chainid|algo|account|hex(public_key)", proving the
+       * owner holds its secret. Verified when present; not required yet.
+       * </pre>
+       *
+       * <code>bytes proof_of_possession = 6 [json_name = "proofOfPossession"];</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearProofOfPossession() {
+        bitField0_ = (bitField0_ & ~0x00000020);
+        proofOfPossession_ = getDefaultInstance().getProofOfPossession();
         onChanged();
         return this;
       }
@@ -3755,8 +3858,10 @@ public final class Tx extends com.google.protobuf.GeneratedFile {
    * MsgRotatePQCKey replaces an account's PQC key with a new key of the SAME
    * algorithm. Both signatures are over the domain-separated bytes
    * "qorechain-pqc-rotate-v1|chainid|algo|account|oldkey|newkey" (no block height —
-   * the signer cannot predict it; replay is prevented because after the rotation
-   * the old key no longer matches the registered key).
+   * the signer cannot predict it). The bytes carry no nonce, so the old key no
+   * longer matching is NOT enough once a key is reused (A-&gt;B-&gt;A makes the A-&gt;B
+   * message valid again). From v3.2.3 the chain refuses any rotation or migration
+   * to a key the account used before, which closes that replay.
    * </pre>
    *
    * Protobuf type {@code qorechain.pqc.v1.MsgRotatePQCKey}
@@ -4097,8 +4202,10 @@ public final class Tx extends com.google.protobuf.GeneratedFile {
      * MsgRotatePQCKey replaces an account's PQC key with a new key of the SAME
      * algorithm. Both signatures are over the domain-separated bytes
      * "qorechain-pqc-rotate-v1|chainid|algo|account|oldkey|newkey" (no block height —
-     * the signer cannot predict it; replay is prevented because after the rotation
-     * the old key no longer matches the registered key).
+     * the signer cannot predict it). The bytes carry no nonce, so the old key no
+     * longer matching is NOT enough once a key is reused (A-&gt;B-&gt;A makes the A-&gt;B
+     * message valid again). From v3.2.3 the chain refuses any rotation or migration
+     * to a key the account used before, which closes that replay.
      * </pre>
      *
      * Protobuf type {@code qorechain.pqc.v1.MsgRotatePQCKey}
@@ -7166,6 +7273,72 @@ public final class Tx extends com.google.protobuf.GeneratedFile {
      */
     com.google.protobuf.ByteString
         getMaxValueBytes();
+
+    /**
+     * <pre>
+     * native_only, when true, narrows the window to plain transfers of native
+     * QOR: it refuses calldata, contract creation, a recipient that carries
+     * code, and EIP-7702 authorizations. Optional; absent keeps the window's
+     * original scope. Honoured from the evm-pqc-window-targets feature on.
+     * </pre>
+     *
+     * <code>bool native_only = 5 [json_name = "nativeOnly"];</code>
+     * @return The nativeOnly.
+     */
+    boolean getNativeOnly();
+
+    /**
+     * <pre>
+     * allowed_targets, when non-empty, narrows the window to transactions whose
+     * recipient is one of these 0x-prefixed 20-byte addresses; contract
+     * creation is refused. Optional; absent keeps the window's original scope.
+     * Honoured from the evm-pqc-window-targets feature on.
+     * </pre>
+     *
+     * <code>repeated string allowed_targets = 6 [json_name = "allowedTargets"];</code>
+     * @return A list containing the allowedTargets.
+     */
+    java.util.List<java.lang.String>
+        getAllowedTargetsList();
+    /**
+     * <pre>
+     * allowed_targets, when non-empty, narrows the window to transactions whose
+     * recipient is one of these 0x-prefixed 20-byte addresses; contract
+     * creation is refused. Optional; absent keeps the window's original scope.
+     * Honoured from the evm-pqc-window-targets feature on.
+     * </pre>
+     *
+     * <code>repeated string allowed_targets = 6 [json_name = "allowedTargets"];</code>
+     * @return The count of allowedTargets.
+     */
+    int getAllowedTargetsCount();
+    /**
+     * <pre>
+     * allowed_targets, when non-empty, narrows the window to transactions whose
+     * recipient is one of these 0x-prefixed 20-byte addresses; contract
+     * creation is refused. Optional; absent keeps the window's original scope.
+     * Honoured from the evm-pqc-window-targets feature on.
+     * </pre>
+     *
+     * <code>repeated string allowed_targets = 6 [json_name = "allowedTargets"];</code>
+     * @param index The index of the element to return.
+     * @return The allowedTargets at the given index.
+     */
+    java.lang.String getAllowedTargets(int index);
+    /**
+     * <pre>
+     * allowed_targets, when non-empty, narrows the window to transactions whose
+     * recipient is one of these 0x-prefixed 20-byte addresses; contract
+     * creation is refused. Optional; absent keeps the window's original scope.
+     * Honoured from the evm-pqc-window-targets feature on.
+     * </pre>
+     *
+     * <code>repeated string allowed_targets = 6 [json_name = "allowedTargets"];</code>
+     * @param index The index of the value to return.
+     * @return The bytes of the allowedTargets at the given index.
+     */
+    com.google.protobuf.ByteString
+        getAllowedTargetsBytes(int index);
   }
   /**
    * <pre>
@@ -7197,6 +7370,8 @@ public final class Tx extends com.google.protobuf.GeneratedFile {
     private MsgOpenEVMWindow() {
       sender_ = "";
       maxValue_ = "";
+      allowedTargets_ =
+          com.google.protobuf.LazyStringArrayList.emptyList();
     }
 
     public static final com.google.protobuf.Descriptors.Descriptor
@@ -7339,6 +7514,89 @@ public final class Tx extends com.google.protobuf.GeneratedFile {
       }
     }
 
+    public static final int NATIVE_ONLY_FIELD_NUMBER = 5;
+    private boolean nativeOnly_ = false;
+    /**
+     * <pre>
+     * native_only, when true, narrows the window to plain transfers of native
+     * QOR: it refuses calldata, contract creation, a recipient that carries
+     * code, and EIP-7702 authorizations. Optional; absent keeps the window's
+     * original scope. Honoured from the evm-pqc-window-targets feature on.
+     * </pre>
+     *
+     * <code>bool native_only = 5 [json_name = "nativeOnly"];</code>
+     * @return The nativeOnly.
+     */
+    @java.lang.Override
+    public boolean getNativeOnly() {
+      return nativeOnly_;
+    }
+
+    public static final int ALLOWED_TARGETS_FIELD_NUMBER = 6;
+    @SuppressWarnings("serial")
+    private com.google.protobuf.LazyStringArrayList allowedTargets_ =
+        com.google.protobuf.LazyStringArrayList.emptyList();
+    /**
+     * <pre>
+     * allowed_targets, when non-empty, narrows the window to transactions whose
+     * recipient is one of these 0x-prefixed 20-byte addresses; contract
+     * creation is refused. Optional; absent keeps the window's original scope.
+     * Honoured from the evm-pqc-window-targets feature on.
+     * </pre>
+     *
+     * <code>repeated string allowed_targets = 6 [json_name = "allowedTargets"];</code>
+     * @return A list containing the allowedTargets.
+     */
+    public com.google.protobuf.ProtocolStringList
+        getAllowedTargetsList() {
+      return allowedTargets_;
+    }
+    /**
+     * <pre>
+     * allowed_targets, when non-empty, narrows the window to transactions whose
+     * recipient is one of these 0x-prefixed 20-byte addresses; contract
+     * creation is refused. Optional; absent keeps the window's original scope.
+     * Honoured from the evm-pqc-window-targets feature on.
+     * </pre>
+     *
+     * <code>repeated string allowed_targets = 6 [json_name = "allowedTargets"];</code>
+     * @return The count of allowedTargets.
+     */
+    public int getAllowedTargetsCount() {
+      return allowedTargets_.size();
+    }
+    /**
+     * <pre>
+     * allowed_targets, when non-empty, narrows the window to transactions whose
+     * recipient is one of these 0x-prefixed 20-byte addresses; contract
+     * creation is refused. Optional; absent keeps the window's original scope.
+     * Honoured from the evm-pqc-window-targets feature on.
+     * </pre>
+     *
+     * <code>repeated string allowed_targets = 6 [json_name = "allowedTargets"];</code>
+     * @param index The index of the element to return.
+     * @return The allowedTargets at the given index.
+     */
+    public java.lang.String getAllowedTargets(int index) {
+      return allowedTargets_.get(index);
+    }
+    /**
+     * <pre>
+     * allowed_targets, when non-empty, narrows the window to transactions whose
+     * recipient is one of these 0x-prefixed 20-byte addresses; contract
+     * creation is refused. Optional; absent keeps the window's original scope.
+     * Honoured from the evm-pqc-window-targets feature on.
+     * </pre>
+     *
+     * <code>repeated string allowed_targets = 6 [json_name = "allowedTargets"];</code>
+     * @param index The index of the value to return.
+     * @return The bytes of the allowedTargets at the given index.
+     */
+    public com.google.protobuf.ByteString
+        getAllowedTargetsBytes(int index) {
+      return allowedTargets_.getByteString(index);
+    }
+
     private byte memoizedIsInitialized = -1;
     @java.lang.Override
     public final boolean isInitialized() {
@@ -7365,6 +7623,12 @@ public final class Tx extends com.google.protobuf.GeneratedFile {
       if (!com.google.protobuf.GeneratedMessage.isStringEmpty(maxValue_)) {
         com.google.protobuf.GeneratedMessage.writeString(output, 4, maxValue_);
       }
+      if (nativeOnly_ != false) {
+        output.writeBool(5, nativeOnly_);
+      }
+      for (int i = 0; i < allowedTargets_.size(); i++) {
+        com.google.protobuf.GeneratedMessage.writeString(output, 6, allowedTargets_.getRaw(i));
+      }
       getUnknownFields().writeTo(output);
     }
     private int computeSerializedSize_0() {
@@ -7382,6 +7646,18 @@ public final class Tx extends com.google.protobuf.GeneratedFile {
       }
       if (!com.google.protobuf.GeneratedMessage.isStringEmpty(maxValue_)) {
         size += com.google.protobuf.GeneratedMessage.computeStringSize(4, maxValue_);
+      }
+      if (nativeOnly_ != false) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeBoolSize(5, nativeOnly_);
+      }
+      {
+        int dataSize = 0;
+        for (int i = 0; i < allowedTargets_.size(); i++) {
+          dataSize += computeStringSizeNoTag(allowedTargets_.getRaw(i));
+        }
+        size += dataSize;
+        size += 1 * getAllowedTargetsList().size();
       }
       return size;
     }
@@ -7415,6 +7691,10 @@ public final class Tx extends com.google.protobuf.GeneratedFile {
           != other.getMaxTxs()) return false;
       if (!getMaxValue()
           .equals(other.getMaxValue())) return false;
+      if (getNativeOnly()
+          != other.getNativeOnly()) return false;
+      if (!getAllowedTargetsList()
+          .equals(other.getAllowedTargetsList())) return false;
       if (!getUnknownFields().equals(other.getUnknownFields())) return false;
       return true;
     }
@@ -7436,6 +7716,13 @@ public final class Tx extends com.google.protobuf.GeneratedFile {
           getMaxTxs());
       hash = (37 * hash) + MAX_VALUE_FIELD_NUMBER;
       hash = (53 * hash) + getMaxValue().hashCode();
+      hash = (37 * hash) + NATIVE_ONLY_FIELD_NUMBER;
+      hash = (53 * hash) + com.google.protobuf.Internal.hashBoolean(
+          getNativeOnly());
+      if (getAllowedTargetsCount() > 0) {
+        hash = (37 * hash) + ALLOWED_TARGETS_FIELD_NUMBER;
+        hash = (53 * hash) + getAllowedTargetsList().hashCode();
+      }
       hash = (29 * hash) + getUnknownFields().hashCode();
       memoizedHashCode = hash;
       return hash;
@@ -7577,6 +7864,9 @@ public final class Tx extends com.google.protobuf.GeneratedFile {
         blocks_ = 0L;
         maxTxs_ = 0L;
         maxValue_ = "";
+        nativeOnly_ = false;
+        allowedTargets_ =
+            com.google.protobuf.LazyStringArrayList.emptyList();
         return this;
       }
 
@@ -7622,6 +7912,13 @@ public final class Tx extends com.google.protobuf.GeneratedFile {
         if (((from_bitField0_ & 0x00000008) != 0)) {
           result.maxValue_ = maxValue_;
         }
+        if (((from_bitField0_ & 0x00000010) != 0)) {
+          result.nativeOnly_ = nativeOnly_;
+        }
+        if (((from_bitField0_ & 0x00000020) != 0)) {
+          allowedTargets_.makeImmutable();
+          result.allowedTargets_ = allowedTargets_;
+        }
       }
 
       @java.lang.Override
@@ -7650,6 +7947,19 @@ public final class Tx extends com.google.protobuf.GeneratedFile {
         if (!other.getMaxValue().isEmpty()) {
           maxValue_ = other.maxValue_;
           bitField0_ |= 0x00000008;
+          onChanged();
+        }
+        if (other.getNativeOnly() != false) {
+          setNativeOnly(other.getNativeOnly());
+        }
+        if (!other.allowedTargets_.isEmpty()) {
+          if (allowedTargets_.isEmpty()) {
+            allowedTargets_ = other.allowedTargets_;
+            bitField0_ |= 0x00000020;
+          } else {
+            ensureAllowedTargetsIsMutable();
+            allowedTargets_.addAll(other.allowedTargets_);
+          }
           onChanged();
         }
         this.mergeUnknownFields(other.getUnknownFields());
@@ -7698,6 +8008,16 @@ public final class Tx extends com.google.protobuf.GeneratedFile {
                 bitField0_ |= 0x00000008;
                 break;
               } // case 34
+              case 40: {
+                nativeOnly_ = input.readBool();
+                bitField0_ |= 0x00000010;
+                break;
+              } // case 40
+              case 50: {
+                ensureAllowedTargetsIsMutable();
+                allowedTargets_.add(input.readStringRequireUtf8());
+                break;
+              } // case 50
               default: {
                 if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                   done = true; // was an endgroup tag
@@ -7979,6 +8299,233 @@ public final class Tx extends com.google.protobuf.GeneratedFile {
         checkByteStringIsUtf8(value);
         maxValue_ = value;
         bitField0_ |= 0x00000008;
+        onChanged();
+        return this;
+      }
+
+      private boolean nativeOnly_ ;
+      /**
+       * <pre>
+       * native_only, when true, narrows the window to plain transfers of native
+       * QOR: it refuses calldata, contract creation, a recipient that carries
+       * code, and EIP-7702 authorizations. Optional; absent keeps the window's
+       * original scope. Honoured from the evm-pqc-window-targets feature on.
+       * </pre>
+       *
+       * <code>bool native_only = 5 [json_name = "nativeOnly"];</code>
+       * @return The nativeOnly.
+       */
+      @java.lang.Override
+      public boolean getNativeOnly() {
+        return nativeOnly_;
+      }
+      /**
+       * <pre>
+       * native_only, when true, narrows the window to plain transfers of native
+       * QOR: it refuses calldata, contract creation, a recipient that carries
+       * code, and EIP-7702 authorizations. Optional; absent keeps the window's
+       * original scope. Honoured from the evm-pqc-window-targets feature on.
+       * </pre>
+       *
+       * <code>bool native_only = 5 [json_name = "nativeOnly"];</code>
+       * @param value The nativeOnly to set.
+       * @return This builder for chaining.
+       */
+      public Builder setNativeOnly(boolean value) {
+
+        nativeOnly_ = value;
+        bitField0_ |= 0x00000010;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * native_only, when true, narrows the window to plain transfers of native
+       * QOR: it refuses calldata, contract creation, a recipient that carries
+       * code, and EIP-7702 authorizations. Optional; absent keeps the window's
+       * original scope. Honoured from the evm-pqc-window-targets feature on.
+       * </pre>
+       *
+       * <code>bool native_only = 5 [json_name = "nativeOnly"];</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearNativeOnly() {
+        bitField0_ = (bitField0_ & ~0x00000010);
+        nativeOnly_ = false;
+        onChanged();
+        return this;
+      }
+
+      private com.google.protobuf.LazyStringArrayList allowedTargets_ =
+          com.google.protobuf.LazyStringArrayList.emptyList();
+      private void ensureAllowedTargetsIsMutable() {
+        if (!allowedTargets_.isModifiable()) {
+          allowedTargets_ = new com.google.protobuf.LazyStringArrayList(allowedTargets_);
+        }
+        bitField0_ |= 0x00000020;
+      }
+      /**
+       * <pre>
+       * allowed_targets, when non-empty, narrows the window to transactions whose
+       * recipient is one of these 0x-prefixed 20-byte addresses; contract
+       * creation is refused. Optional; absent keeps the window's original scope.
+       * Honoured from the evm-pqc-window-targets feature on.
+       * </pre>
+       *
+       * <code>repeated string allowed_targets = 6 [json_name = "allowedTargets"];</code>
+       * @return A list containing the allowedTargets.
+       */
+      public com.google.protobuf.ProtocolStringList
+          getAllowedTargetsList() {
+        allowedTargets_.makeImmutable();
+        return allowedTargets_;
+      }
+      /**
+       * <pre>
+       * allowed_targets, when non-empty, narrows the window to transactions whose
+       * recipient is one of these 0x-prefixed 20-byte addresses; contract
+       * creation is refused. Optional; absent keeps the window's original scope.
+       * Honoured from the evm-pqc-window-targets feature on.
+       * </pre>
+       *
+       * <code>repeated string allowed_targets = 6 [json_name = "allowedTargets"];</code>
+       * @return The count of allowedTargets.
+       */
+      public int getAllowedTargetsCount() {
+        return allowedTargets_.size();
+      }
+      /**
+       * <pre>
+       * allowed_targets, when non-empty, narrows the window to transactions whose
+       * recipient is one of these 0x-prefixed 20-byte addresses; contract
+       * creation is refused. Optional; absent keeps the window's original scope.
+       * Honoured from the evm-pqc-window-targets feature on.
+       * </pre>
+       *
+       * <code>repeated string allowed_targets = 6 [json_name = "allowedTargets"];</code>
+       * @param index The index of the element to return.
+       * @return The allowedTargets at the given index.
+       */
+      public java.lang.String getAllowedTargets(int index) {
+        return allowedTargets_.get(index);
+      }
+      /**
+       * <pre>
+       * allowed_targets, when non-empty, narrows the window to transactions whose
+       * recipient is one of these 0x-prefixed 20-byte addresses; contract
+       * creation is refused. Optional; absent keeps the window's original scope.
+       * Honoured from the evm-pqc-window-targets feature on.
+       * </pre>
+       *
+       * <code>repeated string allowed_targets = 6 [json_name = "allowedTargets"];</code>
+       * @param index The index of the value to return.
+       * @return The bytes of the allowedTargets at the given index.
+       */
+      public com.google.protobuf.ByteString
+          getAllowedTargetsBytes(int index) {
+        return allowedTargets_.getByteString(index);
+      }
+      /**
+       * <pre>
+       * allowed_targets, when non-empty, narrows the window to transactions whose
+       * recipient is one of these 0x-prefixed 20-byte addresses; contract
+       * creation is refused. Optional; absent keeps the window's original scope.
+       * Honoured from the evm-pqc-window-targets feature on.
+       * </pre>
+       *
+       * <code>repeated string allowed_targets = 6 [json_name = "allowedTargets"];</code>
+       * @param index The index to set the value at.
+       * @param value The allowedTargets to set.
+       * @return This builder for chaining.
+       */
+      public Builder setAllowedTargets(
+          int index, java.lang.String value) {
+        if (value == null) { throw new NullPointerException(); }
+        ensureAllowedTargetsIsMutable();
+        allowedTargets_.set(index, value);
+        bitField0_ |= 0x00000020;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * allowed_targets, when non-empty, narrows the window to transactions whose
+       * recipient is one of these 0x-prefixed 20-byte addresses; contract
+       * creation is refused. Optional; absent keeps the window's original scope.
+       * Honoured from the evm-pqc-window-targets feature on.
+       * </pre>
+       *
+       * <code>repeated string allowed_targets = 6 [json_name = "allowedTargets"];</code>
+       * @param value The allowedTargets to add.
+       * @return This builder for chaining.
+       */
+      public Builder addAllowedTargets(
+          java.lang.String value) {
+        if (value == null) { throw new NullPointerException(); }
+        ensureAllowedTargetsIsMutable();
+        allowedTargets_.add(value);
+        bitField0_ |= 0x00000020;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * allowed_targets, when non-empty, narrows the window to transactions whose
+       * recipient is one of these 0x-prefixed 20-byte addresses; contract
+       * creation is refused. Optional; absent keeps the window's original scope.
+       * Honoured from the evm-pqc-window-targets feature on.
+       * </pre>
+       *
+       * <code>repeated string allowed_targets = 6 [json_name = "allowedTargets"];</code>
+       * @param values The allowedTargets to add.
+       * @return This builder for chaining.
+       */
+      public Builder addAllAllowedTargets(
+          java.lang.Iterable<java.lang.String> values) {
+        ensureAllowedTargetsIsMutable();
+        com.google.protobuf.AbstractMessageLite.Builder.addAll(
+            values, allowedTargets_);
+        bitField0_ |= 0x00000020;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * allowed_targets, when non-empty, narrows the window to transactions whose
+       * recipient is one of these 0x-prefixed 20-byte addresses; contract
+       * creation is refused. Optional; absent keeps the window's original scope.
+       * Honoured from the evm-pqc-window-targets feature on.
+       * </pre>
+       *
+       * <code>repeated string allowed_targets = 6 [json_name = "allowedTargets"];</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearAllowedTargets() {
+        allowedTargets_ =
+          com.google.protobuf.LazyStringArrayList.emptyList();
+        bitField0_ = (bitField0_ & ~0x00000020);;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * allowed_targets, when non-empty, narrows the window to transactions whose
+       * recipient is one of these 0x-prefixed 20-byte addresses; contract
+       * creation is refused. Optional; absent keeps the window's original scope.
+       * Honoured from the evm-pqc-window-targets feature on.
+       * </pre>
+       *
+       * <code>repeated string allowed_targets = 6 [json_name = "allowedTargets"];</code>
+       * @param value The bytes of the allowedTargets to add.
+       * @return This builder for chaining.
+       */
+      public Builder addAllowedTargetsBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) { throw new NullPointerException(); }
+        checkByteStringIsUtf8(value);
+        ensureAllowedTargetsIsMutable();
+        allowedTargets_.add(value);
+        bitField0_ |= 0x00000020;
         onChanged();
         return this;
       }
@@ -11625,90 +12172,93 @@ public final class Tx extends com.google.protobuf.GeneratedFile {
       "hium_pubkey\030\002 \001(\014R\017dilithiumPubkey\0222\n\014ec" +
       "dsa_pubkey\030\003 \001(\014B\017\342\336\037\013ECDSAPubkeyR\013ecdsa" +
       "Pubkey\022\031\n\010key_type\030\004 \001(\tR\007keyType:\013\202\347\260*\006" +
-      "sender\"\033\n\031MsgRegisterPQCKeyResponse\"\205\002\n\023" +
+      "sender\"\033\n\031MsgRegisterPQCKeyResponse\"\265\002\n\023" +
       "MsgRegisterPQCKeyV2\0220\n\006sender\030\001 \001(\tB\030\322\264-" +
       "\024cosmos.AddressStringR\006sender\022\035\n\npublic_" +
       "key\030\002 \001(\014R\tpublicKey\022A\n\014algorithm_id\030\003 \001" +
       "(\rB\036\342\336\037\013AlgorithmID\372\336\037\013AlgorithmIDR\013algo" +
       "rithmId\0222\n\014ecdsa_pubkey\030\004 \001(\014B\017\342\336\037\013ECDSA" +
       "PubkeyR\013ecdsaPubkey\022\031\n\010key_type\030\005 \001(\tR\007k" +
-      "eyType:\013\202\347\260*\006sender\"\035\n\033MsgRegisterPQCKey" +
-      "V2Response\"\264\002\n\020MsgMigratePQCKey\0220\n\006sende" +
-      "r\030\001 \001(\tB\030\322\264-\024cosmos.AddressStringR\006sende" +
-      "r\022$\n\016old_public_key\030\002 \001(\014R\014oldPublicKey\022" +
-      "$\n\016new_public_key\030\003 \001(\014R\014newPublicKey\022K\n" +
-      "\020new_algorithm_id\030\004 \001(\rB!\342\336\037\016NewAlgorith" +
-      "mID\372\336\037\013AlgorithmIDR\016newAlgorithmId\022#\n\rol" +
-      "d_signature\030\005 \001(\014R\014oldSignature\022#\n\rnew_s" +
-      "ignature\030\006 \001(\014R\014newSignature:\013\202\347\260*\006sende" +
-      "r\"\032\n\030MsgMigratePQCKeyResponse\"\346\001\n\017MsgRot" +
-      "atePQCKey\0220\n\006sender\030\001 \001(\tB\030\322\264-\024cosmos.Ad" +
-      "dressStringR\006sender\022$\n\016old_public_key\030\002 " +
-      "\001(\014R\014oldPublicKey\022$\n\016new_public_key\030\003 \001(" +
-      "\014R\014newPublicKey\022#\n\rold_signature\030\004 \001(\014R\014" +
-      "oldSignature\022#\n\rnew_signature\030\005 \001(\014R\014new" +
-      "Signature:\013\202\347\260*\006sender\"\031\n\027MsgRotatePQCKe" +
-      "yResponse\"\254\002\n\025MsgDeprecateAlgorithm\0226\n\ta" +
-      "uthority\030\001 \001(\tB\030\322\264-\024cosmos.AddressString" +
-      "R\tauthority\022A\n\014algorithm_id\030\002 \001(\rB\036\342\336\037\013A" +
-      "lgorithmID\372\336\037\013AlgorithmIDR\013algorithmId\022)" +
-      "\n\020migration_blocks\030\003 \001(\003R\017migrationBlock" +
-      "s\022]\n\030replacement_algorithm_id\030\004 \001(\rB#\342\336\037" +
-      "\020ReplacementAlgID\372\336\037\013AlgorithmIDR\026replac" +
-      "ementAlgorithmId:\016\202\347\260*\tauthority\"\037\n\035MsgD" +
-      "eprecateAlgorithmResponse\"\270\001\n\023MsgDisable" +
-      "Algorithm\0226\n\tauthority\030\001 \001(\tB\030\322\264-\024cosmos" +
-      ".AddressStringR\tauthority\022A\n\014algorithm_i" +
-      "d\030\002 \001(\rB\036\342\336\037\013AlgorithmID\372\336\037\013AlgorithmIDR" +
-      "\013algorithmId\022\026\n\006reason\030\003 \001(\tR\006reason:\016\202\347" +
-      "\260*\tauthority\"\035\n\033MsgDisableAlgorithmRespo" +
-      "nse\"\314\001\n\020MsgOpenEVMWindow\0220\n\006sender\030\001 \001(\t" +
-      "B\030\322\264-\024cosmos.AddressStringR\006sender\022\026\n\006bl" +
-      "ocks\030\002 \001(\004R\006blocks\022\027\n\007max_txs\030\003 \001(\004R\006max" +
-      "Txs\022H\n\tmax_value\030\004 \001(\tB+\310\336\037\000\332\336\037\025cosmossd" +
-      "k.io/math.Int\322\264-\ncosmos.IntR\010maxValue:\013\202" +
-      "\347\260*\006sender\"?\n\030MsgOpenEVMWindowResponse\022#" +
-      "\n\rexpiry_height\030\001 \001(\004R\014expiryHeight\"R\n\021M" +
-      "sgCloseEVMWindow\0220\n\006sender\030\001 \001(\tB\030\322\264-\024co" +
-      "smos.AddressStringR\006sender:\013\202\347\260*\006sender\"" +
-      "\033\n\031MsgCloseEVMWindowResponse\"\216\001\n\031MsgAuth" +
-      "orizeEVMDelegation\0220\n\006sender\030\001 \001(\tB\030\322\264-\024" +
-      "cosmos.AddressStringR\006sender\022\032\n\010delegate" +
-      "\030\002 \001(\tR\010delegate\022\026\n\006blocks\030\003 \001(\004R\006blocks" +
-      ":\013\202\347\260*\006sender\"H\n!MsgAuthorizeEVMDelegati" +
-      "onResponse\022#\n\rexpiry_height\030\001 \001(\004R\014expir" +
-      "yHeight\"V\n\025MsgClearEVMDelegation\0220\n\006send" +
+      "eyType\022.\n\023proof_of_possession\030\006 \001(\014R\021pro" +
+      "ofOfPossession:\013\202\347\260*\006sender\"\035\n\033MsgRegist" +
+      "erPQCKeyV2Response\"\264\002\n\020MsgMigratePQCKey\022" +
+      "0\n\006sender\030\001 \001(\tB\030\322\264-\024cosmos.AddressStrin" +
+      "gR\006sender\022$\n\016old_public_key\030\002 \001(\014R\014oldPu" +
+      "blicKey\022$\n\016new_public_key\030\003 \001(\014R\014newPubl" +
+      "icKey\022K\n\020new_algorithm_id\030\004 \001(\rB!\342\336\037\016New" +
+      "AlgorithmID\372\336\037\013AlgorithmIDR\016newAlgorithm" +
+      "Id\022#\n\rold_signature\030\005 \001(\014R\014oldSignature\022" +
+      "#\n\rnew_signature\030\006 \001(\014R\014newSignature:\013\202\347" +
+      "\260*\006sender\"\032\n\030MsgMigratePQCKeyResponse\"\346\001" +
+      "\n\017MsgRotatePQCKey\0220\n\006sender\030\001 \001(\tB\030\322\264-\024c" +
+      "osmos.AddressStringR\006sender\022$\n\016old_publi" +
+      "c_key\030\002 \001(\014R\014oldPublicKey\022$\n\016new_public_" +
+      "key\030\003 \001(\014R\014newPublicKey\022#\n\rold_signature" +
+      "\030\004 \001(\014R\014oldSignature\022#\n\rnew_signature\030\005 " +
+      "\001(\014R\014newSignature:\013\202\347\260*\006sender\"\031\n\027MsgRot" +
+      "atePQCKeyResponse\"\254\002\n\025MsgDeprecateAlgori" +
+      "thm\0226\n\tauthority\030\001 \001(\tB\030\322\264-\024cosmos.Addre" +
+      "ssStringR\tauthority\022A\n\014algorithm_id\030\002 \001(" +
+      "\rB\036\342\336\037\013AlgorithmID\372\336\037\013AlgorithmIDR\013algor" +
+      "ithmId\022)\n\020migration_blocks\030\003 \001(\003R\017migrat" +
+      "ionBlocks\022]\n\030replacement_algorithm_id\030\004 " +
+      "\001(\rB#\342\336\037\020ReplacementAlgID\372\336\037\013AlgorithmID" +
+      "R\026replacementAlgorithmId:\016\202\347\260*\tauthority" +
+      "\"\037\n\035MsgDeprecateAlgorithmResponse\"\270\001\n\023Ms" +
+      "gDisableAlgorithm\0226\n\tauthority\030\001 \001(\tB\030\322\264" +
+      "-\024cosmos.AddressStringR\tauthority\022A\n\014alg" +
+      "orithm_id\030\002 \001(\rB\036\342\336\037\013AlgorithmID\372\336\037\013Algo" +
+      "rithmIDR\013algorithmId\022\026\n\006reason\030\003 \001(\tR\006re" +
+      "ason:\016\202\347\260*\tauthority\"\035\n\033MsgDisableAlgori" +
+      "thmResponse\"\226\002\n\020MsgOpenEVMWindow\0220\n\006send" +
       "er\030\001 \001(\tB\030\322\264-\024cosmos.AddressStringR\006send" +
-      "er:\013\202\347\260*\006sender\"\037\n\035MsgClearEVMDelegation" +
-      "Response2\244\010\n\003Msg\022b\n\016RegisterPQCKey\022#.qor" +
-      "echain.pqc.v1.MsgRegisterPQCKey\032+.qorech" +
-      "ain.pqc.v1.MsgRegisterPQCKeyResponse\022h\n\020" +
-      "RegisterPQCKeyV2\022%.qorechain.pqc.v1.MsgR" +
-      "egisterPQCKeyV2\032-.qorechain.pqc.v1.MsgRe" +
-      "gisterPQCKeyV2Response\022_\n\rMigratePQCKey\022" +
-      "\".qorechain.pqc.v1.MsgMigratePQCKey\032*.qo" +
-      "rechain.pqc.v1.MsgMigratePQCKeyResponse\022" +
-      "\\\n\014RotatePQCKey\022!.qorechain.pqc.v1.MsgRo" +
-      "tatePQCKey\032).qorechain.pqc.v1.MsgRotateP" +
-      "QCKeyResponse\022n\n\022DeprecateAlgorithm\022\'.qo" +
-      "rechain.pqc.v1.MsgDeprecateAlgorithm\032/.q" +
-      "orechain.pqc.v1.MsgDeprecateAlgorithmRes" +
-      "ponse\022h\n\020DisableAlgorithm\022%.qorechain.pq" +
-      "c.v1.MsgDisableAlgorithm\032-.qorechain.pqc" +
-      ".v1.MsgDisableAlgorithmResponse\022_\n\rOpenE" +
-      "VMWindow\022\".qorechain.pqc.v1.MsgOpenEVMWi" +
-      "ndow\032*.qorechain.pqc.v1.MsgOpenEVMWindow" +
-      "Response\022b\n\016CloseEVMWindow\022#.qorechain.p" +
-      "qc.v1.MsgCloseEVMWindow\032+.qorechain.pqc." +
-      "v1.MsgCloseEVMWindowResponse\022z\n\026Authoriz" +
-      "eEVMDelegation\022+.qorechain.pqc.v1.MsgAut" +
-      "horizeEVMDelegation\0323.qorechain.pqc.v1.M" +
-      "sgAuthorizeEVMDelegationResponse\022n\n\022Clea" +
-      "rEVMDelegation\022\'.qorechain.pqc.v1.MsgCle" +
-      "arEVMDelegation\032/.qorechain.pqc.v1.MsgCl" +
-      "earEVMDelegationResponse\032\005\200\347\260*\001B1Z/githu" +
-      "b.com/qorechain/qorechain-core/x/pqc/typ" +
-      "esb\006proto3"
+      "er\022\026\n\006blocks\030\002 \001(\004R\006blocks\022\027\n\007max_txs\030\003 " +
+      "\001(\004R\006maxTxs\022H\n\tmax_value\030\004 \001(\tB+\310\336\037\000\332\336\037\025" +
+      "cosmossdk.io/math.Int\322\264-\ncosmos.IntR\010max" +
+      "Value\022\037\n\013native_only\030\005 \001(\010R\nnativeOnly\022\'" +
+      "\n\017allowed_targets\030\006 \003(\tR\016allowedTargets:" +
+      "\013\202\347\260*\006sender\"?\n\030MsgOpenEVMWindowResponse" +
+      "\022#\n\rexpiry_height\030\001 \001(\004R\014expiryHeight\"R\n" +
+      "\021MsgCloseEVMWindow\0220\n\006sender\030\001 \001(\tB\030\322\264-\024" +
+      "cosmos.AddressStringR\006sender:\013\202\347\260*\006sende" +
+      "r\"\033\n\031MsgCloseEVMWindowResponse\"\216\001\n\031MsgAu" +
+      "thorizeEVMDelegation\0220\n\006sender\030\001 \001(\tB\030\322\264" +
+      "-\024cosmos.AddressStringR\006sender\022\032\n\010delega" +
+      "te\030\002 \001(\tR\010delegate\022\026\n\006blocks\030\003 \001(\004R\006bloc" +
+      "ks:\013\202\347\260*\006sender\"H\n!MsgAuthorizeEVMDelega" +
+      "tionResponse\022#\n\rexpiry_height\030\001 \001(\004R\014exp" +
+      "iryHeight\"V\n\025MsgClearEVMDelegation\0220\n\006se" +
+      "nder\030\001 \001(\tB\030\322\264-\024cosmos.AddressStringR\006se" +
+      "nder:\013\202\347\260*\006sender\"\037\n\035MsgClearEVMDelegati" +
+      "onResponse2\244\010\n\003Msg\022b\n\016RegisterPQCKey\022#.q" +
+      "orechain.pqc.v1.MsgRegisterPQCKey\032+.qore" +
+      "chain.pqc.v1.MsgRegisterPQCKeyResponse\022h" +
+      "\n\020RegisterPQCKeyV2\022%.qorechain.pqc.v1.Ms" +
+      "gRegisterPQCKeyV2\032-.qorechain.pqc.v1.Msg" +
+      "RegisterPQCKeyV2Response\022_\n\rMigratePQCKe" +
+      "y\022\".qorechain.pqc.v1.MsgMigratePQCKey\032*." +
+      "qorechain.pqc.v1.MsgMigratePQCKeyRespons" +
+      "e\022\\\n\014RotatePQCKey\022!.qorechain.pqc.v1.Msg" +
+      "RotatePQCKey\032).qorechain.pqc.v1.MsgRotat" +
+      "ePQCKeyResponse\022n\n\022DeprecateAlgorithm\022\'." +
+      "qorechain.pqc.v1.MsgDeprecateAlgorithm\032/" +
+      ".qorechain.pqc.v1.MsgDeprecateAlgorithmR" +
+      "esponse\022h\n\020DisableAlgorithm\022%.qorechain." +
+      "pqc.v1.MsgDisableAlgorithm\032-.qorechain.p" +
+      "qc.v1.MsgDisableAlgorithmResponse\022_\n\rOpe" +
+      "nEVMWindow\022\".qorechain.pqc.v1.MsgOpenEVM" +
+      "Window\032*.qorechain.pqc.v1.MsgOpenEVMWind" +
+      "owResponse\022b\n\016CloseEVMWindow\022#.qorechain" +
+      ".pqc.v1.MsgCloseEVMWindow\032+.qorechain.pq" +
+      "c.v1.MsgCloseEVMWindowResponse\022z\n\026Author" +
+      "izeEVMDelegation\022+.qorechain.pqc.v1.MsgA" +
+      "uthorizeEVMDelegation\0323.qorechain.pqc.v1" +
+      ".MsgAuthorizeEVMDelegationResponse\022n\n\022Cl" +
+      "earEVMDelegation\022\'.qorechain.pqc.v1.MsgC" +
+      "learEVMDelegation\032/.qorechain.pqc.v1.Msg" +
+      "ClearEVMDelegationResponse\032\005\200\347\260*\001B1Z/git" +
+      "hub.com/qorechain/qorechain-core/x/pqc/t" +
+      "ypesb\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
@@ -11734,7 +12284,7 @@ public final class Tx extends com.google.protobuf.GeneratedFile {
     internal_static_qorechain_pqc_v1_MsgRegisterPQCKeyV2_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_qorechain_pqc_v1_MsgRegisterPQCKeyV2_descriptor,
-        new java.lang.String[] { "Sender", "PublicKey", "AlgorithmId", "EcdsaPubkey", "KeyType", });
+        new java.lang.String[] { "Sender", "PublicKey", "AlgorithmId", "EcdsaPubkey", "KeyType", "ProofOfPossession", });
     internal_static_qorechain_pqc_v1_MsgRegisterPQCKeyV2Response_descriptor =
       getDescriptor().getMessageType(3);
     internal_static_qorechain_pqc_v1_MsgRegisterPQCKeyV2Response_fieldAccessorTable = new
@@ -11794,7 +12344,7 @@ public final class Tx extends com.google.protobuf.GeneratedFile {
     internal_static_qorechain_pqc_v1_MsgOpenEVMWindow_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_qorechain_pqc_v1_MsgOpenEVMWindow_descriptor,
-        new java.lang.String[] { "Sender", "Blocks", "MaxTxs", "MaxValue", });
+        new java.lang.String[] { "Sender", "Blocks", "MaxTxs", "MaxValue", "NativeOnly", "AllowedTargets", });
     internal_static_qorechain_pqc_v1_MsgOpenEVMWindowResponse_descriptor =
       getDescriptor().getMessageType(13);
     internal_static_qorechain_pqc_v1_MsgOpenEVMWindowResponse_fieldAccessorTable = new
