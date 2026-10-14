@@ -9,7 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
-- **QSR-2026-0259 — transaction search sent a parameter the node no longer
+- **transaction search sent a parameter the node no longer
   reads.** `searchTxs` (TS), `search_txs` (Python) and `RestClient.searchTxs`
   (Java) sent the filter as `events=` with the predicates joined by `&`. Cosmos
   SDK v0.53 reads only `query=`, with predicates joined by ` AND `, so the search
@@ -19,7 +19,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   `pagination.*`. Java adds `RestClient.buildEventQuery(List)` and a
   `searchTxs` overload taking a page. Go and Rust were already correct and are
   unchanged.
-- **QSR-2026-0325 — React: a late response for an old address could overwrite
+- **React: a late response for an old address could overwrite
   the new one.** `useBalance` invalidated requests only on unmount, `refetch`
   never invalidated older requests, and the old address's data stayed on screen
   after the address changed. `usePqcStatus` had the same flaw, so a registered
@@ -30,7 +30,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   wins over an older one, and a `refetch` kept from an earlier render does
   nothing. Data and error are cleared as soon as the key changes.
   `@qorechain/react` moves from 0.8.0 to 0.8.3 with the rest of the SDK.
-- **QSR-2026-0380 — Python: `migrate_to_hybrid` sent both transactions at the
+- **Python: `migrate_to_hybrid` sent both transactions at the
   same sequence.** It discarded the result of `ensure_pqc_registered`, so with
   `register_sequence=None` the registration and the hybrid transaction were both
   signed at `sequence` and the second was refused. When a registration is
@@ -38,7 +38,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   out at `sequence + 1`, as Go's `MigrateToHybrid` does. An explicit
   `register_sequence` is unchanged: the caller owns both nonces. The docstring
   now states the sequencing.
-- **QSR-2026-0381 — the canonical PQC derivation depended on how the account was
+- **the canonical PQC derivation depended on how the account was
   written.** It hashed the account string as given, so an upper-case bech32
   address or the `0x` form of the same account derived a different ML-DSA-87
   key. Only Go resolved the account first. TS, Python, Rust and Java now resolve
@@ -58,7 +58,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
-- **QSR-2026-0299 (hardening) — TS signing takes one snapshot of what it signs.**
+- **TS signing takes one snapshot of what it signs.**
   `buildHybridTx` encodes the messages, memo and timeout height into the body
   and copies the fee synchronously, before its first `await`; mutating them
   after the call has started no longer changes what is signed.
