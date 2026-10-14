@@ -170,12 +170,65 @@ pub fn derive_pqc_legacy(mnemonic: &str) -> PqcKeypair {
     pqc_keypair_from_seed(&seed)
 }
 
+/// Resolves `account` to the canonical form the address-bound PQC derivation and
+/// the rotation message use: lower-case `qor1…` bech32.
+///
+/// Accepts a bech32 address in either case (all-lower or all-upper, as bech32
+/// allows) or a `0x`/`0X` EVM address, which is re-encoded to its bech32 form.
+/// Byte-identical to the Go SDK's resolution (`authenticator.toCosmos`): the
+/// 20-byte payload is re-encoded with the `qor` prefix.
+pub fn canonical_account(account: &str) -> Result<String> {
+    let addr20: [u8; 20] = if account.starts_with("0x") || account.starts_with("0X") {
+        let bytes = hex::decode(&account[2..])
+            .map_err(|e| Error::Address(format!("invalid hex address: {e}")))?;
+        <[u8; 20]>::try_from(bytes.as_slice())
+            .map_err(|_| Error::Address(format!("address must be 20 bytes, got {}", bytes.len())))?
+    } else {
+        let (_, data) = bech32::decode(account).map_err(|e| {
+            Error::Address(format!(
+                "cannot resolve account \"{account}\" to a bech32 cosmos address: {e}"
+            ))
+        })?;
+        <[u8; 20]>::try_from(data.as_slice()).map_err(|_| {
+            Error::Address(format!(
+                "bech32 payload must be 20 bytes, got {}",
+                data.len()
+            ))
+        })?
+    };
+    Ok(crate::unified::addresses_from_20(addr20)?.cosmos)
+}
+
 /// Derives the CANONICAL (SDK / wallet-adapter) address-bound ML-DSA-87 keypair:
-/// `keygen(shake256("qorechain:pqc:v1|" + account + "|" + mnemonic, 32))`.
+/// `keygen(shake256("qorechain:pqc:v1|" + cosmos + "|" + mnemonic, 32))`, where
+/// `cosmos` is `account` resolved by [`canonical_account`] — so an upper-case
+/// bech32 or a `0x` form of the same account yields the same key.
+///
+/// Fails if `account` is not a valid 20-byte account address.
+pub fn try_derive_pqc_canonical(account: &str, mnemonic: &str) -> Result<PqcKeypair> {
+    let cosmos = canonical_account(account)?;
+    Ok(derive_pqc_canonical_raw(&cosmos, mnemonic))
+}
+
+/// Derives the CANONICAL (SDK / wallet-adapter) address-bound ML-DSA-87 keypair:
+/// `keygen(shake256("qorechain:pqc:v1|" + cosmos + "|" + mnemonic, 32))`.
+///
+/// `account` is first resolved to its canonical lower-case `qor1…` form (see
+/// [`canonical_account`]), so an upper-case bech32 or a `0x` form of the same
+/// account yields the same key. An `account` that is not a valid address cannot
+/// be resolved and is hashed as given (kept for compatibility); prefer
+/// [`try_derive_pqc_canonical`], which returns an error instead.
 pub fn derive_pqc_canonical(account: &str, mnemonic: &str) -> PqcKeypair {
+    match canonical_account(account) {
+        Ok(cosmos) => derive_pqc_canonical_raw(&cosmos, mnemonic),
+        Err(_) => derive_pqc_canonical_raw(account, mnemonic),
+    }
+}
+
+fn derive_pqc_canonical_raw(cosmos: &str, mnemonic: &str) -> PqcKeypair {
     let mut msg = Vec::new();
     msg.extend_from_slice(b"qorechain:pqc:v1|");
-    msg.extend_from_slice(account.as_bytes());
+    msg.extend_from_slice(cosmos.as_bytes());
     msg.push(b'|');
     msg.extend_from_slice(mnemonic.as_bytes());
     let seed = shake256_32(&msg);
@@ -185,7 +238,7 @@ pub fn derive_pqc_canonical(account: &str, mnemonic: &str) -> PqcKeypair {
 fn derive_pqc_by_scheme(scheme: &str, account: &str, mnemonic: &str) -> Result<PqcKeypair> {
     match scheme {
         DERIVATION_LEGACY | "mnemonic-only" => Ok(derive_pqc_legacy(mnemonic)),
-        DERIVATION_CANONICAL | "" => Ok(derive_pqc_canonical(account, mnemonic)),
+        DERIVATION_CANONICAL | "" => try_derive_pqc_canonical(account, mnemonic),
         other => Err(Error::Pqc(format!(
             "unknown derivation \"{other}\" (use adapter|bridge)"
         ))),
@@ -253,8 +306,12 @@ impl<'a> RotateFromMnemonicOptions<'a> {
 pub fn rotate_pqc_key_msg_from_mnemonic(
     opts: &RotateFromMnemonicOptions<'_>,
 ) -> Result<RotateFromMnemonic> {
-    let old_kp = derive_pqc_by_scheme(opts.old_derivation, opts.account, opts.mnemonic)?;
-    let new_kp = derive_pqc_by_scheme(opts.new_derivation, opts.account, opts.mnemonic)?;
+    // The sender and the account in the rotation sign-bytes use the canonical
+    // lower-case bech32 form, so an upper-case or 0x input builds the same message
+    // the canonical input does (matching the Go SDK).
+    let account = canonical_account(opts.account)?;
+    let old_kp = derive_pqc_by_scheme(opts.old_derivation, &account, opts.mnemonic)?;
+    let new_kp = derive_pqc_by_scheme(opts.new_derivation, &account, opts.mnemonic)?;
     if old_kp.public_key == new_kp.public_key {
         return Err(Error::Pqc(
             "old and new derivations produce the same key — rotation would be a no-op".into(),
@@ -263,14 +320,14 @@ pub fn rotate_pqc_key_msg_from_mnemonic(
     let sb = rotation_sign_bytes(
         opts.chain_id,
         opts.algorithm_id,
-        opts.account,
+        &account,
         &old_kp.public_key,
         &new_kp.public_key,
     );
     let old_signature = pqc_sign(&old_kp.secret_key, sb.as_bytes())?;
     let new_signature = pqc_sign(&new_kp.secret_key, sb.as_bytes())?;
     let msg = pqc_msg::rotate_pqc_key(
-        opts.account,
+        &account,
         old_kp.public_key.clone(),
         new_kp.public_key.clone(),
         old_signature,

@@ -21,7 +21,7 @@ describe("buildEventsQuery", () => {
     );
     expect(
       buildEventsQuery({ "message.sender": "qor1abc", "tx.height": 5 }),
-    ).toBe("message.sender='qor1abc'&tx.height=5");
+    ).toBe("message.sender='qor1abc' AND tx.height=5");
   });
 });
 
@@ -50,7 +50,7 @@ describe("getTx / getBlock / getLatestBlock", () => {
 });
 
 describe("searchTxs", () => {
-  it("builds the events query and pagination params", async () => {
+  it("sends the `query` parameter (not `events`) with page and limit", async () => {
     const { client, get } = fakeRest();
     await searchTxs(client, { "message.sender": "qor1abc" }, {
       page: 2,
@@ -58,8 +58,8 @@ describe("searchTxs", () => {
       orderBy: "desc",
     });
     expect(get).toHaveBeenCalledWith("/cosmos/tx/v1beta1/txs", {
-      events: "message.sender='qor1abc'",
-      "pagination.limit": 50,
+      query: "message.sender='qor1abc'",
+      limit: 50,
       order_by: "ORDER_BY_DESC",
       page: 2,
     });
@@ -70,8 +70,23 @@ describe("searchTxs", () => {
     await searchTxs(client, "message.action='/cosmos.bank.v1beta1.MsgSend'");
     const [path, params] = get.mock.calls[0];
     expect(path).toBe("/cosmos/tx/v1beta1/txs");
-    expect(params.events).toBe("message.action='/cosmos.bank.v1beta1.MsgSend'");
+    expect(params.query).toBe("message.action='/cosmos.bank.v1beta1.MsgSend'");
+    expect(params.events).toBeUndefined();
     expect(params.order_by).toBeUndefined();
+    expect(params.limit).toBeUndefined();
     expect(params["pagination.limit"]).toBeUndefined();
+  });
+
+  it("joins several filters with AND in the `query` parameter", async () => {
+    const { client, get } = fakeRest();
+    await searchTxs(client, {
+      "message.sender": "qor1abc",
+      "transfer.recipient": "qor1def",
+    });
+    const [, params] = get.mock.calls[0];
+    expect(params.query).toBe(
+      "message.sender='qor1abc' AND transfer.recipient='qor1def'",
+    );
+    expect(params.query).not.toContain("&");
   });
 });

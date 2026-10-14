@@ -3,6 +3,8 @@ package io.github.qorechain.query;
 import com.fasterxml.jackson.databind.JsonNode;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -128,12 +130,26 @@ public final class RestClient {
         return get("/cosmos/base/tendermint/v1beta1/blocks/latest");
     }
 
-    /** {@code /cosmos/tx/v1beta1/txs?events=...} — search by event query. */
-    public JsonNode searchTxs(String eventsQuery, Integer limit, String orderBy) {
+    /**
+     * {@code /cosmos/tx/v1beta1/txs?query=...} — search by event query.
+     *
+     * <p>Cosmos SDK v0.53 reads the {@code query} parameter (predicates joined with {@code " AND
+     * "}, see {@link #buildEventQuery(List)}); the old {@code events} parameter is no longer read.
+     * The page size is sent as {@code limit} — the endpoint ignores {@code pagination.*}.
+     */
+    public JsonNode searchTxs(String query, Integer limit, String orderBy) {
+        return searchTxs(query, null, limit, orderBy);
+    }
+
+    /** As {@link #searchTxs(String, Integer, String)}, with a 1-based {@code page}. */
+    public JsonNode searchTxs(String query, Integer page, Integer limit, String orderBy) {
         Map<String, String> q = Http.query();
-        q.put("events", eventsQuery);
+        q.put("query", query);
+        if (page != null) {
+            q.put("page", String.valueOf(page));
+        }
         if (limit != null) {
-            q.put("pagination.limit", String.valueOf(limit));
+            q.put("limit", String.valueOf(limit));
         }
         if ("asc".equals(orderBy)) {
             q.put("order_by", "ORDER_BY_ASC");
@@ -141,5 +157,32 @@ public final class RestClient {
             q.put("order_by", "ORDER_BY_DESC");
         }
         return get("/cosmos/tx/v1beta1/txs", q);
+    }
+
+    /**
+     * Joins {@code key=value} predicates into the chain's tx-search query string. Each value is
+     * single-quoted unless already quoted; predicates without {@code =} pass through verbatim;
+     * blanks are skipped; the parts are joined with {@code " AND "}.
+     */
+    public static String buildEventQuery(List<String> events) {
+        List<String> parts = new ArrayList<>(events.size());
+        for (String raw : events) {
+            String e = raw == null ? "" : raw.trim();
+            if (e.isEmpty()) {
+                continue;
+            }
+            int eq = e.indexOf('=');
+            if (eq < 0) {
+                parts.add(e);
+                continue;
+            }
+            String key = e.substring(0, eq).trim();
+            String value = e.substring(eq + 1).trim();
+            if (!value.startsWith("'") && !value.startsWith("\"")) {
+                value = "'" + value + "'";
+            }
+            parts.add(key + "=" + value);
+        }
+        return String.join(" AND ", parts);
     }
 }

@@ -25,6 +25,7 @@ import type { EncodeObject } from "@cosmjs/proto-signing";
 
 import { mldsa, shake256 } from "@qorechain/pqc";
 import { generatePqcKeypair, type PqcKeypair } from "../accounts/pqc";
+import { qoreAddresses } from "../accounts/unified";
 import {
   evmAuthSignBytes,
   cosmosAuthSignBytes,
@@ -497,10 +498,43 @@ export function derivePqcLegacy(mnemonic: string): PqcKeypair {
   return generatePqcKeypair(shake256(enc.encode(mnemonic), 32));
 }
 
-/** Derive the CANONICAL (address-bound) ML-DSA-87 keypair for a mnemonic. */
-function derivePqcCanonical(account: string, mnemonic: string): PqcKeypair {
+/**
+ * Resolve `account` to the canonical form the address-bound PQC derivation and
+ * the rotation message use: lower-case `qor1…` bech32.
+ *
+ * Accepts a bech32 address in either case (all-lower or all-upper, as bech32
+ * allows) or a `0x`/`0X` EVM address, which is re-encoded to its bech32 form.
+ * Byte-identical to the Go SDK's resolution: the 20-byte payload is re-encoded
+ * with the `qor` prefix.
+ *
+ * @throws if `account` is not a valid 20-byte account address.
+ */
+export function canonicalAccount(account: string): string {
+  if (account.startsWith("0x") || account.startsWith("0X")) {
+    return qoreAddresses({ hex: account }).cosmos;
+  }
+  try {
+    return qoreAddresses({ cosmos: account }).cosmos;
+  } catch (err) {
+    const reason = err instanceof Error ? err.message : String(err);
+    throw new Error(
+      `cannot resolve account "${account}" to a bech32 cosmos address: ${reason}`,
+    );
+  }
+}
+
+/**
+ * Derive the CANONICAL (address-bound) ML-DSA-87 keypair for a mnemonic:
+ * `shake256("qorechain:pqc:v1|" + cosmos + "|" + mnemonic, 32)`, where `cosmos`
+ * is `account` resolved by {@link canonicalAccount} — so an upper-case bech32 or
+ * a `0x` form of the same account yields the same key.
+ *
+ * @throws if `account` is not a valid 20-byte account address.
+ */
+export function derivePqcCanonical(account: string, mnemonic: string): PqcKeypair {
+  const cosmos = canonicalAccount(account);
   return generatePqcKeypair(
-    shake256(enc.encode(`qorechain:pqc:v1|${account}|${mnemonic}`), 32),
+    shake256(enc.encode(`qorechain:pqc:v1|${cosmos}|${mnemonic}`), 32),
   );
 }
 
@@ -556,13 +590,16 @@ export function rotatePqcKeyMsgFromMnemonic(
   opts: RotatePqcKeyMsgFromMnemonicOptions,
 ): RotatePqcKeyMsgFromMnemonicResult {
   const {
-    account,
     mnemonic,
     chainId,
     algorithmId = 1,
     oldDerivation = LEGACY_DERIVATION,
     newDerivation = CANONICAL_DERIVATION,
   } = opts;
+  // The sender and the account in the rotation sign-bytes use the canonical
+  // lower-case bech32 form, so an upper-case or 0x input builds the same message
+  // the canonical input does (matching the Go SDK).
+  const account = canonicalAccount(opts.account);
   const oldKp = derivePqcByScheme(oldDerivation, account, mnemonic);
   const newKp = derivePqcByScheme(newDerivation, account, mnemonic);
   if (toHexLower(oldKp.publicKey) === toHexLower(newKp.publicKey)) {

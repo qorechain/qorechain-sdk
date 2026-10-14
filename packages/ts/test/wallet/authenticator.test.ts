@@ -11,6 +11,8 @@ import {
   buildMetaMaskExecuteCosmos,
   rotatePqcKeyMsgFromMnemonic,
   derivePqcLegacy,
+  derivePqcCanonical,
+  canonicalAccount,
   type AuthenticatorWallet,
   type Eip1193Provider,
 } from "../../src/wallet/authenticator";
@@ -21,6 +23,8 @@ import {
 } from "../../src/tx/authenticator";
 import { qorechainRegistry } from "../../src/messages/registry";
 import { mldsa } from "@qorechain/pqc";
+import { sha256 } from "@noble/hashes/sha256";
+import { bytesToHex } from "@noble/hashes/utils";
 
 const enc = new TextEncoder();
 const registry = qorechainRegistry();
@@ -267,6 +271,8 @@ describe("MetaMask (secp256k1) wallet builders", () => {
 describe("PQC key rotation from mnemonic", () => {
   const MNEMONIC =
     "test test test test test test test test test test test junk";
+  // A valid account: rotation resolves the account and rejects junk addresses.
+  const ROT_ACCOUNT = "qor17w0adeg64ky0daxwd2ugyuneellmjgnxhkv37z";
 
   it("derivePqcLegacy uses shake256(mnemonic) and yields a valid ML-DSA-87 key", () => {
     const kp = derivePqcLegacy(MNEMONIC);
@@ -276,7 +282,7 @@ describe("PQC key rotation from mnemonic", () => {
 
   it("rotatePqcKeyMsgFromMnemonic dual-signs the rotation bytes and both verify", () => {
     const { msg, oldKeypair, newKeypair } = rotatePqcKeyMsgFromMnemonic({
-      account: ACCOUNT,
+      account: ROT_ACCOUNT,
       mnemonic: MNEMONIC,
       chainId: CHAIN_ID,
     });
@@ -288,7 +294,7 @@ describe("PQC key rotation from mnemonic", () => {
       rotationSignBytes(
         CHAIN_ID,
         1,
-        ACCOUNT,
+        ROT_ACCOUNT,
         oldKeypair.publicKey,
         newKeypair.publicKey,
       ),
@@ -306,12 +312,80 @@ describe("PQC key rotation from mnemonic", () => {
   it("throws when old and new derivations collide (no-op rotation)", () => {
     expect(() =>
       rotatePqcKeyMsgFromMnemonic({
-        account: ACCOUNT,
+        account: ROT_ACCOUNT,
         mnemonic: MNEMONIC,
         chainId: CHAIN_ID,
         oldDerivation: "adapter",
         newDerivation: "adapter",
       }),
     ).toThrow(/no-op/);
+  });
+
+  it("rejects an account that is not a valid address", () => {
+    expect(() =>
+      rotatePqcKeyMsgFromMnemonic({
+        account: "qor1account",
+        mnemonic: MNEMONIC,
+        chainId: CHAIN_ID,
+      }),
+    ).toThrow(/cannot resolve account/);
+  });
+});
+
+// Cross-language vector for QSR-2026-0381, produced by the Go SDK
+// (authenticator.TestDerivePQCCanonicalNormalisesAccount): every encoding of one
+// account resolves to its lower-case bech32 form before hashing.
+describe("canonical PQC derivation normalises the account (QSR-2026-0381)", () => {
+  const VEC_MNEMONIC =
+    "abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon about";
+  const VEC_COSMOS = "qor1npvwllfr9dqr8erajqqr6s0vxnk2ak55am9g2c";
+  const VEC_EVM = "0x9858EfFD232B4033E47d90003D41EC34EcaEda94";
+  const VEC_CANONICAL_SHA256 =
+    "3d7bd2b98be09288b43a2fa18049789782d35c408f93099724417249707d1585";
+  const inputs = [
+    VEC_COSMOS,
+    VEC_COSMOS.toUpperCase(),
+    VEC_EVM,
+    VEC_EVM.toLowerCase(),
+    "0X" + VEC_EVM.slice(2).toUpperCase(),
+  ];
+
+  it.each(inputs)("%s derives the Go vector key", (input) => {
+    expect(canonicalAccount(input)).toBe(VEC_COSMOS);
+    const kp = derivePqcCanonical(input, VEC_MNEMONIC);
+    expect(bytesToHex(sha256(kp.publicKey))).toBe(VEC_CANONICAL_SHA256);
+  });
+
+  it.each(inputs)("%s builds the rotation with the canonical sender and sign-bytes", (input) => {
+    const { msg, oldKeypair, newKeypair } = rotatePqcKeyMsgFromMnemonic({
+      account: input,
+      mnemonic: VEC_MNEMONIC,
+      chainId: CHAIN_ID,
+    });
+    const v = msg.value as {
+      sender: string;
+      oldSignature: Uint8Array;
+      newSignature: Uint8Array;
+    };
+    expect(v.sender).toBe(VEC_COSMOS);
+    expect(bytesToHex(sha256(newKeypair.publicKey))).toBe(VEC_CANONICAL_SHA256);
+    const sb = enc.encode(
+      rotationSignBytes(
+        CHAIN_ID,
+        1,
+        VEC_COSMOS,
+        oldKeypair.publicKey,
+        newKeypair.publicKey,
+      ),
+    );
+    expect(mldsa.verify(oldKeypair.publicKey, sb, v.oldSignature)).toBe(true);
+    expect(mldsa.verify(newKeypair.publicKey, sb, v.newSignature)).toBe(true);
+  });
+
+  it("rejects junk, mixed-case and short-hex accounts like Go", () => {
+    for (const bad of ["qor1abc", "Qor1" + VEC_COSMOS.slice(4), "0x1234"]) {
+      expect(() => canonicalAccount(bad)).toThrow();
+      expect(() => derivePqcCanonical(bad, VEC_MNEMONIC)).toThrow();
+    }
   });
 });

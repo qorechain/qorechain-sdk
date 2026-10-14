@@ -1,7 +1,9 @@
 package authenticator
 
 import (
+	"crypto/sha256"
 	"encoding/hex"
+	"strings"
 	"testing"
 
 	"github.com/qorechain/qorechain-sdk/packages/go/qorechain/pqc"
@@ -148,5 +150,61 @@ func TestRotatePQCKeyMsgFromMnemonicEVMAddress(t *testing.T) {
 	}
 	if hex.EncodeToString(fromEVM.NewKeypair.PublicKey) != hex.EncodeToString(acct.Pqc.PublicKey) {
 		t.Fatal("EVM-addressed canonical derivation != unified account PQC key")
+	}
+}
+
+// Cross-language vector for QSR-2026-0381: the canonical PQC derivation must
+// resolve every encoding of one account to its lower-case bech32 form before
+// hashing. These values are this package's output; the TS, Python, Rust and Java
+// SDKs pin the same ones.
+const (
+	vecCosmos       = "qor1npvwllfr9dqr8erajqqr6s0vxnk2ak55am9g2c"
+	vecEvm          = "0x9858EfFD232B4033E47d90003D41EC34EcaEda94"
+	vecCanonicalSHA = "3d7bd2b98be09288b43a2fa18049789782d35c408f93099724417249707d1585"
+)
+
+func vecInputs() []string {
+	return []string{
+		vecCosmos,
+		strings.ToUpper(vecCosmos),
+		vecEvm,
+		strings.ToLower(vecEvm),
+		"0X" + strings.ToUpper(vecEvm[2:]),
+	}
+}
+
+func TestDerivePQCCanonicalNormalisesAccount(t *testing.T) {
+	for _, in := range vecInputs() {
+		kp, err := derivePQCCanonical(in, testMnemonic)
+		if err != nil {
+			t.Fatalf("%s: %v", in, err)
+		}
+		sum := sha256.Sum256(kp.PublicKey)
+		if got := hex.EncodeToString(sum[:]); got != vecCanonicalSHA {
+			t.Fatalf("%s: canonical pubkey sha256 = %s, want %s", in, got, vecCanonicalSHA)
+		}
+	}
+	for _, bad := range []string{"qor1abc", "Qor1" + vecCosmos[4:], "0x1234"} {
+		if _, err := derivePQCCanonical(bad, testMnemonic); err == nil {
+			t.Fatalf("%s: expected an error", bad)
+		}
+	}
+}
+
+func TestRotatePQCKeyMsgFromMnemonicNormalisesSender(t *testing.T) {
+	const chainID = "qorechain-diana"
+	for _, in := range vecInputs() {
+		res, err := RotatePQCKeyMsgFromMnemonic(in, testMnemonic, chainID, 1, DerivationLegacy, DerivationCanonical)
+		if err != nil {
+			t.Fatalf("%s: %v", in, err)
+		}
+		if res.Msg.Sender != vecCosmos {
+			t.Fatalf("%s: sender = %s, want %s", in, res.Msg.Sender, vecCosmos)
+		}
+		sb := []byte(RotationSignBytes(chainID, 1, vecCosmos, res.OldKeypair.PublicKey, res.NewKeypair.PublicKey))
+		if !pqc.PQCVerify(res.OldKeypair.PublicKey, sb, res.Msg.OldSignature) ||
+			!pqc.PQCVerify(res.NewKeypair.PublicKey, sb, res.Msg.NewSignature) {
+			t.Fatalf("%s: signatures are not over the canonical-account rotation bytes", in)
+		}
 	}
 }

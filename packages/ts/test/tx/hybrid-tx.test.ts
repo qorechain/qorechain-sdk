@@ -7,6 +7,8 @@ import { secp256k1 } from "@noble/curves/secp256k1";
 import { sha256 } from "@noble/hashes/sha256";
 
 import { buildHybridTx, signAndBroadcastHybrid } from "../../src/tx/hybrid-tx";
+import { clearSignBytesCache } from "../../src/tx/signbytes";
+import { AuthInfo } from "cosmjs-types/cosmos/tx/v1beta1/tx";
 import { directSignerFromPrivateKey } from "../../src/tx/signer-adapter";
 import {
   generatePqcKeypair,
@@ -352,5 +354,108 @@ describe("signAndBroadcastHybrid", () => {
         sequence: 0,
       }),
     ).rejects.toThrow(/pqc signature verification failed|code 11/);
+  });
+});
+
+describe("hybrid signing snapshots the caller's inputs (QSR-2026-0299)", () => {
+  function decodeSent(bytes: Uint8Array) {
+    const raw = TxRaw.decode(bytes);
+    const body = TxBody.decode(raw.bodyBytes);
+    const auth = AuthInfo.decode(raw.authInfoBytes);
+    return {
+      body,
+      auth,
+      send: MsgSend.decode(body.messages[0].value),
+    };
+  }
+
+  it("buildHybridTx signs what was passed, not what the caller mutates mid-call", async () => {
+    const { signer, pqc, msg, account } = await fixtures();
+    const fee = { amount: [{ denom: "uqor", amount: "5000" }], gas: "200000" };
+    const opts = {
+      registry: registry(),
+      signer,
+      pqcKeypair: pqc,
+      messages: [msg],
+      fee,
+      memo: "original",
+      timeoutHeight: 77n,
+      chainId: CHAIN_ID,
+      signBytesVersion: "v2" as const,
+      accountNumber: 0,
+      sequence: 0,
+    };
+    const pending = buildHybridTx(opts);
+    // Mutations after the call has started (it is suspended on the signer).
+    msg.value.toAddress = "qor1attacker";
+    msg.value.amount[0].amount = "999999999";
+    opts.memo = "mutated";
+    opts.timeoutHeight = 1n;
+    fee.amount[0].amount = "1";
+    fee.gas = "1";
+    const built = await pending;
+
+    const { body, auth, send } = decodeSent(built.txRawBytes);
+    expect(send.toAddress).toBe(account.address);
+    expect(send.amount[0].amount).toBe("1000");
+    expect(body.memo).toBe("original");
+    expect(body.timeoutHeight).toBe(77n);
+    expect(auth.fee?.amount[0].amount).toBe("5000");
+    expect(auth.fee?.gasLimit).toBe(200000n);
+    // The PQC signature covers the original body too.
+    expect(pqcVerify(pqc.publicKey, built.pqcSignedMessage, built.pqcSignature)).toBe(true);
+  });
+
+  it("the sign-bytes retry re-signs the first attempt's snapshot, not a re-read of opts", async () => {
+    clearSignBytesCache();
+    const { signer, pqc, msg, account } = await fixtures();
+    let asked = 0;
+    const fetch = vi.fn(async () => {
+      asked += 1;
+      return new Response(JSON.stringify({ height: asked <= 2 ? "0" : "5746000" }));
+    });
+    const opts = {
+      registry: registry(),
+      signer,
+      pqcKeypair: pqc,
+      messages: [msg],
+      fee: { amount: [{ denom: "uqor", amount: "5000" }], gas: "200000" },
+      memo: "original",
+      chainId: CHAIN_ID,
+      rest: "https://lcd.example",
+      fetch,
+      accountNumber: 0,
+      sequence: 0,
+    };
+    const transport = {
+      broadcastTx: vi
+        .fn()
+        .mockImplementationOnce(async () => {
+          // The caller mutates between the refused attempt and the retry.
+          msg.value.amount[0].amount = "999999999";
+          msg.value.toAddress = "qor1attacker";
+          opts.memo = "mutated";
+          opts.fee.amount[0].amount = "1";
+          throw Object.assign(new Error("refused"), { code: 21, codespace: "pqc" });
+        })
+        .mockResolvedValue({ code: 0, transactionHash: "OK", height: 5 }),
+      broadcastTxSync: vi.fn(),
+    };
+    const res = await signAndBroadcastHybrid({ ...opts, transport: transport as never });
+    expect(res.transactionHash).toBe("OK");
+    expect(transport.broadcastTx).toHaveBeenCalledTimes(2);
+
+    const first = decodeSent(transport.broadcastTx.mock.calls[0][0] as Uint8Array);
+    const second = decodeSent(transport.broadcastTx.mock.calls[1][0] as Uint8Array);
+    for (const sent of [first, second]) {
+      expect(sent.send.toAddress).toBe(account.address);
+      expect(sent.send.amount[0].amount).toBe("1000");
+      expect(sent.body.memo).toBe("original");
+      expect(sent.auth.fee?.amount[0].amount).toBe("5000");
+    }
+    // Same body content; only the PQC extension (other sign-bytes form) differs.
+    expect(TxBody.encode({ ...second.body, extensionOptions: [] }).finish()).toEqual(
+      TxBody.encode({ ...first.body, extensionOptions: [] }).finish(),
+    );
   });
 });

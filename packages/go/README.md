@@ -247,7 +247,7 @@ validator attestations; v2 adds the chain id). `signbytes.VersionFor(chainID,
 appliedHeight)` mirrors the chain's own switch (pass the greatest height any of
 `signbytes.V2Upgrades` answered).
 
-### EVM authorisation window (v0.8.3 / chain v3.2.0)
+### EVM authorisation window (v0.8.2 / chain v3.2.0)
 
 From chain **v3.2.0** the EVM lane is no longer open by default. An EVM
 transaction is admitted only from an account that has **both** a registered

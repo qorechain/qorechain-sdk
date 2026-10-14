@@ -483,6 +483,8 @@ export {
   buildMetaMaskExecuteCosmos,
   rotatePqcKeyMsgFromMnemonic,
   derivePqcLegacy,
+  derivePqcCanonical,
+  canonicalAccount,
   CANONICAL_DERIVATION,
   LEGACY_DERIVATION,
 } from "./wallet/authenticator";

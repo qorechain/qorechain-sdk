@@ -85,9 +85,10 @@ pub use pqc::{
 };
 
 pub use authenticator::{
-    cosmos_auth_sign_bytes, derive_pqc_canonical, derive_pqc_legacy, evm_auth_sign_bytes,
-    rotate_pqc_key_msg_from_mnemonic, rotation_sign_bytes, RotateFromMnemonic,
-    RotateFromMnemonicOptions, DERIVATION_CANONICAL, DERIVATION_LEGACY,
+    canonical_account, cosmos_auth_sign_bytes, derive_pqc_canonical, derive_pqc_legacy,
+    evm_auth_sign_bytes, rotate_pqc_key_msg_from_mnemonic, rotation_sign_bytes,
+    try_derive_pqc_canonical, RotateFromMnemonic, RotateFromMnemonicOptions, DERIVATION_CANONICAL,
+    DERIVATION_LEGACY,
 };
 
 pub use unified::{

@@ -65,20 +65,22 @@ describe("encodeHybridExtension", () => {
 });
 
 describe("attachHybridExtension", () => {
-  it("attaches the Any to TxBody.nonCriticalExtensionOptions by default", () => {
+  it("attaches the Any to the critical TxBody.extensionOptions by default", () => {
+    // The chain reads only the critical slot; the default must land there.
     const body = TxBody.fromPartial({
       messages: [],
       memo: "m",
     });
     const out = attachHybridExtension(body, sampleExtension());
-    expect(out.nonCriticalExtensionOptions).toHaveLength(1);
-    expect(out.nonCriticalExtensionOptions[0].typeUrl).toBe(HYBRID_SIG_TYPE_URL);
-    expect(out.extensionOptions).toHaveLength(0);
+    expect(out.extensionOptions).toHaveLength(1);
+    expect(out.extensionOptions[0].typeUrl).toBe(HYBRID_SIG_TYPE_URL);
+    expect(out.nonCriticalExtensionOptions).toHaveLength(0);
     // original body untouched (memo preserved)
     expect(out.memo).toBe("m");
+    expect(body.extensionOptions).toHaveLength(0);
   });
 
-  it("can attach to extensionOptions when requested", () => {
+  it("can attach to extensionOptions explicitly", () => {
     const body = TxBody.fromPartial({ messages: [], memo: "" });
     const out = attachHybridExtension(body, sampleExtension(), {
       placement: "extension_options",
@@ -86,6 +88,16 @@ describe("attachHybridExtension", () => {
     expect(out.extensionOptions).toHaveLength(1);
     expect(out.extensionOptions[0].typeUrl).toBe(HYBRID_SIG_TYPE_URL);
     expect(out.nonCriticalExtensionOptions).toHaveLength(0);
+  });
+
+  it("still attaches to nonCriticalExtensionOptions when asked", () => {
+    const body = TxBody.fromPartial({ messages: [], memo: "" });
+    const out = attachHybridExtension(body, sampleExtension(), {
+      placement: "non_critical_extension_options",
+    });
+    expect(out.nonCriticalExtensionOptions).toHaveLength(1);
+    expect(out.nonCriticalExtensionOptions[0].typeUrl).toBe(HYBRID_SIG_TYPE_URL);
+    expect(out.extensionOptions).toHaveLength(0);
   });
 
   it("survives a TxBody encode→decode round-trip with a 0x08-prefixed proto value", () => {

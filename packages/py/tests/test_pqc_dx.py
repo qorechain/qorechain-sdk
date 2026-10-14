@@ -16,7 +16,7 @@ import httpx
 import pytest
 import respx
 from cosmpy.protos.cosmos.base.v1beta1.coin_pb2 import Coin
-from cosmpy.protos.cosmos.tx.v1beta1.tx_pb2 import TxBody, TxRaw
+from cosmpy.protos.cosmos.tx.v1beta1.tx_pb2 import AuthInfo, TxBody, TxRaw
 
 from qorsdk import (
     ALGORITHM_DILITHIUM5,
@@ -271,6 +271,73 @@ def test_migrate_to_hybrid_registers_then_sends_hybrid():
     body = TxBody()
     body.ParseFromString(tx.body_bytes)
     assert len(body.extension_options) == 1
+
+
+def _broadcast_sequences(route):
+    """The signer sequence of every broadcast tx, in broadcast order."""
+    out = []
+    for call in route.calls:
+        raw = TxRaw()
+        raw.ParseFromString(base64.b64decode(json.loads(call.request.read())["tx_bytes"]))
+        info = AuthInfo()
+        info.ParseFromString(raw.auth_info_bytes)
+        out.append(info.signer_infos[0].sequence)
+    return out
+
+
+@respx.mock
+def test_migrate_to_hybrid_registering_advances_sequence_by_default():
+    # QSR-2026-0380: with register_sequence=None the registration consumes
+    # `sequence`, so the hybrid tx must go out at sequence + 1 — not reuse it.
+    account, kwargs = _ctx(sequence=7)
+    qor = _FakeQor({"has_pqc_key": False})
+    route = _mock_broadcast()
+    payment = msg.bank.send(
+        from_address=account.address,
+        to_address=account.address,
+        amount=[Coin(denom="uqor", amount="1")],
+    )
+    migrate_to_hybrid(
+        pqc_keypair=generate_pqc_keypair(), messages=[payment], qor=qor, **kwargs
+    )
+    assert route.call_count == 2
+    assert _broadcast_sequences(route) == [7, 8]
+
+
+@respx.mock
+def test_migrate_to_hybrid_already_registered_keeps_sequence():
+    account, kwargs = _ctx(sequence=7)
+    qor = _FakeQor({"has_pqc_key": True})
+    route = _mock_broadcast()
+    payment = msg.bank.send(
+        from_address=account.address,
+        to_address=account.address,
+        amount=[Coin(denom="uqor", amount="1")],
+    )
+    migrate_to_hybrid(
+        pqc_keypair=generate_pqc_keypair(), messages=[payment], qor=qor, **kwargs
+    )
+    assert _broadcast_sequences(route) == [7]
+
+
+@respx.mock
+def test_migrate_to_hybrid_explicit_register_sequence_is_respected():
+    account, kwargs = _ctx(sequence=3)
+    qor = _FakeQor({"has_pqc_key": False})
+    route = _mock_broadcast()
+    payment = msg.bank.send(
+        from_address=account.address,
+        to_address=account.address,
+        amount=[Coin(denom="uqor", amount="1")],
+    )
+    migrate_to_hybrid(
+        pqc_keypair=generate_pqc_keypair(),
+        messages=[payment],
+        qor=qor,
+        register_sequence=2,
+        **kwargs,
+    )
+    assert _broadcast_sequences(route) == [2, 3]
 
 
 def test_migrate_to_hybrid_rejects_empty_messages():

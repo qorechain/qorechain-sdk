@@ -334,16 +334,21 @@ def migrate_to_hybrid(
     sign-bytes form; ``"auto"`` asks ``rest_url`` which form the network verifies
     and retries once on a ``pqc`` code 21 refusal.
 
-    Returns the decoded broadcast response for the hybrid ``messages`` tx. If a
-    registration tx was broadcast first, advance ``sequence`` accordingly (pass
-    the registration at ``register_sequence`` and the hybrid tx at ``sequence``).
+    Sequencing: with ``register_sequence`` left as ``None`` the registration (if
+    one is broadcast) goes out at ``sequence`` and the hybrid ``messages`` tx at
+    ``sequence + 1``; if the key was already registered, the hybrid tx goes out
+    at ``sequence``. Passing ``register_sequence`` explicitly puts the
+    registration at that sequence and the hybrid tx at ``sequence`` unchanged —
+    the caller then owns both nonces.
+
+    Returns the decoded broadcast response for the hybrid ``messages`` tx.
 
     :raises ValueError: If ``messages`` is empty.
     """
     if not messages:
         raise ValueError("migrate_to_hybrid requires at least one message to send")
 
-    ensure_pqc_registered(
+    ensured = ensure_pqc_registered(
         account=account,
         pqc_keypair=pqc_keypair,
         chain_id=chain_id,
@@ -357,12 +362,18 @@ def migrate_to_hybrid(
         mode=mode,
     )
 
+    # A registration broadcast in this flow consumed ``sequence``; the hybrid tx
+    # must sign over the next nonce (mirrors the Go ``MigrateToHybrid``).
+    hybrid_sequence = sequence
+    if register_sequence is None and not ensured["already_registered"]:
+        hybrid_sequence = sequence + 1
+
     return _broadcast_messages(
         account=account,
         messages=messages,
         chain_id=chain_id,
         account_number=account_number,
-        sequence=sequence,
+        sequence=hybrid_sequence,
         fee=fee,
         rest_url=rest_url,
         pqc_keypair=pqc_keypair,

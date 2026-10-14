@@ -8,12 +8,16 @@ rotation builder.
 
 from __future__ import annotations
 
+import hashlib
+
 import pytest
 from cosmpy.protos.cosmos.base.v1beta1.coin_pb2 import Coin
 
 from qorsdk import (
+    canonical_account,
     cosmos_auth_sign_bytes,
     decode_tx_error,
+    derive_pqc_canonical,
     derive_pqc_legacy,
     evm_auth_sign_bytes,
     execute_cosmos_msg,
@@ -298,8 +302,12 @@ def test_unmapped_module_code_falls_back_to_raw_log():
 # --------------------------------------------------------------------------- #
 
 
+# A valid account: rotation resolves the account and rejects junk addresses.
+ROT_ACCOUNT = "qor17w0adeg64ky0daxwd2ugyuneellmjgnxhkv37z"
+
+
 def test_rotate_pqc_key_msg_from_mnemonic_dual_signs():
-    account = "qor1test"
+    account = ROT_ACCOUNT
     mnemonic = "test test test test test test test test test test test junk"
     chain_id = "qorechain-diana"
 
@@ -331,7 +339,7 @@ def test_rotate_pqc_key_msg_from_mnemonic_dual_signs():
 def test_rotate_pqc_key_msg_from_mnemonic_rejects_noop():
     with pytest.raises(ValueError, match="no-op"):
         rotate_pqc_key_msg_from_mnemonic(
-            account="qor1test",
+            account=ROT_ACCOUNT,
             mnemonic="test test test test test test test test test test test junk",
             chain_id="qorechain-diana",
             old_derivation="adapter",
@@ -342,8 +350,68 @@ def test_rotate_pqc_key_msg_from_mnemonic_rejects_noop():
 def test_rotate_pqc_key_msg_from_mnemonic_rejects_unknown_derivation():
     with pytest.raises(ValueError, match="unknown derivation"):
         rotate_pqc_key_msg_from_mnemonic(
-            account="qor1test",
+            account=ROT_ACCOUNT,
             mnemonic="test test test test test test test test test test test junk",
             chain_id="qorechain-diana",
             old_derivation="nope",
         )
+
+
+def test_rotate_pqc_key_msg_from_mnemonic_rejects_invalid_account():
+    with pytest.raises(ValueError, match="cannot resolve account"):
+        rotate_pqc_key_msg_from_mnemonic(
+            account="qor1test",
+            mnemonic="test test test test test test test test test test test junk",
+            chain_id="qorechain-diana",
+        )
+
+
+# --- QSR-2026-0381: canonical derivation normalises the account ---------------
+# Cross-language vector produced by the Go SDK
+# (authenticator.TestDerivePQCCanonicalNormalisesAccount): every encoding of one
+# account resolves to its lower-case bech32 form before hashing.
+
+VEC_MNEMONIC = (
+    "abandon abandon abandon abandon abandon abandon abandon abandon "
+    "abandon abandon abandon about"
+)
+VEC_COSMOS = "qor1npvwllfr9dqr8erajqqr6s0vxnk2ak55am9g2c"
+VEC_EVM = "0x9858EfFD232B4033E47d90003D41EC34EcaEda94"
+VEC_CANONICAL_SHA256 = "3d7bd2b98be09288b43a2fa18049789782d35c408f93099724417249707d1585"
+VEC_INPUTS = [
+    VEC_COSMOS,
+    VEC_COSMOS.upper(),
+    VEC_EVM,
+    VEC_EVM.lower(),
+    "0X" + VEC_EVM[2:].upper(),
+]
+
+
+@pytest.mark.parametrize("account", VEC_INPUTS)
+def test_canonical_derivation_matches_go_vector(account):
+    assert canonical_account(account) == VEC_COSMOS
+    kp = derive_pqc_canonical(account, VEC_MNEMONIC)
+    assert hashlib.sha256(kp.public_key).hexdigest() == VEC_CANONICAL_SHA256
+
+
+@pytest.mark.parametrize("account", VEC_INPUTS)
+def test_rotation_uses_canonical_sender_and_sign_bytes(account):
+    built = rotate_pqc_key_msg_from_mnemonic(
+        account=account, mnemonic=VEC_MNEMONIC, chain_id="qorechain-diana"
+    )
+    assert built.msg.value.sender == VEC_COSMOS
+    assert hashlib.sha256(built.new_keypair.public_key).hexdigest() == VEC_CANONICAL_SHA256
+    sb = rotation_sign_bytes(
+        "qorechain-diana", ALGORITHM_DILITHIUM5, VEC_COSMOS,
+        built.old_keypair.public_key, built.new_keypair.public_key,
+    ).encode("utf-8")
+    assert pqc_verify(built.old_keypair.public_key, sb, built.msg.value.old_signature)
+    assert pqc_verify(built.new_keypair.public_key, sb, built.msg.value.new_signature)
+
+
+@pytest.mark.parametrize("bad", ["qor1abc", "Qor1" + VEC_COSMOS[4:], "0x1234", "0x" + "zz" * 20])
+def test_canonical_account_rejects_invalid_like_go(bad):
+    with pytest.raises(ValueError):
+        canonical_account(bad)
+    with pytest.raises(ValueError):
+        derive_pqc_canonical(bad, VEC_MNEMONIC)

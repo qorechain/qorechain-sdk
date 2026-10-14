@@ -5,7 +5,72 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## Unreleased
+## [0.8.3]
+
+### Fixed
+
+- **QSR-2026-0259 — transaction search sent a parameter the node no longer
+  reads.** `searchTxs` (TS), `search_txs` (Python) and `RestClient.searchTxs`
+  (Java) sent the filter as `events=` with the predicates joined by `&`. Cosmos
+  SDK v0.53 reads only `query=`, with predicates joined by ` AND `, so the search
+  was refused or ignored the filter. All three now send `query` and join with
+  ` AND ` (`buildEventsQuery` / `build_events_query` changed accordingly). The
+  page size is sent as `limit`, the field the endpoint reads; it ignores
+  `pagination.*`. Java adds `RestClient.buildEventQuery(List)` and a
+  `searchTxs` overload taking a page. Go and Rust were already correct and are
+  unchanged.
+- **QSR-2026-0325 — React: a late response for an old address could overwrite
+  the new one.** `useBalance` invalidated requests only on unmount, `refetch`
+  never invalidated older requests, and the old address's data stayed on screen
+  after the address changed. `usePqcStatus` had the same flaw, so a registered
+  old address could briefly mark a new one quantum-safe. Both hooks now keep a
+  request generation in a ref, bumped on every change of client, address, denom
+  (for `useBalance`) or `enabled` and on unmount; a request commits state only
+  if its generation is still current, a newer request for the same key always
+  wins over an older one, and a `refetch` kept from an earlier render does
+  nothing. Data and error are cleared as soon as the key changes.
+  `@qorechain/react` moves from 0.8.0 to 0.8.3 with the rest of the SDK.
+- **QSR-2026-0380 — Python: `migrate_to_hybrid` sent both transactions at the
+  same sequence.** It discarded the result of `ensure_pqc_registered`, so with
+  `register_sequence=None` the registration and the hybrid transaction were both
+  signed at `sequence` and the second was refused. When a registration is
+  broadcast and `register_sequence` is `None`, the hybrid transaction now goes
+  out at `sequence + 1`, as Go's `MigrateToHybrid` does. An explicit
+  `register_sequence` is unchanged: the caller owns both nonces. The docstring
+  now states the sequencing.
+- **QSR-2026-0381 — the canonical PQC derivation depended on how the account was
+  written.** It hashed the account string as given, so an upper-case bech32
+  address or the `0x` form of the same account derived a different ML-DSA-87
+  key. Only Go resolved the account first. TS, Python, Rust and Java now resolve
+  it to the lower-case `qor1…` bech32 form (accepting `0x`/`0X` and re-encoding
+  it) inside the canonical derivation, and the mnemonic rotation builder uses
+  that canonical form for the message `sender` and the rotation sign-bytes. Go's
+  rotation builder now does the same for the sender and sign-bytes, so a `0x`
+  input no longer produces a `0x` sender. All five SDKs pin the same vector
+  (Go's output) for five encodings of one account. New public helpers:
+  `canonicalAccount` / `derivePqcCanonical` (TS), `canonical_account` /
+  `derive_pqc_canonical` (Python), `canonical_account` /
+  `try_derive_pqc_canonical` (Rust), `Authenticator.canonicalAccount` /
+  `Authenticator.derivePqcCanonical` (Java, now public). An account that is not a
+  valid address is refused, as in Go; Rust's existing infallible
+  `derive_pqc_canonical` keeps its signature and hashes such input as given —
+  use `try_derive_pqc_canonical` to get the error.
+
+### Changed
+
+- **QSR-2026-0299 (hardening) — TS signing takes one snapshot of what it signs.**
+  `buildHybridTx` encodes the messages, memo and timeout height into the body
+  and copies the fee synchronously, before its first `await`; mutating them
+  after the call has started no longer changes what is signed.
+  `signAndBroadcastHybrid` takes that snapshot once and its single sign-bytes
+  retry re-signs it instead of rebuilding from the options. `TxClient.signAndBroadcast`
+  copies the message list (and an explicit fee) once and uses that copy for
+  both the `"auto"` simulation and the signing.
+- **TS: `attachHybridExtension` defaults to the critical extension slot.** The
+  chain reads the hybrid signature only from `extension_options`; the previous
+  default, `non_critical_extension_options`, produced a transaction the chain
+  refuses. `placement: "non_critical_extension_options"` is still accepted.
+  `buildHybridTx` always used the critical slot and is unaffected.
 
 ### Fixed — documentation, and it was wrong in the dangerous direction
 

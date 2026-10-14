@@ -1,6 +1,7 @@
 package io.github.qorechain;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import com.fasterxml.jackson.databind.JsonNode;
@@ -10,9 +11,12 @@ import io.github.qorechain.query.QorClient;
 import io.github.qorechain.query.RestClient;
 import java.io.IOException;
 import java.net.InetSocketAddress;
+import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -94,6 +98,33 @@ class QueryTest {
         assertTrue(restPaths.contains("/qorechain/burn/v1/stats"));
         assertTrue(restPaths.contains("/qorechain/xqore/v1/position/qor1abc"));
         assertTrue(restPaths.contains("/qorechain/inflation/v1/rate"));
+    }
+
+    @Test
+    void searchTxsSendsQueryParamJoinedWithAnd() {
+        RestClient rest = new RestClient(baseUrl);
+        String query =
+                RestClient.buildEventQuery(
+                        List.of("message.sender=qor1abc", "transfer.recipient='qor1def'", " "));
+        assertEquals("message.sender='qor1abc' AND transfer.recipient='qor1def'", query);
+        rest.searchTxs(query, 2, 50, "desc");
+
+        assertEquals(1, restPaths.size());
+        String uri = restPaths.get(0);
+        assertTrue(uri.startsWith("/cosmos/tx/v1beta1/txs?"), uri);
+        Map<String, String> params = new HashMap<>();
+        for (String kv : uri.substring(uri.indexOf('?') + 1).split("&")) {
+            int i = kv.indexOf('=');
+            params.put(
+                    URLDecoder.decode(kv.substring(0, i), StandardCharsets.UTF_8),
+                    URLDecoder.decode(kv.substring(i + 1), StandardCharsets.UTF_8));
+        }
+        assertEquals("message.sender='qor1abc' AND transfer.recipient='qor1def'", params.get("query"));
+        assertFalse(params.containsKey("events"), uri);
+        assertFalse(params.containsKey("pagination.limit"), uri);
+        assertEquals("2", params.get("page"));
+        assertEquals("50", params.get("limit"));
+        assertEquals("ORDER_BY_DESC", params.get("order_by"));
     }
 
     @Test

@@ -41,6 +41,48 @@ describe("TxClient.simulate", () => {
 });
 
 describe("TxClient.signAndBroadcast", () => {
+  it("simulates and signs ONE private copy of the messages (QSR-2026-0299)", async () => {
+    const sg = fakeStargate();
+    const client = makeClient(sg);
+    const msgs = [
+      {
+        typeUrl: "/cosmos.bank.v1beta1.MsgSend",
+        value: {
+          fromAddress: SENDER,
+          toAddress: RECIPIENT,
+          amount: [{ denom: "uqor", amount: "1000" }],
+          raw: new Uint8Array([1, 2, 3]),
+        },
+      },
+    ];
+    const pending = client.signAndBroadcast(msgs, "auto", "memo");
+    // The caller mutates its message while simulation is in flight.
+    msgs[0].value.toAddress = SENDER;
+    msgs[0].value.amount[0].amount = "999999999";
+    msgs[0].value.raw[0] = 9;
+    msgs.push({ ...msgs[0] });
+    await pending;
+
+    const simulated = sg.simulate.mock.calls[0][1] as typeof msgs;
+    const signed = sg.signAndBroadcast.mock.calls[0][1] as typeof msgs;
+    expect(signed).toBe(simulated);
+    expect(signed).not.toBe(msgs);
+    expect(signed).toHaveLength(1);
+    expect(signed[0].value.toAddress).toBe(RECIPIENT);
+    expect(signed[0].value.amount[0].amount).toBe("1000");
+    expect(Array.from(signed[0].value.raw)).toEqual([1, 2, 3]);
+  });
+
+  it("signs the fee as passed, even if the caller mutates it mid-call", async () => {
+    const sg = fakeStargate();
+    const client = makeClient(sg);
+    const fee = { amount: [{ denom: "uqor", amount: "5000" }], gas: "200000" };
+    const pending = client.signAndBroadcast([{ typeUrl: "/x", value: {} }], fee, "");
+    fee.amount[0].amount = "1";
+    await pending;
+    expect(sg.signAndBroadcast.mock.calls[0][2]).toEqual(FEE);
+  });
+
   it("uses commit mode by default (signAndBroadcast)", async () => {
     const sg = fakeStargate();
     const client = makeClient(sg);

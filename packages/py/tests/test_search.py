@@ -20,7 +20,7 @@ BASE = "http://localhost:1317"
 
 def test_build_events_query_quotes_strings_and_bare_ints():
     q = build_events_query({"message.sender": "qor1abc", "tx.height": 42})
-    assert q == "message.sender='qor1abc'&tx.height=42"
+    assert q == "message.sender='qor1abc' AND tx.height=42"
 
 
 def test_build_events_query_rejects_bool():
@@ -62,7 +62,7 @@ def test_get_latest_block():
 
 
 @respx.mock
-def test_search_txs_builds_events_and_pagination():
+def test_search_txs_sends_query_param_and_pagination():
     route = respx.get(f"{BASE}/cosmos/tx/v1beta1/txs").mock(
         return_value=httpx.Response(200, json={"txs": []})
     )
@@ -72,8 +72,10 @@ def test_search_txs_builds_events_and_pagination():
     )
     rest.close()
     req = route.calls.last.request
-    assert req.url.params.get("events") == "message.sender='qor1abc'"
-    assert req.url.params.get("pagination.limit") == "10"
+    assert req.url.params.get("query") == "message.sender='qor1abc'"
+    assert "events" not in req.url.params
+    assert req.url.params.get("limit") == "10"
+    assert "pagination.limit" not in req.url.params
     assert req.url.params.get("order_by") == "ORDER_BY_DESC"
     assert req.url.params.get("page") == "2"
 
@@ -86,4 +88,18 @@ def test_search_txs_accepts_raw_query_string():
     rest = RestClient(BASE)
     search_txs(rest, "message.action='swap'")
     rest.close()
-    assert route.calls.last.request.url.params.get("events") == "message.action='swap'"
+    params = route.calls.last.request.url.params
+    assert params.get("query") == "message.action='swap'"
+    assert "events" not in params
+
+
+@respx.mock
+def test_search_txs_joins_filters_with_and():
+    route = respx.get(f"{BASE}/cosmos/tx/v1beta1/txs").mock(
+        return_value=httpx.Response(200, json={"txs": []})
+    )
+    rest = RestClient(BASE)
+    search_txs(rest, {"message.sender": "qor1abc", "transfer.recipient": "qor1def"})
+    rest.close()
+    q = route.calls.last.request.url.params.get("query")
+    assert q == "message.sender='qor1abc' AND transfer.recipient='qor1def'"

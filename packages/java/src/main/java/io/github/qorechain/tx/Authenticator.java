@@ -282,13 +282,48 @@ public final class Authenticator {
     }
 
     /**
+     * Resolve {@code account} to the canonical form the address-bound PQC derivation
+     * and the rotation message use: lower-case {@code qor1…} bech32.
+     *
+     * <p>Accepts a bech32 address in either case (all-lower or all-upper, as bech32
+     * allows) or a {@code 0x}/{@code 0X} EVM address, which is re-encoded to its
+     * bech32 form. Byte-identical to the Go SDK's resolution: the 20-byte payload is
+     * re-encoded with the {@code qor} prefix.
+     *
+     * @throws IllegalArgumentException if {@code account} is not a valid 20-byte
+     *     account address.
+     */
+    public static String canonicalAccount(String account) {
+        if (account == null) {
+            throw new IllegalArgumentException("account is required");
+        }
+        if (account.startsWith("0x") || account.startsWith("0X")) {
+            return UnifiedAccounts.qoreAddresses(null, null, account.substring(2)).cosmos;
+        }
+        try {
+            return UnifiedAccounts.qoreAddresses(account, null, null).cosmos;
+        } catch (IllegalArgumentException e) {
+            throw new IllegalArgumentException(
+                    "cannot resolve account \"" + account + "\" to a bech32 cosmos address: "
+                            + e.getMessage(),
+                    e);
+        }
+    }
+
+    /**
      * The CANONICAL (SDK / wallet-adapter) address-bound PQC derivation for a
      * mnemonic: the same derivation {@link UnifiedAccounts#deriveUnifiedAccount}
-     * uses — {@code ML-DSA-87 keygen(shake256("qorechain:pqc:v1|" + account + "|" +
-     * mnemonic, 32))}, where {@code account} is the bech32 ({@code qor1…}) address.
+     * uses — {@code ML-DSA-87 keygen(shake256("qorechain:pqc:v1|" + cosmos + "|" +
+     * mnemonic, 32))}, where {@code cosmos} is {@code account} resolved by {@link
+     * #canonicalAccount} — so an upper-case bech32 or a {@code 0x} form of the same
+     * account yields the same key.
+     *
+     * @throws IllegalArgumentException if {@code account} is not a valid 20-byte
+     *     account address.
      */
-    static PqcKeypair derivePqcCanonical(String account, String mnemonic) {
-        byte[] seed = Hashing.shake256("qorechain:pqc:v1|" + account + "|" + mnemonic, 32);
+    public static PqcKeypair derivePqcCanonical(String account, String mnemonic) {
+        String cosmos = canonicalAccount(account);
+        byte[] seed = Hashing.shake256("qorechain:pqc:v1|" + cosmos + "|" + mnemonic, 32);
         return Pqc.generatePqcKeypair(seed);
     }
 
@@ -303,14 +338,21 @@ public final class Authenticator {
      * <p>The returned message must be broadcast BY the account, cosigned (hybrid)
      * with the OLD key (it is still the registered key until the rotation lands).
      *
-     * @param account the bech32 ({@code qor1…}) canonical account.
+     * @param account the account: bech32 ({@code qor1…}, either case) or {@code 0x}. The
+     *     message sender and the rotation sign-bytes always carry the canonical
+     *     lower-case {@code qor1…} form (see {@link #canonicalAccount}).
      * @param mnemonic the BIP-39 mnemonic both derivations share.
      * @param chainId the chain id bound into the rotation bytes.
      * @param algorithmId the algorithm id bound into the rotation bytes (ML-DSA-87 = 1).
-     * @throws IllegalArgumentException if both derivations produce the same key (no-op).
+     * @throws IllegalArgumentException if both derivations produce the same key (no-op),
+     *     or {@code account} is not a valid account address.
      */
     public static RotationResult rotatePqcKeyMsgFromMnemonic(
             String account, String mnemonic, String chainId, int algorithmId) {
+        // The sender and the account in the rotation sign-bytes use the canonical
+        // lower-case bech32 form, so an upper-case or 0x input builds the same
+        // message the canonical input does (matching the Go SDK).
+        account = canonicalAccount(account);
         PqcKeypair oldKp = derivePqcLegacy(mnemonic);
         PqcKeypair newKp = derivePqcCanonical(account, mnemonic);
         if (Hex.encode(oldKp.publicKey).equals(Hex.encode(newKp.publicKey))) {

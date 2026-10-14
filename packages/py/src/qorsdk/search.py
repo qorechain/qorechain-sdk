@@ -3,8 +3,9 @@
 Wraps the standard ``/cosmos/tx/v1beta1`` and consensus block routes: fetch a
 single transaction by hash, fetch a block by height (or the latest), and search
 transactions by an events query. :func:`build_events_query` turns an attribute
-map (e.g. ``{"message.sender": addr}``) into the ``events=...`` parameter the
-REST API expects.
+map (e.g. ``{"message.sender": addr}``) into the ``query=...`` parameter the
+REST API expects (Cosmos SDK v0.53: predicates joined with ``" AND "``; the old
+``events`` parameter is no longer read).
 
 Responses are returned as the decoded JSON (the gateway JSON is large and
 version-sensitive); the helpers cover path/param building.
@@ -22,14 +23,14 @@ TxOrderBy = Literal["asc", "desc"]
 
 
 def build_events_query(filters: dict[str, str | int]) -> str:
-    """Build the ``events`` query value for the REST tx-search endpoint.
+    """Build the ``query`` value for the REST tx-search endpoint.
 
     Each ``key=value`` pair is rendered as ``key='value'`` (integers unquoted)
-    and joined with ``&`` — the format ``/cosmos/tx/v1beta1/txs?events=...``
-    expects.
+    and the predicates are joined with ``" AND "`` — the format
+    ``/cosmos/tx/v1beta1/txs?query=...`` expects on Cosmos SDK v0.53.
 
-    :example: ``build_events_query({"message.sender": "qor1..."})`` →
-        ``"message.sender='qor1...'"``
+    :example: ``build_events_query({"message.sender": "qor1...", "tx.height": 5})``
+        → ``"message.sender='qor1...' AND tx.height=5"``
     """
     parts = []
     for key, value in filters.items():
@@ -37,7 +38,7 @@ def build_events_query(filters: dict[str, str | int]) -> str:
             raise TypeError("event filter values must be str or int, not bool")
         rendered = f"{value}" if isinstance(value, int) else f"'{value}'"
         parts.append(f"{key}={rendered}")
-    return "&".join(parts)
+    return " AND ".join(parts)
 
 
 def _order_by_param(order_by: TxOrderBy | None) -> str | None:
@@ -75,16 +76,18 @@ def search_txs(
 ) -> Any:
     """Search transactions by an events query.
 
-    :param query: An ``events`` query string (see :func:`build_events_query`) or
-        an attribute-filter dict passed through it.
+    :param query: A tx-search query string (predicates joined with ``" AND "``,
+        see :func:`build_events_query`) or an attribute-filter dict passed
+        through it. Sent as the ``query`` parameter.
     :param page: 1-based page number.
-    :param limit: Page size.
+    :param limit: Page size, sent as ``limit`` (the endpoint ignores
+        ``pagination.*``).
     :param order_by: Result ordering by block height.
     """
-    events = query if isinstance(query, str) else build_events_query(query)
+    q = query if isinstance(query, str) else build_events_query(query)
     params: dict[str, Any] = {
-        "events": events,
-        "pagination.limit": limit,
+        "query": q,
+        "limit": limit,
         "order_by": _order_by_param(order_by),
     }
     if page is not None:

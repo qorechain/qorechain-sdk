@@ -20,10 +20,11 @@
  *    tx decoder rejected every such tx at CheckTx (the leading `0x7b` = `{` was
  *    misread as field 15 `start_group`). Verified live on testnet 2026-07-05.
  *  - PLACEMENT: the extension is a CRITICAL extension option — it goes in
- *    `TxBody.extension_options`. {@link buildHybridTx} always uses this slot.
- *    This module additionally exposes `non_critical_extension_options` via
- *    {@link AttachHybridOptions.placement} for callers with other needs, but the
- *    chain reads the critical slot.
+ *    `TxBody.extension_options`, the only slot the chain reads.
+ *    {@link buildHybridTx} always uses it, and so does
+ *    {@link attachHybridExtension} by default. `non_critical_extension_options`
+ *    stays reachable via {@link AttachHybridOptions.placement} for callers with
+ *    other needs; a hybrid tx built that way is refused by the chain.
  *  - SIGNED BYTES: the ML-DSA-87 signature is computed over the tx body WITH the
  *    PQC extension REMOVED, framed with the authInfo bytes:
  *    `BE32(len(B0)) || B0 || BE32(len(A)) || A` (see {@link buildHybridTx} for
@@ -52,9 +53,9 @@ export type HybridPlacement =
 export interface AttachHybridOptions {
   /**
    * Which `TxBody` extension list to attach the extension to. Defaults to
-   * `"non_critical_extension_options"`. See the module header: the exact slot
-   * the ante handler reads is not determinable from public core and needs
-   * live-testnet verification.
+   * `"extension_options"` — the critical slot, the only one the chain reads.
+   * `"non_critical_extension_options"` is kept for callers with other needs:
+   * the chain does not look there, so a hybrid tx built that way fails closed.
    */
   placement?: HybridPlacement;
 }
@@ -85,11 +86,11 @@ export function encodeHybridExtension(ext: PQCHybridSignature): Any {
  * Return a copy of `body` with the encoded hybrid-signature extension attached.
  *
  * The input `body` is not mutated. By default the extension is added to
- * `non_critical_extension_options`; pass `placement` to use `extension_options`
- * instead.
+ * `extension_options` (the critical slot the chain reads); pass
+ * `placement: "non_critical_extension_options"` to use the other list.
  *
- * @see The module header — both the placement and the bytes the PQC signature
- *   must cover require live-testnet verification against the `full` build.
+ * @see The module header for the bytes the PQC signature must cover —
+ *   {@link buildHybridTx} handles the whole contract.
  */
 export function attachHybridExtension(
   body: TxBody,
@@ -97,7 +98,7 @@ export function attachHybridExtension(
   opts: AttachHybridOptions = {},
 ): TxBody {
   const anyExt = encodeHybridExtension(ext);
-  const placement = opts.placement ?? "non_critical_extension_options";
+  const placement: HybridPlacement = opts.placement ?? "extension_options";
   const next = TxBody.fromPartial({
     messages: body.messages,
     memo: body.memo,
@@ -105,10 +106,10 @@ export function attachHybridExtension(
     extensionOptions: [...body.extensionOptions],
     nonCriticalExtensionOptions: [...body.nonCriticalExtensionOptions],
   });
-  if (placement === "extension_options") {
-    next.extensionOptions.push(anyExt);
-  } else {
+  if (placement === "non_critical_extension_options") {
     next.nonCriticalExtensionOptions.push(anyExt);
+  } else {
+    next.extensionOptions.push(anyExt);
   }
   return next;
 }

@@ -155,6 +155,13 @@ type RotationResult struct {
 // OLD key (still the registered key until the rotation lands). oldDerivation /
 // newDerivation are DerivationLegacy ("bridge") or DerivationCanonical ("adapter").
 func RotatePQCKeyMsgFromMnemonic(account, mnemonic, chainID string, algorithmID uint32, oldDerivation, newDerivation string) (RotationResult, error) {
+	// The sender and the account in the rotation sign-bytes use the canonical
+	// lower-case bech32 form too, so an upper-case or 0x input builds the same
+	// message the canonical input does (and a 0x sender is never emitted).
+	account, err := toCosmos(account)
+	if err != nil {
+		return RotationResult{}, err
+	}
 	oldKp, err := derivePQCByScheme(oldDerivation, account, mnemonic)
 	if err != nil {
 		return RotationResult{}, err

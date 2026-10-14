@@ -30,7 +30,9 @@ from .authenticator import (
     ROTATE_PQC_KEY_TYPE_URL,
     RotationBuild,
     be64,
+    canonical_account,
     cosmos_auth_sign_bytes,
+    derive_pqc_canonical,
     derive_pqc_legacy,
     evm_auth_sign_bytes,
     execute_cosmos_msg,
@@ -242,7 +244,7 @@ from .utils import (
     to_checksum_address,
 )
 
-__version__ = "0.8.2"
+__version__ = "0.8.3"
 
 __all__ = [
     "__version__",
@@ -294,6 +296,8 @@ __all__ = [
     "execute_cosmos_msg",
     "rotate_pqc_key_msg",
     "derive_pqc_legacy",
+    "derive_pqc_canonical",
+    "canonical_account",
     "rotate_pqc_key_msg_from_mnemonic",
     # eth_secp256k1 Native-lane signing
     "ETHSECP256K1_PUBKEY_TYPE",

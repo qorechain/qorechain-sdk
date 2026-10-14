@@ -5,7 +5,8 @@
  * routes: fetch a single transaction by hash, fetch a block by height (or the
  * latest), and search transactions by an events query. A small query builder
  * turns an attribute map (e.g. `{ "message.sender": addr }`) into the
- * `events=...` parameter the REST API expects.
+ * `query=...` parameter the REST API expects (Cosmos SDK v0.53: predicates
+ * joined with ` AND `; the old `events` parameter is no longer read).
  *
  * Responses are typed loosely (the gateway JSON is large and version-sensitive)
  * via a caller-supplied generic; the shapes here cover the common fields.
@@ -64,20 +65,21 @@ export interface SearchTxsOptions {
 export type EventFilters = Record<string, string | number>;
 
 /**
- * Build the `events` query value for the REST tx-search endpoint.
+ * Build the `query` value for the REST tx-search endpoint.
  *
  * Each `key=value` pair is rendered as `key='value'` (numbers unquoted) and
- * joined with `&` — the format `/cosmos/tx/v1beta1/txs?events=...` expects.
+ * the predicates are joined with ` AND ` — the format
+ * `/cosmos/tx/v1beta1/txs?query=...` expects on Cosmos SDK v0.53.
  *
- * @example buildEventsQuery({ "message.sender": "qor1..." })
- *   // => "message.sender='qor1...'"
+ * @example buildEventsQuery({ "message.sender": "qor1...", "tx.height": 5 })
+ *   // => "message.sender='qor1...' AND tx.height=5"
  */
 export function buildEventsQuery(filters: EventFilters): string {
   return Object.entries(filters)
     .map(([key, value]) =>
       typeof value === "number" ? `${key}=${value}` : `${key}='${value}'`,
     )
-    .join("&");
+    .join(" AND ");
 }
 
 /** Map a REST `order_by` enum value from the friendly {@link TxOrderBy}. */
@@ -115,19 +117,21 @@ export function getLatestBlock(rest: RestClient): Promise<GetBlockResponse> {
  * Search transactions by an events query.
  *
  * @param rest - A {@link RestClient}.
- * @param query - An `events` query string (see {@link buildEventsQuery}) or an
- *   attribute-filter object passed through {@link buildEventsQuery}.
- * @param opts - Page, limit, and ordering.
+ * @param query - A tx-search query string (predicates joined with ` AND `,
+ *   see {@link buildEventsQuery}) or an attribute-filter object passed through
+ *   {@link buildEventsQuery}. Sent as the `query` parameter.
+ * @param opts - Page, limit, and ordering. The page size is sent as `limit`;
+ *   the tx-search endpoint ignores `pagination.*`.
  */
 export function searchTxs(
   rest: RestClient,
   query: string | EventFilters,
   opts: SearchTxsOptions = {},
 ): Promise<SearchTxsResponse> {
-  const events = typeof query === "string" ? query : buildEventsQuery(query);
+  const q = typeof query === "string" ? query : buildEventsQuery(query);
   const params: Record<string, QueryValue> = {
-    events,
-    "pagination.limit": opts.limit,
+    query: q,
+    limit: opts.limit,
     order_by: orderByParam(opts.orderBy),
   };
   if (opts.page !== undefined) {

@@ -200,6 +200,34 @@ export interface BankSendOptions extends SignAndBroadcastOptions {
 }
 
 /**
+ * Deep-copy a value: arrays, plain and class-instance objects (prototype kept,
+ * so e.g. `Long` keeps its methods), `Uint8Array`, `Date`, `Map` and `Set`. Primitives
+ * (including `bigint`) are returned as is.
+ */
+function cloneDeep<T>(value: T): T {
+  if (value instanceof Uint8Array) return value.slice() as T;
+  if (value instanceof Date) return new Date(value.getTime()) as T;
+  if (Array.isArray(value)) return value.map((v: unknown) => cloneDeep(v)) as T;
+  if (value instanceof Map) {
+    return new Map([...value].map(([k, v]) => [k, cloneDeep(v)])) as T;
+  }
+  if (value instanceof Set) return new Set([...value].map((v) => cloneDeep(v))) as T;
+  if (value !== null && typeof value === "object") {
+    const out = Object.create(Object.getPrototypeOf(value)) as Record<string, unknown>;
+    for (const key of Object.keys(value)) {
+      out[key] = cloneDeep((value as Record<string, unknown>)[key]);
+    }
+    return out as T;
+  }
+  return value;
+}
+
+/** A private copy of a message list (each `{ typeUrl, value }` deep-copied). */
+function cloneMessages(messages: readonly EncodeObject[]): EncodeObject[] {
+  return messages.map((m) => ({ typeUrl: m.typeUrl, value: cloneDeep(m.value) }));
+}
+
+/**
  * A native-transaction client: simulate, sign, broadcast, and send tokens.
  */
 export class TxClient {
@@ -313,12 +341,18 @@ export class TxClient {
     opts: SignAndBroadcastOptions = {},
   ): Promise<BroadcastResult> {
     const mode: BroadcastMode = opts.mode ?? "commit";
-    const resolvedFee = await this.resolveFee(messages, fee, memo, opts.autoFee);
+    // One private copy, taken before the first await, feeds BOTH the "auto"
+    // fee simulation and the signing — so the caller mutating its message
+    // objects (or fee) mid-call cannot make the signed tx differ from the
+    // simulated one, or from what it passed in.
+    const msgs = cloneMessages(messages);
+    const feeInput: FeeInput = fee === "auto" ? fee : cloneDeep(fee);
+    const resolvedFee = await this.resolveFee(msgs, feeInput, memo, opts.autoFee);
 
     if (mode === "commit") {
       const res = await this.client.signAndBroadcast(
         this.senderAddress,
-        messages,
+        msgs,
         resolvedFee,
         memo,
       );
@@ -348,7 +382,7 @@ export class TxClient {
     // sync / async: both return after CheckTx without polling for a block.
     const hash = await this.client.signAndBroadcastSync(
       this.senderAddress,
-      messages,
+      msgs,
       resolvedFee,
       memo,
     );

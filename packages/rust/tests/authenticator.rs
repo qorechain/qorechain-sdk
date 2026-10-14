@@ -3,10 +3,89 @@
 //! rotate-from-mnemonic dual-signing path.
 
 use qorechain::authenticator::{
-    cosmos_auth_sign_bytes, derive_pqc_canonical, derive_pqc_legacy, evm_auth_sign_bytes,
-    rotate_pqc_key_msg_from_mnemonic, rotation_sign_bytes, RotateFromMnemonicOptions,
+    canonical_account, cosmos_auth_sign_bytes, derive_pqc_canonical, derive_pqc_legacy,
+    evm_auth_sign_bytes, rotate_pqc_key_msg_from_mnemonic, rotation_sign_bytes,
+    try_derive_pqc_canonical, RotateFromMnemonicOptions,
 };
 use qorechain::pqc::pqc_verify;
+use sha2::{Digest, Sha256};
+
+// Cross-language vector for QSR-2026-0381, produced by the Go SDK
+// (`authenticator.TestDerivePQCCanonicalNormalisesAccount`): every encoding of
+// one account resolves to its lower-case bech32 form before hashing.
+const VEC_MNEMONIC: &str =
+    "abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon about";
+const VEC_COSMOS: &str = "qor1npvwllfr9dqr8erajqqr6s0vxnk2ak55am9g2c";
+const VEC_EVM: &str = "0x9858EfFD232B4033E47d90003D41EC34EcaEda94";
+const VEC_CANONICAL_SHA256: &str =
+    "3d7bd2b98be09288b43a2fa18049789782d35c408f93099724417249707d1585";
+
+fn vec_inputs() -> Vec<String> {
+    vec![
+        VEC_COSMOS.to_string(),
+        VEC_COSMOS.to_uppercase(),
+        VEC_EVM.to_string(),
+        VEC_EVM.to_lowercase(),
+        format!("0X{}", VEC_EVM[2..].to_uppercase()),
+    ]
+}
+
+#[test]
+fn canonical_derivation_normalises_account_like_go() {
+    for input in vec_inputs() {
+        assert_eq!(canonical_account(&input).unwrap(), VEC_COSMOS, "{input}");
+        let kp = try_derive_pqc_canonical(&input, VEC_MNEMONIC).unwrap();
+        assert_eq!(
+            hex::encode(Sha256::digest(&kp.public_key)),
+            VEC_CANONICAL_SHA256,
+            "{input}"
+        );
+        // The infallible form agrees for every valid encoding.
+        assert_eq!(
+            derive_pqc_canonical(&input, VEC_MNEMONIC).public_key,
+            kp.public_key
+        );
+    }
+    let mixed = format!("Qor1{}", &VEC_COSMOS[4..]);
+    for bad in ["qor1abc", mixed.as_str(), "0x1234"] {
+        assert!(canonical_account(bad).is_err(), "{bad}");
+        assert!(
+            try_derive_pqc_canonical(bad, VEC_MNEMONIC).is_err(),
+            "{bad}"
+        );
+    }
+}
+
+#[test]
+fn rotation_normalises_sender_and_sign_bytes_like_go() {
+    let chain_id = "qorechain-diana";
+    for input in vec_inputs() {
+        let opts = RotateFromMnemonicOptions::new(&input, VEC_MNEMONIC, chain_id);
+        let rot = rotate_pqc_key_msg_from_mnemonic(&opts).expect("rotate");
+        assert_eq!(rot.msg.sender, VEC_COSMOS, "{input}");
+        assert_eq!(
+            hex::encode(Sha256::digest(&rot.new_keypair.public_key)),
+            VEC_CANONICAL_SHA256
+        );
+        let sb = rotation_sign_bytes(
+            chain_id,
+            1,
+            VEC_COSMOS,
+            &rot.msg.old_public_key,
+            &rot.msg.new_public_key,
+        );
+        assert!(pqc_verify(
+            &rot.msg.old_public_key,
+            sb.as_bytes(),
+            &rot.msg.old_signature
+        ));
+        assert!(pqc_verify(
+            &rot.msg.new_public_key,
+            sb.as_bytes(),
+            &rot.msg.new_signature
+        ));
+    }
+}
 
 /// The KAT authenticator pubkey: 32 bytes of 0x01.
 fn kat_pubkey() -> Vec<u8> {
@@ -94,7 +173,7 @@ fn nonce_is_bound_into_sign_bytes() {
 fn legacy_and_canonical_derivations_differ() {
     let mnemonic =
         "abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon about";
-    let account = "qor1account00000000000000000000000000000000";
+    let account = VEC_COSMOS;
     let legacy = derive_pqc_legacy(mnemonic);
     let canonical = derive_pqc_canonical(account, mnemonic);
     assert_eq!(legacy.public_key.len(), qorechain::MLDSA87_PUBLIC_KEY_LEN);
@@ -112,7 +191,7 @@ fn legacy_and_canonical_derivations_differ() {
 fn rotate_from_mnemonic_is_dual_signed() {
     let mnemonic =
         "abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon about";
-    let account = "qor1account00000000000000000000000000000000";
+    let account = VEC_COSMOS;
     let chain_id = "qorechain-diana";
 
     let opts = RotateFromMnemonicOptions::new(account, mnemonic, chain_id);
@@ -162,7 +241,7 @@ fn rotate_from_mnemonic_is_dual_signed() {
 fn rotate_from_mnemonic_rejects_no_op() {
     let mnemonic =
         "abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon about";
-    let account = "qor1account00000000000000000000000000000000";
+    let account = VEC_COSMOS;
     let mut opts = RotateFromMnemonicOptions::new(account, mnemonic, "qorechain-diana");
     opts.new_derivation = opts.old_derivation; // bridge -> bridge
     let err = rotate_pqc_key_msg_from_mnemonic(&opts).unwrap_err();
@@ -174,7 +253,7 @@ fn rotate_from_mnemonic_rejects_no_op() {
 fn rotate_from_mnemonic_rejects_unknown_scheme() {
     let mnemonic =
         "abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon about";
-    let account = "qor1account00000000000000000000000000000000";
+    let account = VEC_COSMOS;
     let mut opts = RotateFromMnemonicOptions::new(account, mnemonic, "qorechain-diana");
     opts.old_derivation = "nope";
     let err = rotate_pqc_key_msg_from_mnemonic(&opts).unwrap_err();

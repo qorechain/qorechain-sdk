@@ -160,6 +160,56 @@ function fromBase64(b64: string): Uint8Array {
 }
 
 /**
+ * What a hybrid tx signs over, captured from the caller's options SYNCHRONOUSLY
+ * — before the first `await` — so a caller mutating its message objects, memo,
+ * timeout height or fee while the build is suspended (on `getAccounts`, the
+ * sign-bytes lookup, or the signer) cannot change what gets signed, and so a
+ * retry re-signs exactly what the first attempt did.
+ */
+interface HybridTxSnapshot {
+  /** `B0`: the encoded `TxBody` (messages, memo, timeoutHeight) WITHOUT the PQC extension. */
+  readonly baseBodyBytes: Uint8Array;
+  /** A copy of the fee (coins copied, gas parsed). */
+  readonly fee: {
+    readonly amount: ReadonlyArray<{ readonly denom: string; readonly amount: string }>;
+    readonly gasLimit: number;
+    readonly granter?: string;
+    readonly payer?: string;
+  };
+  readonly chainId: string;
+  readonly accountNumber: bigint;
+  readonly sequence: bigint;
+  readonly includePqcPublicKey: boolean;
+}
+
+/** Encode/copy everything the tx signs over. Must stay free of `await`. */
+function snapshotHybridTx(opts: BuildHybridTxOptions): HybridTxSnapshot {
+  const { registry, messages, fee } = opts;
+  const baseBodyBytes = TxBody.encode(
+    TxBody.fromPartial({
+      messages: messages.map((m) => registry.encodeAsAny(m)),
+      memo: opts.memo ?? "",
+      timeoutHeight: opts.timeoutHeight ?? 0n,
+    }),
+  ).finish();
+  return Object.freeze({
+    baseBodyBytes,
+    fee: Object.freeze({
+      amount: Object.freeze(
+        fee.amount.map((c) => Object.freeze({ denom: c.denom, amount: c.amount })),
+      ),
+      gasLimit: Number(fee.gas),
+      granter: fee.granter,
+      payer: fee.payer,
+    }),
+    chainId: opts.chainId,
+    accountNumber: BigInt(opts.accountNumber),
+    sequence: BigInt(opts.sequence),
+    includePqcPublicKey: opts.includePqcPublicKey ?? false,
+  });
+}
+
+/**
  * Build a fully signed hybrid transaction following the chain contract.
  *
  * The build sequence (see the module header for the exact contract):
@@ -173,24 +223,28 @@ function fromBase64(b64: string): Uint8Array {
  *     accountNumber }`.
  *  6. Assemble `TxRaw{ finalBody, A, [classicalSig] }`.
  *
+ * The messages, memo, timeoutHeight and fee are captured synchronously when the
+ * call starts: mutating them after the call has started does not change what
+ * is signed.
+ *
  * The returned {@link BuiltHybridTx} exposes the intermediate artifacts so the
  * contract can be asserted/audited.
  */
 export async function buildHybridTx(
   opts: BuildHybridTxOptions,
 ): Promise<BuiltHybridTx> {
-  const {
-    registry,
-    signer,
-    pqcKeypair,
-    messages,
-    fee,
-    chainId,
-    accountNumber,
-    sequence,
-  } = opts;
-  const memo = opts.memo ?? "";
-  const timeoutHeight = opts.timeoutHeight ?? 0n;
+  // Synchronous: runs before this async function first yields.
+  const snapshot = snapshotHybridTx(opts);
+  return buildHybridTxFromSnapshot(opts, snapshot, false);
+}
+
+async function buildHybridTxFromSnapshot(
+  opts: BuildHybridTxOptions,
+  snapshot: HybridTxSnapshot,
+  forceRefresh: boolean,
+): Promise<BuiltHybridTx> {
+  const { signer, pqcKeypair } = opts;
+  const { baseBodyBytes: b0, fee, chainId, accountNumber, sequence } = snapshot;
 
   const accounts = await signer.getAccounts();
   if (accounts.length === 0) {
@@ -198,23 +252,15 @@ export async function buildHybridTx(
   }
   const account = accounts[0];
 
-  // 1. B0 — body WITHOUT the PQC extension. Encode the messages via the registry.
-  const encodedMessages = messages.map((m) => registry.encodeAsAny(m));
-  const baseBody = TxBody.fromPartial({
-    messages: encodedMessages,
-    memo,
-    timeoutHeight,
-  });
-  const b0 = TxBody.encode(baseBody).finish();
+  // 1. B0 — body WITHOUT the PQC extension: encoded in the snapshot.
 
   // 2. A — single-signer AuthInfo (SIGN_MODE_DIRECT). The signer's classical
   //    secp256k1 pubkey identifies the account.
   const pubkeyAny = encodePubkey(encodeSecp256k1Pubkey(account.pubkey));
-  const gasLimit = Number(fee.gas);
   const authInfoBytes = makeAuthInfoBytes(
-    [{ pubkey: pubkeyAny, sequence: BigInt(sequence) }],
-    fee.amount,
-    gasLimit,
+    [{ pubkey: pubkeyAny, sequence }],
+    fee.amount.map((c) => ({ denom: c.denom, amount: c.amount })),
+    fee.gasLimit,
     fee.granter,
     fee.payer,
     SignMode.SIGN_MODE_DIRECT,
@@ -227,25 +273,22 @@ export async function buildHybridTx(
     rest: opts.rest,
     signBytesVersion: opts.signBytesVersion,
     fetch: opts.fetch,
-    forceRefresh: opts.forceRefreshSignBytesVersion,
+    forceRefresh: forceRefresh || opts.forceRefreshSignBytesVersion,
   });
   const pqcSignedMessage = hybridSignBytes(signBytesVersion, chainId, b0, authInfoBytes);
   const pqcSignature = pqcSign(pqcKeypair.secretKey, pqcSignedMessage);
 
   // 4. Build the PQC extension Any and attach it to the FINAL body as a
-  //    CRITICAL extension option.
+  //    CRITICAL extension option. The final body is B0 decoded (fresh objects,
+  //    nothing shared with the caller) plus the extension.
   const ext = buildHybridSignatureExtension({
     algorithmId: AlgorithmDilithium5,
     signature: pqcSignature,
-    publicKey: opts.includePqcPublicKey ? pqcKeypair.publicKey : undefined,
+    publicKey: snapshot.includePqcPublicKey ? pqcKeypair.publicKey : undefined,
   });
   const extAny = encodeHybridExtension(ext);
-  const finalBody = TxBody.fromPartial({
-    messages: encodedMessages,
-    memo,
-    timeoutHeight,
-    extensionOptions: [extAny],
-  });
+  const finalBody = TxBody.decode(b0);
+  finalBody.extensionOptions = [extAny];
   const bodyBytesFinal = TxBody.encode(finalBody).finish();
 
   // 5. Classical SIGN_MODE_DIRECT signature over the FINAL body + A.
@@ -253,7 +296,7 @@ export async function buildHybridTx(
     bodyBytes: bodyBytesFinal,
     authInfoBytes,
     chainId,
-    accountNumber: BigInt(accountNumber),
+    accountNumber,
   });
   const { signature } = await signer.signDirect(account.address, signDoc);
   const classicalSig = fromBase64(signature.signature);
@@ -319,27 +362,28 @@ export interface SignAndBroadcastHybridOptions extends BuildHybridTxOptions {
 export async function signAndBroadcastHybrid(
   opts: SignAndBroadcastHybridOptions,
 ): Promise<BroadcastResult> {
+  // Captured once, synchronously, before the first await: the retry below
+  // re-signs this snapshot, never a re-read of `opts`.
+  const snapshot = snapshotHybridTx(opts);
   const auto = (opts.signBytesVersion ?? "auto") === "auto";
   try {
-    return await broadcastHybridOnce(opts, false);
+    return await broadcastHybridOnce(opts, snapshot, false);
   } catch (e) {
     // Signed the form the network no longer (or not yet) verifies: the answer
     // was cached across an upgrade. Ask again once and resend once.
     if (!auto || !isHybridSignBytesRejection(e)) throw e;
-    return broadcastHybridOnce(opts, true);
+    return broadcastHybridOnce(opts, snapshot, true);
   }
 }
 
 async function broadcastHybridOnce(
   opts: SignAndBroadcastHybridOptions,
+  snapshot: HybridTxSnapshot,
   forceRefresh: boolean,
 ): Promise<BroadcastResult> {
   const { transport } = opts;
   const mode: BroadcastMode = opts.mode ?? "commit";
-  const built = await buildHybridTx({
-    ...opts,
-    forceRefreshSignBytesVersion: forceRefresh || opts.forceRefreshSignBytesVersion,
-  });
+  const built = await buildHybridTxFromSnapshot(opts, snapshot, forceRefresh);
 
   if (mode === "commit") {
     const res = await transport.broadcastTx(built.txRawBytes);

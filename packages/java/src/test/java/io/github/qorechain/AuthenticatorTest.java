@@ -327,4 +327,72 @@ class AuthenticatorTest {
                         signBytes,
                         m.getOldSignature().toByteArray()));
     }
+
+    // ---- QSR-2026-0381: canonical derivation normalises the account ----
+    // Cross-language vector produced by the Go SDK
+    // (authenticator.TestDerivePQCCanonicalNormalisesAccount): every encoding of one
+    // account resolves to its lower-case bech32 form before hashing.
+
+    private static final String VEC_MNEMONIC =
+            "abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon"
+                    + " abandon about";
+    private static final String VEC_COSMOS = "qor1npvwllfr9dqr8erajqqr6s0vxnk2ak55am9g2c";
+    private static final String VEC_EVM = "0x9858EfFD232B4033E47d90003D41EC34EcaEda94";
+    private static final String VEC_CANONICAL_SHA256 =
+            "3d7bd2b98be09288b43a2fa18049789782d35c408f93099724417249707d1585";
+
+    private static List<String> vecInputs() {
+        return List.of(
+                VEC_COSMOS,
+                VEC_COSMOS.toUpperCase(java.util.Locale.ROOT),
+                VEC_EVM,
+                VEC_EVM.toLowerCase(java.util.Locale.ROOT),
+                "0X" + VEC_EVM.substring(2).toUpperCase(java.util.Locale.ROOT));
+    }
+
+    @Test
+    void canonicalDerivationMatchesGoVector() {
+        for (String input : vecInputs()) {
+            assertEquals(VEC_COSMOS, Authenticator.canonicalAccount(input), input);
+            byte[] pub = Authenticator.derivePqcCanonical(input, VEC_MNEMONIC).publicKey;
+            assertEquals(
+                    VEC_CANONICAL_SHA256,
+                    Hex.encode(io.github.qorechain.utils.Hashing.sha256(pub)),
+                    input);
+        }
+        for (String bad : List.of("qor1abc", "Qor1" + VEC_COSMOS.substring(4), "0x1234")) {
+            assertThrows(IllegalArgumentException.class, () -> Authenticator.canonicalAccount(bad));
+            assertThrows(
+                    IllegalArgumentException.class,
+                    () -> Authenticator.derivePqcCanonical(bad, VEC_MNEMONIC));
+        }
+    }
+
+    @Test
+    void rotationUsesCanonicalSenderAndSignBytes() throws Exception {
+        for (String input : vecInputs()) {
+            Authenticator.RotationResult r =
+                    Authenticator.rotatePqcKeyMsgFromMnemonic(input, VEC_MNEMONIC, "qorechain-diana");
+            qorechain.pqc.v1.Tx.MsgRotatePQCKey m =
+                    (qorechain.pqc.v1.Tx.MsgRotatePQCKey) Messages.unpack(Messages.pack(r.msg));
+            assertEquals(VEC_COSMOS, m.getSender(), input);
+            assertEquals(
+                    VEC_CANONICAL_SHA256,
+                    Hex.encode(io.github.qorechain.utils.Hashing.sha256(r.newKeypair.publicKey)));
+            byte[] signBytes =
+                    Authenticator.rotationSignBytes(
+                                    "qorechain-diana",
+                                    1,
+                                    VEC_COSMOS,
+                                    r.oldKeypair.publicKey,
+                                    r.newKeypair.publicKey)
+                            .getBytes(StandardCharsets.UTF_8);
+            assertTrue(
+                    Pqc.pqcVerify(
+                            r.oldKeypair.publicKey, signBytes, m.getOldSignature().toByteArray()));
+            assertTrue(
+                    Pqc.pqcVerify(
+                            r.newKeypair.publicKey, signBytes, m.getNewSignature().toByteArray()));
+        }
+    }
 }
