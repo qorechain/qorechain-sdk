@@ -23,6 +23,12 @@ from urllib.parse import quote
 #: RDK messages.
 CHAIN_UPGRADE_V3_2_2 = "v3.2.2"
 
+#: PQC registration integrity and ``proof_of_possession``, hybrid-only key
+#: maintenance for keyed accounts, the EVM window scope (``native_only``,
+#: ``allowed_targets``), the abstract-account v2 digest and
+#: ``MsgUpdateAuthority``.
+CHAIN_UPGRADE_V3_2_3 = "v3.2.3"
+
 #: How long a "not applied yet" answer is trusted before asking again, seconds.
 NOT_APPLIED_TTL_S = 60.0
 

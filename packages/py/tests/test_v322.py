@@ -8,6 +8,7 @@ from typing import Any
 import pytest
 from bech32 import bech32_encode, convertbits
 from bip_utils import Secp256k1PrivateKey
+from dilithium_py.ml_dsa import ML_DSA_87
 
 from qorsdk import (
     CHAIN_UPGRADE_V3_2_2,
@@ -144,11 +145,13 @@ def test_classical_key_cosmos_empty_and_refusals() -> None:
 
 def test_build_register_pqc_key_applies_the_rule() -> None:
     addr, pub = _cosmos_key()
+    # A real ML-DSA key: an all-zero one is degenerate and refused (v3.2.3).
+    pqc_pub = bytes(ML_DSA_87.key_derive(b"\x07" * 32)[0])
     with pytest.raises(ValueError, match="does not belong"):
         build_register_pqc_key(
-            sender=SENDER, dilithium_pubkey=b"\x00" * 2592, ecdsa_pubkey=pub
+            sender=SENDER, dilithium_pubkey=pqc_pub, ecdsa_pubkey=pub
         )
-    m = build_register_pqc_key(sender=addr, dilithium_pubkey=b"\x00" * 2592, ecdsa_pubkey=pub)
+    m = build_register_pqc_key(sender=addr, dilithium_pubkey=pqc_pub, ecdsa_pubkey=pub)
     assert m.value.ecdsa_pubkey == pub
 
 

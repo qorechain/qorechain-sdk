@@ -37,6 +37,7 @@ from typing import Any, TypedDict
 
 from .accounts import Secp256k1Account
 from .classical_key import validate_classical_key_for_sender
+from .key_integrity import validate_registered_pqc_key
 from .messages import msg
 from .messages._composer import Msg
 from .pqc import ALGORITHM_DILITHIUM5, PqcKeypair
@@ -139,6 +140,7 @@ def build_register_pqc_key(
     dilithium_pubkey: bytes,
     ecdsa_pubkey: bytes,
     key_type: str = HYBRID_KEY_TYPE,
+    proof_of_possession: bytes = b"",
 ) -> Msg:
     """Build a ``MsgRegisterPQCKeyV2`` :class:`~qorsdk.messages.Msg` (no signing).
 
@@ -146,17 +148,25 @@ def build_register_pqc_key(
     (classical-exempt bootstrap) registration path — with an explicit
     ``algorithm_id`` (ML-DSA-87 / Dilithium-5).
 
+    ``proof_of_possession`` (chain v3.2.3) comes from
+    :func:`qorsdk.key_integrity.sign_proof_of_possession`. A node below v3.2.3
+    refuses the whole transaction when it is set, so pass it only once the
+    network has applied v3.2.3.
+
     :raises ValueError: If ``ecdsa_pubkey`` is not empty and not the sender's own
-        33-byte compressed key — from chain v3.2.2 such a registration is refused
-        after the fee is charged. Not network-gated: such a key is wrong anywhere.
+        33-byte compressed key (refused from chain v3.2.2), or the key is
+        ``classical_only``, empty or degenerate (refused from v3.2.3). Not
+        network-gated: such a registration is wrong anywhere.
     """
     validate_classical_key_for_sender(sender, ecdsa_pubkey)
+    validate_registered_pqc_key(key_type, dilithium_pubkey)
     message: Msg = msg.pqc.register_pqc_key_v2(
         sender=sender,
         public_key=dilithium_pubkey,
         algorithm_id=ALGORITHM_DILITHIUM5,
         ecdsa_pubkey=ecdsa_pubkey,
         key_type=key_type,
+        proof_of_possession=proof_of_possession,
     )
     return message
 
@@ -413,6 +423,11 @@ def migrate_pqc_key(
     with ``old_signature`` / ``new_signature`` proving control of both keys. The
     tx is hybrid-signed when ``pqc_keypair`` is supplied (sign-bytes form per
     ``sign_bytes_version``, default ``"auto"``), else classical.
+
+    Pass ``pqc_keypair`` — the CURRENTLY registered key. From chain v3.2.3 (and
+    in the mempool of every v3.2.3 node) an account that has a PQC key must send
+    ``MsgMigratePQCKey`` with the hybrid signature; a classical one is refused
+    (``pqc`` 234).
     Returns the decoded broadcast response.
 
     ``old_signature`` / ``new_signature`` are signatures over the key-migration

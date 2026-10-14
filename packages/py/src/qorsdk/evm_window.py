@@ -48,6 +48,7 @@ duration from the chain's recent block time.
 
 from __future__ import annotations
 
+import re
 from collections.abc import Mapping
 from dataclasses import dataclass
 from typing import Any, Literal, Protocol
@@ -69,6 +70,34 @@ MAX_EVM_WINDOW_BLOCKS = 17280
 
 #: The chain's ``MaxEVMWindowTxs``: the most transactions a window may admit.
 MAX_EVM_WINDOW_TXS = 1000
+
+#: The chain's ``MaxEVMWindowTargets`` (v3.2.3): the most ``allowed_targets``.
+MAX_EVM_WINDOW_TARGETS = 16
+
+_ADDRESS = re.compile(r"^0x[0-9a-fA-F]{40}$")
+
+
+def validate_evm_window_targets(targets: list[str] | tuple[str, ...]) -> list[str]:
+    """Check ``allowed_targets`` (chain v3.2.3): at most 16 0x-prefixed 20-byte
+    addresses, no duplicates (compared case-insensitively).
+
+    :raises ValueError: Naming the rule that was violated.
+    """
+    if len(targets) > MAX_EVM_WINDOW_TARGETS:
+        raise ValueError(
+            f"allowed_targets lists {len(targets)} addresses, the maximum is "
+            f"{MAX_EVM_WINDOW_TARGETS}"
+        )
+    seen: set[str] = set()
+    out: list[str] = []
+    for t in targets:
+        if not isinstance(t, str) or not _ADDRESS.match(t):
+            raise ValueError(f"allowed_targets: {t!r} is not a 0x-prefixed 20-byte address")
+        if t.lower() in seen:
+            raise ValueError(f"allowed_targets lists {t} more than once")
+        seen.add(t.lower())
+        out.append(t)
+    return out
 
 # --------------------------------------------------------------------------- #
 # Error codes (codespace ``pqc``)
@@ -276,6 +305,10 @@ class EVMWindowStatus:
     remaining_txs: int
     #: uqor left.
     remaining_value: int
+    #: The window admits only plain native transfers (chain v3.2.3; False before).
+    native_only: bool = False
+    #: The recipients the window is narrowed to; empty = any (chain v3.2.3).
+    allowed_targets: tuple[str, ...] = ()
 
 
 def _as_int(payload: Mapping[str, Any], field: str) -> int:
@@ -332,6 +365,10 @@ def parse_evm_window(payload: Mapping[str, Any]) -> EVMWindowStatus:
         remaining_blocks=_as_int(payload, "remaining_blocks"),
         remaining_txs=_as_int(payload, "remaining_txs"),
         remaining_value=_as_int(payload, "remaining_value"),
+        native_only=payload.get("native_only") is True,
+        allowed_targets=tuple(
+            t for t in (payload.get("allowed_targets") or []) if isinstance(t, str)
+        ),
     )
 
 

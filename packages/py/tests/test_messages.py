@@ -44,7 +44,7 @@ TEST_MNEMONIC = (
 CHAIN_ID = "qorechain-diana"
 FEE = {"amount": [{"denom": "uqor", "amount": "5000"}], "gas": "200000"}
 
-# Every QoreChain composer call -> the exact typeUrl it must emit. Covers all 65.
+# Every QoreChain composer call -> the exact typeUrl it must emit. Covers all 66.
 QORECHAIN_COMPOSER_CASES = [
     # amm (7)
     (amm.create_pool(creator="qor1"), "/qorechain.amm.v1.MsgCreatePool"),
@@ -161,7 +161,7 @@ QORECHAIN_COMPOSER_CASES = [
         lightnode.claim_light_node_rewards(operator="qor1"),
         "/qorechain.lightnode.v1.MsgClaimLightNodeRewards",
     ),
-    # license (4)
+    # license (5)
     (license.grant_license(authority="qor1"), "/qorechain.license.v1.MsgGrantLicense"),
     (license.revoke_license(authority="qor1"), "/qorechain.license.v1.MsgRevokeLicense"),
     (
@@ -169,6 +169,7 @@ QORECHAIN_COMPOSER_CASES = [
         "/qorechain.license.v1.MsgSuspendLicense",
     ),
     (license.resume_license(authority="qor1"), "/qorechain.license.v1.MsgResumeLicense"),
+    (license.update_authority(authority="qor1"), "/qorechain.license.v1.MsgUpdateAuthority"),
     # abstractaccount (6)
     (
         abstractaccount.create_abstract_account(owner="qor1"),
@@ -217,10 +218,10 @@ QORECHAIN_COMPOSER_CASES = [
 ]
 
 
-def test_all_65_qorechain_composers_covered():
-    assert len(QORECHAIN_COMPOSER_CASES) == 65
+def test_all_66_qorechain_composers_covered():
+    assert len(QORECHAIN_COMPOSER_CASES) == 66
     type_urls = {tu for _m, tu in QORECHAIN_COMPOSER_CASES}
-    assert len(type_urls) == 65
+    assert len(type_urls) == 66
 
 
 @pytest.mark.parametrize("built_msg,type_url", QORECHAIN_COMPOSER_CASES)
@@ -260,11 +261,11 @@ def test_cosmos_composer_returns_exact_type_url(built_msg, type_url):
     assert built_msg.type_url == type_url
 
 
-def test_registry_covers_all_65_qorechain_and_18_cosmos():
+def test_registry_covers_all_66_qorechain_and_18_cosmos():
     reg = qorechain_registry()
     qc = [k for k in reg if k.startswith("/qorechain.")]
-    assert len(qc) == 65
-    assert len(reg) == 65 + 18
+    assert len(qc) == 66
+    assert len(reg) == 66 + 18
 
 
 def test_registry_extra_types_override():

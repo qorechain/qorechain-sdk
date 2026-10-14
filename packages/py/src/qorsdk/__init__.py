@@ -34,7 +34,9 @@ from .authenticator import (
     cosmos_auth_sign_bytes,
     derive_pqc_canonical,
     derive_pqc_legacy,
+    evm_auth_digest_version,
     evm_auth_sign_bytes,
+    evm_auth_sign_bytes_v2,
     execute_cosmos_msg,
     execute_evm_msg,
     lp,
@@ -93,6 +95,7 @@ from .evm_window import (
     EVM_WINDOW_QUERY_PATH,
     EVM_WINDOW_REMEDIES,
     MAX_EVM_WINDOW_BLOCKS,
+    MAX_EVM_WINDOW_TARGETS,
     MAX_EVM_WINDOW_TXS,
     OPEN_EVM_WINDOW_TYPE_URL,
     EVMWindowErrorKind,
@@ -110,6 +113,7 @@ from .evm_window import (
     validate_evm_window_max_txs,
     validate_evm_window_max_value,
     validate_evm_window_params,
+    validate_evm_window_targets,
 )
 from .fees import estimate_fee
 from .gas import (
@@ -122,6 +126,15 @@ from .gas import (
     simulate_gas_used,
 )
 from .jsonrpc import AsyncJsonRpcClient, JsonRpcClient, JsonRpcError
+from .key_integrity import (
+    KEY_TYPE_CLASSICAL_ONLY,
+    PROOF_OF_POSSESSION_DOMAIN,
+    is_degenerate_pqc_public_key,
+    proof_of_possession_sign_bytes,
+    sign_proof_of_possession,
+    validate_registered_pqc_key,
+    verify_proof_of_possession,
+)
 from .messages import (
     COSMOS_REGISTRY_TYPES,
     QORECHAIN_REGISTRY_TYPES,
@@ -253,6 +266,7 @@ from .unified import (
 )
 from .upgrades import (
     CHAIN_UPGRADE_V3_2_2,
+    CHAIN_UPGRADE_V3_2_3,
     applied_plan_path,
     clear_upgrade_cache,
     is_upgrade_applied,
@@ -321,6 +335,8 @@ __all__ = [
     "be64",
     "lp",
     "evm_auth_sign_bytes",
+    "evm_auth_sign_bytes_v2",
+    "evm_auth_digest_version",
     "cosmos_auth_sign_bytes",
     "rotation_sign_bytes",
     "execute_evm_msg",
@@ -437,6 +453,8 @@ __all__ = [
     "CLOSE_EVM_WINDOW_TYPE_URL",
     "MAX_EVM_WINDOW_BLOCKS",
     "MAX_EVM_WINDOW_TXS",
+    "MAX_EVM_WINDOW_TARGETS",
+    "validate_evm_window_targets",
     "EVM_WINDOW_CODESPACE",
     "EVM_WINDOW_QUERY_PATH",
     "EVM_WINDOW_REMEDIES",
@@ -476,6 +494,14 @@ __all__ = [
     "COMPRESSED_SECP256K1_LENGTH",
     "validate_classical_key_for_sender",
     "CHAIN_UPGRADE_V3_2_2",
+    "CHAIN_UPGRADE_V3_2_3",
+    "KEY_TYPE_CLASSICAL_ONLY",
+    "PROOF_OF_POSSESSION_DOMAIN",
+    "is_degenerate_pqc_public_key",
+    "proof_of_possession_sign_bytes",
+    "sign_proof_of_possession",
+    "validate_registered_pqc_key",
+    "verify_proof_of_possession",
     "applied_plan_path",
     "clear_upgrade_cache",
     "is_upgrade_applied",

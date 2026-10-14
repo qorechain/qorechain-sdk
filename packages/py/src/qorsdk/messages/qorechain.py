@@ -22,6 +22,7 @@ from ..evm_window import (
     CLOSE_EVM_WINDOW_TYPE_URL,
     OPEN_EVM_WINDOW_TYPE_URL,
     validate_evm_window_params,
+    validate_evm_window_targets,
 )
 from ..proto.qorechain.abstractaccount.v1 import tx_pb2 as abstractaccount_tx
 from ..proto.qorechain.amm.v1 import tx_pb2 as amm_tx
@@ -149,7 +150,13 @@ multilayer = SimpleNamespace(
 
 
 def _open_evm_window(
-    *, sender: str, blocks: int, max_txs: int, max_value: str | int
+    *,
+    sender: str,
+    blocks: int,
+    max_txs: int,
+    max_value: str | int,
+    native_only: bool = False,
+    allowed_targets: list[str] | tuple[str, ...] = (),
 ) -> Msg:
     """Build ``MsgOpenEVMWindow`` (chain v3.2.0), validating the chain's bounds.
 
@@ -170,11 +177,17 @@ def _open_evm_window(
     and 17280 blocks is NOT "about 24 hours" on any live QoreChain network —
     quote blocks, or compute from the chain's recent block time.
 
+    ``native_only`` narrows the window to plain native transfers and
+    ``allowed_targets`` (at most 16) to those recipients (chain v3.2.3). Both are
+    new fields: a node below v3.2.3 refuses the whole transaction when either is
+    set, so set them only once the network has applied v3.2.3.
+
     :raises ValueError: If a bound is violated, naming the bound.
     """
     params = validate_evm_window_params(
         blocks=blocks, max_txs=max_txs, max_value=max_value
     )
+    targets = validate_evm_window_targets(allowed_targets)
     return Msg(
         type_url=OPEN_EVM_WINDOW_TYPE_URL,
         value=pqc_tx.MsgOpenEVMWindow(
@@ -182,6 +195,8 @@ def _open_evm_window(
             blocks=params.blocks,
             max_txs=params.max_txs,
             max_value=params.max_value,
+            native_only=native_only,
+            allowed_targets=targets,
         ),
     )
 
@@ -320,6 +335,10 @@ license = SimpleNamespace(
     ),
     resume_license=composer(
         "/qorechain.license.v1.MsgResumeLicense", license_tx.MsgResumeLicense
+    ),
+    # v3.2.3: replace the licence grant authority. Governance only.
+    update_authority=composer(
+        "/qorechain.license.v1.MsgUpdateAuthority", license_tx.MsgUpdateAuthority
     ),
 )
 

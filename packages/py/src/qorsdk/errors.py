@@ -119,6 +119,28 @@ MODULE_CODES: dict[str, dict[int, tuple[str, str]]] = {
             "no post-quantum consent for this EIP-7702 delegation — broadcast "
             "MsgAuthorizeEVMDelegation for exactly this delegate first",
         ),
+        # v3.2.3 registration integrity and key maintenance (qorsdk.key_integrity).
+        230: (
+            "pqc_key_weak",
+            "the registration carries no usable post-quantum key (classical_only, "
+            "empty, or a degenerate key) — register a real ML-DSA-87 key",
+        ),
+        231: (
+            "pqc_proof_of_possession_invalid",
+            "the proof of possession does not verify — sign it with the key being "
+            "registered over the v1 proof-of-possession bytes for this chain and account",
+        ),
+        232: (
+            "pqc_key_reused",
+            "this account used that PQC key before — rotate or migrate to a key it "
+            "has never had",
+        ),
+        233: ("pqc_last_signature_algorithm", "no active PQC signature algorithm would remain"),
+        234: (
+            "pqc_maintenance_needs_hybrid",
+            "an account with a registered PQC key must send key registration or "
+            "migration with the hybrid signature — pass pqc_keypair to migrate_pqc_key",
+        ),
         61: (
             "evm_delegation_invalid",
             "invalid EIP-7702 delegation request — check the delegate address and "

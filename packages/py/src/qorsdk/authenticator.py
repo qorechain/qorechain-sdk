@@ -33,6 +33,7 @@ from __future__ import annotations
 import hashlib
 import re
 from dataclasses import dataclass
+from typing import Any
 
 from cosmpy.protos.cosmos.base.v1beta1.coin_pb2 import Coin
 from dilithium_py.ml_dsa import ML_DSA_87
@@ -42,6 +43,7 @@ from .pqc import ALGORITHM_DILITHIUM5, PqcKeypair
 from .proto.qorechain.abstractaccount.v1 import tx_pb2 as abstractaccount_tx
 from .proto.qorechain.pqc.v1 import tx_pb2 as pqc_tx
 from .unified import qore_addresses
+from .upgrades import CHAIN_UPGRADE_V3_2_3, is_upgrade_applied
 
 # --------------------------------------------------------------------------- #
 # byte helpers (match the chain's binary.BigEndian + length-prefix framing)
@@ -107,6 +109,54 @@ def evm_auth_sign_bytes(
         + be64(nonce)
     )
     return hashlib.sha256(body).digest()
+
+
+def evm_auth_sign_bytes_v2(
+    chain_id: str,
+    account: str,
+    pubkey: bytes,
+    to: str = "",
+    value: str = "0",
+    data: bytes = b"",
+    nonce: int = 0,
+    *,
+    gas_limit: int,
+) -> bytes:
+    """The v2 digest of a ``MsgExecuteEVM`` (chain v3.2.3,
+    ``abstractaccount-hardening``).
+
+    ``sha256("qorechain-evm-auth-v2" || LP(chain_id) || LP(account) || LP(pubkey)
+    || LP(to) || LP(value) || LP(data) || BE64(nonce) || BE64(gas_limit))``.
+
+    v1 left the gas limit to whoever relayed the message. The chain verifies
+    exactly one form per block: v1 below the v3.2.3 upgrade, v2 from it — pick
+    with :func:`evm_auth_digest_version`.
+
+    :raises ValueError: If ``gas_limit`` is zero; the chain refuses it.
+    """
+    if gas_limit <= 0:
+        raise ValueError(
+            "gas_limit must be set (non-zero): the v2 digest binds it and the chain refuses 0"
+        )
+    body = (
+        b"qorechain-evm-auth-v2"
+        + lp(_utf8(chain_id))
+        + lp(_utf8(account))
+        + lp(pubkey)
+        + lp(_utf8(to))
+        + lp(_utf8(value))
+        + lp(data)
+        + be64(nonce)
+        + be64(gas_limit)
+    )
+    return hashlib.sha256(body).digest()
+
+
+def evm_auth_digest_version(rest: Any, *, cache_key: str | None = None) -> str:
+    """The ``MsgExecuteEVM`` digest the network verifies now: ``"v2"`` once it
+    has applied v3.2.3, ``"v1"`` before. Raises when the node cannot be asked —
+    never guess, the other form is refused."""
+    return "v2" if is_upgrade_applied(rest, CHAIN_UPGRADE_V3_2_3, cache_key=cache_key) else "v1"
 
 
 def cosmos_auth_sign_bytes(

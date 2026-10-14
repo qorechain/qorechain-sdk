@@ -138,6 +138,7 @@ QORECHAIN_REGISTRY_TYPES: dict[str, ProtoType] = {
     "/qorechain.license.v1.MsgRevokeLicense": license_tx.MsgRevokeLicense,
     "/qorechain.license.v1.MsgSuspendLicense": license_tx.MsgSuspendLicense,
     "/qorechain.license.v1.MsgResumeLicense": license_tx.MsgResumeLicense,
+    "/qorechain.license.v1.MsgUpdateAuthority": license_tx.MsgUpdateAuthority,
     # abstractaccount
     "/qorechain.abstractaccount.v1.MsgCreateAbstractAccount": (
         abstractaccount_tx.MsgCreateAbstractAccount
