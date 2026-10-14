@@ -101,6 +101,68 @@ pub fn evm_auth_sign_bytes(
     sha256_32(&body)
 }
 
+/// The v2 digest of a `MsgExecuteEVM` (chain v3.2.3, `abstractaccount-hardening`):
+///
+/// ```text
+/// sha256( "qorechain-evm-auth-v2"
+///         ‖ LP(chain_id) ‖ LP(account) ‖ LP(pubkey)
+///         ‖ LP(to) ‖ LP(value) ‖ LP(data) ‖ BE64(nonce) ‖ BE64(gas_limit) )
+/// ```
+///
+/// v1 left the gas limit to whoever relayed the message. The chain verifies
+/// exactly one form per block: v1 below the v3.2.3 upgrade, v2 from it — pick
+/// with [`evm_auth_digest_version`].
+///
+/// # Errors
+///
+/// [`Error::Pqc`](crate::Error::Pqc) when `gas_limit` is zero; the chain
+/// refuses it.
+#[allow(clippy::too_many_arguments)]
+pub fn evm_auth_sign_bytes_v2(
+    chain_id: &str,
+    account: &str,
+    pubkey: &[u8],
+    to: &str,
+    value: &str,
+    data: &[u8],
+    nonce: u64,
+    gas_limit: u64,
+) -> crate::Result<[u8; 32]> {
+    if gas_limit == 0 {
+        return Err(crate::Error::Pqc(
+            "gas_limit must be set (non-zero): the v2 digest binds it and the chain refuses 0"
+                .into(),
+        ));
+    }
+    let mut body = Vec::new();
+    body.extend_from_slice(b"qorechain-evm-auth-v2");
+    lp(&mut body, chain_id.as_bytes());
+    lp(&mut body, account.as_bytes());
+    lp(&mut body, pubkey);
+    lp(&mut body, to.as_bytes());
+    lp(&mut body, value.as_bytes());
+    lp(&mut body, data);
+    body.extend_from_slice(&be64(nonce));
+    body.extend_from_slice(&be64(gas_limit));
+    Ok(sha256_32(&body))
+}
+
+/// The `MsgExecuteEVM` digest the network verifies now: `"v2"` once it has
+/// applied v3.2.3, `"v1"` before.
+///
+/// # Errors
+///
+/// When the node cannot be asked — never guess, the other form is refused.
+pub async fn evm_auth_digest_version(
+    rest: &crate::query::RestClient,
+    cache_key: Option<&str>,
+) -> crate::Result<&'static str> {
+    let applied =
+        crate::upgrades::is_upgrade_applied(rest, crate::upgrades::CHAIN_UPGRADE_V3_2_3, cache_key)
+            .await?;
+    Ok(if applied { "v2" } else { "v1" })
+}
+
 /// Rebuilds the 32-byte digest the chain re-derives for a `MsgExecuteCosmos`
 /// (`types.CosmosAuthSignBytes`):
 ///

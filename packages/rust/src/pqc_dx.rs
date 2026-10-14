@@ -49,7 +49,7 @@
 //! alternative for callers already on the EVM side.
 
 use crate::error::{Error, Result};
-use crate::msg::pqc::{migrate_pqc_key_any, register_pqc_key_v2_any};
+use crate::msg::pqc::migrate_pqc_key_any;
 use crate::pqc::ALGORITHM_DILITHIUM5;
 use crate::query::QorClient;
 use crate::signbytes::{
@@ -201,17 +201,46 @@ impl PqcDx {
     /// Useful for inspection, packing into a larger tx, or a deferred-broadcast
     /// flow.
     pub fn build_register(&self) -> Result<BuiltTx> {
-        // From chain v3.2.2 an ecdsa_pubkey that is not the sender's is refused
-        // after the fee is charged; catch it here. Not network-gated: such a key
-        // is wrong anywhere.
+        self.build_register_with_proof_of_possession(Vec::new())
+    }
+
+    /// The bound key's proof of possession (chain v3.2.3), signed over this
+    /// signer's chain id and sender.
+    ///
+    /// # Errors
+    ///
+    /// As [`crate::key_integrity::sign_proof_of_possession`].
+    pub fn proof_of_possession(&self) -> Result<Vec<u8>> {
+        crate::key_integrity::sign_proof_of_possession(
+            &self.chain_id,
+            &self.sender,
+            &self.pqc_public_key,
+            &self.pqc_secret_key,
+        )
+    }
+
+    /// [`PqcDx::build_register`] carrying a proof of possession (from
+    /// [`PqcDx::proof_of_possession`]). A node below v3.2.3 refuses the whole
+    /// transaction when it is set: use this only once the network has applied
+    /// v3.2.3. An empty `proof` leaves the field off the wire.
+    ///
+    /// # Errors
+    ///
+    /// When the classical key is not the sender's (refused from v3.2.2), or the
+    /// key is `classical_only`, empty or degenerate (refused from v3.2.3) — not
+    /// network-gated: such a registration is wrong anywhere.
+    pub fn build_register_with_proof_of_possession(&self, proof: Vec<u8>) -> Result<BuiltTx> {
         crate::classical_key::validate_classical_key_for_sender(&self.sender, &self.public_key)?;
-        let msg = register_pqc_key_v2_any(
+        crate::key_integrity::validate_registered_pqc_key(&self.key_type(), &self.pqc_public_key)?;
+        let mut register = crate::msg::pqc::register_pqc_key_v2(
             self.sender.clone(),
             self.pqc_public_key.clone(),
             ALGORITHM_DILITHIUM5,
             self.public_key.clone(),
             self.key_type(),
         );
+        register.proof_of_possession = proof;
+        let msg = crate::msg::to_any(&register, crate::msg::pqc::REGISTER_PQC_KEY_V2);
         send_messages(SendMessagesParams {
             private_key: self.private_key.clone(),
             public_key: self.public_key.clone(),

@@ -300,6 +300,31 @@ pub fn open_evm_window_any(
     ))
 }
 
+/// Builds `MsgOpenEVMWindow` narrowed to plain native transfers (`native_only`)
+/// and/or to the recipients in `allowed_targets` (at most 16), chain v3.2.3.
+///
+/// Both are new fields: a node below v3.2.3 refuses the whole transaction when
+/// either is set, so use this only once the network has applied v3.2.3
+/// ([`crate::upgrades::require_upgrade_applied`]).
+///
+/// # Errors
+///
+/// [`Error::EvmWindow`](crate::Error::EvmWindow) naming the violated rule.
+pub fn open_evm_window_scoped(
+    sender: impl Into<String>,
+    blocks: u64,
+    max_txs: u64,
+    max_value: &str,
+    native_only: bool,
+    allowed_targets: Vec<String>,
+) -> crate::Result<pb::MsgOpenEvmWindow> {
+    crate::evm_window::validate_evm_window_targets(&allowed_targets)?;
+    let mut msg = open_evm_window(sender, blocks, max_txs, max_value)?;
+    msg.native_only = native_only;
+    msg.allowed_targets = allowed_targets;
+    Ok(msg)
+}
+
 /// Builds `MsgCloseEVMWindow`: closes the sender's window, effective in the same
 /// block.
 pub fn close_evm_window(sender: impl Into<String>) -> pb::MsgCloseEvmWindow {

@@ -180,6 +180,20 @@ fn module_reason(codespace: &str, code: u32) -> Option<&'static str> {
             "no post-quantum consent for this EIP-7702 delegation — broadcast \
              MsgAuthorizeEVMDelegation for exactly this delegate first"
         }
+        // v3.2.3 registration integrity and key maintenance (crate::key_integrity).
+        ("pqc", 230) => {
+            "the registration carries no usable post-quantum key (classical_only, empty, \
+             or a degenerate key) — register a real ML-DSA-87 key"
+        }
+        ("pqc", 231) => "PQC proof of possession does not verify",
+        ("pqc", 232) => {
+            "this account used that PQC key before — rotate or migrate to a key it has never had"
+        }
+        ("pqc", 233) => "no active PQC signature algorithm would remain",
+        ("pqc", 234) => {
+            "an account with a registered PQC key must send key registration or migration \
+             with the hybrid signature (PqcDx::build_hybrid with the current key)"
+        }
         ("pqc", 61) => {
             "invalid EIP-7702 delegation request — check the delegate address and the \
              blocks bound, and that the account has a registered PQC key"

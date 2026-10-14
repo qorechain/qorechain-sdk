@@ -118,3 +118,27 @@ pub fn resume_license_any(
         RESUME_LICENSE,
     )
 }
+
+/// `/qorechain.license.v1.MsgUpdateAuthority` type URL (chain v3.2.3).
+pub const UPDATE_AUTHORITY: &str = "/qorechain.license.v1.MsgUpdateAuthority";
+
+/// Builds `MsgUpdateAuthority` (chain v3.2.3), which replaces the licence grant
+/// authority. `authority` must be the governance module account, so it only
+/// executes from a passed proposal.
+pub fn update_authority(
+    authority: impl Into<String>,
+    new_authority: impl Into<String>,
+) -> pb::MsgUpdateAuthority {
+    pb::MsgUpdateAuthority {
+        authority: authority.into(),
+        new_authority: new_authority.into(),
+    }
+}
+
+/// Builds `MsgUpdateAuthority` packed into an `Any`.
+pub fn update_authority_any(authority: impl Into<String>, new_authority: impl Into<String>) -> Any {
+    to_any(
+        &update_authority(authority, new_authority),
+        UPDATE_AUTHORITY,
+    )
+}

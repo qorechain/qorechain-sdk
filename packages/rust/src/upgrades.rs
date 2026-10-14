@@ -20,6 +20,11 @@ use crate::{Error, Result};
 /// RDK messages.
 pub const CHAIN_UPGRADE_V3_2_2: &str = "v3.2.2";
 
+/// PQC registration integrity and `proof_of_possession`, hybrid-only key
+/// maintenance for keyed accounts, the EVM window scope (`native_only`,
+/// `allowed_targets`), the abstract-account v2 digest and `MsgUpdateAuthority`.
+pub const CHAIN_UPGRADE_V3_2_3: &str = "v3.2.3";
+
 /// How long a "not applied yet" answer is trusted. An applied plan stays
 /// applied and is cached for the life of the process.
 const NOT_APPLIED_TTL: Duration = Duration::from_secs(60);

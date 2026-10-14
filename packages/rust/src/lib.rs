@@ -50,6 +50,7 @@ pub mod denom;
 pub mod error;
 pub mod evm_delegation;
 pub mod evm_window;
+pub mod key_integrity;
 pub mod msg;
 pub mod networks;
 pub mod pqc;

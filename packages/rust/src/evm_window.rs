@@ -55,6 +55,39 @@ pub const MAX_EVM_WINDOW_BLOCKS: u64 = 17_280;
 /// The chain's `MaxEVMWindowTxs`: the most transactions a window may admit.
 pub const MAX_EVM_WINDOW_TXS: u64 = 1_000;
 
+/// The chain's `MaxEVMWindowTargets` (v3.2.3): the most `allowed_targets`.
+pub const MAX_EVM_WINDOW_TARGETS: usize = 16;
+
+/// Checks `allowed_targets` (chain v3.2.3): at most 16 0x-prefixed 20-byte
+/// addresses, no duplicates (compared case-insensitively).
+///
+/// # Errors
+///
+/// [`Error::EvmWindow`] naming the rule that was violated.
+pub fn validate_evm_window_targets(targets: &[String]) -> Result<()> {
+    if targets.len() > MAX_EVM_WINDOW_TARGETS {
+        return Err(Error::EvmWindow(format!(
+            "allowed_targets lists {} addresses, the maximum is {MAX_EVM_WINDOW_TARGETS}",
+            targets.len()
+        )));
+    }
+    let mut seen = std::collections::HashSet::new();
+    for t in targets {
+        let ok = matches!(t.strip_prefix("0x"), Some(h) if h.len() == 40 && h.bytes().all(|b| b.is_ascii_hexdigit()));
+        if !ok {
+            return Err(Error::EvmWindow(format!(
+                "allowed_targets: {t:?} is not a 0x-prefixed 20-byte address"
+            )));
+        }
+        if !seen.insert(t.to_ascii_lowercase()) {
+            return Err(Error::EvmWindow(format!(
+                "allowed_targets lists {t} more than once"
+            )));
+        }
+    }
+    Ok(())
+}
+
 /// The codespace every window refusal is reported under.
 pub const EVM_WINDOW_CODESPACE: &str = "pqc";
 
@@ -212,6 +245,11 @@ pub struct EvmWindowStatus {
     pub remaining_txs: u64,
     /// uqor left.
     pub remaining_value: u128,
+    /// The window admits only plain native transfers (chain v3.2.3; `false`
+    /// before, an unscoped window).
+    pub native_only: bool,
+    /// The recipients the window is narrowed to; empty = any (chain v3.2.3).
+    pub allowed_targets: Vec<String>,
 }
 
 /// Reads an exact integer from a JSON field that may be a string or a number.
@@ -271,6 +309,15 @@ pub fn parse_evm_window(payload: &Value) -> Result<EvmWindowStatus> {
         remaining_blocks: as_u64(payload, "remaining_blocks")?,
         remaining_txs: as_u64(payload, "remaining_txs")?,
         remaining_value: as_u128(payload, "remaining_value")?,
+        native_only: payload["native_only"].as_bool().unwrap_or(false),
+        allowed_targets: payload["allowed_targets"]
+            .as_array()
+            .map(|a| {
+                a.iter()
+                    .filter_map(|t| t.as_str().map(str::to_string))
+                    .collect()
+            })
+            .unwrap_or_default(),
     })
 }
 
