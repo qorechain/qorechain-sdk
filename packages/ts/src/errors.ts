@@ -97,7 +97,7 @@ const ABSTRACTACCOUNT_CODES: Record<number, { kind: string; message: string }> =
   11: {
     kind: "authenticator_replay",
     message:
-      "authenticator replay — the nonce does not match the account's expected value; refetch the current nonce/sequence and re-sign",
+      "authenticator replay — the nonce is not the linked key's current authenticator sequence (a per-key counter, NOT the account's EVM nonce or Cosmos sequence); re-sign with the key's next sequence",
   },
 };
 
@@ -113,7 +113,22 @@ const PQC_CODES: Record<number, { kind: string; message: string }> = {
     message:
       "hybrid signature verification failed — the ML-DSA-87 signature did not verify (ensure deterministic signing; hedged signatures are rejected)",
   },
+  60: {
+    kind: "evm_delegation_no_consent",
+    message:
+      "no post-quantum consent for this EIP-7702 delegation — broadcast MsgAuthorizeEVMDelegation for exactly this delegate first (chain v3.2.2)",
+  },
+  61: {
+    kind: "evm_delegation_invalid",
+    message:
+      "invalid EIP-7702 delegation request — check the delegate address and the blocks bound, and that the account has a registered PQC key",
+  },
 };
+
+// The per-sender transaction rate limit (chain v3.2.2) is raised by an ante
+// handler whose codespace and code are not fixed yet, so it is recognised by
+// its text, whatever code carries it.
+const RATE_LIMIT_TEXT = /rate limit/i;
 
 /** Per-codespace code maps for QoreChain custom modules. */
 const MODULE_CODES: Record<number | string, Record<number, { kind: string; message: string }>> = {
@@ -136,6 +151,16 @@ const DEFAULT_CODESPACE = "sdk";
 export function decodeTxError(input: TxErrorInput): DecodedTxError {
   const codespace = input.codespace || DEFAULT_CODESPACE;
   const rawLog = input.rawLog;
+
+  if (rawLog && RATE_LIMIT_TEXT.test(rawLog)) {
+    return {
+      code: input.code,
+      codespace,
+      kind: "rate_limited",
+      message: `the network is limiting this sender's transaction rate — wait and retry (${rawLog})`,
+      rawLog,
+    };
+  }
 
   if (codespace === DEFAULT_CODESPACE) {
     const known = SDK_CODES[input.code];

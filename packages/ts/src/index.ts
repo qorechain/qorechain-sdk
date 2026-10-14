@@ -356,6 +356,40 @@ export type {
   EvmWindowRejection,
 } from "./pqc/evm-window";
 
+// EIP-7702 delegation consent (chain v3.2.2).
+export {
+  MAX_EVM_DELEGATION_CONSENT_BLOCKS,
+  MAX_EVM_AUTHORIZATIONS_PER_TX,
+  EVM_DELEGATION_CLEAR,
+  authorizeEvmDelegationMsg,
+  clearEvmDelegationMsg,
+  fetchEvmDelegationConsent,
+  evmDelegationTupleNonce,
+  classifyEvmDelegationRejection,
+} from "./pqc/evm-delegation";
+export type {
+  AuthorizeEvmDelegationParams,
+  EvmDelegationConsent,
+  EvmDelegationRejection,
+} from "./pqc/evm-delegation";
+
+// The ecdsa_pubkey rule of PQC registration (chain v3.2.2).
+export {
+  COMPRESSED_SECP256K1_LENGTH,
+  validateClassicalKeyForSender,
+} from "./pqc/classical-key";
+
+// Which chain releases a network has applied: set a release's new optional
+// fields only after it, or a node below it refuses the whole transaction.
+export {
+  CHAIN_UPGRADE_V3_2_2,
+  fetchUpgradeAppliedHeight,
+  isUpgradeApplied,
+  requireUpgradeApplied,
+  clearUpgradeCache,
+} from "./tx/upgrades";
+export type { UpgradeQueryOptions } from "./tx/upgrades";
+
 export { buildHybridTx, signAndBroadcastHybrid } from "./tx/hybrid-tx";
 
 // Hybrid / key-migration / bridge-attestation sign-bytes in both forms, and the

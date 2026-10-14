@@ -36,6 +36,7 @@
 import type { EncodeObject } from "@cosmjs/proto-signing";
 
 import { pqc as pqcMsg } from "../messages/qorechain";
+import { validateClassicalKeyForSender } from "../pqc/classical-key";
 import {
   generatePqcKeypair,
   AlgorithmDilithium5,
@@ -202,6 +203,9 @@ export function buildRegisterPqcKeyMsg(
   sender: string,
   opts: Pick<EnsurePqcRegisteredOptions, "pqcKeypair" | "ecdsaPubkey" | "keyType">,
 ): EncodeObject {
+  // From chain v3.2.2 a key that is not the sender's is refused after the fee
+  // is charged; catch it here. Not network-gated: such a key is wrong anywhere.
+  validateClassicalKeyForSender(sender, opts.ecdsaPubkey);
   return pqcMsg.registerPqcKeyV2({
     sender,
     publicKey: opts.pqcKeypair.publicKey,

@@ -1,4 +1,8 @@
 import { describe, it, expect, vi } from "vitest";
+import { secp256k1 } from "@noble/curves/secp256k1";
+import { ripemd160 } from "@noble/hashes/ripemd160";
+import { sha256 } from "@noble/hashes/sha256";
+import { bech32 } from "bech32";
 
 import {
   isPqcRegistered,
@@ -14,7 +18,10 @@ import type { TxClient } from "../../src/tx/builder";
 import type { QorClient } from "../../src/query/qor";
 import { MsgRegisterPQCKeyV2, MsgMigratePQCKey } from "../../src/codegen/qorechain/pqc/v1/tx";
 
-const ADDR = "qor15yk64u7zc9g9k2yr2wmzeva5qgwxps6yjecvvu";
+// A real secp256k1 key and the account it derives to (cosmos path), because
+// from chain v3.2.2 the registration's ecdsa_pubkey must belong to the sender.
+const ECDSA = secp256k1.getPublicKey(new Uint8Array(32).fill(0x11), true);
+const ADDR = bech32.encode("qor", bech32.toWords(ripemd160(sha256(ECDSA))));
 
 /** A fake QorClient returning a fixed getPQCKeyStatus payload. */
 function fakeQor(payload: unknown) {
@@ -81,7 +88,7 @@ describe("getPqcStatus / isPqcRegistered", () => {
 describe("buildRegisterPqcKeyMsg", () => {
   it("builds MsgRegisterPQCKeyV2 with the signer's ML-DSA-87 pubkey", () => {
     const kp = generatePqcKeypair();
-    const ecdsa = new Uint8Array([1, 2, 3]);
+    const ecdsa = ECDSA;
     const m = buildRegisterPqcKeyMsg(ADDR, {
       pqcKeypair: kp,
       ecdsaPubkey: ecdsa,
@@ -124,7 +131,7 @@ describe("ensurePqcRegistered", () => {
     const kp = generatePqcKeypair();
     const res = await ensurePqcRegistered(tx, {
       pqcKeypair: kp,
-      ecdsaPubkey: new Uint8Array([9, 9]),
+      ecdsaPubkey: ECDSA,
       statusSource: qor,
     });
     expect(res.alreadyRegistered).toBe(false);

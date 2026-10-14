@@ -59,6 +59,10 @@ export const qorechainRegistryTypes: ReadonlyArray<[string, GeneratedType]> = [
   ["/qorechain.bridge.v1.MsgUpdateEthLightClient", bridge.MsgUpdateEthLightClient],
   ["/qorechain.bridge.v1.MsgUpdateChainConfig", bridge.MsgUpdateChainConfig],
   ["/qorechain.bridge.v1.MsgSetVerifierBootstrap", bridge.MsgSetVerifierBootstrap],
+  [
+    "/qorechain.bridge.v1.MsgUpdateCircuitBreakerLimits",
+    bridge.MsgUpdateCircuitBreakerLimits,
+  ],
   // rdk
   ["/qorechain.rdk.v1.MsgCreateRollup", rdk.MsgCreateRollup],
   ["/qorechain.rdk.v1.MsgSubmitBatch", rdk.MsgSubmitBatch],
@@ -87,6 +91,7 @@ export const qorechainRegistryTypes: ReadonlyArray<[string, GeneratedType]> = [
     multilayer.MsgUpdateLayerStatus,
   ],
   ["/qorechain.multilayer.v1.MsgChallengeAnchor", multilayer.MsgChallengeAnchor],
+  ["/qorechain.multilayer.v1.MsgUpdateParams", multilayer.MsgUpdateParams],
   // pqc
   ["/qorechain.pqc.v1.MsgRegisterPQCKey", pqc.MsgRegisterPQCKey],
   ["/qorechain.pqc.v1.MsgRegisterPQCKeyV2", pqc.MsgRegisterPQCKeyV2],
@@ -94,6 +99,11 @@ export const qorechainRegistryTypes: ReadonlyArray<[string, GeneratedType]> = [
   ["/qorechain.pqc.v1.MsgRotatePQCKey", pqc.MsgRotatePQCKey],
   ["/qorechain.pqc.v1.MsgOpenEVMWindow", pqc.MsgOpenEVMWindow],
   ["/qorechain.pqc.v1.MsgCloseEVMWindow", pqc.MsgCloseEVMWindow],
+  [
+    "/qorechain.pqc.v1.MsgAuthorizeEVMDelegation",
+    pqc.MsgAuthorizeEVMDelegation,
+  ],
+  ["/qorechain.pqc.v1.MsgClearEVMDelegation", pqc.MsgClearEVMDelegation],
   ["/qorechain.pqc.v1.MsgDeprecateAlgorithm", pqc.MsgDeprecateAlgorithm],
   ["/qorechain.pqc.v1.MsgDisableAlgorithm", pqc.MsgDisableAlgorithm],
   // svm

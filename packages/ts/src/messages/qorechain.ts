@@ -121,6 +121,15 @@ export const bridge = {
     "/qorechain.bridge.v1.MsgSetVerifierBootstrap",
     bridgeTx.MsgSetVerifierBootstrap,
   ),
+  /**
+   * Set a chain's single-transfer and daily circuit-breaker limits (chain
+   * v3.2.2). Amounts in the chain's base unit, "0" = unlimited. Signed by the
+   * bridge admin, a qcb_bridge licence holder, or governance.
+   */
+  updateCircuitBreakerLimits: composer(
+    "/qorechain.bridge.v1.MsgUpdateCircuitBreakerLimits",
+    bridgeTx.MsgUpdateCircuitBreakerLimits,
+  ),
 };
 
 /** RDK (rollup development kit) message composers. */
@@ -190,6 +199,11 @@ export const multilayer = {
     "/qorechain.multilayer.v1.MsgChallengeAnchor",
     multilayerTx.MsgChallengeAnchor,
   ),
+  /** Replace the multilayer parameters (chain v3.2.2). Governance only. */
+  updateParams: composer(
+    "/qorechain.multilayer.v1.MsgUpdateParams",
+    multilayerTx.MsgUpdateParams,
+  ),
 };
 
 /** PQC (post-quantum key) message composers. */
@@ -248,6 +262,27 @@ export const pqc = {
   closeEvmWindow: composer(
     "/qorechain.pqc.v1.MsgCloseEVMWindow",
     pqcTx.MsgCloseEVMWindow,
+  ),
+  /**
+   * Consent, with the post-quantum key, to one EIP-7702 delegation of the
+   * sender's own account (chain v3.2.2). From that release the EVM lane refuses
+   * a type-4 transaction whose authorization would change an account's code
+   * unless that account consented to exactly that delegate. Single use, bounded
+   * in blocks, replaces any earlier consent. Use
+   * {@link ../pqc/evm-delegation.authorizeEvmDelegationMsg} to get the bounds
+   * checked first.
+   */
+  authorizeEvmDelegation: composer(
+    "/qorechain.pqc.v1.MsgAuthorizeEVMDelegation",
+    pqcTx.MsgAuthorizeEVMDelegation,
+  ),
+  /**
+   * Remove the sender's EIP-7702 delegation on the Cosmos lane, with no EVM
+   * transaction, window or classical key (chain v3.2.2).
+   */
+  clearEvmDelegation: composer(
+    "/qorechain.pqc.v1.MsgClearEVMDelegation",
+    pqcTx.MsgClearEVMDelegation,
   ),
 };
 
