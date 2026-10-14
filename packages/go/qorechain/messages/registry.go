@@ -1,7 +1,7 @@
 // Package messages provides the interface registry, codec, and typed message
 // composers for every transaction QoreChain supports.
 //
-// The registry registers all 61 custom QoreChain Msg implementations (across the
+// The registry registers all 65 custom QoreChain Msg implementations (across the
 // 11 custom modules) plus the standard Native modules under their type URLs,
 // so a custom Msg can be packed into a tx Any and decoded back through the codec
 // exactly like the chain does. RegisterInterfaces mirrors each module's
@@ -44,7 +44,7 @@ func RegisterInterfaces(reg codectypes.InterfaceRegistry) {
 	registerCosmosInterfaces(reg)
 }
 
-// registerQoreChainInterfaces registers all 61 custom QoreChain Msg
+// registerQoreChainInterfaces registers all 65 custom QoreChain Msg
 // implementations under the sdk.Msg interface.
 func registerQoreChainInterfaces(reg codectypes.InterfaceRegistry) {
 	reg.RegisterImplementations((*sdk.Msg)(nil),
@@ -56,7 +56,7 @@ func registerQoreChainInterfaces(reg codectypes.InterfaceRegistry) {
 		&ammv1.MsgSwapExactOut{},
 		&ammv1.MsgPausePool{},
 		&ammv1.MsgResumePool{},
-		// bridge (7)
+		// bridge (8)
 		&bridgev1.MsgBridgeDeposit{},
 		&bridgev1.MsgBridgeWithdraw{},
 		&bridgev1.MsgRegisterBridgeValidator{},
@@ -64,6 +64,7 @@ func registerQoreChainInterfaces(reg codectypes.InterfaceRegistry) {
 		&bridgev1.MsgUpdateEthLightClient{},
 		&bridgev1.MsgUpdateChainConfig{},
 		&bridgev1.MsgSetVerifierBootstrap{},
+		&bridgev1.MsgUpdateCircuitBreakerLimits{},
 		// rdk (8)
 		&rdkv1.MsgCreateRollup{},
 		&rdkv1.MsgSubmitBatch{},
@@ -73,14 +74,15 @@ func registerQoreChainInterfaces(reg codectypes.InterfaceRegistry) {
 		&rdkv1.MsgResumeRollup{},
 		&rdkv1.MsgStopRollup{},
 		&rdkv1.MsgExecuteWithdrawal{},
-		// multilayer (6)
+		// multilayer (7)
 		&multilayerv1.MsgRegisterSidechain{},
 		&multilayerv1.MsgRegisterPaychain{},
 		&multilayerv1.MsgAnchorState{},
 		&multilayerv1.MsgRouteTransaction{},
 		&multilayerv1.MsgUpdateLayerStatus{},
 		&multilayerv1.MsgChallengeAnchor{},
-		// pqc (8)
+		&multilayerv1.MsgUpdateParams{},
+		// pqc (10)
 		&pqcv1.MsgRegisterPQCKey{},
 		&pqcv1.MsgRegisterPQCKeyV2{},
 		&pqcv1.MsgMigratePQCKey{},
@@ -89,6 +91,8 @@ func registerQoreChainInterfaces(reg codectypes.InterfaceRegistry) {
 		&pqcv1.MsgDisableAlgorithm{},
 		&pqcv1.MsgOpenEVMWindow{},
 		&pqcv1.MsgCloseEVMWindow{},
+		&pqcv1.MsgAuthorizeEVMDelegation{},
+		&pqcv1.MsgClearEVMDelegation{},
 		// svm (5)
 		&svmv1.MsgDeployProgram{},
 		&svmv1.MsgCreateAccount{},

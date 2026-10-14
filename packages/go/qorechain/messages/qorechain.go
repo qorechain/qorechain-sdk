@@ -115,6 +115,14 @@ func (BridgeComposers) SetVerifierBootstrap(admin, chainID string, wormhole *bri
 	return &bridgev1.MsgSetVerifierBootstrap{Admin: admin, ChainId: chainID, Wormhole: wormhole, Ed25519: ed25519, Bls: bls, Bitcoin: bitcoin, StarknetStateRoot: starknetStateRoot}
 }
 
+// UpdateCircuitBreakerLimits builds MsgUpdateCircuitBreakerLimits (chain
+// v3.2.2): a chain's single-transfer and daily limits in its base unit, "0" =
+// unlimited. Signed by the bridge admin, a qcb_bridge licence holder, or
+// governance.
+func (BridgeComposers) UpdateCircuitBreakerLimits(admin, chainID, maxSingleTransfer, dailyLimit string) *bridgev1.MsgUpdateCircuitBreakerLimits {
+	return &bridgev1.MsgUpdateCircuitBreakerLimits{Admin: admin, ChainId: chainID, MaxSingleTransfer: maxSingleTransfer, DailyLimit: dailyLimit}
+}
+
 // ---- rdk ----
 
 // RdkComposers builds rdk module messages.
@@ -213,6 +221,13 @@ func (MultilayerComposers) ChallengeAnchor(challenger, layerID string, anchorHei
 	return &multilayerv1.MsgChallengeAnchor{Challenger: challenger, LayerID: layerID, AnchorHeight: anchorHeight, FraudProof: fraudProof, ChallengeReason: challengeReason}
 }
 
+// UpdateParams builds MsgUpdateParams (chain v3.2.2), which replaces the
+// multilayer parameters wholesale. Governance only: params.Authority must be
+// the gov module account.
+func (MultilayerComposers) UpdateParams(params multilayerv1.MsgUpdateParams) *multilayerv1.MsgUpdateParams {
+	return &params
+}
+
 // ---- pqc ----
 
 // PqcComposers builds pqc module messages.
@@ -267,6 +282,19 @@ func (PqcComposers) OpenEVMWindow(sender string, blocks, maxTxs uint64, maxValue
 // authorisation window in the same block.
 func (PqcComposers) CloseEVMWindow(sender string) *pqcv1.MsgCloseEVMWindow {
 	return &pqcv1.MsgCloseEVMWindow{Sender: sender}
+}
+
+// AuthorizeEVMDelegation builds MsgAuthorizeEVMDelegation (chain v3.2.2): the
+// sender's post-quantum consent to one EIP-7702 delegation of its own account.
+// Use NewAuthorizeEVMDelegation for the same message with the bounds checked.
+func (PqcComposers) AuthorizeEVMDelegation(sender, delegate string, blocks uint64) *pqcv1.MsgAuthorizeEVMDelegation {
+	return &pqcv1.MsgAuthorizeEVMDelegation{Sender: sender, Delegate: delegate, Blocks: blocks}
+}
+
+// ClearEVMDelegation builds MsgClearEVMDelegation (chain v3.2.2), which removes
+// the sender's installed EIP-7702 delegation on the Cosmos lane.
+func (PqcComposers) ClearEVMDelegation(sender string) *pqcv1.MsgClearEVMDelegation {
+	return &pqcv1.MsgClearEVMDelegation{Sender: sender}
 }
 
 // DeprecateAlgorithm builds MsgDeprecateAlgorithm.

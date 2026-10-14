@@ -233,6 +233,12 @@ func (c *Client) registerMessage(keyType string) (*pqcv1.MsgRegisterPQCKeyV2, er
 	if keyType == "" {
 		keyType = DefaultKeyType
 	}
+	// From chain v3.2.2 an ecdsa_pubkey that is not the sender's is refused
+	// after the fee is charged; catch it here. Not network-gated: such a key is
+	// wrong anywhere.
+	if _, err := messages.ValidateClassicalKeyForSender(c.signer.Account.Address, c.signer.Account.PublicKey); err != nil {
+		return nil, fmt.Errorf("pqcdx: %w", err)
+	}
 	return messages.Pqc.RegisterKeyV2(
 		c.signer.Account.Address,
 		c.signer.PQCKeypair.PublicKey,

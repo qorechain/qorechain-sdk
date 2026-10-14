@@ -1,6 +1,9 @@
 package tx
 
-import "fmt"
+import (
+	"fmt"
+	"strings"
+)
 
 // QoreTxError is a decoded transaction error: a non-zero ABCI result code from
 // CheckTx or DeliverTx, mapped (where possible) to a human-readable reason.
@@ -119,6 +122,9 @@ var moduleCodespaceReasons = map[string]map[uint32]string{
 		26: "no open EVM authorisation window",
 		27: "EVM authorisation window exhausted",
 		28: "invalid EVM authorisation window, or no registered post-quantum key",
+		// 60-61: EIP-7702 delegation consent (chain v3.2.2).
+		60: "no post-quantum consent for this EIP-7702 delegation",
+		61: "invalid EIP-7702 delegation request",
 	},
 	"amm":        {},
 	"bridge":     {},
@@ -132,6 +138,8 @@ var moduleCodespaceReasons = map[string]map[uint32]string{
 		5:  "spending limit exceeded",
 		6:  "session key expired",
 		10: "permission denied",
+		// 11: the nonce is not the linked key's authenticator sequence (a
+		// per-key counter, not the account's EVM nonce).
 		11: "authenticator replay",
 	},
 	"crossvm":     {},
@@ -147,13 +155,24 @@ func DecodeTxError(code uint32, codespace, rawLog string) *QoreTxError {
 	if code == 0 {
 		return nil
 	}
+	reason := reasonFor(code, codespace)
+	// The per-sender transaction rate limit (chain v3.2.2) is raised by an ante
+	// handler whose codespace and code are not fixed yet, so it is recognised
+	// by its text, whatever code carries it.
+	if strings.Contains(strings.ToLower(rawLog), "rate limit") {
+		reason = RateLimitedReason
+	}
 	return &QoreTxError{
 		Code:      code,
 		Codespace: codespace,
-		Reason:    reasonFor(code, codespace),
+		Reason:    reason,
 		RawLog:    rawLog,
 	}
 }
+
+// RateLimitedReason is the Reason of a refusal from the per-sender
+// transaction rate limit (chain v3.2.2). Wait and retry.
+const RateLimitedReason = "rate limited"
 
 func reasonFor(code uint32, codespace string) string {
 	if codespace == "" || codespace == "sdk" {

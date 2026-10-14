@@ -17,7 +17,7 @@ import (
 )
 
 // allCustomTypeURLs is every custom QoreChain Msg type URL the registry must
-// resolve. The 61 entries match the chain's tx services across all 11 modules.
+// resolve. The 65 entries match the chain's tx services across all 11 modules.
 var allCustomTypeURLs = []string{
 	// amm (7)
 	"/qorechain.amm.v1.MsgCreatePool",
@@ -35,6 +35,7 @@ var allCustomTypeURLs = []string{
 	"/qorechain.bridge.v1.MsgUpdateEthLightClient",
 	"/qorechain.bridge.v1.MsgUpdateChainConfig",
 	"/qorechain.bridge.v1.MsgSetVerifierBootstrap",
+	"/qorechain.bridge.v1.MsgUpdateCircuitBreakerLimits",
 	// rdk (8)
 	"/qorechain.rdk.v1.MsgCreateRollup",
 	"/qorechain.rdk.v1.MsgSubmitBatch",
@@ -51,6 +52,7 @@ var allCustomTypeURLs = []string{
 	"/qorechain.multilayer.v1.MsgRouteTransaction",
 	"/qorechain.multilayer.v1.MsgUpdateLayerStatus",
 	"/qorechain.multilayer.v1.MsgChallengeAnchor",
+	"/qorechain.multilayer.v1.MsgUpdateParams",
 	// pqc (8)
 	"/qorechain.pqc.v1.MsgRegisterPQCKey",
 	"/qorechain.pqc.v1.MsgRegisterPQCKeyV2",
@@ -60,6 +62,8 @@ var allCustomTypeURLs = []string{
 	"/qorechain.pqc.v1.MsgDisableAlgorithm",
 	"/qorechain.pqc.v1.MsgOpenEVMWindow",
 	"/qorechain.pqc.v1.MsgCloseEVMWindow",
+	"/qorechain.pqc.v1.MsgAuthorizeEVMDelegation",
+	"/qorechain.pqc.v1.MsgClearEVMDelegation",
 	// svm (5)
 	"/qorechain.svm.v1.MsgDeployProgram",
 	"/qorechain.svm.v1.MsgCreateAccount",
@@ -94,8 +98,8 @@ var allCustomTypeURLs = []string{
 }
 
 func TestAllCustomTypeURLsCount(t *testing.T) {
-	if got := len(allCustomTypeURLs); got != 61 {
-		t.Fatalf("expected 61 custom type URLs, got %d", got)
+	if got := len(allCustomTypeURLs); got != 65 {
+		t.Fatalf("expected 65 custom type URLs, got %d", got)
 	}
 }
 
