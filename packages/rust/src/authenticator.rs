@@ -19,12 +19,12 @@
 //! mismatch is rejected on-chain (codespace `abstractaccount`, code 11 replay /
 //! 10 permission / 5 spending-limit / 6 session-expired).
 //!
-//! **NONCE.** EVM = the account's CURRENT EVM nonce
-//! (`eth_getTransactionCount(account0x)`); because the relayer is a DIFFERENT
-//! account than the owner, the relayer envelope does NOT bump the account's nonce,
-//! so use the current value as-is (no `+1`). Cosmos = the per-authenticator
-//! sequence for `(account, pubkey)` — a store counter distinct from the account's
-//! own sequence, incremented on each successful Native-lane spend.
+//! **NONCE.** Both lanes use the per-authenticator sequence for
+//! `(account, pubkey)`: a counter the chain keeps for each linked key, starting
+//! at 0 and incremented by each successful execution. For `MsgExecuteEVM` it is
+//! NOT the account's EVM nonce (the chain checks this counter since v3.2.0).
+//! There is no query for it yet, so track it per linked key; a mismatch is
+//! refused with abstractaccount code 11.
 
 use crate::error::{Error, Result};
 use crate::msg::pqc as pqc_msg;

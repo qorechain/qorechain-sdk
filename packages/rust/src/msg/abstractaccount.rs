@@ -151,7 +151,8 @@ pub fn revoke_authenticator_any(
 /// fee payer / message signer). `signature` is over the EVM auth sign-bytes (see
 /// [`crate::authenticator::evm_auth_sign_bytes`]); `to` is the 0x-hex recipient
 /// (empty = contract create), `value` the decimal wei (aqor) string, `data` the
-/// calldata, and `nonce` MUST equal the account's current EVM nonce.
+/// calldata, and `nonce` MUST equal the linked key's authenticator sequence (not
+/// the account's EVM nonce).
 #[allow(clippy::too_many_arguments)]
 pub fn execute_evm(
     relayer: impl Into<String>,

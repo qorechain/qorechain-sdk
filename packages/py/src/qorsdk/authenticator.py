@@ -20,12 +20,12 @@ BYTE-FOR-BYTE from the chain (``x/abstractaccount/types/{evm,cosmos}_sign.go``) 
 a mismatch is rejected on-chain (codespace ``abstractaccount``: code 11 replay /
 10 permission / 5 spending-limit / 6 session-expired).
 
-**Nonces.** ``MsgExecuteEVM.nonce`` is the account's CURRENT EVM nonce — because
-the relayer is a DIFFERENT account than the owner, the relayer envelope does NOT
-bump the account's nonce, so use the current value as-is (no ``+1``).
-``MsgExecuteCosmos.nonce`` is the per-authenticator sequence for ``(account,
-pubkey)`` — a store counter distinct from the account's own sequence,
-incremented on each successful Native-lane spend.
+**Nonces.** ``MsgExecuteEVM.nonce`` and ``MsgExecuteCosmos.nonce`` are both the
+per-authenticator sequence for ``(account, pubkey)``: a counter the chain keeps
+for each linked key, starting at 0 and incremented by each successful execution.
+For the EVM lane it is NOT the account's EVM nonce (the chain checks this counter
+since v3.2.0). There is no query for it yet, so track it per linked key; a
+mismatch is refused with abstractaccount code 11.
 """
 
 from __future__ import annotations

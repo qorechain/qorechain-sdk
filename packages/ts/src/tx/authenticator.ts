@@ -95,9 +95,12 @@ export interface EvmAuthSignBytesInput {
   /** EVM calldata. */
   data?: Uint8Array;
   /**
-   * The account's CURRENT EVM nonce. The relayer is a DIFFERENT account than the
-   * owner, so the relayer envelope does NOT bump the account's nonce — use the
-   * current value as-is (do NOT +1).
+   * The per-authenticator sequence for `(account, pubkey)`: a counter the chain
+   * keeps for each linked key, starting at 0 and incremented by each successful
+   * `MsgExecuteEVM`. It is NOT the account's EVM nonce or Cosmos sequence (the
+   * chain checks this counter since v3.2.0). The chain has no query for it yet,
+   * so track it per linked key; a mismatch is refused with abstractaccount
+   * code 11.
    */
   nonce: number | bigint;
 }

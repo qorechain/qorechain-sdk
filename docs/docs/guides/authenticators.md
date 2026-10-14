@@ -181,11 +181,16 @@ There are matching low-level composers (`executeEvmMsg`, `executeCosmosMsg`,
 
 ## Nonces
 
-- `MsgExecuteEVM.nonce` = the account's **current EVM nonce** (relayer ≠ owner,
-  so do **not** add 1).
-- `MsgExecuteCosmos.nonce` = the **per-authenticator sequence** for
-  `(account, pubkey)` — a store counter distinct from the account's own
-  sequence, incremented on each successful Native-lane spend.
+Both lanes use the **per-authenticator sequence** for `(account, pubkey)`: a
+counter the chain keeps for each linked key, starting at 0 and incremented by
+each successful execution.
+
+- `MsgExecuteEVM.nonce` is this counter, **not** the account's EVM nonce
+  (`eth_getTransactionCount`). The chain has checked the per-key counter since
+  v3.2.0.
+- `MsgExecuteCosmos.nonce` is the same kind of counter.
+
+There is no query for the counter yet, so track it per linked key.
 
 Getting the nonce wrong is a replay rejection (see error codes below).
 

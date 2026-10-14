@@ -412,7 +412,8 @@ func (AbstractAccountComposers) RevokeAuthenticator(owner, accountAddress, schem
 // submits + pays fees; the authenticator (scheme, pubkey) signature authorizes an
 // EVM call/transfer FROM the canonical account's 0x address. signature is over the
 // EVM auth sign-bytes (see qorechain/authenticator.EVMAuthSignBytes); nonce MUST
-// equal the account's current EVM nonce. Empty to = contract create.
+// equal the linked key's authenticator sequence (not the account's EVM nonce).
+// Empty to = contract create.
 func (AbstractAccountComposers) ExecuteEVM(relayer, account, scheme string, pubkey, signature []byte, to, value string, data []byte, gasLimit, nonce uint64) *abstractaccountv1.MsgExecuteEVM {
 	return &abstractaccountv1.MsgExecuteEVM{Relayer: relayer, Account: account, Scheme: scheme, Pubkey: pubkey, Signature: signature, To: to, Value: value, Data: data, GasLimit: gasLimit, Nonce: nonce}
 }

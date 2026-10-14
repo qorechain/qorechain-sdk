@@ -84,9 +84,11 @@ func hexLower(b []byte) string { return hex.EncodeToString(b) }
 // the raw calldata, pubkey the authenticator's raw public key (32 bytes for
 // ed25519). Returns the 32-byte digest the wallet signs.
 //
-// NONCE: the account's CURRENT EVM nonce. In production the relayer is a DIFFERENT
-// account than the owner, so the relayer envelope does NOT bump the account's
-// nonce — use the current value as-is (no +1).
+// NONCE: the per-authenticator sequence for (account, pubkey), a counter the chain
+// keeps for each linked key, starting at 0 and incremented by each successful
+// MsgExecuteEVM. It is NOT the account's EVM nonce or Cosmos sequence (the chain
+// checks this counter since v3.2.0). There is no query for it yet, so track it
+// per linked key; a mismatch is refused with abstractaccount code 11.
 func EVMAuthSignBytes(chainID, account string, pubkey []byte, to, value string, data []byte, nonce uint64) [32]byte {
 	body := make([]byte, 0, 256)
 	body = append(body, []byte(evmAuthPrefix)...)

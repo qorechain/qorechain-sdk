@@ -33,12 +33,12 @@ import java.nio.charset.StandardCharsets;
  * a mismatch is rejected on-chain (codespace {@code abstractaccount}, code 11 replay /
  * 10 permission / 5 spending-limit / 6 session-expired).
  *
- * <p><b>NONCE</b>: for the EVM lane the nonce is the account's CURRENT EVM nonce
- * ({@code eth_getTransactionCount}); because in production the relayer is a
- * DIFFERENT account than the owner, the relayer envelope does not bump the account
- * nonce, so it is used as-is (no {@code +1}). For the Native lane the nonce is the
- * per-authenticator sequence for {@code (account, pubkey)} — a store counter
- * distinct from the account's own sequence, incremented on each successful spend.
+ * <p><b>NONCE</b>: both lanes use the per-authenticator sequence for
+ * {@code (account, pubkey)}: a counter the chain keeps for each linked key,
+ * starting at 0 and incremented by each successful execution. For the EVM lane it
+ * is NOT the account's EVM nonce (the chain checks this counter since v3.2.0).
+ * There is no query for it yet, so track it per linked key; a mismatch is refused
+ * with abstractaccount code 11.
  */
 public final class Authenticator {
 
@@ -95,7 +95,7 @@ public final class Authenticator {
      * @param to the {@code 0x}-hex recipient/contract string ({@code ""} = create).
      * @param value the native QOR amount in wei (aqor) as a decimal string.
      * @param data the raw EVM calldata.
-     * @param nonce the account's CURRENT EVM nonce.
+     * @param nonce the linked key's authenticator sequence (not the EVM nonce).
      */
     public static byte[] evmAuthSignBytes(
             String chainId,
