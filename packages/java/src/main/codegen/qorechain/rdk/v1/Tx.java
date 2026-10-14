@@ -1655,6 +1655,31 @@ public final class Tx extends com.google.protobuf.GeneratedFile {
      * @return The withdrawalsRoot.
      */
     com.google.protobuf.ByteString getWithdrawalsRoot();
+
+    /**
+     * <pre>
+     * anchor_signature, when present, is the rollup creator's Dilithium
+     * signature over the v2 anchor sign bytes of this batch (see
+     * x/multilayer/types.AnchorSignBytesV2). From v3.2.2 the batch is then
+     * anchored in x/multilayer in the same transaction, and a refused anchor
+     * refuses the batch. Without it the batch settles unanchored, as before.
+     * </pre>
+     *
+     * <code>bytes anchor_signature = 10 [json_name = "anchorSignature"];</code>
+     * @return The anchorSignature.
+     */
+    com.google.protobuf.ByteString getAnchorSignature();
+
+    /**
+     * <pre>
+     * validator_set_hash is the rollup's validator-set commitment carried in
+     * the anchor. Optional; covered by anchor_signature.
+     * </pre>
+     *
+     * <code>bytes validator_set_hash = 11 [json_name = "validatorSetHash"];</code>
+     * @return The validatorSetHash.
+     */
+    com.google.protobuf.ByteString getValidatorSetHash();
   }
   /**
    * Protobuf type {@code qorechain.rdk.v1.MsgSubmitBatch}
@@ -1685,6 +1710,8 @@ public final class Tx extends com.google.protobuf.GeneratedFile {
       dataHash_ = com.google.protobuf.ByteString.EMPTY;
       proof_ = com.google.protobuf.ByteString.EMPTY;
       withdrawalsRoot_ = com.google.protobuf.ByteString.EMPTY;
+      anchorSignature_ = com.google.protobuf.ByteString.EMPTY;
+      validatorSetHash_ = com.google.protobuf.ByteString.EMPTY;
     }
 
     public static final com.google.protobuf.Descriptors.Descriptor
@@ -1865,6 +1892,41 @@ public final class Tx extends com.google.protobuf.GeneratedFile {
       return withdrawalsRoot_;
     }
 
+    public static final int ANCHOR_SIGNATURE_FIELD_NUMBER = 10;
+    private com.google.protobuf.ByteString anchorSignature_ = com.google.protobuf.ByteString.EMPTY;
+    /**
+     * <pre>
+     * anchor_signature, when present, is the rollup creator's Dilithium
+     * signature over the v2 anchor sign bytes of this batch (see
+     * x/multilayer/types.AnchorSignBytesV2). From v3.2.2 the batch is then
+     * anchored in x/multilayer in the same transaction, and a refused anchor
+     * refuses the batch. Without it the batch settles unanchored, as before.
+     * </pre>
+     *
+     * <code>bytes anchor_signature = 10 [json_name = "anchorSignature"];</code>
+     * @return The anchorSignature.
+     */
+    @java.lang.Override
+    public com.google.protobuf.ByteString getAnchorSignature() {
+      return anchorSignature_;
+    }
+
+    public static final int VALIDATOR_SET_HASH_FIELD_NUMBER = 11;
+    private com.google.protobuf.ByteString validatorSetHash_ = com.google.protobuf.ByteString.EMPTY;
+    /**
+     * <pre>
+     * validator_set_hash is the rollup's validator-set commitment carried in
+     * the anchor. Optional; covered by anchor_signature.
+     * </pre>
+     *
+     * <code>bytes validator_set_hash = 11 [json_name = "validatorSetHash"];</code>
+     * @return The validatorSetHash.
+     */
+    @java.lang.Override
+    public com.google.protobuf.ByteString getValidatorSetHash() {
+      return validatorSetHash_;
+    }
+
     private byte memoizedIsInitialized = -1;
     @java.lang.Override
     public final boolean isInitialized() {
@@ -1906,6 +1968,12 @@ public final class Tx extends com.google.protobuf.GeneratedFile {
       if (!withdrawalsRoot_.isEmpty()) {
         output.writeBytes(9, withdrawalsRoot_);
       }
+      if (!anchorSignature_.isEmpty()) {
+        output.writeBytes(10, anchorSignature_);
+      }
+      if (!validatorSetHash_.isEmpty()) {
+        output.writeBytes(11, validatorSetHash_);
+      }
       getUnknownFields().writeTo(output);
     }
     private int computeSerializedSize_0() {
@@ -1943,6 +2011,14 @@ public final class Tx extends com.google.protobuf.GeneratedFile {
       if (!withdrawalsRoot_.isEmpty()) {
         size += com.google.protobuf.CodedOutputStream
           .computeBytesSize(9, withdrawalsRoot_);
+      }
+      if (!anchorSignature_.isEmpty()) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeBytesSize(10, anchorSignature_);
+      }
+      if (!validatorSetHash_.isEmpty()) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeBytesSize(11, validatorSetHash_);
       }
       return size;
     }
@@ -1986,6 +2062,10 @@ public final class Tx extends com.google.protobuf.GeneratedFile {
           .equals(other.getProof())) return false;
       if (!getWithdrawalsRoot()
           .equals(other.getWithdrawalsRoot())) return false;
+      if (!getAnchorSignature()
+          .equals(other.getAnchorSignature())) return false;
+      if (!getValidatorSetHash()
+          .equals(other.getValidatorSetHash())) return false;
       if (!getUnknownFields().equals(other.getUnknownFields())) return false;
       return true;
     }
@@ -2017,6 +2097,10 @@ public final class Tx extends com.google.protobuf.GeneratedFile {
       hash = (53 * hash) + getProof().hashCode();
       hash = (37 * hash) + WITHDRAWALS_ROOT_FIELD_NUMBER;
       hash = (53 * hash) + getWithdrawalsRoot().hashCode();
+      hash = (37 * hash) + ANCHOR_SIGNATURE_FIELD_NUMBER;
+      hash = (53 * hash) + getAnchorSignature().hashCode();
+      hash = (37 * hash) + VALIDATOR_SET_HASH_FIELD_NUMBER;
+      hash = (53 * hash) + getValidatorSetHash().hashCode();
       hash = (29 * hash) + getUnknownFields().hashCode();
       memoizedHashCode = hash;
       return hash;
@@ -2157,6 +2241,8 @@ public final class Tx extends com.google.protobuf.GeneratedFile {
         dataHash_ = com.google.protobuf.ByteString.EMPTY;
         proof_ = com.google.protobuf.ByteString.EMPTY;
         withdrawalsRoot_ = com.google.protobuf.ByteString.EMPTY;
+        anchorSignature_ = com.google.protobuf.ByteString.EMPTY;
+        validatorSetHash_ = com.google.protobuf.ByteString.EMPTY;
         return this;
       }
 
@@ -2217,6 +2303,12 @@ public final class Tx extends com.google.protobuf.GeneratedFile {
         if (((from_bitField0_ & 0x00000100) != 0)) {
           result.withdrawalsRoot_ = withdrawalsRoot_;
         }
+        if (((from_bitField0_ & 0x00000200) != 0)) {
+          result.anchorSignature_ = anchorSignature_;
+        }
+        if (((from_bitField0_ & 0x00000400) != 0)) {
+          result.validatorSetHash_ = validatorSetHash_;
+        }
       }
 
       @java.lang.Override
@@ -2261,6 +2353,12 @@ public final class Tx extends com.google.protobuf.GeneratedFile {
         }
         if (!other.getWithdrawalsRoot().isEmpty()) {
           setWithdrawalsRoot(other.getWithdrawalsRoot());
+        }
+        if (!other.getAnchorSignature().isEmpty()) {
+          setAnchorSignature(other.getAnchorSignature());
+        }
+        if (!other.getValidatorSetHash().isEmpty()) {
+          setValidatorSetHash(other.getValidatorSetHash());
         }
         this.mergeUnknownFields(other.getUnknownFields());
         onChanged();
@@ -2333,6 +2431,16 @@ public final class Tx extends com.google.protobuf.GeneratedFile {
                 bitField0_ |= 0x00000100;
                 break;
               } // case 74
+              case 82: {
+                anchorSignature_ = input.readBytes();
+                bitField0_ |= 0x00000200;
+                break;
+              } // case 82
+              case 90: {
+                validatorSetHash_ = input.readBytes();
+                bitField0_ |= 0x00000400;
+                break;
+              } // case 90
               default: {
                 if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                   done = true; // was an endgroup tag
@@ -2729,6 +2837,109 @@ public final class Tx extends com.google.protobuf.GeneratedFile {
       public Builder clearWithdrawalsRoot() {
         bitField0_ = (bitField0_ & ~0x00000100);
         withdrawalsRoot_ = getDefaultInstance().getWithdrawalsRoot();
+        onChanged();
+        return this;
+      }
+
+      private com.google.protobuf.ByteString anchorSignature_ = com.google.protobuf.ByteString.EMPTY;
+      /**
+       * <pre>
+       * anchor_signature, when present, is the rollup creator's Dilithium
+       * signature over the v2 anchor sign bytes of this batch (see
+       * x/multilayer/types.AnchorSignBytesV2). From v3.2.2 the batch is then
+       * anchored in x/multilayer in the same transaction, and a refused anchor
+       * refuses the batch. Without it the batch settles unanchored, as before.
+       * </pre>
+       *
+       * <code>bytes anchor_signature = 10 [json_name = "anchorSignature"];</code>
+       * @return The anchorSignature.
+       */
+      @java.lang.Override
+      public com.google.protobuf.ByteString getAnchorSignature() {
+        return anchorSignature_;
+      }
+      /**
+       * <pre>
+       * anchor_signature, when present, is the rollup creator's Dilithium
+       * signature over the v2 anchor sign bytes of this batch (see
+       * x/multilayer/types.AnchorSignBytesV2). From v3.2.2 the batch is then
+       * anchored in x/multilayer in the same transaction, and a refused anchor
+       * refuses the batch. Without it the batch settles unanchored, as before.
+       * </pre>
+       *
+       * <code>bytes anchor_signature = 10 [json_name = "anchorSignature"];</code>
+       * @param value The anchorSignature to set.
+       * @return This builder for chaining.
+       */
+      public Builder setAnchorSignature(com.google.protobuf.ByteString value) {
+        if (value == null) { throw new NullPointerException(); }
+        anchorSignature_ = value;
+        bitField0_ |= 0x00000200;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * anchor_signature, when present, is the rollup creator's Dilithium
+       * signature over the v2 anchor sign bytes of this batch (see
+       * x/multilayer/types.AnchorSignBytesV2). From v3.2.2 the batch is then
+       * anchored in x/multilayer in the same transaction, and a refused anchor
+       * refuses the batch. Without it the batch settles unanchored, as before.
+       * </pre>
+       *
+       * <code>bytes anchor_signature = 10 [json_name = "anchorSignature"];</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearAnchorSignature() {
+        bitField0_ = (bitField0_ & ~0x00000200);
+        anchorSignature_ = getDefaultInstance().getAnchorSignature();
+        onChanged();
+        return this;
+      }
+
+      private com.google.protobuf.ByteString validatorSetHash_ = com.google.protobuf.ByteString.EMPTY;
+      /**
+       * <pre>
+       * validator_set_hash is the rollup's validator-set commitment carried in
+       * the anchor. Optional; covered by anchor_signature.
+       * </pre>
+       *
+       * <code>bytes validator_set_hash = 11 [json_name = "validatorSetHash"];</code>
+       * @return The validatorSetHash.
+       */
+      @java.lang.Override
+      public com.google.protobuf.ByteString getValidatorSetHash() {
+        return validatorSetHash_;
+      }
+      /**
+       * <pre>
+       * validator_set_hash is the rollup's validator-set commitment carried in
+       * the anchor. Optional; covered by anchor_signature.
+       * </pre>
+       *
+       * <code>bytes validator_set_hash = 11 [json_name = "validatorSetHash"];</code>
+       * @param value The validatorSetHash to set.
+       * @return This builder for chaining.
+       */
+      public Builder setValidatorSetHash(com.google.protobuf.ByteString value) {
+        if (value == null) { throw new NullPointerException(); }
+        validatorSetHash_ = value;
+        bitField0_ |= 0x00000400;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * validator_set_hash is the rollup's validator-set commitment carried in
+       * the anchor. Optional; covered by anchor_signature.
+       * </pre>
+       *
+       * <code>bytes validator_set_hash = 11 [json_name = "validatorSetHash"];</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearValidatorSetHash() {
+        bitField0_ = (bitField0_ & ~0x00000400);
+        validatorSetHash_ = getDefaultInstance().getValidatorSetHash();
         onChanged();
         return this;
       }
@@ -10622,7 +10833,7 @@ public final class Tx extends com.google.protobuf.GeneratedFile {
       "mType\022!\n\014stake_amount\030\005 \001(\003R\013stakeAmount" +
       ":\014\202\347\260*\007creator\"D\n\027MsgCreateRollupRespons" +
       "e\022)\n\trollup_id\030\001 \001(\tB\014\342\336\037\010RollupIDR\010roll" +
-      "upId\"\344\002\n\016MsgSubmitBatch\0226\n\tsequencer\030\001 \001" +
+      "upId\"\275\003\n\016MsgSubmitBatch\0226\n\tsequencer\030\001 \001" +
       "(\tB\030\322\264-\024cosmos.AddressStringR\tsequencer\022" +
       ")\n\trollup_id\030\002 \001(\tB\014\342\336\037\010RollupIDR\010rollup" +
       "Id\022\037\n\013batch_index\030\003 \001(\004R\nbatchIndex\022\035\n\ns" +
@@ -10630,62 +10841,64 @@ public final class Tx extends com.google.protobuf.GeneratedFile {
       "_root\030\005 \001(\014R\rprevStateRoot\022\031\n\010tx_count\030\006" +
       " \001(\004R\007txCount\022\033\n\tdata_hash\030\007 \001(\014R\010dataHa" +
       "sh\022\024\n\005proof\030\010 \001(\014R\005proof\022)\n\020withdrawals_" +
-      "root\030\t \001(\014R\017withdrawalsRoot:\016\202\347\260*\tsequen" +
-      "cer\"\030\n\026MsgSubmitBatchResponse\"\300\001\n\021MsgCha" +
-      "llengeBatch\0228\n\nchallenger\030\001 \001(\tB\030\322\264-\024cos" +
-      "mos.AddressStringR\nchallenger\022)\n\trollup_" +
-      "id\030\002 \001(\tB\014\342\336\037\010RollupIDR\010rollupId\022\037\n\013batc" +
-      "h_index\030\003 \001(\004R\nbatchIndex\022\024\n\005proof\030\004 \001(\014" +
-      "R\005proof:\017\202\347\260*\nchallenger\"\033\n\031MsgChallenge" +
-      "BatchResponse\"\311\001\n\023MsgResolveChallenge\0224\n" +
-      "\010resolver\030\001 \001(\tB\030\322\264-\024cosmos.AddressStrin" +
-      "gR\010resolver\022)\n\trollup_id\030\002 \001(\tB\014\342\336\037\010Roll" +
-      "upIDR\010rollupId\022\037\n\013batch_index\030\003 \001(\004R\nbat" +
-      "chIndex\022!\n\014fraud_upheld\030\004 \001(\010R\013fraudUphe" +
-      "ld:\r\202\347\260*\010resolver\"\035\n\033MsgResolveChallenge" +
-      "Response\"\225\001\n\016MsgPauseRollup\0222\n\007creator\030\001" +
-      " \001(\tB\030\322\264-\024cosmos.AddressStringR\007creator\022" +
-      ")\n\trollup_id\030\002 \001(\tB\014\342\336\037\010RollupIDR\010rollup" +
-      "Id\022\026\n\006reason\030\003 \001(\tR\006reason:\014\202\347\260*\007creator" +
-      "\"\030\n\026MsgPauseRollupResponse\"~\n\017MsgResumeR" +
-      "ollup\0222\n\007creator\030\001 \001(\tB\030\322\264-\024cosmos.Addre" +
-      "ssStringR\007creator\022)\n\trollup_id\030\002 \001(\tB\014\342\336" +
-      "\037\010RollupIDR\010rollupId:\014\202\347\260*\007creator\"\031\n\027Ms" +
-      "gResumeRollupResponse\"|\n\rMsgStopRollup\0222" +
-      "\n\007creator\030\001 \001(\tB\030\322\264-\024cosmos.AddressStrin" +
-      "gR\007creator\022)\n\trollup_id\030\002 \001(\tB\014\342\336\037\010Rollu" +
-      "pIDR\010rollupId:\014\202\347\260*\007creator\"\027\n\025MsgStopRo" +
-      "llupResponse\"\321\002\n\024MsgExecuteWithdrawal\0226\n" +
-      "\tsubmitter\030\001 \001(\tB\030\322\264-\024cosmos.AddressStri" +
-      "ngR\tsubmitter\022)\n\trollup_id\030\002 \001(\tB\014\342\336\037\010Ro" +
-      "llupIDR\010rollupId\022\037\n\013batch_index\030\003 \001(\004R\nb" +
-      "atchIndex\022)\n\020withdrawal_index\030\004 \001(\004R\017wit" +
-      "hdrawalIndex\0226\n\trecipient\030\005 \001(\tB\030\322\264-\024cos" +
-      "mos.AddressStringR\trecipient\022\024\n\005denom\030\006 " +
-      "\001(\tR\005denom\022\026\n\006amount\030\007 \001(\003R\006amount\022\024\n\005pr" +
-      "oof\030\010 \003(\014R\005proof:\016\202\347\260*\tsubmitter\"\036\n\034MsgE" +
-      "xecuteWithdrawalResponse2\221\006\n\003Msg\022\\\n\014Crea" +
-      "teRollup\022!.qorechain.rdk.v1.MsgCreateRol" +
-      "lup\032).qorechain.rdk.v1.MsgCreateRollupRe" +
-      "sponse\022Y\n\013SubmitBatch\022 .qorechain.rdk.v1" +
-      ".MsgSubmitBatch\032(.qorechain.rdk.v1.MsgSu" +
-      "bmitBatchResponse\022b\n\016ChallengeBatch\022#.qo" +
-      "rechain.rdk.v1.MsgChallengeBatch\032+.qorec" +
-      "hain.rdk.v1.MsgChallengeBatchResponse\022h\n" +
-      "\020ResolveChallenge\022%.qorechain.rdk.v1.Msg" +
-      "ResolveChallenge\032-.qorechain.rdk.v1.MsgR" +
-      "esolveChallengeResponse\022Y\n\013PauseRollup\022 " +
-      ".qorechain.rdk.v1.MsgPauseRollup\032(.qorec" +
-      "hain.rdk.v1.MsgPauseRollupResponse\022\\\n\014Re" +
-      "sumeRollup\022!.qorechain.rdk.v1.MsgResumeR" +
-      "ollup\032).qorechain.rdk.v1.MsgResumeRollup" +
-      "Response\022V\n\nStopRollup\022\037.qorechain.rdk.v" +
-      "1.MsgStopRollup\032\'.qorechain.rdk.v1.MsgSt" +
-      "opRollupResponse\022k\n\021ExecuteWithdrawal\022&." +
-      "qorechain.rdk.v1.MsgExecuteWithdrawal\032.." +
-      "qorechain.rdk.v1.MsgExecuteWithdrawalRes" +
-      "ponse\032\005\200\347\260*\001B1Z/github.com/qorechain/qor" +
-      "echain-core/x/rdk/typesb\006proto3"
+      "root\030\t \001(\014R\017withdrawalsRoot\022)\n\020anchor_si" +
+      "gnature\030\n \001(\014R\017anchorSignature\022,\n\022valida" +
+      "tor_set_hash\030\013 \001(\014R\020validatorSetHash:\016\202\347" +
+      "\260*\tsequencer\"\030\n\026MsgSubmitBatchResponse\"\300" +
+      "\001\n\021MsgChallengeBatch\0228\n\nchallenger\030\001 \001(\t" +
+      "B\030\322\264-\024cosmos.AddressStringR\nchallenger\022)" +
+      "\n\trollup_id\030\002 \001(\tB\014\342\336\037\010RollupIDR\010rollupI" +
+      "d\022\037\n\013batch_index\030\003 \001(\004R\nbatchIndex\022\024\n\005pr" +
+      "oof\030\004 \001(\014R\005proof:\017\202\347\260*\nchallenger\"\033\n\031Msg" +
+      "ChallengeBatchResponse\"\311\001\n\023MsgResolveCha" +
+      "llenge\0224\n\010resolver\030\001 \001(\tB\030\322\264-\024cosmos.Add" +
+      "ressStringR\010resolver\022)\n\trollup_id\030\002 \001(\tB" +
+      "\014\342\336\037\010RollupIDR\010rollupId\022\037\n\013batch_index\030\003" +
+      " \001(\004R\nbatchIndex\022!\n\014fraud_upheld\030\004 \001(\010R\013" +
+      "fraudUpheld:\r\202\347\260*\010resolver\"\035\n\033MsgResolve" +
+      "ChallengeResponse\"\225\001\n\016MsgPauseRollup\0222\n\007" +
+      "creator\030\001 \001(\tB\030\322\264-\024cosmos.AddressStringR" +
+      "\007creator\022)\n\trollup_id\030\002 \001(\tB\014\342\336\037\010RollupI" +
+      "DR\010rollupId\022\026\n\006reason\030\003 \001(\tR\006reason:\014\202\347\260" +
+      "*\007creator\"\030\n\026MsgPauseRollupResponse\"~\n\017M" +
+      "sgResumeRollup\0222\n\007creator\030\001 \001(\tB\030\322\264-\024cos" +
+      "mos.AddressStringR\007creator\022)\n\trollup_id\030" +
+      "\002 \001(\tB\014\342\336\037\010RollupIDR\010rollupId:\014\202\347\260*\007crea" +
+      "tor\"\031\n\027MsgResumeRollupResponse\"|\n\rMsgSto" +
+      "pRollup\0222\n\007creator\030\001 \001(\tB\030\322\264-\024cosmos.Add" +
+      "ressStringR\007creator\022)\n\trollup_id\030\002 \001(\tB\014" +
+      "\342\336\037\010RollupIDR\010rollupId:\014\202\347\260*\007creator\"\027\n\025" +
+      "MsgStopRollupResponse\"\321\002\n\024MsgExecuteWith" +
+      "drawal\0226\n\tsubmitter\030\001 \001(\tB\030\322\264-\024cosmos.Ad" +
+      "dressStringR\tsubmitter\022)\n\trollup_id\030\002 \001(" +
+      "\tB\014\342\336\037\010RollupIDR\010rollupId\022\037\n\013batch_index" +
+      "\030\003 \001(\004R\nbatchIndex\022)\n\020withdrawal_index\030\004" +
+      " \001(\004R\017withdrawalIndex\0226\n\trecipient\030\005 \001(\t" +
+      "B\030\322\264-\024cosmos.AddressStringR\trecipient\022\024\n" +
+      "\005denom\030\006 \001(\tR\005denom\022\026\n\006amount\030\007 \001(\003R\006amo" +
+      "unt\022\024\n\005proof\030\010 \003(\014R\005proof:\016\202\347\260*\tsubmitte" +
+      "r\"\036\n\034MsgExecuteWithdrawalResponse2\221\006\n\003Ms" +
+      "g\022\\\n\014CreateRollup\022!.qorechain.rdk.v1.Msg" +
+      "CreateRollup\032).qorechain.rdk.v1.MsgCreat" +
+      "eRollupResponse\022Y\n\013SubmitBatch\022 .qorecha" +
+      "in.rdk.v1.MsgSubmitBatch\032(.qorechain.rdk" +
+      ".v1.MsgSubmitBatchResponse\022b\n\016ChallengeB" +
+      "atch\022#.qorechain.rdk.v1.MsgChallengeBatc" +
+      "h\032+.qorechain.rdk.v1.MsgChallengeBatchRe" +
+      "sponse\022h\n\020ResolveChallenge\022%.qorechain.r" +
+      "dk.v1.MsgResolveChallenge\032-.qorechain.rd" +
+      "k.v1.MsgResolveChallengeResponse\022Y\n\013Paus" +
+      "eRollup\022 .qorechain.rdk.v1.MsgPauseRollu" +
+      "p\032(.qorechain.rdk.v1.MsgPauseRollupRespo" +
+      "nse\022\\\n\014ResumeRollup\022!.qorechain.rdk.v1.M" +
+      "sgResumeRollup\032).qorechain.rdk.v1.MsgRes" +
+      "umeRollupResponse\022V\n\nStopRollup\022\037.qorech" +
+      "ain.rdk.v1.MsgStopRollup\032\'.qorechain.rdk" +
+      ".v1.MsgStopRollupResponse\022k\n\021ExecuteWith" +
+      "drawal\022&.qorechain.rdk.v1.MsgExecuteWith" +
+      "drawal\032..qorechain.rdk.v1.MsgExecuteWith" +
+      "drawalResponse\032\005\200\347\260*\001B1Z/github.com/qore" +
+      "chain/qorechain-core/x/rdk/typesb\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
@@ -10711,7 +10924,7 @@ public final class Tx extends com.google.protobuf.GeneratedFile {
     internal_static_qorechain_rdk_v1_MsgSubmitBatch_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_qorechain_rdk_v1_MsgSubmitBatch_descriptor,
-        new java.lang.String[] { "Sequencer", "RollupId", "BatchIndex", "StateRoot", "PrevStateRoot", "TxCount", "DataHash", "Proof", "WithdrawalsRoot", });
+        new java.lang.String[] { "Sequencer", "RollupId", "BatchIndex", "StateRoot", "PrevStateRoot", "TxCount", "DataHash", "Proof", "WithdrawalsRoot", "AnchorSignature", "ValidatorSetHash", });
     internal_static_qorechain_rdk_v1_MsgSubmitBatchResponse_descriptor =
       getDescriptor().getMessageType(3);
     internal_static_qorechain_rdk_v1_MsgSubmitBatchResponse_fieldAccessorTable = new

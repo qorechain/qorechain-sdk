@@ -121,6 +121,60 @@ pub struct QueryLatestBatchResponse {
     pub batch: ::core::option::Option<BatchView>,
 }
 #[derive(Clone, PartialEq, ::prost::Message)]
+pub struct QueryBatchesRequest {
+    #[prost(string, tag="1")]
+    pub rollup_id: ::prost::alloc::string::String,
+    /// start_index is the first batch index returned.
+    #[prost(uint64, tag="2")]
+    pub start_index: u64,
+    /// limit caps the number of batches returned: 0 means 50, and more than 100
+    /// is capped at 100.
+    #[prost(uint32, tag="3")]
+    pub limit: u32,
+}
+#[derive(Clone, PartialEq, ::prost::Message)]
+pub struct QueryBatchesResponse {
+    #[prost(message, repeated, tag="1")]
+    pub batches: ::prost::alloc::vec::Vec<BatchView>,
+    /// next_index is the start_index of the next page, 0 when there is none.
+    #[prost(uint64, tag="2")]
+    pub next_index: u64,
+}
+/// BlobView is the query-facing view of a data-availability blob, without the
+/// blob data itself.
+#[derive(Clone, PartialEq, ::prost::Message)]
+pub struct BlobView {
+    #[prost(string, tag="1")]
+    pub rollup_id: ::prost::alloc::string::String,
+    #[prost(uint64, tag="2")]
+    pub blob_index: u64,
+    #[prost(string, tag="3")]
+    pub commitment: ::prost::alloc::string::String,
+    #[prost(uint64, tag="4")]
+    pub data_size: u64,
+    #[prost(int64, tag="5")]
+    pub height: i64,
+    #[prost(string, tag="6")]
+    pub stored_at: ::prost::alloc::string::String,
+    #[prost(bool, tag="7")]
+    pub pruned: bool,
+    /// expires_at_height is the height after which the blob may be pruned.
+    #[prost(int64, tag="8")]
+    pub expires_at_height: i64,
+}
+#[derive(Clone, PartialEq, ::prost::Message)]
+pub struct QueryBlobRequest {
+    #[prost(string, tag="1")]
+    pub rollup_id: ::prost::alloc::string::String,
+    #[prost(uint64, tag="2")]
+    pub blob_index: u64,
+}
+#[derive(Clone, PartialEq, ::prost::Message)]
+pub struct QueryBlobResponse {
+    #[prost(message, optional, tag="1")]
+    pub blob: ::core::option::Option<BlobView>,
+}
+#[derive(Clone, PartialEq, ::prost::Message)]
 pub struct MsgCreateRollup {
     #[prost(string, tag="1")]
     pub creator: ::prost::alloc::string::String,
@@ -160,6 +214,17 @@ pub struct MsgSubmitBatch {
     /// a binary Merkle root. Empty when the batch carries no cross-layer messages.
     #[prost(bytes="vec", tag="9")]
     pub withdrawals_root: ::prost::alloc::vec::Vec<u8>,
+    /// anchor_signature, when present, is the rollup creator's Dilithium
+    /// signature over the v2 anchor sign bytes of this batch (see
+    /// x/multilayer/types.AnchorSignBytesV2). From v3.2.2 the batch is then
+    /// anchored in x/multilayer in the same transaction, and a refused anchor
+    /// refuses the batch. Without it the batch settles unanchored, as before.
+    #[prost(bytes="vec", tag="10")]
+    pub anchor_signature: ::prost::alloc::vec::Vec<u8>,
+    /// validator_set_hash is the rollup's validator-set commitment carried in
+    /// the anchor. Optional; covered by anchor_signature.
+    #[prost(bytes="vec", tag="11")]
+    pub validator_set_hash: ::prost::alloc::vec::Vec<u8>,
 }
 #[derive(Clone, Copy, PartialEq, ::prost::Message)]
 pub struct MsgSubmitBatchResponse {

@@ -35,6 +35,19 @@ export interface MsgSubmitBatch {
    * a binary Merkle root. Empty when the batch carries no cross-layer messages.
    */
   withdrawalsRoot: Uint8Array;
+  /**
+   * anchor_signature, when present, is the rollup creator's Dilithium
+   * signature over the v2 anchor sign bytes of this batch (see
+   * x/multilayer/types.AnchorSignBytesV2). From v3.2.2 the batch is then
+   * anchored in x/multilayer in the same transaction, and a refused anchor
+   * refuses the batch. Without it the batch settles unanchored, as before.
+   */
+  anchorSignature: Uint8Array;
+  /**
+   * validator_set_hash is the rollup's validator-set commitment carried in
+   * the anchor. Optional; covered by anchor_signature.
+   */
+  validatorSetHash: Uint8Array;
 }
 
 export interface MsgSubmitBatchResponse {
@@ -323,6 +336,8 @@ function createBaseMsgSubmitBatch(): MsgSubmitBatch {
     dataHash: new Uint8Array(0),
     proof: new Uint8Array(0),
     withdrawalsRoot: new Uint8Array(0),
+    anchorSignature: new Uint8Array(0),
+    validatorSetHash: new Uint8Array(0),
   };
 }
 
@@ -354,6 +369,12 @@ export const MsgSubmitBatch: MessageFns<MsgSubmitBatch> = {
     }
     if (message.withdrawalsRoot.length !== 0) {
       writer.uint32(74).bytes(message.withdrawalsRoot);
+    }
+    if (message.anchorSignature.length !== 0) {
+      writer.uint32(82).bytes(message.anchorSignature);
+    }
+    if (message.validatorSetHash.length !== 0) {
+      writer.uint32(90).bytes(message.validatorSetHash);
     }
     return writer;
   },
@@ -437,6 +458,22 @@ export const MsgSubmitBatch: MessageFns<MsgSubmitBatch> = {
           message.withdrawalsRoot = reader.bytes();
           continue;
         }
+        case 10: {
+          if (tag !== 82) {
+            break;
+          }
+
+          message.anchorSignature = reader.bytes();
+          continue;
+        }
+        case 11: {
+          if (tag !== 90) {
+            break;
+          }
+
+          message.validatorSetHash = reader.bytes();
+          continue;
+        }
       }
       if ((tag & 7) === 4 || tag === 0) {
         break;
@@ -485,6 +522,16 @@ export const MsgSubmitBatch: MessageFns<MsgSubmitBatch> = {
         : isSet(object.withdrawals_root)
         ? bytesFromBase64(object.withdrawals_root)
         : new Uint8Array(0),
+      anchorSignature: isSet(object.anchorSignature)
+        ? bytesFromBase64(object.anchorSignature)
+        : isSet(object.anchor_signature)
+        ? bytesFromBase64(object.anchor_signature)
+        : new Uint8Array(0),
+      validatorSetHash: isSet(object.validatorSetHash)
+        ? bytesFromBase64(object.validatorSetHash)
+        : isSet(object.validator_set_hash)
+        ? bytesFromBase64(object.validator_set_hash)
+        : new Uint8Array(0),
     };
   },
 
@@ -517,6 +564,12 @@ export const MsgSubmitBatch: MessageFns<MsgSubmitBatch> = {
     if (message.withdrawalsRoot.length !== 0) {
       obj.withdrawalsRoot = base64FromBytes(message.withdrawalsRoot);
     }
+    if (message.anchorSignature.length !== 0) {
+      obj.anchorSignature = base64FromBytes(message.anchorSignature);
+    }
+    if (message.validatorSetHash.length !== 0) {
+      obj.validatorSetHash = base64FromBytes(message.validatorSetHash);
+    }
     return obj;
   },
 
@@ -534,6 +587,8 @@ export const MsgSubmitBatch: MessageFns<MsgSubmitBatch> = {
     message.dataHash = object.dataHash ?? new Uint8Array(0);
     message.proof = object.proof ?? new Uint8Array(0);
     message.withdrawalsRoot = object.withdrawalsRoot ?? new Uint8Array(0);
+    message.anchorSignature = object.anchorSignature ?? new Uint8Array(0);
+    message.validatorSetHash = object.validatorSetHash ?? new Uint8Array(0);
     return message;
   },
 };

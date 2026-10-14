@@ -7,7 +7,7 @@ from typing import ClassVar as _ClassVar, Iterable as _Iterable, Mapping as _Map
 DESCRIPTOR: _descriptor.FileDescriptor
 
 class LicenseView(_message.Message):
-    __slots__ = ("grantee", "feature_id", "expires_at", "granted_at", "granted_by", "suspended", "metadata")
+    __slots__ = ("grantee", "feature_id", "expires_at", "granted_at", "granted_by", "suspended", "metadata", "active")
     GRANTEE_FIELD_NUMBER: _ClassVar[int]
     FEATURE_ID_FIELD_NUMBER: _ClassVar[int]
     EXPIRES_AT_FIELD_NUMBER: _ClassVar[int]
@@ -15,6 +15,7 @@ class LicenseView(_message.Message):
     GRANTED_BY_FIELD_NUMBER: _ClassVar[int]
     SUSPENDED_FIELD_NUMBER: _ClassVar[int]
     METADATA_FIELD_NUMBER: _ClassVar[int]
+    ACTIVE_FIELD_NUMBER: _ClassVar[int]
     grantee: str
     feature_id: str
     expires_at: int
@@ -22,7 +23,8 @@ class LicenseView(_message.Message):
     granted_by: str
     suspended: bool
     metadata: str
-    def __init__(self, grantee: _Optional[str] = ..., feature_id: _Optional[str] = ..., expires_at: _Optional[int] = ..., granted_at: _Optional[int] = ..., granted_by: _Optional[str] = ..., suspended: bool = ..., metadata: _Optional[str] = ...) -> None: ...
+    active: bool
+    def __init__(self, grantee: _Optional[str] = ..., feature_id: _Optional[str] = ..., expires_at: _Optional[int] = ..., granted_at: _Optional[int] = ..., granted_by: _Optional[str] = ..., suspended: bool = ..., metadata: _Optional[str] = ..., active: bool = ...) -> None: ...
 
 class QueryCheckRequest(_message.Message):
     __slots__ = ("grantee", "feature_id")

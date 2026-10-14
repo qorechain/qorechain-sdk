@@ -79,6 +79,12 @@ pub fn submit_batch(
         data_hash,
         proof,
         withdrawals_root,
+        // Optional anchoring (chain v3.2.2). Left empty, the batch settles
+        // unanchored as before, and the empty fields stay off the wire, so a
+        // node below v3.2.2 accepts the message. Set them on the returned
+        // struct to anchor the batch in the same transaction.
+        anchor_signature: Vec::new(),
+        validator_set_hash: Vec::new(),
     }
 }
 

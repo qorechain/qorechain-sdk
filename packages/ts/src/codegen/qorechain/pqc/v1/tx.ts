@@ -123,6 +123,37 @@ export interface MsgCloseEVMWindow {
 export interface MsgCloseEVMWindowResponse {
 }
 
+/**
+ * MsgAuthorizeEVMDelegation is the account's post-quantum consent to one
+ * EIP-7702 delegation of its own account. It is single-use, bounded in time,
+ * replaces any earlier consent, and is revoked by MsgCloseEVMWindow.
+ */
+export interface MsgAuthorizeEVMDelegation {
+  sender: string;
+  /**
+   * delegate is the 0x-prefixed 20-byte address the authorization tuple
+   * names. The zero address consents to clearing the delegation.
+   */
+  delegate: string;
+  /**
+   * blocks is how long the consent stays usable, counted from the block that
+   * records it. Bounded by the module's maximum.
+   */
+  blocks: string;
+}
+
+export interface MsgAuthorizeEVMDelegationResponse {
+  expiryHeight: string;
+}
+
+/** MsgClearEVMDelegation removes the sender's EIP-7702 delegation designator. */
+export interface MsgClearEVMDelegation {
+  sender: string;
+}
+
+export interface MsgClearEVMDelegationResponse {
+}
+
 function createBaseMsgRegisterPQCKey(): MsgRegisterPQCKey {
   return { sender: "", dilithiumPubkey: new Uint8Array(0), ecdsaPubkey: new Uint8Array(0), keyType: "" };
 }
@@ -1451,6 +1482,263 @@ export const MsgCloseEVMWindowResponse: MessageFns<MsgCloseEVMWindowResponse> = 
   },
 };
 
+function createBaseMsgAuthorizeEVMDelegation(): MsgAuthorizeEVMDelegation {
+  return { sender: "", delegate: "", blocks: "0" };
+}
+
+export const MsgAuthorizeEVMDelegation: MessageFns<MsgAuthorizeEVMDelegation> = {
+  encode(message: MsgAuthorizeEVMDelegation, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.sender !== "") {
+      writer.uint32(10).string(message.sender);
+    }
+    if (message.delegate !== "") {
+      writer.uint32(18).string(message.delegate);
+    }
+    if (message.blocks !== "0") {
+      writer.uint32(24).uint64(message.blocks);
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): MsgAuthorizeEVMDelegation {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseMsgAuthorizeEVMDelegation();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.sender = reader.string();
+          continue;
+        }
+        case 2: {
+          if (tag !== 18) {
+            break;
+          }
+
+          message.delegate = reader.string();
+          continue;
+        }
+        case 3: {
+          if (tag !== 24) {
+            break;
+          }
+
+          message.blocks = reader.uint64().toString();
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(object: any): MsgAuthorizeEVMDelegation {
+    return {
+      sender: isSet(object.sender) ? globalThis.String(object.sender) : "",
+      delegate: isSet(object.delegate) ? globalThis.String(object.delegate) : "",
+      blocks: isSet(object.blocks) ? globalThis.String(object.blocks) : "0",
+    };
+  },
+
+  toJSON(message: MsgAuthorizeEVMDelegation): unknown {
+    const obj: any = {};
+    if (message.sender !== "") {
+      obj.sender = message.sender;
+    }
+    if (message.delegate !== "") {
+      obj.delegate = message.delegate;
+    }
+    if (message.blocks !== "0") {
+      obj.blocks = message.blocks;
+    }
+    return obj;
+  },
+
+  create(base?: DeepPartial<MsgAuthorizeEVMDelegation>): MsgAuthorizeEVMDelegation {
+    return MsgAuthorizeEVMDelegation.fromPartial(base ?? {});
+  },
+  fromPartial(object: DeepPartial<MsgAuthorizeEVMDelegation>): MsgAuthorizeEVMDelegation {
+    const message = createBaseMsgAuthorizeEVMDelegation();
+    message.sender = object.sender ?? "";
+    message.delegate = object.delegate ?? "";
+    message.blocks = object.blocks ?? "0";
+    return message;
+  },
+};
+
+function createBaseMsgAuthorizeEVMDelegationResponse(): MsgAuthorizeEVMDelegationResponse {
+  return { expiryHeight: "0" };
+}
+
+export const MsgAuthorizeEVMDelegationResponse: MessageFns<MsgAuthorizeEVMDelegationResponse> = {
+  encode(message: MsgAuthorizeEVMDelegationResponse, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.expiryHeight !== "0") {
+      writer.uint32(8).uint64(message.expiryHeight);
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): MsgAuthorizeEVMDelegationResponse {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseMsgAuthorizeEVMDelegationResponse();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 8) {
+            break;
+          }
+
+          message.expiryHeight = reader.uint64().toString();
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(object: any): MsgAuthorizeEVMDelegationResponse {
+    return {
+      expiryHeight: isSet(object.expiryHeight)
+        ? globalThis.String(object.expiryHeight)
+        : isSet(object.expiry_height)
+        ? globalThis.String(object.expiry_height)
+        : "0",
+    };
+  },
+
+  toJSON(message: MsgAuthorizeEVMDelegationResponse): unknown {
+    const obj: any = {};
+    if (message.expiryHeight !== "0") {
+      obj.expiryHeight = message.expiryHeight;
+    }
+    return obj;
+  },
+
+  create(base?: DeepPartial<MsgAuthorizeEVMDelegationResponse>): MsgAuthorizeEVMDelegationResponse {
+    return MsgAuthorizeEVMDelegationResponse.fromPartial(base ?? {});
+  },
+  fromPartial(object: DeepPartial<MsgAuthorizeEVMDelegationResponse>): MsgAuthorizeEVMDelegationResponse {
+    const message = createBaseMsgAuthorizeEVMDelegationResponse();
+    message.expiryHeight = object.expiryHeight ?? "0";
+    return message;
+  },
+};
+
+function createBaseMsgClearEVMDelegation(): MsgClearEVMDelegation {
+  return { sender: "" };
+}
+
+export const MsgClearEVMDelegation: MessageFns<MsgClearEVMDelegation> = {
+  encode(message: MsgClearEVMDelegation, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.sender !== "") {
+      writer.uint32(10).string(message.sender);
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): MsgClearEVMDelegation {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseMsgClearEVMDelegation();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.sender = reader.string();
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(object: any): MsgClearEVMDelegation {
+    return { sender: isSet(object.sender) ? globalThis.String(object.sender) : "" };
+  },
+
+  toJSON(message: MsgClearEVMDelegation): unknown {
+    const obj: any = {};
+    if (message.sender !== "") {
+      obj.sender = message.sender;
+    }
+    return obj;
+  },
+
+  create(base?: DeepPartial<MsgClearEVMDelegation>): MsgClearEVMDelegation {
+    return MsgClearEVMDelegation.fromPartial(base ?? {});
+  },
+  fromPartial(object: DeepPartial<MsgClearEVMDelegation>): MsgClearEVMDelegation {
+    const message = createBaseMsgClearEVMDelegation();
+    message.sender = object.sender ?? "";
+    return message;
+  },
+};
+
+function createBaseMsgClearEVMDelegationResponse(): MsgClearEVMDelegationResponse {
+  return {};
+}
+
+export const MsgClearEVMDelegationResponse: MessageFns<MsgClearEVMDelegationResponse> = {
+  encode(_: MsgClearEVMDelegationResponse, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): MsgClearEVMDelegationResponse {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseMsgClearEVMDelegationResponse();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(_: any): MsgClearEVMDelegationResponse {
+    return {};
+  },
+
+  toJSON(_: MsgClearEVMDelegationResponse): unknown {
+    const obj: any = {};
+    return obj;
+  },
+
+  create(base?: DeepPartial<MsgClearEVMDelegationResponse>): MsgClearEVMDelegationResponse {
+    return MsgClearEVMDelegationResponse.fromPartial(base ?? {});
+  },
+  fromPartial(_: DeepPartial<MsgClearEVMDelegationResponse>): MsgClearEVMDelegationResponse {
+    const message = createBaseMsgClearEVMDelegationResponse();
+    return message;
+  },
+};
+
 /** Msg defines the PQC module's transaction service. */
 export type MsgDefinition = typeof MsgDefinition;
 export const MsgDefinition = {
@@ -1531,12 +1819,42 @@ export const MsgDefinition = {
       responseStream: false,
       options: {},
     },
-    /** CloseEVMWindow revokes the sender's window immediately. */
+    /**
+     * CloseEVMWindow revokes the sender's window immediately. From the v3.2.2
+     * plan height it also revokes the sender's EIP-7702 delegation consent.
+     */
     closeEVMWindow: {
       name: "CloseEVMWindow",
       requestType: MsgCloseEVMWindow as typeof MsgCloseEVMWindow,
       requestStream: false,
       responseType: MsgCloseEVMWindowResponse as typeof MsgCloseEVMWindowResponse,
+      responseStream: false,
+      options: {},
+    },
+    /**
+     * AuthorizeEVMDelegation records the sender's post-quantum consent to one
+     * EIP-7702 delegation: the next type-4 transaction that installs (or, with
+     * the zero address, clears) exactly this delegation on the sender's account
+     * is admitted, once, before the consent expires. Without it the EVM lane
+     * refuses a type-4 transaction that would change the account's code.
+     */
+    authorizeEVMDelegation: {
+      name: "AuthorizeEVMDelegation",
+      requestType: MsgAuthorizeEVMDelegation as typeof MsgAuthorizeEVMDelegation,
+      requestStream: false,
+      responseType: MsgAuthorizeEVMDelegationResponse as typeof MsgAuthorizeEVMDelegationResponse,
+      responseStream: false,
+      options: {},
+    },
+    /**
+     * ClearEVMDelegation removes the sender's EIP-7702 delegation directly, on
+     * the Cosmos lane, without an EVM transaction, a window or the classical key.
+     */
+    clearEVMDelegation: {
+      name: "ClearEVMDelegation",
+      requestType: MsgClearEVMDelegation as typeof MsgClearEVMDelegation,
+      requestStream: false,
+      responseType: MsgClearEVMDelegationResponse as typeof MsgClearEVMDelegationResponse,
       responseStream: false,
       options: {},
     },

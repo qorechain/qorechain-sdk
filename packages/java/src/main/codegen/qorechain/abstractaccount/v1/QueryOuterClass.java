@@ -5536,6 +5536,60 @@ java.lang.String defaultValue);
      */
     com.google.protobuf.ByteString
         getKeyManagementMsgsBytes(int index);
+
+    /**
+     * <pre>
+     * lane_rules (schema_version 2 and later) are permission requirements that
+     * depend on a message's content rather than its type, such as a contract
+     * creation through MsgExecuteEVM needing "deploy".
+     * </pre>
+     *
+     * <code>repeated .qorechain.abstractaccount.v1.LaneRule lane_rules = 5 [json_name = "laneRules"];</code>
+     */
+    java.util.List<qorechain.abstractaccount.v1.QueryOuterClass.LaneRule> 
+        getLaneRulesList();
+    /**
+     * <pre>
+     * lane_rules (schema_version 2 and later) are permission requirements that
+     * depend on a message's content rather than its type, such as a contract
+     * creation through MsgExecuteEVM needing "deploy".
+     * </pre>
+     *
+     * <code>repeated .qorechain.abstractaccount.v1.LaneRule lane_rules = 5 [json_name = "laneRules"];</code>
+     */
+    qorechain.abstractaccount.v1.QueryOuterClass.LaneRule getLaneRules(int index);
+    /**
+     * <pre>
+     * lane_rules (schema_version 2 and later) are permission requirements that
+     * depend on a message's content rather than its type, such as a contract
+     * creation through MsgExecuteEVM needing "deploy".
+     * </pre>
+     *
+     * <code>repeated .qorechain.abstractaccount.v1.LaneRule lane_rules = 5 [json_name = "laneRules"];</code>
+     */
+    int getLaneRulesCount();
+    /**
+     * <pre>
+     * lane_rules (schema_version 2 and later) are permission requirements that
+     * depend on a message's content rather than its type, such as a contract
+     * creation through MsgExecuteEVM needing "deploy".
+     * </pre>
+     *
+     * <code>repeated .qorechain.abstractaccount.v1.LaneRule lane_rules = 5 [json_name = "laneRules"];</code>
+     */
+    java.util.List<? extends qorechain.abstractaccount.v1.QueryOuterClass.LaneRuleOrBuilder> 
+        getLaneRulesOrBuilderList();
+    /**
+     * <pre>
+     * lane_rules (schema_version 2 and later) are permission requirements that
+     * depend on a message's content rather than its type, such as a contract
+     * creation through MsgExecuteEVM needing "deploy".
+     * </pre>
+     *
+     * <code>repeated .qorechain.abstractaccount.v1.LaneRule lane_rules = 5 [json_name = "laneRules"];</code>
+     */
+    qorechain.abstractaccount.v1.QueryOuterClass.LaneRuleOrBuilder getLaneRulesOrBuilder(
+        int index);
   }
   /**
    * Protobuf type {@code qorechain.abstractaccount.v1.QueryPermissionSchemaResponse}
@@ -5564,6 +5618,7 @@ java.lang.String defaultValue);
           com.google.protobuf.LazyStringArrayList.emptyList();
       keyManagementMsgs_ =
           com.google.protobuf.LazyStringArrayList.emptyList();
+      laneRules_ = java.util.Collections.emptyList();
     }
 
     public static final com.google.protobuf.Descriptors.Descriptor
@@ -5846,6 +5901,77 @@ java.lang.String defaultValue) {
       return keyManagementMsgs_.getByteString(index);
     }
 
+    public static final int LANE_RULES_FIELD_NUMBER = 5;
+    @SuppressWarnings("serial")
+    private java.util.List<qorechain.abstractaccount.v1.QueryOuterClass.LaneRule> laneRules_;
+    /**
+     * <pre>
+     * lane_rules (schema_version 2 and later) are permission requirements that
+     * depend on a message's content rather than its type, such as a contract
+     * creation through MsgExecuteEVM needing "deploy".
+     * </pre>
+     *
+     * <code>repeated .qorechain.abstractaccount.v1.LaneRule lane_rules = 5 [json_name = "laneRules"];</code>
+     */
+    @java.lang.Override
+    public java.util.List<qorechain.abstractaccount.v1.QueryOuterClass.LaneRule> getLaneRulesList() {
+      return laneRules_;
+    }
+    /**
+     * <pre>
+     * lane_rules (schema_version 2 and later) are permission requirements that
+     * depend on a message's content rather than its type, such as a contract
+     * creation through MsgExecuteEVM needing "deploy".
+     * </pre>
+     *
+     * <code>repeated .qorechain.abstractaccount.v1.LaneRule lane_rules = 5 [json_name = "laneRules"];</code>
+     */
+    @java.lang.Override
+    public java.util.List<? extends qorechain.abstractaccount.v1.QueryOuterClass.LaneRuleOrBuilder> 
+        getLaneRulesOrBuilderList() {
+      return laneRules_;
+    }
+    /**
+     * <pre>
+     * lane_rules (schema_version 2 and later) are permission requirements that
+     * depend on a message's content rather than its type, such as a contract
+     * creation through MsgExecuteEVM needing "deploy".
+     * </pre>
+     *
+     * <code>repeated .qorechain.abstractaccount.v1.LaneRule lane_rules = 5 [json_name = "laneRules"];</code>
+     */
+    @java.lang.Override
+    public int getLaneRulesCount() {
+      return laneRules_.size();
+    }
+    /**
+     * <pre>
+     * lane_rules (schema_version 2 and later) are permission requirements that
+     * depend on a message's content rather than its type, such as a contract
+     * creation through MsgExecuteEVM needing "deploy".
+     * </pre>
+     *
+     * <code>repeated .qorechain.abstractaccount.v1.LaneRule lane_rules = 5 [json_name = "laneRules"];</code>
+     */
+    @java.lang.Override
+    public qorechain.abstractaccount.v1.QueryOuterClass.LaneRule getLaneRules(int index) {
+      return laneRules_.get(index);
+    }
+    /**
+     * <pre>
+     * lane_rules (schema_version 2 and later) are permission requirements that
+     * depend on a message's content rather than its type, such as a contract
+     * creation through MsgExecuteEVM needing "deploy".
+     * </pre>
+     *
+     * <code>repeated .qorechain.abstractaccount.v1.LaneRule lane_rules = 5 [json_name = "laneRules"];</code>
+     */
+    @java.lang.Override
+    public qorechain.abstractaccount.v1.QueryOuterClass.LaneRuleOrBuilder getLaneRulesOrBuilder(
+        int index) {
+      return laneRules_.get(index);
+    }
+
     private byte memoizedIsInitialized = -1;
     @java.lang.Override
     public final boolean isInitialized() {
@@ -5874,6 +6000,9 @@ java.lang.String defaultValue) {
           3);
       for (int i = 0; i < keyManagementMsgs_.size(); i++) {
         com.google.protobuf.GeneratedMessage.writeString(output, 4, keyManagementMsgs_.getRaw(i));
+      }
+      for (int i = 0; i < laneRules_.size(); i++) {
+        output.writeMessage(5, laneRules_.get(i));
       }
       getUnknownFields().writeTo(output);
     }
@@ -5908,6 +6037,15 @@ java.lang.String defaultValue) {
         size += dataSize;
         size += 1 * getKeyManagementMsgsList().size();
       }
+
+          {
+            final int count = laneRules_.size();
+            for (int i = 0; i < count; i++) {
+              size += com.google.protobuf.CodedOutputStream
+                .computeMessageSizeNoTag(laneRules_.get(i));
+            }
+            size += 1 * count;
+          }
       return size;
     }
     @java.lang.Override
@@ -5940,6 +6078,8 @@ java.lang.String defaultValue) {
           other.internalGetMsgPermissions())) return false;
       if (!getKeyManagementMsgsList()
           .equals(other.getKeyManagementMsgsList())) return false;
+      if (!getLaneRulesList()
+          .equals(other.getLaneRulesList())) return false;
       if (!getUnknownFields().equals(other.getUnknownFields())) return false;
       return true;
     }
@@ -5964,6 +6104,10 @@ java.lang.String defaultValue) {
       if (getKeyManagementMsgsCount() > 0) {
         hash = (37 * hash) + KEY_MANAGEMENT_MSGS_FIELD_NUMBER;
         hash = (53 * hash) + getKeyManagementMsgsList().hashCode();
+      }
+      if (getLaneRulesCount() > 0) {
+        hash = (37 * hash) + LANE_RULES_FIELD_NUMBER;
+        hash = (53 * hash) + getLaneRulesList().hashCode();
       }
       hash = (29 * hash) + getUnknownFields().hashCode();
       memoizedHashCode = hash;
@@ -6124,6 +6268,13 @@ java.lang.String defaultValue) {
         internalGetMutableMsgPermissions().clear();
         keyManagementMsgs_ =
             com.google.protobuf.LazyStringArrayList.emptyList();
+        if (laneRulesBuilder_ == null) {
+          laneRules_ = java.util.Collections.emptyList();
+        } else {
+          laneRules_ = null;
+          laneRulesBuilder_.clear();
+        }
+        bitField0_ = (bitField0_ & ~0x00000010);
         return this;
       }
 
@@ -6150,9 +6301,22 @@ java.lang.String defaultValue) {
       @java.lang.Override
       public qorechain.abstractaccount.v1.QueryOuterClass.QueryPermissionSchemaResponse buildPartial() {
         qorechain.abstractaccount.v1.QueryOuterClass.QueryPermissionSchemaResponse result = new qorechain.abstractaccount.v1.QueryOuterClass.QueryPermissionSchemaResponse(this);
+        buildPartialRepeatedFields(result);
         if (bitField0_ != 0) { buildPartial0(result); }
         onBuilt();
         return result;
+      }
+
+      private void buildPartialRepeatedFields(qorechain.abstractaccount.v1.QueryOuterClass.QueryPermissionSchemaResponse result) {
+        if (laneRulesBuilder_ == null) {
+          if (((bitField0_ & 0x00000010) != 0)) {
+            laneRules_ = java.util.Collections.unmodifiableList(laneRules_);
+            bitField0_ = (bitField0_ & ~0x00000010);
+          }
+          result.laneRules_ = laneRules_;
+        } else {
+          result.laneRules_ = laneRulesBuilder_.build();
+        }
       }
 
       private void buildPartial0(qorechain.abstractaccount.v1.QueryOuterClass.QueryPermissionSchemaResponse result) {
@@ -6214,6 +6378,32 @@ java.lang.String defaultValue) {
           }
           onChanged();
         }
+        if (laneRulesBuilder_ == null) {
+          if (!other.laneRules_.isEmpty()) {
+            if (laneRules_.isEmpty()) {
+              laneRules_ = other.laneRules_;
+              bitField0_ = (bitField0_ & ~0x00000010);
+            } else {
+              ensureLaneRulesIsMutable();
+              laneRules_.addAll(other.laneRules_);
+            }
+            onChanged();
+          }
+        } else {
+          if (!other.laneRules_.isEmpty()) {
+            if (laneRulesBuilder_.isEmpty()) {
+              laneRulesBuilder_.dispose();
+              laneRulesBuilder_ = null;
+              laneRules_ = other.laneRules_;
+              bitField0_ = (bitField0_ & ~0x00000010);
+              laneRulesBuilder_ = 
+                com.google.protobuf.GeneratedMessage.alwaysUseFieldBuilders ?
+                   internalGetLaneRulesFieldBuilder() : null;
+            } else {
+              laneRulesBuilder_.addAllMessages(other.laneRules_);
+            }
+          }
+        }
         this.mergeUnknownFields(other.getUnknownFields());
         onChanged();
         return this;
@@ -6264,6 +6454,19 @@ java.lang.String defaultValue) {
                 keyManagementMsgs_.add(input.readStringRequireUtf8());
                 break;
               } // case 34
+              case 42: {
+                qorechain.abstractaccount.v1.QueryOuterClass.LaneRule m =
+                    input.readMessage(
+                        qorechain.abstractaccount.v1.QueryOuterClass.LaneRule.parser(),
+                        extensionRegistry);
+                if (laneRulesBuilder_ == null) {
+                  ensureLaneRulesIsMutable();
+                  laneRules_.add(m);
+                } else {
+                  laneRulesBuilder_.addMessage(m);
+                }
+                break;
+              } // case 42
               default: {
                 if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                   done = true; // was an endgroup tag
@@ -6827,6 +7030,354 @@ java.lang.String defaultValue) {
         return this;
       }
 
+      private java.util.List<qorechain.abstractaccount.v1.QueryOuterClass.LaneRule> laneRules_ =
+        java.util.Collections.emptyList();
+      private void ensureLaneRulesIsMutable() {
+        if (!((bitField0_ & 0x00000010) != 0)) {
+          laneRules_ = new java.util.ArrayList<qorechain.abstractaccount.v1.QueryOuterClass.LaneRule>(laneRules_);
+          bitField0_ |= 0x00000010;
+         }
+      }
+
+      private com.google.protobuf.RepeatedFieldBuilder<
+          qorechain.abstractaccount.v1.QueryOuterClass.LaneRule, qorechain.abstractaccount.v1.QueryOuterClass.LaneRule.Builder, qorechain.abstractaccount.v1.QueryOuterClass.LaneRuleOrBuilder> laneRulesBuilder_;
+
+      /**
+       * <pre>
+       * lane_rules (schema_version 2 and later) are permission requirements that
+       * depend on a message's content rather than its type, such as a contract
+       * creation through MsgExecuteEVM needing "deploy".
+       * </pre>
+       *
+       * <code>repeated .qorechain.abstractaccount.v1.LaneRule lane_rules = 5 [json_name = "laneRules"];</code>
+       */
+      public java.util.List<qorechain.abstractaccount.v1.QueryOuterClass.LaneRule> getLaneRulesList() {
+        if (laneRulesBuilder_ == null) {
+          return java.util.Collections.unmodifiableList(laneRules_);
+        } else {
+          return laneRulesBuilder_.getMessageList();
+        }
+      }
+      /**
+       * <pre>
+       * lane_rules (schema_version 2 and later) are permission requirements that
+       * depend on a message's content rather than its type, such as a contract
+       * creation through MsgExecuteEVM needing "deploy".
+       * </pre>
+       *
+       * <code>repeated .qorechain.abstractaccount.v1.LaneRule lane_rules = 5 [json_name = "laneRules"];</code>
+       */
+      public int getLaneRulesCount() {
+        if (laneRulesBuilder_ == null) {
+          return laneRules_.size();
+        } else {
+          return laneRulesBuilder_.getCount();
+        }
+      }
+      /**
+       * <pre>
+       * lane_rules (schema_version 2 and later) are permission requirements that
+       * depend on a message's content rather than its type, such as a contract
+       * creation through MsgExecuteEVM needing "deploy".
+       * </pre>
+       *
+       * <code>repeated .qorechain.abstractaccount.v1.LaneRule lane_rules = 5 [json_name = "laneRules"];</code>
+       */
+      public qorechain.abstractaccount.v1.QueryOuterClass.LaneRule getLaneRules(int index) {
+        if (laneRulesBuilder_ == null) {
+          return laneRules_.get(index);
+        } else {
+          return laneRulesBuilder_.getMessage(index);
+        }
+      }
+      /**
+       * <pre>
+       * lane_rules (schema_version 2 and later) are permission requirements that
+       * depend on a message's content rather than its type, such as a contract
+       * creation through MsgExecuteEVM needing "deploy".
+       * </pre>
+       *
+       * <code>repeated .qorechain.abstractaccount.v1.LaneRule lane_rules = 5 [json_name = "laneRules"];</code>
+       */
+      public Builder setLaneRules(
+          int index, qorechain.abstractaccount.v1.QueryOuterClass.LaneRule value) {
+        if (laneRulesBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          ensureLaneRulesIsMutable();
+          laneRules_.set(index, value);
+          onChanged();
+        } else {
+          laneRulesBuilder_.setMessage(index, value);
+        }
+        return this;
+      }
+      /**
+       * <pre>
+       * lane_rules (schema_version 2 and later) are permission requirements that
+       * depend on a message's content rather than its type, such as a contract
+       * creation through MsgExecuteEVM needing "deploy".
+       * </pre>
+       *
+       * <code>repeated .qorechain.abstractaccount.v1.LaneRule lane_rules = 5 [json_name = "laneRules"];</code>
+       */
+      public Builder setLaneRules(
+          int index, qorechain.abstractaccount.v1.QueryOuterClass.LaneRule.Builder builderForValue) {
+        if (laneRulesBuilder_ == null) {
+          ensureLaneRulesIsMutable();
+          laneRules_.set(index, builderForValue.build());
+          onChanged();
+        } else {
+          laneRulesBuilder_.setMessage(index, builderForValue.build());
+        }
+        return this;
+      }
+      /**
+       * <pre>
+       * lane_rules (schema_version 2 and later) are permission requirements that
+       * depend on a message's content rather than its type, such as a contract
+       * creation through MsgExecuteEVM needing "deploy".
+       * </pre>
+       *
+       * <code>repeated .qorechain.abstractaccount.v1.LaneRule lane_rules = 5 [json_name = "laneRules"];</code>
+       */
+      public Builder addLaneRules(qorechain.abstractaccount.v1.QueryOuterClass.LaneRule value) {
+        if (laneRulesBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          ensureLaneRulesIsMutable();
+          laneRules_.add(value);
+          onChanged();
+        } else {
+          laneRulesBuilder_.addMessage(value);
+        }
+        return this;
+      }
+      /**
+       * <pre>
+       * lane_rules (schema_version 2 and later) are permission requirements that
+       * depend on a message's content rather than its type, such as a contract
+       * creation through MsgExecuteEVM needing "deploy".
+       * </pre>
+       *
+       * <code>repeated .qorechain.abstractaccount.v1.LaneRule lane_rules = 5 [json_name = "laneRules"];</code>
+       */
+      public Builder addLaneRules(
+          int index, qorechain.abstractaccount.v1.QueryOuterClass.LaneRule value) {
+        if (laneRulesBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          ensureLaneRulesIsMutable();
+          laneRules_.add(index, value);
+          onChanged();
+        } else {
+          laneRulesBuilder_.addMessage(index, value);
+        }
+        return this;
+      }
+      /**
+       * <pre>
+       * lane_rules (schema_version 2 and later) are permission requirements that
+       * depend on a message's content rather than its type, such as a contract
+       * creation through MsgExecuteEVM needing "deploy".
+       * </pre>
+       *
+       * <code>repeated .qorechain.abstractaccount.v1.LaneRule lane_rules = 5 [json_name = "laneRules"];</code>
+       */
+      public Builder addLaneRules(
+          qorechain.abstractaccount.v1.QueryOuterClass.LaneRule.Builder builderForValue) {
+        if (laneRulesBuilder_ == null) {
+          ensureLaneRulesIsMutable();
+          laneRules_.add(builderForValue.build());
+          onChanged();
+        } else {
+          laneRulesBuilder_.addMessage(builderForValue.build());
+        }
+        return this;
+      }
+      /**
+       * <pre>
+       * lane_rules (schema_version 2 and later) are permission requirements that
+       * depend on a message's content rather than its type, such as a contract
+       * creation through MsgExecuteEVM needing "deploy".
+       * </pre>
+       *
+       * <code>repeated .qorechain.abstractaccount.v1.LaneRule lane_rules = 5 [json_name = "laneRules"];</code>
+       */
+      public Builder addLaneRules(
+          int index, qorechain.abstractaccount.v1.QueryOuterClass.LaneRule.Builder builderForValue) {
+        if (laneRulesBuilder_ == null) {
+          ensureLaneRulesIsMutable();
+          laneRules_.add(index, builderForValue.build());
+          onChanged();
+        } else {
+          laneRulesBuilder_.addMessage(index, builderForValue.build());
+        }
+        return this;
+      }
+      /**
+       * <pre>
+       * lane_rules (schema_version 2 and later) are permission requirements that
+       * depend on a message's content rather than its type, such as a contract
+       * creation through MsgExecuteEVM needing "deploy".
+       * </pre>
+       *
+       * <code>repeated .qorechain.abstractaccount.v1.LaneRule lane_rules = 5 [json_name = "laneRules"];</code>
+       */
+      public Builder addAllLaneRules(
+          java.lang.Iterable<? extends qorechain.abstractaccount.v1.QueryOuterClass.LaneRule> values) {
+        if (laneRulesBuilder_ == null) {
+          ensureLaneRulesIsMutable();
+          com.google.protobuf.AbstractMessageLite.Builder.addAll(
+              values, laneRules_);
+          onChanged();
+        } else {
+          laneRulesBuilder_.addAllMessages(values);
+        }
+        return this;
+      }
+      /**
+       * <pre>
+       * lane_rules (schema_version 2 and later) are permission requirements that
+       * depend on a message's content rather than its type, such as a contract
+       * creation through MsgExecuteEVM needing "deploy".
+       * </pre>
+       *
+       * <code>repeated .qorechain.abstractaccount.v1.LaneRule lane_rules = 5 [json_name = "laneRules"];</code>
+       */
+      public Builder clearLaneRules() {
+        if (laneRulesBuilder_ == null) {
+          laneRules_ = java.util.Collections.emptyList();
+          bitField0_ = (bitField0_ & ~0x00000010);
+          onChanged();
+        } else {
+          laneRulesBuilder_.clear();
+        }
+        return this;
+      }
+      /**
+       * <pre>
+       * lane_rules (schema_version 2 and later) are permission requirements that
+       * depend on a message's content rather than its type, such as a contract
+       * creation through MsgExecuteEVM needing "deploy".
+       * </pre>
+       *
+       * <code>repeated .qorechain.abstractaccount.v1.LaneRule lane_rules = 5 [json_name = "laneRules"];</code>
+       */
+      public Builder removeLaneRules(int index) {
+        if (laneRulesBuilder_ == null) {
+          ensureLaneRulesIsMutable();
+          laneRules_.remove(index);
+          onChanged();
+        } else {
+          laneRulesBuilder_.remove(index);
+        }
+        return this;
+      }
+      /**
+       * <pre>
+       * lane_rules (schema_version 2 and later) are permission requirements that
+       * depend on a message's content rather than its type, such as a contract
+       * creation through MsgExecuteEVM needing "deploy".
+       * </pre>
+       *
+       * <code>repeated .qorechain.abstractaccount.v1.LaneRule lane_rules = 5 [json_name = "laneRules"];</code>
+       */
+      public qorechain.abstractaccount.v1.QueryOuterClass.LaneRule.Builder getLaneRulesBuilder(
+          int index) {
+        return internalGetLaneRulesFieldBuilder().getBuilder(index);
+      }
+      /**
+       * <pre>
+       * lane_rules (schema_version 2 and later) are permission requirements that
+       * depend on a message's content rather than its type, such as a contract
+       * creation through MsgExecuteEVM needing "deploy".
+       * </pre>
+       *
+       * <code>repeated .qorechain.abstractaccount.v1.LaneRule lane_rules = 5 [json_name = "laneRules"];</code>
+       */
+      public qorechain.abstractaccount.v1.QueryOuterClass.LaneRuleOrBuilder getLaneRulesOrBuilder(
+          int index) {
+        if (laneRulesBuilder_ == null) {
+          return laneRules_.get(index);  } else {
+          return laneRulesBuilder_.getMessageOrBuilder(index);
+        }
+      }
+      /**
+       * <pre>
+       * lane_rules (schema_version 2 and later) are permission requirements that
+       * depend on a message's content rather than its type, such as a contract
+       * creation through MsgExecuteEVM needing "deploy".
+       * </pre>
+       *
+       * <code>repeated .qorechain.abstractaccount.v1.LaneRule lane_rules = 5 [json_name = "laneRules"];</code>
+       */
+      public java.util.List<? extends qorechain.abstractaccount.v1.QueryOuterClass.LaneRuleOrBuilder> 
+           getLaneRulesOrBuilderList() {
+        if (laneRulesBuilder_ != null) {
+          return laneRulesBuilder_.getMessageOrBuilderList();
+        } else {
+          return java.util.Collections.unmodifiableList(laneRules_);
+        }
+      }
+      /**
+       * <pre>
+       * lane_rules (schema_version 2 and later) are permission requirements that
+       * depend on a message's content rather than its type, such as a contract
+       * creation through MsgExecuteEVM needing "deploy".
+       * </pre>
+       *
+       * <code>repeated .qorechain.abstractaccount.v1.LaneRule lane_rules = 5 [json_name = "laneRules"];</code>
+       */
+      public qorechain.abstractaccount.v1.QueryOuterClass.LaneRule.Builder addLaneRulesBuilder() {
+        return internalGetLaneRulesFieldBuilder().addBuilder(
+            qorechain.abstractaccount.v1.QueryOuterClass.LaneRule.getDefaultInstance());
+      }
+      /**
+       * <pre>
+       * lane_rules (schema_version 2 and later) are permission requirements that
+       * depend on a message's content rather than its type, such as a contract
+       * creation through MsgExecuteEVM needing "deploy".
+       * </pre>
+       *
+       * <code>repeated .qorechain.abstractaccount.v1.LaneRule lane_rules = 5 [json_name = "laneRules"];</code>
+       */
+      public qorechain.abstractaccount.v1.QueryOuterClass.LaneRule.Builder addLaneRulesBuilder(
+          int index) {
+        return internalGetLaneRulesFieldBuilder().addBuilder(
+            index, qorechain.abstractaccount.v1.QueryOuterClass.LaneRule.getDefaultInstance());
+      }
+      /**
+       * <pre>
+       * lane_rules (schema_version 2 and later) are permission requirements that
+       * depend on a message's content rather than its type, such as a contract
+       * creation through MsgExecuteEVM needing "deploy".
+       * </pre>
+       *
+       * <code>repeated .qorechain.abstractaccount.v1.LaneRule lane_rules = 5 [json_name = "laneRules"];</code>
+       */
+      public java.util.List<qorechain.abstractaccount.v1.QueryOuterClass.LaneRule.Builder> 
+           getLaneRulesBuilderList() {
+        return internalGetLaneRulesFieldBuilder().getBuilderList();
+      }
+      private com.google.protobuf.RepeatedFieldBuilder<
+          qorechain.abstractaccount.v1.QueryOuterClass.LaneRule, qorechain.abstractaccount.v1.QueryOuterClass.LaneRule.Builder, qorechain.abstractaccount.v1.QueryOuterClass.LaneRuleOrBuilder> 
+          internalGetLaneRulesFieldBuilder() {
+        if (laneRulesBuilder_ == null) {
+          laneRulesBuilder_ = new com.google.protobuf.RepeatedFieldBuilder<
+              qorechain.abstractaccount.v1.QueryOuterClass.LaneRule, qorechain.abstractaccount.v1.QueryOuterClass.LaneRule.Builder, qorechain.abstractaccount.v1.QueryOuterClass.LaneRuleOrBuilder>(
+                  laneRules_,
+                  ((bitField0_ & 0x00000010) != 0),
+                  getParentForChildren(),
+                  isClean());
+          laneRules_ = null;
+        }
+        return laneRulesBuilder_;
+      }
+
       // @@protoc_insertion_point(builder_scope:qorechain.abstractaccount.v1.QueryPermissionSchemaResponse)
     }
 
@@ -6873,6 +7424,829 @@ java.lang.String defaultValue) {
 
     @java.lang.Override
     public qorechain.abstractaccount.v1.QueryOuterClass.QueryPermissionSchemaResponse getDefaultInstanceForType() {
+      return DEFAULT_INSTANCE;
+    }
+
+  }
+
+  public interface LaneRuleOrBuilder extends
+      // @@protoc_insertion_point(interface_extends:qorechain.abstractaccount.v1.LaneRule)
+      com.google.protobuf.MessageOrBuilder {
+
+    /**
+     * <code>string msg_type_url = 1 [json_name = "msgTypeUrl"];</code>
+     * @return The msgTypeUrl.
+     */
+    java.lang.String getMsgTypeUrl();
+    /**
+     * <code>string msg_type_url = 1 [json_name = "msgTypeUrl"];</code>
+     * @return The bytes for msgTypeUrl.
+     */
+    com.google.protobuf.ByteString
+        getMsgTypeUrlBytes();
+
+    /**
+     * <code>string condition = 2 [json_name = "condition"];</code>
+     * @return The condition.
+     */
+    java.lang.String getCondition();
+    /**
+     * <code>string condition = 2 [json_name = "condition"];</code>
+     * @return The bytes for condition.
+     */
+    com.google.protobuf.ByteString
+        getConditionBytes();
+
+    /**
+     * <code>string permission = 3 [json_name = "permission"];</code>
+     * @return The permission.
+     */
+    java.lang.String getPermission();
+    /**
+     * <code>string permission = 3 [json_name = "permission"];</code>
+     * @return The bytes for permission.
+     */
+    com.google.protobuf.ByteString
+        getPermissionBytes();
+  }
+  /**
+   * <pre>
+   * LaneRule states that a message matching condition requires permission.
+   * </pre>
+   *
+   * Protobuf type {@code qorechain.abstractaccount.v1.LaneRule}
+   */
+  public static final class LaneRule extends
+      com.google.protobuf.GeneratedMessage implements
+      // @@protoc_insertion_point(message_implements:qorechain.abstractaccount.v1.LaneRule)
+      LaneRuleOrBuilder {
+  private static final long serialVersionUID = 0L;
+    static {
+      com.google.protobuf.RuntimeVersion.validateProtobufGencodeVersion(
+        com.google.protobuf.RuntimeVersion.RuntimeDomain.PUBLIC,
+        /* major= */ 4,
+        /* minor= */ 35,
+        /* patch= */ 1,
+        /* suffix= */ "",
+        "LaneRule");
+    }
+    // Use LaneRule.newBuilder() to construct.
+    private LaneRule(com.google.protobuf.GeneratedMessage.Builder<?> builder) {
+      super(builder);
+    }
+    private LaneRule() {
+      msgTypeUrl_ = "";
+      condition_ = "";
+      permission_ = "";
+    }
+
+    public static final com.google.protobuf.Descriptors.Descriptor
+        getDescriptor() {
+      return qorechain.abstractaccount.v1.QueryOuterClass.internal_static_qorechain_abstractaccount_v1_LaneRule_descriptor;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Descriptors.Descriptor getDescriptorForType() {
+      return qorechain.abstractaccount.v1.QueryOuterClass.internal_static_qorechain_abstractaccount_v1_LaneRule_descriptor;
+    }
+
+    @java.lang.Override
+    protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+        internalGetFieldAccessorTable() {
+      return qorechain.abstractaccount.v1.QueryOuterClass.internal_static_qorechain_abstractaccount_v1_LaneRule_fieldAccessorTable
+          .ensureFieldAccessorsInitialized(
+              qorechain.abstractaccount.v1.QueryOuterClass.LaneRule.class, qorechain.abstractaccount.v1.QueryOuterClass.LaneRule.Builder.class);
+    }
+
+    public static final int MSG_TYPE_URL_FIELD_NUMBER = 1;
+    @SuppressWarnings("serial")
+    private volatile java.lang.Object msgTypeUrl_ = "";
+    /**
+     * <code>string msg_type_url = 1 [json_name = "msgTypeUrl"];</code>
+     * @return The msgTypeUrl.
+     */
+    @java.lang.Override
+    public java.lang.String getMsgTypeUrl() {
+      java.lang.Object ref = msgTypeUrl_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        msgTypeUrl_ = s;
+        return s;
+      }
+    }
+    /**
+     * <code>string msg_type_url = 1 [json_name = "msgTypeUrl"];</code>
+     * @return The bytes for msgTypeUrl.
+     */
+    @java.lang.Override
+    public com.google.protobuf.ByteString
+        getMsgTypeUrlBytes() {
+      java.lang.Object ref = msgTypeUrl_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        msgTypeUrl_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
+    public static final int CONDITION_FIELD_NUMBER = 2;
+    @SuppressWarnings("serial")
+    private volatile java.lang.Object condition_ = "";
+    /**
+     * <code>string condition = 2 [json_name = "condition"];</code>
+     * @return The condition.
+     */
+    @java.lang.Override
+    public java.lang.String getCondition() {
+      java.lang.Object ref = condition_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        condition_ = s;
+        return s;
+      }
+    }
+    /**
+     * <code>string condition = 2 [json_name = "condition"];</code>
+     * @return The bytes for condition.
+     */
+    @java.lang.Override
+    public com.google.protobuf.ByteString
+        getConditionBytes() {
+      java.lang.Object ref = condition_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        condition_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
+    public static final int PERMISSION_FIELD_NUMBER = 3;
+    @SuppressWarnings("serial")
+    private volatile java.lang.Object permission_ = "";
+    /**
+     * <code>string permission = 3 [json_name = "permission"];</code>
+     * @return The permission.
+     */
+    @java.lang.Override
+    public java.lang.String getPermission() {
+      java.lang.Object ref = permission_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        permission_ = s;
+        return s;
+      }
+    }
+    /**
+     * <code>string permission = 3 [json_name = "permission"];</code>
+     * @return The bytes for permission.
+     */
+    @java.lang.Override
+    public com.google.protobuf.ByteString
+        getPermissionBytes() {
+      java.lang.Object ref = permission_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        permission_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
+    private byte memoizedIsInitialized = -1;
+    @java.lang.Override
+    public final boolean isInitialized() {
+      byte isInitialized = memoizedIsInitialized;
+      if (isInitialized == 1) return true;
+      if (isInitialized == 0) return false;
+
+      memoizedIsInitialized = 1;
+      return true;
+    }
+
+    @java.lang.Override
+    public void writeTo(com.google.protobuf.CodedOutputStream output)
+                        throws java.io.IOException {
+      if (!com.google.protobuf.GeneratedMessage.isStringEmpty(msgTypeUrl_)) {
+        com.google.protobuf.GeneratedMessage.writeString(output, 1, msgTypeUrl_);
+      }
+      if (!com.google.protobuf.GeneratedMessage.isStringEmpty(condition_)) {
+        com.google.protobuf.GeneratedMessage.writeString(output, 2, condition_);
+      }
+      if (!com.google.protobuf.GeneratedMessage.isStringEmpty(permission_)) {
+        com.google.protobuf.GeneratedMessage.writeString(output, 3, permission_);
+      }
+      getUnknownFields().writeTo(output);
+    }
+    private int computeSerializedSize_0() {
+      int size = 0;
+      if (!com.google.protobuf.GeneratedMessage.isStringEmpty(msgTypeUrl_)) {
+        size += com.google.protobuf.GeneratedMessage.computeStringSize(1, msgTypeUrl_);
+      }
+      if (!com.google.protobuf.GeneratedMessage.isStringEmpty(condition_)) {
+        size += com.google.protobuf.GeneratedMessage.computeStringSize(2, condition_);
+      }
+      if (!com.google.protobuf.GeneratedMessage.isStringEmpty(permission_)) {
+        size += com.google.protobuf.GeneratedMessage.computeStringSize(3, permission_);
+      }
+      return size;
+    }
+    @java.lang.Override
+    public int getSerializedSize() {
+      int size = memoizedSize;
+      if (size != -1) return size;
+
+      size = 0;
+      size += computeSerializedSize_0();
+      size += getUnknownFields().getSerializedSize();
+      memoizedSize = size;
+      return size;
+    }
+
+    @java.lang.Override
+    public boolean equals(final java.lang.Object obj) {
+      if (obj == this) {
+       return true;
+      }
+      if (!(obj instanceof qorechain.abstractaccount.v1.QueryOuterClass.LaneRule)) {
+        return super.equals(obj);
+      }
+      qorechain.abstractaccount.v1.QueryOuterClass.LaneRule other = (qorechain.abstractaccount.v1.QueryOuterClass.LaneRule) obj;
+
+      if (!getMsgTypeUrl()
+          .equals(other.getMsgTypeUrl())) return false;
+      if (!getCondition()
+          .equals(other.getCondition())) return false;
+      if (!getPermission()
+          .equals(other.getPermission())) return false;
+      if (!getUnknownFields().equals(other.getUnknownFields())) return false;
+      return true;
+    }
+
+    @java.lang.Override
+    public int hashCode() {
+      if (memoizedHashCode != 0) {
+        return memoizedHashCode;
+      }
+      int hash = 41;
+      hash = (19 * hash) + getDescriptor().hashCode();
+      hash = (37 * hash) + MSG_TYPE_URL_FIELD_NUMBER;
+      hash = (53 * hash) + getMsgTypeUrl().hashCode();
+      hash = (37 * hash) + CONDITION_FIELD_NUMBER;
+      hash = (53 * hash) + getCondition().hashCode();
+      hash = (37 * hash) + PERMISSION_FIELD_NUMBER;
+      hash = (53 * hash) + getPermission().hashCode();
+      hash = (29 * hash) + getUnknownFields().hashCode();
+      memoizedHashCode = hash;
+      return hash;
+    }
+
+    public static qorechain.abstractaccount.v1.QueryOuterClass.LaneRule parseFrom(
+        java.nio.ByteBuffer data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static qorechain.abstractaccount.v1.QueryOuterClass.LaneRule parseFrom(
+        java.nio.ByteBuffer data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static qorechain.abstractaccount.v1.QueryOuterClass.LaneRule parseFrom(
+        com.google.protobuf.ByteString data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static qorechain.abstractaccount.v1.QueryOuterClass.LaneRule parseFrom(
+        com.google.protobuf.ByteString data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static qorechain.abstractaccount.v1.QueryOuterClass.LaneRule parseFrom(byte[] data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static qorechain.abstractaccount.v1.QueryOuterClass.LaneRule parseFrom(
+        byte[] data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static qorechain.abstractaccount.v1.QueryOuterClass.LaneRule parseFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input);
+    }
+    public static qorechain.abstractaccount.v1.QueryOuterClass.LaneRule parseFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    public static qorechain.abstractaccount.v1.QueryOuterClass.LaneRule parseDelimitedFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseDelimitedWithIOException(PARSER, input);
+    }
+
+    public static qorechain.abstractaccount.v1.QueryOuterClass.LaneRule parseDelimitedFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static qorechain.abstractaccount.v1.QueryOuterClass.LaneRule parseFrom(
+        com.google.protobuf.CodedInputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input);
+    }
+    public static qorechain.abstractaccount.v1.QueryOuterClass.LaneRule parseFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    @java.lang.Override
+    public Builder newBuilderForType() { return newBuilder(); }
+    public static Builder newBuilder() {
+      return DEFAULT_INSTANCE.toBuilder();
+    }
+    public static Builder newBuilder(qorechain.abstractaccount.v1.QueryOuterClass.LaneRule prototype) {
+      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+    }
+    @java.lang.Override
+    public Builder toBuilder() {
+      return this == DEFAULT_INSTANCE
+          ? new Builder() : new Builder().mergeFrom(this);
+    }
+
+    @java.lang.Override
+    protected Builder newBuilderForType(
+        com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+      Builder builder = new Builder(parent);
+      return builder;
+    }
+    /**
+     * <pre>
+     * LaneRule states that a message matching condition requires permission.
+     * </pre>
+     *
+     * Protobuf type {@code qorechain.abstractaccount.v1.LaneRule}
+     */
+    public static final class Builder extends
+        com.google.protobuf.GeneratedMessage.Builder<Builder> implements
+        // @@protoc_insertion_point(builder_implements:qorechain.abstractaccount.v1.LaneRule)
+        qorechain.abstractaccount.v1.QueryOuterClass.LaneRuleOrBuilder {
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return qorechain.abstractaccount.v1.QueryOuterClass.internal_static_qorechain_abstractaccount_v1_LaneRule_descriptor;
+      }
+
+      @java.lang.Override
+      protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return qorechain.abstractaccount.v1.QueryOuterClass.internal_static_qorechain_abstractaccount_v1_LaneRule_fieldAccessorTable
+            .ensureFieldAccessorsInitialized(
+                qorechain.abstractaccount.v1.QueryOuterClass.LaneRule.class, qorechain.abstractaccount.v1.QueryOuterClass.LaneRule.Builder.class);
+      }
+
+      // Construct using qorechain.abstractaccount.v1.QueryOuterClass.LaneRule.newBuilder()
+      private Builder() {
+
+      }
+
+      private Builder(
+          com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+        super(parent);
+
+      }
+      @java.lang.Override
+      public Builder clear() {
+        super.clear();
+        bitField0_ = 0;
+        msgTypeUrl_ = "";
+        condition_ = "";
+        permission_ = "";
+        return this;
+      }
+
+      @java.lang.Override
+      public com.google.protobuf.Descriptors.Descriptor
+          getDescriptorForType() {
+        return qorechain.abstractaccount.v1.QueryOuterClass.internal_static_qorechain_abstractaccount_v1_LaneRule_descriptor;
+      }
+
+      @java.lang.Override
+      public qorechain.abstractaccount.v1.QueryOuterClass.LaneRule getDefaultInstanceForType() {
+        return qorechain.abstractaccount.v1.QueryOuterClass.LaneRule.getDefaultInstance();
+      }
+
+      @java.lang.Override
+      public qorechain.abstractaccount.v1.QueryOuterClass.LaneRule build() {
+        qorechain.abstractaccount.v1.QueryOuterClass.LaneRule result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(result);
+        }
+        return result;
+      }
+
+      @java.lang.Override
+      public qorechain.abstractaccount.v1.QueryOuterClass.LaneRule buildPartial() {
+        qorechain.abstractaccount.v1.QueryOuterClass.LaneRule result = new qorechain.abstractaccount.v1.QueryOuterClass.LaneRule(this);
+        if (bitField0_ != 0) { buildPartial0(result); }
+        onBuilt();
+        return result;
+      }
+
+      private void buildPartial0(qorechain.abstractaccount.v1.QueryOuterClass.LaneRule result) {
+        int from_bitField0_ = bitField0_;
+        if (((from_bitField0_ & 0x00000001) != 0)) {
+          result.msgTypeUrl_ = msgTypeUrl_;
+        }
+        if (((from_bitField0_ & 0x00000002) != 0)) {
+          result.condition_ = condition_;
+        }
+        if (((from_bitField0_ & 0x00000004) != 0)) {
+          result.permission_ = permission_;
+        }
+      }
+
+      @java.lang.Override
+      public Builder mergeFrom(com.google.protobuf.Message other) {
+        if (other instanceof qorechain.abstractaccount.v1.QueryOuterClass.LaneRule) {
+          return mergeFrom((qorechain.abstractaccount.v1.QueryOuterClass.LaneRule)other);
+        } else {
+          super.mergeFrom(other);
+          return this;
+        }
+      }
+
+      public Builder mergeFrom(qorechain.abstractaccount.v1.QueryOuterClass.LaneRule other) {
+        if (other == qorechain.abstractaccount.v1.QueryOuterClass.LaneRule.getDefaultInstance()) return this;
+        if (!other.getMsgTypeUrl().isEmpty()) {
+          msgTypeUrl_ = other.msgTypeUrl_;
+          bitField0_ |= 0x00000001;
+          onChanged();
+        }
+        if (!other.getCondition().isEmpty()) {
+          condition_ = other.condition_;
+          bitField0_ |= 0x00000002;
+          onChanged();
+        }
+        if (!other.getPermission().isEmpty()) {
+          permission_ = other.permission_;
+          bitField0_ |= 0x00000004;
+          onChanged();
+        }
+        this.mergeUnknownFields(other.getUnknownFields());
+        onChanged();
+        return this;
+      }
+
+      @java.lang.Override
+      public final boolean isInitialized() {
+        return true;
+      }
+
+      @java.lang.Override
+      public Builder mergeFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        if (extensionRegistry == null) {
+          throw new java.lang.NullPointerException();
+        }
+        try {
+          boolean done = false;
+          while (!done) {
+            int tag = input.readTag();
+            switch (tag) {
+              case 0:
+                done = true;
+                break;
+              case 10: {
+                msgTypeUrl_ = input.readStringRequireUtf8();
+                bitField0_ |= 0x00000001;
+                break;
+              } // case 10
+              case 18: {
+                condition_ = input.readStringRequireUtf8();
+                bitField0_ |= 0x00000002;
+                break;
+              } // case 18
+              case 26: {
+                permission_ = input.readStringRequireUtf8();
+                bitField0_ |= 0x00000004;
+                break;
+              } // case 26
+              default: {
+                if (!super.parseUnknownField(input, extensionRegistry, tag)) {
+                  done = true; // was an endgroup tag
+                }
+                break;
+              } // default:
+            } // switch (tag)
+          } // while (!done)
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          throw e.unwrapIOException();
+        } finally {
+          onChanged();
+        } // finally
+        return this;
+      }
+      private int bitField0_;
+
+      private java.lang.Object msgTypeUrl_ = "";
+      /**
+       * <code>string msg_type_url = 1 [json_name = "msgTypeUrl"];</code>
+       * @return The msgTypeUrl.
+       */
+      public java.lang.String getMsgTypeUrl() {
+        java.lang.Object ref = msgTypeUrl_;
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          msgTypeUrl_ = s;
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
+      }
+      /**
+       * <code>string msg_type_url = 1 [json_name = "msgTypeUrl"];</code>
+       * @return The bytes for msgTypeUrl.
+       */
+      public com.google.protobuf.ByteString
+          getMsgTypeUrlBytes() {
+        java.lang.Object ref = msgTypeUrl_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          msgTypeUrl_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <code>string msg_type_url = 1 [json_name = "msgTypeUrl"];</code>
+       * @param value The msgTypeUrl to set.
+       * @return This builder for chaining.
+       */
+      public Builder setMsgTypeUrl(
+          java.lang.String value) {
+        if (value == null) { throw new NullPointerException(); }
+        msgTypeUrl_ = value;
+        bitField0_ |= 0x00000001;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>string msg_type_url = 1 [json_name = "msgTypeUrl"];</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearMsgTypeUrl() {
+        msgTypeUrl_ = getDefaultInstance().getMsgTypeUrl();
+        bitField0_ = (bitField0_ & ~0x00000001);
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>string msg_type_url = 1 [json_name = "msgTypeUrl"];</code>
+       * @param value The bytes for msgTypeUrl to set.
+       * @return This builder for chaining.
+       */
+      public Builder setMsgTypeUrlBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) { throw new NullPointerException(); }
+        checkByteStringIsUtf8(value);
+        msgTypeUrl_ = value;
+        bitField0_ |= 0x00000001;
+        onChanged();
+        return this;
+      }
+
+      private java.lang.Object condition_ = "";
+      /**
+       * <code>string condition = 2 [json_name = "condition"];</code>
+       * @return The condition.
+       */
+      public java.lang.String getCondition() {
+        java.lang.Object ref = condition_;
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          condition_ = s;
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
+      }
+      /**
+       * <code>string condition = 2 [json_name = "condition"];</code>
+       * @return The bytes for condition.
+       */
+      public com.google.protobuf.ByteString
+          getConditionBytes() {
+        java.lang.Object ref = condition_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          condition_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <code>string condition = 2 [json_name = "condition"];</code>
+       * @param value The condition to set.
+       * @return This builder for chaining.
+       */
+      public Builder setCondition(
+          java.lang.String value) {
+        if (value == null) { throw new NullPointerException(); }
+        condition_ = value;
+        bitField0_ |= 0x00000002;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>string condition = 2 [json_name = "condition"];</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearCondition() {
+        condition_ = getDefaultInstance().getCondition();
+        bitField0_ = (bitField0_ & ~0x00000002);
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>string condition = 2 [json_name = "condition"];</code>
+       * @param value The bytes for condition to set.
+       * @return This builder for chaining.
+       */
+      public Builder setConditionBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) { throw new NullPointerException(); }
+        checkByteStringIsUtf8(value);
+        condition_ = value;
+        bitField0_ |= 0x00000002;
+        onChanged();
+        return this;
+      }
+
+      private java.lang.Object permission_ = "";
+      /**
+       * <code>string permission = 3 [json_name = "permission"];</code>
+       * @return The permission.
+       */
+      public java.lang.String getPermission() {
+        java.lang.Object ref = permission_;
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          permission_ = s;
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
+      }
+      /**
+       * <code>string permission = 3 [json_name = "permission"];</code>
+       * @return The bytes for permission.
+       */
+      public com.google.protobuf.ByteString
+          getPermissionBytes() {
+        java.lang.Object ref = permission_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          permission_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <code>string permission = 3 [json_name = "permission"];</code>
+       * @param value The permission to set.
+       * @return This builder for chaining.
+       */
+      public Builder setPermission(
+          java.lang.String value) {
+        if (value == null) { throw new NullPointerException(); }
+        permission_ = value;
+        bitField0_ |= 0x00000004;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>string permission = 3 [json_name = "permission"];</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearPermission() {
+        permission_ = getDefaultInstance().getPermission();
+        bitField0_ = (bitField0_ & ~0x00000004);
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>string permission = 3 [json_name = "permission"];</code>
+       * @param value The bytes for permission to set.
+       * @return This builder for chaining.
+       */
+      public Builder setPermissionBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) { throw new NullPointerException(); }
+        checkByteStringIsUtf8(value);
+        permission_ = value;
+        bitField0_ |= 0x00000004;
+        onChanged();
+        return this;
+      }
+
+      // @@protoc_insertion_point(builder_scope:qorechain.abstractaccount.v1.LaneRule)
+    }
+
+    // @@protoc_insertion_point(class_scope:qorechain.abstractaccount.v1.LaneRule)
+    private static final qorechain.abstractaccount.v1.QueryOuterClass.LaneRule DEFAULT_INSTANCE;
+    static {
+      DEFAULT_INSTANCE = new qorechain.abstractaccount.v1.QueryOuterClass.LaneRule();
+    }
+
+    public static qorechain.abstractaccount.v1.QueryOuterClass.LaneRule getDefaultInstance() {
+      return DEFAULT_INSTANCE;
+    }
+
+    private static final com.google.protobuf.Parser<LaneRule>
+        PARSER = new com.google.protobuf.AbstractParser<LaneRule>() {
+      @java.lang.Override
+      public LaneRule parsePartialFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        Builder builder = newBuilder();
+        try {
+          builder.mergeFrom(input, extensionRegistry);
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          throw e.setUnfinishedMessage(builder.buildPartial());
+        } catch (com.google.protobuf.UninitializedMessageException e) {
+          throw e.asInvalidProtocolBufferException().setUnfinishedMessage(builder.buildPartial());
+        } catch (java.io.IOException e) {
+          throw new com.google.protobuf.InvalidProtocolBufferException(e)
+              .setUnfinishedMessage(builder.buildPartial());
+        }
+        return builder.buildPartial();
+      }
+    };
+
+    public static com.google.protobuf.Parser<LaneRule> parser() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Parser<LaneRule> getParserForType() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public qorechain.abstractaccount.v1.QueryOuterClass.LaneRule getDefaultInstanceForType() {
       return DEFAULT_INSTANCE;
     }
 
@@ -6933,6 +8307,11 @@ java.lang.String defaultValue) {
   private static final 
     com.google.protobuf.GeneratedMessage.FieldAccessorTable
       internal_static_qorechain_abstractaccount_v1_QueryPermissionSchemaResponse_MsgPermissionsEntry_fieldAccessorTable;
+  private static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_qorechain_abstractaccount_v1_LaneRule_descriptor;
+  private static final 
+    com.google.protobuf.GeneratedMessage.FieldAccessorTable
+      internal_static_qorechain_abstractaccount_v1_LaneRule_fieldAccessorTable;
 
   public static com.google.protobuf.Descriptors.FileDescriptor
       getDescriptor() {
@@ -6965,35 +8344,40 @@ java.lang.String defaultValue) {
       "t\"\026\n\024QueryAccountsRequest\"^\n\025QueryAccoun" +
       "tsResponse\022E\n\010accounts\030\001 \003(\0132).qorechain" +
       ".abstractaccount.v1.AccountViewR\010account" +
-      "s\"\036\n\034QueryPermissionSchemaRequest\"\325\002\n\035Qu" +
+      "s\"\036\n\034QueryPermissionSchemaRequest\"\234\003\n\035Qu" +
       "eryPermissionSchemaResponse\022%\n\016schema_ve" +
       "rsion\030\001 \001(\tR\rschemaVersion\022 \n\013permission" +
       "s\030\002 \003(\tR\013permissions\022x\n\017msg_permissions\030" +
       "\003 \003(\0132O.qorechain.abstractaccount.v1.Que" +
       "ryPermissionSchemaResponse.MsgPermission" +
       "sEntryR\016msgPermissions\022.\n\023key_management" +
-      "_msgs\030\004 \003(\tR\021keyManagementMsgs\032A\n\023MsgPer" +
-      "missionsEntry\022\020\n\003key\030\001 \001(\tR\003key\022\024\n\005value" +
-      "\030\002 \001(\tR\005value:\0028\0012\277\005\n\005Query\022\233\001\n\006Config\0220" +
-      ".qorechain.abstractaccount.v1.QueryConfi" +
-      "gRequest\0321.qorechain.abstractaccount.v1." +
-      "QueryConfigResponse\",\202\323\344\223\002&\022$/qorechain/" +
-      "abstractaccount/v1/config\022\252\001\n\007Account\0221." +
-      "qorechain.abstractaccount.v1.QueryAccoun" +
-      "tRequest\0322.qorechain.abstractaccount.v1." +
-      "QueryAccountResponse\"8\202\323\344\223\0022\0220/qorechain" +
-      "/abstractaccount/v1/accounts/{address}\022\243" +
-      "\001\n\010Accounts\0222.qorechain.abstractaccount." +
-      "v1.QueryAccountsRequest\0323.qorechain.abst" +
-      "ractaccount.v1.QueryAccountsResponse\".\202\323" +
-      "\344\223\002(\022&/qorechain/abstractaccount/v1/acco" +
-      "unts\022\304\001\n\020PermissionSchema\022:.qorechain.ab" +
-      "stractaccount.v1.QueryPermissionSchemaRe" +
-      "quest\032;.qorechain.abstractaccount.v1.Que" +
-      "ryPermissionSchemaResponse\"7\202\323\344\223\0021\022//qor" +
-      "echain/abstractaccount/v1/permission_sch" +
-      "emaB=Z;github.com/qorechain/qorechain-co" +
-      "re/x/abstractaccount/typesb\006proto3"
+      "_msgs\030\004 \003(\tR\021keyManagementMsgs\022E\n\nlane_r" +
+      "ules\030\005 \003(\0132&.qorechain.abstractaccount.v" +
+      "1.LaneRuleR\tlaneRules\032A\n\023MsgPermissionsE" +
+      "ntry\022\020\n\003key\030\001 \001(\tR\003key\022\024\n\005value\030\002 \001(\tR\005v" +
+      "alue:\0028\001\"j\n\010LaneRule\022 \n\014msg_type_url\030\001 \001" +
+      "(\tR\nmsgTypeUrl\022\034\n\tcondition\030\002 \001(\tR\tcondi" +
+      "tion\022\036\n\npermission\030\003 \001(\tR\npermission2\277\005\n" +
+      "\005Query\022\233\001\n\006Config\0220.qorechain.abstractac" +
+      "count.v1.QueryConfigRequest\0321.qorechain." +
+      "abstractaccount.v1.QueryConfigResponse\"," +
+      "\202\323\344\223\002&\022$/qorechain/abstractaccount/v1/co" +
+      "nfig\022\252\001\n\007Account\0221.qorechain.abstractacc" +
+      "ount.v1.QueryAccountRequest\0322.qorechain." +
+      "abstractaccount.v1.QueryAccountResponse\"" +
+      "8\202\323\344\223\0022\0220/qorechain/abstractaccount/v1/a" +
+      "ccounts/{address}\022\243\001\n\010Accounts\0222.qorecha" +
+      "in.abstractaccount.v1.QueryAccountsReque" +
+      "st\0323.qorechain.abstractaccount.v1.QueryA" +
+      "ccountsResponse\".\202\323\344\223\002(\022&/qorechain/abst" +
+      "ractaccount/v1/accounts\022\304\001\n\020PermissionSc" +
+      "hema\022:.qorechain.abstractaccount.v1.Quer" +
+      "yPermissionSchemaRequest\032;.qorechain.abs" +
+      "tractaccount.v1.QueryPermissionSchemaRes" +
+      "ponse\"7\202\323\344\223\0021\022//qorechain/abstractaccoun" +
+      "t/v1/permission_schemaB=Z;github.com/qor" +
+      "echain/qorechain-core/x/abstractaccount/" +
+      "typesb\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
@@ -7059,13 +8443,19 @@ java.lang.String defaultValue) {
     internal_static_qorechain_abstractaccount_v1_QueryPermissionSchemaResponse_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_qorechain_abstractaccount_v1_QueryPermissionSchemaResponse_descriptor,
-        new java.lang.String[] { "SchemaVersion", "Permissions", "MsgPermissions", "KeyManagementMsgs", });
+        new java.lang.String[] { "SchemaVersion", "Permissions", "MsgPermissions", "KeyManagementMsgs", "LaneRules", });
     internal_static_qorechain_abstractaccount_v1_QueryPermissionSchemaResponse_MsgPermissionsEntry_descriptor =
       internal_static_qorechain_abstractaccount_v1_QueryPermissionSchemaResponse_descriptor.getNestedType(0);
     internal_static_qorechain_abstractaccount_v1_QueryPermissionSchemaResponse_MsgPermissionsEntry_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_qorechain_abstractaccount_v1_QueryPermissionSchemaResponse_MsgPermissionsEntry_descriptor,
         new java.lang.String[] { "Key", "Value", });
+    internal_static_qorechain_abstractaccount_v1_LaneRule_descriptor =
+      getDescriptor().getMessageType(10);
+    internal_static_qorechain_abstractaccount_v1_LaneRule_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessage.FieldAccessorTable(
+        internal_static_qorechain_abstractaccount_v1_LaneRule_descriptor,
+        new java.lang.String[] { "MsgTypeUrl", "Condition", "Permission", });
     descriptor.resolveAllFeaturesImmutable();
     com.google.api.AnnotationsProto.getDescriptor();
     com.google.protobuf.ExtensionRegistry registry =

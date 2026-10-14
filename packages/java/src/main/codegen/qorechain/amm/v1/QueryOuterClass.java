@@ -9411,6 +9411,18 @@ public final class QueryOuterClass extends com.google.protobuf.GeneratedFile {
      */
     com.google.protobuf.ByteString
         getFeeBytes();
+
+    /**
+     * <pre>
+     * impact_bps is how far the quoted execution price falls below the pool's
+     * current marginal price, in basis points (v3.2.2; 0 before it). A trade
+     * over max_swap_impact_bps is refused with ErrPriceImpactExceeded instead.
+     * </pre>
+     *
+     * <code>uint32 impact_bps = 3 [json_name = "impactBps"];</code>
+     * @return The impactBps.
+     */
+    int getImpactBps();
   }
   /**
    * Protobuf type {@code qorechain.amm.v1.QueryQuoteExactInResponse}
@@ -9534,6 +9546,23 @@ public final class QueryOuterClass extends com.google.protobuf.GeneratedFile {
       }
     }
 
+    public static final int IMPACT_BPS_FIELD_NUMBER = 3;
+    private int impactBps_ = 0;
+    /**
+     * <pre>
+     * impact_bps is how far the quoted execution price falls below the pool's
+     * current marginal price, in basis points (v3.2.2; 0 before it). A trade
+     * over max_swap_impact_bps is refused with ErrPriceImpactExceeded instead.
+     * </pre>
+     *
+     * <code>uint32 impact_bps = 3 [json_name = "impactBps"];</code>
+     * @return The impactBps.
+     */
+    @java.lang.Override
+    public int getImpactBps() {
+      return impactBps_;
+    }
+
     private byte memoizedIsInitialized = -1;
     @java.lang.Override
     public final boolean isInitialized() {
@@ -9554,6 +9583,9 @@ public final class QueryOuterClass extends com.google.protobuf.GeneratedFile {
       if (!com.google.protobuf.GeneratedMessage.isStringEmpty(fee_)) {
         com.google.protobuf.GeneratedMessage.writeString(output, 2, fee_);
       }
+      if (impactBps_ != 0) {
+        output.writeUInt32(3, impactBps_);
+      }
       getUnknownFields().writeTo(output);
     }
     private int computeSerializedSize_0() {
@@ -9563,6 +9595,10 @@ public final class QueryOuterClass extends com.google.protobuf.GeneratedFile {
       }
       if (!com.google.protobuf.GeneratedMessage.isStringEmpty(fee_)) {
         size += com.google.protobuf.GeneratedMessage.computeStringSize(2, fee_);
+      }
+      if (impactBps_ != 0) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeUInt32Size(3, impactBps_);
       }
       return size;
     }
@@ -9592,6 +9628,8 @@ public final class QueryOuterClass extends com.google.protobuf.GeneratedFile {
           .equals(other.getAmountOut())) return false;
       if (!getFee()
           .equals(other.getFee())) return false;
+      if (getImpactBps()
+          != other.getImpactBps()) return false;
       if (!getUnknownFields().equals(other.getUnknownFields())) return false;
       return true;
     }
@@ -9607,6 +9645,8 @@ public final class QueryOuterClass extends com.google.protobuf.GeneratedFile {
       hash = (53 * hash) + getAmountOut().hashCode();
       hash = (37 * hash) + FEE_FIELD_NUMBER;
       hash = (53 * hash) + getFee().hashCode();
+      hash = (37 * hash) + IMPACT_BPS_FIELD_NUMBER;
+      hash = (53 * hash) + getImpactBps();
       hash = (29 * hash) + getUnknownFields().hashCode();
       memoizedHashCode = hash;
       return hash;
@@ -9740,6 +9780,7 @@ public final class QueryOuterClass extends com.google.protobuf.GeneratedFile {
         bitField0_ = 0;
         amountOut_ = "";
         fee_ = "";
+        impactBps_ = 0;
         return this;
       }
 
@@ -9779,6 +9820,9 @@ public final class QueryOuterClass extends com.google.protobuf.GeneratedFile {
         if (((from_bitField0_ & 0x00000002) != 0)) {
           result.fee_ = fee_;
         }
+        if (((from_bitField0_ & 0x00000004) != 0)) {
+          result.impactBps_ = impactBps_;
+        }
       }
 
       @java.lang.Override
@@ -9802,6 +9846,9 @@ public final class QueryOuterClass extends com.google.protobuf.GeneratedFile {
           fee_ = other.fee_;
           bitField0_ |= 0x00000002;
           onChanged();
+        }
+        if (other.getImpactBps() != 0) {
+          setImpactBps(other.getImpactBps());
         }
         this.mergeUnknownFields(other.getUnknownFields());
         onChanged();
@@ -9839,6 +9886,11 @@ public final class QueryOuterClass extends com.google.protobuf.GeneratedFile {
                 bitField0_ |= 0x00000002;
                 break;
               } // case 18
+              case 24: {
+                impactBps_ = input.readUInt32();
+                bitField0_ |= 0x00000004;
+                break;
+              } // case 24
               default: {
                 if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                   done = true; // was an endgroup tag
@@ -9996,6 +10048,56 @@ public final class QueryOuterClass extends com.google.protobuf.GeneratedFile {
         checkByteStringIsUtf8(value);
         fee_ = value;
         bitField0_ |= 0x00000002;
+        onChanged();
+        return this;
+      }
+
+      private int impactBps_ ;
+      /**
+       * <pre>
+       * impact_bps is how far the quoted execution price falls below the pool's
+       * current marginal price, in basis points (v3.2.2; 0 before it). A trade
+       * over max_swap_impact_bps is refused with ErrPriceImpactExceeded instead.
+       * </pre>
+       *
+       * <code>uint32 impact_bps = 3 [json_name = "impactBps"];</code>
+       * @return The impactBps.
+       */
+      @java.lang.Override
+      public int getImpactBps() {
+        return impactBps_;
+      }
+      /**
+       * <pre>
+       * impact_bps is how far the quoted execution price falls below the pool's
+       * current marginal price, in basis points (v3.2.2; 0 before it). A trade
+       * over max_swap_impact_bps is refused with ErrPriceImpactExceeded instead.
+       * </pre>
+       *
+       * <code>uint32 impact_bps = 3 [json_name = "impactBps"];</code>
+       * @param value The impactBps to set.
+       * @return This builder for chaining.
+       */
+      public Builder setImpactBps(int value) {
+
+        impactBps_ = value;
+        bitField0_ |= 0x00000004;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * impact_bps is how far the quoted execution price falls below the pool's
+       * current marginal price, in basis points (v3.2.2; 0 before it). A trade
+       * over max_swap_impact_bps is refused with ErrPriceImpactExceeded instead.
+       * </pre>
+       *
+       * <code>uint32 impact_bps = 3 [json_name = "impactBps"];</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearImpactBps() {
+        bitField0_ = (bitField0_ & ~0x00000004);
+        impactBps_ = 0;
         onChanged();
         return this;
       }
@@ -10818,6 +10920,16 @@ public final class QueryOuterClass extends com.google.protobuf.GeneratedFile {
      */
     com.google.protobuf.ByteString
         getFeeBytes();
+
+    /**
+     * <pre>
+     * impact_bps: see QueryQuoteExactInResponse.
+     * </pre>
+     *
+     * <code>uint32 impact_bps = 3 [json_name = "impactBps"];</code>
+     * @return The impactBps.
+     */
+    int getImpactBps();
   }
   /**
    * Protobuf type {@code qorechain.amm.v1.QueryQuoteExactOutResponse}
@@ -10941,6 +11053,21 @@ public final class QueryOuterClass extends com.google.protobuf.GeneratedFile {
       }
     }
 
+    public static final int IMPACT_BPS_FIELD_NUMBER = 3;
+    private int impactBps_ = 0;
+    /**
+     * <pre>
+     * impact_bps: see QueryQuoteExactInResponse.
+     * </pre>
+     *
+     * <code>uint32 impact_bps = 3 [json_name = "impactBps"];</code>
+     * @return The impactBps.
+     */
+    @java.lang.Override
+    public int getImpactBps() {
+      return impactBps_;
+    }
+
     private byte memoizedIsInitialized = -1;
     @java.lang.Override
     public final boolean isInitialized() {
@@ -10961,6 +11088,9 @@ public final class QueryOuterClass extends com.google.protobuf.GeneratedFile {
       if (!com.google.protobuf.GeneratedMessage.isStringEmpty(fee_)) {
         com.google.protobuf.GeneratedMessage.writeString(output, 2, fee_);
       }
+      if (impactBps_ != 0) {
+        output.writeUInt32(3, impactBps_);
+      }
       getUnknownFields().writeTo(output);
     }
     private int computeSerializedSize_0() {
@@ -10970,6 +11100,10 @@ public final class QueryOuterClass extends com.google.protobuf.GeneratedFile {
       }
       if (!com.google.protobuf.GeneratedMessage.isStringEmpty(fee_)) {
         size += com.google.protobuf.GeneratedMessage.computeStringSize(2, fee_);
+      }
+      if (impactBps_ != 0) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeUInt32Size(3, impactBps_);
       }
       return size;
     }
@@ -10999,6 +11133,8 @@ public final class QueryOuterClass extends com.google.protobuf.GeneratedFile {
           .equals(other.getAmountIn())) return false;
       if (!getFee()
           .equals(other.getFee())) return false;
+      if (getImpactBps()
+          != other.getImpactBps()) return false;
       if (!getUnknownFields().equals(other.getUnknownFields())) return false;
       return true;
     }
@@ -11014,6 +11150,8 @@ public final class QueryOuterClass extends com.google.protobuf.GeneratedFile {
       hash = (53 * hash) + getAmountIn().hashCode();
       hash = (37 * hash) + FEE_FIELD_NUMBER;
       hash = (53 * hash) + getFee().hashCode();
+      hash = (37 * hash) + IMPACT_BPS_FIELD_NUMBER;
+      hash = (53 * hash) + getImpactBps();
       hash = (29 * hash) + getUnknownFields().hashCode();
       memoizedHashCode = hash;
       return hash;
@@ -11147,6 +11285,7 @@ public final class QueryOuterClass extends com.google.protobuf.GeneratedFile {
         bitField0_ = 0;
         amountIn_ = "";
         fee_ = "";
+        impactBps_ = 0;
         return this;
       }
 
@@ -11186,6 +11325,9 @@ public final class QueryOuterClass extends com.google.protobuf.GeneratedFile {
         if (((from_bitField0_ & 0x00000002) != 0)) {
           result.fee_ = fee_;
         }
+        if (((from_bitField0_ & 0x00000004) != 0)) {
+          result.impactBps_ = impactBps_;
+        }
       }
 
       @java.lang.Override
@@ -11209,6 +11351,9 @@ public final class QueryOuterClass extends com.google.protobuf.GeneratedFile {
           fee_ = other.fee_;
           bitField0_ |= 0x00000002;
           onChanged();
+        }
+        if (other.getImpactBps() != 0) {
+          setImpactBps(other.getImpactBps());
         }
         this.mergeUnknownFields(other.getUnknownFields());
         onChanged();
@@ -11246,6 +11391,11 @@ public final class QueryOuterClass extends com.google.protobuf.GeneratedFile {
                 bitField0_ |= 0x00000002;
                 break;
               } // case 18
+              case 24: {
+                impactBps_ = input.readUInt32();
+                bitField0_ |= 0x00000004;
+                break;
+              } // case 24
               default: {
                 if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                   done = true; // was an endgroup tag
@@ -11403,6 +11553,50 @@ public final class QueryOuterClass extends com.google.protobuf.GeneratedFile {
         checkByteStringIsUtf8(value);
         fee_ = value;
         bitField0_ |= 0x00000002;
+        onChanged();
+        return this;
+      }
+
+      private int impactBps_ ;
+      /**
+       * <pre>
+       * impact_bps: see QueryQuoteExactInResponse.
+       * </pre>
+       *
+       * <code>uint32 impact_bps = 3 [json_name = "impactBps"];</code>
+       * @return The impactBps.
+       */
+      @java.lang.Override
+      public int getImpactBps() {
+        return impactBps_;
+      }
+      /**
+       * <pre>
+       * impact_bps: see QueryQuoteExactInResponse.
+       * </pre>
+       *
+       * <code>uint32 impact_bps = 3 [json_name = "impactBps"];</code>
+       * @param value The impactBps to set.
+       * @return This builder for chaining.
+       */
+      public Builder setImpactBps(int value) {
+
+        impactBps_ = value;
+        bitField0_ |= 0x00000004;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * impact_bps: see QueryQuoteExactInResponse.
+       * </pre>
+       *
+       * <code>uint32 impact_bps = 3 [json_name = "impactBps"];</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearImpactBps() {
+        bitField0_ = (bitField0_ & ~0x00000004);
+        impactBps_ = 0;
         onChanged();
         return this;
       }
@@ -11585,39 +11779,41 @@ public final class QueryOuterClass extends com.google.protobuf.GeneratedFile {
       "ce\030\001 \001(\tR\007balance\"k\n\030QueryQuoteExactInRe" +
       "quest\022\027\n\007pool_id\030\001 \001(\004R\006poolId\022\031\n\010denom_" +
       "in\030\002 \001(\tR\007denomIn\022\033\n\tamount_in\030\003 \001(\tR\010am" +
-      "ountIn\"L\n\031QueryQuoteExactInResponse\022\035\n\na" +
+      "ountIn\"k\n\031QueryQuoteExactInResponse\022\035\n\na" +
       "mount_out\030\001 \001(\tR\tamountOut\022\020\n\003fee\030\002 \001(\tR" +
-      "\003fee\"p\n\031QueryQuoteExactOutRequest\022\027\n\007poo" +
-      "l_id\030\001 \001(\004R\006poolId\022\033\n\tdenom_out\030\002 \001(\tR\010d" +
-      "enomOut\022\035\n\namount_out\030\003 \001(\tR\tamountOut\"K" +
-      "\n\032QueryQuoteExactOutResponse\022\033\n\tamount_i" +
-      "n\030\001 \001(\tR\010amountIn\022\020\n\003fee\030\002 \001(\tR\003fee2\312\007\n\005" +
-      "Query\022w\n\006Params\022$.qorechain.amm.v1.Query" +
-      "ParamsRequest\032%.qorechain.amm.v1.QueryPa" +
-      "ramsResponse\" \202\323\344\223\002\032\022\030/qorechain/amm/v1/" +
-      "params\022z\n\004Pool\022\".qorechain.amm.v1.QueryP" +
-      "oolRequest\032#.qorechain.amm.v1.QueryPoolR" +
-      "esponse\")\202\323\344\223\002#\022!/qorechain/amm/v1/pools" +
-      "/{pool_id}\022s\n\005Pools\022#.qorechain.amm.v1.Q" +
-      "ueryPoolsRequest\032$.qorechain.amm.v1.Quer" +
-      "yPoolsResponse\"\037\202\323\344\223\002\031\022\027/qorechain/amm/v" +
-      "1/pools\022\221\001\n\014PoolByDenoms\022*.qorechain.amm" +
-      ".v1.QueryPoolByDenomsRequest\032+.qorechain" +
-      ".amm.v1.QueryPoolByDenomsResponse\"(\202\323\344\223\002" +
-      "\"\022 /qorechain/amm/v1/pool_by_denoms\022\226\001\n\t" +
-      "LPBalance\022\'.qorechain.amm.v1.QueryLPBala" +
-      "nceRequest\032(.qorechain.amm.v1.QueryLPBal" +
-      "anceResponse\"6\202\323\344\223\0020\022./qorechain/amm/v1/" +
-      "pools/{pool_id}/lp/{address}\022\221\001\n\014QuoteEx" +
-      "actIn\022*.qorechain.amm.v1.QueryQuoteExact" +
-      "InRequest\032+.qorechain.amm.v1.QueryQuoteE" +
-      "xactInResponse\"(\202\323\344\223\002\"\022 /qorechain/amm/v" +
-      "1/quote/exact_in\022\225\001\n\rQuoteExactOut\022+.qor" +
-      "echain.amm.v1.QueryQuoteExactOutRequest\032" +
-      ",.qorechain.amm.v1.QueryQuoteExactOutRes" +
-      "ponse\")\202\323\344\223\002#\022!/qorechain/amm/v1/quote/e" +
-      "xact_outB1Z/github.com/qorechain/qorecha" +
-      "in-core/x/amm/typesb\006proto3"
+      "\003fee\022\035\n\nimpact_bps\030\003 \001(\rR\timpactBps\"p\n\031Q" +
+      "ueryQuoteExactOutRequest\022\027\n\007pool_id\030\001 \001(" +
+      "\004R\006poolId\022\033\n\tdenom_out\030\002 \001(\tR\010denomOut\022\035" +
+      "\n\namount_out\030\003 \001(\tR\tamountOut\"j\n\032QueryQu" +
+      "oteExactOutResponse\022\033\n\tamount_in\030\001 \001(\tR\010" +
+      "amountIn\022\020\n\003fee\030\002 \001(\tR\003fee\022\035\n\nimpact_bps" +
+      "\030\003 \001(\rR\timpactBps2\312\007\n\005Query\022w\n\006Params\022$." +
+      "qorechain.amm.v1.QueryParamsRequest\032%.qo" +
+      "rechain.amm.v1.QueryParamsResponse\" \202\323\344\223" +
+      "\002\032\022\030/qorechain/amm/v1/params\022z\n\004Pool\022\".q" +
+      "orechain.amm.v1.QueryPoolRequest\032#.qorec" +
+      "hain.amm.v1.QueryPoolResponse\")\202\323\344\223\002#\022!/" +
+      "qorechain/amm/v1/pools/{pool_id}\022s\n\005Pool" +
+      "s\022#.qorechain.amm.v1.QueryPoolsRequest\032$" +
+      ".qorechain.amm.v1.QueryPoolsResponse\"\037\202\323" +
+      "\344\223\002\031\022\027/qorechain/amm/v1/pools\022\221\001\n\014PoolBy" +
+      "Denoms\022*.qorechain.amm.v1.QueryPoolByDen" +
+      "omsRequest\032+.qorechain.amm.v1.QueryPoolB" +
+      "yDenomsResponse\"(\202\323\344\223\002\"\022 /qorechain/amm/" +
+      "v1/pool_by_denoms\022\226\001\n\tLPBalance\022\'.qorech" +
+      "ain.amm.v1.QueryLPBalanceRequest\032(.qorec" +
+      "hain.amm.v1.QueryLPBalanceResponse\"6\202\323\344\223" +
+      "\0020\022./qorechain/amm/v1/pools/{pool_id}/lp" +
+      "/{address}\022\221\001\n\014QuoteExactIn\022*.qorechain." +
+      "amm.v1.QueryQuoteExactInRequest\032+.qorech" +
+      "ain.amm.v1.QueryQuoteExactInResponse\"(\202\323" +
+      "\344\223\002\"\022 /qorechain/amm/v1/quote/exact_in\022\225" +
+      "\001\n\rQuoteExactOut\022+.qorechain.amm.v1.Quer" +
+      "yQuoteExactOutRequest\032,.qorechain.amm.v1" +
+      ".QueryQuoteExactOutResponse\")\202\323\344\223\002#\022!/qo" +
+      "rechain/amm/v1/quote/exact_outB1Z/github" +
+      ".com/qorechain/qorechain-core/x/amm/type" +
+      "sb\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
@@ -11707,7 +11903,7 @@ public final class QueryOuterClass extends com.google.protobuf.GeneratedFile {
     internal_static_qorechain_amm_v1_QueryQuoteExactInResponse_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_qorechain_amm_v1_QueryQuoteExactInResponse_descriptor,
-        new java.lang.String[] { "AmountOut", "Fee", });
+        new java.lang.String[] { "AmountOut", "Fee", "ImpactBps", });
     internal_static_qorechain_amm_v1_QueryQuoteExactOutRequest_descriptor =
       getDescriptor().getMessageType(14);
     internal_static_qorechain_amm_v1_QueryQuoteExactOutRequest_fieldAccessorTable = new
@@ -11719,7 +11915,7 @@ public final class QueryOuterClass extends com.google.protobuf.GeneratedFile {
     internal_static_qorechain_amm_v1_QueryQuoteExactOutResponse_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_qorechain_amm_v1_QueryQuoteExactOutResponse_descriptor,
-        new java.lang.String[] { "AmountIn", "Fee", });
+        new java.lang.String[] { "AmountIn", "Fee", "ImpactBps", });
     descriptor.resolveAllFeaturesImmutable();
     com.google.api.AnnotationsProto.getDescriptor();
     com.google.protobuf.ExtensionRegistry registry =

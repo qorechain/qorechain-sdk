@@ -127,6 +127,22 @@ export interface MsgUpdateEthLightClient {
 export interface MsgUpdateEthLightClientResponse {
 }
 
+/**
+ * MsgUpdateCircuitBreakerLimits replaces a chain's circuit breaker limits. Both
+ * are amounts in the chain's base unit; "0" means unlimited. When both are
+ * non-zero, max_single_transfer may not exceed daily_limit. The daily counter
+ * and pause state are left as they are.
+ */
+export interface MsgUpdateCircuitBreakerLimits {
+  admin: string;
+  chainId: string;
+  maxSingleTransfer: string;
+  dailyLimit: string;
+}
+
+export interface MsgUpdateCircuitBreakerLimitsResponse {
+}
+
 function createBaseMsgUpdateChainConfig(): MsgUpdateChainConfig {
   return {
     admin: "",
@@ -1749,6 +1765,169 @@ export const MsgUpdateEthLightClientResponse: MessageFns<MsgUpdateEthLightClient
   },
 };
 
+function createBaseMsgUpdateCircuitBreakerLimits(): MsgUpdateCircuitBreakerLimits {
+  return { admin: "", chainId: "", maxSingleTransfer: "", dailyLimit: "" };
+}
+
+export const MsgUpdateCircuitBreakerLimits: MessageFns<MsgUpdateCircuitBreakerLimits> = {
+  encode(message: MsgUpdateCircuitBreakerLimits, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.admin !== "") {
+      writer.uint32(10).string(message.admin);
+    }
+    if (message.chainId !== "") {
+      writer.uint32(18).string(message.chainId);
+    }
+    if (message.maxSingleTransfer !== "") {
+      writer.uint32(26).string(message.maxSingleTransfer);
+    }
+    if (message.dailyLimit !== "") {
+      writer.uint32(34).string(message.dailyLimit);
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): MsgUpdateCircuitBreakerLimits {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseMsgUpdateCircuitBreakerLimits();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.admin = reader.string();
+          continue;
+        }
+        case 2: {
+          if (tag !== 18) {
+            break;
+          }
+
+          message.chainId = reader.string();
+          continue;
+        }
+        case 3: {
+          if (tag !== 26) {
+            break;
+          }
+
+          message.maxSingleTransfer = reader.string();
+          continue;
+        }
+        case 4: {
+          if (tag !== 34) {
+            break;
+          }
+
+          message.dailyLimit = reader.string();
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(object: any): MsgUpdateCircuitBreakerLimits {
+    return {
+      admin: isSet(object.admin) ? globalThis.String(object.admin) : "",
+      chainId: isSet(object.chainId)
+        ? globalThis.String(object.chainId)
+        : isSet(object.chain_id)
+        ? globalThis.String(object.chain_id)
+        : "",
+      maxSingleTransfer: isSet(object.maxSingleTransfer)
+        ? globalThis.String(object.maxSingleTransfer)
+        : isSet(object.max_single_transfer)
+        ? globalThis.String(object.max_single_transfer)
+        : "",
+      dailyLimit: isSet(object.dailyLimit)
+        ? globalThis.String(object.dailyLimit)
+        : isSet(object.daily_limit)
+        ? globalThis.String(object.daily_limit)
+        : "",
+    };
+  },
+
+  toJSON(message: MsgUpdateCircuitBreakerLimits): unknown {
+    const obj: any = {};
+    if (message.admin !== "") {
+      obj.admin = message.admin;
+    }
+    if (message.chainId !== "") {
+      obj.chainId = message.chainId;
+    }
+    if (message.maxSingleTransfer !== "") {
+      obj.maxSingleTransfer = message.maxSingleTransfer;
+    }
+    if (message.dailyLimit !== "") {
+      obj.dailyLimit = message.dailyLimit;
+    }
+    return obj;
+  },
+
+  create(base?: DeepPartial<MsgUpdateCircuitBreakerLimits>): MsgUpdateCircuitBreakerLimits {
+    return MsgUpdateCircuitBreakerLimits.fromPartial(base ?? {});
+  },
+  fromPartial(object: DeepPartial<MsgUpdateCircuitBreakerLimits>): MsgUpdateCircuitBreakerLimits {
+    const message = createBaseMsgUpdateCircuitBreakerLimits();
+    message.admin = object.admin ?? "";
+    message.chainId = object.chainId ?? "";
+    message.maxSingleTransfer = object.maxSingleTransfer ?? "";
+    message.dailyLimit = object.dailyLimit ?? "";
+    return message;
+  },
+};
+
+function createBaseMsgUpdateCircuitBreakerLimitsResponse(): MsgUpdateCircuitBreakerLimitsResponse {
+  return {};
+}
+
+export const MsgUpdateCircuitBreakerLimitsResponse: MessageFns<MsgUpdateCircuitBreakerLimitsResponse> = {
+  encode(_: MsgUpdateCircuitBreakerLimitsResponse, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): MsgUpdateCircuitBreakerLimitsResponse {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseMsgUpdateCircuitBreakerLimitsResponse();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(_: any): MsgUpdateCircuitBreakerLimitsResponse {
+    return {};
+  },
+
+  toJSON(_: MsgUpdateCircuitBreakerLimitsResponse): unknown {
+    const obj: any = {};
+    return obj;
+  },
+
+  create(base?: DeepPartial<MsgUpdateCircuitBreakerLimitsResponse>): MsgUpdateCircuitBreakerLimitsResponse {
+    return MsgUpdateCircuitBreakerLimitsResponse.fromPartial(base ?? {});
+  },
+  fromPartial(_: DeepPartial<MsgUpdateCircuitBreakerLimitsResponse>): MsgUpdateCircuitBreakerLimitsResponse {
+    const message = createBaseMsgUpdateCircuitBreakerLimitsResponse();
+    return message;
+  },
+};
+
 /** Msg defines the bridge module's transaction service. */
 export type MsgDefinition = typeof MsgDefinition;
 export const MsgDefinition = {
@@ -1829,6 +2008,19 @@ export const MsgDefinition = {
       requestType: MsgSetVerifierBootstrap as typeof MsgSetVerifierBootstrap,
       requestStream: false,
       responseType: MsgSetVerifierBootstrapResponse as typeof MsgSetVerifierBootstrapResponse,
+      responseStream: false,
+      options: {},
+    },
+    /**
+     * UpdateCircuitBreakerLimits sets a chain's single-transfer and daily limits.
+     * Signed by the bridge_admin key, a qcb_bridge licence holder, or governance.
+     * Before it existed the limits could only be set in genesis.
+     */
+    updateCircuitBreakerLimits: {
+      name: "UpdateCircuitBreakerLimits",
+      requestType: MsgUpdateCircuitBreakerLimits as typeof MsgUpdateCircuitBreakerLimits,
+      requestStream: false,
+      responseType: MsgUpdateCircuitBreakerLimitsResponse as typeof MsgUpdateCircuitBreakerLimitsResponse,
       responseStream: false,
       options: {},
     },

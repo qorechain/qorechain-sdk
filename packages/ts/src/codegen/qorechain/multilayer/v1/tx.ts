@@ -94,6 +94,32 @@ export interface MsgChallengeAnchorResponse {
   resolution: string;
 }
 
+/**
+ * MsgUpdateParams replaces the multilayer parameters wholesale. The fields are
+ * the module's Params, spelled out one by one (as x/inflation does) because the
+ * parameters are stored as JSON by a hand-written struct whose encoding must
+ * not change. Governance only: authority must be the gov module account.
+ */
+export interface MsgUpdateParams {
+  authority: string;
+  maxSidechains: string;
+  maxPaychains: string;
+  minAnchorInterval: string;
+  maxAnchorInterval: string;
+  /** default_challenge_period is in seconds. */
+  defaultChallengePeriod: string;
+  /** min_sidechain_stake and min_paychain_stake are uqor amounts. */
+  minSidechainStake: string;
+  minPaychainStake: string;
+  routingEnabled: boolean;
+  /** routing_confidence_threshold is a decimal between 0 and 1. */
+  routingConfidenceThreshold: string;
+  crossLayerFeeBundling: boolean;
+}
+
+export interface MsgUpdateParamsResponse {
+}
+
 function createBaseMsgRegisterSidechain(): MsgRegisterSidechain {
   return {
     creator: "",
@@ -1571,6 +1597,321 @@ export const MsgChallengeAnchorResponse: MessageFns<MsgChallengeAnchorResponse> 
   },
 };
 
+function createBaseMsgUpdateParams(): MsgUpdateParams {
+  return {
+    authority: "",
+    maxSidechains: "0",
+    maxPaychains: "0",
+    minAnchorInterval: "0",
+    maxAnchorInterval: "0",
+    defaultChallengePeriod: "0",
+    minSidechainStake: "",
+    minPaychainStake: "",
+    routingEnabled: false,
+    routingConfidenceThreshold: "",
+    crossLayerFeeBundling: false,
+  };
+}
+
+export const MsgUpdateParams: MessageFns<MsgUpdateParams> = {
+  encode(message: MsgUpdateParams, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.authority !== "") {
+      writer.uint32(10).string(message.authority);
+    }
+    if (message.maxSidechains !== "0") {
+      writer.uint32(16).uint64(message.maxSidechains);
+    }
+    if (message.maxPaychains !== "0") {
+      writer.uint32(24).uint64(message.maxPaychains);
+    }
+    if (message.minAnchorInterval !== "0") {
+      writer.uint32(32).uint64(message.minAnchorInterval);
+    }
+    if (message.maxAnchorInterval !== "0") {
+      writer.uint32(40).uint64(message.maxAnchorInterval);
+    }
+    if (message.defaultChallengePeriod !== "0") {
+      writer.uint32(48).uint64(message.defaultChallengePeriod);
+    }
+    if (message.minSidechainStake !== "") {
+      writer.uint32(58).string(message.minSidechainStake);
+    }
+    if (message.minPaychainStake !== "") {
+      writer.uint32(66).string(message.minPaychainStake);
+    }
+    if (message.routingEnabled !== false) {
+      writer.uint32(72).bool(message.routingEnabled);
+    }
+    if (message.routingConfidenceThreshold !== "") {
+      writer.uint32(82).string(message.routingConfidenceThreshold);
+    }
+    if (message.crossLayerFeeBundling !== false) {
+      writer.uint32(88).bool(message.crossLayerFeeBundling);
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): MsgUpdateParams {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseMsgUpdateParams();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.authority = reader.string();
+          continue;
+        }
+        case 2: {
+          if (tag !== 16) {
+            break;
+          }
+
+          message.maxSidechains = reader.uint64().toString();
+          continue;
+        }
+        case 3: {
+          if (tag !== 24) {
+            break;
+          }
+
+          message.maxPaychains = reader.uint64().toString();
+          continue;
+        }
+        case 4: {
+          if (tag !== 32) {
+            break;
+          }
+
+          message.minAnchorInterval = reader.uint64().toString();
+          continue;
+        }
+        case 5: {
+          if (tag !== 40) {
+            break;
+          }
+
+          message.maxAnchorInterval = reader.uint64().toString();
+          continue;
+        }
+        case 6: {
+          if (tag !== 48) {
+            break;
+          }
+
+          message.defaultChallengePeriod = reader.uint64().toString();
+          continue;
+        }
+        case 7: {
+          if (tag !== 58) {
+            break;
+          }
+
+          message.minSidechainStake = reader.string();
+          continue;
+        }
+        case 8: {
+          if (tag !== 66) {
+            break;
+          }
+
+          message.minPaychainStake = reader.string();
+          continue;
+        }
+        case 9: {
+          if (tag !== 72) {
+            break;
+          }
+
+          message.routingEnabled = reader.bool();
+          continue;
+        }
+        case 10: {
+          if (tag !== 82) {
+            break;
+          }
+
+          message.routingConfidenceThreshold = reader.string();
+          continue;
+        }
+        case 11: {
+          if (tag !== 88) {
+            break;
+          }
+
+          message.crossLayerFeeBundling = reader.bool();
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(object: any): MsgUpdateParams {
+    return {
+      authority: isSet(object.authority) ? globalThis.String(object.authority) : "",
+      maxSidechains: isSet(object.maxSidechains)
+        ? globalThis.String(object.maxSidechains)
+        : isSet(object.max_sidechains)
+        ? globalThis.String(object.max_sidechains)
+        : "0",
+      maxPaychains: isSet(object.maxPaychains)
+        ? globalThis.String(object.maxPaychains)
+        : isSet(object.max_paychains)
+        ? globalThis.String(object.max_paychains)
+        : "0",
+      minAnchorInterval: isSet(object.minAnchorInterval)
+        ? globalThis.String(object.minAnchorInterval)
+        : isSet(object.min_anchor_interval)
+        ? globalThis.String(object.min_anchor_interval)
+        : "0",
+      maxAnchorInterval: isSet(object.maxAnchorInterval)
+        ? globalThis.String(object.maxAnchorInterval)
+        : isSet(object.max_anchor_interval)
+        ? globalThis.String(object.max_anchor_interval)
+        : "0",
+      defaultChallengePeriod: isSet(object.defaultChallengePeriod)
+        ? globalThis.String(object.defaultChallengePeriod)
+        : isSet(object.default_challenge_period)
+        ? globalThis.String(object.default_challenge_period)
+        : "0",
+      minSidechainStake: isSet(object.minSidechainStake)
+        ? globalThis.String(object.minSidechainStake)
+        : isSet(object.min_sidechain_stake)
+        ? globalThis.String(object.min_sidechain_stake)
+        : "",
+      minPaychainStake: isSet(object.minPaychainStake)
+        ? globalThis.String(object.minPaychainStake)
+        : isSet(object.min_paychain_stake)
+        ? globalThis.String(object.min_paychain_stake)
+        : "",
+      routingEnabled: isSet(object.routingEnabled)
+        ? globalThis.Boolean(object.routingEnabled)
+        : isSet(object.routing_enabled)
+        ? globalThis.Boolean(object.routing_enabled)
+        : false,
+      routingConfidenceThreshold: isSet(object.routingConfidenceThreshold)
+        ? globalThis.String(object.routingConfidenceThreshold)
+        : isSet(object.routing_confidence_threshold)
+        ? globalThis.String(object.routing_confidence_threshold)
+        : "",
+      crossLayerFeeBundling: isSet(object.crossLayerFeeBundling)
+        ? globalThis.Boolean(object.crossLayerFeeBundling)
+        : isSet(object.cross_layer_fee_bundling)
+        ? globalThis.Boolean(object.cross_layer_fee_bundling)
+        : false,
+    };
+  },
+
+  toJSON(message: MsgUpdateParams): unknown {
+    const obj: any = {};
+    if (message.authority !== "") {
+      obj.authority = message.authority;
+    }
+    if (message.maxSidechains !== "0") {
+      obj.maxSidechains = message.maxSidechains;
+    }
+    if (message.maxPaychains !== "0") {
+      obj.maxPaychains = message.maxPaychains;
+    }
+    if (message.minAnchorInterval !== "0") {
+      obj.minAnchorInterval = message.minAnchorInterval;
+    }
+    if (message.maxAnchorInterval !== "0") {
+      obj.maxAnchorInterval = message.maxAnchorInterval;
+    }
+    if (message.defaultChallengePeriod !== "0") {
+      obj.defaultChallengePeriod = message.defaultChallengePeriod;
+    }
+    if (message.minSidechainStake !== "") {
+      obj.minSidechainStake = message.minSidechainStake;
+    }
+    if (message.minPaychainStake !== "") {
+      obj.minPaychainStake = message.minPaychainStake;
+    }
+    if (message.routingEnabled !== false) {
+      obj.routingEnabled = message.routingEnabled;
+    }
+    if (message.routingConfidenceThreshold !== "") {
+      obj.routingConfidenceThreshold = message.routingConfidenceThreshold;
+    }
+    if (message.crossLayerFeeBundling !== false) {
+      obj.crossLayerFeeBundling = message.crossLayerFeeBundling;
+    }
+    return obj;
+  },
+
+  create(base?: DeepPartial<MsgUpdateParams>): MsgUpdateParams {
+    return MsgUpdateParams.fromPartial(base ?? {});
+  },
+  fromPartial(object: DeepPartial<MsgUpdateParams>): MsgUpdateParams {
+    const message = createBaseMsgUpdateParams();
+    message.authority = object.authority ?? "";
+    message.maxSidechains = object.maxSidechains ?? "0";
+    message.maxPaychains = object.maxPaychains ?? "0";
+    message.minAnchorInterval = object.minAnchorInterval ?? "0";
+    message.maxAnchorInterval = object.maxAnchorInterval ?? "0";
+    message.defaultChallengePeriod = object.defaultChallengePeriod ?? "0";
+    message.minSidechainStake = object.minSidechainStake ?? "";
+    message.minPaychainStake = object.minPaychainStake ?? "";
+    message.routingEnabled = object.routingEnabled ?? false;
+    message.routingConfidenceThreshold = object.routingConfidenceThreshold ?? "";
+    message.crossLayerFeeBundling = object.crossLayerFeeBundling ?? false;
+    return message;
+  },
+};
+
+function createBaseMsgUpdateParamsResponse(): MsgUpdateParamsResponse {
+  return {};
+}
+
+export const MsgUpdateParamsResponse: MessageFns<MsgUpdateParamsResponse> = {
+  encode(_: MsgUpdateParamsResponse, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): MsgUpdateParamsResponse {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseMsgUpdateParamsResponse();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(_: any): MsgUpdateParamsResponse {
+    return {};
+  },
+
+  toJSON(_: MsgUpdateParamsResponse): unknown {
+    const obj: any = {};
+    return obj;
+  },
+
+  create(base?: DeepPartial<MsgUpdateParamsResponse>): MsgUpdateParamsResponse {
+    return MsgUpdateParamsResponse.fromPartial(base ?? {});
+  },
+  fromPartial(_: DeepPartial<MsgUpdateParamsResponse>): MsgUpdateParamsResponse {
+    const message = createBaseMsgUpdateParamsResponse();
+    return message;
+  },
+};
+
 export type MsgDefinition = typeof MsgDefinition;
 export const MsgDefinition = {
   name: "Msg",
@@ -1621,6 +1962,15 @@ export const MsgDefinition = {
       requestType: MsgChallengeAnchor as typeof MsgChallengeAnchor,
       requestStream: false,
       responseType: MsgChallengeAnchorResponse as typeof MsgChallengeAnchorResponse,
+      responseStream: false,
+      options: {},
+    },
+    /** UpdateParams replaces the module parameters. Governance only. */
+    updateParams: {
+      name: "UpdateParams",
+      requestType: MsgUpdateParams as typeof MsgUpdateParams,
+      requestStream: false,
+      responseType: MsgUpdateParamsResponse as typeof MsgUpdateParamsResponse,
       responseStream: false,
       options: {},
     },

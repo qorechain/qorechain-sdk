@@ -22,9 +22,10 @@ _runtime_version.ValidateProtobufRuntimeVersion(
 _sym_db = _symbol_database.Default()
 
 
+from google.api import annotations_pb2 as google_dot_api_dot_annotations__pb2
 
 
-DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\x1cqorechain/rdk/v1/query.proto\x12\x10qorechain.rdk.v1\"\xe3\x02\n\nParamsView\x12\x1f\n\x0bmax_rollups\x18\x01 \x01(\rR\nmaxRollups\x12/\n\x14min_stake_for_rollup\x18\x02 \x01(\x03R\x11minStakeForRollup\x12\x39\n\x19rollup_creation_burn_rate\x18\x03 \x01(\tR\x16rollupCreationBurnRate\x12\x38\n\x18\x64\x65\x66\x61ult_challenge_window\x18\x04 \x01(\x04R\x16\x64\x65\x66\x61ultChallengeWindow\x12\'\n\x10max_da_blob_size\x18\x05 \x01(\x04R\rmaxDaBlobSize\x12\x32\n\x15\x62lob_retention_blocks\x18\x06 \x01(\x04R\x13\x62lobRetentionBlocks\x12\x31\n\x15max_batches_per_block\x18\x07 \x01(\rR\x12maxBatchesPerBlock\"\x88\x03\n\nRollupView\x12\x1b\n\trollup_id\x18\x01 \x01(\tR\x08rollupId\x12\x18\n\x07\x63reator\x18\x02 \x01(\tR\x07\x63reator\x12\x18\n\x07profile\x18\x03 \x01(\tR\x07profile\x12\'\n\x0fsettlement_mode\x18\x04 \x01(\tR\x0esettlementMode\x12\x1d\n\nda_backend\x18\x05 \x01(\tR\tdaBackend\x12\"\n\rblock_time_ms\x18\x06 \x01(\x04R\x0b\x62lockTimeMs\x12\'\n\x10max_tx_per_block\x18\x07 \x01(\x04R\rmaxTxPerBlock\x12\x17\n\x07vm_type\x18\x08 \x01(\tR\x06vmType\x12\x16\n\x06status\x18\t \x01(\tR\x06status\x12!\n\x0cstake_amount\x18\n \x01(\x03R\x0bstakeAmount\x12\x19\n\x08layer_id\x18\x0b \x01(\tR\x07layerId\x12%\n\x0e\x63reated_height\x18\x0c \x01(\x03R\rcreatedHeight\"\xf0\x02\n\tBatchView\x12\x1b\n\trollup_id\x18\x01 \x01(\tR\x08rollupId\x12\x1f\n\x0b\x62\x61tch_index\x18\x02 \x01(\x04R\nbatchIndex\x12\x1d\n\nstate_root\x18\x03 \x01(\tR\tstateRoot\x12&\n\x0fprev_state_root\x18\x04 \x01(\tR\rprevStateRoot\x12\x19\n\x08tx_count\x18\x05 \x01(\x04R\x07txCount\x12\x1b\n\tdata_hash\x18\x06 \x01(\tR\x08\x64\x61taHash\x12\x1d\n\nproof_type\x18\x07 \x01(\tR\tproofType\x12\x16\n\x06status\x18\x08 \x01(\tR\x06status\x12!\n\x0csubmitted_at\x18\t \x01(\x03R\x0bsubmittedAt\x12!\n\x0c\x66inalized_at\x18\n \x01(\x03R\x0b\x66inalizedAt\x12)\n\x10withdrawals_root\x18\x0b \x01(\tR\x0fwithdrawalsRoot\"\x14\n\x12QueryParamsRequest\"K\n\x13QueryParamsResponse\x12\x34\n\x06params\x18\x01 \x01(\x0b\x32\x1c.qorechain.rdk.v1.ParamsViewR\x06params\"1\n\x12QueryRollupRequest\x12\x1b\n\trollup_id\x18\x01 \x01(\tR\x08rollupId\"K\n\x13QueryRollupResponse\x12\x34\n\x06rollup\x18\x01 \x01(\x0b\x32\x1c.qorechain.rdk.v1.RollupViewR\x06rollup\"\x15\n\x13QueryRollupsRequest\"N\n\x14QueryRollupsResponse\x12\x36\n\x07rollups\x18\x01 \x03(\x0b\x32\x1c.qorechain.rdk.v1.RollupViewR\x07rollups\"Q\n\x11QueryBatchRequest\x12\x1b\n\trollup_id\x18\x01 \x01(\tR\x08rollupId\x12\x1f\n\x0b\x62\x61tch_index\x18\x02 \x01(\x04R\nbatchIndex\"G\n\x12QueryBatchResponse\x12\x31\n\x05\x62\x61tch\x18\x01 \x01(\x0b\x32\x1b.qorechain.rdk.v1.BatchViewR\x05\x62\x61tch\"6\n\x17QueryLatestBatchRequest\x12\x1b\n\trollup_id\x18\x01 \x01(\tR\x08rollupId\"M\n\x18QueryLatestBatchResponse\x12\x31\n\x05\x62\x61tch\x18\x01 \x01(\x0b\x32\x1b.qorechain.rdk.v1.BatchViewR\x05\x62\x61tch2\xc9\x03\n\x05Query\x12U\n\x06Params\x12$.qorechain.rdk.v1.QueryParamsRequest\x1a%.qorechain.rdk.v1.QueryParamsResponse\x12U\n\x06Rollup\x12$.qorechain.rdk.v1.QueryRollupRequest\x1a%.qorechain.rdk.v1.QueryRollupResponse\x12X\n\x07Rollups\x12%.qorechain.rdk.v1.QueryRollupsRequest\x1a&.qorechain.rdk.v1.QueryRollupsResponse\x12R\n\x05\x42\x61tch\x12#.qorechain.rdk.v1.QueryBatchRequest\x1a$.qorechain.rdk.v1.QueryBatchResponse\x12\x64\n\x0bLatestBatch\x12).qorechain.rdk.v1.QueryLatestBatchRequest\x1a*.qorechain.rdk.v1.QueryLatestBatchResponseB\xb5\x01\n\x14\x63om.qorechain.rdk.v1B\nQueryProtoP\x01Z/github.com/qorechain/qorechain-core/x/rdk/types\xa2\x02\x03QRX\xaa\x02\x10Qorechain.Rdk.V1\xca\x02\x10Qorechain\\Rdk\\V1\xe2\x02\x1cQorechain\\Rdk\\V1\\GPBMetadata\xea\x02\x12Qorechain::Rdk::V1b\x06proto3')
+DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\x1cqorechain/rdk/v1/query.proto\x12\x10qorechain.rdk.v1\x1a\x1cgoogle/api/annotations.proto\"\xe3\x02\n\nParamsView\x12\x1f\n\x0bmax_rollups\x18\x01 \x01(\rR\nmaxRollups\x12/\n\x14min_stake_for_rollup\x18\x02 \x01(\x03R\x11minStakeForRollup\x12\x39\n\x19rollup_creation_burn_rate\x18\x03 \x01(\tR\x16rollupCreationBurnRate\x12\x38\n\x18\x64\x65\x66\x61ult_challenge_window\x18\x04 \x01(\x04R\x16\x64\x65\x66\x61ultChallengeWindow\x12\'\n\x10max_da_blob_size\x18\x05 \x01(\x04R\rmaxDaBlobSize\x12\x32\n\x15\x62lob_retention_blocks\x18\x06 \x01(\x04R\x13\x62lobRetentionBlocks\x12\x31\n\x15max_batches_per_block\x18\x07 \x01(\rR\x12maxBatchesPerBlock\"\x88\x03\n\nRollupView\x12\x1b\n\trollup_id\x18\x01 \x01(\tR\x08rollupId\x12\x18\n\x07\x63reator\x18\x02 \x01(\tR\x07\x63reator\x12\x18\n\x07profile\x18\x03 \x01(\tR\x07profile\x12\'\n\x0fsettlement_mode\x18\x04 \x01(\tR\x0esettlementMode\x12\x1d\n\nda_backend\x18\x05 \x01(\tR\tdaBackend\x12\"\n\rblock_time_ms\x18\x06 \x01(\x04R\x0b\x62lockTimeMs\x12\'\n\x10max_tx_per_block\x18\x07 \x01(\x04R\rmaxTxPerBlock\x12\x17\n\x07vm_type\x18\x08 \x01(\tR\x06vmType\x12\x16\n\x06status\x18\t \x01(\tR\x06status\x12!\n\x0cstake_amount\x18\n \x01(\x03R\x0bstakeAmount\x12\x19\n\x08layer_id\x18\x0b \x01(\tR\x07layerId\x12%\n\x0e\x63reated_height\x18\x0c \x01(\x03R\rcreatedHeight\"\xf0\x02\n\tBatchView\x12\x1b\n\trollup_id\x18\x01 \x01(\tR\x08rollupId\x12\x1f\n\x0b\x62\x61tch_index\x18\x02 \x01(\x04R\nbatchIndex\x12\x1d\n\nstate_root\x18\x03 \x01(\tR\tstateRoot\x12&\n\x0fprev_state_root\x18\x04 \x01(\tR\rprevStateRoot\x12\x19\n\x08tx_count\x18\x05 \x01(\x04R\x07txCount\x12\x1b\n\tdata_hash\x18\x06 \x01(\tR\x08\x64\x61taHash\x12\x1d\n\nproof_type\x18\x07 \x01(\tR\tproofType\x12\x16\n\x06status\x18\x08 \x01(\tR\x06status\x12!\n\x0csubmitted_at\x18\t \x01(\x03R\x0bsubmittedAt\x12!\n\x0c\x66inalized_at\x18\n \x01(\x03R\x0b\x66inalizedAt\x12)\n\x10withdrawals_root\x18\x0b \x01(\tR\x0fwithdrawalsRoot\"\x14\n\x12QueryParamsRequest\"K\n\x13QueryParamsResponse\x12\x34\n\x06params\x18\x01 \x01(\x0b\x32\x1c.qorechain.rdk.v1.ParamsViewR\x06params\"1\n\x12QueryRollupRequest\x12\x1b\n\trollup_id\x18\x01 \x01(\tR\x08rollupId\"K\n\x13QueryRollupResponse\x12\x34\n\x06rollup\x18\x01 \x01(\x0b\x32\x1c.qorechain.rdk.v1.RollupViewR\x06rollup\"\x15\n\x13QueryRollupsRequest\"N\n\x14QueryRollupsResponse\x12\x36\n\x07rollups\x18\x01 \x03(\x0b\x32\x1c.qorechain.rdk.v1.RollupViewR\x07rollups\"Q\n\x11QueryBatchRequest\x12\x1b\n\trollup_id\x18\x01 \x01(\tR\x08rollupId\x12\x1f\n\x0b\x62\x61tch_index\x18\x02 \x01(\x04R\nbatchIndex\"G\n\x12QueryBatchResponse\x12\x31\n\x05\x62\x61tch\x18\x01 \x01(\x0b\x32\x1b.qorechain.rdk.v1.BatchViewR\x05\x62\x61tch\"6\n\x17QueryLatestBatchRequest\x12\x1b\n\trollup_id\x18\x01 \x01(\tR\x08rollupId\"M\n\x18QueryLatestBatchResponse\x12\x31\n\x05\x62\x61tch\x18\x01 \x01(\x0b\x32\x1b.qorechain.rdk.v1.BatchViewR\x05\x62\x61tch\"i\n\x13QueryBatchesRequest\x12\x1b\n\trollup_id\x18\x01 \x01(\tR\x08rollupId\x12\x1f\n\x0bstart_index\x18\x02 \x01(\x04R\nstartIndex\x12\x14\n\x05limit\x18\x03 \x01(\rR\x05limit\"l\n\x14QueryBatchesResponse\x12\x35\n\x07\x62\x61tches\x18\x01 \x03(\x0b\x32\x1b.qorechain.rdk.v1.BatchViewR\x07\x62\x61tches\x12\x1d\n\nnext_index\x18\x02 \x01(\x04R\tnextIndex\"\xfc\x01\n\x08\x42lobView\x12\x1b\n\trollup_id\x18\x01 \x01(\tR\x08rollupId\x12\x1d\n\nblob_index\x18\x02 \x01(\x04R\tblobIndex\x12\x1e\n\ncommitment\x18\x03 \x01(\tR\ncommitment\x12\x1b\n\tdata_size\x18\x04 \x01(\x04R\x08\x64\x61taSize\x12\x16\n\x06height\x18\x05 \x01(\x03R\x06height\x12\x1b\n\tstored_at\x18\x06 \x01(\tR\x08storedAt\x12\x16\n\x06pruned\x18\x07 \x01(\x08R\x06pruned\x12*\n\x11\x65xpires_at_height\x18\x08 \x01(\x03R\x0f\x65xpiresAtHeight\"N\n\x10QueryBlobRequest\x12\x1b\n\trollup_id\x18\x01 \x01(\tR\x08rollupId\x12\x1d\n\nblob_index\x18\x02 \x01(\x04R\tblobIndex\"C\n\x11QueryBlobResponse\x12.\n\x04\x62lob\x18\x01 \x01(\x0b\x32\x1a.qorechain.rdk.v1.BlobViewR\x04\x62lob2\xc3\x07\n\x05Query\x12w\n\x06Params\x12$.qorechain.rdk.v1.QueryParamsRequest\x1a%.qorechain.rdk.v1.QueryParamsResponse\" \x82\xd3\xe4\x93\x02\x1a\x12\x18/qorechain/rdk/v1/params\x12\x83\x01\n\x06Rollup\x12$.qorechain.rdk.v1.QueryRollupRequest\x1a%.qorechain.rdk.v1.QueryRollupResponse\",\x82\xd3\xe4\x93\x02&\x12$/qorechain/rdk/v1/rollup/{rollup_id}\x12{\n\x07Rollups\x12%.qorechain.rdk.v1.QueryRollupsRequest\x1a&.qorechain.rdk.v1.QueryRollupsResponse\"!\x82\xd3\xe4\x93\x02\x1b\x12\x19/qorechain/rdk/v1/rollups\x12\x8d\x01\n\x05\x42\x61tch\x12#.qorechain.rdk.v1.QueryBatchRequest\x1a$.qorechain.rdk.v1.QueryBatchResponse\"9\x82\xd3\xe4\x93\x02\x33\x12\x31/qorechain/rdk/v1/batch/{rollup_id}/{batch_index}\x12\x98\x01\n\x0bLatestBatch\x12).qorechain.rdk.v1.QueryLatestBatchRequest\x1a*.qorechain.rdk.v1.QueryLatestBatchResponse\"2\x82\xd3\xe4\x93\x02,\x12*/qorechain/rdk/v1/latest_batch/{rollup_id}\x12\x87\x01\n\x07\x42\x61tches\x12%.qorechain.rdk.v1.QueryBatchesRequest\x1a&.qorechain.rdk.v1.QueryBatchesResponse\"-\x82\xd3\xe4\x93\x02\'\x12%/qorechain/rdk/v1/batches/{rollup_id}\x12\x88\x01\n\x04\x42lob\x12\".qorechain.rdk.v1.QueryBlobRequest\x1a#.qorechain.rdk.v1.QueryBlobResponse\"7\x82\xd3\xe4\x93\x02\x31\x12//qorechain/rdk/v1/blob/{rollup_id}/{blob_index}B\xb5\x01\n\x14\x63om.qorechain.rdk.v1B\nQueryProtoP\x01Z/github.com/qorechain/qorechain-core/x/rdk/types\xa2\x02\x03QRX\xaa\x02\x10Qorechain.Rdk.V1\xca\x02\x10Qorechain\\Rdk\\V1\xe2\x02\x1cQorechain\\Rdk\\V1\\GPBMetadata\xea\x02\x12Qorechain::Rdk::V1b\x06proto3')
 
 _globals = globals()
 _builder.BuildMessageAndEnumDescriptors(DESCRIPTOR, _globals)
@@ -32,32 +33,56 @@ _builder.BuildTopDescriptorsAndMessages(DESCRIPTOR, 'qorechain.rdk.v1.query_pb2'
 if not _descriptor._USE_C_DESCRIPTORS:
   _globals['DESCRIPTOR']._loaded_options = None
   _globals['DESCRIPTOR']._serialized_options = b'\n\024com.qorechain.rdk.v1B\nQueryProtoP\001Z/github.com/qorechain/qorechain-core/x/rdk/types\242\002\003QRX\252\002\020Qorechain.Rdk.V1\312\002\020Qorechain\\Rdk\\V1\342\002\034Qorechain\\Rdk\\V1\\GPBMetadata\352\002\022Qorechain::Rdk::V1'
-  _globals['_PARAMSVIEW']._serialized_start=51
-  _globals['_PARAMSVIEW']._serialized_end=406
-  _globals['_ROLLUPVIEW']._serialized_start=409
-  _globals['_ROLLUPVIEW']._serialized_end=801
-  _globals['_BATCHVIEW']._serialized_start=804
-  _globals['_BATCHVIEW']._serialized_end=1172
-  _globals['_QUERYPARAMSREQUEST']._serialized_start=1174
-  _globals['_QUERYPARAMSREQUEST']._serialized_end=1194
-  _globals['_QUERYPARAMSRESPONSE']._serialized_start=1196
-  _globals['_QUERYPARAMSRESPONSE']._serialized_end=1271
-  _globals['_QUERYROLLUPREQUEST']._serialized_start=1273
-  _globals['_QUERYROLLUPREQUEST']._serialized_end=1322
-  _globals['_QUERYROLLUPRESPONSE']._serialized_start=1324
-  _globals['_QUERYROLLUPRESPONSE']._serialized_end=1399
-  _globals['_QUERYROLLUPSREQUEST']._serialized_start=1401
-  _globals['_QUERYROLLUPSREQUEST']._serialized_end=1422
-  _globals['_QUERYROLLUPSRESPONSE']._serialized_start=1424
-  _globals['_QUERYROLLUPSRESPONSE']._serialized_end=1502
-  _globals['_QUERYBATCHREQUEST']._serialized_start=1504
-  _globals['_QUERYBATCHREQUEST']._serialized_end=1585
-  _globals['_QUERYBATCHRESPONSE']._serialized_start=1587
-  _globals['_QUERYBATCHRESPONSE']._serialized_end=1658
-  _globals['_QUERYLATESTBATCHREQUEST']._serialized_start=1660
-  _globals['_QUERYLATESTBATCHREQUEST']._serialized_end=1714
-  _globals['_QUERYLATESTBATCHRESPONSE']._serialized_start=1716
-  _globals['_QUERYLATESTBATCHRESPONSE']._serialized_end=1793
-  _globals['_QUERY']._serialized_start=1796
-  _globals['_QUERY']._serialized_end=2253
+  _globals['_QUERY'].methods_by_name['Params']._loaded_options = None
+  _globals['_QUERY'].methods_by_name['Params']._serialized_options = b'\202\323\344\223\002\032\022\030/qorechain/rdk/v1/params'
+  _globals['_QUERY'].methods_by_name['Rollup']._loaded_options = None
+  _globals['_QUERY'].methods_by_name['Rollup']._serialized_options = b'\202\323\344\223\002&\022$/qorechain/rdk/v1/rollup/{rollup_id}'
+  _globals['_QUERY'].methods_by_name['Rollups']._loaded_options = None
+  _globals['_QUERY'].methods_by_name['Rollups']._serialized_options = b'\202\323\344\223\002\033\022\031/qorechain/rdk/v1/rollups'
+  _globals['_QUERY'].methods_by_name['Batch']._loaded_options = None
+  _globals['_QUERY'].methods_by_name['Batch']._serialized_options = b'\202\323\344\223\0023\0221/qorechain/rdk/v1/batch/{rollup_id}/{batch_index}'
+  _globals['_QUERY'].methods_by_name['LatestBatch']._loaded_options = None
+  _globals['_QUERY'].methods_by_name['LatestBatch']._serialized_options = b'\202\323\344\223\002,\022*/qorechain/rdk/v1/latest_batch/{rollup_id}'
+  _globals['_QUERY'].methods_by_name['Batches']._loaded_options = None
+  _globals['_QUERY'].methods_by_name['Batches']._serialized_options = b'\202\323\344\223\002\'\022%/qorechain/rdk/v1/batches/{rollup_id}'
+  _globals['_QUERY'].methods_by_name['Blob']._loaded_options = None
+  _globals['_QUERY'].methods_by_name['Blob']._serialized_options = b'\202\323\344\223\0021\022//qorechain/rdk/v1/blob/{rollup_id}/{blob_index}'
+  _globals['_PARAMSVIEW']._serialized_start=81
+  _globals['_PARAMSVIEW']._serialized_end=436
+  _globals['_ROLLUPVIEW']._serialized_start=439
+  _globals['_ROLLUPVIEW']._serialized_end=831
+  _globals['_BATCHVIEW']._serialized_start=834
+  _globals['_BATCHVIEW']._serialized_end=1202
+  _globals['_QUERYPARAMSREQUEST']._serialized_start=1204
+  _globals['_QUERYPARAMSREQUEST']._serialized_end=1224
+  _globals['_QUERYPARAMSRESPONSE']._serialized_start=1226
+  _globals['_QUERYPARAMSRESPONSE']._serialized_end=1301
+  _globals['_QUERYROLLUPREQUEST']._serialized_start=1303
+  _globals['_QUERYROLLUPREQUEST']._serialized_end=1352
+  _globals['_QUERYROLLUPRESPONSE']._serialized_start=1354
+  _globals['_QUERYROLLUPRESPONSE']._serialized_end=1429
+  _globals['_QUERYROLLUPSREQUEST']._serialized_start=1431
+  _globals['_QUERYROLLUPSREQUEST']._serialized_end=1452
+  _globals['_QUERYROLLUPSRESPONSE']._serialized_start=1454
+  _globals['_QUERYROLLUPSRESPONSE']._serialized_end=1532
+  _globals['_QUERYBATCHREQUEST']._serialized_start=1534
+  _globals['_QUERYBATCHREQUEST']._serialized_end=1615
+  _globals['_QUERYBATCHRESPONSE']._serialized_start=1617
+  _globals['_QUERYBATCHRESPONSE']._serialized_end=1688
+  _globals['_QUERYLATESTBATCHREQUEST']._serialized_start=1690
+  _globals['_QUERYLATESTBATCHREQUEST']._serialized_end=1744
+  _globals['_QUERYLATESTBATCHRESPONSE']._serialized_start=1746
+  _globals['_QUERYLATESTBATCHRESPONSE']._serialized_end=1823
+  _globals['_QUERYBATCHESREQUEST']._serialized_start=1825
+  _globals['_QUERYBATCHESREQUEST']._serialized_end=1930
+  _globals['_QUERYBATCHESRESPONSE']._serialized_start=1932
+  _globals['_QUERYBATCHESRESPONSE']._serialized_end=2040
+  _globals['_BLOBVIEW']._serialized_start=2043
+  _globals['_BLOBVIEW']._serialized_end=2295
+  _globals['_QUERYBLOBREQUEST']._serialized_start=2297
+  _globals['_QUERYBLOBREQUEST']._serialized_end=2375
+  _globals['_QUERYBLOBRESPONSE']._serialized_start=2377
+  _globals['_QUERYBLOBRESPONSE']._serialized_end=2444
+  _globals['_QUERY']._serialized_start=2447
+  _globals['_QUERY']._serialized_end=3410
 # @@protoc_insertion_point(module_scope)

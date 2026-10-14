@@ -73,7 +73,7 @@ class QueryPermissionSchemaRequest(_message.Message):
     def __init__(self) -> None: ...
 
 class QueryPermissionSchemaResponse(_message.Message):
-    __slots__ = ("schema_version", "permissions", "msg_permissions", "key_management_msgs")
+    __slots__ = ("schema_version", "permissions", "msg_permissions", "key_management_msgs", "lane_rules")
     class MsgPermissionsEntry(_message.Message):
         __slots__ = ("key", "value")
         KEY_FIELD_NUMBER: _ClassVar[int]
@@ -85,8 +85,20 @@ class QueryPermissionSchemaResponse(_message.Message):
     PERMISSIONS_FIELD_NUMBER: _ClassVar[int]
     MSG_PERMISSIONS_FIELD_NUMBER: _ClassVar[int]
     KEY_MANAGEMENT_MSGS_FIELD_NUMBER: _ClassVar[int]
+    LANE_RULES_FIELD_NUMBER: _ClassVar[int]
     schema_version: str
     permissions: _containers.RepeatedScalarFieldContainer[str]
     msg_permissions: _containers.ScalarMap[str, str]
     key_management_msgs: _containers.RepeatedScalarFieldContainer[str]
-    def __init__(self, schema_version: _Optional[str] = ..., permissions: _Optional[_Iterable[str]] = ..., msg_permissions: _Optional[_Mapping[str, str]] = ..., key_management_msgs: _Optional[_Iterable[str]] = ...) -> None: ...
+    lane_rules: _containers.RepeatedCompositeFieldContainer[LaneRule]
+    def __init__(self, schema_version: _Optional[str] = ..., permissions: _Optional[_Iterable[str]] = ..., msg_permissions: _Optional[_Mapping[str, str]] = ..., key_management_msgs: _Optional[_Iterable[str]] = ..., lane_rules: _Optional[_Iterable[_Union[LaneRule, _Mapping]]] = ...) -> None: ...
+
+class LaneRule(_message.Message):
+    __slots__ = ("msg_type_url", "condition", "permission")
+    MSG_TYPE_URL_FIELD_NUMBER: _ClassVar[int]
+    CONDITION_FIELD_NUMBER: _ClassVar[int]
+    PERMISSION_FIELD_NUMBER: _ClassVar[int]
+    msg_type_url: str
+    condition: str
+    permission: str
+    def __init__(self, msg_type_url: _Optional[str] = ..., condition: _Optional[str] = ..., permission: _Optional[str] = ...) -> None: ...

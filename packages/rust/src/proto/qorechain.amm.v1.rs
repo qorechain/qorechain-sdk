@@ -116,6 +116,11 @@ pub struct QueryQuoteExactInResponse {
     pub amount_out: ::prost::alloc::string::String,
     #[prost(string, tag="2")]
     pub fee: ::prost::alloc::string::String,
+    /// impact_bps is how far the quoted execution price falls below the pool's
+    /// current marginal price, in basis points (v3.2.2; 0 before it). A trade
+    /// over max_swap_impact_bps is refused with ErrPriceImpactExceeded instead.
+    #[prost(uint32, tag="3")]
+    pub impact_bps: u32,
 }
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct QueryQuoteExactOutRequest {
@@ -132,6 +137,9 @@ pub struct QueryQuoteExactOutResponse {
     pub amount_in: ::prost::alloc::string::String,
     #[prost(string, tag="2")]
     pub fee: ::prost::alloc::string::String,
+    /// impact_bps: see QueryQuoteExactInResponse.
+    #[prost(uint32, tag="3")]
+    pub impact_bps: u32,
 }
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct MsgCreatePool {

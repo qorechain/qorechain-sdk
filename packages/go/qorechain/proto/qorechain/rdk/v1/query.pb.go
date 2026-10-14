@@ -8,6 +8,7 @@ import (
 	fmt "fmt"
 	grpc1 "github.com/cosmos/gogoproto/grpc"
 	proto "github.com/cosmos/gogoproto/proto"
+	_ "google.golang.org/genproto/googleapis/api/annotations"
 	grpc "google.golang.org/grpc"
 	codes "google.golang.org/grpc/codes"
 	status "google.golang.org/grpc/status"
@@ -810,6 +811,321 @@ func (m *QueryLatestBatchResponse) GetBatch() *BatchView {
 	return nil
 }
 
+type QueryBatchesRequest struct {
+	RollupId string `protobuf:"bytes,1,opt,name=rollup_id,json=rollupId,proto3" json:"rollup_id,omitempty"`
+	// start_index is the first batch index returned.
+	StartIndex uint64 `protobuf:"varint,2,opt,name=start_index,json=startIndex,proto3" json:"start_index,omitempty"`
+	// limit caps the number of batches returned: 0 means 50, and more than 100
+	// is capped at 100.
+	Limit uint32 `protobuf:"varint,3,opt,name=limit,proto3" json:"limit,omitempty"`
+}
+
+func (m *QueryBatchesRequest) Reset()         { *m = QueryBatchesRequest{} }
+func (m *QueryBatchesRequest) String() string { return proto.CompactTextString(m) }
+func (*QueryBatchesRequest) ProtoMessage()    {}
+func (*QueryBatchesRequest) Descriptor() ([]byte, []int) {
+	return fileDescriptor_c818fc2efc57e39e, []int{13}
+}
+func (m *QueryBatchesRequest) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *QueryBatchesRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_QueryBatchesRequest.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *QueryBatchesRequest) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_QueryBatchesRequest.Merge(m, src)
+}
+func (m *QueryBatchesRequest) XXX_Size() int {
+	return m.Size()
+}
+func (m *QueryBatchesRequest) XXX_DiscardUnknown() {
+	xxx_messageInfo_QueryBatchesRequest.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_QueryBatchesRequest proto.InternalMessageInfo
+
+func (m *QueryBatchesRequest) GetRollupId() string {
+	if m != nil {
+		return m.RollupId
+	}
+	return ""
+}
+
+func (m *QueryBatchesRequest) GetStartIndex() uint64 {
+	if m != nil {
+		return m.StartIndex
+	}
+	return 0
+}
+
+func (m *QueryBatchesRequest) GetLimit() uint32 {
+	if m != nil {
+		return m.Limit
+	}
+	return 0
+}
+
+type QueryBatchesResponse struct {
+	Batches []*BatchView `protobuf:"bytes,1,rep,name=batches,proto3" json:"batches,omitempty"`
+	// next_index is the start_index of the next page, 0 when there is none.
+	NextIndex uint64 `protobuf:"varint,2,opt,name=next_index,json=nextIndex,proto3" json:"next_index,omitempty"`
+}
+
+func (m *QueryBatchesResponse) Reset()         { *m = QueryBatchesResponse{} }
+func (m *QueryBatchesResponse) String() string { return proto.CompactTextString(m) }
+func (*QueryBatchesResponse) ProtoMessage()    {}
+func (*QueryBatchesResponse) Descriptor() ([]byte, []int) {
+	return fileDescriptor_c818fc2efc57e39e, []int{14}
+}
+func (m *QueryBatchesResponse) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *QueryBatchesResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_QueryBatchesResponse.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *QueryBatchesResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_QueryBatchesResponse.Merge(m, src)
+}
+func (m *QueryBatchesResponse) XXX_Size() int {
+	return m.Size()
+}
+func (m *QueryBatchesResponse) XXX_DiscardUnknown() {
+	xxx_messageInfo_QueryBatchesResponse.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_QueryBatchesResponse proto.InternalMessageInfo
+
+func (m *QueryBatchesResponse) GetBatches() []*BatchView {
+	if m != nil {
+		return m.Batches
+	}
+	return nil
+}
+
+func (m *QueryBatchesResponse) GetNextIndex() uint64 {
+	if m != nil {
+		return m.NextIndex
+	}
+	return 0
+}
+
+// BlobView is the query-facing view of a data-availability blob, without the
+// blob data itself.
+type BlobView struct {
+	RollupId   string `protobuf:"bytes,1,opt,name=rollup_id,json=rollupId,proto3" json:"rollup_id,omitempty"`
+	BlobIndex  uint64 `protobuf:"varint,2,opt,name=blob_index,json=blobIndex,proto3" json:"blob_index,omitempty"`
+	Commitment string `protobuf:"bytes,3,opt,name=commitment,proto3" json:"commitment,omitempty"`
+	DataSize   uint64 `protobuf:"varint,4,opt,name=data_size,json=dataSize,proto3" json:"data_size,omitempty"`
+	Height     int64  `protobuf:"varint,5,opt,name=height,proto3" json:"height,omitempty"`
+	StoredAt   string `protobuf:"bytes,6,opt,name=stored_at,json=storedAt,proto3" json:"stored_at,omitempty"`
+	Pruned     bool   `protobuf:"varint,7,opt,name=pruned,proto3" json:"pruned,omitempty"`
+	// expires_at_height is the height after which the blob may be pruned.
+	ExpiresAtHeight int64 `protobuf:"varint,8,opt,name=expires_at_height,json=expiresAtHeight,proto3" json:"expires_at_height,omitempty"`
+}
+
+func (m *BlobView) Reset()         { *m = BlobView{} }
+func (m *BlobView) String() string { return proto.CompactTextString(m) }
+func (*BlobView) ProtoMessage()    {}
+func (*BlobView) Descriptor() ([]byte, []int) {
+	return fileDescriptor_c818fc2efc57e39e, []int{15}
+}
+func (m *BlobView) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *BlobView) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_BlobView.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *BlobView) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_BlobView.Merge(m, src)
+}
+func (m *BlobView) XXX_Size() int {
+	return m.Size()
+}
+func (m *BlobView) XXX_DiscardUnknown() {
+	xxx_messageInfo_BlobView.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_BlobView proto.InternalMessageInfo
+
+func (m *BlobView) GetRollupId() string {
+	if m != nil {
+		return m.RollupId
+	}
+	return ""
+}
+
+func (m *BlobView) GetBlobIndex() uint64 {
+	if m != nil {
+		return m.BlobIndex
+	}
+	return 0
+}
+
+func (m *BlobView) GetCommitment() string {
+	if m != nil {
+		return m.Commitment
+	}
+	return ""
+}
+
+func (m *BlobView) GetDataSize() uint64 {
+	if m != nil {
+		return m.DataSize
+	}
+	return 0
+}
+
+func (m *BlobView) GetHeight() int64 {
+	if m != nil {
+		return m.Height
+	}
+	return 0
+}
+
+func (m *BlobView) GetStoredAt() string {
+	if m != nil {
+		return m.StoredAt
+	}
+	return ""
+}
+
+func (m *BlobView) GetPruned() bool {
+	if m != nil {
+		return m.Pruned
+	}
+	return false
+}
+
+func (m *BlobView) GetExpiresAtHeight() int64 {
+	if m != nil {
+		return m.ExpiresAtHeight
+	}
+	return 0
+}
+
+type QueryBlobRequest struct {
+	RollupId  string `protobuf:"bytes,1,opt,name=rollup_id,json=rollupId,proto3" json:"rollup_id,omitempty"`
+	BlobIndex uint64 `protobuf:"varint,2,opt,name=blob_index,json=blobIndex,proto3" json:"blob_index,omitempty"`
+}
+
+func (m *QueryBlobRequest) Reset()         { *m = QueryBlobRequest{} }
+func (m *QueryBlobRequest) String() string { return proto.CompactTextString(m) }
+func (*QueryBlobRequest) ProtoMessage()    {}
+func (*QueryBlobRequest) Descriptor() ([]byte, []int) {
+	return fileDescriptor_c818fc2efc57e39e, []int{16}
+}
+func (m *QueryBlobRequest) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *QueryBlobRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_QueryBlobRequest.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *QueryBlobRequest) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_QueryBlobRequest.Merge(m, src)
+}
+func (m *QueryBlobRequest) XXX_Size() int {
+	return m.Size()
+}
+func (m *QueryBlobRequest) XXX_DiscardUnknown() {
+	xxx_messageInfo_QueryBlobRequest.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_QueryBlobRequest proto.InternalMessageInfo
+
+func (m *QueryBlobRequest) GetRollupId() string {
+	if m != nil {
+		return m.RollupId
+	}
+	return ""
+}
+
+func (m *QueryBlobRequest) GetBlobIndex() uint64 {
+	if m != nil {
+		return m.BlobIndex
+	}
+	return 0
+}
+
+type QueryBlobResponse struct {
+	Blob *BlobView `protobuf:"bytes,1,opt,name=blob,proto3" json:"blob,omitempty"`
+}
+
+func (m *QueryBlobResponse) Reset()         { *m = QueryBlobResponse{} }
+func (m *QueryBlobResponse) String() string { return proto.CompactTextString(m) }
+func (*QueryBlobResponse) ProtoMessage()    {}
+func (*QueryBlobResponse) Descriptor() ([]byte, []int) {
+	return fileDescriptor_c818fc2efc57e39e, []int{17}
+}
+func (m *QueryBlobResponse) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *QueryBlobResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_QueryBlobResponse.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *QueryBlobResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_QueryBlobResponse.Merge(m, src)
+}
+func (m *QueryBlobResponse) XXX_Size() int {
+	return m.Size()
+}
+func (m *QueryBlobResponse) XXX_DiscardUnknown() {
+	xxx_messageInfo_QueryBlobResponse.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_QueryBlobResponse proto.InternalMessageInfo
+
+func (m *QueryBlobResponse) GetBlob() *BlobView {
+	if m != nil {
+		return m.Blob
+	}
+	return nil
+}
+
 func init() {
 	proto.RegisterType((*ParamsView)(nil), "qorechain.rdk.v1.ParamsView")
 	proto.RegisterType((*RollupView)(nil), "qorechain.rdk.v1.RollupView")
@@ -824,80 +1140,107 @@ func init() {
 	proto.RegisterType((*QueryBatchResponse)(nil), "qorechain.rdk.v1.QueryBatchResponse")
 	proto.RegisterType((*QueryLatestBatchRequest)(nil), "qorechain.rdk.v1.QueryLatestBatchRequest")
 	proto.RegisterType((*QueryLatestBatchResponse)(nil), "qorechain.rdk.v1.QueryLatestBatchResponse")
+	proto.RegisterType((*QueryBatchesRequest)(nil), "qorechain.rdk.v1.QueryBatchesRequest")
+	proto.RegisterType((*QueryBatchesResponse)(nil), "qorechain.rdk.v1.QueryBatchesResponse")
+	proto.RegisterType((*BlobView)(nil), "qorechain.rdk.v1.BlobView")
+	proto.RegisterType((*QueryBlobRequest)(nil), "qorechain.rdk.v1.QueryBlobRequest")
+	proto.RegisterType((*QueryBlobResponse)(nil), "qorechain.rdk.v1.QueryBlobResponse")
 }
 
 func init() { proto.RegisterFile("qorechain/rdk/v1/query.proto", fileDescriptor_c818fc2efc57e39e) }
 
 var fileDescriptor_c818fc2efc57e39e = []byte{
-	// 1076 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x9c, 0x56, 0xcb, 0x4e, 0x23, 0x47,
-	0x14, 0xc5, 0x36, 0xd8, 0xee, 0xeb, 0x61, 0x60, 0x6a, 0x80, 0x69, 0x1e, 0xf1, 0x90, 0xce, 0x3c,
-	0x98, 0x48, 0xb1, 0x65, 0x12, 0x8d, 0x12, 0xb2, 0xc2, 0x44, 0x99, 0x41, 0x09, 0x11, 0x14, 0x8f,
-	0x8c, 0x22, 0xa4, 0x56, 0xd9, 0x55, 0xe0, 0x56, 0x3f, 0xaa, 0xa9, 0x2e, 0x1b, 0xc3, 0x17, 0x64,
-	0x99, 0x6f, 0xc8, 0x32, 0x5f, 0x92, 0x64, 0x35, 0xcb, 0x2c, 0x23, 0xd8, 0x65, 0x15, 0x29, 0x3f,
-	0x10, 0x75, 0x55, 0xb7, 0x6d, 0x6c, 0x81, 0xd1, 0xec, 0x5c, 0xe7, 0x9e, 0xfb, 0x3a, 0xf7, 0x76,
-	0xb9, 0x60, 0xe5, 0x8c, 0x0b, 0xd6, 0x6c, 0x11, 0x27, 0xa8, 0x0a, 0xea, 0x56, 0x3b, 0xb5, 0xea,
-	0x59, 0x9b, 0x89, 0x8b, 0x4a, 0x28, 0xb8, 0xe4, 0x68, 0xb6, 0x67, 0xad, 0x08, 0xea, 0x56, 0x3a,
-	0x35, 0xeb, 0x3a, 0x0b, 0xb0, 0x4b, 0x04, 0xf1, 0xa3, 0x23, 0x87, 0x9d, 0xa3, 0xa7, 0x50, 0xf2,
-	0x49, 0xd7, 0x16, 0xdc, 0xf3, 0xda, 0x61, 0x64, 0x66, 0x56, 0x33, 0x6b, 0xd3, 0x18, 0x7c, 0xd2,
-	0xc5, 0x1a, 0x41, 0x55, 0x98, 0xf3, 0x9d, 0xc0, 0x8e, 0x24, 0x71, 0x99, 0x7d, 0xc2, 0x45, 0x42,
-	0x35, 0xb3, 0xab, 0x99, 0xb5, 0x1c, 0x7e, 0xe4, 0x3b, 0xc1, 0x7e, 0x6c, 0xfa, 0x96, 0x0b, 0xed,
-	0x81, 0xbe, 0x82, 0x45, 0x4d, 0xb1, 0x9b, 0x82, 0x11, 0xe9, 0xf0, 0xc0, 0x6e, 0xb4, 0x45, 0x60,
-	0x0b, 0x22, 0x99, 0x99, 0x5b, 0xcd, 0xac, 0x19, 0x78, 0x41, 0x13, 0xb6, 0x12, 0x7b, 0xbd, 0x2d,
-	0x02, 0x4c, 0x24, 0x43, 0x5f, 0x82, 0x49, 0xd9, 0x09, 0x69, 0x7b, 0xd2, 0x6e, 0xb6, 0x88, 0xe7,
-	0xb1, 0xe0, 0x94, 0xd9, 0xe7, 0x4e, 0x40, 0xf9, 0xb9, 0x39, 0xb9, 0x9a, 0x59, 0x9b, 0xc4, 0x0b,
-	0x89, 0x7d, 0x2b, 0x35, 0xff, 0xa8, 0xac, 0xe8, 0x25, 0xcc, 0xc6, 0x6d, 0x50, 0x62, 0x37, 0x3c,
-	0xde, 0xb0, 0x23, 0xe7, 0x92, 0x99, 0x53, 0xca, 0x63, 0xda, 0x27, 0xdd, 0x6f, 0x48, 0xdd, 0xe3,
-	0x8d, 0x7d, 0xe7, 0x92, 0xa1, 0x75, 0x98, 0x57, 0x0c, 0xc1, 0x24, 0x0b, 0x74, 0x71, 0x1e, 0x6f,
-	0xba, 0x91, 0x99, 0x57, 0xec, 0xc7, 0xb1, 0x11, 0xa7, 0xb6, 0xba, 0x32, 0xa1, 0x1a, 0xcc, 0xc7,
-	0xc1, 0x1b, 0x44, 0x36, 0x5b, 0x2c, 0xb2, 0x43, 0x26, 0xb4, 0x93, 0x59, 0x50, 0x6a, 0x21, 0x9f,
-	0x74, 0xeb, 0xda, 0xb6, 0xcb, 0x84, 0xf2, 0xb1, 0x7e, 0xce, 0x01, 0x68, 0x3d, 0x94, 0xca, 0xcb,
-	0x60, 0x24, 0x9a, 0x38, 0x54, 0x69, 0x6c, 0xe0, 0xa2, 0x06, 0xb6, 0x29, 0x32, 0xa1, 0xa0, 0x94,
-	0xe2, 0x42, 0x89, 0x6a, 0xe0, 0xf4, 0x18, 0x5b, 0x42, 0xc1, 0x4f, 0x1c, 0x2f, 0x15, 0x2e, 0x3d,
-	0xa2, 0x97, 0x30, 0x13, 0x31, 0x29, 0x3d, 0xe6, 0xb3, 0x40, 0xda, 0x3e, 0xa7, 0x4c, 0x09, 0x64,
-	0xe0, 0x87, 0x7d, 0x78, 0x87, 0x53, 0x86, 0x3e, 0x02, 0x88, 0x45, 0x21, 0x4d, 0x97, 0x05, 0x54,
-	0x49, 0x62, 0x60, 0x83, 0x92, 0xba, 0x06, 0x90, 0x05, 0xd3, 0xaa, 0x15, 0x5b, 0x3a, 0x3e, 0xb3,
-	0xfd, 0x54, 0x86, 0x92, 0x02, 0x0f, 0x1c, 0x9f, 0xed, 0x44, 0xa9, 0xb6, 0xb2, 0x3b, 0xd4, 0xb9,
-	0xd6, 0xf6, 0xa0, 0x9b, 0x36, 0x8d, 0x9e, 0x40, 0xa1, 0xe3, 0xdb, 0xf2, 0x22, 0x64, 0x66, 0x51,
-	0x25, 0xca, 0x77, 0xfc, 0x83, 0x8b, 0x90, 0xa1, 0x05, 0xc8, 0x47, 0x92, 0xc8, 0x76, 0x64, 0x1a,
-	0x1a, 0xd7, 0x27, 0xf4, 0x31, 0x3c, 0xd0, 0x7b, 0x45, 0x7c, 0xde, 0x0e, 0xa4, 0x09, 0x6a, 0xa7,
-	0x4a, 0x0a, 0xdb, 0x54, 0x10, 0x5a, 0x84, 0xa2, 0x47, 0x2e, 0x98, 0x88, 0x85, 0x2b, 0x69, 0x0d,
-	0xd4, 0x79, 0x9b, 0xa2, 0xe7, 0xf0, 0x50, 0x09, 0xc5, 0xa8, 0xdd, 0x62, 0xce, 0x69, 0x4b, 0x9a,
-	0x0f, 0x94, 0xff, 0x74, 0x82, 0xbe, 0x55, 0xa0, 0xf5, 0x6f, 0x16, 0x0c, 0x35, 0x9e, 0xf1, 0x93,
-	0x78, 0x0a, 0x25, 0x35, 0x64, 0xdb, 0x09, 0x28, 0xeb, 0xaa, 0x69, 0x4c, 0x62, 0x50, 0xd0, 0x76,
-	0x8c, 0xc4, 0x6a, 0xc6, 0xa5, 0x33, 0x5b, 0x70, 0x2e, 0x93, 0x99, 0x18, 0x0a, 0xc1, 0x9c, 0x4b,
-	0xf4, 0x02, 0x66, 0x42, 0xc1, 0x3a, 0xf6, 0x00, 0x47, 0x4f, 0x65, 0x3a, 0x86, 0xf7, 0x7b, 0xbc,
-	0x45, 0x28, 0xca, 0xae, 0xdd, 0x54, 0x3d, 0xeb, 0x2d, 0x2d, 0xc8, 0xee, 0x96, 0xea, 0x77, 0x19,
-	0x0c, 0x4a, 0x24, 0xb1, 0x5b, 0x24, 0x6a, 0xa9, 0x61, 0x18, 0xb8, 0x18, 0x03, 0x6f, 0x49, 0xd4,
-	0x8a, 0xd3, 0x87, 0x82, 0xf3, 0x13, 0xad, 0x71, 0x41, 0xa7, 0x57, 0xc8, 0x90, 0xcc, 0xc5, 0x11,
-	0x99, 0xdb, 0x0d, 0xdf, 0x91, 0xb1, 0x54, 0x44, 0xaa, 0x21, 0xc4, 0x32, 0xa7, 0xd8, 0xa6, 0x8c,
-	0x29, 0x27, 0x4e, 0x40, 0x3c, 0xe7, 0x52, 0x53, 0x92, 0x49, 0xf4, 0xb0, 0x4d, 0x89, 0x5e, 0xc1,
-	0xec, 0xb9, 0x23, 0x5b, 0x54, 0x90, 0x73, 0xe2, 0x45, 0xba, 0x3b, 0x3d, 0x91, 0x99, 0x01, 0x3c,
-	0xee, 0xcf, 0x9a, 0x03, 0xb4, 0x17, 0x5f, 0x42, 0xfa, 0x9e, 0xc1, 0xec, 0xac, 0xcd, 0x22, 0x69,
-	0x7d, 0x07, 0x8f, 0x6f, 0xa0, 0x51, 0xc8, 0x83, 0x88, 0xa1, 0x2f, 0x20, 0x1f, 0x2a, 0x44, 0x8d,
-	0xa3, 0xb4, 0xbe, 0x52, 0x19, 0xbe, 0xb3, 0x2a, 0xfd, 0xfb, 0x0a, 0x27, 0x5c, 0xab, 0x96, 0xa4,
-	0xd0, 0x1f, 0x59, 0x92, 0xe2, 0xce, 0xe9, 0xf6, 0xf2, 0xa7, 0x2e, 0xfd, 0xfc, 0xc9, 0x95, 0x76,
-	0x6b, 0xfe, 0xfe, 0x97, 0x8c, 0x13, 0xae, 0x35, 0x7f, 0x23, 0x58, 0xaf, 0xc7, 0x1f, 0x60, 0xee,
-	0x26, 0x9c, 0x24, 0x79, 0x0d, 0x85, 0xfe, 0x15, 0x9b, 0x1b, 0x9b, 0x25, 0x25, 0x5b, 0x7b, 0xf0,
-	0x48, 0xc5, 0x53, 0x0b, 0x7c, 0x9f, 0x2e, 0xc7, 0xee, 0xb0, 0xf5, 0x26, 0x51, 0x2e, 0x09, 0x99,
-	0x14, 0x58, 0x83, 0x29, 0xc5, 0x49, 0x44, 0x58, 0x1e, 0x2d, 0xaf, 0xf7, 0x0d, 0x61, 0xcd, 0xb4,
-	0x5e, 0xc3, 0x13, 0x15, 0xe8, 0x7b, 0x22, 0x59, 0x24, 0xef, 0x5d, 0xa1, 0xb5, 0x03, 0xe6, 0xa8,
-	0xdf, 0x07, 0x97, 0xb1, 0xfe, 0x47, 0x0e, 0xa6, 0x54, 0x3c, 0x74, 0x08, 0x79, 0xbd, 0x29, 0xe8,
-	0xd9, 0xa8, 0xdf, 0xe8, 0x42, 0x2e, 0x3d, 0x1f, 0xc3, 0x4a, 0x6a, 0x3a, 0x84, 0x7c, 0xf2, 0xd7,
-	0x76, 0x5b, 0xd8, 0x1b, 0x4b, 0x78, 0x6b, 0xd8, 0xa1, 0xbd, 0x7b, 0x07, 0x85, 0xf4, 0x3f, 0xf6,
-	0x6e, 0x8f, 0x5e, 0xbd, 0x2f, 0xc6, 0xd1, 0x92, 0xc8, 0x18, 0xa6, 0x94, 0x4a, 0xe8, 0x93, 0x5b,
-	0x1c, 0x06, 0x67, 0xb5, 0xf4, 0xec, 0x6e, 0x52, 0x12, 0x93, 0x42, 0x69, 0x60, 0x5e, 0xe8, 0xd5,
-	0x2d, 0x4e, 0xa3, 0xbb, 0xb0, 0xf4, 0xe9, 0x7d, 0xa8, 0x3a, 0x4b, 0xfd, 0xbf, 0xcc, 0xef, 0x57,
-	0xe5, 0xcc, 0xfb, 0xab, 0x72, 0xe6, 0xef, 0xab, 0x72, 0xe6, 0x97, 0xeb, 0xf2, 0xc4, 0xfb, 0xeb,
-	0xf2, 0xc4, 0x5f, 0xd7, 0xe5, 0x09, 0x98, 0x6b, 0x72, 0x7f, 0x24, 0x52, 0x1d, 0xf4, 0xc0, 0xe2,
-	0xb7, 0xce, 0x6e, 0xe6, 0xa7, 0xc3, 0x53, 0x47, 0xb6, 0xda, 0x8d, 0x4a, 0x93, 0xfb, 0xd5, 0xfe,
-	0xb3, 0xa8, 0xf7, 0xeb, 0xb3, 0x88, 0xba, 0xd5, 0x90, 0x34, 0x5d, 0x72, 0xca, 0xa2, 0xea, 0x29,
-	0x1f, 0xe0, 0xa8, 0xd7, 0x52, 0x75, 0xf8, 0x29, 0xf5, 0xb5, 0xa0, 0x6e, 0xa7, 0xf6, 0x6b, 0x36,
-	0xb7, 0x87, 0xdf, 0xfd, 0x96, 0x9d, 0xdd, 0xeb, 0x65, 0xc7, 0xd4, 0xad, 0x1c, 0xd5, 0xfe, 0x1c,
-	0x80, 0x8e, 0x31, 0x75, 0x8f, 0x8f, 0x6a, 0x57, 0xd9, 0x95, 0x61, 0xe8, 0xf8, 0xcd, 0x6e, 0x7d,
-	0x87, 0x49, 0x12, 0xdf, 0xe2, 0xff, 0x64, 0x51, 0xcf, 0xbc, 0xb1, 0x81, 0xa9, 0xbb, 0xb1, 0x71,
-	0x54, 0x6b, 0xe4, 0x55, 0xf6, 0xcf, 0xff, 0x0f, 0x00, 0x00, 0xff, 0xff, 0xbe, 0xcc, 0xa6, 0xe7,
-	0xcb, 0x09, 0x00, 0x00,
+	// 1440 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x9c, 0x57, 0x4d, 0x4f, 0x1c, 0xc7,
+	0x16, 0x75, 0x0f, 0x30, 0x1f, 0x17, 0x63, 0x70, 0x19, 0xe3, 0xe6, 0xc3, 0x18, 0xb7, 0xbf, 0xb0,
+	0x65, 0xcf, 0x68, 0xf0, 0x7b, 0x7e, 0xcf, 0xbc, 0x15, 0xc3, 0x53, 0x6c, 0x2b, 0xc1, 0x82, 0xb6,
+	0x43, 0xa2, 0xc8, 0x52, 0xab, 0x66, 0xba, 0x60, 0x5a, 0xd3, 0xdd, 0x35, 0xae, 0xae, 0x81, 0xc1,
+	0x96, 0x37, 0xc9, 0x22, 0xde, 0x44, 0x8a, 0x94, 0x4d, 0xd6, 0x59, 0xe6, 0x6f, 0x64, 0x13, 0x65,
+	0x65, 0x29, 0x9b, 0x2c, 0x23, 0xc8, 0x2a, 0xab, 0x48, 0xd9, 0x66, 0x11, 0xd5, 0xad, 0xea, 0x61,
+	0x86, 0xf1, 0x00, 0xca, 0x8e, 0x3a, 0xf7, 0x54, 0xdd, 0x5b, 0xe7, 0xf6, 0x3d, 0x35, 0xc0, 0xdc,
+	0x4b, 0x2e, 0x58, 0xad, 0x4e, 0x83, 0xb8, 0x24, 0xfc, 0x46, 0x69, 0xa7, 0x5c, 0x7a, 0xd9, 0x62,
+	0x62, 0xaf, 0xd8, 0x14, 0x5c, 0x72, 0x32, 0xd1, 0x89, 0x16, 0x85, 0xdf, 0x28, 0xee, 0x94, 0x67,
+	0xe6, 0xb6, 0x39, 0xdf, 0x0e, 0x59, 0x89, 0x36, 0x83, 0x12, 0x8d, 0x63, 0x2e, 0xa9, 0x0c, 0x78,
+	0x9c, 0x68, 0xbe, 0x73, 0x90, 0x01, 0x58, 0xa7, 0x82, 0x46, 0xc9, 0x66, 0xc0, 0x76, 0xc9, 0x15,
+	0x18, 0x8d, 0x68, 0xdb, 0x13, 0x3c, 0x0c, 0x5b, 0xcd, 0xc4, 0xb6, 0x16, 0xac, 0xc5, 0x31, 0x17,
+	0x22, 0xda, 0x76, 0x35, 0x42, 0x4a, 0x30, 0x19, 0x05, 0xb1, 0x97, 0x48, 0xda, 0x60, 0xde, 0x16,
+	0x17, 0x86, 0x6a, 0x67, 0x16, 0xac, 0xc5, 0x21, 0xf7, 0x7c, 0x14, 0xc4, 0xcf, 0x54, 0xe8, 0x03,
+	0x2e, 0xf4, 0x0e, 0xf2, 0x10, 0xa6, 0x35, 0xc5, 0xab, 0x09, 0x86, 0xa9, 0xbd, 0x6a, 0x4b, 0xc4,
+	0x9e, 0xa0, 0x92, 0xd9, 0x43, 0x0b, 0xd6, 0x62, 0xc1, 0x9d, 0xd2, 0x84, 0x55, 0x13, 0xaf, 0xb4,
+	0x44, 0xec, 0x52, 0xc9, 0xc8, 0x7f, 0xc1, 0xf6, 0xd9, 0x16, 0x6d, 0x85, 0xd2, 0xab, 0xd5, 0x69,
+	0x18, 0xb2, 0x78, 0x9b, 0x79, 0xbb, 0x41, 0xec, 0xf3, 0x5d, 0x7b, 0x78, 0xc1, 0x5a, 0x1c, 0x76,
+	0xa7, 0x4c, 0x7c, 0x35, 0x0d, 0x7f, 0x82, 0x51, 0x72, 0x0b, 0x26, 0xd4, 0x35, 0x7c, 0xea, 0x55,
+	0x43, 0x5e, 0xf5, 0x92, 0xe0, 0x15, 0xb3, 0x47, 0x70, 0xc7, 0x58, 0x44, 0xdb, 0xff, 0xa7, 0x95,
+	0x90, 0x57, 0x9f, 0x05, 0xaf, 0x18, 0x59, 0x82, 0x8b, 0xc8, 0x10, 0x4c, 0xb2, 0x58, 0x17, 0x17,
+	0xf2, 0x5a, 0x23, 0xb1, 0xb3, 0xc8, 0xbe, 0xa0, 0x82, 0x6e, 0x1a, 0xab, 0x60, 0x88, 0x94, 0xe1,
+	0xa2, 0x3a, 0xbc, 0x4a, 0x65, 0xad, 0xce, 0x12, 0xaf, 0xc9, 0x84, 0xde, 0x64, 0xe7, 0x50, 0x2d,
+	0x12, 0xd1, 0x76, 0x45, 0xc7, 0xd6, 0x99, 0xc0, 0x3d, 0xce, 0xdb, 0x21, 0x00, 0xad, 0x07, 0xaa,
+	0x3c, 0x0b, 0x05, 0xa3, 0x49, 0xe0, 0xa3, 0xc6, 0x05, 0x37, 0xaf, 0x81, 0x27, 0x3e, 0xb1, 0x21,
+	0x87, 0x4a, 0x71, 0x81, 0xa2, 0x16, 0xdc, 0x74, 0xa9, 0x22, 0x4d, 0xc1, 0xb7, 0x82, 0x30, 0x15,
+	0x2e, 0x5d, 0x92, 0x5b, 0x30, 0x9e, 0x30, 0x29, 0x43, 0x16, 0xb1, 0x58, 0x7a, 0x11, 0xf7, 0x19,
+	0x0a, 0x54, 0x70, 0xcf, 0x1d, 0xc2, 0x6b, 0xdc, 0x67, 0xe4, 0x32, 0x80, 0x12, 0x85, 0xd6, 0x1a,
+	0x2c, 0xf6, 0x51, 0x92, 0x82, 0x5b, 0xf0, 0x69, 0x45, 0x03, 0xc4, 0x81, 0x31, 0xbc, 0x8a, 0x27,
+	0x83, 0x88, 0x79, 0x51, 0x2a, 0xc3, 0x28, 0x82, 0xcf, 0x83, 0x88, 0xad, 0x25, 0xa9, 0xb6, 0xb2,
+	0x7d, 0xe4, 0xe6, 0x5a, 0xdb, 0xe7, 0xed, 0xf4, 0xd2, 0xe4, 0x12, 0xe4, 0x76, 0x22, 0x4f, 0xee,
+	0x35, 0x99, 0x9d, 0xc7, 0x44, 0xd9, 0x9d, 0xe8, 0xf9, 0x5e, 0x93, 0x91, 0x29, 0xc8, 0x26, 0x92,
+	0xca, 0x56, 0x62, 0x17, 0x34, 0xae, 0x57, 0xe4, 0x2a, 0x9c, 0xd5, 0xdf, 0x15, 0x8d, 0x78, 0x2b,
+	0x96, 0x36, 0xe0, 0x37, 0x35, 0x8a, 0xd8, 0x0a, 0x42, 0x64, 0x1a, 0xf2, 0x21, 0xdd, 0x63, 0x42,
+	0x09, 0x37, 0xaa, 0x35, 0xc0, 0xf5, 0x13, 0x9f, 0xdc, 0x80, 0x73, 0x28, 0x14, 0xf3, 0xbd, 0x3a,
+	0x0b, 0xb6, 0xeb, 0xd2, 0x3e, 0x8b, 0xfb, 0xc7, 0x0c, 0xfa, 0x18, 0x41, 0xe7, 0x8f, 0x0c, 0x14,
+	0xb0, 0x3d, 0x27, 0x77, 0xe2, 0x0a, 0x8c, 0x62, 0x93, 0xbd, 0x20, 0xf6, 0x59, 0x1b, 0xbb, 0x31,
+	0xec, 0x02, 0x42, 0x4f, 0x14, 0xa2, 0xd4, 0x54, 0xa5, 0x33, 0x4f, 0x70, 0x2e, 0x4d, 0x4f, 0x0a,
+	0x88, 0xb8, 0x9c, 0x4b, 0x72, 0x13, 0xc6, 0x9b, 0x82, 0xed, 0x78, 0x5d, 0x1c, 0xdd, 0x95, 0x31,
+	0x05, 0x3f, 0xeb, 0xf0, 0xa6, 0x21, 0x2f, 0xdb, 0x5e, 0x0d, 0xef, 0xac, 0xbf, 0xd2, 0x9c, 0x6c,
+	0xaf, 0xe2, 0x7d, 0x67, 0xa1, 0xe0, 0x53, 0x49, 0xbd, 0x3a, 0x4d, 0xea, 0xd8, 0x8c, 0x82, 0x9b,
+	0x57, 0xc0, 0x63, 0x9a, 0xd4, 0x55, 0xfa, 0xa6, 0xe0, 0x7c, 0x4b, 0x6b, 0x9c, 0xd3, 0xe9, 0x11,
+	0x39, 0x22, 0x73, 0xbe, 0x4f, 0xe6, 0x56, 0x35, 0x0a, 0xa4, 0x92, 0x8a, 0x4a, 0x6c, 0x82, 0x92,
+	0x39, 0xc5, 0x56, 0xa4, 0xa2, 0x6c, 0x05, 0x31, 0x0d, 0x83, 0x57, 0x9a, 0x62, 0x3a, 0xd1, 0xc1,
+	0x56, 0x24, 0xb9, 0x0d, 0x13, 0xbb, 0x81, 0xac, 0xfb, 0x82, 0xee, 0xd2, 0x30, 0xd1, 0xb7, 0xd3,
+	0x1d, 0x19, 0xef, 0xc2, 0xd5, 0xfd, 0x9c, 0x49, 0x20, 0x1b, 0xca, 0xa2, 0xb4, 0xcf, 0xb8, 0xec,
+	0x65, 0x8b, 0x25, 0xd2, 0xf9, 0x10, 0x2e, 0xf4, 0xa0, 0x49, 0x93, 0xc7, 0x09, 0x23, 0xff, 0x82,
+	0x6c, 0x13, 0x11, 0x6c, 0xc7, 0xe8, 0xd2, 0x5c, 0xf1, 0xa8, 0xa3, 0x15, 0x0f, 0xfd, 0xca, 0x35,
+	0x5c, 0xa7, 0x6c, 0x52, 0xe8, 0x21, 0x33, 0x29, 0x8e, 0xed, 0x6e, 0x27, 0x7f, 0xba, 0xe5, 0x30,
+	0xbf, 0xb1, 0xb4, 0x81, 0xf9, 0x0f, 0x27, 0xd9, 0x35, 0x5c, 0xe7, 0x62, 0xcf, 0x61, 0x9d, 0x3b,
+	0x3e, 0x85, 0xc9, 0x5e, 0xd8, 0x24, 0x79, 0x00, 0xb9, 0x43, 0x8b, 0x1d, 0x3a, 0x31, 0x4b, 0x4a,
+	0x76, 0x36, 0xe0, 0x3c, 0x9e, 0x87, 0x1f, 0xf0, 0x69, 0x6e, 0x79, 0xe2, 0x37, 0xec, 0x3c, 0x32,
+	0xca, 0x99, 0x23, 0x4d, 0x81, 0x65, 0x18, 0x41, 0x8e, 0x11, 0x61, 0xb6, 0xbf, 0xbc, 0xce, 0x0c,
+	0xb9, 0x9a, 0xe9, 0x3c, 0x80, 0x4b, 0x78, 0xd0, 0x47, 0x54, 0xb2, 0x44, 0x9e, 0xba, 0x42, 0x67,
+	0x0d, 0xec, 0xfe, 0x7d, 0xff, 0xbc, 0x8c, 0xc0, 0x74, 0xc2, 0x58, 0xf0, 0x69, 0x45, 0x4a, 0x24,
+	0x15, 0xb2, 0x57, 0x24, 0x84, 0xf4, 0xa0, 0x4f, 0xc2, 0x48, 0x18, 0x44, 0x81, 0x9e, 0xf1, 0x31,
+	0x57, 0x2f, 0x9c, 0xd0, 0x74, 0xb7, 0x93, 0xca, 0x54, 0xfd, 0x6f, 0xc8, 0x99, 0xc7, 0xc1, 0x74,
+	0xf7, 0xd8, 0xba, 0x53, 0xae, 0x1a, 0xe7, 0x98, 0xb5, 0x7b, 0x8b, 0x28, 0x28, 0x44, 0x37, 0xea,
+	0x2f, 0x0b, 0xf2, 0xea, 0xdd, 0x3a, 0xd9, 0xb7, 0x2e, 0x03, 0xe0, 0xa3, 0xd6, 0x73, 0x90, 0x42,
+	0xf4, 0x65, 0xe6, 0x01, 0x6a, 0x3c, 0x8a, 0x02, 0xa9, 0x5e, 0x05, 0xe3, 0x5a, 0x5d, 0x48, 0xc7,
+	0x73, 0xf0, 0xd5, 0xd4, 0xef, 0x2c, 0x7a, 0x0e, 0x3e, 0x98, 0x53, 0x90, 0x35, 0xee, 0x3a, 0x82,
+	0x9e, 0x60, 0x56, 0x6a, 0x53, 0x22, 0xb9, 0xd0, 0x76, 0x61, 0x8c, 0x4a, 0x03, 0x2b, 0x52, 0x6d,
+	0x6a, 0x8a, 0x56, 0xcc, 0x7c, 0x34, 0xa9, 0xbc, 0x6b, 0x56, 0xe4, 0x0e, 0x9c, 0x67, 0xed, 0x66,
+	0x20, 0x58, 0xe2, 0x51, 0x99, 0xba, 0x76, 0x1e, 0xcf, 0x1d, 0x37, 0x81, 0x15, 0x69, 0x7c, 0xfb,
+	0x29, 0x4c, 0x68, 0xb1, 0xf1, 0x45, 0x3e, 0x45, 0x53, 0x8f, 0x57, 0xc1, 0x59, 0x4d, 0x47, 0x09,
+	0xcf, 0x33, 0x9d, 0x2b, 0xc2, 0xb0, 0x62, 0x98, 0xcf, 0x6d, 0xe6, 0x3d, 0x6d, 0x33, 0x0d, 0x70,
+	0x91, 0xb7, 0xf4, 0x43, 0x0e, 0x46, 0xf0, 0x14, 0xb2, 0x0b, 0x59, 0x6d, 0x4b, 0xe4, 0x7a, 0xff,
+	0xae, 0x7e, 0xf7, 0x9b, 0xb9, 0x71, 0x02, 0x4b, 0x17, 0xe4, 0x2c, 0x7c, 0xfe, 0xf3, 0x6f, 0xdf,
+	0x64, 0x66, 0x88, 0x5d, 0xea, 0xfb, 0xd5, 0xa7, 0x9d, 0x8f, 0x7c, 0x61, 0x41, 0xd6, 0xfc, 0xd4,
+	0x1a, 0x94, 0xb9, 0xc7, 0x14, 0x07, 0x66, 0xee, 0xf5, 0x41, 0xe7, 0x2e, 0x66, 0xbe, 0x49, 0xae,
+	0xf7, 0x67, 0xd6, 0x12, 0x97, 0x5e, 0x77, 0xb4, 0x7f, 0x43, 0x5e, 0x43, 0x2e, 0xfd, 0x85, 0x78,
+	0xfc, 0xf9, 0x1d, 0x01, 0x6e, 0x9e, 0x44, 0x33, 0x75, 0x5c, 0xc5, 0x3a, 0x66, 0xc9, 0xf4, 0xa0,
+	0x3a, 0x12, 0xf2, 0x95, 0x05, 0x23, 0x38, 0x4f, 0xe4, 0xda, 0x80, 0x43, 0xbb, 0xdd, 0x68, 0xe6,
+	0xfa, 0xf1, 0x24, 0x93, 0xf7, 0x21, 0xe6, 0xbd, 0x4f, 0xca, 0xfd, 0x79, 0x71, 0x60, 0xbb, 0xaf,
+	0x5f, 0x7a, 0xdd, 0xe5, 0xb1, 0x6f, 0xc8, 0xb7, 0x16, 0x8c, 0x76, 0xb9, 0x19, 0xb9, 0x3d, 0x20,
+	0x61, 0xbf, 0x53, 0xce, 0xdc, 0x39, 0x0d, 0xd5, 0x54, 0xb8, 0x84, 0x15, 0xde, 0x25, 0x77, 0xfa,
+	0x2b, 0x0c, 0x91, 0xee, 0xf5, 0x15, 0x4a, 0xbe, 0xb4, 0x20, 0x67, 0xec, 0x6a, 0x60, 0xa3, 0x7a,
+	0x9d, 0x73, 0x60, 0xa3, 0x8e, 0xb8, 0x9e, 0x73, 0x0f, 0xcb, 0xb9, 0x45, 0x6e, 0x0c, 0x10, 0x8c,
+	0x25, 0x3d, 0x95, 0xbc, 0xb5, 0x60, 0x58, 0x4d, 0x13, 0x71, 0x06, 0x9d, 0x7f, 0x38, 0xe8, 0x33,
+	0xd7, 0x8e, 0xe5, 0x98, 0x02, 0xfe, 0x83, 0x05, 0x94, 0x49, 0xe9, 0x3d, 0x05, 0x84, 0xbc, 0x7a,
+	0xa4, 0x61, 0x1d, 0x6b, 0x78, 0x53, 0xf9, 0xd3, 0xfa, 0x71, 0x7f, 0xde, 0x7a, 0xb7, 0x3f, 0x6f,
+	0xfd, 0xba, 0x3f, 0x6f, 0x7d, 0x7d, 0x30, 0x7f, 0xe6, 0xdd, 0xc1, 0xfc, 0x99, 0x5f, 0x0e, 0xe6,
+	0xcf, 0xc0, 0x64, 0x8d, 0x47, 0x7d, 0xb9, 0x2b, 0xa0, 0x47, 0x55, 0xfd, 0x03, 0xb5, 0x6e, 0x7d,
+	0xf6, 0xf1, 0x76, 0x20, 0xeb, 0xad, 0x6a, 0xb1, 0xc6, 0xa3, 0xae, 0xcc, 0x9d, 0xbf, 0xee, 0x25,
+	0x7e, 0xa3, 0xd4, 0xa4, 0xb5, 0x06, 0xdd, 0x66, 0x49, 0x69, 0x9b, 0x77, 0x71, 0xf0, 0x5f, 0xb0,
+	0xbe, 0x6a, 0xff, 0x27, 0xfc, 0xc6, 0x4e, 0xf9, 0xbb, 0xcc, 0xd0, 0x86, 0xfb, 0xe9, 0xf7, 0x99,
+	0x89, 0x8d, 0x4e, 0x76, 0xd7, 0x6f, 0x14, 0x37, 0xcb, 0x3f, 0x75, 0x41, 0x2f, 0x5c, 0xbf, 0xf1,
+	0x62, 0xb3, 0xbc, 0x9f, 0x99, 0x3b, 0x0a, 0xbd, 0x78, 0xb4, 0x5e, 0x59, 0x63, 0x92, 0x2a, 0xe3,
+	0xfe, 0x3d, 0x43, 0x3a, 0xe1, 0xe5, 0x65, 0xd7, 0x6f, 0x2c, 0x2f, 0x6f, 0x96, 0xab, 0x59, 0xcc,
+	0x7e, 0xff, 0xef, 0x00, 0x00, 0x00, 0xff, 0xff, 0x11, 0x2c, 0x91, 0xd8, 0x50, 0x0e, 0x00, 0x00,
 }
 
 // Reference imports to suppress errors if they are not otherwise used.
@@ -922,6 +1265,11 @@ type QueryClient interface {
 	Batch(ctx context.Context, in *QueryBatchRequest, opts ...grpc.CallOption) (*QueryBatchResponse, error)
 	// LatestBatch returns the latest settlement batch for a rollup.
 	LatestBatch(ctx context.Context, in *QueryLatestBatchRequest, opts ...grpc.CallOption) (*QueryLatestBatchResponse, error)
+	// Batches lists a rollup's settlement batches in index order, starting at
+	// start_index, at most limit of them (default 50, maximum 100).
+	Batches(ctx context.Context, in *QueryBatchesRequest, opts ...grpc.CallOption) (*QueryBatchesResponse, error)
+	// Blob returns a data-availability blob's metadata (not its data).
+	Blob(ctx context.Context, in *QueryBlobRequest, opts ...grpc.CallOption) (*QueryBlobResponse, error)
 }
 
 type queryClient struct {
@@ -977,6 +1325,24 @@ func (c *queryClient) LatestBatch(ctx context.Context, in *QueryLatestBatchReque
 	return out, nil
 }
 
+func (c *queryClient) Batches(ctx context.Context, in *QueryBatchesRequest, opts ...grpc.CallOption) (*QueryBatchesResponse, error) {
+	out := new(QueryBatchesResponse)
+	err := c.cc.Invoke(ctx, "/qorechain.rdk.v1.Query/Batches", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *queryClient) Blob(ctx context.Context, in *QueryBlobRequest, opts ...grpc.CallOption) (*QueryBlobResponse, error) {
+	out := new(QueryBlobResponse)
+	err := c.cc.Invoke(ctx, "/qorechain.rdk.v1.Query/Blob", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // QueryServer is the server API for Query service.
 type QueryServer interface {
 	// Params returns the module parameters.
@@ -989,6 +1355,11 @@ type QueryServer interface {
 	Batch(context.Context, *QueryBatchRequest) (*QueryBatchResponse, error)
 	// LatestBatch returns the latest settlement batch for a rollup.
 	LatestBatch(context.Context, *QueryLatestBatchRequest) (*QueryLatestBatchResponse, error)
+	// Batches lists a rollup's settlement batches in index order, starting at
+	// start_index, at most limit of them (default 50, maximum 100).
+	Batches(context.Context, *QueryBatchesRequest) (*QueryBatchesResponse, error)
+	// Blob returns a data-availability blob's metadata (not its data).
+	Blob(context.Context, *QueryBlobRequest) (*QueryBlobResponse, error)
 }
 
 // UnimplementedQueryServer can be embedded to have forward compatible implementations.
@@ -1009,6 +1380,12 @@ func (*UnimplementedQueryServer) Batch(ctx context.Context, req *QueryBatchReque
 }
 func (*UnimplementedQueryServer) LatestBatch(ctx context.Context, req *QueryLatestBatchRequest) (*QueryLatestBatchResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method LatestBatch not implemented")
+}
+func (*UnimplementedQueryServer) Batches(ctx context.Context, req *QueryBatchesRequest) (*QueryBatchesResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method Batches not implemented")
+}
+func (*UnimplementedQueryServer) Blob(ctx context.Context, req *QueryBlobRequest) (*QueryBlobResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method Blob not implemented")
 }
 
 func RegisterQueryServer(s grpc1.Server, srv QueryServer) {
@@ -1105,6 +1482,42 @@ func _Query_LatestBatch_Handler(srv interface{}, ctx context.Context, dec func(i
 	return interceptor(ctx, in, info, handler)
 }
 
+func _Query_Batches_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(QueryBatchesRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(QueryServer).Batches(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/qorechain.rdk.v1.Query/Batches",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(QueryServer).Batches(ctx, req.(*QueryBatchesRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Query_Blob_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(QueryBlobRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(QueryServer).Blob(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/qorechain.rdk.v1.Query/Blob",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(QueryServer).Blob(ctx, req.(*QueryBlobRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 var Query_serviceDesc = _Query_serviceDesc
 var _Query_serviceDesc = grpc.ServiceDesc{
 	ServiceName: "qorechain.rdk.v1.Query",
@@ -1129,6 +1542,14 @@ var _Query_serviceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "LatestBatch",
 			Handler:    _Query_LatestBatch_Handler,
+		},
+		{
+			MethodName: "Batches",
+			Handler:    _Query_Batches_Handler,
+		},
+		{
+			MethodName: "Blob",
+			Handler:    _Query_Blob_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
@@ -1704,6 +2125,232 @@ func (m *QueryLatestBatchResponse) MarshalToSizedBuffer(dAtA []byte) (int, error
 	return len(dAtA) - i, nil
 }
 
+func (m *QueryBatchesRequest) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *QueryBatchesRequest) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *QueryBatchesRequest) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if m.Limit != 0 {
+		i = encodeVarintQuery(dAtA, i, uint64(m.Limit))
+		i--
+		dAtA[i] = 0x18
+	}
+	if m.StartIndex != 0 {
+		i = encodeVarintQuery(dAtA, i, uint64(m.StartIndex))
+		i--
+		dAtA[i] = 0x10
+	}
+	if len(m.RollupId) > 0 {
+		i -= len(m.RollupId)
+		copy(dAtA[i:], m.RollupId)
+		i = encodeVarintQuery(dAtA, i, uint64(len(m.RollupId)))
+		i--
+		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *QueryBatchesResponse) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *QueryBatchesResponse) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *QueryBatchesResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if m.NextIndex != 0 {
+		i = encodeVarintQuery(dAtA, i, uint64(m.NextIndex))
+		i--
+		dAtA[i] = 0x10
+	}
+	if len(m.Batches) > 0 {
+		for iNdEx := len(m.Batches) - 1; iNdEx >= 0; iNdEx-- {
+			{
+				size, err := m.Batches[iNdEx].MarshalToSizedBuffer(dAtA[:i])
+				if err != nil {
+					return 0, err
+				}
+				i -= size
+				i = encodeVarintQuery(dAtA, i, uint64(size))
+			}
+			i--
+			dAtA[i] = 0xa
+		}
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *BlobView) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *BlobView) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *BlobView) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if m.ExpiresAtHeight != 0 {
+		i = encodeVarintQuery(dAtA, i, uint64(m.ExpiresAtHeight))
+		i--
+		dAtA[i] = 0x40
+	}
+	if m.Pruned {
+		i--
+		if m.Pruned {
+			dAtA[i] = 1
+		} else {
+			dAtA[i] = 0
+		}
+		i--
+		dAtA[i] = 0x38
+	}
+	if len(m.StoredAt) > 0 {
+		i -= len(m.StoredAt)
+		copy(dAtA[i:], m.StoredAt)
+		i = encodeVarintQuery(dAtA, i, uint64(len(m.StoredAt)))
+		i--
+		dAtA[i] = 0x32
+	}
+	if m.Height != 0 {
+		i = encodeVarintQuery(dAtA, i, uint64(m.Height))
+		i--
+		dAtA[i] = 0x28
+	}
+	if m.DataSize != 0 {
+		i = encodeVarintQuery(dAtA, i, uint64(m.DataSize))
+		i--
+		dAtA[i] = 0x20
+	}
+	if len(m.Commitment) > 0 {
+		i -= len(m.Commitment)
+		copy(dAtA[i:], m.Commitment)
+		i = encodeVarintQuery(dAtA, i, uint64(len(m.Commitment)))
+		i--
+		dAtA[i] = 0x1a
+	}
+	if m.BlobIndex != 0 {
+		i = encodeVarintQuery(dAtA, i, uint64(m.BlobIndex))
+		i--
+		dAtA[i] = 0x10
+	}
+	if len(m.RollupId) > 0 {
+		i -= len(m.RollupId)
+		copy(dAtA[i:], m.RollupId)
+		i = encodeVarintQuery(dAtA, i, uint64(len(m.RollupId)))
+		i--
+		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *QueryBlobRequest) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *QueryBlobRequest) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *QueryBlobRequest) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if m.BlobIndex != 0 {
+		i = encodeVarintQuery(dAtA, i, uint64(m.BlobIndex))
+		i--
+		dAtA[i] = 0x10
+	}
+	if len(m.RollupId) > 0 {
+		i -= len(m.RollupId)
+		copy(dAtA[i:], m.RollupId)
+		i = encodeVarintQuery(dAtA, i, uint64(len(m.RollupId)))
+		i--
+		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *QueryBlobResponse) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *QueryBlobResponse) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *QueryBlobResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if m.Blob != nil {
+		{
+			size, err := m.Blob.MarshalToSizedBuffer(dAtA[:i])
+			if err != nil {
+				return 0, err
+			}
+			i -= size
+			i = encodeVarintQuery(dAtA, i, uint64(size))
+		}
+		i--
+		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
+}
+
 func encodeVarintQuery(dAtA []byte, offset int, v uint64) int {
 	offset -= sovQuery(v)
 	base := offset
@@ -1970,6 +2617,108 @@ func (m *QueryLatestBatchResponse) Size() (n int) {
 	_ = l
 	if m.Batch != nil {
 		l = m.Batch.Size()
+		n += 1 + l + sovQuery(uint64(l))
+	}
+	return n
+}
+
+func (m *QueryBatchesRequest) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	l = len(m.RollupId)
+	if l > 0 {
+		n += 1 + l + sovQuery(uint64(l))
+	}
+	if m.StartIndex != 0 {
+		n += 1 + sovQuery(uint64(m.StartIndex))
+	}
+	if m.Limit != 0 {
+		n += 1 + sovQuery(uint64(m.Limit))
+	}
+	return n
+}
+
+func (m *QueryBatchesResponse) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	if len(m.Batches) > 0 {
+		for _, e := range m.Batches {
+			l = e.Size()
+			n += 1 + l + sovQuery(uint64(l))
+		}
+	}
+	if m.NextIndex != 0 {
+		n += 1 + sovQuery(uint64(m.NextIndex))
+	}
+	return n
+}
+
+func (m *BlobView) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	l = len(m.RollupId)
+	if l > 0 {
+		n += 1 + l + sovQuery(uint64(l))
+	}
+	if m.BlobIndex != 0 {
+		n += 1 + sovQuery(uint64(m.BlobIndex))
+	}
+	l = len(m.Commitment)
+	if l > 0 {
+		n += 1 + l + sovQuery(uint64(l))
+	}
+	if m.DataSize != 0 {
+		n += 1 + sovQuery(uint64(m.DataSize))
+	}
+	if m.Height != 0 {
+		n += 1 + sovQuery(uint64(m.Height))
+	}
+	l = len(m.StoredAt)
+	if l > 0 {
+		n += 1 + l + sovQuery(uint64(l))
+	}
+	if m.Pruned {
+		n += 2
+	}
+	if m.ExpiresAtHeight != 0 {
+		n += 1 + sovQuery(uint64(m.ExpiresAtHeight))
+	}
+	return n
+}
+
+func (m *QueryBlobRequest) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	l = len(m.RollupId)
+	if l > 0 {
+		n += 1 + l + sovQuery(uint64(l))
+	}
+	if m.BlobIndex != 0 {
+		n += 1 + sovQuery(uint64(m.BlobIndex))
+	}
+	return n
+}
+
+func (m *QueryBlobResponse) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	if m.Blob != nil {
+		l = m.Blob.Size()
 		n += 1 + l + sovQuery(uint64(l))
 	}
 	return n
@@ -3678,6 +4427,658 @@ func (m *QueryLatestBatchResponse) Unmarshal(dAtA []byte) error {
 				m.Batch = &BatchView{}
 			}
 			if err := m.Batch.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipQuery(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *QueryBatchesRequest) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowQuery
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: QueryBatchesRequest: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: QueryBatchesRequest: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field RollupId", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuery
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthQuery
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.RollupId = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 2:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field StartIndex", wireType)
+			}
+			m.StartIndex = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuery
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.StartIndex |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		case 3:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Limit", wireType)
+			}
+			m.Limit = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuery
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.Limit |= uint32(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		default:
+			iNdEx = preIndex
+			skippy, err := skipQuery(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *QueryBatchesResponse) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowQuery
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: QueryBatchesResponse: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: QueryBatchesResponse: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Batches", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuery
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthQuery
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Batches = append(m.Batches, &BatchView{})
+			if err := m.Batches[len(m.Batches)-1].Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		case 2:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field NextIndex", wireType)
+			}
+			m.NextIndex = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuery
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.NextIndex |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		default:
+			iNdEx = preIndex
+			skippy, err := skipQuery(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *BlobView) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowQuery
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: BlobView: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: BlobView: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field RollupId", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuery
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthQuery
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.RollupId = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 2:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field BlobIndex", wireType)
+			}
+			m.BlobIndex = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuery
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.BlobIndex |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		case 3:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Commitment", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuery
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthQuery
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Commitment = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 4:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field DataSize", wireType)
+			}
+			m.DataSize = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuery
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.DataSize |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		case 5:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Height", wireType)
+			}
+			m.Height = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuery
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.Height |= int64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		case 6:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field StoredAt", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuery
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthQuery
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.StoredAt = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 7:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Pruned", wireType)
+			}
+			var v int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuery
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				v |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			m.Pruned = bool(v != 0)
+		case 8:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field ExpiresAtHeight", wireType)
+			}
+			m.ExpiresAtHeight = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuery
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.ExpiresAtHeight |= int64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		default:
+			iNdEx = preIndex
+			skippy, err := skipQuery(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *QueryBlobRequest) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowQuery
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: QueryBlobRequest: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: QueryBlobRequest: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field RollupId", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuery
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthQuery
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.RollupId = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 2:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field BlobIndex", wireType)
+			}
+			m.BlobIndex = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuery
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.BlobIndex |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		default:
+			iNdEx = preIndex
+			skippy, err := skipQuery(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *QueryBlobResponse) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowQuery
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: QueryBlobResponse: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: QueryBlobResponse: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Blob", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuery
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthQuery
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if m.Blob == nil {
+				m.Blob = &BlobView{}
+			}
+			if err := m.Blob.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
 				return err
 			}
 			iNdEx = postIndex

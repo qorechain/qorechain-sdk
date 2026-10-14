@@ -72,20 +72,83 @@ pub struct QueryPermissionSchemaResponse {
     /// key_management_msgs are typeURLs that are NEVER delegable to a linked key.
     #[prost(string, repeated, tag="4")]
     pub key_management_msgs: ::prost::alloc::vec::Vec<::prost::alloc::string::String>,
+    /// lane_rules (schema_version 2 and later) are permission requirements that
+    /// depend on a message's content rather than its type, such as a contract
+    /// creation through MsgExecuteEVM needing "deploy".
+    #[prost(message, repeated, tag="5")]
+    pub lane_rules: ::prost::alloc::vec::Vec<LaneRule>,
+}
+/// LaneRule states that a message matching condition requires permission.
+#[derive(Clone, PartialEq, ::prost::Message)]
+pub struct LaneRule {
+    #[prost(string, tag="1")]
+    pub msg_type_url: ::prost::alloc::string::String,
+    #[prost(string, tag="2")]
+    pub condition: ::prost::alloc::string::String,
+    #[prost(string, tag="3")]
+    pub permission: ::prost::alloc::string::String,
 }
 /// SpendingRule defines spending limits for an abstract account.
+///
+/// Every limit is counted per AUTHORISED EXECUTION: one signed MsgExecuteCosmos,
+/// one signed MsgExecuteEVM or one authorised SVM execution. Several authorised
+/// executions in one outer transaction are each checked on their own; daily
+/// limits bound their total per UTC calendar day (a fixed day, not a rolling
+/// window).
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct SpendingRule {
     #[prost(string, tag="1")]
     pub id: ::prost::alloc::string::String,
+    /// daily_limit bounds the total outflow of one denom per UTC calendar day, in
+    /// base units. It applies to every denom that has no denom_limits entry. Zero
+    /// means no daily limit.
     #[prost(int64, tag="2")]
     pub daily_limit: i64,
+    /// per_tx_limit is the maximum outflow of one denom per authorised execution
+    /// (see above), in base units. It applies to every denom that has no
+    /// denom_limits entry. Zero means no per-execution limit. What counts as
+    /// outflow depends on the lane: the Cosmos lane counts the signed amount; the
+    /// SVM lane counts the net decrease of the account's native balance across the
+    /// execution; the EVM lane counts msg.value only until v3.2.2 and, from
+    /// v3.2.2, the measured outflow of the call (native value, native balance
+    /// decrease, bank coins spent and the balance or allowance change of every
+    /// listed ERC-20). The name is kept for wire compatibility.
     #[prost(int64, tag="3")]
     pub per_tx_limit: i64,
+    /// allowed_denoms lists the denoms the rule's keys may move. Empty means any.
+    /// An ERC-20 is listed as "erc20/<contract>".
     #[prost(string, repeated, tag="4")]
     pub allowed_denoms: ::prost::alloc::vec::Vec<::prost::alloc::string::String>,
     #[prost(bool, tag="5")]
     pub enabled: bool,
+    /// allowed_evm_calls (v3.2.2) lists the EVM calls a key bound by this rule may
+    /// make with call data, as "0x<target>" (any function of that contract) or
+    /// "0x<target>/0x<selector>" (that function only). Without an entry a
+    /// rule-bound key may only send value, deploy (with the deploy permission)
+    /// and move the ERC-20 tokens listed in allowed_denoms. Allowlisting a target
+    /// trusts every argument of the calls made to it, recipients included. NFTs
+    /// (ERC-721, ERC-1155) move only through contracts listed here and are not
+    /// capped.
+    #[prost(string, repeated, tag="6")]
+    pub allowed_evm_calls: ::prost::alloc::vec::Vec<::prost::alloc::string::String>,
+    /// denom_limits (v3.2.2) sets per-denom limits that replace per_tx_limit and
+    /// daily_limit for the denoms they name, with amounts as decimal integers so
+    /// 18-decimal tokens can be capped. A denom without an entry keeps the rule's
+    /// per_tx_limit and daily_limit.
+    #[prost(message, repeated, tag="7")]
+    pub denom_limits: ::prost::alloc::vec::Vec<DenomLimit>,
+}
+/// DenomLimit is a per-denom limit of a SpendingRule (v3.2.2). The amounts are
+/// decimal integers in the denom's base units; empty or "0" means no limit of
+/// that kind.
+#[derive(Clone, PartialEq, ::prost::Message)]
+pub struct DenomLimit {
+    #[prost(string, tag="1")]
+    pub denom: ::prost::alloc::string::String,
+    #[prost(string, tag="2")]
+    pub per_tx_limit: ::prost::alloc::string::String,
+    #[prost(string, tag="3")]
+    pub daily_limit: ::prost::alloc::string::String,
 }
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct MsgCreateAbstractAccount {
@@ -158,10 +221,11 @@ pub struct MsgRevokeAuthenticatorResponse {
 /// authenticator (v3.1.85). The relayer submits + pays fees; the authenticator
 /// (scheme,pubkey) signs the domain-separated sign-bytes binding chain-id, the
 /// canonical account, the pubkey, to/value/data and the account's expected EVM
-/// nonce (replay protection — the nonce must equal the account's current EVM
-/// nonce, and executing the call increments it, so a signature cannot be replayed).
-/// The chain resolves the authenticator, checks the "evm" permission + SpendingRule
-/// against `value`, then executes the call FROM the canonical account's EVM address.
+/// nonce (replay protection: the nonce must equal the linked key's current
+/// authenticator sequence, which a successful call increments).
+/// The chain resolves the authenticator, checks the "evm" permission ("deploy"
+/// for a contract creation from v3.2.2) and the SpendingRule, then executes the
+/// call FROM the canonical account's EVM address.
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct MsgExecuteEvm {
     #[prost(string, tag="1")]
@@ -189,7 +253,7 @@ pub struct MsgExecuteEvm {
     pub data: ::prost::alloc::vec::Vec<u8>,
     #[prost(uint64, tag="9")]
     pub gas_limit: u64,
-    /// MUST equal the account's current EVM nonce
+    /// MUST equal the linked key's current authenticator sequence
     #[prost(uint64, tag="10")]
     pub nonce: u64,
 }

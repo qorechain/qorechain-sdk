@@ -18,6 +18,11 @@ export interface LicenseView {
   grantedBy: string;
   suspended: boolean;
   metadata: string;
+  /**
+   * active is true when the grant is not suspended and has not expired at the
+   * height the query was served at (expires_at 0 never expires).
+   */
+  active: boolean;
 }
 
 export interface QueryCheckRequest {
@@ -29,7 +34,12 @@ export interface QueryCheckResponse {
   license?:
     | LicenseView
     | undefined;
-  /** active is true when the grant exists and is not suspended. */
+  /**
+   * active is true when the grant exists, is not suspended and has not
+   * expired at the height the query was served at. An expired grant stays in
+   * the store until the next sweep but is reported inactive from its
+   * expires_at height on.
+   */
   active: boolean;
 }
 
@@ -50,7 +60,16 @@ export interface QueryListResponse {
 }
 
 function createBaseLicenseView(): LicenseView {
-  return { grantee: "", featureId: "", expiresAt: "0", grantedAt: "0", grantedBy: "", suspended: false, metadata: "" };
+  return {
+    grantee: "",
+    featureId: "",
+    expiresAt: "0",
+    grantedAt: "0",
+    grantedBy: "",
+    suspended: false,
+    metadata: "",
+    active: false,
+  };
 }
 
 export const LicenseView: MessageFns<LicenseView> = {
@@ -75,6 +94,9 @@ export const LicenseView: MessageFns<LicenseView> = {
     }
     if (message.metadata !== "") {
       writer.uint32(58).string(message.metadata);
+    }
+    if (message.active !== false) {
+      writer.uint32(64).bool(message.active);
     }
     return writer;
   },
@@ -142,6 +164,14 @@ export const LicenseView: MessageFns<LicenseView> = {
           message.metadata = reader.string();
           continue;
         }
+        case 8: {
+          if (tag !== 64) {
+            break;
+          }
+
+          message.active = reader.bool();
+          continue;
+        }
       }
       if ((tag & 7) === 4 || tag === 0) {
         break;
@@ -176,6 +206,7 @@ export const LicenseView: MessageFns<LicenseView> = {
         : "",
       suspended: isSet(object.suspended) ? globalThis.Boolean(object.suspended) : false,
       metadata: isSet(object.metadata) ? globalThis.String(object.metadata) : "",
+      active: isSet(object.active) ? globalThis.Boolean(object.active) : false,
     };
   },
 
@@ -202,6 +233,9 @@ export const LicenseView: MessageFns<LicenseView> = {
     if (message.metadata !== "") {
       obj.metadata = message.metadata;
     }
+    if (message.active !== false) {
+      obj.active = message.active;
+    }
     return obj;
   },
 
@@ -217,6 +251,7 @@ export const LicenseView: MessageFns<LicenseView> = {
     message.grantedBy = object.grantedBy ?? "";
     message.suspended = object.suspended ?? false;
     message.metadata = object.metadata ?? "";
+    message.active = object.active ?? false;
     return message;
   },
 };

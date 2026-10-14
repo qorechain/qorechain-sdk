@@ -10422,6 +10422,1945 @@ public final class Tx extends com.google.protobuf.GeneratedFile {
 
   }
 
+  public interface MsgUpdateParamsOrBuilder extends
+      // @@protoc_insertion_point(interface_extends:qorechain.multilayer.v1.MsgUpdateParams)
+      com.google.protobuf.MessageOrBuilder {
+
+    /**
+     * <code>string authority = 1 [json_name = "authority", (.cosmos_proto.scalar) = "cosmos.AddressString"];</code>
+     * @return The authority.
+     */
+    java.lang.String getAuthority();
+    /**
+     * <code>string authority = 1 [json_name = "authority", (.cosmos_proto.scalar) = "cosmos.AddressString"];</code>
+     * @return The bytes for authority.
+     */
+    com.google.protobuf.ByteString
+        getAuthorityBytes();
+
+    /**
+     * <code>uint64 max_sidechains = 2 [json_name = "maxSidechains"];</code>
+     * @return The maxSidechains.
+     */
+    long getMaxSidechains();
+
+    /**
+     * <code>uint64 max_paychains = 3 [json_name = "maxPaychains"];</code>
+     * @return The maxPaychains.
+     */
+    long getMaxPaychains();
+
+    /**
+     * <code>uint64 min_anchor_interval = 4 [json_name = "minAnchorInterval"];</code>
+     * @return The minAnchorInterval.
+     */
+    long getMinAnchorInterval();
+
+    /**
+     * <code>uint64 max_anchor_interval = 5 [json_name = "maxAnchorInterval"];</code>
+     * @return The maxAnchorInterval.
+     */
+    long getMaxAnchorInterval();
+
+    /**
+     * <pre>
+     * default_challenge_period is in seconds.
+     * </pre>
+     *
+     * <code>uint64 default_challenge_period = 6 [json_name = "defaultChallengePeriod"];</code>
+     * @return The defaultChallengePeriod.
+     */
+    long getDefaultChallengePeriod();
+
+    /**
+     * <pre>
+     * min_sidechain_stake and min_paychain_stake are uqor amounts.
+     * </pre>
+     *
+     * <code>string min_sidechain_stake = 7 [json_name = "minSidechainStake"];</code>
+     * @return The minSidechainStake.
+     */
+    java.lang.String getMinSidechainStake();
+    /**
+     * <pre>
+     * min_sidechain_stake and min_paychain_stake are uqor amounts.
+     * </pre>
+     *
+     * <code>string min_sidechain_stake = 7 [json_name = "minSidechainStake"];</code>
+     * @return The bytes for minSidechainStake.
+     */
+    com.google.protobuf.ByteString
+        getMinSidechainStakeBytes();
+
+    /**
+     * <code>string min_paychain_stake = 8 [json_name = "minPaychainStake"];</code>
+     * @return The minPaychainStake.
+     */
+    java.lang.String getMinPaychainStake();
+    /**
+     * <code>string min_paychain_stake = 8 [json_name = "minPaychainStake"];</code>
+     * @return The bytes for minPaychainStake.
+     */
+    com.google.protobuf.ByteString
+        getMinPaychainStakeBytes();
+
+    /**
+     * <code>bool routing_enabled = 9 [json_name = "routingEnabled"];</code>
+     * @return The routingEnabled.
+     */
+    boolean getRoutingEnabled();
+
+    /**
+     * <pre>
+     * routing_confidence_threshold is a decimal between 0 and 1.
+     * </pre>
+     *
+     * <code>string routing_confidence_threshold = 10 [json_name = "routingConfidenceThreshold"];</code>
+     * @return The routingConfidenceThreshold.
+     */
+    java.lang.String getRoutingConfidenceThreshold();
+    /**
+     * <pre>
+     * routing_confidence_threshold is a decimal between 0 and 1.
+     * </pre>
+     *
+     * <code>string routing_confidence_threshold = 10 [json_name = "routingConfidenceThreshold"];</code>
+     * @return The bytes for routingConfidenceThreshold.
+     */
+    com.google.protobuf.ByteString
+        getRoutingConfidenceThresholdBytes();
+
+    /**
+     * <code>bool cross_layer_fee_bundling = 11 [json_name = "crossLayerFeeBundling"];</code>
+     * @return The crossLayerFeeBundling.
+     */
+    boolean getCrossLayerFeeBundling();
+  }
+  /**
+   * <pre>
+   * MsgUpdateParams replaces the multilayer parameters wholesale. The fields are
+   * the module's Params, spelled out one by one (as x/inflation does) because the
+   * parameters are stored as JSON by a hand-written struct whose encoding must
+   * not change. Governance only: authority must be the gov module account.
+   * </pre>
+   *
+   * Protobuf type {@code qorechain.multilayer.v1.MsgUpdateParams}
+   */
+  public static final class MsgUpdateParams extends
+      com.google.protobuf.GeneratedMessage implements
+      // @@protoc_insertion_point(message_implements:qorechain.multilayer.v1.MsgUpdateParams)
+      MsgUpdateParamsOrBuilder {
+  private static final long serialVersionUID = 0L;
+    static {
+      com.google.protobuf.RuntimeVersion.validateProtobufGencodeVersion(
+        com.google.protobuf.RuntimeVersion.RuntimeDomain.PUBLIC,
+        /* major= */ 4,
+        /* minor= */ 35,
+        /* patch= */ 1,
+        /* suffix= */ "",
+        "MsgUpdateParams");
+    }
+    // Use MsgUpdateParams.newBuilder() to construct.
+    private MsgUpdateParams(com.google.protobuf.GeneratedMessage.Builder<?> builder) {
+      super(builder);
+    }
+    private MsgUpdateParams() {
+      authority_ = "";
+      minSidechainStake_ = "";
+      minPaychainStake_ = "";
+      routingConfidenceThreshold_ = "";
+    }
+
+    public static final com.google.protobuf.Descriptors.Descriptor
+        getDescriptor() {
+      return qorechain.multilayer.v1.Tx.internal_static_qorechain_multilayer_v1_MsgUpdateParams_descriptor;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Descriptors.Descriptor getDescriptorForType() {
+      return qorechain.multilayer.v1.Tx.internal_static_qorechain_multilayer_v1_MsgUpdateParams_descriptor;
+    }
+
+    @java.lang.Override
+    protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+        internalGetFieldAccessorTable() {
+      return qorechain.multilayer.v1.Tx.internal_static_qorechain_multilayer_v1_MsgUpdateParams_fieldAccessorTable
+          .ensureFieldAccessorsInitialized(
+              qorechain.multilayer.v1.Tx.MsgUpdateParams.class, qorechain.multilayer.v1.Tx.MsgUpdateParams.Builder.class);
+    }
+
+    public static final int AUTHORITY_FIELD_NUMBER = 1;
+    @SuppressWarnings("serial")
+    private volatile java.lang.Object authority_ = "";
+    /**
+     * <code>string authority = 1 [json_name = "authority", (.cosmos_proto.scalar) = "cosmos.AddressString"];</code>
+     * @return The authority.
+     */
+    @java.lang.Override
+    public java.lang.String getAuthority() {
+      java.lang.Object ref = authority_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        authority_ = s;
+        return s;
+      }
+    }
+    /**
+     * <code>string authority = 1 [json_name = "authority", (.cosmos_proto.scalar) = "cosmos.AddressString"];</code>
+     * @return The bytes for authority.
+     */
+    @java.lang.Override
+    public com.google.protobuf.ByteString
+        getAuthorityBytes() {
+      java.lang.Object ref = authority_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        authority_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
+    public static final int MAX_SIDECHAINS_FIELD_NUMBER = 2;
+    private long maxSidechains_ = 0L;
+    /**
+     * <code>uint64 max_sidechains = 2 [json_name = "maxSidechains"];</code>
+     * @return The maxSidechains.
+     */
+    @java.lang.Override
+    public long getMaxSidechains() {
+      return maxSidechains_;
+    }
+
+    public static final int MAX_PAYCHAINS_FIELD_NUMBER = 3;
+    private long maxPaychains_ = 0L;
+    /**
+     * <code>uint64 max_paychains = 3 [json_name = "maxPaychains"];</code>
+     * @return The maxPaychains.
+     */
+    @java.lang.Override
+    public long getMaxPaychains() {
+      return maxPaychains_;
+    }
+
+    public static final int MIN_ANCHOR_INTERVAL_FIELD_NUMBER = 4;
+    private long minAnchorInterval_ = 0L;
+    /**
+     * <code>uint64 min_anchor_interval = 4 [json_name = "minAnchorInterval"];</code>
+     * @return The minAnchorInterval.
+     */
+    @java.lang.Override
+    public long getMinAnchorInterval() {
+      return minAnchorInterval_;
+    }
+
+    public static final int MAX_ANCHOR_INTERVAL_FIELD_NUMBER = 5;
+    private long maxAnchorInterval_ = 0L;
+    /**
+     * <code>uint64 max_anchor_interval = 5 [json_name = "maxAnchorInterval"];</code>
+     * @return The maxAnchorInterval.
+     */
+    @java.lang.Override
+    public long getMaxAnchorInterval() {
+      return maxAnchorInterval_;
+    }
+
+    public static final int DEFAULT_CHALLENGE_PERIOD_FIELD_NUMBER = 6;
+    private long defaultChallengePeriod_ = 0L;
+    /**
+     * <pre>
+     * default_challenge_period is in seconds.
+     * </pre>
+     *
+     * <code>uint64 default_challenge_period = 6 [json_name = "defaultChallengePeriod"];</code>
+     * @return The defaultChallengePeriod.
+     */
+    @java.lang.Override
+    public long getDefaultChallengePeriod() {
+      return defaultChallengePeriod_;
+    }
+
+    public static final int MIN_SIDECHAIN_STAKE_FIELD_NUMBER = 7;
+    @SuppressWarnings("serial")
+    private volatile java.lang.Object minSidechainStake_ = "";
+    /**
+     * <pre>
+     * min_sidechain_stake and min_paychain_stake are uqor amounts.
+     * </pre>
+     *
+     * <code>string min_sidechain_stake = 7 [json_name = "minSidechainStake"];</code>
+     * @return The minSidechainStake.
+     */
+    @java.lang.Override
+    public java.lang.String getMinSidechainStake() {
+      java.lang.Object ref = minSidechainStake_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        minSidechainStake_ = s;
+        return s;
+      }
+    }
+    /**
+     * <pre>
+     * min_sidechain_stake and min_paychain_stake are uqor amounts.
+     * </pre>
+     *
+     * <code>string min_sidechain_stake = 7 [json_name = "minSidechainStake"];</code>
+     * @return The bytes for minSidechainStake.
+     */
+    @java.lang.Override
+    public com.google.protobuf.ByteString
+        getMinSidechainStakeBytes() {
+      java.lang.Object ref = minSidechainStake_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        minSidechainStake_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
+    public static final int MIN_PAYCHAIN_STAKE_FIELD_NUMBER = 8;
+    @SuppressWarnings("serial")
+    private volatile java.lang.Object minPaychainStake_ = "";
+    /**
+     * <code>string min_paychain_stake = 8 [json_name = "minPaychainStake"];</code>
+     * @return The minPaychainStake.
+     */
+    @java.lang.Override
+    public java.lang.String getMinPaychainStake() {
+      java.lang.Object ref = minPaychainStake_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        minPaychainStake_ = s;
+        return s;
+      }
+    }
+    /**
+     * <code>string min_paychain_stake = 8 [json_name = "minPaychainStake"];</code>
+     * @return The bytes for minPaychainStake.
+     */
+    @java.lang.Override
+    public com.google.protobuf.ByteString
+        getMinPaychainStakeBytes() {
+      java.lang.Object ref = minPaychainStake_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        minPaychainStake_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
+    public static final int ROUTING_ENABLED_FIELD_NUMBER = 9;
+    private boolean routingEnabled_ = false;
+    /**
+     * <code>bool routing_enabled = 9 [json_name = "routingEnabled"];</code>
+     * @return The routingEnabled.
+     */
+    @java.lang.Override
+    public boolean getRoutingEnabled() {
+      return routingEnabled_;
+    }
+
+    public static final int ROUTING_CONFIDENCE_THRESHOLD_FIELD_NUMBER = 10;
+    @SuppressWarnings("serial")
+    private volatile java.lang.Object routingConfidenceThreshold_ = "";
+    /**
+     * <pre>
+     * routing_confidence_threshold is a decimal between 0 and 1.
+     * </pre>
+     *
+     * <code>string routing_confidence_threshold = 10 [json_name = "routingConfidenceThreshold"];</code>
+     * @return The routingConfidenceThreshold.
+     */
+    @java.lang.Override
+    public java.lang.String getRoutingConfidenceThreshold() {
+      java.lang.Object ref = routingConfidenceThreshold_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        routingConfidenceThreshold_ = s;
+        return s;
+      }
+    }
+    /**
+     * <pre>
+     * routing_confidence_threshold is a decimal between 0 and 1.
+     * </pre>
+     *
+     * <code>string routing_confidence_threshold = 10 [json_name = "routingConfidenceThreshold"];</code>
+     * @return The bytes for routingConfidenceThreshold.
+     */
+    @java.lang.Override
+    public com.google.protobuf.ByteString
+        getRoutingConfidenceThresholdBytes() {
+      java.lang.Object ref = routingConfidenceThreshold_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        routingConfidenceThreshold_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
+    public static final int CROSS_LAYER_FEE_BUNDLING_FIELD_NUMBER = 11;
+    private boolean crossLayerFeeBundling_ = false;
+    /**
+     * <code>bool cross_layer_fee_bundling = 11 [json_name = "crossLayerFeeBundling"];</code>
+     * @return The crossLayerFeeBundling.
+     */
+    @java.lang.Override
+    public boolean getCrossLayerFeeBundling() {
+      return crossLayerFeeBundling_;
+    }
+
+    private byte memoizedIsInitialized = -1;
+    @java.lang.Override
+    public final boolean isInitialized() {
+      byte isInitialized = memoizedIsInitialized;
+      if (isInitialized == 1) return true;
+      if (isInitialized == 0) return false;
+
+      memoizedIsInitialized = 1;
+      return true;
+    }
+
+    @java.lang.Override
+    public void writeTo(com.google.protobuf.CodedOutputStream output)
+                        throws java.io.IOException {
+      if (!com.google.protobuf.GeneratedMessage.isStringEmpty(authority_)) {
+        com.google.protobuf.GeneratedMessage.writeString(output, 1, authority_);
+      }
+      if (maxSidechains_ != 0L) {
+        output.writeUInt64(2, maxSidechains_);
+      }
+      if (maxPaychains_ != 0L) {
+        output.writeUInt64(3, maxPaychains_);
+      }
+      if (minAnchorInterval_ != 0L) {
+        output.writeUInt64(4, minAnchorInterval_);
+      }
+      if (maxAnchorInterval_ != 0L) {
+        output.writeUInt64(5, maxAnchorInterval_);
+      }
+      if (defaultChallengePeriod_ != 0L) {
+        output.writeUInt64(6, defaultChallengePeriod_);
+      }
+      if (!com.google.protobuf.GeneratedMessage.isStringEmpty(minSidechainStake_)) {
+        com.google.protobuf.GeneratedMessage.writeString(output, 7, minSidechainStake_);
+      }
+      if (!com.google.protobuf.GeneratedMessage.isStringEmpty(minPaychainStake_)) {
+        com.google.protobuf.GeneratedMessage.writeString(output, 8, minPaychainStake_);
+      }
+      if (routingEnabled_ != false) {
+        output.writeBool(9, routingEnabled_);
+      }
+      if (!com.google.protobuf.GeneratedMessage.isStringEmpty(routingConfidenceThreshold_)) {
+        com.google.protobuf.GeneratedMessage.writeString(output, 10, routingConfidenceThreshold_);
+      }
+      if (crossLayerFeeBundling_ != false) {
+        output.writeBool(11, crossLayerFeeBundling_);
+      }
+      getUnknownFields().writeTo(output);
+    }
+    private int computeSerializedSize_0() {
+      int size = 0;
+      if (!com.google.protobuf.GeneratedMessage.isStringEmpty(authority_)) {
+        size += com.google.protobuf.GeneratedMessage.computeStringSize(1, authority_);
+      }
+      if (maxSidechains_ != 0L) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeUInt64Size(2, maxSidechains_);
+      }
+      if (maxPaychains_ != 0L) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeUInt64Size(3, maxPaychains_);
+      }
+      if (minAnchorInterval_ != 0L) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeUInt64Size(4, minAnchorInterval_);
+      }
+      if (maxAnchorInterval_ != 0L) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeUInt64Size(5, maxAnchorInterval_);
+      }
+      if (defaultChallengePeriod_ != 0L) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeUInt64Size(6, defaultChallengePeriod_);
+      }
+      if (!com.google.protobuf.GeneratedMessage.isStringEmpty(minSidechainStake_)) {
+        size += com.google.protobuf.GeneratedMessage.computeStringSize(7, minSidechainStake_);
+      }
+      if (!com.google.protobuf.GeneratedMessage.isStringEmpty(minPaychainStake_)) {
+        size += com.google.protobuf.GeneratedMessage.computeStringSize(8, minPaychainStake_);
+      }
+      if (routingEnabled_ != false) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeBoolSize(9, routingEnabled_);
+      }
+      if (!com.google.protobuf.GeneratedMessage.isStringEmpty(routingConfidenceThreshold_)) {
+        size += com.google.protobuf.GeneratedMessage.computeStringSize(10, routingConfidenceThreshold_);
+      }
+      if (crossLayerFeeBundling_ != false) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeBoolSize(11, crossLayerFeeBundling_);
+      }
+      return size;
+    }
+    @java.lang.Override
+    public int getSerializedSize() {
+      int size = memoizedSize;
+      if (size != -1) return size;
+
+      size = 0;
+      size += computeSerializedSize_0();
+      size += getUnknownFields().getSerializedSize();
+      memoizedSize = size;
+      return size;
+    }
+
+    @java.lang.Override
+    public boolean equals(final java.lang.Object obj) {
+      if (obj == this) {
+       return true;
+      }
+      if (!(obj instanceof qorechain.multilayer.v1.Tx.MsgUpdateParams)) {
+        return super.equals(obj);
+      }
+      qorechain.multilayer.v1.Tx.MsgUpdateParams other = (qorechain.multilayer.v1.Tx.MsgUpdateParams) obj;
+
+      if (!getAuthority()
+          .equals(other.getAuthority())) return false;
+      if (getMaxSidechains()
+          != other.getMaxSidechains()) return false;
+      if (getMaxPaychains()
+          != other.getMaxPaychains()) return false;
+      if (getMinAnchorInterval()
+          != other.getMinAnchorInterval()) return false;
+      if (getMaxAnchorInterval()
+          != other.getMaxAnchorInterval()) return false;
+      if (getDefaultChallengePeriod()
+          != other.getDefaultChallengePeriod()) return false;
+      if (!getMinSidechainStake()
+          .equals(other.getMinSidechainStake())) return false;
+      if (!getMinPaychainStake()
+          .equals(other.getMinPaychainStake())) return false;
+      if (getRoutingEnabled()
+          != other.getRoutingEnabled()) return false;
+      if (!getRoutingConfidenceThreshold()
+          .equals(other.getRoutingConfidenceThreshold())) return false;
+      if (getCrossLayerFeeBundling()
+          != other.getCrossLayerFeeBundling()) return false;
+      if (!getUnknownFields().equals(other.getUnknownFields())) return false;
+      return true;
+    }
+
+    @java.lang.Override
+    public int hashCode() {
+      if (memoizedHashCode != 0) {
+        return memoizedHashCode;
+      }
+      int hash = 41;
+      hash = (19 * hash) + getDescriptor().hashCode();
+      hash = (37 * hash) + AUTHORITY_FIELD_NUMBER;
+      hash = (53 * hash) + getAuthority().hashCode();
+      hash = (37 * hash) + MAX_SIDECHAINS_FIELD_NUMBER;
+      hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
+          getMaxSidechains());
+      hash = (37 * hash) + MAX_PAYCHAINS_FIELD_NUMBER;
+      hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
+          getMaxPaychains());
+      hash = (37 * hash) + MIN_ANCHOR_INTERVAL_FIELD_NUMBER;
+      hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
+          getMinAnchorInterval());
+      hash = (37 * hash) + MAX_ANCHOR_INTERVAL_FIELD_NUMBER;
+      hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
+          getMaxAnchorInterval());
+      hash = (37 * hash) + DEFAULT_CHALLENGE_PERIOD_FIELD_NUMBER;
+      hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
+          getDefaultChallengePeriod());
+      hash = (37 * hash) + MIN_SIDECHAIN_STAKE_FIELD_NUMBER;
+      hash = (53 * hash) + getMinSidechainStake().hashCode();
+      hash = (37 * hash) + MIN_PAYCHAIN_STAKE_FIELD_NUMBER;
+      hash = (53 * hash) + getMinPaychainStake().hashCode();
+      hash = (37 * hash) + ROUTING_ENABLED_FIELD_NUMBER;
+      hash = (53 * hash) + com.google.protobuf.Internal.hashBoolean(
+          getRoutingEnabled());
+      hash = (37 * hash) + ROUTING_CONFIDENCE_THRESHOLD_FIELD_NUMBER;
+      hash = (53 * hash) + getRoutingConfidenceThreshold().hashCode();
+      hash = (37 * hash) + CROSS_LAYER_FEE_BUNDLING_FIELD_NUMBER;
+      hash = (53 * hash) + com.google.protobuf.Internal.hashBoolean(
+          getCrossLayerFeeBundling());
+      hash = (29 * hash) + getUnknownFields().hashCode();
+      memoizedHashCode = hash;
+      return hash;
+    }
+
+    public static qorechain.multilayer.v1.Tx.MsgUpdateParams parseFrom(
+        java.nio.ByteBuffer data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static qorechain.multilayer.v1.Tx.MsgUpdateParams parseFrom(
+        java.nio.ByteBuffer data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static qorechain.multilayer.v1.Tx.MsgUpdateParams parseFrom(
+        com.google.protobuf.ByteString data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static qorechain.multilayer.v1.Tx.MsgUpdateParams parseFrom(
+        com.google.protobuf.ByteString data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static qorechain.multilayer.v1.Tx.MsgUpdateParams parseFrom(byte[] data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static qorechain.multilayer.v1.Tx.MsgUpdateParams parseFrom(
+        byte[] data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static qorechain.multilayer.v1.Tx.MsgUpdateParams parseFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input);
+    }
+    public static qorechain.multilayer.v1.Tx.MsgUpdateParams parseFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    public static qorechain.multilayer.v1.Tx.MsgUpdateParams parseDelimitedFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseDelimitedWithIOException(PARSER, input);
+    }
+
+    public static qorechain.multilayer.v1.Tx.MsgUpdateParams parseDelimitedFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static qorechain.multilayer.v1.Tx.MsgUpdateParams parseFrom(
+        com.google.protobuf.CodedInputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input);
+    }
+    public static qorechain.multilayer.v1.Tx.MsgUpdateParams parseFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    @java.lang.Override
+    public Builder newBuilderForType() { return newBuilder(); }
+    public static Builder newBuilder() {
+      return DEFAULT_INSTANCE.toBuilder();
+    }
+    public static Builder newBuilder(qorechain.multilayer.v1.Tx.MsgUpdateParams prototype) {
+      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+    }
+    @java.lang.Override
+    public Builder toBuilder() {
+      return this == DEFAULT_INSTANCE
+          ? new Builder() : new Builder().mergeFrom(this);
+    }
+
+    @java.lang.Override
+    protected Builder newBuilderForType(
+        com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+      Builder builder = new Builder(parent);
+      return builder;
+    }
+    /**
+     * <pre>
+     * MsgUpdateParams replaces the multilayer parameters wholesale. The fields are
+     * the module's Params, spelled out one by one (as x/inflation does) because the
+     * parameters are stored as JSON by a hand-written struct whose encoding must
+     * not change. Governance only: authority must be the gov module account.
+     * </pre>
+     *
+     * Protobuf type {@code qorechain.multilayer.v1.MsgUpdateParams}
+     */
+    public static final class Builder extends
+        com.google.protobuf.GeneratedMessage.Builder<Builder> implements
+        // @@protoc_insertion_point(builder_implements:qorechain.multilayer.v1.MsgUpdateParams)
+        qorechain.multilayer.v1.Tx.MsgUpdateParamsOrBuilder {
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return qorechain.multilayer.v1.Tx.internal_static_qorechain_multilayer_v1_MsgUpdateParams_descriptor;
+      }
+
+      @java.lang.Override
+      protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return qorechain.multilayer.v1.Tx.internal_static_qorechain_multilayer_v1_MsgUpdateParams_fieldAccessorTable
+            .ensureFieldAccessorsInitialized(
+                qorechain.multilayer.v1.Tx.MsgUpdateParams.class, qorechain.multilayer.v1.Tx.MsgUpdateParams.Builder.class);
+      }
+
+      // Construct using qorechain.multilayer.v1.Tx.MsgUpdateParams.newBuilder()
+      private Builder() {
+
+      }
+
+      private Builder(
+          com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+        super(parent);
+
+      }
+      @java.lang.Override
+      public Builder clear() {
+        super.clear();
+        bitField0_ = 0;
+        authority_ = "";
+        maxSidechains_ = 0L;
+        maxPaychains_ = 0L;
+        minAnchorInterval_ = 0L;
+        maxAnchorInterval_ = 0L;
+        defaultChallengePeriod_ = 0L;
+        minSidechainStake_ = "";
+        minPaychainStake_ = "";
+        routingEnabled_ = false;
+        routingConfidenceThreshold_ = "";
+        crossLayerFeeBundling_ = false;
+        return this;
+      }
+
+      @java.lang.Override
+      public com.google.protobuf.Descriptors.Descriptor
+          getDescriptorForType() {
+        return qorechain.multilayer.v1.Tx.internal_static_qorechain_multilayer_v1_MsgUpdateParams_descriptor;
+      }
+
+      @java.lang.Override
+      public qorechain.multilayer.v1.Tx.MsgUpdateParams getDefaultInstanceForType() {
+        return qorechain.multilayer.v1.Tx.MsgUpdateParams.getDefaultInstance();
+      }
+
+      @java.lang.Override
+      public qorechain.multilayer.v1.Tx.MsgUpdateParams build() {
+        qorechain.multilayer.v1.Tx.MsgUpdateParams result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(result);
+        }
+        return result;
+      }
+
+      @java.lang.Override
+      public qorechain.multilayer.v1.Tx.MsgUpdateParams buildPartial() {
+        qorechain.multilayer.v1.Tx.MsgUpdateParams result = new qorechain.multilayer.v1.Tx.MsgUpdateParams(this);
+        if (bitField0_ != 0) { buildPartial0(result); }
+        onBuilt();
+        return result;
+      }
+
+      private void buildPartial0(qorechain.multilayer.v1.Tx.MsgUpdateParams result) {
+        int from_bitField0_ = bitField0_;
+        if (((from_bitField0_ & 0x00000001) != 0)) {
+          result.authority_ = authority_;
+        }
+        if (((from_bitField0_ & 0x00000002) != 0)) {
+          result.maxSidechains_ = maxSidechains_;
+        }
+        if (((from_bitField0_ & 0x00000004) != 0)) {
+          result.maxPaychains_ = maxPaychains_;
+        }
+        if (((from_bitField0_ & 0x00000008) != 0)) {
+          result.minAnchorInterval_ = minAnchorInterval_;
+        }
+        if (((from_bitField0_ & 0x00000010) != 0)) {
+          result.maxAnchorInterval_ = maxAnchorInterval_;
+        }
+        if (((from_bitField0_ & 0x00000020) != 0)) {
+          result.defaultChallengePeriod_ = defaultChallengePeriod_;
+        }
+        if (((from_bitField0_ & 0x00000040) != 0)) {
+          result.minSidechainStake_ = minSidechainStake_;
+        }
+        if (((from_bitField0_ & 0x00000080) != 0)) {
+          result.minPaychainStake_ = minPaychainStake_;
+        }
+        if (((from_bitField0_ & 0x00000100) != 0)) {
+          result.routingEnabled_ = routingEnabled_;
+        }
+        if (((from_bitField0_ & 0x00000200) != 0)) {
+          result.routingConfidenceThreshold_ = routingConfidenceThreshold_;
+        }
+        if (((from_bitField0_ & 0x00000400) != 0)) {
+          result.crossLayerFeeBundling_ = crossLayerFeeBundling_;
+        }
+      }
+
+      @java.lang.Override
+      public Builder mergeFrom(com.google.protobuf.Message other) {
+        if (other instanceof qorechain.multilayer.v1.Tx.MsgUpdateParams) {
+          return mergeFrom((qorechain.multilayer.v1.Tx.MsgUpdateParams)other);
+        } else {
+          super.mergeFrom(other);
+          return this;
+        }
+      }
+
+      public Builder mergeFrom(qorechain.multilayer.v1.Tx.MsgUpdateParams other) {
+        if (other == qorechain.multilayer.v1.Tx.MsgUpdateParams.getDefaultInstance()) return this;
+        if (!other.getAuthority().isEmpty()) {
+          authority_ = other.authority_;
+          bitField0_ |= 0x00000001;
+          onChanged();
+        }
+        if (other.getMaxSidechains() != 0L) {
+          setMaxSidechains(other.getMaxSidechains());
+        }
+        if (other.getMaxPaychains() != 0L) {
+          setMaxPaychains(other.getMaxPaychains());
+        }
+        if (other.getMinAnchorInterval() != 0L) {
+          setMinAnchorInterval(other.getMinAnchorInterval());
+        }
+        if (other.getMaxAnchorInterval() != 0L) {
+          setMaxAnchorInterval(other.getMaxAnchorInterval());
+        }
+        if (other.getDefaultChallengePeriod() != 0L) {
+          setDefaultChallengePeriod(other.getDefaultChallengePeriod());
+        }
+        if (!other.getMinSidechainStake().isEmpty()) {
+          minSidechainStake_ = other.minSidechainStake_;
+          bitField0_ |= 0x00000040;
+          onChanged();
+        }
+        if (!other.getMinPaychainStake().isEmpty()) {
+          minPaychainStake_ = other.minPaychainStake_;
+          bitField0_ |= 0x00000080;
+          onChanged();
+        }
+        if (other.getRoutingEnabled() != false) {
+          setRoutingEnabled(other.getRoutingEnabled());
+        }
+        if (!other.getRoutingConfidenceThreshold().isEmpty()) {
+          routingConfidenceThreshold_ = other.routingConfidenceThreshold_;
+          bitField0_ |= 0x00000200;
+          onChanged();
+        }
+        if (other.getCrossLayerFeeBundling() != false) {
+          setCrossLayerFeeBundling(other.getCrossLayerFeeBundling());
+        }
+        this.mergeUnknownFields(other.getUnknownFields());
+        onChanged();
+        return this;
+      }
+
+      @java.lang.Override
+      public final boolean isInitialized() {
+        return true;
+      }
+
+      @java.lang.Override
+      public Builder mergeFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        if (extensionRegistry == null) {
+          throw new java.lang.NullPointerException();
+        }
+        try {
+          boolean done = false;
+          while (!done) {
+            int tag = input.readTag();
+            switch (tag) {
+              case 0:
+                done = true;
+                break;
+              case 10: {
+                authority_ = input.readStringRequireUtf8();
+                bitField0_ |= 0x00000001;
+                break;
+              } // case 10
+              case 16: {
+                maxSidechains_ = input.readUInt64();
+                bitField0_ |= 0x00000002;
+                break;
+              } // case 16
+              case 24: {
+                maxPaychains_ = input.readUInt64();
+                bitField0_ |= 0x00000004;
+                break;
+              } // case 24
+              case 32: {
+                minAnchorInterval_ = input.readUInt64();
+                bitField0_ |= 0x00000008;
+                break;
+              } // case 32
+              case 40: {
+                maxAnchorInterval_ = input.readUInt64();
+                bitField0_ |= 0x00000010;
+                break;
+              } // case 40
+              case 48: {
+                defaultChallengePeriod_ = input.readUInt64();
+                bitField0_ |= 0x00000020;
+                break;
+              } // case 48
+              case 58: {
+                minSidechainStake_ = input.readStringRequireUtf8();
+                bitField0_ |= 0x00000040;
+                break;
+              } // case 58
+              case 66: {
+                minPaychainStake_ = input.readStringRequireUtf8();
+                bitField0_ |= 0x00000080;
+                break;
+              } // case 66
+              case 72: {
+                routingEnabled_ = input.readBool();
+                bitField0_ |= 0x00000100;
+                break;
+              } // case 72
+              case 82: {
+                routingConfidenceThreshold_ = input.readStringRequireUtf8();
+                bitField0_ |= 0x00000200;
+                break;
+              } // case 82
+              case 88: {
+                crossLayerFeeBundling_ = input.readBool();
+                bitField0_ |= 0x00000400;
+                break;
+              } // case 88
+              default: {
+                if (!super.parseUnknownField(input, extensionRegistry, tag)) {
+                  done = true; // was an endgroup tag
+                }
+                break;
+              } // default:
+            } // switch (tag)
+          } // while (!done)
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          throw e.unwrapIOException();
+        } finally {
+          onChanged();
+        } // finally
+        return this;
+      }
+      private int bitField0_;
+
+      private java.lang.Object authority_ = "";
+      /**
+       * <code>string authority = 1 [json_name = "authority", (.cosmos_proto.scalar) = "cosmos.AddressString"];</code>
+       * @return The authority.
+       */
+      public java.lang.String getAuthority() {
+        java.lang.Object ref = authority_;
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          authority_ = s;
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
+      }
+      /**
+       * <code>string authority = 1 [json_name = "authority", (.cosmos_proto.scalar) = "cosmos.AddressString"];</code>
+       * @return The bytes for authority.
+       */
+      public com.google.protobuf.ByteString
+          getAuthorityBytes() {
+        java.lang.Object ref = authority_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          authority_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <code>string authority = 1 [json_name = "authority", (.cosmos_proto.scalar) = "cosmos.AddressString"];</code>
+       * @param value The authority to set.
+       * @return This builder for chaining.
+       */
+      public Builder setAuthority(
+          java.lang.String value) {
+        if (value == null) { throw new NullPointerException(); }
+        authority_ = value;
+        bitField0_ |= 0x00000001;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>string authority = 1 [json_name = "authority", (.cosmos_proto.scalar) = "cosmos.AddressString"];</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearAuthority() {
+        authority_ = getDefaultInstance().getAuthority();
+        bitField0_ = (bitField0_ & ~0x00000001);
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>string authority = 1 [json_name = "authority", (.cosmos_proto.scalar) = "cosmos.AddressString"];</code>
+       * @param value The bytes for authority to set.
+       * @return This builder for chaining.
+       */
+      public Builder setAuthorityBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) { throw new NullPointerException(); }
+        checkByteStringIsUtf8(value);
+        authority_ = value;
+        bitField0_ |= 0x00000001;
+        onChanged();
+        return this;
+      }
+
+      private long maxSidechains_ ;
+      /**
+       * <code>uint64 max_sidechains = 2 [json_name = "maxSidechains"];</code>
+       * @return The maxSidechains.
+       */
+      @java.lang.Override
+      public long getMaxSidechains() {
+        return maxSidechains_;
+      }
+      /**
+       * <code>uint64 max_sidechains = 2 [json_name = "maxSidechains"];</code>
+       * @param value The maxSidechains to set.
+       * @return This builder for chaining.
+       */
+      public Builder setMaxSidechains(long value) {
+
+        maxSidechains_ = value;
+        bitField0_ |= 0x00000002;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>uint64 max_sidechains = 2 [json_name = "maxSidechains"];</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearMaxSidechains() {
+        bitField0_ = (bitField0_ & ~0x00000002);
+        maxSidechains_ = 0L;
+        onChanged();
+        return this;
+      }
+
+      private long maxPaychains_ ;
+      /**
+       * <code>uint64 max_paychains = 3 [json_name = "maxPaychains"];</code>
+       * @return The maxPaychains.
+       */
+      @java.lang.Override
+      public long getMaxPaychains() {
+        return maxPaychains_;
+      }
+      /**
+       * <code>uint64 max_paychains = 3 [json_name = "maxPaychains"];</code>
+       * @param value The maxPaychains to set.
+       * @return This builder for chaining.
+       */
+      public Builder setMaxPaychains(long value) {
+
+        maxPaychains_ = value;
+        bitField0_ |= 0x00000004;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>uint64 max_paychains = 3 [json_name = "maxPaychains"];</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearMaxPaychains() {
+        bitField0_ = (bitField0_ & ~0x00000004);
+        maxPaychains_ = 0L;
+        onChanged();
+        return this;
+      }
+
+      private long minAnchorInterval_ ;
+      /**
+       * <code>uint64 min_anchor_interval = 4 [json_name = "minAnchorInterval"];</code>
+       * @return The minAnchorInterval.
+       */
+      @java.lang.Override
+      public long getMinAnchorInterval() {
+        return minAnchorInterval_;
+      }
+      /**
+       * <code>uint64 min_anchor_interval = 4 [json_name = "minAnchorInterval"];</code>
+       * @param value The minAnchorInterval to set.
+       * @return This builder for chaining.
+       */
+      public Builder setMinAnchorInterval(long value) {
+
+        minAnchorInterval_ = value;
+        bitField0_ |= 0x00000008;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>uint64 min_anchor_interval = 4 [json_name = "minAnchorInterval"];</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearMinAnchorInterval() {
+        bitField0_ = (bitField0_ & ~0x00000008);
+        minAnchorInterval_ = 0L;
+        onChanged();
+        return this;
+      }
+
+      private long maxAnchorInterval_ ;
+      /**
+       * <code>uint64 max_anchor_interval = 5 [json_name = "maxAnchorInterval"];</code>
+       * @return The maxAnchorInterval.
+       */
+      @java.lang.Override
+      public long getMaxAnchorInterval() {
+        return maxAnchorInterval_;
+      }
+      /**
+       * <code>uint64 max_anchor_interval = 5 [json_name = "maxAnchorInterval"];</code>
+       * @param value The maxAnchorInterval to set.
+       * @return This builder for chaining.
+       */
+      public Builder setMaxAnchorInterval(long value) {
+
+        maxAnchorInterval_ = value;
+        bitField0_ |= 0x00000010;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>uint64 max_anchor_interval = 5 [json_name = "maxAnchorInterval"];</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearMaxAnchorInterval() {
+        bitField0_ = (bitField0_ & ~0x00000010);
+        maxAnchorInterval_ = 0L;
+        onChanged();
+        return this;
+      }
+
+      private long defaultChallengePeriod_ ;
+      /**
+       * <pre>
+       * default_challenge_period is in seconds.
+       * </pre>
+       *
+       * <code>uint64 default_challenge_period = 6 [json_name = "defaultChallengePeriod"];</code>
+       * @return The defaultChallengePeriod.
+       */
+      @java.lang.Override
+      public long getDefaultChallengePeriod() {
+        return defaultChallengePeriod_;
+      }
+      /**
+       * <pre>
+       * default_challenge_period is in seconds.
+       * </pre>
+       *
+       * <code>uint64 default_challenge_period = 6 [json_name = "defaultChallengePeriod"];</code>
+       * @param value The defaultChallengePeriod to set.
+       * @return This builder for chaining.
+       */
+      public Builder setDefaultChallengePeriod(long value) {
+
+        defaultChallengePeriod_ = value;
+        bitField0_ |= 0x00000020;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * default_challenge_period is in seconds.
+       * </pre>
+       *
+       * <code>uint64 default_challenge_period = 6 [json_name = "defaultChallengePeriod"];</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearDefaultChallengePeriod() {
+        bitField0_ = (bitField0_ & ~0x00000020);
+        defaultChallengePeriod_ = 0L;
+        onChanged();
+        return this;
+      }
+
+      private java.lang.Object minSidechainStake_ = "";
+      /**
+       * <pre>
+       * min_sidechain_stake and min_paychain_stake are uqor amounts.
+       * </pre>
+       *
+       * <code>string min_sidechain_stake = 7 [json_name = "minSidechainStake"];</code>
+       * @return The minSidechainStake.
+       */
+      public java.lang.String getMinSidechainStake() {
+        java.lang.Object ref = minSidechainStake_;
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          minSidechainStake_ = s;
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
+      }
+      /**
+       * <pre>
+       * min_sidechain_stake and min_paychain_stake are uqor amounts.
+       * </pre>
+       *
+       * <code>string min_sidechain_stake = 7 [json_name = "minSidechainStake"];</code>
+       * @return The bytes for minSidechainStake.
+       */
+      public com.google.protobuf.ByteString
+          getMinSidechainStakeBytes() {
+        java.lang.Object ref = minSidechainStake_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          minSidechainStake_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <pre>
+       * min_sidechain_stake and min_paychain_stake are uqor amounts.
+       * </pre>
+       *
+       * <code>string min_sidechain_stake = 7 [json_name = "minSidechainStake"];</code>
+       * @param value The minSidechainStake to set.
+       * @return This builder for chaining.
+       */
+      public Builder setMinSidechainStake(
+          java.lang.String value) {
+        if (value == null) { throw new NullPointerException(); }
+        minSidechainStake_ = value;
+        bitField0_ |= 0x00000040;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * min_sidechain_stake and min_paychain_stake are uqor amounts.
+       * </pre>
+       *
+       * <code>string min_sidechain_stake = 7 [json_name = "minSidechainStake"];</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearMinSidechainStake() {
+        minSidechainStake_ = getDefaultInstance().getMinSidechainStake();
+        bitField0_ = (bitField0_ & ~0x00000040);
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * min_sidechain_stake and min_paychain_stake are uqor amounts.
+       * </pre>
+       *
+       * <code>string min_sidechain_stake = 7 [json_name = "minSidechainStake"];</code>
+       * @param value The bytes for minSidechainStake to set.
+       * @return This builder for chaining.
+       */
+      public Builder setMinSidechainStakeBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) { throw new NullPointerException(); }
+        checkByteStringIsUtf8(value);
+        minSidechainStake_ = value;
+        bitField0_ |= 0x00000040;
+        onChanged();
+        return this;
+      }
+
+      private java.lang.Object minPaychainStake_ = "";
+      /**
+       * <code>string min_paychain_stake = 8 [json_name = "minPaychainStake"];</code>
+       * @return The minPaychainStake.
+       */
+      public java.lang.String getMinPaychainStake() {
+        java.lang.Object ref = minPaychainStake_;
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          minPaychainStake_ = s;
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
+      }
+      /**
+       * <code>string min_paychain_stake = 8 [json_name = "minPaychainStake"];</code>
+       * @return The bytes for minPaychainStake.
+       */
+      public com.google.protobuf.ByteString
+          getMinPaychainStakeBytes() {
+        java.lang.Object ref = minPaychainStake_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          minPaychainStake_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <code>string min_paychain_stake = 8 [json_name = "minPaychainStake"];</code>
+       * @param value The minPaychainStake to set.
+       * @return This builder for chaining.
+       */
+      public Builder setMinPaychainStake(
+          java.lang.String value) {
+        if (value == null) { throw new NullPointerException(); }
+        minPaychainStake_ = value;
+        bitField0_ |= 0x00000080;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>string min_paychain_stake = 8 [json_name = "minPaychainStake"];</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearMinPaychainStake() {
+        minPaychainStake_ = getDefaultInstance().getMinPaychainStake();
+        bitField0_ = (bitField0_ & ~0x00000080);
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>string min_paychain_stake = 8 [json_name = "minPaychainStake"];</code>
+       * @param value The bytes for minPaychainStake to set.
+       * @return This builder for chaining.
+       */
+      public Builder setMinPaychainStakeBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) { throw new NullPointerException(); }
+        checkByteStringIsUtf8(value);
+        minPaychainStake_ = value;
+        bitField0_ |= 0x00000080;
+        onChanged();
+        return this;
+      }
+
+      private boolean routingEnabled_ ;
+      /**
+       * <code>bool routing_enabled = 9 [json_name = "routingEnabled"];</code>
+       * @return The routingEnabled.
+       */
+      @java.lang.Override
+      public boolean getRoutingEnabled() {
+        return routingEnabled_;
+      }
+      /**
+       * <code>bool routing_enabled = 9 [json_name = "routingEnabled"];</code>
+       * @param value The routingEnabled to set.
+       * @return This builder for chaining.
+       */
+      public Builder setRoutingEnabled(boolean value) {
+
+        routingEnabled_ = value;
+        bitField0_ |= 0x00000100;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>bool routing_enabled = 9 [json_name = "routingEnabled"];</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearRoutingEnabled() {
+        bitField0_ = (bitField0_ & ~0x00000100);
+        routingEnabled_ = false;
+        onChanged();
+        return this;
+      }
+
+      private java.lang.Object routingConfidenceThreshold_ = "";
+      /**
+       * <pre>
+       * routing_confidence_threshold is a decimal between 0 and 1.
+       * </pre>
+       *
+       * <code>string routing_confidence_threshold = 10 [json_name = "routingConfidenceThreshold"];</code>
+       * @return The routingConfidenceThreshold.
+       */
+      public java.lang.String getRoutingConfidenceThreshold() {
+        java.lang.Object ref = routingConfidenceThreshold_;
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          routingConfidenceThreshold_ = s;
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
+      }
+      /**
+       * <pre>
+       * routing_confidence_threshold is a decimal between 0 and 1.
+       * </pre>
+       *
+       * <code>string routing_confidence_threshold = 10 [json_name = "routingConfidenceThreshold"];</code>
+       * @return The bytes for routingConfidenceThreshold.
+       */
+      public com.google.protobuf.ByteString
+          getRoutingConfidenceThresholdBytes() {
+        java.lang.Object ref = routingConfidenceThreshold_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          routingConfidenceThreshold_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <pre>
+       * routing_confidence_threshold is a decimal between 0 and 1.
+       * </pre>
+       *
+       * <code>string routing_confidence_threshold = 10 [json_name = "routingConfidenceThreshold"];</code>
+       * @param value The routingConfidenceThreshold to set.
+       * @return This builder for chaining.
+       */
+      public Builder setRoutingConfidenceThreshold(
+          java.lang.String value) {
+        if (value == null) { throw new NullPointerException(); }
+        routingConfidenceThreshold_ = value;
+        bitField0_ |= 0x00000200;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * routing_confidence_threshold is a decimal between 0 and 1.
+       * </pre>
+       *
+       * <code>string routing_confidence_threshold = 10 [json_name = "routingConfidenceThreshold"];</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearRoutingConfidenceThreshold() {
+        routingConfidenceThreshold_ = getDefaultInstance().getRoutingConfidenceThreshold();
+        bitField0_ = (bitField0_ & ~0x00000200);
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * routing_confidence_threshold is a decimal between 0 and 1.
+       * </pre>
+       *
+       * <code>string routing_confidence_threshold = 10 [json_name = "routingConfidenceThreshold"];</code>
+       * @param value The bytes for routingConfidenceThreshold to set.
+       * @return This builder for chaining.
+       */
+      public Builder setRoutingConfidenceThresholdBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) { throw new NullPointerException(); }
+        checkByteStringIsUtf8(value);
+        routingConfidenceThreshold_ = value;
+        bitField0_ |= 0x00000200;
+        onChanged();
+        return this;
+      }
+
+      private boolean crossLayerFeeBundling_ ;
+      /**
+       * <code>bool cross_layer_fee_bundling = 11 [json_name = "crossLayerFeeBundling"];</code>
+       * @return The crossLayerFeeBundling.
+       */
+      @java.lang.Override
+      public boolean getCrossLayerFeeBundling() {
+        return crossLayerFeeBundling_;
+      }
+      /**
+       * <code>bool cross_layer_fee_bundling = 11 [json_name = "crossLayerFeeBundling"];</code>
+       * @param value The crossLayerFeeBundling to set.
+       * @return This builder for chaining.
+       */
+      public Builder setCrossLayerFeeBundling(boolean value) {
+
+        crossLayerFeeBundling_ = value;
+        bitField0_ |= 0x00000400;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>bool cross_layer_fee_bundling = 11 [json_name = "crossLayerFeeBundling"];</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearCrossLayerFeeBundling() {
+        bitField0_ = (bitField0_ & ~0x00000400);
+        crossLayerFeeBundling_ = false;
+        onChanged();
+        return this;
+      }
+
+      // @@protoc_insertion_point(builder_scope:qorechain.multilayer.v1.MsgUpdateParams)
+    }
+
+    // @@protoc_insertion_point(class_scope:qorechain.multilayer.v1.MsgUpdateParams)
+    private static final qorechain.multilayer.v1.Tx.MsgUpdateParams DEFAULT_INSTANCE;
+    static {
+      DEFAULT_INSTANCE = new qorechain.multilayer.v1.Tx.MsgUpdateParams();
+    }
+
+    public static qorechain.multilayer.v1.Tx.MsgUpdateParams getDefaultInstance() {
+      return DEFAULT_INSTANCE;
+    }
+
+    private static final com.google.protobuf.Parser<MsgUpdateParams>
+        PARSER = new com.google.protobuf.AbstractParser<MsgUpdateParams>() {
+      @java.lang.Override
+      public MsgUpdateParams parsePartialFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        Builder builder = newBuilder();
+        try {
+          builder.mergeFrom(input, extensionRegistry);
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          throw e.setUnfinishedMessage(builder.buildPartial());
+        } catch (com.google.protobuf.UninitializedMessageException e) {
+          throw e.asInvalidProtocolBufferException().setUnfinishedMessage(builder.buildPartial());
+        } catch (java.io.IOException e) {
+          throw new com.google.protobuf.InvalidProtocolBufferException(e)
+              .setUnfinishedMessage(builder.buildPartial());
+        }
+        return builder.buildPartial();
+      }
+    };
+
+    public static com.google.protobuf.Parser<MsgUpdateParams> parser() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Parser<MsgUpdateParams> getParserForType() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public qorechain.multilayer.v1.Tx.MsgUpdateParams getDefaultInstanceForType() {
+      return DEFAULT_INSTANCE;
+    }
+
+  }
+
+  public interface MsgUpdateParamsResponseOrBuilder extends
+      // @@protoc_insertion_point(interface_extends:qorechain.multilayer.v1.MsgUpdateParamsResponse)
+      com.google.protobuf.MessageOrBuilder {
+  }
+  /**
+   * Protobuf type {@code qorechain.multilayer.v1.MsgUpdateParamsResponse}
+   */
+  public static final class MsgUpdateParamsResponse extends
+      com.google.protobuf.GeneratedMessage implements
+      // @@protoc_insertion_point(message_implements:qorechain.multilayer.v1.MsgUpdateParamsResponse)
+      MsgUpdateParamsResponseOrBuilder {
+  private static final long serialVersionUID = 0L;
+    static {
+      com.google.protobuf.RuntimeVersion.validateProtobufGencodeVersion(
+        com.google.protobuf.RuntimeVersion.RuntimeDomain.PUBLIC,
+        /* major= */ 4,
+        /* minor= */ 35,
+        /* patch= */ 1,
+        /* suffix= */ "",
+        "MsgUpdateParamsResponse");
+    }
+    // Use MsgUpdateParamsResponse.newBuilder() to construct.
+    private MsgUpdateParamsResponse(com.google.protobuf.GeneratedMessage.Builder<?> builder) {
+      super(builder);
+    }
+    private MsgUpdateParamsResponse() {
+    }
+
+    public static final com.google.protobuf.Descriptors.Descriptor
+        getDescriptor() {
+      return qorechain.multilayer.v1.Tx.internal_static_qorechain_multilayer_v1_MsgUpdateParamsResponse_descriptor;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Descriptors.Descriptor getDescriptorForType() {
+      return qorechain.multilayer.v1.Tx.internal_static_qorechain_multilayer_v1_MsgUpdateParamsResponse_descriptor;
+    }
+
+    @java.lang.Override
+    protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+        internalGetFieldAccessorTable() {
+      return qorechain.multilayer.v1.Tx.internal_static_qorechain_multilayer_v1_MsgUpdateParamsResponse_fieldAccessorTable
+          .ensureFieldAccessorsInitialized(
+              qorechain.multilayer.v1.Tx.MsgUpdateParamsResponse.class, qorechain.multilayer.v1.Tx.MsgUpdateParamsResponse.Builder.class);
+    }
+
+    private byte memoizedIsInitialized = -1;
+    @java.lang.Override
+    public final boolean isInitialized() {
+      byte isInitialized = memoizedIsInitialized;
+      if (isInitialized == 1) return true;
+      if (isInitialized == 0) return false;
+
+      memoizedIsInitialized = 1;
+      return true;
+    }
+
+    @java.lang.Override
+    public void writeTo(com.google.protobuf.CodedOutputStream output)
+                        throws java.io.IOException {
+      getUnknownFields().writeTo(output);
+    }
+    @java.lang.Override
+    public int getSerializedSize() {
+      int size = memoizedSize;
+      if (size != -1) return size;
+
+      size = 0;
+      size += getUnknownFields().getSerializedSize();
+      memoizedSize = size;
+      return size;
+    }
+
+    @java.lang.Override
+    public boolean equals(final java.lang.Object obj) {
+      if (obj == this) {
+       return true;
+      }
+      if (!(obj instanceof qorechain.multilayer.v1.Tx.MsgUpdateParamsResponse)) {
+        return super.equals(obj);
+      }
+      qorechain.multilayer.v1.Tx.MsgUpdateParamsResponse other = (qorechain.multilayer.v1.Tx.MsgUpdateParamsResponse) obj;
+
+      if (!getUnknownFields().equals(other.getUnknownFields())) return false;
+      return true;
+    }
+
+    @java.lang.Override
+    public int hashCode() {
+      if (memoizedHashCode != 0) {
+        return memoizedHashCode;
+      }
+      int hash = 41;
+      hash = (19 * hash) + getDescriptor().hashCode();
+      hash = (29 * hash) + getUnknownFields().hashCode();
+      memoizedHashCode = hash;
+      return hash;
+    }
+
+    public static qorechain.multilayer.v1.Tx.MsgUpdateParamsResponse parseFrom(
+        java.nio.ByteBuffer data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static qorechain.multilayer.v1.Tx.MsgUpdateParamsResponse parseFrom(
+        java.nio.ByteBuffer data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static qorechain.multilayer.v1.Tx.MsgUpdateParamsResponse parseFrom(
+        com.google.protobuf.ByteString data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static qorechain.multilayer.v1.Tx.MsgUpdateParamsResponse parseFrom(
+        com.google.protobuf.ByteString data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static qorechain.multilayer.v1.Tx.MsgUpdateParamsResponse parseFrom(byte[] data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static qorechain.multilayer.v1.Tx.MsgUpdateParamsResponse parseFrom(
+        byte[] data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static qorechain.multilayer.v1.Tx.MsgUpdateParamsResponse parseFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input);
+    }
+    public static qorechain.multilayer.v1.Tx.MsgUpdateParamsResponse parseFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    public static qorechain.multilayer.v1.Tx.MsgUpdateParamsResponse parseDelimitedFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseDelimitedWithIOException(PARSER, input);
+    }
+
+    public static qorechain.multilayer.v1.Tx.MsgUpdateParamsResponse parseDelimitedFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static qorechain.multilayer.v1.Tx.MsgUpdateParamsResponse parseFrom(
+        com.google.protobuf.CodedInputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input);
+    }
+    public static qorechain.multilayer.v1.Tx.MsgUpdateParamsResponse parseFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    @java.lang.Override
+    public Builder newBuilderForType() { return newBuilder(); }
+    public static Builder newBuilder() {
+      return DEFAULT_INSTANCE.toBuilder();
+    }
+    public static Builder newBuilder(qorechain.multilayer.v1.Tx.MsgUpdateParamsResponse prototype) {
+      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+    }
+    @java.lang.Override
+    public Builder toBuilder() {
+      return this == DEFAULT_INSTANCE
+          ? new Builder() : new Builder().mergeFrom(this);
+    }
+
+    @java.lang.Override
+    protected Builder newBuilderForType(
+        com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+      Builder builder = new Builder(parent);
+      return builder;
+    }
+    /**
+     * Protobuf type {@code qorechain.multilayer.v1.MsgUpdateParamsResponse}
+     */
+    public static final class Builder extends
+        com.google.protobuf.GeneratedMessage.Builder<Builder> implements
+        // @@protoc_insertion_point(builder_implements:qorechain.multilayer.v1.MsgUpdateParamsResponse)
+        qorechain.multilayer.v1.Tx.MsgUpdateParamsResponseOrBuilder {
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return qorechain.multilayer.v1.Tx.internal_static_qorechain_multilayer_v1_MsgUpdateParamsResponse_descriptor;
+      }
+
+      @java.lang.Override
+      protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return qorechain.multilayer.v1.Tx.internal_static_qorechain_multilayer_v1_MsgUpdateParamsResponse_fieldAccessorTable
+            .ensureFieldAccessorsInitialized(
+                qorechain.multilayer.v1.Tx.MsgUpdateParamsResponse.class, qorechain.multilayer.v1.Tx.MsgUpdateParamsResponse.Builder.class);
+      }
+
+      // Construct using qorechain.multilayer.v1.Tx.MsgUpdateParamsResponse.newBuilder()
+      private Builder() {
+
+      }
+
+      private Builder(
+          com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+        super(parent);
+
+      }
+      @java.lang.Override
+      public Builder clear() {
+        super.clear();
+        return this;
+      }
+
+      @java.lang.Override
+      public com.google.protobuf.Descriptors.Descriptor
+          getDescriptorForType() {
+        return qorechain.multilayer.v1.Tx.internal_static_qorechain_multilayer_v1_MsgUpdateParamsResponse_descriptor;
+      }
+
+      @java.lang.Override
+      public qorechain.multilayer.v1.Tx.MsgUpdateParamsResponse getDefaultInstanceForType() {
+        return qorechain.multilayer.v1.Tx.MsgUpdateParamsResponse.getDefaultInstance();
+      }
+
+      @java.lang.Override
+      public qorechain.multilayer.v1.Tx.MsgUpdateParamsResponse build() {
+        qorechain.multilayer.v1.Tx.MsgUpdateParamsResponse result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(result);
+        }
+        return result;
+      }
+
+      @java.lang.Override
+      public qorechain.multilayer.v1.Tx.MsgUpdateParamsResponse buildPartial() {
+        qorechain.multilayer.v1.Tx.MsgUpdateParamsResponse result = new qorechain.multilayer.v1.Tx.MsgUpdateParamsResponse(this);
+        onBuilt();
+        return result;
+      }
+
+      @java.lang.Override
+      public Builder mergeFrom(com.google.protobuf.Message other) {
+        if (other instanceof qorechain.multilayer.v1.Tx.MsgUpdateParamsResponse) {
+          return mergeFrom((qorechain.multilayer.v1.Tx.MsgUpdateParamsResponse)other);
+        } else {
+          super.mergeFrom(other);
+          return this;
+        }
+      }
+
+      public Builder mergeFrom(qorechain.multilayer.v1.Tx.MsgUpdateParamsResponse other) {
+        if (other == qorechain.multilayer.v1.Tx.MsgUpdateParamsResponse.getDefaultInstance()) return this;
+        this.mergeUnknownFields(other.getUnknownFields());
+        onChanged();
+        return this;
+      }
+
+      @java.lang.Override
+      public final boolean isInitialized() {
+        return true;
+      }
+
+      @java.lang.Override
+      public Builder mergeFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        if (extensionRegistry == null) {
+          throw new java.lang.NullPointerException();
+        }
+        try {
+          boolean done = false;
+          while (!done) {
+            int tag = input.readTag();
+            switch (tag) {
+              case 0:
+                done = true;
+                break;
+              default: {
+                if (!super.parseUnknownField(input, extensionRegistry, tag)) {
+                  done = true; // was an endgroup tag
+                }
+                break;
+              } // default:
+            } // switch (tag)
+          } // while (!done)
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          throw e.unwrapIOException();
+        } finally {
+          onChanged();
+        } // finally
+        return this;
+      }
+
+      // @@protoc_insertion_point(builder_scope:qorechain.multilayer.v1.MsgUpdateParamsResponse)
+    }
+
+    // @@protoc_insertion_point(class_scope:qorechain.multilayer.v1.MsgUpdateParamsResponse)
+    private static final qorechain.multilayer.v1.Tx.MsgUpdateParamsResponse DEFAULT_INSTANCE;
+    static {
+      DEFAULT_INSTANCE = new qorechain.multilayer.v1.Tx.MsgUpdateParamsResponse();
+    }
+
+    public static qorechain.multilayer.v1.Tx.MsgUpdateParamsResponse getDefaultInstance() {
+      return DEFAULT_INSTANCE;
+    }
+
+    private static final com.google.protobuf.Parser<MsgUpdateParamsResponse>
+        PARSER = new com.google.protobuf.AbstractParser<MsgUpdateParamsResponse>() {
+      @java.lang.Override
+      public MsgUpdateParamsResponse parsePartialFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        Builder builder = newBuilder();
+        try {
+          builder.mergeFrom(input, extensionRegistry);
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          throw e.setUnfinishedMessage(builder.buildPartial());
+        } catch (com.google.protobuf.UninitializedMessageException e) {
+          throw e.asInvalidProtocolBufferException().setUnfinishedMessage(builder.buildPartial());
+        } catch (java.io.IOException e) {
+          throw new com.google.protobuf.InvalidProtocolBufferException(e)
+              .setUnfinishedMessage(builder.buildPartial());
+        }
+        return builder.buildPartial();
+      }
+    };
+
+    public static com.google.protobuf.Parser<MsgUpdateParamsResponse> parser() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Parser<MsgUpdateParamsResponse> getParserForType() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public qorechain.multilayer.v1.Tx.MsgUpdateParamsResponse getDefaultInstanceForType() {
+      return DEFAULT_INSTANCE;
+    }
+
+  }
+
   private static final com.google.protobuf.Descriptors.Descriptor
     internal_static_qorechain_multilayer_v1_MsgRegisterSidechain_descriptor;
   private static final 
@@ -10482,6 +12421,16 @@ public final class Tx extends com.google.protobuf.GeneratedFile {
   private static final 
     com.google.protobuf.GeneratedMessage.FieldAccessorTable
       internal_static_qorechain_multilayer_v1_MsgChallengeAnchorResponse_fieldAccessorTable;
+  private static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_qorechain_multilayer_v1_MsgUpdateParams_descriptor;
+  private static final 
+    com.google.protobuf.GeneratedMessage.FieldAccessorTable
+      internal_static_qorechain_multilayer_v1_MsgUpdateParams_fieldAccessorTable;
+  private static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_qorechain_multilayer_v1_MsgUpdateParamsResponse_descriptor;
+  private static final 
+    com.google.protobuf.GeneratedMessage.FieldAccessorTable
+      internal_static_qorechain_multilayer_v1_MsgUpdateParamsResponse_fieldAccessorTable;
 
   public static com.google.protobuf.Descriptors.FileDescriptor
       getDescriptor() {
@@ -10559,27 +12508,45 @@ public final class Tx extends com.google.protobuf.GeneratedFile {
       "eason\030\005 \001(\tR\017challengeReason:\017\202\347\260*\nchall" +
       "enger\"k\n\032MsgChallengeAnchorResponse\022-\n\022c" +
       "hallenge_accepted\030\001 \001(\010R\021challengeAccept" +
-      "ed\022\036\n\nresolution\030\002 \001(\tR\nresolution2\320\005\n\003M" +
-      "sg\022y\n\021RegisterSidechain\022-.qorechain.mult" +
-      "ilayer.v1.MsgRegisterSidechain\0325.qorecha" +
-      "in.multilayer.v1.MsgRegisterSidechainRes" +
-      "ponse\022v\n\020RegisterPaychain\022,.qorechain.mu" +
-      "ltilayer.v1.MsgRegisterPaychain\0324.qorech" +
-      "ain.multilayer.v1.MsgRegisterPaychainRes" +
-      "ponse\022g\n\013AnchorState\022\'.qorechain.multila" +
-      "yer.v1.MsgAnchorState\032/.qorechain.multil" +
-      "ayer.v1.MsgAnchorStateResponse\022v\n\020RouteT" +
-      "ransaction\022,.qorechain.multilayer.v1.Msg" +
-      "RouteTransaction\0324.qorechain.multilayer." +
-      "v1.MsgRouteTransactionResponse\022y\n\021Update" +
-      "LayerStatus\022-.qorechain.multilayer.v1.Ms" +
-      "gUpdateLayerStatus\0325.qorechain.multilaye" +
-      "r.v1.MsgUpdateLayerStatusResponse\022s\n\017Cha" +
-      "llengeAnchor\022+.qorechain.multilayer.v1.M" +
-      "sgChallengeAnchor\0323.qorechain.multilayer" +
-      ".v1.MsgChallengeAnchorResponse\032\005\200\347\260*\001B8Z" +
-      "6github.com/qorechain/qorechain-core/x/m" +
-      "ultilayer/typesb\006proto3"
+      "ed\022\036\n\nresolution\030\002 \001(\tR\nresolution\"\301\004\n\017M" +
+      "sgUpdateParams\0226\n\tauthority\030\001 \001(\tB\030\322\264-\024c" +
+      "osmos.AddressStringR\tauthority\022%\n\016max_si" +
+      "dechains\030\002 \001(\004R\rmaxSidechains\022#\n\rmax_pay" +
+      "chains\030\003 \001(\004R\014maxPaychains\022.\n\023min_anchor" +
+      "_interval\030\004 \001(\004R\021minAnchorInterval\022.\n\023ma" +
+      "x_anchor_interval\030\005 \001(\004R\021maxAnchorInterv" +
+      "al\0228\n\030default_challenge_period\030\006 \001(\004R\026de" +
+      "faultChallengePeriod\022.\n\023min_sidechain_st" +
+      "ake\030\007 \001(\tR\021minSidechainStake\022,\n\022min_payc" +
+      "hain_stake\030\010 \001(\tR\020minPaychainStake\022\'\n\017ro" +
+      "uting_enabled\030\t \001(\010R\016routingEnabled\022@\n\034r" +
+      "outing_confidence_threshold\030\n \001(\tR\032routi" +
+      "ngConfidenceThreshold\0227\n\030cross_layer_fee" +
+      "_bundling\030\013 \001(\010R\025crossLayerFeeBundling:\016" +
+      "\202\347\260*\tauthority\"\031\n\027MsgUpdateParamsRespons" +
+      "e2\274\006\n\003Msg\022y\n\021RegisterSidechain\022-.qorecha" +
+      "in.multilayer.v1.MsgRegisterSidechain\0325." +
+      "qorechain.multilayer.v1.MsgRegisterSidec" +
+      "hainResponse\022v\n\020RegisterPaychain\022,.qorec" +
+      "hain.multilayer.v1.MsgRegisterPaychain\0324" +
+      ".qorechain.multilayer.v1.MsgRegisterPayc" +
+      "hainResponse\022g\n\013AnchorState\022\'.qorechain." +
+      "multilayer.v1.MsgAnchorState\032/.qorechain" +
+      ".multilayer.v1.MsgAnchorStateResponse\022v\n" +
+      "\020RouteTransaction\022,.qorechain.multilayer" +
+      ".v1.MsgRouteTransaction\0324.qorechain.mult" +
+      "ilayer.v1.MsgRouteTransactionResponse\022y\n" +
+      "\021UpdateLayerStatus\022-.qorechain.multilaye" +
+      "r.v1.MsgUpdateLayerStatus\0325.qorechain.mu" +
+      "ltilayer.v1.MsgUpdateLayerStatusResponse" +
+      "\022s\n\017ChallengeAnchor\022+.qorechain.multilay" +
+      "er.v1.MsgChallengeAnchor\0323.qorechain.mul" +
+      "tilayer.v1.MsgChallengeAnchorResponse\022j\n" +
+      "\014UpdateParams\022(.qorechain.multilayer.v1." +
+      "MsgUpdateParams\0320.qorechain.multilayer.v" +
+      "1.MsgUpdateParamsResponse\032\005\200\347\260*\001B8Z6gith" +
+      "ub.com/qorechain/qorechain-core/x/multil" +
+      "ayer/typesb\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
@@ -10660,6 +12627,18 @@ public final class Tx extends com.google.protobuf.GeneratedFile {
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_qorechain_multilayer_v1_MsgChallengeAnchorResponse_descriptor,
         new java.lang.String[] { "ChallengeAccepted", "Resolution", });
+    internal_static_qorechain_multilayer_v1_MsgUpdateParams_descriptor =
+      getDescriptor().getMessageType(12);
+    internal_static_qorechain_multilayer_v1_MsgUpdateParams_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessage.FieldAccessorTable(
+        internal_static_qorechain_multilayer_v1_MsgUpdateParams_descriptor,
+        new java.lang.String[] { "Authority", "MaxSidechains", "MaxPaychains", "MinAnchorInterval", "MaxAnchorInterval", "DefaultChallengePeriod", "MinSidechainStake", "MinPaychainStake", "RoutingEnabled", "RoutingConfidenceThreshold", "CrossLayerFeeBundling", });
+    internal_static_qorechain_multilayer_v1_MsgUpdateParamsResponse_descriptor =
+      getDescriptor().getMessageType(13);
+    internal_static_qorechain_multilayer_v1_MsgUpdateParamsResponse_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessage.FieldAccessorTable(
+        internal_static_qorechain_multilayer_v1_MsgUpdateParamsResponse_descriptor,
+        new java.lang.String[] { });
     descriptor.resolveAllFeaturesImmutable();
     cosmos.msg.v1.Msg.getDescriptor();
     cosmos_proto.Cosmos.getDescriptor();

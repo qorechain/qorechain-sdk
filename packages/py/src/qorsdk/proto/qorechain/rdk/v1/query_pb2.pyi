@@ -1,3 +1,4 @@
+from google.api import annotations_pb2 as _annotations_pb2
 from google.protobuf.internal import containers as _containers
 from google.protobuf import descriptor as _descriptor
 from google.protobuf import message as _message
@@ -134,3 +135,55 @@ class QueryLatestBatchResponse(_message.Message):
     BATCH_FIELD_NUMBER: _ClassVar[int]
     batch: BatchView
     def __init__(self, batch: _Optional[_Union[BatchView, _Mapping]] = ...) -> None: ...
+
+class QueryBatchesRequest(_message.Message):
+    __slots__ = ("rollup_id", "start_index", "limit")
+    ROLLUP_ID_FIELD_NUMBER: _ClassVar[int]
+    START_INDEX_FIELD_NUMBER: _ClassVar[int]
+    LIMIT_FIELD_NUMBER: _ClassVar[int]
+    rollup_id: str
+    start_index: int
+    limit: int
+    def __init__(self, rollup_id: _Optional[str] = ..., start_index: _Optional[int] = ..., limit: _Optional[int] = ...) -> None: ...
+
+class QueryBatchesResponse(_message.Message):
+    __slots__ = ("batches", "next_index")
+    BATCHES_FIELD_NUMBER: _ClassVar[int]
+    NEXT_INDEX_FIELD_NUMBER: _ClassVar[int]
+    batches: _containers.RepeatedCompositeFieldContainer[BatchView]
+    next_index: int
+    def __init__(self, batches: _Optional[_Iterable[_Union[BatchView, _Mapping]]] = ..., next_index: _Optional[int] = ...) -> None: ...
+
+class BlobView(_message.Message):
+    __slots__ = ("rollup_id", "blob_index", "commitment", "data_size", "height", "stored_at", "pruned", "expires_at_height")
+    ROLLUP_ID_FIELD_NUMBER: _ClassVar[int]
+    BLOB_INDEX_FIELD_NUMBER: _ClassVar[int]
+    COMMITMENT_FIELD_NUMBER: _ClassVar[int]
+    DATA_SIZE_FIELD_NUMBER: _ClassVar[int]
+    HEIGHT_FIELD_NUMBER: _ClassVar[int]
+    STORED_AT_FIELD_NUMBER: _ClassVar[int]
+    PRUNED_FIELD_NUMBER: _ClassVar[int]
+    EXPIRES_AT_HEIGHT_FIELD_NUMBER: _ClassVar[int]
+    rollup_id: str
+    blob_index: int
+    commitment: str
+    data_size: int
+    height: int
+    stored_at: str
+    pruned: bool
+    expires_at_height: int
+    def __init__(self, rollup_id: _Optional[str] = ..., blob_index: _Optional[int] = ..., commitment: _Optional[str] = ..., data_size: _Optional[int] = ..., height: _Optional[int] = ..., stored_at: _Optional[str] = ..., pruned: bool = ..., expires_at_height: _Optional[int] = ...) -> None: ...
+
+class QueryBlobRequest(_message.Message):
+    __slots__ = ("rollup_id", "blob_index")
+    ROLLUP_ID_FIELD_NUMBER: _ClassVar[int]
+    BLOB_INDEX_FIELD_NUMBER: _ClassVar[int]
+    rollup_id: str
+    blob_index: int
+    def __init__(self, rollup_id: _Optional[str] = ..., blob_index: _Optional[int] = ...) -> None: ...
+
+class QueryBlobResponse(_message.Message):
+    __slots__ = ("blob",)
+    BLOB_FIELD_NUMBER: _ClassVar[int]
+    blob: BlobView
+    def __init__(self, blob: _Optional[_Union[BlobView, _Mapping]] = ...) -> None: ...

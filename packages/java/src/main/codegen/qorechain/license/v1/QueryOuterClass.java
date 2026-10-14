@@ -95,6 +95,17 @@ public final class QueryOuterClass extends com.google.protobuf.GeneratedFile {
      */
     com.google.protobuf.ByteString
         getMetadataBytes();
+
+    /**
+     * <pre>
+     * active is true when the grant is not suspended and has not expired at the
+     * height the query was served at (expires_at 0 never expires).
+     * </pre>
+     *
+     * <code>bool active = 8 [json_name = "active"];</code>
+     * @return The active.
+     */
+    boolean getActive();
   }
   /**
    * <pre>
@@ -335,6 +346,22 @@ public final class QueryOuterClass extends com.google.protobuf.GeneratedFile {
       }
     }
 
+    public static final int ACTIVE_FIELD_NUMBER = 8;
+    private boolean active_ = false;
+    /**
+     * <pre>
+     * active is true when the grant is not suspended and has not expired at the
+     * height the query was served at (expires_at 0 never expires).
+     * </pre>
+     *
+     * <code>bool active = 8 [json_name = "active"];</code>
+     * @return The active.
+     */
+    @java.lang.Override
+    public boolean getActive() {
+      return active_;
+    }
+
     private byte memoizedIsInitialized = -1;
     @java.lang.Override
     public final boolean isInitialized() {
@@ -370,6 +397,9 @@ public final class QueryOuterClass extends com.google.protobuf.GeneratedFile {
       if (!com.google.protobuf.GeneratedMessage.isStringEmpty(metadata_)) {
         com.google.protobuf.GeneratedMessage.writeString(output, 7, metadata_);
       }
+      if (active_ != false) {
+        output.writeBool(8, active_);
+      }
       getUnknownFields().writeTo(output);
     }
     private int computeSerializedSize_0() {
@@ -397,6 +427,10 @@ public final class QueryOuterClass extends com.google.protobuf.GeneratedFile {
       }
       if (!com.google.protobuf.GeneratedMessage.isStringEmpty(metadata_)) {
         size += com.google.protobuf.GeneratedMessage.computeStringSize(7, metadata_);
+      }
+      if (active_ != false) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeBoolSize(8, active_);
       }
       return size;
     }
@@ -436,6 +470,8 @@ public final class QueryOuterClass extends com.google.protobuf.GeneratedFile {
           != other.getSuspended()) return false;
       if (!getMetadata()
           .equals(other.getMetadata())) return false;
+      if (getActive()
+          != other.getActive()) return false;
       if (!getUnknownFields().equals(other.getUnknownFields())) return false;
       return true;
     }
@@ -464,6 +500,9 @@ public final class QueryOuterClass extends com.google.protobuf.GeneratedFile {
           getSuspended());
       hash = (37 * hash) + METADATA_FIELD_NUMBER;
       hash = (53 * hash) + getMetadata().hashCode();
+      hash = (37 * hash) + ACTIVE_FIELD_NUMBER;
+      hash = (53 * hash) + com.google.protobuf.Internal.hashBoolean(
+          getActive());
       hash = (29 * hash) + getUnknownFields().hashCode();
       memoizedHashCode = hash;
       return hash;
@@ -606,6 +645,7 @@ public final class QueryOuterClass extends com.google.protobuf.GeneratedFile {
         grantedBy_ = "";
         suspended_ = false;
         metadata_ = "";
+        active_ = false;
         return this;
       }
 
@@ -660,6 +700,9 @@ public final class QueryOuterClass extends com.google.protobuf.GeneratedFile {
         if (((from_bitField0_ & 0x00000040) != 0)) {
           result.metadata_ = metadata_;
         }
+        if (((from_bitField0_ & 0x00000080) != 0)) {
+          result.active_ = active_;
+        }
       }
 
       @java.lang.Override
@@ -702,6 +745,9 @@ public final class QueryOuterClass extends com.google.protobuf.GeneratedFile {
           metadata_ = other.metadata_;
           bitField0_ |= 0x00000040;
           onChanged();
+        }
+        if (other.getActive() != false) {
+          setActive(other.getActive());
         }
         this.mergeUnknownFields(other.getUnknownFields());
         onChanged();
@@ -764,6 +810,11 @@ public final class QueryOuterClass extends com.google.protobuf.GeneratedFile {
                 bitField0_ |= 0x00000040;
                 break;
               } // case 58
+              case 64: {
+                active_ = input.readBool();
+                bitField0_ |= 0x00000080;
+                break;
+              } // case 64
               default: {
                 if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                   done = true; // was an endgroup tag
@@ -1161,6 +1212,53 @@ public final class QueryOuterClass extends com.google.protobuf.GeneratedFile {
         checkByteStringIsUtf8(value);
         metadata_ = value;
         bitField0_ |= 0x00000040;
+        onChanged();
+        return this;
+      }
+
+      private boolean active_ ;
+      /**
+       * <pre>
+       * active is true when the grant is not suspended and has not expired at the
+       * height the query was served at (expires_at 0 never expires).
+       * </pre>
+       *
+       * <code>bool active = 8 [json_name = "active"];</code>
+       * @return The active.
+       */
+      @java.lang.Override
+      public boolean getActive() {
+        return active_;
+      }
+      /**
+       * <pre>
+       * active is true when the grant is not suspended and has not expired at the
+       * height the query was served at (expires_at 0 never expires).
+       * </pre>
+       *
+       * <code>bool active = 8 [json_name = "active"];</code>
+       * @param value The active to set.
+       * @return This builder for chaining.
+       */
+      public Builder setActive(boolean value) {
+
+        active_ = value;
+        bitField0_ |= 0x00000080;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * active is true when the grant is not suspended and has not expired at the
+       * height the query was served at (expires_at 0 never expires).
+       * </pre>
+       *
+       * <code>bool active = 8 [json_name = "active"];</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearActive() {
+        bitField0_ = (bitField0_ & ~0x00000080);
+        active_ = false;
         onChanged();
         return this;
       }
@@ -1904,7 +2002,10 @@ public final class QueryOuterClass extends com.google.protobuf.GeneratedFile {
 
     /**
      * <pre>
-     * active is true when the grant exists and is not suspended.
+     * active is true when the grant exists, is not suspended and has not
+     * expired at the height the query was served at. An expired grant stays in
+     * the store until the next sweep but is reported inactive from its
+     * expires_at height on.
      * </pre>
      *
      * <code>bool active = 2 [json_name = "active"];</code>
@@ -1985,7 +2086,10 @@ public final class QueryOuterClass extends com.google.protobuf.GeneratedFile {
     private boolean active_ = false;
     /**
      * <pre>
-     * active is true when the grant exists and is not suspended.
+     * active is true when the grant exists, is not suspended and has not
+     * expired at the height the query was served at. An expired grant stays in
+     * the store until the next sweep but is reported inactive from its
+     * expires_at height on.
      * </pre>
      *
      * <code>bool active = 2 [json_name = "active"];</code>
@@ -2463,7 +2567,10 @@ public final class QueryOuterClass extends com.google.protobuf.GeneratedFile {
       private boolean active_ ;
       /**
        * <pre>
-       * active is true when the grant exists and is not suspended.
+       * active is true when the grant exists, is not suspended and has not
+       * expired at the height the query was served at. An expired grant stays in
+       * the store until the next sweep but is reported inactive from its
+       * expires_at height on.
        * </pre>
        *
        * <code>bool active = 2 [json_name = "active"];</code>
@@ -2475,7 +2582,10 @@ public final class QueryOuterClass extends com.google.protobuf.GeneratedFile {
       }
       /**
        * <pre>
-       * active is true when the grant exists and is not suspended.
+       * active is true when the grant exists, is not suspended and has not
+       * expired at the height the query was served at. An expired grant stays in
+       * the store until the next sweep but is reported inactive from its
+       * expires_at height on.
        * </pre>
        *
        * <code>bool active = 2 [json_name = "active"];</code>
@@ -2491,7 +2601,10 @@ public final class QueryOuterClass extends com.google.protobuf.GeneratedFile {
       }
       /**
        * <pre>
-       * active is true when the grant exists and is not suspended.
+       * active is true when the grant exists, is not suspended and has not
+       * expired at the height the query was served at. An expired grant stays in
+       * the store until the next sweep but is reported inactive from its
+       * expires_at height on.
        * </pre>
        *
        * <code>bool active = 2 [json_name = "active"];</code>
@@ -5147,36 +5260,37 @@ public final class QueryOuterClass extends com.google.protobuf.GeneratedFile {
     java.lang.String[] descriptorData = {
       "\n qorechain/license/v1/query.proto\022\024qore" +
       "chain.license.v1\032\034google/api/annotations" +
-      ".proto\"\335\001\n\013LicenseView\022\030\n\007grantee\030\001 \001(\tR" +
+      ".proto\"\365\001\n\013LicenseView\022\030\n\007grantee\030\001 \001(\tR" +
       "\007grantee\022\035\n\nfeature_id\030\002 \001(\tR\tfeatureId\022" +
       "\035\n\nexpires_at\030\003 \001(\003R\texpiresAt\022\035\n\ngrante" +
       "d_at\030\004 \001(\003R\tgrantedAt\022\035\n\ngranted_by\030\005 \001(" +
       "\tR\tgrantedBy\022\034\n\tsuspended\030\006 \001(\010R\tsuspend" +
-      "ed\022\032\n\010metadata\030\007 \001(\tR\010metadata\"L\n\021QueryC" +
-      "heckRequest\022\030\n\007grantee\030\001 \001(\tR\007grantee\022\035\n" +
-      "\nfeature_id\030\002 \001(\tR\tfeatureId\"i\n\022QueryChe" +
-      "ckResponse\022;\n\007license\030\001 \001(\0132!.qorechain." +
-      "license.v1.LicenseViewR\007license\022\026\n\006activ" +
-      "e\030\002 \001(\010R\006active\"4\n\023QueryHoldersRequest\022\035" +
-      "\n\nfeature_id\030\001 \001(\tR\tfeatureId\"U\n\024QueryHo" +
-      "ldersResponse\022=\n\010licenses\030\001 \003(\0132!.qorech" +
-      "ain.license.v1.LicenseViewR\010licenses\",\n\020" +
-      "QueryListRequest\022\030\n\007grantee\030\001 \001(\tR\007grant" +
-      "ee\"R\n\021QueryListResponse\022=\n\010licenses\030\001 \003(" +
-      "\0132!.qorechain.license.v1.LicenseViewR\010li" +
-      "censes2\277\003\n\005Query\022\226\001\n\005Check\022\'.qorechain.l" +
-      "icense.v1.QueryCheckRequest\032(.qorechain." +
-      "license.v1.QueryCheckResponse\":\202\323\344\223\0024\0222/" +
-      "qorechain/license/v1/check/{grantee}/{fe" +
-      "ature_id}\022\224\001\n\007Holders\022).qorechain.licens" +
-      "e.v1.QueryHoldersRequest\032*.qorechain.lic" +
-      "ense.v1.QueryHoldersResponse\"2\202\323\344\223\002,\022*/q" +
-      "orechain/license/v1/holders/{feature_id}" +
-      "\022\205\001\n\004List\022&.qorechain.license.v1.QueryLi" +
-      "stRequest\032\'.qorechain.license.v1.QueryLi" +
-      "stResponse\",\202\323\344\223\002&\022$/qorechain/license/v" +
-      "1/list/{grantee}B5Z3github.com/qorechain" +
-      "/qorechain-core/x/license/typesb\006proto3"
+      "ed\022\032\n\010metadata\030\007 \001(\tR\010metadata\022\026\n\006active" +
+      "\030\010 \001(\010R\006active\"L\n\021QueryCheckRequest\022\030\n\007g" +
+      "rantee\030\001 \001(\tR\007grantee\022\035\n\nfeature_id\030\002 \001(" +
+      "\tR\tfeatureId\"i\n\022QueryCheckResponse\022;\n\007li" +
+      "cense\030\001 \001(\0132!.qorechain.license.v1.Licen" +
+      "seViewR\007license\022\026\n\006active\030\002 \001(\010R\006active\"" +
+      "4\n\023QueryHoldersRequest\022\035\n\nfeature_id\030\001 \001" +
+      "(\tR\tfeatureId\"U\n\024QueryHoldersResponse\022=\n" +
+      "\010licenses\030\001 \003(\0132!.qorechain.license.v1.L" +
+      "icenseViewR\010licenses\",\n\020QueryListRequest" +
+      "\022\030\n\007grantee\030\001 \001(\tR\007grantee\"R\n\021QueryListR" +
+      "esponse\022=\n\010licenses\030\001 \003(\0132!.qorechain.li" +
+      "cense.v1.LicenseViewR\010licenses2\277\003\n\005Query" +
+      "\022\226\001\n\005Check\022\'.qorechain.license.v1.QueryC" +
+      "heckRequest\032(.qorechain.license.v1.Query" +
+      "CheckResponse\":\202\323\344\223\0024\0222/qorechain/licens" +
+      "e/v1/check/{grantee}/{feature_id}\022\224\001\n\007Ho" +
+      "lders\022).qorechain.license.v1.QueryHolder" +
+      "sRequest\032*.qorechain.license.v1.QueryHol" +
+      "dersResponse\"2\202\323\344\223\002,\022*/qorechain/license" +
+      "/v1/holders/{feature_id}\022\205\001\n\004List\022&.qore" +
+      "chain.license.v1.QueryListRequest\032\'.qore" +
+      "chain.license.v1.QueryListResponse\",\202\323\344\223" +
+      "\002&\022$/qorechain/license/v1/list/{grantee}" +
+      "B5Z3github.com/qorechain/qorechain-core/" +
+      "x/license/typesb\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
@@ -5188,7 +5302,7 @@ public final class QueryOuterClass extends com.google.protobuf.GeneratedFile {
     internal_static_qorechain_license_v1_LicenseView_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_qorechain_license_v1_LicenseView_descriptor,
-        new java.lang.String[] { "Grantee", "FeatureId", "ExpiresAt", "GrantedAt", "GrantedBy", "Suspended", "Metadata", });
+        new java.lang.String[] { "Grantee", "FeatureId", "ExpiresAt", "GrantedAt", "GrantedBy", "Suspended", "Metadata", "Active", });
     internal_static_qorechain_license_v1_QueryCheckRequest_descriptor =
       getDescriptor().getMessageType(1);
     internal_static_qorechain_license_v1_QueryCheckRequest_fieldAccessorTable = new

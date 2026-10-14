@@ -43,35 +43,73 @@ public final class Tx extends com.google.protobuf.GeneratedFile {
         getIdBytes();
 
     /**
+     * <pre>
+     * daily_limit bounds the total outflow of one denom per UTC calendar day, in
+     * base units. It applies to every denom that has no denom_limits entry. Zero
+     * means no daily limit.
+     * </pre>
+     *
      * <code>int64 daily_limit = 2 [json_name = "dailyLimit"];</code>
      * @return The dailyLimit.
      */
     long getDailyLimit();
 
     /**
+     * <pre>
+     * per_tx_limit is the maximum outflow of one denom per authorised execution
+     * (see above), in base units. It applies to every denom that has no
+     * denom_limits entry. Zero means no per-execution limit. What counts as
+     * outflow depends on the lane: the Cosmos lane counts the signed amount; the
+     * SVM lane counts the net decrease of the account's native balance across the
+     * execution; the EVM lane counts msg.value only until v3.2.2 and, from
+     * v3.2.2, the measured outflow of the call (native value, native balance
+     * decrease, bank coins spent and the balance or allowance change of every
+     * listed ERC-20). The name is kept for wire compatibility.
+     * </pre>
+     *
      * <code>int64 per_tx_limit = 3 [json_name = "perTxLimit"];</code>
      * @return The perTxLimit.
      */
     long getPerTxLimit();
 
     /**
+     * <pre>
+     * allowed_denoms lists the denoms the rule's keys may move. Empty means any.
+     * An ERC-20 is listed as "erc20/&lt;contract&gt;".
+     * </pre>
+     *
      * <code>repeated string allowed_denoms = 4 [json_name = "allowedDenoms"];</code>
      * @return A list containing the allowedDenoms.
      */
     java.util.List<java.lang.String>
         getAllowedDenomsList();
     /**
+     * <pre>
+     * allowed_denoms lists the denoms the rule's keys may move. Empty means any.
+     * An ERC-20 is listed as "erc20/&lt;contract&gt;".
+     * </pre>
+     *
      * <code>repeated string allowed_denoms = 4 [json_name = "allowedDenoms"];</code>
      * @return The count of allowedDenoms.
      */
     int getAllowedDenomsCount();
     /**
+     * <pre>
+     * allowed_denoms lists the denoms the rule's keys may move. Empty means any.
+     * An ERC-20 is listed as "erc20/&lt;contract&gt;".
+     * </pre>
+     *
      * <code>repeated string allowed_denoms = 4 [json_name = "allowedDenoms"];</code>
      * @param index The index of the element to return.
      * @return The allowedDenoms at the given index.
      */
     java.lang.String getAllowedDenoms(int index);
     /**
+     * <pre>
+     * allowed_denoms lists the denoms the rule's keys may move. Empty means any.
+     * An ERC-20 is listed as "erc20/&lt;contract&gt;".
+     * </pre>
+     *
      * <code>repeated string allowed_denoms = 4 [json_name = "allowedDenoms"];</code>
      * @param index The index of the value to return.
      * @return The bytes of the allowedDenoms at the given index.
@@ -84,10 +122,144 @@ public final class Tx extends com.google.protobuf.GeneratedFile {
      * @return The enabled.
      */
     boolean getEnabled();
+
+    /**
+     * <pre>
+     * allowed_evm_calls (v3.2.2) lists the EVM calls a key bound by this rule may
+     * make with call data, as "0x&lt;target&gt;" (any function of that contract) or
+     * "0x&lt;target&gt;/0x&lt;selector&gt;" (that function only). Without an entry a
+     * rule-bound key may only send value, deploy (with the deploy permission)
+     * and move the ERC-20 tokens listed in allowed_denoms. Allowlisting a target
+     * trusts every argument of the calls made to it, recipients included. NFTs
+     * (ERC-721, ERC-1155) move only through contracts listed here and are not
+     * capped.
+     * </pre>
+     *
+     * <code>repeated string allowed_evm_calls = 6 [json_name = "allowedEvmCalls"];</code>
+     * @return A list containing the allowedEvmCalls.
+     */
+    java.util.List<java.lang.String>
+        getAllowedEvmCallsList();
+    /**
+     * <pre>
+     * allowed_evm_calls (v3.2.2) lists the EVM calls a key bound by this rule may
+     * make with call data, as "0x&lt;target&gt;" (any function of that contract) or
+     * "0x&lt;target&gt;/0x&lt;selector&gt;" (that function only). Without an entry a
+     * rule-bound key may only send value, deploy (with the deploy permission)
+     * and move the ERC-20 tokens listed in allowed_denoms. Allowlisting a target
+     * trusts every argument of the calls made to it, recipients included. NFTs
+     * (ERC-721, ERC-1155) move only through contracts listed here and are not
+     * capped.
+     * </pre>
+     *
+     * <code>repeated string allowed_evm_calls = 6 [json_name = "allowedEvmCalls"];</code>
+     * @return The count of allowedEvmCalls.
+     */
+    int getAllowedEvmCallsCount();
+    /**
+     * <pre>
+     * allowed_evm_calls (v3.2.2) lists the EVM calls a key bound by this rule may
+     * make with call data, as "0x&lt;target&gt;" (any function of that contract) or
+     * "0x&lt;target&gt;/0x&lt;selector&gt;" (that function only). Without an entry a
+     * rule-bound key may only send value, deploy (with the deploy permission)
+     * and move the ERC-20 tokens listed in allowed_denoms. Allowlisting a target
+     * trusts every argument of the calls made to it, recipients included. NFTs
+     * (ERC-721, ERC-1155) move only through contracts listed here and are not
+     * capped.
+     * </pre>
+     *
+     * <code>repeated string allowed_evm_calls = 6 [json_name = "allowedEvmCalls"];</code>
+     * @param index The index of the element to return.
+     * @return The allowedEvmCalls at the given index.
+     */
+    java.lang.String getAllowedEvmCalls(int index);
+    /**
+     * <pre>
+     * allowed_evm_calls (v3.2.2) lists the EVM calls a key bound by this rule may
+     * make with call data, as "0x&lt;target&gt;" (any function of that contract) or
+     * "0x&lt;target&gt;/0x&lt;selector&gt;" (that function only). Without an entry a
+     * rule-bound key may only send value, deploy (with the deploy permission)
+     * and move the ERC-20 tokens listed in allowed_denoms. Allowlisting a target
+     * trusts every argument of the calls made to it, recipients included. NFTs
+     * (ERC-721, ERC-1155) move only through contracts listed here and are not
+     * capped.
+     * </pre>
+     *
+     * <code>repeated string allowed_evm_calls = 6 [json_name = "allowedEvmCalls"];</code>
+     * @param index The index of the value to return.
+     * @return The bytes of the allowedEvmCalls at the given index.
+     */
+    com.google.protobuf.ByteString
+        getAllowedEvmCallsBytes(int index);
+
+    /**
+     * <pre>
+     * denom_limits (v3.2.2) sets per-denom limits that replace per_tx_limit and
+     * daily_limit for the denoms they name, with amounts as decimal integers so
+     * 18-decimal tokens can be capped. A denom without an entry keeps the rule's
+     * per_tx_limit and daily_limit.
+     * </pre>
+     *
+     * <code>repeated .qorechain.abstractaccount.v1.DenomLimit denom_limits = 7 [json_name = "denomLimits"];</code>
+     */
+    java.util.List<qorechain.abstractaccount.v1.Tx.DenomLimit> 
+        getDenomLimitsList();
+    /**
+     * <pre>
+     * denom_limits (v3.2.2) sets per-denom limits that replace per_tx_limit and
+     * daily_limit for the denoms they name, with amounts as decimal integers so
+     * 18-decimal tokens can be capped. A denom without an entry keeps the rule's
+     * per_tx_limit and daily_limit.
+     * </pre>
+     *
+     * <code>repeated .qorechain.abstractaccount.v1.DenomLimit denom_limits = 7 [json_name = "denomLimits"];</code>
+     */
+    qorechain.abstractaccount.v1.Tx.DenomLimit getDenomLimits(int index);
+    /**
+     * <pre>
+     * denom_limits (v3.2.2) sets per-denom limits that replace per_tx_limit and
+     * daily_limit for the denoms they name, with amounts as decimal integers so
+     * 18-decimal tokens can be capped. A denom without an entry keeps the rule's
+     * per_tx_limit and daily_limit.
+     * </pre>
+     *
+     * <code>repeated .qorechain.abstractaccount.v1.DenomLimit denom_limits = 7 [json_name = "denomLimits"];</code>
+     */
+    int getDenomLimitsCount();
+    /**
+     * <pre>
+     * denom_limits (v3.2.2) sets per-denom limits that replace per_tx_limit and
+     * daily_limit for the denoms they name, with amounts as decimal integers so
+     * 18-decimal tokens can be capped. A denom without an entry keeps the rule's
+     * per_tx_limit and daily_limit.
+     * </pre>
+     *
+     * <code>repeated .qorechain.abstractaccount.v1.DenomLimit denom_limits = 7 [json_name = "denomLimits"];</code>
+     */
+    java.util.List<? extends qorechain.abstractaccount.v1.Tx.DenomLimitOrBuilder> 
+        getDenomLimitsOrBuilderList();
+    /**
+     * <pre>
+     * denom_limits (v3.2.2) sets per-denom limits that replace per_tx_limit and
+     * daily_limit for the denoms they name, with amounts as decimal integers so
+     * 18-decimal tokens can be capped. A denom without an entry keeps the rule's
+     * per_tx_limit and daily_limit.
+     * </pre>
+     *
+     * <code>repeated .qorechain.abstractaccount.v1.DenomLimit denom_limits = 7 [json_name = "denomLimits"];</code>
+     */
+    qorechain.abstractaccount.v1.Tx.DenomLimitOrBuilder getDenomLimitsOrBuilder(
+        int index);
   }
   /**
    * <pre>
    * SpendingRule defines spending limits for an abstract account.
+   *
+   * Every limit is counted per AUTHORISED EXECUTION: one signed MsgExecuteCosmos,
+   * one signed MsgExecuteEVM or one authorised SVM execution. Several authorised
+   * executions in one outer transaction are each checked on their own; daily
+   * limits bound their total per UTC calendar day (a fixed day, not a rolling
+   * window).
    * </pre>
    *
    * Protobuf type {@code qorechain.abstractaccount.v1.SpendingRule}
@@ -114,6 +286,9 @@ public final class Tx extends com.google.protobuf.GeneratedFile {
       id_ = "";
       allowedDenoms_ =
           com.google.protobuf.LazyStringArrayList.emptyList();
+      allowedEvmCalls_ =
+          com.google.protobuf.LazyStringArrayList.emptyList();
+      denomLimits_ = java.util.Collections.emptyList();
     }
 
     public static final com.google.protobuf.Descriptors.Descriptor
@@ -176,6 +351,12 @@ public final class Tx extends com.google.protobuf.GeneratedFile {
     public static final int DAILY_LIMIT_FIELD_NUMBER = 2;
     private long dailyLimit_ = 0L;
     /**
+     * <pre>
+     * daily_limit bounds the total outflow of one denom per UTC calendar day, in
+     * base units. It applies to every denom that has no denom_limits entry. Zero
+     * means no daily limit.
+     * </pre>
+     *
      * <code>int64 daily_limit = 2 [json_name = "dailyLimit"];</code>
      * @return The dailyLimit.
      */
@@ -187,6 +368,18 @@ public final class Tx extends com.google.protobuf.GeneratedFile {
     public static final int PER_TX_LIMIT_FIELD_NUMBER = 3;
     private long perTxLimit_ = 0L;
     /**
+     * <pre>
+     * per_tx_limit is the maximum outflow of one denom per authorised execution
+     * (see above), in base units. It applies to every denom that has no
+     * denom_limits entry. Zero means no per-execution limit. What counts as
+     * outflow depends on the lane: the Cosmos lane counts the signed amount; the
+     * SVM lane counts the net decrease of the account's native balance across the
+     * execution; the EVM lane counts msg.value only until v3.2.2 and, from
+     * v3.2.2, the measured outflow of the call (native value, native balance
+     * decrease, bank coins spent and the balance or allowance change of every
+     * listed ERC-20). The name is kept for wire compatibility.
+     * </pre>
+     *
      * <code>int64 per_tx_limit = 3 [json_name = "perTxLimit"];</code>
      * @return The perTxLimit.
      */
@@ -200,6 +393,11 @@ public final class Tx extends com.google.protobuf.GeneratedFile {
     private com.google.protobuf.LazyStringArrayList allowedDenoms_ =
         com.google.protobuf.LazyStringArrayList.emptyList();
     /**
+     * <pre>
+     * allowed_denoms lists the denoms the rule's keys may move. Empty means any.
+     * An ERC-20 is listed as "erc20/&lt;contract&gt;".
+     * </pre>
+     *
      * <code>repeated string allowed_denoms = 4 [json_name = "allowedDenoms"];</code>
      * @return A list containing the allowedDenoms.
      */
@@ -208,6 +406,11 @@ public final class Tx extends com.google.protobuf.GeneratedFile {
       return allowedDenoms_;
     }
     /**
+     * <pre>
+     * allowed_denoms lists the denoms the rule's keys may move. Empty means any.
+     * An ERC-20 is listed as "erc20/&lt;contract&gt;".
+     * </pre>
+     *
      * <code>repeated string allowed_denoms = 4 [json_name = "allowedDenoms"];</code>
      * @return The count of allowedDenoms.
      */
@@ -215,6 +418,11 @@ public final class Tx extends com.google.protobuf.GeneratedFile {
       return allowedDenoms_.size();
     }
     /**
+     * <pre>
+     * allowed_denoms lists the denoms the rule's keys may move. Empty means any.
+     * An ERC-20 is listed as "erc20/&lt;contract&gt;".
+     * </pre>
+     *
      * <code>repeated string allowed_denoms = 4 [json_name = "allowedDenoms"];</code>
      * @param index The index of the element to return.
      * @return The allowedDenoms at the given index.
@@ -223,6 +431,11 @@ public final class Tx extends com.google.protobuf.GeneratedFile {
       return allowedDenoms_.get(index);
     }
     /**
+     * <pre>
+     * allowed_denoms lists the denoms the rule's keys may move. Empty means any.
+     * An ERC-20 is listed as "erc20/&lt;contract&gt;".
+     * </pre>
+     *
      * <code>repeated string allowed_denoms = 4 [json_name = "allowedDenoms"];</code>
      * @param index The index of the value to return.
      * @return The bytes of the allowedDenoms at the given index.
@@ -241,6 +454,163 @@ public final class Tx extends com.google.protobuf.GeneratedFile {
     @java.lang.Override
     public boolean getEnabled() {
       return enabled_;
+    }
+
+    public static final int ALLOWED_EVM_CALLS_FIELD_NUMBER = 6;
+    @SuppressWarnings("serial")
+    private com.google.protobuf.LazyStringArrayList allowedEvmCalls_ =
+        com.google.protobuf.LazyStringArrayList.emptyList();
+    /**
+     * <pre>
+     * allowed_evm_calls (v3.2.2) lists the EVM calls a key bound by this rule may
+     * make with call data, as "0x&lt;target&gt;" (any function of that contract) or
+     * "0x&lt;target&gt;/0x&lt;selector&gt;" (that function only). Without an entry a
+     * rule-bound key may only send value, deploy (with the deploy permission)
+     * and move the ERC-20 tokens listed in allowed_denoms. Allowlisting a target
+     * trusts every argument of the calls made to it, recipients included. NFTs
+     * (ERC-721, ERC-1155) move only through contracts listed here and are not
+     * capped.
+     * </pre>
+     *
+     * <code>repeated string allowed_evm_calls = 6 [json_name = "allowedEvmCalls"];</code>
+     * @return A list containing the allowedEvmCalls.
+     */
+    public com.google.protobuf.ProtocolStringList
+        getAllowedEvmCallsList() {
+      return allowedEvmCalls_;
+    }
+    /**
+     * <pre>
+     * allowed_evm_calls (v3.2.2) lists the EVM calls a key bound by this rule may
+     * make with call data, as "0x&lt;target&gt;" (any function of that contract) or
+     * "0x&lt;target&gt;/0x&lt;selector&gt;" (that function only). Without an entry a
+     * rule-bound key may only send value, deploy (with the deploy permission)
+     * and move the ERC-20 tokens listed in allowed_denoms. Allowlisting a target
+     * trusts every argument of the calls made to it, recipients included. NFTs
+     * (ERC-721, ERC-1155) move only through contracts listed here and are not
+     * capped.
+     * </pre>
+     *
+     * <code>repeated string allowed_evm_calls = 6 [json_name = "allowedEvmCalls"];</code>
+     * @return The count of allowedEvmCalls.
+     */
+    public int getAllowedEvmCallsCount() {
+      return allowedEvmCalls_.size();
+    }
+    /**
+     * <pre>
+     * allowed_evm_calls (v3.2.2) lists the EVM calls a key bound by this rule may
+     * make with call data, as "0x&lt;target&gt;" (any function of that contract) or
+     * "0x&lt;target&gt;/0x&lt;selector&gt;" (that function only). Without an entry a
+     * rule-bound key may only send value, deploy (with the deploy permission)
+     * and move the ERC-20 tokens listed in allowed_denoms. Allowlisting a target
+     * trusts every argument of the calls made to it, recipients included. NFTs
+     * (ERC-721, ERC-1155) move only through contracts listed here and are not
+     * capped.
+     * </pre>
+     *
+     * <code>repeated string allowed_evm_calls = 6 [json_name = "allowedEvmCalls"];</code>
+     * @param index The index of the element to return.
+     * @return The allowedEvmCalls at the given index.
+     */
+    public java.lang.String getAllowedEvmCalls(int index) {
+      return allowedEvmCalls_.get(index);
+    }
+    /**
+     * <pre>
+     * allowed_evm_calls (v3.2.2) lists the EVM calls a key bound by this rule may
+     * make with call data, as "0x&lt;target&gt;" (any function of that contract) or
+     * "0x&lt;target&gt;/0x&lt;selector&gt;" (that function only). Without an entry a
+     * rule-bound key may only send value, deploy (with the deploy permission)
+     * and move the ERC-20 tokens listed in allowed_denoms. Allowlisting a target
+     * trusts every argument of the calls made to it, recipients included. NFTs
+     * (ERC-721, ERC-1155) move only through contracts listed here and are not
+     * capped.
+     * </pre>
+     *
+     * <code>repeated string allowed_evm_calls = 6 [json_name = "allowedEvmCalls"];</code>
+     * @param index The index of the value to return.
+     * @return The bytes of the allowedEvmCalls at the given index.
+     */
+    public com.google.protobuf.ByteString
+        getAllowedEvmCallsBytes(int index) {
+      return allowedEvmCalls_.getByteString(index);
+    }
+
+    public static final int DENOM_LIMITS_FIELD_NUMBER = 7;
+    @SuppressWarnings("serial")
+    private java.util.List<qorechain.abstractaccount.v1.Tx.DenomLimit> denomLimits_;
+    /**
+     * <pre>
+     * denom_limits (v3.2.2) sets per-denom limits that replace per_tx_limit and
+     * daily_limit for the denoms they name, with amounts as decimal integers so
+     * 18-decimal tokens can be capped. A denom without an entry keeps the rule's
+     * per_tx_limit and daily_limit.
+     * </pre>
+     *
+     * <code>repeated .qorechain.abstractaccount.v1.DenomLimit denom_limits = 7 [json_name = "denomLimits"];</code>
+     */
+    @java.lang.Override
+    public java.util.List<qorechain.abstractaccount.v1.Tx.DenomLimit> getDenomLimitsList() {
+      return denomLimits_;
+    }
+    /**
+     * <pre>
+     * denom_limits (v3.2.2) sets per-denom limits that replace per_tx_limit and
+     * daily_limit for the denoms they name, with amounts as decimal integers so
+     * 18-decimal tokens can be capped. A denom without an entry keeps the rule's
+     * per_tx_limit and daily_limit.
+     * </pre>
+     *
+     * <code>repeated .qorechain.abstractaccount.v1.DenomLimit denom_limits = 7 [json_name = "denomLimits"];</code>
+     */
+    @java.lang.Override
+    public java.util.List<? extends qorechain.abstractaccount.v1.Tx.DenomLimitOrBuilder> 
+        getDenomLimitsOrBuilderList() {
+      return denomLimits_;
+    }
+    /**
+     * <pre>
+     * denom_limits (v3.2.2) sets per-denom limits that replace per_tx_limit and
+     * daily_limit for the denoms they name, with amounts as decimal integers so
+     * 18-decimal tokens can be capped. A denom without an entry keeps the rule's
+     * per_tx_limit and daily_limit.
+     * </pre>
+     *
+     * <code>repeated .qorechain.abstractaccount.v1.DenomLimit denom_limits = 7 [json_name = "denomLimits"];</code>
+     */
+    @java.lang.Override
+    public int getDenomLimitsCount() {
+      return denomLimits_.size();
+    }
+    /**
+     * <pre>
+     * denom_limits (v3.2.2) sets per-denom limits that replace per_tx_limit and
+     * daily_limit for the denoms they name, with amounts as decimal integers so
+     * 18-decimal tokens can be capped. A denom without an entry keeps the rule's
+     * per_tx_limit and daily_limit.
+     * </pre>
+     *
+     * <code>repeated .qorechain.abstractaccount.v1.DenomLimit denom_limits = 7 [json_name = "denomLimits"];</code>
+     */
+    @java.lang.Override
+    public qorechain.abstractaccount.v1.Tx.DenomLimit getDenomLimits(int index) {
+      return denomLimits_.get(index);
+    }
+    /**
+     * <pre>
+     * denom_limits (v3.2.2) sets per-denom limits that replace per_tx_limit and
+     * daily_limit for the denoms they name, with amounts as decimal integers so
+     * 18-decimal tokens can be capped. A denom without an entry keeps the rule's
+     * per_tx_limit and daily_limit.
+     * </pre>
+     *
+     * <code>repeated .qorechain.abstractaccount.v1.DenomLimit denom_limits = 7 [json_name = "denomLimits"];</code>
+     */
+    @java.lang.Override
+    public qorechain.abstractaccount.v1.Tx.DenomLimitOrBuilder getDenomLimitsOrBuilder(
+        int index) {
+      return denomLimits_.get(index);
     }
 
     private byte memoizedIsInitialized = -1;
@@ -272,6 +642,12 @@ public final class Tx extends com.google.protobuf.GeneratedFile {
       if (enabled_ != false) {
         output.writeBool(5, enabled_);
       }
+      for (int i = 0; i < allowedEvmCalls_.size(); i++) {
+        com.google.protobuf.GeneratedMessage.writeString(output, 6, allowedEvmCalls_.getRaw(i));
+      }
+      for (int i = 0; i < denomLimits_.size(); i++) {
+        output.writeMessage(7, denomLimits_.get(i));
+      }
       getUnknownFields().writeTo(output);
     }
     private int computeSerializedSize_0() {
@@ -299,6 +675,23 @@ public final class Tx extends com.google.protobuf.GeneratedFile {
         size += com.google.protobuf.CodedOutputStream
           .computeBoolSize(5, enabled_);
       }
+      {
+        int dataSize = 0;
+        for (int i = 0; i < allowedEvmCalls_.size(); i++) {
+          dataSize += computeStringSizeNoTag(allowedEvmCalls_.getRaw(i));
+        }
+        size += dataSize;
+        size += 1 * getAllowedEvmCallsList().size();
+      }
+
+          {
+            final int count = denomLimits_.size();
+            for (int i = 0; i < count; i++) {
+              size += com.google.protobuf.CodedOutputStream
+                .computeMessageSizeNoTag(denomLimits_.get(i));
+            }
+            size += 1 * count;
+          }
       return size;
     }
     @java.lang.Override
@@ -333,6 +726,10 @@ public final class Tx extends com.google.protobuf.GeneratedFile {
           .equals(other.getAllowedDenomsList())) return false;
       if (getEnabled()
           != other.getEnabled()) return false;
+      if (!getAllowedEvmCallsList()
+          .equals(other.getAllowedEvmCallsList())) return false;
+      if (!getDenomLimitsList()
+          .equals(other.getDenomLimitsList())) return false;
       if (!getUnknownFields().equals(other.getUnknownFields())) return false;
       return true;
     }
@@ -359,6 +756,14 @@ public final class Tx extends com.google.protobuf.GeneratedFile {
       hash = (37 * hash) + ENABLED_FIELD_NUMBER;
       hash = (53 * hash) + com.google.protobuf.Internal.hashBoolean(
           getEnabled());
+      if (getAllowedEvmCallsCount() > 0) {
+        hash = (37 * hash) + ALLOWED_EVM_CALLS_FIELD_NUMBER;
+        hash = (53 * hash) + getAllowedEvmCallsList().hashCode();
+      }
+      if (getDenomLimitsCount() > 0) {
+        hash = (37 * hash) + DENOM_LIMITS_FIELD_NUMBER;
+        hash = (53 * hash) + getDenomLimitsList().hashCode();
+      }
       hash = (29 * hash) + getUnknownFields().hashCode();
       memoizedHashCode = hash;
       return hash;
@@ -459,6 +864,12 @@ public final class Tx extends com.google.protobuf.GeneratedFile {
     /**
      * <pre>
      * SpendingRule defines spending limits for an abstract account.
+     *
+     * Every limit is counted per AUTHORISED EXECUTION: one signed MsgExecuteCosmos,
+     * one signed MsgExecuteEVM or one authorised SVM execution. Several authorised
+     * executions in one outer transaction are each checked on their own; daily
+     * limits bound their total per UTC calendar day (a fixed day, not a rolling
+     * window).
      * </pre>
      *
      * Protobuf type {@code qorechain.abstractaccount.v1.SpendingRule}
@@ -500,6 +911,15 @@ public final class Tx extends com.google.protobuf.GeneratedFile {
         allowedDenoms_ =
             com.google.protobuf.LazyStringArrayList.emptyList();
         enabled_ = false;
+        allowedEvmCalls_ =
+            com.google.protobuf.LazyStringArrayList.emptyList();
+        if (denomLimitsBuilder_ == null) {
+          denomLimits_ = java.util.Collections.emptyList();
+        } else {
+          denomLimits_ = null;
+          denomLimitsBuilder_.clear();
+        }
+        bitField0_ = (bitField0_ & ~0x00000040);
         return this;
       }
 
@@ -526,9 +946,22 @@ public final class Tx extends com.google.protobuf.GeneratedFile {
       @java.lang.Override
       public qorechain.abstractaccount.v1.Tx.SpendingRule buildPartial() {
         qorechain.abstractaccount.v1.Tx.SpendingRule result = new qorechain.abstractaccount.v1.Tx.SpendingRule(this);
+        buildPartialRepeatedFields(result);
         if (bitField0_ != 0) { buildPartial0(result); }
         onBuilt();
         return result;
+      }
+
+      private void buildPartialRepeatedFields(qorechain.abstractaccount.v1.Tx.SpendingRule result) {
+        if (denomLimitsBuilder_ == null) {
+          if (((bitField0_ & 0x00000040) != 0)) {
+            denomLimits_ = java.util.Collections.unmodifiableList(denomLimits_);
+            bitField0_ = (bitField0_ & ~0x00000040);
+          }
+          result.denomLimits_ = denomLimits_;
+        } else {
+          result.denomLimits_ = denomLimitsBuilder_.build();
+        }
       }
 
       private void buildPartial0(qorechain.abstractaccount.v1.Tx.SpendingRule result) {
@@ -548,6 +981,10 @@ public final class Tx extends com.google.protobuf.GeneratedFile {
         }
         if (((from_bitField0_ & 0x00000010) != 0)) {
           result.enabled_ = enabled_;
+        }
+        if (((from_bitField0_ & 0x00000020) != 0)) {
+          allowedEvmCalls_.makeImmutable();
+          result.allowedEvmCalls_ = allowedEvmCalls_;
         }
       }
 
@@ -586,6 +1023,42 @@ public final class Tx extends com.google.protobuf.GeneratedFile {
         }
         if (other.getEnabled() != false) {
           setEnabled(other.getEnabled());
+        }
+        if (!other.allowedEvmCalls_.isEmpty()) {
+          if (allowedEvmCalls_.isEmpty()) {
+            allowedEvmCalls_ = other.allowedEvmCalls_;
+            bitField0_ |= 0x00000020;
+          } else {
+            ensureAllowedEvmCallsIsMutable();
+            allowedEvmCalls_.addAll(other.allowedEvmCalls_);
+          }
+          onChanged();
+        }
+        if (denomLimitsBuilder_ == null) {
+          if (!other.denomLimits_.isEmpty()) {
+            if (denomLimits_.isEmpty()) {
+              denomLimits_ = other.denomLimits_;
+              bitField0_ = (bitField0_ & ~0x00000040);
+            } else {
+              ensureDenomLimitsIsMutable();
+              denomLimits_.addAll(other.denomLimits_);
+            }
+            onChanged();
+          }
+        } else {
+          if (!other.denomLimits_.isEmpty()) {
+            if (denomLimitsBuilder_.isEmpty()) {
+              denomLimitsBuilder_.dispose();
+              denomLimitsBuilder_ = null;
+              denomLimits_ = other.denomLimits_;
+              bitField0_ = (bitField0_ & ~0x00000040);
+              denomLimitsBuilder_ = 
+                com.google.protobuf.GeneratedMessage.alwaysUseFieldBuilders ?
+                   internalGetDenomLimitsFieldBuilder() : null;
+            } else {
+              denomLimitsBuilder_.addAllMessages(other.denomLimits_);
+            }
+          }
         }
         this.mergeUnknownFields(other.getUnknownFields());
         onChanged();
@@ -638,6 +1111,24 @@ public final class Tx extends com.google.protobuf.GeneratedFile {
                 bitField0_ |= 0x00000010;
                 break;
               } // case 40
+              case 50: {
+                ensureAllowedEvmCallsIsMutable();
+                allowedEvmCalls_.add(input.readStringRequireUtf8());
+                break;
+              } // case 50
+              case 58: {
+                qorechain.abstractaccount.v1.Tx.DenomLimit m =
+                    input.readMessage(
+                        qorechain.abstractaccount.v1.Tx.DenomLimit.parser(),
+                        extensionRegistry);
+                if (denomLimitsBuilder_ == null) {
+                  ensureDenomLimitsIsMutable();
+                  denomLimits_.add(m);
+                } else {
+                  denomLimitsBuilder_.addMessage(m);
+                }
+                break;
+              } // case 58
               default: {
                 if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                   done = true; // was an endgroup tag
@@ -729,6 +1220,12 @@ public final class Tx extends com.google.protobuf.GeneratedFile {
 
       private long dailyLimit_ ;
       /**
+       * <pre>
+       * daily_limit bounds the total outflow of one denom per UTC calendar day, in
+       * base units. It applies to every denom that has no denom_limits entry. Zero
+       * means no daily limit.
+       * </pre>
+       *
        * <code>int64 daily_limit = 2 [json_name = "dailyLimit"];</code>
        * @return The dailyLimit.
        */
@@ -737,6 +1234,12 @@ public final class Tx extends com.google.protobuf.GeneratedFile {
         return dailyLimit_;
       }
       /**
+       * <pre>
+       * daily_limit bounds the total outflow of one denom per UTC calendar day, in
+       * base units. It applies to every denom that has no denom_limits entry. Zero
+       * means no daily limit.
+       * </pre>
+       *
        * <code>int64 daily_limit = 2 [json_name = "dailyLimit"];</code>
        * @param value The dailyLimit to set.
        * @return This builder for chaining.
@@ -749,6 +1252,12 @@ public final class Tx extends com.google.protobuf.GeneratedFile {
         return this;
       }
       /**
+       * <pre>
+       * daily_limit bounds the total outflow of one denom per UTC calendar day, in
+       * base units. It applies to every denom that has no denom_limits entry. Zero
+       * means no daily limit.
+       * </pre>
+       *
        * <code>int64 daily_limit = 2 [json_name = "dailyLimit"];</code>
        * @return This builder for chaining.
        */
@@ -761,6 +1270,18 @@ public final class Tx extends com.google.protobuf.GeneratedFile {
 
       private long perTxLimit_ ;
       /**
+       * <pre>
+       * per_tx_limit is the maximum outflow of one denom per authorised execution
+       * (see above), in base units. It applies to every denom that has no
+       * denom_limits entry. Zero means no per-execution limit. What counts as
+       * outflow depends on the lane: the Cosmos lane counts the signed amount; the
+       * SVM lane counts the net decrease of the account's native balance across the
+       * execution; the EVM lane counts msg.value only until v3.2.2 and, from
+       * v3.2.2, the measured outflow of the call (native value, native balance
+       * decrease, bank coins spent and the balance or allowance change of every
+       * listed ERC-20). The name is kept for wire compatibility.
+       * </pre>
+       *
        * <code>int64 per_tx_limit = 3 [json_name = "perTxLimit"];</code>
        * @return The perTxLimit.
        */
@@ -769,6 +1290,18 @@ public final class Tx extends com.google.protobuf.GeneratedFile {
         return perTxLimit_;
       }
       /**
+       * <pre>
+       * per_tx_limit is the maximum outflow of one denom per authorised execution
+       * (see above), in base units. It applies to every denom that has no
+       * denom_limits entry. Zero means no per-execution limit. What counts as
+       * outflow depends on the lane: the Cosmos lane counts the signed amount; the
+       * SVM lane counts the net decrease of the account's native balance across the
+       * execution; the EVM lane counts msg.value only until v3.2.2 and, from
+       * v3.2.2, the measured outflow of the call (native value, native balance
+       * decrease, bank coins spent and the balance or allowance change of every
+       * listed ERC-20). The name is kept for wire compatibility.
+       * </pre>
+       *
        * <code>int64 per_tx_limit = 3 [json_name = "perTxLimit"];</code>
        * @param value The perTxLimit to set.
        * @return This builder for chaining.
@@ -781,6 +1314,18 @@ public final class Tx extends com.google.protobuf.GeneratedFile {
         return this;
       }
       /**
+       * <pre>
+       * per_tx_limit is the maximum outflow of one denom per authorised execution
+       * (see above), in base units. It applies to every denom that has no
+       * denom_limits entry. Zero means no per-execution limit. What counts as
+       * outflow depends on the lane: the Cosmos lane counts the signed amount; the
+       * SVM lane counts the net decrease of the account's native balance across the
+       * execution; the EVM lane counts msg.value only until v3.2.2 and, from
+       * v3.2.2, the measured outflow of the call (native value, native balance
+       * decrease, bank coins spent and the balance or allowance change of every
+       * listed ERC-20). The name is kept for wire compatibility.
+       * </pre>
+       *
        * <code>int64 per_tx_limit = 3 [json_name = "perTxLimit"];</code>
        * @return This builder for chaining.
        */
@@ -800,6 +1345,11 @@ public final class Tx extends com.google.protobuf.GeneratedFile {
         bitField0_ |= 0x00000008;
       }
       /**
+       * <pre>
+       * allowed_denoms lists the denoms the rule's keys may move. Empty means any.
+       * An ERC-20 is listed as "erc20/&lt;contract&gt;".
+       * </pre>
+       *
        * <code>repeated string allowed_denoms = 4 [json_name = "allowedDenoms"];</code>
        * @return A list containing the allowedDenoms.
        */
@@ -809,6 +1359,11 @@ public final class Tx extends com.google.protobuf.GeneratedFile {
         return allowedDenoms_;
       }
       /**
+       * <pre>
+       * allowed_denoms lists the denoms the rule's keys may move. Empty means any.
+       * An ERC-20 is listed as "erc20/&lt;contract&gt;".
+       * </pre>
+       *
        * <code>repeated string allowed_denoms = 4 [json_name = "allowedDenoms"];</code>
        * @return The count of allowedDenoms.
        */
@@ -816,6 +1371,11 @@ public final class Tx extends com.google.protobuf.GeneratedFile {
         return allowedDenoms_.size();
       }
       /**
+       * <pre>
+       * allowed_denoms lists the denoms the rule's keys may move. Empty means any.
+       * An ERC-20 is listed as "erc20/&lt;contract&gt;".
+       * </pre>
+       *
        * <code>repeated string allowed_denoms = 4 [json_name = "allowedDenoms"];</code>
        * @param index The index of the element to return.
        * @return The allowedDenoms at the given index.
@@ -824,6 +1384,11 @@ public final class Tx extends com.google.protobuf.GeneratedFile {
         return allowedDenoms_.get(index);
       }
       /**
+       * <pre>
+       * allowed_denoms lists the denoms the rule's keys may move. Empty means any.
+       * An ERC-20 is listed as "erc20/&lt;contract&gt;".
+       * </pre>
+       *
        * <code>repeated string allowed_denoms = 4 [json_name = "allowedDenoms"];</code>
        * @param index The index of the value to return.
        * @return The bytes of the allowedDenoms at the given index.
@@ -833,6 +1398,11 @@ public final class Tx extends com.google.protobuf.GeneratedFile {
         return allowedDenoms_.getByteString(index);
       }
       /**
+       * <pre>
+       * allowed_denoms lists the denoms the rule's keys may move. Empty means any.
+       * An ERC-20 is listed as "erc20/&lt;contract&gt;".
+       * </pre>
+       *
        * <code>repeated string allowed_denoms = 4 [json_name = "allowedDenoms"];</code>
        * @param index The index to set the value at.
        * @param value The allowedDenoms to set.
@@ -848,6 +1418,11 @@ public final class Tx extends com.google.protobuf.GeneratedFile {
         return this;
       }
       /**
+       * <pre>
+       * allowed_denoms lists the denoms the rule's keys may move. Empty means any.
+       * An ERC-20 is listed as "erc20/&lt;contract&gt;".
+       * </pre>
+       *
        * <code>repeated string allowed_denoms = 4 [json_name = "allowedDenoms"];</code>
        * @param value The allowedDenoms to add.
        * @return This builder for chaining.
@@ -862,6 +1437,11 @@ public final class Tx extends com.google.protobuf.GeneratedFile {
         return this;
       }
       /**
+       * <pre>
+       * allowed_denoms lists the denoms the rule's keys may move. Empty means any.
+       * An ERC-20 is listed as "erc20/&lt;contract&gt;".
+       * </pre>
+       *
        * <code>repeated string allowed_denoms = 4 [json_name = "allowedDenoms"];</code>
        * @param values The allowedDenoms to add.
        * @return This builder for chaining.
@@ -876,6 +1456,11 @@ public final class Tx extends com.google.protobuf.GeneratedFile {
         return this;
       }
       /**
+       * <pre>
+       * allowed_denoms lists the denoms the rule's keys may move. Empty means any.
+       * An ERC-20 is listed as "erc20/&lt;contract&gt;".
+       * </pre>
+       *
        * <code>repeated string allowed_denoms = 4 [json_name = "allowedDenoms"];</code>
        * @return This builder for chaining.
        */
@@ -887,6 +1472,11 @@ public final class Tx extends com.google.protobuf.GeneratedFile {
         return this;
       }
       /**
+       * <pre>
+       * allowed_denoms lists the denoms the rule's keys may move. Empty means any.
+       * An ERC-20 is listed as "erc20/&lt;contract&gt;".
+       * </pre>
+       *
        * <code>repeated string allowed_denoms = 4 [json_name = "allowedDenoms"];</code>
        * @param value The bytes of the allowedDenoms to add.
        * @return This builder for chaining.
@@ -932,6 +1522,582 @@ public final class Tx extends com.google.protobuf.GeneratedFile {
         enabled_ = false;
         onChanged();
         return this;
+      }
+
+      private com.google.protobuf.LazyStringArrayList allowedEvmCalls_ =
+          com.google.protobuf.LazyStringArrayList.emptyList();
+      private void ensureAllowedEvmCallsIsMutable() {
+        if (!allowedEvmCalls_.isModifiable()) {
+          allowedEvmCalls_ = new com.google.protobuf.LazyStringArrayList(allowedEvmCalls_);
+        }
+        bitField0_ |= 0x00000020;
+      }
+      /**
+       * <pre>
+       * allowed_evm_calls (v3.2.2) lists the EVM calls a key bound by this rule may
+       * make with call data, as "0x&lt;target&gt;" (any function of that contract) or
+       * "0x&lt;target&gt;/0x&lt;selector&gt;" (that function only). Without an entry a
+       * rule-bound key may only send value, deploy (with the deploy permission)
+       * and move the ERC-20 tokens listed in allowed_denoms. Allowlisting a target
+       * trusts every argument of the calls made to it, recipients included. NFTs
+       * (ERC-721, ERC-1155) move only through contracts listed here and are not
+       * capped.
+       * </pre>
+       *
+       * <code>repeated string allowed_evm_calls = 6 [json_name = "allowedEvmCalls"];</code>
+       * @return A list containing the allowedEvmCalls.
+       */
+      public com.google.protobuf.ProtocolStringList
+          getAllowedEvmCallsList() {
+        allowedEvmCalls_.makeImmutable();
+        return allowedEvmCalls_;
+      }
+      /**
+       * <pre>
+       * allowed_evm_calls (v3.2.2) lists the EVM calls a key bound by this rule may
+       * make with call data, as "0x&lt;target&gt;" (any function of that contract) or
+       * "0x&lt;target&gt;/0x&lt;selector&gt;" (that function only). Without an entry a
+       * rule-bound key may only send value, deploy (with the deploy permission)
+       * and move the ERC-20 tokens listed in allowed_denoms. Allowlisting a target
+       * trusts every argument of the calls made to it, recipients included. NFTs
+       * (ERC-721, ERC-1155) move only through contracts listed here and are not
+       * capped.
+       * </pre>
+       *
+       * <code>repeated string allowed_evm_calls = 6 [json_name = "allowedEvmCalls"];</code>
+       * @return The count of allowedEvmCalls.
+       */
+      public int getAllowedEvmCallsCount() {
+        return allowedEvmCalls_.size();
+      }
+      /**
+       * <pre>
+       * allowed_evm_calls (v3.2.2) lists the EVM calls a key bound by this rule may
+       * make with call data, as "0x&lt;target&gt;" (any function of that contract) or
+       * "0x&lt;target&gt;/0x&lt;selector&gt;" (that function only). Without an entry a
+       * rule-bound key may only send value, deploy (with the deploy permission)
+       * and move the ERC-20 tokens listed in allowed_denoms. Allowlisting a target
+       * trusts every argument of the calls made to it, recipients included. NFTs
+       * (ERC-721, ERC-1155) move only through contracts listed here and are not
+       * capped.
+       * </pre>
+       *
+       * <code>repeated string allowed_evm_calls = 6 [json_name = "allowedEvmCalls"];</code>
+       * @param index The index of the element to return.
+       * @return The allowedEvmCalls at the given index.
+       */
+      public java.lang.String getAllowedEvmCalls(int index) {
+        return allowedEvmCalls_.get(index);
+      }
+      /**
+       * <pre>
+       * allowed_evm_calls (v3.2.2) lists the EVM calls a key bound by this rule may
+       * make with call data, as "0x&lt;target&gt;" (any function of that contract) or
+       * "0x&lt;target&gt;/0x&lt;selector&gt;" (that function only). Without an entry a
+       * rule-bound key may only send value, deploy (with the deploy permission)
+       * and move the ERC-20 tokens listed in allowed_denoms. Allowlisting a target
+       * trusts every argument of the calls made to it, recipients included. NFTs
+       * (ERC-721, ERC-1155) move only through contracts listed here and are not
+       * capped.
+       * </pre>
+       *
+       * <code>repeated string allowed_evm_calls = 6 [json_name = "allowedEvmCalls"];</code>
+       * @param index The index of the value to return.
+       * @return The bytes of the allowedEvmCalls at the given index.
+       */
+      public com.google.protobuf.ByteString
+          getAllowedEvmCallsBytes(int index) {
+        return allowedEvmCalls_.getByteString(index);
+      }
+      /**
+       * <pre>
+       * allowed_evm_calls (v3.2.2) lists the EVM calls a key bound by this rule may
+       * make with call data, as "0x&lt;target&gt;" (any function of that contract) or
+       * "0x&lt;target&gt;/0x&lt;selector&gt;" (that function only). Without an entry a
+       * rule-bound key may only send value, deploy (with the deploy permission)
+       * and move the ERC-20 tokens listed in allowed_denoms. Allowlisting a target
+       * trusts every argument of the calls made to it, recipients included. NFTs
+       * (ERC-721, ERC-1155) move only through contracts listed here and are not
+       * capped.
+       * </pre>
+       *
+       * <code>repeated string allowed_evm_calls = 6 [json_name = "allowedEvmCalls"];</code>
+       * @param index The index to set the value at.
+       * @param value The allowedEvmCalls to set.
+       * @return This builder for chaining.
+       */
+      public Builder setAllowedEvmCalls(
+          int index, java.lang.String value) {
+        if (value == null) { throw new NullPointerException(); }
+        ensureAllowedEvmCallsIsMutable();
+        allowedEvmCalls_.set(index, value);
+        bitField0_ |= 0x00000020;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * allowed_evm_calls (v3.2.2) lists the EVM calls a key bound by this rule may
+       * make with call data, as "0x&lt;target&gt;" (any function of that contract) or
+       * "0x&lt;target&gt;/0x&lt;selector&gt;" (that function only). Without an entry a
+       * rule-bound key may only send value, deploy (with the deploy permission)
+       * and move the ERC-20 tokens listed in allowed_denoms. Allowlisting a target
+       * trusts every argument of the calls made to it, recipients included. NFTs
+       * (ERC-721, ERC-1155) move only through contracts listed here and are not
+       * capped.
+       * </pre>
+       *
+       * <code>repeated string allowed_evm_calls = 6 [json_name = "allowedEvmCalls"];</code>
+       * @param value The allowedEvmCalls to add.
+       * @return This builder for chaining.
+       */
+      public Builder addAllowedEvmCalls(
+          java.lang.String value) {
+        if (value == null) { throw new NullPointerException(); }
+        ensureAllowedEvmCallsIsMutable();
+        allowedEvmCalls_.add(value);
+        bitField0_ |= 0x00000020;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * allowed_evm_calls (v3.2.2) lists the EVM calls a key bound by this rule may
+       * make with call data, as "0x&lt;target&gt;" (any function of that contract) or
+       * "0x&lt;target&gt;/0x&lt;selector&gt;" (that function only). Without an entry a
+       * rule-bound key may only send value, deploy (with the deploy permission)
+       * and move the ERC-20 tokens listed in allowed_denoms. Allowlisting a target
+       * trusts every argument of the calls made to it, recipients included. NFTs
+       * (ERC-721, ERC-1155) move only through contracts listed here and are not
+       * capped.
+       * </pre>
+       *
+       * <code>repeated string allowed_evm_calls = 6 [json_name = "allowedEvmCalls"];</code>
+       * @param values The allowedEvmCalls to add.
+       * @return This builder for chaining.
+       */
+      public Builder addAllAllowedEvmCalls(
+          java.lang.Iterable<java.lang.String> values) {
+        ensureAllowedEvmCallsIsMutable();
+        com.google.protobuf.AbstractMessageLite.Builder.addAll(
+            values, allowedEvmCalls_);
+        bitField0_ |= 0x00000020;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * allowed_evm_calls (v3.2.2) lists the EVM calls a key bound by this rule may
+       * make with call data, as "0x&lt;target&gt;" (any function of that contract) or
+       * "0x&lt;target&gt;/0x&lt;selector&gt;" (that function only). Without an entry a
+       * rule-bound key may only send value, deploy (with the deploy permission)
+       * and move the ERC-20 tokens listed in allowed_denoms. Allowlisting a target
+       * trusts every argument of the calls made to it, recipients included. NFTs
+       * (ERC-721, ERC-1155) move only through contracts listed here and are not
+       * capped.
+       * </pre>
+       *
+       * <code>repeated string allowed_evm_calls = 6 [json_name = "allowedEvmCalls"];</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearAllowedEvmCalls() {
+        allowedEvmCalls_ =
+          com.google.protobuf.LazyStringArrayList.emptyList();
+        bitField0_ = (bitField0_ & ~0x00000020);;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * allowed_evm_calls (v3.2.2) lists the EVM calls a key bound by this rule may
+       * make with call data, as "0x&lt;target&gt;" (any function of that contract) or
+       * "0x&lt;target&gt;/0x&lt;selector&gt;" (that function only). Without an entry a
+       * rule-bound key may only send value, deploy (with the deploy permission)
+       * and move the ERC-20 tokens listed in allowed_denoms. Allowlisting a target
+       * trusts every argument of the calls made to it, recipients included. NFTs
+       * (ERC-721, ERC-1155) move only through contracts listed here and are not
+       * capped.
+       * </pre>
+       *
+       * <code>repeated string allowed_evm_calls = 6 [json_name = "allowedEvmCalls"];</code>
+       * @param value The bytes of the allowedEvmCalls to add.
+       * @return This builder for chaining.
+       */
+      public Builder addAllowedEvmCallsBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) { throw new NullPointerException(); }
+        checkByteStringIsUtf8(value);
+        ensureAllowedEvmCallsIsMutable();
+        allowedEvmCalls_.add(value);
+        bitField0_ |= 0x00000020;
+        onChanged();
+        return this;
+      }
+
+      private java.util.List<qorechain.abstractaccount.v1.Tx.DenomLimit> denomLimits_ =
+        java.util.Collections.emptyList();
+      private void ensureDenomLimitsIsMutable() {
+        if (!((bitField0_ & 0x00000040) != 0)) {
+          denomLimits_ = new java.util.ArrayList<qorechain.abstractaccount.v1.Tx.DenomLimit>(denomLimits_);
+          bitField0_ |= 0x00000040;
+         }
+      }
+
+      private com.google.protobuf.RepeatedFieldBuilder<
+          qorechain.abstractaccount.v1.Tx.DenomLimit, qorechain.abstractaccount.v1.Tx.DenomLimit.Builder, qorechain.abstractaccount.v1.Tx.DenomLimitOrBuilder> denomLimitsBuilder_;
+
+      /**
+       * <pre>
+       * denom_limits (v3.2.2) sets per-denom limits that replace per_tx_limit and
+       * daily_limit for the denoms they name, with amounts as decimal integers so
+       * 18-decimal tokens can be capped. A denom without an entry keeps the rule's
+       * per_tx_limit and daily_limit.
+       * </pre>
+       *
+       * <code>repeated .qorechain.abstractaccount.v1.DenomLimit denom_limits = 7 [json_name = "denomLimits"];</code>
+       */
+      public java.util.List<qorechain.abstractaccount.v1.Tx.DenomLimit> getDenomLimitsList() {
+        if (denomLimitsBuilder_ == null) {
+          return java.util.Collections.unmodifiableList(denomLimits_);
+        } else {
+          return denomLimitsBuilder_.getMessageList();
+        }
+      }
+      /**
+       * <pre>
+       * denom_limits (v3.2.2) sets per-denom limits that replace per_tx_limit and
+       * daily_limit for the denoms they name, with amounts as decimal integers so
+       * 18-decimal tokens can be capped. A denom without an entry keeps the rule's
+       * per_tx_limit and daily_limit.
+       * </pre>
+       *
+       * <code>repeated .qorechain.abstractaccount.v1.DenomLimit denom_limits = 7 [json_name = "denomLimits"];</code>
+       */
+      public int getDenomLimitsCount() {
+        if (denomLimitsBuilder_ == null) {
+          return denomLimits_.size();
+        } else {
+          return denomLimitsBuilder_.getCount();
+        }
+      }
+      /**
+       * <pre>
+       * denom_limits (v3.2.2) sets per-denom limits that replace per_tx_limit and
+       * daily_limit for the denoms they name, with amounts as decimal integers so
+       * 18-decimal tokens can be capped. A denom without an entry keeps the rule's
+       * per_tx_limit and daily_limit.
+       * </pre>
+       *
+       * <code>repeated .qorechain.abstractaccount.v1.DenomLimit denom_limits = 7 [json_name = "denomLimits"];</code>
+       */
+      public qorechain.abstractaccount.v1.Tx.DenomLimit getDenomLimits(int index) {
+        if (denomLimitsBuilder_ == null) {
+          return denomLimits_.get(index);
+        } else {
+          return denomLimitsBuilder_.getMessage(index);
+        }
+      }
+      /**
+       * <pre>
+       * denom_limits (v3.2.2) sets per-denom limits that replace per_tx_limit and
+       * daily_limit for the denoms they name, with amounts as decimal integers so
+       * 18-decimal tokens can be capped. A denom without an entry keeps the rule's
+       * per_tx_limit and daily_limit.
+       * </pre>
+       *
+       * <code>repeated .qorechain.abstractaccount.v1.DenomLimit denom_limits = 7 [json_name = "denomLimits"];</code>
+       */
+      public Builder setDenomLimits(
+          int index, qorechain.abstractaccount.v1.Tx.DenomLimit value) {
+        if (denomLimitsBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          ensureDenomLimitsIsMutable();
+          denomLimits_.set(index, value);
+          onChanged();
+        } else {
+          denomLimitsBuilder_.setMessage(index, value);
+        }
+        return this;
+      }
+      /**
+       * <pre>
+       * denom_limits (v3.2.2) sets per-denom limits that replace per_tx_limit and
+       * daily_limit for the denoms they name, with amounts as decimal integers so
+       * 18-decimal tokens can be capped. A denom without an entry keeps the rule's
+       * per_tx_limit and daily_limit.
+       * </pre>
+       *
+       * <code>repeated .qorechain.abstractaccount.v1.DenomLimit denom_limits = 7 [json_name = "denomLimits"];</code>
+       */
+      public Builder setDenomLimits(
+          int index, qorechain.abstractaccount.v1.Tx.DenomLimit.Builder builderForValue) {
+        if (denomLimitsBuilder_ == null) {
+          ensureDenomLimitsIsMutable();
+          denomLimits_.set(index, builderForValue.build());
+          onChanged();
+        } else {
+          denomLimitsBuilder_.setMessage(index, builderForValue.build());
+        }
+        return this;
+      }
+      /**
+       * <pre>
+       * denom_limits (v3.2.2) sets per-denom limits that replace per_tx_limit and
+       * daily_limit for the denoms they name, with amounts as decimal integers so
+       * 18-decimal tokens can be capped. A denom without an entry keeps the rule's
+       * per_tx_limit and daily_limit.
+       * </pre>
+       *
+       * <code>repeated .qorechain.abstractaccount.v1.DenomLimit denom_limits = 7 [json_name = "denomLimits"];</code>
+       */
+      public Builder addDenomLimits(qorechain.abstractaccount.v1.Tx.DenomLimit value) {
+        if (denomLimitsBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          ensureDenomLimitsIsMutable();
+          denomLimits_.add(value);
+          onChanged();
+        } else {
+          denomLimitsBuilder_.addMessage(value);
+        }
+        return this;
+      }
+      /**
+       * <pre>
+       * denom_limits (v3.2.2) sets per-denom limits that replace per_tx_limit and
+       * daily_limit for the denoms they name, with amounts as decimal integers so
+       * 18-decimal tokens can be capped. A denom without an entry keeps the rule's
+       * per_tx_limit and daily_limit.
+       * </pre>
+       *
+       * <code>repeated .qorechain.abstractaccount.v1.DenomLimit denom_limits = 7 [json_name = "denomLimits"];</code>
+       */
+      public Builder addDenomLimits(
+          int index, qorechain.abstractaccount.v1.Tx.DenomLimit value) {
+        if (denomLimitsBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          ensureDenomLimitsIsMutable();
+          denomLimits_.add(index, value);
+          onChanged();
+        } else {
+          denomLimitsBuilder_.addMessage(index, value);
+        }
+        return this;
+      }
+      /**
+       * <pre>
+       * denom_limits (v3.2.2) sets per-denom limits that replace per_tx_limit and
+       * daily_limit for the denoms they name, with amounts as decimal integers so
+       * 18-decimal tokens can be capped. A denom without an entry keeps the rule's
+       * per_tx_limit and daily_limit.
+       * </pre>
+       *
+       * <code>repeated .qorechain.abstractaccount.v1.DenomLimit denom_limits = 7 [json_name = "denomLimits"];</code>
+       */
+      public Builder addDenomLimits(
+          qorechain.abstractaccount.v1.Tx.DenomLimit.Builder builderForValue) {
+        if (denomLimitsBuilder_ == null) {
+          ensureDenomLimitsIsMutable();
+          denomLimits_.add(builderForValue.build());
+          onChanged();
+        } else {
+          denomLimitsBuilder_.addMessage(builderForValue.build());
+        }
+        return this;
+      }
+      /**
+       * <pre>
+       * denom_limits (v3.2.2) sets per-denom limits that replace per_tx_limit and
+       * daily_limit for the denoms they name, with amounts as decimal integers so
+       * 18-decimal tokens can be capped. A denom without an entry keeps the rule's
+       * per_tx_limit and daily_limit.
+       * </pre>
+       *
+       * <code>repeated .qorechain.abstractaccount.v1.DenomLimit denom_limits = 7 [json_name = "denomLimits"];</code>
+       */
+      public Builder addDenomLimits(
+          int index, qorechain.abstractaccount.v1.Tx.DenomLimit.Builder builderForValue) {
+        if (denomLimitsBuilder_ == null) {
+          ensureDenomLimitsIsMutable();
+          denomLimits_.add(index, builderForValue.build());
+          onChanged();
+        } else {
+          denomLimitsBuilder_.addMessage(index, builderForValue.build());
+        }
+        return this;
+      }
+      /**
+       * <pre>
+       * denom_limits (v3.2.2) sets per-denom limits that replace per_tx_limit and
+       * daily_limit for the denoms they name, with amounts as decimal integers so
+       * 18-decimal tokens can be capped. A denom without an entry keeps the rule's
+       * per_tx_limit and daily_limit.
+       * </pre>
+       *
+       * <code>repeated .qorechain.abstractaccount.v1.DenomLimit denom_limits = 7 [json_name = "denomLimits"];</code>
+       */
+      public Builder addAllDenomLimits(
+          java.lang.Iterable<? extends qorechain.abstractaccount.v1.Tx.DenomLimit> values) {
+        if (denomLimitsBuilder_ == null) {
+          ensureDenomLimitsIsMutable();
+          com.google.protobuf.AbstractMessageLite.Builder.addAll(
+              values, denomLimits_);
+          onChanged();
+        } else {
+          denomLimitsBuilder_.addAllMessages(values);
+        }
+        return this;
+      }
+      /**
+       * <pre>
+       * denom_limits (v3.2.2) sets per-denom limits that replace per_tx_limit and
+       * daily_limit for the denoms they name, with amounts as decimal integers so
+       * 18-decimal tokens can be capped. A denom without an entry keeps the rule's
+       * per_tx_limit and daily_limit.
+       * </pre>
+       *
+       * <code>repeated .qorechain.abstractaccount.v1.DenomLimit denom_limits = 7 [json_name = "denomLimits"];</code>
+       */
+      public Builder clearDenomLimits() {
+        if (denomLimitsBuilder_ == null) {
+          denomLimits_ = java.util.Collections.emptyList();
+          bitField0_ = (bitField0_ & ~0x00000040);
+          onChanged();
+        } else {
+          denomLimitsBuilder_.clear();
+        }
+        return this;
+      }
+      /**
+       * <pre>
+       * denom_limits (v3.2.2) sets per-denom limits that replace per_tx_limit and
+       * daily_limit for the denoms they name, with amounts as decimal integers so
+       * 18-decimal tokens can be capped. A denom without an entry keeps the rule's
+       * per_tx_limit and daily_limit.
+       * </pre>
+       *
+       * <code>repeated .qorechain.abstractaccount.v1.DenomLimit denom_limits = 7 [json_name = "denomLimits"];</code>
+       */
+      public Builder removeDenomLimits(int index) {
+        if (denomLimitsBuilder_ == null) {
+          ensureDenomLimitsIsMutable();
+          denomLimits_.remove(index);
+          onChanged();
+        } else {
+          denomLimitsBuilder_.remove(index);
+        }
+        return this;
+      }
+      /**
+       * <pre>
+       * denom_limits (v3.2.2) sets per-denom limits that replace per_tx_limit and
+       * daily_limit for the denoms they name, with amounts as decimal integers so
+       * 18-decimal tokens can be capped. A denom without an entry keeps the rule's
+       * per_tx_limit and daily_limit.
+       * </pre>
+       *
+       * <code>repeated .qorechain.abstractaccount.v1.DenomLimit denom_limits = 7 [json_name = "denomLimits"];</code>
+       */
+      public qorechain.abstractaccount.v1.Tx.DenomLimit.Builder getDenomLimitsBuilder(
+          int index) {
+        return internalGetDenomLimitsFieldBuilder().getBuilder(index);
+      }
+      /**
+       * <pre>
+       * denom_limits (v3.2.2) sets per-denom limits that replace per_tx_limit and
+       * daily_limit for the denoms they name, with amounts as decimal integers so
+       * 18-decimal tokens can be capped. A denom without an entry keeps the rule's
+       * per_tx_limit and daily_limit.
+       * </pre>
+       *
+       * <code>repeated .qorechain.abstractaccount.v1.DenomLimit denom_limits = 7 [json_name = "denomLimits"];</code>
+       */
+      public qorechain.abstractaccount.v1.Tx.DenomLimitOrBuilder getDenomLimitsOrBuilder(
+          int index) {
+        if (denomLimitsBuilder_ == null) {
+          return denomLimits_.get(index);  } else {
+          return denomLimitsBuilder_.getMessageOrBuilder(index);
+        }
+      }
+      /**
+       * <pre>
+       * denom_limits (v3.2.2) sets per-denom limits that replace per_tx_limit and
+       * daily_limit for the denoms they name, with amounts as decimal integers so
+       * 18-decimal tokens can be capped. A denom without an entry keeps the rule's
+       * per_tx_limit and daily_limit.
+       * </pre>
+       *
+       * <code>repeated .qorechain.abstractaccount.v1.DenomLimit denom_limits = 7 [json_name = "denomLimits"];</code>
+       */
+      public java.util.List<? extends qorechain.abstractaccount.v1.Tx.DenomLimitOrBuilder> 
+           getDenomLimitsOrBuilderList() {
+        if (denomLimitsBuilder_ != null) {
+          return denomLimitsBuilder_.getMessageOrBuilderList();
+        } else {
+          return java.util.Collections.unmodifiableList(denomLimits_);
+        }
+      }
+      /**
+       * <pre>
+       * denom_limits (v3.2.2) sets per-denom limits that replace per_tx_limit and
+       * daily_limit for the denoms they name, with amounts as decimal integers so
+       * 18-decimal tokens can be capped. A denom without an entry keeps the rule's
+       * per_tx_limit and daily_limit.
+       * </pre>
+       *
+       * <code>repeated .qorechain.abstractaccount.v1.DenomLimit denom_limits = 7 [json_name = "denomLimits"];</code>
+       */
+      public qorechain.abstractaccount.v1.Tx.DenomLimit.Builder addDenomLimitsBuilder() {
+        return internalGetDenomLimitsFieldBuilder().addBuilder(
+            qorechain.abstractaccount.v1.Tx.DenomLimit.getDefaultInstance());
+      }
+      /**
+       * <pre>
+       * denom_limits (v3.2.2) sets per-denom limits that replace per_tx_limit and
+       * daily_limit for the denoms they name, with amounts as decimal integers so
+       * 18-decimal tokens can be capped. A denom without an entry keeps the rule's
+       * per_tx_limit and daily_limit.
+       * </pre>
+       *
+       * <code>repeated .qorechain.abstractaccount.v1.DenomLimit denom_limits = 7 [json_name = "denomLimits"];</code>
+       */
+      public qorechain.abstractaccount.v1.Tx.DenomLimit.Builder addDenomLimitsBuilder(
+          int index) {
+        return internalGetDenomLimitsFieldBuilder().addBuilder(
+            index, qorechain.abstractaccount.v1.Tx.DenomLimit.getDefaultInstance());
+      }
+      /**
+       * <pre>
+       * denom_limits (v3.2.2) sets per-denom limits that replace per_tx_limit and
+       * daily_limit for the denoms they name, with amounts as decimal integers so
+       * 18-decimal tokens can be capped. A denom without an entry keeps the rule's
+       * per_tx_limit and daily_limit.
+       * </pre>
+       *
+       * <code>repeated .qorechain.abstractaccount.v1.DenomLimit denom_limits = 7 [json_name = "denomLimits"];</code>
+       */
+      public java.util.List<qorechain.abstractaccount.v1.Tx.DenomLimit.Builder> 
+           getDenomLimitsBuilderList() {
+        return internalGetDenomLimitsFieldBuilder().getBuilderList();
+      }
+      private com.google.protobuf.RepeatedFieldBuilder<
+          qorechain.abstractaccount.v1.Tx.DenomLimit, qorechain.abstractaccount.v1.Tx.DenomLimit.Builder, qorechain.abstractaccount.v1.Tx.DenomLimitOrBuilder> 
+          internalGetDenomLimitsFieldBuilder() {
+        if (denomLimitsBuilder_ == null) {
+          denomLimitsBuilder_ = new com.google.protobuf.RepeatedFieldBuilder<
+              qorechain.abstractaccount.v1.Tx.DenomLimit, qorechain.abstractaccount.v1.Tx.DenomLimit.Builder, qorechain.abstractaccount.v1.Tx.DenomLimitOrBuilder>(
+                  denomLimits_,
+                  ((bitField0_ & 0x00000040) != 0),
+                  getParentForChildren(),
+                  isClean());
+          denomLimits_ = null;
+        }
+        return denomLimitsBuilder_;
       }
 
       // @@protoc_insertion_point(builder_scope:qorechain.abstractaccount.v1.SpendingRule)
@@ -980,6 +2146,833 @@ public final class Tx extends com.google.protobuf.GeneratedFile {
 
     @java.lang.Override
     public qorechain.abstractaccount.v1.Tx.SpendingRule getDefaultInstanceForType() {
+      return DEFAULT_INSTANCE;
+    }
+
+  }
+
+  public interface DenomLimitOrBuilder extends
+      // @@protoc_insertion_point(interface_extends:qorechain.abstractaccount.v1.DenomLimit)
+      com.google.protobuf.MessageOrBuilder {
+
+    /**
+     * <code>string denom = 1 [json_name = "denom"];</code>
+     * @return The denom.
+     */
+    java.lang.String getDenom();
+    /**
+     * <code>string denom = 1 [json_name = "denom"];</code>
+     * @return The bytes for denom.
+     */
+    com.google.protobuf.ByteString
+        getDenomBytes();
+
+    /**
+     * <code>string per_tx_limit = 2 [json_name = "perTxLimit"];</code>
+     * @return The perTxLimit.
+     */
+    java.lang.String getPerTxLimit();
+    /**
+     * <code>string per_tx_limit = 2 [json_name = "perTxLimit"];</code>
+     * @return The bytes for perTxLimit.
+     */
+    com.google.protobuf.ByteString
+        getPerTxLimitBytes();
+
+    /**
+     * <code>string daily_limit = 3 [json_name = "dailyLimit"];</code>
+     * @return The dailyLimit.
+     */
+    java.lang.String getDailyLimit();
+    /**
+     * <code>string daily_limit = 3 [json_name = "dailyLimit"];</code>
+     * @return The bytes for dailyLimit.
+     */
+    com.google.protobuf.ByteString
+        getDailyLimitBytes();
+  }
+  /**
+   * <pre>
+   * DenomLimit is a per-denom limit of a SpendingRule (v3.2.2). The amounts are
+   * decimal integers in the denom's base units; empty or "0" means no limit of
+   * that kind.
+   * </pre>
+   *
+   * Protobuf type {@code qorechain.abstractaccount.v1.DenomLimit}
+   */
+  public static final class DenomLimit extends
+      com.google.protobuf.GeneratedMessage implements
+      // @@protoc_insertion_point(message_implements:qorechain.abstractaccount.v1.DenomLimit)
+      DenomLimitOrBuilder {
+  private static final long serialVersionUID = 0L;
+    static {
+      com.google.protobuf.RuntimeVersion.validateProtobufGencodeVersion(
+        com.google.protobuf.RuntimeVersion.RuntimeDomain.PUBLIC,
+        /* major= */ 4,
+        /* minor= */ 35,
+        /* patch= */ 1,
+        /* suffix= */ "",
+        "DenomLimit");
+    }
+    // Use DenomLimit.newBuilder() to construct.
+    private DenomLimit(com.google.protobuf.GeneratedMessage.Builder<?> builder) {
+      super(builder);
+    }
+    private DenomLimit() {
+      denom_ = "";
+      perTxLimit_ = "";
+      dailyLimit_ = "";
+    }
+
+    public static final com.google.protobuf.Descriptors.Descriptor
+        getDescriptor() {
+      return qorechain.abstractaccount.v1.Tx.internal_static_qorechain_abstractaccount_v1_DenomLimit_descriptor;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Descriptors.Descriptor getDescriptorForType() {
+      return qorechain.abstractaccount.v1.Tx.internal_static_qorechain_abstractaccount_v1_DenomLimit_descriptor;
+    }
+
+    @java.lang.Override
+    protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+        internalGetFieldAccessorTable() {
+      return qorechain.abstractaccount.v1.Tx.internal_static_qorechain_abstractaccount_v1_DenomLimit_fieldAccessorTable
+          .ensureFieldAccessorsInitialized(
+              qorechain.abstractaccount.v1.Tx.DenomLimit.class, qorechain.abstractaccount.v1.Tx.DenomLimit.Builder.class);
+    }
+
+    public static final int DENOM_FIELD_NUMBER = 1;
+    @SuppressWarnings("serial")
+    private volatile java.lang.Object denom_ = "";
+    /**
+     * <code>string denom = 1 [json_name = "denom"];</code>
+     * @return The denom.
+     */
+    @java.lang.Override
+    public java.lang.String getDenom() {
+      java.lang.Object ref = denom_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        denom_ = s;
+        return s;
+      }
+    }
+    /**
+     * <code>string denom = 1 [json_name = "denom"];</code>
+     * @return The bytes for denom.
+     */
+    @java.lang.Override
+    public com.google.protobuf.ByteString
+        getDenomBytes() {
+      java.lang.Object ref = denom_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        denom_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
+    public static final int PER_TX_LIMIT_FIELD_NUMBER = 2;
+    @SuppressWarnings("serial")
+    private volatile java.lang.Object perTxLimit_ = "";
+    /**
+     * <code>string per_tx_limit = 2 [json_name = "perTxLimit"];</code>
+     * @return The perTxLimit.
+     */
+    @java.lang.Override
+    public java.lang.String getPerTxLimit() {
+      java.lang.Object ref = perTxLimit_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        perTxLimit_ = s;
+        return s;
+      }
+    }
+    /**
+     * <code>string per_tx_limit = 2 [json_name = "perTxLimit"];</code>
+     * @return The bytes for perTxLimit.
+     */
+    @java.lang.Override
+    public com.google.protobuf.ByteString
+        getPerTxLimitBytes() {
+      java.lang.Object ref = perTxLimit_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        perTxLimit_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
+    public static final int DAILY_LIMIT_FIELD_NUMBER = 3;
+    @SuppressWarnings("serial")
+    private volatile java.lang.Object dailyLimit_ = "";
+    /**
+     * <code>string daily_limit = 3 [json_name = "dailyLimit"];</code>
+     * @return The dailyLimit.
+     */
+    @java.lang.Override
+    public java.lang.String getDailyLimit() {
+      java.lang.Object ref = dailyLimit_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        dailyLimit_ = s;
+        return s;
+      }
+    }
+    /**
+     * <code>string daily_limit = 3 [json_name = "dailyLimit"];</code>
+     * @return The bytes for dailyLimit.
+     */
+    @java.lang.Override
+    public com.google.protobuf.ByteString
+        getDailyLimitBytes() {
+      java.lang.Object ref = dailyLimit_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        dailyLimit_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
+    private byte memoizedIsInitialized = -1;
+    @java.lang.Override
+    public final boolean isInitialized() {
+      byte isInitialized = memoizedIsInitialized;
+      if (isInitialized == 1) return true;
+      if (isInitialized == 0) return false;
+
+      memoizedIsInitialized = 1;
+      return true;
+    }
+
+    @java.lang.Override
+    public void writeTo(com.google.protobuf.CodedOutputStream output)
+                        throws java.io.IOException {
+      if (!com.google.protobuf.GeneratedMessage.isStringEmpty(denom_)) {
+        com.google.protobuf.GeneratedMessage.writeString(output, 1, denom_);
+      }
+      if (!com.google.protobuf.GeneratedMessage.isStringEmpty(perTxLimit_)) {
+        com.google.protobuf.GeneratedMessage.writeString(output, 2, perTxLimit_);
+      }
+      if (!com.google.protobuf.GeneratedMessage.isStringEmpty(dailyLimit_)) {
+        com.google.protobuf.GeneratedMessage.writeString(output, 3, dailyLimit_);
+      }
+      getUnknownFields().writeTo(output);
+    }
+    private int computeSerializedSize_0() {
+      int size = 0;
+      if (!com.google.protobuf.GeneratedMessage.isStringEmpty(denom_)) {
+        size += com.google.protobuf.GeneratedMessage.computeStringSize(1, denom_);
+      }
+      if (!com.google.protobuf.GeneratedMessage.isStringEmpty(perTxLimit_)) {
+        size += com.google.protobuf.GeneratedMessage.computeStringSize(2, perTxLimit_);
+      }
+      if (!com.google.protobuf.GeneratedMessage.isStringEmpty(dailyLimit_)) {
+        size += com.google.protobuf.GeneratedMessage.computeStringSize(3, dailyLimit_);
+      }
+      return size;
+    }
+    @java.lang.Override
+    public int getSerializedSize() {
+      int size = memoizedSize;
+      if (size != -1) return size;
+
+      size = 0;
+      size += computeSerializedSize_0();
+      size += getUnknownFields().getSerializedSize();
+      memoizedSize = size;
+      return size;
+    }
+
+    @java.lang.Override
+    public boolean equals(final java.lang.Object obj) {
+      if (obj == this) {
+       return true;
+      }
+      if (!(obj instanceof qorechain.abstractaccount.v1.Tx.DenomLimit)) {
+        return super.equals(obj);
+      }
+      qorechain.abstractaccount.v1.Tx.DenomLimit other = (qorechain.abstractaccount.v1.Tx.DenomLimit) obj;
+
+      if (!getDenom()
+          .equals(other.getDenom())) return false;
+      if (!getPerTxLimit()
+          .equals(other.getPerTxLimit())) return false;
+      if (!getDailyLimit()
+          .equals(other.getDailyLimit())) return false;
+      if (!getUnknownFields().equals(other.getUnknownFields())) return false;
+      return true;
+    }
+
+    @java.lang.Override
+    public int hashCode() {
+      if (memoizedHashCode != 0) {
+        return memoizedHashCode;
+      }
+      int hash = 41;
+      hash = (19 * hash) + getDescriptor().hashCode();
+      hash = (37 * hash) + DENOM_FIELD_NUMBER;
+      hash = (53 * hash) + getDenom().hashCode();
+      hash = (37 * hash) + PER_TX_LIMIT_FIELD_NUMBER;
+      hash = (53 * hash) + getPerTxLimit().hashCode();
+      hash = (37 * hash) + DAILY_LIMIT_FIELD_NUMBER;
+      hash = (53 * hash) + getDailyLimit().hashCode();
+      hash = (29 * hash) + getUnknownFields().hashCode();
+      memoizedHashCode = hash;
+      return hash;
+    }
+
+    public static qorechain.abstractaccount.v1.Tx.DenomLimit parseFrom(
+        java.nio.ByteBuffer data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static qorechain.abstractaccount.v1.Tx.DenomLimit parseFrom(
+        java.nio.ByteBuffer data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static qorechain.abstractaccount.v1.Tx.DenomLimit parseFrom(
+        com.google.protobuf.ByteString data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static qorechain.abstractaccount.v1.Tx.DenomLimit parseFrom(
+        com.google.protobuf.ByteString data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static qorechain.abstractaccount.v1.Tx.DenomLimit parseFrom(byte[] data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static qorechain.abstractaccount.v1.Tx.DenomLimit parseFrom(
+        byte[] data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static qorechain.abstractaccount.v1.Tx.DenomLimit parseFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input);
+    }
+    public static qorechain.abstractaccount.v1.Tx.DenomLimit parseFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    public static qorechain.abstractaccount.v1.Tx.DenomLimit parseDelimitedFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseDelimitedWithIOException(PARSER, input);
+    }
+
+    public static qorechain.abstractaccount.v1.Tx.DenomLimit parseDelimitedFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static qorechain.abstractaccount.v1.Tx.DenomLimit parseFrom(
+        com.google.protobuf.CodedInputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input);
+    }
+    public static qorechain.abstractaccount.v1.Tx.DenomLimit parseFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    @java.lang.Override
+    public Builder newBuilderForType() { return newBuilder(); }
+    public static Builder newBuilder() {
+      return DEFAULT_INSTANCE.toBuilder();
+    }
+    public static Builder newBuilder(qorechain.abstractaccount.v1.Tx.DenomLimit prototype) {
+      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+    }
+    @java.lang.Override
+    public Builder toBuilder() {
+      return this == DEFAULT_INSTANCE
+          ? new Builder() : new Builder().mergeFrom(this);
+    }
+
+    @java.lang.Override
+    protected Builder newBuilderForType(
+        com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+      Builder builder = new Builder(parent);
+      return builder;
+    }
+    /**
+     * <pre>
+     * DenomLimit is a per-denom limit of a SpendingRule (v3.2.2). The amounts are
+     * decimal integers in the denom's base units; empty or "0" means no limit of
+     * that kind.
+     * </pre>
+     *
+     * Protobuf type {@code qorechain.abstractaccount.v1.DenomLimit}
+     */
+    public static final class Builder extends
+        com.google.protobuf.GeneratedMessage.Builder<Builder> implements
+        // @@protoc_insertion_point(builder_implements:qorechain.abstractaccount.v1.DenomLimit)
+        qorechain.abstractaccount.v1.Tx.DenomLimitOrBuilder {
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return qorechain.abstractaccount.v1.Tx.internal_static_qorechain_abstractaccount_v1_DenomLimit_descriptor;
+      }
+
+      @java.lang.Override
+      protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return qorechain.abstractaccount.v1.Tx.internal_static_qorechain_abstractaccount_v1_DenomLimit_fieldAccessorTable
+            .ensureFieldAccessorsInitialized(
+                qorechain.abstractaccount.v1.Tx.DenomLimit.class, qorechain.abstractaccount.v1.Tx.DenomLimit.Builder.class);
+      }
+
+      // Construct using qorechain.abstractaccount.v1.Tx.DenomLimit.newBuilder()
+      private Builder() {
+
+      }
+
+      private Builder(
+          com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+        super(parent);
+
+      }
+      @java.lang.Override
+      public Builder clear() {
+        super.clear();
+        bitField0_ = 0;
+        denom_ = "";
+        perTxLimit_ = "";
+        dailyLimit_ = "";
+        return this;
+      }
+
+      @java.lang.Override
+      public com.google.protobuf.Descriptors.Descriptor
+          getDescriptorForType() {
+        return qorechain.abstractaccount.v1.Tx.internal_static_qorechain_abstractaccount_v1_DenomLimit_descriptor;
+      }
+
+      @java.lang.Override
+      public qorechain.abstractaccount.v1.Tx.DenomLimit getDefaultInstanceForType() {
+        return qorechain.abstractaccount.v1.Tx.DenomLimit.getDefaultInstance();
+      }
+
+      @java.lang.Override
+      public qorechain.abstractaccount.v1.Tx.DenomLimit build() {
+        qorechain.abstractaccount.v1.Tx.DenomLimit result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(result);
+        }
+        return result;
+      }
+
+      @java.lang.Override
+      public qorechain.abstractaccount.v1.Tx.DenomLimit buildPartial() {
+        qorechain.abstractaccount.v1.Tx.DenomLimit result = new qorechain.abstractaccount.v1.Tx.DenomLimit(this);
+        if (bitField0_ != 0) { buildPartial0(result); }
+        onBuilt();
+        return result;
+      }
+
+      private void buildPartial0(qorechain.abstractaccount.v1.Tx.DenomLimit result) {
+        int from_bitField0_ = bitField0_;
+        if (((from_bitField0_ & 0x00000001) != 0)) {
+          result.denom_ = denom_;
+        }
+        if (((from_bitField0_ & 0x00000002) != 0)) {
+          result.perTxLimit_ = perTxLimit_;
+        }
+        if (((from_bitField0_ & 0x00000004) != 0)) {
+          result.dailyLimit_ = dailyLimit_;
+        }
+      }
+
+      @java.lang.Override
+      public Builder mergeFrom(com.google.protobuf.Message other) {
+        if (other instanceof qorechain.abstractaccount.v1.Tx.DenomLimit) {
+          return mergeFrom((qorechain.abstractaccount.v1.Tx.DenomLimit)other);
+        } else {
+          super.mergeFrom(other);
+          return this;
+        }
+      }
+
+      public Builder mergeFrom(qorechain.abstractaccount.v1.Tx.DenomLimit other) {
+        if (other == qorechain.abstractaccount.v1.Tx.DenomLimit.getDefaultInstance()) return this;
+        if (!other.getDenom().isEmpty()) {
+          denom_ = other.denom_;
+          bitField0_ |= 0x00000001;
+          onChanged();
+        }
+        if (!other.getPerTxLimit().isEmpty()) {
+          perTxLimit_ = other.perTxLimit_;
+          bitField0_ |= 0x00000002;
+          onChanged();
+        }
+        if (!other.getDailyLimit().isEmpty()) {
+          dailyLimit_ = other.dailyLimit_;
+          bitField0_ |= 0x00000004;
+          onChanged();
+        }
+        this.mergeUnknownFields(other.getUnknownFields());
+        onChanged();
+        return this;
+      }
+
+      @java.lang.Override
+      public final boolean isInitialized() {
+        return true;
+      }
+
+      @java.lang.Override
+      public Builder mergeFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        if (extensionRegistry == null) {
+          throw new java.lang.NullPointerException();
+        }
+        try {
+          boolean done = false;
+          while (!done) {
+            int tag = input.readTag();
+            switch (tag) {
+              case 0:
+                done = true;
+                break;
+              case 10: {
+                denom_ = input.readStringRequireUtf8();
+                bitField0_ |= 0x00000001;
+                break;
+              } // case 10
+              case 18: {
+                perTxLimit_ = input.readStringRequireUtf8();
+                bitField0_ |= 0x00000002;
+                break;
+              } // case 18
+              case 26: {
+                dailyLimit_ = input.readStringRequireUtf8();
+                bitField0_ |= 0x00000004;
+                break;
+              } // case 26
+              default: {
+                if (!super.parseUnknownField(input, extensionRegistry, tag)) {
+                  done = true; // was an endgroup tag
+                }
+                break;
+              } // default:
+            } // switch (tag)
+          } // while (!done)
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          throw e.unwrapIOException();
+        } finally {
+          onChanged();
+        } // finally
+        return this;
+      }
+      private int bitField0_;
+
+      private java.lang.Object denom_ = "";
+      /**
+       * <code>string denom = 1 [json_name = "denom"];</code>
+       * @return The denom.
+       */
+      public java.lang.String getDenom() {
+        java.lang.Object ref = denom_;
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          denom_ = s;
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
+      }
+      /**
+       * <code>string denom = 1 [json_name = "denom"];</code>
+       * @return The bytes for denom.
+       */
+      public com.google.protobuf.ByteString
+          getDenomBytes() {
+        java.lang.Object ref = denom_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          denom_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <code>string denom = 1 [json_name = "denom"];</code>
+       * @param value The denom to set.
+       * @return This builder for chaining.
+       */
+      public Builder setDenom(
+          java.lang.String value) {
+        if (value == null) { throw new NullPointerException(); }
+        denom_ = value;
+        bitField0_ |= 0x00000001;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>string denom = 1 [json_name = "denom"];</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearDenom() {
+        denom_ = getDefaultInstance().getDenom();
+        bitField0_ = (bitField0_ & ~0x00000001);
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>string denom = 1 [json_name = "denom"];</code>
+       * @param value The bytes for denom to set.
+       * @return This builder for chaining.
+       */
+      public Builder setDenomBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) { throw new NullPointerException(); }
+        checkByteStringIsUtf8(value);
+        denom_ = value;
+        bitField0_ |= 0x00000001;
+        onChanged();
+        return this;
+      }
+
+      private java.lang.Object perTxLimit_ = "";
+      /**
+       * <code>string per_tx_limit = 2 [json_name = "perTxLimit"];</code>
+       * @return The perTxLimit.
+       */
+      public java.lang.String getPerTxLimit() {
+        java.lang.Object ref = perTxLimit_;
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          perTxLimit_ = s;
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
+      }
+      /**
+       * <code>string per_tx_limit = 2 [json_name = "perTxLimit"];</code>
+       * @return The bytes for perTxLimit.
+       */
+      public com.google.protobuf.ByteString
+          getPerTxLimitBytes() {
+        java.lang.Object ref = perTxLimit_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          perTxLimit_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <code>string per_tx_limit = 2 [json_name = "perTxLimit"];</code>
+       * @param value The perTxLimit to set.
+       * @return This builder for chaining.
+       */
+      public Builder setPerTxLimit(
+          java.lang.String value) {
+        if (value == null) { throw new NullPointerException(); }
+        perTxLimit_ = value;
+        bitField0_ |= 0x00000002;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>string per_tx_limit = 2 [json_name = "perTxLimit"];</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearPerTxLimit() {
+        perTxLimit_ = getDefaultInstance().getPerTxLimit();
+        bitField0_ = (bitField0_ & ~0x00000002);
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>string per_tx_limit = 2 [json_name = "perTxLimit"];</code>
+       * @param value The bytes for perTxLimit to set.
+       * @return This builder for chaining.
+       */
+      public Builder setPerTxLimitBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) { throw new NullPointerException(); }
+        checkByteStringIsUtf8(value);
+        perTxLimit_ = value;
+        bitField0_ |= 0x00000002;
+        onChanged();
+        return this;
+      }
+
+      private java.lang.Object dailyLimit_ = "";
+      /**
+       * <code>string daily_limit = 3 [json_name = "dailyLimit"];</code>
+       * @return The dailyLimit.
+       */
+      public java.lang.String getDailyLimit() {
+        java.lang.Object ref = dailyLimit_;
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          dailyLimit_ = s;
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
+      }
+      /**
+       * <code>string daily_limit = 3 [json_name = "dailyLimit"];</code>
+       * @return The bytes for dailyLimit.
+       */
+      public com.google.protobuf.ByteString
+          getDailyLimitBytes() {
+        java.lang.Object ref = dailyLimit_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          dailyLimit_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <code>string daily_limit = 3 [json_name = "dailyLimit"];</code>
+       * @param value The dailyLimit to set.
+       * @return This builder for chaining.
+       */
+      public Builder setDailyLimit(
+          java.lang.String value) {
+        if (value == null) { throw new NullPointerException(); }
+        dailyLimit_ = value;
+        bitField0_ |= 0x00000004;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>string daily_limit = 3 [json_name = "dailyLimit"];</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearDailyLimit() {
+        dailyLimit_ = getDefaultInstance().getDailyLimit();
+        bitField0_ = (bitField0_ & ~0x00000004);
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>string daily_limit = 3 [json_name = "dailyLimit"];</code>
+       * @param value The bytes for dailyLimit to set.
+       * @return This builder for chaining.
+       */
+      public Builder setDailyLimitBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) { throw new NullPointerException(); }
+        checkByteStringIsUtf8(value);
+        dailyLimit_ = value;
+        bitField0_ |= 0x00000004;
+        onChanged();
+        return this;
+      }
+
+      // @@protoc_insertion_point(builder_scope:qorechain.abstractaccount.v1.DenomLimit)
+    }
+
+    // @@protoc_insertion_point(class_scope:qorechain.abstractaccount.v1.DenomLimit)
+    private static final qorechain.abstractaccount.v1.Tx.DenomLimit DEFAULT_INSTANCE;
+    static {
+      DEFAULT_INSTANCE = new qorechain.abstractaccount.v1.Tx.DenomLimit();
+    }
+
+    public static qorechain.abstractaccount.v1.Tx.DenomLimit getDefaultInstance() {
+      return DEFAULT_INSTANCE;
+    }
+
+    private static final com.google.protobuf.Parser<DenomLimit>
+        PARSER = new com.google.protobuf.AbstractParser<DenomLimit>() {
+      @java.lang.Override
+      public DenomLimit parsePartialFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        Builder builder = newBuilder();
+        try {
+          builder.mergeFrom(input, extensionRegistry);
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          throw e.setUnfinishedMessage(builder.buildPartial());
+        } catch (com.google.protobuf.UninitializedMessageException e) {
+          throw e.asInvalidProtocolBufferException().setUnfinishedMessage(builder.buildPartial());
+        } catch (java.io.IOException e) {
+          throw new com.google.protobuf.InvalidProtocolBufferException(e)
+              .setUnfinishedMessage(builder.buildPartial());
+        }
+        return builder.buildPartial();
+      }
+    };
+
+    public static com.google.protobuf.Parser<DenomLimit> parser() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Parser<DenomLimit> getParserForType() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public qorechain.abstractaccount.v1.Tx.DenomLimit getDefaultInstanceForType() {
       return DEFAULT_INSTANCE;
     }
 
@@ -6808,7 +8801,7 @@ public final class Tx extends com.google.protobuf.GeneratedFile {
 
     /**
      * <pre>
-     * MUST equal the account's current EVM nonce
+     * MUST equal the linked key's current authenticator sequence
      * </pre>
      *
      * <code>uint64 nonce = 10 [json_name = "nonce"];</code>
@@ -6822,10 +8815,11 @@ public final class Tx extends com.google.protobuf.GeneratedFile {
    * authenticator (v3.1.85). The relayer submits + pays fees; the authenticator
    * (scheme,pubkey) signs the domain-separated sign-bytes binding chain-id, the
    * canonical account, the pubkey, to/value/data and the account's expected EVM
-   * nonce (replay protection — the nonce must equal the account's current EVM
-   * nonce, and executing the call increments it, so a signature cannot be replayed).
-   * The chain resolves the authenticator, checks the "evm" permission + SpendingRule
-   * against `value`, then executes the call FROM the canonical account's EVM address.
+   * nonce (replay protection: the nonce must equal the linked key's current
+   * authenticator sequence, which a successful call increments).
+   * The chain resolves the authenticator, checks the "evm" permission ("deploy"
+   * for a contract creation from v3.2.2) and the SpendingRule, then executes the
+   * call FROM the canonical account's EVM address.
    * </pre>
    *
    * Protobuf type {@code qorechain.abstractaccount.v1.MsgExecuteEVM}
@@ -7164,7 +9158,7 @@ public final class Tx extends com.google.protobuf.GeneratedFile {
     private long nonce_ = 0L;
     /**
      * <pre>
-     * MUST equal the account's current EVM nonce
+     * MUST equal the linked key's current authenticator sequence
      * </pre>
      *
      * <code>uint64 nonce = 10 [json_name = "nonce"];</code>
@@ -7438,10 +9432,11 @@ public final class Tx extends com.google.protobuf.GeneratedFile {
      * authenticator (v3.1.85). The relayer submits + pays fees; the authenticator
      * (scheme,pubkey) signs the domain-separated sign-bytes binding chain-id, the
      * canonical account, the pubkey, to/value/data and the account's expected EVM
-     * nonce (replay protection — the nonce must equal the account's current EVM
-     * nonce, and executing the call increments it, so a signature cannot be replayed).
-     * The chain resolves the authenticator, checks the "evm" permission + SpendingRule
-     * against `value`, then executes the call FROM the canonical account's EVM address.
+     * nonce (replay protection: the nonce must equal the linked key's current
+     * authenticator sequence, which a successful call increments).
+     * The chain resolves the authenticator, checks the "evm" permission ("deploy"
+     * for a contract creation from v3.2.2) and the SpendingRule, then executes the
+     * call FROM the canonical account's EVM address.
      * </pre>
      *
      * Protobuf type {@code qorechain.abstractaccount.v1.MsgExecuteEVM}
@@ -8304,7 +10299,7 @@ public final class Tx extends com.google.protobuf.GeneratedFile {
       private long nonce_ ;
       /**
        * <pre>
-       * MUST equal the account's current EVM nonce
+       * MUST equal the linked key's current authenticator sequence
        * </pre>
        *
        * <code>uint64 nonce = 10 [json_name = "nonce"];</code>
@@ -8316,7 +10311,7 @@ public final class Tx extends com.google.protobuf.GeneratedFile {
       }
       /**
        * <pre>
-       * MUST equal the account's current EVM nonce
+       * MUST equal the linked key's current authenticator sequence
        * </pre>
        *
        * <code>uint64 nonce = 10 [json_name = "nonce"];</code>
@@ -8332,7 +10327,7 @@ public final class Tx extends com.google.protobuf.GeneratedFile {
       }
       /**
        * <pre>
-       * MUST equal the account's current EVM nonce
+       * MUST equal the linked key's current authenticator sequence
        * </pre>
        *
        * <code>uint64 nonce = 10 [json_name = "nonce"];</code>
@@ -11347,6 +13342,11 @@ public final class Tx extends com.google.protobuf.GeneratedFile {
     com.google.protobuf.GeneratedMessage.FieldAccessorTable
       internal_static_qorechain_abstractaccount_v1_SpendingRule_fieldAccessorTable;
   private static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_qorechain_abstractaccount_v1_DenomLimit_descriptor;
+  private static final 
+    com.google.protobuf.GeneratedMessage.FieldAccessorTable
+      internal_static_qorechain_abstractaccount_v1_DenomLimit_fieldAccessorTable;
+  private static final com.google.protobuf.Descriptors.Descriptor
     internal_static_qorechain_abstractaccount_v1_MsgCreateAbstractAccount_descriptor;
   private static final 
     com.google.protobuf.GeneratedMessage.FieldAccessorTable
@@ -11419,78 +13419,83 @@ public final class Tx extends com.google.protobuf.GeneratedFile {
       "\034qorechain.abstractaccount.v1\032\027cosmos/ms" +
       "g/v1/msg.proto\032\031cosmos_proto/cosmos.prot" +
       "o\032\024gogoproto/gogo.proto\032\036cosmos/base/v1b" +
-      "eta1/coin.proto\"\252\001\n\014SpendingRule\022\026\n\002id\030\001" +
+      "eta1/coin.proto\"\243\002\n\014SpendingRule\022\026\n\002id\030\001" +
       " \001(\tB\006\342\336\037\002IDR\002id\022\037\n\013daily_limit\030\002 \001(\003R\nd" +
       "ailyLimit\022 \n\014per_tx_limit\030\003 \001(\003R\nperTxLi" +
       "mit\022%\n\016allowed_denoms\030\004 \003(\tR\rallowedDeno" +
-      "ms\022\030\n\007enabled\030\005 \001(\010R\007enabled\"y\n\030MsgCreat" +
-      "eAbstractAccount\022.\n\005owner\030\001 \001(\tB\030\322\264-\024cos" +
-      "mos.AddressStringR\005owner\022!\n\014account_type" +
-      "\030\002 \001(\tR\013accountType:\n\202\347\260*\005owner\"<\n MsgCr" +
-      "eateAbstractAccountResponse\022\030\n\007address\030\001" +
-      " \001(\tR\007address\"\305\001\n\026MsgUpdateSpendingRules" +
+      "ms\022\030\n\007enabled\030\005 \001(\010R\007enabled\022*\n\021allowed_" +
+      "evm_calls\030\006 \003(\tR\017allowedEvmCalls\022K\n\014deno" +
+      "m_limits\030\007 \003(\0132(.qorechain.abstractaccou" +
+      "nt.v1.DenomLimitR\013denomLimits\"e\n\nDenomLi" +
+      "mit\022\024\n\005denom\030\001 \001(\tR\005denom\022 \n\014per_tx_limi" +
+      "t\030\002 \001(\tR\nperTxLimit\022\037\n\013daily_limit\030\003 \001(\t" +
+      "R\ndailyLimit\"y\n\030MsgCreateAbstractAccount" +
       "\022.\n\005owner\030\001 \001(\tB\030\322\264-\024cosmos.AddressStrin" +
-      "gR\005owner\022\'\n\017account_address\030\002 \001(\tR\016accou" +
-      "ntAddress\022F\n\005rules\030\003 \003(\0132*.qorechain.abs" +
-      "tractaccount.v1.SpendingRuleB\004\310\336\037\000R\005rule" +
-      "s:\n\202\347\260*\005owner\" \n\036MsgUpdateSpendingRulesR" +
-      "esponse\"\210\002\n\030MsgRegisterAuthenticator\022.\n\005" +
-      "owner\030\001 \001(\tB\030\322\264-\024cosmos.AddressStringR\005o" +
-      "wner\022\'\n\017account_address\030\002 \001(\tR\016accountAd" +
-      "dress\022\026\n\006scheme\030\003 \001(\tR\006scheme\022\026\n\006pubkey\030" +
-      "\004 \001(\014R\006pubkey\022 \n\013permissions\030\005 \003(\tR\013perm" +
-      "issions\022\037\n\013expiry_unix\030\006 \001(\003R\nexpiryUnix" +
-      "\022\024\n\005label\030\007 \001(\tR\005label:\n\202\347\260*\005owner\"\"\n Ms" +
-      "gRegisterAuthenticatorResponse\"\255\001\n\026MsgRe" +
-      "vokeAuthenticator\022.\n\005owner\030\001 \001(\tB\030\322\264-\024co" +
-      "smos.AddressStringR\005owner\022\'\n\017account_add" +
-      "ress\030\002 \001(\tR\016accountAddress\022\026\n\006scheme\030\003 \001" +
-      "(\tR\006scheme\022\026\n\006pubkey\030\004 \001(\014R\006pubkey:\n\202\347\260*" +
-      "\005owner\" \n\036MsgRevokeAuthenticatorResponse" +
-      "\"\246\002\n\rMsgExecuteEVM\0222\n\007relayer\030\001 \001(\tB\030\322\264-" +
-      "\024cosmos.AddressStringR\007relayer\022\030\n\007accoun" +
-      "t\030\002 \001(\tR\007account\022\026\n\006scheme\030\003 \001(\tR\006scheme" +
-      "\022\026\n\006pubkey\030\004 \001(\014R\006pubkey\022\034\n\tsignature\030\005 " +
-      "\001(\014R\tsignature\022\016\n\002to\030\006 \001(\tR\002to\022\024\n\005value\030" +
-      "\007 \001(\tR\005value\022\022\n\004data\030\010 \001(\014R\004data\022\033\n\tgas_" +
-      "limit\030\t \001(\004R\010gasLimit\022\024\n\005nonce\030\n \001(\004R\005no" +
-      "nce:\014\202\347\260*\007relayer\"y\n\025MsgExecuteEVMRespon" +
-      "se\022\030\n\007success\030\001 \001(\010R\007success\022\020\n\003ret\030\002 \001(" +
-      "\014R\003ret\022\031\n\010gas_used\030\003 \001(\004R\007gasUsed\022\031\n\010vm_" +
-      "error\030\004 \001(\tR\007vmError\"\341\002\n\020MsgExecuteCosmo" +
-      "s\0222\n\007relayer\030\001 \001(\tB\030\322\264-\024cosmos.AddressSt" +
-      "ringR\007relayer\022\030\n\007account\030\002 \001(\tR\007account\022" +
-      "\026\n\006scheme\030\003 \001(\tR\006scheme\022\026\n\006pubkey\030\004 \001(\014R" +
-      "\006pubkey\022\034\n\tsignature\030\005 \001(\014R\tsignature\022(\n" +
-      "\002to\030\006 \001(\tB\030\322\264-\024cosmos.AddressStringR\002to\022" +
-      "c\n\006amount\030\007 \003(\0132\031.cosmos.base.v1beta1.Co" +
-      "inB0\310\336\037\000\252\337\037(github.com/cosmos/cosmos-sdk" +
-      "/types.CoinsR\006amount\022\024\n\005nonce\030\010 \001(\004R\005non" +
-      "ce:\014\202\347\260*\007relayer\"4\n\030MsgExecuteCosmosResp" +
-      "onse\022\030\n\007success\030\001 \001(\010R\007success2\261\006\n\003Msg\022\217" +
-      "\001\n\025CreateAbstractAccount\0226.qorechain.abs" +
+      "gR\005owner\022!\n\014account_type\030\002 \001(\tR\013accountT" +
+      "ype:\n\202\347\260*\005owner\"<\n MsgCreateAbstractAcco" +
+      "untResponse\022\030\n\007address\030\001 \001(\tR\007address\"\305\001" +
+      "\n\026MsgUpdateSpendingRules\022.\n\005owner\030\001 \001(\tB" +
+      "\030\322\264-\024cosmos.AddressStringR\005owner\022\'\n\017acco" +
+      "unt_address\030\002 \001(\tR\016accountAddress\022F\n\005rul" +
+      "es\030\003 \003(\0132*.qorechain.abstractaccount.v1." +
+      "SpendingRuleB\004\310\336\037\000R\005rules:\n\202\347\260*\005owner\" \n" +
+      "\036MsgUpdateSpendingRulesResponse\"\210\002\n\030MsgR" +
+      "egisterAuthenticator\022.\n\005owner\030\001 \001(\tB\030\322\264-" +
+      "\024cosmos.AddressStringR\005owner\022\'\n\017account_" +
+      "address\030\002 \001(\tR\016accountAddress\022\026\n\006scheme\030" +
+      "\003 \001(\tR\006scheme\022\026\n\006pubkey\030\004 \001(\014R\006pubkey\022 \n" +
+      "\013permissions\030\005 \003(\tR\013permissions\022\037\n\013expir" +
+      "y_unix\030\006 \001(\003R\nexpiryUnix\022\024\n\005label\030\007 \001(\tR" +
+      "\005label:\n\202\347\260*\005owner\"\"\n MsgRegisterAuthent" +
+      "icatorResponse\"\255\001\n\026MsgRevokeAuthenticato" +
+      "r\022.\n\005owner\030\001 \001(\tB\030\322\264-\024cosmos.AddressStri" +
+      "ngR\005owner\022\'\n\017account_address\030\002 \001(\tR\016acco" +
+      "untAddress\022\026\n\006scheme\030\003 \001(\tR\006scheme\022\026\n\006pu" +
+      "bkey\030\004 \001(\014R\006pubkey:\n\202\347\260*\005owner\" \n\036MsgRev" +
+      "okeAuthenticatorResponse\"\246\002\n\rMsgExecuteE" +
+      "VM\0222\n\007relayer\030\001 \001(\tB\030\322\264-\024cosmos.AddressS" +
+      "tringR\007relayer\022\030\n\007account\030\002 \001(\tR\007account" +
+      "\022\026\n\006scheme\030\003 \001(\tR\006scheme\022\026\n\006pubkey\030\004 \001(\014" +
+      "R\006pubkey\022\034\n\tsignature\030\005 \001(\014R\tsignature\022\016" +
+      "\n\002to\030\006 \001(\tR\002to\022\024\n\005value\030\007 \001(\tR\005value\022\022\n\004" +
+      "data\030\010 \001(\014R\004data\022\033\n\tgas_limit\030\t \001(\004R\010gas" +
+      "Limit\022\024\n\005nonce\030\n \001(\004R\005nonce:\014\202\347\260*\007relaye" +
+      "r\"y\n\025MsgExecuteEVMResponse\022\030\n\007success\030\001 " +
+      "\001(\010R\007success\022\020\n\003ret\030\002 \001(\014R\003ret\022\031\n\010gas_us" +
+      "ed\030\003 \001(\004R\007gasUsed\022\031\n\010vm_error\030\004 \001(\tR\007vmE" +
+      "rror\"\341\002\n\020MsgExecuteCosmos\0222\n\007relayer\030\001 \001" +
+      "(\tB\030\322\264-\024cosmos.AddressStringR\007relayer\022\030\n" +
+      "\007account\030\002 \001(\tR\007account\022\026\n\006scheme\030\003 \001(\tR" +
+      "\006scheme\022\026\n\006pubkey\030\004 \001(\014R\006pubkey\022\034\n\tsigna" +
+      "ture\030\005 \001(\014R\tsignature\022(\n\002to\030\006 \001(\tB\030\322\264-\024c" +
+      "osmos.AddressStringR\002to\022c\n\006amount\030\007 \003(\0132" +
+      "\031.cosmos.base.v1beta1.CoinB0\310\336\037\000\252\337\037(gith" +
+      "ub.com/cosmos/cosmos-sdk/types.CoinsR\006am" +
+      "ount\022\024\n\005nonce\030\010 \001(\004R\005nonce:\014\202\347\260*\007relayer" +
+      "\"4\n\030MsgExecuteCosmosResponse\022\030\n\007success\030" +
+      "\001 \001(\010R\007success2\261\006\n\003Msg\022\217\001\n\025CreateAbstrac" +
+      "tAccount\0226.qorechain.abstractaccount.v1." +
+      "MsgCreateAbstractAccount\032>.qorechain.abs" +
       "tractaccount.v1.MsgCreateAbstractAccount" +
-      "\032>.qorechain.abstractaccount.v1.MsgCreat" +
-      "eAbstractAccountResponse\022\211\001\n\023UpdateSpend" +
-      "ingRules\0224.qorechain.abstractaccount.v1." +
-      "MsgUpdateSpendingRules\032<.qorechain.abstr" +
-      "actaccount.v1.MsgUpdateSpendingRulesResp" +
-      "onse\022\217\001\n\025RegisterAuthenticator\0226.qorecha" +
+      "Response\022\211\001\n\023UpdateSpendingRules\0224.qorec" +
+      "hain.abstractaccount.v1.MsgUpdateSpendin" +
+      "gRules\032<.qorechain.abstractaccount.v1.Ms" +
+      "gUpdateSpendingRulesResponse\022\217\001\n\025Registe" +
+      "rAuthenticator\0226.qorechain.abstractaccou" +
+      "nt.v1.MsgRegisterAuthenticator\032>.qorecha" +
       "in.abstractaccount.v1.MsgRegisterAuthent" +
-      "icator\032>.qorechain.abstractaccount.v1.Ms" +
-      "gRegisterAuthenticatorResponse\022\211\001\n\023Revok" +
-      "eAuthenticator\0224.qorechain.abstractaccou" +
-      "nt.v1.MsgRevokeAuthenticator\032<.qorechain" +
-      ".abstractaccount.v1.MsgRevokeAuthenticat" +
-      "orResponse\022n\n\nExecuteEVM\022+.qorechain.abs" +
-      "tractaccount.v1.MsgExecuteEVM\0323.qorechai" +
-      "n.abstractaccount.v1.MsgExecuteEVMRespon" +
-      "se\022w\n\rExecuteCosmos\022..qorechain.abstract" +
-      "account.v1.MsgExecuteCosmos\0326.qorechain." +
-      "abstractaccount.v1.MsgExecuteCosmosRespo" +
-      "nse\032\005\200\347\260*\001B=Z;github.com/qorechain/qorec" +
-      "hain-core/x/abstractaccount/typesb\006proto" +
-      "3"
+      "icatorResponse\022\211\001\n\023RevokeAuthenticator\0224" +
+      ".qorechain.abstractaccount.v1.MsgRevokeA" +
+      "uthenticator\032<.qorechain.abstractaccount" +
+      ".v1.MsgRevokeAuthenticatorResponse\022n\n\nEx" +
+      "ecuteEVM\022+.qorechain.abstractaccount.v1." +
+      "MsgExecuteEVM\0323.qorechain.abstractaccoun" +
+      "t.v1.MsgExecuteEVMResponse\022w\n\rExecuteCos" +
+      "mos\022..qorechain.abstractaccount.v1.MsgEx" +
+      "ecuteCosmos\0326.qorechain.abstractaccount." +
+      "v1.MsgExecuteCosmosResponse\032\005\200\347\260*\001B=Z;gi" +
+      "thub.com/qorechain/qorechain-core/x/abst" +
+      "ractaccount/typesb\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
@@ -11505,75 +13510,81 @@ public final class Tx extends com.google.protobuf.GeneratedFile {
     internal_static_qorechain_abstractaccount_v1_SpendingRule_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_qorechain_abstractaccount_v1_SpendingRule_descriptor,
-        new java.lang.String[] { "Id", "DailyLimit", "PerTxLimit", "AllowedDenoms", "Enabled", });
-    internal_static_qorechain_abstractaccount_v1_MsgCreateAbstractAccount_descriptor =
+        new java.lang.String[] { "Id", "DailyLimit", "PerTxLimit", "AllowedDenoms", "Enabled", "AllowedEvmCalls", "DenomLimits", });
+    internal_static_qorechain_abstractaccount_v1_DenomLimit_descriptor =
       getDescriptor().getMessageType(1);
+    internal_static_qorechain_abstractaccount_v1_DenomLimit_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessage.FieldAccessorTable(
+        internal_static_qorechain_abstractaccount_v1_DenomLimit_descriptor,
+        new java.lang.String[] { "Denom", "PerTxLimit", "DailyLimit", });
+    internal_static_qorechain_abstractaccount_v1_MsgCreateAbstractAccount_descriptor =
+      getDescriptor().getMessageType(2);
     internal_static_qorechain_abstractaccount_v1_MsgCreateAbstractAccount_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_qorechain_abstractaccount_v1_MsgCreateAbstractAccount_descriptor,
         new java.lang.String[] { "Owner", "AccountType", });
     internal_static_qorechain_abstractaccount_v1_MsgCreateAbstractAccountResponse_descriptor =
-      getDescriptor().getMessageType(2);
+      getDescriptor().getMessageType(3);
     internal_static_qorechain_abstractaccount_v1_MsgCreateAbstractAccountResponse_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_qorechain_abstractaccount_v1_MsgCreateAbstractAccountResponse_descriptor,
         new java.lang.String[] { "Address", });
     internal_static_qorechain_abstractaccount_v1_MsgUpdateSpendingRules_descriptor =
-      getDescriptor().getMessageType(3);
+      getDescriptor().getMessageType(4);
     internal_static_qorechain_abstractaccount_v1_MsgUpdateSpendingRules_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_qorechain_abstractaccount_v1_MsgUpdateSpendingRules_descriptor,
         new java.lang.String[] { "Owner", "AccountAddress", "Rules", });
     internal_static_qorechain_abstractaccount_v1_MsgUpdateSpendingRulesResponse_descriptor =
-      getDescriptor().getMessageType(4);
+      getDescriptor().getMessageType(5);
     internal_static_qorechain_abstractaccount_v1_MsgUpdateSpendingRulesResponse_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_qorechain_abstractaccount_v1_MsgUpdateSpendingRulesResponse_descriptor,
         new java.lang.String[] { });
     internal_static_qorechain_abstractaccount_v1_MsgRegisterAuthenticator_descriptor =
-      getDescriptor().getMessageType(5);
+      getDescriptor().getMessageType(6);
     internal_static_qorechain_abstractaccount_v1_MsgRegisterAuthenticator_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_qorechain_abstractaccount_v1_MsgRegisterAuthenticator_descriptor,
         new java.lang.String[] { "Owner", "AccountAddress", "Scheme", "Pubkey", "Permissions", "ExpiryUnix", "Label", });
     internal_static_qorechain_abstractaccount_v1_MsgRegisterAuthenticatorResponse_descriptor =
-      getDescriptor().getMessageType(6);
+      getDescriptor().getMessageType(7);
     internal_static_qorechain_abstractaccount_v1_MsgRegisterAuthenticatorResponse_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_qorechain_abstractaccount_v1_MsgRegisterAuthenticatorResponse_descriptor,
         new java.lang.String[] { });
     internal_static_qorechain_abstractaccount_v1_MsgRevokeAuthenticator_descriptor =
-      getDescriptor().getMessageType(7);
+      getDescriptor().getMessageType(8);
     internal_static_qorechain_abstractaccount_v1_MsgRevokeAuthenticator_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_qorechain_abstractaccount_v1_MsgRevokeAuthenticator_descriptor,
         new java.lang.String[] { "Owner", "AccountAddress", "Scheme", "Pubkey", });
     internal_static_qorechain_abstractaccount_v1_MsgRevokeAuthenticatorResponse_descriptor =
-      getDescriptor().getMessageType(8);
+      getDescriptor().getMessageType(9);
     internal_static_qorechain_abstractaccount_v1_MsgRevokeAuthenticatorResponse_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_qorechain_abstractaccount_v1_MsgRevokeAuthenticatorResponse_descriptor,
         new java.lang.String[] { });
     internal_static_qorechain_abstractaccount_v1_MsgExecuteEVM_descriptor =
-      getDescriptor().getMessageType(9);
+      getDescriptor().getMessageType(10);
     internal_static_qorechain_abstractaccount_v1_MsgExecuteEVM_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_qorechain_abstractaccount_v1_MsgExecuteEVM_descriptor,
         new java.lang.String[] { "Relayer", "Account", "Scheme", "Pubkey", "Signature", "To", "Value", "Data", "GasLimit", "Nonce", });
     internal_static_qorechain_abstractaccount_v1_MsgExecuteEVMResponse_descriptor =
-      getDescriptor().getMessageType(10);
+      getDescriptor().getMessageType(11);
     internal_static_qorechain_abstractaccount_v1_MsgExecuteEVMResponse_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_qorechain_abstractaccount_v1_MsgExecuteEVMResponse_descriptor,
         new java.lang.String[] { "Success", "Ret", "GasUsed", "VmError", });
     internal_static_qorechain_abstractaccount_v1_MsgExecuteCosmos_descriptor =
-      getDescriptor().getMessageType(11);
+      getDescriptor().getMessageType(12);
     internal_static_qorechain_abstractaccount_v1_MsgExecuteCosmos_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_qorechain_abstractaccount_v1_MsgExecuteCosmos_descriptor,
         new java.lang.String[] { "Relayer", "Account", "Scheme", "Pubkey", "Signature", "To", "Amount", "Nonce", });
     internal_static_qorechain_abstractaccount_v1_MsgExecuteCosmosResponse_descriptor =
-      getDescriptor().getMessageType(12);
+      getDescriptor().getMessageType(13);
     internal_static_qorechain_abstractaccount_v1_MsgExecuteCosmosResponse_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_qorechain_abstractaccount_v1_MsgExecuteCosmosResponse_descriptor,

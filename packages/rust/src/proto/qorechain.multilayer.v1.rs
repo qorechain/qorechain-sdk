@@ -276,4 +276,39 @@ pub struct MsgChallengeAnchorResponse {
     #[prost(string, tag="2")]
     pub resolution: ::prost::alloc::string::String,
 }
+/// MsgUpdateParams replaces the multilayer parameters wholesale. The fields are
+/// the module's Params, spelled out one by one (as x/inflation does) because the
+/// parameters are stored as JSON by a hand-written struct whose encoding must
+/// not change. Governance only: authority must be the gov module account.
+#[derive(Clone, PartialEq, ::prost::Message)]
+pub struct MsgUpdateParams {
+    #[prost(string, tag="1")]
+    pub authority: ::prost::alloc::string::String,
+    #[prost(uint64, tag="2")]
+    pub max_sidechains: u64,
+    #[prost(uint64, tag="3")]
+    pub max_paychains: u64,
+    #[prost(uint64, tag="4")]
+    pub min_anchor_interval: u64,
+    #[prost(uint64, tag="5")]
+    pub max_anchor_interval: u64,
+    /// default_challenge_period is in seconds.
+    #[prost(uint64, tag="6")]
+    pub default_challenge_period: u64,
+    /// min_sidechain_stake and min_paychain_stake are uqor amounts.
+    #[prost(string, tag="7")]
+    pub min_sidechain_stake: ::prost::alloc::string::String,
+    #[prost(string, tag="8")]
+    pub min_paychain_stake: ::prost::alloc::string::String,
+    #[prost(bool, tag="9")]
+    pub routing_enabled: bool,
+    /// routing_confidence_threshold is a decimal between 0 and 1.
+    #[prost(string, tag="10")]
+    pub routing_confidence_threshold: ::prost::alloc::string::String,
+    #[prost(bool, tag="11")]
+    pub cross_layer_fee_bundling: bool,
+}
+#[derive(Clone, Copy, PartialEq, ::prost::Message)]
+pub struct MsgUpdateParamsResponse {
+}
 // @@protoc_insertion_point(module)

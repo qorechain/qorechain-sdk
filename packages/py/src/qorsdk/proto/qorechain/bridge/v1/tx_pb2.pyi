@@ -169,3 +169,19 @@ class MsgUpdateEthLightClient(_message.Message):
 class MsgUpdateEthLightClientResponse(_message.Message):
     __slots__ = ()
     def __init__(self) -> None: ...
+
+class MsgUpdateCircuitBreakerLimits(_message.Message):
+    __slots__ = ("admin", "chain_id", "max_single_transfer", "daily_limit")
+    ADMIN_FIELD_NUMBER: _ClassVar[int]
+    CHAIN_ID_FIELD_NUMBER: _ClassVar[int]
+    MAX_SINGLE_TRANSFER_FIELD_NUMBER: _ClassVar[int]
+    DAILY_LIMIT_FIELD_NUMBER: _ClassVar[int]
+    admin: str
+    chain_id: str
+    max_single_transfer: str
+    daily_limit: str
+    def __init__(self, admin: _Optional[str] = ..., chain_id: _Optional[str] = ..., max_single_transfer: _Optional[str] = ..., daily_limit: _Optional[str] = ...) -> None: ...
+
+class MsgUpdateCircuitBreakerLimitsResponse(_message.Message):
+    __slots__ = ()
+    def __init__(self) -> None: ...

@@ -19,6 +19,39 @@ pub struct PqcHybridSignature {
     pub pqc_public_key: ::prost::alloc::vec::Vec<u8>,
 }
 #[derive(Clone, PartialEq, ::prost::Message)]
+pub struct QueryEvmDelegationConsentRequest {
+    /// address is bech32 or 0x-prefixed hex.
+    #[prost(string, tag="1")]
+    pub address: ::prost::alloc::string::String,
+}
+#[derive(Clone, PartialEq, ::prost::Message)]
+pub struct QueryEvmDelegationConsentResponse {
+    /// found reports whether a consent is stored; live whether it is still usable
+    /// at the current height.
+    #[prost(bool, tag="1")]
+    pub found: bool,
+    #[prost(bool, tag="2")]
+    pub live: bool,
+    /// delegate is the 0x address the consent names; the zero address means
+    /// clearing.
+    #[prost(string, tag="3")]
+    pub delegate: ::prost::alloc::string::String,
+    #[prost(uint64, tag="4")]
+    pub granted_height: u64,
+    #[prost(uint64, tag="5")]
+    pub expiry_height: u64,
+    /// current_delegate is the delegation installed on the account now, empty
+    /// when there is none.
+    #[prost(string, tag="6")]
+    pub current_delegate: ::prost::alloc::string::String,
+    /// nonce is the account's EVM nonce now. A tuple signed for a sponsored
+    /// transaction carries it; one in the account's own type-4 transaction
+    /// carries it plus one, because the transaction's own nonce is consumed
+    /// first.
+    #[prost(uint64, tag="7")]
+    pub nonce: u64,
+}
+#[derive(Clone, PartialEq, ::prost::Message)]
 pub struct QueryEvmWindowRequest {
     #[prost(string, tag="1")]
     pub address: ::prost::alloc::string::String,
@@ -89,6 +122,11 @@ pub struct PqcAccountView {
     pub migration_public_key: ::prost::alloc::vec::Vec<u8>,
     #[prost(uint32, tag="9")]
     pub migration_algorithm_id: u32,
+    /// classical_key_source says where ecdsa_pubkey comes from: "stored" (the key
+    /// given at registration), "auth_account" (nothing was stored, so this is the
+    /// account's on-chain public key) or "none" (neither exists yet).
+    #[prost(string, tag="10")]
+    pub classical_key_source: ::prost::alloc::string::String,
 }
 /// MsgRegisterPQCKey registers a PQC keypair for an account.
 /// Deprecated: use MsgRegisterPQCKeyV2 which includes algorithm_id.
@@ -224,5 +262,35 @@ pub struct MsgCloseEvmWindow {
 }
 #[derive(Clone, Copy, PartialEq, ::prost::Message)]
 pub struct MsgCloseEvmWindowResponse {
+}
+/// MsgAuthorizeEVMDelegation is the account's post-quantum consent to one
+/// EIP-7702 delegation of its own account. It is single-use, bounded in time,
+/// replaces any earlier consent, and is revoked by MsgCloseEVMWindow.
+#[derive(Clone, PartialEq, ::prost::Message)]
+pub struct MsgAuthorizeEvmDelegation {
+    #[prost(string, tag="1")]
+    pub sender: ::prost::alloc::string::String,
+    /// delegate is the 0x-prefixed 20-byte address the authorization tuple
+    /// names. The zero address consents to clearing the delegation.
+    #[prost(string, tag="2")]
+    pub delegate: ::prost::alloc::string::String,
+    /// blocks is how long the consent stays usable, counted from the block that
+    /// records it. Bounded by the module's maximum.
+    #[prost(uint64, tag="3")]
+    pub blocks: u64,
+}
+#[derive(Clone, Copy, PartialEq, ::prost::Message)]
+pub struct MsgAuthorizeEvmDelegationResponse {
+    #[prost(uint64, tag="1")]
+    pub expiry_height: u64,
+}
+/// MsgClearEVMDelegation removes the sender's EIP-7702 delegation designator.
+#[derive(Clone, PartialEq, ::prost::Message)]
+pub struct MsgClearEvmDelegation {
+    #[prost(string, tag="1")]
+    pub sender: ::prost::alloc::string::String,
+}
+#[derive(Clone, Copy, PartialEq, ::prost::Message)]
+pub struct MsgClearEvmDelegationResponse {
 }
 // @@protoc_insertion_point(module)

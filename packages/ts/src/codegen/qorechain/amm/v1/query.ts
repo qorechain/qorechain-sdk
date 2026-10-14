@@ -90,6 +90,12 @@ export interface QueryQuoteExactInRequest {
 export interface QueryQuoteExactInResponse {
   amountOut: string;
   fee: string;
+  /**
+   * impact_bps is how far the quoted execution price falls below the pool's
+   * current marginal price, in basis points (v3.2.2; 0 before it). A trade
+   * over max_swap_impact_bps is refused with ErrPriceImpactExceeded instead.
+   */
+  impactBps: number;
 }
 
 export interface QueryQuoteExactOutRequest {
@@ -101,6 +107,8 @@ export interface QueryQuoteExactOutRequest {
 export interface QueryQuoteExactOutResponse {
   amountIn: string;
   fee: string;
+  /** impact_bps: see QueryQuoteExactInResponse. */
+  impactBps: number;
 }
 
 function createBaseParamsView(): ParamsView {
@@ -1329,7 +1337,7 @@ export const QueryQuoteExactInRequest: MessageFns<QueryQuoteExactInRequest> = {
 };
 
 function createBaseQueryQuoteExactInResponse(): QueryQuoteExactInResponse {
-  return { amountOut: "", fee: "" };
+  return { amountOut: "", fee: "", impactBps: 0 };
 }
 
 export const QueryQuoteExactInResponse: MessageFns<QueryQuoteExactInResponse> = {
@@ -1339,6 +1347,9 @@ export const QueryQuoteExactInResponse: MessageFns<QueryQuoteExactInResponse> = 
     }
     if (message.fee !== "") {
       writer.uint32(18).string(message.fee);
+    }
+    if (message.impactBps !== 0) {
+      writer.uint32(24).uint32(message.impactBps);
     }
     return writer;
   },
@@ -1366,6 +1377,14 @@ export const QueryQuoteExactInResponse: MessageFns<QueryQuoteExactInResponse> = 
           message.fee = reader.string();
           continue;
         }
+        case 3: {
+          if (tag !== 24) {
+            break;
+          }
+
+          message.impactBps = reader.uint32();
+          continue;
+        }
       }
       if ((tag & 7) === 4 || tag === 0) {
         break;
@@ -1383,6 +1402,11 @@ export const QueryQuoteExactInResponse: MessageFns<QueryQuoteExactInResponse> = 
         ? globalThis.String(object.amount_out)
         : "",
       fee: isSet(object.fee) ? globalThis.String(object.fee) : "",
+      impactBps: isSet(object.impactBps)
+        ? globalThis.Number(object.impactBps)
+        : isSet(object.impact_bps)
+        ? globalThis.Number(object.impact_bps)
+        : 0,
     };
   },
 
@@ -1394,6 +1418,9 @@ export const QueryQuoteExactInResponse: MessageFns<QueryQuoteExactInResponse> = 
     if (message.fee !== "") {
       obj.fee = message.fee;
     }
+    if (message.impactBps !== 0) {
+      obj.impactBps = Math.round(message.impactBps);
+    }
     return obj;
   },
 
@@ -1404,6 +1431,7 @@ export const QueryQuoteExactInResponse: MessageFns<QueryQuoteExactInResponse> = 
     const message = createBaseQueryQuoteExactInResponse();
     message.amountOut = object.amountOut ?? "";
     message.fee = object.fee ?? "";
+    message.impactBps = object.impactBps ?? 0;
     return message;
   },
 };
@@ -1513,7 +1541,7 @@ export const QueryQuoteExactOutRequest: MessageFns<QueryQuoteExactOutRequest> = 
 };
 
 function createBaseQueryQuoteExactOutResponse(): QueryQuoteExactOutResponse {
-  return { amountIn: "", fee: "" };
+  return { amountIn: "", fee: "", impactBps: 0 };
 }
 
 export const QueryQuoteExactOutResponse: MessageFns<QueryQuoteExactOutResponse> = {
@@ -1523,6 +1551,9 @@ export const QueryQuoteExactOutResponse: MessageFns<QueryQuoteExactOutResponse> 
     }
     if (message.fee !== "") {
       writer.uint32(18).string(message.fee);
+    }
+    if (message.impactBps !== 0) {
+      writer.uint32(24).uint32(message.impactBps);
     }
     return writer;
   },
@@ -1550,6 +1581,14 @@ export const QueryQuoteExactOutResponse: MessageFns<QueryQuoteExactOutResponse> 
           message.fee = reader.string();
           continue;
         }
+        case 3: {
+          if (tag !== 24) {
+            break;
+          }
+
+          message.impactBps = reader.uint32();
+          continue;
+        }
       }
       if ((tag & 7) === 4 || tag === 0) {
         break;
@@ -1567,6 +1606,11 @@ export const QueryQuoteExactOutResponse: MessageFns<QueryQuoteExactOutResponse> 
         ? globalThis.String(object.amount_in)
         : "",
       fee: isSet(object.fee) ? globalThis.String(object.fee) : "",
+      impactBps: isSet(object.impactBps)
+        ? globalThis.Number(object.impactBps)
+        : isSet(object.impact_bps)
+        ? globalThis.Number(object.impact_bps)
+        : 0,
     };
   },
 
@@ -1578,6 +1622,9 @@ export const QueryQuoteExactOutResponse: MessageFns<QueryQuoteExactOutResponse> 
     if (message.fee !== "") {
       obj.fee = message.fee;
     }
+    if (message.impactBps !== 0) {
+      obj.impactBps = Math.round(message.impactBps);
+    }
     return obj;
   },
 
@@ -1588,6 +1635,7 @@ export const QueryQuoteExactOutResponse: MessageFns<QueryQuoteExactOutResponse> 
     const message = createBaseQueryQuoteExactOutResponse();
     message.amountIn = object.amountIn ?? "";
     message.fee = object.fee ?? "";
+    message.impactBps = object.impactBps ?? 0;
     return message;
   },
 };

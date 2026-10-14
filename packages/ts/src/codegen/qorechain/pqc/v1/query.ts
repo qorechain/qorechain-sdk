@@ -9,6 +9,39 @@ import { BinaryReader, BinaryWriter } from "@bufbuild/protobuf/wire";
 
 export const protobufPackage = "qorechain.pqc.v1";
 
+export interface QueryEVMDelegationConsentRequest {
+  /** address is bech32 or 0x-prefixed hex. */
+  address: string;
+}
+
+export interface QueryEVMDelegationConsentResponse {
+  /**
+   * found reports whether a consent is stored; live whether it is still usable
+   * at the current height.
+   */
+  found: boolean;
+  live: boolean;
+  /**
+   * delegate is the 0x address the consent names; the zero address means
+   * clearing.
+   */
+  delegate: string;
+  grantedHeight: string;
+  expiryHeight: string;
+  /**
+   * current_delegate is the delegation installed on the account now, empty
+   * when there is none.
+   */
+  currentDelegate: string;
+  /**
+   * nonce is the account's EVM nonce now. A tuple signed for a sponsored
+   * transaction carries it; one in the account's own type-4 transaction
+   * carries it plus one, because the transaction's own nonce is consumed
+   * first.
+   */
+  nonce: string;
+}
+
 export interface QueryEVMWindowRequest {
   address: string;
 }
@@ -61,7 +94,247 @@ export interface PQCAccountView {
   createdAtHeight: string;
   migrationPublicKey: Uint8Array;
   migrationAlgorithmId: number;
+  /**
+   * classical_key_source says where ecdsa_pubkey comes from: "stored" (the key
+   * given at registration), "auth_account" (nothing was stored, so this is the
+   * account's on-chain public key) or "none" (neither exists yet).
+   */
+  classicalKeySource: string;
 }
+
+function createBaseQueryEVMDelegationConsentRequest(): QueryEVMDelegationConsentRequest {
+  return { address: "" };
+}
+
+export const QueryEVMDelegationConsentRequest: MessageFns<QueryEVMDelegationConsentRequest> = {
+  encode(message: QueryEVMDelegationConsentRequest, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.address !== "") {
+      writer.uint32(10).string(message.address);
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): QueryEVMDelegationConsentRequest {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseQueryEVMDelegationConsentRequest();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.address = reader.string();
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(object: any): QueryEVMDelegationConsentRequest {
+    return { address: isSet(object.address) ? globalThis.String(object.address) : "" };
+  },
+
+  toJSON(message: QueryEVMDelegationConsentRequest): unknown {
+    const obj: any = {};
+    if (message.address !== "") {
+      obj.address = message.address;
+    }
+    return obj;
+  },
+
+  create(base?: DeepPartial<QueryEVMDelegationConsentRequest>): QueryEVMDelegationConsentRequest {
+    return QueryEVMDelegationConsentRequest.fromPartial(base ?? {});
+  },
+  fromPartial(object: DeepPartial<QueryEVMDelegationConsentRequest>): QueryEVMDelegationConsentRequest {
+    const message = createBaseQueryEVMDelegationConsentRequest();
+    message.address = object.address ?? "";
+    return message;
+  },
+};
+
+function createBaseQueryEVMDelegationConsentResponse(): QueryEVMDelegationConsentResponse {
+  return {
+    found: false,
+    live: false,
+    delegate: "",
+    grantedHeight: "0",
+    expiryHeight: "0",
+    currentDelegate: "",
+    nonce: "0",
+  };
+}
+
+export const QueryEVMDelegationConsentResponse: MessageFns<QueryEVMDelegationConsentResponse> = {
+  encode(message: QueryEVMDelegationConsentResponse, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.found !== false) {
+      writer.uint32(8).bool(message.found);
+    }
+    if (message.live !== false) {
+      writer.uint32(16).bool(message.live);
+    }
+    if (message.delegate !== "") {
+      writer.uint32(26).string(message.delegate);
+    }
+    if (message.grantedHeight !== "0") {
+      writer.uint32(32).uint64(message.grantedHeight);
+    }
+    if (message.expiryHeight !== "0") {
+      writer.uint32(40).uint64(message.expiryHeight);
+    }
+    if (message.currentDelegate !== "") {
+      writer.uint32(50).string(message.currentDelegate);
+    }
+    if (message.nonce !== "0") {
+      writer.uint32(56).uint64(message.nonce);
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): QueryEVMDelegationConsentResponse {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseQueryEVMDelegationConsentResponse();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 8) {
+            break;
+          }
+
+          message.found = reader.bool();
+          continue;
+        }
+        case 2: {
+          if (tag !== 16) {
+            break;
+          }
+
+          message.live = reader.bool();
+          continue;
+        }
+        case 3: {
+          if (tag !== 26) {
+            break;
+          }
+
+          message.delegate = reader.string();
+          continue;
+        }
+        case 4: {
+          if (tag !== 32) {
+            break;
+          }
+
+          message.grantedHeight = reader.uint64().toString();
+          continue;
+        }
+        case 5: {
+          if (tag !== 40) {
+            break;
+          }
+
+          message.expiryHeight = reader.uint64().toString();
+          continue;
+        }
+        case 6: {
+          if (tag !== 50) {
+            break;
+          }
+
+          message.currentDelegate = reader.string();
+          continue;
+        }
+        case 7: {
+          if (tag !== 56) {
+            break;
+          }
+
+          message.nonce = reader.uint64().toString();
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(object: any): QueryEVMDelegationConsentResponse {
+    return {
+      found: isSet(object.found) ? globalThis.Boolean(object.found) : false,
+      live: isSet(object.live) ? globalThis.Boolean(object.live) : false,
+      delegate: isSet(object.delegate) ? globalThis.String(object.delegate) : "",
+      grantedHeight: isSet(object.grantedHeight)
+        ? globalThis.String(object.grantedHeight)
+        : isSet(object.granted_height)
+        ? globalThis.String(object.granted_height)
+        : "0",
+      expiryHeight: isSet(object.expiryHeight)
+        ? globalThis.String(object.expiryHeight)
+        : isSet(object.expiry_height)
+        ? globalThis.String(object.expiry_height)
+        : "0",
+      currentDelegate: isSet(object.currentDelegate)
+        ? globalThis.String(object.currentDelegate)
+        : isSet(object.current_delegate)
+        ? globalThis.String(object.current_delegate)
+        : "",
+      nonce: isSet(object.nonce) ? globalThis.String(object.nonce) : "0",
+    };
+  },
+
+  toJSON(message: QueryEVMDelegationConsentResponse): unknown {
+    const obj: any = {};
+    if (message.found !== false) {
+      obj.found = message.found;
+    }
+    if (message.live !== false) {
+      obj.live = message.live;
+    }
+    if (message.delegate !== "") {
+      obj.delegate = message.delegate;
+    }
+    if (message.grantedHeight !== "0") {
+      obj.grantedHeight = message.grantedHeight;
+    }
+    if (message.expiryHeight !== "0") {
+      obj.expiryHeight = message.expiryHeight;
+    }
+    if (message.currentDelegate !== "") {
+      obj.currentDelegate = message.currentDelegate;
+    }
+    if (message.nonce !== "0") {
+      obj.nonce = message.nonce;
+    }
+    return obj;
+  },
+
+  create(base?: DeepPartial<QueryEVMDelegationConsentResponse>): QueryEVMDelegationConsentResponse {
+    return QueryEVMDelegationConsentResponse.fromPartial(base ?? {});
+  },
+  fromPartial(object: DeepPartial<QueryEVMDelegationConsentResponse>): QueryEVMDelegationConsentResponse {
+    const message = createBaseQueryEVMDelegationConsentResponse();
+    message.found = object.found ?? false;
+    message.live = object.live ?? false;
+    message.delegate = object.delegate ?? "";
+    message.grantedHeight = object.grantedHeight ?? "0";
+    message.expiryHeight = object.expiryHeight ?? "0";
+    message.currentDelegate = object.currentDelegate ?? "";
+    message.nonce = object.nonce ?? "0";
+    return message;
+  },
+};
 
 function createBaseQueryEVMWindowRequest(): QueryEVMWindowRequest {
   return { address: "" };
@@ -536,6 +809,7 @@ function createBasePQCAccountView(): PQCAccountView {
     createdAtHeight: "0",
     migrationPublicKey: new Uint8Array(0),
     migrationAlgorithmId: 0,
+    classicalKeySource: "",
   };
 }
 
@@ -567,6 +841,9 @@ export const PQCAccountView: MessageFns<PQCAccountView> = {
     }
     if (message.migrationAlgorithmId !== 0) {
       writer.uint32(72).uint32(message.migrationAlgorithmId);
+    }
+    if (message.classicalKeySource !== "") {
+      writer.uint32(82).string(message.classicalKeySource);
     }
     return writer;
   },
@@ -650,6 +927,14 @@ export const PQCAccountView: MessageFns<PQCAccountView> = {
           message.migrationAlgorithmId = reader.uint32();
           continue;
         }
+        case 10: {
+          if (tag !== 82) {
+            break;
+          }
+
+          message.classicalKeySource = reader.string();
+          continue;
+        }
       }
       if ((tag & 7) === 4 || tag === 0) {
         break;
@@ -702,6 +987,11 @@ export const PQCAccountView: MessageFns<PQCAccountView> = {
         : isSet(object.migration_algorithm_id)
         ? globalThis.Number(object.migration_algorithm_id)
         : 0,
+      classicalKeySource: isSet(object.classicalKeySource)
+        ? globalThis.String(object.classicalKeySource)
+        : isSet(object.classical_key_source)
+        ? globalThis.String(object.classical_key_source)
+        : "",
     };
   },
 
@@ -734,6 +1024,9 @@ export const PQCAccountView: MessageFns<PQCAccountView> = {
     if (message.migrationAlgorithmId !== 0) {
       obj.migrationAlgorithmId = Math.round(message.migrationAlgorithmId);
     }
+    if (message.classicalKeySource !== "") {
+      obj.classicalKeySource = message.classicalKeySource;
+    }
     return obj;
   },
 
@@ -751,6 +1044,7 @@ export const PQCAccountView: MessageFns<PQCAccountView> = {
     message.createdAtHeight = object.createdAtHeight ?? "0";
     message.migrationPublicKey = object.migrationPublicKey ?? new Uint8Array(0);
     message.migrationAlgorithmId = object.migrationAlgorithmId ?? 0;
+    message.classicalKeySource = object.classicalKeySource ?? "";
     return message;
   },
 };
@@ -860,6 +1154,79 @@ export const QueryDefinition = {
               100,
               111,
               119,
+              47,
+              123,
+              97,
+              100,
+              100,
+              114,
+              101,
+              115,
+              115,
+              125,
+            ]) as Uint8Array,
+          ],
+        },
+      },
+    },
+    /**
+     * EVMDelegationConsent returns an address's EIP-7702 delegation consent, if
+     * any, together with what a client needs to sign the matching authorization
+     * tuple: the account's current delegation and EVM nonce.
+     */
+    eVMDelegationConsent: {
+      name: "EVMDelegationConsent",
+      requestType: QueryEVMDelegationConsentRequest as typeof QueryEVMDelegationConsentRequest,
+      requestStream: false,
+      responseType: QueryEVMDelegationConsentResponse as typeof QueryEVMDelegationConsentResponse,
+      responseStream: false,
+      options: {
+        _unknownFields: {
+          578365826: [
+            new Uint8Array([
+              52,
+              18,
+              50,
+              47,
+              113,
+              111,
+              114,
+              101,
+              99,
+              104,
+              97,
+              105,
+              110,
+              47,
+              112,
+              113,
+              99,
+              47,
+              118,
+              49,
+              47,
+              101,
+              118,
+              109,
+              95,
+              100,
+              101,
+              108,
+              101,
+              103,
+              97,
+              116,
+              105,
+              111,
+              110,
+              95,
+              99,
+              111,
+              110,
+              115,
+              101,
+              110,
+              116,
               47,
               123,
               97,

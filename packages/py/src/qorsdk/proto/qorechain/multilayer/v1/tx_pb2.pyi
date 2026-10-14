@@ -153,3 +153,33 @@ class MsgChallengeAnchorResponse(_message.Message):
     challenge_accepted: bool
     resolution: str
     def __init__(self, challenge_accepted: bool = ..., resolution: _Optional[str] = ...) -> None: ...
+
+class MsgUpdateParams(_message.Message):
+    __slots__ = ("authority", "max_sidechains", "max_paychains", "min_anchor_interval", "max_anchor_interval", "default_challenge_period", "min_sidechain_stake", "min_paychain_stake", "routing_enabled", "routing_confidence_threshold", "cross_layer_fee_bundling")
+    AUTHORITY_FIELD_NUMBER: _ClassVar[int]
+    MAX_SIDECHAINS_FIELD_NUMBER: _ClassVar[int]
+    MAX_PAYCHAINS_FIELD_NUMBER: _ClassVar[int]
+    MIN_ANCHOR_INTERVAL_FIELD_NUMBER: _ClassVar[int]
+    MAX_ANCHOR_INTERVAL_FIELD_NUMBER: _ClassVar[int]
+    DEFAULT_CHALLENGE_PERIOD_FIELD_NUMBER: _ClassVar[int]
+    MIN_SIDECHAIN_STAKE_FIELD_NUMBER: _ClassVar[int]
+    MIN_PAYCHAIN_STAKE_FIELD_NUMBER: _ClassVar[int]
+    ROUTING_ENABLED_FIELD_NUMBER: _ClassVar[int]
+    ROUTING_CONFIDENCE_THRESHOLD_FIELD_NUMBER: _ClassVar[int]
+    CROSS_LAYER_FEE_BUNDLING_FIELD_NUMBER: _ClassVar[int]
+    authority: str
+    max_sidechains: int
+    max_paychains: int
+    min_anchor_interval: int
+    max_anchor_interval: int
+    default_challenge_period: int
+    min_sidechain_stake: str
+    min_paychain_stake: str
+    routing_enabled: bool
+    routing_confidence_threshold: str
+    cross_layer_fee_bundling: bool
+    def __init__(self, authority: _Optional[str] = ..., max_sidechains: _Optional[int] = ..., max_paychains: _Optional[int] = ..., min_anchor_interval: _Optional[int] = ..., max_anchor_interval: _Optional[int] = ..., default_challenge_period: _Optional[int] = ..., min_sidechain_stake: _Optional[str] = ..., min_paychain_stake: _Optional[str] = ..., routing_enabled: bool = ..., routing_confidence_threshold: _Optional[str] = ..., cross_layer_fee_bundling: bool = ...) -> None: ...
+
+class MsgUpdateParamsResponse(_message.Message):
+    __slots__ = ()
+    def __init__(self) -> None: ...

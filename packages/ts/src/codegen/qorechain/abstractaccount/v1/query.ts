@@ -63,11 +63,24 @@ export interface QueryPermissionSchemaResponse {
   msgPermissions: { [key: string]: string };
   /** key_management_msgs are typeURLs that are NEVER delegable to a linked key. */
   keyManagementMsgs: string[];
+  /**
+   * lane_rules (schema_version 2 and later) are permission requirements that
+   * depend on a message's content rather than its type, such as a contract
+   * creation through MsgExecuteEVM needing "deploy".
+   */
+  laneRules: LaneRule[];
 }
 
 export interface QueryPermissionSchemaResponse_MsgPermissionsEntry {
   key: string;
   value: string;
+}
+
+/** LaneRule states that a message matching condition requires permission. */
+export interface LaneRule {
+  msgTypeUrl: string;
+  condition: string;
+  permission: string;
 }
 
 function createBaseConfigView(): ConfigView {
@@ -744,7 +757,7 @@ export const QueryPermissionSchemaRequest: MessageFns<QueryPermissionSchemaReque
 };
 
 function createBaseQueryPermissionSchemaResponse(): QueryPermissionSchemaResponse {
-  return { schemaVersion: "", permissions: [], msgPermissions: {}, keyManagementMsgs: [] };
+  return { schemaVersion: "", permissions: [], msgPermissions: {}, keyManagementMsgs: [], laneRules: [] };
 }
 
 export const QueryPermissionSchemaResponse: MessageFns<QueryPermissionSchemaResponse> = {
@@ -761,6 +774,9 @@ export const QueryPermissionSchemaResponse: MessageFns<QueryPermissionSchemaResp
     });
     for (const v of message.keyManagementMsgs) {
       writer.uint32(34).string(v!);
+    }
+    for (const v of message.laneRules) {
+      LaneRule.encode(v!, writer.uint32(42).fork()).join();
     }
     return writer;
   },
@@ -807,6 +823,14 @@ export const QueryPermissionSchemaResponse: MessageFns<QueryPermissionSchemaResp
           message.keyManagementMsgs.push(reader.string());
           continue;
         }
+        case 5: {
+          if (tag !== 42) {
+            break;
+          }
+
+          message.laneRules.push(LaneRule.decode(reader, reader.uint32()));
+          continue;
+        }
       }
       if ((tag & 7) === 4 || tag === 0) {
         break;
@@ -848,6 +872,11 @@ export const QueryPermissionSchemaResponse: MessageFns<QueryPermissionSchemaResp
         : globalThis.Array.isArray(object?.key_management_msgs)
         ? object.key_management_msgs.map((e: any) => globalThis.String(e))
         : [],
+      laneRules: globalThis.Array.isArray(object?.laneRules)
+        ? object.laneRules.map((e: any) => LaneRule.fromJSON(e))
+        : globalThis.Array.isArray(object?.lane_rules)
+        ? object.lane_rules.map((e: any) => LaneRule.fromJSON(e))
+        : [],
     };
   },
 
@@ -871,6 +900,9 @@ export const QueryPermissionSchemaResponse: MessageFns<QueryPermissionSchemaResp
     if (message.keyManagementMsgs?.length) {
       obj.keyManagementMsgs = message.keyManagementMsgs;
     }
+    if (message.laneRules?.length) {
+      obj.laneRules = message.laneRules.map((e) => LaneRule.toJSON(e));
+    }
     return obj;
   },
 
@@ -891,6 +923,7 @@ export const QueryPermissionSchemaResponse: MessageFns<QueryPermissionSchemaResp
       {},
     );
     message.keyManagementMsgs = object.keyManagementMsgs?.map((e) => e) || [];
+    message.laneRules = object.laneRules?.map((e) => LaneRule.fromPartial(e)) || [];
     return message;
   },
 };
@@ -976,6 +1009,102 @@ export const QueryPermissionSchemaResponse_MsgPermissionsEntry: MessageFns<
     const message = createBaseQueryPermissionSchemaResponse_MsgPermissionsEntry();
     message.key = object.key ?? "";
     message.value = object.value ?? "";
+    return message;
+  },
+};
+
+function createBaseLaneRule(): LaneRule {
+  return { msgTypeUrl: "", condition: "", permission: "" };
+}
+
+export const LaneRule: MessageFns<LaneRule> = {
+  encode(message: LaneRule, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.msgTypeUrl !== "") {
+      writer.uint32(10).string(message.msgTypeUrl);
+    }
+    if (message.condition !== "") {
+      writer.uint32(18).string(message.condition);
+    }
+    if (message.permission !== "") {
+      writer.uint32(26).string(message.permission);
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): LaneRule {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseLaneRule();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.msgTypeUrl = reader.string();
+          continue;
+        }
+        case 2: {
+          if (tag !== 18) {
+            break;
+          }
+
+          message.condition = reader.string();
+          continue;
+        }
+        case 3: {
+          if (tag !== 26) {
+            break;
+          }
+
+          message.permission = reader.string();
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(object: any): LaneRule {
+    return {
+      msgTypeUrl: isSet(object.msgTypeUrl)
+        ? globalThis.String(object.msgTypeUrl)
+        : isSet(object.msg_type_url)
+        ? globalThis.String(object.msg_type_url)
+        : "",
+      condition: isSet(object.condition) ? globalThis.String(object.condition) : "",
+      permission: isSet(object.permission) ? globalThis.String(object.permission) : "",
+    };
+  },
+
+  toJSON(message: LaneRule): unknown {
+    const obj: any = {};
+    if (message.msgTypeUrl !== "") {
+      obj.msgTypeUrl = message.msgTypeUrl;
+    }
+    if (message.condition !== "") {
+      obj.condition = message.condition;
+    }
+    if (message.permission !== "") {
+      obj.permission = message.permission;
+    }
+    return obj;
+  },
+
+  create(base?: DeepPartial<LaneRule>): LaneRule {
+    return LaneRule.fromPartial(base ?? {});
+  },
+  fromPartial(object: DeepPartial<LaneRule>): LaneRule {
+    const message = createBaseLaneRule();
+    message.msgTypeUrl = object.msgTypeUrl ?? "";
+    message.condition = object.condition ?? "";
+    message.permission = object.permission ?? "";
     return message;
   },
 };

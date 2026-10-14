@@ -25,7 +25,7 @@ _sym_db = _symbol_database.Default()
 from google.api import annotations_pb2 as google_dot_api_dot_annotations__pb2
 
 
-DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n qorechain/license/v1/query.proto\x12\x14qorechain.license.v1\x1a\x1cgoogle/api/annotations.proto\"\xdd\x01\n\x0bLicenseView\x12\x18\n\x07grantee\x18\x01 \x01(\tR\x07grantee\x12\x1d\n\nfeature_id\x18\x02 \x01(\tR\tfeatureId\x12\x1d\n\nexpires_at\x18\x03 \x01(\x03R\texpiresAt\x12\x1d\n\ngranted_at\x18\x04 \x01(\x03R\tgrantedAt\x12\x1d\n\ngranted_by\x18\x05 \x01(\tR\tgrantedBy\x12\x1c\n\tsuspended\x18\x06 \x01(\x08R\tsuspended\x12\x1a\n\x08metadata\x18\x07 \x01(\tR\x08metadata\"L\n\x11QueryCheckRequest\x12\x18\n\x07grantee\x18\x01 \x01(\tR\x07grantee\x12\x1d\n\nfeature_id\x18\x02 \x01(\tR\tfeatureId\"i\n\x12QueryCheckResponse\x12;\n\x07license\x18\x01 \x01(\x0b\x32!.qorechain.license.v1.LicenseViewR\x07license\x12\x16\n\x06\x61\x63tive\x18\x02 \x01(\x08R\x06\x61\x63tive\"4\n\x13QueryHoldersRequest\x12\x1d\n\nfeature_id\x18\x01 \x01(\tR\tfeatureId\"U\n\x14QueryHoldersResponse\x12=\n\x08licenses\x18\x01 \x03(\x0b\x32!.qorechain.license.v1.LicenseViewR\x08licenses\",\n\x10QueryListRequest\x12\x18\n\x07grantee\x18\x01 \x01(\tR\x07grantee\"R\n\x11QueryListResponse\x12=\n\x08licenses\x18\x01 \x03(\x0b\x32!.qorechain.license.v1.LicenseViewR\x08licenses2\xbf\x03\n\x05Query\x12\x96\x01\n\x05\x43heck\x12\'.qorechain.license.v1.QueryCheckRequest\x1a(.qorechain.license.v1.QueryCheckResponse\":\x82\xd3\xe4\x93\x02\x34\x12\x32/qorechain/license/v1/check/{grantee}/{feature_id}\x12\x94\x01\n\x07Holders\x12).qorechain.license.v1.QueryHoldersRequest\x1a*.qorechain.license.v1.QueryHoldersResponse\"2\x82\xd3\xe4\x93\x02,\x12*/qorechain/license/v1/holders/{feature_id}\x12\x85\x01\n\x04List\x12&.qorechain.license.v1.QueryListRequest\x1a\'.qorechain.license.v1.QueryListResponse\",\x82\xd3\xe4\x93\x02&\x12$/qorechain/license/v1/list/{grantee}B\xcd\x01\n\x18\x63om.qorechain.license.v1B\nQueryProtoP\x01Z3github.com/qorechain/qorechain-core/x/license/types\xa2\x02\x03QLX\xaa\x02\x14Qorechain.License.V1\xca\x02\x14Qorechain\\License\\V1\xe2\x02 Qorechain\\License\\V1\\GPBMetadata\xea\x02\x16Qorechain::License::V1b\x06proto3')
+DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n qorechain/license/v1/query.proto\x12\x14qorechain.license.v1\x1a\x1cgoogle/api/annotations.proto\"\xf5\x01\n\x0bLicenseView\x12\x18\n\x07grantee\x18\x01 \x01(\tR\x07grantee\x12\x1d\n\nfeature_id\x18\x02 \x01(\tR\tfeatureId\x12\x1d\n\nexpires_at\x18\x03 \x01(\x03R\texpiresAt\x12\x1d\n\ngranted_at\x18\x04 \x01(\x03R\tgrantedAt\x12\x1d\n\ngranted_by\x18\x05 \x01(\tR\tgrantedBy\x12\x1c\n\tsuspended\x18\x06 \x01(\x08R\tsuspended\x12\x1a\n\x08metadata\x18\x07 \x01(\tR\x08metadata\x12\x16\n\x06\x61\x63tive\x18\x08 \x01(\x08R\x06\x61\x63tive\"L\n\x11QueryCheckRequest\x12\x18\n\x07grantee\x18\x01 \x01(\tR\x07grantee\x12\x1d\n\nfeature_id\x18\x02 \x01(\tR\tfeatureId\"i\n\x12QueryCheckResponse\x12;\n\x07license\x18\x01 \x01(\x0b\x32!.qorechain.license.v1.LicenseViewR\x07license\x12\x16\n\x06\x61\x63tive\x18\x02 \x01(\x08R\x06\x61\x63tive\"4\n\x13QueryHoldersRequest\x12\x1d\n\nfeature_id\x18\x01 \x01(\tR\tfeatureId\"U\n\x14QueryHoldersResponse\x12=\n\x08licenses\x18\x01 \x03(\x0b\x32!.qorechain.license.v1.LicenseViewR\x08licenses\",\n\x10QueryListRequest\x12\x18\n\x07grantee\x18\x01 \x01(\tR\x07grantee\"R\n\x11QueryListResponse\x12=\n\x08licenses\x18\x01 \x03(\x0b\x32!.qorechain.license.v1.LicenseViewR\x08licenses2\xbf\x03\n\x05Query\x12\x96\x01\n\x05\x43heck\x12\'.qorechain.license.v1.QueryCheckRequest\x1a(.qorechain.license.v1.QueryCheckResponse\":\x82\xd3\xe4\x93\x02\x34\x12\x32/qorechain/license/v1/check/{grantee}/{feature_id}\x12\x94\x01\n\x07Holders\x12).qorechain.license.v1.QueryHoldersRequest\x1a*.qorechain.license.v1.QueryHoldersResponse\"2\x82\xd3\xe4\x93\x02,\x12*/qorechain/license/v1/holders/{feature_id}\x12\x85\x01\n\x04List\x12&.qorechain.license.v1.QueryListRequest\x1a\'.qorechain.license.v1.QueryListResponse\",\x82\xd3\xe4\x93\x02&\x12$/qorechain/license/v1/list/{grantee}B\xcd\x01\n\x18\x63om.qorechain.license.v1B\nQueryProtoP\x01Z3github.com/qorechain/qorechain-core/x/license/types\xa2\x02\x03QLX\xaa\x02\x14Qorechain.License.V1\xca\x02\x14Qorechain\\License\\V1\xe2\x02 Qorechain\\License\\V1\\GPBMetadata\xea\x02\x16Qorechain::License::V1b\x06proto3')
 
 _globals = globals()
 _builder.BuildMessageAndEnumDescriptors(DESCRIPTOR, _globals)
@@ -40,19 +40,19 @@ if not _descriptor._USE_C_DESCRIPTORS:
   _globals['_QUERY'].methods_by_name['List']._loaded_options = None
   _globals['_QUERY'].methods_by_name['List']._serialized_options = b'\202\323\344\223\002&\022$/qorechain/license/v1/list/{grantee}'
   _globals['_LICENSEVIEW']._serialized_start=89
-  _globals['_LICENSEVIEW']._serialized_end=310
-  _globals['_QUERYCHECKREQUEST']._serialized_start=312
-  _globals['_QUERYCHECKREQUEST']._serialized_end=388
-  _globals['_QUERYCHECKRESPONSE']._serialized_start=390
-  _globals['_QUERYCHECKRESPONSE']._serialized_end=495
-  _globals['_QUERYHOLDERSREQUEST']._serialized_start=497
-  _globals['_QUERYHOLDERSREQUEST']._serialized_end=549
-  _globals['_QUERYHOLDERSRESPONSE']._serialized_start=551
-  _globals['_QUERYHOLDERSRESPONSE']._serialized_end=636
-  _globals['_QUERYLISTREQUEST']._serialized_start=638
-  _globals['_QUERYLISTREQUEST']._serialized_end=682
-  _globals['_QUERYLISTRESPONSE']._serialized_start=684
-  _globals['_QUERYLISTRESPONSE']._serialized_end=766
-  _globals['_QUERY']._serialized_start=769
-  _globals['_QUERY']._serialized_end=1216
+  _globals['_LICENSEVIEW']._serialized_end=334
+  _globals['_QUERYCHECKREQUEST']._serialized_start=336
+  _globals['_QUERYCHECKREQUEST']._serialized_end=412
+  _globals['_QUERYCHECKRESPONSE']._serialized_start=414
+  _globals['_QUERYCHECKRESPONSE']._serialized_end=519
+  _globals['_QUERYHOLDERSREQUEST']._serialized_start=521
+  _globals['_QUERYHOLDERSREQUEST']._serialized_end=573
+  _globals['_QUERYHOLDERSRESPONSE']._serialized_start=575
+  _globals['_QUERYHOLDERSRESPONSE']._serialized_end=660
+  _globals['_QUERYLISTREQUEST']._serialized_start=662
+  _globals['_QUERYLISTREQUEST']._serialized_end=706
+  _globals['_QUERYLISTRESPONSE']._serialized_start=708
+  _globals['_QUERYLISTRESPONSE']._serialized_end=790
+  _globals['_QUERY']._serialized_start=793
+  _globals['_QUERY']._serialized_end=1240
 # @@protoc_insertion_point(module_scope)

@@ -10,18 +10,32 @@ from typing import ClassVar as _ClassVar, Iterable as _Iterable, Mapping as _Map
 DESCRIPTOR: _descriptor.FileDescriptor
 
 class SpendingRule(_message.Message):
-    __slots__ = ("id", "daily_limit", "per_tx_limit", "allowed_denoms", "enabled")
+    __slots__ = ("id", "daily_limit", "per_tx_limit", "allowed_denoms", "enabled", "allowed_evm_calls", "denom_limits")
     ID_FIELD_NUMBER: _ClassVar[int]
     DAILY_LIMIT_FIELD_NUMBER: _ClassVar[int]
     PER_TX_LIMIT_FIELD_NUMBER: _ClassVar[int]
     ALLOWED_DENOMS_FIELD_NUMBER: _ClassVar[int]
     ENABLED_FIELD_NUMBER: _ClassVar[int]
+    ALLOWED_EVM_CALLS_FIELD_NUMBER: _ClassVar[int]
+    DENOM_LIMITS_FIELD_NUMBER: _ClassVar[int]
     id: str
     daily_limit: int
     per_tx_limit: int
     allowed_denoms: _containers.RepeatedScalarFieldContainer[str]
     enabled: bool
-    def __init__(self, id: _Optional[str] = ..., daily_limit: _Optional[int] = ..., per_tx_limit: _Optional[int] = ..., allowed_denoms: _Optional[_Iterable[str]] = ..., enabled: bool = ...) -> None: ...
+    allowed_evm_calls: _containers.RepeatedScalarFieldContainer[str]
+    denom_limits: _containers.RepeatedCompositeFieldContainer[DenomLimit]
+    def __init__(self, id: _Optional[str] = ..., daily_limit: _Optional[int] = ..., per_tx_limit: _Optional[int] = ..., allowed_denoms: _Optional[_Iterable[str]] = ..., enabled: bool = ..., allowed_evm_calls: _Optional[_Iterable[str]] = ..., denom_limits: _Optional[_Iterable[_Union[DenomLimit, _Mapping]]] = ...) -> None: ...
+
+class DenomLimit(_message.Message):
+    __slots__ = ("denom", "per_tx_limit", "daily_limit")
+    DENOM_FIELD_NUMBER: _ClassVar[int]
+    PER_TX_LIMIT_FIELD_NUMBER: _ClassVar[int]
+    DAILY_LIMIT_FIELD_NUMBER: _ClassVar[int]
+    denom: str
+    per_tx_limit: str
+    daily_limit: str
+    def __init__(self, denom: _Optional[str] = ..., per_tx_limit: _Optional[str] = ..., daily_limit: _Optional[str] = ...) -> None: ...
 
 class MsgCreateAbstractAccount(_message.Message):
     __slots__ = ("owner", "account_type")

@@ -9356,6 +9356,2158 @@ public final class Tx extends com.google.protobuf.GeneratedFile {
 
   }
 
+  public interface MsgAuthorizeEVMDelegationOrBuilder extends
+      // @@protoc_insertion_point(interface_extends:qorechain.pqc.v1.MsgAuthorizeEVMDelegation)
+      com.google.protobuf.MessageOrBuilder {
+
+    /**
+     * <code>string sender = 1 [json_name = "sender", (.cosmos_proto.scalar) = "cosmos.AddressString"];</code>
+     * @return The sender.
+     */
+    java.lang.String getSender();
+    /**
+     * <code>string sender = 1 [json_name = "sender", (.cosmos_proto.scalar) = "cosmos.AddressString"];</code>
+     * @return The bytes for sender.
+     */
+    com.google.protobuf.ByteString
+        getSenderBytes();
+
+    /**
+     * <pre>
+     * delegate is the 0x-prefixed 20-byte address the authorization tuple
+     * names. The zero address consents to clearing the delegation.
+     * </pre>
+     *
+     * <code>string delegate = 2 [json_name = "delegate"];</code>
+     * @return The delegate.
+     */
+    java.lang.String getDelegate();
+    /**
+     * <pre>
+     * delegate is the 0x-prefixed 20-byte address the authorization tuple
+     * names. The zero address consents to clearing the delegation.
+     * </pre>
+     *
+     * <code>string delegate = 2 [json_name = "delegate"];</code>
+     * @return The bytes for delegate.
+     */
+    com.google.protobuf.ByteString
+        getDelegateBytes();
+
+    /**
+     * <pre>
+     * blocks is how long the consent stays usable, counted from the block that
+     * records it. Bounded by the module's maximum.
+     * </pre>
+     *
+     * <code>uint64 blocks = 3 [json_name = "blocks"];</code>
+     * @return The blocks.
+     */
+    long getBlocks();
+  }
+  /**
+   * <pre>
+   * MsgAuthorizeEVMDelegation is the account's post-quantum consent to one
+   * EIP-7702 delegation of its own account. It is single-use, bounded in time,
+   * replaces any earlier consent, and is revoked by MsgCloseEVMWindow.
+   * </pre>
+   *
+   * Protobuf type {@code qorechain.pqc.v1.MsgAuthorizeEVMDelegation}
+   */
+  public static final class MsgAuthorizeEVMDelegation extends
+      com.google.protobuf.GeneratedMessage implements
+      // @@protoc_insertion_point(message_implements:qorechain.pqc.v1.MsgAuthorizeEVMDelegation)
+      MsgAuthorizeEVMDelegationOrBuilder {
+  private static final long serialVersionUID = 0L;
+    static {
+      com.google.protobuf.RuntimeVersion.validateProtobufGencodeVersion(
+        com.google.protobuf.RuntimeVersion.RuntimeDomain.PUBLIC,
+        /* major= */ 4,
+        /* minor= */ 35,
+        /* patch= */ 1,
+        /* suffix= */ "",
+        "MsgAuthorizeEVMDelegation");
+    }
+    // Use MsgAuthorizeEVMDelegation.newBuilder() to construct.
+    private MsgAuthorizeEVMDelegation(com.google.protobuf.GeneratedMessage.Builder<?> builder) {
+      super(builder);
+    }
+    private MsgAuthorizeEVMDelegation() {
+      sender_ = "";
+      delegate_ = "";
+    }
+
+    public static final com.google.protobuf.Descriptors.Descriptor
+        getDescriptor() {
+      return qorechain.pqc.v1.Tx.internal_static_qorechain_pqc_v1_MsgAuthorizeEVMDelegation_descriptor;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Descriptors.Descriptor getDescriptorForType() {
+      return qorechain.pqc.v1.Tx.internal_static_qorechain_pqc_v1_MsgAuthorizeEVMDelegation_descriptor;
+    }
+
+    @java.lang.Override
+    protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+        internalGetFieldAccessorTable() {
+      return qorechain.pqc.v1.Tx.internal_static_qorechain_pqc_v1_MsgAuthorizeEVMDelegation_fieldAccessorTable
+          .ensureFieldAccessorsInitialized(
+              qorechain.pqc.v1.Tx.MsgAuthorizeEVMDelegation.class, qorechain.pqc.v1.Tx.MsgAuthorizeEVMDelegation.Builder.class);
+    }
+
+    public static final int SENDER_FIELD_NUMBER = 1;
+    @SuppressWarnings("serial")
+    private volatile java.lang.Object sender_ = "";
+    /**
+     * <code>string sender = 1 [json_name = "sender", (.cosmos_proto.scalar) = "cosmos.AddressString"];</code>
+     * @return The sender.
+     */
+    @java.lang.Override
+    public java.lang.String getSender() {
+      java.lang.Object ref = sender_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        sender_ = s;
+        return s;
+      }
+    }
+    /**
+     * <code>string sender = 1 [json_name = "sender", (.cosmos_proto.scalar) = "cosmos.AddressString"];</code>
+     * @return The bytes for sender.
+     */
+    @java.lang.Override
+    public com.google.protobuf.ByteString
+        getSenderBytes() {
+      java.lang.Object ref = sender_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        sender_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
+    public static final int DELEGATE_FIELD_NUMBER = 2;
+    @SuppressWarnings("serial")
+    private volatile java.lang.Object delegate_ = "";
+    /**
+     * <pre>
+     * delegate is the 0x-prefixed 20-byte address the authorization tuple
+     * names. The zero address consents to clearing the delegation.
+     * </pre>
+     *
+     * <code>string delegate = 2 [json_name = "delegate"];</code>
+     * @return The delegate.
+     */
+    @java.lang.Override
+    public java.lang.String getDelegate() {
+      java.lang.Object ref = delegate_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        delegate_ = s;
+        return s;
+      }
+    }
+    /**
+     * <pre>
+     * delegate is the 0x-prefixed 20-byte address the authorization tuple
+     * names. The zero address consents to clearing the delegation.
+     * </pre>
+     *
+     * <code>string delegate = 2 [json_name = "delegate"];</code>
+     * @return The bytes for delegate.
+     */
+    @java.lang.Override
+    public com.google.protobuf.ByteString
+        getDelegateBytes() {
+      java.lang.Object ref = delegate_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        delegate_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
+    public static final int BLOCKS_FIELD_NUMBER = 3;
+    private long blocks_ = 0L;
+    /**
+     * <pre>
+     * blocks is how long the consent stays usable, counted from the block that
+     * records it. Bounded by the module's maximum.
+     * </pre>
+     *
+     * <code>uint64 blocks = 3 [json_name = "blocks"];</code>
+     * @return The blocks.
+     */
+    @java.lang.Override
+    public long getBlocks() {
+      return blocks_;
+    }
+
+    private byte memoizedIsInitialized = -1;
+    @java.lang.Override
+    public final boolean isInitialized() {
+      byte isInitialized = memoizedIsInitialized;
+      if (isInitialized == 1) return true;
+      if (isInitialized == 0) return false;
+
+      memoizedIsInitialized = 1;
+      return true;
+    }
+
+    @java.lang.Override
+    public void writeTo(com.google.protobuf.CodedOutputStream output)
+                        throws java.io.IOException {
+      if (!com.google.protobuf.GeneratedMessage.isStringEmpty(sender_)) {
+        com.google.protobuf.GeneratedMessage.writeString(output, 1, sender_);
+      }
+      if (!com.google.protobuf.GeneratedMessage.isStringEmpty(delegate_)) {
+        com.google.protobuf.GeneratedMessage.writeString(output, 2, delegate_);
+      }
+      if (blocks_ != 0L) {
+        output.writeUInt64(3, blocks_);
+      }
+      getUnknownFields().writeTo(output);
+    }
+    private int computeSerializedSize_0() {
+      int size = 0;
+      if (!com.google.protobuf.GeneratedMessage.isStringEmpty(sender_)) {
+        size += com.google.protobuf.GeneratedMessage.computeStringSize(1, sender_);
+      }
+      if (!com.google.protobuf.GeneratedMessage.isStringEmpty(delegate_)) {
+        size += com.google.protobuf.GeneratedMessage.computeStringSize(2, delegate_);
+      }
+      if (blocks_ != 0L) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeUInt64Size(3, blocks_);
+      }
+      return size;
+    }
+    @java.lang.Override
+    public int getSerializedSize() {
+      int size = memoizedSize;
+      if (size != -1) return size;
+
+      size = 0;
+      size += computeSerializedSize_0();
+      size += getUnknownFields().getSerializedSize();
+      memoizedSize = size;
+      return size;
+    }
+
+    @java.lang.Override
+    public boolean equals(final java.lang.Object obj) {
+      if (obj == this) {
+       return true;
+      }
+      if (!(obj instanceof qorechain.pqc.v1.Tx.MsgAuthorizeEVMDelegation)) {
+        return super.equals(obj);
+      }
+      qorechain.pqc.v1.Tx.MsgAuthorizeEVMDelegation other = (qorechain.pqc.v1.Tx.MsgAuthorizeEVMDelegation) obj;
+
+      if (!getSender()
+          .equals(other.getSender())) return false;
+      if (!getDelegate()
+          .equals(other.getDelegate())) return false;
+      if (getBlocks()
+          != other.getBlocks()) return false;
+      if (!getUnknownFields().equals(other.getUnknownFields())) return false;
+      return true;
+    }
+
+    @java.lang.Override
+    public int hashCode() {
+      if (memoizedHashCode != 0) {
+        return memoizedHashCode;
+      }
+      int hash = 41;
+      hash = (19 * hash) + getDescriptor().hashCode();
+      hash = (37 * hash) + SENDER_FIELD_NUMBER;
+      hash = (53 * hash) + getSender().hashCode();
+      hash = (37 * hash) + DELEGATE_FIELD_NUMBER;
+      hash = (53 * hash) + getDelegate().hashCode();
+      hash = (37 * hash) + BLOCKS_FIELD_NUMBER;
+      hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
+          getBlocks());
+      hash = (29 * hash) + getUnknownFields().hashCode();
+      memoizedHashCode = hash;
+      return hash;
+    }
+
+    public static qorechain.pqc.v1.Tx.MsgAuthorizeEVMDelegation parseFrom(
+        java.nio.ByteBuffer data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static qorechain.pqc.v1.Tx.MsgAuthorizeEVMDelegation parseFrom(
+        java.nio.ByteBuffer data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static qorechain.pqc.v1.Tx.MsgAuthorizeEVMDelegation parseFrom(
+        com.google.protobuf.ByteString data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static qorechain.pqc.v1.Tx.MsgAuthorizeEVMDelegation parseFrom(
+        com.google.protobuf.ByteString data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static qorechain.pqc.v1.Tx.MsgAuthorizeEVMDelegation parseFrom(byte[] data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static qorechain.pqc.v1.Tx.MsgAuthorizeEVMDelegation parseFrom(
+        byte[] data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static qorechain.pqc.v1.Tx.MsgAuthorizeEVMDelegation parseFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input);
+    }
+    public static qorechain.pqc.v1.Tx.MsgAuthorizeEVMDelegation parseFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    public static qorechain.pqc.v1.Tx.MsgAuthorizeEVMDelegation parseDelimitedFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseDelimitedWithIOException(PARSER, input);
+    }
+
+    public static qorechain.pqc.v1.Tx.MsgAuthorizeEVMDelegation parseDelimitedFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static qorechain.pqc.v1.Tx.MsgAuthorizeEVMDelegation parseFrom(
+        com.google.protobuf.CodedInputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input);
+    }
+    public static qorechain.pqc.v1.Tx.MsgAuthorizeEVMDelegation parseFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    @java.lang.Override
+    public Builder newBuilderForType() { return newBuilder(); }
+    public static Builder newBuilder() {
+      return DEFAULT_INSTANCE.toBuilder();
+    }
+    public static Builder newBuilder(qorechain.pqc.v1.Tx.MsgAuthorizeEVMDelegation prototype) {
+      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+    }
+    @java.lang.Override
+    public Builder toBuilder() {
+      return this == DEFAULT_INSTANCE
+          ? new Builder() : new Builder().mergeFrom(this);
+    }
+
+    @java.lang.Override
+    protected Builder newBuilderForType(
+        com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+      Builder builder = new Builder(parent);
+      return builder;
+    }
+    /**
+     * <pre>
+     * MsgAuthorizeEVMDelegation is the account's post-quantum consent to one
+     * EIP-7702 delegation of its own account. It is single-use, bounded in time,
+     * replaces any earlier consent, and is revoked by MsgCloseEVMWindow.
+     * </pre>
+     *
+     * Protobuf type {@code qorechain.pqc.v1.MsgAuthorizeEVMDelegation}
+     */
+    public static final class Builder extends
+        com.google.protobuf.GeneratedMessage.Builder<Builder> implements
+        // @@protoc_insertion_point(builder_implements:qorechain.pqc.v1.MsgAuthorizeEVMDelegation)
+        qorechain.pqc.v1.Tx.MsgAuthorizeEVMDelegationOrBuilder {
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return qorechain.pqc.v1.Tx.internal_static_qorechain_pqc_v1_MsgAuthorizeEVMDelegation_descriptor;
+      }
+
+      @java.lang.Override
+      protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return qorechain.pqc.v1.Tx.internal_static_qorechain_pqc_v1_MsgAuthorizeEVMDelegation_fieldAccessorTable
+            .ensureFieldAccessorsInitialized(
+                qorechain.pqc.v1.Tx.MsgAuthorizeEVMDelegation.class, qorechain.pqc.v1.Tx.MsgAuthorizeEVMDelegation.Builder.class);
+      }
+
+      // Construct using qorechain.pqc.v1.Tx.MsgAuthorizeEVMDelegation.newBuilder()
+      private Builder() {
+
+      }
+
+      private Builder(
+          com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+        super(parent);
+
+      }
+      @java.lang.Override
+      public Builder clear() {
+        super.clear();
+        bitField0_ = 0;
+        sender_ = "";
+        delegate_ = "";
+        blocks_ = 0L;
+        return this;
+      }
+
+      @java.lang.Override
+      public com.google.protobuf.Descriptors.Descriptor
+          getDescriptorForType() {
+        return qorechain.pqc.v1.Tx.internal_static_qorechain_pqc_v1_MsgAuthorizeEVMDelegation_descriptor;
+      }
+
+      @java.lang.Override
+      public qorechain.pqc.v1.Tx.MsgAuthorizeEVMDelegation getDefaultInstanceForType() {
+        return qorechain.pqc.v1.Tx.MsgAuthorizeEVMDelegation.getDefaultInstance();
+      }
+
+      @java.lang.Override
+      public qorechain.pqc.v1.Tx.MsgAuthorizeEVMDelegation build() {
+        qorechain.pqc.v1.Tx.MsgAuthorizeEVMDelegation result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(result);
+        }
+        return result;
+      }
+
+      @java.lang.Override
+      public qorechain.pqc.v1.Tx.MsgAuthorizeEVMDelegation buildPartial() {
+        qorechain.pqc.v1.Tx.MsgAuthorizeEVMDelegation result = new qorechain.pqc.v1.Tx.MsgAuthorizeEVMDelegation(this);
+        if (bitField0_ != 0) { buildPartial0(result); }
+        onBuilt();
+        return result;
+      }
+
+      private void buildPartial0(qorechain.pqc.v1.Tx.MsgAuthorizeEVMDelegation result) {
+        int from_bitField0_ = bitField0_;
+        if (((from_bitField0_ & 0x00000001) != 0)) {
+          result.sender_ = sender_;
+        }
+        if (((from_bitField0_ & 0x00000002) != 0)) {
+          result.delegate_ = delegate_;
+        }
+        if (((from_bitField0_ & 0x00000004) != 0)) {
+          result.blocks_ = blocks_;
+        }
+      }
+
+      @java.lang.Override
+      public Builder mergeFrom(com.google.protobuf.Message other) {
+        if (other instanceof qorechain.pqc.v1.Tx.MsgAuthorizeEVMDelegation) {
+          return mergeFrom((qorechain.pqc.v1.Tx.MsgAuthorizeEVMDelegation)other);
+        } else {
+          super.mergeFrom(other);
+          return this;
+        }
+      }
+
+      public Builder mergeFrom(qorechain.pqc.v1.Tx.MsgAuthorizeEVMDelegation other) {
+        if (other == qorechain.pqc.v1.Tx.MsgAuthorizeEVMDelegation.getDefaultInstance()) return this;
+        if (!other.getSender().isEmpty()) {
+          sender_ = other.sender_;
+          bitField0_ |= 0x00000001;
+          onChanged();
+        }
+        if (!other.getDelegate().isEmpty()) {
+          delegate_ = other.delegate_;
+          bitField0_ |= 0x00000002;
+          onChanged();
+        }
+        if (other.getBlocks() != 0L) {
+          setBlocks(other.getBlocks());
+        }
+        this.mergeUnknownFields(other.getUnknownFields());
+        onChanged();
+        return this;
+      }
+
+      @java.lang.Override
+      public final boolean isInitialized() {
+        return true;
+      }
+
+      @java.lang.Override
+      public Builder mergeFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        if (extensionRegistry == null) {
+          throw new java.lang.NullPointerException();
+        }
+        try {
+          boolean done = false;
+          while (!done) {
+            int tag = input.readTag();
+            switch (tag) {
+              case 0:
+                done = true;
+                break;
+              case 10: {
+                sender_ = input.readStringRequireUtf8();
+                bitField0_ |= 0x00000001;
+                break;
+              } // case 10
+              case 18: {
+                delegate_ = input.readStringRequireUtf8();
+                bitField0_ |= 0x00000002;
+                break;
+              } // case 18
+              case 24: {
+                blocks_ = input.readUInt64();
+                bitField0_ |= 0x00000004;
+                break;
+              } // case 24
+              default: {
+                if (!super.parseUnknownField(input, extensionRegistry, tag)) {
+                  done = true; // was an endgroup tag
+                }
+                break;
+              } // default:
+            } // switch (tag)
+          } // while (!done)
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          throw e.unwrapIOException();
+        } finally {
+          onChanged();
+        } // finally
+        return this;
+      }
+      private int bitField0_;
+
+      private java.lang.Object sender_ = "";
+      /**
+       * <code>string sender = 1 [json_name = "sender", (.cosmos_proto.scalar) = "cosmos.AddressString"];</code>
+       * @return The sender.
+       */
+      public java.lang.String getSender() {
+        java.lang.Object ref = sender_;
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          sender_ = s;
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
+      }
+      /**
+       * <code>string sender = 1 [json_name = "sender", (.cosmos_proto.scalar) = "cosmos.AddressString"];</code>
+       * @return The bytes for sender.
+       */
+      public com.google.protobuf.ByteString
+          getSenderBytes() {
+        java.lang.Object ref = sender_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          sender_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <code>string sender = 1 [json_name = "sender", (.cosmos_proto.scalar) = "cosmos.AddressString"];</code>
+       * @param value The sender to set.
+       * @return This builder for chaining.
+       */
+      public Builder setSender(
+          java.lang.String value) {
+        if (value == null) { throw new NullPointerException(); }
+        sender_ = value;
+        bitField0_ |= 0x00000001;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>string sender = 1 [json_name = "sender", (.cosmos_proto.scalar) = "cosmos.AddressString"];</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearSender() {
+        sender_ = getDefaultInstance().getSender();
+        bitField0_ = (bitField0_ & ~0x00000001);
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>string sender = 1 [json_name = "sender", (.cosmos_proto.scalar) = "cosmos.AddressString"];</code>
+       * @param value The bytes for sender to set.
+       * @return This builder for chaining.
+       */
+      public Builder setSenderBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) { throw new NullPointerException(); }
+        checkByteStringIsUtf8(value);
+        sender_ = value;
+        bitField0_ |= 0x00000001;
+        onChanged();
+        return this;
+      }
+
+      private java.lang.Object delegate_ = "";
+      /**
+       * <pre>
+       * delegate is the 0x-prefixed 20-byte address the authorization tuple
+       * names. The zero address consents to clearing the delegation.
+       * </pre>
+       *
+       * <code>string delegate = 2 [json_name = "delegate"];</code>
+       * @return The delegate.
+       */
+      public java.lang.String getDelegate() {
+        java.lang.Object ref = delegate_;
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          delegate_ = s;
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
+      }
+      /**
+       * <pre>
+       * delegate is the 0x-prefixed 20-byte address the authorization tuple
+       * names. The zero address consents to clearing the delegation.
+       * </pre>
+       *
+       * <code>string delegate = 2 [json_name = "delegate"];</code>
+       * @return The bytes for delegate.
+       */
+      public com.google.protobuf.ByteString
+          getDelegateBytes() {
+        java.lang.Object ref = delegate_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          delegate_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <pre>
+       * delegate is the 0x-prefixed 20-byte address the authorization tuple
+       * names. The zero address consents to clearing the delegation.
+       * </pre>
+       *
+       * <code>string delegate = 2 [json_name = "delegate"];</code>
+       * @param value The delegate to set.
+       * @return This builder for chaining.
+       */
+      public Builder setDelegate(
+          java.lang.String value) {
+        if (value == null) { throw new NullPointerException(); }
+        delegate_ = value;
+        bitField0_ |= 0x00000002;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * delegate is the 0x-prefixed 20-byte address the authorization tuple
+       * names. The zero address consents to clearing the delegation.
+       * </pre>
+       *
+       * <code>string delegate = 2 [json_name = "delegate"];</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearDelegate() {
+        delegate_ = getDefaultInstance().getDelegate();
+        bitField0_ = (bitField0_ & ~0x00000002);
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * delegate is the 0x-prefixed 20-byte address the authorization tuple
+       * names. The zero address consents to clearing the delegation.
+       * </pre>
+       *
+       * <code>string delegate = 2 [json_name = "delegate"];</code>
+       * @param value The bytes for delegate to set.
+       * @return This builder for chaining.
+       */
+      public Builder setDelegateBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) { throw new NullPointerException(); }
+        checkByteStringIsUtf8(value);
+        delegate_ = value;
+        bitField0_ |= 0x00000002;
+        onChanged();
+        return this;
+      }
+
+      private long blocks_ ;
+      /**
+       * <pre>
+       * blocks is how long the consent stays usable, counted from the block that
+       * records it. Bounded by the module's maximum.
+       * </pre>
+       *
+       * <code>uint64 blocks = 3 [json_name = "blocks"];</code>
+       * @return The blocks.
+       */
+      @java.lang.Override
+      public long getBlocks() {
+        return blocks_;
+      }
+      /**
+       * <pre>
+       * blocks is how long the consent stays usable, counted from the block that
+       * records it. Bounded by the module's maximum.
+       * </pre>
+       *
+       * <code>uint64 blocks = 3 [json_name = "blocks"];</code>
+       * @param value The blocks to set.
+       * @return This builder for chaining.
+       */
+      public Builder setBlocks(long value) {
+
+        blocks_ = value;
+        bitField0_ |= 0x00000004;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * blocks is how long the consent stays usable, counted from the block that
+       * records it. Bounded by the module's maximum.
+       * </pre>
+       *
+       * <code>uint64 blocks = 3 [json_name = "blocks"];</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearBlocks() {
+        bitField0_ = (bitField0_ & ~0x00000004);
+        blocks_ = 0L;
+        onChanged();
+        return this;
+      }
+
+      // @@protoc_insertion_point(builder_scope:qorechain.pqc.v1.MsgAuthorizeEVMDelegation)
+    }
+
+    // @@protoc_insertion_point(class_scope:qorechain.pqc.v1.MsgAuthorizeEVMDelegation)
+    private static final qorechain.pqc.v1.Tx.MsgAuthorizeEVMDelegation DEFAULT_INSTANCE;
+    static {
+      DEFAULT_INSTANCE = new qorechain.pqc.v1.Tx.MsgAuthorizeEVMDelegation();
+    }
+
+    public static qorechain.pqc.v1.Tx.MsgAuthorizeEVMDelegation getDefaultInstance() {
+      return DEFAULT_INSTANCE;
+    }
+
+    private static final com.google.protobuf.Parser<MsgAuthorizeEVMDelegation>
+        PARSER = new com.google.protobuf.AbstractParser<MsgAuthorizeEVMDelegation>() {
+      @java.lang.Override
+      public MsgAuthorizeEVMDelegation parsePartialFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        Builder builder = newBuilder();
+        try {
+          builder.mergeFrom(input, extensionRegistry);
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          throw e.setUnfinishedMessage(builder.buildPartial());
+        } catch (com.google.protobuf.UninitializedMessageException e) {
+          throw e.asInvalidProtocolBufferException().setUnfinishedMessage(builder.buildPartial());
+        } catch (java.io.IOException e) {
+          throw new com.google.protobuf.InvalidProtocolBufferException(e)
+              .setUnfinishedMessage(builder.buildPartial());
+        }
+        return builder.buildPartial();
+      }
+    };
+
+    public static com.google.protobuf.Parser<MsgAuthorizeEVMDelegation> parser() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Parser<MsgAuthorizeEVMDelegation> getParserForType() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public qorechain.pqc.v1.Tx.MsgAuthorizeEVMDelegation getDefaultInstanceForType() {
+      return DEFAULT_INSTANCE;
+    }
+
+  }
+
+  public interface MsgAuthorizeEVMDelegationResponseOrBuilder extends
+      // @@protoc_insertion_point(interface_extends:qorechain.pqc.v1.MsgAuthorizeEVMDelegationResponse)
+      com.google.protobuf.MessageOrBuilder {
+
+    /**
+     * <code>uint64 expiry_height = 1 [json_name = "expiryHeight"];</code>
+     * @return The expiryHeight.
+     */
+    long getExpiryHeight();
+  }
+  /**
+   * Protobuf type {@code qorechain.pqc.v1.MsgAuthorizeEVMDelegationResponse}
+   */
+  public static final class MsgAuthorizeEVMDelegationResponse extends
+      com.google.protobuf.GeneratedMessage implements
+      // @@protoc_insertion_point(message_implements:qorechain.pqc.v1.MsgAuthorizeEVMDelegationResponse)
+      MsgAuthorizeEVMDelegationResponseOrBuilder {
+  private static final long serialVersionUID = 0L;
+    static {
+      com.google.protobuf.RuntimeVersion.validateProtobufGencodeVersion(
+        com.google.protobuf.RuntimeVersion.RuntimeDomain.PUBLIC,
+        /* major= */ 4,
+        /* minor= */ 35,
+        /* patch= */ 1,
+        /* suffix= */ "",
+        "MsgAuthorizeEVMDelegationResponse");
+    }
+    // Use MsgAuthorizeEVMDelegationResponse.newBuilder() to construct.
+    private MsgAuthorizeEVMDelegationResponse(com.google.protobuf.GeneratedMessage.Builder<?> builder) {
+      super(builder);
+    }
+    private MsgAuthorizeEVMDelegationResponse() {
+    }
+
+    public static final com.google.protobuf.Descriptors.Descriptor
+        getDescriptor() {
+      return qorechain.pqc.v1.Tx.internal_static_qorechain_pqc_v1_MsgAuthorizeEVMDelegationResponse_descriptor;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Descriptors.Descriptor getDescriptorForType() {
+      return qorechain.pqc.v1.Tx.internal_static_qorechain_pqc_v1_MsgAuthorizeEVMDelegationResponse_descriptor;
+    }
+
+    @java.lang.Override
+    protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+        internalGetFieldAccessorTable() {
+      return qorechain.pqc.v1.Tx.internal_static_qorechain_pqc_v1_MsgAuthorizeEVMDelegationResponse_fieldAccessorTable
+          .ensureFieldAccessorsInitialized(
+              qorechain.pqc.v1.Tx.MsgAuthorizeEVMDelegationResponse.class, qorechain.pqc.v1.Tx.MsgAuthorizeEVMDelegationResponse.Builder.class);
+    }
+
+    public static final int EXPIRY_HEIGHT_FIELD_NUMBER = 1;
+    private long expiryHeight_ = 0L;
+    /**
+     * <code>uint64 expiry_height = 1 [json_name = "expiryHeight"];</code>
+     * @return The expiryHeight.
+     */
+    @java.lang.Override
+    public long getExpiryHeight() {
+      return expiryHeight_;
+    }
+
+    private byte memoizedIsInitialized = -1;
+    @java.lang.Override
+    public final boolean isInitialized() {
+      byte isInitialized = memoizedIsInitialized;
+      if (isInitialized == 1) return true;
+      if (isInitialized == 0) return false;
+
+      memoizedIsInitialized = 1;
+      return true;
+    }
+
+    @java.lang.Override
+    public void writeTo(com.google.protobuf.CodedOutputStream output)
+                        throws java.io.IOException {
+      if (expiryHeight_ != 0L) {
+        output.writeUInt64(1, expiryHeight_);
+      }
+      getUnknownFields().writeTo(output);
+    }
+    private int computeSerializedSize_0() {
+      int size = 0;
+      if (expiryHeight_ != 0L) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeUInt64Size(1, expiryHeight_);
+      }
+      return size;
+    }
+    @java.lang.Override
+    public int getSerializedSize() {
+      int size = memoizedSize;
+      if (size != -1) return size;
+
+      size = 0;
+      size += computeSerializedSize_0();
+      size += getUnknownFields().getSerializedSize();
+      memoizedSize = size;
+      return size;
+    }
+
+    @java.lang.Override
+    public boolean equals(final java.lang.Object obj) {
+      if (obj == this) {
+       return true;
+      }
+      if (!(obj instanceof qorechain.pqc.v1.Tx.MsgAuthorizeEVMDelegationResponse)) {
+        return super.equals(obj);
+      }
+      qorechain.pqc.v1.Tx.MsgAuthorizeEVMDelegationResponse other = (qorechain.pqc.v1.Tx.MsgAuthorizeEVMDelegationResponse) obj;
+
+      if (getExpiryHeight()
+          != other.getExpiryHeight()) return false;
+      if (!getUnknownFields().equals(other.getUnknownFields())) return false;
+      return true;
+    }
+
+    @java.lang.Override
+    public int hashCode() {
+      if (memoizedHashCode != 0) {
+        return memoizedHashCode;
+      }
+      int hash = 41;
+      hash = (19 * hash) + getDescriptor().hashCode();
+      hash = (37 * hash) + EXPIRY_HEIGHT_FIELD_NUMBER;
+      hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
+          getExpiryHeight());
+      hash = (29 * hash) + getUnknownFields().hashCode();
+      memoizedHashCode = hash;
+      return hash;
+    }
+
+    public static qorechain.pqc.v1.Tx.MsgAuthorizeEVMDelegationResponse parseFrom(
+        java.nio.ByteBuffer data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static qorechain.pqc.v1.Tx.MsgAuthorizeEVMDelegationResponse parseFrom(
+        java.nio.ByteBuffer data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static qorechain.pqc.v1.Tx.MsgAuthorizeEVMDelegationResponse parseFrom(
+        com.google.protobuf.ByteString data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static qorechain.pqc.v1.Tx.MsgAuthorizeEVMDelegationResponse parseFrom(
+        com.google.protobuf.ByteString data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static qorechain.pqc.v1.Tx.MsgAuthorizeEVMDelegationResponse parseFrom(byte[] data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static qorechain.pqc.v1.Tx.MsgAuthorizeEVMDelegationResponse parseFrom(
+        byte[] data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static qorechain.pqc.v1.Tx.MsgAuthorizeEVMDelegationResponse parseFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input);
+    }
+    public static qorechain.pqc.v1.Tx.MsgAuthorizeEVMDelegationResponse parseFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    public static qorechain.pqc.v1.Tx.MsgAuthorizeEVMDelegationResponse parseDelimitedFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseDelimitedWithIOException(PARSER, input);
+    }
+
+    public static qorechain.pqc.v1.Tx.MsgAuthorizeEVMDelegationResponse parseDelimitedFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static qorechain.pqc.v1.Tx.MsgAuthorizeEVMDelegationResponse parseFrom(
+        com.google.protobuf.CodedInputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input);
+    }
+    public static qorechain.pqc.v1.Tx.MsgAuthorizeEVMDelegationResponse parseFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    @java.lang.Override
+    public Builder newBuilderForType() { return newBuilder(); }
+    public static Builder newBuilder() {
+      return DEFAULT_INSTANCE.toBuilder();
+    }
+    public static Builder newBuilder(qorechain.pqc.v1.Tx.MsgAuthorizeEVMDelegationResponse prototype) {
+      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+    }
+    @java.lang.Override
+    public Builder toBuilder() {
+      return this == DEFAULT_INSTANCE
+          ? new Builder() : new Builder().mergeFrom(this);
+    }
+
+    @java.lang.Override
+    protected Builder newBuilderForType(
+        com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+      Builder builder = new Builder(parent);
+      return builder;
+    }
+    /**
+     * Protobuf type {@code qorechain.pqc.v1.MsgAuthorizeEVMDelegationResponse}
+     */
+    public static final class Builder extends
+        com.google.protobuf.GeneratedMessage.Builder<Builder> implements
+        // @@protoc_insertion_point(builder_implements:qorechain.pqc.v1.MsgAuthorizeEVMDelegationResponse)
+        qorechain.pqc.v1.Tx.MsgAuthorizeEVMDelegationResponseOrBuilder {
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return qorechain.pqc.v1.Tx.internal_static_qorechain_pqc_v1_MsgAuthorizeEVMDelegationResponse_descriptor;
+      }
+
+      @java.lang.Override
+      protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return qorechain.pqc.v1.Tx.internal_static_qorechain_pqc_v1_MsgAuthorizeEVMDelegationResponse_fieldAccessorTable
+            .ensureFieldAccessorsInitialized(
+                qorechain.pqc.v1.Tx.MsgAuthorizeEVMDelegationResponse.class, qorechain.pqc.v1.Tx.MsgAuthorizeEVMDelegationResponse.Builder.class);
+      }
+
+      // Construct using qorechain.pqc.v1.Tx.MsgAuthorizeEVMDelegationResponse.newBuilder()
+      private Builder() {
+
+      }
+
+      private Builder(
+          com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+        super(parent);
+
+      }
+      @java.lang.Override
+      public Builder clear() {
+        super.clear();
+        bitField0_ = 0;
+        expiryHeight_ = 0L;
+        return this;
+      }
+
+      @java.lang.Override
+      public com.google.protobuf.Descriptors.Descriptor
+          getDescriptorForType() {
+        return qorechain.pqc.v1.Tx.internal_static_qorechain_pqc_v1_MsgAuthorizeEVMDelegationResponse_descriptor;
+      }
+
+      @java.lang.Override
+      public qorechain.pqc.v1.Tx.MsgAuthorizeEVMDelegationResponse getDefaultInstanceForType() {
+        return qorechain.pqc.v1.Tx.MsgAuthorizeEVMDelegationResponse.getDefaultInstance();
+      }
+
+      @java.lang.Override
+      public qorechain.pqc.v1.Tx.MsgAuthorizeEVMDelegationResponse build() {
+        qorechain.pqc.v1.Tx.MsgAuthorizeEVMDelegationResponse result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(result);
+        }
+        return result;
+      }
+
+      @java.lang.Override
+      public qorechain.pqc.v1.Tx.MsgAuthorizeEVMDelegationResponse buildPartial() {
+        qorechain.pqc.v1.Tx.MsgAuthorizeEVMDelegationResponse result = new qorechain.pqc.v1.Tx.MsgAuthorizeEVMDelegationResponse(this);
+        if (bitField0_ != 0) { buildPartial0(result); }
+        onBuilt();
+        return result;
+      }
+
+      private void buildPartial0(qorechain.pqc.v1.Tx.MsgAuthorizeEVMDelegationResponse result) {
+        int from_bitField0_ = bitField0_;
+        if (((from_bitField0_ & 0x00000001) != 0)) {
+          result.expiryHeight_ = expiryHeight_;
+        }
+      }
+
+      @java.lang.Override
+      public Builder mergeFrom(com.google.protobuf.Message other) {
+        if (other instanceof qorechain.pqc.v1.Tx.MsgAuthorizeEVMDelegationResponse) {
+          return mergeFrom((qorechain.pqc.v1.Tx.MsgAuthorizeEVMDelegationResponse)other);
+        } else {
+          super.mergeFrom(other);
+          return this;
+        }
+      }
+
+      public Builder mergeFrom(qorechain.pqc.v1.Tx.MsgAuthorizeEVMDelegationResponse other) {
+        if (other == qorechain.pqc.v1.Tx.MsgAuthorizeEVMDelegationResponse.getDefaultInstance()) return this;
+        if (other.getExpiryHeight() != 0L) {
+          setExpiryHeight(other.getExpiryHeight());
+        }
+        this.mergeUnknownFields(other.getUnknownFields());
+        onChanged();
+        return this;
+      }
+
+      @java.lang.Override
+      public final boolean isInitialized() {
+        return true;
+      }
+
+      @java.lang.Override
+      public Builder mergeFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        if (extensionRegistry == null) {
+          throw new java.lang.NullPointerException();
+        }
+        try {
+          boolean done = false;
+          while (!done) {
+            int tag = input.readTag();
+            switch (tag) {
+              case 0:
+                done = true;
+                break;
+              case 8: {
+                expiryHeight_ = input.readUInt64();
+                bitField0_ |= 0x00000001;
+                break;
+              } // case 8
+              default: {
+                if (!super.parseUnknownField(input, extensionRegistry, tag)) {
+                  done = true; // was an endgroup tag
+                }
+                break;
+              } // default:
+            } // switch (tag)
+          } // while (!done)
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          throw e.unwrapIOException();
+        } finally {
+          onChanged();
+        } // finally
+        return this;
+      }
+      private int bitField0_;
+
+      private long expiryHeight_ ;
+      /**
+       * <code>uint64 expiry_height = 1 [json_name = "expiryHeight"];</code>
+       * @return The expiryHeight.
+       */
+      @java.lang.Override
+      public long getExpiryHeight() {
+        return expiryHeight_;
+      }
+      /**
+       * <code>uint64 expiry_height = 1 [json_name = "expiryHeight"];</code>
+       * @param value The expiryHeight to set.
+       * @return This builder for chaining.
+       */
+      public Builder setExpiryHeight(long value) {
+
+        expiryHeight_ = value;
+        bitField0_ |= 0x00000001;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>uint64 expiry_height = 1 [json_name = "expiryHeight"];</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearExpiryHeight() {
+        bitField0_ = (bitField0_ & ~0x00000001);
+        expiryHeight_ = 0L;
+        onChanged();
+        return this;
+      }
+
+      // @@protoc_insertion_point(builder_scope:qorechain.pqc.v1.MsgAuthorizeEVMDelegationResponse)
+    }
+
+    // @@protoc_insertion_point(class_scope:qorechain.pqc.v1.MsgAuthorizeEVMDelegationResponse)
+    private static final qorechain.pqc.v1.Tx.MsgAuthorizeEVMDelegationResponse DEFAULT_INSTANCE;
+    static {
+      DEFAULT_INSTANCE = new qorechain.pqc.v1.Tx.MsgAuthorizeEVMDelegationResponse();
+    }
+
+    public static qorechain.pqc.v1.Tx.MsgAuthorizeEVMDelegationResponse getDefaultInstance() {
+      return DEFAULT_INSTANCE;
+    }
+
+    private static final com.google.protobuf.Parser<MsgAuthorizeEVMDelegationResponse>
+        PARSER = new com.google.protobuf.AbstractParser<MsgAuthorizeEVMDelegationResponse>() {
+      @java.lang.Override
+      public MsgAuthorizeEVMDelegationResponse parsePartialFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        Builder builder = newBuilder();
+        try {
+          builder.mergeFrom(input, extensionRegistry);
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          throw e.setUnfinishedMessage(builder.buildPartial());
+        } catch (com.google.protobuf.UninitializedMessageException e) {
+          throw e.asInvalidProtocolBufferException().setUnfinishedMessage(builder.buildPartial());
+        } catch (java.io.IOException e) {
+          throw new com.google.protobuf.InvalidProtocolBufferException(e)
+              .setUnfinishedMessage(builder.buildPartial());
+        }
+        return builder.buildPartial();
+      }
+    };
+
+    public static com.google.protobuf.Parser<MsgAuthorizeEVMDelegationResponse> parser() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Parser<MsgAuthorizeEVMDelegationResponse> getParserForType() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public qorechain.pqc.v1.Tx.MsgAuthorizeEVMDelegationResponse getDefaultInstanceForType() {
+      return DEFAULT_INSTANCE;
+    }
+
+  }
+
+  public interface MsgClearEVMDelegationOrBuilder extends
+      // @@protoc_insertion_point(interface_extends:qorechain.pqc.v1.MsgClearEVMDelegation)
+      com.google.protobuf.MessageOrBuilder {
+
+    /**
+     * <code>string sender = 1 [json_name = "sender", (.cosmos_proto.scalar) = "cosmos.AddressString"];</code>
+     * @return The sender.
+     */
+    java.lang.String getSender();
+    /**
+     * <code>string sender = 1 [json_name = "sender", (.cosmos_proto.scalar) = "cosmos.AddressString"];</code>
+     * @return The bytes for sender.
+     */
+    com.google.protobuf.ByteString
+        getSenderBytes();
+  }
+  /**
+   * <pre>
+   * MsgClearEVMDelegation removes the sender's EIP-7702 delegation designator.
+   * </pre>
+   *
+   * Protobuf type {@code qorechain.pqc.v1.MsgClearEVMDelegation}
+   */
+  public static final class MsgClearEVMDelegation extends
+      com.google.protobuf.GeneratedMessage implements
+      // @@protoc_insertion_point(message_implements:qorechain.pqc.v1.MsgClearEVMDelegation)
+      MsgClearEVMDelegationOrBuilder {
+  private static final long serialVersionUID = 0L;
+    static {
+      com.google.protobuf.RuntimeVersion.validateProtobufGencodeVersion(
+        com.google.protobuf.RuntimeVersion.RuntimeDomain.PUBLIC,
+        /* major= */ 4,
+        /* minor= */ 35,
+        /* patch= */ 1,
+        /* suffix= */ "",
+        "MsgClearEVMDelegation");
+    }
+    // Use MsgClearEVMDelegation.newBuilder() to construct.
+    private MsgClearEVMDelegation(com.google.protobuf.GeneratedMessage.Builder<?> builder) {
+      super(builder);
+    }
+    private MsgClearEVMDelegation() {
+      sender_ = "";
+    }
+
+    public static final com.google.protobuf.Descriptors.Descriptor
+        getDescriptor() {
+      return qorechain.pqc.v1.Tx.internal_static_qorechain_pqc_v1_MsgClearEVMDelegation_descriptor;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Descriptors.Descriptor getDescriptorForType() {
+      return qorechain.pqc.v1.Tx.internal_static_qorechain_pqc_v1_MsgClearEVMDelegation_descriptor;
+    }
+
+    @java.lang.Override
+    protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+        internalGetFieldAccessorTable() {
+      return qorechain.pqc.v1.Tx.internal_static_qorechain_pqc_v1_MsgClearEVMDelegation_fieldAccessorTable
+          .ensureFieldAccessorsInitialized(
+              qorechain.pqc.v1.Tx.MsgClearEVMDelegation.class, qorechain.pqc.v1.Tx.MsgClearEVMDelegation.Builder.class);
+    }
+
+    public static final int SENDER_FIELD_NUMBER = 1;
+    @SuppressWarnings("serial")
+    private volatile java.lang.Object sender_ = "";
+    /**
+     * <code>string sender = 1 [json_name = "sender", (.cosmos_proto.scalar) = "cosmos.AddressString"];</code>
+     * @return The sender.
+     */
+    @java.lang.Override
+    public java.lang.String getSender() {
+      java.lang.Object ref = sender_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        sender_ = s;
+        return s;
+      }
+    }
+    /**
+     * <code>string sender = 1 [json_name = "sender", (.cosmos_proto.scalar) = "cosmos.AddressString"];</code>
+     * @return The bytes for sender.
+     */
+    @java.lang.Override
+    public com.google.protobuf.ByteString
+        getSenderBytes() {
+      java.lang.Object ref = sender_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        sender_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
+    private byte memoizedIsInitialized = -1;
+    @java.lang.Override
+    public final boolean isInitialized() {
+      byte isInitialized = memoizedIsInitialized;
+      if (isInitialized == 1) return true;
+      if (isInitialized == 0) return false;
+
+      memoizedIsInitialized = 1;
+      return true;
+    }
+
+    @java.lang.Override
+    public void writeTo(com.google.protobuf.CodedOutputStream output)
+                        throws java.io.IOException {
+      if (!com.google.protobuf.GeneratedMessage.isStringEmpty(sender_)) {
+        com.google.protobuf.GeneratedMessage.writeString(output, 1, sender_);
+      }
+      getUnknownFields().writeTo(output);
+    }
+    private int computeSerializedSize_0() {
+      int size = 0;
+      if (!com.google.protobuf.GeneratedMessage.isStringEmpty(sender_)) {
+        size += com.google.protobuf.GeneratedMessage.computeStringSize(1, sender_);
+      }
+      return size;
+    }
+    @java.lang.Override
+    public int getSerializedSize() {
+      int size = memoizedSize;
+      if (size != -1) return size;
+
+      size = 0;
+      size += computeSerializedSize_0();
+      size += getUnknownFields().getSerializedSize();
+      memoizedSize = size;
+      return size;
+    }
+
+    @java.lang.Override
+    public boolean equals(final java.lang.Object obj) {
+      if (obj == this) {
+       return true;
+      }
+      if (!(obj instanceof qorechain.pqc.v1.Tx.MsgClearEVMDelegation)) {
+        return super.equals(obj);
+      }
+      qorechain.pqc.v1.Tx.MsgClearEVMDelegation other = (qorechain.pqc.v1.Tx.MsgClearEVMDelegation) obj;
+
+      if (!getSender()
+          .equals(other.getSender())) return false;
+      if (!getUnknownFields().equals(other.getUnknownFields())) return false;
+      return true;
+    }
+
+    @java.lang.Override
+    public int hashCode() {
+      if (memoizedHashCode != 0) {
+        return memoizedHashCode;
+      }
+      int hash = 41;
+      hash = (19 * hash) + getDescriptor().hashCode();
+      hash = (37 * hash) + SENDER_FIELD_NUMBER;
+      hash = (53 * hash) + getSender().hashCode();
+      hash = (29 * hash) + getUnknownFields().hashCode();
+      memoizedHashCode = hash;
+      return hash;
+    }
+
+    public static qorechain.pqc.v1.Tx.MsgClearEVMDelegation parseFrom(
+        java.nio.ByteBuffer data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static qorechain.pqc.v1.Tx.MsgClearEVMDelegation parseFrom(
+        java.nio.ByteBuffer data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static qorechain.pqc.v1.Tx.MsgClearEVMDelegation parseFrom(
+        com.google.protobuf.ByteString data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static qorechain.pqc.v1.Tx.MsgClearEVMDelegation parseFrom(
+        com.google.protobuf.ByteString data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static qorechain.pqc.v1.Tx.MsgClearEVMDelegation parseFrom(byte[] data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static qorechain.pqc.v1.Tx.MsgClearEVMDelegation parseFrom(
+        byte[] data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static qorechain.pqc.v1.Tx.MsgClearEVMDelegation parseFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input);
+    }
+    public static qorechain.pqc.v1.Tx.MsgClearEVMDelegation parseFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    public static qorechain.pqc.v1.Tx.MsgClearEVMDelegation parseDelimitedFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseDelimitedWithIOException(PARSER, input);
+    }
+
+    public static qorechain.pqc.v1.Tx.MsgClearEVMDelegation parseDelimitedFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static qorechain.pqc.v1.Tx.MsgClearEVMDelegation parseFrom(
+        com.google.protobuf.CodedInputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input);
+    }
+    public static qorechain.pqc.v1.Tx.MsgClearEVMDelegation parseFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    @java.lang.Override
+    public Builder newBuilderForType() { return newBuilder(); }
+    public static Builder newBuilder() {
+      return DEFAULT_INSTANCE.toBuilder();
+    }
+    public static Builder newBuilder(qorechain.pqc.v1.Tx.MsgClearEVMDelegation prototype) {
+      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+    }
+    @java.lang.Override
+    public Builder toBuilder() {
+      return this == DEFAULT_INSTANCE
+          ? new Builder() : new Builder().mergeFrom(this);
+    }
+
+    @java.lang.Override
+    protected Builder newBuilderForType(
+        com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+      Builder builder = new Builder(parent);
+      return builder;
+    }
+    /**
+     * <pre>
+     * MsgClearEVMDelegation removes the sender's EIP-7702 delegation designator.
+     * </pre>
+     *
+     * Protobuf type {@code qorechain.pqc.v1.MsgClearEVMDelegation}
+     */
+    public static final class Builder extends
+        com.google.protobuf.GeneratedMessage.Builder<Builder> implements
+        // @@protoc_insertion_point(builder_implements:qorechain.pqc.v1.MsgClearEVMDelegation)
+        qorechain.pqc.v1.Tx.MsgClearEVMDelegationOrBuilder {
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return qorechain.pqc.v1.Tx.internal_static_qorechain_pqc_v1_MsgClearEVMDelegation_descriptor;
+      }
+
+      @java.lang.Override
+      protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return qorechain.pqc.v1.Tx.internal_static_qorechain_pqc_v1_MsgClearEVMDelegation_fieldAccessorTable
+            .ensureFieldAccessorsInitialized(
+                qorechain.pqc.v1.Tx.MsgClearEVMDelegation.class, qorechain.pqc.v1.Tx.MsgClearEVMDelegation.Builder.class);
+      }
+
+      // Construct using qorechain.pqc.v1.Tx.MsgClearEVMDelegation.newBuilder()
+      private Builder() {
+
+      }
+
+      private Builder(
+          com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+        super(parent);
+
+      }
+      @java.lang.Override
+      public Builder clear() {
+        super.clear();
+        bitField0_ = 0;
+        sender_ = "";
+        return this;
+      }
+
+      @java.lang.Override
+      public com.google.protobuf.Descriptors.Descriptor
+          getDescriptorForType() {
+        return qorechain.pqc.v1.Tx.internal_static_qorechain_pqc_v1_MsgClearEVMDelegation_descriptor;
+      }
+
+      @java.lang.Override
+      public qorechain.pqc.v1.Tx.MsgClearEVMDelegation getDefaultInstanceForType() {
+        return qorechain.pqc.v1.Tx.MsgClearEVMDelegation.getDefaultInstance();
+      }
+
+      @java.lang.Override
+      public qorechain.pqc.v1.Tx.MsgClearEVMDelegation build() {
+        qorechain.pqc.v1.Tx.MsgClearEVMDelegation result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(result);
+        }
+        return result;
+      }
+
+      @java.lang.Override
+      public qorechain.pqc.v1.Tx.MsgClearEVMDelegation buildPartial() {
+        qorechain.pqc.v1.Tx.MsgClearEVMDelegation result = new qorechain.pqc.v1.Tx.MsgClearEVMDelegation(this);
+        if (bitField0_ != 0) { buildPartial0(result); }
+        onBuilt();
+        return result;
+      }
+
+      private void buildPartial0(qorechain.pqc.v1.Tx.MsgClearEVMDelegation result) {
+        int from_bitField0_ = bitField0_;
+        if (((from_bitField0_ & 0x00000001) != 0)) {
+          result.sender_ = sender_;
+        }
+      }
+
+      @java.lang.Override
+      public Builder mergeFrom(com.google.protobuf.Message other) {
+        if (other instanceof qorechain.pqc.v1.Tx.MsgClearEVMDelegation) {
+          return mergeFrom((qorechain.pqc.v1.Tx.MsgClearEVMDelegation)other);
+        } else {
+          super.mergeFrom(other);
+          return this;
+        }
+      }
+
+      public Builder mergeFrom(qorechain.pqc.v1.Tx.MsgClearEVMDelegation other) {
+        if (other == qorechain.pqc.v1.Tx.MsgClearEVMDelegation.getDefaultInstance()) return this;
+        if (!other.getSender().isEmpty()) {
+          sender_ = other.sender_;
+          bitField0_ |= 0x00000001;
+          onChanged();
+        }
+        this.mergeUnknownFields(other.getUnknownFields());
+        onChanged();
+        return this;
+      }
+
+      @java.lang.Override
+      public final boolean isInitialized() {
+        return true;
+      }
+
+      @java.lang.Override
+      public Builder mergeFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        if (extensionRegistry == null) {
+          throw new java.lang.NullPointerException();
+        }
+        try {
+          boolean done = false;
+          while (!done) {
+            int tag = input.readTag();
+            switch (tag) {
+              case 0:
+                done = true;
+                break;
+              case 10: {
+                sender_ = input.readStringRequireUtf8();
+                bitField0_ |= 0x00000001;
+                break;
+              } // case 10
+              default: {
+                if (!super.parseUnknownField(input, extensionRegistry, tag)) {
+                  done = true; // was an endgroup tag
+                }
+                break;
+              } // default:
+            } // switch (tag)
+          } // while (!done)
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          throw e.unwrapIOException();
+        } finally {
+          onChanged();
+        } // finally
+        return this;
+      }
+      private int bitField0_;
+
+      private java.lang.Object sender_ = "";
+      /**
+       * <code>string sender = 1 [json_name = "sender", (.cosmos_proto.scalar) = "cosmos.AddressString"];</code>
+       * @return The sender.
+       */
+      public java.lang.String getSender() {
+        java.lang.Object ref = sender_;
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          sender_ = s;
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
+      }
+      /**
+       * <code>string sender = 1 [json_name = "sender", (.cosmos_proto.scalar) = "cosmos.AddressString"];</code>
+       * @return The bytes for sender.
+       */
+      public com.google.protobuf.ByteString
+          getSenderBytes() {
+        java.lang.Object ref = sender_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          sender_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <code>string sender = 1 [json_name = "sender", (.cosmos_proto.scalar) = "cosmos.AddressString"];</code>
+       * @param value The sender to set.
+       * @return This builder for chaining.
+       */
+      public Builder setSender(
+          java.lang.String value) {
+        if (value == null) { throw new NullPointerException(); }
+        sender_ = value;
+        bitField0_ |= 0x00000001;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>string sender = 1 [json_name = "sender", (.cosmos_proto.scalar) = "cosmos.AddressString"];</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearSender() {
+        sender_ = getDefaultInstance().getSender();
+        bitField0_ = (bitField0_ & ~0x00000001);
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>string sender = 1 [json_name = "sender", (.cosmos_proto.scalar) = "cosmos.AddressString"];</code>
+       * @param value The bytes for sender to set.
+       * @return This builder for chaining.
+       */
+      public Builder setSenderBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) { throw new NullPointerException(); }
+        checkByteStringIsUtf8(value);
+        sender_ = value;
+        bitField0_ |= 0x00000001;
+        onChanged();
+        return this;
+      }
+
+      // @@protoc_insertion_point(builder_scope:qorechain.pqc.v1.MsgClearEVMDelegation)
+    }
+
+    // @@protoc_insertion_point(class_scope:qorechain.pqc.v1.MsgClearEVMDelegation)
+    private static final qorechain.pqc.v1.Tx.MsgClearEVMDelegation DEFAULT_INSTANCE;
+    static {
+      DEFAULT_INSTANCE = new qorechain.pqc.v1.Tx.MsgClearEVMDelegation();
+    }
+
+    public static qorechain.pqc.v1.Tx.MsgClearEVMDelegation getDefaultInstance() {
+      return DEFAULT_INSTANCE;
+    }
+
+    private static final com.google.protobuf.Parser<MsgClearEVMDelegation>
+        PARSER = new com.google.protobuf.AbstractParser<MsgClearEVMDelegation>() {
+      @java.lang.Override
+      public MsgClearEVMDelegation parsePartialFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        Builder builder = newBuilder();
+        try {
+          builder.mergeFrom(input, extensionRegistry);
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          throw e.setUnfinishedMessage(builder.buildPartial());
+        } catch (com.google.protobuf.UninitializedMessageException e) {
+          throw e.asInvalidProtocolBufferException().setUnfinishedMessage(builder.buildPartial());
+        } catch (java.io.IOException e) {
+          throw new com.google.protobuf.InvalidProtocolBufferException(e)
+              .setUnfinishedMessage(builder.buildPartial());
+        }
+        return builder.buildPartial();
+      }
+    };
+
+    public static com.google.protobuf.Parser<MsgClearEVMDelegation> parser() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Parser<MsgClearEVMDelegation> getParserForType() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public qorechain.pqc.v1.Tx.MsgClearEVMDelegation getDefaultInstanceForType() {
+      return DEFAULT_INSTANCE;
+    }
+
+  }
+
+  public interface MsgClearEVMDelegationResponseOrBuilder extends
+      // @@protoc_insertion_point(interface_extends:qorechain.pqc.v1.MsgClearEVMDelegationResponse)
+      com.google.protobuf.MessageOrBuilder {
+  }
+  /**
+   * Protobuf type {@code qorechain.pqc.v1.MsgClearEVMDelegationResponse}
+   */
+  public static final class MsgClearEVMDelegationResponse extends
+      com.google.protobuf.GeneratedMessage implements
+      // @@protoc_insertion_point(message_implements:qorechain.pqc.v1.MsgClearEVMDelegationResponse)
+      MsgClearEVMDelegationResponseOrBuilder {
+  private static final long serialVersionUID = 0L;
+    static {
+      com.google.protobuf.RuntimeVersion.validateProtobufGencodeVersion(
+        com.google.protobuf.RuntimeVersion.RuntimeDomain.PUBLIC,
+        /* major= */ 4,
+        /* minor= */ 35,
+        /* patch= */ 1,
+        /* suffix= */ "",
+        "MsgClearEVMDelegationResponse");
+    }
+    // Use MsgClearEVMDelegationResponse.newBuilder() to construct.
+    private MsgClearEVMDelegationResponse(com.google.protobuf.GeneratedMessage.Builder<?> builder) {
+      super(builder);
+    }
+    private MsgClearEVMDelegationResponse() {
+    }
+
+    public static final com.google.protobuf.Descriptors.Descriptor
+        getDescriptor() {
+      return qorechain.pqc.v1.Tx.internal_static_qorechain_pqc_v1_MsgClearEVMDelegationResponse_descriptor;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Descriptors.Descriptor getDescriptorForType() {
+      return qorechain.pqc.v1.Tx.internal_static_qorechain_pqc_v1_MsgClearEVMDelegationResponse_descriptor;
+    }
+
+    @java.lang.Override
+    protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+        internalGetFieldAccessorTable() {
+      return qorechain.pqc.v1.Tx.internal_static_qorechain_pqc_v1_MsgClearEVMDelegationResponse_fieldAccessorTable
+          .ensureFieldAccessorsInitialized(
+              qorechain.pqc.v1.Tx.MsgClearEVMDelegationResponse.class, qorechain.pqc.v1.Tx.MsgClearEVMDelegationResponse.Builder.class);
+    }
+
+    private byte memoizedIsInitialized = -1;
+    @java.lang.Override
+    public final boolean isInitialized() {
+      byte isInitialized = memoizedIsInitialized;
+      if (isInitialized == 1) return true;
+      if (isInitialized == 0) return false;
+
+      memoizedIsInitialized = 1;
+      return true;
+    }
+
+    @java.lang.Override
+    public void writeTo(com.google.protobuf.CodedOutputStream output)
+                        throws java.io.IOException {
+      getUnknownFields().writeTo(output);
+    }
+    @java.lang.Override
+    public int getSerializedSize() {
+      int size = memoizedSize;
+      if (size != -1) return size;
+
+      size = 0;
+      size += getUnknownFields().getSerializedSize();
+      memoizedSize = size;
+      return size;
+    }
+
+    @java.lang.Override
+    public boolean equals(final java.lang.Object obj) {
+      if (obj == this) {
+       return true;
+      }
+      if (!(obj instanceof qorechain.pqc.v1.Tx.MsgClearEVMDelegationResponse)) {
+        return super.equals(obj);
+      }
+      qorechain.pqc.v1.Tx.MsgClearEVMDelegationResponse other = (qorechain.pqc.v1.Tx.MsgClearEVMDelegationResponse) obj;
+
+      if (!getUnknownFields().equals(other.getUnknownFields())) return false;
+      return true;
+    }
+
+    @java.lang.Override
+    public int hashCode() {
+      if (memoizedHashCode != 0) {
+        return memoizedHashCode;
+      }
+      int hash = 41;
+      hash = (19 * hash) + getDescriptor().hashCode();
+      hash = (29 * hash) + getUnknownFields().hashCode();
+      memoizedHashCode = hash;
+      return hash;
+    }
+
+    public static qorechain.pqc.v1.Tx.MsgClearEVMDelegationResponse parseFrom(
+        java.nio.ByteBuffer data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static qorechain.pqc.v1.Tx.MsgClearEVMDelegationResponse parseFrom(
+        java.nio.ByteBuffer data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static qorechain.pqc.v1.Tx.MsgClearEVMDelegationResponse parseFrom(
+        com.google.protobuf.ByteString data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static qorechain.pqc.v1.Tx.MsgClearEVMDelegationResponse parseFrom(
+        com.google.protobuf.ByteString data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static qorechain.pqc.v1.Tx.MsgClearEVMDelegationResponse parseFrom(byte[] data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static qorechain.pqc.v1.Tx.MsgClearEVMDelegationResponse parseFrom(
+        byte[] data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static qorechain.pqc.v1.Tx.MsgClearEVMDelegationResponse parseFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input);
+    }
+    public static qorechain.pqc.v1.Tx.MsgClearEVMDelegationResponse parseFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    public static qorechain.pqc.v1.Tx.MsgClearEVMDelegationResponse parseDelimitedFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseDelimitedWithIOException(PARSER, input);
+    }
+
+    public static qorechain.pqc.v1.Tx.MsgClearEVMDelegationResponse parseDelimitedFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static qorechain.pqc.v1.Tx.MsgClearEVMDelegationResponse parseFrom(
+        com.google.protobuf.CodedInputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input);
+    }
+    public static qorechain.pqc.v1.Tx.MsgClearEVMDelegationResponse parseFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    @java.lang.Override
+    public Builder newBuilderForType() { return newBuilder(); }
+    public static Builder newBuilder() {
+      return DEFAULT_INSTANCE.toBuilder();
+    }
+    public static Builder newBuilder(qorechain.pqc.v1.Tx.MsgClearEVMDelegationResponse prototype) {
+      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+    }
+    @java.lang.Override
+    public Builder toBuilder() {
+      return this == DEFAULT_INSTANCE
+          ? new Builder() : new Builder().mergeFrom(this);
+    }
+
+    @java.lang.Override
+    protected Builder newBuilderForType(
+        com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+      Builder builder = new Builder(parent);
+      return builder;
+    }
+    /**
+     * Protobuf type {@code qorechain.pqc.v1.MsgClearEVMDelegationResponse}
+     */
+    public static final class Builder extends
+        com.google.protobuf.GeneratedMessage.Builder<Builder> implements
+        // @@protoc_insertion_point(builder_implements:qorechain.pqc.v1.MsgClearEVMDelegationResponse)
+        qorechain.pqc.v1.Tx.MsgClearEVMDelegationResponseOrBuilder {
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return qorechain.pqc.v1.Tx.internal_static_qorechain_pqc_v1_MsgClearEVMDelegationResponse_descriptor;
+      }
+
+      @java.lang.Override
+      protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return qorechain.pqc.v1.Tx.internal_static_qorechain_pqc_v1_MsgClearEVMDelegationResponse_fieldAccessorTable
+            .ensureFieldAccessorsInitialized(
+                qorechain.pqc.v1.Tx.MsgClearEVMDelegationResponse.class, qorechain.pqc.v1.Tx.MsgClearEVMDelegationResponse.Builder.class);
+      }
+
+      // Construct using qorechain.pqc.v1.Tx.MsgClearEVMDelegationResponse.newBuilder()
+      private Builder() {
+
+      }
+
+      private Builder(
+          com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+        super(parent);
+
+      }
+      @java.lang.Override
+      public Builder clear() {
+        super.clear();
+        return this;
+      }
+
+      @java.lang.Override
+      public com.google.protobuf.Descriptors.Descriptor
+          getDescriptorForType() {
+        return qorechain.pqc.v1.Tx.internal_static_qorechain_pqc_v1_MsgClearEVMDelegationResponse_descriptor;
+      }
+
+      @java.lang.Override
+      public qorechain.pqc.v1.Tx.MsgClearEVMDelegationResponse getDefaultInstanceForType() {
+        return qorechain.pqc.v1.Tx.MsgClearEVMDelegationResponse.getDefaultInstance();
+      }
+
+      @java.lang.Override
+      public qorechain.pqc.v1.Tx.MsgClearEVMDelegationResponse build() {
+        qorechain.pqc.v1.Tx.MsgClearEVMDelegationResponse result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(result);
+        }
+        return result;
+      }
+
+      @java.lang.Override
+      public qorechain.pqc.v1.Tx.MsgClearEVMDelegationResponse buildPartial() {
+        qorechain.pqc.v1.Tx.MsgClearEVMDelegationResponse result = new qorechain.pqc.v1.Tx.MsgClearEVMDelegationResponse(this);
+        onBuilt();
+        return result;
+      }
+
+      @java.lang.Override
+      public Builder mergeFrom(com.google.protobuf.Message other) {
+        if (other instanceof qorechain.pqc.v1.Tx.MsgClearEVMDelegationResponse) {
+          return mergeFrom((qorechain.pqc.v1.Tx.MsgClearEVMDelegationResponse)other);
+        } else {
+          super.mergeFrom(other);
+          return this;
+        }
+      }
+
+      public Builder mergeFrom(qorechain.pqc.v1.Tx.MsgClearEVMDelegationResponse other) {
+        if (other == qorechain.pqc.v1.Tx.MsgClearEVMDelegationResponse.getDefaultInstance()) return this;
+        this.mergeUnknownFields(other.getUnknownFields());
+        onChanged();
+        return this;
+      }
+
+      @java.lang.Override
+      public final boolean isInitialized() {
+        return true;
+      }
+
+      @java.lang.Override
+      public Builder mergeFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        if (extensionRegistry == null) {
+          throw new java.lang.NullPointerException();
+        }
+        try {
+          boolean done = false;
+          while (!done) {
+            int tag = input.readTag();
+            switch (tag) {
+              case 0:
+                done = true;
+                break;
+              default: {
+                if (!super.parseUnknownField(input, extensionRegistry, tag)) {
+                  done = true; // was an endgroup tag
+                }
+                break;
+              } // default:
+            } // switch (tag)
+          } // while (!done)
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          throw e.unwrapIOException();
+        } finally {
+          onChanged();
+        } // finally
+        return this;
+      }
+
+      // @@protoc_insertion_point(builder_scope:qorechain.pqc.v1.MsgClearEVMDelegationResponse)
+    }
+
+    // @@protoc_insertion_point(class_scope:qorechain.pqc.v1.MsgClearEVMDelegationResponse)
+    private static final qorechain.pqc.v1.Tx.MsgClearEVMDelegationResponse DEFAULT_INSTANCE;
+    static {
+      DEFAULT_INSTANCE = new qorechain.pqc.v1.Tx.MsgClearEVMDelegationResponse();
+    }
+
+    public static qorechain.pqc.v1.Tx.MsgClearEVMDelegationResponse getDefaultInstance() {
+      return DEFAULT_INSTANCE;
+    }
+
+    private static final com.google.protobuf.Parser<MsgClearEVMDelegationResponse>
+        PARSER = new com.google.protobuf.AbstractParser<MsgClearEVMDelegationResponse>() {
+      @java.lang.Override
+      public MsgClearEVMDelegationResponse parsePartialFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        Builder builder = newBuilder();
+        try {
+          builder.mergeFrom(input, extensionRegistry);
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          throw e.setUnfinishedMessage(builder.buildPartial());
+        } catch (com.google.protobuf.UninitializedMessageException e) {
+          throw e.asInvalidProtocolBufferException().setUnfinishedMessage(builder.buildPartial());
+        } catch (java.io.IOException e) {
+          throw new com.google.protobuf.InvalidProtocolBufferException(e)
+              .setUnfinishedMessage(builder.buildPartial());
+        }
+        return builder.buildPartial();
+      }
+    };
+
+    public static com.google.protobuf.Parser<MsgClearEVMDelegationResponse> parser() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Parser<MsgClearEVMDelegationResponse> getParserForType() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public qorechain.pqc.v1.Tx.MsgClearEVMDelegationResponse getDefaultInstanceForType() {
+      return DEFAULT_INSTANCE;
+    }
+
+  }
+
   private static final com.google.protobuf.Descriptors.Descriptor
     internal_static_qorechain_pqc_v1_MsgRegisterPQCKey_descriptor;
   private static final 
@@ -9436,6 +11588,26 @@ public final class Tx extends com.google.protobuf.GeneratedFile {
   private static final 
     com.google.protobuf.GeneratedMessage.FieldAccessorTable
       internal_static_qorechain_pqc_v1_MsgCloseEVMWindowResponse_fieldAccessorTable;
+  private static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_qorechain_pqc_v1_MsgAuthorizeEVMDelegation_descriptor;
+  private static final 
+    com.google.protobuf.GeneratedMessage.FieldAccessorTable
+      internal_static_qorechain_pqc_v1_MsgAuthorizeEVMDelegation_fieldAccessorTable;
+  private static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_qorechain_pqc_v1_MsgAuthorizeEVMDelegationResponse_descriptor;
+  private static final 
+    com.google.protobuf.GeneratedMessage.FieldAccessorTable
+      internal_static_qorechain_pqc_v1_MsgAuthorizeEVMDelegationResponse_fieldAccessorTable;
+  private static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_qorechain_pqc_v1_MsgClearEVMDelegation_descriptor;
+  private static final 
+    com.google.protobuf.GeneratedMessage.FieldAccessorTable
+      internal_static_qorechain_pqc_v1_MsgClearEVMDelegation_fieldAccessorTable;
+  private static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_qorechain_pqc_v1_MsgClearEVMDelegationResponse_descriptor;
+  private static final 
+    com.google.protobuf.GeneratedMessage.FieldAccessorTable
+      internal_static_qorechain_pqc_v1_MsgClearEVMDelegationResponse_fieldAccessorTable;
 
   public static com.google.protobuf.Descriptors.FileDescriptor
       getDescriptor() {
@@ -9499,29 +11671,44 @@ public final class Tx extends com.google.protobuf.GeneratedFile {
       "\n\rexpiry_height\030\001 \001(\004R\014expiryHeight\"R\n\021M" +
       "sgCloseEVMWindow\0220\n\006sender\030\001 \001(\tB\030\322\264-\024co" +
       "smos.AddressStringR\006sender:\013\202\347\260*\006sender\"" +
-      "\033\n\031MsgCloseEVMWindowResponse2\270\006\n\003Msg\022b\n\016" +
-      "RegisterPQCKey\022#.qorechain.pqc.v1.MsgReg" +
-      "isterPQCKey\032+.qorechain.pqc.v1.MsgRegist" +
-      "erPQCKeyResponse\022h\n\020RegisterPQCKeyV2\022%.q" +
-      "orechain.pqc.v1.MsgRegisterPQCKeyV2\032-.qo" +
-      "rechain.pqc.v1.MsgRegisterPQCKeyV2Respon" +
-      "se\022_\n\rMigratePQCKey\022\".qorechain.pqc.v1.M" +
-      "sgMigratePQCKey\032*.qorechain.pqc.v1.MsgMi" +
-      "gratePQCKeyResponse\022\\\n\014RotatePQCKey\022!.qo" +
-      "rechain.pqc.v1.MsgRotatePQCKey\032).qorecha" +
-      "in.pqc.v1.MsgRotatePQCKeyResponse\022n\n\022Dep" +
-      "recateAlgorithm\022\'.qorechain.pqc.v1.MsgDe" +
-      "precateAlgorithm\032/.qorechain.pqc.v1.MsgD" +
-      "eprecateAlgorithmResponse\022h\n\020DisableAlgo" +
-      "rithm\022%.qorechain.pqc.v1.MsgDisableAlgor" +
-      "ithm\032-.qorechain.pqc.v1.MsgDisableAlgori" +
-      "thmResponse\022_\n\rOpenEVMWindow\022\".qorechain" +
-      ".pqc.v1.MsgOpenEVMWindow\032*.qorechain.pqc" +
-      ".v1.MsgOpenEVMWindowResponse\022b\n\016CloseEVM" +
-      "Window\022#.qorechain.pqc.v1.MsgCloseEVMWin" +
-      "dow\032+.qorechain.pqc.v1.MsgCloseEVMWindow" +
-      "Response\032\005\200\347\260*\001B1Z/github.com/qorechain/" +
-      "qorechain-core/x/pqc/typesb\006proto3"
+      "\033\n\031MsgCloseEVMWindowResponse\"\216\001\n\031MsgAuth" +
+      "orizeEVMDelegation\0220\n\006sender\030\001 \001(\tB\030\322\264-\024" +
+      "cosmos.AddressStringR\006sender\022\032\n\010delegate" +
+      "\030\002 \001(\tR\010delegate\022\026\n\006blocks\030\003 \001(\004R\006blocks" +
+      ":\013\202\347\260*\006sender\"H\n!MsgAuthorizeEVMDelegati" +
+      "onResponse\022#\n\rexpiry_height\030\001 \001(\004R\014expir" +
+      "yHeight\"V\n\025MsgClearEVMDelegation\0220\n\006send" +
+      "er\030\001 \001(\tB\030\322\264-\024cosmos.AddressStringR\006send" +
+      "er:\013\202\347\260*\006sender\"\037\n\035MsgClearEVMDelegation" +
+      "Response2\244\010\n\003Msg\022b\n\016RegisterPQCKey\022#.qor" +
+      "echain.pqc.v1.MsgRegisterPQCKey\032+.qorech" +
+      "ain.pqc.v1.MsgRegisterPQCKeyResponse\022h\n\020" +
+      "RegisterPQCKeyV2\022%.qorechain.pqc.v1.MsgR" +
+      "egisterPQCKeyV2\032-.qorechain.pqc.v1.MsgRe" +
+      "gisterPQCKeyV2Response\022_\n\rMigratePQCKey\022" +
+      "\".qorechain.pqc.v1.MsgMigratePQCKey\032*.qo" +
+      "rechain.pqc.v1.MsgMigratePQCKeyResponse\022" +
+      "\\\n\014RotatePQCKey\022!.qorechain.pqc.v1.MsgRo" +
+      "tatePQCKey\032).qorechain.pqc.v1.MsgRotateP" +
+      "QCKeyResponse\022n\n\022DeprecateAlgorithm\022\'.qo" +
+      "rechain.pqc.v1.MsgDeprecateAlgorithm\032/.q" +
+      "orechain.pqc.v1.MsgDeprecateAlgorithmRes" +
+      "ponse\022h\n\020DisableAlgorithm\022%.qorechain.pq" +
+      "c.v1.MsgDisableAlgorithm\032-.qorechain.pqc" +
+      ".v1.MsgDisableAlgorithmResponse\022_\n\rOpenE" +
+      "VMWindow\022\".qorechain.pqc.v1.MsgOpenEVMWi" +
+      "ndow\032*.qorechain.pqc.v1.MsgOpenEVMWindow" +
+      "Response\022b\n\016CloseEVMWindow\022#.qorechain.p" +
+      "qc.v1.MsgCloseEVMWindow\032+.qorechain.pqc." +
+      "v1.MsgCloseEVMWindowResponse\022z\n\026Authoriz" +
+      "eEVMDelegation\022+.qorechain.pqc.v1.MsgAut" +
+      "horizeEVMDelegation\0323.qorechain.pqc.v1.M" +
+      "sgAuthorizeEVMDelegationResponse\022n\n\022Clea" +
+      "rEVMDelegation\022\'.qorechain.pqc.v1.MsgCle" +
+      "arEVMDelegation\032/.qorechain.pqc.v1.MsgCl" +
+      "earEVMDelegationResponse\032\005\200\347\260*\001B1Z/githu" +
+      "b.com/qorechain/qorechain-core/x/pqc/typ" +
+      "esb\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
@@ -9625,6 +11812,30 @@ public final class Tx extends com.google.protobuf.GeneratedFile {
     internal_static_qorechain_pqc_v1_MsgCloseEVMWindowResponse_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_qorechain_pqc_v1_MsgCloseEVMWindowResponse_descriptor,
+        new java.lang.String[] { });
+    internal_static_qorechain_pqc_v1_MsgAuthorizeEVMDelegation_descriptor =
+      getDescriptor().getMessageType(16);
+    internal_static_qorechain_pqc_v1_MsgAuthorizeEVMDelegation_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessage.FieldAccessorTable(
+        internal_static_qorechain_pqc_v1_MsgAuthorizeEVMDelegation_descriptor,
+        new java.lang.String[] { "Sender", "Delegate", "Blocks", });
+    internal_static_qorechain_pqc_v1_MsgAuthorizeEVMDelegationResponse_descriptor =
+      getDescriptor().getMessageType(17);
+    internal_static_qorechain_pqc_v1_MsgAuthorizeEVMDelegationResponse_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessage.FieldAccessorTable(
+        internal_static_qorechain_pqc_v1_MsgAuthorizeEVMDelegationResponse_descriptor,
+        new java.lang.String[] { "ExpiryHeight", });
+    internal_static_qorechain_pqc_v1_MsgClearEVMDelegation_descriptor =
+      getDescriptor().getMessageType(18);
+    internal_static_qorechain_pqc_v1_MsgClearEVMDelegation_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessage.FieldAccessorTable(
+        internal_static_qorechain_pqc_v1_MsgClearEVMDelegation_descriptor,
+        new java.lang.String[] { "Sender", });
+    internal_static_qorechain_pqc_v1_MsgClearEVMDelegationResponse_descriptor =
+      getDescriptor().getMessageType(19);
+    internal_static_qorechain_pqc_v1_MsgClearEVMDelegationResponse_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessage.FieldAccessorTable(
+        internal_static_qorechain_pqc_v1_MsgClearEVMDelegationResponse_descriptor,
         new java.lang.String[] { });
     descriptor.resolveAllFeaturesImmutable();
     cosmos.msg.v1.Msg.getDescriptor();

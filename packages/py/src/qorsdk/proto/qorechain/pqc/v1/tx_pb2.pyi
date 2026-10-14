@@ -136,3 +136,29 @@ class MsgCloseEVMWindow(_message.Message):
 class MsgCloseEVMWindowResponse(_message.Message):
     __slots__ = ()
     def __init__(self) -> None: ...
+
+class MsgAuthorizeEVMDelegation(_message.Message):
+    __slots__ = ("sender", "delegate", "blocks")
+    SENDER_FIELD_NUMBER: _ClassVar[int]
+    DELEGATE_FIELD_NUMBER: _ClassVar[int]
+    BLOCKS_FIELD_NUMBER: _ClassVar[int]
+    sender: str
+    delegate: str
+    blocks: int
+    def __init__(self, sender: _Optional[str] = ..., delegate: _Optional[str] = ..., blocks: _Optional[int] = ...) -> None: ...
+
+class MsgAuthorizeEVMDelegationResponse(_message.Message):
+    __slots__ = ("expiry_height",)
+    EXPIRY_HEIGHT_FIELD_NUMBER: _ClassVar[int]
+    expiry_height: int
+    def __init__(self, expiry_height: _Optional[int] = ...) -> None: ...
+
+class MsgClearEVMDelegation(_message.Message):
+    __slots__ = ("sender",)
+    SENDER_FIELD_NUMBER: _ClassVar[int]
+    sender: str
+    def __init__(self, sender: _Optional[str] = ...) -> None: ...
+
+class MsgClearEVMDelegationResponse(_message.Message):
+    __slots__ = ()
+    def __init__(self) -> None: ...

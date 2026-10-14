@@ -290,6 +290,7 @@ async fn typed_abstractaccount_permission_schema_query_decodes_response() {
             "/qorechain.abstractaccount.v1.MsgRegisterAuthenticator".into(),
             "/qorechain.abstractaccount.v1.MsgRevokeAuthenticator".into(),
         ],
+        lane_rules: vec![],
     };
     let value_b64 = BASE64.encode(prost::Message::encode_to_vec(&resp));
     let server = MockServer::start(value_b64).await;

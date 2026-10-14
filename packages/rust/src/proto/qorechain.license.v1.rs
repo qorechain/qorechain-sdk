@@ -17,6 +17,10 @@ pub struct LicenseView {
     pub suspended: bool,
     #[prost(string, tag="7")]
     pub metadata: ::prost::alloc::string::String,
+    /// active is true when the grant is not suspended and has not expired at the
+    /// height the query was served at (expires_at 0 never expires).
+    #[prost(bool, tag="8")]
+    pub active: bool,
 }
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct QueryCheckRequest {
@@ -29,7 +33,10 @@ pub struct QueryCheckRequest {
 pub struct QueryCheckResponse {
     #[prost(message, optional, tag="1")]
     pub license: ::core::option::Option<LicenseView>,
-    /// active is true when the grant exists and is not suspended.
+    /// active is true when the grant exists, is not suspended and has not
+    /// expired at the height the query was served at. An expired grant stays in
+    /// the store until the next sweep but is reported inactive from its
+    /// expires_at height on.
     #[prost(bool, tag="2")]
     pub active: bool,
 }

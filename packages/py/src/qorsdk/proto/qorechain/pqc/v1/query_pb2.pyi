@@ -5,6 +5,30 @@ from typing import ClassVar as _ClassVar, Mapping as _Mapping, Optional as _Opti
 
 DESCRIPTOR: _descriptor.FileDescriptor
 
+class QueryEVMDelegationConsentRequest(_message.Message):
+    __slots__ = ("address",)
+    ADDRESS_FIELD_NUMBER: _ClassVar[int]
+    address: str
+    def __init__(self, address: _Optional[str] = ...) -> None: ...
+
+class QueryEVMDelegationConsentResponse(_message.Message):
+    __slots__ = ("found", "live", "delegate", "granted_height", "expiry_height", "current_delegate", "nonce")
+    FOUND_FIELD_NUMBER: _ClassVar[int]
+    LIVE_FIELD_NUMBER: _ClassVar[int]
+    DELEGATE_FIELD_NUMBER: _ClassVar[int]
+    GRANTED_HEIGHT_FIELD_NUMBER: _ClassVar[int]
+    EXPIRY_HEIGHT_FIELD_NUMBER: _ClassVar[int]
+    CURRENT_DELEGATE_FIELD_NUMBER: _ClassVar[int]
+    NONCE_FIELD_NUMBER: _ClassVar[int]
+    found: bool
+    live: bool
+    delegate: str
+    granted_height: int
+    expiry_height: int
+    current_delegate: str
+    nonce: int
+    def __init__(self, found: bool = ..., live: bool = ..., delegate: _Optional[str] = ..., granted_height: _Optional[int] = ..., expiry_height: _Optional[int] = ..., current_delegate: _Optional[str] = ..., nonce: _Optional[int] = ...) -> None: ...
+
 class QueryEVMWindowRequest(_message.Message):
     __slots__ = ("address",)
     ADDRESS_FIELD_NUMBER: _ClassVar[int]
@@ -52,7 +76,7 @@ class QueryAccountResponse(_message.Message):
     def __init__(self, found: bool = ..., account: _Optional[_Union[PQCAccountView, _Mapping]] = ...) -> None: ...
 
 class PQCAccountView(_message.Message):
-    __slots__ = ("address", "public_key", "algorithm_id", "algorithm_name", "ecdsa_pubkey", "key_type", "created_at_height", "migration_public_key", "migration_algorithm_id")
+    __slots__ = ("address", "public_key", "algorithm_id", "algorithm_name", "ecdsa_pubkey", "key_type", "created_at_height", "migration_public_key", "migration_algorithm_id", "classical_key_source")
     ADDRESS_FIELD_NUMBER: _ClassVar[int]
     PUBLIC_KEY_FIELD_NUMBER: _ClassVar[int]
     ALGORITHM_ID_FIELD_NUMBER: _ClassVar[int]
@@ -62,6 +86,7 @@ class PQCAccountView(_message.Message):
     CREATED_AT_HEIGHT_FIELD_NUMBER: _ClassVar[int]
     MIGRATION_PUBLIC_KEY_FIELD_NUMBER: _ClassVar[int]
     MIGRATION_ALGORITHM_ID_FIELD_NUMBER: _ClassVar[int]
+    CLASSICAL_KEY_SOURCE_FIELD_NUMBER: _ClassVar[int]
     address: str
     public_key: bytes
     algorithm_id: int
@@ -71,4 +96,5 @@ class PQCAccountView(_message.Message):
     created_at_height: int
     migration_public_key: bytes
     migration_algorithm_id: int
-    def __init__(self, address: _Optional[str] = ..., public_key: _Optional[bytes] = ..., algorithm_id: _Optional[int] = ..., algorithm_name: _Optional[str] = ..., ecdsa_pubkey: _Optional[bytes] = ..., key_type: _Optional[str] = ..., created_at_height: _Optional[int] = ..., migration_public_key: _Optional[bytes] = ..., migration_algorithm_id: _Optional[int] = ...) -> None: ...
+    classical_key_source: str
+    def __init__(self, address: _Optional[str] = ..., public_key: _Optional[bytes] = ..., algorithm_id: _Optional[int] = ..., algorithm_name: _Optional[str] = ..., ecdsa_pubkey: _Optional[bytes] = ..., key_type: _Optional[str] = ..., created_at_height: _Optional[int] = ..., migration_public_key: _Optional[bytes] = ..., migration_algorithm_id: _Optional[int] = ..., classical_key_source: _Optional[str] = ...) -> None: ...

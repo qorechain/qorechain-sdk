@@ -10,13 +10,70 @@ import { Coin } from "../../../cosmos/base/v1beta1/coin";
 
 export const protobufPackage = "qorechain.abstractaccount.v1";
 
-/** SpendingRule defines spending limits for an abstract account. */
+/**
+ * SpendingRule defines spending limits for an abstract account.
+ *
+ * Every limit is counted per AUTHORISED EXECUTION: one signed MsgExecuteCosmos,
+ * one signed MsgExecuteEVM or one authorised SVM execution. Several authorised
+ * executions in one outer transaction are each checked on their own; daily
+ * limits bound their total per UTC calendar day (a fixed day, not a rolling
+ * window).
+ */
 export interface SpendingRule {
   id: string;
+  /**
+   * daily_limit bounds the total outflow of one denom per UTC calendar day, in
+   * base units. It applies to every denom that has no denom_limits entry. Zero
+   * means no daily limit.
+   */
   dailyLimit: string;
+  /**
+   * per_tx_limit is the maximum outflow of one denom per authorised execution
+   * (see above), in base units. It applies to every denom that has no
+   * denom_limits entry. Zero means no per-execution limit. What counts as
+   * outflow depends on the lane: the Cosmos lane counts the signed amount; the
+   * SVM lane counts the net decrease of the account's native balance across the
+   * execution; the EVM lane counts msg.value only until v3.2.2 and, from
+   * v3.2.2, the measured outflow of the call (native value, native balance
+   * decrease, bank coins spent and the balance or allowance change of every
+   * listed ERC-20). The name is kept for wire compatibility.
+   */
   perTxLimit: string;
+  /**
+   * allowed_denoms lists the denoms the rule's keys may move. Empty means any.
+   * An ERC-20 is listed as "erc20/<contract>".
+   */
   allowedDenoms: string[];
   enabled: boolean;
+  /**
+   * allowed_evm_calls (v3.2.2) lists the EVM calls a key bound by this rule may
+   * make with call data, as "0x<target>" (any function of that contract) or
+   * "0x<target>/0x<selector>" (that function only). Without an entry a
+   * rule-bound key may only send value, deploy (with the deploy permission)
+   * and move the ERC-20 tokens listed in allowed_denoms. Allowlisting a target
+   * trusts every argument of the calls made to it, recipients included. NFTs
+   * (ERC-721, ERC-1155) move only through contracts listed here and are not
+   * capped.
+   */
+  allowedEvmCalls: string[];
+  /**
+   * denom_limits (v3.2.2) sets per-denom limits that replace per_tx_limit and
+   * daily_limit for the denoms they name, with amounts as decimal integers so
+   * 18-decimal tokens can be capped. A denom without an entry keeps the rule's
+   * per_tx_limit and daily_limit.
+   */
+  denomLimits: DenomLimit[];
+}
+
+/**
+ * DenomLimit is a per-denom limit of a SpendingRule (v3.2.2). The amounts are
+ * decimal integers in the denom's base units; empty or "0" means no limit of
+ * that kind.
+ */
+export interface DenomLimit {
+  denom: string;
+  perTxLimit: string;
+  dailyLimit: string;
 }
 
 export interface MsgCreateAbstractAccount {
@@ -78,10 +135,11 @@ export interface MsgRevokeAuthenticatorResponse {
  * authenticator (v3.1.85). The relayer submits + pays fees; the authenticator
  * (scheme,pubkey) signs the domain-separated sign-bytes binding chain-id, the
  * canonical account, the pubkey, to/value/data and the account's expected EVM
- * nonce (replay protection — the nonce must equal the account's current EVM
- * nonce, and executing the call increments it, so a signature cannot be replayed).
- * The chain resolves the authenticator, checks the "evm" permission + SpendingRule
- * against `value`, then executes the call FROM the canonical account's EVM address.
+ * nonce (replay protection: the nonce must equal the linked key's current
+ * authenticator sequence, which a successful call increments).
+ * The chain resolves the authenticator, checks the "evm" permission ("deploy"
+ * for a contract creation from v3.2.2) and the SpendingRule, then executes the
+ * call FROM the canonical account's EVM address.
  */
 export interface MsgExecuteEVM {
   relayer: string;
@@ -100,7 +158,7 @@ export interface MsgExecuteEVM {
   /** EVM calldata */
   data: Uint8Array;
   gasLimit: string;
-  /** MUST equal the account's current EVM nonce */
+  /** MUST equal the linked key's current authenticator sequence */
   nonce: string;
 }
 
@@ -147,7 +205,15 @@ export interface MsgExecuteCosmosResponse {
 }
 
 function createBaseSpendingRule(): SpendingRule {
-  return { id: "", dailyLimit: "0", perTxLimit: "0", allowedDenoms: [], enabled: false };
+  return {
+    id: "",
+    dailyLimit: "0",
+    perTxLimit: "0",
+    allowedDenoms: [],
+    enabled: false,
+    allowedEvmCalls: [],
+    denomLimits: [],
+  };
 }
 
 export const SpendingRule: MessageFns<SpendingRule> = {
@@ -166,6 +232,12 @@ export const SpendingRule: MessageFns<SpendingRule> = {
     }
     if (message.enabled !== false) {
       writer.uint32(40).bool(message.enabled);
+    }
+    for (const v of message.allowedEvmCalls) {
+      writer.uint32(50).string(v!);
+    }
+    for (const v of message.denomLimits) {
+      DenomLimit.encode(v!, writer.uint32(58).fork()).join();
     }
     return writer;
   },
@@ -217,6 +289,22 @@ export const SpendingRule: MessageFns<SpendingRule> = {
           message.enabled = reader.bool();
           continue;
         }
+        case 6: {
+          if (tag !== 50) {
+            break;
+          }
+
+          message.allowedEvmCalls.push(reader.string());
+          continue;
+        }
+        case 7: {
+          if (tag !== 58) {
+            break;
+          }
+
+          message.denomLimits.push(DenomLimit.decode(reader, reader.uint32()));
+          continue;
+        }
       }
       if ((tag & 7) === 4 || tag === 0) {
         break;
@@ -245,6 +333,16 @@ export const SpendingRule: MessageFns<SpendingRule> = {
         ? object.allowed_denoms.map((e: any) => globalThis.String(e))
         : [],
       enabled: isSet(object.enabled) ? globalThis.Boolean(object.enabled) : false,
+      allowedEvmCalls: globalThis.Array.isArray(object?.allowedEvmCalls)
+        ? object.allowedEvmCalls.map((e: any) => globalThis.String(e))
+        : globalThis.Array.isArray(object?.allowed_evm_calls)
+        ? object.allowed_evm_calls.map((e: any) => globalThis.String(e))
+        : [],
+      denomLimits: globalThis.Array.isArray(object?.denomLimits)
+        ? object.denomLimits.map((e: any) => DenomLimit.fromJSON(e))
+        : globalThis.Array.isArray(object?.denom_limits)
+        ? object.denom_limits.map((e: any) => DenomLimit.fromJSON(e))
+        : [],
     };
   },
 
@@ -265,6 +363,12 @@ export const SpendingRule: MessageFns<SpendingRule> = {
     if (message.enabled !== false) {
       obj.enabled = message.enabled;
     }
+    if (message.allowedEvmCalls?.length) {
+      obj.allowedEvmCalls = message.allowedEvmCalls;
+    }
+    if (message.denomLimits?.length) {
+      obj.denomLimits = message.denomLimits.map((e) => DenomLimit.toJSON(e));
+    }
     return obj;
   },
 
@@ -278,6 +382,108 @@ export const SpendingRule: MessageFns<SpendingRule> = {
     message.perTxLimit = object.perTxLimit ?? "0";
     message.allowedDenoms = object.allowedDenoms?.map((e) => e) || [];
     message.enabled = object.enabled ?? false;
+    message.allowedEvmCalls = object.allowedEvmCalls?.map((e) => e) || [];
+    message.denomLimits = object.denomLimits?.map((e) => DenomLimit.fromPartial(e)) || [];
+    return message;
+  },
+};
+
+function createBaseDenomLimit(): DenomLimit {
+  return { denom: "", perTxLimit: "", dailyLimit: "" };
+}
+
+export const DenomLimit: MessageFns<DenomLimit> = {
+  encode(message: DenomLimit, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.denom !== "") {
+      writer.uint32(10).string(message.denom);
+    }
+    if (message.perTxLimit !== "") {
+      writer.uint32(18).string(message.perTxLimit);
+    }
+    if (message.dailyLimit !== "") {
+      writer.uint32(26).string(message.dailyLimit);
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): DenomLimit {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseDenomLimit();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.denom = reader.string();
+          continue;
+        }
+        case 2: {
+          if (tag !== 18) {
+            break;
+          }
+
+          message.perTxLimit = reader.string();
+          continue;
+        }
+        case 3: {
+          if (tag !== 26) {
+            break;
+          }
+
+          message.dailyLimit = reader.string();
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(object: any): DenomLimit {
+    return {
+      denom: isSet(object.denom) ? globalThis.String(object.denom) : "",
+      perTxLimit: isSet(object.perTxLimit)
+        ? globalThis.String(object.perTxLimit)
+        : isSet(object.per_tx_limit)
+        ? globalThis.String(object.per_tx_limit)
+        : "",
+      dailyLimit: isSet(object.dailyLimit)
+        ? globalThis.String(object.dailyLimit)
+        : isSet(object.daily_limit)
+        ? globalThis.String(object.daily_limit)
+        : "",
+    };
+  },
+
+  toJSON(message: DenomLimit): unknown {
+    const obj: any = {};
+    if (message.denom !== "") {
+      obj.denom = message.denom;
+    }
+    if (message.perTxLimit !== "") {
+      obj.perTxLimit = message.perTxLimit;
+    }
+    if (message.dailyLimit !== "") {
+      obj.dailyLimit = message.dailyLimit;
+    }
+    return obj;
+  },
+
+  create(base?: DeepPartial<DenomLimit>): DenomLimit {
+    return DenomLimit.fromPartial(base ?? {});
+  },
+  fromPartial(object: DeepPartial<DenomLimit>): DenomLimit {
+    const message = createBaseDenomLimit();
+    message.denom = object.denom ?? "";
+    message.perTxLimit = object.perTxLimit ?? "";
+    message.dailyLimit = object.dailyLimit ?? "";
     return message;
   },
 };

@@ -127,12 +127,14 @@ class QueryQuoteExactInRequest(_message.Message):
     def __init__(self, pool_id: _Optional[int] = ..., denom_in: _Optional[str] = ..., amount_in: _Optional[str] = ...) -> None: ...
 
 class QueryQuoteExactInResponse(_message.Message):
-    __slots__ = ("amount_out", "fee")
+    __slots__ = ("amount_out", "fee", "impact_bps")
     AMOUNT_OUT_FIELD_NUMBER: _ClassVar[int]
     FEE_FIELD_NUMBER: _ClassVar[int]
+    IMPACT_BPS_FIELD_NUMBER: _ClassVar[int]
     amount_out: str
     fee: str
-    def __init__(self, amount_out: _Optional[str] = ..., fee: _Optional[str] = ...) -> None: ...
+    impact_bps: int
+    def __init__(self, amount_out: _Optional[str] = ..., fee: _Optional[str] = ..., impact_bps: _Optional[int] = ...) -> None: ...
 
 class QueryQuoteExactOutRequest(_message.Message):
     __slots__ = ("pool_id", "denom_out", "amount_out")
@@ -145,9 +147,11 @@ class QueryQuoteExactOutRequest(_message.Message):
     def __init__(self, pool_id: _Optional[int] = ..., denom_out: _Optional[str] = ..., amount_out: _Optional[str] = ...) -> None: ...
 
 class QueryQuoteExactOutResponse(_message.Message):
-    __slots__ = ("amount_in", "fee")
+    __slots__ = ("amount_in", "fee", "impact_bps")
     AMOUNT_IN_FIELD_NUMBER: _ClassVar[int]
     FEE_FIELD_NUMBER: _ClassVar[int]
+    IMPACT_BPS_FIELD_NUMBER: _ClassVar[int]
     amount_in: str
     fee: str
-    def __init__(self, amount_in: _Optional[str] = ..., fee: _Optional[str] = ...) -> None: ...
+    impact_bps: int
+    def __init__(self, amount_in: _Optional[str] = ..., fee: _Optional[str] = ..., impact_bps: _Optional[int] = ...) -> None: ...

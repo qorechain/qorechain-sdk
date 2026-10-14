@@ -29,7 +29,7 @@ class MsgCreateRollupResponse(_message.Message):
     def __init__(self, rollup_id: _Optional[str] = ...) -> None: ...
 
 class MsgSubmitBatch(_message.Message):
-    __slots__ = ("sequencer", "rollup_id", "batch_index", "state_root", "prev_state_root", "tx_count", "data_hash", "proof", "withdrawals_root")
+    __slots__ = ("sequencer", "rollup_id", "batch_index", "state_root", "prev_state_root", "tx_count", "data_hash", "proof", "withdrawals_root", "anchor_signature", "validator_set_hash")
     SEQUENCER_FIELD_NUMBER: _ClassVar[int]
     ROLLUP_ID_FIELD_NUMBER: _ClassVar[int]
     BATCH_INDEX_FIELD_NUMBER: _ClassVar[int]
@@ -39,6 +39,8 @@ class MsgSubmitBatch(_message.Message):
     DATA_HASH_FIELD_NUMBER: _ClassVar[int]
     PROOF_FIELD_NUMBER: _ClassVar[int]
     WITHDRAWALS_ROOT_FIELD_NUMBER: _ClassVar[int]
+    ANCHOR_SIGNATURE_FIELD_NUMBER: _ClassVar[int]
+    VALIDATOR_SET_HASH_FIELD_NUMBER: _ClassVar[int]
     sequencer: str
     rollup_id: str
     batch_index: int
@@ -48,7 +50,9 @@ class MsgSubmitBatch(_message.Message):
     data_hash: bytes
     proof: bytes
     withdrawals_root: bytes
-    def __init__(self, sequencer: _Optional[str] = ..., rollup_id: _Optional[str] = ..., batch_index: _Optional[int] = ..., state_root: _Optional[bytes] = ..., prev_state_root: _Optional[bytes] = ..., tx_count: _Optional[int] = ..., data_hash: _Optional[bytes] = ..., proof: _Optional[bytes] = ..., withdrawals_root: _Optional[bytes] = ...) -> None: ...
+    anchor_signature: bytes
+    validator_set_hash: bytes
+    def __init__(self, sequencer: _Optional[str] = ..., rollup_id: _Optional[str] = ..., batch_index: _Optional[int] = ..., state_root: _Optional[bytes] = ..., prev_state_root: _Optional[bytes] = ..., tx_count: _Optional[int] = ..., data_hash: _Optional[bytes] = ..., proof: _Optional[bytes] = ..., withdrawals_root: _Optional[bytes] = ..., anchor_signature: _Optional[bytes] = ..., validator_set_hash: _Optional[bytes] = ...) -> None: ...
 
 class MsgSubmitBatchResponse(_message.Message):
     __slots__ = ()

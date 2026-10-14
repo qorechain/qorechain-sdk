@@ -90,6 +90,48 @@ export interface QueryLatestBatchResponse {
   batch?: BatchView | undefined;
 }
 
+export interface QueryBatchesRequest {
+  rollupId: string;
+  /** start_index is the first batch index returned. */
+  startIndex: string;
+  /**
+   * limit caps the number of batches returned: 0 means 50, and more than 100
+   * is capped at 100.
+   */
+  limit: number;
+}
+
+export interface QueryBatchesResponse {
+  batches: BatchView[];
+  /** next_index is the start_index of the next page, 0 when there is none. */
+  nextIndex: string;
+}
+
+/**
+ * BlobView is the query-facing view of a data-availability blob, without the
+ * blob data itself.
+ */
+export interface BlobView {
+  rollupId: string;
+  blobIndex: string;
+  commitment: string;
+  dataSize: string;
+  height: string;
+  storedAt: string;
+  pruned: boolean;
+  /** expires_at_height is the height after which the blob may be pruned. */
+  expiresAtHeight: string;
+}
+
+export interface QueryBlobRequest {
+  rollupId: string;
+  blobIndex: string;
+}
+
+export interface QueryBlobResponse {
+  blob?: BlobView | undefined;
+}
+
 function createBaseParamsView(): ParamsView {
   return {
     maxRollups: 0,
@@ -1437,7 +1479,536 @@ export const QueryLatestBatchResponse: MessageFns<QueryLatestBatchResponse> = {
   },
 };
 
-/** Query defines the gRPC query service for the rdk (rollup) module. */
+function createBaseQueryBatchesRequest(): QueryBatchesRequest {
+  return { rollupId: "", startIndex: "0", limit: 0 };
+}
+
+export const QueryBatchesRequest: MessageFns<QueryBatchesRequest> = {
+  encode(message: QueryBatchesRequest, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.rollupId !== "") {
+      writer.uint32(10).string(message.rollupId);
+    }
+    if (message.startIndex !== "0") {
+      writer.uint32(16).uint64(message.startIndex);
+    }
+    if (message.limit !== 0) {
+      writer.uint32(24).uint32(message.limit);
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): QueryBatchesRequest {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseQueryBatchesRequest();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.rollupId = reader.string();
+          continue;
+        }
+        case 2: {
+          if (tag !== 16) {
+            break;
+          }
+
+          message.startIndex = reader.uint64().toString();
+          continue;
+        }
+        case 3: {
+          if (tag !== 24) {
+            break;
+          }
+
+          message.limit = reader.uint32();
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(object: any): QueryBatchesRequest {
+    return {
+      rollupId: isSet(object.rollupId)
+        ? globalThis.String(object.rollupId)
+        : isSet(object.rollup_id)
+        ? globalThis.String(object.rollup_id)
+        : "",
+      startIndex: isSet(object.startIndex)
+        ? globalThis.String(object.startIndex)
+        : isSet(object.start_index)
+        ? globalThis.String(object.start_index)
+        : "0",
+      limit: isSet(object.limit) ? globalThis.Number(object.limit) : 0,
+    };
+  },
+
+  toJSON(message: QueryBatchesRequest): unknown {
+    const obj: any = {};
+    if (message.rollupId !== "") {
+      obj.rollupId = message.rollupId;
+    }
+    if (message.startIndex !== "0") {
+      obj.startIndex = message.startIndex;
+    }
+    if (message.limit !== 0) {
+      obj.limit = Math.round(message.limit);
+    }
+    return obj;
+  },
+
+  create(base?: DeepPartial<QueryBatchesRequest>): QueryBatchesRequest {
+    return QueryBatchesRequest.fromPartial(base ?? {});
+  },
+  fromPartial(object: DeepPartial<QueryBatchesRequest>): QueryBatchesRequest {
+    const message = createBaseQueryBatchesRequest();
+    message.rollupId = object.rollupId ?? "";
+    message.startIndex = object.startIndex ?? "0";
+    message.limit = object.limit ?? 0;
+    return message;
+  },
+};
+
+function createBaseQueryBatchesResponse(): QueryBatchesResponse {
+  return { batches: [], nextIndex: "0" };
+}
+
+export const QueryBatchesResponse: MessageFns<QueryBatchesResponse> = {
+  encode(message: QueryBatchesResponse, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    for (const v of message.batches) {
+      BatchView.encode(v!, writer.uint32(10).fork()).join();
+    }
+    if (message.nextIndex !== "0") {
+      writer.uint32(16).uint64(message.nextIndex);
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): QueryBatchesResponse {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseQueryBatchesResponse();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.batches.push(BatchView.decode(reader, reader.uint32()));
+          continue;
+        }
+        case 2: {
+          if (tag !== 16) {
+            break;
+          }
+
+          message.nextIndex = reader.uint64().toString();
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(object: any): QueryBatchesResponse {
+    return {
+      batches: globalThis.Array.isArray(object?.batches) ? object.batches.map((e: any) => BatchView.fromJSON(e)) : [],
+      nextIndex: isSet(object.nextIndex)
+        ? globalThis.String(object.nextIndex)
+        : isSet(object.next_index)
+        ? globalThis.String(object.next_index)
+        : "0",
+    };
+  },
+
+  toJSON(message: QueryBatchesResponse): unknown {
+    const obj: any = {};
+    if (message.batches?.length) {
+      obj.batches = message.batches.map((e) => BatchView.toJSON(e));
+    }
+    if (message.nextIndex !== "0") {
+      obj.nextIndex = message.nextIndex;
+    }
+    return obj;
+  },
+
+  create(base?: DeepPartial<QueryBatchesResponse>): QueryBatchesResponse {
+    return QueryBatchesResponse.fromPartial(base ?? {});
+  },
+  fromPartial(object: DeepPartial<QueryBatchesResponse>): QueryBatchesResponse {
+    const message = createBaseQueryBatchesResponse();
+    message.batches = object.batches?.map((e) => BatchView.fromPartial(e)) || [];
+    message.nextIndex = object.nextIndex ?? "0";
+    return message;
+  },
+};
+
+function createBaseBlobView(): BlobView {
+  return {
+    rollupId: "",
+    blobIndex: "0",
+    commitment: "",
+    dataSize: "0",
+    height: "0",
+    storedAt: "",
+    pruned: false,
+    expiresAtHeight: "0",
+  };
+}
+
+export const BlobView: MessageFns<BlobView> = {
+  encode(message: BlobView, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.rollupId !== "") {
+      writer.uint32(10).string(message.rollupId);
+    }
+    if (message.blobIndex !== "0") {
+      writer.uint32(16).uint64(message.blobIndex);
+    }
+    if (message.commitment !== "") {
+      writer.uint32(26).string(message.commitment);
+    }
+    if (message.dataSize !== "0") {
+      writer.uint32(32).uint64(message.dataSize);
+    }
+    if (message.height !== "0") {
+      writer.uint32(40).int64(message.height);
+    }
+    if (message.storedAt !== "") {
+      writer.uint32(50).string(message.storedAt);
+    }
+    if (message.pruned !== false) {
+      writer.uint32(56).bool(message.pruned);
+    }
+    if (message.expiresAtHeight !== "0") {
+      writer.uint32(64).int64(message.expiresAtHeight);
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): BlobView {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseBlobView();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.rollupId = reader.string();
+          continue;
+        }
+        case 2: {
+          if (tag !== 16) {
+            break;
+          }
+
+          message.blobIndex = reader.uint64().toString();
+          continue;
+        }
+        case 3: {
+          if (tag !== 26) {
+            break;
+          }
+
+          message.commitment = reader.string();
+          continue;
+        }
+        case 4: {
+          if (tag !== 32) {
+            break;
+          }
+
+          message.dataSize = reader.uint64().toString();
+          continue;
+        }
+        case 5: {
+          if (tag !== 40) {
+            break;
+          }
+
+          message.height = reader.int64().toString();
+          continue;
+        }
+        case 6: {
+          if (tag !== 50) {
+            break;
+          }
+
+          message.storedAt = reader.string();
+          continue;
+        }
+        case 7: {
+          if (tag !== 56) {
+            break;
+          }
+
+          message.pruned = reader.bool();
+          continue;
+        }
+        case 8: {
+          if (tag !== 64) {
+            break;
+          }
+
+          message.expiresAtHeight = reader.int64().toString();
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(object: any): BlobView {
+    return {
+      rollupId: isSet(object.rollupId)
+        ? globalThis.String(object.rollupId)
+        : isSet(object.rollup_id)
+        ? globalThis.String(object.rollup_id)
+        : "",
+      blobIndex: isSet(object.blobIndex)
+        ? globalThis.String(object.blobIndex)
+        : isSet(object.blob_index)
+        ? globalThis.String(object.blob_index)
+        : "0",
+      commitment: isSet(object.commitment) ? globalThis.String(object.commitment) : "",
+      dataSize: isSet(object.dataSize)
+        ? globalThis.String(object.dataSize)
+        : isSet(object.data_size)
+        ? globalThis.String(object.data_size)
+        : "0",
+      height: isSet(object.height) ? globalThis.String(object.height) : "0",
+      storedAt: isSet(object.storedAt)
+        ? globalThis.String(object.storedAt)
+        : isSet(object.stored_at)
+        ? globalThis.String(object.stored_at)
+        : "",
+      pruned: isSet(object.pruned) ? globalThis.Boolean(object.pruned) : false,
+      expiresAtHeight: isSet(object.expiresAtHeight)
+        ? globalThis.String(object.expiresAtHeight)
+        : isSet(object.expires_at_height)
+        ? globalThis.String(object.expires_at_height)
+        : "0",
+    };
+  },
+
+  toJSON(message: BlobView): unknown {
+    const obj: any = {};
+    if (message.rollupId !== "") {
+      obj.rollupId = message.rollupId;
+    }
+    if (message.blobIndex !== "0") {
+      obj.blobIndex = message.blobIndex;
+    }
+    if (message.commitment !== "") {
+      obj.commitment = message.commitment;
+    }
+    if (message.dataSize !== "0") {
+      obj.dataSize = message.dataSize;
+    }
+    if (message.height !== "0") {
+      obj.height = message.height;
+    }
+    if (message.storedAt !== "") {
+      obj.storedAt = message.storedAt;
+    }
+    if (message.pruned !== false) {
+      obj.pruned = message.pruned;
+    }
+    if (message.expiresAtHeight !== "0") {
+      obj.expiresAtHeight = message.expiresAtHeight;
+    }
+    return obj;
+  },
+
+  create(base?: DeepPartial<BlobView>): BlobView {
+    return BlobView.fromPartial(base ?? {});
+  },
+  fromPartial(object: DeepPartial<BlobView>): BlobView {
+    const message = createBaseBlobView();
+    message.rollupId = object.rollupId ?? "";
+    message.blobIndex = object.blobIndex ?? "0";
+    message.commitment = object.commitment ?? "";
+    message.dataSize = object.dataSize ?? "0";
+    message.height = object.height ?? "0";
+    message.storedAt = object.storedAt ?? "";
+    message.pruned = object.pruned ?? false;
+    message.expiresAtHeight = object.expiresAtHeight ?? "0";
+    return message;
+  },
+};
+
+function createBaseQueryBlobRequest(): QueryBlobRequest {
+  return { rollupId: "", blobIndex: "0" };
+}
+
+export const QueryBlobRequest: MessageFns<QueryBlobRequest> = {
+  encode(message: QueryBlobRequest, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.rollupId !== "") {
+      writer.uint32(10).string(message.rollupId);
+    }
+    if (message.blobIndex !== "0") {
+      writer.uint32(16).uint64(message.blobIndex);
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): QueryBlobRequest {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseQueryBlobRequest();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.rollupId = reader.string();
+          continue;
+        }
+        case 2: {
+          if (tag !== 16) {
+            break;
+          }
+
+          message.blobIndex = reader.uint64().toString();
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(object: any): QueryBlobRequest {
+    return {
+      rollupId: isSet(object.rollupId)
+        ? globalThis.String(object.rollupId)
+        : isSet(object.rollup_id)
+        ? globalThis.String(object.rollup_id)
+        : "",
+      blobIndex: isSet(object.blobIndex)
+        ? globalThis.String(object.blobIndex)
+        : isSet(object.blob_index)
+        ? globalThis.String(object.blob_index)
+        : "0",
+    };
+  },
+
+  toJSON(message: QueryBlobRequest): unknown {
+    const obj: any = {};
+    if (message.rollupId !== "") {
+      obj.rollupId = message.rollupId;
+    }
+    if (message.blobIndex !== "0") {
+      obj.blobIndex = message.blobIndex;
+    }
+    return obj;
+  },
+
+  create(base?: DeepPartial<QueryBlobRequest>): QueryBlobRequest {
+    return QueryBlobRequest.fromPartial(base ?? {});
+  },
+  fromPartial(object: DeepPartial<QueryBlobRequest>): QueryBlobRequest {
+    const message = createBaseQueryBlobRequest();
+    message.rollupId = object.rollupId ?? "";
+    message.blobIndex = object.blobIndex ?? "0";
+    return message;
+  },
+};
+
+function createBaseQueryBlobResponse(): QueryBlobResponse {
+  return { blob: undefined };
+}
+
+export const QueryBlobResponse: MessageFns<QueryBlobResponse> = {
+  encode(message: QueryBlobResponse, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.blob !== undefined) {
+      BlobView.encode(message.blob, writer.uint32(10).fork()).join();
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): QueryBlobResponse {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseQueryBlobResponse();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.blob = BlobView.decode(reader, reader.uint32());
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(object: any): QueryBlobResponse {
+    return { blob: isSet(object.blob) ? BlobView.fromJSON(object.blob) : undefined };
+  },
+
+  toJSON(message: QueryBlobResponse): unknown {
+    const obj: any = {};
+    if (message.blob !== undefined) {
+      obj.blob = BlobView.toJSON(message.blob);
+    }
+    return obj;
+  },
+
+  create(base?: DeepPartial<QueryBlobResponse>): QueryBlobResponse {
+    return QueryBlobResponse.fromPartial(base ?? {});
+  },
+  fromPartial(object: DeepPartial<QueryBlobResponse>): QueryBlobResponse {
+    const message = createBaseQueryBlobResponse();
+    message.blob = (object.blob !== undefined && object.blob !== null) ? BlobView.fromPartial(object.blob) : undefined;
+    return message;
+  },
+};
+
+/**
+ * Query defines the gRPC query service for the rdk (rollup) module.
+ *
+ * Every RPC is also served over REST by the gRPC gateway, under
+ * /qorechain/rdk/v1/. Rollup ids are restricted to [a-z0-9._-] from v3.2.2,
+ * so an id is always a single clean path segment.
+ */
 export type QueryDefinition = typeof QueryDefinition;
 export const QueryDefinition = {
   name: "Query",
@@ -1450,7 +2021,41 @@ export const QueryDefinition = {
       requestStream: false,
       responseType: QueryParamsResponse as typeof QueryParamsResponse,
       responseStream: false,
-      options: {},
+      options: {
+        _unknownFields: {
+          578365826: [
+            new Uint8Array([
+              26,
+              18,
+              24,
+              47,
+              113,
+              111,
+              114,
+              101,
+              99,
+              104,
+              97,
+              105,
+              110,
+              47,
+              114,
+              100,
+              107,
+              47,
+              118,
+              49,
+              47,
+              112,
+              97,
+              114,
+              97,
+              109,
+              115,
+            ]) as Uint8Array,
+          ],
+        },
+      },
     },
     /** Rollup returns a single rollup config by ID. */
     rollup: {
@@ -1459,7 +2064,53 @@ export const QueryDefinition = {
       requestStream: false,
       responseType: QueryRollupResponse as typeof QueryRollupResponse,
       responseStream: false,
-      options: {},
+      options: {
+        _unknownFields: {
+          578365826: [
+            new Uint8Array([
+              38,
+              18,
+              36,
+              47,
+              113,
+              111,
+              114,
+              101,
+              99,
+              104,
+              97,
+              105,
+              110,
+              47,
+              114,
+              100,
+              107,
+              47,
+              118,
+              49,
+              47,
+              114,
+              111,
+              108,
+              108,
+              117,
+              112,
+              47,
+              123,
+              114,
+              111,
+              108,
+              108,
+              117,
+              112,
+              95,
+              105,
+              100,
+              125,
+            ]) as Uint8Array,
+          ],
+        },
+      },
     },
     /** Rollups lists all rollups. */
     rollups: {
@@ -1468,7 +2119,42 @@ export const QueryDefinition = {
       requestStream: false,
       responseType: QueryRollupsResponse as typeof QueryRollupsResponse,
       responseStream: false,
-      options: {},
+      options: {
+        _unknownFields: {
+          578365826: [
+            new Uint8Array([
+              27,
+              18,
+              25,
+              47,
+              113,
+              111,
+              114,
+              101,
+              99,
+              104,
+              97,
+              105,
+              110,
+              47,
+              114,
+              100,
+              107,
+              47,
+              118,
+              49,
+              47,
+              114,
+              111,
+              108,
+              108,
+              117,
+              112,
+              115,
+            ]) as Uint8Array,
+          ],
+        },
+      },
     },
     /** Batch returns a settlement batch by (rollup_id, batch_index). */
     batch: {
@@ -1477,7 +2163,66 @@ export const QueryDefinition = {
       requestStream: false,
       responseType: QueryBatchResponse as typeof QueryBatchResponse,
       responseStream: false,
-      options: {},
+      options: {
+        _unknownFields: {
+          578365826: [
+            new Uint8Array([
+              51,
+              18,
+              49,
+              47,
+              113,
+              111,
+              114,
+              101,
+              99,
+              104,
+              97,
+              105,
+              110,
+              47,
+              114,
+              100,
+              107,
+              47,
+              118,
+              49,
+              47,
+              98,
+              97,
+              116,
+              99,
+              104,
+              47,
+              123,
+              114,
+              111,
+              108,
+              108,
+              117,
+              112,
+              95,
+              105,
+              100,
+              125,
+              47,
+              123,
+              98,
+              97,
+              116,
+              99,
+              104,
+              95,
+              105,
+              110,
+              100,
+              101,
+              120,
+              125,
+            ]) as Uint8Array,
+          ],
+        },
+      },
     },
     /** LatestBatch returns the latest settlement batch for a rollup. */
     latestBatch: {
@@ -1486,7 +2231,184 @@ export const QueryDefinition = {
       requestStream: false,
       responseType: QueryLatestBatchResponse as typeof QueryLatestBatchResponse,
       responseStream: false,
-      options: {},
+      options: {
+        _unknownFields: {
+          578365826: [
+            new Uint8Array([
+              44,
+              18,
+              42,
+              47,
+              113,
+              111,
+              114,
+              101,
+              99,
+              104,
+              97,
+              105,
+              110,
+              47,
+              114,
+              100,
+              107,
+              47,
+              118,
+              49,
+              47,
+              108,
+              97,
+              116,
+              101,
+              115,
+              116,
+              95,
+              98,
+              97,
+              116,
+              99,
+              104,
+              47,
+              123,
+              114,
+              111,
+              108,
+              108,
+              117,
+              112,
+              95,
+              105,
+              100,
+              125,
+            ]) as Uint8Array,
+          ],
+        },
+      },
+    },
+    /**
+     * Batches lists a rollup's settlement batches in index order, starting at
+     * start_index, at most limit of them (default 50, maximum 100).
+     */
+    batches: {
+      name: "Batches",
+      requestType: QueryBatchesRequest as typeof QueryBatchesRequest,
+      requestStream: false,
+      responseType: QueryBatchesResponse as typeof QueryBatchesResponse,
+      responseStream: false,
+      options: {
+        _unknownFields: {
+          578365826: [
+            new Uint8Array([
+              39,
+              18,
+              37,
+              47,
+              113,
+              111,
+              114,
+              101,
+              99,
+              104,
+              97,
+              105,
+              110,
+              47,
+              114,
+              100,
+              107,
+              47,
+              118,
+              49,
+              47,
+              98,
+              97,
+              116,
+              99,
+              104,
+              101,
+              115,
+              47,
+              123,
+              114,
+              111,
+              108,
+              108,
+              117,
+              112,
+              95,
+              105,
+              100,
+              125,
+            ]) as Uint8Array,
+          ],
+        },
+      },
+    },
+    /** Blob returns a data-availability blob's metadata (not its data). */
+    blob: {
+      name: "Blob",
+      requestType: QueryBlobRequest as typeof QueryBlobRequest,
+      requestStream: false,
+      responseType: QueryBlobResponse as typeof QueryBlobResponse,
+      responseStream: false,
+      options: {
+        _unknownFields: {
+          578365826: [
+            new Uint8Array([
+              49,
+              18,
+              47,
+              47,
+              113,
+              111,
+              114,
+              101,
+              99,
+              104,
+              97,
+              105,
+              110,
+              47,
+              114,
+              100,
+              107,
+              47,
+              118,
+              49,
+              47,
+              98,
+              108,
+              111,
+              98,
+              47,
+              123,
+              114,
+              111,
+              108,
+              108,
+              117,
+              112,
+              95,
+              105,
+              100,
+              125,
+              47,
+              123,
+              98,
+              108,
+              111,
+              98,
+              95,
+              105,
+              110,
+              100,
+              101,
+              120,
+              125,
+            ]) as Uint8Array,
+          ],
+        },
+      },
     },
   },
 } as const;

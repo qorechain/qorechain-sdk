@@ -12959,6 +12959,1342 @@ public final class Tx extends com.google.protobuf.GeneratedFile {
 
   }
 
+  public interface MsgUpdateCircuitBreakerLimitsOrBuilder extends
+      // @@protoc_insertion_point(interface_extends:qorechain.bridge.v1.MsgUpdateCircuitBreakerLimits)
+      com.google.protobuf.MessageOrBuilder {
+
+    /**
+     * <code>string admin = 1 [json_name = "admin", (.cosmos_proto.scalar) = "cosmos.AddressString"];</code>
+     * @return The admin.
+     */
+    java.lang.String getAdmin();
+    /**
+     * <code>string admin = 1 [json_name = "admin", (.cosmos_proto.scalar) = "cosmos.AddressString"];</code>
+     * @return The bytes for admin.
+     */
+    com.google.protobuf.ByteString
+        getAdminBytes();
+
+    /**
+     * <code>string chain_id = 2 [json_name = "chainId"];</code>
+     * @return The chainId.
+     */
+    java.lang.String getChainId();
+    /**
+     * <code>string chain_id = 2 [json_name = "chainId"];</code>
+     * @return The bytes for chainId.
+     */
+    com.google.protobuf.ByteString
+        getChainIdBytes();
+
+    /**
+     * <code>string max_single_transfer = 3 [json_name = "maxSingleTransfer"];</code>
+     * @return The maxSingleTransfer.
+     */
+    java.lang.String getMaxSingleTransfer();
+    /**
+     * <code>string max_single_transfer = 3 [json_name = "maxSingleTransfer"];</code>
+     * @return The bytes for maxSingleTransfer.
+     */
+    com.google.protobuf.ByteString
+        getMaxSingleTransferBytes();
+
+    /**
+     * <code>string daily_limit = 4 [json_name = "dailyLimit"];</code>
+     * @return The dailyLimit.
+     */
+    java.lang.String getDailyLimit();
+    /**
+     * <code>string daily_limit = 4 [json_name = "dailyLimit"];</code>
+     * @return The bytes for dailyLimit.
+     */
+    com.google.protobuf.ByteString
+        getDailyLimitBytes();
+  }
+  /**
+   * <pre>
+   * MsgUpdateCircuitBreakerLimits replaces a chain's circuit breaker limits. Both
+   * are amounts in the chain's base unit; "0" means unlimited. When both are
+   * non-zero, max_single_transfer may not exceed daily_limit. The daily counter
+   * and pause state are left as they are.
+   * </pre>
+   *
+   * Protobuf type {@code qorechain.bridge.v1.MsgUpdateCircuitBreakerLimits}
+   */
+  public static final class MsgUpdateCircuitBreakerLimits extends
+      com.google.protobuf.GeneratedMessage implements
+      // @@protoc_insertion_point(message_implements:qorechain.bridge.v1.MsgUpdateCircuitBreakerLimits)
+      MsgUpdateCircuitBreakerLimitsOrBuilder {
+  private static final long serialVersionUID = 0L;
+    static {
+      com.google.protobuf.RuntimeVersion.validateProtobufGencodeVersion(
+        com.google.protobuf.RuntimeVersion.RuntimeDomain.PUBLIC,
+        /* major= */ 4,
+        /* minor= */ 35,
+        /* patch= */ 1,
+        /* suffix= */ "",
+        "MsgUpdateCircuitBreakerLimits");
+    }
+    // Use MsgUpdateCircuitBreakerLimits.newBuilder() to construct.
+    private MsgUpdateCircuitBreakerLimits(com.google.protobuf.GeneratedMessage.Builder<?> builder) {
+      super(builder);
+    }
+    private MsgUpdateCircuitBreakerLimits() {
+      admin_ = "";
+      chainId_ = "";
+      maxSingleTransfer_ = "";
+      dailyLimit_ = "";
+    }
+
+    public static final com.google.protobuf.Descriptors.Descriptor
+        getDescriptor() {
+      return qorechain.bridge.v1.Tx.internal_static_qorechain_bridge_v1_MsgUpdateCircuitBreakerLimits_descriptor;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Descriptors.Descriptor getDescriptorForType() {
+      return qorechain.bridge.v1.Tx.internal_static_qorechain_bridge_v1_MsgUpdateCircuitBreakerLimits_descriptor;
+    }
+
+    @java.lang.Override
+    protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+        internalGetFieldAccessorTable() {
+      return qorechain.bridge.v1.Tx.internal_static_qorechain_bridge_v1_MsgUpdateCircuitBreakerLimits_fieldAccessorTable
+          .ensureFieldAccessorsInitialized(
+              qorechain.bridge.v1.Tx.MsgUpdateCircuitBreakerLimits.class, qorechain.bridge.v1.Tx.MsgUpdateCircuitBreakerLimits.Builder.class);
+    }
+
+    public static final int ADMIN_FIELD_NUMBER = 1;
+    @SuppressWarnings("serial")
+    private volatile java.lang.Object admin_ = "";
+    /**
+     * <code>string admin = 1 [json_name = "admin", (.cosmos_proto.scalar) = "cosmos.AddressString"];</code>
+     * @return The admin.
+     */
+    @java.lang.Override
+    public java.lang.String getAdmin() {
+      java.lang.Object ref = admin_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        admin_ = s;
+        return s;
+      }
+    }
+    /**
+     * <code>string admin = 1 [json_name = "admin", (.cosmos_proto.scalar) = "cosmos.AddressString"];</code>
+     * @return The bytes for admin.
+     */
+    @java.lang.Override
+    public com.google.protobuf.ByteString
+        getAdminBytes() {
+      java.lang.Object ref = admin_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        admin_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
+    public static final int CHAIN_ID_FIELD_NUMBER = 2;
+    @SuppressWarnings("serial")
+    private volatile java.lang.Object chainId_ = "";
+    /**
+     * <code>string chain_id = 2 [json_name = "chainId"];</code>
+     * @return The chainId.
+     */
+    @java.lang.Override
+    public java.lang.String getChainId() {
+      java.lang.Object ref = chainId_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        chainId_ = s;
+        return s;
+      }
+    }
+    /**
+     * <code>string chain_id = 2 [json_name = "chainId"];</code>
+     * @return The bytes for chainId.
+     */
+    @java.lang.Override
+    public com.google.protobuf.ByteString
+        getChainIdBytes() {
+      java.lang.Object ref = chainId_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        chainId_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
+    public static final int MAX_SINGLE_TRANSFER_FIELD_NUMBER = 3;
+    @SuppressWarnings("serial")
+    private volatile java.lang.Object maxSingleTransfer_ = "";
+    /**
+     * <code>string max_single_transfer = 3 [json_name = "maxSingleTransfer"];</code>
+     * @return The maxSingleTransfer.
+     */
+    @java.lang.Override
+    public java.lang.String getMaxSingleTransfer() {
+      java.lang.Object ref = maxSingleTransfer_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        maxSingleTransfer_ = s;
+        return s;
+      }
+    }
+    /**
+     * <code>string max_single_transfer = 3 [json_name = "maxSingleTransfer"];</code>
+     * @return The bytes for maxSingleTransfer.
+     */
+    @java.lang.Override
+    public com.google.protobuf.ByteString
+        getMaxSingleTransferBytes() {
+      java.lang.Object ref = maxSingleTransfer_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        maxSingleTransfer_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
+    public static final int DAILY_LIMIT_FIELD_NUMBER = 4;
+    @SuppressWarnings("serial")
+    private volatile java.lang.Object dailyLimit_ = "";
+    /**
+     * <code>string daily_limit = 4 [json_name = "dailyLimit"];</code>
+     * @return The dailyLimit.
+     */
+    @java.lang.Override
+    public java.lang.String getDailyLimit() {
+      java.lang.Object ref = dailyLimit_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        dailyLimit_ = s;
+        return s;
+      }
+    }
+    /**
+     * <code>string daily_limit = 4 [json_name = "dailyLimit"];</code>
+     * @return The bytes for dailyLimit.
+     */
+    @java.lang.Override
+    public com.google.protobuf.ByteString
+        getDailyLimitBytes() {
+      java.lang.Object ref = dailyLimit_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        dailyLimit_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
+    private byte memoizedIsInitialized = -1;
+    @java.lang.Override
+    public final boolean isInitialized() {
+      byte isInitialized = memoizedIsInitialized;
+      if (isInitialized == 1) return true;
+      if (isInitialized == 0) return false;
+
+      memoizedIsInitialized = 1;
+      return true;
+    }
+
+    @java.lang.Override
+    public void writeTo(com.google.protobuf.CodedOutputStream output)
+                        throws java.io.IOException {
+      if (!com.google.protobuf.GeneratedMessage.isStringEmpty(admin_)) {
+        com.google.protobuf.GeneratedMessage.writeString(output, 1, admin_);
+      }
+      if (!com.google.protobuf.GeneratedMessage.isStringEmpty(chainId_)) {
+        com.google.protobuf.GeneratedMessage.writeString(output, 2, chainId_);
+      }
+      if (!com.google.protobuf.GeneratedMessage.isStringEmpty(maxSingleTransfer_)) {
+        com.google.protobuf.GeneratedMessage.writeString(output, 3, maxSingleTransfer_);
+      }
+      if (!com.google.protobuf.GeneratedMessage.isStringEmpty(dailyLimit_)) {
+        com.google.protobuf.GeneratedMessage.writeString(output, 4, dailyLimit_);
+      }
+      getUnknownFields().writeTo(output);
+    }
+    private int computeSerializedSize_0() {
+      int size = 0;
+      if (!com.google.protobuf.GeneratedMessage.isStringEmpty(admin_)) {
+        size += com.google.protobuf.GeneratedMessage.computeStringSize(1, admin_);
+      }
+      if (!com.google.protobuf.GeneratedMessage.isStringEmpty(chainId_)) {
+        size += com.google.protobuf.GeneratedMessage.computeStringSize(2, chainId_);
+      }
+      if (!com.google.protobuf.GeneratedMessage.isStringEmpty(maxSingleTransfer_)) {
+        size += com.google.protobuf.GeneratedMessage.computeStringSize(3, maxSingleTransfer_);
+      }
+      if (!com.google.protobuf.GeneratedMessage.isStringEmpty(dailyLimit_)) {
+        size += com.google.protobuf.GeneratedMessage.computeStringSize(4, dailyLimit_);
+      }
+      return size;
+    }
+    @java.lang.Override
+    public int getSerializedSize() {
+      int size = memoizedSize;
+      if (size != -1) return size;
+
+      size = 0;
+      size += computeSerializedSize_0();
+      size += getUnknownFields().getSerializedSize();
+      memoizedSize = size;
+      return size;
+    }
+
+    @java.lang.Override
+    public boolean equals(final java.lang.Object obj) {
+      if (obj == this) {
+       return true;
+      }
+      if (!(obj instanceof qorechain.bridge.v1.Tx.MsgUpdateCircuitBreakerLimits)) {
+        return super.equals(obj);
+      }
+      qorechain.bridge.v1.Tx.MsgUpdateCircuitBreakerLimits other = (qorechain.bridge.v1.Tx.MsgUpdateCircuitBreakerLimits) obj;
+
+      if (!getAdmin()
+          .equals(other.getAdmin())) return false;
+      if (!getChainId()
+          .equals(other.getChainId())) return false;
+      if (!getMaxSingleTransfer()
+          .equals(other.getMaxSingleTransfer())) return false;
+      if (!getDailyLimit()
+          .equals(other.getDailyLimit())) return false;
+      if (!getUnknownFields().equals(other.getUnknownFields())) return false;
+      return true;
+    }
+
+    @java.lang.Override
+    public int hashCode() {
+      if (memoizedHashCode != 0) {
+        return memoizedHashCode;
+      }
+      int hash = 41;
+      hash = (19 * hash) + getDescriptor().hashCode();
+      hash = (37 * hash) + ADMIN_FIELD_NUMBER;
+      hash = (53 * hash) + getAdmin().hashCode();
+      hash = (37 * hash) + CHAIN_ID_FIELD_NUMBER;
+      hash = (53 * hash) + getChainId().hashCode();
+      hash = (37 * hash) + MAX_SINGLE_TRANSFER_FIELD_NUMBER;
+      hash = (53 * hash) + getMaxSingleTransfer().hashCode();
+      hash = (37 * hash) + DAILY_LIMIT_FIELD_NUMBER;
+      hash = (53 * hash) + getDailyLimit().hashCode();
+      hash = (29 * hash) + getUnknownFields().hashCode();
+      memoizedHashCode = hash;
+      return hash;
+    }
+
+    public static qorechain.bridge.v1.Tx.MsgUpdateCircuitBreakerLimits parseFrom(
+        java.nio.ByteBuffer data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static qorechain.bridge.v1.Tx.MsgUpdateCircuitBreakerLimits parseFrom(
+        java.nio.ByteBuffer data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static qorechain.bridge.v1.Tx.MsgUpdateCircuitBreakerLimits parseFrom(
+        com.google.protobuf.ByteString data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static qorechain.bridge.v1.Tx.MsgUpdateCircuitBreakerLimits parseFrom(
+        com.google.protobuf.ByteString data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static qorechain.bridge.v1.Tx.MsgUpdateCircuitBreakerLimits parseFrom(byte[] data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static qorechain.bridge.v1.Tx.MsgUpdateCircuitBreakerLimits parseFrom(
+        byte[] data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static qorechain.bridge.v1.Tx.MsgUpdateCircuitBreakerLimits parseFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input);
+    }
+    public static qorechain.bridge.v1.Tx.MsgUpdateCircuitBreakerLimits parseFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    public static qorechain.bridge.v1.Tx.MsgUpdateCircuitBreakerLimits parseDelimitedFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseDelimitedWithIOException(PARSER, input);
+    }
+
+    public static qorechain.bridge.v1.Tx.MsgUpdateCircuitBreakerLimits parseDelimitedFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static qorechain.bridge.v1.Tx.MsgUpdateCircuitBreakerLimits parseFrom(
+        com.google.protobuf.CodedInputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input);
+    }
+    public static qorechain.bridge.v1.Tx.MsgUpdateCircuitBreakerLimits parseFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    @java.lang.Override
+    public Builder newBuilderForType() { return newBuilder(); }
+    public static Builder newBuilder() {
+      return DEFAULT_INSTANCE.toBuilder();
+    }
+    public static Builder newBuilder(qorechain.bridge.v1.Tx.MsgUpdateCircuitBreakerLimits prototype) {
+      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+    }
+    @java.lang.Override
+    public Builder toBuilder() {
+      return this == DEFAULT_INSTANCE
+          ? new Builder() : new Builder().mergeFrom(this);
+    }
+
+    @java.lang.Override
+    protected Builder newBuilderForType(
+        com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+      Builder builder = new Builder(parent);
+      return builder;
+    }
+    /**
+     * <pre>
+     * MsgUpdateCircuitBreakerLimits replaces a chain's circuit breaker limits. Both
+     * are amounts in the chain's base unit; "0" means unlimited. When both are
+     * non-zero, max_single_transfer may not exceed daily_limit. The daily counter
+     * and pause state are left as they are.
+     * </pre>
+     *
+     * Protobuf type {@code qorechain.bridge.v1.MsgUpdateCircuitBreakerLimits}
+     */
+    public static final class Builder extends
+        com.google.protobuf.GeneratedMessage.Builder<Builder> implements
+        // @@protoc_insertion_point(builder_implements:qorechain.bridge.v1.MsgUpdateCircuitBreakerLimits)
+        qorechain.bridge.v1.Tx.MsgUpdateCircuitBreakerLimitsOrBuilder {
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return qorechain.bridge.v1.Tx.internal_static_qorechain_bridge_v1_MsgUpdateCircuitBreakerLimits_descriptor;
+      }
+
+      @java.lang.Override
+      protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return qorechain.bridge.v1.Tx.internal_static_qorechain_bridge_v1_MsgUpdateCircuitBreakerLimits_fieldAccessorTable
+            .ensureFieldAccessorsInitialized(
+                qorechain.bridge.v1.Tx.MsgUpdateCircuitBreakerLimits.class, qorechain.bridge.v1.Tx.MsgUpdateCircuitBreakerLimits.Builder.class);
+      }
+
+      // Construct using qorechain.bridge.v1.Tx.MsgUpdateCircuitBreakerLimits.newBuilder()
+      private Builder() {
+
+      }
+
+      private Builder(
+          com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+        super(parent);
+
+      }
+      @java.lang.Override
+      public Builder clear() {
+        super.clear();
+        bitField0_ = 0;
+        admin_ = "";
+        chainId_ = "";
+        maxSingleTransfer_ = "";
+        dailyLimit_ = "";
+        return this;
+      }
+
+      @java.lang.Override
+      public com.google.protobuf.Descriptors.Descriptor
+          getDescriptorForType() {
+        return qorechain.bridge.v1.Tx.internal_static_qorechain_bridge_v1_MsgUpdateCircuitBreakerLimits_descriptor;
+      }
+
+      @java.lang.Override
+      public qorechain.bridge.v1.Tx.MsgUpdateCircuitBreakerLimits getDefaultInstanceForType() {
+        return qorechain.bridge.v1.Tx.MsgUpdateCircuitBreakerLimits.getDefaultInstance();
+      }
+
+      @java.lang.Override
+      public qorechain.bridge.v1.Tx.MsgUpdateCircuitBreakerLimits build() {
+        qorechain.bridge.v1.Tx.MsgUpdateCircuitBreakerLimits result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(result);
+        }
+        return result;
+      }
+
+      @java.lang.Override
+      public qorechain.bridge.v1.Tx.MsgUpdateCircuitBreakerLimits buildPartial() {
+        qorechain.bridge.v1.Tx.MsgUpdateCircuitBreakerLimits result = new qorechain.bridge.v1.Tx.MsgUpdateCircuitBreakerLimits(this);
+        if (bitField0_ != 0) { buildPartial0(result); }
+        onBuilt();
+        return result;
+      }
+
+      private void buildPartial0(qorechain.bridge.v1.Tx.MsgUpdateCircuitBreakerLimits result) {
+        int from_bitField0_ = bitField0_;
+        if (((from_bitField0_ & 0x00000001) != 0)) {
+          result.admin_ = admin_;
+        }
+        if (((from_bitField0_ & 0x00000002) != 0)) {
+          result.chainId_ = chainId_;
+        }
+        if (((from_bitField0_ & 0x00000004) != 0)) {
+          result.maxSingleTransfer_ = maxSingleTransfer_;
+        }
+        if (((from_bitField0_ & 0x00000008) != 0)) {
+          result.dailyLimit_ = dailyLimit_;
+        }
+      }
+
+      @java.lang.Override
+      public Builder mergeFrom(com.google.protobuf.Message other) {
+        if (other instanceof qorechain.bridge.v1.Tx.MsgUpdateCircuitBreakerLimits) {
+          return mergeFrom((qorechain.bridge.v1.Tx.MsgUpdateCircuitBreakerLimits)other);
+        } else {
+          super.mergeFrom(other);
+          return this;
+        }
+      }
+
+      public Builder mergeFrom(qorechain.bridge.v1.Tx.MsgUpdateCircuitBreakerLimits other) {
+        if (other == qorechain.bridge.v1.Tx.MsgUpdateCircuitBreakerLimits.getDefaultInstance()) return this;
+        if (!other.getAdmin().isEmpty()) {
+          admin_ = other.admin_;
+          bitField0_ |= 0x00000001;
+          onChanged();
+        }
+        if (!other.getChainId().isEmpty()) {
+          chainId_ = other.chainId_;
+          bitField0_ |= 0x00000002;
+          onChanged();
+        }
+        if (!other.getMaxSingleTransfer().isEmpty()) {
+          maxSingleTransfer_ = other.maxSingleTransfer_;
+          bitField0_ |= 0x00000004;
+          onChanged();
+        }
+        if (!other.getDailyLimit().isEmpty()) {
+          dailyLimit_ = other.dailyLimit_;
+          bitField0_ |= 0x00000008;
+          onChanged();
+        }
+        this.mergeUnknownFields(other.getUnknownFields());
+        onChanged();
+        return this;
+      }
+
+      @java.lang.Override
+      public final boolean isInitialized() {
+        return true;
+      }
+
+      @java.lang.Override
+      public Builder mergeFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        if (extensionRegistry == null) {
+          throw new java.lang.NullPointerException();
+        }
+        try {
+          boolean done = false;
+          while (!done) {
+            int tag = input.readTag();
+            switch (tag) {
+              case 0:
+                done = true;
+                break;
+              case 10: {
+                admin_ = input.readStringRequireUtf8();
+                bitField0_ |= 0x00000001;
+                break;
+              } // case 10
+              case 18: {
+                chainId_ = input.readStringRequireUtf8();
+                bitField0_ |= 0x00000002;
+                break;
+              } // case 18
+              case 26: {
+                maxSingleTransfer_ = input.readStringRequireUtf8();
+                bitField0_ |= 0x00000004;
+                break;
+              } // case 26
+              case 34: {
+                dailyLimit_ = input.readStringRequireUtf8();
+                bitField0_ |= 0x00000008;
+                break;
+              } // case 34
+              default: {
+                if (!super.parseUnknownField(input, extensionRegistry, tag)) {
+                  done = true; // was an endgroup tag
+                }
+                break;
+              } // default:
+            } // switch (tag)
+          } // while (!done)
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          throw e.unwrapIOException();
+        } finally {
+          onChanged();
+        } // finally
+        return this;
+      }
+      private int bitField0_;
+
+      private java.lang.Object admin_ = "";
+      /**
+       * <code>string admin = 1 [json_name = "admin", (.cosmos_proto.scalar) = "cosmos.AddressString"];</code>
+       * @return The admin.
+       */
+      public java.lang.String getAdmin() {
+        java.lang.Object ref = admin_;
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          admin_ = s;
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
+      }
+      /**
+       * <code>string admin = 1 [json_name = "admin", (.cosmos_proto.scalar) = "cosmos.AddressString"];</code>
+       * @return The bytes for admin.
+       */
+      public com.google.protobuf.ByteString
+          getAdminBytes() {
+        java.lang.Object ref = admin_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          admin_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <code>string admin = 1 [json_name = "admin", (.cosmos_proto.scalar) = "cosmos.AddressString"];</code>
+       * @param value The admin to set.
+       * @return This builder for chaining.
+       */
+      public Builder setAdmin(
+          java.lang.String value) {
+        if (value == null) { throw new NullPointerException(); }
+        admin_ = value;
+        bitField0_ |= 0x00000001;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>string admin = 1 [json_name = "admin", (.cosmos_proto.scalar) = "cosmos.AddressString"];</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearAdmin() {
+        admin_ = getDefaultInstance().getAdmin();
+        bitField0_ = (bitField0_ & ~0x00000001);
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>string admin = 1 [json_name = "admin", (.cosmos_proto.scalar) = "cosmos.AddressString"];</code>
+       * @param value The bytes for admin to set.
+       * @return This builder for chaining.
+       */
+      public Builder setAdminBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) { throw new NullPointerException(); }
+        checkByteStringIsUtf8(value);
+        admin_ = value;
+        bitField0_ |= 0x00000001;
+        onChanged();
+        return this;
+      }
+
+      private java.lang.Object chainId_ = "";
+      /**
+       * <code>string chain_id = 2 [json_name = "chainId"];</code>
+       * @return The chainId.
+       */
+      public java.lang.String getChainId() {
+        java.lang.Object ref = chainId_;
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          chainId_ = s;
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
+      }
+      /**
+       * <code>string chain_id = 2 [json_name = "chainId"];</code>
+       * @return The bytes for chainId.
+       */
+      public com.google.protobuf.ByteString
+          getChainIdBytes() {
+        java.lang.Object ref = chainId_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          chainId_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <code>string chain_id = 2 [json_name = "chainId"];</code>
+       * @param value The chainId to set.
+       * @return This builder for chaining.
+       */
+      public Builder setChainId(
+          java.lang.String value) {
+        if (value == null) { throw new NullPointerException(); }
+        chainId_ = value;
+        bitField0_ |= 0x00000002;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>string chain_id = 2 [json_name = "chainId"];</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearChainId() {
+        chainId_ = getDefaultInstance().getChainId();
+        bitField0_ = (bitField0_ & ~0x00000002);
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>string chain_id = 2 [json_name = "chainId"];</code>
+       * @param value The bytes for chainId to set.
+       * @return This builder for chaining.
+       */
+      public Builder setChainIdBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) { throw new NullPointerException(); }
+        checkByteStringIsUtf8(value);
+        chainId_ = value;
+        bitField0_ |= 0x00000002;
+        onChanged();
+        return this;
+      }
+
+      private java.lang.Object maxSingleTransfer_ = "";
+      /**
+       * <code>string max_single_transfer = 3 [json_name = "maxSingleTransfer"];</code>
+       * @return The maxSingleTransfer.
+       */
+      public java.lang.String getMaxSingleTransfer() {
+        java.lang.Object ref = maxSingleTransfer_;
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          maxSingleTransfer_ = s;
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
+      }
+      /**
+       * <code>string max_single_transfer = 3 [json_name = "maxSingleTransfer"];</code>
+       * @return The bytes for maxSingleTransfer.
+       */
+      public com.google.protobuf.ByteString
+          getMaxSingleTransferBytes() {
+        java.lang.Object ref = maxSingleTransfer_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          maxSingleTransfer_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <code>string max_single_transfer = 3 [json_name = "maxSingleTransfer"];</code>
+       * @param value The maxSingleTransfer to set.
+       * @return This builder for chaining.
+       */
+      public Builder setMaxSingleTransfer(
+          java.lang.String value) {
+        if (value == null) { throw new NullPointerException(); }
+        maxSingleTransfer_ = value;
+        bitField0_ |= 0x00000004;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>string max_single_transfer = 3 [json_name = "maxSingleTransfer"];</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearMaxSingleTransfer() {
+        maxSingleTransfer_ = getDefaultInstance().getMaxSingleTransfer();
+        bitField0_ = (bitField0_ & ~0x00000004);
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>string max_single_transfer = 3 [json_name = "maxSingleTransfer"];</code>
+       * @param value The bytes for maxSingleTransfer to set.
+       * @return This builder for chaining.
+       */
+      public Builder setMaxSingleTransferBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) { throw new NullPointerException(); }
+        checkByteStringIsUtf8(value);
+        maxSingleTransfer_ = value;
+        bitField0_ |= 0x00000004;
+        onChanged();
+        return this;
+      }
+
+      private java.lang.Object dailyLimit_ = "";
+      /**
+       * <code>string daily_limit = 4 [json_name = "dailyLimit"];</code>
+       * @return The dailyLimit.
+       */
+      public java.lang.String getDailyLimit() {
+        java.lang.Object ref = dailyLimit_;
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          dailyLimit_ = s;
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
+      }
+      /**
+       * <code>string daily_limit = 4 [json_name = "dailyLimit"];</code>
+       * @return The bytes for dailyLimit.
+       */
+      public com.google.protobuf.ByteString
+          getDailyLimitBytes() {
+        java.lang.Object ref = dailyLimit_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          dailyLimit_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <code>string daily_limit = 4 [json_name = "dailyLimit"];</code>
+       * @param value The dailyLimit to set.
+       * @return This builder for chaining.
+       */
+      public Builder setDailyLimit(
+          java.lang.String value) {
+        if (value == null) { throw new NullPointerException(); }
+        dailyLimit_ = value;
+        bitField0_ |= 0x00000008;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>string daily_limit = 4 [json_name = "dailyLimit"];</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearDailyLimit() {
+        dailyLimit_ = getDefaultInstance().getDailyLimit();
+        bitField0_ = (bitField0_ & ~0x00000008);
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>string daily_limit = 4 [json_name = "dailyLimit"];</code>
+       * @param value The bytes for dailyLimit to set.
+       * @return This builder for chaining.
+       */
+      public Builder setDailyLimitBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) { throw new NullPointerException(); }
+        checkByteStringIsUtf8(value);
+        dailyLimit_ = value;
+        bitField0_ |= 0x00000008;
+        onChanged();
+        return this;
+      }
+
+      // @@protoc_insertion_point(builder_scope:qorechain.bridge.v1.MsgUpdateCircuitBreakerLimits)
+    }
+
+    // @@protoc_insertion_point(class_scope:qorechain.bridge.v1.MsgUpdateCircuitBreakerLimits)
+    private static final qorechain.bridge.v1.Tx.MsgUpdateCircuitBreakerLimits DEFAULT_INSTANCE;
+    static {
+      DEFAULT_INSTANCE = new qorechain.bridge.v1.Tx.MsgUpdateCircuitBreakerLimits();
+    }
+
+    public static qorechain.bridge.v1.Tx.MsgUpdateCircuitBreakerLimits getDefaultInstance() {
+      return DEFAULT_INSTANCE;
+    }
+
+    private static final com.google.protobuf.Parser<MsgUpdateCircuitBreakerLimits>
+        PARSER = new com.google.protobuf.AbstractParser<MsgUpdateCircuitBreakerLimits>() {
+      @java.lang.Override
+      public MsgUpdateCircuitBreakerLimits parsePartialFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        Builder builder = newBuilder();
+        try {
+          builder.mergeFrom(input, extensionRegistry);
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          throw e.setUnfinishedMessage(builder.buildPartial());
+        } catch (com.google.protobuf.UninitializedMessageException e) {
+          throw e.asInvalidProtocolBufferException().setUnfinishedMessage(builder.buildPartial());
+        } catch (java.io.IOException e) {
+          throw new com.google.protobuf.InvalidProtocolBufferException(e)
+              .setUnfinishedMessage(builder.buildPartial());
+        }
+        return builder.buildPartial();
+      }
+    };
+
+    public static com.google.protobuf.Parser<MsgUpdateCircuitBreakerLimits> parser() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Parser<MsgUpdateCircuitBreakerLimits> getParserForType() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public qorechain.bridge.v1.Tx.MsgUpdateCircuitBreakerLimits getDefaultInstanceForType() {
+      return DEFAULT_INSTANCE;
+    }
+
+  }
+
+  public interface MsgUpdateCircuitBreakerLimitsResponseOrBuilder extends
+      // @@protoc_insertion_point(interface_extends:qorechain.bridge.v1.MsgUpdateCircuitBreakerLimitsResponse)
+      com.google.protobuf.MessageOrBuilder {
+  }
+  /**
+   * Protobuf type {@code qorechain.bridge.v1.MsgUpdateCircuitBreakerLimitsResponse}
+   */
+  public static final class MsgUpdateCircuitBreakerLimitsResponse extends
+      com.google.protobuf.GeneratedMessage implements
+      // @@protoc_insertion_point(message_implements:qorechain.bridge.v1.MsgUpdateCircuitBreakerLimitsResponse)
+      MsgUpdateCircuitBreakerLimitsResponseOrBuilder {
+  private static final long serialVersionUID = 0L;
+    static {
+      com.google.protobuf.RuntimeVersion.validateProtobufGencodeVersion(
+        com.google.protobuf.RuntimeVersion.RuntimeDomain.PUBLIC,
+        /* major= */ 4,
+        /* minor= */ 35,
+        /* patch= */ 1,
+        /* suffix= */ "",
+        "MsgUpdateCircuitBreakerLimitsResponse");
+    }
+    // Use MsgUpdateCircuitBreakerLimitsResponse.newBuilder() to construct.
+    private MsgUpdateCircuitBreakerLimitsResponse(com.google.protobuf.GeneratedMessage.Builder<?> builder) {
+      super(builder);
+    }
+    private MsgUpdateCircuitBreakerLimitsResponse() {
+    }
+
+    public static final com.google.protobuf.Descriptors.Descriptor
+        getDescriptor() {
+      return qorechain.bridge.v1.Tx.internal_static_qorechain_bridge_v1_MsgUpdateCircuitBreakerLimitsResponse_descriptor;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Descriptors.Descriptor getDescriptorForType() {
+      return qorechain.bridge.v1.Tx.internal_static_qorechain_bridge_v1_MsgUpdateCircuitBreakerLimitsResponse_descriptor;
+    }
+
+    @java.lang.Override
+    protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+        internalGetFieldAccessorTable() {
+      return qorechain.bridge.v1.Tx.internal_static_qorechain_bridge_v1_MsgUpdateCircuitBreakerLimitsResponse_fieldAccessorTable
+          .ensureFieldAccessorsInitialized(
+              qorechain.bridge.v1.Tx.MsgUpdateCircuitBreakerLimitsResponse.class, qorechain.bridge.v1.Tx.MsgUpdateCircuitBreakerLimitsResponse.Builder.class);
+    }
+
+    private byte memoizedIsInitialized = -1;
+    @java.lang.Override
+    public final boolean isInitialized() {
+      byte isInitialized = memoizedIsInitialized;
+      if (isInitialized == 1) return true;
+      if (isInitialized == 0) return false;
+
+      memoizedIsInitialized = 1;
+      return true;
+    }
+
+    @java.lang.Override
+    public void writeTo(com.google.protobuf.CodedOutputStream output)
+                        throws java.io.IOException {
+      getUnknownFields().writeTo(output);
+    }
+    @java.lang.Override
+    public int getSerializedSize() {
+      int size = memoizedSize;
+      if (size != -1) return size;
+
+      size = 0;
+      size += getUnknownFields().getSerializedSize();
+      memoizedSize = size;
+      return size;
+    }
+
+    @java.lang.Override
+    public boolean equals(final java.lang.Object obj) {
+      if (obj == this) {
+       return true;
+      }
+      if (!(obj instanceof qorechain.bridge.v1.Tx.MsgUpdateCircuitBreakerLimitsResponse)) {
+        return super.equals(obj);
+      }
+      qorechain.bridge.v1.Tx.MsgUpdateCircuitBreakerLimitsResponse other = (qorechain.bridge.v1.Tx.MsgUpdateCircuitBreakerLimitsResponse) obj;
+
+      if (!getUnknownFields().equals(other.getUnknownFields())) return false;
+      return true;
+    }
+
+    @java.lang.Override
+    public int hashCode() {
+      if (memoizedHashCode != 0) {
+        return memoizedHashCode;
+      }
+      int hash = 41;
+      hash = (19 * hash) + getDescriptor().hashCode();
+      hash = (29 * hash) + getUnknownFields().hashCode();
+      memoizedHashCode = hash;
+      return hash;
+    }
+
+    public static qorechain.bridge.v1.Tx.MsgUpdateCircuitBreakerLimitsResponse parseFrom(
+        java.nio.ByteBuffer data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static qorechain.bridge.v1.Tx.MsgUpdateCircuitBreakerLimitsResponse parseFrom(
+        java.nio.ByteBuffer data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static qorechain.bridge.v1.Tx.MsgUpdateCircuitBreakerLimitsResponse parseFrom(
+        com.google.protobuf.ByteString data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static qorechain.bridge.v1.Tx.MsgUpdateCircuitBreakerLimitsResponse parseFrom(
+        com.google.protobuf.ByteString data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static qorechain.bridge.v1.Tx.MsgUpdateCircuitBreakerLimitsResponse parseFrom(byte[] data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static qorechain.bridge.v1.Tx.MsgUpdateCircuitBreakerLimitsResponse parseFrom(
+        byte[] data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static qorechain.bridge.v1.Tx.MsgUpdateCircuitBreakerLimitsResponse parseFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input);
+    }
+    public static qorechain.bridge.v1.Tx.MsgUpdateCircuitBreakerLimitsResponse parseFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    public static qorechain.bridge.v1.Tx.MsgUpdateCircuitBreakerLimitsResponse parseDelimitedFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseDelimitedWithIOException(PARSER, input);
+    }
+
+    public static qorechain.bridge.v1.Tx.MsgUpdateCircuitBreakerLimitsResponse parseDelimitedFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static qorechain.bridge.v1.Tx.MsgUpdateCircuitBreakerLimitsResponse parseFrom(
+        com.google.protobuf.CodedInputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input);
+    }
+    public static qorechain.bridge.v1.Tx.MsgUpdateCircuitBreakerLimitsResponse parseFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    @java.lang.Override
+    public Builder newBuilderForType() { return newBuilder(); }
+    public static Builder newBuilder() {
+      return DEFAULT_INSTANCE.toBuilder();
+    }
+    public static Builder newBuilder(qorechain.bridge.v1.Tx.MsgUpdateCircuitBreakerLimitsResponse prototype) {
+      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+    }
+    @java.lang.Override
+    public Builder toBuilder() {
+      return this == DEFAULT_INSTANCE
+          ? new Builder() : new Builder().mergeFrom(this);
+    }
+
+    @java.lang.Override
+    protected Builder newBuilderForType(
+        com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+      Builder builder = new Builder(parent);
+      return builder;
+    }
+    /**
+     * Protobuf type {@code qorechain.bridge.v1.MsgUpdateCircuitBreakerLimitsResponse}
+     */
+    public static final class Builder extends
+        com.google.protobuf.GeneratedMessage.Builder<Builder> implements
+        // @@protoc_insertion_point(builder_implements:qorechain.bridge.v1.MsgUpdateCircuitBreakerLimitsResponse)
+        qorechain.bridge.v1.Tx.MsgUpdateCircuitBreakerLimitsResponseOrBuilder {
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return qorechain.bridge.v1.Tx.internal_static_qorechain_bridge_v1_MsgUpdateCircuitBreakerLimitsResponse_descriptor;
+      }
+
+      @java.lang.Override
+      protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return qorechain.bridge.v1.Tx.internal_static_qorechain_bridge_v1_MsgUpdateCircuitBreakerLimitsResponse_fieldAccessorTable
+            .ensureFieldAccessorsInitialized(
+                qorechain.bridge.v1.Tx.MsgUpdateCircuitBreakerLimitsResponse.class, qorechain.bridge.v1.Tx.MsgUpdateCircuitBreakerLimitsResponse.Builder.class);
+      }
+
+      // Construct using qorechain.bridge.v1.Tx.MsgUpdateCircuitBreakerLimitsResponse.newBuilder()
+      private Builder() {
+
+      }
+
+      private Builder(
+          com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+        super(parent);
+
+      }
+      @java.lang.Override
+      public Builder clear() {
+        super.clear();
+        return this;
+      }
+
+      @java.lang.Override
+      public com.google.protobuf.Descriptors.Descriptor
+          getDescriptorForType() {
+        return qorechain.bridge.v1.Tx.internal_static_qorechain_bridge_v1_MsgUpdateCircuitBreakerLimitsResponse_descriptor;
+      }
+
+      @java.lang.Override
+      public qorechain.bridge.v1.Tx.MsgUpdateCircuitBreakerLimitsResponse getDefaultInstanceForType() {
+        return qorechain.bridge.v1.Tx.MsgUpdateCircuitBreakerLimitsResponse.getDefaultInstance();
+      }
+
+      @java.lang.Override
+      public qorechain.bridge.v1.Tx.MsgUpdateCircuitBreakerLimitsResponse build() {
+        qorechain.bridge.v1.Tx.MsgUpdateCircuitBreakerLimitsResponse result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(result);
+        }
+        return result;
+      }
+
+      @java.lang.Override
+      public qorechain.bridge.v1.Tx.MsgUpdateCircuitBreakerLimitsResponse buildPartial() {
+        qorechain.bridge.v1.Tx.MsgUpdateCircuitBreakerLimitsResponse result = new qorechain.bridge.v1.Tx.MsgUpdateCircuitBreakerLimitsResponse(this);
+        onBuilt();
+        return result;
+      }
+
+      @java.lang.Override
+      public Builder mergeFrom(com.google.protobuf.Message other) {
+        if (other instanceof qorechain.bridge.v1.Tx.MsgUpdateCircuitBreakerLimitsResponse) {
+          return mergeFrom((qorechain.bridge.v1.Tx.MsgUpdateCircuitBreakerLimitsResponse)other);
+        } else {
+          super.mergeFrom(other);
+          return this;
+        }
+      }
+
+      public Builder mergeFrom(qorechain.bridge.v1.Tx.MsgUpdateCircuitBreakerLimitsResponse other) {
+        if (other == qorechain.bridge.v1.Tx.MsgUpdateCircuitBreakerLimitsResponse.getDefaultInstance()) return this;
+        this.mergeUnknownFields(other.getUnknownFields());
+        onChanged();
+        return this;
+      }
+
+      @java.lang.Override
+      public final boolean isInitialized() {
+        return true;
+      }
+
+      @java.lang.Override
+      public Builder mergeFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        if (extensionRegistry == null) {
+          throw new java.lang.NullPointerException();
+        }
+        try {
+          boolean done = false;
+          while (!done) {
+            int tag = input.readTag();
+            switch (tag) {
+              case 0:
+                done = true;
+                break;
+              default: {
+                if (!super.parseUnknownField(input, extensionRegistry, tag)) {
+                  done = true; // was an endgroup tag
+                }
+                break;
+              } // default:
+            } // switch (tag)
+          } // while (!done)
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          throw e.unwrapIOException();
+        } finally {
+          onChanged();
+        } // finally
+        return this;
+      }
+
+      // @@protoc_insertion_point(builder_scope:qorechain.bridge.v1.MsgUpdateCircuitBreakerLimitsResponse)
+    }
+
+    // @@protoc_insertion_point(class_scope:qorechain.bridge.v1.MsgUpdateCircuitBreakerLimitsResponse)
+    private static final qorechain.bridge.v1.Tx.MsgUpdateCircuitBreakerLimitsResponse DEFAULT_INSTANCE;
+    static {
+      DEFAULT_INSTANCE = new qorechain.bridge.v1.Tx.MsgUpdateCircuitBreakerLimitsResponse();
+    }
+
+    public static qorechain.bridge.v1.Tx.MsgUpdateCircuitBreakerLimitsResponse getDefaultInstance() {
+      return DEFAULT_INSTANCE;
+    }
+
+    private static final com.google.protobuf.Parser<MsgUpdateCircuitBreakerLimitsResponse>
+        PARSER = new com.google.protobuf.AbstractParser<MsgUpdateCircuitBreakerLimitsResponse>() {
+      @java.lang.Override
+      public MsgUpdateCircuitBreakerLimitsResponse parsePartialFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        Builder builder = newBuilder();
+        try {
+          builder.mergeFrom(input, extensionRegistry);
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          throw e.setUnfinishedMessage(builder.buildPartial());
+        } catch (com.google.protobuf.UninitializedMessageException e) {
+          throw e.asInvalidProtocolBufferException().setUnfinishedMessage(builder.buildPartial());
+        } catch (java.io.IOException e) {
+          throw new com.google.protobuf.InvalidProtocolBufferException(e)
+              .setUnfinishedMessage(builder.buildPartial());
+        }
+        return builder.buildPartial();
+      }
+    };
+
+    public static com.google.protobuf.Parser<MsgUpdateCircuitBreakerLimitsResponse> parser() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Parser<MsgUpdateCircuitBreakerLimitsResponse> getParserForType() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public qorechain.bridge.v1.Tx.MsgUpdateCircuitBreakerLimitsResponse getDefaultInstanceForType() {
+      return DEFAULT_INSTANCE;
+    }
+
+  }
+
   private static final com.google.protobuf.Descriptors.Descriptor
     internal_static_qorechain_bridge_v1_MsgUpdateChainConfig_descriptor;
   private static final 
@@ -13044,6 +14380,16 @@ public final class Tx extends com.google.protobuf.GeneratedFile {
   private static final 
     com.google.protobuf.GeneratedMessage.FieldAccessorTable
       internal_static_qorechain_bridge_v1_MsgUpdateEthLightClientResponse_fieldAccessorTable;
+  private static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_qorechain_bridge_v1_MsgUpdateCircuitBreakerLimits_descriptor;
+  private static final 
+    com.google.protobuf.GeneratedMessage.FieldAccessorTable
+      internal_static_qorechain_bridge_v1_MsgUpdateCircuitBreakerLimits_fieldAccessorTable;
+  private static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_qorechain_bridge_v1_MsgUpdateCircuitBreakerLimitsResponse_descriptor;
+  private static final 
+    com.google.protobuf.GeneratedMessage.FieldAccessorTable
+      internal_static_qorechain_bridge_v1_MsgUpdateCircuitBreakerLimitsResponse_fieldAccessorTable;
 
   public static com.google.protobuf.Descriptors.FileDescriptor
       getDescriptor() {
@@ -13117,30 +14463,39 @@ public final class Tx extends com.google.protobuf.GeneratedFile {
       "s\n\027MsgUpdateEthLightClient\0222\n\007relayer\030\001 " +
       "\001(\tB\030\322\264-\024cosmos.AddressStringR\007relayer\022\026" +
       "\n\006update\030\002 \001(\014R\006update:\014\202\347\260*\007relayer\"!\n\037" +
-      "MsgUpdateEthLightClientResponse2\301\006\n\003Msg\022" +
-      "e\n\rBridgeDeposit\022%.qorechain.bridge.v1.M" +
-      "sgBridgeDeposit\032-.qorechain.bridge.v1.Ms" +
-      "gBridgeDepositResponse\022h\n\016BridgeWithdraw" +
-      "\022&.qorechain.bridge.v1.MsgBridgeWithdraw" +
-      "\032..qorechain.bridge.v1.MsgBridgeWithdraw" +
-      "Response\022\203\001\n\027RegisterBridgeValidator\022/.q" +
-      "orechain.bridge.v1.MsgRegisterBridgeVali" +
-      "dator\0327.qorechain.bridge.v1.MsgRegisterB" +
-      "ridgeValidatorResponse\022q\n\021BridgeAttestat" +
-      "ion\022).qorechain.bridge.v1.MsgBridgeAttes" +
-      "tation\0321.qorechain.bridge.v1.MsgBridgeAt" +
-      "testationResponse\022z\n\024UpdateEthLightClien" +
-      "t\022,.qorechain.bridge.v1.MsgUpdateEthLigh" +
-      "tClient\0324.qorechain.bridge.v1.MsgUpdateE" +
-      "thLightClientResponse\022q\n\021UpdateChainConf" +
-      "ig\022).qorechain.bridge.v1.MsgUpdateChainC" +
-      "onfig\0321.qorechain.bridge.v1.MsgUpdateCha" +
-      "inConfigResponse\022z\n\024SetVerifierBootstrap" +
-      "\022,.qorechain.bridge.v1.MsgSetVerifierBoo" +
-      "tstrap\0324.qorechain.bridge.v1.MsgSetVerif" +
-      "ierBootstrapResponse\032\005\200\347\260*\001B4Z2github.co" +
-      "m/qorechain/qorechain-core/x/bridge/type" +
-      "sb\006proto3"
+      "MsgUpdateEthLightClientResponse\"\307\001\n\035MsgU" +
+      "pdateCircuitBreakerLimits\022.\n\005admin\030\001 \001(\t" +
+      "B\030\322\264-\024cosmos.AddressStringR\005admin\022\031\n\010cha" +
+      "in_id\030\002 \001(\tR\007chainId\022.\n\023max_single_trans" +
+      "fer\030\003 \001(\tR\021maxSingleTransfer\022\037\n\013daily_li" +
+      "mit\030\004 \001(\tR\ndailyLimit:\n\202\347\260*\005admin\"\'\n%Msg" +
+      "UpdateCircuitBreakerLimitsResponse2\320\007\n\003M" +
+      "sg\022e\n\rBridgeDeposit\022%.qorechain.bridge.v" +
+      "1.MsgBridgeDeposit\032-.qorechain.bridge.v1" +
+      ".MsgBridgeDepositResponse\022h\n\016BridgeWithd" +
+      "raw\022&.qorechain.bridge.v1.MsgBridgeWithd" +
+      "raw\032..qorechain.bridge.v1.MsgBridgeWithd" +
+      "rawResponse\022\203\001\n\027RegisterBridgeValidator\022" +
+      "/.qorechain.bridge.v1.MsgRegisterBridgeV" +
+      "alidator\0327.qorechain.bridge.v1.MsgRegist" +
+      "erBridgeValidatorResponse\022q\n\021BridgeAttes" +
+      "tation\022).qorechain.bridge.v1.MsgBridgeAt" +
+      "testation\0321.qorechain.bridge.v1.MsgBridg" +
+      "eAttestationResponse\022z\n\024UpdateEthLightCl" +
+      "ient\022,.qorechain.bridge.v1.MsgUpdateEthL" +
+      "ightClient\0324.qorechain.bridge.v1.MsgUpda" +
+      "teEthLightClientResponse\022q\n\021UpdateChainC" +
+      "onfig\022).qorechain.bridge.v1.MsgUpdateCha" +
+      "inConfig\0321.qorechain.bridge.v1.MsgUpdate" +
+      "ChainConfigResponse\022z\n\024SetVerifierBootst" +
+      "rap\022,.qorechain.bridge.v1.MsgSetVerifier" +
+      "Bootstrap\0324.qorechain.bridge.v1.MsgSetVe" +
+      "rifierBootstrapResponse\022\214\001\n\032UpdateCircui" +
+      "tBreakerLimits\0222.qorechain.bridge.v1.Msg" +
+      "UpdateCircuitBreakerLimits\032:.qorechain.b" +
+      "ridge.v1.MsgUpdateCircuitBreakerLimitsRe" +
+      "sponse\032\005\200\347\260*\001B4Z2github.com/qorechain/qo" +
+      "rechain-core/x/bridge/typesb\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
@@ -13250,6 +14605,18 @@ public final class Tx extends com.google.protobuf.GeneratedFile {
     internal_static_qorechain_bridge_v1_MsgUpdateEthLightClientResponse_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_qorechain_bridge_v1_MsgUpdateEthLightClientResponse_descriptor,
+        new java.lang.String[] { });
+    internal_static_qorechain_bridge_v1_MsgUpdateCircuitBreakerLimits_descriptor =
+      getDescriptor().getMessageType(17);
+    internal_static_qorechain_bridge_v1_MsgUpdateCircuitBreakerLimits_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessage.FieldAccessorTable(
+        internal_static_qorechain_bridge_v1_MsgUpdateCircuitBreakerLimits_descriptor,
+        new java.lang.String[] { "Admin", "ChainId", "MaxSingleTransfer", "DailyLimit", });
+    internal_static_qorechain_bridge_v1_MsgUpdateCircuitBreakerLimitsResponse_descriptor =
+      getDescriptor().getMessageType(18);
+    internal_static_qorechain_bridge_v1_MsgUpdateCircuitBreakerLimitsResponse_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessage.FieldAccessorTable(
+        internal_static_qorechain_bridge_v1_MsgUpdateCircuitBreakerLimitsResponse_descriptor,
         new java.lang.String[] { });
     descriptor.resolveAllFeaturesImmutable();
     cosmos.msg.v1.Msg.getDescriptor();

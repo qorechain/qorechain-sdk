@@ -293,4 +293,22 @@ pub struct MsgUpdateEthLightClient {
 #[derive(Clone, Copy, PartialEq, ::prost::Message)]
 pub struct MsgUpdateEthLightClientResponse {
 }
+/// MsgUpdateCircuitBreakerLimits replaces a chain's circuit breaker limits. Both
+/// are amounts in the chain's base unit; "0" means unlimited. When both are
+/// non-zero, max_single_transfer may not exceed daily_limit. The daily counter
+/// and pause state are left as they are.
+#[derive(Clone, PartialEq, ::prost::Message)]
+pub struct MsgUpdateCircuitBreakerLimits {
+    #[prost(string, tag="1")]
+    pub admin: ::prost::alloc::string::String,
+    #[prost(string, tag="2")]
+    pub chain_id: ::prost::alloc::string::String,
+    #[prost(string, tag="3")]
+    pub max_single_transfer: ::prost::alloc::string::String,
+    #[prost(string, tag="4")]
+    pub daily_limit: ::prost::alloc::string::String,
+}
+#[derive(Clone, Copy, PartialEq, ::prost::Message)]
+pub struct MsgUpdateCircuitBreakerLimitsResponse {
+}
 // @@protoc_insertion_point(module)
