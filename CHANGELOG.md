@@ -7,10 +7,30 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-Client support for chain v3.2.2, in all five SDKs. To be released after the
-network release is tagged.
+Client support for chain v3.2.2 and v3.2.3, in all five SDKs. To be released
+after each network release is tagged.
 
-### Added
+### Added (chain v3.2.3)
+
+- **PQC registration integrity.** The registration builders refuse
+  `key_type: "classical_only"`, an empty key and a degenerate ML-DSA-87 key
+  (all-zero `t1`), which the chain refuses from v3.2.3.
+- **Proof of possession** (`MsgRegisterPQCKeyV2.proof_of_possession`): sign-bytes
+  `qorechain-pqc-pop-v1|<chain>|<algorithm>|<account>|<hex(public key)>`, plus a
+  signer and a verifier. The registration builders carry it when given. It is
+  optional on the chain today and due to become mandatory; set it only once the
+  network has applied v3.2.3. The same vector holds in all five SDKs.
+- **Hybrid key migration** (`migratePqcKeyHybrid` and equivalents). From v3.2.3
+  an account that has a PQC key must send `MsgMigratePQCKey` with the hybrid
+  signature. The classical helpers are deprecated.
+- **EVM window scope:** `native_only` and `allowed_targets` (at most 16, no
+  duplicates) when opening a window, and both read back from the window query.
+- **Abstract-account v2 digest** (`evmAuthSignBytesV2`), which binds the call's
+  gas limit, and a resolver that picks v1 or v2 per network. The vectors were
+  computed with the chain's own functions.
+- `MsgUpdateAuthority` (license) and decoding of `pqc` codes 230–234.
+
+### Added (chain v3.2.2)
 
 - **EIP-7702 delegation consent** (`MsgAuthorizeEVMDelegation`,
   `MsgClearEVMDelegation`). From v3.2.2 a type-4 transaction is admitted only
