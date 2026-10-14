@@ -46,6 +46,35 @@ impl std::error::Error for QoreTxError {}
 /// and retry.
 pub const RATE_LIMITED_REASON: &str = "rate limited";
 
+/// The `reason` when the account has no registered PQC key (pqc 8, or pqc 20
+/// from a keyless account): register the key first.
+pub const PQC_KEY_REQUIRED_REASON: &str = "PQC key required: register the account's PQC key first";
+/// The `reason` when a keyed account sent no hybrid extension (pqc 20): sign
+/// the transaction hybrid.
+pub const HYBRID_SIGNATURE_REQUIRED_REASON: &str =
+    "hybrid signature required: the account has a PQC key";
+
+/// Tells pqc 8 / pqc 20 apart. pqc 8 is always an account without a PQC key
+/// (classical fallback disabled). pqc 20 is either a keyless account or a keyed
+/// account that sent no hybrid extension; only the text tells them apart.
+fn pqc_key_requirement(codespace: &str, code: u32, raw_log: &str) -> Option<&'static str> {
+    if codespace != "pqc" || (code != 8 && code != 20) {
+        return None;
+    }
+    let lower = raw_log.to_ascii_lowercase();
+    if lower.contains("has a registered pqc key and must include") {
+        return Some(HYBRID_SIGNATURE_REQUIRED_REASON);
+    }
+    if code == 8
+        || lower.contains("has no registered pqc key")
+        || lower.contains("has no pqc key")
+        || lower.contains("must include a pqc hybrid signature extension")
+    {
+        return Some(PQC_KEY_REQUIRED_REASON);
+    }
+    None
+}
+
 /// Recognises the per-sender rate limit (both lanes' ante handler): codespace
 /// `ai`, code 3, text "sender <addr> has sent <n> transactions in the last 30
 /// blocks, at the configured limit of <limit> per minute". Code 3 also carries
@@ -69,7 +98,9 @@ pub fn decode_tx_error(code: u32, codespace: &str, raw_log: &str) -> Option<Qore
     if code == 0 {
         return None;
     }
-    let reason = if is_rate_limit_log(codespace, code, raw_log) {
+    let reason = if let Some(r) = pqc_key_requirement(codespace, code, raw_log) {
+        r.to_string()
+    } else if is_rate_limit_log(codespace, code, raw_log) {
         RATE_LIMITED_REASON.to_string()
     } else {
         reason_for(code, codespace).to_string()

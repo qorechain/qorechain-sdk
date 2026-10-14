@@ -122,4 +122,14 @@ class V322Test {
         assertEquals("evm_delegation_no_consent", TxError.decode(60, "pqc", "", "").kind);
         assertEquals("evm_delegation_invalid", TxError.decode(61, "pqc", "", "").kind);
     }
+
+    @Test
+    void decodePqcKeyRequirement() {
+        assertEquals(TxError.PQC_KEY_REQUIRED, TxError.decode(8, "pqc", "account has no PQC key and classical fallback is disabled", "").kind);
+        assertEquals(TxError.PQC_KEY_REQUIRED, TxError.decode(8, "pqc", "", "").kind);
+        assertEquals(TxError.PQC_KEY_REQUIRED, TxError.decode(20, "pqc", "account qor1abc has no registered PQC key, so its hybrid extension cannot be verified; register the key first (hybrid mode: required)", "").kind);
+        assertEquals(TxError.PQC_KEY_REQUIRED, TxError.decode(20, "pqc", "account qor1abc must include a PQC hybrid signature extension (hybrid mode: required)", "").kind);
+        assertEquals(TxError.HYBRID_SIGNATURE_REQUIRED, TxError.decode(20, "pqc", "account qor1abc has a registered PQC key and must include the hybrid signature extension (hybrid mode: required)", "").kind);
+        assertNotEquals(TxError.PQC_KEY_REQUIRED, TxError.decode(20, "pqc", "", "").kind);
+    }
 }

@@ -32,6 +32,34 @@ public final class TxError {
         }
     }
 
+    /** The kind when the account has no registered PQC key (pqc 8, or pqc 20 from a keyless account). */
+    public static final String PQC_KEY_REQUIRED = "pqc_key_required";
+
+    /** The kind when a keyed account sent no hybrid extension (pqc 20). */
+    public static final String HYBRID_SIGNATURE_REQUIRED = "hybrid_signature_required";
+
+    /**
+     * Tells pqc 8 / pqc 20 apart. pqc 8 is always an account without a PQC key
+     * (classical fallback disabled). pqc 20 is either a keyless account or a keyed
+     * account that sent no hybrid extension; only the text tells them apart.
+     */
+    static String pqcKeyRequirement(String codespace, int code, String rawLog) {
+        if (!"pqc".equals(codespace) || (code != 8 && code != 20)) {
+            return null;
+        }
+        String lower = rawLog == null ? "" : rawLog.toLowerCase(java.util.Locale.ROOT);
+        if (lower.contains("has a registered pqc key and must include")) {
+            return HYBRID_SIGNATURE_REQUIRED;
+        }
+        if (code == 8
+                || lower.contains("has no registered pqc key")
+                || lower.contains("has no pqc key")
+                || lower.contains("must include a pqc hybrid signature extension")) {
+            return PQC_KEY_REQUIRED;
+        }
+        return null;
+    }
+
     /** The kind of a refusal from the per-sender transaction rate limit. */
     public static final String RATE_LIMITED = "rate_limited";
 
@@ -128,7 +156,16 @@ public final class TxError {
         String kind;
         String message;
         String[] known;
-        if (isRateLimitLog(codespace, code, rawLog)) {
+        String keyRequirement = pqcKeyRequirement(codespace, code, rawLog);
+        if (keyRequirement != null) {
+            known = new String[] {
+                keyRequirement,
+                PQC_KEY_REQUIRED.equals(keyRequirement)
+                        ? "this account has no registered PQC key — register one (MsgRegisterPQCKeyV2) before sending"
+                        : "this account has a registered PQC key — sign the transaction with the hybrid"
+                                + " (ML-DSA-87) extension"
+            };
+        } else if (isRateLimitLog(codespace, code, rawLog)) {
             known = new String[] {RATE_LIMITED, "the network is limiting this sender's transaction rate"};
         } else if ("sdk".equals(cs)) {
             known = SDK_CODES.get(code);

@@ -130,6 +130,31 @@ const PQC_CODES: Record<number, { kind: string; message: string }> = {
 // in the last 30 blocks, at the configured limit of <limit> per minute". Code 3
 // also carries other AI-engine rejections, so the text decides; a transport
 // that drops the codespace (EVM JSON-RPC) is matched on the text alone.
+// pqc 8 and pqc 20 cover two different remedies. pqc 8 is always an account
+// without a PQC key (classical fallback disabled). pqc 20 is either a keyless
+// account (register the key first) or a keyed account that sent no hybrid
+// extension (sign hybrid); only the text tells them apart.
+function classifyPqcKeyRequirement(
+  codespace: string | undefined,
+  code: number,
+  rawLog: string | undefined,
+): "pqc_key_required" | "hybrid_signature_required" | undefined {
+  if (codespace !== "pqc" || (code !== 8 && code !== 20)) return undefined;
+  const log = rawLog ?? "";
+  if (/has a registered PQC key and must include/i.test(log)) return "hybrid_signature_required";
+  if (code === 8 || /has no (registered )?PQC key|must include a PQC hybrid signature extension/i.test(log)) {
+    return "pqc_key_required";
+  }
+  return undefined;
+}
+
+const PQC_KEY_REQUIREMENT_MESSAGES = {
+  pqc_key_required:
+    "this account has no registered PQC key — register one (MsgRegisterPQCKeyV2) before sending",
+  hybrid_signature_required:
+    "this account has a registered PQC key — sign the transaction with the hybrid (ML-DSA-87) extension",
+} as const;
+
 function isRateLimitLog(codespace: string | undefined, code: number, rawLog: string | undefined): boolean {
   if (!rawLog || !/transactions in the last/i.test(rawLog) || !/per minute/i.test(rawLog)) return false;
   return !codespace || (codespace === "ai" && code === 3);
@@ -156,6 +181,18 @@ const DEFAULT_CODESPACE = "sdk";
 export function decodeTxError(input: TxErrorInput): DecodedTxError {
   const codespace = input.codespace || DEFAULT_CODESPACE;
   const rawLog = input.rawLog;
+
+  const keyRequirement = classifyPqcKeyRequirement(input.codespace, input.code, rawLog);
+  if (keyRequirement) {
+    const base = PQC_KEY_REQUIREMENT_MESSAGES[keyRequirement];
+    return {
+      code: input.code,
+      codespace,
+      kind: keyRequirement,
+      message: rawLog ? `${base} (${rawLog})` : base,
+      rawLog,
+    };
+  }
 
   if (isRateLimitLog(input.codespace, input.code, rawLog)) {
     return {

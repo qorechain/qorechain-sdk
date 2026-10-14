@@ -134,6 +134,40 @@ MODULE_CODES: dict[str, dict[int, tuple[str, str]]] = {
 # the codespace (EVM JSON-RPC) is matched on the text alone.
 
 
+# pqc 8 and pqc 20 cover two different remedies. pqc 8 is always an account
+# without a PQC key (classical fallback disabled). pqc 20 is either a keyless
+# account (register the key first) or a keyed account that sent no hybrid
+# extension (sign hybrid); only the text tells them apart.
+_PQC_KEY_REQUIREMENT_MESSAGES = {
+    "pqc_key_required": (
+        "this account has no registered PQC key — register one (MsgRegisterPQCKeyV2) "
+        "before sending"
+    ),
+    "hybrid_signature_required": (
+        "this account has a registered PQC key — sign the transaction with the hybrid "
+        "(ML-DSA-87) extension"
+    ),
+}
+
+
+def _classify_pqc_key_requirement(
+    codespace: str | None, code: int, raw_log: str | None
+) -> str | None:
+    if codespace != "pqc" or code not in (8, 20):
+        return None
+    low = (raw_log or "").lower()
+    if "has a registered pqc key and must include" in low:
+        return "hybrid_signature_required"
+    if (
+        code == 8
+        or "has no registered pqc key" in low
+        or "has no pqc key" in low
+        or "must include a pqc hybrid signature extension" in low
+    ):
+        return "pqc_key_required"
+    return None
+
+
 def _is_rate_limit_log(codespace: str | None, code: int, raw_log: str | None) -> bool:
     if not raw_log:
         return False
@@ -178,6 +212,17 @@ def decode_tx_error(
     :param raw_log: The raw ABCI log string, used as a fallback message.
     """
     space = codespace or DEFAULT_CODESPACE
+
+    key_requirement = _classify_pqc_key_requirement(codespace, code, raw_log)
+    if key_requirement:
+        base = _PQC_KEY_REQUIREMENT_MESSAGES[key_requirement]
+        return DecodedTxError(
+            code=code,
+            codespace=space,
+            message=f"{base} ({raw_log})" if raw_log else base,
+            kind=key_requirement,
+            raw_log=raw_log,
+        )
 
     if _is_rate_limit_log(codespace, code, raw_log):
         return DecodedTxError(
