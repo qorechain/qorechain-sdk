@@ -201,6 +201,10 @@ impl PqcDx {
     /// Useful for inspection, packing into a larger tx, or a deferred-broadcast
     /// flow.
     pub fn build_register(&self) -> Result<BuiltTx> {
+        // From chain v3.2.2 an ecdsa_pubkey that is not the sender's is refused
+        // after the fee is charged; catch it here. Not network-gated: such a key
+        // is wrong anywhere.
+        crate::classical_key::validate_classical_key_for_sender(&self.sender, &self.public_key)?;
         let msg = register_pqc_key_v2_any(
             self.sender.clone(),
             self.pqc_public_key.clone(),

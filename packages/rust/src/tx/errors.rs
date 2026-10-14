@@ -42,6 +42,10 @@ impl fmt::Display for QoreTxError {
 
 impl std::error::Error for QoreTxError {}
 
+/// The `reason` of a refusal from the per-sender transaction rate limit (chain
+/// v3.2.2). Wait and retry.
+pub const RATE_LIMITED_REASON: &str = "rate limited";
+
 /// Maps an ABCI `(code, codespace, raw_log)` triple to a [`QoreTxError`].
 ///
 /// A zero `code` returns `None` (success). The codespace selects the code table:
@@ -52,10 +56,18 @@ pub fn decode_tx_error(code: u32, codespace: &str, raw_log: &str) -> Option<Qore
     if code == 0 {
         return None;
     }
+    // The per-sender transaction rate limit (chain v3.2.2) is raised by an ante
+    // handler whose codespace and code are not fixed yet, so it is recognised
+    // by its text, whatever code carries it.
+    let reason = if raw_log.to_ascii_lowercase().contains("rate limit") {
+        RATE_LIMITED_REASON.to_string()
+    } else {
+        reason_for(code, codespace).to_string()
+    };
     Some(QoreTxError {
         code,
         codespace: codespace.to_string(),
-        reason: reason_for(code, codespace).to_string(),
+        reason,
         raw_log: raw_log.to_string(),
         tx_hash: String::new(),
     })
@@ -131,6 +143,8 @@ fn module_reason(codespace: &str, code: u32) -> Option<&'static str> {
         ("abstractaccount", 5) => "spending limit exceeded",
         ("abstractaccount", 6) => "session key expired",
         ("abstractaccount", 10) => "authenticator not permitted for this action",
+        // The nonce is not the linked key's authenticator sequence (a per-key
+        // counter, not the account's EVM nonce).
         ("abstractaccount", 11) => "authenticator signature replay binding mismatch",
         // pqc hybrid-signature verification (surfaced on a MsgRotatePQCKey whose
         // dual signatures or hybrid cosignature do not verify).
@@ -150,6 +164,15 @@ fn module_reason(codespace: &str, code: u32) -> Option<&'static str> {
         ("pqc", 28) => {
             "invalid EVM authorisation window, or the account has no registered \
              post-quantum key — check the log text to tell the two apart"
+        }
+        // v3.2.2 EIP-7702 delegation consent (crate::evm_delegation).
+        ("pqc", 60) => {
+            "no post-quantum consent for this EIP-7702 delegation — broadcast \
+             MsgAuthorizeEVMDelegation for exactly this delegate first"
+        }
+        ("pqc", 61) => {
+            "invalid EIP-7702 delegation request — check the delegate address and the \
+             blocks bound, and that the account has a registered PQC key"
         }
         _ => return None,
     };

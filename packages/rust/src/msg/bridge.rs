@@ -315,3 +315,37 @@ pub fn set_verifier_bootstrap_any(
         SET_VERIFIER_BOOTSTRAP,
     )
 }
+
+/// `/qorechain.bridge.v1.MsgUpdateCircuitBreakerLimits` type URL (chain v3.2.2).
+pub const UPDATE_CIRCUIT_BREAKER_LIMITS: &str =
+    "/qorechain.bridge.v1.MsgUpdateCircuitBreakerLimits";
+
+/// Builds `MsgUpdateCircuitBreakerLimits` (chain v3.2.2): a chain's
+/// single-transfer and daily limits in its base unit, `"0"` = unlimited. Signed
+/// by the bridge admin, a qcb_bridge licence holder, or governance.
+pub fn update_circuit_breaker_limits(
+    admin: impl Into<String>,
+    chain_id: impl Into<String>,
+    max_single_transfer: impl Into<String>,
+    daily_limit: impl Into<String>,
+) -> pb::MsgUpdateCircuitBreakerLimits {
+    pb::MsgUpdateCircuitBreakerLimits {
+        admin: admin.into(),
+        chain_id: chain_id.into(),
+        max_single_transfer: max_single_transfer.into(),
+        daily_limit: daily_limit.into(),
+    }
+}
+
+/// Builds `MsgUpdateCircuitBreakerLimits` packed into an `Any`.
+pub fn update_circuit_breaker_limits_any(
+    admin: impl Into<String>,
+    chain_id: impl Into<String>,
+    max_single_transfer: impl Into<String>,
+    daily_limit: impl Into<String>,
+) -> Any {
+    to_any(
+        &update_circuit_breaker_limits(admin, chain_id, max_single_transfer, daily_limit),
+        UPDATE_CIRCUIT_BREAKER_LIMITS,
+    )
+}

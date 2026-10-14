@@ -305,3 +305,63 @@ pub fn close_evm_window(sender: impl Into<String>) -> pb::MsgCloseEvmWindow {
 pub fn close_evm_window_any(sender: impl Into<String>) -> Any {
     to_any(&close_evm_window(sender), CLOSE_EVM_WINDOW)
 }
+
+// --------------------------------------------------------------------------- //
+// v3.2.2: EIP-7702 delegation consent
+// --------------------------------------------------------------------------- //
+
+/// `/qorechain.pqc.v1.MsgAuthorizeEVMDelegation` type URL (chain v3.2.2).
+pub const AUTHORIZE_EVM_DELEGATION: &str = "/qorechain.pqc.v1.MsgAuthorizeEVMDelegation";
+/// `/qorechain.pqc.v1.MsgClearEVMDelegation` type URL (chain v3.2.2).
+pub const CLEAR_EVM_DELEGATION: &str = "/qorechain.pqc.v1.MsgClearEVMDelegation";
+
+/// Builds `MsgAuthorizeEVMDelegation`: the sender's post-quantum consent to one
+/// EIP-7702 delegation of its own account (chain v3.2.2). Single use, bounded in
+/// blocks (`1..=17280`), replaces any earlier consent, revoked by
+/// `MsgCloseEVMWindow`. Broadcasting it ADVANCES the account's nonce; see
+/// [`crate::evm_delegation`] for the ordering.
+///
+/// # Errors
+///
+/// [`Error::Pqc`](crate::Error::Pqc) when the delegate or the bound is invalid.
+pub fn authorize_evm_delegation(
+    sender: impl Into<String>,
+    delegate: &str,
+    blocks: u64,
+) -> crate::Result<pb::MsgAuthorizeEvmDelegation> {
+    let delegate = crate::evm_delegation::validate_evm_delegation_consent(delegate, blocks)?;
+    Ok(pb::MsgAuthorizeEvmDelegation {
+        sender: sender.into(),
+        delegate,
+        blocks,
+    })
+}
+
+/// Builds `MsgAuthorizeEVMDelegation` packed into an `Any`.
+///
+/// # Errors
+///
+/// As [`authorize_evm_delegation`].
+pub fn authorize_evm_delegation_any(
+    sender: impl Into<String>,
+    delegate: &str,
+    blocks: u64,
+) -> crate::Result<Any> {
+    Ok(to_any(
+        &authorize_evm_delegation(sender, delegate, blocks)?,
+        AUTHORIZE_EVM_DELEGATION,
+    ))
+}
+
+/// Builds `MsgClearEVMDelegation`: removes the sender's installed delegation on
+/// the Cosmos lane, with no EVM transaction (chain v3.2.2).
+pub fn clear_evm_delegation(sender: impl Into<String>) -> pb::MsgClearEvmDelegation {
+    pb::MsgClearEvmDelegation {
+        sender: sender.into(),
+    }
+}
+
+/// Builds `MsgClearEVMDelegation` packed into an `Any`.
+pub fn clear_evm_delegation_any(sender: impl Into<String>) -> Any {
+    to_any(&clear_evm_delegation(sender), CLEAR_EVM_DELEGATION)
+}

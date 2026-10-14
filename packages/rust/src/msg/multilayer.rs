@@ -265,3 +265,13 @@ pub fn challenge_anchor_any(
         CHALLENGE_ANCHOR,
     )
 }
+
+/// `/qorechain.multilayer.v1.MsgUpdateParams` type URL (chain v3.2.2).
+pub const UPDATE_PARAMS: &str = "/qorechain.multilayer.v1.MsgUpdateParams";
+
+/// Packs `MsgUpdateParams` (chain v3.2.2), which replaces the multilayer
+/// parameters wholesale, into an `Any`. Governance only: `params.authority` must
+/// be the gov module account.
+pub fn update_params_any(params: &pb::MsgUpdateParams) -> Any {
+    to_any(params, UPDATE_PARAMS)
+}

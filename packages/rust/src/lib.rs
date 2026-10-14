@@ -43,10 +43,12 @@ pub mod accounts;
 pub mod address;
 pub mod ai;
 pub mod authenticator;
+pub mod classical_key;
 pub mod client;
 pub mod cross_vm;
 pub mod denom;
 pub mod error;
+pub mod evm_delegation;
 pub mod evm_window;
 pub mod msg;
 pub mod networks;
@@ -59,6 +61,7 @@ pub mod signbytes;
 pub mod subscribe;
 pub mod tx;
 pub mod unified;
+pub mod upgrades;
 pub mod utils;
 
 pub use error::{Error, Result};
@@ -118,7 +121,16 @@ pub use evm_window::{
     EVM_WINDOW_CODESPACE, EVM_WINDOW_QUERY_PATH, MAX_EVM_WINDOW_BLOCKS, MAX_EVM_WINDOW_TXS,
 };
 
+pub use classical_key::{validate_classical_key_for_sender, ClassicalKeyMatch};
+pub use evm_delegation::{
+    classify_evm_delegation_error, get_evm_delegation_consent, EvmDelegationConsent,
+    EvmDelegationRefusal, EVM_DELEGATION_CLEAR, MAX_EVM_DELEGATION_CONSENT_BLOCKS,
+};
 pub use query::{JsonRpcClient, QorClient, RestClient, TypedQueryClient, QOR_METHODS};
+pub use upgrades::{
+    clear_upgrade_cache, is_upgrade_applied, require_upgrade_applied, upgrade_applied_height,
+    CHAIN_UPGRADE_V3_2_2,
+};
 
 pub use client::{create_client, Client, ClientBuilder, Fees};
 
