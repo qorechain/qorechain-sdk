@@ -32,6 +32,9 @@ public final class TxError {
         }
     }
 
+    /** The kind of a refusal from the per-sender transaction rate limit (chain v3.2.2). */
+    public static final String RATE_LIMITED = "rate_limited";
+
     private static final Map<Integer, String[]> SDK_CODES = new HashMap<>();
 
     /** Per-codespace maps for QoreChain module errors (codespace → code → [kind, msg]). */
@@ -43,6 +46,8 @@ public final class TxError {
         aa.put(5, new String[] {"spending_limit_exceeded", "authenticator spending limit exceeded"});
         aa.put(6, new String[] {"session_expired", "authenticator session expired"});
         aa.put(10, new String[] {"permission_denied", "authenticator permission denied"});
+        // 11: the nonce is not the linked key's authenticator sequence (a per-key
+        // counter, not the account's EVM nonce).
         aa.put(11, new String[] {"replay_detected", "authenticator nonce replay detected"});
         MODULE_CODES.put("abstractaccount", aa);
 
@@ -60,6 +65,13 @@ public final class TxError {
                     "evm_window_invalid",
                     "invalid EVM authorisation window, or no registered post-quantum key"
                 });
+        // EIP-7702 delegation consent (chain v3.2.2).
+        pqc.put(
+                60,
+                new String[] {
+                    "evm_delegation_no_consent", "no post-quantum consent for this EIP-7702 delegation"
+                });
+        pqc.put(61, new String[] {"evm_delegation_invalid", "invalid EIP-7702 delegation request"});
         MODULE_CODES.put("pqc", pqc);
     }
 
@@ -98,7 +110,12 @@ public final class TxError {
         String kind;
         String message;
         String[] known;
-        if ("sdk".equals(cs)) {
+        // The per-sender transaction rate limit (chain v3.2.2) is raised by an ante
+        // handler whose codespace and code are not fixed yet, so it is recognised
+        // by its text, whatever code carries it.
+        if (rawLog != null && rawLog.toLowerCase(java.util.Locale.ROOT).contains("rate limit")) {
+            known = new String[] {RATE_LIMITED, "the network is limiting this sender's transaction rate"};
+        } else if ("sdk".equals(cs)) {
             known = SDK_CODES.get(code);
         } else {
             Map<Integer, String[]> module = MODULE_CODES.get(cs);

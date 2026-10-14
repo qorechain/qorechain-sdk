@@ -193,13 +193,16 @@ class PqcDxTest {
         statusResultJson = "{\"registered\":false}";
         PqcKeypair kp = Pqc.generatePqcKeypair(new byte[32]);
         PqcDx.EnsureOptions opts = new PqcDx.EnsureOptions();
-        opts.ecdsaPubkey = new byte[] {0x11, 0x22};
+        // An explicit empty key overrides the signer's own (the default). From
+        // chain v3.2.2 a non-empty key must be the sender's, so an arbitrary one
+        // is refused before broadcast (see V322Test).
+        opts.ecdsaPubkey = new byte[0];
         opts.keyType = "pqc-only";
 
         PqcDx.ensurePqcRegistered(signer(kp), new Broadcaster(baseUrl), qor(), opts);
 
         qorechain.pqc.v1.Tx.MsgRegisterPQCKeyV2 msg = soleRegisterMsg(broadcastTxs.get(0));
-        assertArrayEquals(new byte[] {0x11, 0x22}, msg.getEcdsaPubkey().toByteArray());
+        assertArrayEquals(new byte[0], msg.getEcdsaPubkey().toByteArray());
         assertEquals("pqc-only", msg.getKeyType());
     }
 

@@ -13,10 +13,10 @@ import java.util.List;
 import java.util.Set;
 import org.junit.jupiter.api.Test;
 
-/** Registry coverage of all 61 QoreChain custom messages + Any pack/unpack round-trip. */
+/** Registry coverage of all 65 QoreChain custom messages + Any pack/unpack round-trip. */
 class MessagesTest {
 
-    /** The 61 QoreChain custom Msg type URLs (amm 7, bridge 7, rdk 8, multilayer 6, pqc 8,
+    /** The 65 QoreChain custom Msg type URLs (amm 7, bridge 8, rdk 8, multilayer 7, pqc 10,
      * svm 5, lightnode 4, license 4, abstractaccount 6, crossvm 2, rlconsensus 4). */
     private static final List<String> QORECHAIN_TYPE_URLS =
             List.of(
@@ -34,6 +34,7 @@ class MessagesTest {
                     "/qorechain.bridge.v1.MsgUpdateEthLightClient",
                     "/qorechain.bridge.v1.MsgUpdateChainConfig",
                     "/qorechain.bridge.v1.MsgSetVerifierBootstrap",
+                    "/qorechain.bridge.v1.MsgUpdateCircuitBreakerLimits",
                     "/qorechain.rdk.v1.MsgCreateRollup",
                     "/qorechain.rdk.v1.MsgSubmitBatch",
                     "/qorechain.rdk.v1.MsgChallengeBatch",
@@ -48,6 +49,7 @@ class MessagesTest {
                     "/qorechain.multilayer.v1.MsgRouteTransaction",
                     "/qorechain.multilayer.v1.MsgUpdateLayerStatus",
                     "/qorechain.multilayer.v1.MsgChallengeAnchor",
+                    "/qorechain.multilayer.v1.MsgUpdateParams",
                     "/qorechain.pqc.v1.MsgRegisterPQCKey",
                     "/qorechain.pqc.v1.MsgRegisterPQCKeyV2",
                     "/qorechain.pqc.v1.MsgMigratePQCKey",
@@ -56,6 +58,8 @@ class MessagesTest {
                     "/qorechain.pqc.v1.MsgDisableAlgorithm",
                     "/qorechain.pqc.v1.MsgOpenEVMWindow",
                     "/qorechain.pqc.v1.MsgCloseEVMWindow",
+                    "/qorechain.pqc.v1.MsgAuthorizeEVMDelegation",
+                    "/qorechain.pqc.v1.MsgClearEVMDelegation",
                     "/qorechain.svm.v1.MsgDeployProgram",
                     "/qorechain.svm.v1.MsgCreateAccount",
                     "/qorechain.svm.v1.MsgExecuteProgram",
@@ -84,7 +88,7 @@ class MessagesTest {
 
     @Test
     void allCustomTypeUrlsRegistered() {
-        assertEquals(61, QORECHAIN_TYPE_URLS.size());
+        assertEquals(65, QORECHAIN_TYPE_URLS.size());
         Set<String> registered = Messages.typeUrls();
         for (String url : QORECHAIN_TYPE_URLS) {
             assertTrue(registered.contains(url), "missing registry entry: " + url);

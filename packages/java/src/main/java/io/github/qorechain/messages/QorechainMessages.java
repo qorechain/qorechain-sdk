@@ -80,6 +80,16 @@ public final class QorechainMessages {
                 qorechain.bridge.v1.Tx.MsgSetVerifierBootstrap m) {
             return new TypedMessage("/qorechain.bridge.v1.MsgSetVerifierBootstrap", m);
         }
+
+        /**
+         * {@code MsgUpdateCircuitBreakerLimits} (chain v3.2.2) — a chain's
+         * single-transfer and daily limits in its base unit, "0" = unlimited.
+         * Bridge admin, qcb_bridge licence holder, or governance.
+         */
+        public static TypedMessage updateCircuitBreakerLimits(
+                qorechain.bridge.v1.Tx.MsgUpdateCircuitBreakerLimits m) {
+            return new TypedMessage("/qorechain.bridge.v1.MsgUpdateCircuitBreakerLimits", m);
+        }
     }
 
     /** RDK (rollup development kit) module composers. */
@@ -172,6 +182,11 @@ public final class QorechainMessages {
                 qorechain.multilayer.v1.Tx.MsgChallengeAnchor m) {
             return new TypedMessage("/qorechain.multilayer.v1.MsgChallengeAnchor", m);
         }
+
+        /** {@code MsgUpdateParams} (chain v3.2.2) — replaces the parameters wholesale. Governance only. */
+        public static TypedMessage updateParams(qorechain.multilayer.v1.Tx.MsgUpdateParams m) {
+            return new TypedMessage("/qorechain.multilayer.v1.MsgUpdateParams", m);
+        }
     }
 
     /** PQC module composers. */
@@ -221,6 +236,22 @@ public final class QorechainMessages {
         /** {@code MsgCloseEVMWindow} — revokes the sender's window in the same block. */
         public static TypedMessage closeEvmWindow(qorechain.pqc.v1.Tx.MsgCloseEVMWindow m) {
             return new TypedMessage("/qorechain.pqc.v1.MsgCloseEVMWindow", m);
+        }
+
+        /**
+         * {@code MsgAuthorizeEVMDelegation} (chain v3.2.2) — the sender's
+         * post-quantum consent to one EIP-7702 delegation of its own account. Use
+         * {@link io.github.qorechain.evm.EvmDelegation#authorize} to get the bounds
+         * checked first.
+         */
+        public static TypedMessage authorizeEvmDelegation(
+                qorechain.pqc.v1.Tx.MsgAuthorizeEVMDelegation m) {
+            return new TypedMessage("/qorechain.pqc.v1.MsgAuthorizeEVMDelegation", m);
+        }
+
+        /** {@code MsgClearEVMDelegation} (chain v3.2.2) — removes the sender's installed delegation. */
+        public static TypedMessage clearEvmDelegation(qorechain.pqc.v1.Tx.MsgClearEVMDelegation m) {
+            return new TypedMessage("/qorechain.pqc.v1.MsgClearEVMDelegation", m);
         }
     }
 

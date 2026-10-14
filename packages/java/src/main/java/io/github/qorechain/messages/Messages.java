@@ -45,7 +45,7 @@ public final class Messages {
         m.put("/qorechain.amm.v1.MsgPausePool", qorechain.amm.v1.Tx.MsgPausePool.parser());
         m.put("/qorechain.amm.v1.MsgResumePool", qorechain.amm.v1.Tx.MsgResumePool.parser());
 
-        // ---- bridge (7) ----
+        // ---- bridge (8) ----
         m.put("/qorechain.bridge.v1.MsgBridgeDeposit", qorechain.bridge.v1.Tx.MsgBridgeDeposit.parser());
         m.put("/qorechain.bridge.v1.MsgBridgeWithdraw", qorechain.bridge.v1.Tx.MsgBridgeWithdraw.parser());
         m.put("/qorechain.bridge.v1.MsgRegisterBridgeValidator", qorechain.bridge.v1.Tx.MsgRegisterBridgeValidator.parser());
@@ -53,6 +53,7 @@ public final class Messages {
         m.put("/qorechain.bridge.v1.MsgUpdateEthLightClient", qorechain.bridge.v1.Tx.MsgUpdateEthLightClient.parser());
         m.put("/qorechain.bridge.v1.MsgUpdateChainConfig", qorechain.bridge.v1.Tx.MsgUpdateChainConfig.parser());
         m.put("/qorechain.bridge.v1.MsgSetVerifierBootstrap", qorechain.bridge.v1.Tx.MsgSetVerifierBootstrap.parser());
+        m.put("/qorechain.bridge.v1.MsgUpdateCircuitBreakerLimits", qorechain.bridge.v1.Tx.MsgUpdateCircuitBreakerLimits.parser());
 
         // ---- rdk (8) ----
         m.put("/qorechain.rdk.v1.MsgCreateRollup", qorechain.rdk.v1.Tx.MsgCreateRollup.parser());
@@ -64,15 +65,16 @@ public final class Messages {
         m.put("/qorechain.rdk.v1.MsgStopRollup", qorechain.rdk.v1.Tx.MsgStopRollup.parser());
         m.put("/qorechain.rdk.v1.MsgExecuteWithdrawal", qorechain.rdk.v1.Tx.MsgExecuteWithdrawal.parser());
 
-        // ---- multilayer (6) ----
+        // ---- multilayer (7) ----
         m.put("/qorechain.multilayer.v1.MsgRegisterSidechain", qorechain.multilayer.v1.Tx.MsgRegisterSidechain.parser());
         m.put("/qorechain.multilayer.v1.MsgRegisterPaychain", qorechain.multilayer.v1.Tx.MsgRegisterPaychain.parser());
         m.put("/qorechain.multilayer.v1.MsgAnchorState", qorechain.multilayer.v1.Tx.MsgAnchorState.parser());
         m.put("/qorechain.multilayer.v1.MsgRouteTransaction", qorechain.multilayer.v1.Tx.MsgRouteTransaction.parser());
         m.put("/qorechain.multilayer.v1.MsgUpdateLayerStatus", qorechain.multilayer.v1.Tx.MsgUpdateLayerStatus.parser());
         m.put("/qorechain.multilayer.v1.MsgChallengeAnchor", qorechain.multilayer.v1.Tx.MsgChallengeAnchor.parser());
+        m.put("/qorechain.multilayer.v1.MsgUpdateParams", qorechain.multilayer.v1.Tx.MsgUpdateParams.parser());
 
-        // ---- pqc (8) ----
+        // ---- pqc (10) ----
         m.put("/qorechain.pqc.v1.MsgRegisterPQCKey", qorechain.pqc.v1.Tx.MsgRegisterPQCKey.parser());
         m.put("/qorechain.pqc.v1.MsgRegisterPQCKeyV2", qorechain.pqc.v1.Tx.MsgRegisterPQCKeyV2.parser());
         m.put("/qorechain.pqc.v1.MsgMigratePQCKey", qorechain.pqc.v1.Tx.MsgMigratePQCKey.parser());
@@ -82,6 +84,9 @@ public final class Messages {
         // The EVM authorisation window (chain v3.2.0): ordinary Cosmos-lane messages.
         m.put("/qorechain.pqc.v1.MsgOpenEVMWindow", qorechain.pqc.v1.Tx.MsgOpenEVMWindow.parser());
         m.put("/qorechain.pqc.v1.MsgCloseEVMWindow", qorechain.pqc.v1.Tx.MsgCloseEVMWindow.parser());
+        // EIP-7702 delegation consent (chain v3.2.2).
+        m.put("/qorechain.pqc.v1.MsgAuthorizeEVMDelegation", qorechain.pqc.v1.Tx.MsgAuthorizeEVMDelegation.parser());
+        m.put("/qorechain.pqc.v1.MsgClearEVMDelegation", qorechain.pqc.v1.Tx.MsgClearEVMDelegation.parser());
 
         // ---- svm (5) ----
         m.put("/qorechain.svm.v1.MsgDeployProgram", qorechain.svm.v1.Tx.MsgDeployProgram.parser());

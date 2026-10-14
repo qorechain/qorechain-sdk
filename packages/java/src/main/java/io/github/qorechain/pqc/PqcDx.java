@@ -194,6 +194,10 @@ public final class PqcDx {
         EnsureOptions o = opts != null ? opts : new EnsureOptions();
         byte[] ecdsaPubkey = o.ecdsaPubkey != null ? o.ecdsaPubkey : signer.secp256k1PublicKey;
         String keyType = o.keyType != null ? o.keyType : DEFAULT_KEY_TYPE;
+        // From chain v3.2.2 an ecdsa_pubkey that is not the sender's is refused
+        // after the fee is charged; catch it here. Not network-gated: such a key
+        // is wrong anywhere.
+        ClassicalKey.validateForSender(signer.sender, ecdsaPubkey);
 
         qorechain.pqc.v1.Tx.MsgRegisterPQCKeyV2.Builder msg =
                 qorechain.pqc.v1.Tx.MsgRegisterPQCKeyV2.newBuilder()

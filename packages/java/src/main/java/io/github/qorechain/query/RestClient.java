@@ -93,6 +93,21 @@ public final class RestClient {
         return io.github.qorechain.evm.EvmWindowStatus.of(getEvmWindow(address));
     }
 
+    /**
+     * {@code /qorechain/pqc/v1/evm_delegation_consent/{address}} — the account's
+     * EIP-7702 delegation consent (chain v3.2.2), raw. An older node has no such
+     * route and answers an HTTP error, which propagates rather than reading as
+     * "no consent".
+     */
+    public JsonNode getEvmDelegationConsent(String address) {
+        return get("/qorechain/pqc/v1/evm_delegation_consent/" + enc(address));
+    }
+
+    /** The same route, decoded into {@link io.github.qorechain.evm.EvmDelegationConsent}. */
+    public io.github.qorechain.evm.EvmDelegationConsent evmDelegationConsent(String address) {
+        return io.github.qorechain.evm.EvmDelegationConsent.of(getEvmDelegationConsent(address));
+    }
+
     /** {@code /qorechain/reputation/v1/validators/{address}}. */
     public JsonNode getReputation(String validatorAddress) {
         return get("/qorechain/reputation/v1/validators/" + enc(validatorAddress));
