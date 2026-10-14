@@ -405,6 +405,13 @@ func (LicenseComposers) Resume(authority, grantee, featureID string) *licensev1.
 	return &licensev1.MsgResumeLicense{Authority: authority, Grantee: grantee, FeatureID: featureID}
 }
 
+// UpdateAuthority builds MsgUpdateAuthority (chain v3.2.3), which replaces the
+// licence grant authority. authority must be the governance module account, so
+// it only executes from a passed proposal.
+func (LicenseComposers) UpdateAuthority(authority, newAuthority string) *licensev1.MsgUpdateAuthority {
+	return &licensev1.MsgUpdateAuthority{Authority: authority, NewAuthority: newAuthority}
+}
+
 // ---- abstractaccount ----
 
 // AbstractAccountComposers builds abstractaccount module messages.

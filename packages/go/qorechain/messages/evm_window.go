@@ -2,6 +2,7 @@ package messages
 
 import (
 	"fmt"
+	"strings"
 
 	"cosmossdk.io/math"
 
@@ -25,6 +26,9 @@ const (
 	// admit. Zero is refused: a window that admits nothing is a mistake, not a
 	// policy.
 	MaxEVMWindowTxs uint64 = 1000
+	// MaxEVMWindowTargets is the most allowed_targets one window may list
+	// (chain v3.2.3).
+	MaxEVMWindowTargets = 16
 )
 
 // ValidateOpenEVMWindow mirrors the chain's ValidateBasic for MsgOpenEVMWindow
@@ -52,7 +56,38 @@ func ValidateOpenEVMWindow(msg *pqcv1.MsgOpenEVMWindow) error {
 	if !msg.MaxValue.IsPositive() {
 		return fmt.Errorf("open evm window: max_value must be greater than 0 uqor, got %s", msg.MaxValue.String())
 	}
+	if len(msg.AllowedTargets) > MaxEVMWindowTargets {
+		return fmt.Errorf("open evm window: allowed_targets lists %d addresses, the maximum is %d", len(msg.AllowedTargets), MaxEVMWindowTargets)
+	}
+	seen := make(map[string]bool, len(msg.AllowedTargets))
+	for _, t := range msg.AllowedTargets {
+		if !evmAddress.MatchString(t) {
+			return fmt.Errorf("open evm window: allowed_targets: %q is not a 0x-prefixed 20-byte address", t)
+		}
+		if seen[strings.ToLower(t)] {
+			return fmt.Errorf("open evm window: allowed_targets lists %s more than once", t)
+		}
+		seen[strings.ToLower(t)] = true
+	}
 	return nil
+}
+
+// NewOpenEVMWindowScoped builds a validated MsgOpenEVMWindow narrowed to plain
+// native transfers (nativeOnly) and/or to the recipients in allowedTargets (at
+// most 16), chain v3.2.3. Both are new fields: a node below v3.2.3 refuses the
+// whole transaction when either is set, so use this only once the network has
+// applied v3.2.3 (query.RestClient.RequireUpgradeApplied).
+func NewOpenEVMWindowScoped(sender string, blocks, maxTxs uint64, maxValue string, nativeOnly bool, allowedTargets []string) (*pqcv1.MsgOpenEVMWindow, error) {
+	msg, err := NewOpenEVMWindow(sender, blocks, maxTxs, maxValue)
+	if err != nil {
+		return nil, err
+	}
+	msg.NativeOnly = nativeOnly
+	msg.AllowedTargets = allowedTargets
+	if err := ValidateOpenEVMWindow(msg); err != nil {
+		return nil, err
+	}
+	return msg, nil
 }
 
 // ValidateCloseEVMWindow mirrors the chain's ValidateBasic for

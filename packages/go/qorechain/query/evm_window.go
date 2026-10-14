@@ -46,6 +46,10 @@ type EVMWindowStatus struct {
 	RemainingBlocks uint64
 	RemainingTxs    uint64
 	RemainingValue  math.Int
+	// NativeOnly and AllowedTargets report the window's scope as opened
+	// (chain v3.2.3); false / empty before, which is an unscoped window.
+	NativeOnly     bool
+	AllowedTargets []string
 }
 
 // Exhausted reports whether a found window has run out of transactions, value
@@ -92,6 +96,8 @@ type evmWindowBody struct {
 	RemainingBlocks json.RawMessage `json:"remaining_blocks"`
 	RemainingTxs    json.RawMessage `json:"remaining_txs"`
 	RemainingValue  json.RawMessage `json:"remaining_value"`
+	NativeOnly      json.RawMessage `json:"native_only"`
+	AllowedTargets  []string        `json:"allowed_targets"`
 }
 
 // ParseEVMWindowStatus decodes an evm_window REST body. It accepts both shapes
@@ -111,6 +117,10 @@ func ParseEVMWindowStatus(raw []byte) (*EVMWindowStatus, error) {
 	if out.Live, err = windowBool(body.Live, "live"); err != nil {
 		return nil, err
 	}
+	if out.NativeOnly, err = windowBool(body.NativeOnly, "native_only"); err != nil {
+		return nil, err
+	}
+	out.AllowedTargets = body.AllowedTargets
 	for _, f := range []struct {
 		raw  json.RawMessage
 		name string

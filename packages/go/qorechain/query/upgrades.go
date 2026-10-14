@@ -14,6 +14,12 @@ import (
 // network.
 const ChainUpgradeV3_2_2 = "v3.2.2"
 
+// ChainUpgradeV3_2_3 is the plan that brings PQC registration integrity and
+// proof_of_possession, hybrid-only key maintenance for keyed accounts, the EVM
+// window scope (native_only, allowed_targets), the abstract-account v2 digest
+// and MsgUpdateAuthority.
+const ChainUpgradeV3_2_3 = "v3.2.3"
+
 // A release adds message fields, and a node below it does not know them: the
 // transaction decoder refuses a message carrying an unknown field, so setting
 // a release's new OPTIONAL field before the upgrade gets the whole transaction

@@ -42,6 +42,7 @@ import (
 // Sign-bytes domain-separation prefixes (must match the chain byte-for-byte).
 const (
 	evmAuthPrefix    = "qorechain-evm-auth-v1"
+	evmAuthPrefixV2  = "qorechain-evm-auth-v2"
 	cosmosAuthPrefix = "qorechain-cosmos-auth-v1"
 	rotatePrefix     = "qorechain-pqc-rotate-v1"
 )
@@ -100,6 +101,54 @@ func EVMAuthSignBytes(chainID, account string, pubkey []byte, to, value string, 
 	body = append(body, lp(data)...)
 	body = append(body, be64(nonce)...)
 	return sha256.Sum256(body)
+}
+
+// EVMAuthSignBytesV2 is the v2 digest of a MsgExecuteEVM (chain v3.2.3,
+// abstractaccount-hardening): EVMAuthSignBytes under its own domain tag with
+// the call's gas limit appended,
+//
+//	sha256( "qorechain-evm-auth-v2"
+//	        ‖ LP(chainID) ‖ LP(account) ‖ LP(pubkey)
+//	        ‖ LP(to) ‖ LP(value) ‖ LP(data) ‖ BE64(nonce) ‖ BE64(gasLimit) )
+//
+// v1 left the gas limit to whoever relayed the message. The chain verifies
+// exactly one form per block: v1 below the v3.2.3 upgrade, v2 from it (see
+// EVMAuthDigestVersion). gasLimit must be non-zero: the chain refuses 0.
+func EVMAuthSignBytesV2(chainID, account string, pubkey []byte, to, value string, data []byte, nonce, gasLimit uint64) ([32]byte, error) {
+	if gasLimit == 0 {
+		return [32]byte{}, errors.New("authenticator: gasLimit must be set (non-zero): the v2 digest binds it and the chain refuses 0")
+	}
+	body := make([]byte, 0, 264)
+	body = append(body, []byte(evmAuthPrefixV2)...)
+	body = append(body, lp([]byte(chainID))...)
+	body = append(body, lp([]byte(account))...)
+	body = append(body, lp(pubkey)...)
+	body = append(body, lp([]byte(to))...)
+	body = append(body, lp([]byte(value))...)
+	body = append(body, lp(data)...)
+	body = append(body, be64(nonce)...)
+	body = append(body, be64(gasLimit)...)
+	return sha256.Sum256(body), nil
+}
+
+// UpgradeChecker reports whether a network has applied an upgrade plan; a
+// *query.RestClient satisfies it.
+type UpgradeChecker interface {
+	IsUpgradeApplied(plan string) (bool, error)
+}
+
+// EVMAuthDigestVersion returns the MsgExecuteEVM digest the network verifies
+// now: "v2" once it has applied v3.2.3, "v1" before. An error means the node
+// could not be asked — never guess, the other form is refused.
+func EVMAuthDigestVersion(rest UpgradeChecker) (string, error) {
+	ok, err := rest.IsUpgradeApplied("v3.2.3")
+	if err != nil {
+		return "", err
+	}
+	if ok {
+		return "v2", nil
+	}
+	return "v1", nil
 }
 
 // CosmosAuthSignBytes rebuilds the 32-byte digest the chain re-derives for a

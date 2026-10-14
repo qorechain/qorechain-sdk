@@ -211,6 +211,11 @@ type RegisterOptions struct {
 	// Force skips the qor_getPQCKeyStatus pre-check and always broadcasts the
 	// registration message. Use when status is already known to be unregistered.
 	Force bool
+	// ProofOfPossession is the key's proof of possession (chain v3.2.3), from
+	// messages.SignProofOfPossession. Optional on the chain today and due to
+	// become mandatory. A node below v3.2.3 refuses the whole transaction when
+	// it is set, so set it only once the network has applied v3.2.3.
+	ProofOfPossession []byte
 }
 
 // EnsureResult reports the outcome of EnsurePQCRegistered.
@@ -223,7 +228,7 @@ type EnsureResult struct {
 }
 
 // registerMessage builds the MsgRegisterPQCKeyV2 for the signer.
-func (c *Client) registerMessage(keyType string) (*pqcv1.MsgRegisterPQCKeyV2, error) {
+func (c *Client) registerMessage(keyType string, proofOfPossession []byte) (*pqcv1.MsgRegisterPQCKeyV2, error) {
 	if len(c.signer.PQCKeypair.PublicKey) == 0 {
 		return nil, fmt.Errorf("pqcdx: Signer.PQCKeypair.PublicKey is required to register")
 	}
@@ -239,13 +244,20 @@ func (c *Client) registerMessage(keyType string) (*pqcv1.MsgRegisterPQCKeyV2, er
 	if _, err := messages.ValidateClassicalKeyForSender(c.signer.Account.Address, c.signer.Account.PublicKey); err != nil {
 		return nil, fmt.Errorf("pqcdx: %w", err)
 	}
-	return messages.Pqc.RegisterKeyV2(
+	// From chain v3.2.3 a classical_only, empty or degenerate key is refused
+	// after the fee; such a registration is wrong on any network.
+	if err := messages.ValidateRegisteredPQCKey(keyType, c.signer.PQCKeypair.PublicKey); err != nil {
+		return nil, fmt.Errorf("pqcdx: %w", err)
+	}
+	msg := messages.Pqc.RegisterKeyV2(
 		c.signer.Account.Address,
 		c.signer.PQCKeypair.PublicKey,
 		pqcv1.AlgorithmID(pqc.AlgorithmDilithium5),
 		c.signer.Account.PublicKey,
 		keyType,
-	), nil
+	)
+	msg.ProofOfPossession = proofOfPossession
+	return msg, nil
 }
 
 // EnsurePQCRegistered ensures the signer's PQC key is registered on chain. It is
@@ -263,7 +275,7 @@ func (c *Client) EnsurePQCRegistered(opts RegisterOptions) (EnsureResult, error)
 			return EnsureResult{AlreadyRegistered: true}, nil
 		}
 	}
-	msg, err := c.registerMessage(opts.KeyType)
+	msg, err := c.registerMessage(opts.KeyType, opts.ProofOfPossession)
 	if err != nil {
 		return EnsureResult{}, err
 	}
@@ -277,7 +289,7 @@ func (c *Client) EnsurePQCRegistered(opts RegisterOptions) (EnsureResult, error)
 // BuildRegister builds and signs the MsgRegisterPQCKeyV2 WITHOUT broadcasting,
 // returning the BuiltTx. It does not check current status.
 func (c *Client) BuildRegister(opts RegisterOptions) (*tx.BuiltTx, error) {
-	msg, err := c.registerMessage(opts.KeyType)
+	msg, err := c.registerMessage(opts.KeyType, opts.ProofOfPossession)
 	if err != nil {
 		return nil, err
 	}
@@ -321,14 +333,32 @@ func (c *Client) migrateMessage(o MigrateOptions) (*pqcv1.MsgMigratePQCKey, erro
 	), nil
 }
 
-// MigratePQCKey builds, signs, and broadcasts a MsgMigratePQCKey, rotating the
-// account's registered PQC key to a new key (and optionally a new algorithm).
+// MigratePQCKey builds, signs CLASSICALLY, and broadcasts a MsgMigratePQCKey,
+// rotating the account's registered PQC key to a new key (and optionally a new
+// algorithm).
+//
+// Deprecated: from chain v3.2.3 (and in the mempool of every v3.2.3 node) an
+// account that has a PQC key must send MsgMigratePQCKey with the hybrid
+// signature; a classical one is refused (pqc 234). Use MigratePQCKeyHybrid.
 func (c *Client) MigratePQCKey(o MigrateOptions) (*tx.TxResult, error) {
 	msg, err := c.migrateMessage(o)
 	if err != nil {
 		return nil, err
 	}
 	return c.broadcast([]sdk.Msg{msg})
+}
+
+// MigratePQCKeyHybrid rotates the account's PQC key with the hybrid signature
+// the chain requires from v3.2.3 for an account that has a key. The Signer's
+// PQCKeypair must be the CURRENTLY registered key (the one being rotated out):
+// the transaction's hybrid signature is verified against it. Works on every
+// network, before and after v3.2.3.
+func (c *Client) MigratePQCKeyHybrid(o MigrateOptions) (*MigrateToHybridResult, error) {
+	msg, err := c.migrateMessage(o)
+	if err != nil {
+		return nil, err
+	}
+	return c.MigrateToHybrid([]sdk.Msg{msg}, MigrateToHybridOptions{})
 }
 
 // BuildMigratePQCKey builds and signs a MsgMigratePQCKey WITHOUT broadcasting.

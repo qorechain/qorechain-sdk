@@ -125,6 +125,12 @@ var moduleCodespaceReasons = map[string]map[uint32]string{
 		// 60-61: EIP-7702 delegation consent (chain v3.2.2).
 		60: "no post-quantum consent for this EIP-7702 delegation",
 		61: "invalid EIP-7702 delegation request",
+		// 230-234: registration integrity and key maintenance (chain v3.2.3).
+		230: "PQC public key gives no post-quantum protection",
+		231: "PQC proof of possession does not verify",
+		232: "PQC key was used by this account before",
+		233: "no active PQC signature algorithm would remain",
+		234: "PQC key maintenance from a keyed account needs the hybrid signature",
 	},
 	"amm":        {},
 	"bridge":     {},

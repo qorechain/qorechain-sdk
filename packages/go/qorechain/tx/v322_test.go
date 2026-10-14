@@ -35,3 +35,16 @@ func TestClassifyEVMDelegation(t *testing.T) {
 		t.Fatalf("window code must not classify as delegation: %q", got)
 	}
 }
+
+func TestDecodeTxErrorV323(t *testing.T) {
+	for code, want := range map[uint32]string{
+		230: "PQC public key gives no post-quantum protection",
+		231: "PQC proof of possession does not verify",
+		232: "PQC key was used by this account before",
+		234: "PQC key maintenance from a keyed account needs the hybrid signature",
+	} {
+		if got := DecodeTxError(code, "pqc", "").Reason; got != want {
+			t.Errorf("%d: %q", code, got)
+		}
+	}
+}

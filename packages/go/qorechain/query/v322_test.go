@@ -65,3 +65,14 @@ func TestUpgradeDetectionErrorIsNotNo(t *testing.T) {
 		t.Fatal("an unreachable node must be an error, never 'not applied'")
 	}
 }
+
+func TestEVMWindowScopeParsed(t *testing.T) {
+	s, err := ParseEVMWindowStatus([]byte(`{"found":true,"live":true,"native_only":true,"allowed_targets":["0x63c0c19a282a1b52b07dd5a65b58948a07dae32b"]}`))
+	if err != nil || !s.NativeOnly || len(s.AllowedTargets) != 1 {
+		t.Fatalf("%+v %v", s, err)
+	}
+	s, err = ParseEVMWindowStatus([]byte(`{"found":false}`))
+	if err != nil || s.NativeOnly || len(s.AllowedTargets) != 0 {
+		t.Fatalf("%+v %v", s, err)
+	}
+}

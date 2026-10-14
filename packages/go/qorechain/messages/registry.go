@@ -1,7 +1,7 @@
 // Package messages provides the interface registry, codec, and typed message
 // composers for every transaction QoreChain supports.
 //
-// The registry registers all 65 custom QoreChain Msg implementations (across the
+// The registry registers all 66 custom QoreChain Msg implementations (across the
 // 11 custom modules) plus the standard Native modules under their type URLs,
 // so a custom Msg can be packed into a tx Any and decoded back through the codec
 // exactly like the chain does. RegisterInterfaces mirrors each module's
@@ -44,7 +44,7 @@ func RegisterInterfaces(reg codectypes.InterfaceRegistry) {
 	registerCosmosInterfaces(reg)
 }
 
-// registerQoreChainInterfaces registers all 65 custom QoreChain Msg
+// registerQoreChainInterfaces registers all 66 custom QoreChain Msg
 // implementations under the sdk.Msg interface.
 func registerQoreChainInterfaces(reg codectypes.InterfaceRegistry) {
 	reg.RegisterImplementations((*sdk.Msg)(nil),
@@ -104,11 +104,12 @@ func registerQoreChainInterfaces(reg codectypes.InterfaceRegistry) {
 		&lightnodev1.MsgHeartbeat{},
 		&lightnodev1.MsgDeregisterLightNode{},
 		&lightnodev1.MsgClaimLightNodeRewards{},
-		// license (4)
+		// license (5)
 		&licensev1.MsgGrantLicense{},
 		&licensev1.MsgRevokeLicense{},
 		&licensev1.MsgSuspendLicense{},
 		&licensev1.MsgResumeLicense{},
+		&licensev1.MsgUpdateAuthority{},
 		// abstractaccount (6)
 		&abstractaccountv1.MsgCreateAbstractAccount{},
 		&abstractaccountv1.MsgUpdateSpendingRules{},
