@@ -23,6 +23,7 @@ import {
 } from "../../src/tx/upgrades";
 import { decodeTxError } from "../../src/errors";
 import { buildRegisterPqcKeyMsg } from "../../src/helpers/pqc";
+import { generatePqcKeypair } from "../../src/accounts/pqc";
 import { qorechainRegistry } from "../../src/messages/registry";
 import {
   MsgAuthorizeEVMDelegation,
@@ -167,7 +168,8 @@ describe("validateClassicalKeyForSender", () => {
   });
 
   it("is applied by buildRegisterPqcKeyMsg", () => {
-    const pqcKeypair = { publicKey: new Uint8Array(2592), secretKey: new Uint8Array(4896) };
+    // A real key: an all-zero one is degenerate and refused (chain v3.2.3).
+    const pqcKeypair = generatePqcKeypair(new Uint8Array(32).fill(7));
     const foreign = secp256k1.getPublicKey(hex("11".repeat(32)), true);
     expect(() => buildRegisterPqcKeyMsg(SENDER, { pqcKeypair, ecdsaPubkey: foreign })).toThrow(/does not belong/);
     expect(buildRegisterPqcKeyMsg(SENDER, { pqcKeypair }).typeUrl).toBe("/qorechain.pqc.v1.MsgRegisterPQCKeyV2");

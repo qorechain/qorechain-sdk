@@ -28,11 +28,14 @@
  */
 
 import { sha256 } from "../utils/hash";
+import type { FetchLike } from "../query/http";
+import { CHAIN_UPGRADE_V3_2_3, isUpgradeApplied } from "./upgrades";
 
 const enc = new TextEncoder();
 
 /** Domain-separation tag for the EVM authenticator lane. */
 const EVM_AUTH_DOMAIN = "qorechain-evm-auth-v1";
+const EVM_AUTH_DOMAIN_V2 = "qorechain-evm-auth-v2";
 /** Domain-separation tag for the Native (Cosmos) authenticator lane. */
 const COSMOS_AUTH_DOMAIN = "qorechain-cosmos-auth-v1";
 /** Domain-separation tag for the PQC key-rotation payload. */
@@ -138,6 +141,66 @@ export function evmAuthSignBytes(input: EvmAuthSignBytesInput): Uint8Array {
     be64(nonce),
   ]);
   return sha256(body);
+}
+
+/** Input to {@link evmAuthSignBytesV2}: the v1 input plus the call's gas limit. */
+export interface EvmAuthSignBytesV2Input extends EvmAuthSignBytesInput {
+  /**
+   * The gas limit of the authenticated call, as carried in
+   * `MsgExecuteEVM.gas_limit`. Must be non-zero: from v3.2.3 the chain runs the
+   * call with exactly this limit and refuses a transaction that provisions
+   * less.
+   */
+  gasLimit: number | bigint;
+}
+
+/**
+ * The v2 digest of a `MsgExecuteEVM` (chain v3.2.3, `abstractaccount-hardening`):
+ *
+ * ```
+ * sha256( "qorechain-evm-auth-v2"
+ *         ‖ LP(chainId) ‖ LP(account) ‖ LP(pubkey)
+ *         ‖ LP(to) ‖ LP(value) ‖ LP(data) ‖ BE64(nonce) ‖ BE64(gasLimit) )
+ * ```
+ *
+ * v1 left the gas limit to whoever relayed the message, so a relayer could
+ * replay a valid signature with a different limit. The chain verifies exactly
+ * one form per block: v1 below the v3.2.3 upgrade, v2 from it — pick with
+ * {@link resolveEvmAuthDigestVersion}.
+ */
+export function evmAuthSignBytesV2(input: EvmAuthSignBytesV2Input): Uint8Array {
+  const { chainId, account, pubkey, to = "", value = "0", data = new Uint8Array(0), nonce, gasLimit } = input;
+  if (BigInt(gasLimit) <= 0n) {
+    throw new Error("gasLimit must be set (non-zero): the v2 digest binds it and the chain refuses 0");
+  }
+  const body = concat([
+    enc.encode(EVM_AUTH_DOMAIN_V2),
+    lengthPrefixed(toBytes(chainId)),
+    lengthPrefixed(toBytes(account)),
+    lengthPrefixed(pubkey),
+    lengthPrefixed(toBytes(to)),
+    lengthPrefixed(toBytes(value)),
+    lengthPrefixed(data),
+    be64(nonce),
+    be64(gasLimit),
+  ]);
+  return sha256(body);
+}
+
+/** Which `MsgExecuteEVM` digest a network verifies. */
+export type EvmAuthDigestVersion = "v1" | "v2";
+
+/**
+ * The `MsgExecuteEVM` digest the network verifies now: `"v2"` once it has
+ * applied v3.2.3, `"v1"` before. Throws when the node cannot be asked — never
+ * guess, the other form is refused.
+ */
+export async function resolveEvmAuthDigestVersion(opts: {
+  rest: string;
+  fetch?: FetchLike;
+}): Promise<EvmAuthDigestVersion> {
+  const applied = await isUpgradeApplied({ rest: opts.rest, upgrade: CHAIN_UPGRADE_V3_2_3, fetch: opts.fetch });
+  return applied ? "v2" : "v1";
 }
 
 /** Input to {@link cosmosAuthSignBytes}. */

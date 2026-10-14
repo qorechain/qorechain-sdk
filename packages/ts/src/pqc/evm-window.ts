@@ -48,6 +48,8 @@ import type { FetchLike } from "../query/http";
 export const MAX_EVM_WINDOW_BLOCKS = 17280n;
 /** The largest `maxTxs` the chain accepts (`MaxEVMWindowTxs`). */
 export const MAX_EVM_WINDOW_TXS = 1000n;
+/** The most `allowedTargets` one window may list (`MaxEVMWindowTargets`, chain v3.2.3). */
+export const MAX_EVM_WINDOW_TARGETS = 16;
 
 /** Inputs for {@link openEvmWindowMsg}. Every field is required. */
 export interface OpenEvmWindowParams {
@@ -62,6 +64,40 @@ export interface OpenEvmWindowParams {
    * admitted transaction. Must be above 0.
    */
   maxValue: number | bigint | string;
+  /**
+   * Narrow the window to plain transfers of native QOR: no calldata, no
+   * contract creation, no recipient that carries code, no EIP-7702
+   * authorizations (chain v3.2.3). Recommended for a window opened only to
+   * send QOR.
+   *
+   * New field: a node below v3.2.3 refuses the whole transaction when it is
+   * set, so set it only once the network has applied v3.2.3.
+   */
+  nativeOnly?: boolean;
+  /**
+   * Narrow the window to transactions whose recipient is one of these 0x
+   * addresses (at most {@link MAX_EVM_WINDOW_TARGETS}, no duplicates);
+   * contract creation is refused (chain v3.2.3). Same caveat as `nativeOnly`.
+   */
+  allowedTargets?: readonly string[];
+}
+
+const ADDRESS = /^0x[0-9a-fA-F]{40}$/;
+
+function checkTargets(targets: readonly string[]): string[] {
+  if (targets.length > MAX_EVM_WINDOW_TARGETS) {
+    throw new Error(`allowedTargets lists ${targets.length} addresses, the maximum is ${MAX_EVM_WINDOW_TARGETS}`);
+  }
+  const seen = new Set<string>();
+  return targets.map((t) => {
+    if (typeof t !== "string" || !ADDRESS.test(t)) {
+      throw new Error(`allowedTargets: ${JSON.stringify(t)} is not a 0x-prefixed 20-byte address`);
+    }
+    const lower = t.toLowerCase();
+    if (seen.has(lower)) throw new Error(`allowedTargets lists ${t} more than once`);
+    seen.add(lower);
+    return t;
+  });
 }
 
 function requireRange(name: string, value: bigint, max: bigint): void {
@@ -105,6 +141,8 @@ export function openEvmWindowMsg(params: OpenEvmWindowParams): EncodeObject {
     blocks: blocks.toString(),
     maxTxs: maxTxs.toString(),
     maxValue: maxValue.toString(),
+    nativeOnly: params.nativeOnly === true,
+    allowedTargets: checkTargets(params.allowedTargets ?? []),
   });
 }
 
@@ -132,6 +170,10 @@ export interface EvmWindow {
   remainingTxs: bigint;
   /** uqor. */
   remainingValue: bigint;
+  /** The window admits only plain native transfers (chain v3.2.3; false before). */
+  nativeOnly: boolean;
+  /** The recipients the window is narrowed to; empty = any (chain v3.2.3). */
+  allowedTargets: string[];
 }
 
 /** The chain sends every number as a JSON string; empty means zero. */
@@ -176,6 +218,10 @@ export async function fetchEvmWindow(opts: {
     remainingBlocks: big(b.remaining_blocks ?? b.remainingBlocks),
     remainingTxs: big(b.remaining_txs ?? b.remainingTxs),
     remainingValue: big(b.remaining_value ?? b.remainingValue),
+    nativeOnly: (b.native_only ?? b.nativeOnly) === true,
+    allowedTargets: Array.isArray(b.allowed_targets ?? b.allowedTargets)
+      ? ((b.allowed_targets ?? b.allowedTargets) as unknown[]).filter((t): t is string => typeof t === "string")
+      : [],
   };
 }
 

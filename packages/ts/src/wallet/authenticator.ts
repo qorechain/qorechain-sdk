@@ -28,8 +28,10 @@ import { generatePqcKeypair, type PqcKeypair } from "../accounts/pqc";
 import { qoreAddresses } from "../accounts/unified";
 import {
   evmAuthSignBytes,
+  evmAuthSignBytesV2,
   cosmosAuthSignBytes,
   rotationSignBytes,
+  type EvmAuthDigestVersion,
 } from "../tx/authenticator";
 
 const enc = new TextEncoder();
@@ -292,8 +294,17 @@ export interface BuildPhantomExecuteEvmOptions {
   value?: string;
   data?: Uint8Array;
   gasLimit?: number | bigint;
-  /** The account's CURRENT EVM nonce (relayer ≠ owner → do NOT +1). */
+  /**
+   * The linked key's authenticator sequence (a per-key counter starting at 0),
+   * NOT the account's EVM nonce.
+   */
   nonce: number | bigint;
+  /**
+   * Which digest to sign: `"v1"` (default) below chain v3.2.3, `"v2"` (binds
+   * `gasLimit`) from it. Resolve with `resolveEvmAuthDigestVersion`; the chain
+   * verifies exactly one form per block.
+   */
+  digestVersion?: EvmAuthDigestVersion;
 }
 
 /**
@@ -315,7 +326,10 @@ export async function buildPhantomExecuteEvm(
     nonce,
   } = opts;
   const pubkey = walletPubkey(wallet);
-  const digest = evmAuthSignBytes({ chainId, account, pubkey, to, value, data, nonce });
+  const digest =
+    opts.digestVersion === "v2"
+      ? evmAuthSignBytesV2({ chainId, account, pubkey, to, value, data, nonce, gasLimit })
+      : evmAuthSignBytes({ chainId, account, pubkey, to, value, data, nonce });
   const signature = normalizeSignature(await wallet.signMessage(digest));
   return executeEvmMsg({
     relayer,
@@ -399,8 +413,17 @@ export interface BuildMetaMaskExecuteEvmOptions {
   value?: string;
   data?: Uint8Array;
   gasLimit?: number | bigint;
-  /** The account's CURRENT EVM nonce (relayer ≠ owner → do NOT +1). */
+  /**
+   * The linked key's authenticator sequence (a per-key counter starting at 0),
+   * NOT the account's EVM nonce.
+   */
   nonce: number | bigint;
+  /**
+   * Which digest to sign: `"v1"` (default) below chain v3.2.3, `"v2"` (binds
+   * `gasLimit`) from it. Resolve with `resolveEvmAuthDigestVersion`; the chain
+   * verifies exactly one form per block.
+   */
+  digestVersion?: EvmAuthDigestVersion;
 }
 
 /**
@@ -424,7 +447,10 @@ export async function buildMetaMaskExecuteEvm(
     nonce,
   } = opts;
   const pubkey = hexToBytes(address);
-  const digest = evmAuthSignBytes({ chainId, account, pubkey, to, value, data, nonce });
+  const digest =
+    opts.digestVersion === "v2"
+      ? evmAuthSignBytesV2({ chainId, account, pubkey, to, value, data, nonce, gasLimit })
+      : evmAuthSignBytes({ chainId, account, pubkey, to, value, data, nonce });
   const signature = await ethPersonalSign(provider, address, digest);
   return executeEvmMsg({
     relayer,

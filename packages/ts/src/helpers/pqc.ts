@@ -37,6 +37,7 @@ import type { EncodeObject } from "@cosmjs/proto-signing";
 
 import { pqc as pqcMsg } from "../messages/qorechain";
 import { validateClassicalKeyForSender } from "../pqc/classical-key";
+import { validateRegisteredPqcKey } from "../pqc/key-integrity";
 import {
   generatePqcKeypair,
   AlgorithmDilithium5,
@@ -160,8 +161,20 @@ export interface EnsurePqcRegisteredOptions {
    * whose classical key is already known on-chain.
    */
   ecdsaPubkey?: Uint8Array;
-  /** Key-type tag forwarded to `MsgRegisterPQCKeyV2` (default `"hybrid"`). */
+  /**
+   * Key-type tag forwarded to `MsgRegisterPQCKeyV2` (default `"hybrid"`).
+   * `"classical_only"` is refused: it registers no post-quantum key and leaves
+   * the account unable to sign (the chain refuses it from v3.2.3).
+   */
   keyType?: string;
+  /**
+   * The key's proof of possession (chain v3.2.3), from
+   * {@link ../pqc/key-integrity.signProofOfPossession}. Optional on the chain
+   * today and due to become mandatory. A node below v3.2.3 refuses the whole
+   * transaction when it is set, so pass it only once the network has applied
+   * v3.2.3.
+   */
+  proofOfPossession?: Uint8Array;
   /** Fee: explicit `StdFee` or `"auto"` (simulate + price). Default `"auto"`. */
   fee?: FeeInput;
   /** Optional memo string. */
@@ -201,17 +214,20 @@ export interface EnsurePqcRegisteredResult {
  */
 export function buildRegisterPqcKeyMsg(
   sender: string,
-  opts: Pick<EnsurePqcRegisteredOptions, "pqcKeypair" | "ecdsaPubkey" | "keyType">,
+  opts: Pick<EnsurePqcRegisteredOptions, "pqcKeypair" | "ecdsaPubkey" | "keyType" | "proofOfPossession">,
 ): EncodeObject {
-  // From chain v3.2.2 a key that is not the sender's is refused after the fee
-  // is charged; catch it here. Not network-gated: such a key is wrong anywhere.
+  const keyType = opts.keyType ?? "hybrid";
+  // Refusals the chain makes after the fee is charged; caught here instead.
+  // Not network-gated: such a registration is wrong on any network.
   validateClassicalKeyForSender(sender, opts.ecdsaPubkey);
+  validateRegisteredPqcKey(keyType, opts.pqcKeypair.publicKey);
   return pqcMsg.registerPqcKeyV2({
     sender,
     publicKey: opts.pqcKeypair.publicKey,
     algorithmId: AlgorithmDilithium5,
     ecdsaPubkey: opts.ecdsaPubkey ?? new Uint8Array(0),
-    keyType: opts.keyType ?? "hybrid",
+    keyType,
+    proofOfPossession: opts.proofOfPossession ?? new Uint8Array(0),
   });
 }
 
@@ -281,12 +297,16 @@ export interface MigratePqcKeyOptions {
 }
 
 /**
- * Rotate an account's PQC key via `MsgMigratePQCKey`.
+ * Rotate an account's PQC key via `MsgMigratePQCKey`, signed CLASSICALLY.
  *
  * The chain proves ownership of BOTH the old and new keys (the caller supplies
  * `oldSignature` / `newSignature` per the chain's migration contract), so key
  * rotation never strands an account. Use this when upgrading algorithms or
  * rolling a compromised key.
+ *
+ * @deprecated From chain v3.2.3 (and in the mempool of every v3.2.3 node) an
+ * account that has a PQC key must send `MsgMigratePQCKey` with the hybrid
+ * signature; a classical one is refused. Use {@link migratePqcKeyHybrid}.
  */
 export async function migratePqcKey(
   tx: TxClient,
@@ -303,6 +323,37 @@ export async function migratePqcKey(
   return tx.signAndBroadcast([message], opts.fee ?? "auto", opts.memo ?? "", {
     autoFee: opts.autoFee,
   });
+}
+
+/** Options for {@link migratePqcKeyHybrid}. */
+export type MigratePqcKeyHybridOptions = Omit<SignAndBroadcastHybridOptions, "messages"> &
+  Pick<
+    MigratePqcKeyOptions,
+    "oldPublicKey" | "newPublicKey" | "newAlgorithmId" | "oldSignature" | "newSignature"
+  > & {
+    /** The account rotating its key (`qor1…`), the transaction's signer. */
+    sender: string;
+  };
+
+/**
+ * Rotate an account's PQC key via `MsgMigratePQCKey`, with the hybrid
+ * signature the chain requires from v3.2.3 for an account that has a key.
+ *
+ * `pqcKeypair` is the CURRENTLY registered key (the one being rotated out): the
+ * transaction's hybrid signature is verified against it. Works on every
+ * network, before and after v3.2.3.
+ */
+export async function migratePqcKeyHybrid(opts: MigratePqcKeyHybridOptions): Promise<BroadcastResult> {
+  const { sender, oldPublicKey, newPublicKey, newAlgorithmId, oldSignature, newSignature, ...hybrid } = opts;
+  const message = pqcMsg.migratePqcKey({
+    sender,
+    oldPublicKey,
+    newPublicKey,
+    newAlgorithmId: newAlgorithmId ?? AlgorithmDilithium5,
+    oldSignature,
+    newSignature,
+  });
+  return signAndBroadcastHybrid({ ...hybrid, messages: [message] });
 }
 
 /** Options for {@link migrateToHybrid}. */

@@ -358,6 +358,14 @@ export const license = {
     "/qorechain.license.v1.MsgResumeLicense",
     licenseTx.MsgResumeLicense,
   ),
+  /**
+   * Replace the licence grant authority (chain v3.2.3). Signed by the
+   * governance module account, so it only executes from a passed proposal.
+   */
+  updateAuthority: composer(
+    "/qorechain.license.v1.MsgUpdateAuthority",
+    licenseTx.MsgUpdateAuthority,
+  ),
 };
 
 /** Abstract-account message composers. */

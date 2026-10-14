@@ -327,6 +327,8 @@ export type {
 // below from ./wallet/authenticator.
 export {
   evmAuthSignBytes,
+  evmAuthSignBytesV2,
+  resolveEvmAuthDigestVersion,
   cosmosAuthSignBytes,
   rotationSignBytes,
   be64,
@@ -334,6 +336,8 @@ export {
 } from "./tx/authenticator";
 export type {
   EvmAuthSignBytesInput,
+  EvmAuthSignBytesV2Input,
+  EvmAuthDigestVersion,
   CosmosAuthSignBytesInput,
 } from "./tx/authenticator";
 export { encodeHybridExtension, attachHybridExtension } from "./tx/hybrid";
@@ -344,6 +348,7 @@ export type { HybridPlacement, AttachHybridOptions } from "./tx/hybrid";
 export {
   MAX_EVM_WINDOW_BLOCKS,
   MAX_EVM_WINDOW_TXS,
+  MAX_EVM_WINDOW_TARGETS,
   openEvmWindowMsg,
   closeEvmWindowMsg,
   fetchEvmWindow,
@@ -373,6 +378,18 @@ export type {
   EvmDelegationRejection,
 } from "./pqc/evm-delegation";
 
+// PQC registration integrity and proof of possession (chain v3.2.3).
+export {
+  KEY_TYPE_CLASSICAL_ONLY,
+  PROOF_OF_POSSESSION_DOMAIN,
+  isDegeneratePqcPublicKey,
+  validateRegisteredPqcKey,
+  proofOfPossessionSignBytes,
+  signProofOfPossession,
+  verifyProofOfPossession,
+} from "./pqc/key-integrity";
+export type { ProofOfPossessionInput } from "./pqc/key-integrity";
+
 // The ecdsa_pubkey rule of PQC registration (chain v3.2.2).
 export {
   COMPRESSED_SECP256K1_LENGTH,
@@ -383,6 +400,7 @@ export {
 // fields only after it, or a node below it refuses the whole transaction.
 export {
   CHAIN_UPGRADE_V3_2_2,
+  CHAIN_UPGRADE_V3_2_3,
   fetchUpgradeAppliedHeight,
   isUpgradeApplied,
   requireUpgradeApplied,
@@ -625,6 +643,7 @@ export {
   ensurePqcRegistered,
   buildRegisterPqcKeyMsg,
   migratePqcKey,
+  migratePqcKeyHybrid,
   migrateToHybrid,
   PQC_KEY_STATUS_PRECOMPILE_ADDRESS,
 } from "./helpers";
@@ -634,6 +653,7 @@ export type {
   EnsurePqcRegisteredOptions,
   EnsurePqcRegisteredResult,
   MigratePqcKeyOptions,
+  MigratePqcKeyHybridOptions,
   MigrateToHybridOptions,
   HybridSendPath,
 } from "./helpers";

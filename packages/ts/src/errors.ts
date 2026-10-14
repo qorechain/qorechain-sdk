@@ -118,6 +118,29 @@ const PQC_CODES: Record<number, { kind: string; message: string }> = {
     message:
       "no post-quantum consent for this EIP-7702 delegation — broadcast MsgAuthorizeEVMDelegation for exactly this delegate first (chain v3.2.2)",
   },
+  230: {
+    kind: "pqc_key_weak",
+    message:
+      "the registration carries no usable post-quantum key (classical_only, empty, or a degenerate key) — register a real ML-DSA-87 key",
+  },
+  231: {
+    kind: "pqc_proof_of_possession_invalid",
+    message:
+      "the proof of possession does not verify — sign it with the key being registered over the v1 proof-of-possession bytes for this chain and account",
+  },
+  232: {
+    kind: "pqc_key_reused",
+    message: "this account used that PQC key before — rotate or migrate to a key it has never had",
+  },
+  233: {
+    kind: "pqc_last_signature_algorithm",
+    message: "no active PQC signature algorithm would remain",
+  },
+  234: {
+    kind: "pqc_maintenance_needs_hybrid",
+    message:
+      "an account with a registered PQC key must send key registration or migration with the hybrid signature — use migratePqcKeyHybrid",
+  },
   61: {
     kind: "evm_delegation_invalid",
     message:

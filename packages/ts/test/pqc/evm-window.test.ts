@@ -116,6 +116,9 @@ describe("fetchEvmWindow", () => {
       remainingBlocks: 286n,
       remainingTxs: 4n,
       remainingValue: 1996637n,
+      // Absent before chain v3.2.3: an unscoped window.
+      nativeOnly: false,
+      allowedTargets: [],
     });
     expect(f).toHaveBeenCalledWith(`${REST}/qorechain/pqc/v1/evm_window/${SENDER}`);
   });

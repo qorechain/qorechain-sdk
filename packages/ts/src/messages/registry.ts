@@ -128,6 +128,7 @@ export const qorechainRegistryTypes: ReadonlyArray<[string, GeneratedType]> = [
   ["/qorechain.license.v1.MsgRevokeLicense", license.MsgRevokeLicense],
   ["/qorechain.license.v1.MsgSuspendLicense", license.MsgSuspendLicense],
   ["/qorechain.license.v1.MsgResumeLicense", license.MsgResumeLicense],
+  ["/qorechain.license.v1.MsgUpdateAuthority", license.MsgUpdateAuthority],
   // abstractaccount
   [
     "/qorechain.abstractaccount.v1.MsgCreateAbstractAccount",
