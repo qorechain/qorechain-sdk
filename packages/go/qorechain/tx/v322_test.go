@@ -48,3 +48,24 @@ func TestDecodeTxErrorV323(t *testing.T) {
 		}
 	}
 }
+
+func TestDecodePQCKeyRequirement(t *testing.T) {
+	for _, c := range []struct {
+		code uint32
+		log  string
+		want string
+	}{
+		{8, "account has no PQC key and classical fallback is disabled", PQCKeyRequiredReason},
+		{8, "", PQCKeyRequiredReason},
+		{20, "account qor1abc has no registered PQC key, so its hybrid extension cannot be verified; register the key first (hybrid mode: required)", PQCKeyRequiredReason},
+		{20, "account qor1abc must include a PQC hybrid signature extension (hybrid mode: required)", PQCKeyRequiredReason},
+		{20, "account qor1abc has a registered PQC key and must include the hybrid signature extension (hybrid mode: required)", HybridSignatureRequiredReason},
+	} {
+		if got := DecodeTxError(c.code, "pqc", c.log).Reason; got != c.want {
+			t.Errorf("%d %q: %q", c.code, c.log, got)
+		}
+	}
+	if got := DecodeTxError(20, "pqc", "").Reason; got == PQCKeyRequiredReason || got == HybridSignatureRequiredReason {
+		t.Fatalf("bare pqc 20 must not be guessed: %q", got)
+	}
+}

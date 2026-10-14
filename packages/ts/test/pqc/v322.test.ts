@@ -230,3 +230,15 @@ describe("decodeTxError: chain v3.2.2", () => {
     expect(decodeTxError({ code: 61, codespace: "pqc" }).kind).toBe("evm_delegation_invalid");
   });
 });
+
+describe("decodeTxError: pqc 8 / 20", () => {
+  it("tells a missing key from a missing hybrid signature by the chain's text", () => {
+    expect(decodeTxError({ code: 8, codespace: "pqc", rawLog: "account has no PQC key and classical fallback is disabled" }).kind).toBe("pqc_key_required");
+    expect(decodeTxError({ code: 8, codespace: "pqc" }).kind).toBe("pqc_key_required");
+    expect(decodeTxError({ code: 20, codespace: "pqc", rawLog: "account qor1abc has no registered PQC key, so its hybrid extension cannot be verified; register the key first (hybrid mode: required)" }).kind).toBe("pqc_key_required");
+    expect(decodeTxError({ code: 20, codespace: "pqc", rawLog: "account qor1abc must include a PQC hybrid signature extension (hybrid mode: required)" }).kind).toBe("pqc_key_required");
+    expect(decodeTxError({ code: 20, codespace: "pqc", rawLog: "account qor1abc has a registered PQC key and must include the hybrid signature extension (hybrid mode: required)" }).kind).toBe("hybrid_signature_required");
+    expect(decodeTxError({ code: 20, codespace: "pqc" }).kind).toBe("pqc_20");
+    expect(decodeTxError({ code: 8, codespace: "bank" }).kind).not.toBe("pqc_key_required");
+  });
+});

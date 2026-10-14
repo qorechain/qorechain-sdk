@@ -172,3 +172,35 @@ fn decode_tx_error_v322() {
         .reason
         .contains("EIP-7702"));
 }
+
+#[test]
+fn decode_pqc_key_requirement() {
+    use qorechain::tx::errors::{
+        HYBRID_SIGNATURE_REQUIRED_REASON as H, PQC_KEY_REQUIRED_REASON as K,
+    };
+    assert_eq!(
+        decode_tx_error(
+            8,
+            "pqc",
+            "account has no PQC key and classical fallback is disabled"
+        )
+        .unwrap()
+        .reason,
+        K
+    );
+    assert_eq!(decode_tx_error(8, "pqc", "").unwrap().reason, K);
+    assert_eq!(decode_tx_error(20, "pqc", "account qor1abc has no registered PQC key, so its hybrid extension cannot be verified; register the key first (hybrid mode: required)").unwrap().reason, K);
+    assert_eq!(
+        decode_tx_error(
+            20,
+            "pqc",
+            "account qor1abc must include a PQC hybrid signature extension (hybrid mode: required)"
+        )
+        .unwrap()
+        .reason,
+        K
+    );
+    assert_eq!(decode_tx_error(20, "pqc", "account qor1abc has a registered PQC key and must include the hybrid signature extension (hybrid mode: required)").unwrap().reason, H);
+    let bare = decode_tx_error(20, "pqc", "").unwrap().reason;
+    assert!(bare != K && bare != H);
+}

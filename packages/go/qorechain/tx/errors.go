@@ -162,7 +162,9 @@ func DecodeTxError(code uint32, codespace, rawLog string) *QoreTxError {
 		return nil
 	}
 	reason := reasonFor(code, codespace)
-	if isRateLimitLog(codespace, code, rawLog) {
+	if r := pqcKeyRequirement(codespace, code, rawLog); r != "" {
+		reason = r
+	} else if isRateLimitLog(codespace, code, rawLog) {
 		reason = RateLimitedReason
 	}
 	return &QoreTxError{
@@ -176,6 +178,35 @@ func DecodeTxError(code uint32, codespace, rawLog string) *QoreTxError {
 // RateLimitedReason is the Reason of a refusal from the per-sender
 // transaction rate limit. Wait and retry.
 const RateLimitedReason = "rate limited"
+
+// Reasons for pqc 8 / pqc 20, which cover two different remedies.
+const (
+	// PQCKeyRequiredReason: the account has no registered PQC key; register
+	// one (MsgRegisterPQCKeyV2) before sending.
+	PQCKeyRequiredReason = "PQC key required: register the account's PQC key first"
+	// HybridSignatureRequiredReason: the account has a PQC key and sent no
+	// hybrid extension; sign the transaction hybrid.
+	HybridSignatureRequiredReason = "hybrid signature required: the account has a PQC key"
+)
+
+// pqcKeyRequirement tells pqc 8 / pqc 20 apart. pqc 8 is always an account
+// without a PQC key (classical fallback disabled). pqc 20 is either a keyless
+// account or a keyed account that sent no hybrid extension; only the text tells
+// them apart. "" when it is neither.
+func pqcKeyRequirement(codespace string, code uint32, rawLog string) string {
+	if codespace != "pqc" || (code != 8 && code != 20) {
+		return ""
+	}
+	lower := strings.ToLower(rawLog)
+	if strings.Contains(lower, "has a registered pqc key and must include") {
+		return HybridSignatureRequiredReason
+	}
+	if code == 8 || strings.Contains(lower, "has no registered pqc key") || strings.Contains(lower, "has no pqc key") ||
+		strings.Contains(lower, "must include a pqc hybrid signature extension") {
+		return PQCKeyRequiredReason
+	}
+	return ""
+}
 
 // isRateLimitLog recognises the per-sender rate limit (both lanes' ante
 // handler): codespace "ai", code 3, text "sender <addr> has sent <n>

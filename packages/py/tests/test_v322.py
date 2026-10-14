@@ -185,3 +185,24 @@ def test_decode_tx_error_v322() -> None:
     assert decode_tx_error(2, "ai", log).kind != "rate_limited"
     assert decode_tx_error(60, "pqc").kind == "evm_delegation_no_consent"
     assert decode_tx_error(61, "pqc").kind == "evm_delegation_invalid"
+
+
+def test_decode_pqc_key_requirement() -> None:
+    no_key_8 = "account has no PQC key and classical fallback is disabled"
+    no_key_20 = (
+        "account qor1abc has no registered PQC key, so its hybrid extension cannot be "
+        "verified; register the key first (hybrid mode: required)"
+    )
+    keyless_20 = (
+        "account qor1abc must include a PQC hybrid signature extension (hybrid mode: required)"
+    )
+    keyed_20 = (
+        "account qor1abc has a registered PQC key and must include the hybrid signature "
+        "extension (hybrid mode: required)"
+    )
+    assert decode_tx_error(8, "pqc", no_key_8).kind == "pqc_key_required"
+    assert decode_tx_error(8, "pqc").kind == "pqc_key_required"
+    assert decode_tx_error(20, "pqc", no_key_20).kind == "pqc_key_required"
+    assert decode_tx_error(20, "pqc", keyless_20).kind == "pqc_key_required"
+    assert decode_tx_error(20, "pqc", keyed_20).kind == "hybrid_signature_required"
+    assert decode_tx_error(20, "pqc").kind != "pqc_key_required"
