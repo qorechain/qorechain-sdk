@@ -81,6 +81,9 @@ QORECHAIN_REGISTRY_TYPES: dict[str, ProtoType] = {
     "/qorechain.bridge.v1.MsgSetVerifierBootstrap": (
         bridge_tx.MsgSetVerifierBootstrap
     ),
+    "/qorechain.bridge.v1.MsgUpdateCircuitBreakerLimits": (
+        bridge_tx.MsgUpdateCircuitBreakerLimits
+    ),
     # rdk
     "/qorechain.rdk.v1.MsgCreateRollup": rdk_tx.MsgCreateRollup,
     "/qorechain.rdk.v1.MsgSubmitBatch": rdk_tx.MsgSubmitBatch,
@@ -101,6 +104,7 @@ QORECHAIN_REGISTRY_TYPES: dict[str, ProtoType] = {
         multilayer_tx.MsgUpdateLayerStatus
     ),
     "/qorechain.multilayer.v1.MsgChallengeAnchor": multilayer_tx.MsgChallengeAnchor,
+    "/qorechain.multilayer.v1.MsgUpdateParams": multilayer_tx.MsgUpdateParams,
     # pqc
     "/qorechain.pqc.v1.MsgRegisterPQCKey": pqc_tx.MsgRegisterPQCKey,
     "/qorechain.pqc.v1.MsgRegisterPQCKeyV2": pqc_tx.MsgRegisterPQCKeyV2,
@@ -110,6 +114,8 @@ QORECHAIN_REGISTRY_TYPES: dict[str, ProtoType] = {
     "/qorechain.pqc.v1.MsgDisableAlgorithm": pqc_tx.MsgDisableAlgorithm,
     "/qorechain.pqc.v1.MsgOpenEVMWindow": pqc_tx.MsgOpenEVMWindow,
     "/qorechain.pqc.v1.MsgCloseEVMWindow": pqc_tx.MsgCloseEVMWindow,
+    "/qorechain.pqc.v1.MsgAuthorizeEVMDelegation": pqc_tx.MsgAuthorizeEVMDelegation,
+    "/qorechain.pqc.v1.MsgClearEVMDelegation": pqc_tx.MsgClearEVMDelegation,
     # svm
     "/qorechain.svm.v1.MsgDeployProgram": svm_tx.MsgDeployProgram,
     "/qorechain.svm.v1.MsgCreateAccount": svm_tx.MsgCreateAccount,

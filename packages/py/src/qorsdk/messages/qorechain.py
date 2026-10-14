@@ -13,6 +13,11 @@ from __future__ import annotations
 
 from types import SimpleNamespace
 
+from ..evm_delegation import (
+    AUTHORIZE_EVM_DELEGATION_TYPE_URL,
+    CLEAR_EVM_DELEGATION_TYPE_URL,
+    validate_evm_delegation_consent,
+)
 from ..evm_window import (
     CLOSE_EVM_WINDOW_TYPE_URL,
     OPEN_EVM_WINDOW_TYPE_URL,
@@ -75,6 +80,13 @@ bridge = SimpleNamespace(
         "/qorechain.bridge.v1.MsgSetVerifierBootstrap",
         bridge_tx.MsgSetVerifierBootstrap,
     ),
+    # v3.2.2: a chain's single-transfer and daily circuit-breaker limits, in the
+    # chain's base unit ("0" = unlimited). Bridge admin, qcb_bridge licence
+    # holder, or governance.
+    update_circuit_breaker_limits=composer(
+        "/qorechain.bridge.v1.MsgUpdateCircuitBreakerLimits",
+        bridge_tx.MsgUpdateCircuitBreakerLimits,
+    ),
 )
 
 # --------------------------------------------------------------------------- #
@@ -123,6 +135,11 @@ multilayer = SimpleNamespace(
     challenge_anchor=composer(
         "/qorechain.multilayer.v1.MsgChallengeAnchor",
         multilayer_tx.MsgChallengeAnchor,
+    ),
+    # v3.2.2: replace the module parameters. Governance only.
+    update_params=composer(
+        "/qorechain.multilayer.v1.MsgUpdateParams",
+        multilayer_tx.MsgUpdateParams,
     ),
 )
 
@@ -177,6 +194,40 @@ def _close_evm_window(*, sender: str) -> Msg:
     )
 
 
+def _authorize_evm_delegation(*, sender: str, delegate: str, blocks: int) -> Msg:
+    """Build ``MsgAuthorizeEVMDelegation`` (chain v3.2.2), validating its bounds.
+
+    The account's post-quantum consent to one EIP-7702 delegation of its own
+    account: from v3.2.2 the EVM lane refuses a type-4 transaction that would
+    change an account's code unless that account consented to exactly that
+    delegate. Single use, bounded in blocks (``1..17280``), replaces any earlier
+    consent, revoked by ``MsgCloseEVMWindow``. Broadcasting it ADVANCES the
+    account's nonce; see :mod:`qorsdk.evm_delegation` for the ordering.
+
+    :raises ValueError: If the delegate or the bound is invalid.
+    """
+    delegate, blocks = validate_evm_delegation_consent(delegate=delegate, blocks=blocks)
+    return Msg(
+        type_url=AUTHORIZE_EVM_DELEGATION_TYPE_URL,
+        value=pqc_tx.MsgAuthorizeEVMDelegation(
+            sender=sender, delegate=delegate, blocks=blocks
+        ),
+    )
+
+
+def _clear_evm_delegation(*, sender: str) -> Msg:
+    """Build ``MsgClearEVMDelegation`` (chain v3.2.2): remove the sender's
+    installed delegation on the Cosmos lane, with no EVM transaction."""
+    return Msg(
+        type_url=CLEAR_EVM_DELEGATION_TYPE_URL,
+        value=pqc_tx.MsgClearEVMDelegation(sender=sender),
+    )
+
+
+_authorize_evm_delegation.__name__ = "MsgAuthorizeEVMDelegation"
+_authorize_evm_delegation.__qualname__ = "MsgAuthorizeEVMDelegation"
+_clear_evm_delegation.__name__ = "MsgClearEVMDelegation"
+_clear_evm_delegation.__qualname__ = "MsgClearEVMDelegation"
 _open_evm_window.__name__ = "MsgOpenEVMWindow"
 _open_evm_window.__qualname__ = "MsgOpenEVMWindow"
 _close_evm_window.__name__ = "MsgCloseEVMWindow"
@@ -206,6 +257,9 @@ pqc = SimpleNamespace(
     # instead of paying for a refused transaction.
     open_evm_window=_open_evm_window,
     close_evm_window=_close_evm_window,
+    # v3.2.2 EIP-7702 delegation consent.
+    authorize_evm_delegation=_authorize_evm_delegation,
+    clear_evm_delegation=_clear_evm_delegation,
 )
 
 # --------------------------------------------------------------------------- #

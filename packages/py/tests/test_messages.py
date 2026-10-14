@@ -44,7 +44,7 @@ TEST_MNEMONIC = (
 CHAIN_ID = "qorechain-diana"
 FEE = {"amount": [{"denom": "uqor", "amount": "5000"}], "gas": "200000"}
 
-# Every QoreChain composer call -> the exact typeUrl it must emit. Covers all 61.
+# Every QoreChain composer call -> the exact typeUrl it must emit. Covers all 65.
 QORECHAIN_COMPOSER_CASES = [
     # amm (7)
     (amm.create_pool(creator="qor1"), "/qorechain.amm.v1.MsgCreatePool"),
@@ -54,7 +54,7 @@ QORECHAIN_COMPOSER_CASES = [
     (amm.swap_exact_out(sender="qor1"), "/qorechain.amm.v1.MsgSwapExactOut"),
     (amm.pause_pool(authority="qor1"), "/qorechain.amm.v1.MsgPausePool"),
     (amm.resume_pool(authority="qor1"), "/qorechain.amm.v1.MsgResumePool"),
-    # bridge (7)
+    # bridge (8)
     (bridge.bridge_deposit(sender="qor1"), "/qorechain.bridge.v1.MsgBridgeDeposit"),
     (bridge.bridge_withdraw(sender="qor1"), "/qorechain.bridge.v1.MsgBridgeWithdraw"),
     (
@@ -77,6 +77,10 @@ QORECHAIN_COMPOSER_CASES = [
         bridge.set_verifier_bootstrap(admin="qor1"),
         "/qorechain.bridge.v1.MsgSetVerifierBootstrap",
     ),
+    (
+        bridge.update_circuit_breaker_limits(admin="qor1"),
+        "/qorechain.bridge.v1.MsgUpdateCircuitBreakerLimits",
+    ),
     # rdk (8)
     (rdk.create_rollup(creator="qor1"), "/qorechain.rdk.v1.MsgCreateRollup"),
     (rdk.submit_batch(sequencer="qor1"), "/qorechain.rdk.v1.MsgSubmitBatch"),
@@ -89,7 +93,7 @@ QORECHAIN_COMPOSER_CASES = [
         rdk.execute_withdrawal(submitter="qor1"),
         "/qorechain.rdk.v1.MsgExecuteWithdrawal",
     ),
-    # multilayer (6)
+    # multilayer (7)
     (
         multilayer.register_sidechain(creator="qor1"),
         "/qorechain.multilayer.v1.MsgRegisterSidechain",
@@ -111,7 +115,11 @@ QORECHAIN_COMPOSER_CASES = [
         multilayer.challenge_anchor(challenger="qor1"),
         "/qorechain.multilayer.v1.MsgChallengeAnchor",
     ),
-    # pqc (8)
+    (
+        multilayer.update_params(authority="qor1"),
+        "/qorechain.multilayer.v1.MsgUpdateParams",
+    ),
+    # pqc (10)
     (pqc.register_pqc_key(sender="qor1"), "/qorechain.pqc.v1.MsgRegisterPQCKey"),
     (pqc.register_pqc_key_v2(sender="qor1"), "/qorechain.pqc.v1.MsgRegisterPQCKeyV2"),
     (pqc.migrate_pqc_key(sender="qor1"), "/qorechain.pqc.v1.MsgMigratePQCKey"),
@@ -126,6 +134,13 @@ QORECHAIN_COMPOSER_CASES = [
         "/qorechain.pqc.v1.MsgOpenEVMWindow",
     ),
     (pqc.close_evm_window(sender="qor1"), "/qorechain.pqc.v1.MsgCloseEVMWindow"),
+    (
+        pqc.authorize_evm_delegation(
+            sender="qor1", delegate="0x" + "11" * 20, blocks=1
+        ),
+        "/qorechain.pqc.v1.MsgAuthorizeEVMDelegation",
+    ),
+    (pqc.clear_evm_delegation(sender="qor1"), "/qorechain.pqc.v1.MsgClearEVMDelegation"),
     # svm (5)
     (svm.deploy_program(sender="qor1"), "/qorechain.svm.v1.MsgDeployProgram"),
     (svm.create_account(sender="qor1"), "/qorechain.svm.v1.MsgCreateAccount"),
@@ -202,10 +217,10 @@ QORECHAIN_COMPOSER_CASES = [
 ]
 
 
-def test_all_61_qorechain_composers_covered():
-    assert len(QORECHAIN_COMPOSER_CASES) == 61
+def test_all_65_qorechain_composers_covered():
+    assert len(QORECHAIN_COMPOSER_CASES) == 65
     type_urls = {tu for _m, tu in QORECHAIN_COMPOSER_CASES}
-    assert len(type_urls) == 61
+    assert len(type_urls) == 65
 
 
 @pytest.mark.parametrize("built_msg,type_url", QORECHAIN_COMPOSER_CASES)
@@ -245,11 +260,11 @@ def test_cosmos_composer_returns_exact_type_url(built_msg, type_url):
     assert built_msg.type_url == type_url
 
 
-def test_registry_covers_all_61_qorechain_and_18_cosmos():
+def test_registry_covers_all_65_qorechain_and_18_cosmos():
     reg = qorechain_registry()
     qc = [k for k in reg if k.startswith("/qorechain.")]
-    assert len(qc) == 61
-    assert len(reg) == 61 + 18
+    assert len(qc) == 65
+    assert len(reg) == 65 + 18
 
 
 def test_registry_extra_types_override():

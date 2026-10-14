@@ -82,8 +82,9 @@ MODULE_CODES: dict[str, dict[int, tuple[str, str]]] = {
         ),
         11: (
             "authenticator_replay",
-            "authenticator replay — the nonce does not match the account/key's "
-            "current sequence (refetch and retry)",
+            "authenticator replay — the nonce is not the linked key's current "
+            "authenticator sequence (a per-key counter, NOT the account's EVM nonce "
+            "or Cosmos sequence); re-sign with the key's next sequence",
         ),
     },
     "pqc": {
@@ -112,8 +113,24 @@ MODULE_CODES: dict[str, dict[int, tuple[str, str]]] = {
             "invalid EVM authorisation window, or the account has no registered "
             "post-quantum key — check the log text to tell the two apart",
         ),
+        # v3.2.2 EIP-7702 delegation consent (qorsdk.evm_delegation).
+        60: (
+            "evm_delegation_no_consent",
+            "no post-quantum consent for this EIP-7702 delegation — broadcast "
+            "MsgAuthorizeEVMDelegation for exactly this delegate first",
+        ),
+        61: (
+            "evm_delegation_invalid",
+            "invalid EIP-7702 delegation request — check the delegate address and "
+            "the blocks bound, and that the account has a registered PQC key",
+        ),
     },
 }
+
+# The per-sender transaction rate limit (chain v3.2.2) is raised by an ante
+# handler whose codespace and code are not fixed yet, so it is recognised by its
+# text, whatever code carries it.
+_RATE_LIMIT_TEXT = "rate limit"
 
 
 @dataclass(frozen=True)
@@ -151,6 +168,18 @@ def decode_tx_error(
     :param raw_log: The raw ABCI log string, used as a fallback message.
     """
     space = codespace or DEFAULT_CODESPACE
+
+    if raw_log and _RATE_LIMIT_TEXT in raw_log.lower():
+        return DecodedTxError(
+            code=code,
+            codespace=space,
+            message=(
+                "the network is limiting this sender's transaction rate — wait and "
+                f"retry ({raw_log})"
+            ),
+            kind="rate_limited",
+            raw_log=raw_log,
+        )
 
     if space == DEFAULT_CODESPACE and code in SDK_CODES:
         kind, base_message = SDK_CODES[code]

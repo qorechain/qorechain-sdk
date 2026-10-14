@@ -36,6 +36,7 @@ from __future__ import annotations
 from typing import Any, TypedDict
 
 from .accounts import Secp256k1Account
+from .classical_key import validate_classical_key_for_sender
 from .messages import msg
 from .messages._composer import Msg
 from .pqc import ALGORITHM_DILITHIUM5, PqcKeypair
@@ -144,7 +145,12 @@ def build_register_pqc_key(
     Uses ``/qorechain.pqc.v1.MsgRegisterPQCKeyV2`` — the chain's current
     (classical-exempt bootstrap) registration path — with an explicit
     ``algorithm_id`` (ML-DSA-87 / Dilithium-5).
+
+    :raises ValueError: If ``ecdsa_pubkey`` is not empty and not the sender's own
+        33-byte compressed key — from chain v3.2.2 such a registration is refused
+        after the fee is charged. Not network-gated: such a key is wrong anywhere.
     """
+    validate_classical_key_for_sender(sender, ecdsa_pubkey)
     message: Msg = msg.pqc.register_pqc_key_v2(
         sender=sender,
         public_key=dilithium_pubkey,

@@ -42,6 +42,10 @@ from .authenticator import (
     rotate_pqc_key_msg_from_mnemonic,
     rotation_sign_bytes,
 )
+from .classical_key import (
+    COMPRESSED_SECP256K1_LENGTH,
+    validate_classical_key_for_sender,
+)
 from .client import QoreChainClient, create_client
 from .cross_vm import (
     CROSS_VM_CALL_RESPONSE_TYPE_URL,
@@ -61,6 +65,24 @@ from .errors import (
     decode_tx_error,
     is_tx_failure,
     tx_error_from,
+)
+from .evm_delegation import (
+    AUTHORIZE_EVM_DELEGATION_TYPE_URL,
+    CLEAR_EVM_DELEGATION_TYPE_URL,
+    ERR_INVALID_EVM_DELEGATION,
+    ERR_NO_EVM_DELEGATION_CONSENT,
+    EVM_DELEGATION_CLEAR,
+    MAX_EVM_AUTHORIZATIONS_PER_TX,
+    MAX_EVM_DELEGATION_CONSENT_BLOCKS,
+    EVMDelegationConsent,
+    EVMDelegationErrorKind,
+    classify_evm_delegation_error,
+    evm_delegation_consent_path,
+    evm_delegation_tuple_nonce,
+    get_evm_delegation_consent,
+    get_evm_delegation_consent_async,
+    parse_evm_delegation_consent,
+    validate_evm_delegation_consent,
 )
 from .evm_window import (
     CLOSE_EVM_WINDOW_TYPE_URL,
@@ -228,6 +250,15 @@ from .unified import (
     qore_addresses,
     unified_account_from_phantom_signature,
     unified_account_from_seed,
+)
+from .upgrades import (
+    CHAIN_UPGRADE_V3_2_2,
+    applied_plan_path,
+    clear_upgrade_cache,
+    is_upgrade_applied,
+    parse_applied_height,
+    require_upgrade_applied,
+    upgrade_applied_height,
 )
 from .utils import (
     format_units,
@@ -426,6 +457,31 @@ __all__ = [
     "get_evm_window",
     "get_evm_window_async",
     "classify_evm_window_error",
+    "AUTHORIZE_EVM_DELEGATION_TYPE_URL",
+    "CLEAR_EVM_DELEGATION_TYPE_URL",
+    "ERR_INVALID_EVM_DELEGATION",
+    "ERR_NO_EVM_DELEGATION_CONSENT",
+    "EVM_DELEGATION_CLEAR",
+    "MAX_EVM_AUTHORIZATIONS_PER_TX",
+    "MAX_EVM_DELEGATION_CONSENT_BLOCKS",
+    "EVMDelegationConsent",
+    "EVMDelegationErrorKind",
+    "classify_evm_delegation_error",
+    "evm_delegation_consent_path",
+    "evm_delegation_tuple_nonce",
+    "get_evm_delegation_consent",
+    "get_evm_delegation_consent_async",
+    "parse_evm_delegation_consent",
+    "validate_evm_delegation_consent",
+    "COMPRESSED_SECP256K1_LENGTH",
+    "validate_classical_key_for_sender",
+    "CHAIN_UPGRADE_V3_2_2",
+    "applied_plan_path",
+    "clear_upgrade_cache",
+    "is_upgrade_applied",
+    "parse_applied_height",
+    "require_upgrade_applied",
+    "upgrade_applied_height",
     "describe_evm_window_error",
     # errors
     "DecodedTxError",
