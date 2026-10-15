@@ -56,6 +56,12 @@ const remote = createClient({
 });
 ```
 
+Endpoint roles:
+
+- `rest` is the Native REST/LCD endpoint for account, balance, and module queries.
+- `rpc` is the consensus RPC endpoint for transaction broadcast and block/event access.
+- `evmRpc` is the EVM JSON-RPC endpoint for EVM tooling and `qor_` JSON-RPC calls.
+
 Mainnet (chain id `qorechain-vladi`) is live; target it with
 `createClient({ network: "mainnet", endpoints })`, overriding the localhost
 defaults with your node URLs.
