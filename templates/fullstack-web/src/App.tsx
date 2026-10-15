@@ -7,6 +7,8 @@ import { createClient, type QoreChainClient } from "@qorechain/sdk";
 const REST_URL = import.meta.env.VITE_QORE_REST_URL ?? "http://localhost:1317";
 const EVM_RPC_URL =
   import.meta.env.VITE_QORE_EVM_RPC_URL ?? "http://localhost:8545";
+const NETWORK =
+  import.meta.env.VITE_QORE_NETWORK === "mainnet" ? "mainnet" : "testnet";
 
 interface Balance {
   denom: string;
@@ -18,7 +20,7 @@ export function App(): JSX.Element {
   const client: QoreChainClient = useMemo(
     () =>
       createClient({
-        network: "testnet",
+        network: NETWORK,
         endpoints: { rest: REST_URL, evmRpc: EVM_RPC_URL },
       }),
     [],

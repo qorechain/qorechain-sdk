@@ -3,7 +3,7 @@
 A minimal [Vite](https://vitejs.dev) + React + TypeScript dApp that uses
 [`@qorechain/sdk`](https://github.com/qorechain/qorechain-sdk) to:
 
-- connect to QoreChain testnet (`createClient`),
+- connect to the selected QoreChain network (`createClient`),
 - read a native balance for an address you enter, and
 - read the tokenomics overview (`qor_getTokenomicsOverview`).
 
@@ -26,10 +26,11 @@ pnpm dev               # http://localhost:5173
 Configure endpoints in `.env` (only `VITE_`-prefixed vars are exposed to the
 browser):
 
-| Variable               | Purpose                | Default                 |
-| ---------------------- | ---------------------- | ----------------------- |
-| `VITE_QORE_REST_URL`     | Native REST (balances) | `http://localhost:1317` |
-| `VITE_QORE_EVM_RPC_URL`  | EVM JSON-RPC (`qor_*`) | `http://localhost:8545` |
+| Variable                | Purpose                | Default                 |
+| ----------------------- | ---------------------- | ----------------------- |
+| `VITE_QORE_NETWORK`     | SDK network preset     | `testnet`               |
+| `VITE_QORE_REST_URL`    | Native REST (balances) | `http://localhost:1317` |
+| `VITE_QORE_EVM_RPC_URL` | EVM JSON-RPC (`qor_*`) | `http://localhost:8545` |
 
 ## Build / type-check
 

@@ -20,6 +20,8 @@ export interface TemplateInfo {
   hint: string;
   /** Source language. */
   language: TemplateLanguage;
+  /** Environment variable populated from the CLI network selection. */
+  networkEnvVar?: string;
 }
 
 /** All templates the CLI can scaffold. */
@@ -35,12 +37,14 @@ export const TEMPLATES: readonly TemplateInfo[] = [
     label: "Full-stack web (Vite + React)",
     hint: "A minimal Vite + React dApp using @qorechain/sdk to read balances and tokenomics.",
     language: "typescript",
+    networkEnvVar: "VITE_QORE_NETWORK",
   },
   {
     id: "rollup-app",
     label: "Rollup + multilayer app",
     hint: "A rollup + sidechain/paychain app using the RollupClient and multilayer helper from @qorechain/sdk.",
     language: "typescript",
+    networkEnvVar: "QORE_NETWORK",
   },
 ] as const;
 

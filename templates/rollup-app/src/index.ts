@@ -28,6 +28,8 @@ const TEST_MNEMONIC =
 
 async function main(): Promise<void> {
   const mnemonic = process.env.QORE_MNEMONIC ?? TEST_MNEMONIC;
+  const network =
+    process.env.QORE_NETWORK === "mainnet" ? "mainnet" : "testnet";
   const rpcUrl = process.env.QORE_RPC_URL ?? "http://localhost:26657";
   const restUrl = process.env.QORE_REST_URL ?? "http://localhost:1317";
   const evmRpcUrl = process.env.QORE_EVM_RPC_URL ?? "http://localhost:8545";
@@ -36,7 +38,7 @@ async function main(): Promise<void> {
   const broadcast = process.env.QORE_BROADCAST === "1";
 
   const client = createClient({
-    network: "testnet",
+    network,
     endpoints: { rpc: rpcUrl, rest: restUrl, evmRpc: evmRpcUrl },
   });
 
