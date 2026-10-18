@@ -70,10 +70,15 @@ const hash = await writeContract(wallet, {
 
 ### Call a precompile
 
-QoreChain exposes on-chain precompiles for post-quantum verification, AI-based
-risk/anomaly checks, and live consensus parameters. These are available on
-QoreChain network nodes; on a default or community node a call may return a
-"not available" error.
+QoreChain defines on-chain precompiles for post-quantum verification, AI-based
+risk/anomaly checks, and live consensus parameters.
+
+> **Not available on the public networks today.** These precompiles are not
+> active on `qorechain-vladi` or `qorechain-diana`: the chain's
+> `/cosmos/evm/vm/v1/params` lists no active static precompiles, and a call to
+> them returns empty data (the helpers then throw). Check that list before you
+> rely on them.
+
 
 ```ts
 import { precompiles } from "@qorechain/evm";

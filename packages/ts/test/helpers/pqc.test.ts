@@ -251,3 +251,27 @@ describe("migrateToHybrid", () => {
     expect(typeof path.signAndBroadcastHybrid).toBe("function");
   });
 });
+
+describe("getPqcStatus over a source's REST client", () => {
+  const restOf = (impl: () => Promise<unknown>) => ({ getPqcAccount: vi.fn(impl) }) as never;
+
+  it("prefers .rest (the route public endpoints serve) over .qor", async () => {
+    const getPqcKeyStatus = vi.fn();
+    const rest = restOf(async () => ({ found: true, account: { public_key: "AAAA" } }));
+    const status = await getPqcStatus({ qor: { getPqcKeyStatus } as never, rest }, ADDR);
+    expect(status).toEqual({ registered: true, pubkey: "AAAA" });
+    expect(getPqcKeyStatus).not.toHaveBeenCalled();
+  });
+
+  it("reads found: false as not registered", async () => {
+    expect(await isPqcRegistered({ rest: restOf(async () => ({ found: false, account: null })) }, ADDR)).toBe(false);
+  });
+
+  it("throws, after one retry, when the answer is unclear", async () => {
+    const rest = restOf(async () => {
+      throw new Error("HTTP 501");
+    });
+    await expect(getPqcStatus({ rest }, ADDR)).rejects.toThrow(/cannot tell/);
+    expect((rest as { getPqcAccount: ReturnType<typeof vi.fn> }).getPqcAccount).toHaveBeenCalledTimes(2);
+  });
+});

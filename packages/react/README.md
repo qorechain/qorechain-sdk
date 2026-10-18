@@ -2,7 +2,7 @@
 
 Official **React hooks and components** for building quantum-safe
 [QoreChain](https://github.com/qorechain/qorechain-sdk) dApps. It wraps
-[`@qorechain/sdk`](../ts) in an idiomatic React surface: one provider, a handful
+[`@qorechain/sdk`](https://github.com/qorechain/qorechain-sdk/tree/main/packages/ts) in an idiomatic React surface: one provider, a handful
 of hooks, and two drop-in components — including a one-line
 **Quantum-safe** badge.
 
@@ -168,7 +168,7 @@ Shows a **Quantum-safe** indicator when the address has a registered PQC key
 `@qorechain/react` surfaces QoreChain's post-quantum security in the UI, and the
 core SDK makes an account PQC-protected in one call
 (`ensurePqcRegistered` / `migrateToHybrid`). See the
-[quantum-safe guide](../../docs/docs/guides/quantum-safe.md).
+[quantum-safe guide](https://docs.qorechain.io/sdk/guides/quantum-safe).
 
 ## License
 

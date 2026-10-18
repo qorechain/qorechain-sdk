@@ -228,8 +228,8 @@ with connect_query_clients("localhost:9090") as q:
     batch = q.rdk.latest_batch("r1")
 ```
 
-See the [multilayer](../../docs/docs/guides/multilayer.md) and
-[rollups](../../docs/docs/guides/rollups.md) guides.
+See the [multilayer](https://github.com/qorechain/qorechain-sdk/blob/main/docs/docs/guides/multilayer.md) and
+[rollups](https://github.com/qorechain/qorechain-sdk/blob/main/docs/docs/guides/rollups.md) guides.
 
 ### AI pre-flight risk scoring (v0.5.0)
 
@@ -258,7 +258,7 @@ risk = ai_risk_score(eth_client, b"\xde\xad\xbe\xef")  # {"score", "level"}
 anomaly = ai_anomaly_check(eth_client, "0xSender", 1_000_000)  # {"anomaly_score", "flagged"}
 ```
 
-See the [AI pre-flight](../../docs/docs/guides/ai-preflight.md) guide.
+See the [AI pre-flight](https://docs.qorechain.io/sdk/guides/ai-preflight) guide.
 
 ### Unified cross-VM calls (v0.5.0)
 
@@ -308,7 +308,7 @@ execution context; it is still accepted (and sent, default `"evm"`) so older
 nodes keep taking the message, but setting it has no on-chain effect.
 
 `build_cross_vm_call(...)` is also available as a free function for hand-building
-the message. See the [cross-VM](../../docs/docs/guides/cross-vm.md) guide.
+the message. See the [cross-VM](https://docs.qorechain.io/sdk/guides/cross-vm) guide.
 
 ### Quantum-safe DX (v0.5.0)
 
@@ -340,7 +340,7 @@ migrate_pqc_key(account=native, ...)
 
 Async status reads are available as `is_pqc_registered_async` /
 `get_pqc_status_async`. See the
-[quantum-safe](../../docs/docs/guides/quantum-safe.md) guide.
+[quantum-safe](https://docs.qorechain.io/sdk/guides/quantum-safe) guide.
 
 ### Hybrid sign-bytes v1 / v2 (v0.8.1 / chain v3.2.0, testnet v3.1.98)
 
@@ -488,7 +488,7 @@ external key, register it with `MsgRegisterAuthenticator` and use the
 authenticator lanes (`MsgExecuteCosmos` / `MsgExecuteEVM`) below. Any account
 previously derived from a signature must be treated as exposed — move its funds.
 
-See the [unified-wallet](../../docs/docs/guides/unified-wallet.md) guide.
+See the [unified-wallet](https://github.com/qorechain/qorechain-sdk/blob/main/docs/docs/guides/unified-wallet.md) guide.
 
 ### Auto-gas, errors, tracking, search
 
@@ -615,7 +615,7 @@ build = rotate_pqc_key_msg_from_mnemonic(
 )
 ```
 
-See the [authenticators](../../docs/docs/guides/authenticators.md) guide.
+See the [authenticators](https://docs.qorechain.io/sdk/guides/authenticators) guide.
 
 ### EVM authorisation window (v0.8.2 / chain v3.2.0)
 
