@@ -86,6 +86,10 @@ after each network release is tagged.
   cache reset. The TS `ensurePqcRegistered` now refuses to run without `rest`,
   `statusSource` or `status`; pass `force: true` to register without a check
   (Java: `EnsureOptions.force`).
+- **Dependency ranges that froze fixes out.** `@qorechain/sdk` declared
+  `@qorechain/evm ^0.5.1` (installed 0.5.x, never 0.8) and
+  `@qorechain/pqc ^0.1.1` (never 0.2.x). It now declares `@qorechain/pqc ^0.2.1`,
+  and `@qorechain/evm` follows the workspace version when published.
 - **The PQC account route was wrong** in every SDK: `/qorechain/pqc/v1/accounts/`
   (plural, answered 501). It is `/qorechain/pqc/v1/account/` (singular).
 - **TS `getPqcStatus` / `isPqcRegistered` now read over REST when the source has

@@ -491,11 +491,11 @@ importers:
         specifier: ^1.8.0
         version: 1.8.0
       '@qorechain/evm':
-        specifier: ^0.5.1
-        version: 0.5.1(viem@2.53.1(bufferutil@4.1.0)(typescript@5.9.3)(utf-8-validate@6.0.6))
+        specifier: workspace:^
+        version: link:../evm
       '@qorechain/pqc':
-        specifier: ^0.1.1
-        version: 0.1.1
+        specifier: ^0.2.1
+        version: 0.2.1
       '@scure/base':
         specifier: ^1.2.0
         version: 1.2.6
@@ -1387,13 +1387,8 @@ packages:
     resolution: {integrity: sha512-oGB+UxlgWcgQkgwo8GcEGwemoTFt3FIO9ababBmaGwXIoBKZ+GTy0pP185beGg7Llih/NSHSV2XAs1lnznocSg==}
     engines: {node: '>= 8'}
 
-  '@qorechain/evm@0.5.1':
-    resolution: {integrity: sha512-LKyaRZxu/1KVkoDpCoFL3SxfpEbCPUgqlsF8PSx83gI7n/xXXFjwZifP5gaOlwO2GturfbsxrQAnrPTw/unb7Q==}
-    peerDependencies:
-      viem: ^2.0.0
-
-  '@qorechain/pqc@0.1.1':
-    resolution: {integrity: sha512-ZjVXOlXpIoQsDHNmWiIgDML5U9dD1Gl+7A8Xm6GUUgvsdSQ0UkGIsCXhkVED/SsV5X8xYdIDpNri08Ty0zIhRg==}
+  '@qorechain/pqc@0.2.1':
+    resolution: {integrity: sha512-Iz20sDxdd0/XD8Qu0fCEJxfG2RwggMORkUb8DBMQr25j7q9XEGBX+p8WV7dOhrnNlIhocB80uQJmPWzIpEDK6A==}
     engines: {node: '>=18'}
 
   '@rolldown/pluginutils@1.0.0-beta.27':
@@ -4094,11 +4089,7 @@ snapshots:
       '@nodelib/fs.scandir': 2.1.5
       fastq: 1.20.1
 
-  '@qorechain/evm@0.5.1(viem@2.53.1(bufferutil@4.1.0)(typescript@5.9.3)(utf-8-validate@6.0.6))':
-    dependencies:
-      viem: 2.53.1(bufferutil@4.1.0)(typescript@5.9.3)(utf-8-validate@6.0.6)
-
-  '@qorechain/pqc@0.1.1':
+  '@qorechain/pqc@0.2.1':
     dependencies:
       '@noble/hashes': 2.2.0
       '@noble/post-quantum': 0.6.1
