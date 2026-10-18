@@ -76,7 +76,7 @@ describe("RestClient custom QoreChain module reads", () => {
     [
       "getPqcAccount",
       (c) => c.getPqcAccount("qor1abc"),
-      "http://host:1317/qorechain/pqc/v1/accounts/qor1abc",
+      "http://host:1317/qorechain/pqc/v1/account/qor1abc",
     ],
     [
       "getReputation",

@@ -19,7 +19,7 @@ func TestRestMethodPaths(t *testing.T) {
 		{"GetAIStats", func(c *RestClient) (json.RawMessage, error) { return c.GetAIStats() }, "/qorechain/ai/v1/stats", ""},
 		{"GetFeeEstimate", func(c *RestClient) (json.RawMessage, error) { return c.GetFeeEstimate("fast") }, "/qorechain/ai/v1/fee-estimate", "urgency=fast"},
 		{"GetBridgeChains", func(c *RestClient) (json.RawMessage, error) { return c.GetBridgeChains() }, "/qorechain/bridge/v1/chains", ""},
-		{"GetPQCAccount", func(c *RestClient) (json.RawMessage, error) { return c.GetPQCAccount("qor1abc") }, "/qorechain/pqc/v1/accounts/qor1abc", ""},
+		{"GetPQCAccount", func(c *RestClient) (json.RawMessage, error) { return c.GetPQCAccount("qor1abc") }, "/qorechain/pqc/v1/account/qor1abc", ""},
 		{"GetReputation", func(c *RestClient) (json.RawMessage, error) { return c.GetReputation("qorvaloper1xyz") }, "/qorechain/reputation/v1/validators/qorvaloper1xyz", ""},
 		{"GetBurnStats", func(c *RestClient) (json.RawMessage, error) { return c.GetBurnStats() }, "/qorechain/burn/v1/stats", ""},
 		{"GetXQOREPosition", func(c *RestClient) (json.RawMessage, error) { return c.GetXQOREPosition("qor1abc") }, "/qorechain/xqore/v1/position/qor1abc", ""},

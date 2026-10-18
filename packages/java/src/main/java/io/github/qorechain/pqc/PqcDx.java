@@ -129,6 +129,12 @@ public final class PqcDx {
          * When provided and {@code registered}, the registration is skipped.
          */
         public PqcStatus status;
+        /**
+         * Broadcast the registration without checking first. The chain refuses a
+         * second registration AFTER charging the fee, so this is only for a caller
+         * that already knows the account has no key.
+         */
+        public boolean force;
     }
 
     /** Result of {@link #ensurePqcRegistered}. */
@@ -159,14 +165,81 @@ public final class PqcDx {
      */
     public static PqcStatus getPqcStatus(QorClient qor, String address) {
         JsonNode raw = qor.getPqcKeyStatus(address);
-        if (raw == null || !raw.isObject()) {
-            return new PqcStatus(false, PqcAlgorithm.ALGORITHM_UNSPECIFIED, null);
+        // No answer is not "not registered": reading it that way makes a client
+        // re-register a key the chain already has, and pay the fee each time.
+        if (raw == null
+                || !raw.isObject()
+                || firstOf(raw, "registered", "isRegistered", "is_registered", "has_pqc_key",
+                                "pubkey", "publicKey", "public_key")
+                        == null) {
+            throw new IllegalStateException(
+                    "qor_getPQCKeyStatus gave no usable answer for " + address
+                            + "; cannot tell whether a PQC key is registered");
         }
         boolean registered =
-                asBool(firstOf(raw, "registered", "isRegistered", "is_registered"));
+                asBool(firstOf(raw, "registered", "isRegistered", "is_registered", "has_pqc_key"));
         int algorithmId = asInt(firstOf(raw, "algorithmId", "algorithm_id"));
         byte[] pubkey = asBytes(firstOf(raw, "pubkey", "publicKey", "public_key"));
         return new PqcStatus(registered, algorithmId, pubkey);
+    }
+
+    private static final java.util.Set<String> REGISTERED_CACHE =
+            java.util.concurrent.ConcurrentHashMap.newKeySet();
+
+    /**
+     * Read the PQC registration status over REST
+     * ({@code GET {restUrl}/qorechain/pqc/v1/account/{address}}), the route every
+     * public endpoint serves (the {@code qor_*} JSON-RPC namespace is not exposed
+     * publicly).
+     *
+     * <p>The chain answers {@code {"found": false}} for an account without a key.
+     * Anything that is not a readable {@code found} — an HTTP error, a missing
+     * field, a transport failure — is UNKNOWN: retried once, then thrown. It is
+     * never read as "not registered". A positive answer is cached per (restUrl,
+     * address).
+     *
+     * @throws IllegalStateException when the status cannot be read
+     */
+    public static PqcStatus fetchPqcStatus(String restUrl, String address) {
+        String base = restUrl.replaceAll("/+$", "");
+        String key = base + "|" + address;
+        if (REGISTERED_CACHE.contains(key)) {
+            return new PqcStatus(true, PqcAlgorithm.ALGORITHM_UNSPECIFIED, null);
+        }
+        RuntimeException last = null;
+        for (int attempt = 0; attempt < 2; attempt++) {
+            try {
+                JsonNode body = new io.github.qorechain.query.RestClient(base).getPqcAccount(address);
+                JsonNode found = body == null ? null : body.get("found");
+                if (found == null || !found.isBoolean()) {
+                    throw new IllegalStateException("no \"found\" field in the answer for " + address);
+                }
+                if (!found.asBoolean()) {
+                    return new PqcStatus(false, PqcAlgorithm.ALGORITHM_UNSPECIFIED, null);
+                }
+                REGISTERED_CACHE.add(key);
+                JsonNode account = body.get("account");
+                byte[] pubkey = account == null ? null : asBytes(account.get("public_key"));
+                return new PqcStatus(true, PqcAlgorithm.ALGORITHM_UNSPECIFIED, pubkey);
+            } catch (RuntimeException e) {
+                last = e;
+            }
+        }
+        throw new IllegalStateException(
+                "cannot tell whether " + address + " has a registered PQC key: " + last.getMessage(), last);
+    }
+
+    /** Forget cached registration answers (tests, network switches). */
+    public static void clearPqcStatusCache() {
+        REGISTERED_CACHE.clear();
+    }
+
+    /** The chain's refusal of a second registration ({@code pqc} 7). */
+    private static boolean isAlreadyRegistered(int code, String codespace, String rawLog) {
+        if (rawLog != null && rawLog.toLowerCase(java.util.Locale.ROOT).contains("pqc account already registered")) {
+            return true;
+        }
+        return "pqc".equals(codespace) && code == 7;
     }
 
     /**
@@ -226,9 +299,12 @@ public final class PqcDx {
      *
      * @param signer the signing context (keys, chain id, account, fee).
      * @param bc the consensus-RPC broadcaster.
-     * @param qor optional status source for the idempotency pre-flight; when
-     *     {@code null} and no {@code opts.status} is supplied, the registration is
-     *     broadcast unconditionally.
+     * @param qor optional {@code qor_*} status source, used only when
+     *     {@code signer.restUrl} is not set (public endpoints do not expose
+     *     {@code qor_*}). With neither, nor {@code opts.status}, nor
+     *     {@code opts.force}, the helper refuses rather than register blind: the
+     *     chain charges the fee before refusing a second registration. A refusal
+     *     as "already registered" ({@code pqc} 7) counts as already registered.
      * @param opts ECDSA pubkey / key-type / pre-read status (may be {@code null}).
      */
     public static EnsureResult ensurePqcRegistered(
@@ -237,8 +313,15 @@ public final class PqcDx {
 
         // Pre-flight: skip registration entirely when already registered.
         PqcStatus status = o.status;
-        if (status == null && qor != null) {
+        if (status == null && signer.restUrl != null && !signer.restUrl.isEmpty()) {
+            status = fetchPqcStatus(signer.restUrl, signer.sender);
+        } else if (status == null && qor != null) {
             status = getPqcStatus(qor, signer.sender);
+        } else if (status == null && !o.force) {
+            throw new IllegalStateException(
+                    "ensurePqcRegistered: set signer.restUrl so the helper can check whether the key is"
+                            + " already registered; registering blind charges a fee every time the key"
+                            + " exists. Set opts.force only when the account is known to have no key.");
         }
         if (status != null && status.registered) {
             return new EnsureResult(true, null, null);
@@ -258,7 +341,17 @@ public final class PqcDx {
         txOpts.timeoutHeight = signer.timeoutHeight;
 
         NativeTx.Built built = NativeTx.buildAndSign(txOpts);
-        Broadcaster.Result result = bc.broadcast(built.txRawBytes, Broadcaster.Mode.SYNC);
+        Broadcaster.Result result;
+        try {
+            result = bc.broadcast(built.txRawBytes, Broadcaster.Mode.SYNC);
+        } catch (TxError.QoreTxException e) {
+            // The key was registered after all: not an error for a helper whose
+            // job is "make sure it is registered".
+            if (isAlreadyRegistered(e.code, e.codespace, e.rawLog)) {
+                return new EnsureResult(true, null, null);
+            }
+            throw e;
+        }
         return new EnsureResult(false, result.transactionHash, result);
     }
 

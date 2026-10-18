@@ -19,8 +19,11 @@ import (
 func planServer(t *testing.T, planBody string) *httptest.Server {
 	t.Helper()
 	last := signbytes.V2Upgrades[len(signbytes.V2Upgrades)-1]
+	ClearPQCStatusCache()
 	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		switch {
+		case strings.HasPrefix(r.URL.Path, "/qorechain/pqc/v1/account/"):
+			writePQCStatus(w)
 		case strings.HasPrefix(r.URL.Path, "/cosmos/upgrade/v1beta1/applied_plan/"):
 			if strings.TrimPrefix(r.URL.Path, "/cosmos/upgrade/v1beta1/applied_plan/") == last {
 				_, _ = w.Write([]byte(planBody))

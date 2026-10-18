@@ -491,7 +491,10 @@ registered, _ := pqcdx.IsPQCRegistered(c.Qor, acc.Address)
 status, _ := pqcdx.GetPQCStatus(c.Qor, acc.Address)
 
 pdx := pqcdx.New(pqcdx.Signer{ /* account + key material + ctx */ }, pqcdx.Options{Qor: c.Qor})
-ensure, _ := pdx.EnsurePQCRegistered(pqcdx.RegisterOptions{}) // registers only if missing
+// Registers only if missing: the check reads REST from Signer.RestURL
+// (pqcdx.FetchPQCStatus) and never registers blind — a second registration is
+// refused after the fee is charged.
+ensure, _ := pdx.EnsurePQCRegistered(pqcdx.RegisterOptions{})
 hybrid, _ := pdx.MigrateToHybrid(messages, pqcdx.MigrateToHybridOptions{})
 rotate, _ := pdx.MigratePQCKey(pqcdx.MigrateOptions{ /* new key */ })
 _ = (registered, status, ensure, hybrid, rotate)

@@ -413,11 +413,13 @@ import {
 const registered = await isPqcRegistered(client.qor, native.address);
 const status = await getPqcStatus(client.qor, native.address);
 
-// Idempotent: registers the signer's PQC key only if it isn't already.
-await ensurePqcRegistered({ tx, signer: pqcSigner /* … */ });
+// Idempotent: registers the signer's PQC key only if it isn't already. It
+// checks over REST first and never registers blind (a second registration is
+// refused after the fee is charged).
+await ensurePqcRegistered(tx, { pqcKeypair, rest: "https://api.qore.host" });
 
 // Migrate an existing classical account to hybrid signing, then sign hybrid.
-const path = await migrateToHybrid({ tx, signer: pqcSigner /* … */ });
+const path = await migrateToHybrid(tx, { pqcKeypair, rest: "https://api.qore.host" });
 
 // Rotate an account's on-chain PQC key (MsgMigratePQCKey).
 await migratePqcKey({ tx, /* new key material … */ });

@@ -108,7 +108,8 @@ func (c *RestClient) GetBridgeChains() (json.RawMessage, error) {
 
 // GetPQCAccount returns the PQC account record for an address.
 func (c *RestClient) GetPQCAccount(address string) (json.RawMessage, error) {
-	return c.Get("/qorechain/pqc/v1/accounts/"+url.PathEscape(address), nil)
+	// Singular: the chain's route. Answers {"found": bool, "account": ...}.
+	return c.Get("/qorechain/pqc/v1/account/"+url.PathEscape(address), nil)
 }
 
 // GetReputation returns the reputation record for a validator address.

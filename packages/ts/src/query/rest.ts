@@ -179,9 +179,12 @@ export class RestClient {
     return this.get<T>("/qorechain/bridge/v1/chains");
   }
 
-  /** PQC account record (`/qorechain/pqc/v1/accounts/{address}`). */
+  /**
+   * PQC account record (`/qorechain/pqc/v1/account/{address}`, singular).
+   * Answers `{ found, account }`: `found: false` for an account with no key.
+   */
   getPqcAccount<T = Record<string, unknown>>(address: string): Promise<T> {
-    return this.get<T>(`/qorechain/pqc/v1/accounts/${encodeURIComponent(address)}`);
+    return this.get<T>(`/qorechain/pqc/v1/account/${encodeURIComponent(address)}`);
   }
 
   /** Validator reputation (`/qorechain/reputation/v1/validators/{address}`). */

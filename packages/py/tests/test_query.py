@@ -25,7 +25,7 @@ REST_CASES = [
     ("get_ai_stats", (), "/qorechain/ai/v1/stats", {}),
     ("get_fee_estimate", ("fast",), "/qorechain/ai/v1/fee-estimate", {"urgency": "fast"}),
     ("get_bridge_chains", (), "/qorechain/bridge/v1/chains", {}),
-    ("get_pqc_account", (ADDR,), f"/qorechain/pqc/v1/accounts/{ADDR}", {}),
+    ("get_pqc_account", (ADDR,), f"/qorechain/pqc/v1/account/{ADDR}", {}),
     (
         "get_reputation",
         ("qorvaloper1abc",),

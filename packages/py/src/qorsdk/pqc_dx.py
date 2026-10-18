@@ -34,12 +34,14 @@ check status and register/migrate keys without touching raw messages.
 from __future__ import annotations
 
 from typing import Any, TypedDict
+from urllib.parse import quote
 
 from .accounts import Secp256k1Account
 from .classical_key import validate_classical_key_for_sender
 from .messages import msg
 from .messages._composer import Msg
 from .pqc import ALGORITHM_DILITHIUM5, PqcKeypair
+from .rest import RestClient
 from .signbytes import SignBytesVersion
 from .tx import broadcast, build_hybrid_tx, hybrid_sign_and_broadcast, send_messages
 
@@ -88,8 +90,18 @@ def _algorithm_id_for_key_type(key_type: str) -> int | None:
 
 
 def _resolve_status(raw: Any, address: str) -> PqcStatus:
-    """Normalise a ``qor_getPQCKeyStatus`` result into a :class:`PqcStatus`."""
-    data: dict[str, Any] = raw if isinstance(raw, dict) else {}
+    """Normalise a ``qor_getPQCKeyStatus`` result into a :class:`PqcStatus`.
+
+    :raises ValueError: When the answer is not a readable status. No answer is
+        not "not registered": reading it that way makes a client re-register a
+        key the chain already has, and pay the fee each time.
+    """
+    if not isinstance(raw, dict) or "has_pqc_key" not in raw:
+        raise ValueError(
+            f"qor_getPQCKeyStatus gave no usable answer for {address}; cannot tell "
+            "whether a PQC key is registered"
+        )
+    data: dict[str, Any] = raw
     registered = bool(data.get("has_pqc_key", False))
     status: PqcStatus = {"registered": registered}
     if registered:
@@ -115,6 +127,69 @@ def get_pqc_status(client: Any, address: str) -> PqcStatus:
     """
     raw = client.get_pqc_key_status(address)
     return _resolve_status(raw, address)
+
+
+_REGISTERED_CACHE: set[tuple[str, str]] = set()
+
+
+def fetch_pqc_status(rest_url: str, address: str) -> PqcStatus:
+    """Read the PQC registration status over REST
+    (``GET {rest_url}/qorechain/pqc/v1/account/{address}``), the route every
+    public endpoint serves (the ``qor_*`` JSON-RPC namespace is not exposed
+    publicly).
+
+    The chain answers ``{"found": false}`` for an account without a key.
+    Anything that is not a readable ``found`` — an HTTP error, a missing field, a
+    transport failure — is UNKNOWN: retried once, then raised. It is never read
+    as "not registered". A positive answer is cached per (rest_url, address).
+
+    :raises RuntimeError: When the status cannot be read.
+    """
+    base = rest_url.rstrip("/")
+    if (base, address) in _REGISTERED_CACHE:
+        return {"registered": True}
+    path = f"/qorechain/pqc/v1/account/{quote(address, safe='')}"
+    last: Exception | None = None
+    for _attempt in range(2):
+        try:
+            with RestClient(base) as rest:
+                body = rest.get(path)
+            if not isinstance(body, dict) or not isinstance(body.get("found"), bool):
+                raise ValueError(f'no "found" field in the answer from {base}{path}')
+            if not body["found"]:
+                return {"registered": False}
+            _REGISTERED_CACHE.add((base, address))
+            status: PqcStatus = {"registered": True}
+            acct = body.get("account") or {}
+            key_type = acct.get("key_type") if isinstance(acct, dict) else None
+            if key_type:
+                status["key_type"] = key_type
+                algorithm_id = _algorithm_id_for_key_type(key_type)
+                if algorithm_id is not None:
+                    status["algorithm_id"] = algorithm_id
+            return status
+        except Exception as exc:  # noqa: BLE001 - any failure means "unknown"
+            last = exc
+    raise RuntimeError(
+        f"cannot tell whether {address} has a registered PQC key: {last}"
+    ) from last
+
+
+def clear_pqc_status_cache() -> None:
+    """Forget cached registration answers (tests, network switches)."""
+    _REGISTERED_CACHE.clear()
+
+
+def _is_already_registered(response: Any) -> bool:
+    """True when a broadcast response is the chain's refusal of a second
+    registration (``pqc`` 7)."""
+    tx = response.get("tx_response", response) if isinstance(response, dict) else {}
+    if not isinstance(tx, dict):
+        return False
+    log = str(tx.get("raw_log") or tx.get("log") or "")
+    if "pqc account already registered" in log.lower():
+        return True
+    return tx.get("codespace") == "pqc" and str(tx.get("code")) == "7"
 
 
 def is_pqc_registered(client: Any, address: str) -> bool:
@@ -263,15 +338,20 @@ def ensure_pqc_registered(
     rest_url: str,
     fee: FeeDict,
     sequence: int = 0,
-    qor: Any,
+    qor: Any = None,
     key_type: str = HYBRID_KEY_TYPE,
     memo: str = "",
     mode: str = "sync",
 ) -> EnsureResult:
     """Make sure ``account`` has a PQC key registered; register it if missing.
 
-    Idempotent: queries ``qor_getPQCKeyStatus`` first via ``qor`` (a
-    :class:`~qorsdk.qor.QorClient`). If already registered, returns
+    Idempotent: reads the registration status over REST from ``rest_url``
+    first (:func:`fetch_pqc_status`; the ``qor_*`` JSON-RPC namespace is not
+    exposed on public endpoints, so ``qor`` is no longer needed and is
+    ignored). An unreadable status raises instead of registering blind — a
+    second registration is refused by the chain after the fee is charged. A
+    refusal of the broadcast as "already registered" (``pqc`` 7) also counts as
+    ``already_registered``. If already registered, returns
     ``{"already_registered": True}`` with no transaction. Otherwise builds and
     broadcasts a ``MsgRegisterPQCKeyV2`` carrying the signer's Dilithium public key
     (``pqc_keypair.public_key``) and classical ECDSA public key
@@ -282,7 +362,7 @@ def ensure_pqc_registered(
     hybrid for the very key it is registering); subsequent txs should use the
     hybrid path — see :func:`migrate_to_hybrid`.
     """
-    if is_pqc_registered(qor, account.address):
+    if fetch_pqc_status(rest_url, account.address)["registered"]:
         return {"already_registered": True}
 
     register = build_register_pqc_key(
@@ -303,6 +383,8 @@ def ensure_pqc_registered(
         memo=memo,
         mode=mode,
     )
+    if _is_already_registered(response):
+        return {"already_registered": True}
     result: EnsureResult = {"already_registered": False}
     tx_hash = _extract_tx_hash(response)
     if tx_hash is not None:
@@ -448,6 +530,8 @@ __all__ = [
     "PqcStatus",
     "EnsureResult",
     "get_pqc_status",
+    "fetch_pqc_status",
+    "clear_pqc_status_cache",
     "is_pqc_registered",
     "get_pqc_status_async",
     "is_pqc_registered_async",
