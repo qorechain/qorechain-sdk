@@ -53,10 +53,19 @@ const pqcKeypair = generatePqcKeypair(); // or derive deterministically from the
 
 const res = await ensurePqcRegistered(tx, {
   pqcKeypair,
-  statusSource: client, // makes the call idempotent (skips if already registered)
+  rest: "https://api.qore.host", // checks first: skips if already registered
 });
 // res: { alreadyRegistered: boolean; txHash?: string }
 ```
+
+:::warning Always let it check first
+The chain refuses a second registration of the same key **after charging the
+fee**. `ensurePqcRegistered` therefore reads the status first, over REST
+(`/qorechain/pqc/v1/account/{address}`, which every public endpoint serves), and
+refuses to register when it cannot tell — it never registers blind. Pass `rest`
+(or `statusSource` for a node that exposes `qor_*`); `force: true` skips the
+check and is only for an account known to have no key.
+:::
 
 Under the hood it builds and broadcasts `MsgRegisterPQCKeyV2` (the chain's
 classical-exempt bootstrap path, with an explicit ML-DSA-87 `algorithmId`)
@@ -80,7 +89,7 @@ builders:
 ```ts
 import { migrateToHybrid } from "@qorechain/sdk";
 
-const hybrid = await migrateToHybrid(tx, { pqcKeypair, statusSource: client });
+const hybrid = await migrateToHybrid(tx, { pqcKeypair, rest: "https://api.qore.host" });
 
 await hybrid.signAndBroadcastHybrid({
   registry,

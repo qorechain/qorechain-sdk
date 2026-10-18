@@ -199,6 +199,9 @@ boolean registered = PqcDx.isPqcRegistered(qor, account.address());
 PqcDx.PqcStatus status = PqcDx.getPqcStatus(qor, account.address());
 
 // Idempotent: registers the signer's Dilithium key only if it isn't already.
+// The check reads REST from signer.restUrl (PqcDx.fetchPqcStatus) and never
+// registers blind — a second registration is refused after the fee is charged.
+signer.restUrl = "https://api.qore.host";
 PqcDx.EnsureResult ensure =
         PqcDx.ensurePqcRegistered(signer, broadcaster, qor, new PqcDx.EnsureOptions());
 

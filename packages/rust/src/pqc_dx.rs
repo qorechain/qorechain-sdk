@@ -157,7 +157,7 @@ impl PqcDx {
     pub async fn get_pqc_status(&self, address: &str) -> Result<PqcStatus> {
         let qor = self.require_qor("get_pqc_status")?;
         let raw = qor.get_pqc_key_status(address).await?;
-        Ok(parse_pqc_status(&raw))
+        parse_pqc_status(&raw)
     }
 
     /// Registers the signer's PQC key if it is not already registered —
@@ -172,11 +172,16 @@ impl PqcDx {
     /// startup (or before the first hybrid tx) and the account is PQC-protected
     /// thereafter.
     ///
-    /// Note: without a configured [`QorClient`], no pre-flight check is possible,
-    /// so the registration is broadcast unconditionally — the chain's own
-    /// idempotency then applies.
+    /// The pre-flight check reads REST from `rest_url` ([`fetch_pqc_status`]);
+    /// the `qor_*` JSON-RPC namespace is not exposed on public endpoints. An
+    /// unreadable status is an error, never a blind registration: the chain
+    /// charges the fee before refusing a second one. A refusal as "already
+    /// registered" (`pqc` 7) counts as `already_registered`.
     pub async fn ensure_pqc_registered(&self) -> Result<EnsureResult> {
-        if self.qor.is_some() && self.is_pqc_registered(&self.sender).await? {
+        if fetch_pqc_status(&self.rest_url, &self.sender)
+            .await?
+            .registered
+        {
             return Ok(EnsureResult {
                 already_registered: true,
                 tx_hash: None,
@@ -185,6 +190,12 @@ impl PqcDx {
 
         let built = self.build_register()?;
         let resp = broadcast(&self.rest_url, &built.tx_raw_bytes, self.mode).await?;
+        if is_already_registered(&resp) {
+            return Ok(EnsureResult {
+                already_registered: true,
+                tx_hash: None,
+            });
+        }
         Ok(EnsureResult {
             already_registered: false,
             tx_hash: extract_tx_hash(&resp),
@@ -476,13 +487,29 @@ fn decode_pubkey(v: &Value) -> Option<Vec<u8>> {
 }
 
 /// Normalizes the rich `qor_getPQCKeyStatus` JSON object into a [`PqcStatus`].
-fn parse_pqc_status(raw: &Value) -> PqcStatus {
+fn parse_pqc_status(raw: &Value) -> Result<PqcStatus> {
+    // No answer is not "not registered": reading it that way makes a client
+    // re-register a key the chain already has, and pay the fee each time.
+    let known = [
+        "registered",
+        "isRegistered",
+        "is_registered",
+        "has_pqc_key",
+        "pubkey",
+        "publicKey",
+        "public_key",
+    ];
     let obj = match raw {
-        Value::Object(_) => raw,
-        _ => return PqcStatus::default(),
+        Value::Object(o) if known.iter().any(|k| o.contains_key(*k)) => raw,
+        _ => {
+            return Err(Error::InvalidResponse(
+                "qor_getPQCKeyStatus gave no usable answer; cannot tell whether a PQC key is registered"
+                    .into(),
+            ))
+        }
     };
 
-    let registered = ["registered", "isRegistered", "is_registered"]
+    let registered = ["registered", "isRegistered", "is_registered", "has_pqc_key"]
         .iter()
         .find_map(|k| obj.get(*k))
         .map(as_bool)
@@ -498,11 +525,98 @@ fn parse_pqc_status(raw: &Value) -> PqcStatus {
         .find_map(|k| obj.get(*k))
         .and_then(decode_pubkey);
 
-    PqcStatus {
+    // A non-empty key implies registration even if the flag is absent.
+    let registered = registered || pubkey.as_ref().is_some_and(|k| !k.is_empty());
+    Ok(PqcStatus {
         registered,
         algorithm_id,
         pubkey,
+    })
+}
+
+static REGISTERED_CACHE: std::sync::Mutex<Option<std::collections::HashSet<String>>> =
+    std::sync::Mutex::new(None);
+
+/// Reads the PQC registration status over REST
+/// (`GET {rest_url}/qorechain/pqc/v1/account/{address}`), the route every
+/// public endpoint serves (the `qor_*` JSON-RPC namespace is not exposed
+/// publicly).
+///
+/// The chain answers `{"found": false}` for an account without a key. Anything
+/// that is not a readable `found` — an HTTP error, a missing field, a transport
+/// failure — is UNKNOWN: retried once, then returned as an error. It is never
+/// read as "not registered". A positive answer is cached per
+/// (rest_url, address).
+///
+/// # Errors
+///
+/// [`Error::InvalidResponse`] when the status cannot be read.
+pub async fn fetch_pqc_status(rest_url: &str, address: &str) -> Result<PqcStatus> {
+    let base = rest_url.trim_end_matches('/').to_string();
+    let key = format!("{base}|{address}");
+    if REGISTERED_CACHE
+        .lock()
+        .expect("pqc status cache")
+        .as_ref()
+        .is_some_and(|c| c.contains(&key))
+    {
+        return Ok(PqcStatus {
+            registered: true,
+            ..PqcStatus::default()
+        });
     }
+    let rest = crate::query::RestClient::new(base.clone());
+    let mut last = String::new();
+    for _ in 0..2 {
+        match rest.get_pqc_account(address).await {
+            Ok(body) => match body.get("found").and_then(Value::as_bool) {
+                Some(false) => return Ok(PqcStatus::default()),
+                Some(true) => {
+                    REGISTERED_CACHE
+                        .lock()
+                        .expect("pqc status cache")
+                        .get_or_insert_with(Default::default)
+                        .insert(key);
+                    let pubkey = body
+                        .get("account")
+                        .and_then(|a| a.get("public_key"))
+                        .and_then(decode_pubkey);
+                    return Ok(PqcStatus {
+                        registered: true,
+                        algorithm_id: None,
+                        pubkey,
+                    });
+                }
+                None => last = format!("no \"found\" field in the answer for {address}"),
+            },
+            Err(e) => last = e.to_string(),
+        }
+    }
+    Err(Error::InvalidResponse(format!(
+        "cannot tell whether {address} has a registered PQC key: {last}"
+    )))
+}
+
+/// Forgets cached registration answers (tests, network switches).
+pub fn clear_pqc_status_cache() {
+    *REGISTERED_CACHE.lock().expect("pqc status cache") = None;
+}
+
+/// The chain's refusal of a second registration (`pqc` 7) in a broadcast
+/// response: not an error for a helper whose job is "make sure it is
+/// registered".
+fn is_already_registered(resp: &Value) -> bool {
+    let tx = resp.get("tx_response").unwrap_or(resp);
+    let log = tx
+        .get("raw_log")
+        .and_then(Value::as_str)
+        .unwrap_or_default()
+        .to_ascii_lowercase();
+    if log.contains("pqc account already registered") {
+        return true;
+    }
+    tx.get("codespace").and_then(Value::as_str) == Some("pqc")
+        && tx.get("code").and_then(Value::as_u64) == Some(7)
 }
 
 /// Extracts the broadcast tx hash from a REST `/cosmos/tx/v1beta1/txs` response.
@@ -522,7 +636,7 @@ mod tests {
     #[test]
     fn parse_status_registered_snake_case() {
         let raw = json!({ "registered": true, "algorithm_id": 1, "public_key": "0xdeadbeef" });
-        let s = parse_pqc_status(&raw);
+        let s = parse_pqc_status(&raw).unwrap();
         assert!(s.registered);
         assert_eq!(s.algorithm_id, Some(1));
         assert_eq!(s.pubkey, Some(vec![0xde, 0xad, 0xbe, 0xef]));
@@ -531,7 +645,7 @@ mod tests {
     #[test]
     fn parse_status_camel_case_and_string_fields() {
         let raw = json!({ "isRegistered": "true", "algorithmId": "1" });
-        let s = parse_pqc_status(&raw);
+        let s = parse_pqc_status(&raw).unwrap();
         assert!(s.registered);
         assert_eq!(s.algorithm_id, Some(1));
         assert_eq!(s.pubkey, None);
@@ -539,18 +653,39 @@ mod tests {
 
     #[test]
     fn parse_status_unregistered_and_unknown_shapes() {
-        assert!(!parse_pqc_status(&json!({ "registered": false })).registered);
-        assert_eq!(parse_pqc_status(&Value::Null), PqcStatus::default());
-        assert_eq!(parse_pqc_status(&json!("nope")), PqcStatus::default());
+        assert!(
+            !parse_pqc_status(&json!({ "registered": false }))
+                .unwrap()
+                .registered
+        );
+        // No usable answer is an error, never "not registered".
+        assert!(parse_pqc_status(&Value::Null).is_err());
+        assert!(parse_pqc_status(&json!("nope")).is_err());
+        assert!(parse_pqc_status(&json!({})).is_err());
     }
 
     #[test]
     fn pubkey_decodes_base64_and_array() {
         // "AQID" is base64 for [1,2,3]; it is not valid hex, so base64 wins.
-        let s = parse_pqc_status(&json!({ "registered": true, "pubkey": "AQID" }));
+        let s = parse_pqc_status(&json!({ "registered": true, "pubkey": "AQID" })).unwrap();
         assert_eq!(s.pubkey, Some(vec![1, 2, 3]));
-        let s = parse_pqc_status(&json!({ "registered": true, "pubkey": [4, 5, 6] }));
+        let s = parse_pqc_status(&json!({ "registered": true, "pubkey": [4, 5, 6] })).unwrap();
         assert_eq!(s.pubkey, Some(vec![4, 5, 6]));
+    }
+
+    #[test]
+    fn already_registered_refusal_is_recognised() {
+        assert!(is_already_registered(&json!({ "tx_response": {
+            "code": 7, "codespace": "pqc", "raw_log": "PQC account already registered" } })));
+        assert!(is_already_registered(
+            &json!({ "tx_response": { "code": 7, "codespace": "pqc" } })
+        ));
+        assert!(!is_already_registered(
+            &json!({ "tx_response": { "code": 7, "codespace": "bank" } })
+        ));
+        assert!(!is_already_registered(
+            &json!({ "tx_response": { "code": 0 } })
+        ));
     }
 
     #[test]

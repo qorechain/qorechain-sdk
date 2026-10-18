@@ -4,6 +4,7 @@ import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import com.fasterxml.jackson.databind.JsonNode;
@@ -44,12 +45,30 @@ class PqcDxTest {
 
     /** Controls what qor_getPQCKeyStatus returns; set per-test. */
     private volatile String statusResultJson = "{\"registered\":false}";
+    /** What the REST status route answers (HTTP status, body); set per-test. */
+    private volatile int restStatus = 200;
+    private volatile String restBody = "{\"found\":false,\"account\":null}";
+    private final List<String> restPaths = new ArrayList<>();
+    /** The broadcast result (code, log); set per-test. */
+    private volatile String broadcastResult = "{\"code\":0,\"hash\":\"DEADBEEF\",\"log\":\"\"}";
 
     @BeforeEach
     void start() throws IOException {
         broadcastTxs.clear();
         rpcMethods.clear();
+        restPaths.clear();
+        PqcDx.clearPqcStatusCache();
         server = HttpServer.create(new InetSocketAddress("127.0.0.1", 0), 0);
+        server.createContext(
+                "/qorechain/pqc/v1/account/",
+                ex -> {
+                    restPaths.add(ex.getRequestURI().getPath());
+                    byte[] bytes = restBody.getBytes(StandardCharsets.UTF_8);
+                    ex.getResponseHeaders().add("content-type", "application/json");
+                    ex.sendResponseHeaders(restStatus, bytes.length);
+                    ex.getResponseBody().write(bytes);
+                    ex.close();
+                });
         server.createContext(
                 "/",
                 ex -> {
@@ -62,7 +81,7 @@ class PqcDxTest {
                         broadcastTxs.add(java.util.Base64.getDecoder().decode(txB64));
                         respond(
                                 ex,
-                                "{\"jsonrpc\":\"2.0\",\"id\":1,\"result\":{\"code\":0,\"hash\":\"DEADBEEF\",\"log\":\"\"}}");
+                                "{\"jsonrpc\":\"2.0\",\"id\":1,\"result\":" + broadcastResult + "}");
                     } else {
                         // qor_getPQCKeyStatus
                         respond(
@@ -132,12 +151,10 @@ class PqcDxTest {
     }
 
     @Test
-    void getPqcStatusDegradesGracefullyOnEmptyResult() {
+    void getPqcStatusRefusesAnEmptyAnswer() {
+        // No answer is not "not registered": that reading re-registers known keys.
         statusResultJson = "{}";
-        PqcDx.PqcStatus st = PqcDx.getPqcStatus(qor(), "qor1addr");
-        assertFalse(st.registered);
-        assertEquals(PqcAlgorithm.ALGORITHM_UNSPECIFIED, st.algorithmId);
-        assertNull(st.pubkey);
+        assertThrows(IllegalStateException.class, () -> PqcDx.getPqcStatus(qor(), "qor1addr"));
     }
 
     // ---- ensurePqcRegistered ----
@@ -178,14 +195,65 @@ class PqcDxTest {
     }
 
     @Test
-    void ensureBroadcastsUnconditionallyWhenNoStatusSource() throws Exception {
-        // No QorClient passed => no pre-flight read; relies on chain idempotency.
+    void ensureRefusesToRegisterBlind() {
         PqcKeypair kp = Pqc.generatePqcKeypair(new byte[32]);
+        assertThrows(
+                IllegalStateException.class,
+                () -> PqcDx.ensurePqcRegistered(signer(kp), new Broadcaster(baseUrl), null, null));
+        assertEquals(0, broadcastTxs.size());
+    }
+
+    @Test
+    void ensureRegistersWithoutCheckOnlyWhenForced() {
+        PqcDx.EnsureOptions o = new PqcDx.EnsureOptions();
+        o.force = true;
         PqcDx.EnsureResult r =
-                PqcDx.ensurePqcRegistered(signer(kp), new Broadcaster(baseUrl), null, null);
+                PqcDx.ensurePqcRegistered(
+                        signer(Pqc.generatePqcKeypair(new byte[32])), new Broadcaster(baseUrl), null, o);
         assertFalse(r.alreadyRegistered);
         assertEquals(1, broadcastTxs.size());
-        assertFalse(rpcMethods.contains("qor_getPQCKeyStatus"));
+    }
+
+    @Test
+    void ensureChecksOverRestAndCachesAPositiveAnswer() {
+        restBody = "{\"found\":true,\"account\":{\"public_key\":\"AQID\"}}";
+        PqcDx.Signer s = signer(Pqc.generatePqcKeypair(new byte[32]));
+        s.restUrl = baseUrl + "/";
+        assertTrue(PqcDx.ensurePqcRegistered(s, new Broadcaster(baseUrl), null, null).alreadyRegistered);
+        assertTrue(PqcDx.ensurePqcRegistered(s, new Broadcaster(baseUrl), null, null).alreadyRegistered);
+        assertEquals(0, broadcastTxs.size());
+        assertEquals(List.of("/qorechain/pqc/v1/account/" + s.sender), restPaths);
+    }
+
+    @Test
+    void ensureRegistersOverRestWhenNotFound() {
+        PqcDx.Signer s = signer(Pqc.generatePqcKeypair(new byte[32]));
+        s.restUrl = baseUrl;
+        assertFalse(PqcDx.ensurePqcRegistered(s, new Broadcaster(baseUrl), null, null).alreadyRegistered);
+        assertEquals(1, broadcastTxs.size());
+    }
+
+    @Test
+    void ensureNeverRegistersOnAnUnclearAnswer() {
+        restStatus = 501;
+        restBody = "{\"code\":12,\"message\":\"Not Implemented\"}";
+        PqcDx.Signer s = signer(Pqc.generatePqcKeypair(new byte[32]));
+        s.restUrl = baseUrl;
+        IllegalStateException e =
+                assertThrows(
+                        IllegalStateException.class,
+                        () -> PqcDx.ensurePqcRegistered(s, new Broadcaster(baseUrl), null, null));
+        assertTrue(e.getMessage().contains("cannot tell"));
+        assertTrue(restPaths.size() >= 2, "retried before giving up");
+        assertEquals(0, broadcastTxs.size());
+    }
+
+    @Test
+    void ensureTreatsAlreadyRegisteredRefusalAsSuccess() {
+        broadcastResult = "{\"code\":7,\"codespace\":\"pqc\",\"hash\":\"AB\",\"log\":\"PQC account already registered\"}";
+        PqcDx.Signer s = signer(Pqc.generatePqcKeypair(new byte[32]));
+        s.restUrl = baseUrl;
+        assertTrue(PqcDx.ensurePqcRegistered(s, new Broadcaster(baseUrl), null, null).alreadyRegistered);
     }
 
     @Test

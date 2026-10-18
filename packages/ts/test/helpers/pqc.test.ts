@@ -4,6 +4,7 @@ import {
   isPqcRegistered,
   getPqcStatus,
   ensurePqcRegistered,
+  clearPqcStatusCache,
   buildRegisterPqcKeyMsg,
   migratePqcKey,
   migrateToHybrid,
@@ -57,11 +58,14 @@ describe("getPqcStatus / isPqcRegistered", () => {
     expect(status.pubkey).toBe("0x1234");
   });
 
-  it("treats an unregistered / empty response as not registered", async () => {
+  it("reads an explicit registered: false as not registered", async () => {
     const { qor } = fakeQor({ registered: false });
     expect(await isPqcRegistered(qor, ADDR)).toBe(false);
+  });
+
+  it("refuses to read an empty answer as 'not registered'", async () => {
     const { qor: nullQor } = fakeQor(null);
-    expect(await isPqcRegistered(nullQor, ADDR)).toBe(false);
+    await expect(isPqcRegistered(nullQor, ADDR)).rejects.toThrow(/cannot tell/);
   });
 
   it("accepts a source exposing `.qor` (composed client)", async () => {
@@ -135,12 +139,71 @@ describe("ensurePqcRegistered", () => {
     expect(v.publicKey).toEqual(kp.publicKey);
   });
 
-  it("broadcasts unconditionally when no status source is provided", async () => {
+  it("refuses to register blind when it has no way to check", async () => {
     const { tx, signAndBroadcast } = fakeTx();
     const kp = generatePqcKeypair();
-    const res = await ensurePqcRegistered(tx, { pqcKeypair: kp });
+    await expect(ensurePqcRegistered(tx, { pqcKeypair: kp })).rejects.toThrow(/pass `rest`/);
+    expect(signAndBroadcast).not.toHaveBeenCalled();
+  });
+
+  it("registers without a check only when forced", async () => {
+    const { tx, signAndBroadcast } = fakeTx();
+    const res = await ensurePqcRegistered(tx, { pqcKeypair: generatePqcKeypair(), force: true });
     expect(res.alreadyRegistered).toBe(false);
     expect(signAndBroadcast).toHaveBeenCalledOnce();
+  });
+
+  it("checks over REST (singular route, `found`) and skips a registered key", async () => {
+    clearPqcStatusCache();
+    const { tx, signAndBroadcast } = fakeTx();
+    const fetch = vi.fn(async () => ({
+      ok: true,
+      status: 200,
+      json: async () => ({ found: true, account: { address: ADDR, public_key: "AAAA" } }),
+    }));
+    const res = await ensurePqcRegistered(tx, { pqcKeypair: generatePqcKeypair(), rest: "https://lcd/", fetch });
+    expect(res.alreadyRegistered).toBe(true);
+    expect(signAndBroadcast).not.toHaveBeenCalled();
+    expect(fetch).toHaveBeenCalledWith(`https://lcd/qorechain/pqc/v1/account/${ADDR}`);
+    // A positive answer is cached: the next call asks nobody.
+    await ensurePqcRegistered(tx, { pqcKeypair: generatePqcKeypair(), rest: "https://lcd", fetch });
+    expect(fetch).toHaveBeenCalledOnce();
+  });
+
+  it("registers over REST when the chain says found: false", async () => {
+    clearPqcStatusCache();
+    const { tx, signAndBroadcast } = fakeTx();
+    const fetch = vi.fn(async () => ({ ok: true, status: 200, json: async () => ({ found: false, account: null }) }));
+    const res = await ensurePqcRegistered(tx, { pqcKeypair: generatePqcKeypair(), rest: "https://lcd", fetch });
+    expect(res.alreadyRegistered).toBe(false);
+    expect(signAndBroadcast).toHaveBeenCalledOnce();
+  });
+
+  it("never reads an unclear answer as 'not registered': retries, then throws", async () => {
+    clearPqcStatusCache();
+    const { tx, signAndBroadcast } = fakeTx();
+    for (const answer of [
+      { ok: false, status: 501, json: async () => ({ code: 12 }) },
+      { ok: true, status: 200, json: async () => ({ registered: false }) },
+    ]) {
+      const fetch = vi.fn(async () => answer);
+      await expect(
+        ensurePqcRegistered(tx, { pqcKeypair: generatePqcKeypair(), rest: "https://lcd", fetch }),
+      ).rejects.toThrow(/cannot tell/);
+      expect(fetch).toHaveBeenCalledTimes(2);
+    }
+    expect(signAndBroadcast).not.toHaveBeenCalled();
+  });
+
+  it("treats the chain's 'already registered' refusal as success", async () => {
+    const tx = {
+      senderAddress: ADDR,
+      signAndBroadcast: vi.fn(async () => {
+        throw Object.assign(new Error("tx failed"), { code: 7, codespace: "pqc", rawLog: "PQC account already registered" });
+      }),
+    } as unknown as TxClient;
+    const res = await ensurePqcRegistered(tx, { pqcKeypair: generatePqcKeypair(), force: true });
+    expect(res.alreadyRegistered).toBe(true);
   });
 
   it("honors a pre-read status to avoid a redundant round-trip", async () => {
