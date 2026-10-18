@@ -95,8 +95,8 @@ var bridge = new BridgeQueryClient("http://localhost:26657");
 var chains = bridge.chainConfigs();
 ```
 
-See the [multilayer](../../docs/docs/guides/multilayer.md) and
-[rollups](../../docs/docs/guides/rollups.md) guides.
+See the [multilayer](https://github.com/qorechain/qorechain-sdk/blob/main/docs/docs/guides/multilayer.md) and
+[rollups](https://github.com/qorechain/qorechain-sdk/blob/main/docs/docs/guides/rollups.md) guides.
 
 ## AI pre-flight risk scoring (v0.5.0)
 
@@ -125,7 +125,7 @@ EvmPrecompiles.Anomaly anomaly =
         EvmPrecompiles.aiAnomalyCheck(rpc, "0xSender", java.math.BigInteger.valueOf(1_000_000));
 ```
 
-See the [AI pre-flight](../../docs/docs/guides/ai-preflight.md) guide.
+See the [AI pre-flight](https://docs.qorechain.io/sdk/guides/ai-preflight) guide.
 
 ## Unified cross-VM calls (v0.5.0)
 
@@ -180,7 +180,7 @@ for (CrossVMClient.CallResponse r : CrossVMClient.decodeCallResponses(result)) {
 from the execution context, not from what the caller claims to be. It is retained so
 older clients are not rejected.
 
-See the [cross-VM](../../docs/docs/guides/cross-vm.md) guide.
+See the [cross-VM](https://docs.qorechain.io/sdk/guides/cross-vm) guide.
 
 ## Quantum-safe DX (v0.5.0)
 
@@ -213,7 +213,7 @@ PqcDx.HybridSendPath path =
 PqcDx.migratePqcKey(signer, broadcaster, new PqcDx.MigrateOptions());
 ```
 
-See the [quantum-safe](../../docs/docs/guides/quantum-safe.md) guide.
+See the [quantum-safe](https://docs.qorechain.io/sdk/guides/quantum-safe) guide.
 
 ## Hybrid sign-bytes v1 / v2 (v0.8.1 / chain v3.2.0, testnet v3.1.98)
 
@@ -453,7 +453,7 @@ SignEth.Built built = SignEth.signHybridEth(opts);
 > key: it must be real secret entropy, never a wallet signature or any value a
 > third party can request.
 
-See the [unified-wallet](../../docs/docs/guides/unified-wallet.md) guide.
+See the [unified-wallet](https://github.com/qorechain/qorechain-sdk/blob/main/docs/docs/guides/unified-wallet.md) guide.
 
 ## Authenticator lanes (v0.7.0 / chain v3.1.85)
 
@@ -521,7 +521,7 @@ Authenticator.RotationResult rotation =
 TypedMessage rotateMsg = rotation.msg; // broadcast BY the account, hybrid-cosigned
 ```
 
-See the [authenticators](../../docs/docs/guides/authenticators.md) guide.
+See the [authenticators](https://docs.qorechain.io/sdk/guides/authenticators) guide.
 
 ## Regenerating the protobuf classes
 

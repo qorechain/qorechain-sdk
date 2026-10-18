@@ -74,6 +74,15 @@ after each network release is tagged.
   (Java: `EnsureOptions.force`).
 - **The PQC account route was wrong** in every SDK: `/qorechain/pqc/v1/accounts/`
   (plural, answered 501). It is `/qorechain/pqc/v1/account/` (singular).
+- **TS `getPqcStatus` / `isPqcRegistered` now read over REST when the source has
+  `.rest`** (the composed client does), as the documentation describes. An
+  unclear answer throws instead of reporting "not registered".
+- **The TS `VERSION` constant said 0.8.0 in 0.8.3.** It now matches the
+  package, and a test keeps the two in sync.
+- **Package READMEs:** the AI pre-flight precompiles are marked as not available
+  on the public networks today (the chain lists no active static precompiles).
+  The links to the guides were relative paths that do not ship in the packages;
+  they now point to the documentation site or GitHub.
 
 - **Documentation of `MsgExecuteEVM.nonce`.** It is the linked key's
   authenticator sequence (a per-key counter), not the account's EVM nonce. The

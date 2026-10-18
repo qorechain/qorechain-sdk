@@ -60,15 +60,47 @@ export const PQC_KEY_STATUS_PRECOMPILE_ADDRESS =
   "0x0000000000000000000000000000000000000A02";
 
 /**
- * A source for PQC status reads: either a {@link QorClient} directly, or any
- * object exposing one as `.qor` (e.g. the composed `QoreChainClient`).
+ * A source for PQC status reads: a {@link QorClient} directly, or any object
+ * exposing one as `.qor` and/or a REST client as `.rest` (e.g. the composed
+ * `QoreChainClient`). When `.rest` is present the status is read over REST,
+ * the route every public endpoint serves.
  */
-export type PqcStatusSource = QorClient | { qor: QorClient };
+export type PqcStatusSource =
+  | QorClient
+  | { qor?: QorClient; rest?: { getPqcAccount<T = Record<string, unknown>>(address: string): Promise<T> } };
 
 /** Resolve the underlying {@link QorClient} from a {@link PqcStatusSource}. */
 function resolveQor(source: PqcStatusSource): QorClient {
   if ("qor" in source && source.qor) return source.qor;
   return source as QorClient;
+}
+
+/** Read the status through a REST client's `getPqcAccount` (singular route). */
+async function statusFromRest(
+  rest: { getPqcAccount<T = Record<string, unknown>>(address: string): Promise<T> },
+  address: string,
+): Promise<PqcStatus> {
+  let lastError: unknown;
+  for (let attempt = 0; attempt < 2; attempt++) {
+    try {
+      const body = await rest.getPqcAccount<Record<string, unknown> | null>(address);
+      if (body == null || typeof body.found !== "boolean") {
+        throw new Error('no "found" field in the answer');
+      }
+      if (!body.found) return { registered: false };
+      const account = (body.account ?? {}) as Record<string, unknown>;
+      const status: PqcStatus = { registered: true };
+      if (typeof account.public_key === "string") status.pubkey = account.public_key;
+      return status;
+    } catch (e) {
+      lastError = e;
+    }
+  }
+  throw new Error(
+    `cannot tell whether ${address} has a registered PQC key: ${
+      lastError instanceof Error ? lastError.message : String(lastError)
+    }`,
+  );
 }
 
 /** Normalized PQC registration status for an address. */
@@ -112,6 +144,12 @@ export async function getPqcStatus(
   source: PqcStatusSource,
   address: string,
 ): Promise<PqcStatus> {
+  // Prefer REST when the source has it: public endpoints serve
+  // /qorechain/pqc/v1/account/{address} but not the qor_* JSON-RPC namespace.
+  const rest = "rest" in source ? source.rest : undefined;
+  if (rest && typeof rest.getPqcAccount === "function") {
+    return statusFromRest(rest, address);
+  }
   const qor = resolveQor(source);
   const raw = await qor.getPqcKeyStatus<Record<string, unknown>>(address);
   // No answer is not "not registered": reading it that way is what makes a

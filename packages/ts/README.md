@@ -24,9 +24,10 @@ network — a quantum-safe, triple-VM Layer 1 with native, EVM, and SVM accounts
 - **Unified cross-VM calls** — `createCrossVMClient` with atomic triple-VM
   transactions over `MsgCrossVMCall` (v0.5.0).
 - **AI pre-flight** — on-chain risk/anomaly scoring (`simulateWithRiskScore`)
-  over the EVM precompiles before you sign (v0.5.0).
+  over the EVM precompiles before you sign (v0.5.0). Not available on the
+  public networks today; see below.
 - **React kit** — hooks + connect kit in
-  [`@qorechain/react`](../react/README.md).
+  [`@qorechain/react`](https://github.com/qorechain/qorechain-sdk/blob/main/packages/react/README.md).
 
 ## Install
 
@@ -318,10 +319,16 @@ New in chain v3.1.83: `amm`, `license`, and `abstractaccount` typed query client
 the `multilayer` `anchor` / `anchors` state-anchor queries; and abstractaccount
 `registerAuthenticator` / `revokeAuthenticator` message composers.
 
-See the [multilayer](../../docs/docs/guides/multilayer.md) and
-[rollups](../../docs/docs/guides/rollups.md) guides.
+See the [multilayer](https://github.com/qorechain/qorechain-sdk/blob/main/docs/docs/guides/multilayer.md) and
+[rollups](https://github.com/qorechain/qorechain-sdk/blob/main/docs/docs/guides/rollups.md) guides.
 
 ### AI pre-flight risk scoring (v0.5.0)
+
+> **Not available on the public networks today.** The AI precompiles are not
+> active on `qorechain-vladi` or `qorechain-diana`: the chain's
+> `/cosmos/evm/vm/v1/params` lists no active static precompiles, and a call to
+> them returns empty data (the helpers then throw). Check that list before you
+> rely on them.
 
 QoreChain exposes an on-chain AI risk/anomaly model to any dApp through plain
 `eth_call`s, so you can get an advisory verdict on a transaction **before** it is
@@ -352,7 +359,7 @@ const risk = await aiRiskScore(evm, "0xCalldata");      // { score, level }
 const anomaly = await aiAnomalyCheck(evm, "0xSender", 1_000_000n); // { anomalyScore, flagged }
 ```
 
-See the [AI pre-flight](../../docs/docs/guides/ai-preflight.md) guide.
+See the [AI pre-flight](https://docs.qorechain.io/sdk/guides/ai-preflight) guide.
 
 ### Unified cross-VM calls (v0.5.0)
 
@@ -391,7 +398,7 @@ const status = await xvm.getMessage("42");
 ```
 
 `targetVm` is one of `"evm" | "cosmwasm" | "svm"` (see `VM_TYPES`). See the
-[cross-VM](../../docs/docs/guides/cross-vm.md) guide.
+[cross-VM](https://docs.qorechain.io/sdk/guides/cross-vm) guide.
 
 ### Quantum-safe DX (v0.5.0)
 
@@ -425,7 +432,7 @@ const path = await migrateToHybrid(tx, { pqcKeypair, rest: "https://api.qore.hos
 await migratePqcKey({ tx, /* new key material … */ });
 ```
 
-See the [quantum-safe](../../docs/docs/guides/quantum-safe.md) guide.
+See the [quantum-safe](https://docs.qorechain.io/sdk/guides/quantum-safe) guide.
 
 ### Unified eth-native wallet (v0.6.0)
 
@@ -480,7 +487,7 @@ derived helpers `unifiedAccountFromPhantomSignature` / `connectPhantomUnified`
 were removed in v0.8.0 for exactly that reason and now throw.) To let an
 external wallet key act for an account, use the authenticator lanes below.
 
-See the [unified-wallet](../../docs/docs/guides/unified-wallet.md) guide.
+See the [unified-wallet](https://github.com/qorechain/qorechain-sdk/blob/main/docs/docs/guides/unified-wallet.md) guide.
 
 ### Cross-VM message reads
 
@@ -569,7 +576,7 @@ const { msg: rotateMsg } = rotatePqcKeyMsgFromMnemonic({
 });
 ```
 
-See the [Authenticators guide](../../docs/docs/guides/authenticators.md) for the
+See the [Authenticators guide](https://docs.qorechain.io/sdk/guides/authenticators) for the
 full lifecycle (register → spend → rotate → revoke).
 
 ## Network reference

@@ -383,8 +383,8 @@ Chain v3.1.83 adds `Amm()`, `License()`, and `AbstractAccount()` typed query
 clients, the `multilayer` `Anchor` / `Anchors` state-anchor queries, and
 abstractaccount `RegisterAuthenticator` / `RevokeAuthenticator` message composers.
 
-See the [multilayer](../../docs/docs/guides/multilayer.md) and
-[rollups](../../docs/docs/guides/rollups.md) guides.
+See the [multilayer](https://github.com/qorechain/qorechain-sdk/blob/main/docs/docs/guides/multilayer.md) and
+[rollups](https://github.com/qorechain/qorechain-sdk/blob/main/docs/docs/guides/rollups.md) guides.
 
 ### AI pre-flight risk scoring (v0.5.0)
 
@@ -411,7 +411,7 @@ score, level, _ := ec.AIRiskScore(calldata)
 anomalyScore, flagged, _ := ec.AIAnomalyCheck("0xSender", big.NewInt(1_000_000))
 ```
 
-See the [AI pre-flight](../../docs/docs/guides/ai-preflight.md) guide.
+See the [AI pre-flight](https://docs.qorechain.io/sdk/guides/ai-preflight) guide.
 
 ### Unified cross-VM calls (v0.5.0)
 
@@ -475,7 +475,7 @@ The field is still sent and still defaults to `evm` so older nodes keep working;
 setting it changes nothing on a current chain and can never claim a lane the
 caller is not on.
 
-See the [cross-VM](../../docs/docs/guides/cross-vm.md) guide.
+See the [cross-VM](https://docs.qorechain.io/sdk/guides/cross-vm) guide.
 
 ### Quantum-safe DX (v0.5.0)
 
@@ -500,7 +500,7 @@ rotate, _ := pdx.MigratePQCKey(pqcdx.MigrateOptions{ /* new key */ })
 _ = (registered, status, ensure, hybrid, rotate)
 ```
 
-See the [quantum-safe](../../docs/docs/guides/quantum-safe.md) guide.
+See the [quantum-safe](https://docs.qorechain.io/sdk/guides/quantum-safe) guide.
 
 ### Unified eth-native wallet (v0.6.0)
 
@@ -553,7 +553,7 @@ seed from a wallet signature or any other value a third party can request.
 > `MsgExecuteCosmos` / `MsgExecuteEVM`. Any account previously derived this way
 > must be treated as exposed: move its funds.
 
-See the [unified-wallet](../../docs/docs/guides/unified-wallet.md) guide.
+See the [unified-wallet](https://github.com/qorechain/qorechain-sdk/blob/main/docs/docs/guides/unified-wallet.md) guide.
 
 ## Authenticator lanes (v0.7.0 / chain v3.1.85)
 
@@ -627,7 +627,7 @@ res, _ := authenticator.RotatePQCKeyMsgFromMnemonic(
 _ = res.Msg // *pqcv1.MsgRotatePQCKey, broadcast BY the account, hybrid-cosigned
 ```
 
-See the [authenticators](../../docs/docs/guides/authenticators.md) guide.
+See the [authenticators](https://docs.qorechain.io/sdk/guides/authenticators) guide.
 
 ## Development
 
