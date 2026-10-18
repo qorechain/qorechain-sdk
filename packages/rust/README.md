@@ -380,8 +380,8 @@ let _ = (register, route, create, withdraw, layer, layers, stats, rollup);
 # }
 ```
 
-See the [multilayer](../../docs/docs/guides/multilayer.md) and
-[rollups](../../docs/docs/guides/rollups.md) guides.
+See the [multilayer](https://github.com/qorechain/qorechain-sdk/blob/main/docs/docs/guides/multilayer.md) and
+[rollups](https://github.com/qorechain/qorechain-sdk/blob/main/docs/docs/guides/rollups.md) guides.
 
 ### AI pre-flight risk scoring (v0.5.0)
 
@@ -414,7 +414,7 @@ let _ = (risk, anomaly);
 # }
 ```
 
-See the [AI pre-flight](../../docs/docs/guides/ai-preflight.md) guide.
+See the [AI pre-flight](https://docs.qorechain.io/sdk/guides/ai-preflight) guide.
 
 ### Unified cross-VM calls (v0.5.0)
 
@@ -450,7 +450,7 @@ let _ = (res, atomic, built, status);
 
 A `CrossVm` is a struct literal carrying the signer's key material, chain id,
 account number / sequence, fee, REST URL, and an optional `QorClient` for
-`get_message`. See the [cross-VM](../../docs/docs/guides/cross-vm.md) guide.
+`get_message`. See the [cross-VM](https://docs.qorechain.io/sdk/guides/cross-vm) guide.
 
 **Immediate vs queued (chain v3.1.97).** A call now executes **inside the
 transaction** by default and the chain returns the callee's answer.
@@ -505,7 +505,7 @@ sign-bytes form; the sync `build_hybrid` needs an explicit `V1`/`V2` on
 `migrate_pqc_key` rotates an account's on-chain PQC key (`MsgMigratePQCKey`);
 both key signatures cover `signbytes::migration_sign_bytes` in the form the chain
 verifies (v1 binds no public keys, v2 binds both). See
-the [quantum-safe](../../docs/docs/guides/quantum-safe.md) guide.
+the [quantum-safe](https://docs.qorechain.io/sdk/guides/quantum-safe) guide.
 
 ### Unified eth-native wallet (v0.6.0)
 
@@ -553,7 +553,7 @@ let _ = (account, from_seed);
 > external signature authorizes a spend instead of becoming key material. Any
 > account previously derived this way must be treated as exposed — move its funds.
 
-See the [unified-wallet](../../docs/docs/guides/unified-wallet.md) guide.
+See the [unified-wallet](https://github.com/qorechain/qorechain-sdk/blob/main/docs/docs/guides/unified-wallet.md) guide.
 
 ### WebSocket subscriptions
 
@@ -645,7 +645,7 @@ let _ = rotation.msg; // MsgRotatePQCKey, broadcast BY the account, hybrid-cosig
 # fn phantom_sign(_d: &[u8; 32]) -> Vec<u8> { vec![] }
 ```
 
-See the [authenticators](../../docs/docs/guides/authenticators.md) guide.
+See the [authenticators](https://docs.qorechain.io/sdk/guides/authenticators) guide.
 
 ## EVM authorisation window (v0.8.2 / chain v3.2.0)
 
