@@ -527,11 +527,15 @@ both keys sign).
 
 **NONCE semantics:**
 
-- `MsgExecuteEVM.nonce` = the account's **current EVM nonce** (the relayer is a
-  different account than the owner, so its envelope does **not** bump the
-  account's nonce — pass the value as-is, do **not** `+1`).
+- `MsgExecuteEVM.nonce` = the linked key's **authenticator sequence**: a counter the
+  chain keeps in its state for each `(account, linked key)`, starting at 0 and
+  incremented by every successful execution. It is **not** the account's EVM
+  nonce (`eth_getTransactionCount`). The chain has no query for it yet (a
+  read-only one is planned), so mirror the chain: 0 for a newly linked key, +1
+  after each execution the chain accepts; abstractaccount code 11 means the
+  value you sent is not the chain's.
 - `MsgExecuteCosmos.nonce` = the **per-authenticator sequence** for
-  `(account, pubkey)`, a store counter distinct from the account's own sequence.
+  `(account, pubkey)`: the same kind of counter, kept per linked key.
 
 **Wallet builders** sign the digest and return a ready-to-broadcast message:
 `buildPhantomExecuteEvm` / `buildPhantomExecuteCosmos` (ed25519),
@@ -557,7 +561,8 @@ import {
 } from "@qorechain/sdk";
 
 // Phantom ed25519 authenticator spends from the canonical account; the relayer
-// broadcasts and pays. `nonce` is the account's CURRENT EVM nonce (no +1).
+// broadcasts and pays. `nonce` is the linked key's authenticator sequence
+// (0 for a newly linked key, +1 after each accepted execution) — NOT the EVM nonce.
 const execMsg = await buildPhantomExecuteEvm({
   wallet, // { publicKey, signMessage }
   relayer: "qor1relayer…",
@@ -565,7 +570,7 @@ const execMsg = await buildPhantomExecuteEvm({
   account: "qor1canonical…",
   to: "0xRecipient…",
   value: "1000000000000000000", // 1 QOR in aqor (wei)
-  nonce: await client.qor.getTransactionCount("0xAccount…"),
+  nonce: authenticatorSequence, // tracked per linked key; see "NONCE semantics"
 });
 
 // One-shot: migrate a legacy shake256(mnemonic) key to the address-bound key.

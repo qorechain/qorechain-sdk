@@ -170,3 +170,20 @@ def test_update_authority_registered() -> None:
     assert "/qorechain.license.v1.MsgUpdateAuthority" in QORECHAIN_REGISTRY_TYPES
     m = msg.license.update_authority(authority="qor1gov", new_authority="qor1new")
     assert m.type_url == "/qorechain.license.v1.MsgUpdateAuthority"
+
+
+def test_legacy_derivation_refused_as_new_key() -> None:
+    from qorsdk.authenticator import rotate_pqc_key_msg_from_mnemonic
+
+    mnemonic = " ".join(["abandon"] * 11 + ["about"])
+    with pytest.raises(ValueError, match="deprecated for new keys"):
+        rotate_pqc_key_msg_from_mnemonic(
+            account=SENDER,
+            mnemonic=mnemonic,
+            chain_id="qorechain-diana",
+            old_derivation="adapter",
+            new_derivation="bridge",
+        )
+    assert rotate_pqc_key_msg_from_mnemonic(
+        account=SENDER, mnemonic=mnemonic, chain_id="qorechain-diana"
+    )

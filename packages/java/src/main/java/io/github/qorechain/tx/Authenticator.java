@@ -325,6 +325,11 @@ public final class Authenticator {
      * {@code ML-DSA-87 keygen(shake256(utf8(mnemonic), 32))}. This is how a backend
      * (chain-bridge / faucet-api) registered a key from a bare mnemonic, WITHOUT the
      * SDK's address binding.
+     *
+     * <p><b>Deprecated for new keys:</b> one mnemonic yields one key for every
+     * account. Keep using it only to recover, or rotate away from, a key that was
+     * registered this way ({@link #rotatePqcKeyMsgFromMnemonic}, which always
+     * rotates to the address-bound derivation).
      */
     public static PqcKeypair derivePqcLegacy(String mnemonic) {
         return Pqc.generatePqcKeypair(Hashing.shake256(utf8(mnemonic), 32));

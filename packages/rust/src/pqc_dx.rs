@@ -188,7 +188,22 @@ impl PqcDx {
             });
         }
 
-        let built = self.build_register()?;
+        // From chain v3.2.3 the registration carries a proof that the registrant
+        // holds the key. Sign it once the network has applied v3.2.3, never
+        // before: a node below it refuses the whole transaction for the field.
+        let rest = crate::query::RestClient::new(self.rest_url.clone());
+        let applied = crate::upgrades::is_upgrade_applied(
+            &rest,
+            crate::upgrades::CHAIN_UPGRADE_V3_2_3,
+            Some(&self.rest_url),
+        )
+        .await?;
+        let proof = if applied {
+            self.proof_of_possession()?
+        } else {
+            Vec::new()
+        };
+        let built = self.build_register_with_proof_of_possession(proof)?;
         let resp = broadcast(&self.rest_url, &built.tx_raw_bytes, self.mode).await?;
         if is_already_registered(&resp) {
             return Ok(EnsureResult {

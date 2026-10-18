@@ -243,9 +243,24 @@ fn rotate_from_mnemonic_rejects_no_op() {
         "abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon about";
     let account = VEC_COSMOS;
     let mut opts = RotateFromMnemonicOptions::new(account, mnemonic, "qorechain-diana");
-    opts.new_derivation = opts.old_derivation; // bridge -> bridge
+    opts.old_derivation = opts.new_derivation; // adapter -> adapter
     let err = rotate_pqc_key_msg_from_mnemonic(&opts).unwrap_err();
     assert!(err.to_string().contains("no-op"), "got: {err}");
+}
+
+/// The legacy derivation is deprecated for NEW keys; it stays valid as the old key.
+#[test]
+fn rotate_from_mnemonic_refuses_a_new_legacy_key() {
+    let mnemonic =
+        "abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon about";
+    let mut opts = RotateFromMnemonicOptions::new(VEC_COSMOS, mnemonic, "qorechain-diana");
+    opts.old_derivation = "adapter";
+    opts.new_derivation = "bridge";
+    let err = rotate_pqc_key_msg_from_mnemonic(&opts).unwrap_err();
+    assert!(
+        err.to_string().contains("deprecated for new keys"),
+        "got: {err}"
+    );
 }
 
 /// An unknown derivation scheme is rejected.

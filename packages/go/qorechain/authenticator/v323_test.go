@@ -34,3 +34,14 @@ func TestEVMAuthDigestMatchesChain(t *testing.T) {
 		t.Fatal(v)
 	}
 }
+
+func TestRotationRefusesANewLegacyKey(t *testing.T) {
+	const mnemonic = "abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon about"
+	const acct = "qor1hkkxx5jmmw02wcz26c74lsp74qysj6h495vv0k"
+	if _, err := RotatePQCKeyMsgFromMnemonic(acct, mnemonic, "qorechain-diana", 1, DerivationCanonical, DerivationLegacy); err == nil {
+		t.Fatal("a new legacy key must be refused")
+	}
+	if _, err := RotatePQCKeyMsgFromMnemonic(acct, mnemonic, "qorechain-diana", 1, DerivationLegacy, DerivationCanonical); err != nil {
+		t.Fatalf("legacy -> canonical must still work: %v", err)
+	}
+}

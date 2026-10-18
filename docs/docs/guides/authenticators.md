@@ -109,8 +109,9 @@ domain-separated, replay-bound **sign-bytes** digest.
                                                                   spend FROM canonical account
 ```
 
-The relayer is a **different** account than the owner, so it does not bump the
-account's EVM nonce.
+The relayer is a **different** account than the owner. The nonce the
+authenticator signs is the linked key's own sequence, kept by the chain (see
+[Nonces](#nonces)), not the account's EVM nonce.
 
 ## The three lanes
 

@@ -342,6 +342,25 @@ public final class PqcDx {
             return new EnsureResult(true, null, null);
         }
 
+        // From chain v3.2.3 the registration carries a proof that the registrant
+        // holds the key. Sign it once the network has applied v3.2.3, never
+        // before: a node below it refuses the whole transaction for the field.
+        if ((o.proofOfPossession == null || o.proofOfPossession.length == 0)
+                && signer.restUrl != null
+                && !signer.restUrl.isEmpty()
+                && io.github.qorechain.query.ChainUpgrades.isApplied(
+                        new io.github.qorechain.query.RestClient(signer.restUrl),
+                        io.github.qorechain.query.ChainUpgrades.V3_2_3,
+                        signer.restUrl)) {
+            EnsureOptions withProof = new EnsureOptions();
+            withProof.ecdsaPubkey = o.ecdsaPubkey;
+            withProof.keyType = o.keyType;
+            withProof.status = o.status;
+            withProof.force = o.force;
+            withProof.proofOfPossession =
+                    KeyIntegrity.signProofOfPossession(signer.chainId, signer.sender, signer.pqcKeypair);
+            o = withProof;
+        }
         TypedMessage message = buildRegisterPqcKeyMsg(signer, o);
 
         NativeTx.Options txOpts = new NativeTx.Options();

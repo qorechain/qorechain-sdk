@@ -168,3 +168,18 @@ describe("decodeTxError: chain v3.2.3", () => {
     expect(qorechainRegistry().lookupType("/qorechain.license.v1.MsgUpdateAuthority")).toBeDefined();
   });
 });
+
+describe("legacy (bridge) derivation", () => {
+  it("is refused as the NEW key of a rotation, still accepted as the old one", async () => {
+    const { rotatePqcKeyMsgFromMnemonic } = await import("../../src/wallet/authenticator");
+    const base = {
+      mnemonic: "abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon about",
+      account: SENDER,
+      chainId: "qorechain-diana",
+    };
+    expect(() => rotatePqcKeyMsgFromMnemonic({ ...base, oldDerivation: "adapter", newDerivation: "bridge" })).toThrow(
+      /deprecated for new keys/,
+    );
+    expect(rotatePqcKeyMsgFromMnemonic(base).msg.typeUrl).toBe("/qorechain.pqc.v1.MsgRotatePQCKey");
+  });
+});

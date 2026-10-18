@@ -227,6 +227,10 @@ pub const DERIVATION_CANONICAL: &str = "adapter";
 /// Derives the LEGACY (chain-bridge) ML-DSA-87 keypair for a mnemonic:
 /// `keygen(shake256(mnemonic, 32))`. This is the key a backend (chain-bridge /
 /// faucet-api) registered before the address-bound derivation existed.
+///
+/// **Deprecated for new keys:** it is not bound to the account, so one mnemonic
+/// yields one key for every account. Keep using it only to recover, or rotate
+/// away from, a key registered this way ([`rotate_pqc_key_msg_from_mnemonic`]).
 pub fn derive_pqc_legacy(mnemonic: &str) -> PqcKeypair {
     let seed = shake256_32(mnemonic.as_bytes());
     pqc_keypair_from_seed(&seed)
@@ -372,6 +376,14 @@ pub fn rotate_pqc_key_msg_from_mnemonic(
     // lower-case bech32 form, so an upper-case or 0x input builds the same message
     // the canonical input does (matching the Go SDK).
     let account = canonical_account(opts.account)?;
+    // The legacy derivation is deprecated for NEW keys (as in the chain CLI); it
+    // stays valid as the OLD key of a rotation.
+    if opts.new_derivation == DERIVATION_LEGACY || opts.new_derivation == "mnemonic-only" {
+        return Err(Error::Pqc(format!(
+            "the legacy (bridge) derivation is deprecated for new keys: rotate to the address-bound \
+             derivation (\"{DERIVATION_CANONICAL}\"); a legacy key can still be the OLD key of a rotation"
+        )));
+    }
     let old_kp = derive_pqc_by_scheme(opts.old_derivation, &account, opts.mnemonic)?;
     let new_kp = derive_pqc_by_scheme(opts.new_derivation, &account, opts.mnemonic)?;
     if old_kp.public_key == new_kp.public_key {

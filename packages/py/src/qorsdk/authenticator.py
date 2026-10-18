@@ -311,7 +311,13 @@ def rotate_pqc_key_msg(
 
 
 def derive_pqc_legacy(mnemonic: str) -> PqcKeypair:
-    """Derive the LEGACY (chain-bridge) ML-DSA-87 keypair for a ``mnemonic``.
+    """Deprecated for new keys.
+
+    Not bound to the account, so one mnemonic yields one key for every account.
+    Keep using it only to recover, or rotate away from, a key that was
+    registered this way (:func:`rotate_pqc_key_msg_from_mnemonic`).
+
+    Derive the LEGACY (chain-bridge) ML-DSA-87 keypair for a ``mnemonic``.
 
     Legacy derivation = ``mldsa.keygen(shake256(utf8(mnemonic), 32))`` — the
     ``shake256(mnemonic)`` seed a backend (chain-bridge / faucet-api) used before
@@ -422,6 +428,12 @@ def rotate_pqc_key_msg_from_mnemonic(
     # message the canonical input does (matching the Go SDK).
     account = canonical_account(account)
     old_kp = _derive_pqc_by_scheme(old_derivation, account, mnemonic)
+    if new_derivation in (LEGACY_DERIVATION, "mnemonic-only"):
+        raise ValueError(
+            "the legacy (bridge) derivation is deprecated for new keys: rotate to the "
+            f'address-bound derivation ("{CANONICAL_DERIVATION}"). A legacy key can still be '
+            "the OLD key of a rotation."
+        )
     new_kp = _derive_pqc_by_scheme(new_derivation, account, mnemonic)
     if old_kp.public_key == new_kp.public_key:
         raise ValueError(

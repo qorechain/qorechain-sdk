@@ -22,6 +22,7 @@ from qorsdk import (
     ALGORITHM_DILITHIUM5,
     build_register_pqc_key,
     clear_pqc_status_cache,
+    clear_upgrade_cache,
     decode_any,
     derive_native_account,
     ensure_pqc_registered,
@@ -74,9 +75,14 @@ def _mock_broadcast():
     )
 
 
-def _mock_status(registered: bool):
-    """The REST status route ensure_pqc_registered reads (singular, ``found``)."""
+def _mock_status(registered: bool, v323_height: str = "0"):
+    """The REST status route ensure_pqc_registered reads (singular, ``found``),
+    and the v3.2.3 plan it checks before attaching a proof of possession."""
     clear_pqc_status_cache()
+    clear_upgrade_cache()
+    respx.get(f"{REST}/cosmos/upgrade/v1beta1/applied_plan/v3.2.3").mock(
+        return_value=httpx.Response(200, json={"height": v323_height})
+    )
     return respx.get(url__regex=rf"{REST}/qorechain/pqc/v1/account/.*").mock(
         return_value=httpx.Response(200, json={"found": registered, "account": None})
     )
@@ -475,3 +481,25 @@ def test_ensure_treats_already_registered_refusal_as_success():
     )
     res = ensure_pqc_registered(pqc_keypair=generate_pqc_keypair(), **kwargs)
     assert res == {"already_registered": True}
+
+
+# --- proof of possession at registration (chain v3.2.3) -----------------------
+
+
+def _registered_pop(v323_height: str) -> bytes:
+    account, kwargs = _ctx()
+    _mock_status(False, v323_height)
+    route = _mock_broadcast()
+    ensure_pqc_registered(pqc_keypair=generate_pqc_keypair(), **kwargs)
+    (register,) = _decoded_messages(route, REGISTER_TYPE_URL)
+    return bytes(register.proof_of_possession)
+
+
+@respx.mock
+def test_ensure_attaches_proof_of_possession_once_v323_is_applied():
+    assert len(_registered_pop("8003746")) == 4627
+
+
+@respx.mock
+def test_ensure_leaves_proof_of_possession_off_before_v323():
+    assert _registered_pop("0") == b""

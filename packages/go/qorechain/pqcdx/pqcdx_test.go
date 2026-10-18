@@ -16,6 +16,7 @@ import (
 	"github.com/qorechain/qorechain-sdk/packages/go/qorechain/messages"
 	"github.com/qorechain/qorechain-sdk/packages/go/qorechain/pqc"
 	pqcv1 "github.com/qorechain/qorechain-sdk/packages/go/qorechain/proto/qorechain/pqc/v1"
+	"github.com/qorechain/qorechain-sdk/packages/go/qorechain/query"
 	"github.com/qorechain/qorechain-sdk/packages/go/qorechain/tx"
 )
 
@@ -580,5 +581,57 @@ func TestEnsureTreatsAlreadyRegisteredAsSuccess(t *testing.T) {
 func TestGetPQCStatusRefusesAnEmptyAnswer(t *testing.T) {
 	if _, err := GetPQCStatus(&fakeQor{resp: json.RawMessage(`null`)}, "qor1x"); err == nil {
 		t.Fatal("an empty answer must not read as 'not registered'")
+	}
+}
+
+// ---- proof of possession at registration (chain v3.2.3) ----
+
+func registeredPoP(t *testing.T, v323Height string) []byte {
+	t.Helper()
+	ClearPQCStatusCache()
+	query.ClearUpgradeCache()
+	var bcast string
+	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		switch {
+		case strings.HasPrefix(r.URL.Path, "/qorechain/pqc/v1/account/"):
+			_, _ = w.Write([]byte(`{"found":false,"account":null}`))
+		case r.URL.Path == "/cosmos/upgrade/v1beta1/applied_plan/v3.2.3":
+			_, _ = w.Write([]byte(`{"height":"` + v323Height + `"}`))
+		case r.URL.Path == "/cosmos/tx/v1beta1/txs":
+			b, _ := io.ReadAll(r.Body)
+			bcast = string(b)
+			_, _ = w.Write([]byte(`{"tx_response":{"txhash":"ABC123","code":0}}`))
+		default:
+			_, _ = w.Write([]byte(`{"tx_response":{"txhash":"ABC123","code":0,"height":"10"}}`))
+		}
+	}))
+	defer srv.Close()
+	signer := testSigner(t)
+	signer.RestURL = srv.URL
+	if _, err := New(signer, Options{}).EnsurePQCRegistered(RegisterOptions{}); err != nil {
+		t.Fatalf("EnsurePQCRegistered: %v", err)
+	}
+	var req struct {
+		TxBytes []byte `json:"tx_bytes"`
+	}
+	if err := json.Unmarshal([]byte(bcast), &req); err != nil {
+		t.Fatalf("broadcast body: %v", err)
+	}
+	var raw sdktx.TxRaw
+	if err := proto.Unmarshal(req.TxBytes, &raw); err != nil {
+		t.Fatalf("tx raw: %v", err)
+	}
+	return decodeRegisterMsg(t, &tx.BuiltTx{TxRaw: &raw}).ProofOfPossession
+}
+
+func TestEnsureAttachesProofOfPossessionOnceV323IsApplied(t *testing.T) {
+	if pop := registeredPoP(t, "8003746"); len(pop) != 4627 {
+		t.Fatalf("expected a 4627-byte proof, got %d bytes", len(pop))
+	}
+}
+
+func TestEnsureLeavesProofOfPossessionOffBeforeV323(t *testing.T) {
+	if pop := registeredPoP(t, "0"); len(pop) != 0 {
+		t.Fatalf("expected no proof before v3.2.3, got %d bytes", len(pop))
 	}
 }

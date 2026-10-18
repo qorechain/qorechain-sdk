@@ -305,6 +305,8 @@ type RegisterOptions struct {
 	// messages.SignProofOfPossession. Optional on the chain today and due to
 	// become mandatory. A node below v3.2.3 refuses the whole transaction when
 	// it is set, so set it only once the network has applied v3.2.3.
+	// EnsurePQCRegistered signs it itself when Signer.RestURL is set and the
+	// network has applied v3.2.3; set it here to override.
 	ProofOfPossession []byte
 }
 
@@ -368,7 +370,22 @@ func (c *Client) EnsurePQCRegistered(opts RegisterOptions) (EnsureResult, error)
 			return EnsureResult{AlreadyRegistered: true}, nil
 		}
 	}
-	msg, err := c.registerMessage(opts.KeyType, opts.ProofOfPossession)
+	// From chain v3.2.3 the registration carries a proof that the registrant
+	// holds the key. Sign it once the network has applied v3.2.3, never before:
+	// a node below it refuses the whole transaction for the field.
+	pop := opts.ProofOfPossession
+	if len(pop) == 0 && c.signer.RestURL != "" {
+		applied, err := query.NewRestClient(c.signer.RestURL, nil).IsUpgradeApplied(query.ChainUpgradeV3_2_3)
+		if err != nil {
+			return EnsureResult{}, fmt.Errorf("pqcdx: cannot tell whether the network applied v3.2.3: %w", err)
+		}
+		if applied {
+			if pop, err = messages.SignProofOfPossession(c.signer.ChainID, c.signer.Account.Address, c.signer.PQCKeypair); err != nil {
+				return EnsureResult{}, err
+			}
+		}
+	}
+	msg, err := c.registerMessage(opts.KeyType, pop)
 	if err != nil {
 		return EnsureResult{}, err
 	}

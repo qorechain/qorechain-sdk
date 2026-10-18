@@ -282,3 +282,37 @@ describe("getPqcStatus over a source's REST client", () => {
     expect((rest as { getPqcAccount: ReturnType<typeof vi.fn> }).getPqcAccount).toHaveBeenCalledTimes(2);
   });
 });
+
+describe("ensurePqcRegistered: proof of possession (chain v3.2.3)", () => {
+  async function register(plans: Record<string, string>) {
+    clearPqcStatusCache();
+    const { clearUpgradeCache } = await import("../../src/tx/upgrades");
+    clearUpgradeCache();
+    const { tx, signAndBroadcast } = fakeTx();
+    const fetch = vi.fn(async (url: string) => {
+      const ok = (body: unknown) => ({ ok: true, status: 200, json: async () => body });
+      if (url.includes("/qorechain/pqc/v1/account/")) return ok({ found: false, account: null });
+      if (url.includes("/applied_plan/")) return ok({ height: plans[url.split("/").pop()!] ?? "0" });
+      if (url.endsWith("/node_info")) return ok({ default_node_info: { network: "qorechain-diana" } });
+      throw new Error(`unexpected ${url}`);
+    });
+    const kp = generatePqcKeypair(new Uint8Array(32).fill(1));
+    await ensurePqcRegistered(tx, { pqcKeypair: kp, rest: `https://lcd-${Object.keys(plans).length}`, fetch });
+    const msg = (signAndBroadcast.mock.calls[0]![0] as Array<{ value: { proofOfPossession: Uint8Array } }>)[0]!;
+    return { msg, kp };
+  }
+
+  it("signs and attaches it once the network has applied v3.2.3", async () => {
+    const { msg, kp } = await register({ "v3.2.3": "8003746" });
+    const { verifyProofOfPossession } = await import("../../src/pqc/key-integrity");
+    expect(msg.value.proofOfPossession.length).toBe(4627);
+    expect(
+      verifyProofOfPossession({ chainId: "qorechain-diana", account: ADDR, publicKey: kp.publicKey, proof: msg.value.proofOfPossession }),
+    ).toBe(true);
+  });
+
+  it("leaves it off before v3.2.3 (an older node refuses the field)", async () => {
+    const { msg } = await register({});
+    expect(msg.value.proofOfPossession.length).toBe(0);
+  });
+});

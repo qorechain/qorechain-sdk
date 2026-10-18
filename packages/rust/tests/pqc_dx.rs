@@ -82,6 +82,11 @@ impl MockServer {
                                     rec.lock().unwrap().push(Recorded { path: path.clone(), body });
                                     let resp = if path == "/cosmos/tx/v1beta1/txs" {
                                         broadcast_body.to_string()
+                                    } else if path == "/cosmos/upgrade/v1beta1/applied_plan/v3.2.3" {
+                                        // The plan ensure_pqc_registered checks before
+                                        // attaching a proof of possession.
+                                        let h = if status_result.contains("\"v323\":true") { "8003746" } else { "0" };
+                                        format!(r#"{{"height":"{h}"}}"#)
                                     } else if path.starts_with("/qorechain/pqc/v1/account/") {
                                         // The REST status route ensure_pqc_registered
                                         // reads: `found` mirrors the canned status.
@@ -331,4 +336,42 @@ async fn migrate_to_hybrid_ensures_then_binds_keypair() {
     assert_eq!(path.registration_tx_hash, Some("MIGR".to_string()));
     // The bound DX carries the same PQC key material.
     assert_eq!(path.dx.pqc_public_key, dx.pqc_public_key);
+}
+
+#[tokio::test]
+async fn ensure_pqc_registered_attaches_proof_of_possession_once_v323_is_applied() {
+    qorechain::pqc_dx::clear_pqc_status_cache();
+    qorechain::upgrades::clear_upgrade_cache();
+    let server = MockServer::start(
+        r#"{"registered":false,"v323":true}"#,
+        r#"{"tx_response":{"code":0,"txhash":"POP"}}"#,
+    )
+    .await;
+    let mut dx = make_pqc_dx(server.base_url.clone(), None);
+    // A real keypair, so the proof can be verified.
+    let kp = qorechain::pqc::pqc_keypair_from_seed(&[1u8; 32]);
+    dx.pqc_public_key = kp.public_key;
+    dx.pqc_secret_key = kp.secret_key;
+    dx.ensure_pqc_registered().await.unwrap();
+    let msg = decode_register_msg(&server);
+    assert_eq!(msg.proof_of_possession.len(), 4627);
+    assert!(qorechain::key_integrity::verify_proof_of_possession(
+        &dx.chain_id,
+        &dx.sender,
+        &dx.pqc_public_key,
+        &msg.proof_of_possession
+    ));
+}
+
+#[tokio::test]
+async fn ensure_pqc_registered_leaves_proof_off_before_v323() {
+    qorechain::pqc_dx::clear_pqc_status_cache();
+    let server = MockServer::start(
+        r#"{"registered":false}"#,
+        r#"{"tx_response":{"code":0,"txhash":"NOPOP"}}"#,
+    )
+    .await;
+    let dx = make_pqc_dx(server.base_url.clone(), None);
+    dx.ensure_pqc_registered().await.unwrap();
+    assert!(decode_register_msg(&server).proof_of_possession.is_empty());
 }

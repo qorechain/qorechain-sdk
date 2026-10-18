@@ -519,7 +519,13 @@ export const CANONICAL_DERIVATION = "adapter";
  */
 export const LEGACY_DERIVATION = "bridge";
 
-/** Derive the LEGACY (chain-bridge) ML-DSA-87 keypair for a mnemonic. */
+/**
+ * Derive the LEGACY (chain-bridge) ML-DSA-87 keypair for a mnemonic.
+ *
+ * @deprecated for new keys: not bound to the account, so one mnemonic yields one
+ * key for every account. Keep using it only to recover, or rotate away from, a
+ * key that was registered this way ({@link rotatePqcKeyMsgFromMnemonic}).
+ */
 export function derivePqcLegacy(mnemonic: string): PqcKeypair {
   return generatePqcKeypair(shake256(enc.encode(mnemonic), 32));
 }
@@ -622,6 +628,12 @@ export function rotatePqcKeyMsgFromMnemonic(
     oldDerivation = LEGACY_DERIVATION,
     newDerivation = CANONICAL_DERIVATION,
   } = opts;
+  if (newDerivation === LEGACY_DERIVATION || newDerivation === "mnemonic-only") {
+    throw new Error(
+      "the legacy (bridge) derivation is deprecated for new keys: rotate to the address-bound derivation " +
+        `("${CANONICAL_DERIVATION}"). A legacy key can still be the OLD key of a rotation.`,
+    );
+  }
   // The sender and the account in the rotation sign-bytes use the canonical
   // lower-case bech32 form, so an upper-case or 0x input builds the same message
   // the canonical input does (matching the Go SDK).

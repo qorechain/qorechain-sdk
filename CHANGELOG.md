@@ -15,6 +15,12 @@ after each network release is tagged.
 - **PQC registration integrity.** The registration builders refuse
   `key_type: "classical_only"`, an empty key and a degenerate ML-DSA-87 key
   (all-zero `t1`), which the chain refuses from v3.2.3.
+- **Registration sends the proof of possession by itself** once the network has
+  applied v3.2.3: `ensurePqcRegistered` (TS, given `rest`; the chain id comes
+  from `chainId` or the node), `ensure_pqc_registered` (Python),
+  `EnsurePQCRegistered` (Go, `Signer.RestURL`), `ensure_pqc_registered` (Rust)
+  and `ensurePqcRegistered` (Java, `signer.restUrl`). Before v3.2.3 it is left
+  off, since an older node refuses the field.
 - **Proof of possession** (`MsgRegisterPQCKeyV2.proof_of_possession`): sign-bytes
   `qorechain-pqc-pop-v1|<chain>|<algorithm>|<account>|<hex(public key)>`, plus a
   signer and a verifier. The registration builders carry it when given. It is
@@ -29,6 +35,14 @@ after each network release is tagged.
   gas limit, and a resolver that picks v1 or v2 per network. The vectors were
   computed with the chain's own functions.
 - `MsgUpdateAuthority` (license) and decoding of `pqc` codes 230–234.
+
+### Deprecated (chain v3.2.3)
+
+- **The legacy PQC derivation for new keys** (`derivePqcLegacy` /
+  `derive_pqc_legacy` / `DerivePQCLegacy`, `"bridge"`). It is not bound to the
+  account, so one mnemonic yields one key for every account. The rotation
+  helpers now refuse it as the new key, as the chain CLI does. Recovering or
+  rotating away from an existing legacy key still works.
 
 ### Added (chain v3.2.2)
 
@@ -86,7 +100,9 @@ after each network release is tagged.
 
 - **Documentation of `MsgExecuteEVM.nonce`.** It is the linked key's
   authenticator sequence (a per-key counter), not the account's EVM nonce. The
-  chain has checked the per-key counter since v3.2.0.
+  chain has checked the per-key counter since v3.2.0. Corrected in the code
+  docs, the guide and every package README (the README example used
+  `getTransactionCount`).
 
 ## [0.8.3]
 

@@ -15,6 +15,7 @@ import io.github.qorechain.accounts.Account;
 import io.github.qorechain.accounts.Accounts;
 import io.github.qorechain.messages.Messages;
 import io.github.qorechain.messages.TypedMessage;
+import io.github.qorechain.pqc.KeyIntegrity;
 import io.github.qorechain.pqc.Pqc;
 import io.github.qorechain.pqc.PqcAlgorithm;
 import io.github.qorechain.pqc.PqcDx;
@@ -49,6 +50,8 @@ class PqcDxTest {
     private volatile int restStatus = 200;
     private volatile String restBody = "{\"found\":false,\"account\":null}";
     private final List<String> restPaths = new ArrayList<>();
+    /** The v3.2.3 applied height the upgrade route reports; set per-test. */
+    private volatile String v323Height = "0";
     /** The broadcast result (code, log); set per-test. */
     private volatile String broadcastResult = "{\"code\":0,\"hash\":\"DEADBEEF\",\"log\":\"\"}";
 
@@ -59,6 +62,19 @@ class PqcDxTest {
         restPaths.clear();
         PqcDx.clearPqcStatusCache();
         server = HttpServer.create(new InetSocketAddress("127.0.0.1", 0), 0);
+        io.github.qorechain.query.ChainUpgrades.clearCache();
+        server.createContext(
+                "/cosmos/upgrade/v1beta1/applied_plan/",
+                ex -> {
+                    String plan = ex.getRequestURI().getPath().replaceAll(".*/", "");
+                    byte[] bytes =
+                            ("{\"height\":\"" + ("v3.2.3".equals(plan) ? v323Height : "0") + "\"}")
+                                    .getBytes(StandardCharsets.UTF_8);
+                    ex.getResponseHeaders().add("content-type", "application/json");
+                    ex.sendResponseHeaders(200, bytes.length);
+                    ex.getResponseBody().write(bytes);
+                    ex.close();
+                });
         server.createContext(
                 "/qorechain/pqc/v1/account/",
                 ex -> {
@@ -366,5 +382,26 @@ class PqcDxTest {
             }
         }
         return false;
+    }
+
+    @Test
+    void ensureAttachesProofOfPossessionOnceV323IsApplied() throws Exception {
+        v323Height = "8003746";
+        PqcKeypair kp = Pqc.generatePqcKeypair(new byte[32]);
+        PqcDx.Signer s = signer(kp);
+        s.restUrl = baseUrl;
+        PqcDx.ensurePqcRegistered(s, new Broadcaster(baseUrl), null, null);
+        qorechain.pqc.v1.Tx.MsgRegisterPQCKeyV2 msg = soleRegisterMsg(broadcastTxs.get(0));
+        assertEquals(4627, msg.getProofOfPossession().size());
+        assertTrue(KeyIntegrity.verifyProofOfPossession(
+                s.chainId, s.sender, kp.publicKey, msg.getProofOfPossession().toByteArray()));
+    }
+
+    @Test
+    void ensureLeavesProofOfPossessionOffBeforeV323() throws Exception {
+        PqcDx.Signer s = signer(Pqc.generatePqcKeypair(new byte[32]));
+        s.restUrl = baseUrl;
+        PqcDx.ensurePqcRegistered(s, new Broadcaster(baseUrl), null, null);
+        assertEquals(0, soleRegisterMsg(broadcastTxs.get(0)).getProofOfPossession().size());
     }
 }

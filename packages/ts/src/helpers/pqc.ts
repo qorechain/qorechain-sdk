@@ -37,7 +37,8 @@ import type { EncodeObject } from "@cosmjs/proto-signing";
 
 import { pqc as pqcMsg } from "../messages/qorechain";
 import { validateClassicalKeyForSender } from "../pqc/classical-key";
-import { validateRegisteredPqcKey } from "../pqc/key-integrity";
+import { signProofOfPossession, validateRegisteredPqcKey } from "../pqc/key-integrity";
+import { CHAIN_UPGRADE_V3_2_3, isUpgradeApplied } from "../tx/upgrades";
 import {
   generatePqcKeypair,
   AlgorithmDilithium5,
@@ -233,6 +234,18 @@ export function clearPqcStatusCache(): void {
   registeredCache.clear();
 }
 
+/** The node's chain id (`/cosmos/base/tendermint/v1beta1/node_info`). */
+async function fetchChainId(rest: string, fetchImpl?: FetchLike): Promise<string> {
+  const f = fetchImpl ?? (globalThis.fetch as FetchLike);
+  const url = `${rest.replace(/\/+$/, "")}/cosmos/base/tendermint/v1beta1/node_info`;
+  const res = await f(url);
+  if (!res.ok) throw new Error(`node_info query failed: HTTP ${res.status} from ${url}`);
+  const body = (await res.json()) as { default_node_info?: { network?: unknown } };
+  const network = body?.default_node_info?.network;
+  if (typeof network !== "string" || network === "") throw new Error(`no chain id in the answer from ${url}`);
+  return network;
+}
+
 /** True for the chain's refusal of a second registration (`pqc` 7). */
 function isAlreadyRegistered(e: unknown): boolean {
   const o = e as { code?: unknown; codespace?: unknown; rawLog?: unknown; message?: unknown } | null;
@@ -282,8 +295,16 @@ export interface EnsurePqcRegisteredOptions {
    * today and due to become mandatory. A node below v3.2.3 refuses the whole
    * transaction when it is set, so pass it only once the network has applied
    * v3.2.3.
+   *
+   * {@link ensurePqcRegistered} signs it itself when given `rest` and the
+   * network has applied v3.2.3; pass it here to override.
    */
   proofOfPossession?: Uint8Array;
+  /**
+   * The chain id, for the proof of possession. When omitted,
+   * {@link ensurePqcRegistered} reads it from the node at `rest`.
+   */
+  chainId?: string;
   /** Fee: explicit `StdFee` or `"auto"` (simulate + price). Default `"auto"`. */
   fee?: FeeInput;
   /** Optional memo string. */
@@ -394,7 +415,19 @@ export async function ensurePqcRegistered(
     return { alreadyRegistered: true };
   }
 
-  const message = buildRegisterPqcKeyMsg(sender, opts);
+  // From chain v3.2.3 the registration carries a proof that the registrant
+  // holds the key. Sign it when the network has applied v3.2.3 (and never
+  // before: a node below it refuses the whole transaction for the field).
+  let proofOfPossession = opts.proofOfPossession;
+  if (!proofOfPossession && opts.rest) {
+    const applied = await isUpgradeApplied({ rest: opts.rest, upgrade: CHAIN_UPGRADE_V3_2_3, fetch: opts.fetch });
+    if (applied) {
+      const chainId = opts.chainId ?? (await fetchChainId(opts.rest, opts.fetch));
+      proofOfPossession = signProofOfPossession({ chainId, account: sender, keypair: opts.pqcKeypair });
+    }
+  }
+
+  const message = buildRegisterPqcKeyMsg(sender, { ...opts, proofOfPossession });
   let result: BroadcastResult;
   try {
     result = await tx.signAndBroadcast([message], opts.fee ?? "auto", opts.memo ?? "", {

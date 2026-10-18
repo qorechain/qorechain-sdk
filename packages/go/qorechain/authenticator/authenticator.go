@@ -213,6 +213,11 @@ func RotatePQCKeyMsgFromMnemonic(account, mnemonic, chainID string, algorithmID 
 	if err != nil {
 		return RotationResult{}, err
 	}
+	// The legacy derivation is deprecated for NEW keys (as in the chain CLI); it
+	// stays valid as the OLD key of a rotation.
+	if newDerivation == DerivationLegacy || newDerivation == "mnemonic-only" {
+		return RotationResult{}, fmt.Errorf("the legacy (bridge) derivation is deprecated for new keys: rotate to the address-bound derivation (%q); a legacy key can still be the OLD key of a rotation", DerivationCanonical)
+	}
 	oldKp, err := derivePQCByScheme(oldDerivation, account, mnemonic)
 	if err != nil {
 		return RotationResult{}, err
@@ -239,6 +244,10 @@ func RotatePQCKeyMsgFromMnemonic(account, mnemonic, chainID string, algorithmID 
 
 // DerivePQCLegacy exposes the LEGACY (chain-bridge) PQC derivation for a mnemonic:
 // ML-DSA-87 seeded keygen of shake256([]byte(mnemonic), 32).
+//
+// Deprecated: for new keys. It is not bound to the account, so one mnemonic
+// yields one key for every account. Keep using it only to recover, or rotate
+// away from, a key that was registered this way (RotatePQCKeyMsgFromMnemonic).
 func DerivePQCLegacy(mnemonic string) (pqc.Keypair, error) {
 	return pqcFromSeed(shake256([]byte(mnemonic), 32))
 }
