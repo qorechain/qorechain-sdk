@@ -46,6 +46,7 @@ import {
 import type { TxClient, FeeInput, AutoFeeOptions } from "../tx/builder";
 import type { BroadcastResult } from "../tx/broadcast";
 import type { QorClient } from "../query/qor";
+import type { FetchLike } from "../query/http";
 import {
   buildHybridTx,
   signAndBroadcastHybrid,
@@ -113,8 +114,10 @@ export async function getPqcStatus(
 ): Promise<PqcStatus> {
   const qor = resolveQor(source);
   const raw = await qor.getPqcKeyStatus<Record<string, unknown>>(address);
+  // No answer is not "not registered": reading it that way is what makes a
+  // client re-register a key the chain already has, and pay the fee each time.
   if (raw == null || typeof raw !== "object") {
-    return { registered: false };
+    throw new Error(`qor_getPQCKeyStatus gave no usable answer for ${address}; cannot tell whether a PQC key is registered`);
   }
 
   const registered = asBool(
@@ -133,11 +136,79 @@ export async function getPqcStatus(
   return status;
 }
 
+/** Positive answers per (rest, address): a registered key stays registered. */
+const registeredCache = new Set<string>();
+
+/**
+ * Read the PQC registration status over REST
+ * (`GET {rest}/qorechain/pqc/v1/account/{address}`), the route every public
+ * endpoint serves (the `qor_*` JSON-RPC namespace is not exposed publicly).
+ *
+ * The chain answers `{ found: false }` for an account without a key. Anything
+ * else that is not a readable `found` — an HTTP error, a missing field, a
+ * transport failure — is UNKNOWN: retried once, then thrown. It is never read
+ * as "not registered".
+ */
+export async function fetchPqcStatus(opts: {
+  /** The network's REST (LCD) base URL. */
+  rest: string;
+  /** The `qor1…` address. */
+  address: string;
+  /** Injectable `fetch`. Defaults to `globalThis.fetch`. */
+  fetch?: FetchLike;
+}): Promise<PqcStatus> {
+  const base = opts.rest.replace(/\/+$/, "");
+  const key = `${base}|${opts.address}`;
+  if (registeredCache.has(key)) return { registered: true };
+  const fetchImpl = opts.fetch ?? (globalThis.fetch as FetchLike);
+  const url = `${base}/qorechain/pqc/v1/account/${encodeURIComponent(opts.address)}`;
+  let lastError: unknown;
+  for (let attempt = 0; attempt < 2; attempt++) {
+    try {
+      const res = await fetchImpl(url);
+      if (!res.ok) throw new Error(`HTTP ${res.status} from ${url}`);
+      const body = (await res.json()) as Record<string, unknown> | null;
+      if (body == null || typeof body.found !== "boolean") {
+        throw new Error(`no "found" field in the answer from ${url}`);
+      }
+      if (!body.found) return { registered: false };
+      registeredCache.add(key);
+      const account = (body.account ?? {}) as Record<string, unknown>;
+      const status: PqcStatus = { registered: true };
+      const algorithmId = asNumber(account.algorithm_id ?? account.algorithmId ?? account.algorithm);
+      if (algorithmId !== undefined) status.algorithmId = algorithmId;
+      if (typeof account.public_key === "string") status.pubkey = account.public_key;
+      return status;
+    } catch (e) {
+      lastError = e;
+    }
+  }
+  throw new Error(
+    `cannot tell whether ${opts.address} has a registered PQC key: ${
+      lastError instanceof Error ? lastError.message : String(lastError)
+    }`,
+  );
+}
+
+/** Forget cached registration answers (tests, network switches). */
+export function clearPqcStatusCache(): void {
+  registeredCache.clear();
+}
+
+/** True for the chain's refusal of a second registration (`pqc` 7). */
+function isAlreadyRegistered(e: unknown): boolean {
+  const o = e as { code?: unknown; codespace?: unknown; rawLog?: unknown; message?: unknown } | null;
+  if (!o || typeof o !== "object") return false;
+  const text = [o.rawLog, o.message].filter((t): t is string => typeof t === "string").join(" ");
+  if (/PQC account already registered/i.test(text)) return true;
+  return o.codespace === "pqc" && Number(o.code) === 7;
+}
+
 /**
  * Whether `address` has a registered PQC key.
  *
- * Thin boolean wrapper over {@link getPqcStatus} using `qor_getPQCKeyStatus`
- * (preferred). The EVM `pqcKeyStatus` precompile is the documented alternative.
+ * Thin boolean wrapper over {@link getPqcStatus} using `qor_getPQCKeyStatus`.
+ * On a public endpoint (where `qor_*` is not exposed) use {@link fetchPqcStatus}.
  */
 export async function isPqcRegistered(
   source: PqcStatusSource,
@@ -187,11 +258,25 @@ export interface EnsurePqcRegisteredOptions {
    */
   status?: PqcStatus;
   /**
-   * A status source for the pre-flight registration check. When omitted, the
-   * registration message is broadcast unconditionally (relying on the chain's
-   * own idempotency) — pass `{ qor }` to make the helper truly idempotent.
+   * A `qor_*` JSON-RPC status source for the pre-flight check. Public endpoints
+   * do not expose `qor_*`; prefer {@link rest}.
    */
   statusSource?: PqcStatusSource;
+  /**
+   * The network's REST (LCD) base URL for the pre-flight check
+   * ({@link fetchPqcStatus}). Recommended: it works on every public endpoint.
+   */
+  rest?: string;
+  /** Injectable `fetch` for {@link rest}. */
+  fetch?: FetchLike;
+  /**
+   * Broadcast the registration without checking first. The chain refuses a
+   * second registration AFTER charging the fee, so this is only for a caller
+   * that already knows the account has no key. Without `status`,
+   * `statusSource`, `rest` or `force`, the helper refuses rather than register
+   * blind.
+   */
+  force?: boolean;
 }
 
 /** Result of {@link ensurePqcRegistered}. */
@@ -252,23 +337,37 @@ export async function ensurePqcRegistered(
 ): Promise<EnsurePqcRegisteredResult> {
   const sender = tx.senderAddress;
 
-  // Pre-flight: skip the registration entirely when already registered.
-  const status =
-    opts.status ??
-    (opts.statusSource
-      ? await getPqcStatus(opts.statusSource, sender)
-      : undefined);
+  // Pre-flight: skip the registration entirely when already registered. A
+  // registration the chain refuses still costs its fee, so the helper never
+  // registers without an answer unless told to (`force`).
+  let status = opts.status;
+  if (!status && opts.rest) {
+    status = await fetchPqcStatus({ rest: opts.rest, address: sender, fetch: opts.fetch });
+  } else if (!status && opts.statusSource) {
+    status = await getPqcStatus(opts.statusSource, sender);
+  } else if (!status && !opts.force) {
+    throw new Error(
+      "ensurePqcRegistered: pass `rest` (the network's REST URL) so the helper can check whether the key is " +
+        "already registered; registering blind charges a fee every time the key exists. Use `force: true` " +
+        "only when the account is known to have no key.",
+    );
+  }
   if (status?.registered) {
     return { alreadyRegistered: true };
   }
 
   const message = buildRegisterPqcKeyMsg(sender, opts);
-  const result = await tx.signAndBroadcast(
-    [message],
-    opts.fee ?? "auto",
-    opts.memo ?? "",
-    { autoFee: opts.autoFee },
-  );
+  let result: BroadcastResult;
+  try {
+    result = await tx.signAndBroadcast([message], opts.fee ?? "auto", opts.memo ?? "", {
+      autoFee: opts.autoFee,
+    });
+  } catch (e) {
+    // The key was registered after all (a race, or a stale answer): not an
+    // error for a helper whose job is "make sure it is registered".
+    if (isAlreadyRegistered(e)) return { alreadyRegistered: true };
+    throw e;
+  }
   return {
     alreadyRegistered: false,
     txHash: result.transactionHash,

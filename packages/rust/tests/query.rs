@@ -118,7 +118,7 @@ async fn rest_paths_are_correct() {
     assert_eq!(server.last().path, "/qorechain/bridge/v1/chains");
 
     rest.get_pqc_account("qor1abc").await.unwrap();
-    assert_eq!(server.last().path, "/qorechain/pqc/v1/accounts/qor1abc");
+    assert_eq!(server.last().path, "/qorechain/pqc/v1/account/qor1abc");
 
     rest.get_reputation("qorvaloper1xyz").await.unwrap();
     assert_eq!(

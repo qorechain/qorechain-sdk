@@ -103,10 +103,11 @@ migrate to hybrid signing — with a React badge to show users they're protected
 import { ensurePqcRegistered, migrateToHybrid } from "@qorechain/sdk";
 
 // Idempotent: registers the signer's ML-DSA-87 key on-chain if not already.
-const { alreadyRegistered, txHash } = await ensurePqcRegistered(tx, { pqcKeypair });
+const rest = "https://api.qore.host";
+const { alreadyRegistered, txHash } = await ensurePqcRegistered(tx, { pqcKeypair, rest });
 
 // Switch the signing path to hybrid (classical + post-quantum).
-const hybrid = await migrateToHybrid(tx, { pqcKeypair });
+const hybrid = await migrateToHybrid(tx, { pqcKeypair, rest });
 await hybrid.send(messages);
 ```
 

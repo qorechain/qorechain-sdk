@@ -74,9 +74,12 @@ public final class RestClient {
         return get("/qorechain/bridge/v1/chains");
     }
 
-    /** {@code /qorechain/pqc/v1/accounts/{address}}. */
+    /**
+     * {@code /qorechain/pqc/v1/account/{address}} (singular, the chain's route).
+     * Answers {@code {"found": bool, "account": ...}}.
+     */
     public JsonNode getPqcAccount(String address) {
-        return get("/qorechain/pqc/v1/accounts/" + enc(address));
+        return get("/qorechain/pqc/v1/account/" + enc(address));
     }
 
     /**

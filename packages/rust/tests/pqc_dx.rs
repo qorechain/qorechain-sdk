@@ -82,6 +82,11 @@ impl MockServer {
                                     rec.lock().unwrap().push(Recorded { path: path.clone(), body });
                                     let resp = if path == "/cosmos/tx/v1beta1/txs" {
                                         broadcast_body.to_string()
+                                    } else if path.starts_with("/qorechain/pqc/v1/account/") {
+                                        // The REST status route ensure_pqc_registered
+                                        // reads: `found` mirrors the canned status.
+                                        let found = status_result.contains("\"registered\":true");
+                                        format!(r#"{{"found":{found},"account":null}}"#)
                                     } else {
                                         rpc_body
                                     };
@@ -261,25 +266,46 @@ async fn ensure_pqc_registered_broadcasts_when_missing() {
 }
 
 #[tokio::test]
-async fn ensure_pqc_registered_without_qor_broadcasts_unconditionally() {
-    // No QorClient -> no pre-flight check -> always broadcasts.
+async fn ensure_pqc_registered_without_qor_still_checks_over_rest() {
+    // No QorClient: the pre-flight check reads REST, so a registered key is
+    // never registered again (each attempt would cost a fee).
+    qorechain::pqc_dx::clear_pqc_status_cache();
     let server = MockServer::start(
         r#"{"registered":true}"#,
-        r#"{"tx_response":{"code":0,"txhash":"UNCONDITIONAL"}}"#,
+        r#"{"tx_response":{"code":0,"txhash":"SHOULD_NOT_BROADCAST"}}"#,
     )
     .await;
     let dx = make_pqc_dx(server.base_url.clone(), None);
 
     let res = dx.ensure_pqc_registered().await.unwrap();
-    assert!(!res.already_registered);
-    assert_eq!(res.tx_hash, Some("UNCONDITIONAL".to_string()));
-
+    assert!(res.already_registered);
     let broadcasts = server
         .recorded()
         .into_iter()
         .filter(|r| r.path == "/cosmos/tx/v1beta1/txs")
         .count();
-    assert_eq!(broadcasts, 1);
+    assert_eq!(broadcasts, 0);
+}
+
+#[tokio::test]
+async fn ensure_pqc_registered_never_registers_on_unknown_status() {
+    // An unreachable node: the status is unknown, so nothing is broadcast.
+    let dx = make_pqc_dx("http://127.0.0.1:9".into(), None);
+    let err = dx.ensure_pqc_registered().await.unwrap_err().to_string();
+    assert!(err.contains("cannot tell"), "{err}");
+}
+
+#[tokio::test]
+async fn ensure_pqc_registered_treats_already_registered_as_success() {
+    qorechain::pqc_dx::clear_pqc_status_cache();
+    let server = MockServer::start(
+        r#"{"registered":false}"#,
+        r#"{"tx_response":{"code":7,"codespace":"pqc","raw_log":"PQC account already registered","txhash":"AB"}}"#,
+    )
+    .await;
+    let dx = make_pqc_dx(server.base_url.clone(), None);
+    let res = dx.ensure_pqc_registered().await.unwrap();
+    assert!(res.already_registered);
 }
 
 #[tokio::test]

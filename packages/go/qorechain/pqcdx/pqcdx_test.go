@@ -5,6 +5,7 @@ import (
 	"io"
 	"net/http"
 	"net/http/httptest"
+	"strings"
 	"testing"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -100,11 +101,28 @@ func decodeMigrateMsg(t *testing.T, built *tx.BuiltTx) *pqcv1.MsgMigratePQCKey {
 	return &m
 }
 
+// fakePQCFound is what the fake REST status route answers for the signer
+// (GET /qorechain/pqc/v1/account/{addr} → {"found": ...}).
+var fakePQCFound = true
+
+func writePQCStatus(w http.ResponseWriter) {
+	if fakePQCFound {
+		_, _ = w.Write([]byte(`{"found":true,"account":{"public_key":"AQID"}}`))
+		return
+	}
+	_, _ = w.Write([]byte(`{"found":false,"account":null}`))
+}
+
 // broadcastServer returns an httptest server that handles broadcast + tx poll,
 // recording the broadcast body.
 func broadcastServer(t *testing.T, body *string) *httptest.Server {
 	t.Helper()
+	ClearPQCStatusCache()
 	return httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		if strings.HasPrefix(r.URL.Path, "/qorechain/pqc/v1/account/") {
+			writePQCStatus(w)
+			return
+		}
 		switch r.URL.Path {
 		case "/cosmos/tx/v1beta1/txs":
 			b, _ := io.ReadAll(r.Body)
@@ -224,6 +242,8 @@ func TestEnsureAlreadyRegisteredNoTx(t *testing.T) {
 }
 
 func TestEnsureMissingBroadcasts(t *testing.T) {
+	fakePQCFound = false
+	defer func() { fakePQCFound = true }()
 	var bcastBody string
 	srv := broadcastServer(t, &bcastBody)
 	defer srv.Close()
@@ -412,6 +432,8 @@ func TestMigrateToHybridAlreadyRegistered(t *testing.T) {
 }
 
 func TestMigrateToHybridRegistersFirst(t *testing.T) {
+	fakePQCFound = false
+	defer func() { fakePQCFound = true }()
 	srv := broadcastServer(t, nil)
 	defer srv.Close()
 	q := &fakeQor{resp: json.RawMessage(`{"registered":false}`)}
@@ -468,5 +490,95 @@ func TestClientAddress(t *testing.T) {
 	c := New(signer, Options{})
 	if c.Address() != signer.Account.Address {
 		t.Errorf("Address() = %q, want %q", c.Address(), signer.Account.Address)
+	}
+}
+
+// ---- REST status (the route every public endpoint serves) ----
+
+func TestFetchPQCStatusUnclearAnswerIsAnError(t *testing.T) {
+	ClearPQCStatusCache()
+	calls := 0
+	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		calls++
+		if calls == 1 {
+			w.WriteHeader(http.StatusNotImplemented)
+			return
+		}
+		_, _ = w.Write([]byte(`{"registered":false}`))
+	}))
+	defer srv.Close()
+	if _, err := FetchPQCStatus(srv.URL, "qor1x"); err == nil || !strings.Contains(err.Error(), "cannot tell") {
+		t.Fatalf("expected an unknown status, got %v", err)
+	}
+	if calls != 2 {
+		t.Fatalf("expected one retry, got %d calls", calls)
+	}
+}
+
+func TestFetchPQCStatusCachesPositive(t *testing.T) {
+	ClearPQCStatusCache()
+	calls := 0
+	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		calls++
+		if r.URL.Path != "/qorechain/pqc/v1/account/qor1x" {
+			t.Errorf("path %s", r.URL.Path)
+		}
+		_, _ = w.Write([]byte(`{"found":true,"account":{"public_key":"AQID"}}`))
+	}))
+	defer srv.Close()
+	for i := 0; i < 2; i++ {
+		s, err := FetchPQCStatus(srv.URL+"/", "qor1x")
+		if err != nil || !s.Registered {
+			t.Fatalf("%+v %v", s, err)
+		}
+	}
+	if calls != 1 {
+		t.Fatalf("a positive answer must be cached, got %d calls", calls)
+	}
+}
+
+func TestEnsureNeverRegistersOnUnknownStatus(t *testing.T) {
+	ClearPQCStatusCache()
+	broadcasts := 0
+	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		if r.URL.Path == "/cosmos/tx/v1beta1/txs" {
+			broadcasts++
+		}
+		w.WriteHeader(http.StatusServiceUnavailable)
+	}))
+	defer srv.Close()
+	signer := testSigner(t)
+	signer.RestURL = srv.URL
+	if _, err := New(signer, Options{}).EnsurePQCRegistered(RegisterOptions{}); err == nil {
+		t.Fatal("expected an error on an unknown status")
+	}
+	if broadcasts != 0 {
+		t.Fatalf("registered blind: %d broadcasts", broadcasts)
+	}
+}
+
+func TestEnsureTreatsAlreadyRegisteredAsSuccess(t *testing.T) {
+	ClearPQCStatusCache()
+	fakePQCFound = false
+	defer func() { fakePQCFound = true }()
+	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		if strings.HasPrefix(r.URL.Path, "/qorechain/pqc/v1/account/") {
+			writePQCStatus(w)
+			return
+		}
+		_, _ = w.Write([]byte(`{"tx_response":{"txhash":"AB","code":7,"codespace":"pqc","raw_log":"PQC account already registered"}}`))
+	}))
+	defer srv.Close()
+	signer := testSigner(t)
+	signer.RestURL = srv.URL
+	res, err := New(signer, Options{}).EnsurePQCRegistered(RegisterOptions{})
+	if err != nil || !res.AlreadyRegistered {
+		t.Fatalf("%+v %v", res, err)
+	}
+}
+
+func TestGetPQCStatusRefusesAnEmptyAnswer(t *testing.T) {
+	if _, err := GetPQCStatus(&fakeQor{resp: json.RawMessage(`null`)}, "qor1x"); err == nil {
+		t.Fatal("an empty answer must not read as 'not registered'")
 	}
 }

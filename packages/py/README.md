@@ -327,6 +327,8 @@ registered = is_pqc_registered(client.qor, native.address)
 status = get_pqc_status(client.qor, native.address)
 
 # Idempotent: registers the signer's Dilithium key only if it isn't already.
+# The check reads REST from rest_url (fetch_pqc_status) and never registers
+# blind — a second registration is refused after the fee is charged.
 result = ensure_pqc_registered(account=native, pqc_keypair=generate_pqc_keypair(), ...)
 
 # Migrate a classical account to hybrid signing, then sign hybrid.

@@ -55,6 +55,26 @@ after each network release is tagged.
 
 ### Fixed
 
+- **`ensurePqcRegistered` could register an existing key again, and the chain
+  charges the fee before refusing it.** Without a status source the helper
+  registered unconditionally. Its status reads used the `qor_*` JSON-RPC
+  namespace, which public endpoints do not serve, and an empty answer was read
+  as "not registered". All five SDKs now:
+  - read the status over REST (`/qorechain/pqc/v1/account/{address}`, served by
+    every public endpoint) from the URL the helper already has: `rest` (TS),
+    `rest_url` (Python), `Signer.RestURL` (Go), `rest_url` (Rust),
+    `signer.restUrl` (Java);
+  - treat an unreadable status as unknown: retry once, then raise. It is never
+    read as "not registered", so a key is never registered blind;
+  - cache a positive answer per (endpoint, address);
+  - treat the chain's "already registered" refusal (`pqc` 7) as success.
+  New helpers: `fetchPqcStatus` / `fetch_pqc_status` / `FetchPQCStatus` and a
+  cache reset. The TS `ensurePqcRegistered` now refuses to run without `rest`,
+  `statusSource` or `status`; pass `force: true` to register without a check
+  (Java: `EnsureOptions.force`).
+- **The PQC account route was wrong** in every SDK: `/qorechain/pqc/v1/accounts/`
+  (plural, answered 501). It is `/qorechain/pqc/v1/account/` (singular).
+
 - **Documentation of `MsgExecuteEVM.nonce`.** It is the linked key's
   authenticator sequence (a per-key counter), not the account's EVM nonce. The
   chain has checked the per-key counter since v3.2.0.

@@ -68,7 +68,8 @@ class _RestPaths:
 
     @staticmethod
     def pqc_account(address: str) -> tuple[str, dict[str, Any] | None]:
-        return f"/qorechain/pqc/v1/accounts/{quote(address, safe='')}", None
+        # Singular: the chain's route. Answers {"found": bool, "account": ...}.
+        return f"/qorechain/pqc/v1/account/{quote(address, safe='')}", None
 
     @staticmethod
     def pqc_evm_window(address: str) -> tuple[str, dict[str, Any] | None]:

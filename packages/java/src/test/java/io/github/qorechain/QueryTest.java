@@ -93,7 +93,7 @@ class QueryTest {
         assertTrue(restPaths.contains("/qorechain/ai/v1/stats"));
         assertTrue(restPaths.contains("/qorechain/ai/v1/fee-estimate?urgency=normal"));
         assertTrue(restPaths.contains("/qorechain/bridge/v1/chains"));
-        assertTrue(restPaths.contains("/qorechain/pqc/v1/accounts/qor1abc"));
+        assertTrue(restPaths.contains("/qorechain/pqc/v1/account/qor1abc"));
         assertTrue(restPaths.contains("/qorechain/reputation/v1/validators/qorvaloper1xyz"));
         assertTrue(restPaths.contains("/qorechain/burn/v1/stats"));
         assertTrue(restPaths.contains("/qorechain/xqore/v1/position/qor1abc"));

@@ -482,6 +482,8 @@ let registered = pdx.is_pqc_registered(&pdx.sender).await?;
 let status = pdx.get_pqc_status(&pdx.sender).await?;
 
 // Idempotent: registers the signer's Dilithium key only if it isn't already.
+// The check reads REST from `pdx.rest_url` (`fetch_pqc_status`) and never
+// registers blind — a second registration is refused after the fee is charged.
 let ensure = pdx.ensure_pqc_registered().await?;
 
 // Migrate a classical account to hybrid signing, then sign hybrid. The

@@ -91,7 +91,8 @@ impl RestClient {
 
     /// Returns the PQC account record for an address.
     pub async fn get_pqc_account(&self, address: &str) -> Result<Value> {
-        self.get(&format!("/qorechain/pqc/v1/accounts/{address}"), &[])
+        // Singular: the chain's route. Answers {"found": bool, "account": ...}.
+        self.get(&format!("/qorechain/pqc/v1/account/{address}"), &[])
             .await
     }
 

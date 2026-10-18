@@ -21,9 +21,11 @@ from cosmpy.protos.cosmos.tx.v1beta1.tx_pb2 import AuthInfo, TxBody, TxRaw
 from qorsdk import (
     ALGORITHM_DILITHIUM5,
     build_register_pqc_key,
+    clear_pqc_status_cache,
     decode_any,
     derive_native_account,
     ensure_pqc_registered,
+    fetch_pqc_status,
     generate_pqc_keypair,
     get_pqc_status,
     is_pqc_registered,
@@ -69,6 +71,14 @@ def _mock_broadcast():
         return_value=httpx.Response(
             200, json={"tx_response": {"code": 0, "txhash": "DEADBEEF"}}
         )
+    )
+
+
+def _mock_status(registered: bool):
+    """The REST status route ensure_pqc_registered reads (singular, ``found``)."""
+    clear_pqc_status_cache()
+    return respx.get(url__regex=rf"{REST}/qorechain/pqc/v1/account/.*").mock(
+        return_value=httpx.Response(200, json={"found": registered, "account": None})
     )
 
 
@@ -141,8 +151,10 @@ def test_is_pqc_registered_true_and_false():
     assert is_pqc_registered(_FakeQor({"has_pqc_key": False}), "qor1") is False
 
 
-def test_get_pqc_status_handles_non_dict_result():
-    assert get_pqc_status(_FakeQor(None), "qor1") == {"registered": False}
+def test_get_pqc_status_refuses_an_unreadable_answer():
+    # No answer is not "not registered": that reading re-registers known keys.
+    with pytest.raises(ValueError, match="cannot tell"):
+        get_pqc_status(_FakeQor(None), "qor1")
 
 
 # --- build_register_pqc_key ---------------------------------------------------
@@ -172,19 +184,23 @@ def test_ensure_pqc_registered_already_registered_no_tx():
     account, kwargs = _ctx()
     qor = _FakeQor({"has_pqc_key": True})
     with respx.mock:
+        status = _mock_status(True)
         route = _mock_broadcast()
         result = ensure_pqc_registered(
             pqc_keypair=generate_pqc_keypair(), qor=qor, **kwargs
         )
     assert result == {"already_registered": True}
     assert route.called is False
-    assert qor.calls == [account.address]
+    # The status comes from REST (public endpoints do not expose qor_*).
+    assert status.call_count == 1
+    assert qor.calls == []
 
 
 @respx.mock
 def test_ensure_pqc_registered_missing_broadcasts_register_msg():
     account, kwargs = _ctx()
     qor = _FakeQor({"has_pqc_key": False})
+    _mock_status(False)
     keypair = generate_pqc_keypair()
     route = _mock_broadcast()
     result = ensure_pqc_registered(pqc_keypair=keypair, qor=qor, **kwargs)
@@ -204,6 +220,7 @@ def test_ensure_pqc_registered_missing_broadcasts_register_msg():
 def test_ensure_pqc_registered_uses_classical_signature():
     _, kwargs = _ctx()
     qor = _FakeQor({"has_pqc_key": False})
+    _mock_status(False)
     route = _mock_broadcast()
     ensure_pqc_registered(pqc_keypair=generate_pqc_keypair(), qor=qor, **kwargs)
     body_json = json.loads(route.calls.last.request.read())
@@ -224,6 +241,7 @@ def test_ensure_pqc_registered_uses_classical_signature():
 def test_migrate_to_hybrid_already_registered_sends_hybrid_only():
     account, kwargs = _ctx()
     qor = _FakeQor({"has_pqc_key": True})
+    _mock_status(True)
     route = _mock_broadcast()
     payment = msg.bank.send(
         from_address=account.address,
@@ -249,6 +267,7 @@ def test_migrate_to_hybrid_already_registered_sends_hybrid_only():
 def test_migrate_to_hybrid_registers_then_sends_hybrid():
     account, kwargs = _ctx()
     qor = _FakeQor({"has_pqc_key": False})
+    _mock_status(False)
     route = _mock_broadcast()
     payment = msg.bank.send(
         from_address=account.address,
@@ -291,6 +310,7 @@ def test_migrate_to_hybrid_registering_advances_sequence_by_default():
     # `sequence`, so the hybrid tx must go out at sequence + 1 — not reuse it.
     account, kwargs = _ctx(sequence=7)
     qor = _FakeQor({"has_pqc_key": False})
+    _mock_status(False)
     route = _mock_broadcast()
     payment = msg.bank.send(
         from_address=account.address,
@@ -308,6 +328,7 @@ def test_migrate_to_hybrid_registering_advances_sequence_by_default():
 def test_migrate_to_hybrid_already_registered_keeps_sequence():
     account, kwargs = _ctx(sequence=7)
     qor = _FakeQor({"has_pqc_key": True})
+    _mock_status(True)
     route = _mock_broadcast()
     payment = msg.bank.send(
         from_address=account.address,
@@ -324,6 +345,7 @@ def test_migrate_to_hybrid_already_registered_keeps_sequence():
 def test_migrate_to_hybrid_explicit_register_sequence_is_respected():
     account, kwargs = _ctx(sequence=3)
     qor = _FakeQor({"has_pqc_key": False})
+    _mock_status(False)
     route = _mock_broadcast()
     payment = msg.bank.send(
         from_address=account.address,
@@ -375,3 +397,81 @@ def test_migrate_pqc_key_broadcasts_migrate_msg():
     assert msgs[0].new_algorithm_id == ALGORITHM_DILITHIUM5
     assert msgs[0].old_signature == b"\x05"
     assert msgs[0].new_signature == b"\x06"
+
+
+# --- REST status (fetch_pqc_status) -------------------------------------------
+
+
+@respx.mock
+def test_fetch_pqc_status_reads_found_and_caches_a_positive_answer():
+    clear_pqc_status_cache()
+    route = respx.get(f"{REST}/qorechain/pqc/v1/account/qor1x").mock(
+        return_value=httpx.Response(
+            200, json={"found": True, "account": {"key_type": "hybrid", "public_key": "AA"}}
+        )
+    )
+    assert fetch_pqc_status(REST, "qor1x")["registered"] is True
+    assert fetch_pqc_status(REST + "/", "qor1x")["registered"] is True
+    assert route.call_count == 1
+
+
+@respx.mock
+def test_fetch_pqc_status_found_false_is_not_registered():
+    clear_pqc_status_cache()
+    respx.get(f"{REST}/qorechain/pqc/v1/account/qor1y").mock(
+        return_value=httpx.Response(200, json={"found": False, "account": None})
+    )
+    assert fetch_pqc_status(REST, "qor1y") == {"registered": False}
+
+
+@respx.mock
+@pytest.mark.parametrize(
+    "response",
+    [
+        httpx.Response(501, json={"code": 12, "message": "Not Implemented"}),
+        httpx.Response(200, json={"registered": False}),
+    ],
+)
+def test_fetch_pqc_status_unclear_answer_is_unknown_not_false(response):
+    clear_pqc_status_cache()
+    route = respx.get(f"{REST}/qorechain/pqc/v1/account/qor1z").mock(return_value=response)
+    with pytest.raises(RuntimeError, match="cannot tell"):
+        fetch_pqc_status(REST, "qor1z")
+    assert route.call_count == 2
+
+
+@respx.mock
+def test_ensure_never_registers_when_the_status_is_unknown():
+    clear_pqc_status_cache()
+    account, kwargs = _ctx()
+    respx.get(url__regex=rf"{REST}/qorechain/pqc/v1/account/.*").mock(
+        return_value=httpx.Response(503, text="unavailable")
+    )
+    route = _mock_broadcast()
+    with pytest.raises(RuntimeError, match="cannot tell"):
+        ensure_pqc_registered(pqc_keypair=generate_pqc_keypair(), **kwargs)
+    assert route.call_count == 0
+
+
+@respx.mock
+def test_ensure_treats_already_registered_refusal_as_success():
+    account, kwargs = _ctx()
+    _mock_status(False)
+    respx.get(f"{REST}/cosmos/upgrade/v1beta1/applied_plan/v3.2.0").mock(
+        return_value=httpx.Response(200, json={"height": "0"})
+    )
+    respx.post(f"{REST}/cosmos/tx/v1beta1/txs").mock(
+        return_value=httpx.Response(
+            200,
+            json={
+                "tx_response": {
+                    "code": 7,
+                    "codespace": "pqc",
+                    "raw_log": "PQC account already registered",
+                    "txhash": "AB",
+                }
+            },
+        )
+    )
+    res = ensure_pqc_registered(pqc_keypair=generate_pqc_keypair(), **kwargs)
+    assert res == {"already_registered": True}

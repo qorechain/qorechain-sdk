@@ -640,6 +640,8 @@ export type {
 export {
   isPqcRegistered,
   getPqcStatus,
+  fetchPqcStatus,
+  clearPqcStatusCache,
   ensurePqcRegistered,
   buildRegisterPqcKeyMsg,
   migratePqcKey,

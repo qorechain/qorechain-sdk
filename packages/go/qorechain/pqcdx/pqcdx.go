@@ -24,7 +24,10 @@ package pqcdx
 
 import (
 	"encoding/json"
+	"errors"
 	"fmt"
+	"strings"
+	"sync"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
@@ -32,6 +35,7 @@ import (
 	"github.com/qorechain/qorechain-sdk/packages/go/qorechain/messages"
 	"github.com/qorechain/qorechain-sdk/packages/go/qorechain/pqc"
 	pqcv1 "github.com/qorechain/qorechain-sdk/packages/go/qorechain/proto/qorechain/pqc/v1"
+	"github.com/qorechain/qorechain-sdk/packages/go/qorechain/query"
 	"github.com/qorechain/qorechain-sdk/packages/go/qorechain/signbytes"
 	"github.com/qorechain/qorechain-sdk/packages/go/qorechain/tx"
 )
@@ -78,6 +82,7 @@ type statusWire struct {
 	Registered   *bool  `json:"registered"`
 	IsRegistered *bool  `json:"is_registered"`
 	HasKey       *bool  `json:"has_key"`
+	HasPQCKey    *bool  `json:"has_pqc_key"`
 	AlgorithmID  *uint8 `json:"algorithm_id"`
 	AlgID        *uint8 `json:"algorithm"`
 	Pubkey       []byte `json:"pubkey"`
@@ -93,6 +98,8 @@ func (w statusWire) toStatus() Status {
 		s.Registered = *w.IsRegistered
 	case w.HasKey != nil:
 		s.Registered = *w.HasKey
+	case w.HasPQCKey != nil:
+		s.Registered = *w.HasPQCKey
 	}
 	switch {
 	case w.AlgorithmID != nil:
@@ -127,7 +134,84 @@ func GetPQCStatus(client QorRPC, address string) (Status, error) {
 	if err := json.Unmarshal(raw, &wire); err != nil {
 		return Status{}, fmt.Errorf("pqcdx: decode qor_getPQCKeyStatus: %w", err)
 	}
+	// No answer is not "not registered": reading it that way makes a client
+	// re-register a key the chain already has, and pay the fee each time.
+	if wire.Registered == nil && wire.IsRegistered == nil && wire.HasKey == nil && wire.HasPQCKey == nil &&
+		len(wire.Pubkey) == 0 && len(wire.PublicKey) == 0 {
+		return Status{}, fmt.Errorf("pqcdx: qor_getPQCKeyStatus gave no usable answer for %s; cannot tell whether a PQC key is registered", address)
+	}
 	return wire.toStatus(), nil
+}
+
+var (
+	registeredMu    sync.Mutex
+	registeredCache = map[string]bool{}
+)
+
+// FetchPQCStatus reads the PQC registration status over REST
+// (GET {restURL}/qorechain/pqc/v1/account/{address}), the route every public
+// endpoint serves (the qor_* JSON-RPC namespace is not exposed publicly).
+//
+// The chain answers {"found": false} for an account without a key. Anything
+// that is not a readable "found" — an HTTP error, a missing field, a transport
+// failure — is UNKNOWN: retried once, then returned as an error. It is never
+// read as "not registered". A positive answer is cached per (restURL, address).
+func FetchPQCStatus(restURL, address string) (Status, error) {
+	base := strings.TrimRight(restURL, "/")
+	key := base + "|" + address
+	registeredMu.Lock()
+	cached := registeredCache[key]
+	registeredMu.Unlock()
+	if cached {
+		return Status{Registered: true}, nil
+	}
+	var lastErr error
+	for attempt := 0; attempt < 2; attempt++ {
+		raw, err := query.NewRestClient(base, nil).GetPQCAccount(address)
+		if err != nil {
+			lastErr = err
+			continue
+		}
+		var body struct {
+			Found   *bool `json:"found"`
+			Account *struct {
+				PublicKey []byte `json:"public_key"`
+			} `json:"account"`
+		}
+		if err := json.Unmarshal(raw, &body); err != nil || body.Found == nil {
+			lastErr = fmt.Errorf(`no "found" field in the answer for %s`, address)
+			continue
+		}
+		if !*body.Found {
+			return Status{}, nil
+		}
+		registeredMu.Lock()
+		registeredCache[key] = true
+		registeredMu.Unlock()
+		s := Status{Registered: true}
+		if body.Account != nil {
+			s.Pubkey = body.Account.PublicKey
+		}
+		return s, nil
+	}
+	return Status{}, fmt.Errorf("pqcdx: cannot tell whether %s has a registered PQC key: %w", address, lastErr)
+}
+
+// ClearPQCStatusCache forgets cached registration answers (tests, network
+// switches).
+func ClearPQCStatusCache() {
+	registeredMu.Lock()
+	registeredCache = map[string]bool{}
+	registeredMu.Unlock()
+}
+
+// isAlreadyRegistered reports the chain's refusal of a second registration
+// (pqc 7): not an error for a helper whose job is "make sure it is registered".
+func isAlreadyRegistered(code uint32, codespace, rawLog string) bool {
+	if strings.Contains(strings.ToLower(rawLog), "pqc account already registered") {
+		return true
+	}
+	return codespace == "pqc" && code == 7
 }
 
 // IsPQCRegistered reports whether an address has a PQC key registered, via
@@ -199,7 +283,13 @@ func New(signer Signer, opts Options) *Client {
 func (c *Client) Address() string { return c.signer.Account.Address }
 
 // Status reads the signer's own PQC registration status.
+//
+// It reads REST from Signer.RestURL (every public endpoint serves it); the
+// qor_* JSON-RPC client is only used when no REST URL is set.
 func (c *Client) Status() (Status, error) {
+	if c.signer.RestURL != "" {
+		return FetchPQCStatus(c.signer.RestURL, c.signer.Account.Address)
+	}
 	return GetPQCStatus(c.qor, c.signer.Account.Address)
 }
 
@@ -261,10 +351,13 @@ func (c *Client) registerMessage(keyType string, proofOfPossession []byte) (*pqc
 }
 
 // EnsurePQCRegistered ensures the signer's PQC key is registered on chain. It is
-// idempotent: unless RegisterOptions.Force is set, it first checks
-// qor_getPQCKeyStatus and returns AlreadyRegistered without broadcasting when a
-// key is present; otherwise it builds and broadcasts a MsgRegisterPQCKeyV2
-// carrying the signer's Dilithium and ECDSA public keys.
+// idempotent: unless RegisterOptions.Force is set, it first reads the status
+// (Client.Status: REST from Signer.RestURL) and returns AlreadyRegistered
+// without broadcasting when a key is present; an unreadable status is an error,
+// never a blind registration (the chain charges the fee before refusing a second
+// one). Otherwise it builds and broadcasts a MsgRegisterPQCKeyV2 carrying the
+// signer's Dilithium and ECDSA public keys. A refusal as "already registered"
+// (pqc 7) counts as AlreadyRegistered.
 func (c *Client) EnsurePQCRegistered(opts RegisterOptions) (EnsureResult, error) {
 	if !opts.Force {
 		s, err := c.Status()
@@ -281,7 +374,14 @@ func (c *Client) EnsurePQCRegistered(opts RegisterOptions) (EnsureResult, error)
 	}
 	res, err := c.broadcast([]sdk.Msg{msg})
 	if err != nil {
+		var txErr *tx.QoreTxError
+		if errors.As(err, &txErr) && isAlreadyRegistered(txErr.Code, txErr.Codespace, txErr.RawLog) {
+			return EnsureResult{AlreadyRegistered: true}, nil
+		}
 		return EnsureResult{}, err
+	}
+	if res.Code != 0 && isAlreadyRegistered(res.Code, res.Codespace, res.RawLog) {
+		return EnsureResult{AlreadyRegistered: true}, nil
 	}
 	return EnsureResult{TxHash: res.TxHash}, nil
 }
