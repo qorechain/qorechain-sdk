@@ -163,17 +163,21 @@ describe("ensurePqcRegistered", () => {
   it("checks over REST (singular route, `found`) and skips a registered key", async () => {
     clearPqcStatusCache();
     const { tx, signAndBroadcast } = fakeTx();
+    const kp = generatePqcKeypair();
     const fetch = vi.fn(async () => ({
       ok: true,
       status: 200,
-      json: async () => ({ found: true, account: { address: ADDR, public_key: "AAAA" } }),
+      json: async () => ({
+        found: true,
+        account: { address: ADDR, public_key: Buffer.from(kp.publicKey).toString("base64") },
+      }),
     }));
-    const res = await ensurePqcRegistered(tx, { pqcKeypair: generatePqcKeypair(), rest: "https://lcd/", fetch });
+    const res = await ensurePqcRegistered(tx, { pqcKeypair: kp, rest: "https://lcd/", fetch });
     expect(res.alreadyRegistered).toBe(true);
     expect(signAndBroadcast).not.toHaveBeenCalled();
     expect(fetch).toHaveBeenCalledWith(`https://lcd/qorechain/pqc/v1/account/${ADDR}`);
     // A positive answer is cached: the next call asks nobody.
-    await ensurePqcRegistered(tx, { pqcKeypair: generatePqcKeypair(), rest: "https://lcd", fetch });
+    await ensurePqcRegistered(tx, { pqcKeypair: kp, rest: "https://lcd", fetch });
     expect(fetch).toHaveBeenCalledOnce();
   });
 

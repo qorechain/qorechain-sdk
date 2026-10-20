@@ -16,6 +16,10 @@
  * block) and `commit` onto `signAndBroadcast`.
  */
 
+import { hexToBytes } from "@noble/hashes/utils";
+
+import type { FetchLike } from "../query/http";
+
 /** Broadcast mode for a signed transaction. */
 export type BroadcastMode = "sync" | "async" | "commit";
 
@@ -61,4 +65,48 @@ export interface BroadcastResult {
    * cross-VM callee's return value — without a second round-trip.
    */
   msgResponses?: ReadonlyArray<{ typeUrl: string; value: Uint8Array }>;
+}
+
+/** A consensus client that can read an indexed transaction (cosmjs `CometClient`). */
+interface TxLookupClient {
+  tx(params: { hash: Uint8Array }): Promise<{ result: { codespace?: string } }>;
+}
+
+/**
+ * The codespace of a transaction that failed in a block.
+ *
+ * cosmjs's `DeliverTxResponse` carries the code but not the codespace, and a
+ * code means nothing without it (`pqc` 7 is not `sdk` 7). Reads it back from
+ * the indexed transaction: over REST when `rest` is given, otherwise from the
+ * cosmjs client's own consensus connection. Best effort — `undefined` when
+ * neither answers.
+ */
+export async function lookupDeliverCodespace(
+  transactionHash: string,
+  src: { rest?: string; fetch?: FetchLike; client?: unknown },
+): Promise<string | undefined> {
+  if (src.rest) {
+    try {
+      const f = src.fetch ?? (globalThis.fetch as FetchLike);
+      const res = await f(`${src.rest.replace(/\/+$/, "")}/cosmos/tx/v1beta1/txs/${transactionHash}`);
+      if (res.ok) {
+        const body = (await res.json()) as { tx_response?: { codespace?: unknown } };
+        const cs = body?.tx_response?.codespace;
+        if (typeof cs === "string") return cs;
+      }
+    } catch {
+      // fall through to the consensus client
+    }
+  }
+  // StargateClient keeps its CometClient behind a protected accessor.
+  const comet = (src.client as { getCometClient?: () => TxLookupClient | undefined } | undefined)?.getCometClient?.();
+  if (comet && /^[0-9a-fA-F]+$/.test(transactionHash)) {
+    try {
+      const res = await comet.tx({ hash: hexToBytes(transactionHash) });
+      if (typeof res.result.codespace === "string") return res.result.codespace;
+    } catch {
+      // unknown
+    }
+  }
+  return undefined;
 }

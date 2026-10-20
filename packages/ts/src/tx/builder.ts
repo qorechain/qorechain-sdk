@@ -38,7 +38,7 @@ import { qorechainRegistry } from "../messages/registry";
 import { MsgSend } from "cosmjs-types/cosmos/bank/v1beta1/tx";
 import type { Coin } from "../query/rest";
 import type { StdFee } from "./fees";
-import type { BroadcastMode, BroadcastResult } from "./broadcast";
+import { lookupDeliverCodespace, type BroadcastMode, type BroadcastResult } from "./broadcast";
 import { txErrorFrom } from "../errors";
 import { GasPrice, calculateFee } from "./gas";
 
@@ -359,7 +359,9 @@ export class TxClient {
       if (res.code !== 0) {
         throw txErrorFrom({
           code: res.code,
-          codespace: (res as { codespace?: string }).codespace,
+          codespace:
+            (res as { codespace?: string }).codespace ??
+            (await lookupDeliverCodespace(res.transactionHash, { client: this.client })),
           rawLog: res.rawLog,
           txHash: res.transactionHash,
         });

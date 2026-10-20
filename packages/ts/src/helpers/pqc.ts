@@ -34,6 +34,8 @@
  */
 
 import type { EncodeObject } from "@cosmjs/proto-signing";
+import { shake256 } from "@noble/hashes/sha3";
+import { bytesToHex, hexToBytes } from "@noble/hashes/utils";
 
 import { pqc as pqcMsg } from "../messages/qorechain";
 import { validateClassicalKeyForSender } from "../pqc/classical-key";
@@ -176,7 +178,7 @@ export async function getPqcStatus(
 }
 
 /** Positive answers per (rest, address): a registered key stays registered. */
-const registeredCache = new Set<string>();
+const registeredCache = new Map<string, PqcStatus>();
 
 /**
  * Read the PQC registration status over REST
@@ -198,7 +200,8 @@ export async function fetchPqcStatus(opts: {
 }): Promise<PqcStatus> {
   const base = opts.rest.replace(/\/+$/, "");
   const key = `${base}|${opts.address}`;
-  if (registeredCache.has(key)) return { registered: true };
+  const cached = registeredCache.get(key);
+  if (cached) return { ...cached };
   const fetchImpl = opts.fetch ?? (globalThis.fetch as FetchLike);
   const url = `${base}/qorechain/pqc/v1/account/${encodeURIComponent(opts.address)}`;
   let lastError: unknown;
@@ -211,13 +214,13 @@ export async function fetchPqcStatus(opts: {
         throw new Error(`no "found" field in the answer from ${url}`);
       }
       if (!body.found) return { registered: false };
-      registeredCache.add(key);
       const account = (body.account ?? {}) as Record<string, unknown>;
       const status: PqcStatus = { registered: true };
       const algorithmId = asNumber(account.algorithm_id ?? account.algorithmId ?? account.algorithm);
       if (algorithmId !== undefined) status.algorithmId = algorithmId;
       if (typeof account.public_key === "string") status.pubkey = account.public_key;
-      return status;
+      registeredCache.set(key, status);
+      return { ...status };
     } catch (e) {
       lastError = e;
     }
@@ -244,6 +247,70 @@ async function fetchChainId(rest: string, fetchImpl?: FetchLike): Promise<string
   const network = body?.default_node_info?.network;
   if (typeof network !== "string" || network === "") throw new Error(`no chain id in the answer from ${url}`);
   return network;
+}
+
+/**
+ * The registered public key carried by a {@link PqcStatus}, as bytes: the REST
+ * route returns it base64, `qor_getPQCKeyStatus` hex. `undefined` when the
+ * status carries no key or it does not decode.
+ */
+export function pqcStatusPublicKey(status: PqcStatus): Uint8Array | undefined {
+  const raw = status.pubkey;
+  if (raw instanceof Uint8Array) return raw;
+  if (typeof raw !== "string" || raw === "") return undefined;
+  const hex = raw.startsWith("0x") || raw.startsWith("0X") ? raw.slice(2) : raw;
+  try {
+    if (hex.length % 2 === 0 && /^[0-9a-fA-F]+$/.test(hex)) return hexToBytes(hex);
+    const bin = atob(raw.replace(/-/g, "+").replace(/_/g, "/"));
+    return Uint8Array.from(bin, (c) => c.charCodeAt(0));
+  } catch {
+    return undefined;
+  }
+}
+
+/**
+ * Whether the key a {@link PqcStatus} reports registered is `publicKey`:
+ * `true` / `false`, or `undefined` when the status carries no readable key.
+ */
+export function isRegisteredPqcKey(status: PqcStatus, publicKey: Uint8Array): boolean | undefined {
+  if (!status.registered) return false;
+  const registered = pqcStatusPublicKey(status);
+  if (!registered) return undefined;
+  return registered.length === publicKey.length && registered.every((b, i) => b === publicKey[i]);
+}
+
+/**
+ * Thrown by {@link ensurePqcRegistered} (and {@link migrateToHybrid}) when the
+ * account already has a PQC key and it is NOT the caller's keypair. Nothing is
+ * broadcast: the chain refuses a second registration after charging the fee,
+ * and every hybrid transaction signed with the caller's key would be refused.
+ * Sign with the keypair that registered the account, or rotate the key
+ * (`MsgRotatePQCKey`, see `rotatePqcKeyMsgFromMnemonic`).
+ */
+export class PqcKeyMismatchError extends Error {
+  /** A short stable identifier, like {@link QoreTxError.kind}. */
+  readonly kind = "pqc_key_mismatch";
+  constructor(
+    /** The account. */
+    readonly address: string,
+    /** The key registered on chain. */
+    readonly registeredPublicKey: Uint8Array,
+    /** The caller's key. */
+    readonly publicKey: Uint8Array,
+  ) {
+    super(
+      `${address} already has a different PQC key registered (registered ${keyFingerprint(registeredPublicKey)}, ` +
+        `this keypair ${keyFingerprint(publicKey)}). Nothing was sent. Sign with the keypair that registered ` +
+        "the account, or rotate its key with MsgRotatePQCKey.",
+    );
+    this.name = "PqcKeyMismatchError";
+    Object.setPrototypeOf(this, PqcKeyMismatchError.prototype);
+  }
+}
+
+/** First 8 bytes of shake256(key), hex: enough to tell two keys apart in a message. */
+function keyFingerprint(key: Uint8Array): string {
+  return bytesToHex(shake256(key, { dkLen: 8 }));
 }
 
 /** True for the chain's refusal of a second registration (`pqc` 7). */
@@ -378,11 +445,15 @@ export function buildRegisterPqcKeyMsg(
 /**
  * Register the signer's PQC key if it is not already registered — idempotent.
  *
- * If a {@link EnsurePqcRegisteredOptions.statusSource} (or pre-read `status`) is
- * supplied and the key is already registered, this returns
- * `{ alreadyRegistered: true }` WITHOUT broadcasting. Otherwise it builds and
- * broadcasts `MsgRegisterPQCKeyV2` with the signer's Dilithium public key (from
- * `pqcKeypair`) plus the supplied ECDSA public key.
+ * It reads the account's status first (`rest`, `statusSource` or a pre-read
+ * `status`). When the account already has a key, this returns
+ * `{ alreadyRegistered: true }` WITHOUT broadcasting, provided the registered
+ * key is `pqcKeypair`'s. When it is a different key it throws a
+ * {@link PqcKeyMismatchError}: the caller's hybrid transactions would all be
+ * refused. (A status that carries no public key cannot be compared and is
+ * taken as registered; the REST route always carries it.) Otherwise it builds
+ * and broadcasts `MsgRegisterPQCKeyV2` with the signer's Dilithium public key
+ * plus the supplied ECDSA public key.
  *
  * This is the single call that makes a dApp quantum-safe: run it once at startup
  * (or before the first hybrid tx) and the account is PQC-protected thereafter.
@@ -412,6 +483,11 @@ export async function ensurePqcRegistered(
     );
   }
   if (status?.registered) {
+    // Registered, but by whom? A different key means the caller's hybrid
+    // transactions would all be refused; say so now rather than "done".
+    if (isRegisteredPqcKey(status, opts.pqcKeypair.publicKey) === false) {
+      await throwIfStillMismatched(sender, opts, status);
+    }
     return { alreadyRegistered: true };
   }
 
@@ -436,7 +512,16 @@ export async function ensurePqcRegistered(
   } catch (e) {
     // The key was registered after all (a race, or a stale answer): not an
     // error for a helper whose job is "make sure it is registered".
-    if (isAlreadyRegistered(e)) return { alreadyRegistered: true };
+    if (isAlreadyRegistered(e)) {
+      if (opts.rest) {
+        registeredCache.delete(`${opts.rest.replace(/\/+$/, "")}|${sender}`);
+        const now = await fetchPqcStatus({ rest: opts.rest, address: sender, fetch: opts.fetch });
+        if (now.registered && isRegisteredPqcKey(now, opts.pqcKeypair.publicKey) === false) {
+          throw new PqcKeyMismatchError(sender, pqcStatusPublicKey(now)!, opts.pqcKeypair.publicKey);
+        }
+      }
+      return { alreadyRegistered: true };
+    }
     throw e;
   }
   return {
@@ -444,6 +529,25 @@ export async function ensurePqcRegistered(
     txHash: result.transactionHash,
     result,
   };
+}
+
+/**
+ * The status said "registered, with another key". When it came over REST, read
+ * it once more uncached (a rotation may have just landed) before throwing.
+ */
+async function throwIfStillMismatched(
+  sender: string,
+  opts: EnsurePqcRegisteredOptions,
+  status: PqcStatus,
+): Promise<void> {
+  let current = status;
+  if (opts.rest && !opts.status) {
+    registeredCache.delete(`${opts.rest.replace(/\/+$/, "")}|${sender}`);
+    current = await fetchPqcStatus({ rest: opts.rest, address: sender, fetch: opts.fetch });
+  }
+  if (current.registered && isRegisteredPqcKey(current, opts.pqcKeypair.publicKey) === false) {
+    throw new PqcKeyMismatchError(sender, pqcStatusPublicKey(current)!, opts.pqcKeypair.publicKey);
+  }
 }
 
 /** Options for {@link migratePqcKey} (PQC key rotation). */

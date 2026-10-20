@@ -41,6 +41,8 @@ import {
   type SignBytesVersionOption,
 } from "./signbytes";
 import type { FetchLike } from "../query/http";
+import { txErrorFrom } from "../errors";
+import { lookupDeliverCodespace } from "./broadcast";
 
 export { ETHSECP256K1_PUBKEY_TYPE } from "./sign-eth";
 
@@ -195,11 +197,12 @@ export class EthNativeSigner {
       const { txRawBytes } = this.sign({ ...params, signBytesVersion });
       const res = await transport.broadcastTx(txRawBytes);
       if (res.code !== 0) {
+        const codespace =
+          (res as { codespace?: string }).codespace ??
+          (await lookupDeliverCodespace(res.transactionHash, { rest: this.rest, fetch: this.fetchImpl, client: transport }));
         throw Object.assign(
-          new Error(
-            `eth-native tx failed with code ${res.code}: ${res.rawLog ?? "(no log)"} (hash ${res.transactionHash})`,
-          ),
-          { code: res.code, rawLog: res.rawLog, transactionHash: res.transactionHash },
+          txErrorFrom({ code: res.code, codespace, rawLog: res.rawLog, txHash: res.transactionHash }),
+          { transactionHash: res.transactionHash },
         );
       }
       return res;

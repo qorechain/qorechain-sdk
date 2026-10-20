@@ -82,7 +82,8 @@ import {
 } from "./signbytes";
 import type { FetchLike } from "../query/http";
 import type { StdFee } from "./fees";
-import type { BroadcastMode, BroadcastResult } from "./broadcast";
+import { lookupDeliverCodespace, type BroadcastMode, type BroadcastResult } from "./broadcast";
+import { txErrorFrom } from "../errors";
 
 /** The fields shared by {@link buildHybridTx} and {@link signAndBroadcastHybrid}. */
 export interface BuildHybridTxOptions {
@@ -388,11 +389,12 @@ async function broadcastHybridOnce(
   if (mode === "commit") {
     const res = await transport.broadcastTx(built.txRawBytes);
     if (res.code !== 0) {
+      const codespace =
+        (res as { codespace?: string }).codespace ??
+        (await lookupDeliverCodespace(res.transactionHash, { rest: opts.rest, fetch: opts.fetch, client: transport }));
       throw Object.assign(
-        new Error(
-          `hybrid transaction failed with code ${res.code}: ${res.rawLog ?? "(no log)"} (hash ${res.transactionHash})`,
-        ),
-        { code: res.code, rawLog: res.rawLog, transactionHash: res.transactionHash },
+        txErrorFrom({ code: res.code, codespace, rawLog: res.rawLog, txHash: res.transactionHash }),
+        { transactionHash: res.transactionHash },
       );
     }
     return {

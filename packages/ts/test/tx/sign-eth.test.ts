@@ -280,7 +280,13 @@ describe("eth-native hybrid sign-bytes form", () => {
     // Neither plan applied on the first resolve (both names asked), then the
     // network upgrades, so the forced re-resolve sees it.
     let asked = 0;
-    const f = vi.fn(async () => {
+    const txLookups: string[] = [];
+    const f = vi.fn(async (url: string) => {
+      // The refused tx's codespace is read back (cosmjs results carry none).
+      if (url.includes("/cosmos/tx/v1beta1/txs/")) {
+        txLookups.push(url);
+        return new Response(JSON.stringify({ tx_response: { code: 21, codespace: "pqc" } }));
+      }
       asked += 1;
       return new Response(JSON.stringify({ height: asked <= 2 ? "0" : "5746000" }));
     });
@@ -300,7 +306,8 @@ describe("eth-native hybrid sign-bytes form", () => {
     });
     expect(res.transactionHash).toBe("OK");
     expect(transport.broadcastTx).toHaveBeenCalledTimes(2);
-    expect(f).toHaveBeenCalledTimes(3); // 2 plan names, then the refresh
+    expect(asked).toBe(3); // 2 plan names, then the refresh
+    expect(txLookups).toEqual(["https://lcd.example/cosmos/tx/v1beta1/txs/X"]);
   });
 
   it("EthNativeSigner auto without rest on a legacy network throws", async () => {
