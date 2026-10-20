@@ -16,10 +16,10 @@ import org.junit.jupiter.api.Test;
 /**
  * Deterministic-signing regression tests.
  *
- * <p>The chain's PQC verifier accepts ONLY deterministic (FIPS-204 §3.4,
- * {@code rnd} = 32 zero bytes) ML-DSA-87 signatures; hedged signing is rejected
- * with codespace {@code pqc}. These tests pin the deterministic default against
- * the shared qorechain-pqc vectors.
+ * <p>The SDK signs deterministically by default (FIPS-204 §3.4, {@code rnd} =
+ * 32 zero bytes) so signatures are reproducible; the chain accepts hedged
+ * signatures equally. These tests pin the deterministic default against the
+ * shared qorechain-pqc vectors.
  */
 class PqcDeterministicTest {
 
@@ -42,7 +42,7 @@ class PqcDeterministicTest {
     @Test
     void pqcSignIsDeterministic() {
         PqcKeypair kp = Pqc.generatePqcKeypair();
-        byte[] msg = "deterministic ML-DSA-87 required by the chain".getBytes(StandardCharsets.UTF_8);
+        byte[] msg = "deterministic ML-DSA-87 is the SDK default".getBytes(StandardCharsets.UTF_8);
         assertArrayEquals(
                 Pqc.pqcSign(kp.secretKey, msg),
                 Pqc.pqcSign(kp.secretKey, msg),
@@ -66,7 +66,7 @@ class PqcDeterministicTest {
     @Test
     void pqcSignHedgedOptInDiffersButVerifies() {
         PqcKeypair kp = Pqc.generatePqcKeypair();
-        byte[] msg = "hedged signatures are NOT accepted by the chain".getBytes(StandardCharsets.UTF_8);
+        byte[] msg = "hedged signatures verify just the same".getBytes(StandardCharsets.UTF_8);
         byte[] det = Pqc.pqcSign(kp.secretKey, msg);
         byte[] hedged = Pqc.pqcSignHedged(kp.secretKey, msg);
         assertFalse(Arrays.equals(det, hedged));

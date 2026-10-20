@@ -67,17 +67,26 @@ refuses to register when it cannot tell — it never registers blind. Pass `rest
 check and is only for an account known to have no key.
 :::
 
+:::caution One account, one key
+When the account already has a key, `ensurePqcRegistered` checks that it is
+**this** keypair's. If another key is registered (a second device, a keypair
+generated separately, an unfinished rotation) it throws `PqcKeyMismatchError`
+and sends nothing: every hybrid transaction signed with this keypair would be
+refused. Sign with the keypair that registered the account, or rotate its key
+with `MsgRotatePQCKey`.
+:::
+
 Under the hood it builds and broadcasts `MsgRegisterPQCKeyV2` (the chain's
 classical-exempt bootstrap path, with an explicit ML-DSA-87 `algorithmId`)
 carrying the signer's Dilithium public key (from `pqcKeypair`) plus, optionally,
 the account's ECDSA public key.
 
 :::note Deterministic signing
-ML-DSA-87 signing in every SDK language is **deterministic** (FIPS-204 §3.4,
-`rnd` = 32 zero bytes). The chain's verifier accepts only deterministic
-signatures — randomized ("hedged") signatures are rejected with codespace
-`pqc`. The SDK signs deterministically by default; the hedged variants are
-opt-in and for off-chain use only.
+ML-DSA-87 signing in every SDK language is **deterministic** by default
+(FIPS-204 §3.4, `rnd` = 32 zero bytes), so signatures are reproducible against
+the test vectors. This is an SDK default, not a chain rule: the chain verifies
+any valid FIPS-204 ML-DSA-87 signature, hedged or deterministic. The hedged
+(randomized) variants are opt-in and equally accepted.
 :::
 
 ## Sign hybrid

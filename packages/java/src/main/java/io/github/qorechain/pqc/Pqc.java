@@ -70,11 +70,11 @@ public final class Pqc {
      * Sign a message with an ML-DSA-87 secret key (pure mode, empty context).
      *
      * <p>Signing is DETERMINISTIC (FIPS-204 §3.4, {@code rnd} = 32 zero bytes):
-     * the same {@code (secretKey, message)} always yields the same signature.
-     * The chain's on-chain PQC verifier accepts ONLY deterministic ML-DSA-87
-     * signatures (hedged signatures are rejected with codespace {@code pqc}),
-     * so this default is consensus-critical. Use {@link #pqcSignHedged} only
-     * for off-chain uses that want side-channel hedging.
+     * the same {@code (secretKey, message)} always yields the same signature,
+     * reproducible against the shared test vectors. The chain's PQC verifier
+     * accepts any valid FIPS-204 ML-DSA-87 signature, hedged or deterministic;
+     * use {@link #pqcSignHedged} for randomized (hedged) signing, which is
+     * equally accepted.
      *
      * @throws IllegalArgumentException if {@code secretKey} is not exactly
      *     {@link #ML_DSA_87_SECRET_KEY_LENGTH} bytes.
@@ -98,8 +98,8 @@ public final class Pqc {
      * Sign a message with an ML-DSA-87 secret key using the RANDOMIZED (hedged)
      * FIPS-204 variant.
      *
-     * <p>NOT accepted by the chain's PQC verifier — use {@link #pqcSign} for
-     * anything that goes on-chain.
+     * <p>Accepted by the chain's PQC verifier exactly like {@link #pqcSign}
+     * output; the signature is simply not reproducible.
      *
      * @throws IllegalArgumentException if {@code secretKey} is not exactly
      *     {@link #ML_DSA_87_SECRET_KEY_LENGTH} bytes.

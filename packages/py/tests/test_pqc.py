@@ -151,11 +151,11 @@ def test_build_extension_rejects_wrong_public_key_length():
         build_hybrid_signature_extension(ALGORITHM_DILITHIUM5, b"x" * 4627, b"y" * 10)
 
 
-# --- deterministic signing (chain requirement) --------------------------------
+# --- deterministic signing (SDK default) --------------------------------------
 
-# The chain's PQC verifier accepts ONLY deterministic (FIPS-204 §3.4,
-# rnd = 32 zero bytes) ML-DSA-87 signatures; hedged signing is rejected with
-# codespace "pqc". These tests pin the deterministic default.
+# The SDK signs deterministically by default (FIPS-204 §3.4, rnd = 32 zero
+# bytes) so signatures are reproducible against the shared vectors. The chain
+# accepts hedged signatures equally. These tests pin the deterministic default.
 
 _VECTORS_PATH = Path(__file__).parent / "fixtures" / "ml_dsa_87_deterministic.json"
 
@@ -166,7 +166,7 @@ def _vectors() -> list[dict]:
 
 def test_pqc_sign_is_deterministic():
     kp = generate_pqc_keypair()
-    message = b"deterministic ML-DSA-87 required by the chain"
+    message = b"deterministic ML-DSA-87 is the SDK default"
     assert pqc_sign(kp.secret_key, message) == pqc_sign(kp.secret_key, message)
 
 
@@ -183,7 +183,7 @@ def test_pqc_sign_matches_shared_deterministic_vectors():
 
 def test_pqc_sign_hedged_opt_in_differs_but_verifies():
     kp = generate_pqc_keypair()
-    message = b"hedged signatures are NOT accepted by the chain"
+    message = b"hedged signatures verify just the same"
     det = pqc_sign(kp.secret_key, message)
     hedged = pqc_sign(kp.secret_key, message, hedged=True)
     assert hedged != det

@@ -227,8 +227,10 @@ Failures decode through `decodeTxError` with a friendly `kind`:
 | `abstractaccount` | 11 | `authenticator_replay` |
 | `pqc` | 21 | `hybrid_verify_failed` |
 
-`hybrid_verify_failed` most commonly means a **hedged** (non-deterministic)
-ML-DSA-87 signature — the chain accepts only deterministic signatures.
+`hybrid_verify_failed` means the ML-DSA-87 signature did not verify: it was
+made with the wrong key, over the wrong sign-bytes form for the network, or the
+body / authInfo changed after signing. Hedged and deterministic signatures are
+both accepted.
 
 ## Key rotation
 

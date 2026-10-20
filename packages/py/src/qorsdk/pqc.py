@@ -79,11 +79,10 @@ def pqc_sign(secret_key: bytes, message: bytes, *, hedged: bool = False) -> byte
     """Sign a message with an ML-DSA-87 (Dilithium-5) secret key.
 
     DETERMINISTIC (FIPS-204 §3.4, ``rnd`` = 32 zero bytes) by default: the same
-    ``(secret_key, message)`` always yields the same signature. The chain's
-    on-chain PQC verifier accepts ONLY deterministic ML-DSA-87 signatures
-    (hedged signatures are rejected with codespace ``pqc``), so this default is
-    consensus-critical — do not pass ``hedged=True`` for anything that goes
-    on-chain.
+    ``(secret_key, message)`` always yields the same signature, reproducible
+    against the shared test vectors. Pass ``hedged=True`` for randomized
+    (hedged) signing; the chain verifies any valid FIPS-204 ML-DSA-87
+    signature, hedged or deterministic, so both are accepted on-chain.
 
     ``secret_key`` must be EXACTLY :data:`ML_DSA_87_SECRET_KEY_LENGTH` bytes
     (see :func:`pqc_verify` for why the SDK checks sizes itself).

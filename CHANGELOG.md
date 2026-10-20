@@ -86,6 +86,27 @@ after each network release is tagged.
   cache reset. The TS `ensurePqcRegistered` now refuses to run without `rest`,
   `statusSource` or `status`; pass `force: true` to register without a check
   (Java: `EnsureOptions.force`).
+- **`ensurePqcRegistered` reported success when a different key was
+  registered.** It skipped the registration whenever the account had any key,
+  so a client holding another keypair (a second device, a fresh
+  `generatePqcKeypair()`, an unfinished rotation) was told it was registered,
+  and every hybrid transaction it then signed was refused. All five SDKs now
+  compare the registered key with the caller's and raise a key-mismatch error
+  (TS `PqcKeyMismatchError`, kind `pqc_key_mismatch`) without sending
+  anything; a cached answer is re-read once before raising, so a key rotated a
+  moment ago is not a false alarm. The same check runs after the chain's
+  "already registered" refusal, and `migrateToHybrid` inherits it. The cached
+  status now keeps the public key. New helpers: `pqcStatusPublicKey` and
+  `isRegisteredPqcKey` (and their equivalents).
+- **TS: failures inside a block lost their module.** cosmjs's
+  `DeliverTxResponse` carries no codespace, so an error raised during block
+  execution was decoded under `sdk` (for example `pqc` 231 came back as
+  `sdk_231`), and every `pqc` / `ai` classification missed on the commit path.
+  `TxClient.signAndBroadcast`, `signAndBroadcastHybrid` and `EthNativeSigner`
+  now read the codespace back from the indexed transaction (over `rest` when
+  given, otherwise the client's own connection). The hybrid and eth-native
+  paths now throw `QoreTxError` like `TxClient` (still carrying
+  `transactionHash`).
 - **Dependency ranges that froze fixes out.** `@qorechain/sdk` declared
   `@qorechain/evm ^0.5.1` (installed 0.5.x, never 0.8) and
   `@qorechain/pqc ^0.1.1` (never 0.2.x). It now declares `@qorechain/pqc ^0.2.1`,
@@ -107,6 +128,11 @@ after each network release is tagged.
   chain has checked the per-key counter since v3.2.0. Corrected in the code
   docs, the guide and every package README (the README example used
   `getTransactionCount`).
+- **Documentation said the chain rejects hedged ML-DSA signatures.** It does
+  not: the chain verifies any valid FIPS-204 ML-DSA-87 signature, hedged or
+  deterministic. Deterministic signing stays the default (reproducible against
+  the test vectors); the docs and comments in every SDK no longer call it a
+  consensus rule.
 
 ## [0.8.3]
 

@@ -19,11 +19,11 @@
  * audited, pure-TS `@noble/post-quantum`). No primitives are reimplemented
  * here.
  *
- * Signing is DETERMINISTIC (FIPS-204 §3.4, rnd = 32 zero bytes) by default:
- * the chain's on-chain PQC verifier accepts ONLY deterministic ML-DSA-87
- * signatures (hedged signatures are rejected with codespace `pqc`), so this
- * default is consensus-critical. Pass `{ hedged: true }` to {@link pqcSign}
- * only for off-chain uses that want side-channel hedging.
+ * Signing is DETERMINISTIC (FIPS-204 §3.4, rnd = 32 zero bytes) by default, so
+ * signatures are reproducible against the shared test vectors. The chain
+ * verifies any valid FIPS-204 ML-DSA-87 signature, hedged or deterministic;
+ * pass `{ hedged: true }` to {@link pqcSign} for randomized (hedged) signing,
+ * which is equally accepted.
  */
 
 import { mldsa87 } from "@qorechain/pqc";
@@ -108,9 +108,8 @@ export function generatePqcKeypair(seed?: Uint8Array): PqcKeypair {
  * Sign a message with an ML-DSA-87 (Dilithium-5) secret key.
  *
  * DETERMINISTIC (FIPS-204 §3.4, rnd = 32 zero bytes) by default — the same
- * `(secretKey, message)` always yields the same signature. The chain's PQC
- * verifier accepts ONLY deterministic signatures, so do not pass
- * `{ hedged: true }` for anything that goes on-chain.
+ * `(secretKey, message)` always yields the same signature. `{ hedged: true }`
+ * selects randomized signing; the chain's PQC verifier accepts both.
  *
  * The secret key length is checked explicitly before the library is called (see
  * {@link pqcVerify} for why the bindings validate sizes themselves).

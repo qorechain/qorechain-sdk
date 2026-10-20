@@ -12,7 +12,7 @@
  *   - `proof_of_possession` (optional now, to become mandatory): the key's own
  *     ML-DSA signature over
  *     `"qorechain-pqc-pop-v1|<chain-id>|<algorithm>|<account>|<hex(public key)>"`,
- *     lower-case hex, deterministic, empty context — like every chain signature.
+ *     lower-case hex, deterministic, empty context — like every SDK signature.
  *
  * Also from v3.2.3: an account that already has a key must send
  * `MsgRegisterPQCKeyV2` / `MsgMigratePQCKey` with the hybrid signature (only

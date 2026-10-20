@@ -69,11 +69,11 @@ describe("authenticator-lane codespaces (v3.1.85)", () => {
     const d = decodeTxError({
       code: 21,
       codespace: "pqc",
-      rawLog: "hedged sig rejected",
+      rawLog: "hybrid signature verification failed",
     });
     expect(d.kind).toBe("hybrid_verify_failed");
     expect(d.message).toContain("ML-DSA-87");
-    expect(d.message).toContain("hedged sig rejected");
+    expect(d.message).toContain("hybrid signature verification failed");
   });
 
   it("includes the raw log for a mapped module code", () => {

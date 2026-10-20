@@ -107,12 +107,12 @@ fn extension_rejects_invalid_input() {
     );
 }
 
-// --- deterministic signing (chain requirement) -------------------------------
+// --- deterministic signing (SDK default) -------------------------------------
 //
-// The chain's PQC verifier accepts ONLY deterministic (FIPS-204 §3.4,
-// rnd = 32 zero bytes) ML-DSA-87 signatures; hedged signing is rejected with
-// codespace "pqc". These tests pin the deterministic default against the
-// shared qorechain-pqc vectors.
+// The SDK signs deterministically by default (FIPS-204 §3.4, rnd = 32 zero
+// bytes) so signatures are reproducible; the chain accepts hedged signatures
+// equally. These tests pin the deterministic default against the shared
+// qorechain-pqc vectors.
 
 fn from_hex(s: &str) -> Vec<u8> {
     assert!(s.len() % 2 == 0, "odd-length hex");
@@ -135,7 +135,7 @@ fn vector_cases() -> Vec<serde_json::Value> {
 #[test]
 fn pqc_sign_is_deterministic() {
     let kp = generate_pqc_keypair().unwrap();
-    let msg = b"deterministic ML-DSA-87 required by the chain";
+    let msg = b"deterministic ML-DSA-87 is the SDK default";
     let a = pqc_sign(&kp.secret_key, msg).unwrap();
     let b = pqc_sign(&kp.secret_key, msg).unwrap();
     assert_eq!(a, b, "two signatures over the same input must be identical");
@@ -301,7 +301,7 @@ fn hybrid_extension_rejects_off_by_one_lengths() {
 #[test]
 fn pqc_sign_hedged_opt_in_differs_but_verifies() {
     let kp = generate_pqc_keypair().unwrap();
-    let msg = b"hedged signatures are NOT accepted by the chain";
+    let msg = b"hedged signatures verify just the same";
     let det = pqc_sign(&kp.secret_key, msg).unwrap();
     let hedged = qorechain::pqc::pqc_sign_hedged(&kp.secret_key, msg).unwrap();
     assert_ne!(det, hedged);

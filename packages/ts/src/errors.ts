@@ -103,15 +103,16 @@ const ABSTRACTACCOUNT_CODES: Record<number, { kind: string; message: string }> =
 
 /**
  * Known error codes in the `pqc` codespace surfaced to dApps. Code 21 is raised
- * when a hybrid (classical + ML-DSA-87) signature fails verification — most
- * commonly a hedged (non-deterministic) ML-DSA signature, which the chain
- * rejects (it accepts ONLY deterministic signatures).
+ * when a hybrid (classical + ML-DSA-87) signature fails verification — the
+ * signature was made with the wrong key, over the wrong sign-bytes form for the
+ * network, or the body / authInfo changed after signing. (Hedged and
+ * deterministic ML-DSA signatures are both accepted.)
  */
 const PQC_CODES: Record<number, { kind: string; message: string }> = {
   21: {
     kind: "hybrid_verify_failed",
     message:
-      "hybrid signature verification failed — the ML-DSA-87 signature did not verify (ensure deterministic signing; hedged signatures are rejected)",
+      "hybrid signature verification failed — the ML-DSA-87 signature did not verify (check the PQC key, the sign-bytes form for this network, and that the body / authInfo did not change after signing)",
   },
   60: {
     kind: "evm_delegation_no_consent",

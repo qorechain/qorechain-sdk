@@ -97,11 +97,11 @@ pub fn pqc_keypair_from_seed(seed: &[u8; 32]) -> PqcKeypair {
 /// Signs a message with an ML-DSA-87 (Dilithium-5) secret key.
 ///
 /// Signing is DETERMINISTIC (FIPS-204 §3.4, `rnd` = 32 zero bytes): the same
-/// `(secret_key, message)` always yields the same signature. The chain's
-/// on-chain PQC verifier accepts ONLY deterministic ML-DSA-87 signatures
-/// (hedged signatures are rejected with codespace `pqc`), so this default is
-/// consensus-critical. Use [`pqc_sign_hedged`] only for off-chain uses that
-/// want side-channel hedging.
+/// `(secret_key, message)` always yields the same signature, reproducible
+/// against the shared test vectors. The chain's PQC verifier accepts any valid
+/// FIPS-204 ML-DSA-87 signature, hedged or deterministic; use
+/// [`pqc_sign_hedged`] for randomized (hedged) signing, which is equally
+/// accepted.
 pub fn pqc_sign(secret_key: &[u8], message: &[u8]) -> Result<Vec<u8>> {
     let sk = decode_secret_key(secret_key)?;
     // Deterministic variant: fixed all-zero 32-byte rnd, empty context (the
@@ -115,8 +115,8 @@ pub fn pqc_sign(secret_key: &[u8], message: &[u8]) -> Result<Vec<u8>> {
 /// Signs a message with an ML-DSA-87 secret key using the RANDOMIZED (hedged)
 /// FIPS-204 variant.
 ///
-/// NOT accepted by the chain's PQC verifier — use [`pqc_sign`] for anything
-/// that goes on-chain.
+/// Accepted by the chain's PQC verifier exactly like [`pqc_sign`] output; the
+/// signature is simply not reproducible.
 pub fn pqc_sign_hedged(secret_key: &[u8], message: &[u8]) -> Result<Vec<u8>> {
     let sk = decode_secret_key(secret_key)?;
     // Empty context, the chain's hybrid scheme convention.

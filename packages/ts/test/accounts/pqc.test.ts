@@ -279,10 +279,10 @@ describe("HybridSigner (hybrid mode)", () => {
   });
 });
 
-describe("ML-DSA-87 deterministic signing (chain requirement)", () => {
-  // The chain's PQC verifier accepts ONLY deterministic (FIPS-204 §3.4,
-  // rnd = 32 zero bytes) ML-DSA-87 signatures; hedged signing is rejected
-  // with codespace "pqc". These tests pin the deterministic default.
+describe("ML-DSA-87 deterministic signing (SDK default)", () => {
+  // The SDK signs deterministically by default (FIPS-204 §3.4, rnd = 32 zero
+  // bytes) so signatures are reproducible against the shared vectors. The
+  // chain accepts hedged signatures equally. These tests pin the default.
   interface VectorCase {
     seed: string;
     publicKey: string;

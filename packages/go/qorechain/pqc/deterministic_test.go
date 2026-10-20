@@ -2,10 +2,10 @@ package pqc
 
 // Deterministic-signing regression tests.
 //
-// The chain's PQC verifier accepts ONLY deterministic (FIPS-204 §3.4,
-// rnd = 32 zero bytes) ML-DSA-87 signatures; hedged signing is rejected with
-// codespace "pqc". These tests pin the deterministic behaviour against the
-// shared qorechain-pqc vectors.
+// The SDK signs deterministically (FIPS-204 §3.4, rnd = 32 zero bytes) so
+// signatures are reproducible; the chain accepts hedged signatures equally.
+// These tests pin the deterministic behaviour against the shared
+// qorechain-pqc vectors.
 
 import (
 	"bytes"
@@ -57,7 +57,7 @@ func TestPQCSignIsDeterministic(t *testing.T) {
 	if err != nil {
 		t.Fatalf("keygen: %v", err)
 	}
-	msg := []byte("deterministic ML-DSA-87 required by the chain")
+	msg := []byte("deterministic ML-DSA-87 is the SDK default")
 	a, err := PQCSign(kp.SecretKey, msg)
 	if err != nil {
 		t.Fatalf("sign: %v", err)
