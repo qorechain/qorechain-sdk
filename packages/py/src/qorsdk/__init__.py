@@ -175,6 +175,7 @@ from .pqc_dx import (
     DILITHIUM5_KEY_TYPE,
     HYBRID_KEY_TYPE,
     EnsureResult,
+    PqcKeyMismatchError,
     PqcStatus,
     build_migrate_pqc_key,
     build_register_pqc_key,
@@ -185,8 +186,10 @@ from .pqc_dx import (
     get_pqc_status_async,
     is_pqc_registered,
     is_pqc_registered_async,
+    is_registered_pqc_key,
     migrate_pqc_key,
     migrate_to_hybrid,
+    pqc_status_public_key,
 )
 from .precompiles import (
     PRECOMPILE_AI_ANOMALY_CHECK,
@@ -374,6 +377,9 @@ __all__ = [
     "HYBRID_KEY_TYPE",
     "PqcStatus",
     "EnsureResult",
+    "PqcKeyMismatchError",
+    "pqc_status_public_key",
+    "is_registered_pqc_key",
     "get_pqc_status",
     "fetch_pqc_status",
     "clear_pqc_status_cache",

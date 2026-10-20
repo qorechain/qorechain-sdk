@@ -23,6 +23,9 @@
 package pqcdx
 
 import (
+	"bytes"
+	"encoding/base64"
+	"encoding/hex"
 	"encoding/json"
 	"errors"
 	"fmt"
@@ -30,6 +33,7 @@ import (
 	"sync"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	"golang.org/x/crypto/sha3"
 
 	"github.com/qorechain/qorechain-sdk/packages/go/qorechain/accounts"
 	"github.com/qorechain/qorechain-sdk/packages/go/qorechain/messages"
@@ -77,16 +81,50 @@ type Status struct {
 
 // statusWire tolerantly decodes the qor_getPQCKeyStatus response. The chain
 // reports the field under one of a few common names, and the public key may
-// arrive as base64 (Go []byte JSON) or 0x-hex; both are accepted.
+// arrive as base64 (std or URL-safe) or hex (optional 0x); all are accepted.
 type statusWire struct {
-	Registered   *bool  `json:"registered"`
-	IsRegistered *bool  `json:"is_registered"`
-	HasKey       *bool  `json:"has_key"`
-	HasPQCKey    *bool  `json:"has_pqc_key"`
-	AlgorithmID  *uint8 `json:"algorithm_id"`
-	AlgID        *uint8 `json:"algorithm"`
-	Pubkey       []byte `json:"pubkey"`
-	PublicKey    []byte `json:"public_key"`
+	Registered   *bool    `json:"registered"`
+	IsRegistered *bool    `json:"is_registered"`
+	HasKey       *bool    `json:"has_key"`
+	HasPQCKey    *bool    `json:"has_pqc_key"`
+	AlgorithmID  *uint8   `json:"algorithm_id"`
+	AlgID        *uint8   `json:"algorithm"`
+	Pubkey       keyField `json:"pubkey"`
+	PublicKey    keyField `json:"public_key"`
+}
+
+// keyField is a public key carried as a JSON string, hex (optional 0x prefix)
+// or base64 (std or URL-safe, padded or not). Anything else, or a string that
+// does not decode, reads as no key rather than failing the whole answer.
+type keyField []byte
+
+func (k *keyField) UnmarshalJSON(data []byte) error {
+	var str string
+	if err := json.Unmarshal(data, &str); err != nil {
+		*k = nil
+		return nil
+	}
+	*k = decodeKeyString(str)
+	return nil
+}
+
+// decodeKeyString decodes a hex (optional 0x) or base64 (std / URL-safe) key;
+// nil when empty or undecodable.
+func decodeKeyString(str string) []byte {
+	if str == "" {
+		return nil
+	}
+	h := strings.TrimPrefix(strings.TrimPrefix(str, "0x"), "0X")
+	if len(h)%2 == 0 && h != "" {
+		if b, err := hex.DecodeString(h); err == nil {
+			return b
+		}
+	}
+	std := strings.TrimRight(strings.NewReplacer("-", "+", "_", "/").Replace(str), "=")
+	if b, err := base64.RawStdEncoding.DecodeString(std); err == nil && len(b) > 0 {
+		return b
+	}
+	return nil
 }
 
 func (w statusWire) toStatus() Status {
@@ -143,10 +181,28 @@ func GetPQCStatus(client QorRPC, address string) (Status, error) {
 	return wire.toStatus(), nil
 }
 
+// registeredCache holds positive answers per (restURL, address), with the
+// registered key so a cached answer can still be compared with a keypair.
 var (
 	registeredMu    sync.Mutex
-	registeredCache = map[string]bool{}
+	registeredCache = map[string]Status{}
 )
+
+func statusCacheKey(restURL, address string) string {
+	return strings.TrimRight(restURL, "/") + "|" + address
+}
+
+// forgetStatus drops one cached answer, so the next read asks the chain.
+func forgetStatus(restURL, address string) {
+	registeredMu.Lock()
+	delete(registeredCache, statusCacheKey(restURL, address))
+	registeredMu.Unlock()
+}
+
+func cloneStatus(s Status) Status {
+	s.Pubkey = bytes.Clone(s.Pubkey)
+	return s
+}
 
 // FetchPQCStatus reads the PQC registration status over REST
 // (GET {restURL}/qorechain/pqc/v1/account/{address}), the route every public
@@ -155,15 +211,16 @@ var (
 // The chain answers {"found": false} for an account without a key. Anything
 // that is not a readable "found" — an HTTP error, a missing field, a transport
 // failure — is UNKNOWN: retried once, then returned as an error. It is never
-// read as "not registered". A positive answer is cached per (restURL, address).
+// read as "not registered". A positive answer is cached per (restURL, address),
+// registered key included.
 func FetchPQCStatus(restURL, address string) (Status, error) {
 	base := strings.TrimRight(restURL, "/")
-	key := base + "|" + address
+	key := statusCacheKey(base, address)
 	registeredMu.Lock()
-	cached := registeredCache[key]
+	cached, ok := registeredCache[key]
 	registeredMu.Unlock()
-	if cached {
-		return Status{Registered: true}, nil
+	if ok {
+		return cloneStatus(cached), nil
 	}
 	var lastErr error
 	for attempt := 0; attempt < 2; attempt++ {
@@ -175,7 +232,8 @@ func FetchPQCStatus(restURL, address string) (Status, error) {
 		var body struct {
 			Found   *bool `json:"found"`
 			Account *struct {
-				PublicKey []byte `json:"public_key"`
+				AlgorithmID *uint8   `json:"algorithm_id"`
+				PublicKey   keyField `json:"public_key"`
 			} `json:"account"`
 		}
 		if err := json.Unmarshal(raw, &body); err != nil || body.Found == nil {
@@ -185,13 +243,16 @@ func FetchPQCStatus(restURL, address string) (Status, error) {
 		if !*body.Found {
 			return Status{}, nil
 		}
-		registeredMu.Lock()
-		registeredCache[key] = true
-		registeredMu.Unlock()
 		s := Status{Registered: true}
 		if body.Account != nil {
+			if body.Account.AlgorithmID != nil {
+				s.AlgorithmID = *body.Account.AlgorithmID
+			}
 			s.Pubkey = body.Account.PublicKey
 		}
+		registeredMu.Lock()
+		registeredCache[key] = cloneStatus(s)
+		registeredMu.Unlock()
 		return s, nil
 	}
 	return Status{}, fmt.Errorf("pqcdx: cannot tell whether %s has a registered PQC key: %w", address, lastErr)
@@ -201,8 +262,67 @@ func FetchPQCStatus(restURL, address string) (Status, error) {
 // switches).
 func ClearPQCStatusCache() {
 	registeredMu.Lock()
-	registeredCache = map[string]bool{}
+	registeredCache = map[string]Status{}
 	registeredMu.Unlock()
+}
+
+// PQCStatusPublicKey returns the registered public key a Status carries, or nil
+// when it carries none. (Both readers decode the key the chain sends, base64
+// over REST or hex/base64 over qor_getPQCKeyStatus, into Status.Pubkey.)
+func PQCStatusPublicKey(s Status) []byte {
+	if len(s.Pubkey) == 0 {
+		return nil
+	}
+	return s.Pubkey
+}
+
+// IsRegisteredPQCKey reports whether the key a Status reports registered is
+// publicKey. known is false when the status is registered but carries no key
+// to compare; an unregistered status is (false, true).
+func IsRegisteredPQCKey(s Status, publicKey []byte) (match, known bool) {
+	if !s.Registered {
+		return false, true
+	}
+	registered := PQCStatusPublicKey(s)
+	if registered == nil {
+		return false, false
+	}
+	return bytes.Equal(registered, publicKey), true
+}
+
+// KindPQCKeyMismatch is PQCKeyMismatchError's Kind.
+const KindPQCKeyMismatch = "pqc_key_mismatch"
+
+// PQCKeyMismatchError is returned by EnsurePQCRegistered (and MigrateToHybrid)
+// when the account already has a PQC key and it is NOT the Signer's PQCKeypair.
+// Nothing is broadcast: the chain refuses a second registration after charging
+// the fee, and every hybrid transaction signed with the Signer's key would be
+// refused. Sign with the keypair that registered the account, or rotate its key
+// (MsgRotatePQCKey).
+type PQCKeyMismatchError struct {
+	// Address is the account.
+	Address string
+	// RegisteredPublicKey is the key registered on chain.
+	RegisteredPublicKey []byte
+	// PublicKey is the caller's key.
+	PublicKey []byte
+}
+
+// Kind is a short stable identifier for the error (KindPQCKeyMismatch).
+func (e *PQCKeyMismatchError) Kind() string { return KindPQCKeyMismatch }
+
+func (e *PQCKeyMismatchError) Error() string {
+	return fmt.Sprintf("%s already has a different PQC key registered (registered %s, this keypair %s). "+
+		"Nothing was sent. Sign with the keypair that registered the account, or rotate its key with MsgRotatePQCKey.",
+		e.Address, keyFingerprint(e.RegisteredPublicKey), keyFingerprint(e.PublicKey))
+}
+
+// keyFingerprint is the first 8 bytes of SHAKE-256(key), hex: enough to tell
+// two keys apart in a message.
+func keyFingerprint(key []byte) string {
+	out := make([]byte, 8)
+	sha3.ShakeSum256(out, key)
+	return hex.EncodeToString(out)
 }
 
 // isAlreadyRegistered reports the chain's refusal of a second registration
@@ -354,12 +474,17 @@ func (c *Client) registerMessage(keyType string, proofOfPossession []byte) (*pqc
 
 // EnsurePQCRegistered ensures the signer's PQC key is registered on chain. It is
 // idempotent: unless RegisterOptions.Force is set, it first reads the status
-// (Client.Status: REST from Signer.RestURL) and returns AlreadyRegistered
-// without broadcasting when a key is present; an unreadable status is an error,
+// (Client.Status: REST from Signer.RestURL); an unreadable status is an error,
 // never a blind registration (the chain charges the fee before refusing a second
-// one). Otherwise it builds and broadcasts a MsgRegisterPQCKeyV2 carrying the
-// signer's Dilithium and ECDSA public keys. A refusal as "already registered"
-// (pqc 7) counts as AlreadyRegistered.
+// one). When the account already has a key it compares it with
+// Signer.PQCKeypair: the same key returns AlreadyRegistered without
+// broadcasting; a different key returns a *PQCKeyMismatchError and nothing is
+// sent, since every hybrid transaction signed with the Signer's key would be
+// refused. (A status that carries no public key cannot be compared and is taken
+// as registered; the REST route always carries it.) Otherwise it builds and
+// broadcasts a MsgRegisterPQCKeyV2 carrying the signer's Dilithium and ECDSA
+// public keys. A refusal as "already registered" (pqc 7) counts as
+// AlreadyRegistered, after the same key comparison.
 func (c *Client) EnsurePQCRegistered(opts RegisterOptions) (EnsureResult, error) {
 	if !opts.Force {
 		s, err := c.Status()
@@ -367,6 +492,13 @@ func (c *Client) EnsurePQCRegistered(opts RegisterOptions) (EnsureResult, error)
 			return EnsureResult{}, err
 		}
 		if s.Registered {
+			// Registered, but by whom? A different key means the Signer's hybrid
+			// transactions would all be refused; say so now rather than "done".
+			if match, known := IsRegisteredPQCKey(s, c.signer.PQCKeypair.PublicKey); known && !match {
+				if err := c.checkStillMismatched(s); err != nil {
+					return EnsureResult{}, err
+				}
+			}
 			return EnsureResult{AlreadyRegistered: true}, nil
 		}
 	}
@@ -393,14 +525,62 @@ func (c *Client) EnsurePQCRegistered(opts RegisterOptions) (EnsureResult, error)
 	if err != nil {
 		var txErr *tx.QoreTxError
 		if errors.As(err, &txErr) && isAlreadyRegistered(txErr.Code, txErr.Codespace, txErr.RawLog) {
-			return EnsureResult{AlreadyRegistered: true}, nil
+			return c.registeredMeanwhile()
 		}
 		return EnsureResult{}, err
 	}
 	if res.Code != 0 && isAlreadyRegistered(res.Code, res.Codespace, res.RawLog) {
-		return EnsureResult{AlreadyRegistered: true}, nil
+		return c.registeredMeanwhile()
 	}
 	return EnsureResult{TxHash: res.TxHash}, nil
+}
+
+// checkStillMismatched handles a status that says "registered, with another
+// key". When it came over REST it is read once more uncached (a rotation may
+// have just landed) before returning the mismatch.
+func (c *Client) checkStillMismatched(s Status) error {
+	current := s
+	if c.signer.RestURL != "" {
+		forgetStatus(c.signer.RestURL, c.signer.Account.Address)
+		var err error
+		if current, err = FetchPQCStatus(c.signer.RestURL, c.signer.Account.Address); err != nil {
+			return err
+		}
+	}
+	return c.mismatchError(current)
+}
+
+// registeredMeanwhile handles the chain's "already registered" refusal (a race,
+// or a stale answer): not an error for a helper whose job is "make sure it is
+// registered", unless the key now registered is not the Signer's.
+func (c *Client) registeredMeanwhile() (EnsureResult, error) {
+	if c.signer.RestURL != "" {
+		forgetStatus(c.signer.RestURL, c.signer.Account.Address)
+		now, err := FetchPQCStatus(c.signer.RestURL, c.signer.Account.Address)
+		if err != nil {
+			return EnsureResult{}, err
+		}
+		if err := c.mismatchError(now); err != nil {
+			return EnsureResult{}, err
+		}
+	}
+	return EnsureResult{AlreadyRegistered: true}, nil
+}
+
+// mismatchError is a *PQCKeyMismatchError when s is registered with a key other
+// than the Signer's, else nil.
+func (c *Client) mismatchError(s Status) error {
+	if !s.Registered {
+		return nil
+	}
+	if match, known := IsRegisteredPQCKey(s, c.signer.PQCKeypair.PublicKey); known && !match {
+		return &PQCKeyMismatchError{
+			Address:             c.signer.Account.Address,
+			RegisteredPublicKey: PQCStatusPublicKey(s),
+			PublicKey:           c.signer.PQCKeypair.PublicKey,
+		}
+	}
+	return nil
 }
 
 // BuildRegister builds and signs the MsgRegisterPQCKeyV2 WITHOUT broadcasting,
@@ -515,7 +695,8 @@ type MigrateToHybridResult struct {
 }
 
 // MigrateToHybrid is the one-call "go quantum-safe" path: it ensures the signer's
-// PQC key is registered, then builds and broadcasts the given messages as a
+// PQC key is registered (returning EnsurePQCRegistered's *PQCKeyMismatchError
+// when the account holds a different key), then builds and broadcasts the given messages as a
 // hybrid (classical + ML-DSA-87) transaction using the signer's PQC keypair.
 //
 // The messages are any module messages (e.g. a bank send from the composers);

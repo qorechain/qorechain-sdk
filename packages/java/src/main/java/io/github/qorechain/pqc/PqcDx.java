@@ -12,7 +12,12 @@ import io.github.qorechain.tx.SignBytes;
 import io.github.qorechain.tx.SignBytesResolver;
 import io.github.qorechain.tx.StdFee;
 import io.github.qorechain.tx.TxError;
+import io.github.qorechain.utils.Hashing;
+import io.github.qorechain.utils.Hex;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * High-level quantum-safe developer-experience helpers.
@@ -33,7 +38,8 @@ import java.util.List;
  *       has a registered PQC key (via {@code qor_getPQCKeyStatus}).
  *   <li>{@link #ensurePqcRegistered} — register the signer's Dilithium key if (and
  *       only if) it is not already registered. Idempotent: safe to call on every
- *       app start.
+ *       app start. Throws {@link PqcKeyMismatchException} when the account holds a
+ *       different key.
  *   <li>{@link #migrateToHybrid} — ensure registration, then hand back a hybrid
  *       send path wired to {@link HybridTx#buildHybridTx} and the broadcaster.
  *   <li>{@link #migratePqcKey} — rotate an account's PQC key ({@code MsgMigratePQCKey}).
@@ -194,8 +200,16 @@ public final class PqcDx {
         return new PqcStatus(registered, algorithmId, pubkey);
     }
 
-    private static final java.util.Set<String> REGISTERED_CACHE =
-            java.util.concurrent.ConcurrentHashMap.newKeySet();
+    /** Positive answers per (restUrl, address), key included: a registered key stays registered. */
+    private static final Map<String, PqcStatus> REGISTERED_CACHE = new ConcurrentHashMap<>();
+
+    private static String cacheKey(String restUrl, String address) {
+        return restUrl.replaceAll("/+$", "") + "|" + address;
+    }
+
+    private static PqcStatus copyOf(PqcStatus s) {
+        return new PqcStatus(s.registered, s.algorithmId, s.pubkey == null ? null : s.pubkey.clone());
+    }
 
     /**
      * Read the PQC registration status over REST
@@ -206,16 +220,17 @@ public final class PqcDx {
      * <p>The chain answers {@code {"found": false}} for an account without a key.
      * Anything that is not a readable {@code found} — an HTTP error, a missing
      * field, a transport failure — is UNKNOWN: retried once, then thrown. It is
-     * never read as "not registered". A positive answer is cached per (restUrl,
-     * address).
+     * never read as "not registered". A positive answer (with the registered key)
+     * is cached per (restUrl, address).
      *
      * @throws IllegalStateException when the status cannot be read
      */
     public static PqcStatus fetchPqcStatus(String restUrl, String address) {
         String base = restUrl.replaceAll("/+$", "");
-        String key = base + "|" + address;
-        if (REGISTERED_CACHE.contains(key)) {
-            return new PqcStatus(true, PqcAlgorithm.ALGORITHM_UNSPECIFIED, null);
+        String key = cacheKey(restUrl, address);
+        PqcStatus cached = REGISTERED_CACHE.get(key);
+        if (cached != null) {
+            return copyOf(cached);
         }
         RuntimeException last = null;
         for (int attempt = 0; attempt < 2; attempt++) {
@@ -228,10 +243,16 @@ public final class PqcDx {
                 if (!found.asBoolean()) {
                     return new PqcStatus(false, PqcAlgorithm.ALGORITHM_UNSPECIFIED, null);
                 }
-                REGISTERED_CACHE.add(key);
                 JsonNode account = body.get("account");
-                byte[] pubkey = account == null ? null : asBytes(account.get("public_key"));
-                return new PqcStatus(true, PqcAlgorithm.ALGORITHM_UNSPECIFIED, pubkey);
+                byte[] pubkey =
+                        account == null ? null : asBytes(firstOf(account, "public_key", "publicKey"));
+                int algorithmId =
+                        account == null
+                                ? PqcAlgorithm.ALGORITHM_UNSPECIFIED
+                                : asInt(firstOf(account, "algorithm_id", "algorithmId", "algorithm"));
+                PqcStatus status = new PqcStatus(true, algorithmId, pubkey);
+                REGISTERED_CACHE.put(key, status);
+                return copyOf(status);
             } catch (RuntimeException e) {
                 last = e;
             }
@@ -243,6 +264,71 @@ public final class PqcDx {
     /** Forget cached registration answers (tests, network switches). */
     public static void clearPqcStatusCache() {
         REGISTERED_CACHE.clear();
+    }
+
+    /**
+     * The registered public key carried by a {@link PqcStatus}, as bytes (the
+     * readers decode the REST route's base64 and {@code qor_getPQCKeyStatus}'s
+     * hex). {@code null} when the status carries no key.
+     */
+    public static byte[] pqcStatusPublicKey(PqcStatus status) {
+        if (status == null || status.pubkey == null || status.pubkey.length == 0) {
+            return null;
+        }
+        return status.pubkey;
+    }
+
+    /**
+     * Whether the key a {@link PqcStatus} reports registered is {@code publicKey}:
+     * {@code TRUE} / {@code FALSE}, or {@code null} when the status carries no key.
+     */
+    public static Boolean isRegisteredPqcKey(PqcStatus status, byte[] publicKey) {
+        if (status == null || !status.registered) {
+            return Boolean.FALSE;
+        }
+        byte[] registered = pqcStatusPublicKey(status);
+        if (registered == null) {
+            return null;
+        }
+        return Arrays.equals(registered, publicKey);
+    }
+
+    /**
+     * Thrown by {@link #ensurePqcRegistered} (and {@link #migrateToHybrid}) when the
+     * account already has a PQC key and it is NOT the signer's keypair. Nothing is
+     * broadcast: the chain refuses a second registration after charging the fee,
+     * and every hybrid transaction signed with the signer's key would be refused.
+     * Sign with the keypair that registered the account, or rotate the key
+     * ({@code MsgRotatePQCKey}).
+     */
+    public static final class PqcKeyMismatchException extends RuntimeException {
+        /** A short stable identifier, like {@link TxError.QoreTxException#kind}. */
+        public final String kind = PQC_KEY_MISMATCH;
+        /** The account. */
+        public final String address;
+        /** The key registered on chain. */
+        public final byte[] registeredPublicKey;
+        /** The signer's key. */
+        public final byte[] publicKey;
+
+        public PqcKeyMismatchException(String address, byte[] registeredPublicKey, byte[] publicKey) {
+            super(
+                    address + " already has a different PQC key registered (registered "
+                            + keyFingerprint(registeredPublicKey) + ", this keypair "
+                            + keyFingerprint(publicKey) + "). Nothing was sent. Sign with the keypair"
+                            + " that registered the account, or rotate its key with MsgRotatePQCKey.");
+            this.address = address;
+            this.registeredPublicKey = registeredPublicKey;
+            this.publicKey = publicKey;
+        }
+    }
+
+    /** The {@link PqcKeyMismatchException#kind}. */
+    public static final String PQC_KEY_MISMATCH = "pqc_key_mismatch";
+
+    /** First 8 bytes of shake256(key), hex: enough to tell two keys apart in a message. */
+    private static String keyFingerprint(byte[] key) {
+        return Hex.encode(Hashing.shake256(key, 8));
     }
 
     /** The chain's refusal of a second registration ({@code pqc} 7). */
@@ -302,12 +388,16 @@ public final class PqcDx {
     /**
      * Register the signer's PQC key if it is not already registered — idempotent.
      *
-     * <p>If {@code qor} is non-null (or a pre-read {@code opts.status} is supplied)
-     * and the key is already registered, this returns
-     * {@code EnsureResult{alreadyRegistered=true}} WITHOUT broadcasting. Otherwise
-     * it builds, signs, and broadcasts {@code MsgRegisterPQCKeyV2} with the signer's
-     * Dilithium public key (from {@code signer.pqcKeypair}) plus the supplied (or
-     * signer's) ECDSA public key.
+     * <p>It reads the account's status first ({@code signer.restUrl}, {@code qor} or
+     * a pre-read {@code opts.status}). When the account already has a key, this
+     * returns {@code EnsureResult{alreadyRegistered=true}} WITHOUT broadcasting,
+     * provided the registered key is {@code signer.pqcKeypair}'s. When it is a
+     * different key it throws a {@link PqcKeyMismatchException}: the signer's hybrid
+     * transactions would all be refused. (A status that carries no public key
+     * cannot be compared and is taken as registered; the REST route always carries
+     * it.) Otherwise it builds, signs, and broadcasts {@code MsgRegisterPQCKeyV2}
+     * with the signer's Dilithium public key plus the supplied (or signer's) ECDSA
+     * public key.
      *
      * <p>This is the single call that makes a dApp quantum-safe: run it once at
      * startup (or before the first hybrid tx) and the account is PQC-protected.
@@ -321,6 +411,7 @@ public final class PqcDx {
      *     chain charges the fee before refusing a second registration. A refusal
      *     as "already registered" ({@code pqc} 7) counts as already registered.
      * @param opts ECDSA pubkey / key-type / pre-read status (may be {@code null}).
+     * @throws PqcKeyMismatchException when the account has a different PQC key.
      */
     public static EnsureResult ensurePqcRegistered(
             Signer signer, Broadcaster bc, QorClient qor, EnsureOptions opts) {
@@ -339,6 +430,11 @@ public final class PqcDx {
                             + " exists. Set opts.force only when the account is known to have no key.");
         }
         if (status != null && status.registered) {
+            // Registered, but by whom? A different key means the signer's hybrid
+            // transactions would all be refused; say so now rather than "done".
+            if (Boolean.FALSE.equals(isRegisteredPqcKey(status, signer.pqcKeypair.publicKey))) {
+                throwIfStillMismatched(signer, o, status);
+            }
             return new EnsureResult(true, null, null);
         }
 
@@ -382,11 +478,41 @@ public final class PqcDx {
             // The key was registered after all: not an error for a helper whose
             // job is "make sure it is registered".
             if (isAlreadyRegistered(e.code, e.codespace, e.rawLog)) {
+                if (hasRest(signer)) {
+                    REGISTERED_CACHE.remove(cacheKey(signer.restUrl, signer.sender));
+                    PqcStatus now = fetchPqcStatus(signer.restUrl, signer.sender);
+                    if (now.registered
+                            && Boolean.FALSE.equals(isRegisteredPqcKey(now, signer.pqcKeypair.publicKey))) {
+                        throw new PqcKeyMismatchException(
+                                signer.sender, pqcStatusPublicKey(now), signer.pqcKeypair.publicKey);
+                    }
+                }
                 return new EnsureResult(true, null, null);
             }
             throw e;
         }
         return new EnsureResult(false, result.transactionHash, result);
+    }
+
+    private static boolean hasRest(Signer signer) {
+        return signer.restUrl != null && !signer.restUrl.isEmpty();
+    }
+
+    /**
+     * The status said "registered, with another key". When it came over REST, read
+     * it once more uncached (a rotation may have just landed) before throwing.
+     */
+    private static void throwIfStillMismatched(Signer signer, EnsureOptions o, PqcStatus status) {
+        PqcStatus current = status;
+        if (hasRest(signer) && o.status == null) {
+            REGISTERED_CACHE.remove(cacheKey(signer.restUrl, signer.sender));
+            current = fetchPqcStatus(signer.restUrl, signer.sender);
+        }
+        if (current.registered
+                && Boolean.FALSE.equals(isRegisteredPqcKey(current, signer.pqcKeypair.publicKey))) {
+            throw new PqcKeyMismatchException(
+                    signer.sender, pqcStatusPublicKey(current), signer.pqcKeypair.publicKey);
+        }
     }
 
     /** Options for {@link #migratePqcKey} (PQC key rotation, {@code MsgMigratePQCKey}). */
@@ -586,6 +712,7 @@ public final class PqcDx {
      * @param bc the consensus-RPC broadcaster.
      * @param qor optional status source for the registration pre-flight.
      * @param opts registration options (may be {@code null}).
+     * @throws PqcKeyMismatchException when the account has a different PQC key.
      */
     public static HybridSendPath migrateToHybrid(
             Signer signer, Broadcaster bc, QorClient qor, EnsureOptions opts) {
@@ -647,7 +774,8 @@ public final class PqcDx {
 
     /**
      * Decode a public-key field the chain may return as a hex string (0x-optional)
-     * or a base64 string. Returns {@code null} when absent or undecodable.
+     * or a base64 string (standard or URL-safe). Returns {@code null} when absent
+     * or undecodable.
      */
     private static byte[] asBytes(JsonNode v) {
         if (v == null || v.isNull() || !v.isTextual()) {
@@ -666,7 +794,7 @@ public final class PqcDx {
             return out;
         }
         try {
-            return java.util.Base64.getDecoder().decode(s);
+            return java.util.Base64.getDecoder().decode(s.replace('-', '+').replace('_', '/'));
         } catch (IllegalArgumentException ignored) {
             return null;
         }

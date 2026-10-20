@@ -71,6 +71,11 @@ pub enum Error {
     #[error(transparent)]
     Tx(#[from] crate::tx::QoreTxError),
 
+    /// The account already has a PQC key and it is not the caller's keypair
+    /// (from [`crate::pqc_dx::PqcDx::ensure_pqc_registered`]). Nothing was sent.
+    #[error(transparent)]
+    PqcKeyMismatch(#[from] crate::pqc_dx::PqcKeyMismatchError),
+
     /// The post-quantum sign-bytes version (v1 / v2) could not be chosen or
     /// parsed. The message says what to pass instead (a REST URL, or an explicit
     /// version). See [`crate::signbytes`].

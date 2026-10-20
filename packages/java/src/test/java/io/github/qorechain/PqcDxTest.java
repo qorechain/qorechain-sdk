@@ -232,8 +232,12 @@ class PqcDxTest {
 
     @Test
     void ensureChecksOverRestAndCachesAPositiveAnswer() {
-        restBody = "{\"found\":true,\"account\":{\"public_key\":\"AQID\"}}";
-        PqcDx.Signer s = signer(Pqc.generatePqcKeypair(new byte[32]));
+        PqcKeypair kp = Pqc.generatePqcKeypair(new byte[32]);
+        restBody =
+                "{\"found\":true,\"account\":{\"public_key\":\""
+                        + java.util.Base64.getEncoder().encodeToString(kp.publicKey)
+                        + "\"}}";
+        PqcDx.Signer s = signer(kp);
         s.restUrl = baseUrl + "/";
         assertTrue(PqcDx.ensurePqcRegistered(s, new Broadcaster(baseUrl), null, null).alreadyRegistered);
         assertTrue(PqcDx.ensurePqcRegistered(s, new Broadcaster(baseUrl), null, null).alreadyRegistered);

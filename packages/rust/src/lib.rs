@@ -156,8 +156,8 @@ pub use cross_vm::{
 };
 
 pub use pqc_dx::{
-    EnsureResult, HybridSendPath, MigrateKeyOptions, PqcDx, PqcStatus, DEFAULT_KEY_TYPE,
-    PQC_KEY_STATUS_PRECOMPILE,
+    is_registered_pqc_key, pqc_status_public_key, EnsureResult, HybridSendPath, MigrateKeyOptions,
+    PqcDx, PqcKeyMismatchError, PqcStatus, DEFAULT_KEY_TYPE, PQC_KEY_STATUS_PRECOMPILE,
 };
 
 pub use utils::{

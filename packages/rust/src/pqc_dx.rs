@@ -163,10 +163,15 @@ impl PqcDx {
     /// Registers the signer's PQC key if it is not already registered —
     /// idempotent.
     ///
-    /// When a [`QorClient`] is configured and the key is already registered, this
-    /// returns `EnsureResult { already_registered: true, tx_hash: None }` WITHOUT
-    /// broadcasting. Otherwise it builds and broadcasts `MsgRegisterPQCKeyV2` with
-    /// the signer's Dilithium public key plus its classical ECDSA public key.
+    /// When the account already has a key, this returns
+    /// `EnsureResult { already_registered: true, tx_hash: None }` WITHOUT
+    /// broadcasting, provided the registered key is [`PqcDx::pqc_public_key`].
+    /// When it is a different key it returns [`Error::PqcKeyMismatch`] and sends
+    /// nothing: every hybrid transaction signed with this keypair would be
+    /// refused. (A status that carries no public key cannot be compared and is
+    /// taken as registered; the REST route always carries it.) Otherwise it
+    /// builds and broadcasts `MsgRegisterPQCKeyV2` with the signer's Dilithium
+    /// public key plus its classical ECDSA public key.
     ///
     /// This is the single call that makes a dApp quantum-safe: run it once at
     /// startup (or before the first hybrid tx) and the account is PQC-protected
@@ -175,13 +180,19 @@ impl PqcDx {
     /// The pre-flight check reads REST from `rest_url` ([`fetch_pqc_status`]);
     /// the `qor_*` JSON-RPC namespace is not exposed on public endpoints. An
     /// unreadable status is an error, never a blind registration: the chain
-    /// charges the fee before refusing a second one. A refusal as "already
-    /// registered" (`pqc` 7) counts as `already_registered`.
+    /// charges the fee before refusing a second one. Before reporting a
+    /// different key, the status is read once more uncached (a rotation may
+    /// have just landed). A refusal as "already registered" (`pqc` 7) counts as
+    /// `already_registered` once the key on chain is confirmed to be this one
+    /// (or carries none).
     pub async fn ensure_pqc_registered(&self) -> Result<EnsureResult> {
-        if fetch_pqc_status(&self.rest_url, &self.sender)
-            .await?
-            .registered
-        {
+        let status = fetch_pqc_status(&self.rest_url, &self.sender).await?;
+        if status.registered {
+            // Registered, but by whom? A different key means this signer's hybrid
+            // transactions would all be refused; say so now rather than "done".
+            if is_registered_pqc_key(&status, &self.pqc_public_key) == Some(false) {
+                self.check_registered_key_uncached().await?;
+            }
             return Ok(EnsureResult {
                 already_registered: true,
                 tx_hash: None,
@@ -206,6 +217,9 @@ impl PqcDx {
         let built = self.build_register_with_proof_of_possession(proof)?;
         let resp = broadcast(&self.rest_url, &built.tx_raw_bytes, self.mode).await?;
         if is_already_registered(&resp) {
+            // The key was registered after all (a race, or a stale answer): fine
+            // when it is this signer's key, an error when it is another.
+            self.check_registered_key_uncached().await?;
             return Ok(EnsureResult {
                 already_registered: true,
                 tx_hash: None,
@@ -286,7 +300,8 @@ impl PqcDx {
     /// transactions.
     ///
     /// After this call the dApp's transactions can carry a verified hybrid
-    /// signature.
+    /// signature. Fails with [`Error::PqcKeyMismatch`] (nothing sent) when the
+    /// account is registered with a different key.
     pub async fn migrate_to_hybrid(&self) -> Result<HybridSendPath> {
         let ensured = self.ensure_pqc_registered().await?;
         Ok(HybridSendPath {
@@ -420,6 +435,23 @@ impl PqcDx {
         })
     }
 
+    /// Reads the status once more, bypassing the cache, and fails with
+    /// [`Error::PqcKeyMismatch`] when the account is registered with a key other
+    /// than [`PqcDx::pqc_public_key`].
+    async fn check_registered_key_uncached(&self) -> Result<()> {
+        forget_pqc_status(&self.rest_url, &self.sender);
+        let now = fetch_pqc_status(&self.rest_url, &self.sender).await?;
+        if now.registered && is_registered_pqc_key(&now, &self.pqc_public_key) == Some(false) {
+            return Err(PqcKeyMismatchError::new(
+                &self.sender,
+                pqc_status_public_key(&now).unwrap_or_default().to_vec(),
+                self.pqc_public_key.clone(),
+            )
+            .into());
+        }
+        Ok(())
+    }
+
     fn key_type(&self) -> String {
         if self.key_type.is_empty() {
             DEFAULT_KEY_TYPE.to_string()
@@ -509,18 +541,26 @@ fn as_u8(v: &Value) -> Option<u8> {
 }
 
 /// Decode a pubkey the chain may return as a hex string (with/without `0x`), a
-/// base64 string, or a JSON array of byte values.
+/// base64 string (standard or URL-safe; the REST route answers base64), or a
+/// JSON array of byte values.
 fn decode_pubkey(v: &Value) -> Option<Vec<u8>> {
     match v {
         Value::String(s) if s.is_empty() => None,
         Value::String(s) => {
-            let trimmed = s.strip_prefix("0x").unwrap_or(s);
+            let trimmed = s
+                .strip_prefix("0x")
+                .or_else(|| s.strip_prefix("0X"))
+                .unwrap_or(s);
             if let Ok(bytes) = hex::decode(trimmed) {
                 return Some(bytes);
             }
-            use base64::engine::general_purpose::STANDARD as BASE64;
+            use base64::engine::general_purpose::{
+                STANDARD, STANDARD_NO_PAD, URL_SAFE, URL_SAFE_NO_PAD,
+            };
             use base64::Engine;
-            BASE64.decode(s).ok()
+            [STANDARD, STANDARD_NO_PAD, URL_SAFE, URL_SAFE_NO_PAD]
+                .iter()
+                .find_map(|engine| engine.decode(s).ok())
         }
         Value::Array(items) => {
             let mut out = Vec::with_capacity(items.len());
@@ -582,8 +622,100 @@ fn parse_pqc_status(raw: &Value) -> Result<PqcStatus> {
     })
 }
 
-static REGISTERED_CACHE: std::sync::Mutex<Option<std::collections::HashSet<String>>> =
+/// The registered public key carried by a [`PqcStatus`], as bytes: the REST
+/// route returns it base64, `qor_getPQCKeyStatus` hex; both are decoded when
+/// the status is read. `None` when the status carries no key (or an empty one).
+pub fn pqc_status_public_key(status: &PqcStatus) -> Option<&[u8]> {
+    status.pubkey.as_deref().filter(|k| !k.is_empty())
+}
+
+/// Whether the key a [`PqcStatus`] reports registered is `public_key`:
+/// `Some(true)` / `Some(false)`, or `None` when the status carries no readable
+/// key. An unregistered status is `Some(false)`.
+pub fn is_registered_pqc_key(status: &PqcStatus, public_key: &[u8]) -> Option<bool> {
+    if !status.registered {
+        return Some(false);
+    }
+    pqc_status_public_key(status).map(|registered| registered == public_key)
+}
+
+/// Returned (as [`Error::PqcKeyMismatch`]) by [`PqcDx::ensure_pqc_registered`]
+/// and [`PqcDx::migrate_to_hybrid`] when the account already has a PQC key and
+/// it is NOT the caller's keypair. Nothing is broadcast: the chain refuses a
+/// second registration after charging the fee, and every hybrid transaction
+/// signed with the caller's key would be refused. Sign with the keypair that
+/// registered the account, or rotate the key (`MsgRotatePQCKey`).
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub struct PqcKeyMismatchError {
+    /// The account.
+    pub address: String,
+    /// The key registered on chain.
+    pub registered_public_key: Vec<u8>,
+    /// The caller's key.
+    pub public_key: Vec<u8>,
+}
+
+impl PqcKeyMismatchError {
+    /// A short stable identifier for this error.
+    pub const KIND: &'static str = "pqc_key_mismatch";
+
+    /// Builds the error for `address`.
+    pub fn new(address: &str, registered_public_key: Vec<u8>, public_key: Vec<u8>) -> Self {
+        Self {
+            address: address.to_string(),
+            registered_public_key,
+            public_key,
+        }
+    }
+
+    /// [`PqcKeyMismatchError::KIND`].
+    pub fn kind(&self) -> &'static str {
+        Self::KIND
+    }
+}
+
+impl std::fmt::Display for PqcKeyMismatchError {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        write!(
+            f,
+            "{} already has a different PQC key registered (registered {}, this keypair {}). \
+             Nothing was sent. Sign with the keypair that registered the account, or rotate \
+             its key with MsgRotatePQCKey.",
+            self.address,
+            key_fingerprint(&self.registered_public_key),
+            key_fingerprint(&self.public_key),
+        )
+    }
+}
+
+impl std::error::Error for PqcKeyMismatchError {}
+
+/// First 8 bytes of shake256(key), hex: enough to tell two keys apart in a
+/// message.
+fn key_fingerprint(key: &[u8]) -> String {
+    use sha3::digest::{ExtendableOutput, Update, XofReader};
+    let mut hasher = sha3::Shake256::default();
+    hasher.update(key);
+    let mut out = [0u8; 8];
+    hasher.finalize_xof().read(&mut out);
+    hex::encode(out)
+}
+
+/// Positive answers per (rest_url, address), with the key: a registered key
+/// stays registered (it may rotate, which is why a mismatch is re-read).
+static REGISTERED_CACHE: std::sync::Mutex<Option<std::collections::HashMap<String, PqcStatus>>> =
     std::sync::Mutex::new(None);
+
+fn status_cache_key(rest_url: &str, address: &str) -> String {
+    format!("{}|{address}", rest_url.trim_end_matches('/'))
+}
+
+/// Drops one cached positive answer.
+fn forget_pqc_status(rest_url: &str, address: &str) {
+    if let Some(c) = REGISTERED_CACHE.lock().expect("pqc status cache").as_mut() {
+        c.remove(&status_cache_key(rest_url, address));
+    }
+}
 
 /// Reads the PQC registration status over REST
 /// (`GET {rest_url}/qorechain/pqc/v1/account/{address}`), the route every
@@ -593,25 +725,22 @@ static REGISTERED_CACHE: std::sync::Mutex<Option<std::collections::HashSet<Strin
 /// The chain answers `{"found": false}` for an account without a key. Anything
 /// that is not a readable `found` — an HTTP error, a missing field, a transport
 /// failure — is UNKNOWN: retried once, then returned as an error. It is never
-/// read as "not registered". A positive answer is cached per
-/// (rest_url, address).
+/// read as "not registered". A positive answer (with the registered key, from
+/// `account.public_key`) is cached per (rest_url, address).
 ///
 /// # Errors
 ///
 /// [`Error::InvalidResponse`] when the status cannot be read.
 pub async fn fetch_pqc_status(rest_url: &str, address: &str) -> Result<PqcStatus> {
     let base = rest_url.trim_end_matches('/').to_string();
-    let key = format!("{base}|{address}");
-    if REGISTERED_CACHE
+    let key = status_cache_key(&base, address);
+    if let Some(cached) = REGISTERED_CACHE
         .lock()
         .expect("pqc status cache")
         .as_ref()
-        .is_some_and(|c| c.contains(&key))
+        .and_then(|c| c.get(&key).cloned())
     {
-        return Ok(PqcStatus {
-            registered: true,
-            ..PqcStatus::default()
-        });
+        return Ok(cached);
     }
     let rest = crate::query::RestClient::new(base.clone());
     let mut last = String::new();
@@ -620,20 +749,21 @@ pub async fn fetch_pqc_status(rest_url: &str, address: &str) -> Result<PqcStatus
             Ok(body) => match body.get("found").and_then(Value::as_bool) {
                 Some(false) => return Ok(PqcStatus::default()),
                 Some(true) => {
+                    let account = body.get("account");
+                    let field =
+                        |names: &[&str]| account.and_then(|a| names.iter().find_map(|n| a.get(*n)));
+                    let status = PqcStatus {
+                        registered: true,
+                        algorithm_id: field(&["algorithm_id", "algorithmId", "algorithm"])
+                            .and_then(as_u8),
+                        pubkey: field(&["public_key", "publicKey"]).and_then(decode_pubkey),
+                    };
                     REGISTERED_CACHE
                         .lock()
                         .expect("pqc status cache")
                         .get_or_insert_with(Default::default)
-                        .insert(key);
-                    let pubkey = body
-                        .get("account")
-                        .and_then(|a| a.get("public_key"))
-                        .and_then(decode_pubkey);
-                    return Ok(PqcStatus {
-                        registered: true,
-                        algorithm_id: None,
-                        pubkey,
-                    });
+                        .insert(key, status.clone());
+                    return Ok(status);
                 }
                 None => last = format!("no \"found\" field in the answer for {address}"),
             },
@@ -719,6 +849,62 @@ mod tests {
         assert_eq!(s.pubkey, Some(vec![1, 2, 3]));
         let s = parse_pqc_status(&json!({ "registered": true, "pubkey": [4, 5, 6] })).unwrap();
         assert_eq!(s.pubkey, Some(vec![4, 5, 6]));
+    }
+
+    #[test]
+    fn pubkey_decodes_url_safe_base64_and_uppercase_hex_prefix() {
+        // [0xfb, 0xff] is "+/8=" in standard base64 and "-_8=" URL-safe.
+        let s = parse_pqc_status(&json!({ "registered": true, "pubkey": "-_8=" })).unwrap();
+        assert_eq!(s.pubkey, Some(vec![0xfb, 0xff]));
+        let s = parse_pqc_status(&json!({ "registered": true, "pubkey": "+/8" })).unwrap();
+        assert_eq!(s.pubkey, Some(vec![0xfb, 0xff]));
+        let s = parse_pqc_status(&json!({ "registered": true, "pubkey": "0XABCD" })).unwrap();
+        assert_eq!(s.pubkey, Some(vec![0xab, 0xcd]));
+    }
+
+    #[test]
+    fn registered_key_is_compared_from_hex_or_base64() {
+        let mine = crate::pqc::pqc_keypair_from_seed(&[2u8; 32]).public_key;
+        let other = crate::pqc::pqc_keypair_from_seed(&[3u8; 32]).public_key;
+        use base64::Engine;
+        let b64 = base64::engine::general_purpose::STANDARD.encode(&other);
+        let hex_other = format!("0x{}", hex::encode(&other));
+        for raw in [b64, hex_other] {
+            let s = parse_pqc_status(&json!({ "registered": true, "public_key": raw })).unwrap();
+            assert_eq!(pqc_status_public_key(&s), Some(other.as_slice()));
+            assert_eq!(is_registered_pqc_key(&s, &other), Some(true));
+            assert_eq!(is_registered_pqc_key(&s, &mine), Some(false));
+        }
+        // No key to compare: unknown, not a mismatch.
+        let keyless = PqcStatus {
+            registered: true,
+            ..PqcStatus::default()
+        };
+        assert_eq!(is_registered_pqc_key(&keyless, &mine), None);
+        let empty = PqcStatus {
+            registered: true,
+            pubkey: Some(Vec::new()),
+            ..PqcStatus::default()
+        };
+        assert_eq!(is_registered_pqc_key(&empty, &mine), None);
+        assert_eq!(
+            is_registered_pqc_key(&PqcStatus::default(), &mine),
+            Some(false)
+        );
+    }
+
+    #[test]
+    fn key_mismatch_error_names_both_fingerprints() {
+        let e = PqcKeyMismatchError::new("qor1abc", vec![1, 2, 3], vec![4, 5, 6]);
+        assert_eq!(e.kind(), "pqc_key_mismatch");
+        let msg = Error::from(e.clone()).to_string();
+        assert!(msg.starts_with("qor1abc already has a different PQC key registered (registered "));
+        assert!(msg.contains(&key_fingerprint(&[1, 2, 3])));
+        assert!(msg.contains(&format!("this keypair {})", key_fingerprint(&[4, 5, 6]))));
+        assert!(msg.ends_with(
+            "Nothing was sent. Sign with the keypair that registered the account, or rotate its key with MsgRotatePQCKey."
+        ));
+        assert_eq!(key_fingerprint(&[1, 2, 3]), "aa79c890c9483a63");
     }
 
     #[test]

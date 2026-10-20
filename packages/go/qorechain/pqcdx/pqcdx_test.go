@@ -1,6 +1,7 @@
 package pqcdx
 
 import (
+	"encoding/base64"
 	"encoding/json"
 	"io"
 	"net/http"
@@ -8,6 +9,7 @@ import (
 	"strings"
 	"testing"
 
+	"github.com/cloudflare/circl/sign/mldsa/mldsa87"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdktx "github.com/cosmos/cosmos-sdk/types/tx"
 	"github.com/cosmos/gogoproto/proto"
@@ -35,13 +37,23 @@ func (f *fakeQor) GetPQCKeyStatus(address string) (json.RawMessage, error) {
 	return f.resp, nil
 }
 
+// seededKeypair is the ML-DSA-87 keypair from a 32-byte seed filled with b.
+func seededKeypair(b byte) pqc.Keypair {
+	var seed [mldsa87.SeedSize]byte
+	for i := range seed {
+		seed[i] = b
+	}
+	pub, priv := mldsa87.NewKeyFromSeed(&seed)
+	pubBytes, _ := pub.MarshalBinary()
+	privBytes, _ := priv.MarshalBinary()
+	return pqc.Keypair{PublicKey: pubBytes, SecretKey: privBytes}
+}
+
+// testKeypair is the test signer's keypair: fixed, so the fake REST status
+// route can report it as the registered key.
 func testKeypair(t *testing.T) pqc.Keypair {
 	t.Helper()
-	kp, err := pqc.GeneratePQCKeypair()
-	if err != nil {
-		t.Fatalf("generate keypair: %v", err)
-	}
-	return kp
+	return seededKeypair(2)
 }
 
 func testSigner(t *testing.T) Signer {
@@ -103,12 +115,14 @@ func decodeMigrateMsg(t *testing.T, built *tx.BuiltTx) *pqcv1.MsgMigratePQCKey {
 }
 
 // fakePQCFound is what the fake REST status route answers for the signer
-// (GET /qorechain/pqc/v1/account/{addr} → {"found": ...}).
+// (GET /qorechain/pqc/v1/account/{addr} → {"found": ...}). When found, the
+// registered key is the test signer's.
 var fakePQCFound = true
 
 func writePQCStatus(w http.ResponseWriter) {
 	if fakePQCFound {
-		_, _ = w.Write([]byte(`{"found":true,"account":{"public_key":"AQID"}}`))
+		key := base64.StdEncoding.EncodeToString(seededKeypair(2).PublicKey)
+		_, _ = w.Write([]byte(`{"found":true,"account":{"public_key":"` + key + `"}}`))
 		return
 	}
 	_, _ = w.Write([]byte(`{"found":false,"account":null}`))
