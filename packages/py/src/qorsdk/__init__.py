@@ -137,6 +137,8 @@ from .key_integrity import (
 )
 from .messages import (
     COSMOS_REGISTRY_TYPES,
+    MAX_ALLOWED_EVM_CALLS,
+    MAX_DENOM_LIMITS,
     QORECHAIN_REGISTRY_TYPES,
     Msg,
     composer,
@@ -144,6 +146,7 @@ from .messages import (
     msg,
     qorechain_registry,
     resolve_message_type,
+    validate_spending_rules,
 )
 from .networks import (
     NETWORKS,
@@ -447,6 +450,9 @@ __all__ = [
     "decode_any",
     "QORECHAIN_REGISTRY_TYPES",
     "COSMOS_REGISTRY_TYPES",
+    "validate_spending_rules",
+    "MAX_DENOM_LIMITS",
+    "MAX_ALLOWED_EVM_CALLS",
     # typed query clients
     "QueryClients",
     "connect_query_clients",

@@ -107,6 +107,18 @@ after each network release is tagged.
   given, otherwise the client's own connection). The hybrid and eth-native
   paths now throw `QoreTxError` like `TxClient` (still carrying
   `transactionHash`).
+- **Spending rules that limit nothing are refused before signing.** An
+  enabled rule that bounds nothing, and a `denom_limits` entry with neither a
+  per-tx nor a daily amount, were accepted and stored as limits. When a denom
+  has an entry the chain applies only that entry, so an empty one removes
+  every limit on the denom while the rule still reads as limited. The
+  `MsgUpdateSpendingRules` builders now run `validateSpendingRules` (with the
+  chain's other checks: non-negative limits, at most 64 denom limits and 64
+  allowed calls, one limit per denom, decimal amounts). TS
+  `abstractaccount.updateSpendingRules`, Python `update_spending_rules` and
+  Java `updateSpendingRules` check in place; Go adds
+  `NewUpdateSpendingRules` and Rust `update_spending_rules_checked` (the
+  existing unchecked builders are unchanged).
 - **Dependency ranges that froze fixes out.** `@qorechain/sdk` declared
   `@qorechain/evm ^0.5.1` (installed 0.5.x, never 0.8) and
   `@qorechain/pqc ^0.1.1` (never 0.2.x). It now declares `@qorechain/pqc ^0.2.1`,

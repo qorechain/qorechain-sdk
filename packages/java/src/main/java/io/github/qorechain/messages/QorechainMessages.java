@@ -348,8 +348,17 @@ public final class QorechainMessages {
             return new TypedMessage("/qorechain.abstractaccount.v1.MsgCreateAbstractAccount", m);
         }
 
+        /**
+         * Set an account's spending rules. Owner-signed. The rules are checked
+         * first ({@link SpendingRules#validate}): an enabled rule that bounds
+         * nothing, or a denom limit that sets no amount, is refused here rather
+         * than stored as a limit that limits nothing.
+         *
+         * @throws IllegalArgumentException naming the rule and the problem.
+         */
         public static TypedMessage updateSpendingRules(
                 qorechain.abstractaccount.v1.Tx.MsgUpdateSpendingRules m) {
+            SpendingRules.validate(m.getRulesList());
             return new TypedMessage("/qorechain.abstractaccount.v1.MsgUpdateSpendingRules", m);
         }
 

@@ -127,6 +127,7 @@ pub use evm_delegation::{
     classify_evm_delegation_error, get_evm_delegation_consent, EvmDelegationConsent,
     EvmDelegationRefusal, EVM_DELEGATION_CLEAR, MAX_EVM_DELEGATION_CONSENT_BLOCKS,
 };
+pub use msg::abstractaccount::{validate_spending_rules, MAX_ALLOWED_EVM_CALLS, MAX_DENOM_LIMITS};
 pub use query::{JsonRpcClient, QorClient, RestClient, TypedQueryClient, QOR_METHODS};
 pub use upgrades::{
     clear_upgrade_cache, is_upgrade_applied, require_upgrade_applied, upgrade_applied_height,

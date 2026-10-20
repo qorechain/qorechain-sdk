@@ -37,6 +37,11 @@ from .registry import (
     qorechain_registry,
     resolve_message_type,
 )
+from .spending_rules import (
+    MAX_ALLOWED_EVM_CALLS,
+    MAX_DENOM_LIMITS,
+    validate_spending_rules,
+)
 
 #: All message composers, grouped by module. Recommended import::
 #:
@@ -94,4 +99,8 @@ __all__ = [
     "decode_any",
     "QORECHAIN_REGISTRY_TYPES",
     "COSMOS_REGISTRY_TYPES",
+    # client-side checks run by the abstract-account spending-rules composer
+    "validate_spending_rules",
+    "MAX_DENOM_LIMITS",
+    "MAX_ALLOWED_EVM_CALLS",
 ]

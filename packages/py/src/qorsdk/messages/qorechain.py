@@ -12,6 +12,7 @@ exact module/name surface of the TypeScript SDK, snake_cased.
 from __future__ import annotations
 
 from types import SimpleNamespace
+from typing import Any
 
 from ..evm_delegation import (
     AUTHORIZE_EVM_DELEGATION_TYPE_URL,
@@ -36,6 +37,7 @@ from ..proto.qorechain.rdk.v1 import tx_pb2 as rdk_tx
 from ..proto.qorechain.rlconsensus.v1 import tx_pb2 as rlconsensus_tx
 from ..proto.qorechain.svm.v1 import tx_pb2 as svm_tx
 from ._composer import Msg, composer
+from .spending_rules import validate_spending_rules
 
 # --------------------------------------------------------------------------- #
 # AMM (automated market maker)
@@ -345,15 +347,36 @@ license = SimpleNamespace(
 # --------------------------------------------------------------------------- #
 # Abstract account (programmable accounts / spending rules)
 # --------------------------------------------------------------------------- #
+_compose_update_spending_rules = composer(
+    "/qorechain.abstractaccount.v1.MsgUpdateSpendingRules",
+    abstractaccount_tx.MsgUpdateSpendingRules,
+)
+
+
+def _update_spending_rules(**fields: Any) -> Msg:
+    """Build ``MsgUpdateSpendingRules`` (owner-signed), checking the rules first.
+
+    The rules are checked by
+    :func:`~qorsdk.messages.spending_rules.validate_spending_rules`: an enabled
+    rule that bounds nothing, or a denom limit that sets no amount, is refused
+    here rather than stored as a limit that limits nothing.
+
+    :raises ValueError: Naming the rule and the problem.
+    """
+    built = _compose_update_spending_rules(**fields)
+    validate_spending_rules(built.value.rules)  # type: ignore[attr-defined]
+    return built
+
+
+_update_spending_rules.__name__ = "MsgUpdateSpendingRules"
+_update_spending_rules.__qualname__ = "MsgUpdateSpendingRules"
+
 abstractaccount = SimpleNamespace(
     create_abstract_account=composer(
         "/qorechain.abstractaccount.v1.MsgCreateAbstractAccount",
         abstractaccount_tx.MsgCreateAbstractAccount,
     ),
-    update_spending_rules=composer(
-        "/qorechain.abstractaccount.v1.MsgUpdateSpendingRules",
-        abstractaccount_tx.MsgUpdateSpendingRules,
-    ),
+    update_spending_rules=_update_spending_rules,
     register_authenticator=composer(
         "/qorechain.abstractaccount.v1.MsgRegisterAuthenticator",
         abstractaccount_tx.MsgRegisterAuthenticator,

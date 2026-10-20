@@ -39,6 +39,12 @@ pub enum Error {
     #[error("evm window: {0}")]
     EvmWindow(String),
 
+    /// A spending rule was refused client-side before encoding. The message
+    /// names the rule index and the problem. See
+    /// [`crate::msg::abstractaccount::validate_spending_rules`].
+    #[error("{0}")]
+    SpendingRule(String),
+
     /// A non-2xx HTTP response was received.
     #[error("HTTP {status} for {url}")]
     Http {

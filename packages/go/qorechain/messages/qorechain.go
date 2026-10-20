@@ -425,7 +425,10 @@ func (AbstractAccountComposers) Create(owner, accountType string) *abstractaccou
 	return &abstractaccountv1.MsgCreateAbstractAccount{Owner: owner, AccountType: accountType}
 }
 
-// UpdateSpendingRules builds MsgUpdateSpendingRules.
+// UpdateSpendingRules builds MsgUpdateSpendingRules without checking the
+// rules. Prefer NewUpdateSpendingRules, which refuses an enabled rule that
+// bounds nothing and a denom limit that would remove the limit for its denom
+// (see ValidateSpendingRules).
 func (AbstractAccountComposers) UpdateSpendingRules(owner, accountAddress string, rules []abstractaccountv1.SpendingRule) *abstractaccountv1.MsgUpdateSpendingRules {
 	return &abstractaccountv1.MsgUpdateSpendingRules{Owner: owner, AccountAddress: accountAddress, Rules: rules}
 }
