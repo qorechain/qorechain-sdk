@@ -175,9 +175,9 @@ verification failed`).
 
 - **Testnet** (`qorechain-diana`) applied the upgrade under the plan name
   `v3.1.98` at height 5,746,000 and verifies **only v2**.
-- **Mainnet** (`qorechain-vladi`) verifies **only v1** and stays on v1 until its
-  own governance upgrade, which applies the plan under the name `v3.2.0`; the
-  SDK follows it automatically when that happens.
+- **Mainnet** (`qorechain-vladi`) applied its upgrade under the plan name
+  `v3.2.0` at height 2,981,742 and verifies **only v2** since; the SDK follows
+  it automatically.
 - Any other chain id starts on that release or later and verifies v2 from genesis.
 
 **The switch has TWO plan names.** The chain registers one handler under both
@@ -218,7 +218,7 @@ it never guesses.
 import "github.com/qorechain/qorechain-sdk/packages/go/qorechain/signbytes"
 
 // Resolve, then build (pure).
-v, err := signbytes.Resolve(ctx, "https://api.qore.host", "qorechain-vladi", signbytes.Auto) // v1 today
+v, err := signbytes.Resolve(ctx, "https://api.qore.host", "qorechain-vladi", signbytes.Auto) // v2 since v3.2.0
 // Note the order: restURL FIRST, then chainID. The other language bindings take
 // (chainId, rest). Swapping them is refused with ErrUnresolvedVersion rather
 // than silently answering v2 — the form mainnet refuses.
@@ -490,7 +490,18 @@ import "github.com/qorechain/qorechain-sdk/packages/go/qorechain/pqcdx"
 registered, _ := pqcdx.IsPQCRegistered(c.Qor, acc.Address)
 status, _ := pqcdx.GetPQCStatus(c.Qor, acc.Address)
 
-pdx := pqcdx.New(pqcdx.Signer{ /* account + key material + ctx */ }, pqcdx.Options{Qor: c.Qor})
+// The recoverable PQC key: derived from the account's mnemonic, bound to its address.
+pqcKey, _ := authenticator.DerivePQCCanonical(account.Address, mnemonic)
+pdx := pqcdx.New(pqcdx.Signer{
+	Account:       account,
+	PQCKeypair:    pqcKey,
+	ChainID:       "qorechain-vladi",
+	RestURL:       "https://api.qore.host", // the status check reads REST from here
+	AccountNumber: accountNumber,           // from /cosmos/auth/v1beta1/accounts/{address}
+	Sequence:      sequence,
+	// Registration carries a 2592-byte key and a 4627-byte proof of possession.
+	Fee: tx.Fee{Amount: []tx.Coin{{Denom: "uqor", Amount: "60000"}}, Gas: "400000"},
+}, pqcdx.Options{})
 // Registers only if missing: the check reads REST from Signer.RestURL
 // (pqcdx.FetchPQCStatus) and never registers blind — a second registration is
 // refused after the fee is charged.

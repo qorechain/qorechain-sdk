@@ -30,10 +30,13 @@ import {
 } from "@cosmjs/stargate";
 import {
   Registry,
+  isOfflineDirectSigner,
   type EncodeObject,
+  type OfflineDirectSigner,
   type OfflineSigner,
   type GeneratedType,
 } from "@cosmjs/proto-signing";
+import { SimulateRequest, SimulateResponse } from "cosmjs-types/cosmos/tx/v1beta1/service";
 import { qorechainRegistry } from "../messages/registry";
 import { MsgSend } from "cosmjs-types/cosmos/bank/v1beta1/tx";
 import type { Coin } from "../query/rest";
@@ -41,6 +44,10 @@ import type { StdFee } from "./fees";
 import { lookupDeliverCodespace, type BroadcastMode, type BroadcastResult } from "./broadcast";
 import { txErrorFrom } from "../errors";
 import { GasPrice, calculateFee } from "./gas";
+import { buildHybridTx, signAndBroadcastHybrid, type HybridBroadcaster } from "./hybrid-tx";
+import type { SignBytesVersionOption } from "./signbytes";
+import type { PqcKeypair } from "../accounts/pqc";
+import type { FetchLike } from "../query/http";
 
 /** The `/cosmos.bank.v1beta1.MsgSend` type URL. */
 export const MSG_SEND_TYPE_URL = "/cosmos.bank.v1beta1.MsgSend";
@@ -114,7 +121,61 @@ export interface SigningClientLike {
     memo?: string,
   ): Promise<string>;
   disconnect?(): void;
+  // Used by hybrid signing ({@link TxConnectOptions.pqcKeypair}); cosmjs's
+  // SigningStargateClient provides all four.
+  getChainId?(): Promise<string>;
+  getSequence?(address: string): Promise<{ accountNumber: number | bigint; sequence: number | bigint }>;
+  broadcastTx?: HybridBroadcaster["broadcastTx"];
+  broadcastTxSync?: HybridBroadcaster["broadcastTxSync"];
 }
+
+/**
+ * Hybrid (classical + ML-DSA-87) signing for a {@link TxClient}. Every
+ * transaction is then signed the way the chain requires of an account with a
+ * registered PQC key; a transaction that only registers the key is still
+ * signed classically (the chain's bootstrap path).
+ */
+export interface HybridSigningOptions {
+  /** The account's ML-DSA-87 keypair: the key registered on chain. */
+  pqcKeypair: PqcKeypair;
+  /** The classical DIRECT signer that signs the SignDoc. */
+  signer: OfflineDirectSigner;
+  /** The registry that encodes the body (the client's own). */
+  registry: Registry;
+  /**
+   * The network's REST URL. Used to pick the sign-bytes form
+   * (`signBytesVersion: "auto"`, required on qorechain-vladi / qorechain-diana),
+   * to simulate the hybrid transaction for `fee: "auto"`, and to read a failed
+   * transaction's codespace.
+   */
+  rest?: string;
+  /** Injectable `fetch` for `rest`. */
+  fetch?: FetchLike;
+  /** Force a sign-bytes form instead of asking the network. */
+  signBytesVersion?: SignBytesVersionOption;
+}
+
+/** Standard base64 of raw bytes (browser and Node). */
+function toBase64(bytes: Uint8Array): string {
+  let bin = "";
+  for (let i = 0; i < bytes.length; i += 0x8000) {
+    bin += String.fromCharCode(...bytes.subarray(i, i + 0x8000));
+  }
+  return btoa(bin);
+}
+
+/**
+ * Gas a hybrid transaction spends in the block beyond what its simulation
+ * reports: the ML-DSA-87 verification is not charged in simulation. Measured on
+ * the chain (a hybrid MsgSend simulates at about 129k and uses about 164k).
+ */
+export const HYBRID_VERIFY_GAS = 40_000;
+
+/** Messages the chain accepts with a classical signature only: PQC key registration. */
+const PQC_REGISTRATION_TYPE_URLS = new Set([
+  "/qorechain.pqc.v1.MsgRegisterPQCKey",
+  "/qorechain.pqc.v1.MsgRegisterPQCKeyV2",
+]);
 
 /** Options for constructing a {@link TxClient} directly (testing/advanced). */
 export interface TxClientOptions {
@@ -122,6 +183,8 @@ export interface TxClientOptions {
   signingClient: SigningClientLike;
   /** The bech32 address transactions are signed and sent from. */
   senderAddress: string;
+  /** Sign hybrid (see {@link HybridSigningOptions}). Omit for classical only. */
+  hybrid?: HybridSigningOptions;
 }
 
 /** Options for {@link TxClient.connect}. */
@@ -169,6 +232,25 @@ export interface TxConnectOptions {
   extraAminoConverters?: AminoConverters;
   /** Additional cosmjs `SigningStargateClientOptions` (gas price, etc.). */
   clientOptions?: SigningStargateClientOptions;
+  /**
+   * The account's registered ML-DSA-87 keypair. When set, every transaction
+   * is signed hybrid (classical + post-quantum), as QoreChain requires of an
+   * account with a PQC key; a transaction that only registers the key stays
+   * classical. Needs a DIRECT `signer`. Register the key first with
+   * `ensurePqcRegistered(tx, { pqcKeypair, rest })`.
+   */
+  pqcKeypair?: PqcKeypair;
+  /**
+   * The network's REST URL, for hybrid signing: picks the sign-bytes form,
+   * simulates `fee: "auto"` and reads failed transactions' codespace.
+   * Required with `pqcKeypair` on qorechain-vladi / qorechain-diana unless
+   * `signBytesVersion` is forced.
+   */
+  rest?: string;
+  /** Injectable `fetch` for `rest`. */
+  fetch?: FetchLike;
+  /** Force a hybrid sign-bytes form (`"v1"` / `"v2"`) instead of asking `rest`. */
+  signBytesVersion?: SignBytesVersionOption;
 }
 
 /** Options accepted when signing and broadcasting. */
@@ -232,12 +314,95 @@ function cloneMessages(messages: readonly EncodeObject[]): EncodeObject[] {
  */
 export class TxClient {
   private readonly client: SigningClientLike;
+  private readonly hybrid?: HybridSigningOptions;
   /** The signing/sending bech32 address. */
   readonly senderAddress: string;
 
   constructor(opts: TxClientOptions) {
     this.client = opts.signingClient;
     this.senderAddress = opts.senderAddress;
+    this.hybrid = opts.hybrid;
+  }
+
+  /** The ML-DSA-87 keypair this client signs with, when it signs hybrid. */
+  get pqcKeypair(): PqcKeypair | undefined {
+    return this.hybrid?.pqcKeypair;
+  }
+
+  /** Whether `messages` go out hybrid-signed (everything but a bare key registration). */
+  private signsHybrid(messages: readonly EncodeObject[]): boolean {
+    if (!this.hybrid) return false;
+    return !(messages.length > 0 && messages.every((m) => PQC_REGISTRATION_TYPE_URLS.has(m.typeUrl)));
+  }
+
+  /** Chain id, account number and sequence for building a hybrid tx. */
+  private async accountContext(): Promise<{ chainId: string; accountNumber: bigint; sequence: bigint }> {
+    if (!this.client.getChainId || !this.client.getSequence) {
+      throw new Error("hybrid signing needs a signing client that reports the chain id and the account sequence");
+    }
+    const [chainId, { accountNumber, sequence }] = await Promise.all([
+      this.client.getChainId(),
+      this.client.getSequence(this.senderAddress),
+    ]);
+    return { chainId, accountNumber: BigInt(accountNumber), sequence: BigInt(sequence) };
+  }
+
+  /**
+   * Simulate a hybrid transaction as it will be sent: the extension's 4627-byte
+   * signature and its verification cost gas that a signature-less simulation
+   * does not see.
+   */
+  private async simulateHybrid(messages: readonly EncodeObject[], memo: string | undefined): Promise<number> {
+    const h = this.hybrid!;
+    const ctx = await this.accountContext();
+    const built = await buildHybridTx({
+      registry: h.registry,
+      signer: h.signer,
+      pqcKeypair: h.pqcKeypair,
+      messages,
+      // Simulation runs without a gas limit or a fee check.
+      fee: { amount: [], gas: "0" },
+      memo,
+      ...ctx,
+      rest: h.rest,
+      fetch: h.fetch,
+      signBytesVersion: h.signBytesVersion,
+    });
+    return (await this.simulateTxBytes(built.txRawBytes)) + HYBRID_VERIFY_GAS;
+  }
+
+  /**
+   * Simulate signed tx bytes. Over the client's own connection first: the
+   * node's REST gateway renders the result as JSON and fails for messages
+   * whose response type it cannot resolve (e.g. MsgOpenEVMWindowResponse).
+   */
+  private async simulateTxBytes(txBytes: Uint8Array): Promise<number> {
+    const query = (
+      this.client as {
+        forceGetQueryClient?: () => { queryAbci(path: string, data: Uint8Array): Promise<{ value: Uint8Array }> };
+      }
+    ).forceGetQueryClient?.();
+    if (query) {
+      const res = await query.queryAbci(
+        "/cosmos.tx.v1beta1.Service/Simulate",
+        SimulateRequest.encode(SimulateRequest.fromPartial({ txBytes })).finish(),
+      );
+      return Number(SimulateResponse.decode(res.value).gasInfo?.gasUsed ?? 0n);
+    }
+    const h = this.hybrid!;
+    if (!h.rest) throw new Error('hybrid fee "auto" needs `rest` or a client with a query connection');
+    const f = h.fetch ?? (globalThis.fetch as FetchLike);
+    const url = `${h.rest.replace(/\/+$/, "")}/cosmos/tx/v1beta1/simulate`;
+    const res = await f(url, {
+      method: "POST",
+      headers: { "content-type": "application/json" },
+      body: JSON.stringify({ tx_bytes: toBase64(txBytes) }),
+    });
+    const body = (await res.json()) as { gas_info?: { gas_used?: string }; message?: string };
+    if (!res.ok || body.gas_info?.gas_used === undefined) {
+      throw new Error(`simulation failed: ${body.message ?? `HTTP ${res.status} from ${url}`}`);
+    }
+    return Number(body.gas_info.gas_used);
   }
 
   /**
@@ -260,9 +425,24 @@ export class TxClient {
     if (accounts.length === 0) {
       throw new Error("signer exposes no accounts");
     }
+    let hybrid: HybridSigningOptions | undefined;
+    if (opts.pqcKeypair) {
+      if (!isOfflineDirectSigner(opts.signer)) {
+        throw new Error("hybrid signing (pqcKeypair) needs a DIRECT signer: the post-quantum signature covers the protobuf body");
+      }
+      hybrid = {
+        pqcKeypair: opts.pqcKeypair,
+        signer: opts.signer,
+        registry,
+        rest: opts.rest,
+        fetch: opts.fetch,
+        signBytesVersion: opts.signBytesVersion,
+      };
+    }
     return new TxClient({
       signingClient: client,
       senderAddress: accounts[0].address,
+      hybrid,
     });
   }
 
@@ -276,6 +456,7 @@ export class TxClient {
     messages: readonly EncodeObject[],
     opts: SimulateOptions = {},
   ): Promise<number> {
+    if (this.signsHybrid(messages)) return this.simulateHybrid(messages, opts.memo);
     return this.client.simulate(this.senderAddress, messages, opts.memo);
   }
 
@@ -348,6 +529,24 @@ export class TxClient {
     const msgs = cloneMessages(messages);
     const feeInput: FeeInput = fee === "auto" ? fee : cloneDeep(fee);
     const resolvedFee = await this.resolveFee(msgs, feeInput, memo, opts.autoFee);
+
+    if (this.signsHybrid(msgs)) {
+      const h = this.hybrid!;
+      return signAndBroadcastHybrid({
+        registry: h.registry,
+        signer: h.signer,
+        pqcKeypair: h.pqcKeypair,
+        messages: msgs,
+        fee: resolvedFee,
+        memo,
+        ...(await this.accountContext()),
+        rest: h.rest,
+        fetch: h.fetch,
+        signBytesVersion: h.signBytesVersion,
+        transport: this.client as HybridBroadcaster,
+        mode,
+      });
+    }
 
     if (mode === "commit") {
       const res = await this.client.signAndBroadcast(

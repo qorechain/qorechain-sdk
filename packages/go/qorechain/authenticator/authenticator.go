@@ -266,6 +266,13 @@ func derivePQCByScheme(scheme, account, mnemonic string) (pqc.Keypair, error) {
 	}
 }
 
+// DerivePQCCanonical returns the account's recoverable ML-DSA-87 keypair: the
+// address-bound derivation the SDKs and the wallet adapter use, from the same
+// mnemonic as the account. This is the key to register with pqcdx.
+func DerivePQCCanonical(account, mnemonic string) (pqc.Keypair, error) {
+	return derivePQCCanonical(account, mnemonic)
+}
+
 // derivePQCCanonical is the SDK/wallet-adapter address-bound derivation. It
 // resolves account (any of the three address encodings) to its canonical bech32
 // form, then seeds ML-DSA-87 keygen from shake256("qorechain:pqc:v1|"+cosmos+"|"+mnemonic),

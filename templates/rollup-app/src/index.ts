@@ -18,7 +18,9 @@ import {
   createMultilayerClient,
   createRollupClient,
   deriveNativeAccount,
+  derivePqcCanonical,
   directSignerFromPrivateKey,
+  ensurePqcRegistered,
 } from "@qorechain/sdk";
 
 // The public BIP-39 test mnemonic — NOT funded on any real network. Replace it
@@ -44,10 +46,14 @@ async function main(): Promise<void> {
   const account = await deriveNativeAccount(mnemonic);
   console.log(`account: ${account.address}`);
 
+  // QoreChain requires a hybrid (classical + post-quantum) signature, so the
+  // transaction client gets the account's ML-DSA-87 key, derived from the same
+  // mnemonic.
+  const pqcKeypair = derivePqcCanonical(account.address, mnemonic);
   const signer = await directSignerFromPrivateKey(account.privateKey, prefix);
-  const tx = await client.connectTx(signer);
+  const tx = await client.connectTx(signer, { pqcKeypair });
 
-  const rollup = createRollupClient(tx, { qor: client.qor });
+  const rollup = createRollupClient(tx);
   const multilayer = createMultilayerClient(tx);
 
   // --- Build the messages offline (no node needed) --------------------------
@@ -87,6 +93,10 @@ async function main(): Promise<void> {
   }
 
   // --- Broadcast ------------------------------------------------------------
+  // Register the post-quantum key once (idempotent: skipped when it is there).
+  const ensured = await ensurePqcRegistered(tx, { pqcKeypair, rest: restUrl });
+  console.log(ensured.alreadyRegistered ? "PQC key already registered" : `PQC key registered — tx ${ensured.txHash}`);
+
   console.log("\nCreating rollup...");
   const created = await rollup.createRollup({
     rollupId,
@@ -107,12 +117,9 @@ async function main(): Promise<void> {
   console.log(`  ok — tx ${batched.transactionHash}`);
 
   // --- Read -----------------------------------------------------------------
-  const status = await rollup.getRollupStatus(rollupId);
-  console.log("rollup status (qor_):", JSON.stringify(status, null, 2));
-
   const comet = await connectComet(rpcUrl);
   const queries = connectQueryClients(comet);
-  const reader = createRollupClient(tx, { query: queries.rdk, qor: client.qor });
+  const reader = createRollupClient(tx, { query: queries.rdk });
 
   const latest = await reader.getLatestBatch(rollupId);
   console.log("latest batch:", JSON.stringify(latest, null, 2));

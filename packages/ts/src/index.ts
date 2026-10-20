@@ -8,7 +8,7 @@
  */
 
 /** SDK version. */
-export const VERSION = "0.8.3";
+export const VERSION = "0.9.0";
 
 // Top-level factory: the recommended entrypoint that resolves a network and
 // composes the read clients, fee helper, and a lazy signing entrypoint.
@@ -248,9 +248,11 @@ export {
   buildAminoTypes,
   DEFAULT_GAS_MULTIPLIER,
   DEFAULT_GAS_PRICE,
+  HYBRID_VERIFY_GAS,
 } from "./tx/builder";
 export type {
   SigningClientLike,
+  HybridSigningOptions,
   TxClientOptions,
   TxConnectOptions,
   SignAndBroadcastOptions,

@@ -46,17 +46,29 @@ status source and it skips the registration when the key is already registered,
 so it is safe to call on every app start.
 
 ```ts
-import { generatePqcKeypair, ensurePqcRegistered } from "@qorechain/sdk";
+import { derivePqcCanonical, ensurePqcRegistered } from "@qorechain/sdk";
 
-const tx = await client.connectTx(signer);
-const pqcKeypair = generatePqcKeypair(); // or derive deterministically from the wallet
+// The recoverable key: derived from the account's mnemonic, bound to its address.
+const pqcKeypair = derivePqcCanonical(account.address, mnemonic);
+// With the keypair, the client signs every transaction hybrid (the
+// registration itself stays classical, the chain's bootstrap path).
+const tx = await client.connectTx(signer, { pqcKeypair });
 
 const res = await ensurePqcRegistered(tx, {
   pqcKeypair,
   rest: "https://api.qore.host", // checks first: skips if already registered
 });
 // res: { alreadyRegistered: boolean; txHash?: string }
+
+await tx.bankSend("qor1…", [{ denom: "uqor", amount: "1000000" }]); // hybrid-signed
 ```
+
+The same key in the other SDKs: `derive_pqc_canonical(address, mnemonic)`
+(Python), `authenticator.DerivePQCCanonical` (Go),
+`try_derive_pqc_canonical` (Rust), `Authenticator.derivePqcCanonical` (Java).
+They sign hybrid through their hybrid transaction builders
+(`build_hybrid_tx`, `tx.BuildHybridMessages`, `build_hybrid_tx`,
+`PqcDx.HybridSendPath`).
 
 :::warning Always let it check first
 The chain refuses a second registration of the same key **after charging the
@@ -116,8 +128,9 @@ await hybrid.signAndBroadcastHybrid({
 :::caution The sign-bytes form depends on the network
 Chain v3.1.98 introduced a v2 form of the hybrid sign-bytes that binds a domain
 tag and the chain id. A network verifies exactly **one** form at any height: the
-testnet (`qorechain-diana`) switched to v2 at its `v3.1.98` upgrade, mainnet
-(`qorechain-vladi`) stays on v1 until its own, which is named `v3.2.0`. The SDK
+testnet (`qorechain-diana`) switched to v2 at its `v3.1.98` upgrade (height 5,746,000),
+mainnet (`qorechain-vladi`) at its `v3.2.0` upgrade (height 2,981,742); both verify
+only v2 today. The SDK
 asks for both plan names, so it follows either network. Pass `rest` and the SDK asks the
 network (`signBytesVersion: "auto"`, the default), caching the answer for about a
 minute. Without `rest` on those two networks the SDK throws rather than guess —

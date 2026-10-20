@@ -33,6 +33,7 @@ import { QorClient } from "./query/qor";
 import { estimateFee } from "./tx/fees";
 import type { FeeUrgency } from "./query/rest";
 import { TxClient } from "./tx/builder";
+import type { PqcKeypair } from "./accounts/pqc";
 import { createCosmWasmClient } from "./cosmwasm";
 import type { CosmWasmClient } from "@cosmjs/cosmwasm-stargate";
 import {
@@ -74,6 +75,13 @@ export interface ConnectTxOptions {
    * pairs (forwarded to {@link TxClient.connect}).
    */
   registryTypes?: ReadonlyArray<[string, GeneratedType]>;
+  /**
+   * The account's registered ML-DSA-87 keypair. When set, the client signs
+   * every transaction hybrid (classical + post-quantum), as QoreChain requires
+   * of an account with a PQC key; it uses the client's REST endpoint to pick
+   * the sign-bytes form. See {@link TxConnectOptions.pqcKeypair}.
+   */
+  pqcKeypair?: PqcKeypair;
 }
 
 /** Fee convenience surface exposed by {@link QoreChainClient}. */
@@ -243,6 +251,9 @@ export function createClient(opts: CreateClientOptions = {}): QoreChainClient {
         rpcEndpoint: requireEndpoint(network.endpoints, "rpc"),
         signer,
         registryTypes: txOpts.registryTypes,
+        ...(txOpts.pqcKeypair
+          ? { pqcKeypair: txOpts.pqcKeypair, rest: network.endpoints.rest, fetch: opts.fetch }
+          : {}),
       });
     },
   };

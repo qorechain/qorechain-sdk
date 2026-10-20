@@ -38,7 +38,7 @@ Go, and Rust SDKs:
 ## Coordinates
 
 ```
-io.github.qorechain:qorechain-sdk:0.8.3
+io.github.qorechain:qorechain-sdk:0.9.0
 ```
 
 Base Java package: `io.github.qorechain` (sub-packages `networks`, `accounts`,
@@ -228,9 +228,9 @@ two forms, and **each network verifies exactly one at any height** (no overlap):
 
 v2 adds a domain tag (so a signature made in another context can never pass as a
 transaction signature) and binds the chain id (so the post-quantum signature
-itself refuses to verify on another network). Mainnet stays on v1 until its own
-governance upgrade, which applies the plan under the name `v3.2.0`; after that
-the same code signs v2 automatically.
+itself refuses to verify on another network). Mainnet switched to v2 at its own
+governance upgrade, plan `v3.2.0` (height 2,981,742); the same code signs v1
+below that height and v2 above it automatically.
 
 **The switch has TWO plan names.** The chain registers one handler under both
 (`x/pqc/types.SignBytesV2Upgrades`) and each network keeps the record of the

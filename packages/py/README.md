@@ -316,23 +316,38 @@ QoreChain enforces hybrid post-quantum signatures (ML-DSA-87 + secp256k1) by
 default. `qorsdk.pqc_dx` makes a dApp PQC-protected in one idempotent call.
 
 ```python
+import httpx
 from qorsdk import (
-    is_pqc_registered, get_pqc_status,
-    ensure_pqc_registered, migrate_to_hybrid, migrate_pqc_key,
-    generate_pqc_keypair,
+    fetch_pqc_status, ensure_pqc_registered, migrate_to_hybrid, migrate_pqc_key,
+    derive_native_account, derive_pqc_canonical,
 )
 
-# Read-only status (over the qor_ namespace).
-registered = is_pqc_registered(client.qor, native.address)
-status = get_pqc_status(client.qor, native.address)
+REST = "https://api.qore.host"
+native = derive_native_account(mnemonic, 0)
+# The recoverable PQC key: derived from the same mnemonic, bound to the address.
+pqc_keypair = derive_pqc_canonical(native.address, mnemonic)
 
-# Idempotent: registers the signer's Dilithium key only if it isn't already.
-# The check reads REST from rest_url (fetch_pqc_status) and never registers
-# blind — a second registration is refused after the fee is charged.
-result = ensure_pqc_registered(account=native, pqc_keypair=generate_pqc_keypair(), ...)
+# Read-only status over REST (served by every public endpoint).
+status = fetch_pqc_status(REST, native.address)
+
+# Idempotent: registers the signer's Dilithium key only if it isn't already,
+# and raises PqcKeyMismatchError if another key is registered. It never
+# registers blind: a second registration is refused after the fee is charged.
+acct = httpx.get(f"{REST}/cosmos/auth/v1beta1/accounts/{native.address}").json()["account"]
+result = ensure_pqc_registered(
+    account=native,
+    pqc_keypair=pqc_keypair,
+    chain_id="qorechain-vladi",
+    account_number=int(acct["account_number"]),
+    sequence=int(acct.get("sequence", 0)),
+    rest_url=REST,
+    # Registration carries a 2592-byte key and, from chain v3.2.3, a
+    # 4627-byte proof of possession: about 275k gas.
+    fee={"amount": [{"denom": "uqor", "amount": "60000"}], "gas": "400000"},
+)
 
 # Migrate a classical account to hybrid signing, then sign hybrid.
-path = migrate_to_hybrid(account=native, pqc_keypair=generate_pqc_keypair(), ...)
+path = migrate_to_hybrid(account=native, pqc_keypair=pqc_keypair, ...)
 
 # Rotate an account's on-chain PQC key (MsgMigratePQCKey).
 migrate_pqc_key(account=native, ...)

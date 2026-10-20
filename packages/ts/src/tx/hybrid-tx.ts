@@ -339,6 +339,8 @@ export interface HybridBroadcaster {
     gasUsed?: bigint;
     gasWanted?: bigint;
     rawLog?: string;
+    events?: BroadcastResult["events"];
+    msgResponses?: BroadcastResult["msgResponses"];
   }>;
   /** Submit and return after CheckTx: returns the tx hash. */
   broadcastTxSync(tx: Uint8Array): Promise<string>;
@@ -404,6 +406,8 @@ async function broadcastHybridOnce(
       gasUsed: res.gasUsed,
       gasWanted: res.gasWanted,
       rawLog: res.rawLog,
+      events: res.events,
+      msgResponses: res.msgResponses,
     };
   }
 

@@ -415,7 +415,7 @@ importers:
   packages/react:
     dependencies:
       '@qorechain/sdk':
-        specifier: workspace:*
+        specifier: workspace:^
         version: link:../ts
     devDependencies:
       '@testing-library/react':

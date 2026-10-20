@@ -5,10 +5,26 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased]
+## [0.9.0] — 2026-10-20
 
-Client support for chain v3.2.2 and v3.2.3, in all five SDKs. To be released
-after each network release is tagged.
+Client support for chain v3.2.2 and v3.2.3 in all five SDKs. Mainnet applied
+v3.2.2 at height 3,556,788 and v3.2.3 at height 3,662,051.
+
+### Added
+
+- **TS `TxClient` signs hybrid.** QoreChain requires a hybrid (classical +
+  ML-DSA-87) signature, and `TxClient` signed classically only, so
+  `bankSend`, the rollup / multilayer / cross-VM clients and every composer
+  sent through it were refused on the public networks (`pqc` 20). Pass the
+  account's keypair — `TxClient.connect({ …, pqcKeypair, rest })` or
+  `client.connectTx(signer, { pqcKeypair })` — and every transaction is signed
+  hybrid; a bare key registration stays classical (the chain's bootstrap
+  path). `fee: "auto"` simulates the hybrid transaction itself and adds
+  `HYBRID_VERIFY_GAS` for the post-quantum verification, which simulation
+  does not charge. `signAndBroadcastHybrid` now also returns `events` and
+  `msgResponses` on commit. Without a keypair nothing changes.
+- **`@qorechain/react` depends on `@qorechain/sdk ^0.9.0`** instead of the exact
+  version, so an SDK patch does not install a second copy.
 
 ### Added (chain v3.2.3)
 
@@ -145,6 +161,25 @@ after each network release is tagged.
   deterministic. Deterministic signing stays the default (reproducible against
   the test vectors); the docs and comments in every SDK no longer call it a
   consensus rule.
+- **Docs said mainnet verifies only the v1 hybrid sign-bytes.** Mainnet
+  switched to v2 at its `v3.2.0` upgrade (height 2,981,742); the SDKs already
+  followed it automatically. The guides and READMEs now say so.
+- **`create-qorechain-dapp` scaffolded projects on `@qorechain/sdk ^0.3.0`.**
+  On 0.x a caret range pins the minor version, so every new project installed
+  SDK 0.3.x. The templates now depend on the release they ship with, and the
+  CLI build rewrites their `@qorechain/*` ranges to the current workspace
+  versions so they cannot fall behind again.
+- **TS `decodeTxError` on a thrown error.** A CheckTx refusal reaches callers
+  as cosmjs's `BroadcastTxError`, whose log is in `log`, and a failed fee
+  simulation carries only a message; both decoded as "(no log provided)", so
+  text-based classifications (rate limit, missing PQC key) missed them. Both
+  are read now.
+- **Python `fetch_pqc_status` never reported `algorithm_id`** for keys the SDK
+  registers (key type `hybrid`); it now reads the account's `algorithm_id`.
+- **Go: `authenticator.DerivePQCCanonical`** is exported, the address-bound
+  key derivation the other SDKs already exposed. The Python and Go README
+  examples for registration are now complete (account number, sequence, a fee
+  that covers the key and the proof of possession).
 
 ## [0.8.3]
 

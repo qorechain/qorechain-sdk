@@ -88,21 +88,38 @@ const tokenomics = await client.qor.getTokenomicsOverview();
 
 ### Send a transfer
 
+QoreChain requires a hybrid (classical + post-quantum) signature from every
+account, so give the transaction client the account's ML-DSA-87 keypair. The
+first time, register the key; after that every transaction the client sends
+(`bankSend`, the rollup / multilayer / cross-VM clients, any composer) is signed
+hybrid.
+
 ```ts
-import { directSignerFromPrivateKey, toBase } from "@qorechain/sdk";
+import {
+  directSignerFromPrivateKey,
+  derivePqcCanonical,
+  ensurePqcRegistered,
+  toBase,
+} from "@qorechain/sdk";
 
 const account = await deriveNativeAccount(mnemonic);
+// The recoverable PQC key: derived from the same mnemonic, bound to the address.
+const pqcKeypair = derivePqcCanonical(account.address, mnemonic);
 const signer = await directSignerFromPrivateKey(account.privateKey, "qor");
-const tx = await client.connectTx(signer);
+const tx = await client.connectTx(signer, { pqcKeypair });
 
-const fee = await client.fees.estimate(); // or "fast" | "normal" | "slow"
+// Once per account (idempotent; refuses if a different key is registered).
+await ensurePqcRegistered(tx, { pqcKeypair, rest: client.network.endpoints.rest });
+
 const result = await tx.bankSend(
   "qor1recipientaddress...",
   [{ denom: "uqor", amount: toBase("1.5") }],
-  { fee },
-);
+); // fee "auto": simulates the hybrid transaction itself
 console.log(result.transactionHash);
 ```
+
+Without `pqcKeypair` the client signs classically, which the chain accepts only
+for the key registration itself.
 
 ### Quantum-safe signing
 
@@ -133,7 +150,7 @@ v2: "qorechain-pqc-hybrid-v2" ‖ BE64(len chainId) ‖ chainId ‖ BE32(len B0)
 
 A network verifies exactly **one** form at any height. `qorechain-diana`
 (testnet) switched to v2 at its `v3.1.98` upgrade; `qorechain-vladi` (mainnet)
-stays on v1 until its own, named `v3.2.0`; chains born later are v2 from genesis. So pass
+at its own, named `v3.2.0` (height 2,981,742); chains born later are v2 from genesis. So pass
 the network's REST endpoint and let the SDK ask (`signBytesVersion: "auto"`, the
 default):
 
