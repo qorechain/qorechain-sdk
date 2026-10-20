@@ -96,3 +96,6 @@ export {
 
 // The registry that resolves all of the above.
 export { qorechainRegistry, qorechainRegistryTypes } from "./registry";
+
+// Client-side checks run by the abstract-account spending-rules composer.
+export { validateSpendingRules, MAX_DENOM_LIMITS, MAX_ALLOWED_EVM_CALLS } from "./spending-rules";

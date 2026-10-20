@@ -23,6 +23,7 @@ import * as svmTx from "../codegen/qorechain/svm/v1/tx";
 import * as lightnodeTx from "../codegen/qorechain/lightnode/v1/tx";
 import * as licenseTx from "../codegen/qorechain/license/v1/tx";
 import * as abstractaccountTx from "../codegen/qorechain/abstractaccount/v1/tx";
+import { validateSpendingRules } from "./spending-rules";
 import * as crossvmTx from "../codegen/qorechain/crossvm/v1/tx";
 import * as rlconsensusTx from "../codegen/qorechain/rlconsensus/v1/tx";
 
@@ -374,10 +375,18 @@ export const abstractaccount = {
     "/qorechain.abstractaccount.v1.MsgCreateAbstractAccount",
     abstractaccountTx.MsgCreateAbstractAccount,
   ),
-  updateSpendingRules: composer(
-    "/qorechain.abstractaccount.v1.MsgUpdateSpendingRules",
-    abstractaccountTx.MsgUpdateSpendingRules,
-  ),
+  /**
+   * Set an account's spending rules. Owner-signed. The rules are checked
+   * first ({@link validateSpendingRules}): an enabled rule that bounds nothing
+   * is refused here rather than stored as a limit that limits nothing.
+   */
+  updateSpendingRules: (value: PartialMsg<abstractaccountTx.MsgUpdateSpendingRules>): EncodeObject => {
+    validateSpendingRules(value.rules as Parameters<typeof validateSpendingRules>[0]);
+    return composer(
+      "/qorechain.abstractaccount.v1.MsgUpdateSpendingRules",
+      abstractaccountTx.MsgUpdateSpendingRules,
+    )(value);
+  },
   /**
    * Link a foreign-scheme wallet key (e.g. a Phantom ed25519 key) to an account
    * so it may act for that account under least-privilege, time-bounded, revocable

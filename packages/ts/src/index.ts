@@ -513,6 +513,9 @@ export {
   abstractaccount,
   crossvm,
   rlconsensus,
+  validateSpendingRules,
+  MAX_DENOM_LIMITS,
+  MAX_ALLOWED_EVM_CALLS,
 } from "./messages";
 // Generated message types, namespaced by module, for callers who want the raw
 // encode/decode/interface types (e.g. to decode a message read back from chain).
