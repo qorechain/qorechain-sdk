@@ -6,7 +6,7 @@ plugins {
 }
 
 group = "io.github.qorechain"
-version = "0.9.0"
+version = "0.9.1"
 
 repositories {
     mavenCentral()
@@ -32,7 +32,7 @@ sourceSets {
 
 dependencies {
     // Cryptography: secp256k1 / ed25519 / keccak / ripemd / sha + ML-DSA-87 (FIPS-204).
-    api("org.bouncycastle:bcprov-jdk18on:1.80")
+    api("org.bouncycastle:bcprov-jdk18on:1.85")
     // Generated protobuf message classes (committed under src/main/codegen).
     api("com.google.protobuf:protobuf-java:4.35.1")
     // JSON for REST / JSON-RPC transport and the Go-JSON hybrid extension.
@@ -72,7 +72,7 @@ mavenPublishing {
         signAllPublications()
     }
 
-    coordinates("io.github.qorechain", "qorechain-sdk", "0.9.0")
+    coordinates("io.github.qorechain", "qorechain-sdk", "0.9.1")
 
     pom {
         name.set("QoreChain Java SDK")

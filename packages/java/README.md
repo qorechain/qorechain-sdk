@@ -38,7 +38,7 @@ Go, and Rust SDKs:
 ## Coordinates
 
 ```
-io.github.qorechain:qorechain-sdk:0.9.0
+io.github.qorechain:qorechain-sdk:0.9.1
 ```
 
 Base Java package: `io.github.qorechain` (sub-packages `networks`, `accounts`,

@@ -5,6 +5,15 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.9.1] — 2026-10-21 (Java only)
+
+### Security
+
+- **Java: Bouncy Castle 1.80 → 1.85.** Versions before 1.85 carry published
+  advisories (critical and high), none in the ML-DSA, secp256k1 or hashing code
+  the SDK calls, but dependency scanners flag them in every project that pulls
+  the SDK in. No API change; the other languages stay at 0.9.0.
+
 ## [0.9.0] — 2026-10-20
 
 Client support for chain v3.2.2 and v3.2.3 in all five SDKs. Mainnet applied
