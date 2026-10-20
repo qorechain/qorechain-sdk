@@ -11,9 +11,15 @@ describe("spending rules: an enabled rule must bound something", () => {
     expect(() => msg([{ enabled: true }])).toThrow(/bounds nothing/);
   });
 
-  it("refuses an enabled rule whose only bounds are denom limits with empty or zero amounts", () => {
+  it("refuses a denom limit with empty or zero amounts: it would remove the limit for that denom", () => {
     for (const amounts of [{ perTxLimit: "", dailyLimit: "" }, { perTxLimit: "0", dailyLimit: "0" }, {}]) {
-      expect(() => msg([{ enabled: true, denomLimits: [{ denom: "uqor", ...amounts }] }])).toThrow(/bounds nothing/);
+      expect(() => msg([{ enabled: true, denomLimits: [{ denom: "uqor", ...amounts }] }])).toThrow(
+        /remove the limit for uqor/,
+      );
+      // Also inside a rule bounded otherwise: the entry replaces the rule-level limits for uqor.
+      expect(() => msg([{ enabled: true, dailyLimit: "100", denomLimits: [{ denom: "uqor", ...amounts }] }])).toThrow(
+        /remove the limit for uqor/,
+      );
     }
   });
 
@@ -22,10 +28,7 @@ describe("spending rules: an enabled rule must bound something", () => {
     expect(() => msg([{ enabled: true, denomLimits: [{ denom: "uqor", dailyLimit: "5" }] }])).not.toThrow();
     expect(() => msg([{ enabled: true, allowedDenoms: ["uqor"] }])).not.toThrow();
     expect(() => msg([{ enabled: true, allowedEvmCalls: ["0x63C0c19a282a1B52b07dD5a65b58948A07DAE32B"] }])).not.toThrow();
-    // A zero denom limit inside a bounded rule exempts that denom: still allowed.
-    expect(() =>
-      msg([{ enabled: true, dailyLimit: "100", denomLimits: [{ denom: "uqor", perTxLimit: "", dailyLimit: "" }] }]),
-    ).not.toThrow();
+    expect(() => msg([{ enabled: true, dailyLimit: "100", denomLimits: [{ denom: "uqor", perTxLimit: "7" }] }])).not.toThrow();
     // A disabled rule bounds nothing by design.
     expect(() => msg([{ enabled: false }])).not.toThrow();
   });

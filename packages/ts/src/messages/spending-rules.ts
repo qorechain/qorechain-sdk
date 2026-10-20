@@ -12,9 +12,10 @@
  * only "bounds" are denom limits with empty or zero amounts permits
  * everything while showing as an active spending limit.
  *
- * A single denom limit with both amounts empty is still accepted inside a
- * rule that bounds something else: it exempts that denom from the rule-level
- * limits.
+ * A denom limit with both amounts empty or zero is refused too, whatever else
+ * the rule sets. When a denom has an entry the chain applies only that entry
+ * and skips the rule-level limits for the denom, so such an entry silently
+ * removes every limit on it while the rule still reads as limited.
  */
 
 /** At most this many `denom_limits` per rule (chain `MaxDenomLimits`). */
@@ -83,7 +84,13 @@ export function validateSpendingRules(rules: readonly RuleInput[] | undefined): 
       seen.add(key);
       const a = limitAmount(dl?.perTxLimit, `denom ${denom} per-tx limit`, i);
       const b = limitAmount(dl?.dailyLimit, `denom ${denom} daily limit`, i);
-      if (a > 0n || b > 0n) boundingDenomLimit = true;
+      if (a === 0n && b === 0n) {
+        throw new Error(
+          `spending rule ${i}: the limit for ${denom} sets neither a per-tx nor a daily amount, which would remove ` +
+            `the limit for ${denom} (an entry replaces the rule-level limits for its denom); set an amount or drop the entry`,
+        );
+      }
+      boundingDenomLimit = true;
     }
     const bounded =
       daily > 0n || perTx > 0n || (rule.allowedDenoms ?? []).length > 0 || calls.length > 0 || boundingDenomLimit;
