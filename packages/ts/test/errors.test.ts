@@ -115,3 +115,22 @@ describe("QoreTxError", () => {
     expect(err.message).toContain("ABCD");
   });
 });
+
+describe("decodeTxError on thrown errors", () => {
+  it("reads a cosmjs BroadcastTxError's `log` (CheckTx refusal)", () => {
+    const e = Object.assign(new Error("Broadcasting transaction failed with code 3"), {
+      code: 3,
+      codespace: "ai",
+      log: "sender exceeded 10 transactions in the last minute (limit per minute)",
+    });
+    const d = decodeTxError(e as never);
+    expect(d.rawLog).toContain("transactions in the last");
+    expect(d.kind).toBe("rate_limited");
+  });
+
+  it("keeps a failed simulation's message instead of '(no log provided)'", () => {
+    const e = new Error("Query failed with (6): failed to execute message; message index: 0: PQC proof of possession does not verify");
+    const d = decodeTxError(e as never);
+    expect(d.message).toContain("proof of possession does not verify");
+  });
+});

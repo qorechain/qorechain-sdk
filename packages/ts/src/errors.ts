@@ -200,11 +200,19 @@ const DEFAULT_CODESPACE = "sdk";
  * such as `pqc`, `crossvm`, `bridge`, `amm`, …) fall back to the raw log, which
  * the module itself populates with a descriptive reason.
  *
+ * Also accepts a thrown error as is: cosmjs's `BroadcastTxError` (a CheckTx
+ * refusal) carries its log as `log`, and a failed simulation carries only a
+ * `message`; either stands in for `rawLog`.
+ *
  * @param input - The `code`, `codespace`, and `rawLog` from the result.
  */
 export function decodeTxError(input: TxErrorInput): DecodedTxError {
   const codespace = input.codespace || DEFAULT_CODESPACE;
-  const rawLog = input.rawLog;
+  const alt = input as { log?: unknown; message?: unknown };
+  const rawLog =
+    input.rawLog ??
+    (typeof alt.log === "string" ? alt.log : undefined) ??
+    (typeof alt.message === "string" && alt.message !== "" ? alt.message : undefined);
 
   const keyRequirement = classifyPqcKeyRequirement(input.codespace, input.code, rawLog);
   if (keyRequirement) {
