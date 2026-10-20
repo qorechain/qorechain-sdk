@@ -40,7 +40,7 @@ type TxResult struct {
 // as a *QoreTxError.
 func WaitForTx(restURL, hash string, opts WaitOptions, httpClient *http.Client) (*TxResult, error) {
 	if httpClient == nil {
-		httpClient = http.DefaultClient
+		httpClient = defaultHTTPClient
 	}
 	timeout := opts.Timeout
 	if timeout <= 0 {

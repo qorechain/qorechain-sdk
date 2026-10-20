@@ -109,7 +109,7 @@ pub async fn estimate_gas(rest_url: &str, tx_bytes: &[u8]) -> Result<u64> {
         rest_url.trim_end_matches('/')
     );
     let payload = serde_json::json!({ "tx_bytes": BASE64.encode(tx_bytes) });
-    let resp = reqwest::Client::new()
+    let resp = crate::query::default_http_client()
         .post(&url)
         .header("Content-Type", "application/json")
         .header("Accept", "application/json")

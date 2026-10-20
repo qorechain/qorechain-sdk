@@ -41,6 +41,7 @@ from urllib.parse import quote
 
 from .accounts import Secp256k1Account
 from .classical_key import validate_classical_key_for_sender
+from .errors import tx_error_from
 from .key_integrity import sign_proof_of_possession, validate_registered_pqc_key
 from .messages import msg
 from .messages._composer import Msg
@@ -301,6 +302,29 @@ def _is_already_registered(response: Any) -> bool:
     return tx.get("codespace") == "pqc" and str(tx.get("code")) == "7"
 
 
+def _raise_if_check_tx_failed(response: Any) -> None:
+    """Raise :class:`~qorsdk.errors.QoreTxError` when the broadcast answer
+    carries a non-zero CheckTx code.
+
+    Only the broadcast answer is read: in ``sync`` mode a failure inside the
+    block is not known yet and is left to the caller's tracking.
+    """
+    tx = response.get("tx_response", response) if isinstance(response, dict) else {}
+    if not isinstance(tx, dict):
+        return
+    try:
+        code = int(tx.get("code") or 0)
+    except (TypeError, ValueError):
+        return
+    if code != 0:
+        raise tx_error_from(
+            code,
+            codespace=tx.get("codespace") or None,
+            raw_log=tx.get("raw_log") or tx.get("log") or None,
+            tx_hash=_extract_tx_hash(response),
+        )
+
+
 def is_pqc_registered(client: Any, address: str) -> bool:
     """True if ``address`` has a PQC key registered (via ``qor_getPQCKeyStatus``)."""
     return get_pqc_status(client, address)["registered"]
@@ -480,7 +504,9 @@ def ensure_pqc_registered(
     broadcasts a ``MsgRegisterPQCKeyV2`` carrying the signer's Dilithium public key
     (``pqc_keypair.public_key``) and classical ECDSA public key
     (``account.public_key``), returning
-    ``{"already_registered": False, "tx_hash": ...}``.
+    ``{"already_registered": False, "tx_hash": ...}``. Any other non-zero
+    CheckTx code in the broadcast answer raises
+    :class:`~qorsdk.errors.QoreTxError`.
 
     The registration tx itself is signed classically (a wallet cannot yet sign
     hybrid for the very key it is registering); subsequent txs should use the
@@ -533,6 +559,8 @@ def ensure_pqc_registered(
         status = fetch_pqc_status(rest_url, account.address)
         _raise_if_other_key(account.address, status, pqc_keypair.public_key)
         return {"already_registered": True}
+    # Any other refusal is a failure, not a registration.
+    _raise_if_check_tx_failed(response)
     result: EnsureResult = {"already_registered": False}
     tx_hash = _extract_tx_hash(response)
     if tx_hash is not None:
@@ -582,6 +610,8 @@ def migrate_to_hybrid(
     :raises ValueError: If ``messages`` is empty.
     :raises PqcKeyMismatchError: If the account already has a different PQC key
         registered (nothing is sent).
+    :raises QoreTxError: If the registration is refused at CheckTx (the
+        ``messages`` tx is then not sent).
     """
     if not messages:
         raise ValueError("migrate_to_hybrid requires at least one message to send")

@@ -184,7 +184,8 @@ impl PqcDx {
     /// different key, the status is read once more uncached (a rotation may
     /// have just landed). A refusal as "already registered" (`pqc` 7) counts as
     /// `already_registered` once the key on chain is confirmed to be this one
-    /// (or carries none).
+    /// (or carries none); any other non-zero CheckTx code in the broadcast
+    /// answer is returned as [`Error::Tx`].
     pub async fn ensure_pqc_registered(&self) -> Result<EnsureResult> {
         let status = fetch_pqc_status(&self.rest_url, &self.sender).await?;
         if status.registered {
@@ -224,6 +225,10 @@ impl PqcDx {
                 already_registered: true,
                 tx_hash: None,
             });
+        }
+        // Any other refusal is a failure, never a registration.
+        if let Some(err) = check_tx_error(&resp) {
+            return Err(Error::Tx(err));
         }
         Ok(EnsureResult {
             already_registered: false,
@@ -795,6 +800,20 @@ fn is_already_registered(resp: &Value) -> bool {
     }
     tx.get("codespace").and_then(Value::as_str) == Some("pqc")
         && tx.get("code").and_then(Value::as_u64) == Some(7)
+}
+
+/// The decoded error for a non-zero CheckTx code in a REST broadcast response,
+/// or `None` when the code is zero or absent. Only the broadcast answer is read:
+/// in sync mode a failure inside the block is not known yet.
+fn check_tx_error(resp: &Value) -> Option<crate::tx::QoreTxError> {
+    let tx = resp.get("tx_response").unwrap_or(resp);
+    let code = tx.get("code").and_then(Value::as_u64).unwrap_or(0);
+    let codespace = tx.get("codespace").and_then(Value::as_str).unwrap_or("");
+    let raw_log = tx.get("raw_log").and_then(Value::as_str).unwrap_or("");
+    let mut err =
+        crate::tx::decode_tx_error(u32::try_from(code).unwrap_or(u32::MAX), codespace, raw_log)?;
+    err.tx_hash = extract_tx_hash(resp).unwrap_or_default();
+    Some(err)
 }
 
 /// Extracts the broadcast tx hash from a REST `/cosmos/tx/v1beta1/txs` response.

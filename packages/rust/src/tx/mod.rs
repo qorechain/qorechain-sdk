@@ -538,7 +538,7 @@ pub async fn broadcast(rest_url: &str, tx_bytes: &[u8], mode: BroadcastMode) -> 
         "tx_bytes": BASE64.encode(tx_bytes),
         "mode": mode.wire(),
     });
-    let resp = reqwest::Client::new()
+    let resp = crate::query::default_http_client()
         .post(&url)
         .header("Content-Type", "application/json")
         .header("Accept", "application/json")

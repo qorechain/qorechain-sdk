@@ -14,7 +14,7 @@ import (
 // it into a TxResult. It returns an error if the tx is not found.
 func GetTx(restURL, hash string, httpClient *http.Client) (*TxResult, error) {
 	if httpClient == nil {
-		httpClient = http.DefaultClient
+		httpClient = defaultHTTPClient
 	}
 	u := fmt.Sprintf("%s/cosmos/tx/v1beta1/txs/%s", trimRightSlash(restURL), hash)
 	result, found, err := fetchTxResult(u, httpClient)
@@ -142,7 +142,7 @@ func parseTxSearch(body []byte) (*TxSearchResult, error) {
 
 func getJSON(u string, httpClient *http.Client) (json.RawMessage, error) {
 	if httpClient == nil {
-		httpClient = http.DefaultClient
+		httpClient = defaultHTTPClient
 	}
 	resp, err := httpClient.Get(u)
 	if err != nil {

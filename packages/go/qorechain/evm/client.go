@@ -32,7 +32,7 @@ type Client struct {
 }
 
 // NewClient creates an EVM Client targeting the given EVM JSON-RPC URL. If
-// httpClient is nil, http.DefaultClient is used.
+// httpClient is nil, a shared client with a 30s timeout is used.
 func NewClient(rpcURL string, httpClient *http.Client) *Client {
 	return &Client{JSONRPCClient: query.NewJSONRPCClient(rpcURL, httpClient)}
 }

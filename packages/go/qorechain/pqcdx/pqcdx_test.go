@@ -3,6 +3,7 @@ package pqcdx
 import (
 	"encoding/base64"
 	"encoding/json"
+	"errors"
 	"io"
 	"net/http"
 	"net/http/httptest"
@@ -19,6 +20,7 @@ import (
 	"github.com/qorechain/qorechain-sdk/packages/go/qorechain/pqc"
 	pqcv1 "github.com/qorechain/qorechain-sdk/packages/go/qorechain/proto/qorechain/pqc/v1"
 	"github.com/qorechain/qorechain-sdk/packages/go/qorechain/query"
+	"github.com/qorechain/qorechain-sdk/packages/go/qorechain/signbytes"
 	"github.com/qorechain/qorechain-sdk/packages/go/qorechain/tx"
 )
 
@@ -647,5 +649,79 @@ func TestEnsureAttachesProofOfPossessionOnceV323IsApplied(t *testing.T) {
 func TestEnsureLeavesProofOfPossessionOffBeforeV323(t *testing.T) {
 	if pop := registeredPoP(t, "0"); len(pop) != 0 {
 		t.Fatalf("expected no proof before v3.2.3, got %d bytes", len(pop))
+	}
+}
+
+// checkTxServer answers every broadcast with checkTx and every tx poll with an
+// included code-0 result, so only the broadcast answer decides the outcome.
+func checkTxServer(t *testing.T, checkTx string, broadcasts *int) *httptest.Server {
+	t.Helper()
+	ClearPQCStatusCache()
+	return httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		if strings.HasPrefix(r.URL.Path, "/qorechain/pqc/v1/account/") {
+			writePQCStatus(w)
+			return
+		}
+		if r.URL.Path == "/cosmos/tx/v1beta1/txs" {
+			*broadcasts++
+			_, _ = w.Write([]byte(checkTx))
+			return
+		}
+		_, _ = w.Write([]byte(`{"tx_response":{"txhash":"OK0","code":0,"height":"10"}}`))
+	}))
+}
+
+func TestEnsureReturnsACheckTxRefusalAsATxError(t *testing.T) {
+	fakePQCFound = false
+	defer func() { fakePQCFound = true }()
+	var broadcasts int
+	srv := checkTxServer(t, `{"tx_response":{"txhash":"FEE13","code":13,"codespace":"sdk","raw_log":"insufficient fee"}}`, &broadcasts)
+	defer srv.Close()
+	signer := testSigner(t)
+	signer.RestURL = srv.URL
+	res, err := New(signer, Options{}).EnsurePQCRegistered(RegisterOptions{})
+	var txErr *tx.QoreTxError
+	if !errors.As(err, &txErr) {
+		t.Fatalf("want *tx.QoreTxError, got %+v %v", res, err)
+	}
+	if txErr.Code != 13 || txErr.Codespace != "sdk" || txErr.RawLog != "insufficient fee" || txErr.TxHash != "FEE13" {
+		t.Fatalf("decoded %+v", txErr)
+	}
+	if res.TxHash != "" || res.AlreadyRegistered {
+		t.Fatalf("a refused registration must not read as done: %+v", res)
+	}
+}
+
+func TestEnsureCheckTxCodeZeroReturnsTheHash(t *testing.T) {
+	fakePQCFound = false
+	defer func() { fakePQCFound = true }()
+	var broadcasts int
+	srv := checkTxServer(t, `{"tx_response":{"txhash":"OK0","code":0}}`, &broadcasts)
+	defer srv.Close()
+	signer := testSigner(t)
+	signer.RestURL = srv.URL
+	res, err := New(signer, Options{}).EnsurePQCRegistered(RegisterOptions{})
+	if err != nil || res.AlreadyRegistered || res.TxHash != "OK0" {
+		t.Fatalf("%+v %v", res, err)
+	}
+}
+
+func TestMigrateToHybridStopsWhenTheRegistrationIsRefused(t *testing.T) {
+	fakePQCFound = false
+	defer func() { fakePQCFound = true }()
+	var broadcasts int
+	srv := checkTxServer(t, `{"tx_response":{"txhash":"FEE13","code":13,"codespace":"sdk","raw_log":"insufficient fee"}}`, &broadcasts)
+	defer srv.Close()
+	signer := testSigner(t)
+	signer.RestURL = srv.URL
+	signer.SignBytesVersion = signbytes.V2
+	c := New(signer, Options{})
+	_, err := c.MigrateToHybrid(testBankSend(signer.Account.Address), MigrateToHybridOptions{})
+	var txErr *tx.QoreTxError
+	if !errors.As(err, &txErr) || txErr.Code != 13 {
+		t.Fatalf("want the registration's tx error, got %v", err)
+	}
+	if broadcasts != 1 {
+		t.Fatalf("the hybrid tx must not be sent after a refused registration: %d broadcasts", broadcasts)
 	}
 }

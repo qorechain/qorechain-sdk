@@ -131,7 +131,7 @@ pub use msg::abstractaccount::{validate_spending_rules, MAX_ALLOWED_EVM_CALLS, M
 pub use query::{JsonRpcClient, QorClient, RestClient, TypedQueryClient, QOR_METHODS};
 pub use upgrades::{
     clear_upgrade_cache, is_upgrade_applied, require_upgrade_applied, upgrade_applied_height,
-    CHAIN_UPGRADE_V3_2_2,
+    CHAIN_UPGRADE_V3_2_2, CHAIN_UPGRADE_V3_2_3,
 };
 
 pub use client::{create_client, Client, ClientBuilder, Fees};
@@ -157,8 +157,9 @@ pub use cross_vm::{
 };
 
 pub use pqc_dx::{
-    is_registered_pqc_key, pqc_status_public_key, EnsureResult, HybridSendPath, MigrateKeyOptions,
-    PqcDx, PqcKeyMismatchError, PqcStatus, DEFAULT_KEY_TYPE, PQC_KEY_STATUS_PRECOMPILE,
+    clear_pqc_status_cache, fetch_pqc_status, is_registered_pqc_key, pqc_status_public_key,
+    EnsureResult, HybridSendPath, MigrateKeyOptions, PqcDx, PqcKeyMismatchError, PqcStatus,
+    DEFAULT_KEY_TYPE, PQC_KEY_STATUS_PRECOMPILE,
 };
 
 pub use utils::{

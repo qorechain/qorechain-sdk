@@ -6,6 +6,7 @@ import (
 	"net/http"
 	"net/http/httptest"
 	"testing"
+	"time"
 )
 
 func TestRestMethodPaths(t *testing.T) {
@@ -197,5 +198,20 @@ func TestJSONRPCResultReturned(t *testing.T) {
 	}
 	if parsed.Value != 42 {
 		t.Errorf("value = %d", parsed.Value)
+	}
+}
+
+func TestNilHTTPClientFallsBackToATimedClient(t *testing.T) {
+	for name, c := range map[string]*http.Client{
+		"rest":    NewRestClient("http://127.0.0.1:1", nil).http,
+		"jsonrpc": NewJSONRPCClient("http://127.0.0.1:1", nil).http,
+	} {
+		if c == http.DefaultClient || c.Timeout != 30*time.Second {
+			t.Fatalf("%s: fallback client timeout %v, want 30s", name, c.Timeout)
+		}
+	}
+	mine := &http.Client{}
+	if NewRestClient("http://127.0.0.1:1", mine).http != mine {
+		t.Fatal("a caller's client must be used as given")
 	}
 }

@@ -275,3 +275,37 @@ async fn positive_cache_keeps_the_key() {
         Some(false)
     );
 }
+
+// Any other CheckTx refusal of the registration is an error, never a
+// registration.
+
+const REFUSED_FEE: &str = r#"{"tx_response":{"code":13,"codespace":"sdk","raw_log":"insufficient fee","txhash":"FEE13"}}"#;
+
+#[tokio::test]
+async fn check_tx_refusal_is_a_tx_error() {
+    let mine = mine();
+    let server = MockServer::start(vec![None], REFUSED_FEE).await;
+    let dx = make_dx(&server.base_url, &mine);
+    match dx.ensure_pqc_registered().await.unwrap_err() {
+        Error::Tx(e) => {
+            assert_eq!(e.code, 13);
+            assert_eq!(e.codespace, "sdk");
+            assert_eq!(e.raw_log, "insufficient fee");
+            assert_eq!(e.tx_hash, "FEE13");
+        }
+        other => panic!("expected a tx error, got {other}"),
+    }
+    assert_eq!(server.broadcasts(), 1);
+    // migrate_to_hybrid stops there too.
+    assert!(matches!(dx.migrate_to_hybrid().await, Err(Error::Tx(_))));
+}
+
+#[tokio::test]
+async fn check_tx_code_zero_returns_the_hash() {
+    let mine = mine();
+    let server = MockServer::start(vec![None], OK_BROADCAST).await;
+    let dx = make_dx(&server.base_url, &mine);
+    let res = dx.ensure_pqc_registered().await.unwrap();
+    assert!(!res.already_registered);
+    assert_eq!(res.tx_hash.as_deref(), Some("SENT"));
+}

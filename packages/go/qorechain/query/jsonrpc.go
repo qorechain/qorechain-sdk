@@ -42,10 +42,10 @@ type JSONRPCClient struct {
 }
 
 // NewJSONRPCClient creates a JSON-RPC client targeting the given URL. If
-// httpClient is nil, http.DefaultClient is used.
+// httpClient is nil, a shared client with a 30s timeout is used.
 func NewJSONRPCClient(rpcURL string, httpClient *http.Client) *JSONRPCClient {
 	if httpClient == nil {
-		httpClient = http.DefaultClient
+		httpClient = defaultHTTPClient
 	}
 	return &JSONRPCClient{url: rpcURL, http: httpClient, nextID: 1}
 }

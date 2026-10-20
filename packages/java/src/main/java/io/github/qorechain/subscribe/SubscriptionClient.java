@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.WebSocket;
+import java.time.Duration;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.concurrent.CompletionStage;
@@ -23,8 +24,12 @@ public final class SubscriptionClient implements AutoCloseable {
 
     private static final ObjectMapper MAPPER = new ObjectMapper();
 
+    /** How long opening the socket (connect + handshake) may take before it fails. */
+    private static final Duration CONNECT_TIMEOUT = Duration.ofSeconds(10);
+
     private final String wsUrl;
-    private final HttpClient httpClient = HttpClient.newHttpClient();
+    private final HttpClient httpClient =
+            HttpClient.newBuilder().connectTimeout(CONNECT_TIMEOUT).build();
     private final AtomicLong nextId = new AtomicLong(1);
     private WebSocket webSocket;
 
@@ -132,6 +137,7 @@ public final class SubscriptionClient implements AutoCloseable {
         this.webSocket =
                 httpClient
                         .newWebSocketBuilder()
+                        .connectTimeout(CONNECT_TIMEOUT)
                         .buildAsync(URI.create(wsUrl), listener)
                         .join();
     }

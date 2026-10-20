@@ -20,6 +20,7 @@ from cosmpy.protos.cosmos.tx.v1beta1.tx_pb2 import AuthInfo, TxBody, TxRaw
 
 from qorsdk import (
     ALGORITHM_DILITHIUM5,
+    QoreTxError,
     build_register_pqc_key,
     clear_pqc_status_cache,
     clear_upgrade_cache,
@@ -481,6 +482,65 @@ def test_ensure_treats_already_registered_refusal_as_success():
     )
     res = ensure_pqc_registered(pqc_keypair=generate_pqc_keypair(), **kwargs)
     assert res == {"already_registered": True}
+
+
+def _mock_check_tx(tx_response: dict):
+    _mock_status(False)
+    respx.get(f"{REST}/cosmos/upgrade/v1beta1/applied_plan/v3.2.0").mock(
+        return_value=httpx.Response(200, json={"height": "0"})
+    )
+    return respx.post(f"{REST}/cosmos/tx/v1beta1/txs").mock(
+        return_value=httpx.Response(200, json={"tx_response": tx_response})
+    )
+
+
+@respx.mock
+def test_ensure_raises_on_a_check_tx_refusal_that_is_not_already_registered():
+    _, kwargs = _ctx()
+    _mock_check_tx(
+        {
+            "code": 13,
+            "codespace": "sdk",
+            "raw_log": "insufficient fee",
+            "txhash": "FEE13",
+        }
+    )
+    with pytest.raises(QoreTxError) as info:
+        ensure_pqc_registered(pqc_keypair=generate_pqc_keypair(), **kwargs)
+    assert info.value.code == 13
+    assert info.value.codespace == "sdk"
+    assert info.value.kind == "insufficient_fee"
+    assert info.value.raw_log == "insufficient fee"
+    assert info.value.tx_hash == "FEE13"
+
+
+@respx.mock
+def test_ensure_returns_the_hash_on_check_tx_code_zero():
+    _, kwargs = _ctx()
+    _mock_check_tx({"code": 0, "txhash": "OK0"})
+    res = ensure_pqc_registered(pqc_keypair=generate_pqc_keypair(), **kwargs)
+    assert res == {"already_registered": False, "tx_hash": "OK0"}
+
+
+@respx.mock
+def test_migrate_to_hybrid_stops_when_the_registration_is_refused():
+    _, kwargs = _ctx()
+    route = _mock_check_tx({"code": 13, "codespace": "sdk", "raw_log": "insufficient fee"})
+    with pytest.raises(QoreTxError):
+        migrate_to_hybrid(
+            pqc_keypair=generate_pqc_keypair(),
+            messages=[
+                msg.bank.send(
+                    from_address=kwargs["account"].address,
+                    to_address=kwargs["account"].address,
+                    amount=[Coin(denom="uqor", amount="1")],
+                )
+            ],
+            qor=None,
+            **kwargs,
+        )
+    # The hybrid messages tx is not sent after a refused registration.
+    assert route.call_count == 1
 
 
 # --- proof of possession at registration (chain v3.2.3) -----------------------

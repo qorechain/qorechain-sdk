@@ -19,3 +19,21 @@ pub use typed::TypedQueryClient;
 
 /// Default `User-Agent` sent with every request.
 pub(crate) const DEFAULT_USER_AGENT: &str = "qorechain-rust-sdk";
+
+/// Whole-request timeout of the HTTP client the SDK creates itself.
+pub(crate) const DEFAULT_HTTP_TIMEOUT: std::time::Duration = std::time::Duration::from_secs(30);
+
+/// Connect timeout of the HTTP client the SDK creates itself.
+pub(crate) const DEFAULT_HTTP_CONNECT_TIMEOUT: std::time::Duration =
+    std::time::Duration::from_secs(10);
+
+/// The HTTP client the SDK uses when the caller supplies none: a stalled
+/// connection fails after [`DEFAULT_HTTP_TIMEOUT`] instead of hanging. A client
+/// passed in by the caller (`with_client`, `http_client`) is used as given.
+pub(crate) fn default_http_client() -> reqwest::Client {
+    reqwest::Client::builder()
+        .timeout(DEFAULT_HTTP_TIMEOUT)
+        .connect_timeout(DEFAULT_HTTP_CONNECT_TIMEOUT)
+        .build()
+        .expect("the default HTTP client builds")
+}

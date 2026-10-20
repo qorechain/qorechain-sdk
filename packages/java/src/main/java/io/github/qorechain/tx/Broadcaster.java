@@ -121,7 +121,13 @@ public final class Broadcaster {
     private Result resultFromCommit(JsonNode res) {
         String hash = text(res, "hash");
         JsonNode checkTx = res == null ? null : res.get("check_tx");
-        JsonNode deliverTx = res == null ? null : res.get("deliver_tx");
+        // The in-block result is `tx_result` on current nodes; older nodes named it
+        // `deliver_tx`. Reading only the old name made every in-block failure look like
+        // code 0.
+        JsonNode deliverTx = res == null ? null : res.get("tx_result");
+        if (deliverTx == null || deliverTx.isNull()) {
+            deliverTx = res == null ? null : res.get("deliver_tx");
+        }
         int checkCode = intOf(checkTx, "code");
         if (checkCode != 0) {
             throw TxError.decode(checkCode, text(checkTx, "codespace"), text(checkTx, "log"), hash);

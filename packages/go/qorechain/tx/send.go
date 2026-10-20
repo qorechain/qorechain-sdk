@@ -170,7 +170,9 @@ func parseBroadcastResponse(raw json.RawMessage) (hash string, txErr error, err 
 		return "", nil, fmt.Errorf("broadcast response missing txhash: %s", string(raw))
 	}
 	if tr.Code != 0 {
-		return tr.TxHash, DecodeTxError(tr.Code, tr.Codespace, tr.RawLog), nil
+		txErr := DecodeTxError(tr.Code, tr.Codespace, tr.RawLog)
+		txErr.TxHash = tr.TxHash
+		return tr.TxHash, txErr, nil
 	}
 	return tr.TxHash, nil, nil
 }

@@ -2,6 +2,7 @@ package io.github.qorechain;
 
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -17,6 +18,7 @@ import io.github.qorechain.pqc.PqcKeypair;
 import io.github.qorechain.query.QorClient;
 import io.github.qorechain.tx.Broadcaster;
 import io.github.qorechain.tx.StdFee;
+import io.github.qorechain.tx.TxError;
 import io.github.qorechain.utils.Hex;
 import java.io.IOException;
 import java.net.InetSocketAddress;
@@ -223,6 +225,34 @@ class PqcKeyMismatchTest {
         }
         restKeys = Arrays.asList(null, MINE.publicKey);
         assertTrue(PqcDx.ensurePqcRegistered(signer(true), bc(), null, null).alreadyRegistered);
+    }
+
+    @Test
+    void anyOtherCheckTxRefusalIsATxErrorNotARegistration() {
+        broadcastResult =
+                "{\"code\":13,\"codespace\":\"sdk\",\"hash\":\"FEE13\",\"log\":\"insufficient fee\"}";
+        restKeys = Arrays.asList((byte[]) null);
+        TxError.QoreTxException e =
+                assertThrows(
+                        TxError.QoreTxException.class,
+                        () -> PqcDx.ensurePqcRegistered(signer(true), bc(), null, null));
+        assertEquals(13, e.code);
+        assertEquals("sdk", e.codespace);
+        assertEquals("insufficient fee", e.rawLog);
+        assertEquals("FEE13", e.txHash);
+        assertEquals(1, broadcasts.size());
+        // migrateToHybrid stops there too.
+        assertThrows(
+                TxError.QoreTxException.class,
+                () -> PqcDx.migrateToHybrid(signer(true), bc(), null, null));
+    }
+
+    @Test
+    void checkTxCodeZeroReturnsTheHash() {
+        restKeys = Arrays.asList((byte[]) null);
+        PqcDx.EnsureResult r = PqcDx.ensurePqcRegistered(signer(true), bc(), null, null);
+        assertFalse(r.alreadyRegistered);
+        assertEquals("DEADBEEF", r.txHash);
     }
 
     @Test

@@ -84,10 +84,10 @@ func CalculateFee(gasLimit uint64, multiplier float64, price GasPrice) (Fee, err
 //
 // txBytes must be a fully assembled (signed) TxRaw; the simulate endpoint does
 // not verify signatures but does require the tx structure. If httpClient is nil,
-// http.DefaultClient is used.
+// a shared client with a 30s timeout is used.
 func EstimateGas(restURL string, txBytes []byte, httpClient *http.Client) (uint64, error) {
 	if httpClient == nil {
-		httpClient = http.DefaultClient
+		httpClient = defaultHTTPClient
 	}
 	payload, err := json.Marshal(map[string]string{
 		"tx_bytes": base64.StdEncoding.EncodeToString(txBytes),

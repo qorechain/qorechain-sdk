@@ -34,9 +34,13 @@ public final class TxTracker {
 
     /**
      * Poll {@code GET /cosmos/tx/v1beta1/txs/{hash}} until the tx is found (and
-     * has a delivery code), throwing on timeout or a non-zero code.
+     * has a delivery code), throwing on timeout or a non-zero code. A {@code null}
+     * {@code opts} uses the defaults.
      */
     public static IncludedTx waitForTx(RestClient rest, String txHash, WaitOptions opts) {
+        if (opts == null) {
+            opts = new WaitOptions();
+        }
         long deadline = System.currentTimeMillis() + opts.timeoutMs;
         while (true) {
             JsonNode found = null;

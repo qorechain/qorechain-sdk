@@ -153,3 +153,18 @@ fn v323_codes_and_messages() {
         UPDATE_AUTHORITY
     );
 }
+
+#[test]
+fn crate_root_re_exports() {
+    assert_eq!(qorechain::CHAIN_UPGRADE_V3_2_3, "v3.2.3");
+    assert_eq!(
+        qorechain::CHAIN_UPGRADE_V3_2_3,
+        qorechain::upgrades::CHAIN_UPGRADE_V3_2_3
+    );
+    // The status read and its cache sit at the crate root next to the
+    // key-mismatch helpers.
+    qorechain::clear_pqc_status_cache();
+    let _read = qorechain::fetch_pqc_status;
+    let _ = qorechain::is_registered_pqc_key;
+    let _ = qorechain::pqc_status_public_key;
+}

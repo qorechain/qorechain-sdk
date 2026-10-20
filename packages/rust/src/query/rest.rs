@@ -12,9 +12,10 @@ pub struct RestClient {
 }
 
 impl RestClient {
-    /// Creates a `RestClient` for the given base URL using a fresh HTTP client.
+    /// Creates a `RestClient` for the given base URL using a fresh HTTP client
+    /// (30 s request timeout, 10 s connect timeout).
     pub fn new(base_url: impl Into<String>) -> Self {
-        Self::with_client(base_url, reqwest::Client::new())
+        Self::with_client(base_url, super::default_http_client())
     }
 
     /// Creates a `RestClient` for the given base URL using the supplied HTTP

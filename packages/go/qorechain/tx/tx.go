@@ -67,6 +67,7 @@ import (
 	"io"
 	"net/http"
 	"strings"
+	"time"
 
 	"cosmossdk.io/math"
 	codectypes "github.com/cosmos/cosmos-sdk/codec/types"
@@ -395,18 +396,26 @@ func BuildHybridTx(params BuildHybridTxParams) (*BuiltTx, error) {
 	}, nil
 }
 
+// defaultHTTPTimeout bounds each request made through the package's own HTTP
+// client, used when a function is given a nil *http.Client.
+const defaultHTTPTimeout = 30 * time.Second
+
+// defaultHTTPClient is the client used when the caller supplies none: unlike
+// http.DefaultClient it gives up on a stalled connection.
+var defaultHTTPClient = &http.Client{Timeout: defaultHTTPTimeout}
+
 // Broadcast POSTs signed TxRaw bytes to the REST /cosmos/tx/v1beta1/txs endpoint.
 //
 // It sends {"tx_bytes": <base64>, "mode": "BROADCAST_MODE_*"} and returns the
 // raw JSON response. Broadcasting requires a live node; unit tests mock this
-// POST. If httpClient is nil, http.DefaultClient is used.
+// POST. If httpClient is nil, a shared client with a 30s timeout is used.
 func Broadcast(restURL string, txBytes []byte, mode BroadcastMode, httpClient *http.Client) (json.RawMessage, error) {
 	protoMode, ok := broadcastModeMap[mode]
 	if !ok {
 		return nil, fmt.Errorf("unknown broadcast mode: %q", mode)
 	}
 	if httpClient == nil {
-		httpClient = http.DefaultClient
+		httpClient = defaultHTTPClient
 	}
 	payload, err := json.Marshal(map[string]string{
 		"tx_bytes": base64.StdEncoding.EncodeToString(txBytes),

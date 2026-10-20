@@ -58,7 +58,7 @@ pub async fn wait_for_tx(rest_url: &str, hash: &str, opts: WaitOptions) -> Resul
         rest_url.trim_end_matches('/')
     );
     let deadline = std::time::Instant::now() + timeout;
-    let http = reqwest::Client::new();
+    let http = crate::query::default_http_client();
     loop {
         if let Some(result) = fetch_tx_result(&http, &url).await? {
             if result.code != 0 {

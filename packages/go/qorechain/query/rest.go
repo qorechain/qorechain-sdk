@@ -14,9 +14,18 @@ import (
 	"net/http"
 	"net/url"
 	"strings"
+	"time"
 )
 
 const defaultUserAgent = "qorechain-go-sdk"
+
+// defaultHTTPTimeout bounds each request made through the package's own HTTP
+// client, used when a constructor is given a nil *http.Client.
+const defaultHTTPTimeout = 30 * time.Second
+
+// defaultHTTPClient is the client used when the caller supplies none: unlike
+// http.DefaultClient it gives up on a stalled connection.
+var defaultHTTPClient = &http.Client{Timeout: defaultHTTPTimeout}
 
 // HTTPError is returned when an HTTP response has a non-2xx status.
 type HTTPError struct {
@@ -37,10 +46,10 @@ type RestClient struct {
 }
 
 // NewRestClient creates a RestClient for the given base URL. If httpClient is
-// nil, http.DefaultClient is used.
+// nil, a shared client with a 30s timeout is used.
 func NewRestClient(baseURL string, httpClient *http.Client) *RestClient {
 	if httpClient == nil {
-		httpClient = http.DefaultClient
+		httpClient = defaultHTTPClient
 	}
 	return &RestClient{baseURL: strings.TrimRight(baseURL, "/"), http: httpClient}
 }

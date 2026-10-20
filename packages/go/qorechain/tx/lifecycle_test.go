@@ -322,3 +322,17 @@ func containsBytes(haystack, needle []byte) bool {
 }
 
 var _ = json.Marshal
+
+func TestNilHTTPClientFallsBackToATimedClient(t *testing.T) {
+	if defaultHTTPClient == http.DefaultClient || defaultHTTPClient.Timeout != 30*time.Second {
+		t.Fatalf("fallback client timeout %v, want 30s", defaultHTTPClient.Timeout)
+	}
+}
+
+func TestCheckTxErrorCarriesTheHash(t *testing.T) {
+	_, txErr, err := parseBroadcastResponse(json.RawMessage(`{"tx_response":{"txhash":"FEE13","code":13,"codespace":"sdk","raw_log":"insufficient fee"}}`))
+	var qe *QoreTxError
+	if err != nil || !errors.As(txErr, &qe) || qe.TxHash != "FEE13" || qe.Code != 13 {
+		t.Fatalf("%v %v", txErr, err)
+	}
+}

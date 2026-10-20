@@ -16,9 +16,9 @@ pub struct JsonRpcClient {
 
 impl JsonRpcClient {
     /// Creates a JSON-RPC client targeting the given URL using a fresh HTTP
-    /// client.
+    /// client (30 s request timeout, 10 s connect timeout).
     pub fn new(url: impl Into<String>) -> Self {
-        Self::with_client(url, reqwest::Client::new())
+        Self::with_client(url, super::default_http_client())
     }
 
     /// Creates a JSON-RPC client targeting the given URL using the supplied HTTP

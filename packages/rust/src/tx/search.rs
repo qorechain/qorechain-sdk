@@ -11,7 +11,7 @@ pub async fn get_tx(rest_url: &str, hash: &str) -> Result<TxResult> {
         "{}/cosmos/tx/v1beta1/txs/{hash}",
         rest_url.trim_end_matches('/')
     );
-    let http = reqwest::Client::new();
+    let http = crate::query::default_http_client();
     match fetch_tx_result(&http, &url).await? {
         Some(result) => Ok(result),
         None => Err(Error::InvalidResponse(format!("tx {hash} not found"))),
@@ -67,7 +67,7 @@ pub async fn search_txs(
             "at least one event predicate is required".into(),
         ));
     }
-    let http = reqwest::Client::new();
+    let http = crate::query::default_http_client();
     let resp = http
         .get(format!(
             "{}/cosmos/tx/v1beta1/txs",
@@ -142,7 +142,7 @@ fn parse_tx_search(v: Value) -> TxSearchResult {
 }
 
 async fn get_json(url: &str) -> Result<Value> {
-    let http = reqwest::Client::new();
+    let http = crate::query::default_http_client();
     let resp = http
         .get(url)
         .header("Accept", "application/json")

@@ -107,7 +107,8 @@ impl ClientBuilder {
         self
     }
 
-    /// Supplies the `reqwest::Client` used for all requests. Optional.
+    /// Supplies the `reqwest::Client` used for all requests. Optional; without
+    /// it the SDK uses a client with a 30 s request timeout.
     pub fn http_client(mut self, http: reqwest::Client) -> Self {
         self.http = Some(http);
         self
@@ -127,7 +128,7 @@ impl ClientBuilder {
         let rest_url = require_endpoint("rest", &eps.rest)?;
         let evm_url = require_endpoint("evm_rpc", &eps.evm_rpc)?;
 
-        let http = self.http.unwrap_or_default();
+        let http = self.http.unwrap_or_else(crate::query::default_http_client);
         let rest = RestClient::with_client(rest_url, http.clone());
         let qor = QorClient::from_jsonrpc(crate::query::JsonRpcClient::with_client(evm_url, http));
         let fees = Fees { rest: rest.clone() };

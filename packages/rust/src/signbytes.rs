@@ -446,9 +446,10 @@ impl Default for SignBytesResolver {
 }
 
 impl SignBytesResolver {
-    /// A resolver with a fresh HTTP client and the default TTL.
+    /// A resolver with a fresh HTTP client (30 s request timeout) and the
+    /// default TTL.
     pub fn new() -> Self {
-        Self::with_client(reqwest::Client::new())
+        Self::with_client(crate::query::default_http_client())
     }
 
     /// A resolver using the supplied HTTP client and the default TTL.

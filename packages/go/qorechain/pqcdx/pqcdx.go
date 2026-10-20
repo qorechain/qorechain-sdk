@@ -484,7 +484,8 @@ func (c *Client) registerMessage(keyType string, proofOfPossession []byte) (*pqc
 // as registered; the REST route always carries it.) Otherwise it builds and
 // broadcasts a MsgRegisterPQCKeyV2 carrying the signer's Dilithium and ECDSA
 // public keys. A refusal as "already registered" (pqc 7) counts as
-// AlreadyRegistered, after the same key comparison.
+// AlreadyRegistered, after the same key comparison; any other non-zero code is
+// returned as a *tx.QoreTxError.
 func (c *Client) EnsurePQCRegistered(opts RegisterOptions) (EnsureResult, error) {
 	if !opts.Force {
 		s, err := c.Status()
@@ -529,8 +530,14 @@ func (c *Client) EnsurePQCRegistered(opts RegisterOptions) (EnsureResult, error)
 		}
 		return EnsureResult{}, err
 	}
-	if res.Code != 0 && isAlreadyRegistered(res.Code, res.Codespace, res.RawLog) {
-		return c.registeredMeanwhile()
+	if res.Code != 0 {
+		if isAlreadyRegistered(res.Code, res.Codespace, res.RawLog) {
+			return c.registeredMeanwhile()
+		}
+		// Any other refusal is a failure, never a registration.
+		txErr := tx.DecodeTxError(res.Code, res.Codespace, res.RawLog)
+		txErr.TxHash = res.TxHash
+		return EnsureResult{}, txErr
 	}
 	return EnsureResult{TxHash: res.TxHash}, nil
 }
