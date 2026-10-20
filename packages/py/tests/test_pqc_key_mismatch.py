@@ -217,3 +217,22 @@ def test_positive_cache_keeps_the_key():
     assert pqc_status_public_key(again) == MINE.public_key
     assert is_registered_pqc_key(again, MINE.public_key) is True
     assert is_registered_pqc_key(again, OTHER.public_key) is False
+
+
+@respx.mock
+def test_fetch_pqc_status_reads_algorithm_id_from_the_account() -> None:
+    # Keys the SDK registers have key_type "hybrid", which names no algorithm;
+    # the account carries algorithm_id itself.
+    clear_pqc_status_cache()
+    respx.get(STATUS_URL).mock(
+        return_value=httpx.Response(
+            200,
+            json={
+                "found": True,
+                "account": {"public_key": "AQID", "algorithm_id": 1, "key_type": "hybrid"},
+            },
+        )
+    )
+    status = fetch_pqc_status(REST, ADDR)
+    assert status["algorithm_id"] == 1
+    assert status["key_type"] == "hybrid"

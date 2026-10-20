@@ -179,9 +179,15 @@ def fetch_pqc_status(rest_url: str, address: str) -> PqcStatus:
             key_type = acct.get("key_type")
             if key_type:
                 status["key_type"] = key_type
-                algorithm_id = _algorithm_id_for_key_type(key_type)
-                if algorithm_id is not None:
-                    status["algorithm_id"] = algorithm_id
+            # The account carries algorithm_id itself; key_type is "hybrid" for
+            # every key the SDK registers, so it names no algorithm.
+            algorithm_id = acct.get("algorithm_id")
+            if isinstance(algorithm_id, (int, str)) and str(algorithm_id).isdigit():
+                status["algorithm_id"] = int(algorithm_id)
+            elif key_type:
+                mapped = _algorithm_id_for_key_type(key_type)
+                if mapped is not None:
+                    status["algorithm_id"] = mapped
             public_key = acct.get("public_key")
             if isinstance(public_key, str) and public_key:
                 status["pubkey"] = public_key
