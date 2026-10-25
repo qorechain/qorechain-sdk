@@ -8,9 +8,10 @@
  * client therefore sets a release's new fields only after the network has
  * applied that release, and this module is how it finds out.
  *
- * The chain has no query for its protocol features, but each release switches
- * them on at its upgrade plan height, and the upgrade module reports the height
- * at which a plan was applied. A plan name is the same on every network.
+ * Each release switches its protocol features on at its upgrade plan height,
+ * and the upgrade module reports the height at which a plan was applied. A plan
+ * name is the same on every network. From chain v3.2.4 the switches can also be
+ * read by name (`fetchProtocolFeatures`); a plan check works on every release.
  */
 
 import type { FetchLike } from "../query/http";

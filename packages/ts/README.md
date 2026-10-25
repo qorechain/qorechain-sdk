@@ -246,6 +246,49 @@ const w = await fetchEvmWindow({ rest, address: account.cosmos });
   opened on every send is a click nobody reads. Show the limits and let the user
   authorise, then reuse the live window until it is exhausted.
 
+### Staking tiers (v0.10.0, chain v3.2.4)
+
+Lock part of an existing delegation for 3, 6 or 12 months for a bonus on top
+of the staking reward. Running a light node or a validator adds to it, up to a
+total cap; leaving early burns a penalty and forfeits the bonus. The terms are
+governance parameters: read them rather than hard-coding them.
+
+```ts
+import { msg, fetchStakingTierParams, fetchStakingLocks, qorechainTypes } from "@qorechain/sdk";
+
+const params = await fetchStakingTierParams({ rest });
+// params.lockTiers → [{ months: 3, bonusBps: 150 }, { months: 6, bonusBps: 300 }, …]
+
+const res = await tx.signAndBroadcast(
+  [msg.stakingtier.lockDelegation({ delegator, validator, amount: "10000000", months: 3 })],
+  "auto",
+);
+const { lockId, endTime } = qorechainTypes.stakingtier.MsgLockDelegationResponse.decode(res.msgResponses![0].value);
+
+const { locks, claimable } = await fetchStakingLocks({ rest, holder: delegator });
+await tx.signAndBroadcast([msg.stakingtier.claimBonus({ holder: delegator })], "auto");
+await tx.signAndBroadcast([msg.stakingtier.unlockEarly({ delegator, lockId })], "auto");
+```
+
+`lockDelegation` refuses, before signing, a term other than 3, 6 or 12 and an
+amount that is not a positive integer in base units. A locked delegation cannot
+be undelegated or redelegated until the lock ends (`stakingtier` code 13).
+
+### Network reads added in chain v3.2.4
+
+```ts
+import { fetchAuthNonce, fetchProtocolFeatures, isProtocolFeatureEnabled, fetchPqcStatus } from "@qorechain/sdk";
+
+// The nonce a linked authenticator key must sign next (MsgExecuteEVM / MsgExecuteCosmos).
+const { nonce, linked } = await fetchAuthNonce({ rest, address, pubkey });
+
+// Which consensus rules the network enforces today, by name.
+const on = await isProtocolFeatureEnabled({ rest, name: "pqc-sign-bytes-v2" });
+
+// Whether the account's PQC key was proven by a proof of possession.
+const { possessionProven } = await fetchPqcStatus({ rest, address });
+```
+
 ### CosmWasm contracts
 
 Interact with CosmWasm contracts via thin wrappers over

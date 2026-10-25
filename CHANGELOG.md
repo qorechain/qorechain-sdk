@@ -5,6 +5,42 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.10.0] — Unreleased
+
+Client support for chain v3.2.4, applied on mainnet at height 3,742,566.
+
+### Added
+
+- **Staking tiers** (`x/stakingtier`): lock part of a delegation for 3, 6 or
+  12 months for a bonus. Composers `lockDelegation` (with the chain's checks:
+  term 3, 6 or 12, positive integer amount), `unlockEarly`, `claimBonus`,
+  `updateParams`; reads for the parameters, a holder's locks and the bonus
+  pool; the module's error codes.
+- **Authenticator nonce** (`fetchAuthNonce`): the sequence a linked key must
+  sign next for `MsgExecuteEVM` / `MsgExecuteCosmos`, from the chain instead of
+  tracked by hand.
+- **Protocol feature switches** (`fetchProtocolFeatures`,
+  `isProtocolFeatureEnabled`): which consensus rules a network enforces, by
+  name.
+- **`possessionProven`** on the PQC status: whether the account's key was
+  proven by a proof of possession.
+- **`ibcTimeoutTimestamp(seconds)`**: an absolute IBC timeout in the unit
+  `MsgTransfer` takes (Unix nanoseconds). IBC timeouts are absolute times; IBC
+  v2 packets take absolute Unix seconds, and a relative value there is refused
+  after the fee is charged.
+- `CHAIN_UPGRADE_V3_2_4`; protos synced with chain v3.2.4 (new fields on the
+  bridge validator registration, light node and rollup queries).
+
+### Fixed
+
+- **`ensurePqcRegistered` counted a status without a public key as a match.**
+  It now reads the key over `rest` and compares it; with nothing to read it
+  from, the result reports `keyVerified: false` instead of claiming the key is
+  the caller's.
+- **TS: refusals from a failed fee simulation decoded as `sdk_undefined`.** The
+  `"auto"` fee path reports a chain refusal as text only; `decodeTxError` now
+  names it from the chain's registered error description.
+
 ## [0.9.1] — 2026-10-21 (Java only)
 
 ### Security
