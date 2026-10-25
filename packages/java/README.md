@@ -38,7 +38,7 @@ Go, and Rust SDKs:
 ## Coordinates
 
 ```
-io.github.qorechain:qorechain-sdk:0.9.1
+io.github.qorechain:qorechain-sdk:0.10.0
 ```
 
 Base Java package: `io.github.qorechain` (sub-packages `networks`, `accounts`,
@@ -403,6 +403,11 @@ Lock part of an existing delegation for 3, 6 or 12 months for a bonus on top
 of the staking reward. Running a light node or a validator adds to it, up to a
 total cap; leaving early burns a penalty and forfeits the bonus. The terms are
 governance parameters: read them rather than hard-coding them.
+
+A lock needs an existing delegation to the validator. The Java SDK does not
+ship the standard staking messages (`MsgDelegate`, `MsgUndelegate`): build
+them with the Cosmos SDK protobuf classes of your choice and send them
+through the same hybrid path as any other message.
 
 ```java
 import io.github.qorechain.messages.QorechainMessages;

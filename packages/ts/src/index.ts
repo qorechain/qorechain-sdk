@@ -8,7 +8,7 @@
  */
 
 /** SDK version. */
-export const VERSION = "0.9.0";
+export const VERSION = "0.10.0";
 
 // Top-level factory: the recommended entrypoint that resolves a network and
 // composes the read clients, fee helper, and a lazy signing entrypoint.

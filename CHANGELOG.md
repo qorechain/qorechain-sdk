@@ -7,7 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [0.10.0] — Unreleased
 
-Client support for chain v3.2.4, applied on mainnet at height 3,742,566.
+Client support for chain v3.2.4, applied on mainnet at height 3,742,566. Every
+language was checked with real transactions on the testnet (register a key with
+its proof of possession, delegate, lock, read, refused undelegate and claim,
+early unlock).
 
 ### Added
 
@@ -37,9 +40,15 @@ Client support for chain v3.2.4, applied on mainnet at height 3,742,566.
   It now reads the key over `rest` and compares it; with nothing to read it
   from, the result reports `keyVerified: false` instead of claiming the key is
   the caller's.
-- **TS: refusals from a failed fee simulation decoded as `sdk_undefined`.** The
-  `"auto"` fee path reports a chain refusal as text only; `decodeTxError` now
-  names it from the chain's registered error description.
+- **Refusals from a failed fee simulation were not named.** The fee-estimation
+  path reports a chain refusal as text only (for example "no bonus to claim"),
+  so it decoded as an unknown error. Every SDK now names it from the chain's
+  registered error descriptions: TS `decodeTxError`, Python
+  `SimulationRefusedError` (also an `httpx.HTTPStatusError`), Go
+  `tx.DecodeRefusalText` (and `EstimateFee` wraps a `*QoreTxError`), Rust
+  `tx::decode_refusal_text` (and `estimate_gas` returns `Error::Tx`), Java
+  `TxError.decode` on text-only input. A delivered result with code 0 still
+  decodes as success.
 
 ## [0.9.1] — 2026-10-21 (Java only)
 
