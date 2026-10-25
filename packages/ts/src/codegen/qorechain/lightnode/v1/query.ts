@@ -112,6 +112,19 @@ export interface QueryRewardPoolResponse {
    * then informational only.
    */
   maxRewardPerMonthPerNode: string;
+  /**
+   * monthly_cap_active reports whether the lightnode-monthly-cap switch is on
+   * at this height, so max_reward_per_month_per_node is the bound in force.
+   */
+  monthlyCapActive: boolean;
+  /**
+   * last_distribution_time is the block time (unix seconds) of the previous
+   * settlement; 0 when none has been recorded with a time (every settlement
+   * before the monthly cap switch).
+   */
+  lastDistributionTime: string;
+  /** last_distribution_height is the height of the previous settlement. */
+  lastDistributionHeight: string;
 }
 
 function createBaseLightNodeView(): LightNodeView {
@@ -1213,6 +1226,9 @@ function createBaseQueryRewardPoolResponse(): QueryRewardPoolResponse {
     distributable: "",
     initialized: false,
     maxRewardPerMonthPerNode: "",
+    monthlyCapActive: false,
+    lastDistributionTime: "0",
+    lastDistributionHeight: "0",
   };
 }
 
@@ -1241,6 +1257,15 @@ export const QueryRewardPoolResponse: MessageFns<QueryRewardPoolResponse> = {
     }
     if (message.maxRewardPerMonthPerNode !== "") {
       writer.uint32(66).string(message.maxRewardPerMonthPerNode);
+    }
+    if (message.monthlyCapActive !== false) {
+      writer.uint32(72).bool(message.monthlyCapActive);
+    }
+    if (message.lastDistributionTime !== "0") {
+      writer.uint32(80).int64(message.lastDistributionTime);
+    }
+    if (message.lastDistributionHeight !== "0") {
+      writer.uint32(88).int64(message.lastDistributionHeight);
     }
     return writer;
   },
@@ -1316,6 +1341,30 @@ export const QueryRewardPoolResponse: MessageFns<QueryRewardPoolResponse> = {
           message.maxRewardPerMonthPerNode = reader.string();
           continue;
         }
+        case 9: {
+          if (tag !== 72) {
+            break;
+          }
+
+          message.monthlyCapActive = reader.bool();
+          continue;
+        }
+        case 10: {
+          if (tag !== 80) {
+            break;
+          }
+
+          message.lastDistributionTime = reader.int64().toString();
+          continue;
+        }
+        case 11: {
+          if (tag !== 88) {
+            break;
+          }
+
+          message.lastDistributionHeight = reader.int64().toString();
+          continue;
+        }
       }
       if ((tag & 7) === 4 || tag === 0) {
         break;
@@ -1343,6 +1392,21 @@ export const QueryRewardPoolResponse: MessageFns<QueryRewardPoolResponse> = {
         : isSet(object.max_reward_per_month_per_node)
         ? globalThis.String(object.max_reward_per_month_per_node)
         : "",
+      monthlyCapActive: isSet(object.monthlyCapActive)
+        ? globalThis.Boolean(object.monthlyCapActive)
+        : isSet(object.monthly_cap_active)
+        ? globalThis.Boolean(object.monthly_cap_active)
+        : false,
+      lastDistributionTime: isSet(object.lastDistributionTime)
+        ? globalThis.String(object.lastDistributionTime)
+        : isSet(object.last_distribution_time)
+        ? globalThis.String(object.last_distribution_time)
+        : "0",
+      lastDistributionHeight: isSet(object.lastDistributionHeight)
+        ? globalThis.String(object.lastDistributionHeight)
+        : isSet(object.last_distribution_height)
+        ? globalThis.String(object.last_distribution_height)
+        : "0",
     };
   },
 
@@ -1372,6 +1436,15 @@ export const QueryRewardPoolResponse: MessageFns<QueryRewardPoolResponse> = {
     if (message.maxRewardPerMonthPerNode !== "") {
       obj.maxRewardPerMonthPerNode = message.maxRewardPerMonthPerNode;
     }
+    if (message.monthlyCapActive !== false) {
+      obj.monthlyCapActive = message.monthlyCapActive;
+    }
+    if (message.lastDistributionTime !== "0") {
+      obj.lastDistributionTime = message.lastDistributionTime;
+    }
+    if (message.lastDistributionHeight !== "0") {
+      obj.lastDistributionHeight = message.lastDistributionHeight;
+    }
     return obj;
   },
 
@@ -1388,6 +1461,9 @@ export const QueryRewardPoolResponse: MessageFns<QueryRewardPoolResponse> = {
     message.distributable = object.distributable ?? "";
     message.initialized = object.initialized ?? false;
     message.maxRewardPerMonthPerNode = object.maxRewardPerMonthPerNode ?? "";
+    message.monthlyCapActive = object.monthlyCapActive ?? false;
+    message.lastDistributionTime = object.lastDistributionTime ?? "0";
+    message.lastDistributionHeight = object.lastDistributionHeight ?? "0";
     return message;
   },
 };

@@ -9,6 +9,30 @@ import { BinaryReader, BinaryWriter } from "@bufbuild/protobuf/wire";
 
 export const protobufPackage = "qorechain.pqc.v1";
 
+export interface QueryProtocolFeaturesRequest {
+}
+
+export interface ProtocolFeatureStatus {
+  name: string;
+  /** enabled reports whether the switch is on at the current height. */
+  enabled: boolean;
+  /**
+   * known is false for a feature recorded as enabled that this binary does
+   * not know (a newer release enabled it).
+   */
+  known: boolean;
+  /**
+   * staged is true for a feature this binary carries but no release has
+   * enabled yet.
+   */
+  staged: boolean;
+}
+
+export interface QueryProtocolFeaturesResponse {
+  features: ProtocolFeatureStatus[];
+  height: string;
+}
+
 export interface QueryEVMDelegationConsentRequest {
   /** address is bech32 or 0x-prefixed hex. */
   address: string;
@@ -103,7 +127,244 @@ export interface PQCAccountView {
    * account's on-chain public key) or "none" (neither exists yet).
    */
   classicalKeySource: string;
+  /**
+   * possession_proven is true when the current key was proven by a proof of
+   * possession: a registration carrying a valid proof_of_possession, or a
+   * rotation or migration (both verify a signature by the new key). False for
+   * a key registered without a proof, and for every record from before v3.2.4.
+   * A key without it may be one whose secret the account does not hold.
+   */
+  possessionProven: boolean;
 }
+
+function createBaseQueryProtocolFeaturesRequest(): QueryProtocolFeaturesRequest {
+  return {};
+}
+
+export const QueryProtocolFeaturesRequest: MessageFns<QueryProtocolFeaturesRequest> = {
+  encode(_: QueryProtocolFeaturesRequest, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): QueryProtocolFeaturesRequest {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseQueryProtocolFeaturesRequest();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(_: any): QueryProtocolFeaturesRequest {
+    return {};
+  },
+
+  toJSON(_: QueryProtocolFeaturesRequest): unknown {
+    const obj: any = {};
+    return obj;
+  },
+
+  create(base?: DeepPartial<QueryProtocolFeaturesRequest>): QueryProtocolFeaturesRequest {
+    return QueryProtocolFeaturesRequest.fromPartial(base ?? {});
+  },
+  fromPartial(_: DeepPartial<QueryProtocolFeaturesRequest>): QueryProtocolFeaturesRequest {
+    const message = createBaseQueryProtocolFeaturesRequest();
+    return message;
+  },
+};
+
+function createBaseProtocolFeatureStatus(): ProtocolFeatureStatus {
+  return { name: "", enabled: false, known: false, staged: false };
+}
+
+export const ProtocolFeatureStatus: MessageFns<ProtocolFeatureStatus> = {
+  encode(message: ProtocolFeatureStatus, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.name !== "") {
+      writer.uint32(10).string(message.name);
+    }
+    if (message.enabled !== false) {
+      writer.uint32(16).bool(message.enabled);
+    }
+    if (message.known !== false) {
+      writer.uint32(24).bool(message.known);
+    }
+    if (message.staged !== false) {
+      writer.uint32(32).bool(message.staged);
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): ProtocolFeatureStatus {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseProtocolFeatureStatus();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.name = reader.string();
+          continue;
+        }
+        case 2: {
+          if (tag !== 16) {
+            break;
+          }
+
+          message.enabled = reader.bool();
+          continue;
+        }
+        case 3: {
+          if (tag !== 24) {
+            break;
+          }
+
+          message.known = reader.bool();
+          continue;
+        }
+        case 4: {
+          if (tag !== 32) {
+            break;
+          }
+
+          message.staged = reader.bool();
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(object: any): ProtocolFeatureStatus {
+    return {
+      name: isSet(object.name) ? globalThis.String(object.name) : "",
+      enabled: isSet(object.enabled) ? globalThis.Boolean(object.enabled) : false,
+      known: isSet(object.known) ? globalThis.Boolean(object.known) : false,
+      staged: isSet(object.staged) ? globalThis.Boolean(object.staged) : false,
+    };
+  },
+
+  toJSON(message: ProtocolFeatureStatus): unknown {
+    const obj: any = {};
+    if (message.name !== "") {
+      obj.name = message.name;
+    }
+    if (message.enabled !== false) {
+      obj.enabled = message.enabled;
+    }
+    if (message.known !== false) {
+      obj.known = message.known;
+    }
+    if (message.staged !== false) {
+      obj.staged = message.staged;
+    }
+    return obj;
+  },
+
+  create(base?: DeepPartial<ProtocolFeatureStatus>): ProtocolFeatureStatus {
+    return ProtocolFeatureStatus.fromPartial(base ?? {});
+  },
+  fromPartial(object: DeepPartial<ProtocolFeatureStatus>): ProtocolFeatureStatus {
+    const message = createBaseProtocolFeatureStatus();
+    message.name = object.name ?? "";
+    message.enabled = object.enabled ?? false;
+    message.known = object.known ?? false;
+    message.staged = object.staged ?? false;
+    return message;
+  },
+};
+
+function createBaseQueryProtocolFeaturesResponse(): QueryProtocolFeaturesResponse {
+  return { features: [], height: "0" };
+}
+
+export const QueryProtocolFeaturesResponse: MessageFns<QueryProtocolFeaturesResponse> = {
+  encode(message: QueryProtocolFeaturesResponse, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    for (const v of message.features) {
+      ProtocolFeatureStatus.encode(v!, writer.uint32(10).fork()).join();
+    }
+    if (message.height !== "0") {
+      writer.uint32(16).int64(message.height);
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): QueryProtocolFeaturesResponse {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseQueryProtocolFeaturesResponse();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.features.push(ProtocolFeatureStatus.decode(reader, reader.uint32()));
+          continue;
+        }
+        case 2: {
+          if (tag !== 16) {
+            break;
+          }
+
+          message.height = reader.int64().toString();
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(object: any): QueryProtocolFeaturesResponse {
+    return {
+      features: globalThis.Array.isArray(object?.features)
+        ? object.features.map((e: any) => ProtocolFeatureStatus.fromJSON(e))
+        : [],
+      height: isSet(object.height) ? globalThis.String(object.height) : "0",
+    };
+  },
+
+  toJSON(message: QueryProtocolFeaturesResponse): unknown {
+    const obj: any = {};
+    if (message.features?.length) {
+      obj.features = message.features.map((e) => ProtocolFeatureStatus.toJSON(e));
+    }
+    if (message.height !== "0") {
+      obj.height = message.height;
+    }
+    return obj;
+  },
+
+  create(base?: DeepPartial<QueryProtocolFeaturesResponse>): QueryProtocolFeaturesResponse {
+    return QueryProtocolFeaturesResponse.fromPartial(base ?? {});
+  },
+  fromPartial(object: DeepPartial<QueryProtocolFeaturesResponse>): QueryProtocolFeaturesResponse {
+    const message = createBaseQueryProtocolFeaturesResponse();
+    message.features = object.features?.map((e) => ProtocolFeatureStatus.fromPartial(e)) || [];
+    message.height = object.height ?? "0";
+    return message;
+  },
+};
 
 function createBaseQueryEVMDelegationConsentRequest(): QueryEVMDelegationConsentRequest {
   return { address: "" };
@@ -855,6 +1116,7 @@ function createBasePQCAccountView(): PQCAccountView {
     migrationPublicKey: new Uint8Array(0),
     migrationAlgorithmId: 0,
     classicalKeySource: "",
+    possessionProven: false,
   };
 }
 
@@ -889,6 +1151,9 @@ export const PQCAccountView: MessageFns<PQCAccountView> = {
     }
     if (message.classicalKeySource !== "") {
       writer.uint32(82).string(message.classicalKeySource);
+    }
+    if (message.possessionProven !== false) {
+      writer.uint32(88).bool(message.possessionProven);
     }
     return writer;
   },
@@ -980,6 +1245,14 @@ export const PQCAccountView: MessageFns<PQCAccountView> = {
           message.classicalKeySource = reader.string();
           continue;
         }
+        case 11: {
+          if (tag !== 88) {
+            break;
+          }
+
+          message.possessionProven = reader.bool();
+          continue;
+        }
       }
       if ((tag & 7) === 4 || tag === 0) {
         break;
@@ -1037,6 +1310,11 @@ export const PQCAccountView: MessageFns<PQCAccountView> = {
         : isSet(object.classical_key_source)
         ? globalThis.String(object.classical_key_source)
         : "",
+      possessionProven: isSet(object.possessionProven)
+        ? globalThis.Boolean(object.possessionProven)
+        : isSet(object.possession_proven)
+        ? globalThis.Boolean(object.possession_proven)
+        : false,
     };
   },
 
@@ -1072,6 +1350,9 @@ export const PQCAccountView: MessageFns<PQCAccountView> = {
     if (message.classicalKeySource !== "") {
       obj.classicalKeySource = message.classicalKeySource;
     }
+    if (message.possessionProven !== false) {
+      obj.possessionProven = message.possessionProven;
+    }
     return obj;
   },
 
@@ -1090,6 +1371,7 @@ export const PQCAccountView: MessageFns<PQCAccountView> = {
     message.migrationPublicKey = object.migrationPublicKey ?? new Uint8Array(0);
     message.migrationAlgorithmId = object.migrationAlgorithmId ?? 0;
     message.classicalKeySource = object.classicalKeySource ?? "";
+    message.possessionProven = object.possessionProven ?? false;
     return message;
   },
 };
@@ -1282,6 +1564,64 @@ export const QueryDefinition = {
               115,
               115,
               125,
+            ]) as Uint8Array,
+          ],
+        },
+      },
+    },
+    /**
+     * ProtocolFeatures lists every protocol feature this binary knows, released
+     * or staged, with whether it is enabled at the current height, followed by
+     * any enabled feature this binary does not know.
+     */
+    protocolFeatures: {
+      name: "ProtocolFeatures",
+      requestType: QueryProtocolFeaturesRequest as typeof QueryProtocolFeaturesRequest,
+      requestStream: false,
+      responseType: QueryProtocolFeaturesResponse as typeof QueryProtocolFeaturesResponse,
+      responseStream: false,
+      options: {
+        _unknownFields: {
+          578365826: [
+            new Uint8Array([
+              37,
+              18,
+              35,
+              47,
+              113,
+              111,
+              114,
+              101,
+              99,
+              104,
+              97,
+              105,
+              110,
+              47,
+              112,
+              113,
+              99,
+              47,
+              118,
+              49,
+              47,
+              112,
+              114,
+              111,
+              116,
+              111,
+              99,
+              111,
+              108,
+              95,
+              102,
+              101,
+              97,
+              116,
+              117,
+              114,
+              101,
+              115,
             ]) as Uint8Array,
           ],
         },

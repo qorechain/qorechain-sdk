@@ -131,6 +131,18 @@ pub struct QueryRewardPoolResponse {
     /// then informational only.
     #[prost(string, tag="8")]
     pub max_reward_per_month_per_node: ::prost::alloc::string::String,
+    /// monthly_cap_active reports whether the lightnode-monthly-cap switch is on
+    /// at this height, so max_reward_per_month_per_node is the bound in force.
+    #[prost(bool, tag="9")]
+    pub monthly_cap_active: bool,
+    /// last_distribution_time is the block time (unix seconds) of the previous
+    /// settlement; 0 when none has been recorded with a time (every settlement
+    /// before the monthly cap switch).
+    #[prost(int64, tag="10")]
+    pub last_distribution_time: i64,
+    /// last_distribution_height is the height of the previous settlement.
+    #[prost(int64, tag="11")]
+    pub last_distribution_height: i64,
 }
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct MsgRegisterLightNode {

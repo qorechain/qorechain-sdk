@@ -117,6 +117,10 @@ pub fn register_bridge_validator(
         validator_address: validator_address.into(),
         pqc_pubkey,
         supported_chains,
+        // Proof of possession of `pqc_pubkey` (chain v3.2.4), the x/pqc format
+        // with the validator address as the account. Required once the chain
+        // enables it; set it on the returned struct.
+        proof_of_possession: Vec::new(),
     }
 }
 

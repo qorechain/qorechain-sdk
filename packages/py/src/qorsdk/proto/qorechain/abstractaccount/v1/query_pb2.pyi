@@ -6,6 +6,22 @@ from typing import ClassVar as _ClassVar, Iterable as _Iterable, Mapping as _Map
 
 DESCRIPTOR: _descriptor.FileDescriptor
 
+class QueryAuthNonceRequest(_message.Message):
+    __slots__ = ("address", "pubkey_hex")
+    ADDRESS_FIELD_NUMBER: _ClassVar[int]
+    PUBKEY_HEX_FIELD_NUMBER: _ClassVar[int]
+    address: str
+    pubkey_hex: str
+    def __init__(self, address: _Optional[str] = ..., pubkey_hex: _Optional[str] = ...) -> None: ...
+
+class QueryAuthNonceResponse(_message.Message):
+    __slots__ = ("nonce", "linked")
+    NONCE_FIELD_NUMBER: _ClassVar[int]
+    LINKED_FIELD_NUMBER: _ClassVar[int]
+    nonce: int
+    linked: bool
+    def __init__(self, nonce: _Optional[int] = ..., linked: bool = ...) -> None: ...
+
 class ConfigView(_message.Message):
     __slots__ = ("enabled", "max_session_keys", "max_spending_rules", "default_session_ttl")
     ENABLED_FIELD_NUMBER: _ClassVar[int]

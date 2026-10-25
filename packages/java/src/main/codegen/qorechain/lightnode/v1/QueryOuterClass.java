@@ -8359,6 +8359,39 @@ public final class QueryOuterClass extends com.google.protobuf.GeneratedFile {
      */
     com.google.protobuf.ByteString
         getMaxRewardPerMonthPerNodeBytes();
+
+    /**
+     * <pre>
+     * monthly_cap_active reports whether the lightnode-monthly-cap switch is on
+     * at this height, so max_reward_per_month_per_node is the bound in force.
+     * </pre>
+     *
+     * <code>bool monthly_cap_active = 9 [json_name = "monthlyCapActive"];</code>
+     * @return The monthlyCapActive.
+     */
+    boolean getMonthlyCapActive();
+
+    /**
+     * <pre>
+     * last_distribution_time is the block time (unix seconds) of the previous
+     * settlement; 0 when none has been recorded with a time (every settlement
+     * before the monthly cap switch).
+     * </pre>
+     *
+     * <code>int64 last_distribution_time = 10 [json_name = "lastDistributionTime"];</code>
+     * @return The lastDistributionTime.
+     */
+    long getLastDistributionTime();
+
+    /**
+     * <pre>
+     * last_distribution_height is the height of the previous settlement.
+     * </pre>
+     *
+     * <code>int64 last_distribution_height = 11 [json_name = "lastDistributionHeight"];</code>
+     * @return The lastDistributionHeight.
+     */
+    long getLastDistributionHeight();
   }
   /**
    * Protobuf type {@code qorechain.lightnode.v1.QueryRewardPoolResponse}
@@ -8769,6 +8802,54 @@ public final class QueryOuterClass extends com.google.protobuf.GeneratedFile {
       }
     }
 
+    public static final int MONTHLY_CAP_ACTIVE_FIELD_NUMBER = 9;
+    private boolean monthlyCapActive_ = false;
+    /**
+     * <pre>
+     * monthly_cap_active reports whether the lightnode-monthly-cap switch is on
+     * at this height, so max_reward_per_month_per_node is the bound in force.
+     * </pre>
+     *
+     * <code>bool monthly_cap_active = 9 [json_name = "monthlyCapActive"];</code>
+     * @return The monthlyCapActive.
+     */
+    @java.lang.Override
+    public boolean getMonthlyCapActive() {
+      return monthlyCapActive_;
+    }
+
+    public static final int LAST_DISTRIBUTION_TIME_FIELD_NUMBER = 10;
+    private long lastDistributionTime_ = 0L;
+    /**
+     * <pre>
+     * last_distribution_time is the block time (unix seconds) of the previous
+     * settlement; 0 when none has been recorded with a time (every settlement
+     * before the monthly cap switch).
+     * </pre>
+     *
+     * <code>int64 last_distribution_time = 10 [json_name = "lastDistributionTime"];</code>
+     * @return The lastDistributionTime.
+     */
+    @java.lang.Override
+    public long getLastDistributionTime() {
+      return lastDistributionTime_;
+    }
+
+    public static final int LAST_DISTRIBUTION_HEIGHT_FIELD_NUMBER = 11;
+    private long lastDistributionHeight_ = 0L;
+    /**
+     * <pre>
+     * last_distribution_height is the height of the previous settlement.
+     * </pre>
+     *
+     * <code>int64 last_distribution_height = 11 [json_name = "lastDistributionHeight"];</code>
+     * @return The lastDistributionHeight.
+     */
+    @java.lang.Override
+    public long getLastDistributionHeight() {
+      return lastDistributionHeight_;
+    }
+
     private byte memoizedIsInitialized = -1;
     @java.lang.Override
     public final boolean isInitialized() {
@@ -8807,6 +8888,15 @@ public final class QueryOuterClass extends com.google.protobuf.GeneratedFile {
       if (!com.google.protobuf.GeneratedMessage.isStringEmpty(maxRewardPerMonthPerNode_)) {
         com.google.protobuf.GeneratedMessage.writeString(output, 8, maxRewardPerMonthPerNode_);
       }
+      if (monthlyCapActive_ != false) {
+        output.writeBool(9, monthlyCapActive_);
+      }
+      if (lastDistributionTime_ != 0L) {
+        output.writeInt64(10, lastDistributionTime_);
+      }
+      if (lastDistributionHeight_ != 0L) {
+        output.writeInt64(11, lastDistributionHeight_);
+      }
       getUnknownFields().writeTo(output);
     }
     private int computeSerializedSize_0() {
@@ -8835,6 +8925,18 @@ public final class QueryOuterClass extends com.google.protobuf.GeneratedFile {
       }
       if (!com.google.protobuf.GeneratedMessage.isStringEmpty(maxRewardPerMonthPerNode_)) {
         size += com.google.protobuf.GeneratedMessage.computeStringSize(8, maxRewardPerMonthPerNode_);
+      }
+      if (monthlyCapActive_ != false) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeBoolSize(9, monthlyCapActive_);
+      }
+      if (lastDistributionTime_ != 0L) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeInt64Size(10, lastDistributionTime_);
+      }
+      if (lastDistributionHeight_ != 0L) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeInt64Size(11, lastDistributionHeight_);
       }
       return size;
     }
@@ -8876,6 +8978,12 @@ public final class QueryOuterClass extends com.google.protobuf.GeneratedFile {
           != other.getInitialized()) return false;
       if (!getMaxRewardPerMonthPerNode()
           .equals(other.getMaxRewardPerMonthPerNode())) return false;
+      if (getMonthlyCapActive()
+          != other.getMonthlyCapActive()) return false;
+      if (getLastDistributionTime()
+          != other.getLastDistributionTime()) return false;
+      if (getLastDistributionHeight()
+          != other.getLastDistributionHeight()) return false;
       if (!getUnknownFields().equals(other.getUnknownFields())) return false;
       return true;
     }
@@ -8904,6 +9012,15 @@ public final class QueryOuterClass extends com.google.protobuf.GeneratedFile {
           getInitialized());
       hash = (37 * hash) + MAX_REWARD_PER_MONTH_PER_NODE_FIELD_NUMBER;
       hash = (53 * hash) + getMaxRewardPerMonthPerNode().hashCode();
+      hash = (37 * hash) + MONTHLY_CAP_ACTIVE_FIELD_NUMBER;
+      hash = (53 * hash) + com.google.protobuf.Internal.hashBoolean(
+          getMonthlyCapActive());
+      hash = (37 * hash) + LAST_DISTRIBUTION_TIME_FIELD_NUMBER;
+      hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
+          getLastDistributionTime());
+      hash = (37 * hash) + LAST_DISTRIBUTION_HEIGHT_FIELD_NUMBER;
+      hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
+          getLastDistributionHeight());
       hash = (29 * hash) + getUnknownFields().hashCode();
       memoizedHashCode = hash;
       return hash;
@@ -9043,6 +9160,9 @@ public final class QueryOuterClass extends com.google.protobuf.GeneratedFile {
         distributable_ = "";
         initialized_ = false;
         maxRewardPerMonthPerNode_ = "";
+        monthlyCapActive_ = false;
+        lastDistributionTime_ = 0L;
+        lastDistributionHeight_ = 0L;
         return this;
       }
 
@@ -9100,6 +9220,15 @@ public final class QueryOuterClass extends com.google.protobuf.GeneratedFile {
         if (((from_bitField0_ & 0x00000080) != 0)) {
           result.maxRewardPerMonthPerNode_ = maxRewardPerMonthPerNode_;
         }
+        if (((from_bitField0_ & 0x00000100) != 0)) {
+          result.monthlyCapActive_ = monthlyCapActive_;
+        }
+        if (((from_bitField0_ & 0x00000200) != 0)) {
+          result.lastDistributionTime_ = lastDistributionTime_;
+        }
+        if (((from_bitField0_ & 0x00000400) != 0)) {
+          result.lastDistributionHeight_ = lastDistributionHeight_;
+        }
       }
 
       @java.lang.Override
@@ -9151,6 +9280,15 @@ public final class QueryOuterClass extends com.google.protobuf.GeneratedFile {
           maxRewardPerMonthPerNode_ = other.maxRewardPerMonthPerNode_;
           bitField0_ |= 0x00000080;
           onChanged();
+        }
+        if (other.getMonthlyCapActive() != false) {
+          setMonthlyCapActive(other.getMonthlyCapActive());
+        }
+        if (other.getLastDistributionTime() != 0L) {
+          setLastDistributionTime(other.getLastDistributionTime());
+        }
+        if (other.getLastDistributionHeight() != 0L) {
+          setLastDistributionHeight(other.getLastDistributionHeight());
         }
         this.mergeUnknownFields(other.getUnknownFields());
         onChanged();
@@ -9218,6 +9356,21 @@ public final class QueryOuterClass extends com.google.protobuf.GeneratedFile {
                 bitField0_ |= 0x00000080;
                 break;
               } // case 66
+              case 72: {
+                monthlyCapActive_ = input.readBool();
+                bitField0_ |= 0x00000100;
+                break;
+              } // case 72
+              case 80: {
+                lastDistributionTime_ = input.readInt64();
+                bitField0_ |= 0x00000200;
+                break;
+              } // case 80
+              case 88: {
+                lastDistributionHeight_ = input.readInt64();
+                bitField0_ |= 0x00000400;
+                break;
+              } // case 88
               default: {
                 if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                   done = true; // was an endgroup tag
@@ -9965,6 +10118,147 @@ public final class QueryOuterClass extends com.google.protobuf.GeneratedFile {
         return this;
       }
 
+      private boolean monthlyCapActive_ ;
+      /**
+       * <pre>
+       * monthly_cap_active reports whether the lightnode-monthly-cap switch is on
+       * at this height, so max_reward_per_month_per_node is the bound in force.
+       * </pre>
+       *
+       * <code>bool monthly_cap_active = 9 [json_name = "monthlyCapActive"];</code>
+       * @return The monthlyCapActive.
+       */
+      @java.lang.Override
+      public boolean getMonthlyCapActive() {
+        return monthlyCapActive_;
+      }
+      /**
+       * <pre>
+       * monthly_cap_active reports whether the lightnode-monthly-cap switch is on
+       * at this height, so max_reward_per_month_per_node is the bound in force.
+       * </pre>
+       *
+       * <code>bool monthly_cap_active = 9 [json_name = "monthlyCapActive"];</code>
+       * @param value The monthlyCapActive to set.
+       * @return This builder for chaining.
+       */
+      public Builder setMonthlyCapActive(boolean value) {
+
+        monthlyCapActive_ = value;
+        bitField0_ |= 0x00000100;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * monthly_cap_active reports whether the lightnode-monthly-cap switch is on
+       * at this height, so max_reward_per_month_per_node is the bound in force.
+       * </pre>
+       *
+       * <code>bool monthly_cap_active = 9 [json_name = "monthlyCapActive"];</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearMonthlyCapActive() {
+        bitField0_ = (bitField0_ & ~0x00000100);
+        monthlyCapActive_ = false;
+        onChanged();
+        return this;
+      }
+
+      private long lastDistributionTime_ ;
+      /**
+       * <pre>
+       * last_distribution_time is the block time (unix seconds) of the previous
+       * settlement; 0 when none has been recorded with a time (every settlement
+       * before the monthly cap switch).
+       * </pre>
+       *
+       * <code>int64 last_distribution_time = 10 [json_name = "lastDistributionTime"];</code>
+       * @return The lastDistributionTime.
+       */
+      @java.lang.Override
+      public long getLastDistributionTime() {
+        return lastDistributionTime_;
+      }
+      /**
+       * <pre>
+       * last_distribution_time is the block time (unix seconds) of the previous
+       * settlement; 0 when none has been recorded with a time (every settlement
+       * before the monthly cap switch).
+       * </pre>
+       *
+       * <code>int64 last_distribution_time = 10 [json_name = "lastDistributionTime"];</code>
+       * @param value The lastDistributionTime to set.
+       * @return This builder for chaining.
+       */
+      public Builder setLastDistributionTime(long value) {
+
+        lastDistributionTime_ = value;
+        bitField0_ |= 0x00000200;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * last_distribution_time is the block time (unix seconds) of the previous
+       * settlement; 0 when none has been recorded with a time (every settlement
+       * before the monthly cap switch).
+       * </pre>
+       *
+       * <code>int64 last_distribution_time = 10 [json_name = "lastDistributionTime"];</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearLastDistributionTime() {
+        bitField0_ = (bitField0_ & ~0x00000200);
+        lastDistributionTime_ = 0L;
+        onChanged();
+        return this;
+      }
+
+      private long lastDistributionHeight_ ;
+      /**
+       * <pre>
+       * last_distribution_height is the height of the previous settlement.
+       * </pre>
+       *
+       * <code>int64 last_distribution_height = 11 [json_name = "lastDistributionHeight"];</code>
+       * @return The lastDistributionHeight.
+       */
+      @java.lang.Override
+      public long getLastDistributionHeight() {
+        return lastDistributionHeight_;
+      }
+      /**
+       * <pre>
+       * last_distribution_height is the height of the previous settlement.
+       * </pre>
+       *
+       * <code>int64 last_distribution_height = 11 [json_name = "lastDistributionHeight"];</code>
+       * @param value The lastDistributionHeight to set.
+       * @return This builder for chaining.
+       */
+      public Builder setLastDistributionHeight(long value) {
+
+        lastDistributionHeight_ = value;
+        bitField0_ |= 0x00000400;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * last_distribution_height is the height of the previous settlement.
+       * </pre>
+       *
+       * <code>int64 last_distribution_height = 11 [json_name = "lastDistributionHeight"];</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearLastDistributionHeight() {
+        bitField0_ = (bitField0_ & ~0x00000400);
+        lastDistributionHeight_ = 0L;
+        onChanged();
+        return this;
+      }
+
       // @@protoc_insertion_point(builder_scope:qorechain.lightnode.v1.QueryRewardPoolResponse)
     }
 
@@ -10129,7 +10423,7 @@ public final class QueryOuterClass extends com.google.protobuf.GeneratedFile {
       "totalActive\022#\n\rtotal_rewards\030\003 \001(\tR\014tota" +
       "lRewards\022,\n\022last_reward_height\030\004 \001(\003R\020la" +
       "stRewardHeight\"\030\n\026QueryRewardPoolRequest" +
-      "\"\325\002\n\027QueryRewardPoolResponse\022\030\n\007balance\030" +
+      "\"\363\003\n\027QueryRewardPoolResponse\022\030\n\007balance\030" +
       "\001 \001(\tR\007balance\022\032\n\010reserved\030\002 \001(\tR\010reserv" +
       "ed\022 \n\013outstanding\030\003 \001(\tR\013outstanding\022\030\n\007" +
       "payable\030\005 \001(\tR\007payable\022?\n\035max_reward_per" +
@@ -10137,31 +10431,35 @@ public final class QueryOuterClass extends com.google.protobuf.GeneratedFile {
       "PerNode\022$\n\rdistributable\030\004 \001(\tR\rdistribu" +
       "table\022 \n\013initialized\030\007 \001(\010R\013initialized\022" +
       "?\n\035max_reward_per_month_per_node\030\010 \001(\tR\030" +
-      "maxRewardPerMonthPerNode2\206\007\n\005Query\022\232\001\n\tL" +
-      "ightNode\022-.qorechain.lightnode.v1.QueryL" +
-      "ightNodeRequest\032..qorechain.lightnode.v1" +
-      ".QueryLightNodeResponse\".\202\323\344\223\002(\022&/qorech" +
-      "ain/lightnode/v1/node/{address}\022\224\001\n\nLigh" +
-      "tNodes\022..qorechain.lightnode.v1.QueryLig" +
-      "htNodesRequest\032/.qorechain.lightnode.v1." +
-      "QueryLightNodesResponse\"%\202\323\344\223\002\037\022\035/qorech" +
-      "ain/lightnode/v1/nodes\022\211\001\n\006Params\022*.qore" +
-      "chain.lightnode.v1.QueryParamsRequest\032+." +
-      "qorechain.lightnode.v1.QueryParamsRespon" +
-      "se\"&\202\323\344\223\002 \022\036/qorechain/lightnode/v1/para" +
-      "ms\022\227\001\n\007Rewards\022+.qorechain.lightnode.v1." +
-      "QueryRewardsRequest\032,.qorechain.lightnod" +
-      "e.v1.QueryRewardsResponse\"1\202\323\344\223\002+\022)/qore" +
-      "chain/lightnode/v1/rewards/{address}\022\205\001\n" +
-      "\005Stats\022).qorechain.lightnode.v1.QuerySta" +
-      "tsRequest\032*.qorechain.lightnode.v1.Query" +
-      "StatsResponse\"%\202\323\344\223\002\037\022\035/qorechain/lightn" +
-      "ode/v1/stats\022\232\001\n\nRewardPool\022..qorechain." +
-      "lightnode.v1.QueryRewardPoolRequest\032/.qo" +
-      "rechain.lightnode.v1.QueryRewardPoolResp" +
-      "onse\"+\202\323\344\223\002%\022#/qorechain/lightnode/v1/re" +
-      "ward_poolB7Z5github.com/qorechain/qorech" +
-      "ain-core/x/lightnode/typesb\006proto3"
+      "maxRewardPerMonthPerNode\022,\n\022monthly_cap_" +
+      "active\030\t \001(\010R\020monthlyCapActive\0224\n\026last_d" +
+      "istribution_time\030\n \001(\003R\024lastDistribution" +
+      "Time\0228\n\030last_distribution_height\030\013 \001(\003R\026" +
+      "lastDistributionHeight2\206\007\n\005Query\022\232\001\n\tLig" +
+      "htNode\022-.qorechain.lightnode.v1.QueryLig" +
+      "htNodeRequest\032..qorechain.lightnode.v1.Q" +
+      "ueryLightNodeResponse\".\202\323\344\223\002(\022&/qorechai" +
+      "n/lightnode/v1/node/{address}\022\224\001\n\nLightN" +
+      "odes\022..qorechain.lightnode.v1.QueryLight" +
+      "NodesRequest\032/.qorechain.lightnode.v1.Qu" +
+      "eryLightNodesResponse\"%\202\323\344\223\002\037\022\035/qorechai" +
+      "n/lightnode/v1/nodes\022\211\001\n\006Params\022*.qorech" +
+      "ain.lightnode.v1.QueryParamsRequest\032+.qo" +
+      "rechain.lightnode.v1.QueryParamsResponse" +
+      "\"&\202\323\344\223\002 \022\036/qorechain/lightnode/v1/params" +
+      "\022\227\001\n\007Rewards\022+.qorechain.lightnode.v1.Qu" +
+      "eryRewardsRequest\032,.qorechain.lightnode." +
+      "v1.QueryRewardsResponse\"1\202\323\344\223\002+\022)/qorech" +
+      "ain/lightnode/v1/rewards/{address}\022\205\001\n\005S" +
+      "tats\022).qorechain.lightnode.v1.QueryStats" +
+      "Request\032*.qorechain.lightnode.v1.QuerySt" +
+      "atsResponse\"%\202\323\344\223\002\037\022\035/qorechain/lightnod" +
+      "e/v1/stats\022\232\001\n\nRewardPool\022..qorechain.li" +
+      "ghtnode.v1.QueryRewardPoolRequest\032/.qore" +
+      "chain.lightnode.v1.QueryRewardPoolRespon" +
+      "se\"+\202\323\344\223\002%\022#/qorechain/lightnode/v1/rewa" +
+      "rd_poolB7Z5github.com/qorechain/qorechai" +
+      "n-core/x/lightnode/typesb\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
@@ -10245,7 +10543,7 @@ public final class QueryOuterClass extends com.google.protobuf.GeneratedFile {
     internal_static_qorechain_lightnode_v1_QueryRewardPoolResponse_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_qorechain_lightnode_v1_QueryRewardPoolResponse_descriptor,
-        new java.lang.String[] { "Balance", "Reserved", "Outstanding", "Payable", "MaxRewardPerBlockPerNode", "Distributable", "Initialized", "MaxRewardPerMonthPerNode", });
+        new java.lang.String[] { "Balance", "Reserved", "Outstanding", "Payable", "MaxRewardPerBlockPerNode", "Distributable", "Initialized", "MaxRewardPerMonthPerNode", "MonthlyCapActive", "LastDistributionTime", "LastDistributionHeight", });
     descriptor.resolveAllFeaturesImmutable();
     com.google.api.AnnotationsProto.getDescriptor();
     com.google.protobuf.ExtensionRegistry registry =

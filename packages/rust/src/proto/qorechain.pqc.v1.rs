@@ -18,6 +18,32 @@ pub struct PqcHybridSignature {
     #[prost(bytes="vec", tag="3")]
     pub pqc_public_key: ::prost::alloc::vec::Vec<u8>,
 }
+#[derive(Clone, Copy, PartialEq, ::prost::Message)]
+pub struct QueryProtocolFeaturesRequest {
+}
+#[derive(Clone, PartialEq, ::prost::Message)]
+pub struct ProtocolFeatureStatus {
+    #[prost(string, tag="1")]
+    pub name: ::prost::alloc::string::String,
+    /// enabled reports whether the switch is on at the current height.
+    #[prost(bool, tag="2")]
+    pub enabled: bool,
+    /// known is false for a feature recorded as enabled that this binary does
+    /// not know (a newer release enabled it).
+    #[prost(bool, tag="3")]
+    pub known: bool,
+    /// staged is true for a feature this binary carries but no release has
+    /// enabled yet.
+    #[prost(bool, tag="4")]
+    pub staged: bool,
+}
+#[derive(Clone, PartialEq, ::prost::Message)]
+pub struct QueryProtocolFeaturesResponse {
+    #[prost(message, repeated, tag="1")]
+    pub features: ::prost::alloc::vec::Vec<ProtocolFeatureStatus>,
+    #[prost(int64, tag="2")]
+    pub height: i64,
+}
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct QueryEvmDelegationConsentRequest {
     /// address is bech32 or 0x-prefixed hex.
@@ -132,6 +158,13 @@ pub struct PqcAccountView {
     /// account's on-chain public key) or "none" (neither exists yet).
     #[prost(string, tag="10")]
     pub classical_key_source: ::prost::alloc::string::String,
+    /// possession_proven is true when the current key was proven by a proof of
+    /// possession: a registration carrying a valid proof_of_possession, or a
+    /// rotation or migration (both verify a signature by the new key). False for
+    /// a key registered without a proof, and for every record from before v3.2.4.
+    /// A key without it may be one whose secret the account does not hold.
+    #[prost(bool, tag="11")]
+    pub possession_proven: bool,
 }
 /// MsgRegisterPQCKey registers a PQC keypair for an account.
 /// Deprecated: use MsgRegisterPQCKeyV2 which includes algorithm_id.

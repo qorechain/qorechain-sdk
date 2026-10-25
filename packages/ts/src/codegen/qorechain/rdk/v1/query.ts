@@ -40,6 +40,15 @@ export interface RollupView {
    * refunds. It is read from the per-rollup escrow ledger (from v3.2.3).
    */
   escrowBalance: string;
+  /**
+   * challenge_window_sec, challenge_bond and proof_system are the rollup's own
+   * proof configuration, so a watchtower can tell when a batch's challenge
+   * window closes and what a challenge costs without assuming the module
+   * default.
+   */
+  challengeWindowSec: string;
+  challengeBond: string;
+  proofSystem: string;
 }
 
 /** BatchView is the query-facing view of a settlement batch. */
@@ -55,6 +64,15 @@ export interface BatchView {
   submittedAt: string;
   finalizedAt: string;
   withdrawalsRoot: string;
+  /**
+   * submitted_time is the block time (unix seconds) of the block that settled
+   * the batch, recorded from rdk-challenge-window-time (v3.2.4). Zero for a
+   * batch settled before the switch, whose challenge window still counts in
+   * blocks (submitted_at + challenge_window_sec / 6). A batch with a time
+   * closes when block time >= submitted_time + the rollup's
+   * challenge_window_sec.
+   */
+  submittedTime: string;
 }
 
 export interface QueryParamsRequest {
@@ -345,6 +363,9 @@ function createBaseRollupView(): RollupView {
     layerId: "",
     createdHeight: "0",
     escrowBalance: "0",
+    challengeWindowSec: "0",
+    challengeBond: "0",
+    proofSystem: "",
   };
 }
 
@@ -388,6 +409,15 @@ export const RollupView: MessageFns<RollupView> = {
     }
     if (message.escrowBalance !== "0") {
       writer.uint32(104).uint64(message.escrowBalance);
+    }
+    if (message.challengeWindowSec !== "0") {
+      writer.uint32(112).uint64(message.challengeWindowSec);
+    }
+    if (message.challengeBond !== "0") {
+      writer.uint32(120).int64(message.challengeBond);
+    }
+    if (message.proofSystem !== "") {
+      writer.uint32(130).string(message.proofSystem);
     }
     return writer;
   },
@@ -503,6 +533,30 @@ export const RollupView: MessageFns<RollupView> = {
           message.escrowBalance = reader.uint64().toString();
           continue;
         }
+        case 14: {
+          if (tag !== 112) {
+            break;
+          }
+
+          message.challengeWindowSec = reader.uint64().toString();
+          continue;
+        }
+        case 15: {
+          if (tag !== 120) {
+            break;
+          }
+
+          message.challengeBond = reader.int64().toString();
+          continue;
+        }
+        case 16: {
+          if (tag !== 130) {
+            break;
+          }
+
+          message.proofSystem = reader.string();
+          continue;
+        }
       }
       if ((tag & 7) === 4 || tag === 0) {
         break;
@@ -567,6 +621,21 @@ export const RollupView: MessageFns<RollupView> = {
         : isSet(object.escrow_balance)
         ? globalThis.String(object.escrow_balance)
         : "0",
+      challengeWindowSec: isSet(object.challengeWindowSec)
+        ? globalThis.String(object.challengeWindowSec)
+        : isSet(object.challenge_window_sec)
+        ? globalThis.String(object.challenge_window_sec)
+        : "0",
+      challengeBond: isSet(object.challengeBond)
+        ? globalThis.String(object.challengeBond)
+        : isSet(object.challenge_bond)
+        ? globalThis.String(object.challenge_bond)
+        : "0",
+      proofSystem: isSet(object.proofSystem)
+        ? globalThis.String(object.proofSystem)
+        : isSet(object.proof_system)
+        ? globalThis.String(object.proof_system)
+        : "",
     };
   },
 
@@ -611,6 +680,15 @@ export const RollupView: MessageFns<RollupView> = {
     if (message.escrowBalance !== "0") {
       obj.escrowBalance = message.escrowBalance;
     }
+    if (message.challengeWindowSec !== "0") {
+      obj.challengeWindowSec = message.challengeWindowSec;
+    }
+    if (message.challengeBond !== "0") {
+      obj.challengeBond = message.challengeBond;
+    }
+    if (message.proofSystem !== "") {
+      obj.proofSystem = message.proofSystem;
+    }
     return obj;
   },
 
@@ -632,6 +710,9 @@ export const RollupView: MessageFns<RollupView> = {
     message.layerId = object.layerId ?? "";
     message.createdHeight = object.createdHeight ?? "0";
     message.escrowBalance = object.escrowBalance ?? "0";
+    message.challengeWindowSec = object.challengeWindowSec ?? "0";
+    message.challengeBond = object.challengeBond ?? "0";
+    message.proofSystem = object.proofSystem ?? "";
     return message;
   },
 };
@@ -649,6 +730,7 @@ function createBaseBatchView(): BatchView {
     submittedAt: "0",
     finalizedAt: "0",
     withdrawalsRoot: "",
+    submittedTime: "0",
   };
 }
 
@@ -686,6 +768,9 @@ export const BatchView: MessageFns<BatchView> = {
     }
     if (message.withdrawalsRoot !== "") {
       writer.uint32(90).string(message.withdrawalsRoot);
+    }
+    if (message.submittedTime !== "0") {
+      writer.uint32(96).int64(message.submittedTime);
     }
     return writer;
   },
@@ -785,6 +870,14 @@ export const BatchView: MessageFns<BatchView> = {
           message.withdrawalsRoot = reader.string();
           continue;
         }
+        case 12: {
+          if (tag !== 96) {
+            break;
+          }
+
+          message.submittedTime = reader.int64().toString();
+          continue;
+        }
       }
       if ((tag & 7) === 4 || tag === 0) {
         break;
@@ -847,6 +940,11 @@ export const BatchView: MessageFns<BatchView> = {
         : isSet(object.withdrawals_root)
         ? globalThis.String(object.withdrawals_root)
         : "",
+      submittedTime: isSet(object.submittedTime)
+        ? globalThis.String(object.submittedTime)
+        : isSet(object.submitted_time)
+        ? globalThis.String(object.submitted_time)
+        : "0",
     };
   },
 
@@ -885,6 +983,9 @@ export const BatchView: MessageFns<BatchView> = {
     if (message.withdrawalsRoot !== "") {
       obj.withdrawalsRoot = message.withdrawalsRoot;
     }
+    if (message.submittedTime !== "0") {
+      obj.submittedTime = message.submittedTime;
+    }
     return obj;
   },
 
@@ -904,6 +1005,7 @@ export const BatchView: MessageFns<BatchView> = {
     message.submittedAt = object.submittedAt ?? "0";
     message.finalizedAt = object.finalizedAt ?? "0";
     message.withdrawalsRoot = object.withdrawalsRoot ?? "";
+    message.submittedTime = object.submittedTime ?? "0";
     return message;
   },
 };

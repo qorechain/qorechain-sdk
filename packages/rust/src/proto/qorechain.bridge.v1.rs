@@ -253,6 +253,12 @@ pub struct MsgRegisterBridgeValidator {
     pub pqc_pubkey: ::prost::alloc::vec::Vec<u8>,
     #[prost(string, repeated, tag="3")]
     pub supported_chains: ::prost::alloc::vec::Vec<::prost::alloc::string::String>,
+    /// proof_of_possession (v3.2.4) is pqc_pubkey's ML-DSA-87 signature over
+    /// "qorechain-pqc-pop-v1|<chain-id>|1|<validator_address>|<hex pqc_pubkey>",
+    /// the x/pqc proof of possession format. Required from
+    /// bridge-validator-key-pop; ignored before it.
+    #[prost(bytes="vec", tag="4")]
+    pub proof_of_possession: ::prost::alloc::vec::Vec<u8>,
 }
 #[derive(Clone, Copy, PartialEq, ::prost::Message)]
 pub struct MsgRegisterBridgeValidatorResponse {

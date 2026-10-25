@@ -90,6 +90,13 @@ pub mod qorechain {
             include!("qorechain.rlconsensus.v1.rs");
         }
     }
+    /// `qorechain.stakingtier.v1` generated types.
+    pub mod stakingtier {
+        /// `qorechain.stakingtier.v1` generated types.
+        pub mod v1 {
+            include!("qorechain.stakingtier.v1.rs");
+        }
+    }
     /// `qorechain.svm.v1` generated types.
     pub mod svm {
         /// `qorechain.svm.v1` generated types.

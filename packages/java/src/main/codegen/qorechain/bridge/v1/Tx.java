@@ -8953,6 +8953,19 @@ public final class Tx extends com.google.protobuf.GeneratedFile {
      */
     com.google.protobuf.ByteString
         getSupportedChainsBytes(int index);
+
+    /**
+     * <pre>
+     * proof_of_possession (v3.2.4) is pqc_pubkey's ML-DSA-87 signature over
+     * "qorechain-pqc-pop-v1|&lt;chain-id&gt;|1|&lt;validator_address&gt;|&lt;hex pqc_pubkey&gt;",
+     * the x/pqc proof of possession format. Required from
+     * bridge-validator-key-pop; ignored before it.
+     * </pre>
+     *
+     * <code>bytes proof_of_possession = 4 [json_name = "proofOfPossession"];</code>
+     * @return The proofOfPossession.
+     */
+    com.google.protobuf.ByteString getProofOfPossession();
   }
   /**
    * Protobuf type {@code qorechain.bridge.v1.MsgRegisterBridgeValidator}
@@ -8980,6 +8993,7 @@ public final class Tx extends com.google.protobuf.GeneratedFile {
       pqcPubkey_ = com.google.protobuf.ByteString.EMPTY;
       supportedChains_ =
           com.google.protobuf.LazyStringArrayList.emptyList();
+      proofOfPossession_ = com.google.protobuf.ByteString.EMPTY;
     }
 
     public static final com.google.protobuf.Descriptors.Descriptor
@@ -9087,6 +9101,24 @@ public final class Tx extends com.google.protobuf.GeneratedFile {
       return supportedChains_.getByteString(index);
     }
 
+    public static final int PROOF_OF_POSSESSION_FIELD_NUMBER = 4;
+    private com.google.protobuf.ByteString proofOfPossession_ = com.google.protobuf.ByteString.EMPTY;
+    /**
+     * <pre>
+     * proof_of_possession (v3.2.4) is pqc_pubkey's ML-DSA-87 signature over
+     * "qorechain-pqc-pop-v1|&lt;chain-id&gt;|1|&lt;validator_address&gt;|&lt;hex pqc_pubkey&gt;",
+     * the x/pqc proof of possession format. Required from
+     * bridge-validator-key-pop; ignored before it.
+     * </pre>
+     *
+     * <code>bytes proof_of_possession = 4 [json_name = "proofOfPossession"];</code>
+     * @return The proofOfPossession.
+     */
+    @java.lang.Override
+    public com.google.protobuf.ByteString getProofOfPossession() {
+      return proofOfPossession_;
+    }
+
     private byte memoizedIsInitialized = -1;
     @java.lang.Override
     public final boolean isInitialized() {
@@ -9110,6 +9142,9 @@ public final class Tx extends com.google.protobuf.GeneratedFile {
       for (int i = 0; i < supportedChains_.size(); i++) {
         com.google.protobuf.GeneratedMessage.writeString(output, 3, supportedChains_.getRaw(i));
       }
+      if (!proofOfPossession_.isEmpty()) {
+        output.writeBytes(4, proofOfPossession_);
+      }
       getUnknownFields().writeTo(output);
     }
     private int computeSerializedSize_0() {
@@ -9128,6 +9163,10 @@ public final class Tx extends com.google.protobuf.GeneratedFile {
         }
         size += dataSize;
         size += 1 * getSupportedChainsList().size();
+      }
+      if (!proofOfPossession_.isEmpty()) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeBytesSize(4, proofOfPossession_);
       }
       return size;
     }
@@ -9159,6 +9198,8 @@ public final class Tx extends com.google.protobuf.GeneratedFile {
           .equals(other.getPqcPubkey())) return false;
       if (!getSupportedChainsList()
           .equals(other.getSupportedChainsList())) return false;
+      if (!getProofOfPossession()
+          .equals(other.getProofOfPossession())) return false;
       if (!getUnknownFields().equals(other.getUnknownFields())) return false;
       return true;
     }
@@ -9178,6 +9219,8 @@ public final class Tx extends com.google.protobuf.GeneratedFile {
         hash = (37 * hash) + SUPPORTED_CHAINS_FIELD_NUMBER;
         hash = (53 * hash) + getSupportedChainsList().hashCode();
       }
+      hash = (37 * hash) + PROOF_OF_POSSESSION_FIELD_NUMBER;
+      hash = (53 * hash) + getProofOfPossession().hashCode();
       hash = (29 * hash) + getUnknownFields().hashCode();
       memoizedHashCode = hash;
       return hash;
@@ -9313,6 +9356,7 @@ public final class Tx extends com.google.protobuf.GeneratedFile {
         pqcPubkey_ = com.google.protobuf.ByteString.EMPTY;
         supportedChains_ =
             com.google.protobuf.LazyStringArrayList.emptyList();
+        proofOfPossession_ = com.google.protobuf.ByteString.EMPTY;
         return this;
       }
 
@@ -9356,6 +9400,9 @@ public final class Tx extends com.google.protobuf.GeneratedFile {
           supportedChains_.makeImmutable();
           result.supportedChains_ = supportedChains_;
         }
+        if (((from_bitField0_ & 0x00000008) != 0)) {
+          result.proofOfPossession_ = proofOfPossession_;
+        }
       }
 
       @java.lang.Override
@@ -9387,6 +9434,9 @@ public final class Tx extends com.google.protobuf.GeneratedFile {
             supportedChains_.addAll(other.supportedChains_);
           }
           onChanged();
+        }
+        if (!other.getProofOfPossession().isEmpty()) {
+          setProofOfPossession(other.getProofOfPossession());
         }
         this.mergeUnknownFields(other.getUnknownFields());
         onChanged();
@@ -9429,6 +9479,11 @@ public final class Tx extends com.google.protobuf.GeneratedFile {
                 supportedChains_.add(input.readStringRequireUtf8());
                 break;
               } // case 26
+              case 34: {
+                proofOfPossession_ = input.readBytes();
+                bitField0_ |= 0x00000008;
+                break;
+              } // case 34
               default: {
                 if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                   done = true; // was an endgroup tag
@@ -9657,6 +9712,59 @@ public final class Tx extends com.google.protobuf.GeneratedFile {
         ensureSupportedChainsIsMutable();
         supportedChains_.add(value);
         bitField0_ |= 0x00000004;
+        onChanged();
+        return this;
+      }
+
+      private com.google.protobuf.ByteString proofOfPossession_ = com.google.protobuf.ByteString.EMPTY;
+      /**
+       * <pre>
+       * proof_of_possession (v3.2.4) is pqc_pubkey's ML-DSA-87 signature over
+       * "qorechain-pqc-pop-v1|&lt;chain-id&gt;|1|&lt;validator_address&gt;|&lt;hex pqc_pubkey&gt;",
+       * the x/pqc proof of possession format. Required from
+       * bridge-validator-key-pop; ignored before it.
+       * </pre>
+       *
+       * <code>bytes proof_of_possession = 4 [json_name = "proofOfPossession"];</code>
+       * @return The proofOfPossession.
+       */
+      @java.lang.Override
+      public com.google.protobuf.ByteString getProofOfPossession() {
+        return proofOfPossession_;
+      }
+      /**
+       * <pre>
+       * proof_of_possession (v3.2.4) is pqc_pubkey's ML-DSA-87 signature over
+       * "qorechain-pqc-pop-v1|&lt;chain-id&gt;|1|&lt;validator_address&gt;|&lt;hex pqc_pubkey&gt;",
+       * the x/pqc proof of possession format. Required from
+       * bridge-validator-key-pop; ignored before it.
+       * </pre>
+       *
+       * <code>bytes proof_of_possession = 4 [json_name = "proofOfPossession"];</code>
+       * @param value The proofOfPossession to set.
+       * @return This builder for chaining.
+       */
+      public Builder setProofOfPossession(com.google.protobuf.ByteString value) {
+        if (value == null) { throw new NullPointerException(); }
+        proofOfPossession_ = value;
+        bitField0_ |= 0x00000008;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * proof_of_possession (v3.2.4) is pqc_pubkey's ML-DSA-87 signature over
+       * "qorechain-pqc-pop-v1|&lt;chain-id&gt;|1|&lt;validator_address&gt;|&lt;hex pqc_pubkey&gt;",
+       * the x/pqc proof of possession format. Required from
+       * bridge-validator-key-pop; ignored before it.
+       * </pre>
+       *
+       * <code>bytes proof_of_possession = 4 [json_name = "proofOfPossession"];</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearProofOfPossession() {
+        bitField0_ = (bitField0_ & ~0x00000008);
+        proofOfPossession_ = getDefaultInstance().getProofOfPossession();
         onChanged();
         return this;
       }
@@ -14443,59 +14551,61 @@ public final class Tx extends com.google.protobuf.GeneratedFile {
       "destination_address\030\003 \001(\tR\022destinationAd" +
       "dress\022\024\n\005asset\030\004 \001(\tR\005asset\022\026\n\006amount\030\005 " +
       "\001(\tR\006amount:\013\202\347\260*\006sender\"\033\n\031MsgBridgeWit" +
-      "hdrawResponse\"\324\001\n\032MsgRegisterBridgeValid" +
+      "hdrawResponse\"\204\002\n\032MsgRegisterBridgeValid" +
       "ator\022E\n\021validator_address\030\001 \001(\tB\030\322\264-\024cos" +
       "mos.AddressStringR\020validatorAddress\022,\n\np" +
       "qc_pubkey\030\002 \001(\014B\r\342\336\037\tPQCPubkeyR\tpqcPubke" +
       "y\022)\n\020supported_chains\030\003 \003(\tR\017supportedCh" +
-      "ains:\026\202\347\260*\021validator_address\"$\n\"MsgRegis" +
-      "terBridgeValidatorResponse\"\372\002\n\024MsgBridge" +
-      "Attestation\0226\n\tvalidator\030\001 \001(\tB\030\322\264-\024cosm" +
-      "os.AddressStringR\tvalidator\022\024\n\005chain\030\002 \001" +
-      "(\tR\005chain\022\035\n\nevent_type\030\003 \001(\tR\teventType" +
-      "\0222\n\014operation_id\030\004 \001(\tB\017\342\336\037\013OperationIDR" +
-      "\013operationId\022\027\n\007tx_hash\030\005 \001(\tR\006txHash\0225\n" +
-      "\006amount\030\006 \001(\tB\035\310\336\037\000\332\336\037\025cosmossdk.io/math" +
-      ".IntR\006amount\022\024\n\005asset\030\007 \001(\tR\005asset\022\024\n\005pr" +
-      "oof\030\010 \001(\014R\005proof\0225\n\rpqc_signature\030\t \001(\014B" +
-      "\020\342\336\037\014PQCSignatureR\014pqcSignature:\016\202\347\260*\tva" +
-      "lidator\"\036\n\034MsgBridgeAttestationResponse\"" +
-      "s\n\027MsgUpdateEthLightClient\0222\n\007relayer\030\001 " +
-      "\001(\tB\030\322\264-\024cosmos.AddressStringR\007relayer\022\026" +
-      "\n\006update\030\002 \001(\014R\006update:\014\202\347\260*\007relayer\"!\n\037" +
-      "MsgUpdateEthLightClientResponse\"\307\001\n\035MsgU" +
-      "pdateCircuitBreakerLimits\022.\n\005admin\030\001 \001(\t" +
-      "B\030\322\264-\024cosmos.AddressStringR\005admin\022\031\n\010cha" +
-      "in_id\030\002 \001(\tR\007chainId\022.\n\023max_single_trans" +
-      "fer\030\003 \001(\tR\021maxSingleTransfer\022\037\n\013daily_li" +
-      "mit\030\004 \001(\tR\ndailyLimit:\n\202\347\260*\005admin\"\'\n%Msg" +
-      "UpdateCircuitBreakerLimitsResponse2\320\007\n\003M" +
-      "sg\022e\n\rBridgeDeposit\022%.qorechain.bridge.v" +
-      "1.MsgBridgeDeposit\032-.qorechain.bridge.v1" +
-      ".MsgBridgeDepositResponse\022h\n\016BridgeWithd" +
-      "raw\022&.qorechain.bridge.v1.MsgBridgeWithd" +
-      "raw\032..qorechain.bridge.v1.MsgBridgeWithd" +
-      "rawResponse\022\203\001\n\027RegisterBridgeValidator\022" +
-      "/.qorechain.bridge.v1.MsgRegisterBridgeV" +
-      "alidator\0327.qorechain.bridge.v1.MsgRegist" +
-      "erBridgeValidatorResponse\022q\n\021BridgeAttes" +
-      "tation\022).qorechain.bridge.v1.MsgBridgeAt" +
-      "testation\0321.qorechain.bridge.v1.MsgBridg" +
-      "eAttestationResponse\022z\n\024UpdateEthLightCl" +
-      "ient\022,.qorechain.bridge.v1.MsgUpdateEthL" +
-      "ightClient\0324.qorechain.bridge.v1.MsgUpda" +
-      "teEthLightClientResponse\022q\n\021UpdateChainC" +
-      "onfig\022).qorechain.bridge.v1.MsgUpdateCha" +
-      "inConfig\0321.qorechain.bridge.v1.MsgUpdate" +
-      "ChainConfigResponse\022z\n\024SetVerifierBootst" +
-      "rap\022,.qorechain.bridge.v1.MsgSetVerifier" +
-      "Bootstrap\0324.qorechain.bridge.v1.MsgSetVe" +
-      "rifierBootstrapResponse\022\214\001\n\032UpdateCircui" +
-      "tBreakerLimits\0222.qorechain.bridge.v1.Msg" +
-      "UpdateCircuitBreakerLimits\032:.qorechain.b" +
-      "ridge.v1.MsgUpdateCircuitBreakerLimitsRe" +
-      "sponse\032\005\200\347\260*\001B4Z2github.com/qorechain/qo" +
-      "rechain-core/x/bridge/typesb\006proto3"
+      "ains\022.\n\023proof_of_possession\030\004 \001(\014R\021proof" +
+      "OfPossession:\026\202\347\260*\021validator_address\"$\n\"" +
+      "MsgRegisterBridgeValidatorResponse\"\372\002\n\024M" +
+      "sgBridgeAttestation\0226\n\tvalidator\030\001 \001(\tB\030" +
+      "\322\264-\024cosmos.AddressStringR\tvalidator\022\024\n\005c" +
+      "hain\030\002 \001(\tR\005chain\022\035\n\nevent_type\030\003 \001(\tR\te" +
+      "ventType\0222\n\014operation_id\030\004 \001(\tB\017\342\336\037\013Oper" +
+      "ationIDR\013operationId\022\027\n\007tx_hash\030\005 \001(\tR\006t" +
+      "xHash\0225\n\006amount\030\006 \001(\tB\035\310\336\037\000\332\336\037\025cosmossdk" +
+      ".io/math.IntR\006amount\022\024\n\005asset\030\007 \001(\tR\005ass" +
+      "et\022\024\n\005proof\030\010 \001(\014R\005proof\0225\n\rpqc_signatur" +
+      "e\030\t \001(\014B\020\342\336\037\014PQCSignatureR\014pqcSignature:" +
+      "\016\202\347\260*\tvalidator\"\036\n\034MsgBridgeAttestationR" +
+      "esponse\"s\n\027MsgUpdateEthLightClient\0222\n\007re" +
+      "layer\030\001 \001(\tB\030\322\264-\024cosmos.AddressStringR\007r" +
+      "elayer\022\026\n\006update\030\002 \001(\014R\006update:\014\202\347\260*\007rel" +
+      "ayer\"!\n\037MsgUpdateEthLightClientResponse\"" +
+      "\307\001\n\035MsgUpdateCircuitBreakerLimits\022.\n\005adm" +
+      "in\030\001 \001(\tB\030\322\264-\024cosmos.AddressStringR\005admi" +
+      "n\022\031\n\010chain_id\030\002 \001(\tR\007chainId\022.\n\023max_sing" +
+      "le_transfer\030\003 \001(\tR\021maxSingleTransfer\022\037\n\013" +
+      "daily_limit\030\004 \001(\tR\ndailyLimit:\n\202\347\260*\005admi" +
+      "n\"\'\n%MsgUpdateCircuitBreakerLimitsRespon" +
+      "se2\320\007\n\003Msg\022e\n\rBridgeDeposit\022%.qorechain." +
+      "bridge.v1.MsgBridgeDeposit\032-.qorechain.b" +
+      "ridge.v1.MsgBridgeDepositResponse\022h\n\016Bri" +
+      "dgeWithdraw\022&.qorechain.bridge.v1.MsgBri" +
+      "dgeWithdraw\032..qorechain.bridge.v1.MsgBri" +
+      "dgeWithdrawResponse\022\203\001\n\027RegisterBridgeVa" +
+      "lidator\022/.qorechain.bridge.v1.MsgRegiste" +
+      "rBridgeValidator\0327.qorechain.bridge.v1.M" +
+      "sgRegisterBridgeValidatorResponse\022q\n\021Bri" +
+      "dgeAttestation\022).qorechain.bridge.v1.Msg" +
+      "BridgeAttestation\0321.qorechain.bridge.v1." +
+      "MsgBridgeAttestationResponse\022z\n\024UpdateEt" +
+      "hLightClient\022,.qorechain.bridge.v1.MsgUp" +
+      "dateEthLightClient\0324.qorechain.bridge.v1" +
+      ".MsgUpdateEthLightClientResponse\022q\n\021Upda" +
+      "teChainConfig\022).qorechain.bridge.v1.MsgU" +
+      "pdateChainConfig\0321.qorechain.bridge.v1.M" +
+      "sgUpdateChainConfigResponse\022z\n\024SetVerifi" +
+      "erBootstrap\022,.qorechain.bridge.v1.MsgSet" +
+      "VerifierBootstrap\0324.qorechain.bridge.v1." +
+      "MsgSetVerifierBootstrapResponse\022\214\001\n\032Upda" +
+      "teCircuitBreakerLimits\0222.qorechain.bridg" +
+      "e.v1.MsgUpdateCircuitBreakerLimits\032:.qor" +
+      "echain.bridge.v1.MsgUpdateCircuitBreaker" +
+      "LimitsResponse\032\005\200\347\260*\001B4Z2github.com/qore" +
+      "chain/qorechain-core/x/bridge/typesb\006pro" +
+      "to3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
@@ -14575,7 +14685,7 @@ public final class Tx extends com.google.protobuf.GeneratedFile {
     internal_static_qorechain_bridge_v1_MsgRegisterBridgeValidator_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_qorechain_bridge_v1_MsgRegisterBridgeValidator_descriptor,
-        new java.lang.String[] { "ValidatorAddress", "PqcPubkey", "SupportedChains", });
+        new java.lang.String[] { "ValidatorAddress", "PqcPubkey", "SupportedChains", "ProofOfPossession", });
     internal_static_qorechain_bridge_v1_MsgRegisterBridgeValidatorResponse_descriptor =
       getDescriptor().getMessageType(12);
     internal_static_qorechain_bridge_v1_MsgRegisterBridgeValidatorResponse_fieldAccessorTable = new

@@ -119,14 +119,16 @@ class MsgBridgeWithdrawResponse(_message.Message):
     def __init__(self) -> None: ...
 
 class MsgRegisterBridgeValidator(_message.Message):
-    __slots__ = ("validator_address", "pqc_pubkey", "supported_chains")
+    __slots__ = ("validator_address", "pqc_pubkey", "supported_chains", "proof_of_possession")
     VALIDATOR_ADDRESS_FIELD_NUMBER: _ClassVar[int]
     PQC_PUBKEY_FIELD_NUMBER: _ClassVar[int]
     SUPPORTED_CHAINS_FIELD_NUMBER: _ClassVar[int]
+    PROOF_OF_POSSESSION_FIELD_NUMBER: _ClassVar[int]
     validator_address: str
     pqc_pubkey: bytes
     supported_chains: _containers.RepeatedScalarFieldContainer[str]
-    def __init__(self, validator_address: _Optional[str] = ..., pqc_pubkey: _Optional[bytes] = ..., supported_chains: _Optional[_Iterable[str]] = ...) -> None: ...
+    proof_of_possession: bytes
+    def __init__(self, validator_address: _Optional[str] = ..., pqc_pubkey: _Optional[bytes] = ..., supported_chains: _Optional[_Iterable[str]] = ..., proof_of_possession: _Optional[bytes] = ...) -> None: ...
 
 class MsgRegisterBridgeValidatorResponse(_message.Message):
     __slots__ = ()

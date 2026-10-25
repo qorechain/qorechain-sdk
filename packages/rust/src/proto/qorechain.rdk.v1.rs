@@ -50,6 +50,16 @@ pub struct RollupView {
     /// refunds. It is read from the per-rollup escrow ledger (from v3.2.3).
     #[prost(uint64, tag="13")]
     pub escrow_balance: u64,
+    /// challenge_window_sec, challenge_bond and proof_system are the rollup's own
+    /// proof configuration, so a watchtower can tell when a batch's challenge
+    /// window closes and what a challenge costs without assuming the module
+    /// default.
+    #[prost(uint64, tag="14")]
+    pub challenge_window_sec: u64,
+    #[prost(int64, tag="15")]
+    pub challenge_bond: i64,
+    #[prost(string, tag="16")]
+    pub proof_system: ::prost::alloc::string::String,
 }
 /// BatchView is the query-facing view of a settlement batch.
 #[derive(Clone, PartialEq, ::prost::Message)]
@@ -76,6 +86,14 @@ pub struct BatchView {
     pub finalized_at: i64,
     #[prost(string, tag="11")]
     pub withdrawals_root: ::prost::alloc::string::String,
+    /// submitted_time is the block time (unix seconds) of the block that settled
+    /// the batch, recorded from rdk-challenge-window-time (v3.2.4). Zero for a
+    /// batch settled before the switch, whose challenge window still counts in
+    /// blocks (submitted_at + challenge_window_sec / 6). A batch with a time
+    /// closes when block time >= submitted_time + the rollup's
+    /// challenge_window_sec.
+    #[prost(int64, tag="12")]
+    pub submitted_time: i64,
 }
 #[derive(Clone, Copy, PartialEq, ::prost::Message)]
 pub struct QueryParamsRequest {

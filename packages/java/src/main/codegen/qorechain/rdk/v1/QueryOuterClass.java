@@ -1124,6 +1124,37 @@ public final class QueryOuterClass extends com.google.protobuf.GeneratedFile {
      * @return The escrowBalance.
      */
     long getEscrowBalance();
+
+    /**
+     * <pre>
+     * challenge_window_sec, challenge_bond and proof_system are the rollup's own
+     * proof configuration, so a watchtower can tell when a batch's challenge
+     * window closes and what a challenge costs without assuming the module
+     * default.
+     * </pre>
+     *
+     * <code>uint64 challenge_window_sec = 14 [json_name = "challengeWindowSec"];</code>
+     * @return The challengeWindowSec.
+     */
+    long getChallengeWindowSec();
+
+    /**
+     * <code>int64 challenge_bond = 15 [json_name = "challengeBond"];</code>
+     * @return The challengeBond.
+     */
+    long getChallengeBond();
+
+    /**
+     * <code>string proof_system = 16 [json_name = "proofSystem"];</code>
+     * @return The proofSystem.
+     */
+    java.lang.String getProofSystem();
+    /**
+     * <code>string proof_system = 16 [json_name = "proofSystem"];</code>
+     * @return The bytes for proofSystem.
+     */
+    com.google.protobuf.ByteString
+        getProofSystemBytes();
   }
   /**
    * <pre>
@@ -1159,6 +1190,7 @@ public final class QueryOuterClass extends com.google.protobuf.GeneratedFile {
       vmType_ = "";
       status_ = "";
       layerId_ = "";
+      proofSystem_ = "";
     }
 
     public static final com.google.protobuf.Descriptors.Descriptor
@@ -1552,6 +1584,74 @@ public final class QueryOuterClass extends com.google.protobuf.GeneratedFile {
       return escrowBalance_;
     }
 
+    public static final int CHALLENGE_WINDOW_SEC_FIELD_NUMBER = 14;
+    private long challengeWindowSec_ = 0L;
+    /**
+     * <pre>
+     * challenge_window_sec, challenge_bond and proof_system are the rollup's own
+     * proof configuration, so a watchtower can tell when a batch's challenge
+     * window closes and what a challenge costs without assuming the module
+     * default.
+     * </pre>
+     *
+     * <code>uint64 challenge_window_sec = 14 [json_name = "challengeWindowSec"];</code>
+     * @return The challengeWindowSec.
+     */
+    @java.lang.Override
+    public long getChallengeWindowSec() {
+      return challengeWindowSec_;
+    }
+
+    public static final int CHALLENGE_BOND_FIELD_NUMBER = 15;
+    private long challengeBond_ = 0L;
+    /**
+     * <code>int64 challenge_bond = 15 [json_name = "challengeBond"];</code>
+     * @return The challengeBond.
+     */
+    @java.lang.Override
+    public long getChallengeBond() {
+      return challengeBond_;
+    }
+
+    public static final int PROOF_SYSTEM_FIELD_NUMBER = 16;
+    @SuppressWarnings("serial")
+    private volatile java.lang.Object proofSystem_ = "";
+    /**
+     * <code>string proof_system = 16 [json_name = "proofSystem"];</code>
+     * @return The proofSystem.
+     */
+    @java.lang.Override
+    public java.lang.String getProofSystem() {
+      java.lang.Object ref = proofSystem_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        proofSystem_ = s;
+        return s;
+      }
+    }
+    /**
+     * <code>string proof_system = 16 [json_name = "proofSystem"];</code>
+     * @return The bytes for proofSystem.
+     */
+    @java.lang.Override
+    public com.google.protobuf.ByteString
+        getProofSystemBytes() {
+      java.lang.Object ref = proofSystem_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        proofSystem_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
     private byte memoizedIsInitialized = -1;
     @java.lang.Override
     public final boolean isInitialized() {
@@ -1605,6 +1705,15 @@ public final class QueryOuterClass extends com.google.protobuf.GeneratedFile {
       if (escrowBalance_ != 0L) {
         output.writeUInt64(13, escrowBalance_);
       }
+      if (challengeWindowSec_ != 0L) {
+        output.writeUInt64(14, challengeWindowSec_);
+      }
+      if (challengeBond_ != 0L) {
+        output.writeInt64(15, challengeBond_);
+      }
+      if (!com.google.protobuf.GeneratedMessage.isStringEmpty(proofSystem_)) {
+        com.google.protobuf.GeneratedMessage.writeString(output, 16, proofSystem_);
+      }
       getUnknownFields().writeTo(output);
     }
     private int computeSerializedSize_0() {
@@ -1652,6 +1761,17 @@ public final class QueryOuterClass extends com.google.protobuf.GeneratedFile {
       if (escrowBalance_ != 0L) {
         size += com.google.protobuf.CodedOutputStream
           .computeUInt64Size(13, escrowBalance_);
+      }
+      if (challengeWindowSec_ != 0L) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeUInt64Size(14, challengeWindowSec_);
+      }
+      if (challengeBond_ != 0L) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeInt64Size(15, challengeBond_);
+      }
+      if (!com.google.protobuf.GeneratedMessage.isStringEmpty(proofSystem_)) {
+        size += com.google.protobuf.GeneratedMessage.computeStringSize(16, proofSystem_);
       }
       return size;
     }
@@ -1703,6 +1823,12 @@ public final class QueryOuterClass extends com.google.protobuf.GeneratedFile {
           != other.getCreatedHeight()) return false;
       if (getEscrowBalance()
           != other.getEscrowBalance()) return false;
+      if (getChallengeWindowSec()
+          != other.getChallengeWindowSec()) return false;
+      if (getChallengeBond()
+          != other.getChallengeBond()) return false;
+      if (!getProofSystem()
+          .equals(other.getProofSystem())) return false;
       if (!getUnknownFields().equals(other.getUnknownFields())) return false;
       return true;
     }
@@ -1745,6 +1871,14 @@ public final class QueryOuterClass extends com.google.protobuf.GeneratedFile {
       hash = (37 * hash) + ESCROW_BALANCE_FIELD_NUMBER;
       hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
           getEscrowBalance());
+      hash = (37 * hash) + CHALLENGE_WINDOW_SEC_FIELD_NUMBER;
+      hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
+          getChallengeWindowSec());
+      hash = (37 * hash) + CHALLENGE_BOND_FIELD_NUMBER;
+      hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
+          getChallengeBond());
+      hash = (37 * hash) + PROOF_SYSTEM_FIELD_NUMBER;
+      hash = (53 * hash) + getProofSystem().hashCode();
       hash = (29 * hash) + getUnknownFields().hashCode();
       memoizedHashCode = hash;
       return hash;
@@ -1893,6 +2027,9 @@ public final class QueryOuterClass extends com.google.protobuf.GeneratedFile {
         layerId_ = "";
         createdHeight_ = 0L;
         escrowBalance_ = 0L;
+        challengeWindowSec_ = 0L;
+        challengeBond_ = 0L;
+        proofSystem_ = "";
         return this;
       }
 
@@ -1965,6 +2102,15 @@ public final class QueryOuterClass extends com.google.protobuf.GeneratedFile {
         if (((from_bitField0_ & 0x00001000) != 0)) {
           result.escrowBalance_ = escrowBalance_;
         }
+        if (((from_bitField0_ & 0x00002000) != 0)) {
+          result.challengeWindowSec_ = challengeWindowSec_;
+        }
+        if (((from_bitField0_ & 0x00004000) != 0)) {
+          result.challengeBond_ = challengeBond_;
+        }
+        if (((from_bitField0_ & 0x00008000) != 0)) {
+          result.proofSystem_ = proofSystem_;
+        }
       }
 
       @java.lang.Override
@@ -2033,6 +2179,17 @@ public final class QueryOuterClass extends com.google.protobuf.GeneratedFile {
         }
         if (other.getEscrowBalance() != 0L) {
           setEscrowBalance(other.getEscrowBalance());
+        }
+        if (other.getChallengeWindowSec() != 0L) {
+          setChallengeWindowSec(other.getChallengeWindowSec());
+        }
+        if (other.getChallengeBond() != 0L) {
+          setChallengeBond(other.getChallengeBond());
+        }
+        if (!other.getProofSystem().isEmpty()) {
+          proofSystem_ = other.proofSystem_;
+          bitField0_ |= 0x00008000;
+          onChanged();
         }
         this.mergeUnknownFields(other.getUnknownFields());
         onChanged();
@@ -2125,6 +2282,21 @@ public final class QueryOuterClass extends com.google.protobuf.GeneratedFile {
                 bitField0_ |= 0x00001000;
                 break;
               } // case 104
+              case 112: {
+                challengeWindowSec_ = input.readUInt64();
+                bitField0_ |= 0x00002000;
+                break;
+              } // case 112
+              case 120: {
+                challengeBond_ = input.readInt64();
+                bitField0_ |= 0x00004000;
+                break;
+              } // case 120
+              case 130: {
+                proofSystem_ = input.readStringRequireUtf8();
+                bitField0_ |= 0x00008000;
+                break;
+              } // case 130
               default: {
                 if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                   done = true; // was an endgroup tag
@@ -2896,6 +3068,163 @@ public final class QueryOuterClass extends com.google.protobuf.GeneratedFile {
         return this;
       }
 
+      private long challengeWindowSec_ ;
+      /**
+       * <pre>
+       * challenge_window_sec, challenge_bond and proof_system are the rollup's own
+       * proof configuration, so a watchtower can tell when a batch's challenge
+       * window closes and what a challenge costs without assuming the module
+       * default.
+       * </pre>
+       *
+       * <code>uint64 challenge_window_sec = 14 [json_name = "challengeWindowSec"];</code>
+       * @return The challengeWindowSec.
+       */
+      @java.lang.Override
+      public long getChallengeWindowSec() {
+        return challengeWindowSec_;
+      }
+      /**
+       * <pre>
+       * challenge_window_sec, challenge_bond and proof_system are the rollup's own
+       * proof configuration, so a watchtower can tell when a batch's challenge
+       * window closes and what a challenge costs without assuming the module
+       * default.
+       * </pre>
+       *
+       * <code>uint64 challenge_window_sec = 14 [json_name = "challengeWindowSec"];</code>
+       * @param value The challengeWindowSec to set.
+       * @return This builder for chaining.
+       */
+      public Builder setChallengeWindowSec(long value) {
+
+        challengeWindowSec_ = value;
+        bitField0_ |= 0x00002000;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * challenge_window_sec, challenge_bond and proof_system are the rollup's own
+       * proof configuration, so a watchtower can tell when a batch's challenge
+       * window closes and what a challenge costs without assuming the module
+       * default.
+       * </pre>
+       *
+       * <code>uint64 challenge_window_sec = 14 [json_name = "challengeWindowSec"];</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearChallengeWindowSec() {
+        bitField0_ = (bitField0_ & ~0x00002000);
+        challengeWindowSec_ = 0L;
+        onChanged();
+        return this;
+      }
+
+      private long challengeBond_ ;
+      /**
+       * <code>int64 challenge_bond = 15 [json_name = "challengeBond"];</code>
+       * @return The challengeBond.
+       */
+      @java.lang.Override
+      public long getChallengeBond() {
+        return challengeBond_;
+      }
+      /**
+       * <code>int64 challenge_bond = 15 [json_name = "challengeBond"];</code>
+       * @param value The challengeBond to set.
+       * @return This builder for chaining.
+       */
+      public Builder setChallengeBond(long value) {
+
+        challengeBond_ = value;
+        bitField0_ |= 0x00004000;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>int64 challenge_bond = 15 [json_name = "challengeBond"];</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearChallengeBond() {
+        bitField0_ = (bitField0_ & ~0x00004000);
+        challengeBond_ = 0L;
+        onChanged();
+        return this;
+      }
+
+      private java.lang.Object proofSystem_ = "";
+      /**
+       * <code>string proof_system = 16 [json_name = "proofSystem"];</code>
+       * @return The proofSystem.
+       */
+      public java.lang.String getProofSystem() {
+        java.lang.Object ref = proofSystem_;
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          proofSystem_ = s;
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
+      }
+      /**
+       * <code>string proof_system = 16 [json_name = "proofSystem"];</code>
+       * @return The bytes for proofSystem.
+       */
+      public com.google.protobuf.ByteString
+          getProofSystemBytes() {
+        java.lang.Object ref = proofSystem_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          proofSystem_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <code>string proof_system = 16 [json_name = "proofSystem"];</code>
+       * @param value The proofSystem to set.
+       * @return This builder for chaining.
+       */
+      public Builder setProofSystem(
+          java.lang.String value) {
+        if (value == null) { throw new NullPointerException(); }
+        proofSystem_ = value;
+        bitField0_ |= 0x00008000;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>string proof_system = 16 [json_name = "proofSystem"];</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearProofSystem() {
+        proofSystem_ = getDefaultInstance().getProofSystem();
+        bitField0_ = (bitField0_ & ~0x00008000);
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>string proof_system = 16 [json_name = "proofSystem"];</code>
+       * @param value The bytes for proofSystem to set.
+       * @return This builder for chaining.
+       */
+      public Builder setProofSystemBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) { throw new NullPointerException(); }
+        checkByteStringIsUtf8(value);
+        proofSystem_ = value;
+        bitField0_ |= 0x00008000;
+        onChanged();
+        return this;
+      }
+
       // @@protoc_insertion_point(builder_scope:qorechain.rdk.v1.RollupView)
     }
 
@@ -3058,6 +3387,21 @@ public final class QueryOuterClass extends com.google.protobuf.GeneratedFile {
      */
     com.google.protobuf.ByteString
         getWithdrawalsRootBytes();
+
+    /**
+     * <pre>
+     * submitted_time is the block time (unix seconds) of the block that settled
+     * the batch, recorded from rdk-challenge-window-time (v3.2.4). Zero for a
+     * batch settled before the switch, whose challenge window still counts in
+     * blocks (submitted_at + challenge_window_sec / 6). A batch with a time
+     * closes when block time &gt;= submitted_time + the rollup's
+     * challenge_window_sec.
+     * </pre>
+     *
+     * <code>int64 submitted_time = 12 [json_name = "submittedTime"];</code>
+     * @return The submittedTime.
+     */
+    long getSubmittedTime();
   }
   /**
    * <pre>
@@ -3429,6 +3773,26 @@ public final class QueryOuterClass extends com.google.protobuf.GeneratedFile {
       }
     }
 
+    public static final int SUBMITTED_TIME_FIELD_NUMBER = 12;
+    private long submittedTime_ = 0L;
+    /**
+     * <pre>
+     * submitted_time is the block time (unix seconds) of the block that settled
+     * the batch, recorded from rdk-challenge-window-time (v3.2.4). Zero for a
+     * batch settled before the switch, whose challenge window still counts in
+     * blocks (submitted_at + challenge_window_sec / 6). A batch with a time
+     * closes when block time &gt;= submitted_time + the rollup's
+     * challenge_window_sec.
+     * </pre>
+     *
+     * <code>int64 submitted_time = 12 [json_name = "submittedTime"];</code>
+     * @return The submittedTime.
+     */
+    @java.lang.Override
+    public long getSubmittedTime() {
+      return submittedTime_;
+    }
+
     private byte memoizedIsInitialized = -1;
     @java.lang.Override
     public final boolean isInitialized() {
@@ -3476,6 +3840,9 @@ public final class QueryOuterClass extends com.google.protobuf.GeneratedFile {
       if (!com.google.protobuf.GeneratedMessage.isStringEmpty(withdrawalsRoot_)) {
         com.google.protobuf.GeneratedMessage.writeString(output, 11, withdrawalsRoot_);
       }
+      if (submittedTime_ != 0L) {
+        output.writeInt64(12, submittedTime_);
+      }
       getUnknownFields().writeTo(output);
     }
     private int computeSerializedSize_0() {
@@ -3516,6 +3883,10 @@ public final class QueryOuterClass extends com.google.protobuf.GeneratedFile {
       }
       if (!com.google.protobuf.GeneratedMessage.isStringEmpty(withdrawalsRoot_)) {
         size += com.google.protobuf.GeneratedMessage.computeStringSize(11, withdrawalsRoot_);
+      }
+      if (submittedTime_ != 0L) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeInt64Size(12, submittedTime_);
       }
       return size;
     }
@@ -3563,6 +3934,8 @@ public final class QueryOuterClass extends com.google.protobuf.GeneratedFile {
           != other.getFinalizedAt()) return false;
       if (!getWithdrawalsRoot()
           .equals(other.getWithdrawalsRoot())) return false;
+      if (getSubmittedTime()
+          != other.getSubmittedTime()) return false;
       if (!getUnknownFields().equals(other.getUnknownFields())) return false;
       return true;
     }
@@ -3600,6 +3973,9 @@ public final class QueryOuterClass extends com.google.protobuf.GeneratedFile {
           getFinalizedAt());
       hash = (37 * hash) + WITHDRAWALS_ROOT_FIELD_NUMBER;
       hash = (53 * hash) + getWithdrawalsRoot().hashCode();
+      hash = (37 * hash) + SUBMITTED_TIME_FIELD_NUMBER;
+      hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
+          getSubmittedTime());
       hash = (29 * hash) + getUnknownFields().hashCode();
       memoizedHashCode = hash;
       return hash;
@@ -3746,6 +4122,7 @@ public final class QueryOuterClass extends com.google.protobuf.GeneratedFile {
         submittedAt_ = 0L;
         finalizedAt_ = 0L;
         withdrawalsRoot_ = "";
+        submittedTime_ = 0L;
         return this;
       }
 
@@ -3812,6 +4189,9 @@ public final class QueryOuterClass extends com.google.protobuf.GeneratedFile {
         if (((from_bitField0_ & 0x00000400) != 0)) {
           result.withdrawalsRoot_ = withdrawalsRoot_;
         }
+        if (((from_bitField0_ & 0x00000800) != 0)) {
+          result.submittedTime_ = submittedTime_;
+        }
       }
 
       @java.lang.Override
@@ -3872,6 +4252,9 @@ public final class QueryOuterClass extends com.google.protobuf.GeneratedFile {
           withdrawalsRoot_ = other.withdrawalsRoot_;
           bitField0_ |= 0x00000400;
           onChanged();
+        }
+        if (other.getSubmittedTime() != 0L) {
+          setSubmittedTime(other.getSubmittedTime());
         }
         this.mergeUnknownFields(other.getUnknownFields());
         onChanged();
@@ -3954,6 +4337,11 @@ public final class QueryOuterClass extends com.google.protobuf.GeneratedFile {
                 bitField0_ |= 0x00000400;
                 break;
               } // case 90
+              case 96: {
+                submittedTime_ = input.readInt64();
+                bitField0_ |= 0x00000800;
+                break;
+              } // case 96
               default: {
                 if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                   done = true; // was an endgroup tag
@@ -4599,6 +4987,65 @@ public final class QueryOuterClass extends com.google.protobuf.GeneratedFile {
         checkByteStringIsUtf8(value);
         withdrawalsRoot_ = value;
         bitField0_ |= 0x00000400;
+        onChanged();
+        return this;
+      }
+
+      private long submittedTime_ ;
+      /**
+       * <pre>
+       * submitted_time is the block time (unix seconds) of the block that settled
+       * the batch, recorded from rdk-challenge-window-time (v3.2.4). Zero for a
+       * batch settled before the switch, whose challenge window still counts in
+       * blocks (submitted_at + challenge_window_sec / 6). A batch with a time
+       * closes when block time &gt;= submitted_time + the rollup's
+       * challenge_window_sec.
+       * </pre>
+       *
+       * <code>int64 submitted_time = 12 [json_name = "submittedTime"];</code>
+       * @return The submittedTime.
+       */
+      @java.lang.Override
+      public long getSubmittedTime() {
+        return submittedTime_;
+      }
+      /**
+       * <pre>
+       * submitted_time is the block time (unix seconds) of the block that settled
+       * the batch, recorded from rdk-challenge-window-time (v3.2.4). Zero for a
+       * batch settled before the switch, whose challenge window still counts in
+       * blocks (submitted_at + challenge_window_sec / 6). A batch with a time
+       * closes when block time &gt;= submitted_time + the rollup's
+       * challenge_window_sec.
+       * </pre>
+       *
+       * <code>int64 submitted_time = 12 [json_name = "submittedTime"];</code>
+       * @param value The submittedTime to set.
+       * @return This builder for chaining.
+       */
+      public Builder setSubmittedTime(long value) {
+
+        submittedTime_ = value;
+        bitField0_ |= 0x00000800;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * submitted_time is the block time (unix seconds) of the block that settled
+       * the batch, recorded from rdk-challenge-window-time (v3.2.4). Zero for a
+       * batch settled before the switch, whose challenge window still counts in
+       * blocks (submitted_at + challenge_window_sec / 6). A batch with a time
+       * closes when block time &gt;= submitted_time + the rollup's
+       * challenge_window_sec.
+       * </pre>
+       *
+       * <code>int64 submitted_time = 12 [json_name = "submittedTime"];</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearSubmittedTime() {
+        bitField0_ = (bitField0_ & ~0x00000800);
+        submittedTime_ = 0L;
         onChanged();
         return this;
       }
@@ -14118,7 +14565,7 @@ public final class QueryOuterClass extends com.google.protobuf.GeneratedFile {
       "llengeWindow\022\'\n\020max_da_blob_size\030\005 \001(\004R\r" +
       "maxDaBlobSize\0222\n\025blob_retention_blocks\030\006" +
       " \001(\004R\023blobRetentionBlocks\0221\n\025max_batches" +
-      "_per_block\030\007 \001(\rR\022maxBatchesPerBlock\"\257\003\n" +
+      "_per_block\030\007 \001(\rR\022maxBatchesPerBlock\"\253\004\n" +
       "\nRollupView\022\033\n\trollup_id\030\001 \001(\tR\010rollupId" +
       "\022\030\n\007creator\030\002 \001(\tR\007creator\022\030\n\007profile\030\003 " +
       "\001(\tR\007profile\022\'\n\017settlement_mode\030\004 \001(\tR\016s" +
@@ -14129,73 +14576,77 @@ public final class QueryOuterClass extends com.google.protobuf.GeneratedFile {
       "(\tR\006status\022!\n\014stake_amount\030\n \001(\003R\013stakeA" +
       "mount\022\031\n\010layer_id\030\013 \001(\tR\007layerId\022%\n\016crea" +
       "ted_height\030\014 \001(\003R\rcreatedHeight\022%\n\016escro" +
-      "w_balance\030\r \001(\004R\rescrowBalance\"\360\002\n\tBatch" +
-      "View\022\033\n\trollup_id\030\001 \001(\tR\010rollupId\022\037\n\013bat" +
-      "ch_index\030\002 \001(\004R\nbatchIndex\022\035\n\nstate_root" +
-      "\030\003 \001(\tR\tstateRoot\022&\n\017prev_state_root\030\004 \001" +
-      "(\tR\rprevStateRoot\022\031\n\010tx_count\030\005 \001(\004R\007txC" +
-      "ount\022\033\n\tdata_hash\030\006 \001(\tR\010dataHash\022\035\n\npro" +
-      "of_type\030\007 \001(\tR\tproofType\022\026\n\006status\030\010 \001(\t" +
-      "R\006status\022!\n\014submitted_at\030\t \001(\003R\013submitte" +
-      "dAt\022!\n\014finalized_at\030\n \001(\003R\013finalizedAt\022)" +
-      "\n\020withdrawals_root\030\013 \001(\tR\017withdrawalsRoo" +
-      "t\"\024\n\022QueryParamsRequest\"K\n\023QueryParamsRe" +
-      "sponse\0224\n\006params\030\001 \001(\0132\034.qorechain.rdk.v" +
-      "1.ParamsViewR\006params\"1\n\022QueryRollupReque" +
-      "st\022\033\n\trollup_id\030\001 \001(\tR\010rollupId\"K\n\023Query" +
-      "RollupResponse\0224\n\006rollup\030\001 \001(\0132\034.qorecha" +
-      "in.rdk.v1.RollupViewR\006rollup\"\025\n\023QueryRol" +
-      "lupsRequest\"N\n\024QueryRollupsResponse\0226\n\007r" +
-      "ollups\030\001 \003(\0132\034.qorechain.rdk.v1.RollupVi" +
-      "ewR\007rollups\"Q\n\021QueryBatchRequest\022\033\n\troll" +
-      "up_id\030\001 \001(\tR\010rollupId\022\037\n\013batch_index\030\002 \001" +
-      "(\004R\nbatchIndex\"G\n\022QueryBatchResponse\0221\n\005" +
-      "batch\030\001 \001(\0132\033.qorechain.rdk.v1.BatchView" +
-      "R\005batch\"6\n\027QueryLatestBatchRequest\022\033\n\tro" +
-      "llup_id\030\001 \001(\tR\010rollupId\"M\n\030QueryLatestBa" +
-      "tchResponse\0221\n\005batch\030\001 \001(\0132\033.qorechain.r" +
-      "dk.v1.BatchViewR\005batch\"i\n\023QueryBatchesRe" +
-      "quest\022\033\n\trollup_id\030\001 \001(\tR\010rollupId\022\037\n\013st" +
-      "art_index\030\002 \001(\004R\nstartIndex\022\024\n\005limit\030\003 \001" +
-      "(\rR\005limit\"l\n\024QueryBatchesResponse\0225\n\007bat" +
-      "ches\030\001 \003(\0132\033.qorechain.rdk.v1.BatchViewR" +
-      "\007batches\022\035\n\nnext_index\030\002 \001(\004R\tnextIndex\"" +
-      "\374\001\n\010BlobView\022\033\n\trollup_id\030\001 \001(\tR\010rollupI" +
-      "d\022\035\n\nblob_index\030\002 \001(\004R\tblobIndex\022\036\n\ncomm" +
-      "itment\030\003 \001(\tR\ncommitment\022\033\n\tdata_size\030\004 " +
-      "\001(\004R\010dataSize\022\026\n\006height\030\005 \001(\003R\006height\022\033\n" +
-      "\tstored_at\030\006 \001(\tR\010storedAt\022\026\n\006pruned\030\007 \001" +
-      "(\010R\006pruned\022*\n\021expires_at_height\030\010 \001(\003R\017e" +
-      "xpiresAtHeight\"N\n\020QueryBlobRequest\022\033\n\tro" +
-      "llup_id\030\001 \001(\tR\010rollupId\022\035\n\nblob_index\030\002 " +
-      "\001(\004R\tblobIndex\"C\n\021QueryBlobResponse\022.\n\004b" +
-      "lob\030\001 \001(\0132\032.qorechain.rdk.v1.BlobViewR\004b" +
-      "lob2\303\007\n\005Query\022w\n\006Params\022$.qorechain.rdk." +
-      "v1.QueryParamsRequest\032%.qorechain.rdk.v1" +
-      ".QueryParamsResponse\" \202\323\344\223\002\032\022\030/qorechain" +
-      "/rdk/v1/params\022\203\001\n\006Rollup\022$.qorechain.rd" +
-      "k.v1.QueryRollupRequest\032%.qorechain.rdk." +
-      "v1.QueryRollupResponse\",\202\323\344\223\002&\022$/qorecha" +
-      "in/rdk/v1/rollup/{rollup_id}\022{\n\007Rollups\022" +
-      "%.qorechain.rdk.v1.QueryRollupsRequest\032&" +
-      ".qorechain.rdk.v1.QueryRollupsResponse\"!" +
-      "\202\323\344\223\002\033\022\031/qorechain/rdk/v1/rollups\022\215\001\n\005Ba" +
-      "tch\022#.qorechain.rdk.v1.QueryBatchRequest" +
-      "\032$.qorechain.rdk.v1.QueryBatchResponse\"9" +
-      "\202\323\344\223\0023\0221/qorechain/rdk/v1/batch/{rollup_" +
-      "id}/{batch_index}\022\230\001\n\013LatestBatch\022).qore" +
-      "chain.rdk.v1.QueryLatestBatchRequest\032*.q" +
-      "orechain.rdk.v1.QueryLatestBatchResponse" +
-      "\"2\202\323\344\223\002,\022*/qorechain/rdk/v1/latest_batch" +
-      "/{rollup_id}\022\207\001\n\007Batches\022%.qorechain.rdk" +
-      ".v1.QueryBatchesRequest\032&.qorechain.rdk." +
-      "v1.QueryBatchesResponse\"-\202\323\344\223\002\'\022%/qorech" +
-      "ain/rdk/v1/batches/{rollup_id}\022\210\001\n\004Blob\022" +
-      "\".qorechain.rdk.v1.QueryBlobRequest\032#.qo" +
-      "rechain.rdk.v1.QueryBlobResponse\"7\202\323\344\223\0021" +
-      "\022//qorechain/rdk/v1/blob/{rollup_id}/{bl" +
-      "ob_index}B1Z/github.com/qorechain/qorech" +
-      "ain-core/x/rdk/typesb\006proto3"
+      "w_balance\030\r \001(\004R\rescrowBalance\0220\n\024challe" +
+      "nge_window_sec\030\016 \001(\004R\022challengeWindowSec" +
+      "\022%\n\016challenge_bond\030\017 \001(\003R\rchallengeBond\022" +
+      "!\n\014proof_system\030\020 \001(\tR\013proofSystem\"\227\003\n\tB" +
+      "atchView\022\033\n\trollup_id\030\001 \001(\tR\010rollupId\022\037\n" +
+      "\013batch_index\030\002 \001(\004R\nbatchIndex\022\035\n\nstate_" +
+      "root\030\003 \001(\tR\tstateRoot\022&\n\017prev_state_root" +
+      "\030\004 \001(\tR\rprevStateRoot\022\031\n\010tx_count\030\005 \001(\004R" +
+      "\007txCount\022\033\n\tdata_hash\030\006 \001(\tR\010dataHash\022\035\n" +
+      "\nproof_type\030\007 \001(\tR\tproofType\022\026\n\006status\030\010" +
+      " \001(\tR\006status\022!\n\014submitted_at\030\t \001(\003R\013subm" +
+      "ittedAt\022!\n\014finalized_at\030\n \001(\003R\013finalized" +
+      "At\022)\n\020withdrawals_root\030\013 \001(\tR\017withdrawal" +
+      "sRoot\022%\n\016submitted_time\030\014 \001(\003R\rsubmitted" +
+      "Time\"\024\n\022QueryParamsRequest\"K\n\023QueryParam" +
+      "sResponse\0224\n\006params\030\001 \001(\0132\034.qorechain.rd" +
+      "k.v1.ParamsViewR\006params\"1\n\022QueryRollupRe" +
+      "quest\022\033\n\trollup_id\030\001 \001(\tR\010rollupId\"K\n\023Qu" +
+      "eryRollupResponse\0224\n\006rollup\030\001 \001(\0132\034.qore" +
+      "chain.rdk.v1.RollupViewR\006rollup\"\025\n\023Query" +
+      "RollupsRequest\"N\n\024QueryRollupsResponse\0226" +
+      "\n\007rollups\030\001 \003(\0132\034.qorechain.rdk.v1.Rollu" +
+      "pViewR\007rollups\"Q\n\021QueryBatchRequest\022\033\n\tr" +
+      "ollup_id\030\001 \001(\tR\010rollupId\022\037\n\013batch_index\030" +
+      "\002 \001(\004R\nbatchIndex\"G\n\022QueryBatchResponse\022" +
+      "1\n\005batch\030\001 \001(\0132\033.qorechain.rdk.v1.BatchV" +
+      "iewR\005batch\"6\n\027QueryLatestBatchRequest\022\033\n" +
+      "\trollup_id\030\001 \001(\tR\010rollupId\"M\n\030QueryLates" +
+      "tBatchResponse\0221\n\005batch\030\001 \001(\0132\033.qorechai" +
+      "n.rdk.v1.BatchViewR\005batch\"i\n\023QueryBatche" +
+      "sRequest\022\033\n\trollup_id\030\001 \001(\tR\010rollupId\022\037\n" +
+      "\013start_index\030\002 \001(\004R\nstartIndex\022\024\n\005limit\030" +
+      "\003 \001(\rR\005limit\"l\n\024QueryBatchesResponse\0225\n\007" +
+      "batches\030\001 \003(\0132\033.qorechain.rdk.v1.BatchVi" +
+      "ewR\007batches\022\035\n\nnext_index\030\002 \001(\004R\tnextInd" +
+      "ex\"\374\001\n\010BlobView\022\033\n\trollup_id\030\001 \001(\tR\010roll" +
+      "upId\022\035\n\nblob_index\030\002 \001(\004R\tblobIndex\022\036\n\nc" +
+      "ommitment\030\003 \001(\tR\ncommitment\022\033\n\tdata_size" +
+      "\030\004 \001(\004R\010dataSize\022\026\n\006height\030\005 \001(\003R\006height" +
+      "\022\033\n\tstored_at\030\006 \001(\tR\010storedAt\022\026\n\006pruned\030" +
+      "\007 \001(\010R\006pruned\022*\n\021expires_at_height\030\010 \001(\003" +
+      "R\017expiresAtHeight\"N\n\020QueryBlobRequest\022\033\n" +
+      "\trollup_id\030\001 \001(\tR\010rollupId\022\035\n\nblob_index" +
+      "\030\002 \001(\004R\tblobIndex\"C\n\021QueryBlobResponse\022." +
+      "\n\004blob\030\001 \001(\0132\032.qorechain.rdk.v1.BlobView" +
+      "R\004blob2\303\007\n\005Query\022w\n\006Params\022$.qorechain.r" +
+      "dk.v1.QueryParamsRequest\032%.qorechain.rdk" +
+      ".v1.QueryParamsResponse\" \202\323\344\223\002\032\022\030/qorech" +
+      "ain/rdk/v1/params\022\203\001\n\006Rollup\022$.qorechain" +
+      ".rdk.v1.QueryRollupRequest\032%.qorechain.r" +
+      "dk.v1.QueryRollupResponse\",\202\323\344\223\002&\022$/qore" +
+      "chain/rdk/v1/rollup/{rollup_id}\022{\n\007Rollu" +
+      "ps\022%.qorechain.rdk.v1.QueryRollupsReques" +
+      "t\032&.qorechain.rdk.v1.QueryRollupsRespons" +
+      "e\"!\202\323\344\223\002\033\022\031/qorechain/rdk/v1/rollups\022\215\001\n" +
+      "\005Batch\022#.qorechain.rdk.v1.QueryBatchRequ" +
+      "est\032$.qorechain.rdk.v1.QueryBatchRespons" +
+      "e\"9\202\323\344\223\0023\0221/qorechain/rdk/v1/batch/{roll" +
+      "up_id}/{batch_index}\022\230\001\n\013LatestBatch\022).q" +
+      "orechain.rdk.v1.QueryLatestBatchRequest\032" +
+      "*.qorechain.rdk.v1.QueryLatestBatchRespo" +
+      "nse\"2\202\323\344\223\002,\022*/qorechain/rdk/v1/latest_ba" +
+      "tch/{rollup_id}\022\207\001\n\007Batches\022%.qorechain." +
+      "rdk.v1.QueryBatchesRequest\032&.qorechain.r" +
+      "dk.v1.QueryBatchesResponse\"-\202\323\344\223\002\'\022%/qor" +
+      "echain/rdk/v1/batches/{rollup_id}\022\210\001\n\004Bl" +
+      "ob\022\".qorechain.rdk.v1.QueryBlobRequest\032#" +
+      ".qorechain.rdk.v1.QueryBlobResponse\"7\202\323\344" +
+      "\223\0021\022//qorechain/rdk/v1/blob/{rollup_id}/" +
+      "{blob_index}B1Z/github.com/qorechain/qor" +
+      "echain-core/x/rdk/typesb\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
@@ -14213,13 +14664,13 @@ public final class QueryOuterClass extends com.google.protobuf.GeneratedFile {
     internal_static_qorechain_rdk_v1_RollupView_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_qorechain_rdk_v1_RollupView_descriptor,
-        new java.lang.String[] { "RollupId", "Creator", "Profile", "SettlementMode", "DaBackend", "BlockTimeMs", "MaxTxPerBlock", "VmType", "Status", "StakeAmount", "LayerId", "CreatedHeight", "EscrowBalance", });
+        new java.lang.String[] { "RollupId", "Creator", "Profile", "SettlementMode", "DaBackend", "BlockTimeMs", "MaxTxPerBlock", "VmType", "Status", "StakeAmount", "LayerId", "CreatedHeight", "EscrowBalance", "ChallengeWindowSec", "ChallengeBond", "ProofSystem", });
     internal_static_qorechain_rdk_v1_BatchView_descriptor =
       getDescriptor().getMessageType(2);
     internal_static_qorechain_rdk_v1_BatchView_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_qorechain_rdk_v1_BatchView_descriptor,
-        new java.lang.String[] { "RollupId", "BatchIndex", "StateRoot", "PrevStateRoot", "TxCount", "DataHash", "ProofType", "Status", "SubmittedAt", "FinalizedAt", "WithdrawalsRoot", });
+        new java.lang.String[] { "RollupId", "BatchIndex", "StateRoot", "PrevStateRoot", "TxCount", "DataHash", "ProofType", "Status", "SubmittedAt", "FinalizedAt", "WithdrawalsRoot", "SubmittedTime", });
     internal_static_qorechain_rdk_v1_QueryParamsRequest_descriptor =
       getDescriptor().getMessageType(3);
     internal_static_qorechain_rdk_v1_QueryParamsRequest_fieldAccessorTable = new

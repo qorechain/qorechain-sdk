@@ -9,6 +9,23 @@ import { BinaryReader, BinaryWriter } from "@bufbuild/protobuf/wire";
 
 export const protobufPackage = "qorechain.abstractaccount.v1";
 
+export interface QueryAuthNonceRequest {
+  /** address is the account's bech32 address. */
+  address: string;
+  /** pubkey_hex is the authenticator public key, hex encoded (0x optional). */
+  pubkeyHex: string;
+}
+
+export interface QueryAuthNonceResponse {
+  /** nonce is the next expected sequence; 0 for a key that has never executed. */
+  nonce: string;
+  /**
+   * linked reports whether the key is currently an authenticator of the
+   * account (present and not revoked); the nonce is kept either way.
+   */
+  linked: boolean;
+}
+
 export interface ConfigView {
   enabled: boolean;
   maxSessionKeys: number;
@@ -82,6 +99,162 @@ export interface LaneRule {
   condition: string;
   permission: string;
 }
+
+function createBaseQueryAuthNonceRequest(): QueryAuthNonceRequest {
+  return { address: "", pubkeyHex: "" };
+}
+
+export const QueryAuthNonceRequest: MessageFns<QueryAuthNonceRequest> = {
+  encode(message: QueryAuthNonceRequest, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.address !== "") {
+      writer.uint32(10).string(message.address);
+    }
+    if (message.pubkeyHex !== "") {
+      writer.uint32(18).string(message.pubkeyHex);
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): QueryAuthNonceRequest {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseQueryAuthNonceRequest();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.address = reader.string();
+          continue;
+        }
+        case 2: {
+          if (tag !== 18) {
+            break;
+          }
+
+          message.pubkeyHex = reader.string();
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(object: any): QueryAuthNonceRequest {
+    return {
+      address: isSet(object.address) ? globalThis.String(object.address) : "",
+      pubkeyHex: isSet(object.pubkeyHex)
+        ? globalThis.String(object.pubkeyHex)
+        : isSet(object.pubkey_hex)
+        ? globalThis.String(object.pubkey_hex)
+        : "",
+    };
+  },
+
+  toJSON(message: QueryAuthNonceRequest): unknown {
+    const obj: any = {};
+    if (message.address !== "") {
+      obj.address = message.address;
+    }
+    if (message.pubkeyHex !== "") {
+      obj.pubkeyHex = message.pubkeyHex;
+    }
+    return obj;
+  },
+
+  create(base?: DeepPartial<QueryAuthNonceRequest>): QueryAuthNonceRequest {
+    return QueryAuthNonceRequest.fromPartial(base ?? {});
+  },
+  fromPartial(object: DeepPartial<QueryAuthNonceRequest>): QueryAuthNonceRequest {
+    const message = createBaseQueryAuthNonceRequest();
+    message.address = object.address ?? "";
+    message.pubkeyHex = object.pubkeyHex ?? "";
+    return message;
+  },
+};
+
+function createBaseQueryAuthNonceResponse(): QueryAuthNonceResponse {
+  return { nonce: "0", linked: false };
+}
+
+export const QueryAuthNonceResponse: MessageFns<QueryAuthNonceResponse> = {
+  encode(message: QueryAuthNonceResponse, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.nonce !== "0") {
+      writer.uint32(8).uint64(message.nonce);
+    }
+    if (message.linked !== false) {
+      writer.uint32(16).bool(message.linked);
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): QueryAuthNonceResponse {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseQueryAuthNonceResponse();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 8) {
+            break;
+          }
+
+          message.nonce = reader.uint64().toString();
+          continue;
+        }
+        case 2: {
+          if (tag !== 16) {
+            break;
+          }
+
+          message.linked = reader.bool();
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(object: any): QueryAuthNonceResponse {
+    return {
+      nonce: isSet(object.nonce) ? globalThis.String(object.nonce) : "0",
+      linked: isSet(object.linked) ? globalThis.Boolean(object.linked) : false,
+    };
+  },
+
+  toJSON(message: QueryAuthNonceResponse): unknown {
+    const obj: any = {};
+    if (message.nonce !== "0") {
+      obj.nonce = message.nonce;
+    }
+    if (message.linked !== false) {
+      obj.linked = message.linked;
+    }
+    return obj;
+  },
+
+  create(base?: DeepPartial<QueryAuthNonceResponse>): QueryAuthNonceResponse {
+    return QueryAuthNonceResponse.fromPartial(base ?? {});
+  },
+  fromPartial(object: DeepPartial<QueryAuthNonceResponse>): QueryAuthNonceResponse {
+    const message = createBaseQueryAuthNonceResponse();
+    message.nonce = object.nonce ?? "0";
+    message.linked = object.linked ?? false;
+    return message;
+  },
+};
 
 function createBaseConfigView(): ConfigView {
   return { enabled: false, maxSessionKeys: 0, maxSpendingRules: 0, defaultSessionTtl: "0" };
@@ -1359,6 +1532,92 @@ export const QueryDefinition = {
               101,
               109,
               97,
+            ]) as Uint8Array,
+          ],
+        },
+      },
+    },
+    /**
+     * AuthNonce returns the sequence a linked authenticator key must sign next
+     * for an account: the nonce MsgExecuteEVM and MsgExecuteCosmos must carry
+     * (QSR-2026-0596). It is the key's own counter, not the account's EVM nonce.
+     */
+    authNonce: {
+      name: "AuthNonce",
+      requestType: QueryAuthNonceRequest as typeof QueryAuthNonceRequest,
+      requestStream: false,
+      responseType: QueryAuthNonceResponse as typeof QueryAuthNonceResponse,
+      responseStream: false,
+      options: {
+        _unknownFields: {
+          578365826: [
+            new Uint8Array([
+              65,
+              18,
+              63,
+              47,
+              113,
+              111,
+              114,
+              101,
+              99,
+              104,
+              97,
+              105,
+              110,
+              47,
+              97,
+              98,
+              115,
+              116,
+              114,
+              97,
+              99,
+              116,
+              97,
+              99,
+              99,
+              111,
+              117,
+              110,
+              116,
+              47,
+              118,
+              49,
+              47,
+              97,
+              117,
+              116,
+              104,
+              95,
+              110,
+              111,
+              110,
+              99,
+              101,
+              47,
+              123,
+              97,
+              100,
+              100,
+              114,
+              101,
+              115,
+              115,
+              125,
+              47,
+              123,
+              112,
+              117,
+              98,
+              107,
+              101,
+              121,
+              95,
+              104,
+              101,
+              120,
+              125,
             ]) as Uint8Array,
           ],
         },

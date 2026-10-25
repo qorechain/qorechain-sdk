@@ -113,7 +113,7 @@ class QueryRewardPoolRequest(_message.Message):
     def __init__(self) -> None: ...
 
 class QueryRewardPoolResponse(_message.Message):
-    __slots__ = ("balance", "reserved", "outstanding", "payable", "max_reward_per_block_per_node", "distributable", "initialized", "max_reward_per_month_per_node")
+    __slots__ = ("balance", "reserved", "outstanding", "payable", "max_reward_per_block_per_node", "distributable", "initialized", "max_reward_per_month_per_node", "monthly_cap_active", "last_distribution_time", "last_distribution_height")
     BALANCE_FIELD_NUMBER: _ClassVar[int]
     RESERVED_FIELD_NUMBER: _ClassVar[int]
     OUTSTANDING_FIELD_NUMBER: _ClassVar[int]
@@ -122,6 +122,9 @@ class QueryRewardPoolResponse(_message.Message):
     DISTRIBUTABLE_FIELD_NUMBER: _ClassVar[int]
     INITIALIZED_FIELD_NUMBER: _ClassVar[int]
     MAX_REWARD_PER_MONTH_PER_NODE_FIELD_NUMBER: _ClassVar[int]
+    MONTHLY_CAP_ACTIVE_FIELD_NUMBER: _ClassVar[int]
+    LAST_DISTRIBUTION_TIME_FIELD_NUMBER: _ClassVar[int]
+    LAST_DISTRIBUTION_HEIGHT_FIELD_NUMBER: _ClassVar[int]
     balance: str
     reserved: str
     outstanding: str
@@ -130,4 +133,7 @@ class QueryRewardPoolResponse(_message.Message):
     distributable: str
     initialized: bool
     max_reward_per_month_per_node: str
-    def __init__(self, balance: _Optional[str] = ..., reserved: _Optional[str] = ..., outstanding: _Optional[str] = ..., payable: _Optional[str] = ..., max_reward_per_block_per_node: _Optional[str] = ..., distributable: _Optional[str] = ..., initialized: bool = ..., max_reward_per_month_per_node: _Optional[str] = ...) -> None: ...
+    monthly_cap_active: bool
+    last_distribution_time: int
+    last_distribution_height: int
+    def __init__(self, balance: _Optional[str] = ..., reserved: _Optional[str] = ..., outstanding: _Optional[str] = ..., payable: _Optional[str] = ..., max_reward_per_block_per_node: _Optional[str] = ..., distributable: _Optional[str] = ..., initialized: bool = ..., max_reward_per_month_per_node: _Optional[str] = ..., monthly_cap_active: bool = ..., last_distribution_time: _Optional[int] = ..., last_distribution_height: _Optional[int] = ...) -> None: ...

@@ -95,6 +95,13 @@ export interface MsgRegisterBridgeValidator {
   validatorAddress: string;
   pqcPubkey: Uint8Array;
   supportedChains: string[];
+  /**
+   * proof_of_possession (v3.2.4) is pqc_pubkey's ML-DSA-87 signature over
+   * "qorechain-pqc-pop-v1|<chain-id>|1|<validator_address>|<hex pqc_pubkey>",
+   * the x/pqc proof of possession format. Required from
+   * bridge-validator-key-pop; ignored before it.
+   */
+  proofOfPossession: Uint8Array;
 }
 
 export interface MsgRegisterBridgeValidatorResponse {
@@ -1243,7 +1250,12 @@ export const MsgBridgeWithdrawResponse: MessageFns<MsgBridgeWithdrawResponse> = 
 };
 
 function createBaseMsgRegisterBridgeValidator(): MsgRegisterBridgeValidator {
-  return { validatorAddress: "", pqcPubkey: new Uint8Array(0), supportedChains: [] };
+  return {
+    validatorAddress: "",
+    pqcPubkey: new Uint8Array(0),
+    supportedChains: [],
+    proofOfPossession: new Uint8Array(0),
+  };
 }
 
 export const MsgRegisterBridgeValidator: MessageFns<MsgRegisterBridgeValidator> = {
@@ -1256,6 +1268,9 @@ export const MsgRegisterBridgeValidator: MessageFns<MsgRegisterBridgeValidator> 
     }
     for (const v of message.supportedChains) {
       writer.uint32(26).string(v!);
+    }
+    if (message.proofOfPossession.length !== 0) {
+      writer.uint32(34).bytes(message.proofOfPossession);
     }
     return writer;
   },
@@ -1291,6 +1306,14 @@ export const MsgRegisterBridgeValidator: MessageFns<MsgRegisterBridgeValidator> 
           message.supportedChains.push(reader.string());
           continue;
         }
+        case 4: {
+          if (tag !== 34) {
+            break;
+          }
+
+          message.proofOfPossession = reader.bytes();
+          continue;
+        }
       }
       if ((tag & 7) === 4 || tag === 0) {
         break;
@@ -1317,6 +1340,11 @@ export const MsgRegisterBridgeValidator: MessageFns<MsgRegisterBridgeValidator> 
         : globalThis.Array.isArray(object?.supported_chains)
         ? object.supported_chains.map((e: any) => globalThis.String(e))
         : [],
+      proofOfPossession: isSet(object.proofOfPossession)
+        ? bytesFromBase64(object.proofOfPossession)
+        : isSet(object.proof_of_possession)
+        ? bytesFromBase64(object.proof_of_possession)
+        : new Uint8Array(0),
     };
   },
 
@@ -1331,6 +1359,9 @@ export const MsgRegisterBridgeValidator: MessageFns<MsgRegisterBridgeValidator> 
     if (message.supportedChains?.length) {
       obj.supportedChains = message.supportedChains;
     }
+    if (message.proofOfPossession.length !== 0) {
+      obj.proofOfPossession = base64FromBytes(message.proofOfPossession);
+    }
     return obj;
   },
 
@@ -1342,6 +1373,7 @@ export const MsgRegisterBridgeValidator: MessageFns<MsgRegisterBridgeValidator> 
     message.validatorAddress = object.validatorAddress ?? "";
     message.pqcPubkey = object.pqcPubkey ?? new Uint8Array(0);
     message.supportedChains = object.supportedChains?.map((e) => e) || [];
+    message.proofOfPossession = object.proofOfPossession ?? new Uint8Array(0);
     return message;
   },
 };

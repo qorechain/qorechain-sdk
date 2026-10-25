@@ -25,7 +25,7 @@ class ParamsView(_message.Message):
     def __init__(self, max_rollups: _Optional[int] = ..., min_stake_for_rollup: _Optional[int] = ..., rollup_creation_burn_rate: _Optional[str] = ..., default_challenge_window: _Optional[int] = ..., max_da_blob_size: _Optional[int] = ..., blob_retention_blocks: _Optional[int] = ..., max_batches_per_block: _Optional[int] = ...) -> None: ...
 
 class RollupView(_message.Message):
-    __slots__ = ("rollup_id", "creator", "profile", "settlement_mode", "da_backend", "block_time_ms", "max_tx_per_block", "vm_type", "status", "stake_amount", "layer_id", "created_height", "escrow_balance")
+    __slots__ = ("rollup_id", "creator", "profile", "settlement_mode", "da_backend", "block_time_ms", "max_tx_per_block", "vm_type", "status", "stake_amount", "layer_id", "created_height", "escrow_balance", "challenge_window_sec", "challenge_bond", "proof_system")
     ROLLUP_ID_FIELD_NUMBER: _ClassVar[int]
     CREATOR_FIELD_NUMBER: _ClassVar[int]
     PROFILE_FIELD_NUMBER: _ClassVar[int]
@@ -39,6 +39,9 @@ class RollupView(_message.Message):
     LAYER_ID_FIELD_NUMBER: _ClassVar[int]
     CREATED_HEIGHT_FIELD_NUMBER: _ClassVar[int]
     ESCROW_BALANCE_FIELD_NUMBER: _ClassVar[int]
+    CHALLENGE_WINDOW_SEC_FIELD_NUMBER: _ClassVar[int]
+    CHALLENGE_BOND_FIELD_NUMBER: _ClassVar[int]
+    PROOF_SYSTEM_FIELD_NUMBER: _ClassVar[int]
     rollup_id: str
     creator: str
     profile: str
@@ -52,10 +55,13 @@ class RollupView(_message.Message):
     layer_id: str
     created_height: int
     escrow_balance: int
-    def __init__(self, rollup_id: _Optional[str] = ..., creator: _Optional[str] = ..., profile: _Optional[str] = ..., settlement_mode: _Optional[str] = ..., da_backend: _Optional[str] = ..., block_time_ms: _Optional[int] = ..., max_tx_per_block: _Optional[int] = ..., vm_type: _Optional[str] = ..., status: _Optional[str] = ..., stake_amount: _Optional[int] = ..., layer_id: _Optional[str] = ..., created_height: _Optional[int] = ..., escrow_balance: _Optional[int] = ...) -> None: ...
+    challenge_window_sec: int
+    challenge_bond: int
+    proof_system: str
+    def __init__(self, rollup_id: _Optional[str] = ..., creator: _Optional[str] = ..., profile: _Optional[str] = ..., settlement_mode: _Optional[str] = ..., da_backend: _Optional[str] = ..., block_time_ms: _Optional[int] = ..., max_tx_per_block: _Optional[int] = ..., vm_type: _Optional[str] = ..., status: _Optional[str] = ..., stake_amount: _Optional[int] = ..., layer_id: _Optional[str] = ..., created_height: _Optional[int] = ..., escrow_balance: _Optional[int] = ..., challenge_window_sec: _Optional[int] = ..., challenge_bond: _Optional[int] = ..., proof_system: _Optional[str] = ...) -> None: ...
 
 class BatchView(_message.Message):
-    __slots__ = ("rollup_id", "batch_index", "state_root", "prev_state_root", "tx_count", "data_hash", "proof_type", "status", "submitted_at", "finalized_at", "withdrawals_root")
+    __slots__ = ("rollup_id", "batch_index", "state_root", "prev_state_root", "tx_count", "data_hash", "proof_type", "status", "submitted_at", "finalized_at", "withdrawals_root", "submitted_time")
     ROLLUP_ID_FIELD_NUMBER: _ClassVar[int]
     BATCH_INDEX_FIELD_NUMBER: _ClassVar[int]
     STATE_ROOT_FIELD_NUMBER: _ClassVar[int]
@@ -67,6 +73,7 @@ class BatchView(_message.Message):
     SUBMITTED_AT_FIELD_NUMBER: _ClassVar[int]
     FINALIZED_AT_FIELD_NUMBER: _ClassVar[int]
     WITHDRAWALS_ROOT_FIELD_NUMBER: _ClassVar[int]
+    SUBMITTED_TIME_FIELD_NUMBER: _ClassVar[int]
     rollup_id: str
     batch_index: int
     state_root: str
@@ -78,7 +85,8 @@ class BatchView(_message.Message):
     submitted_at: int
     finalized_at: int
     withdrawals_root: str
-    def __init__(self, rollup_id: _Optional[str] = ..., batch_index: _Optional[int] = ..., state_root: _Optional[str] = ..., prev_state_root: _Optional[str] = ..., tx_count: _Optional[int] = ..., data_hash: _Optional[str] = ..., proof_type: _Optional[str] = ..., status: _Optional[str] = ..., submitted_at: _Optional[int] = ..., finalized_at: _Optional[int] = ..., withdrawals_root: _Optional[str] = ...) -> None: ...
+    submitted_time: int
+    def __init__(self, rollup_id: _Optional[str] = ..., batch_index: _Optional[int] = ..., state_root: _Optional[str] = ..., prev_state_root: _Optional[str] = ..., tx_count: _Optional[int] = ..., data_hash: _Optional[str] = ..., proof_type: _Optional[str] = ..., status: _Optional[str] = ..., submitted_at: _Optional[int] = ..., finalized_at: _Optional[int] = ..., withdrawals_root: _Optional[str] = ..., submitted_time: _Optional[int] = ...) -> None: ...
 
 class QueryParamsRequest(_message.Message):
     __slots__ = ()
