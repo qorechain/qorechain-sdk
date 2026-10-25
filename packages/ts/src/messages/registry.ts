@@ -29,6 +29,7 @@ import * as license from "../codegen/qorechain/license/v1/tx";
 import * as abstractaccount from "../codegen/qorechain/abstractaccount/v1/tx";
 import * as crossvm from "../codegen/qorechain/crossvm/v1/tx";
 import * as rlconsensus from "../codegen/qorechain/rlconsensus/v1/tx";
+import * as stakingtier from "../codegen/qorechain/stakingtier/v1/tx";
 
 /**
  * Every QoreChain custom-module message type, as `[typeUrl, GeneratedType]`
@@ -154,6 +155,11 @@ export const qorechainRegistryTypes: ReadonlyArray<[string, GeneratedType]> = [
   // crossvm
   ["/qorechain.crossvm.v1.MsgCrossVMCall", crossvm.MsgCrossVMCall],
   ["/qorechain.crossvm.v1.MsgProcessQueue", crossvm.MsgProcessQueue],
+  // stakingtier (chain v3.2.4)
+  ["/qorechain.stakingtier.v1.MsgLockDelegation", stakingtier.MsgLockDelegation],
+  ["/qorechain.stakingtier.v1.MsgUnlockEarly", stakingtier.MsgUnlockEarly],
+  ["/qorechain.stakingtier.v1.MsgClaimBonus", stakingtier.MsgClaimBonus],
+  ["/qorechain.stakingtier.v1.MsgUpdateParams", stakingtier.MsgUpdateParams],
   // rlconsensus
   ["/qorechain.rlconsensus.v1.MsgSetAgentMode", rlconsensus.MsgSetAgentMode],
   ["/qorechain.rlconsensus.v1.MsgResumeAgent", rlconsensus.MsgResumeAgent],

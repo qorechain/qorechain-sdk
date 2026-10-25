@@ -101,9 +101,8 @@ export interface EvmAuthSignBytesInput {
    * The per-authenticator sequence for `(account, pubkey)`: a counter the chain
    * keeps for each linked key, starting at 0 and incremented by each successful
    * `MsgExecuteEVM`. It is NOT the account's EVM nonce or Cosmos sequence (the
-   * chain checks this counter since v3.2.0). The chain has no query for it yet,
-   * so track it per linked key; a mismatch is refused with abstractaccount
-   * code 11.
+   * chain checks this counter since v3.2.0). Read it with {@link fetchAuthNonce}
+   * (chain v3.2.4); a mismatch is refused with abstractaccount code 11.
    */
   nonce: number | bigint;
 }
@@ -201,6 +200,49 @@ export async function resolveEvmAuthDigestVersion(opts: {
 }): Promise<EvmAuthDigestVersion> {
   const applied = await isUpgradeApplied({ rest: opts.rest, upgrade: CHAIN_UPGRADE_V3_2_3, fetch: opts.fetch });
   return applied ? "v2" : "v1";
+}
+
+/** A linked key's sequence, from {@link fetchAuthNonce}. */
+export interface AuthNonce {
+  /** The nonce the next `MsgExecuteEVM` / `MsgExecuteCosmos` from this key must carry. */
+  nonce: bigint;
+  /** Whether the key is currently linked (present and not revoked); the counter is kept either way. */
+  linked: boolean;
+}
+
+/**
+ * Read the sequence a linked authenticator key must sign next
+ * (`/qorechain/abstractaccount/v1/auth_nonce/{address}/{pubkey_hex}`, chain
+ * v3.2.4). This is the `nonce` of {@link evmAuthSignBytes} /
+ * {@link evmAuthSignBytesV2} / {@link cosmosAuthSignBytes}: the key's own
+ * counter, not the account's EVM nonce. A key that never executed reads 0.
+ */
+export async function fetchAuthNonce(opts: {
+  /** The network's REST (LCD) base URL. */
+  rest: string;
+  /** The `qor1…` account the key acts for. */
+  address: string;
+  /** The authenticator public key: bytes, or hex (`0x` optional). */
+  pubkey: Uint8Array | string;
+  /** Injectable `fetch`. Defaults to `globalThis.fetch`. */
+  fetch?: FetchLike;
+}): Promise<AuthNonce> {
+  const hex =
+    typeof opts.pubkey === "string"
+      ? opts.pubkey.replace(/^0x/i, "")
+      : Array.from(opts.pubkey, (b) => b.toString(16).padStart(2, "0")).join("");
+  if (!/^[0-9a-fA-F]*$/.test(hex) || hex.length === 0 || hex.length % 2 !== 0) {
+    throw new Error("fetchAuthNonce: pubkey must be bytes or a hex string");
+  }
+  const f = opts.fetch ?? (globalThis.fetch as FetchLike);
+  const url = `${opts.rest.replace(/\/+$/, "")}/qorechain/abstractaccount/v1/auth_nonce/${encodeURIComponent(opts.address)}/${hex}`;
+  const res = await f(url);
+  if (!res.ok) throw new Error(`auth_nonce query failed: HTTP ${res.status} from ${url}`);
+  const b = (await res.json()) as { nonce?: unknown; linked?: unknown };
+  if (typeof b.nonce !== "string" && typeof b.nonce !== "number") {
+    throw new Error(`auth_nonce query: no nonce in the answer from ${url}`);
+  }
+  return { nonce: BigInt(b.nonce), linked: b.linked === true };
 }
 
 /** Input to {@link cosmosAuthSignBytes}. */

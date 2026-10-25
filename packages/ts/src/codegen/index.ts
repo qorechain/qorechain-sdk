@@ -21,6 +21,7 @@ export * as license from "./qorechain/license/v1/tx";
 export * as abstractaccount from "./qorechain/abstractaccount/v1/tx";
 export * as crossvm from "./qorechain/crossvm/v1/tx";
 export * as rlconsensus from "./qorechain/rlconsensus/v1/tx";
+export * as stakingtier from "./qorechain/stakingtier/v1/tx";
 
 // The generated protobuf `PQCHybridSignature` message (pqc/v1/hybrid.proto).
 // Exposed for callers who read the hybrid extension back off-chain and want the
@@ -38,6 +39,7 @@ export * as multilayerQuery from "./qorechain/multilayer/v1/query";
 export * as pqcQuery from "./qorechain/pqc/v1/query";
 export * as qcaQuery from "./qorechain/qca/v1/query";
 export * as rdkQuery from "./qorechain/rdk/v1/query";
+export * as stakingtierQuery from "./qorechain/stakingtier/v1/query";
 export * as reputationQuery from "./qorechain/reputation/v1/query";
 export * as rlconsensusQuery from "./qorechain/rlconsensus/v1/query";
 export * as svmQuery from "./qorechain/svm/v1/query";

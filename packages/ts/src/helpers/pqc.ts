@@ -94,6 +94,7 @@ async function statusFromRest(
       const account = (body.account ?? {}) as Record<string, unknown>;
       const status: PqcStatus = { registered: true };
       if (typeof account.public_key === "string") status.pubkey = account.public_key;
+      if (typeof account.possession_proven === "boolean") status.possessionProven = account.possession_proven;
       return status;
     } catch (e) {
       lastError = e;
@@ -114,6 +115,12 @@ export interface PqcStatus {
   algorithmId?: number;
   /** The registered PQC public key, when the chain returns it (hex or bytes). */
   pubkey?: string | Uint8Array;
+  /**
+   * Whether the key was proven by a proof of possession (chain v3.2.4): a
+   * registration carrying a valid proof, or a rotation or migration. False
+   * for a key registered without one; absent on nodes below v3.2.4.
+   */
+  possessionProven?: boolean;
 }
 
 /** Truthy-coerce a JSON value the chain may return as bool/number/string. */
@@ -219,6 +226,7 @@ export async function fetchPqcStatus(opts: {
       const algorithmId = asNumber(account.algorithm_id ?? account.algorithmId ?? account.algorithm);
       if (algorithmId !== undefined) status.algorithmId = algorithmId;
       if (typeof account.public_key === "string") status.pubkey = account.public_key;
+      if (typeof account.possession_proven === "boolean") status.possessionProven = account.possession_proven;
       registeredCache.set(key, status);
       return { ...status };
     } catch (e) {
@@ -409,6 +417,14 @@ export interface EnsurePqcRegisteredOptions {
 export interface EnsurePqcRegisteredResult {
   /** `true` when the key was already registered (no transaction was sent). */
   alreadyRegistered: boolean;
+  /**
+   * Whether the registered key was compared with `pqcKeypair` and matched.
+   * `false` only when the account has a key and no answer carried it (a
+   * pre-read `status` or a `qor_*` source without the key, and no `rest` to
+   * read it from): the key could not be checked, so do not assume it is
+   * yours. Absent when a registration was sent.
+   */
+  keyVerified?: boolean;
   /** The registration transaction hash, when a registration was broadcast. */
   txHash?: string;
   /** The raw broadcast result, when a registration was broadcast. */
@@ -450,8 +466,9 @@ export function buildRegisterPqcKeyMsg(
  * `{ alreadyRegistered: true }` WITHOUT broadcasting, provided the registered
  * key is `pqcKeypair`'s. When it is a different key it throws a
  * {@link PqcKeyMismatchError}: the caller's hybrid transactions would all be
- * refused. (A status that carries no public key cannot be compared and is
- * taken as registered; the REST route always carries it.) Otherwise it builds
+ * refused. A status that carries no public key is re-read over `rest`; when
+ * there is no `rest` either, the result says `keyVerified: false` instead of
+ * claiming the key is yours. Otherwise it builds
  * and broadcasts `MsgRegisterPQCKeyV2` with the signer's Dilithium public key
  * plus the supplied ECDSA public key.
  *
@@ -485,10 +502,21 @@ export async function ensurePqcRegistered(
   if (status?.registered) {
     // Registered, but by whom? A different key means the caller's hybrid
     // transactions would all be refused; say so now rather than "done".
-    if (isRegisteredPqcKey(status, opts.pqcKeypair.publicKey) === false) {
+    let match = isRegisteredPqcKey(status, opts.pqcKeypair.publicKey);
+    if (match === false) {
       await throwIfStillMismatched(sender, opts, status);
+      match = true;
+    } else if (match === undefined && opts.rest) {
+      // The answer carried no key (a pre-read status, a qor_* source): read
+      // it over REST rather than take "registered" for "yours".
+      registeredCache.delete(`${opts.rest.replace(/\/+$/, "")}|${sender}`);
+      const fresh = await fetchPqcStatus({ rest: opts.rest, address: sender, fetch: opts.fetch });
+      match = isRegisteredPqcKey(fresh, opts.pqcKeypair.publicKey);
+      if (fresh.registered && match === false) {
+        throw new PqcKeyMismatchError(sender, pqcStatusPublicKey(fresh)!, opts.pqcKeypair.publicKey);
+      }
     }
-    return { alreadyRegistered: true };
+    return { alreadyRegistered: true, keyVerified: match === true };
   }
 
   // From chain v3.2.3 the registration carries a proof that the registrant
@@ -519,8 +547,9 @@ export async function ensurePqcRegistered(
         if (now.registered && isRegisteredPqcKey(now, opts.pqcKeypair.publicKey) === false) {
           throw new PqcKeyMismatchError(sender, pqcStatusPublicKey(now)!, opts.pqcKeypair.publicKey);
         }
+        return { alreadyRegistered: true, keyVerified: isRegisteredPqcKey(now, opts.pqcKeypair.publicKey) === true };
       }
-      return { alreadyRegistered: true };
+      return { alreadyRegistered: true, keyVerified: false };
     }
     throw e;
   }

@@ -6,7 +6,7 @@
  * `msg.pqc.registerPqcKey({ ... })`, etc. Standard Native modules
  * (bank/staking/distribution/gov/authz/feegrant/ibc) sit alongside the
  * QoreChain custom modules (amm/bridge/rdk/multilayer/pqc/svm/lightnode/
- * license/abstractaccount/crossvm/rlconsensus).
+ * license/abstractaccount/crossvm/rlconsensus/stakingtier).
  *
  * Every composer returns a cosmjs `{ typeUrl, value }` `EncodeObject` that
  * {@link qorechainRegistry} can encode — pass an array of them straight to
@@ -37,6 +37,7 @@ import {
   abstractaccount,
   crossvm,
   rlconsensus,
+  stakingtier,
 } from "./qorechain";
 
 /**
@@ -68,6 +69,7 @@ export const msg = {
   abstractaccount,
   crossvm,
   rlconsensus,
+  stakingtier,
 } as const;
 
 // Also expose the per-module groups as named exports for tree-shakeable imports.
@@ -79,6 +81,7 @@ export {
   authz,
   feegrant,
   ibc,
+  ibcTimeoutTimestamp,
 } from "./cosmos";
 export {
   amm,
@@ -92,6 +95,7 @@ export {
   abstractaccount,
   crossvm,
   rlconsensus,
+  stakingtier,
 } from "./qorechain";
 
 // The registry that resolves all of the above.

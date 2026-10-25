@@ -30,6 +30,12 @@ export const CHAIN_UPGRADE_V3_2_2 = "v3.2.2";
  */
 export const CHAIN_UPGRADE_V3_2_3 = "v3.2.3";
 
+/**
+ * Chain v3.2.4: staking tiers, the authenticator nonce and protocol-feature
+ * queries, `possession_proven`, and the bridge validator's proof of possession.
+ */
+export const CHAIN_UPGRADE_V3_2_4 = "v3.2.4";
+
 /** How long a "not applied yet" answer is trusted before asking again. */
 const NOT_APPLIED_TTL_MS = 60_000;
 

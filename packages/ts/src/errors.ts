@@ -185,9 +185,32 @@ function isRateLimitLog(codespace: string | undefined, code: number, rawLog: str
 }
 
 /** Per-codespace code maps for QoreChain custom modules. */
+/** `stakingtier` codespace (chain v3.2.4). */
+const STAKINGTIER_CODES: Record<number, { kind: string; message: string }> = {
+  2: { kind: "stakingtier_invalid_params", message: "invalid staking-tier parameters" },
+  3: { kind: "stakingtier_not_active", message: "staking tiers are not active on this network yet" },
+  4: { kind: "stakingtier_disabled", message: "staking tiers are switched off by governance" },
+  5: { kind: "stakingtier_invalid_term", message: "this lock term is not offered (see the module parameters)" },
+  6: { kind: "stakingtier_invalid_amount", message: "invalid lock amount (below the minimum, or not positive)" },
+  7: {
+    kind: "stakingtier_insufficient_unlocked",
+    message: "not enough unlocked delegation to this validator to lock that amount",
+  },
+  8: { kind: "stakingtier_lock_not_found", message: "lock not found" },
+  9: { kind: "stakingtier_not_lock_owner", message: "the lock belongs to another delegator" },
+  10: { kind: "stakingtier_lock_expired", message: "the lock has already expired; nothing to unlock early" },
+  11: { kind: "stakingtier_too_many_locks", message: "too many open locks for this delegator" },
+  12: { kind: "stakingtier_nothing_to_claim", message: "no bonus to claim" },
+  13: {
+    kind: "stakingtier_stake_locked",
+    message: "this stake is locked; undelegating or redelegating it waits for the lock to end",
+  },
+};
+
 const MODULE_CODES: Record<number | string, Record<number, { kind: string; message: string }>> = {
   abstractaccount: ABSTRACTACCOUNT_CODES,
   pqc: PQC_CODES,
+  stakingtier: STAKINGTIER_CODES,
 };
 
 const DEFAULT_CODESPACE = "sdk";

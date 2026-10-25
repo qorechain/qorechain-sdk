@@ -73,15 +73,27 @@ describe("ensurePqcRegistered compares the registered key with the caller's", ()
     ).rejects.toBeInstanceOf(PqcKeyMismatchError);
     await expect(
       ensurePqcRegistered(tx, { pqcKeypair: MINE, status: { registered: true, pubkey: MINE.publicKey } }),
-    ).resolves.toEqual({ alreadyRegistered: true });
+    ).resolves.toEqual({ alreadyRegistered: true, keyVerified: true });
     expect(signAndBroadcast).not.toHaveBeenCalled();
   });
 
-  it("takes a status without a key as registered (nothing to compare)", async () => {
-    const { tx } = fakeTx();
+  it("does not count a status without a key as a match", async () => {
+    const { tx, signAndBroadcast } = fakeTx();
+    // Nothing to read the key from: registered, but not verified as yours.
     await expect(ensurePqcRegistered(tx, { pqcKeypair: MINE, status: { registered: true } })).resolves.toEqual({
       alreadyRegistered: true,
+      keyVerified: false,
     });
+    // With rest, the key is read and compared.
+    clearPqcStatusCache();
+    await expect(
+      ensurePqcRegistered(tx, { pqcKeypair: MINE, status: { registered: true }, rest: "https://lcd", fetch: restWith(MINE.publicKey) }),
+    ).resolves.toEqual({ alreadyRegistered: true, keyVerified: true });
+    clearPqcStatusCache();
+    await expect(
+      ensurePqcRegistered(tx, { pqcKeypair: MINE, status: { registered: true }, rest: "https://lcd", fetch: restWith(OTHER.publicKey) }),
+    ).rejects.toBeInstanceOf(PqcKeyMismatchError);
+    expect(signAndBroadcast).not.toHaveBeenCalled();
   });
 
   it("on the chain's 'already registered' refusal (a race), reads the key and throws if it is not the caller's", async () => {
@@ -97,7 +109,7 @@ describe("ensurePqcRegistered compares the registered key with the caller's", ()
     clearPqcStatusCache();
     await expect(
       ensurePqcRegistered(tx, { pqcKeypair: MINE, rest: "https://lcd", fetch: restWith(null, MINE.publicKey) }),
-    ).resolves.toEqual({ alreadyRegistered: true });
+    ).resolves.toEqual({ alreadyRegistered: true, keyVerified: true });
   });
 
   it("the positive cache keeps the key, so a cached answer can still be compared", async () => {

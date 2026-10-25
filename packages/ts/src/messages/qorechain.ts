@@ -24,6 +24,8 @@ import * as lightnodeTx from "../codegen/qorechain/lightnode/v1/tx";
 import * as licenseTx from "../codegen/qorechain/license/v1/tx";
 import * as abstractaccountTx from "../codegen/qorechain/abstractaccount/v1/tx";
 import { validateSpendingRules } from "./spending-rules";
+import * as stakingtierTx from "../codegen/qorechain/stakingtier/v1/tx";
+import { validateLockDelegation } from "../stakingtier";
 import * as crossvmTx from "../codegen/qorechain/crossvm/v1/tx";
 import * as rlconsensusTx from "../codegen/qorechain/rlconsensus/v1/tx";
 
@@ -85,6 +87,12 @@ export const bridge = {
     "/qorechain.bridge.v1.MsgBridgeWithdraw",
     bridgeTx.MsgBridgeWithdraw,
   ),
+  /**
+   * Register a bridge validator. From chain v3.2.4 the registration carries
+   * `proofOfPossession`: the PQC key's own signature in the x/pqc format with
+   * the validator address as the account, from
+   * `signProofOfPossession({ chainId, account: validatorAddress, keypair })`.
+   */
   registerBridgeValidator: composer(
     "/qorechain.bridge.v1.MsgRegisterBridgeValidator",
     bridgeTx.MsgRegisterBridgeValidator,
@@ -453,4 +461,23 @@ export const rlconsensus = {
     "/qorechain.rlconsensus.v1.MsgUpdateRewardWeights",
     rlconsensusTx.MsgUpdateRewardWeights,
   ),
+};
+
+/**
+ * Staking-tier composers (chain v3.2.4): lock part of a delegation for 3, 6
+ * or 12 months for a bonus on top of the staking reward, leave a lock early
+ * (a penalty is burned and the bonus forfeited), and claim the accrued bonus.
+ */
+export const stakingtier = {
+  /** Lock `amount` (base units) of the delegator's existing delegation to `validator`. */
+  lockDelegation: (value: PartialMsg<stakingtierTx.MsgLockDelegation>): EncodeObject => {
+    validateLockDelegation(value);
+    return composer("/qorechain.stakingtier.v1.MsgLockDelegation", stakingtierTx.MsgLockDelegation)(value);
+  },
+  /** Release lock `lockId` before its term ends. */
+  unlockEarly: composer("/qorechain.stakingtier.v1.MsgUnlockEarly", stakingtierTx.MsgUnlockEarly),
+  /** Claim the holder's accrued bonus. */
+  claimBonus: composer("/qorechain.stakingtier.v1.MsgClaimBonus", stakingtierTx.MsgClaimBonus),
+  /** Governance: replace the module parameters. */
+  updateParams: composer("/qorechain.stakingtier.v1.MsgUpdateParams", stakingtierTx.MsgUpdateParams),
 };

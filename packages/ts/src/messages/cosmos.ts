@@ -128,6 +128,18 @@ export const feegrant = {
   ),
 };
 
+/**
+ * An absolute IBC timeout `seconds` from now, in the unit
+ * `MsgTransfer.timeoutTimestamp` takes: Unix time in NANOSECONDS. ICS-20
+ * timeouts are absolute: pass this, never a duration. (IBC v2 packets take an
+ * absolute Unix time in SECONDS; a relative value there is refused after the
+ * fee is charged.)
+ */
+export function ibcTimeoutTimestamp(seconds: number, now: Date = new Date()): bigint {
+  if (!Number.isFinite(seconds) || seconds <= 0) throw new Error("ibcTimeoutTimestamp: seconds must be positive");
+  return BigInt(now.getTime() + Math.ceil(seconds * 1000)) * 1_000_000n;
+}
+
 /** IBC fungible-token-transfer message builders. */
 export const ibc = {
   transfer: composer<MsgTransfer>(
