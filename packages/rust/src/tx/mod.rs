@@ -64,7 +64,9 @@ pub mod gas;
 pub mod search;
 pub mod track;
 
-pub use errors::{decode_tx_error, QoreTxError};
+pub use errors::{
+    decode_refusal_text, decode_tx_error, error_from_text, QoreTxError, REGISTERED_ERRORS,
+};
 pub use gas::{
     calculate_fee, estimate_fee, estimate_gas, GasPrice, DEFAULT_GAS_MULTIPLIER, DEFAULT_GAS_PRICE,
     GAS_AUTO,

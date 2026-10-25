@@ -33,7 +33,7 @@ use qorechain::stakingtier::{
     fetch_staking_locks, fetch_staking_tier_params, fetch_staking_tier_pool,
     stakingtier_error_kind, StakingLockTier, STAKING_LOCK_MONTHS,
 };
-use qorechain::tx::decode_tx_error;
+use qorechain::tx::{decode_refusal_text, decode_tx_error, error_from_text, REGISTERED_ERRORS};
 use qorechain::upgrades::CHAIN_UPGRADE_V3_2_4;
 use qorechain::Error;
 
@@ -346,4 +346,33 @@ fn ibc_timeout_is_absolute_unix_nanoseconds() {
 #[test]
 fn upgrade_constant() {
     assert_eq!(CHAIN_UPGRADE_V3_2_4, "v3.2.4");
+}
+
+#[test]
+fn decode_tx_error_on_a_failed_simulation_text_only() {
+    let sim = "Query failed with (6): rpc error: code = Unknown desc = failed to execute message; \
+               message index: 0: no bonus to claim [baseapp.go:1052] with gas used: '111685': \
+               unknown request";
+    let e = decode_refusal_text(sim).expect("named");
+    assert_eq!((e.codespace.as_str(), e.code), ("stakingtier", 12));
+    assert_eq!(
+        stakingtier_error_kind(e.code),
+        Some("stakingtier_nothing_to_claim")
+    );
+    assert_eq!(e.raw_log, sim);
+    // The longest match wins: the hybrid failure is not the plain PQC one.
+    assert_eq!(
+        error_from_text("hybrid PQC signature verification failed"),
+        Some(("pqc", 21))
+    );
+    // A coded error is left alone.
+    assert_eq!(
+        decode_tx_error(5, "sdk", "no bonus to claim").unwrap().code,
+        5
+    );
+    // Text that names nothing stays None, and code 0 is success whatever the log says.
+    assert!(decode_refusal_text("").is_none());
+    assert!(decode_refusal_text("something else").is_none());
+    assert!(decode_tx_error(0, "", sim).is_none());
+    assert_eq!(REGISTERED_ERRORS.len(), 36);
 }

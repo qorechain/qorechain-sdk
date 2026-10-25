@@ -269,4 +269,26 @@ class V324Test {
     void upgradeConstant() {
         assertEquals("v3.2.4", ChainUpgrades.V3_2_4);
     }
+
+    @Test
+    void decodeOnAFailedSimulationTextOnly() {
+        String sim = "Query failed with (6): rpc error: code = Unknown desc = failed to execute message;"
+                + " message index: 0: no bonus to claim [baseapp.go:1052] with gas used: '111685':"
+                + " unknown request";
+        TxError.QoreTxException e = TxError.decode(0, null, sim, null);
+        assertEquals("stakingtier", e.codespace);
+        assertEquals(12, e.code);
+        assertEquals("stakingtier_nothing_to_claim", e.kind);
+        assertEquals(sim, e.rawLog);
+        // The longest match wins: the hybrid failure is not the plain PQC one.
+        TxError.QoreTxException h = TxError.decode(0, null, "hybrid PQC signature verification failed", null);
+        assertEquals("pqc", h.codespace);
+        assertEquals(21, h.code);
+        // A coded error is left alone.
+        assertEquals(5, TxError.decode(5, "sdk", "no bonus to claim", null).code);
+        // Text that names nothing stays generic.
+        assertNull(TxError.errorFromText("something else"));
+        assertEquals("sdk_0", TxError.decode(0, null, "something else", null).kind);
+        assertEquals(36, TxError.REGISTERED_ERRORS.size());
+    }
 }

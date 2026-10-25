@@ -88,14 +88,96 @@ fn is_rate_limit_log(codespace: &str, code: u32, raw_log: &str) -> bool {
     codespace.is_empty() || (codespace == "ai" && code == 3)
 }
 
+/// The chain's registered error descriptions, `(codespace, code, description)`,
+/// for refusals that arrive as text only: a failed simulation
+/// ([`crate::tx::estimate_gas`]) reports the module's message but no code. Kept
+/// to the codespaces this module decodes; the same table as the TypeScript SDK.
+pub const REGISTERED_ERRORS: &[(&str, u32, &str)] = &[
+    ("sdk", 4, "unauthorized"),
+    ("sdk", 5, "insufficient funds"),
+    ("sdk", 11, "out of gas"),
+    ("sdk", 13, "insufficient fee"),
+    ("sdk", 19, "tx already in mempool"),
+    ("sdk", 32, "incorrect account sequence"),
+    ("pqc", 2, "PQC signature verification failed"),
+    ("pqc", 6, "PQC account not found"),
+    ("pqc", 7, "PQC account already registered"),
+    ("pqc", 8, "classical fallback not allowed"),
+    ("pqc", 20, "hybrid PQC signature required"),
+    ("pqc", 21, "hybrid PQC signature verification failed"),
+    ("pqc", 26, "no open EVM authorisation window"),
+    ("pqc", 27, "EVM authorisation window exhausted"),
+    ("pqc", 28, "invalid EVM authorisation window"),
+    (
+        "pqc",
+        45,
+        "ecdsa_pubkey is not the signer's compressed secp256k1 key",
+    ),
+    (
+        "pqc",
+        60,
+        "no post-quantum consent for this EIP-7702 delegation",
+    ),
+    ("pqc", 61, "invalid EIP-7702 delegation request"),
+    ("pqc", 231, "PQC proof of possession does not verify"),
+    ("abstractaccount", 2, "abstract account not found"),
+    ("abstractaccount", 5, "spending limit exceeded"),
+    ("abstractaccount", 6, "session key expired"),
+    ("abstractaccount", 8, "invalid spending rule"),
+    (
+        "abstractaccount",
+        10,
+        "authenticator not permitted for this action",
+    ),
+    (
+        "abstractaccount",
+        11,
+        "authenticator signature replay binding mismatch",
+    ),
+    (
+        "stakingtier",
+        3,
+        "staking tiers are not active on this chain yet",
+    ),
+    ("stakingtier", 4, "staking tiers are disabled by governance"),
+    ("stakingtier", 5, "lock term is not offered"),
+    ("stakingtier", 6, "invalid lock amount"),
+    ("stakingtier", 7, "not enough unlocked delegation"),
+    ("stakingtier", 8, "lock not found"),
+    ("stakingtier", 9, "lock belongs to another delegator"),
+    ("stakingtier", 10, "lock has already expired"),
+    ("stakingtier", 11, "too many open locks"),
+    ("stakingtier", 12, "no bonus to claim"),
+    ("stakingtier", 13, "stake is locked"),
+];
+
+/// The registered `(codespace, code)` a text-only refusal names: the longest
+/// description in [`REGISTERED_ERRORS`] that `text` contains (so "hybrid PQC
+/// signature verification failed" is pqc 21, not pqc 2). `None` when it names
+/// none.
+pub fn error_from_text(text: &str) -> Option<(&'static str, u32)> {
+    REGISTERED_ERRORS
+        .iter()
+        .filter(|(_, _, d)| text.contains(d))
+        .fold(None::<&(&str, u32, &str)>, |best, e| match best {
+            Some(b) if b.2.len() >= e.2.len() => Some(b),
+            _ => Some(e),
+        })
+        .map(|(cs, code, _)| (*cs, *code))
+}
+
 /// Maps an ABCI `(code, codespace, raw_log)` triple to a [`QoreTxError`].
 ///
-/// A zero `code` returns `None` (success). The codespace selects the code table:
-/// the empty / `"sdk"` codespace uses the root SDK table; a module codespace
-/// uses its per-module table, with a generic fallback when the specific code is
-/// unmapped.
+/// A zero `code` returns `None` (success), unless `raw_log` names a registered
+/// refusal: a refusal that arrives as text only, such as a failed simulation, is
+/// named from [`REGISTERED_ERRORS`] (longest match wins) and decoded as that
+/// codespace and code. The codespace selects the code table: the empty / `"sdk"`
+/// codespace uses the root SDK table; a module codespace uses its per-module
+/// table, with a generic fallback when the specific code is unmapped.
 pub fn decode_tx_error(code: u32, codespace: &str, raw_log: &str) -> Option<QoreTxError> {
     if code == 0 {
+        // Code 0 is success, whatever the log says. A refusal without a code
+        // (a failed simulation) is named with `decode_refusal_text` instead.
         return None;
     }
     let reason = if let Some(r) = pqc_key_requirement(codespace, code, raw_log) {
@@ -290,4 +372,13 @@ fn reason_for(code: u32, codespace: &str) -> String {
         return format!("unknown {codespace} error");
     }
     format!("unknown {codespace} error")
+}
+
+/// Names a refusal that arrives as text only, such as a failed simulation (the
+/// chain reports the module's message but no code): matches
+/// [`REGISTERED_ERRORS`] (longest match wins) and decodes that codespace and
+/// code. `None` when the text names no registered error.
+pub fn decode_refusal_text(text: &str) -> Option<QoreTxError> {
+    let (cs, code) = error_from_text(text)?;
+    decode_tx_error(code, cs, text)
 }

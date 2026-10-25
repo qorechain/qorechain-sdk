@@ -13,8 +13,10 @@ use hyper_util::rt::TokioIo;
 use tokio::net::TcpListener;
 
 use qorechain::tx::{
-    estimate_fee, get_block, get_latest_block, get_tx, search_txs, wait_for_tx, WaitOptions,
+    estimate_fee, estimate_gas, get_block, get_latest_block, get_tx, search_txs, wait_for_tx,
+    WaitOptions,
 };
+use qorechain::Error;
 
 /// A path-routed mock server. `routes` maps an exact path to a
 /// `(status, body)` response; `default` is used for unmatched paths.
@@ -114,6 +116,32 @@ async fn estimate_fee_from_simulated_gas() {
     assert_eq!(fee.gas, "140000");
     assert_eq!(fee.amount[0].amount, "3500");
     assert_eq!(fee.amount[0].denom, "uqor");
+}
+
+#[tokio::test]
+async fn failed_simulation_names_the_refusal() {
+    let text = "rpc error: code = Unknown desc = failed to execute message; message index: 0: \
+                no bonus to claim [baseapp.go:1052] with gas used: '111685': unknown request";
+    let body = serde_json::json!({ "code": 2, "message": text, "details": [] }).to_string();
+    let server = MockServer::start(vec![("/cosmos/tx/v1beta1/simulate", 500, &body)]).await;
+    match estimate_gas(&server.base_url, &[0x01]).await {
+        Err(Error::Tx(e)) => {
+            assert_eq!((e.codespace.as_str(), e.code), ("stakingtier", 12));
+            assert_eq!(e.reason, "no bonus to claim");
+            assert_eq!(e.raw_log, text);
+        }
+        other => panic!("expected Error::Tx, got {other:?}"),
+    }
+
+    // A failure that names no refusal keeps the body in Error::Http.
+    let plain = MockServer::start(vec![("/cosmos/tx/v1beta1/simulate", 502, "bad gateway")]).await;
+    match estimate_fee(&plain.base_url, &[0x01], 1.4, "").await {
+        Err(Error::Http { status, body, .. }) => {
+            assert_eq!(status, 502);
+            assert_eq!(body, "bad gateway");
+        }
+        other => panic!("expected Error::Http, got {other:?}"),
+    }
 }
 
 #[tokio::test]

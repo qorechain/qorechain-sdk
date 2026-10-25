@@ -252,3 +252,52 @@ def test_ibc_timeout_timestamp_is_absolute_unix_nanoseconds() -> None:
 
 def test_upgrade_constant() -> None:
     assert CHAIN_UPGRADE_V3_2_4 == "v3.2.4"
+
+
+SIM_TEXT = (
+    "rpc error: code = Unknown desc = failed to execute message; message index: 0: "
+    "no bonus to claim [baseapp.go:1052] with gas used: '111685': unknown request"
+)
+
+
+def test_decode_tx_error_on_a_failed_simulation_text_only() -> None:
+    from qorsdk import decode_tx_error
+
+    d = decode_tx_error(0, None, SIM_TEXT)
+    assert (d.codespace, d.code, d.kind) == ("stakingtier", 12, "stakingtier_nothing_to_claim")
+    assert d.raw_log == SIM_TEXT
+    # The longest match wins: the hybrid failure is not the plain PQC one.
+    h = decode_tx_error(0, None, "hybrid PQC signature verification failed")
+    assert (h.codespace, h.code) == ("pqc", 21)
+    # A coded error is left alone.
+    assert decode_tx_error(5, "sdk", "no bonus to claim").code == 5
+    # Text that names nothing stays generic.
+    assert decode_tx_error(0, None, "something else").kind == "sdk_0"
+
+
+@respx.mock
+def test_failed_simulation_raises_a_named_refusal() -> None:
+    from cosmpy.protos.cosmos.tx.v1beta1.tx_pb2 import TxRaw
+
+    from qorsdk import QoreTxError, SimulationRefusedError, simulate_gas_used
+    from qorsdk.tx import BuiltTx
+
+    raw = TxRaw(body_bytes=b"\x01", auth_info_bytes=b"\x02", signatures=[b"\x03"])
+    built = BuiltTx(tx_raw=raw, tx_raw_bytes=raw.SerializeToString(), auth_info_bytes=b"\x02")
+    route = respx.post("https://lcd/cosmos/tx/v1beta1/simulate")
+    route.mock(
+        return_value=httpx.Response(500, json={"code": 2, "message": SIM_TEXT, "details": []})
+    )
+    with pytest.raises(SimulationRefusedError) as info:
+        simulate_gas_used("https://lcd", built)
+    err = info.value
+    assert isinstance(err, QoreTxError) and isinstance(err, httpx.HTTPStatusError)
+    assert (err.codespace, err.code) == ("stakingtier", 12)
+    assert err.kind == "stakingtier_nothing_to_claim"
+    assert err.raw_log == SIM_TEXT
+    assert err.response.status_code == 500
+    # A failure that names no refusal is the plain HTTP error, as before.
+    route.mock(return_value=httpx.Response(502, text="bad gateway"))
+    with pytest.raises(httpx.HTTPStatusError) as plain:
+        simulate_gas_used("https://lcd", built)
+    assert not isinstance(plain.value, SimulationRefusedError)

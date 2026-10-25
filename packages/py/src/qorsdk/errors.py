@@ -233,6 +233,66 @@ def _is_rate_limit_log(codespace: str | None, code: int, raw_log: str | None) ->
     return not codespace or (codespace == "ai" and code == 3)
 
 
+#: The chain's registered error descriptions, for refusals that arrive as text
+#: only: a failed simulation (the ``fee="auto"`` path) reports the module's
+#: message but no code. Kept to the codespaces this module decodes; the same
+#: table as the TypeScript SDK.
+REGISTERED_ERRORS: tuple[tuple[str, int, str], ...] = (
+    ("sdk", 4, "unauthorized"),
+    ("sdk", 5, "insufficient funds"),
+    ("sdk", 11, "out of gas"),
+    ("sdk", 13, "insufficient fee"),
+    ("sdk", 19, "tx already in mempool"),
+    ("sdk", 32, "incorrect account sequence"),
+    ("pqc", 2, "PQC signature verification failed"),
+    ("pqc", 6, "PQC account not found"),
+    ("pqc", 7, "PQC account already registered"),
+    ("pqc", 8, "classical fallback not allowed"),
+    ("pqc", 20, "hybrid PQC signature required"),
+    ("pqc", 21, "hybrid PQC signature verification failed"),
+    ("pqc", 26, "no open EVM authorisation window"),
+    ("pqc", 27, "EVM authorisation window exhausted"),
+    ("pqc", 28, "invalid EVM authorisation window"),
+    ("pqc", 45, "ecdsa_pubkey is not the signer's compressed secp256k1 key"),
+    ("pqc", 60, "no post-quantum consent for this EIP-7702 delegation"),
+    ("pqc", 61, "invalid EIP-7702 delegation request"),
+    ("pqc", 231, "PQC proof of possession does not verify"),
+    ("abstractaccount", 2, "abstract account not found"),
+    ("abstractaccount", 5, "spending limit exceeded"),
+    ("abstractaccount", 6, "session key expired"),
+    ("abstractaccount", 8, "invalid spending rule"),
+    ("abstractaccount", 10, "authenticator not permitted for this action"),
+    ("abstractaccount", 11, "authenticator signature replay binding mismatch"),
+    ("stakingtier", 3, "staking tiers are not active on this chain yet"),
+    ("stakingtier", 4, "staking tiers are disabled by governance"),
+    ("stakingtier", 5, "lock term is not offered"),
+    ("stakingtier", 6, "invalid lock amount"),
+    ("stakingtier", 7, "not enough unlocked delegation"),
+    ("stakingtier", 8, "lock not found"),
+    ("stakingtier", 9, "lock belongs to another delegator"),
+    ("stakingtier", 10, "lock has already expired"),
+    ("stakingtier", 11, "too many open locks"),
+    ("stakingtier", 12, "no bonus to claim"),
+    ("stakingtier", 13, "stake is locked"),
+)
+
+
+def error_from_text(text: str | None) -> tuple[str, int] | None:
+    """The registered ``(codespace, code)`` a text-only refusal names, or ``None``.
+
+    Matches the chain's registered error descriptions (:data:`REGISTERED_ERRORS`);
+    when several are contained in ``text``, the longest description wins (so
+    "hybrid PQC signature verification failed" is pqc 21, not pqc 2).
+    """
+    if not text:
+        return None
+    best: tuple[str, int, str] | None = None
+    for entry in REGISTERED_ERRORS:
+        if entry[2] in text and (best is None or len(entry[2]) > len(best[2])):
+            best = entry
+    return (best[0], best[1]) if best else None
+
+
 @dataclass(frozen=True)
 class DecodedTxError:
     """A decoded, human-readable transaction error."""
@@ -262,11 +322,25 @@ def decode_tx_error(
     back to the raw log, which the module itself populates with a descriptive
     reason.
 
+    A refusal that arrives as text only (no positive ``code``), such as a failed
+    simulation, is named from the chain's registered error descriptions
+    (:data:`REGISTERED_ERRORS`, longest match wins) and decoded as that
+    codespace / code. Pass ``0`` and the message text, e.g. the body of the
+    ``httpx.HTTPStatusError`` a failed :func:`~qorsdk.gas.simulate_gas_used` raises
+    (that error is already a :class:`SimulationRefusedError` when the text names a
+    refusal).
+
     :param code: The ABCI result code (``0`` is success; non-zero is failure).
     :param codespace: The codespace (module) that produced the code; defaults to
         ``"sdk"``.
     :param raw_log: The raw ABCI log string, used as a fallback message.
     """
+    # A refusal without a code (a failed simulation): name it from the text.
+    if not code > 0 and raw_log:
+        named = error_from_text(raw_log)
+        if named is not None:
+            return decode_tx_error(named[1], named[0], raw_log)
+
     space = codespace or DEFAULT_CODESPACE
 
     key_requirement = _classify_pqc_key_requirement(codespace, code, raw_log)

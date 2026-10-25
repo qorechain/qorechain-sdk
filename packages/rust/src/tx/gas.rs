@@ -98,11 +98,24 @@ pub fn calculate_fee(gas_limit: u64, multiplier: f64, price: &GasPrice) -> Fee {
     }
 }
 
+/// The refusal text of a failed simulate response: its `message` member, else
+/// the whole body.
+fn simulation_text(body: &str) -> String {
+    serde_json::from_str::<Value>(body)
+        .ok()
+        .and_then(|v| v["message"].as_str().map(str::to_string))
+        .unwrap_or_else(|| body.to_string())
+}
+
 /// Simulates a signed tx against the REST simulate endpoint and returns the gas
 /// the chain reports it would use.
 ///
 /// `tx_bytes` must be a fully assembled (signed) `TxRaw`; the simulate endpoint
 /// does not verify signatures but does require the tx structure.
+///
+/// A refusal the chain names with a registered error (the simulate response
+/// carries the module's message but no code) is returned as [`Error::Tx`] with
+/// its codespace and code; any other non-2xx is [`Error::Http`] with the body.
 pub async fn estimate_gas(rest_url: &str, tx_bytes: &[u8]) -> Result<u64> {
     let url = format!(
         "{}/cosmos/tx/v1beta1/simulate",
@@ -119,6 +132,11 @@ pub async fn estimate_gas(rest_url: &str, tx_bytes: &[u8]) -> Result<u64> {
     let status = resp.status();
     let body = resp.text().await?;
     if !status.is_success() {
+        // A refusal the chain names (e.g. stakingtier 12, "no bonus to claim")
+        // comes back as `Error::Tx`; anything else keeps the body in `Error::Http`.
+        if let Some(named) = super::decode_refusal_text(&simulation_text(&body)) {
+            return Err(Error::Tx(named));
+        }
         return Err(Error::Http {
             status: status.as_u16(),
             url,

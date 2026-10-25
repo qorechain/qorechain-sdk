@@ -70,6 +70,7 @@ from .errors import (
     DecodedTxError,
     QoreTxError,
     decode_tx_error,
+    error_from_text,
     is_tx_failure,
     tx_error_from,
 )
@@ -125,6 +126,7 @@ from .gas import (
     DEFAULT_GAS_MULTIPLIER,
     DEFAULT_GAS_PRICE,
     GasPrice,
+    SimulationRefusedError,
     auto_fee,
     calculate_fee,
     estimate_gas,
@@ -504,6 +506,7 @@ __all__ = [
     "estimate_gas",
     "simulate_gas_used",
     "auto_fee",
+    "SimulationRefusedError",
     "DEFAULT_GAS_MULTIPLIER",
     "DEFAULT_GAS_PRICE",
     # v3.2.0 EVM authorisation window (x/pqc)
@@ -613,6 +616,7 @@ __all__ = [
     "DecodedTxError",
     "QoreTxError",
     "decode_tx_error",
+    "error_from_text",
     "is_tx_failure",
     "tx_error_from",
     # tx tracking

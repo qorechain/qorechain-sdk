@@ -167,13 +167,79 @@ var moduleCodespaceReasons = map[string]map[uint32]string{
 	},
 }
 
+// RegisteredError is one of the chain's registered error descriptions.
+type RegisteredError struct {
+	Codespace   string
+	Code        uint32
+	Description string
+}
+
+// RegisteredErrors are the chain's registered error descriptions, for refusals
+// that arrive as text only: a failed simulation (EstimateGas / EstimateFee)
+// reports the module's message but no code. Kept to the codespaces this package
+// decodes; the same table as the TypeScript SDK.
+var RegisteredErrors = []RegisteredError{
+	{"sdk", 4, "unauthorized"},
+	{"sdk", 5, "insufficient funds"},
+	{"sdk", 11, "out of gas"},
+	{"sdk", 13, "insufficient fee"},
+	{"sdk", 19, "tx already in mempool"},
+	{"sdk", 32, "incorrect account sequence"},
+	{"pqc", 2, "PQC signature verification failed"},
+	{"pqc", 6, "PQC account not found"},
+	{"pqc", 7, "PQC account already registered"},
+	{"pqc", 8, "classical fallback not allowed"},
+	{"pqc", 20, "hybrid PQC signature required"},
+	{"pqc", 21, "hybrid PQC signature verification failed"},
+	{"pqc", 26, "no open EVM authorisation window"},
+	{"pqc", 27, "EVM authorisation window exhausted"},
+	{"pqc", 28, "invalid EVM authorisation window"},
+	{"pqc", 45, "ecdsa_pubkey is not the signer's compressed secp256k1 key"},
+	{"pqc", 60, "no post-quantum consent for this EIP-7702 delegation"},
+	{"pqc", 61, "invalid EIP-7702 delegation request"},
+	{"pqc", 231, "PQC proof of possession does not verify"},
+	{"abstractaccount", 2, "abstract account not found"},
+	{"abstractaccount", 5, "spending limit exceeded"},
+	{"abstractaccount", 6, "session key expired"},
+	{"abstractaccount", 8, "invalid spending rule"},
+	{"abstractaccount", 10, "authenticator not permitted for this action"},
+	{"abstractaccount", 11, "authenticator signature replay binding mismatch"},
+	{"stakingtier", 3, "staking tiers are not active on this chain yet"},
+	{"stakingtier", 4, "staking tiers are disabled by governance"},
+	{"stakingtier", 5, "lock term is not offered"},
+	{"stakingtier", 6, "invalid lock amount"},
+	{"stakingtier", 7, "not enough unlocked delegation"},
+	{"stakingtier", 8, "lock not found"},
+	{"stakingtier", 9, "lock belongs to another delegator"},
+	{"stakingtier", 10, "lock has already expired"},
+	{"stakingtier", 11, "too many open locks"},
+	{"stakingtier", 12, "no bonus to claim"},
+	{"stakingtier", 13, "stake is locked"},
+}
+
+// ErrorFromText returns the registered error a text-only refusal names: the
+// longest description in RegisteredErrors that text contains (so "hybrid PQC
+// signature verification failed" is pqc 21, not pqc 2). ok is false when it
+// names none.
+func ErrorFromText(text string) (e RegisteredError, ok bool) {
+	for _, r := range RegisteredErrors {
+		if strings.Contains(text, r.Description) && (!ok || len(r.Description) > len(e.Description)) {
+			e, ok = r, true
+		}
+	}
+	return e, ok
+}
+
 // DecodeTxError maps an ABCI (code, codespace, rawLog) triple to a *QoreTxError.
 //
-// A zero code returns nil (success). The codespace selects the code table: the
-// empty / "sdk" codespace uses the root SDK table; a module codespace uses its
-// per-module table, with a generic fallback when the specific code is unmapped.
+// A zero code returns nil (success), unless rawLog names a registered refusal:
+// code 0 is success and returns nil. The codespace selects the code table: the empty / "sdk" codespace uses
+// the root SDK table; a module codespace uses its per-module table, with a
+// generic fallback when the specific code is unmapped.
 func DecodeTxError(code uint32, codespace, rawLog string) *QoreTxError {
 	if code == 0 {
+		// Code 0 is success, whatever the log says. A refusal without a code
+		// (a failed simulation) is named with DecodeRefusalText instead.
 		return nil
 	}
 	reason := reasonFor(code, codespace)
@@ -250,4 +316,16 @@ func reasonFor(code uint32, codespace string) string {
 		return fmt.Sprintf("unknown %s error", codespace)
 	}
 	return fmt.Sprintf("unknown %s error", codespace)
+}
+
+// DecodeRefusalText names a refusal that arrives as text only, such as a failed
+// simulation (the chain reports the module's message but no code): it matches
+// RegisteredErrors (longest match wins) and decodes that codespace and code.
+// It returns nil when the text names no registered error.
+func DecodeRefusalText(text string) *QoreTxError {
+	named, ok := ErrorFromText(text)
+	if !ok {
+		return nil
+	}
+	return DecodeTxError(named.Code, named.Codespace, text)
 }

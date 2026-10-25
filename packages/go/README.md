@@ -149,6 +149,12 @@ res, _ := tx.BroadcastAndWait(tx.BroadcastAndWaitParams{
 fmt.Println(res.Height)
 ```
 
+`tx.EstimateGas` / `tx.EstimateFee` simulate first. A simulation the chain
+refuses with a registered error wraps a `*tx.QoreTxError` naming it
+(`errors.As(err, &txErr)`: e.g. codespace `stakingtier`, code 12, "no bonus to
+claim"), and `tx.DecodeRefusalText(text)` names any text-only refusal the
+same way.
+
 For a quantum-safe transaction over the same messages, use
 `tx.BuildHybridMessages` with an ML-DSA-87 keypair — it preserves the
 exclude-extension hybrid contract the chain's ante handler verifies — or
@@ -346,6 +352,62 @@ makes, and a wallet is expected to show it as such.
   this binary starts at the genesis default of 10; an upgraded one sits at 600,
   because the upgrade handler raises it so a relayer does not stall. Read the
   value from `qorechain.ai.v1.Query/Config` — never assume either number.
+
+### Staking tiers (v0.10.0, chain v3.2.4)
+
+Lock part of an existing delegation for 3, 6 or 12 months for a bonus on top
+of the staking reward. Running a light node or a validator adds to it, up to a
+total cap; leaving early burns a penalty and forfeits the bonus. The terms are
+governance parameters: read them rather than hard-coding them.
+
+```go
+import (
+    "github.com/qorechain/qorechain-sdk/packages/go/qorechain/messages"
+    "github.com/qorechain/qorechain-sdk/packages/go/qorechain/query"
+)
+
+rest := query.NewRestClient("https://api.qore.host", nil)
+params, _ := rest.GetStakingTierParams()
+// params.LockTiers → [{Months: 3, BonusBps: 150}, {Months: 6, BonusBps: 300}, …]
+
+lock, err := messages.NewLockDelegation(delegator, validator, "10000000", 3)
+if err != nil {
+    panic(err) // a term other than 3/6/12, or an amount that is not a positive integer
+}
+// …sign and broadcast it like any other message (tx.SendMessages / tx.BroadcastHybridAndWait).
+
+locks, _ := rest.GetStakingLocks(delegator) // locks.Locks, locks.Claimable
+claim := messages.StakingTier.ClaimBonus(delegator)
+unlock := messages.StakingTier.UnlockEarly(delegator, locks.Locks[0].ID)
+```
+
+`messages.NewLockDelegation` refuses, before anything is signed, a term other
+than 3, 6 or 12 (`messages.StakingLockMonths`) and an amount that is not a
+positive integer in base units. A locked delegation cannot be undelegated or
+redelegated until the lock ends (`stakingtier` code 13). `rest.GetStakingTierPool()`
+reads the bonus pool.
+
+### Network reads added in chain v3.2.4
+
+```go
+import (
+    "github.com/qorechain/qorechain-sdk/packages/go/qorechain/pqcdx"
+    "github.com/qorechain/qorechain-sdk/packages/go/qorechain/query"
+)
+
+rest := query.NewRestClient("https://api.qore.host", nil)
+
+// The nonce a linked authenticator key must sign next (MsgExecuteEVM / MsgExecuteCosmos).
+n, _ := rest.GetAuthNonce(address, pubkey) // n.Nonce, n.Linked; GetAuthNonceHex takes hex
+
+// Which consensus rules the network enforces today, by name.
+on, _ := rest.IsProtocolFeatureEnabled("pqc-sign-bytes-v2")
+features, _ := rest.GetProtocolFeatures() // features.Features, features.Height
+
+// Whether the account's PQC key was proven by a proof of possession (nil when not reported).
+status, _ := pqcdx.FetchPQCStatus("https://api.qore.host", address)
+proven := status.PossessionProven
+```
 
 ### Sidechains, paychains & rollups (v0.4.0)
 
@@ -595,10 +657,11 @@ both keys sign).
 - `MsgExecuteEVM.Nonce` = the linked key's **authenticator sequence**: a counter the
   chain keeps in its state for each `(account, linked key)`, starting at 0 and
   incremented by every successful execution. It is **not** the account's EVM
-  nonce (`eth_getTransactionCount`). The chain has no query for it yet (a
-  read-only one is planned), so mirror the chain: 0 for a newly linked key, +1
-  after each execution the chain accepts; abstractaccount code 11 means the
-  value you sent is not the chain's.
+  nonce (`eth_getTransactionCount`). Read it with
+  `RestClient.GetAuthNonce(address, pubkey)` (chain v3.2.4, see "Network reads
+  added in chain v3.2.4"): 0 for a newly linked key, +1 after each execution the
+  chain accepts; abstractaccount code 11 means the value you sent is not the
+  chain's.
 - `MsgExecuteCosmos.Nonce` = the **per-authenticator sequence** for
   `(account, pubkey)`: the same kind of counter, kept per linked key.
 

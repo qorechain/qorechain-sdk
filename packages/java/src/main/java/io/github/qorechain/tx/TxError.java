@@ -200,8 +200,86 @@ public final class TxError {
         SDK_CODES.put(code, new String[] {kind, msg});
     }
 
-    /** Decode an ABCI error into a {@link QoreTxException}. */
+    /** One of the chain's registered error descriptions. */
+    public record RegisteredError(String codespace, int code, String description) {}
+
+    /**
+     * The chain's registered error descriptions, for refusals that arrive as text
+     * only: a failed simulation reports the module's message but no code. Kept to
+     * the codespaces this class decodes; the same table as the TypeScript SDK.
+     */
+    public static final java.util.List<RegisteredError> REGISTERED_ERRORS = java.util.List.of(
+            new RegisteredError("sdk", 4, "unauthorized"),
+            new RegisteredError("sdk", 5, "insufficient funds"),
+            new RegisteredError("sdk", 11, "out of gas"),
+            new RegisteredError("sdk", 13, "insufficient fee"),
+            new RegisteredError("sdk", 19, "tx already in mempool"),
+            new RegisteredError("sdk", 32, "incorrect account sequence"),
+            new RegisteredError("pqc", 2, "PQC signature verification failed"),
+            new RegisteredError("pqc", 6, "PQC account not found"),
+            new RegisteredError("pqc", 7, "PQC account already registered"),
+            new RegisteredError("pqc", 8, "classical fallback not allowed"),
+            new RegisteredError("pqc", 20, "hybrid PQC signature required"),
+            new RegisteredError("pqc", 21, "hybrid PQC signature verification failed"),
+            new RegisteredError("pqc", 26, "no open EVM authorisation window"),
+            new RegisteredError("pqc", 27, "EVM authorisation window exhausted"),
+            new RegisteredError("pqc", 28, "invalid EVM authorisation window"),
+            new RegisteredError("pqc", 45, "ecdsa_pubkey is not the signer's compressed secp256k1 key"),
+            new RegisteredError("pqc", 60, "no post-quantum consent for this EIP-7702 delegation"),
+            new RegisteredError("pqc", 61, "invalid EIP-7702 delegation request"),
+            new RegisteredError("pqc", 231, "PQC proof of possession does not verify"),
+            new RegisteredError("abstractaccount", 2, "abstract account not found"),
+            new RegisteredError("abstractaccount", 5, "spending limit exceeded"),
+            new RegisteredError("abstractaccount", 6, "session key expired"),
+            new RegisteredError("abstractaccount", 8, "invalid spending rule"),
+            new RegisteredError("abstractaccount", 10, "authenticator not permitted for this action"),
+            new RegisteredError("abstractaccount", 11, "authenticator signature replay binding mismatch"),
+            new RegisteredError("stakingtier", 3, "staking tiers are not active on this chain yet"),
+            new RegisteredError("stakingtier", 4, "staking tiers are disabled by governance"),
+            new RegisteredError("stakingtier", 5, "lock term is not offered"),
+            new RegisteredError("stakingtier", 6, "invalid lock amount"),
+            new RegisteredError("stakingtier", 7, "not enough unlocked delegation"),
+            new RegisteredError("stakingtier", 8, "lock not found"),
+            new RegisteredError("stakingtier", 9, "lock belongs to another delegator"),
+            new RegisteredError("stakingtier", 10, "lock has already expired"),
+            new RegisteredError("stakingtier", 11, "too many open locks"),
+            new RegisteredError("stakingtier", 12, "no bonus to claim"),
+            new RegisteredError("stakingtier", 13, "stake is locked"));
+
+    /**
+     * The registered error a text-only refusal names: the longest description in
+     * {@link #REGISTERED_ERRORS} that {@code text} contains (so "hybrid PQC
+     * signature verification failed" is pqc 21, not pqc 2), or {@code null}.
+     */
+    public static RegisteredError errorFromText(String text) {
+        if (text == null || text.isEmpty()) {
+            return null;
+        }
+        RegisteredError best = null;
+        for (RegisteredError e : REGISTERED_ERRORS) {
+            if (text.contains(e.description())
+                    && (best == null || e.description().length() > best.description().length())) {
+                best = e;
+            }
+        }
+        return best;
+    }
+
+    /**
+     * Decode an ABCI error into a {@link QoreTxException}.
+     *
+     * <p>A refusal that arrives as text only (no positive {@code code}), such as a
+     * failed simulation, is named from {@link #REGISTERED_ERRORS} (longest match
+     * wins) and decoded as that codespace and code: pass {@code 0} and the text.
+     */
     public static QoreTxException decode(int code, String codespace, String rawLog, String txHash) {
+        // A refusal without a code (a failed simulation): name it from the text.
+        if (code <= 0) {
+            RegisteredError named = errorFromText(rawLog);
+            if (named != null) {
+                return decode(named.code(), named.codespace(), rawLog, txHash);
+            }
+        }
         String cs = (codespace == null || codespace.isEmpty()) ? "sdk" : codespace;
         String kind;
         String message;

@@ -308,7 +308,10 @@ let built = tx::send_messages(tx::SendMessagesParams {
     chain_id: "qorechain-diana".into(),
     account_number: 1,
     sequence: 0,
-    fee: tx::estimate_fee(rest, &[], 1.4, "0.15uqor").await?, // auto-gas via simulate
+    // Auto-gas via simulate. A simulation the chain refuses with a registered
+    // error is `Error::Tx` naming it (e.g. stakingtier 12, "no bonus to claim");
+    // `tx::decode_refusal_text(text)` names any text-only refusal the same way.
+    fee: tx::estimate_fee(rest, &[], 1.4, "0.15uqor").await?,
     memo: String::new(),
     timeout_height: 0,
 })?;
@@ -600,10 +603,11 @@ both keys sign).
 - `MsgExecuteEVM.nonce` = the linked key's **authenticator sequence**: a counter the
   chain keeps in its state for each `(account, linked key)`, starting at 0 and
   incremented by every successful execution. It is **not** the account's EVM
-  nonce (`eth_getTransactionCount`). The chain has no query for it yet (a
-  read-only one is planned), so mirror the chain: 0 for a newly linked key, +1
-  after each execution the chain accepts; abstractaccount code 11 means the
-  value you sent is not the chain's.
+  nonce (`eth_getTransactionCount`). Read it with
+  `authenticator::fetch_auth_nonce(&rest, address, pubkey)` (chain v3.2.4, see
+  "Network reads added in chain v3.2.4"): 0 for a newly linked key, +1 after
+  each execution the chain accepts; abstractaccount code 11 means the value you
+  sent is not the chain's.
 - `MsgExecuteCosmos.nonce` = the **per-authenticator sequence** for
   `(account, pubkey)`: the same kind of counter, kept per linked key.
 
@@ -761,6 +765,69 @@ Nothing to call in the SDK, but these change when an existing call is refused:
   change it on a running chain. **Read it** via `qorechain.ai.v1.Query/Config` —
   never assume either value. Batch senders (faucets, relayers, exchange hot
   wallets) that exceed it get `ai` `ErrTxRejected`.
+
+## Staking tiers (v0.10.0, chain v3.2.4)
+
+Lock part of an existing delegation for 3, 6 or 12 months for a bonus on top
+of the staking reward. Running a light node or a validator adds to it, up to a
+total cap; leaving early burns a penalty and forfeits the bonus. The terms are
+governance parameters: read them rather than hard-coding them.
+
+```rust,no_run
+use qorechain::msg::stakingtier;
+use qorechain::query::RestClient;
+use qorechain::stakingtier::{fetch_staking_locks, fetch_staking_tier_params};
+
+# async fn run(delegator: &str, validator: &str) -> qorechain::Result<()> {
+let rest = RestClient::new("https://api.qore.host");
+let params = fetch_staking_tier_params(&rest).await?;
+// params.lock_tiers → [StakingLockTier { months: 3, bonus_bps: 150 }, { months: 6, … }, …]
+
+// Refused before signing (Error::StakingTier) for a term other than 3/6/12 or
+// an amount that is not a positive integer in base units.
+let lock = stakingtier::lock_delegation_any(delegator, validator, "10000000", 3)?;
+// …put it in `messages` for tx::send_messages / broadcast_hybrid_tx like any other.
+
+let locks = fetch_staking_locks(&rest, delegator).await?; // locks.locks, locks.claimable
+let claim = stakingtier::claim_bonus_any(delegator);
+let unlock = stakingtier::unlock_early_any(delegator, locks.locks[0].id);
+# let _ = (params, lock, claim, unlock);
+# Ok(())
+# }
+```
+
+`msg::stakingtier::lock_delegation` (and `lock_delegation_any`) refuses, before
+anything is signed, a term other than 3, 6 or 12
+(`stakingtier::STAKING_LOCK_MONTHS`) and an amount that is not a positive
+integer in base units. A locked delegation cannot be undelegated or redelegated
+until the lock ends (`stakingtier` code 13; `stakingtier::stakingtier_error_kind`
+gives `"stakingtier_stake_locked"`). `fetch_staking_tier_pool(&rest)` reads the
+bonus pool.
+
+## Network reads added in chain v3.2.4
+
+```rust,no_run
+use qorechain::authenticator::fetch_auth_nonce;
+use qorechain::pqc_dx::fetch_pqc_status;
+use qorechain::protocol_features::{fetch_protocol_features, is_protocol_feature_enabled};
+use qorechain::query::RestClient;
+
+# async fn run(address: &str, pubkey: &[u8]) -> qorechain::Result<()> {
+let rest = RestClient::new("https://api.qore.host");
+
+// The nonce a linked authenticator key must sign next (MsgExecuteEVM / MsgExecuteCosmos).
+let n = fetch_auth_nonce(&rest, address, pubkey).await?; // n.nonce, n.linked; hex &str works too
+
+// Which consensus rules the network enforces today, by name.
+let on = is_protocol_feature_enabled(&rest, "pqc-sign-bytes-v2").await?;
+let features = fetch_protocol_features(&rest).await?; // features.features, features.height
+
+// Whether the account's PQC key was proven by a proof of possession (None when not reported).
+let proven = fetch_pqc_status("https://api.qore.host", address).await?.possession_proven;
+# let _ = (n, on, features, proven);
+# Ok(())
+# }
+```
 
 ## Development
 

@@ -397,6 +397,73 @@ makes.
   because the upgrade handler raises it so a relayer does not stall. Read the
   value from `qorechain.ai.v1.Query/Config` — never assume either number.
 
+## Staking tiers (v0.10.0, chain v3.2.4)
+
+Lock part of an existing delegation for 3, 6 or 12 months for a bonus on top
+of the staking reward. Running a light node or a validator adds to it, up to a
+total cap; leaving early burns a penalty and forfeits the bonus. The terms are
+governance parameters: read them rather than hard-coding them.
+
+```java
+import io.github.qorechain.messages.QorechainMessages;
+import io.github.qorechain.messages.TypedMessage;
+import io.github.qorechain.query.RestClient;
+import io.github.qorechain.stakingtier.StakingTier;
+
+RestClient rest = new RestClient("https://api.qore.host");
+StakingTier.Params params = StakingTier.fetchParams(rest);
+// params.lockTiers: months 3 at bonusBps 150, months 6 at bonusBps 300, …
+
+// Throws IllegalArgumentException, before signing, for a term other than 3/6/12
+// or an amount that is not a positive integer in base units.
+TypedMessage lock = QorechainMessages.stakingtier.lockDelegation(
+        qorechain.stakingtier.v1.Tx.MsgLockDelegation.newBuilder()
+                .setDelegator(delegator).setValidator(validator)
+                .setAmount("10000000").setMonths(3)
+                .build());
+// …sign and broadcast it like any other message.
+
+StakingTier.Locks locks = StakingTier.fetchLocks(rest, delegator); // locks.locks, locks.claimable
+TypedMessage claim = QorechainMessages.stakingtier.claimBonus(
+        qorechain.stakingtier.v1.Tx.MsgClaimBonus.newBuilder().setHolder(delegator).build());
+TypedMessage unlock = QorechainMessages.stakingtier.unlockEarly(
+        qorechain.stakingtier.v1.Tx.MsgUnlockEarly.newBuilder()
+                .setDelegator(delegator).setLockId(locks.locks.get(0).id).build());
+```
+
+`QorechainMessages.stakingtier.lockDelegation` runs
+`StakingTier.validateLockDelegation`, which refuses a term other than 3, 6 or 12
+(`StakingTier.STAKING_LOCK_MONTHS`) and an amount that is not a positive integer
+in base units. A locked delegation cannot be undelegated or redelegated until
+the lock ends (`stakingtier` code 13, kind `stakingtier_stake_locked`).
+`StakingTier.fetchPool(rest)` reads the bonus pool.
+
+A refusal that arrives as text only, with no code (a failed simulation reports
+the module's message alone), decodes with `TxError.decode(0, null, text, null)`:
+it is named from the chain's registered error descriptions, so "...: no bonus
+to claim" is codespace `stakingtier`, code 12, kind `stakingtier_nothing_to_claim`.
+
+## Network reads added in chain v3.2.4
+
+```java
+import io.github.qorechain.pqc.PqcDx;
+import io.github.qorechain.query.ProtocolFeatures;
+import io.github.qorechain.query.RestClient;
+import io.github.qorechain.tx.Authenticator;
+
+RestClient rest = new RestClient("https://api.qore.host");
+
+// The nonce a linked authenticator key must sign next (MsgExecuteEVM / MsgExecuteCosmos).
+Authenticator.AuthNonce n = Authenticator.fetchAuthNonce(rest, address, pubkey); // n.nonce, n.linked
+
+// Which consensus rules the network enforces today, by name.
+boolean on = ProtocolFeatures.isEnabled(rest, "pqc-sign-bytes-v2");
+ProtocolFeatures features = ProtocolFeatures.fetch(rest); // features.features, features.height
+
+// Whether the account's PQC key was proven by a proof of possession (null when not reported).
+Boolean proven = PqcDx.fetchPqcStatus("https://api.qore.host", address).possessionProven;
+```
+
 ## Unified eth-native wallet (v0.6.0)
 
 One `eth_secp256k1` key = ONE 20-byte identity rendered three ways — `qor1…`
@@ -484,10 +551,11 @@ string both keys sign).
 - `MsgExecuteEVM.nonce` = the linked key's **authenticator sequence**: a counter the
   chain keeps in its state for each `(account, linked key)`, starting at 0 and
   incremented by every successful execution. It is **not** the account's EVM
-  nonce (`eth_getTransactionCount`). The chain has no query for it yet (a
-  read-only one is planned), so mirror the chain: 0 for a newly linked key, +1
-  after each execution the chain accepts; abstractaccount code 11 means the
-  value you sent is not the chain's.
+  nonce (`eth_getTransactionCount`). Read it with
+  `Authenticator.fetchAuthNonce(rest, address, pubkey)` (chain v3.2.4, see
+  "Network reads added in chain v3.2.4"): 0 for a newly linked key, +1 after
+  each execution the chain accepts; abstractaccount code 11 means the value you
+  sent is not the chain's.
 - `MsgExecuteCosmos.nonce` = the **per-authenticator sequence** for
   `(account, pubkey)`: the same kind of counter, kept per linked key.
 

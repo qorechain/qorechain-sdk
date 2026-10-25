@@ -23,6 +23,7 @@ from typing import Any
 
 import httpx
 
+from .errors import DecodedTxError, QoreTxError, decode_tx_error, error_from_text
 from .tx import BuiltTx
 
 #: Default gas-used safety multiplier applied to a simulation result.
@@ -104,6 +105,39 @@ def calculate_fee(gas: int | str, gas_price: GasPrice | str) -> FeeDict:
     }
 
 
+class SimulationRefusedError(QoreTxError, httpx.HTTPStatusError):
+    """A failed simulation whose text names a registered chain refusal.
+
+    The simulate endpoint reports a refusal with the module's message but no
+    ABCI code; :func:`~qorsdk.errors.decode_tx_error` names it from the chain's
+    registered error descriptions. Both a :class:`~qorsdk.errors.QoreTxError`
+    (``codespace`` / ``code`` / ``kind`` / ``raw_log``) and the original
+    ``httpx.HTTPStatusError`` (``request`` / ``response``), so existing
+    ``except httpx.HTTPStatusError`` handlers still catch it.
+    """
+
+    def __init__(self, decoded: DecodedTxError, err: httpx.HTTPStatusError) -> None:
+        Exception.__init__(self, f"simulation refused: {decoded.message}")
+        self.code = decoded.code
+        self.codespace = decoded.codespace
+        self.kind = decoded.kind
+        self.raw_log = decoded.raw_log
+        self.tx_hash = None
+        self.request = err.request
+        self.response = err.response
+
+
+def _simulation_text(response: httpx.Response) -> str:
+    """The refusal text of a failed simulate response (its ``message``, else the body)."""
+    try:
+        body = response.json()
+    except ValueError:
+        return response.text
+    if isinstance(body, dict) and isinstance(body.get("message"), str):
+        return str(body["message"])
+    return response.text
+
+
 def _simulate_request(
     rest_url: str,
     tx_bytes: bytes,
@@ -118,7 +152,13 @@ def _simulate_request(
     http = client or httpx.Client(timeout=timeout)
     try:
         resp = http.post(url, json=payload)
-        resp.raise_for_status()
+        try:
+            resp.raise_for_status()
+        except httpx.HTTPStatusError as err:
+            text = _simulation_text(resp)
+            if error_from_text(text) is not None:
+                raise SimulationRefusedError(decode_tx_error(0, None, text), err) from err
+            raise
         return resp.json()
     finally:
         if owns_client:
@@ -136,6 +176,9 @@ def simulate_gas_used(
 
     Simulation requires a live node; unit tests mock the HTTP POST.
 
+    :raises SimulationRefusedError: If the chain refuses the transaction with a
+        registered error (e.g. stakingtier 12, "no bonus to claim").
+    :raises httpx.HTTPStatusError: On any other non-2xx response.
     :raises ValueError: If the response carries no ``gas_info.gas_used``.
     """
     res = _simulate_request(

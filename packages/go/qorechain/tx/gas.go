@@ -85,6 +85,10 @@ func CalculateFee(gasLimit uint64, multiplier float64, price GasPrice) (Fee, err
 // txBytes must be a fully assembled (signed) TxRaw; the simulate endpoint does
 // not verify signatures but does require the tx structure. If httpClient is nil,
 // a shared client with a 30s timeout is used.
+//
+// When the chain refuses the tx with a registered error (the simulate response
+// carries the module's message but no code), the returned error wraps a
+// *QoreTxError naming it: errors.As(err, &txErr) gives its Codespace and Code.
 func EstimateGas(restURL string, txBytes []byte, httpClient *http.Client) (uint64, error) {
 	if httpClient == nil {
 		httpClient = defaultHTTPClient
@@ -112,6 +116,11 @@ func EstimateGas(restURL string, txBytes []byte, httpClient *http.Client) (uint6
 		return 0, err
 	}
 	if resp.StatusCode < 200 || resp.StatusCode >= 300 {
+		// A refusal the chain names (e.g. stakingtier 12, "no bonus to claim")
+		// comes back as a *QoreTxError, reachable with errors.As.
+		if txErr := DecodeRefusalText(simulationText(body)); txErr != nil {
+			return 0, fmt.Errorf("simulate HTTP %d for %s: %w", resp.StatusCode, u, txErr)
+		}
 		return 0, fmt.Errorf("simulate HTTP %d for %s: %s", resp.StatusCode, u, string(body))
 	}
 	var sim struct {
@@ -130,6 +139,18 @@ func EstimateGas(restURL string, txBytes []byte, httpClient *http.Client) (uint6
 		return 0, fmt.Errorf("parse gas_used %q: %w", sim.GasInfo.GasUsed, err)
 	}
 	return gasUsed, nil
+}
+
+// simulationText is the refusal text of a failed simulate response: its
+// "message" member, else the whole body.
+func simulationText(body []byte) string {
+	var e struct {
+		Message string `json:"message"`
+	}
+	if json.Unmarshal(body, &e) == nil && e.Message != "" {
+		return e.Message
+	}
+	return string(body)
 }
 
 // EstimateFee simulates txBytes and returns the auto-gas Fee (gasUsed ×
