@@ -95,3 +95,17 @@ describe("chain v3.2.4 reads", () => {
     expect(() => ibcTimeoutTimestamp(0)).toThrow(/positive/);
   });
 });
+
+describe("decodeTxError on a failed simulation (text only)", () => {
+  it("names the module error from its registered description", () => {
+    const sim = new Error(
+      "Query failed with (6): rpc error: code = Unknown desc = failed to execute message; message index: 0: no bonus to claim [baseapp.go:1052] with gas used: '111685': unknown request",
+    );
+    expect(decodeTxError(sim as never)).toMatchObject({ codespace: "stakingtier", code: 12, kind: "stakingtier_nothing_to_claim" });
+    // The longest match wins: the hybrid failure is not the plain PQC one.
+    const h = decodeTxError({ rawLog: "hybrid PQC signature verification failed" } as never);
+    expect(h).toMatchObject({ codespace: "pqc", code: 21 });
+    // A coded error is left alone.
+    expect(decodeTxError({ code: 5, codespace: "sdk", rawLog: "no bonus to claim" }).code).toBe(5);
+  });
+});

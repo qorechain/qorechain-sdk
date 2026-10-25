@@ -229,6 +229,59 @@ const DEFAULT_CODESPACE = "sdk";
  *
  * @param input - The `code`, `codespace`, and `rawLog` from the result.
  */
+/**
+ * The chain's registered error descriptions, for refusals that arrive as text
+ * only: a failed simulation (the `"auto"` fee path) reports the module's
+ * message but no code. Kept to the codespaces this module decodes.
+ */
+const REGISTERED_ERRORS: ReadonlyArray<readonly [codespace: string, code: number, description: string]> = [
+  ["sdk", 4, "unauthorized"],
+  ["sdk", 5, "insufficient funds"],
+  ["sdk", 11, "out of gas"],
+  ["sdk", 13, "insufficient fee"],
+  ["sdk", 19, "tx already in mempool"],
+  ["sdk", 32, "incorrect account sequence"],
+  ["pqc", 2, "PQC signature verification failed"],
+  ["pqc", 6, "PQC account not found"],
+  ["pqc", 7, "PQC account already registered"],
+  ["pqc", 8, "classical fallback not allowed"],
+  ["pqc", 20, "hybrid PQC signature required"],
+  ["pqc", 21, "hybrid PQC signature verification failed"],
+  ["pqc", 26, "no open EVM authorisation window"],
+  ["pqc", 27, "EVM authorisation window exhausted"],
+  ["pqc", 28, "invalid EVM authorisation window"],
+  ["pqc", 45, "ecdsa_pubkey is not the signer's compressed secp256k1 key"],
+  ["pqc", 60, "no post-quantum consent for this EIP-7702 delegation"],
+  ["pqc", 61, "invalid EIP-7702 delegation request"],
+  ["pqc", 231, "PQC proof of possession does not verify"],
+  ["abstractaccount", 2, "abstract account not found"],
+  ["abstractaccount", 5, "spending limit exceeded"],
+  ["abstractaccount", 6, "session key expired"],
+  ["abstractaccount", 8, "invalid spending rule"],
+  ["abstractaccount", 10, "authenticator not permitted for this action"],
+  ["abstractaccount", 11, "authenticator signature replay binding mismatch"],
+  ["stakingtier", 3, "staking tiers are not active on this chain yet"],
+  ["stakingtier", 4, "staking tiers are disabled by governance"],
+  ["stakingtier", 5, "lock term is not offered"],
+  ["stakingtier", 6, "invalid lock amount"],
+  ["stakingtier", 7, "not enough unlocked delegation"],
+  ["stakingtier", 8, "lock not found"],
+  ["stakingtier", 9, "lock belongs to another delegator"],
+  ["stakingtier", 10, "lock has already expired"],
+  ["stakingtier", 11, "too many open locks"],
+  ["stakingtier", 12, "no bonus to claim"],
+  ["stakingtier", 13, "stake is locked"],
+];
+
+/** The registered error a text-only log names (the longest description it contains). */
+function errorFromText(rawLog: string): { codespace: string; code: number } | undefined {
+  let best: (typeof REGISTERED_ERRORS)[number] | undefined;
+  for (const e of REGISTERED_ERRORS) {
+    if (rawLog.includes(e[2]) && (!best || e[2].length > best[2].length)) best = e;
+  }
+  return best && { codespace: best[0], code: best[1] };
+}
+
 export function decodeTxError(input: TxErrorInput): DecodedTxError {
   const codespace = input.codespace || DEFAULT_CODESPACE;
   const alt = input as { log?: unknown; message?: unknown };
@@ -236,6 +289,12 @@ export function decodeTxError(input: TxErrorInput): DecodedTxError {
     input.rawLog ??
     (typeof alt.log === "string" ? alt.log : undefined) ??
     (typeof alt.message === "string" && alt.message !== "" ? alt.message : undefined);
+
+  // A refusal without a code (a failed simulation): name it from the text.
+  if (!(Number(input.code) > 0) && rawLog) {
+    const named = errorFromText(rawLog);
+    if (named) return decodeTxError({ ...named, rawLog, txHash: input.txHash });
+  }
 
   const keyRequirement = classifyPqcKeyRequirement(input.codespace, input.code, rawLog);
   if (keyRequirement) {
