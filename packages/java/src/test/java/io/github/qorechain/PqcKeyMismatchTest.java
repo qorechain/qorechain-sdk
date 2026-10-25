@@ -182,11 +182,12 @@ class PqcKeyMismatchTest {
                         PqcDx.ensurePqcRegistered(
                                 s, bc(), null,
                                 withStatus(new PqcDx.PqcStatus(true, PqcAlgorithm.ALGORITHM_DILITHIUM5, OTHER.publicKey))));
-        assertTrue(
+        PqcDx.EnsureResult ok =
                 PqcDx.ensurePqcRegistered(
-                                s, bc(), null,
-                                withStatus(new PqcDx.PqcStatus(true, PqcAlgorithm.ALGORITHM_DILITHIUM5, MINE.publicKey)))
-                        .alreadyRegistered);
+                        s, bc(), null,
+                        withStatus(new PqcDx.PqcStatus(true, PqcAlgorithm.ALGORITHM_DILITHIUM5, MINE.publicKey)));
+        assertTrue(ok.alreadyRegistered);
+        assertEquals(Boolean.TRUE, ok.keyVerified);
         // qor_getPQCKeyStatus reports the key hex.
         qorStatusJson = "{\"registered\":true,\"public_key\":\"0x" + Hex.encode(OTHER.publicKey) + "\"}";
         assertThrows(
@@ -199,12 +200,29 @@ class PqcKeyMismatchTest {
     }
 
     @Test
-    void takesAStatusWithoutAKeyAsRegistered() {
-        assertTrue(
-                PqcDx.ensurePqcRegistered(
-                                signer(false), bc(), null,
-                                withStatus(new PqcDx.PqcStatus(true, PqcAlgorithm.ALGORITHM_DILITHIUM5, null)))
-                        .alreadyRegistered);
+    void doesNotCountAStatusWithoutAKeyAsAMatch() {
+        PqcDx.PqcStatus keyless = new PqcDx.PqcStatus(true, PqcAlgorithm.ALGORITHM_DILITHIUM5, null);
+        // Nothing to read the key from: registered, but not verified as the signer's.
+        PqcDx.EnsureResult r = PqcDx.ensurePqcRegistered(signer(false), bc(), null, withStatus(keyless));
+        assertTrue(r.alreadyRegistered);
+        assertEquals(Boolean.FALSE, r.keyVerified);
+        // A qor_* answer without the key, and no REST URL: the same.
+        qorStatusJson = "{\"registered\":true}";
+        r = PqcDx.ensurePqcRegistered(signer(false), bc(), new QorClient(baseUrl), null);
+        assertTrue(r.alreadyRegistered);
+        assertEquals(Boolean.FALSE, r.keyVerified);
+        assertEquals(0, restPaths.size());
+        // With a REST URL, the key is read and compared.
+        restKeys = List.of(MINE.publicKey);
+        r = PqcDx.ensurePqcRegistered(signer(true), bc(), null, withStatus(keyless));
+        assertTrue(r.alreadyRegistered);
+        assertEquals(Boolean.TRUE, r.keyVerified);
+        assertEquals(1, restPaths.size());
+        PqcDx.clearPqcStatusCache();
+        restKeys = List.of(OTHER.publicKey);
+        assertThrows(
+                PqcDx.PqcKeyMismatchException.class,
+                () -> PqcDx.ensurePqcRegistered(signer(true), bc(), null, withStatus(keyless)));
         assertEquals(0, broadcasts.size());
     }
 
@@ -224,7 +242,16 @@ class PqcKeyMismatchTest {
             restPaths.clear();
         }
         restKeys = Arrays.asList(null, MINE.publicKey);
-        assertTrue(PqcDx.ensurePqcRegistered(signer(true), bc(), null, null).alreadyRegistered);
+        PqcDx.EnsureResult r = PqcDx.ensurePqcRegistered(signer(true), bc(), null, null);
+        assertTrue(r.alreadyRegistered);
+        assertEquals(Boolean.TRUE, r.keyVerified);
+
+        // No REST URL to read the key back from: registered, not verified.
+        PqcDx.EnsureOptions force = new PqcDx.EnsureOptions();
+        force.force = true;
+        r = PqcDx.ensurePqcRegistered(signer(false), bc(), null, force);
+        assertTrue(r.alreadyRegistered);
+        assertEquals(Boolean.FALSE, r.keyVerified);
     }
 
     @Test

@@ -4,9 +4,10 @@
 //! transaction decoder refuses a message carrying an unknown field, so setting
 //! one of a release's new OPTIONAL fields before the upgrade gets the whole
 //! transaction refused. Set such fields only after the network has applied the
-//! release. The chain has no query for its protocol features, but each release
-//! switches them on at its plan height, which the upgrade module reports. Plan
-//! names are the same on every network.
+//! release. Each release switches its features on at its plan height, which
+//! the upgrade module reports. Plan names are the same on every network. From
+//! v3.2.4 the switches can also be read by name with
+//! [`crate::protocol_features`].
 
 use std::collections::HashMap;
 use std::sync::Mutex;
@@ -24,6 +25,10 @@ pub const CHAIN_UPGRADE_V3_2_2: &str = "v3.2.2";
 /// maintenance for keyed accounts, the EVM window scope (`native_only`,
 /// `allowed_targets`), the abstract-account v2 digest and `MsgUpdateAuthority`.
 pub const CHAIN_UPGRADE_V3_2_3: &str = "v3.2.3";
+
+/// Staking tiers, the authenticator nonce and protocol-feature queries,
+/// `possession_proven`, and the bridge validator's proof of possession.
+pub const CHAIN_UPGRADE_V3_2_4: &str = "v3.2.4";
 
 /// How long a "not applied yet" answer is trusted. An applied plan stays
 /// applied and is cached for the life of the process.

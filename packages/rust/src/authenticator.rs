@@ -23,8 +23,8 @@
 //! `(account, pubkey)`: a counter the chain keeps for each linked key, starting
 //! at 0 and incremented by each successful execution. For `MsgExecuteEVM` it is
 //! NOT the account's EVM nonce (the chain checks this counter since v3.2.0).
-//! There is no query for it yet, so track it per linked key; a mismatch is
-//! refused with abstractaccount code 11.
+//! Read it with [`fetch_auth_nonce`] (chain v3.2.4); a mismatch is refused
+//! with abstractaccount code 11.
 
 use crate::error::{Error, Result};
 use crate::msg::pqc as pqc_msg;
@@ -161,6 +161,125 @@ pub async fn evm_auth_digest_version(
         crate::upgrades::is_upgrade_applied(rest, crate::upgrades::CHAIN_UPGRADE_V3_2_3, cache_key)
             .await?;
     Ok(if applied { "v2" } else { "v1" })
+}
+
+/// A linked key's sequence, from [`fetch_auth_nonce`].
+#[derive(Debug, Clone, Copy, Default, PartialEq, Eq)]
+pub struct AuthNonce {
+    /// The nonce the next `MsgExecuteEVM` / `MsgExecuteCosmos` from this key
+    /// must carry.
+    pub nonce: u64,
+    /// Whether the key is currently linked (present and not revoked); the
+    /// counter is kept either way.
+    pub linked: bool,
+}
+
+/// An authenticator public key for [`fetch_auth_nonce`]: raw bytes, or hex
+/// (`0x` optional).
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub enum AuthPubkey<'a> {
+    /// The raw public key.
+    Bytes(&'a [u8]),
+    /// The public key as hex, `0x` optional.
+    Hex(&'a str),
+}
+
+impl<'a> From<&'a [u8]> for AuthPubkey<'a> {
+    fn from(b: &'a [u8]) -> Self {
+        AuthPubkey::Bytes(b)
+    }
+}
+
+impl<'a, const N: usize> From<&'a [u8; N]> for AuthPubkey<'a> {
+    fn from(b: &'a [u8; N]) -> Self {
+        AuthPubkey::Bytes(b)
+    }
+}
+
+impl<'a> From<&'a Vec<u8>> for AuthPubkey<'a> {
+    fn from(b: &'a Vec<u8>) -> Self {
+        AuthPubkey::Bytes(b)
+    }
+}
+
+impl<'a> From<&'a str> for AuthPubkey<'a> {
+    fn from(s: &'a str) -> Self {
+        AuthPubkey::Hex(s)
+    }
+}
+
+impl<'a> From<&'a String> for AuthPubkey<'a> {
+    fn from(s: &'a String) -> Self {
+        AuthPubkey::Hex(s)
+    }
+}
+
+/// The REST path of the `auth_nonce` query for `(address, pubkey)`. Bytes are
+/// rendered lowercase hex; a hex key is passed as given, without its `0x`.
+///
+/// # Errors
+///
+/// [`Error::InvalidInput`] when the key is empty, not hex, or of odd length.
+pub fn auth_nonce_path<'a>(address: &str, pubkey: impl Into<AuthPubkey<'a>>) -> Result<String> {
+    let hex = match pubkey.into() {
+        AuthPubkey::Bytes(b) => to_hex_lower(b),
+        AuthPubkey::Hex(s) => s
+            .strip_prefix("0x")
+            .or_else(|| s.strip_prefix("0X"))
+            .unwrap_or(s)
+            .to_string(),
+    };
+    if hex.is_empty() || hex.len() % 2 != 0 || !hex.bytes().all(|b| b.is_ascii_hexdigit()) {
+        return Err(Error::InvalidInput(
+            "fetch_auth_nonce: pubkey must be bytes or a hex string".into(),
+        ));
+    }
+    Ok(format!(
+        "/qorechain/abstractaccount/v1/auth_nonce/{address}/{hex}"
+    ))
+}
+
+/// Parses an `auth_nonce` payload.
+///
+/// # Errors
+///
+/// [`Error::InvalidResponse`] when the answer carries no integer `nonce`.
+pub fn parse_auth_nonce(b: &serde_json::Value) -> Result<AuthNonce> {
+    let nonce = match &b["nonce"] {
+        serde_json::Value::String(s) => s.trim().parse::<u64>().ok(),
+        serde_json::Value::Number(n) => n.as_u64(),
+        _ => None,
+    }
+    .ok_or_else(|| {
+        Error::InvalidResponse(format!("auth_nonce query: no nonce in the answer: {b}"))
+    })?;
+    Ok(AuthNonce {
+        nonce,
+        linked: b["linked"].as_bool().unwrap_or(false),
+    })
+}
+
+/// Reads the sequence a linked authenticator key must sign next
+/// (`/qorechain/abstractaccount/v1/auth_nonce/{address}/{pubkey_hex}`, chain
+/// v3.2.4). This is the `nonce` of [`evm_auth_sign_bytes`] /
+/// [`evm_auth_sign_bytes_v2`] / [`cosmos_auth_sign_bytes`]: the key's own
+/// counter, not the account's EVM nonce. A key that never executed reads 0.
+///
+/// `address` is the `qor1…` account the key acts for; `pubkey` the
+/// authenticator public key, as bytes or hex (`0x` optional).
+///
+/// # Errors
+///
+/// [`Error::InvalidInput`] for a key that is not hex (nothing is sent),
+/// transport / HTTP errors from the REST client, or [`Error::InvalidResponse`]
+/// when the answer carries no nonce.
+pub async fn fetch_auth_nonce<'a>(
+    rest: &crate::query::RestClient,
+    address: &str,
+    pubkey: impl Into<AuthPubkey<'a>>,
+) -> Result<AuthNonce> {
+    let path = auth_nonce_path(address, pubkey)?;
+    parse_auth_nonce(&rest.get(&path, &[]).await?)
 }
 
 /// Rebuilds the 32-byte digest the chain re-derives for a `MsgExecuteCosmos`

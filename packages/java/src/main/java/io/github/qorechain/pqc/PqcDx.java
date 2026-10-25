@@ -79,11 +79,23 @@ public final class PqcDx {
         public final int algorithmId;
         /** The registered PQC public key, when the chain returns it; otherwise {@code null}. */
         public final byte[] pubkey;
+        /**
+         * Whether the key was proven by a proof of possession (chain v3.2.4): a
+         * registration carrying a valid proof, or a rotation or migration.
+         * {@code FALSE} for a key registered without one; {@code null} on nodes
+         * below v3.2.4 (and from {@code qor_getPQCKeyStatus}).
+         */
+        public final Boolean possessionProven;
 
         public PqcStatus(boolean registered, int algorithmId, byte[] pubkey) {
+            this(registered, algorithmId, pubkey, null);
+        }
+
+        public PqcStatus(boolean registered, int algorithmId, byte[] pubkey, Boolean possessionProven) {
             this.registered = registered;
             this.algorithmId = algorithmId;
             this.pubkey = pubkey;
+            this.possessionProven = possessionProven;
         }
     }
 
@@ -158,13 +170,28 @@ public final class PqcDx {
     public static final class EnsureResult {
         /** {@code true} when the key was already registered (no transaction was sent). */
         public final boolean alreadyRegistered;
+        /**
+         * Whether the registered key was compared with {@code signer.pqcKeypair} and
+         * matched. {@code FALSE} only when the account has a key and no answer
+         * carried it (a pre-read {@code opts.status} or a {@code qor_*} source
+         * without the key, and no {@code signer.restUrl} to read it from): the key
+         * could not be checked, so do not assume it is the signer's. {@code null}
+         * when a registration was sent.
+         */
+        public final Boolean keyVerified;
         /** The registration transaction hash, when a registration was broadcast; else {@code null}. */
         public final String txHash;
         /** The raw broadcast result, when a registration was broadcast; else {@code null}. */
         public final Broadcaster.Result result;
 
         public EnsureResult(boolean alreadyRegistered, String txHash, Broadcaster.Result result) {
+            this(alreadyRegistered, null, txHash, result);
+        }
+
+        public EnsureResult(
+                boolean alreadyRegistered, Boolean keyVerified, String txHash, Broadcaster.Result result) {
             this.alreadyRegistered = alreadyRegistered;
+            this.keyVerified = keyVerified;
             this.txHash = txHash;
             this.result = result;
         }
@@ -208,7 +235,8 @@ public final class PqcDx {
     }
 
     private static PqcStatus copyOf(PqcStatus s) {
-        return new PqcStatus(s.registered, s.algorithmId, s.pubkey == null ? null : s.pubkey.clone());
+        return new PqcStatus(
+                s.registered, s.algorithmId, s.pubkey == null ? null : s.pubkey.clone(), s.possessionProven);
     }
 
     /**
@@ -250,7 +278,13 @@ public final class PqcDx {
                         account == null
                                 ? PqcAlgorithm.ALGORITHM_UNSPECIFIED
                                 : asInt(firstOf(account, "algorithm_id", "algorithmId", "algorithm"));
-                PqcStatus status = new PqcStatus(true, algorithmId, pubkey);
+                JsonNode proven = account == null ? null : account.get("possession_proven");
+                PqcStatus status =
+                        new PqcStatus(
+                                true,
+                                algorithmId,
+                                pubkey,
+                                proven != null && proven.isBoolean() ? proven.asBoolean() : null);
                 REGISTERED_CACHE.put(key, status);
                 return copyOf(status);
             } catch (RuntimeException e) {
@@ -393,9 +427,10 @@ public final class PqcDx {
      * returns {@code EnsureResult{alreadyRegistered=true}} WITHOUT broadcasting,
      * provided the registered key is {@code signer.pqcKeypair}'s. When it is a
      * different key it throws a {@link PqcKeyMismatchException}: the signer's hybrid
-     * transactions would all be refused. (A status that carries no public key
-     * cannot be compared and is taken as registered; the REST route always carries
-     * it.) Otherwise it builds, signs, and broadcasts {@code MsgRegisterPQCKeyV2}
+     * transactions would all be refused. A status that carries no public key is
+     * re-read over {@code signer.restUrl}; when there is no REST URL either, the
+     * result says {@code keyVerified = FALSE} instead of claiming the key is the
+     * signer's. Otherwise it builds, signs, and broadcasts {@code MsgRegisterPQCKeyV2}
      * with the signer's Dilithium public key plus the supplied (or signer's) ECDSA
      * public key.
      *
@@ -432,10 +467,22 @@ public final class PqcDx {
         if (status != null && status.registered) {
             // Registered, but by whom? A different key means the signer's hybrid
             // transactions would all be refused; say so now rather than "done".
-            if (Boolean.FALSE.equals(isRegisteredPqcKey(status, signer.pqcKeypair.publicKey))) {
+            Boolean match = isRegisteredPqcKey(status, signer.pqcKeypair.publicKey);
+            if (Boolean.FALSE.equals(match)) {
                 throwIfStillMismatched(signer, o, status);
+                match = Boolean.TRUE;
+            } else if (match == null && hasRest(signer)) {
+                // The answer carried no key (a pre-read status, a qor_* source):
+                // read it over REST rather than take "registered" for "the signer's".
+                REGISTERED_CACHE.remove(cacheKey(signer.restUrl, signer.sender));
+                PqcStatus fresh = fetchPqcStatus(signer.restUrl, signer.sender);
+                match = isRegisteredPqcKey(fresh, signer.pqcKeypair.publicKey);
+                if (fresh.registered && Boolean.FALSE.equals(match)) {
+                    throw new PqcKeyMismatchException(
+                            signer.sender, pqcStatusPublicKey(fresh), signer.pqcKeypair.publicKey);
+                }
             }
-            return new EnsureResult(true, null, null);
+            return new EnsureResult(true, Boolean.TRUE.equals(match), null, null);
         }
 
         // From chain v3.2.3 the registration carries a proof that the registrant
@@ -486,12 +533,17 @@ public final class PqcDx {
                         throw new PqcKeyMismatchException(
                                 signer.sender, pqcStatusPublicKey(now), signer.pqcKeypair.publicKey);
                     }
+                    return new EnsureResult(
+                            true,
+                            Boolean.TRUE.equals(isRegisteredPqcKey(now, signer.pqcKeypair.publicKey)),
+                            null,
+                            null);
                 }
-                return new EnsureResult(true, null, null);
+                return new EnsureResult(true, false, null, null);
             }
             throw e;
         }
-        return new EnsureResult(false, result.transactionHash, result);
+        return new EnsureResult(false, null, result.transactionHash, result);
     }
 
     private static boolean hasRest(Signer signer) {
@@ -593,9 +645,12 @@ public final class PqcDx {
     public static Broadcaster.Result migratePqcKeyHybrid(
             Signer signer, Broadcaster bc, MigrateOptions opts) {
         TypedMessage message = buildMigratePqcKeyMsg(signer, opts);
-        // The account is keyed by definition: skip the registration pre-flight.
+        // The account is keyed by definition, with signer.pqcKeypair (the chain
+        // checks the hybrid signature against the registered key): skip the
+        // registration pre-flight and its REST read.
         EnsureOptions ensure = new EnsureOptions();
-        ensure.status = new PqcStatus(true, PqcAlgorithm.ALGORITHM_DILITHIUM5, null);
+        ensure.status =
+                new PqcStatus(true, PqcAlgorithm.ALGORITHM_DILITHIUM5, signer.pqcKeypair.publicKey);
         return migrateToHybrid(signer, bc, null, ensure).send(List.of(message));
     }
 

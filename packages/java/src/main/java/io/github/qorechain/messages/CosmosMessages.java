@@ -59,6 +59,28 @@ public final class CosmosMessages {
     public static final String MSG_IBC_TRANSFER = "/ibc.applications.transfer.v1.MsgTransfer";
 
     /**
+     * An absolute IBC timeout {@code seconds} from now, in the unit
+     * {@code MsgTransfer.timeout_timestamp} takes: Unix time in NANOSECONDS.
+     * ICS-20 timeouts are absolute: pass this, never a duration. (IBC v2 packets
+     * take an absolute Unix time in SECONDS; a relative value there is refused
+     * after the fee is charged.)
+     *
+     * @throws IllegalArgumentException when {@code seconds} is not positive.
+     */
+    public static long ibcTimeoutTimestamp(double seconds) {
+        return ibcTimeoutTimestamp(seconds, java.time.Instant.now());
+    }
+
+    /** {@link #ibcTimeoutTimestamp(double)} counted from {@code now}. */
+    public static long ibcTimeoutTimestamp(double seconds, java.time.Instant now) {
+        if (!Double.isFinite(seconds) || seconds <= 0) {
+            throw new IllegalArgumentException("ibcTimeoutTimestamp: seconds must be positive");
+        }
+        long ms = Math.addExact(now.toEpochMilli(), (long) Math.ceil(seconds * 1000));
+        return Math.multiplyExact(ms, 1_000_000L);
+    }
+
+    /**
      * Wrap any protobuf message with an explicit type URL. Use this for standard
      * Native messages whose protobuf class you build yourself (staking,
      * distribution, gov, authz, feegrant, IBC), e.g.

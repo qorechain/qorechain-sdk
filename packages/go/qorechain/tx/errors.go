@@ -150,6 +150,21 @@ var moduleCodespaceReasons = map[string]map[uint32]string{
 	},
 	"crossvm":     {},
 	"rlconsensus": {},
+	// stakingtier (chain v3.2.4).
+	"stakingtier": {
+		2:  "invalid staking-tier parameters",
+		3:  "staking tiers are not active on this network yet",
+		4:  "staking tiers are switched off by governance",
+		5:  "this lock term is not offered (see the module parameters)",
+		6:  "invalid lock amount (below the minimum, or not positive)",
+		7:  "not enough unlocked delegation to this validator to lock that amount",
+		8:  "lock not found",
+		9:  "the lock belongs to another delegator",
+		10: "the lock has already expired; nothing to unlock early",
+		11: "too many open locks for this delegator",
+		12: "no bonus to claim",
+		13: "this stake is locked; undelegating or redelegating it waits for the lock to end",
+	},
 }
 
 // DecodeTxError maps an ABCI (code, codespace, rawLog) triple to a *QoreTxError.

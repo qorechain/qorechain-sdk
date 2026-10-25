@@ -5,7 +5,7 @@ The :data:`msg` namespace groups composers by module so callers write
 ``msg.pqc.register_pqc_key(...)``, etc. Standard Native modules
 (bank/staking/distribution/gov/authz/feegrant/ibc) sit alongside the QoreChain
 custom modules (amm/bridge/rdk/multilayer/pqc/svm/lightnode/license/
-abstractaccount/crossvm/rlconsensus).
+abstractaccount/crossvm/rlconsensus/stakingtier).
 
 Every composer returns a :class:`Msg` (``{type_url, value}``) — pass a list of
 them to :func:`qorechain.tx.send_messages` or the hybrid PQC tx path.
@@ -16,7 +16,16 @@ from __future__ import annotations
 from types import SimpleNamespace
 
 from ._composer import Msg, composer
-from .cosmos import authz, bank, distribution, feegrant, gov, ibc, staking
+from .cosmos import (
+    authz,
+    bank,
+    distribution,
+    feegrant,
+    gov,
+    ibc,
+    ibc_timeout_timestamp,
+    staking,
+)
 from .qorechain import (
     abstractaccount,
     amm,
@@ -28,6 +37,7 @@ from .qorechain import (
     pqc,
     rdk,
     rlconsensus,
+    stakingtier,
     svm,
 )
 from .registry import (
@@ -68,6 +78,7 @@ msg = SimpleNamespace(
     abstractaccount=abstractaccount,
     crossvm=crossvm,
     rlconsensus=rlconsensus,
+    stakingtier=stakingtier,
 )
 
 __all__ = [
@@ -82,6 +93,7 @@ __all__ = [
     "authz",
     "feegrant",
     "ibc",
+    "ibc_timeout_timestamp",
     "amm",
     "bridge",
     "rdk",
@@ -93,6 +105,7 @@ __all__ = [
     "abstractaccount",
     "crossvm",
     "rlconsensus",
+    "stakingtier",
     # registry
     "qorechain_registry",
     "resolve_message_type",

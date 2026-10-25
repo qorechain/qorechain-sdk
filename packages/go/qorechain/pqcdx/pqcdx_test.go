@@ -253,6 +253,10 @@ func TestEnsureAlreadyRegisteredNoTx(t *testing.T) {
 	if !res.AlreadyRegistered {
 		t.Error("expected AlreadyRegistered=true")
 	}
+	// The qor_* answer carried no key and there is no RestURL to read it from.
+	if res.KeyVerified {
+		t.Error("a key that could not be compared must not read as verified")
+	}
 	if res.TxHash != "" {
 		t.Errorf("expected no tx hash, got %q", res.TxHash)
 	}
@@ -274,8 +278,8 @@ func TestEnsureMissingBroadcasts(t *testing.T) {
 	if err != nil {
 		t.Fatalf("EnsurePQCRegistered: %v", err)
 	}
-	if res.AlreadyRegistered {
-		t.Error("expected AlreadyRegistered=false")
+	if res.AlreadyRegistered || res.KeyVerified {
+		t.Errorf("expected AlreadyRegistered=false KeyVerified=false, got %+v", res)
 	}
 	if res.TxHash != "ABC123" {
 		t.Errorf("TxHash = %q, want ABC123", res.TxHash)

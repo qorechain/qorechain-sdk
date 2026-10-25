@@ -19,7 +19,8 @@ var (
 )
 
 // keyServer is a fake REST endpoint whose status route answers, in turn, each
-// of keys (nil = {"found": false}; the last answer repeats). Broadcasts answer
+// of keys (nil = {"found": false}, empty = found without a key; the last answer
+// repeats). Broadcasts answer
 // with refusal when set, else success. It counts status reads and broadcasts.
 type keyServer struct {
 	*httptest.Server
@@ -42,6 +43,10 @@ func newKeyServer(t *testing.T, refusal string, keys ...[]byte) *keyServer {
 			ks.reads++
 			if k == nil {
 				_, _ = w.Write([]byte(`{"found":false,"account":null}`))
+				return
+			}
+			if len(k) == 0 {
+				_, _ = w.Write([]byte(`{"found":true,"account":{}}`))
 				return
 			}
 			_, _ = w.Write([]byte(`{"found":true,"account":{"public_key":"` + base64.StdEncoding.EncodeToString(k) + `"}}`))
@@ -104,7 +109,7 @@ func TestEnsureRereadsSoACachedPreRotationKeyIsNoFalseAlarm(t *testing.T) {
 		t.Fatal(err)
 	}
 	res, err := New(signer, Options{}).EnsurePQCRegistered(RegisterOptions{})
-	if err != nil || !res.AlreadyRegistered {
+	if err != nil || !res.AlreadyRegistered || !res.KeyVerified {
 		t.Fatalf("%+v %v", res, err)
 	}
 	if ks.broadcasts != 0 {
@@ -148,18 +153,46 @@ func TestEnsureComparesAStatusReadOverQorRPC(t *testing.T) {
 				}
 				return
 			}
-			if err != nil || !res.AlreadyRegistered {
+			if err != nil || !res.AlreadyRegistered || !res.KeyVerified {
 				t.Fatalf("%+v %v", res, err)
 			}
 		})
 	}
 }
 
-func TestEnsureTakesAStatusWithoutAKeyAsRegistered(t *testing.T) {
+func TestEnsureDoesNotCountAStatusWithoutAKeyAsAMatch(t *testing.T) {
+	// Nothing to read the key from: registered, but not verified as yours.
 	q := &fakeQor{resp: json.RawMessage(`{"registered":true}`)}
 	res, err := New(testSigner(t), Options{Qor: q}).EnsurePQCRegistered(RegisterOptions{})
-	if err != nil || !res.AlreadyRegistered {
+	if err != nil || !res.AlreadyRegistered || res.KeyVerified {
 		t.Fatalf("%+v %v", res, err)
+	}
+
+	// With REST, an answer without the key is read again uncached and compared.
+	ks := newKeyServer(t, "", []byte{}, mineKP.PublicKey)
+	res, err = New(restSigner(t, ks.URL), Options{}).EnsurePQCRegistered(RegisterOptions{})
+	if err != nil || !res.AlreadyRegistered || !res.KeyVerified {
+		t.Fatalf("%+v %v", res, err)
+	}
+	if ks.reads != 2 || ks.broadcasts != 0 {
+		t.Fatalf("reads %d broadcasts %d", ks.reads, ks.broadcasts)
+	}
+
+	ks = newKeyServer(t, "", []byte{}, otherKP.PublicKey)
+	_, err = New(restSigner(t, ks.URL), Options{}).EnsurePQCRegistered(RegisterOptions{})
+	var mm *PQCKeyMismatchError
+	if !errors.As(err, &mm) || !bytes.Equal(mm.RegisteredPublicKey, otherKP.PublicKey) {
+		t.Fatalf("expected *PQCKeyMismatchError, got %v", err)
+	}
+	if ks.broadcasts != 0 {
+		t.Fatalf("sent %d transactions", ks.broadcasts)
+	}
+
+	// Still no key after the re-read: registered, not verified.
+	ks = newKeyServer(t, "", []byte{})
+	res, err = New(restSigner(t, ks.URL), Options{}).EnsurePQCRegistered(RegisterOptions{})
+	if err != nil || !res.AlreadyRegistered || res.KeyVerified || ks.broadcasts != 0 {
+		t.Fatalf("%+v %v broadcasts %d", res, err, ks.broadcasts)
 	}
 }
 
@@ -174,10 +207,52 @@ func TestEnsureChecksTheKeyAfterAnAlreadyRegisteredRefusal(t *testing.T) {
 
 	ks = newKeyServer(t, alreadyRegisteredRefusal, nil, mineKP.PublicKey)
 	res, err := New(restSigner(t, ks.URL), Options{}).EnsurePQCRegistered(RegisterOptions{})
-	if err != nil || !res.AlreadyRegistered {
+	if err != nil || !res.AlreadyRegistered || !res.KeyVerified {
+		t.Fatalf("%+v %v", res, err)
+	}
+
+	// The re-read carries no key: registered meanwhile, but not verified.
+	ks = newKeyServer(t, alreadyRegisteredRefusal, nil, []byte{})
+	res, err = New(restSigner(t, ks.URL), Options{}).EnsurePQCRegistered(RegisterOptions{})
+	if err != nil || !res.AlreadyRegistered || res.KeyVerified {
 		t.Fatalf("%+v %v", res, err)
 	}
 }
+
+func TestFetchPQCStatusReadsPossessionProven(t *testing.T) {
+	for _, tc := range []struct {
+		field string
+		want  *bool
+	}{
+		{`,"possession_proven":true`, ptr(true)},
+		{`,"possession_proven":false`, ptr(false)},
+		{``, nil}, // a node below v3.2.4
+	} {
+		ClearPQCStatusCache()
+		srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+			_, _ = w.Write([]byte(`{"found":true,"account":{"public_key":"AQID"` + tc.field + `}}`))
+		}))
+		s, err := FetchPQCStatus(srv.URL, "qor1x")
+		srv.Close()
+		if err != nil {
+			t.Fatal(err)
+		}
+		if (s.PossessionProven == nil) != (tc.want == nil) || (tc.want != nil && *s.PossessionProven != *tc.want) {
+			t.Fatalf("%q: %v", tc.field, s.PossessionProven)
+		}
+		if tc.want == nil {
+			continue
+		}
+		// Cached with the rest of the status, and a copy each time.
+		*s.PossessionProven = !*tc.want
+		again, err := FetchPQCStatus(srv.URL, "qor1x")
+		if err != nil || again.PossessionProven == nil || *again.PossessionProven != *tc.want {
+			t.Fatalf("cached: %v %v", again.PossessionProven, err)
+		}
+	}
+}
+
+func ptr[T any](v T) *T { return &v }
 
 func TestFetchPQCStatusCacheKeepsTheKey(t *testing.T) {
 	ks := newKeyServer(t, "", mineKP.PublicKey)

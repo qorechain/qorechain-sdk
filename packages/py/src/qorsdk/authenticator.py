@@ -24,8 +24,8 @@ a mismatch is rejected on-chain (codespace ``abstractaccount``: code 11 replay /
 per-authenticator sequence for ``(account, pubkey)``: a counter the chain keeps
 for each linked key, starting at 0 and incremented by each successful execution.
 For the EVM lane it is NOT the account's EVM nonce (the chain checks this counter
-since v3.2.0). There is no query for it yet, so track it per linked key; a
-mismatch is refused with abstractaccount code 11.
+since v3.2.0). Read it with :func:`fetch_auth_nonce` (chain v3.2.4); a mismatch
+is refused with abstractaccount code 11.
 """
 
 from __future__ import annotations
@@ -34,6 +34,7 @@ import hashlib
 import re
 from dataclasses import dataclass
 from typing import Any
+from urllib.parse import quote
 
 from cosmpy.protos.cosmos.base.v1beta1.coin_pb2 import Coin
 from dilithium_py.ml_dsa import ML_DSA_87
@@ -157,6 +158,76 @@ def evm_auth_digest_version(rest: Any, *, cache_key: str | None = None) -> str:
     has applied v3.2.3, ``"v1"`` before. Raises when the node cannot be asked —
     never guess, the other form is refused."""
     return "v2" if is_upgrade_applied(rest, CHAIN_UPGRADE_V3_2_3, cache_key=cache_key) else "v1"
+
+
+@dataclass(frozen=True)
+class AuthNonce:
+    """A linked key's sequence, from :func:`fetch_auth_nonce`."""
+
+    #: The nonce the next ``MsgExecuteEVM`` / ``MsgExecuteCosmos`` from this key
+    #: must carry.
+    nonce: int
+    #: Whether the key is currently linked (present and not revoked); the counter
+    #: is kept either way.
+    linked: bool
+
+
+_HEX = re.compile(r"^[0-9a-fA-F]+$")
+
+
+def auth_nonce_path(address: str, pubkey: bytes | str) -> str:
+    """The REST path of the ``auth_nonce`` query for ``(address, pubkey)``.
+
+    :param pubkey: The authenticator public key: bytes, or hex (``0x`` optional).
+    :raises ValueError: If ``pubkey`` is empty, not hex, or of odd length.
+    """
+    if isinstance(pubkey, (bytes, bytearray)):
+        hex_key = bytes(pubkey).hex()
+    elif isinstance(pubkey, str):
+        hex_key = pubkey[2:] if pubkey[:2] in ("0x", "0X") else pubkey
+    else:
+        hex_key = ""
+    if not _HEX.match(hex_key) or len(hex_key) % 2 != 0:
+        raise ValueError("fetch_auth_nonce: pubkey must be bytes or a hex string")
+    return f"/qorechain/abstractaccount/v1/auth_nonce/{quote(address, safe='')}/{hex_key}"
+
+
+def parse_auth_nonce(payload: Any) -> AuthNonce:
+    """Parse an ``auth_nonce`` REST payload.
+
+    :raises ValueError: When the answer carries no nonce.
+    """
+    raw = payload.get("nonce") if isinstance(payload, dict) else None
+    if isinstance(raw, bool) or not isinstance(raw, (int, str)):
+        raise ValueError("auth_nonce query: no nonce in the answer")
+    try:
+        nonce = int(raw.strip(), 10) if isinstance(raw, str) else raw
+    except ValueError:
+        raise ValueError(f"auth_nonce query: nonce is not an integer: {raw!r}") from None
+    return AuthNonce(nonce=nonce, linked=payload.get("linked") is True)
+
+
+def fetch_auth_nonce(rest: Any, address: str, pubkey: bytes | str) -> AuthNonce:
+    """Read the sequence a linked authenticator key must sign next
+    (``/qorechain/abstractaccount/v1/auth_nonce/{address}/{pubkey_hex}``, chain
+    v3.2.4).
+
+    This is the ``nonce`` of :func:`evm_auth_sign_bytes` /
+    :func:`evm_auth_sign_bytes_v2` / :func:`cosmos_auth_sign_bytes`: the key's
+    own counter, not the account's EVM nonce. A key that never executed reads 0.
+
+    :param rest: A :class:`~qorsdk.rest.RestClient` (or anything with ``get``).
+    :param address: The ``qor1…`` account the key acts for.
+    :param pubkey: The authenticator public key: bytes, or hex (``0x`` optional).
+    :raises ValueError: If ``pubkey`` is not bytes or hex (nothing is sent), or
+        the answer carries no nonce.
+    """
+    return parse_auth_nonce(rest.get(auth_nonce_path(address, pubkey)))
+
+
+async def fetch_auth_nonce_async(rest: Any, address: str, pubkey: bytes | str) -> AuthNonce:
+    """Asynchronous mirror of :func:`fetch_auth_nonce`."""
+    return parse_auth_nonce(await rest.get(auth_nonce_path(address, pubkey)))
 
 
 def cosmos_auth_sign_bytes(
@@ -463,6 +534,11 @@ __all__ = [
     "be64",
     "lp",
     "evm_auth_sign_bytes",
+    "AuthNonce",
+    "auth_nonce_path",
+    "parse_auth_nonce",
+    "fetch_auth_nonce",
+    "fetch_auth_nonce_async",
     "cosmos_auth_sign_bytes",
     "rotation_sign_bytes",
     "execute_evm_msg",

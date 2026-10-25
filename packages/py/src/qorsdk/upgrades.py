@@ -7,9 +7,10 @@ upgrade does not get it ignored: the whole transaction is refused. A client
 therefore sets a release's new fields only after the network has applied that
 release, and this module is how it finds out.
 
-The chain has no query for its protocol features, but each release switches
-them on at its upgrade plan height, and the upgrade module reports the height at
-which a plan was applied. A plan name is the same on every network.
+Each release switches its protocol features on at its upgrade plan height, and
+the upgrade module reports the height at which a plan was applied. A plan name
+is the same on every network. From chain v3.2.4 the switches can also be read by
+name with :func:`qorsdk.protocol_features.fetch_protocol_features`.
 """
 
 from __future__ import annotations
@@ -28,6 +29,10 @@ CHAIN_UPGRADE_V3_2_2 = "v3.2.2"
 #: ``allowed_targets``), the abstract-account v2 digest and
 #: ``MsgUpdateAuthority``.
 CHAIN_UPGRADE_V3_2_3 = "v3.2.3"
+
+#: Staking tiers, the authenticator nonce and protocol-feature queries,
+#: ``possession_proven``, and the bridge validator's proof of possession.
+CHAIN_UPGRADE_V3_2_4 = "v3.2.4"
 
 #: How long a "not applied yet" answer is trusted before asking again, seconds.
 NOT_APPLIED_TTL_S = 60.0

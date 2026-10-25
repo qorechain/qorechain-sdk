@@ -122,7 +122,7 @@ def test_rereads_so_a_cached_key_from_before_a_rotation_is_no_false_alarm():
     _mock_status(OTHER.public_key, MINE.public_key)
     fetch_pqc_status(REST, ADDR)  # cached: the old key
     broadcast = _mock_node()
-    assert _ensure() == {"already_registered": True}
+    assert _ensure() == {"already_registered": True, "key_verified": True}
     assert broadcast.call_count == 0
 
 
@@ -131,7 +131,7 @@ def test_own_key_is_already_registered_with_one_read():
     clear_pqc_status_cache()
     status = _mock_status(MINE.public_key)
     broadcast = _mock_node()
-    assert _ensure() == {"already_registered": True}
+    assert _ensure() == {"already_registered": True, "key_verified": True}
     assert status.call_count == 1
     assert broadcast.call_count == 0
 
@@ -169,15 +169,39 @@ def test_pre_read_status_hex_or_bytes_is_compared():
 
 
 @respx.mock
-def test_status_without_a_key_is_already_registered():
+def test_status_without_a_key_is_not_counted_as_a_match():
     clear_pqc_status_cache()
-    respx.get(STATUS_URL).mock(
+    status = respx.get(STATUS_URL).mock(
         return_value=httpx.Response(200, json={"found": True, "account": None})
     )
     broadcast = _mock_node()
-    assert _ensure() == {"already_registered": True}
+    # Registered, but no answer carries the key: not verified as ours.
+    assert _ensure() == {"already_registered": True, "key_verified": False}
+    # The keyless answer was read once more, uncached, before deciding.
+    assert status.call_count == 2
     assert broadcast.call_count == 0
     assert is_registered_pqc_key({"registered": True}, MINE.public_key) is None
+
+
+@respx.mock
+def test_status_without_a_key_rereads_and_compares():
+    def keyless_then(key: bytes) -> list[httpx.Response]:
+        return [
+            httpx.Response(200, json={"found": True, "account": None}),
+            *_status_answers(key),
+        ]
+
+    for key, mine in ((MINE.public_key, True), (OTHER.public_key, False)):
+        clear_pqc_status_cache()
+        answers = iter(keyless_then(key))
+        respx.get(STATUS_URL).mock(side_effect=lambda _r, a=answers: next(a))
+        broadcast = _mock_node()
+        if mine:
+            assert _ensure() == {"already_registered": True, "key_verified": True}
+        else:
+            with pytest.raises(PqcKeyMismatchError):
+                _ensure()
+        assert broadcast.call_count == 0
 
 
 _REFUSED = {
@@ -204,7 +228,21 @@ def test_race_refusal_with_own_key_is_already_registered():
     clear_pqc_status_cache()
     _mock_status(None, MINE.public_key)
     _mock_node(_REFUSED)
-    assert _ensure() == {"already_registered": True}
+    assert _ensure() == {"already_registered": True, "key_verified": True}
+
+
+@respx.mock
+def test_race_refusal_with_an_unreadable_key_is_not_verified():
+    clear_pqc_status_cache()
+    answers = iter(
+        [
+            *_status_answers(None),
+            httpx.Response(200, json={"found": True, "account": None}),
+        ]
+    )
+    respx.get(STATUS_URL).mock(side_effect=lambda _r: next(answers))
+    _mock_node(_REFUSED)
+    assert _ensure() == {"already_registered": True, "key_verified": False}
 
 
 @respx.mock

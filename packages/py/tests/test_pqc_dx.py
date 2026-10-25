@@ -196,10 +196,12 @@ def test_ensure_pqc_registered_already_registered_no_tx():
         result = ensure_pqc_registered(
             pqc_keypair=generate_pqc_keypair(), qor=qor, **kwargs
         )
-    assert result == {"already_registered": True}
+    # The status carries no key, so it could not be compared with ours.
+    assert result == {"already_registered": True, "key_verified": False}
     assert route.called is False
-    # The status comes from REST (public endpoints do not expose qor_*).
-    assert status.call_count == 1
+    # The status comes from REST (public endpoints do not expose qor_*); the
+    # keyless answer is read once more, uncached, before deciding.
+    assert status.call_count == 2
     assert qor.calls == []
 
 
@@ -481,7 +483,8 @@ def test_ensure_treats_already_registered_refusal_as_success():
         )
     )
     res = ensure_pqc_registered(pqc_keypair=generate_pqc_keypair(), **kwargs)
-    assert res == {"already_registered": True}
+    # The re-read carries no key: registered, but not verified as ours.
+    assert res == {"already_registered": True, "key_verified": False}
 
 
 def _mock_check_tx(tx_response: dict):

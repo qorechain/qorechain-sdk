@@ -35,7 +35,15 @@ from ..proto.qorechain.multilayer.v1 import tx_pb2 as multilayer_tx
 from ..proto.qorechain.pqc.v1 import tx_pb2 as pqc_tx
 from ..proto.qorechain.rdk.v1 import tx_pb2 as rdk_tx
 from ..proto.qorechain.rlconsensus.v1 import tx_pb2 as rlconsensus_tx
+from ..proto.qorechain.stakingtier.v1 import tx_pb2 as stakingtier_tx
 from ..proto.qorechain.svm.v1 import tx_pb2 as svm_tx
+from ..stakingtier import (
+    CLAIM_BONUS_TYPE_URL,
+    LOCK_DELEGATION_TYPE_URL,
+    UNLOCK_EARLY_TYPE_URL,
+    UPDATE_STAKING_TIER_PARAMS_TYPE_URL,
+    validate_lock_delegation,
+)
 from ._composer import Msg, composer
 from .spending_rules import validate_spending_rules
 
@@ -64,6 +72,10 @@ bridge = SimpleNamespace(
     bridge_withdraw=composer(
         "/qorechain.bridge.v1.MsgBridgeWithdraw", bridge_tx.MsgBridgeWithdraw
     ),
+    # From chain v3.2.4 the registration carries ``proof_of_possession``: the
+    # PQC key's own signature in the x/pqc format with the validator address as
+    # the account, from ``qorsdk.sign_proof_of_possession(chain_id=...,
+    # account=validator_address, keypair=...)``.
     register_bridge_validator=composer(
         "/qorechain.bridge.v1.MsgRegisterBridgeValidator",
         bridge_tx.MsgRegisterBridgeValidator,
@@ -426,6 +438,46 @@ rlconsensus = SimpleNamespace(
     ),
 )
 
+# --------------------------------------------------------------------------- #
+# Staking tiers (chain v3.2.4): lock part of a delegation for 3, 6 or 12 months
+# for a bonus on top of the staking reward, leave a lock early (a penalty is
+# burned and the bonus forfeited), and claim the accrued bonus.
+# --------------------------------------------------------------------------- #
+
+
+def _lock_delegation(*, delegator: str, validator: str, amount: str, months: int) -> Msg:
+    """Build ``MsgLockDelegation``: lock ``amount`` (base units) of the
+    delegator's existing delegation to ``validator`` for ``months`` (3, 6 or 12).
+
+    :raises ValueError: Naming the field, from
+        :func:`~qorsdk.stakingtier.validate_lock_delegation`.
+    """
+    validate_lock_delegation(
+        delegator=delegator, validator=validator, amount=amount, months=months
+    )
+    return Msg(
+        type_url=LOCK_DELEGATION_TYPE_URL,
+        value=stakingtier_tx.MsgLockDelegation(
+            delegator=delegator, validator=validator, amount=amount, months=months
+        ),
+    )
+
+
+_lock_delegation.__name__ = "MsgLockDelegation"
+_lock_delegation.__qualname__ = "MsgLockDelegation"
+
+stakingtier = SimpleNamespace(
+    lock_delegation=_lock_delegation,
+    # Release lock ``lock_id`` before its term ends.
+    unlock_early=composer(UNLOCK_EARLY_TYPE_URL, stakingtier_tx.MsgUnlockEarly),
+    # Claim the holder's accrued bonus.
+    claim_bonus=composer(CLAIM_BONUS_TYPE_URL, stakingtier_tx.MsgClaimBonus),
+    # Governance: replace the module parameters.
+    update_params=composer(
+        UPDATE_STAKING_TIER_PARAMS_TYPE_URL, stakingtier_tx.MsgUpdateParams
+    ),
+)
+
 __all__ = [
     "amm",
     "bridge",
@@ -438,4 +490,5 @@ __all__ = [
     "abstractaccount",
     "crossvm",
     "rlconsensus",
+    "stakingtier",
 ]

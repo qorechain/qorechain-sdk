@@ -14,9 +14,9 @@ import java.util.Set;
  * The QoreChain message registry: a {@code typeUrl → protobuf Parser} map plus
  * Native {@link Any} pack/unpack.
  *
- * <p>Covers all 61 QoreChain custom-module {@code Msg} types (amm, bridge, rdk,
+ * <p>Covers all 70 QoreChain custom-module {@code Msg} types (amm, bridge, rdk,
  * multilayer, pqc, svm, lightnode, license, abstractaccount, crossvm,
- * rlconsensus) and the standard Native messages exposed by {@link CosmosMessages}.
+ * rlconsensus, stakingtier) and the standard Native messages exposed by {@link CosmosMessages}.
  *
  * <p>The Native lane packs messages into {@code Any} with a bare leading-slash type URL
  * (e.g. {@code /qorechain.amm.v1.MsgCreatePool}) — NOT protobuf-java's default
@@ -127,10 +127,16 @@ public final class Messages {
         m.put("/qorechain.rlconsensus.v1.MsgUpdatePolicy", qorechain.rlconsensus.v1.Tx.MsgUpdatePolicy.parser());
         m.put("/qorechain.rlconsensus.v1.MsgUpdateRewardWeights", qorechain.rlconsensus.v1.Tx.MsgUpdateRewardWeights.parser());
 
+        // ---- stakingtier (4, chain v3.2.4) ----
+        m.put("/qorechain.stakingtier.v1.MsgLockDelegation", qorechain.stakingtier.v1.Tx.MsgLockDelegation.parser());
+        m.put("/qorechain.stakingtier.v1.MsgUnlockEarly", qorechain.stakingtier.v1.Tx.MsgUnlockEarly.parser());
+        m.put("/qorechain.stakingtier.v1.MsgClaimBonus", qorechain.stakingtier.v1.Tx.MsgClaimBonus.parser());
+        m.put("/qorechain.stakingtier.v1.MsgUpdateParams", qorechain.stakingtier.v1.Tx.MsgUpdateParams.parser());
+
         REGISTRY = Collections.unmodifiableMap(m);
     }
 
-    /** All registered type URLs (Native standard + 61 QoreChain customs). */
+    /** All registered type URLs (Native standard + 70 QoreChain customs). */
     public static Set<String> typeUrls() {
         return REGISTRY.keySet();
     }

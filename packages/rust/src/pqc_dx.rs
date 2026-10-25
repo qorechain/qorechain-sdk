@@ -80,6 +80,11 @@ pub struct PqcStatus {
     /// The registered PQC public key, when the chain returns it (decoded from a
     /// hex or base64 string, or a JSON byte array).
     pub pubkey: Option<Vec<u8>>,
+    /// Whether the key was proven by a proof of possession (chain v3.2.4): a
+    /// registration carrying a valid proof, or a rotation or migration.
+    /// `Some(false)` for a key registered without one; `None` on nodes below
+    /// v3.2.4 (and from `qor_getPQCKeyStatus`, which does not carry it).
+    pub possession_proven: Option<bool>,
 }
 
 /// The result of [`PqcDx::ensure_pqc_registered`].
@@ -87,6 +92,12 @@ pub struct PqcStatus {
 pub struct EnsureResult {
     /// `true` when the key was already registered (no transaction was sent).
     pub already_registered: bool,
+    /// Whether the registered key was compared with
+    /// [`PqcDx::pqc_public_key`] and matched: `Some(true)` when it was,
+    /// `Some(false)` when the account has a key and no answer carried it, so
+    /// it could not be checked (do not assume it is yours). `None` when a
+    /// registration was sent.
+    pub key_verified: Option<bool>,
     /// The registration transaction hash, when a registration was broadcast.
     pub tx_hash: Option<String>,
 }
@@ -164,14 +175,16 @@ impl PqcDx {
     /// idempotent.
     ///
     /// When the account already has a key, this returns
-    /// `EnsureResult { already_registered: true, tx_hash: None }` WITHOUT
-    /// broadcasting, provided the registered key is [`PqcDx::pqc_public_key`].
-    /// When it is a different key it returns [`Error::PqcKeyMismatch`] and sends
-    /// nothing: every hybrid transaction signed with this keypair would be
-    /// refused. (A status that carries no public key cannot be compared and is
-    /// taken as registered; the REST route always carries it.) Otherwise it
-    /// builds and broadcasts `MsgRegisterPQCKeyV2` with the signer's Dilithium
-    /// public key plus its classical ECDSA public key.
+    /// `EnsureResult { already_registered: true, key_verified: Some(true), .. }`
+    /// WITHOUT broadcasting, provided the registered key is
+    /// [`PqcDx::pqc_public_key`]. When it is a different key it returns
+    /// [`Error::PqcKeyMismatch`] and sends nothing: every hybrid transaction
+    /// signed with this keypair would be refused. A cached status that carries
+    /// no public key is re-read uncached and compared; when no answer carries
+    /// the key the result says `key_verified: Some(false)` instead of claiming
+    /// the key is yours (the REST route always carries it). Otherwise it builds
+    /// and broadcasts `MsgRegisterPQCKeyV2` with the signer's Dilithium public
+    /// key plus its classical ECDSA public key.
     ///
     /// This is the single call that makes a dApp quantum-safe: run it once at
     /// startup (or before the first hybrid tx) and the account is PQC-protected
@@ -184,18 +197,23 @@ impl PqcDx {
     /// different key, the status is read once more uncached (a rotation may
     /// have just landed). A refusal as "already registered" (`pqc` 7) counts as
     /// `already_registered` once the key on chain is confirmed to be this one
-    /// (or carries none); any other non-zero CheckTx code in the broadcast
-    /// answer is returned as [`Error::Tx`].
+    /// (`key_verified: Some(true)`) or carries none (`Some(false)`); any other
+    /// non-zero CheckTx code in the broadcast answer is returned as
+    /// [`Error::Tx`].
     pub async fn ensure_pqc_registered(&self) -> Result<EnsureResult> {
         let status = fetch_pqc_status(&self.rest_url, &self.sender).await?;
         if status.registered {
             // Registered, but by whom? A different key means this signer's hybrid
             // transactions would all be refused; say so now rather than "done".
-            if is_registered_pqc_key(&status, &self.pqc_public_key) == Some(false) {
-                self.check_registered_key_uncached().await?;
-            }
+            // A status without the key cannot be compared: re-read it rather
+            // than take "registered" for "yours".
+            let key_verified = match is_registered_pqc_key(&status, &self.pqc_public_key) {
+                Some(true) => true,
+                _ => self.check_registered_key_uncached().await?,
+            };
             return Ok(EnsureResult {
                 already_registered: true,
+                key_verified: Some(key_verified),
                 tx_hash: None,
             });
         }
@@ -220,9 +238,10 @@ impl PqcDx {
         if is_already_registered(&resp) {
             // The key was registered after all (a race, or a stale answer): fine
             // when it is this signer's key, an error when it is another.
-            self.check_registered_key_uncached().await?;
+            let key_verified = self.check_registered_key_uncached().await?;
             return Ok(EnsureResult {
                 already_registered: true,
+                key_verified: Some(key_verified),
                 tx_hash: None,
             });
         }
@@ -232,6 +251,7 @@ impl PqcDx {
         }
         Ok(EnsureResult {
             already_registered: false,
+            key_verified: None,
             tx_hash: extract_tx_hash(&resp),
         })
     }
@@ -443,10 +463,14 @@ impl PqcDx {
     /// Reads the status once more, bypassing the cache, and fails with
     /// [`Error::PqcKeyMismatch`] when the account is registered with a key other
     /// than [`PqcDx::pqc_public_key`].
-    async fn check_registered_key_uncached(&self) -> Result<()> {
+    /// Re-reads the status uncached: [`Error::PqcKeyMismatch`] when the key on
+    /// chain is another, otherwise whether it was compared and matched
+    /// (`false` when the answer carries no key).
+    async fn check_registered_key_uncached(&self) -> Result<bool> {
         forget_pqc_status(&self.rest_url, &self.sender);
         let now = fetch_pqc_status(&self.rest_url, &self.sender).await?;
-        if now.registered && is_registered_pqc_key(&now, &self.pqc_public_key) == Some(false) {
+        let matched = is_registered_pqc_key(&now, &self.pqc_public_key);
+        if now.registered && matched == Some(false) {
             return Err(PqcKeyMismatchError::new(
                 &self.sender,
                 pqc_status_public_key(&now).unwrap_or_default().to_vec(),
@@ -454,7 +478,7 @@ impl PqcDx {
             )
             .into());
         }
-        Ok(())
+        Ok(matched == Some(true))
     }
 
     fn key_type(&self) -> String {
@@ -624,6 +648,7 @@ fn parse_pqc_status(raw: &Value) -> Result<PqcStatus> {
         registered,
         algorithm_id,
         pubkey,
+        possession_proven: None,
     })
 }
 
@@ -762,6 +787,8 @@ pub async fn fetch_pqc_status(rest_url: &str, address: &str) -> Result<PqcStatus
                         algorithm_id: field(&["algorithm_id", "algorithmId", "algorithm"])
                             .and_then(as_u8),
                         pubkey: field(&["public_key", "publicKey"]).and_then(decode_pubkey),
+                        possession_proven: field(&["possession_proven", "possessionProven"])
+                            .and_then(Value::as_bool),
                     };
                     REGISTERED_CACHE
                         .lock()

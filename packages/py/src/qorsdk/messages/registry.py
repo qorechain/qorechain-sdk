@@ -52,6 +52,7 @@ from ..proto.qorechain.multilayer.v1 import tx_pb2 as multilayer_tx
 from ..proto.qorechain.pqc.v1 import tx_pb2 as pqc_tx
 from ..proto.qorechain.rdk.v1 import tx_pb2 as rdk_tx
 from ..proto.qorechain.rlconsensus.v1 import tx_pb2 as rlconsensus_tx
+from ..proto.qorechain.stakingtier.v1 import tx_pb2 as stakingtier_tx
 from ..proto.qorechain.svm.v1 import tx_pb2 as svm_tx
 
 #: A protobuf message class (callable producing a message instance).
@@ -159,6 +160,11 @@ QORECHAIN_REGISTRY_TYPES: dict[str, ProtoType] = {
     # crossvm
     "/qorechain.crossvm.v1.MsgCrossVMCall": crossvm_tx.MsgCrossVMCall,
     "/qorechain.crossvm.v1.MsgProcessQueue": crossvm_tx.MsgProcessQueue,
+    # stakingtier (chain v3.2.4)
+    "/qorechain.stakingtier.v1.MsgLockDelegation": stakingtier_tx.MsgLockDelegation,
+    "/qorechain.stakingtier.v1.MsgUnlockEarly": stakingtier_tx.MsgUnlockEarly,
+    "/qorechain.stakingtier.v1.MsgClaimBonus": stakingtier_tx.MsgClaimBonus,
+    "/qorechain.stakingtier.v1.MsgUpdateParams": stakingtier_tx.MsgUpdateParams,
     # rlconsensus
     "/qorechain.rlconsensus.v1.MsgSetAgentMode": rlconsensus_tx.MsgSetAgentMode,
     "/qorechain.rlconsensus.v1.MsgResumeAgent": rlconsensus_tx.MsgResumeAgent,

@@ -383,12 +383,29 @@ fn all_custom_type_urls_are_produced() {
             "/qorechain.rlconsensus.v1.MsgUpdateRewardWeights",
             msg::rlconsensus::update_reward_weights_any(addr, "1", "1", "1", "1", "1"),
         ),
+        // stakingtier (4, chain v3.2.4)
+        (
+            "/qorechain.stakingtier.v1.MsgLockDelegation",
+            msg::stakingtier::lock_delegation_any(addr, "qorvaloper1v", "10000000", 3).unwrap(),
+        ),
+        (
+            "/qorechain.stakingtier.v1.MsgUnlockEarly",
+            msg::stakingtier::unlock_early_any(addr, 1),
+        ),
+        (
+            "/qorechain.stakingtier.v1.MsgClaimBonus",
+            msg::stakingtier::claim_bonus_any(addr),
+        ),
+        (
+            "/qorechain.stakingtier.v1.MsgUpdateParams",
+            msg::stakingtier::update_params_any(&Default::default()),
+        ),
     ];
 
     assert_eq!(
         cases.len(),
-        59,
-        "exactly 59 custom messages must be covered"
+        63,
+        "exactly 63 custom messages must be covered"
     );
     for (want_url, any) in &cases {
         assert_eq!(&any.type_url, want_url, "type URL mismatch");
@@ -398,7 +415,8 @@ fn all_custom_type_urls_are_produced() {
                 || want_url.ends_with("MsgResumeAgent")
                 || want_url.ends_with("MsgHeartbeat")
                 || want_url.ends_with("MsgDeregisterLightNode")
-                || want_url.ends_with("MsgClaimLightNodeRewards"),
+                || want_url.ends_with("MsgClaimLightNodeRewards")
+                || want_url.ends_with("stakingtier.v1.MsgUpdateParams"),
             "expected non-empty value for {want_url}"
         );
     }

@@ -77,6 +77,11 @@ type Status struct {
 	AlgorithmID uint8
 	// Pubkey is the registered PQC public key bytes (nil when unregistered).
 	Pubkey []byte
+	// PossessionProven reports whether the key was proven by a proof of
+	// possession (chain v3.2.4): a registration carrying a valid proof, or a
+	// rotation or migration. False for a key registered without one; nil on
+	// nodes below v3.2.4 and over qor_getPQCKeyStatus. Read over REST only.
+	PossessionProven *bool
 }
 
 // statusWire tolerantly decodes the qor_getPQCKeyStatus response. The chain
@@ -201,6 +206,10 @@ func forgetStatus(restURL, address string) {
 
 func cloneStatus(s Status) Status {
 	s.Pubkey = bytes.Clone(s.Pubkey)
+	if s.PossessionProven != nil {
+		v := *s.PossessionProven
+		s.PossessionProven = &v
+	}
 	return s
 }
 
@@ -232,8 +241,9 @@ func FetchPQCStatus(restURL, address string) (Status, error) {
 		var body struct {
 			Found   *bool `json:"found"`
 			Account *struct {
-				AlgorithmID *uint8   `json:"algorithm_id"`
-				PublicKey   keyField `json:"public_key"`
+				AlgorithmID      *uint8   `json:"algorithm_id"`
+				PublicKey        keyField `json:"public_key"`
+				PossessionProven *bool    `json:"possession_proven"`
 			} `json:"account"`
 		}
 		if err := json.Unmarshal(raw, &body); err != nil || body.Found == nil {
@@ -249,6 +259,7 @@ func FetchPQCStatus(restURL, address string) (Status, error) {
 				s.AlgorithmID = *body.Account.AlgorithmID
 			}
 			s.Pubkey = body.Account.PublicKey
+			s.PossessionProven = body.Account.PossessionProven
 		}
 		registeredMu.Lock()
 		registeredCache[key] = cloneStatus(s)
@@ -435,6 +446,13 @@ type EnsureResult struct {
 	// AlreadyRegistered is true when the address already had a PQC key and no
 	// transaction was broadcast.
 	AlreadyRegistered bool
+	// KeyVerified reports, when AlreadyRegistered is true, whether the
+	// registered key was compared with Signer.PQCKeypair and matched. It is
+	// false only when the account has a key and no answer carried it (a
+	// qor_getPQCKeyStatus answer without the key, and no Signer.RestURL to read
+	// it from): the key could not be checked, so do not assume it is yours.
+	// Always false when a registration was sent.
+	KeyVerified bool
 	// TxHash is the registration tx hash. Empty when AlreadyRegistered is true.
 	TxHash string
 }
@@ -480,8 +498,9 @@ func (c *Client) registerMessage(keyType string, proofOfPossession []byte) (*pqc
 // Signer.PQCKeypair: the same key returns AlreadyRegistered without
 // broadcasting; a different key returns a *PQCKeyMismatchError and nothing is
 // sent, since every hybrid transaction signed with the Signer's key would be
-// refused. (A status that carries no public key cannot be compared and is taken
-// as registered; the REST route always carries it.) Otherwise it builds and
+// refused. A status that carries no public key is re-read uncached over REST
+// (Signer.RestURL); when there is no REST URL either, the result says
+// KeyVerified false instead of claiming the key is yours. Otherwise it builds and
 // broadcasts a MsgRegisterPQCKeyV2 carrying the signer's Dilithium and ECDSA
 // public keys. A refusal as "already registered" (pqc 7) counts as
 // AlreadyRegistered, after the same key comparison; any other non-zero code is
@@ -495,12 +514,27 @@ func (c *Client) EnsurePQCRegistered(opts RegisterOptions) (EnsureResult, error)
 		if s.Registered {
 			// Registered, but by whom? A different key means the Signer's hybrid
 			// transactions would all be refused; say so now rather than "done".
-			if match, known := IsRegisteredPQCKey(s, c.signer.PQCKeypair.PublicKey); known && !match {
+			match, known := IsRegisteredPQCKey(s, c.signer.PQCKeypair.PublicKey)
+			switch {
+			case known && !match:
 				if err := c.checkStillMismatched(s); err != nil {
 					return EnsureResult{}, err
 				}
+				match = true
+			case !known && c.signer.RestURL != "":
+				// The answer carried no key: read it over REST rather than
+				// take "registered" for "yours".
+				forgetStatus(c.signer.RestURL, c.signer.Account.Address)
+				fresh, err := FetchPQCStatus(c.signer.RestURL, c.signer.Account.Address)
+				if err != nil {
+					return EnsureResult{}, err
+				}
+				if err := c.mismatchError(fresh); err != nil {
+					return EnsureResult{}, err
+				}
+				match, _ = IsRegisteredPQCKey(fresh, c.signer.PQCKeypair.PublicKey)
 			}
-			return EnsureResult{AlreadyRegistered: true}, nil
+			return EnsureResult{AlreadyRegistered: true, KeyVerified: match}, nil
 		}
 	}
 	// From chain v3.2.3 the registration carries a proof that the registrant
@@ -570,7 +604,10 @@ func (c *Client) registeredMeanwhile() (EnsureResult, error) {
 		if err := c.mismatchError(now); err != nil {
 			return EnsureResult{}, err
 		}
+		match, _ := IsRegisteredPQCKey(now, c.signer.PQCKeypair.PublicKey)
+		return EnsureResult{AlreadyRegistered: true, KeyVerified: match}, nil
 	}
+	// Nothing to read the key from: registered, but not verified as the Signer's.
 	return EnsureResult{AlreadyRegistered: true}, nil
 }
 

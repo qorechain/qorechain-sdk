@@ -50,7 +50,8 @@ struct MockServer {
 
 impl MockServer {
     /// `keys`: the registered key each status read answers (`None` = not
-    /// registered); the last one repeats.
+    /// registered, an empty key = registered with no key in the answer); the
+    /// last one repeats.
     async fn start(keys: Vec<Option<Vec<u8>>>, broadcast_body: &'static str) -> Self {
         let listener = TcpListener::bind("127.0.0.1:0").await.unwrap();
         let base_url = format!("http://{}", listener.local_addr().unwrap());
@@ -82,6 +83,9 @@ impl MockServer {
                                         let key = &keys[(*n).min(keys.len() - 1)];
                                         *n += 1;
                                         match key {
+                                            Some(k) if k.is_empty() => {
+                                                r#"{"found":true,"account":{"algorithm_id":1}}"#.to_string()
+                                            }
                                             Some(k) => format!(
                                                 r#"{{"found":true,"account":{{"public_key":"{}","algorithm_id":1}}}}"#,
                                                 BASE64.encode(k)
@@ -204,6 +208,7 @@ async fn cached_old_key_is_re_read_before_failing() {
 
     let res = dx.ensure_pqc_registered().await.unwrap();
     assert!(res.already_registered);
+    assert_eq!(res.key_verified, Some(true));
     assert_eq!(server.broadcasts(), 0);
     assert_eq!(server.status_reads(), 2);
 }
@@ -215,9 +220,43 @@ async fn own_key_registered_is_already_registered() {
     let dx = make_dx(&server.base_url, &mine);
     let res = dx.ensure_pqc_registered().await.unwrap();
     assert!(res.already_registered);
+    assert_eq!(res.key_verified, Some(true));
     assert_eq!(res.tx_hash, None);
     assert_eq!(server.broadcasts(), 0);
     assert_eq!(server.status_reads(), 1);
+}
+
+#[tokio::test]
+async fn status_without_a_key_is_not_counted_as_a_match() {
+    // The first answer carries no key: it is re-read uncached and compared.
+    let (mine, other) = (mine(), other());
+    let server = MockServer::start(
+        vec![Some(Vec::new()), Some(mine.public_key.clone())],
+        OK_BROADCAST,
+    )
+    .await;
+    let dx = make_dx(&server.base_url, &mine);
+    let res = dx.ensure_pqc_registered().await.unwrap();
+    assert!(res.already_registered);
+    assert_eq!(res.key_verified, Some(true));
+    assert_eq!(server.status_reads(), 2);
+
+    // Re-read with another key: a mismatch.
+    let server = MockServer::start(
+        vec![Some(Vec::new()), Some(other.public_key.clone())],
+        OK_BROADCAST,
+    )
+    .await;
+    let dx = make_dx(&server.base_url, &mine);
+    mismatch(dx.ensure_pqc_registered().await.unwrap_err());
+
+    // No answer carries the key: registered, but not verified as yours.
+    let server = MockServer::start(vec![Some(Vec::new())], OK_BROADCAST).await;
+    let dx = make_dx(&server.base_url, &mine);
+    let res = dx.ensure_pqc_registered().await.unwrap();
+    assert!(res.already_registered);
+    assert_eq!(res.key_verified, Some(false));
+    assert_eq!(server.broadcasts(), 0);
 }
 
 #[tokio::test]
@@ -250,7 +289,18 @@ async fn race_refusal_with_own_key_is_already_registered() {
     let dx = make_dx(&server.base_url, &mine);
     let res = dx.ensure_pqc_registered().await.unwrap();
     assert!(res.already_registered);
+    assert_eq!(res.key_verified, Some(true));
     assert_eq!(res.tx_hash, None);
+}
+
+#[tokio::test]
+async fn race_refusal_without_a_readable_key_is_not_verified() {
+    let mine = mine();
+    let server = MockServer::start(vec![None, Some(Vec::new())], REFUSED_ALREADY).await;
+    let dx = make_dx(&server.base_url, &mine);
+    let res = dx.ensure_pqc_registered().await.unwrap();
+    assert!(res.already_registered);
+    assert_eq!(res.key_verified, Some(false));
 }
 
 #[tokio::test]
@@ -307,5 +357,6 @@ async fn check_tx_code_zero_returns_the_hash() {
     let dx = make_dx(&server.base_url, &mine);
     let res = dx.ensure_pqc_registered().await.unwrap();
     assert!(!res.already_registered);
+    assert_eq!(res.key_verified, None);
     assert_eq!(res.tx_hash.as_deref(), Some("SENT"));
 }

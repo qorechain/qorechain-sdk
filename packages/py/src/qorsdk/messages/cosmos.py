@@ -11,6 +11,8 @@ Builders are grouped per module into a small namespace object.
 
 from __future__ import annotations
 
+import math
+from datetime import datetime, timezone
 from types import SimpleNamespace
 
 from cosmpy.protos.cosmos.authz.v1beta1.tx_pb2 import MsgExec, MsgGrant, MsgRevoke
@@ -89,6 +91,31 @@ feegrant = SimpleNamespace(
     revoke=composer("/cosmos.feegrant.v1beta1.MsgRevokeAllowance", MsgRevokeAllowance),
 )
 
+
+def ibc_timeout_timestamp(seconds: float, *, now: datetime | None = None) -> int:
+    """An absolute IBC timeout ``seconds`` from now, in the unit
+    ``MsgTransfer.timeout_timestamp`` takes: Unix time in NANOSECONDS.
+
+    ICS-20 timeouts are absolute: pass this, never a duration. (IBC v2 packets
+    take an absolute Unix time in SECONDS; a relative value there is refused
+    after the fee is charged.)
+
+    :param seconds: How far ahead, in seconds; must be positive.
+    :param now: The current time (defaults to the clock); a naive value is
+        read as local time.
+    :raises ValueError: If ``seconds`` is not a positive finite number.
+    """
+    if (
+        isinstance(seconds, bool)
+        or not isinstance(seconds, (int, float))
+        or not math.isfinite(seconds)
+        or seconds <= 0
+    ):
+        raise ValueError("ibc_timeout_timestamp: seconds must be positive")
+    base_ms = math.floor((now or datetime.now(timezone.utc)).timestamp() * 1000)
+    return (base_ms + math.ceil(seconds * 1000)) * 1_000_000
+
+
 #: IBC fungible-token-transfer message composers.
 ibc = SimpleNamespace(
     transfer=composer("/ibc.applications.transfer.v1.MsgTransfer", MsgTransfer),
@@ -102,4 +129,5 @@ __all__ = [
     "authz",
     "feegrant",
     "ibc",
+    "ibc_timeout_timestamp",
 ]

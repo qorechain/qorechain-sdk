@@ -147,6 +147,40 @@ MODULE_CODES: dict[str, dict[int, tuple[str, str]]] = {
             "the blocks bound, and that the account has a registered PQC key",
         ),
     },
+    # v3.2.4 staking tiers (qorsdk.stakingtier).
+    "stakingtier": {
+        2: ("stakingtier_invalid_params", "invalid staking-tier parameters"),
+        3: (
+            "stakingtier_not_active",
+            "staking tiers are not active on this network yet",
+        ),
+        4: ("stakingtier_disabled", "staking tiers are switched off by governance"),
+        5: (
+            "stakingtier_invalid_term",
+            "this lock term is not offered (see the module parameters)",
+        ),
+        6: (
+            "stakingtier_invalid_amount",
+            "invalid lock amount (below the minimum, or not positive)",
+        ),
+        7: (
+            "stakingtier_insufficient_unlocked",
+            "not enough unlocked delegation to this validator to lock that amount",
+        ),
+        8: ("stakingtier_lock_not_found", "lock not found"),
+        9: ("stakingtier_not_lock_owner", "the lock belongs to another delegator"),
+        10: (
+            "stakingtier_lock_expired",
+            "the lock has already expired; nothing to unlock early",
+        ),
+        11: ("stakingtier_too_many_locks", "too many open locks for this delegator"),
+        12: ("stakingtier_nothing_to_claim", "no bonus to claim"),
+        13: (
+            "stakingtier_stake_locked",
+            "this stake is locked; undelegating or redelegating it waits for the "
+            "lock to end",
+        ),
+    },
 }
 
 # The per-sender transaction rate limit (both lanes' ante handler) is codespace

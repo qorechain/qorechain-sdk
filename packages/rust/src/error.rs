@@ -45,6 +45,17 @@ pub enum Error {
     #[error("{0}")]
     SpendingRule(String),
 
+    /// A staking-tier message was refused client-side before encoding (chain
+    /// v3.2.4). The message names the field. See
+    /// [`crate::stakingtier::validate_lock_delegation`].
+    #[error("{0}")]
+    StakingTier(String),
+
+    /// An argument was refused before anything was sent (an authenticator key
+    /// that is not hex, a non-positive IBC timeout). The message names it.
+    #[error("{0}")]
+    InvalidInput(String),
+
     /// A non-2xx HTTP response was received.
     #[error("HTTP {status} for {url}")]
     Http {

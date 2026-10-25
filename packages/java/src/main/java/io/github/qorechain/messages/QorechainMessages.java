@@ -1,7 +1,7 @@
 package io.github.qorechain.messages;
 
 /**
- * Typed composers for every QoreChain custom-module {@code Msg} (61 total).
+ * Typed composers for every QoreChain custom-module {@code Msg} (70 total).
  *
  * <p>Each method wraps an already-built protobuf message in a {@link TypedMessage}
  * carrying the correct on-chain type URL, ready to feed into the tx builder. The
@@ -57,6 +57,12 @@ public final class QorechainMessages {
             return new TypedMessage("/qorechain.bridge.v1.MsgBridgeWithdraw", m);
         }
 
+        /**
+         * Register a bridge validator. From chain v3.2.4 the registration carries
+         * {@code proof_of_possession}: the PQC key's own signature in the x/pqc
+         * format with the validator address as the account, from
+         * {@code KeyIntegrity.signProofOfPossession(chainId, validatorAddress, keypair)}.
+         */
         public static TypedMessage registerBridgeValidator(
                 qorechain.bridge.v1.Tx.MsgRegisterBridgeValidator m) {
             return new TypedMessage("/qorechain.bridge.v1.MsgRegisterBridgeValidator", m);
@@ -414,6 +420,43 @@ public final class QorechainMessages {
         public static TypedMessage updateRewardWeights(
                 qorechain.rlconsensus.v1.Tx.MsgUpdateRewardWeights m) {
             return new TypedMessage("/qorechain.rlconsensus.v1.MsgUpdateRewardWeights", m);
+        }
+    }
+
+    /**
+     * Staking-tier composers (chain v3.2.4): lock part of a delegation for 3, 6
+     * or 12 months for a bonus on top of the staking reward, leave a lock early
+     * (a penalty is burned and the bonus forfeited), and claim the accrued bonus.
+     * Reads and the checks are in {@link io.github.qorechain.stakingtier.StakingTier}.
+     */
+    public static final class stakingtier {
+        private stakingtier() {}
+
+        /**
+         * Lock {@code amount} (base units) of the delegator's existing delegation
+         * to {@code validator}. The chain's stateless checks run first
+         * ({@link io.github.qorechain.stakingtier.StakingTier#validateLockDelegation}).
+         *
+         * @throws IllegalArgumentException naming the field.
+         */
+        public static TypedMessage lockDelegation(qorechain.stakingtier.v1.Tx.MsgLockDelegation m) {
+            io.github.qorechain.stakingtier.StakingTier.validateLockDelegation(m);
+            return new TypedMessage("/qorechain.stakingtier.v1.MsgLockDelegation", m);
+        }
+
+        /** Release lock {@code lock_id} before its term ends. */
+        public static TypedMessage unlockEarly(qorechain.stakingtier.v1.Tx.MsgUnlockEarly m) {
+            return new TypedMessage("/qorechain.stakingtier.v1.MsgUnlockEarly", m);
+        }
+
+        /** Claim the holder's accrued bonus. */
+        public static TypedMessage claimBonus(qorechain.stakingtier.v1.Tx.MsgClaimBonus m) {
+            return new TypedMessage("/qorechain.stakingtier.v1.MsgClaimBonus", m);
+        }
+
+        /** Governance: replace the module parameters. */
+        public static TypedMessage updateParams(qorechain.stakingtier.v1.Tx.MsgUpdateParams m) {
+            return new TypedMessage("/qorechain.stakingtier.v1.MsgUpdateParams", m);
         }
     }
 }

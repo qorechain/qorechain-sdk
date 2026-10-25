@@ -28,6 +28,7 @@ pub mod multilayer;
 pub mod pqc;
 pub mod rdk;
 pub mod rlconsensus;
+pub mod stakingtier;
 pub mod svm;
 
 /// Packs a prost message into a `cosmrs::Any` with the given `type_url`.

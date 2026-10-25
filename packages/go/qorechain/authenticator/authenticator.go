@@ -88,8 +88,8 @@ func hexLower(b []byte) string { return hex.EncodeToString(b) }
 // NONCE: the per-authenticator sequence for (account, pubkey), a counter the chain
 // keeps for each linked key, starting at 0 and incremented by each successful
 // MsgExecuteEVM. It is NOT the account's EVM nonce or Cosmos sequence (the chain
-// checks this counter since v3.2.0). There is no query for it yet, so track it
-// per linked key; a mismatch is refused with abstractaccount code 11.
+// checks this counter since v3.2.0). Read it with query.RestClient.GetAuthNonce
+// (chain v3.2.4); a mismatch is refused with abstractaccount code 11.
 func EVMAuthSignBytes(chainID, account string, pubkey []byte, to, value string, data []byte, nonce uint64) [32]byte {
 	body := make([]byte, 0, 256)
 	body = append(body, []byte(evmAuthPrefix)...)
@@ -163,6 +163,7 @@ func EVMAuthDigestVersion(rest UpgradeChecker) (string, error) {
 //
 // NONCE: the per-authenticator sequence for (account, pubkey) — a store counter
 // distinct from the account's own sequence, incremented on each Native-lane spend.
+// Read it with query.RestClient.GetAuthNonce (chain v3.2.4).
 func CosmosAuthSignBytes(chainID, account string, pubkey []byte, to, amount string, nonce uint64) [32]byte {
 	body := make([]byte, 0, 256)
 	body = append(body, []byte(cosmosAuthPrefix)...)

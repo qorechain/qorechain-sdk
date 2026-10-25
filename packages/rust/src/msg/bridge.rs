@@ -108,6 +108,12 @@ pub fn bridge_withdraw_any(
 }
 
 /// Builds `MsgRegisterBridgeValidator`.
+///
+/// From chain v3.2.4 the registration carries `proof_of_possession`: the PQC
+/// key's own signature in the x/pqc format with the validator address as the
+/// account, from
+/// [`sign_proof_of_possession`](crate::key_integrity::sign_proof_of_possession)
+/// `(chain_id, validator_address, ..)`. Set it on the returned struct.
 pub fn register_bridge_validator(
     validator_address: impl Into<String>,
     pqc_pubkey: Vec<u8>,

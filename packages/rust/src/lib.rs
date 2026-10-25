@@ -35,6 +35,11 @@
 //! - [`evm_window`] — the v3.2.0 EVM authorisation window: the bounds the chain
 //!   enforces, the `evm_window` status query, and the classifier that turns an
 //!   EVM-lane refusal into a state plus a remedy.
+//! - [`stakingtier`] — chain v3.2.4 staking tiers: the lock checks, the
+//!   params / locks / pool reads and the error kinds (composers in
+//!   [`msg::stakingtier`]).
+//! - [`protocol_features`] — chain v3.2.4 protocol feature switches, read by
+//!   name.
 
 #![forbid(unsafe_code)]
 #![warn(missing_docs)]
@@ -56,9 +61,11 @@ pub mod networks;
 pub mod pqc;
 pub mod pqc_dx;
 pub mod proto;
+pub mod protocol_features;
 pub mod query;
 pub mod sign_eth;
 pub mod signbytes;
+pub mod stakingtier;
 pub mod subscribe;
 pub mod tx;
 pub mod unified;
@@ -89,9 +96,10 @@ pub use pqc::{
 };
 
 pub use authenticator::{
-    canonical_account, cosmos_auth_sign_bytes, derive_pqc_canonical, derive_pqc_legacy,
-    evm_auth_sign_bytes, rotate_pqc_key_msg_from_mnemonic, rotation_sign_bytes,
-    try_derive_pqc_canonical, RotateFromMnemonic, RotateFromMnemonicOptions, DERIVATION_CANONICAL,
+    auth_nonce_path, canonical_account, cosmos_auth_sign_bytes, derive_pqc_canonical,
+    derive_pqc_legacy, evm_auth_sign_bytes, fetch_auth_nonce, parse_auth_nonce,
+    rotate_pqc_key_msg_from_mnemonic, rotation_sign_bytes, try_derive_pqc_canonical, AuthNonce,
+    AuthPubkey, RotateFromMnemonic, RotateFromMnemonicOptions, DERIVATION_CANONICAL,
     DERIVATION_LEGACY,
 };
 
@@ -131,8 +139,21 @@ pub use msg::abstractaccount::{validate_spending_rules, MAX_ALLOWED_EVM_CALLS, M
 pub use query::{JsonRpcClient, QorClient, RestClient, TypedQueryClient, QOR_METHODS};
 pub use upgrades::{
     clear_upgrade_cache, is_upgrade_applied, require_upgrade_applied, upgrade_applied_height,
-    CHAIN_UPGRADE_V3_2_2, CHAIN_UPGRADE_V3_2_3,
+    CHAIN_UPGRADE_V3_2_2, CHAIN_UPGRADE_V3_2_3, CHAIN_UPGRADE_V3_2_4,
 };
+
+pub use protocol_features::{
+    fetch_protocol_features, is_protocol_feature_enabled, parse_protocol_features, ProtocolFeature,
+    ProtocolFeatures, PROTOCOL_FEATURES_PATH,
+};
+
+pub use stakingtier::{
+    fetch_staking_locks, fetch_staking_tier_params, fetch_staking_tier_pool,
+    stakingtier_error_kind, validate_lock_delegation, StakingLock, StakingLockTier, StakingLocks,
+    StakingTierParams, StakingTierPool, STAKING_LOCK_MONTHS,
+};
+
+pub use msg::cosmos::{ibc_timeout_timestamp, ibc_timeout_timestamp_at, MSG_TRANSFER};
 
 pub use client::{create_client, Client, ClientBuilder, Fees};
 

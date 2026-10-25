@@ -20,12 +20,18 @@ const ChainUpgradeV3_2_2 = "v3.2.2"
 // and MsgUpdateAuthority.
 const ChainUpgradeV3_2_3 = "v3.2.3"
 
+// ChainUpgradeV3_2_4 is the plan that brings staking tiers, the authenticator
+// nonce and protocol-feature queries, possession_proven on PQC accounts, and
+// the bridge validator's proof of possession.
+const ChainUpgradeV3_2_4 = "v3.2.4"
+
 // A release adds message fields, and a node below it does not know them: the
 // transaction decoder refuses a message carrying an unknown field, so setting
 // a release's new OPTIONAL field before the upgrade gets the whole transaction
 // refused. Set such fields only after the network has applied the release.
-// The chain has no query for protocol features, but each release switches them
-// on at its plan height, which the upgrade module reports.
+// Each release switches its features on at its plan height, which the upgrade
+// module reports. From chain v3.2.4 the switches can also be read by name
+// (RestClient.GetProtocolFeatures / IsProtocolFeatureEnabled).
 
 // notAppliedTTL is how long a "not applied yet" answer is trusted. An applied
 // plan stays applied and is cached for the life of the process.

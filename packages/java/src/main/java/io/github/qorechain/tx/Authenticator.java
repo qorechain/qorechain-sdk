@@ -37,8 +37,8 @@ import java.nio.charset.StandardCharsets;
  * {@code (account, pubkey)}: a counter the chain keeps for each linked key,
  * starting at 0 and incremented by each successful execution. For the EVM lane it
  * is NOT the account's EVM nonce (the chain checks this counter since v3.2.0).
- * There is no query for it yet, so track it per linked key; a mismatch is refused
- * with abstractaccount code 11.
+ * Read it with {@link #fetchAuthNonce} (chain v3.2.4); a mismatch is refused with
+ * abstractaccount code 11.
  */
 public final class Authenticator {
 
@@ -96,7 +96,8 @@ public final class Authenticator {
      * @param to the {@code 0x}-hex recipient/contract string ({@code ""} = create).
      * @param value the native QOR amount in wei (aqor) as a decimal string.
      * @param data the raw EVM calldata.
-     * @param nonce the linked key's authenticator sequence (not the EVM nonce).
+     * @param nonce the linked key's authenticator sequence (not the EVM nonce), from
+     *     {@link #fetchAuthNonce}.
      */
     public static byte[] evmAuthSignBytes(
             String chainId,
@@ -164,6 +165,65 @@ public final class Authenticator {
                         rest, io.github.qorechain.query.ChainUpgrades.V3_2_3, cacheKey)
                 ? "v2"
                 : "v1";
+    }
+
+    /** A linked key's sequence, from {@link #fetchAuthNonce}. */
+    public static final class AuthNonce {
+        /** The nonce the next {@code MsgExecuteEVM} / {@code MsgExecuteCosmos} from this key must carry. */
+        public final long nonce;
+        /** Whether the key is currently linked (present and not revoked); the counter is kept either way. */
+        public final boolean linked;
+
+        public AuthNonce(long nonce, boolean linked) {
+            this.nonce = nonce;
+            this.linked = linked;
+        }
+    }
+
+    /**
+     * Read the sequence a linked authenticator key must sign next
+     * ({@code /qorechain/abstractaccount/v1/auth_nonce/{address}/{pubkey_hex}}, chain
+     * v3.2.4). This is the {@code nonce} of {@link #evmAuthSignBytes} /
+     * {@link #evmAuthSignBytesV2} / {@link #cosmosAuthSignBytes}: the key's own
+     * counter, not the account's EVM nonce. A key that never executed reads 0.
+     *
+     * @param address the {@code qor1…} account the key acts for.
+     * @param pubkey the authenticator's raw public key.
+     * @throws IllegalArgumentException when {@code pubkey} is empty.
+     */
+    public static AuthNonce fetchAuthNonce(io.github.qorechain.query.RestClient rest, String address, byte[] pubkey) {
+        return fetchAuthNonce(rest, address, pubkey == null ? "" : Hex.encode(pubkey));
+    }
+
+    /**
+     * {@link #fetchAuthNonce(io.github.qorechain.query.RestClient, String, byte[])}
+     * with the key as hex ({@code 0x} optional).
+     *
+     * @throws IllegalArgumentException when {@code pubkeyHex} is empty, not hex, or of odd length.
+     */
+    public static AuthNonce fetchAuthNonce(io.github.qorechain.query.RestClient rest, String address, String pubkeyHex) {
+        String hex = pubkeyHex == null ? "" : pubkeyHex.replaceFirst("^0[xX]", "");
+        if (hex.isEmpty() || hex.length() % 2 != 0 || !hex.matches("^[0-9a-fA-F]*$")) {
+            throw new IllegalArgumentException("fetchAuthNonce: pubkey must be bytes or a hex string");
+        }
+        String path =
+                "/qorechain/abstractaccount/v1/auth_nonce/"
+                        + java.net.URLEncoder.encode(address, StandardCharsets.UTF_8)
+                        + "/"
+                        + hex;
+        com.fasterxml.jackson.databind.JsonNode b = rest.get(path);
+        com.fasterxml.jackson.databind.JsonNode n = b == null ? null : b.get("nonce");
+        if (n == null || !(n.isTextual() || n.isIntegralNumber())) {
+            throw new IllegalStateException("auth_nonce query: no nonce in the answer for " + path);
+        }
+        long nonce;
+        try {
+            nonce = Long.parseUnsignedLong(n.asText().trim());
+        } catch (NumberFormatException e) {
+            throw new IllegalStateException("auth_nonce query: nonce is not an integer: \"" + n.asText() + "\"");
+        }
+        com.fasterxml.jackson.databind.JsonNode linked = b.get("linked");
+        return new AuthNonce(nonce, linked != null && linked.isBoolean() && linked.asBoolean());
     }
 
     /**

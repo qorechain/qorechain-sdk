@@ -1,6 +1,7 @@
 package messages
 
 import (
+	"fmt"
 	"time"
 
 	"cosmossdk.io/math"
@@ -156,10 +157,27 @@ type IBCComposers struct{}
 // IBC is the IBC message composer group.
 var IBC IBCComposers
 
+// IBCTimeoutTimestamp returns an absolute IBC timeout d from now, in the unit
+// MsgTransfer.TimeoutTimestamp takes: Unix time in NANOSECONDS. ICS-20
+// timeouts are absolute: pass this, never a duration. (IBC v2 packets take an
+// absolute Unix time in SECONDS; a relative value there is refused after the
+// fee is charged.) d must be positive.
+func IBCTimeoutTimestamp(d time.Duration) (uint64, error) {
+	return ibcTimeoutTimestampAt(d, time.Now())
+}
+
+func ibcTimeoutTimestampAt(d time.Duration, now time.Time) (uint64, error) {
+	if d <= 0 {
+		return 0, fmt.Errorf("ibc timeout timestamp: the timeout must be positive, got %s", d)
+	}
+	return uint64(now.Add(d).UnixNano()), nil
+}
+
 // Transfer builds /ibc.applications.transfer.v1.MsgTransfer (ICS-20).
 //
 // timeoutHeight may be the zero value for no height timeout; timeoutTimestamp is
-// nanoseconds since the Unix epoch (0 for none). memo is optional.
+// an ABSOLUTE time in nanoseconds since the Unix epoch (0 for none), never a
+// duration: see IBCTimeoutTimestamp. memo is optional.
 func (IBCComposers) Transfer(sourcePort, sourceChannel string, token sdk.Coin, sender, receiver string, timeoutHeight ibcclienttypes.Height, timeoutTimestamp uint64, memo string) *ibctransfertypes.MsgTransfer {
 	return &ibctransfertypes.MsgTransfer{
 		SourcePort:       sourcePort,

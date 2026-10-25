@@ -139,7 +139,7 @@ class SignBytesRetryTest {
         s.restUrl = baseUrl;
         s.signBytesResolver = new SignBytesResolver(60_000);
         PqcDx.EnsureOptions eo = new PqcDx.EnsureOptions();
-        eo.status = new PqcDx.PqcStatus(true, 1, null); // already registered: no tx.
+        eo.status = new PqcDx.PqcStatus(true, 1, s.pqcKeypair.publicKey); // already registered: no tx.
         return PqcDx.migrateToHybrid(s, new Broadcaster(baseUrl), null, eo);
     }
 

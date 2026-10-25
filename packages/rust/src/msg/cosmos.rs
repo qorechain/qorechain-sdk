@@ -296,3 +296,38 @@ pub fn revoke_allowance_any(granter: impl Into<String>, grantee: impl Into<Strin
 /// `/ibc.applications.transfer.v1.MsgTransfer` type URL, exposed so callers can
 /// pack an `ibc-proto` `MsgTransfer` with [`crate::msg::to_any`].
 pub const MSG_TRANSFER: &str = "/ibc.applications.transfer.v1.MsgTransfer";
+
+/// An absolute IBC timeout `seconds` from now, in the unit
+/// `MsgTransfer.timeout_timestamp` takes: Unix time in NANOSECONDS. ICS-20
+/// timeouts are absolute: pass this, never a duration. (IBC v2 packets take an
+/// absolute Unix time in SECONDS; a relative value there is refused after the
+/// fee is charged.)
+///
+/// # Errors
+///
+/// [`Error::InvalidInput`](crate::Error::InvalidInput) when `seconds` is zero.
+pub fn ibc_timeout_timestamp(seconds: u64) -> crate::Result<u64> {
+    ibc_timeout_timestamp_at(seconds, std::time::SystemTime::now())
+}
+
+/// [`ibc_timeout_timestamp`] counted from `now` instead of the system clock.
+///
+/// # Errors
+///
+/// [`Error::InvalidInput`](crate::Error::InvalidInput) when `seconds` is zero,
+/// or the result does not fit a `u64`.
+pub fn ibc_timeout_timestamp_at(seconds: u64, now: std::time::SystemTime) -> crate::Result<u64> {
+    if seconds == 0 {
+        return Err(crate::Error::InvalidInput(
+            "ibc_timeout_timestamp: seconds must be positive".into(),
+        ));
+    }
+    let too_far =
+        || crate::Error::InvalidInput("ibc_timeout_timestamp: timeout does not fit a u64".into());
+    let since_epoch = now
+        .duration_since(std::time::UNIX_EPOCH)
+        .map_err(|_| crate::Error::InvalidInput("ibc_timeout_timestamp: clock before 1970".into()))?
+        .checked_add(std::time::Duration::from_secs(seconds))
+        .ok_or_else(too_far)?;
+    u64::try_from(since_epoch.as_nanos()).map_err(|_| too_far())
+}

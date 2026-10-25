@@ -131,6 +131,44 @@ public final class TxError {
                         + " (PqcDx.migratePqcKeyHybrid)"
                 });
         MODULE_CODES.put("pqc", pqc);
+
+        // ---- stakingtier (chain v3.2.4) ----
+        Map<Integer, String[]> st = new HashMap<>();
+        st.put(2, new String[] {"stakingtier_invalid_params", "invalid staking-tier parameters"});
+        st.put(3, new String[] {"stakingtier_not_active", "staking tiers are not active on this network yet"});
+        st.put(4, new String[] {"stakingtier_disabled", "staking tiers are switched off by governance"});
+        st.put(
+                5,
+                new String[] {
+                    "stakingtier_invalid_term", "this lock term is not offered (see the module parameters)"
+                });
+        st.put(
+                6,
+                new String[] {
+                    "stakingtier_invalid_amount", "invalid lock amount (below the minimum, or not positive)"
+                });
+        st.put(
+                7,
+                new String[] {
+                    "stakingtier_insufficient_unlocked",
+                    "not enough unlocked delegation to this validator to lock that amount"
+                });
+        st.put(8, new String[] {"stakingtier_lock_not_found", "lock not found"});
+        st.put(9, new String[] {"stakingtier_not_lock_owner", "the lock belongs to another delegator"});
+        st.put(
+                10,
+                new String[] {
+                    "stakingtier_lock_expired", "the lock has already expired; nothing to unlock early"
+                });
+        st.put(11, new String[] {"stakingtier_too_many_locks", "too many open locks for this delegator"});
+        st.put(12, new String[] {"stakingtier_nothing_to_claim", "no bonus to claim"});
+        st.put(
+                13,
+                new String[] {
+                    "stakingtier_stake_locked",
+                    "this stake is locked; undelegating or redelegating it waits for the lock to end"
+                });
+        MODULE_CODES.put("stakingtier", st);
     }
 
     static {

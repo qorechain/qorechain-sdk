@@ -71,6 +71,11 @@ class PqcStatus(TypedDict, total=False):
     ``created_at_height`` and ``pubkey`` are populated only when a key is
     registered. ``pubkey`` is the registered public key as the source gave it:
     base64 over REST, hex or bytes elsewhere (see :func:`pqc_status_public_key`).
+
+    ``possession_proven`` (chain v3.2.4, read over REST) is whether the key was
+    proven by a proof of possession: a registration carrying a valid proof, or a
+    rotation or migration. ``False`` for a key registered without one; absent on
+    nodes below v3.2.4.
     """
 
     registered: bool
@@ -78,6 +83,7 @@ class PqcStatus(TypedDict, total=False):
     algorithm_id: int
     created_at_height: int
     pubkey: str | bytes
+    possession_proven: bool
 
 
 class EnsureResult(TypedDict, total=False):
@@ -85,9 +91,15 @@ class EnsureResult(TypedDict, total=False):
 
     ``already_registered`` is always present. ``tx_hash`` is set only when a
     ``MsgRegisterPQCKeyV2`` was broadcast (i.e. the key was missing before).
+
+    ``key_verified`` is set when the account was already registered: ``True``
+    when the registered key was compared with ``pqc_keypair`` and matched,
+    ``False`` when no answer carried the key, so it could not be checked (do not
+    assume it is yours). Absent when a registration was sent.
     """
 
     already_registered: bool
+    key_verified: bool
     tx_hash: str
 
 
@@ -192,6 +204,9 @@ def fetch_pqc_status(rest_url: str, address: str) -> PqcStatus:
             public_key = acct.get("public_key")
             if isinstance(public_key, str) and public_key:
                 status["pubkey"] = public_key
+            possession_proven = acct.get("possession_proven")
+            if isinstance(possession_proven, bool):
+                status["possession_proven"] = possession_proven
             _REGISTERED_CACHE[(base, address)] = status
             return PqcStatus(**status)
         except Exception as exc:  # noqa: BLE001 - any failure means "unknown"
@@ -497,10 +512,12 @@ def ensure_pqc_registered(
     ``{"already_registered": True}`` with no transaction, provided the
     registered key is ``pqc_keypair``'s. When it is a different key it raises
     :class:`PqcKeyMismatchError` and sends nothing: the caller's hybrid
-    transactions would all be refused. (A status that carries no public key
-    cannot be compared and is taken as registered; the REST route always
-    carries it.) A refusal of the broadcast as "already registered" (``pqc`` 7)
-    is checked the same way. Otherwise builds and
+    transactions would all be refused. A status that carries no public key, or a
+    different one, is read once more uncached before deciding; when still no
+    answer carries the key, the result says ``"key_verified": False`` instead of
+    claiming the key is yours (``True`` when it was compared and matched). A
+    refusal of the broadcast as "already registered" (``pqc`` 7) is checked the
+    same way. Otherwise builds and
     broadcasts a ``MsgRegisterPQCKeyV2`` carrying the signer's Dilithium public key
     (``pqc_keypair.public_key``) and classical ECDSA public key
     (``account.public_key``), returning
@@ -516,12 +533,16 @@ def ensure_pqc_registered(
     if status["registered"]:
         # Registered, but by whom? A different key means the caller's hybrid
         # transactions would all be refused; say so now rather than "done".
-        if is_registered_pqc_key(status, pqc_keypair.public_key) is False:
-            # Read once more uncached (a rotation may have just landed).
+        match = is_registered_pqc_key(status, pqc_keypair.public_key)
+        if match is not True:
+            # A different key, or none in the answer: read once more uncached (a
+            # rotation may have just landed) rather than take "registered" for
+            # "yours".
             _forget_status(rest_url, account.address)
             status = fetch_pqc_status(rest_url, account.address)
             _raise_if_other_key(account.address, status, pqc_keypair.public_key)
-        return {"already_registered": True}
+            match = is_registered_pqc_key(status, pqc_keypair.public_key)
+        return {"already_registered": True, "key_verified": match is True}
 
     # From chain v3.2.3 the registration carries a proof that the registrant
     # holds the key. Sign it once the network has applied v3.2.3 — never before:
@@ -558,7 +579,10 @@ def ensure_pqc_registered(
         _forget_status(rest_url, account.address)
         status = fetch_pqc_status(rest_url, account.address)
         _raise_if_other_key(account.address, status, pqc_keypair.public_key)
-        return {"already_registered": True}
+        return {
+            "already_registered": True,
+            "key_verified": is_registered_pqc_key(status, pqc_keypair.public_key) is True,
+        }
     # Any other refusal is a failure, not a registration.
     _raise_if_check_tx_failed(response)
     result: EnsureResult = {"already_registered": False}

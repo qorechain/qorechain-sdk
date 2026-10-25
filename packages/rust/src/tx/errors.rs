@@ -225,6 +225,24 @@ fn module_reason(codespace: &str, code: u32) -> Option<&'static str> {
             "an account with a registered PQC key must send key registration or migration \
              with the hybrid signature (PqcDx::build_hybrid with the current key)"
         }
+        // v3.2.4 staking tiers (crate::stakingtier; the kinds are in
+        // crate::stakingtier::stakingtier_error_kind).
+        ("stakingtier", 2) => "invalid staking-tier parameters",
+        ("stakingtier", 3) => "staking tiers are not active on this network yet",
+        ("stakingtier", 4) => "staking tiers are switched off by governance",
+        ("stakingtier", 5) => "this lock term is not offered (see the module parameters)",
+        ("stakingtier", 6) => "invalid lock amount (below the minimum, or not positive)",
+        ("stakingtier", 7) => {
+            "not enough unlocked delegation to this validator to lock that amount"
+        }
+        ("stakingtier", 8) => "lock not found",
+        ("stakingtier", 9) => "the lock belongs to another delegator",
+        ("stakingtier", 10) => "the lock has already expired; nothing to unlock early",
+        ("stakingtier", 11) => "too many open locks for this delegator",
+        ("stakingtier", 12) => "no bonus to claim",
+        ("stakingtier", 13) => {
+            "this stake is locked; undelegating or redelegating it waits for the lock to end"
+        }
         ("pqc", 61) => {
             "invalid EIP-7702 delegation request — check the delegate address and the \
              blocks bound, and that the account has a registered PQC key"
@@ -249,6 +267,7 @@ const QORE_CODESPACES: &[&str] = &[
     "abstractaccount",
     "crossvm",
     "rlconsensus",
+    "stakingtier",
 ];
 
 const KNOWN_MODULE_CODESPACES: &[&str] = &[

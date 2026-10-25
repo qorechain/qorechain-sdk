@@ -215,13 +215,29 @@ QORECHAIN_COMPOSER_CASES = [
         rlconsensus.update_reward_weights(authority="qor1"),
         "/qorechain.rlconsensus.v1.MsgUpdateRewardWeights",
     ),
+    # stakingtier (4)
+    (
+        msg.stakingtier.lock_delegation(
+            delegator="qor1", validator="qorvaloper1", amount="1", months=3
+        ),
+        "/qorechain.stakingtier.v1.MsgLockDelegation",
+    ),
+    (
+        msg.stakingtier.unlock_early(delegator="qor1", lock_id=1),
+        "/qorechain.stakingtier.v1.MsgUnlockEarly",
+    ),
+    (msg.stakingtier.claim_bonus(holder="qor1"), "/qorechain.stakingtier.v1.MsgClaimBonus"),
+    (
+        msg.stakingtier.update_params(authority="qor1"),
+        "/qorechain.stakingtier.v1.MsgUpdateParams",
+    ),
 ]
 
 
-def test_all_66_qorechain_composers_covered():
-    assert len(QORECHAIN_COMPOSER_CASES) == 66
+def test_all_70_qorechain_composers_covered():
+    assert len(QORECHAIN_COMPOSER_CASES) == 70
     type_urls = {tu for _m, tu in QORECHAIN_COMPOSER_CASES}
-    assert len(type_urls) == 66
+    assert len(type_urls) == 70
 
 
 @pytest.mark.parametrize("built_msg,type_url", QORECHAIN_COMPOSER_CASES)
@@ -261,11 +277,11 @@ def test_cosmos_composer_returns_exact_type_url(built_msg, type_url):
     assert built_msg.type_url == type_url
 
 
-def test_registry_covers_all_66_qorechain_and_18_cosmos():
+def test_registry_covers_all_70_qorechain_and_18_cosmos():
     reg = qorechain_registry()
     qc = [k for k in reg if k.startswith("/qorechain.")]
-    assert len(qc) == 66
-    assert len(reg) == 66 + 18
+    assert len(qc) == 70
+    assert len(reg) == 70 + 18
 
 
 def test_registry_extra_types_override():

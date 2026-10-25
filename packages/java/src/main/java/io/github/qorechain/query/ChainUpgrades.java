@@ -10,9 +10,10 @@ import java.util.concurrent.ConcurrentHashMap;
  * transaction decoder refuses a message carrying an unknown field, so setting
  * one of a release's new OPTIONAL fields before the upgrade gets the whole
  * transaction refused. Set such fields only after the network has applied the
- * release. The chain has no query for its protocol features, but each release
- * switches them on at its plan height, which the upgrade module reports. Plan
- * names are the same on every network.
+ * release. Each release switches its protocol features on at its plan height,
+ * which the upgrade module reports. Plan names are the same on every network.
+ * From chain v3.2.4 the switches can also be read by name with
+ * {@link ProtocolFeatures#fetch}.
  */
 public final class ChainUpgrades {
     private ChainUpgrades() {}
@@ -31,6 +32,12 @@ public final class ChainUpgrades {
      * {@code MsgUpdateAuthority}.
      */
     public static final String V3_2_3 = "v3.2.3";
+
+    /**
+     * Staking tiers, the authenticator nonce and protocol-feature queries,
+     * {@code possession_proven}, and the bridge validator's proof of possession.
+     */
+    public static final String V3_2_4 = "v3.2.4";
 
     /** How long a "not applied yet" answer is trusted, in milliseconds. */
     static final long NOT_APPLIED_TTL_MS = 60_000L;

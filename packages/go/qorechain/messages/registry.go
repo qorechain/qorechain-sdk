@@ -1,8 +1,8 @@
 // Package messages provides the interface registry, codec, and typed message
 // composers for every transaction QoreChain supports.
 //
-// The registry registers all 66 custom QoreChain Msg implementations (across the
-// 11 custom modules) plus the standard Native modules under their type URLs,
+// The registry registers all 70 custom QoreChain Msg implementations (across the
+// 12 custom modules) plus the standard Native modules under their type URLs,
 // so a custom Msg can be packed into a tx Any and decoded back through the codec
 // exactly like the chain does. RegisterInterfaces mirrors each module's
 // RegisterInterfaces on the chain.
@@ -33,6 +33,7 @@ import (
 	pqcv1 "github.com/qorechain/qorechain-sdk/packages/go/qorechain/proto/qorechain/pqc/v1"
 	rdkv1 "github.com/qorechain/qorechain-sdk/packages/go/qorechain/proto/qorechain/rdk/v1"
 	rlconsensusv1 "github.com/qorechain/qorechain-sdk/packages/go/qorechain/proto/qorechain/rlconsensus/v1"
+	stakingtierv1 "github.com/qorechain/qorechain-sdk/packages/go/qorechain/proto/qorechain/stakingtier/v1"
 	svmv1 "github.com/qorechain/qorechain-sdk/packages/go/qorechain/proto/qorechain/svm/v1"
 )
 
@@ -44,7 +45,7 @@ func RegisterInterfaces(reg codectypes.InterfaceRegistry) {
 	registerCosmosInterfaces(reg)
 }
 
-// registerQoreChainInterfaces registers all 66 custom QoreChain Msg
+// registerQoreChainInterfaces registers all 70 custom QoreChain Msg
 // implementations under the sdk.Msg interface.
 func registerQoreChainInterfaces(reg codectypes.InterfaceRegistry) {
 	reg.RegisterImplementations((*sdk.Msg)(nil),
@@ -125,6 +126,11 @@ func registerQoreChainInterfaces(reg codectypes.InterfaceRegistry) {
 		&rlconsensusv1.MsgResumeAgent{},
 		&rlconsensusv1.MsgUpdatePolicy{},
 		&rlconsensusv1.MsgUpdateRewardWeights{},
+		// stakingtier (4, chain v3.2.4)
+		&stakingtierv1.MsgLockDelegation{},
+		&stakingtierv1.MsgUnlockEarly{},
+		&stakingtierv1.MsgClaimBonus{},
+		&stakingtierv1.MsgUpdateParams{},
 	)
 }
 
