@@ -109,6 +109,46 @@ describe("scaffold(fullstack-web)", () => {
     ) as { name: string };
     expect(pkg.name).toBe("web-dapp");
   });
+
+  it("writes the selected mainnet preset to the generated app", () => {
+    const target = join(workdir, "mainnet-web-dapp");
+    scaffold({
+      template: "fullstack-web",
+      targetDir: target,
+      projectName: "mainnet-web-dapp",
+      network: "mainnet",
+      install: false,
+      templatesRoot,
+    });
+
+    expect(readFileSync(join(target, ".env"), "utf8")).toContain(
+      "VITE_QORE_NETWORK=mainnet",
+    );
+    expect(readFileSync(join(target, "src", "App.tsx"), "utf8")).toContain(
+      "network: NETWORK",
+    );
+  });
+});
+
+describe("scaffold(rollup-app)", () => {
+  it("writes the selected mainnet preset to the generated app", () => {
+    const target = join(workdir, "mainnet-rollup-app");
+    scaffold({
+      template: "rollup-app",
+      targetDir: target,
+      projectName: "mainnet-rollup-app",
+      network: "mainnet",
+      install: false,
+      templatesRoot,
+    });
+
+    expect(readFileSync(join(target, ".env"), "utf8")).toContain(
+      "QORE_NETWORK=mainnet",
+    );
+    expect(readFileSync(join(target, "src", "index.ts"), "utf8")).toContain(
+      "network,",
+    );
+  });
 });
 
 describe("scaffold errors", () => {
