@@ -188,7 +188,7 @@ export type {
   CrossVmParamsResponse,
 } from "./query/crossvm";
 
-// AI pre-flight risk scoring - QoreChain-unique on-chain AI risk/anomaly scoring
+// AI pre-flight risk scoring - on-chain AI risk/anomaly scoring
 // over the EVM precompiles. The implementation lives in `@qorechain/evm` (which
 // owns viem); it is re-exported here for discovery. `@qorechain/evm` is an
 // OPTIONAL peer dependency - install it (and viem) to use these helpers.
@@ -660,7 +660,7 @@ export type {
   CosmWasmPayload,
   SvmPayload,
 } from "./helpers";
-// Quantum-safe DX: make a dApp PQC-protected (register the signer's Dilithium
+// PQC key helpers: register a dApp's PQC key (register the signer's Dilithium
 // key, then sign hybrid) in one idempotent call. See ./helpers/pqc for the full
 // docs, including the EVM `pqcKeyStatus` precompile alternative.
 export {

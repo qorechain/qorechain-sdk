@@ -1,7 +1,7 @@
 # ai-preflight
 
-Score a transaction with QoreChain's **on-chain AI** before you send it - a
-first-in-industry capability. Uses `@qorechain/evm` (a thin, type-safe layer over
+Score a transaction with QoreChain's **on-chain AI** precompiles before you send
+it. Uses `@qorechain/evm` (a thin, type-safe layer over
 [viem](https://viem.sh)) to:
 
 - create an EVM client (`createEvmClient`) - the numeric EVM chain id is

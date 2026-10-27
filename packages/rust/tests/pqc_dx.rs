@@ -1,4 +1,4 @@
-//! Quantum-safe DX helper tests: `is_pqc_registered` / `get_pqc_status` against
+//! PQC key helper tests: `is_pqc_registered` / `get_pqc_status` against
 //! a mocked `qor_getPQCKeyStatus` JSON-RPC endpoint, and `ensure_pqc_registered`
 //! on both paths (already-registered → no broadcast; missing → builds, signs and
 //! broadcasts `MsgRegisterPQCKeyV2`).

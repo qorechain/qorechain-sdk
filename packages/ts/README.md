@@ -1,7 +1,8 @@
 # @qorechain/sdk
 
 Official TypeScript SDK for building decentralized applications on the QoreChain
-network - a quantum-safe, triple-VM Layer 1 with native, EVM, and SVM accounts.
+network - a triple-VM Layer 1 with native, EVM, and SVM accounts and hybrid
+post-quantum (ML-DSA-87) signing on the native lane.
 
 ## Features
 
@@ -18,7 +19,7 @@ network - a quantum-safe, triple-VM Layer 1 with native, EVM, and SVM accounts.
 - **CosmWasm lifecycle** - query, upload, instantiate/instantiate2, execute,
   migrate, and admin management.
 - **PQC** - ML-DSA-87 (Dilithium-5) signing and hybrid-signature transactions,
-  plus quantum-safe DX helpers (`ensurePqcRegistered` / `migrateToHybrid`).
+  plus PQC key helpers (`ensurePqcRegistered` / `migrateToHybrid`).
 - **Sidechains, paychains & rollups** - high-level `createMultilayerClient` and
   `createRollupClient` helpers (v0.4.0).
 - **Unified cross-VM calls** - `createCrossVMClient` with atomic triple-VM
@@ -121,7 +122,7 @@ console.log(result.transactionHash);
 Without `pqcKeypair` the client signs classically, which the chain accepts only
 for the key registration itself.
 
-### Quantum-safe signing
+### Post-quantum hybrid signing
 
 QoreChain supports post-quantum cryptography via ML-DSA-87 (Dilithium-5) and a
 hybrid posture. The key/sign/verify primitives are available today through
@@ -460,10 +461,10 @@ const status = await xvm.getMessage("42");
 `targetVm` is one of `"evm" | "cosmwasm" | "svm"` (see `VM_TYPES`). See the
 [cross-VM](https://docs.qorechain.io/sdk/guides/cross-vm) guide.
 
-### Quantum-safe DX (v0.5.0)
+### PQC key helpers (v0.5.0)
 
-QoreChain enforces hybrid post-quantum signatures (ML-DSA-87 + secp256k1) by
-default. These helpers make a dApp PQC-protected in one idempotent call: check
+On the native lane QoreChain requires hybrid post-quantum signatures
+(ML-DSA-87 + secp256k1) by default. These helpers register the signer's PQC key in one idempotent call: check
 whether the signer's Dilithium key is registered, register it if not, and route
 subsequent transactions through the hybrid signing path.
 
@@ -492,7 +493,7 @@ const path = await migrateToHybrid(tx, { pqcKeypair, rest: "https://api.qore.hos
 await migratePqcKey({ tx, /* new key material … */ });
 ```
 
-See the [quantum-safe](https://docs.qorechain.io/sdk/guides/quantum-safe) guide.
+See the [post-quantum hybrid signing](https://docs.qorechain.io/sdk/guides/quantum-safe) guide.
 
 ### Unified eth-native wallet (v0.6.0)
 

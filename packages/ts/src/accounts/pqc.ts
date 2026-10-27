@@ -6,7 +6,7 @@
  * architecture (see the core `PQC_INTEGRATION.md`): a transaction carries the
  * usual classical (secp256k1 / ed25519) signature PLUS an ML-DSA-87 signature
  * attached as a `PQCHybridSignature` TX extension. The chain's ante handler
- * verifies both, so quantum-safe wallets stay compatible with classical
+ * verifies both, so PQC-registered wallets stay compatible with classical
  * verification.
  *
  * Scope: this module provides the signing PRIMITIVES (keygen / sign / verify),

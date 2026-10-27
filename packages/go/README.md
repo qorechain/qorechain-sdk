@@ -44,7 +44,7 @@ Requires Go 1.23+.
 | `qorechain/subscribe` | WebSocket client for the chain RPC `/websocket` (new blocks, transactions). |
 | `qorechain/crossvm` | Unified cross-VM call helper over `MsgCrossVMCall` (single + atomic triple-VM). |
 | `qorechain/evm` | AI pre-flight risk/anomaly scoring over the EVM precompiles (`eth_call`). |
-| `qorechain/pqcdx` | Quantum-safe DX: idempotent PQC-key registration + classical→hybrid migration. |
+| `qorechain/pqcdx` | PQC key helpers: idempotent PQC-key registration + classical→hybrid migration. |
 | `qorechain/signbytes` | Hybrid / key-migration / bridge-attestation sign-bytes (v1 + v2), per-network version resolution. |
 
 ## Quickstart
@@ -155,7 +155,7 @@ refuses with a registered error wraps a `*tx.QoreTxError` naming it
 claim"), and `tx.DecodeRefusalText(text)` names any text-only refusal the
 same way.
 
-For a quantum-safe transaction over the same messages, use
+For a hybrid (classical + ML-DSA-87) transaction over the same messages, use
 `tx.BuildHybridMessages` with an ML-DSA-87 keypair - it preserves the
 exclude-extension hybrid contract the chain's ante handler verifies - or
 `tx.BroadcastHybridAndWait`, which also picks the sign-bytes form for the
@@ -539,9 +539,9 @@ caller is not on.
 
 See the [cross-VM](https://docs.qorechain.io/sdk/guides/cross-vm) guide.
 
-### Quantum-safe DX (v0.5.0)
+### PQC key helpers (v0.5.0)
 
-The `qorechain/pqcdx` package makes a dApp PQC-protected in one idempotent call:
+The `qorechain/pqcdx` package registers the signer's PQC key in one idempotent call:
 check whether the signer's Dilithium key is registered, register it if not, then
 sign hybrid (ML-DSA-87 + secp256k1).
 
@@ -573,7 +573,7 @@ rotate, _ := pdx.MigratePQCKey(pqcdx.MigrateOptions{ /* new key */ })
 _ = (registered, status, ensure, hybrid, rotate)
 ```
 
-See the [quantum-safe](https://docs.qorechain.io/sdk/guides/quantum-safe) guide.
+See the [post-quantum hybrid signing](https://docs.qorechain.io/sdk/guides/quantum-safe) guide.
 
 ### Unified eth-native wallet (v0.6.0)
 

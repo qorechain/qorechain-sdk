@@ -1,5 +1,5 @@
 /**
- * AI pre-flight risk scoring - a QoreChain-unique capability.
+ * AI pre-flight risk scoring over QoreChain's AI precompiles.
  *
  * QoreChain ships an on-chain inference engine (QCAI) exposed to the EVM through
  * two read-only precompiles. Any dApp can score a transaction *before* it is
@@ -162,8 +162,8 @@ export interface PreflightResult {
  * Run an AI pre-flight on a transaction: estimate gas, score its risk, and check
  * for anomalies - all read-only, before anything is signed or broadcast.
  *
- * This is a first-in-industry capability: the risk model runs *on-chain* and is
- * reachable from any dApp via plain `eth_call`/`eth_estimateGas`. The returned
+ * The risk model is served on-chain by two precompiles and is reachable from
+ * any dApp via plain `eth_call`/`eth_estimateGas`. The returned
  * `safe` flag is **advisory** - off-chain dApps should set and enforce their own
  * policy (and contracts can `require` on the level on-chain).
  *

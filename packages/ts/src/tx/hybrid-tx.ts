@@ -6,7 +6,7 @@
  * `TxRaw.signatures` PLUS an ML-DSA-87 (Dilithium-5) signature attached to the
  * `TxBody` as a `PQCHybridSignature` extension. The chain's ante handler
  * verifies BOTH, so a hybrid account stays interoperable with classical
- * verification while gaining quantum safety.
+ * verification while also carrying an ML-DSA-87 signature.
  *
  * ──────────────────────────────────────────────────────────────────────────
  *  The wallet ↔ chain contract (enforced by the chain)

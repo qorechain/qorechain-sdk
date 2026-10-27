@@ -96,8 +96,8 @@ directly.
 ## Hybrid signing
 
 A **hybrid** transaction carries both a classical secp256k1 signature and an
-ML-DSA-87 signature, so it remains valid under classical verification while
-gaining post-quantum protection. The post-quantum part travels as a
+ML-DSA-87 signature, and the chain verifies both. On the native lane the chain
+requires this hybrid signature by default. The post-quantum part travels as a
 `PQCHybridSignature` extension on the transaction.
 
 ```ts
@@ -139,7 +139,8 @@ one form at any height: `qorechain-diana` switched to v2 at its `v3.1.98`
 upgrade, `qorechain-vladi` at its own, named `v3.2.0` (height 2,981,742; the SDK
 asks for both plan names), and chains born later are v2
 from genesis. The SDK picks the form per network (`signBytesVersion: "auto"`,
-with the network's REST endpoint) - see the Quantum-safe guide.
+with the network's REST endpoint) - see the
+[Post-quantum hybrid signing](../guides/quantum-safe.md) guide.
 
 ### Hybrid tx contract (high level)
 

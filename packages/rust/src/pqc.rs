@@ -5,7 +5,7 @@
 //! architecture: a transaction carries the usual classical (secp256k1 /
 //! ed25519) signature **plus** an ML-DSA-87 signature attached as a
 //! `PQCHybridSignature` transaction extension. The chain's ante handler verifies
-//! both, so quantum-safe wallets stay compatible with classical verification.
+//! both, so PQC-registered wallets stay compatible with classical verification.
 //!
 //! This module provides the signing primitives (keygen / sign / verify) and a
 //! builder for the on-chain hybrid-signature extension object. The cryptography

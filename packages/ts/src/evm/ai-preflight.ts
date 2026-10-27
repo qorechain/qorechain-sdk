@@ -10,8 +10,8 @@
  * `viem` remains an **optional peer**: it is only needed for the viem-typed
  * helpers in `@qorechain/evm`. The core Native-side SDK does not depend on it.
  *
- * QoreChain is the first network to expose an on-chain AI risk/anomaly model to
- * any dApp through plain `eth_call`s. Use {@link simulateWithRiskScore} to bundle
+ * QoreChain exposes an on-chain AI risk/anomaly model to dApps through plain
+ * `eth_call`s. Use {@link simulateWithRiskScore} to bundle
  * a gas estimate, a risk score, and an anomaly check into one advisory verdict
  * before a transaction is signed or broadcast.
  */

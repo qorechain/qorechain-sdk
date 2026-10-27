@@ -5,7 +5,7 @@
 // TxRaw.Signatures. A hybrid transaction additionally attaches an ML-DSA-87
 // (Dilithium-5) signature to the TxBody as a PQCHybridSignature extension. The
 // chain's ante handler verifies BOTH, so a hybrid account stays interoperable
-// with classical verification while gaining quantum safety.
+// with classical verification while also carrying an ML-DSA-87 signature.
 //
 // ───────────────────────────────────────────────────────────────────────────
 //

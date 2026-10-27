@@ -32,7 +32,7 @@ Go, and Rust SDKs:
 - **evm** - `EvmPrecompiles`: AI pre-flight risk/anomaly scoring (v0.5.0), and
   `EvmWindow` / `EvmWindowStatus` / `EvmWindowIssue`: the EVM authorisation
   window the chain requires from v3.2.0 (0.8.2).
-- **pqc** - `PqcDx`: quantum-safe DX (idempotent registration + classical→hybrid
+- **pqc** - `PqcDx`: PQC key helpers (idempotent registration + classical→hybrid
   migration) (v0.5.0).
 
 ## Coordinates
@@ -182,9 +182,9 @@ older clients are not rejected.
 
 See the [cross-VM](https://docs.qorechain.io/sdk/guides/cross-vm) guide.
 
-## Quantum-safe DX (v0.5.0)
+## PQC key helpers (v0.5.0)
 
-`PqcDx` makes a dApp PQC-protected in one idempotent call: check whether the
+`PqcDx` registers the signer's PQC key in one idempotent call: check whether the
 signer's Dilithium key is registered, register it if not, then sign hybrid
 (ML-DSA-87 + secp256k1).
 
@@ -213,7 +213,7 @@ PqcDx.HybridSendPath path =
 PqcDx.migratePqcKey(signer, broadcaster, new PqcDx.MigrateOptions());
 ```
 
-See the [quantum-safe](https://docs.qorechain.io/sdk/guides/quantum-safe) guide.
+See the [post-quantum hybrid signing](https://docs.qorechain.io/sdk/guides/quantum-safe) guide.
 
 ## Hybrid sign-bytes v1 / v2 (v0.8.1 / chain v3.2.0, testnet v3.1.98)
 

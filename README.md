@@ -1,6 +1,6 @@
 # qorechain-sdk
 
-Official multi-language SDK and developer kit for building decentralized applications on the QoreChain network - a quantum-safe, triple-VM Layer 1.
+Official multi-language SDK and developer kit for building decentralized applications on the QoreChain network - a triple-VM Layer 1 with hybrid post-quantum (ML-DSA-87) signing.
 
 QoreChain is a triple-VM Layer 1 with first-class support for CosmWasm,
 EVM/Solidity, and SVM smart contracts, plus IBC interoperability. SDKs are
@@ -136,7 +136,7 @@ const result = await tx.bankSend(
 console.log(result.transactionHash);
 ```
 
-### Quantum-safe signing
+### Post-quantum hybrid signing
 
 QoreChain supports post-quantum cryptography via ML-DSA-87 (Dilithium-5) and a
 hybrid posture that carries both a classical and a post-quantum signature. The
@@ -149,6 +149,11 @@ computed over the sign-bytes form the target network verifies - v2 on both
 networks today, v1 below their sign-bytes upgrades - so pass the
 network's REST endpoint (`rest`) and the SDK picks the form (see the
 [TypeScript guide](./packages/ts/README.md)).
+
+On the native (Cosmos SDK) lane the chain requires the hybrid secp256k1 +
+ML-DSA-87 signature by default; the EVM lane admits transactions only inside a
+bounded authorisation window opened from the native lane; the SVM lane is not
+open yet.
 
 ```ts
 import { generatePqcKeypair, pqcSign, pqcVerify } from "@qorechain/sdk";
@@ -165,7 +170,7 @@ The Python, Go, Rust, and Java SDKs mirror the TypeScript native-chain surface -
 networks, accounts (native/EVM/SVM + PQC), typed messages for every module,
 typed queries, the tx lifecycle (auto-gas, error decoding, tracking, search),
 WebSocket subscriptions, plus AI pre-flight risk scoring, unified cross-VM calls
-(with atomic triple-VM batching), and the quantum-safe DX helpers. React hooks
+(with atomic triple-VM batching), and the PQC key helpers. React hooks
 and the viem / `@solana/web3.js` adapters are TypeScript-only.
 
 - **Python** - `pip install qorechain-sdk`, then `import qorsdk`. See [packages/py](./packages/py/README.md).
@@ -207,11 +212,12 @@ native-chain parts. Highlights:
   precompiles to return gas plus a risk/anomaly verdict before you broadcast.
 - **Unified cross-VM calls** - call a contract on any VM (CosmWasm/EVM/SVM) from
   one account, and batch calls across all three VMs into one atomic transaction.
-- **Quantum-safe by default** - `ensurePqcRegistered` / `migrateToHybrid` make a
-  signer post-quantum protected in one call.
+- **Hybrid post-quantum signing by default (native lane)** -
+  `ensurePqcRegistered` / `migrateToHybrid` register the signer's ML-DSA-87 key
+  and switch it to hybrid signing in one call.
 - **React kit** (`@qorechain/react`) - `QoreChainProvider`, hooks
   (`useAccount`, `useBalance`, `useTx`, `useConnect`, `usePqcStatus`), and
-  `ConnectButton` / `QuantumSafeBadge` components.
+  `ConnectButton` / `PqcStatusBadge` components.
 - **Unified eth-native wallet** - `deriveUnifiedAccount` gives one key three
   addresses (`qor1…`/`0x…`/SVM) that share one balance and spend on every lane,
   and `signClassicalEth` / `signHybridEth` sign Native-lane txs with the same key.

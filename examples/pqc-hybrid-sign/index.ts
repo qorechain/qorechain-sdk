@@ -41,7 +41,7 @@ async function localSignVerify(): Promise<void> {
   const keypair = generatePqcKeypair();
   console.log(`public key:  ${keypair.publicKey.length} bytes (expected ${ML_DSA_87_PUBLIC_KEY_LENGTH})`);
 
-  const message = new TextEncoder().encode("QoreChain is quantum-safe");
+  const message = new TextEncoder().encode("hello from QoreChain");
   const signature = pqcSign(keypair.secretKey, message);
   console.log(`signature:   ${signature.length} bytes (expected ${ML_DSA_87_SIGNATURE_LENGTH})`);
 
@@ -49,7 +49,7 @@ async function localSignVerify(): Promise<void> {
   console.log(`verify:      ${valid ? "OK" : "FAILED"}`);
 
   // Negative control: a tampered message must NOT verify.
-  const tampered = new TextEncoder().encode("QoreChain is quantum-safe!");
+  const tampered = new TextEncoder().encode("hello from QoreChain!");
   const tamperedValid = pqcVerify(keypair.publicKey, tampered, signature);
   console.log(`tamper check: ${tamperedValid ? "UNEXPECTEDLY VALID" : "correctly rejected"}`);
 

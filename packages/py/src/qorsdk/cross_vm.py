@@ -283,7 +283,7 @@ class CrossVmClient:
     context (chain id, account number, REST url, default fee). The account's
     address is used as the message ``sender``, so callers never repeat it.
 
-    Provide a ``pqc_keypair`` to sign quantum-safe hybrid transactions; otherwise
+    Provide a ``pqc_keypair`` to sign hybrid (classical + ML-DSA-87) transactions; otherwise
     a classical secp256k1 tx is built. ``sign_bytes_version`` (``"auto"`` |
     ``"v1"`` | ``"v2"``, default ``"auto"``) picks the hybrid sign-bytes form;
     ``"auto"`` asks ``rest_url`` and retries once on a ``pqc`` code 21 refusal.

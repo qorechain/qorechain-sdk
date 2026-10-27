@@ -419,7 +419,7 @@ __all__ = [
     "pqc_verify",
     "build_hybrid_signature_extension",
     "encode_hybrid_signature_extension",
-    # quantum-safe DX (x/pqc key registry)
+    # PQC key helpers (x/pqc key registry)
     "DILITHIUM5_KEY_TYPE",
     "HYBRID_KEY_TYPE",
     "PqcStatus",

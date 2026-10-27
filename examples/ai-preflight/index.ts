@@ -1,8 +1,8 @@
 /**
  * ai-preflight - score a transaction with QoreChain's on-chain AI before sending.
  *
- * QoreChain is the first network to expose an on-chain risk/anomaly model to any
- * dApp through plain `eth_call`s. This example:
+ * QoreChain exposes an on-chain risk/anomaly model to dApps through plain
+ * `eth_call`s. This example:
  *  1. createEvmClient({ endpoints }) → a viem-backed client (chain id auto-detected)
  *  2. simulateWithRiskScore(publicClient, tx) → gas estimate + risk score +
  *     anomaly check + an advisory `safe` verdict, all read-only

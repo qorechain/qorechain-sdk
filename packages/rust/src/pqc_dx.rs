@@ -1,4 +1,4 @@
-//! High-level quantum-safe developer-experience helper for QoreChain's
+//! High-level developer-experience helper for QoreChain's
 //! `x/pqc` module.
 //!
 //! QoreChain treats post-quantum cryptography (PQC) as a first-class signature
@@ -8,8 +8,8 @@
 //! full. The low-level primitives already exist - [`generate_pqc_keypair`](crate::pqc::generate_pqc_keypair),
 //! [`build_hybrid_tx`](crate::tx::build_hybrid_tx), the `msg::pqc` composers, and
 //! the `qor_getPQCKeyStatus` read. This module wraps them into a tiny, idempotent
-//! surface so a dApp becomes **quantum-safe by default**: one call to be
-//! PQC-protected.
+//! surface: one call registers the signer's ML-DSA-87 key, and native-lane
+//! transactions are then **hybrid-signed by default**.
 //!
 //! It mirrors the canonical TypeScript SDK's `pqc` DX surface and follows the
 //! explicit signer/account-context idiom of the parallel [`CrossVm`](crate::cross_vm::CrossVm)
@@ -186,9 +186,9 @@ impl PqcDx {
     /// and broadcasts `MsgRegisterPQCKeyV2` with the signer's Dilithium public
     /// key plus its classical ECDSA public key.
     ///
-    /// This is the single call that makes a dApp quantum-safe: run it once at
-    /// startup (or before the first hybrid tx) and the account is PQC-protected
-    /// thereafter.
+    /// This is the single call that registers the signer's ML-DSA-87 key: run it
+    /// once at startup (or before the first hybrid tx) and the account is
+    /// PQC-registered thereafter.
     ///
     /// The pre-flight check reads REST from `rest_url` ([`fetch_pqc_status`]);
     /// the `qor_*` JSON-RPC namespace is not exposed on public endpoints. An

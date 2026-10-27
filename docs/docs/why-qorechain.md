@@ -10,10 +10,10 @@ The QoreChain SDK gives you everything a modern multi-chain SDK does - typed
 messages for every module, typed queries, accounts for three VMs from one
 mnemonic, auto-gas, error decoding, subscriptions, wallets, and a React kit.
 
-But three capabilities are **only possible on QoreChain**, because they are built
-on protocol features no other Layer 1 has: on-chain AI, three co-resident VMs
-with a native bridge, and mandatory post-quantum cryptography. These are the
-reasons to build here.
+It also wraps three protocol features of the QoreChain network: AI risk-scoring
+precompiles on the EVM, three co-resident VMs with a native cross-VM bridge, and
+hybrid post-quantum (ML-DSA-87) signing on the native lane. This page shows what
+each one does and how the SDK exposes it.
 
 ---
 
@@ -47,11 +47,10 @@ if (!preflight.safe) {
 }
 ```
 
-**Why it's unique:** the scoring runs *inside the chain* as a deterministic
-precompile (`aiRiskScore` at `0x…0B01`, `aiAnomalyCheck` at `0x…0B02`). Other
-networks can only bolt on off-chain, non-deterministic AI services. This is the
-first SDK that AI-screens a transaction before it is signed, with an on-chain
-result. See [AI pre-flight](./guides/ai-preflight.md).
+**How it works:** the scoring is served by two read-only EVM precompiles
+(`aiRiskScore` at `0x…0B01`, `aiAnomalyCheck` at `0x…0B02`), queried with a
+plain `eth_call` before anything is signed. The `safe` verdict is advisory: your
+application decides what to do with it. See [AI pre-flight](./guides/ai-preflight.md).
 
 ---
 
@@ -83,21 +82,24 @@ await crossVM.callAtomic([
 ]);
 ```
 
-**Why it's unique:** QoreChain is the only L1 with three co-resident VMs and a
-native bridge module (`crossvm` + the `CrossVMBridge` precompile). Single-VM
-chains cannot express "one account, three VMs, one atomic transaction" - their
-SDKs have nothing to wrap. Write once, call any VM. See
+**How it works:** the three VMs share one chain and a native bridge module
+(`crossvm` + the `CrossVMBridge` precompile). The SDK encodes each call's payload
+for its target VM and packs several calls into one transaction, signed once. See
 [Cross-VM calls](./guides/cross-vm.md).
 
 ---
 
-## 3. Quantum-safe by default
+## 3. Post-quantum hybrid signing
 
-**Make a signer post-quantum protected in one call.**
+**Register an ML-DSA-87 key and sign hybrid in one call.**
 
-QoreChain enforces hybrid post-quantum signatures (ML-DSA-87 + classical) at the
-protocol level. The SDK makes adopting them a one-liner: check, register, and
-migrate to hybrid signing - with a React badge to show users they're protected.
+On the native (Cosmos SDK) lane the chain requires a hybrid signature by
+default: classical secp256k1 plus ML-DSA-87 (FIPS 204). On the EVM lane, a
+transaction is admitted only from a PQC-registered account inside a bounded
+authorisation window opened from the native lane. The SVM lane is not open yet.
+The SDK makes adopting hybrid signing one call: check, register, and switch to
+hybrid signing, with a React badge that shows whether the account has a
+registered key.
 
 ```ts
 import { ensurePqcRegistered, migrateToHybrid } from "@qorechain/sdk";
@@ -112,22 +114,22 @@ await hybrid.send(messages);
 ```
 
 ```tsx
-import { QuantumSafeBadge } from "@qorechain/react";
+import { PqcStatusBadge } from "@qorechain/react";
 
-// Shows a "Quantum-safe" indicator when the address has a registered PQC key.
-<QuantumSafeBadge address={account.address} />
+// Shows "PQC key registered" when the address has a registered ML-DSA-87 key.
+<PqcStatusBadge address={account.address} />
 ```
 
-**Why it's unique:** post-quantum cryptography is native and mandatory on
-QoreChain, not an experiment. This is the first SDK where "quantum-safe by
-default" is a single call plus a drop-in badge. See
-[Quantum-safe](./guides/quantum-safe.md).
+**How it works:** `ensurePqcRegistered` reads the account's key status first and
+registers the key only when none is there, so it is safe to call on every start;
+`migrateToHybrid` returns a send path that signs every native transaction with
+both keys. See [Post-quantum hybrid signing](./guides/quantum-safe.md).
 
 ---
 
 ## Everything else, too
 
-Beyond the three differentiators, the SDK covers the full chain surface across
+Beyond these three features, the SDK covers the full chain surface across
 **TypeScript, Python, Go, Rust, and Java**: typed composers for every module
 (including sidechains/paychains via `multilayer` and rollups via `rdk`), typed
 queries, the tx lifecycle, subscriptions, browser wallets, and the

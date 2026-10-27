@@ -6,9 +6,9 @@
  *
  * - `classical` - a single classical signature (secp256k1 / ed25519). Backward
  *   compatible; no post-quantum material.
- * - `pqc` - an ML-DSA-87 (Dilithium-5) signature only. Maximum quantum safety.
+ * - `pqc` - an ML-DSA-87 (Dilithium-5) signature only, with no classical part.
  * - `hybrid` - a classical signature PLUS an ML-DSA-87 signature carried as a TX
- *   extension, so quantum-safe wallets interoperate with classical verification.
+ *   extension, so PQC-registered wallets interoperate with classical verification.
  *
  * This module defines only the SIGNING primitives and the shape of their output.
  * Wiring a {@link SignOutput} into a real transaction (attaching the PQC

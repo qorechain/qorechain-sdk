@@ -37,7 +37,7 @@ Requires Rust 1.74+.
 | `utils` | Hashing (sha256/keccak256/ripemd160), exact unit math, EVM/SVM address validators. |
 | `ai` | AI pre-flight risk/anomaly scoring over the EVM precompiles (`simulate_with_risk_score`). |
 | `cross_vm` | Unified cross-VM call helper over `MsgCrossVMCall` (single + atomic triple-VM). |
-| `pqc_dx` | Quantum-safe DX: idempotent PQC-key registration + classical→hybrid migration. |
+| `pqc_dx` | PQC key helpers: idempotent PQC-key registration + classical→hybrid migration. |
 | `evm_window` | The v3.2.0 EVM authorisation window: local bounds, `evm_window` status query, refusal classifier. |
 
 ### Typed messages and composers
@@ -469,9 +469,9 @@ lane is derived from the execution context rather than from the caller's own
 description of itself. The SDK still sends the field so older nodes keep
 accepting the message.
 
-### Quantum-safe DX (v0.5.0)
+### PQC key helpers (v0.5.0)
 
-The `pqc_dx` module makes a dApp PQC-protected in one idempotent call: check
+The `pqc_dx` module registers the signer's PQC key in one idempotent call: check
 whether the signer's Dilithium key is registered, register it if not, then sign
 hybrid (ML-DSA-87 + secp256k1).
 
@@ -508,7 +508,7 @@ sign-bytes form; the sync `build_hybrid` needs an explicit `V1`/`V2` on
 `migrate_pqc_key` rotates an account's on-chain PQC key (`MsgMigratePQCKey`);
 both key signatures cover `signbytes::migration_sign_bytes` in the form the chain
 verifies (v1 binds no public keys, v2 binds both). See
-the [quantum-safe](https://docs.qorechain.io/sdk/guides/quantum-safe) guide.
+the [post-quantum hybrid signing](https://docs.qorechain.io/sdk/guides/quantum-safe) guide.
 
 ### Unified eth-native wallet (v0.6.0)
 

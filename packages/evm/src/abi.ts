@@ -331,7 +331,7 @@ export const ERC1155_ABI = [
  * Post-quantum cryptography precompile interface (`IQorePQC`).
  *
  * Exposes signature verification and on-chain key registration status for
- * QoreChain's quantum-resistant key material (Dilithium / ML-DSA family).
+ * QoreChain's post-quantum key material (Dilithium / ML-DSA family).
  */
 export const IQORE_PQC_ABI = [
   {

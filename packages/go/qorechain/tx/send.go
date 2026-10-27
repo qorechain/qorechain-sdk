@@ -51,7 +51,7 @@ type SendMessagesParams struct {
 // carrying any messages. It does not broadcast - pass BuiltTx.TxRawBytes to
 // Broadcast (or use BroadcastAndWait).
 //
-// For a quantum-safe transaction over the same messages use BuildHybridMessages,
+// For a hybrid (classical + ML-DSA-87) transaction over the same messages use BuildHybridMessages,
 // which preserves the B0 exclude-extension contract.
 func SendMessages(params SendMessagesParams) (*BuiltTx, error) {
 	encoded, err := encodeMessages(MessagesFromSDK(params.Messages))

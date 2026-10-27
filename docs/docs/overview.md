@@ -8,8 +8,8 @@ sidebar_position: 1
 # QoreChain SDK
 
 The QoreChain SDK is the official multi-language developer kit for building
-decentralized applications on **QoreChain** - a quantum-safe, triple-VM Layer 1
-network.
+decentralized applications on **QoreChain** - a triple-VM Layer 1 network with
+hybrid post-quantum (ML-DSA-87) signing.
 
 This documentation covers how to install the SDK, connect to the network, read
 on-chain state, derive accounts, sign and send transactions, and work with each
@@ -28,13 +28,16 @@ runtimes on a single chain:
 Accounts, balances, and tokens are shared across the runtimes, and the chain
 supports IBC for cross-chain interoperability.
 
-### Quantum-safe by design
+### Post-quantum hybrid signing
 
 QoreChain provides post-quantum cryptography (PQC) primitives based on
 **ML-DSA-87** (Dilithium-5, FIPS 204). Alongside classical secp256k1 signing,
 the chain supports a **hybrid** signing posture in which a transaction carries
-*both* a classical signature and a post-quantum signature, so it stays valid
-under classical verification today while gaining post-quantum protection.
+*both* a classical signature and an ML-DSA-87 signature, and the chain verifies
+both. On the native (Cosmos SDK) lane the chain requires the hybrid secp256k1 +
+ML-DSA-87 signature by default; the EVM lane admits transactions only inside a
+bounded authorisation window opened from the native lane; the SVM lane is not
+open yet.
 
 The SDK exposes ML-DSA-87 key generation, signing, and verification today, plus
 the building blocks for hybrid transactions. See

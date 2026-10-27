@@ -1,4 +1,4 @@
-// Package pqcdx provides a high-level, quantum-safe developer-experience (DX)
+// Package pqcdx provides a high-level developer-experience (DX)
 // helper for QoreChain's x/pqc module. It wraps the three things an app developer
 // actually wants when adopting post-quantum signatures:
 //
@@ -738,7 +738,7 @@ type MigrateToHybridResult struct {
 	Retried bool
 }
 
-// MigrateToHybrid is the one-call "go quantum-safe" path: it ensures the signer's
+// MigrateToHybrid is the one-call "go hybrid" path: it ensures the signer's
 // PQC key is registered (returning EnsurePQCRegistered's *PQCKeyMismatchError
 // when the account holds a different key), then builds and broadcasts the given messages as a
 // hybrid (classical + ML-DSA-87) transaction using the signer's PQC keypair.

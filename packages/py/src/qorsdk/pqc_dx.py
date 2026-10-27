@@ -1,6 +1,6 @@
-"""Quantum-safe developer-experience (DX) helpers for QoreChain's ``x/pqc`` module.
+"""Developer-experience (DX) helpers for QoreChain's ``x/pqc`` module.
 
-QoreChain is **quantum-safe by default**: an account can register an ML-DSA-87
+On QoreChain's native lane **hybrid signing is the default**: an account can register an ML-DSA-87
 (Dilithium-5) post-quantum key, after which its transactions carry a hybrid
 signature (classical secp256k1 + PQC) that the chain's ante handler verifies
 end-to-end. These helpers make that migration a one-liner instead of
@@ -22,7 +22,7 @@ Registration is done with ``MsgRegisterPQCKeyV2``
 bootstrap path), which carries the signer's ML-DSA-87 public key with an
 explicit ``algorithm_id`` plus its classical ECDSA (secp256k1) public key. Once
 registered, send transactions through the hybrid signing path
-(:func:`qorsdk.tx.build_hybrid_tx`) so every tx is quantum-safe.
+(:func:`qorsdk.tx.build_hybrid_tx`) so every native tx is hybrid-signed.
 
 This helper mirrors the ergonomic cross-VM / rollup helpers: it wraps the typed
 ``msg.pqc.register_pqc_key_v2`` / ``msg.pqc.migrate_pqc_key`` composers and the
@@ -609,9 +609,9 @@ def migrate_to_hybrid(
     mode: str = "sync",
     sign_bytes_version: str = "auto",
 ) -> Any:
-    """Ensure ``account`` is PQC-registered, then send ``messages`` quantum-safe.
+    """Ensure ``account`` is PQC-registered, then send ``messages`` hybrid-signed.
 
-    This is the "go quantum-safe" path: it calls :func:`ensure_pqc_registered`
+    This is the "go hybrid" path: it calls :func:`ensure_pqc_registered`
     (broadcasting a ``MsgRegisterPQCKeyV2`` if needed, signed classically at
     ``register_sequence`` - defaulting to ``sequence``), then signs and
     broadcasts ``messages`` through the hybrid path

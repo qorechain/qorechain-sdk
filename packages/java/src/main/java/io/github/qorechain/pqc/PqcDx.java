@@ -20,7 +20,7 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
- * High-level quantum-safe developer-experience helpers.
+ * High-level helpers for PQC (ML-DSA-87) key registration and hybrid signing.
  *
  * <p>QoreChain treats post-quantum cryptography (PQC) as a first-class signature
  * scheme: an account registers an ML-DSA-87 (Dilithium-5) key on-chain
@@ -29,8 +29,8 @@ import java.util.concurrent.ConcurrentHashMap;
  * full. The low-level primitives already exist - {@link Pqc#generatePqcKeypair()},
  * {@link HybridTx#buildHybridTx}, the {@code QorechainMessages.pqc.registerPqcKey}
  * composer, and the {@code qor_getPQCKeyStatus} read. This class wraps them into a
- * tiny, idempotent surface so a dApp becomes <b>quantum-safe by default</b>: one
- * call to be PQC-protected.
+ * tiny, idempotent surface: one call registers the signer's ML-DSA-87 key, and
+ * native-lane transactions are then <b>hybrid-signed by default</b>.
  *
  * <p>The headline calls:
  * <ul>
@@ -434,8 +434,9 @@ public final class PqcDx {
      * with the signer's Dilithium public key plus the supplied (or signer's) ECDSA
      * public key.
      *
-     * <p>This is the single call that makes a dApp quantum-safe: run it once at
-     * startup (or before the first hybrid tx) and the account is PQC-protected.
+     * <p>This is the single call that registers the signer's ML-DSA-87 key: run it
+     * once at startup (or before the first hybrid tx) and the account is
+     * PQC-registered.
      *
      * @param signer the signing context (keys, chain id, account, fee).
      * @param bc the consensus-RPC broadcaster.
@@ -755,7 +756,7 @@ public final class PqcDx {
     }
 
     /**
-     * Make an account quantum-safe and hand back a hybrid send path.
+     * Register the account's PQC key and hand back a hybrid send path.
      *
      * <p>Ensures the signer's PQC key is registered (idempotent - see
      * {@link #ensurePqcRegistered}), then returns a {@link HybridSendPath} bound to

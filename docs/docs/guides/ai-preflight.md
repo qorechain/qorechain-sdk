@@ -6,8 +6,8 @@ sidebar_position: 10
 
 # AI pre-flight guide
 
-QoreChain is the first network to expose an **on-chain AI risk/anomaly model**
-to any dApp. Two read-only EVM precompiles let you score a transaction *before*
+QoreChain exposes an **on-chain AI risk/anomaly model** to dApps through the
+EVM. Two read-only EVM precompiles let you score a transaction *before*
 it is signed or broadcast, using nothing but `eth_call`:
 
 | Capability | Precompile | Address |

@@ -1,21 +1,31 @@
 ---
 id: quantum-safe
-title: Quantum-safe by default
+title: Post-quantum hybrid signing
 sidebar_position: 12
 ---
 
-# Quantum-safe by default
+# Post-quantum hybrid signing
 
-QoreChain treats post-quantum cryptography as a **first-class** signature scheme.
-An account registers an **ML-DSA-87 (Dilithium-5, NIST FIPS 204)** key on-chain,
-after which its transactions can carry a **hybrid** signature - the usual
-classical secp256k1 signature **plus** an ML-DSA-87 signature. The chain's ante
-handler verifies both, so a quantum-safe account stays fully compatible with
-classical verification while gaining protection against a future quantum
-adversary.
+QoreChain supports post-quantum cryptography as a signature scheme next to the
+classical one. An account registers an **ML-DSA-87 (Dilithium-5, NIST FIPS 204)**
+key on-chain, after which its transactions carry a **hybrid** signature - the
+usual classical secp256k1 signature **plus** an ML-DSA-87 signature. The chain's
+ante handler verifies both, so a PQC-registered account stays compatible with
+classical verification and also carries a signature from a post-quantum scheme.
 
-The SDK packages this into a tiny, idempotent surface so a dApp becomes
-**quantum-safe by default**: one call to be PQC-protected.
+What this covers, lane by lane:
+
+- **Native (Cosmos SDK) lane:** the chain requires the hybrid secp256k1 +
+  ML-DSA-87 signature by default. Registering the key is the classical bootstrap
+  message; every transaction after it is hybrid-signed.
+- **EVM lane:** an EVM transaction is admitted only from an account with a
+  registered ML-DSA-87 key and an open, bounded authorisation window. The window
+  is opened by a hybrid-signed message on the native lane; the EVM transaction
+  itself is signed with secp256k1.
+- **SVM lane:** not open yet.
+
+The SDK packages this into a small, idempotent surface: one call registers the
+account's ML-DSA-87 key and switches it to hybrid signing on the native lane.
 
 ## Check status
 
@@ -41,7 +51,7 @@ which needs no viem peer.
 
 ## Register in one call
 
-`ensurePqcRegistered` makes an account quantum-safe. It is **idempotent**: pass a
+`ensurePqcRegistered` registers the account's ML-DSA-87 key. It is **idempotent**: pass a
 status source and it skips the registration when the key is already registered,
 so it is safe to call on every app start.
 
@@ -162,5 +172,6 @@ await migratePqcKey(tx, {
 ## In the UI
 
 The [`@qorechain/react`](./react.md) kit surfaces all of this in React: the
-`usePqcStatus` hook and the `<QuantumSafeBadge/>` component show a **Quantum-safe**
-indicator whenever the connected account has a registered PQC key.
+`usePqcStatus` hook and the `<PqcStatusBadge/>` component show a **PQC key
+registered** indicator whenever the connected account has a registered ML-DSA-87
+key.

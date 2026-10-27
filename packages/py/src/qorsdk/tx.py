@@ -239,7 +239,7 @@ def send_messages(
     signs the ``SignDoc``, and assembles the ``TxRaw``. It does not broadcast -
     pass :attr:`BuiltTx.tx_raw_bytes` to :func:`broadcast`.
 
-    For a quantum-safe (classical + ML-DSA-87) transaction over the same
+    For a hybrid (classical + ML-DSA-87) transaction over the same
     messages, use :func:`build_hybrid_tx` instead.
 
     :param messages: Messages to include (``Msg`` objects or

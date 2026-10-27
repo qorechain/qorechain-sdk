@@ -4,7 +4,7 @@ NIST FIPS 204) for digital signatures.
 QoreChain treats PQC as a first-class signature scheme via a hybrid
 architecture: a transaction carries the usual classical (secp256k1 / ed25519)
 signature PLUS an ML-DSA-87 signature attached as a ``PQCHybridSignature`` TX
-extension. The chain's ante handler verifies both, so quantum-safe wallets stay
+extension. The chain's ante handler verifies both, so PQC-registered wallets stay
 compatible with classical verification.
 
 This module provides the signing PRIMITIVES (keygen / sign / verify) and a

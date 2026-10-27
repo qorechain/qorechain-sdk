@@ -21,7 +21,7 @@
 //!   over `eth_call`, plus an advisory `simulate_with_risk_score`.
 //! - [`cross_vm`] - high-level unified cross-VM call helper (build / sign /
 //!   broadcast `MsgCrossVMCall`, including atomic multi-call txs).
-//! - [`pqc_dx`] - high-level quantum-safe DX helper (idempotent PQC-key
+//! - [`pqc_dx`] - high-level PQC key helper (idempotent PQC-key
 //!   registration, status reads, key rotation, and a bound hybrid send path).
 //! - [`unified`] - the unified eth-native wallet: one secp256k1 key rendered as
 //!   all three address encodings (native/EVM/SVM) plus a deterministic ML-DSA-87

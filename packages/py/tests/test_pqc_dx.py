@@ -1,4 +1,4 @@
-"""Tests for the quantum-safe DX helpers (``x/pqc`` key registry).
+"""Tests for the PQC key helpers (``x/pqc`` key registry).
 
 Status queries are mocked at the ``QorClient.get_pqc_key_status`` level (the
 ``qor_getPQCKeyStatus`` JSON-RPC method). Registration / migration are built,

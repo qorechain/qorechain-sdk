@@ -12,8 +12,9 @@
  *    state (plus the `qor_*` conveniences).
  *  - {@link createCrossVMClient} - unified, atomic calls across the EVM, SVM, and
  *    CosmWasm VMs.
- *  - Quantum-safe DX ({@link ensurePqcRegistered} / {@link migrateToHybrid} /
- *    {@link isPqcRegistered}) - make a dApp PQC-protected in one call.
+ *  - PQC key helpers ({@link ensurePqcRegistered} / {@link migrateToHybrid} /
+ *    {@link isPqcRegistered}) - register the signer's ML-DSA-87 key and sign
+ *    hybrid in one call.
  */
 
 export {

@@ -162,7 +162,7 @@ built = send_messages(
     fee={"amount": [{"denom": "uqor", "amount": "5000"}], "gas": "200000"},
 )
 
-# Or a quantum-safe hybrid (classical + ML-DSA-87) tx over the same messages.
+# Or a hybrid (classical + ML-DSA-87) tx over the same messages.
 # The testnet verifies the v2 sign-bytes form (see "Hybrid sign-bytes v1 / v2").
 hybrid = build_hybrid_tx(
     account=native, pqc_keypair=generate_pqc_keypair(), messages=[swap],
@@ -310,10 +310,10 @@ nodes keep taking the message, but setting it has no on-chain effect.
 `build_cross_vm_call(...)` is also available as a free function for hand-building
 the message. See the [cross-VM](https://docs.qorechain.io/sdk/guides/cross-vm) guide.
 
-### Quantum-safe DX (v0.5.0)
+### PQC key helpers (v0.5.0)
 
-QoreChain enforces hybrid post-quantum signatures (ML-DSA-87 + secp256k1) by
-default. `qorsdk.pqc_dx` makes a dApp PQC-protected in one idempotent call.
+On the native lane QoreChain requires hybrid post-quantum signatures
+(ML-DSA-87 + secp256k1) by default. `qorsdk.pqc_dx` registers the signer's PQC key in one idempotent call.
 
 ```python
 import httpx
@@ -355,7 +355,7 @@ migrate_pqc_key(account=native, ...)
 
 Async status reads are available as `is_pqc_registered_async` /
 `get_pqc_status_async`. See the
-[quantum-safe](https://docs.qorechain.io/sdk/guides/quantum-safe) guide.
+[post-quantum hybrid signing](https://docs.qorechain.io/sdk/guides/quantum-safe) guide.
 
 ### Hybrid sign-bytes v1 / v2 (v0.8.1 / chain v3.2.0, testnet v3.1.98)
 

@@ -1,5 +1,5 @@
 /**
- * High-level quantum-safe developer-experience helpers.
+ * High-level helpers for PQC (ML-DSA-87) key registration and hybrid signing.
  *
  * QoreChain treats post-quantum cryptography (PQC) as a first-class signature
  * scheme: an account registers an ML-DSA-87 (Dilithium-5) key on-chain
@@ -8,8 +8,9 @@
  * full. The low-level primitives already exist - {@link generatePqcKeypair},
  * {@link buildHybridTx}, {@link signAndBroadcastHybrid}, the
  * `msg.pqc.registerPqcKey` composer, and the `qor_getPQCKeyStatus` read. This
- * module wraps them into a tiny, idempotent surface so a dApp becomes
- * **quantum-safe by default**: one call to be PQC-protected.
+ * module wraps them into a tiny, idempotent surface: one call registers the
+ * signer's ML-DSA-87 key, and native-lane transactions are then
+ * **hybrid-signed by default**.
  *
  * The headline calls:
  *  - {@link isPqcRegistered} / {@link getPqcStatus} - read whether an address has
@@ -472,8 +473,9 @@ export function buildRegisterPqcKeyMsg(
  * and broadcasts `MsgRegisterPQCKeyV2` with the signer's Dilithium public key
  * plus the supplied ECDSA public key.
  *
- * This is the single call that makes a dApp quantum-safe: run it once at startup
- * (or before the first hybrid tx) and the account is PQC-protected thereafter.
+ * This is the single call that registers the signer's ML-DSA-87 key: run it once
+ * at startup (or before the first hybrid tx) and the account is PQC-registered
+ * thereafter.
  *
  * @param tx - A connected signing client (the sender address is its identity).
  * @param opts - The signer's PQC keypair, optional ECDSA pubkey, and write opts.
@@ -694,7 +696,7 @@ export interface HybridSendPath {
 }
 
 /**
- * Make an account quantum-safe and hand back a hybrid send path.
+ * Register the account's PQC key and hand back a hybrid send path.
  *
  * Ensures the signer's PQC key is registered (idempotent - see
  * {@link ensurePqcRegistered}), then returns a {@link HybridSendPath} with the

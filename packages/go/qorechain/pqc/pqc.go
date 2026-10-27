@@ -4,7 +4,7 @@
 // QoreChain treats PQC as a first-class signature scheme via a hybrid
 // architecture: a transaction carries the usual classical (secp256k1 / ed25519)
 // signature PLUS an ML-DSA-87 signature attached as a PQCHybridSignature TX
-// extension. The chain's ante handler verifies both, so quantum-safe wallets
+// extension. The chain's ante handler verifies both, so PQC-registered wallets
 // stay compatible with classical verification.
 //
 // This package provides the signing primitives (keygen / sign / verify) and a
