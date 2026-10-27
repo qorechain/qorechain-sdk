@@ -10,6 +10,20 @@ The TypeScript core (`@qorechain/sdk`) includes thin, typed wrappers over
 `@cosmjs/cosmwasm-stargate` for querying and executing CosmWasm contracts. Reads
 use a read-only client; state changes use a signing client.
 
+## What the networks allow
+
+Code upload is **governance-only** on both networks: the chain's
+`code_upload_access` is `Nobody`, so Wasm code is stored by a governance
+proposal carrying `MsgStoreCode` with the governance module as sender.
+Instantiation is open to everybody on the testnet and closed on mainnet
+(`instantiate_default_permission`). Both values are readable at
+`/cosmwasm/wasm/v1/codes/params`; list stored codes with
+`/cosmwasm/wasm/v1/code` (singular).
+
+`npx create-qorechain-dapp my-token --template cosmwasm` scaffolds a CW20 token
+on `cw20-base` with an optimized build, the governance upload proposal, and
+testnet instantiate and query scripts.
+
 ## Read-only queries
 
 Open a read-only CosmWasm client from your `createClient()` instance - it

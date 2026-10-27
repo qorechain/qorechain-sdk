@@ -21,6 +21,8 @@ const sidebars: SidebarsConfig = {
         "guides/events",
         "guides/gas-fees-errors",
         "guides/evm",
+        "guides/evm-quickstarts",
+        "guides/evm-differences",
         "guides/ai-preflight",
         "guides/svm",
         "guides/cosmwasm",

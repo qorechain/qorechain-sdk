@@ -27,12 +27,21 @@ npx create-qorechain-dapp my-dapp --template evm-solidity --yes --no-install
 | --- | --- |
 | `evm-solidity` | A Solidity `Counter` contract + a viem deploy/interact script (`@qorechain/evm`). |
 | `fullstack-web` | A Vite + React + TypeScript dApp reading balances and tokenomics (`@qorechain/sdk`). |
+| `rollup-app` | A rollup + sidechain/paychain app (`RollupClient` + multilayer helper). |
+| `foundry` | A Foundry project (contract, tests, deploy script) + the EVM window helper. |
+| `hardhat` | A Hardhat 3 + viem project (contract, tests, Ignition deploy) + the EVM window helper. |
+| `viem-wagmi` | A Vite + React + wagmi + RainbowKit dApp with the QoreX wallet. |
+| `cosmwasm` | A CW20 token on `cw20-base`, optimized build, governance upload proposal. |
+
+The `foundry` and `hardhat` templates include `pnpm window`, which registers the
+account's ML-DSA-87 key and opens the EVM authorisation window every EVM
+transaction needs (see [QoreChain EVM compared with Ethereum](../guides/evm-differences.md)).
 
 ## Options
 
 | Flag | Description |
 | --- | --- |
-| `-t, --template <name>` | Template to use (`evm-solidity` \| `fullstack-web`). |
+| `-t, --template <name>` | Template to use (one of the ids above). |
 | `--network <name>` | Network preset (`testnet` \| `mainnet`). |
 | `--package-manager <pm>` | `pnpm` \| `npm` \| `yarn`. |
 | `-y, --yes` | Skip prompts and use defaults. |

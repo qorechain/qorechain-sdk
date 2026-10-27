@@ -100,6 +100,48 @@ const tmpl = await erc1155.uri(client.publicClient, multi, id);
 
 See the `evm-nft` example in the repository for a runnable read.
 
+## Chain definitions
+
+`qorechain` (EVM chain id 9801, mainnet) and `qorechainTestnet` (9800) are viem
+chain objects with the public endpoints, for viem, wagmi or RainbowKit.
+`QORECHAIN_CHAINS` lists both, mainnet first.
+
+```ts
+import { createPublicClient, http } from "viem";
+import { qorechainTestnet } from "@qorechain/evm";
+
+const publicClient = createPublicClient({ chain: qorechainTestnet, transport: http() });
+```
+
+## The EVM authorisation window
+
+Before an account can send any EVM transaction, it needs a registered ML-DSA-87
+key and a live authorisation window. The window is opened with a native-lane
+message (`MsgOpenEVMWindow`) signed hybrid, and bounds the number of blocks,
+transactions and total value (value plus the maximum fee) the EVM lane may
+spend. `@qorechain/evm` reads the window and composes the message; sign it with
+`@qorechain/sdk`.
+
+```ts
+import { evmWindowStatus, openEvmWindowMessage, evmWindowCost } from "@qorechain/evm";
+
+const w = await evmWindowStatus({ rest: "https://api-testnet.qore.host", address: "0x..." });
+
+const msg = openEvmWindowMessage({
+  sender: "qor1...",
+  blocks: 600,
+  maxTxs: 5,
+  maxValue: evmWindowCost({ gas: 3_000_000n, maxFeePerGas: 112_500_000_000n }) * 5n,
+});
+```
+
+`toQorAddress("0x...")` gives the `qor1...` form of the same account. Opening a
+window advances the account's EVM nonce, so open first, then read the nonce,
+then sign. The full rules and the SDK signing code are in the
+[TypeScript SDK README](https://github.com/qorechain/qorechain-sdk/tree/main/packages/ts#evm-authorisation-window-v082-chain-v320);
+the differences from Ethereum are in
+[QoreChain EVM compared with Ethereum](evm-differences.md).
+
 ## Fees
 
 `estimateEip1559Fees` wraps viem's fee estimation; `gasPrice` is the legacy
@@ -141,6 +183,10 @@ exported.
 | QCAI risk score | `aiRiskScore` | `0x0000000000000000000000000000000000000B01` |
 | QCAI anomaly check | `aiAnomalyCheck` | `0x0000000000000000000000000000000000000B02` |
 | Consensus params | `rlConsensusParams` | `0x0000000000000000000000000000000000000C01` |
+
+Not every precompile is active on every network. See
+[QoreChain EVM compared with Ethereum](evm-differences.md#precompiles) for the
+state of each one on the testnet and on mainnet.
 
 ```ts
 import {
