@@ -37,6 +37,45 @@ This is the EVM-side representation and is distinct from the Native `uqor` base
 denomination (10^6). Override with `{ decimals }` if your node differs; confirm
 the canonical value against your target node.
 
+### Chain definitions
+
+`qorechain` (chain id 9801) and `qorechainTestnet` (9800) are viem chains with
+the public endpoints, ready for viem, wagmi or RainbowKit:
+
+```ts
+import { createPublicClient, http } from "viem";
+import { qorechainTestnet, QORECHAIN_CHAINS } from "@qorechain/evm";
+
+const client = createPublicClient({ chain: qorechainTestnet, transport: http() });
+// wagmi / RainbowKit: chains: QORECHAIN_CHAINS (mainnet first)
+```
+
+### Before you send: the EVM authorisation window
+
+Every EVM transaction on QoreChain needs a registered ML-DSA-87 key and a live
+authorisation window for the sender. The window is opened by a native-lane
+message signed hybrid (secp256k1 + ML-DSA-87). This package reads the window
+and composes the message; sign and broadcast it with `@qorechain/sdk`.
+
+```ts
+import { evmWindowStatus, openEvmWindowMessage, evmWindowCost } from "@qorechain/evm";
+
+const w = await evmWindowStatus({ rest: "https://api-testnet.qore.host", address: "0x..." });
+// w.live, w.remainingTxs, w.remainingValue (uqor), w.remainingBlocks
+
+const msg = openEvmWindowMessage({
+  sender: "qor1...", // the same account; toQorAddress("0x...") converts
+  blocks: 600,
+  maxTxs: 5,
+  maxValue: evmWindowCost({ gas: 3_000_000n, maxFeePerGas: 112_500_000_000n }) * 5n,
+});
+// Sign `msg` hybrid on the native lane, then read the nonce (opening advances it).
+```
+
+`classifyEvmWindowRejection(err)` tells a refused transaction apart:
+`"no-pqc-key"`, `"no-window"`, `"exhausted"` or `"invalid"`. The window helpers
+are also published viem-free at `@qorechain/evm/window`.
+
 ### Read an ERC-20 balance
 
 ```ts
@@ -73,11 +112,11 @@ const hash = await writeContract(wallet, {
 QoreChain defines on-chain precompiles for post-quantum verification, AI-based
 risk/anomaly checks, and live consensus parameters.
 
-> **Not available on the public networks today.** These precompiles are not
-> active on `qorechain-vladi` or `qorechain-diana`: the chain's
-> `/cosmos/evm/vm/v1/params` lists no active static precompiles, and a call to
-> them returns empty data (the helpers then throw). Check that list before you
-> rely on them.
+> **Activation differs per network.** On the testnet (`qorechain-diana`) the
+> chain's `/cosmos/evm/vm/v1/params` lists `0x0A01`, `0x0A02` and `0x0C01` as
+> active; on mainnet (`qorechain-vladi`) it lists none. A call to an inactive
+> precompile returns empty data (the helpers then throw). Check that list
+> before you rely on them.
 
 
 ```ts

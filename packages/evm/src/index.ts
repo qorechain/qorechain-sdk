@@ -18,6 +18,40 @@ export {
   type EvmEndpoints,
 } from "./client";
 
+export {
+  qorechain,
+  qorechainTestnet,
+  QORECHAIN_CHAINS,
+  QORECHAIN_REST_ENDPOINTS,
+} from "./chains";
+
+// The EVM authorisation window: read it, compose the native-lane message that
+// opens it, size it, and classify a refusal.
+export {
+  evmWindowStatus,
+  parseEvmWindow,
+  openEvmWindowMessage,
+  checkOpenEvmWindowParams,
+  classifyEvmWindowRejection,
+  isEvmWindowRejection,
+  evmWindowCost,
+  weiToUqorCeil,
+  toQorAddress,
+  toEvmAddress,
+  OPEN_EVM_WINDOW_TYPE_URL,
+  CLOSE_EVM_WINDOW_TYPE_URL,
+  MAX_EVM_WINDOW_BLOCKS,
+  MAX_EVM_WINDOW_TXS,
+  MAX_EVM_WINDOW_TARGETS,
+  type EvmWindow,
+  type EvmWindowRejection,
+  type EvmWindowStatusOptions,
+  type OpenEvmWindowParams,
+  type OpenEvmWindowValue,
+  type OpenEvmWindowMessage,
+  type WindowFetchLike,
+} from "./window";
+
 export { evmAccountFromPrivateKey } from "./accounts";
 
 export {

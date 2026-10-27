@@ -1,7 +1,9 @@
 import { defineConfig } from "tsup";
 
 export default defineConfig({
-  entry: ["src/index.ts"],
+  // `window` is also published as a viem-free subpath (`@qorechain/evm/window`),
+  // so the native-side SDK can reuse it without loading viem.
+  entry: ["src/index.ts", "src/window.ts"],
   format: ["esm", "cjs"],
   dts: true,
   sourcemap: true,

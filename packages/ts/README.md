@@ -387,8 +387,8 @@ See the [multilayer](https://github.com/qorechain/qorechain-sdk/blob/main/docs/d
 
 > **Not available on the public networks today.** The AI precompiles are not
 > active on `qorechain-vladi` or `qorechain-diana`: the chain's
-> `/cosmos/evm/vm/v1/params` lists no active static precompiles, and a call to
-> them returns empty data (the helpers then throw). Check that list before you
+> `/cosmos/evm/vm/v1/params` does not list `0x0B01` / `0x0B02` among the active
+> static precompiles on either network, and a call to them returns empty data (the helpers then throw). Check that list before you
 > rely on them.
 
 QoreChain exposes an on-chain AI risk/anomaly model to any dApp through plain
