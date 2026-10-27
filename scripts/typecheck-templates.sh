@@ -8,6 +8,12 @@
 #
 # This keeps `pnpm -r build/test/install` green while still giving real type
 # coverage for the templates in CI.
+#
+# `--local` only rewrites the template's direct `@qorechain/*` deps. The local
+# packages themselves can depend on each other via `workspace:` ranges (e.g.
+# `@qorechain/sdk` -> `@qorechain/evm`), which pnpm cannot resolve outside the
+# workspace. We add `pnpm.overrides` pointing every local package at its
+# monorepo dir so those transitive deps resolve to the same local builds.
 set -euo pipefail
 
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
@@ -28,7 +34,23 @@ for tmpl in evm-solidity fullstack-web rollup-app; do
   echo "==> Type-checking template: $tmpl"
   out="$TMP/$tmpl"
   node cli/dist/index.js "$out" --template "$tmpl" --yes --local --no-install
-  ( cd "$out" && pnpm install --ignore-workspace --no-frozen-lockfile >/dev/null 2>&1 && pnpm typecheck )
+  node -e '
+    const fs = require("fs");
+    const [pkgPath, root] = process.argv.slice(1);
+    const pkg = JSON.parse(fs.readFileSync(pkgPath, "utf8"));
+    pkg.pnpm = { ...pkg.pnpm, overrides: {
+      "@qorechain/sdk": `file:${root}/packages/ts`,
+      "@qorechain/evm": `file:${root}/packages/evm`,
+      "@qorechain/svm": `file:${root}/packages/svm`,
+    } };
+    fs.writeFileSync(pkgPath, JSON.stringify(pkg, null, 2) + "\n");
+  ' "$out/package.json" "$ROOT"
+  if ! ( cd "$out" && pnpm install --ignore-workspace --no-frozen-lockfile >"$TMP/$tmpl-install.log" 2>&1 ); then
+    echo "pnpm install failed for template $tmpl:" >&2
+    cat "$TMP/$tmpl-install.log" >&2
+    exit 1
+  fi
+  ( cd "$out" && pnpm typecheck )
 done
 
 echo "ALL TEMPLATE TYPECHECKS PASSED"
