@@ -1,0 +1,25 @@
+{
+  "name": "qorechain-cosmwasm-dapp",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "description": "A CW20 token (cw20-base from cw-plus) for QoreChain, with build, governance upload and instantiate scripts.",
+  "scripts": {
+    "test:contract": "cargo test",
+    "build:wasm": "bash scripts/build.sh",
+    "propose-store": "tsx --env-file=.env scripts/propose-store.ts",
+    "instantiate": "tsx --env-file=.env scripts/instantiate.ts",
+    "query": "tsx --env-file=.env scripts/query.ts",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@cosmjs/encoding": "^0.39.0",
+    "@qorechain/sdk": "^0.10.0",
+    "cosmjs-types": "^0.11.0"
+  },
+  "devDependencies": {
+    "@types/node": "^22.7.5",
+    "tsx": "^4.19.0",
+    "typescript": "^5.6.3"
+  }
+}

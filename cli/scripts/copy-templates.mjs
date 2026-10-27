@@ -11,7 +11,22 @@ const cliRoot = join(here, "..");
 const src = join(cliRoot, "..", "templates");
 const dest = join(cliRoot, "templates");
 
-const SKIP = new Set(["node_modules", "dist", ".turbo", "coverage", ".env"]);
+// Build output of the Foundry, Hardhat and CosmWasm templates is skipped too, and
+// `scaffold-eth-extension` is a Scaffold-ETH 2 extension, not a CLI template.
+const SKIP = new Set([
+  "node_modules",
+  "dist",
+  ".turbo",
+  "coverage",
+  ".env",
+  "out",
+  "cache",
+  "artifacts",
+  "target",
+  "lib",
+  "broadcast",
+  "scaffold-eth-extension",
+]);
 
 // The workspace packages a template may depend on. Their ranges are rewritten
 // to "^<current version>" on copy, so a published CLI always scaffolds against

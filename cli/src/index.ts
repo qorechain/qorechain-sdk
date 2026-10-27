@@ -129,8 +129,17 @@ function nextSteps(
   const lines: string[] = [`cd ${dir}`];
   if (!installed) lines.push(`${pm} install`);
   const run = pm === "npm" ? "npm run" : pm;
-  if (template === "fullstack-web") {
+  if (template === "fullstack-web" || template === "viem-wagmi") {
     lines.push(`${run} dev`);
+  } else if (template === "foundry") {
+    lines.push(`${run} forge-std && forge test`);
+    lines.push(`${run} window status   # open an EVM window before deploying (README)`);
+  } else if (template === "hardhat") {
+    lines.push(`${run} test`);
+    lines.push(`${run} window status   # open an EVM window before deploying (README)`);
+  } else if (template === "cosmwasm") {
+    lines.push("cargo test");
+    lines.push(`${run} build:wasm   # code upload is governance-only (README)`);
   } else {
     lines.push(`${run} deploy   # see README for prerequisites`);
   }

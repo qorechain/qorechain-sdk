@@ -111,6 +111,68 @@ describe("scaffold(fullstack-web)", () => {
   });
 });
 
+describe("chain developer templates", () => {
+  const cases: Array<[string, string[]]> = [
+    [
+      "foundry",
+      [
+        "foundry.toml",
+        "src/Counter.sol",
+        "test/Counter.t.sol",
+        "script/Counter.s.sol",
+        "scripts/window.ts",
+        "README.md",
+      ],
+    ],
+    [
+      "hardhat",
+      [
+        "hardhat.config.ts",
+        "contracts/Counter.sol",
+        "test/Counter.ts",
+        "ignition/modules/Counter.ts",
+        "scripts/window.ts",
+        "README.md",
+      ],
+    ],
+    ["viem-wagmi", ["index.html", "vite.config.ts", "src/App.tsx", "src/wagmi.ts", "src/main.tsx", "README.md"]],
+    [
+      "cosmwasm",
+      [
+        "Cargo.toml",
+        "Cargo.lock",
+        "contracts/cw20-token/Cargo.toml",
+        "contracts/cw20-token/src/lib.rs",
+        "scripts/build.sh",
+        "scripts/propose-store.ts",
+        "scripts/instantiate.ts",
+        "README.md",
+      ],
+    ],
+  ];
+
+  it.each(cases)("scaffolds %s", (template, files) => {
+    const target = join(workdir, template);
+    const result = scaffold({ template, targetDir: target, projectName: `my-${template}`, templatesRoot });
+    for (const f of files) expect(result.files, `${template}: ${f}`).toContain(f);
+    expect(existsSync(join(target, ".env"))).toBe(true);
+    const pkg = JSON.parse(readFileSync(join(target, "package.json"), "utf8")) as { name: string };
+    expect(pkg.name).toBe(`my-${template}`);
+  });
+
+  it("points Foundry at the public QoreChain endpoints", () => {
+    const toml = readFileSync(join(templatesRoot, "foundry", "foundry.toml"), "utf8");
+    expect(toml).toContain('qorechain = "https://evm.qore.host"');
+    expect(toml).toContain('qorechain_testnet = "https://evm-testnet.qore.host"');
+  });
+
+  it("points Hardhat at chain ids 9800 and 9801", () => {
+    const config = readFileSync(join(templatesRoot, "hardhat", "hardhat.config.ts"), "utf8");
+    expect(config).toMatch(/chainId: 9800,\s+url: "https:\/\/evm-testnet\.qore\.host"/);
+    expect(config).toMatch(/chainId: 9801,\s+url: "https:\/\/evm\.qore\.host"/);
+  });
+});
+
 describe("scaffold errors", () => {
   it("throws clearly on an unknown template", () => {
     expect(() =>

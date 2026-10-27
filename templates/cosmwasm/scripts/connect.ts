@@ -1,0 +1,72 @@
+/**
+ * Shared setup for the scripts: the network, the account and a hybrid-signing
+ * transaction client.
+ *
+ * The account is the standard native one derived from QORE_MNEMONIC. QoreChain
+ * signs native transactions hybrid (secp256k1 + ML-DSA-87); the ML-DSA-87 key
+ * is derived from the same mnemonic and must already be registered for the
+ * account (see README).
+ */
+import {
+  createClient,
+  deriveNativeAccount,
+  derivePqcCanonical,
+  directSignerFromPrivateKey,
+  type TxClient,
+} from "@qorechain/sdk";
+import { MsgInstantiateContract, MsgExecuteContract } from "cosmjs-types/cosmwasm/wasm/v1/tx";
+
+export const NETWORKS = {
+  testnet: {
+    chainId: "qorechain-diana",
+    rest: "https://api-testnet.qore.host",
+    rpc: "https://rpc-testnet.qore.host",
+  },
+  mainnet: {
+    chainId: "qorechain-vladi",
+    rest: "https://api.qore.host",
+    rpc: "https://rpc.qore.host",
+  },
+} as const;
+
+export type NetworkName = keyof typeof NETWORKS;
+
+export function networkName(): NetworkName {
+  const name = (process.env.QORE_NETWORK ?? "testnet") as NetworkName;
+  if (!(name in NETWORKS)) throw new Error(`QORE_NETWORK must be "testnet" or "mainnet", got "${name}"`);
+  return name;
+}
+
+export function requireEnv(name: string): string {
+  const value = process.env[name]?.trim();
+  if (!value) throw new Error(`Set ${name} in .env`);
+  return value;
+}
+
+/** Connect a transaction client that signs hybrid for the QORE_MNEMONIC account. */
+export async function connect(): Promise<{ tx: TxClient; address: string; network: NetworkName }> {
+  const network = networkName();
+  const endpoints = NETWORKS[network];
+  const mnemonic = requireEnv("QORE_MNEMONIC");
+  const account = await deriveNativeAccount(mnemonic);
+  const signer = await directSignerFromPrivateKey(account.privateKey, "qor");
+  const pqcKeypair = derivePqcCanonical(account.address, mnemonic);
+  const client = createClient({ network, endpoints: { rest: endpoints.rest, rpc: endpoints.rpc } });
+  const tx = await client.connectTx(signer, {
+    pqcKeypair,
+    registryTypes: [
+      ["/cosmwasm.wasm.v1.MsgInstantiateContract", MsgInstantiateContract],
+      ["/cosmwasm.wasm.v1.MsgExecuteContract", MsgExecuteContract],
+    ],
+  });
+  return { tx, address: account.address, network };
+}
+
+/** GET a JSON document from the network's REST API. */
+export async function restGet<T>(path: string): Promise<T> {
+  const { rest } = NETWORKS[networkName()];
+  const res = await fetch(`${rest}${path}`);
+  const body = (await res.json()) as T & { message?: string };
+  if (!res.ok) throw new Error(`${path}: HTTP ${res.status} ${body.message ?? ""}`);
+  return body;
+}

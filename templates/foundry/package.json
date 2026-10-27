@@ -1,0 +1,26 @@
+{
+  "name": "qorechain-foundry-dapp",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "description": "A Foundry project for the QoreChain EVM, with a helper that opens the EVM authorisation window.",
+  "scripts": {
+    "forge-std": "forge install foundry-rs/forge-std --no-git",
+    "build": "forge build",
+    "test": "forge test",
+    "window": "tsx --env-file=.env scripts/window.ts",
+    "deploy:testnet": "forge script script/Counter.s.sol --rpc-url qorechain_testnet --broadcast",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@cosmjs/stargate": "^0.39.0",
+    "@qorechain/evm": "^0.8.0",
+    "@qorechain/sdk": "^0.10.0"
+  },
+  "devDependencies": {
+    "@types/node": "^22.7.5",
+    "tsx": "^4.19.0",
+    "typescript": "^5.6.3",
+    "viem": "^2.0.0"
+  }
+}

@@ -1,0 +1,23 @@
+[package]
+name = "cw20-token"
+version = "0.1.0"
+edition = "2021"
+rust-version = "1.81"
+description = "A CW20 token for QoreChain, built on cw20-base from cw-plus."
+license = "Apache-2.0"
+publish = false
+
+[lib]
+crate-type = ["cdylib", "rlib"]
+
+[features]
+# Use this crate as a dependency without exporting its entry points.
+library = []
+
+[dependencies]
+cosmwasm-std = "2.1"
+cw20 = "2.0"
+cw20-base = { version = "2.0", features = ["library"] }
+
+[dev-dependencies]
+cw-multi-test = "2.1"

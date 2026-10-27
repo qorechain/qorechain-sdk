@@ -7,8 +7,8 @@
  * touching the scaffolding logic.
  */
 
-/** A language a template targets. Only TypeScript ships today. */
-export type TemplateLanguage = "typescript";
+/** The main language a template targets. */
+export type TemplateLanguage = "typescript" | "solidity" | "rust";
 
 /** A scaffoldable starter template. */
 export interface TemplateInfo {
@@ -41,6 +41,30 @@ export const TEMPLATES: readonly TemplateInfo[] = [
     label: "Rollup + multilayer app",
     hint: "A rollup + sidechain/paychain app using the RollupClient and multilayer helper from @qorechain/sdk.",
     language: "typescript",
+  },
+  {
+    id: "foundry",
+    label: "Foundry",
+    hint: "A Foundry project (contract, tests, deploy script) with a helper that opens the EVM authorisation window.",
+    language: "solidity",
+  },
+  {
+    id: "hardhat",
+    label: "Hardhat 3",
+    hint: "A Hardhat 3 + viem project (contract, tests, Ignition deploy) with the EVM window helper.",
+    language: "solidity",
+  },
+  {
+    id: "viem-wagmi",
+    label: "viem + wagmi (Vite + React)",
+    hint: "A wagmi + RainbowKit dApp with the QoreX wallet and the QoreChain chain definitions.",
+    language: "typescript",
+  },
+  {
+    id: "cosmwasm",
+    label: "CosmWasm (CW20)",
+    hint: "A cw20-base token with an optimized build, a governance upload proposal and testnet scripts.",
+    language: "rust",
   },
 ] as const;
 

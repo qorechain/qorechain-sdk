@@ -1,0 +1,36 @@
+{
+  "name": "qorechain-hardhat-dapp",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "description": "A Hardhat 3 project for the QoreChain EVM, with a helper that opens the EVM authorisation window.",
+  "scripts": {
+    "build": "hardhat build",
+    "test": "hardhat test",
+    "window": "tsx --env-file=.env scripts/window.ts",
+    "deploy:testnet": "hardhat ignition deploy ignition/modules/Counter.ts --network qorechainTestnet",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@cosmjs/stargate": "^0.39.0",
+    "@qorechain/evm": "^0.8.0",
+    "@qorechain/sdk": "^0.10.0"
+  },
+  "devDependencies": {
+    "@nomicfoundation/hardhat-ignition": "^3.1.9",
+    "@nomicfoundation/hardhat-ignition-viem": "^3.1.6",
+    "@nomicfoundation/hardhat-keystore": "^3.1.2",
+    "@nomicfoundation/hardhat-network-helpers": "^3.0.12",
+    "@nomicfoundation/hardhat-node-test-runner": "^3.1.2",
+    "@nomicfoundation/hardhat-toolbox-viem": "^5.0.7",
+    "@nomicfoundation/hardhat-verify": "^3.1.4",
+    "@nomicfoundation/hardhat-viem": "^3.1.0",
+    "@nomicfoundation/hardhat-viem-assertions": "^3.1.5",
+    "@nomicfoundation/ignition-core": "^3.1.11",
+    "@types/node": "^22.7.5",
+    "hardhat": "^3.21.1",
+    "tsx": "^4.19.0",
+    "typescript": "^5.6.3",
+    "viem": "^2.47.6"
+  }
+}
