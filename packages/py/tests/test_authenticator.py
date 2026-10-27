@@ -366,7 +366,7 @@ def test_rotate_pqc_key_msg_from_mnemonic_rejects_invalid_account():
         )
 
 
-# --- QSR-2026-0381: canonical derivation normalises the account ---------------
+# --- canonical derivation normalises the account ---------------
 # Cross-language vector produced by the Go SDK
 # (authenticator.TestDerivePQCCanonicalNormalisesAccount): every encoding of one
 # account resolves to its lower-case bech32 form before hashing.

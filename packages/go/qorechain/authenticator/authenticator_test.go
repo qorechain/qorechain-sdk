@@ -153,7 +153,7 @@ func TestRotatePQCKeyMsgFromMnemonicEVMAddress(t *testing.T) {
 	}
 }
 
-// Cross-language vector for QSR-2026-0381: the canonical PQC derivation must
+// Cross-language vector: the canonical PQC derivation must
 // resolve every encoding of one account to its lower-case bech32 form before
 // hashing. These values are this package's output; the TS, Python, Rust and Java
 // SDKs pin the same ones.

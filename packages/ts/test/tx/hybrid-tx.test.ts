@@ -357,7 +357,7 @@ describe("signAndBroadcastHybrid", () => {
   });
 });
 
-describe("hybrid signing snapshots the caller's inputs (QSR-2026-0299)", () => {
+describe("hybrid signing snapshots the caller's inputs", () => {
   function decodeSent(bytes: Uint8Array) {
     const raw = TxRaw.decode(bytes);
     const body = TxBody.decode(raw.bodyBytes);

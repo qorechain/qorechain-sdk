@@ -41,7 +41,7 @@ describe("TxClient.simulate", () => {
 });
 
 describe("TxClient.signAndBroadcast", () => {
-  it("simulates and signs ONE private copy of the messages (QSR-2026-0299)", async () => {
+  it("simulates and signs ONE private copy of the messages", async () => {
     const sg = fakeStargate();
     const client = makeClient(sg);
     const msgs = [

@@ -141,7 +141,7 @@ describe("useBalance", () => {
     await waitFor(() => expect(screen.getByText("boom")).toBeTruthy());
   });
 
-  it("ignores a late response for the previous address (QSR-2026-0325)", async () => {
+  it("ignores a late response for the previous address", async () => {
     const { client, getBalance } = mockClient();
     const pending: Record<string, ReturnType<typeof deferred<unknown>>> = {};
     getBalance.mockImplementation(((addr: string) => {
@@ -276,7 +276,7 @@ describe("useBalance", () => {
 });
 
 describe("usePqcStatus + PqcStatusBadge", () => {
-  it("ignores a late status for the previous address (QSR-2026-0325)", async () => {
+  it("ignores a late status for the previous address", async () => {
     const { client, getPqcKeyStatus } = mockClient();
     const pending: Record<string, ReturnType<typeof deferred<unknown>>> = {};
     getPqcKeyStatus.mockImplementation(((addr: string) => {

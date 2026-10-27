@@ -332,10 +332,10 @@ describe("PQC key rotation from mnemonic", () => {
   });
 });
 
-// Cross-language vector for QSR-2026-0381, produced by the Go SDK
+// Cross-language vector, produced by the Go SDK
 // (authenticator.TestDerivePQCCanonicalNormalisesAccount): every encoding of one
 // account resolves to its lower-case bech32 form before hashing.
-describe("canonical PQC derivation normalises the account (QSR-2026-0381)", () => {
+describe("canonical PQC derivation normalises the account", () => {
   const VEC_MNEMONIC =
     "abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon about";
   const VEC_COSMOS = "qor1npvwllfr9dqr8erajqqr6s0vxnk2ak55am9g2c";

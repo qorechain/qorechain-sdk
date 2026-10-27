@@ -315,7 +315,7 @@ def _broadcast_sequences(route):
 
 @respx.mock
 def test_migrate_to_hybrid_registering_advances_sequence_by_default():
-    # QSR-2026-0380: with register_sequence=None the registration consumes
+    # with register_sequence=None the registration consumes
     # `sequence`, so the hybrid tx must go out at sequence + 1 - not reuse it.
     account, kwargs = _ctx(sequence=7)
     qor = _FakeQor({"has_pqc_key": False})

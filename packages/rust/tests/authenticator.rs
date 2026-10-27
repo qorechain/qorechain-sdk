@@ -10,7 +10,7 @@ use qorechain::authenticator::{
 use qorechain::pqc::pqc_verify;
 use sha2::{Digest, Sha256};
 
-// Cross-language vector for QSR-2026-0381, produced by the Go SDK
+// Cross-language vector, produced by the Go SDK
 // (`authenticator.TestDerivePQCCanonicalNormalisesAccount`): every encoding of
 // one account resolves to its lower-case bech32 form before hashing.
 const VEC_MNEMONIC: &str =

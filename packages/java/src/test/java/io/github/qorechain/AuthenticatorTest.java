@@ -328,7 +328,7 @@ class AuthenticatorTest {
                         m.getOldSignature().toByteArray()));
     }
 
-    // ---- QSR-2026-0381: canonical derivation normalises the account ----
+    // ---- canonical derivation normalises the account ----
     // Cross-language vector produced by the Go SDK
     // (authenticator.TestDerivePQCCanonicalNormalisesAccount): every encoding of one
     // account resolves to its lower-case bech32 form before hashing.
