@@ -1,6 +1,6 @@
 {
   "name": "@qorechain/example-ai-preflight",
-  "version": "0.0.0",
+  "version": "0.11.0",
   "private": true,
   "type": "module",
   "description": "AI pre-flight: estimate gas + on-chain risk + anomaly for a sample EVM tx and print a verdict.",

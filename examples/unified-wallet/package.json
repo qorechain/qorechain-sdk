@@ -1,6 +1,6 @@
 {
   "name": "@qorechain/example-unified-wallet",
-  "version": "0.0.0",
+  "version": "0.11.0",
   "private": true,
   "type": "module",
   "description": "Derive a unified eth-native account: one identity, three lanes (qor1 / 0x / svm).",

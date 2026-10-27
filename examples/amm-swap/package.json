@@ -1,6 +1,6 @@
 {
   "name": "@qorechain/example-amm-swap",
-  "version": "0.0.0",
+  "version": "0.11.0",
   "private": true,
   "type": "module",
   "description": "Build and broadcast an AMM SwapExactIn via the message registry/composer.",

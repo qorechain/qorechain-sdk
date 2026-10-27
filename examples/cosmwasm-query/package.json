@@ -1,6 +1,6 @@
 {
   "name": "@qorechain/example-cosmwasm-query",
-  "version": "0.0.0",
+  "version": "0.11.0",
   "private": true,
   "type": "module",
   "description": "Query a CosmWasm contract on QoreChain (smart query).",

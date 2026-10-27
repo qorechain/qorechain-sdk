@@ -1,6 +1,6 @@
 {
   "name": "@qorechain/example-pqc-hybrid-sign",
-  "version": "0.0.0",
+  "version": "0.11.0",
   "private": true,
   "type": "module",
   "description": "Generate an ML-DSA-87 PQC keypair, sign/verify locally, and build a hybrid tx.",

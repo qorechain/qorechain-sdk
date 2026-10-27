@@ -1,6 +1,6 @@
 {
   "name": "@qorechain/example-authenticator-spend",
-  "version": "0.0.0",
+  "version": "0.11.0",
   "private": true,
   "type": "module",
   "description": "Link a Phantom key and build a relayer-submitted MsgExecuteCosmos (authenticator lane).",

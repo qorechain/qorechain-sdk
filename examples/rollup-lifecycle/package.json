@@ -1,6 +1,6 @@
 {
   "name": "@qorechain/example-rollup-lifecycle",
-  "version": "0.0.0",
+  "version": "0.11.0",
   "private": true,
   "type": "module",
   "description": "Create a rollup, submit a batch, query status/latest batch, and execute a withdrawal via the RollupClient helper.",

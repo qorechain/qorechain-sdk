@@ -1,6 +1,6 @@
 {
   "name": "@qorechain/example-svm-transfer",
-  "version": "0.0.0",
+  "version": "0.11.0",
   "private": true,
   "type": "module",
   "description": "Build a SOL transfer + memo on QoreChain's SVM runtime.",

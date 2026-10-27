@@ -5,10 +5,13 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased]
+## [0.11.0] - 2026-10-27
+
+npm packages only (`@qorechain/sdk`, `@qorechain/react`, `@qorechain/evm`, `@qorechain/svm`, `create-qorechain-dapp`); the Python, Rust, Go and Java packages stay at 0.10.0.
 
 ### Added
 
+- **Chain developer kit.** `@qorechain/evm` exports the viem chains `qorechain` (9801) and `qorechainTestnet` (9800) and the EVM authorization window helpers (`evmWindowStatus`, `openEvmWindowMessage`, also as `@qorechain/evm/window` without viem). `create-qorechain-dapp` adds the `foundry`, `hardhat`, `viem-wagmi` and `cosmwasm` templates; Foundry and Hardhat include `pnpm window status|register|open`. New guides: EVM quickstarts in TypeScript, Python, Go, Rust and Java, and "QoreChain EVM compared with Ethereum".
 - **`PqcStatusBadge`** (`@qorechain/react`): the badge that shows whether an
   address has a registered ML-DSA-87 key, with `PqcStatusBadgeProps` and
   `PqcStatusRenderState`. The root element carries `data-pqc-status` next to the

@@ -1,6 +1,6 @@
 {
   "name": "@qorechain/example-evm-precompile",
-  "version": "0.0.0",
+  "version": "0.11.0",
   "private": true,
   "type": "module",
   "description": "Call QoreChain EVM precompiles and read an ERC-20 balance.",
