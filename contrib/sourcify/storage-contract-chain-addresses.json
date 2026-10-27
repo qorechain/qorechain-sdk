@@ -1,0 +1,4 @@
+{
+  "9800": "<address of Storage.sol deployed on the testnet>",
+  "9801": "<address of Storage.sol deployed on mainnet>"
+}

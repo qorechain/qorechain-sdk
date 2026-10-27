@@ -1,0 +1,10 @@
+{
+  "9800": {
+    "sourcifyName": "QoreChain Testnet",
+    "rpc": ["https://evm-testnet.qore.host"]
+  },
+  "9801": {
+    "sourcifyName": "QoreChain",
+    "rpc": ["https://evm.qore.host"]
+  }
+}

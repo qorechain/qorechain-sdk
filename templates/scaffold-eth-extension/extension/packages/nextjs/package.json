@@ -1,0 +1,5 @@
+{
+  "dependencies": {
+    "@qorechain/evm": "^0.9.0"
+  }
+}
