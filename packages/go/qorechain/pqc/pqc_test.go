@@ -89,7 +89,7 @@ func TestEncodeHybridSignatureExtensionProto(t *testing.T) {
 	}
 
 	// CONSENSUS-CRITICAL: the extension value must be protobuf, not Go-JSON. Its
-	// first byte is the field-1 varint tag 0x08, NEVER '{' (0x7b) — the chain's
+	// first byte is the field-1 varint tag 0x08, NEVER '{' (0x7b) - the chain's
 	// tx decoder rejects a 0x7b-leading value (misread as field 15 start_group).
 	if len(value) == 0 {
 		t.Fatal("encoded extension value is empty")
@@ -161,7 +161,7 @@ func TestEncodeHybridSignatureExtensionValidation(t *testing.T) {
 // TestPQCVerifyRejectsWrongSignatureLength is a regression test for a real
 // cross-binding malleability: the underlying CIRCL implementation verifies a
 // 4627-byte signature with one extra trailing byte as TRUE, while the Rust
-// fips204 binding rejects it — so the same bytes were valid to the Go SDK and
+// fips204 binding rejects it - so the same bytes were valid to the Go SDK and
 // invalid to the Rust SDK. PQCVerify must enforce the exact size itself.
 func TestPQCVerifyRejectsWrongSignatureLength(t *testing.T) {
 	kp, err := GeneratePQCKeypair()
@@ -182,7 +182,7 @@ func TestPQCVerifyRejectsWrongSignatureLength(t *testing.T) {
 		t.Fatal("a valid exact-length signature must verify")
 	}
 
-	// One extra trailing byte — the case the library accepts on its own.
+	// One extra trailing byte - the case the library accepts on its own.
 	padded := make([]byte, 0, len(sig)+1)
 	padded = append(padded, sig...)
 	padded = append(padded, 0x00)

@@ -24,7 +24,7 @@ const (
 	EVMWindowIssueInvalid EVMWindowIssue = "invalid_window"
 	// EVMWindowIssueNoPQCKey is pqc code 28 for the OTHER state it carries: the
 	// account has no registered post-quantum key. It is its own state because
-	// the remedy is different — register a key first; a window cannot be opened
+	// the remedy is different - register a key first; a window cannot be opened
 	// (let alone used) without one.
 	EVMWindowIssueNoPQCKey EVMWindowIssue = "no_pqc_key"
 )
@@ -56,8 +56,8 @@ func (i EVMWindowIssue) Remedy() string {
 
 // ClassifyEVMWindowFailure classifies a refusal from its ABCI (code, codespace)
 // pair plus whatever text came with it. Over the EVM JSON-RPC the refusal does
-// not arrive as an ABCI triple at all — it is a broadcast error carrying the
-// chain's own message — so pass code 0 and an empty codespace with the text and
+// not arrive as an ABCI triple at all - it is a broadcast error carrying the
+// chain's own message - so pass code 0 and an empty codespace with the text and
 // the text alone decides.
 func ClassifyEVMWindowFailure(code uint32, codespace, text string) EVMWindowIssue {
 	lower := strings.ToLower(text)
@@ -79,8 +79,8 @@ func ClassifyEVMWindowFailure(code uint32, codespace, text string) EVMWindowIssu
 }
 
 // ClassifyEVMWindowError classifies any error. A *QoreTxError is classified on
-// its codespace/code first (with its raw log as the text); anything else — a
-// broadcast error from the EVM JSON-RPC lane, for instance — is classified on
+// its codespace/code first (with its raw log as the text); anything else - a
+// broadcast error from the EVM JSON-RPC lane, for instance - is classified on
 // its message. A non-matching error returns EVMWindowIssueNone.
 func ClassifyEVMWindowError(err error) EVMWindowIssue {
 	if err == nil {

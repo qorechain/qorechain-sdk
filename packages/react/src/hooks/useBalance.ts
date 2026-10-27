@@ -1,5 +1,5 @@
 /**
- * {@link useBalance} — a bank balance with optional auto-refresh.
+ * {@link useBalance} - a bank balance with optional auto-refresh.
  */
 
 import { useCallback, useEffect, useRef, useState } from "react";
@@ -54,7 +54,7 @@ export function useBalance(
 
   // When the request key (client / address / denom / enabled) changes, drop the
   // previous key's result during render, so the old address's balance or error
-  // is never shown for the new one — not even for a frame.
+  // is never shown for the new one - not even for a frame.
   const [key, setKey] = useState({ client, resolvedAddress, denom, enabled });
   if (
     key.client !== client ||

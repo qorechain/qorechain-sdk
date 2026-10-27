@@ -1,5 +1,5 @@
 /**
- * Core scaffolding logic — pure and unit-testable, with no prompt I/O.
+ * Core scaffolding logic - pure and unit-testable, with no prompt I/O.
  *
  * `scaffold(...)` copies a template into a target directory, rewrites the
  * template's package.json name, generates `.env` from `.env.example`, optionally

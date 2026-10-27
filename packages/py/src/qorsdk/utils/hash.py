@@ -2,7 +2,7 @@
 
 Each function accepts a UTF-8 string or raw bytes and returns the digest as raw
 bytes, with a ``*_hex`` companion returning a lowercase ``0x``-prefixed hex
-string. No new cryptography is implemented here — SHA-256/RIPEMD-160 come from
+string. No new cryptography is implemented here - SHA-256/RIPEMD-160 come from
 the standard library and keccak-256 from ``pycryptodome`` (a transitive
 dependency of cosmpy/bip-utils, always present).
 """

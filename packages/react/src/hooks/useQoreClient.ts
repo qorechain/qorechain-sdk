@@ -1,5 +1,5 @@
 /**
- * {@link useQoreClient} — the composed read client held by the provider.
+ * {@link useQoreClient} - the composed read client held by the provider.
  */
 
 import type { QoreChainClient } from "@qorechain/sdk";

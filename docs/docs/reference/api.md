@@ -19,7 +19,7 @@ pnpm --filter @qorechain/sdk docs:api
 
 This runs the `docs:api` script (`typedoc`) defined in `packages/ts`, producing
 the API site under that package's `docs/` output directory. The generated output
-is not committed — run the command locally or wire it into your own docs
+is not committed - run the command locally or wire it into your own docs
 pipeline.
 
 The documentation site's own TypeDoc config lives at `docs/typedoc.json`; it
@@ -70,7 +70,7 @@ constants.
 
 | Language | Generated docs | Notes |
 | --- | --- | --- |
-| Python | [PyPI](https://pypi.org/project/qorechain-sdk/) — docstrings on the public API | publish-pending |
+| Python | [PyPI](https://pypi.org/project/qorechain-sdk/) - docstrings on the public API | publish-pending |
 | Go | [pkg.go.dev](https://pkg.go.dev/github.com/qorechain/qorechain-sdk/packages/go) (godoc) | publish-pending |
 | Rust | [docs.rs](https://docs.rs/qorechain) (rustdoc) | publish-pending |
 

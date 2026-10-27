@@ -68,7 +68,7 @@ export type EventFilters = Record<string, string | number>;
  * Build the `query` value for the REST tx-search endpoint.
  *
  * Each `key=value` pair is rendered as `key='value'` (numbers unquoted) and
- * the predicates are joined with ` AND ` — the format
+ * the predicates are joined with ` AND ` - the format
  * `/cosmos/tx/v1beta1/txs?query=...` expects on Cosmos SDK v0.53.
  *
  * @example buildEventsQuery({ "message.sender": "qor1...", "tx.height": 5 })

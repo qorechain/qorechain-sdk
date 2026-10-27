@@ -1,7 +1,7 @@
 """Tests for the typed gRPC query clients (mocked channel).
 
 A fake channel captures the method path and (de)serializers each typed call
-binds, and round-trips a response through the real generated types — so the
+binds, and round-trips a response through the real generated types - so the
 service/method routing and typing are exercised without opening a socket.
 """
 

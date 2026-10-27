@@ -278,7 +278,7 @@ func TestParseVersion(t *testing.T) {
 type planServer struct {
 	*httptest.Server
 	requests atomic.Int32 // every applied-plan request
-	rounds   atomic.Int32 // requests for V2Upgrades[0] — one per resolve round
+	rounds   atomic.Int32 // requests for V2Upgrades[0] - one per resolve round
 	status   atomic.Int32
 
 	mu    sync.Mutex
@@ -395,7 +395,7 @@ func TestResolverSecondNameAppliedCostsTwoRequests(t *testing.T) {
 }
 
 // Mainnet before its upgrade: every name answers zero (as "0" or as {}), so the
-// resolver answers v1 — and only then.
+// resolver answers v1 - and only then.
 func TestResolverNoNameAppliedIsV1(t *testing.T) {
 	for _, c := range []struct {
 		name  string
@@ -594,8 +594,8 @@ func TestIsHybridRejection(t *testing.T) {
 }
 
 // A swapped (restURL, chainID) pair must fail loudly. Swapped, chainID holds a
-// URL, which is not a legacy chain, so without the guard this would answer V2 —
-// the form mainnet refuses — with no request made and no error.
+// URL, which is not a legacy chain, so without the guard this would answer V2 -
+// the form mainnet refuses - with no request made and no error.
 func TestResolveRejectsSwappedArguments(t *testing.T) {
 	r := NewResolver(ResolverOptions{})
 	for _, tc := range []struct {

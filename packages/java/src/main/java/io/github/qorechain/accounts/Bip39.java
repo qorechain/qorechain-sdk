@@ -23,7 +23,7 @@ import javax.crypto.spec.SecretKeySpec;
  *
  * <p>{@link #toSeed} runs PBKDF2-HMAC-SHA512 (2048 iterations) per BIP-39.
  * {@link #validate} checks both the wordlist membership AND the entropy
- * checksum — the load-bearing guard against a typo'd phrase silently deriving a
+ * checksum - the load-bearing guard against a typo'd phrase silently deriving a
  * valid-looking but WRONG account.
  */
 public final class Bip39 {

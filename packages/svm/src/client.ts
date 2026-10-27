@@ -45,7 +45,7 @@ export interface CreateSvmClientOptions {
   commitment?: Commitment;
   /**
    * A preconstructed `Connection`. When provided it is used as-is and `rpcUrl`/
-   * `endpoints`/`commitment` are ignored — primarily for testing.
+   * `endpoints`/`commitment` are ignored - primarily for testing.
    */
   connection?: Connection;
 }

@@ -17,7 +17,7 @@ Shows the full signing path:
   (`:26657` and `:1317`).
 - A **funded account**: the address derived from `QORE_MNEMONIC` must hold QOR
   to pay the fee and the transfer. The default is the public BIP-39 test
-  mnemonic (`test test ... junk`), which is **not funded** on any real network —
+  mnemonic (`test test ... junk`), which is **not funded** on any real network -
   the broadcast will fail unless you supply a funded mnemonic.
 
 Copy `.env.example` to `.env` and edit.

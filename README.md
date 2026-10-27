@@ -1,10 +1,10 @@
 # qorechain-sdk
 
-Official multi-language SDK and developer kit for building decentralized applications on the QoreChain network — a quantum-safe, triple-VM Layer 1.
+Official multi-language SDK and developer kit for building decentralized applications on the QoreChain network - a quantum-safe, triple-VM Layer 1.
 
 QoreChain is a triple-VM Layer 1 with first-class support for CosmWasm,
 EVM/Solidity, and SVM smart contracts, plus IBC interoperability. SDKs are
-available for **TypeScript, Python, Go, Rust, and Java** — all published at
+available for **TypeScript, Python, Go, Rust, and Java** - all published at
 `0.8.x`.
 
 ## Packages
@@ -12,14 +12,14 @@ available for **TypeScript, Python, Go, Rust, and Java** — all published at
 | Package | Language | Install | Import |
 | --- | --- | --- | --- |
 | `@qorechain/sdk` | TypeScript | `npm i @qorechain/sdk` | `@qorechain/sdk` |
-| `@qorechain/evm` | TS — EVM adapter (viem peer) | `npm i @qorechain/evm viem` | `@qorechain/evm` |
-| `@qorechain/svm` | TS — SVM adapter | `npm i @qorechain/svm @solana/web3.js` | `@qorechain/svm` |
-| `@qorechain/react` | TS — React hooks + components (React peer) | `npm i @qorechain/react react react-dom` | `@qorechain/react` |
+| `@qorechain/evm` | TS - EVM adapter (viem peer) | `npm i @qorechain/evm viem` | `@qorechain/evm` |
+| `@qorechain/svm` | TS - SVM adapter | `npm i @qorechain/svm @solana/web3.js` | `@qorechain/svm` |
+| `@qorechain/react` | TS - React hooks + components (React peer) | `npm i @qorechain/react react react-dom` | `@qorechain/react` |
 | `qorechain-sdk` | Python | `pip install qorechain-sdk` | `import qorsdk` |
 | `qorechain-sdk` | Rust | `cargo add qorechain-sdk` | `use qorechain` |
 | Go module | Go | `go get github.com/qorechain/qorechain-sdk/packages/go` | `.../packages/go` |
 | `io.github.qorechain:qorechain-sdk` | Java | `implementation("io.github.qorechain:qorechain-sdk:0.8.0")` | `io.github.qorechain` |
-| `create-qorechain-dapp` | CLI scaffolder | `npm create qorechain-dapp@latest` | — |
+| `create-qorechain-dapp` | CLI scaffolder | `npm create qorechain-dapp@latest` | - |
 
 > **Import names:** the Python distribution `qorechain-sdk` imports as `qorsdk`;
 > the Rust crate `qorechain-sdk` imports as `qorechain`.
@@ -145,8 +145,8 @@ PQC key generation, signing, and verification are available through
 `PqcSigner` / `HybridSigner`. Hybrid transactions are supported end-to-end via
 `buildHybridTx` / `signAndBroadcastHybrid` (the signer's PQC key must first be
 registered on-chain with `MsgRegisterPQCKeyV2`). The post-quantum signature is
-computed over the sign-bytes form the target network verifies — v2 on both
-networks today, v1 below their sign-bytes upgrades — so pass the
+computed over the sign-bytes form the target network verifies - v2 on both
+networks today, v1 below their sign-bytes upgrades - so pass the
 network's REST endpoint (`rest`) and the SDK picks the form (see the
 [TypeScript guide](./packages/ts/README.md)).
 
@@ -161,17 +161,17 @@ const ok = pqcVerify(keypair.publicKey, message, signature);
 
 ## Other languages
 
-The Python, Go, Rust, and Java SDKs mirror the TypeScript native-chain surface —
+The Python, Go, Rust, and Java SDKs mirror the TypeScript native-chain surface -
 networks, accounts (native/EVM/SVM + PQC), typed messages for every module,
 typed queries, the tx lifecycle (auto-gas, error decoding, tracking, search),
 WebSocket subscriptions, plus AI pre-flight risk scoring, unified cross-VM calls
 (with atomic triple-VM batching), and the quantum-safe DX helpers. React hooks
 and the viem / `@solana/web3.js` adapters are TypeScript-only.
 
-- **Python** — `pip install qorechain-sdk`, then `import qorsdk`. See [packages/py](./packages/py/README.md).
-- **Go** — `go get github.com/qorechain/qorechain-sdk/packages/go`. See [packages/go](./packages/go/README.md).
-- **Rust** — `cargo add qorechain-sdk`, then `use qorechain;`. See [packages/rust](./packages/rust/README.md).
-- **Java** — `io.github.qorechain:qorechain-sdk:0.8.0` (Maven Central), package `io.github.qorechain`. See [packages/java](./packages/java/README.md).
+- **Python** - `pip install qorechain-sdk`, then `import qorsdk`. See [packages/py](./packages/py/README.md).
+- **Go** - `go get github.com/qorechain/qorechain-sdk/packages/go`. See [packages/go](./packages/go/README.md).
+- **Rust** - `cargo add qorechain-sdk`, then `use qorechain;`. See [packages/rust](./packages/rust/README.md).
+- **Java** - `io.github.qorechain:qorechain-sdk:0.8.0` (Maven Central), package `io.github.qorechain`. See [packages/java](./packages/java/README.md).
 
 > Browser wallets and the viem / `@solana/web3.js` EVM/SVM adapters are
 > TypeScript-only; in Python/Go/Rust use that ecosystem's standard libraries for
@@ -183,45 +183,45 @@ The TypeScript SDK (`@qorechain/sdk` plus the `@qorechain/evm` and
 `@qorechain/svm` adapters) has the full surface; Python/Go/Rust mirror the
 native-chain parts. Highlights:
 
-- **Full message coverage** — typed composers for every chain message (bank,
+- **Full message coverage** - typed composers for every chain message (bank,
   staking, distribution, gov, authz, feegrant, IBC, and the QoreChain custom
   modules: AMM, bridge, RDK, multilayer, PQC, SVM, lightnode, license,
   abstract-account, cross-VM, RL consensus), resolved through a message registry.
-- **Browser wallets** — Keplr/Leap (Native), MetaMask/EIP-1193 (EVM), and
+- **Browser wallets** - Keplr/Leap (Native), MetaMask/EIP-1193 (EVM), and
   Phantom/Wallet-Standard (SVM).
-- **Auto-gas** — simulation-based fee estimation, plus EVM EIP-1559 helpers and
+- **Auto-gas** - simulation-based fee estimation, plus EVM EIP-1559 helpers and
   SVM compute-budget / priority-fee helpers.
-- **Subscriptions** — new-block and tx event streams (Native), block/event/log
+- **Subscriptions** - new-block and tx event streams (Native), block/event/log
   watchers (EVM), and logs/account/slot subscriptions (SVM).
-- **Error decoding** — structured, human-readable errors across all three VMs.
-- **NFT helpers** — typed ERC-721 and ERC-1155 read/write wrappers.
-- **CosmWasm lifecycle** — query, upload, instantiate/instantiate2, execute,
+- **Error decoding** - structured, human-readable errors across all three VMs.
+- **NFT helpers** - typed ERC-721 and ERC-1155 read/write wrappers.
+- **CosmWasm lifecycle** - query, upload, instantiate/instantiate2, execute,
   migrate, and admin management.
-- **PQC** — ML-DSA-87 (Dilithium-5) signing and hybrid-signature transactions,
+- **PQC** - ML-DSA-87 (Dilithium-5) signing and hybrid-signature transactions,
   with the sign-bytes form (v1 / v2) chosen per network.
-- **Sidechains, paychains & rollups** — high-level `multilayer` and rollup
+- **Sidechains, paychains & rollups** - high-level `multilayer` and rollup
   helpers to register a sidechain/paychain, anchor state, route transactions,
   and run a full rollup lifecycle (create → submit batch → execute withdrawal),
   with typed `multilayer` and `rdk` query clients.
-- **AI pre-flight risk scoring** — `simulateWithRiskScore` runs the on-chain AI
+- **AI pre-flight risk scoring** - `simulateWithRiskScore` runs the on-chain AI
   precompiles to return gas plus a risk/anomaly verdict before you broadcast.
-- **Unified cross-VM calls** — call a contract on any VM (CosmWasm/EVM/SVM) from
+- **Unified cross-VM calls** - call a contract on any VM (CosmWasm/EVM/SVM) from
   one account, and batch calls across all three VMs into one atomic transaction.
-- **Quantum-safe by default** — `ensurePqcRegistered` / `migrateToHybrid` make a
+- **Quantum-safe by default** - `ensurePqcRegistered` / `migrateToHybrid` make a
   signer post-quantum protected in one call.
-- **React kit** (`@qorechain/react`) — `QoreChainProvider`, hooks
+- **React kit** (`@qorechain/react`) - `QoreChainProvider`, hooks
   (`useAccount`, `useBalance`, `useTx`, `useConnect`, `usePqcStatus`), and
   `ConnectButton` / `QuantumSafeBadge` components.
-- **Unified eth-native wallet** — `deriveUnifiedAccount` gives one key three
+- **Unified eth-native wallet** - `deriveUnifiedAccount` gives one key three
   addresses (`qor1…`/`0x…`/SVM) that share one balance and spend on every lane,
   and `signClassicalEth` / `signHybridEth` sign Native-lane txs with the same key.
   To let an *external* wallet (Phantom / MetaMask) spend from such an account, use
-  the authenticator lanes below — never derive a spend key from a wallet signature.
-- **Authenticator lanes** (module currently **disabled on mainnet** — see the
-  Authenticators guide) — link an external key (Phantom / MetaMask) to a
+  the authenticator lanes below - never derive a spend key from a wallet signature.
+- **Authenticator lanes** (module currently **disabled on mainnet** - see the
+  Authenticators guide) - link an external key (Phantom / MetaMask) to a
   canonical PQC account and let it spend via a relayer under least-privilege,
-  revocable terms. A `SpendingRule` — allowed denoms, per-transaction and daily
-  limits — is enforced by the chain on both lanes, fail-closed, **when a rule is
+  revocable terms. A `SpendingRule` - allowed denoms, per-transaction and daily
+  limits - is enforced by the chain on both lanes, fail-closed, **when a rule is
   set and `Enabled`**; a key with no enabled rule is unbounded, and a disabled
   rule means no limit rather than a zero one, so set one deliberately (see the
   Authenticators guide for what a rule does and does not cover):

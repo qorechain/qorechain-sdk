@@ -61,7 +61,7 @@ func pqcSigFromTx(t *testing.T, txBytes []byte) (sig, b0, authInfo []byte) {
 
 // fakeChain is a REST node for a network that verifies ONLY one hybrid form
 // (verifies), while its applied-plan endpoint answers planBodies in turn (the
-// last one repeats) — modelling a node whose first answer was stale.
+// last one repeats) - modelling a node whose first answer was stale.
 type fakeChain struct {
 	pub          []byte
 	chainID      string

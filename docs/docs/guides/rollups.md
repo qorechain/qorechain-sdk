@@ -11,10 +11,10 @@ rollups that settle to the main chain. The lifecycle is
 **create → batch → withdraw**:
 
 1. **Create** a rollup (profile + VM + stake).
-2. **Submit batches** — the sequencer posts settlement batches (state root, data
+2. **Submit batches** - the sequencer posts settlement batches (state root, data
    hash, and an optional `withdrawalsRoot` committing L2→L1 messages).
-3. **Challenge / resolve** — the fraud-proof game for optimistic batches.
-4. **Withdraw** — anyone proves a withdrawal leaf against a finalized batch's
+3. **Challenge / resolve** - the fraud-proof game for optimistic batches.
+4. **Withdraw** - anyone proves a withdrawal leaf against a finalized batch's
    `withdrawalsRoot`, and the recipient is paid from the rollup escrow.
 
 `@qorechain/sdk` exposes a high-level `createRollupClient` helper with
@@ -106,7 +106,7 @@ await rollup.stop({ rollupId });
 ## Execute a withdrawal
 
 Finalize an L2→L1 withdrawal by proving its leaf against a finalized batch's
-`withdrawalsRoot`. This is **permissionless** — anyone may submit a valid proof,
+`withdrawalsRoot`. This is **permissionless** - anyone may submit a valid proof,
 and the funds always go to the committed recipient. Replay-protected per
 `(rollupId, batchIndex, withdrawalIndex)`:
 
@@ -147,7 +147,7 @@ const blob = await rollup.getDaBlobStatus("my-app-rollup", 0);
 
 This SDK is the **app-developer interaction** surface: it submits and reads
 rollup transactions. The separate **Rollup Development Kit** is for *operating* a
-rollup node — running the sequencer, prover, and data-availability layer. They
+rollup node - running the sequencer, prover, and data-availability layer. They
 are complementary: build your app against this SDK; run the rollup with the RDK.
 
 ## See also

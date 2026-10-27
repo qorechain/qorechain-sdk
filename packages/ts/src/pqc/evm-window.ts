@@ -9,7 +9,7 @@
  *
  * The testnet (`qorechain-diana`) enforces this from its v3.2.0 upgrade;
  * mainnet from its own. Before those heights the messages, the query and this
- * module all work — only the refusal waits for the switch.
+ * module all work - only the refusal waits for the switch.
  *
  * ──────────────────────────────────────────────────────────────────────────
  *  Three things that surprise people
@@ -29,7 +29,7 @@
  *     is commented "about 24 hours at 5s blocks", but no QoreChain network runs
  *     at 5s: the maximum of 17,280 blocks is roughly 5 hours on the testnet
  *     (~1.03 s) and roughly 15 hours on mainnet (~3.1 s). Show "up to 17,280
- *     blocks", or compute a duration from the chain's recent block time —
+ *     blocks", or compute a duration from the chain's recent block time -
  *     never print "24 hours".
  *
  * This module deliberately offers no "open a window automatically before
@@ -60,7 +60,7 @@ export interface OpenEvmWindowParams {
   /** How many EVM transactions it admits: 1…{@link MAX_EVM_WINDOW_TXS}. */
   maxTxs: number | bigint;
   /**
-   * The total it may spend, in uqor — value PLUS the maximum fee of every
+   * The total it may spend, in uqor - value PLUS the maximum fee of every
    * admitted transaction. Must be above 0.
    */
   maxValue: number | bigint | string;
@@ -258,7 +258,7 @@ const TEXTS: ReadonlyArray<[RegExp, EvmWindowRejection]> = [
  * chain's own message text, which is what arrives over EVM JSON-RPC.
  *
  * `no-pqc-key` is a different state from `no-window` and needs a different
- * remedy — register a key first — but the chain raises BOTH under `ErrNoEVMWindow`,
+ * remedy - register a key first - but the chain raises BOTH under `ErrNoEVMWindow`,
  * code 26 (verified in the ante handler, not the spec, which says 28). The code
  * alone therefore cannot tell them apart: the text is matched first, and the code
  * is only a fallback for when the transport drops the message.
@@ -289,8 +289,8 @@ export function classifyEvmWindowRejection(x: unknown): EvmWindowRejection | und
       case 28:
         return "invalid";
       // 26 with no matching text: a window is missing, but it could also be a
-      // missing key whose text did not survive. "no-window" is the safe report
-      // — acting on it queries the window, which then shows the real state.
+      // missing key whose text did not survive. "no-window" is the safe report -
+      // acting on it queries the window, which then shows the real state.
     }
   }
   return undefined;

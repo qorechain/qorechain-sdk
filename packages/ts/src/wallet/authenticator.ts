@@ -7,7 +7,7 @@
  * {@link ../tx/authenticator}), have the wallet sign the 32-byte digest, and
  * return a relayer-ready `{ typeUrl, value }` message for the EVM or Native
  * lane. A relayer then submits and pays fees; the authenticator's signature IS
- * the authorization — the external key never produces an ML-DSA co-signature.
+ * the authorization - the external key never produces an ML-DSA co-signature.
  *
  * Signature schemes:
  *   - `ed25519` (Phantom): the chain verifies `ed25519.Verify(pubkey, digest,
@@ -93,7 +93,7 @@ export interface ExecuteEvmMsgInput {
 }
 
 /**
- * Build a `MsgExecuteEVM` (`{ typeUrl, value }`) — the relayer broadcasts this
+ * Build a `MsgExecuteEVM` (`{ typeUrl, value }`) - the relayer broadcasts this
  * and is the fee payer. `to` is a 0x-hex address, `value` a decimal wei string.
  */
 export function executeEvmMsg(input: ExecuteEvmMsgInput): EncodeObject {
@@ -140,7 +140,7 @@ export interface ExecuteCosmosMsgInput {
 }
 
 /**
- * Build a `MsgExecuteCosmos` (`{ typeUrl, value }`) — the relayer broadcasts
+ * Build a `MsgExecuteCosmos` (`{ typeUrl, value }`) - the relayer broadcasts
  * this. `amount` is a single-coin string like `100uqor`.
  */
 export function executeCosmosMsg(input: ExecuteCosmosMsgInput): EncodeObject {
@@ -170,7 +170,7 @@ export interface RevokeAuthenticatorMsgInput {
 }
 
 /**
- * Build a `MsgRevokeAuthenticator` (`{ typeUrl, value }`) — owner-signed;
+ * Build a `MsgRevokeAuthenticator` (`{ typeUrl, value }`) - owner-signed;
  * instantly disables a linked key. `account` defaults to `owner`.
  */
 export function revokeAuthenticatorMsg(
@@ -239,7 +239,7 @@ export interface RotatePqcKeyMsgInput {
 }
 
 /**
- * Build a `MsgRotatePQCKey` (`{ typeUrl, value }`) — sender-signed (hybrid, with
+ * Build a `MsgRotatePQCKey` (`{ typeUrl, value }`) - sender-signed (hybrid, with
  * the OLD key); dual-signed payload.
  */
 export function rotatePqcKeyMsg(input: RotatePqcKeyMsgInput): EncodeObject {
@@ -558,7 +558,7 @@ export function canonicalAccount(account: string): string {
 /**
  * Derive the CANONICAL (address-bound) ML-DSA-87 keypair for a mnemonic:
  * `shake256("qorechain:pqc:v1|" + cosmos + "|" + mnemonic, 32)`, where `cosmos`
- * is `account` resolved by {@link canonicalAccount} — so an upper-case bech32 or
+ * is `account` resolved by {@link canonicalAccount} - so an upper-case bech32 or
  * a `0x` form of the same account yields the same key.
  *
  * @throws if `account` is not a valid 20-byte account address.
@@ -610,7 +610,7 @@ export interface RotatePqcKeyMsgFromMnemonicResult {
 
 /**
  * Build a `MsgRotatePQCKey` that rotates an account's ML-DSA-87 key (SAME
- * algorithm) from one derivation to another — canonically migrating a LEGACY
+ * algorithm) from one derivation to another - canonically migrating a LEGACY
  * chain-bridge key (`shake256(mnemonic)`) to the canonical address-bound key
  * (`shake256("qorechain:pqc:v1|addr|mnemonic")`). Both keys dual-sign the
  * domain-separated rotation bytes.
@@ -642,7 +642,7 @@ export function rotatePqcKeyMsgFromMnemonic(
   const newKp = derivePqcByScheme(newDerivation, account, mnemonic);
   if (toHexLower(oldKp.publicKey) === toHexLower(newKp.publicKey)) {
     throw new Error(
-      "old and new derivations produce the same key — rotation would be a no-op",
+      "old and new derivations produce the same key - rotation would be a no-op",
     );
   }
   const sb = enc.encode(

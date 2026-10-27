@@ -1,6 +1,6 @@
 # qorechain (Rust)
 
-Rust SDK for QoreChain — network presets, denomination/address utilities, HD
+Rust SDK for QoreChain - network presets, denomination/address utilities, HD
 account derivation (native / EVM / SVM), post-quantum (ML-DSA-87) signing, typed
 messages for every custom chain module, the full transaction lifecycle (auto-gas,
 error decoding, tracking, search), typed queries, WebSocket subscriptions, and
@@ -50,8 +50,8 @@ type URL, ready for `tx::send_messages` or `tx::build_hybrid_tx`.
 
 New in chain v3.1.97: `msg::svm::update_params` builds
 `/qorechain.svm.v1.MsgUpdateParams`, the governance message that replaces the SVM
-module's runtime `SVMParams` wholesale (so `enabled` — and therefore closing the
-SVM lane — is an ordinary proposal rather than a binary release). The replacement
+module's runtime `SVMParams` wholesale (so `enabled` - and therefore closing the
+SVM lane - is an ordinary proposal rather than a binary release). The replacement
 is wholesale, so pass every field at its intended value, not only the ones being
 changed.
 
@@ -77,7 +77,7 @@ protoc. Type URLs use the exact on-chain message names (e.g.
 ### Out of scope
 
 Browser wallet adapters and EVM/SVM transaction adapters are intentionally not
-bundled — Rust dApps use `ethers-rs`/`alloy` (EVM) and the Solana SDK (SVM)
+bundled - Rust dApps use `ethers-rs`/`alloy` (EVM) and the Solana SDK (SVM)
 directly. The ICS-20 IBC `MsgTransfer` is not bundled either (the underlying
 proto crate omits IBC types); build it with `ibc-proto` and pack it via
 `msg::to_any` using `msg::cosmos::MSG_TRANSFER`.
@@ -156,7 +156,7 @@ let _ = ext;
 ```
 
 **Lengths are exact.** Every entry point validates its inputs against the FIPS
-204 sizes — signature 4627, public key 2592, secret key 4896 — before touching
+204 sizes - signature 4627, public key 2592, secret key 4896 - before touching
 the underlying library, and rejects anything else (`pqc_verify` returns `false`,
 the signing paths return `Err`). A signature carrying even one extra trailing
 byte is not valid. This is the SDK's own guarantee rather than an inherited one:
@@ -175,8 +175,8 @@ assert_eq!(to_base("1.5", 6).unwrap(), "1500000");
 assert_eq!(from_base("1500000", 6).unwrap(), "1.5");
 ```
 
-All amount math is exact integer arithmetic on decimal strings — never floating
-point — so conversions never drift for any magnitude.
+All amount math is exact integer arithmetic on decimal strings - never floating
+point - so conversions never drift for any magnitude.
 
 ## Transactions
 
@@ -191,17 +191,17 @@ end-to-end hybrid (classical secp256k1 + post-quantum ML-DSA-87) signing:
 - `build_hybrid_tx` produces a tx carrying the classical signature in
   `TxRaw.signatures` PLUS an ML-DSA-87 signature in the `TxBody`
   `PQCHybridSignature` extension. The PQC half signs the per-network hybrid
-  sign-bytes of `B0` (the body without the extension) and `A` (authInfo) — see
+  sign-bytes of `B0` (the body without the extension) and `A` (authInfo) - see
   below; the classical half signs the final body. The signer's PQC key must
-  be registered on-chain (`MsgRegisterPQCKeyV2`) — or pass `include_pqc_public_key`
+  be registered on-chain (`MsgRegisterPQCKeyV2`) - or pass `include_pqc_public_key`
   to embed it for auto-registration.
 - `broadcast_hybrid_tx` builds, signs and broadcasts a hybrid tx, choosing the
   sign-bytes version per network and retrying once on a version mismatch.
 
 ### Hybrid sign-bytes v1 / v2 (chain v3.2.0, testnet v3.1.98)
 
-Chain release `v3.2.0` — which the testnet already took under the earlier name
-`v3.1.98` — changed the bytes the ML-DSA-87 key signs. Each network verifies
+Chain release `v3.2.0` - which the testnet already took under the earlier name
+`v3.1.98` - changed the bytes the ML-DSA-87 key signs. Each network verifies
 exactly **one** form:
 
 | form | bytes |
@@ -232,14 +232,14 @@ node, for each name in order,
 
     GET {rest}/cosmos/upgrade/v1beta1/applied_plan/{name}  ->  {"height":"<n>"}
 
-and signs v2 when **any** `n > 0` (compared numerically — the height is a
+and signs v2 when **any** `n > 0` (compared numerically - the height is a
 string, and a missing one counts as 0). The lookup stops at the first positive
 height, so mainnet costs one request after its upgrade and the testnet two. The
 answer is cached per `(rest URL, chain id)` for about a minute
 (`SignBytesResolver::with_ttl`, `force_refresh`, `clear_cache`). If the chain
 still refuses the tx with `pqc` code 21 ("hybrid PQC signature verification
 failed"), the SDK re-asks the node, re-signs and broadcasts **once** more. A
-legacy chain with no REST URL, or a failed query, is an error — the SDK never
+legacy chain with no REST URL, or a failed query, is an error - the SDK never
 guesses.
 
 **Today:** the testnet has applied `v3.1.98` and verifies **v2 only**; the
@@ -421,8 +421,8 @@ See the [AI pre-flight](https://docs.qorechain.io/sdk/guides/ai-preflight) guide
 
 ### Unified cross-VM calls (v0.5.0)
 
-The `cross_vm` module wraps `MsgCrossVMCall` so you can route a single call — or
-several atomically in **one** transaction (`call_atomic`) — across the EVM,
+The `cross_vm` module wraps `MsgCrossVMCall` so you can route a single call - or
+several atomically in **one** transaction (`call_atomic`) - across the EVM,
 CosmWasm, and SVM VMs (`VM_TYPES`). A `Payload::Raw(bytes)` is sent as-is (the
 EVM form: ABI-encoded calldata); a `Payload::CosmWasm(json)` is serialized to
 compact UTF-8 JSON.
@@ -460,7 +460,7 @@ transaction** by default and the chain returns the callee's answer.
 `call_with_responses` / `call_atomic_with_responses` decode it into
 `CrossVmCallResponse { message_id, executed, data, gas_used }`. Set
 `CallOptions::queue(true)` (the proto's `async` field) to only enqueue the
-message for a later `MsgProcessQueue` dispatch — the response then carries just
+message for a later `MsgProcessQueue` dispatch - the response then carries just
 the id with `executed == false`, and the outcome is read afterwards with
 `get_message`.
 
@@ -486,7 +486,7 @@ let status = pdx.get_pqc_status(&pdx.sender).await?;
 
 // Idempotent: registers the signer's Dilithium key only if it isn't already.
 // The check reads REST from `pdx.rest_url` (`fetch_pqc_status`) and never
-// registers blind — a second registration is refused after the fee is charged.
+// registers blind - a second registration is refused after the fee is charged.
 let ensure = pdx.ensure_pqc_registered().await?;
 
 // Migrate a classical account to hybrid signing, then sign hybrid. The
@@ -512,7 +512,7 @@ the [quantum-safe](https://docs.qorechain.io/sdk/guides/quantum-safe) guide.
 
 ### Unified eth-native wallet (v0.6.0)
 
-One `eth_secp256k1` key = ONE 20-byte identity rendered three ways — `qor1…`
+One `eth_secp256k1` key = ONE 20-byte identity rendered three ways - `qor1…`
 (bech32), `0x…` (EIP-55), and SVM base58 (the 20 bytes right-padded with 12 zero
 bytes to 32). A deposit to any of the three lands in the **same** balance, and the
 key spends on **all** lanes. `unified::derive_unified_account` uses the Ethereum HD
@@ -533,9 +533,9 @@ use qorechain::sign_eth::{sign_hybrid_eth, EthSignParams};
 
 # fn run(mnemonic: &str, secret_entropy: [u8; 32]) -> qorechain::Result<()> {
 let account = derive_unified_account(mnemonic, 0)?;
-account.cosmos; // "qor1…"    — QoreChain Native lane
-account.evm;    // "0x…"      — EIP-55 checksummed
-account.svm;    // "<base58>" — 20 bytes + 12 zero pad
+account.cosmos; // "qor1…" - QoreChain Native lane
+account.evm;    // "0x…" - EIP-55 checksummed
+account.svm;    // "<base58>" - 20 bytes + 12 zero pad
 
 // Or build one directly from a 32-byte seed. The seed IS the spend key, so it
 // must be real secret entropy (CSPRNG / HSM / a mnemonic), never a wallet
@@ -554,7 +554,7 @@ let _ = (account, from_seed);
 > key move funds, use the **authenticator lanes** below
 > (`MsgRegisterAuthenticator` + `MsgExecuteCosmos` / `MsgExecuteEVM`), where the
 > external signature authorizes a spend instead of becoming key material. Any
-> account previously derived this way must be treated as exposed — move its funds.
+> account previously derived this way must be treated as exposed - move its funds.
 
 See the [unified-wallet](https://github.com/qorechain/qorechain-sdk/blob/main/docs/docs/guides/unified-wallet.md) guide.
 
@@ -576,8 +576,8 @@ sub.unsubscribe()?;
 
 ## Authenticator lanes (v0.7.0 / chain v3.1.85)
 
-A linked external key — a Phantom **ed25519** key, or a MetaMask **secp256k1**
-key bound **by address** — spends from the ONE canonical PQC account through a
+A linked external key - a Phantom **ed25519** key, or a MetaMask **secp256k1**
+key bound **by address** - spends from the ONE canonical PQC account through a
 **relayer** that submits the tx and pays the fee (its own hybrid-PQC signature
 satisfies the ante). The external key **never produces an ML-DSA co-signature**;
 its signature over the domain-separated, replay-bound sign-bytes **is** the
@@ -586,11 +586,11 @@ enforced on-chain.
 
 Three messages carry the lanes, each with a composer:
 
-- `MsgExecuteEVM` (`/qorechain.abstractaccount.v1.MsgExecuteEVM`) —
+- `MsgExecuteEVM` (`/qorechain.abstractaccount.v1.MsgExecuteEVM`) -
   `msg::abstractaccount::execute_evm`
-- `MsgExecuteCosmos` (`/qorechain.abstractaccount.v1.MsgExecuteCosmos`) —
+- `MsgExecuteCosmos` (`/qorechain.abstractaccount.v1.MsgExecuteCosmos`) -
   `msg::abstractaccount::execute_cosmos`
-- `MsgRotatePQCKey` (`/qorechain.pqc.v1.MsgRotatePQCKey`) —
+- `MsgRotatePQCKey` (`/qorechain.pqc.v1.MsgRotatePQCKey`) -
   `msg::pqc::rotate_pqc_key`
 
 **Sign-bytes helpers** (`authenticator` module) rebuild the exact digest the
@@ -614,7 +614,7 @@ both keys sign).
 **Permission taxonomy & errors.** Query the on-chain permission schema with the
 typed query client's `abstractaccount_permission_schema()` and compare an action
 to it before submitting. `tx::errors::decode_tx_error` surfaces the lane
-failures — codespace `abstractaccount`: `5` SpendingLimitExceeded, `6`
+failures - codespace `abstractaccount`: `5` SpendingLimitExceeded, `6`
 SessionKeyExpired, `10` PermissionDenied, `11` AuthenticatorReplay; codespace
 `pqc`: `21` HybridVerifyFailed.
 
@@ -679,14 +679,14 @@ use qorechain::msg;
 use qorechain::query::RestClient;
 
 # async fn run() -> qorechain::Result<()> {
-// 1. Check what the account has. 200 with found:false when absent — safe to poll.
+// 1. Check what the account has. 200 with found:false when absent - safe to poll.
 let rest = RestClient::new("https://api.qore.host");
 let status = get_evm_window(&rest, "qor1…").await?;
 status.found;            // bool
-status.live;             // bool — a stored window may be expired or exhausted
+status.live;             // bool - a stored window may be expired or exhausted
 status.remaining_blocks; // u64
 status.remaining_txs;    // u64
-status.remaining_value;  // u128 (uqor, exact — never a float)
+status.remaining_value;  // u128 (uqor, exact - never a float)
 
 // 2. Open one. Every field is REQUIRED; the bounds mirror the chain's
 //    ValidateBasic and are checked locally, so a bad call errors before it
@@ -719,11 +719,11 @@ Opening replaces any existing window rather than adding to it.
 **The SDK never opens a window for you.** There is no implicit "open before
 send": a window authorises spending, so the step must be explicit and visible to
 the user. The crate gives you the status query, the two composers, the local
-bounds check, and the classifier — the wallet decides.
+bounds check, and the classifier - the wallet decides.
 
 ### Three traps
 
-1. **Ordering — open, then read the nonce, then sign.** QoreChain unifies the
+1. **Ordering - open, then read the nonce, then sign.** QoreChain unifies the
    identity, so the Cosmos sequence **is** the EVM nonce, and
    `MsgOpenEVMWindow` is a Cosmos transaction from the same account: opening a
    window **advances the nonce** (measured on the testnet: 2 before, 3 after). A
@@ -748,7 +748,7 @@ bounds check, and the classifier — the wallet decides.
 
 Nothing to call in the SDK, but these change when an existing call is refused:
 
-- **`msg::rdk::submit_batch` — settle only as the rollup's sequencer.** From
+- **`msg::rdk::submit_batch` - settle only as the rollup's sequencer.** From
   v3.2.0 `MsgSubmitBatch` is accepted **only** from the rollup's
   `SequencerConfig.SequencerAddress`, falling back to `Creator` when no sequencer
   is set; anyone else gets `ErrUnauthorized`
@@ -762,7 +762,7 @@ Nothing to call in the SDK, but these change when an existing call is refused:
   the field being named `max_tx_per_minute` (~31 s on the testnet, ~93 s on
   mainnet). A network born on this binary starts at the genesis default **10**;
   the upgrade handler raises an upgraded chain to **600**, and no message can
-  change it on a running chain. **Read it** via `qorechain.ai.v1.Query/Config` —
+  change it on a running chain. **Read it** via `qorechain.ai.v1.Query/Config` -
   never assume either value. Batch senders (faucets, relayers, exchange hot
   wallets) that exceed it get `ai` `ErrTxRejected`.
 

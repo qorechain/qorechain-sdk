@@ -4,7 +4,7 @@ import type * as Preset from "@docusaurus/preset-classic";
 
 const config: Config = {
   title: "QoreChain SDK",
-  tagline: "Build dApps on QoreChain — a quantum-safe, triple-VM Layer 1",
+  tagline: "Build dApps on QoreChain - a quantum-safe, triple-VM Layer 1",
   favicon: "img/favicon.ico",
 
   url: "https://qorechain.github.io",

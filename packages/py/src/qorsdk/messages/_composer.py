@@ -2,7 +2,7 @@
 
 A *composer* binds a fixed ``type_url`` to a generated protobuf ``Msg*`` class
 and returns a callable that builds that message from keyword arguments (the
-proto's snake_case field names) into a :class:`Msg` — a ``{type_url, value}``
+proto's snake_case field names) into a :class:`Msg` - a ``{type_url, value}``
 pair where ``value`` is a populated protobuf message instance.
 
 The :class:`Msg` shape is exactly what :func:`qorechain.tx.send_messages` and

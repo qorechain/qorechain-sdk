@@ -3,7 +3,7 @@
 A thin, type-safe adapter over
 [`@solana/web3.js`](https://solana-labs.github.io/solana-web3.js/) for
 **QoreChain's Solana-compatible JSON-RPC** (port `8899`). It does not reimplement
-an SVM client — `@solana/web3.js` is a peer dependency — it adds conveniences: a
+an SVM client - `@solana/web3.js` is a peer dependency - it adds conveniences: a
 client factory targeting the SVM RPC endpoint, key helpers, typed read wrappers,
 SOL transfer build/sign/send, and minimal native-program instruction builders
 (Memo, SPL-Token, Associated Token Account) plus a generic program-invoke

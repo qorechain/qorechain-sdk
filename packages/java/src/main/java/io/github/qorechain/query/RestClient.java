@@ -83,7 +83,7 @@ public final class RestClient {
     }
 
     /**
-     * {@code /qorechain/pqc/v1/evm_window/{address}} — the account's EVM
+     * {@code /qorechain/pqc/v1/evm_window/{address}} - the account's EVM
      * authorisation window (chain v3.2.0), raw. The route answers 200 with
      * {@code found:false} when there is no window, so it is safe to poll.
      */
@@ -97,7 +97,7 @@ public final class RestClient {
     }
 
     /**
-     * {@code /qorechain/pqc/v1/evm_delegation_consent/{address}} — the account's
+     * {@code /qorechain/pqc/v1/evm_delegation_consent/{address}} - the account's
      * EIP-7702 delegation consent (chain v3.2.2), raw. An older node has no such
      * route and answers an HTTP error, which propagates rather than reading as
      * "no consent".
@@ -149,11 +149,11 @@ public final class RestClient {
     }
 
     /**
-     * {@code /cosmos/tx/v1beta1/txs?query=...} — search by event query.
+     * {@code /cosmos/tx/v1beta1/txs?query=...} - search by event query.
      *
      * <p>Cosmos SDK v0.53 reads the {@code query} parameter (predicates joined with {@code " AND
      * "}, see {@link #buildEventQuery(List)}); the old {@code events} parameter is no longer read.
-     * The page size is sent as {@code limit} — the endpoint ignores {@code pagination.*}.
+     * The page size is sent as {@code limit} - the endpoint ignores {@code pagination.*}.
      */
     public JsonNode searchTxs(String query, Integer limit, String orderBy) {
         return searchTxs(query, null, limit, orderBy);

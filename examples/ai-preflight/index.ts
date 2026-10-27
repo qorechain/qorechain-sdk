@@ -1,5 +1,5 @@
 /**
- * ai-preflight — score a transaction with QoreChain's on-chain AI before sending.
+ * ai-preflight - score a transaction with QoreChain's on-chain AI before sending.
  *
  * QoreChain is the first network to expose an on-chain risk/anomaly model to any
  * dApp through plain `eth_call`s. This example:
@@ -9,7 +9,7 @@
  *  3. aiRiskScore / aiAnomalyCheck → the individual building blocks
  *
  * Everything here is a read-only `eth_call` / `eth_estimateGas`, so nothing is
- * signed or broadcast — it is a pre-flight check you run BEFORE sending. The
+ * signed or broadcast - it is a pre-flight check you run BEFORE sending. The
  * `safe` flag is advisory: set your own policy in production.
  *
  * On a node without the QoreChain AI precompiles, the precompile calls throw
@@ -42,7 +42,7 @@ async function main(): Promise<void> {
     "0x0000000000000000000000000000000000000001") as Address;
   const to = (process.env.QORE_EVM_TO ??
     "0x0000000000000000000000000000000000000002") as Address;
-  // A sample ERC-20 transfer(0x..,1) calldata — replace with your real tx data.
+  // A sample ERC-20 transfer(0x..,1) calldata - replace with your real tx data.
   const data = (process.env.QORE_EVM_DATA ??
     "0xa9059cbb0000000000000000000000000000000000000000000000000000000000000002" +
       "0000000000000000000000000000000000000000000000000000000000000001") as Hex;
@@ -69,7 +69,7 @@ async function main(): Promise<void> {
   );
 
   console.log(
-    "\nThe `safe` flag is advisory — enforce your own policy before broadcasting.",
+    "\nThe `safe` flag is advisory - enforce your own policy before broadcasting.",
   );
 }
 

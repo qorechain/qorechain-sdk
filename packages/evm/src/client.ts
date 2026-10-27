@@ -42,7 +42,7 @@ export interface CreateEvmClientOptions {
    * Numeric EVM chain id. If omitted, it is auto-detected via `eth_chainId`.
    *
    * The canonical chain id for QoreChain networks is not pinned in this package
-   * on purpose — always detect it, or pass it explicitly here.
+   * on purpose - always detect it, or pass it explicitly here.
    */
   chainId?: number;
   /**
@@ -54,7 +54,7 @@ export interface CreateEvmClientOptions {
   decimals?: number;
   /**
    * Custom viem transport. When provided it is used instead of an HTTP
-   * transport built from the resolved RPC URL — primarily for testing.
+   * transport built from the resolved RPC URL - primarily for testing.
    */
   transport?: Transport;
 }

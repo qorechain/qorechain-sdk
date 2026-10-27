@@ -11,7 +11,7 @@ Shows:
 - `createMemoInstruction(...)` appended to the transfer
 
 The example **builds and prints** the transaction (unsigned, no recent
-blockhash) — this part runs without a node.
+blockhash) - this part runs without a node.
 
 ## Prerequisites (to actually send)
 

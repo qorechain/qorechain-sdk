@@ -3,7 +3,7 @@
 The documentation site for `qorechain-sdk`, built with
 [Docusaurus](https://docusaurus.io).
 
-This is a **standalone** project — it is intentionally *not* part of the
+This is a **standalone** project - it is intentionally *not* part of the
 monorepo's pnpm workspace. It has its own `package.json` and its own install, so
 it never affects `pnpm install` / `pnpm -r build` / `pnpm -r test` at the repo
 root.

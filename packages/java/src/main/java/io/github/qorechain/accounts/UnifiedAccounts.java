@@ -20,7 +20,7 @@ import org.bouncycastle.asn1.x9.X9ECParameters;
  * wallet never "has funds on one lane but not another". The 20 bytes are the
  * Ethereum derivation {@code keccak256(uncompressedPubkey[1:])[12:]}, so the key
  * is natively spendable on the EVM lane; the native ({@code qor1…}) and SVM
- * (base58) forms are just other encodings of the SAME 20 bytes — the chain reads
+ * (base58) forms are just other encodings of the SAME 20 bytes - the chain reads
  * one x/bank balance for the account, visible under all three encodings.
  *
  * <p>This is ADDITIVE. The legacy coin-118 native derivation
@@ -29,9 +29,9 @@ import org.bouncycastle.asn1.x9.X9ECParameters;
  * key.
  *
  * <p>The deterministic ML-DSA-87 (Dilithium-5) PQC keypair is bound to
- * {@code shake256("qorechain:pqc:v1|" + cosmos + "|" + secret, 32)} — the secret
+ * {@code shake256("qorechain:pqc:v1|" + cosmos + "|" + secret, 32)} - the secret
  * is the mnemonic for mnemonic-derived accounts and the hex of the 32-byte seed
- * for seed-derived accounts — so it is recoverable from the account and the same
+ * for seed-derived accounts - so it is recoverable from the account and the same
  * secret, and portable across the QoreChain SDKs (byte-identical FIPS-204 keygen).
  */
 public final class UnifiedAccounts {
@@ -191,10 +191,10 @@ public final class UnifiedAccounts {
      * <p>Same address derivation as {@link #deriveUnifiedAccount}; the PQC key is
      * derived from {@code shake256("qorechain:pqc:v1|" + cosmos + "|" + hex(seed32), 32)}.
      *
-     * <p><b>SAFETY — the seed IS the private key.</b> {@code seed32} MUST be real
+     * <p><b>SAFETY - the seed IS the private key.</b> {@code seed32} MUST be real
      * secret entropy: a CSPRNG draw, or a seed derived from a secret only the owner
      * holds. It must NEVER be a wallet signature, a hash of one, or any other value a
-     * third party can ask a wallet, a server, or the user's browser to produce —
+     * third party can ask a wallet, a server, or the user's browser to produce -
      * anyone who can obtain that value reconstructs this account and can spend from
      * it. To let an external wallet key act for an account, register it with
      * {@code MsgRegisterAuthenticator} and spend via {@code MsgExecuteCosmos} /
@@ -219,7 +219,7 @@ public final class UnifiedAccounts {
     }
 
     /**
-     * REMOVED in v0.8.0 — always throws {@link UnsupportedOperationException}.
+     * REMOVED in v0.8.0 - always throws {@link UnsupportedOperationException}.
      *
      * <p>This derived the account's spend key from a wallet signature. A wallet
      * signature is a bearer secret: any page can ask the wallet for it, so whoever
@@ -242,12 +242,12 @@ public final class UnifiedAccounts {
     /** The removal notice thrown by {@link #unifiedAccountFromPhantomSignature}. */
     private static final String REMOVED_SIGNATURE_DERIVATION =
             "unifiedAccountFromPhantomSignature was removed in v0.8.0: deriving a spend key"
-                    + " from a wallet signature is unsafe — the signature is a bearer secret"
+                    + " from a wallet signature is unsafe - the signature is a bearer secret"
                     + " that any page can request from the wallet, so whoever obtains it"
                     + " controls the account. Use the authenticator lanes instead: register"
                     + " the external key with MsgRegisterAuthenticator and spend via"
                     + " MsgExecuteCosmos / MsgExecuteEVM. Any account previously derived this"
-                    + " way must be treated as exposed — move its funds.";
+                    + " way must be treated as exposed - move its funds.";
 
     /** Build the address + PQC bundle from a 32-byte secp256k1 private key + PQC secret. */
     private static UnifiedAccount build(

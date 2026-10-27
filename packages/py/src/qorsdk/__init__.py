@@ -373,7 +373,7 @@ __all__ = [
     "UnifiedAccount",
     "derive_unified_account",
     "unified_account_from_seed",
-    # REMOVED in v0.8.0 (unsafe signature-derived spend key) — raises when called.
+    # REMOVED in v0.8.0 (unsafe signature-derived spend key) - raises when called.
     "unified_account_from_phantom_signature",
     "addresses_from_20",
     "qore_addresses",

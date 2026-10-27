@@ -12,8 +12,8 @@
 //! [`sign_hybrid_eth`] adds it. [`sign_classical_eth`] omits it (used for the
 //! one-time PQC-key registration, which is bootstrap-exempt from the hybrid
 //! requirement). The hybrid framing (`B0` without the extension, ML-DSA-87 over
-//! the per-network hybrid sign-bytes of `(chainId, B0, authInfo)` — v1 or v2, see
-//! [`crate::signbytes`] — extension added to the final body, classical signature
+//! the per-network hybrid sign-bytes of `(chainId, B0, authInfo)` - v1 or v2, see
+//! [`crate::signbytes`] - extension added to the final body, classical signature
 //! over the final body) is identical to [`crate::tx::build_hybrid_tx`]; only the
 //! classical hash (keccak256, not the k256 default sha256) and the pubkey type
 //! URL change.
@@ -66,7 +66,7 @@ pub struct EthSignParams {
     /// The hybrid sign-bytes version [`sign_hybrid_eth`] frames (ignored by
     /// [`sign_classical_eth`]). `None` means v2 on a chain born with v2 and an
     /// ERROR on `qorechain-vladi` / `qorechain-diana`, whose form depends on
-    /// whether the v2 upgrade (`v3.2.0` / `v3.1.98`) is applied there — resolve it with
+    /// whether the v2 upgrade (`v3.2.0` / `v3.1.98`) is applied there - resolve it with
     /// [`crate::signbytes::SignBytesResolver`]. Never silently v1.
     pub sign_bytes_version: Option<SignBytesVersion>,
 }
@@ -76,7 +76,7 @@ pub struct EthSignParams {
 pub struct EthBuiltTx {
     /// Encoded `TxRaw`, ready to broadcast.
     pub tx_raw_bytes: Vec<u8>,
-    /// `A` — the `AuthInfo` bytes.
+    /// `A` - the `AuthInfo` bytes.
     pub auth_info_bytes: Vec<u8>,
     /// The final `TxBody` bytes (WITH the PQC extension for a hybrid tx).
     pub body_bytes: Vec<u8>,
@@ -91,7 +91,7 @@ pub struct EthBuiltTx {
 /// Builds a classical-only `eth_secp256k1` native-lane tx (no PQC extension).
 ///
 /// Use for the one-time PQC-key registration (`MsgRegisterPQCKeyV2`), which is
-/// bootstrap-exempt from the mainnet hybrid requirement. Does not broadcast —
+/// bootstrap-exempt from the mainnet hybrid requirement. Does not broadcast -
 /// pass [`EthBuiltTx::tx_raw_bytes`] to [`crate::tx::broadcast`].
 pub fn sign_classical_eth(params: EthSignParams) -> Result<EthBuiltTx> {
     let auth_info_bytes =
@@ -147,7 +147,7 @@ pub fn sign_hybrid_eth(
     let auth_info_bytes =
         build_eth_auth_info_bytes(&params.public_key, params.sequence, &params.fee)?;
 
-    // B0 — body WITHOUT the PQC extension.
+    // B0 - body WITHOUT the PQC extension.
     let b0_body = TxBody {
         messages: params.messages.clone(),
         memo: params.memo.clone(),
@@ -205,7 +205,7 @@ pub fn sign_hybrid_eth(
     })
 }
 
-/// REMOVED in v0.8.0 — always returns [`Error::Removed`].
+/// REMOVED in v0.8.0 - always returns [`Error::Removed`].
 ///
 /// This function used to derive a spend key from a wallet signature over a fixed
 /// public message. That is not a key-derivation input: a wallet signature is a
@@ -217,7 +217,7 @@ pub fn sign_hybrid_eth(
 /// `MsgRegisterAuthenticator` (see [`crate::msg::abstractaccount`]) and spend via
 /// `MsgExecuteCosmos` / `MsgExecuteEVM`, which keep the spend key on the
 /// canonical PQC account and treat the external signature as an *authorization*
-/// under revocable, least-privilege terms — never as key material.
+/// under revocable, least-privilege terms - never as key material.
 ///
 /// Any account previously derived through this function must be treated as
 /// exposed; move its funds.
@@ -232,11 +232,11 @@ pub fn unified_account_from_phantom_signature(_sig: &[u8]) -> Result<UnifiedAcco
 /// The exact text of the [`Error::Removed`] returned by
 /// [`unified_account_from_phantom_signature`].
 const REMOVED_MESSAGE: &str = "unified_account_from_phantom_signature was removed in v0.8.0: \
-deriving a spend key from a wallet signature is unsafe — the signature is a bearer secret that any \
+deriving a spend key from a wallet signature is unsafe - the signature is a bearer secret that any \
 page can request from the wallet, so whoever obtains it controls the account. Use the authenticator \
 lanes instead: register the external key with MsgRegisterAuthenticator and spend via \
 MsgExecuteCosmos / MsgExecuteEVM. Any account previously derived this way must be treated as \
-exposed — move its funds.";
+exposed - move its funds.";
 
 /// Reports whether an on-chain pubkey `Any` type URL is the `eth_secp256k1`
 /// scheme accepted by this module's signer.
@@ -322,7 +322,7 @@ fn build_eth_auth_info_bytes(public_key: &[u8], sequence: u64, fee: &Fee) -> Res
 }
 
 /// Produces a canonical 64-byte secp256k1 signature over `keccak256(SignDoc)`
-/// (low-s normalized) — the `eth_secp256k1` classical signature.
+/// (low-s normalized) - the `eth_secp256k1` classical signature.
 fn eth_sign_direct(
     private_key: &[u8; 32],
     body_bytes: &[u8],

@@ -8,7 +8,7 @@
 //! The window is opened by an ordinary Cosmos-lane message
 //! (`/qorechain.pqc.v1.MsgOpenEVMWindow`) which therefore carries the account's
 //! hybrid (classical + ML-DSA-87) signature: the classical key alone can never
-//! open a window. That is the whole point of the design — MetaMask and any other
+//! open a window. That is the whole point of the design - MetaMask and any other
 //! EVM client keep working unmodified *inside* a window, and the post-quantum
 //! key authorises the window itself.
 //!
@@ -49,7 +49,7 @@ use crate::query::RestClient;
 use serde_json::Value;
 
 /// The chain's `MaxEVMWindowBlocks`: the longest a window may stay open.
-/// Counted in BLOCKS, never in wall-clock time — see the module docs.
+/// Counted in BLOCKS, never in wall-clock time - see the module docs.
 pub const MAX_EVM_WINDOW_BLOCKS: u64 = 17_280;
 
 /// The chain's `MaxEVMWindowTxs`: the most transactions a window may admit.
@@ -91,13 +91,13 @@ pub fn validate_evm_window_targets(targets: &[String]) -> Result<()> {
 /// The codespace every window refusal is reported under.
 pub const EVM_WINDOW_CODESPACE: &str = "pqc";
 
-/// `pqc` 26 — the account has no open EVM authorisation window.
+/// `pqc` 26 - the account has no open EVM authorisation window.
 pub const ERR_NO_EVM_WINDOW: u32 = 26;
 
-/// `pqc` 27 — the window ran out of blocks, transactions or value.
+/// `pqc` 27 - the window ran out of blocks, transactions or value.
 pub const ERR_EVM_WINDOW_EXHAUSTED: u32 = 27;
 
-/// `pqc` 28 — the window is invalid **or** the account has no registered
+/// `pqc` 28 - the window is invalid **or** the account has no registered
 /// post-quantum key. The two are distinguished by the chain's message text,
 /// which [`classify_evm_window_error`] inspects.
 pub const ERR_INVALID_EVM_WINDOW: u32 = 28;
@@ -368,20 +368,20 @@ impl EvmWindowRefusal {
             Self::NoWindow => {
                 "open an EVM authorisation window first (msg::pqc::open_evm_window, signed \
                  on the Cosmos lane with the account's post-quantum key), THEN read the \
-                 nonce, THEN sign the EVM transaction — opening the window advances the nonce"
+                 nonce, THEN sign the EVM transaction - opening the window advances the nonce"
             }
             Self::WindowExhausted => {
-                "the window ran out of blocks, transactions or value — open a new one \
+                "the window ran out of blocks, transactions or value - open a new one \
                  (msg::pqc::open_evm_window); check the evm_window query to see which \
                  bound ran out"
             }
             Self::InvalidWindow => {
-                "the open window does not cover this transaction — re-open it with bounds \
+                "the open window does not cover this transaction - re-open it with bounds \
                  that cover the value PLUS the maximum fee (gas limit x gas fee cap)"
             }
             Self::NoPqcKey => {
                 "register a post-quantum key first (msg::pqc::register_pqc_key_v2 / \
-                 PqcDx::ensure_pqc_registered) — an account without one cannot open a \
+                 PqcDx::ensure_pqc_registered) - an account without one cannot open a \
                  window and cannot use the EVM lane"
             }
         }
@@ -462,7 +462,7 @@ pub fn classify_evm_window_error(
 
 /// Classifies a [`crate::tx::QoreTxError`] as an EVM-lane refusal, or returns
 /// `None`. The convenience wrapper a send path uses to turn the chain's refusal
-/// into something a wallet can act on — it never opens a window, because the
+/// into something a wallet can act on - it never opens a window, because the
 /// authorisation step is always explicit.
 pub fn classify_tx_error(err: &crate::tx::QoreTxError) -> Option<EvmWindowRefusal> {
     classify_evm_window_error(Some(err.code), &err.codespace, &err.raw_log)

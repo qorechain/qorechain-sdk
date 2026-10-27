@@ -50,7 +50,7 @@ KAT = json.loads(
     (Path(__file__).parent / "fixtures" / "signbytes-kat-v3.1.98.json").read_text("utf-8")
 )
 
-# Public test mnemonic only — never a real one.
+# Public test mnemonic only - never a real one.
 TEST_MNEMONIC = (
     "abandon abandon abandon abandon abandon abandon abandon abandon "
     "abandon abandon abandon about"

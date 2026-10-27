@@ -1,6 +1,6 @@
 """A type-URL → protobuf-class registry for QoreChain messages.
 
-Building a transaction does not need a registry — a :class:`Msg`'s ``value`` is a
+Building a transaction does not need a registry - a :class:`Msg`'s ``value`` is a
 populated protobuf instance that packs directly into a Native ``Any`` under its
 ``type_url`` (see :func:`qorechain.tx.send_messages`). The registry is the
 *inverse*: it maps a ``type_url`` back to the generated class so a message pulled

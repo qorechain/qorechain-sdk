@@ -1,5 +1,5 @@
 /**
- * connect-keplr — connect a Keplr/Leap browser wallet and send a QOR transfer.
+ * connect-keplr - connect a Keplr/Leap browser wallet and send a QOR transfer.
  *
  * Shows:
  *  - suggestChainInfo(network) → a Keplr/Leap chain-info object to register the chain
@@ -46,12 +46,12 @@ export async function run(): Promise<void> {
   });
   const amount = [{ denom: network.coin.base, amount: "1000000" }];
   const result = await tx.bankSend(sender, amount); // self-send demo
-  console.log(`broadcast ok — ${result.transactionHash}`);
+  console.log(`broadcast ok - ${result.transactionHash}`);
 }
 
 // Browser entrypoint guard: only run automatically when a wallet is present.
 if (typeof window === "undefined") {
-  console.log("connect-keplr is a browser example — bundle it into a web app.");
+  console.log("connect-keplr is a browser example - bundle it into a web app.");
   console.log("It calls window.keplr / window.leap, which only exist in a browser.");
 } else {
   void run();

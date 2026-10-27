@@ -1,6 +1,6 @@
 //! Convert between human display amounts and integer base amounts.
 //!
-//! All value math is performed with integer arithmetic on decimal strings —
+//! All value math is performed with integer arithmetic on decimal strings -
 //! there is no floating-point arithmetic anywhere in this module, so
 //! conversions are exact for any magnitude and never drift (e.g.
 //! `to_base("0.1", 6) == "100000"`).

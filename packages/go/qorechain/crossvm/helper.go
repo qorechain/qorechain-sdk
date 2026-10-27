@@ -83,7 +83,7 @@ type CallOptions struct {
 	//
 	// The chain IGNORES this field (chain v3.1.97+): it derives the origin lane
 	// from the execution context, because a caller naming its own lane is not
-	// evidence of what it is. It is still sent — and still defaulted — so older
+	// evidence of what it is. It is still sent - and still defaulted - so older
 	// nodes that read it keep working; setting it changes nothing on a current
 	// chain, and it can never be used to claim a lane the caller is not on.
 	SourceVM crossvmv1.VMType
@@ -102,7 +102,7 @@ type CallOptions struct {
 	// ProcessQueue dispatch.
 	//
 	// The default (false) executes the call inside this transaction and returns
-	// the callee's answer in CallResult.Data — which is what a caller that needs
+	// the callee's answer in CallResult.Data - which is what a caller that needs
 	// the result requires. With Async=true the response carries only the message
 	// id: Executed is false, Data is empty, and the outcome must be polled with
 	// GetMessage.
@@ -179,7 +179,7 @@ func (c *Client) Call(o CallOptions) (*tx.TxResult, error) {
 }
 
 // CallAtomic builds, signs, and broadcasts ONE transaction carrying N
-// MsgCrossVMCall messages — they succeed or fail atomically as a single tx.
+// MsgCrossVMCall messages - they succeed or fail atomically as a single tx.
 func (c *Client) CallAtomic(opts []CallOptions) (*tx.TxResult, error) {
 	if len(opts) == 0 {
 		return nil, fmt.Errorf("crossvm: CallAtomic requires at least one call")
@@ -230,7 +230,7 @@ func (c *Client) GetMessage(id string) (*crossvmv1.QueryMessageResponse, error) 
 		}
 		return &resp, nil
 	}
-	return nil, fmt.Errorf("crossvm: GetMessage requires a query client — pass Query or Qor to New")
+	return nil, fmt.Errorf("crossvm: GetMessage requires a query client - pass Query or Qor to New")
 }
 
 // build signs the given messages into a BuiltTx using the helper's Signer.

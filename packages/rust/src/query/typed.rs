@@ -354,7 +354,7 @@ impl TypedQueryClient {
         .await
     }
 
-    /// Queries `qorechain.multilayer.v1.Query/Anchor` — the latest state anchor
+    /// Queries `qorechain.multilayer.v1.Query/Anchor` - the latest state anchor
     /// for a layer.
     pub async fn multilayer_anchor(
         &self,
@@ -369,7 +369,7 @@ impl TypedQueryClient {
         .await
     }
 
-    /// Queries `qorechain.multilayer.v1.Query/Anchors` — all state anchors for a
+    /// Queries `qorechain.multilayer.v1.Query/Anchors` - all state anchors for a
     /// layer (newest first).
     pub async fn multilayer_anchors(
         &self,
@@ -576,7 +576,7 @@ impl TypedQueryClient {
         .await
     }
 
-    /// Queries `qorechain.abstractaccount.v1.Query/PermissionSchema` — the
+    /// Queries `qorechain.abstractaccount.v1.Query/PermissionSchema` - the
     /// canonical authenticator permission taxonomy (v3.1.85), so clients validate
     /// scopes without hardcoding strings and detect drift via `schema_version`.
     pub async fn abstractaccount_permission_schema(

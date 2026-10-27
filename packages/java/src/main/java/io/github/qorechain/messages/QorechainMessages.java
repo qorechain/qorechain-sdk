@@ -88,7 +88,7 @@ public final class QorechainMessages {
         }
 
         /**
-         * {@code MsgUpdateCircuitBreakerLimits} (chain v3.2.2) — a chain's
+         * {@code MsgUpdateCircuitBreakerLimits} (chain v3.2.2) - a chain's
          * single-transfer and daily limits in its base unit, "0" = unlimited.
          * Bridge admin, qcb_bridge licence holder, or governance.
          */
@@ -111,7 +111,7 @@ public final class QorechainMessages {
          * settle: the sender must be {@code SequencerConfig.SequencerAddress}, falling
          * back to the rollup's {@code Creator} when no sequencer is configured. Anyone
          * else is refused with {@code ErrUnauthorized} ("%s may not settle batches for
-         * rollup %s"). Batches must also extend the chain by index — an existing index
+         * rollup %s"). Batches must also extend the chain by index - an existing index
          * cannot be overwritten.
          */
         public static TypedMessage submitBatch(qorechain.rdk.v1.Tx.MsgSubmitBatch m) {
@@ -189,7 +189,7 @@ public final class QorechainMessages {
             return new TypedMessage("/qorechain.multilayer.v1.MsgChallengeAnchor", m);
         }
 
-        /** {@code MsgUpdateParams} (chain v3.2.2) — replaces the parameters wholesale. Governance only. */
+        /** {@code MsgUpdateParams} (chain v3.2.2) - replaces the parameters wholesale. Governance only. */
         public static TypedMessage updateParams(qorechain.multilayer.v1.Tx.MsgUpdateParams m) {
             return new TypedMessage("/qorechain.multilayer.v1.MsgUpdateParams", m);
         }
@@ -225,27 +225,27 @@ public final class QorechainMessages {
         }
 
         /**
-         * {@code MsgOpenEVMWindow} — the Cosmos-lane authorisation an account needs
+         * {@code MsgOpenEVMWindow} - the Cosmos-lane authorisation an account needs
          * before the chain admits any EVM transaction from it (chain v3.2.0). It is
          * an ordinary protobuf message travelling the normal hybrid signing path, so
          * the classical key alone can never open a window.
          *
          * <p>Prefer {@link io.github.qorechain.evm.EvmWindow#open} , which checks the
          * chain's {@code ValidateBasic} bounds locally. Opening replaces any existing
-         * window and advances the account sequence — which on QoreChain is also the
+         * window and advances the account sequence - which on QoreChain is also the
          * EVM nonce: open the window, THEN read the nonce, THEN sign the EVM tx.
          */
         public static TypedMessage openEvmWindow(qorechain.pqc.v1.Tx.MsgOpenEVMWindow m) {
             return new TypedMessage("/qorechain.pqc.v1.MsgOpenEVMWindow", m);
         }
 
-        /** {@code MsgCloseEVMWindow} — revokes the sender's window in the same block. */
+        /** {@code MsgCloseEVMWindow} - revokes the sender's window in the same block. */
         public static TypedMessage closeEvmWindow(qorechain.pqc.v1.Tx.MsgCloseEVMWindow m) {
             return new TypedMessage("/qorechain.pqc.v1.MsgCloseEVMWindow", m);
         }
 
         /**
-         * {@code MsgAuthorizeEVMDelegation} (chain v3.2.2) — the sender's
+         * {@code MsgAuthorizeEVMDelegation} (chain v3.2.2) - the sender's
          * post-quantum consent to one EIP-7702 delegation of its own account. Use
          * {@link io.github.qorechain.evm.EvmDelegation#authorize} to get the bounds
          * checked first.
@@ -255,7 +255,7 @@ public final class QorechainMessages {
             return new TypedMessage("/qorechain.pqc.v1.MsgAuthorizeEVMDelegation", m);
         }
 
-        /** {@code MsgClearEVMDelegation} (chain v3.2.2) — removes the sender's installed delegation. */
+        /** {@code MsgClearEVMDelegation} (chain v3.2.2) - removes the sender's installed delegation. */
         public static TypedMessage clearEvmDelegation(qorechain.pqc.v1.Tx.MsgClearEVMDelegation m) {
             return new TypedMessage("/qorechain.pqc.v1.MsgClearEVMDelegation", m);
         }
@@ -282,7 +282,7 @@ public final class QorechainMessages {
         }
 
         /**
-         * {@code MsgUpdateParams} — replace the SVM runtime parameters wholesale
+         * {@code MsgUpdateParams} - replace the SVM runtime parameters wholesale
          * (chain v3.1.97).
          *
          * <p>A GOVERNANCE message: {@code authority} must be the governance module
@@ -339,7 +339,7 @@ public final class QorechainMessages {
             return new TypedMessage("/qorechain.license.v1.MsgResumeLicense", m);
         }
 
-        /** {@code MsgUpdateAuthority} (chain v3.2.3) — replaces the licence grant authority. Governance only. */
+        /** {@code MsgUpdateAuthority} (chain v3.2.3) - replaces the licence grant authority. Governance only. */
         public static TypedMessage updateAuthority(qorechain.license.v1.Tx.MsgUpdateAuthority m) {
             return new TypedMessage("/qorechain.license.v1.MsgUpdateAuthority", m);
         }

@@ -1,5 +1,5 @@
 /**
- * unified-wallet — one identity, three lanes.
+ * unified-wallet - one identity, three lanes.
  *
  * A unified eth-native QoreChain account is ONE `eth_secp256k1` key rendered as
  * all THREE address encodings, sharing ONE on-chain balance:
@@ -13,7 +13,7 @@
  * same 20 bytes. The account also carries a deterministic ML-DSA-87 (Dilithium-5)
  * PQC keypair for the mainnet hybrid signature.
  *
- * This example runs fully offline — it derives and prints an account, then shows
+ * This example runs fully offline - it derives and prints an account, then shows
  * decoding any one encoding back into all three. It does NOT broadcast anything.
  *
  * Legacy note: the classic coin-118 native derivation (`deriveNativeAccount`) is
@@ -26,7 +26,7 @@ import {
   qoreAddresses,
 } from "@qorechain/sdk";
 
-// A PUBLIC, well-known dev mnemonic — NEVER use a funded mnemonic in code.
+// A PUBLIC, well-known dev mnemonic - NEVER use a funded mnemonic in code.
 const MNEMONIC =
   "test test test test test test test test test test test junk";
 
@@ -50,7 +50,7 @@ async function main(): Promise<void> {
   console.log("  publicKey (33B compressed):", account.publicKey);
   console.log("  pqc.publicKey  bytes:", account.pqc.publicKey.length); // 2592
   console.log("  pqc.secretKey  bytes:", account.pqc.secretKey.length); // 4896
-  // privateKey / pqc.secretKey are secret — do not print in real apps.
+  // privateKey / pqc.secretKey are secret - do not print in real apps.
 
   // 2) Any ONE encoding decodes to all three (they are the same 20 bytes).
   const fromEvm = qoreAddresses({ evm: account.evm });
@@ -60,11 +60,11 @@ async function main(): Promise<void> {
   console.log("  svm    :", fromEvm.svm);
 
   // 3) A seed-derived unified account (32 bytes used AS the secp256k1 key).
-  //    The seed IS the spend key, so in a real app it must be secret entropy —
-  //    a CSPRNG seed or a mnemonic-derived key — never a wallet signature or any
+  //    The seed IS the spend key, so in a real app it must be secret entropy -
+  //    a CSPRNG seed or a mnemonic-derived key - never a wallet signature or any
   //    other value a third party can ask for. (The fixed 0x01 × 32 below is a
   //    printable demo constant, not a usable key.) To let an external wallet key
-  //    act for an account, use the authenticator lanes instead — see the
+  //    act for an account, use the authenticator lanes instead - see the
   //    authenticator-spend example.
   const seedAccount = unifiedAccountFromSeed(new Uint8Array(32).fill(1));
   console.log();

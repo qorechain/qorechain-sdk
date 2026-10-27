@@ -113,7 +113,7 @@ class PqcTest {
      * The FIPS-204 encodings are fixed-length, and the five official QoreChain
      * bindings must agree on that: an ML-DSA-87 signature is 4627 bytes, not 4628
      * with a byte of trailing garbage. (A probe found the Go binding accepting the
-     * over-long form while Rust rejected it — a disagreement the chain cannot
+     * over-long form while Rust rejected it - a disagreement the chain cannot
      * afford.) Verification therefore rejects on length, before the library runs.
      */
     @Test

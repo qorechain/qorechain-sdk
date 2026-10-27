@@ -2,7 +2,7 @@ node_modules/
 dist/
 *.tsbuildinfo
 
-# Secrets / env — never commit
+# Secrets / env - never commit
 .env
 .env.*
 !.env.example

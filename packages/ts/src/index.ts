@@ -188,10 +188,10 @@ export type {
   CrossVmParamsResponse,
 } from "./query/crossvm";
 
-// AI pre-flight risk scoring — QoreChain-unique on-chain AI risk/anomaly scoring
+// AI pre-flight risk scoring - QoreChain-unique on-chain AI risk/anomaly scoring
 // over the EVM precompiles. The implementation lives in `@qorechain/evm` (which
 // owns viem); it is re-exported here for discovery. `@qorechain/evm` is an
-// OPTIONAL peer dependency — install it (and viem) to use these helpers.
+// OPTIONAL peer dependency - install it (and viem) to use these helpers.
 export {
   ai,
   aiRiskScore,
@@ -325,7 +325,7 @@ export type {
 } from "./search";
 // Authenticator lanes (v3.1.85): byte-exact sign-bytes builders for the EVM
 // and Native (Cosmos) spend lanes and the PQC key-rotation payload. Pure byte
-// math — no wallet, no network. The DX builders that sign them are exported
+// math - no wallet, no network. The DX builders that sign them are exported
 // below from ./wallet/authenticator.
 export {
   evmAuthSignBytes,
@@ -544,7 +544,7 @@ export {
 // encode/decode/interface types (e.g. to decode a message read back from chain).
 export * as qorechainTypes from "./codegen";
 
-// Authenticator-lane wallet DX (v3.1.85): mirror the reference wallet-adapter —
+// Authenticator-lane wallet DX (v3.1.85): mirror the reference wallet-adapter -
 // link a Phantom (ed25519) or MetaMask (secp256k1) key and build a relayer-ready
 // MsgExecuteEVM / MsgExecuteCosmos, plus the low-level composers, the ETH
 // authenticator registration, revoke, and mnemonic-based PQC key rotation
@@ -619,8 +619,8 @@ export type {
 } from "./query/grpc";
 
 // High-level developer-experience helpers: ergonomic, strongly-typed clients for
-// building sidechains/paychains (multilayer) and rollups (rdk) — register →
-// anchor → route, and create → batch → withdraw — without hand-building Any
+// building sidechains/paychains (multilayer) and rollups (rdk) - register →
+// anchor → route, and create → batch → withdraw - without hand-building Any
 // payloads. See ./helpers for the full option-object docs.
 export {
   createMultilayerClient,

@@ -2,7 +2,7 @@
 
 Post-quantum signing on QoreChain with ML-DSA-87 (Dilithium-5, NIST FIPS 204).
 
-**This example runs fully offline — no node required.**
+**This example runs fully offline - no node required.**
 
 - **Part 1** generates a PQC keypair and signs/verifies a message with
   `pqcSign` / `pqcVerify`, including a tamper check.
@@ -13,7 +13,7 @@ Post-quantum signing on QoreChain with ML-DSA-87 (Dilithium-5, NIST FIPS 204).
 ## On-chain prerequisite (for actually broadcasting hybrid txs)
 
 The signer's PQC public key must be registered on-chain via the chain's
-`MsgRegisterPQCKeyV2` before a hybrid tx will PQC-verify — **unless** you set
+`MsgRegisterPQCKeyV2` before a hybrid tx will PQC-verify - **unless** you set
 `includePqcPublicKey: true` (as this example does), which embeds the key in the
 extension so the chain can auto-register it on first use. Broadcasting also
 requires a reachable node and a funded, sequence-correct account. This example

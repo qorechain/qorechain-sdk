@@ -27,7 +27,7 @@ from qorsdk import (
 from qorsdk.proto.qorechain.pqc.v1.hybrid_pb2 import PQCHybridSignature
 from qorsdk.tx import MSG_SEND_TYPE_URL, bank_send, broadcast
 
-# Public test mnemonic only — never a real one.
+# Public test mnemonic only - never a real one.
 TEST_MNEMONIC = (
     "abandon abandon abandon abandon abandon abandon abandon abandon "
     "abandon abandon abandon about"
@@ -176,7 +176,7 @@ def test_broadcast_mode_mapping(mode, expected):
 
 
 # --------------------------------------------------------------------------- #
-# Hybrid PQC tx — the core invariants, mirroring the TS/Go contract.
+# Hybrid PQC tx - the core invariants, mirroring the TS/Go contract.
 # --------------------------------------------------------------------------- #
 def test_hybrid_pqc_message_is_over_b0_not_final_body(native, pqc):
     """The PQC signed message must cover B0 (body WITHOUT the ext), framed with A."""

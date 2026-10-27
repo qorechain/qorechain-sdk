@@ -125,7 +125,7 @@ type SimulateResult struct {
 	// Safe is an ADVISORY verdict: true when Risk.Level < 3 AND not flagged.
 	//
 	// It is a convenience signal for client-side UX only and is NOT enforced by
-	// the chain — the transaction can still be submitted when Safe is false, and
+	// the chain - the transaction can still be submitted when Safe is false, and
 	// a Safe value of true is not a guarantee of execution success.
 	Safe bool
 }

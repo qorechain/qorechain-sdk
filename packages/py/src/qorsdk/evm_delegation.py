@@ -18,7 +18,7 @@ How a delegation goes through
    nonce NOW, after the consent.
 3. Sign the authorization tuple with that nonce if someone else sponsors the
    type-4 transaction, or with ``nonce + 1`` if the account sends the type-4
-   transaction itself (its own nonce is consumed first) —
+   transaction itself (its own nonce is consumed first) -
    :func:`evm_delegation_tuple_nonce`.
 4. Send the type-4 transaction. The sender still needs an open EVM window; a
    sponsor pays from its own.
@@ -54,10 +54,10 @@ EVM_DELEGATION_CLEAR = "0x0000000000000000000000000000000000000000"
 #: The most authorization tuples the EVM lane accepts in one type-4 transaction.
 MAX_EVM_AUTHORIZATIONS_PER_TX = 8
 
-#: ``pqc`` 60 — no live consent for the delegation a tuple would install.
+#: ``pqc`` 60 - no live consent for the delegation a tuple would install.
 ERR_NO_EVM_DELEGATION_CONSENT = 60
 
-#: ``pqc`` 61 — a malformed consent or clear request, or no PQC key.
+#: ``pqc`` 61 - a malformed consent or clear request, or no PQC key.
 ERR_INVALID_EVM_DELEGATION = 61
 
 _ADDRESS = re.compile(r"^0x[0-9a-fA-F]{40}$")

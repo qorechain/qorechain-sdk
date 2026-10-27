@@ -95,7 +95,7 @@ public final class KeyIntegrity {
 
     /**
      * Sign the proof of possession with the key being registered (deterministic
-     * ML-DSA-87). Set it as {@code PqcDx.EnsureOptions.proofOfPossession} — only
+     * ML-DSA-87). Set it as {@code PqcDx.EnsureOptions.proofOfPossession} - only
      * on a network that has applied v3.2.3.
      */
     public static byte[] signProofOfPossession(String chainId, String account, PqcKeypair keypair) {

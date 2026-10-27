@@ -2,12 +2,12 @@
  * Mnemonic generation/validation and hierarchical-deterministic (HD) derivation
  * of QoreChain accounts in all three supported schemes:
  *
- * 1. native — Native secp256k1, BIP-44 path `m/44'/118'/0'/0/{index}`,
+ * 1. native - Native secp256k1, BIP-44 path `m/44'/118'/0'/0/{index}`,
  *    address = bech32(`qor`, ripemd160(sha256(compressedPubkey))).
- * 2. evm    — secp256k1, BIP-44 path `m/44'/60'/0'/0/{index}`,
+ * 2. evm - secp256k1, BIP-44 path `m/44'/60'/0'/0/{index}`,
  *    address = `0x` + last 20 bytes of keccak256(uncompressedPubkey[1:]),
  *    rendered with an EIP-55 mixed-case checksum.
- * 3. svm    — ed25519, SLIP-0010 path `m/44'/501'/{index}'/0'` (all hardened,
+ * 3. svm - ed25519, SLIP-0010 path `m/44'/501'/{index}'/0'` (all hardened,
  *    the Solana standard), address = base58(32-byte ed25519 public key).
  *
  * Derivation uses audited primitives: @scure/bip39 (mnemonic + seed), @scure/bip32
@@ -18,7 +18,7 @@
  * Dependency note: this module pins @noble/hashes/@noble/curves/@scure/base on
  * the 1.x line, while `micro-key-producer` brings its own 2.x copies of those
  * packages. The two majors are installed side by side intentionally. They never
- * exchange hash or curve instances across the boundary — micro-key-producer is
+ * exchange hash or curve instances across the boundary - micro-key-producer is
  * used only as a self-contained SLIP-0010 derivation black box (seed in, ed25519
  * node out), so the duplicate copies are isolated and harmless. Do not force a
  * `pnpm.overrides` that drags micro-key-producer onto a different major; that
@@ -195,7 +195,7 @@ export async function deriveEvmAccount(
 /**
  * Derive an SVM (Solana-style ed25519) account from a mnemonic.
  *
- * Path: `m/44'/501'/{accountIndex}'/0'` — the conventional Solana derivation,
+ * Path: `m/44'/501'/{accountIndex}'/0'` - the conventional Solana derivation,
  * all segments hardened (SLIP-0010 for ed25519 supports hardened keys only).
  * The address is the base58 encoding of the 32-byte ed25519 public key.
  *

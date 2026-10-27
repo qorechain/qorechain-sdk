@@ -5,21 +5,21 @@
  * scheme: an account registers an ML-DSA-87 (Dilithium-5) key on-chain
  * (`MsgRegisterPQCKeyV2`), after which its transactions can carry a hybrid
  * (classical secp256k1 + ML-DSA-87) signature that the ante handler verifies in
- * full. The low-level primitives already exist — {@link generatePqcKeypair},
+ * full. The low-level primitives already exist - {@link generatePqcKeypair},
  * {@link buildHybridTx}, {@link signAndBroadcastHybrid}, the
  * `msg.pqc.registerPqcKey` composer, and the `qor_getPQCKeyStatus` read. This
  * module wraps them into a tiny, idempotent surface so a dApp becomes
  * **quantum-safe by default**: one call to be PQC-protected.
  *
  * The headline calls:
- *  - {@link isPqcRegistered} / {@link getPqcStatus} — read whether an address has
+ *  - {@link isPqcRegistered} / {@link getPqcStatus} - read whether an address has
  *    a registered PQC key (via `qor_getPQCKeyStatus`).
- *  - {@link ensurePqcRegistered} — register the signer's Dilithium key if (and
+ *  - {@link ensurePqcRegistered} - register the signer's Dilithium key if (and
  *    only if) it is not already registered. Idempotent: safe to call on every
  *    app start.
- *  - {@link migrateToHybrid} — ensure registration, then hand back a hybrid send
+ *  - {@link migrateToHybrid} - ensure registration, then hand back a hybrid send
  *    path wired to {@link buildHybridTx} / {@link signAndBroadcastHybrid}.
- *  - {@link migratePqcKey} — rotate an account's PQC key (`MsgMigratePQCKey`).
+ *  - {@link migratePqcKey} - rotate an account's PQC key (`MsgMigratePQCKey`).
  *
  * Reads accept either a {@link QorClient} or anything exposing a `qor`
  * sub-client (e.g. the composed `QoreChainClient` from `createClient`). Writes
@@ -193,8 +193,8 @@ const registeredCache = new Map<string, PqcStatus>();
  * endpoint serves (the `qor_*` JSON-RPC namespace is not exposed publicly).
  *
  * The chain answers `{ found: false }` for an account without a key. Anything
- * else that is not a readable `found` — an HTTP error, a missing field, a
- * transport failure — is UNKNOWN: retried once, then thrown. It is never read
+ * else that is not a readable `found` - an HTTP error, a missing field, a
+ * transport failure - is UNKNOWN: retried once, then thrown. It is never read
  * as "not registered".
  */
 export async function fetchPqcStatus(opts: {
@@ -353,7 +353,7 @@ export interface EnsurePqcRegisteredOptions {
   pqcKeypair: PqcKeypair;
   /**
    * The account's classical ECDSA (secp256k1) public key, registered alongside
-   * the Dilithium key. When omitted, an empty key is sent — the chain binds the
+   * the Dilithium key. When omitted, an empty key is sent - the chain binds the
    * registration to the transaction signer, so this is optional for accounts
    * whose classical key is already known on-chain.
    */
@@ -435,8 +435,8 @@ export interface EnsurePqcRegisteredResult {
  * Build the `MsgRegisterPQCKeyV2` for a signer without broadcasting.
  *
  * Useful for packing registration into a larger transaction body, or for the
- * offline build path. Uses `/qorechain.pqc.v1.MsgRegisterPQCKeyV2` — the
- * chain's current (classical-exempt bootstrap) registration path — with an
+ * offline build path. Uses `/qorechain.pqc.v1.MsgRegisterPQCKeyV2` - the
+ * chain's current (classical-exempt bootstrap) registration path - with an
  * explicit `algorithmId` (ML-DSA-87 / Dilithium-5).
  */
 export function buildRegisterPqcKeyMsg(
@@ -459,7 +459,7 @@ export function buildRegisterPqcKeyMsg(
 }
 
 /**
- * Register the signer's PQC key if it is not already registered — idempotent.
+ * Register the signer's PQC key if it is not already registered - idempotent.
  *
  * It reads the account's status first (`rest`, `statusSource` or a pre-read
  * `status`). When the account already has a key, this returns
@@ -696,7 +696,7 @@ export interface HybridSendPath {
 /**
  * Make an account quantum-safe and hand back a hybrid send path.
  *
- * Ensures the signer's PQC key is registered (idempotent — see
+ * Ensures the signer's PQC key is registered (idempotent - see
  * {@link ensurePqcRegistered}), then returns a {@link HybridSendPath} with the
  * keypair pre-bound to the existing {@link buildHybridTx} /
  * {@link signAndBroadcastHybrid} builders. After this call, the dApp's

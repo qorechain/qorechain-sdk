@@ -6,7 +6,7 @@ import { MsgSend } from "cosmjs-types/cosmos/bank/v1beta1/tx";
 // Cross-implementation byte vector. This MUST equal the chain's B0 for the same
 // fixture (QoreChain x/pqc getSignBytes canonical B0). It proves the SDK
 // (ts-proto) and the chain (gogoproto) serialize the signed TxBody (without the
-// PQC extension) byte-for-byte identically — the precondition for any SDK-signed
+// PQC extension) byte-for-byte identically - the precondition for any SDK-signed
 // hybrid PQC tx to verify on chain. Verified equal 2026-06-23.
 const CANONICAL_B0_HEX =
   "0a89010a1c2f636f736d6f732e62616e6b2e763162657461312e4d736753656e6412690a2a716f7231717171717171717171717171717171717171717171717171717171717171717170396a376432122a716f72317777777777777777777777777777777777777777777777777777777777777777667a306a78351a0f0a0475716f721207313233343536371214716f7265636861696e2d73646b2d766563746f72";

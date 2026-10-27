@@ -1,9 +1,9 @@
 /**
- * AI pre-flight risk scoring — re-exported from `@qorechain/evm` for discovery.
+ * AI pre-flight risk scoring - re-exported from `@qorechain/evm` for discovery.
  *
  * The implementation lives in the EVM adapter (`@qorechain/evm`), which owns the
  * viem/JSON-RPC surface. It is re-exported here so it is discoverable from the
- * umbrella `@qorechain/sdk` package — `import { simulateWithRiskScore } from
+ * umbrella `@qorechain/sdk` package - `import { simulateWithRiskScore } from
  * "@qorechain/sdk"` works out of the box (`@qorechain/evm` is a regular
  * dependency; it imports cleanly without viem).
  *

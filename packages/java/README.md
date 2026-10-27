@@ -3,36 +3,36 @@
 Java SDK for QoreChain with full native-chain parity to the TypeScript, Python,
 Go, and Rust SDKs:
 
-- **networks** — `Networks.get("testnet" | "mainnet")` presets (`qorechain-diana`
+- **networks** - `Networks.get("testnet" | "mainnet")` presets (`qorechain-diana`
   / `qorechain-vladi`), bech32 prefixes, `QOR`/`uqor` coin, and per-VM endpoints.
-- **denom / address** — exact `BigInteger` `toBase`/`fromBase`, bech32 ↔ hex,
+- **denom / address** - exact `BigInteger` `toBase`/`fromBase`, bech32 ↔ hex,
   EIP-55 checksum, EVM/SVM address validators.
-- **accounts** — HD derivation for native (secp256k1, `m/44'/118'/0'/0/i`), EVM
+- **accounts** - HD derivation for native (secp256k1, `m/44'/118'/0'/0/i`), EVM
   (secp256k1, `m/44'/60'/0'/0/i`), and SVM (ed25519 SLIP-0010,
   `m/44'/501'/i'/0'`). BIP-39 mnemonic generation/validation/seed.
-- **pqc** — ML-DSA-87 (FIPS-204) keygen / sign / verify via BouncyCastle, plus
+- **pqc** - ML-DSA-87 (FIPS-204) keygen / sign / verify via BouncyCastle, plus
   the hybrid-signature extension builder.
-- **messages** — committed `protobuf-java` classes for all QoreChain modules, a
+- **messages** - committed `protobuf-java` classes for all QoreChain modules, a
   `typeUrl → parser` registry covering all 61 custom `Msg` types, typed composers,
   and Native `Any` pack/unpack.
-- **tx** — native `bankSend` builder, hybrid (classical + PQC) transaction
+- **tx** - native `bankSend` builder, hybrid (classical + PQC) transaction
   signing with per-network sign-bytes v1/v2 (`SignBytes`, `SignBytesResolver`),
   gas/fee helpers, ABCI error decoding, broadcast, and `waitForTx`.
-- **query** — `RestClient` (Native + 9 custom routes, incl. `evmWindow`), `JsonRpcClient`
+- **query** - `RestClient` (Native + 9 custom routes, incl. `evmWindow`), `JsonRpcClient`
   (EVM `eth_*`), `QorClient` (25 `qor_*` methods).
-- **subscribe** — WebSocket `subscribeNewBlocks` / `subscribeTx`.
-- **multilayer / rdk** — typed composers and `MultilayerQueryClient` /
+- **subscribe** - WebSocket `subscribeNewBlocks` / `subscribeTx`.
+- **multilayer / rdk** - typed composers and `MultilayerQueryClient` /
   `RdkQueryClient` / `BridgeQueryClient` for sidechains, paychains, and rollups
   (v0.4.0). Chain v3.1.83 adds `AmmQueryClient` / `LicenseQueryClient` /
   `AbstractAccountQueryClient`, the `multilayer` `anchor` / `anchors` state-anchor
   queries, and abstractaccount `registerAuthenticator` / `revokeAuthenticator`
   composers.
-- **crossvm** — `CrossVMClient`: unified cross-VM calls (single + atomic
+- **crossvm** - `CrossVMClient`: unified cross-VM calls (single + atomic
   triple-VM) over `MsgCrossVMCall` (v0.5.0).
-- **evm** — `EvmPrecompiles`: AI pre-flight risk/anomaly scoring (v0.5.0), and
+- **evm** - `EvmPrecompiles`: AI pre-flight risk/anomaly scoring (v0.5.0), and
   `EvmWindow` / `EvmWindowStatus` / `EvmWindowIssue`: the EVM authorisation
   window the chain requires from v3.2.0 (0.8.2).
-- **pqc** — `PqcDx`: quantum-safe DX (idempotent registration + classical→hybrid
+- **pqc** - `PqcDx`: quantum-safe DX (idempotent registration + classical→hybrid
   migration) (v0.5.0).
 
 ## Coordinates
@@ -129,8 +129,8 @@ See the [AI pre-flight](https://docs.qorechain.io/sdk/guides/ai-preflight) guide
 
 ## Unified cross-VM calls (v0.5.0)
 
-`CrossVMClient` wraps `MsgCrossVMCall` so you can route a single call — or several
-atomically in **one** transaction (`callAtomic`) — across the EVM, CosmWasm, and
+`CrossVMClient` wraps `MsgCrossVMCall` so you can route a single call - or several
+atomically in **one** transaction (`callAtomic`) - across the EVM, CosmWasm, and
 SVM VMs (`CrossVMClient.VMType.EVM` / `.COSMWASM` / `.SVM`). The payload is raw
 bytes (`payload`) or a JSON-serializable CosmWasm object (`cosmwasm`, which is
 serialized to UTF-8 JSON via Jackson).
@@ -162,12 +162,12 @@ var status = xvm.getMessage("42"); // read a routed message's status
 
 **Sync by default, async on request (chain v3.1.97).** A call executes inside the
 transaction and returns the callee's answer. Set `opts.async = true` to queue it for
-a later `ProcessQueue` dispatch instead — nothing has run yet then, and only the
+a later `ProcessQueue` dispatch instead - nothing has run yet then, and only the
 message id is meaningful. The decoded `MsgCrossVMCallResponse` carries `executed`,
 `data` (the callee's return value) and `gasUsed` alongside `messageId`:
 
 ```java
-// Per-message responses only come back from a COMMIT broadcast — a sync broadcast
+// Per-message responses only come back from a COMMIT broadcast - a sync broadcast
 // returns before the messages have run.
 signer.broadcastMode = Broadcaster.Mode.COMMIT;
 var result = xvm.call(cw);
@@ -200,7 +200,7 @@ PqcDx.PqcStatus status = PqcDx.getPqcStatus(qor, account.address());
 
 // Idempotent: registers the signer's Dilithium key only if it isn't already.
 // The check reads REST from signer.restUrl (PqcDx.fetchPqcStatus) and never
-// registers blind — a second registration is refused after the fee is charged.
+// registers blind - a second registration is refused after the fee is charged.
 signer.restUrl = "https://api.qore.host";
 PqcDx.EnsureResult ensure =
         PqcDx.ensurePqcRegistered(signer, broadcaster, qor, new PqcDx.EnsureOptions());
@@ -223,7 +223,7 @@ two forms, and **each network verifies exactly one at any height** (no overlap):
 
 | Form | Bytes | Verified by |
 |---|---|---|
-| v1 | `BE32(len B0) ‖ B0 ‖ BE32(len A) ‖ A` | a network that has applied neither `v3.2.0` nor `v3.1.98` — **mainnet `qorechain-vladi` today** |
+| v1 | `BE32(len B0) ‖ B0 ‖ BE32(len A) ‖ A` | a network that has applied neither `v3.2.0` nor `v3.1.98` - **mainnet `qorechain-vladi` today** |
 | v2 | `"qorechain-pqc-hybrid-v2" ‖ BE64(len chainId) ‖ chainId ‖ BE32(len B0) ‖ B0 ‖ BE32(len A) ‖ A` | testnet `qorechain-diana` (which applied `v3.1.98` at height 5,746,000) and every network born on that release or later |
 
 v2 adds a domain tag (so a signature made in another context can never pass as a
@@ -238,7 +238,7 @@ name it actually took: diana answers under `v3.1.98` forever, mainnet will answe
 under `v3.2.0`. `SignBytes.SIGN_BYTES_V2_UPGRADES` is that list (primary name
 first) and `SignBytes.SIGN_BYTES_V2_UPGRADE` is the primary name `"v3.2.0"`
 alone. A client that asks for one name only resolves v1 on the other network,
-and every hybrid transaction there is refused with `pqc` code 21 — which is what
+and every hybrid transaction there is refused with `pqc` code 21 - which is what
 published clients up to 0.8.0 do.
 
 **The auto rule** (`SignBytes.Mode.AUTO`, the default in `PqcDx`):
@@ -265,7 +265,7 @@ other chain id they use v2. The form used is reported on `Built.signBytesVersion
 
 `PqcDx.HybridSendPath.send` resolves the version per `Signer.signBytesMode` /
 `Signer.restUrl`. In AUTO mode, if the network refuses the tx with `pqc` code 21
-(`hybrid PQC signature verification failed` — e.g. the network upgraded while the
+(`hybrid PQC signature verification failed` - e.g. the network upgraded while the
 answer was cached), it force-refreshes the version, re-signs **once** and
 re-broadcasts **once**, then surfaces any error. An explicit V1/V2 never retries.
 
@@ -341,20 +341,20 @@ TypedMessage close = EvmWindow.close(sender);
 throw `IllegalArgumentException` naming the bound, so a wrong value costs
 nothing: `blocks` in 1..`EvmWindow.MAX_BLOCKS` (17280), `maxTxs` in
 1..`EvmWindow.MAX_TXS` (1000), `maxValue` a positive integer amount of uqor.
-**Every field is required** — the chain refuses a missing one rather than
+**Every field is required** - the chain refuses a missing one rather than
 defaulting it. `QorechainMessages.pqc.openEvmWindow` / `closeEvmWindow` are the
 plain composers for a message you built yourself, and both type URLs are in the
 registry like every other pqc message.
 
 `EvmWindowStatus` keeps every number exact: counters are `long`, and
-`maxValue` / `usedValue` / `remainingValue` are `BigInteger` (`cosmos.Int`) —
+`maxValue` / `usedValue` / `remainingValue` are `BigInteger` (`cosmos.Int`) -
 never `double`, which truncates above 2^53. `EvmWindowStatus.parse(json)` decodes
 a body you fetched yourself, and `EvmWindowStatus.of(QueryEVMWindowResponse)`
 adapts the protobuf answer.
 
 Refusals are classified by `EvmWindowIssue.classify(throwable)` (or
 `classify(code, codespace, text)`), which returns `NO_WINDOW` (`pqc` 26),
-`EXHAUSTED` (27), `INVALID` (28) or `NO_PQC_KEY` — the *other* state code 28
+`EXHAUSTED` (27), `INVALID` (28) or `NO_PQC_KEY` - the *other* state code 28
 carries, kept separate because the remedy differs: register a key first, rather
 than open a window. Over the EVM JSON-RPC the refusal arrives as a broadcast
 error carrying the chain's text and no codespace, so the classifier matches on
@@ -367,7 +367,7 @@ makes.
 ### Three traps
 
 1. **Ordering.** QoreChain unifies the identity, so the Cosmos sequence **is**
-   the EVM nonce — and opening a window advances it (measured: nonce 2 before,
+   the EVM nonce - and opening a window advances it (measured: nonce 2 before,
    3 after). The order is: **open the window, then read the nonce, then sign the
    EVM transaction.** Signing first gives `nonce too low`.
 2. **`maxValue` bounds value *plus* fees.** It counts the transferred value AND
@@ -395,7 +395,7 @@ makes.
   is **30 blocks** (~31 s on the testnet, ~93 s on mainnet). A network born on
   this binary starts at the genesis default of 10; an upgraded one sits at 600,
   because the upgrade handler raises it so a relayer does not stall. Read the
-  value from `qorechain.ai.v1.Query/Config` — never assume either number.
+  value from `qorechain.ai.v1.Query/Config` - never assume either number.
 
 ## Staking tiers (v0.10.0, chain v3.2.4)
 
@@ -471,7 +471,7 @@ Boolean proven = PqcDx.fetchPqcStatus("https://api.qore.host", address).possessi
 
 ## Unified eth-native wallet (v0.6.0)
 
-One `eth_secp256k1` key = ONE 20-byte identity rendered three ways — `qor1…`
+One `eth_secp256k1` key = ONE 20-byte identity rendered three ways - `qor1…`
 (bech32), `0x…` (EIP-55), and SVM base58 (the 20 bytes right-padded with 12 zero
 bytes to 32). A deposit to any of the three lands in the **same** balance, and the
 key spends on **all** lanes. `UnifiedAccounts.deriveUnifiedAccount` uses the
@@ -493,9 +493,9 @@ import io.github.qorechain.tx.SignBytesResolver;
 import io.github.qorechain.tx.SignEth;
 
 UnifiedAccount account = UnifiedAccounts.deriveUnifiedAccount(mnemonic, 0);
-account.cosmos; // "qor1…"    — QoreChain Native lane
-account.evm;    // "0x…"      — EIP-55 checksummed
-account.svm;    // "<base58>" — 20 bytes + 12 zero pad
+account.cosmos; // "qor1…" - QoreChain Native lane
+account.evm;    // "0x…" - EIP-55 checksummed
+account.svm;    // "<base58>" - 20 bytes + 12 zero pad
 
 // Sign a QoreChain Native tx from the unified eth key (hybrid PQC path).
 SignEth.Options opts = new SignEth.Options();
@@ -513,13 +513,13 @@ opts.signBytesVersion =
 SignEth.Built built = SignEth.signHybridEth(opts);
 ```
 
-> **Removed in v0.8.0 — `unifiedAccountFromPhantomSignature` now throws.** It
+> **Removed in v0.8.0 - `unifiedAccountFromPhantomSignature` now throws.** It
 > derived the account's spend key from a wallet signature. A wallet signature is a
-> bearer secret — any page can ask the wallet for it — so whoever obtained it
+> bearer secret - any page can ask the wallet for it - so whoever obtained it
 > controlled the account. To let an external wallet key act for an account, use the
 > **authenticator lanes** below: register the key with `MsgRegisterAuthenticator`
 > and spend via `MsgExecuteCosmos` / `MsgExecuteEVM`. Any account previously
-> derived this way must be treated as exposed — move its funds.
+> derived this way must be treated as exposed - move its funds.
 >
 > The seed passed to `UnifiedAccounts.unifiedAccountFromSeed` **is** the private
 > key: it must be real secret entropy, never a wallet signature or any value a
@@ -529,8 +529,8 @@ See the [unified-wallet](https://github.com/qorechain/qorechain-sdk/blob/main/do
 
 ## Authenticator lanes (v0.7.0 / chain v3.1.85)
 
-A linked external key — a Phantom **ed25519** key, or a MetaMask **secp256k1**
-key bound **by address** — spends from the ONE canonical PQC account through a
+A linked external key - a Phantom **ed25519** key, or a MetaMask **secp256k1**
+key bound **by address** - spends from the ONE canonical PQC account through a
 **relayer** that submits the tx and pays the fee (its own hybrid-PQC signature
 satisfies the ante). The external key **never produces an ML-DSA co-signature**;
 its signature over the domain-separated, replay-bound sign-bytes **is** the
@@ -539,11 +539,11 @@ enforced on-chain.
 
 Three messages carry the lanes:
 
-- `MsgExecuteEVM` (`/qorechain.abstractaccount.v1.MsgExecuteEVM`) — built by
+- `MsgExecuteEVM` (`/qorechain.abstractaccount.v1.MsgExecuteEVM`) - built by
   `Authenticator.executeEvmMsg`
-- `MsgExecuteCosmos` (`/qorechain.abstractaccount.v1.MsgExecuteCosmos`) — built
+- `MsgExecuteCosmos` (`/qorechain.abstractaccount.v1.MsgExecuteCosmos`) - built
   by `Authenticator.executeCosmosMsg`
-- `MsgRotatePQCKey` (`/qorechain.pqc.v1.MsgRotatePQCKey`) — composer
+- `MsgRotatePQCKey` (`/qorechain.pqc.v1.MsgRotatePQCKey`) - composer
   `QorechainMessages.pqc.rotatePqcKey`
 
 **Sign-bytes helpers** rebuild the exact digest the chain re-derives:
@@ -566,7 +566,7 @@ string both keys sign).
 
 **Permission taxonomy & errors.** Query the on-chain permission schema with
 `new AbstractAccountQueryClient(url).permissionSchema()` and compare an action to
-it before submitting. `TxError.decode` surfaces the lane failures — codespace
+it before submitting. `TxError.decode` surfaces the lane failures - codespace
 `abstractaccount`: `5` SpendingLimitExceeded, `6` SessionKeyExpired, `10`
 PermissionDenied, `11` AuthenticatorReplay; codespace `pqc`: `21`
 HybridVerifyFailed.

@@ -1,5 +1,5 @@
 /**
- * deploy.ts — deploy the Counter contract to the QoreChain EVM Engine and
+ * deploy.ts - deploy the Counter contract to the QoreChain EVM Engine and
  * exercise it: read the initial count, increment it, and read it back.
  *
  * Uses @qorechain/evm:

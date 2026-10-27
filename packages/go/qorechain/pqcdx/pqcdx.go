@@ -12,7 +12,7 @@
 //
 // The helper mirrors the SDK's module-helper style (see the crossvm helper): a
 // caller-supplied Signer carries the explicit account number, sequence, chain id,
-// and fee — the Go SDK never simulates or auto-fetches these — and the high-level
+// and fee - the Go SDK never simulates or auto-fetches these - and the high-level
 // methods build, sign, and broadcast using that context.
 //
 // On-chain mapping: MsgRegisterPQCKeyV2 { sender, public_key, algorithm_id,
@@ -218,8 +218,8 @@ func cloneStatus(s Status) Status {
 // endpoint serves (the qor_* JSON-RPC namespace is not exposed publicly).
 //
 // The chain answers {"found": false} for an account without a key. Anything
-// that is not a readable "found" — an HTTP error, a missing field, a transport
-// failure — is UNKNOWN: retried once, then returned as an error. It is never
+// that is not a readable "found" - an HTTP error, a missing field, a transport
+// failure - is UNKNOWN: retried once, then returned as an error. It is never
 // read as "not registered". A positive answer is cached per (restURL, address),
 // registered key included.
 func FetchPQCStatus(restURL, address string) (Status, error) {

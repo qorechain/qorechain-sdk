@@ -2,7 +2,7 @@
 // amounts.
 //
 // All value math is performed with integer (big.Int) arithmetic on decimal
-// strings — there is no floating-point arithmetic anywhere in this package, so
+// strings - there is no floating-point arithmetic anywhere in this package, so
 // conversions are exact for any magnitude and never drift (e.g.
 // ToBase("0.1", 6) == "100000").
 //

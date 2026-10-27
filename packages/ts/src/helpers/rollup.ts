@@ -1,5 +1,5 @@
 /**
- * High-level Rollup client — ergonomic RDK (rollup) operations.
+ * High-level Rollup client - ergonomic RDK (rollup) operations.
  *
  * The rdk module lets an app create app-specific rollups, submit settlement
  * batches, run the fraud-proof challenge game, pause/resume/stop a rollup, and
@@ -9,14 +9,14 @@
  * service/method names.
  *
  * Lifecycle, end to end:
- *  1. `createRollup` — declare a new rollup (profile + VM + stake).
- *  2. `submitBatch` — the sequencer posts a settlement batch (state root, data
+ *  1. `createRollup` - declare a new rollup (profile + VM + stake).
+ *  2. `submitBatch` - the sequencer posts a settlement batch (state root, data
  *     hash, optional `withdrawalsRoot` committing L2->L1 messages).
- *  3. `challengeBatch` / `resolveChallenge` — the fraud-proof game.
- *  4. `pause` / `resume` / `stop` — operator lifecycle controls.
- *  5. `executeWithdrawal` — anyone proves a withdrawal leaf against a finalized
+ *  3. `challengeBatch` / `resolveChallenge` - the fraud-proof game.
+ *  4. `pause` / `resume` / `stop` - operator lifecycle controls.
+ *  5. `executeWithdrawal` - anyone proves a withdrawal leaf against a finalized
  *     batch's `withdrawalsRoot` and the recipient is paid.
- *  6. `getRollup` / `listRollups` / `getBatch` / `getLatestBatch` — typed reads,
+ *  6. `getRollup` / `listRollups` / `getBatch` / `getLatestBatch` - typed reads,
  *     plus the `qor_*` conveniences (`getRollupStatus`, `suggestRollupProfile`,
  *     `getDaBlobStatus`).
  *
@@ -108,8 +108,8 @@ export interface ResolveChallengeOptions extends RollupWriteOptions {
   /** Index of the challenged batch. */
   batchIndex: bigint | number | string;
   /**
-   * `true`: fraud confirmed — batch rejected, challenger refunded + rewarded.
-   * `false`: challenge dismissed — challenger bond forfeited, batch finalizable.
+   * `true`: fraud confirmed - batch rejected, challenger refunded + rewarded.
+   * `false`: challenge dismissed - challenger bond forfeited, batch finalizable.
    */
   fraudUpheld: boolean;
 }
@@ -215,7 +215,7 @@ function toUint(value: bigint | number | string | undefined): string | undefined
 function requireQuery(q: RdkQueryClient | undefined): RdkQueryClient {
   if (!q) {
     throw new Error(
-      "rollup typed reads require a query client — pass { query } to createRollupClient (e.g. from connectQueryClients)",
+      "rollup typed reads require a query client - pass { query } to createRollupClient (e.g. from connectQueryClients)",
     );
   }
   return q;
@@ -224,7 +224,7 @@ function requireQuery(q: RdkQueryClient | undefined): RdkQueryClient {
 function requireQor(q: QorClient | undefined): QorClient {
   if (!q) {
     throw new Error(
-      "rollup qor_ reads require a qor client — pass { qor } to createRollupClient (e.g. client.qor)",
+      "rollup qor_ reads require a qor client - pass { qor } to createRollupClient (e.g. client.qor)",
     );
   }
   return q;

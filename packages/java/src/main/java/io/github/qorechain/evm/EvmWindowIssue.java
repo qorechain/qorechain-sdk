@@ -10,7 +10,7 @@ import java.util.Locale;
  * post-quantum key.
  *
  * <p>Over the EVM JSON-RPC lane the refusal does not arrive as an ABCI triple at
- * all — it is a broadcast error carrying the chain's own text — so the
+ * all - it is a broadcast error carrying the chain's own text - so the
  * classifier matches on the text too.
  */
 public enum EvmWindowIssue {
@@ -31,7 +31,7 @@ public enum EvmWindowIssue {
                     + " re-read the nonce"),
     /**
      * The other state {@code pqc} 28 carries: the account has no registered
-     * post-quantum key. It is its own state because the remedy differs — a key
+     * post-quantum key. It is its own state because the remedy differs - a key
      * must be registered before a window can be opened, let alone used.
      */
     NO_PQC_KEY(
@@ -51,7 +51,7 @@ public enum EvmWindowIssue {
     }
 
     /**
-     * The one-line action that clears the issue — the text a wallet can show next
+     * The one-line action that clears the issue - the text a wallet can show next
      * to the refusal. There is deliberately no automatic recovery: opening a
      * window is an explicit authorisation the user makes.
      */
@@ -84,8 +84,8 @@ public enum EvmWindowIssue {
 
     /**
      * Classify any throwable. A {@link TxError.QoreTxException} is classified on
-     * its codespace/code first (with its raw log as the text); anything else — a
-     * broadcast error from the EVM JSON-RPC lane, for instance — on its message,
+     * its codespace/code first (with its raw log as the text); anything else - a
+     * broadcast error from the EVM JSON-RPC lane, for instance - on its message,
      * walking the cause chain. A non-matching error returns {@link #NONE}.
      */
     public static EvmWindowIssue classify(Throwable err) {

@@ -90,7 +90,7 @@ own node URLs):
 | Consensus RPC | `https://rpc.qore.host` | `https://rpc-testnet.qore.host` |
 | Native REST (LCD) | `https://api.qore.host` | `https://api-testnet.qore.host` |
 | EVM JSON-RPC | `https://evm.qore.host` | `https://evm-testnet.qore.host` |
-| EVM WebSocket | — | `wss://evm-ws-testnet.qore.host` |
+| EVM WebSocket | - | `wss://evm-ws-testnet.qore.host` |
 | SVM JSON-RPC | `https://svm.qore.host` | `https://svm-testnet.qore.host` |
 | Consensus WebSocket | `wss://rpc.qore.host/websocket` | `wss://rpc-testnet.qore.host/websocket` |
 
@@ -98,7 +98,7 @@ The public explorer is at [explore.qore.network](https://explore.qore.network).
 
 ## Explorer & faucet URLs (config-driven)
 
-`NetworkConfig` has two optional fields — `explorerUrl` and `faucetUrl` — that
+`NetworkConfig` has two optional fields - `explorerUrl` and `faucetUrl` - that
 are **undefined by default** on both presets. No public explorer or faucet
 hostname is baked into the SDK; supply them through a network override. The
 public explorer lives at **https://explore.qore.network**:

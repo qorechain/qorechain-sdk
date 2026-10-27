@@ -1,6 +1,6 @@
 # qorechain (Python SDK)
 
-A typed Python SDK for QoreChain — typed messages for every module, typed query
+A typed Python SDK for QoreChain - typed messages for every module, typed query
 clients, auto-gas, tx tracking, error decoding, block/tx search, websocket
 subscriptions, network presets, denom/address utilities, HD account derivation
 (native / EVM / SVM), post-quantum (ML-DSA-87) signing, and read clients (REST +
@@ -91,7 +91,7 @@ to_base("1.5")        # "1500000"  (QOR -> uqor, exponent 6)
 from_base("1500000")  # "1.5"
 ```
 
-All conversions use integer arithmetic — never floats — so they are exact.
+All conversions use integer arithmetic - never floats - so they are exact.
 
 ### Post-quantum signing (ML-DSA-87 / Dilithium-5)
 
@@ -262,8 +262,8 @@ See the [AI pre-flight](https://docs.qorechain.io/sdk/guides/ai-preflight) guide
 
 ### Unified cross-VM calls (v0.5.0)
 
-`CrossVmClient` wraps `MsgCrossVMCall` so you can route a single call — or
-several atomically in **one** transaction — across the EVM, CosmWasm, and SVM
+`CrossVmClient` wraps `MsgCrossVMCall` so you can route a single call - or
+several atomically in **one** transaction - across the EVM, CosmWasm, and SVM
 VMs (`VM_TYPES`). The payload is raw bytes (`payload=`), a CosmWasm JSON message
 (`cosmwasm=` is `json.dumps`'d to UTF-8), or SVM bytes (`svm=`).
 
@@ -295,7 +295,7 @@ and returns its result; `decode_cross_vm_response` (or `…_responses`, one per
 call, in message order) reads the `MsgCrossVMCallResponse` out of the committed
 tx and gives you `message_id`, `executed`, `data` (the callee's return value) and
 `gas_used`. Pass `async_=True` to queue the call for a later `MsgProcessQueue`
-dispatch instead — a queued call comes back `executed=False` with no `data` yet.
+dispatch instead - a queued call comes back `executed=False` with no `data` yet.
 
 ```python
 included = wait_for_tx(client.rest, res["tx_response"]["txhash"])
@@ -360,8 +360,8 @@ Async status reads are available as `is_pqc_registered_async` /
 ### Hybrid sign-bytes v1 / v2 (v0.8.1 / chain v3.2.0, testnet v3.1.98)
 
 A hybrid transaction's ML-DSA-87 signature covers `B0` (the `TxBody` without the
-PQC extension) and `A` (the `AuthInfo` bytes). Chain release **v3.2.0** — which
-the testnet already took under the earlier name **v3.1.98** — changed the exact
+PQC extension) and `A` (the `AuthInfo` bytes). Chain release **v3.2.0** - which
+the testnet already took under the earlier name **v3.1.98** - changed the exact
 bytes that are signed:
 
 | Form | Signed bytes |
@@ -451,7 +451,7 @@ known-answer vectors byte-for-byte:
 
 ### Unified eth-native wallet (v0.6.0)
 
-One `eth_secp256k1` key = ONE 20-byte identity rendered three ways — `qor1…`
+One `eth_secp256k1` key = ONE 20-byte identity rendered three ways - `qor1…`
 (bech32), `0x…` (EIP-55), and SVM base58 (the 20 bytes right-padded with 12 zero
 bytes to 32). A deposit to any of the three lands in the **same** balance, and the
 key spends on **all** lanes. `derive_unified_account` uses the Ethereum HD path
@@ -471,9 +471,9 @@ from qorsdk import (
 )
 
 account = derive_unified_account(mnemonic)
-account.cosmos  # "qor1…"    — QoreChain Native lane
-account.evm     # "0x…"      — EIP-55 checksummed
-account.svm     # "<base58>" — 20 bytes + 12 zero pad
+account.cosmos  # "qor1…" - QoreChain Native lane
+account.evm     # "0x…" - EIP-55 checksummed
+account.svm     # "<base58>" - 20 bytes + 12 zero pad
 
 # Sign a QoreChain Native tx from the unified eth key (hybrid PQC path).
 built = sign_hybrid_eth(
@@ -496,12 +496,12 @@ fresh = unified_account_from_seed(secrets.token_bytes(32))
 `unified_account_from_seed` uses its seed verbatim as the spend key, so the seed
 must be a CSPRNG draw or key material the user already keeps secret. Never derive
 it from a wallet signature or any other value a third party can ask the wallet
-(or the user) to produce — such a value is a bearer secret handed out on request.
+(or the user) to produce - such a value is a bearer secret handed out on request.
 Deriving an account from a wallet signature was removed in **v0.8.0**
 (`unified_account_from_phantom_signature` now raises); to spend from an existing
 external key, register it with `MsgRegisterAuthenticator` and use the
 authenticator lanes (`MsgExecuteCosmos` / `MsgExecuteEVM`) below. Any account
-previously derived from a signature must be treated as exposed — move its funds.
+previously derived from a signature must be treated as exposed - move its funds.
 
 See the [unified-wallet](https://github.com/qorechain/qorechain-sdk/blob/main/docs/docs/guides/unified-wallet.md) guide.
 
@@ -561,8 +561,8 @@ to_checksum_address("0x5aaeb6053f3e94c9b9a09f33669435e7ef1beaed")
 
 ### Authenticator lanes (v0.7.0 / chain v3.1.85)
 
-A linked external key — a Phantom **ed25519** key, or a MetaMask **secp256k1**
-key bound **by address** — spends from the ONE canonical PQC account through a
+A linked external key - a Phantom **ed25519** key, or a MetaMask **secp256k1**
+key bound **by address** - spends from the ONE canonical PQC account through a
 **relayer** that submits the tx and pays the fee (its own hybrid-PQC signature
 satisfies the ante). The external key **never produces an ML-DSA co-signature**;
 its signature over the domain-separated, replay-bound sign-bytes **is** the
@@ -571,11 +571,11 @@ enforced on-chain.
 
 Three messages carry the lanes, each with a composer:
 
-- `MsgExecuteEVM` (`/qorechain.abstractaccount.v1.MsgExecuteEVM`) —
+- `MsgExecuteEVM` (`/qorechain.abstractaccount.v1.MsgExecuteEVM`) -
   `msg.abstractaccount.execute_evm`
-- `MsgExecuteCosmos` (`/qorechain.abstractaccount.v1.MsgExecuteCosmos`) —
+- `MsgExecuteCosmos` (`/qorechain.abstractaccount.v1.MsgExecuteCosmos`) -
   `msg.abstractaccount.execute_cosmos`
-- `MsgRotatePQCKey` (`/qorechain.pqc.v1.MsgRotatePQCKey`) —
+- `MsgRotatePQCKey` (`/qorechain.pqc.v1.MsgRotatePQCKey`) -
   `msg.pqc.rotate_pqc_key`
 
 The `execute_evm_msg` / `execute_cosmos_msg` / `rotate_pqc_key_msg` builders
@@ -600,7 +600,7 @@ keys sign).
 **Permission taxonomy & errors.** Fetch the on-chain permission schema with the
 gRPC query client's `permission_schema()` (REST equivalent
 `GET /qorechain/abstractaccount/v1/permission_schema`) and compare an action to
-it before submitting. `decode_tx_error` surfaces the lane failures — codespace
+it before submitting. `decode_tx_error` surfaces the lane failures - codespace
 `abstractaccount`: `5` SpendingLimitExceeded, `6` SessionKeyExpired, `10`
 PermissionDenied, `11` AuthenticatorReplay; codespace `pqc`: `21`
 HybridVerifyFailed.
@@ -666,13 +666,13 @@ from qorsdk import (
     MAX_EVM_WINDOW_BLOCKS, MAX_EVM_WINDOW_TXS,
 )
 
-# 1. Check what the account has. 200 with found:false when absent — safe to poll.
+# 1. Check what the account has. 200 with found:false when absent - safe to poll.
 rest = RestClient("https://api.qore.host")
 status = get_evm_window(rest, "qor1…")
 status.found, status.live          # bool
 status.remaining_blocks            # int
 status.remaining_txs               # int
-status.remaining_value             # int (uqor, exact — never a float)
+status.remaining_value             # int (uqor, exact - never a float)
 
 # 2. Open one. Every field is REQUIRED; the bounds mirror the chain's
 #    ValidateBasic and are checked locally, so a bad call raises before it
@@ -702,11 +702,11 @@ Opening replaces any existing window rather than adding to it.
 **The SDK never opens a window for you.** There is no implicit "open before
 send": a window authorises spending, so the step must be explicit and visible to
 the user. The SDK gives you the status query, the two composers, the local bounds
-check, and the classifier — the wallet decides.
+check, and the classifier - the wallet decides.
 
 #### Three traps
 
-1. **Ordering — open, then read the nonce, then sign.** QoreChain unifies the
+1. **Ordering - open, then read the nonce, then sign.** QoreChain unifies the
    identity, so the Cosmos sequence **is** the EVM nonce, and
    `MsgOpenEVMWindow` is a Cosmos transaction from the same account: opening a
    window **advances the nonce** (measured on the testnet: 2 before, 3 after). A
@@ -731,7 +731,7 @@ check, and the classifier — the wallet decides.
 
 Nothing to call in the SDK, but these change when an existing call is refused:
 
-- **`msg.rdk.submit_batch` — settle only as the rollup's sequencer.** From
+- **`msg.rdk.submit_batch` - settle only as the rollup's sequencer.** From
   v3.2.0 `MsgSubmitBatch` is accepted **only** from the rollup's
   `SequencerConfig.SequencerAddress`, falling back to `Creator` when no sequencer
   is set; anyone else gets `ErrUnauthorized`
@@ -744,7 +744,7 @@ Nothing to call in the SDK, but these change when an existing call is refused:
   the field being named `max_tx_per_minute` (~31 s on the testnet, ~93 s on
   mainnet). A network born on this binary starts at the genesis default **10**;
   the upgrade handler raises an upgraded chain to **600**, and no message can
-  change it on a running chain. **Read it** via `qorechain.ai.v1.Query/Config` —
+  change it on a running chain. **Read it** via `qorechain.ai.v1.Query/Config` -
   never assume either value. Batch senders (faucets, relayers, exchange hot
   wallets) that exceed it get `ai` `ErrTxRejected`.
 
@@ -817,7 +817,7 @@ package `__init__.py` files.
 ## Out of scope (use a dedicated library)
 
 Browser-wallet adapters (Keplr / MetaMask / Phantom) and viem / `@solana/web3.js`
--style EVM/SVM clients are intentionally **not** part of this SDK — they are
+-style EVM/SVM clients are intentionally **not** part of this SDK - they are
 JS/browser-specific. In Python, talk to the EVM with [web3.py](https://web3py.readthedocs.io)
 and to the SVM with [solana-py](https://michaelhly.github.io/solana-py/), pointing
 them at the network's `evm_rpc` / `svm_rpc` endpoints. This SDK covers the native

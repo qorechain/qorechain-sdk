@@ -5,15 +5,15 @@
  * strongly-typed clients so an app developer can build sidechains, paychains, and
  * rollups without reading chain source or hand-building protobuf `Any` payloads:
  *
- *  - {@link createMultilayerClient} — register sidechains/paychains, anchor state,
+ *  - {@link createMultilayerClient} - register sidechains/paychains, anchor state,
  *    route transactions, and read layers + routing stats.
- *  - {@link createRollupClient} — create rollups, submit batches, run the
+ *  - {@link createRollupClient} - create rollups, submit batches, run the
  *    challenge game, manage lifecycle, execute withdrawals, and read rollup/batch
  *    state (plus the `qor_*` conveniences).
- *  - {@link createCrossVMClient} — unified, atomic calls across the EVM, SVM, and
+ *  - {@link createCrossVMClient} - unified, atomic calls across the EVM, SVM, and
  *    CosmWasm VMs.
  *  - Quantum-safe DX ({@link ensurePqcRegistered} / {@link migrateToHybrid} /
- *    {@link isPqcRegistered}) — make a dApp PQC-protected in one call.
+ *    {@link isPqcRegistered}) - make a dApp PQC-protected in one call.
  */
 
 export {

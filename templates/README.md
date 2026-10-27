@@ -19,7 +19,7 @@ Each template is a complete, type-checking project with its own README.
 ## Workspace membership and `@qorechain/*` dependencies
 
 These templates are **deliberately excluded** from the pnpm workspace (the root
-`pnpm-workspace.yaml` globs `packages/*`, `cli`, and `examples/*` — not
+`pnpm-workspace.yaml` globs `packages/*`, `cli`, and `examples/*` - not
 `templates/*`). That keeps the published `@qorechain/sdk` / `@qorechain/evm`
 version ranges in their `package.json` files from breaking `pnpm install` at the
 repo root before those packages are published to npm.

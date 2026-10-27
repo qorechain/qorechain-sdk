@@ -7,7 +7,7 @@
  * throwing a typed {@link QoreTxError} if it landed with a non-zero code.
  *
  * {@link broadcastAndWait} chains a `sync` broadcast with {@link waitForTx}.
- * {@link withRetry} retries a function with exponential backoff — useful for
+ * {@link withRetry} retries a function with exponential backoff - useful for
  * wrapping flaky read RPC calls.
  */
 

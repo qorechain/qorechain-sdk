@@ -1,16 +1,16 @@
 /**
- * AI pre-flight risk scoring — a QoreChain-unique capability.
+ * AI pre-flight risk scoring - a QoreChain-unique capability.
  *
  * QoreChain ships an on-chain inference engine (QCAI) exposed to the EVM through
  * two read-only precompiles. Any dApp can score a transaction *before* it is
  * broadcast, using nothing but `eth_call`s, and combine that with a gas estimate
  * to make an informed, policy-driven decision off-chain.
  *
- *  - {@link aiRiskScore} — a model-derived risk score + bucketed level for raw
+ *  - {@link aiRiskScore} - a model-derived risk score + bucketed level for raw
  *    transaction calldata (precompile `0x..0B01`).
- *  - {@link aiAnomalyCheck} — an anomaly score + boolean flag for a
+ *  - {@link aiAnomalyCheck} - an anomaly score + boolean flag for a
  *    `(sender, amount)` pair (precompile `0x..0B02`).
- *  - {@link simulateWithRiskScore} — one call that bundles a gas estimate, a risk
+ *  - {@link simulateWithRiskScore} - one call that bundles a gas estimate, a risk
  *    score, and an anomaly check into a single advisory verdict.
  *
  * These bindings re-use the precompile address constants and ABIs in
@@ -54,7 +54,7 @@ export {
  * `3` or above is treated as unsafe here.
  *
  * This threshold is **advisory**. The precompiles do not block anything on their
- * own — an off-chain dApp should pick and enforce its own policy (and a contract
+ * own - an off-chain dApp should pick and enforce its own policy (and a contract
  * can enforce its own on-chain `require`). It is exported so callers can reference
  * the same default the SDK documents.
  */
@@ -160,18 +160,18 @@ export interface PreflightResult {
 
 /**
  * Run an AI pre-flight on a transaction: estimate gas, score its risk, and check
- * for anomalies — all read-only, before anything is signed or broadcast.
+ * for anomalies - all read-only, before anything is signed or broadcast.
  *
  * This is a first-in-industry capability: the risk model runs *on-chain* and is
  * reachable from any dApp via plain `eth_call`/`eth_estimateGas`. The returned
- * `safe` flag is **advisory** — off-chain dApps should set and enforce their own
+ * `safe` flag is **advisory** - off-chain dApps should set and enforce their own
  * policy (and contracts can `require` on the level on-chain).
  *
- *  - `gas` — `eth_estimateGas` for the transaction.
- *  - `risk` — {@link aiRiskScore} over `tx.data` (or, when absent, the deployed
+ *  - `gas` - `eth_estimateGas` for the transaction.
+ *  - `risk` - {@link aiRiskScore} over `tx.data` (or, when absent, the deployed
  *    bytecode at `tx.to`, so a plain transfer to a contract is still scored).
- *  - `anomaly` — {@link aiAnomalyCheck} over `(tx.from, tx.value ?? 0)`.
- *  - `safe` — `risk.level < {@link RISK_LEVEL_UNSAFE_THRESHOLD} && !anomaly.flagged`.
+ *  - `anomaly` - {@link aiAnomalyCheck} over `(tx.from, tx.value ?? 0)`.
+ *  - `safe` - `risk.level < {@link RISK_LEVEL_UNSAFE_THRESHOLD} && !anomaly.flagged`.
  *
  * @param client - A viem public client bound to a QoreChain EVM endpoint.
  * @param tx - The transaction to evaluate.

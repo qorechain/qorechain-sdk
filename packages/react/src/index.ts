@@ -1,5 +1,5 @@
 /**
- * `@qorechain/react` — React hooks and components for quantum-safe QoreChain
+ * `@qorechain/react` - React hooks and components for quantum-safe QoreChain
  * dApps.
  *
  * Wrap your app in {@link QoreChainProvider} once, then use the hooks

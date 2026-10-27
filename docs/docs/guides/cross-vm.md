@@ -9,8 +9,8 @@ sidebar_position: 4
 QoreChain runs **EVM, SVM, and CosmWasm side by side**, and the `x/crossvm`
 module lets a single native account invoke a contract on any of them. The SDK
 provides a high-level `createCrossVMClient` helper to build, sign, and broadcast
-these calls — including packing several into **one atomic transaction across all
-three VMs** — plus typed read helpers to track message state. EVM→native routing
+these calls - including packing several into **one atomic transaction across all
+three VMs** - plus typed read helpers to track message state. EVM→native routing
 initiated *from inside the EVM* still runs on-chain via the **cross-VM bridge
 precompile** in `@qorechain/evm`.
 
@@ -28,7 +28,7 @@ const client = createClient({ network: "testnet", endpoints: { rpc, rest } });
 const tx = await client.connectTx(signer);
 const xvm = createCrossVMClient(tx);
 
-// Call an EVM contract from a native account — the payload is ABI-encoded.
+// Call an EVM contract from a native account - the payload is ABI-encoded.
 const { messageId, result } = await xvm.call({
   sourceVm: "cosmwasm",
   targetVm: "evm",
@@ -56,7 +56,7 @@ when you actually use an `{ evm: ... }` payload.
 
 ### Build-only (offline)
 
-`buildCall` returns the `EncodeObject` without broadcasting — handy for
+`buildCall` returns the `EncodeObject` without broadcasting - handy for
 inspection, batching by hand, or signing elsewhere. (EVM payloads are
 ABI-encoded asynchronously, so for those use `call`/`callAtomic`, or pre-encode
 and pass `{ payload }`.)
@@ -72,7 +72,7 @@ const msg = xvm.buildCall({
 ## Atomic triple-VM transactions
 
 `callAtomic` packs multiple `MsgCrossVMCall` messages into **one transaction
-body** so they execute atomically under a single signature — the triple-VM
+body** so they execute atomically under a single signature - the triple-VM
 headline. One signature, calls across EVM + SVM + CosmWasm that all land together
 or not at all:
 

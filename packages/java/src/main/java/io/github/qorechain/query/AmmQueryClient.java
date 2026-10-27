@@ -22,14 +22,14 @@ public final class AmmQueryClient {
         this(new AbciQueryClient(url));
     }
 
-    /** {@code Params} — the module parameters. */
+    /** {@code Params} - the module parameters. */
     public QueryOuterClass.QueryParamsResponse params() {
         ByteString req = QueryOuterClass.QueryParamsRequest.newBuilder().build().toByteString();
         return decode(
                 abci.request(SERVICE, "Params", req), QueryOuterClass.QueryParamsResponse.parser());
     }
 
-    /** {@code Pool} — a single pool by id. */
+    /** {@code Pool} - a single pool by id. */
     public QueryOuterClass.QueryPoolResponse pool(long poolId) {
         ByteString req =
                 QueryOuterClass.QueryPoolRequest.newBuilder().setPoolId(poolId).build().toByteString();
@@ -37,14 +37,14 @@ public final class AmmQueryClient {
                 abci.request(SERVICE, "Pool", req), QueryOuterClass.QueryPoolResponse.parser());
     }
 
-    /** {@code Pools} — all pools. */
+    /** {@code Pools} - all pools. */
     public QueryOuterClass.QueryPoolsResponse pools() {
         ByteString req = QueryOuterClass.QueryPoolsRequest.newBuilder().build().toByteString();
         return decode(
                 abci.request(SERVICE, "Pools", req), QueryOuterClass.QueryPoolsResponse.parser());
     }
 
-    /** {@code PoolByDenoms} — the pool for a token pair. */
+    /** {@code PoolByDenoms} - the pool for a token pair. */
     public QueryOuterClass.QueryPoolByDenomsResponse poolByDenoms(String denomA, String denomB) {
         ByteString req =
                 QueryOuterClass.QueryPoolByDenomsRequest.newBuilder()
@@ -57,7 +57,7 @@ public final class AmmQueryClient {
                 QueryOuterClass.QueryPoolByDenomsResponse.parser());
     }
 
-    /** {@code LPBalance} — an address's LP-share balance in a pool. */
+    /** {@code LPBalance} - an address's LP-share balance in a pool. */
     public QueryOuterClass.QueryLPBalanceResponse lpBalance(long poolId, String address) {
         ByteString req =
                 QueryOuterClass.QueryLPBalanceRequest.newBuilder()
@@ -70,7 +70,7 @@ public final class AmmQueryClient {
                 QueryOuterClass.QueryLPBalanceResponse.parser());
     }
 
-    /** {@code QuoteExactIn} — quote the output for an exact input amount. */
+    /** {@code QuoteExactIn} - quote the output for an exact input amount. */
     public QueryOuterClass.QueryQuoteExactInResponse quoteExactIn(
             long poolId, String denomIn, String amountIn) {
         ByteString req =
@@ -85,7 +85,7 @@ public final class AmmQueryClient {
                 QueryOuterClass.QueryQuoteExactInResponse.parser());
     }
 
-    /** {@code QuoteExactOut} — quote the input required for an exact output amount. */
+    /** {@code QuoteExactOut} - quote the input required for an exact output amount. */
     public QueryOuterClass.QueryQuoteExactOutResponse quoteExactOut(
             long poolId, String denomOut, String amountOut) {
         ByteString req =

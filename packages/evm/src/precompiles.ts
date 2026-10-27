@@ -1,5 +1,5 @@
 /**
- * Typed bindings for QoreChain's EVM precompiles — the headline capability of
+ * Typed bindings for QoreChain's EVM precompiles - the headline capability of
  * the QoreChain EVM Engine. Each helper issues an `eth_call` against the fixed
  * precompile address using the corresponding bundled interface ABI.
  *

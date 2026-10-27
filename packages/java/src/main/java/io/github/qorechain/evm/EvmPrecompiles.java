@@ -8,7 +8,7 @@ import java.math.BigInteger;
 import java.util.Arrays;
 
 /**
- * Typed bindings for QoreChain's AI EVM precompiles — an on-chain "pre-flight"
+ * Typed bindings for QoreChain's AI EVM precompiles - an on-chain "pre-flight"
  * surface usable from any EVM/JSON-RPC client via {@code eth_call}.
  *
  * <p>Each helper hand-encodes the call data (4-byte selector +

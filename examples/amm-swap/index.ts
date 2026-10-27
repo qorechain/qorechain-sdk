@@ -1,5 +1,5 @@
 /**
- * amm-swap — build and broadcast an AMM SwapExactIn via the message composer.
+ * amm-swap - build and broadcast an AMM SwapExactIn via the message composer.
  *
  * Shows:
  *  - msg.amm.swapExactIn({...}) → a typed `{ typeUrl, value }` EncodeObject
@@ -8,7 +8,7 @@
  *
  * The message is built and logged offline regardless of connectivity. Actually
  * broadcasting needs a reachable node and a FUNDED account that holds `tokenIn`,
- * plus a real pool id — otherwise it fails at broadcast (reported cleanly).
+ * plus a real pool id - otherwise it fails at broadcast (reported cleanly).
  */
 
 import {
@@ -41,7 +41,7 @@ async function main(): Promise<void> {
   const account = await deriveNativeAccount(mnemonic);
   console.log(`sender: ${account.address}`);
 
-  // Build the swap message from the composer — no network needed for this.
+  // Build the swap message from the composer - no network needed for this.
   const swap = amm.swapExactIn({
     sender: account.address,
     poolId,
@@ -52,14 +52,14 @@ async function main(): Promise<void> {
   console.log("message:", JSON.stringify(swap, null, 2));
 
   if (process.env.QORE_BROADCAST !== "1") {
-    console.log("\nDry run — set QORE_BROADCAST=1 (with a funded account + real pool) to send.");
+    console.log("\nDry run - set QORE_BROADCAST=1 (with a funded account + real pool) to send.");
     return;
   }
 
   const signer = await directSignerFromPrivateKey(account.privateKey, prefix);
   const tx = await client.connectTx(signer);
   const result = await tx.signAndBroadcast([swap], "auto");
-  console.log(`broadcast ok — tx hash ${result.transactionHash} at height ${result.height ?? "?"}`);
+  console.log(`broadcast ok - tx hash ${result.transactionHash} at height ${result.height ?? "?"}`);
   tx.disconnect();
 }
 

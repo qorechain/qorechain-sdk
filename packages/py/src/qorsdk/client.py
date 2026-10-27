@@ -85,7 +85,7 @@ def _require_endpoint(network: NetworkConfig, key: str) -> str:
     value: str | None = getattr(network.endpoints, key, None) if network.endpoints else None
     if not value:
         raise ValueError(
-            f'endpoint "{key}" is not configured — pass it via '
+            f'endpoint "{key}" is not configured - pass it via '
             f"create_client(endpoints={{'{key}': '...'}})"
         )
     return value

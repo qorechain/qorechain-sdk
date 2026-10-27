@@ -1,5 +1,5 @@
 /**
- * cross-vm-call — invoke contracts across EVM, SVM, and CosmWasm from ONE native
+ * cross-vm-call - invoke contracts across EVM, SVM, and CosmWasm from ONE native
  * account via the high-level `createCrossVMClient` helper.
  *
  * QoreChain runs three VMs side by side and lets a single signature drive calls
@@ -77,13 +77,13 @@ async function main(): Promise<void> {
 
   if (process.env.QORE_BROADCAST !== "1") {
     console.log(
-      "\nDry run — set QORE_BROADCAST=1 (with a funded account) to call across VMs.",
+      "\nDry run - set QORE_BROADCAST=1 (with a funded account) to call across VMs.",
     );
     tx.disconnect();
     return;
   }
 
-  // Single EVM call from a native account — payload ABI-encoded via viem.
+  // Single EVM call from a native account - payload ABI-encoded via viem.
   console.log("\nCalling an EVM contract from a native account...");
   const single = await xvm.call({
     sourceVm: "cosmwasm",
@@ -91,7 +91,7 @@ async function main(): Promise<void> {
     targetContract: evmContract,
     evm: { abi: ERC20_ABI, functionName: "transfer", args: [recipient, 1n] },
   });
-  console.log(`  ok — tx ${single.result.transactionHash}, message ${single.messageId}`);
+  console.log(`  ok - tx ${single.result.transactionHash}, message ${single.messageId}`);
 
   // Atomic batch hitting two VMs in ONE tx body / one signature.
   console.log("Submitting an atomic batch across EVM + SVM...");
@@ -108,7 +108,7 @@ async function main(): Promise<void> {
     },
   ]);
   console.log(
-    `  ok — tx ${atomic.result.transactionHash}, messages ${atomic.messageIds.join(", ")}`,
+    `  ok - tx ${atomic.result.transactionHash}, messages ${atomic.messageIds.join(", ")}`,
   );
 
   // Read a message back via the typed query client.

@@ -1,5 +1,5 @@
 /**
- * High-level Multilayer client — ergonomic sidechain / paychain operations.
+ * High-level Multilayer client - ergonomic sidechain / paychain operations.
  *
  * The multilayer module lets an app register additional execution layers
  * (sidechains and paychains), periodically anchor their state roots back to the
@@ -9,17 +9,17 @@
  * or remember a service/method name.
  *
  * Lifecycle, end to end:
- *  1. `registerSidechain` / `registerPaychain` — declare a new layer.
- *  2. `anchorState` — commit a layer's state root to the main chain (the relayer
+ *  1. `registerSidechain` / `registerPaychain` - declare a new layer.
+ *  2. `anchorState` - commit a layer's state root to the main chain (the relayer
  *     does this on each settlement interval).
- *  3. `routeTransaction` — submit a payload and let the chain pick the best layer.
- *  4. `getLayer` / `listLayers` / `routingStats` — read layer state and metrics.
+ *  3. `routeTransaction` - submit a payload and let the chain pick the best layer.
+ *  4. `getLayer` / `listLayers` / `routingStats` - read layer state and metrics.
  *
  * Construct one with {@link createMultilayerClient}, passing a connected
  * {@link TxClient} (for writes) and, optionally, a {@link MultilayerQueryClient}
  * (for the typed reads).
  *
- * Note on running a layer: this SDK is the *app-developer* surface — it submits
+ * Note on running a layer: this SDK is the *app-developer* surface - it submits
  * and reads multilayer transactions. Operating the off-chain layer node itself
  * (block production, the relayer that calls `anchorState`) is a separate concern.
  */
@@ -167,7 +167,7 @@ function requireQuery(
 ): MultilayerQueryClient {
   if (!q) {
     throw new Error(
-      "multilayer reads require a query client — pass { query } to createMultilayerClient (e.g. from connectQueryClients)",
+      "multilayer reads require a query client - pass { query } to createMultilayerClient (e.g. from connectQueryClients)",
     );
   }
   return q;

@@ -184,7 +184,7 @@ class CrossVMClientTest {
 
     /**
      * A queued call has not run: the response carries the id but {@code executed=false},
-     * no data and no gas — the caller must not read an answer that does not exist yet.
+     * no data and no gas - the caller must not read an answer that does not exist yet.
      */
     @Test
     void decodeCallResponsesReadsTxMsgDataAndSkipsOtherResponses() {
@@ -202,7 +202,7 @@ class CrossVMClientTest {
                         .build()
                         .toByteArray();
 
-        // TxMsgData { repeated Any msg_responses = 2 } — built by hand, since the SDK
+        // TxMsgData { repeated Any msg_responses = 2 } - built by hand, since the SDK
         // does not vendor cosmos.base.abci.
         byte[] txMsgData =
                 txMsgData(

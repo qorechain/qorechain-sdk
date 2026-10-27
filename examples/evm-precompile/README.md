@@ -2,7 +2,7 @@
 
 Use `@qorechain/evm` (a thin, type-safe layer over [viem](https://viem.sh)) to:
 
-- create an EVM client (`createEvmClient`) — the numeric EVM chain id is
+- create an EVM client (`createEvmClient`) - the numeric EVM chain id is
   auto-detected via `eth_chainId`
 - call read-only precompiles: `precompiles.rlConsensusParams` (live consensus
   parameters) and `precompiles.pqcKeyStatus` (PQC key registration status)

@@ -9,7 +9,7 @@
  * license/abstractaccount/crossvm/rlconsensus/stakingtier).
  *
  * Every composer returns a cosmjs `{ typeUrl, value }` `EncodeObject` that
- * {@link qorechainRegistry} can encode — pass an array of them straight to
+ * {@link qorechainRegistry} can encode - pass an array of them straight to
  * `TxClient.signAndBroadcast` or the hybrid PQC tx path.
  */
 

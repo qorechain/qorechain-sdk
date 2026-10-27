@@ -196,7 +196,7 @@ describe("classifyEvmWindowRejection", () => {
   });
 
   // A different state with a different remedy: register a key first. The chain
-  // raises BOTH under ErrNoEVMWindow — code 26, verified in the ante handler —
+  // raises BOTH under ErrNoEVMWindow - code 26, verified in the ante handler -
   // so the code cannot separate them and the text must win.
   it("separates a missing PQC key from a missing window, under the chain's real code 26", () => {
     const noKey =

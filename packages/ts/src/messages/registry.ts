@@ -5,8 +5,8 @@
  * standard Native message types ({@link defaultRegistryTypes}: bank,
  * staking, distribution, gov, authz, feegrant, IBC transfer, …) plus every
  * QoreChain custom module message, keyed by its on-chain `typeUrl`. This is the
- * registry {@link TxClient} uses by default, so `signAndBroadcast` — and the
- * hybrid PQC tx path — can carry any supported message without extra setup.
+ * registry {@link TxClient} uses by default, so `signAndBroadcast` - and the
+ * hybrid PQC tx path - can carry any supported message without extra setup.
  *
  * The generated message types are cosmjs-compatible: each exposes
  * `encode`/`decode`/`fromPartial`, which is all {@link Registry} requires.

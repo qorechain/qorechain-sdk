@@ -15,7 +15,7 @@ import org.bouncycastle.pqc.crypto.mldsa.MLDSASigner;
  * FIPS 204), delegated entirely to BouncyCastle's {@code mldsa} primitives.
  *
  * <p>Provides keygen / sign / verify and the on-chain hybrid-signature extension
- * builder. It does NOT assemble or broadcast transactions — the tx builder
+ * builder. It does NOT assemble or broadcast transactions - the tx builder
  * attaches the extension this module describes.
  */
 public final class Pqc {
@@ -125,8 +125,8 @@ public final class Pqc {
      * {@link #ML_DSA_87_PUBLIC_KEY_LENGTH} bytes and the signature exactly
      * {@link #ML_DSA_87_SIGNATURE_LENGTH} bytes; anything else is rejected here,
      * before the library sees it. ML-DSA implementations disagree about trailing
-     * garbage — some accept a signature with an extra byte appended, others reject
-     * it — and a signature the five official QoreChain bindings do not agree on is a
+     * garbage - some accept a signature with an extra byte appended, others reject
+     * it - and a signature the five official QoreChain bindings do not agree on is a
      * consensus hazard. The FIPS-204 encoding is fixed-length, so a length that is
      * not exactly right is not a valid signature, and every binding must say so.
      *
@@ -150,7 +150,7 @@ public final class Pqc {
 
     /**
      * Enforce the exact FIPS-204 ML-DSA-87 secret-key length before the library sees
-     * the bytes — the same strictness {@link #pqcVerify} applies to signatures and
+     * the bytes - the same strictness {@link #pqcVerify} applies to signatures and
      * public keys, so the five official bindings cannot disagree about what is a key.
      */
     private static void requireSecretKeyLength(byte[] secretKey) {

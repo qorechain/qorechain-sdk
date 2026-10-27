@@ -199,7 +199,7 @@ class MessagesTest {
 
     /**
      * {@code MsgUpdateParams} (chain v3.1.97) is the governance message that can turn
-     * the SVM lane on or off without a binary release — composer, registry entry, and
+     * the SVM lane on or off without a binary release - composer, registry entry, and
      * {@code Any} round-trip must all carry {@code params.enabled} intact.
      */
     @Test

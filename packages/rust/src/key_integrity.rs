@@ -93,7 +93,7 @@ pub fn proof_of_possession_sign_bytes(
 }
 
 /// Signs the proof of possession with the key being registered (deterministic
-/// ML-DSA-87). Set the result as `MsgRegisterPqcKeyV2::proof_of_possession` —
+/// ML-DSA-87). Set the result as `MsgRegisterPqcKeyV2::proof_of_possession` -
 /// only on a network that has applied v3.2.3.
 ///
 /// # Errors

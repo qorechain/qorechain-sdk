@@ -163,7 +163,7 @@ function requireEndpoint(
   const value = endpoints?.[key];
   if (!value) {
     throw new Error(
-      `endpoint "${key}" is not configured — pass it via createClient({ endpoints: { ${key}: "..." } })`,
+      `endpoint "${key}" is not configured - pass it via createClient({ endpoints: { ${key}: "..." } })`,
     );
   }
   return value;

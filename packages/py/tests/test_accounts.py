@@ -12,7 +12,7 @@ from qorsdk import (
 TEST_MNEMONIC = "test test test test test test test test test test test junk"
 
 # Known-answer vectors from the QoreChain TypeScript SDK. If any of these break,
-# the Python derivation has diverged from the TS surface — a cross-language bug.
+# the Python derivation has diverged from the TS surface - a cross-language bug.
 EVM_IDX0 = "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266"
 EVM_IDX1 = "0x70997970C51812dc3A010C7d01b50e0d17dc79C8"
 NATIVE_IDX0 = "qor15yk64u7zc9g9k2yr2wmzeva5qgwxps6yjecvvu"

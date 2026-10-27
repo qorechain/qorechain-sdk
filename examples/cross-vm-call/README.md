@@ -1,15 +1,15 @@
 # cross-vm-call
 
 Invoke contracts across **EVM, SVM, and CosmWasm from one native account** with a
-single signature — QoreChain's triple-VM headline. Uses the high-level
+single signature - QoreChain's triple-VM headline. Uses the high-level
 `createCrossVMClient` helper from `@qorechain/sdk` to:
 
-- `buildCall({ ... })` — build a single `MsgCrossVMCall` offline (per-VM payload)
-- `call({ evm: { abi, functionName, args } })` — call an EVM contract from a
+- `buildCall({ ... })` - build a single `MsgCrossVMCall` offline (per-VM payload)
+- `call({ evm: { abi, functionName, args } })` - call an EVM contract from a
   native account, payload ABI-encoded with viem
-- `callAtomic([...])` — pack multiple calls into ONE transaction body so they
+- `callAtomic([...])` - pack multiple calls into ONE transaction body so they
   execute atomically under one signature
-- `getMessage(id)` — read message state via the typed query client (or the
+- `getMessage(id)` - read message state via the typed query client (or the
   `qor_getCrossVMMessage` fallback)
 
 Per-VM payload shapes (pick one per call): `{ payload }` (raw bytes/hex),

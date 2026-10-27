@@ -5,7 +5,7 @@
 //! native lane but not the EVM lane" again. The 20 bytes are the Ethereum
 //! derivation `keccak256(uncompressed_pubkey[1..])[12..]`, so the key is natively
 //! spendable on the EVM lane; the native (`qor1…`) and SVM (base58) forms are
-//! just other encodings of those same 20 bytes — the chain reads one balance for
+//! just other encodings of those same 20 bytes - the chain reads one balance for
 //! the account, visible under all three.
 //!
 //! The account also carries a deterministic ML-DSA-87 (Dilithium-5) PQC keypair
@@ -107,7 +107,7 @@ fn to_eip55(addr20: &[u8; 20]) -> String {
 ///
 /// - `cosmos` = bech32(`qor`, addr20)
 /// - `evm`    = EIP-55(addr20)
-/// - `svm`    = base58(addr20 ‖ 12 zero bytes) — the unified 32-byte SVM address
+/// - `svm`    = base58(addr20 ‖ 12 zero bytes) - the unified 32-byte SVM address
 pub fn addresses_from_20(addr20: [u8; 20]) -> Result<UnifiedAddresses> {
     let cosmos = bytes_to_bech32(&addr20, HRP)?;
     let evm = to_eip55(&addr20);
@@ -225,7 +225,7 @@ pub fn derive_unified_account(mnemonic: &str, index: u32) -> Result<UnifiedAccou
 ///
 /// # Safety of the seed
 ///
-/// `seed32` **is** the account's spend key — everything else here is a rendering
+/// `seed32` **is** the account's spend key - everything else here is a rendering
 /// of it. It MUST be real secret entropy: a CSPRNG draw, or a value derived from
 /// one (a BIP-39 mnemonic via [`derive_unified_account`], an HSM, a KDF over a
 /// secret the user alone holds).
@@ -233,8 +233,8 @@ pub fn derive_unified_account(mnemonic: &str, index: u32) -> Result<UnifiedAccou
 /// It must NEVER be a wallet signature, or a hash of one, or any other value a
 /// third party can ask a wallet, a service, or the user's browser to produce. A
 /// wallet signature is a bearer secret: it is deterministic for a given message,
-/// and any page that gets the wallet to sign that message receives the same bytes
-/// — so whoever obtains them would hold this account's spend key. Link external
+/// and any page that gets the wallet to sign that message receives the same bytes -
+/// so whoever obtains them would hold this account's spend key. Link external
 /// wallet keys through the authenticator lanes (`MsgRegisterAuthenticator` +
 /// `MsgExecuteCosmos` / `MsgExecuteEVM`) instead, where an external signature
 /// authorizes a spend but never becomes key material.
@@ -262,7 +262,7 @@ mod tests {
         assert_eq!(acct.svm, "HQ1S8pxTw4YN41GPdWYPQVfweQveXAUtfFnZNmvPfrYf");
         assert_eq!(acct.pqc.public_key.len(), 2592);
         assert_eq!(acct.pqc.secret_key.len(), 4896);
-        // PQC public-key determinism (first 8 bytes) — locked against the 0.1.5
+        // PQC public-key determinism (first 8 bytes) - locked against the 0.1.5
         // reference adapter to pin exact ML-DSA-87 keygen across languages.
         assert_eq!(hex::encode(&acct.pqc.public_key[..8]), "4a685622f2a99d54");
     }
@@ -275,7 +275,7 @@ mod tests {
         assert_eq!(acct.svm, "2n2Cnc7fib6rm4Azo1mbvMuHB3iCb1J254kEQDcrHyPu");
         assert_eq!(acct.pqc.public_key.len(), 2592);
         assert_eq!(acct.pqc.secret_key.len(), 4896);
-        // PQC public-key determinism (first 8 bytes) — locked against the 0.1.5
+        // PQC public-key determinism (first 8 bytes) - locked against the 0.1.5
         // reference adapter (uses the "seed:"-prefixed hex privkey in the PQC seed).
         assert_eq!(hex::encode(&acct.pqc.public_key[..8]), "2d7f888fecbe5b24");
     }

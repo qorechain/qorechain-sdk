@@ -1,6 +1,6 @@
 ---
 id: cli
-title: CLI — create-qorechain-dapp
+title: CLI - create-qorechain-dapp
 sidebar_position: 2
 ---
 

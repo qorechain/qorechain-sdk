@@ -60,7 +60,7 @@ public final class Address {
 
     /**
      * Decode a {@code qor1...} account address to the {@code 0x}-hex of its 20-byte
-     * payload — the same bytes the matching EVM address carries.
+     * payload - the same bytes the matching EVM address carries.
      */
     public static String qorToEvm(String addr) {
         return bech32ToHex(addr);

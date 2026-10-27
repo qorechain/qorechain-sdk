@@ -26,7 +26,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * scheme: an account registers an ML-DSA-87 (Dilithium-5) key on-chain
  * ({@code MsgRegisterPQCKeyV2}), after which its transactions can carry a hybrid
  * (classical secp256k1 + ML-DSA-87) signature that the ante handler verifies in
- * full. The low-level primitives already exist — {@link Pqc#generatePqcKeypair()},
+ * full. The low-level primitives already exist - {@link Pqc#generatePqcKeypair()},
  * {@link HybridTx#buildHybridTx}, the {@code QorechainMessages.pqc.registerPqcKey}
  * composer, and the {@code qor_getPQCKeyStatus} read. This class wraps them into a
  * tiny, idempotent surface so a dApp becomes <b>quantum-safe by default</b>: one
@@ -34,15 +34,15 @@ import java.util.concurrent.ConcurrentHashMap;
  *
  * <p>The headline calls:
  * <ul>
- *   <li>{@link #isPqcRegistered} / {@link #getPqcStatus} — read whether an address
+ *   <li>{@link #isPqcRegistered} / {@link #getPqcStatus} - read whether an address
  *       has a registered PQC key (via {@code qor_getPQCKeyStatus}).
- *   <li>{@link #ensurePqcRegistered} — register the signer's Dilithium key if (and
+ *   <li>{@link #ensurePqcRegistered} - register the signer's Dilithium key if (and
  *       only if) it is not already registered. Idempotent: safe to call on every
  *       app start. Throws {@link PqcKeyMismatchException} when the account holds a
  *       different key.
- *   <li>{@link #migrateToHybrid} — ensure registration, then hand back a hybrid
+ *   <li>{@link #migrateToHybrid} - ensure registration, then hand back a hybrid
  *       send path wired to {@link HybridTx#buildHybridTx} and the broadcaster.
- *   <li>{@link #migratePqcKey} — rotate an account's PQC key ({@code MsgMigratePQCKey}).
+ *   <li>{@link #migratePqcKey} - rotate an account's PQC key ({@code MsgMigratePQCKey}).
  * </ul>
  *
  * <p>Reads take a {@link QorClient} directly; writes take a {@link Signer},
@@ -246,8 +246,8 @@ public final class PqcDx {
      * publicly).
      *
      * <p>The chain answers {@code {"found": false}} for an account without a key.
-     * Anything that is not a readable {@code found} — an HTTP error, a missing
-     * field, a transport failure — is UNKNOWN: retried once, then thrown. It is
+     * Anything that is not a readable {@code found} - an HTTP error, a missing
+     * field, a transport failure - is UNKNOWN: retried once, then thrown. It is
      * never read as "not registered". A positive answer (with the registered key)
      * is cached per (restUrl, address).
      *
@@ -390,8 +390,8 @@ public final class PqcDx {
      * Build the {@code MsgRegisterPQCKeyV2} {@link TypedMessage} for a signer (no
      * broadcasting). Useful for packing registration into a larger transaction body.
      *
-     * <p>Uses {@code /qorechain.pqc.v1.MsgRegisterPQCKeyV2} — the chain's current
-     * (classical-exempt bootstrap) registration path — with an explicit
+     * <p>Uses {@code /qorechain.pqc.v1.MsgRegisterPQCKeyV2} - the chain's current
+     * (classical-exempt bootstrap) registration path - with an explicit
      * {@code algorithm_id} (ML-DSA-87 / Dilithium-5).
      */
     public static TypedMessage buildRegisterPqcKeyMsg(Signer signer, EnsureOptions opts) {
@@ -420,7 +420,7 @@ public final class PqcDx {
     }
 
     /**
-     * Register the signer's PQC key if it is not already registered — idempotent.
+     * Register the signer's PQC key if it is not already registered - idempotent.
      *
      * <p>It reads the account's status first ({@code signer.restUrl}, {@code qor} or
      * a pre-read {@code opts.status}). When the account already has a key, this
@@ -730,7 +730,7 @@ public final class PqcDx {
          * Build, sign, and broadcast a hybrid tx for {@code messages} (SYNC mode).
          *
          * <p>With {@link SignBytes.Mode#AUTO}, if the network refuses the tx because
-         * the hybrid PQC signature does not verify ({@code pqc} code 21 — the network
+         * the hybrid PQC signature does not verify ({@code pqc} code 21 - the network
          * may have upgraded since the version was cached), the version is re-resolved
          * with a forced refresh, the tx is rebuilt and re-signed ONCE, and broadcast
          * ONCE more; any error from that second attempt is surfaced. An explicit
@@ -757,7 +757,7 @@ public final class PqcDx {
     /**
      * Make an account quantum-safe and hand back a hybrid send path.
      *
-     * <p>Ensures the signer's PQC key is registered (idempotent — see
+     * <p>Ensures the signer's PQC key is registered (idempotent - see
      * {@link #ensurePqcRegistered}), then returns a {@link HybridSendPath} bound to
      * the signer's keypair and broadcaster. After this call, the dApp's
      * transactions can carry a verified hybrid signature via

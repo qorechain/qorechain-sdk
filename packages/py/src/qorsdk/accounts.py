@@ -1,12 +1,12 @@
 """Mnemonic generation/validation and hierarchical-deterministic (HD) derivation
 of QoreChain accounts in all three supported schemes:
 
-1. native — Native secp256k1, BIP-44 path ``m/44'/118'/0'/0/{index}``,
+1. native - Native secp256k1, BIP-44 path ``m/44'/118'/0'/0/{index}``,
    address = bech32(``qor``, ripemd160(sha256(compressed_pubkey))).
-2. evm    — secp256k1, BIP-44 path ``m/44'/60'/0'/0/{index}``,
+2. evm - secp256k1, BIP-44 path ``m/44'/60'/0'/0/{index}``,
    address = ``0x`` + last 20 bytes of keccak256(uncompressed_pubkey[1:]),
    rendered with an EIP-55 mixed-case checksum.
-3. svm    — ed25519, SLIP-0010 path ``m/44'/501'/{index}'/0'`` (all hardened,
+3. svm - ed25519, SLIP-0010 path ``m/44'/501'/{index}'/0'`` (all hardened,
    the Solana standard), address = base58(32-byte ed25519 public key).
 
 Derivation uses the audited ``bip-utils`` library (BIP-39 mnemonic + seed,
@@ -151,7 +151,7 @@ def derive_evm_account(mnemonic: str, account_index: int = 0) -> Secp256k1Accoun
 def derive_svm_account(mnemonic: str, account_index: int = 0) -> Ed25519Account:
     """Derive an SVM (Solana-style ed25519) account from a mnemonic.
 
-    Path: ``m/44'/501'/{account_index}'/0'`` — the conventional Solana
+    Path: ``m/44'/501'/{account_index}'/0'`` - the conventional Solana
     derivation, all segments hardened (SLIP-0010 for ed25519 supports hardened
     keys only). The address is the base58 encoding of the 32-byte public key.
     The returned ``secret_key`` is the 64-byte Solana form

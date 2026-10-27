@@ -2,7 +2,7 @@
  * Conversion between human display amounts (e.g. `"1.5"` QOR) and integer base
  * amounts (e.g. `"1500000"` uqor).
  *
- * All value math is performed with {@link BigInt} on decimal strings — there is
+ * All value math is performed with {@link BigInt} on decimal strings - there is
  * no floating-point arithmetic anywhere in this module, so conversions are exact
  * for any magnitude and never drift (e.g. `toBase("0.1")` is exactly
  * `"100000"`).

@@ -143,7 +143,7 @@ async fn rest_paths_are_correct() {
 async fn rest_http_error_is_surfaced() {
     let server = MockServer::start(r#"{"ok":true}"#).await;
     // Point at a path the server still answers 200 for; instead test a 404-style
-    // by using a generic get against a server that returns a non-JSON 200 — here
+    // by using a generic get against a server that returns a non-JSON 200 - here
     // we validate JSON parse error path instead.
     let rest = RestClient::new(server.base_url.clone());
     let v = rest.get("/anything", &[]).await.unwrap();

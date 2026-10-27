@@ -5,16 +5,16 @@
  * broadcast native (QoreChain Native) transactions, with a `bankSend` convenience for
  * the common transfer case. It is constructed in two ways:
  *
- *  - {@link TxClient.connect} — the production path: connect to the network's
+ *  - {@link TxClient.connect} - the production path: connect to the network's
  *    consensus RPC with an offline signer (see {@link directSignerFromPrivateKey})
  *    and an optional custom message {@link Registry}.
- *  - `new TxClient({ signingClient, senderAddress })` — the testable path: inject
+ *  - `new TxClient({ signingClient, senderAddress })` - the testable path: inject
  *    any object satisfying {@link SigningClientLike}, so unit tests never touch
  *    the network.
  *
- * By default {@link TxClient.connect} uses {@link qorechainRegistry} — cosmjs's
+ * By default {@link TxClient.connect} uses {@link qorechainRegistry} - cosmjs's
  * standard bank/staking/gov/etc. types plus every QoreChain custom-module
- * message — so any message built via the `msg.*` composers can be carried
+ * message - so any message built via the `msg.*` composers can be carried
  * without extra setup. Callers may still register additional protobuf types
  * (e.g. from a private module) by passing `registryTypes`, or supply a fully
  * custom `registry` to override the default entirely.
@@ -85,7 +85,7 @@ export interface AutoFeeOptions {
  *
  * Seeds cosmjs's `createDefaultAminoConverters()` (standard Native modules:
  * bank, staking, gov, distribution, IBC, etc.) and merges any `extra`
- * converters on top — e.g. for QoreChain custom modules to support Ledger.
+ * converters on top - e.g. for QoreChain custom modules to support Ledger.
  *
  * QoreChain custom messages sign via DIRECT mode today (Keplr/Leap support it);
  * full Amino converters for those modules are a follow-up. Use the `extra`
@@ -193,7 +193,7 @@ export interface TxConnectOptions {
   rpcEndpoint: string;
   /**
    * An offline signer. Either a DIRECT signer (see
-   * {@link directSignerFromPrivateKey}) or an Amino signer — including the
+   * {@link directSignerFromPrivateKey}) or an Amino signer - including the
    * `OfflineSigner` returned by a browser wallet's `getOfflineSignerAuto`
    * (Keplr/Leap), which picks DIRECT or Amino automatically. Custom QoreChain
    * messages sign via DIRECT mode; Amino mode covers standard Native messages
@@ -217,7 +217,7 @@ export interface TxConnectOptions {
    * Amino converters for Amino-mode signing (Ledger and some hardware/mobile
    * wallets sign Amino). Defaults to cosmjs's `createDefaultAminoConverters()`,
    * which covers the standard Native modules (bank, staking, gov, distribution,
-   * etc.). When set, this replaces the defaults entirely — to add converters on
+   * etc.). When set, this replaces the defaults entirely - to add converters on
    * top of the defaults use {@link extraAminoConverters} instead.
    *
    * Full Amino converters for QoreChain's custom modules are a follow-up; for
@@ -523,7 +523,7 @@ export class TxClient {
   ): Promise<BroadcastResult> {
     const mode: BroadcastMode = opts.mode ?? "commit";
     // One private copy, taken before the first await, feeds BOTH the "auto"
-    // fee simulation and the signing — so the caller mutating its message
+    // fee simulation and the signing - so the caller mutating its message
     // objects (or fee) mid-call cannot make the signed tx differ from the
     // simulated one, or from what it passed in.
     const msgs = cloneMessages(messages);

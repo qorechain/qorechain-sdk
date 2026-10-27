@@ -4,10 +4,10 @@
 //! call read-only (via `eth_call`) before submitting a transaction:
 //!
 //! - `aiRiskScore(bytes) returns (uint256 score, uint8 level)` at
-//!   [`AI_RISK_SCORE_PRECOMPILE`] — scores arbitrary calldata / tx bytes for
+//!   [`AI_RISK_SCORE_PRECOMPILE`] - scores arbitrary calldata / tx bytes for
 //!   risk; `level` is a coarse 0..=4 bucket (higher is riskier).
 //! - `aiAnomalyCheck(address,uint256) returns (uint256 anomalyScore, bool flagged)`
-//!   at [`AI_ANOMALY_CHECK_PRECOMPILE`] — scores a `(sender, amount)` pair for
+//!   at [`AI_ANOMALY_CHECK_PRECOMPILE`] - scores a `(sender, amount)` pair for
 //!   anomalous-transfer patterns; `flagged` is the engine's boolean verdict.
 //!
 //! These mirror the `aiRiskScore` / `aiAnomalyCheck` / `simulateWithRiskScore`
@@ -117,8 +117,8 @@ pub struct Preflight {
     pub risk: RiskScore,
     /// The anomaly-check result for `(from, value)`.
     pub anomaly: Anomaly,
-    /// Advisory safety hint: `risk.level < 3 && !anomaly.flagged`. Advisory only
-    /// — the chain makes the authoritative decision at submission time.
+    /// Advisory safety hint: `risk.level < 3 && !anomaly.flagged`. Advisory only -
+    /// the chain makes the authoritative decision at submission time.
     pub safe: bool,
 }
 
@@ -183,7 +183,7 @@ impl AiClient {
     /// scores the calldata risk, and checks the `(from, value)` anomaly. Returns
     /// an advisory [`Preflight`] with a `safe` hint.
     ///
-    /// `safe = risk.level < 3 && !anomaly.flagged`. This is advisory only — the
+    /// `safe = risk.level < 3 && !anomaly.flagged`. This is advisory only - the
     /// chain makes the authoritative decision when the tx is submitted.
     pub async fn simulate_with_risk_score(&self, tx: PreflightTx) -> Result<Preflight> {
         let gas = self.estimate_gas(&tx).await?;

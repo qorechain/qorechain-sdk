@@ -1,15 +1,15 @@
 /**
- * High-level Cross-VM client — unified calls across QoreChain's three VMs.
+ * High-level Cross-VM client - unified calls across QoreChain's three VMs.
  *
  * QoreChain runs EVM, SVM, and CosmWasm side by side and lets a single native
  * account invoke a contract on any of them through the `x/crossvm` module's
- * {@link MsgCrossVMCall}. This helper wraps that message — and the cross-VM query
- * client — so an app developer never hand-builds a `{ typeUrl, value }`, encodes a
+ * {@link MsgCrossVMCall}. This helper wraps that message - and the cross-VM query
+ * client - so an app developer never hand-builds a `{ typeUrl, value }`, encodes a
  * payload by hand, or remembers a service/method name.
  *
  * The headline capability is {@link CrossVMClient.callAtomic}: pack several
  * `MsgCrossVMCall` messages into ONE transaction body so they execute atomically
- * under a single signature — e.g. an EVM call, an SVM call, and a CosmWasm call
+ * under a single signature - e.g. an EVM call, an SVM call, and a CosmWasm call
  * that all land together or not at all.
  *
  * A call executes inside the transaction and returns the callee's answer: the
@@ -19,12 +19,12 @@
  * only the message id is meaningful.
  *
  * Per-VM payload encoding (pick exactly one shape per call):
- *  - `{ payload }` — raw bytes / hex, passed through unchanged.
- *  - `{ evm: { abi, functionName, args } }` — ABI-encoded with viem's
+ *  - `{ payload }` - raw bytes / hex, passed through unchanged.
+ *  - `{ evm: { abi, functionName, args } }` - ABI-encoded with viem's
  *    `encodeFunctionData` (selector + args). Requires the optional `viem` peer.
- *  - `{ cosmwasm: object }` — `JSON.stringify` then UTF-8 bytes (the CosmWasm
+ *  - `{ cosmwasm: object }` - `JSON.stringify` then UTF-8 bytes (the CosmWasm
  *    execute-msg convention).
- *  - `{ svm: { data } }` — raw bytes / hex (already an SVM instruction blob).
+ *  - `{ svm: { data } }` - raw bytes / hex (already an SVM instruction blob).
  *
  * Construct one with {@link createCrossVMClient}, passing a connected
  * {@link TxClient} (for writes) and, optionally, a {@link CrossVmQueryClient}
@@ -51,7 +51,7 @@ export const VM_TYPES = ["evm", "cosmwasm", "svm"] as const satisfies readonly V
 /** A hex string (`0x`-prefixed) as accepted for raw payloads. */
 export type Hex = `0x${string}`;
 
-/** Raw, pre-encoded payload — passed through to the chain unchanged. */
+/** Raw, pre-encoded payload - passed through to the chain unchanged. */
 export interface RawPayload {
   /** The opaque payload bytes (raw `Uint8Array` or `0x`-hex). */
   payload: Uint8Array | Hex;
@@ -108,7 +108,7 @@ export interface CrossVMCallBase {
    * IGNORED BY THE CHAIN (v3.1.97). The chain derives the origin lane from the
    * execution context rather than trusting the caller's self-description, so
    * setting this changes nothing about how the call is handled. The field is
-   * retained — and still sent, defaulting to `"evm"` — purely for wire
+   * retained - and still sent, defaulting to `"evm"` - purely for wire
    * compatibility, so older nodes and clients keep accepting the message.
    */
   sourceVm?: VMType;
@@ -125,7 +125,7 @@ export interface CrossVMCallBase {
    * Defaults to `false`, matching the chain's default: execute now and return
    * the callee's answer (see {@link CrossVMCallResult.data}). With `async: true`
    * the call is only enqueued, so the response carries `executed: false` and no
-   * `data` — use it when you do not need the result in this transaction.
+   * `data` - use it when you do not need the result in this transaction.
    */
   async?: boolean;
 }
@@ -140,8 +140,8 @@ export type CallOptions = CrossVMCallOptions & CrossVMWriteOptions;
  * The decoded `MsgCrossVMCallResponse` fields for one cross-VM call.
  *
  * Populated from the tx's per-message responses when the node returns them
- * (`commit` broadcasts). When they are absent — a `sync`/`async` broadcast, or
- * an older node — `executed` is `false`, `data` is empty and `gasUsed` is `0n`;
+ * (`commit` broadcasts). When they are absent - a `sync`/`async` broadcast, or
+ * an older node - `executed` is `false`, `data` is empty and `gasUsed` is `0n`;
  * read the result with {@link CrossVMClient.getMessage} instead.
  */
 export interface CrossVMCallOutcome {
@@ -276,7 +276,7 @@ function requireGetMessageSource(
 ): void {
   if (!query && !qor) {
     throw new Error(
-      "crossvm getMessage requires a query client or a qor client — pass { query } or { qor } to createCrossVMClient",
+      "crossvm getMessage requires a query client or a qor client - pass { query } or { qor } to createCrossVMClient",
     );
   }
 }

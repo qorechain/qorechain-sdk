@@ -158,8 +158,8 @@ fn pqc_sign_matches_shared_deterministic_vectors() {
 // --- length strictness (cross-language invariant) ----------------------------
 //
 // ML-DSA implementations disagree about trailing bytes: the Go binding over
-// CIRCL v1.6.1 accepts a 4628-byte signature — the 4627-byte signature with one
-// extra byte appended — as VALID, while Rust's fips204 rejects it. Strict is the
+// CIRCL v1.6.1 accepts a 4628-byte signature - the 4627-byte signature with one
+// extra byte appended - as VALID, while Rust's fips204 rejects it. Strict is the
 // correct side. These tests pin the strict behaviour as this SDK's own
 // guarantee, so the divergence cannot come back through a library change.
 
@@ -173,7 +173,7 @@ fn signature_with_one_extra_trailing_byte_is_rejected() {
     assert_eq!(sig.len(), MLDSA87_SIGNATURE_LEN);
     assert!(pqc_verify(&kp.public_key, msg, &sig));
 
-    // One extra trailing byte — the exact case Go/CIRCL accepts — must NOT.
+    // One extra trailing byte - the exact case Go/CIRCL accepts - must NOT.
     for extra in [0x00u8, 0x01, 0xff] {
         let mut padded = sig.clone();
         padded.push(extra);

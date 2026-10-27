@@ -118,7 +118,7 @@ const signer = await directSignerFromPrivateKey(account.privateKey, "qor");
 ### On-chain prerequisite
 
 Before a hybrid transaction will PQC-verify on-chain, the signer's PQC public
-key must be **registered** via the chain's `MsgRegisterPQCKeyV2` — *unless* you set
+key must be **registered** via the chain's `MsgRegisterPQCKeyV2` - *unless* you set
 `includePqcPublicKey: true`, which embeds the key in the extension so the chain
 can auto-register it on first use.
 
@@ -139,7 +139,7 @@ one form at any height: `qorechain-diana` switched to v2 at its `v3.1.98`
 upgrade, `qorechain-vladi` at its own, named `v3.2.0` (height 2,981,742; the SDK
 asks for both plan names), and chains born later are v2
 from genesis. The SDK picks the form per network (`signBytesVersion: "auto"`,
-with the network's REST endpoint) — see the Quantum-safe guide.
+with the network's REST endpoint) - see the Quantum-safe guide.
 
 ### Hybrid tx contract (high level)
 

@@ -6,7 +6,7 @@ import java.math.BigInteger;
  * Conversion between human display amounts (e.g. {@code "1.5"} QOR) and integer
  * base amounts (e.g. {@code "1500000"} uqor).
  *
- * <p>All value math is performed with {@link BigInteger} on decimal strings —
+ * <p>All value math is performed with {@link BigInteger} on decimal strings -
  * there is no floating-point arithmetic anywhere, so conversions are exact for
  * any magnitude. QoreChain's staking coin uses a default exponent of {@code 6}
  * (1 QOR = 10^6 uqor), but every function accepts a custom exponent.

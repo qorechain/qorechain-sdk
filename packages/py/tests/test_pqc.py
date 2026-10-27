@@ -56,7 +56,7 @@ def test_verify_fails_on_tampered_signature():
 # valid signature. They did not: a Go binding accepted a 4628-byte signature
 # (spec size 4627, one extra trailing byte) as VALID while Rust `fips204`
 # rejected it. A signature one binding accepts and another refuses is a
-# consensus hazard, so every binding — this SDK included — now checks the exact
+# consensus hazard, so every binding - this SDK included - now checks the exact
 # sizes itself instead of trusting the library underneath.
 
 

@@ -5,7 +5,7 @@
 //! scheme: an account registers an ML-DSA-87 (Dilithium-5) key on-chain
 //! (`MsgRegisterPQCKeyV2`), after which its transactions can carry a hybrid
 //! (classical secp256k1 + ML-DSA-87) signature that the ante handler verifies in
-//! full. The low-level primitives already exist — [`generate_pqc_keypair`](crate::pqc::generate_pqc_keypair),
+//! full. The low-level primitives already exist - [`generate_pqc_keypair`](crate::pqc::generate_pqc_keypair),
 //! [`build_hybrid_tx`](crate::tx::build_hybrid_tx), the `msg::pqc` composers, and
 //! the `qor_getPQCKeyStatus` read. This module wraps them into a tiny, idempotent
 //! surface so a dApp becomes **quantum-safe by default**: one call to be
@@ -16,14 +16,14 @@
 //! helper: construct a [`PqcDx`] with the signer's key material and account
 //! context (chain id, account number, sequence), then:
 //!
-//! - [`PqcDx::is_pqc_registered`] / [`PqcDx::get_pqc_status`] — read whether an
+//! - [`PqcDx::is_pqc_registered`] / [`PqcDx::get_pqc_status`] - read whether an
 //!   address has a registered PQC key (via `qor_getPQCKeyStatus`).
-//! - [`PqcDx::ensure_pqc_registered`] — register the signer's Dilithium key if
+//! - [`PqcDx::ensure_pqc_registered`] - register the signer's Dilithium key if
 //!   (and only if) it is not already registered. Idempotent: safe to call on
 //!   every app start.
-//! - [`PqcDx::migrate_to_hybrid`] — ensure registration, then expose a hybrid
+//! - [`PqcDx::migrate_to_hybrid`] - ensure registration, then expose a hybrid
 //!   send path (build a hybrid tx with the bound PQC keypair).
-//! - [`PqcDx::migrate_pqc_key`] — rotate an account's PQC key
+//! - [`PqcDx::migrate_pqc_key`] - rotate an account's PQC key
 //!   (`MsgMigratePQCKey`).
 //!
 //! ## Sign-bytes version
@@ -118,10 +118,10 @@ pub struct PqcDx {
     /// The signer's 33-byte compressed secp256k1 public key (registered on-chain
     /// as the account's classical key).
     pub public_key: Vec<u8>,
-    /// The signer's ML-DSA-87 (Dilithium-5) public key — the Dilithium key
+    /// The signer's ML-DSA-87 (Dilithium-5) public key - the Dilithium key
     /// registered on-chain.
     pub pqc_public_key: Vec<u8>,
-    /// The signer's ML-DSA-87 (Dilithium-5) secret key — the post-quantum half
+    /// The signer's ML-DSA-87 (Dilithium-5) secret key - the post-quantum half
     /// used for hybrid signing.
     pub pqc_secret_key: Vec<u8>,
     /// The chain id (e.g. `"qorechain-diana"`).
@@ -171,7 +171,7 @@ impl PqcDx {
         parse_pqc_status(&raw)
     }
 
-    /// Registers the signer's PQC key if it is not already registered —
+    /// Registers the signer's PQC key if it is not already registered -
     /// idempotent.
     ///
     /// When the account already has a key, this returns
@@ -259,8 +259,8 @@ impl PqcDx {
     /// Builds + signs (but does not broadcast) the `MsgRegisterPQCKeyV2` for the
     /// signer.
     ///
-    /// Uses `/qorechain.pqc.v1.MsgRegisterPQCKeyV2` — the chain's current
-    /// (classical-exempt bootstrap) registration path — with an explicit
+    /// Uses `/qorechain.pqc.v1.MsgRegisterPQCKeyV2` - the chain's current
+    /// (classical-exempt bootstrap) registration path - with an explicit
     /// `algorithm_id` (ML-DSA-87 / Dilithium-5).
     ///
     /// Useful for inspection, packing into a larger tx, or a deferred-broadcast
@@ -292,7 +292,7 @@ impl PqcDx {
     /// # Errors
     ///
     /// When the classical key is not the sender's (refused from v3.2.2), or the
-    /// key is `classical_only`, empty or degenerate (refused from v3.2.3) — not
+    /// key is `classical_only`, empty or degenerate (refused from v3.2.3) - not
     /// network-gated: such a registration is wrong anywhere.
     pub fn build_register_with_proof_of_possession(&self, proof: Vec<u8>) -> Result<BuiltTx> {
         crate::classical_key::validate_classical_key_for_sender(&self.sender, &self.public_key)?;
@@ -319,7 +319,7 @@ impl PqcDx {
         })
     }
 
-    /// Ensures the signer's PQC key is registered (idempotent — see
+    /// Ensures the signer's PQC key is registered (idempotent - see
     /// [`PqcDx::ensure_pqc_registered`]) and returns a [`HybridSendPath`] with the
     /// bound PQC keypair, ready to build hybrid (classical + ML-DSA-87)
     /// transactions.
@@ -342,7 +342,7 @@ impl PqcDx {
     /// The sign-bytes version comes from [`PqcDx::sign_bytes`]. This is a sync,
     /// network-free build, so `Auto` resolves only where no node is needed (v2 on
     /// a chain born with v2); on `qorechain-vladi` / `qorechain-diana` it is an
-    /// error — use [`PqcDx::send_hybrid`], or
+    /// error - use [`PqcDx::send_hybrid`], or
     /// [`PqcDx::resolve_sign_bytes_version`] + [`PqcDx::build_hybrid_with_version`].
     ///
     /// On-chain prerequisite: the signer's PQC key must already be registered
@@ -499,7 +499,7 @@ impl PqcDx {
 /// Options for [`PqcDx::migrate_pqc_key`] (PQC key rotation, `MsgMigratePQCKey`).
 ///
 /// `old_signature` / `new_signature` are ML-DSA signatures over the per-network
-/// migration sign-bytes — build them with
+/// migration sign-bytes - build them with
 /// [`crate::signbytes::migration_sign_bytes`] using the version the chain
 /// verifies (v1 binds no public keys; v2 binds both).
 #[derive(Debug, Clone, Default)]
@@ -753,8 +753,8 @@ fn forget_pqc_status(rest_url: &str, address: &str) {
 /// publicly).
 ///
 /// The chain answers `{"found": false}` for an account without a key. Anything
-/// that is not a readable `found` — an HTTP error, a missing field, a transport
-/// failure — is UNKNOWN: retried once, then returned as an error. It is never
+/// that is not a readable `found` - an HTTP error, a missing field, a transport
+/// failure - is UNKNOWN: retried once, then returned as an error. It is never
 /// read as "not registered". A positive answer (with the registered key, from
 /// `account.public_key`) is cached per (rest_url, address).
 ///

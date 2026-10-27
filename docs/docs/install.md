@@ -24,7 +24,7 @@ It targets Node.js 20+ and ships ESM, CommonJS, and type definitions.
 ### EVM adapter
 
 `@qorechain/evm` is a thin, type-safe adapter over [viem](https://viem.sh).
-viem is a **peer dependency** — install it alongside:
+viem is a **peer dependency** - install it alongside:
 
 ```bash
 npm i @qorechain/evm viem

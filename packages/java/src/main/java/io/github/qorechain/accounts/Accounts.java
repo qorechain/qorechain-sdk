@@ -11,17 +11,17 @@ import java.util.Arrays;
  * three supported schemes:
  *
  * <ol>
- *   <li>native — secp256k1, BIP-44 {@code m/44'/118'/0'/0/{index}},
+ *   <li>native - secp256k1, BIP-44 {@code m/44'/118'/0'/0/{index}},
  *       address = bech32({@code qor}, ripemd160(sha256(compressedPubkey))).
- *   <li>evm — secp256k1, BIP-44 {@code m/44'/60'/0'/0/{index}},
+ *   <li>evm - secp256k1, BIP-44 {@code m/44'/60'/0'/0/{index}},
  *       address = {@code 0x} + last 20 bytes of keccak256(uncompressedPubkey[1:]),
  *       EIP-55 checksummed.
- *   <li>svm — ed25519, SLIP-0010 {@code m/44'/501'/{index}'/0'} (all hardened),
+ *   <li>svm - ed25519, SLIP-0010 {@code m/44'/501'/{index}'/0'} (all hardened),
  *       address = base58(32-byte ed25519 public key).
  * </ol>
  *
  * <p>Every derive function validates the mnemonic first (via {@link Bip39}) and
- * throws on an invalid phrase — the guard against a typo'd phrase silently
+ * throws on an invalid phrase - the guard against a typo'd phrase silently
  * deriving a wrong account.
  */
 public final class Accounts {

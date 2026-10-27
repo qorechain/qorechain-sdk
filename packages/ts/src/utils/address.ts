@@ -109,7 +109,7 @@ export function isValidBech32(addr: string, prefix?: string): boolean {
 
 /**
  * Decode a QoreChain bech32 account address into the `0x`-prefixed hex form of
- * its 20-byte payload — the same byte payload an EVM address carries.
+ * its 20-byte payload - the same byte payload an EVM address carries.
  *
  * QoreChain shares one account-key space across its VMs: a native `qor1...`
  * address and the matching EVM `0x...` address are two encodings of the same

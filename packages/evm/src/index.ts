@@ -1,5 +1,5 @@
 /**
- * `@qorechain/evm` — a thin, type-safe adapter over [viem](https://viem.sh) for
+ * `@qorechain/evm` - a thin, type-safe adapter over [viem](https://viem.sh) for
  * the QoreChain EVM Engine.
  *
  * It does not reimplement an EVM client; viem is a peer dependency. This package
@@ -67,7 +67,7 @@ export {
   type ConsensusParams,
 } from "./precompiles";
 
-// AI pre-flight risk scoring — the high-level, positional-argument surface for
+// AI pre-flight risk scoring - the high-level, positional-argument surface for
 // QoreChain's on-chain AI precompiles (score + anomaly + a bundled simulate).
 export {
   ai,

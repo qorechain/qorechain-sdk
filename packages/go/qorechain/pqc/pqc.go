@@ -115,8 +115,8 @@ func PQCSign(secretKey, message []byte) ([]byte, error) {
 // PQCVerify verifies an ML-DSA-87 (Dilithium-5) signature over a message.
 //
 // SIZES ARE EXACT, and are checked HERE, before the library is called. The
-// underlying implementation accepts an over-long signature — a valid 4627-byte
-// signature with extra bytes appended verifies as true — while other FIPS-204
+// underlying implementation accepts an over-long signature - a valid 4627-byte
+// signature with extra bytes appended verifies as true - while other FIPS-204
 // bindings (the Rust `fips204` one, for instance) reject it. That difference is
 // signature malleability: the same transaction bytes would be valid to one
 // binding and invalid to another, so two SDKs could disagree about whether a tx

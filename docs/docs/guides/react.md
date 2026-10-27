@@ -7,7 +7,7 @@ sidebar_position: 13
 # React kit (`@qorechain/react`)
 
 `@qorechain/react` is the official React layer over `@qorechain/sdk`: one
-provider, a handful of hooks, and two drop-in components — including a one-line
+provider, a handful of hooks, and two drop-in components - including a one-line
 **Quantum-safe** badge. It makes building a quantum-safe dApp the default path.
 
 ```bash
@@ -50,7 +50,7 @@ For tests, pass a pre-built (or mocked) `client` prop instead of `config`.
 | Hook | Returns |
 | --- | --- |
 | `useQoreClient()` | The composed `QoreChainClient` for ad-hoc reads. |
-| `useAccount()` | `{ addresses, address, isConnected, status, wallet }` — native / EVM / SVM addresses. |
+| `useAccount()` | `{ addresses, address, isConnected, status, wallet }` - native / EVM / SVM addresses. |
 | `useBalance(address?, options?)` | `{ data, isLoading, error, refetch }`; auto-refresh via `refreshInterval`. |
 | `useConnect()` / `useWallet()` | `{ connect, disconnect, status, isConnecting, error }`. |
 | `useTx()` | `{ send, sendTokens, status, data, error, isPending, reset }`. |
@@ -65,12 +65,12 @@ const { connect } = useConnect();
 await connect({ kind: "keplr" }); // or "leap" | "evm" | "svm"
 ```
 
-- **keplr / leap** — Native wallets via `getCosmosWallet`. Suggests and enables
+- **keplr / leap** - Native wallets via `getCosmosWallet`. Suggests and enables
   the chain, returns a CosmJS signer that is wired into a `TxClient`, so `useTx`
   can sign immediately. Sets `addresses.native`.
-- **evm** — any injected EIP-1193 provider (`window.ethereum`, e.g. MetaMask) via
+- **evm** - any injected EIP-1193 provider (`window.ethereum`, e.g. MetaMask) via
   `eth_requestAccounts`. Sets `addresses.evm`.
-- **svm** — any injected Wallet-Standard provider (`window.solana`, e.g. Phantom)
+- **svm** - any injected Wallet-Standard provider (`window.solana`, e.g. Phantom)
   via `connect()`. Sets `addresses.svm`.
 
 The EVM and SVM paths use the injected provider's standard request API directly,

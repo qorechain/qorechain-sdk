@@ -35,9 +35,9 @@ pub const MAX_EVM_DELEGATION_CONSENT_BLOCKS: u64 = MAX_EVM_WINDOW_BLOCKS;
 pub const MAX_EVM_AUTHORIZATIONS_PER_TX: usize = 8;
 /// The delegate to consent to when the intent is to CLEAR the delegation.
 pub const EVM_DELEGATION_CLEAR: &str = "0x0000000000000000000000000000000000000000";
-/// `pqc` 60 — no live consent for the delegation a tuple would install.
+/// `pqc` 60 - no live consent for the delegation a tuple would install.
 pub const ERR_NO_EVM_DELEGATION_CONSENT: u32 = 60;
-/// `pqc` 61 — a malformed consent or clear request, or no PQC key.
+/// `pqc` 61 - a malformed consent or clear request, or no PQC key.
 pub const ERR_INVALID_EVM_DELEGATION: u32 = 61;
 
 /// Checks a consent request against the chain's rules and returns the delegate

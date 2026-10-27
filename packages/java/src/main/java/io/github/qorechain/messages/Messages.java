@@ -19,8 +19,8 @@ import java.util.Set;
  * rlconsensus, stakingtier) and the standard Native messages exposed by {@link CosmosMessages}.
  *
  * <p>The Native lane packs messages into {@code Any} with a bare leading-slash type URL
- * (e.g. {@code /qorechain.amm.v1.MsgCreatePool}) — NOT protobuf-java's default
- * {@code type.googleapis.com/} prefix — so {@link #pack} and {@link #unpack}
+ * (e.g. {@code /qorechain.amm.v1.MsgCreatePool}) - NOT protobuf-java's default
+ * {@code type.googleapis.com/} prefix - so {@link #pack} and {@link #unpack}
  * build/read the {@code Any} fields directly.
  */
 public final class Messages {

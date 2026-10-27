@@ -26,7 +26,7 @@ def build_events_query(filters: dict[str, str | int]) -> str:
     """Build the ``query`` value for the REST tx-search endpoint.
 
     Each ``key=value`` pair is rendered as ``key='value'`` (integers unquoted)
-    and the predicates are joined with ``" AND "`` — the format
+    and the predicates are joined with ``" AND "`` - the format
     ``/cosmos/tx/v1beta1/txs?query=...`` expects on Cosmos SDK v0.53.
 
     :example: ``build_events_query({"message.sender": "qor1...", "tx.height": 5})``

@@ -102,8 +102,8 @@ def pqc_verify(public_key: bytes, message: bytes, signature: bytes) -> bool:
 
     STRICT about sizes: the public key must be exactly
     :data:`ML_DSA_87_PUBLIC_KEY_LENGTH` bytes and the signature exactly
-    :data:`ML_DSA_87_SIGNATURE_LENGTH` bytes. Anything else — a truncated
-    signature, or one carrying extra trailing bytes — returns ``False`` without
+    :data:`ML_DSA_87_SIGNATURE_LENGTH` bytes. Anything else - a truncated
+    signature, or one carrying extra trailing bytes - returns ``False`` without
     reaching the underlying library.
 
     The SDK enforces this itself rather than trusting the library, because the
@@ -191,7 +191,7 @@ def encode_hybrid_signature_extension(
     extension option (``type_url`` :data:`HYBRID_SIG_TYPE_URL`). This is the
     generated ``PQCHybridSignature`` codec's serialization (fields
     ``algorithm_id`` = 1, ``pqc_signature`` = 2, ``pqc_public_key`` = 3), so the
-    result ALWAYS begins with byte ``0x08`` (field-1 varint tag) — never
+    result ALWAYS begins with byte ``0x08`` (field-1 varint tag) - never
     ``0x7b`` (``{``).
 
     The chain's ante handler extracts the extension by type URL and

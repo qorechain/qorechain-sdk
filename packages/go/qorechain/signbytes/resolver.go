@@ -121,7 +121,7 @@ func (r *Resolver) resolve(ctx context.Context, restURL, chainID string, request
 	// Guard the argument order. restURL and chainID are adjacent strings, and the
 	// other language bindings take (chainID, restURL), so a caller porting code
 	// can swap them. Swapped, chainID would hold a URL, which is not a legacy
-	// chain, and this would quietly answer V2 — the form mainnet refuses — with
+	// chain, and this would quietly answer V2 - the form mainnet refuses - with
 	// no request made and no error raised. Fail loudly instead.
 	if strings.Contains(chainID, "://") {
 		return "", fmt.Errorf("%w: chainID %q looks like a URL; the argument order here is "+
@@ -171,7 +171,7 @@ func (r *Resolver) resolve(ctx context.Context, restURL, chainID string, request
 //
 // The switch to v2 ships under two plan names and each network applies only one
 // of them (mainnet "v3.2.0", the testnet already "v3.1.98"), so asking a single
-// name answers height 0 on the other network and would resolve v1 there — the
+// name answers height 0 on the other network and would resolve v1 there - the
 // form it refuses with pqc code 21. Names are ordered most likely first and the
 // loop short-circuits: a network that took the first name costs one request.
 // A failed query is returned as an error, never treated as "not applied".

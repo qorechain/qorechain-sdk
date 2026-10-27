@@ -1,5 +1,5 @@
 /**
- * rollup-lifecycle — drive an RDK rollup with the high-level `createRollupClient`
+ * rollup-lifecycle - drive an RDK rollup with the high-level `createRollupClient`
  * helper: create -> submit batch -> read status / latest batch -> execute a
  * withdrawal with a Merkle proof.
  *
@@ -83,7 +83,7 @@ async function main(): Promise<void> {
 
   if (process.env.QORE_BROADCAST !== "1") {
     console.log(
-      "\nDry run — set QORE_BROADCAST=1 (with a funded account) to create, batch, and withdraw.",
+      "\nDry run - set QORE_BROADCAST=1 (with a funded account) to create, batch, and withdraw.",
     );
     tx.disconnect();
     return;
@@ -96,7 +96,7 @@ async function main(): Promise<void> {
     vmType: "evm",
     stakeAmount: 1_000_000,
   });
-  console.log(`  ok — tx ${r1.transactionHash}`);
+  console.log(`  ok - tx ${r1.transactionHash}`);
 
   console.log("Submitting batch 0...");
   const r2 = await rollup.submitBatch({
@@ -108,7 +108,7 @@ async function main(): Promise<void> {
     dataHash: new Uint8Array(32).fill(2),
     withdrawalsRoot: new Uint8Array(32).fill(3),
   });
-  console.log(`  ok — tx ${r2.transactionHash}`);
+  console.log(`  ok - tx ${r2.transactionHash}`);
 
   // Reads: qor_ status + typed latest batch.
   const status = await rollup.getRollupStatus(rollupId);
@@ -136,7 +136,7 @@ async function main(): Promise<void> {
     amount: 500_000,
     proof: [new Uint8Array(32).fill(9), new Uint8Array(32).fill(8)],
   });
-  console.log(`  ok — tx ${r3.transactionHash}`);
+  console.log(`  ok - tx ${r3.transactionHash}`);
 
   comet.disconnect();
   tx.disconnect();

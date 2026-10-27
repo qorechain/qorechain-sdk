@@ -1,5 +1,5 @@
 /**
- * svm-transfer — build a SOL transfer + memo on QoreChain's SVM runtime.
+ * svm-transfer - build a SOL transfer + memo on QoreChain's SVM runtime.
  *
  * Shows:
  *  - deriveSvmAccount(mnemonic) (from @qorechain/sdk) → a 64-byte secret key

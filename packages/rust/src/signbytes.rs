@@ -25,7 +25,7 @@
 //! takes it as `v3.2.0`. Both names run the same handler, so
 //! [`SignBytesResolver`] asks a node's REST endpoint
 //! (`/cosmos/upgrade/v1beta1/applied_plan/{name}`) for EVERY name, in order,
-//! stopping at the first height above zero — asking one name only would read
+//! stopping at the first height above zero - asking one name only would read
 //! height 0 on the other network, sign v1, and have every hybrid transaction
 //! refused with `pqc` code 21. The answer is cached briefly, because a network
 //! can upgrade while a wallet is open.
@@ -213,7 +213,7 @@ pub fn sign_bytes_version_for(chain_id: &str, v2_applied_height: i64) -> SignByt
 
 /// The version a synchronous (network-free) builder uses: `version` when given;
 /// otherwise v2 for a non-legacy chain. A legacy chain with no version is an
-/// error — the builder cannot know whether the upgrade is applied, and it never
+/// error - the builder cannot know whether the upgrade is applied, and it never
 /// silently falls back to v1.
 pub fn require_sign_bytes_version(
     chain_id: &str,
@@ -644,7 +644,7 @@ pub fn parse_applied_height(body: &Value) -> Result<i64> {
 // ---------------------------------------------------------------------------
 
 /// Whether an ABCI `(codespace, code, log)` is the chain refusing a hybrid PQC
-/// signature — `pqc` code 21, or a log carrying the chain's message for it.
+/// signature - `pqc` code 21, or a log carrying the chain's message for it.
 /// Code 21 from any other codespace is NOT this case.
 pub fn is_hybrid_sign_bytes_rejection(codespace: &str, code: u32, log: &str) -> bool {
     (codespace == PQC_CODESPACE && code == PQC_HYBRID_VERIFY_FAILED_CODE)
@@ -701,9 +701,9 @@ pub struct HybridBroadcast {
     pub retried: bool,
 }
 
-/// Resolves the version, builds with `build`, sends with `send`, and — only when
+/// Resolves the version, builds with `build`, sends with `send`, and - only when
 /// `mode` is [`SignBytesMode::Auto`] and the send is refused as a hybrid PQC
-/// signature failure (see [`is_hybrid_sign_bytes_rejection`]) — force-refreshes
+/// signature failure (see [`is_hybrid_sign_bytes_rejection`]) - force-refreshes
 /// the version, rebuilds and sends exactly once more. The second attempt's
 /// outcome is returned as-is.
 ///
@@ -771,7 +771,7 @@ fn require_rest_url<'a>(chain_id: &str, rest_url: Option<&'a str>) -> Result<&'a
         Some(u) if !u.trim().is_empty() => Ok(u),
         _ => Err(Error::SignBytes(format!(
             "chain {chain_id:?} verifies hybrid sign-bytes v1 until upgrade {} is applied \
-             and v2 after it; to choose, the SDK must ask a node — pass a REST URL, or an \
+             and v2 after it; to choose, the SDK must ask a node - pass a REST URL, or an \
              explicit sign-bytes version (v1 or v2)",
             upgrade_names()
         ))),

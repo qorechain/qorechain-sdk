@@ -18,7 +18,7 @@
 //   - B0 = protobuf bytes of the TxBody containing the messages/memo/timeout but
 //     NOT the PQCHybridSignature extension.
 //   - A  = the AuthInfo bytes (signer secp256k1 pubkey, SIGN_MODE_DIRECT,
-//     sequence, fee) — the exact bytes that are broadcast.
+//     sequence, fee) - the exact bytes that are broadcast.
 //   - PQC signed message = the hybrid sign-bytes in the form the TARGET
 //     network verifies (see package signbytes; NO hashing in either form):
 //     v1 = BE32(len(B0)) || B0 || BE32(len(A)) || A
@@ -32,7 +32,7 @@
 //     pqc code 21. The testnet is on v2 (from height 5,746,000); mainnet stays
 //     on v1 until its own upgrade. BuildHybridTx therefore takes a
 //     SignBytesVersion; BroadcastHybridAndWait resolves it against the node.
-//   - PQC signature = PQCSign(pqcSecret, message) — pure ML-DSA-87, 4627 bytes.
+//   - PQC signature = PQCSign(pqcSecret, message) - pure ML-DSA-87, 4627 bytes.
 //   - The PQCHybridSignature extension is then added to TxBody.ExtensionOptions
 //     (the CRITICAL extension-options slot) as an Any whose TypeUrl is
 //     "/qorechain.pqc.v1.PQCHybridSignature" and whose Value is the PROTOBUF
@@ -48,7 +48,7 @@
 //     (outside the body). The classical signature never signs itself.
 //
 // The signer's PQC key must be registered on-chain (via MsgRegisterPQCKey)
-// before hybrid txs PQC-verify — unless IncludePQCPublicKey is set, which embeds
+// before hybrid txs PQC-verify - unless IncludePQCPublicKey is set, which embeds
 // the key for auto-registration on first use. Registering the key is the
 // caller's responsibility.
 //
@@ -136,7 +136,7 @@ type BuiltTx struct {
 	TxRaw *sdktx.TxRaw
 	// TxRawBytes is the encoded TxRaw, ready to broadcast.
 	TxRawBytes []byte
-	// AuthInfoBytes is A — identical in the PQC framing and the SignDoc.
+	// AuthInfoBytes is A - identical in the PQC framing and the SignDoc.
 	AuthInfoBytes []byte
 	// PQCSignedMessage is the exact bytes the ML-DSA-87 signature covered (nil
 	// for a non-hybrid tx).
@@ -212,7 +212,7 @@ type BankSendParams struct {
 // It constructs /cosmos.bank.v1beta1.MsgSend from the account address to
 // ToAddress, builds the SIGN_MODE_DIRECT AuthInfo from the account's compressed
 // secp256k1 pubkey, signs the SignDoc, and assembles the TxRaw. This does not
-// broadcast — pass BuiltTx.TxRawBytes to Broadcast.
+// broadcast - pass BuiltTx.TxRawBytes to Broadcast.
 func BankSend(params BankSendParams) (*BuiltTx, error) {
 	amount, err := toCoins(params.Amount)
 	if err != nil {
@@ -298,8 +298,8 @@ type BuildHybridTxParams struct {
 // following the chain contract documented in the package header.
 //
 // The build sequence:
-//  1. Encode B0 — the TxBody WITHOUT the PQC extension.
-//  2. Encode A  — the single-signer SIGN_MODE_DIRECT AuthInfo.
+//  1. Encode B0 - the TxBody WITHOUT the PQC extension.
+//  2. Encode A - the single-signer SIGN_MODE_DIRECT AuthInfo.
 //  3. message = signbytes.Hybrid(version, ChainID, B0, A) (v1 or v2, see
 //     SignBytesVersion); ML-DSA-87 sign it.
 //  4. Build the PQCHybridSignature extension Any and attach it to a new body
@@ -320,7 +320,7 @@ func BuildHybridTx(params BuildHybridTxParams) (*BuiltTx, error) {
 		return nil, err
 	}
 
-	// 1. B0 — body WITHOUT the PQC extension.
+	// 1. B0 - body WITHOUT the PQC extension.
 	baseBody := &sdktx.TxBody{
 		Messages:      encoded,
 		Memo:          params.Memo,
@@ -331,7 +331,7 @@ func BuildHybridTx(params BuildHybridTxParams) (*BuiltTx, error) {
 		return nil, fmt.Errorf("marshal base TxBody: %w", err)
 	}
 
-	// 2. A — single-signer AuthInfo (SIGN_MODE_DIRECT).
+	// 2. A - single-signer AuthInfo (SIGN_MODE_DIRECT).
 	authInfoBytes, err := buildAuthInfoBytes(params.Account.PublicKey, params.Sequence, params.Fee)
 	if err != nil {
 		return nil, err

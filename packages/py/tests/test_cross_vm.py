@@ -382,7 +382,7 @@ def test_decode_accepts_a_bare_tx_response_dict():
 
 
 def test_decode_of_a_sync_broadcast_without_data_is_empty():
-    # A sync broadcast has not executed yet — nothing to decode, and no raise.
+    # A sync broadcast has not executed yet - nothing to decode, and no raise.
     assert decode_cross_vm_responses({"tx_response": {"code": 0, "txhash": "ABC"}}) == []
     assert decode_cross_vm_response(None) is None
 

@@ -32,7 +32,7 @@ func RIPEMD160(data []byte) []byte {
 	return h.Sum(nil)
 }
 
-// Hash160 returns RIPEMD160(SHA256(data)) — the Native account-address hash of a
+// Hash160 returns RIPEMD160(SHA256(data)) - the Native account-address hash of a
 // public key.
 func Hash160(data []byte) []byte {
 	return RIPEMD160(SHA256(data))

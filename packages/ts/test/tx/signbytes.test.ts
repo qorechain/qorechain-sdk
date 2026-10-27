@@ -156,7 +156,7 @@ describe("the v1 (legacy) forms", () => {
   });
 });
 
-describe("signBytesVersionFor — mirror of the chain's switch", () => {
+describe("signBytesVersionFor - mirror of the chain's switch", () => {
   it.each([
     ["qorechain-vladi", 0, "v1"],
     ["qorechain-vladi", 5_746_000, "v2"],

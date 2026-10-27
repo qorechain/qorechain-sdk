@@ -16,7 +16,7 @@
 //!   - `B0` = protobuf bytes of the `TxBody` containing the messages/memo/timeout
 //!     but NOT the `PQCHybridSignature` extension.
 //!   - `A`  = the `AuthInfo` bytes (signer secp256k1 pubkey, `SIGN_MODE_DIRECT`,
-//!     sequence, fee) — the exact bytes that are broadcast.
+//!     sequence, fee) - the exact bytes that are broadcast.
 //!   - PQC signed message = the per-network hybrid sign-bytes (see
 //!     [`crate::signbytes`]):
 //!       - v1 (legacy): `BE32(len(B0)) || B0 || BE32(len(A)) || A`
@@ -30,7 +30,7 @@
 //!     so for those two chains it needs an explicit
 //!     [`BuildHybridTxParams::sign_bytes_version`]; [`broadcast_hybrid_tx`]
 //!     resolves it from the node and retries once on a `pqc` code-21 refusal.
-//!   - PQC signature = `pqc_sign(pqc_secret, message)` — pure ML-DSA-87 (4627
+//!   - PQC signature = `pqc_sign(pqc_secret, message)` - pure ML-DSA-87 (4627
 //!     bytes for Dilithium-5).
 //!   - The `PQCHybridSignature` extension is then added to
 //!     `TxBody.extension_options` (the CRITICAL extension-options slot) as an
@@ -39,7 +39,7 @@
 //!     (fields `algorithm_id` = 1, `pqc_signature` = 2, `pqc_public_key` = 3;
 //!     `pqc_public_key` omitted when not supplied) → the final body bytes. The
 //!     chain protobuf-decodes this extension, so the value always begins with
-//!     `0x08` (the field-1 varint tag), NOT `0x7b` (`{`) — a JSON value was
+//!     `0x08` (the field-1 varint tag), NOT `0x7b` (`{`) - a JSON value was
 //!     rejected by the chain's tx decoder at CheckTx (verified on testnet
 //!     2026-07-05).
 //!   - The CLASSICAL secp256k1 `SIGN_MODE_DIRECT` signature is computed over
@@ -48,7 +48,7 @@
 //!     itself.
 //!
 //! The signer's PQC key must be registered on-chain (via `MsgRegisterPQCKey`)
-//! before hybrid txs PQC-verify — unless `include_pqc_public_key` is set, which
+//! before hybrid txs PQC-verify - unless `include_pqc_public_key` is set, which
 //! embeds the key for auto-registration on first use. Registering the key is the
 //! caller's responsibility.
 //!
@@ -142,7 +142,7 @@ pub struct Message {
 pub struct BuiltTx {
     /// Encoded `TxRaw`, ready to broadcast.
     pub tx_raw_bytes: Vec<u8>,
-    /// `A` — the `AuthInfo` bytes (identical in the PQC framing and the SignDoc).
+    /// `A` - the `AuthInfo` bytes (identical in the PQC framing and the SignDoc).
     pub auth_info_bytes: Vec<u8>,
     /// The final `TxBody` bytes (WITH the PQC extension, for a hybrid tx).
     pub body_bytes: Vec<u8>,
@@ -251,7 +251,7 @@ pub struct BankSendParams {
 ///
 /// Constructs `/cosmos.bank.v1beta1.MsgSend` from `from_address` to `to_address`,
 /// builds the `SIGN_MODE_DIRECT` `AuthInfo` from the compressed secp256k1 pubkey,
-/// signs the `SignDoc`, and assembles the `TxRaw`. This does not broadcast — pass
+/// signs the `SignDoc`, and assembles the `TxRaw`. This does not broadcast - pass
 /// [`BuiltTx::tx_raw_bytes`] to [`broadcast`].
 pub fn bank_send(params: BankSendParams) -> Result<BuiltTx> {
     let msg = MsgSend {
@@ -327,7 +327,7 @@ pub struct SendMessagesParams {
 /// This is the generic counterpart of [`bank_send`]: pass any messages produced
 /// by the [`crate::msg`] composers (custom QoreChain modules or standard Native
 /// modules). Use [`build_hybrid_tx`] when a post-quantum signature is also
-/// required. This does not broadcast — pass [`BuiltTx::tx_raw_bytes`] to
+/// required. This does not broadcast - pass [`BuiltTx::tx_raw_bytes`] to
 /// [`broadcast`].
 pub fn send_messages(params: SendMessagesParams) -> Result<BuiltTx> {
     let body = TxBody {
@@ -406,8 +406,8 @@ pub struct BuildHybridTxParams {
 /// contract documented in the module header.
 ///
 /// The build sequence:
-///  1. Encode `B0` — the `TxBody` WITHOUT the PQC extension.
-///  2. Encode `A`  — the single-signer `SIGN_MODE_DIRECT` `AuthInfo`.
+///  1. Encode `B0` - the `TxBody` WITHOUT the PQC extension.
+///  2. Encode `A` - the single-signer `SIGN_MODE_DIRECT` `AuthInfo`.
 ///  3. `message = hybrid_sign_bytes(version, chainId, B0, A)` (v1 or v2, see
 ///     [`crate::signbytes`]); ML-DSA-87 sign it.
 ///  4. Build the `PQCHybridSignature` extension `Any` and attach it to a new body
@@ -429,7 +429,7 @@ pub fn build_hybrid_tx(params: BuildHybridTxParams) -> Result<BuiltTx> {
     let version = require_sign_bytes_version(&params.chain_id, params.sign_bytes_version)?;
     let messages = encode_messages(&params.messages);
 
-    // 1. B0 — body WITHOUT the PQC extension.
+    // 1. B0 - body WITHOUT the PQC extension.
     let base_body = TxBody {
         messages: messages.clone(),
         memo: params.memo.clone(),
@@ -439,7 +439,7 @@ pub fn build_hybrid_tx(params: BuildHybridTxParams) -> Result<BuiltTx> {
     };
     let b0 = base_body.encode_to_vec();
 
-    // 2. A — single-signer AuthInfo (SIGN_MODE_DIRECT).
+    // 2. A - single-signer AuthInfo (SIGN_MODE_DIRECT).
     let auth_info_bytes = build_auth_info_bytes(&params.public_key, params.sequence, &params.fee)?;
 
     // 3. PQC sign-bytes (per-network v1/v2) + ML-DSA-87 signature over B0 + A

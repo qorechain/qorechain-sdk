@@ -6,14 +6,14 @@ import java.util.Base64;
 import java.util.List;
 
 /**
- * A protobuf RPC transport over the consensus RPC's {@code abci_query} method —
+ * A protobuf RPC transport over the consensus RPC's {@code abci_query} method -
  * the Java analog of cosmjs's {@code ProtobufRpcClient}.
  *
  * <p>Module {@code Query} services are exposed by the chain over the ABCI query
  * path {@code /{package}.Query/{Method}} (e.g.
  * {@code /qorechain.rdk.v1.Query/Rollup}). Each typed module client below encodes
  * its request, calls {@link #request(String, String, ByteString)} with the
- * service + method name, and decodes the response bytes — so callers get fully
+ * service + method name, and decodes the response bytes - so callers get fully
  * typed {@code Query*Request → Query*Response} calls without hand-rolling ABCI
  * paths.
  *

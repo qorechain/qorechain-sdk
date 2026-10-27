@@ -137,7 +137,7 @@ function defaultSignBytesVersion(chainId: string): SignBytesVersion {
   if (!isLegacySignBytesChain(chainId)) return "v2";
   throw new Error(
     `signHybridEth on ${chainId} needs signBytesVersion: resolve it with ` +
-      `resolveSignBytesVersion({ chainId, rest }) — the network switches from v1 to v2 at its own upgrade height`,
+      `resolveSignBytesVersion({ chainId, rest }) - the network switches from v1 to v2 at its own upgrade height`,
   );
 }
 
@@ -256,7 +256,7 @@ export function signHybridEth(params: EthSignParams): SignedEthTx {
   const authInfoBytes = buildAuthInfoBytes(params);
   const encodedMessages = encodeMessages(params);
 
-  // B0 — body WITHOUT the PQC extension.
+  // B0 - body WITHOUT the PQC extension.
   const b0 = TxBody.encode(
     TxBody.fromPartial({ messages: encodedMessages, memo, timeoutHeight }),
   ).finish();

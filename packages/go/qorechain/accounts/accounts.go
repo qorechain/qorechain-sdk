@@ -2,12 +2,12 @@
 // hierarchical-deterministic (HD) derivation of QoreChain accounts in all three
 // supported schemes:
 //
-//  1. native — QoreChain Native secp256k1, BIP-44 path m/44'/118'/0'/0/{index},
+//  1. native - QoreChain Native secp256k1, BIP-44 path m/44'/118'/0'/0/{index},
 //     address = bech32("qor", ripemd160(sha256(compressedPubKey))).
-//  2. evm    — secp256k1, BIP-44 path m/44'/60'/0'/0/{index},
+//  2. evm - secp256k1, BIP-44 path m/44'/60'/0'/0/{index},
 //     address = "0x" + last 20 bytes of keccak256(uncompressedPubKey[1:]),
 //     rendered with an EIP-55 mixed-case checksum.
-//  3. svm    — ed25519, SLIP-0010 path m/44'/501'/{index}'/0' (all hardened,
+//  3. svm - ed25519, SLIP-0010 path m/44'/501'/{index}'/0' (all hardened,
 //     the Solana standard), address = base58(32-byte ed25519 public key).
 //
 // Secret material is returned explicitly from the derive functions and is never
@@ -76,7 +76,7 @@ func GenerateMnemonic(strength int) (string, error) {
 // the checksum. It never returns an error.
 //
 // Note: go-bip39's IsMnemonicValid only checks word membership and length, not
-// the checksum bits — so a phrase of all valid words with a wrong checksum
+// the checksum bits - so a phrase of all valid words with a wrong checksum
 // passes it. MnemonicToByteArray decodes and verifies the checksum, which is
 // the guarantee callers need to avoid the fund-loss footgun of deriving from a
 // typo'd phrase.
@@ -186,7 +186,7 @@ func DeriveEVMAccount(mnemonic string, index uint32) (Secp256k1Account, error) {
 // DeriveSVMAccount derives an SVM (Solana-style ed25519) account from a
 // mnemonic.
 //
-// Path: m/44'/501'/{index}'/0' — the conventional Solana derivation, all
+// Path: m/44'/501'/{index}'/0' - the conventional Solana derivation, all
 // segments hardened (SLIP-0010 for ed25519 supports hardened keys only). The
 // address is the base58 encoding of the 32-byte public key. The returned
 // SecretKey is the 64-byte Solana form (privateSeed32 || publicKey32).

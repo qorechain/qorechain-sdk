@@ -4,12 +4,12 @@ package crossvm
 //
 // A synchronous cross-VM call (the default, CallOptions.Async == false) executes
 // inside the transaction and the callee's answer comes back in the Msg response,
-// not in an event — so a caller that needs the result has to decode it. Since
+// not in an event - so a caller that needs the result has to decode it. Since
 // chain v3.1.97 the response carries, besides the message id:
 //
-//	Executed — false for a queued (async) call, whose result is not known yet
-//	Data     — the callee's return value
-//	GasUsed  — gas the callee's execution consumed
+//	Executed - false for a queued (async) call, whose result is not known yet
+//	Data - the callee's return value
+//	GasUsed - gas the callee's execution consumed
 //
 // The response bytes travel in TxResponse.data: the hex-encoded protobuf
 // sdk.TxMsgData, whose MsgResponses are one Any per Msg in the tx, in order.
@@ -31,14 +31,14 @@ import (
 // MsgCrossVMCallResponseTypeURL is the type URL of the cross-VM call response.
 const MsgCrossVMCallResponseTypeURL = "/qorechain.crossvm.v1.MsgCrossVMCallResponse"
 
-// CallResult is one decoded MsgCrossVMCallResponse — the outcome of a single
+// CallResult is one decoded MsgCrossVMCallResponse - the outcome of a single
 // MsgCrossVMCall in a transaction.
 type CallResult struct {
 	// MessageID is the chain's id for the cross-VM message. Pass it to
 	// Client.GetMessage to follow a queued call.
 	MessageID string
 	// Executed reports whether the call ran inside this transaction. It is false
-	// for an async (queued) call, whose result is not known yet — poll
+	// for an async (queued) call, whose result is not known yet - poll
 	// GetMessage for the outcome.
 	Executed bool
 	// Data is the callee's return value, carried back to the caller. Empty for a
@@ -49,7 +49,7 @@ type CallResult struct {
 }
 
 // DecodeCallResults decodes every MsgCrossVMCallResponse carried by a confirmed
-// transaction, in message order — so for a CallAtomic of N calls, result[i]
+// transaction, in message order - so for a CallAtomic of N calls, result[i]
 // belongs to option[i].
 //
 // Pass the *tx.TxResult returned by Call / CallAtomic (or by
@@ -57,7 +57,7 @@ type CallResult struct {
 //
 // FALLBACK: a node that does not populate TxResponse.data leaves only the
 // emitted events. In that case the ids are recovered from the `message_id`
-// event attribute and the remaining fields are ZERO — Executed is false and Data
+// event attribute and the remaining fields are ZERO - Executed is false and Data
 // is empty because the event does not carry them, NOT because the call was
 // queued. Use Client.GetMessage to establish the real status when Data matters.
 func DecodeCallResults(res *tx.TxResult) ([]CallResult, error) {
@@ -81,7 +81,7 @@ func DecodeCallResults(res *tx.TxResult) ([]CallResult, error) {
 }
 
 // DecodeCallResult decodes the FIRST MsgCrossVMCallResponse in a confirmed
-// transaction — the common case of a single Call. It returns an error when the
+// transaction - the common case of a single Call. It returns an error when the
 // transaction carries no cross-VM response at all.
 func DecodeCallResult(res *tx.TxResult) (CallResult, error) {
 	all, err := DecodeCallResults(res)

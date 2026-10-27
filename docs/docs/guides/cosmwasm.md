@@ -12,7 +12,7 @@ use a read-only client; state changes use a signing client.
 
 ## Read-only queries
 
-Open a read-only CosmWasm client from your `createClient()` instance — it
+Open a read-only CosmWasm client from your `createClient()` instance - it
 connects over the consensus RPC endpoint and is memoized on the client.
 
 ```ts
@@ -95,7 +95,7 @@ import {
   clearAdmin,
 } from "@qorechain/sdk";
 
-// Predictable address from (codeId, salt, creator) — counterfactual deploys.
+// Predictable address from (codeId, salt, creator) - counterfactual deploys.
 const salt = new TextEncoder().encode("my-salt");
 const { contractAddress } = await instantiate2(
   signingCw,

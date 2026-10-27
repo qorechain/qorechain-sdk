@@ -2,11 +2,11 @@
  * Broadcast-mode definitions and the broadcast result shape for native txs.
  *
  * QoreChain Native nodes accept transactions in three modes:
- * - `sync`  — return after `CheckTx` (mempool admission); you get a tx hash but
+ * - `sync` - return after `CheckTx` (mempool admission); you get a tx hash but
  *   not an on-chain result.
- * - `async` — return immediately after submission, without waiting for
+ * - `async` - return immediately after submission, without waiting for
  *   `CheckTx`; fire-and-forget.
- * - `commit` — wait until the tx is included in a block; you get the full
+ * - `commit` - wait until the tx is included in a block; you get the full
  *   delivery result (height, gas used, events). This is the default and is what
  *   cosmjs's `signAndBroadcast` does.
  *
@@ -49,8 +49,8 @@ export interface BroadcastResult {
   /**
    * The ABCI events emitted by the tx (only for `commit`).
    *
-   * Helpers that read typed attributes out of a delivery — e.g. the cross-VM
-   * client's message-id extraction — read them from here.
+   * Helpers that read typed attributes out of a delivery - e.g. the cross-VM
+   * client's message-id extraction - read them from here.
    */
   events?: ReadonlyArray<{
     type: string;
@@ -61,8 +61,8 @@ export interface BroadcastResult {
    * (only for `commit`).
    *
    * Each entry is the response's `typeUrl` plus its encoded bytes, so a caller
-   * can decode the typed response — e.g. `MsgCrossVMCallResponse` to read a
-   * cross-VM callee's return value — without a second round-trip.
+   * can decode the typed response - e.g. `MsgCrossVMCallResponse` to read a
+   * cross-VM callee's return value - without a second round-trip.
    */
   msgResponses?: ReadonlyArray<{ typeUrl: string; value: Uint8Array }>;
 }
@@ -78,7 +78,7 @@ interface TxLookupClient {
  * cosmjs's `DeliverTxResponse` carries the code but not the codespace, and a
  * code means nothing without it (`pqc` 7 is not `sdk` 7). Reads it back from
  * the indexed transaction: over REST when `rest` is given, otherwise from the
- * cosmjs client's own consensus connection. Best effort — `undefined` when
+ * cosmjs client's own consensus connection. Best effort - `undefined` when
  * neither answers.
  */
 export async function lookupDeliverCodespace(

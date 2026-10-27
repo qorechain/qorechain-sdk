@@ -2,7 +2,7 @@
 //!
 //! QoreChain runs multiple VMs (EVM, CosmWasm, SVM) over one state machine. The
 //! `x/crossvm` module routes a single `MsgCrossVMCall` from a source VM to a
-//! target VM — e.g. an EVM dApp triggering a CosmWasm contract, or an SVM
+//! target VM - e.g. an EVM dApp triggering a CosmWasm contract, or an SVM
 //! program calling into the EVM. This helper mirrors the canonical TypeScript
 //! SDK's `crossVm` surface: it builds, signs, and broadcasts one (or many)
 //! `MsgCrossVMCall` without the caller hand-assembling protobuf or remembering
@@ -11,14 +11,14 @@
 //! Construct a [`CrossVm`] with the signer's key material and account context
 //! (chain id, account number, sequence), then:
 //!
-//! - [`CrossVm::call`] — build + sign + broadcast one cross-VM call.
-//! - [`CrossVm::build_call`] — build + sign only (returns the
+//! - [`CrossVm::call`] - build + sign + broadcast one cross-VM call.
+//! - [`CrossVm::build_call`] - build + sign only (returns the
 //!   [`BuiltTx`](crate::tx::BuiltTx) for inspection or deferred broadcast).
-//! - [`CrossVm::call_atomic`] — pack N calls into **one** tx so they settle
+//! - [`CrossVm::call_atomic`] - pack N calls into **one** tx so they settle
 //!   atomically (all-or-nothing in a single block).
-//! - [`CrossVm::get_message`] — read a routed message's status via
+//! - [`CrossVm::get_message`] - read a routed message's status via
 //!   `qor_getCrossVMMessage`.
-//! - [`CrossVm::call_with_responses`] / [`CrossVm::call_atomic_with_responses`] —
+//! - [`CrossVm::call_with_responses`] / [`CrossVm::call_atomic_with_responses`] -
 //!   the same writes, with the chain's [`CrossVmCallResponse`] decoded.
 //!
 //! ## Immediate vs queued (chain v3.1.97)
@@ -33,10 +33,10 @@
 //! ## Payload
 //!
 //! [`Payload`] is either:
-//! - [`Payload::Raw`] — opaque bytes, used as-is. This is the form for EVM
+//! - [`Payload::Raw`] - opaque bytes, used as-is. This is the form for EVM
 //!   targets: the SDK does not ABI-encode high-level EVM calls in Rust (that is
 //!   TypeScript-only); pass already-encoded calldata.
-//! - [`Payload::CosmWasm`] — a `serde_json::Value`, serialized to its compact
+//! - [`Payload::CosmWasm`] - a `serde_json::Value`, serialized to its compact
 //!   UTF-8 JSON bytes (the execute-msg form a CosmWasm contract expects).
 //!
 //! ## VM types
@@ -130,7 +130,7 @@ pub struct CallOptions {
     /// `false` (the default) executes the call within this transaction and returns
     /// the callee's answer in [`CrossVmCallResponse::data`]. `true` only enqueues
     /// the message for a later `MsgProcessQueue` dispatch, so the response carries
-    /// `executed == false` and no data — read the outcome later with
+    /// `executed == false` and no data - read the outcome later with
     /// [`CrossVm::get_message`].
     pub queue: bool,
 }
@@ -156,7 +156,7 @@ impl CallOptions {
 
     /// Overrides the source VM.
     ///
-    /// Kept for compatibility with older nodes; see [`CallOptions::source_vm`] —
+    /// Kept for compatibility with older nodes; see [`CallOptions::source_vm`] -
     /// the chain ignores the value.
     pub fn source_vm(mut self, vm: impl Into<String>) -> Self {
         self.source_vm = vm.into();
@@ -177,7 +177,7 @@ impl CallOptions {
     }
 }
 
-/// A decoded `MsgCrossVMCallResponse` — what the chain answers for one
+/// A decoded `MsgCrossVMCallResponse` - what the chain answers for one
 /// `MsgCrossVMCall` in the transaction.
 #[derive(Debug, Clone, Default, PartialEq, Eq)]
 pub struct CrossVmCallResponse {
@@ -210,7 +210,7 @@ impl CrossVmCallResponse {
     ///
     /// Reads `tx_response.msg_responses[]`, keeping the entries whose `type_url`
     /// is [`CROSS_VM_CALL_RESPONSE`] and base64-decoding their `value`. Returns an
-    /// empty vector when the node did not include `msg_responses` — a `sync`
+    /// empty vector when the node did not include `msg_responses` - a `sync`
     /// broadcast answers before execution, so the results are only present once
     /// the tx is confirmed (see [`crate::tx::broadcast_and_wait`]).
     pub fn list_from_broadcast(resp: &Value) -> Result<Vec<Self>> {
@@ -294,7 +294,7 @@ impl CrossVm {
     }
 
     /// Like [`CrossVm::call`], but also decodes the chain's
-    /// `MsgCrossVMCallResponse`s — the message id plus, for a call that executed
+    /// `MsgCrossVMCallResponse`s - the message id plus, for a call that executed
     /// inline, the callee's `data`, the `executed` flag, and `gas_used`.
     ///
     /// The decoded vector is empty when the node's answer carried no

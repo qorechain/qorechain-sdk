@@ -24,12 +24,12 @@ The Native lane handles bank transfers, staking, governance, and the
 
 The SDK talks to a node through several endpoints:
 
-- **Native REST (LCD)** — bank balances, account info, module queries.
-- **Consensus RPC** — used for signing/broadcasting native transactions and for
+- **Native REST (LCD)** - bank balances, account info, module queries.
+- **Consensus RPC** - used for signing/broadcasting native transactions and for
   the CosmWasm read client.
-- **EVM JSON-RPC** — standard `eth_*` calls plus the QoreChain `qor_*`
+- **EVM JSON-RPC** - standard `eth_*` calls plus the QoreChain `qor_*`
   namespace and the EVM precompiles.
-- **SVM JSON-RPC** — Solana-compatible RPC for the SVM runtime.
+- **SVM JSON-RPC** - Solana-compatible RPC for the SVM runtime.
 
 The `qor_*` JSON-RPC namespace exposes QoreChain-specific reads such as
 tokenomics, PQC key status, hybrid-signature mode, cross-VM messages, and
@@ -60,10 +60,10 @@ fromBase("1500000");  // "1.5"      (uqor -> QOR)
 
 The same key material can be expressed in three address formats:
 
-- **native** — bech32 with the `qor` prefix (`qor1…`), validators use
+- **native** - bech32 with the `qor` prefix (`qor1…`), validators use
   `qorvaloper`.
-- **EVM** — `0x…`, EIP-55 checksummed.
-- **SVM** — base58 of the ed25519 public key.
+- **EVM** - `0x…`, EIP-55 checksummed.
+- **SVM** - base58 of the ed25519 public key.
 
 See [Accounts & PQC signing](accounts-pqc.md) for the derivation paths.
 

@@ -11,13 +11,13 @@ the authorization.
 
 Shows:
 
-- `cosmosAuthSignBytes(...)` — the byte-exact 32-byte digest the wallet signs
-- `buildPhantomExecuteCosmos(...)` — sign the digest with a Phantom-style
+- `cosmosAuthSignBytes(...)` - the byte-exact 32-byte digest the wallet signs
+- `buildPhantomExecuteCosmos(...)` - sign the digest with a Phantom-style
   ed25519 wallet and get a relayer-ready `MsgExecuteCosmos`
-- `qorechainRegistry().encode(...)` — prove the message encodes for broadcast
+- `qorechainRegistry().encode(...)` - prove the message encodes for broadcast
 
 The example uses a local ed25519 keypair to stand in for Phantom (in a browser,
-that is `window.solana`). It **builds and prints** the message — this runs
+that is `window.solana`). It **builds and prints** the message - this runs
 without a node.
 
 ## Dry run only

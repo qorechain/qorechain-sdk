@@ -30,7 +30,7 @@ import java.util.List;
  * {@link CallResponse} carries {@code executed}, {@code data} (the return value)
  * and {@code gasUsed} alongside the chain-assigned message id. Set
  * {@link CallOptions#async} to queue the call for a later {@code ProcessQueue}
- * dispatch instead — nothing has run yet then, and only the message id is
+ * dispatch instead - nothing has run yet then, and only the message id is
  * meaningful.
  *
  * <p>Payload handling: callers supply either a raw {@code byte[]} (used as-is)
@@ -61,7 +61,7 @@ public final class CrossVMClient {
         /**
          * Source VM (default {@link VMType#EVM}).
          *
-         * <p>The chain IGNORES this on input — it derives the origin lane from the
+         * <p>The chain IGNORES this on input - it derives the origin lane from the
          * execution context, because a caller describing itself is not evidence of what
          * it is. It is still sent (and still accepted) so older clients keep working;
          * setting it changes nothing about how the call is routed or charged.
@@ -79,7 +79,7 @@ public final class CrossVMClient {
          *
          * <p>Default {@code false}: execute now and return the callee's answer, which is
          * what a caller that needs the result requires. When {@code true}, the response
-         * carries {@code executed == false}, no {@code data} and no {@code gasUsed} — only
+         * carries {@code executed == false}, no {@code data} and no {@code gasUsed} - only
          * the message id, which {@link #getMessage} can be polled with.
          */
         public boolean async = false;
@@ -192,7 +192,7 @@ public final class CrossVMClient {
 
     /**
      * Build, sign, and broadcast ONE transaction containing N
-     * {@code MsgCrossVMCall} messages — all-or-nothing atomic execution.
+     * {@code MsgCrossVMCall} messages - all-or-nothing atomic execution.
      */
     public Broadcaster.Result callAtomic(List<CallOptions> opts) {
         List<TypedMessage> messages = new ArrayList<>(opts.size());
@@ -220,7 +220,7 @@ public final class CrossVMClient {
     /**
      * Decode the {@code MsgCrossVMCallResponse} entries carried by a broadcast result.
      *
-     * <p>Returns an empty list when the node returned no per-message responses — a
+     * <p>Returns an empty list when the node returned no per-message responses - a
      * {@code sync}/{@code async} broadcast returns before the messages have run, so set
      * {@link Signer#broadcastMode} to {@link Broadcaster.Mode#COMMIT} to get them.
      * Responses of other types (a mixed transaction body) are skipped.
@@ -230,8 +230,8 @@ public final class CrossVMClient {
     }
 
     /**
-     * Decode the {@code MsgCrossVMCallResponse} entries out of a tx result's {@code data}
-     * — a protobuf {@code TxMsgData} whose field 2 holds the per-message response
+     * Decode the {@code MsgCrossVMCallResponse} entries out of a tx result's {@code data} -
+     * a protobuf {@code TxMsgData} whose field 2 holds the per-message response
      * {@code Any}s.
      *
      * <p>{@code TxMsgData} is read field-by-field rather than through a generated class

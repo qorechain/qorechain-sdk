@@ -2,7 +2,7 @@
  * Block-explorer URL builders.
  *
  * These are config-driven: a URL is produced only when the network's
- * `explorerUrl` is set. No public explorer hostname is baked into the SDK — the
+ * `explorerUrl` is set. No public explorer hostname is baked into the SDK - the
  * built-in presets leave `explorerUrl` undefined, and apps supply it through a
  * network override (e.g. `createClient({ network: { ...getNetwork("mainnet"),
  * explorerUrl: "https://explorer.example" } })`).
@@ -20,7 +20,7 @@ export interface ExplorerConfig {
 function requireExplorerUrl(network: ExplorerConfig): string {
   if (!network.explorerUrl) {
     throw new Error(
-      "explorer URL not configured for this network — set endpoints/explorerUrl",
+      "explorer URL not configured for this network - set endpoints/explorerUrl",
     );
   }
   return network.explorerUrl;

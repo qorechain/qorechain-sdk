@@ -1,8 +1,8 @@
 /**
  * Shared HTTP transport for the read/query clients.
  *
- * Provides two primitives — {@link getJson} for REST GETs and
- * {@link postJsonRpc} for JSON-RPC POSTs — both built on the global `fetch`.
+ * Provides two primitives - {@link getJson} for REST GETs and
+ * {@link postJsonRpc} for JSON-RPC POSTs - both built on the global `fetch`.
  * `fetch` is injectable so tests can mock the network entirely; nothing here
  * ever performs a real request on its own.
  *
@@ -68,7 +68,7 @@ function resolveFetch(opts?: HttpOptions): FetchLike {
   const f = opts?.fetch ?? (globalThis.fetch as FetchLike | undefined);
   if (!f) {
     throw new Error(
-      "no fetch implementation available — pass `fetch` in the client options",
+      "no fetch implementation available - pass `fetch` in the client options",
     );
   }
   return f;

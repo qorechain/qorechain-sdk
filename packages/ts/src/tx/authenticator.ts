@@ -3,18 +3,18 @@
  *
  * QoreChain "authenticator lanes" let a linked external key (a Phantom ed25519
  * key, or an EVM secp256k1 key) spend from the ONE canonical PQC-required
- * account under least-privilege, spend-limited, revocable terms — WITHOUT the
+ * account under least-privilege, spend-limited, revocable terms - WITHOUT the
  * external key ever producing an ML-DSA co-signature. A relayer submits and
  * pays fees (its own hybrid-PQC signature satisfies the ante on the envelope);
  * the authenticator's signature over the domain-separated, replay-bound
  * sign-bytes below IS the authorization.
  *
  * There are three lanes:
- *   - EVM lane    — `MsgExecuteEVM`:    an EVM call/transfer from the account's
+ *   - EVM lane - `MsgExecuteEVM`:    an EVM call/transfer from the account's
  *                   0x address, authorized by {@link evmAuthSignBytes}.
- *   - Native lane — `MsgExecuteCosmos`: a bank send from the account, authorized
+ *   - Native lane - `MsgExecuteCosmos`: a bank send from the account, authorized
  *                   by {@link cosmosAuthSignBytes}.
- *   - Key rotation — `MsgRotatePQCKey`: dual-signed over
+ *   - Key rotation - `MsgRotatePQCKey`: dual-signed over
  *                    {@link rotationSignBytes}.
  *
  * The digests here are rebuilt BYTE-FOR-BYTE from what the chain re-derives
@@ -23,7 +23,7 @@
  * replay / 10 permission / 5 spending-limit / 6 session-expired; codespace
  * `pqc`, code 21 hybrid-verify-failed).
  *
- * These are pure byte-builders — no wallet, no network. See
+ * These are pure byte-builders - no wallet, no network. See
  * {@link ../wallet/authenticator} for the DX builders that sign them.
  */
 
@@ -164,7 +164,7 @@ export interface EvmAuthSignBytesV2Input extends EvmAuthSignBytesInput {
  *
  * v1 left the gas limit to whoever relayed the message, so a relayer could
  * replay a valid signature with a different limit. The chain verifies exactly
- * one form per block: v1 below the v3.2.3 upgrade, v2 from it — pick with
+ * one form per block: v1 below the v3.2.3 upgrade, v2 from it - pick with
  * {@link resolveEvmAuthDigestVersion}.
  */
 export function evmAuthSignBytesV2(input: EvmAuthSignBytesV2Input): Uint8Array {
@@ -191,7 +191,7 @@ export type EvmAuthDigestVersion = "v1" | "v2";
 
 /**
  * The `MsgExecuteEVM` digest the network verifies now: `"v2"` once it has
- * applied v3.2.3, `"v1"` before. Throws when the node cannot be asked — never
+ * applied v3.2.3, `"v1"` before. Throws when the node cannot be asked - never
  * guess, the other form is refused.
  */
 export async function resolveEvmAuthDigestVersion(opts: {
@@ -258,7 +258,7 @@ export interface CosmosAuthSignBytesInput {
   /** The CANONICAL single-coin amount string (e.g. `100uqor`). */
   amount: string;
   /**
-   * The per-authenticator sequence for `(account, pubkey)` — a store counter
+   * The per-authenticator sequence for `(account, pubkey)` - a store counter
    * distinct from the account's own sequence, incremented on each successful
    * Native-lane spend.
    */

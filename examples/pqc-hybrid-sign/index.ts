@@ -1,18 +1,18 @@
 /**
- * pqc-hybrid-sign — post-quantum signing with ML-DSA-87 (Dilithium-5).
+ * pqc-hybrid-sign - post-quantum signing with ML-DSA-87 (Dilithium-5).
  *
  * Part 1 (runs fully offline, no node needed):
  *  - generatePqcKeypair() → an ML-DSA-87 keypair
  *  - pqcSign() / pqcVerify() → sign a message and verify it (and a tamper check)
  *
- * Part 2 (also offline — builds, does NOT broadcast):
+ * Part 2 (also offline - builds, does NOT broadcast):
  *  - buildHybridTx() assembles a transaction carrying BOTH a classical
  *    secp256k1 signature AND the ML-DSA-87 signature attached as a
  *    PQCHybridSignature extension.
  *
  * On-chain prerequisite for hybrid txs: the signer's PQC public key must be
  * registered via the chain's MsgRegisterPQCKeyV2 before a hybrid tx will
- * PQC-verify — UNLESS you set `includePqcPublicKey: true`, which embeds the key
+ * PQC-verify - UNLESS you set `includePqcPublicKey: true`, which embeds the key
  * in the extension for auto-registration on first use. This example just builds
  * the signed bytes locally; broadcasting them needs a reachable node and a
  * funded, sequence-correct account.
@@ -68,7 +68,7 @@ async function buildHybrid(): Promise<void> {
   // The post-quantum half.
   const pqcKeypair = generatePqcKeypair();
 
-  // The registry must encode the messages canonically — use cosmjs defaults.
+  // The registry must encode the messages canonically - use cosmjs defaults.
   const registry = new Registry(defaultRegistryTypes);
 
   const built = await buildHybridTx({
@@ -103,7 +103,7 @@ async function buildHybrid(): Promise<void> {
   console.log(`txRaw bytes:       ${built.txRawBytes.length} bytes (ready to broadcast)`);
 
   // The PQC signature is computed over the framed (body-without-extension +
-  // authInfo) message — verify it locally against the embedded key.
+  // authInfo) message - verify it locally against the embedded key.
   const pqcOk = pqcVerify(
     pqcKeypair.publicKey,
     built.pqcSignedMessage,

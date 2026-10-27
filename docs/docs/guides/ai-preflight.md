@@ -40,10 +40,10 @@ const preflight = await simulateWithRiskScore(publicClient, {
   value: 0n,
 });
 
-console.log(preflight.gas);     // bigint — eth_estimateGas
+console.log(preflight.gas);     // bigint - eth_estimateGas
 console.log(preflight.risk);    // { score: bigint, level: number }
 console.log(preflight.anomaly); // { anomalyScore: bigint, flagged: boolean }
-console.log(preflight.safe);    // boolean — advisory verdict
+console.log(preflight.safe);    // boolean - advisory verdict
 ```
 
 `safe` is computed as `risk.level < RISK_LEVEL_UNSAFE_THRESHOLD && !anomaly.flagged`,
@@ -84,7 +84,7 @@ import { AI_RISK_SCORE_ADDRESS, AI_ANOMALY_CHECK_ADDRESS } from "@qorechain/evm"
 ## Availability
 
 The AI precompiles exist on QoreChain network nodes. On a plain EVM node the
-calls throw a "not available" error — treat a thrown error from any of these
+calls throw a "not available" error - treat a thrown error from any of these
 helpers as "feature not present on this node".
 
 See the runnable [`ai-preflight` example](https://github.com/qorechain/qorechain-sdk/tree/main/examples/ai-preflight).

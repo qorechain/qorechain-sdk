@@ -5,7 +5,7 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [0.10.0] — 2026-10-25
+## [0.10.0] - 2026-10-25
 
 Client support for chain v3.2.4, applied on mainnet at height 3,742,566. Every
 language was checked with real transactions on the testnet (register a key with
@@ -50,7 +50,7 @@ early unlock).
   `TxError.decode` on text-only input. A delivered result with code 0 still
   decodes as success.
 
-## [0.9.1] — 2026-10-21 (Java only)
+## [0.9.1] - 2026-10-21 (Java only)
 
 ### Security
 
@@ -59,7 +59,7 @@ early unlock).
   the SDK calls, but dependency scanners flag them in every project that pulls
   the SDK in. No API change; the other languages stay at 0.9.0.
 
-## [0.9.0] — 2026-10-20
+## [0.9.0] - 2026-10-20
 
 Client support for chain v3.2.2 and v3.2.3 in all five SDKs. Mainnet applied
 v3.2.2 at height 3,556,788 and v3.2.3 at height 3,662,051.
@@ -70,8 +70,8 @@ v3.2.2 at height 3,556,788 and v3.2.3 at height 3,662,051.
   ML-DSA-87) signature, and `TxClient` signed classically only, so
   `bankSend`, the rollup / multilayer / cross-VM clients and every composer
   sent through it were refused on the public networks (`pqc` 20). Pass the
-  account's keypair — `TxClient.connect({ …, pqcKeypair, rest })` or
-  `client.connectTx(signer, { pqcKeypair })` — and every transaction is signed
+  account's keypair - `TxClient.connect({ …, pqcKeypair, rest })` or
+  `client.connectTx(signer, { pqcKeypair })` - and every transaction is signed
   hybrid; a bare key registration stays classical (the chain's bootstrap
   path). `fee: "auto"` simulates the hybrid transaction itself and adds
   `HYBRID_VERIFY_GAS` for the post-quantum verification, which simulation
@@ -104,7 +104,7 @@ v3.2.2 at height 3,556,788 and v3.2.3 at height 3,662,051.
 - **Abstract-account v2 digest** (`evmAuthSignBytesV2`), which binds the call's
   gas limit, and a resolver that picks v1 or v2 per network. The vectors were
   computed with the chain's own functions.
-- `MsgUpdateAuthority` (license) and decoding of `pqc` codes 230–234.
+- `MsgUpdateAuthority` (license) and decoding of `pqc` codes 230-234.
 
 ### Deprecated (chain v3.2.3)
 
@@ -120,7 +120,7 @@ v3.2.2 at height 3,556,788 and v3.2.3 at height 3,662,051.
   `MsgClearEVMDelegation`). From v3.2.2 a type-4 transaction is admitted only
   when every account whose authorization takes effect has consented, with its
   post-quantum key, to exactly that delegate. Builders check the bounds
-  (`blocks` 1–17,280, a 0x 20-byte delegate). The consent query is
+  (`blocks` 1-17,280, a 0x 20-byte delegate). The consent query is
   `evm_delegation_consent`. A helper gives the nonce the tuple must carry:
   the account's nonce for a sponsored transaction, nonce + 1 for its own. A
   classifier covers `pqc` 60/61.
@@ -283,7 +283,7 @@ v3.2.2 at height 3,556,788 and v3.2.3 at height 3,662,051.
   `try_derive_pqc_canonical` (Rust), `Authenticator.canonicalAccount` /
   `Authenticator.derivePqcCanonical` (Java, now public). An account that is not a
   valid address is refused, as in Go; Rust's existing infallible
-  `derive_pqc_canonical` keeps its signature and hashes such input as given —
+  `derive_pqc_canonical` keeps its signature and hashes such input as given -
   use `try_derive_pqc_canonical` to get the error.
 
 ### Changed
@@ -302,9 +302,9 @@ v3.2.2 at height 3,556,788 and v3.2.3 at height 3,662,051.
   refuses. `placement: "non_critical_extension_options"` is still accepted.
   `buildHybridTx` always used the critical slot and is unaffected.
 
-### Fixed — documentation, and it was wrong in the dangerous direction
+### Fixed - documentation, and it was wrong in the dangerous direction
 
-- **A `SpendingRule` on a linked authenticator IS enforced by the chain — when
+- **A `SpendingRule` on a linked authenticator IS enforced by the chain - when
   one exists.** The
   0.8.0 release notes, the root README and the Authenticators guide all said it
   was "not currently enforced" on the `ExecuteCosmos` / `ExecuteEVM` lanes and
@@ -317,7 +317,7 @@ v3.2.2 at height 3,556,788 and v3.2.3 at height 3,662,051.
   the claim was written from a security report and never re-checked after the fix
   landed one day later. It survived because `x/abstractaccount` in the public
   `qorechain-core` repository ships as `keeper_stub.go` / `module_stub.go`, with
-  the spend-accumulator store key defined, documented — and read by nothing. The
+  the spend-accumulator store key defined, documented - and read by nothing. The
   enforcement lives in the private tree behind `//go:build full`. Absence of the
   logic in the public repository is how the split is designed, not evidence that
   a rule goes unenforced.
@@ -325,7 +325,7 @@ v3.2.2 at height 3,556,788 and v3.2.3 at height 3,662,051.
   The condition matters as much as the correction. The chain resolves the rule in
   order: the authenticator's own rule if set and `Enabled`; otherwise the first
   `Enabled` rule on the account; otherwise **none, and then there is no limit**.
-  A rule stored with `Enabled` false is **no limit, not a zero limit** — it
+  A rule stored with `Enabled` false is **no limit, not a zero limit** - it
   resolves to nothing and the check returns immediately, while the account still
   reports it in its rule count, which counts stored rules rather than active
   ones. Anything that displays rules should display the enabled state.
@@ -340,15 +340,15 @@ v3.2.2 at height 3,556,788 and v3.2.3 at height 3,662,051.
   `erc20/<contract>`, guarding `transfer`, `transferFrom` and `approve` but not
   other methods that move tokens; and an EVM outflow below 1 uqor truncates down,
   adding nothing to the daily accumulator. A rule that is `Enabled` must also
-  constrain something — the chain refuses one with no per-transaction limit, no
+  constrain something - the chain refuses one with no per-transaction limit, no
   daily limit and no denomination list.
 
   A limit bounds the damage a linked key can do; it does not remove the need to
   register only the permissions that key needs and to revoke it when it is done.
 
 - **The `abstractaccount` module is disabled on both networks, and from the
-  v3.2.0 upgrade that flag is enforced on every path** — account creation, key
-  linking, and both execution lanes — so on mainnet a linked key cannot be
+  v3.2.0 upgrade that flag is enforced on every path** - account creation, key
+  linking, and both execution lanes - so on mainnet a linked key cannot be
   registered or spend, refused with `abstract account module is disabled`
   (code 9). No message can switch it on: there is no `MsgUpdateConfig`, and
   `SetConfig` is reachable only from genesis and upgrade handlers. Check
@@ -358,7 +358,7 @@ v3.2.2 at height 3,556,788 and v3.2.3 at height 3,662,051.
   a 60,000,000 uqor spend against an enabled 5,000,000 per-transaction rule is
   refused with `per-tx limit 5000000uqor exceeded (attempted 60000000)`
   (codespace `abstractaccount`), 1,000,000 passes, and the same 60,000,000 spend
-  passes when the rule is **disabled** — with the account reporting
+  passes when the rule is **disabled** - with the account reporting
   `spending_rules_count: 1` either way.
 
 This is a documentation correction only: no code changed, and the published
@@ -367,7 +367,7 @@ README, the Authenticators guide and these notes.
 
 ## [0.8.2]
 
-### Added — required by chain v3.2.0: the EVM authorisation window
+### Added - required by chain v3.2.0: the EVM authorisation window
 
 From v3.2.0 an EVM transaction is admitted only from an account that holds a
 registered PQC key **and** has an open, unexhausted authorisation window, opened
@@ -378,8 +378,8 @@ to open one, so every EVM transaction it sent was refused.
 
 - `openEvmWindowMsg` / `closeEvmWindowMsg` compose `MsgOpenEVMWindow` /
   `MsgCloseEVMWindow`, checking the chain's bounds client-side first: `blocks`
-  1…17280, `maxTxs` 1…1000, `maxValue` above 0. Every field is required — the
-  chain refuses a missing one rather than defaulting it — and opening replaces
+  1…17280, `maxTxs` 1…1000, `maxValue` above 0. Every field is required - the
+  chain refuses a missing one rather than defaulting it - and opening replaces
   any existing window.
 - `fetchEvmWindow` reads `/qorechain/pqc/v1/evm_window/{address}`, which answers
   `found: false` instead of failing when there is none, so it is safe to poll.
@@ -444,13 +444,13 @@ user authorise.
 
 ## [0.8.1]
 
-### Fixed — required before the mainnet upgrade
+### Fixed - required before the mainnet upgrade
 
 - **The sign-bytes resolver now asks for every v2 upgrade plan name.** 0.8.0 asked
   only `applied_plan/v3.1.98`. The chain recognises two names: the testnet took
   the switch under `v3.1.98` and keeps that record, while **mainnet applies
   `v3.2.0`**. So 0.8.0 is correct on the testnet today and would have answered v1
-  on mainnet after its upgrade — and the chain refuses a v1 hybrid signature with
+  on mainnet after its upgrade - and the chain refuses a v1 hybrid signature with
   `pqc` code 21. `"auto"` now queries `SIGN_BYTES_V2_UPGRADES` (`"v3.2.0"`, then
   `"v3.1.98"`) in order and uses v2 if any applied height is above 0, stopping at
   the first. `SIGN_BYTES_V2_UPGRADE` is now the current name, `"v3.2.0"`, and the
@@ -458,15 +458,15 @@ user authorise.
   an optional plan name and `fetchSignBytesV2AppliedHeightAny` returns the first
   positive height across the list.
 - **Go only (`packages/go/v0.8.1`):** `signbytes.Resolve` takes
-  `(ctx, restURL, chainID, version)` — the URL first, the opposite of the other
+  `(ctx, restURL, chainID, version)` - the URL first, the opposite of the other
   bindings. A swapped pair put a URL in `chainID`, which is not a legacy network,
-  so the resolver answered v2 with no request and no error — the form mainnet
+  so the resolver answered v2 with no request and no error - the form mainnet
   refuses. A swapped pair, an empty `chainID`, and a `restURL` that is not a URL
   are now refused with `ErrUnresolvedVersion`.
 
 ## [0.8.0]
 
-### Breaking — hybrid sign-bytes follow the network (chain v3.1.98)
+### Breaking - hybrid sign-bytes follow the network (chain v3.1.98)
 
 - **The post-quantum half of a hybrid transaction is now signed in the form the
   target network verifies.** Chain v3.1.98 introduced a v2 sign-bytes form that
@@ -505,14 +505,14 @@ user authorise.
   chain's own implementation, byte for byte, in every language.
 - **Upgrade checklist.** `rest` is optional in the TypeScript types, so a caller that forgets it compiles cleanly and only fails at runtime on `qorechain-vladi` / `qorechain-diana`. Cover your wiring with a runtime test, not just a type check. In unit tests, pass `signBytesVersion: "v1"` or `"v2"` explicitly (or inject `fetch`): `"auto"` asks the network, so a test that omits it silently depends on a live node.
 
-### Removed — security
+### Removed - security
 
-- **Wallet-signature account derivation is gone.** The Phantom "P1a" helpers —
+- **Wallet-signature account derivation is gone.** The Phantom "P1a" helpers -
   `unifiedAccountFromPhantomSignature` (all languages) and `connectPhantomUnified`
-  (TypeScript) — derived an account's **spend key** from a wallet signature over a
+  (TypeScript) - derived an account's **spend key** from a wallet signature over a
   fixed, public message. That is unsafe by construction: a wallet signature is a
   bearer secret, wallets return it to whatever page requests it, and the signature
-  over a fixed message is reproducible — so whoever obtains it controls the
+  over a fixed message is reproducible - so whoever obtains it controls the
   account. No in-message binding (origin, nonce) can fix this, because the page
   supplies the bytes the wallet signs and the derivation has to stay reproducible.
 
@@ -520,9 +520,9 @@ user authorise.
   authenticator lanes instead** (shipped in 0.7.0, chain v3.1.85): register the
   external key with `MsgRegisterAuthenticator` and spend via `MsgExecuteCosmos` /
   `MsgExecuteEVM`. There the external key only ever *authorises* a spend under a
-  permission scope, and can be revoked — it never becomes the spend key.
+  permission scope, and can be revoked - it never becomes the spend key.
 
-  > **CORRECTED — the paragraph this note replaces was wrong.** It said
+  > **CORRECTED - the paragraph this note replaces was wrong.** It said
   > a `SpendingRule` was not enforced on the `ExecuteCosmos` / `ExecuteEVM` lanes
   > and that a linked key should be assumed able to spend the full balance. It
   > **is** enforced, fail-closed, on both lanes. Scope a linked key deliberately
@@ -546,7 +546,7 @@ user authorise.
   surface the callee's return value, execution flag and gas used.
   **Requires a network on v3.1.98.** Before its upgrade a network queues every
   call, does not know the `async` field (a transaction that sets it is rejected),
-  and returns none of the new response fields — mainnet is in that state until
+  and returns none of the new response fields - mainnet is in that state until
   its v3.1.98 upgrade.
 - `MsgUpdateParams` composer for the `svm` module (`/qorechain.svm.v1.MsgUpdateParams`),
   the governance message that replaces the SVM runtime parameters. Also chain
@@ -559,7 +559,7 @@ user authorise.
   compatibility and is now documented as advisory only.
 - **Strict ML-DSA-87 sizes in every binding.** The bindings disagreed on what
   counts as a valid signature: a Go binding (CIRCL v1.6.1) accepted a 4628-byte
-  signature — the FIPS 204 size 4627 plus one trailing byte — as VALID, while
+  signature - the FIPS 204 size 4627 plus one trailing byte - as VALID, while
   Rust `fips204` rejected it. A signature one binding accepts and another refuses
   is a consensus hazard and a malleability surface, so the SDKs now check the
   exact sizes themselves before calling the library underneath: signature 4627,
@@ -570,26 +570,26 @@ user authorise.
 
 ### Added
 
-- **Authenticator lanes (chain v3.1.85)** — a linked external key (Phantom
+- **Authenticator lanes (chain v3.1.85)** - a linked external key (Phantom
   ed25519, or a MetaMask/secp256k1 key by its 20-byte address) can spend from the
   one canonical PQC-required account through a **relayer**, under least-privilege,
-  revocable terms — without the external key ever producing an ML-DSA
+  revocable terms - without the external key ever producing an ML-DSA
   co-signature. (A `SpendingRule` on a linked key **is** enforced by the chain on
-  both lanes when one is set — see the correction at the top of this file; the
+  both lanes when one is set - see the correction at the top of this file; the
   caveat printed here and in 0.8.0
   was wrong.)
   Added across all five languages:
   - New messages + composers: `MsgExecuteEVM`, `MsgExecuteCosmos`
     (`/qorechain.abstractaccount.v1.*`), and `MsgRotatePQCKey`
     (`/qorechain.pqc.v1.*`).
-  - Byte-exact sign-bytes helpers — `evmAuthSignBytes`
+  - Byte-exact sign-bytes helpers - `evmAuthSignBytes`
     (`sha256("qorechain-evm-auth-v1" ‖ …)`), `cosmosAuthSignBytes`
     (`"qorechain-cosmos-auth-v1"`), and `rotationSignBytes`
-    (`qorechain-pqc-rotate-v1|…`) — the digest an authenticator signs.
+    (`qorechain-pqc-rotate-v1|…`) - the digest an authenticator signs.
   - `permissionSchema` query (the on-chain permission taxonomy) and new decoded
     error codes: abstractaccount `5` SpendingLimitExceeded, `6` SessionKeyExpired,
     `10` PermissionDenied, `11` AuthenticatorReplay; pqc `21` HybridVerifyFailed.
-  - Same-algorithm PQC key rotation — `rotatePqcKeyMsgFromMnemonic` +
+  - Same-algorithm PQC key rotation - `rotatePqcKeyMsgFromMnemonic` +
     `derivePqcLegacy` migrate a legacy `shake256(mnemonic)` key to the canonical
     address-bound key (dual-signed with both keys).
   - TypeScript wallet builders: `buildPhantomExecuteEvm` / `buildPhantomExecuteCosmos`
@@ -605,7 +605,7 @@ user authorise.
 
 ### Fixed
 
-- **Hybrid-signature tx extension encoding (consensus-critical)** — the
+- **Hybrid-signature tx extension encoding (consensus-critical)** - the
   `/qorechain.pqc.v1.PQCHybridSignature` tx-body extension was serialized as
   Go-JSON into `Any.value`, which the chain's tx decoder rejected at CheckTx (the
   leading `0x7b` `{` was misread as protobuf field 15 `start_group`, giving a tx
@@ -621,49 +621,49 @@ user authorise.
 
 ### Added
 
-- **Unified eth-native wallet** — `deriveUnifiedAccount` / `unifiedAccountFromSeed`
+- **Unified eth-native wallet** - `deriveUnifiedAccount` / `unifiedAccountFromSeed`
   (plus `addressesFrom20` / `qoreAddresses`) across all five languages: one
-  `eth_secp256k1` key is one 20-byte identity rendered three ways — `qor1…`
+  `eth_secp256k1` key is one 20-byte identity rendered three ways - `qor1…`
   (bech32), `0x…` (EIP-55), and SVM base58 (the 20 bytes right-padded with 12 zero
   bytes to 32). A deposit to any of the three lands in one balance, and the key
   spends on every lane. The legacy coin-type-118 `deriveNativeAccount` remains
   supported (additive).
-- **eth_secp256k1 Native-lane signing** — `signClassicalEth` / `signHybridEth`:
+- **eth_secp256k1 Native-lane signing** - `signClassicalEth` / `signHybridEth`:
   the classical signature is secp256k1 over `keccak256(SignDoc)` and the signer
   public key is `/cosmos.evm.crypto.v1.ethsecp256k1.PubKey`; the hybrid path adds
   the ML-DSA-87 post-quantum signature. Account parsing accepts eth_secp256k1
   public keys. (Chain v3.1.83.)
-- **Phantom P1a** — `unifiedAccountFromPhantomSignature` / `connectPhantomUnified`
+- **Phantom P1a** - `unifiedAccountFromPhantomSignature` / `connectPhantomUnified`
   (TypeScript): derive a canonical, non-custodial unified account from a
   deterministic Phantom signature (`shake256(signature, 32)`), so a Phantom user
   gets all three QoreChain addresses and can spend on every lane.
-  > **Removed in 0.8.0 — do not use.** Deriving a spend key from a wallet
+  > **Removed in 0.8.0 - do not use.** Deriving a spend key from a wallet
   > signature is unsafe; see the 0.8.0 entry. Accounts created this way must be
   > treated as exposed.
-- **New chain surface (v3.1.83)** — abstractaccount `MsgRegisterAuthenticator` /
+- **New chain surface (v3.1.83)** - abstractaccount `MsgRegisterAuthenticator` /
   `MsgRevokeAuthenticator` composers; typed query clients for `amm`, `license`,
   and `abstractaccount`; and the `multilayer` `Anchor` / `Anchors` state-anchor
   queries.
 
 ### Changed
 
-- **Documentation terminology** — the native lane (formerly described as the
+- **Documentation terminology** - the native lane (formerly described as the
   "Cosmos-SDK" lane) is now referred to as **QoreChain Native** (or "Native")
   throughout the docs, guides, and package manuals. Dependency names, on-chain
   type URLs, and the CosmWasm VM name are unchanged.
 
-## 0.5.2 — 2026-07-02
+## 0.5.2 - 2026-07-02
 
 ### Fixed
 - `@qorechain/sdk` no longer crashes on bare import: `@qorechain/evm` (statically
   re-exported for the AI pre-flight helpers) moved from optional peer to a regular
-  dependency — it imports cleanly without viem. `viem` stays an optional peer.
+  dependency - it imports cleanly without viem. `viem` stays an optional peer.
 
 ## [0.5.1]
 
 ### Fixed
 
-- **Deterministic ML-DSA-87 signing (consensus-critical)** — the chain's PQC
+- **Deterministic ML-DSA-87 signing (consensus-critical)** - the chain's PQC
   verifier accepts ONLY deterministic (FIPS-204 §3.4, `rnd` = 32 zero bytes)
   ML-DSA-87 signatures; hedged/randomized signing is rejected with codespace
   `pqc`. All language bindings now sign deterministically by default
@@ -672,18 +672,18 @@ user authorise.
   BouncyCastle's deterministic path; Go already used circl's deterministic
   mode), with explicit hedged opt-ins for off-chain use, and regression tests
   pinned to the shared `qorechain-pqc` deterministic signature vectors.
-- **PQC key registration** — the quantum-safe DX helpers now broadcast
+- **PQC key registration** - the quantum-safe DX helpers now broadcast
   `/qorechain.pqc.v1.MsgRegisterPQCKeyV2` (explicit `algorithm_id`; the chain's
   classical-exempt bootstrap path) instead of the legacy `MsgRegisterPQCKey`,
   with `key_type` defaulting to `"hybrid"` in every language.
 
 ### Changed
 
-- **Fee-floor defaults** — default/fallback gas prices raised from `0.025uqor`
+- **Fee-floor defaults** - default/fallback gas prices raised from `0.025uqor`
   to `0.15uqor` per unit of gas, above the genesis min-gas-price (BaseFee) of
   `0.1uqor`/gas enforced on both networks. User-supplied gas prices are
   untouched.
-- **Docs & examples** — READMEs, guides, and example configs now show the live
+- **Docs & examples** - READMEs, guides, and example configs now show the live
   public endpoints (`rpc`/`api`/`evm`/`svm.qore.host`,
   `*-testnet.qore.host`, `wss://rpc.qore.host/websocket`) and the public
   explorer at `explore.qore.network`.
@@ -692,22 +692,22 @@ user authorise.
 
 ### Added
 
-- **AI pre-flight risk scoring** — `simulateWithRiskScore`, `aiRiskScore`, and
+- **AI pre-flight risk scoring** - `simulateWithRiskScore`, `aiRiskScore`, and
   `aiAnomalyCheck` call the on-chain AI EVM precompiles (`aiRiskScore(bytes)` at
   `0x…0B01`, `aiAnomalyCheck(address,uint256)` at `0x…0B02`) via `eth_call` to
   return gas plus a risk score/level and an anomaly score/flag, with an advisory
   `safe` verdict. Available across TypeScript, Python, Go, Rust, and Java.
-- **Unified cross-VM calls + atomic triple-VM transactions** — a high-level
+- **Unified cross-VM calls + atomic triple-VM transactions** - a high-level
   cross-VM client (`call` / `buildCall` / `callAtomic` / `getMessage`) over
   `MsgCrossVMCall`, targeting any VM (`evm` | `cosmwasm` | `svm`) from one account
   and one signature; `callAtomic` packs multiple cross-VM calls into a single
   transaction. TypeScript encodes payloads per VM (EVM ABI, CosmWasm JSON, raw);
   the other languages accept raw payloads and CosmWasm JSON.
-- **Quantum-safe DX** — `isPqcRegistered` / `getPqcStatus` /
+- **Quantum-safe DX** - `isPqcRegistered` / `getPqcStatus` /
   `ensurePqcRegistered` (idempotent, via `qor_getPQCKeyStatus` +
   `MsgRegisterPQCKey`) and `migrateToHybrid` (+ `MsgMigratePQCKey`), across all
   five languages.
-- **`@qorechain/react`** (new package) — `QoreChainProvider`, hooks
+- **`@qorechain/react`** (new package) - `QoreChainProvider`, hooks
   (`useQoreClient`, `useAccount`, `useBalance`, `useConnect`/`useWallet`,
   `useTx`, `usePqcStatus`), and `ConnectButton` / `QuantumSafeBadge` components.
 - Docs guides for AI pre-flight, cross-VM, quantum-safe, and React; runnable
@@ -717,10 +717,10 @@ user authorise.
 
 ### Added
 
-- Rollup withdrawals — `MsgExecuteWithdrawal` (the L2→L1 rollup exit path) is now
+- Rollup withdrawals - `MsgExecuteWithdrawal` (the L2→L1 rollup exit path) is now
   exposed across all five SDKs, with the rollup batch `withdrawals_root` field.
 - Typed query clients for the `multilayer`, `rdk`, and `bridge` modules.
-- Bridge admin messages — `MsgUpdateEthLightClient`, `MsgUpdateChainConfig`,
+- Bridge admin messages - `MsgUpdateEthLightClient`, `MsgUpdateChainConfig`,
   `MsgSetVerifierBootstrap`.
 - High-level sidechain/paychain (`multilayer`) and rollup (`rdk`) helpers, with
   `register-sidechain` and `rollup-lifecycle` examples, a `rollup-app` CLI
@@ -765,15 +765,15 @@ user authorise.
   for all custom modules, typed message composers + standard Native builders,
   typed query clients, generic message broadcast + hybrid PQC transactions,
   auto-gas, error decoding, tx tracking, block/tx search, utilities, and
-  websocket subscriptions — matching the TypeScript native-chain surface.
+  websocket subscriptions - matching the TypeScript native-chain surface.
 
 - Initial public repository scaffolding for the QoreChain SDK monorepo.
 - `@qorechain/sdk` TypeScript core:
   - Network presets (`NETWORKS`, `getNetwork`, `listNetworks`): live testnet
     (`qorechain-diana`) and live mainnet (`qorechain-vladi`), both with localhost
     defaults.
-  - Account derivation from a single mnemonic — native (`qor1…` secp256k1), EVM
-    (`0x…` EIP-55), and SVM (base58 ed25519) — plus `generateMnemonic` /
+  - Account derivation from a single mnemonic - native (`qor1…` secp256k1), EVM
+    (`0x…` EIP-55), and SVM (base58 ed25519) - plus `generateMnemonic` /
     `validateMnemonic`.
   - Post-quantum cryptography: ML-DSA-87 (Dilithium-5) key generation, signing,
     and verification, with a pluggable `PqcSigner` / `HybridSigner` and a

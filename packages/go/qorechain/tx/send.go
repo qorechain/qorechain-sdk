@@ -48,7 +48,7 @@ type SendMessagesParams struct {
 }
 
 // SendMessages builds and signs a classical (secp256k1-only) transaction
-// carrying any messages. It does not broadcast — pass BuiltTx.TxRawBytes to
+// carrying any messages. It does not broadcast - pass BuiltTx.TxRawBytes to
 // Broadcast (or use BroadcastAndWait).
 //
 // For a quantum-safe transaction over the same messages use BuildHybridMessages,

@@ -1,32 +1,32 @@
 # @qorechain/sdk
 
 Official TypeScript SDK for building decentralized applications on the QoreChain
-network — a quantum-safe, triple-VM Layer 1 with native, EVM, and SVM accounts.
+network - a quantum-safe, triple-VM Layer 1 with native, EVM, and SVM accounts.
 
 ## Features
 
-- **Full message coverage** — typed composers for every chain message (bank,
+- **Full message coverage** - typed composers for every chain message (bank,
   staking, distribution, gov, authz, feegrant, IBC, and the QoreChain custom
   modules), resolved through a message registry.
-- **Browser wallets** — Keplr/Leap (Native); MetaMask/EIP-1193 and
+- **Browser wallets** - Keplr/Leap (Native); MetaMask/EIP-1193 and
   Phantom/Wallet-Standard via the `@qorechain/evm` and `@qorechain/svm` adapters.
-- **Auto-gas** — simulation-based fee estimation, with EVM EIP-1559 and SVM
+- **Auto-gas** - simulation-based fee estimation, with EVM EIP-1559 and SVM
   compute-budget helpers in the adapters.
-- **Subscriptions** — new-block and tx event streams over the consensus RPC.
-- **Error decoding** — structured, human-readable transaction errors.
-- **NFT helpers** — ERC-721 / ERC-1155 wrappers in `@qorechain/evm`.
-- **CosmWasm lifecycle** — query, upload, instantiate/instantiate2, execute,
+- **Subscriptions** - new-block and tx event streams over the consensus RPC.
+- **Error decoding** - structured, human-readable transaction errors.
+- **NFT helpers** - ERC-721 / ERC-1155 wrappers in `@qorechain/evm`.
+- **CosmWasm lifecycle** - query, upload, instantiate/instantiate2, execute,
   migrate, and admin management.
-- **PQC** — ML-DSA-87 (Dilithium-5) signing and hybrid-signature transactions,
+- **PQC** - ML-DSA-87 (Dilithium-5) signing and hybrid-signature transactions,
   plus quantum-safe DX helpers (`ensurePqcRegistered` / `migrateToHybrid`).
-- **Sidechains, paychains & rollups** — high-level `createMultilayerClient` and
+- **Sidechains, paychains & rollups** - high-level `createMultilayerClient` and
   `createRollupClient` helpers (v0.4.0).
-- **Unified cross-VM calls** — `createCrossVMClient` with atomic triple-VM
+- **Unified cross-VM calls** - `createCrossVMClient` with atomic triple-VM
   transactions over `MsgCrossVMCall` (v0.5.0).
-- **AI pre-flight** — on-chain risk/anomaly scoring (`simulateWithRiskScore`)
+- **AI pre-flight** - on-chain risk/anomaly scoring (`simulateWithRiskScore`)
   over the EVM precompiles before you sign (v0.5.0). Not available on the
   public networks today; see below.
-- **React kit** — hooks + connect kit in
+- **React kit** - hooks + connect kit in
   [`@qorechain/react`](https://github.com/qorechain/qorechain-sdk/blob/main/packages/react/README.md).
 
 ## Install
@@ -172,8 +172,8 @@ const res = await signAndBroadcastHybrid({
   names matter: the testnet switched under `v3.1.98` and keeps that record,
   mainnet switches under `v3.2.0`. A client that asks for only one answers v1 on
   the other network, and the chain then refuses every hybrid tx with `pqc` code 21.
-- On `qorechain-vladi` / `qorechain-diana`, `"auto"` without `rest` — or with a
-  node that cannot be asked — **throws** rather than guess. Force a form with
+- On `qorechain-vladi` / `qorechain-diana`, `"auto"` without `rest` - or with a
+  node that cannot be asked - **throws** rather than guess. Force a form with
   `signBytesVersion: "v1"` or `"v2"`.
 - `signAndBroadcastHybrid` and `EthNativeSigner.signAndBroadcast` re-resolve and
   retry once on a `pqc` code 21 refusal. If you broadcast yourself, catch the
@@ -207,7 +207,7 @@ try {
   switch (classifyEvmWindowRejection(err)) {
     case "no-pqc-key": /* register a PQC key first */ break;
     case "no-window":  /* ask the user to authorise, below */ break;
-    case "exhausted":  /* the window ran out — open a new one */ break;
+    case "exhausted":  /* the window ran out - open a new one */ break;
     case "invalid":    /* the bounds were refused */ break;
     default: throw err; // not a window problem
   }
@@ -230,7 +230,7 @@ await walletClient.sendTransaction({ to, value, nonce });
 
 // Whatever remains of the window, at any time:
 const w = await fetchEvmWindow({ rest, address: account.cosmos });
-// w.live, w.remainingTxs, w.remainingValue, w.remainingBlocks — all bigint
+// w.live, w.remainingTxs, w.remainingValue, w.remainingBlocks - all bigint
 ```
 
 - **Opening advances the EVM nonce.** The identity is unified, so the Cosmos
@@ -240,7 +240,7 @@ const w = await fetchEvmWindow({ rest, address: account.cosmos });
   1,000 uqor transfer with 21,000 gas at 112.5 gwei consumes 3,363 uqor. Wei to
   uqor rounds up.
 - **`blocks` is a block count.** 17,280 is roughly 5 hours on the testnet
-  (~1.03 s blocks) and 15 on mainnet (~3.1 s) — not the "24 hours" the chain
+  (~1.03 s blocks) and 15 on mainnet (~3.1 s) - not the "24 hours" the chain
   constant's comment suggests. Show blocks, or compute from recent block time.
 - There is no "open automatically before sending" helper, on purpose: a window
   opened on every send is a click nobody reads. Show the limits and let the user
@@ -366,7 +366,7 @@ Every write also has a `*Msg(...)` variant (`registerSidechainMsg`,
 messages. The challenge game (`challengeBatch` / `resolveChallenge`) and lifecycle
 controls are exposed on the rollup client too.
 
-You can also reach the typed query clients directly — `connectQueryClients`
+You can also reach the typed query clients directly - `connectQueryClients`
 returns `multilayer`, `rdk`, `bridge`, and `crossvm` clients (among others):
 
 ```ts
@@ -393,7 +393,7 @@ See the [multilayer](https://github.com/qorechain/qorechain-sdk/blob/main/docs/d
 QoreChain exposes an on-chain AI risk/anomaly model to any dApp through plain
 `eth_call`s, so you can get an advisory verdict on a transaction **before** it is
 signed or broadcast. The helpers live in `@qorechain/evm` (which owns viem) and
-are re-exported from `@qorechain/sdk` for discovery — install `@qorechain/evm`
+are re-exported from `@qorechain/sdk` for discovery - install `@qorechain/evm`
 and `viem` (an optional peer) to use them.
 
 `simulateWithRiskScore` bundles a gas estimate, a risk score from the
@@ -425,7 +425,7 @@ See the [AI pre-flight](https://docs.qorechain.io/sdk/guides/ai-preflight) guide
 
 QoreChain routes calls across its EVM, CosmWasm, and SVM execution environments
 over a single `MsgCrossVMCall`. `createCrossVMClient` builds, signs, and
-broadcasts these for you — including `callAtomic`, which packs several calls into
+broadcasts these for you - including `callAtomic`, which packs several calls into
 **one** transaction so a triple-VM workflow settles atomically.
 
 This SDK encodes the payload per VM: an `{ evm: { abi, functionName, args } }`
@@ -496,7 +496,7 @@ See the [quantum-safe](https://docs.qorechain.io/sdk/guides/quantum-safe) guide.
 
 ### Unified eth-native wallet (v0.6.0)
 
-One `eth_secp256k1` key = ONE 20-byte identity rendered three ways — `qor1…`
+One `eth_secp256k1` key = ONE 20-byte identity rendered three ways - `qor1…`
 (bech32), `0x…` (EIP-55), and SVM base58 (the 20 bytes right-padded with 12 zero
 bytes to 32). A deposit to any of the three lands in the **same** balance, and the
 key spends on **all** lanes. `deriveUnifiedAccount` uses the Ethereum HD path
@@ -514,9 +514,9 @@ account number / sequence from an eth_secp256k1 on-chain pubkey.
 import { deriveUnifiedAccount, resolveSignBytesVersion, signHybridEth } from "@qorechain/sdk";
 
 const account = await deriveUnifiedAccount(mnemonic);
-account.cosmos; // "qor1…"  — QoreChain Native lane
-account.evm; //    "0x…"   — EIP-55 checksummed
-account.svm; //    "<base58>" — 20 bytes + 12 zero pad
+account.cosmos; // "qor1…" - QoreChain Native lane
+account.evm; //    "0x…" - EIP-55 checksummed
+account.svm; //    "<base58>" - 20 bytes + 12 zero pad
 
 // Sign a QoreChain Native tx from the unified eth key (hybrid PQC path).
 // signHybridEth is synchronous: resolve the sign-bytes form for the network
@@ -541,7 +541,7 @@ const signed = signHybridEth({
 ```
 
 `unifiedAccountFromSeed` uses the 32 bytes it is given **as** the spend key, so
-pass real secret entropy — a CSPRNG seed or a mnemonic-derived key — never a
+pass real secret entropy - a CSPRNG seed or a mnemonic-derived key - never a
 wallet signature or any other value a third party can request. (The signature-
 derived helpers `unifiedAccountFromPhantomSignature` / `connectPhantomUnified`
 were removed in v0.8.0 for exactly that reason and now throw.) To let an
@@ -564,8 +564,8 @@ const status = await client.qor.getCrossVmMessage("42");
 
 ## Authenticator lanes (v0.7.0 / chain v3.1.85)
 
-A linked external key — a Phantom **ed25519** key, or a MetaMask **secp256k1**
-key bound **by address** — can spend from the ONE canonical PQC account through
+A linked external key - a Phantom **ed25519** key, or a MetaMask **secp256k1**
+key bound **by address** - can spend from the ONE canonical PQC account through
 a **relayer** that submits the tx and pays the fee (its own hybrid-PQC signature
 satisfies the ante). The external key **never produces an ML-DSA co-signature**;
 its signature over the domain-separated, replay-bound sign-bytes **is** the
@@ -605,7 +605,7 @@ and `registerEthAuthenticatorMsg` to link an EVM key first.
 **Permission taxonomy & errors.** Query the on-chain permission schema with
 `client.query.getPermissionSchema()` (REST) / `client.grpc.permissionSchema()`
 (gRPC) and compare a candidate action against it before submitting. Failed lanes
-surface structured codes via `decodeTxError` — codespace `abstractaccount`: `5`
+surface structured codes via `decodeTxError` - codespace `abstractaccount`: `5`
 SpendingLimitExceeded, `6` SessionKeyExpired, `10` PermissionDenied, `11`
 AuthenticatorReplay; codespace `pqc`: `21` HybridVerifyFailed.
 
@@ -622,7 +622,7 @@ import {
 
 // Phantom ed25519 authenticator spends from the canonical account; the relayer
 // broadcasts and pays. `nonce` is the linked key's authenticator sequence
-// (0 for a newly linked key, +1 after each accepted execution) — NOT the EVM nonce.
+// (0 for a newly linked key, +1 after each accepted execution) - NOT the EVM nonce.
 const execMsg = await buildPhantomExecuteEvm({
   wallet, // { publicKey, signMessage }
   relayer: "qor1relayer…",
@@ -649,7 +649,7 @@ full lifecycle (register → spend → rotate → revoke).
 - Mainnet chain id: `qorechain-vladi` (live).
 - Testnet chain id: `qorechain-diana` (live).
 - Token: `QOR` / `uqor` (10^6 base units per QOR).
-- Default endpoints point at localhost — override them to reach a real node.
+- Default endpoints point at localhost - override them to reach a real node.
 
 ## License
 

@@ -1,5 +1,5 @@
 /**
- * {@link useTx} — send a transaction and track its status.
+ * {@link useTx} - send a transaction and track its status.
  */
 
 import { useCallback, useState } from "react";

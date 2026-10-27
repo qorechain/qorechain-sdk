@@ -571,7 +571,7 @@ fn rotate_pqc_key_round_trips_through_any() {
 }
 
 /// `MsgUpdateParams` (svm governance) round-trips through `Any`, preserving every
-/// `SVMParams` field — the message replaces the parameters wholesale, so a field
+/// `SVMParams` field - the message replaces the parameters wholesale, so a field
 /// lost in transit would silently reset a runtime limit.
 #[test]
 fn svm_update_params_round_trips_through_any() {
@@ -770,7 +770,7 @@ fn hybrid_tx_b0_excludes_extension_with_custom_message() {
     );
 
     // Strip the extension, re-encode B0', re-frame, and assert it equals the
-    // signed message — the exclude-extension contract.
+    // signed message - the exclude-extension contract.
     let mut stripped = final_body.clone();
     stripped.extension_options.clear();
     let b0_prime = stripped.encode_to_vec();

@@ -5,12 +5,12 @@
 //! `x/abstractaccount/types/{evm,cosmos}_sign.go` and `x/pqc` key rotation. A
 //! linked external key (a Phantom ed25519 key, or a secp256k1 key) can spend from
 //! the ONE unified PQC-required account under least-privilege, spend-limited,
-//! revocable terms — via a relayer — WITHOUT that external key ever producing an
+//! revocable terms - via a relayer - WITHOUT that external key ever producing an
 //! ML-DSA co-signature:
 //!
-//! - **EVM lane** ([`evm_auth_sign_bytes`]) — `MsgExecuteEVM`: an EVM
+//! - **EVM lane** ([`evm_auth_sign_bytes`]) - `MsgExecuteEVM`: an EVM
 //!   call/transfer from the account's `0x` address.
-//! - **Native lane** ([`cosmos_auth_sign_bytes`]) — `MsgExecuteCosmos`: a bank
+//! - **Native lane** ([`cosmos_auth_sign_bytes`]) - `MsgExecuteCosmos`: a bank
 //!   send from the account (Cosmos).
 //!
 //! The relayer submits + pays fees (its own hybrid-PQC signature satisfies the
@@ -36,12 +36,12 @@ use sha3::Shake256;
 
 // ---- byte helpers (match the chain's binary.BigEndian + length-prefix framing) ----
 
-/// `BE64(n)` — `n` as 8 big-endian bytes.
+/// `BE64(n)` - `n` as 8 big-endian bytes.
 fn be64(n: u64) -> [u8; 8] {
     n.to_be_bytes()
 }
 
-/// `LP(b)` — length-prefixed field: `BE64(len(b)) ‖ b`.
+/// `LP(b)` - length-prefixed field: `BE64(len(b)) ‖ b`.
 fn lp(out: &mut Vec<u8>, bytes: &[u8]) {
     out.extend_from_slice(&be64(bytes.len() as u64));
     out.extend_from_slice(bytes);
@@ -110,7 +110,7 @@ pub fn evm_auth_sign_bytes(
 /// ```
 ///
 /// v1 left the gas limit to whoever relayed the message. The chain verifies
-/// exactly one form per block: v1 below the v3.2.3 upgrade, v2 from it — pick
+/// exactly one form per block: v1 below the v3.2.3 upgrade, v2 from it - pick
 /// with [`evm_auth_digest_version`].
 ///
 /// # Errors
@@ -152,7 +152,7 @@ pub fn evm_auth_sign_bytes_v2(
 ///
 /// # Errors
 ///
-/// When the node cannot be asked — never guess, the other form is refused.
+/// When the node cannot be asked - never guess, the other form is refused.
 pub async fn evm_auth_digest_version(
     rest: &crate::query::RestClient,
     cache_key: Option<&str>,
@@ -386,7 +386,7 @@ pub fn canonical_account(account: &str) -> Result<String> {
 
 /// Derives the CANONICAL (SDK / wallet-adapter) address-bound ML-DSA-87 keypair:
 /// `keygen(shake256("qorechain:pqc:v1|" + cosmos + "|" + mnemonic, 32))`, where
-/// `cosmos` is `account` resolved by [`canonical_account`] — so an upper-case
+/// `cosmos` is `account` resolved by [`canonical_account`] - so an upper-case
 /// bech32 or a `0x` form of the same account yields the same key.
 ///
 /// Fails if `account` is not a valid 20-byte account address.
@@ -507,7 +507,7 @@ pub fn rotate_pqc_key_msg_from_mnemonic(
     let new_kp = derive_pqc_by_scheme(opts.new_derivation, &account, opts.mnemonic)?;
     if old_kp.public_key == new_kp.public_key {
         return Err(Error::Pqc(
-            "old and new derivations produce the same key — rotation would be a no-op".into(),
+            "old and new derivations produce the same key - rotation would be a no-op".into(),
         ));
     }
     let sb = rotation_sign_bytes(

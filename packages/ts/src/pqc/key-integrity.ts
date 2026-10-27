@@ -12,7 +12,7 @@
  *   - `proof_of_possession` (optional now, to become mandatory): the key's own
  *     ML-DSA signature over
  *     `"qorechain-pqc-pop-v1|<chain-id>|<algorithm>|<account>|<hex(public key)>"`,
- *     lower-case hex, deterministic, empty context — like every SDK signature.
+ *     lower-case hex, deterministic, empty context - like every SDK signature.
  *
  * Also from v3.2.3: an account that already has a key must send
  * `MsgRegisterPQCKeyV2` / `MsgMigratePQCKey` with the hybrid signature (only
@@ -104,7 +104,7 @@ export function proofOfPossessionSignBytes(input: ProofOfPossessionInput): Uint8
 /**
  * Sign the proof of possession with the key being registered (deterministic
  * ML-DSA-87, empty context). Pass the result as `proofOfPossession` to the
- * registration builder — only on a network that has applied v3.2.3.
+ * registration builder - only on a network that has applied v3.2.3.
  */
 export function signProofOfPossession(
   input: Omit<ProofOfPossessionInput, "publicKey"> & {

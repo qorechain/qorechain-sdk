@@ -12,7 +12,7 @@
  * Scope: this module provides the signing PRIMITIVES (keygen / sign / verify),
  * a pluggable {@link Signer} for the `pqc` and `hybrid` postures, and a builder
  * for the on-chain hybrid-signature extension OBJECT. It deliberately does NOT
- * assemble or broadcast transactions — the tx-builder attaches the extension
+ * assemble or broadcast transactions - the tx-builder attaches the extension
  * the {@link buildHybridSignatureExtension} result describes.
  *
  * Crypto is delegated entirely to `@qorechain/pqc` (`mldsa87`, wrapping the
@@ -107,7 +107,7 @@ export function generatePqcKeypair(seed?: Uint8Array): PqcKeypair {
 /**
  * Sign a message with an ML-DSA-87 (Dilithium-5) secret key.
  *
- * DETERMINISTIC (FIPS-204 §3.4, rnd = 32 zero bytes) by default — the same
+ * DETERMINISTIC (FIPS-204 §3.4, rnd = 32 zero bytes) by default - the same
  * `(secretKey, message)` always yields the same signature. `{ hedged: true }`
  * selects randomized signing; the chain's PQC verifier accepts both.
  *
@@ -289,7 +289,7 @@ export class HybridSigner implements Signer {
     this.algorithmId = algorithmId;
   }
 
-  /** The classical public key — the on-chain account identity. */
+  /** The classical public key - the on-chain account identity. */
   publicKey(): Uint8Array {
     return this.classical.publicKey();
   }

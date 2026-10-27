@@ -6,8 +6,8 @@ queries it via the shared :class:`~qorechain.rest.RestClient` and shapes the
 answer as a Native ``StdFee``-style dict (``{"amount": [...], "gas": ...}``).
 
 The oracle can be unavailable, so this falls back to a deterministic static fee
-computed from a configurable gas price in the base denom — ``ceil(gas *
-gas_price)`` — using integer math (no floats). The fallback is transparent and
+computed from a configurable gas price in the base denom - ``ceil(gas *
+gas_price)`` - using integer math (no floats). The fallback is transparent and
 never raises on a missing/erroring endpoint.
 """
 
@@ -63,7 +63,7 @@ def estimate_fee(
             if amount not in ("", "0"):
                 return {"amount": [{"denom": denom, "amount": amount}], "gas": gas_str}
     except Exception:
-        # Oracle unavailable — fall through to the static fee.
+        # Oracle unavailable - fall through to the static fee.
         pass
 
     return _static_fee(gas_str, fallback_gas_price, denom)

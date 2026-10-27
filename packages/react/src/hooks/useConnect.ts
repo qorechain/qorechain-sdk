@@ -1,5 +1,5 @@
 /**
- * {@link useConnect} / {@link useWallet} — multi-wallet connect.
+ * {@link useConnect} / {@link useWallet} - multi-wallet connect.
  *
  * Wraps the EXISTING wallet adapters so a component connects with one call and
  * the resolved signer + addresses land in the provider's connection state:
@@ -165,5 +165,5 @@ export function useConnect(): UseConnectResult {
   };
 }
 
-/** Alias for {@link useConnect} — the multi-wallet connect hook. */
+/** Alias for {@link useConnect} - the multi-wallet connect hook. */
 export const useWallet = useConnect;

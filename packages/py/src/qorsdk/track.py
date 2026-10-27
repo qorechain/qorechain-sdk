@@ -6,7 +6,7 @@ until the tx is included (or a timeout elapses), decoding the result and raising
 a typed :class:`~qorechain.errors.QoreTxError` if it landed with a non-zero code.
 
 :func:`broadcast_and_wait` chains a ``sync`` broadcast with :func:`wait_for_tx`.
-:func:`with_retry` retries a callable with exponential backoff — useful for
+:func:`with_retry` retries a callable with exponential backoff - useful for
 wrapping flaky read RPC calls.
 """
 
@@ -101,7 +101,7 @@ def wait_for_tx(
         res: Any = None
         try:
             res = get(tx_hash)
-        except Exception as err:  # noqa: BLE001 — re-raised unless a benign 404
+        except Exception as err:  # noqa: BLE001 - re-raised unless a benign 404
             if not (isinstance(err, Exception) and _is_not_found(err)):
                 raise
 
@@ -173,7 +173,7 @@ def with_retry(
     for attempt in range(retries + 1):
         try:
             return fn(attempt)
-        except Exception as err:  # noqa: BLE001 — generic retry wrapper
+        except Exception as err:  # noqa: BLE001 - generic retry wrapper
             last_error = err
             if attempt == retries or not predicate(err, attempt):
                 raise

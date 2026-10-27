@@ -5,7 +5,7 @@ and returns a :class:`~qorechain.messages._composer.Msg` (``{type_url, value}``)
 ready to pass to :func:`qorechain.tx.send_messages` / the hybrid PQC tx path.
 
 Composers are grouped per module into a small namespace object, so callers write
-e.g. ``msg.amm.swap_exact_in(...)`` or ``msg.pqc.register_pqc_key(...)`` — the
+e.g. ``msg.amm.swap_exact_in(...)`` or ``msg.pqc.register_pqc_key(...)`` - the
 exact module/name surface of the TypeScript SDK, snake_cased.
 """
 
@@ -176,7 +176,7 @@ def _open_evm_window(
 
     An EVM-lane transaction is admitted only from an account that has a
     registered post-quantum key AND an open, unexhausted window. This message
-    travels the Cosmos lane, so it carries the account's hybrid signature — the
+    travels the Cosmos lane, so it carries the account's hybrid signature - the
     classical key alone can never open a window.
 
     Every field is required: the chain refuses an omitted field rather than
@@ -188,7 +188,7 @@ def _open_evm_window(
     Three traps, in full in :mod:`qorsdk.evm_window`: opening ADVANCES the
     account's sequence, which is also the EVM nonce (open, then read the nonce,
     then sign the EVM transaction); ``max_value`` covers fees as well as value;
-    and 17280 blocks is NOT "about 24 hours" on any live QoreChain network —
+    and 17280 blocks is NOT "about 24 hours" on any live QoreChain network -
     quote blocks, or compute from the chain's recent block time.
 
     ``native_only`` narrows the window to plain native transfers and
@@ -308,8 +308,8 @@ svm = SimpleNamespace(
         "/qorechain.svm.v1.MsgRegisterSVMPQCKey", svm_tx.MsgRegisterSVMPQCKey
     ),
     # Governance-only (authority = the gov module account): replaces the SVM
-    # runtime parameters (``SVMParams``) wholesale, so the lane's limits — and
-    # whether it is enabled at all — are a proposal rather than a binary release.
+    # runtime parameters (``SVMParams``) wholesale, so the lane's limits - and
+    # whether it is enabled at all - are a proposal rather than a binary release.
     update_params=composer(
         "/qorechain.svm.v1.MsgUpdateParams", svm_tx.MsgUpdateParams
     ),

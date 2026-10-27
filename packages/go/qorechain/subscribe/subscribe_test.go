@@ -34,11 +34,11 @@ func TestDispatchFraming(t *testing.T) {
 	got := make(chan Event, 1)
 	c.subs["1"] = func(e Event) error { got <- e; return nil }
 
-	// Subscribe ack: no result.data — must be ignored.
+	// Subscribe ack: no result.data - must be ignored.
 	c.DispatchForTest([]byte(`{"jsonrpc":"2.0","id":"1","result":{}}`))
 	// Real event for subscription id "1".
 	c.DispatchForTest([]byte(`{"jsonrpc":"2.0","id":"1","result":{"query":"tm.event='NewBlock'","data":{"type":"event/NewBlock","value":{"block":{"header":{"height":"100"}}}}}}`))
-	// Event for an unknown id — must be dropped.
+	// Event for an unknown id - must be dropped.
 	c.DispatchForTest([]byte(`{"jsonrpc":"2.0","id":"99","result":{"query":"x","data":{"a":1}}}`))
 
 	select {

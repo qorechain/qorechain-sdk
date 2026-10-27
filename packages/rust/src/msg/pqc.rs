@@ -3,7 +3,7 @@
 //! The generated prost type names normalize the proto `PQC` acronym to `Pqc`
 //! (e.g. `MsgRegisterPqcKey`), but the on-chain type URLs use the original proto
 //! message names (`MsgRegisterPQCKey`), which is what the chain's interface
-//! registry resolves — the constants below carry those exact strings.
+//! registry resolves - the constants below carry those exact strings.
 
 use crate::msg::to_any;
 use crate::proto::qorechain::pqc::v1 as pb;
@@ -243,7 +243,7 @@ pub const CLOSE_EVM_WINDOW: &str = "/qorechain.pqc.v1.MsgCloseEVMWindow";
 /// From chain v3.2.0 an EVM-lane transaction is admitted only from an account
 /// that has a registered post-quantum key AND an open, unexhausted window. This
 /// message travels the **Cosmos lane**, so it carries the account's hybrid
-/// signature — the classical key alone can never open a window. Opening
+/// signature - the classical key alone can never open a window. Opening
 /// **replaces** any existing window rather than adding to it.
 ///
 /// Every field is required: the chain refuses an omitted field rather than

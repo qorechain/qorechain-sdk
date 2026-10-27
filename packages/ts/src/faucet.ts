@@ -3,7 +3,7 @@
  *
  * Config-driven: the faucet endpoint comes from the network's `faucetUrl` (or an
  * explicit override), and a clear error is thrown when neither is configured.
- * No public faucet hostname is baked into the SDK — the built-in presets leave
+ * No public faucet hostname is baked into the SDK - the built-in presets leave
  * `faucetUrl` undefined; apps supply it via a network override or the `faucetUrl`
  * option here. (For the SVM runtime, `@qorechain/svm` exposes `requestAirdrop`.)
  */
@@ -44,7 +44,7 @@ export async function requestFaucet<T = unknown>(
   const base = options.faucetUrl ?? network.faucetUrl;
   if (!base) {
     throw new Error(
-      "faucet URL not configured for this network — set endpoints/faucetUrl",
+      "faucet URL not configured for this network - set endpoints/faucetUrl",
     );
   }
   const doFetch = options.fetch ?? (globalThis.fetch as FetchLike);

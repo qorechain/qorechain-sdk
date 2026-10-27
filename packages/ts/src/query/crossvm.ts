@@ -11,7 +11,7 @@
  * does not model every field.
  *
  * Note on direction: these helpers READ cross-VM message state. The actual
- * EVM→native routing — e.g. an EVM contract triggering a native AMM swap — is
+ * EVM→native routing - e.g. an EVM contract triggering a native AMM swap - is
  * performed on-chain via the cross-VM bridge precompile exposed in the
  * `@qorechain/evm` package (not duplicated here). Once a message is in flight,
  * track its status either through these REST reads or via the

@@ -2,7 +2,7 @@
 
 The address vectors and PQC-pubkey determinism vectors come from
 ``@qorechain/wallet-adapter`` (0.1.5). If any break, the Python derivation has
-diverged from the canonical wallet — a cross-language / cross-chain bug.
+diverged from the canonical wallet - a cross-language / cross-chain bug.
 """
 
 from __future__ import annotations

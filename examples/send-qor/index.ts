@@ -1,5 +1,5 @@
 /**
- * send-qor — derive a native account from a mnemonic and broadcast a QOR transfer.
+ * send-qor - derive a native account from a mnemonic and broadcast a QOR transfer.
  *
  * Shows:
  *  - deriveNativeAccount(mnemonic) → a secp256k1 account with a private key
@@ -12,7 +12,7 @@
  *  - A reachable consensus RPC (QORE_RPC_URL) AND REST endpoint (QORE_REST_URL).
  *  - A FUNDED account: the address derived from QORE_MNEMONIC must hold QOR.
  *
- * The public BIP-39 test mnemonic is used by default — it is NOT funded on any
+ * The public BIP-39 test mnemonic is used by default - it is NOT funded on any
  * real network, so this will fail at broadcast unless you supply a funded
  * QORE_MNEMONIC and a reachable node.
  */
@@ -77,7 +77,7 @@ async function main(): Promise<void> {
   console.log(`fee: ${fee.amount.map((c) => `${c.amount}${c.denom}`).join(",")} (gas ${fee.gas})`);
 
   const result = await tx.bankSend(recipient, amount, { fee });
-  console.log(`broadcast ok — tx hash ${result.transactionHash} at height ${result.height ?? "?"}`);
+  console.log(`broadcast ok - tx hash ${result.transactionHash} at height ${result.height ?? "?"}`);
 
   tx.disconnect();
 }

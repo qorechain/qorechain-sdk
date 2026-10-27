@@ -8,7 +8,7 @@ sidebar_position: 12
 
 QoreChain treats post-quantum cryptography as a **first-class** signature scheme.
 An account registers an **ML-DSA-87 (Dilithium-5, NIST FIPS 204)** key on-chain,
-after which its transactions can carry a **hybrid** signature — the usual
+after which its transactions can carry a **hybrid** signature - the usual
 classical secp256k1 signature **plus** an ML-DSA-87 signature. The chain's ante
 handler verifies both, so a quantum-safe account stays fully compatible with
 classical verification while gaining protection against a future quantum
@@ -74,7 +74,7 @@ They sign hybrid through their hybrid transaction builders
 The chain refuses a second registration of the same key **after charging the
 fee**. `ensurePqcRegistered` therefore reads the status first, over REST
 (`/qorechain/pqc/v1/account/{address}`, which every public endpoint serves), and
-refuses to register when it cannot tell — it never registers blind. Pass `rest`
+refuses to register when it cannot tell - it never registers blind. Pass `rest`
 (or `statusSource` for a node that exposes `qor_*`); `force: true` skips the
 check and is only for an account known to have no key.
 :::
@@ -118,7 +118,7 @@ await hybrid.signAndBroadcastHybrid({
   messages,
   fee,
   chainId,
-  rest,            // the network's REST (LCD) URL — picks the sign-bytes form
+  rest,            // the network's REST (LCD) URL - picks the sign-bytes form
   accountNumber,
   sequence,
   transport,       // a connected broadcast transport (e.g. StargateClient)
@@ -133,7 +133,7 @@ mainnet (`qorechain-vladi`) at its `v3.2.0` upgrade (height 2,981,742); both ver
 only v2 today. The SDK
 asks for both plan names, so it follows either network. Pass `rest` and the SDK asks the
 network (`signBytesVersion: "auto"`, the default), caching the answer for about a
-minute. Without `rest` on those two networks the SDK throws rather than guess —
+minute. Without `rest` on those two networks the SDK throws rather than guess -
 a wrong guess is refused on-chain with `pqc` code 21. Force a form with
 `signBytesVersion: "v1"` or `"v2"`.
 

@@ -199,7 +199,7 @@ func resolveNetwork(network string, overrides map[string]string, chainID string)
 
 func requireEndpoint(key, value string) (string, error) {
 	if value == "" {
-		return "", fmt.Errorf("endpoint %q is not configured — pass it via CreateClient Endpoints", key)
+		return "", fmt.Errorf("endpoint %q is not configured - pass it via CreateClient Endpoints", key)
 	}
 	return value, nil
 }

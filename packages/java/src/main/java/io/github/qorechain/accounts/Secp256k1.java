@@ -14,7 +14,7 @@ import org.bouncycastle.crypto.signers.HMacDSAKCalculator;
  *
  * <p>The Native lane signs {@code sha256(signDocBytes)} with RFC-6979 deterministic
  * ECDSA, normalizes to low-S, and serializes the signature as the raw 64-byte
- * {@code r || s} (each 32 bytes big-endian) — NOT DER.
+ * {@code r || s} (each 32 bytes big-endian) - NOT DER.
  */
 public final class Secp256k1 {
 
@@ -42,7 +42,7 @@ public final class Secp256k1 {
      * ECDSA over {@code keccak256(message)}, returning the 64-byte {@code r || s}
      * low-S signature. This is the classical half of the eth-native Native lane
      * (the address is {@code keccak(pubkey)[12:]}), where the SignDoc is hashed
-     * with keccak-256 — NOT sha256.
+     * with keccak-256 - NOT sha256.
      */
     public static byte[] signEth(byte[] privateKey, byte[] message) {
         return signHash(privateKey, Hashing.keccak256(message));

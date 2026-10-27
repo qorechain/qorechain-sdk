@@ -21,7 +21,7 @@ import (
 // proto Msg ready to pass to tx.SendMessages or to pack with PackAny. They are
 // grouped per module under package-level values (Amm, Bridge, …) so callers can
 // write messages.Amm.SwapExactIn(...). Each returns a concrete *Msg type (which
-// satisfies sdk.Msg) — no hidden defaults are applied.
+// satisfies sdk.Msg) - no hidden defaults are applied.
 
 // ---- amm ----
 
@@ -144,7 +144,7 @@ func (RdkComposers) CreateRollup(creator, rollupID, profile, vmType string, stak
 // be SequencerConfig.SequencerAddress, falling back to the rollup's Creator when
 // no sequencer is configured. Anyone else is refused with the rdk codespace's
 // ErrUnauthorized ("%s may not settle batches for rollup %s"). Batches must also
-// extend the chain by index — an existing index cannot be overwritten.
+// extend the chain by index - an existing index cannot be overwritten.
 func (RdkComposers) SubmitBatch(sequencer, rollupID string, batchIndex uint64, stateRoot, prevStateRoot []byte, txCount uint64, dataHash, proof, withdrawalsRoot []byte) *rdkv1.MsgSubmitBatch {
 	return &rdkv1.MsgSubmitBatch{Sequencer: sequencer, RollupID: rollupID, BatchIndex: batchIndex, StateRoot: stateRoot, PrevStateRoot: prevStateRoot, TxCount: txCount, DataHash: dataHash, Proof: proof, WithdrawalsRoot: withdrawalsRoot}
 }
@@ -252,7 +252,7 @@ func (PqcComposers) MigrateKey(sender string, oldPublicKey, newPublicKey []byte,
 }
 
 // RotatePQCKey builds MsgRotatePQCKey. It replaces an account's PQC key with a
-// NEW key of the SAME algorithm — the canonical use is migrating a legacy-derived
+// NEW key of the SAME algorithm - the canonical use is migrating a legacy-derived
 // key to the canonical address-bound derivation. Dual-signed: oldSignature proves
 // ownership of the current key, newSignature proves control of the replacement;
 // both sign the domain-separated rotation bytes (see
@@ -262,7 +262,7 @@ func (PqcComposers) RotatePQCKey(sender string, oldPublicKey, newPublicKey, oldS
 	return &pqcv1.MsgRotatePQCKey{Sender: sender, OldPublicKey: oldPublicKey, NewPublicKey: newPublicKey, OldSignature: oldSignature, NewSignature: newSignature}
 }
 
-// OpenEVMWindow builds MsgOpenEVMWindow — the Cosmos-lane authorisation an
+// OpenEVMWindow builds MsgOpenEVMWindow - the Cosmos-lane authorisation an
 // account needs before the chain admits any EVM transaction from it (chain
 // v3.2.0). It is an ordinary protobuf message travelling the normal hybrid
 // signing path: the classical key alone can never open a window.
@@ -340,7 +340,7 @@ func (SvmComposers) RegisterPQCKey(sender string, svmAddr svmv1.Bytes32, pqcPubK
 
 // UpdateParams builds MsgUpdateParams, the svm module's governance message
 // (chain v3.1.97+). It replaces the SVM runtime parameters WHOLESALE, so params
-// must carry every field — including Enabled, which is how the lane is turned on
+// must carry every field - including Enabled, which is how the lane is turned on
 // or off by proposal rather than by a binary release.
 //
 // authority must be the governance module account; a tx signed by anyone else is

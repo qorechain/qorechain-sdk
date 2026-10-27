@@ -87,7 +87,7 @@ func ProofOfPossessionSignBytes(chainID string, algorithmID uint32, account stri
 
 // SignProofOfPossession signs the proof of possession with the key being
 // registered (deterministic ML-DSA-87). Set the result as
-// MsgRegisterPQCKeyV2.ProofOfPossession — only on a network that has applied
+// MsgRegisterPQCKeyV2.ProofOfPossession - only on a network that has applied
 // v3.2.3.
 func SignProofOfPossession(chainID, account string, keypair pqc.Keypair) ([]byte, error) {
 	bz, err := ProofOfPossessionSignBytes(chainID, uint32(pqc.AlgorithmDilithium5), account, keypair.PublicKey)

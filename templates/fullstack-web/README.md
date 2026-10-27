@@ -40,7 +40,7 @@ pnpm build       # type-check + vite build
 
 ## Using `@qorechain/sdk` before it is published
 
-`@qorechain/sdk` is published to npm — once published, `pnpm install` just
+`@qorechain/sdk` is published to npm - once published, `pnpm install` just
 works. Until then, scaffold with the CLI's `--local` flag to rewrite the
 dependency to a `file:` link into the SDK monorepo, after building the workspace
 packages:

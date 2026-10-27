@@ -3,7 +3,7 @@
 Each module that defines a ``Query`` service (crossvm, lightnode, pqc, qca,
 reputation, rlconsensus, svm, multilayer, rdk, bridge, amm, license,
 abstractaccount) gets a typed client whose methods take the generated
-``Query*Request`` and return the decoded ``Query*Response`` protobuf message —
+``Query*Request`` and return the decoded ``Query*Response`` protobuf message -
 fully typed, no hand-rolled paths.
 
 The transport is a gRPC channel (cosmpy bundles ``grpcio``). Service stubs are

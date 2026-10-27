@@ -75,27 +75,27 @@ export class JsonRpcClient {
     return res.result as T;
   }
 
-  /** `eth_chainId` — the chain id as a hex quantity string. */
+  /** `eth_chainId` - the chain id as a hex quantity string. */
   ethChainId(): Promise<string> {
     return this.call<string>("eth_chainId", []);
   }
 
-  /** `eth_blockNumber` — the latest block height as a hex quantity string. */
+  /** `eth_blockNumber` - the latest block height as a hex quantity string. */
   ethBlockNumber(): Promise<string> {
     return this.call<string>("eth_blockNumber", []);
   }
 
-  /** `eth_getBalance` — wei balance of `address` as a hex quantity string. */
+  /** `eth_getBalance` - wei balance of `address` as a hex quantity string. */
   ethGetBalance(address: string, block: string = "latest"): Promise<string> {
     return this.call<string>("eth_getBalance", [address, block]);
   }
 
-  /** `net_version` — the network id as a decimal string. */
+  /** `net_version` - the network id as a decimal string. */
   netVersion(): Promise<string> {
     return this.call<string>("net_version", []);
   }
 
-  /** `web3_clientVersion` — the node client version string. */
+  /** `web3_clientVersion` - the node client version string. */
   web3ClientVersion(): Promise<string> {
     return this.call<string>("web3_clientVersion", []);
   }

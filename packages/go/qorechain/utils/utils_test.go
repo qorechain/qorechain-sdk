@@ -15,7 +15,7 @@ func TestSHA256Vector(t *testing.T) {
 }
 
 func TestKeccak256Vector(t *testing.T) {
-	// Keccak-256("") — the canonical empty-input EVM hash.
+	// Keccak-256("") - the canonical empty-input EVM hash.
 	got := hex.EncodeToString(Keccak256([]byte{}))
 	want := "c5d2460186f7233c927e7db2dcc703c0e500b653ca82273b7bfad8045d85a470"
 	if got != want {

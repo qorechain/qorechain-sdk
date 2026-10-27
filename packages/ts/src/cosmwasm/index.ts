@@ -9,7 +9,7 @@
  * Two construction helpers ({@link createCosmWasmClient}, {@link
  * connectCosmWasmSigner}) build the cosmjs clients against a network's `rpc`
  * endpoint. The wrapper functions, however, accept an already-built client so
- * they are unit-testable with a stubbed fake — no real connection required.
+ * they are unit-testable with a stubbed fake - no real connection required.
  */
 
 import {

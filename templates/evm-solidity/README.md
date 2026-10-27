@@ -68,7 +68,7 @@ wire in a fuller toolchain such as Foundry or Hardhat if you prefer.)
 
 ## Using `@qorechain/evm` before it is published
 
-`@qorechain/evm` is published to npm — once published, `pnpm install` just
+`@qorechain/evm` is published to npm - once published, `pnpm install` just
 works. Until then, scaffold with the CLI's `--local` flag to rewrite the
 dependency to a `file:` link into the SDK monorepo, then build the workspace
 packages first:

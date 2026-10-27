@@ -5,7 +5,7 @@ THREE QoreChain address encodings, so a wallet never "has funds on one lane but
 not another" again. The 20 bytes are the Ethereum derivation
 ``keccak256(uncompressed_pubkey[1:])[12:]`` so the key is natively spendable on
 the EVM lane; the native (``qor1…``) and SVM (base58) forms are just other
-encodings of those same 20 bytes — the chain reads one x/bank balance for the
+encodings of those same 20 bytes - the chain reads one x/bank balance for the
 account, visible under all three.
 
     UnifiedAccount:
@@ -18,7 +18,7 @@ account, visible under all three.
       pqc           PqcKeypair         (ML-DSA-87, seeded + recoverable)
 
 An eth-native account signs EVM txs (EIP-155) AND, via the Native-lane
-``eth_secp256k1`` scheme (see :mod:`qorsdk.sign_eth`), PQC-hybrid Native txs —
+``eth_secp256k1`` scheme (see :mod:`qorsdk.sign_eth`), PQC-hybrid Native txs -
 one identity, all lanes.
 
 This mirrors ``@qorechain/wallet-adapter`` (``wallet.js``) byte-for-byte but is
@@ -45,7 +45,7 @@ try:  # dilithium-py exposes seeded keygen as ML_DSA_87.key_derive(seed32)
 except Exception as exc:  # pragma: no cover - dependency guaranteed by pyproject
     raise ImportError("dilithium-py is required for unified PQC derivation") from exc
 
-#: Ethereum HD path (coin-type 60) — makes the 20-byte address the keccak
+#: Ethereum HD path (coin-type 60) - makes the 20-byte address the keccak
 #: derivation, so the key is EVM-native (spendable via eth_sendRawTransaction).
 _ETH_HD_PATH = "44'/60'/0'/0/{index}"
 
@@ -57,7 +57,7 @@ HRP = DEFAULT_PREFIX
 class UnifiedAccount:
     """A single eth-native account rendered in every QoreChain encoding.
 
-    ``private_key`` and ``pqc.secret_key`` are secret material — never log them.
+    ``private_key`` and ``pqc.secret_key`` are secret material - never log them.
     ``public_key`` is the 33-byte compressed secp256k1 key; ``address_bytes`` is
     the 20-byte Ethereum-derivation account address the three encodings share.
     """
@@ -108,7 +108,7 @@ def addresses_from_20(addr20: bytes) -> dict[str, str]:
 
     Exposed so SDKs / backends can render all three from a known account too.
 
-    :returns: ``{"cosmos", "evm", "svm"}`` — the bech32 (``qor``), EIP-55 hex,
+    :returns: ``{"cosmos", "evm", "svm"}`` - the bech32 (``qor``), EIP-55 hex,
         and base58 (32-byte, right-padded with 12 zero bytes) encodings.
     :raises ValueError: If ``addr20`` is not exactly 20 bytes.
     """
@@ -188,7 +188,7 @@ def unified_account_from_seed(seed32: bytes) -> UnifiedAccount:
 
     .. warning::
 
-       ``seed32`` MUST be real secret entropy — a CSPRNG draw
+       ``seed32`` MUST be real secret entropy - a CSPRNG draw
        (``secrets.token_bytes(32)``) or key material the user already keeps
        secret. It becomes the account's spend key verbatim, so anyone who learns
        it controls the account. It must NEVER be derived from a wallet
@@ -209,17 +209,17 @@ def unified_account_from_seed(seed32: bytes) -> UnifiedAccount:
 #: The error raised by the removed signature-derivation entry point.
 _SIGNATURE_DERIVATION_REMOVED = (
     "unified_account_from_phantom_signature was removed in v0.8.0: deriving a "
-    "spend key from a wallet signature is unsafe — the signature is a bearer "
+    "spend key from a wallet signature is unsafe - the signature is a bearer "
     "secret that any page can request from the wallet, so whoever obtains it "
     "controls the account. Use the authenticator lanes instead: register the "
     "external key with MsgRegisterAuthenticator and spend via MsgExecuteCosmos "
     "/ MsgExecuteEVM. Any account previously derived this way must be treated "
-    "as exposed — move its funds."
+    "as exposed - move its funds."
 )
 
 
 def unified_account_from_phantom_signature(sig_bytes: bytes) -> UnifiedAccount:
-    """REMOVED in v0.8.0 — always raises :class:`NotImplementedError`.
+    """REMOVED in v0.8.0 - always raises :class:`NotImplementedError`.
 
     This used to derive a unified account's spend key from a wallet signature.
     That is unsafe: the signature is a bearer secret the wallet will hand to any
@@ -227,7 +227,7 @@ def unified_account_from_phantom_signature(sig_bytes: bytes) -> UnifiedAccount:
     account. The symbol is retained only so existing callers fail loudly instead
     of silently keeping an exposed account.
 
-    Use the authenticator lanes instead — register the external key with
+    Use the authenticator lanes instead - register the external key with
     ``MsgRegisterAuthenticator`` (see :mod:`qorsdk.authenticator`) and spend from
     the canonical account via ``MsgExecuteCosmos`` / ``MsgExecuteEVM``. Any
     account previously derived this way must be treated as exposed: move its

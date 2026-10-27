@@ -2,8 +2,8 @@
  * Human-readable decoding of SVM (Solana-compatible) transaction errors.
  *
  * `@solana/web3.js` throws a `SendTransactionError` (and related shapes) whose
- * useful detail — the failing instruction index, a program's custom error code,
- * and the program logs — is spread across several fields that differ slightly
+ * useful detail - the failing instruction index, a program's custom error code,
+ * and the program logs - is spread across several fields that differ slightly
  * between library versions. {@link decodeSvmError} reads those fields
  * structurally (so it works across versions) and produces a flat summary with
  * the program logs and, where present, the failing instruction index.

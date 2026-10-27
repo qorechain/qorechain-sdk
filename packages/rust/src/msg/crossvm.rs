@@ -10,7 +10,7 @@ pub const CROSS_VM_CALL: &str = "/qorechain.crossvm.v1.MsgCrossVMCall";
 /// `/qorechain.crossvm.v1.MsgProcessQueue` type URL.
 pub const PROCESS_QUEUE: &str = "/qorechain.crossvm.v1.MsgProcessQueue";
 
-/// `/qorechain.crossvm.v1.MsgCrossVMCallResponse` type URL — the `Msg` service
+/// `/qorechain.crossvm.v1.MsgCrossVMCallResponse` type URL - the `Msg` service
 /// response the chain returns for a [`CROSS_VM_CALL`].
 pub const CROSS_VM_CALL_RESPONSE: &str = "/qorechain.crossvm.v1.MsgCrossVMCallResponse";
 

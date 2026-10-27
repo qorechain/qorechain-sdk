@@ -28,7 +28,7 @@ import java.util.List;
  *
  * <p>The hybrid framing is identical to {@link HybridTx}: {@code B0} = body WITHOUT
  * the PQC extension, and the ML-DSA-87 signature is over the per-network
- * {@link SignBytes#hybrid} form of {@code (chainId, B0, A)} — v1
+ * {@link SignBytes#hybrid} form of {@code (chainId, B0, A)} - v1
  * {@code BE32(len B0) ‖ B0 ‖ BE32(len A) ‖ A} on networks that have applied none of
  * {@link SignBytes#SIGN_BYTES_V2_UPGRADES}, v2
  * {@code "qorechain-pqc-hybrid-v2" ‖ BE64(len chainId) ‖ chainId ‖ ...} after. Only the classical hash (keccak vs sha256) and the SignerInfo pubkey
@@ -79,7 +79,7 @@ public final class SignEth {
         public byte[] secp256k1PrivateKey;
         /** 33-byte compressed secp256k1 public key. */
         public byte[] secp256k1PublicKey;
-        /** ML-DSA-87 keypair — required only for {@link #signHybridEth}. */
+        /** ML-DSA-87 keypair - required only for {@link #signHybridEth}. */
         public PqcKeypair pqcKeypair;
         public StdFee fee;
         public String memo = "";
@@ -277,10 +277,10 @@ public final class SignEth {
     public static Built signHybridEth(Options opts) {
         SignBytes.Version version = SignBytes.requireVersion(opts.chainId, opts.signBytesVersion);
 
-        // 1. B0 — body WITHOUT the PQC extension.
+        // 1. B0 - body WITHOUT the PQC extension.
         byte[] b0 = buildBody(opts, null).toByteArray();
 
-        // 2. A — single-signer eth_secp256k1 AuthInfo (SIGN_MODE_DIRECT).
+        // 2. A - single-signer eth_secp256k1 AuthInfo (SIGN_MODE_DIRECT).
         byte[] authInfoBytes = buildAuthInfoBytes(opts);
 
         // 3. PQC framing (per-network form) + ML-DSA-87 signature over B0 + A

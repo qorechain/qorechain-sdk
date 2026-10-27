@@ -62,7 +62,7 @@ export type RestClientOptions = HttpOptions;
 export type FeeUrgency = "fast" | "normal" | "slow";
 
 /**
- * REST shape of `GET /qorechain/abstractaccount/v1/permission_schema` — the
+ * REST shape of `GET /qorechain/abstractaccount/v1/permission_schema` - the
  * canonical authenticator permission taxonomy (v3.1.85). `schema_version` bumps
  * whenever the taxonomy or the mapping changes, so clients compare it to their
  * embedded copy to detect drift.

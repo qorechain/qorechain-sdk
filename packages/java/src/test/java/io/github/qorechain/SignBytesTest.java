@@ -229,7 +229,7 @@ class SignBytesTest {
 
     /**
      * A fake applied-plan endpoint that answers per PLAN NAME and records every call. A
-     * name with no body configured answers {@code {}} — the plan was never applied on
+     * name with no body configured answers {@code {}} - the plan was never applied on
      * this network, which is what each real network answers for the name it did not
      * take.
      */
@@ -309,7 +309,7 @@ class SignBytesTest {
     }
 
     /**
-     * Diana today: the first name is not applied, the second is — v2 after two requests.
+     * Diana today: the first name is not applied, the second is - v2 after two requests.
      * Asking only the first name (what published clients up to 0.8.0 did) would resolve
      * v1 here and every hybrid transaction would be refused with pqc code 21.
      */

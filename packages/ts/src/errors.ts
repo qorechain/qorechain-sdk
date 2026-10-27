@@ -3,7 +3,7 @@
  *
  * When a transaction fails, the node returns an ABCI result with a non-zero
  * `code`, a `codespace` naming the module that rejected it, and a `rawLog`
- * string. The numeric `code` is only meaningful *within* its codespace — code
+ * string. The numeric `code` is only meaningful *within* its codespace - code
  * `5` in the `sdk` codespace is "insufficient funds", but code `5` in another
  * module means something else entirely. {@link decodeTxError} maps the common
  * `sdk` codespace codes to readable messages and falls back to the raw log for
@@ -49,7 +49,7 @@ export interface DecodedTxError {
  */
 const SDK_CODES: Record<number, { kind: string; message: string }> = {
   2: { kind: "tx_decode_error", message: "failed to decode the transaction" },
-  3: { kind: "invalid_sequence", message: "account sequence mismatch (nonce out of order) — refetch the account and retry" },
+  3: { kind: "invalid_sequence", message: "account sequence mismatch (nonce out of order) - refetch the account and retry" },
   4: { kind: "unauthorized", message: "unauthorized: signature or signer does not match" },
   5: { kind: "insufficient_funds", message: "insufficient funds to cover the transfer or fee" },
   6: { kind: "unknown_request", message: "unknown request" },
@@ -57,16 +57,16 @@ const SDK_CODES: Record<number, { kind: string; message: string }> = {
   8: { kind: "invalid_pubkey", message: "invalid public key" },
   9: { kind: "unknown_address", message: "unknown address (account does not exist on chain)" },
   10: { kind: "invalid_coins", message: "invalid coin amount or denomination" },
-  11: { kind: "out_of_gas", message: "out of gas — raise the gas limit (or use the \"auto\" fee path with a higher multiplier)" },
+  11: { kind: "out_of_gas", message: "out of gas - raise the gas limit (or use the \"auto\" fee path with a higher multiplier)" },
   12: { kind: "memo_too_large", message: "memo is too large" },
-  13: { kind: "insufficient_fee", message: "insufficient fee — the offered fee is below the node's minimum gas price" },
+  13: { kind: "insufficient_fee", message: "insufficient fee - the offered fee is below the node's minimum gas price" },
   14: { kind: "maximum_signatures_exceeded", message: "transaction has too many signatures" },
   15: { kind: "no_signatures", message: "transaction has no signatures" },
   16: { kind: "json_marshal_error", message: "failed to marshal JSON" },
   17: { kind: "json_unmarshal_error", message: "failed to unmarshal JSON" },
   18: { kind: "invalid_request", message: "invalid request" },
   19: { kind: "tx_in_mempool_cache", message: "transaction already exists in the mempool" },
-  20: { kind: "mempool_is_full", message: "mempool is full — retry later" },
+  20: { kind: "mempool_is_full", message: "mempool is full - retry later" },
   21: { kind: "tx_too_large", message: "transaction is too large" },
   25: { kind: "invalid_gas_limit", message: "invalid gas limit" },
   30: { kind: "tx_timeout_height", message: "transaction timeout height exceeded" },
@@ -82,28 +82,28 @@ const ABSTRACTACCOUNT_CODES: Record<number, { kind: string; message: string }> =
   5: {
     kind: "spending_limit_exceeded",
     message:
-      "spending limit exceeded — the amount is over the authenticator's per-tx or daily SpendingRule",
+      "spending limit exceeded - the amount is over the authenticator's per-tx or daily SpendingRule",
   },
   6: {
     kind: "session_key_expired",
     message:
-      "session key expired — the authenticator's expiry_unix has passed; re-register the key",
+      "session key expired - the authenticator's expiry_unix has passed; re-register the key",
   },
   10: {
     kind: "permission_denied",
     message:
-      "permission denied — the authenticator lacks the permission this message requires (check the permission_schema)",
+      "permission denied - the authenticator lacks the permission this message requires (check the permission_schema)",
   },
   11: {
     kind: "authenticator_replay",
     message:
-      "authenticator replay — the nonce is not the linked key's current authenticator sequence (a per-key counter, NOT the account's EVM nonce or Cosmos sequence); re-sign with the key's next sequence",
+      "authenticator replay - the nonce is not the linked key's current authenticator sequence (a per-key counter, NOT the account's EVM nonce or Cosmos sequence); re-sign with the key's next sequence",
   },
 };
 
 /**
  * Known error codes in the `pqc` codespace surfaced to dApps. Code 21 is raised
- * when a hybrid (classical + ML-DSA-87) signature fails verification — the
+ * when a hybrid (classical + ML-DSA-87) signature fails verification - the
  * signature was made with the wrong key, over the wrong sign-bytes form for the
  * network, or the body / authInfo changed after signing. (Hedged and
  * deterministic ML-DSA signatures are both accepted.)
@@ -112,26 +112,26 @@ const PQC_CODES: Record<number, { kind: string; message: string }> = {
   21: {
     kind: "hybrid_verify_failed",
     message:
-      "hybrid signature verification failed — the ML-DSA-87 signature did not verify (check the PQC key, the sign-bytes form for this network, and that the body / authInfo did not change after signing)",
+      "hybrid signature verification failed - the ML-DSA-87 signature did not verify (check the PQC key, the sign-bytes form for this network, and that the body / authInfo did not change after signing)",
   },
   60: {
     kind: "evm_delegation_no_consent",
     message:
-      "no post-quantum consent for this EIP-7702 delegation — broadcast MsgAuthorizeEVMDelegation for exactly this delegate first (chain v3.2.2)",
+      "no post-quantum consent for this EIP-7702 delegation - broadcast MsgAuthorizeEVMDelegation for exactly this delegate first (chain v3.2.2)",
   },
   230: {
     kind: "pqc_key_weak",
     message:
-      "the registration carries no usable post-quantum key (classical_only, empty, or a degenerate key) — register a real ML-DSA-87 key",
+      "the registration carries no usable post-quantum key (classical_only, empty, or a degenerate key) - register a real ML-DSA-87 key",
   },
   231: {
     kind: "pqc_proof_of_possession_invalid",
     message:
-      "the proof of possession does not verify — sign it with the key being registered over the v1 proof-of-possession bytes for this chain and account",
+      "the proof of possession does not verify - sign it with the key being registered over the v1 proof-of-possession bytes for this chain and account",
   },
   232: {
     kind: "pqc_key_reused",
-    message: "this account used that PQC key before — rotate or migrate to a key it has never had",
+    message: "this account used that PQC key before - rotate or migrate to a key it has never had",
   },
   233: {
     kind: "pqc_last_signature_algorithm",
@@ -140,12 +140,12 @@ const PQC_CODES: Record<number, { kind: string; message: string }> = {
   234: {
     kind: "pqc_maintenance_needs_hybrid",
     message:
-      "an account with a registered PQC key must send key registration or migration with the hybrid signature — use migratePqcKeyHybrid",
+      "an account with a registered PQC key must send key registration or migration with the hybrid signature - use migratePqcKeyHybrid",
   },
   61: {
     kind: "evm_delegation_invalid",
     message:
-      "invalid EIP-7702 delegation request — check the delegate address and the blocks bound, and that the account has a registered PQC key",
+      "invalid EIP-7702 delegation request - check the delegate address and the blocks bound, and that the account has a registered PQC key",
   },
 };
 
@@ -174,9 +174,9 @@ function classifyPqcKeyRequirement(
 
 const PQC_KEY_REQUIREMENT_MESSAGES = {
   pqc_key_required:
-    "this account has no registered PQC key — register one (MsgRegisterPQCKeyV2) before sending",
+    "this account has no registered PQC key - register one (MsgRegisterPQCKeyV2) before sending",
   hybrid_signature_required:
-    "this account has a registered PQC key — sign the transaction with the hybrid (ML-DSA-87) extension",
+    "this account has a registered PQC key - sign the transaction with the hybrid (ML-DSA-87) extension",
 } as const;
 
 function isRateLimitLog(codespace: string | undefined, code: number, rawLog: string | undefined): boolean {
@@ -313,7 +313,7 @@ export function decodeTxError(input: TxErrorInput): DecodedTxError {
       code: input.code,
       codespace,
       kind: "rate_limited",
-      message: `the network is limiting this sender's transaction rate — wait and retry (${rawLog})`,
+      message: `the network is limiting this sender's transaction rate - wait and retry (${rawLog})`,
       rawLog,
     };
   }

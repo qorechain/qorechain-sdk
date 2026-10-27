@@ -34,7 +34,7 @@ pub mod svm;
 /// Packs a prost message into a `cosmrs::Any` with the given `type_url`.
 ///
 /// `value = msg.encode_to_vec()`, so the resulting `Any` is byte-identical to
-/// what the chain produces for the same message — this is what lets a custom Msg
+/// what the chain produces for the same message - this is what lets a custom Msg
 /// ride in a tx body and be decoded back through the chain's interface registry.
 pub fn to_any<M: Message>(msg: &M, type_url: &str) -> Any {
     Any {

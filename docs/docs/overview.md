@@ -8,7 +8,7 @@ sidebar_position: 1
 # QoreChain SDK
 
 The QoreChain SDK is the official multi-language developer kit for building
-decentralized applications on **QoreChain** — a quantum-safe, triple-VM Layer 1
+decentralized applications on **QoreChain** - a quantum-safe, triple-VM Layer 1
 network.
 
 This documentation covers how to install the SDK, connect to the network, read
@@ -20,10 +20,10 @@ of QoreChain's virtual machines.
 QoreChain is a Layer 1 blockchain with three first-class smart-contract
 runtimes on a single chain:
 
-- **CosmWasm** — Wasm smart contracts on the Native lane.
-- **QoreChain EVM Engine** — Ethereum-compatible execution (Solidity, viem,
+- **CosmWasm** - Wasm smart contracts on the Native lane.
+- **QoreChain EVM Engine** - Ethereum-compatible execution (Solidity, viem,
   standard JSON-RPC).
-- **SVM** — a Solana-compatible runtime with a Solana-style JSON-RPC.
+- **SVM** - a Solana-compatible runtime with a Solana-style JSON-RPC.
 
 Accounts, balances, and tokens are shared across the runtimes, and the chain
 supports IBC for cross-chain interoperability.
@@ -39,7 +39,7 @@ under classical verification today while gaining post-quantum protection.
 The SDK exposes ML-DSA-87 key generation, signing, and verification today, plus
 the building blocks for hybrid transactions. See
 [Accounts & PQC signing](concepts/accounts-pqc.md) for details. No marketing
-claims here — the SDK exposes exactly the primitives the chain implements.
+claims here - the SDK exposes exactly the primitives the chain implements.
 
 ## The SDK family
 
@@ -66,10 +66,10 @@ follow-up in the other languages.
 
 ## Where to go next
 
-- [Install](install.md) — per-language install instructions.
-- [Quickstart](quickstart.md) — connect, read a balance, send a transfer.
-- [Concepts: Architecture](concepts/architecture.md) — the triple-VM model.
-- [Concepts: Accounts & PQC signing](concepts/accounts-pqc.md) — keys and
+- [Install](install.md) - per-language install instructions.
+- [Quickstart](quickstart.md) - connect, read a balance, send a transfer.
+- [Concepts: Architecture](concepts/architecture.md) - the triple-VM model.
+- [Concepts: Accounts & PQC signing](concepts/accounts-pqc.md) - keys and
   post-quantum signing.
-- [Guides](guides/evm.md) — per-VM how-tos.
-- [Network & endpoints reference](reference/network.md) — chain id, ports, token.
+- [Guides](guides/evm.md) - per-VM how-tos.
+- [Network & endpoints reference](reference/network.md) - chain id, ports, token.

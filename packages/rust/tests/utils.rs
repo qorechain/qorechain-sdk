@@ -15,7 +15,7 @@ fn to_base_exact_integer_math() {
     assert_eq!(to_base("0", 6).unwrap(), "0");
     assert_eq!(to_base("0.0", 6).unwrap(), "0");
     assert_eq!(to_base(" +2.25 ", 6).unwrap(), "2250000");
-    // Large magnitude — never drifts.
+    // Large magnitude - never drifts.
     assert_eq!(
         to_base("123456789012345.123456", 6).unwrap(),
         "123456789012345123456"

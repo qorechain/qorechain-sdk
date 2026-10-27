@@ -3,7 +3,7 @@
  *
  * Each function accepts a UTF-8 string or raw bytes and returns the digest as
  * raw bytes, with a `*Hex` companion returning a lowercase `0x`-prefixed hex
- * string. No new cryptography is implemented here — these are thin, ergonomic
+ * string. No new cryptography is implemented here - these are thin, ergonomic
  * wrappers so callers don't need to depend on `@noble/hashes` directly or pick
  * the right submodule path.
  */

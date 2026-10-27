@@ -10,7 +10,7 @@ pub enum Error {
     UnknownNetwork(String),
 
     /// A required endpoint URL was not configured.
-    #[error("endpoint \"{0}\" is not configured — pass it via create_client endpoints")]
+    #[error("endpoint \"{0}\" is not configured - pass it via create_client endpoints")]
     MissingEndpoint(String),
 
     /// A decimal/base amount or exponent was invalid.

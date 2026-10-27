@@ -4,9 +4,9 @@ A minimal QoreChain app that drives a **rollup** and the **multilayer**
 (sidechain / paychain) module with the high-level helpers from
 [`@qorechain/sdk`](https://github.com/qorechain/qorechain-sdk):
 
-- `createRollupClient(tx, { query, qor })` — create rollups, submit batches, run
+- `createRollupClient(tx, { query, qor })` - create rollups, submit batches, run
   the challenge game, manage lifecycle, execute withdrawals, and read state.
-- `createMultilayerClient(tx, { query })` — register sidechains/paychains, anchor
+- `createMultilayerClient(tx, { query })` - register sidechains/paychains, anchor
   state roots, route transactions, and read layers + routing stats.
 
 By default `pnpm start` runs a **dry run**: it builds and logs the messages
@@ -31,7 +31,7 @@ broadcast and read.
 # install dependencies (use the package manager you scaffolded with)
 pnpm install
 
-# dry run — build + log the messages, no node needed
+# dry run - build + log the messages, no node needed
 pnpm start
 
 # broadcast + read against a live node

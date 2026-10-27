@@ -4,10 +4,10 @@ QoreChain's EVM Engine exposes on-chain risk/anomaly intelligence through two
 fixed-address precompiles, callable like any view function via ``eth_call``:
 
 - ``aiRiskScore(bytes) returns (uint256 score, uint8 level)`` at
-  :data:`PRECOMPILE_AI_RISK_SCORE` — a model-driven risk score for raw
+  :data:`PRECOMPILE_AI_RISK_SCORE` - a model-driven risk score for raw
   transaction calldata.
 - ``aiAnomalyCheck(address,uint256) returns (uint256 anomalyScore, bool flagged)``
-  at :data:`PRECOMPILE_AI_ANOMALY_CHECK` — whether a ``(sender, amount)`` pair is
+  at :data:`PRECOMPILE_AI_ANOMALY_CHECK` - whether a ``(sender, amount)`` pair is
   anomalous.
 
 This module ABI-encodes the calldata by hand (no web3 dependency): the 4-byte
@@ -18,7 +18,7 @@ take the EVM JSON-RPC client (:class:`~qorsdk.qor.QorClient`, which exposes
 
 Availability note: on a default or community node these precompiles may return a
 "not available" error; they are available on QoreChain network nodes. The
-:func:`simulate_with_risk_score` ``safe`` verdict is ADVISORY — it summarizes the
+:func:`simulate_with_risk_score` ``safe`` verdict is ADVISORY - it summarizes the
 advice (``level < 3`` and not ``flagged``) but does not gate or alter the
 transaction; the caller decides whether to proceed.
 """

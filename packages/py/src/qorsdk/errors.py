@@ -2,7 +2,7 @@
 
 When a transaction fails, the node returns an ABCI result with a non-zero
 ``code``, a ``codespace`` naming the module that rejected it, and a ``raw_log``
-string. The numeric ``code`` is only meaningful *within* its codespace — code
+string. The numeric ``code`` is only meaningful *within* its codespace - code
 ``5`` in the ``sdk`` codespace is "insufficient funds", but code ``5`` in another
 module means something else. :func:`decode_tx_error` maps the common ``sdk``
 codespace codes to readable messages and falls back to the raw log for
@@ -27,7 +27,7 @@ SDK_CODES: dict[int, tuple[str, str]] = {
     2: ("tx_decode_error", "failed to decode the transaction"),
     3: (
         "invalid_sequence",
-        "account sequence mismatch (nonce out of order) — refetch the account and retry",
+        "account sequence mismatch (nonce out of order) - refetch the account and retry",
     ),
     4: ("unauthorized", "unauthorized: signature or signer does not match"),
     5: ("insufficient_funds", "insufficient funds to cover the transfer or fee"),
@@ -38,13 +38,13 @@ SDK_CODES: dict[int, tuple[str, str]] = {
     10: ("invalid_coins", "invalid coin amount or denomination"),
     11: (
         "out_of_gas",
-        'out of gas — raise the gas limit (or use the "auto" fee path with a '
+        'out of gas - raise the gas limit (or use the "auto" fee path with a '
         "higher multiplier)",
     ),
     12: ("memo_too_large", "memo is too large"),
     13: (
         "insufficient_fee",
-        "insufficient fee — the offered fee is below the node's minimum gas price",
+        "insufficient fee - the offered fee is below the node's minimum gas price",
     ),
     14: ("maximum_signatures_exceeded", "transaction has too many signatures"),
     15: ("no_signatures", "transaction has no signatures"),
@@ -52,7 +52,7 @@ SDK_CODES: dict[int, tuple[str, str]] = {
     17: ("json_unmarshal_error", "failed to unmarshal JSON"),
     18: ("invalid_request", "invalid request"),
     19: ("tx_in_mempool_cache", "transaction already exists in the mempool"),
-    20: ("mempool_is_full", "mempool is full — retry later"),
+    20: ("mempool_is_full", "mempool is full - retry later"),
     21: ("tx_too_large", "transaction is too large"),
     25: ("invalid_gas_limit", "invalid gas limit"),
     30: ("tx_timeout_height", "transaction timeout height exceeded"),
@@ -67,22 +67,22 @@ MODULE_CODES: dict[str, dict[int, tuple[str, str]]] = {
     "abstractaccount": {
         5: (
             "spending_limit_exceeded",
-            "authenticator spending limit exceeded — the value/amount is over the "
+            "authenticator spending limit exceeded - the value/amount is over the "
             "linked key's SpendingRule",
         ),
         6: (
             "session_key_expired",
-            "authenticator session key expired — re-register the linked key with a "
+            "authenticator session key expired - re-register the linked key with a "
             "fresh expiry",
         ),
         10: (
             "permission_denied",
-            "authenticator permission denied — the linked key lacks the required "
+            "authenticator permission denied - the linked key lacks the required "
             "permission for this message",
         ),
         11: (
             "authenticator_replay",
-            "authenticator replay — the nonce is not the linked key's current "
+            "authenticator replay - the nonce is not the linked key's current "
             "authenticator sequence (a per-key counter, NOT the account's EVM nonce "
             "or Cosmos sequence); re-sign with the key's next sequence",
         ),
@@ -90,7 +90,7 @@ MODULE_CODES: dict[str, dict[int, tuple[str, str]]] = {
     "pqc": {
         21: (
             "hybrid_verify_failed",
-            "hybrid PQC verification failed — the ML-DSA signature did not verify "
+            "hybrid PQC verification failed - the ML-DSA signature did not verify "
             "against the registered key",
         ),
         # v3.2.0 EVM authorisation window. Code 28 covers two states with
@@ -99,51 +99,51 @@ MODULE_CODES: dict[str, dict[int, tuple[str, str]]] = {
         # tell them apart.
         26: (
             "no_evm_window",
-            "no open EVM authorisation window — open one with MsgOpenEVMWindow "
+            "no open EVM authorisation window - open one with MsgOpenEVMWindow "
             "(msg.pqc.open_evm_window) on the Cosmos lane, THEN read the nonce, "
             "THEN sign the EVM transaction",
         ),
         27: (
             "evm_window_exhausted",
-            "EVM authorisation window exhausted — it ran out of blocks, "
+            "EVM authorisation window exhausted - it ran out of blocks, "
             "transactions or value; open a new one with MsgOpenEVMWindow",
         ),
         28: (
             "invalid_evm_window",
             "invalid EVM authorisation window, or the account has no registered "
-            "post-quantum key — check the log text to tell the two apart",
+            "post-quantum key - check the log text to tell the two apart",
         ),
         # v3.2.2 EIP-7702 delegation consent (qorsdk.evm_delegation).
         60: (
             "evm_delegation_no_consent",
-            "no post-quantum consent for this EIP-7702 delegation — broadcast "
+            "no post-quantum consent for this EIP-7702 delegation - broadcast "
             "MsgAuthorizeEVMDelegation for exactly this delegate first",
         ),
         # v3.2.3 registration integrity and key maintenance (qorsdk.key_integrity).
         230: (
             "pqc_key_weak",
             "the registration carries no usable post-quantum key (classical_only, "
-            "empty, or a degenerate key) — register a real ML-DSA-87 key",
+            "empty, or a degenerate key) - register a real ML-DSA-87 key",
         ),
         231: (
             "pqc_proof_of_possession_invalid",
-            "the proof of possession does not verify — sign it with the key being "
+            "the proof of possession does not verify - sign it with the key being "
             "registered over the v1 proof-of-possession bytes for this chain and account",
         ),
         232: (
             "pqc_key_reused",
-            "this account used that PQC key before — rotate or migrate to a key it "
+            "this account used that PQC key before - rotate or migrate to a key it "
             "has never had",
         ),
         233: ("pqc_last_signature_algorithm", "no active PQC signature algorithm would remain"),
         234: (
             "pqc_maintenance_needs_hybrid",
             "an account with a registered PQC key must send key registration or "
-            "migration with the hybrid signature — pass pqc_keypair to migrate_pqc_key",
+            "migration with the hybrid signature - pass pqc_keypair to migrate_pqc_key",
         ),
         61: (
             "evm_delegation_invalid",
-            "invalid EIP-7702 delegation request — check the delegate address and "
+            "invalid EIP-7702 delegation request - check the delegate address and "
             "the blocks bound, and that the account has a registered PQC key",
         ),
     },
@@ -196,11 +196,11 @@ MODULE_CODES: dict[str, dict[int, tuple[str, str]]] = {
 # extension (sign hybrid); only the text tells them apart.
 _PQC_KEY_REQUIREMENT_MESSAGES = {
     "pqc_key_required": (
-        "this account has no registered PQC key — register one (MsgRegisterPQCKeyV2) "
+        "this account has no registered PQC key - register one (MsgRegisterPQCKeyV2) "
         "before sending"
     ),
     "hybrid_signature_required": (
-        "this account has a registered PQC key — sign the transaction with the hybrid "
+        "this account has a registered PQC key - sign the transaction with the hybrid "
         "(ML-DSA-87) extension"
     ),
 }
@@ -359,7 +359,7 @@ def decode_tx_error(
             code=code,
             codespace=space,
             message=(
-                "the network is limiting this sender's transaction rate — wait and "
+                "the network is limiting this sender's transaction rate - wait and "
                 f"retry ({raw_log})"
             ),
             kind="rate_limited",

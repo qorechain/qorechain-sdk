@@ -106,7 +106,7 @@ class SubscriptionClient:
                 if sub_id in self._handlers and result and result.get("data"):
                     await self._handlers[sub_id](result)
         except Exception:
-            # Connection closed or read error — the loop ends; callers that need
+            # Connection closed or read error - the loop ends; callers that need
             # error visibility can wrap the handler. Swallow on teardown.
             return
 

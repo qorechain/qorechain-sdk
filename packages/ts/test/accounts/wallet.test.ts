@@ -69,7 +69,7 @@ describe("deriveNativeAccount (QoreChain bech32)", () => {
     const acct = await deriveNativeAccount(TEST_MNEMONIC);
     expect(acct.type).toBe("native");
     // Cross-verified against @cosmjs/proto-signing DirectSecp256k1HdWallet
-    // (prefix "qor", hdPath m/44'/118'/0'/0/0) — see report.
+    // (prefix "qor", hdPath m/44'/118'/0'/0/0) - see report.
     expect(acct.address).toBe("qor15yk64u7zc9g9k2yr2wmzeva5qgwxps6yjecvvu");
     expect(acct.address.startsWith("qor1")).toBe(true);
     expect(isValidBech32(acct.address, "qor")).toBe(true);

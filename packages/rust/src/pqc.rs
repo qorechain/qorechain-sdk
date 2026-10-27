@@ -14,9 +14,9 @@
 //!
 //! # Length strictness
 //!
-//! Every entry point validates its key and signature lengths **exactly** —
+//! Every entry point validates its key and signature lengths **exactly** -
 //! [`MLDSA87_SIGNATURE_LEN`] (4627), [`MLDSA87_PUBLIC_KEY_LEN`] (2592),
-//! [`MLDSA87_SECRET_KEY_LEN`] (4896) — before handing anything to the underlying
+//! [`MLDSA87_SECRET_KEY_LEN`] (4896) - before handing anything to the underlying
 //! library, and rejects everything else. This is the SDK's own guarantee, not an
 //! inherited one: ML-DSA implementations disagree about trailing bytes (the Go
 //! binding over CIRCL v1.6.1 accepts a 4628-byte signature as valid, `fips204`
@@ -128,7 +128,7 @@ pub fn pqc_sign_hedged(secret_key: &[u8], message: &[u8]) -> Result<Vec<u8>> {
 
 /// Reports whether `signature` is exactly [`MLDSA87_SIGNATURE_LEN`] (4627) bytes.
 ///
-/// Length is checked in full — a signature carrying even one extra trailing byte
+/// Length is checked in full - a signature carrying even one extra trailing byte
 /// is **not** a valid ML-DSA-87 signature, however the trailing byte was acquired.
 pub fn is_valid_pqc_signature_len(signature: &[u8]) -> bool {
     signature.len() == MLDSA87_SIGNATURE_LEN
@@ -148,8 +148,8 @@ pub fn is_valid_pqc_secret_key_len(secret_key: &[u8]) -> bool {
 ///
 /// The SDK checks this itself rather than inheriting whatever the underlying
 /// library happens to do, because implementations disagree: the Go binding
-/// (CIRCL v1.6.1) accepts a 4628-byte signature — the 4627-byte signature with
-/// one extra trailing byte — as valid, while `fips204` rejects it. Strict is the
+/// (CIRCL v1.6.1) accepts a 4628-byte signature - the 4627-byte signature with
+/// one extra trailing byte - as valid, while `fips204` rejects it. Strict is the
 /// correct side, and stating it here makes the guarantee the SDK's own, testable
 /// and identical in every language binding.
 fn check_exact_len(what: &str, got: usize, want: usize) -> Result<()> {
@@ -173,7 +173,7 @@ fn decode_secret_key(secret_key: &[u8]) -> Result<ml_dsa_87::PrivateKey> {
 
 /// Verifies an ML-DSA-87 (Dilithium-5) signature over a message.
 ///
-/// Both inputs must be **exactly** their FIPS 204 sizes — 2592 bytes of public
+/// Both inputs must be **exactly** their FIPS 204 sizes - 2592 bytes of public
 /// key, 4627 bytes of signature. A signature that is otherwise valid but carries
 /// extra trailing bytes, or one that is truncated, returns `false`; the length
 /// check happens here, before the underlying library is consulted, so the rule
@@ -226,7 +226,7 @@ impl HybridSignatureExtension {
     ///
     /// Builds the generated [`PqcHybridSignature`] prost message and returns
     /// `Message::encode_to_vec`. An absent public key is encoded as an empty
-    /// field (the default), which prost omits from the wire — matching the
+    /// field (the default), which prost omits from the wire - matching the
     /// other SDKs. The result always begins with byte `0x08`, never `0x7b`.
     pub fn encode_to_vec(&self) -> Vec<u8> {
         let msg = PqcHybridSignature {

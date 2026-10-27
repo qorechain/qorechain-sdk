@@ -81,7 +81,7 @@ public class JsonRpcClient {
     }
 
     /**
-     * {@code eth_call} — execute a read-only call against {@code to} with hex
+     * {@code eth_call} - execute a read-only call against {@code to} with hex
      * call {@code data} at the given block tag (default {@code "latest"}).
      *
      * @return the {@code 0x}-prefixed hex result string node.
@@ -98,7 +98,7 @@ public class JsonRpcClient {
     }
 
     /**
-     * {@code eth_estimateGas} — estimate gas for a call to {@code to} with the
+     * {@code eth_estimateGas} - estimate gas for a call to {@code to} with the
      * given hex {@code data}, optionally from {@code from} and carrying
      * {@code value} (0x-hex wei). Null fields are omitted.
      *

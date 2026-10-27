@@ -1,5 +1,5 @@
 /**
- * subscribe-blocks — stream new QoreChain blocks over the consensus RPC.
+ * subscribe-blocks - stream new QoreChain blocks over the consensus RPC.
  *
  * Shows:
  *  - createSubscriptionClient(rpcUrl) → a websocket-backed subscription client

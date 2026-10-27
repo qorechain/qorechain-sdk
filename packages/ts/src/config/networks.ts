@@ -59,13 +59,13 @@ export interface NetworkConfig {
   endpoints: NetworkEndpoints;
   /**
    * Block-explorer base URL (no trailing slash), used by the `explorer*Url`
-   * helpers. Left `undefined` by default for both presets — no public explorer
+   * helpers. Left `undefined` by default for both presets - no public explorer
    * hostname is baked in; apps set this via a network override.
    */
   explorerUrl?: string;
   /**
    * Faucet base URL, used by `requestFaucet`. Left `undefined` by default for
-   * both presets — no public faucet hostname is baked in; apps set this via a
+   * both presets - no public faucet hostname is baked in; apps set this via a
    * network override.
    */
   faucetUrl?: string;

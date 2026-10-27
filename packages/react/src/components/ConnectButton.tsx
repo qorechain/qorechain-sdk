@@ -1,9 +1,9 @@
 /**
- * {@link ConnectButton} — a minimal, headless-ish multi-wallet connect control.
+ * {@link ConnectButton} - a minimal, headless-ish multi-wallet connect control.
  *
  * Renders a connect button (or a small picker when multiple wallet kinds are
  * offered) wired to {@link useConnect}; once connected it shows the truncated
- * address and a disconnect action. Styling is intentionally light — pass
+ * address and a disconnect action. Styling is intentionally light - pass
  * `className` / `style` to theme it, or rebuild your own UI on the hooks.
  */
 

@@ -23,7 +23,7 @@ import {
   ensurePqcRegistered,
 } from "@qorechain/sdk";
 
-// The public BIP-39 test mnemonic — NOT funded on any real network. Replace it
+// The public BIP-39 test mnemonic - NOT funded on any real network. Replace it
 // (via QORE_MNEMONIC) with your own funded testnet mnemonic to broadcast.
 const TEST_MNEMONIC =
   "test test test test test test test test test test test junk";
@@ -86,7 +86,7 @@ async function main(): Promise<void> {
 
   if (!broadcast) {
     console.log(
-      "\nDry run — set QORE_BROADCAST=1 (with a funded account) to broadcast and read.",
+      "\nDry run - set QORE_BROADCAST=1 (with a funded account) to broadcast and read.",
     );
     tx.disconnect();
     return;
@@ -95,7 +95,7 @@ async function main(): Promise<void> {
   // --- Broadcast ------------------------------------------------------------
   // Register the post-quantum key once (idempotent: skipped when it is there).
   const ensured = await ensurePqcRegistered(tx, { pqcKeypair, rest: restUrl });
-  console.log(ensured.alreadyRegistered ? "PQC key already registered" : `PQC key registered — tx ${ensured.txHash}`);
+  console.log(ensured.alreadyRegistered ? "PQC key already registered" : `PQC key registered - tx ${ensured.txHash}`);
 
   console.log("\nCreating rollup...");
   const created = await rollup.createRollup({
@@ -104,7 +104,7 @@ async function main(): Promise<void> {
     vmType: "evm",
     stakeAmount: 1_000_000,
   });
-  console.log(`  ok — tx ${created.transactionHash}`);
+  console.log(`  ok - tx ${created.transactionHash}`);
 
   console.log("Submitting batch 0...");
   const batched = await rollup.submitBatch({
@@ -114,7 +114,7 @@ async function main(): Promise<void> {
     txCount: 10,
     withdrawalsRoot: new Uint8Array(32).fill(3),
   });
-  console.log(`  ok — tx ${batched.transactionHash}`);
+  console.log(`  ok - tx ${batched.transactionHash}`);
 
   // --- Read -----------------------------------------------------------------
   const comet = await connectComet(rpcUrl);

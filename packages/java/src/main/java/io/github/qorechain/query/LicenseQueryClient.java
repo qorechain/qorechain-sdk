@@ -22,7 +22,7 @@ public final class LicenseQueryClient {
         this(new AbciQueryClient(url));
     }
 
-    /** {@code Check} — whether {@code grantee} holds an active license for {@code featureId}. */
+    /** {@code Check} - whether {@code grantee} holds an active license for {@code featureId}. */
     public QueryOuterClass.QueryCheckResponse check(String grantee, String featureId) {
         ByteString req =
                 QueryOuterClass.QueryCheckRequest.newBuilder()
@@ -34,7 +34,7 @@ public final class LicenseQueryClient {
                 abci.request(SERVICE, "Check", req), QueryOuterClass.QueryCheckResponse.parser());
     }
 
-    /** {@code Holders} — all holders of a feature license. */
+    /** {@code Holders} - all holders of a feature license. */
     public QueryOuterClass.QueryHoldersResponse holders(String featureId) {
         ByteString req =
                 QueryOuterClass.QueryHoldersRequest.newBuilder()
@@ -46,7 +46,7 @@ public final class LicenseQueryClient {
                 QueryOuterClass.QueryHoldersResponse.parser());
     }
 
-    /** {@code List} — all licenses held by a grantee. */
+    /** {@code List} - all licenses held by a grantee. */
     public QueryOuterClass.QueryListResponse list(String grantee) {
         ByteString req =
                 QueryOuterClass.QueryListRequest.newBuilder()

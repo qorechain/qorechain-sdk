@@ -13,8 +13,8 @@ import qorechain.pqc.v1.Tx;
  * <p>From chain v3.2.0 an EVM transaction is admitted only from an account that
  * has <strong>both</strong> a registered post-quantum key <strong>and</strong> an
  * open, unexhausted window. Opening one is an ordinary Cosmos-lane protobuf
- * message that travels the normal hybrid signing path — the classical key alone
- * can never open a window — so an EVM wallet keeps working unmodified
+ * message that travels the normal hybrid signing path - the classical key alone
+ * can never open a window - so an EVM wallet keeps working unmodified
  * <em>inside</em> a window.
  *
  * <p>Three traps, all of which a wallet gets wrong by default:

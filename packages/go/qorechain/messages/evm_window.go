@@ -19,7 +19,7 @@ const (
 	// The chain constant is documented as "about 24 hours at 5s blocks", but no
 	// QoreChain network runs at 5s: the testnet produces a block about every
 	// 1.03s (17280 blocks ≈ 5 hours) and mainnet about every 3.1s (≈ 15 hours).
-	// Do NOT present this bound to a user as "24 hours" — say "up to 17280
+	// Do NOT present this bound to a user as "24 hours" - say "up to 17280
 	// blocks", or compute the duration from the chain's recent block time.
 	MaxEVMWindowBlocks uint64 = 17280
 	// MaxEVMWindowTxs is the largest number of EVM transactions a window may
@@ -122,8 +122,8 @@ func validateWindowSender(sender string) error {
 // transfer with a 21,000 gas limit at 112.5 gwei consumed 3,363 uqor of the
 // window. wei→uqor rounds UP.
 //
-// Opening a window REPLACES any window the account already has, and — because
-// QoreChain unifies the identity — it advances the account sequence, which is
+// Opening a window REPLACES any window the account already has, and - because
+// QoreChain unifies the identity - it advances the account sequence, which is
 // also the EVM nonce. Open the window, THEN read the nonce, THEN sign the EVM
 // transaction; the other order gives "nonce too low".
 func NewOpenEVMWindow(sender string, blocks, maxTxs uint64, maxValue string) (*pqcv1.MsgOpenEVMWindow, error) {

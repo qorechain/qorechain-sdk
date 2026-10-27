@@ -1,5 +1,5 @@
 // Package evm provides a minimal EVM JSON-RPC client and typed bindings for
-// QoreChain's EVM precompiles — the AI pre-flight surface in particular.
+// QoreChain's EVM precompiles - the AI pre-flight surface in particular.
 //
 // The QoreChain EVM Engine exposes on-chain AI capabilities (transaction risk
 // scoring and anomaly detection) as fixed-address precompiles callable via

@@ -7,8 +7,8 @@
  * bridges the two via `@cosmjs/proto-signing`'s `DirectSecp256k1Wallet`, binding
  * the key to the network's bech32 account prefix (`qor`).
  *
- * The signer performs SIGN_MODE_DIRECT (protobuf) signing — the native chain's
- * default — so the produced address and signatures match what the node's ante
+ * The signer performs SIGN_MODE_DIRECT (protobuf) signing - the native chain's
+ * default - so the produced address and signatures match what the node's ante
  * handler verifies for a classical secp256k1 account.
  */
 

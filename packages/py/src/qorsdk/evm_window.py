@@ -8,7 +8,7 @@ From v3.2.0 an EVM-lane transaction is admitted only from an account that
 The window is opened by an ordinary Cosmos-lane message
 (``/qorechain.pqc.v1.MsgOpenEVMWindow``) which therefore carries the account's
 hybrid (classical + ML-DSA-87) signature: the classical key alone can never open
-a window. That is the whole point of the design — MetaMask and any other EVM
+a window. That is the whole point of the design - MetaMask and any other EVM
 client keep working unmodified *inside* a window, and the post-quantum key
 authorises the window itself.
 
@@ -65,7 +65,7 @@ OPEN_EVM_WINDOW_TYPE_URL = "/qorechain.pqc.v1.MsgOpenEVMWindow"
 CLOSE_EVM_WINDOW_TYPE_URL = "/qorechain.pqc.v1.MsgCloseEVMWindow"
 
 #: The chain's ``MaxEVMWindowBlocks``: the longest a window may stay open.
-#: Counted in BLOCKS, never in wall-clock time — see the module docstring.
+#: Counted in BLOCKS, never in wall-clock time - see the module docstring.
 MAX_EVM_WINDOW_BLOCKS = 17280
 
 #: The chain's ``MaxEVMWindowTxs``: the most transactions a window may admit.
@@ -106,23 +106,23 @@ def validate_evm_window_targets(targets: list[str] | tuple[str, ...]) -> list[st
 #: The codespace every window refusal is reported under.
 EVM_WINDOW_CODESPACE = "pqc"
 
-#: ``pqc`` 26 — the account has no open EVM authorisation window.
+#: ``pqc`` 26 - the account has no open EVM authorisation window.
 ERR_NO_EVM_WINDOW = 26
 
-#: ``pqc`` 27 — the window ran out of blocks, transactions or value.
+#: ``pqc`` 27 - the window ran out of blocks, transactions or value.
 ERR_EVM_WINDOW_EXHAUSTED = 27
 
-#: ``pqc`` 28 — the window is invalid **or** the account has no registered
+#: ``pqc`` 28 - the window is invalid **or** the account has no registered
 #: post-quantum key. The two are distinguished by the chain's message text, which
 #: :func:`classify_evm_window_error` inspects.
 ERR_INVALID_EVM_WINDOW = 28
 
 #: What an EVM-lane refusal turned out to be.
 #:
-#: - ``"no_window"`` — no window is open (remedy: open one).
-#: - ``"window_exhausted"`` — a window exists but has nothing left.
-#: - ``"invalid_window"`` — the window does not cover this transaction.
-#: - ``"no_pqc_key"`` — the account has no registered post-quantum key. This is
+#: - ``"no_window"`` - no window is open (remedy: open one).
+#: - ``"window_exhausted"`` - a window exists but has nothing left.
+#: - ``"invalid_window"`` - the window does not cover this transaction.
+#: - ``"no_pqc_key"`` - the account has no registered post-quantum key. This is
 #:   its OWN state: no window can be opened until a key is registered.
 EVMWindowErrorKind = Literal[
     "no_window", "window_exhausted", "invalid_window", "no_pqc_key"
@@ -133,20 +133,20 @@ EVM_WINDOW_REMEDIES: dict[str, str] = {
     "no_window": (
         "open an EVM authorisation window first (msg.pqc.open_evm_window, signed on "
         "the Cosmos lane with the account's post-quantum key), THEN read the nonce, "
-        "THEN sign the EVM transaction — opening the window advances the nonce"
+        "THEN sign the EVM transaction - opening the window advances the nonce"
     ),
     "window_exhausted": (
-        "the window ran out of blocks, transactions or value — open a new one "
+        "the window ran out of blocks, transactions or value - open a new one "
         "(msg.pqc.open_evm_window); check the evm_window query to see which bound "
         "ran out"
     ),
     "invalid_window": (
-        "the open window does not cover this transaction — re-open it with bounds "
+        "the open window does not cover this transaction - re-open it with bounds "
         "that cover the value PLUS the maximum fee (gas limit x gas fee cap)"
     ),
     "no_pqc_key": (
         "register a post-quantum key first (msg.pqc.register_pqc_key_v2 / "
-        "qorsdk.ensure_pqc_registered) — an account without one cannot open a window "
+        "qorsdk.ensure_pqc_registered) - an account without one cannot open a window "
         "and cannot use the EVM lane"
     ),
 }

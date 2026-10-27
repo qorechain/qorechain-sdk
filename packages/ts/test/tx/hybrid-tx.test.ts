@@ -91,7 +91,7 @@ describe("buildHybridTx", () => {
 
     // Independently reconstruct B0 by taking the FINAL body, stripping the ext,
     // and re-encoding. This must equal the body the builder framed for the PQC
-    // signature — proving the signature covers B0, not the with-ext body.
+    // signature - proving the signature covers B0, not the with-ext body.
     const finalBody = TxBody.decode(built.txRaw.bodyBytes);
     expect(finalBody.extensionOptions).toHaveLength(1);
 

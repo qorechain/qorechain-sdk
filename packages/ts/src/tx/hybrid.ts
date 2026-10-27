@@ -7,7 +7,7 @@
  * ──────────────────────────────────────────────────────────────────────────
  * These are low-level encode/attach primitives. The full, contract-correct
  * hybrid build sequence lives in {@link ../tx/hybrid-tx} ({@link buildHybridTx}
- * / {@link signAndBroadcastHybrid}) — prefer those for end-to-end signing. This
+ * / {@link signAndBroadcastHybrid}) - prefer those for end-to-end signing. This
  * module documents the on-wire encoding the chain reads:
  *
  *  - `PQCHybridSignature` protobuf message (fields `algorithm_id` = 1,
@@ -19,7 +19,7 @@
  *    (field-1 varint tag). A prior release JSON-encoded this value; the chain's
  *    tx decoder rejected every such tx at CheckTx (the leading `0x7b` = `{` was
  *    misread as field 15 `start_group`). Verified live on testnet 2026-07-05.
- *  - PLACEMENT: the extension is a CRITICAL extension option — it goes in
+ *  - PLACEMENT: the extension is a CRITICAL extension option - it goes in
  *    `TxBody.extension_options`, the only slot the chain reads.
  *    {@link buildHybridTx} always uses it, and so does
  *    {@link attachHybridExtension} by default. `non_critical_extension_options`
@@ -29,7 +29,7 @@
  *    PQC extension REMOVED, framed with the authInfo bytes:
  *    `BE32(len(B0)) || B0 || BE32(len(A)) || A` (see {@link buildHybridTx} for
  *    the full contract). This module does not decide what the PQC signature
- *    signs — {@link buildHybridTx} does.
+ *    signs - {@link buildHybridTx} does.
  *
  * Cross-implementation proto byte-determinism (cosmjs encode vs. the chain's
  * re-marshal) is confirmed on the live testnet for the default registry message
@@ -53,7 +53,7 @@ export type HybridPlacement =
 export interface AttachHybridOptions {
   /**
    * Which `TxBody` extension list to attach the extension to. Defaults to
-   * `"extension_options"` — the critical slot, the only one the chain reads.
+   * `"extension_options"` - the critical slot, the only one the chain reads.
    * `"non_critical_extension_options"` is kept for callers with other needs:
    * the chain does not look there, so a hybrid tx built that way fails closed.
    */
@@ -66,7 +66,7 @@ export interface AttachHybridOptions {
  *
  * The `Any.typeUrl` is the core {@link HYBRID_SIG_TYPE_URL}; the `Any.value` is
  * the PROTOBUF encoding of the `PQCHybridSignature` message (via the generated
- * codec — fields `algorithmId` = 1, `pqcSignature` = 2, `pqcPublicKey` = 3), so
+ * codec - fields `algorithmId` = 1, `pqcSignature` = 2, `pqcPublicKey` = 3), so
  * the encoded value always begins with `0x08` (field-1 varint tag). The chain's
  * ante handler protobuf-decodes this extension; a JSON-encoded value is rejected
  * by the tx decoder at CheckTx.
@@ -89,7 +89,7 @@ export function encodeHybridExtension(ext: PQCHybridSignature): Any {
  * `extension_options` (the critical slot the chain reads); pass
  * `placement: "non_critical_extension_options"` to use the other list.
  *
- * @see The module header for the bytes the PQC signature must cover —
+ * @see The module header for the bytes the PQC signature must cover -
  *   {@link buildHybridTx} handles the whole contract.
  */
 export function attachHybridExtension(

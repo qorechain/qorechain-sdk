@@ -23,7 +23,7 @@ node.
 - To broadcast (`QORE_BROADCAST=1`): a **funded account**. The default is the
   public BIP-39 test mnemonic, which is not funded on any real network.
 - The withdrawal step needs a **finalized batch** whose `withdrawalsRoot` commits
-  the leaf, plus a **real Merkle proof** — the placeholder proof here will be
+  the leaf, plus a **real Merkle proof** - the placeholder proof here will be
   rejected on a live chain (reported cleanly).
 
 > Never commit a real mnemonic. Treat `QORE_MNEMONIC` as a secret.
@@ -32,7 +32,7 @@ node.
 
 ```bash
 pnpm install
-# Dry run — just builds + logs the messages (no node needed):
+# Dry run - just builds + logs the messages (no node needed):
 pnpm start
 
 # Broadcast + read against a live node:
@@ -43,5 +43,5 @@ QORE_RPC_URL=https://rpc-testnet.qore.host QORE_REST_URL=https://api-testnet.qor
 
 The SDK is the **app-developer** interaction surface (submit + read rollup txs).
 **Operating** a rollup node (sequencer, prover, data availability) is the job of
-the separate Rollup Development Kit — see the
+the separate Rollup Development Kit - see the
 [Rollups (RDK) guide](../../docs/docs/guides/rollups.md).

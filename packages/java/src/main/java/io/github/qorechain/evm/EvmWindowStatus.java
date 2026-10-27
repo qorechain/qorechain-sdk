@@ -6,8 +6,8 @@ import java.math.BigInteger;
 import qorechain.pqc.v1.QueryOuterClass;
 
 /**
- * The decoded answer of {@code GET {rest}/qorechain/pqc/v1/evm_window/{address}}
- * — one account's EVM authorisation window (chain v3.2.0).
+ * The decoded answer of {@code GET {rest}/qorechain/pqc/v1/evm_window/{address}} -
+ * one account's EVM authorisation window (chain v3.2.0).
  *
  * <p>The route answers 200 with {@code found:false} when the account has no
  * window, so it is safe to poll. A stored window may still be expired or
@@ -15,7 +15,7 @@ import qorechain.pqc.v1.QueryOuterClass;
  * zero-value transaction at the current height.
  *
  * <p>All numbers arrive as JSON strings. The counters are {@code long} and the
- * three value fields are {@link BigInteger} uqor amounts ({@code cosmos.Int}) —
+ * three value fields are {@link BigInteger} uqor amounts ({@code cosmos.Int}) -
  * never {@code double}, which silently truncates above 2^53. When a field is
  * absent (the {@code found:false} shape) the value fields decode to zero.
  */
@@ -97,7 +97,7 @@ public final class EvmWindowStatus {
 
     /**
      * Whether a found window has run out of transactions, value or blocks. False
-     * when no window is stored at all — that is "no window", a different state
+     * when no window is stored at all - that is "no window", a different state
      * with a different remedy (open one).
      */
     public boolean exhausted() {

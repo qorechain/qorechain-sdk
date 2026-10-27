@@ -97,7 +97,7 @@ describe("ML-DSA-87 sign / verify", () => {
 /**
  * Strict length enforcement.
  *
- * ML-DSA implementations disagree about trailing garbage — some accept a valid
+ * ML-DSA implementations disagree about trailing garbage - some accept a valid
  * signature with an extra byte appended, others reject it. A signature that one
  * official binding accepts and another rejects is a consensus hazard, so every
  * binding enforces the exact FIPS-204 sizes itself before verifying.
@@ -233,7 +233,7 @@ describe("HybridSigner (hybrid mode)", () => {
 
     const out = await hybrid.sign(msg);
 
-    // classical signature still verifies — proves classical compat is intact
+    // classical signature still verifies - proves classical compat is intact
     expect(out.classicalSignature).toBeDefined();
     expect(verifyClassical(classicalPub, msg, out.classicalSignature!)).toBe(
       true,

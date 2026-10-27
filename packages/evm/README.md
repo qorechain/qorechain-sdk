@@ -1,7 +1,7 @@
 # @qorechain/evm
 
 A thin, type-safe adapter over [viem](https://viem.sh) for the **QoreChain EVM
-Engine**. It does not reimplement an EVM client — `viem` is a peer dependency —
+Engine**. It does not reimplement an EVM client - `viem` is a peer dependency -
 it adds QoreChain-specific conveniences: a chain-aware client factory with EVM
 chain-id auto-detection, ERC-20 helpers, contract deploy/call wrappers, and
 typed bindings for QoreChain's EVM precompiles.

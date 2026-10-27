@@ -6,7 +6,7 @@ take an explicit ``decimals`` argument and are the right tool for EVM-style
 18-decimal tokens, SPL tokens, or any other denomination.
 
 All math is performed with Python's arbitrary-precision ``int`` on decimal
-strings — there is no floating-point arithmetic, so conversions are exact for
+strings - there is no floating-point arithmetic, so conversions are exact for
 any magnitude. :func:`parse_units` returns an ``int``; :func:`format_units`
 returns a normalized decimal string.
 """

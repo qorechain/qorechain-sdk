@@ -9,7 +9,7 @@ via `workspace:*`, with its own `README.md`, `.env.example`, and a single
 |---|---|---|
 | [`connect-and-query`](./connect-and-query) | `createClient`, read a native balance, read tokenomics overview | Yes |
 | [`send-qor`](./send-qor) | derive a native account, sign, broadcast a QOR transfer | Yes (+ funded account) |
-| [`pqc-hybrid-sign`](./pqc-hybrid-sign) | ML-DSA-87 sign/verify + build a hybrid tx | **No — runs offline** |
+| [`pqc-hybrid-sign`](./pqc-hybrid-sign) | ML-DSA-87 sign/verify + build a hybrid tx | **No - runs offline** |
 | [`evm-precompile`](./evm-precompile) | EVM precompiles + ERC-20 `balanceOf` | Yes |
 | [`ai-preflight`](./ai-preflight) | `simulateWithRiskScore`: on-chain AI risk + anomaly + gas estimate for a sample EVM tx | Yes |
 | [`cross-vm-call`](./cross-vm-call) | `createCrossVMClient`: call an EVM contract from a native account, then an atomic batch across two VMs | No to build; yes to send |
@@ -41,7 +41,7 @@ pnpm typecheck    # tsc --noEmit
 ```
 
 Each example reads endpoints/mnemonics from environment variables with sane
-localhost defaults — copy that folder's `.env.example` and adjust. Network
+localhost defaults - copy that folder's `.env.example` and adjust. Network
 examples fail gracefully with a hint if no node is reachable.
 
 > Use only test mnemonics / generated keys. Never commit real secrets.

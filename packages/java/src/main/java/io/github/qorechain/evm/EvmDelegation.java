@@ -38,10 +38,10 @@ public final class EvmDelegation {
     /** The delegate to consent to when the intent is to CLEAR the delegation. */
     public static final String CLEAR = "0x0000000000000000000000000000000000000000";
 
-    /** {@code pqc} 60 — no live consent for the delegation a tuple would install. */
+    /** {@code pqc} 60 - no live consent for the delegation a tuple would install. */
     public static final int ERR_NO_CONSENT = 60;
 
-    /** {@code pqc} 61 — a malformed consent or clear request, or no PQC key. */
+    /** {@code pqc} 61 - a malformed consent or clear request, or no PQC key. */
     public static final int ERR_INVALID = 61;
 
     private static final Pattern ADDRESS = Pattern.compile("^0x[0-9a-fA-F]{40}$");

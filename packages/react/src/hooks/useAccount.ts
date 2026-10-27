@@ -1,5 +1,5 @@
 /**
- * {@link useAccount} — the connected wallet's addresses and status.
+ * {@link useAccount} - the connected wallet's addresses and status.
  */
 
 import { useQoreContext } from "../context";
@@ -24,8 +24,8 @@ export interface UseAccountResult {
 }
 
 /**
- * Return the connected account's address(es) — native (bech32), EVM (`0x...`),
- * and/or SVM (base58) — plus a convenience primary `address` and connection
+ * Return the connected account's address(es) - native (bech32), EVM (`0x...`),
+ * and/or SVM (base58) - plus a convenience primary `address` and connection
  * status. Empty until a wallet is connected via {@link useConnect}.
  */
 export function useAccount(): UseAccountResult {

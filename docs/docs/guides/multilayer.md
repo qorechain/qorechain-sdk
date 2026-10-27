@@ -9,9 +9,9 @@ sidebar_position: 8
 QoreChain's **multilayer** module lets an app run additional execution layers
 alongside the main chain:
 
-- **Sidechains** — general-purpose layers with their own block production and VM
+- **Sidechains** - general-purpose layers with their own block production and VM
   support, settling state back to the main chain on an interval.
-- **Paychains** — payment-optimized layers tuned for high-throughput, low-fee
+- **Paychains** - payment-optimized layers tuned for high-throughput, low-fee
   transfers.
 
 The lifecycle is **register → anchor → route**:
@@ -22,7 +22,7 @@ The lifecycle is **register → anchor → route**:
 3. **Route** individual transactions to the best-fit layer.
 
 `@qorechain/sdk` exposes a high-level `createMultilayerClient` helper so you can
-do all of this with strongly-typed option objects — no hand-built protobuf
+do all of this with strongly-typed option objects - no hand-built protobuf
 `Any` payloads.
 
 ## Creating the client
@@ -79,7 +79,7 @@ await multilayer.registerPaychain({
 ```
 
 Each write returns the broadcast result (`transactionHash`, `code`, …). Numeric
-fields accept `number | bigint | string` — the helper coerces them to the
+fields accept `number | bigint | string` - the helper coerces them to the
 string form the chain expects for 64-bit integers.
 
 ## Anchor a state root

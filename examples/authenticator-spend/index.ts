@@ -1,5 +1,5 @@
 /**
- * authenticator-spend — link a Phantom (ed25519) key and build a relayer-
+ * authenticator-spend - link a Phantom (ed25519) key and build a relayer-
  * submitted MsgExecuteCosmos on the Native authenticator lane (v3.1.85).
  *
  * The authenticator model: a linked external key (here a Phantom ed25519 key)
@@ -9,7 +9,7 @@
  * over the domain-separated, replay-bound sign-bytes IS the authorization.
  *
  * This is a DRY RUN: it derives a deterministic ed25519 keypair to stand in for
- * Phantom, builds the MsgExecuteCosmos, and prints it. It does NOT broadcast —
+ * Phantom, builds the MsgExecuteCosmos, and prints it. It does NOT broadcast -
  * broadcasting requires a live relayer that pays fees and a registered
  * authenticator (see MsgRegisterAuthenticator, owner-signed).
  */
@@ -107,7 +107,7 @@ async function main(): Promise<void> {
   const bytes = registry.encode(m);
   console.log(`\nencoded ${bytes.length} bytes (ready for the relayer to sign + broadcast).`);
   console.log(
-    "\nDry run only — a live relayer (paying fees) and a registered authenticator",
+    "\nDry run only - a live relayer (paying fees) and a registered authenticator",
   );
   console.log(
     "(MsgRegisterAuthenticator, owner-signed) are required to actually spend.",

@@ -100,7 +100,7 @@ public final class TxError {
         // ---- pqc ----
         Map<Integer, String[]> pqc = new HashMap<>();
         pqc.put(21, new String[] {"pqc_signature_invalid", "invalid PQC signature"});
-        // The EVM authorisation window (chain v3.2.0). Code 28 carries two states —
+        // The EVM authorisation window (chain v3.2.0). Code 28 carries two states -
         // an unusable window and an account with no registered post-quantum key;
         // EvmWindowIssue.classify separates them on the message text.
         pqc.put(26, new String[] {"evm_window_missing", "no open EVM authorisation window"});
@@ -289,8 +289,8 @@ public final class TxError {
             known = new String[] {
                 keyRequirement,
                 PQC_KEY_REQUIRED.equals(keyRequirement)
-                        ? "this account has no registered PQC key — register one (MsgRegisterPQCKeyV2) before sending"
-                        : "this account has a registered PQC key — sign the transaction with the hybrid"
+                        ? "this account has no registered PQC key - register one (MsgRegisterPQCKeyV2) before sending"
+                        : "this account has a registered PQC key - sign the transaction with the hybrid"
                                 + " (ML-DSA-87) extension"
             };
         } else if (isRateLimitLog(codespace, code, rawLog)) {

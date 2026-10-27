@@ -13,10 +13,10 @@ import java.util.Set;
  * <p>Each network verifies exactly ONE form at any height, never both:
  *
  * <ul>
- *   <li><b>v1</b> — the original forms. Verified by networks that have applied none
+ *   <li><b>v1</b> - the original forms. Verified by networks that have applied none
  *       of the {@link #SIGN_BYTES_V2_UPGRADES} plans (today: mainnet
  *       {@code qorechain-vladi}).
- *   <li><b>v2</b> — domain-tagged and chain-id-bound. Verified once one of those plans
+ *   <li><b>v2</b> - domain-tagged and chain-id-bound. Verified once one of those plans
  *       is applied (today: testnet {@code qorechain-diana}, which applied
  *       {@code v3.1.98} at height 5,746,000) and by every network born on that release
  *       or later.
@@ -62,13 +62,13 @@ public final class SignBytes {
 
     /**
      * The PRIMARY name of the coordinated upgrade whose handler switches a pre-existing
-     * network to v2 — the name mainnet ({@code qorechain-vladi}) applies.
+     * network to v2 - the name mainnet ({@code qorechain-vladi}) applies.
      *
      * <p>It is <b>not</b> the only one. A client must ask the network about every name
      * in {@link #SIGN_BYTES_V2_UPGRADES}, never this one alone: the testnet took the
      * same batch under the earlier name {@code v3.1.98} and keeps that record forever,
      * so a single-name lookup answers "not applied" on one of the two networks and
-     * resolves v1 there — the form it refuses with {@code pqc} code 21.
+     * resolves v1 there - the form it refuses with {@code pqc} code 21.
      */
     public static final String SIGN_BYTES_V2_UPGRADE = "v3.2.0";
 
@@ -171,7 +171,7 @@ public final class SignBytes {
 
     /**
      * The form a client must sign for {@code chainId}, given the height at which one
-     * of {@link #SIGN_BYTES_V2_UPGRADES} was applied on that chain — the greatest
+     * of {@link #SIGN_BYTES_V2_UPGRADES} was applied on that chain - the greatest
      * height any of the names answered, 0 when none has been applied. Mirrors the
      * chain's {@code SignBytesVersionFor} exactly: v2 when the height is positive OR
      * the chain is not a legacy network; v1 otherwise.
@@ -381,7 +381,7 @@ public final class SignBytes {
     // ---- rejection detection ----
 
     /**
-     * Whether a broadcast refusal is the chain rejecting the hybrid PQC signature —
+     * Whether a broadcast refusal is the chain rejecting the hybrid PQC signature -
      * the symptom of signing the wrong sign-bytes form. True when
      * {@code codespace == "pqc" && code == 21}, or when the log/message contains
      * {@value #PQC_HYBRID_VERIFY_FAILED_LOG}. Code 21 in any other codespace is NOT

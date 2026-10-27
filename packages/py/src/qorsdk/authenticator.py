@@ -1,22 +1,22 @@
 """v3.1.85 authenticator lanes (EVM + Native/Cosmos) and same-algorithm PQC key
-rotation — the Python mirror of the canonical TypeScript SDK / wallet-adapter
+rotation - the Python mirror of the canonical TypeScript SDK / wallet-adapter
 ``authenticator`` module.
 
 v3.1.84 introduced the SVM authenticator lane. v3.1.85 adds two more lanes so a
 linked external key (Phantom ed25519 / a secp256k1 key) can spend from the ONE
 unified PQC-required account under least-privilege, spend-limited, revocable
-terms — via a relayer, WITHOUT the external key ever producing an ML-DSA
+terms - via a relayer, WITHOUT the external key ever producing an ML-DSA
 co-signature:
 
-* **EVM lane** — :func:`execute_evm_msg` / ``MsgExecuteEVM``: an EVM
+* **EVM lane** - :func:`execute_evm_msg` / ``MsgExecuteEVM``: an EVM
   call/transfer FROM the account's ``0x`` address.
-* **Native lane** — :func:`execute_cosmos_msg` / ``MsgExecuteCosmos``: a bank
+* **Native lane** - :func:`execute_cosmos_msg` / ``MsgExecuteCosmos``: a bank
   send FROM the account (Cosmos).
 
 The relayer submits + pays fees (its own hybrid-PQC signature satisfies the ante
 on the envelope); the authenticator's signature over the domain-separated,
 replay-bound sign-bytes IS the authorization. The digests below are rebuilt
-BYTE-FOR-BYTE from the chain (``x/abstractaccount/types/{evm,cosmos}_sign.go``) —
+BYTE-FOR-BYTE from the chain (``x/abstractaccount/types/{evm,cosmos}_sign.go``) -
 a mismatch is rejected on-chain (codespace ``abstractaccount``: code 11 replay /
 10 permission / 5 spending-limit / 6 session-expired).
 
@@ -76,7 +76,7 @@ def _utf8(value: str) -> bytes:
 
 
 # --------------------------------------------------------------------------- #
-# sign-bytes (the digest an authenticator signs) — BYTE-EXACT
+# sign-bytes (the digest an authenticator signs) - BYTE-EXACT
 # --------------------------------------------------------------------------- #
 
 
@@ -130,7 +130,7 @@ def evm_auth_sign_bytes_v2(
     || LP(to) || LP(value) || LP(data) || BE64(nonce) || BE64(gas_limit))``.
 
     v1 left the gas limit to whoever relayed the message. The chain verifies
-    exactly one form per block: v1 below the v3.2.3 upgrade, v2 from it — pick
+    exactly one form per block: v1 below the v3.2.3 upgrade, v2 from it - pick
     with :func:`evm_auth_digest_version`.
 
     :raises ValueError: If ``gas_limit`` is zero; the chain refuses it.
@@ -155,7 +155,7 @@ def evm_auth_sign_bytes_v2(
 
 def evm_auth_digest_version(rest: Any, *, cache_key: str | None = None) -> str:
     """The ``MsgExecuteEVM`` digest the network verifies now: ``"v2"`` once it
-    has applied v3.2.3, ``"v1"`` before. Raises when the node cannot be asked —
+    has applied v3.2.3, ``"v1"`` before. Raises when the node cannot be asked -
     never guess, the other form is refused."""
     return "v2" if is_upgrade_applied(rest, CHAIN_UPGRADE_V3_2_3, cache_key=cache_key) else "v1"
 
@@ -308,7 +308,7 @@ def execute_evm_msg(
     gas_limit: int = 0,
     nonce: int = 0,
 ) -> Msg:
-    """Compose a ``MsgExecuteEVM`` — the relayer broadcasts it (fee payer)."""
+    """Compose a ``MsgExecuteEVM`` - the relayer broadcasts it (fee payer)."""
     return Msg(
         type_url=EXECUTE_EVM_TYPE_URL,
         value=abstractaccount_tx.MsgExecuteEVM(
@@ -336,7 +336,7 @@ def execute_cosmos_msg(
     amount: str,
     nonce: int,
 ) -> Msg:
-    """Compose a ``MsgExecuteCosmos`` — the relayer broadcasts it (fee payer).
+    """Compose a ``MsgExecuteCosmos`` - the relayer broadcasts it (fee payer).
 
     ``amount`` is a single-coin string like ``"100uqor"`` (parsed into
     ``sdk.Coins``).
@@ -390,7 +390,7 @@ def derive_pqc_legacy(mnemonic: str) -> PqcKeypair:
 
     Derive the LEGACY (chain-bridge) ML-DSA-87 keypair for a ``mnemonic``.
 
-    Legacy derivation = ``mldsa.keygen(shake256(utf8(mnemonic), 32))`` — the
+    Legacy derivation = ``mldsa.keygen(shake256(utf8(mnemonic), 32))`` - the
     ``shake256(mnemonic)`` seed a backend (chain-bridge / faucet-api) used before
     the address-bound canonical derivation existed.
     """
@@ -431,7 +431,7 @@ def derive_pqc_canonical(account: str, mnemonic: str) -> PqcKeypair:
 
     Canonical derivation = ``mldsa.keygen(shake256("qorechain:pqc:v1|" + cosmos
     + "|" + mnemonic, 32))`` where ``cosmos`` is ``account`` resolved by
-    :func:`canonical_account` — so an upper-case bech32 or a ``0x`` form of the
+    :func:`canonical_account` - so an upper-case bech32 or a ``0x`` form of the
     same account yields the same key. The seed matches
     :func:`qorsdk.unified._derive_pqc`, so a wallet moved to this derivation
     matches the unified account's key.
@@ -484,7 +484,7 @@ def rotate_pqc_key_msg_from_mnemonic(
     ownership, new proves control).
 
     The returned message must be broadcast BY the account, cosigned (hybrid) with
-    the OLD key — it is still the registered key until the rotation lands.
+    the OLD key - it is still the registered key until the rotation lands.
 
     ``account`` may be any encoding :func:`canonical_account` accepts; the
     message ``sender`` and the rotation sign-bytes always carry the canonical
@@ -508,7 +508,7 @@ def rotate_pqc_key_msg_from_mnemonic(
     new_kp = _derive_pqc_by_scheme(new_derivation, account, mnemonic)
     if old_kp.public_key == new_kp.public_key:
         raise ValueError(
-            "old and new derivations produce the same key — rotation would be a no-op"
+            "old and new derivations produce the same key - rotation would be a no-op"
         )
     sign_bytes = _utf8(
         rotation_sign_bytes(

@@ -73,7 +73,7 @@ pub fn validate_lock_delegation(
     Ok(())
 }
 
-/// The stable kind of a `stakingtier` refusal code (2–13), matching the other
+/// The stable kind of a `stakingtier` refusal code (2-13), matching the other
 /// SDKs' kind strings; `None` for any other code. The reason text is in
 /// [`crate::tx::decode_tx_error`].
 pub fn stakingtier_error_kind(code: u32) -> Option<&'static str> {

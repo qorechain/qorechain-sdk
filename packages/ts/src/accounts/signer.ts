@@ -4,10 +4,10 @@
  * QoreChain supports three signature postures, mirroring the chain's `x/pqc`
  * key types (see the core `PQC_INTEGRATION.md`):
  *
- * - `classical` — a single classical signature (secp256k1 / ed25519). Backward
+ * - `classical` - a single classical signature (secp256k1 / ed25519). Backward
  *   compatible; no post-quantum material.
- * - `pqc` — an ML-DSA-87 (Dilithium-5) signature only. Maximum quantum safety.
- * - `hybrid` — a classical signature PLUS an ML-DSA-87 signature carried as a TX
+ * - `pqc` - an ML-DSA-87 (Dilithium-5) signature only. Maximum quantum safety.
+ * - `hybrid` - a classical signature PLUS an ML-DSA-87 signature carried as a TX
  *   extension, so quantum-safe wallets interoperate with classical verification.
  *
  * This module defines only the SIGNING primitives and the shape of their output.

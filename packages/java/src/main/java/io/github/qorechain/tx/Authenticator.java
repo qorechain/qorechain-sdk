@@ -18,18 +18,18 @@ import java.nio.charset.StandardCharsets;
  * <p>v3.1.84 introduced the SVM authenticator lane; v3.1.85 adds two more lanes so
  * a linked external key (a Phantom ed25519 key / a secp256k1 key) can spend from
  * the ONE unified PQC-required account under least-privilege, spend-limited,
- * revocable terms — via a relayer, WITHOUT the external key ever producing an
+ * revocable terms - via a relayer, WITHOUT the external key ever producing an
  * ML-DSA co-signature:
  *
  * <ul>
- *   <li>EVM lane — {@code MsgExecuteEVM}: EVM call/transfer from the account's 0x addr.
- *   <li>Native lane — {@code MsgExecuteCosmos}: bank send from the account (Cosmos).
+ *   <li>EVM lane - {@code MsgExecuteEVM}: EVM call/transfer from the account's 0x addr.
+ *   <li>Native lane - {@code MsgExecuteCosmos}: bank send from the account (Cosmos).
  * </ul>
  *
  * <p>The relayer submits + pays fees (its own hybrid-PQC signature satisfies the
  * ante on the envelope); the authenticator's signature over the domain-separated,
  * replay-bound sign-bytes IS the authorization. The digests are rebuilt
- * byte-for-byte from the chain ({@code x/abstractaccount/types/{evm,cosmos}_sign.go}) —
+ * byte-for-byte from the chain ({@code x/abstractaccount/types/{evm,cosmos}_sign.go}) -
  * a mismatch is rejected on-chain (codespace {@code abstractaccount}, code 11 replay /
  * 10 permission / 5 spending-limit / 6 session-expired).
  *
@@ -125,7 +125,7 @@ public final class Authenticator {
      * LP(chainId) ‖ LP(account) ‖ LP(pubkey) ‖ LP(to) ‖ LP(value) ‖ LP(data) ‖
      * BE64(nonce) ‖ BE64(gasLimit))}. v1 left the gas limit to whoever relayed the
      * message. The chain verifies exactly one form per block: v1 below the v3.2.3
-     * upgrade, v2 from it — pick with {@link #evmAuthDigestVersion}.
+     * upgrade, v2 from it - pick with {@link #evmAuthDigestVersion}.
      *
      * @throws IllegalArgumentException if {@code gasLimit} is zero; the chain refuses it
      */
@@ -157,7 +157,7 @@ public final class Authenticator {
 
     /**
      * The {@code MsgExecuteEVM} digest the network verifies now: {@code "v2"} once
-     * it has applied v3.2.3, {@code "v1"} before. A transport failure propagates —
+     * it has applied v3.2.3, {@code "v1"} before. A transport failure propagates -
      * never guess, the other form is refused.
      */
     public static String evmAuthDigestVersion(io.github.qorechain.query.RestClient rest, String cacheKey) {
@@ -427,9 +427,9 @@ public final class Authenticator {
     /**
      * The CANONICAL (SDK / wallet-adapter) address-bound PQC derivation for a
      * mnemonic: the same derivation {@link UnifiedAccounts#deriveUnifiedAccount}
-     * uses — {@code ML-DSA-87 keygen(shake256("qorechain:pqc:v1|" + cosmos + "|" +
+     * uses - {@code ML-DSA-87 keygen(shake256("qorechain:pqc:v1|" + cosmos + "|" +
      * mnemonic, 32))}, where {@code cosmos} is {@code account} resolved by {@link
-     * #canonicalAccount} — so an upper-case bech32 or a {@code 0x} form of the same
+     * #canonicalAccount} - so an upper-case bech32 or a {@code 0x} form of the same
      * account yields the same key.
      *
      * @throws IllegalArgumentException if {@code account} is not a valid 20-byte
@@ -471,7 +471,7 @@ public final class Authenticator {
         PqcKeypair newKp = derivePqcCanonical(account, mnemonic);
         if (Hex.encode(oldKp.publicKey).equals(Hex.encode(newKp.publicKey))) {
             throw new IllegalArgumentException(
-                    "old and new derivations produce the same key — rotation would be a no-op");
+                    "old and new derivations produce the same key - rotation would be a no-op");
         }
         byte[] sb =
                 utf8(rotationSignBytes(chainId, algorithmId, account, oldKp.publicKey, newKp.publicKey));

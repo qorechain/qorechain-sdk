@@ -25,13 +25,13 @@ public final class MultilayerQueryClient {
         this(new AbciQueryClient(url));
     }
 
-    /** {@code Params} — the module parameters. */
+    /** {@code Params} - the module parameters. */
     public QueryOuterClass.QueryParamsResponse params() {
         ByteString req = QueryOuterClass.QueryParamsRequest.newBuilder().build().toByteString();
         return decode(abci.request(SERVICE, "Params", req), QueryOuterClass.QueryParamsResponse.parser());
     }
 
-    /** {@code Layer} — a single layer config by id. */
+    /** {@code Layer} - a single layer config by id. */
     public QueryOuterClass.QueryLayerResponse layer(String layerId) {
         ByteString req =
                 QueryOuterClass.QueryLayerRequest.newBuilder()
@@ -41,13 +41,13 @@ public final class MultilayerQueryClient {
         return decode(abci.request(SERVICE, "Layer", req), QueryOuterClass.QueryLayerResponse.parser());
     }
 
-    /** {@code Layers} — all layers. */
+    /** {@code Layers} - all layers. */
     public QueryOuterClass.QueryLayersResponse layers() {
         ByteString req = QueryOuterClass.QueryLayersRequest.newBuilder().build().toByteString();
         return decode(abci.request(SERVICE, "Layers", req), QueryOuterClass.QueryLayersResponse.parser());
     }
 
-    /** {@code Anchor} — the latest state anchor for a layer. */
+    /** {@code Anchor} - the latest state anchor for a layer. */
     public QueryOuterClass.QueryAnchorResponse anchor(String layerId) {
         ByteString req =
                 QueryOuterClass.QueryAnchorRequest.newBuilder()
@@ -58,7 +58,7 @@ public final class MultilayerQueryClient {
                 abci.request(SERVICE, "Anchor", req), QueryOuterClass.QueryAnchorResponse.parser());
     }
 
-    /** {@code Anchors} — all state anchors for a layer. */
+    /** {@code Anchors} - all state anchors for a layer. */
     public QueryOuterClass.QueryAnchorsResponse anchors(String layerId) {
         ByteString req =
                 QueryOuterClass.QueryAnchorsRequest.newBuilder()
@@ -70,7 +70,7 @@ public final class MultilayerQueryClient {
                 QueryOuterClass.QueryAnchorsResponse.parser());
     }
 
-    /** {@code RoutingStats} — the cross-layer routing statistics. */
+    /** {@code RoutingStats} - the cross-layer routing statistics. */
     public QueryOuterClass.QueryRoutingStatsView routingStats() {
         ByteString req =
                 QueryOuterClass.QueryRoutingStatsRequest.newBuilder().build().toByteString();

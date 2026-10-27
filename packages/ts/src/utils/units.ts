@@ -6,7 +6,7 @@
  * `decimals` argument and are the right tool for EVM-style 18-decimal tokens,
  * SPL tokens, or any other denomination.
  *
- * All math is performed with {@link BigInt} on decimal strings — there is no
+ * All math is performed with {@link BigInt} on decimal strings - there is no
  * floating-point arithmetic, so conversions are exact for any magnitude. Values
  * are returned as `bigint` (for `parseUnits`) and decimal strings (for
  * `formatUnits`) so no precision is lost across the boundary.

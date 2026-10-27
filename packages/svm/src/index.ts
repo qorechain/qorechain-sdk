@@ -1,5 +1,5 @@
 /**
- * `@qorechain/svm` — a thin, type-safe adapter over
+ * `@qorechain/svm` - a thin, type-safe adapter over
  * [`@solana/web3.js`](https://solana-labs.github.io/solana-web3.js/) for
  * QoreChain's Solana-compatible JSON-RPC.
  *

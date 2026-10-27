@@ -25,13 +25,13 @@ public final class BridgeQueryClient {
         this(new AbciQueryClient(url));
     }
 
-    /** {@code Config} — the global bridge config. */
+    /** {@code Config} - the global bridge config. */
     public QueryOuterClass.QueryConfigResponse config() {
         ByteString req = QueryOuterClass.QueryConfigRequest.newBuilder().build().toByteString();
         return decode(abci.request(SERVICE, "Config", req), QueryOuterClass.QueryConfigResponse.parser());
     }
 
-    /** {@code ChainConfig} — a single chain config by id. */
+    /** {@code ChainConfig} - a single chain config by id. */
     public QueryOuterClass.QueryChainConfigResponse chainConfig(String chainId) {
         ByteString req =
                 QueryOuterClass.QueryChainConfigRequest.newBuilder()
@@ -43,7 +43,7 @@ public final class BridgeQueryClient {
                 QueryOuterClass.QueryChainConfigResponse.parser());
     }
 
-    /** {@code ChainConfigs} — all configured chains. */
+    /** {@code ChainConfigs} - all configured chains. */
     public QueryOuterClass.QueryChainConfigsResponse chainConfigs() {
         ByteString req =
                 QueryOuterClass.QueryChainConfigsRequest.newBuilder().build().toByteString();
@@ -52,7 +52,7 @@ public final class BridgeQueryClient {
                 QueryOuterClass.QueryChainConfigsResponse.parser());
     }
 
-    /** {@code Validator} — a single bridge validator by address. */
+    /** {@code Validator} - a single bridge validator by address. */
     public QueryOuterClass.QueryValidatorResponse validator(String address) {
         ByteString req =
                 QueryOuterClass.QueryValidatorRequest.newBuilder()
@@ -64,7 +64,7 @@ public final class BridgeQueryClient {
                 QueryOuterClass.QueryValidatorResponse.parser());
     }
 
-    /** {@code Validators} — all bridge validators. */
+    /** {@code Validators} - all bridge validators. */
     public QueryOuterClass.QueryValidatorsResponse validators() {
         ByteString req =
                 QueryOuterClass.QueryValidatorsRequest.newBuilder().build().toByteString();
@@ -73,7 +73,7 @@ public final class BridgeQueryClient {
                 QueryOuterClass.QueryValidatorsResponse.parser());
     }
 
-    /** {@code Operation} — a single bridge operation by id. */
+    /** {@code Operation} - a single bridge operation by id. */
     public QueryOuterClass.QueryOperationResponse operation(String id) {
         ByteString req =
                 QueryOuterClass.QueryOperationRequest.newBuilder()
@@ -85,7 +85,7 @@ public final class BridgeQueryClient {
                 QueryOuterClass.QueryOperationResponse.parser());
     }
 
-    /** {@code Operations} — all bridge operations. */
+    /** {@code Operations} - all bridge operations. */
     public QueryOuterClass.QueryOperationsResponse operations() {
         ByteString req =
                 QueryOuterClass.QueryOperationsRequest.newBuilder().build().toByteString();

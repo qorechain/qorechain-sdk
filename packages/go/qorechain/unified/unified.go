@@ -4,7 +4,7 @@
 //
 // The 20 bytes are the Ethereum derivation keccak256(uncompressedPubKey[1:])[12:],
 // so the key is natively spendable on the EVM lane; the native ("qor1…") and SVM
-// (base58) forms are just other encodings of those same 20 bytes — the chain
+// (base58) forms are just other encodings of those same 20 bytes - the chain
 // reads one x/bank balance for the account, visible under all three:
 //
 //	UnifiedAccount{
@@ -109,10 +109,10 @@ func DeriveUnifiedAccount(mnemonic string, index uint32) (UnifiedAccount, error)
 // UnifiedAccountFromSeed builds a unified account directly from a 32-byte seed
 // used as the secp256k1 private key (no HD derivation).
 //
-// SAFETY — seed32 IS the private key. It MUST be real secret entropy: 32 bytes
+// SAFETY - seed32 IS the private key. It MUST be real secret entropy: 32 bytes
 // from a CSPRNG, or a secret already held only by the account owner. It must
 // NEVER be derived from a wallet signature, and never from any other value a
-// third party can ask for or reproduce — a signature over a fixed message, an
+// third party can ask for or reproduce - a signature over a fixed message, an
 // address, a user id, a password without a proper KDF, a timestamp. Wallet
 // signatures in particular are deterministic and are handed to whatever page
 // requests them, so a seed built from one is a bearer secret: whoever collects
@@ -120,7 +120,7 @@ func DeriveUnifiedAccount(mnemonic string, index uint32) (UnifiedAccount, error)
 // and use the authenticator lanes (MsgRegisterAuthenticator +
 // MsgExecuteCosmos / MsgExecuteEVM) instead of deriving an account from it.
 //
-// The PQC seed is shake256("qorechain:pqc:v1|"+cosmos+"|seed:"+hex(seed32)) —
+// The PQC seed is shake256("qorechain:pqc:v1|"+cosmos+"|seed:"+hex(seed32)) -
 // the literal "seed:" prefix plus the lowercase-hex 32-byte private key stands
 // in for the mnemonic, matching the wallet adapter's walletFromSeed contract.
 func UnifiedAccountFromSeed(seed32 []byte) (UnifiedAccount, error) {

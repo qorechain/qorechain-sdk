@@ -435,7 +435,7 @@ async fn resolver_second_name_applied_is_v2_in_two_requests() {
     );
 }
 
-/// Mainnet before its upgrade: every name answers 0 (or `{}`), so v1 — and only
+/// Mainnet before its upgrade: every name answers 0 (or `{}`), so v1 - and only
 /// after ALL of them were asked.
 #[tokio::test]
 async fn resolver_height_zero_is_v1() {

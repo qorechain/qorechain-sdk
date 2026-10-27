@@ -7,7 +7,7 @@ The :data:`msg` namespace groups composers by module so callers write
 custom modules (amm/bridge/rdk/multilayer/pqc/svm/lightnode/license/
 abstractaccount/crossvm/rlconsensus/stakingtier).
 
-Every composer returns a :class:`Msg` (``{type_url, value}``) — pass a list of
+Every composer returns a :class:`Msg` (``{type_url, value}``) - pass a list of
 them to :func:`qorechain.tx.send_messages` or the hybrid PQC tx path.
 """
 

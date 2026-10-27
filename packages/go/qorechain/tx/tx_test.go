@@ -261,7 +261,7 @@ func TestBuildHybridTxContract(t *testing.T) {
 		t.Errorf("ext type URL = %q, want %q", ext.TypeUrl, pqc.HybridSigTypeURL)
 	}
 	// CONSENSUS-CRITICAL: the Any.value must be PROTOBUF, not Go-JSON. Its first
-	// byte is the field-1 varint tag 0x08, NEVER '{' (0x7b) — the chain's tx
+	// byte is the field-1 varint tag 0x08, NEVER '{' (0x7b) - the chain's tx
 	// decoder rejected the old 0x7b-leading JSON value at CheckTx.
 	if len(ext.Value) == 0 {
 		t.Fatal("extension value is empty")

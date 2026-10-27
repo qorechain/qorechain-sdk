@@ -16,7 +16,7 @@
  *
  *  - `B0` = canonical protobuf bytes of the `TxBody` containing the
  *    messages/memo/timeoutHeight but NOT the `PQCHybridSignature` extension.
- *  - `A`  = the tx `authInfoBytes`, verbatim — the same bytes that are
+ *  - `A`  = the tx `authInfoBytes`, verbatim - the same bytes that are
  *    broadcast.
  *  - PQC signed message = the hybrid sign-bytes in the form the TARGET network
  *    verifies (see ./signbytes):
@@ -27,13 +27,13 @@
  *    applied (at different heights); other chains are v2 from genesis. The
  *    default `signBytesVersion: "auto"` asks the network (needs `rest`).
  *  - PQC signature       = `ml_dsa87.sign(pqcSecretKey, message)` (pure
- *    ML-DSA-87, empty context) — 4627 bytes for Dilithium-5.
+ *    ML-DSA-87, empty context) - 4627 bytes for Dilithium-5.
  *  - The `PQCHybridSignature` extension is then added to
  *    `TxBody.extension_options` (CRITICAL extension options) as an `Any` with
  *    `type_url = "/qorechain.pqc.v1.PQCHybridSignature"` and `value` = the
  *    PROTOBUF encoding of the `PQCHybridSignature` message (fields
  *    `algorithm_id` = 1, `pqc_signature` = 2, `pqc_public_key` = 3; the encoded
- *    value begins with `0x08`). The chain protobuf-decodes it — a JSON value is
+ *    value begins with `0x08`). The chain protobuf-decodes it - a JSON value is
  *    rejected by the tx decoder.
  *  - The CLASSICAL signature is computed normally (SIGN_MODE_DIRECT) over the
  *    FINAL body (the one WITH the PQC extension) + authInfo + chainId +
@@ -41,7 +41,7 @@
  *    no self-reference: the classical signature never signs itself.
  *
  * The signer's PQC key must be registered on-chain (via `MsgRegisterPQCKey`)
- * before hybrid txs PQC-verify — unless `includePqcPublicKey` is set, which
+ * before hybrid txs PQC-verify - unless `includePqcPublicKey` is set, which
  * embeds the key for auto-registration on first use. Registering the key is the
  * caller's responsibility.
  *
@@ -90,7 +90,7 @@ export interface BuildHybridTxOptions {
   /**
    * The protobuf message {@link Registry} used to encode the messages into the
    * `TxBody`. Use cosmjs's `defaultRegistryTypes` (plus any custom QoreChain
-   * message types) — the same registry the network's `TxClient` is built with.
+   * message types) - the same registry the network's `TxClient` is built with.
    */
   registry: Registry;
   /**
@@ -142,7 +142,7 @@ export interface BuiltHybridTx {
   txRaw: TxRaw;
   /** Encoded `TxRaw` bytes, ready to broadcast. */
   txRawBytes: Uint8Array;
-  /** The `authInfoBytes` (`A`) — identical in the PQC framing and the SignDoc. */
+  /** The `authInfoBytes` (`A`) - identical in the PQC framing and the SignDoc. */
   authInfoBytes: Uint8Array;
   /** The exact bytes the ML-DSA-87 signature was computed over (the framing). */
   pqcSignedMessage: Uint8Array;
@@ -161,8 +161,8 @@ function fromBase64(b64: string): Uint8Array {
 }
 
 /**
- * What a hybrid tx signs over, captured from the caller's options SYNCHRONOUSLY
- * — before the first `await` — so a caller mutating its message objects, memo,
+ * What a hybrid tx signs over, captured from the caller's options SYNCHRONOUSLY -
+ * before the first `await` - so a caller mutating its message objects, memo,
  * timeout height or fee while the build is suspended (on `getAccounts`, the
  * sign-bytes lookup, or the signer) cannot change what gets signed, and so a
  * retry re-signs exactly what the first attempt did.
@@ -214,8 +214,8 @@ function snapshotHybridTx(opts: BuildHybridTxOptions): HybridTxSnapshot {
  * Build a fully signed hybrid transaction following the chain contract.
  *
  * The build sequence (see the module header for the exact contract):
- *  1. Encode `B0` — the `TxBody` WITHOUT the PQC extension.
- *  2. Encode `A`  — the single-signer `AuthInfo` (SIGN_MODE_DIRECT).
+ *  1. Encode `B0` - the `TxBody` WITHOUT the PQC extension.
+ *  2. Encode `A` - the single-signer `AuthInfo` (SIGN_MODE_DIRECT).
  *  3. Compute `message = BE32(len B0) || B0 || BE32(len A) || A`; ML-DSA-87
  *     sign it.
  *  4. Build the PQC extension `Any` and attach it to a NEW body identical to
@@ -253,9 +253,9 @@ async function buildHybridTxFromSnapshot(
   }
   const account = accounts[0];
 
-  // 1. B0 — body WITHOUT the PQC extension: encoded in the snapshot.
+  // 1. B0 - body WITHOUT the PQC extension: encoded in the snapshot.
 
-  // 2. A — single-signer AuthInfo (SIGN_MODE_DIRECT). The signer's classical
+  // 2. A - single-signer AuthInfo (SIGN_MODE_DIRECT). The signer's classical
   //    secp256k1 pubkey identifies the account.
   const pubkeyAny = encodePubkey(encodeSecp256k1Pubkey(account.pubkey));
   const authInfoBytes = makeAuthInfoBytes(

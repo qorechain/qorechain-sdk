@@ -167,13 +167,13 @@ pub fn register_svm_pqc_key_any(
     )
 }
 
-/// Builds `MsgUpdateParams` — the **governance** message that replaces the SVM
+/// Builds `MsgUpdateParams` - the **governance** message that replaces the SVM
 /// module's runtime parameters wholesale (chain v3.1.97).
 ///
 /// `authority` must be the governance module account; a transaction signed by
 /// anyone else is rejected by the chain. Because the replacement is wholesale,
 /// `params` must carry **every** field at its intended value, not only the ones
-/// being changed — read the current parameters first and edit the struct.
+/// being changed - read the current parameters first and edit the struct.
 ///
 /// `SVMParams::enabled` is what turns the SVM lane on or off, so disabling the
 /// lane is now an ordinary governance proposal rather than a binary release.

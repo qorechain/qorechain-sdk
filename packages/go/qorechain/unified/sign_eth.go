@@ -121,12 +121,12 @@ func SignClassicalEth(params EthSignParams) ([]byte, error) {
 // SignHybridEth builds a hybrid eth_secp256k1 + ML-DSA-87 native tx.
 //
 // Sequence:
-//  1. B0 — body WITHOUT the PQC extension.
-//  2. A  — single-signer eth_secp256k1 SIGN_MODE_DIRECT AuthInfo.
-//  3. ML-DSA-87 sign over signbytes.Hybrid(version, ChainID, B0, A) — v1 or
+//  1. B0 - body WITHOUT the PQC extension.
+//  2. A - single-signer eth_secp256k1 SIGN_MODE_DIRECT AuthInfo.
+//  3. ML-DSA-87 sign over signbytes.Hybrid(version, ChainID, B0, A) - v1 or
 //     v2 per SignBytesVersion (see EthSignParams).
 //  4. Attach the protobuf-encoded PQCHybridSignature extension Any → final body.
-//  5. Classical eth_secp256k1 signature over SignDoc(finalBody, A, …) — secp256k1
+//  5. Classical eth_secp256k1 signature over SignDoc(finalBody, A, …) - secp256k1
 //     of keccak256(SignDoc).
 //  6. Assemble TxRaw(finalBody, A, [classicalSig]).
 //
@@ -144,7 +144,7 @@ func SignHybridEth(params EthSignParams) ([]byte, error) {
 	if err != nil {
 		return nil, err
 	}
-	// 1. B0 — body without the PQC extension.
+	// 1. B0 - body without the PQC extension.
 	b0, err := proto.Marshal(&sdktx.TxBody{
 		Messages:      encoded,
 		Memo:          params.Memo,
@@ -208,10 +208,10 @@ func UnifiedAccountFromPhantomSignature(_ []byte) (UnifiedAccount, error) {
 // removedPhantomDerivationMsg is the error returned by the removed
 // signature-derived account constructor.
 const removedPhantomDerivationMsg = "UnifiedAccountFromPhantomSignature was removed in v0.8.0: " +
-	"deriving a spend key from a wallet signature is unsafe — the signature is a bearer secret that any page " +
+	"deriving a spend key from a wallet signature is unsafe - the signature is a bearer secret that any page " +
 	"can request from the wallet, so whoever obtains it controls the account. Use the authenticator lanes " +
 	"instead: register the external key with MsgRegisterAuthenticator and spend via MsgExecuteCosmos / " +
-	"MsgExecuteEVM. Any account previously derived this way must be treated as exposed — move its funds."
+	"MsgExecuteEVM. Any account previously derived this way must be treated as exposed - move its funds."
 
 // --- internal helpers ---
 

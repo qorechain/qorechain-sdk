@@ -1,5 +1,5 @@
 /**
- * connect-and-query — create a client and read public chain state.
+ * connect-and-query - create a client and read public chain state.
  *
  * Shows:
  *  - createClient() with endpoint overrides from the environment

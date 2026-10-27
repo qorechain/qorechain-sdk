@@ -101,7 +101,7 @@ func svmParamsFixture() svmv1.SVMParams {
 }
 
 // TestSvmUpdateParamsComposer asserts the governance composer produces the new
-// type URL and carries the params through — Enabled in particular, which is the
+// type URL and carries the params through - Enabled in particular, which is the
 // switch that turns the SVM lane off by proposal instead of by binary release.
 func TestSvmUpdateParamsComposer(t *testing.T) {
 	params := svmParamsFixture()

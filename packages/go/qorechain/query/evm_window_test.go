@@ -9,7 +9,7 @@ import (
 )
 
 // TestParseEVMWindowStatusAbsent covers the found:false shape the route answers
-// for an account with no window — a 200, so polling is safe.
+// for an account with no window - a 200, so polling is safe.
 func TestParseEVMWindowStatusAbsent(t *testing.T) {
 	status, err := ParseEVMWindowStatus([]byte(`{"found":false}`))
 	if err != nil {
@@ -65,8 +65,8 @@ func TestParseEVMWindowStatusLive(t *testing.T) {
 	}
 }
 
-// TestParseEVMWindowStatusKeepsBigNumbersExact uses values above 2^53 — the
-// point where a float64 decode starts truncating — and one far beyond uint64,
+// TestParseEVMWindowStatusKeepsBigNumbersExact uses values above 2^53 - the
+// point where a float64 decode starts truncating - and one far beyond uint64,
 // which the cosmos.Int fields must still carry digit for digit.
 func TestParseEVMWindowStatusKeepsBigNumbersExact(t *testing.T) {
 	body := []byte(`{"found":true,"live":false,"opened_height":"9007199254740993",` +

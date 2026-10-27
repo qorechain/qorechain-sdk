@@ -134,7 +134,7 @@ export function helpText(): string {
   const templates = TEMPLATES.map(
     (t) => `    ${t.id.padEnd(16)} ${t.hint}`,
   ).join("\n");
-  return `create-qorechain-dapp — scaffold a new QoreChain dApp.
+  return `create-qorechain-dapp - scaffold a new QoreChain dApp.
 
 Usage:
   npm create qorechain-dapp <dir> [options]

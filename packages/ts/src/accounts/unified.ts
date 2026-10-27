@@ -5,7 +5,7 @@
  * never "has funds on one lane but not another". The 20 bytes are the Ethereum
  * derivation `keccak256(uncompressedPubkey[1:])[12:]`, so the key is natively
  * spendable on the EVM lane; the native (`qor1…`) and SVM (base58) forms are just
- * other encodings of the SAME 20 bytes — the chain reads one x/bank balance for
+ * other encodings of the SAME 20 bytes - the chain reads one x/bank balance for
  * the account, visible under all three encodings.
  *
  * This is ADDITIVE. The legacy coin-118 native derivation
@@ -270,7 +270,7 @@ export async function deriveUnifiedAccount(
  * mnemonic-derived one).
  *
  * SAFETY: `seed32` becomes the account's spend key, so it MUST be real secret
- * entropy — a CSPRNG seed (`crypto.getRandomValues`) or a key derived from a
+ * entropy - a CSPRNG seed (`crypto.getRandomValues`) or a key derived from a
  * BIP-39 mnemonic. NEVER derive it from a wallet signature, or from any other
  * value a third party can ask the wallet (or the user) to produce: such a value
  * is a bearer secret, and whoever obtains it controls the account. To let an

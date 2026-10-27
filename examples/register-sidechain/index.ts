@@ -1,5 +1,5 @@
 /**
- * register-sidechain — drive the multilayer (sidechain / paychain) lifecycle via
+ * register-sidechain - drive the multilayer (sidechain / paychain) lifecycle via
  * the high-level `createMultilayerClient` helper.
  *
  * Shows the full register -> anchor -> route -> read flow:
@@ -87,7 +87,7 @@ async function main(): Promise<void> {
 
   if (process.env.QORE_BROADCAST !== "1") {
     console.log(
-      "\nDry run — set QORE_BROADCAST=1 (with a funded account) to register, anchor, and route.",
+      "\nDry run - set QORE_BROADCAST=1 (with a funded account) to register, anchor, and route.",
     );
     tx.disconnect();
     return;
@@ -104,7 +104,7 @@ async function main(): Promise<void> {
     supportedVmTypes: ["evm", "wasm"],
     supportedDomains: ["gaming"],
   });
-  console.log(`  ok — tx ${r1.transactionHash}`);
+  console.log(`  ok - tx ${r1.transactionHash}`);
 
   console.log("Registering paychain...");
   const r2 = await multi.registerPaychain({
@@ -114,7 +114,7 @@ async function main(): Promise<void> {
     settlementIntervalBlocks: 50,
     baseFeeMultiplier: "0.5",
   });
-  console.log(`  ok — tx ${r2.transactionHash}`);
+  console.log(`  ok - tx ${r2.transactionHash}`);
 
   console.log("Anchoring sidechain state root...");
   const r3 = await multi.anchorState({
@@ -123,7 +123,7 @@ async function main(): Promise<void> {
     stateRoot: new Uint8Array(32).fill(7),
     transactionCount: 4_321,
   });
-  console.log(`  ok — tx ${r3.transactionHash}`);
+  console.log(`  ok - tx ${r3.transactionHash}`);
 
   console.log("Routing a transaction...");
   const r4 = await multi.routeTransaction({
@@ -132,7 +132,7 @@ async function main(): Promise<void> {
     maxLatencyMs: 1_000,
     maxFee: "1000",
   });
-  console.log(`  ok — tx ${r4.transactionHash}`);
+  console.log(`  ok - tx ${r4.transactionHash}`);
 
   // Typed reads over the consensus RPC's ABCI query path.
   const comet = await connectComet(rpcUrl);

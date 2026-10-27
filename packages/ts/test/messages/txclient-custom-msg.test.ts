@@ -46,7 +46,7 @@ describe("TxClient with a custom QoreChain message", () => {
     expect(msgs[0].typeUrl).toBe("/qorechain.amm.v1.MsgSwapExactIn");
 
     // The default registry (which TxClient.connect uses) encodes this message
-    // and decodes it back to the same value — i.e. the body would be carried
+    // and decodes it back to the same value - i.e. the body would be carried
     // correctly on the wire.
     const registry = qorechainRegistry();
     const encoded = registry.encode(msgs[0]);

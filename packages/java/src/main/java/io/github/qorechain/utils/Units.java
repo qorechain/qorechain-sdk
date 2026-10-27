@@ -4,7 +4,7 @@ import java.math.BigInteger;
 
 /**
  * Generic, integer-exact unit conversion for arbitrary token decimals (e.g. 18
- * for most ERC-20 tokens). All math is {@link BigInteger} on decimal strings —
+ * for most ERC-20 tokens). All math is {@link BigInteger} on decimal strings -
  * no floating-point arithmetic.
  */
 public final class Units {

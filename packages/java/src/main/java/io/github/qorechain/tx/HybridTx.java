@@ -82,7 +82,7 @@ public final class HybridTx {
         public final cosmos.tx.v1beta1.TxOuterClass.TxRaw txRaw;
         /** Encoded {@code TxRaw} bytes, ready to broadcast. */
         public final byte[] txRawBytes;
-        /** The {@code authInfoBytes} (A) — identical in the PQC framing and SignDoc. */
+        /** The {@code authInfoBytes} (A) - identical in the PQC framing and SignDoc. */
         public final byte[] authInfoBytes;
         /** B0: the body bytes WITHOUT the PQC extension. */
         public final byte[] b0Bytes;
@@ -238,10 +238,10 @@ public final class HybridTx {
     public static Built buildHybridTx(Options opts) {
         SignBytes.Version version = SignBytes.requireVersion(opts.chainId, opts.signBytesVersion);
 
-        // 1. B0 — body WITHOUT the PQC extension.
+        // 1. B0 - body WITHOUT the PQC extension.
         byte[] b0 = buildBody(opts, null).toByteArray();
 
-        // 2. A — single-signer AuthInfo (SIGN_MODE_DIRECT).
+        // 2. A - single-signer AuthInfo (SIGN_MODE_DIRECT).
         byte[] authInfoBytes = buildAuthInfoBytes(opts);
 
         // 3. PQC framing (per-network form) + ML-DSA-87 signature over B0 + A

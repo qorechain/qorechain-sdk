@@ -9,7 +9,7 @@ import (
 const testMnemonic = "test test test test test test test test test test test junk"
 
 // Known-answer vectors shared with the TypeScript and Python SDKs. If any of
-// these break, the Go derivation has diverged — a cross-language bug.
+// these break, the Go derivation has diverged - a cross-language bug.
 const (
 	evmIdx0    = "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266"
 	evmIdx1    = "0x70997970C51812dc3A010C7d01b50e0d17dc79C8"

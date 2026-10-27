@@ -40,7 +40,7 @@ class AuthenticatorTest {
     private static final String MNEMONIC =
             "test test test test test test test test test test test junk";
 
-    /** 32 bytes of 0x01 — the KAT authenticator pubkey. */
+    /** 32 bytes of 0x01 - the KAT authenticator pubkey. */
     private static byte[] katPubkey() {
         byte[] pubkey = new byte[32];
         Arrays.fill(pubkey, (byte) 0x01);

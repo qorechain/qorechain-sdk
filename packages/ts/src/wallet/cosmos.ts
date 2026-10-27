@@ -2,7 +2,7 @@
  * Native browser-wallet integration for QoreChain (Keplr and Leap).
  *
  * Keplr and Leap inject the same API shape under `window.keplr` / `window.leap`,
- * so this module targets both through a light structural interface — it does not
+ * so this module targets both through a light structural interface - it does not
  * take a hard dependency on `@keplr-wallet/types`.
  *
  * The typical flow:
@@ -72,7 +72,7 @@ export interface KeplrChainInfo {
  * The minimal injected-wallet surface this module uses. Both Keplr and Leap
  * implement (at least) these methods. Declared structurally so no wallet types
  * package is required; apps that have `@keplr-wallet/types` can pass a real
- * `Keplr` here — it is structurally compatible.
+ * `Keplr` here - it is structurally compatible.
  */
 export interface InjectedCosmosWallet {
   experimentalSuggestChain(chainInfo: KeplrChainInfo): Promise<void>;
@@ -95,12 +95,12 @@ export interface GetCosmosWalletOptions {
   network: NetworkConfig;
   /**
    * Provide the injected wallet object directly instead of reading it off
-   * `window` — primarily for testing or non-browser embedding.
+   * `window` - primarily for testing or non-browser embedding.
    */
   provider?: InjectedCosmosWallet;
   /**
    * Use Amino signing (`getOfflineSigner` Amino path) instead of the auto
-   * signer. Defaults to `false` — `getOfflineSignerAuto` is used, which picks
+   * signer. Defaults to `false` - `getOfflineSignerAuto` is used, which picks
    * DIRECT (preferred; required for QoreChain custom messages) or Amino.
    */
   preferAmino?: boolean;
@@ -186,7 +186,7 @@ function resolveProvider(
  *
  * The returned `signer` plugs straight into
  * `TxClient.connect(network.endpoints.rpc, signer)` and can send any registered
- * message — standard Native *and* QoreChain custom messages — via DIRECT mode,
+ * message - standard Native *and* QoreChain custom messages - via DIRECT mode,
  * which both Keplr and Leap support. (Amino mode covers standard messages only
  * until custom-module Amino converters land; see `TxClient` `aminoTypes`.)
  *

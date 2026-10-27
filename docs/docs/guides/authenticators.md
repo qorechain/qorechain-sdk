@@ -6,8 +6,8 @@ sidebar_position: 13
 
 # Authenticator lanes
 
-**Authenticator lanes** (chain v3.1.85) let a linked external key — a Phantom
-**ed25519** key, or a MetaMask / EVM **secp256k1** key — spend from the ONE
+**Authenticator lanes** (chain v3.1.85) let a linked external key - a Phantom
+**ed25519** key, or a MetaMask / EVM **secp256k1** key - spend from the ONE
 canonical **PQC-required** account under least-privilege, revocable terms,
 **without the external key ever producing an ML-DSA co-signature**.
 
@@ -15,8 +15,8 @@ canonical **PQC-required** account under least-privilege, revocable terms,
 
 `abstractaccount` carries an `enabled` flag, and it is **false on both networks**
 today (`GET {lcd}/qorechain/abstractaccount/v1/config`). From the v3.2.0 upgrade
-that flag gates every path — creating an abstract account, linking a key, and
-both execution lanes — so on mainnet **linking a key and spending through a
+that flag gates every path - creating an abstract account, linking a key, and
+both execution lanes - so on mainnet **linking a key and spending through a
 linked key are refused**, with `abstract account module is disabled` (code 9).
 
 Nothing in use breaks, because mainnet has no abstract accounts. But there is no
@@ -33,8 +33,8 @@ mainnet users today. Check the config flag before offering a linking flow.
 
 :::warning A limit applies only if you set one
 
-A `SpendingRule` — allowed denominations, a per-transaction limit and a daily
-limit — **is** enforced by the chain on both the `ExecuteCosmos` and
+A `SpendingRule` - allowed denominations, a per-transaction limit and a daily
+limit - **is** enforced by the chain on both the `ExecuteCosmos` and
 `ExecuteEVM` lanes, fail-closed: the spend is checked before it happens, and the
 daily accumulator is credited only once the check passes.
 
@@ -43,14 +43,14 @@ in order:
 
 1. the authenticator's own rule, if it is set **and** `Enabled`;
 2. otherwise the first `Enabled` rule on the **account**;
-3. otherwise **no rule — and no limit at all**.
+3. otherwise **no rule - and no limit at all**.
 
 `MsgRegisterAuthenticator` carries no rule field, so a key linked with that
 message alone falls to step 2 or 3. **If nobody set an account-level rule, that
 key can move the whole balance.** Set a rule deliberately with
 `MsgUpdateSpendingRules`; do not assume a default.
 
-**A disabled rule is not a zero limit — it is no limit.** A rule stored with
+**A disabled rule is not a zero limit - it is no limit.** A rule stored with
 `Enabled` false resolves to nothing, and the spend check returns immediately
 without looking at it. The account still reports it in its rule count, because
 that counts stored rules rather than active ones. If you show rules in a UI,
@@ -69,7 +69,7 @@ whose rules are both disabled is looking at an unbounded key.
   a rate. What the rule does bound is *which* tokens a key may touch: list them
   as `erc20/<contract>` in the allowed denominations, and `transfer`,
   `transferFrom` and `approve` are guarded. **Other methods that move tokens are
-  not guarded** — a known gap.
+  not guarded** - a known gap.
 - **Dust below 1 uqor on the EVM lane records zero.** The outflow truncates
   down, so a transfer under one uqor adds nothing to the daily accumulator. It
   is economically self-defeating, since the fee exceeds the amount, but it is
@@ -89,7 +89,7 @@ register only the permissions that key needs, and to revoke it when it is done.
 Do not seed an account from a wallet signature (the removed "Phantom P1a"
 pattern). A wallet signature is a bearer secret that any page can request, so
 anyone who obtains it controls the derived account. Link the external key as an
-**authenticator** instead — that is what this guide describes.
+**authenticator** instead - that is what this guide describes.
 
 :::
 
@@ -126,7 +126,7 @@ authenticator signs is the linked key's own sequence, kept by the chain (see
 Two byte helpers: `BE64(n)` is an 8-byte big-endian integer; `LP(bytes)` is
 `BE64(len) ‖ bytes` (length-prefixed).
 
-**EVM lane** — `evmAuthSignBytes({ chainId, account, pubkey, to, value, data, nonce })`
+**EVM lane** - `evmAuthSignBytes({ chainId, account, pubkey, to, value, data, nonce })`
 returns a 32-byte digest:
 
 ```
@@ -138,7 +138,7 @@ sha256( "qorechain-evm-auth-v1"
 `to` is the `0x`-hex recipient, `value` the decimal wei string, `data` the raw
 calldata.
 
-**Native lane** — `cosmosAuthSignBytes({ chainId, account, pubkey, to, amount, nonce })`
+**Native lane** - `cosmosAuthSignBytes({ chainId, account, pubkey, to, amount, nonce })`
 returns a 32-byte digest:
 
 ```
@@ -149,7 +149,7 @@ sha256( "qorechain-cosmos-auth-v1"
 
 `amount` is the canonical single-coin string (e.g. `100uqor`).
 
-**Rotation** — `rotationSignBytes(chainId, algorithmId, account, oldPub, newPub)`
+**Rotation** - `rotationSignBytes(chainId, algorithmId, account, oldPub, newPub)`
 returns the string both keys sign (`utf8` of it):
 
 ```
@@ -234,7 +234,7 @@ both accepted.
 
 ## Key rotation
 
-Rotate an account's ML-DSA-87 key to a new key of the **same** algorithm — for
+Rotate an account's ML-DSA-87 key to a new key of the **same** algorithm - for
 example migrating a legacy chain-bridge-derived key (`shake256(mnemonic)`) to
 the canonical address-bound key
 (`shake256("qorechain:pqc:v1|addr|mnemonic")`):
@@ -248,7 +248,7 @@ const { msg, oldKeypair, newKeypair } = rotatePqcKeyMsgFromMnemonic({
   chainId: "qorechain-diana",
   // oldDerivation: "bridge" (legacy), newDerivation: "adapter" (canonical) by default
 });
-// broadcast `msg` BY the account, cosigned (hybrid) with the OLD key —
+// broadcast `msg` BY the account, cosigned (hybrid) with the OLD key -
 // both keys dual-sign the rotation bytes (old proves ownership, new proves control).
 ```
 

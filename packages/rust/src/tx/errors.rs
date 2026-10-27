@@ -277,30 +277,30 @@ fn module_reason(codespace: &str, code: u32) -> Option<&'static str> {
         // key); crate::evm_window::classify_evm_window_error reads the message
         // text to tell them apart.
         ("pqc", 26) => {
-            "no open EVM authorisation window — open one with MsgOpenEVMWindow on the \
+            "no open EVM authorisation window - open one with MsgOpenEVMWindow on the \
              Cosmos lane, THEN read the nonce, THEN sign the EVM transaction"
         }
         ("pqc", 27) => {
-            "EVM authorisation window exhausted — it ran out of blocks, transactions or \
+            "EVM authorisation window exhausted - it ran out of blocks, transactions or \
              value; open a new one with MsgOpenEVMWindow"
         }
         ("pqc", 28) => {
             "invalid EVM authorisation window, or the account has no registered \
-             post-quantum key — check the log text to tell the two apart"
+             post-quantum key - check the log text to tell the two apart"
         }
         // v3.2.2 EIP-7702 delegation consent (crate::evm_delegation).
         ("pqc", 60) => {
-            "no post-quantum consent for this EIP-7702 delegation — broadcast \
+            "no post-quantum consent for this EIP-7702 delegation - broadcast \
              MsgAuthorizeEVMDelegation for exactly this delegate first"
         }
         // v3.2.3 registration integrity and key maintenance (crate::key_integrity).
         ("pqc", 230) => {
             "the registration carries no usable post-quantum key (classical_only, empty, \
-             or a degenerate key) — register a real ML-DSA-87 key"
+             or a degenerate key) - register a real ML-DSA-87 key"
         }
         ("pqc", 231) => "PQC proof of possession does not verify",
         ("pqc", 232) => {
-            "this account used that PQC key before — rotate or migrate to a key it has never had"
+            "this account used that PQC key before - rotate or migrate to a key it has never had"
         }
         ("pqc", 233) => "no active PQC signature algorithm would remain",
         ("pqc", 234) => {
@@ -326,7 +326,7 @@ fn module_reason(codespace: &str, code: u32) -> Option<&'static str> {
             "this stake is locked; undelegating or redelegating it waits for the lock to end"
         }
         ("pqc", 61) => {
-            "invalid EIP-7702 delegation request — check the delegate address and the \
+            "invalid EIP-7702 delegation request - check the delegate address and the \
              blocks bound, and that the account has a registered PQC key"
         }
         _ => return None,

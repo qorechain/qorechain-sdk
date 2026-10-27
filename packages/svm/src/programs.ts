@@ -6,7 +6,7 @@
  * The program ids are the exact canonical ones used by Solana-compatible
  * runtimes, so standard wallets, explorers, and tooling interoperate directly.
  * The SPL-Token / ATA / Memo instructions are built minimally here (by hand)
- * to keep the dependency surface to a single peer — `@solana/web3.js` — with no
+ * to keep the dependency surface to a single peer - `@solana/web3.js` - with no
  * `@solana/spl-token` requirement.
  */
 

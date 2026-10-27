@@ -12,12 +12,12 @@ import java.util.function.LongSupplier;
  * verifies right now.
  *
  * <ul>
- *   <li>{@link SignBytes.Mode#V1} / {@link SignBytes.Mode#V2} — returned as-is, no
+ *   <li>{@link SignBytes.Mode#V1} / {@link SignBytes.Mode#V2} - returned as-is, no
  *       network call.
- *   <li>{@link SignBytes.Mode#AUTO} on a chain that is not a legacy network — v2, no
+ *   <li>{@link SignBytes.Mode#AUTO} on a chain that is not a legacy network - v2, no
  *       network call.
  *   <li>{@link SignBytes.Mode#AUTO} on {@code qorechain-vladi} /
- *       {@code qorechain-diana} — {@code GET
+ *       {@code qorechain-diana} - {@code GET
  *       {restUrl}/cosmos/upgrade/v1beta1/applied_plan/{name}} for <b>every</b> name in
  *       {@link SignBytes#SIGN_BYTES_V2_UPGRADES}, in order, then apply
  *       {@link SignBytes#versionFor}: the first name whose {@code {"height":"<n>"}} is

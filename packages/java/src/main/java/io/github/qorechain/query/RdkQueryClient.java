@@ -25,13 +25,13 @@ public final class RdkQueryClient {
         this(new AbciQueryClient(url));
     }
 
-    /** {@code Params} — the module parameters. */
+    /** {@code Params} - the module parameters. */
     public QueryOuterClass.QueryParamsResponse params() {
         ByteString req = QueryOuterClass.QueryParamsRequest.newBuilder().build().toByteString();
         return decode(abci.request(SERVICE, "Params", req), QueryOuterClass.QueryParamsResponse.parser());
     }
 
-    /** {@code Rollup} — a single rollup config by id. */
+    /** {@code Rollup} - a single rollup config by id. */
     public QueryOuterClass.QueryRollupResponse rollup(String rollupId) {
         ByteString req =
                 QueryOuterClass.QueryRollupRequest.newBuilder()
@@ -41,13 +41,13 @@ public final class RdkQueryClient {
         return decode(abci.request(SERVICE, "Rollup", req), QueryOuterClass.QueryRollupResponse.parser());
     }
 
-    /** {@code Rollups} — all rollups. */
+    /** {@code Rollups} - all rollups. */
     public QueryOuterClass.QueryRollupsResponse rollups() {
         ByteString req = QueryOuterClass.QueryRollupsRequest.newBuilder().build().toByteString();
         return decode(abci.request(SERVICE, "Rollups", req), QueryOuterClass.QueryRollupsResponse.parser());
     }
 
-    /** {@code Batch} — a settlement batch by {@code (rollupId, batchIndex)}. */
+    /** {@code Batch} - a settlement batch by {@code (rollupId, batchIndex)}. */
     public QueryOuterClass.QueryBatchResponse batch(String rollupId, long batchIndex) {
         ByteString req =
                 QueryOuterClass.QueryBatchRequest.newBuilder()
@@ -58,7 +58,7 @@ public final class RdkQueryClient {
         return decode(abci.request(SERVICE, "Batch", req), QueryOuterClass.QueryBatchResponse.parser());
     }
 
-    /** {@code LatestBatch} — the latest settlement batch for a rollup. */
+    /** {@code LatestBatch} - the latest settlement batch for a rollup. */
     public QueryOuterClass.QueryLatestBatchResponse latestBatch(String rollupId) {
         ByteString req =
                 QueryOuterClass.QueryLatestBatchRequest.newBuilder()

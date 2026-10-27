@@ -61,7 +61,7 @@ const (
 	// BridgeDomain prefixes the v2 bridge-attestation sign-bytes.
 	BridgeDomain = "qorechain-bridge-attestation-v2"
 	// V2Upgrade is the PRIMARY name of the upgrade plan whose application
-	// switches a legacy network from v1 to v2 — the name mainnet
+	// switches a legacy network from v1 to v2 - the name mainnet
 	// ("qorechain-vladi") takes. It is not the only one: the testnet took the
 	// same batch under the earlier name "v3.1.98" and keeps that record forever,
 	// so a client must ask for every name in V2Upgrades, not this one alone.
@@ -122,7 +122,7 @@ func LegacyChains() []string { return []string{"qorechain-vladi", "qorechain-dia
 func IsLegacyChain(chainID string) bool { return legacyChains[chainID] }
 
 // VersionFor mirrors the chain's own switch: V2 once one of V2Upgrades has been
-// applied (v2AppliedHeight > 0 — the greatest height answered by any of the
+// applied (v2AppliedHeight > 0 - the greatest height answered by any of the
 // names) or for any chain that is not a legacy network; V1 otherwise.
 func VersionFor(chainID string, v2AppliedHeight int64) Version {
 	if v2AppliedHeight > 0 || !IsLegacyChain(chainID) {

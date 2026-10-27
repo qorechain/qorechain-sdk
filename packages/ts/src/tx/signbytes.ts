@@ -2,7 +2,7 @@
  * Sign-bytes for the payloads a QoreChain key signs outside SIGN_MODE_DIRECT:
  * the post-quantum half of a hybrid transaction, a PQC key migration, and a
  * bridge attestation. Each exists in two forms, and a network verifies exactly
- * ONE of them at any height — there is no overlap window.
+ * ONE of them at any height - there is no overlap window.
  *
  * ──────────────────────────────────────────────────────────────────────────
  *  Which form to sign
@@ -40,7 +40,7 @@ export type SignBytesVersion = "v1" | "v2";
 export type SignBytesVersionOption = SignBytesVersion | "auto";
 
 /**
- * The upgrade plan whose application switches a legacy network to v2 — the
+ * The upgrade plan whose application switches a legacy network to v2 - the
  * name used from the v3.2.0 release onward. See {@link SIGN_BYTES_V2_UPGRADES}:
  * a client must accept either name, because the testnet took the switch under
  * the earlier one and keeps that record.
@@ -52,7 +52,7 @@ export const SIGN_BYTES_V2_UPGRADE = "v3.2.0";
  * recent first. The testnet applied `"v3.1.98"` and its record stays in state
  * forever; mainnet applies `"v3.2.0"`. A network is on v2 if ANY of these is
  * applied, so a client asks for each in turn and stops at the first positive
- * height — querying only one name answers v1 on the other network and every
+ * height - querying only one name answers v1 on the other network and every
  * hybrid transaction is then refused with `pqc` code 21.
  */
 export const SIGN_BYTES_V2_UPGRADES: readonly string[] = ["v3.2.0", "v3.1.98"];
@@ -296,7 +296,7 @@ function parseAppliedHeight(body: unknown): bigint {
  * Ask a node at which height an upgrade plan was applied (0 when it has not
  * been). Defaults to {@link SIGN_BYTES_V2_UPGRADE}; pass a name from
  * {@link SIGN_BYTES_V2_UPGRADES} to ask for an earlier one.
- * @throws on a transport or parse failure — the caller must not guess.
+ * @throws on a transport or parse failure - the caller must not guess.
  */
 export async function fetchSignBytesV2AppliedHeight(
   rest: string,
@@ -358,7 +358,7 @@ export function clearSignBytesCache(): void {
  *   `ttlMs` because a network can upgrade while a wallet stays open.
  *
  * @throws when a legacy network has no `rest`, or the query fails. Pass an
- * explicit `"v1"`/`"v2"` in that case — a wrong guess is refused on-chain.
+ * explicit `"v1"`/`"v2"` in that case - a wrong guess is refused on-chain.
  */
 export async function resolveSignBytesVersion(
   opts: ResolveSignBytesVersionOptions,
@@ -399,7 +399,7 @@ export const HYBRID_SIGN_BYTES_REJECTION_LOG = "hybrid PQC signature verificatio
 
 /**
  * True when a broadcast failure is the chain refusing the hybrid PQC signature
- * (`pqc` code 21) — the symptom of signing the wrong sign-bytes form. Accepts a
+ * (`pqc` code 21) - the symptom of signing the wrong sign-bytes form. Accepts a
  * thrown cosmjs `BroadcastTxError` (`code`, `codespace`, `log`), a
  * `DeliverTxResponse`-like result (`code`, `rawLog`), or a plain `Error`.
  * Code 21 from any other codespace does NOT match.

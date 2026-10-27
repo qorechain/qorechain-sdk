@@ -4,41 +4,41 @@
 //! provides the building blocks dApp developers need to talk to a QoreChain
 //! network:
 //!
-//! - [`networks`] — built-in network presets (testnet and mainnet, both live).
-//! - [`denom`] — exact integer conversion between display and base amounts.
-//! - [`address`] — bech32 / hex address conversion and validation.
-//! - [`accounts`] — BIP-39 mnemonics and HD derivation of native (QoreChain Native
+//! - [`networks`] - built-in network presets (testnet and mainnet, both live).
+//! - [`denom`] - exact integer conversion between display and base amounts.
+//! - [`address`] - bech32 / hex address conversion and validation.
+//! - [`accounts`] - BIP-39 mnemonics and HD derivation of native (QoreChain Native
 //!   secp256k1), EVM (secp256k1), and SVM (ed25519) accounts.
-//! - [`pqc`] — post-quantum ML-DSA-87 (FIPS 204) keygen / sign / verify and the
+//! - [`pqc`] - post-quantum ML-DSA-87 (FIPS 204) keygen / sign / verify and the
 //!   on-chain hybrid-signature extension builder.
-//! - [`query`] — async REST (LCD) and JSON-RPC read clients, including the typed
+//! - [`query`] - async REST (LCD) and JSON-RPC read clients, including the typed
 //!   `qor_*` namespace.
-//! - [`client`] — the top-level [`create_client`](client::create_client)
+//! - [`client`] - the top-level [`create_client`](client::create_client)
 //!   factory.
-//! - [`tx`] — native bank-send building/signing, REST broadcast, and end-to-end
+//! - [`tx`] - native bank-send building/signing, REST broadcast, and end-to-end
 //!   hybrid (classical + ML-DSA-87) transaction signing.
-//! - [`ai`] — EVM AI pre-flight precompiles (`aiRiskScore` / `aiAnomalyCheck`)
+//! - [`ai`] - EVM AI pre-flight precompiles (`aiRiskScore` / `aiAnomalyCheck`)
 //!   over `eth_call`, plus an advisory `simulate_with_risk_score`.
-//! - [`cross_vm`] — high-level unified cross-VM call helper (build / sign /
+//! - [`cross_vm`] - high-level unified cross-VM call helper (build / sign /
 //!   broadcast `MsgCrossVMCall`, including atomic multi-call txs).
-//! - [`pqc_dx`] — high-level quantum-safe DX helper (idempotent PQC-key
+//! - [`pqc_dx`] - high-level quantum-safe DX helper (idempotent PQC-key
 //!   registration, status reads, key rotation, and a bound hybrid send path).
-//! - [`unified`] — the unified eth-native wallet: one secp256k1 key rendered as
+//! - [`unified`] - the unified eth-native wallet: one secp256k1 key rendered as
 //!   all three address encodings (native/EVM/SVM) plus a deterministic ML-DSA-87
 //!   keypair, so a single identity shares one balance across all lanes.
-//! - [`sign_eth`] — `eth_secp256k1` native-lane signing (classical + hybrid) for
+//! - [`sign_eth`] - `eth_secp256k1` native-lane signing (classical + hybrid) for
 //!   the unified account: secp256k1 over `keccak256(SignDoc)` with the
 //!   `eth_secp256k1` pubkey type.
-//! - [`signbytes`] — the per-network post-quantum sign-bytes forms (v1 / v2)
+//! - [`signbytes`] - the per-network post-quantum sign-bytes forms (v1 / v2)
 //!   for hybrid txs, key migrations and bridge attestations, the rule that
 //!   picks one per chain, and a cached resolver that asks the node.
-//! - [`evm_window`] — the v3.2.0 EVM authorisation window: the bounds the chain
+//! - [`evm_window`] - the v3.2.0 EVM authorisation window: the bounds the chain
 //!   enforces, the `evm_window` status query, and the classifier that turns an
 //!   EVM-lane refusal into a state plus a remedy.
-//! - [`stakingtier`] — chain v3.2.4 staking tiers: the lock checks, the
+//! - [`stakingtier`] - chain v3.2.4 staking tiers: the lock checks, the
 //!   params / locks / pool reads and the error kinds (composers in
 //!   [`msg::stakingtier`]).
-//! - [`protocol_features`] — chain v3.2.4 protocol feature switches, read by
+//! - [`protocol_features`] - chain v3.2.4 protocol feature switches, read by
 //!   name.
 
 #![forbid(unsafe_code)]

@@ -7,7 +7,7 @@ sidebar_position: 1
 # EVM guide
 
 `@qorechain/evm` is a thin, type-safe adapter over [viem](https://viem.sh) for
-the QoreChain EVM Engine. It does not reimplement an EVM client — viem is a peer
+the QoreChain EVM Engine. It does not reimplement an EVM client - viem is a peer
 dependency. It adds a chain-aware client factory (with EVM chain-id
 auto-detection), ERC-20 helpers, contract deploy/call wrappers, and typed
 bindings for QoreChain's EVM precompiles.
@@ -29,12 +29,12 @@ const client = await createEvmClient({
 });
 
 console.log(await client.getChainId());
-// client.publicClient — a viem PublicClient for reads
+// client.publicClient - a viem PublicClient for reads
 ```
 
 You can also pass `rpcUrl` directly (mutually exclusive with `endpoints`), a
 `wsUrl` / `endpoints.evmWs` for WebSocket, an explicit `chainId`, and `decimals`
-(defaults to 18, the EVM convention for QOR — distinct from the Native `uqor`
+(defaults to 18, the EVM convention for QOR - distinct from the Native `uqor`
 base of 10^6).
 
 Derive an EVM signing account from a private key:

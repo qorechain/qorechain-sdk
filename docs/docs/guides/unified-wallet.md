@@ -90,7 +90,7 @@ two ways:
 1. The classical signature is secp256k1 over the **keccak256** of the SignDoc
    bytes (not sha256), serialized as the 64-byte `r ‖ s` (low-s normalized).
 2. The `SignerInfo` public key `Any` uses the type URL
-   `/cosmos.evm.crypto.v1.ethsecp256k1.PubKey` — its `value` is the same wire
+   `/cosmos.evm.crypto.v1.ethsecp256k1.PubKey` - its `value` is the same wire
    shape as the standard secp256k1 `PubKey`, only the type URL differs.
 
 Mainnet requires the ML-DSA-87 hybrid extension, so use the hybrid signer for
@@ -137,7 +137,7 @@ An earlier API derived a unified account from a Phantom signature. It was
 **removed in v0.8.0**: a wallet signature is a bearer secret that any page can
 ask the wallet to produce, so it must never be used as the secret entropy of a
 spend key. `unifiedAccountFromPhantomSignature` and `connectPhantomUnified` now
-throw, and any account previously derived that way must be treated as exposed —
+throw, and any account previously derived that way must be treated as exposed -
 move its funds.
 
 To let an external wallet key act for an account, use the **authenticator
@@ -147,5 +147,5 @@ permission and a `SpendingRule`. See the
 [Authenticators guide](./authenticators.md).
 
 Relatedly, `unifiedAccountFromSeed` takes the 32 bytes it is given as the spend
-key, so pass real secret entropy — a CSPRNG seed or a mnemonic-derived key —
+key, so pass real secret entropy - a CSPRNG seed or a mnemonic-derived key -
 never a wallet signature.

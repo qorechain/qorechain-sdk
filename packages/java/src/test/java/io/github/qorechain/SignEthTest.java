@@ -93,7 +93,7 @@ class SignEthTest {
         assertTrue(
                 verify(acct.publicKey, keccak, built.classicalSignature),
                 "classical sig must verify as secp256k1 over keccak256(SignDoc)");
-        // And must NOT verify over sha256(SignDoc) — proving the keccak divergence.
+        // And must NOT verify over sha256(SignDoc) - proving the keccak divergence.
         assertTrue(!verify(acct.publicKey, Hashing.sha256(signBytes), built.classicalSignature));
     }
 

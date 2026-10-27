@@ -1,5 +1,5 @@
 /**
- * {@link QuantumSafeBadge} — a "Quantum-safe" indicator for an address.
+ * {@link QuantumSafeBadge} - a "Quantum-safe" indicator for an address.
  *
  * Reads the address's PQC registration via {@link usePqcStatus} and renders a
  * compact badge: a positive "Quantum-safe" state when a PQC key is registered,
@@ -93,7 +93,7 @@ export function QuantumSafeBadge(props: QuantumSafeBadgeProps): ReactNode {
       className={props.className}
       style={{ ...baseStyle, ...props.style }}
       data-quantum-safe="true"
-      title="Post-quantum (ML-DSA-87) key registered — transactions can be hybrid-signed"
+      title="Post-quantum (ML-DSA-87) key registered - transactions can be hybrid-signed"
     >
       <span aria-hidden="true">🛡️</span>
       {props.safeLabel ?? "Quantum-safe"}

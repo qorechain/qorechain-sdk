@@ -1,5 +1,5 @@
 /**
- * read-tokenomics — read tokenomics state via the qor_* JSON-RPC namespace.
+ * read-tokenomics - read tokenomics state via the qor_* JSON-RPC namespace.
  *
  * Shows three QorClient methods (served over the EVM JSON-RPC endpoint):
  *  - client.qor.getBurnStats()        → qor_getBurnStats

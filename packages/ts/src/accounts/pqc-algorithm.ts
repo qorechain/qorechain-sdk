@@ -9,7 +9,7 @@
 
 /**
  * Identifies a PQC algorithm. Numeric to match the chain's `uint32 AlgorithmID`.
- * IDs 1–2 are the initial algorithms; 3–255 are reserved for future
+ * IDs 1-2 are the initial algorithms; 3-255 are reserved for future
  * governance-approved algorithms.
  */
 export type AlgorithmID = number;

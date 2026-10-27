@@ -171,7 +171,7 @@ export const rdk = {
   /**
    * Finalize an L2->L1 withdrawal: prove a withdrawal leaf is committed in a
    * finalized batch's `withdrawalsRoot` and pay the committed recipient from the
-   * rdk module escrow. Permissionless — anyone may submit a valid proof; funds
+   * rdk module escrow. Permissionless - anyone may submit a valid proof; funds
    * always go to the committed recipient. Replay-protected per
    * (rollupId, batchIndex, withdrawalIndex). `proof` is the list of binary-Merkle
    * sibling hashes from the leaf to the root.
@@ -319,7 +319,7 @@ export const svm = {
    * GOVERNANCE ONLY: `authority` must be the governance module account, so this
    * message is submitted inside a gov proposal, not signed by a user. It is what
    * makes enabling/disabling the SVM lane a proposal rather than a binary
-   * release. `params` is replaced in full — send every field, not just the ones
+   * release. `params` is replaced in full - send every field, not just the ones
    * you mean to change. `rentExemptionMulti` is a `LegacyDec` string (e.g.
    * `"2.000000000000000000"`).
    */

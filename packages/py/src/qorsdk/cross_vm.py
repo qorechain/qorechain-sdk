@@ -1,6 +1,6 @@
 """High-level unified cross-VM call helper for QoreChain's ``x/crossvm`` module.
 
-QoreChain runs several execution VMs side by side — the EVM, a CosmWasm VM, and
+QoreChain runs several execution VMs side by side - the EVM, a CosmWasm VM, and
 an SVM (Solana-style) VM. The ``x/crossvm`` module routes a call from one VM to a
 contract on another as a single message, ``MsgCrossVMCall``:
 
@@ -12,14 +12,14 @@ with type URL ``/qorechain.crossvm.v1.MsgCrossVMCall`` and
 ``"cosmwasm"``, ``"svm"``).
 
 **``source_vm`` is IGNORED by the chain (v3.1.97).** The origin lane is derived
-from the execution context — a caller describing itself is not evidence of what
-it is — and the field is retained only so the field number stays taken and older
+from the execution context - a caller describing itself is not evidence of what
+it is - and the field is retained only so the field number stays taken and older
 clients that still set it are accepted rather than rejected. The SDK still
 accepts and sends it (default ``"evm"``), but setting it has no on-chain effect.
 
 ``async_`` (proto field ``async``, 7) queues the call for a later
 ``MsgProcessQueue`` dispatch instead of running it. The default, ``False``,
-executes the call inside the transaction and returns the callee's answer — which
+executes the call inside the transaction and returns the callee's answer - which
 is what a caller that needs the result requires. A queued call's
 ``MsgCrossVMCallResponse`` carries ``executed=False`` and no ``data`` yet.
 
@@ -31,16 +31,16 @@ This helper mirrors the ergonomic rollup/multilayer helpers: it wraps the typed
 :func:`qorsdk.messages.qorechain.crossvm.cross_vm_call` composer and the SDK's
 tx surface (:func:`~qorsdk.tx.send_messages` / :func:`~qorsdk.tx.build_hybrid_tx`
 + :func:`~qorsdk.tx.broadcast`) so an app can build, sign, and broadcast a
-cross-VM call — or several atomically in ONE transaction — without hand-rolling
+cross-VM call - or several atomically in ONE transaction - without hand-rolling
 messages.
 
 Payload encoding (one of three sources, checked in this order):
 
-- ``payload=<bytes>`` — used verbatim (raw VM-native calldata; the only EVM form
+- ``payload=<bytes>`` - used verbatim (raw VM-native calldata; the only EVM form
   supported here, since EVM ABI-encoding of high-level calls is a TS-only DX
   convenience).
-- ``cosmwasm=<dict>`` — ``json.dumps`` UTF-8 encoded (CosmWasm execute message).
-- ``svm=<bytes>`` — used verbatim (raw SVM instruction data).
+- ``cosmwasm=<dict>`` - ``json.dumps`` UTF-8 encoded (CosmWasm execute message).
+- ``svm=<bytes>`` - used verbatim (raw SVM instruction data).
 
 Omitting all three sends an empty payload.
 """
@@ -104,7 +104,7 @@ class CrossVmCallOptions:
     #: Raw SVM instruction data (used verbatim).
     svm: bytes | None = None
     #: Queue the call for a later ``MsgProcessQueue`` dispatch instead of
-    #: executing it now. Default ``False`` — execute now and return the answer.
+    #: executing it now. Default ``False`` - execute now and return the answer.
     async_: bool = False
 
 
@@ -114,7 +114,7 @@ class CrossVmCallResult:
 
     Produced by :func:`decode_cross_vm_responses` from a committed transaction's
     result. A queued (``async_=True``) call comes back with ``executed=False``,
-    empty ``data`` and ``gas_used=0`` — its answer is only known once
+    empty ``data`` and ``gas_used=0`` - its answer is only known once
     ``MsgProcessQueue`` dispatches it.
     """
 
@@ -200,7 +200,7 @@ def _result_data_hex(response: Any) -> str:
 
     Accepts a REST broadcast body (``{"tx_response": {...}}``), a bare
     ``tx_response`` dict, an :class:`~qorsdk.track.IncludedTx` (via its ``raw``),
-    or the hex string itself. Returns ``""`` when the result carries no data —
+    or the hex string itself. Returns ``""`` when the result carries no data -
     a ``sync``-mode broadcast has not executed yet, so there is nothing to
     decode.
     """
@@ -481,7 +481,7 @@ class CrossVmClient:
         if self._qor is not None:
             return self._qor.get_cross_vm_message(message_id)
         raise ValueError(
-            "get_message requires a query client or a qor client — pass query=… "
+            "get_message requires a query client or a qor client - pass query=… "
             "or qor=… to CrossVmClient"
         )
 

@@ -11,9 +11,9 @@ import java.util.List;
  * {@code broadcast_tx_*} JSON-RPC methods.
  *
  * <ul>
- *   <li>{@code sync} — submit and return after CheckTx (returns the tx hash).
- *   <li>{@code async} — submit and return immediately.
- *   <li>{@code commit} — submit and wait for the tx to land in a block; throws
+ *   <li>{@code sync} - submit and return after CheckTx (returns the tx hash).
+ *   <li>{@code async} - submit and return immediately.
+ *   <li>{@code commit} - submit and wait for the tx to land in a block; throws
  *       on a non-zero delivery code.
  * </ul>
  */
@@ -33,7 +33,7 @@ public final class Broadcaster {
         public Long height;
         public String rawLog;
         /**
-         * The tx result's {@code data} field — a protobuf {@code TxMsgData} carrying the
+         * The tx result's {@code data} field - a protobuf {@code TxMsgData} carrying the
          * per-message responses, or {@code null} when the node returned none.
          *
          * <p>Only a {@link Mode#COMMIT} broadcast waits long enough to have it: a

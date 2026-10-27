@@ -10,7 +10,7 @@
  * The oracle can be unavailable (node still syncing, sidecar down, custom RPC
  * without the AI module). To keep transaction building robust, this falls back
  * to a deterministic static fee computed from a configurable gas price in the
- * base denom — `ceil(gas * gasPrice)` — exactly as a wallet would compute a
+ * base denom - `ceil(gas * gasPrice)` - exactly as a wallet would compute a
  * minimum-gas-price fee. The fallback is transparent and never throws on a
  * missing/erroring endpoint; only a successful response is preferred.
  */
@@ -131,7 +131,7 @@ export async function estimateFee(
       }
     }
   } catch {
-    // Oracle unavailable — fall through to the static fee.
+    // Oracle unavailable - fall through to the static fee.
   }
 
   return staticFee(gas, fallbackGasPrice, denom);

@@ -60,7 +60,7 @@ export interface SubscriptionClient {
  * Connect a websocket-capable consensus RPC client for subscriptions.
  *
  * @param rpcWsUrl - The consensus RPC endpoint (`endpoints.rpc`). An `http(s)://`
- *   URL is accepted — the client upgrades to a websocket internally.
+ *   URL is accepted - the client upgrades to a websocket internally.
  */
 export async function createSubscriptionClient(
   rpcWsUrl: string,

@@ -1,7 +1,7 @@
 # register-sidechain
 
 Drive the multilayer (sidechain / paychain) lifecycle with the high-level
-`createMultilayerClient` helper — register two layers, anchor a state root, route
+`createMultilayerClient` helper - register two layers, anchor a state root, route
 a transaction, and read layer state + routing stats.
 
 Shows:
@@ -28,7 +28,7 @@ need a node.
 
 ```bash
 pnpm install
-# Dry run — just builds + logs the messages (no node needed):
+# Dry run - just builds + logs the messages (no node needed):
 pnpm start
 
 # Broadcast + read against a live node:

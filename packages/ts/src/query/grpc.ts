@@ -5,7 +5,7 @@
  * reuse cosmjs's {@link QueryClient} + {@link createProtobufRpcClient}, which
  * turns that path into a `ProtobufRpcClient` (`request(service, method, data)`
  * → `Uint8Array`). Each typed client below encodes the request, dispatches by
- * the proto service/method name, and decodes the response — so callers get
+ * the proto service/method name, and decodes the response - so callers get
  * fully typed `Query*Request` → `Query*Response` calls without hand-rolling ABCI
  * paths.
  *

@@ -1,5 +1,5 @@
 /**
- * cosmwasm-query — run a smart query against a deployed CosmWasm contract.
+ * cosmwasm-query - run a smart query against a deployed CosmWasm contract.
  *
  * Shows:
  *  - client.cosmwasm() → a read-only CosmWasmClient (connects over the RPC endpoint)

@@ -22,14 +22,14 @@ public final class AbstractAccountQueryClient {
         this(new AbciQueryClient(url));
     }
 
-    /** {@code Config} — the module configuration. */
+    /** {@code Config} - the module configuration. */
     public QueryOuterClass.QueryConfigResponse config() {
         ByteString req = QueryOuterClass.QueryConfigRequest.newBuilder().build().toByteString();
         return decode(
                 abci.request(SERVICE, "Config", req), QueryOuterClass.QueryConfigResponse.parser());
     }
 
-    /** {@code Account} — a single abstract account by address. */
+    /** {@code Account} - a single abstract account by address. */
     public QueryOuterClass.QueryAccountResponse account(String address) {
         ByteString req =
                 QueryOuterClass.QueryAccountRequest.newBuilder()
@@ -41,7 +41,7 @@ public final class AbstractAccountQueryClient {
                 QueryOuterClass.QueryAccountResponse.parser());
     }
 
-    /** {@code Accounts} — all abstract accounts. */
+    /** {@code Accounts} - all abstract accounts. */
     public QueryOuterClass.QueryAccountsResponse accounts() {
         ByteString req = QueryOuterClass.QueryAccountsRequest.newBuilder().build().toByteString();
         return decode(
@@ -50,7 +50,7 @@ public final class AbstractAccountQueryClient {
     }
 
     /**
-     * {@code PermissionSchema} — the canonical authenticator permission taxonomy
+     * {@code PermissionSchema} - the canonical authenticator permission taxonomy
      * (v3.1.85). Returns the schema version, the valid permission strings, the
      * message-typeURL → required-permission map, and the never-delegable
      * key-management message typeURLs, so clients validate scopes without

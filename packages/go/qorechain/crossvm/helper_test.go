@@ -375,8 +375,8 @@ func txResultWithResponses(t *testing.T, responses ...*crossvmv1.MsgCrossVMCallR
 	return &tx.TxResult{TxHash: "ABC123", Raw: body}
 }
 
-// TestDecodeCallResultSynchronous asserts the executed call's answer — Data,
-// GasUsed and Executed — is surfaced alongside the message id.
+// TestDecodeCallResultSynchronous asserts the executed call's answer - Data,
+// GasUsed and Executed - is surfaced alongside the message id.
 func TestDecodeCallResultSynchronous(t *testing.T) {
 	res := txResultWithResponses(t, &crossvmv1.MsgCrossVMCallResponse{
 		MessageID: "msg-7",
@@ -404,7 +404,7 @@ func TestDecodeCallResultSynchronous(t *testing.T) {
 }
 
 // TestDecodeCallResultQueued asserts a queued (async) call reports Executed
-// false with no data — the id is all the caller gets until ProcessQueue runs.
+// false with no data - the id is all the caller gets until ProcessQueue runs.
 func TestDecodeCallResultQueued(t *testing.T) {
 	res := txResultWithResponses(t, &crossvmv1.MsgCrossVMCallResponse{MessageID: "msg-8"})
 

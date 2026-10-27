@@ -1,5 +1,5 @@
 /**
- * evm-precompile — call QoreChain EVM precompiles and read an ERC-20 balance.
+ * evm-precompile - call QoreChain EVM precompiles and read an ERC-20 balance.
  *
  * Shows:
  *  - createEvmClient({ endpoints }) → a viem-backed client bundle (chain id is
@@ -10,7 +10,7 @@
  *
  * All reads are read-only `eth_call`s and need a reachable EVM JSON-RPC. On a
  * node without the QoreChain precompiles, the precompile calls throw "feature
- * not present" — the example reports that per-call and keeps going.
+ * not present" - the example reports that per-call and keeps going.
  */
 
 import {

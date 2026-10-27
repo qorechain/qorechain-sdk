@@ -1,20 +1,20 @@
-// Package authenticator rebuilds — BYTE-FOR-BYTE — the sign-bytes that
+// Package authenticator rebuilds - BYTE-FOR-BYTE - the sign-bytes that
 // QoreChain's x/abstractaccount and x/pqc modules re-derive on-chain for the
 // v3.1.85 authenticator lanes and same-algorithm PQC key rotation.
 //
 // v3.1.84 introduced the SVM authenticator lane; v3.1.85 adds two more lanes so a
 // linked external key (a Phantom ed25519 key or an EVM secp256k1 key) can spend
 // from the ONE unified PQC-required account under least-privilege, spend-limited,
-// revocable terms — via a relayer, WITHOUT the external key ever producing an
+// revocable terms - via a relayer, WITHOUT the external key ever producing an
 // ML-DSA co-signature:
 //
-//   - EVM lane    — MsgExecuteEVM:    an EVM call/transfer from the account's 0x addr.
-//   - Native lane — MsgExecuteCosmos: a bank send from the account (Cosmos).
+//   - EVM lane - MsgExecuteEVM:    an EVM call/transfer from the account's 0x addr.
+//   - Native lane - MsgExecuteCosmos: a bank send from the account (Cosmos).
 //
 // The relayer submits + pays fees (its own hybrid-PQC signature satisfies the ante
 // on the envelope); the authenticator's signature over the domain-separated,
 // replay-bound sign-bytes IS the authorization. The digests here are rebuilt
-// byte-for-byte from the chain (x/abstractaccount/types/{evm,cosmos}_sign.go) — a
+// byte-for-byte from the chain (x/abstractaccount/types/{evm,cosmos}_sign.go) - a
 // mismatch is rejected on-chain (codespace abstractaccount, code 11 replay / 10
 // permission / 5 spending-limit / 6 session-expired).
 //
@@ -139,7 +139,7 @@ type UpgradeChecker interface {
 
 // EVMAuthDigestVersion returns the MsgExecuteEVM digest the network verifies
 // now: "v2" once it has applied v3.2.3, "v1" before. An error means the node
-// could not be asked — never guess, the other form is refused.
+// could not be asked - never guess, the other form is refused.
 func EVMAuthDigestVersion(rest UpgradeChecker) (string, error) {
 	ok, err := rest.IsUpgradeApplied("v3.2.3")
 	if err != nil {
@@ -161,7 +161,7 @@ func EVMAuthDigestVersion(rest UpgradeChecker) (string, error) {
 // to is the bech32 recipient, amount the canonical sdk.Coins string (sorted, e.g.
 // "100uqor"). Returns the 32-byte digest.
 //
-// NONCE: the per-authenticator sequence for (account, pubkey) — a store counter
+// NONCE: the per-authenticator sequence for (account, pubkey) - a store counter
 // distinct from the account's own sequence, incremented on each Native-lane spend.
 // Read it with query.RestClient.GetAuthNonce (chain v3.2.4).
 func CosmosAuthSignBytes(chainID, account string, pubkey []byte, to, amount string, nonce uint64) [32]byte {
@@ -197,7 +197,7 @@ type RotationResult struct {
 }
 
 // RotatePQCKeyMsgFromMnemonic builds a MsgRotatePQCKey that rotates an account's
-// ML-DSA-87 key (SAME algorithm) from one derivation to another — the canonical
+// ML-DSA-87 key (SAME algorithm) from one derivation to another - the canonical
 // use is migrating a LEGACY chain-bridge key (shake256(mnemonic)) to the canonical
 // address-bound key (shake256("qorechain:pqc:v1|"+account+"|"+mnemonic)), so a
 // wallet whose key was registered by a backend can move to the standard
@@ -228,7 +228,7 @@ func RotatePQCKeyMsgFromMnemonic(account, mnemonic, chainID string, algorithmID 
 		return RotationResult{}, err
 	}
 	if hexLower(oldKp.PublicKey) == hexLower(newKp.PublicKey) {
-		return RotationResult{}, errors.New("old and new derivations produce the same key — rotation would be a no-op")
+		return RotationResult{}, errors.New("old and new derivations produce the same key - rotation would be a no-op")
 	}
 	sb := []byte(RotationSignBytes(chainID, algorithmID, account, oldKp.PublicKey, newKp.PublicKey))
 	oldSig, err := pqc.PQCSign(oldKp.SecretKey, sb)
@@ -305,7 +305,7 @@ func toCosmos(account string) (string, error) {
 	return enc.Cosmos, nil
 }
 
-// pqcFromSeed runs ML-DSA-87 (Dilithium-5) seeded keygen from a 32-byte seed —
+// pqcFromSeed runs ML-DSA-87 (Dilithium-5) seeded keygen from a 32-byte seed -
 // identical to qorechain/unified.pqcFromSeed.
 func pqcFromSeed(seed []byte) (pqc.Keypair, error) {
 	if len(seed) != mldsa87.SeedSize {

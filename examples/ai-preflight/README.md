@@ -1,17 +1,17 @@
 # ai-preflight
 
-Score a transaction with QoreChain's **on-chain AI** before you send it — a
+Score a transaction with QoreChain's **on-chain AI** before you send it - a
 first-in-industry capability. Uses `@qorechain/evm` (a thin, type-safe layer over
 [viem](https://viem.sh)) to:
 
-- create an EVM client (`createEvmClient`) — the numeric EVM chain id is
+- create an EVM client (`createEvmClient`) - the numeric EVM chain id is
   auto-detected via `eth_chainId`
-- run a one-call pre-flight with `simulateWithRiskScore` — gas estimate
+- run a one-call pre-flight with `simulateWithRiskScore` - gas estimate
   (`eth_estimateGas`) + risk score + anomaly check + an advisory `safe` verdict
 - call the building blocks directly: `aiRiskScore` and `aiAnomalyCheck`
 
 Everything is a read-only `eth_call` / `eth_estimateGas`, so nothing is signed or
-broadcast. The `safe` flag is **advisory** (`level < 3 && !flagged` by default) —
+broadcast. The `safe` flag is **advisory** (`level < 3 && !flagged` by default) -
 set and enforce your own policy in production.
 
 ## Prerequisites

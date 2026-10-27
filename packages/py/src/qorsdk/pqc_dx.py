@@ -165,8 +165,8 @@ def fetch_pqc_status(rest_url: str, address: str) -> PqcStatus:
     publicly).
 
     The chain answers ``{"found": false}`` for an account without a key.
-    Anything that is not a readable ``found`` — an HTTP error, a missing field, a
-    transport failure — is UNKNOWN: retried once, then raised. It is never read
+    Anything that is not a readable ``found`` - an HTTP error, a missing field, a
+    transport failure - is UNKNOWN: retried once, then raised. It is never read
     as "not registered". A positive answer is cached per (rest_url, address).
 
     :raises RuntimeError: When the status cannot be read.
@@ -366,8 +366,8 @@ def build_register_pqc_key(
 ) -> Msg:
     """Build a ``MsgRegisterPQCKeyV2`` :class:`~qorsdk.messages.Msg` (no signing).
 
-    Uses ``/qorechain.pqc.v1.MsgRegisterPQCKeyV2`` — the chain's current
-    (classical-exempt bootstrap) registration path — with an explicit
+    Uses ``/qorechain.pqc.v1.MsgRegisterPQCKeyV2`` - the chain's current
+    (classical-exempt bootstrap) registration path - with an explicit
     ``algorithm_id`` (ML-DSA-87 / Dilithium-5).
 
     ``proof_of_possession`` (chain v3.2.3) comes from
@@ -436,7 +436,7 @@ def _broadcast_messages(
     """Sign (hybrid when ``pqc_keypair`` given, else classical) and broadcast.
 
     The hybrid path resolves the per-network sign-bytes form (``"auto"`` asks the
-    node) and retries once on a ``pqc`` code 21 refusal — see
+    node) and retries once on a ``pqc`` code 21 refusal - see
     :func:`qorsdk.tx.hybrid_sign_and_broadcast`.
     """
     if pqc_keypair is not None:
@@ -505,7 +505,7 @@ def ensure_pqc_registered(
     Idempotent: reads the registration status over REST from ``rest_url``
     first (:func:`fetch_pqc_status`; the ``qor_*`` JSON-RPC namespace is not
     exposed on public endpoints, so ``qor`` is no longer needed and is
-    ignored). An unreadable status raises instead of registering blind — a
+    ignored). An unreadable status raises instead of registering blind - a
     second registration is refused by the chain after the fee is charged.
 
     When the account already has a key, this returns
@@ -527,7 +527,7 @@ def ensure_pqc_registered(
 
     The registration tx itself is signed classically (a wallet cannot yet sign
     hybrid for the very key it is registering); subsequent txs should use the
-    hybrid path — see :func:`migrate_to_hybrid`.
+    hybrid path - see :func:`migrate_to_hybrid`.
     """
     status = fetch_pqc_status(rest_url, account.address)
     if status["registered"]:
@@ -545,7 +545,7 @@ def ensure_pqc_registered(
         return {"already_registered": True, "key_verified": match is True}
 
     # From chain v3.2.3 the registration carries a proof that the registrant
-    # holds the key. Sign it once the network has applied v3.2.3 — never before:
+    # holds the key. Sign it once the network has applied v3.2.3 - never before:
     # a node below it refuses the whole transaction for the field.
     proof = b""
     with RestClient(rest_url) as rest:
@@ -613,7 +613,7 @@ def migrate_to_hybrid(
 
     This is the "go quantum-safe" path: it calls :func:`ensure_pqc_registered`
     (broadcasting a ``MsgRegisterPQCKeyV2`` if needed, signed classically at
-    ``register_sequence`` — defaulting to ``sequence``), then signs and
+    ``register_sequence`` - defaulting to ``sequence``), then signs and
     broadcasts ``messages`` through the hybrid path
     (:func:`qorsdk.tx.build_hybrid_tx`) so the transaction carries both a
     classical and an ML-DSA-87 signature.
@@ -626,7 +626,7 @@ def migrate_to_hybrid(
     one is broadcast) goes out at ``sequence`` and the hybrid ``messages`` tx at
     ``sequence + 1``; if the key was already registered, the hybrid tx goes out
     at ``sequence``. Passing ``register_sequence`` explicitly puts the
-    registration at that sequence and the hybrid tx at ``sequence`` unchanged —
+    registration at that sequence and the hybrid tx at ``sequence`` unchanged -
     the caller then owns both nonces.
 
     Returns the decoded broadcast response for the hybrid ``messages`` tx.
@@ -700,7 +700,7 @@ def migrate_pqc_key(
     tx is hybrid-signed when ``pqc_keypair`` is supplied (sign-bytes form per
     ``sign_bytes_version``, default ``"auto"``), else classical.
 
-    Pass ``pqc_keypair`` — the CURRENTLY registered key. From chain v3.2.3 (and
+    Pass ``pqc_keypair`` - the CURRENTLY registered key. From chain v3.2.3 (and
     in the mempool of every v3.2.3 node) an account that has a PQC key must send
     ``MsgMigratePQCKey`` with the hybrid signature; a classical one is refused
     (``pqc`` 234).

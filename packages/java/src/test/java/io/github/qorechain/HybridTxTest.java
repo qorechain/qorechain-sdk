@@ -81,7 +81,7 @@ class HybridTxTest {
         assertEquals(1, finalBody.getExtensionOptionsCount());
         assertEquals(0, finalBody.getNonCriticalExtensionOptionsCount());
 
-        // The PQC signed message frames B0 (no extension) + A — NOT the final body.
+        // The PQC signed message frames B0 (no extension) + A - NOT the final body.
         byte[] b0 = built.b0Bytes;
         byte[] a = built.authInfoBytes;
         byte[] expected = concat(be32(b0.length), b0, be32(a.length), a);

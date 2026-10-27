@@ -6,7 +6,7 @@ sidebar_position: 2
 
 # Why QoreChain SDK
 
-The QoreChain SDK gives you everything a modern multi-chain SDK does — typed
+The QoreChain SDK gives you everything a modern multi-chain SDK does - typed
 messages for every module, typed queries, accounts for three VMs from one
 mnemonic, auto-gas, error decoding, subscriptions, wallets, and a React kit.
 
@@ -22,7 +22,7 @@ reasons to build here.
 **Scan a transaction with on-chain AI before you broadcast it.**
 
 QoreChain ships AI risk analysis as EVM precompiles. The SDK calls them for you
-and returns gas plus a risk/anomaly verdict in a single call — so a wallet or
+and returns gas plus a risk/anomaly verdict in a single call - so a wallet or
 dApp can warn (or block) *before* signing.
 
 ```ts
@@ -42,7 +42,7 @@ console.log(preflight.gas);            // estimated gas
 console.log(preflight.risk.level);     // on-chain risk level
 console.log(preflight.anomaly.flagged);// anomalous pattern?
 if (!preflight.safe) {
-  // advisory verdict — set your own policy
+  // advisory verdict - set your own policy
   console.warn("Transaction flagged by on-chain AI risk scoring");
 }
 ```
@@ -55,12 +55,12 @@ result. See [AI pre-flight](./guides/ai-preflight.md).
 
 ---
 
-## 2. Unified cross-VM calls — one account, three VMs, one transaction
+## 2. Unified cross-VM calls - one account, three VMs, one transaction
 
 **Call a contract on any VM, and batch calls across all three atomically.**
 
 QoreChain runs CosmWasm, EVM, and SVM contracts on the same chain with a native
-cross-VM bridge. The SDK exposes one interface to call any of them — and to pack
+cross-VM bridge. The SDK exposes one interface to call any of them - and to pack
 several cross-VM calls into a single, atomic transaction signed once.
 
 ```ts
@@ -85,7 +85,7 @@ await crossVM.callAtomic([
 
 **Why it's unique:** QoreChain is the only L1 with three co-resident VMs and a
 native bridge module (`crossvm` + the `CrossVMBridge` precompile). Single-VM
-chains cannot express "one account, three VMs, one atomic transaction" — their
+chains cannot express "one account, three VMs, one atomic transaction" - their
 SDKs have nothing to wrap. Write once, call any VM. See
 [Cross-VM calls](./guides/cross-vm.md).
 
@@ -97,7 +97,7 @@ SDKs have nothing to wrap. Write once, call any VM. See
 
 QoreChain enforces hybrid post-quantum signatures (ML-DSA-87 + classical) at the
 protocol level. The SDK makes adopting them a one-liner: check, register, and
-migrate to hybrid signing — with a React badge to show users they're protected.
+migrate to hybrid signing - with a React badge to show users they're protected.
 
 ```ts
 import { ensurePqcRegistered, migrateToHybrid } from "@qorechain/sdk";
@@ -134,7 +134,7 @@ queries, the tx lifecycle, subscriptions, browser wallets, and the
 [`@qorechain/react`](./guides/react.md) hooks kit.
 
 It also ships a **unified eth-native wallet**: one key is one identity rendered
-as `qor1…`, `0x…`, and an SVM address that all share a single balance — so a
+as `qor1…`, `0x…`, and an SVM address that all share a single balance - so a
 wallet is never "funded on one lane but not another," and the same key signs on
 every lane. See [Unified wallet](./guides/unified-wallet.md).
 

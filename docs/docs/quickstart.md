@@ -167,7 +167,7 @@ async fn main() -> qorechain::Result<()> {
 
 ## Next
 
-- [Guides](guides/evm.md) — work with each VM (EVM, SVM, CosmWasm, cross-VM).
-- [Accounts & PQC signing](concepts/accounts-pqc.md) — HD derivation and
+- [Guides](guides/evm.md) - work with each VM (EVM, SVM, CosmWasm, cross-VM).
+- [Accounts & PQC signing](concepts/accounts-pqc.md) - HD derivation and
   post-quantum signing.
 - [Network & endpoints reference](reference/network.md).

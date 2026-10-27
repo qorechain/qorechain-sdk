@@ -11,7 +11,7 @@ import (
 )
 
 // EVMWindowStatus is the decoded answer of
-// GET {rest}/qorechain/pqc/v1/evm_window/{address} — the EVM authorisation
+// GET {rest}/qorechain/pqc/v1/evm_window/{address} - the EVM authorisation
 // window of one account (chain v3.2.0).
 //
 // The route answers 200 with Found=false when the account has no window, so it
@@ -20,7 +20,7 @@ import (
 // current height.
 //
 // All numbers arrive as JSON strings. The three value fields are cosmos.Int
-// amounts in uqor and are kept as math.Int (arbitrary precision) — never
+// amounts in uqor and are kept as math.Int (arbitrary precision) - never
 // float64, which silently truncates above 2^53. When a field is absent (the
 // Found=false shape) the value fields decode to zero rather than a nil Int.
 type EVMWindowStatus struct {
@@ -53,7 +53,7 @@ type EVMWindowStatus struct {
 }
 
 // Exhausted reports whether a found window has run out of transactions, value
-// or blocks. It is false when no window is stored at all — that is
+// or blocks. It is false when no window is stored at all - that is
 // "no window", a different state with a different remedy (open one).
 func (s *EVMWindowStatus) Exhausted() bool {
 	if s == nil || !s.Found {

@@ -1,5 +1,5 @@
 /**
- * evm-nft — read ERC-721 NFT metadata over the QoreChain EVM Engine.
+ * evm-nft - read ERC-721 NFT metadata over the QoreChain EVM Engine.
  *
  * Shows:
  *  - createEvmClient({ endpoints }) → a viem-backed client bundle

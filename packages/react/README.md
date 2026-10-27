@@ -3,7 +3,7 @@
 Official **React hooks and components** for building quantum-safe
 [QoreChain](https://github.com/qorechain/qorechain-sdk) dApps. It wraps
 [`@qorechain/sdk`](https://github.com/qorechain/qorechain-sdk/tree/main/packages/ts) in an idiomatic React surface: one provider, a handful
-of hooks, and two drop-in components — including a one-line
+of hooks, and two drop-in components - including a one-line
 **Quantum-safe** badge.
 
 ```bash
@@ -111,7 +111,7 @@ await connect({ kind: "keplr" }); // or "leap" | "evm" | "svm"
 
 | Wallet kind | Adapter | Result |
 | --- | --- | --- |
-| `keplr` / `leap` | `getCosmosWallet` (Native) — suggests + enables the chain, returns a CosmJS signer wired into a `TxClient` | `addresses.native`, signing enabled |
+| `keplr` / `leap` | `getCosmosWallet` (Native) - suggests + enables the chain, returns a CosmJS signer wired into a `TxClient` | `addresses.native`, signing enabled |
 | `evm` | injected EIP-1193 provider (`window.ethereum`, e.g. MetaMask) via `eth_requestAccounts` | `addresses.evm` |
 | `svm` | injected Wallet-Standard provider (`window.solana`, e.g. Phantom) via `connect()` | `addresses.svm` |
 
@@ -135,8 +135,8 @@ await send([msg.bank.send({ /* … */ })], { memo: "gm" });
 
 ### `usePqcStatus(address?, options?)`
 
-Reads whether an address is **quantum-safe** — i.e. has a registered
-post-quantum (ML-DSA-87) key — via the SDK's `getPqcStatus` (`qor_getPQCKeyStatus`).
+Reads whether an address is **quantum-safe** - i.e. has a registered
+post-quantum (ML-DSA-87) key - via the SDK's `getPqcStatus` (`qor_getPQCKeyStatus`).
 Returns `{ data, isRegistered, isLoading, error, refetch }`.
 
 ## Components
@@ -160,7 +160,7 @@ Shows a **Quantum-safe** indicator when the address has a registered PQC key
 | `address` | `string` | Address to check. Default: connected account. |
 | `hideWhenUnsafe` | `boolean` | Render nothing when the address is not quantum-safe. |
 | `safeLabel` / `unsafeLabel` | `string` | Override the labels. |
-| `className` / `style` | — | Theming. |
+| `className` / `style` | - | Theming. |
 | `children` | render-prop | `({ isRegistered, isLoading, error }) => ReactNode`. |
 
 ## Quantum-safe by default

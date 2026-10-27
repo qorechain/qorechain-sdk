@@ -229,7 +229,7 @@ async fn ensure_pqc_registered_skips_when_already_registered() {
     assert!(res.already_registered);
     assert_eq!(res.tx_hash, None);
 
-    // No broadcast happened — only the status read.
+    // No broadcast happened - only the status read.
     let broadcasts = server
         .recorded()
         .into_iter()

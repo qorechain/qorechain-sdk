@@ -144,7 +144,7 @@ fn rotation_sign_bytes_kat() {
 }
 
 /// The framing is length-prefixed: a field boundary shift (moving a byte from
-/// `to` into `value`) changes the EVM digest — the LP(len) prefix is load-bearing.
+/// `to` into `value`) changes the EVM digest - the LP(len) prefix is load-bearing.
 #[test]
 fn evm_sign_bytes_are_field_boundary_sensitive() {
     let a = evm_auth_sign_bytes("c", "acct", &kat_pubkey(), "ab", "c", &[], 1);

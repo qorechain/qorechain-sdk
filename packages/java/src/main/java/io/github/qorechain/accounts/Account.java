@@ -2,7 +2,7 @@ package io.github.qorechain.accounts;
 
 /**
  * A derived QoreChain account: its on-chain address, public key, and secret
- * material. Treat {@code privateKey} / {@code secretKey} as secrets — never log
+ * material. Treat {@code privateKey} / {@code secretKey} as secrets - never log
  * them.
  *
  * <p>For {@code native} and {@code evm} accounts the key scheme is secp256k1
