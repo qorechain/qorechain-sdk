@@ -9,6 +9,7 @@ import {
   useBalance,
   usePqcStatus,
   useConnect,
+  PqcStatusBadge,
   QuantumSafeBadge,
   ConnectButton,
 } from "../src/index";
@@ -274,7 +275,7 @@ describe("useBalance", () => {
   });
 });
 
-describe("usePqcStatus + QuantumSafeBadge", () => {
+describe("usePqcStatus + PqcStatusBadge", () => {
   it("ignores a late status for the previous address (QSR-2026-0325)", async () => {
     const { client, getPqcKeyStatus } = mockClient();
     const pending: Record<string, ReturnType<typeof deferred<unknown>>> = {};
@@ -303,7 +304,7 @@ describe("usePqcStatus + QuantumSafeBadge", () => {
     });
     expect(screen.getByTestId("pqc").textContent).toBe("unsafe");
     // The old address IS registered; its late answer must not mark the new
-    // address quantum-safe.
+    // address as registered.
     await act(async () => {
       pending["qor1old"].resolve({ registered: true, algorithmId: 1 });
     });
@@ -346,34 +347,50 @@ describe("usePqcStatus + QuantumSafeBadge", () => {
     await waitFor(() => expect(screen.getByText("safe")).toBeTruthy());
   });
 
-  it("renders the safe badge when registered", async () => {
+  it("renders the registered badge when registered", async () => {
     const { client } = mockClient({ registered: true });
-    render(<QuantumSafeBadge address="qor1abc" />, {
-      wrapper: wrapper(client),
-    });
-    await waitFor(() => expect(screen.getByText("Quantum-safe")).toBeTruthy());
-  });
-
-  it("renders the unsafe badge when not registered", async () => {
-    const { client } = mockClient({ registered: false });
-    render(<QuantumSafeBadge address="qor1abc" />, {
+    const { container } = render(<PqcStatusBadge address="qor1abc" />, {
       wrapper: wrapper(client),
     });
     await waitFor(() =>
-      expect(screen.getByText("Not quantum-safe")).toBeTruthy(),
+      expect(screen.getByText("PQC key registered")).toBeTruthy(),
     );
+    const root = container.querySelector("[data-pqc-status]");
+    expect(root?.getAttribute("data-pqc-status")).toBe("true");
+    expect(root?.getAttribute("data-quantum-safe")).toBe("true");
   });
 
-  it("hides the badge when unsafe and hideWhenUnsafe is set", async () => {
+  it("renders the unregistered badge when not registered", async () => {
+    const { client } = mockClient({ registered: false });
+    const { container } = render(<PqcStatusBadge address="qor1abc" />, {
+      wrapper: wrapper(client),
+    });
+    await waitFor(() => expect(screen.getByText("No PQC key")).toBeTruthy());
+    const root = container.querySelector("[data-pqc-status]");
+    expect(root?.getAttribute("data-pqc-status")).toBe("false");
+    expect(root?.getAttribute("data-quantum-safe")).toBe("false");
+  });
+
+  it("hides the badge when unregistered and hideWhenUnsafe is set", async () => {
     const { client } = mockClient({ registered: false });
     const { container } = render(
-      <QuantumSafeBadge address="qor1abc" hideWhenUnsafe />,
+      <PqcStatusBadge address="qor1abc" hideWhenUnsafe />,
       { wrapper: wrapper(client) },
     );
     // Give the effect a tick; nothing should render.
     await waitFor(() =>
-      expect(container.querySelector('[data-quantum-safe]')).toBeNull(),
+      expect(container.querySelector("[data-pqc-status]")).toBeNull(),
     );
+    expect(container.querySelector("[data-quantum-safe]")).toBeNull();
+  });
+
+  it("keeps QuantumSafeBadge as a deprecated alias of PqcStatusBadge", async () => {
+    expect(QuantumSafeBadge).toBe(PqcStatusBadge);
+    const { client } = mockClient({ registered: true });
+    render(<QuantumSafeBadge address="qor1abc" safeLabel="custom label" />, {
+      wrapper: wrapper(client),
+    });
+    await waitFor(() => expect(screen.getByText("custom label")).toBeTruthy());
   });
 });
 

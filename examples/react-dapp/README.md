@@ -6,8 +6,8 @@ showing the full flow:
 - `QoreChainProvider` holding the read client + connection state
 - `<ConnectButton/>` for multi-wallet connect (Keplr / Leap / MetaMask)
 - `useBalance()` with auto-refresh
-- `<QuantumSafeBadge/>` indicating whether the account has a registered
-  post-quantum key
+- `<PqcStatusBadge/>` indicating whether the account has a registered
+  post-quantum (ML-DSA-87) key
 
 ## Run
 

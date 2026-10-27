@@ -1,6 +1,6 @@
 /**
  * Minimal React dApp wiring together the @qorechain/react kit:
- *   QoreChainProvider → ConnectButton → balance → QuantumSafeBadge.
+ *   QoreChainProvider → ConnectButton → balance → PqcStatusBadge.
  *
  * Point the endpoints at your node and run `pnpm dev`.
  */
@@ -8,7 +8,7 @@
 import {
   QoreChainProvider,
   ConnectButton,
-  QuantumSafeBadge,
+  PqcStatusBadge,
   useAccount,
   useBalance,
   usePqcStatus,
@@ -39,10 +39,10 @@ function Dashboard() {
               : `${balance?.amount ?? "0"} ${balance?.denom ?? "uqor"}`}
           </p>
           <p>
-            <QuantumSafeBadge />{" "}
+            <PqcStatusBadge />{" "}
             {isRegistered
-              ? "Your account is protected by a post-quantum key."
-              : "Register a PQC key to become quantum-safe."}
+              ? "Your account has a registered ML-DSA-87 key: native transactions are hybrid-signed."
+              : "Register an ML-DSA-87 key to sign native transactions hybrid."}
           </p>
         </section>
       )}

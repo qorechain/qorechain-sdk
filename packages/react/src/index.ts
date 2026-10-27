@@ -1,17 +1,17 @@
 /**
- * `@qorechain/react` - React hooks and components for quantum-safe QoreChain
- * dApps.
+ * `@qorechain/react` - React hooks and components for QoreChain dApps, with
+ * post-quantum hybrid signing support.
  *
  * Wrap your app in {@link QoreChainProvider} once, then use the hooks
  * ({@link useQoreClient}, {@link useAccount}, {@link useBalance},
  * {@link useConnect} / {@link useWallet}, {@link useTx}, {@link usePqcStatus})
- * and the drop-in components ({@link ConnectButton}, {@link QuantumSafeBadge}).
+ * and the drop-in components ({@link ConnectButton}, {@link PqcStatusBadge}).
  *
  * The kit is built entirely on `@qorechain/sdk`: the provider holds a
  * {@link createClient} instance, `useConnect` wraps the existing Keplr/Leap,
  * EIP-1193 (MetaMask), and Wallet-Standard (Phantom) adapters, and
- * `usePqcStatus` / {@link QuantumSafeBadge} surface the SDK's quantum-safe DX so
- * a dApp can be PQC-protected by default.
+ * `usePqcStatus` / {@link PqcStatusBadge} surface the SDK's PQC key helpers so a
+ * dApp can show whether an account has a registered ML-DSA-87 key.
  */
 
 // Provider + context.
@@ -62,7 +62,11 @@ export {
   type ConnectButtonRenderState,
 } from "./components/ConnectButton";
 export {
+  PqcStatusBadge,
+  type PqcStatusBadgeProps,
+  type PqcStatusRenderState,
+  // Deprecated aliases of the three names above, kept for compatibility.
   QuantumSafeBadge,
   type QuantumSafeBadgeProps,
   type QuantumSafeRenderState,
-} from "./components/QuantumSafeBadge";
+} from "./components/PqcStatusBadge";

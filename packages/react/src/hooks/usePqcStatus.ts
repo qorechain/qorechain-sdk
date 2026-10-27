@@ -1,9 +1,9 @@
 /**
- * {@link usePqcStatus} - read an address's quantum-safe (PQC) registration state.
+ * {@link usePqcStatus} - read an address's PQC key registration state.
  *
- * Built on the SDK's quantum-safe DX helpers ({@link getPqcStatus} /
+ * Built on the SDK's PQC key helpers ({@link getPqcStatus} /
  * {@link isPqcRegistered}), which call `qor_getPQCKeyStatus`. Powers the
- * {@link QuantumSafeBadge} component.
+ * {@link PqcStatusBadge} component.
  */
 
 import { useCallback, useEffect, useRef, useState } from "react";
@@ -36,8 +36,8 @@ export interface UsePqcStatusResult {
 }
 
 /**
- * Read whether `address` (or the connected account when omitted) is quantum-safe -
- * i.e. has a registered PQC key on QoreChain. Returns
+ * Read whether `address` (or the connected account when omitted) has a
+ * registered PQC (ML-DSA-87) key on QoreChain. Returns
  * `{ data, isRegistered, isLoading, error, refetch }`.
  */
 export function usePqcStatus(

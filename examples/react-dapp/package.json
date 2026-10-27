@@ -3,7 +3,7 @@
   "version": "0.0.0",
   "private": true,
   "type": "module",
-  "description": "React dApp: QoreChainProvider + ConnectButton + balance + QuantumSafeBadge.",
+  "description": "React dApp: QoreChainProvider + ConnectButton + balance + PqcStatusBadge.",
   "scripts": {
     "dev": "vite",
     "typecheck": "tsc --noEmit"

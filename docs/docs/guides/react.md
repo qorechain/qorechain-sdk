@@ -8,7 +8,7 @@ sidebar_position: 13
 
 `@qorechain/react` is the official React layer over `@qorechain/sdk`: one
 provider, a handful of hooks, and two drop-in components - including a one-line
-**Quantum-safe** badge. It makes building a quantum-safe dApp the default path.
+badge that shows whether an account has a registered PQC (ML-DSA-87) key.
 
 ```bash
 npm i @qorechain/react @qorechain/sdk react react-dom
@@ -114,23 +114,28 @@ control:
 <ConnectButton wallets={["keplr", "leap", "evm"]} />
 ```
 
-### `<QuantumSafeBadge/>`
+### `<PqcStatusBadge/>`
 
-Shows a **Quantum-safe** indicator when the address has a registered post-quantum
-key (via `usePqcStatus`), otherwise a muted "Not quantum-safe" state. Defaults to
-the connected account.
+Shows a **PQC key registered** indicator when the address has a registered
+ML-DSA-87 key (via `usePqcStatus`), otherwise a muted "No PQC key" state.
+Defaults to the connected account. The root element carries `data-pqc-status`
+(and `data-quantum-safe`, kept for existing stylesheets) set to `"loading"`,
+`"false"` or `"true"`.
 
 ```tsx
-<QuantumSafeBadge />
-<QuantumSafeBadge address="qor1…" hideWhenUnsafe />
+<PqcStatusBadge />
+<PqcStatusBadge address="qor1…" hideWhenUnsafe />
 ```
+
+`QuantumSafeBadge` is the earlier name of this component and stays exported as a
+deprecated alias.
 
 ## Putting it together
 
 ```tsx
 import {
   ConnectButton,
-  QuantumSafeBadge,
+  PqcStatusBadge,
   useAccount,
   useBalance,
 } from "@qorechain/react";
@@ -143,7 +148,7 @@ function Dashboard() {
       <ConnectButton wallets={["keplr", "leap", "evm"]} />
       {isConnected && (
         <p>
-          {balance?.amount ?? "…"} {balance?.denom} <QuantumSafeBadge />
+          {balance?.amount ?? "…"} {balance?.denom} <PqcStatusBadge />
         </p>
       )}
     </>
@@ -152,4 +157,5 @@ function Dashboard() {
 ```
 
 See the runnable [`react-dapp` example](https://github.com/qorechain/qorechain-sdk/tree/main/examples/react-dapp)
-and the [quantum-safe guide](./quantum-safe.md) for the underlying SDK calls.
+and the [post-quantum hybrid signing guide](./quantum-safe.md) for the underlying
+SDK calls.

@@ -1,36 +1,42 @@
 /**
- * {@link QuantumSafeBadge} - a "Quantum-safe" indicator for an address.
+ * {@link PqcStatusBadge} - shows whether an address has a registered PQC key.
  *
  * Reads the address's PQC registration via {@link usePqcStatus} and renders a
- * compact badge: a positive "Quantum-safe" state when a PQC key is registered,
- * otherwise a muted "Not quantum-safe" state (or nothing, with
+ * compact badge: a positive "PQC key registered" state when an ML-DSA-87 key is
+ * registered, otherwise a muted "No PQC key" state (or nothing, with
  * `hideWhenUnsafe`). Styling is minimal; theme it via `className` / `style` or
  * supply a `children` render-prop.
+ *
+ * The root element carries `data-pqc-status` and, for existing stylesheets,
+ * `data-quantum-safe`, both set to `"loading"`, `"false"` or `"true"`.
+ *
+ * {@link QuantumSafeBadge} is the earlier name of this component and remains
+ * exported as a deprecated alias.
  */
 
 import { type CSSProperties, type ReactNode } from "react";
 import { usePqcStatus } from "../hooks/usePqcStatus";
 
-/** Props for {@link QuantumSafeBadge}. */
-export interface QuantumSafeBadgeProps {
+/** Props for {@link PqcStatusBadge}. */
+export interface PqcStatusBadgeProps {
   /** Address to check. Defaults to the connected account. */
   address?: string;
-  /** When `true`, render nothing if the address is not quantum-safe. */
+  /** When `true`, render nothing if the address has no registered PQC key. */
   hideWhenUnsafe?: boolean;
-  /** Label for the safe state. Defaults to `"Quantum-safe"`. */
+  /** Label for the registered state. Defaults to `"PQC key registered"`. */
   safeLabel?: string;
-  /** Label for the unsafe state. Defaults to `"Not quantum-safe"`. */
+  /** Label for the unregistered state. Defaults to `"No PQC key"`. */
   unsafeLabel?: string;
   /** Optional class applied to the root element. */
   className?: string;
   /** Optional inline styles merged onto the root element. */
   style?: CSSProperties;
   /** Render-prop override for full control over the rendered UI. */
-  children?: (state: QuantumSafeRenderState) => ReactNode;
+  children?: (state: PqcStatusRenderState) => ReactNode;
 }
 
-/** State passed to the {@link QuantumSafeBadgeProps.children} render-prop. */
-export interface QuantumSafeRenderState {
+/** State passed to the {@link PqcStatusBadgeProps.children} render-prop. */
+export interface PqcStatusRenderState {
   /** Whether the address has a registered PQC key. */
   isRegistered: boolean;
   /** Whether the status is still loading. */
@@ -52,9 +58,9 @@ const baseStyle: CSSProperties = {
 };
 
 /**
- * A badge showing whether an address is quantum-safe (has a registered PQC key).
+ * A badge showing whether an address has a registered PQC (ML-DSA-87) key.
  */
-export function QuantumSafeBadge(props: QuantumSafeBadgeProps): ReactNode {
+export function PqcStatusBadge(props: PqcStatusBadgeProps): ReactNode {
   const { isRegistered, isLoading, error } = usePqcStatus(props.address);
 
   if (props.children) {
@@ -66,6 +72,7 @@ export function QuantumSafeBadge(props: QuantumSafeBadgeProps): ReactNode {
       <span
         className={props.className}
         style={{ ...baseStyle, opacity: 0.6, ...props.style }}
+        data-pqc-status="loading"
         data-quantum-safe="loading"
       >
         Checking…
@@ -79,11 +86,12 @@ export function QuantumSafeBadge(props: QuantumSafeBadgeProps): ReactNode {
       <span
         className={props.className}
         style={{ ...baseStyle, opacity: 0.7, ...props.style }}
+        data-pqc-status="false"
         data-quantum-safe="false"
-        title="No post-quantum key registered for this address"
+        title="No ML-DSA-87 key registered for this address"
       >
         <span aria-hidden="true">○</span>
-        {props.unsafeLabel ?? "Not quantum-safe"}
+        {props.unsafeLabel ?? "No PQC key"}
       </span>
     );
   }
@@ -92,11 +100,27 @@ export function QuantumSafeBadge(props: QuantumSafeBadgeProps): ReactNode {
     <span
       className={props.className}
       style={{ ...baseStyle, ...props.style }}
+      data-pqc-status="true"
       data-quantum-safe="true"
       title="Post-quantum (ML-DSA-87) key registered - transactions can be hybrid-signed"
     >
       <span aria-hidden="true">🛡️</span>
-      {props.safeLabel ?? "Quantum-safe"}
+      {props.safeLabel ?? "PQC key registered"}
     </span>
   );
 }
+
+/**
+ * @deprecated Use {@link PqcStatusBadge}. Kept as an alias for compatibility.
+ */
+export const QuantumSafeBadge = PqcStatusBadge;
+
+/**
+ * @deprecated Use {@link PqcStatusBadgeProps}. Kept as an alias for compatibility.
+ */
+export type QuantumSafeBadgeProps = PqcStatusBadgeProps;
+
+/**
+ * @deprecated Use {@link PqcStatusRenderState}. Kept as an alias for compatibility.
+ */
+export type QuantumSafeRenderState = PqcStatusRenderState;

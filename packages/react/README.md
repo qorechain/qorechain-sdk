@@ -1,10 +1,10 @@
 # @qorechain/react
 
-Official **React hooks and components** for building quantum-safe
+Official **React hooks and components** for building
 [QoreChain](https://github.com/qorechain/qorechain-sdk) dApps. It wraps
 [`@qorechain/sdk`](https://github.com/qorechain/qorechain-sdk/tree/main/packages/ts) in an idiomatic React surface: one provider, a handful
-of hooks, and two drop-in components - including a one-line
-**Quantum-safe** badge.
+of hooks, and two drop-in components - including a one-line badge that shows
+whether an account has a registered PQC (ML-DSA-87) key.
 
 ```bash
 npm i @qorechain/react @qorechain/sdk react react-dom
@@ -20,7 +20,7 @@ Wrap your app in `QoreChainProvider` once, then use the hooks anywhere below it:
 import {
   QoreChainProvider,
   ConnectButton,
-  QuantumSafeBadge,
+  PqcStatusBadge,
   useAccount,
   useBalance,
 } from "@qorechain/react";
@@ -33,7 +33,7 @@ function Wallet() {
       <ConnectButton wallets={["keplr", "leap", "evm"]} />
       {isConnected && (
         <p>
-          {balance?.amount ?? "…"} {balance?.denom} <QuantumSafeBadge />
+          {balance?.amount ?? "…"} {balance?.denom} <PqcStatusBadge />
         </p>
       )}
     </div>
@@ -135,8 +135,7 @@ await send([msg.bank.send({ /* … */ })], { memo: "gm" });
 
 ### `usePqcStatus(address?, options?)`
 
-Reads whether an address is **quantum-safe** - i.e. has a registered
-post-quantum (ML-DSA-87) key - via the SDK's `getPqcStatus` (`qor_getPQCKeyStatus`).
+Reads whether an address has a registered post-quantum (ML-DSA-87) key, via the SDK's `getPqcStatus` (`qor_getPQCKeyStatus`).
 Returns `{ data, isRegistered, isLoading, error, refetch }`.
 
 ## Components
@@ -150,25 +149,33 @@ A minimal, headless-ish connect / disconnect control.
 - Pass `className` / `style` to theme it, or a `children` render-prop for full
   control: `({ isConnected, isConnecting, address, connect, disconnect, error }) => ReactNode`.
 
-### `<QuantumSafeBadge address?/>`
+### `<PqcStatusBadge address?/>`
 
-Shows a **Quantum-safe** indicator when the address has a registered PQC key
-(via `usePqcStatus`), otherwise a muted "Not quantum-safe" state.
+Shows a **PQC key registered** indicator when the address has a registered
+ML-DSA-87 key (via `usePqcStatus`), otherwise a muted "No PQC key" state. The
+root element carries `data-pqc-status` (and, for existing stylesheets,
+`data-quantum-safe`) set to `"loading"`, `"false"` or `"true"`.
+
+`QuantumSafeBadge` (with `QuantumSafeBadgeProps` / `QuantumSafeRenderState`) is
+the earlier name of this component and stays exported as a deprecated alias.
 
 | Prop | Type | Description |
 | --- | --- | --- |
 | `address` | `string` | Address to check. Default: connected account. |
-| `hideWhenUnsafe` | `boolean` | Render nothing when the address is not quantum-safe. |
+| `hideWhenUnsafe` | `boolean` | Render nothing when the address has no registered PQC key. |
 | `safeLabel` / `unsafeLabel` | `string` | Override the labels. |
 | `className` / `style` | - | Theming. |
 | `children` | render-prop | `({ isRegistered, isLoading, error }) => ReactNode`. |
 
-## Quantum-safe by default
+## Post-quantum hybrid signing
 
-`@qorechain/react` surfaces QoreChain's post-quantum security in the UI, and the
-core SDK makes an account PQC-protected in one call
-(`ensurePqcRegistered` / `migrateToHybrid`). See the
-[quantum-safe guide](https://docs.qorechain.io/sdk/guides/quantum-safe).
+`@qorechain/react` shows an account's PQC key status in the UI, and the core SDK
+registers an ML-DSA-87 key and switches the account to hybrid signing in one
+call (`ensurePqcRegistered` / `migrateToHybrid`). On the native lane the chain
+requires the hybrid secp256k1 + ML-DSA-87 signature by default; the EVM lane
+uses a bounded authorisation window opened from the native lane; the SVM lane is
+not open yet. See the
+[post-quantum hybrid signing guide](https://docs.qorechain.io/sdk/guides/quantum-safe).
 
 ## License
 
