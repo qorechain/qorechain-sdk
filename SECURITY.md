@@ -9,7 +9,7 @@ discussions, or pull requests.
 
 Instead, report them privately by email to:
 
-**security@qorechain.io**
+**security@qore.network**
 
 Please include as much of the following as you can:
 
@@ -17,6 +17,8 @@ Please include as much of the following as you can:
 - Steps to reproduce, or a proof of concept.
 - Any affected versions or packages.
 - Suggested remediation, if you have one.
+
+Qualifying reports are eligible for the QoreChain bug bounty; scope and rules are published at <https://www.qorechain.io/security>.
 
 ## What to expect
 
