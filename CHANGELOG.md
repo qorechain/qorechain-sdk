@@ -5,6 +5,31 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+### Added
+
+- **`PqcStatusBadge`** (`@qorechain/react`): the badge that shows whether an
+  address has a registered ML-DSA-87 key, with `PqcStatusBadgeProps` and
+  `PqcStatusRenderState`. The root element carries `data-pqc-status` next to the
+  existing `data-quantum-safe` attribute, with the same values.
+
+### Changed
+
+- The badge's default labels are now "PQC key registered" and "No PQC key".
+  `safeLabel` / `unsafeLabel` still override them.
+- Docs, READMEs, comments and messages in every language describe post-quantum
+  signing precisely: on the native lane the chain requires the hybrid
+  secp256k1 + ML-DSA-87 signature by default, the EVM lane uses a bounded
+  authorisation window opened from the native lane, and the SVM lane is not
+  open yet. Plain hyphens replace long dashes. The guide keeps its address
+  (`/sdk/guides/quantum-safe`) under the title "Post-quantum hybrid signing".
+
+### Deprecated
+
+- `QuantumSafeBadge`, `QuantumSafeBadgeProps` and `QuantumSafeRenderState`:
+  aliases of the `PqcStatusBadge` names, kept so existing code keeps working.
+
 ## [0.10.0] - 2026-10-25
 
 Client support for chain v3.2.4, applied on mainnet at height 3,742,566. Every
@@ -253,7 +278,7 @@ v3.2.2 at height 3,556,788 and v3.2.3 at height 3,662,051.
   the new one.** `useBalance` invalidated requests only on unmount, `refetch`
   never invalidated older requests, and the old address's data stayed on screen
   after the address changed. `usePqcStatus` had the same flaw, so a registered
-  old address could briefly mark a new one quantum-safe. Both hooks now keep a
+  old address could briefly mark a new one as registered. Both hooks now keep a
   request generation in a ref, bumped on every change of client, address, denom
   (for `useBalance`) or `enabled` and on unmount; a request commits state only
   if its generation is still current, a newer request for the same key always
@@ -672,7 +697,7 @@ user authorise.
   BouncyCastle's deterministic path; Go already used circl's deterministic
   mode), with explicit hedged opt-ins for off-chain use, and regression tests
   pinned to the shared `qorechain-pqc` deterministic signature vectors.
-- **PQC key registration** - the quantum-safe DX helpers now broadcast
+- **PQC key registration** - the PQC key helpers now broadcast
   `/qorechain.pqc.v1.MsgRegisterPQCKeyV2` (explicit `algorithm_id`; the chain's
   classical-exempt bootstrap path) instead of the legacy `MsgRegisterPQCKey`,
   with `key_type` defaulting to `"hybrid"` in every language.
@@ -703,14 +728,14 @@ user authorise.
   and one signature; `callAtomic` packs multiple cross-VM calls into a single
   transaction. TypeScript encodes payloads per VM (EVM ABI, CosmWasm JSON, raw);
   the other languages accept raw payloads and CosmWasm JSON.
-- **Quantum-safe DX** - `isPqcRegistered` / `getPqcStatus` /
+- **PQC key helpers** - `isPqcRegistered` / `getPqcStatus` /
   `ensurePqcRegistered` (idempotent, via `qor_getPQCKeyStatus` +
   `MsgRegisterPQCKey`) and `migrateToHybrid` (+ `MsgMigratePQCKey`), across all
   five languages.
 - **`@qorechain/react`** (new package) - `QoreChainProvider`, hooks
   (`useQoreClient`, `useAccount`, `useBalance`, `useConnect`/`useWallet`,
   `useTx`, `usePqcStatus`), and `ConnectButton` / `QuantumSafeBadge` components.
-- Docs guides for AI pre-flight, cross-VM, quantum-safe, and React; runnable
+- Docs guides for AI pre-flight, cross-VM, post-quantum hybrid signing, and React; runnable
   `ai-preflight`, `cross-vm-call`, and `react-dapp` examples.
 
 ## [0.4.0]
