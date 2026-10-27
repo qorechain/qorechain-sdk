@@ -11,7 +11,7 @@ app:
 - A `/qorechain` page (and a header link) that shows the connected account's
   EVM authorisation window.
 
-The extension needs `@qorechain/evm` 0.9.0 or later (the release that adds the
+The extension needs `@qorechain/evm` 0.11.0 or later (the release that adds the
 chain definitions and `evmWindowStatus`).
 
 ## Use it
