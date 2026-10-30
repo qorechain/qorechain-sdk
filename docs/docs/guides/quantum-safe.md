@@ -169,6 +169,38 @@ await migratePqcKey(tx, {
 });
 ```
 
+## Publish an encryption key (KEM registry, chain v3.2.5)
+
+Besides its ML-DSA-87 signing key, an account can publish one ML-KEM-1024
+(FIPS 203) encapsulation key so that anyone can encrypt to it. It is not an
+authentication key; the account keeps signing with ML-DSA-87.
+
+```ts
+import { msg, fetchKemKey } from "@qorechain/sdk";
+
+// Register (or replace) the key: algorithm 2 = ML-KEM-1024, 1568 bytes.
+await tx.signAndBroadcast([msg.pqc.registerKemKey({ sender: address, publicKey })], "auto");
+
+// Anyone can read it (bech32 or 0x address).
+const { found, key } = await fetchKemKey({ rest, address });
+
+// Withdraw it.
+await tx.signAndBroadcast([msg.pqc.removeKemKey({ sender: address })], "auto");
+```
+
+- One key per account; registering again replaces it.
+- Both messages need the account's hybrid signature, and the account must
+  already hold a registered post-quantum signature key. There is no proof of
+  possession: the hybrid signature authenticates the registration. Both are
+  refused through authz.
+- `registerKemKey` checks the key before signing: exactly 1568 bytes, every
+  coefficient below 3329, not all zero.
+- Refusals are named: `pqc` 250 (registry not enabled), 251 (invalid key),
+  252 (nothing to remove), 253 (the same key is already published), 254 (no
+  post-quantum signature key).
+- The chain stores and serves the raw key only. Encryption to it is not part of
+  this SDK.
+
 ## In the UI
 
 The [`@qorechain/react`](./react.md) kit surfaces all of this in React: the

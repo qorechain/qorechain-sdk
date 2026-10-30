@@ -27,8 +27,11 @@ const client = createSvmClient({
 });
 ```
 
-You can also pass `rpcUrl`, an existing `connection`, or rely on
-`DEFAULT_SVM_RPC_URL` (localhost `8899`).
+You can also pass `rpcUrl` or an existing `connection`; with no options at all
+it uses `DEFAULT_SVM_RPC_URL` (localhost `8899`, a node on your machine). The
+SDK's `mainnet` and `testnet` presets set no `svmRpc` because SVM transactions
+are not open on either network yet, so passing their `endpoints` throws an error
+that names `endpoints.svmRpc` instead of quietly using localhost.
 
 ## Keys
 

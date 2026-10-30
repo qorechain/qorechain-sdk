@@ -13,18 +13,17 @@ canonical **PQC-required** account under least-privilege, revocable terms,
 
 :::danger The module is switched off on mainnet
 
-`abstractaccount` carries an `enabled` flag, and it is **false on both networks**
-today (`GET {lcd}/qorechain/abstractaccount/v1/config`). From the v3.2.0 upgrade
+`abstractaccount` carries an `enabled` flag (`GET {lcd}/qorechain/abstractaccount/v1/config`).
+It is **false on mainnet** and true on testnet today. From the v3.2.0 upgrade
 that flag gates every path - creating an abstract account, linking a key, and
 both execution lanes - so on mainnet **linking a key and spending through a
 linked key are refused**, with `abstract account module is disabled` (code 9).
 
-Nothing in use breaks, because mainnet has no abstract accounts. But there is no
-message that can switch it on: the `Msg` service has create, update-rules,
-register, revoke and the two executes, and **no `MsgUpdateConfig`**. `SetConfig`
-is reachable only from `InitGenesis` and upgrade handlers, and the v3.2.0 handler
-does not touch it. Turning the module on for mainnet needs a future release and
-an explicit decision.
+From chain v3.2.5 governance can switch it with `MsgUpdateConfig`
+(`msg.abstractaccount.updateConfig` in the SDK, which checks the values first).
+The message replaces the whole configuration, so a proposal copies the current
+values from the config route and changes only `enabled`. Whether and when to
+switch it on for mainnet is a governance decision; none is scheduled.
 
 So treat everything below as the mechanism, not as something you can ship to
 mainnet users today. Check the config flag before offering a linking flow.
@@ -191,7 +190,24 @@ each successful execution.
   v3.2.0.
 - `MsgExecuteCosmos.nonce` is the same kind of counter.
 
-There is no query for the counter yet, so track it per linked key.
+Read it from the chain with `fetchAuthNonce` (from v3.2.4) instead of tracking
+it by hand.
+
+## Reading back linked keys and rules (chain v3.2.5)
+
+- `fetchAuthenticators({ rest, address })` lists the keys linked to an
+  account, revoked ones included, with their permissions, expiry and whether
+  each carries its own spending rule.
+- `fetchSpendingRules({ rest, address })` returns the rules
+  `MsgUpdateSpendingRules` stored: the account-wide rules and each linked key's
+  own rule.
+
+From v3.2.5 the chain also checks a rule when it is saved and refuses it with
+`invalid spending rule` (code 8): an enabled rule that bounds nothing, a denom
+limit with no amount, or an `erc20/`, `erc721/` or `erc1155/` denom whose
+contract address does not parse. `msg.abstractaccount.updateSpendingRules`
+runs the same checks before anything is signed (`validateSpendingRules`,
+`validateEvmDenom`).
 
 Getting the nonce wrong is a replay rejection (see error codes below).
 

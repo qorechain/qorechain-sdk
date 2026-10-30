@@ -30,76 +30,83 @@ sidebar_position: 1
 | Account bech32 prefix | `qor` |
 | Validator bech32 prefix | `qorvaloper` |
 
-## Default ports
+## Presets and their endpoints
 
-`createClient()` uses these localhost ports by default. Override `endpoints` to
-point at a real node.
+From SDK 0.12.0, `mainnet` and `testnet` point at the public QoreChain
+endpoints, and `localnet` keeps the localhost ports every preset used before.
+`createClient()` with no options is `testnet`.
 
-| Endpoint | Port | Purpose |
-| --- | --- | --- |
-| Native REST (LCD) | `1317` | bank balances, account info, module queries |
-| gRPC | `9090` | gRPC queries |
-| Consensus RPC | `26657` | signing/broadcasting native txs, CosmWasm reads |
-| EVM JSON-RPC | `8545` | `eth_*`, `qor_*`, precompiles |
-| EVM JSON-RPC (WS) | `8546` | EVM WebSocket subscriptions |
-| SVM JSON-RPC | `8899` | Solana-compatible RPC |
+| Endpoint | `mainnet` | `testnet` | `localnet` |
+| --- | --- | --- | --- |
+| Native REST (LCD) `rest` | `https://api.qore.host` | `https://api-testnet.qore.host` | `http://localhost:1317` |
+| Consensus RPC `rpc` | `https://rpc.qore.host` | `https://rpc-testnet.qore.host` | `http://localhost:26657` |
+| EVM JSON-RPC `evmRpc` | `https://evm.qore.host` (EVM chain id 9801) | `https://evm-testnet.qore.host` (9800) | `http://localhost:8545` |
+| EVM WebSocket `evmWs` | not set | `wss://evm-ws-testnet.qore.host` | `ws://localhost:8546` |
+| gRPC `grpc` | not set | not set | `http://localhost:9090` |
+| SVM JSON-RPC `svmRpc` | not set | not set | `http://localhost:8899` |
+| Chain id | `qorechain-vladi` | `qorechain-diana` | `qorechain-devnet` |
 
-Example with explicit endpoints:
+The table is the SDK's own preset list (`PUBLIC_ENDPOINTS` and
+`LOCALNET_ENDPOINTS` in TypeScript; the networks module in Python, Go, Rust and
+Java), so it is the one place to read them from in code.
+
+- **Not set** means the network has no public endpoint of that kind. Code that
+  needs one (an EVM subscription on mainnet, a gRPC client, an SVM client)
+  fails with an error that names the endpoint to pass, instead of falling back
+  to localhost. SVM transactions are not open on either network, so no preset
+  sets an SVM endpoint.
+- The testnet endpoints carry a per-IP rate limit at the edge. Production
+  traffic should run or use its own node and pass it in `endpoints`.
+- `https://download.qore.host/<net>/latest.json` is a release manifest
+  (version, peers, state sync), not an API endpoint.
+- The consensus RPC also answers WebSocket subscriptions at
+  `wss://rpc.qore.host/websocket` and `wss://rpc-testnet.qore.host/websocket`.
+
+Override any endpoint, or use your own node, with `endpoints`; the rest keep
+the preset's values:
 
 ```ts
 import { createClient } from "@qorechain/sdk";
 
-const client = createClient({
-  endpoints: {
-    rest: "https://api-testnet.qore.host",   // REST (LCD)
-    rpc: "https://rpc-testnet.qore.host",      // consensus RPC
-    evmRpc: "https://evm-testnet.qore.host",   // EVM + qor_ JSON-RPC
-    evmWs: "wss://evm-ws-testnet.qore.host",      // EVM WebSocket
-  },
+const main = createClient({ network: "mainnet" }); // public endpoints
+const mine = createClient({
+  network: "mainnet",
+  endpoints: { rest: "https://lcd.my-node.example", rpc: "https://rpc.my-node.example" },
 });
+const local = createClient({ network: "localnet" }); // a node on this machine
 ```
 
-The SDK exposes network presets and lookup helpers (exported from the networks
-module) so you can list and resolve networks programmatically. In Python/Go/Rust
-the equivalents are `create_client` / `CreateClient` / `ClientBuilder` plus the
-`networks` module.
+The SDK exposes the presets and lookup helpers (`getNetwork`, `listNetworks`,
+`NETWORKS`) so you can list and resolve networks programmatically. In
+Python/Go/Rust/Java the equivalents are `create_client` / `CreateClient` /
+`ClientBuilder` / `Networks` plus the `networks` module.
 
-## Targeting mainnet
+## Which chain release is a network on?
 
-Both presets ship the same localhost defaults; select `mainnet` and override the
-endpoints with your node URLs:
+Nodes do not report their binary version: `application_version` in
+`node_info` is empty on purpose, so a node cannot be fingerprinted by release.
+Detect features instead:
 
-```ts
-const main = createClient({
-  network: "mainnet",       // chain id qorechain-vladi
-  endpoints: {
-    rest: "https://api.qore.host",
-    rpc: "https://rpc.qore.host",
-    evmRpc: "https://evm.qore.host",
-  },
-});
-```
+- **By upgrade plan name.** `GET /cosmos/upgrade/v1beta1/applied_plan/<name>`
+  answers the height at which a plan was applied (`"0"` when it was not). Ask
+  for EVERY plan name that brings the feature, since networks differ:
+  - mainnet has applied `v3.2.5` (height 3,906,833);
+  - testnet has applied `v3.2.5` and `v3.2.6`;
+  - sign-bytes v2 arrived with `v3.2.0` on mainnet and `v3.1.98` on testnet.
 
-## Public endpoints
-
-Live public endpoints (override the localhost defaults with these, or with your
-own node URLs):
-
-| Service | Mainnet (`qorechain-vladi`) | Testnet (`qorechain-diana`) |
-| --- | --- | --- |
-| Consensus RPC | `https://rpc.qore.host` | `https://rpc-testnet.qore.host` |
-| Native REST (LCD) | `https://api.qore.host` | `https://api-testnet.qore.host` |
-| EVM JSON-RPC | `https://evm.qore.host` | `https://evm-testnet.qore.host` |
-| EVM WebSocket | - | `wss://evm-ws-testnet.qore.host` |
-| SVM JSON-RPC | `https://svm.qore.host` | `https://svm-testnet.qore.host` |
-| Consensus WebSocket | `wss://rpc.qore.host/websocket` | `wss://rpc-testnet.qore.host/websocket` |
-
-The public explorer is at [explore.qore.network](https://explore.qore.network).
+  The SDK does this for you: `isUpgradeApplied({ rest, upgrade: CHAIN_UPGRADE_V3_2_5 })`
+  (TypeScript; `is_upgrade_applied` in Python, and the equivalents in Go, Rust
+  and Java) caches the answer per endpoint.
+- **By feature switch** (from v3.2.4): `fetchProtocolFeatures` lists the
+  consensus rules a network enforces, by name.
+- **For people, not code:** the release a network runs is the `.version` of
+  `https://download.qore.host/mainnet/latest.json` or
+  `https://download.qore.host/testnet/latest.json`.
 
 ## Explorer & faucet URLs (config-driven)
 
 `NetworkConfig` has two optional fields - `explorerUrl` and `faucetUrl` - that
-are **undefined by default** on both presets. No public explorer or faucet
+are **undefined by default** on every preset. No public explorer or faucet
 hostname is baked into the SDK; supply them through a network override. The
 public explorer lives at **https://explore.qore.network**:
 

@@ -33,33 +33,27 @@ documentation lives in [`docs/`](./docs).
 
 ### Connect
 
-`createClient()` targets the public testnet by default. The default endpoints
-point at localhost, so pass `endpoints` to talk to a real node.
+`createClient()` targets the public testnet by default. From 0.12.0 the
+`mainnet` and `testnet` presets use the public endpoints, and `localnet` a node
+on your machine.
 
 ```ts
 import { createClient } from "@qorechain/sdk";
 
-// Testnet (chain id "qorechain-diana"), default localhost endpoints.
+// Testnet (chain id "qorechain-diana"), public endpoints.
 const client = createClient();
 
-// Point at a real node by overriding endpoints.
-const remote = createClient({
-  endpoints: {
-    rest: "https://api-testnet.qore.host",   // Native REST (LCD)
-    rpc: "https://rpc-testnet.qore.host",      // consensus RPC (for signing)
-    evmRpc: "https://evm-testnet.qore.host",   // EVM + qor_ JSON-RPC
-  },
+// Mainnet (chain id "qorechain-vladi"), public endpoints.
+const main = createClient({ network: "mainnet" });
+
+// Your own node: override any endpoint; the rest keep the preset's values.
+const mine = createClient({
+  network: "mainnet",
+  endpoints: { rest: "https://lcd.my-node.example", rpc: "https://rpc.my-node.example" },
 });
 
-// Mainnet (chain id "qorechain-vladi") is live; select it and point at a node.
-const main = createClient({
-  network: "mainnet",
-  endpoints: {
-    rest: "https://api.qore.host",
-    rpc: "https://rpc.qore.host",
-    evmRpc: "https://evm.qore.host",
-  },
-});
+// A node on this machine (localhost ports).
+const local = createClient({ network: "localnet" });
 ```
 
 ### Accounts
@@ -242,9 +236,17 @@ See the [docs](./docs) and [examples](./examples) for runnable usage.
 
 - Mainnet chain id: `qorechain-vladi` (live).
 - Testnet chain id: `qorechain-diana` (live).
-- Default endpoint ports (localhost): REST `1317`, gRPC `9090`, consensus RPC
-  `26657`, EVM JSON-RPC `8545` / WS `8546`, SVM RPC `8899`. Override these to
-  point at a real node.
+- Presets: `mainnet` and `testnet` use the public endpoints (REST, consensus
+  RPC, EVM JSON-RPC; an EVM WebSocket on testnet only); `localnet` uses the
+  localhost ports (REST `1317`, gRPC `9090`, consensus RPC `26657`, EVM `8545`
+  / WS `8546`, SVM `8899`). No preset sets gRPC or SVM on the public networks.
+  The full table is in [Network & endpoints](./docs/docs/reference/network.md).
+- The public testnet endpoints are rate limited per IP; production traffic
+  should run or use its own node.
+- Nodes do not report their binary version. Detect features by upgrade plan
+  name (`isUpgradeApplied`), or read `.version` from
+  `https://download.qore.host/<net>/latest.json`. Mainnet runs chain v3.2.5,
+  testnet v3.2.6.
 - Token: `QOR` (display) / `uqor` (base), with 10^6 base units per QOR.
 
 ## License

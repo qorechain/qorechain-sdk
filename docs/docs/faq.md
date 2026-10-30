@@ -9,25 +9,38 @@ sidebar_position: 9
 ## Is mainnet live?
 
 Yes. Mainnet is **live** (chain id `qorechain-vladi`). The testnet preset
-(`qorechain-diana`) also remains available. Both presets ship localhost endpoint
-defaults; select the network with `createClient({ network: "mainnet" })` and
-override `endpoints` with your node URLs. See
+(`qorechain-diana`) also remains available. Both presets point at the public
+endpoints from SDK 0.12.0; select the network with
+`createClient({ network: "mainnet" })`. See
 [Network & endpoints](reference/network.md).
 
 ## Why do my calls hit localhost?
 
-`createClient()` defaults to **localhost** endpoints. To talk to a real node,
-pass an `endpoints` object:
+Before SDK 0.12.0 every preset defaulted to **localhost**. From 0.12.0 only
+the `localnet` preset does; `mainnet` and `testnet` use the public endpoints.
+To use your own node, pass an `endpoints` object (any endpoint you leave out
+keeps the preset's value):
 
 ```ts
 const client = createClient({
-  endpoints: {
-    rest: "https://api-testnet.qore.host",
-    rpc: "https://rpc-testnet.qore.host",
-    evmRpc: "https://evm-testnet.qore.host",
-  },
+  network: "testnet",
+  endpoints: { rest: "https://lcd.my-node.example", rpc: "https://rpc.my-node.example" },
 });
 ```
+
+## "endpoint ... is not configured for the mainnet preset"
+
+The public networks serve no gRPC and no SVM endpoint, and mainnet has no
+public EVM WebSocket. Code that needs one names the endpoint to pass instead of
+falling back to localhost: pass it in `endpoints` for your own node, or poll
+over HTTP instead of subscribing.
+
+## Which chain release is a network on?
+
+Nodes do not report their binary version. Detect features by upgrade plan name
+(`isUpgradeApplied`), or read `.version` from
+`https://download.qore.host/<net>/latest.json` for a human-readable answer. See
+[Network & endpoints](reference/network.md#which-chain-release-is-a-network-on).
 
 The signing path (`connectTx`) needs the consensus **`rpc`** endpoint; CosmWasm
 reads also use it. REST reads use `rest`; EVM and `qor_` calls use `evmRpc`.

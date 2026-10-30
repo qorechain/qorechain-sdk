@@ -8,6 +8,7 @@
  * account (see README).
  */
 import {
+  getNetwork,
   createClient,
   deriveNativeAccount,
   derivePqcCanonical,
@@ -16,17 +17,20 @@ import {
 } from "@qorechain/sdk";
 import { MsgInstantiateContract, MsgExecuteContract } from "cosmjs-types/cosmwasm/wasm/v1/tx";
 
+// The public endpoints come from the SDK's network presets. Set
+// QORE_REST_URL / QORE_RPC_URL to use your own node instead.
+const preset = (name: "testnet" | "mainnet") => {
+  const n = getNetwork(name);
+  return {
+    chainId: n.chainId,
+    rest: process.env.QORE_REST_URL?.trim() || n.endpoints.rest,
+    rpc: process.env.QORE_RPC_URL?.trim() || n.endpoints.rpc,
+  };
+};
+
 export const NETWORKS = {
-  testnet: {
-    chainId: "qorechain-diana",
-    rest: "https://api-testnet.qore.host",
-    rpc: "https://rpc-testnet.qore.host",
-  },
-  mainnet: {
-    chainId: "qorechain-vladi",
-    rest: "https://api.qore.host",
-    rpc: "https://rpc.qore.host",
-  },
+  testnet: preset("testnet"),
+  mainnet: preset("mainnet"),
 } as const;
 
 export type NetworkName = keyof typeof NETWORKS;

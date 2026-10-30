@@ -14,38 +14,31 @@ follow at the end.
 
 `createClient()` resolves a network and composes the read clients, a fee helper,
 and a lazy signing entrypoint. It targets the public testnet
-(`qorechain-diana`) by default. The default endpoints point at **localhost**, so
-pass `endpoints` to talk to a real node.
+(`qorechain-diana`) by default, on its public endpoints (from SDK 0.12.0).
 
 ```ts
 import { createClient } from "@qorechain/sdk";
 
-// Testnet (chain id "qorechain-diana"), default localhost endpoints.
+// Testnet (chain id "qorechain-diana"), public endpoints.
 const client = createClient();
 
-// Point at a real node by overriding endpoints.
-const remote = createClient({
-  endpoints: {
-    rest: "https://api-testnet.qore.host",   // Native REST (LCD)
-    rpc: "https://rpc-testnet.qore.host",      // consensus RPC (for signing)
-    evmRpc: "https://evm-testnet.qore.host",   // EVM + qor_ JSON-RPC
-  },
-});
-```
+// Mainnet (chain id "qorechain-vladi"), public endpoints.
+const main = createClient({ network: "mainnet" });
 
-Mainnet (chain id `qorechain-vladi`) is live. Select it and override the
-localhost defaults with your node URLs:
-
-```ts
-const main = createClient({
+// Your own node: override any endpoint; the rest keep the preset's values.
+const mine = createClient({
   network: "mainnet",
-  endpoints: {
-    rest: "https://api.qore.host",
-    rpc: "https://rpc.qore.host",
-    evmRpc: "https://evm.qore.host",
-  },
+  endpoints: { rest: "https://lcd.my-node.example", rpc: "https://rpc.my-node.example" },
 });
+
+// A node on this machine (localhost ports).
+const local = createClient({ network: "localnet" });
 ```
+
+The public testnet endpoints are rate limited per IP; production traffic should
+use its own node. The presets, and the endpoints they leave unset (gRPC, SVM,
+and the EVM WebSocket on mainnet), are listed in
+[Network & endpoints](reference/network.md).
 
 ## 2. Derive an account
 
@@ -127,7 +120,7 @@ These mirror the same network presets and read surface.
 ```python
 from qorsdk import create_client
 
-client = create_client()  # testnet preset (localhost endpoints)
+client = create_client()  # testnet preset (public endpoints)
 print(client.network.chain_id)  # "qorechain-diana"
 
 balances = client.rest.get_all_balances("qor1...")

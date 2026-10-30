@@ -5,6 +5,78 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.12.0] - Unreleased
+
+Client support for chain v3.2.5, applied on mainnet at height 3,906,833 on
+29 October 2026 (testnet runs v3.2.6). All five SDKs (TypeScript, Python, Go,
+Rust, Java) move to 0.12.0, with `@qorechain/react`, `@qorechain/evm`,
+`@qorechain/svm` and `create-qorechain-dapp`. Every language was checked with
+real transactions on the testnet (a hybrid bank send with the new gas rule,
+and a KEM key registered, read back and removed) and with reads on mainnet.
+
+### Added
+
+- **KEM key registry** (`x/pqc`): an account publishes one ML-KEM-1024
+  encapsulation key (algorithm 2, 1568 bytes) so anyone can encrypt to it.
+  Composers for `MsgRegisterKEMKey` and `MsgRemoveKEMKey`, which check the key
+  first (size, every coefficient below 3329, not all zero), and a read of
+  `/qorechain/pqc/v1/kem/{address}` (bech32 or `0x`). Refusals `pqc` 250 to
+  254 are named, by code and from text. Both messages need the hybrid
+  signature. The SDK does not encrypt.
+- **Abstract accounts**: reads of an account's stored spending rules and of its
+  linked keys (revoked ones included); `MsgUpdateConfig`, the governance
+  message that switches the module, with its checks; `authenticators_count` on
+  the account view.
+- **Governance parameters**: crossvm `MsgUpdateParams` (including the CosmWasm
+  contracts the EVM bridge precompile may call) and rdk `MsgUpdateParams`, each
+  checked against the chain's bounds before signing. The crossvm params read
+  carries `bridge_allowed_targets`.
+- **Exact gas helpers**: `exactHybridGas` (and the equivalents in every
+  language) and, in TypeScript, `estimateGasDetails`, which reports the
+  simulation, the gas limit and which rule set it.
+- `CHAIN_UPGRADE_V3_2_5`; protos synced with chain v3.2.5.
+- **`localnet` preset** with the localhost ports every preset used before, and
+  the EVM chain id on the presets (9801 mainnet, 9800 testnet).
+
+### Changed
+
+- **Behaviour change: the `mainnet` and `testnet` presets now default to the
+  public endpoints** instead of localhost: REST, consensus RPC and EVM JSON-RPC
+  on both, plus the EVM WebSocket on testnet. No preset sets a gRPC or an SVM
+  endpoint on the public networks (SVM transactions are not open), and mainnet
+  has no public EVM WebSocket; code that needs one of those now fails with an
+  error naming the endpoint to pass, instead of falling back to localhost.
+  Explicit `endpoints` overrides work as before. To keep the old behaviour,
+  select `localnet`. The public testnet endpoints are rate limited per IP;
+  production traffic should run or use its own node. In Rust the optional
+  endpoints are now `Option<String>`; in Python, Go and Java an unset endpoint
+  is `None`, an empty string and `null`.
+- **Gas for hybrid transactions on v3.2.5 networks**: the `"auto"` fee of a
+  hybrid-signed native-lane transaction is `ceil(simulated × 1.02) + 2000`,
+  since the simulation now charges the post-quantum verification itself. A
+  hybrid bank send asks for about 171,600 gas instead of about 289,000, and the
+  fee falls with it. Networks below v3.2.5, classical transactions and a failed
+  plan lookup keep the earlier rule; a multiplier passed by the caller replaces
+  either one. Java gained the auto-gas path (`AutoGas`, `HybridSendPath.sendAuto`).
+- **Spending rules** are checked as the chain checks them when saved from
+  v3.2.5: an `erc20/`, `erc721/` or `erc1155/` denom must name a `0x` contract
+  address (an `erc20/` denom the address alone). `abstractaccount` code 8
+  (invalid spending rule) and 9 (module disabled) are named.
+- Templates read the public endpoints from the SDK presets and accept
+  `QORE_REST_URL` / `QORE_RPC_URL` for your own node.
+- Docs: nodes do not report their binary version; detect features by upgrade
+  plan name, asking every name that brings the feature, or read `.version`
+  from `https://download.qore.host/<net>/latest.json`.
+
+### Fixed
+
+- `@qorechain/svm` given a network's endpoints without `svmRpc` used localhost;
+  it now says the endpoint is not configured.
+- Python code generation now points imports between QoreChain protos into the
+  package (v3.2.5 adds the first one).
+- The authenticators guide said there is no nonce query and no way to switch
+  the module; it now points at `fetchAuthNonce` and `MsgUpdateConfig`.
+
 ## [0.11.0] - 2026-10-27
 
 npm packages only (`@qorechain/sdk`, `@qorechain/react`, `@qorechain/evm`, `@qorechain/svm`, `create-qorechain-dapp`); the Python, Rust, Go and Java packages stay at 0.10.0.

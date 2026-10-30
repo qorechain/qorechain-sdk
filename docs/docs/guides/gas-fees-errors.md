@@ -26,6 +26,28 @@ const gasPrice = GasPrice.fromString("0.15uqor");
 const fee = calculateFee(200_000, gasPrice); // ceil(gas * price)
 ```
 
+### Hybrid transactions from chain v3.2.5
+
+A native-lane transaction signed hybrid (secp256k1 + ML-DSA-87) is estimated
+by simulating the signed transaction itself. What happens next depends on the
+network:
+
+| Network | Gas limit for `"auto"` |
+| --- | --- |
+| Has applied `v3.2.5` (mainnet and testnet today) | `ceil(simulated × 1.02) + 2000` (`exactHybridGas`) |
+| Below `v3.2.5` | `ceil((simulated + HYBRID_VERIFY_GAS) × DEFAULT_GAS_MULTIPLIER)` |
+
+From v3.2.5 the simulation already charges the post-quantum verification (once
+per signer), so nothing is added per signer. The SDK asks the network once per
+endpoint whether it has applied `v3.2.5`; if it cannot ask, it keeps the older,
+larger estimate. A `gasMultiplier` you pass replaces either rule. On the native
+lane the fee is the gas limit times the gas price, so the tighter limit is a
+lower fee: a hybrid bank send simulates at about 166,300 gas and now asks for
+about 171,600 instead of about 289,000.
+
+`estimateGasDetails` returns `{ simulated, gasWanted, exact }` when you want to
+see which rule applied. The same rule is in the Python, Go, Rust and Java SDKs.
+
 :::note Fee floor
 Both networks enforce a genesis min-gas-price (BaseFee) of **`0.1uqor` per unit
 of gas** - transactions priced below the floor are rejected. The SDK default
