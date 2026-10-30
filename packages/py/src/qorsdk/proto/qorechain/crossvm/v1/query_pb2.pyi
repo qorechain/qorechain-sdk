@@ -1,3 +1,4 @@
+from google.api import annotations_pb2 as _annotations_pb2
 from google.protobuf.internal import containers as _containers
 from google.protobuf import descriptor as _descriptor
 from google.protobuf import message as _message
@@ -36,16 +37,18 @@ class QueryParamsRequest(_message.Message):
     def __init__(self) -> None: ...
 
 class QueryParamsResponse(_message.Message):
-    __slots__ = ("max_message_size", "max_queue_size", "queue_timeout_blocks", "enabled")
+    __slots__ = ("max_message_size", "max_queue_size", "queue_timeout_blocks", "enabled", "bridge_allowed_targets")
     MAX_MESSAGE_SIZE_FIELD_NUMBER: _ClassVar[int]
     MAX_QUEUE_SIZE_FIELD_NUMBER: _ClassVar[int]
     QUEUE_TIMEOUT_BLOCKS_FIELD_NUMBER: _ClassVar[int]
     ENABLED_FIELD_NUMBER: _ClassVar[int]
+    BRIDGE_ALLOWED_TARGETS_FIELD_NUMBER: _ClassVar[int]
     max_message_size: int
     max_queue_size: int
     queue_timeout_blocks: int
     enabled: bool
-    def __init__(self, max_message_size: _Optional[int] = ..., max_queue_size: _Optional[int] = ..., queue_timeout_blocks: _Optional[int] = ..., enabled: bool = ...) -> None: ...
+    bridge_allowed_targets: _containers.RepeatedScalarFieldContainer[str]
+    def __init__(self, max_message_size: _Optional[int] = ..., max_queue_size: _Optional[int] = ..., queue_timeout_blocks: _Optional[int] = ..., enabled: bool = ..., bridge_allowed_targets: _Optional[_Iterable[str]] = ...) -> None: ...
 
 class QueryPendingMessagesRequest(_message.Message):
     __slots__ = ()

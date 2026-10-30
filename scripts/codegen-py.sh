@@ -74,6 +74,16 @@ for path in root.rglob("*_pb2.py"):
         text = pat.sub(repl, text)
     path.write_text(text)
 
+# Imports between qorechain protos (abstractaccount query.proto imports its
+# tx.proto from chain v3.2.5) point into this package, in the .py modules and
+# in their .pyi stubs.
+internal = re.compile(r"^from qorechain\.", re.MULTILINE)
+for path in [*root.rglob("*_pb2.py"), *root.rglob("*_pb2.pyi")]:
+    text = path.read_text()
+    fixed = internal.sub("from qorsdk.proto.qorechain.", text)
+    if fixed != text:
+        path.write_text(fixed)
+
 # Make every directory in the generated tree an importable package.
 for directory in [root, *(d for d in root.rglob("*") if d.is_dir())]:
     init = directory / "__init__.py"

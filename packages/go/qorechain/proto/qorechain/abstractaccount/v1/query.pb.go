@@ -6,6 +6,7 @@ package abstractaccountv1
 import (
 	context "context"
 	fmt "fmt"
+	_ "github.com/cosmos/gogoproto/gogoproto"
 	grpc1 "github.com/cosmos/gogoproto/grpc"
 	proto "github.com/cosmos/gogoproto/proto"
 	_ "google.golang.org/genproto/googleapis/api/annotations"
@@ -28,6 +29,360 @@ var _ = math.Inf
 // proto package needs to be updated.
 const _ = proto.GoGoProtoPackageIsVersion3 // please upgrade the proto package
 
+type QuerySpendingRulesRequest struct {
+	// address is the account's bech32 address.
+	Address string `protobuf:"bytes,1,opt,name=address,proto3" json:"address,omitempty"`
+}
+
+func (m *QuerySpendingRulesRequest) Reset()         { *m = QuerySpendingRulesRequest{} }
+func (m *QuerySpendingRulesRequest) String() string { return proto.CompactTextString(m) }
+func (*QuerySpendingRulesRequest) ProtoMessage()    {}
+func (*QuerySpendingRulesRequest) Descriptor() ([]byte, []int) {
+	return fileDescriptor_01650bc9b1b12fad, []int{0}
+}
+func (m *QuerySpendingRulesRequest) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *QuerySpendingRulesRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_QuerySpendingRulesRequest.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *QuerySpendingRulesRequest) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_QuerySpendingRulesRequest.Merge(m, src)
+}
+func (m *QuerySpendingRulesRequest) XXX_Size() int {
+	return m.Size()
+}
+func (m *QuerySpendingRulesRequest) XXX_DiscardUnknown() {
+	xxx_messageInfo_QuerySpendingRulesRequest.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_QuerySpendingRulesRequest proto.InternalMessageInfo
+
+func (m *QuerySpendingRulesRequest) GetAddress() string {
+	if m != nil {
+		return m.Address
+	}
+	return ""
+}
+
+type QuerySpendingRulesResponse struct {
+	// rules are the account-wide rules in stored order; the first enabled one
+	// bounds every linked key without a rule of its own.
+	Rules []SpendingRule `protobuf:"bytes,1,rep,name=rules,proto3" json:"rules"`
+	// authenticator_rules are the per-key rules.
+	AuthenticatorRules []AuthenticatorRule `protobuf:"bytes,2,rep,name=authenticator_rules,json=authenticatorRules,proto3" json:"authenticator_rules"`
+}
+
+func (m *QuerySpendingRulesResponse) Reset()         { *m = QuerySpendingRulesResponse{} }
+func (m *QuerySpendingRulesResponse) String() string { return proto.CompactTextString(m) }
+func (*QuerySpendingRulesResponse) ProtoMessage()    {}
+func (*QuerySpendingRulesResponse) Descriptor() ([]byte, []int) {
+	return fileDescriptor_01650bc9b1b12fad, []int{1}
+}
+func (m *QuerySpendingRulesResponse) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *QuerySpendingRulesResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_QuerySpendingRulesResponse.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *QuerySpendingRulesResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_QuerySpendingRulesResponse.Merge(m, src)
+}
+func (m *QuerySpendingRulesResponse) XXX_Size() int {
+	return m.Size()
+}
+func (m *QuerySpendingRulesResponse) XXX_DiscardUnknown() {
+	xxx_messageInfo_QuerySpendingRulesResponse.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_QuerySpendingRulesResponse proto.InternalMessageInfo
+
+func (m *QuerySpendingRulesResponse) GetRules() []SpendingRule {
+	if m != nil {
+		return m.Rules
+	}
+	return nil
+}
+
+func (m *QuerySpendingRulesResponse) GetAuthenticatorRules() []AuthenticatorRule {
+	if m != nil {
+		return m.AuthenticatorRules
+	}
+	return nil
+}
+
+// AuthenticatorRule is the rule a linked key carries itself.
+type AuthenticatorRule struct {
+	Scheme string `protobuf:"bytes,1,opt,name=scheme,proto3" json:"scheme,omitempty"`
+	// pubkey_hex is the key, hex encoded.
+	PubkeyHex string       `protobuf:"bytes,2,opt,name=pubkey_hex,json=pubkeyHex,proto3" json:"pubkey_hex,omitempty"`
+	Rule      SpendingRule `protobuf:"bytes,3,opt,name=rule,proto3" json:"rule"`
+}
+
+func (m *AuthenticatorRule) Reset()         { *m = AuthenticatorRule{} }
+func (m *AuthenticatorRule) String() string { return proto.CompactTextString(m) }
+func (*AuthenticatorRule) ProtoMessage()    {}
+func (*AuthenticatorRule) Descriptor() ([]byte, []int) {
+	return fileDescriptor_01650bc9b1b12fad, []int{2}
+}
+func (m *AuthenticatorRule) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *AuthenticatorRule) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_AuthenticatorRule.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *AuthenticatorRule) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_AuthenticatorRule.Merge(m, src)
+}
+func (m *AuthenticatorRule) XXX_Size() int {
+	return m.Size()
+}
+func (m *AuthenticatorRule) XXX_DiscardUnknown() {
+	xxx_messageInfo_AuthenticatorRule.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_AuthenticatorRule proto.InternalMessageInfo
+
+func (m *AuthenticatorRule) GetScheme() string {
+	if m != nil {
+		return m.Scheme
+	}
+	return ""
+}
+
+func (m *AuthenticatorRule) GetPubkeyHex() string {
+	if m != nil {
+		return m.PubkeyHex
+	}
+	return ""
+}
+
+func (m *AuthenticatorRule) GetRule() SpendingRule {
+	if m != nil {
+		return m.Rule
+	}
+	return SpendingRule{}
+}
+
+type QueryAuthenticatorsRequest struct {
+	// address is the account's bech32 address.
+	Address string `protobuf:"bytes,1,opt,name=address,proto3" json:"address,omitempty"`
+}
+
+func (m *QueryAuthenticatorsRequest) Reset()         { *m = QueryAuthenticatorsRequest{} }
+func (m *QueryAuthenticatorsRequest) String() string { return proto.CompactTextString(m) }
+func (*QueryAuthenticatorsRequest) ProtoMessage()    {}
+func (*QueryAuthenticatorsRequest) Descriptor() ([]byte, []int) {
+	return fileDescriptor_01650bc9b1b12fad, []int{3}
+}
+func (m *QueryAuthenticatorsRequest) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *QueryAuthenticatorsRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_QueryAuthenticatorsRequest.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *QueryAuthenticatorsRequest) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_QueryAuthenticatorsRequest.Merge(m, src)
+}
+func (m *QueryAuthenticatorsRequest) XXX_Size() int {
+	return m.Size()
+}
+func (m *QueryAuthenticatorsRequest) XXX_DiscardUnknown() {
+	xxx_messageInfo_QueryAuthenticatorsRequest.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_QueryAuthenticatorsRequest proto.InternalMessageInfo
+
+func (m *QueryAuthenticatorsRequest) GetAddress() string {
+	if m != nil {
+		return m.Address
+	}
+	return ""
+}
+
+type QueryAuthenticatorsResponse struct {
+	Authenticators []AuthenticatorView `protobuf:"bytes,1,rep,name=authenticators,proto3" json:"authenticators"`
+}
+
+func (m *QueryAuthenticatorsResponse) Reset()         { *m = QueryAuthenticatorsResponse{} }
+func (m *QueryAuthenticatorsResponse) String() string { return proto.CompactTextString(m) }
+func (*QueryAuthenticatorsResponse) ProtoMessage()    {}
+func (*QueryAuthenticatorsResponse) Descriptor() ([]byte, []int) {
+	return fileDescriptor_01650bc9b1b12fad, []int{4}
+}
+func (m *QueryAuthenticatorsResponse) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *QueryAuthenticatorsResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_QueryAuthenticatorsResponse.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *QueryAuthenticatorsResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_QueryAuthenticatorsResponse.Merge(m, src)
+}
+func (m *QueryAuthenticatorsResponse) XXX_Size() int {
+	return m.Size()
+}
+func (m *QueryAuthenticatorsResponse) XXX_DiscardUnknown() {
+	xxx_messageInfo_QueryAuthenticatorsResponse.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_QueryAuthenticatorsResponse proto.InternalMessageInfo
+
+func (m *QueryAuthenticatorsResponse) GetAuthenticators() []AuthenticatorView {
+	if m != nil {
+		return m.Authenticators
+	}
+	return nil
+}
+
+type AuthenticatorView struct {
+	Scheme string `protobuf:"bytes,1,opt,name=scheme,proto3" json:"scheme,omitempty"`
+	// pubkey_hex is the key, hex encoded.
+	PubkeyHex   string   `protobuf:"bytes,2,opt,name=pubkey_hex,json=pubkeyHex,proto3" json:"pubkey_hex,omitempty"`
+	Permissions []string `protobuf:"bytes,3,rep,name=permissions,proto3" json:"permissions,omitempty"`
+	// expiry_unix and created_at_unix are unix seconds.
+	ExpiryUnix    int64  `protobuf:"varint,4,opt,name=expiry_unix,json=expiryUnix,proto3" json:"expiry_unix,omitempty"`
+	Label         string `protobuf:"bytes,5,opt,name=label,proto3" json:"label,omitempty"`
+	CreatedAtUnix int64  `protobuf:"varint,6,opt,name=created_at_unix,json=createdAtUnix,proto3" json:"created_at_unix,omitempty"`
+	Revoked       bool   `protobuf:"varint,7,opt,name=revoked,proto3" json:"revoked,omitempty"`
+	// has_spend_rule reports a rule of the key's own (see SpendingRules).
+	HasSpendRule bool `protobuf:"varint,8,opt,name=has_spend_rule,json=hasSpendRule,proto3" json:"has_spend_rule,omitempty"`
+}
+
+func (m *AuthenticatorView) Reset()         { *m = AuthenticatorView{} }
+func (m *AuthenticatorView) String() string { return proto.CompactTextString(m) }
+func (*AuthenticatorView) ProtoMessage()    {}
+func (*AuthenticatorView) Descriptor() ([]byte, []int) {
+	return fileDescriptor_01650bc9b1b12fad, []int{5}
+}
+func (m *AuthenticatorView) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *AuthenticatorView) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_AuthenticatorView.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *AuthenticatorView) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_AuthenticatorView.Merge(m, src)
+}
+func (m *AuthenticatorView) XXX_Size() int {
+	return m.Size()
+}
+func (m *AuthenticatorView) XXX_DiscardUnknown() {
+	xxx_messageInfo_AuthenticatorView.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_AuthenticatorView proto.InternalMessageInfo
+
+func (m *AuthenticatorView) GetScheme() string {
+	if m != nil {
+		return m.Scheme
+	}
+	return ""
+}
+
+func (m *AuthenticatorView) GetPubkeyHex() string {
+	if m != nil {
+		return m.PubkeyHex
+	}
+	return ""
+}
+
+func (m *AuthenticatorView) GetPermissions() []string {
+	if m != nil {
+		return m.Permissions
+	}
+	return nil
+}
+
+func (m *AuthenticatorView) GetExpiryUnix() int64 {
+	if m != nil {
+		return m.ExpiryUnix
+	}
+	return 0
+}
+
+func (m *AuthenticatorView) GetLabel() string {
+	if m != nil {
+		return m.Label
+	}
+	return ""
+}
+
+func (m *AuthenticatorView) GetCreatedAtUnix() int64 {
+	if m != nil {
+		return m.CreatedAtUnix
+	}
+	return 0
+}
+
+func (m *AuthenticatorView) GetRevoked() bool {
+	if m != nil {
+		return m.Revoked
+	}
+	return false
+}
+
+func (m *AuthenticatorView) GetHasSpendRule() bool {
+	if m != nil {
+		return m.HasSpendRule
+	}
+	return false
+}
+
 type QueryAuthNonceRequest struct {
 	// address is the account's bech32 address.
 	Address string `protobuf:"bytes,1,opt,name=address,proto3" json:"address,omitempty"`
@@ -39,7 +394,7 @@ func (m *QueryAuthNonceRequest) Reset()         { *m = QueryAuthNonceRequest{} }
 func (m *QueryAuthNonceRequest) String() string { return proto.CompactTextString(m) }
 func (*QueryAuthNonceRequest) ProtoMessage()    {}
 func (*QueryAuthNonceRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_01650bc9b1b12fad, []int{0}
+	return fileDescriptor_01650bc9b1b12fad, []int{6}
 }
 func (m *QueryAuthNonceRequest) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -94,7 +449,7 @@ func (m *QueryAuthNonceResponse) Reset()         { *m = QueryAuthNonceResponse{}
 func (m *QueryAuthNonceResponse) String() string { return proto.CompactTextString(m) }
 func (*QueryAuthNonceResponse) ProtoMessage()    {}
 func (*QueryAuthNonceResponse) Descriptor() ([]byte, []int) {
-	return fileDescriptor_01650bc9b1b12fad, []int{1}
+	return fileDescriptor_01650bc9b1b12fad, []int{7}
 }
 func (m *QueryAuthNonceResponse) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -148,7 +503,7 @@ func (m *ConfigView) Reset()         { *m = ConfigView{} }
 func (m *ConfigView) String() string { return proto.CompactTextString(m) }
 func (*ConfigView) ProtoMessage()    {}
 func (*ConfigView) Descriptor() ([]byte, []int) {
-	return fileDescriptor_01650bc9b1b12fad, []int{2}
+	return fileDescriptor_01650bc9b1b12fad, []int{8}
 }
 func (m *ConfigView) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -213,13 +568,16 @@ type AccountView struct {
 	SessionKeysCount   uint32 `protobuf:"varint,5,opt,name=session_keys_count,json=sessionKeysCount,proto3" json:"session_keys_count,omitempty"`
 	CreatedAt          int64  `protobuf:"varint,6,opt,name=created_at,json=createdAt,proto3" json:"created_at,omitempty"`
 	Owner              string `protobuf:"bytes,7,opt,name=owner,proto3" json:"owner,omitempty"`
+	// authenticators_count is the number of linked keys that are not revoked.
+	// session_keys_count counts the legacy session keys only.
+	AuthenticatorsCount uint32 `protobuf:"varint,8,opt,name=authenticators_count,json=authenticatorsCount,proto3" json:"authenticators_count,omitempty"`
 }
 
 func (m *AccountView) Reset()         { *m = AccountView{} }
 func (m *AccountView) String() string { return proto.CompactTextString(m) }
 func (*AccountView) ProtoMessage()    {}
 func (*AccountView) Descriptor() ([]byte, []int) {
-	return fileDescriptor_01650bc9b1b12fad, []int{3}
+	return fileDescriptor_01650bc9b1b12fad, []int{9}
 }
 func (m *AccountView) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -297,6 +655,13 @@ func (m *AccountView) GetOwner() string {
 	return ""
 }
 
+func (m *AccountView) GetAuthenticatorsCount() uint32 {
+	if m != nil {
+		return m.AuthenticatorsCount
+	}
+	return 0
+}
+
 type QueryConfigRequest struct {
 }
 
@@ -304,7 +669,7 @@ func (m *QueryConfigRequest) Reset()         { *m = QueryConfigRequest{} }
 func (m *QueryConfigRequest) String() string { return proto.CompactTextString(m) }
 func (*QueryConfigRequest) ProtoMessage()    {}
 func (*QueryConfigRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_01650bc9b1b12fad, []int{4}
+	return fileDescriptor_01650bc9b1b12fad, []int{10}
 }
 func (m *QueryConfigRequest) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -341,7 +706,7 @@ func (m *QueryConfigResponse) Reset()         { *m = QueryConfigResponse{} }
 func (m *QueryConfigResponse) String() string { return proto.CompactTextString(m) }
 func (*QueryConfigResponse) ProtoMessage()    {}
 func (*QueryConfigResponse) Descriptor() ([]byte, []int) {
-	return fileDescriptor_01650bc9b1b12fad, []int{5}
+	return fileDescriptor_01650bc9b1b12fad, []int{11}
 }
 func (m *QueryConfigResponse) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -385,7 +750,7 @@ func (m *QueryAccountRequest) Reset()         { *m = QueryAccountRequest{} }
 func (m *QueryAccountRequest) String() string { return proto.CompactTextString(m) }
 func (*QueryAccountRequest) ProtoMessage()    {}
 func (*QueryAccountRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_01650bc9b1b12fad, []int{6}
+	return fileDescriptor_01650bc9b1b12fad, []int{12}
 }
 func (m *QueryAccountRequest) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -429,7 +794,7 @@ func (m *QueryAccountResponse) Reset()         { *m = QueryAccountResponse{} }
 func (m *QueryAccountResponse) String() string { return proto.CompactTextString(m) }
 func (*QueryAccountResponse) ProtoMessage()    {}
 func (*QueryAccountResponse) Descriptor() ([]byte, []int) {
-	return fileDescriptor_01650bc9b1b12fad, []int{7}
+	return fileDescriptor_01650bc9b1b12fad, []int{13}
 }
 func (m *QueryAccountResponse) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -472,7 +837,7 @@ func (m *QueryAccountsRequest) Reset()         { *m = QueryAccountsRequest{} }
 func (m *QueryAccountsRequest) String() string { return proto.CompactTextString(m) }
 func (*QueryAccountsRequest) ProtoMessage()    {}
 func (*QueryAccountsRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_01650bc9b1b12fad, []int{8}
+	return fileDescriptor_01650bc9b1b12fad, []int{14}
 }
 func (m *QueryAccountsRequest) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -509,7 +874,7 @@ func (m *QueryAccountsResponse) Reset()         { *m = QueryAccountsResponse{} }
 func (m *QueryAccountsResponse) String() string { return proto.CompactTextString(m) }
 func (*QueryAccountsResponse) ProtoMessage()    {}
 func (*QueryAccountsResponse) Descriptor() ([]byte, []int) {
-	return fileDescriptor_01650bc9b1b12fad, []int{9}
+	return fileDescriptor_01650bc9b1b12fad, []int{15}
 }
 func (m *QueryAccountsResponse) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -552,7 +917,7 @@ func (m *QueryPermissionSchemaRequest) Reset()         { *m = QueryPermissionSch
 func (m *QueryPermissionSchemaRequest) String() string { return proto.CompactTextString(m) }
 func (*QueryPermissionSchemaRequest) ProtoMessage()    {}
 func (*QueryPermissionSchemaRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_01650bc9b1b12fad, []int{10}
+	return fileDescriptor_01650bc9b1b12fad, []int{16}
 }
 func (m *QueryPermissionSchemaRequest) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -601,7 +966,7 @@ func (m *QueryPermissionSchemaResponse) Reset()         { *m = QueryPermissionSc
 func (m *QueryPermissionSchemaResponse) String() string { return proto.CompactTextString(m) }
 func (*QueryPermissionSchemaResponse) ProtoMessage()    {}
 func (*QueryPermissionSchemaResponse) Descriptor() ([]byte, []int) {
-	return fileDescriptor_01650bc9b1b12fad, []int{11}
+	return fileDescriptor_01650bc9b1b12fad, []int{17}
 }
 func (m *QueryPermissionSchemaResponse) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -676,7 +1041,7 @@ func (m *LaneRule) Reset()         { *m = LaneRule{} }
 func (m *LaneRule) String() string { return proto.CompactTextString(m) }
 func (*LaneRule) ProtoMessage()    {}
 func (*LaneRule) Descriptor() ([]byte, []int) {
-	return fileDescriptor_01650bc9b1b12fad, []int{12}
+	return fileDescriptor_01650bc9b1b12fad, []int{18}
 }
 func (m *LaneRule) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -727,6 +1092,12 @@ func (m *LaneRule) GetPermission() string {
 }
 
 func init() {
+	proto.RegisterType((*QuerySpendingRulesRequest)(nil), "qorechain.abstractaccount.v1.QuerySpendingRulesRequest")
+	proto.RegisterType((*QuerySpendingRulesResponse)(nil), "qorechain.abstractaccount.v1.QuerySpendingRulesResponse")
+	proto.RegisterType((*AuthenticatorRule)(nil), "qorechain.abstractaccount.v1.AuthenticatorRule")
+	proto.RegisterType((*QueryAuthenticatorsRequest)(nil), "qorechain.abstractaccount.v1.QueryAuthenticatorsRequest")
+	proto.RegisterType((*QueryAuthenticatorsResponse)(nil), "qorechain.abstractaccount.v1.QueryAuthenticatorsResponse")
+	proto.RegisterType((*AuthenticatorView)(nil), "qorechain.abstractaccount.v1.AuthenticatorView")
 	proto.RegisterType((*QueryAuthNonceRequest)(nil), "qorechain.abstractaccount.v1.QueryAuthNonceRequest")
 	proto.RegisterType((*QueryAuthNonceResponse)(nil), "qorechain.abstractaccount.v1.QueryAuthNonceResponse")
 	proto.RegisterType((*ConfigView)(nil), "qorechain.abstractaccount.v1.ConfigView")
@@ -748,75 +1119,96 @@ func init() {
 }
 
 var fileDescriptor_01650bc9b1b12fad = []byte{
-	// 1077 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xa4, 0x56, 0xcd, 0x6f, 0xdc, 0x44,
-	0x14, 0x8f, 0x77, 0xf3, 0xb5, 0x2f, 0x6d, 0x9a, 0x4e, 0x42, 0xb4, 0x5a, 0x25, 0xab, 0x60, 0x41,
-	0xb4, 0x95, 0xca, 0x3a, 0x9b, 0x22, 0x51, 0x6d, 0x0f, 0xb0, 0x89, 0x42, 0x91, 0x20, 0x90, 0x38,
-	0x25, 0x20, 0x88, 0xb0, 0x26, 0xf6, 0xd4, 0x6b, 0xd6, 0x1e, 0x6f, 0x3c, 0xe3, 0x74, 0x57, 0x55,
-	0x0f, 0x70, 0xe4, 0x84, 0xc4, 0x11, 0x4e, 0x70, 0xeb, 0x81, 0x7f, 0x81, 0x0b, 0x12, 0x88, 0x53,
-	0x25, 0x2e, 0x1c, 0x51, 0xc2, 0x89, 0xbf, 0x02, 0xcd, 0x78, 0xec, 0xfd, 0x10, 0x75, 0xb3, 0x70,
-	0xf3, 0xfc, 0xde, 0xc7, 0xfc, 0xe6, 0x37, 0xef, 0x3d, 0x0f, 0xd4, 0xce, 0xc2, 0x88, 0xd8, 0x6d,
-	0xec, 0x51, 0x03, 0x9f, 0x32, 0x1e, 0x61, 0x9b, 0x63, 0xdb, 0x0e, 0x63, 0xca, 0x8d, 0xf3, 0x86,
-	0x71, 0x16, 0x93, 0xa8, 0x5f, 0xef, 0x46, 0x21, 0x0f, 0xd1, 0x5a, 0xe6, 0x59, 0x1f, 0xf3, 0xac,
-	0x9f, 0x37, 0x2a, 0x6b, 0x6e, 0x18, 0xba, 0x3e, 0x31, 0x70, 0xd7, 0x33, 0x30, 0xa5, 0x21, 0xc7,
-	0xdc, 0x0b, 0x29, 0x4b, 0x62, 0xf5, 0x03, 0x78, 0xe9, 0x50, 0xa4, 0x6a, 0xc5, 0xbc, 0xfd, 0x7e,
-	0x48, 0x6d, 0x62, 0x92, 0xb3, 0x98, 0x30, 0x8e, 0xca, 0x30, 0x87, 0x1d, 0x27, 0x22, 0x8c, 0x95,
-	0xb5, 0x0d, 0xad, 0x56, 0x32, 0xd3, 0x25, 0x5a, 0x07, 0xe8, 0xc6, 0xa7, 0x1d, 0xd2, 0xb7, 0xda,
-	0xa4, 0x57, 0x2e, 0x48, 0x63, 0x29, 0x41, 0xde, 0x21, 0x3d, 0xfd, 0x6d, 0x58, 0x1d, 0xcf, 0xc8,
-	0xba, 0x21, 0x65, 0x04, 0xad, 0xc0, 0x0c, 0x15, 0x80, 0x4c, 0x38, 0x6d, 0x26, 0x0b, 0xb4, 0x0a,
-	0xb3, 0xbe, 0x47, 0x3b, 0xc4, 0x91, 0xa9, 0xe6, 0x4d, 0xb5, 0xd2, 0x7f, 0xd4, 0x00, 0x76, 0x43,
-	0xfa, 0xd0, 0x73, 0x8f, 0x3d, 0xf2, 0x48, 0xf0, 0x21, 0x14, 0x9f, 0xfa, 0xc4, 0x91, 0xe1, 0xf3,
-	0x66, 0xba, 0x44, 0x35, 0x58, 0x0a, 0x70, 0xcf, 0x62, 0x84, 0x31, 0x2f, 0xa4, 0x56, 0x87, 0xf4,
-	0x99, 0x4c, 0x35, 0x63, 0x2e, 0x06, 0xb8, 0x77, 0x94, 0xc0, 0xef, 0x92, 0x3e, 0x43, 0xb7, 0x01,
-	0x49, 0xcf, 0x2e, 0xa1, 0x8e, 0x47, 0x5d, 0x2b, 0x8a, 0x7d, 0xc2, 0xca, 0x45, 0xe9, 0x2b, 0x72,
-	0x1c, 0x29, 0x83, 0x29, 0x70, 0x54, 0x87, 0x65, 0x87, 0x3c, 0xc4, 0xb1, 0xcf, 0xb3, 0xdc, 0x9c,
-	0xfb, 0xe5, 0xe9, 0x0d, 0xad, 0x56, 0x34, 0x6f, 0x2a, 0x93, 0x4a, 0xff, 0x80, 0xfb, 0xfa, 0x57,
-	0x05, 0x58, 0x68, 0x25, 0xba, 0xa7, 0x8c, 0x9f, 0xa3, 0xe0, 0x2d, 0x58, 0xb2, 0x43, 0x2a, 0x2f,
-	0xca, 0x4a, 0x5d, 0x12, 0x1d, 0x6f, 0xa4, 0x78, 0x4b, 0xb9, 0xbe, 0x0c, 0xd7, 0xd4, 0x5d, 0x5a,
-	0xbc, 0xdf, 0x25, 0x92, 0x6c, 0xc9, 0x5c, 0x50, 0xd8, 0x83, 0x7e, 0x97, 0xa0, 0x2d, 0x58, 0x19,
-	0x3d, 0x91, 0x25, 0x6d, 0x92, 0xe8, 0x75, 0x13, 0xb1, 0xe1, 0x43, 0xed, 0x0a, 0x8b, 0xd0, 0x61,
-	0x58, 0x2d, 0xe5, 0x3f, 0x23, 0xfd, 0x97, 0xd8, 0x40, 0xb0, 0xc4, 0x7b, 0x1d, 0xc0, 0x8e, 0x08,
-	0xe6, 0xc4, 0xb1, 0x30, 0x2f, 0xcf, 0xca, 0xe3, 0x97, 0x14, 0xd2, 0xe2, 0xe2, 0x56, 0xc3, 0x47,
-	0x94, 0x44, 0xe5, 0x39, 0x49, 0x2d, 0x59, 0xe8, 0x2b, 0x80, 0x64, 0x15, 0x24, 0x37, 0xa8, 0x8a,
-	0x4a, 0xff, 0x08, 0x96, 0x47, 0x50, 0x55, 0x18, 0x6f, 0xc1, 0xac, 0x2d, 0x11, 0x29, 0xd4, 0xc2,
-	0x76, 0xad, 0x9e, 0x57, 0xd1, 0xf5, 0x41, 0x55, 0x98, 0x2a, 0x4e, 0x37, 0x54, 0x62, 0xa5, 0xff,
-	0x0b, 0x8b, 0x58, 0xff, 0x14, 0x56, 0x46, 0x03, 0x14, 0x95, 0x5d, 0x98, 0x53, 0x3b, 0x29, 0x2e,
-	0xb7, 0xf2, 0xb9, 0x0c, 0x5d, 0xb8, 0x99, 0x46, 0xea, 0xab, 0xa3, 0xc9, 0x59, 0x7a, 0xfc, 0xcf,
-	0xd2, 0x66, 0xcb, 0x70, 0xb5, 0xeb, 0x1e, 0xcc, 0xab, 0x58, 0x41, 0xb4, 0x38, 0xd9, 0xb6, 0x59,
-	0xa8, 0x5e, 0x85, 0x35, 0x99, 0xff, 0x80, 0x44, 0x81, 0x27, 0x6f, 0xf1, 0xc8, 0x6e, 0x93, 0x00,
-	0xa7, 0xfb, 0x7f, 0x57, 0x84, 0xf5, 0xe7, 0x38, 0x28, 0x22, 0xaf, 0xc2, 0x22, 0x93, 0x88, 0x75,
-	0x4e, 0x22, 0x61, 0x57, 0xba, 0x5d, 0x4f, 0xd0, 0xe3, 0x04, 0x44, 0x1b, 0xb0, 0xd0, 0xcd, 0x52,
-	0x88, 0xda, 0x2d, 0x8a, 0xa2, 0x1c, 0x82, 0x50, 0x0f, 0x6e, 0x04, 0xcc, 0xb5, 0x86, 0xbd, 0x8a,
-	0xf2, 0x60, 0x1f, 0xe4, 0x1f, 0x2c, 0x97, 0x5e, 0x7d, 0x9f, 0xb9, 0x03, 0x1b, 0xdb, 0xa3, 0x3c,
-	0xea, 0x9b, 0x8b, 0xc1, 0x08, 0x28, 0xda, 0x56, 0xcc, 0xa6, 0x00, 0x53, 0xec, 0x92, 0x80, 0x50,
-	0x6e, 0x05, 0xcc, 0x65, 0xe5, 0x69, 0xc9, 0xf1, 0x66, 0x87, 0xf4, 0xf7, 0x33, 0xcb, 0x3e, 0x73,
-	0x19, 0xda, 0x03, 0xf0, 0x31, 0x25, 0x6a, 0x18, 0xcc, 0x48, 0x92, 0x9b, 0xf9, 0x24, 0xdf, 0xc3,
-	0x94, 0x88, 0x76, 0x32, 0x4b, 0xbe, 0xfa, 0x62, 0x95, 0x16, 0x2c, 0xff, 0x0b, 0x3b, 0xb4, 0x04,
-	0xc5, 0x0e, 0xe9, 0x2b, 0x15, 0xc5, 0xa7, 0xe8, 0x97, 0x73, 0xec, 0xc7, 0x44, 0x75, 0x7c, 0xb2,
-	0x68, 0x16, 0xee, 0x6a, 0xfa, 0xe7, 0x30, 0x9f, 0x66, 0x46, 0x1b, 0x70, 0x4d, 0xe8, 0x27, 0x7a,
-	0xde, 0x8a, 0x23, 0x5f, 0x25, 0x80, 0x80, 0xb9, 0xa2, 0xe7, 0x3f, 0x8c, 0x7c, 0xb4, 0x06, 0x25,
-	0x3b, 0xa4, 0x8e, 0x27, 0xa6, 0x79, 0x3a, 0x85, 0x33, 0x00, 0x55, 0x01, 0x06, 0xda, 0xab, 0xa9,
-	0x31, 0x84, 0x6c, 0x7f, 0x31, 0x07, 0x33, 0x52, 0x6b, 0xf4, 0xad, 0x06, 0xb3, 0x49, 0x47, 0xa1,
-	0xad, 0x2b, 0xdc, 0xcd, 0x48, 0x43, 0x57, 0x1a, 0x13, 0x44, 0x24, 0x77, 0xa8, 0xdf, 0xfe, 0xf2,
-	0xf7, 0xbf, 0xbe, 0x29, 0x6c, 0xa2, 0x57, 0x8c, 0xdc, 0x1f, 0x5c, 0xd2, 0xd8, 0xe8, 0xa9, 0x06,
-	0x73, 0xaa, 0xd8, 0xd1, 0x55, 0x36, 0x1b, 0x1d, 0x00, 0x95, 0xed, 0x49, 0x42, 0x14, 0xc1, 0xbb,
-	0x92, 0xe0, 0x36, 0xda, 0xca, 0x27, 0x98, 0x76, 0x9d, 0xf1, 0x58, 0xcd, 0x94, 0x27, 0xe8, 0x07,
-	0x0d, 0xe6, 0xd3, 0xde, 0x46, 0x13, 0x6c, 0x9d, 0x0e, 0x88, 0xca, 0x9d, 0x89, 0x62, 0x14, 0xdf,
-	0xba, 0xe4, 0x5b, 0x43, 0x9b, 0x57, 0xe3, 0x8b, 0x7e, 0xd6, 0x60, 0x69, 0xbc, 0xc3, 0x50, 0xf3,
-	0x3f, 0xb5, 0x65, 0xc2, 0xfa, 0xde, 0xff, 0x68, 0x69, 0xfd, 0x0d, 0xc9, 0xbe, 0x81, 0x8c, 0x7c,
-	0xf6, 0x83, 0xd2, 0xb5, 0x92, 0x51, 0x84, 0x7e, 0xd2, 0xa0, 0x94, 0xbd, 0x31, 0xd0, 0x95, 0x94,
-	0x1b, 0x7b, 0xe3, 0x54, 0x5e, 0x9f, 0x2c, 0x48, 0x31, 0xbe, 0x2f, 0x19, 0xb7, 0xd0, 0x9b, 0x2f,
-	0xd0, 0x3b, 0xe6, 0x6d, 0x4b, 0x3e, 0x71, 0x06, 0x15, 0x62, 0x3c, 0x1e, 0xbc, 0x9c, 0x9e, 0xec,
-	0xfc, 0x52, 0xf8, 0xf5, 0xa2, 0xaa, 0x3d, 0xbb, 0xa8, 0x6a, 0x7f, 0x5e, 0x54, 0xb5, 0xaf, 0x2f,
-	0xab, 0x53, 0xcf, 0x2e, 0xab, 0x53, 0x7f, 0x5c, 0x56, 0xa7, 0x60, 0xc3, 0x0e, 0x83, 0x5c, 0x72,
-	0x3b, 0x90, 0xc8, 0x2a, 0x1e, 0x71, 0x07, 0xda, 0x27, 0x81, 0xeb, 0xf1, 0x76, 0x7c, 0x5a, 0xb7,
-	0xc3, 0x60, 0x88, 0x55, 0xf6, 0xf5, 0x1a, 0x73, 0x3a, 0x46, 0x17, 0xdb, 0x1d, 0xec, 0x12, 0x66,
-	0xb8, 0xe1, 0x90, 0x8f, 0x7c, 0x06, 0xe6, 0x9e, 0xe4, 0xde, 0x18, 0x74, 0xde, 0xf8, 0xbe, 0x50,
-	0x3c, 0x6c, 0x7d, 0xfc, 0xb4, 0xb0, 0x76, 0x98, 0x31, 0x6c, 0x8d, 0x31, 0x3c, 0x6e, 0xfc, 0x36,
-	0x64, 0x3e, 0x19, 0x33, 0x9f, 0x1c, 0x37, 0x2e, 0x0a, 0xb5, 0x3c, 0xf3, 0xc9, 0xfd, 0x83, 0x9d,
-	0x7d, 0xc2, 0xb1, 0x83, 0x39, 0xfe, 0xbb, 0x50, 0xcd, 0x5c, 0x9b, 0xcd, 0x31, 0xdf, 0x66, 0xf3,
-	0xb8, 0x71, 0x3a, 0x2b, 0x4f, 0x71, 0xe7, 0x9f, 0x00, 0x00, 0x00, 0xff, 0xff, 0xdc, 0x4a, 0x8d,
-	0xe3, 0x34, 0x0b, 0x00, 0x00,
+	// 1412 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xa4, 0x57, 0xcb, 0x6f, 0x1b, 0xd5,
+	0x1a, 0xcf, 0xd8, 0x71, 0x62, 0x7f, 0x6e, 0xd2, 0xf4, 0xc4, 0xb7, 0xf2, 0xf5, 0x4d, 0x5d, 0xdf,
+	0x51, 0x1b, 0xb9, 0x57, 0x17, 0x4f, 0x9d, 0x02, 0x2d, 0xe9, 0x02, 0x9c, 0xd2, 0x16, 0x09, 0x52,
+	0xd2, 0x69, 0x1b, 0x50, 0x29, 0x8c, 0x4e, 0xc6, 0xa7, 0xe3, 0xc1, 0xf3, 0x70, 0xe7, 0x8c, 0x53,
+	0x5b, 0xa5, 0x1b, 0xb6, 0x6c, 0x2a, 0xb1, 0x65, 0x05, 0x3b, 0x16, 0xfc, 0x07, 0x88, 0x05, 0x48,
+	0x54, 0x80, 0x50, 0x25, 0x36, 0x6c, 0x40, 0x28, 0x65, 0xc5, 0xbf, 0xc0, 0x06, 0x9d, 0xc7, 0xd8,
+	0x1e, 0x27, 0xf5, 0x23, 0xdd, 0xcd, 0xf9, 0x5e, 0xe7, 0xf7, 0xbd, 0x7e, 0x3a, 0x03, 0xe5, 0x7b,
+	0x7e, 0x40, 0xcc, 0x06, 0xb6, 0x3d, 0x0d, 0xef, 0xd0, 0x30, 0xc0, 0x66, 0x88, 0x4d, 0xd3, 0x6f,
+	0x7b, 0xa1, 0xb6, 0x5b, 0xd5, 0xee, 0xb5, 0x49, 0xd0, 0xad, 0xb4, 0x02, 0x3f, 0xf4, 0xd1, 0x4a,
+	0xcf, 0xb2, 0x32, 0x64, 0x59, 0xd9, 0xad, 0x16, 0x56, 0x2c, 0xdf, 0xb7, 0x1c, 0xa2, 0xe1, 0x96,
+	0xad, 0x61, 0xcf, 0xf3, 0x43, 0x1c, 0xda, 0xbe, 0x47, 0x85, 0x6f, 0x21, 0x67, 0xf9, 0x96, 0xcf,
+	0x3f, 0x35, 0xf6, 0x25, 0xa5, 0xa7, 0x47, 0xde, 0x1d, 0x76, 0x84, 0x99, 0xfa, 0x12, 0xfc, 0xfb,
+	0x3a, 0xc3, 0x71, 0xa3, 0x45, 0xbc, 0xba, 0xed, 0x59, 0x7a, 0xdb, 0x21, 0x54, 0x27, 0xf7, 0xda,
+	0x84, 0x86, 0x28, 0x0f, 0xf3, 0xb8, 0x5e, 0x0f, 0x08, 0xa5, 0x79, 0xa5, 0xa4, 0x94, 0x33, 0x7a,
+	0x74, 0x54, 0x7f, 0x52, 0xa0, 0x70, 0x90, 0x1f, 0x6d, 0xf9, 0x1e, 0x25, 0xe8, 0x0a, 0xa4, 0x02,
+	0x26, 0xc8, 0x2b, 0xa5, 0x64, 0x39, 0xbb, 0xf6, 0xbf, 0xca, 0xa8, 0xf4, 0x2a, 0x83, 0x31, 0x36,
+	0x66, 0x1f, 0xff, 0x7e, 0x72, 0x46, 0x17, 0xee, 0xe8, 0x2e, 0x2c, 0xe3, 0x76, 0xd8, 0x20, 0x5e,
+	0x68, 0x9b, 0x38, 0xf4, 0x03, 0x43, 0x44, 0x4d, 0xf0, 0xa8, 0xda, 0xe8, 0xa8, 0xb5, 0x41, 0xc7,
+	0x81, 0xd0, 0x08, 0x0f, 0x2b, 0xa8, 0xfa, 0x48, 0x81, 0x63, 0xfb, 0xec, 0xd1, 0x71, 0x98, 0xa3,
+	0x66, 0x83, 0xb8, 0x44, 0x66, 0x2f, 0x4f, 0xe8, 0x04, 0x40, 0xab, 0xbd, 0xd3, 0x24, 0x5d, 0xa3,
+	0x41, 0x3a, 0xf9, 0x04, 0xd7, 0x65, 0x84, 0xe4, 0x0d, 0xd2, 0x41, 0xaf, 0xc3, 0x2c, 0x83, 0x99,
+	0x4f, 0x96, 0x94, 0x43, 0xe5, 0xce, 0xbd, 0xd5, 0x97, 0x65, 0x81, 0x63, 0xb0, 0x26, 0xe8, 0xcc,
+	0x47, 0xf0, 0x9f, 0x03, 0xfd, 0x64, 0x67, 0xde, 0x87, 0xc5, 0x58, 0xfe, 0x51, 0x8b, 0xa6, 0x29,
+	0xe6, 0xb6, 0x4d, 0xee, 0x4b, 0xac, 0x43, 0xc1, 0xd4, 0x4f, 0x12, 0x43, 0x85, 0x64, 0xb6, 0x87,
+	0x2d, 0x64, 0x09, 0xb2, 0x2d, 0x12, 0xb8, 0x36, 0xa5, 0x6c, 0xda, 0xf3, 0xc9, 0x52, 0xb2, 0x9c,
+	0xd1, 0x07, 0x45, 0xe8, 0x24, 0x64, 0x49, 0xa7, 0x65, 0x07, 0x5d, 0xa3, 0xed, 0xd9, 0x9d, 0xfc,
+	0x6c, 0x49, 0x29, 0x27, 0x75, 0x10, 0xa2, 0x5b, 0x9e, 0xdd, 0x41, 0x39, 0x48, 0x39, 0x78, 0x87,
+	0x38, 0xf9, 0x14, 0x0f, 0x2e, 0x0e, 0x68, 0x15, 0x8e, 0x9a, 0x01, 0xc1, 0x21, 0xa9, 0x1b, 0x38,
+	0x14, 0xae, 0x73, 0xdc, 0x75, 0x41, 0x8a, 0x6b, 0x21, 0xf7, 0xce, 0xc3, 0x7c, 0x40, 0x76, 0xfd,
+	0x26, 0xa9, 0xe7, 0xe7, 0x4b, 0x4a, 0x39, 0xad, 0x47, 0x47, 0x74, 0x0a, 0x16, 0x1b, 0x98, 0x1a,
+	0x94, 0x75, 0x8f, 0x0f, 0x65, 0x3e, 0xcd, 0x0d, 0x8e, 0x34, 0x30, 0xe5, 0x2d, 0x65, 0xfd, 0x54,
+	0xb7, 0xe0, 0x5f, 0xbd, 0x5e, 0x5c, 0xf3, 0x3d, 0x93, 0x8c, 0x6d, 0xdf, 0x98, 0x92, 0xa8, 0x57,
+	0xe0, 0xf8, 0x70, 0x44, 0xd9, 0xd8, 0x1c, 0xa4, 0x3c, 0x26, 0xe0, 0x01, 0x67, 0x75, 0x71, 0x60,
+	0x95, 0x77, 0x6c, 0x8f, 0x25, 0x90, 0xe0, 0xf8, 0xe4, 0x49, 0xfd, 0x4a, 0x01, 0xb8, 0xe4, 0x7b,
+	0x77, 0x6d, 0x8b, 0x37, 0x28, 0x0f, 0xf3, 0xc4, 0xc3, 0x3b, 0x0e, 0xa9, 0x73, 0xf7, 0xb4, 0x1e,
+	0x1d, 0x51, 0x19, 0x96, 0x5c, 0xdc, 0x31, 0x28, 0xe1, 0x15, 0x37, 0x9a, 0xa4, 0x4b, 0x79, 0xa8,
+	0x94, 0xbe, 0xe8, 0xe2, 0xce, 0x0d, 0x21, 0x7e, 0x93, 0x74, 0x29, 0xfa, 0x3f, 0x20, 0x6e, 0x29,
+	0x07, 0x5a, 0xae, 0x6a, 0x92, 0xdb, 0xb2, 0x18, 0x31, 0xa6, 0x40, 0x15, 0x58, 0xae, 0x93, 0xbb,
+	0xb8, 0xed, 0x84, 0xbd, 0xd8, 0x61, 0xe8, 0xc8, 0x0e, 0x1e, 0x93, 0x2a, 0x19, 0xfe, 0x66, 0xe8,
+	0xa8, 0x5f, 0x27, 0x20, 0x5b, 0x13, 0xf3, 0x18, 0x21, 0x7e, 0x46, 0x05, 0xcf, 0xc0, 0x92, 0xe9,
+	0x7b, 0x7c, 0x80, 0x8d, 0xc8, 0x44, 0xd4, 0xf1, 0x68, 0x24, 0xaf, 0x49, 0xd3, 0xff, 0xc2, 0x11,
+	0x39, 0xe3, 0x46, 0xd8, 0x6d, 0x89, 0x8d, 0xcd, 0xe8, 0x59, 0x29, 0xbb, 0xd9, 0x6d, 0x11, 0x74,
+	0x16, 0x72, 0xf1, 0x8c, 0x0c, 0xae, 0xe3, 0x40, 0x17, 0x74, 0x44, 0x07, 0x93, 0xba, 0xc4, 0x34,
+	0xac, 0x0e, 0x83, 0xd5, 0x92, 0xf6, 0x29, 0x6e, 0xbf, 0x44, 0xfb, 0x05, 0x13, 0xd6, 0x27, 0x00,
+	0xfa, 0xa3, 0x28, 0xa7, 0x30, 0xd3, 0x9b, 0x42, 0xd6, 0x55, 0xff, 0xbe, 0x47, 0x02, 0x3e, 0x7f,
+	0x19, 0x5d, 0x1c, 0x50, 0x15, 0x72, 0xf1, 0xbd, 0x93, 0x97, 0xa4, 0xf9, 0x25, 0x71, 0xca, 0x14,
+	0xf7, 0xa8, 0x39, 0x40, 0x7c, 0x70, 0x44, 0xd3, 0xe5, 0x1c, 0xaa, 0xef, 0xc0, 0x72, 0x4c, 0x2a,
+	0x67, 0xe9, 0x35, 0x98, 0x33, 0xb9, 0x84, 0xd7, 0x36, 0xbb, 0x56, 0x1e, 0x4d, 0x0e, 0xfd, 0x41,
+	0xd2, 0xa5, 0x9f, 0xaa, 0xc9, 0xc0, 0xb2, 0x65, 0xe3, 0x69, 0xeb, 0x3d, 0xc8, 0xc5, 0x1d, 0x24,
+	0x94, 0x4b, 0x30, 0x2f, 0x6f, 0x92, 0x58, 0xce, 0x8c, 0x21, 0xaa, 0xfe, 0x8c, 0xe8, 0x91, 0xa7,
+	0x7a, 0x3c, 0x1e, 0x3c, 0x62, 0x51, 0xf5, 0x83, 0x68, 0x3f, 0x7b, 0x72, 0x79, 0xeb, 0x65, 0x48,
+	0x4b, 0xdf, 0x88, 0x1f, 0xa7, 0xb8, 0xb6, 0xe7, 0xaa, 0x16, 0x61, 0x85, 0xc7, 0xdf, 0xea, 0x51,
+	0xd6, 0x0d, 0x46, 0x7c, 0x38, 0xba, 0xff, 0xb3, 0x24, 0x9c, 0x78, 0x86, 0x81, 0x04, 0x72, 0x1a,
+	0x16, 0x39, 0x57, 0x62, 0x63, 0x97, 0x04, 0x4c, 0x2f, 0xeb, 0xb6, 0x20, 0xa4, 0xdb, 0x42, 0x38,
+	0xcc, 0x94, 0x89, 0xfd, 0x4c, 0xd9, 0x81, 0xa3, 0x2e, 0xb5, 0x8c, 0x61, 0x3e, 0xcd, 0xae, 0xbd,
+	0x3d, 0x3a, 0xb1, 0x91, 0xf0, 0x2a, 0x9b, 0xd4, 0xea, 0xeb, 0xe8, 0x65, 0x2f, 0x0c, 0xba, 0xfa,
+	0xa2, 0x1b, 0x13, 0xb2, 0x4d, 0x67, 0x74, 0xe6, 0x62, 0x0f, 0x5b, 0xc4, 0x25, 0x5e, 0x68, 0xb8,
+	0xd4, 0xa2, 0xf9, 0x59, 0x8e, 0xf1, 0x58, 0x93, 0x74, 0x37, 0x7b, 0x9a, 0x4d, 0x6a, 0x51, 0x74,
+	0x19, 0xc0, 0xc1, 0x1e, 0x91, 0xfc, 0x91, 0xe2, 0x20, 0x57, 0x47, 0x83, 0x7c, 0x0b, 0x7b, 0x84,
+	0x6d, 0xa0, 0x9e, 0x71, 0xe4, 0x17, 0x2d, 0xd4, 0x60, 0xf9, 0x00, 0x74, 0x68, 0x09, 0x92, 0x4d,
+	0xd2, 0x95, 0x55, 0x64, 0x9f, 0x6c, 0xc5, 0x76, 0xb1, 0xd3, 0x26, 0x92, 0x24, 0xc4, 0x61, 0x3d,
+	0x71, 0x41, 0x51, 0x3f, 0x84, 0x74, 0x14, 0x19, 0x95, 0xe0, 0x08, 0xab, 0x1f, 0xa3, 0x09, 0xa3,
+	0x1d, 0x38, 0x32, 0x00, 0xb8, 0xd4, 0x62, 0x34, 0x71, 0x2b, 0x70, 0xd0, 0x0a, 0x64, 0x4c, 0xdf,
+	0xab, 0xdb, 0xec, 0x69, 0x16, 0x11, 0x77, 0x4f, 0x80, 0x8a, 0x00, 0xfd, 0xda, 0x4b, 0xa2, 0x19,
+	0x90, 0xac, 0xfd, 0x0d, 0x90, 0xe2, 0xb5, 0x46, 0xdf, 0x2a, 0x30, 0x27, 0x36, 0x0a, 0x9d, 0x9d,
+	0xa0, 0x37, 0xb1, 0x85, 0x2e, 0x54, 0xa7, 0xf0, 0x10, 0x3d, 0x54, 0x6f, 0x7e, 0xfc, 0xcb, 0x9f,
+	0x9f, 0x26, 0xae, 0xdd, 0x5e, 0x45, 0xa7, 0xb4, 0x91, 0x6f, 0xc6, 0x16, 0x0e, 0xb0, 0x4b, 0xc7,
+	0x59, 0x09, 0x02, 0x40, 0xbf, 0x29, 0x30, 0x2f, 0x97, 0x02, 0x4d, 0x02, 0x2a, 0x4e, 0x14, 0x85,
+	0xb5, 0x69, 0x5c, 0x64, 0x22, 0x4d, 0x9e, 0x08, 0xb9, 0x5d, 0x45, 0xda, 0x68, 0x88, 0xd1, 0xe7,
+	0x03, 0x49, 0x3e, 0x0f, 0xd1, 0xd9, 0x89, 0x1c, 0xe8, 0x80, 0xc7, 0x17, 0x0a, 0xa4, 0x23, 0xda,
+	0x40, 0x53, 0xa0, 0x8d, 0xb8, 0xa7, 0x70, 0x6e, 0x2a, 0x1f, 0x99, 0x62, 0x85, 0xa7, 0x58, 0x46,
+	0xab, 0x93, 0xe1, 0x45, 0xdf, 0x29, 0xb0, 0x34, 0xbc, 0xbc, 0x68, 0xfd, 0x50, 0x1b, 0x2f, 0x50,
+	0x5f, 0x7c, 0x0e, 0xb6, 0x50, 0xcf, 0x73, 0xf4, 0x63, 0xdb, 0xd3, 0xdf, 0x0a, 0x43, 0xb0, 0x1c,
+	0xfa, 0x46, 0x81, 0x4c, 0xef, 0xc5, 0x83, 0x26, 0xaa, 0xdc, 0xd0, 0x8b, 0xab, 0xf0, 0xe2, 0x74,
+	0x4e, 0x12, 0xf1, 0x55, 0x8e, 0xb8, 0x86, 0x5e, 0x1d, 0x53, 0xef, 0x76, 0xd8, 0x30, 0xf8, 0x83,
+	0xab, 0x3f, 0x21, 0xda, 0x83, 0xfe, 0x3b, 0xee, 0x21, 0xfa, 0x51, 0x81, 0x85, 0xf8, 0x03, 0xe8,
+	0xfc, 0x04, 0x80, 0x0e, 0xfa, 0x29, 0x2b, 0x5c, 0x98, 0xde, 0x71, 0xca, 0x6c, 0xf6, 0x4d, 0xbb,
+	0x16, 0x7f, 0x02, 0xa1, 0x9f, 0x15, 0x58, 0x8c, 0xff, 0x5f, 0xa0, 0x0b, 0x13, 0xd6, 0x77, 0xdf,
+	0xaf, 0x4c, 0xe1, 0x95, 0x43, 0x78, 0x3e, 0x77, 0x42, 0xf1, 0x27, 0xd2, 0xc6, 0xf7, 0x89, 0xc7,
+	0x7b, 0x45, 0xe5, 0xc9, 0x5e, 0x51, 0xf9, 0x63, 0xaf, 0xa8, 0x3c, 0x7a, 0x5a, 0x9c, 0x79, 0xf2,
+	0xb4, 0x38, 0xf3, 0xeb, 0xd3, 0xe2, 0x0c, 0x94, 0x4c, 0xdf, 0x1d, 0x89, 0x70, 0x03, 0xc4, 0xd4,
+	0xb3, 0xdf, 0xe9, 0x2d, 0xe5, 0xb6, 0x6b, 0xd9, 0x61, 0xa3, 0xbd, 0x53, 0x31, 0x7d, 0x77, 0x00,
+	0x55, 0xef, 0xeb, 0x05, 0x5a, 0x6f, 0x6a, 0x2d, 0x6c, 0x36, 0xb1, 0x45, 0xa8, 0x66, 0xf9, 0x03,
+	0x36, 0xe2, 0x17, 0x7e, 0x54, 0x26, 0x17, 0x87, 0x44, 0xbb, 0xd5, 0xcf, 0x13, 0xc9, 0xeb, 0xb5,
+	0x77, 0xbf, 0x4c, 0xac, 0x5c, 0xef, 0x21, 0xac, 0x0d, 0x21, 0xdc, 0xae, 0xfe, 0x30, 0xa0, 0xbe,
+	0x33, 0xa4, 0xbe, 0xb3, 0x5d, 0xdd, 0x4b, 0x94, 0x47, 0xa9, 0xef, 0x5c, 0xdd, 0xda, 0xd8, 0x24,
+	0x21, 0xae, 0xe3, 0x10, 0xff, 0x95, 0x28, 0xf6, 0x4c, 0xd7, 0xd7, 0x87, 0x6c, 0xd7, 0xd7, 0xb7,
+	0xab, 0x3b, 0x73, 0x3c, 0x8b, 0x73, 0xff, 0x04, 0x00, 0x00, 0xff, 0xff, 0x62, 0xa8, 0x57, 0x47,
+	0xfb, 0x10, 0x00, 0x00,
 }
 
 // Reference imports to suppress errors if they are not otherwise used.
@@ -832,8 +1224,11 @@ const _ = grpc.SupportPackageIsVersion4
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://godoc.org/google.golang.org/grpc#ClientConn.NewStream.
 type QueryClient interface {
 	// Config returns the module config.
+	// "/params" is served too: the module has no params, and the API reference
+	// listed that path for it.
 	Config(ctx context.Context, in *QueryConfigRequest, opts ...grpc.CallOption) (*QueryConfigResponse, error)
-	// Account returns a single abstract account by address.
+	// Account returns a single abstract account by address. The singular
+	// "/account/{address}" path, which the API reference listed, is an alias.
 	Account(ctx context.Context, in *QueryAccountRequest, opts ...grpc.CallOption) (*QueryAccountResponse, error)
 	// Accounts lists all abstract accounts.
 	Accounts(ctx context.Context, in *QueryAccountsRequest, opts ...grpc.CallOption) (*QueryAccountsResponse, error)
@@ -845,6 +1240,14 @@ type QueryClient interface {
 	// for an account: the nonce MsgExecuteEVM and MsgExecuteCosmos must carry
 	// (QSR-2026-0596). It is the key's own counter, not the account's EVM nonce.
 	AuthNonce(ctx context.Context, in *QueryAuthNonceRequest, opts ...grpc.CallOption) (*QueryAuthNonceResponse, error)
+	// SpendingRules returns the spending rules stored for an account: the
+	// account-wide rules and the rule of every linked key that carries its own.
+	// The account view only counts them, so an owner could not read back what
+	// MsgUpdateSpendingRules saved.
+	SpendingRules(ctx context.Context, in *QuerySpendingRulesRequest, opts ...grpc.CallOption) (*QuerySpendingRulesResponse, error)
+	// Authenticators returns the keys linked to an account, revoked ones
+	// included, with their permissions and expiry.
+	Authenticators(ctx context.Context, in *QueryAuthenticatorsRequest, opts ...grpc.CallOption) (*QueryAuthenticatorsResponse, error)
 }
 
 type queryClient struct {
@@ -900,11 +1303,32 @@ func (c *queryClient) AuthNonce(ctx context.Context, in *QueryAuthNonceRequest, 
 	return out, nil
 }
 
+func (c *queryClient) SpendingRules(ctx context.Context, in *QuerySpendingRulesRequest, opts ...grpc.CallOption) (*QuerySpendingRulesResponse, error) {
+	out := new(QuerySpendingRulesResponse)
+	err := c.cc.Invoke(ctx, "/qorechain.abstractaccount.v1.Query/SpendingRules", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *queryClient) Authenticators(ctx context.Context, in *QueryAuthenticatorsRequest, opts ...grpc.CallOption) (*QueryAuthenticatorsResponse, error) {
+	out := new(QueryAuthenticatorsResponse)
+	err := c.cc.Invoke(ctx, "/qorechain.abstractaccount.v1.Query/Authenticators", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // QueryServer is the server API for Query service.
 type QueryServer interface {
 	// Config returns the module config.
+	// "/params" is served too: the module has no params, and the API reference
+	// listed that path for it.
 	Config(context.Context, *QueryConfigRequest) (*QueryConfigResponse, error)
-	// Account returns a single abstract account by address.
+	// Account returns a single abstract account by address. The singular
+	// "/account/{address}" path, which the API reference listed, is an alias.
 	Account(context.Context, *QueryAccountRequest) (*QueryAccountResponse, error)
 	// Accounts lists all abstract accounts.
 	Accounts(context.Context, *QueryAccountsRequest) (*QueryAccountsResponse, error)
@@ -916,6 +1340,14 @@ type QueryServer interface {
 	// for an account: the nonce MsgExecuteEVM and MsgExecuteCosmos must carry
 	// (QSR-2026-0596). It is the key's own counter, not the account's EVM nonce.
 	AuthNonce(context.Context, *QueryAuthNonceRequest) (*QueryAuthNonceResponse, error)
+	// SpendingRules returns the spending rules stored for an account: the
+	// account-wide rules and the rule of every linked key that carries its own.
+	// The account view only counts them, so an owner could not read back what
+	// MsgUpdateSpendingRules saved.
+	SpendingRules(context.Context, *QuerySpendingRulesRequest) (*QuerySpendingRulesResponse, error)
+	// Authenticators returns the keys linked to an account, revoked ones
+	// included, with their permissions and expiry.
+	Authenticators(context.Context, *QueryAuthenticatorsRequest) (*QueryAuthenticatorsResponse, error)
 }
 
 // UnimplementedQueryServer can be embedded to have forward compatible implementations.
@@ -936,6 +1368,12 @@ func (*UnimplementedQueryServer) PermissionSchema(ctx context.Context, req *Quer
 }
 func (*UnimplementedQueryServer) AuthNonce(ctx context.Context, req *QueryAuthNonceRequest) (*QueryAuthNonceResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method AuthNonce not implemented")
+}
+func (*UnimplementedQueryServer) SpendingRules(ctx context.Context, req *QuerySpendingRulesRequest) (*QuerySpendingRulesResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method SpendingRules not implemented")
+}
+func (*UnimplementedQueryServer) Authenticators(ctx context.Context, req *QueryAuthenticatorsRequest) (*QueryAuthenticatorsResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method Authenticators not implemented")
 }
 
 func RegisterQueryServer(s grpc1.Server, srv QueryServer) {
@@ -1032,6 +1470,42 @@ func _Query_AuthNonce_Handler(srv interface{}, ctx context.Context, dec func(int
 	return interceptor(ctx, in, info, handler)
 }
 
+func _Query_SpendingRules_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(QuerySpendingRulesRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(QueryServer).SpendingRules(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/qorechain.abstractaccount.v1.Query/SpendingRules",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(QueryServer).SpendingRules(ctx, req.(*QuerySpendingRulesRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Query_Authenticators_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(QueryAuthenticatorsRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(QueryServer).Authenticators(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/qorechain.abstractaccount.v1.Query/Authenticators",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(QueryServer).Authenticators(ctx, req.(*QueryAuthenticatorsRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 var Query_serviceDesc = _Query_serviceDesc
 var _Query_serviceDesc = grpc.ServiceDesc{
 	ServiceName: "qorechain.abstractaccount.v1.Query",
@@ -1057,9 +1531,295 @@ var _Query_serviceDesc = grpc.ServiceDesc{
 			MethodName: "AuthNonce",
 			Handler:    _Query_AuthNonce_Handler,
 		},
+		{
+			MethodName: "SpendingRules",
+			Handler:    _Query_SpendingRules_Handler,
+		},
+		{
+			MethodName: "Authenticators",
+			Handler:    _Query_Authenticators_Handler,
+		},
 	},
 	Streams:  []grpc.StreamDesc{},
 	Metadata: "qorechain/abstractaccount/v1/query.proto",
+}
+
+func (m *QuerySpendingRulesRequest) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *QuerySpendingRulesRequest) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *QuerySpendingRulesRequest) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if len(m.Address) > 0 {
+		i -= len(m.Address)
+		copy(dAtA[i:], m.Address)
+		i = encodeVarintQuery(dAtA, i, uint64(len(m.Address)))
+		i--
+		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *QuerySpendingRulesResponse) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *QuerySpendingRulesResponse) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *QuerySpendingRulesResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if len(m.AuthenticatorRules) > 0 {
+		for iNdEx := len(m.AuthenticatorRules) - 1; iNdEx >= 0; iNdEx-- {
+			{
+				size, err := m.AuthenticatorRules[iNdEx].MarshalToSizedBuffer(dAtA[:i])
+				if err != nil {
+					return 0, err
+				}
+				i -= size
+				i = encodeVarintQuery(dAtA, i, uint64(size))
+			}
+			i--
+			dAtA[i] = 0x12
+		}
+	}
+	if len(m.Rules) > 0 {
+		for iNdEx := len(m.Rules) - 1; iNdEx >= 0; iNdEx-- {
+			{
+				size, err := m.Rules[iNdEx].MarshalToSizedBuffer(dAtA[:i])
+				if err != nil {
+					return 0, err
+				}
+				i -= size
+				i = encodeVarintQuery(dAtA, i, uint64(size))
+			}
+			i--
+			dAtA[i] = 0xa
+		}
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *AuthenticatorRule) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *AuthenticatorRule) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *AuthenticatorRule) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	{
+		size, err := m.Rule.MarshalToSizedBuffer(dAtA[:i])
+		if err != nil {
+			return 0, err
+		}
+		i -= size
+		i = encodeVarintQuery(dAtA, i, uint64(size))
+	}
+	i--
+	dAtA[i] = 0x1a
+	if len(m.PubkeyHex) > 0 {
+		i -= len(m.PubkeyHex)
+		copy(dAtA[i:], m.PubkeyHex)
+		i = encodeVarintQuery(dAtA, i, uint64(len(m.PubkeyHex)))
+		i--
+		dAtA[i] = 0x12
+	}
+	if len(m.Scheme) > 0 {
+		i -= len(m.Scheme)
+		copy(dAtA[i:], m.Scheme)
+		i = encodeVarintQuery(dAtA, i, uint64(len(m.Scheme)))
+		i--
+		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *QueryAuthenticatorsRequest) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *QueryAuthenticatorsRequest) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *QueryAuthenticatorsRequest) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if len(m.Address) > 0 {
+		i -= len(m.Address)
+		copy(dAtA[i:], m.Address)
+		i = encodeVarintQuery(dAtA, i, uint64(len(m.Address)))
+		i--
+		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *QueryAuthenticatorsResponse) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *QueryAuthenticatorsResponse) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *QueryAuthenticatorsResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if len(m.Authenticators) > 0 {
+		for iNdEx := len(m.Authenticators) - 1; iNdEx >= 0; iNdEx-- {
+			{
+				size, err := m.Authenticators[iNdEx].MarshalToSizedBuffer(dAtA[:i])
+				if err != nil {
+					return 0, err
+				}
+				i -= size
+				i = encodeVarintQuery(dAtA, i, uint64(size))
+			}
+			i--
+			dAtA[i] = 0xa
+		}
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *AuthenticatorView) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *AuthenticatorView) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *AuthenticatorView) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if m.HasSpendRule {
+		i--
+		if m.HasSpendRule {
+			dAtA[i] = 1
+		} else {
+			dAtA[i] = 0
+		}
+		i--
+		dAtA[i] = 0x40
+	}
+	if m.Revoked {
+		i--
+		if m.Revoked {
+			dAtA[i] = 1
+		} else {
+			dAtA[i] = 0
+		}
+		i--
+		dAtA[i] = 0x38
+	}
+	if m.CreatedAtUnix != 0 {
+		i = encodeVarintQuery(dAtA, i, uint64(m.CreatedAtUnix))
+		i--
+		dAtA[i] = 0x30
+	}
+	if len(m.Label) > 0 {
+		i -= len(m.Label)
+		copy(dAtA[i:], m.Label)
+		i = encodeVarintQuery(dAtA, i, uint64(len(m.Label)))
+		i--
+		dAtA[i] = 0x2a
+	}
+	if m.ExpiryUnix != 0 {
+		i = encodeVarintQuery(dAtA, i, uint64(m.ExpiryUnix))
+		i--
+		dAtA[i] = 0x20
+	}
+	if len(m.Permissions) > 0 {
+		for iNdEx := len(m.Permissions) - 1; iNdEx >= 0; iNdEx-- {
+			i -= len(m.Permissions[iNdEx])
+			copy(dAtA[i:], m.Permissions[iNdEx])
+			i = encodeVarintQuery(dAtA, i, uint64(len(m.Permissions[iNdEx])))
+			i--
+			dAtA[i] = 0x1a
+		}
+	}
+	if len(m.PubkeyHex) > 0 {
+		i -= len(m.PubkeyHex)
+		copy(dAtA[i:], m.PubkeyHex)
+		i = encodeVarintQuery(dAtA, i, uint64(len(m.PubkeyHex)))
+		i--
+		dAtA[i] = 0x12
+	}
+	if len(m.Scheme) > 0 {
+		i -= len(m.Scheme)
+		copy(dAtA[i:], m.Scheme)
+		i = encodeVarintQuery(dAtA, i, uint64(len(m.Scheme)))
+		i--
+		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
 }
 
 func (m *QueryAuthNonceRequest) Marshal() (dAtA []byte, err error) {
@@ -1205,6 +1965,11 @@ func (m *AccountView) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	_ = i
 	var l int
 	_ = l
+	if m.AuthenticatorsCount != 0 {
+		i = encodeVarintQuery(dAtA, i, uint64(m.AuthenticatorsCount))
+		i--
+		dAtA[i] = 0x40
+	}
 	if len(m.Owner) > 0 {
 		i -= len(m.Owner)
 		copy(dAtA[i:], m.Owner)
@@ -1593,6 +2358,126 @@ func encodeVarintQuery(dAtA []byte, offset int, v uint64) int {
 	dAtA[offset] = uint8(v)
 	return base
 }
+func (m *QuerySpendingRulesRequest) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	l = len(m.Address)
+	if l > 0 {
+		n += 1 + l + sovQuery(uint64(l))
+	}
+	return n
+}
+
+func (m *QuerySpendingRulesResponse) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	if len(m.Rules) > 0 {
+		for _, e := range m.Rules {
+			l = e.Size()
+			n += 1 + l + sovQuery(uint64(l))
+		}
+	}
+	if len(m.AuthenticatorRules) > 0 {
+		for _, e := range m.AuthenticatorRules {
+			l = e.Size()
+			n += 1 + l + sovQuery(uint64(l))
+		}
+	}
+	return n
+}
+
+func (m *AuthenticatorRule) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	l = len(m.Scheme)
+	if l > 0 {
+		n += 1 + l + sovQuery(uint64(l))
+	}
+	l = len(m.PubkeyHex)
+	if l > 0 {
+		n += 1 + l + sovQuery(uint64(l))
+	}
+	l = m.Rule.Size()
+	n += 1 + l + sovQuery(uint64(l))
+	return n
+}
+
+func (m *QueryAuthenticatorsRequest) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	l = len(m.Address)
+	if l > 0 {
+		n += 1 + l + sovQuery(uint64(l))
+	}
+	return n
+}
+
+func (m *QueryAuthenticatorsResponse) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	if len(m.Authenticators) > 0 {
+		for _, e := range m.Authenticators {
+			l = e.Size()
+			n += 1 + l + sovQuery(uint64(l))
+		}
+	}
+	return n
+}
+
+func (m *AuthenticatorView) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	l = len(m.Scheme)
+	if l > 0 {
+		n += 1 + l + sovQuery(uint64(l))
+	}
+	l = len(m.PubkeyHex)
+	if l > 0 {
+		n += 1 + l + sovQuery(uint64(l))
+	}
+	if len(m.Permissions) > 0 {
+		for _, s := range m.Permissions {
+			l = len(s)
+			n += 1 + l + sovQuery(uint64(l))
+		}
+	}
+	if m.ExpiryUnix != 0 {
+		n += 1 + sovQuery(uint64(m.ExpiryUnix))
+	}
+	l = len(m.Label)
+	if l > 0 {
+		n += 1 + l + sovQuery(uint64(l))
+	}
+	if m.CreatedAtUnix != 0 {
+		n += 1 + sovQuery(uint64(m.CreatedAtUnix))
+	}
+	if m.Revoked {
+		n += 2
+	}
+	if m.HasSpendRule {
+		n += 2
+	}
+	return n
+}
+
 func (m *QueryAuthNonceRequest) Size() (n int) {
 	if m == nil {
 		return 0
@@ -1676,6 +2561,9 @@ func (m *AccountView) Size() (n int) {
 	l = len(m.Owner)
 	if l > 0 {
 		n += 1 + l + sovQuery(uint64(l))
+	}
+	if m.AuthenticatorsCount != 0 {
+		n += 1 + sovQuery(uint64(m.AuthenticatorsCount))
 	}
 	return n
 }
@@ -1826,6 +2714,775 @@ func sovQuery(x uint64) (n int) {
 }
 func sozQuery(x uint64) (n int) {
 	return sovQuery(uint64((x << 1) ^ uint64((int64(x) >> 63))))
+}
+func (m *QuerySpendingRulesRequest) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowQuery
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: QuerySpendingRulesRequest: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: QuerySpendingRulesRequest: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Address", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuery
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthQuery
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Address = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipQuery(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *QuerySpendingRulesResponse) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowQuery
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: QuerySpendingRulesResponse: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: QuerySpendingRulesResponse: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Rules", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuery
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthQuery
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Rules = append(m.Rules, SpendingRule{})
+			if err := m.Rules[len(m.Rules)-1].Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field AuthenticatorRules", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuery
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthQuery
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.AuthenticatorRules = append(m.AuthenticatorRules, AuthenticatorRule{})
+			if err := m.AuthenticatorRules[len(m.AuthenticatorRules)-1].Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipQuery(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *AuthenticatorRule) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowQuery
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: AuthenticatorRule: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: AuthenticatorRule: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Scheme", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuery
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthQuery
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Scheme = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field PubkeyHex", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuery
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthQuery
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.PubkeyHex = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 3:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Rule", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuery
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthQuery
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if err := m.Rule.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipQuery(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *QueryAuthenticatorsRequest) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowQuery
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: QueryAuthenticatorsRequest: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: QueryAuthenticatorsRequest: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Address", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuery
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthQuery
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Address = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipQuery(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *QueryAuthenticatorsResponse) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowQuery
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: QueryAuthenticatorsResponse: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: QueryAuthenticatorsResponse: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Authenticators", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuery
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthQuery
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Authenticators = append(m.Authenticators, AuthenticatorView{})
+			if err := m.Authenticators[len(m.Authenticators)-1].Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipQuery(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *AuthenticatorView) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowQuery
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: AuthenticatorView: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: AuthenticatorView: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Scheme", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuery
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthQuery
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Scheme = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field PubkeyHex", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuery
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthQuery
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.PubkeyHex = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 3:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Permissions", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuery
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthQuery
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Permissions = append(m.Permissions, string(dAtA[iNdEx:postIndex]))
+			iNdEx = postIndex
+		case 4:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field ExpiryUnix", wireType)
+			}
+			m.ExpiryUnix = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuery
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.ExpiryUnix |= int64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		case 5:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Label", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuery
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthQuery
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Label = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 6:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field CreatedAtUnix", wireType)
+			}
+			m.CreatedAtUnix = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuery
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.CreatedAtUnix |= int64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		case 7:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Revoked", wireType)
+			}
+			var v int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuery
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				v |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			m.Revoked = bool(v != 0)
+		case 8:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field HasSpendRule", wireType)
+			}
+			var v int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuery
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				v |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			m.HasSpendRule = bool(v != 0)
+		default:
+			iNdEx = preIndex
+			skippy, err := skipQuery(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
 }
 func (m *QueryAuthNonceRequest) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
@@ -2371,6 +4028,25 @@ func (m *AccountView) Unmarshal(dAtA []byte) error {
 			}
 			m.Owner = string(dAtA[iNdEx:postIndex])
 			iNdEx = postIndex
+		case 8:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field AuthenticatorsCount", wireType)
+			}
+			m.AuthenticatorsCount = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuery
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.AuthenticatorsCount |= uint32(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
 		default:
 			iNdEx = preIndex
 			skippy, err := skipQuery(dAtA[iNdEx:])

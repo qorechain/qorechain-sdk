@@ -28,7 +28,7 @@ pub struct CrossVmMessageView {
 #[derive(Clone, Copy, PartialEq, ::prost::Message)]
 pub struct QueryParamsRequest {
 }
-#[derive(Clone, Copy, PartialEq, ::prost::Message)]
+#[derive(Clone, PartialEq, ::prost::Message)]
 pub struct QueryParamsResponse {
     #[prost(uint64, tag="1")]
     pub max_message_size: u64,
@@ -38,6 +38,10 @@ pub struct QueryParamsResponse {
     pub queue_timeout_blocks: i64,
     #[prost(bool, tag="4")]
     pub enabled: bool,
+    /// bridge_allowed_targets is the allowlist of the EVM bridge precompile, each
+    /// entry "<vm>:<contract>". Empty means the bridge reaches nothing.
+    #[prost(string, repeated, tag="5")]
+    pub bridge_allowed_targets: ::prost::alloc::vec::Vec<::prost::alloc::string::String>,
 }
 #[derive(Clone, Copy, PartialEq, ::prost::Message)]
 pub struct QueryPendingMessagesRequest {
@@ -106,5 +110,31 @@ pub struct MsgProcessQueue {
 }
 #[derive(Clone, Copy, PartialEq, ::prost::Message)]
 pub struct MsgProcessQueueResponse {
+}
+/// MsgUpdateParams replaces every crossvm parameter at once: a field left out is
+/// set to its zero value, which Validate refuses for the numeric limits. Signed
+/// by the governance module account, so it only ever executes from a passed
+/// proposal.
+#[derive(Clone, PartialEq, ::prost::Message)]
+pub struct MsgUpdateParams {
+    /// authority is the governance module account.
+    #[prost(string, tag="1")]
+    pub authority: ::prost::alloc::string::String,
+    #[prost(uint64, tag="2")]
+    pub max_message_size: u64,
+    #[prost(uint32, tag="3")]
+    pub max_queue_size: u32,
+    #[prost(int64, tag="4")]
+    pub queue_timeout_blocks: i64,
+    #[prost(bool, tag="5")]
+    pub enabled: bool,
+    /// bridge_allowed_targets lists the targets the EVM bridge precompile may
+    /// call, each as "<vm>:<contract>", for example "cosmwasm:qor1...". Empty
+    /// keeps the bridge shut.
+    #[prost(string, repeated, tag="6")]
+    pub bridge_allowed_targets: ::prost::alloc::vec::Vec<::prost::alloc::string::String>,
+}
+#[derive(Clone, Copy, PartialEq, ::prost::Message)]
+pub struct MsgUpdateParamsResponse {
 }
 // @@protoc_insertion_point(module)

@@ -9,6 +9,31 @@ import { BinaryReader, BinaryWriter } from "@bufbuild/protobuf/wire";
 
 export const protobufPackage = "qorechain.pqc.v1";
 
+export interface QueryKEMKeyRequest {
+  /** address is bech32 or 0x-prefixed hex. */
+  address: string;
+}
+
+export interface QueryKEMKeyResponse {
+  /** found reports whether the address has published a KEM key. */
+  found: boolean;
+  key?: KEMKeyView | undefined;
+}
+
+/** KEMKeyView is the query-facing view of a published KEM key. */
+export interface KEMKeyView {
+  /** address is the bech32 account address that published the key. */
+  address: string;
+  algorithmId: number;
+  algorithmName: string;
+  publicKey: Uint8Array;
+  /**
+   * registered_height is the height of the registration that published this
+   * key (a replacement resets it).
+   */
+  registeredHeight: string;
+}
+
 export interface QueryProtocolFeaturesRequest {
 }
 
@@ -136,6 +161,280 @@ export interface PQCAccountView {
    */
   possessionProven: boolean;
 }
+
+function createBaseQueryKEMKeyRequest(): QueryKEMKeyRequest {
+  return { address: "" };
+}
+
+export const QueryKEMKeyRequest: MessageFns<QueryKEMKeyRequest> = {
+  encode(message: QueryKEMKeyRequest, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.address !== "") {
+      writer.uint32(10).string(message.address);
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): QueryKEMKeyRequest {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseQueryKEMKeyRequest();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.address = reader.string();
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(object: any): QueryKEMKeyRequest {
+    return { address: isSet(object.address) ? globalThis.String(object.address) : "" };
+  },
+
+  toJSON(message: QueryKEMKeyRequest): unknown {
+    const obj: any = {};
+    if (message.address !== "") {
+      obj.address = message.address;
+    }
+    return obj;
+  },
+
+  create(base?: DeepPartial<QueryKEMKeyRequest>): QueryKEMKeyRequest {
+    return QueryKEMKeyRequest.fromPartial(base ?? {});
+  },
+  fromPartial(object: DeepPartial<QueryKEMKeyRequest>): QueryKEMKeyRequest {
+    const message = createBaseQueryKEMKeyRequest();
+    message.address = object.address ?? "";
+    return message;
+  },
+};
+
+function createBaseQueryKEMKeyResponse(): QueryKEMKeyResponse {
+  return { found: false, key: undefined };
+}
+
+export const QueryKEMKeyResponse: MessageFns<QueryKEMKeyResponse> = {
+  encode(message: QueryKEMKeyResponse, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.found !== false) {
+      writer.uint32(8).bool(message.found);
+    }
+    if (message.key !== undefined) {
+      KEMKeyView.encode(message.key, writer.uint32(18).fork()).join();
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): QueryKEMKeyResponse {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseQueryKEMKeyResponse();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 8) {
+            break;
+          }
+
+          message.found = reader.bool();
+          continue;
+        }
+        case 2: {
+          if (tag !== 18) {
+            break;
+          }
+
+          message.key = KEMKeyView.decode(reader, reader.uint32());
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(object: any): QueryKEMKeyResponse {
+    return {
+      found: isSet(object.found) ? globalThis.Boolean(object.found) : false,
+      key: isSet(object.key) ? KEMKeyView.fromJSON(object.key) : undefined,
+    };
+  },
+
+  toJSON(message: QueryKEMKeyResponse): unknown {
+    const obj: any = {};
+    if (message.found !== false) {
+      obj.found = message.found;
+    }
+    if (message.key !== undefined) {
+      obj.key = KEMKeyView.toJSON(message.key);
+    }
+    return obj;
+  },
+
+  create(base?: DeepPartial<QueryKEMKeyResponse>): QueryKEMKeyResponse {
+    return QueryKEMKeyResponse.fromPartial(base ?? {});
+  },
+  fromPartial(object: DeepPartial<QueryKEMKeyResponse>): QueryKEMKeyResponse {
+    const message = createBaseQueryKEMKeyResponse();
+    message.found = object.found ?? false;
+    message.key = (object.key !== undefined && object.key !== null) ? KEMKeyView.fromPartial(object.key) : undefined;
+    return message;
+  },
+};
+
+function createBaseKEMKeyView(): KEMKeyView {
+  return { address: "", algorithmId: 0, algorithmName: "", publicKey: new Uint8Array(0), registeredHeight: "0" };
+}
+
+export const KEMKeyView: MessageFns<KEMKeyView> = {
+  encode(message: KEMKeyView, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.address !== "") {
+      writer.uint32(10).string(message.address);
+    }
+    if (message.algorithmId !== 0) {
+      writer.uint32(16).uint32(message.algorithmId);
+    }
+    if (message.algorithmName !== "") {
+      writer.uint32(26).string(message.algorithmName);
+    }
+    if (message.publicKey.length !== 0) {
+      writer.uint32(34).bytes(message.publicKey);
+    }
+    if (message.registeredHeight !== "0") {
+      writer.uint32(40).int64(message.registeredHeight);
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): KEMKeyView {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseKEMKeyView();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.address = reader.string();
+          continue;
+        }
+        case 2: {
+          if (tag !== 16) {
+            break;
+          }
+
+          message.algorithmId = reader.uint32();
+          continue;
+        }
+        case 3: {
+          if (tag !== 26) {
+            break;
+          }
+
+          message.algorithmName = reader.string();
+          continue;
+        }
+        case 4: {
+          if (tag !== 34) {
+            break;
+          }
+
+          message.publicKey = reader.bytes();
+          continue;
+        }
+        case 5: {
+          if (tag !== 40) {
+            break;
+          }
+
+          message.registeredHeight = reader.int64().toString();
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(object: any): KEMKeyView {
+    return {
+      address: isSet(object.address) ? globalThis.String(object.address) : "",
+      algorithmId: isSet(object.algorithmId)
+        ? globalThis.Number(object.algorithmId)
+        : isSet(object.algorithm_id)
+        ? globalThis.Number(object.algorithm_id)
+        : 0,
+      algorithmName: isSet(object.algorithmName)
+        ? globalThis.String(object.algorithmName)
+        : isSet(object.algorithm_name)
+        ? globalThis.String(object.algorithm_name)
+        : "",
+      publicKey: isSet(object.publicKey)
+        ? bytesFromBase64(object.publicKey)
+        : isSet(object.public_key)
+        ? bytesFromBase64(object.public_key)
+        : new Uint8Array(0),
+      registeredHeight: isSet(object.registeredHeight)
+        ? globalThis.String(object.registeredHeight)
+        : isSet(object.registered_height)
+        ? globalThis.String(object.registered_height)
+        : "0",
+    };
+  },
+
+  toJSON(message: KEMKeyView): unknown {
+    const obj: any = {};
+    if (message.address !== "") {
+      obj.address = message.address;
+    }
+    if (message.algorithmId !== 0) {
+      obj.algorithmId = Math.round(message.algorithmId);
+    }
+    if (message.algorithmName !== "") {
+      obj.algorithmName = message.algorithmName;
+    }
+    if (message.publicKey.length !== 0) {
+      obj.publicKey = base64FromBytes(message.publicKey);
+    }
+    if (message.registeredHeight !== "0") {
+      obj.registeredHeight = message.registeredHeight;
+    }
+    return obj;
+  },
+
+  create(base?: DeepPartial<KEMKeyView>): KEMKeyView {
+    return KEMKeyView.fromPartial(base ?? {});
+  },
+  fromPartial(object: DeepPartial<KEMKeyView>): KEMKeyView {
+    const message = createBaseKEMKeyView();
+    message.address = object.address ?? "";
+    message.algorithmId = object.algorithmId ?? 0;
+    message.algorithmName = object.algorithmName ?? "";
+    message.publicKey = object.publicKey ?? new Uint8Array(0);
+    message.registeredHeight = object.registeredHeight ?? "0";
+    return message;
+  },
+};
 
 function createBaseQueryProtocolFeaturesRequest(): QueryProtocolFeaturesRequest {
   return {};
@@ -1622,6 +1921,59 @@ export const QueryDefinition = {
               114,
               101,
               115,
+            ]) as Uint8Array,
+          ],
+        },
+      },
+    },
+    /**
+     * KEMKey returns the key-encapsulation public key an address published, if
+     * any, so a sender can encrypt to it.
+     */
+    kEMKey: {
+      name: "KEMKey",
+      requestType: QueryKEMKeyRequest as typeof QueryKEMKeyRequest,
+      requestStream: false,
+      responseType: QueryKEMKeyResponse as typeof QueryKEMKeyResponse,
+      responseStream: false,
+      options: {
+        _unknownFields: {
+          578365826: [
+            new Uint8Array([
+              33,
+              18,
+              31,
+              47,
+              113,
+              111,
+              114,
+              101,
+              99,
+              104,
+              97,
+              105,
+              110,
+              47,
+              112,
+              113,
+              99,
+              47,
+              118,
+              49,
+              47,
+              107,
+              101,
+              109,
+              47,
+              123,
+              97,
+              100,
+              100,
+              114,
+              101,
+              115,
+              115,
+              125,
             ]) as Uint8Array,
           ],
         },

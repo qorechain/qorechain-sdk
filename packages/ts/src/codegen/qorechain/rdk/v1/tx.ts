@@ -70,7 +70,10 @@ export interface MsgResolveChallenge {
   /**
    * fraud_upheld true: fraud confirmed -> batch rejected, challenger refunded +
    * rewarded from rollup stake. false: challenge dismissed -> challenger bond
-   * forfeited to the rollup operator, batch eligible for finalization.
+   * forfeited to the rollup operator, batch eligible for finalization. The
+   * chain verifies the stored fraud proof and refuses an assertion that does
+   * not match. Before v3.2.5 only the rollup creator may resolve; from
+   * rdk-challenge-settlement any account may.
    */
   fraudUpheld: boolean;
 }
@@ -123,6 +126,33 @@ export interface MsgExecuteWithdrawal {
 }
 
 export interface MsgExecuteWithdrawalResponse {
+}
+
+/**
+ * MsgUpdateParams replaces the rdk parameters wholesale. The fields are the
+ * module's Params, spelled out one by one (as x/multilayer does) because the
+ * parameters are stored as JSON by a hand-written struct whose encoding must
+ * not change. Governance only: authority must be the gov module account.
+ * Served from v3.2.5 (rdk-params-route).
+ */
+export interface MsgUpdateParams {
+  authority: string;
+  maxRollups: number;
+  /** min_stake_for_rollup is a uqor amount. */
+  minStakeForRollup: string;
+  /** rollup_creation_burn_rate is a decimal in [0, 1). */
+  rollupCreationBurnRate: string;
+  /**
+   * default_challenge_window is in seconds. From rdk-rollup-params a new
+   * optimistic rollup takes its challenge window from it.
+   */
+  defaultChallengeWindow: string;
+  maxDaBlobSize: string;
+  blobRetentionBlocks: string;
+  maxBatchesPerBlock: number;
+}
+
+export interface MsgUpdateParamsResponse {
 }
 
 function createBaseMsgCreateRollup(): MsgCreateRollup {
@@ -1579,6 +1609,258 @@ export const MsgExecuteWithdrawalResponse: MessageFns<MsgExecuteWithdrawalRespon
   },
 };
 
+function createBaseMsgUpdateParams(): MsgUpdateParams {
+  return {
+    authority: "",
+    maxRollups: 0,
+    minStakeForRollup: "0",
+    rollupCreationBurnRate: "",
+    defaultChallengeWindow: "0",
+    maxDaBlobSize: "0",
+    blobRetentionBlocks: "0",
+    maxBatchesPerBlock: 0,
+  };
+}
+
+export const MsgUpdateParams: MessageFns<MsgUpdateParams> = {
+  encode(message: MsgUpdateParams, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.authority !== "") {
+      writer.uint32(10).string(message.authority);
+    }
+    if (message.maxRollups !== 0) {
+      writer.uint32(16).uint32(message.maxRollups);
+    }
+    if (message.minStakeForRollup !== "0") {
+      writer.uint32(24).int64(message.minStakeForRollup);
+    }
+    if (message.rollupCreationBurnRate !== "") {
+      writer.uint32(34).string(message.rollupCreationBurnRate);
+    }
+    if (message.defaultChallengeWindow !== "0") {
+      writer.uint32(40).uint64(message.defaultChallengeWindow);
+    }
+    if (message.maxDaBlobSize !== "0") {
+      writer.uint32(48).uint64(message.maxDaBlobSize);
+    }
+    if (message.blobRetentionBlocks !== "0") {
+      writer.uint32(56).uint64(message.blobRetentionBlocks);
+    }
+    if (message.maxBatchesPerBlock !== 0) {
+      writer.uint32(64).uint32(message.maxBatchesPerBlock);
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): MsgUpdateParams {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseMsgUpdateParams();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.authority = reader.string();
+          continue;
+        }
+        case 2: {
+          if (tag !== 16) {
+            break;
+          }
+
+          message.maxRollups = reader.uint32();
+          continue;
+        }
+        case 3: {
+          if (tag !== 24) {
+            break;
+          }
+
+          message.minStakeForRollup = reader.int64().toString();
+          continue;
+        }
+        case 4: {
+          if (tag !== 34) {
+            break;
+          }
+
+          message.rollupCreationBurnRate = reader.string();
+          continue;
+        }
+        case 5: {
+          if (tag !== 40) {
+            break;
+          }
+
+          message.defaultChallengeWindow = reader.uint64().toString();
+          continue;
+        }
+        case 6: {
+          if (tag !== 48) {
+            break;
+          }
+
+          message.maxDaBlobSize = reader.uint64().toString();
+          continue;
+        }
+        case 7: {
+          if (tag !== 56) {
+            break;
+          }
+
+          message.blobRetentionBlocks = reader.uint64().toString();
+          continue;
+        }
+        case 8: {
+          if (tag !== 64) {
+            break;
+          }
+
+          message.maxBatchesPerBlock = reader.uint32();
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(object: any): MsgUpdateParams {
+    return {
+      authority: isSet(object.authority) ? globalThis.String(object.authority) : "",
+      maxRollups: isSet(object.maxRollups)
+        ? globalThis.Number(object.maxRollups)
+        : isSet(object.max_rollups)
+        ? globalThis.Number(object.max_rollups)
+        : 0,
+      minStakeForRollup: isSet(object.minStakeForRollup)
+        ? globalThis.String(object.minStakeForRollup)
+        : isSet(object.min_stake_for_rollup)
+        ? globalThis.String(object.min_stake_for_rollup)
+        : "0",
+      rollupCreationBurnRate: isSet(object.rollupCreationBurnRate)
+        ? globalThis.String(object.rollupCreationBurnRate)
+        : isSet(object.rollup_creation_burn_rate)
+        ? globalThis.String(object.rollup_creation_burn_rate)
+        : "",
+      defaultChallengeWindow: isSet(object.defaultChallengeWindow)
+        ? globalThis.String(object.defaultChallengeWindow)
+        : isSet(object.default_challenge_window)
+        ? globalThis.String(object.default_challenge_window)
+        : "0",
+      maxDaBlobSize: isSet(object.maxDaBlobSize)
+        ? globalThis.String(object.maxDaBlobSize)
+        : isSet(object.max_da_blob_size)
+        ? globalThis.String(object.max_da_blob_size)
+        : "0",
+      blobRetentionBlocks: isSet(object.blobRetentionBlocks)
+        ? globalThis.String(object.blobRetentionBlocks)
+        : isSet(object.blob_retention_blocks)
+        ? globalThis.String(object.blob_retention_blocks)
+        : "0",
+      maxBatchesPerBlock: isSet(object.maxBatchesPerBlock)
+        ? globalThis.Number(object.maxBatchesPerBlock)
+        : isSet(object.max_batches_per_block)
+        ? globalThis.Number(object.max_batches_per_block)
+        : 0,
+    };
+  },
+
+  toJSON(message: MsgUpdateParams): unknown {
+    const obj: any = {};
+    if (message.authority !== "") {
+      obj.authority = message.authority;
+    }
+    if (message.maxRollups !== 0) {
+      obj.maxRollups = Math.round(message.maxRollups);
+    }
+    if (message.minStakeForRollup !== "0") {
+      obj.minStakeForRollup = message.minStakeForRollup;
+    }
+    if (message.rollupCreationBurnRate !== "") {
+      obj.rollupCreationBurnRate = message.rollupCreationBurnRate;
+    }
+    if (message.defaultChallengeWindow !== "0") {
+      obj.defaultChallengeWindow = message.defaultChallengeWindow;
+    }
+    if (message.maxDaBlobSize !== "0") {
+      obj.maxDaBlobSize = message.maxDaBlobSize;
+    }
+    if (message.blobRetentionBlocks !== "0") {
+      obj.blobRetentionBlocks = message.blobRetentionBlocks;
+    }
+    if (message.maxBatchesPerBlock !== 0) {
+      obj.maxBatchesPerBlock = Math.round(message.maxBatchesPerBlock);
+    }
+    return obj;
+  },
+
+  create(base?: DeepPartial<MsgUpdateParams>): MsgUpdateParams {
+    return MsgUpdateParams.fromPartial(base ?? {});
+  },
+  fromPartial(object: DeepPartial<MsgUpdateParams>): MsgUpdateParams {
+    const message = createBaseMsgUpdateParams();
+    message.authority = object.authority ?? "";
+    message.maxRollups = object.maxRollups ?? 0;
+    message.minStakeForRollup = object.minStakeForRollup ?? "0";
+    message.rollupCreationBurnRate = object.rollupCreationBurnRate ?? "";
+    message.defaultChallengeWindow = object.defaultChallengeWindow ?? "0";
+    message.maxDaBlobSize = object.maxDaBlobSize ?? "0";
+    message.blobRetentionBlocks = object.blobRetentionBlocks ?? "0";
+    message.maxBatchesPerBlock = object.maxBatchesPerBlock ?? 0;
+    return message;
+  },
+};
+
+function createBaseMsgUpdateParamsResponse(): MsgUpdateParamsResponse {
+  return {};
+}
+
+export const MsgUpdateParamsResponse: MessageFns<MsgUpdateParamsResponse> = {
+  encode(_: MsgUpdateParamsResponse, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): MsgUpdateParamsResponse {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseMsgUpdateParamsResponse();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(_: any): MsgUpdateParamsResponse {
+    return {};
+  },
+
+  toJSON(_: MsgUpdateParamsResponse): unknown {
+    const obj: any = {};
+    return obj;
+  },
+
+  create(base?: DeepPartial<MsgUpdateParamsResponse>): MsgUpdateParamsResponse {
+    return MsgUpdateParamsResponse.fromPartial(base ?? {});
+  },
+  fromPartial(_: DeepPartial<MsgUpdateParamsResponse>): MsgUpdateParamsResponse {
+    const message = createBaseMsgUpdateParamsResponse();
+    return message;
+  },
+};
+
 /** Msg defines the rdk module's transaction service. */
 export type MsgDefinition = typeof MsgDefinition;
 export const MsgDefinition = {
@@ -1646,6 +1928,15 @@ export const MsgDefinition = {
       requestType: MsgExecuteWithdrawal as typeof MsgExecuteWithdrawal,
       requestStream: false,
       responseType: MsgExecuteWithdrawalResponse as typeof MsgExecuteWithdrawalResponse,
+      responseStream: false,
+      options: {},
+    },
+    /** UpdateParams is served from v3.2.5 (rdk-params-route). Governance only. */
+    updateParams: {
+      name: "UpdateParams",
+      requestType: MsgUpdateParams as typeof MsgUpdateParams,
+      requestStream: false,
+      responseType: MsgUpdateParamsResponse as typeof MsgUpdateParamsResponse,
       responseStream: false,
       options: {},
     },

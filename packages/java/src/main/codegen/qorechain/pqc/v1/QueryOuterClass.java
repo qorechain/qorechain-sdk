@@ -26,6 +26,2187 @@ public final class QueryOuterClass extends com.google.protobuf.GeneratedFile {
     registerAllExtensions(
         (com.google.protobuf.ExtensionRegistryLite) registry);
   }
+  public interface QueryKEMKeyRequestOrBuilder extends
+      // @@protoc_insertion_point(interface_extends:qorechain.pqc.v1.QueryKEMKeyRequest)
+      com.google.protobuf.MessageOrBuilder {
+
+    /**
+     * <pre>
+     * address is bech32 or 0x-prefixed hex.
+     * </pre>
+     *
+     * <code>string address = 1 [json_name = "address"];</code>
+     * @return The address.
+     */
+    java.lang.String getAddress();
+    /**
+     * <pre>
+     * address is bech32 or 0x-prefixed hex.
+     * </pre>
+     *
+     * <code>string address = 1 [json_name = "address"];</code>
+     * @return The bytes for address.
+     */
+    com.google.protobuf.ByteString
+        getAddressBytes();
+  }
+  /**
+   * Protobuf type {@code qorechain.pqc.v1.QueryKEMKeyRequest}
+   */
+  public static final class QueryKEMKeyRequest extends
+      com.google.protobuf.GeneratedMessage implements
+      // @@protoc_insertion_point(message_implements:qorechain.pqc.v1.QueryKEMKeyRequest)
+      QueryKEMKeyRequestOrBuilder {
+  private static final long serialVersionUID = 0L;
+    static {
+      com.google.protobuf.RuntimeVersion.validateProtobufGencodeVersion(
+        com.google.protobuf.RuntimeVersion.RuntimeDomain.PUBLIC,
+        /* major= */ 4,
+        /* minor= */ 35,
+        /* patch= */ 1,
+        /* suffix= */ "",
+        "QueryKEMKeyRequest");
+    }
+    // Use QueryKEMKeyRequest.newBuilder() to construct.
+    private QueryKEMKeyRequest(com.google.protobuf.GeneratedMessage.Builder<?> builder) {
+      super(builder);
+    }
+    private QueryKEMKeyRequest() {
+      address_ = "";
+    }
+
+    public static final com.google.protobuf.Descriptors.Descriptor
+        getDescriptor() {
+      return qorechain.pqc.v1.QueryOuterClass.internal_static_qorechain_pqc_v1_QueryKEMKeyRequest_descriptor;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Descriptors.Descriptor getDescriptorForType() {
+      return qorechain.pqc.v1.QueryOuterClass.internal_static_qorechain_pqc_v1_QueryKEMKeyRequest_descriptor;
+    }
+
+    @java.lang.Override
+    protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+        internalGetFieldAccessorTable() {
+      return qorechain.pqc.v1.QueryOuterClass.internal_static_qorechain_pqc_v1_QueryKEMKeyRequest_fieldAccessorTable
+          .ensureFieldAccessorsInitialized(
+              qorechain.pqc.v1.QueryOuterClass.QueryKEMKeyRequest.class, qorechain.pqc.v1.QueryOuterClass.QueryKEMKeyRequest.Builder.class);
+    }
+
+    public static final int ADDRESS_FIELD_NUMBER = 1;
+    @SuppressWarnings("serial")
+    private volatile java.lang.Object address_ = "";
+    /**
+     * <pre>
+     * address is bech32 or 0x-prefixed hex.
+     * </pre>
+     *
+     * <code>string address = 1 [json_name = "address"];</code>
+     * @return The address.
+     */
+    @java.lang.Override
+    public java.lang.String getAddress() {
+      java.lang.Object ref = address_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        address_ = s;
+        return s;
+      }
+    }
+    /**
+     * <pre>
+     * address is bech32 or 0x-prefixed hex.
+     * </pre>
+     *
+     * <code>string address = 1 [json_name = "address"];</code>
+     * @return The bytes for address.
+     */
+    @java.lang.Override
+    public com.google.protobuf.ByteString
+        getAddressBytes() {
+      java.lang.Object ref = address_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        address_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
+    private byte memoizedIsInitialized = -1;
+    @java.lang.Override
+    public final boolean isInitialized() {
+      byte isInitialized = memoizedIsInitialized;
+      if (isInitialized == 1) return true;
+      if (isInitialized == 0) return false;
+
+      memoizedIsInitialized = 1;
+      return true;
+    }
+
+    @java.lang.Override
+    public void writeTo(com.google.protobuf.CodedOutputStream output)
+                        throws java.io.IOException {
+      if (!com.google.protobuf.GeneratedMessage.isStringEmpty(address_)) {
+        com.google.protobuf.GeneratedMessage.writeString(output, 1, address_);
+      }
+      getUnknownFields().writeTo(output);
+    }
+    private int computeSerializedSize_0() {
+      int size = 0;
+      if (!com.google.protobuf.GeneratedMessage.isStringEmpty(address_)) {
+        size += com.google.protobuf.GeneratedMessage.computeStringSize(1, address_);
+      }
+      return size;
+    }
+    @java.lang.Override
+    public int getSerializedSize() {
+      int size = memoizedSize;
+      if (size != -1) return size;
+
+      size = 0;
+      size += computeSerializedSize_0();
+      size += getUnknownFields().getSerializedSize();
+      memoizedSize = size;
+      return size;
+    }
+
+    @java.lang.Override
+    public boolean equals(final java.lang.Object obj) {
+      if (obj == this) {
+       return true;
+      }
+      if (!(obj instanceof qorechain.pqc.v1.QueryOuterClass.QueryKEMKeyRequest)) {
+        return super.equals(obj);
+      }
+      qorechain.pqc.v1.QueryOuterClass.QueryKEMKeyRequest other = (qorechain.pqc.v1.QueryOuterClass.QueryKEMKeyRequest) obj;
+
+      if (!getAddress()
+          .equals(other.getAddress())) return false;
+      if (!getUnknownFields().equals(other.getUnknownFields())) return false;
+      return true;
+    }
+
+    @java.lang.Override
+    public int hashCode() {
+      if (memoizedHashCode != 0) {
+        return memoizedHashCode;
+      }
+      int hash = 41;
+      hash = (19 * hash) + getDescriptor().hashCode();
+      hash = (37 * hash) + ADDRESS_FIELD_NUMBER;
+      hash = (53 * hash) + getAddress().hashCode();
+      hash = (29 * hash) + getUnknownFields().hashCode();
+      memoizedHashCode = hash;
+      return hash;
+    }
+
+    public static qorechain.pqc.v1.QueryOuterClass.QueryKEMKeyRequest parseFrom(
+        java.nio.ByteBuffer data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static qorechain.pqc.v1.QueryOuterClass.QueryKEMKeyRequest parseFrom(
+        java.nio.ByteBuffer data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static qorechain.pqc.v1.QueryOuterClass.QueryKEMKeyRequest parseFrom(
+        com.google.protobuf.ByteString data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static qorechain.pqc.v1.QueryOuterClass.QueryKEMKeyRequest parseFrom(
+        com.google.protobuf.ByteString data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static qorechain.pqc.v1.QueryOuterClass.QueryKEMKeyRequest parseFrom(byte[] data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static qorechain.pqc.v1.QueryOuterClass.QueryKEMKeyRequest parseFrom(
+        byte[] data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static qorechain.pqc.v1.QueryOuterClass.QueryKEMKeyRequest parseFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input);
+    }
+    public static qorechain.pqc.v1.QueryOuterClass.QueryKEMKeyRequest parseFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    public static qorechain.pqc.v1.QueryOuterClass.QueryKEMKeyRequest parseDelimitedFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseDelimitedWithIOException(PARSER, input);
+    }
+
+    public static qorechain.pqc.v1.QueryOuterClass.QueryKEMKeyRequest parseDelimitedFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static qorechain.pqc.v1.QueryOuterClass.QueryKEMKeyRequest parseFrom(
+        com.google.protobuf.CodedInputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input);
+    }
+    public static qorechain.pqc.v1.QueryOuterClass.QueryKEMKeyRequest parseFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    @java.lang.Override
+    public Builder newBuilderForType() { return newBuilder(); }
+    public static Builder newBuilder() {
+      return DEFAULT_INSTANCE.toBuilder();
+    }
+    public static Builder newBuilder(qorechain.pqc.v1.QueryOuterClass.QueryKEMKeyRequest prototype) {
+      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+    }
+    @java.lang.Override
+    public Builder toBuilder() {
+      return this == DEFAULT_INSTANCE
+          ? new Builder() : new Builder().mergeFrom(this);
+    }
+
+    @java.lang.Override
+    protected Builder newBuilderForType(
+        com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+      Builder builder = new Builder(parent);
+      return builder;
+    }
+    /**
+     * Protobuf type {@code qorechain.pqc.v1.QueryKEMKeyRequest}
+     */
+    public static final class Builder extends
+        com.google.protobuf.GeneratedMessage.Builder<Builder> implements
+        // @@protoc_insertion_point(builder_implements:qorechain.pqc.v1.QueryKEMKeyRequest)
+        qorechain.pqc.v1.QueryOuterClass.QueryKEMKeyRequestOrBuilder {
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return qorechain.pqc.v1.QueryOuterClass.internal_static_qorechain_pqc_v1_QueryKEMKeyRequest_descriptor;
+      }
+
+      @java.lang.Override
+      protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return qorechain.pqc.v1.QueryOuterClass.internal_static_qorechain_pqc_v1_QueryKEMKeyRequest_fieldAccessorTable
+            .ensureFieldAccessorsInitialized(
+                qorechain.pqc.v1.QueryOuterClass.QueryKEMKeyRequest.class, qorechain.pqc.v1.QueryOuterClass.QueryKEMKeyRequest.Builder.class);
+      }
+
+      // Construct using qorechain.pqc.v1.QueryOuterClass.QueryKEMKeyRequest.newBuilder()
+      private Builder() {
+
+      }
+
+      private Builder(
+          com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+        super(parent);
+
+      }
+      @java.lang.Override
+      public Builder clear() {
+        super.clear();
+        bitField0_ = 0;
+        address_ = "";
+        return this;
+      }
+
+      @java.lang.Override
+      public com.google.protobuf.Descriptors.Descriptor
+          getDescriptorForType() {
+        return qorechain.pqc.v1.QueryOuterClass.internal_static_qorechain_pqc_v1_QueryKEMKeyRequest_descriptor;
+      }
+
+      @java.lang.Override
+      public qorechain.pqc.v1.QueryOuterClass.QueryKEMKeyRequest getDefaultInstanceForType() {
+        return qorechain.pqc.v1.QueryOuterClass.QueryKEMKeyRequest.getDefaultInstance();
+      }
+
+      @java.lang.Override
+      public qorechain.pqc.v1.QueryOuterClass.QueryKEMKeyRequest build() {
+        qorechain.pqc.v1.QueryOuterClass.QueryKEMKeyRequest result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(result);
+        }
+        return result;
+      }
+
+      @java.lang.Override
+      public qorechain.pqc.v1.QueryOuterClass.QueryKEMKeyRequest buildPartial() {
+        qorechain.pqc.v1.QueryOuterClass.QueryKEMKeyRequest result = new qorechain.pqc.v1.QueryOuterClass.QueryKEMKeyRequest(this);
+        if (bitField0_ != 0) { buildPartial0(result); }
+        onBuilt();
+        return result;
+      }
+
+      private void buildPartial0(qorechain.pqc.v1.QueryOuterClass.QueryKEMKeyRequest result) {
+        int from_bitField0_ = bitField0_;
+        if (((from_bitField0_ & 0x00000001) != 0)) {
+          result.address_ = address_;
+        }
+      }
+
+      @java.lang.Override
+      public Builder mergeFrom(com.google.protobuf.Message other) {
+        if (other instanceof qorechain.pqc.v1.QueryOuterClass.QueryKEMKeyRequest) {
+          return mergeFrom((qorechain.pqc.v1.QueryOuterClass.QueryKEMKeyRequest)other);
+        } else {
+          super.mergeFrom(other);
+          return this;
+        }
+      }
+
+      public Builder mergeFrom(qorechain.pqc.v1.QueryOuterClass.QueryKEMKeyRequest other) {
+        if (other == qorechain.pqc.v1.QueryOuterClass.QueryKEMKeyRequest.getDefaultInstance()) return this;
+        if (!other.getAddress().isEmpty()) {
+          address_ = other.address_;
+          bitField0_ |= 0x00000001;
+          onChanged();
+        }
+        this.mergeUnknownFields(other.getUnknownFields());
+        onChanged();
+        return this;
+      }
+
+      @java.lang.Override
+      public final boolean isInitialized() {
+        return true;
+      }
+
+      @java.lang.Override
+      public Builder mergeFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        if (extensionRegistry == null) {
+          throw new java.lang.NullPointerException();
+        }
+        try {
+          boolean done = false;
+          while (!done) {
+            int tag = input.readTag();
+            switch (tag) {
+              case 0:
+                done = true;
+                break;
+              case 10: {
+                address_ = input.readStringRequireUtf8();
+                bitField0_ |= 0x00000001;
+                break;
+              } // case 10
+              default: {
+                if (!super.parseUnknownField(input, extensionRegistry, tag)) {
+                  done = true; // was an endgroup tag
+                }
+                break;
+              } // default:
+            } // switch (tag)
+          } // while (!done)
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          throw e.unwrapIOException();
+        } finally {
+          onChanged();
+        } // finally
+        return this;
+      }
+      private int bitField0_;
+
+      private java.lang.Object address_ = "";
+      /**
+       * <pre>
+       * address is bech32 or 0x-prefixed hex.
+       * </pre>
+       *
+       * <code>string address = 1 [json_name = "address"];</code>
+       * @return The address.
+       */
+      public java.lang.String getAddress() {
+        java.lang.Object ref = address_;
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          address_ = s;
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
+      }
+      /**
+       * <pre>
+       * address is bech32 or 0x-prefixed hex.
+       * </pre>
+       *
+       * <code>string address = 1 [json_name = "address"];</code>
+       * @return The bytes for address.
+       */
+      public com.google.protobuf.ByteString
+          getAddressBytes() {
+        java.lang.Object ref = address_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          address_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <pre>
+       * address is bech32 or 0x-prefixed hex.
+       * </pre>
+       *
+       * <code>string address = 1 [json_name = "address"];</code>
+       * @param value The address to set.
+       * @return This builder for chaining.
+       */
+      public Builder setAddress(
+          java.lang.String value) {
+        if (value == null) { throw new NullPointerException(); }
+        address_ = value;
+        bitField0_ |= 0x00000001;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * address is bech32 or 0x-prefixed hex.
+       * </pre>
+       *
+       * <code>string address = 1 [json_name = "address"];</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearAddress() {
+        address_ = getDefaultInstance().getAddress();
+        bitField0_ = (bitField0_ & ~0x00000001);
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * address is bech32 or 0x-prefixed hex.
+       * </pre>
+       *
+       * <code>string address = 1 [json_name = "address"];</code>
+       * @param value The bytes for address to set.
+       * @return This builder for chaining.
+       */
+      public Builder setAddressBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) { throw new NullPointerException(); }
+        checkByteStringIsUtf8(value);
+        address_ = value;
+        bitField0_ |= 0x00000001;
+        onChanged();
+        return this;
+      }
+
+      // @@protoc_insertion_point(builder_scope:qorechain.pqc.v1.QueryKEMKeyRequest)
+    }
+
+    // @@protoc_insertion_point(class_scope:qorechain.pqc.v1.QueryKEMKeyRequest)
+    private static final qorechain.pqc.v1.QueryOuterClass.QueryKEMKeyRequest DEFAULT_INSTANCE;
+    static {
+      DEFAULT_INSTANCE = new qorechain.pqc.v1.QueryOuterClass.QueryKEMKeyRequest();
+    }
+
+    public static qorechain.pqc.v1.QueryOuterClass.QueryKEMKeyRequest getDefaultInstance() {
+      return DEFAULT_INSTANCE;
+    }
+
+    private static final com.google.protobuf.Parser<QueryKEMKeyRequest>
+        PARSER = new com.google.protobuf.AbstractParser<QueryKEMKeyRequest>() {
+      @java.lang.Override
+      public QueryKEMKeyRequest parsePartialFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        Builder builder = newBuilder();
+        try {
+          builder.mergeFrom(input, extensionRegistry);
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          throw e.setUnfinishedMessage(builder.buildPartial());
+        } catch (com.google.protobuf.UninitializedMessageException e) {
+          throw e.asInvalidProtocolBufferException().setUnfinishedMessage(builder.buildPartial());
+        } catch (java.io.IOException e) {
+          throw new com.google.protobuf.InvalidProtocolBufferException(e)
+              .setUnfinishedMessage(builder.buildPartial());
+        }
+        return builder.buildPartial();
+      }
+    };
+
+    public static com.google.protobuf.Parser<QueryKEMKeyRequest> parser() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Parser<QueryKEMKeyRequest> getParserForType() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public qorechain.pqc.v1.QueryOuterClass.QueryKEMKeyRequest getDefaultInstanceForType() {
+      return DEFAULT_INSTANCE;
+    }
+
+  }
+
+  public interface QueryKEMKeyResponseOrBuilder extends
+      // @@protoc_insertion_point(interface_extends:qorechain.pqc.v1.QueryKEMKeyResponse)
+      com.google.protobuf.MessageOrBuilder {
+
+    /**
+     * <pre>
+     * found reports whether the address has published a KEM key.
+     * </pre>
+     *
+     * <code>bool found = 1 [json_name = "found"];</code>
+     * @return The found.
+     */
+    boolean getFound();
+
+    /**
+     * <code>.qorechain.pqc.v1.KEMKeyView key = 2 [json_name = "key"];</code>
+     * @return Whether the key field is set.
+     */
+    boolean hasKey();
+    /**
+     * <code>.qorechain.pqc.v1.KEMKeyView key = 2 [json_name = "key"];</code>
+     * @return The key.
+     */
+    qorechain.pqc.v1.QueryOuterClass.KEMKeyView getKey();
+    /**
+     * <code>.qorechain.pqc.v1.KEMKeyView key = 2 [json_name = "key"];</code>
+     */
+    qorechain.pqc.v1.QueryOuterClass.KEMKeyViewOrBuilder getKeyOrBuilder();
+  }
+  /**
+   * Protobuf type {@code qorechain.pqc.v1.QueryKEMKeyResponse}
+   */
+  public static final class QueryKEMKeyResponse extends
+      com.google.protobuf.GeneratedMessage implements
+      // @@protoc_insertion_point(message_implements:qorechain.pqc.v1.QueryKEMKeyResponse)
+      QueryKEMKeyResponseOrBuilder {
+  private static final long serialVersionUID = 0L;
+    static {
+      com.google.protobuf.RuntimeVersion.validateProtobufGencodeVersion(
+        com.google.protobuf.RuntimeVersion.RuntimeDomain.PUBLIC,
+        /* major= */ 4,
+        /* minor= */ 35,
+        /* patch= */ 1,
+        /* suffix= */ "",
+        "QueryKEMKeyResponse");
+    }
+    // Use QueryKEMKeyResponse.newBuilder() to construct.
+    private QueryKEMKeyResponse(com.google.protobuf.GeneratedMessage.Builder<?> builder) {
+      super(builder);
+    }
+    private QueryKEMKeyResponse() {
+    }
+
+    public static final com.google.protobuf.Descriptors.Descriptor
+        getDescriptor() {
+      return qorechain.pqc.v1.QueryOuterClass.internal_static_qorechain_pqc_v1_QueryKEMKeyResponse_descriptor;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Descriptors.Descriptor getDescriptorForType() {
+      return qorechain.pqc.v1.QueryOuterClass.internal_static_qorechain_pqc_v1_QueryKEMKeyResponse_descriptor;
+    }
+
+    @java.lang.Override
+    protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+        internalGetFieldAccessorTable() {
+      return qorechain.pqc.v1.QueryOuterClass.internal_static_qorechain_pqc_v1_QueryKEMKeyResponse_fieldAccessorTable
+          .ensureFieldAccessorsInitialized(
+              qorechain.pqc.v1.QueryOuterClass.QueryKEMKeyResponse.class, qorechain.pqc.v1.QueryOuterClass.QueryKEMKeyResponse.Builder.class);
+    }
+
+    private int bitField0_;
+    public static final int FOUND_FIELD_NUMBER = 1;
+    private boolean found_ = false;
+    /**
+     * <pre>
+     * found reports whether the address has published a KEM key.
+     * </pre>
+     *
+     * <code>bool found = 1 [json_name = "found"];</code>
+     * @return The found.
+     */
+    @java.lang.Override
+    public boolean getFound() {
+      return found_;
+    }
+
+    public static final int KEY_FIELD_NUMBER = 2;
+    private qorechain.pqc.v1.QueryOuterClass.KEMKeyView key_;
+    /**
+     * <code>.qorechain.pqc.v1.KEMKeyView key = 2 [json_name = "key"];</code>
+     * @return Whether the key field is set.
+     */
+    @java.lang.Override
+    public boolean hasKey() {
+      return ((bitField0_ & 0x00000001) != 0);
+    }
+    /**
+     * <code>.qorechain.pqc.v1.KEMKeyView key = 2 [json_name = "key"];</code>
+     * @return The key.
+     */
+    @java.lang.Override
+    public qorechain.pqc.v1.QueryOuterClass.KEMKeyView getKey() {
+      return key_ == null ? qorechain.pqc.v1.QueryOuterClass.KEMKeyView.getDefaultInstance() : key_;
+    }
+    /**
+     * <code>.qorechain.pqc.v1.KEMKeyView key = 2 [json_name = "key"];</code>
+     */
+    @java.lang.Override
+    public qorechain.pqc.v1.QueryOuterClass.KEMKeyViewOrBuilder getKeyOrBuilder() {
+      return key_ == null ? qorechain.pqc.v1.QueryOuterClass.KEMKeyView.getDefaultInstance() : key_;
+    }
+
+    private byte memoizedIsInitialized = -1;
+    @java.lang.Override
+    public final boolean isInitialized() {
+      byte isInitialized = memoizedIsInitialized;
+      if (isInitialized == 1) return true;
+      if (isInitialized == 0) return false;
+
+      memoizedIsInitialized = 1;
+      return true;
+    }
+
+    @java.lang.Override
+    public void writeTo(com.google.protobuf.CodedOutputStream output)
+                        throws java.io.IOException {
+      if (found_ != false) {
+        output.writeBool(1, found_);
+      }
+      if (((bitField0_ & 0x00000001) != 0)) {
+        output.writeMessage(2, getKey());
+      }
+      getUnknownFields().writeTo(output);
+    }
+    private int computeSerializedSize_0() {
+      int size = 0;
+      if (found_ != false) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeBoolSize(1, found_);
+      }
+      if (((bitField0_ & 0x00000001) != 0)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeMessageSize(2, getKey());
+      }
+      return size;
+    }
+    @java.lang.Override
+    public int getSerializedSize() {
+      int size = memoizedSize;
+      if (size != -1) return size;
+
+      size = 0;
+      size += computeSerializedSize_0();
+      size += getUnknownFields().getSerializedSize();
+      memoizedSize = size;
+      return size;
+    }
+
+    @java.lang.Override
+    public boolean equals(final java.lang.Object obj) {
+      if (obj == this) {
+       return true;
+      }
+      if (!(obj instanceof qorechain.pqc.v1.QueryOuterClass.QueryKEMKeyResponse)) {
+        return super.equals(obj);
+      }
+      qorechain.pqc.v1.QueryOuterClass.QueryKEMKeyResponse other = (qorechain.pqc.v1.QueryOuterClass.QueryKEMKeyResponse) obj;
+
+      if (getFound()
+          != other.getFound()) return false;
+      if (hasKey() != other.hasKey()) return false;
+      if (hasKey()) {
+        if (!getKey()
+            .equals(other.getKey())) return false;
+      }
+      if (!getUnknownFields().equals(other.getUnknownFields())) return false;
+      return true;
+    }
+
+    @java.lang.Override
+    public int hashCode() {
+      if (memoizedHashCode != 0) {
+        return memoizedHashCode;
+      }
+      int hash = 41;
+      hash = (19 * hash) + getDescriptor().hashCode();
+      hash = (37 * hash) + FOUND_FIELD_NUMBER;
+      hash = (53 * hash) + com.google.protobuf.Internal.hashBoolean(
+          getFound());
+      if (hasKey()) {
+        hash = (37 * hash) + KEY_FIELD_NUMBER;
+        hash = (53 * hash) + getKey().hashCode();
+      }
+      hash = (29 * hash) + getUnknownFields().hashCode();
+      memoizedHashCode = hash;
+      return hash;
+    }
+
+    public static qorechain.pqc.v1.QueryOuterClass.QueryKEMKeyResponse parseFrom(
+        java.nio.ByteBuffer data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static qorechain.pqc.v1.QueryOuterClass.QueryKEMKeyResponse parseFrom(
+        java.nio.ByteBuffer data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static qorechain.pqc.v1.QueryOuterClass.QueryKEMKeyResponse parseFrom(
+        com.google.protobuf.ByteString data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static qorechain.pqc.v1.QueryOuterClass.QueryKEMKeyResponse parseFrom(
+        com.google.protobuf.ByteString data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static qorechain.pqc.v1.QueryOuterClass.QueryKEMKeyResponse parseFrom(byte[] data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static qorechain.pqc.v1.QueryOuterClass.QueryKEMKeyResponse parseFrom(
+        byte[] data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static qorechain.pqc.v1.QueryOuterClass.QueryKEMKeyResponse parseFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input);
+    }
+    public static qorechain.pqc.v1.QueryOuterClass.QueryKEMKeyResponse parseFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    public static qorechain.pqc.v1.QueryOuterClass.QueryKEMKeyResponse parseDelimitedFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseDelimitedWithIOException(PARSER, input);
+    }
+
+    public static qorechain.pqc.v1.QueryOuterClass.QueryKEMKeyResponse parseDelimitedFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static qorechain.pqc.v1.QueryOuterClass.QueryKEMKeyResponse parseFrom(
+        com.google.protobuf.CodedInputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input);
+    }
+    public static qorechain.pqc.v1.QueryOuterClass.QueryKEMKeyResponse parseFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    @java.lang.Override
+    public Builder newBuilderForType() { return newBuilder(); }
+    public static Builder newBuilder() {
+      return DEFAULT_INSTANCE.toBuilder();
+    }
+    public static Builder newBuilder(qorechain.pqc.v1.QueryOuterClass.QueryKEMKeyResponse prototype) {
+      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+    }
+    @java.lang.Override
+    public Builder toBuilder() {
+      return this == DEFAULT_INSTANCE
+          ? new Builder() : new Builder().mergeFrom(this);
+    }
+
+    @java.lang.Override
+    protected Builder newBuilderForType(
+        com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+      Builder builder = new Builder(parent);
+      return builder;
+    }
+    /**
+     * Protobuf type {@code qorechain.pqc.v1.QueryKEMKeyResponse}
+     */
+    public static final class Builder extends
+        com.google.protobuf.GeneratedMessage.Builder<Builder> implements
+        // @@protoc_insertion_point(builder_implements:qorechain.pqc.v1.QueryKEMKeyResponse)
+        qorechain.pqc.v1.QueryOuterClass.QueryKEMKeyResponseOrBuilder {
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return qorechain.pqc.v1.QueryOuterClass.internal_static_qorechain_pqc_v1_QueryKEMKeyResponse_descriptor;
+      }
+
+      @java.lang.Override
+      protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return qorechain.pqc.v1.QueryOuterClass.internal_static_qorechain_pqc_v1_QueryKEMKeyResponse_fieldAccessorTable
+            .ensureFieldAccessorsInitialized(
+                qorechain.pqc.v1.QueryOuterClass.QueryKEMKeyResponse.class, qorechain.pqc.v1.QueryOuterClass.QueryKEMKeyResponse.Builder.class);
+      }
+
+      // Construct using qorechain.pqc.v1.QueryOuterClass.QueryKEMKeyResponse.newBuilder()
+      private Builder() {
+        maybeForceBuilderInitialization();
+      }
+
+      private Builder(
+          com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+        super(parent);
+        maybeForceBuilderInitialization();
+      }
+      private void maybeForceBuilderInitialization() {
+        if (com.google.protobuf.GeneratedMessage
+                .alwaysUseFieldBuilders) {
+          internalGetKeyFieldBuilder();
+        }
+      }
+      @java.lang.Override
+      public Builder clear() {
+        super.clear();
+        bitField0_ = 0;
+        found_ = false;
+        key_ = null;
+        if (keyBuilder_ != null) {
+          keyBuilder_.dispose();
+          keyBuilder_ = null;
+        }
+        return this;
+      }
+
+      @java.lang.Override
+      public com.google.protobuf.Descriptors.Descriptor
+          getDescriptorForType() {
+        return qorechain.pqc.v1.QueryOuterClass.internal_static_qorechain_pqc_v1_QueryKEMKeyResponse_descriptor;
+      }
+
+      @java.lang.Override
+      public qorechain.pqc.v1.QueryOuterClass.QueryKEMKeyResponse getDefaultInstanceForType() {
+        return qorechain.pqc.v1.QueryOuterClass.QueryKEMKeyResponse.getDefaultInstance();
+      }
+
+      @java.lang.Override
+      public qorechain.pqc.v1.QueryOuterClass.QueryKEMKeyResponse build() {
+        qorechain.pqc.v1.QueryOuterClass.QueryKEMKeyResponse result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(result);
+        }
+        return result;
+      }
+
+      @java.lang.Override
+      public qorechain.pqc.v1.QueryOuterClass.QueryKEMKeyResponse buildPartial() {
+        qorechain.pqc.v1.QueryOuterClass.QueryKEMKeyResponse result = new qorechain.pqc.v1.QueryOuterClass.QueryKEMKeyResponse(this);
+        if (bitField0_ != 0) { buildPartial0(result); }
+        onBuilt();
+        return result;
+      }
+
+      private void buildPartial0(qorechain.pqc.v1.QueryOuterClass.QueryKEMKeyResponse result) {
+        int from_bitField0_ = bitField0_;
+        if (((from_bitField0_ & 0x00000001) != 0)) {
+          result.found_ = found_;
+        }
+        int to_bitField0_ = 0;
+        if (((from_bitField0_ & 0x00000002) != 0)) {
+          result.key_ = keyBuilder_ == null
+              ? key_
+              : keyBuilder_.build();
+          to_bitField0_ |= 0x00000001;
+        }
+        result.bitField0_ |= to_bitField0_;
+      }
+
+      @java.lang.Override
+      public Builder mergeFrom(com.google.protobuf.Message other) {
+        if (other instanceof qorechain.pqc.v1.QueryOuterClass.QueryKEMKeyResponse) {
+          return mergeFrom((qorechain.pqc.v1.QueryOuterClass.QueryKEMKeyResponse)other);
+        } else {
+          super.mergeFrom(other);
+          return this;
+        }
+      }
+
+      public Builder mergeFrom(qorechain.pqc.v1.QueryOuterClass.QueryKEMKeyResponse other) {
+        if (other == qorechain.pqc.v1.QueryOuterClass.QueryKEMKeyResponse.getDefaultInstance()) return this;
+        if (other.getFound() != false) {
+          setFound(other.getFound());
+        }
+        if (other.hasKey()) {
+          mergeKey(other.getKey());
+        }
+        this.mergeUnknownFields(other.getUnknownFields());
+        onChanged();
+        return this;
+      }
+
+      @java.lang.Override
+      public final boolean isInitialized() {
+        return true;
+      }
+
+      @java.lang.Override
+      public Builder mergeFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        if (extensionRegistry == null) {
+          throw new java.lang.NullPointerException();
+        }
+        try {
+          boolean done = false;
+          while (!done) {
+            int tag = input.readTag();
+            switch (tag) {
+              case 0:
+                done = true;
+                break;
+              case 8: {
+                found_ = input.readBool();
+                bitField0_ |= 0x00000001;
+                break;
+              } // case 8
+              case 18: {
+                input.readMessage(
+                    internalGetKeyFieldBuilder().getBuilder(),
+                    extensionRegistry);
+                bitField0_ |= 0x00000002;
+                break;
+              } // case 18
+              default: {
+                if (!super.parseUnknownField(input, extensionRegistry, tag)) {
+                  done = true; // was an endgroup tag
+                }
+                break;
+              } // default:
+            } // switch (tag)
+          } // while (!done)
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          throw e.unwrapIOException();
+        } finally {
+          onChanged();
+        } // finally
+        return this;
+      }
+      private int bitField0_;
+
+      private boolean found_ ;
+      /**
+       * <pre>
+       * found reports whether the address has published a KEM key.
+       * </pre>
+       *
+       * <code>bool found = 1 [json_name = "found"];</code>
+       * @return The found.
+       */
+      @java.lang.Override
+      public boolean getFound() {
+        return found_;
+      }
+      /**
+       * <pre>
+       * found reports whether the address has published a KEM key.
+       * </pre>
+       *
+       * <code>bool found = 1 [json_name = "found"];</code>
+       * @param value The found to set.
+       * @return This builder for chaining.
+       */
+      public Builder setFound(boolean value) {
+
+        found_ = value;
+        bitField0_ |= 0x00000001;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * found reports whether the address has published a KEM key.
+       * </pre>
+       *
+       * <code>bool found = 1 [json_name = "found"];</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearFound() {
+        bitField0_ = (bitField0_ & ~0x00000001);
+        found_ = false;
+        onChanged();
+        return this;
+      }
+
+      private qorechain.pqc.v1.QueryOuterClass.KEMKeyView key_;
+      private com.google.protobuf.SingleFieldBuilder<
+          qorechain.pqc.v1.QueryOuterClass.KEMKeyView, qorechain.pqc.v1.QueryOuterClass.KEMKeyView.Builder, qorechain.pqc.v1.QueryOuterClass.KEMKeyViewOrBuilder> keyBuilder_;
+      /**
+       * <code>.qorechain.pqc.v1.KEMKeyView key = 2 [json_name = "key"];</code>
+       * @return Whether the key field is set.
+       */
+      public boolean hasKey() {
+        return ((bitField0_ & 0x00000002) != 0);
+      }
+      /**
+       * <code>.qorechain.pqc.v1.KEMKeyView key = 2 [json_name = "key"];</code>
+       * @return The key.
+       */
+      public qorechain.pqc.v1.QueryOuterClass.KEMKeyView getKey() {
+        if (keyBuilder_ == null) {
+          return key_ == null ? qorechain.pqc.v1.QueryOuterClass.KEMKeyView.getDefaultInstance() : key_;
+        } else {
+          return keyBuilder_.getMessage();
+        }
+      }
+      /**
+       * <code>.qorechain.pqc.v1.KEMKeyView key = 2 [json_name = "key"];</code>
+       */
+      public Builder setKey(qorechain.pqc.v1.QueryOuterClass.KEMKeyView value) {
+        if (keyBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          key_ = value;
+        } else {
+          keyBuilder_.setMessage(value);
+        }
+        bitField0_ |= 0x00000002;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>.qorechain.pqc.v1.KEMKeyView key = 2 [json_name = "key"];</code>
+       */
+      public Builder setKey(
+          qorechain.pqc.v1.QueryOuterClass.KEMKeyView.Builder builderForValue) {
+        if (keyBuilder_ == null) {
+          key_ = builderForValue.build();
+        } else {
+          keyBuilder_.setMessage(builderForValue.build());
+        }
+        bitField0_ |= 0x00000002;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>.qorechain.pqc.v1.KEMKeyView key = 2 [json_name = "key"];</code>
+       */
+      public Builder mergeKey(qorechain.pqc.v1.QueryOuterClass.KEMKeyView value) {
+        if (keyBuilder_ == null) {
+          if (((bitField0_ & 0x00000002) != 0) &&
+            key_ != null &&
+            key_ != qorechain.pqc.v1.QueryOuterClass.KEMKeyView.getDefaultInstance()) {
+            getKeyBuilder().mergeFrom(value);
+          } else {
+            key_ = value;
+          }
+        } else {
+          keyBuilder_.mergeFrom(value);
+        }
+        if (key_ != null) {
+          bitField0_ |= 0x00000002;
+          onChanged();
+        }
+        return this;
+      }
+      /**
+       * <code>.qorechain.pqc.v1.KEMKeyView key = 2 [json_name = "key"];</code>
+       */
+      public Builder clearKey() {
+        bitField0_ = (bitField0_ & ~0x00000002);
+        key_ = null;
+        if (keyBuilder_ != null) {
+          keyBuilder_.dispose();
+          keyBuilder_ = null;
+        }
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>.qorechain.pqc.v1.KEMKeyView key = 2 [json_name = "key"];</code>
+       */
+      public qorechain.pqc.v1.QueryOuterClass.KEMKeyView.Builder getKeyBuilder() {
+        bitField0_ |= 0x00000002;
+        onChanged();
+        return internalGetKeyFieldBuilder().getBuilder();
+      }
+      /**
+       * <code>.qorechain.pqc.v1.KEMKeyView key = 2 [json_name = "key"];</code>
+       */
+      public qorechain.pqc.v1.QueryOuterClass.KEMKeyViewOrBuilder getKeyOrBuilder() {
+        if (keyBuilder_ != null) {
+          return keyBuilder_.getMessageOrBuilder();
+        } else {
+          return key_ == null ?
+              qorechain.pqc.v1.QueryOuterClass.KEMKeyView.getDefaultInstance() : key_;
+        }
+      }
+      /**
+       * <code>.qorechain.pqc.v1.KEMKeyView key = 2 [json_name = "key"];</code>
+       */
+      private com.google.protobuf.SingleFieldBuilder<
+          qorechain.pqc.v1.QueryOuterClass.KEMKeyView, qorechain.pqc.v1.QueryOuterClass.KEMKeyView.Builder, qorechain.pqc.v1.QueryOuterClass.KEMKeyViewOrBuilder> 
+          internalGetKeyFieldBuilder() {
+        if (keyBuilder_ == null) {
+          keyBuilder_ = new com.google.protobuf.SingleFieldBuilder<
+              qorechain.pqc.v1.QueryOuterClass.KEMKeyView, qorechain.pqc.v1.QueryOuterClass.KEMKeyView.Builder, qorechain.pqc.v1.QueryOuterClass.KEMKeyViewOrBuilder>(
+                  getKey(),
+                  getParentForChildren(),
+                  isClean());
+          key_ = null;
+        }
+        return keyBuilder_;
+      }
+
+      // @@protoc_insertion_point(builder_scope:qorechain.pqc.v1.QueryKEMKeyResponse)
+    }
+
+    // @@protoc_insertion_point(class_scope:qorechain.pqc.v1.QueryKEMKeyResponse)
+    private static final qorechain.pqc.v1.QueryOuterClass.QueryKEMKeyResponse DEFAULT_INSTANCE;
+    static {
+      DEFAULT_INSTANCE = new qorechain.pqc.v1.QueryOuterClass.QueryKEMKeyResponse();
+    }
+
+    public static qorechain.pqc.v1.QueryOuterClass.QueryKEMKeyResponse getDefaultInstance() {
+      return DEFAULT_INSTANCE;
+    }
+
+    private static final com.google.protobuf.Parser<QueryKEMKeyResponse>
+        PARSER = new com.google.protobuf.AbstractParser<QueryKEMKeyResponse>() {
+      @java.lang.Override
+      public QueryKEMKeyResponse parsePartialFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        Builder builder = newBuilder();
+        try {
+          builder.mergeFrom(input, extensionRegistry);
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          throw e.setUnfinishedMessage(builder.buildPartial());
+        } catch (com.google.protobuf.UninitializedMessageException e) {
+          throw e.asInvalidProtocolBufferException().setUnfinishedMessage(builder.buildPartial());
+        } catch (java.io.IOException e) {
+          throw new com.google.protobuf.InvalidProtocolBufferException(e)
+              .setUnfinishedMessage(builder.buildPartial());
+        }
+        return builder.buildPartial();
+      }
+    };
+
+    public static com.google.protobuf.Parser<QueryKEMKeyResponse> parser() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Parser<QueryKEMKeyResponse> getParserForType() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public qorechain.pqc.v1.QueryOuterClass.QueryKEMKeyResponse getDefaultInstanceForType() {
+      return DEFAULT_INSTANCE;
+    }
+
+  }
+
+  public interface KEMKeyViewOrBuilder extends
+      // @@protoc_insertion_point(interface_extends:qorechain.pqc.v1.KEMKeyView)
+      com.google.protobuf.MessageOrBuilder {
+
+    /**
+     * <pre>
+     * address is the bech32 account address that published the key.
+     * </pre>
+     *
+     * <code>string address = 1 [json_name = "address"];</code>
+     * @return The address.
+     */
+    java.lang.String getAddress();
+    /**
+     * <pre>
+     * address is the bech32 account address that published the key.
+     * </pre>
+     *
+     * <code>string address = 1 [json_name = "address"];</code>
+     * @return The bytes for address.
+     */
+    com.google.protobuf.ByteString
+        getAddressBytes();
+
+    /**
+     * <code>uint32 algorithm_id = 2 [json_name = "algorithmId"];</code>
+     * @return The algorithmId.
+     */
+    int getAlgorithmId();
+
+    /**
+     * <code>string algorithm_name = 3 [json_name = "algorithmName"];</code>
+     * @return The algorithmName.
+     */
+    java.lang.String getAlgorithmName();
+    /**
+     * <code>string algorithm_name = 3 [json_name = "algorithmName"];</code>
+     * @return The bytes for algorithmName.
+     */
+    com.google.protobuf.ByteString
+        getAlgorithmNameBytes();
+
+    /**
+     * <code>bytes public_key = 4 [json_name = "publicKey"];</code>
+     * @return The publicKey.
+     */
+    com.google.protobuf.ByteString getPublicKey();
+
+    /**
+     * <pre>
+     * registered_height is the height of the registration that published this
+     * key (a replacement resets it).
+     * </pre>
+     *
+     * <code>int64 registered_height = 5 [json_name = "registeredHeight"];</code>
+     * @return The registeredHeight.
+     */
+    long getRegisteredHeight();
+  }
+  /**
+   * <pre>
+   * KEMKeyView is the query-facing view of a published KEM key.
+   * </pre>
+   *
+   * Protobuf type {@code qorechain.pqc.v1.KEMKeyView}
+   */
+  public static final class KEMKeyView extends
+      com.google.protobuf.GeneratedMessage implements
+      // @@protoc_insertion_point(message_implements:qorechain.pqc.v1.KEMKeyView)
+      KEMKeyViewOrBuilder {
+  private static final long serialVersionUID = 0L;
+    static {
+      com.google.protobuf.RuntimeVersion.validateProtobufGencodeVersion(
+        com.google.protobuf.RuntimeVersion.RuntimeDomain.PUBLIC,
+        /* major= */ 4,
+        /* minor= */ 35,
+        /* patch= */ 1,
+        /* suffix= */ "",
+        "KEMKeyView");
+    }
+    // Use KEMKeyView.newBuilder() to construct.
+    private KEMKeyView(com.google.protobuf.GeneratedMessage.Builder<?> builder) {
+      super(builder);
+    }
+    private KEMKeyView() {
+      address_ = "";
+      algorithmName_ = "";
+      publicKey_ = com.google.protobuf.ByteString.EMPTY;
+    }
+
+    public static final com.google.protobuf.Descriptors.Descriptor
+        getDescriptor() {
+      return qorechain.pqc.v1.QueryOuterClass.internal_static_qorechain_pqc_v1_KEMKeyView_descriptor;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Descriptors.Descriptor getDescriptorForType() {
+      return qorechain.pqc.v1.QueryOuterClass.internal_static_qorechain_pqc_v1_KEMKeyView_descriptor;
+    }
+
+    @java.lang.Override
+    protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+        internalGetFieldAccessorTable() {
+      return qorechain.pqc.v1.QueryOuterClass.internal_static_qorechain_pqc_v1_KEMKeyView_fieldAccessorTable
+          .ensureFieldAccessorsInitialized(
+              qorechain.pqc.v1.QueryOuterClass.KEMKeyView.class, qorechain.pqc.v1.QueryOuterClass.KEMKeyView.Builder.class);
+    }
+
+    public static final int ADDRESS_FIELD_NUMBER = 1;
+    @SuppressWarnings("serial")
+    private volatile java.lang.Object address_ = "";
+    /**
+     * <pre>
+     * address is the bech32 account address that published the key.
+     * </pre>
+     *
+     * <code>string address = 1 [json_name = "address"];</code>
+     * @return The address.
+     */
+    @java.lang.Override
+    public java.lang.String getAddress() {
+      java.lang.Object ref = address_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        address_ = s;
+        return s;
+      }
+    }
+    /**
+     * <pre>
+     * address is the bech32 account address that published the key.
+     * </pre>
+     *
+     * <code>string address = 1 [json_name = "address"];</code>
+     * @return The bytes for address.
+     */
+    @java.lang.Override
+    public com.google.protobuf.ByteString
+        getAddressBytes() {
+      java.lang.Object ref = address_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        address_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
+    public static final int ALGORITHM_ID_FIELD_NUMBER = 2;
+    private int algorithmId_ = 0;
+    /**
+     * <code>uint32 algorithm_id = 2 [json_name = "algorithmId"];</code>
+     * @return The algorithmId.
+     */
+    @java.lang.Override
+    public int getAlgorithmId() {
+      return algorithmId_;
+    }
+
+    public static final int ALGORITHM_NAME_FIELD_NUMBER = 3;
+    @SuppressWarnings("serial")
+    private volatile java.lang.Object algorithmName_ = "";
+    /**
+     * <code>string algorithm_name = 3 [json_name = "algorithmName"];</code>
+     * @return The algorithmName.
+     */
+    @java.lang.Override
+    public java.lang.String getAlgorithmName() {
+      java.lang.Object ref = algorithmName_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        algorithmName_ = s;
+        return s;
+      }
+    }
+    /**
+     * <code>string algorithm_name = 3 [json_name = "algorithmName"];</code>
+     * @return The bytes for algorithmName.
+     */
+    @java.lang.Override
+    public com.google.protobuf.ByteString
+        getAlgorithmNameBytes() {
+      java.lang.Object ref = algorithmName_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        algorithmName_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
+    public static final int PUBLIC_KEY_FIELD_NUMBER = 4;
+    private com.google.protobuf.ByteString publicKey_ = com.google.protobuf.ByteString.EMPTY;
+    /**
+     * <code>bytes public_key = 4 [json_name = "publicKey"];</code>
+     * @return The publicKey.
+     */
+    @java.lang.Override
+    public com.google.protobuf.ByteString getPublicKey() {
+      return publicKey_;
+    }
+
+    public static final int REGISTERED_HEIGHT_FIELD_NUMBER = 5;
+    private long registeredHeight_ = 0L;
+    /**
+     * <pre>
+     * registered_height is the height of the registration that published this
+     * key (a replacement resets it).
+     * </pre>
+     *
+     * <code>int64 registered_height = 5 [json_name = "registeredHeight"];</code>
+     * @return The registeredHeight.
+     */
+    @java.lang.Override
+    public long getRegisteredHeight() {
+      return registeredHeight_;
+    }
+
+    private byte memoizedIsInitialized = -1;
+    @java.lang.Override
+    public final boolean isInitialized() {
+      byte isInitialized = memoizedIsInitialized;
+      if (isInitialized == 1) return true;
+      if (isInitialized == 0) return false;
+
+      memoizedIsInitialized = 1;
+      return true;
+    }
+
+    @java.lang.Override
+    public void writeTo(com.google.protobuf.CodedOutputStream output)
+                        throws java.io.IOException {
+      if (!com.google.protobuf.GeneratedMessage.isStringEmpty(address_)) {
+        com.google.protobuf.GeneratedMessage.writeString(output, 1, address_);
+      }
+      if (algorithmId_ != 0) {
+        output.writeUInt32(2, algorithmId_);
+      }
+      if (!com.google.protobuf.GeneratedMessage.isStringEmpty(algorithmName_)) {
+        com.google.protobuf.GeneratedMessage.writeString(output, 3, algorithmName_);
+      }
+      if (!publicKey_.isEmpty()) {
+        output.writeBytes(4, publicKey_);
+      }
+      if (registeredHeight_ != 0L) {
+        output.writeInt64(5, registeredHeight_);
+      }
+      getUnknownFields().writeTo(output);
+    }
+    private int computeSerializedSize_0() {
+      int size = 0;
+      if (!com.google.protobuf.GeneratedMessage.isStringEmpty(address_)) {
+        size += com.google.protobuf.GeneratedMessage.computeStringSize(1, address_);
+      }
+      if (algorithmId_ != 0) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeUInt32Size(2, algorithmId_);
+      }
+      if (!com.google.protobuf.GeneratedMessage.isStringEmpty(algorithmName_)) {
+        size += com.google.protobuf.GeneratedMessage.computeStringSize(3, algorithmName_);
+      }
+      if (!publicKey_.isEmpty()) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeBytesSize(4, publicKey_);
+      }
+      if (registeredHeight_ != 0L) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeInt64Size(5, registeredHeight_);
+      }
+      return size;
+    }
+    @java.lang.Override
+    public int getSerializedSize() {
+      int size = memoizedSize;
+      if (size != -1) return size;
+
+      size = 0;
+      size += computeSerializedSize_0();
+      size += getUnknownFields().getSerializedSize();
+      memoizedSize = size;
+      return size;
+    }
+
+    @java.lang.Override
+    public boolean equals(final java.lang.Object obj) {
+      if (obj == this) {
+       return true;
+      }
+      if (!(obj instanceof qorechain.pqc.v1.QueryOuterClass.KEMKeyView)) {
+        return super.equals(obj);
+      }
+      qorechain.pqc.v1.QueryOuterClass.KEMKeyView other = (qorechain.pqc.v1.QueryOuterClass.KEMKeyView) obj;
+
+      if (!getAddress()
+          .equals(other.getAddress())) return false;
+      if (getAlgorithmId()
+          != other.getAlgorithmId()) return false;
+      if (!getAlgorithmName()
+          .equals(other.getAlgorithmName())) return false;
+      if (!getPublicKey()
+          .equals(other.getPublicKey())) return false;
+      if (getRegisteredHeight()
+          != other.getRegisteredHeight()) return false;
+      if (!getUnknownFields().equals(other.getUnknownFields())) return false;
+      return true;
+    }
+
+    @java.lang.Override
+    public int hashCode() {
+      if (memoizedHashCode != 0) {
+        return memoizedHashCode;
+      }
+      int hash = 41;
+      hash = (19 * hash) + getDescriptor().hashCode();
+      hash = (37 * hash) + ADDRESS_FIELD_NUMBER;
+      hash = (53 * hash) + getAddress().hashCode();
+      hash = (37 * hash) + ALGORITHM_ID_FIELD_NUMBER;
+      hash = (53 * hash) + getAlgorithmId();
+      hash = (37 * hash) + ALGORITHM_NAME_FIELD_NUMBER;
+      hash = (53 * hash) + getAlgorithmName().hashCode();
+      hash = (37 * hash) + PUBLIC_KEY_FIELD_NUMBER;
+      hash = (53 * hash) + getPublicKey().hashCode();
+      hash = (37 * hash) + REGISTERED_HEIGHT_FIELD_NUMBER;
+      hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
+          getRegisteredHeight());
+      hash = (29 * hash) + getUnknownFields().hashCode();
+      memoizedHashCode = hash;
+      return hash;
+    }
+
+    public static qorechain.pqc.v1.QueryOuterClass.KEMKeyView parseFrom(
+        java.nio.ByteBuffer data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static qorechain.pqc.v1.QueryOuterClass.KEMKeyView parseFrom(
+        java.nio.ByteBuffer data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static qorechain.pqc.v1.QueryOuterClass.KEMKeyView parseFrom(
+        com.google.protobuf.ByteString data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static qorechain.pqc.v1.QueryOuterClass.KEMKeyView parseFrom(
+        com.google.protobuf.ByteString data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static qorechain.pqc.v1.QueryOuterClass.KEMKeyView parseFrom(byte[] data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static qorechain.pqc.v1.QueryOuterClass.KEMKeyView parseFrom(
+        byte[] data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static qorechain.pqc.v1.QueryOuterClass.KEMKeyView parseFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input);
+    }
+    public static qorechain.pqc.v1.QueryOuterClass.KEMKeyView parseFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    public static qorechain.pqc.v1.QueryOuterClass.KEMKeyView parseDelimitedFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseDelimitedWithIOException(PARSER, input);
+    }
+
+    public static qorechain.pqc.v1.QueryOuterClass.KEMKeyView parseDelimitedFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static qorechain.pqc.v1.QueryOuterClass.KEMKeyView parseFrom(
+        com.google.protobuf.CodedInputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input);
+    }
+    public static qorechain.pqc.v1.QueryOuterClass.KEMKeyView parseFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    @java.lang.Override
+    public Builder newBuilderForType() { return newBuilder(); }
+    public static Builder newBuilder() {
+      return DEFAULT_INSTANCE.toBuilder();
+    }
+    public static Builder newBuilder(qorechain.pqc.v1.QueryOuterClass.KEMKeyView prototype) {
+      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+    }
+    @java.lang.Override
+    public Builder toBuilder() {
+      return this == DEFAULT_INSTANCE
+          ? new Builder() : new Builder().mergeFrom(this);
+    }
+
+    @java.lang.Override
+    protected Builder newBuilderForType(
+        com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+      Builder builder = new Builder(parent);
+      return builder;
+    }
+    /**
+     * <pre>
+     * KEMKeyView is the query-facing view of a published KEM key.
+     * </pre>
+     *
+     * Protobuf type {@code qorechain.pqc.v1.KEMKeyView}
+     */
+    public static final class Builder extends
+        com.google.protobuf.GeneratedMessage.Builder<Builder> implements
+        // @@protoc_insertion_point(builder_implements:qorechain.pqc.v1.KEMKeyView)
+        qorechain.pqc.v1.QueryOuterClass.KEMKeyViewOrBuilder {
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return qorechain.pqc.v1.QueryOuterClass.internal_static_qorechain_pqc_v1_KEMKeyView_descriptor;
+      }
+
+      @java.lang.Override
+      protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return qorechain.pqc.v1.QueryOuterClass.internal_static_qorechain_pqc_v1_KEMKeyView_fieldAccessorTable
+            .ensureFieldAccessorsInitialized(
+                qorechain.pqc.v1.QueryOuterClass.KEMKeyView.class, qorechain.pqc.v1.QueryOuterClass.KEMKeyView.Builder.class);
+      }
+
+      // Construct using qorechain.pqc.v1.QueryOuterClass.KEMKeyView.newBuilder()
+      private Builder() {
+
+      }
+
+      private Builder(
+          com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+        super(parent);
+
+      }
+      @java.lang.Override
+      public Builder clear() {
+        super.clear();
+        bitField0_ = 0;
+        address_ = "";
+        algorithmId_ = 0;
+        algorithmName_ = "";
+        publicKey_ = com.google.protobuf.ByteString.EMPTY;
+        registeredHeight_ = 0L;
+        return this;
+      }
+
+      @java.lang.Override
+      public com.google.protobuf.Descriptors.Descriptor
+          getDescriptorForType() {
+        return qorechain.pqc.v1.QueryOuterClass.internal_static_qorechain_pqc_v1_KEMKeyView_descriptor;
+      }
+
+      @java.lang.Override
+      public qorechain.pqc.v1.QueryOuterClass.KEMKeyView getDefaultInstanceForType() {
+        return qorechain.pqc.v1.QueryOuterClass.KEMKeyView.getDefaultInstance();
+      }
+
+      @java.lang.Override
+      public qorechain.pqc.v1.QueryOuterClass.KEMKeyView build() {
+        qorechain.pqc.v1.QueryOuterClass.KEMKeyView result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(result);
+        }
+        return result;
+      }
+
+      @java.lang.Override
+      public qorechain.pqc.v1.QueryOuterClass.KEMKeyView buildPartial() {
+        qorechain.pqc.v1.QueryOuterClass.KEMKeyView result = new qorechain.pqc.v1.QueryOuterClass.KEMKeyView(this);
+        if (bitField0_ != 0) { buildPartial0(result); }
+        onBuilt();
+        return result;
+      }
+
+      private void buildPartial0(qorechain.pqc.v1.QueryOuterClass.KEMKeyView result) {
+        int from_bitField0_ = bitField0_;
+        if (((from_bitField0_ & 0x00000001) != 0)) {
+          result.address_ = address_;
+        }
+        if (((from_bitField0_ & 0x00000002) != 0)) {
+          result.algorithmId_ = algorithmId_;
+        }
+        if (((from_bitField0_ & 0x00000004) != 0)) {
+          result.algorithmName_ = algorithmName_;
+        }
+        if (((from_bitField0_ & 0x00000008) != 0)) {
+          result.publicKey_ = publicKey_;
+        }
+        if (((from_bitField0_ & 0x00000010) != 0)) {
+          result.registeredHeight_ = registeredHeight_;
+        }
+      }
+
+      @java.lang.Override
+      public Builder mergeFrom(com.google.protobuf.Message other) {
+        if (other instanceof qorechain.pqc.v1.QueryOuterClass.KEMKeyView) {
+          return mergeFrom((qorechain.pqc.v1.QueryOuterClass.KEMKeyView)other);
+        } else {
+          super.mergeFrom(other);
+          return this;
+        }
+      }
+
+      public Builder mergeFrom(qorechain.pqc.v1.QueryOuterClass.KEMKeyView other) {
+        if (other == qorechain.pqc.v1.QueryOuterClass.KEMKeyView.getDefaultInstance()) return this;
+        if (!other.getAddress().isEmpty()) {
+          address_ = other.address_;
+          bitField0_ |= 0x00000001;
+          onChanged();
+        }
+        if (other.getAlgorithmId() != 0) {
+          setAlgorithmId(other.getAlgorithmId());
+        }
+        if (!other.getAlgorithmName().isEmpty()) {
+          algorithmName_ = other.algorithmName_;
+          bitField0_ |= 0x00000004;
+          onChanged();
+        }
+        if (!other.getPublicKey().isEmpty()) {
+          setPublicKey(other.getPublicKey());
+        }
+        if (other.getRegisteredHeight() != 0L) {
+          setRegisteredHeight(other.getRegisteredHeight());
+        }
+        this.mergeUnknownFields(other.getUnknownFields());
+        onChanged();
+        return this;
+      }
+
+      @java.lang.Override
+      public final boolean isInitialized() {
+        return true;
+      }
+
+      @java.lang.Override
+      public Builder mergeFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        if (extensionRegistry == null) {
+          throw new java.lang.NullPointerException();
+        }
+        try {
+          boolean done = false;
+          while (!done) {
+            int tag = input.readTag();
+            switch (tag) {
+              case 0:
+                done = true;
+                break;
+              case 10: {
+                address_ = input.readStringRequireUtf8();
+                bitField0_ |= 0x00000001;
+                break;
+              } // case 10
+              case 16: {
+                algorithmId_ = input.readUInt32();
+                bitField0_ |= 0x00000002;
+                break;
+              } // case 16
+              case 26: {
+                algorithmName_ = input.readStringRequireUtf8();
+                bitField0_ |= 0x00000004;
+                break;
+              } // case 26
+              case 34: {
+                publicKey_ = input.readBytes();
+                bitField0_ |= 0x00000008;
+                break;
+              } // case 34
+              case 40: {
+                registeredHeight_ = input.readInt64();
+                bitField0_ |= 0x00000010;
+                break;
+              } // case 40
+              default: {
+                if (!super.parseUnknownField(input, extensionRegistry, tag)) {
+                  done = true; // was an endgroup tag
+                }
+                break;
+              } // default:
+            } // switch (tag)
+          } // while (!done)
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          throw e.unwrapIOException();
+        } finally {
+          onChanged();
+        } // finally
+        return this;
+      }
+      private int bitField0_;
+
+      private java.lang.Object address_ = "";
+      /**
+       * <pre>
+       * address is the bech32 account address that published the key.
+       * </pre>
+       *
+       * <code>string address = 1 [json_name = "address"];</code>
+       * @return The address.
+       */
+      public java.lang.String getAddress() {
+        java.lang.Object ref = address_;
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          address_ = s;
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
+      }
+      /**
+       * <pre>
+       * address is the bech32 account address that published the key.
+       * </pre>
+       *
+       * <code>string address = 1 [json_name = "address"];</code>
+       * @return The bytes for address.
+       */
+      public com.google.protobuf.ByteString
+          getAddressBytes() {
+        java.lang.Object ref = address_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          address_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <pre>
+       * address is the bech32 account address that published the key.
+       * </pre>
+       *
+       * <code>string address = 1 [json_name = "address"];</code>
+       * @param value The address to set.
+       * @return This builder for chaining.
+       */
+      public Builder setAddress(
+          java.lang.String value) {
+        if (value == null) { throw new NullPointerException(); }
+        address_ = value;
+        bitField0_ |= 0x00000001;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * address is the bech32 account address that published the key.
+       * </pre>
+       *
+       * <code>string address = 1 [json_name = "address"];</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearAddress() {
+        address_ = getDefaultInstance().getAddress();
+        bitField0_ = (bitField0_ & ~0x00000001);
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * address is the bech32 account address that published the key.
+       * </pre>
+       *
+       * <code>string address = 1 [json_name = "address"];</code>
+       * @param value The bytes for address to set.
+       * @return This builder for chaining.
+       */
+      public Builder setAddressBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) { throw new NullPointerException(); }
+        checkByteStringIsUtf8(value);
+        address_ = value;
+        bitField0_ |= 0x00000001;
+        onChanged();
+        return this;
+      }
+
+      private int algorithmId_ ;
+      /**
+       * <code>uint32 algorithm_id = 2 [json_name = "algorithmId"];</code>
+       * @return The algorithmId.
+       */
+      @java.lang.Override
+      public int getAlgorithmId() {
+        return algorithmId_;
+      }
+      /**
+       * <code>uint32 algorithm_id = 2 [json_name = "algorithmId"];</code>
+       * @param value The algorithmId to set.
+       * @return This builder for chaining.
+       */
+      public Builder setAlgorithmId(int value) {
+
+        algorithmId_ = value;
+        bitField0_ |= 0x00000002;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>uint32 algorithm_id = 2 [json_name = "algorithmId"];</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearAlgorithmId() {
+        bitField0_ = (bitField0_ & ~0x00000002);
+        algorithmId_ = 0;
+        onChanged();
+        return this;
+      }
+
+      private java.lang.Object algorithmName_ = "";
+      /**
+       * <code>string algorithm_name = 3 [json_name = "algorithmName"];</code>
+       * @return The algorithmName.
+       */
+      public java.lang.String getAlgorithmName() {
+        java.lang.Object ref = algorithmName_;
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          algorithmName_ = s;
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
+      }
+      /**
+       * <code>string algorithm_name = 3 [json_name = "algorithmName"];</code>
+       * @return The bytes for algorithmName.
+       */
+      public com.google.protobuf.ByteString
+          getAlgorithmNameBytes() {
+        java.lang.Object ref = algorithmName_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          algorithmName_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <code>string algorithm_name = 3 [json_name = "algorithmName"];</code>
+       * @param value The algorithmName to set.
+       * @return This builder for chaining.
+       */
+      public Builder setAlgorithmName(
+          java.lang.String value) {
+        if (value == null) { throw new NullPointerException(); }
+        algorithmName_ = value;
+        bitField0_ |= 0x00000004;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>string algorithm_name = 3 [json_name = "algorithmName"];</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearAlgorithmName() {
+        algorithmName_ = getDefaultInstance().getAlgorithmName();
+        bitField0_ = (bitField0_ & ~0x00000004);
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>string algorithm_name = 3 [json_name = "algorithmName"];</code>
+       * @param value The bytes for algorithmName to set.
+       * @return This builder for chaining.
+       */
+      public Builder setAlgorithmNameBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) { throw new NullPointerException(); }
+        checkByteStringIsUtf8(value);
+        algorithmName_ = value;
+        bitField0_ |= 0x00000004;
+        onChanged();
+        return this;
+      }
+
+      private com.google.protobuf.ByteString publicKey_ = com.google.protobuf.ByteString.EMPTY;
+      /**
+       * <code>bytes public_key = 4 [json_name = "publicKey"];</code>
+       * @return The publicKey.
+       */
+      @java.lang.Override
+      public com.google.protobuf.ByteString getPublicKey() {
+        return publicKey_;
+      }
+      /**
+       * <code>bytes public_key = 4 [json_name = "publicKey"];</code>
+       * @param value The publicKey to set.
+       * @return This builder for chaining.
+       */
+      public Builder setPublicKey(com.google.protobuf.ByteString value) {
+        if (value == null) { throw new NullPointerException(); }
+        publicKey_ = value;
+        bitField0_ |= 0x00000008;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>bytes public_key = 4 [json_name = "publicKey"];</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearPublicKey() {
+        bitField0_ = (bitField0_ & ~0x00000008);
+        publicKey_ = getDefaultInstance().getPublicKey();
+        onChanged();
+        return this;
+      }
+
+      private long registeredHeight_ ;
+      /**
+       * <pre>
+       * registered_height is the height of the registration that published this
+       * key (a replacement resets it).
+       * </pre>
+       *
+       * <code>int64 registered_height = 5 [json_name = "registeredHeight"];</code>
+       * @return The registeredHeight.
+       */
+      @java.lang.Override
+      public long getRegisteredHeight() {
+        return registeredHeight_;
+      }
+      /**
+       * <pre>
+       * registered_height is the height of the registration that published this
+       * key (a replacement resets it).
+       * </pre>
+       *
+       * <code>int64 registered_height = 5 [json_name = "registeredHeight"];</code>
+       * @param value The registeredHeight to set.
+       * @return This builder for chaining.
+       */
+      public Builder setRegisteredHeight(long value) {
+
+        registeredHeight_ = value;
+        bitField0_ |= 0x00000010;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * registered_height is the height of the registration that published this
+       * key (a replacement resets it).
+       * </pre>
+       *
+       * <code>int64 registered_height = 5 [json_name = "registeredHeight"];</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearRegisteredHeight() {
+        bitField0_ = (bitField0_ & ~0x00000010);
+        registeredHeight_ = 0L;
+        onChanged();
+        return this;
+      }
+
+      // @@protoc_insertion_point(builder_scope:qorechain.pqc.v1.KEMKeyView)
+    }
+
+    // @@protoc_insertion_point(class_scope:qorechain.pqc.v1.KEMKeyView)
+    private static final qorechain.pqc.v1.QueryOuterClass.KEMKeyView DEFAULT_INSTANCE;
+    static {
+      DEFAULT_INSTANCE = new qorechain.pqc.v1.QueryOuterClass.KEMKeyView();
+    }
+
+    public static qorechain.pqc.v1.QueryOuterClass.KEMKeyView getDefaultInstance() {
+      return DEFAULT_INSTANCE;
+    }
+
+    private static final com.google.protobuf.Parser<KEMKeyView>
+        PARSER = new com.google.protobuf.AbstractParser<KEMKeyView>() {
+      @java.lang.Override
+      public KEMKeyView parsePartialFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        Builder builder = newBuilder();
+        try {
+          builder.mergeFrom(input, extensionRegistry);
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          throw e.setUnfinishedMessage(builder.buildPartial());
+        } catch (com.google.protobuf.UninitializedMessageException e) {
+          throw e.asInvalidProtocolBufferException().setUnfinishedMessage(builder.buildPartial());
+        } catch (java.io.IOException e) {
+          throw new com.google.protobuf.InvalidProtocolBufferException(e)
+              .setUnfinishedMessage(builder.buildPartial());
+        }
+        return builder.buildPartial();
+      }
+    };
+
+    public static com.google.protobuf.Parser<KEMKeyView> parser() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Parser<KEMKeyView> getParserForType() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public qorechain.pqc.v1.QueryOuterClass.KEMKeyView getDefaultInstanceForType() {
+      return DEFAULT_INSTANCE;
+    }
+
+  }
+
   public interface QueryProtocolFeaturesRequestOrBuilder extends
       // @@protoc_insertion_point(interface_extends:qorechain.pqc.v1.QueryProtocolFeaturesRequest)
       com.google.protobuf.MessageOrBuilder {
@@ -8858,6 +11039,21 @@ public final class QueryOuterClass extends com.google.protobuf.GeneratedFile {
   }
 
   private static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_qorechain_pqc_v1_QueryKEMKeyRequest_descriptor;
+  private static final 
+    com.google.protobuf.GeneratedMessage.FieldAccessorTable
+      internal_static_qorechain_pqc_v1_QueryKEMKeyRequest_fieldAccessorTable;
+  private static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_qorechain_pqc_v1_QueryKEMKeyResponse_descriptor;
+  private static final 
+    com.google.protobuf.GeneratedMessage.FieldAccessorTable
+      internal_static_qorechain_pqc_v1_QueryKEMKeyResponse_fieldAccessorTable;
+  private static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_qorechain_pqc_v1_KEMKeyView_descriptor;
+  private static final 
+    com.google.protobuf.GeneratedMessage.FieldAccessorTable
+      internal_static_qorechain_pqc_v1_KEMKeyView_fieldAccessorTable;
+  private static final com.google.protobuf.Descriptors.Descriptor
     internal_static_qorechain_pqc_v1_QueryProtocolFeaturesRequest_descriptor;
   private static final 
     com.google.protobuf.GeneratedMessage.FieldAccessorTable
@@ -8917,129 +11113,159 @@ public final class QueryOuterClass extends com.google.protobuf.GeneratedFile {
   static {
     java.lang.String[] descriptorData = {
       "\n\034qorechain/pqc/v1/query.proto\022\020qorechai" +
-      "n.pqc.v1\032\034google/api/annotations.proto\"\036" +
-      "\n\034QueryProtocolFeaturesRequest\"s\n\025Protoc" +
-      "olFeatureStatus\022\022\n\004name\030\001 \001(\tR\004name\022\030\n\007e" +
-      "nabled\030\002 \001(\010R\007enabled\022\024\n\005known\030\003 \001(\010R\005kn" +
-      "own\022\026\n\006staged\030\004 \001(\010R\006staged\"|\n\035QueryProt" +
-      "ocolFeaturesResponse\022C\n\010features\030\001 \003(\0132\'" +
-      ".qorechain.pqc.v1.ProtocolFeatureStatusR" +
-      "\010features\022\026\n\006height\030\002 \001(\003R\006height\"<\n Que" +
-      "ryEVMDelegationConsentRequest\022\030\n\007address" +
-      "\030\001 \001(\tR\007address\"\366\001\n!QueryEVMDelegationCo" +
-      "nsentResponse\022\024\n\005found\030\001 \001(\010R\005found\022\022\n\004l" +
-      "ive\030\002 \001(\010R\004live\022\032\n\010delegate\030\003 \001(\tR\010deleg" +
-      "ate\022%\n\016granted_height\030\004 \001(\004R\rgrantedHeig" +
-      "ht\022#\n\rexpiry_height\030\005 \001(\004R\014expiryHeight\022" +
-      ")\n\020current_delegate\030\006 \001(\tR\017currentDelega" +
-      "te\022\024\n\005nonce\030\007 \001(\004R\005nonce\"1\n\025QueryEVMWind" +
-      "owRequest\022\030\n\007address\030\001 \001(\tR\007address\"\277\003\n\026" +
-      "QueryEVMWindowResponse\022\024\n\005found\030\001 \001(\010R\005f" +
-      "ound\022\022\n\004live\030\002 \001(\010R\004live\022#\n\ropened_heigh" +
-      "t\030\003 \001(\004R\014openedHeight\022#\n\rexpiry_height\030\004" +
-      " \001(\004R\014expiryHeight\022\027\n\007max_txs\030\005 \001(\004R\006max" +
-      "Txs\022\031\n\010used_txs\030\006 \001(\004R\007usedTxs\022\033\n\tmax_va" +
-      "lue\030\007 \001(\tR\010maxValue\022\035\n\nused_value\030\010 \001(\tR" +
-      "\tusedValue\022)\n\020remaining_blocks\030\t \001(\004R\017re" +
-      "mainingBlocks\022#\n\rremaining_txs\030\n \001(\004R\014re" +
-      "mainingTxs\022\'\n\017remaining_value\030\013 \001(\tR\016rem" +
-      "ainingValue\022\037\n\013native_only\030\014 \001(\010R\nnative" +
-      "Only\022\'\n\017allowed_targets\030\r \003(\tR\016allowedTa" +
-      "rgets\"/\n\023QueryAccountRequest\022\030\n\007address\030" +
-      "\001 \001(\tR\007address\"h\n\024QueryAccountResponse\022\024" +
-      "\n\005found\030\001 \001(\010R\005found\022:\n\007account\030\002 \001(\0132 ." +
-      "qorechain.pqc.v1.PQCAccountViewR\007account" +
-      "\"\304\003\n\016PQCAccountView\022\030\n\007address\030\001 \001(\tR\007ad" +
-      "dress\022\035\n\npublic_key\030\002 \001(\014R\tpublicKey\022!\n\014" +
-      "algorithm_id\030\003 \001(\rR\013algorithmId\022%\n\016algor" +
-      "ithm_name\030\004 \001(\tR\ralgorithmName\022!\n\014ecdsa_" +
-      "pubkey\030\005 \001(\014R\013ecdsaPubkey\022\031\n\010key_type\030\006 " +
-      "\001(\tR\007keyType\022*\n\021created_at_height\030\007 \001(\003R" +
-      "\017createdAtHeight\0220\n\024migration_public_key" +
-      "\030\010 \001(\014R\022migrationPublicKey\0224\n\026migration_" +
-      "algorithm_id\030\t \001(\rR\024migrationAlgorithmId" +
-      "\0220\n\024classical_key_source\030\n \001(\tR\022classica" +
-      "lKeySource\022+\n\021possession_proven\030\013 \001(\010R\020p" +
-      "ossessionProven2\201\005\n\005Query\022\205\001\n\007Account\022%." +
-      "qorechain.pqc.v1.QueryAccountRequest\032&.q" +
-      "orechain.pqc.v1.QueryAccountResponse\"+\202\323" +
-      "\344\223\002%\022#/qorechain/pqc/v1/account/{address" +
-      "}\022\216\001\n\tEVMWindow\022\'.qorechain.pqc.v1.Query" +
-      "EVMWindowRequest\032(.qorechain.pqc.v1.Quer" +
-      "yEVMWindowResponse\".\202\323\344\223\002(\022&/qorechain/p" +
-      "qc/v1/evm_window/{address}\022\273\001\n\024EVMDelega" +
-      "tionConsent\0222.qorechain.pqc.v1.QueryEVMD" +
-      "elegationConsentRequest\0323.qorechain.pqc." +
-      "v1.QueryEVMDelegationConsentResponse\":\202\323" +
-      "\344\223\0024\0222/qorechain/pqc/v1/evm_delegation_c" +
-      "onsent/{address}\022\240\001\n\020ProtocolFeatures\022.." +
-      "qorechain.pqc.v1.QueryProtocolFeaturesRe" +
-      "quest\032/.qorechain.pqc.v1.QueryProtocolFe" +
-      "aturesResponse\"+\202\323\344\223\002%\022#/qorechain/pqc/v" +
-      "1/protocol_featuresB1Z/github.com/qorech" +
-      "ain/qorechain-core/x/pqc/typesb\006proto3"
+      "n.pqc.v1\032\034google/api/annotations.proto\"." +
+      "\n\022QueryKEMKeyRequest\022\030\n\007address\030\001 \001(\tR\007a" +
+      "ddress\"[\n\023QueryKEMKeyResponse\022\024\n\005found\030\001" +
+      " \001(\010R\005found\022.\n\003key\030\002 \001(\0132\034.qorechain.pqc" +
+      ".v1.KEMKeyViewR\003key\"\274\001\n\nKEMKeyView\022\030\n\007ad" +
+      "dress\030\001 \001(\tR\007address\022!\n\014algorithm_id\030\002 \001" +
+      "(\rR\013algorithmId\022%\n\016algorithm_name\030\003 \001(\tR" +
+      "\ralgorithmName\022\035\n\npublic_key\030\004 \001(\014R\tpubl" +
+      "icKey\022+\n\021registered_height\030\005 \001(\003R\020regist" +
+      "eredHeight\"\036\n\034QueryProtocolFeaturesReque" +
+      "st\"s\n\025ProtocolFeatureStatus\022\022\n\004name\030\001 \001(" +
+      "\tR\004name\022\030\n\007enabled\030\002 \001(\010R\007enabled\022\024\n\005kno" +
+      "wn\030\003 \001(\010R\005known\022\026\n\006staged\030\004 \001(\010R\006staged\"" +
+      "|\n\035QueryProtocolFeaturesResponse\022C\n\010feat" +
+      "ures\030\001 \003(\0132\'.qorechain.pqc.v1.ProtocolFe" +
+      "atureStatusR\010features\022\026\n\006height\030\002 \001(\003R\006h" +
+      "eight\"<\n QueryEVMDelegationConsentReques" +
+      "t\022\030\n\007address\030\001 \001(\tR\007address\"\366\001\n!QueryEVM" +
+      "DelegationConsentResponse\022\024\n\005found\030\001 \001(\010" +
+      "R\005found\022\022\n\004live\030\002 \001(\010R\004live\022\032\n\010delegate\030" +
+      "\003 \001(\tR\010delegate\022%\n\016granted_height\030\004 \001(\004R" +
+      "\rgrantedHeight\022#\n\rexpiry_height\030\005 \001(\004R\014e" +
+      "xpiryHeight\022)\n\020current_delegate\030\006 \001(\tR\017c" +
+      "urrentDelegate\022\024\n\005nonce\030\007 \001(\004R\005nonce\"1\n\025" +
+      "QueryEVMWindowRequest\022\030\n\007address\030\001 \001(\tR\007" +
+      "address\"\277\003\n\026QueryEVMWindowResponse\022\024\n\005fo" +
+      "und\030\001 \001(\010R\005found\022\022\n\004live\030\002 \001(\010R\004live\022#\n\r" +
+      "opened_height\030\003 \001(\004R\014openedHeight\022#\n\rexp" +
+      "iry_height\030\004 \001(\004R\014expiryHeight\022\027\n\007max_tx" +
+      "s\030\005 \001(\004R\006maxTxs\022\031\n\010used_txs\030\006 \001(\004R\007usedT" +
+      "xs\022\033\n\tmax_value\030\007 \001(\tR\010maxValue\022\035\n\nused_" +
+      "value\030\010 \001(\tR\tusedValue\022)\n\020remaining_bloc" +
+      "ks\030\t \001(\004R\017remainingBlocks\022#\n\rremaining_t" +
+      "xs\030\n \001(\004R\014remainingTxs\022\'\n\017remaining_valu" +
+      "e\030\013 \001(\tR\016remainingValue\022\037\n\013native_only\030\014" +
+      " \001(\010R\nnativeOnly\022\'\n\017allowed_targets\030\r \003(" +
+      "\tR\016allowedTargets\"/\n\023QueryAccountRequest" +
+      "\022\030\n\007address\030\001 \001(\tR\007address\"h\n\024QueryAccou" +
+      "ntResponse\022\024\n\005found\030\001 \001(\010R\005found\022:\n\007acco" +
+      "unt\030\002 \001(\0132 .qorechain.pqc.v1.PQCAccountV" +
+      "iewR\007account\"\304\003\n\016PQCAccountView\022\030\n\007addre" +
+      "ss\030\001 \001(\tR\007address\022\035\n\npublic_key\030\002 \001(\014R\tp" +
+      "ublicKey\022!\n\014algorithm_id\030\003 \001(\rR\013algorith" +
+      "mId\022%\n\016algorithm_name\030\004 \001(\tR\ralgorithmNa" +
+      "me\022!\n\014ecdsa_pubkey\030\005 \001(\014R\013ecdsaPubkey\022\031\n" +
+      "\010key_type\030\006 \001(\tR\007keyType\022*\n\021created_at_h" +
+      "eight\030\007 \001(\003R\017createdAtHeight\0220\n\024migratio" +
+      "n_public_key\030\010 \001(\014R\022migrationPublicKey\0224" +
+      "\n\026migration_algorithm_id\030\t \001(\rR\024migratio" +
+      "nAlgorithmId\0220\n\024classical_key_source\030\n \001" +
+      "(\tR\022classicalKeySource\022+\n\021possession_pro" +
+      "ven\030\013 \001(\010R\020possessionProven2\201\006\n\005Query\022\205\001" +
+      "\n\007Account\022%.qorechain.pqc.v1.QueryAccoun" +
+      "tRequest\032&.qorechain.pqc.v1.QueryAccount" +
+      "Response\"+\202\323\344\223\002%\022#/qorechain/pqc/v1/acco" +
+      "unt/{address}\022\216\001\n\tEVMWindow\022\'.qorechain." +
+      "pqc.v1.QueryEVMWindowRequest\032(.qorechain" +
+      ".pqc.v1.QueryEVMWindowResponse\".\202\323\344\223\002(\022&" +
+      "/qorechain/pqc/v1/evm_window/{address}\022\273" +
+      "\001\n\024EVMDelegationConsent\0222.qorechain.pqc." +
+      "v1.QueryEVMDelegationConsentRequest\0323.qo" +
+      "rechain.pqc.v1.QueryEVMDelegationConsent" +
+      "Response\":\202\323\344\223\0024\0222/qorechain/pqc/v1/evm_" +
+      "delegation_consent/{address}\022\240\001\n\020Protoco" +
+      "lFeatures\022..qorechain.pqc.v1.QueryProtoc" +
+      "olFeaturesRequest\032/.qorechain.pqc.v1.Que" +
+      "ryProtocolFeaturesResponse\"+\202\323\344\223\002%\022#/qor" +
+      "echain/pqc/v1/protocol_features\022~\n\006KEMKe" +
+      "y\022$.qorechain.pqc.v1.QueryKEMKeyRequest\032" +
+      "%.qorechain.pqc.v1.QueryKEMKeyResponse\"\'" +
+      "\202\323\344\223\002!\022\037/qorechain/pqc/v1/kem/{address}B" +
+      "1Z/github.com/qorechain/qorechain-core/x" +
+      "/pqc/typesb\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
         new com.google.protobuf.Descriptors.FileDescriptor[] {
           com.google.api.AnnotationsProto.getDescriptor(),
         });
-    internal_static_qorechain_pqc_v1_QueryProtocolFeaturesRequest_descriptor =
+    internal_static_qorechain_pqc_v1_QueryKEMKeyRequest_descriptor =
       getDescriptor().getMessageType(0);
+    internal_static_qorechain_pqc_v1_QueryKEMKeyRequest_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessage.FieldAccessorTable(
+        internal_static_qorechain_pqc_v1_QueryKEMKeyRequest_descriptor,
+        new java.lang.String[] { "Address", });
+    internal_static_qorechain_pqc_v1_QueryKEMKeyResponse_descriptor =
+      getDescriptor().getMessageType(1);
+    internal_static_qorechain_pqc_v1_QueryKEMKeyResponse_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessage.FieldAccessorTable(
+        internal_static_qorechain_pqc_v1_QueryKEMKeyResponse_descriptor,
+        new java.lang.String[] { "Found", "Key", });
+    internal_static_qorechain_pqc_v1_KEMKeyView_descriptor =
+      getDescriptor().getMessageType(2);
+    internal_static_qorechain_pqc_v1_KEMKeyView_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessage.FieldAccessorTable(
+        internal_static_qorechain_pqc_v1_KEMKeyView_descriptor,
+        new java.lang.String[] { "Address", "AlgorithmId", "AlgorithmName", "PublicKey", "RegisteredHeight", });
+    internal_static_qorechain_pqc_v1_QueryProtocolFeaturesRequest_descriptor =
+      getDescriptor().getMessageType(3);
     internal_static_qorechain_pqc_v1_QueryProtocolFeaturesRequest_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_qorechain_pqc_v1_QueryProtocolFeaturesRequest_descriptor,
         new java.lang.String[] { });
     internal_static_qorechain_pqc_v1_ProtocolFeatureStatus_descriptor =
-      getDescriptor().getMessageType(1);
+      getDescriptor().getMessageType(4);
     internal_static_qorechain_pqc_v1_ProtocolFeatureStatus_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_qorechain_pqc_v1_ProtocolFeatureStatus_descriptor,
         new java.lang.String[] { "Name", "Enabled", "Known", "Staged", });
     internal_static_qorechain_pqc_v1_QueryProtocolFeaturesResponse_descriptor =
-      getDescriptor().getMessageType(2);
+      getDescriptor().getMessageType(5);
     internal_static_qorechain_pqc_v1_QueryProtocolFeaturesResponse_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_qorechain_pqc_v1_QueryProtocolFeaturesResponse_descriptor,
         new java.lang.String[] { "Features", "Height", });
     internal_static_qorechain_pqc_v1_QueryEVMDelegationConsentRequest_descriptor =
-      getDescriptor().getMessageType(3);
+      getDescriptor().getMessageType(6);
     internal_static_qorechain_pqc_v1_QueryEVMDelegationConsentRequest_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_qorechain_pqc_v1_QueryEVMDelegationConsentRequest_descriptor,
         new java.lang.String[] { "Address", });
     internal_static_qorechain_pqc_v1_QueryEVMDelegationConsentResponse_descriptor =
-      getDescriptor().getMessageType(4);
+      getDescriptor().getMessageType(7);
     internal_static_qorechain_pqc_v1_QueryEVMDelegationConsentResponse_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_qorechain_pqc_v1_QueryEVMDelegationConsentResponse_descriptor,
         new java.lang.String[] { "Found", "Live", "Delegate", "GrantedHeight", "ExpiryHeight", "CurrentDelegate", "Nonce", });
     internal_static_qorechain_pqc_v1_QueryEVMWindowRequest_descriptor =
-      getDescriptor().getMessageType(5);
+      getDescriptor().getMessageType(8);
     internal_static_qorechain_pqc_v1_QueryEVMWindowRequest_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_qorechain_pqc_v1_QueryEVMWindowRequest_descriptor,
         new java.lang.String[] { "Address", });
     internal_static_qorechain_pqc_v1_QueryEVMWindowResponse_descriptor =
-      getDescriptor().getMessageType(6);
+      getDescriptor().getMessageType(9);
     internal_static_qorechain_pqc_v1_QueryEVMWindowResponse_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_qorechain_pqc_v1_QueryEVMWindowResponse_descriptor,
         new java.lang.String[] { "Found", "Live", "OpenedHeight", "ExpiryHeight", "MaxTxs", "UsedTxs", "MaxValue", "UsedValue", "RemainingBlocks", "RemainingTxs", "RemainingValue", "NativeOnly", "AllowedTargets", });
     internal_static_qorechain_pqc_v1_QueryAccountRequest_descriptor =
-      getDescriptor().getMessageType(7);
+      getDescriptor().getMessageType(10);
     internal_static_qorechain_pqc_v1_QueryAccountRequest_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_qorechain_pqc_v1_QueryAccountRequest_descriptor,
         new java.lang.String[] { "Address", });
     internal_static_qorechain_pqc_v1_QueryAccountResponse_descriptor =
-      getDescriptor().getMessageType(8);
+      getDescriptor().getMessageType(11);
     internal_static_qorechain_pqc_v1_QueryAccountResponse_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_qorechain_pqc_v1_QueryAccountResponse_descriptor,
         new java.lang.String[] { "Found", "Account", });
     internal_static_qorechain_pqc_v1_PQCAccountView_descriptor =
-      getDescriptor().getMessageType(9);
+      getDescriptor().getMessageType(12);
     internal_static_qorechain_pqc_v1_PQCAccountView_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_qorechain_pqc_v1_PQCAccountView_descriptor,

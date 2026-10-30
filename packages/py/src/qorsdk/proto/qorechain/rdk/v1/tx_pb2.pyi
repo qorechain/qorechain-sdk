@@ -151,3 +151,27 @@ class MsgExecuteWithdrawal(_message.Message):
 class MsgExecuteWithdrawalResponse(_message.Message):
     __slots__ = ()
     def __init__(self) -> None: ...
+
+class MsgUpdateParams(_message.Message):
+    __slots__ = ("authority", "max_rollups", "min_stake_for_rollup", "rollup_creation_burn_rate", "default_challenge_window", "max_da_blob_size", "blob_retention_blocks", "max_batches_per_block")
+    AUTHORITY_FIELD_NUMBER: _ClassVar[int]
+    MAX_ROLLUPS_FIELD_NUMBER: _ClassVar[int]
+    MIN_STAKE_FOR_ROLLUP_FIELD_NUMBER: _ClassVar[int]
+    ROLLUP_CREATION_BURN_RATE_FIELD_NUMBER: _ClassVar[int]
+    DEFAULT_CHALLENGE_WINDOW_FIELD_NUMBER: _ClassVar[int]
+    MAX_DA_BLOB_SIZE_FIELD_NUMBER: _ClassVar[int]
+    BLOB_RETENTION_BLOCKS_FIELD_NUMBER: _ClassVar[int]
+    MAX_BATCHES_PER_BLOCK_FIELD_NUMBER: _ClassVar[int]
+    authority: str
+    max_rollups: int
+    min_stake_for_rollup: int
+    rollup_creation_burn_rate: str
+    default_challenge_window: int
+    max_da_blob_size: int
+    blob_retention_blocks: int
+    max_batches_per_block: int
+    def __init__(self, authority: _Optional[str] = ..., max_rollups: _Optional[int] = ..., min_stake_for_rollup: _Optional[int] = ..., rollup_creation_burn_rate: _Optional[str] = ..., default_challenge_window: _Optional[int] = ..., max_da_blob_size: _Optional[int] = ..., blob_retention_blocks: _Optional[int] = ..., max_batches_per_block: _Optional[int] = ...) -> None: ...
+
+class MsgUpdateParamsResponse(_message.Message):
+    __slots__ = ()
+    def __init__(self) -> None: ...

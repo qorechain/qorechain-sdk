@@ -12055,6 +12055,2082 @@ public final class Tx extends com.google.protobuf.GeneratedFile {
 
   }
 
+  public interface MsgRegisterKEMKeyOrBuilder extends
+      // @@protoc_insertion_point(interface_extends:qorechain.pqc.v1.MsgRegisterKEMKey)
+      com.google.protobuf.MessageOrBuilder {
+
+    /**
+     * <code>string sender = 1 [json_name = "sender", (.cosmos_proto.scalar) = "cosmos.AddressString"];</code>
+     * @return The sender.
+     */
+    java.lang.String getSender();
+    /**
+     * <code>string sender = 1 [json_name = "sender", (.cosmos_proto.scalar) = "cosmos.AddressString"];</code>
+     * @return The bytes for sender.
+     */
+    com.google.protobuf.ByteString
+        getSenderBytes();
+
+    /**
+     * <pre>
+     * algorithm_id names a key-encapsulation algorithm of the on-chain
+     * registry (ML-KEM-1024 is 2).
+     * </pre>
+     *
+     * <code>uint32 algorithm_id = 2 [json_name = "algorithmId", (.gogoproto.customname) = "AlgorithmID", (.gogoproto.casttype) = "AlgorithmID"];</code>
+     * @return The algorithmId.
+     */
+    int getAlgorithmId();
+
+    /**
+     * <pre>
+     * public_key is the encapsulation key exactly as FIPS 203 encodes it
+     * (1568 bytes for ML-KEM-1024).
+     * </pre>
+     *
+     * <code>bytes public_key = 3 [json_name = "publicKey"];</code>
+     * @return The publicKey.
+     */
+    com.google.protobuf.ByteString getPublicKey();
+  }
+  /**
+   * <pre>
+   * MsgRegisterKEMKey publishes the sender's key-encapsulation public key. The
+   * sender must already hold a post-quantum signature key; the message is
+   * authenticated by its hybrid signature, like the other key maintenance.
+   * </pre>
+   *
+   * Protobuf type {@code qorechain.pqc.v1.MsgRegisterKEMKey}
+   */
+  public static final class MsgRegisterKEMKey extends
+      com.google.protobuf.GeneratedMessage implements
+      // @@protoc_insertion_point(message_implements:qorechain.pqc.v1.MsgRegisterKEMKey)
+      MsgRegisterKEMKeyOrBuilder {
+  private static final long serialVersionUID = 0L;
+    static {
+      com.google.protobuf.RuntimeVersion.validateProtobufGencodeVersion(
+        com.google.protobuf.RuntimeVersion.RuntimeDomain.PUBLIC,
+        /* major= */ 4,
+        /* minor= */ 35,
+        /* patch= */ 1,
+        /* suffix= */ "",
+        "MsgRegisterKEMKey");
+    }
+    // Use MsgRegisterKEMKey.newBuilder() to construct.
+    private MsgRegisterKEMKey(com.google.protobuf.GeneratedMessage.Builder<?> builder) {
+      super(builder);
+    }
+    private MsgRegisterKEMKey() {
+      sender_ = "";
+      publicKey_ = com.google.protobuf.ByteString.EMPTY;
+    }
+
+    public static final com.google.protobuf.Descriptors.Descriptor
+        getDescriptor() {
+      return qorechain.pqc.v1.Tx.internal_static_qorechain_pqc_v1_MsgRegisterKEMKey_descriptor;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Descriptors.Descriptor getDescriptorForType() {
+      return qorechain.pqc.v1.Tx.internal_static_qorechain_pqc_v1_MsgRegisterKEMKey_descriptor;
+    }
+
+    @java.lang.Override
+    protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+        internalGetFieldAccessorTable() {
+      return qorechain.pqc.v1.Tx.internal_static_qorechain_pqc_v1_MsgRegisterKEMKey_fieldAccessorTable
+          .ensureFieldAccessorsInitialized(
+              qorechain.pqc.v1.Tx.MsgRegisterKEMKey.class, qorechain.pqc.v1.Tx.MsgRegisterKEMKey.Builder.class);
+    }
+
+    public static final int SENDER_FIELD_NUMBER = 1;
+    @SuppressWarnings("serial")
+    private volatile java.lang.Object sender_ = "";
+    /**
+     * <code>string sender = 1 [json_name = "sender", (.cosmos_proto.scalar) = "cosmos.AddressString"];</code>
+     * @return The sender.
+     */
+    @java.lang.Override
+    public java.lang.String getSender() {
+      java.lang.Object ref = sender_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        sender_ = s;
+        return s;
+      }
+    }
+    /**
+     * <code>string sender = 1 [json_name = "sender", (.cosmos_proto.scalar) = "cosmos.AddressString"];</code>
+     * @return The bytes for sender.
+     */
+    @java.lang.Override
+    public com.google.protobuf.ByteString
+        getSenderBytes() {
+      java.lang.Object ref = sender_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        sender_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
+    public static final int ALGORITHM_ID_FIELD_NUMBER = 2;
+    private int algorithmId_ = 0;
+    /**
+     * <pre>
+     * algorithm_id names a key-encapsulation algorithm of the on-chain
+     * registry (ML-KEM-1024 is 2).
+     * </pre>
+     *
+     * <code>uint32 algorithm_id = 2 [json_name = "algorithmId", (.gogoproto.customname) = "AlgorithmID", (.gogoproto.casttype) = "AlgorithmID"];</code>
+     * @return The algorithmId.
+     */
+    @java.lang.Override
+    public int getAlgorithmId() {
+      return algorithmId_;
+    }
+
+    public static final int PUBLIC_KEY_FIELD_NUMBER = 3;
+    private com.google.protobuf.ByteString publicKey_ = com.google.protobuf.ByteString.EMPTY;
+    /**
+     * <pre>
+     * public_key is the encapsulation key exactly as FIPS 203 encodes it
+     * (1568 bytes for ML-KEM-1024).
+     * </pre>
+     *
+     * <code>bytes public_key = 3 [json_name = "publicKey"];</code>
+     * @return The publicKey.
+     */
+    @java.lang.Override
+    public com.google.protobuf.ByteString getPublicKey() {
+      return publicKey_;
+    }
+
+    private byte memoizedIsInitialized = -1;
+    @java.lang.Override
+    public final boolean isInitialized() {
+      byte isInitialized = memoizedIsInitialized;
+      if (isInitialized == 1) return true;
+      if (isInitialized == 0) return false;
+
+      memoizedIsInitialized = 1;
+      return true;
+    }
+
+    @java.lang.Override
+    public void writeTo(com.google.protobuf.CodedOutputStream output)
+                        throws java.io.IOException {
+      if (!com.google.protobuf.GeneratedMessage.isStringEmpty(sender_)) {
+        com.google.protobuf.GeneratedMessage.writeString(output, 1, sender_);
+      }
+      if (algorithmId_ != 0) {
+        output.writeUInt32(2, algorithmId_);
+      }
+      if (!publicKey_.isEmpty()) {
+        output.writeBytes(3, publicKey_);
+      }
+      getUnknownFields().writeTo(output);
+    }
+    private int computeSerializedSize_0() {
+      int size = 0;
+      if (!com.google.protobuf.GeneratedMessage.isStringEmpty(sender_)) {
+        size += com.google.protobuf.GeneratedMessage.computeStringSize(1, sender_);
+      }
+      if (algorithmId_ != 0) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeUInt32Size(2, algorithmId_);
+      }
+      if (!publicKey_.isEmpty()) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeBytesSize(3, publicKey_);
+      }
+      return size;
+    }
+    @java.lang.Override
+    public int getSerializedSize() {
+      int size = memoizedSize;
+      if (size != -1) return size;
+
+      size = 0;
+      size += computeSerializedSize_0();
+      size += getUnknownFields().getSerializedSize();
+      memoizedSize = size;
+      return size;
+    }
+
+    @java.lang.Override
+    public boolean equals(final java.lang.Object obj) {
+      if (obj == this) {
+       return true;
+      }
+      if (!(obj instanceof qorechain.pqc.v1.Tx.MsgRegisterKEMKey)) {
+        return super.equals(obj);
+      }
+      qorechain.pqc.v1.Tx.MsgRegisterKEMKey other = (qorechain.pqc.v1.Tx.MsgRegisterKEMKey) obj;
+
+      if (!getSender()
+          .equals(other.getSender())) return false;
+      if (getAlgorithmId()
+          != other.getAlgorithmId()) return false;
+      if (!getPublicKey()
+          .equals(other.getPublicKey())) return false;
+      if (!getUnknownFields().equals(other.getUnknownFields())) return false;
+      return true;
+    }
+
+    @java.lang.Override
+    public int hashCode() {
+      if (memoizedHashCode != 0) {
+        return memoizedHashCode;
+      }
+      int hash = 41;
+      hash = (19 * hash) + getDescriptor().hashCode();
+      hash = (37 * hash) + SENDER_FIELD_NUMBER;
+      hash = (53 * hash) + getSender().hashCode();
+      hash = (37 * hash) + ALGORITHM_ID_FIELD_NUMBER;
+      hash = (53 * hash) + getAlgorithmId();
+      hash = (37 * hash) + PUBLIC_KEY_FIELD_NUMBER;
+      hash = (53 * hash) + getPublicKey().hashCode();
+      hash = (29 * hash) + getUnknownFields().hashCode();
+      memoizedHashCode = hash;
+      return hash;
+    }
+
+    public static qorechain.pqc.v1.Tx.MsgRegisterKEMKey parseFrom(
+        java.nio.ByteBuffer data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static qorechain.pqc.v1.Tx.MsgRegisterKEMKey parseFrom(
+        java.nio.ByteBuffer data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static qorechain.pqc.v1.Tx.MsgRegisterKEMKey parseFrom(
+        com.google.protobuf.ByteString data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static qorechain.pqc.v1.Tx.MsgRegisterKEMKey parseFrom(
+        com.google.protobuf.ByteString data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static qorechain.pqc.v1.Tx.MsgRegisterKEMKey parseFrom(byte[] data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static qorechain.pqc.v1.Tx.MsgRegisterKEMKey parseFrom(
+        byte[] data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static qorechain.pqc.v1.Tx.MsgRegisterKEMKey parseFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input);
+    }
+    public static qorechain.pqc.v1.Tx.MsgRegisterKEMKey parseFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    public static qorechain.pqc.v1.Tx.MsgRegisterKEMKey parseDelimitedFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseDelimitedWithIOException(PARSER, input);
+    }
+
+    public static qorechain.pqc.v1.Tx.MsgRegisterKEMKey parseDelimitedFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static qorechain.pqc.v1.Tx.MsgRegisterKEMKey parseFrom(
+        com.google.protobuf.CodedInputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input);
+    }
+    public static qorechain.pqc.v1.Tx.MsgRegisterKEMKey parseFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    @java.lang.Override
+    public Builder newBuilderForType() { return newBuilder(); }
+    public static Builder newBuilder() {
+      return DEFAULT_INSTANCE.toBuilder();
+    }
+    public static Builder newBuilder(qorechain.pqc.v1.Tx.MsgRegisterKEMKey prototype) {
+      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+    }
+    @java.lang.Override
+    public Builder toBuilder() {
+      return this == DEFAULT_INSTANCE
+          ? new Builder() : new Builder().mergeFrom(this);
+    }
+
+    @java.lang.Override
+    protected Builder newBuilderForType(
+        com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+      Builder builder = new Builder(parent);
+      return builder;
+    }
+    /**
+     * <pre>
+     * MsgRegisterKEMKey publishes the sender's key-encapsulation public key. The
+     * sender must already hold a post-quantum signature key; the message is
+     * authenticated by its hybrid signature, like the other key maintenance.
+     * </pre>
+     *
+     * Protobuf type {@code qorechain.pqc.v1.MsgRegisterKEMKey}
+     */
+    public static final class Builder extends
+        com.google.protobuf.GeneratedMessage.Builder<Builder> implements
+        // @@protoc_insertion_point(builder_implements:qorechain.pqc.v1.MsgRegisterKEMKey)
+        qorechain.pqc.v1.Tx.MsgRegisterKEMKeyOrBuilder {
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return qorechain.pqc.v1.Tx.internal_static_qorechain_pqc_v1_MsgRegisterKEMKey_descriptor;
+      }
+
+      @java.lang.Override
+      protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return qorechain.pqc.v1.Tx.internal_static_qorechain_pqc_v1_MsgRegisterKEMKey_fieldAccessorTable
+            .ensureFieldAccessorsInitialized(
+                qorechain.pqc.v1.Tx.MsgRegisterKEMKey.class, qorechain.pqc.v1.Tx.MsgRegisterKEMKey.Builder.class);
+      }
+
+      // Construct using qorechain.pqc.v1.Tx.MsgRegisterKEMKey.newBuilder()
+      private Builder() {
+
+      }
+
+      private Builder(
+          com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+        super(parent);
+
+      }
+      @java.lang.Override
+      public Builder clear() {
+        super.clear();
+        bitField0_ = 0;
+        sender_ = "";
+        algorithmId_ = 0;
+        publicKey_ = com.google.protobuf.ByteString.EMPTY;
+        return this;
+      }
+
+      @java.lang.Override
+      public com.google.protobuf.Descriptors.Descriptor
+          getDescriptorForType() {
+        return qorechain.pqc.v1.Tx.internal_static_qorechain_pqc_v1_MsgRegisterKEMKey_descriptor;
+      }
+
+      @java.lang.Override
+      public qorechain.pqc.v1.Tx.MsgRegisterKEMKey getDefaultInstanceForType() {
+        return qorechain.pqc.v1.Tx.MsgRegisterKEMKey.getDefaultInstance();
+      }
+
+      @java.lang.Override
+      public qorechain.pqc.v1.Tx.MsgRegisterKEMKey build() {
+        qorechain.pqc.v1.Tx.MsgRegisterKEMKey result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(result);
+        }
+        return result;
+      }
+
+      @java.lang.Override
+      public qorechain.pqc.v1.Tx.MsgRegisterKEMKey buildPartial() {
+        qorechain.pqc.v1.Tx.MsgRegisterKEMKey result = new qorechain.pqc.v1.Tx.MsgRegisterKEMKey(this);
+        if (bitField0_ != 0) { buildPartial0(result); }
+        onBuilt();
+        return result;
+      }
+
+      private void buildPartial0(qorechain.pqc.v1.Tx.MsgRegisterKEMKey result) {
+        int from_bitField0_ = bitField0_;
+        if (((from_bitField0_ & 0x00000001) != 0)) {
+          result.sender_ = sender_;
+        }
+        if (((from_bitField0_ & 0x00000002) != 0)) {
+          result.algorithmId_ = algorithmId_;
+        }
+        if (((from_bitField0_ & 0x00000004) != 0)) {
+          result.publicKey_ = publicKey_;
+        }
+      }
+
+      @java.lang.Override
+      public Builder mergeFrom(com.google.protobuf.Message other) {
+        if (other instanceof qorechain.pqc.v1.Tx.MsgRegisterKEMKey) {
+          return mergeFrom((qorechain.pqc.v1.Tx.MsgRegisterKEMKey)other);
+        } else {
+          super.mergeFrom(other);
+          return this;
+        }
+      }
+
+      public Builder mergeFrom(qorechain.pqc.v1.Tx.MsgRegisterKEMKey other) {
+        if (other == qorechain.pqc.v1.Tx.MsgRegisterKEMKey.getDefaultInstance()) return this;
+        if (!other.getSender().isEmpty()) {
+          sender_ = other.sender_;
+          bitField0_ |= 0x00000001;
+          onChanged();
+        }
+        if (other.getAlgorithmId() != 0) {
+          setAlgorithmId(other.getAlgorithmId());
+        }
+        if (!other.getPublicKey().isEmpty()) {
+          setPublicKey(other.getPublicKey());
+        }
+        this.mergeUnknownFields(other.getUnknownFields());
+        onChanged();
+        return this;
+      }
+
+      @java.lang.Override
+      public final boolean isInitialized() {
+        return true;
+      }
+
+      @java.lang.Override
+      public Builder mergeFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        if (extensionRegistry == null) {
+          throw new java.lang.NullPointerException();
+        }
+        try {
+          boolean done = false;
+          while (!done) {
+            int tag = input.readTag();
+            switch (tag) {
+              case 0:
+                done = true;
+                break;
+              case 10: {
+                sender_ = input.readStringRequireUtf8();
+                bitField0_ |= 0x00000001;
+                break;
+              } // case 10
+              case 16: {
+                algorithmId_ = input.readUInt32();
+                bitField0_ |= 0x00000002;
+                break;
+              } // case 16
+              case 26: {
+                publicKey_ = input.readBytes();
+                bitField0_ |= 0x00000004;
+                break;
+              } // case 26
+              default: {
+                if (!super.parseUnknownField(input, extensionRegistry, tag)) {
+                  done = true; // was an endgroup tag
+                }
+                break;
+              } // default:
+            } // switch (tag)
+          } // while (!done)
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          throw e.unwrapIOException();
+        } finally {
+          onChanged();
+        } // finally
+        return this;
+      }
+      private int bitField0_;
+
+      private java.lang.Object sender_ = "";
+      /**
+       * <code>string sender = 1 [json_name = "sender", (.cosmos_proto.scalar) = "cosmos.AddressString"];</code>
+       * @return The sender.
+       */
+      public java.lang.String getSender() {
+        java.lang.Object ref = sender_;
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          sender_ = s;
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
+      }
+      /**
+       * <code>string sender = 1 [json_name = "sender", (.cosmos_proto.scalar) = "cosmos.AddressString"];</code>
+       * @return The bytes for sender.
+       */
+      public com.google.protobuf.ByteString
+          getSenderBytes() {
+        java.lang.Object ref = sender_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          sender_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <code>string sender = 1 [json_name = "sender", (.cosmos_proto.scalar) = "cosmos.AddressString"];</code>
+       * @param value The sender to set.
+       * @return This builder for chaining.
+       */
+      public Builder setSender(
+          java.lang.String value) {
+        if (value == null) { throw new NullPointerException(); }
+        sender_ = value;
+        bitField0_ |= 0x00000001;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>string sender = 1 [json_name = "sender", (.cosmos_proto.scalar) = "cosmos.AddressString"];</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearSender() {
+        sender_ = getDefaultInstance().getSender();
+        bitField0_ = (bitField0_ & ~0x00000001);
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>string sender = 1 [json_name = "sender", (.cosmos_proto.scalar) = "cosmos.AddressString"];</code>
+       * @param value The bytes for sender to set.
+       * @return This builder for chaining.
+       */
+      public Builder setSenderBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) { throw new NullPointerException(); }
+        checkByteStringIsUtf8(value);
+        sender_ = value;
+        bitField0_ |= 0x00000001;
+        onChanged();
+        return this;
+      }
+
+      private int algorithmId_ ;
+      /**
+       * <pre>
+       * algorithm_id names a key-encapsulation algorithm of the on-chain
+       * registry (ML-KEM-1024 is 2).
+       * </pre>
+       *
+       * <code>uint32 algorithm_id = 2 [json_name = "algorithmId", (.gogoproto.customname) = "AlgorithmID", (.gogoproto.casttype) = "AlgorithmID"];</code>
+       * @return The algorithmId.
+       */
+      @java.lang.Override
+      public int getAlgorithmId() {
+        return algorithmId_;
+      }
+      /**
+       * <pre>
+       * algorithm_id names a key-encapsulation algorithm of the on-chain
+       * registry (ML-KEM-1024 is 2).
+       * </pre>
+       *
+       * <code>uint32 algorithm_id = 2 [json_name = "algorithmId", (.gogoproto.customname) = "AlgorithmID", (.gogoproto.casttype) = "AlgorithmID"];</code>
+       * @param value The algorithmId to set.
+       * @return This builder for chaining.
+       */
+      public Builder setAlgorithmId(int value) {
+
+        algorithmId_ = value;
+        bitField0_ |= 0x00000002;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * algorithm_id names a key-encapsulation algorithm of the on-chain
+       * registry (ML-KEM-1024 is 2).
+       * </pre>
+       *
+       * <code>uint32 algorithm_id = 2 [json_name = "algorithmId", (.gogoproto.customname) = "AlgorithmID", (.gogoproto.casttype) = "AlgorithmID"];</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearAlgorithmId() {
+        bitField0_ = (bitField0_ & ~0x00000002);
+        algorithmId_ = 0;
+        onChanged();
+        return this;
+      }
+
+      private com.google.protobuf.ByteString publicKey_ = com.google.protobuf.ByteString.EMPTY;
+      /**
+       * <pre>
+       * public_key is the encapsulation key exactly as FIPS 203 encodes it
+       * (1568 bytes for ML-KEM-1024).
+       * </pre>
+       *
+       * <code>bytes public_key = 3 [json_name = "publicKey"];</code>
+       * @return The publicKey.
+       */
+      @java.lang.Override
+      public com.google.protobuf.ByteString getPublicKey() {
+        return publicKey_;
+      }
+      /**
+       * <pre>
+       * public_key is the encapsulation key exactly as FIPS 203 encodes it
+       * (1568 bytes for ML-KEM-1024).
+       * </pre>
+       *
+       * <code>bytes public_key = 3 [json_name = "publicKey"];</code>
+       * @param value The publicKey to set.
+       * @return This builder for chaining.
+       */
+      public Builder setPublicKey(com.google.protobuf.ByteString value) {
+        if (value == null) { throw new NullPointerException(); }
+        publicKey_ = value;
+        bitField0_ |= 0x00000004;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * public_key is the encapsulation key exactly as FIPS 203 encodes it
+       * (1568 bytes for ML-KEM-1024).
+       * </pre>
+       *
+       * <code>bytes public_key = 3 [json_name = "publicKey"];</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearPublicKey() {
+        bitField0_ = (bitField0_ & ~0x00000004);
+        publicKey_ = getDefaultInstance().getPublicKey();
+        onChanged();
+        return this;
+      }
+
+      // @@protoc_insertion_point(builder_scope:qorechain.pqc.v1.MsgRegisterKEMKey)
+    }
+
+    // @@protoc_insertion_point(class_scope:qorechain.pqc.v1.MsgRegisterKEMKey)
+    private static final qorechain.pqc.v1.Tx.MsgRegisterKEMKey DEFAULT_INSTANCE;
+    static {
+      DEFAULT_INSTANCE = new qorechain.pqc.v1.Tx.MsgRegisterKEMKey();
+    }
+
+    public static qorechain.pqc.v1.Tx.MsgRegisterKEMKey getDefaultInstance() {
+      return DEFAULT_INSTANCE;
+    }
+
+    private static final com.google.protobuf.Parser<MsgRegisterKEMKey>
+        PARSER = new com.google.protobuf.AbstractParser<MsgRegisterKEMKey>() {
+      @java.lang.Override
+      public MsgRegisterKEMKey parsePartialFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        Builder builder = newBuilder();
+        try {
+          builder.mergeFrom(input, extensionRegistry);
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          throw e.setUnfinishedMessage(builder.buildPartial());
+        } catch (com.google.protobuf.UninitializedMessageException e) {
+          throw e.asInvalidProtocolBufferException().setUnfinishedMessage(builder.buildPartial());
+        } catch (java.io.IOException e) {
+          throw new com.google.protobuf.InvalidProtocolBufferException(e)
+              .setUnfinishedMessage(builder.buildPartial());
+        }
+        return builder.buildPartial();
+      }
+    };
+
+    public static com.google.protobuf.Parser<MsgRegisterKEMKey> parser() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Parser<MsgRegisterKEMKey> getParserForType() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public qorechain.pqc.v1.Tx.MsgRegisterKEMKey getDefaultInstanceForType() {
+      return DEFAULT_INSTANCE;
+    }
+
+  }
+
+  public interface MsgRegisterKEMKeyResponseOrBuilder extends
+      // @@protoc_insertion_point(interface_extends:qorechain.pqc.v1.MsgRegisterKEMKeyResponse)
+      com.google.protobuf.MessageOrBuilder {
+
+    /**
+     * <pre>
+     * replaced reports whether a previously published key was replaced.
+     * </pre>
+     *
+     * <code>bool replaced = 1 [json_name = "replaced"];</code>
+     * @return The replaced.
+     */
+    boolean getReplaced();
+  }
+  /**
+   * Protobuf type {@code qorechain.pqc.v1.MsgRegisterKEMKeyResponse}
+   */
+  public static final class MsgRegisterKEMKeyResponse extends
+      com.google.protobuf.GeneratedMessage implements
+      // @@protoc_insertion_point(message_implements:qorechain.pqc.v1.MsgRegisterKEMKeyResponse)
+      MsgRegisterKEMKeyResponseOrBuilder {
+  private static final long serialVersionUID = 0L;
+    static {
+      com.google.protobuf.RuntimeVersion.validateProtobufGencodeVersion(
+        com.google.protobuf.RuntimeVersion.RuntimeDomain.PUBLIC,
+        /* major= */ 4,
+        /* minor= */ 35,
+        /* patch= */ 1,
+        /* suffix= */ "",
+        "MsgRegisterKEMKeyResponse");
+    }
+    // Use MsgRegisterKEMKeyResponse.newBuilder() to construct.
+    private MsgRegisterKEMKeyResponse(com.google.protobuf.GeneratedMessage.Builder<?> builder) {
+      super(builder);
+    }
+    private MsgRegisterKEMKeyResponse() {
+    }
+
+    public static final com.google.protobuf.Descriptors.Descriptor
+        getDescriptor() {
+      return qorechain.pqc.v1.Tx.internal_static_qorechain_pqc_v1_MsgRegisterKEMKeyResponse_descriptor;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Descriptors.Descriptor getDescriptorForType() {
+      return qorechain.pqc.v1.Tx.internal_static_qorechain_pqc_v1_MsgRegisterKEMKeyResponse_descriptor;
+    }
+
+    @java.lang.Override
+    protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+        internalGetFieldAccessorTable() {
+      return qorechain.pqc.v1.Tx.internal_static_qorechain_pqc_v1_MsgRegisterKEMKeyResponse_fieldAccessorTable
+          .ensureFieldAccessorsInitialized(
+              qorechain.pqc.v1.Tx.MsgRegisterKEMKeyResponse.class, qorechain.pqc.v1.Tx.MsgRegisterKEMKeyResponse.Builder.class);
+    }
+
+    public static final int REPLACED_FIELD_NUMBER = 1;
+    private boolean replaced_ = false;
+    /**
+     * <pre>
+     * replaced reports whether a previously published key was replaced.
+     * </pre>
+     *
+     * <code>bool replaced = 1 [json_name = "replaced"];</code>
+     * @return The replaced.
+     */
+    @java.lang.Override
+    public boolean getReplaced() {
+      return replaced_;
+    }
+
+    private byte memoizedIsInitialized = -1;
+    @java.lang.Override
+    public final boolean isInitialized() {
+      byte isInitialized = memoizedIsInitialized;
+      if (isInitialized == 1) return true;
+      if (isInitialized == 0) return false;
+
+      memoizedIsInitialized = 1;
+      return true;
+    }
+
+    @java.lang.Override
+    public void writeTo(com.google.protobuf.CodedOutputStream output)
+                        throws java.io.IOException {
+      if (replaced_ != false) {
+        output.writeBool(1, replaced_);
+      }
+      getUnknownFields().writeTo(output);
+    }
+    private int computeSerializedSize_0() {
+      int size = 0;
+      if (replaced_ != false) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeBoolSize(1, replaced_);
+      }
+      return size;
+    }
+    @java.lang.Override
+    public int getSerializedSize() {
+      int size = memoizedSize;
+      if (size != -1) return size;
+
+      size = 0;
+      size += computeSerializedSize_0();
+      size += getUnknownFields().getSerializedSize();
+      memoizedSize = size;
+      return size;
+    }
+
+    @java.lang.Override
+    public boolean equals(final java.lang.Object obj) {
+      if (obj == this) {
+       return true;
+      }
+      if (!(obj instanceof qorechain.pqc.v1.Tx.MsgRegisterKEMKeyResponse)) {
+        return super.equals(obj);
+      }
+      qorechain.pqc.v1.Tx.MsgRegisterKEMKeyResponse other = (qorechain.pqc.v1.Tx.MsgRegisterKEMKeyResponse) obj;
+
+      if (getReplaced()
+          != other.getReplaced()) return false;
+      if (!getUnknownFields().equals(other.getUnknownFields())) return false;
+      return true;
+    }
+
+    @java.lang.Override
+    public int hashCode() {
+      if (memoizedHashCode != 0) {
+        return memoizedHashCode;
+      }
+      int hash = 41;
+      hash = (19 * hash) + getDescriptor().hashCode();
+      hash = (37 * hash) + REPLACED_FIELD_NUMBER;
+      hash = (53 * hash) + com.google.protobuf.Internal.hashBoolean(
+          getReplaced());
+      hash = (29 * hash) + getUnknownFields().hashCode();
+      memoizedHashCode = hash;
+      return hash;
+    }
+
+    public static qorechain.pqc.v1.Tx.MsgRegisterKEMKeyResponse parseFrom(
+        java.nio.ByteBuffer data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static qorechain.pqc.v1.Tx.MsgRegisterKEMKeyResponse parseFrom(
+        java.nio.ByteBuffer data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static qorechain.pqc.v1.Tx.MsgRegisterKEMKeyResponse parseFrom(
+        com.google.protobuf.ByteString data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static qorechain.pqc.v1.Tx.MsgRegisterKEMKeyResponse parseFrom(
+        com.google.protobuf.ByteString data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static qorechain.pqc.v1.Tx.MsgRegisterKEMKeyResponse parseFrom(byte[] data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static qorechain.pqc.v1.Tx.MsgRegisterKEMKeyResponse parseFrom(
+        byte[] data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static qorechain.pqc.v1.Tx.MsgRegisterKEMKeyResponse parseFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input);
+    }
+    public static qorechain.pqc.v1.Tx.MsgRegisterKEMKeyResponse parseFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    public static qorechain.pqc.v1.Tx.MsgRegisterKEMKeyResponse parseDelimitedFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseDelimitedWithIOException(PARSER, input);
+    }
+
+    public static qorechain.pqc.v1.Tx.MsgRegisterKEMKeyResponse parseDelimitedFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static qorechain.pqc.v1.Tx.MsgRegisterKEMKeyResponse parseFrom(
+        com.google.protobuf.CodedInputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input);
+    }
+    public static qorechain.pqc.v1.Tx.MsgRegisterKEMKeyResponse parseFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    @java.lang.Override
+    public Builder newBuilderForType() { return newBuilder(); }
+    public static Builder newBuilder() {
+      return DEFAULT_INSTANCE.toBuilder();
+    }
+    public static Builder newBuilder(qorechain.pqc.v1.Tx.MsgRegisterKEMKeyResponse prototype) {
+      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+    }
+    @java.lang.Override
+    public Builder toBuilder() {
+      return this == DEFAULT_INSTANCE
+          ? new Builder() : new Builder().mergeFrom(this);
+    }
+
+    @java.lang.Override
+    protected Builder newBuilderForType(
+        com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+      Builder builder = new Builder(parent);
+      return builder;
+    }
+    /**
+     * Protobuf type {@code qorechain.pqc.v1.MsgRegisterKEMKeyResponse}
+     */
+    public static final class Builder extends
+        com.google.protobuf.GeneratedMessage.Builder<Builder> implements
+        // @@protoc_insertion_point(builder_implements:qorechain.pqc.v1.MsgRegisterKEMKeyResponse)
+        qorechain.pqc.v1.Tx.MsgRegisterKEMKeyResponseOrBuilder {
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return qorechain.pqc.v1.Tx.internal_static_qorechain_pqc_v1_MsgRegisterKEMKeyResponse_descriptor;
+      }
+
+      @java.lang.Override
+      protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return qorechain.pqc.v1.Tx.internal_static_qorechain_pqc_v1_MsgRegisterKEMKeyResponse_fieldAccessorTable
+            .ensureFieldAccessorsInitialized(
+                qorechain.pqc.v1.Tx.MsgRegisterKEMKeyResponse.class, qorechain.pqc.v1.Tx.MsgRegisterKEMKeyResponse.Builder.class);
+      }
+
+      // Construct using qorechain.pqc.v1.Tx.MsgRegisterKEMKeyResponse.newBuilder()
+      private Builder() {
+
+      }
+
+      private Builder(
+          com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+        super(parent);
+
+      }
+      @java.lang.Override
+      public Builder clear() {
+        super.clear();
+        bitField0_ = 0;
+        replaced_ = false;
+        return this;
+      }
+
+      @java.lang.Override
+      public com.google.protobuf.Descriptors.Descriptor
+          getDescriptorForType() {
+        return qorechain.pqc.v1.Tx.internal_static_qorechain_pqc_v1_MsgRegisterKEMKeyResponse_descriptor;
+      }
+
+      @java.lang.Override
+      public qorechain.pqc.v1.Tx.MsgRegisterKEMKeyResponse getDefaultInstanceForType() {
+        return qorechain.pqc.v1.Tx.MsgRegisterKEMKeyResponse.getDefaultInstance();
+      }
+
+      @java.lang.Override
+      public qorechain.pqc.v1.Tx.MsgRegisterKEMKeyResponse build() {
+        qorechain.pqc.v1.Tx.MsgRegisterKEMKeyResponse result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(result);
+        }
+        return result;
+      }
+
+      @java.lang.Override
+      public qorechain.pqc.v1.Tx.MsgRegisterKEMKeyResponse buildPartial() {
+        qorechain.pqc.v1.Tx.MsgRegisterKEMKeyResponse result = new qorechain.pqc.v1.Tx.MsgRegisterKEMKeyResponse(this);
+        if (bitField0_ != 0) { buildPartial0(result); }
+        onBuilt();
+        return result;
+      }
+
+      private void buildPartial0(qorechain.pqc.v1.Tx.MsgRegisterKEMKeyResponse result) {
+        int from_bitField0_ = bitField0_;
+        if (((from_bitField0_ & 0x00000001) != 0)) {
+          result.replaced_ = replaced_;
+        }
+      }
+
+      @java.lang.Override
+      public Builder mergeFrom(com.google.protobuf.Message other) {
+        if (other instanceof qorechain.pqc.v1.Tx.MsgRegisterKEMKeyResponse) {
+          return mergeFrom((qorechain.pqc.v1.Tx.MsgRegisterKEMKeyResponse)other);
+        } else {
+          super.mergeFrom(other);
+          return this;
+        }
+      }
+
+      public Builder mergeFrom(qorechain.pqc.v1.Tx.MsgRegisterKEMKeyResponse other) {
+        if (other == qorechain.pqc.v1.Tx.MsgRegisterKEMKeyResponse.getDefaultInstance()) return this;
+        if (other.getReplaced() != false) {
+          setReplaced(other.getReplaced());
+        }
+        this.mergeUnknownFields(other.getUnknownFields());
+        onChanged();
+        return this;
+      }
+
+      @java.lang.Override
+      public final boolean isInitialized() {
+        return true;
+      }
+
+      @java.lang.Override
+      public Builder mergeFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        if (extensionRegistry == null) {
+          throw new java.lang.NullPointerException();
+        }
+        try {
+          boolean done = false;
+          while (!done) {
+            int tag = input.readTag();
+            switch (tag) {
+              case 0:
+                done = true;
+                break;
+              case 8: {
+                replaced_ = input.readBool();
+                bitField0_ |= 0x00000001;
+                break;
+              } // case 8
+              default: {
+                if (!super.parseUnknownField(input, extensionRegistry, tag)) {
+                  done = true; // was an endgroup tag
+                }
+                break;
+              } // default:
+            } // switch (tag)
+          } // while (!done)
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          throw e.unwrapIOException();
+        } finally {
+          onChanged();
+        } // finally
+        return this;
+      }
+      private int bitField0_;
+
+      private boolean replaced_ ;
+      /**
+       * <pre>
+       * replaced reports whether a previously published key was replaced.
+       * </pre>
+       *
+       * <code>bool replaced = 1 [json_name = "replaced"];</code>
+       * @return The replaced.
+       */
+      @java.lang.Override
+      public boolean getReplaced() {
+        return replaced_;
+      }
+      /**
+       * <pre>
+       * replaced reports whether a previously published key was replaced.
+       * </pre>
+       *
+       * <code>bool replaced = 1 [json_name = "replaced"];</code>
+       * @param value The replaced to set.
+       * @return This builder for chaining.
+       */
+      public Builder setReplaced(boolean value) {
+
+        replaced_ = value;
+        bitField0_ |= 0x00000001;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * replaced reports whether a previously published key was replaced.
+       * </pre>
+       *
+       * <code>bool replaced = 1 [json_name = "replaced"];</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearReplaced() {
+        bitField0_ = (bitField0_ & ~0x00000001);
+        replaced_ = false;
+        onChanged();
+        return this;
+      }
+
+      // @@protoc_insertion_point(builder_scope:qorechain.pqc.v1.MsgRegisterKEMKeyResponse)
+    }
+
+    // @@protoc_insertion_point(class_scope:qorechain.pqc.v1.MsgRegisterKEMKeyResponse)
+    private static final qorechain.pqc.v1.Tx.MsgRegisterKEMKeyResponse DEFAULT_INSTANCE;
+    static {
+      DEFAULT_INSTANCE = new qorechain.pqc.v1.Tx.MsgRegisterKEMKeyResponse();
+    }
+
+    public static qorechain.pqc.v1.Tx.MsgRegisterKEMKeyResponse getDefaultInstance() {
+      return DEFAULT_INSTANCE;
+    }
+
+    private static final com.google.protobuf.Parser<MsgRegisterKEMKeyResponse>
+        PARSER = new com.google.protobuf.AbstractParser<MsgRegisterKEMKeyResponse>() {
+      @java.lang.Override
+      public MsgRegisterKEMKeyResponse parsePartialFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        Builder builder = newBuilder();
+        try {
+          builder.mergeFrom(input, extensionRegistry);
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          throw e.setUnfinishedMessage(builder.buildPartial());
+        } catch (com.google.protobuf.UninitializedMessageException e) {
+          throw e.asInvalidProtocolBufferException().setUnfinishedMessage(builder.buildPartial());
+        } catch (java.io.IOException e) {
+          throw new com.google.protobuf.InvalidProtocolBufferException(e)
+              .setUnfinishedMessage(builder.buildPartial());
+        }
+        return builder.buildPartial();
+      }
+    };
+
+    public static com.google.protobuf.Parser<MsgRegisterKEMKeyResponse> parser() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Parser<MsgRegisterKEMKeyResponse> getParserForType() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public qorechain.pqc.v1.Tx.MsgRegisterKEMKeyResponse getDefaultInstanceForType() {
+      return DEFAULT_INSTANCE;
+    }
+
+  }
+
+  public interface MsgRemoveKEMKeyOrBuilder extends
+      // @@protoc_insertion_point(interface_extends:qorechain.pqc.v1.MsgRemoveKEMKey)
+      com.google.protobuf.MessageOrBuilder {
+
+    /**
+     * <code>string sender = 1 [json_name = "sender", (.cosmos_proto.scalar) = "cosmos.AddressString"];</code>
+     * @return The sender.
+     */
+    java.lang.String getSender();
+    /**
+     * <code>string sender = 1 [json_name = "sender", (.cosmos_proto.scalar) = "cosmos.AddressString"];</code>
+     * @return The bytes for sender.
+     */
+    com.google.protobuf.ByteString
+        getSenderBytes();
+  }
+  /**
+   * <pre>
+   * MsgRemoveKEMKey withdraws the sender's published KEM key.
+   * </pre>
+   *
+   * Protobuf type {@code qorechain.pqc.v1.MsgRemoveKEMKey}
+   */
+  public static final class MsgRemoveKEMKey extends
+      com.google.protobuf.GeneratedMessage implements
+      // @@protoc_insertion_point(message_implements:qorechain.pqc.v1.MsgRemoveKEMKey)
+      MsgRemoveKEMKeyOrBuilder {
+  private static final long serialVersionUID = 0L;
+    static {
+      com.google.protobuf.RuntimeVersion.validateProtobufGencodeVersion(
+        com.google.protobuf.RuntimeVersion.RuntimeDomain.PUBLIC,
+        /* major= */ 4,
+        /* minor= */ 35,
+        /* patch= */ 1,
+        /* suffix= */ "",
+        "MsgRemoveKEMKey");
+    }
+    // Use MsgRemoveKEMKey.newBuilder() to construct.
+    private MsgRemoveKEMKey(com.google.protobuf.GeneratedMessage.Builder<?> builder) {
+      super(builder);
+    }
+    private MsgRemoveKEMKey() {
+      sender_ = "";
+    }
+
+    public static final com.google.protobuf.Descriptors.Descriptor
+        getDescriptor() {
+      return qorechain.pqc.v1.Tx.internal_static_qorechain_pqc_v1_MsgRemoveKEMKey_descriptor;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Descriptors.Descriptor getDescriptorForType() {
+      return qorechain.pqc.v1.Tx.internal_static_qorechain_pqc_v1_MsgRemoveKEMKey_descriptor;
+    }
+
+    @java.lang.Override
+    protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+        internalGetFieldAccessorTable() {
+      return qorechain.pqc.v1.Tx.internal_static_qorechain_pqc_v1_MsgRemoveKEMKey_fieldAccessorTable
+          .ensureFieldAccessorsInitialized(
+              qorechain.pqc.v1.Tx.MsgRemoveKEMKey.class, qorechain.pqc.v1.Tx.MsgRemoveKEMKey.Builder.class);
+    }
+
+    public static final int SENDER_FIELD_NUMBER = 1;
+    @SuppressWarnings("serial")
+    private volatile java.lang.Object sender_ = "";
+    /**
+     * <code>string sender = 1 [json_name = "sender", (.cosmos_proto.scalar) = "cosmos.AddressString"];</code>
+     * @return The sender.
+     */
+    @java.lang.Override
+    public java.lang.String getSender() {
+      java.lang.Object ref = sender_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        sender_ = s;
+        return s;
+      }
+    }
+    /**
+     * <code>string sender = 1 [json_name = "sender", (.cosmos_proto.scalar) = "cosmos.AddressString"];</code>
+     * @return The bytes for sender.
+     */
+    @java.lang.Override
+    public com.google.protobuf.ByteString
+        getSenderBytes() {
+      java.lang.Object ref = sender_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        sender_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
+    private byte memoizedIsInitialized = -1;
+    @java.lang.Override
+    public final boolean isInitialized() {
+      byte isInitialized = memoizedIsInitialized;
+      if (isInitialized == 1) return true;
+      if (isInitialized == 0) return false;
+
+      memoizedIsInitialized = 1;
+      return true;
+    }
+
+    @java.lang.Override
+    public void writeTo(com.google.protobuf.CodedOutputStream output)
+                        throws java.io.IOException {
+      if (!com.google.protobuf.GeneratedMessage.isStringEmpty(sender_)) {
+        com.google.protobuf.GeneratedMessage.writeString(output, 1, sender_);
+      }
+      getUnknownFields().writeTo(output);
+    }
+    private int computeSerializedSize_0() {
+      int size = 0;
+      if (!com.google.protobuf.GeneratedMessage.isStringEmpty(sender_)) {
+        size += com.google.protobuf.GeneratedMessage.computeStringSize(1, sender_);
+      }
+      return size;
+    }
+    @java.lang.Override
+    public int getSerializedSize() {
+      int size = memoizedSize;
+      if (size != -1) return size;
+
+      size = 0;
+      size += computeSerializedSize_0();
+      size += getUnknownFields().getSerializedSize();
+      memoizedSize = size;
+      return size;
+    }
+
+    @java.lang.Override
+    public boolean equals(final java.lang.Object obj) {
+      if (obj == this) {
+       return true;
+      }
+      if (!(obj instanceof qorechain.pqc.v1.Tx.MsgRemoveKEMKey)) {
+        return super.equals(obj);
+      }
+      qorechain.pqc.v1.Tx.MsgRemoveKEMKey other = (qorechain.pqc.v1.Tx.MsgRemoveKEMKey) obj;
+
+      if (!getSender()
+          .equals(other.getSender())) return false;
+      if (!getUnknownFields().equals(other.getUnknownFields())) return false;
+      return true;
+    }
+
+    @java.lang.Override
+    public int hashCode() {
+      if (memoizedHashCode != 0) {
+        return memoizedHashCode;
+      }
+      int hash = 41;
+      hash = (19 * hash) + getDescriptor().hashCode();
+      hash = (37 * hash) + SENDER_FIELD_NUMBER;
+      hash = (53 * hash) + getSender().hashCode();
+      hash = (29 * hash) + getUnknownFields().hashCode();
+      memoizedHashCode = hash;
+      return hash;
+    }
+
+    public static qorechain.pqc.v1.Tx.MsgRemoveKEMKey parseFrom(
+        java.nio.ByteBuffer data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static qorechain.pqc.v1.Tx.MsgRemoveKEMKey parseFrom(
+        java.nio.ByteBuffer data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static qorechain.pqc.v1.Tx.MsgRemoveKEMKey parseFrom(
+        com.google.protobuf.ByteString data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static qorechain.pqc.v1.Tx.MsgRemoveKEMKey parseFrom(
+        com.google.protobuf.ByteString data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static qorechain.pqc.v1.Tx.MsgRemoveKEMKey parseFrom(byte[] data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static qorechain.pqc.v1.Tx.MsgRemoveKEMKey parseFrom(
+        byte[] data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static qorechain.pqc.v1.Tx.MsgRemoveKEMKey parseFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input);
+    }
+    public static qorechain.pqc.v1.Tx.MsgRemoveKEMKey parseFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    public static qorechain.pqc.v1.Tx.MsgRemoveKEMKey parseDelimitedFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseDelimitedWithIOException(PARSER, input);
+    }
+
+    public static qorechain.pqc.v1.Tx.MsgRemoveKEMKey parseDelimitedFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static qorechain.pqc.v1.Tx.MsgRemoveKEMKey parseFrom(
+        com.google.protobuf.CodedInputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input);
+    }
+    public static qorechain.pqc.v1.Tx.MsgRemoveKEMKey parseFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    @java.lang.Override
+    public Builder newBuilderForType() { return newBuilder(); }
+    public static Builder newBuilder() {
+      return DEFAULT_INSTANCE.toBuilder();
+    }
+    public static Builder newBuilder(qorechain.pqc.v1.Tx.MsgRemoveKEMKey prototype) {
+      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+    }
+    @java.lang.Override
+    public Builder toBuilder() {
+      return this == DEFAULT_INSTANCE
+          ? new Builder() : new Builder().mergeFrom(this);
+    }
+
+    @java.lang.Override
+    protected Builder newBuilderForType(
+        com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+      Builder builder = new Builder(parent);
+      return builder;
+    }
+    /**
+     * <pre>
+     * MsgRemoveKEMKey withdraws the sender's published KEM key.
+     * </pre>
+     *
+     * Protobuf type {@code qorechain.pqc.v1.MsgRemoveKEMKey}
+     */
+    public static final class Builder extends
+        com.google.protobuf.GeneratedMessage.Builder<Builder> implements
+        // @@protoc_insertion_point(builder_implements:qorechain.pqc.v1.MsgRemoveKEMKey)
+        qorechain.pqc.v1.Tx.MsgRemoveKEMKeyOrBuilder {
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return qorechain.pqc.v1.Tx.internal_static_qorechain_pqc_v1_MsgRemoveKEMKey_descriptor;
+      }
+
+      @java.lang.Override
+      protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return qorechain.pqc.v1.Tx.internal_static_qorechain_pqc_v1_MsgRemoveKEMKey_fieldAccessorTable
+            .ensureFieldAccessorsInitialized(
+                qorechain.pqc.v1.Tx.MsgRemoveKEMKey.class, qorechain.pqc.v1.Tx.MsgRemoveKEMKey.Builder.class);
+      }
+
+      // Construct using qorechain.pqc.v1.Tx.MsgRemoveKEMKey.newBuilder()
+      private Builder() {
+
+      }
+
+      private Builder(
+          com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+        super(parent);
+
+      }
+      @java.lang.Override
+      public Builder clear() {
+        super.clear();
+        bitField0_ = 0;
+        sender_ = "";
+        return this;
+      }
+
+      @java.lang.Override
+      public com.google.protobuf.Descriptors.Descriptor
+          getDescriptorForType() {
+        return qorechain.pqc.v1.Tx.internal_static_qorechain_pqc_v1_MsgRemoveKEMKey_descriptor;
+      }
+
+      @java.lang.Override
+      public qorechain.pqc.v1.Tx.MsgRemoveKEMKey getDefaultInstanceForType() {
+        return qorechain.pqc.v1.Tx.MsgRemoveKEMKey.getDefaultInstance();
+      }
+
+      @java.lang.Override
+      public qorechain.pqc.v1.Tx.MsgRemoveKEMKey build() {
+        qorechain.pqc.v1.Tx.MsgRemoveKEMKey result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(result);
+        }
+        return result;
+      }
+
+      @java.lang.Override
+      public qorechain.pqc.v1.Tx.MsgRemoveKEMKey buildPartial() {
+        qorechain.pqc.v1.Tx.MsgRemoveKEMKey result = new qorechain.pqc.v1.Tx.MsgRemoveKEMKey(this);
+        if (bitField0_ != 0) { buildPartial0(result); }
+        onBuilt();
+        return result;
+      }
+
+      private void buildPartial0(qorechain.pqc.v1.Tx.MsgRemoveKEMKey result) {
+        int from_bitField0_ = bitField0_;
+        if (((from_bitField0_ & 0x00000001) != 0)) {
+          result.sender_ = sender_;
+        }
+      }
+
+      @java.lang.Override
+      public Builder mergeFrom(com.google.protobuf.Message other) {
+        if (other instanceof qorechain.pqc.v1.Tx.MsgRemoveKEMKey) {
+          return mergeFrom((qorechain.pqc.v1.Tx.MsgRemoveKEMKey)other);
+        } else {
+          super.mergeFrom(other);
+          return this;
+        }
+      }
+
+      public Builder mergeFrom(qorechain.pqc.v1.Tx.MsgRemoveKEMKey other) {
+        if (other == qorechain.pqc.v1.Tx.MsgRemoveKEMKey.getDefaultInstance()) return this;
+        if (!other.getSender().isEmpty()) {
+          sender_ = other.sender_;
+          bitField0_ |= 0x00000001;
+          onChanged();
+        }
+        this.mergeUnknownFields(other.getUnknownFields());
+        onChanged();
+        return this;
+      }
+
+      @java.lang.Override
+      public final boolean isInitialized() {
+        return true;
+      }
+
+      @java.lang.Override
+      public Builder mergeFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        if (extensionRegistry == null) {
+          throw new java.lang.NullPointerException();
+        }
+        try {
+          boolean done = false;
+          while (!done) {
+            int tag = input.readTag();
+            switch (tag) {
+              case 0:
+                done = true;
+                break;
+              case 10: {
+                sender_ = input.readStringRequireUtf8();
+                bitField0_ |= 0x00000001;
+                break;
+              } // case 10
+              default: {
+                if (!super.parseUnknownField(input, extensionRegistry, tag)) {
+                  done = true; // was an endgroup tag
+                }
+                break;
+              } // default:
+            } // switch (tag)
+          } // while (!done)
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          throw e.unwrapIOException();
+        } finally {
+          onChanged();
+        } // finally
+        return this;
+      }
+      private int bitField0_;
+
+      private java.lang.Object sender_ = "";
+      /**
+       * <code>string sender = 1 [json_name = "sender", (.cosmos_proto.scalar) = "cosmos.AddressString"];</code>
+       * @return The sender.
+       */
+      public java.lang.String getSender() {
+        java.lang.Object ref = sender_;
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          sender_ = s;
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
+      }
+      /**
+       * <code>string sender = 1 [json_name = "sender", (.cosmos_proto.scalar) = "cosmos.AddressString"];</code>
+       * @return The bytes for sender.
+       */
+      public com.google.protobuf.ByteString
+          getSenderBytes() {
+        java.lang.Object ref = sender_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          sender_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <code>string sender = 1 [json_name = "sender", (.cosmos_proto.scalar) = "cosmos.AddressString"];</code>
+       * @param value The sender to set.
+       * @return This builder for chaining.
+       */
+      public Builder setSender(
+          java.lang.String value) {
+        if (value == null) { throw new NullPointerException(); }
+        sender_ = value;
+        bitField0_ |= 0x00000001;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>string sender = 1 [json_name = "sender", (.cosmos_proto.scalar) = "cosmos.AddressString"];</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearSender() {
+        sender_ = getDefaultInstance().getSender();
+        bitField0_ = (bitField0_ & ~0x00000001);
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>string sender = 1 [json_name = "sender", (.cosmos_proto.scalar) = "cosmos.AddressString"];</code>
+       * @param value The bytes for sender to set.
+       * @return This builder for chaining.
+       */
+      public Builder setSenderBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) { throw new NullPointerException(); }
+        checkByteStringIsUtf8(value);
+        sender_ = value;
+        bitField0_ |= 0x00000001;
+        onChanged();
+        return this;
+      }
+
+      // @@protoc_insertion_point(builder_scope:qorechain.pqc.v1.MsgRemoveKEMKey)
+    }
+
+    // @@protoc_insertion_point(class_scope:qorechain.pqc.v1.MsgRemoveKEMKey)
+    private static final qorechain.pqc.v1.Tx.MsgRemoveKEMKey DEFAULT_INSTANCE;
+    static {
+      DEFAULT_INSTANCE = new qorechain.pqc.v1.Tx.MsgRemoveKEMKey();
+    }
+
+    public static qorechain.pqc.v1.Tx.MsgRemoveKEMKey getDefaultInstance() {
+      return DEFAULT_INSTANCE;
+    }
+
+    private static final com.google.protobuf.Parser<MsgRemoveKEMKey>
+        PARSER = new com.google.protobuf.AbstractParser<MsgRemoveKEMKey>() {
+      @java.lang.Override
+      public MsgRemoveKEMKey parsePartialFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        Builder builder = newBuilder();
+        try {
+          builder.mergeFrom(input, extensionRegistry);
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          throw e.setUnfinishedMessage(builder.buildPartial());
+        } catch (com.google.protobuf.UninitializedMessageException e) {
+          throw e.asInvalidProtocolBufferException().setUnfinishedMessage(builder.buildPartial());
+        } catch (java.io.IOException e) {
+          throw new com.google.protobuf.InvalidProtocolBufferException(e)
+              .setUnfinishedMessage(builder.buildPartial());
+        }
+        return builder.buildPartial();
+      }
+    };
+
+    public static com.google.protobuf.Parser<MsgRemoveKEMKey> parser() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Parser<MsgRemoveKEMKey> getParserForType() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public qorechain.pqc.v1.Tx.MsgRemoveKEMKey getDefaultInstanceForType() {
+      return DEFAULT_INSTANCE;
+    }
+
+  }
+
+  public interface MsgRemoveKEMKeyResponseOrBuilder extends
+      // @@protoc_insertion_point(interface_extends:qorechain.pqc.v1.MsgRemoveKEMKeyResponse)
+      com.google.protobuf.MessageOrBuilder {
+  }
+  /**
+   * Protobuf type {@code qorechain.pqc.v1.MsgRemoveKEMKeyResponse}
+   */
+  public static final class MsgRemoveKEMKeyResponse extends
+      com.google.protobuf.GeneratedMessage implements
+      // @@protoc_insertion_point(message_implements:qorechain.pqc.v1.MsgRemoveKEMKeyResponse)
+      MsgRemoveKEMKeyResponseOrBuilder {
+  private static final long serialVersionUID = 0L;
+    static {
+      com.google.protobuf.RuntimeVersion.validateProtobufGencodeVersion(
+        com.google.protobuf.RuntimeVersion.RuntimeDomain.PUBLIC,
+        /* major= */ 4,
+        /* minor= */ 35,
+        /* patch= */ 1,
+        /* suffix= */ "",
+        "MsgRemoveKEMKeyResponse");
+    }
+    // Use MsgRemoveKEMKeyResponse.newBuilder() to construct.
+    private MsgRemoveKEMKeyResponse(com.google.protobuf.GeneratedMessage.Builder<?> builder) {
+      super(builder);
+    }
+    private MsgRemoveKEMKeyResponse() {
+    }
+
+    public static final com.google.protobuf.Descriptors.Descriptor
+        getDescriptor() {
+      return qorechain.pqc.v1.Tx.internal_static_qorechain_pqc_v1_MsgRemoveKEMKeyResponse_descriptor;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Descriptors.Descriptor getDescriptorForType() {
+      return qorechain.pqc.v1.Tx.internal_static_qorechain_pqc_v1_MsgRemoveKEMKeyResponse_descriptor;
+    }
+
+    @java.lang.Override
+    protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+        internalGetFieldAccessorTable() {
+      return qorechain.pqc.v1.Tx.internal_static_qorechain_pqc_v1_MsgRemoveKEMKeyResponse_fieldAccessorTable
+          .ensureFieldAccessorsInitialized(
+              qorechain.pqc.v1.Tx.MsgRemoveKEMKeyResponse.class, qorechain.pqc.v1.Tx.MsgRemoveKEMKeyResponse.Builder.class);
+    }
+
+    private byte memoizedIsInitialized = -1;
+    @java.lang.Override
+    public final boolean isInitialized() {
+      byte isInitialized = memoizedIsInitialized;
+      if (isInitialized == 1) return true;
+      if (isInitialized == 0) return false;
+
+      memoizedIsInitialized = 1;
+      return true;
+    }
+
+    @java.lang.Override
+    public void writeTo(com.google.protobuf.CodedOutputStream output)
+                        throws java.io.IOException {
+      getUnknownFields().writeTo(output);
+    }
+    @java.lang.Override
+    public int getSerializedSize() {
+      int size = memoizedSize;
+      if (size != -1) return size;
+
+      size = 0;
+      size += getUnknownFields().getSerializedSize();
+      memoizedSize = size;
+      return size;
+    }
+
+    @java.lang.Override
+    public boolean equals(final java.lang.Object obj) {
+      if (obj == this) {
+       return true;
+      }
+      if (!(obj instanceof qorechain.pqc.v1.Tx.MsgRemoveKEMKeyResponse)) {
+        return super.equals(obj);
+      }
+      qorechain.pqc.v1.Tx.MsgRemoveKEMKeyResponse other = (qorechain.pqc.v1.Tx.MsgRemoveKEMKeyResponse) obj;
+
+      if (!getUnknownFields().equals(other.getUnknownFields())) return false;
+      return true;
+    }
+
+    @java.lang.Override
+    public int hashCode() {
+      if (memoizedHashCode != 0) {
+        return memoizedHashCode;
+      }
+      int hash = 41;
+      hash = (19 * hash) + getDescriptor().hashCode();
+      hash = (29 * hash) + getUnknownFields().hashCode();
+      memoizedHashCode = hash;
+      return hash;
+    }
+
+    public static qorechain.pqc.v1.Tx.MsgRemoveKEMKeyResponse parseFrom(
+        java.nio.ByteBuffer data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static qorechain.pqc.v1.Tx.MsgRemoveKEMKeyResponse parseFrom(
+        java.nio.ByteBuffer data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static qorechain.pqc.v1.Tx.MsgRemoveKEMKeyResponse parseFrom(
+        com.google.protobuf.ByteString data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static qorechain.pqc.v1.Tx.MsgRemoveKEMKeyResponse parseFrom(
+        com.google.protobuf.ByteString data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static qorechain.pqc.v1.Tx.MsgRemoveKEMKeyResponse parseFrom(byte[] data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static qorechain.pqc.v1.Tx.MsgRemoveKEMKeyResponse parseFrom(
+        byte[] data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static qorechain.pqc.v1.Tx.MsgRemoveKEMKeyResponse parseFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input);
+    }
+    public static qorechain.pqc.v1.Tx.MsgRemoveKEMKeyResponse parseFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    public static qorechain.pqc.v1.Tx.MsgRemoveKEMKeyResponse parseDelimitedFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseDelimitedWithIOException(PARSER, input);
+    }
+
+    public static qorechain.pqc.v1.Tx.MsgRemoveKEMKeyResponse parseDelimitedFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static qorechain.pqc.v1.Tx.MsgRemoveKEMKeyResponse parseFrom(
+        com.google.protobuf.CodedInputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input);
+    }
+    public static qorechain.pqc.v1.Tx.MsgRemoveKEMKeyResponse parseFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    @java.lang.Override
+    public Builder newBuilderForType() { return newBuilder(); }
+    public static Builder newBuilder() {
+      return DEFAULT_INSTANCE.toBuilder();
+    }
+    public static Builder newBuilder(qorechain.pqc.v1.Tx.MsgRemoveKEMKeyResponse prototype) {
+      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+    }
+    @java.lang.Override
+    public Builder toBuilder() {
+      return this == DEFAULT_INSTANCE
+          ? new Builder() : new Builder().mergeFrom(this);
+    }
+
+    @java.lang.Override
+    protected Builder newBuilderForType(
+        com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+      Builder builder = new Builder(parent);
+      return builder;
+    }
+    /**
+     * Protobuf type {@code qorechain.pqc.v1.MsgRemoveKEMKeyResponse}
+     */
+    public static final class Builder extends
+        com.google.protobuf.GeneratedMessage.Builder<Builder> implements
+        // @@protoc_insertion_point(builder_implements:qorechain.pqc.v1.MsgRemoveKEMKeyResponse)
+        qorechain.pqc.v1.Tx.MsgRemoveKEMKeyResponseOrBuilder {
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return qorechain.pqc.v1.Tx.internal_static_qorechain_pqc_v1_MsgRemoveKEMKeyResponse_descriptor;
+      }
+
+      @java.lang.Override
+      protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return qorechain.pqc.v1.Tx.internal_static_qorechain_pqc_v1_MsgRemoveKEMKeyResponse_fieldAccessorTable
+            .ensureFieldAccessorsInitialized(
+                qorechain.pqc.v1.Tx.MsgRemoveKEMKeyResponse.class, qorechain.pqc.v1.Tx.MsgRemoveKEMKeyResponse.Builder.class);
+      }
+
+      // Construct using qorechain.pqc.v1.Tx.MsgRemoveKEMKeyResponse.newBuilder()
+      private Builder() {
+
+      }
+
+      private Builder(
+          com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+        super(parent);
+
+      }
+      @java.lang.Override
+      public Builder clear() {
+        super.clear();
+        return this;
+      }
+
+      @java.lang.Override
+      public com.google.protobuf.Descriptors.Descriptor
+          getDescriptorForType() {
+        return qorechain.pqc.v1.Tx.internal_static_qorechain_pqc_v1_MsgRemoveKEMKeyResponse_descriptor;
+      }
+
+      @java.lang.Override
+      public qorechain.pqc.v1.Tx.MsgRemoveKEMKeyResponse getDefaultInstanceForType() {
+        return qorechain.pqc.v1.Tx.MsgRemoveKEMKeyResponse.getDefaultInstance();
+      }
+
+      @java.lang.Override
+      public qorechain.pqc.v1.Tx.MsgRemoveKEMKeyResponse build() {
+        qorechain.pqc.v1.Tx.MsgRemoveKEMKeyResponse result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(result);
+        }
+        return result;
+      }
+
+      @java.lang.Override
+      public qorechain.pqc.v1.Tx.MsgRemoveKEMKeyResponse buildPartial() {
+        qorechain.pqc.v1.Tx.MsgRemoveKEMKeyResponse result = new qorechain.pqc.v1.Tx.MsgRemoveKEMKeyResponse(this);
+        onBuilt();
+        return result;
+      }
+
+      @java.lang.Override
+      public Builder mergeFrom(com.google.protobuf.Message other) {
+        if (other instanceof qorechain.pqc.v1.Tx.MsgRemoveKEMKeyResponse) {
+          return mergeFrom((qorechain.pqc.v1.Tx.MsgRemoveKEMKeyResponse)other);
+        } else {
+          super.mergeFrom(other);
+          return this;
+        }
+      }
+
+      public Builder mergeFrom(qorechain.pqc.v1.Tx.MsgRemoveKEMKeyResponse other) {
+        if (other == qorechain.pqc.v1.Tx.MsgRemoveKEMKeyResponse.getDefaultInstance()) return this;
+        this.mergeUnknownFields(other.getUnknownFields());
+        onChanged();
+        return this;
+      }
+
+      @java.lang.Override
+      public final boolean isInitialized() {
+        return true;
+      }
+
+      @java.lang.Override
+      public Builder mergeFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        if (extensionRegistry == null) {
+          throw new java.lang.NullPointerException();
+        }
+        try {
+          boolean done = false;
+          while (!done) {
+            int tag = input.readTag();
+            switch (tag) {
+              case 0:
+                done = true;
+                break;
+              default: {
+                if (!super.parseUnknownField(input, extensionRegistry, tag)) {
+                  done = true; // was an endgroup tag
+                }
+                break;
+              } // default:
+            } // switch (tag)
+          } // while (!done)
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          throw e.unwrapIOException();
+        } finally {
+          onChanged();
+        } // finally
+        return this;
+      }
+
+      // @@protoc_insertion_point(builder_scope:qorechain.pqc.v1.MsgRemoveKEMKeyResponse)
+    }
+
+    // @@protoc_insertion_point(class_scope:qorechain.pqc.v1.MsgRemoveKEMKeyResponse)
+    private static final qorechain.pqc.v1.Tx.MsgRemoveKEMKeyResponse DEFAULT_INSTANCE;
+    static {
+      DEFAULT_INSTANCE = new qorechain.pqc.v1.Tx.MsgRemoveKEMKeyResponse();
+    }
+
+    public static qorechain.pqc.v1.Tx.MsgRemoveKEMKeyResponse getDefaultInstance() {
+      return DEFAULT_INSTANCE;
+    }
+
+    private static final com.google.protobuf.Parser<MsgRemoveKEMKeyResponse>
+        PARSER = new com.google.protobuf.AbstractParser<MsgRemoveKEMKeyResponse>() {
+      @java.lang.Override
+      public MsgRemoveKEMKeyResponse parsePartialFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        Builder builder = newBuilder();
+        try {
+          builder.mergeFrom(input, extensionRegistry);
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          throw e.setUnfinishedMessage(builder.buildPartial());
+        } catch (com.google.protobuf.UninitializedMessageException e) {
+          throw e.asInvalidProtocolBufferException().setUnfinishedMessage(builder.buildPartial());
+        } catch (java.io.IOException e) {
+          throw new com.google.protobuf.InvalidProtocolBufferException(e)
+              .setUnfinishedMessage(builder.buildPartial());
+        }
+        return builder.buildPartial();
+      }
+    };
+
+    public static com.google.protobuf.Parser<MsgRemoveKEMKeyResponse> parser() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Parser<MsgRemoveKEMKeyResponse> getParserForType() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public qorechain.pqc.v1.Tx.MsgRemoveKEMKeyResponse getDefaultInstanceForType() {
+      return DEFAULT_INSTANCE;
+    }
+
+  }
+
   private static final com.google.protobuf.Descriptors.Descriptor
     internal_static_qorechain_pqc_v1_MsgRegisterPQCKey_descriptor;
   private static final 
@@ -12155,6 +14231,26 @@ public final class Tx extends com.google.protobuf.GeneratedFile {
   private static final 
     com.google.protobuf.GeneratedMessage.FieldAccessorTable
       internal_static_qorechain_pqc_v1_MsgClearEVMDelegationResponse_fieldAccessorTable;
+  private static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_qorechain_pqc_v1_MsgRegisterKEMKey_descriptor;
+  private static final 
+    com.google.protobuf.GeneratedMessage.FieldAccessorTable
+      internal_static_qorechain_pqc_v1_MsgRegisterKEMKey_fieldAccessorTable;
+  private static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_qorechain_pqc_v1_MsgRegisterKEMKeyResponse_descriptor;
+  private static final 
+    com.google.protobuf.GeneratedMessage.FieldAccessorTable
+      internal_static_qorechain_pqc_v1_MsgRegisterKEMKeyResponse_fieldAccessorTable;
+  private static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_qorechain_pqc_v1_MsgRemoveKEMKey_descriptor;
+  private static final 
+    com.google.protobuf.GeneratedMessage.FieldAccessorTable
+      internal_static_qorechain_pqc_v1_MsgRemoveKEMKey_fieldAccessorTable;
+  private static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_qorechain_pqc_v1_MsgRemoveKEMKeyResponse_descriptor;
+  private static final 
+    com.google.protobuf.GeneratedMessage.FieldAccessorTable
+      internal_static_qorechain_pqc_v1_MsgRemoveKEMKeyResponse_fieldAccessorTable;
 
   public static com.google.protobuf.Descriptors.FileDescriptor
       getDescriptor() {
@@ -12230,35 +14326,48 @@ public final class Tx extends com.google.protobuf.GeneratedFile {
       "iryHeight\"V\n\025MsgClearEVMDelegation\0220\n\006se" +
       "nder\030\001 \001(\tB\030\322\264-\024cosmos.AddressStringR\006se" +
       "nder:\013\202\347\260*\006sender\"\037\n\035MsgClearEVMDelegati" +
-      "onResponse2\244\010\n\003Msg\022b\n\016RegisterPQCKey\022#.q" +
-      "orechain.pqc.v1.MsgRegisterPQCKey\032+.qore" +
-      "chain.pqc.v1.MsgRegisterPQCKeyResponse\022h" +
-      "\n\020RegisterPQCKeyV2\022%.qorechain.pqc.v1.Ms" +
-      "gRegisterPQCKeyV2\032-.qorechain.pqc.v1.Msg" +
-      "RegisterPQCKeyV2Response\022_\n\rMigratePQCKe" +
-      "y\022\".qorechain.pqc.v1.MsgMigratePQCKey\032*." +
-      "qorechain.pqc.v1.MsgMigratePQCKeyRespons" +
-      "e\022\\\n\014RotatePQCKey\022!.qorechain.pqc.v1.Msg" +
-      "RotatePQCKey\032).qorechain.pqc.v1.MsgRotat" +
-      "ePQCKeyResponse\022n\n\022DeprecateAlgorithm\022\'." +
-      "qorechain.pqc.v1.MsgDeprecateAlgorithm\032/" +
-      ".qorechain.pqc.v1.MsgDeprecateAlgorithmR" +
-      "esponse\022h\n\020DisableAlgorithm\022%.qorechain." +
-      "pqc.v1.MsgDisableAlgorithm\032-.qorechain.p" +
-      "qc.v1.MsgDisableAlgorithmResponse\022_\n\rOpe" +
-      "nEVMWindow\022\".qorechain.pqc.v1.MsgOpenEVM" +
-      "Window\032*.qorechain.pqc.v1.MsgOpenEVMWind" +
-      "owResponse\022b\n\016CloseEVMWindow\022#.qorechain" +
-      ".pqc.v1.MsgCloseEVMWindow\032+.qorechain.pq" +
-      "c.v1.MsgCloseEVMWindowResponse\022z\n\026Author" +
-      "izeEVMDelegation\022+.qorechain.pqc.v1.MsgA" +
-      "uthorizeEVMDelegation\0323.qorechain.pqc.v1" +
-      ".MsgAuthorizeEVMDelegationResponse\022n\n\022Cl" +
-      "earEVMDelegation\022\'.qorechain.pqc.v1.MsgC" +
-      "learEVMDelegation\032/.qorechain.pqc.v1.Msg" +
-      "ClearEVMDelegationResponse\032\005\200\347\260*\001B1Z/git" +
-      "hub.com/qorechain/qorechain-core/x/pqc/t" +
-      "ypesb\006proto3"
+      "onResponse\"\264\001\n\021MsgRegisterKEMKey\0220\n\006send" +
+      "er\030\001 \001(\tB\030\322\264-\024cosmos.AddressStringR\006send" +
+      "er\022A\n\014algorithm_id\030\002 \001(\rB\036\342\336\037\013AlgorithmI" +
+      "D\372\336\037\013AlgorithmIDR\013algorithmId\022\035\n\npublic_" +
+      "key\030\003 \001(\014R\tpublicKey:\013\202\347\260*\006sender\"7\n\031Msg" +
+      "RegisterKEMKeyResponse\022\032\n\010replaced\030\001 \001(\010" +
+      "R\010replaced\"P\n\017MsgRemoveKEMKey\0220\n\006sender\030" +
+      "\001 \001(\tB\030\322\264-\024cosmos.AddressStringR\006sender:" +
+      "\013\202\347\260*\006sender\"\031\n\027MsgRemoveKEMKeyResponse2" +
+      "\346\t\n\003Msg\022b\n\016RegisterPQCKey\022#.qorechain.pq" +
+      "c.v1.MsgRegisterPQCKey\032+.qorechain.pqc.v" +
+      "1.MsgRegisterPQCKeyResponse\022h\n\020RegisterP" +
+      "QCKeyV2\022%.qorechain.pqc.v1.MsgRegisterPQ" +
+      "CKeyV2\032-.qorechain.pqc.v1.MsgRegisterPQC" +
+      "KeyV2Response\022_\n\rMigratePQCKey\022\".qorecha" +
+      "in.pqc.v1.MsgMigratePQCKey\032*.qorechain.p" +
+      "qc.v1.MsgMigratePQCKeyResponse\022\\\n\014Rotate" +
+      "PQCKey\022!.qorechain.pqc.v1.MsgRotatePQCKe" +
+      "y\032).qorechain.pqc.v1.MsgRotatePQCKeyResp" +
+      "onse\022n\n\022DeprecateAlgorithm\022\'.qorechain.p" +
+      "qc.v1.MsgDeprecateAlgorithm\032/.qorechain." +
+      "pqc.v1.MsgDeprecateAlgorithmResponse\022h\n\020" +
+      "DisableAlgorithm\022%.qorechain.pqc.v1.MsgD" +
+      "isableAlgorithm\032-.qorechain.pqc.v1.MsgDi" +
+      "sableAlgorithmResponse\022_\n\rOpenEVMWindow\022" +
+      "\".qorechain.pqc.v1.MsgOpenEVMWindow\032*.qo" +
+      "rechain.pqc.v1.MsgOpenEVMWindowResponse\022" +
+      "b\n\016CloseEVMWindow\022#.qorechain.pqc.v1.Msg" +
+      "CloseEVMWindow\032+.qorechain.pqc.v1.MsgClo" +
+      "seEVMWindowResponse\022z\n\026AuthorizeEVMDeleg" +
+      "ation\022+.qorechain.pqc.v1.MsgAuthorizeEVM" +
+      "Delegation\0323.qorechain.pqc.v1.MsgAuthori" +
+      "zeEVMDelegationResponse\022n\n\022ClearEVMDeleg" +
+      "ation\022\'.qorechain.pqc.v1.MsgClearEVMDele" +
+      "gation\032/.qorechain.pqc.v1.MsgClearEVMDel" +
+      "egationResponse\022b\n\016RegisterKEMKey\022#.qore" +
+      "chain.pqc.v1.MsgRegisterKEMKey\032+.qorecha" +
+      "in.pqc.v1.MsgRegisterKEMKeyResponse\022\\\n\014R" +
+      "emoveKEMKey\022!.qorechain.pqc.v1.MsgRemove" +
+      "KEMKey\032).qorechain.pqc.v1.MsgRemoveKEMKe" +
+      "yResponse\032\005\200\347\260*\001B1Z/github.com/qorechain" +
+      "/qorechain-core/x/pqc/typesb\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
@@ -12386,6 +14495,30 @@ public final class Tx extends com.google.protobuf.GeneratedFile {
     internal_static_qorechain_pqc_v1_MsgClearEVMDelegationResponse_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_qorechain_pqc_v1_MsgClearEVMDelegationResponse_descriptor,
+        new java.lang.String[] { });
+    internal_static_qorechain_pqc_v1_MsgRegisterKEMKey_descriptor =
+      getDescriptor().getMessageType(20);
+    internal_static_qorechain_pqc_v1_MsgRegisterKEMKey_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessage.FieldAccessorTable(
+        internal_static_qorechain_pqc_v1_MsgRegisterKEMKey_descriptor,
+        new java.lang.String[] { "Sender", "AlgorithmId", "PublicKey", });
+    internal_static_qorechain_pqc_v1_MsgRegisterKEMKeyResponse_descriptor =
+      getDescriptor().getMessageType(21);
+    internal_static_qorechain_pqc_v1_MsgRegisterKEMKeyResponse_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessage.FieldAccessorTable(
+        internal_static_qorechain_pqc_v1_MsgRegisterKEMKeyResponse_descriptor,
+        new java.lang.String[] { "Replaced", });
+    internal_static_qorechain_pqc_v1_MsgRemoveKEMKey_descriptor =
+      getDescriptor().getMessageType(22);
+    internal_static_qorechain_pqc_v1_MsgRemoveKEMKey_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessage.FieldAccessorTable(
+        internal_static_qorechain_pqc_v1_MsgRemoveKEMKey_descriptor,
+        new java.lang.String[] { "Sender", });
+    internal_static_qorechain_pqc_v1_MsgRemoveKEMKeyResponse_descriptor =
+      getDescriptor().getMessageType(23);
+    internal_static_qorechain_pqc_v1_MsgRemoveKEMKeyResponse_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessage.FieldAccessorTable(
+        internal_static_qorechain_pqc_v1_MsgRemoveKEMKeyResponse_descriptor,
         new java.lang.String[] { });
     descriptor.resolveAllFeaturesImmutable();
     cosmos.msg.v1.Msg.getDescriptor();

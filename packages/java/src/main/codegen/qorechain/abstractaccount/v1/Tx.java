@@ -13336,6 +13336,1272 @@ public final class Tx extends com.google.protobuf.GeneratedFile {
 
   }
 
+  public interface MsgUpdateConfigOrBuilder extends
+      // @@protoc_insertion_point(interface_extends:qorechain.abstractaccount.v1.MsgUpdateConfig)
+      com.google.protobuf.MessageOrBuilder {
+
+    /**
+     * <pre>
+     * authority must be the governance module account.
+     * </pre>
+     *
+     * <code>string authority = 1 [json_name = "authority", (.cosmos_proto.scalar) = "cosmos.AddressString"];</code>
+     * @return The authority.
+     */
+    java.lang.String getAuthority();
+    /**
+     * <pre>
+     * authority must be the governance module account.
+     * </pre>
+     *
+     * <code>string authority = 1 [json_name = "authority", (.cosmos_proto.scalar) = "cosmos.AddressString"];</code>
+     * @return The bytes for authority.
+     */
+    com.google.protobuf.ByteString
+        getAuthorityBytes();
+
+    /**
+     * <pre>
+     * enabled gates CreateAbstractAccount, RegisterAuthenticator, ExecuteEVM and
+     * ExecuteCosmos.
+     * </pre>
+     *
+     * <code>bool enabled = 2 [json_name = "enabled"];</code>
+     * @return The enabled.
+     */
+    boolean getEnabled();
+
+    /**
+     * <pre>
+     * max_session_keys, max_spending_rules and default_session_ttl (seconds)
+     * must be positive, as in genesis.
+     * </pre>
+     *
+     * <code>int32 max_session_keys = 3 [json_name = "maxSessionKeys"];</code>
+     * @return The maxSessionKeys.
+     */
+    int getMaxSessionKeys();
+
+    /**
+     * <code>int32 max_spending_rules = 4 [json_name = "maxSpendingRules"];</code>
+     * @return The maxSpendingRules.
+     */
+    int getMaxSpendingRules();
+
+    /**
+     * <code>int64 default_session_ttl = 5 [json_name = "defaultSessionTtl"];</code>
+     * @return The defaultSessionTtl.
+     */
+    long getDefaultSessionTtl();
+  }
+  /**
+   * <pre>
+   * MsgUpdateConfig replaces the abstractaccount configuration wholesale (v3.2.5).
+   * A proposal copies the current values from /qorechain/abstractaccount/v1/config
+   * and changes only what it means to change.
+   * </pre>
+   *
+   * Protobuf type {@code qorechain.abstractaccount.v1.MsgUpdateConfig}
+   */
+  public static final class MsgUpdateConfig extends
+      com.google.protobuf.GeneratedMessage implements
+      // @@protoc_insertion_point(message_implements:qorechain.abstractaccount.v1.MsgUpdateConfig)
+      MsgUpdateConfigOrBuilder {
+  private static final long serialVersionUID = 0L;
+    static {
+      com.google.protobuf.RuntimeVersion.validateProtobufGencodeVersion(
+        com.google.protobuf.RuntimeVersion.RuntimeDomain.PUBLIC,
+        /* major= */ 4,
+        /* minor= */ 35,
+        /* patch= */ 1,
+        /* suffix= */ "",
+        "MsgUpdateConfig");
+    }
+    // Use MsgUpdateConfig.newBuilder() to construct.
+    private MsgUpdateConfig(com.google.protobuf.GeneratedMessage.Builder<?> builder) {
+      super(builder);
+    }
+    private MsgUpdateConfig() {
+      authority_ = "";
+    }
+
+    public static final com.google.protobuf.Descriptors.Descriptor
+        getDescriptor() {
+      return qorechain.abstractaccount.v1.Tx.internal_static_qorechain_abstractaccount_v1_MsgUpdateConfig_descriptor;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Descriptors.Descriptor getDescriptorForType() {
+      return qorechain.abstractaccount.v1.Tx.internal_static_qorechain_abstractaccount_v1_MsgUpdateConfig_descriptor;
+    }
+
+    @java.lang.Override
+    protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+        internalGetFieldAccessorTable() {
+      return qorechain.abstractaccount.v1.Tx.internal_static_qorechain_abstractaccount_v1_MsgUpdateConfig_fieldAccessorTable
+          .ensureFieldAccessorsInitialized(
+              qorechain.abstractaccount.v1.Tx.MsgUpdateConfig.class, qorechain.abstractaccount.v1.Tx.MsgUpdateConfig.Builder.class);
+    }
+
+    public static final int AUTHORITY_FIELD_NUMBER = 1;
+    @SuppressWarnings("serial")
+    private volatile java.lang.Object authority_ = "";
+    /**
+     * <pre>
+     * authority must be the governance module account.
+     * </pre>
+     *
+     * <code>string authority = 1 [json_name = "authority", (.cosmos_proto.scalar) = "cosmos.AddressString"];</code>
+     * @return The authority.
+     */
+    @java.lang.Override
+    public java.lang.String getAuthority() {
+      java.lang.Object ref = authority_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        authority_ = s;
+        return s;
+      }
+    }
+    /**
+     * <pre>
+     * authority must be the governance module account.
+     * </pre>
+     *
+     * <code>string authority = 1 [json_name = "authority", (.cosmos_proto.scalar) = "cosmos.AddressString"];</code>
+     * @return The bytes for authority.
+     */
+    @java.lang.Override
+    public com.google.protobuf.ByteString
+        getAuthorityBytes() {
+      java.lang.Object ref = authority_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        authority_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
+    public static final int ENABLED_FIELD_NUMBER = 2;
+    private boolean enabled_ = false;
+    /**
+     * <pre>
+     * enabled gates CreateAbstractAccount, RegisterAuthenticator, ExecuteEVM and
+     * ExecuteCosmos.
+     * </pre>
+     *
+     * <code>bool enabled = 2 [json_name = "enabled"];</code>
+     * @return The enabled.
+     */
+    @java.lang.Override
+    public boolean getEnabled() {
+      return enabled_;
+    }
+
+    public static final int MAX_SESSION_KEYS_FIELD_NUMBER = 3;
+    private int maxSessionKeys_ = 0;
+    /**
+     * <pre>
+     * max_session_keys, max_spending_rules and default_session_ttl (seconds)
+     * must be positive, as in genesis.
+     * </pre>
+     *
+     * <code>int32 max_session_keys = 3 [json_name = "maxSessionKeys"];</code>
+     * @return The maxSessionKeys.
+     */
+    @java.lang.Override
+    public int getMaxSessionKeys() {
+      return maxSessionKeys_;
+    }
+
+    public static final int MAX_SPENDING_RULES_FIELD_NUMBER = 4;
+    private int maxSpendingRules_ = 0;
+    /**
+     * <code>int32 max_spending_rules = 4 [json_name = "maxSpendingRules"];</code>
+     * @return The maxSpendingRules.
+     */
+    @java.lang.Override
+    public int getMaxSpendingRules() {
+      return maxSpendingRules_;
+    }
+
+    public static final int DEFAULT_SESSION_TTL_FIELD_NUMBER = 5;
+    private long defaultSessionTtl_ = 0L;
+    /**
+     * <code>int64 default_session_ttl = 5 [json_name = "defaultSessionTtl"];</code>
+     * @return The defaultSessionTtl.
+     */
+    @java.lang.Override
+    public long getDefaultSessionTtl() {
+      return defaultSessionTtl_;
+    }
+
+    private byte memoizedIsInitialized = -1;
+    @java.lang.Override
+    public final boolean isInitialized() {
+      byte isInitialized = memoizedIsInitialized;
+      if (isInitialized == 1) return true;
+      if (isInitialized == 0) return false;
+
+      memoizedIsInitialized = 1;
+      return true;
+    }
+
+    @java.lang.Override
+    public void writeTo(com.google.protobuf.CodedOutputStream output)
+                        throws java.io.IOException {
+      if (!com.google.protobuf.GeneratedMessage.isStringEmpty(authority_)) {
+        com.google.protobuf.GeneratedMessage.writeString(output, 1, authority_);
+      }
+      if (enabled_ != false) {
+        output.writeBool(2, enabled_);
+      }
+      if (maxSessionKeys_ != 0) {
+        output.writeInt32(3, maxSessionKeys_);
+      }
+      if (maxSpendingRules_ != 0) {
+        output.writeInt32(4, maxSpendingRules_);
+      }
+      if (defaultSessionTtl_ != 0L) {
+        output.writeInt64(5, defaultSessionTtl_);
+      }
+      getUnknownFields().writeTo(output);
+    }
+    private int computeSerializedSize_0() {
+      int size = 0;
+      if (!com.google.protobuf.GeneratedMessage.isStringEmpty(authority_)) {
+        size += com.google.protobuf.GeneratedMessage.computeStringSize(1, authority_);
+      }
+      if (enabled_ != false) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeBoolSize(2, enabled_);
+      }
+      if (maxSessionKeys_ != 0) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeInt32Size(3, maxSessionKeys_);
+      }
+      if (maxSpendingRules_ != 0) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeInt32Size(4, maxSpendingRules_);
+      }
+      if (defaultSessionTtl_ != 0L) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeInt64Size(5, defaultSessionTtl_);
+      }
+      return size;
+    }
+    @java.lang.Override
+    public int getSerializedSize() {
+      int size = memoizedSize;
+      if (size != -1) return size;
+
+      size = 0;
+      size += computeSerializedSize_0();
+      size += getUnknownFields().getSerializedSize();
+      memoizedSize = size;
+      return size;
+    }
+
+    @java.lang.Override
+    public boolean equals(final java.lang.Object obj) {
+      if (obj == this) {
+       return true;
+      }
+      if (!(obj instanceof qorechain.abstractaccount.v1.Tx.MsgUpdateConfig)) {
+        return super.equals(obj);
+      }
+      qorechain.abstractaccount.v1.Tx.MsgUpdateConfig other = (qorechain.abstractaccount.v1.Tx.MsgUpdateConfig) obj;
+
+      if (!getAuthority()
+          .equals(other.getAuthority())) return false;
+      if (getEnabled()
+          != other.getEnabled()) return false;
+      if (getMaxSessionKeys()
+          != other.getMaxSessionKeys()) return false;
+      if (getMaxSpendingRules()
+          != other.getMaxSpendingRules()) return false;
+      if (getDefaultSessionTtl()
+          != other.getDefaultSessionTtl()) return false;
+      if (!getUnknownFields().equals(other.getUnknownFields())) return false;
+      return true;
+    }
+
+    @java.lang.Override
+    public int hashCode() {
+      if (memoizedHashCode != 0) {
+        return memoizedHashCode;
+      }
+      int hash = 41;
+      hash = (19 * hash) + getDescriptor().hashCode();
+      hash = (37 * hash) + AUTHORITY_FIELD_NUMBER;
+      hash = (53 * hash) + getAuthority().hashCode();
+      hash = (37 * hash) + ENABLED_FIELD_NUMBER;
+      hash = (53 * hash) + com.google.protobuf.Internal.hashBoolean(
+          getEnabled());
+      hash = (37 * hash) + MAX_SESSION_KEYS_FIELD_NUMBER;
+      hash = (53 * hash) + getMaxSessionKeys();
+      hash = (37 * hash) + MAX_SPENDING_RULES_FIELD_NUMBER;
+      hash = (53 * hash) + getMaxSpendingRules();
+      hash = (37 * hash) + DEFAULT_SESSION_TTL_FIELD_NUMBER;
+      hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
+          getDefaultSessionTtl());
+      hash = (29 * hash) + getUnknownFields().hashCode();
+      memoizedHashCode = hash;
+      return hash;
+    }
+
+    public static qorechain.abstractaccount.v1.Tx.MsgUpdateConfig parseFrom(
+        java.nio.ByteBuffer data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static qorechain.abstractaccount.v1.Tx.MsgUpdateConfig parseFrom(
+        java.nio.ByteBuffer data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static qorechain.abstractaccount.v1.Tx.MsgUpdateConfig parseFrom(
+        com.google.protobuf.ByteString data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static qorechain.abstractaccount.v1.Tx.MsgUpdateConfig parseFrom(
+        com.google.protobuf.ByteString data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static qorechain.abstractaccount.v1.Tx.MsgUpdateConfig parseFrom(byte[] data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static qorechain.abstractaccount.v1.Tx.MsgUpdateConfig parseFrom(
+        byte[] data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static qorechain.abstractaccount.v1.Tx.MsgUpdateConfig parseFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input);
+    }
+    public static qorechain.abstractaccount.v1.Tx.MsgUpdateConfig parseFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    public static qorechain.abstractaccount.v1.Tx.MsgUpdateConfig parseDelimitedFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseDelimitedWithIOException(PARSER, input);
+    }
+
+    public static qorechain.abstractaccount.v1.Tx.MsgUpdateConfig parseDelimitedFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static qorechain.abstractaccount.v1.Tx.MsgUpdateConfig parseFrom(
+        com.google.protobuf.CodedInputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input);
+    }
+    public static qorechain.abstractaccount.v1.Tx.MsgUpdateConfig parseFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    @java.lang.Override
+    public Builder newBuilderForType() { return newBuilder(); }
+    public static Builder newBuilder() {
+      return DEFAULT_INSTANCE.toBuilder();
+    }
+    public static Builder newBuilder(qorechain.abstractaccount.v1.Tx.MsgUpdateConfig prototype) {
+      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+    }
+    @java.lang.Override
+    public Builder toBuilder() {
+      return this == DEFAULT_INSTANCE
+          ? new Builder() : new Builder().mergeFrom(this);
+    }
+
+    @java.lang.Override
+    protected Builder newBuilderForType(
+        com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+      Builder builder = new Builder(parent);
+      return builder;
+    }
+    /**
+     * <pre>
+     * MsgUpdateConfig replaces the abstractaccount configuration wholesale (v3.2.5).
+     * A proposal copies the current values from /qorechain/abstractaccount/v1/config
+     * and changes only what it means to change.
+     * </pre>
+     *
+     * Protobuf type {@code qorechain.abstractaccount.v1.MsgUpdateConfig}
+     */
+    public static final class Builder extends
+        com.google.protobuf.GeneratedMessage.Builder<Builder> implements
+        // @@protoc_insertion_point(builder_implements:qorechain.abstractaccount.v1.MsgUpdateConfig)
+        qorechain.abstractaccount.v1.Tx.MsgUpdateConfigOrBuilder {
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return qorechain.abstractaccount.v1.Tx.internal_static_qorechain_abstractaccount_v1_MsgUpdateConfig_descriptor;
+      }
+
+      @java.lang.Override
+      protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return qorechain.abstractaccount.v1.Tx.internal_static_qorechain_abstractaccount_v1_MsgUpdateConfig_fieldAccessorTable
+            .ensureFieldAccessorsInitialized(
+                qorechain.abstractaccount.v1.Tx.MsgUpdateConfig.class, qorechain.abstractaccount.v1.Tx.MsgUpdateConfig.Builder.class);
+      }
+
+      // Construct using qorechain.abstractaccount.v1.Tx.MsgUpdateConfig.newBuilder()
+      private Builder() {
+
+      }
+
+      private Builder(
+          com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+        super(parent);
+
+      }
+      @java.lang.Override
+      public Builder clear() {
+        super.clear();
+        bitField0_ = 0;
+        authority_ = "";
+        enabled_ = false;
+        maxSessionKeys_ = 0;
+        maxSpendingRules_ = 0;
+        defaultSessionTtl_ = 0L;
+        return this;
+      }
+
+      @java.lang.Override
+      public com.google.protobuf.Descriptors.Descriptor
+          getDescriptorForType() {
+        return qorechain.abstractaccount.v1.Tx.internal_static_qorechain_abstractaccount_v1_MsgUpdateConfig_descriptor;
+      }
+
+      @java.lang.Override
+      public qorechain.abstractaccount.v1.Tx.MsgUpdateConfig getDefaultInstanceForType() {
+        return qorechain.abstractaccount.v1.Tx.MsgUpdateConfig.getDefaultInstance();
+      }
+
+      @java.lang.Override
+      public qorechain.abstractaccount.v1.Tx.MsgUpdateConfig build() {
+        qorechain.abstractaccount.v1.Tx.MsgUpdateConfig result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(result);
+        }
+        return result;
+      }
+
+      @java.lang.Override
+      public qorechain.abstractaccount.v1.Tx.MsgUpdateConfig buildPartial() {
+        qorechain.abstractaccount.v1.Tx.MsgUpdateConfig result = new qorechain.abstractaccount.v1.Tx.MsgUpdateConfig(this);
+        if (bitField0_ != 0) { buildPartial0(result); }
+        onBuilt();
+        return result;
+      }
+
+      private void buildPartial0(qorechain.abstractaccount.v1.Tx.MsgUpdateConfig result) {
+        int from_bitField0_ = bitField0_;
+        if (((from_bitField0_ & 0x00000001) != 0)) {
+          result.authority_ = authority_;
+        }
+        if (((from_bitField0_ & 0x00000002) != 0)) {
+          result.enabled_ = enabled_;
+        }
+        if (((from_bitField0_ & 0x00000004) != 0)) {
+          result.maxSessionKeys_ = maxSessionKeys_;
+        }
+        if (((from_bitField0_ & 0x00000008) != 0)) {
+          result.maxSpendingRules_ = maxSpendingRules_;
+        }
+        if (((from_bitField0_ & 0x00000010) != 0)) {
+          result.defaultSessionTtl_ = defaultSessionTtl_;
+        }
+      }
+
+      @java.lang.Override
+      public Builder mergeFrom(com.google.protobuf.Message other) {
+        if (other instanceof qorechain.abstractaccount.v1.Tx.MsgUpdateConfig) {
+          return mergeFrom((qorechain.abstractaccount.v1.Tx.MsgUpdateConfig)other);
+        } else {
+          super.mergeFrom(other);
+          return this;
+        }
+      }
+
+      public Builder mergeFrom(qorechain.abstractaccount.v1.Tx.MsgUpdateConfig other) {
+        if (other == qorechain.abstractaccount.v1.Tx.MsgUpdateConfig.getDefaultInstance()) return this;
+        if (!other.getAuthority().isEmpty()) {
+          authority_ = other.authority_;
+          bitField0_ |= 0x00000001;
+          onChanged();
+        }
+        if (other.getEnabled() != false) {
+          setEnabled(other.getEnabled());
+        }
+        if (other.getMaxSessionKeys() != 0) {
+          setMaxSessionKeys(other.getMaxSessionKeys());
+        }
+        if (other.getMaxSpendingRules() != 0) {
+          setMaxSpendingRules(other.getMaxSpendingRules());
+        }
+        if (other.getDefaultSessionTtl() != 0L) {
+          setDefaultSessionTtl(other.getDefaultSessionTtl());
+        }
+        this.mergeUnknownFields(other.getUnknownFields());
+        onChanged();
+        return this;
+      }
+
+      @java.lang.Override
+      public final boolean isInitialized() {
+        return true;
+      }
+
+      @java.lang.Override
+      public Builder mergeFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        if (extensionRegistry == null) {
+          throw new java.lang.NullPointerException();
+        }
+        try {
+          boolean done = false;
+          while (!done) {
+            int tag = input.readTag();
+            switch (tag) {
+              case 0:
+                done = true;
+                break;
+              case 10: {
+                authority_ = input.readStringRequireUtf8();
+                bitField0_ |= 0x00000001;
+                break;
+              } // case 10
+              case 16: {
+                enabled_ = input.readBool();
+                bitField0_ |= 0x00000002;
+                break;
+              } // case 16
+              case 24: {
+                maxSessionKeys_ = input.readInt32();
+                bitField0_ |= 0x00000004;
+                break;
+              } // case 24
+              case 32: {
+                maxSpendingRules_ = input.readInt32();
+                bitField0_ |= 0x00000008;
+                break;
+              } // case 32
+              case 40: {
+                defaultSessionTtl_ = input.readInt64();
+                bitField0_ |= 0x00000010;
+                break;
+              } // case 40
+              default: {
+                if (!super.parseUnknownField(input, extensionRegistry, tag)) {
+                  done = true; // was an endgroup tag
+                }
+                break;
+              } // default:
+            } // switch (tag)
+          } // while (!done)
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          throw e.unwrapIOException();
+        } finally {
+          onChanged();
+        } // finally
+        return this;
+      }
+      private int bitField0_;
+
+      private java.lang.Object authority_ = "";
+      /**
+       * <pre>
+       * authority must be the governance module account.
+       * </pre>
+       *
+       * <code>string authority = 1 [json_name = "authority", (.cosmos_proto.scalar) = "cosmos.AddressString"];</code>
+       * @return The authority.
+       */
+      public java.lang.String getAuthority() {
+        java.lang.Object ref = authority_;
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          authority_ = s;
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
+      }
+      /**
+       * <pre>
+       * authority must be the governance module account.
+       * </pre>
+       *
+       * <code>string authority = 1 [json_name = "authority", (.cosmos_proto.scalar) = "cosmos.AddressString"];</code>
+       * @return The bytes for authority.
+       */
+      public com.google.protobuf.ByteString
+          getAuthorityBytes() {
+        java.lang.Object ref = authority_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          authority_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <pre>
+       * authority must be the governance module account.
+       * </pre>
+       *
+       * <code>string authority = 1 [json_name = "authority", (.cosmos_proto.scalar) = "cosmos.AddressString"];</code>
+       * @param value The authority to set.
+       * @return This builder for chaining.
+       */
+      public Builder setAuthority(
+          java.lang.String value) {
+        if (value == null) { throw new NullPointerException(); }
+        authority_ = value;
+        bitField0_ |= 0x00000001;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * authority must be the governance module account.
+       * </pre>
+       *
+       * <code>string authority = 1 [json_name = "authority", (.cosmos_proto.scalar) = "cosmos.AddressString"];</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearAuthority() {
+        authority_ = getDefaultInstance().getAuthority();
+        bitField0_ = (bitField0_ & ~0x00000001);
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * authority must be the governance module account.
+       * </pre>
+       *
+       * <code>string authority = 1 [json_name = "authority", (.cosmos_proto.scalar) = "cosmos.AddressString"];</code>
+       * @param value The bytes for authority to set.
+       * @return This builder for chaining.
+       */
+      public Builder setAuthorityBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) { throw new NullPointerException(); }
+        checkByteStringIsUtf8(value);
+        authority_ = value;
+        bitField0_ |= 0x00000001;
+        onChanged();
+        return this;
+      }
+
+      private boolean enabled_ ;
+      /**
+       * <pre>
+       * enabled gates CreateAbstractAccount, RegisterAuthenticator, ExecuteEVM and
+       * ExecuteCosmos.
+       * </pre>
+       *
+       * <code>bool enabled = 2 [json_name = "enabled"];</code>
+       * @return The enabled.
+       */
+      @java.lang.Override
+      public boolean getEnabled() {
+        return enabled_;
+      }
+      /**
+       * <pre>
+       * enabled gates CreateAbstractAccount, RegisterAuthenticator, ExecuteEVM and
+       * ExecuteCosmos.
+       * </pre>
+       *
+       * <code>bool enabled = 2 [json_name = "enabled"];</code>
+       * @param value The enabled to set.
+       * @return This builder for chaining.
+       */
+      public Builder setEnabled(boolean value) {
+
+        enabled_ = value;
+        bitField0_ |= 0x00000002;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * enabled gates CreateAbstractAccount, RegisterAuthenticator, ExecuteEVM and
+       * ExecuteCosmos.
+       * </pre>
+       *
+       * <code>bool enabled = 2 [json_name = "enabled"];</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearEnabled() {
+        bitField0_ = (bitField0_ & ~0x00000002);
+        enabled_ = false;
+        onChanged();
+        return this;
+      }
+
+      private int maxSessionKeys_ ;
+      /**
+       * <pre>
+       * max_session_keys, max_spending_rules and default_session_ttl (seconds)
+       * must be positive, as in genesis.
+       * </pre>
+       *
+       * <code>int32 max_session_keys = 3 [json_name = "maxSessionKeys"];</code>
+       * @return The maxSessionKeys.
+       */
+      @java.lang.Override
+      public int getMaxSessionKeys() {
+        return maxSessionKeys_;
+      }
+      /**
+       * <pre>
+       * max_session_keys, max_spending_rules and default_session_ttl (seconds)
+       * must be positive, as in genesis.
+       * </pre>
+       *
+       * <code>int32 max_session_keys = 3 [json_name = "maxSessionKeys"];</code>
+       * @param value The maxSessionKeys to set.
+       * @return This builder for chaining.
+       */
+      public Builder setMaxSessionKeys(int value) {
+
+        maxSessionKeys_ = value;
+        bitField0_ |= 0x00000004;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * max_session_keys, max_spending_rules and default_session_ttl (seconds)
+       * must be positive, as in genesis.
+       * </pre>
+       *
+       * <code>int32 max_session_keys = 3 [json_name = "maxSessionKeys"];</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearMaxSessionKeys() {
+        bitField0_ = (bitField0_ & ~0x00000004);
+        maxSessionKeys_ = 0;
+        onChanged();
+        return this;
+      }
+
+      private int maxSpendingRules_ ;
+      /**
+       * <code>int32 max_spending_rules = 4 [json_name = "maxSpendingRules"];</code>
+       * @return The maxSpendingRules.
+       */
+      @java.lang.Override
+      public int getMaxSpendingRules() {
+        return maxSpendingRules_;
+      }
+      /**
+       * <code>int32 max_spending_rules = 4 [json_name = "maxSpendingRules"];</code>
+       * @param value The maxSpendingRules to set.
+       * @return This builder for chaining.
+       */
+      public Builder setMaxSpendingRules(int value) {
+
+        maxSpendingRules_ = value;
+        bitField0_ |= 0x00000008;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>int32 max_spending_rules = 4 [json_name = "maxSpendingRules"];</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearMaxSpendingRules() {
+        bitField0_ = (bitField0_ & ~0x00000008);
+        maxSpendingRules_ = 0;
+        onChanged();
+        return this;
+      }
+
+      private long defaultSessionTtl_ ;
+      /**
+       * <code>int64 default_session_ttl = 5 [json_name = "defaultSessionTtl"];</code>
+       * @return The defaultSessionTtl.
+       */
+      @java.lang.Override
+      public long getDefaultSessionTtl() {
+        return defaultSessionTtl_;
+      }
+      /**
+       * <code>int64 default_session_ttl = 5 [json_name = "defaultSessionTtl"];</code>
+       * @param value The defaultSessionTtl to set.
+       * @return This builder for chaining.
+       */
+      public Builder setDefaultSessionTtl(long value) {
+
+        defaultSessionTtl_ = value;
+        bitField0_ |= 0x00000010;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>int64 default_session_ttl = 5 [json_name = "defaultSessionTtl"];</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearDefaultSessionTtl() {
+        bitField0_ = (bitField0_ & ~0x00000010);
+        defaultSessionTtl_ = 0L;
+        onChanged();
+        return this;
+      }
+
+      // @@protoc_insertion_point(builder_scope:qorechain.abstractaccount.v1.MsgUpdateConfig)
+    }
+
+    // @@protoc_insertion_point(class_scope:qorechain.abstractaccount.v1.MsgUpdateConfig)
+    private static final qorechain.abstractaccount.v1.Tx.MsgUpdateConfig DEFAULT_INSTANCE;
+    static {
+      DEFAULT_INSTANCE = new qorechain.abstractaccount.v1.Tx.MsgUpdateConfig();
+    }
+
+    public static qorechain.abstractaccount.v1.Tx.MsgUpdateConfig getDefaultInstance() {
+      return DEFAULT_INSTANCE;
+    }
+
+    private static final com.google.protobuf.Parser<MsgUpdateConfig>
+        PARSER = new com.google.protobuf.AbstractParser<MsgUpdateConfig>() {
+      @java.lang.Override
+      public MsgUpdateConfig parsePartialFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        Builder builder = newBuilder();
+        try {
+          builder.mergeFrom(input, extensionRegistry);
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          throw e.setUnfinishedMessage(builder.buildPartial());
+        } catch (com.google.protobuf.UninitializedMessageException e) {
+          throw e.asInvalidProtocolBufferException().setUnfinishedMessage(builder.buildPartial());
+        } catch (java.io.IOException e) {
+          throw new com.google.protobuf.InvalidProtocolBufferException(e)
+              .setUnfinishedMessage(builder.buildPartial());
+        }
+        return builder.buildPartial();
+      }
+    };
+
+    public static com.google.protobuf.Parser<MsgUpdateConfig> parser() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Parser<MsgUpdateConfig> getParserForType() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public qorechain.abstractaccount.v1.Tx.MsgUpdateConfig getDefaultInstanceForType() {
+      return DEFAULT_INSTANCE;
+    }
+
+  }
+
+  public interface MsgUpdateConfigResponseOrBuilder extends
+      // @@protoc_insertion_point(interface_extends:qorechain.abstractaccount.v1.MsgUpdateConfigResponse)
+      com.google.protobuf.MessageOrBuilder {
+  }
+  /**
+   * Protobuf type {@code qorechain.abstractaccount.v1.MsgUpdateConfigResponse}
+   */
+  public static final class MsgUpdateConfigResponse extends
+      com.google.protobuf.GeneratedMessage implements
+      // @@protoc_insertion_point(message_implements:qorechain.abstractaccount.v1.MsgUpdateConfigResponse)
+      MsgUpdateConfigResponseOrBuilder {
+  private static final long serialVersionUID = 0L;
+    static {
+      com.google.protobuf.RuntimeVersion.validateProtobufGencodeVersion(
+        com.google.protobuf.RuntimeVersion.RuntimeDomain.PUBLIC,
+        /* major= */ 4,
+        /* minor= */ 35,
+        /* patch= */ 1,
+        /* suffix= */ "",
+        "MsgUpdateConfigResponse");
+    }
+    // Use MsgUpdateConfigResponse.newBuilder() to construct.
+    private MsgUpdateConfigResponse(com.google.protobuf.GeneratedMessage.Builder<?> builder) {
+      super(builder);
+    }
+    private MsgUpdateConfigResponse() {
+    }
+
+    public static final com.google.protobuf.Descriptors.Descriptor
+        getDescriptor() {
+      return qorechain.abstractaccount.v1.Tx.internal_static_qorechain_abstractaccount_v1_MsgUpdateConfigResponse_descriptor;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Descriptors.Descriptor getDescriptorForType() {
+      return qorechain.abstractaccount.v1.Tx.internal_static_qorechain_abstractaccount_v1_MsgUpdateConfigResponse_descriptor;
+    }
+
+    @java.lang.Override
+    protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+        internalGetFieldAccessorTable() {
+      return qorechain.abstractaccount.v1.Tx.internal_static_qorechain_abstractaccount_v1_MsgUpdateConfigResponse_fieldAccessorTable
+          .ensureFieldAccessorsInitialized(
+              qorechain.abstractaccount.v1.Tx.MsgUpdateConfigResponse.class, qorechain.abstractaccount.v1.Tx.MsgUpdateConfigResponse.Builder.class);
+    }
+
+    private byte memoizedIsInitialized = -1;
+    @java.lang.Override
+    public final boolean isInitialized() {
+      byte isInitialized = memoizedIsInitialized;
+      if (isInitialized == 1) return true;
+      if (isInitialized == 0) return false;
+
+      memoizedIsInitialized = 1;
+      return true;
+    }
+
+    @java.lang.Override
+    public void writeTo(com.google.protobuf.CodedOutputStream output)
+                        throws java.io.IOException {
+      getUnknownFields().writeTo(output);
+    }
+    @java.lang.Override
+    public int getSerializedSize() {
+      int size = memoizedSize;
+      if (size != -1) return size;
+
+      size = 0;
+      size += getUnknownFields().getSerializedSize();
+      memoizedSize = size;
+      return size;
+    }
+
+    @java.lang.Override
+    public boolean equals(final java.lang.Object obj) {
+      if (obj == this) {
+       return true;
+      }
+      if (!(obj instanceof qorechain.abstractaccount.v1.Tx.MsgUpdateConfigResponse)) {
+        return super.equals(obj);
+      }
+      qorechain.abstractaccount.v1.Tx.MsgUpdateConfigResponse other = (qorechain.abstractaccount.v1.Tx.MsgUpdateConfigResponse) obj;
+
+      if (!getUnknownFields().equals(other.getUnknownFields())) return false;
+      return true;
+    }
+
+    @java.lang.Override
+    public int hashCode() {
+      if (memoizedHashCode != 0) {
+        return memoizedHashCode;
+      }
+      int hash = 41;
+      hash = (19 * hash) + getDescriptor().hashCode();
+      hash = (29 * hash) + getUnknownFields().hashCode();
+      memoizedHashCode = hash;
+      return hash;
+    }
+
+    public static qorechain.abstractaccount.v1.Tx.MsgUpdateConfigResponse parseFrom(
+        java.nio.ByteBuffer data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static qorechain.abstractaccount.v1.Tx.MsgUpdateConfigResponse parseFrom(
+        java.nio.ByteBuffer data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static qorechain.abstractaccount.v1.Tx.MsgUpdateConfigResponse parseFrom(
+        com.google.protobuf.ByteString data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static qorechain.abstractaccount.v1.Tx.MsgUpdateConfigResponse parseFrom(
+        com.google.protobuf.ByteString data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static qorechain.abstractaccount.v1.Tx.MsgUpdateConfigResponse parseFrom(byte[] data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static qorechain.abstractaccount.v1.Tx.MsgUpdateConfigResponse parseFrom(
+        byte[] data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static qorechain.abstractaccount.v1.Tx.MsgUpdateConfigResponse parseFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input);
+    }
+    public static qorechain.abstractaccount.v1.Tx.MsgUpdateConfigResponse parseFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    public static qorechain.abstractaccount.v1.Tx.MsgUpdateConfigResponse parseDelimitedFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseDelimitedWithIOException(PARSER, input);
+    }
+
+    public static qorechain.abstractaccount.v1.Tx.MsgUpdateConfigResponse parseDelimitedFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static qorechain.abstractaccount.v1.Tx.MsgUpdateConfigResponse parseFrom(
+        com.google.protobuf.CodedInputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input);
+    }
+    public static qorechain.abstractaccount.v1.Tx.MsgUpdateConfigResponse parseFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    @java.lang.Override
+    public Builder newBuilderForType() { return newBuilder(); }
+    public static Builder newBuilder() {
+      return DEFAULT_INSTANCE.toBuilder();
+    }
+    public static Builder newBuilder(qorechain.abstractaccount.v1.Tx.MsgUpdateConfigResponse prototype) {
+      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+    }
+    @java.lang.Override
+    public Builder toBuilder() {
+      return this == DEFAULT_INSTANCE
+          ? new Builder() : new Builder().mergeFrom(this);
+    }
+
+    @java.lang.Override
+    protected Builder newBuilderForType(
+        com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+      Builder builder = new Builder(parent);
+      return builder;
+    }
+    /**
+     * Protobuf type {@code qorechain.abstractaccount.v1.MsgUpdateConfigResponse}
+     */
+    public static final class Builder extends
+        com.google.protobuf.GeneratedMessage.Builder<Builder> implements
+        // @@protoc_insertion_point(builder_implements:qorechain.abstractaccount.v1.MsgUpdateConfigResponse)
+        qorechain.abstractaccount.v1.Tx.MsgUpdateConfigResponseOrBuilder {
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return qorechain.abstractaccount.v1.Tx.internal_static_qorechain_abstractaccount_v1_MsgUpdateConfigResponse_descriptor;
+      }
+
+      @java.lang.Override
+      protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return qorechain.abstractaccount.v1.Tx.internal_static_qorechain_abstractaccount_v1_MsgUpdateConfigResponse_fieldAccessorTable
+            .ensureFieldAccessorsInitialized(
+                qorechain.abstractaccount.v1.Tx.MsgUpdateConfigResponse.class, qorechain.abstractaccount.v1.Tx.MsgUpdateConfigResponse.Builder.class);
+      }
+
+      // Construct using qorechain.abstractaccount.v1.Tx.MsgUpdateConfigResponse.newBuilder()
+      private Builder() {
+
+      }
+
+      private Builder(
+          com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+        super(parent);
+
+      }
+      @java.lang.Override
+      public Builder clear() {
+        super.clear();
+        return this;
+      }
+
+      @java.lang.Override
+      public com.google.protobuf.Descriptors.Descriptor
+          getDescriptorForType() {
+        return qorechain.abstractaccount.v1.Tx.internal_static_qorechain_abstractaccount_v1_MsgUpdateConfigResponse_descriptor;
+      }
+
+      @java.lang.Override
+      public qorechain.abstractaccount.v1.Tx.MsgUpdateConfigResponse getDefaultInstanceForType() {
+        return qorechain.abstractaccount.v1.Tx.MsgUpdateConfigResponse.getDefaultInstance();
+      }
+
+      @java.lang.Override
+      public qorechain.abstractaccount.v1.Tx.MsgUpdateConfigResponse build() {
+        qorechain.abstractaccount.v1.Tx.MsgUpdateConfigResponse result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(result);
+        }
+        return result;
+      }
+
+      @java.lang.Override
+      public qorechain.abstractaccount.v1.Tx.MsgUpdateConfigResponse buildPartial() {
+        qorechain.abstractaccount.v1.Tx.MsgUpdateConfigResponse result = new qorechain.abstractaccount.v1.Tx.MsgUpdateConfigResponse(this);
+        onBuilt();
+        return result;
+      }
+
+      @java.lang.Override
+      public Builder mergeFrom(com.google.protobuf.Message other) {
+        if (other instanceof qorechain.abstractaccount.v1.Tx.MsgUpdateConfigResponse) {
+          return mergeFrom((qorechain.abstractaccount.v1.Tx.MsgUpdateConfigResponse)other);
+        } else {
+          super.mergeFrom(other);
+          return this;
+        }
+      }
+
+      public Builder mergeFrom(qorechain.abstractaccount.v1.Tx.MsgUpdateConfigResponse other) {
+        if (other == qorechain.abstractaccount.v1.Tx.MsgUpdateConfigResponse.getDefaultInstance()) return this;
+        this.mergeUnknownFields(other.getUnknownFields());
+        onChanged();
+        return this;
+      }
+
+      @java.lang.Override
+      public final boolean isInitialized() {
+        return true;
+      }
+
+      @java.lang.Override
+      public Builder mergeFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        if (extensionRegistry == null) {
+          throw new java.lang.NullPointerException();
+        }
+        try {
+          boolean done = false;
+          while (!done) {
+            int tag = input.readTag();
+            switch (tag) {
+              case 0:
+                done = true;
+                break;
+              default: {
+                if (!super.parseUnknownField(input, extensionRegistry, tag)) {
+                  done = true; // was an endgroup tag
+                }
+                break;
+              } // default:
+            } // switch (tag)
+          } // while (!done)
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          throw e.unwrapIOException();
+        } finally {
+          onChanged();
+        } // finally
+        return this;
+      }
+
+      // @@protoc_insertion_point(builder_scope:qorechain.abstractaccount.v1.MsgUpdateConfigResponse)
+    }
+
+    // @@protoc_insertion_point(class_scope:qorechain.abstractaccount.v1.MsgUpdateConfigResponse)
+    private static final qorechain.abstractaccount.v1.Tx.MsgUpdateConfigResponse DEFAULT_INSTANCE;
+    static {
+      DEFAULT_INSTANCE = new qorechain.abstractaccount.v1.Tx.MsgUpdateConfigResponse();
+    }
+
+    public static qorechain.abstractaccount.v1.Tx.MsgUpdateConfigResponse getDefaultInstance() {
+      return DEFAULT_INSTANCE;
+    }
+
+    private static final com.google.protobuf.Parser<MsgUpdateConfigResponse>
+        PARSER = new com.google.protobuf.AbstractParser<MsgUpdateConfigResponse>() {
+      @java.lang.Override
+      public MsgUpdateConfigResponse parsePartialFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        Builder builder = newBuilder();
+        try {
+          builder.mergeFrom(input, extensionRegistry);
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          throw e.setUnfinishedMessage(builder.buildPartial());
+        } catch (com.google.protobuf.UninitializedMessageException e) {
+          throw e.asInvalidProtocolBufferException().setUnfinishedMessage(builder.buildPartial());
+        } catch (java.io.IOException e) {
+          throw new com.google.protobuf.InvalidProtocolBufferException(e)
+              .setUnfinishedMessage(builder.buildPartial());
+        }
+        return builder.buildPartial();
+      }
+    };
+
+    public static com.google.protobuf.Parser<MsgUpdateConfigResponse> parser() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Parser<MsgUpdateConfigResponse> getParserForType() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public qorechain.abstractaccount.v1.Tx.MsgUpdateConfigResponse getDefaultInstanceForType() {
+      return DEFAULT_INSTANCE;
+    }
+
+  }
+
   private static final com.google.protobuf.Descriptors.Descriptor
     internal_static_qorechain_abstractaccount_v1_SpendingRule_descriptor;
   private static final 
@@ -13406,6 +14672,16 @@ public final class Tx extends com.google.protobuf.GeneratedFile {
   private static final 
     com.google.protobuf.GeneratedMessage.FieldAccessorTable
       internal_static_qorechain_abstractaccount_v1_MsgExecuteCosmosResponse_fieldAccessorTable;
+  private static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_qorechain_abstractaccount_v1_MsgUpdateConfig_descriptor;
+  private static final 
+    com.google.protobuf.GeneratedMessage.FieldAccessorTable
+      internal_static_qorechain_abstractaccount_v1_MsgUpdateConfig_fieldAccessorTable;
+  private static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_qorechain_abstractaccount_v1_MsgUpdateConfigResponse_descriptor;
+  private static final 
+    com.google.protobuf.GeneratedMessage.FieldAccessorTable
+      internal_static_qorechain_abstractaccount_v1_MsgUpdateConfigResponse_fieldAccessorTable;
 
   public static com.google.protobuf.Descriptors.FileDescriptor
       getDescriptor() {
@@ -13473,29 +14749,39 @@ public final class Tx extends com.google.protobuf.GeneratedFile {
       "ub.com/cosmos/cosmos-sdk/types.CoinsR\006am" +
       "ount\022\024\n\005nonce\030\010 \001(\004R\005nonce:\014\202\347\260*\007relayer" +
       "\"4\n\030MsgExecuteCosmosResponse\022\030\n\007success\030" +
-      "\001 \001(\010R\007success2\261\006\n\003Msg\022\217\001\n\025CreateAbstrac" +
-      "tAccount\0226.qorechain.abstractaccount.v1." +
-      "MsgCreateAbstractAccount\032>.qorechain.abs" +
-      "tractaccount.v1.MsgCreateAbstractAccount" +
-      "Response\022\211\001\n\023UpdateSpendingRules\0224.qorec" +
-      "hain.abstractaccount.v1.MsgUpdateSpendin" +
-      "gRules\032<.qorechain.abstractaccount.v1.Ms" +
-      "gUpdateSpendingRulesResponse\022\217\001\n\025Registe" +
-      "rAuthenticator\0226.qorechain.abstractaccou" +
-      "nt.v1.MsgRegisterAuthenticator\032>.qorecha" +
-      "in.abstractaccount.v1.MsgRegisterAuthent" +
-      "icatorResponse\022\211\001\n\023RevokeAuthenticator\0224" +
-      ".qorechain.abstractaccount.v1.MsgRevokeA" +
-      "uthenticator\032<.qorechain.abstractaccount" +
-      ".v1.MsgRevokeAuthenticatorResponse\022n\n\nEx" +
-      "ecuteEVM\022+.qorechain.abstractaccount.v1." +
-      "MsgExecuteEVM\0323.qorechain.abstractaccoun" +
-      "t.v1.MsgExecuteEVMResponse\022w\n\rExecuteCos" +
-      "mos\022..qorechain.abstractaccount.v1.MsgEx" +
-      "ecuteCosmos\0326.qorechain.abstractaccount." +
-      "v1.MsgExecuteCosmosResponse\032\005\200\347\260*\001B=Z;gi" +
-      "thub.com/qorechain/qorechain-core/x/abst" +
-      "ractaccount/typesb\006proto3"
+      "\001 \001(\010R\007success\"\373\001\n\017MsgUpdateConfig\0226\n\tau" +
+      "thority\030\001 \001(\tB\030\322\264-\024cosmos.AddressStringR" +
+      "\tauthority\022\030\n\007enabled\030\002 \001(\010R\007enabled\022(\n\020" +
+      "max_session_keys\030\003 \001(\005R\016maxSessionKeys\022," +
+      "\n\022max_spending_rules\030\004 \001(\005R\020maxSpendingR" +
+      "ules\022.\n\023default_session_ttl\030\005 \001(\003R\021defau" +
+      "ltSessionTtl:\016\202\347\260*\tauthority\"\031\n\027MsgUpdat" +
+      "eConfigResponse2\247\007\n\003Msg\022\217\001\n\025CreateAbstra" +
+      "ctAccount\0226.qorechain.abstractaccount.v1" +
+      ".MsgCreateAbstractAccount\032>.qorechain.ab" +
+      "stractaccount.v1.MsgCreateAbstractAccoun" +
+      "tResponse\022\211\001\n\023UpdateSpendingRules\0224.qore" +
+      "chain.abstractaccount.v1.MsgUpdateSpendi" +
+      "ngRules\032<.qorechain.abstractaccount.v1.M" +
+      "sgUpdateSpendingRulesResponse\022\217\001\n\025Regist" +
+      "erAuthenticator\0226.qorechain.abstractacco" +
+      "unt.v1.MsgRegisterAuthenticator\032>.qorech" +
+      "ain.abstractaccount.v1.MsgRegisterAuthen" +
+      "ticatorResponse\022\211\001\n\023RevokeAuthenticator\022" +
+      "4.qorechain.abstractaccount.v1.MsgRevoke" +
+      "Authenticator\032<.qorechain.abstractaccoun" +
+      "t.v1.MsgRevokeAuthenticatorResponse\022n\n\nE" +
+      "xecuteEVM\022+.qorechain.abstractaccount.v1" +
+      ".MsgExecuteEVM\0323.qorechain.abstractaccou" +
+      "nt.v1.MsgExecuteEVMResponse\022w\n\rExecuteCo" +
+      "smos\022..qorechain.abstractaccount.v1.MsgE" +
+      "xecuteCosmos\0326.qorechain.abstractaccount" +
+      ".v1.MsgExecuteCosmosResponse\022t\n\014UpdateCo" +
+      "nfig\022-.qorechain.abstractaccount.v1.MsgU" +
+      "pdateConfig\0325.qorechain.abstractaccount." +
+      "v1.MsgUpdateConfigResponse\032\005\200\347\260*\001B=Z;git" +
+      "hub.com/qorechain/qorechain-core/x/abstr" +
+      "actaccount/typesb\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
@@ -13589,6 +14875,18 @@ public final class Tx extends com.google.protobuf.GeneratedFile {
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_qorechain_abstractaccount_v1_MsgExecuteCosmosResponse_descriptor,
         new java.lang.String[] { "Success", });
+    internal_static_qorechain_abstractaccount_v1_MsgUpdateConfig_descriptor =
+      getDescriptor().getMessageType(14);
+    internal_static_qorechain_abstractaccount_v1_MsgUpdateConfig_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessage.FieldAccessorTable(
+        internal_static_qorechain_abstractaccount_v1_MsgUpdateConfig_descriptor,
+        new java.lang.String[] { "Authority", "Enabled", "MaxSessionKeys", "MaxSpendingRules", "DefaultSessionTtl", });
+    internal_static_qorechain_abstractaccount_v1_MsgUpdateConfigResponse_descriptor =
+      getDescriptor().getMessageType(15);
+    internal_static_qorechain_abstractaccount_v1_MsgUpdateConfigResponse_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessage.FieldAccessorTable(
+        internal_static_qorechain_abstractaccount_v1_MsgUpdateConfigResponse_descriptor,
+        new java.lang.String[] { });
     descriptor.resolveAllFeaturesImmutable();
     cosmos.msg.v1.Msg.getDescriptor();
     cosmos_proto.Cosmos.getDescriptor();

@@ -204,6 +204,31 @@ export interface MsgExecuteCosmosResponse {
   success: boolean;
 }
 
+/**
+ * MsgUpdateConfig replaces the abstractaccount configuration wholesale (v3.2.5).
+ * A proposal copies the current values from /qorechain/abstractaccount/v1/config
+ * and changes only what it means to change.
+ */
+export interface MsgUpdateConfig {
+  /** authority must be the governance module account. */
+  authority: string;
+  /**
+   * enabled gates CreateAbstractAccount, RegisterAuthenticator, ExecuteEVM and
+   * ExecuteCosmos.
+   */
+  enabled: boolean;
+  /**
+   * max_session_keys, max_spending_rules and default_session_ttl (seconds)
+   * must be positive, as in genesis.
+   */
+  maxSessionKeys: number;
+  maxSpendingRules: number;
+  defaultSessionTtl: string;
+}
+
+export interface MsgUpdateConfigResponse {
+}
+
 function createBaseSpendingRule(): SpendingRule {
   return {
     id: "",
@@ -1711,6 +1736,185 @@ export const MsgExecuteCosmosResponse: MessageFns<MsgExecuteCosmosResponse> = {
   },
 };
 
+function createBaseMsgUpdateConfig(): MsgUpdateConfig {
+  return { authority: "", enabled: false, maxSessionKeys: 0, maxSpendingRules: 0, defaultSessionTtl: "0" };
+}
+
+export const MsgUpdateConfig: MessageFns<MsgUpdateConfig> = {
+  encode(message: MsgUpdateConfig, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.authority !== "") {
+      writer.uint32(10).string(message.authority);
+    }
+    if (message.enabled !== false) {
+      writer.uint32(16).bool(message.enabled);
+    }
+    if (message.maxSessionKeys !== 0) {
+      writer.uint32(24).int32(message.maxSessionKeys);
+    }
+    if (message.maxSpendingRules !== 0) {
+      writer.uint32(32).int32(message.maxSpendingRules);
+    }
+    if (message.defaultSessionTtl !== "0") {
+      writer.uint32(40).int64(message.defaultSessionTtl);
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): MsgUpdateConfig {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseMsgUpdateConfig();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.authority = reader.string();
+          continue;
+        }
+        case 2: {
+          if (tag !== 16) {
+            break;
+          }
+
+          message.enabled = reader.bool();
+          continue;
+        }
+        case 3: {
+          if (tag !== 24) {
+            break;
+          }
+
+          message.maxSessionKeys = reader.int32();
+          continue;
+        }
+        case 4: {
+          if (tag !== 32) {
+            break;
+          }
+
+          message.maxSpendingRules = reader.int32();
+          continue;
+        }
+        case 5: {
+          if (tag !== 40) {
+            break;
+          }
+
+          message.defaultSessionTtl = reader.int64().toString();
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(object: any): MsgUpdateConfig {
+    return {
+      authority: isSet(object.authority) ? globalThis.String(object.authority) : "",
+      enabled: isSet(object.enabled) ? globalThis.Boolean(object.enabled) : false,
+      maxSessionKeys: isSet(object.maxSessionKeys)
+        ? globalThis.Number(object.maxSessionKeys)
+        : isSet(object.max_session_keys)
+        ? globalThis.Number(object.max_session_keys)
+        : 0,
+      maxSpendingRules: isSet(object.maxSpendingRules)
+        ? globalThis.Number(object.maxSpendingRules)
+        : isSet(object.max_spending_rules)
+        ? globalThis.Number(object.max_spending_rules)
+        : 0,
+      defaultSessionTtl: isSet(object.defaultSessionTtl)
+        ? globalThis.String(object.defaultSessionTtl)
+        : isSet(object.default_session_ttl)
+        ? globalThis.String(object.default_session_ttl)
+        : "0",
+    };
+  },
+
+  toJSON(message: MsgUpdateConfig): unknown {
+    const obj: any = {};
+    if (message.authority !== "") {
+      obj.authority = message.authority;
+    }
+    if (message.enabled !== false) {
+      obj.enabled = message.enabled;
+    }
+    if (message.maxSessionKeys !== 0) {
+      obj.maxSessionKeys = Math.round(message.maxSessionKeys);
+    }
+    if (message.maxSpendingRules !== 0) {
+      obj.maxSpendingRules = Math.round(message.maxSpendingRules);
+    }
+    if (message.defaultSessionTtl !== "0") {
+      obj.defaultSessionTtl = message.defaultSessionTtl;
+    }
+    return obj;
+  },
+
+  create(base?: DeepPartial<MsgUpdateConfig>): MsgUpdateConfig {
+    return MsgUpdateConfig.fromPartial(base ?? {});
+  },
+  fromPartial(object: DeepPartial<MsgUpdateConfig>): MsgUpdateConfig {
+    const message = createBaseMsgUpdateConfig();
+    message.authority = object.authority ?? "";
+    message.enabled = object.enabled ?? false;
+    message.maxSessionKeys = object.maxSessionKeys ?? 0;
+    message.maxSpendingRules = object.maxSpendingRules ?? 0;
+    message.defaultSessionTtl = object.defaultSessionTtl ?? "0";
+    return message;
+  },
+};
+
+function createBaseMsgUpdateConfigResponse(): MsgUpdateConfigResponse {
+  return {};
+}
+
+export const MsgUpdateConfigResponse: MessageFns<MsgUpdateConfigResponse> = {
+  encode(_: MsgUpdateConfigResponse, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): MsgUpdateConfigResponse {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseMsgUpdateConfigResponse();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(_: any): MsgUpdateConfigResponse {
+    return {};
+  },
+
+  toJSON(_: MsgUpdateConfigResponse): unknown {
+    const obj: any = {};
+    return obj;
+  },
+
+  create(base?: DeepPartial<MsgUpdateConfigResponse>): MsgUpdateConfigResponse {
+    return MsgUpdateConfigResponse.fromPartial(base ?? {});
+  },
+  fromPartial(_: DeepPartial<MsgUpdateConfigResponse>): MsgUpdateConfigResponse {
+    const message = createBaseMsgUpdateConfigResponse();
+    return message;
+  },
+};
+
 /** Msg defines the abstractaccount module's transaction service. */
 export type MsgDefinition = typeof MsgDefinition;
 export const MsgDefinition = {
@@ -1762,6 +1966,20 @@ export const MsgDefinition = {
       requestType: MsgExecuteCosmos as typeof MsgExecuteCosmos,
       requestStream: false,
       responseType: MsgExecuteCosmosResponse as typeof MsgExecuteCosmosResponse,
+      responseStream: false,
+      options: {},
+    },
+    /**
+     * UpdateConfig replaces the module configuration. Governance-only, routed
+     * from v3.2.5 (abstractaccount-config-governance). It is how the enabled
+     * flag that gates account creation, authenticator registration and both
+     * execute lanes is switched on or off.
+     */
+    updateConfig: {
+      name: "UpdateConfig",
+      requestType: MsgUpdateConfig as typeof MsgUpdateConfig,
+      requestStream: false,
+      responseType: MsgUpdateConfigResponse as typeof MsgUpdateConfigResponse,
       responseStream: false,
       options: {},
     },

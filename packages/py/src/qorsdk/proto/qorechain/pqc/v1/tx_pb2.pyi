@@ -169,3 +169,29 @@ class MsgClearEVMDelegation(_message.Message):
 class MsgClearEVMDelegationResponse(_message.Message):
     __slots__ = ()
     def __init__(self) -> None: ...
+
+class MsgRegisterKEMKey(_message.Message):
+    __slots__ = ("sender", "algorithm_id", "public_key")
+    SENDER_FIELD_NUMBER: _ClassVar[int]
+    ALGORITHM_ID_FIELD_NUMBER: _ClassVar[int]
+    PUBLIC_KEY_FIELD_NUMBER: _ClassVar[int]
+    sender: str
+    algorithm_id: int
+    public_key: bytes
+    def __init__(self, sender: _Optional[str] = ..., algorithm_id: _Optional[int] = ..., public_key: _Optional[bytes] = ...) -> None: ...
+
+class MsgRegisterKEMKeyResponse(_message.Message):
+    __slots__ = ("replaced",)
+    REPLACED_FIELD_NUMBER: _ClassVar[int]
+    replaced: bool
+    def __init__(self, replaced: bool = ...) -> None: ...
+
+class MsgRemoveKEMKey(_message.Message):
+    __slots__ = ("sender",)
+    SENDER_FIELD_NUMBER: _ClassVar[int]
+    sender: str
+    def __init__(self, sender: _Optional[str] = ...) -> None: ...
+
+class MsgRemoveKEMKeyResponse(_message.Message):
+    __slots__ = ()
+    def __init__(self) -> None: ...

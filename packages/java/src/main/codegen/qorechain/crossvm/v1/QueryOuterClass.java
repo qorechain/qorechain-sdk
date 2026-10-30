@@ -2261,6 +2261,51 @@ public final class QueryOuterClass extends com.google.protobuf.GeneratedFile {
      * @return The enabled.
      */
     boolean getEnabled();
+
+    /**
+     * <pre>
+     * bridge_allowed_targets is the allowlist of the EVM bridge precompile, each
+     * entry "&lt;vm&gt;:&lt;contract&gt;". Empty means the bridge reaches nothing.
+     * </pre>
+     *
+     * <code>repeated string bridge_allowed_targets = 5 [json_name = "bridgeAllowedTargets"];</code>
+     * @return A list containing the bridgeAllowedTargets.
+     */
+    java.util.List<java.lang.String>
+        getBridgeAllowedTargetsList();
+    /**
+     * <pre>
+     * bridge_allowed_targets is the allowlist of the EVM bridge precompile, each
+     * entry "&lt;vm&gt;:&lt;contract&gt;". Empty means the bridge reaches nothing.
+     * </pre>
+     *
+     * <code>repeated string bridge_allowed_targets = 5 [json_name = "bridgeAllowedTargets"];</code>
+     * @return The count of bridgeAllowedTargets.
+     */
+    int getBridgeAllowedTargetsCount();
+    /**
+     * <pre>
+     * bridge_allowed_targets is the allowlist of the EVM bridge precompile, each
+     * entry "&lt;vm&gt;:&lt;contract&gt;". Empty means the bridge reaches nothing.
+     * </pre>
+     *
+     * <code>repeated string bridge_allowed_targets = 5 [json_name = "bridgeAllowedTargets"];</code>
+     * @param index The index of the element to return.
+     * @return The bridgeAllowedTargets at the given index.
+     */
+    java.lang.String getBridgeAllowedTargets(int index);
+    /**
+     * <pre>
+     * bridge_allowed_targets is the allowlist of the EVM bridge precompile, each
+     * entry "&lt;vm&gt;:&lt;contract&gt;". Empty means the bridge reaches nothing.
+     * </pre>
+     *
+     * <code>repeated string bridge_allowed_targets = 5 [json_name = "bridgeAllowedTargets"];</code>
+     * @param index The index of the value to return.
+     * @return The bytes of the bridgeAllowedTargets at the given index.
+     */
+    com.google.protobuf.ByteString
+        getBridgeAllowedTargetsBytes(int index);
   }
   /**
    * Protobuf type {@code qorechain.crossvm.v1.QueryParamsResponse}
@@ -2284,6 +2329,8 @@ public final class QueryOuterClass extends com.google.protobuf.GeneratedFile {
       super(builder);
     }
     private QueryParamsResponse() {
+      bridgeAllowedTargets_ =
+          com.google.protobuf.LazyStringArrayList.emptyList();
     }
 
     public static final com.google.protobuf.Descriptors.Descriptor
@@ -2348,6 +2395,63 @@ public final class QueryOuterClass extends com.google.protobuf.GeneratedFile {
       return enabled_;
     }
 
+    public static final int BRIDGE_ALLOWED_TARGETS_FIELD_NUMBER = 5;
+    @SuppressWarnings("serial")
+    private com.google.protobuf.LazyStringArrayList bridgeAllowedTargets_ =
+        com.google.protobuf.LazyStringArrayList.emptyList();
+    /**
+     * <pre>
+     * bridge_allowed_targets is the allowlist of the EVM bridge precompile, each
+     * entry "&lt;vm&gt;:&lt;contract&gt;". Empty means the bridge reaches nothing.
+     * </pre>
+     *
+     * <code>repeated string bridge_allowed_targets = 5 [json_name = "bridgeAllowedTargets"];</code>
+     * @return A list containing the bridgeAllowedTargets.
+     */
+    public com.google.protobuf.ProtocolStringList
+        getBridgeAllowedTargetsList() {
+      return bridgeAllowedTargets_;
+    }
+    /**
+     * <pre>
+     * bridge_allowed_targets is the allowlist of the EVM bridge precompile, each
+     * entry "&lt;vm&gt;:&lt;contract&gt;". Empty means the bridge reaches nothing.
+     * </pre>
+     *
+     * <code>repeated string bridge_allowed_targets = 5 [json_name = "bridgeAllowedTargets"];</code>
+     * @return The count of bridgeAllowedTargets.
+     */
+    public int getBridgeAllowedTargetsCount() {
+      return bridgeAllowedTargets_.size();
+    }
+    /**
+     * <pre>
+     * bridge_allowed_targets is the allowlist of the EVM bridge precompile, each
+     * entry "&lt;vm&gt;:&lt;contract&gt;". Empty means the bridge reaches nothing.
+     * </pre>
+     *
+     * <code>repeated string bridge_allowed_targets = 5 [json_name = "bridgeAllowedTargets"];</code>
+     * @param index The index of the element to return.
+     * @return The bridgeAllowedTargets at the given index.
+     */
+    public java.lang.String getBridgeAllowedTargets(int index) {
+      return bridgeAllowedTargets_.get(index);
+    }
+    /**
+     * <pre>
+     * bridge_allowed_targets is the allowlist of the EVM bridge precompile, each
+     * entry "&lt;vm&gt;:&lt;contract&gt;". Empty means the bridge reaches nothing.
+     * </pre>
+     *
+     * <code>repeated string bridge_allowed_targets = 5 [json_name = "bridgeAllowedTargets"];</code>
+     * @param index The index of the value to return.
+     * @return The bytes of the bridgeAllowedTargets at the given index.
+     */
+    public com.google.protobuf.ByteString
+        getBridgeAllowedTargetsBytes(int index) {
+      return bridgeAllowedTargets_.getByteString(index);
+    }
+
     private byte memoizedIsInitialized = -1;
     @java.lang.Override
     public final boolean isInitialized() {
@@ -2374,6 +2478,9 @@ public final class QueryOuterClass extends com.google.protobuf.GeneratedFile {
       if (enabled_ != false) {
         output.writeBool(4, enabled_);
       }
+      for (int i = 0; i < bridgeAllowedTargets_.size(); i++) {
+        com.google.protobuf.GeneratedMessage.writeString(output, 5, bridgeAllowedTargets_.getRaw(i));
+      }
       getUnknownFields().writeTo(output);
     }
     private int computeSerializedSize_0() {
@@ -2393,6 +2500,14 @@ public final class QueryOuterClass extends com.google.protobuf.GeneratedFile {
       if (enabled_ != false) {
         size += com.google.protobuf.CodedOutputStream
           .computeBoolSize(4, enabled_);
+      }
+      {
+        int dataSize = 0;
+        for (int i = 0; i < bridgeAllowedTargets_.size(); i++) {
+          dataSize += computeStringSizeNoTag(bridgeAllowedTargets_.getRaw(i));
+        }
+        size += dataSize;
+        size += 1 * getBridgeAllowedTargetsList().size();
       }
       return size;
     }
@@ -2426,6 +2541,8 @@ public final class QueryOuterClass extends com.google.protobuf.GeneratedFile {
           != other.getQueueTimeoutBlocks()) return false;
       if (getEnabled()
           != other.getEnabled()) return false;
+      if (!getBridgeAllowedTargetsList()
+          .equals(other.getBridgeAllowedTargetsList())) return false;
       if (!getUnknownFields().equals(other.getUnknownFields())) return false;
       return true;
     }
@@ -2448,6 +2565,10 @@ public final class QueryOuterClass extends com.google.protobuf.GeneratedFile {
       hash = (37 * hash) + ENABLED_FIELD_NUMBER;
       hash = (53 * hash) + com.google.protobuf.Internal.hashBoolean(
           getEnabled());
+      if (getBridgeAllowedTargetsCount() > 0) {
+        hash = (37 * hash) + BRIDGE_ALLOWED_TARGETS_FIELD_NUMBER;
+        hash = (53 * hash) + getBridgeAllowedTargetsList().hashCode();
+      }
       hash = (29 * hash) + getUnknownFields().hashCode();
       memoizedHashCode = hash;
       return hash;
@@ -2583,6 +2704,8 @@ public final class QueryOuterClass extends com.google.protobuf.GeneratedFile {
         maxQueueSize_ = 0;
         queueTimeoutBlocks_ = 0L;
         enabled_ = false;
+        bridgeAllowedTargets_ =
+            com.google.protobuf.LazyStringArrayList.emptyList();
         return this;
       }
 
@@ -2628,6 +2751,10 @@ public final class QueryOuterClass extends com.google.protobuf.GeneratedFile {
         if (((from_bitField0_ & 0x00000008) != 0)) {
           result.enabled_ = enabled_;
         }
+        if (((from_bitField0_ & 0x00000010) != 0)) {
+          bridgeAllowedTargets_.makeImmutable();
+          result.bridgeAllowedTargets_ = bridgeAllowedTargets_;
+        }
       }
 
       @java.lang.Override
@@ -2653,6 +2780,16 @@ public final class QueryOuterClass extends com.google.protobuf.GeneratedFile {
         }
         if (other.getEnabled() != false) {
           setEnabled(other.getEnabled());
+        }
+        if (!other.bridgeAllowedTargets_.isEmpty()) {
+          if (bridgeAllowedTargets_.isEmpty()) {
+            bridgeAllowedTargets_ = other.bridgeAllowedTargets_;
+            bitField0_ |= 0x00000010;
+          } else {
+            ensureBridgeAllowedTargetsIsMutable();
+            bridgeAllowedTargets_.addAll(other.bridgeAllowedTargets_);
+          }
+          onChanged();
         }
         this.mergeUnknownFields(other.getUnknownFields());
         onChanged();
@@ -2700,6 +2837,11 @@ public final class QueryOuterClass extends com.google.protobuf.GeneratedFile {
                 bitField0_ |= 0x00000008;
                 break;
               } // case 32
+              case 42: {
+                ensureBridgeAllowedTargetsIsMutable();
+                bridgeAllowedTargets_.add(input.readStringRequireUtf8());
+                break;
+              } // case 42
               default: {
                 if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                   done = true; // was an endgroup tag
@@ -2841,6 +2983,162 @@ public final class QueryOuterClass extends com.google.protobuf.GeneratedFile {
       public Builder clearEnabled() {
         bitField0_ = (bitField0_ & ~0x00000008);
         enabled_ = false;
+        onChanged();
+        return this;
+      }
+
+      private com.google.protobuf.LazyStringArrayList bridgeAllowedTargets_ =
+          com.google.protobuf.LazyStringArrayList.emptyList();
+      private void ensureBridgeAllowedTargetsIsMutable() {
+        if (!bridgeAllowedTargets_.isModifiable()) {
+          bridgeAllowedTargets_ = new com.google.protobuf.LazyStringArrayList(bridgeAllowedTargets_);
+        }
+        bitField0_ |= 0x00000010;
+      }
+      /**
+       * <pre>
+       * bridge_allowed_targets is the allowlist of the EVM bridge precompile, each
+       * entry "&lt;vm&gt;:&lt;contract&gt;". Empty means the bridge reaches nothing.
+       * </pre>
+       *
+       * <code>repeated string bridge_allowed_targets = 5 [json_name = "bridgeAllowedTargets"];</code>
+       * @return A list containing the bridgeAllowedTargets.
+       */
+      public com.google.protobuf.ProtocolStringList
+          getBridgeAllowedTargetsList() {
+        bridgeAllowedTargets_.makeImmutable();
+        return bridgeAllowedTargets_;
+      }
+      /**
+       * <pre>
+       * bridge_allowed_targets is the allowlist of the EVM bridge precompile, each
+       * entry "&lt;vm&gt;:&lt;contract&gt;". Empty means the bridge reaches nothing.
+       * </pre>
+       *
+       * <code>repeated string bridge_allowed_targets = 5 [json_name = "bridgeAllowedTargets"];</code>
+       * @return The count of bridgeAllowedTargets.
+       */
+      public int getBridgeAllowedTargetsCount() {
+        return bridgeAllowedTargets_.size();
+      }
+      /**
+       * <pre>
+       * bridge_allowed_targets is the allowlist of the EVM bridge precompile, each
+       * entry "&lt;vm&gt;:&lt;contract&gt;". Empty means the bridge reaches nothing.
+       * </pre>
+       *
+       * <code>repeated string bridge_allowed_targets = 5 [json_name = "bridgeAllowedTargets"];</code>
+       * @param index The index of the element to return.
+       * @return The bridgeAllowedTargets at the given index.
+       */
+      public java.lang.String getBridgeAllowedTargets(int index) {
+        return bridgeAllowedTargets_.get(index);
+      }
+      /**
+       * <pre>
+       * bridge_allowed_targets is the allowlist of the EVM bridge precompile, each
+       * entry "&lt;vm&gt;:&lt;contract&gt;". Empty means the bridge reaches nothing.
+       * </pre>
+       *
+       * <code>repeated string bridge_allowed_targets = 5 [json_name = "bridgeAllowedTargets"];</code>
+       * @param index The index of the value to return.
+       * @return The bytes of the bridgeAllowedTargets at the given index.
+       */
+      public com.google.protobuf.ByteString
+          getBridgeAllowedTargetsBytes(int index) {
+        return bridgeAllowedTargets_.getByteString(index);
+      }
+      /**
+       * <pre>
+       * bridge_allowed_targets is the allowlist of the EVM bridge precompile, each
+       * entry "&lt;vm&gt;:&lt;contract&gt;". Empty means the bridge reaches nothing.
+       * </pre>
+       *
+       * <code>repeated string bridge_allowed_targets = 5 [json_name = "bridgeAllowedTargets"];</code>
+       * @param index The index to set the value at.
+       * @param value The bridgeAllowedTargets to set.
+       * @return This builder for chaining.
+       */
+      public Builder setBridgeAllowedTargets(
+          int index, java.lang.String value) {
+        if (value == null) { throw new NullPointerException(); }
+        ensureBridgeAllowedTargetsIsMutable();
+        bridgeAllowedTargets_.set(index, value);
+        bitField0_ |= 0x00000010;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * bridge_allowed_targets is the allowlist of the EVM bridge precompile, each
+       * entry "&lt;vm&gt;:&lt;contract&gt;". Empty means the bridge reaches nothing.
+       * </pre>
+       *
+       * <code>repeated string bridge_allowed_targets = 5 [json_name = "bridgeAllowedTargets"];</code>
+       * @param value The bridgeAllowedTargets to add.
+       * @return This builder for chaining.
+       */
+      public Builder addBridgeAllowedTargets(
+          java.lang.String value) {
+        if (value == null) { throw new NullPointerException(); }
+        ensureBridgeAllowedTargetsIsMutable();
+        bridgeAllowedTargets_.add(value);
+        bitField0_ |= 0x00000010;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * bridge_allowed_targets is the allowlist of the EVM bridge precompile, each
+       * entry "&lt;vm&gt;:&lt;contract&gt;". Empty means the bridge reaches nothing.
+       * </pre>
+       *
+       * <code>repeated string bridge_allowed_targets = 5 [json_name = "bridgeAllowedTargets"];</code>
+       * @param values The bridgeAllowedTargets to add.
+       * @return This builder for chaining.
+       */
+      public Builder addAllBridgeAllowedTargets(
+          java.lang.Iterable<java.lang.String> values) {
+        ensureBridgeAllowedTargetsIsMutable();
+        com.google.protobuf.AbstractMessageLite.Builder.addAll(
+            values, bridgeAllowedTargets_);
+        bitField0_ |= 0x00000010;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * bridge_allowed_targets is the allowlist of the EVM bridge precompile, each
+       * entry "&lt;vm&gt;:&lt;contract&gt;". Empty means the bridge reaches nothing.
+       * </pre>
+       *
+       * <code>repeated string bridge_allowed_targets = 5 [json_name = "bridgeAllowedTargets"];</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearBridgeAllowedTargets() {
+        bridgeAllowedTargets_ =
+          com.google.protobuf.LazyStringArrayList.emptyList();
+        bitField0_ = (bitField0_ & ~0x00000010);;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * bridge_allowed_targets is the allowlist of the EVM bridge precompile, each
+       * entry "&lt;vm&gt;:&lt;contract&gt;". Empty means the bridge reaches nothing.
+       * </pre>
+       *
+       * <code>repeated string bridge_allowed_targets = 5 [json_name = "bridgeAllowedTargets"];</code>
+       * @param value The bytes of the bridgeAllowedTargets to add.
+       * @return This builder for chaining.
+       */
+      public Builder addBridgeAllowedTargetsBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) { throw new NullPointerException(); }
+        checkByteStringIsUtf8(value);
+        ensureBridgeAllowedTargetsIsMutable();
+        bridgeAllowedTargets_.add(value);
+        bitField0_ |= 0x00000010;
         onChanged();
         return this;
       }
@@ -5297,42 +5595,49 @@ public final class QueryOuterClass extends com.google.protobuf.GeneratedFile {
   static {
     java.lang.String[] descriptorData = {
       "\n qorechain/crossvm/v1/query.proto\022\024qore" +
-      "chain.crossvm.v1\"\347\002\n\022CrossVMMessageView\022" +
-      "\016\n\002id\030\001 \001(\tR\002id\022\033\n\tsource_vm\030\002 \001(\tR\010sour" +
-      "ceVm\022\033\n\ttarget_vm\030\003 \001(\tR\010targetVm\022\026\n\006sen" +
-      "der\030\004 \001(\tR\006sender\022\'\n\017source_contract\030\005 \001" +
-      "(\tR\016sourceContract\022\'\n\017target_contract\030\006 " +
-      "\001(\tR\016targetContract\022\037\n\013payload_hex\030\007 \001(\t" +
-      "R\npayloadHex\022\026\n\006status\030\010 \001(\tR\006status\022%\n\016" +
-      "created_height\030\t \001(\003R\rcreatedHeight\022\'\n\017e" +
-      "xecuted_height\030\n \001(\003R\016executedHeight\022\024\n\005" +
-      "error\030\013 \001(\tR\005error\"\024\n\022QueryParamsRequest" +
-      "\"\261\001\n\023QueryParamsResponse\022(\n\020max_message_" +
-      "size\030\001 \001(\004R\016maxMessageSize\022$\n\016max_queue_" +
-      "size\030\002 \001(\rR\014maxQueueSize\0220\n\024queue_timeou" +
-      "t_blocks\030\003 \001(\003R\022queueTimeoutBlocks\022\030\n\007en" +
-      "abled\030\004 \001(\010R\007enabled\"\035\n\033QueryPendingMess" +
-      "agesRequest\"z\n\034QueryPendingMessagesRespo" +
-      "nse\022D\n\010messages\030\001 \003(\0132(.qorechain.crossv" +
-      "m.v1.CrossVMMessageViewR\010messages\022\024\n\005cou" +
-      "nt\030\002 \001(\rR\005count\"%\n\023QueryMessageRequest\022\016" +
-      "\n\002id\030\001 \001(\tR\002id\"p\n\024QueryMessageResponse\022B" +
-      "\n\007message\030\001 \001(\0132(.qorechain.crossvm.v1.C" +
-      "rossVMMessageViewR\007message\022\024\n\005found\030\002 \001(" +
-      "\010R\005found2\302\002\n\005Query\022]\n\006Params\022(.qorechain" +
-      ".crossvm.v1.QueryParamsRequest\032).qorecha" +
-      "in.crossvm.v1.QueryParamsResponse\022x\n\017Pen" +
-      "dingMessages\0221.qorechain.crossvm.v1.Quer" +
-      "yPendingMessagesRequest\0322.qorechain.cros" +
-      "svm.v1.QueryPendingMessagesResponse\022`\n\007M" +
-      "essage\022).qorechain.crossvm.v1.QueryMessa" +
-      "geRequest\032*.qorechain.crossvm.v1.QueryMe" +
-      "ssageResponseB5Z3github.com/qorechain/qo" +
-      "rechain-core/x/crossvm/typesb\006proto3"
+      "chain.crossvm.v1\032\034google/api/annotations" +
+      ".proto\"\347\002\n\022CrossVMMessageView\022\016\n\002id\030\001 \001(" +
+      "\tR\002id\022\033\n\tsource_vm\030\002 \001(\tR\010sourceVm\022\033\n\tta" +
+      "rget_vm\030\003 \001(\tR\010targetVm\022\026\n\006sender\030\004 \001(\tR" +
+      "\006sender\022\'\n\017source_contract\030\005 \001(\tR\016source" +
+      "Contract\022\'\n\017target_contract\030\006 \001(\tR\016targe" +
+      "tContract\022\037\n\013payload_hex\030\007 \001(\tR\npayloadH" +
+      "ex\022\026\n\006status\030\010 \001(\tR\006status\022%\n\016created_he" +
+      "ight\030\t \001(\003R\rcreatedHeight\022\'\n\017executed_he" +
+      "ight\030\n \001(\003R\016executedHeight\022\024\n\005error\030\013 \001(" +
+      "\tR\005error\"\024\n\022QueryParamsRequest\"\347\001\n\023Query" +
+      "ParamsResponse\022(\n\020max_message_size\030\001 \001(\004" +
+      "R\016maxMessageSize\022$\n\016max_queue_size\030\002 \001(\r" +
+      "R\014maxQueueSize\0220\n\024queue_timeout_blocks\030\003" +
+      " \001(\003R\022queueTimeoutBlocks\022\030\n\007enabled\030\004 \001(" +
+      "\010R\007enabled\0224\n\026bridge_allowed_targets\030\005 \003" +
+      "(\tR\024bridgeAllowedTargets\"\035\n\033QueryPending" +
+      "MessagesRequest\"z\n\034QueryPendingMessagesR" +
+      "esponse\022D\n\010messages\030\001 \003(\0132(.qorechain.cr" +
+      "ossvm.v1.CrossVMMessageViewR\010messages\022\024\n" +
+      "\005count\030\002 \001(\rR\005count\"%\n\023QueryMessageReque" +
+      "st\022\016\n\002id\030\001 \001(\tR\002id\"p\n\024QueryMessageRespon" +
+      "se\022B\n\007message\030\001 \001(\0132(.qorechain.crossvm." +
+      "v1.CrossVMMessageViewR\007message\022\024\n\005found\030" +
+      "\002 \001(\010R\005found2\276\003\n\005Query\022\203\001\n\006Params\022(.qore" +
+      "chain.crossvm.v1.QueryParamsRequest\032).qo" +
+      "rechain.crossvm.v1.QueryParamsResponse\"$" +
+      "\202\323\344\223\002\036\022\034/qorechain/crossvm/v1/params\022\237\001\n" +
+      "\017PendingMessages\0221.qorechain.crossvm.v1." +
+      "QueryPendingMessagesRequest\0322.qorechain." +
+      "crossvm.v1.QueryPendingMessagesResponse\"" +
+      "%\202\323\344\223\002\037\022\035/qorechain/crossvm/v1/pending\022\214" +
+      "\001\n\007Message\022).qorechain.crossvm.v1.QueryM" +
+      "essageRequest\032*.qorechain.crossvm.v1.Que" +
+      "ryMessageResponse\"*\202\323\344\223\002$\022\"/qorechain/cr" +
+      "ossvm/v1/message/{id}B5Z3github.com/qore" +
+      "chain/qorechain-core/x/crossvm/typesb\006pr" +
+      "oto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
         new com.google.protobuf.Descriptors.FileDescriptor[] {
+          com.google.api.AnnotationsProto.getDescriptor(),
         });
     internal_static_qorechain_crossvm_v1_CrossVMMessageView_descriptor =
       getDescriptor().getMessageType(0);
@@ -5351,7 +5656,7 @@ public final class QueryOuterClass extends com.google.protobuf.GeneratedFile {
     internal_static_qorechain_crossvm_v1_QueryParamsResponse_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_qorechain_crossvm_v1_QueryParamsResponse_descriptor,
-        new java.lang.String[] { "MaxMessageSize", "MaxQueueSize", "QueueTimeoutBlocks", "Enabled", });
+        new java.lang.String[] { "MaxMessageSize", "MaxQueueSize", "QueueTimeoutBlocks", "Enabled", "BridgeAllowedTargets", });
     internal_static_qorechain_crossvm_v1_QueryPendingMessagesRequest_descriptor =
       getDescriptor().getMessageType(3);
     internal_static_qorechain_crossvm_v1_QueryPendingMessagesRequest_fieldAccessorTable = new
@@ -5377,6 +5682,12 @@ public final class QueryOuterClass extends com.google.protobuf.GeneratedFile {
         internal_static_qorechain_crossvm_v1_QueryMessageResponse_descriptor,
         new java.lang.String[] { "Message", "Found", });
     descriptor.resolveAllFeaturesImmutable();
+    com.google.api.AnnotationsProto.getDescriptor();
+    com.google.protobuf.ExtensionRegistry registry =
+        com.google.protobuf.ExtensionRegistry.newInstance();
+    registry.add(com.google.api.AnnotationsProto.http);
+    com.google.protobuf.Descriptors.FileDescriptor
+        .internalUpdateFileDescriptor(descriptor, registry);
   }
 
   // @@protoc_insertion_point(outer_class_scope)

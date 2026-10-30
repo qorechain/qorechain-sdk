@@ -31,6 +31,11 @@ export interface QueryParamsResponse {
   maxQueueSize: number;
   queueTimeoutBlocks: string;
   enabled: boolean;
+  /**
+   * bridge_allowed_targets is the allowlist of the EVM bridge precompile, each
+   * entry "<vm>:<contract>". Empty means the bridge reaches nothing.
+   */
+  bridgeAllowedTargets: string[];
 }
 
 export interface QueryPendingMessagesRequest {
@@ -354,7 +359,7 @@ export const QueryParamsRequest: MessageFns<QueryParamsRequest> = {
 };
 
 function createBaseQueryParamsResponse(): QueryParamsResponse {
-  return { maxMessageSize: "0", maxQueueSize: 0, queueTimeoutBlocks: "0", enabled: false };
+  return { maxMessageSize: "0", maxQueueSize: 0, queueTimeoutBlocks: "0", enabled: false, bridgeAllowedTargets: [] };
 }
 
 export const QueryParamsResponse: MessageFns<QueryParamsResponse> = {
@@ -370,6 +375,9 @@ export const QueryParamsResponse: MessageFns<QueryParamsResponse> = {
     }
     if (message.enabled !== false) {
       writer.uint32(32).bool(message.enabled);
+    }
+    for (const v of message.bridgeAllowedTargets) {
+      writer.uint32(42).string(v!);
     }
     return writer;
   },
@@ -413,6 +421,14 @@ export const QueryParamsResponse: MessageFns<QueryParamsResponse> = {
           message.enabled = reader.bool();
           continue;
         }
+        case 5: {
+          if (tag !== 42) {
+            break;
+          }
+
+          message.bridgeAllowedTargets.push(reader.string());
+          continue;
+        }
       }
       if ((tag & 7) === 4 || tag === 0) {
         break;
@@ -440,6 +456,11 @@ export const QueryParamsResponse: MessageFns<QueryParamsResponse> = {
         ? globalThis.String(object.queue_timeout_blocks)
         : "0",
       enabled: isSet(object.enabled) ? globalThis.Boolean(object.enabled) : false,
+      bridgeAllowedTargets: globalThis.Array.isArray(object?.bridgeAllowedTargets)
+        ? object.bridgeAllowedTargets.map((e: any) => globalThis.String(e))
+        : globalThis.Array.isArray(object?.bridge_allowed_targets)
+        ? object.bridge_allowed_targets.map((e: any) => globalThis.String(e))
+        : [],
     };
   },
 
@@ -457,6 +478,9 @@ export const QueryParamsResponse: MessageFns<QueryParamsResponse> = {
     if (message.enabled !== false) {
       obj.enabled = message.enabled;
     }
+    if (message.bridgeAllowedTargets?.length) {
+      obj.bridgeAllowedTargets = message.bridgeAllowedTargets;
+    }
     return obj;
   },
 
@@ -469,6 +493,7 @@ export const QueryParamsResponse: MessageFns<QueryParamsResponse> = {
     message.maxQueueSize = object.maxQueueSize ?? 0;
     message.queueTimeoutBlocks = object.queueTimeoutBlocks ?? "0";
     message.enabled = object.enabled ?? false;
+    message.bridgeAllowedTargets = object.bridgeAllowedTargets?.map((e) => e) || [];
     return message;
   },
 };
@@ -743,7 +768,45 @@ export const QueryDefinition = {
       requestStream: false,
       responseType: QueryParamsResponse as typeof QueryParamsResponse,
       responseStream: false,
-      options: {},
+      options: {
+        _unknownFields: {
+          578365826: [
+            new Uint8Array([
+              30,
+              18,
+              28,
+              47,
+              113,
+              111,
+              114,
+              101,
+              99,
+              104,
+              97,
+              105,
+              110,
+              47,
+              99,
+              114,
+              111,
+              115,
+              115,
+              118,
+              109,
+              47,
+              118,
+              49,
+              47,
+              112,
+              97,
+              114,
+              97,
+              109,
+              115,
+            ]) as Uint8Array,
+          ],
+        },
+      },
     },
     /** PendingMessages returns the current cross-VM message queue. */
     pendingMessages: {
@@ -752,7 +815,46 @@ export const QueryDefinition = {
       requestStream: false,
       responseType: QueryPendingMessagesResponse as typeof QueryPendingMessagesResponse,
       responseStream: false,
-      options: {},
+      options: {
+        _unknownFields: {
+          578365826: [
+            new Uint8Array([
+              31,
+              18,
+              29,
+              47,
+              113,
+              111,
+              114,
+              101,
+              99,
+              104,
+              97,
+              105,
+              110,
+              47,
+              99,
+              114,
+              111,
+              115,
+              115,
+              118,
+              109,
+              47,
+              118,
+              49,
+              47,
+              112,
+              101,
+              110,
+              100,
+              105,
+              110,
+              103,
+            ]) as Uint8Array,
+          ],
+        },
+      },
     },
     /** Message returns a single cross-VM message by id. */
     message: {
@@ -761,7 +863,51 @@ export const QueryDefinition = {
       requestStream: false,
       responseType: QueryMessageResponse as typeof QueryMessageResponse,
       responseStream: false,
-      options: {},
+      options: {
+        _unknownFields: {
+          578365826: [
+            new Uint8Array([
+              36,
+              18,
+              34,
+              47,
+              113,
+              111,
+              114,
+              101,
+              99,
+              104,
+              97,
+              105,
+              110,
+              47,
+              99,
+              114,
+              111,
+              115,
+              115,
+              118,
+              109,
+              47,
+              118,
+              49,
+              47,
+              109,
+              101,
+              115,
+              115,
+              97,
+              103,
+              101,
+              47,
+              123,
+              105,
+              100,
+              125,
+            ]) as Uint8Array,
+          ],
+        },
+      },
     },
   },
 } as const;

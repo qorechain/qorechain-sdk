@@ -18,6 +18,37 @@ pub struct PqcHybridSignature {
     #[prost(bytes="vec", tag="3")]
     pub pqc_public_key: ::prost::alloc::vec::Vec<u8>,
 }
+#[derive(Clone, PartialEq, ::prost::Message)]
+pub struct QueryKemKeyRequest {
+    /// address is bech32 or 0x-prefixed hex.
+    #[prost(string, tag="1")]
+    pub address: ::prost::alloc::string::String,
+}
+#[derive(Clone, PartialEq, ::prost::Message)]
+pub struct QueryKemKeyResponse {
+    /// found reports whether the address has published a KEM key.
+    #[prost(bool, tag="1")]
+    pub found: bool,
+    #[prost(message, optional, tag="2")]
+    pub key: ::core::option::Option<KemKeyView>,
+}
+/// KEMKeyView is the query-facing view of a published KEM key.
+#[derive(Clone, PartialEq, ::prost::Message)]
+pub struct KemKeyView {
+    /// address is the bech32 account address that published the key.
+    #[prost(string, tag="1")]
+    pub address: ::prost::alloc::string::String,
+    #[prost(uint32, tag="2")]
+    pub algorithm_id: u32,
+    #[prost(string, tag="3")]
+    pub algorithm_name: ::prost::alloc::string::String,
+    #[prost(bytes="vec", tag="4")]
+    pub public_key: ::prost::alloc::vec::Vec<u8>,
+    /// registered_height is the height of the registration that published this
+    /// key (a replacement resets it).
+    #[prost(int64, tag="5")]
+    pub registered_height: i64,
+}
 #[derive(Clone, Copy, PartialEq, ::prost::Message)]
 pub struct QueryProtocolFeaturesRequest {
 }
@@ -349,5 +380,36 @@ pub struct MsgClearEvmDelegation {
 }
 #[derive(Clone, Copy, PartialEq, ::prost::Message)]
 pub struct MsgClearEvmDelegationResponse {
+}
+/// MsgRegisterKEMKey publishes the sender's key-encapsulation public key. The
+/// sender must already hold a post-quantum signature key; the message is
+/// authenticated by its hybrid signature, like the other key maintenance.
+#[derive(Clone, PartialEq, ::prost::Message)]
+pub struct MsgRegisterKemKey {
+    #[prost(string, tag="1")]
+    pub sender: ::prost::alloc::string::String,
+    /// algorithm_id names a key-encapsulation algorithm of the on-chain
+    /// registry (ML-KEM-1024 is 2).
+    #[prost(uint32, tag="2")]
+    pub algorithm_id: u32,
+    /// public_key is the encapsulation key exactly as FIPS 203 encodes it
+    /// (1568 bytes for ML-KEM-1024).
+    #[prost(bytes="vec", tag="3")]
+    pub public_key: ::prost::alloc::vec::Vec<u8>,
+}
+#[derive(Clone, Copy, PartialEq, ::prost::Message)]
+pub struct MsgRegisterKemKeyResponse {
+    /// replaced reports whether a previously published key was replaced.
+    #[prost(bool, tag="1")]
+    pub replaced: bool,
+}
+/// MsgRemoveKEMKey withdraws the sender's published KEM key.
+#[derive(Clone, PartialEq, ::prost::Message)]
+pub struct MsgRemoveKemKey {
+    #[prost(string, tag="1")]
+    pub sender: ::prost::alloc::string::String,
+}
+#[derive(Clone, Copy, PartialEq, ::prost::Message)]
+pub struct MsgRemoveKemKeyResponse {
 }
 // @@protoc_insertion_point(module)

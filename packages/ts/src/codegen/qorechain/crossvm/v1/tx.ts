@@ -50,6 +50,30 @@ export interface MsgProcessQueue {
 export interface MsgProcessQueueResponse {
 }
 
+/**
+ * MsgUpdateParams replaces every crossvm parameter at once: a field left out is
+ * set to its zero value, which Validate refuses for the numeric limits. Signed
+ * by the governance module account, so it only ever executes from a passed
+ * proposal.
+ */
+export interface MsgUpdateParams {
+  /** authority is the governance module account. */
+  authority: string;
+  maxMessageSize: string;
+  maxQueueSize: number;
+  queueTimeoutBlocks: string;
+  enabled: boolean;
+  /**
+   * bridge_allowed_targets lists the targets the EVM bridge precompile may
+   * call, each as "<vm>:<contract>", for example "cosmwasm:qor1...". Empty
+   * keeps the bridge shut.
+   */
+  bridgeAllowedTargets: string[];
+}
+
+export interface MsgUpdateParamsResponse {
+}
+
 function createBaseMsgCrossVMCall(): MsgCrossVMCall {
   return {
     sender: "",
@@ -445,6 +469,212 @@ export const MsgProcessQueueResponse: MessageFns<MsgProcessQueueResponse> = {
   },
 };
 
+function createBaseMsgUpdateParams(): MsgUpdateParams {
+  return {
+    authority: "",
+    maxMessageSize: "0",
+    maxQueueSize: 0,
+    queueTimeoutBlocks: "0",
+    enabled: false,
+    bridgeAllowedTargets: [],
+  };
+}
+
+export const MsgUpdateParams: MessageFns<MsgUpdateParams> = {
+  encode(message: MsgUpdateParams, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.authority !== "") {
+      writer.uint32(10).string(message.authority);
+    }
+    if (message.maxMessageSize !== "0") {
+      writer.uint32(16).uint64(message.maxMessageSize);
+    }
+    if (message.maxQueueSize !== 0) {
+      writer.uint32(24).uint32(message.maxQueueSize);
+    }
+    if (message.queueTimeoutBlocks !== "0") {
+      writer.uint32(32).int64(message.queueTimeoutBlocks);
+    }
+    if (message.enabled !== false) {
+      writer.uint32(40).bool(message.enabled);
+    }
+    for (const v of message.bridgeAllowedTargets) {
+      writer.uint32(50).string(v!);
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): MsgUpdateParams {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseMsgUpdateParams();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.authority = reader.string();
+          continue;
+        }
+        case 2: {
+          if (tag !== 16) {
+            break;
+          }
+
+          message.maxMessageSize = reader.uint64().toString();
+          continue;
+        }
+        case 3: {
+          if (tag !== 24) {
+            break;
+          }
+
+          message.maxQueueSize = reader.uint32();
+          continue;
+        }
+        case 4: {
+          if (tag !== 32) {
+            break;
+          }
+
+          message.queueTimeoutBlocks = reader.int64().toString();
+          continue;
+        }
+        case 5: {
+          if (tag !== 40) {
+            break;
+          }
+
+          message.enabled = reader.bool();
+          continue;
+        }
+        case 6: {
+          if (tag !== 50) {
+            break;
+          }
+
+          message.bridgeAllowedTargets.push(reader.string());
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(object: any): MsgUpdateParams {
+    return {
+      authority: isSet(object.authority) ? globalThis.String(object.authority) : "",
+      maxMessageSize: isSet(object.maxMessageSize)
+        ? globalThis.String(object.maxMessageSize)
+        : isSet(object.max_message_size)
+        ? globalThis.String(object.max_message_size)
+        : "0",
+      maxQueueSize: isSet(object.maxQueueSize)
+        ? globalThis.Number(object.maxQueueSize)
+        : isSet(object.max_queue_size)
+        ? globalThis.Number(object.max_queue_size)
+        : 0,
+      queueTimeoutBlocks: isSet(object.queueTimeoutBlocks)
+        ? globalThis.String(object.queueTimeoutBlocks)
+        : isSet(object.queue_timeout_blocks)
+        ? globalThis.String(object.queue_timeout_blocks)
+        : "0",
+      enabled: isSet(object.enabled) ? globalThis.Boolean(object.enabled) : false,
+      bridgeAllowedTargets: globalThis.Array.isArray(object?.bridgeAllowedTargets)
+        ? object.bridgeAllowedTargets.map((e: any) => globalThis.String(e))
+        : globalThis.Array.isArray(object?.bridge_allowed_targets)
+        ? object.bridge_allowed_targets.map((e: any) => globalThis.String(e))
+        : [],
+    };
+  },
+
+  toJSON(message: MsgUpdateParams): unknown {
+    const obj: any = {};
+    if (message.authority !== "") {
+      obj.authority = message.authority;
+    }
+    if (message.maxMessageSize !== "0") {
+      obj.maxMessageSize = message.maxMessageSize;
+    }
+    if (message.maxQueueSize !== 0) {
+      obj.maxQueueSize = Math.round(message.maxQueueSize);
+    }
+    if (message.queueTimeoutBlocks !== "0") {
+      obj.queueTimeoutBlocks = message.queueTimeoutBlocks;
+    }
+    if (message.enabled !== false) {
+      obj.enabled = message.enabled;
+    }
+    if (message.bridgeAllowedTargets?.length) {
+      obj.bridgeAllowedTargets = message.bridgeAllowedTargets;
+    }
+    return obj;
+  },
+
+  create(base?: DeepPartial<MsgUpdateParams>): MsgUpdateParams {
+    return MsgUpdateParams.fromPartial(base ?? {});
+  },
+  fromPartial(object: DeepPartial<MsgUpdateParams>): MsgUpdateParams {
+    const message = createBaseMsgUpdateParams();
+    message.authority = object.authority ?? "";
+    message.maxMessageSize = object.maxMessageSize ?? "0";
+    message.maxQueueSize = object.maxQueueSize ?? 0;
+    message.queueTimeoutBlocks = object.queueTimeoutBlocks ?? "0";
+    message.enabled = object.enabled ?? false;
+    message.bridgeAllowedTargets = object.bridgeAllowedTargets?.map((e) => e) || [];
+    return message;
+  },
+};
+
+function createBaseMsgUpdateParamsResponse(): MsgUpdateParamsResponse {
+  return {};
+}
+
+export const MsgUpdateParamsResponse: MessageFns<MsgUpdateParamsResponse> = {
+  encode(_: MsgUpdateParamsResponse, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): MsgUpdateParamsResponse {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseMsgUpdateParamsResponse();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(_: any): MsgUpdateParamsResponse {
+    return {};
+  },
+
+  toJSON(_: MsgUpdateParamsResponse): unknown {
+    const obj: any = {};
+    return obj;
+  },
+
+  create(base?: DeepPartial<MsgUpdateParamsResponse>): MsgUpdateParamsResponse {
+    return MsgUpdateParamsResponse.fromPartial(base ?? {});
+  },
+  fromPartial(_: DeepPartial<MsgUpdateParamsResponse>): MsgUpdateParamsResponse {
+    const message = createBaseMsgUpdateParamsResponse();
+    return message;
+  },
+};
+
 /** Msg defines the crossvm module's transaction service. */
 export type MsgDefinition = typeof MsgDefinition;
 export const MsgDefinition = {
@@ -470,6 +700,19 @@ export const MsgDefinition = {
       requestType: MsgProcessQueue as typeof MsgProcessQueue,
       requestStream: false,
       responseType: MsgProcessQueueResponse as typeof MsgProcessQueueResponse,
+      responseStream: false,
+      options: {},
+    },
+    /**
+     * UpdateParams replaces the module parameters, among them the allowlist of
+     * targets the EVM bridge precompile may call. Only the governance module may
+     * call it.
+     */
+    updateParams: {
+      name: "UpdateParams",
+      requestType: MsgUpdateParams as typeof MsgUpdateParams,
+      requestStream: false,
+      responseType: MsgUpdateParamsResponse as typeof MsgUpdateParamsResponse,
       responseStream: false,
       options: {},
     },

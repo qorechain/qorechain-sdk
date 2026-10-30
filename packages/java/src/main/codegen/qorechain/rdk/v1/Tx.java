@@ -4564,7 +4564,10 @@ public final class Tx extends com.google.protobuf.GeneratedFile {
      * <pre>
      * fraud_upheld true: fraud confirmed -&gt; batch rejected, challenger refunded +
      * rewarded from rollup stake. false: challenge dismissed -&gt; challenger bond
-     * forfeited to the rollup operator, batch eligible for finalization.
+     * forfeited to the rollup operator, batch eligible for finalization. The
+     * chain verifies the stored fraud proof and refuses an assertion that does
+     * not match. Before v3.2.5 only the rollup creator may resolve; from
+     * rdk-challenge-settlement any account may.
      * </pre>
      *
      * <code>bool fraud_upheld = 4 [json_name = "fraudUpheld"];</code>
@@ -4711,7 +4714,10 @@ public final class Tx extends com.google.protobuf.GeneratedFile {
      * <pre>
      * fraud_upheld true: fraud confirmed -&gt; batch rejected, challenger refunded +
      * rewarded from rollup stake. false: challenge dismissed -&gt; challenger bond
-     * forfeited to the rollup operator, batch eligible for finalization.
+     * forfeited to the rollup operator, batch eligible for finalization. The
+     * chain verifies the stored fraud proof and refuses an assertion that does
+     * not match. Before v3.2.5 only the rollup creator may resolve; from
+     * rdk-challenge-settlement any account may.
      * </pre>
      *
      * <code>bool fraud_upheld = 4 [json_name = "fraudUpheld"];</code>
@@ -5273,7 +5279,10 @@ public final class Tx extends com.google.protobuf.GeneratedFile {
        * <pre>
        * fraud_upheld true: fraud confirmed -&gt; batch rejected, challenger refunded +
        * rewarded from rollup stake. false: challenge dismissed -&gt; challenger bond
-       * forfeited to the rollup operator, batch eligible for finalization.
+       * forfeited to the rollup operator, batch eligible for finalization. The
+       * chain verifies the stored fraud proof and refuses an assertion that does
+       * not match. Before v3.2.5 only the rollup creator may resolve; from
+       * rdk-challenge-settlement any account may.
        * </pre>
        *
        * <code>bool fraud_upheld = 4 [json_name = "fraudUpheld"];</code>
@@ -5287,7 +5296,10 @@ public final class Tx extends com.google.protobuf.GeneratedFile {
        * <pre>
        * fraud_upheld true: fraud confirmed -&gt; batch rejected, challenger refunded +
        * rewarded from rollup stake. false: challenge dismissed -&gt; challenger bond
-       * forfeited to the rollup operator, batch eligible for finalization.
+       * forfeited to the rollup operator, batch eligible for finalization. The
+       * chain verifies the stored fraud proof and refuses an assertion that does
+       * not match. Before v3.2.5 only the rollup creator may resolve; from
+       * rdk-challenge-settlement any account may.
        * </pre>
        *
        * <code>bool fraud_upheld = 4 [json_name = "fraudUpheld"];</code>
@@ -5305,7 +5317,10 @@ public final class Tx extends com.google.protobuf.GeneratedFile {
        * <pre>
        * fraud_upheld true: fraud confirmed -&gt; batch rejected, challenger refunded +
        * rewarded from rollup stake. false: challenge dismissed -&gt; challenger bond
-       * forfeited to the rollup operator, batch eligible for finalization.
+       * forfeited to the rollup operator, batch eligible for finalization. The
+       * chain verifies the stored fraud proof and refuses an assertion that does
+       * not match. Before v3.2.5 only the rollup creator may resolve; from
+       * rdk-challenge-settlement any account may.
        * </pre>
        *
        * <code>bool fraud_upheld = 4 [json_name = "fraudUpheld"];</code>
@@ -10734,6 +10749,1565 @@ public final class Tx extends com.google.protobuf.GeneratedFile {
 
   }
 
+  public interface MsgUpdateParamsOrBuilder extends
+      // @@protoc_insertion_point(interface_extends:qorechain.rdk.v1.MsgUpdateParams)
+      com.google.protobuf.MessageOrBuilder {
+
+    /**
+     * <code>string authority = 1 [json_name = "authority", (.cosmos_proto.scalar) = "cosmos.AddressString"];</code>
+     * @return The authority.
+     */
+    java.lang.String getAuthority();
+    /**
+     * <code>string authority = 1 [json_name = "authority", (.cosmos_proto.scalar) = "cosmos.AddressString"];</code>
+     * @return The bytes for authority.
+     */
+    com.google.protobuf.ByteString
+        getAuthorityBytes();
+
+    /**
+     * <code>uint32 max_rollups = 2 [json_name = "maxRollups"];</code>
+     * @return The maxRollups.
+     */
+    int getMaxRollups();
+
+    /**
+     * <pre>
+     * min_stake_for_rollup is a uqor amount.
+     * </pre>
+     *
+     * <code>int64 min_stake_for_rollup = 3 [json_name = "minStakeForRollup"];</code>
+     * @return The minStakeForRollup.
+     */
+    long getMinStakeForRollup();
+
+    /**
+     * <pre>
+     * rollup_creation_burn_rate is a decimal in [0, 1).
+     * </pre>
+     *
+     * <code>string rollup_creation_burn_rate = 4 [json_name = "rollupCreationBurnRate"];</code>
+     * @return The rollupCreationBurnRate.
+     */
+    java.lang.String getRollupCreationBurnRate();
+    /**
+     * <pre>
+     * rollup_creation_burn_rate is a decimal in [0, 1).
+     * </pre>
+     *
+     * <code>string rollup_creation_burn_rate = 4 [json_name = "rollupCreationBurnRate"];</code>
+     * @return The bytes for rollupCreationBurnRate.
+     */
+    com.google.protobuf.ByteString
+        getRollupCreationBurnRateBytes();
+
+    /**
+     * <pre>
+     * default_challenge_window is in seconds. From rdk-rollup-params a new
+     * optimistic rollup takes its challenge window from it.
+     * </pre>
+     *
+     * <code>uint64 default_challenge_window = 5 [json_name = "defaultChallengeWindow"];</code>
+     * @return The defaultChallengeWindow.
+     */
+    long getDefaultChallengeWindow();
+
+    /**
+     * <code>uint64 max_da_blob_size = 6 [json_name = "maxDaBlobSize"];</code>
+     * @return The maxDaBlobSize.
+     */
+    long getMaxDaBlobSize();
+
+    /**
+     * <code>uint64 blob_retention_blocks = 7 [json_name = "blobRetentionBlocks"];</code>
+     * @return The blobRetentionBlocks.
+     */
+    long getBlobRetentionBlocks();
+
+    /**
+     * <code>uint32 max_batches_per_block = 8 [json_name = "maxBatchesPerBlock"];</code>
+     * @return The maxBatchesPerBlock.
+     */
+    int getMaxBatchesPerBlock();
+  }
+  /**
+   * <pre>
+   * MsgUpdateParams replaces the rdk parameters wholesale. The fields are the
+   * module's Params, spelled out one by one (as x/multilayer does) because the
+   * parameters are stored as JSON by a hand-written struct whose encoding must
+   * not change. Governance only: authority must be the gov module account.
+   * Served from v3.2.5 (rdk-params-route).
+   * </pre>
+   *
+   * Protobuf type {@code qorechain.rdk.v1.MsgUpdateParams}
+   */
+  public static final class MsgUpdateParams extends
+      com.google.protobuf.GeneratedMessage implements
+      // @@protoc_insertion_point(message_implements:qorechain.rdk.v1.MsgUpdateParams)
+      MsgUpdateParamsOrBuilder {
+  private static final long serialVersionUID = 0L;
+    static {
+      com.google.protobuf.RuntimeVersion.validateProtobufGencodeVersion(
+        com.google.protobuf.RuntimeVersion.RuntimeDomain.PUBLIC,
+        /* major= */ 4,
+        /* minor= */ 35,
+        /* patch= */ 1,
+        /* suffix= */ "",
+        "MsgUpdateParams");
+    }
+    // Use MsgUpdateParams.newBuilder() to construct.
+    private MsgUpdateParams(com.google.protobuf.GeneratedMessage.Builder<?> builder) {
+      super(builder);
+    }
+    private MsgUpdateParams() {
+      authority_ = "";
+      rollupCreationBurnRate_ = "";
+    }
+
+    public static final com.google.protobuf.Descriptors.Descriptor
+        getDescriptor() {
+      return qorechain.rdk.v1.Tx.internal_static_qorechain_rdk_v1_MsgUpdateParams_descriptor;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Descriptors.Descriptor getDescriptorForType() {
+      return qorechain.rdk.v1.Tx.internal_static_qorechain_rdk_v1_MsgUpdateParams_descriptor;
+    }
+
+    @java.lang.Override
+    protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+        internalGetFieldAccessorTable() {
+      return qorechain.rdk.v1.Tx.internal_static_qorechain_rdk_v1_MsgUpdateParams_fieldAccessorTable
+          .ensureFieldAccessorsInitialized(
+              qorechain.rdk.v1.Tx.MsgUpdateParams.class, qorechain.rdk.v1.Tx.MsgUpdateParams.Builder.class);
+    }
+
+    public static final int AUTHORITY_FIELD_NUMBER = 1;
+    @SuppressWarnings("serial")
+    private volatile java.lang.Object authority_ = "";
+    /**
+     * <code>string authority = 1 [json_name = "authority", (.cosmos_proto.scalar) = "cosmos.AddressString"];</code>
+     * @return The authority.
+     */
+    @java.lang.Override
+    public java.lang.String getAuthority() {
+      java.lang.Object ref = authority_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        authority_ = s;
+        return s;
+      }
+    }
+    /**
+     * <code>string authority = 1 [json_name = "authority", (.cosmos_proto.scalar) = "cosmos.AddressString"];</code>
+     * @return The bytes for authority.
+     */
+    @java.lang.Override
+    public com.google.protobuf.ByteString
+        getAuthorityBytes() {
+      java.lang.Object ref = authority_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        authority_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
+    public static final int MAX_ROLLUPS_FIELD_NUMBER = 2;
+    private int maxRollups_ = 0;
+    /**
+     * <code>uint32 max_rollups = 2 [json_name = "maxRollups"];</code>
+     * @return The maxRollups.
+     */
+    @java.lang.Override
+    public int getMaxRollups() {
+      return maxRollups_;
+    }
+
+    public static final int MIN_STAKE_FOR_ROLLUP_FIELD_NUMBER = 3;
+    private long minStakeForRollup_ = 0L;
+    /**
+     * <pre>
+     * min_stake_for_rollup is a uqor amount.
+     * </pre>
+     *
+     * <code>int64 min_stake_for_rollup = 3 [json_name = "minStakeForRollup"];</code>
+     * @return The minStakeForRollup.
+     */
+    @java.lang.Override
+    public long getMinStakeForRollup() {
+      return minStakeForRollup_;
+    }
+
+    public static final int ROLLUP_CREATION_BURN_RATE_FIELD_NUMBER = 4;
+    @SuppressWarnings("serial")
+    private volatile java.lang.Object rollupCreationBurnRate_ = "";
+    /**
+     * <pre>
+     * rollup_creation_burn_rate is a decimal in [0, 1).
+     * </pre>
+     *
+     * <code>string rollup_creation_burn_rate = 4 [json_name = "rollupCreationBurnRate"];</code>
+     * @return The rollupCreationBurnRate.
+     */
+    @java.lang.Override
+    public java.lang.String getRollupCreationBurnRate() {
+      java.lang.Object ref = rollupCreationBurnRate_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        rollupCreationBurnRate_ = s;
+        return s;
+      }
+    }
+    /**
+     * <pre>
+     * rollup_creation_burn_rate is a decimal in [0, 1).
+     * </pre>
+     *
+     * <code>string rollup_creation_burn_rate = 4 [json_name = "rollupCreationBurnRate"];</code>
+     * @return The bytes for rollupCreationBurnRate.
+     */
+    @java.lang.Override
+    public com.google.protobuf.ByteString
+        getRollupCreationBurnRateBytes() {
+      java.lang.Object ref = rollupCreationBurnRate_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        rollupCreationBurnRate_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
+    public static final int DEFAULT_CHALLENGE_WINDOW_FIELD_NUMBER = 5;
+    private long defaultChallengeWindow_ = 0L;
+    /**
+     * <pre>
+     * default_challenge_window is in seconds. From rdk-rollup-params a new
+     * optimistic rollup takes its challenge window from it.
+     * </pre>
+     *
+     * <code>uint64 default_challenge_window = 5 [json_name = "defaultChallengeWindow"];</code>
+     * @return The defaultChallengeWindow.
+     */
+    @java.lang.Override
+    public long getDefaultChallengeWindow() {
+      return defaultChallengeWindow_;
+    }
+
+    public static final int MAX_DA_BLOB_SIZE_FIELD_NUMBER = 6;
+    private long maxDaBlobSize_ = 0L;
+    /**
+     * <code>uint64 max_da_blob_size = 6 [json_name = "maxDaBlobSize"];</code>
+     * @return The maxDaBlobSize.
+     */
+    @java.lang.Override
+    public long getMaxDaBlobSize() {
+      return maxDaBlobSize_;
+    }
+
+    public static final int BLOB_RETENTION_BLOCKS_FIELD_NUMBER = 7;
+    private long blobRetentionBlocks_ = 0L;
+    /**
+     * <code>uint64 blob_retention_blocks = 7 [json_name = "blobRetentionBlocks"];</code>
+     * @return The blobRetentionBlocks.
+     */
+    @java.lang.Override
+    public long getBlobRetentionBlocks() {
+      return blobRetentionBlocks_;
+    }
+
+    public static final int MAX_BATCHES_PER_BLOCK_FIELD_NUMBER = 8;
+    private int maxBatchesPerBlock_ = 0;
+    /**
+     * <code>uint32 max_batches_per_block = 8 [json_name = "maxBatchesPerBlock"];</code>
+     * @return The maxBatchesPerBlock.
+     */
+    @java.lang.Override
+    public int getMaxBatchesPerBlock() {
+      return maxBatchesPerBlock_;
+    }
+
+    private byte memoizedIsInitialized = -1;
+    @java.lang.Override
+    public final boolean isInitialized() {
+      byte isInitialized = memoizedIsInitialized;
+      if (isInitialized == 1) return true;
+      if (isInitialized == 0) return false;
+
+      memoizedIsInitialized = 1;
+      return true;
+    }
+
+    @java.lang.Override
+    public void writeTo(com.google.protobuf.CodedOutputStream output)
+                        throws java.io.IOException {
+      if (!com.google.protobuf.GeneratedMessage.isStringEmpty(authority_)) {
+        com.google.protobuf.GeneratedMessage.writeString(output, 1, authority_);
+      }
+      if (maxRollups_ != 0) {
+        output.writeUInt32(2, maxRollups_);
+      }
+      if (minStakeForRollup_ != 0L) {
+        output.writeInt64(3, minStakeForRollup_);
+      }
+      if (!com.google.protobuf.GeneratedMessage.isStringEmpty(rollupCreationBurnRate_)) {
+        com.google.protobuf.GeneratedMessage.writeString(output, 4, rollupCreationBurnRate_);
+      }
+      if (defaultChallengeWindow_ != 0L) {
+        output.writeUInt64(5, defaultChallengeWindow_);
+      }
+      if (maxDaBlobSize_ != 0L) {
+        output.writeUInt64(6, maxDaBlobSize_);
+      }
+      if (blobRetentionBlocks_ != 0L) {
+        output.writeUInt64(7, blobRetentionBlocks_);
+      }
+      if (maxBatchesPerBlock_ != 0) {
+        output.writeUInt32(8, maxBatchesPerBlock_);
+      }
+      getUnknownFields().writeTo(output);
+    }
+    private int computeSerializedSize_0() {
+      int size = 0;
+      if (!com.google.protobuf.GeneratedMessage.isStringEmpty(authority_)) {
+        size += com.google.protobuf.GeneratedMessage.computeStringSize(1, authority_);
+      }
+      if (maxRollups_ != 0) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeUInt32Size(2, maxRollups_);
+      }
+      if (minStakeForRollup_ != 0L) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeInt64Size(3, minStakeForRollup_);
+      }
+      if (!com.google.protobuf.GeneratedMessage.isStringEmpty(rollupCreationBurnRate_)) {
+        size += com.google.protobuf.GeneratedMessage.computeStringSize(4, rollupCreationBurnRate_);
+      }
+      if (defaultChallengeWindow_ != 0L) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeUInt64Size(5, defaultChallengeWindow_);
+      }
+      if (maxDaBlobSize_ != 0L) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeUInt64Size(6, maxDaBlobSize_);
+      }
+      if (blobRetentionBlocks_ != 0L) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeUInt64Size(7, blobRetentionBlocks_);
+      }
+      if (maxBatchesPerBlock_ != 0) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeUInt32Size(8, maxBatchesPerBlock_);
+      }
+      return size;
+    }
+    @java.lang.Override
+    public int getSerializedSize() {
+      int size = memoizedSize;
+      if (size != -1) return size;
+
+      size = 0;
+      size += computeSerializedSize_0();
+      size += getUnknownFields().getSerializedSize();
+      memoizedSize = size;
+      return size;
+    }
+
+    @java.lang.Override
+    public boolean equals(final java.lang.Object obj) {
+      if (obj == this) {
+       return true;
+      }
+      if (!(obj instanceof qorechain.rdk.v1.Tx.MsgUpdateParams)) {
+        return super.equals(obj);
+      }
+      qorechain.rdk.v1.Tx.MsgUpdateParams other = (qorechain.rdk.v1.Tx.MsgUpdateParams) obj;
+
+      if (!getAuthority()
+          .equals(other.getAuthority())) return false;
+      if (getMaxRollups()
+          != other.getMaxRollups()) return false;
+      if (getMinStakeForRollup()
+          != other.getMinStakeForRollup()) return false;
+      if (!getRollupCreationBurnRate()
+          .equals(other.getRollupCreationBurnRate())) return false;
+      if (getDefaultChallengeWindow()
+          != other.getDefaultChallengeWindow()) return false;
+      if (getMaxDaBlobSize()
+          != other.getMaxDaBlobSize()) return false;
+      if (getBlobRetentionBlocks()
+          != other.getBlobRetentionBlocks()) return false;
+      if (getMaxBatchesPerBlock()
+          != other.getMaxBatchesPerBlock()) return false;
+      if (!getUnknownFields().equals(other.getUnknownFields())) return false;
+      return true;
+    }
+
+    @java.lang.Override
+    public int hashCode() {
+      if (memoizedHashCode != 0) {
+        return memoizedHashCode;
+      }
+      int hash = 41;
+      hash = (19 * hash) + getDescriptor().hashCode();
+      hash = (37 * hash) + AUTHORITY_FIELD_NUMBER;
+      hash = (53 * hash) + getAuthority().hashCode();
+      hash = (37 * hash) + MAX_ROLLUPS_FIELD_NUMBER;
+      hash = (53 * hash) + getMaxRollups();
+      hash = (37 * hash) + MIN_STAKE_FOR_ROLLUP_FIELD_NUMBER;
+      hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
+          getMinStakeForRollup());
+      hash = (37 * hash) + ROLLUP_CREATION_BURN_RATE_FIELD_NUMBER;
+      hash = (53 * hash) + getRollupCreationBurnRate().hashCode();
+      hash = (37 * hash) + DEFAULT_CHALLENGE_WINDOW_FIELD_NUMBER;
+      hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
+          getDefaultChallengeWindow());
+      hash = (37 * hash) + MAX_DA_BLOB_SIZE_FIELD_NUMBER;
+      hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
+          getMaxDaBlobSize());
+      hash = (37 * hash) + BLOB_RETENTION_BLOCKS_FIELD_NUMBER;
+      hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
+          getBlobRetentionBlocks());
+      hash = (37 * hash) + MAX_BATCHES_PER_BLOCK_FIELD_NUMBER;
+      hash = (53 * hash) + getMaxBatchesPerBlock();
+      hash = (29 * hash) + getUnknownFields().hashCode();
+      memoizedHashCode = hash;
+      return hash;
+    }
+
+    public static qorechain.rdk.v1.Tx.MsgUpdateParams parseFrom(
+        java.nio.ByteBuffer data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static qorechain.rdk.v1.Tx.MsgUpdateParams parseFrom(
+        java.nio.ByteBuffer data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static qorechain.rdk.v1.Tx.MsgUpdateParams parseFrom(
+        com.google.protobuf.ByteString data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static qorechain.rdk.v1.Tx.MsgUpdateParams parseFrom(
+        com.google.protobuf.ByteString data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static qorechain.rdk.v1.Tx.MsgUpdateParams parseFrom(byte[] data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static qorechain.rdk.v1.Tx.MsgUpdateParams parseFrom(
+        byte[] data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static qorechain.rdk.v1.Tx.MsgUpdateParams parseFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input);
+    }
+    public static qorechain.rdk.v1.Tx.MsgUpdateParams parseFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    public static qorechain.rdk.v1.Tx.MsgUpdateParams parseDelimitedFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseDelimitedWithIOException(PARSER, input);
+    }
+
+    public static qorechain.rdk.v1.Tx.MsgUpdateParams parseDelimitedFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static qorechain.rdk.v1.Tx.MsgUpdateParams parseFrom(
+        com.google.protobuf.CodedInputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input);
+    }
+    public static qorechain.rdk.v1.Tx.MsgUpdateParams parseFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    @java.lang.Override
+    public Builder newBuilderForType() { return newBuilder(); }
+    public static Builder newBuilder() {
+      return DEFAULT_INSTANCE.toBuilder();
+    }
+    public static Builder newBuilder(qorechain.rdk.v1.Tx.MsgUpdateParams prototype) {
+      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+    }
+    @java.lang.Override
+    public Builder toBuilder() {
+      return this == DEFAULT_INSTANCE
+          ? new Builder() : new Builder().mergeFrom(this);
+    }
+
+    @java.lang.Override
+    protected Builder newBuilderForType(
+        com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+      Builder builder = new Builder(parent);
+      return builder;
+    }
+    /**
+     * <pre>
+     * MsgUpdateParams replaces the rdk parameters wholesale. The fields are the
+     * module's Params, spelled out one by one (as x/multilayer does) because the
+     * parameters are stored as JSON by a hand-written struct whose encoding must
+     * not change. Governance only: authority must be the gov module account.
+     * Served from v3.2.5 (rdk-params-route).
+     * </pre>
+     *
+     * Protobuf type {@code qorechain.rdk.v1.MsgUpdateParams}
+     */
+    public static final class Builder extends
+        com.google.protobuf.GeneratedMessage.Builder<Builder> implements
+        // @@protoc_insertion_point(builder_implements:qorechain.rdk.v1.MsgUpdateParams)
+        qorechain.rdk.v1.Tx.MsgUpdateParamsOrBuilder {
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return qorechain.rdk.v1.Tx.internal_static_qorechain_rdk_v1_MsgUpdateParams_descriptor;
+      }
+
+      @java.lang.Override
+      protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return qorechain.rdk.v1.Tx.internal_static_qorechain_rdk_v1_MsgUpdateParams_fieldAccessorTable
+            .ensureFieldAccessorsInitialized(
+                qorechain.rdk.v1.Tx.MsgUpdateParams.class, qorechain.rdk.v1.Tx.MsgUpdateParams.Builder.class);
+      }
+
+      // Construct using qorechain.rdk.v1.Tx.MsgUpdateParams.newBuilder()
+      private Builder() {
+
+      }
+
+      private Builder(
+          com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+        super(parent);
+
+      }
+      @java.lang.Override
+      public Builder clear() {
+        super.clear();
+        bitField0_ = 0;
+        authority_ = "";
+        maxRollups_ = 0;
+        minStakeForRollup_ = 0L;
+        rollupCreationBurnRate_ = "";
+        defaultChallengeWindow_ = 0L;
+        maxDaBlobSize_ = 0L;
+        blobRetentionBlocks_ = 0L;
+        maxBatchesPerBlock_ = 0;
+        return this;
+      }
+
+      @java.lang.Override
+      public com.google.protobuf.Descriptors.Descriptor
+          getDescriptorForType() {
+        return qorechain.rdk.v1.Tx.internal_static_qorechain_rdk_v1_MsgUpdateParams_descriptor;
+      }
+
+      @java.lang.Override
+      public qorechain.rdk.v1.Tx.MsgUpdateParams getDefaultInstanceForType() {
+        return qorechain.rdk.v1.Tx.MsgUpdateParams.getDefaultInstance();
+      }
+
+      @java.lang.Override
+      public qorechain.rdk.v1.Tx.MsgUpdateParams build() {
+        qorechain.rdk.v1.Tx.MsgUpdateParams result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(result);
+        }
+        return result;
+      }
+
+      @java.lang.Override
+      public qorechain.rdk.v1.Tx.MsgUpdateParams buildPartial() {
+        qorechain.rdk.v1.Tx.MsgUpdateParams result = new qorechain.rdk.v1.Tx.MsgUpdateParams(this);
+        if (bitField0_ != 0) { buildPartial0(result); }
+        onBuilt();
+        return result;
+      }
+
+      private void buildPartial0(qorechain.rdk.v1.Tx.MsgUpdateParams result) {
+        int from_bitField0_ = bitField0_;
+        if (((from_bitField0_ & 0x00000001) != 0)) {
+          result.authority_ = authority_;
+        }
+        if (((from_bitField0_ & 0x00000002) != 0)) {
+          result.maxRollups_ = maxRollups_;
+        }
+        if (((from_bitField0_ & 0x00000004) != 0)) {
+          result.minStakeForRollup_ = minStakeForRollup_;
+        }
+        if (((from_bitField0_ & 0x00000008) != 0)) {
+          result.rollupCreationBurnRate_ = rollupCreationBurnRate_;
+        }
+        if (((from_bitField0_ & 0x00000010) != 0)) {
+          result.defaultChallengeWindow_ = defaultChallengeWindow_;
+        }
+        if (((from_bitField0_ & 0x00000020) != 0)) {
+          result.maxDaBlobSize_ = maxDaBlobSize_;
+        }
+        if (((from_bitField0_ & 0x00000040) != 0)) {
+          result.blobRetentionBlocks_ = blobRetentionBlocks_;
+        }
+        if (((from_bitField0_ & 0x00000080) != 0)) {
+          result.maxBatchesPerBlock_ = maxBatchesPerBlock_;
+        }
+      }
+
+      @java.lang.Override
+      public Builder mergeFrom(com.google.protobuf.Message other) {
+        if (other instanceof qorechain.rdk.v1.Tx.MsgUpdateParams) {
+          return mergeFrom((qorechain.rdk.v1.Tx.MsgUpdateParams)other);
+        } else {
+          super.mergeFrom(other);
+          return this;
+        }
+      }
+
+      public Builder mergeFrom(qorechain.rdk.v1.Tx.MsgUpdateParams other) {
+        if (other == qorechain.rdk.v1.Tx.MsgUpdateParams.getDefaultInstance()) return this;
+        if (!other.getAuthority().isEmpty()) {
+          authority_ = other.authority_;
+          bitField0_ |= 0x00000001;
+          onChanged();
+        }
+        if (other.getMaxRollups() != 0) {
+          setMaxRollups(other.getMaxRollups());
+        }
+        if (other.getMinStakeForRollup() != 0L) {
+          setMinStakeForRollup(other.getMinStakeForRollup());
+        }
+        if (!other.getRollupCreationBurnRate().isEmpty()) {
+          rollupCreationBurnRate_ = other.rollupCreationBurnRate_;
+          bitField0_ |= 0x00000008;
+          onChanged();
+        }
+        if (other.getDefaultChallengeWindow() != 0L) {
+          setDefaultChallengeWindow(other.getDefaultChallengeWindow());
+        }
+        if (other.getMaxDaBlobSize() != 0L) {
+          setMaxDaBlobSize(other.getMaxDaBlobSize());
+        }
+        if (other.getBlobRetentionBlocks() != 0L) {
+          setBlobRetentionBlocks(other.getBlobRetentionBlocks());
+        }
+        if (other.getMaxBatchesPerBlock() != 0) {
+          setMaxBatchesPerBlock(other.getMaxBatchesPerBlock());
+        }
+        this.mergeUnknownFields(other.getUnknownFields());
+        onChanged();
+        return this;
+      }
+
+      @java.lang.Override
+      public final boolean isInitialized() {
+        return true;
+      }
+
+      @java.lang.Override
+      public Builder mergeFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        if (extensionRegistry == null) {
+          throw new java.lang.NullPointerException();
+        }
+        try {
+          boolean done = false;
+          while (!done) {
+            int tag = input.readTag();
+            switch (tag) {
+              case 0:
+                done = true;
+                break;
+              case 10: {
+                authority_ = input.readStringRequireUtf8();
+                bitField0_ |= 0x00000001;
+                break;
+              } // case 10
+              case 16: {
+                maxRollups_ = input.readUInt32();
+                bitField0_ |= 0x00000002;
+                break;
+              } // case 16
+              case 24: {
+                minStakeForRollup_ = input.readInt64();
+                bitField0_ |= 0x00000004;
+                break;
+              } // case 24
+              case 34: {
+                rollupCreationBurnRate_ = input.readStringRequireUtf8();
+                bitField0_ |= 0x00000008;
+                break;
+              } // case 34
+              case 40: {
+                defaultChallengeWindow_ = input.readUInt64();
+                bitField0_ |= 0x00000010;
+                break;
+              } // case 40
+              case 48: {
+                maxDaBlobSize_ = input.readUInt64();
+                bitField0_ |= 0x00000020;
+                break;
+              } // case 48
+              case 56: {
+                blobRetentionBlocks_ = input.readUInt64();
+                bitField0_ |= 0x00000040;
+                break;
+              } // case 56
+              case 64: {
+                maxBatchesPerBlock_ = input.readUInt32();
+                bitField0_ |= 0x00000080;
+                break;
+              } // case 64
+              default: {
+                if (!super.parseUnknownField(input, extensionRegistry, tag)) {
+                  done = true; // was an endgroup tag
+                }
+                break;
+              } // default:
+            } // switch (tag)
+          } // while (!done)
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          throw e.unwrapIOException();
+        } finally {
+          onChanged();
+        } // finally
+        return this;
+      }
+      private int bitField0_;
+
+      private java.lang.Object authority_ = "";
+      /**
+       * <code>string authority = 1 [json_name = "authority", (.cosmos_proto.scalar) = "cosmos.AddressString"];</code>
+       * @return The authority.
+       */
+      public java.lang.String getAuthority() {
+        java.lang.Object ref = authority_;
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          authority_ = s;
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
+      }
+      /**
+       * <code>string authority = 1 [json_name = "authority", (.cosmos_proto.scalar) = "cosmos.AddressString"];</code>
+       * @return The bytes for authority.
+       */
+      public com.google.protobuf.ByteString
+          getAuthorityBytes() {
+        java.lang.Object ref = authority_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          authority_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <code>string authority = 1 [json_name = "authority", (.cosmos_proto.scalar) = "cosmos.AddressString"];</code>
+       * @param value The authority to set.
+       * @return This builder for chaining.
+       */
+      public Builder setAuthority(
+          java.lang.String value) {
+        if (value == null) { throw new NullPointerException(); }
+        authority_ = value;
+        bitField0_ |= 0x00000001;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>string authority = 1 [json_name = "authority", (.cosmos_proto.scalar) = "cosmos.AddressString"];</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearAuthority() {
+        authority_ = getDefaultInstance().getAuthority();
+        bitField0_ = (bitField0_ & ~0x00000001);
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>string authority = 1 [json_name = "authority", (.cosmos_proto.scalar) = "cosmos.AddressString"];</code>
+       * @param value The bytes for authority to set.
+       * @return This builder for chaining.
+       */
+      public Builder setAuthorityBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) { throw new NullPointerException(); }
+        checkByteStringIsUtf8(value);
+        authority_ = value;
+        bitField0_ |= 0x00000001;
+        onChanged();
+        return this;
+      }
+
+      private int maxRollups_ ;
+      /**
+       * <code>uint32 max_rollups = 2 [json_name = "maxRollups"];</code>
+       * @return The maxRollups.
+       */
+      @java.lang.Override
+      public int getMaxRollups() {
+        return maxRollups_;
+      }
+      /**
+       * <code>uint32 max_rollups = 2 [json_name = "maxRollups"];</code>
+       * @param value The maxRollups to set.
+       * @return This builder for chaining.
+       */
+      public Builder setMaxRollups(int value) {
+
+        maxRollups_ = value;
+        bitField0_ |= 0x00000002;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>uint32 max_rollups = 2 [json_name = "maxRollups"];</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearMaxRollups() {
+        bitField0_ = (bitField0_ & ~0x00000002);
+        maxRollups_ = 0;
+        onChanged();
+        return this;
+      }
+
+      private long minStakeForRollup_ ;
+      /**
+       * <pre>
+       * min_stake_for_rollup is a uqor amount.
+       * </pre>
+       *
+       * <code>int64 min_stake_for_rollup = 3 [json_name = "minStakeForRollup"];</code>
+       * @return The minStakeForRollup.
+       */
+      @java.lang.Override
+      public long getMinStakeForRollup() {
+        return minStakeForRollup_;
+      }
+      /**
+       * <pre>
+       * min_stake_for_rollup is a uqor amount.
+       * </pre>
+       *
+       * <code>int64 min_stake_for_rollup = 3 [json_name = "minStakeForRollup"];</code>
+       * @param value The minStakeForRollup to set.
+       * @return This builder for chaining.
+       */
+      public Builder setMinStakeForRollup(long value) {
+
+        minStakeForRollup_ = value;
+        bitField0_ |= 0x00000004;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * min_stake_for_rollup is a uqor amount.
+       * </pre>
+       *
+       * <code>int64 min_stake_for_rollup = 3 [json_name = "minStakeForRollup"];</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearMinStakeForRollup() {
+        bitField0_ = (bitField0_ & ~0x00000004);
+        minStakeForRollup_ = 0L;
+        onChanged();
+        return this;
+      }
+
+      private java.lang.Object rollupCreationBurnRate_ = "";
+      /**
+       * <pre>
+       * rollup_creation_burn_rate is a decimal in [0, 1).
+       * </pre>
+       *
+       * <code>string rollup_creation_burn_rate = 4 [json_name = "rollupCreationBurnRate"];</code>
+       * @return The rollupCreationBurnRate.
+       */
+      public java.lang.String getRollupCreationBurnRate() {
+        java.lang.Object ref = rollupCreationBurnRate_;
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          rollupCreationBurnRate_ = s;
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
+      }
+      /**
+       * <pre>
+       * rollup_creation_burn_rate is a decimal in [0, 1).
+       * </pre>
+       *
+       * <code>string rollup_creation_burn_rate = 4 [json_name = "rollupCreationBurnRate"];</code>
+       * @return The bytes for rollupCreationBurnRate.
+       */
+      public com.google.protobuf.ByteString
+          getRollupCreationBurnRateBytes() {
+        java.lang.Object ref = rollupCreationBurnRate_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          rollupCreationBurnRate_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <pre>
+       * rollup_creation_burn_rate is a decimal in [0, 1).
+       * </pre>
+       *
+       * <code>string rollup_creation_burn_rate = 4 [json_name = "rollupCreationBurnRate"];</code>
+       * @param value The rollupCreationBurnRate to set.
+       * @return This builder for chaining.
+       */
+      public Builder setRollupCreationBurnRate(
+          java.lang.String value) {
+        if (value == null) { throw new NullPointerException(); }
+        rollupCreationBurnRate_ = value;
+        bitField0_ |= 0x00000008;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * rollup_creation_burn_rate is a decimal in [0, 1).
+       * </pre>
+       *
+       * <code>string rollup_creation_burn_rate = 4 [json_name = "rollupCreationBurnRate"];</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearRollupCreationBurnRate() {
+        rollupCreationBurnRate_ = getDefaultInstance().getRollupCreationBurnRate();
+        bitField0_ = (bitField0_ & ~0x00000008);
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * rollup_creation_burn_rate is a decimal in [0, 1).
+       * </pre>
+       *
+       * <code>string rollup_creation_burn_rate = 4 [json_name = "rollupCreationBurnRate"];</code>
+       * @param value The bytes for rollupCreationBurnRate to set.
+       * @return This builder for chaining.
+       */
+      public Builder setRollupCreationBurnRateBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) { throw new NullPointerException(); }
+        checkByteStringIsUtf8(value);
+        rollupCreationBurnRate_ = value;
+        bitField0_ |= 0x00000008;
+        onChanged();
+        return this;
+      }
+
+      private long defaultChallengeWindow_ ;
+      /**
+       * <pre>
+       * default_challenge_window is in seconds. From rdk-rollup-params a new
+       * optimistic rollup takes its challenge window from it.
+       * </pre>
+       *
+       * <code>uint64 default_challenge_window = 5 [json_name = "defaultChallengeWindow"];</code>
+       * @return The defaultChallengeWindow.
+       */
+      @java.lang.Override
+      public long getDefaultChallengeWindow() {
+        return defaultChallengeWindow_;
+      }
+      /**
+       * <pre>
+       * default_challenge_window is in seconds. From rdk-rollup-params a new
+       * optimistic rollup takes its challenge window from it.
+       * </pre>
+       *
+       * <code>uint64 default_challenge_window = 5 [json_name = "defaultChallengeWindow"];</code>
+       * @param value The defaultChallengeWindow to set.
+       * @return This builder for chaining.
+       */
+      public Builder setDefaultChallengeWindow(long value) {
+
+        defaultChallengeWindow_ = value;
+        bitField0_ |= 0x00000010;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * default_challenge_window is in seconds. From rdk-rollup-params a new
+       * optimistic rollup takes its challenge window from it.
+       * </pre>
+       *
+       * <code>uint64 default_challenge_window = 5 [json_name = "defaultChallengeWindow"];</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearDefaultChallengeWindow() {
+        bitField0_ = (bitField0_ & ~0x00000010);
+        defaultChallengeWindow_ = 0L;
+        onChanged();
+        return this;
+      }
+
+      private long maxDaBlobSize_ ;
+      /**
+       * <code>uint64 max_da_blob_size = 6 [json_name = "maxDaBlobSize"];</code>
+       * @return The maxDaBlobSize.
+       */
+      @java.lang.Override
+      public long getMaxDaBlobSize() {
+        return maxDaBlobSize_;
+      }
+      /**
+       * <code>uint64 max_da_blob_size = 6 [json_name = "maxDaBlobSize"];</code>
+       * @param value The maxDaBlobSize to set.
+       * @return This builder for chaining.
+       */
+      public Builder setMaxDaBlobSize(long value) {
+
+        maxDaBlobSize_ = value;
+        bitField0_ |= 0x00000020;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>uint64 max_da_blob_size = 6 [json_name = "maxDaBlobSize"];</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearMaxDaBlobSize() {
+        bitField0_ = (bitField0_ & ~0x00000020);
+        maxDaBlobSize_ = 0L;
+        onChanged();
+        return this;
+      }
+
+      private long blobRetentionBlocks_ ;
+      /**
+       * <code>uint64 blob_retention_blocks = 7 [json_name = "blobRetentionBlocks"];</code>
+       * @return The blobRetentionBlocks.
+       */
+      @java.lang.Override
+      public long getBlobRetentionBlocks() {
+        return blobRetentionBlocks_;
+      }
+      /**
+       * <code>uint64 blob_retention_blocks = 7 [json_name = "blobRetentionBlocks"];</code>
+       * @param value The blobRetentionBlocks to set.
+       * @return This builder for chaining.
+       */
+      public Builder setBlobRetentionBlocks(long value) {
+
+        blobRetentionBlocks_ = value;
+        bitField0_ |= 0x00000040;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>uint64 blob_retention_blocks = 7 [json_name = "blobRetentionBlocks"];</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearBlobRetentionBlocks() {
+        bitField0_ = (bitField0_ & ~0x00000040);
+        blobRetentionBlocks_ = 0L;
+        onChanged();
+        return this;
+      }
+
+      private int maxBatchesPerBlock_ ;
+      /**
+       * <code>uint32 max_batches_per_block = 8 [json_name = "maxBatchesPerBlock"];</code>
+       * @return The maxBatchesPerBlock.
+       */
+      @java.lang.Override
+      public int getMaxBatchesPerBlock() {
+        return maxBatchesPerBlock_;
+      }
+      /**
+       * <code>uint32 max_batches_per_block = 8 [json_name = "maxBatchesPerBlock"];</code>
+       * @param value The maxBatchesPerBlock to set.
+       * @return This builder for chaining.
+       */
+      public Builder setMaxBatchesPerBlock(int value) {
+
+        maxBatchesPerBlock_ = value;
+        bitField0_ |= 0x00000080;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>uint32 max_batches_per_block = 8 [json_name = "maxBatchesPerBlock"];</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearMaxBatchesPerBlock() {
+        bitField0_ = (bitField0_ & ~0x00000080);
+        maxBatchesPerBlock_ = 0;
+        onChanged();
+        return this;
+      }
+
+      // @@protoc_insertion_point(builder_scope:qorechain.rdk.v1.MsgUpdateParams)
+    }
+
+    // @@protoc_insertion_point(class_scope:qorechain.rdk.v1.MsgUpdateParams)
+    private static final qorechain.rdk.v1.Tx.MsgUpdateParams DEFAULT_INSTANCE;
+    static {
+      DEFAULT_INSTANCE = new qorechain.rdk.v1.Tx.MsgUpdateParams();
+    }
+
+    public static qorechain.rdk.v1.Tx.MsgUpdateParams getDefaultInstance() {
+      return DEFAULT_INSTANCE;
+    }
+
+    private static final com.google.protobuf.Parser<MsgUpdateParams>
+        PARSER = new com.google.protobuf.AbstractParser<MsgUpdateParams>() {
+      @java.lang.Override
+      public MsgUpdateParams parsePartialFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        Builder builder = newBuilder();
+        try {
+          builder.mergeFrom(input, extensionRegistry);
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          throw e.setUnfinishedMessage(builder.buildPartial());
+        } catch (com.google.protobuf.UninitializedMessageException e) {
+          throw e.asInvalidProtocolBufferException().setUnfinishedMessage(builder.buildPartial());
+        } catch (java.io.IOException e) {
+          throw new com.google.protobuf.InvalidProtocolBufferException(e)
+              .setUnfinishedMessage(builder.buildPartial());
+        }
+        return builder.buildPartial();
+      }
+    };
+
+    public static com.google.protobuf.Parser<MsgUpdateParams> parser() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Parser<MsgUpdateParams> getParserForType() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public qorechain.rdk.v1.Tx.MsgUpdateParams getDefaultInstanceForType() {
+      return DEFAULT_INSTANCE;
+    }
+
+  }
+
+  public interface MsgUpdateParamsResponseOrBuilder extends
+      // @@protoc_insertion_point(interface_extends:qorechain.rdk.v1.MsgUpdateParamsResponse)
+      com.google.protobuf.MessageOrBuilder {
+  }
+  /**
+   * Protobuf type {@code qorechain.rdk.v1.MsgUpdateParamsResponse}
+   */
+  public static final class MsgUpdateParamsResponse extends
+      com.google.protobuf.GeneratedMessage implements
+      // @@protoc_insertion_point(message_implements:qorechain.rdk.v1.MsgUpdateParamsResponse)
+      MsgUpdateParamsResponseOrBuilder {
+  private static final long serialVersionUID = 0L;
+    static {
+      com.google.protobuf.RuntimeVersion.validateProtobufGencodeVersion(
+        com.google.protobuf.RuntimeVersion.RuntimeDomain.PUBLIC,
+        /* major= */ 4,
+        /* minor= */ 35,
+        /* patch= */ 1,
+        /* suffix= */ "",
+        "MsgUpdateParamsResponse");
+    }
+    // Use MsgUpdateParamsResponse.newBuilder() to construct.
+    private MsgUpdateParamsResponse(com.google.protobuf.GeneratedMessage.Builder<?> builder) {
+      super(builder);
+    }
+    private MsgUpdateParamsResponse() {
+    }
+
+    public static final com.google.protobuf.Descriptors.Descriptor
+        getDescriptor() {
+      return qorechain.rdk.v1.Tx.internal_static_qorechain_rdk_v1_MsgUpdateParamsResponse_descriptor;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Descriptors.Descriptor getDescriptorForType() {
+      return qorechain.rdk.v1.Tx.internal_static_qorechain_rdk_v1_MsgUpdateParamsResponse_descriptor;
+    }
+
+    @java.lang.Override
+    protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+        internalGetFieldAccessorTable() {
+      return qorechain.rdk.v1.Tx.internal_static_qorechain_rdk_v1_MsgUpdateParamsResponse_fieldAccessorTable
+          .ensureFieldAccessorsInitialized(
+              qorechain.rdk.v1.Tx.MsgUpdateParamsResponse.class, qorechain.rdk.v1.Tx.MsgUpdateParamsResponse.Builder.class);
+    }
+
+    private byte memoizedIsInitialized = -1;
+    @java.lang.Override
+    public final boolean isInitialized() {
+      byte isInitialized = memoizedIsInitialized;
+      if (isInitialized == 1) return true;
+      if (isInitialized == 0) return false;
+
+      memoizedIsInitialized = 1;
+      return true;
+    }
+
+    @java.lang.Override
+    public void writeTo(com.google.protobuf.CodedOutputStream output)
+                        throws java.io.IOException {
+      getUnknownFields().writeTo(output);
+    }
+    @java.lang.Override
+    public int getSerializedSize() {
+      int size = memoizedSize;
+      if (size != -1) return size;
+
+      size = 0;
+      size += getUnknownFields().getSerializedSize();
+      memoizedSize = size;
+      return size;
+    }
+
+    @java.lang.Override
+    public boolean equals(final java.lang.Object obj) {
+      if (obj == this) {
+       return true;
+      }
+      if (!(obj instanceof qorechain.rdk.v1.Tx.MsgUpdateParamsResponse)) {
+        return super.equals(obj);
+      }
+      qorechain.rdk.v1.Tx.MsgUpdateParamsResponse other = (qorechain.rdk.v1.Tx.MsgUpdateParamsResponse) obj;
+
+      if (!getUnknownFields().equals(other.getUnknownFields())) return false;
+      return true;
+    }
+
+    @java.lang.Override
+    public int hashCode() {
+      if (memoizedHashCode != 0) {
+        return memoizedHashCode;
+      }
+      int hash = 41;
+      hash = (19 * hash) + getDescriptor().hashCode();
+      hash = (29 * hash) + getUnknownFields().hashCode();
+      memoizedHashCode = hash;
+      return hash;
+    }
+
+    public static qorechain.rdk.v1.Tx.MsgUpdateParamsResponse parseFrom(
+        java.nio.ByteBuffer data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static qorechain.rdk.v1.Tx.MsgUpdateParamsResponse parseFrom(
+        java.nio.ByteBuffer data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static qorechain.rdk.v1.Tx.MsgUpdateParamsResponse parseFrom(
+        com.google.protobuf.ByteString data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static qorechain.rdk.v1.Tx.MsgUpdateParamsResponse parseFrom(
+        com.google.protobuf.ByteString data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static qorechain.rdk.v1.Tx.MsgUpdateParamsResponse parseFrom(byte[] data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static qorechain.rdk.v1.Tx.MsgUpdateParamsResponse parseFrom(
+        byte[] data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static qorechain.rdk.v1.Tx.MsgUpdateParamsResponse parseFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input);
+    }
+    public static qorechain.rdk.v1.Tx.MsgUpdateParamsResponse parseFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    public static qorechain.rdk.v1.Tx.MsgUpdateParamsResponse parseDelimitedFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseDelimitedWithIOException(PARSER, input);
+    }
+
+    public static qorechain.rdk.v1.Tx.MsgUpdateParamsResponse parseDelimitedFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static qorechain.rdk.v1.Tx.MsgUpdateParamsResponse parseFrom(
+        com.google.protobuf.CodedInputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input);
+    }
+    public static qorechain.rdk.v1.Tx.MsgUpdateParamsResponse parseFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    @java.lang.Override
+    public Builder newBuilderForType() { return newBuilder(); }
+    public static Builder newBuilder() {
+      return DEFAULT_INSTANCE.toBuilder();
+    }
+    public static Builder newBuilder(qorechain.rdk.v1.Tx.MsgUpdateParamsResponse prototype) {
+      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+    }
+    @java.lang.Override
+    public Builder toBuilder() {
+      return this == DEFAULT_INSTANCE
+          ? new Builder() : new Builder().mergeFrom(this);
+    }
+
+    @java.lang.Override
+    protected Builder newBuilderForType(
+        com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+      Builder builder = new Builder(parent);
+      return builder;
+    }
+    /**
+     * Protobuf type {@code qorechain.rdk.v1.MsgUpdateParamsResponse}
+     */
+    public static final class Builder extends
+        com.google.protobuf.GeneratedMessage.Builder<Builder> implements
+        // @@protoc_insertion_point(builder_implements:qorechain.rdk.v1.MsgUpdateParamsResponse)
+        qorechain.rdk.v1.Tx.MsgUpdateParamsResponseOrBuilder {
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return qorechain.rdk.v1.Tx.internal_static_qorechain_rdk_v1_MsgUpdateParamsResponse_descriptor;
+      }
+
+      @java.lang.Override
+      protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return qorechain.rdk.v1.Tx.internal_static_qorechain_rdk_v1_MsgUpdateParamsResponse_fieldAccessorTable
+            .ensureFieldAccessorsInitialized(
+                qorechain.rdk.v1.Tx.MsgUpdateParamsResponse.class, qorechain.rdk.v1.Tx.MsgUpdateParamsResponse.Builder.class);
+      }
+
+      // Construct using qorechain.rdk.v1.Tx.MsgUpdateParamsResponse.newBuilder()
+      private Builder() {
+
+      }
+
+      private Builder(
+          com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+        super(parent);
+
+      }
+      @java.lang.Override
+      public Builder clear() {
+        super.clear();
+        return this;
+      }
+
+      @java.lang.Override
+      public com.google.protobuf.Descriptors.Descriptor
+          getDescriptorForType() {
+        return qorechain.rdk.v1.Tx.internal_static_qorechain_rdk_v1_MsgUpdateParamsResponse_descriptor;
+      }
+
+      @java.lang.Override
+      public qorechain.rdk.v1.Tx.MsgUpdateParamsResponse getDefaultInstanceForType() {
+        return qorechain.rdk.v1.Tx.MsgUpdateParamsResponse.getDefaultInstance();
+      }
+
+      @java.lang.Override
+      public qorechain.rdk.v1.Tx.MsgUpdateParamsResponse build() {
+        qorechain.rdk.v1.Tx.MsgUpdateParamsResponse result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(result);
+        }
+        return result;
+      }
+
+      @java.lang.Override
+      public qorechain.rdk.v1.Tx.MsgUpdateParamsResponse buildPartial() {
+        qorechain.rdk.v1.Tx.MsgUpdateParamsResponse result = new qorechain.rdk.v1.Tx.MsgUpdateParamsResponse(this);
+        onBuilt();
+        return result;
+      }
+
+      @java.lang.Override
+      public Builder mergeFrom(com.google.protobuf.Message other) {
+        if (other instanceof qorechain.rdk.v1.Tx.MsgUpdateParamsResponse) {
+          return mergeFrom((qorechain.rdk.v1.Tx.MsgUpdateParamsResponse)other);
+        } else {
+          super.mergeFrom(other);
+          return this;
+        }
+      }
+
+      public Builder mergeFrom(qorechain.rdk.v1.Tx.MsgUpdateParamsResponse other) {
+        if (other == qorechain.rdk.v1.Tx.MsgUpdateParamsResponse.getDefaultInstance()) return this;
+        this.mergeUnknownFields(other.getUnknownFields());
+        onChanged();
+        return this;
+      }
+
+      @java.lang.Override
+      public final boolean isInitialized() {
+        return true;
+      }
+
+      @java.lang.Override
+      public Builder mergeFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        if (extensionRegistry == null) {
+          throw new java.lang.NullPointerException();
+        }
+        try {
+          boolean done = false;
+          while (!done) {
+            int tag = input.readTag();
+            switch (tag) {
+              case 0:
+                done = true;
+                break;
+              default: {
+                if (!super.parseUnknownField(input, extensionRegistry, tag)) {
+                  done = true; // was an endgroup tag
+                }
+                break;
+              } // default:
+            } // switch (tag)
+          } // while (!done)
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          throw e.unwrapIOException();
+        } finally {
+          onChanged();
+        } // finally
+        return this;
+      }
+
+      // @@protoc_insertion_point(builder_scope:qorechain.rdk.v1.MsgUpdateParamsResponse)
+    }
+
+    // @@protoc_insertion_point(class_scope:qorechain.rdk.v1.MsgUpdateParamsResponse)
+    private static final qorechain.rdk.v1.Tx.MsgUpdateParamsResponse DEFAULT_INSTANCE;
+    static {
+      DEFAULT_INSTANCE = new qorechain.rdk.v1.Tx.MsgUpdateParamsResponse();
+    }
+
+    public static qorechain.rdk.v1.Tx.MsgUpdateParamsResponse getDefaultInstance() {
+      return DEFAULT_INSTANCE;
+    }
+
+    private static final com.google.protobuf.Parser<MsgUpdateParamsResponse>
+        PARSER = new com.google.protobuf.AbstractParser<MsgUpdateParamsResponse>() {
+      @java.lang.Override
+      public MsgUpdateParamsResponse parsePartialFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        Builder builder = newBuilder();
+        try {
+          builder.mergeFrom(input, extensionRegistry);
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          throw e.setUnfinishedMessage(builder.buildPartial());
+        } catch (com.google.protobuf.UninitializedMessageException e) {
+          throw e.asInvalidProtocolBufferException().setUnfinishedMessage(builder.buildPartial());
+        } catch (java.io.IOException e) {
+          throw new com.google.protobuf.InvalidProtocolBufferException(e)
+              .setUnfinishedMessage(builder.buildPartial());
+        }
+        return builder.buildPartial();
+      }
+    };
+
+    public static com.google.protobuf.Parser<MsgUpdateParamsResponse> parser() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Parser<MsgUpdateParamsResponse> getParserForType() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public qorechain.rdk.v1.Tx.MsgUpdateParamsResponse getDefaultInstanceForType() {
+      return DEFAULT_INSTANCE;
+    }
+
+  }
+
   private static final com.google.protobuf.Descriptors.Descriptor
     internal_static_qorechain_rdk_v1_MsgCreateRollup_descriptor;
   private static final 
@@ -10814,6 +12388,16 @@ public final class Tx extends com.google.protobuf.GeneratedFile {
   private static final 
     com.google.protobuf.GeneratedMessage.FieldAccessorTable
       internal_static_qorechain_rdk_v1_MsgExecuteWithdrawalResponse_fieldAccessorTable;
+  private static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_qorechain_rdk_v1_MsgUpdateParams_descriptor;
+  private static final 
+    com.google.protobuf.GeneratedMessage.FieldAccessorTable
+      internal_static_qorechain_rdk_v1_MsgUpdateParams_fieldAccessorTable;
+  private static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_qorechain_rdk_v1_MsgUpdateParamsResponse_descriptor;
+  private static final 
+    com.google.protobuf.GeneratedMessage.FieldAccessorTable
+      internal_static_qorechain_rdk_v1_MsgUpdateParamsResponse_fieldAccessorTable;
 
   public static com.google.protobuf.Descriptors.FileDescriptor
       getDescriptor() {
@@ -10877,28 +12461,42 @@ public final class Tx extends com.google.protobuf.GeneratedFile {
       "B\030\322\264-\024cosmos.AddressStringR\trecipient\022\024\n" +
       "\005denom\030\006 \001(\tR\005denom\022\026\n\006amount\030\007 \001(\003R\006amo" +
       "unt\022\024\n\005proof\030\010 \003(\014R\005proof:\016\202\347\260*\tsubmitte" +
-      "r\"\036\n\034MsgExecuteWithdrawalResponse2\221\006\n\003Ms" +
-      "g\022\\\n\014CreateRollup\022!.qorechain.rdk.v1.Msg" +
-      "CreateRollup\032).qorechain.rdk.v1.MsgCreat" +
-      "eRollupResponse\022Y\n\013SubmitBatch\022 .qorecha" +
-      "in.rdk.v1.MsgSubmitBatch\032(.qorechain.rdk" +
-      ".v1.MsgSubmitBatchResponse\022b\n\016ChallengeB" +
-      "atch\022#.qorechain.rdk.v1.MsgChallengeBatc" +
-      "h\032+.qorechain.rdk.v1.MsgChallengeBatchRe" +
-      "sponse\022h\n\020ResolveChallenge\022%.qorechain.r" +
-      "dk.v1.MsgResolveChallenge\032-.qorechain.rd" +
-      "k.v1.MsgResolveChallengeResponse\022Y\n\013Paus" +
-      "eRollup\022 .qorechain.rdk.v1.MsgPauseRollu" +
-      "p\032(.qorechain.rdk.v1.MsgPauseRollupRespo" +
-      "nse\022\\\n\014ResumeRollup\022!.qorechain.rdk.v1.M" +
-      "sgResumeRollup\032).qorechain.rdk.v1.MsgRes" +
-      "umeRollupResponse\022V\n\nStopRollup\022\037.qorech" +
-      "ain.rdk.v1.MsgStopRollup\032\'.qorechain.rdk" +
-      ".v1.MsgStopRollupResponse\022k\n\021ExecuteWith" +
-      "drawal\022&.qorechain.rdk.v1.MsgExecuteWith" +
-      "drawal\032..qorechain.rdk.v1.MsgExecuteWith" +
-      "drawalResponse\032\005\200\347\260*\001B1Z/github.com/qore" +
-      "chain/qorechain-core/x/rdk/typesb\006proto3"
+      "r\"\036\n\034MsgExecuteWithdrawalResponse\"\260\003\n\017Ms" +
+      "gUpdateParams\0226\n\tauthority\030\001 \001(\tB\030\322\264-\024co" +
+      "smos.AddressStringR\tauthority\022\037\n\013max_rol" +
+      "lups\030\002 \001(\rR\nmaxRollups\022/\n\024min_stake_for_" +
+      "rollup\030\003 \001(\003R\021minStakeForRollup\0229\n\031rollu" +
+      "p_creation_burn_rate\030\004 \001(\tR\026rollupCreati" +
+      "onBurnRate\0228\n\030default_challenge_window\030\005" +
+      " \001(\004R\026defaultChallengeWindow\022\'\n\020max_da_b" +
+      "lob_size\030\006 \001(\004R\rmaxDaBlobSize\0222\n\025blob_re" +
+      "tention_blocks\030\007 \001(\004R\023blobRetentionBlock" +
+      "s\0221\n\025max_batches_per_block\030\010 \001(\rR\022maxBat" +
+      "chesPerBlock:\016\202\347\260*\tauthority\"\031\n\027MsgUpdat" +
+      "eParamsResponse2\357\006\n\003Msg\022\\\n\014CreateRollup\022" +
+      "!.qorechain.rdk.v1.MsgCreateRollup\032).qor" +
+      "echain.rdk.v1.MsgCreateRollupResponse\022Y\n" +
+      "\013SubmitBatch\022 .qorechain.rdk.v1.MsgSubmi" +
+      "tBatch\032(.qorechain.rdk.v1.MsgSubmitBatch" +
+      "Response\022b\n\016ChallengeBatch\022#.qorechain.r" +
+      "dk.v1.MsgChallengeBatch\032+.qorechain.rdk." +
+      "v1.MsgChallengeBatchResponse\022h\n\020ResolveC" +
+      "hallenge\022%.qorechain.rdk.v1.MsgResolveCh" +
+      "allenge\032-.qorechain.rdk.v1.MsgResolveCha" +
+      "llengeResponse\022Y\n\013PauseRollup\022 .qorechai" +
+      "n.rdk.v1.MsgPauseRollup\032(.qorechain.rdk." +
+      "v1.MsgPauseRollupResponse\022\\\n\014ResumeRollu" +
+      "p\022!.qorechain.rdk.v1.MsgResumeRollup\032).q" +
+      "orechain.rdk.v1.MsgResumeRollupResponse\022" +
+      "V\n\nStopRollup\022\037.qorechain.rdk.v1.MsgStop" +
+      "Rollup\032\'.qorechain.rdk.v1.MsgStopRollupR" +
+      "esponse\022k\n\021ExecuteWithdrawal\022&.qorechain" +
+      ".rdk.v1.MsgExecuteWithdrawal\032..qorechain" +
+      ".rdk.v1.MsgExecuteWithdrawalResponse\022\\\n\014" +
+      "UpdateParams\022!.qorechain.rdk.v1.MsgUpdat" +
+      "eParams\032).qorechain.rdk.v1.MsgUpdatePara" +
+      "msResponse\032\005\200\347\260*\001B1Z/github.com/qorechai" +
+      "n/qorechain-core/x/rdk/typesb\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
@@ -11002,6 +12600,18 @@ public final class Tx extends com.google.protobuf.GeneratedFile {
     internal_static_qorechain_rdk_v1_MsgExecuteWithdrawalResponse_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_qorechain_rdk_v1_MsgExecuteWithdrawalResponse_descriptor,
+        new java.lang.String[] { });
+    internal_static_qorechain_rdk_v1_MsgUpdateParams_descriptor =
+      getDescriptor().getMessageType(16);
+    internal_static_qorechain_rdk_v1_MsgUpdateParams_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessage.FieldAccessorTable(
+        internal_static_qorechain_rdk_v1_MsgUpdateParams_descriptor,
+        new java.lang.String[] { "Authority", "MaxRollups", "MinStakeForRollup", "RollupCreationBurnRate", "DefaultChallengeWindow", "MaxDaBlobSize", "BlobRetentionBlocks", "MaxBatchesPerBlock", });
+    internal_static_qorechain_rdk_v1_MsgUpdateParamsResponse_descriptor =
+      getDescriptor().getMessageType(17);
+    internal_static_qorechain_rdk_v1_MsgUpdateParamsResponse_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessage.FieldAccessorTable(
+        internal_static_qorechain_rdk_v1_MsgUpdateParamsResponse_descriptor,
         new java.lang.String[] { });
     descriptor.resolveAllFeaturesImmutable();
     cosmos.msg.v1.Msg.getDescriptor();

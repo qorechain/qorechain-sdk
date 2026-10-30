@@ -6,8 +6,55 @@
 
 /* eslint-disable */
 import { BinaryReader, BinaryWriter } from "@bufbuild/protobuf/wire";
+import { SpendingRule } from "./tx";
 
 export const protobufPackage = "qorechain.abstractaccount.v1";
+
+export interface QuerySpendingRulesRequest {
+  /** address is the account's bech32 address. */
+  address: string;
+}
+
+export interface QuerySpendingRulesResponse {
+  /**
+   * rules are the account-wide rules in stored order; the first enabled one
+   * bounds every linked key without a rule of its own.
+   */
+  rules: SpendingRule[];
+  /** authenticator_rules are the per-key rules. */
+  authenticatorRules: AuthenticatorRule[];
+}
+
+/** AuthenticatorRule is the rule a linked key carries itself. */
+export interface AuthenticatorRule {
+  scheme: string;
+  /** pubkey_hex is the key, hex encoded. */
+  pubkeyHex: string;
+  rule?: SpendingRule | undefined;
+}
+
+export interface QueryAuthenticatorsRequest {
+  /** address is the account's bech32 address. */
+  address: string;
+}
+
+export interface QueryAuthenticatorsResponse {
+  authenticators: AuthenticatorView[];
+}
+
+export interface AuthenticatorView {
+  scheme: string;
+  /** pubkey_hex is the key, hex encoded. */
+  pubkeyHex: string;
+  permissions: string[];
+  /** expiry_unix and created_at_unix are unix seconds. */
+  expiryUnix: string;
+  label: string;
+  createdAtUnix: string;
+  revoked: boolean;
+  /** has_spend_rule reports a rule of the key's own (see SpendingRules). */
+  hasSpendRule: boolean;
+}
 
 export interface QueryAuthNonceRequest {
   /** address is the account's bech32 address. */
@@ -41,6 +88,11 @@ export interface AccountView {
   sessionKeysCount: number;
   createdAt: string;
   owner: string;
+  /**
+   * authenticators_count is the number of linked keys that are not revoked.
+   * session_keys_count counts the legacy session keys only.
+   */
+  authenticatorsCount: number;
 }
 
 export interface QueryConfigRequest {
@@ -99,6 +151,561 @@ export interface LaneRule {
   condition: string;
   permission: string;
 }
+
+function createBaseQuerySpendingRulesRequest(): QuerySpendingRulesRequest {
+  return { address: "" };
+}
+
+export const QuerySpendingRulesRequest: MessageFns<QuerySpendingRulesRequest> = {
+  encode(message: QuerySpendingRulesRequest, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.address !== "") {
+      writer.uint32(10).string(message.address);
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): QuerySpendingRulesRequest {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseQuerySpendingRulesRequest();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.address = reader.string();
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(object: any): QuerySpendingRulesRequest {
+    return { address: isSet(object.address) ? globalThis.String(object.address) : "" };
+  },
+
+  toJSON(message: QuerySpendingRulesRequest): unknown {
+    const obj: any = {};
+    if (message.address !== "") {
+      obj.address = message.address;
+    }
+    return obj;
+  },
+
+  create(base?: DeepPartial<QuerySpendingRulesRequest>): QuerySpendingRulesRequest {
+    return QuerySpendingRulesRequest.fromPartial(base ?? {});
+  },
+  fromPartial(object: DeepPartial<QuerySpendingRulesRequest>): QuerySpendingRulesRequest {
+    const message = createBaseQuerySpendingRulesRequest();
+    message.address = object.address ?? "";
+    return message;
+  },
+};
+
+function createBaseQuerySpendingRulesResponse(): QuerySpendingRulesResponse {
+  return { rules: [], authenticatorRules: [] };
+}
+
+export const QuerySpendingRulesResponse: MessageFns<QuerySpendingRulesResponse> = {
+  encode(message: QuerySpendingRulesResponse, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    for (const v of message.rules) {
+      SpendingRule.encode(v!, writer.uint32(10).fork()).join();
+    }
+    for (const v of message.authenticatorRules) {
+      AuthenticatorRule.encode(v!, writer.uint32(18).fork()).join();
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): QuerySpendingRulesResponse {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseQuerySpendingRulesResponse();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.rules.push(SpendingRule.decode(reader, reader.uint32()));
+          continue;
+        }
+        case 2: {
+          if (tag !== 18) {
+            break;
+          }
+
+          message.authenticatorRules.push(AuthenticatorRule.decode(reader, reader.uint32()));
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(object: any): QuerySpendingRulesResponse {
+    return {
+      rules: globalThis.Array.isArray(object?.rules) ? object.rules.map((e: any) => SpendingRule.fromJSON(e)) : [],
+      authenticatorRules: globalThis.Array.isArray(object?.authenticatorRules)
+        ? object.authenticatorRules.map((e: any) => AuthenticatorRule.fromJSON(e))
+        : globalThis.Array.isArray(object?.authenticator_rules)
+        ? object.authenticator_rules.map((e: any) => AuthenticatorRule.fromJSON(e))
+        : [],
+    };
+  },
+
+  toJSON(message: QuerySpendingRulesResponse): unknown {
+    const obj: any = {};
+    if (message.rules?.length) {
+      obj.rules = message.rules.map((e) => SpendingRule.toJSON(e));
+    }
+    if (message.authenticatorRules?.length) {
+      obj.authenticatorRules = message.authenticatorRules.map((e) => AuthenticatorRule.toJSON(e));
+    }
+    return obj;
+  },
+
+  create(base?: DeepPartial<QuerySpendingRulesResponse>): QuerySpendingRulesResponse {
+    return QuerySpendingRulesResponse.fromPartial(base ?? {});
+  },
+  fromPartial(object: DeepPartial<QuerySpendingRulesResponse>): QuerySpendingRulesResponse {
+    const message = createBaseQuerySpendingRulesResponse();
+    message.rules = object.rules?.map((e) => SpendingRule.fromPartial(e)) || [];
+    message.authenticatorRules = object.authenticatorRules?.map((e) => AuthenticatorRule.fromPartial(e)) || [];
+    return message;
+  },
+};
+
+function createBaseAuthenticatorRule(): AuthenticatorRule {
+  return { scheme: "", pubkeyHex: "", rule: undefined };
+}
+
+export const AuthenticatorRule: MessageFns<AuthenticatorRule> = {
+  encode(message: AuthenticatorRule, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.scheme !== "") {
+      writer.uint32(10).string(message.scheme);
+    }
+    if (message.pubkeyHex !== "") {
+      writer.uint32(18).string(message.pubkeyHex);
+    }
+    if (message.rule !== undefined) {
+      SpendingRule.encode(message.rule, writer.uint32(26).fork()).join();
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): AuthenticatorRule {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseAuthenticatorRule();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.scheme = reader.string();
+          continue;
+        }
+        case 2: {
+          if (tag !== 18) {
+            break;
+          }
+
+          message.pubkeyHex = reader.string();
+          continue;
+        }
+        case 3: {
+          if (tag !== 26) {
+            break;
+          }
+
+          message.rule = SpendingRule.decode(reader, reader.uint32());
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(object: any): AuthenticatorRule {
+    return {
+      scheme: isSet(object.scheme) ? globalThis.String(object.scheme) : "",
+      pubkeyHex: isSet(object.pubkeyHex)
+        ? globalThis.String(object.pubkeyHex)
+        : isSet(object.pubkey_hex)
+        ? globalThis.String(object.pubkey_hex)
+        : "",
+      rule: isSet(object.rule) ? SpendingRule.fromJSON(object.rule) : undefined,
+    };
+  },
+
+  toJSON(message: AuthenticatorRule): unknown {
+    const obj: any = {};
+    if (message.scheme !== "") {
+      obj.scheme = message.scheme;
+    }
+    if (message.pubkeyHex !== "") {
+      obj.pubkeyHex = message.pubkeyHex;
+    }
+    if (message.rule !== undefined) {
+      obj.rule = SpendingRule.toJSON(message.rule);
+    }
+    return obj;
+  },
+
+  create(base?: DeepPartial<AuthenticatorRule>): AuthenticatorRule {
+    return AuthenticatorRule.fromPartial(base ?? {});
+  },
+  fromPartial(object: DeepPartial<AuthenticatorRule>): AuthenticatorRule {
+    const message = createBaseAuthenticatorRule();
+    message.scheme = object.scheme ?? "";
+    message.pubkeyHex = object.pubkeyHex ?? "";
+    message.rule = (object.rule !== undefined && object.rule !== null)
+      ? SpendingRule.fromPartial(object.rule)
+      : undefined;
+    return message;
+  },
+};
+
+function createBaseQueryAuthenticatorsRequest(): QueryAuthenticatorsRequest {
+  return { address: "" };
+}
+
+export const QueryAuthenticatorsRequest: MessageFns<QueryAuthenticatorsRequest> = {
+  encode(message: QueryAuthenticatorsRequest, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.address !== "") {
+      writer.uint32(10).string(message.address);
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): QueryAuthenticatorsRequest {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseQueryAuthenticatorsRequest();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.address = reader.string();
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(object: any): QueryAuthenticatorsRequest {
+    return { address: isSet(object.address) ? globalThis.String(object.address) : "" };
+  },
+
+  toJSON(message: QueryAuthenticatorsRequest): unknown {
+    const obj: any = {};
+    if (message.address !== "") {
+      obj.address = message.address;
+    }
+    return obj;
+  },
+
+  create(base?: DeepPartial<QueryAuthenticatorsRequest>): QueryAuthenticatorsRequest {
+    return QueryAuthenticatorsRequest.fromPartial(base ?? {});
+  },
+  fromPartial(object: DeepPartial<QueryAuthenticatorsRequest>): QueryAuthenticatorsRequest {
+    const message = createBaseQueryAuthenticatorsRequest();
+    message.address = object.address ?? "";
+    return message;
+  },
+};
+
+function createBaseQueryAuthenticatorsResponse(): QueryAuthenticatorsResponse {
+  return { authenticators: [] };
+}
+
+export const QueryAuthenticatorsResponse: MessageFns<QueryAuthenticatorsResponse> = {
+  encode(message: QueryAuthenticatorsResponse, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    for (const v of message.authenticators) {
+      AuthenticatorView.encode(v!, writer.uint32(10).fork()).join();
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): QueryAuthenticatorsResponse {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseQueryAuthenticatorsResponse();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.authenticators.push(AuthenticatorView.decode(reader, reader.uint32()));
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(object: any): QueryAuthenticatorsResponse {
+    return {
+      authenticators: globalThis.Array.isArray(object?.authenticators)
+        ? object.authenticators.map((e: any) => AuthenticatorView.fromJSON(e))
+        : [],
+    };
+  },
+
+  toJSON(message: QueryAuthenticatorsResponse): unknown {
+    const obj: any = {};
+    if (message.authenticators?.length) {
+      obj.authenticators = message.authenticators.map((e) => AuthenticatorView.toJSON(e));
+    }
+    return obj;
+  },
+
+  create(base?: DeepPartial<QueryAuthenticatorsResponse>): QueryAuthenticatorsResponse {
+    return QueryAuthenticatorsResponse.fromPartial(base ?? {});
+  },
+  fromPartial(object: DeepPartial<QueryAuthenticatorsResponse>): QueryAuthenticatorsResponse {
+    const message = createBaseQueryAuthenticatorsResponse();
+    message.authenticators = object.authenticators?.map((e) => AuthenticatorView.fromPartial(e)) || [];
+    return message;
+  },
+};
+
+function createBaseAuthenticatorView(): AuthenticatorView {
+  return {
+    scheme: "",
+    pubkeyHex: "",
+    permissions: [],
+    expiryUnix: "0",
+    label: "",
+    createdAtUnix: "0",
+    revoked: false,
+    hasSpendRule: false,
+  };
+}
+
+export const AuthenticatorView: MessageFns<AuthenticatorView> = {
+  encode(message: AuthenticatorView, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.scheme !== "") {
+      writer.uint32(10).string(message.scheme);
+    }
+    if (message.pubkeyHex !== "") {
+      writer.uint32(18).string(message.pubkeyHex);
+    }
+    for (const v of message.permissions) {
+      writer.uint32(26).string(v!);
+    }
+    if (message.expiryUnix !== "0") {
+      writer.uint32(32).int64(message.expiryUnix);
+    }
+    if (message.label !== "") {
+      writer.uint32(42).string(message.label);
+    }
+    if (message.createdAtUnix !== "0") {
+      writer.uint32(48).int64(message.createdAtUnix);
+    }
+    if (message.revoked !== false) {
+      writer.uint32(56).bool(message.revoked);
+    }
+    if (message.hasSpendRule !== false) {
+      writer.uint32(64).bool(message.hasSpendRule);
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): AuthenticatorView {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseAuthenticatorView();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.scheme = reader.string();
+          continue;
+        }
+        case 2: {
+          if (tag !== 18) {
+            break;
+          }
+
+          message.pubkeyHex = reader.string();
+          continue;
+        }
+        case 3: {
+          if (tag !== 26) {
+            break;
+          }
+
+          message.permissions.push(reader.string());
+          continue;
+        }
+        case 4: {
+          if (tag !== 32) {
+            break;
+          }
+
+          message.expiryUnix = reader.int64().toString();
+          continue;
+        }
+        case 5: {
+          if (tag !== 42) {
+            break;
+          }
+
+          message.label = reader.string();
+          continue;
+        }
+        case 6: {
+          if (tag !== 48) {
+            break;
+          }
+
+          message.createdAtUnix = reader.int64().toString();
+          continue;
+        }
+        case 7: {
+          if (tag !== 56) {
+            break;
+          }
+
+          message.revoked = reader.bool();
+          continue;
+        }
+        case 8: {
+          if (tag !== 64) {
+            break;
+          }
+
+          message.hasSpendRule = reader.bool();
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(object: any): AuthenticatorView {
+    return {
+      scheme: isSet(object.scheme) ? globalThis.String(object.scheme) : "",
+      pubkeyHex: isSet(object.pubkeyHex)
+        ? globalThis.String(object.pubkeyHex)
+        : isSet(object.pubkey_hex)
+        ? globalThis.String(object.pubkey_hex)
+        : "",
+      permissions: globalThis.Array.isArray(object?.permissions)
+        ? object.permissions.map((e: any) => globalThis.String(e))
+        : [],
+      expiryUnix: isSet(object.expiryUnix)
+        ? globalThis.String(object.expiryUnix)
+        : isSet(object.expiry_unix)
+        ? globalThis.String(object.expiry_unix)
+        : "0",
+      label: isSet(object.label) ? globalThis.String(object.label) : "",
+      createdAtUnix: isSet(object.createdAtUnix)
+        ? globalThis.String(object.createdAtUnix)
+        : isSet(object.created_at_unix)
+        ? globalThis.String(object.created_at_unix)
+        : "0",
+      revoked: isSet(object.revoked) ? globalThis.Boolean(object.revoked) : false,
+      hasSpendRule: isSet(object.hasSpendRule)
+        ? globalThis.Boolean(object.hasSpendRule)
+        : isSet(object.has_spend_rule)
+        ? globalThis.Boolean(object.has_spend_rule)
+        : false,
+    };
+  },
+
+  toJSON(message: AuthenticatorView): unknown {
+    const obj: any = {};
+    if (message.scheme !== "") {
+      obj.scheme = message.scheme;
+    }
+    if (message.pubkeyHex !== "") {
+      obj.pubkeyHex = message.pubkeyHex;
+    }
+    if (message.permissions?.length) {
+      obj.permissions = message.permissions;
+    }
+    if (message.expiryUnix !== "0") {
+      obj.expiryUnix = message.expiryUnix;
+    }
+    if (message.label !== "") {
+      obj.label = message.label;
+    }
+    if (message.createdAtUnix !== "0") {
+      obj.createdAtUnix = message.createdAtUnix;
+    }
+    if (message.revoked !== false) {
+      obj.revoked = message.revoked;
+    }
+    if (message.hasSpendRule !== false) {
+      obj.hasSpendRule = message.hasSpendRule;
+    }
+    return obj;
+  },
+
+  create(base?: DeepPartial<AuthenticatorView>): AuthenticatorView {
+    return AuthenticatorView.fromPartial(base ?? {});
+  },
+  fromPartial(object: DeepPartial<AuthenticatorView>): AuthenticatorView {
+    const message = createBaseAuthenticatorView();
+    message.scheme = object.scheme ?? "";
+    message.pubkeyHex = object.pubkeyHex ?? "";
+    message.permissions = object.permissions?.map((e) => e) || [];
+    message.expiryUnix = object.expiryUnix ?? "0";
+    message.label = object.label ?? "";
+    message.createdAtUnix = object.createdAtUnix ?? "0";
+    message.revoked = object.revoked ?? false;
+    message.hasSpendRule = object.hasSpendRule ?? false;
+    return message;
+  },
+};
 
 function createBaseQueryAuthNonceRequest(): QueryAuthNonceRequest {
   return { address: "", pubkeyHex: "" };
@@ -385,6 +992,7 @@ function createBaseAccountView(): AccountView {
     sessionKeysCount: 0,
     createdAt: "0",
     owner: "",
+    authenticatorsCount: 0,
   };
 }
 
@@ -410,6 +1018,9 @@ export const AccountView: MessageFns<AccountView> = {
     }
     if (message.owner !== "") {
       writer.uint32(58).string(message.owner);
+    }
+    if (message.authenticatorsCount !== 0) {
+      writer.uint32(64).uint32(message.authenticatorsCount);
     }
     return writer;
   },
@@ -477,6 +1088,14 @@ export const AccountView: MessageFns<AccountView> = {
           message.owner = reader.string();
           continue;
         }
+        case 8: {
+          if (tag !== 64) {
+            break;
+          }
+
+          message.authenticatorsCount = reader.uint32();
+          continue;
+        }
       }
       if ((tag & 7) === 4 || tag === 0) {
         break;
@@ -515,6 +1134,11 @@ export const AccountView: MessageFns<AccountView> = {
         ? globalThis.String(object.created_at)
         : "0",
       owner: isSet(object.owner) ? globalThis.String(object.owner) : "",
+      authenticatorsCount: isSet(object.authenticatorsCount)
+        ? globalThis.Number(object.authenticatorsCount)
+        : isSet(object.authenticators_count)
+        ? globalThis.Number(object.authenticators_count)
+        : 0,
     };
   },
 
@@ -541,6 +1165,9 @@ export const AccountView: MessageFns<AccountView> = {
     if (message.owner !== "") {
       obj.owner = message.owner;
     }
+    if (message.authenticatorsCount !== 0) {
+      obj.authenticatorsCount = Math.round(message.authenticatorsCount);
+    }
     return obj;
   },
 
@@ -556,6 +1183,7 @@ export const AccountView: MessageFns<AccountView> = {
     message.sessionKeysCount = object.sessionKeysCount ?? 0;
     message.createdAt = object.createdAt ?? "0";
     message.owner = object.owner ?? "";
+    message.authenticatorsCount = object.authenticatorsCount ?? 0;
     return message;
   },
 };
@@ -1288,7 +1916,11 @@ export const QueryDefinition = {
   name: "Query",
   fullName: "qorechain.abstractaccount.v1.Query",
   methods: {
-    /** Config returns the module config. */
+    /**
+     * Config returns the module config.
+     * "/params" is served too: the module has no params, and the API reference
+     * listed that path for it.
+     */
     config: {
       name: "Config",
       requestType: QueryConfigRequest as typeof QueryConfigRequest,
@@ -1299,7 +1931,47 @@ export const QueryDefinition = {
         _unknownFields: {
           578365826: [
             new Uint8Array([
+              78,
+              90,
               38,
+              18,
+              36,
+              47,
+              113,
+              111,
+              114,
+              101,
+              99,
+              104,
+              97,
+              105,
+              110,
+              47,
+              97,
+              98,
+              115,
+              116,
+              114,
+              97,
+              99,
+              116,
+              97,
+              99,
+              99,
+              111,
+              117,
+              110,
+              116,
+              47,
+              118,
+              49,
+              47,
+              112,
+              97,
+              114,
+              97,
+              109,
+              115,
               18,
               36,
               47,
@@ -1343,7 +2015,10 @@ export const QueryDefinition = {
         },
       },
     },
-    /** Account returns a single abstract account by address. */
+    /**
+     * Account returns a single abstract account by address. The singular
+     * "/account/{address}" path, which the API reference listed, is an alias.
+     */
     account: {
       name: "Account",
       requestType: QueryAccountRequest as typeof QueryAccountRequest,
@@ -1354,7 +2029,58 @@ export const QueryDefinition = {
         _unknownFields: {
           578365826: [
             new Uint8Array([
-              50,
+              101,
+              90,
+              49,
+              18,
+              47,
+              47,
+              113,
+              111,
+              114,
+              101,
+              99,
+              104,
+              97,
+              105,
+              110,
+              47,
+              97,
+              98,
+              115,
+              116,
+              114,
+              97,
+              99,
+              116,
+              97,
+              99,
+              99,
+              111,
+              117,
+              110,
+              116,
+              47,
+              118,
+              49,
+              47,
+              97,
+              99,
+              99,
+              111,
+              117,
+              110,
+              116,
+              47,
+              123,
+              97,
+              100,
+              100,
+              114,
+              101,
+              115,
+              115,
+              125,
               18,
               48,
               47,
@@ -1618,6 +2344,178 @@ export const QueryDefinition = {
               101,
               120,
               125,
+            ]) as Uint8Array,
+          ],
+        },
+      },
+    },
+    /**
+     * SpendingRules returns the spending rules stored for an account: the
+     * account-wide rules and the rule of every linked key that carries its own.
+     * The account view only counts them, so an owner could not read back what
+     * MsgUpdateSpendingRules saved.
+     */
+    spendingRules: {
+      name: "SpendingRules",
+      requestType: QuerySpendingRulesRequest as typeof QuerySpendingRulesRequest,
+      requestStream: false,
+      responseType: QuerySpendingRulesResponse as typeof QuerySpendingRulesResponse,
+      responseStream: false,
+      options: {
+        _unknownFields: {
+          578365826: [
+            new Uint8Array([
+              65,
+              18,
+              63,
+              47,
+              113,
+              111,
+              114,
+              101,
+              99,
+              104,
+              97,
+              105,
+              110,
+              47,
+              97,
+              98,
+              115,
+              116,
+              114,
+              97,
+              99,
+              116,
+              97,
+              99,
+              99,
+              111,
+              117,
+              110,
+              116,
+              47,
+              118,
+              49,
+              47,
+              97,
+              99,
+              99,
+              111,
+              117,
+              110,
+              116,
+              115,
+              47,
+              123,
+              97,
+              100,
+              100,
+              114,
+              101,
+              115,
+              115,
+              125,
+              47,
+              115,
+              112,
+              101,
+              110,
+              100,
+              105,
+              110,
+              103,
+              95,
+              114,
+              117,
+              108,
+              101,
+              115,
+            ]) as Uint8Array,
+          ],
+        },
+      },
+    },
+    /**
+     * Authenticators returns the keys linked to an account, revoked ones
+     * included, with their permissions and expiry.
+     */
+    authenticators: {
+      name: "Authenticators",
+      requestType: QueryAuthenticatorsRequest as typeof QueryAuthenticatorsRequest,
+      requestStream: false,
+      responseType: QueryAuthenticatorsResponse as typeof QueryAuthenticatorsResponse,
+      responseStream: false,
+      options: {
+        _unknownFields: {
+          578365826: [
+            new Uint8Array([
+              65,
+              18,
+              63,
+              47,
+              113,
+              111,
+              114,
+              101,
+              99,
+              104,
+              97,
+              105,
+              110,
+              47,
+              97,
+              98,
+              115,
+              116,
+              114,
+              97,
+              99,
+              116,
+              97,
+              99,
+              99,
+              111,
+              117,
+              110,
+              116,
+              47,
+              118,
+              49,
+              47,
+              97,
+              99,
+              99,
+              111,
+              117,
+              110,
+              116,
+              115,
+              47,
+              123,
+              97,
+              100,
+              100,
+              114,
+              101,
+              115,
+              115,
+              125,
+              47,
+              97,
+              117,
+              116,
+              104,
+              101,
+              110,
+              116,
+              105,
+              99,
+              97,
+              116,
+              111,
+              114,
+              115,
             ]) as Uint8Array,
           ],
         },

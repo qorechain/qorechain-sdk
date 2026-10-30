@@ -176,6 +176,38 @@ export interface MsgClearEVMDelegation {
 export interface MsgClearEVMDelegationResponse {
 }
 
+/**
+ * MsgRegisterKEMKey publishes the sender's key-encapsulation public key. The
+ * sender must already hold a post-quantum signature key; the message is
+ * authenticated by its hybrid signature, like the other key maintenance.
+ */
+export interface MsgRegisterKEMKey {
+  sender: string;
+  /**
+   * algorithm_id names a key-encapsulation algorithm of the on-chain
+   * registry (ML-KEM-1024 is 2).
+   */
+  algorithmId: number;
+  /**
+   * public_key is the encapsulation key exactly as FIPS 203 encodes it
+   * (1568 bytes for ML-KEM-1024).
+   */
+  publicKey: Uint8Array;
+}
+
+export interface MsgRegisterKEMKeyResponse {
+  /** replaced reports whether a previously published key was replaced. */
+  replaced: boolean;
+}
+
+/** MsgRemoveKEMKey withdraws the sender's published KEM key. */
+export interface MsgRemoveKEMKey {
+  sender: string;
+}
+
+export interface MsgRemoveKEMKeyResponse {
+}
+
 function createBaseMsgRegisterPQCKey(): MsgRegisterPQCKey {
   return { sender: "", dilithiumPubkey: new Uint8Array(0), ecdsaPubkey: new Uint8Array(0), keyType: "" };
 }
@@ -1828,6 +1860,265 @@ export const MsgClearEVMDelegationResponse: MessageFns<MsgClearEVMDelegationResp
   },
 };
 
+function createBaseMsgRegisterKEMKey(): MsgRegisterKEMKey {
+  return { sender: "", algorithmId: 0, publicKey: new Uint8Array(0) };
+}
+
+export const MsgRegisterKEMKey: MessageFns<MsgRegisterKEMKey> = {
+  encode(message: MsgRegisterKEMKey, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.sender !== "") {
+      writer.uint32(10).string(message.sender);
+    }
+    if (message.algorithmId !== 0) {
+      writer.uint32(16).uint32(message.algorithmId);
+    }
+    if (message.publicKey.length !== 0) {
+      writer.uint32(26).bytes(message.publicKey);
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): MsgRegisterKEMKey {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseMsgRegisterKEMKey();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.sender = reader.string();
+          continue;
+        }
+        case 2: {
+          if (tag !== 16) {
+            break;
+          }
+
+          message.algorithmId = reader.uint32();
+          continue;
+        }
+        case 3: {
+          if (tag !== 26) {
+            break;
+          }
+
+          message.publicKey = reader.bytes();
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(object: any): MsgRegisterKEMKey {
+    return {
+      sender: isSet(object.sender) ? globalThis.String(object.sender) : "",
+      algorithmId: isSet(object.algorithmId)
+        ? globalThis.Number(object.algorithmId)
+        : isSet(object.algorithm_id)
+        ? globalThis.Number(object.algorithm_id)
+        : 0,
+      publicKey: isSet(object.publicKey)
+        ? bytesFromBase64(object.publicKey)
+        : isSet(object.public_key)
+        ? bytesFromBase64(object.public_key)
+        : new Uint8Array(0),
+    };
+  },
+
+  toJSON(message: MsgRegisterKEMKey): unknown {
+    const obj: any = {};
+    if (message.sender !== "") {
+      obj.sender = message.sender;
+    }
+    if (message.algorithmId !== 0) {
+      obj.algorithmId = Math.round(message.algorithmId);
+    }
+    if (message.publicKey.length !== 0) {
+      obj.publicKey = base64FromBytes(message.publicKey);
+    }
+    return obj;
+  },
+
+  create(base?: DeepPartial<MsgRegisterKEMKey>): MsgRegisterKEMKey {
+    return MsgRegisterKEMKey.fromPartial(base ?? {});
+  },
+  fromPartial(object: DeepPartial<MsgRegisterKEMKey>): MsgRegisterKEMKey {
+    const message = createBaseMsgRegisterKEMKey();
+    message.sender = object.sender ?? "";
+    message.algorithmId = object.algorithmId ?? 0;
+    message.publicKey = object.publicKey ?? new Uint8Array(0);
+    return message;
+  },
+};
+
+function createBaseMsgRegisterKEMKeyResponse(): MsgRegisterKEMKeyResponse {
+  return { replaced: false };
+}
+
+export const MsgRegisterKEMKeyResponse: MessageFns<MsgRegisterKEMKeyResponse> = {
+  encode(message: MsgRegisterKEMKeyResponse, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.replaced !== false) {
+      writer.uint32(8).bool(message.replaced);
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): MsgRegisterKEMKeyResponse {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseMsgRegisterKEMKeyResponse();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 8) {
+            break;
+          }
+
+          message.replaced = reader.bool();
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(object: any): MsgRegisterKEMKeyResponse {
+    return { replaced: isSet(object.replaced) ? globalThis.Boolean(object.replaced) : false };
+  },
+
+  toJSON(message: MsgRegisterKEMKeyResponse): unknown {
+    const obj: any = {};
+    if (message.replaced !== false) {
+      obj.replaced = message.replaced;
+    }
+    return obj;
+  },
+
+  create(base?: DeepPartial<MsgRegisterKEMKeyResponse>): MsgRegisterKEMKeyResponse {
+    return MsgRegisterKEMKeyResponse.fromPartial(base ?? {});
+  },
+  fromPartial(object: DeepPartial<MsgRegisterKEMKeyResponse>): MsgRegisterKEMKeyResponse {
+    const message = createBaseMsgRegisterKEMKeyResponse();
+    message.replaced = object.replaced ?? false;
+    return message;
+  },
+};
+
+function createBaseMsgRemoveKEMKey(): MsgRemoveKEMKey {
+  return { sender: "" };
+}
+
+export const MsgRemoveKEMKey: MessageFns<MsgRemoveKEMKey> = {
+  encode(message: MsgRemoveKEMKey, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.sender !== "") {
+      writer.uint32(10).string(message.sender);
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): MsgRemoveKEMKey {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseMsgRemoveKEMKey();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.sender = reader.string();
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(object: any): MsgRemoveKEMKey {
+    return { sender: isSet(object.sender) ? globalThis.String(object.sender) : "" };
+  },
+
+  toJSON(message: MsgRemoveKEMKey): unknown {
+    const obj: any = {};
+    if (message.sender !== "") {
+      obj.sender = message.sender;
+    }
+    return obj;
+  },
+
+  create(base?: DeepPartial<MsgRemoveKEMKey>): MsgRemoveKEMKey {
+    return MsgRemoveKEMKey.fromPartial(base ?? {});
+  },
+  fromPartial(object: DeepPartial<MsgRemoveKEMKey>): MsgRemoveKEMKey {
+    const message = createBaseMsgRemoveKEMKey();
+    message.sender = object.sender ?? "";
+    return message;
+  },
+};
+
+function createBaseMsgRemoveKEMKeyResponse(): MsgRemoveKEMKeyResponse {
+  return {};
+}
+
+export const MsgRemoveKEMKeyResponse: MessageFns<MsgRemoveKEMKeyResponse> = {
+  encode(_: MsgRemoveKEMKeyResponse, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): MsgRemoveKEMKeyResponse {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseMsgRemoveKEMKeyResponse();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(_: any): MsgRemoveKEMKeyResponse {
+    return {};
+  },
+
+  toJSON(_: MsgRemoveKEMKeyResponse): unknown {
+    const obj: any = {};
+    return obj;
+  },
+
+  create(base?: DeepPartial<MsgRemoveKEMKeyResponse>): MsgRemoveKEMKeyResponse {
+    return MsgRemoveKEMKeyResponse.fromPartial(base ?? {});
+  },
+  fromPartial(_: DeepPartial<MsgRemoveKEMKeyResponse>): MsgRemoveKEMKeyResponse {
+    const message = createBaseMsgRemoveKEMKeyResponse();
+    return message;
+  },
+};
+
 /** Msg defines the PQC module's transaction service. */
 export type MsgDefinition = typeof MsgDefinition;
 export const MsgDefinition = {
@@ -1944,6 +2235,33 @@ export const MsgDefinition = {
       requestType: MsgClearEVMDelegation as typeof MsgClearEVMDelegation,
       requestStream: false,
       responseType: MsgClearEVMDelegationResponse as typeof MsgClearEVMDelegationResponse,
+      responseStream: false,
+      options: {},
+    },
+    /**
+     * RegisterKEMKey publishes the sender's ML-KEM (FIPS 203) encapsulation
+     * key, so anyone can encrypt to the account. It is not an authentication
+     * key: the account keeps signing with its signature key. Sending it again
+     * replaces the published key. Needs the account's hybrid signature
+     * (v3.2.5, pqc-kem-registry).
+     */
+    registerKEMKey: {
+      name: "RegisterKEMKey",
+      requestType: MsgRegisterKEMKey as typeof MsgRegisterKEMKey,
+      requestStream: false,
+      responseType: MsgRegisterKEMKeyResponse as typeof MsgRegisterKEMKeyResponse,
+      responseStream: false,
+      options: {},
+    },
+    /**
+     * RemoveKEMKey withdraws the sender's published KEM key (v3.2.5,
+     * pqc-kem-registry).
+     */
+    removeKEMKey: {
+      name: "RemoveKEMKey",
+      requestType: MsgRemoveKEMKey as typeof MsgRemoveKEMKey,
+      requestStream: false,
+      responseType: MsgRemoveKEMKeyResponse as typeof MsgRemoveKEMKeyResponse,
       responseStream: false,
       options: {},
     },

@@ -276,7 +276,10 @@ pub struct MsgResolveChallenge {
     pub batch_index: u64,
     /// fraud_upheld true: fraud confirmed -> batch rejected, challenger refunded +
     /// rewarded from rollup stake. false: challenge dismissed -> challenger bond
-    /// forfeited to the rollup operator, batch eligible for finalization.
+    /// forfeited to the rollup operator, batch eligible for finalization. The
+    /// chain verifies the stored fraud proof and refuses an assertion that does
+    /// not match. Before v3.2.5 only the rollup creator may resolve; from
+    /// rdk-challenge-settlement any account may.
     #[prost(bool, tag="4")]
     pub fraud_upheld: bool,
 }
@@ -342,5 +345,36 @@ pub struct MsgExecuteWithdrawal {
 }
 #[derive(Clone, Copy, PartialEq, ::prost::Message)]
 pub struct MsgExecuteWithdrawalResponse {
+}
+/// MsgUpdateParams replaces the rdk parameters wholesale. The fields are the
+/// module's Params, spelled out one by one (as x/multilayer does) because the
+/// parameters are stored as JSON by a hand-written struct whose encoding must
+/// not change. Governance only: authority must be the gov module account.
+/// Served from v3.2.5 (rdk-params-route).
+#[derive(Clone, PartialEq, ::prost::Message)]
+pub struct MsgUpdateParams {
+    #[prost(string, tag="1")]
+    pub authority: ::prost::alloc::string::String,
+    #[prost(uint32, tag="2")]
+    pub max_rollups: u32,
+    /// min_stake_for_rollup is a uqor amount.
+    #[prost(int64, tag="3")]
+    pub min_stake_for_rollup: i64,
+    /// rollup_creation_burn_rate is a decimal in [0, 1).
+    #[prost(string, tag="4")]
+    pub rollup_creation_burn_rate: ::prost::alloc::string::String,
+    /// default_challenge_window is in seconds. From rdk-rollup-params a new
+    /// optimistic rollup takes its challenge window from it.
+    #[prost(uint64, tag="5")]
+    pub default_challenge_window: u64,
+    #[prost(uint64, tag="6")]
+    pub max_da_blob_size: u64,
+    #[prost(uint64, tag="7")]
+    pub blob_retention_blocks: u64,
+    #[prost(uint32, tag="8")]
+    pub max_batches_per_block: u32,
+}
+#[derive(Clone, Copy, PartialEq, ::prost::Message)]
+pub struct MsgUpdateParamsResponse {
 }
 // @@protoc_insertion_point(module)

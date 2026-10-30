@@ -6,6 +6,34 @@ from typing import ClassVar as _ClassVar, Iterable as _Iterable, Mapping as _Map
 
 DESCRIPTOR: _descriptor.FileDescriptor
 
+class QueryKEMKeyRequest(_message.Message):
+    __slots__ = ("address",)
+    ADDRESS_FIELD_NUMBER: _ClassVar[int]
+    address: str
+    def __init__(self, address: _Optional[str] = ...) -> None: ...
+
+class QueryKEMKeyResponse(_message.Message):
+    __slots__ = ("found", "key")
+    FOUND_FIELD_NUMBER: _ClassVar[int]
+    KEY_FIELD_NUMBER: _ClassVar[int]
+    found: bool
+    key: KEMKeyView
+    def __init__(self, found: bool = ..., key: _Optional[_Union[KEMKeyView, _Mapping]] = ...) -> None: ...
+
+class KEMKeyView(_message.Message):
+    __slots__ = ("address", "algorithm_id", "algorithm_name", "public_key", "registered_height")
+    ADDRESS_FIELD_NUMBER: _ClassVar[int]
+    ALGORITHM_ID_FIELD_NUMBER: _ClassVar[int]
+    ALGORITHM_NAME_FIELD_NUMBER: _ClassVar[int]
+    PUBLIC_KEY_FIELD_NUMBER: _ClassVar[int]
+    REGISTERED_HEIGHT_FIELD_NUMBER: _ClassVar[int]
+    address: str
+    algorithm_id: int
+    algorithm_name: str
+    public_key: bytes
+    registered_height: int
+    def __init__(self, address: _Optional[str] = ..., algorithm_id: _Optional[int] = ..., algorithm_name: _Optional[str] = ..., public_key: _Optional[bytes] = ..., registered_height: _Optional[int] = ...) -> None: ...
+
 class QueryProtocolFeaturesRequest(_message.Message):
     __slots__ = ()
     def __init__(self) -> None: ...

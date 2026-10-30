@@ -164,3 +164,21 @@ class MsgExecuteCosmosResponse(_message.Message):
     SUCCESS_FIELD_NUMBER: _ClassVar[int]
     success: bool
     def __init__(self, success: bool = ...) -> None: ...
+
+class MsgUpdateConfig(_message.Message):
+    __slots__ = ("authority", "enabled", "max_session_keys", "max_spending_rules", "default_session_ttl")
+    AUTHORITY_FIELD_NUMBER: _ClassVar[int]
+    ENABLED_FIELD_NUMBER: _ClassVar[int]
+    MAX_SESSION_KEYS_FIELD_NUMBER: _ClassVar[int]
+    MAX_SPENDING_RULES_FIELD_NUMBER: _ClassVar[int]
+    DEFAULT_SESSION_TTL_FIELD_NUMBER: _ClassVar[int]
+    authority: str
+    enabled: bool
+    max_session_keys: int
+    max_spending_rules: int
+    default_session_ttl: int
+    def __init__(self, authority: _Optional[str] = ..., enabled: bool = ..., max_session_keys: _Optional[int] = ..., max_spending_rules: _Optional[int] = ..., default_session_ttl: _Optional[int] = ...) -> None: ...
+
+class MsgUpdateConfigResponse(_message.Message):
+    __slots__ = ()
+    def __init__(self) -> None: ...

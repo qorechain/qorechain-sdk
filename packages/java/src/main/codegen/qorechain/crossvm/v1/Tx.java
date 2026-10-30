@@ -3272,6 +3272,1540 @@ public final class Tx extends com.google.protobuf.GeneratedFile {
 
   }
 
+  public interface MsgUpdateParamsOrBuilder extends
+      // @@protoc_insertion_point(interface_extends:qorechain.crossvm.v1.MsgUpdateParams)
+      com.google.protobuf.MessageOrBuilder {
+
+    /**
+     * <pre>
+     * authority is the governance module account.
+     * </pre>
+     *
+     * <code>string authority = 1 [json_name = "authority", (.cosmos_proto.scalar) = "cosmos.AddressString"];</code>
+     * @return The authority.
+     */
+    java.lang.String getAuthority();
+    /**
+     * <pre>
+     * authority is the governance module account.
+     * </pre>
+     *
+     * <code>string authority = 1 [json_name = "authority", (.cosmos_proto.scalar) = "cosmos.AddressString"];</code>
+     * @return The bytes for authority.
+     */
+    com.google.protobuf.ByteString
+        getAuthorityBytes();
+
+    /**
+     * <code>uint64 max_message_size = 2 [json_name = "maxMessageSize"];</code>
+     * @return The maxMessageSize.
+     */
+    long getMaxMessageSize();
+
+    /**
+     * <code>uint32 max_queue_size = 3 [json_name = "maxQueueSize"];</code>
+     * @return The maxQueueSize.
+     */
+    int getMaxQueueSize();
+
+    /**
+     * <code>int64 queue_timeout_blocks = 4 [json_name = "queueTimeoutBlocks"];</code>
+     * @return The queueTimeoutBlocks.
+     */
+    long getQueueTimeoutBlocks();
+
+    /**
+     * <code>bool enabled = 5 [json_name = "enabled"];</code>
+     * @return The enabled.
+     */
+    boolean getEnabled();
+
+    /**
+     * <pre>
+     * bridge_allowed_targets lists the targets the EVM bridge precompile may
+     * call, each as "&lt;vm&gt;:&lt;contract&gt;", for example "cosmwasm:qor1...". Empty
+     * keeps the bridge shut.
+     * </pre>
+     *
+     * <code>repeated string bridge_allowed_targets = 6 [json_name = "bridgeAllowedTargets"];</code>
+     * @return A list containing the bridgeAllowedTargets.
+     */
+    java.util.List<java.lang.String>
+        getBridgeAllowedTargetsList();
+    /**
+     * <pre>
+     * bridge_allowed_targets lists the targets the EVM bridge precompile may
+     * call, each as "&lt;vm&gt;:&lt;contract&gt;", for example "cosmwasm:qor1...". Empty
+     * keeps the bridge shut.
+     * </pre>
+     *
+     * <code>repeated string bridge_allowed_targets = 6 [json_name = "bridgeAllowedTargets"];</code>
+     * @return The count of bridgeAllowedTargets.
+     */
+    int getBridgeAllowedTargetsCount();
+    /**
+     * <pre>
+     * bridge_allowed_targets lists the targets the EVM bridge precompile may
+     * call, each as "&lt;vm&gt;:&lt;contract&gt;", for example "cosmwasm:qor1...". Empty
+     * keeps the bridge shut.
+     * </pre>
+     *
+     * <code>repeated string bridge_allowed_targets = 6 [json_name = "bridgeAllowedTargets"];</code>
+     * @param index The index of the element to return.
+     * @return The bridgeAllowedTargets at the given index.
+     */
+    java.lang.String getBridgeAllowedTargets(int index);
+    /**
+     * <pre>
+     * bridge_allowed_targets lists the targets the EVM bridge precompile may
+     * call, each as "&lt;vm&gt;:&lt;contract&gt;", for example "cosmwasm:qor1...". Empty
+     * keeps the bridge shut.
+     * </pre>
+     *
+     * <code>repeated string bridge_allowed_targets = 6 [json_name = "bridgeAllowedTargets"];</code>
+     * @param index The index of the value to return.
+     * @return The bytes of the bridgeAllowedTargets at the given index.
+     */
+    com.google.protobuf.ByteString
+        getBridgeAllowedTargetsBytes(int index);
+  }
+  /**
+   * <pre>
+   * MsgUpdateParams replaces every crossvm parameter at once: a field left out is
+   * set to its zero value, which Validate refuses for the numeric limits. Signed
+   * by the governance module account, so it only ever executes from a passed
+   * proposal.
+   * </pre>
+   *
+   * Protobuf type {@code qorechain.crossvm.v1.MsgUpdateParams}
+   */
+  public static final class MsgUpdateParams extends
+      com.google.protobuf.GeneratedMessage implements
+      // @@protoc_insertion_point(message_implements:qorechain.crossvm.v1.MsgUpdateParams)
+      MsgUpdateParamsOrBuilder {
+  private static final long serialVersionUID = 0L;
+    static {
+      com.google.protobuf.RuntimeVersion.validateProtobufGencodeVersion(
+        com.google.protobuf.RuntimeVersion.RuntimeDomain.PUBLIC,
+        /* major= */ 4,
+        /* minor= */ 35,
+        /* patch= */ 1,
+        /* suffix= */ "",
+        "MsgUpdateParams");
+    }
+    // Use MsgUpdateParams.newBuilder() to construct.
+    private MsgUpdateParams(com.google.protobuf.GeneratedMessage.Builder<?> builder) {
+      super(builder);
+    }
+    private MsgUpdateParams() {
+      authority_ = "";
+      bridgeAllowedTargets_ =
+          com.google.protobuf.LazyStringArrayList.emptyList();
+    }
+
+    public static final com.google.protobuf.Descriptors.Descriptor
+        getDescriptor() {
+      return qorechain.crossvm.v1.Tx.internal_static_qorechain_crossvm_v1_MsgUpdateParams_descriptor;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Descriptors.Descriptor getDescriptorForType() {
+      return qorechain.crossvm.v1.Tx.internal_static_qorechain_crossvm_v1_MsgUpdateParams_descriptor;
+    }
+
+    @java.lang.Override
+    protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+        internalGetFieldAccessorTable() {
+      return qorechain.crossvm.v1.Tx.internal_static_qorechain_crossvm_v1_MsgUpdateParams_fieldAccessorTable
+          .ensureFieldAccessorsInitialized(
+              qorechain.crossvm.v1.Tx.MsgUpdateParams.class, qorechain.crossvm.v1.Tx.MsgUpdateParams.Builder.class);
+    }
+
+    public static final int AUTHORITY_FIELD_NUMBER = 1;
+    @SuppressWarnings("serial")
+    private volatile java.lang.Object authority_ = "";
+    /**
+     * <pre>
+     * authority is the governance module account.
+     * </pre>
+     *
+     * <code>string authority = 1 [json_name = "authority", (.cosmos_proto.scalar) = "cosmos.AddressString"];</code>
+     * @return The authority.
+     */
+    @java.lang.Override
+    public java.lang.String getAuthority() {
+      java.lang.Object ref = authority_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        authority_ = s;
+        return s;
+      }
+    }
+    /**
+     * <pre>
+     * authority is the governance module account.
+     * </pre>
+     *
+     * <code>string authority = 1 [json_name = "authority", (.cosmos_proto.scalar) = "cosmos.AddressString"];</code>
+     * @return The bytes for authority.
+     */
+    @java.lang.Override
+    public com.google.protobuf.ByteString
+        getAuthorityBytes() {
+      java.lang.Object ref = authority_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        authority_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
+    public static final int MAX_MESSAGE_SIZE_FIELD_NUMBER = 2;
+    private long maxMessageSize_ = 0L;
+    /**
+     * <code>uint64 max_message_size = 2 [json_name = "maxMessageSize"];</code>
+     * @return The maxMessageSize.
+     */
+    @java.lang.Override
+    public long getMaxMessageSize() {
+      return maxMessageSize_;
+    }
+
+    public static final int MAX_QUEUE_SIZE_FIELD_NUMBER = 3;
+    private int maxQueueSize_ = 0;
+    /**
+     * <code>uint32 max_queue_size = 3 [json_name = "maxQueueSize"];</code>
+     * @return The maxQueueSize.
+     */
+    @java.lang.Override
+    public int getMaxQueueSize() {
+      return maxQueueSize_;
+    }
+
+    public static final int QUEUE_TIMEOUT_BLOCKS_FIELD_NUMBER = 4;
+    private long queueTimeoutBlocks_ = 0L;
+    /**
+     * <code>int64 queue_timeout_blocks = 4 [json_name = "queueTimeoutBlocks"];</code>
+     * @return The queueTimeoutBlocks.
+     */
+    @java.lang.Override
+    public long getQueueTimeoutBlocks() {
+      return queueTimeoutBlocks_;
+    }
+
+    public static final int ENABLED_FIELD_NUMBER = 5;
+    private boolean enabled_ = false;
+    /**
+     * <code>bool enabled = 5 [json_name = "enabled"];</code>
+     * @return The enabled.
+     */
+    @java.lang.Override
+    public boolean getEnabled() {
+      return enabled_;
+    }
+
+    public static final int BRIDGE_ALLOWED_TARGETS_FIELD_NUMBER = 6;
+    @SuppressWarnings("serial")
+    private com.google.protobuf.LazyStringArrayList bridgeAllowedTargets_ =
+        com.google.protobuf.LazyStringArrayList.emptyList();
+    /**
+     * <pre>
+     * bridge_allowed_targets lists the targets the EVM bridge precompile may
+     * call, each as "&lt;vm&gt;:&lt;contract&gt;", for example "cosmwasm:qor1...". Empty
+     * keeps the bridge shut.
+     * </pre>
+     *
+     * <code>repeated string bridge_allowed_targets = 6 [json_name = "bridgeAllowedTargets"];</code>
+     * @return A list containing the bridgeAllowedTargets.
+     */
+    public com.google.protobuf.ProtocolStringList
+        getBridgeAllowedTargetsList() {
+      return bridgeAllowedTargets_;
+    }
+    /**
+     * <pre>
+     * bridge_allowed_targets lists the targets the EVM bridge precompile may
+     * call, each as "&lt;vm&gt;:&lt;contract&gt;", for example "cosmwasm:qor1...". Empty
+     * keeps the bridge shut.
+     * </pre>
+     *
+     * <code>repeated string bridge_allowed_targets = 6 [json_name = "bridgeAllowedTargets"];</code>
+     * @return The count of bridgeAllowedTargets.
+     */
+    public int getBridgeAllowedTargetsCount() {
+      return bridgeAllowedTargets_.size();
+    }
+    /**
+     * <pre>
+     * bridge_allowed_targets lists the targets the EVM bridge precompile may
+     * call, each as "&lt;vm&gt;:&lt;contract&gt;", for example "cosmwasm:qor1...". Empty
+     * keeps the bridge shut.
+     * </pre>
+     *
+     * <code>repeated string bridge_allowed_targets = 6 [json_name = "bridgeAllowedTargets"];</code>
+     * @param index The index of the element to return.
+     * @return The bridgeAllowedTargets at the given index.
+     */
+    public java.lang.String getBridgeAllowedTargets(int index) {
+      return bridgeAllowedTargets_.get(index);
+    }
+    /**
+     * <pre>
+     * bridge_allowed_targets lists the targets the EVM bridge precompile may
+     * call, each as "&lt;vm&gt;:&lt;contract&gt;", for example "cosmwasm:qor1...". Empty
+     * keeps the bridge shut.
+     * </pre>
+     *
+     * <code>repeated string bridge_allowed_targets = 6 [json_name = "bridgeAllowedTargets"];</code>
+     * @param index The index of the value to return.
+     * @return The bytes of the bridgeAllowedTargets at the given index.
+     */
+    public com.google.protobuf.ByteString
+        getBridgeAllowedTargetsBytes(int index) {
+      return bridgeAllowedTargets_.getByteString(index);
+    }
+
+    private byte memoizedIsInitialized = -1;
+    @java.lang.Override
+    public final boolean isInitialized() {
+      byte isInitialized = memoizedIsInitialized;
+      if (isInitialized == 1) return true;
+      if (isInitialized == 0) return false;
+
+      memoizedIsInitialized = 1;
+      return true;
+    }
+
+    @java.lang.Override
+    public void writeTo(com.google.protobuf.CodedOutputStream output)
+                        throws java.io.IOException {
+      if (!com.google.protobuf.GeneratedMessage.isStringEmpty(authority_)) {
+        com.google.protobuf.GeneratedMessage.writeString(output, 1, authority_);
+      }
+      if (maxMessageSize_ != 0L) {
+        output.writeUInt64(2, maxMessageSize_);
+      }
+      if (maxQueueSize_ != 0) {
+        output.writeUInt32(3, maxQueueSize_);
+      }
+      if (queueTimeoutBlocks_ != 0L) {
+        output.writeInt64(4, queueTimeoutBlocks_);
+      }
+      if (enabled_ != false) {
+        output.writeBool(5, enabled_);
+      }
+      for (int i = 0; i < bridgeAllowedTargets_.size(); i++) {
+        com.google.protobuf.GeneratedMessage.writeString(output, 6, bridgeAllowedTargets_.getRaw(i));
+      }
+      getUnknownFields().writeTo(output);
+    }
+    private int computeSerializedSize_0() {
+      int size = 0;
+      if (!com.google.protobuf.GeneratedMessage.isStringEmpty(authority_)) {
+        size += com.google.protobuf.GeneratedMessage.computeStringSize(1, authority_);
+      }
+      if (maxMessageSize_ != 0L) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeUInt64Size(2, maxMessageSize_);
+      }
+      if (maxQueueSize_ != 0) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeUInt32Size(3, maxQueueSize_);
+      }
+      if (queueTimeoutBlocks_ != 0L) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeInt64Size(4, queueTimeoutBlocks_);
+      }
+      if (enabled_ != false) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeBoolSize(5, enabled_);
+      }
+      {
+        int dataSize = 0;
+        for (int i = 0; i < bridgeAllowedTargets_.size(); i++) {
+          dataSize += computeStringSizeNoTag(bridgeAllowedTargets_.getRaw(i));
+        }
+        size += dataSize;
+        size += 1 * getBridgeAllowedTargetsList().size();
+      }
+      return size;
+    }
+    @java.lang.Override
+    public int getSerializedSize() {
+      int size = memoizedSize;
+      if (size != -1) return size;
+
+      size = 0;
+      size += computeSerializedSize_0();
+      size += getUnknownFields().getSerializedSize();
+      memoizedSize = size;
+      return size;
+    }
+
+    @java.lang.Override
+    public boolean equals(final java.lang.Object obj) {
+      if (obj == this) {
+       return true;
+      }
+      if (!(obj instanceof qorechain.crossvm.v1.Tx.MsgUpdateParams)) {
+        return super.equals(obj);
+      }
+      qorechain.crossvm.v1.Tx.MsgUpdateParams other = (qorechain.crossvm.v1.Tx.MsgUpdateParams) obj;
+
+      if (!getAuthority()
+          .equals(other.getAuthority())) return false;
+      if (getMaxMessageSize()
+          != other.getMaxMessageSize()) return false;
+      if (getMaxQueueSize()
+          != other.getMaxQueueSize()) return false;
+      if (getQueueTimeoutBlocks()
+          != other.getQueueTimeoutBlocks()) return false;
+      if (getEnabled()
+          != other.getEnabled()) return false;
+      if (!getBridgeAllowedTargetsList()
+          .equals(other.getBridgeAllowedTargetsList())) return false;
+      if (!getUnknownFields().equals(other.getUnknownFields())) return false;
+      return true;
+    }
+
+    @java.lang.Override
+    public int hashCode() {
+      if (memoizedHashCode != 0) {
+        return memoizedHashCode;
+      }
+      int hash = 41;
+      hash = (19 * hash) + getDescriptor().hashCode();
+      hash = (37 * hash) + AUTHORITY_FIELD_NUMBER;
+      hash = (53 * hash) + getAuthority().hashCode();
+      hash = (37 * hash) + MAX_MESSAGE_SIZE_FIELD_NUMBER;
+      hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
+          getMaxMessageSize());
+      hash = (37 * hash) + MAX_QUEUE_SIZE_FIELD_NUMBER;
+      hash = (53 * hash) + getMaxQueueSize();
+      hash = (37 * hash) + QUEUE_TIMEOUT_BLOCKS_FIELD_NUMBER;
+      hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
+          getQueueTimeoutBlocks());
+      hash = (37 * hash) + ENABLED_FIELD_NUMBER;
+      hash = (53 * hash) + com.google.protobuf.Internal.hashBoolean(
+          getEnabled());
+      if (getBridgeAllowedTargetsCount() > 0) {
+        hash = (37 * hash) + BRIDGE_ALLOWED_TARGETS_FIELD_NUMBER;
+        hash = (53 * hash) + getBridgeAllowedTargetsList().hashCode();
+      }
+      hash = (29 * hash) + getUnknownFields().hashCode();
+      memoizedHashCode = hash;
+      return hash;
+    }
+
+    public static qorechain.crossvm.v1.Tx.MsgUpdateParams parseFrom(
+        java.nio.ByteBuffer data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static qorechain.crossvm.v1.Tx.MsgUpdateParams parseFrom(
+        java.nio.ByteBuffer data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static qorechain.crossvm.v1.Tx.MsgUpdateParams parseFrom(
+        com.google.protobuf.ByteString data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static qorechain.crossvm.v1.Tx.MsgUpdateParams parseFrom(
+        com.google.protobuf.ByteString data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static qorechain.crossvm.v1.Tx.MsgUpdateParams parseFrom(byte[] data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static qorechain.crossvm.v1.Tx.MsgUpdateParams parseFrom(
+        byte[] data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static qorechain.crossvm.v1.Tx.MsgUpdateParams parseFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input);
+    }
+    public static qorechain.crossvm.v1.Tx.MsgUpdateParams parseFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    public static qorechain.crossvm.v1.Tx.MsgUpdateParams parseDelimitedFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseDelimitedWithIOException(PARSER, input);
+    }
+
+    public static qorechain.crossvm.v1.Tx.MsgUpdateParams parseDelimitedFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static qorechain.crossvm.v1.Tx.MsgUpdateParams parseFrom(
+        com.google.protobuf.CodedInputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input);
+    }
+    public static qorechain.crossvm.v1.Tx.MsgUpdateParams parseFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    @java.lang.Override
+    public Builder newBuilderForType() { return newBuilder(); }
+    public static Builder newBuilder() {
+      return DEFAULT_INSTANCE.toBuilder();
+    }
+    public static Builder newBuilder(qorechain.crossvm.v1.Tx.MsgUpdateParams prototype) {
+      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+    }
+    @java.lang.Override
+    public Builder toBuilder() {
+      return this == DEFAULT_INSTANCE
+          ? new Builder() : new Builder().mergeFrom(this);
+    }
+
+    @java.lang.Override
+    protected Builder newBuilderForType(
+        com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+      Builder builder = new Builder(parent);
+      return builder;
+    }
+    /**
+     * <pre>
+     * MsgUpdateParams replaces every crossvm parameter at once: a field left out is
+     * set to its zero value, which Validate refuses for the numeric limits. Signed
+     * by the governance module account, so it only ever executes from a passed
+     * proposal.
+     * </pre>
+     *
+     * Protobuf type {@code qorechain.crossvm.v1.MsgUpdateParams}
+     */
+    public static final class Builder extends
+        com.google.protobuf.GeneratedMessage.Builder<Builder> implements
+        // @@protoc_insertion_point(builder_implements:qorechain.crossvm.v1.MsgUpdateParams)
+        qorechain.crossvm.v1.Tx.MsgUpdateParamsOrBuilder {
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return qorechain.crossvm.v1.Tx.internal_static_qorechain_crossvm_v1_MsgUpdateParams_descriptor;
+      }
+
+      @java.lang.Override
+      protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return qorechain.crossvm.v1.Tx.internal_static_qorechain_crossvm_v1_MsgUpdateParams_fieldAccessorTable
+            .ensureFieldAccessorsInitialized(
+                qorechain.crossvm.v1.Tx.MsgUpdateParams.class, qorechain.crossvm.v1.Tx.MsgUpdateParams.Builder.class);
+      }
+
+      // Construct using qorechain.crossvm.v1.Tx.MsgUpdateParams.newBuilder()
+      private Builder() {
+
+      }
+
+      private Builder(
+          com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+        super(parent);
+
+      }
+      @java.lang.Override
+      public Builder clear() {
+        super.clear();
+        bitField0_ = 0;
+        authority_ = "";
+        maxMessageSize_ = 0L;
+        maxQueueSize_ = 0;
+        queueTimeoutBlocks_ = 0L;
+        enabled_ = false;
+        bridgeAllowedTargets_ =
+            com.google.protobuf.LazyStringArrayList.emptyList();
+        return this;
+      }
+
+      @java.lang.Override
+      public com.google.protobuf.Descriptors.Descriptor
+          getDescriptorForType() {
+        return qorechain.crossvm.v1.Tx.internal_static_qorechain_crossvm_v1_MsgUpdateParams_descriptor;
+      }
+
+      @java.lang.Override
+      public qorechain.crossvm.v1.Tx.MsgUpdateParams getDefaultInstanceForType() {
+        return qorechain.crossvm.v1.Tx.MsgUpdateParams.getDefaultInstance();
+      }
+
+      @java.lang.Override
+      public qorechain.crossvm.v1.Tx.MsgUpdateParams build() {
+        qorechain.crossvm.v1.Tx.MsgUpdateParams result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(result);
+        }
+        return result;
+      }
+
+      @java.lang.Override
+      public qorechain.crossvm.v1.Tx.MsgUpdateParams buildPartial() {
+        qorechain.crossvm.v1.Tx.MsgUpdateParams result = new qorechain.crossvm.v1.Tx.MsgUpdateParams(this);
+        if (bitField0_ != 0) { buildPartial0(result); }
+        onBuilt();
+        return result;
+      }
+
+      private void buildPartial0(qorechain.crossvm.v1.Tx.MsgUpdateParams result) {
+        int from_bitField0_ = bitField0_;
+        if (((from_bitField0_ & 0x00000001) != 0)) {
+          result.authority_ = authority_;
+        }
+        if (((from_bitField0_ & 0x00000002) != 0)) {
+          result.maxMessageSize_ = maxMessageSize_;
+        }
+        if (((from_bitField0_ & 0x00000004) != 0)) {
+          result.maxQueueSize_ = maxQueueSize_;
+        }
+        if (((from_bitField0_ & 0x00000008) != 0)) {
+          result.queueTimeoutBlocks_ = queueTimeoutBlocks_;
+        }
+        if (((from_bitField0_ & 0x00000010) != 0)) {
+          result.enabled_ = enabled_;
+        }
+        if (((from_bitField0_ & 0x00000020) != 0)) {
+          bridgeAllowedTargets_.makeImmutable();
+          result.bridgeAllowedTargets_ = bridgeAllowedTargets_;
+        }
+      }
+
+      @java.lang.Override
+      public Builder mergeFrom(com.google.protobuf.Message other) {
+        if (other instanceof qorechain.crossvm.v1.Tx.MsgUpdateParams) {
+          return mergeFrom((qorechain.crossvm.v1.Tx.MsgUpdateParams)other);
+        } else {
+          super.mergeFrom(other);
+          return this;
+        }
+      }
+
+      public Builder mergeFrom(qorechain.crossvm.v1.Tx.MsgUpdateParams other) {
+        if (other == qorechain.crossvm.v1.Tx.MsgUpdateParams.getDefaultInstance()) return this;
+        if (!other.getAuthority().isEmpty()) {
+          authority_ = other.authority_;
+          bitField0_ |= 0x00000001;
+          onChanged();
+        }
+        if (other.getMaxMessageSize() != 0L) {
+          setMaxMessageSize(other.getMaxMessageSize());
+        }
+        if (other.getMaxQueueSize() != 0) {
+          setMaxQueueSize(other.getMaxQueueSize());
+        }
+        if (other.getQueueTimeoutBlocks() != 0L) {
+          setQueueTimeoutBlocks(other.getQueueTimeoutBlocks());
+        }
+        if (other.getEnabled() != false) {
+          setEnabled(other.getEnabled());
+        }
+        if (!other.bridgeAllowedTargets_.isEmpty()) {
+          if (bridgeAllowedTargets_.isEmpty()) {
+            bridgeAllowedTargets_ = other.bridgeAllowedTargets_;
+            bitField0_ |= 0x00000020;
+          } else {
+            ensureBridgeAllowedTargetsIsMutable();
+            bridgeAllowedTargets_.addAll(other.bridgeAllowedTargets_);
+          }
+          onChanged();
+        }
+        this.mergeUnknownFields(other.getUnknownFields());
+        onChanged();
+        return this;
+      }
+
+      @java.lang.Override
+      public final boolean isInitialized() {
+        return true;
+      }
+
+      @java.lang.Override
+      public Builder mergeFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        if (extensionRegistry == null) {
+          throw new java.lang.NullPointerException();
+        }
+        try {
+          boolean done = false;
+          while (!done) {
+            int tag = input.readTag();
+            switch (tag) {
+              case 0:
+                done = true;
+                break;
+              case 10: {
+                authority_ = input.readStringRequireUtf8();
+                bitField0_ |= 0x00000001;
+                break;
+              } // case 10
+              case 16: {
+                maxMessageSize_ = input.readUInt64();
+                bitField0_ |= 0x00000002;
+                break;
+              } // case 16
+              case 24: {
+                maxQueueSize_ = input.readUInt32();
+                bitField0_ |= 0x00000004;
+                break;
+              } // case 24
+              case 32: {
+                queueTimeoutBlocks_ = input.readInt64();
+                bitField0_ |= 0x00000008;
+                break;
+              } // case 32
+              case 40: {
+                enabled_ = input.readBool();
+                bitField0_ |= 0x00000010;
+                break;
+              } // case 40
+              case 50: {
+                ensureBridgeAllowedTargetsIsMutable();
+                bridgeAllowedTargets_.add(input.readStringRequireUtf8());
+                break;
+              } // case 50
+              default: {
+                if (!super.parseUnknownField(input, extensionRegistry, tag)) {
+                  done = true; // was an endgroup tag
+                }
+                break;
+              } // default:
+            } // switch (tag)
+          } // while (!done)
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          throw e.unwrapIOException();
+        } finally {
+          onChanged();
+        } // finally
+        return this;
+      }
+      private int bitField0_;
+
+      private java.lang.Object authority_ = "";
+      /**
+       * <pre>
+       * authority is the governance module account.
+       * </pre>
+       *
+       * <code>string authority = 1 [json_name = "authority", (.cosmos_proto.scalar) = "cosmos.AddressString"];</code>
+       * @return The authority.
+       */
+      public java.lang.String getAuthority() {
+        java.lang.Object ref = authority_;
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          authority_ = s;
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
+      }
+      /**
+       * <pre>
+       * authority is the governance module account.
+       * </pre>
+       *
+       * <code>string authority = 1 [json_name = "authority", (.cosmos_proto.scalar) = "cosmos.AddressString"];</code>
+       * @return The bytes for authority.
+       */
+      public com.google.protobuf.ByteString
+          getAuthorityBytes() {
+        java.lang.Object ref = authority_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          authority_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <pre>
+       * authority is the governance module account.
+       * </pre>
+       *
+       * <code>string authority = 1 [json_name = "authority", (.cosmos_proto.scalar) = "cosmos.AddressString"];</code>
+       * @param value The authority to set.
+       * @return This builder for chaining.
+       */
+      public Builder setAuthority(
+          java.lang.String value) {
+        if (value == null) { throw new NullPointerException(); }
+        authority_ = value;
+        bitField0_ |= 0x00000001;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * authority is the governance module account.
+       * </pre>
+       *
+       * <code>string authority = 1 [json_name = "authority", (.cosmos_proto.scalar) = "cosmos.AddressString"];</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearAuthority() {
+        authority_ = getDefaultInstance().getAuthority();
+        bitField0_ = (bitField0_ & ~0x00000001);
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * authority is the governance module account.
+       * </pre>
+       *
+       * <code>string authority = 1 [json_name = "authority", (.cosmos_proto.scalar) = "cosmos.AddressString"];</code>
+       * @param value The bytes for authority to set.
+       * @return This builder for chaining.
+       */
+      public Builder setAuthorityBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) { throw new NullPointerException(); }
+        checkByteStringIsUtf8(value);
+        authority_ = value;
+        bitField0_ |= 0x00000001;
+        onChanged();
+        return this;
+      }
+
+      private long maxMessageSize_ ;
+      /**
+       * <code>uint64 max_message_size = 2 [json_name = "maxMessageSize"];</code>
+       * @return The maxMessageSize.
+       */
+      @java.lang.Override
+      public long getMaxMessageSize() {
+        return maxMessageSize_;
+      }
+      /**
+       * <code>uint64 max_message_size = 2 [json_name = "maxMessageSize"];</code>
+       * @param value The maxMessageSize to set.
+       * @return This builder for chaining.
+       */
+      public Builder setMaxMessageSize(long value) {
+
+        maxMessageSize_ = value;
+        bitField0_ |= 0x00000002;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>uint64 max_message_size = 2 [json_name = "maxMessageSize"];</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearMaxMessageSize() {
+        bitField0_ = (bitField0_ & ~0x00000002);
+        maxMessageSize_ = 0L;
+        onChanged();
+        return this;
+      }
+
+      private int maxQueueSize_ ;
+      /**
+       * <code>uint32 max_queue_size = 3 [json_name = "maxQueueSize"];</code>
+       * @return The maxQueueSize.
+       */
+      @java.lang.Override
+      public int getMaxQueueSize() {
+        return maxQueueSize_;
+      }
+      /**
+       * <code>uint32 max_queue_size = 3 [json_name = "maxQueueSize"];</code>
+       * @param value The maxQueueSize to set.
+       * @return This builder for chaining.
+       */
+      public Builder setMaxQueueSize(int value) {
+
+        maxQueueSize_ = value;
+        bitField0_ |= 0x00000004;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>uint32 max_queue_size = 3 [json_name = "maxQueueSize"];</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearMaxQueueSize() {
+        bitField0_ = (bitField0_ & ~0x00000004);
+        maxQueueSize_ = 0;
+        onChanged();
+        return this;
+      }
+
+      private long queueTimeoutBlocks_ ;
+      /**
+       * <code>int64 queue_timeout_blocks = 4 [json_name = "queueTimeoutBlocks"];</code>
+       * @return The queueTimeoutBlocks.
+       */
+      @java.lang.Override
+      public long getQueueTimeoutBlocks() {
+        return queueTimeoutBlocks_;
+      }
+      /**
+       * <code>int64 queue_timeout_blocks = 4 [json_name = "queueTimeoutBlocks"];</code>
+       * @param value The queueTimeoutBlocks to set.
+       * @return This builder for chaining.
+       */
+      public Builder setQueueTimeoutBlocks(long value) {
+
+        queueTimeoutBlocks_ = value;
+        bitField0_ |= 0x00000008;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>int64 queue_timeout_blocks = 4 [json_name = "queueTimeoutBlocks"];</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearQueueTimeoutBlocks() {
+        bitField0_ = (bitField0_ & ~0x00000008);
+        queueTimeoutBlocks_ = 0L;
+        onChanged();
+        return this;
+      }
+
+      private boolean enabled_ ;
+      /**
+       * <code>bool enabled = 5 [json_name = "enabled"];</code>
+       * @return The enabled.
+       */
+      @java.lang.Override
+      public boolean getEnabled() {
+        return enabled_;
+      }
+      /**
+       * <code>bool enabled = 5 [json_name = "enabled"];</code>
+       * @param value The enabled to set.
+       * @return This builder for chaining.
+       */
+      public Builder setEnabled(boolean value) {
+
+        enabled_ = value;
+        bitField0_ |= 0x00000010;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>bool enabled = 5 [json_name = "enabled"];</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearEnabled() {
+        bitField0_ = (bitField0_ & ~0x00000010);
+        enabled_ = false;
+        onChanged();
+        return this;
+      }
+
+      private com.google.protobuf.LazyStringArrayList bridgeAllowedTargets_ =
+          com.google.protobuf.LazyStringArrayList.emptyList();
+      private void ensureBridgeAllowedTargetsIsMutable() {
+        if (!bridgeAllowedTargets_.isModifiable()) {
+          bridgeAllowedTargets_ = new com.google.protobuf.LazyStringArrayList(bridgeAllowedTargets_);
+        }
+        bitField0_ |= 0x00000020;
+      }
+      /**
+       * <pre>
+       * bridge_allowed_targets lists the targets the EVM bridge precompile may
+       * call, each as "&lt;vm&gt;:&lt;contract&gt;", for example "cosmwasm:qor1...". Empty
+       * keeps the bridge shut.
+       * </pre>
+       *
+       * <code>repeated string bridge_allowed_targets = 6 [json_name = "bridgeAllowedTargets"];</code>
+       * @return A list containing the bridgeAllowedTargets.
+       */
+      public com.google.protobuf.ProtocolStringList
+          getBridgeAllowedTargetsList() {
+        bridgeAllowedTargets_.makeImmutable();
+        return bridgeAllowedTargets_;
+      }
+      /**
+       * <pre>
+       * bridge_allowed_targets lists the targets the EVM bridge precompile may
+       * call, each as "&lt;vm&gt;:&lt;contract&gt;", for example "cosmwasm:qor1...". Empty
+       * keeps the bridge shut.
+       * </pre>
+       *
+       * <code>repeated string bridge_allowed_targets = 6 [json_name = "bridgeAllowedTargets"];</code>
+       * @return The count of bridgeAllowedTargets.
+       */
+      public int getBridgeAllowedTargetsCount() {
+        return bridgeAllowedTargets_.size();
+      }
+      /**
+       * <pre>
+       * bridge_allowed_targets lists the targets the EVM bridge precompile may
+       * call, each as "&lt;vm&gt;:&lt;contract&gt;", for example "cosmwasm:qor1...". Empty
+       * keeps the bridge shut.
+       * </pre>
+       *
+       * <code>repeated string bridge_allowed_targets = 6 [json_name = "bridgeAllowedTargets"];</code>
+       * @param index The index of the element to return.
+       * @return The bridgeAllowedTargets at the given index.
+       */
+      public java.lang.String getBridgeAllowedTargets(int index) {
+        return bridgeAllowedTargets_.get(index);
+      }
+      /**
+       * <pre>
+       * bridge_allowed_targets lists the targets the EVM bridge precompile may
+       * call, each as "&lt;vm&gt;:&lt;contract&gt;", for example "cosmwasm:qor1...". Empty
+       * keeps the bridge shut.
+       * </pre>
+       *
+       * <code>repeated string bridge_allowed_targets = 6 [json_name = "bridgeAllowedTargets"];</code>
+       * @param index The index of the value to return.
+       * @return The bytes of the bridgeAllowedTargets at the given index.
+       */
+      public com.google.protobuf.ByteString
+          getBridgeAllowedTargetsBytes(int index) {
+        return bridgeAllowedTargets_.getByteString(index);
+      }
+      /**
+       * <pre>
+       * bridge_allowed_targets lists the targets the EVM bridge precompile may
+       * call, each as "&lt;vm&gt;:&lt;contract&gt;", for example "cosmwasm:qor1...". Empty
+       * keeps the bridge shut.
+       * </pre>
+       *
+       * <code>repeated string bridge_allowed_targets = 6 [json_name = "bridgeAllowedTargets"];</code>
+       * @param index The index to set the value at.
+       * @param value The bridgeAllowedTargets to set.
+       * @return This builder for chaining.
+       */
+      public Builder setBridgeAllowedTargets(
+          int index, java.lang.String value) {
+        if (value == null) { throw new NullPointerException(); }
+        ensureBridgeAllowedTargetsIsMutable();
+        bridgeAllowedTargets_.set(index, value);
+        bitField0_ |= 0x00000020;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * bridge_allowed_targets lists the targets the EVM bridge precompile may
+       * call, each as "&lt;vm&gt;:&lt;contract&gt;", for example "cosmwasm:qor1...". Empty
+       * keeps the bridge shut.
+       * </pre>
+       *
+       * <code>repeated string bridge_allowed_targets = 6 [json_name = "bridgeAllowedTargets"];</code>
+       * @param value The bridgeAllowedTargets to add.
+       * @return This builder for chaining.
+       */
+      public Builder addBridgeAllowedTargets(
+          java.lang.String value) {
+        if (value == null) { throw new NullPointerException(); }
+        ensureBridgeAllowedTargetsIsMutable();
+        bridgeAllowedTargets_.add(value);
+        bitField0_ |= 0x00000020;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * bridge_allowed_targets lists the targets the EVM bridge precompile may
+       * call, each as "&lt;vm&gt;:&lt;contract&gt;", for example "cosmwasm:qor1...". Empty
+       * keeps the bridge shut.
+       * </pre>
+       *
+       * <code>repeated string bridge_allowed_targets = 6 [json_name = "bridgeAllowedTargets"];</code>
+       * @param values The bridgeAllowedTargets to add.
+       * @return This builder for chaining.
+       */
+      public Builder addAllBridgeAllowedTargets(
+          java.lang.Iterable<java.lang.String> values) {
+        ensureBridgeAllowedTargetsIsMutable();
+        com.google.protobuf.AbstractMessageLite.Builder.addAll(
+            values, bridgeAllowedTargets_);
+        bitField0_ |= 0x00000020;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * bridge_allowed_targets lists the targets the EVM bridge precompile may
+       * call, each as "&lt;vm&gt;:&lt;contract&gt;", for example "cosmwasm:qor1...". Empty
+       * keeps the bridge shut.
+       * </pre>
+       *
+       * <code>repeated string bridge_allowed_targets = 6 [json_name = "bridgeAllowedTargets"];</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearBridgeAllowedTargets() {
+        bridgeAllowedTargets_ =
+          com.google.protobuf.LazyStringArrayList.emptyList();
+        bitField0_ = (bitField0_ & ~0x00000020);;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * bridge_allowed_targets lists the targets the EVM bridge precompile may
+       * call, each as "&lt;vm&gt;:&lt;contract&gt;", for example "cosmwasm:qor1...". Empty
+       * keeps the bridge shut.
+       * </pre>
+       *
+       * <code>repeated string bridge_allowed_targets = 6 [json_name = "bridgeAllowedTargets"];</code>
+       * @param value The bytes of the bridgeAllowedTargets to add.
+       * @return This builder for chaining.
+       */
+      public Builder addBridgeAllowedTargetsBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) { throw new NullPointerException(); }
+        checkByteStringIsUtf8(value);
+        ensureBridgeAllowedTargetsIsMutable();
+        bridgeAllowedTargets_.add(value);
+        bitField0_ |= 0x00000020;
+        onChanged();
+        return this;
+      }
+
+      // @@protoc_insertion_point(builder_scope:qorechain.crossvm.v1.MsgUpdateParams)
+    }
+
+    // @@protoc_insertion_point(class_scope:qorechain.crossvm.v1.MsgUpdateParams)
+    private static final qorechain.crossvm.v1.Tx.MsgUpdateParams DEFAULT_INSTANCE;
+    static {
+      DEFAULT_INSTANCE = new qorechain.crossvm.v1.Tx.MsgUpdateParams();
+    }
+
+    public static qorechain.crossvm.v1.Tx.MsgUpdateParams getDefaultInstance() {
+      return DEFAULT_INSTANCE;
+    }
+
+    private static final com.google.protobuf.Parser<MsgUpdateParams>
+        PARSER = new com.google.protobuf.AbstractParser<MsgUpdateParams>() {
+      @java.lang.Override
+      public MsgUpdateParams parsePartialFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        Builder builder = newBuilder();
+        try {
+          builder.mergeFrom(input, extensionRegistry);
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          throw e.setUnfinishedMessage(builder.buildPartial());
+        } catch (com.google.protobuf.UninitializedMessageException e) {
+          throw e.asInvalidProtocolBufferException().setUnfinishedMessage(builder.buildPartial());
+        } catch (java.io.IOException e) {
+          throw new com.google.protobuf.InvalidProtocolBufferException(e)
+              .setUnfinishedMessage(builder.buildPartial());
+        }
+        return builder.buildPartial();
+      }
+    };
+
+    public static com.google.protobuf.Parser<MsgUpdateParams> parser() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Parser<MsgUpdateParams> getParserForType() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public qorechain.crossvm.v1.Tx.MsgUpdateParams getDefaultInstanceForType() {
+      return DEFAULT_INSTANCE;
+    }
+
+  }
+
+  public interface MsgUpdateParamsResponseOrBuilder extends
+      // @@protoc_insertion_point(interface_extends:qorechain.crossvm.v1.MsgUpdateParamsResponse)
+      com.google.protobuf.MessageOrBuilder {
+  }
+  /**
+   * Protobuf type {@code qorechain.crossvm.v1.MsgUpdateParamsResponse}
+   */
+  public static final class MsgUpdateParamsResponse extends
+      com.google.protobuf.GeneratedMessage implements
+      // @@protoc_insertion_point(message_implements:qorechain.crossvm.v1.MsgUpdateParamsResponse)
+      MsgUpdateParamsResponseOrBuilder {
+  private static final long serialVersionUID = 0L;
+    static {
+      com.google.protobuf.RuntimeVersion.validateProtobufGencodeVersion(
+        com.google.protobuf.RuntimeVersion.RuntimeDomain.PUBLIC,
+        /* major= */ 4,
+        /* minor= */ 35,
+        /* patch= */ 1,
+        /* suffix= */ "",
+        "MsgUpdateParamsResponse");
+    }
+    // Use MsgUpdateParamsResponse.newBuilder() to construct.
+    private MsgUpdateParamsResponse(com.google.protobuf.GeneratedMessage.Builder<?> builder) {
+      super(builder);
+    }
+    private MsgUpdateParamsResponse() {
+    }
+
+    public static final com.google.protobuf.Descriptors.Descriptor
+        getDescriptor() {
+      return qorechain.crossvm.v1.Tx.internal_static_qorechain_crossvm_v1_MsgUpdateParamsResponse_descriptor;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Descriptors.Descriptor getDescriptorForType() {
+      return qorechain.crossvm.v1.Tx.internal_static_qorechain_crossvm_v1_MsgUpdateParamsResponse_descriptor;
+    }
+
+    @java.lang.Override
+    protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+        internalGetFieldAccessorTable() {
+      return qorechain.crossvm.v1.Tx.internal_static_qorechain_crossvm_v1_MsgUpdateParamsResponse_fieldAccessorTable
+          .ensureFieldAccessorsInitialized(
+              qorechain.crossvm.v1.Tx.MsgUpdateParamsResponse.class, qorechain.crossvm.v1.Tx.MsgUpdateParamsResponse.Builder.class);
+    }
+
+    private byte memoizedIsInitialized = -1;
+    @java.lang.Override
+    public final boolean isInitialized() {
+      byte isInitialized = memoizedIsInitialized;
+      if (isInitialized == 1) return true;
+      if (isInitialized == 0) return false;
+
+      memoizedIsInitialized = 1;
+      return true;
+    }
+
+    @java.lang.Override
+    public void writeTo(com.google.protobuf.CodedOutputStream output)
+                        throws java.io.IOException {
+      getUnknownFields().writeTo(output);
+    }
+    @java.lang.Override
+    public int getSerializedSize() {
+      int size = memoizedSize;
+      if (size != -1) return size;
+
+      size = 0;
+      size += getUnknownFields().getSerializedSize();
+      memoizedSize = size;
+      return size;
+    }
+
+    @java.lang.Override
+    public boolean equals(final java.lang.Object obj) {
+      if (obj == this) {
+       return true;
+      }
+      if (!(obj instanceof qorechain.crossvm.v1.Tx.MsgUpdateParamsResponse)) {
+        return super.equals(obj);
+      }
+      qorechain.crossvm.v1.Tx.MsgUpdateParamsResponse other = (qorechain.crossvm.v1.Tx.MsgUpdateParamsResponse) obj;
+
+      if (!getUnknownFields().equals(other.getUnknownFields())) return false;
+      return true;
+    }
+
+    @java.lang.Override
+    public int hashCode() {
+      if (memoizedHashCode != 0) {
+        return memoizedHashCode;
+      }
+      int hash = 41;
+      hash = (19 * hash) + getDescriptor().hashCode();
+      hash = (29 * hash) + getUnknownFields().hashCode();
+      memoizedHashCode = hash;
+      return hash;
+    }
+
+    public static qorechain.crossvm.v1.Tx.MsgUpdateParamsResponse parseFrom(
+        java.nio.ByteBuffer data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static qorechain.crossvm.v1.Tx.MsgUpdateParamsResponse parseFrom(
+        java.nio.ByteBuffer data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static qorechain.crossvm.v1.Tx.MsgUpdateParamsResponse parseFrom(
+        com.google.protobuf.ByteString data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static qorechain.crossvm.v1.Tx.MsgUpdateParamsResponse parseFrom(
+        com.google.protobuf.ByteString data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static qorechain.crossvm.v1.Tx.MsgUpdateParamsResponse parseFrom(byte[] data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static qorechain.crossvm.v1.Tx.MsgUpdateParamsResponse parseFrom(
+        byte[] data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static qorechain.crossvm.v1.Tx.MsgUpdateParamsResponse parseFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input);
+    }
+    public static qorechain.crossvm.v1.Tx.MsgUpdateParamsResponse parseFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    public static qorechain.crossvm.v1.Tx.MsgUpdateParamsResponse parseDelimitedFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseDelimitedWithIOException(PARSER, input);
+    }
+
+    public static qorechain.crossvm.v1.Tx.MsgUpdateParamsResponse parseDelimitedFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static qorechain.crossvm.v1.Tx.MsgUpdateParamsResponse parseFrom(
+        com.google.protobuf.CodedInputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input);
+    }
+    public static qorechain.crossvm.v1.Tx.MsgUpdateParamsResponse parseFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    @java.lang.Override
+    public Builder newBuilderForType() { return newBuilder(); }
+    public static Builder newBuilder() {
+      return DEFAULT_INSTANCE.toBuilder();
+    }
+    public static Builder newBuilder(qorechain.crossvm.v1.Tx.MsgUpdateParamsResponse prototype) {
+      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+    }
+    @java.lang.Override
+    public Builder toBuilder() {
+      return this == DEFAULT_INSTANCE
+          ? new Builder() : new Builder().mergeFrom(this);
+    }
+
+    @java.lang.Override
+    protected Builder newBuilderForType(
+        com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+      Builder builder = new Builder(parent);
+      return builder;
+    }
+    /**
+     * Protobuf type {@code qorechain.crossvm.v1.MsgUpdateParamsResponse}
+     */
+    public static final class Builder extends
+        com.google.protobuf.GeneratedMessage.Builder<Builder> implements
+        // @@protoc_insertion_point(builder_implements:qorechain.crossvm.v1.MsgUpdateParamsResponse)
+        qorechain.crossvm.v1.Tx.MsgUpdateParamsResponseOrBuilder {
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return qorechain.crossvm.v1.Tx.internal_static_qorechain_crossvm_v1_MsgUpdateParamsResponse_descriptor;
+      }
+
+      @java.lang.Override
+      protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return qorechain.crossvm.v1.Tx.internal_static_qorechain_crossvm_v1_MsgUpdateParamsResponse_fieldAccessorTable
+            .ensureFieldAccessorsInitialized(
+                qorechain.crossvm.v1.Tx.MsgUpdateParamsResponse.class, qorechain.crossvm.v1.Tx.MsgUpdateParamsResponse.Builder.class);
+      }
+
+      // Construct using qorechain.crossvm.v1.Tx.MsgUpdateParamsResponse.newBuilder()
+      private Builder() {
+
+      }
+
+      private Builder(
+          com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+        super(parent);
+
+      }
+      @java.lang.Override
+      public Builder clear() {
+        super.clear();
+        return this;
+      }
+
+      @java.lang.Override
+      public com.google.protobuf.Descriptors.Descriptor
+          getDescriptorForType() {
+        return qorechain.crossvm.v1.Tx.internal_static_qorechain_crossvm_v1_MsgUpdateParamsResponse_descriptor;
+      }
+
+      @java.lang.Override
+      public qorechain.crossvm.v1.Tx.MsgUpdateParamsResponse getDefaultInstanceForType() {
+        return qorechain.crossvm.v1.Tx.MsgUpdateParamsResponse.getDefaultInstance();
+      }
+
+      @java.lang.Override
+      public qorechain.crossvm.v1.Tx.MsgUpdateParamsResponse build() {
+        qorechain.crossvm.v1.Tx.MsgUpdateParamsResponse result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(result);
+        }
+        return result;
+      }
+
+      @java.lang.Override
+      public qorechain.crossvm.v1.Tx.MsgUpdateParamsResponse buildPartial() {
+        qorechain.crossvm.v1.Tx.MsgUpdateParamsResponse result = new qorechain.crossvm.v1.Tx.MsgUpdateParamsResponse(this);
+        onBuilt();
+        return result;
+      }
+
+      @java.lang.Override
+      public Builder mergeFrom(com.google.protobuf.Message other) {
+        if (other instanceof qorechain.crossvm.v1.Tx.MsgUpdateParamsResponse) {
+          return mergeFrom((qorechain.crossvm.v1.Tx.MsgUpdateParamsResponse)other);
+        } else {
+          super.mergeFrom(other);
+          return this;
+        }
+      }
+
+      public Builder mergeFrom(qorechain.crossvm.v1.Tx.MsgUpdateParamsResponse other) {
+        if (other == qorechain.crossvm.v1.Tx.MsgUpdateParamsResponse.getDefaultInstance()) return this;
+        this.mergeUnknownFields(other.getUnknownFields());
+        onChanged();
+        return this;
+      }
+
+      @java.lang.Override
+      public final boolean isInitialized() {
+        return true;
+      }
+
+      @java.lang.Override
+      public Builder mergeFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        if (extensionRegistry == null) {
+          throw new java.lang.NullPointerException();
+        }
+        try {
+          boolean done = false;
+          while (!done) {
+            int tag = input.readTag();
+            switch (tag) {
+              case 0:
+                done = true;
+                break;
+              default: {
+                if (!super.parseUnknownField(input, extensionRegistry, tag)) {
+                  done = true; // was an endgroup tag
+                }
+                break;
+              } // default:
+            } // switch (tag)
+          } // while (!done)
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          throw e.unwrapIOException();
+        } finally {
+          onChanged();
+        } // finally
+        return this;
+      }
+
+      // @@protoc_insertion_point(builder_scope:qorechain.crossvm.v1.MsgUpdateParamsResponse)
+    }
+
+    // @@protoc_insertion_point(class_scope:qorechain.crossvm.v1.MsgUpdateParamsResponse)
+    private static final qorechain.crossvm.v1.Tx.MsgUpdateParamsResponse DEFAULT_INSTANCE;
+    static {
+      DEFAULT_INSTANCE = new qorechain.crossvm.v1.Tx.MsgUpdateParamsResponse();
+    }
+
+    public static qorechain.crossvm.v1.Tx.MsgUpdateParamsResponse getDefaultInstance() {
+      return DEFAULT_INSTANCE;
+    }
+
+    private static final com.google.protobuf.Parser<MsgUpdateParamsResponse>
+        PARSER = new com.google.protobuf.AbstractParser<MsgUpdateParamsResponse>() {
+      @java.lang.Override
+      public MsgUpdateParamsResponse parsePartialFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        Builder builder = newBuilder();
+        try {
+          builder.mergeFrom(input, extensionRegistry);
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          throw e.setUnfinishedMessage(builder.buildPartial());
+        } catch (com.google.protobuf.UninitializedMessageException e) {
+          throw e.asInvalidProtocolBufferException().setUnfinishedMessage(builder.buildPartial());
+        } catch (java.io.IOException e) {
+          throw new com.google.protobuf.InvalidProtocolBufferException(e)
+              .setUnfinishedMessage(builder.buildPartial());
+        }
+        return builder.buildPartial();
+      }
+    };
+
+    public static com.google.protobuf.Parser<MsgUpdateParamsResponse> parser() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Parser<MsgUpdateParamsResponse> getParserForType() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public qorechain.crossvm.v1.Tx.MsgUpdateParamsResponse getDefaultInstanceForType() {
+      return DEFAULT_INSTANCE;
+    }
+
+  }
+
   private static final com.google.protobuf.Descriptors.Descriptor
     internal_static_qorechain_crossvm_v1_MsgCrossVMCall_descriptor;
   private static final 
@@ -3292,6 +4826,16 @@ public final class Tx extends com.google.protobuf.GeneratedFile {
   private static final 
     com.google.protobuf.GeneratedMessage.FieldAccessorTable
       internal_static_qorechain_crossvm_v1_MsgProcessQueueResponse_fieldAccessorTable;
+  private static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_qorechain_crossvm_v1_MsgUpdateParams_descriptor;
+  private static final 
+    com.google.protobuf.GeneratedMessage.FieldAccessorTable
+      internal_static_qorechain_crossvm_v1_MsgUpdateParams_fieldAccessorTable;
+  private static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_qorechain_crossvm_v1_MsgUpdateParamsResponse_descriptor;
+  private static final 
+    com.google.protobuf.GeneratedMessage.FieldAccessorTable
+      internal_static_qorechain_crossvm_v1_MsgUpdateParamsResponse_fieldAccessorTable;
 
   public static com.google.protobuf.Descriptors.FileDescriptor
       getDescriptor() {
@@ -3321,13 +4865,24 @@ public final class Tx extends com.google.protobuf.GeneratedFile {
       "sed\"Y\n\017MsgProcessQueue\0226\n\tauthority\030\001 \001(" +
       "\tB\030\322\264-\024cosmos.AddressStringR\tauthority:\016" +
       "\202\347\260*\tauthority\"\031\n\027MsgProcessQueueRespons" +
-      "e2\325\001\n\003Msg\022a\n\013CrossVMCall\022$.qorechain.cro" +
-      "ssvm.v1.MsgCrossVMCall\032,.qorechain.cross" +
-      "vm.v1.MsgCrossVMCallResponse\022d\n\014ProcessQ" +
-      "ueue\022%.qorechain.crossvm.v1.MsgProcessQu" +
-      "eue\032-.qorechain.crossvm.v1.MsgProcessQue" +
-      "ueResponse\032\005\200\347\260*\001B5Z3github.com/qorechai" +
-      "n/qorechain-core/x/crossvm/typesb\006proto3"
+      "e\"\253\002\n\017MsgUpdateParams\0226\n\tauthority\030\001 \001(\t" +
+      "B\030\322\264-\024cosmos.AddressStringR\tauthority\022(\n" +
+      "\020max_message_size\030\002 \001(\004R\016maxMessageSize\022" +
+      "$\n\016max_queue_size\030\003 \001(\rR\014maxQueueSize\0220\n" +
+      "\024queue_timeout_blocks\030\004 \001(\003R\022queueTimeou" +
+      "tBlocks\022\030\n\007enabled\030\005 \001(\010R\007enabled\0224\n\026bri" +
+      "dge_allowed_targets\030\006 \003(\tR\024bridgeAllowed" +
+      "Targets:\016\202\347\260*\tauthority\"\031\n\027MsgUpdatePara" +
+      "msResponse2\273\002\n\003Msg\022a\n\013CrossVMCall\022$.qore" +
+      "chain.crossvm.v1.MsgCrossVMCall\032,.qorech" +
+      "ain.crossvm.v1.MsgCrossVMCallResponse\022d\n" +
+      "\014ProcessQueue\022%.qorechain.crossvm.v1.Msg" +
+      "ProcessQueue\032-.qorechain.crossvm.v1.MsgP" +
+      "rocessQueueResponse\022d\n\014UpdateParams\022%.qo" +
+      "rechain.crossvm.v1.MsgUpdateParams\032-.qor" +
+      "echain.crossvm.v1.MsgUpdateParamsRespons" +
+      "e\032\005\200\347\260*\001B5Z3github.com/qorechain/qorecha" +
+      "in-core/x/crossvm/typesb\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
@@ -3360,6 +4915,18 @@ public final class Tx extends com.google.protobuf.GeneratedFile {
     internal_static_qorechain_crossvm_v1_MsgProcessQueueResponse_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_qorechain_crossvm_v1_MsgProcessQueueResponse_descriptor,
+        new java.lang.String[] { });
+    internal_static_qorechain_crossvm_v1_MsgUpdateParams_descriptor =
+      getDescriptor().getMessageType(4);
+    internal_static_qorechain_crossvm_v1_MsgUpdateParams_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessage.FieldAccessorTable(
+        internal_static_qorechain_crossvm_v1_MsgUpdateParams_descriptor,
+        new java.lang.String[] { "Authority", "MaxMessageSize", "MaxQueueSize", "QueueTimeoutBlocks", "Enabled", "BridgeAllowedTargets", });
+    internal_static_qorechain_crossvm_v1_MsgUpdateParamsResponse_descriptor =
+      getDescriptor().getMessageType(5);
+    internal_static_qorechain_crossvm_v1_MsgUpdateParamsResponse_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessage.FieldAccessorTable(
+        internal_static_qorechain_crossvm_v1_MsgUpdateParamsResponse_descriptor,
         new java.lang.String[] { });
     descriptor.resolveAllFeaturesImmutable();
     cosmos.msg.v1.Msg.getDescriptor();
