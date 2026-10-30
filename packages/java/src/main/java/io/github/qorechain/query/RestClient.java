@@ -83,6 +83,32 @@ public final class RestClient {
     }
 
     /**
+     * {@code /qorechain/pqc/v1/kem/{address}} (chain v3.2.5) - the KEM key the
+     * address (bech32 or 0x) published, raw: {@code {"found": bool, "key": ...}}.
+     * Decoded by {@link io.github.qorechain.pqc.KemRegistry#parseKemKey}.
+     */
+    public JsonNode getKemKey(String address) {
+        return get("/qorechain/pqc/v1/kem/" + enc(address));
+    }
+
+    /**
+     * {@code /qorechain/abstractaccount/v1/accounts/{address}/spending_rules}
+     * (chain v3.2.5) - the account-wide rules ({@code rules}) and the per-key
+     * rules ({@code authenticator_rules}).
+     */
+    public JsonNode getSpendingRules(String address) {
+        return get("/qorechain/abstractaccount/v1/accounts/" + enc(address) + "/spending_rules");
+    }
+
+    /**
+     * {@code /qorechain/abstractaccount/v1/accounts/{address}/authenticators}
+     * (chain v3.2.5) - the linked keys, revoked ones included.
+     */
+    public JsonNode getAuthenticators(String address) {
+        return get("/qorechain/abstractaccount/v1/accounts/" + enc(address) + "/authenticators");
+    }
+
+    /**
      * {@code /qorechain/pqc/v1/evm_window/{address}} - the account's EVM
      * authorisation window (chain v3.2.0), raw. The route answers 200 with
      * {@code found:false} when there is no window, so it is safe to poll.

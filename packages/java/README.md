@@ -3,8 +3,9 @@
 Java SDK for QoreChain with full native-chain parity to the TypeScript, Python,
 Go, and Rust SDKs:
 
-- **networks** - `Networks.get("testnet" | "mainnet")` presets (`qorechain-diana`
-  / `qorechain-vladi`), bech32 prefixes, `QOR`/`uqor` coin, and per-VM endpoints.
+- **networks** - `Networks.get("mainnet" | "testnet" | "localnet")` presets
+  (`qorechain-vladi` / `qorechain-diana` / a local node), bech32 prefixes,
+  `QOR`/`uqor` coin, and per-VM endpoints (public endpoints by default from 0.12.0).
 - **denom / address** - exact `BigInteger` `toBase`/`fromBase`, bech32 ↔ hex,
   EIP-55 checksum, EVM/SVM address validators.
 - **accounts** - HD derivation for native (secp256k1, `m/44'/118'/0'/0/i`), EVM
@@ -13,7 +14,7 @@ Go, and Rust SDKs:
 - **pqc** - ML-DSA-87 (FIPS-204) keygen / sign / verify via BouncyCastle, plus
   the hybrid-signature extension builder.
 - **messages** - committed `protobuf-java` classes for all QoreChain modules, a
-  `typeUrl → parser` registry covering all 61 custom `Msg` types, typed composers,
+  `typeUrl → parser` registry covering all 75 custom `Msg` types, typed composers,
   and Native `Any` pack/unpack.
 - **tx** - native `bankSend` builder, hybrid (classical + PQC) transaction
   signing with per-network sign-bytes v1/v2 (`SignBytes`, `SignBytesResolver`),
@@ -38,7 +39,7 @@ Go, and Rust SDKs:
 ## Coordinates
 
 ```
-io.github.qorechain:qorechain-sdk:0.10.0
+io.github.qorechain:qorechain-sdk:0.12.0
 ```
 
 Base Java package: `io.github.qorechain` (sub-packages `networks`, `accounts`,
@@ -52,6 +53,121 @@ export JAVA_HOME="$(/usr/libexec/java_home -v 21 2>/dev/null || echo /opt/homebr
 ./gradlew build test            # compile + run the JUnit 5 suite
 ./gradlew publishToMavenLocal   # validate packaging (main + sources + javadoc jars)
 ```
+
+## Chain v3.2.5 (0.12.0)
+
+Mainnet (`qorechain-vladi`) applied v3.2.5 at height 3,906,833; the testnet
+(`qorechain-diana`) runs v3.2.6.
+
+### Network presets
+
+`Networks.get(name)` points at the public endpoints. The hostnames live in one
+table in `Networks.java`; read them from the preset rather than copying them.
+
+| Preset | Chain id | REST, RPC, EVM JSON-RPC | EVM WebSocket | gRPC | SVM |
+|---|---|---|---|---|---|
+| `mainnet` | `qorechain-vladi` (EVM 9801) | public | none | none | none |
+| `testnet` | `qorechain-diana` (EVM 9800) | public | public | none | none |
+| `localnet` | `qorechain-devnet` | `localhost` (1317, 26657, 8545) | `ws://localhost:8546` | `localhost:9090` | `localhost:8899` |
+
+```java
+import io.github.qorechain.networks.NetworkConfig;
+import io.github.qorechain.networks.Networks;
+
+NetworkConfig net = Networks.get("mainnet");
+String rest = net.endpoints.rest;            // public REST
+String ws = net.requireEndpoint("evmWs");    // throws: "evmWs is not configured for the mainnet preset; pass endpoints evmWs ..."
+
+// Your own node: non-null fields replace the preset's.
+NetworkConfig mine = Networks.get("mainnet",
+        new NetworkConfig.NetworkEndpoints("https://my-node:1317", null, "https://my-node:26657", null, null, null));
+```
+
+- **Behaviour change:** before 0.12.0 `mainnet` and `testnet` pointed at
+  `localhost`. Code that ran against a local node under those names should use
+  `localnet` (same ports) or pass its endpoints.
+- An endpoint a network does not offer is `null`; `requireEndpoint` /
+  `NetworkEndpoints.require` fail with a clear message instead of falling back to
+  a local node.
+- The public testnet endpoints have a per-IP rate limit at the edge. For
+  production traffic run or use your own node.
+- SVM transactions are not open on either network, so no SVM endpoint is preset.
+- `https://download.qore.host/<net>/latest.json` is a manifest (version, peers,
+  state sync), not an endpoint.
+
+### Feature detection and the chain version
+
+Nodes do not expose their binary version: `node_info` `application_version` is
+empty on purpose, so a node cannot be fingerprinted by it. Detect a feature by
+the upgrade plan that brought it, asking `applied_plan` for **every** relevant
+plan name (a height above 0 means applied):
+
+- mainnet applied `v3.2.5`; the testnet applied `v3.2.5` and `v3.2.6`;
+- sign-bytes v2 came with `v3.2.0` on mainnet and `v3.1.98` on the testnet
+  (`SignBytes.SIGN_BYTES_V2_UPGRADES` asks both).
+
+```java
+boolean v325 = ChainUpgrades.isApplied(rest, ChainUpgrades.V3_2_5, restUrl);
+```
+
+For a human-readable version read `https://download.qore.host/<net>/latest.json`
+(`.version`), with `<net>` `mainnet` or `testnet`.
+
+### Exact gas
+
+`PqcDx.HybridSendPath.sendAuto(messages, gasPrice, multiplier)` simulates the
+hybrid transaction as it will be sent, chooses the gas limit, prices it
+(default `0.15uqor`) and broadcasts; `estimateGas` stops after the choice. The
+rule lives in `AutoGas`:
+
+- on a network that has applied `v3.2.5` (cached `applied_plan` lookup per REST
+  endpoint), a hybrid native-lane transaction gets
+  `ceil(simulated * 1.02) + 2000` (`AutoGas.exactHybridGas`). From v3.2.5 the
+  simulation already includes the post-quantum verification, once per signer;
+- an older network, a classical transaction or a failed plan lookup gets
+  `ceil(simulated * 1.4)`;
+- an explicit multiplier is applied as given.
+
+Native-lane transactions pay gas limit x gas price, so the tighter limit is a
+smaller fee. `Signer.restUrl` must be set.
+
+### KEM key registry
+
+An account can publish one ML-KEM-1024 (FIPS 203) encapsulation key so that
+anyone can encrypt to it. It is not a signing key.
+
+```java
+import io.github.qorechain.pqc.KemRegistry;
+
+path.sendAuto(List.of(KemRegistry.registerKemKey(address, kemPublicKey)), null, null); // 1568 bytes
+KemRegistry.KemKeyResult r = KemRegistry.fetchKemKey(restUrl, address); // bech32 or 0x
+path.sendAuto(List.of(KemRegistry.removeKemKey(address)), null, null);
+```
+
+- Algorithm id 2 (`ALGORITHM_ML_KEM_1024`), key exactly 1568 bytes. The
+  composer runs the chain's checks first: size, the FIPS 203 modulus check (every
+  coefficient below 3329) and a non-zero key.
+- Both messages always need the hybrid signature, and the account needs a
+  registered post-quantum signature key. There is no proof of possession; the
+  hybrid signature authenticates the registration.
+- One key per account: registering again replaces it. Errors `pqc` 250 to 254
+  are named (`kem_registry_not_enabled`, `kem_key_invalid`, `kem_key_not_found`,
+  `kem_key_unchanged`, `kem_needs_signature_key`).
+- The SDK carries the chain messages and the query only; encryption is up to
+  the application.
+
+### Spending rules, config and governance messages
+
+- `updateSpendingRules` also refuses an `erc20/`, `erc721/` or `erc1155/` denom
+  (in `denom_limits` or `allowed_denoms`) whose contract address is not `0x` + 40
+  hex digits, and an `erc20/` denom with anything after the address. The chain
+  refuses these when saving from v3.2.5 (`abstractaccount` 8,
+  `invalid_spending_rule`).
+- Reads: `AbstractAccountQueryClient.spendingRules` / `authenticators` (and
+  `RestClient.getSpendingRules` / `getAuthenticators` over REST).
+- Governance composers: `abstractaccount.updateConfig`, `crossvm.updateParams`
+  (with the EVM bridge target allowlist, each `<vm>:<contract>`) and
+  `rdk.updateParams` (burn rate a decimal in [0, 1)).
 
 ## Sidechains, paychains & rollups (v0.4.0)
 
@@ -223,7 +339,7 @@ two forms, and **each network verifies exactly one at any height** (no overlap):
 
 | Form | Bytes | Verified by |
 |---|---|---|
-| v1 | `BE32(len B0) ‖ B0 ‖ BE32(len A) ‖ A` | a network that has applied neither `v3.2.0` nor `v3.1.98` - **mainnet `qorechain-vladi` today** |
+| v1 | `BE32(len B0) ‖ B0 ‖ BE32(len A) ‖ A` | a network that has applied neither `v3.2.0` nor `v3.1.98` (mainnet `qorechain-vladi` below height 2,981,742) |
 | v2 | `"qorechain-pqc-hybrid-v2" ‖ BE64(len chainId) ‖ chainId ‖ BE32(len B0) ‖ B0 ‖ BE32(len A) ‖ A` | testnet `qorechain-diana` (which applied `v3.1.98` at height 5,746,000) and every network born on that release or later |
 
 v2 adds a domain tag (so a signature made in another context can never pass as a
@@ -234,7 +350,7 @@ below that height and v2 above it automatically.
 
 **The switch has TWO plan names.** The chain registers one handler under both
 (`x/pqc/types.SignBytesV2Upgrades`) and each network keeps the record of the
-name it actually took: diana answers under `v3.1.98` forever, mainnet will answer
+name it actually took: diana answers under `v3.1.98` forever, mainnet answers
 under `v3.2.0`. `SignBytes.SIGN_BYTES_V2_UPGRADES` is that list (primary name
 first) and `SignBytes.SIGN_BYTES_V2_UPGRADE` is the primary name `"v3.2.0"`
 alone. A client that asks for one name only resolves v1 on the other network,
@@ -279,7 +395,7 @@ HybridTx.Options opts = /* messages, keys, fee, chainId, accountNumber, sequence
 opts.signBytesVersion = SignBytesResolver.shared()
         .resolve(SignBytes.Mode.AUTO, opts.chainId, "https://api-testnet.qore.host");
 HybridTx.Built built = HybridTx.buildHybridTx(opts);
-built.signBytesVersion; // V2 on testnet today, V1 on mainnet
+built.signBytesVersion; // V2 on both public networks today
 
 // High level: PqcDx resolves (and retries once on pqc code 21) for you.
 signer.signBytesMode = SignBytes.Mode.AUTO;           // default
@@ -451,12 +567,13 @@ to claim" is codespace `stakingtier`, code 12, kind `stakingtier_nothing_to_clai
 ## Network reads added in chain v3.2.4
 
 ```java
+import io.github.qorechain.networks.Networks;
 import io.github.qorechain.pqc.PqcDx;
 import io.github.qorechain.query.ProtocolFeatures;
 import io.github.qorechain.query.RestClient;
 import io.github.qorechain.tx.Authenticator;
 
-RestClient rest = new RestClient("https://api.qore.host");
+RestClient rest = new RestClient(Networks.get("mainnet").endpoints.rest);
 
 // The nonce a linked authenticator key must sign next (MsgExecuteEVM / MsgExecuteCosmos).
 Authenticator.AuthNonce n = Authenticator.fetchAuthNonce(rest, address, pubkey); // n.nonce, n.linked
@@ -466,7 +583,7 @@ boolean on = ProtocolFeatures.isEnabled(rest, "pqc-sign-bytes-v2");
 ProtocolFeatures features = ProtocolFeatures.fetch(rest); // features.features, features.height
 
 // Whether the account's PQC key was proven by a proof of possession (null when not reported).
-Boolean proven = PqcDx.fetchPqcStatus("https://api.qore.host", address).possessionProven;
+Boolean proven = PqcDx.fetchPqcStatus(Networks.get("mainnet").endpoints.rest, address).possessionProven;
 ```
 
 ## Unified eth-native wallet (v0.6.0)

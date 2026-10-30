@@ -3,10 +3,11 @@ package io.github.qorechain.networks;
 /**
  * A fully described QoreChain network preset.
  *
- * <p>Both the {@code testnet} and {@code mainnet} presets are live. Their
- * endpoints default to localhost ports so the SDK works out of the box against a
- * locally running node; callers override these with real hostnames when creating
- * a client.
+ * <p>The {@code mainnet} and {@code testnet} presets point at the public
+ * endpoints; {@code localnet} points at a node on this machine (see
+ * {@link Networks}). An endpoint a network does not offer is {@code null}: read
+ * it with {@link NetworkEndpoints#require} to get a clear error instead of a
+ * silent fallback. {@link #withEndpoints} overrides any of them.
  */
 public final class NetworkConfig {
 
@@ -42,19 +43,24 @@ public final class NetworkConfig {
         }
     }
 
-    /** Service endpoints for talking to a network across its supported VMs. */
+    /**
+     * Service endpoints for talking to a network across its supported VMs. Any
+     * field may be {@code null} when the network offers no public endpoint for
+     * it (the public presets set no gRPC and no SVM endpoint, and mainnet no EVM
+     * WebSocket).
+     */
     public static final class NetworkEndpoints {
         /** Native REST (LCD) endpoint. */
         public final String rest;
-        /** Native gRPC endpoint. */
+        /** Native gRPC endpoint, or {@code null}. */
         public final String grpc;
         /** Consensus RPC endpoint. */
         public final String rpc;
         /** EVM JSON-RPC HTTP endpoint. */
         public final String evmRpc;
-        /** EVM JSON-RPC WebSocket endpoint. */
+        /** EVM JSON-RPC WebSocket endpoint, or {@code null}. */
         public final String evmWs;
-        /** SVM JSON-RPC endpoint. */
+        /** SVM JSON-RPC endpoint, or {@code null}. */
         public final String svmRpc;
 
         public NetworkEndpoints(
@@ -65,6 +71,54 @@ public final class NetworkConfig {
             this.evmRpc = evmRpc;
             this.evmWs = evmWs;
             this.svmRpc = svmRpc;
+        }
+
+        /**
+         * These endpoints with every non-null field of {@code overrides} taking
+         * precedence. {@code null} overrides keep the current value.
+         */
+        public NetworkEndpoints merge(NetworkEndpoints overrides) {
+            if (overrides == null) {
+                return this;
+            }
+            return new NetworkEndpoints(
+                    overrides.rest != null ? overrides.rest : rest,
+                    overrides.grpc != null ? overrides.grpc : grpc,
+                    overrides.rpc != null ? overrides.rpc : rpc,
+                    overrides.evmRpc != null ? overrides.evmRpc : evmRpc,
+                    overrides.evmWs != null ? overrides.evmWs : evmWs,
+                    overrides.svmRpc != null ? overrides.svmRpc : svmRpc);
+        }
+
+        /**
+         * The endpoint named {@code field} ({@code rest}, {@code grpc}, {@code rpc},
+         * {@code evmRpc}, {@code evmWs} or {@code svmRpc}).
+         *
+         * @param network the preset name, for the error message (may be {@code null}).
+         * @throws IllegalStateException when the endpoint is not configured, naming
+         *     the field to pass instead of falling back to a local node.
+         */
+        public String require(String field, String network) {
+            String v;
+            switch (field) {
+                case "rest": v = rest; break;
+                case "grpc": v = grpc; break;
+                case "rpc": v = rpc; break;
+                case "evmRpc": v = evmRpc; break;
+                case "evmWs": v = evmWs; break;
+                case "svmRpc": v = svmRpc; break;
+                default: throw new IllegalArgumentException("unknown endpoint: " + field);
+            }
+            if (v == null || v.isEmpty()) {
+                String where = network == null ? "this network" : "the " + network + " preset";
+                String extra = "svmRpc".equals(field)
+                        ? " (SVM transactions are not open on the public networks yet)"
+                        : "";
+                throw new IllegalStateException(
+                        field + " is not configured for " + where + extra + "; pass endpoints " + field
+                                + " (or use your own node)");
+            }
+            return v;
         }
     }
 
@@ -94,5 +148,18 @@ public final class NetworkConfig {
         this.bech32 = bech32;
         this.coin = coin;
         this.endpoints = endpoints;
+    }
+
+    /**
+     * The endpoint named {@code field}, or a clear error naming it when this
+     * network has none (see {@link NetworkEndpoints#require}).
+     */
+    public String requireEndpoint(String field) {
+        return endpoints.require(field, name);
+    }
+
+    /** This preset with {@code overrides} applied (non-null fields win). */
+    public NetworkConfig withEndpoints(NetworkEndpoints overrides) {
+        return new NetworkConfig(name, live, chainId, bech32, coin, endpoints.merge(overrides));
     }
 }

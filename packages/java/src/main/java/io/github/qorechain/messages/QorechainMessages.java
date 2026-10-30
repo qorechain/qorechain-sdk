@@ -1,7 +1,7 @@
 package io.github.qorechain.messages;
 
 /**
- * Typed composers for every QoreChain custom-module {@code Msg} (70 total).
+ * Typed composers for every QoreChain custom-module {@code Msg}.
  *
  * <p>Each method wraps an already-built protobuf message in a {@link TypedMessage}
  * carrying the correct on-chain type URL, ready to feed into the tx builder. The
@@ -154,6 +154,33 @@ public final class QorechainMessages {
                 qorechain.rdk.v1.Tx.MsgExecuteWithdrawal m) {
             return new TypedMessage("/qorechain.rdk.v1.MsgExecuteWithdrawal", m);
         }
+
+        /**
+         * {@code MsgUpdateParams} (chain v3.2.5) - governance: replace the rdk
+         * parameters wholesale. {@code rollup_creation_burn_rate} is a decimal in
+         * [0, 1); {@code default_challenge_window} is in seconds.
+         *
+         * @throws IllegalArgumentException naming the problem.
+         */
+        public static TypedMessage updateParams(qorechain.rdk.v1.Tx.MsgUpdateParams m) {
+            if (m.getAuthority().isEmpty()) {
+                throw new IllegalArgumentException("authority (the governance module account) is required");
+            }
+            if (m.getMinStakeForRollup() < 0) {
+                throw new IllegalArgumentException("min_stake_for_rollup must be non-negative");
+            }
+            java.math.BigDecimal rate;
+            try {
+                rate = new java.math.BigDecimal(m.getRollupCreationBurnRate());
+            } catch (NumberFormatException e) {
+                throw new IllegalArgumentException(
+                        "rollup_creation_burn_rate \"" + m.getRollupCreationBurnRate() + "\" is not a decimal");
+            }
+            if (rate.signum() < 0 || rate.compareTo(java.math.BigDecimal.ONE) >= 0) {
+                throw new IllegalArgumentException("rollup_creation_burn_rate must be in [0, 1)");
+            }
+            return new TypedMessage("/qorechain.rdk.v1.MsgUpdateParams", m);
+        }
     }
 
     /** Multilayer module composers. */
@@ -258,6 +285,25 @@ public final class QorechainMessages {
         /** {@code MsgClearEVMDelegation} (chain v3.2.2) - removes the sender's installed delegation. */
         public static TypedMessage clearEvmDelegation(qorechain.pqc.v1.Tx.MsgClearEVMDelegation m) {
             return new TypedMessage("/qorechain.pqc.v1.MsgClearEVMDelegation", m);
+        }
+
+        /**
+         * {@code MsgRegisterKEMKey} (chain v3.2.5) - publish or replace the sender's
+         * KEM public key (ML-KEM-1024 is algorithm 2). Always needs the hybrid
+         * signature. The key is checked first
+         * ({@link io.github.qorechain.pqc.KemRegistry#validatePublicKey}).
+         *
+         * @throws IllegalArgumentException naming the problem.
+         */
+        public static TypedMessage registerKemKey(qorechain.pqc.v1.Tx.MsgRegisterKEMKey m) {
+            io.github.qorechain.pqc.KemRegistry.validatePublicKey(
+                    m.getAlgorithmId(), m.getPublicKey().toByteArray());
+            return new TypedMessage("/qorechain.pqc.v1.MsgRegisterKEMKey", m);
+        }
+
+        /** {@code MsgRemoveKEMKey} (chain v3.2.5) - withdraw the sender's KEM key. Hybrid signature only. */
+        public static TypedMessage removeKemKey(qorechain.pqc.v1.Tx.MsgRemoveKEMKey m) {
+            return new TypedMessage("/qorechain.pqc.v1.MsgRemoveKEMKey", m);
         }
     }
 
@@ -386,6 +432,48 @@ public final class QorechainMessages {
                 qorechain.abstractaccount.v1.Tx.MsgExecuteCosmos m) {
             return new TypedMessage("/qorechain.abstractaccount.v1.MsgExecuteCosmos", m);
         }
+
+        /**
+         * {@code MsgUpdateConfig} (chain v3.2.5) - governance: replace the module
+         * configuration wholesale. {@code enabled} gates account creation,
+         * authenticator registration and both execute lanes. Copy the current
+         * values from {@code /qorechain/abstractaccount/v1/config} and change only
+         * what is meant to change.
+         *
+         * @throws IllegalArgumentException when a limit is not positive.
+         */
+        public static TypedMessage updateConfig(qorechain.abstractaccount.v1.Tx.MsgUpdateConfig m) {
+            if (m.getAuthority().isEmpty()) {
+                throw new IllegalArgumentException("authority (the governance module account) is required");
+            }
+            if (m.getMaxSessionKeys() <= 0) {
+                throw new IllegalArgumentException("max_session_keys must be positive");
+            }
+            if (m.getMaxSpendingRules() <= 0) {
+                throw new IllegalArgumentException("max_spending_rules must be positive");
+            }
+            if (m.getDefaultSessionTtl() <= 0) {
+                throw new IllegalArgumentException("default_session_ttl (seconds) must be positive");
+            }
+            return new TypedMessage("/qorechain.abstractaccount.v1.MsgUpdateConfig", m);
+        }
+
+        /** {@code MsgUpdateConfig} from its fields (see {@link #updateConfig(qorechain.abstractaccount.v1.Tx.MsgUpdateConfig)}). */
+        public static TypedMessage updateConfig(
+                String authority,
+                boolean enabled,
+                int maxSessionKeys,
+                int maxSpendingRules,
+                long defaultSessionTtlSeconds) {
+            return updateConfig(
+                    qorechain.abstractaccount.v1.Tx.MsgUpdateConfig.newBuilder()
+                            .setAuthority(authority)
+                            .setEnabled(enabled)
+                            .setMaxSessionKeys(maxSessionKeys)
+                            .setMaxSpendingRules(maxSpendingRules)
+                            .setDefaultSessionTtl(defaultSessionTtlSeconds)
+                            .build());
+        }
     }
 
     /** Cross-VM module composers. */
@@ -398,6 +486,32 @@ public final class QorechainMessages {
 
         public static TypedMessage processQueue(qorechain.crossvm.v1.Tx.MsgProcessQueue m) {
             return new TypedMessage("/qorechain.crossvm.v1.MsgProcessQueue", m);
+        }
+
+        /**
+         * {@code MsgUpdateParams} (chain v3.2.5) - governance: replace every crossvm
+         * parameter at once, among them the targets the EVM bridge precompile may
+         * call. A field left out is set to zero, which the chain refuses for the
+         * numeric limits; each target is {@code "<vm>:<contract>"}.
+         *
+         * @throws IllegalArgumentException naming the problem.
+         */
+        public static TypedMessage updateParams(qorechain.crossvm.v1.Tx.MsgUpdateParams m) {
+            if (m.getAuthority().isEmpty()) {
+                throw new IllegalArgumentException("authority (the governance module account) is required");
+            }
+            if (m.getMaxMessageSize() == 0 || m.getMaxQueueSize() == 0 || m.getQueueTimeoutBlocks() <= 0) {
+                throw new IllegalArgumentException(
+                        "max_message_size, max_queue_size and queue_timeout_blocks must be positive");
+            }
+            for (String t : m.getBridgeAllowedTargetsList()) {
+                int i = t.indexOf(':');
+                if (i <= 0 || i == t.length() - 1) {
+                    throw new IllegalArgumentException(
+                            "bridge target \"" + t + "\" is not \"<vm>:<contract>\"");
+                }
+            }
+            return new TypedMessage("/qorechain.crossvm.v1.MsgUpdateParams", m);
         }
     }
 

@@ -5,7 +5,9 @@ import com.google.protobuf.ByteString;
 import io.github.qorechain.messages.QorechainMessages;
 import io.github.qorechain.messages.TypedMessage;
 import io.github.qorechain.query.QorClient;
+import io.github.qorechain.tx.AutoGas;
 import io.github.qorechain.tx.Broadcaster;
+import io.github.qorechain.tx.GasPrice;
 import io.github.qorechain.tx.HybridTx;
 import io.github.qorechain.tx.NativeTx;
 import io.github.qorechain.tx.SignBytes;
@@ -712,12 +714,17 @@ public final class PqcDx {
         /** Build a fully signed hybrid tx for {@code messages} in an explicit sign-bytes form. */
         public HybridTx.Built buildHybridTx(
                 List<TypedMessage> messages, SignBytes.Version signBytesVersion) {
+            return buildHybridTx(messages, signBytesVersion, signer.fee);
+        }
+
+        private HybridTx.Built buildHybridTx(
+                List<TypedMessage> messages, SignBytes.Version signBytesVersion, StdFee fee) {
             HybridTx.Options opts = new HybridTx.Options();
             opts.messages = messages;
             opts.secp256k1PrivateKey = signer.secp256k1PrivateKey;
             opts.secp256k1PublicKey = signer.secp256k1PublicKey;
             opts.pqcKeypair = signer.pqcKeypair;
-            opts.fee = signer.fee;
+            opts.fee = fee;
             opts.memo = signer.memo;
             opts.chainId = signer.chainId;
             opts.accountNumber = signer.accountNumber;
@@ -751,6 +758,66 @@ public final class PqcDx {
                 SignBytes.Version fresh = resolveSignBytesVersion(true);
                 HybridTx.Built rebuilt = buildHybridTx(messages, fresh);
                 return broadcaster.broadcast(rebuilt.txRawBytes, Broadcaster.Mode.SYNC);
+            }
+        }
+
+        /**
+         * Simulate the hybrid tx for {@code messages} as it will be sent (with its
+         * ML-DSA-87 signature) and choose its gas limit ({@link AutoGas}): on a
+         * network that has applied chain v3.2.5, {@code ceil(simulated * 1.02) + 2000};
+         * otherwise {@code ceil(simulated * 1.4)}. Needs {@link Signer#restUrl}.
+         *
+         * @param multiplier an explicit multiplier, or {@code null} for the default rule.
+         */
+        public AutoGas.Estimate estimateGas(List<TypedMessage> messages, Double multiplier) {
+            SignBytes.Version version = resolveSignBytesVersion(false);
+            // Simulation runs without a gas limit or a fee check.
+            HybridTx.Built built = buildHybridTx(messages, version, new StdFee(List.of(), "0"));
+            return AutoGas.estimate(signer.restUrl, built.txRawBytes, true, multiplier, null);
+        }
+
+        /** The result of {@link #sendAuto}. */
+        public static final class AutoSendResult {
+            /** The simulation and the gas limit signed. */
+            public final AutoGas.Estimate estimate;
+            /** The fee paid for that gas limit. */
+            public final StdFee fee;
+            /** The broadcast result (SYNC). */
+            public final Broadcaster.Result result;
+
+            AutoSendResult(AutoGas.Estimate estimate, StdFee fee, Broadcaster.Result result) {
+                this.estimate = estimate;
+                this.fee = fee;
+                this.result = result;
+            }
+        }
+
+        /**
+         * Simulate, choose the gas limit ({@link #estimateGas}), price it at
+         * {@code gasPrice} (default {@link GasPrice#DEFAULT_GAS_PRICE}), then sign and
+         * broadcast as {@link #send(List)} does, including its one sign-bytes retry.
+         *
+         * @param gasPrice e.g. {@code "0.15uqor"}, or {@code null} for the default.
+         * @param multiplier an explicit gas multiplier, or {@code null} for the default rule.
+         */
+        public AutoSendResult sendAuto(List<TypedMessage> messages, String gasPrice, Double multiplier) {
+            AutoGas.Estimate est = estimateGas(messages, multiplier);
+            StdFee fee = GasPrice.calculateFee(
+                    est.gasWanted, gasPrice == null ? GasPrice.DEFAULT_GAS_PRICE : gasPrice);
+            SignBytes.Version version = resolveSignBytesVersion(false);
+            try {
+                HybridTx.Built built = buildHybridTx(messages, version, fee);
+                return new AutoSendResult(
+                        est, fee, broadcaster.broadcast(built.txRawBytes, Broadcaster.Mode.SYNC));
+            } catch (TxError.QoreTxException e) {
+                boolean auto =
+                        signer.signBytesMode == null || signer.signBytesMode == SignBytes.Mode.AUTO;
+                if (!auto || !SignBytes.isHybridVerifyRejection(e)) {
+                    throw e;
+                }
+                HybridTx.Built rebuilt = buildHybridTx(messages, resolveSignBytesVersion(true), fee);
+                return new AutoSendResult(
+                        est, fee, broadcaster.broadcast(rebuilt.txRawBytes, Broadcaster.Mode.SYNC));
             }
         }
     }

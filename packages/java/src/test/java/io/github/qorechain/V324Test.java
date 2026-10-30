@@ -289,6 +289,6 @@ class V324Test {
         // Text that names nothing stays generic.
         assertNull(TxError.errorFromText("something else"));
         assertEquals("sdk_0", TxError.decode(0, null, "something else", null).kind);
-        assertEquals(36, TxError.REGISTERED_ERRORS.size());
+        assertEquals(42, TxError.REGISTERED_ERRORS.size());
     }
 }

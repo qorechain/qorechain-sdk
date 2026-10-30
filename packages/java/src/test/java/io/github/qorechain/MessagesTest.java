@@ -16,8 +16,8 @@ import org.junit.jupiter.api.Test;
 /** Registry coverage of all 70 QoreChain custom messages + Any pack/unpack round-trip. */
 class MessagesTest {
 
-    /** The 70 QoreChain custom Msg type URLs (amm 7, bridge 8, rdk 8, multilayer 7, pqc 10,
-     * svm 5, lightnode 4, license 5, abstractaccount 6, crossvm 2, rlconsensus 4, stakingtier 4). */
+    /** The 75 QoreChain custom Msg type URLs (amm 7, bridge 8, rdk 8, multilayer 7, pqc 10,
+     * svm 5, lightnode 4, license 5, abstractaccount 6, crossvm 2, rlconsensus 4, stakingtier 4; v3.2.5 adds pqc 2, abstractaccount 1, crossvm 1, rdk 1). */
     private static final List<String> QORECHAIN_TYPE_URLS =
             List.of(
                     "/qorechain.amm.v1.MsgCreatePool",
@@ -89,11 +89,16 @@ class MessagesTest {
                     "/qorechain.stakingtier.v1.MsgLockDelegation",
                     "/qorechain.stakingtier.v1.MsgUnlockEarly",
                     "/qorechain.stakingtier.v1.MsgClaimBonus",
-                    "/qorechain.stakingtier.v1.MsgUpdateParams");
+                    "/qorechain.stakingtier.v1.MsgUpdateParams",
+                    "/qorechain.pqc.v1.MsgRegisterKEMKey",
+                    "/qorechain.pqc.v1.MsgRemoveKEMKey",
+                    "/qorechain.abstractaccount.v1.MsgUpdateConfig",
+                    "/qorechain.crossvm.v1.MsgUpdateParams",
+                    "/qorechain.rdk.v1.MsgUpdateParams");
 
     @Test
     void allCustomTypeUrlsRegistered() {
-        assertEquals(70, QORECHAIN_TYPE_URLS.size());
+        assertEquals(75, QORECHAIN_TYPE_URLS.size());
         Set<String> registered = Messages.typeUrls();
         for (String url : QORECHAIN_TYPE_URLS) {
             assertTrue(registered.contains(url), "missing registry entry: " + url);

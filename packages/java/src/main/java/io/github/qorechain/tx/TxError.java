@@ -91,6 +91,10 @@ public final class TxError {
         Map<Integer, String[]> aa = new HashMap<>();
         aa.put(5, new String[] {"spending_limit_exceeded", "authenticator spending limit exceeded"});
         aa.put(6, new String[] {"session_expired", "authenticator session expired"});
+        // 8: refused when the rules are saved (from v3.2.5 also an EVM denom whose
+        // address does not parse, and a rule or denom limit that bounds nothing).
+        aa.put(8, new String[] {"invalid_spending_rule", "invalid spending rule"});
+        aa.put(9, new String[] {"abstractaccount_disabled", "abstract account module is disabled"});
         aa.put(10, new String[] {"permission_denied", "authenticator permission denied"});
         // 11: the nonce is not the linked key's authenticator sequence (a per-key
         // counter, not the account's EVM nonce).
@@ -129,6 +133,17 @@ public final class TxError {
                     "pqc_maintenance_needs_hybrid",
                     "PQC key maintenance from a keyed account needs the hybrid signature"
                         + " (PqcDx.migratePqcKeyHybrid)"
+                });
+        // The KEM key registry (chain v3.2.5).
+        pqc.put(250, new String[] {"kem_registry_not_enabled", "the KEM key registry is not enabled on this chain yet"});
+        pqc.put(251, new String[] {"kem_key_invalid", "invalid KEM public key"});
+        pqc.put(252, new String[] {"kem_key_not_found", "no KEM key published for this account"});
+        pqc.put(253, new String[] {"kem_key_unchanged", "this KEM key is already published for this account"});
+        pqc.put(
+                254,
+                new String[] {
+                    "kem_needs_signature_key",
+                    "publishing a KEM key needs a registered post-quantum signature key"
                 });
         MODULE_CODES.put("pqc", pqc);
 
@@ -228,10 +243,16 @@ public final class TxError {
             new RegisteredError("pqc", 60, "no post-quantum consent for this EIP-7702 delegation"),
             new RegisteredError("pqc", 61, "invalid EIP-7702 delegation request"),
             new RegisteredError("pqc", 231, "PQC proof of possession does not verify"),
+            new RegisteredError("pqc", 250, "the KEM key registry is not enabled on this chain yet"),
+            new RegisteredError("pqc", 251, "invalid KEM public key"),
+            new RegisteredError("pqc", 252, "no KEM key published for this account"),
+            new RegisteredError("pqc", 253, "this KEM key is already published for this account"),
+            new RegisteredError("pqc", 254, "publishing a KEM key needs a registered post-quantum signature key"),
             new RegisteredError("abstractaccount", 2, "abstract account not found"),
             new RegisteredError("abstractaccount", 5, "spending limit exceeded"),
             new RegisteredError("abstractaccount", 6, "session key expired"),
             new RegisteredError("abstractaccount", 8, "invalid spending rule"),
+            new RegisteredError("abstractaccount", 9, "abstract account module is disabled"),
             new RegisteredError("abstractaccount", 10, "authenticator not permitted for this action"),
             new RegisteredError("abstractaccount", 11, "authenticator signature replay binding mismatch"),
             new RegisteredError("stakingtier", 3, "staking tiers are not active on this chain yet"),

@@ -64,6 +64,38 @@ public final class AbstractAccountQueryClient {
                 QueryOuterClass.QueryPermissionSchemaResponse.parser());
     }
 
+    /**
+     * {@code SpendingRules} (chain v3.2.5) - the rules stored for an account: the
+     * account-wide rules and the rule of every linked key that carries its own.
+     * Over REST: {@code /qorechain/abstractaccount/v1/accounts/{address}/spending_rules}.
+     */
+    public QueryOuterClass.QuerySpendingRulesResponse spendingRules(String address) {
+        ByteString req =
+                QueryOuterClass.QuerySpendingRulesRequest.newBuilder()
+                        .setAddress(address)
+                        .build()
+                        .toByteString();
+        return decode(
+                abci.request(SERVICE, "SpendingRules", req),
+                QueryOuterClass.QuerySpendingRulesResponse.parser());
+    }
+
+    /**
+     * {@code Authenticators} (chain v3.2.5) - the keys linked to an account,
+     * revoked ones included, with their permissions and expiry. Over REST:
+     * {@code /qorechain/abstractaccount/v1/accounts/{address}/authenticators}.
+     */
+    public QueryOuterClass.QueryAuthenticatorsResponse authenticators(String address) {
+        ByteString req =
+                QueryOuterClass.QueryAuthenticatorsRequest.newBuilder()
+                        .setAddress(address)
+                        .build()
+                        .toByteString();
+        return decode(
+                abci.request(SERVICE, "Authenticators", req),
+                QueryOuterClass.QueryAuthenticatorsResponse.parser());
+    }
+
     private static <T extends com.google.protobuf.Message> T decode(
             ByteString bytes, com.google.protobuf.Parser<T> parser) {
         try {

@@ -39,6 +39,14 @@ public final class ChainUpgrades {
      */
     public static final String V3_2_4 = "v3.2.4";
 
+    /**
+     * The KEM key registry ({@code MsgRegisterKEMKey} / {@code MsgRemoveKEMKey}),
+     * exact simulation gas (simulation includes the post-quantum verification),
+     * spending-rule bounds checked when the rules are saved, the abstract-account
+     * {@code MsgUpdateConfig}, and the crossvm and rdk {@code MsgUpdateParams}.
+     */
+    public static final String V3_2_5 = "v3.2.5";
+
     /** How long a "not applied yet" answer is trusted, in milliseconds. */
     static final long NOT_APPLIED_TTL_MS = 60_000L;
 

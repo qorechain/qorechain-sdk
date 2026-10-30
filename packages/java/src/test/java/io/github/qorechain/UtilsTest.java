@@ -1,6 +1,7 @@
 package io.github.qorechain;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -14,6 +15,7 @@ import io.github.qorechain.utils.Hashing;
 import io.github.qorechain.utils.Hex;
 import io.github.qorechain.utils.Units;
 import java.math.BigInteger;
+import java.util.List;
 import org.junit.jupiter.api.Test;
 
 /** Denom/units/address/validation/hash known-vector and network preset tests. */
@@ -90,14 +92,59 @@ class UtilsTest {
         assertEquals("qor", testnet.bech32.account);
         assertEquals("uqor", testnet.coin.base);
         assertEquals(6, testnet.coin.exponent);
-        assertEquals("http://localhost:1317", testnet.endpoints.rest);
-        assertEquals("http://localhost:26657", testnet.endpoints.rpc);
-        assertEquals("ws://localhost:8546", testnet.endpoints.evmWs);
+        // Public endpoints (the hostnames themselves live in Networks only).
+        assertTrue(testnet.endpoints.rest.startsWith("https://"));
+        assertTrue(testnet.endpoints.rpc.startsWith("https://"));
+        assertTrue(testnet.endpoints.evmRpc.startsWith("https://"));
+        assertTrue(testnet.endpoints.evmWs.startsWith("wss://"));
+        assertNull(testnet.endpoints.grpc);
+        assertNull(testnet.endpoints.svmRpc);
 
         NetworkConfig mainnet = Networks.get("mainnet");
         assertEquals("qorechain-vladi", mainnet.chainId);
         assertTrue(mainnet.live);
+        assertTrue(mainnet.endpoints.rest.startsWith("https://"));
+        assertTrue(mainnet.endpoints.rpc.startsWith("https://"));
+        assertTrue(mainnet.endpoints.evmRpc.startsWith("https://"));
+        assertNull(mainnet.endpoints.evmWs);
+        assertNull(mainnet.endpoints.grpc);
+        assertNull(mainnet.endpoints.svmRpc);
+        assertEquals(9801L, Networks.MAINNET_EVM_CHAIN_ID);
+        assertEquals(9800L, Networks.TESTNET_EVM_CHAIN_ID);
+
+        // localnet keeps the localhost endpoints the presets used before 0.12.0.
+        NetworkConfig local = Networks.get("localnet");
+        assertEquals("http://localhost:1317", local.endpoints.rest);
+        assertEquals("http://localhost:9090", local.endpoints.grpc);
+        assertEquals("http://localhost:26657", local.endpoints.rpc);
+        assertEquals("http://localhost:8545", local.endpoints.evmRpc);
+        assertEquals("ws://localhost:8546", local.endpoints.evmWs);
+        assertEquals("http://localhost:8899", local.endpoints.svmRpc);
+        assertEquals(List.of("testnet", "mainnet", "localnet"), Networks.list());
 
         assertThrows(IllegalArgumentException.class, () -> Networks.get("nope"));
+    }
+
+    @Test
+    void anUnsetEndpointFailsClearlyAndOverridesWin() {
+        NetworkConfig mainnet = Networks.get("mainnet");
+        IllegalStateException e =
+                assertThrows(IllegalStateException.class, () -> mainnet.requireEndpoint("evmWs"));
+        assertTrue(e.getMessage().contains("evmWs is not configured for the mainnet preset"), e.getMessage());
+        assertTrue(e.getMessage().contains("pass endpoints evmWs"), e.getMessage());
+        assertThrows(IllegalStateException.class, () -> mainnet.requireEndpoint("grpc"));
+        IllegalStateException svm =
+                assertThrows(IllegalStateException.class, () -> mainnet.requireEndpoint("svmRpc"));
+        assertTrue(svm.getMessage().contains("SVM transactions are not open"), svm.getMessage());
+        assertEquals(mainnet.endpoints.rest, mainnet.requireEndpoint("rest"));
+
+        NetworkConfig mine = Networks.get(
+                "mainnet",
+                new NetworkConfig.NetworkEndpoints(
+                        "http://my-node:1317", null, null, null, "ws://my-node:8546", null));
+        assertEquals("http://my-node:1317", mine.endpoints.rest);
+        assertEquals("ws://my-node:8546", mine.requireEndpoint("evmWs"));
+        assertEquals(mainnet.endpoints.rpc, mine.endpoints.rpc);
+        assertEquals("qorechain-vladi", mine.chainId);
     }
 }

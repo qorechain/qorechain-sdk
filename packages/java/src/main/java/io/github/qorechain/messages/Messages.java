@@ -14,7 +14,7 @@ import java.util.Set;
  * The QoreChain message registry: a {@code typeUrl → protobuf Parser} map plus
  * Native {@link Any} pack/unpack.
  *
- * <p>Covers all 70 QoreChain custom-module {@code Msg} types (amm, bridge, rdk,
+ * <p>Covers all 75 QoreChain custom-module {@code Msg} types (amm, bridge, rdk,
  * multilayer, pqc, svm, lightnode, license, abstractaccount, crossvm,
  * rlconsensus, stakingtier) and the standard Native messages exposed by {@link CosmosMessages}.
  *
@@ -132,6 +132,13 @@ public final class Messages {
         m.put("/qorechain.stakingtier.v1.MsgUnlockEarly", qorechain.stakingtier.v1.Tx.MsgUnlockEarly.parser());
         m.put("/qorechain.stakingtier.v1.MsgClaimBonus", qorechain.stakingtier.v1.Tx.MsgClaimBonus.parser());
         m.put("/qorechain.stakingtier.v1.MsgUpdateParams", qorechain.stakingtier.v1.Tx.MsgUpdateParams.parser());
+
+        // ---- chain v3.2.5 (5) ----
+        m.put("/qorechain.pqc.v1.MsgRegisterKEMKey", qorechain.pqc.v1.Tx.MsgRegisterKEMKey.parser());
+        m.put("/qorechain.pqc.v1.MsgRemoveKEMKey", qorechain.pqc.v1.Tx.MsgRemoveKEMKey.parser());
+        m.put("/qorechain.abstractaccount.v1.MsgUpdateConfig", qorechain.abstractaccount.v1.Tx.MsgUpdateConfig.parser());
+        m.put("/qorechain.crossvm.v1.MsgUpdateParams", qorechain.crossvm.v1.Tx.MsgUpdateParams.parser());
+        m.put("/qorechain.rdk.v1.MsgUpdateParams", qorechain.rdk.v1.Tx.MsgUpdateParams.parser());
 
         REGISTRY = Collections.unmodifiableMap(m);
     }

@@ -25,6 +25,13 @@ import qorechain.abstractaccount.v1.Tx.SpendingRule;
  * the rule sets. When a denom has an entry the chain applies only that entry and
  * skips the rule-level limits for the denom, so such an entry silently removes
  * every limit on it while the rule still reads as limited.
+ *
+ * <p>From chain v3.2.5 the chain refuses these shapes itself when the rules are
+ * saved ({@code abstractaccount} code 8, "invalid spending rule"), and also an
+ * EVM token denom whose contract address does not parse: an {@code erc20/},
+ * {@code erc721/} or {@code erc1155/} denom (in {@code denom_limits} or
+ * {@code allowed_denoms}) must carry a {@code 0x}-prefixed 20-byte address, and an
+ * {@code erc20/} denom is the address alone. The same check runs here.
  */
 public final class SpendingRules {
 
@@ -37,6 +44,41 @@ public final class SpendingRules {
     public static final int MAX_ALLOWED_EVM_CALLS = 64;
 
     private static final Pattern DECIMAL = Pattern.compile("^\\d+$");
+
+    /** The EVM token denom prefixes the chain parses (compared case-insensitively). */
+    public static final List<String> EVM_DENOM_PREFIXES = List.of("erc20/", "erc721/", "erc1155/");
+
+    private static final Pattern HEX_ADDRESS = Pattern.compile("^0[xX][0-9a-fA-F]{40}$");
+
+    /**
+     * Check one denom the way the chain's {@code ValidateEVMDenom} does (v3.2.5):
+     * a denom starting with {@code erc20/}, {@code erc721/} or {@code erc1155/}
+     * must continue with a {@code 0x}-prefixed 40-hex-digit contract address (up
+     * to the next {@code /}), and an {@code erc20/} denom may not continue after
+     * the address. Any other denom passes.
+     *
+     * @throws IllegalArgumentException naming the denom.
+     */
+    public static void validateEvmDenom(String denom) {
+        String lower = denom.toLowerCase(Locale.ROOT);
+        for (String p : EVM_DENOM_PREFIXES) {
+            if (!lower.startsWith(p)) {
+                continue;
+            }
+            String rest = denom.substring(p.length());
+            int slash = rest.indexOf('/');
+            String addr = slash >= 0 ? rest.substring(0, slash) : rest;
+            if (!HEX_ADDRESS.matcher(addr).matches()) {
+                throw new IllegalArgumentException("denom " + quote(denom) + ": " + p
+                        + " must be followed by a 0x-prefixed 20-byte contract address");
+            }
+            if ("erc20/".equals(p) && slash >= 0) {
+                throw new IllegalArgumentException(
+                        "denom " + quote(denom) + ": an erc20/ denom is the contract address alone");
+            }
+            return;
+        }
+    }
     private static final Pattern WHITESPACE_OR_CONTROL = Pattern.compile("[\\x00-\\x20\\x7f]");
 
     /**
@@ -80,6 +122,11 @@ public final class SpendingRules {
                 throw new IllegalArgumentException("spending rule " + i + ": denom " + quote(denom)
                         + " is too long or contains whitespace");
             }
+            try {
+                validateEvmDenom(denom);
+            } catch (IllegalArgumentException e) {
+                throw new IllegalArgumentException("spending rule " + i + ": " + e.getMessage());
+            }
             if (!seen.add(denom.toLowerCase(Locale.ROOT))) {
                 throw new IllegalArgumentException(
                         "spending rule " + i + ": denom " + denom + " has more than one limit");
@@ -92,6 +139,13 @@ public final class SpendingRules {
                         + " (an entry replaces the rule-level limits for its denom); set an amount or drop the entry");
             }
             boundingDenomLimit = true;
+        }
+        for (String d : rule.getAllowedDenomsList()) {
+            try {
+                validateEvmDenom(d);
+            } catch (IllegalArgumentException e) {
+                throw new IllegalArgumentException("spending rule " + i + ": " + e.getMessage());
+            }
         }
         boolean bounded = daily > 0 || perTx > 0 || rule.getAllowedDenomsCount() > 0 || calls > 0
                 || boundingDenomLimit;
