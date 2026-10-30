@@ -68,8 +68,9 @@ pub use errors::{
     decode_refusal_text, decode_tx_error, error_from_text, QoreTxError, REGISTERED_ERRORS,
 };
 pub use gas::{
-    calculate_fee, estimate_fee, estimate_gas, GasPrice, DEFAULT_GAS_MULTIPLIER, DEFAULT_GAS_PRICE,
-    GAS_AUTO,
+    calculate_fee, estimate_fee, estimate_gas, estimate_gas_wanted, exact_gas_applies,
+    exact_hybrid_gas, hybrid_gas_wanted, is_hybrid_tx, GasEstimate, GasPrice,
+    DEFAULT_GAS_MULTIPLIER, DEFAULT_GAS_PRICE, EXACT_GAS_HEADROOM, EXACT_GAS_MULTIPLIER, GAS_AUTO,
 };
 pub use search::{
     build_event_query, get_block, get_latest_block, get_tx, search_txs, TxSearchResult,

@@ -10,6 +10,10 @@ pub const CROSS_VM_CALL: &str = "/qorechain.crossvm.v1.MsgCrossVMCall";
 /// `/qorechain.crossvm.v1.MsgProcessQueue` type URL.
 pub const PROCESS_QUEUE: &str = "/qorechain.crossvm.v1.MsgProcessQueue";
 
+/// `/qorechain.crossvm.v1.MsgUpdateParams` type URL (chain v3.2.5, governance
+/// only).
+pub const UPDATE_PARAMS: &str = "/qorechain.crossvm.v1.MsgUpdateParams";
+
 /// `/qorechain.crossvm.v1.MsgCrossVMCallResponse` type URL - the `Msg` service
 /// response the chain returns for a [`CROSS_VM_CALL`].
 pub const CROSS_VM_CALL_RESPONSE: &str = "/qorechain.crossvm.v1.MsgCrossVMCallResponse";
@@ -82,4 +86,59 @@ pub fn process_queue(authority: impl Into<String>) -> pb::MsgProcessQueue {
 /// Builds `MsgProcessQueue` packed into an `Any`.
 pub fn process_queue_any(authority: impl Into<String>) -> Any {
     to_any(&process_queue(authority), PROCESS_QUEUE)
+}
+
+/// Builds `MsgUpdateParams` (chain v3.2.5): replace every crossvm parameter at
+/// once, among them the allowlist of targets the EVM bridge precompile may call
+/// (`bridge_allowed_targets`, each `"<vm>:<contract>"`, e.g.
+/// `"cosmwasm:qor1..."`; empty keeps the bridge shut). Governance only:
+/// `authority` is the gov module account. A field left at zero is set to zero,
+/// which the chain refuses for the numeric limits, so copy the current values
+/// from `/qorechain/crossvm/v1/params`.
+///
+/// # Errors
+///
+/// [`Error::InvalidInput`](crate::Error::InvalidInput) when `authority` is
+/// empty, a limit is zero, or a target is not `"<vm>:<contract>"`.
+pub fn update_params(
+    authority: impl Into<String>,
+    max_message_size: u64,
+    max_queue_size: u32,
+    queue_timeout_blocks: i64,
+    enabled: bool,
+    bridge_allowed_targets: Vec<String>,
+) -> crate::Result<pb::MsgUpdateParams> {
+    let authority = authority.into();
+    let bad = |m: String| crate::Error::InvalidInput(format!("crossvm update_params: {m}"));
+    if authority.is_empty() {
+        return Err(bad("authority is required".into()));
+    }
+    if max_message_size == 0 || max_queue_size == 0 || queue_timeout_blocks <= 0 {
+        return Err(bad(
+            "max_message_size, max_queue_size and queue_timeout_blocks must be positive".into(),
+        ));
+    }
+    for t in &bridge_allowed_targets {
+        match t.split_once(':') {
+            Some((vm, contract)) if !vm.is_empty() && !contract.is_empty() => {}
+            _ => {
+                return Err(bad(format!(
+                    "bridge target {t:?} is not \"<vm>:<contract>\""
+                )))
+            }
+        }
+    }
+    Ok(pb::MsgUpdateParams {
+        authority,
+        max_message_size,
+        max_queue_size,
+        queue_timeout_blocks,
+        enabled,
+        bridge_allowed_targets,
+    })
+}
+
+/// Packs a crossvm `MsgUpdateParams` into an `Any`.
+pub fn update_params_any(params: &pb::MsgUpdateParams) -> Any {
+    to_any(params, UPDATE_PARAMS)
 }

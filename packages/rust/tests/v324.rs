@@ -374,5 +374,6 @@ fn decode_tx_error_on_a_failed_simulation_text_only() {
     assert!(decode_refusal_text("").is_none());
     assert!(decode_refusal_text("something else").is_none());
     assert!(decode_tx_error(0, "", sim).is_none());
-    assert_eq!(REGISTERED_ERRORS.len(), 36);
+    // 36 through v3.2.4, plus pqc 250-254 and abstractaccount 9 from v3.2.5.
+    assert_eq!(REGISTERED_ERRORS.len(), 42);
 }

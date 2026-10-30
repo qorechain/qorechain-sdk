@@ -19,6 +19,10 @@ pub const MIGRATE_PQC_KEY: &str = "/qorechain.pqc.v1.MsgMigratePQCKey";
 pub const DEPRECATE_ALGORITHM: &str = "/qorechain.pqc.v1.MsgDeprecateAlgorithm";
 /// `/qorechain.pqc.v1.MsgDisableAlgorithm` type URL.
 pub const DISABLE_ALGORITHM: &str = "/qorechain.pqc.v1.MsgDisableAlgorithm";
+/// `/qorechain.pqc.v1.MsgRegisterKEMKey` type URL (chain v3.2.5).
+pub const REGISTER_KEM_KEY: &str = "/qorechain.pqc.v1.MsgRegisterKEMKey";
+/// `/qorechain.pqc.v1.MsgRemoveKEMKey` type URL (chain v3.2.5).
+pub const REMOVE_KEM_KEY: &str = "/qorechain.pqc.v1.MsgRemoveKEMKey";
 /// `/qorechain.pqc.v1.MsgRotatePQCKey` type URL.
 pub const ROTATE_PQC_KEY: &str = "/qorechain.pqc.v1.MsgRotatePQCKey";
 
@@ -396,4 +400,57 @@ pub fn clear_evm_delegation(sender: impl Into<String>) -> pb::MsgClearEvmDelegat
 /// Builds `MsgClearEVMDelegation` packed into an `Any`.
 pub fn clear_evm_delegation_any(sender: impl Into<String>) -> Any {
     to_any(&clear_evm_delegation(sender), CLEAR_EVM_DELEGATION)
+}
+
+/// Builds `MsgRegisterKEMKey` (chain v3.2.5): publish `public_key` so anyone can
+/// encrypt to `sender`. `algorithm_id` is a KEM algorithm of the on-chain
+/// registry ([`crate::kem::KEM_ALGORITHM_ML_KEM_1024`], 2, is the one
+/// registered). Sending it again replaces the published key. It must go out
+/// hybrid-signed (the sender needs a registered ML-DSA-87 key); the chain has
+/// no classical path for it.
+///
+/// # Errors
+///
+/// [`crate::Error::Pqc`] when an ML-KEM-1024 key fails
+/// [`crate::kem::validate_kem_public_key`].
+pub fn register_kem_key(
+    sender: impl Into<String>,
+    public_key: Vec<u8>,
+    algorithm_id: u32,
+) -> crate::Result<pb::MsgRegisterKemKey> {
+    crate::kem::validate_kem_public_key(algorithm_id, &public_key)?;
+    Ok(pb::MsgRegisterKemKey {
+        sender: sender.into(),
+        algorithm_id,
+        public_key,
+    })
+}
+
+/// Builds `MsgRegisterKEMKey` packed into an `Any`.
+///
+/// # Errors
+///
+/// As [`register_kem_key`].
+pub fn register_kem_key_any(
+    sender: impl Into<String>,
+    public_key: Vec<u8>,
+    algorithm_id: u32,
+) -> crate::Result<Any> {
+    Ok(to_any(
+        &register_kem_key(sender, public_key, algorithm_id)?,
+        REGISTER_KEM_KEY,
+    ))
+}
+
+/// Builds `MsgRemoveKEMKey` (chain v3.2.5): withdraw the sender's published KEM
+/// key. Hybrid-signed, like registration.
+pub fn remove_kem_key(sender: impl Into<String>) -> pb::MsgRemoveKemKey {
+    pb::MsgRemoveKemKey {
+        sender: sender.into(),
+    }
+}
+
+/// Builds `MsgRemoveKEMKey` packed into an `Any`.
+pub fn remove_kem_key_any(sender: impl Into<String>) -> Any {
+    to_any(&remove_kem_key(sender), REMOVE_KEM_KEY)
 }

@@ -19,6 +19,9 @@ pub const REVOKE_AUTHENTICATOR: &str = "/qorechain.abstractaccount.v1.MsgRevokeA
 pub const EXECUTE_EVM: &str = "/qorechain.abstractaccount.v1.MsgExecuteEVM";
 /// `/qorechain.abstractaccount.v1.MsgExecuteCosmos` type URL.
 pub const EXECUTE_COSMOS: &str = "/qorechain.abstractaccount.v1.MsgExecuteCosmos";
+/// `/qorechain.abstractaccount.v1.MsgUpdateConfig` type URL (chain v3.2.5,
+/// governance only).
+pub const UPDATE_CONFIG: &str = "/qorechain.abstractaccount.v1.MsgUpdateConfig";
 
 /// Builds `MsgCreateAbstractAccount`.
 pub fn create_abstract_account(
@@ -114,6 +117,12 @@ pub fn update_spending_rules_checked_any(
 // rule-level per-tx or daily limit, a denom list, an allowed-call list, or a
 // denom limit with a non-zero amount.
 //
+// From chain v3.2.5 the chain itself refuses these shapes when the rules are
+// saved (abstractaccount code 8, "invalid spending rule"), and also an EVM token
+// denom whose contract address does not parse: an `erc20/`, `erc721/` or
+// `erc1155/` denom (prefix in any case) must carry a 0x-prefixed 20-byte hex
+// address, and an `erc20/` denom is the address alone (no `/<token id>`).
+//
 // A denom limit with both amounts empty or zero is refused too, whatever else
 // the rule sets. When a denom has an entry the chain applies only that entry
 // and skips the rule-level limits for the denom, so such an entry silently
@@ -126,6 +135,43 @@ pub const MAX_ALLOWED_EVM_CALLS: usize = 64;
 
 fn rule_error(msg: String) -> crate::Error {
     crate::Error::SpendingRule(msg)
+}
+
+/// The EVM token denom prefixes the spending policy reads an address from.
+pub const EVM_DENOM_PREFIXES: [&str; 3] = ["erc20/", "erc721/", "erc1155/"];
+
+/// The chain's v3.2.5 check on an EVM token denom (`ValidateEVMDenom`): a denom
+/// that starts with `erc20/`, `erc721/` or `erc1155/` (any case) must follow it
+/// with a `0x`-prefixed 20-byte hex contract address, and an `erc20/` denom is
+/// that address alone. Any other denom passes.
+///
+/// # Errors
+///
+/// [`Error::SpendingRule`](crate::Error::SpendingRule) naming the denom.
+pub fn validate_evm_denom(denom: &str) -> crate::Result<()> {
+    let lower = denom.to_ascii_lowercase();
+    let Some(prefix) = EVM_DENOM_PREFIXES.iter().find(|p| lower.starts_with(**p)) else {
+        return Ok(());
+    };
+    let rest = &denom[prefix.len()..];
+    let (addr, tail) = match rest.find('/') {
+        Some(i) => (&rest[..i], &rest[i..]),
+        None => (rest, ""),
+    };
+    let ok = addr.len() == 42
+        && (addr.starts_with("0x") || addr.starts_with("0X"))
+        && addr[2..].bytes().all(|b| b.is_ascii_hexdigit());
+    if !ok {
+        return Err(rule_error(format!(
+            "denom {denom:?}: {prefix} must be followed by a 0x-prefixed 20-byte contract address"
+        )));
+    }
+    if *prefix == "erc20/" && !tail.is_empty() {
+        return Err(rule_error(format!(
+            "denom {denom:?}: an erc20/ denom is the contract address alone"
+        )));
+    }
+    Ok(())
 }
 
 /// A denom-limit amount: `""` is zero, otherwise a non-negative decimal
@@ -142,12 +188,21 @@ fn limit_amount_nonzero(s: &str, what: &str, i: usize) -> crate::Result<bool> {
     Ok(s.bytes().any(|b| b != b'0'))
 }
 
+fn strip_rule(e: crate::Error) -> String {
+    match e {
+        crate::Error::SpendingRule(m) => m,
+        other => other.to_string(),
+    }
+}
+
 /// Checks the rules of a `MsgUpdateSpendingRules` (see
 /// [`update_spending_rules_checked`]): limits non-negative, at most
 /// [`MAX_DENOM_LIMITS`] denom limits and [`MAX_ALLOWED_EVM_CALLS`] allowed
 /// calls, one limit per denom (case-insensitive), amounts as non-negative
 /// decimal integers, no denom limit with both amounts empty or zero (it would
-/// remove the limit for its denom), and no enabled rule that bounds nothing.
+/// remove the limit for its denom), no enabled rule that bounds nothing, and
+/// EVM token denoms whose contract address parses ([`validate_evm_denom`]).
+/// Chain v3.2.5 refuses the same rules when they are saved (code 8).
 ///
 /// # Errors
 ///
@@ -195,6 +250,8 @@ pub fn validate_spending_rules(rules: &[SpendingRule]) -> crate::Result<()> {
                     "spending rule {i}: denom {denom:?} is too long or contains whitespace"
                 )));
             }
+            validate_evm_denom(denom)
+                .map_err(|e| rule_error(format!("spending rule {i}: {}", strip_rule(e))))?;
             if !seen.insert(denom.to_lowercase()) {
                 return Err(rule_error(format!(
                     "spending rule {i}: denom {denom} has more than one limit"
@@ -212,6 +269,10 @@ pub fn validate_spending_rules(rules: &[SpendingRule]) -> crate::Result<()> {
                 )));
             }
             bounding_denom_limit = true;
+        }
+        for d in &rule.allowed_denoms {
+            validate_evm_denom(d)
+                .map_err(|e| rule_error(format!("spending rule {i}: {}", strip_rule(e))))?;
         }
         let bounded = rule.daily_limit > 0
             || rule.per_tx_limit > 0
@@ -412,4 +473,72 @@ pub fn execute_cosmos_any(
         ),
         EXECUTE_COSMOS,
     )
+}
+
+/// Builds `MsgUpdateConfig` (chain v3.2.5): replace the abstract-account
+/// configuration wholesale. Governance only: `authority` is the gov module
+/// account, so it runs from a passed proposal. Copy the current values from
+/// `/qorechain/abstractaccount/v1/config` and change only what you mean to;
+/// `enabled` gates account creation, authenticator registration and both
+/// execute lanes.
+///
+/// # Errors
+///
+/// [`Error::InvalidInput`](crate::Error::InvalidInput) when `authority` is
+/// empty or a limit is not positive (the chain requires all three positive).
+pub fn update_config(
+    authority: impl Into<String>,
+    enabled: bool,
+    max_session_keys: i32,
+    max_spending_rules: i32,
+    default_session_ttl: i64,
+) -> crate::Result<pb::MsgUpdateConfig> {
+    let authority = authority.into();
+    if authority.is_empty() {
+        return Err(crate::Error::InvalidInput(
+            "update_config: authority is required".into(),
+        ));
+    }
+    for (name, v) in [
+        ("max_session_keys", i64::from(max_session_keys)),
+        ("max_spending_rules", i64::from(max_spending_rules)),
+        ("default_session_ttl", default_session_ttl),
+    ] {
+        if v <= 0 {
+            return Err(crate::Error::InvalidInput(format!(
+                "update_config: {name} must be positive, got {v}"
+            )));
+        }
+    }
+    Ok(pb::MsgUpdateConfig {
+        authority,
+        enabled,
+        max_session_keys,
+        max_spending_rules,
+        default_session_ttl,
+    })
+}
+
+/// Builds `MsgUpdateConfig` packed into an `Any`.
+///
+/// # Errors
+///
+/// As [`update_config`].
+pub fn update_config_any(
+    authority: impl Into<String>,
+    enabled: bool,
+    max_session_keys: i32,
+    max_spending_rules: i32,
+    default_session_ttl: i64,
+) -> crate::Result<Any> {
+    Ok(to_any(
+        &update_config(
+            authority,
+            enabled,
+            max_session_keys,
+            max_spending_rules,
+            default_session_ttl,
+        )?,
+        UPDATE_CONFIG,
+    ))
 }

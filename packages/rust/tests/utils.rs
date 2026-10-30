@@ -4,7 +4,7 @@ use qorechain::address::{
     bech32_to_hex, bytes_to_bech32, hex_to_bech32, is_valid_bech32, DEFAULT_PREFIX,
 };
 use qorechain::denom::{from_base, to_base, DEFAULT_EXPONENT};
-use qorechain::networks::{get_network, list_networks};
+use qorechain::networks::{evm_chain_id, get_network, list_networks};
 
 #[test]
 fn to_base_exact_integer_math() {
@@ -99,15 +99,18 @@ fn hex_to_bech32_rejects_bad_hex() {
 }
 
 #[test]
-fn testnet_and_mainnet_are_live() {
+fn presets_default_to_public_endpoints() {
     let testnet = get_network("testnet").unwrap();
     assert!(testnet.live);
     assert_eq!(testnet.chain_id.as_deref(), Some("qorechain-diana"));
-    let eps = testnet.endpoints.unwrap();
-    assert_eq!(eps.rest, "http://localhost:1317");
-    assert_eq!(eps.rpc, "http://localhost:26657");
-    assert_eq!(eps.evm_rpc, "http://localhost:8545");
-    assert_eq!(eps.svm_rpc, "http://localhost:8899");
+    let eps = testnet.endpoints.clone().unwrap();
+    assert!(eps.rest.starts_with("https://"));
+    assert!(eps.rpc.starts_with("https://"));
+    assert!(eps.evm_rpc.starts_with("https://"));
+    assert!(eps.evm_ws.as_deref().unwrap().starts_with("wss://"));
+    assert_eq!(eps.grpc, None);
+    assert_eq!(eps.svm_rpc, None);
+    assert_eq!(evm_chain_id("testnet"), Some(9800));
     assert_eq!(testnet.coin.display, "QOR");
     assert_eq!(testnet.coin.base, "uqor");
     assert_eq!(testnet.coin.exponent, 6);
@@ -117,16 +120,42 @@ fn testnet_and_mainnet_are_live() {
     let mainnet = get_network("mainnet").unwrap();
     assert!(mainnet.live);
     assert_eq!(mainnet.chain_id.as_deref(), Some("qorechain-vladi"));
-    let meps = mainnet.endpoints.unwrap();
-    assert_eq!(meps.rest, "http://localhost:1317");
-    assert_eq!(meps.evm_rpc, "http://localhost:8545");
-    assert_eq!(meps.svm_rpc, "http://localhost:8899");
+    let meps = mainnet.endpoints.clone().unwrap();
+    assert!(meps.rest.starts_with("https://"));
+    assert!(meps.evm_rpc.starts_with("https://"));
+    assert_eq!(meps.grpc, None);
+    assert_eq!(meps.evm_ws, None);
+    assert_eq!(meps.svm_rpc, None);
+    assert_eq!(evm_chain_id("mainnet"), Some(9801));
+    assert_ne!(meps.rest, eps.rest);
     assert_eq!(mainnet.coin.display, "QOR");
     assert_eq!(mainnet.bech32.account, "qor");
     assert_eq!(mainnet.bech32.validator, "qorvaloper");
     assert_eq!(mainnet.bech32.consensus, "qorvalcons");
 
+    // An endpoint the preset does not serve is a clear error, never localhost.
+    let err = mainnet.endpoint("evm_ws").unwrap_err().to_string();
+    assert!(
+        err.contains("evm_ws is not configured for the mainnet preset"),
+        "{err}"
+    );
+    assert!(mainnet.endpoint("svm_rpc").is_err());
+    assert!(testnet.endpoint("grpc").is_err());
+    assert_eq!(mainnet.endpoint("rest").unwrap(), meps.rest);
+    assert!(mainnet.endpoint("bogus").is_err());
+
+    // localnet keeps the old localhost defaults.
+    let local = get_network("localnet").unwrap();
+    assert_eq!(local.chain_id.as_deref(), Some("qorechain-devnet"));
+    let leps = local.endpoints.unwrap();
+    assert_eq!(leps.rest, "http://localhost:1317");
+    assert_eq!(leps.grpc.as_deref(), Some("http://localhost:9090"));
+    assert_eq!(leps.rpc, "http://localhost:26657");
+    assert_eq!(leps.evm_rpc, "http://localhost:8545");
+    assert_eq!(leps.evm_ws.as_deref(), Some("ws://localhost:8546"));
+    assert_eq!(leps.svm_rpc.as_deref(), Some("http://localhost:8899"));
+
     assert!(get_network("nonexistent").is_err());
 
-    assert_eq!(list_networks(), vec!["testnet", "mainnet"]);
+    assert_eq!(list_networks(), vec!["testnet", "mainnet", "localnet"]);
 }

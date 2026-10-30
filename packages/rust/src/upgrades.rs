@@ -30,6 +30,13 @@ pub const CHAIN_UPGRADE_V3_2_3: &str = "v3.2.3";
 /// `possession_proven`, and the bridge validator's proof of possession.
 pub const CHAIN_UPGRADE_V3_2_4: &str = "v3.2.4";
 
+/// The KEM key registry (`MsgRegisterKEMKey` / `MsgRemoveKEMKey`), simulation
+/// that already charges the post-quantum verification (exact gas, see
+/// [`crate::tx::exact_hybrid_gas`]), spending-rule bounds checked when a rule is
+/// saved, the abstract-account `MsgUpdateConfig` and the crossvm / rdk
+/// `MsgUpdateParams`. Applied on mainnet at height 3,906,833.
+pub const CHAIN_UPGRADE_V3_2_5: &str = "v3.2.5";
+
 /// How long a "not applied yet" answer is trusted. An applied plan stays
 /// applied and is cached for the life of the process.
 const NOT_APPLIED_TTL: Duration = Duration::from_secs(60);

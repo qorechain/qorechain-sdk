@@ -120,10 +120,28 @@ pub const REGISTERED_ERRORS: &[(&str, u32, &str)] = &[
     ),
     ("pqc", 61, "invalid EIP-7702 delegation request"),
     ("pqc", 231, "PQC proof of possession does not verify"),
+    (
+        "pqc",
+        250,
+        "the KEM key registry is not enabled on this chain yet",
+    ),
+    ("pqc", 251, "invalid KEM public key"),
+    ("pqc", 252, "no KEM key published for this account"),
+    (
+        "pqc",
+        253,
+        "this KEM key is already published for this account",
+    ),
+    (
+        "pqc",
+        254,
+        "publishing a KEM key needs a registered post-quantum signature key",
+    ),
     ("abstractaccount", 2, "abstract account not found"),
     ("abstractaccount", 5, "spending limit exceeded"),
     ("abstractaccount", 6, "session key expired"),
     ("abstractaccount", 8, "invalid spending rule"),
+    ("abstractaccount", 9, "abstract account module is disabled"),
     (
         "abstractaccount",
         10,
@@ -265,6 +283,9 @@ fn module_reason(codespace: &str, code: u32) -> Option<&'static str> {
         // relayer-authorized MsgExecuteEVM / MsgExecuteCosmos fail-closed on these.
         ("abstractaccount", 5) => "spending limit exceeded",
         ("abstractaccount", 6) => "session key expired",
+        // v3.2.5 checks a rule's bounds and EVM denoms when it is saved.
+        ("abstractaccount", 8) => "invalid spending rule",
+        ("abstractaccount", 9) => "abstract account module is disabled",
         ("abstractaccount", 10) => "authenticator not permitted for this action",
         // The nonce is not the linked key's authenticator sequence (a per-key
         // counter, not the account's EVM nonce).
@@ -306,6 +327,18 @@ fn module_reason(codespace: &str, code: u32) -> Option<&'static str> {
         ("pqc", 234) => {
             "an account with a registered PQC key must send key registration or migration \
              with the hybrid signature (PqcDx::build_hybrid with the current key)"
+        }
+        // v3.2.5 KEM key registry (crate::kem).
+        ("pqc", 250) => "the KEM key registry is not enabled on this network yet",
+        ("pqc", 251) => {
+            "invalid KEM public key (ML-KEM-1024 takes exactly 1568 bytes with every \
+             coefficient below 3329)"
+        }
+        ("pqc", 252) => "no KEM key published for this account",
+        ("pqc", 253) => "this KEM key is already published for this account",
+        ("pqc", 254) => {
+            "publishing a KEM key needs a registered post-quantum signature key; register \
+             the account's ML-DSA-87 key first"
         }
         // v3.2.4 staking tiers (crate::stakingtier; the kinds are in
         // crate::stakingtier::stakingtier_error_kind).

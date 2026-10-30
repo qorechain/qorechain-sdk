@@ -7,9 +7,9 @@
 //! convenience.
 //!
 //! Network resolution rules:
-//! - The default network is `"testnet"`. Both `"testnet"` and `"mainnet"` are
-//!   live and ship localhost endpoint defaults; callers can override them with
-//!   real hostnames.
+//! - The default network is `"testnet"`. `"testnet"` and `"mainnet"` default
+//!   to the public endpoints, `"localnet"` to a node on localhost (see
+//!   [`mod@crate::networks`]); any endpoint can be overridden.
 
 use crate::error::{Error, Result};
 use crate::networks::{get_network, Endpoints, NetworkConfig};
@@ -271,7 +271,7 @@ fn overlay(eps: &mut Endpoints, o: &EndpointOverrides) {
         eps.rest = v.clone();
     }
     if let Some(v) = &o.grpc {
-        eps.grpc = v.clone();
+        eps.grpc = Some(v.clone());
     }
     if let Some(v) = &o.rpc {
         eps.rpc = v.clone();
@@ -280,10 +280,10 @@ fn overlay(eps: &mut Endpoints, o: &EndpointOverrides) {
         eps.evm_rpc = v.clone();
     }
     if let Some(v) = &o.evm_ws {
-        eps.evm_ws = v.clone();
+        eps.evm_ws = Some(v.clone());
     }
     if let Some(v) = &o.svm_rpc {
-        eps.svm_rpc = v.clone();
+        eps.svm_rpc = Some(v.clone());
     }
 }
 
@@ -294,11 +294,11 @@ fn require_endpoint(key: &str, value: &str) -> Result<String> {
     Ok(value.to_string())
 }
 
-/// Creates a composed [`Client`] for the given network using default localhost
-/// endpoints (testnet) or the supplied overrides.
+/// Creates a composed [`Client`] for the given network preset (`"mainnet"`,
+/// `"testnet"` or `"localnet"`) with its default endpoints.
 ///
 /// This is a convenience wrapper over [`ClientBuilder`]. It returns an error if
-/// mainnet is selected without endpoints, or if a required endpoint is missing.
+/// the network is unknown or a required endpoint is missing.
 pub fn create_client(network: &str) -> Result<Client> {
     ClientBuilder::new().network(network).build()
 }

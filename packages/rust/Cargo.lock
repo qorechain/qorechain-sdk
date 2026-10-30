@@ -1020,7 +1020,7 @@ dependencies = [
 
 [[package]]
 name = "qorechain-sdk"
-version = "0.10.0"
+version = "0.12.0"
 dependencies = [
  "base64",
  "bech32",

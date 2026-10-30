@@ -13,7 +13,7 @@ Python, and Go SDK surfaces for the native chain.
 
 ```toml
 [dependencies]
-qorechain-sdk = "0.10" # imported as `qorechain`
+qorechain-sdk = "0.12" # imported as `qorechain`
 tokio = { version = "1", features = ["macros", "rt-multi-thread"] }
 ```
 
@@ -23,7 +23,7 @@ Requires Rust 1.74+.
 
 | Module | Purpose |
 |---|---|
-| `networks` | Network presets (`testnet` and `mainnet`, both live), `get_network`. |
+| `networks` | Network presets (`mainnet` and `testnet` on the public endpoints, `localnet` on localhost), `get_network`, `NetworkConfig::endpoint`. |
 | `denom` | `to_base` / `from_base` exact integer money math (no floats). |
 | `address` | bech32 ⇄ hex conversion and validation. |
 | `accounts` | BIP-39 mnemonics + HD derivation (native, EVM, SVM). |
@@ -39,6 +39,9 @@ Requires Rust 1.74+.
 | `cross_vm` | Unified cross-VM call helper over `MsgCrossVMCall` (single + atomic triple-VM). |
 | `pqc_dx` | PQC key helpers: idempotent PQC-key registration + classical→hybrid migration. |
 | `evm_window` | The v3.2.0 EVM authorisation window: local bounds, `evm_window` status query, refusal classifier. |
+| `kem` | The v3.2.5 KEM key registry: key check and the `/qorechain/pqc/v1/kem/{address}` read. |
+| `abstractaccount` | The v3.2.5 abstract-account reads: stored spending rules and linked keys. |
+| `upgrades` | Which chain releases a network has applied (`applied_plan`, cached). |
 
 ### Typed messages and composers
 
@@ -105,8 +108,32 @@ async fn main() -> qorechain::Result<()> {
 }
 ```
 
-Mainnet (chain id `qorechain-vladi`) is live; select it and override the
-localhost defaults with your node URLs:
+### Network presets
+
+From 0.12.0 the `mainnet` and `testnet` presets use the public endpoints;
+before, both pointed at localhost. All built-in hostnames live in one table in
+`src/networks.rs`.
+
+| Preset | Chain id | EVM chain id | REST, RPC, EVM JSON-RPC | EVM WebSocket | gRPC | SVM |
+|---|---|---|---|---|---|---|
+| `mainnet` | `qorechain-vladi` | 9801 | public | none | none | none |
+| `testnet` | `qorechain-diana` | 9800 | public | public | none | none |
+| `localnet` | `qorechain-devnet` | 9800 | `localhost` (`:1317`, `:26657`, `:8545`) | `ws://localhost:8546` | `localhost:9090` | `localhost:8899` |
+
+- The public testnet endpoints have a per-IP rate limit at the edge. For
+  production, run your own node (or use a provider) and pass its URLs.
+- Neither public network serves gRPC, mainnet has no public EVM WebSocket (poll
+  instead), and no SVM endpoint is preset because SVM transactions are not open
+  on either network. Those fields are `None`, and
+  `NetworkConfig::endpoint("evm_ws")` (or `"grpc"`, `"svm_rpc"`) returns
+  `Error::EndpointNotConfigured` ("evm_ws is not configured for the mainnet
+  preset; set endpoints.evm_ws (or use your own node)") instead of falling back
+  to localhost.
+- `Endpoints::grpc`, `evm_ws` and `svm_rpc` are `Option<String>` from 0.12.0.
+- `https://download.qore.host/<net>/latest.json` is a release manifest
+  (version, peers, state sync), not an endpoint.
+
+Any endpoint can be overridden; an override replaces the preset value:
 
 ```rust,no_run
 use qorechain::ClientBuilder;
@@ -115,9 +142,13 @@ let client = ClientBuilder::new()
     .network("mainnet")
     .rest("https://rest.example")
     .evm_rpc("https://evm.example")
+    .evm_ws("wss://ws.example")
     .build()
     .unwrap();
 // client.network.chain_id == Some("qorechain-vladi".into())
+
+// The pre-0.12 localhost defaults:
+let local = ClientBuilder::new().network("localnet").build().unwrap();
 ```
 
 ### Derive accounts
@@ -242,9 +273,8 @@ failed"), the SDK re-asks the node, re-signs and broadcasts **once** more. A
 legacy chain with no REST URL, or a failed query, is an error - the SDK never
 guesses.
 
-**Today:** the testnet has applied `v3.1.98` and verifies **v2 only**; the
-mainnet has not, and stays on **v1** until it applies `v3.2.0` (the `auto` rule
-then switches automatically).
+**Today:** both networks verify **v2 only**: the testnet applied `v3.1.98`,
+mainnet applied `v3.2.0`.
 
 **Override.** Pass an explicit version to pin the form with no network call:
 `SignBytesMode::V1` / `V2` on the async paths (never retried), or
@@ -260,7 +290,7 @@ use qorechain::signbytes::{SignBytesMode, SignBytesResolver, SignBytesVersion};
 use qorechain::tx::{broadcast_hybrid_tx, build_hybrid_tx, BroadcastMode, BuildHybridTxParams};
 
 # async fn run(mut params: BuildHybridTxParams) -> qorechain::Result<()> {
-let rest = "https://api-testnet.qore.host";
+let rest = &qorechain::get_network("testnet")?.endpoint("rest")?;
 
 // Resolve once, then build offline.
 let version = SignBytesResolver::new()
@@ -311,7 +341,9 @@ let built = tx::send_messages(tx::SendMessagesParams {
     // Auto-gas via simulate. A simulation the chain refuses with a registered
     // error is `Error::Tx` naming it (e.g. stakingtier 12, "no bonus to claim");
     // `tx::decode_refusal_text(text)` names any text-only refusal the same way.
-    fee: tx::estimate_fee(rest, &[], 1.4, "0.15uqor").await?,
+    // A multiplier <= 0 takes the default rule: exact gas for a hybrid tx on
+    // chain v3.2.5 (see "Exact gas on chain v3.2.5"), else gas_used x 1.4.
+    fee: tx::estimate_fee(rest, &[], 0.0, "0.15uqor").await?,
     memo: String::new(),
     timeout_height: 0,
 })?;
@@ -680,7 +712,7 @@ use qorechain::query::RestClient;
 
 # async fn run() -> qorechain::Result<()> {
 // 1. Check what the account has. 200 with found:false when absent - safe to poll.
-let rest = RestClient::new("https://api.qore.host");
+let rest = RestClient::new(qorechain::get_network("mainnet")?.endpoint("rest")?);
 let status = get_evm_window(&rest, "qor1…").await?;
 status.found;            // bool
 status.live;             // bool - a stored window may be expired or exhausted
@@ -779,7 +811,7 @@ use qorechain::query::RestClient;
 use qorechain::stakingtier::{fetch_staking_locks, fetch_staking_tier_params};
 
 # async fn run(delegator: &str, validator: &str) -> qorechain::Result<()> {
-let rest = RestClient::new("https://api.qore.host");
+let rest = RestClient::new(qorechain::get_network("mainnet")?.endpoint("rest")?);
 let params = fetch_staking_tier_params(&rest).await?;
 // params.lock_tiers → [StakingLockTier { months: 3, bonus_bps: 150 }, { months: 6, … }, …]
 
@@ -813,7 +845,7 @@ use qorechain::protocol_features::{fetch_protocol_features, is_protocol_feature_
 use qorechain::query::RestClient;
 
 # async fn run(address: &str, pubkey: &[u8]) -> qorechain::Result<()> {
-let rest = RestClient::new("https://api.qore.host");
+let rest = RestClient::new(qorechain::get_network("mainnet")?.endpoint("rest")?);
 
 // The nonce a linked authenticator key must sign next (MsgExecuteEVM / MsgExecuteCosmos).
 let n = fetch_auth_nonce(&rest, address, pubkey).await?; // n.nonce, n.linked; hex &str works too
@@ -823,11 +855,105 @@ let on = is_protocol_feature_enabled(&rest, "pqc-sign-bytes-v2").await?;
 let features = fetch_protocol_features(&rest).await?; // features.features, features.height
 
 // Whether the account's PQC key was proven by a proof of possession (None when not reported).
-let proven = fetch_pqc_status("https://api.qore.host", address).await?.possession_proven;
+let rest_url = qorechain::get_network("mainnet")?.endpoint("rest")?;
+let proven = fetch_pqc_status(&rest_url, address).await?.possession_proven;
 # let _ = (n, on, features, proven);
 # Ok(())
 # }
 ```
+
+## Chain v3.2.5 (0.12.0)
+
+Mainnet applied `v3.2.5` at height 3,906,833; the testnet runs `v3.2.6`.
+
+### Chain versions and feature detection
+
+Nodes do not report their binary version: `node_info` leaves
+`application_version` empty on purpose, against fingerprinting. To tell what a
+network supports, ask `applied_plan` by plan name, and ask for EVERY plan name
+that carries the feature, since a release can have different names per network:
+
+    GET {rest}/cosmos/upgrade/v1beta1/applied_plan/{name}  ->  {"height":"<n>"}  (0 = not applied)
+
+- mainnet has applied `v3.2.5`; the testnet has applied `v3.2.5` and `v3.2.6`;
+- hybrid sign-bytes v2 is `v3.2.0` on mainnet and `v3.1.98` on the testnet
+  (`SIGN_BYTES_V2_UPGRADES` holds both).
+
+`upgrades::upgrade_applied_height` / `is_upgrade_applied` do this with a cache
+(an applied plan for the life of the process, "not yet" for 60 s), and
+`protocol_features` reads the individual switches by name. For a human-readable
+version use the release manifest `https://download.qore.host/<net>/latest.json`
+(`.version`, `mainnet` or `testnet`).
+
+### Exact gas on chain v3.2.5
+
+From `v3.2.5` a simulation already charges the post-quantum verification of a
+hybrid transaction (2,000 gas per signer), so the simulated gas is what the
+transaction spends. On a network that has applied `v3.2.5`, the default auto-gas
+rule for a hybrid transaction is
+
+    gas_wanted = ceil(simulated * 1.02) + 2000      (tx::exact_hybrid_gas)
+
+once per transaction, not per signer. Native-lane fees are the full gas limit
+times the gas price, so a tighter limit is a lower fee. `tx::estimate_fee` and
+`tx::estimate_gas_wanted` apply it when the signed bytes carry the hybrid
+extension (`tx::is_hybrid_tx`) and the multiplier is the default (`<= 0`); the
+plan lookup is cached per REST endpoint. A network below `v3.2.5`, a failed
+lookup, a classical transaction or an explicit multiplier keep
+`ceil(simulated * multiplier)` (1.4 by default), as before.
+
+```rust,no_run
+# async fn run(rest: &str, signed_hybrid_tx: &[u8]) -> qorechain::Result<()> {
+let est = qorechain::tx::estimate_gas_wanted(rest, signed_hybrid_tx, 0.0).await?;
+// est.simulated, est.gas_wanted, est.exact
+let fee = qorechain::tx::calculate_fee(est.gas_wanted, 1.0, &qorechain::GasPrice::parse("0.1uqor")?);
+# let _ = fee;
+# Ok(())
+# }
+```
+
+Measured on the testnet with this rule: a hybrid bank send simulated at
+166,292 gas, was given 171,618 and used 166,602.
+
+### KEM key registry
+
+An account can publish one ML-KEM-1024 (FIPS 203) encapsulation key so anyone
+can encrypt to it. The chain stores and serves the raw key; it defines no
+encryption context, and this crate does no encryption.
+
+- `msg::pqc::register_kem_key(sender, public_key, 2)` /
+  `register_kem_key_any`: algorithm id 2 (`kem::KEM_ALGORITHM_ML_KEM_1024`), a
+  1,568-byte key. The composer runs the chain's checks first
+  (`kem::validate_kem_public_key`: size, every coefficient below 3329, not all
+  zero). Sending again replaces the key (the response says `replaced`).
+- `msg::pqc::remove_kem_key(sender)` / `remove_kem_key_any`.
+- `kem::fetch_kem_key(&rest, address)` (bech32 or `0x`) returns `found` and the
+  key (`algorithm_id`, `algorithm_name`, `public_key`, `registered_height`);
+  `TypedQueryClient::pqc_kem_key` is the same over ABCI.
+
+Both messages always need the hybrid signature, so the sender needs a
+registered ML-DSA-87 key; there is no proof of possession and both are refused
+through authz. Refusals are `pqc` 250 to 254 (`kem::KEM_ERROR_CODES`):
+`ErrKEMRegistryNotEnabled`, `ErrInvalidKEMKey`, `ErrKEMKeyNotFound`,
+`ErrKEMKeyUnchanged`, `ErrKEMNeedsSignatureKey`, named by `tx::decode_tx_error`
+and, for text-only refusals, `tx::decode_refusal_text`.
+
+### Spending rules, configuration and parameters
+
+- `msg::abstractaccount::validate_spending_rules` (run by
+  `update_spending_rules_checked`) also checks EVM token denoms
+  (`validate_evm_denom`): an `erc20/`, `erc721/` or `erc1155/` denom needs a
+  `0x`-prefixed 20-byte contract address, and an `erc20/` denom is the address
+  alone. Chain v3.2.5 refuses the same rules when they are saved
+  (`abstractaccount` code 8, "invalid spending rule").
+- `abstractaccount::fetch_spending_rules(&rest, address)` and
+  `fetch_authenticators(&rest, address)` read what is stored (also over ABCI:
+  `TypedQueryClient::abstractaccount_spending_rules` / `_authenticators`).
+- Governance messages: `msg::abstractaccount::update_config` (the module's
+  `enabled` switch and limits), `msg::crossvm::update_params` (including the
+  EVM bridge precompile's `bridge_allowed_targets`, `"<vm>:<contract>"`), and
+  `msg::rdk::update_params`. Each replaces the whole configuration: copy the
+  current values and change only what you mean to.
 
 ## Development
 

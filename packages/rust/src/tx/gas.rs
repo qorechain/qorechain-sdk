@@ -4,6 +4,18 @@
 //! `/cosmos/tx/v1beta1/simulate` endpoint and returns the gas the chain reports
 //! it would use; [`calculate_fee`] turns a gas limit into a [`Fee`] via a
 //! multiplier and a [`GasPrice`]; [`estimate_fee`] combines the two.
+//!
+//! **Exact gas on chain v3.2.5.** From v3.2.5 a simulation already charges the
+//! post-quantum verification of a hybrid transaction (2,000 gas per signer), so
+//! the simulated gas is what the transaction spends. On a network that has
+//! applied `v3.2.5`, the auto-gas path ([`estimate_gas_wanted`],
+//! [`estimate_fee`]) sets a hybrid transaction's gas limit to
+//! [`exact_hybrid_gas`]: `ceil(simulated * 1.02) + 2000`. Native-lane fees are
+//! the full gas limit times the gas price, so the tighter limit is a lower fee.
+//! A network below v3.2.5, a failed plan lookup, a classical transaction or an
+//! explicit multiplier keep the multiplier path (`ceil(simulated * 1.4)` by
+//! default). The plan lookup is cached per REST endpoint
+//! ([`crate::upgrades`]).
 
 use crate::error::{Error, Result};
 use crate::tx::{Coin, Fee};
@@ -19,6 +31,112 @@ pub const DEFAULT_GAS_MULTIPLIER: f64 = 1.4;
 pub const DEFAULT_GAS_PRICE: &str = "0.15uqor";
 /// The sentinel `Fee.gas` value that requests gas simulation.
 pub const GAS_AUTO: &str = "auto";
+/// The margin [`exact_hybrid_gas`] puts on a v3.2.5 simulation (2 %).
+pub const EXACT_GAS_MULTIPLIER: f64 = 1.02;
+/// The fixed headroom [`exact_hybrid_gas`] adds on top of the margin. Added
+/// once per transaction, not per signer: the simulation already charges every
+/// signer's verification.
+pub const EXACT_GAS_HEADROOM: u64 = 2000;
+
+/// The gas limit for a hybrid transaction on a network that has applied
+/// `v3.2.5`: `ceil(simulated * 1.02) + 2000`, in integer arithmetic.
+pub fn exact_hybrid_gas(simulated: u64) -> u64 {
+    // ceil(simulated * 102 / 100) without floating point (100_000 * 1.02 in
+    // f64 is 102000.00000000001, which would round up one gas too many).
+    ((simulated as u128 * 102).div_ceil(100) as u64).saturating_add(EXACT_GAS_HEADROOM)
+}
+
+/// Whether signed `tx_bytes` (a `TxRaw`) carry the hybrid PQC signature
+/// extension. Undecodable bytes are not hybrid.
+pub fn is_hybrid_tx(tx_bytes: &[u8]) -> bool {
+    use cosmrs::proto::cosmos::tx::v1beta1::{TxBody, TxRaw};
+    use cosmrs::proto::traits::Message as _;
+    let Ok(raw) = TxRaw::decode(tx_bytes) else {
+        return false;
+    };
+    let Ok(body) = TxBody::decode(raw.body_bytes.as_slice()) else {
+        return false;
+    };
+    body.extension_options
+        .iter()
+        .any(|a| a.type_url == crate::pqc::HYBRID_SIG_TYPE_URL)
+}
+
+/// Whether the network behind `rest_url` simulates hybrid transactions exactly
+/// (it has applied `v3.2.5`). The answer is cached per endpoint (an applied plan
+/// for the life of the process, "not yet" for 60 s); a lookup that fails is
+/// `false`, which keeps the larger multiplier path.
+pub async fn exact_gas_applies(rest_url: &str) -> bool {
+    let base = rest_url.trim_end_matches('/');
+    let rest = crate::query::RestClient::new(base.to_string());
+    crate::upgrades::is_upgrade_applied(&rest, crate::upgrades::CHAIN_UPGRADE_V3_2_5, Some(base))
+        .await
+        .unwrap_or(false)
+}
+
+/// The result of [`estimate_gas_wanted`].
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub struct GasEstimate {
+    /// The gas the simulation reported.
+    pub simulated: u64,
+    /// The gas limit to sign.
+    pub gas_wanted: u64,
+    /// Whether the v3.2.5 exact rule ([`exact_hybrid_gas`]) set `gas_wanted`.
+    pub exact: bool,
+}
+
+fn multiplied(simulated: u64, multiplier: f64) -> u64 {
+    let m = if multiplier <= 0.0 {
+        DEFAULT_GAS_MULTIPLIER
+    } else {
+        multiplier
+    };
+    (simulated as f64 * m).ceil() as u64
+}
+
+/// The gas limit for a hybrid transaction that simulated at `simulated`.
+///
+/// `multiplier > 0` is honoured as `ceil(simulated * multiplier)`. With the
+/// default (`multiplier <= 0`) the limit is [`exact_hybrid_gas`] when the
+/// network behind `rest_url` has applied `v3.2.5`, else
+/// `ceil(simulated * DEFAULT_GAS_MULTIPLIER)` as before.
+pub async fn hybrid_gas_wanted(rest_url: &str, simulated: u64, multiplier: f64) -> GasEstimate {
+    if multiplier <= 0.0 && exact_gas_applies(rest_url).await {
+        return GasEstimate {
+            simulated,
+            gas_wanted: exact_hybrid_gas(simulated),
+            exact: true,
+        };
+    }
+    GasEstimate {
+        simulated,
+        gas_wanted: multiplied(simulated, multiplier),
+        exact: false,
+    }
+}
+
+/// Simulates signed `tx_bytes` and picks the gas limit: [`hybrid_gas_wanted`]
+/// for a hybrid transaction, `ceil(simulated * multiplier)` (default
+/// [`DEFAULT_GAS_MULTIPLIER`] when `multiplier <= 0`) for a classical one.
+///
+/// # Errors
+///
+/// As [`estimate_gas`].
+pub async fn estimate_gas_wanted(
+    rest_url: &str,
+    tx_bytes: &[u8],
+    multiplier: f64,
+) -> Result<GasEstimate> {
+    let simulated = estimate_gas(rest_url, tx_bytes).await?;
+    if is_hybrid_tx(tx_bytes) {
+        return Ok(hybrid_gas_wanted(rest_url, simulated, multiplier).await);
+    }
+    Ok(GasEstimate {
+        simulated,
+        gas_wanted: multiplied(simulated, multiplier),
+        exact: false,
+    })
+}
 
 /// A parsed price per unit of gas: an exact decimal amount plus a denom.
 ///
@@ -160,11 +278,12 @@ pub async fn estimate_gas(rest_url: &str, tx_bytes: &[u8]) -> Result<u64> {
         .map_err(|_| Error::InvalidResponse(format!("invalid gas_used: {gas_used:?}")))
 }
 
-/// Simulates `tx_bytes` and returns the auto-gas [`Fee`] (`gas_used × multiplier
-/// × price`).
+/// Simulates `tx_bytes` and returns the auto-gas [`Fee`]: the gas limit from
+/// [`estimate_gas_wanted`] (exact on v3.2.5 for a hybrid transaction, else
+/// `gas_used × multiplier`) times the price.
 ///
 /// Pass an empty `price_str` to use [`DEFAULT_GAS_PRICE`] and a `multiplier <= 0`
-/// to use [`DEFAULT_GAS_MULTIPLIER`].
+/// for the default rule.
 pub async fn estimate_fee(
     rest_url: &str,
     tx_bytes: &[u8],
@@ -177,6 +296,6 @@ pub async fn estimate_fee(
         price_str
     };
     let price = GasPrice::parse(price_str)?;
-    let gas_used = estimate_gas(rest_url, tx_bytes).await?;
-    Ok(calculate_fee(gas_used, multiplier, &price))
+    let estimate = estimate_gas_wanted(rest_url, tx_bytes, multiplier).await?;
+    Ok(calculate_fee(estimate.gas_wanted, 1.0, &price))
 }

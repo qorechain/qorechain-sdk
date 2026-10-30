@@ -13,6 +13,16 @@ pub enum Error {
     #[error("endpoint \"{0}\" is not configured - pass it via create_client endpoints")]
     MissingEndpoint(String),
 
+    /// A network preset serves no endpoint of this kind (for example `evm_ws`
+    /// on mainnet, `grpc` and `svm_rpc` on the public presets).
+    #[error("{endpoint} is not configured for the {network} preset; set endpoints.{endpoint} (or use your own node)")]
+    EndpointNotConfigured {
+        /// The endpoint key (`grpc`, `evm_ws`, `svm_rpc`, ...).
+        endpoint: String,
+        /// The preset name.
+        network: String,
+    },
+
     /// A decimal/base amount or exponent was invalid.
     #[error("{0}")]
     Denom(String),

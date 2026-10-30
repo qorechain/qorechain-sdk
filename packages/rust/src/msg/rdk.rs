@@ -20,6 +20,8 @@ pub const RESUME_ROLLUP: &str = "/qorechain.rdk.v1.MsgResumeRollup";
 pub const STOP_ROLLUP: &str = "/qorechain.rdk.v1.MsgStopRollup";
 /// `/qorechain.rdk.v1.MsgExecuteWithdrawal` type URL.
 pub const EXECUTE_WITHDRAWAL: &str = "/qorechain.rdk.v1.MsgExecuteWithdrawal";
+/// `/qorechain.rdk.v1.MsgUpdateParams` type URL (chain v3.2.5, governance only).
+pub const UPDATE_PARAMS: &str = "/qorechain.rdk.v1.MsgUpdateParams";
 
 /// Builds `MsgCreateRollup`.
 pub fn create_rollup(
@@ -277,4 +279,45 @@ pub fn execute_withdrawal_any(
         ),
         EXECUTE_WITHDRAWAL,
     )
+}
+
+/// Builds rdk `MsgUpdateParams` (chain v3.2.5): replace the rdk parameters
+/// wholesale. Governance only: `params.authority` is the gov module account.
+/// Copy the current values from `/qorechain/rdk/v1/params` and change only what
+/// you mean to. `default_challenge_window` is in seconds; a new optimistic
+/// rollup takes its challenge window from it.
+///
+/// # Errors
+///
+/// [`Error::InvalidInput`](crate::Error::InvalidInput) when `authority` is
+/// empty, `min_stake_for_rollup` is negative, or `rollup_creation_burn_rate` is
+/// not a decimal in `[0, 1)`.
+pub fn update_params(params: pb::MsgUpdateParams) -> crate::Result<pb::MsgUpdateParams> {
+    let bad = |m: String| crate::Error::InvalidInput(format!("rdk update_params: {m}"));
+    if params.authority.is_empty() {
+        return Err(bad("authority is required".into()));
+    }
+    if params.min_stake_for_rollup < 0 {
+        return Err(bad("min_stake_for_rollup must not be negative".into()));
+    }
+    let rate = params.rollup_creation_burn_rate.trim();
+    let (int, frac) = rate.split_once('.').unwrap_or((rate, ""));
+    let digits = |s: &str| s.bytes().all(|b| b.is_ascii_digit());
+    let well_formed = !int.is_empty() && digits(int) && digits(frac);
+    if !well_formed || int.bytes().any(|b| b != b'0') {
+        return Err(bad(format!(
+            "rollup_creation_burn_rate {:?} must be a decimal in [0, 1)",
+            params.rollup_creation_burn_rate
+        )));
+    }
+    Ok(params)
+}
+
+/// Builds rdk `MsgUpdateParams` packed into an `Any`.
+///
+/// # Errors
+///
+/// As [`update_params`].
+pub fn update_params_any(params: pb::MsgUpdateParams) -> crate::Result<Any> {
+    Ok(to_any(&update_params(params)?, UPDATE_PARAMS))
 }

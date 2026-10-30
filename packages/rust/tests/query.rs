@@ -15,6 +15,7 @@ use hyper_util::rt::TokioIo;
 use tokio::net::TcpListener;
 
 use qorechain::client::ClientBuilder;
+use qorechain::networks::get_network;
 use qorechain::query::{JsonRpcClient, QorClient, RestClient, QOR_METHODS};
 
 /// A single recorded request.
@@ -298,7 +299,10 @@ fn client_mainnet_default_builds_live() {
     assert!(client.network.live);
     assert_eq!(client.network.chain_id.as_deref(), Some("qorechain-vladi"));
     let eps = client.network.endpoints.as_ref().unwrap();
-    assert_eq!(eps.rest, "http://localhost:1317");
+    assert_eq!(
+        eps.rest,
+        get_network("mainnet").unwrap().endpoints.unwrap().rest
+    );
 }
 
 #[test]
@@ -313,6 +317,35 @@ fn client_mainnet_with_endpoints_builds() {
     assert_eq!(client.network.chain_id.as_deref(), Some("qorechain-vladi"));
     let eps = client.network.endpoints.as_ref().unwrap();
     assert_eq!(eps.rest, "https://rest.example.com");
+}
+
+#[test]
+fn client_overrides_fill_endpoints_a_preset_lacks() {
+    let client = ClientBuilder::new()
+        .network("mainnet")
+        .evm_ws("wss://ws.example.com")
+        .grpc("https://grpc.example.com")
+        .svm_rpc("https://svm.example.com")
+        .build()
+        .unwrap();
+    let eps = client.network.endpoints.as_ref().unwrap();
+    assert_eq!(eps.evm_ws.as_deref(), Some("wss://ws.example.com"));
+    assert_eq!(
+        client.network.endpoint("grpc").unwrap(),
+        "https://grpc.example.com"
+    );
+    assert_eq!(
+        client.network.endpoint("svm_rpc").unwrap(),
+        "https://svm.example.com"
+    );
+}
+
+#[test]
+fn client_localnet_keeps_localhost() {
+    let client = ClientBuilder::new().network("localnet").build().unwrap();
+    let eps = client.network.endpoints.as_ref().unwrap();
+    assert_eq!(eps.rest, "http://localhost:1317");
+    assert_eq!(eps.evm_rpc, "http://localhost:8545");
 }
 
 #[test]

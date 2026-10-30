@@ -105,6 +105,21 @@ impl TypedQueryClient {
         .await
     }
 
+    /// Queries `qorechain.pqc.v1.Query/KEMKey` (chain v3.2.5): the KEM key an
+    /// address (bech32 or 0x) published, if any.
+    pub async fn pqc_kem_key(
+        &self,
+        address: impl Into<String>,
+    ) -> Result<qorechain::pqc::v1::QueryKemKeyResponse> {
+        self.grpc_query(
+            "/qorechain.pqc.v1.Query/KEMKey",
+            &qorechain::pqc::v1::QueryKemKeyRequest {
+                address: address.into(),
+            },
+        )
+        .await
+    }
+
     // --- crossvm ---
 
     /// Queries `qorechain.crossvm.v1.Query/Params`.
@@ -559,6 +574,36 @@ impl TypedQueryClient {
         self.grpc_query(
             "/qorechain.abstractaccount.v1.Query/Account",
             &qorechain::abstractaccount::v1::QueryAccountRequest {
+                address: address.into(),
+            },
+        )
+        .await
+    }
+
+    /// Queries `qorechain.abstractaccount.v1.Query/SpendingRules` (chain v3.2.5):
+    /// the stored account-wide and per-key rules.
+    pub async fn abstractaccount_spending_rules(
+        &self,
+        address: impl Into<String>,
+    ) -> Result<qorechain::abstractaccount::v1::QuerySpendingRulesResponse> {
+        self.grpc_query(
+            "/qorechain.abstractaccount.v1.Query/SpendingRules",
+            &qorechain::abstractaccount::v1::QuerySpendingRulesRequest {
+                address: address.into(),
+            },
+        )
+        .await
+    }
+
+    /// Queries `qorechain.abstractaccount.v1.Query/Authenticators` (chain
+    /// v3.2.5): the linked keys, revoked ones included.
+    pub async fn abstractaccount_authenticators(
+        &self,
+        address: impl Into<String>,
+    ) -> Result<qorechain::abstractaccount::v1::QueryAuthenticatorsResponse> {
+        self.grpc_query(
+            "/qorechain.abstractaccount.v1.Query/Authenticators",
+            &qorechain::abstractaccount::v1::QueryAuthenticatorsRequest {
                 address: address.into(),
             },
         )

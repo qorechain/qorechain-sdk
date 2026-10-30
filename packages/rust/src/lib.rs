@@ -4,7 +4,8 @@
 //! provides the building blocks dApp developers need to talk to a QoreChain
 //! network:
 //!
-//! - [`networks`] - built-in network presets (testnet and mainnet, both live).
+//! - [`mod@networks`] - built-in network presets: `mainnet` and `testnet` on the
+//!   public endpoints, `localnet` on localhost.
 //! - [`denom`] - exact integer conversion between display and base amounts.
 //! - [`address`] - bech32 / hex address conversion and validation.
 //! - [`accounts`] - BIP-39 mnemonics and HD derivation of native (QoreChain Native
@@ -40,10 +41,15 @@
 //!   [`msg::stakingtier`]).
 //! - [`protocol_features`] - chain v3.2.4 protocol feature switches, read by
 //!   name.
+//! - [`kem`] - chain v3.2.5 KEM key registry: the key check and the read
+//!   (composers in [`msg::pqc`]).
+//! - [`abstractaccount`] - chain v3.2.5 abstract-account reads: stored
+//!   spending rules and linked keys.
 
 #![forbid(unsafe_code)]
 #![warn(missing_docs)]
 
+pub mod abstractaccount;
 pub mod accounts;
 pub mod address;
 pub mod ai;
@@ -55,6 +61,7 @@ pub mod denom;
 pub mod error;
 pub mod evm_delegation;
 pub mod evm_window;
+pub mod kem;
 pub mod key_integrity;
 pub mod msg;
 pub mod networks;
@@ -75,7 +82,8 @@ pub mod utils;
 pub use error::{Error, Result};
 
 pub use networks::{
-    get_network, list_networks, networks, Bech32Prefixes, CoinInfo, Endpoints, NetworkConfig,
+    evm_chain_id, get_network, list_networks, networks, Bech32Prefixes, CoinInfo, Endpoints,
+    NetworkConfig,
 };
 
 pub use denom::{from_base, to_base, DEFAULT_EXPONENT};
@@ -139,7 +147,16 @@ pub use msg::abstractaccount::{validate_spending_rules, MAX_ALLOWED_EVM_CALLS, M
 pub use query::{JsonRpcClient, QorClient, RestClient, TypedQueryClient, QOR_METHODS};
 pub use upgrades::{
     clear_upgrade_cache, is_upgrade_applied, require_upgrade_applied, upgrade_applied_height,
-    CHAIN_UPGRADE_V3_2_2, CHAIN_UPGRADE_V3_2_3, CHAIN_UPGRADE_V3_2_4,
+    CHAIN_UPGRADE_V3_2_2, CHAIN_UPGRADE_V3_2_3, CHAIN_UPGRADE_V3_2_4, CHAIN_UPGRADE_V3_2_5,
+};
+
+pub use abstractaccount::{
+    fetch_authenticators, fetch_spending_rules, AuthenticatorRule, AuthenticatorView, SpendingRules,
+};
+
+pub use kem::{
+    fetch_kem_key, kem_error_name, kem_key_path, validate_kem_public_key, KemKey, KemKeyLookup,
+    KEM_ALGORITHM_ML_KEM_1024, KEM_ERROR_CODES, KEM_REGISTRY_FEATURE, ML_KEM_1024_PUBLIC_KEY_LEN,
 };
 
 pub use protocol_features::{
@@ -159,10 +176,11 @@ pub use client::{create_client, Client, ClientBuilder, Fees};
 
 pub use tx::{
     bank_send, broadcast, broadcast_and_wait, broadcast_hybrid_tx, build_hybrid_tx, calculate_fee,
-    decode_tx_error, estimate_fee, estimate_gas, fee_from_estimate, get_block, get_latest_block,
-    get_tx, search_txs, send_messages, wait_for_tx, with_retry, BankSendParams, BroadcastMode,
-    BuildHybridTxParams, BuiltTx, Coin, Fee, GasPrice, Message, QoreTxError, SendMessagesParams,
-    TxResult, TxSearchResult, WaitOptions, MSG_SEND_TYPE_URL,
+    decode_tx_error, estimate_fee, estimate_gas, estimate_gas_wanted, exact_hybrid_gas,
+    fee_from_estimate, get_block, get_latest_block, get_tx, hybrid_gas_wanted, is_hybrid_tx,
+    search_txs, send_messages, wait_for_tx, with_retry, BankSendParams, BroadcastMode,
+    BuildHybridTxParams, BuiltTx, Coin, Fee, GasEstimate, GasPrice, Message, QoreTxError,
+    SendMessagesParams, TxResult, TxSearchResult, WaitOptions, MSG_SEND_TYPE_URL,
 };
 
 pub use subscribe::{Event, SubscribeClient, Subscription};
