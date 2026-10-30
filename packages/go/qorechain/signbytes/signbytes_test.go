@@ -601,8 +601,8 @@ func TestResolveRejectsSwappedArguments(t *testing.T) {
 	for _, tc := range []struct {
 		name, restURL, chainID string
 	}{
-		{"swapped", "qorechain-vladi", "https://api.qore.host"},
-		{"empty chain id", "https://api.qore.host", ""},
+		{"swapped", "qorechain-vladi", "https://rest.example"},
+		{"empty chain id", "https://rest.example", ""},
 		{"rest url is not a url", "qorechain-vladi", "qorechain-vladi"},
 	} {
 		t.Run(tc.name, func(t *testing.T) {

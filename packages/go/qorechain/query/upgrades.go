@@ -25,6 +25,21 @@ const ChainUpgradeV3_2_3 = "v3.2.3"
 // the bridge validator's proof of possession.
 const ChainUpgradeV3_2_4 = "v3.2.4"
 
+// ChainUpgradeV3_2_5 is the plan that brings the KEM key registry
+// (MsgRegisterKEMKey / MsgRemoveKEMKey), simulation that includes the
+// post-quantum verification gas (so a hybrid transaction's gas can be set
+// exactly; see tx.HybridGasWanted), the spending-rule bounds checked when a
+// rule is saved, abstractaccount MsgUpdateConfig, and the crossvm and rdk
+// MsgUpdateParams.
+const ChainUpgradeV3_2_5 = "v3.2.5"
+
+// Nodes do not report their binary version (node_info application_version is
+// empty on purpose), so feature detection asks applied_plan by plan name, and
+// asks EVERY plan name that brings the feature (mainnet and testnet did not
+// always use the same plan for a feature). The human-readable version of a
+// network is in its release manifest, https://download.qore.host/<net>/latest.json
+// (the "version" field).
+//
 // A release adds message fields, and a node below it does not know them: the
 // transaction decoder refuses a message carrying an unknown field, so setting
 // a release's new OPTIONAL field before the upgrade gets the whole transaction

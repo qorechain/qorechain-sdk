@@ -20,6 +20,12 @@ import (
 // non-zero amount. A rule whose only "bounds" are denom limits with empty or
 // zero amounts permits everything while showing as an active spending limit.
 //
+// From chain v3.2.5 the chain checks these bounds itself when a rule is saved
+// and refuses a failing rule with abstractaccount code 8 (invalid spending
+// rule). It also parses EVM token denoms: an erc20/, erc721/ or erc1155/ denom
+// (in denom_limits or allowed_denoms) must name a 0x-prefixed 20-byte contract
+// address (ValidateEVMDenom), and the SDK applies the same check.
+//
 // A denom limit with both amounts empty or zero is refused too, whatever else
 // the rule sets. When a denom has an entry the chain applies only that entry
 // and skips the rule-level limits for the denom, so such an entry silently
@@ -77,6 +83,9 @@ func ValidateSpendingRules(rules []abstractaccountv1.SpendingRule) error {
 			if len(denom) > 256 || strings.ContainsFunc(denom, func(r rune) bool { return r <= 0x20 || r == 0x7f }) {
 				return fmt.Errorf("spending rule %d: denom %q is too long or contains whitespace", i, denom)
 			}
+			if err := ValidateEVMDenom(denom); err != nil {
+				return fmt.Errorf("spending rule %d: %w", i, err)
+			}
 			key := strings.ToLower(denom)
 			if seen[key] {
 				return fmt.Errorf("spending rule %d: denom %s has more than one limit", i, denom)
@@ -96,6 +105,11 @@ func ValidateSpendingRules(rules []abstractaccountv1.SpendingRule) error {
 					i, denom, denom)
 			}
 			boundingDenomLimit = true
+		}
+		for _, d := range rule.AllowedDenoms {
+			if err := ValidateEVMDenom(d); err != nil {
+				return fmt.Errorf("spending rule %d: %w", i, err)
+			}
 		}
 		bounded := rule.DailyLimit > 0 || rule.PerTxLimit > 0 || len(rule.AllowedDenoms) > 0 ||
 			len(rule.AllowedEvmCalls) > 0 || boundingDenomLimit

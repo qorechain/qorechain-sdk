@@ -131,6 +131,12 @@ var moduleCodespaceReasons = map[string]map[uint32]string{
 		232: "PQC key was used by this account before",
 		233: "no active PQC signature algorithm would remain",
 		234: "PQC key maintenance from a keyed account needs the hybrid signature",
+		// 250-254: the KEM key registry (chain v3.2.5).
+		250: "the KEM key registry is not enabled on this chain yet",
+		251: "invalid KEM public key",
+		252: "no KEM key published for this account",
+		253: "this KEM key is already published for this account",
+		254: "publishing a KEM key needs a registered post-quantum signature key",
 	},
 	"amm":        {},
 	"bridge":     {},
@@ -141,8 +147,12 @@ var moduleCodespaceReasons = map[string]map[uint32]string{
 	"license":    {},
 	"abstractaccount": {
 		// v3.1.85 authenticator-lane failures (MsgExecuteEVM / MsgExecuteCosmos).
-		5:  "spending limit exceeded",
-		6:  "session key expired",
+		5: "spending limit exceeded",
+		6: "session key expired",
+		// 8: a rule refused when saved; from chain v3.2.5 this includes a rule
+		// that bounds nothing and an EVM token denom whose address does not parse.
+		8:  "invalid spending rule",
+		9:  "abstract account module is disabled",
 		10: "permission denied",
 		// 11: the nonce is not the linked key's authenticator sequence (a
 		// per-key counter, not the account's EVM nonce).
@@ -198,10 +208,16 @@ var RegisteredErrors = []RegisteredError{
 	{"pqc", 60, "no post-quantum consent for this EIP-7702 delegation"},
 	{"pqc", 61, "invalid EIP-7702 delegation request"},
 	{"pqc", 231, "PQC proof of possession does not verify"},
+	{"pqc", 250, "the KEM key registry is not enabled on this chain yet"},
+	{"pqc", 251, "invalid KEM public key"},
+	{"pqc", 252, "no KEM key published for this account"},
+	{"pqc", 253, "this KEM key is already published for this account"},
+	{"pqc", 254, "publishing a KEM key needs a registered post-quantum signature key"},
 	{"abstractaccount", 2, "abstract account not found"},
 	{"abstractaccount", 5, "spending limit exceeded"},
 	{"abstractaccount", 6, "session key expired"},
 	{"abstractaccount", 8, "invalid spending rule"},
+	{"abstractaccount", 9, "abstract account module is disabled"},
 	{"abstractaccount", 10, "authenticator not permitted for this action"},
 	{"abstractaccount", 11, "authenticator signature replay binding mismatch"},
 	{"stakingtier", 3, "staking tiers are not active on this chain yet"},

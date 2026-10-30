@@ -17,7 +17,7 @@ import (
 )
 
 // allCustomTypeURLs is every custom QoreChain Msg type URL the registry must
-// resolve. The 70 entries match the chain's tx services across all 12 modules.
+// resolve. The 75 entries match the chain's tx services across all 13 modules.
 var allCustomTypeURLs = []string{
 	// amm (7)
 	"/qorechain.amm.v1.MsgCreatePool",
@@ -45,6 +45,7 @@ var allCustomTypeURLs = []string{
 	"/qorechain.rdk.v1.MsgResumeRollup",
 	"/qorechain.rdk.v1.MsgStopRollup",
 	"/qorechain.rdk.v1.MsgExecuteWithdrawal",
+	"/qorechain.rdk.v1.MsgUpdateParams",
 	// multilayer (6)
 	"/qorechain.multilayer.v1.MsgRegisterSidechain",
 	"/qorechain.multilayer.v1.MsgRegisterPaychain",
@@ -64,6 +65,8 @@ var allCustomTypeURLs = []string{
 	"/qorechain.pqc.v1.MsgCloseEVMWindow",
 	"/qorechain.pqc.v1.MsgAuthorizeEVMDelegation",
 	"/qorechain.pqc.v1.MsgClearEVMDelegation",
+	"/qorechain.pqc.v1.MsgRegisterKEMKey",
+	"/qorechain.pqc.v1.MsgRemoveKEMKey",
 	// svm (5)
 	"/qorechain.svm.v1.MsgDeployProgram",
 	"/qorechain.svm.v1.MsgCreateAccount",
@@ -88,9 +91,11 @@ var allCustomTypeURLs = []string{
 	"/qorechain.abstractaccount.v1.MsgRevokeAuthenticator",
 	"/qorechain.abstractaccount.v1.MsgExecuteEVM",
 	"/qorechain.abstractaccount.v1.MsgExecuteCosmos",
+	"/qorechain.abstractaccount.v1.MsgUpdateConfig",
 	// crossvm (2)
 	"/qorechain.crossvm.v1.MsgCrossVMCall",
 	"/qorechain.crossvm.v1.MsgProcessQueue",
+	"/qorechain.crossvm.v1.MsgUpdateParams",
 	// rlconsensus (4)
 	"/qorechain.rlconsensus.v1.MsgSetAgentMode",
 	"/qorechain.rlconsensus.v1.MsgResumeAgent",
@@ -104,8 +109,8 @@ var allCustomTypeURLs = []string{
 }
 
 func TestAllCustomTypeURLsCount(t *testing.T) {
-	if got := len(allCustomTypeURLs); got != 70 {
-		t.Fatalf("expected 70 custom type URLs, got %d", got)
+	if got := len(allCustomTypeURLs); got != 75 {
+		t.Fatalf("expected 75 custom type URLs, got %d", got)
 	}
 }
 

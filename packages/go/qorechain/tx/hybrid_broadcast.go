@@ -30,6 +30,13 @@ type BroadcastHybridParams struct {
 	Resolver *signbytes.Resolver
 	// Context bounds the version query. Nil uses context.Background().
 	Context context.Context
+	// GasPrice prices an automatic fee (Build.Fee.Gas == GasAuto). Empty uses
+	// DefaultGasPrice.
+	GasPrice string
+	// GasMultiplier, when > 0, replaces the automatic gas rule with
+	// ceil(simulated * GasMultiplier). Zero uses HybridGasWanted's rule
+	// (exact on a v3.2.5 network).
+	GasMultiplier float64
 }
 
 // HybridBroadcastResult reports BroadcastHybridAndWait's outcome.
@@ -42,11 +49,20 @@ type HybridBroadcastResult struct {
 	// Retried is true when the first attempt was refused as a hybrid-signature
 	// failure and the tx was re-signed under a freshly resolved version.
 	Retried bool
+	// Gas reports the automatic gas decision when Build.Fee.Gas was GasAuto
+	// (nil otherwise).
+	Gas *HybridGasDecision
 }
 
 // BroadcastHybridAndWait resolves the hybrid sign-bytes version for the target
 // network, builds and signs the hybrid tx, broadcasts it and waits for
 // inclusion.
+//
+// Automatic fee: with Build.Fee.Gas set to GasAuto the tx is first simulated
+// as it will be sent and the gas limit comes from HybridGasWanted: on a
+// network that has applied v3.2.5, ceil(simulated * 1.02) + 2000; on an older
+// one, simulated * DefaultGasMultiplier. GasPrice and GasMultiplier tune it;
+// the result's Gas field reports the numbers.
 //
 // Retry rule: when the version was Auto and the chain refuses the tx with the
 // hybrid-signature failure (codespace "pqc" code 21, or a log containing
@@ -73,25 +89,53 @@ func BroadcastHybridAndWait(params BroadcastHybridParams) (*HybridBroadcastResul
 	if err != nil {
 		return nil, err
 	}
+	var gas *HybridGasDecision
+	if params.Build.Fee.Gas == GasAuto {
+		fee, d, err := autoHybridFee(params, version)
+		if err != nil {
+			return nil, err
+		}
+		params.Build.Fee = fee
+		gas = &d
+	}
 	res, built, err := buildAndBroadcastHybrid(params, version)
 	if err == nil || !requested.IsAuto() || !IsHybridSignBytesRejection(err) {
-		return &HybridBroadcastResult{Result: res, Built: built}, err
+		return &HybridBroadcastResult{Result: res, Built: built, Gas: gas}, err
 	}
 
 	// Refused as a hybrid-signature failure under an auto-resolved version:
 	// the network may have just switched form. Ask again, bypassing the cache.
 	fresh, rerr := resolver.Refresh(ctx, params.RestURL, chainID, requested)
 	if rerr != nil {
-		return &HybridBroadcastResult{Result: res, Built: built},
+		return &HybridBroadcastResult{Result: res, Built: built, Gas: gas},
 			fmt.Errorf("%w (re-resolving the sign-bytes version also failed: %v)", err, rerr)
 	}
 	if fresh == version {
 		// The node still names the form we signed; re-signing would produce
 		// the same refusal. Surface the original error.
-		return &HybridBroadcastResult{Result: res, Built: built}, err
+		return &HybridBroadcastResult{Result: res, Built: built, Gas: gas}, err
 	}
 	res, built, err = buildAndBroadcastHybrid(params, fresh)
-	return &HybridBroadcastResult{Result: res, Built: built, Retried: true}, err
+	return &HybridBroadcastResult{Result: res, Built: built, Retried: true, Gas: gas}, err
+}
+
+// autoHybridFee signs the tx once without a gas limit or fee, simulates it as
+// it will be sent (the hybrid extension included) and prices the gas limit
+// HybridGasWanted chooses.
+func autoHybridFee(params BroadcastHybridParams, version signbytes.Version) (Fee, HybridGasDecision, error) {
+	b := params.Build
+	b.SignBytesVersion = version
+	b.Fee = Fee{Granter: b.Fee.Granter, Payer: b.Fee.Payer}
+	probe, err := BuildHybridMessages(b)
+	if err != nil {
+		return Fee{}, HybridGasDecision{}, err
+	}
+	fee, d, err := EstimateHybridFee(params.RestURL, probe.TxRawBytes, params.GasMultiplier, params.GasPrice, params.HTTPClient)
+	if err != nil {
+		return Fee{}, d, err
+	}
+	fee.Granter, fee.Payer = params.Build.Fee.Granter, params.Build.Fee.Payer
+	return fee, d, nil
 }
 
 func buildAndBroadcastHybrid(params BroadcastHybridParams, version signbytes.Version) (*TxResult, *BuiltTx, error) {

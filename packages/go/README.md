@@ -3,7 +3,7 @@
 Idiomatic Go SDK for QoreChain - network presets, denomination/address utilities,
 HD account derivation (native / EVM / SVM), post-quantum (ML-DSA-87) signing, read
 clients for the REST (LCD) and `qor_*` JSON-RPC surfaces, the full native-chain
-message set (61 custom messages across 11 modules + the standard Native modules),
+message set (75 custom messages across 13 modules + the standard Native modules),
 typed gRPC query clients, complete transaction lifecycle (auto-gas, error
 decoding, tracking, search), utilities, and WebSocket subscriptions.
 
@@ -30,14 +30,14 @@ Requires Go 1.23+.
 
 | Package | Purpose |
 |---|---|
-| `qorechain/networks` | Network presets (`testnet` and `mainnet`, both live), `GetNetwork`. |
+| `qorechain/networks` | Network presets (`mainnet` and `testnet` on the public endpoints, `localnet` on localhost), `GetNetwork`. |
 | `qorechain/denom` | `ToBase` / `FromBase` exact big.Int money math. |
 | `qorechain/address` | bech32 ⇄ hex conversion and validation. |
 | `qorechain/accounts` | BIP-39 mnemonics + HD derivation (native, EVM, SVM). |
 | `qorechain/pqc` | ML-DSA-87 (FIPS 204) keygen / sign / verify + hybrid extension. |
 | `qorechain/query` | REST client, JSON-RPC client, `qor_*` typed client, typed gRPC query clients. |
 | `qorechain/client` | `CreateClient` factory composing the read clients + fees. |
-| `qorechain/messages` | Interface registry/codec + typed composers for all 61 custom messages and the standard Native modules. |
+| `qorechain/messages` | Interface registry/codec + typed composers for all 75 custom messages and the standard Native modules. |
 | `qorechain/tx` | Build/sign/broadcast (classical + hybrid PQC), auto-gas, error decoding, tracking/retry, tx & block search. |
 | `qorechain/proto` | Generated gogoproto Go types for every chain module (committed; regenerate with `scripts/codegen-go.sh`). |
 | `qorechain/utils` | Hashing (sha256/keccak256/ripemd160), unit conversion, EVM/SVM address validation + EIP-55. |
@@ -65,19 +65,63 @@ stats, err := c.Qor.GetAIStats()
 fee, err := c.Fees.Estimate("fast")
 ```
 
-Mainnet (chain id `qorechain-vladi`) is live; select it and override the
-localhost defaults with your node URLs:
+### Network presets
+
+`mainnet` and `testnet` point at the public endpoints; `localnet` points at a
+node on this machine. The hostnames live in one table, `networks.Networks`.
+
+| Preset | Chain id | EVM chain id | REST, RPC, EVM | EVM WebSocket | gRPC | SVM |
+|---|---|---|---|---|---|---|
+| `mainnet` | `qorechain-vladi` | 9801 | public | none | none | none |
+| `testnet` | `qorechain-diana` | 9800 | public | public | none | none |
+| `localnet` | `qorechain-devnet` | ask the node | localhost:1317, :26657, :8545 | localhost:8546 | localhost:9090 | localhost:8899 |
+
+- An endpoint a preset leaves empty is not configured: `c.GRPCEndpoint()`,
+  `c.EVMWSEndpoint()`, `c.SVMRPCEndpoint()` and `c.NewGRPCClient()` return a
+  `*networks.EndpointNotConfiguredError` ("evm ws is not configured for the
+  mainnet preset; set Endpoints.EVMWS (or use your own node)"). Nothing falls
+  back to localhost.
+- No SVM endpoint is preset: SVM transactions are not open on either network.
+  Mainnet has no public EVM WebSocket; poll over the EVM JSON-RPC.
+- The testnet endpoints have a per-IP rate limit at the edge. Production
+  traffic should run or use its own node: pass it in `Endpoints`, which
+  replaces the preset value exactly as before.
+- `https://download.qore.host/<net>/latest.json` is the release manifest
+  (version, peers, state sync), not an endpoint.
 
 ```go
 c, err := client.CreateClient(client.Options{
     Network: "mainnet",
     Endpoints: client.EndpointOverrides{
-        REST:   "https://rest.example",
-        EVMRPC: "https://evm.example",
+        REST:   "https://rest.example", // your own node
+        GRPC:   "https://grpc.example:443",
     },
 })
 // c.Network.ChainID == "qorechain-vladi"
+g, err := c.NewGRPCClient() // uses the override
 ```
+
+Before 0.12.0 the `mainnet` and `testnet` presets pointed at localhost. Code
+that relied on that now selects `localnet` (or passes its endpoints).
+
+### Chain version and feature detection
+
+Nodes do not report their binary version (`node_info` leaves
+`application_version` empty on purpose). To tell whether a network has a
+feature, ask `applied_plan` for the plan that brought it, and ask EVERY plan
+name that brought it, since the networks did not always take the same name:
+
+- mainnet has applied `v3.2.5`; testnet has applied `v3.2.5` and `v3.2.6`;
+- hybrid sign-bytes v2 came with `v3.2.0` on mainnet and `v3.1.98` on testnet
+  (`signbytes.V2Upgrades` lists both).
+
+```go
+rest := query.NewRestClient(networks.Networks["mainnet"].Endpoints.REST, nil)
+ok, err := rest.IsUpgradeApplied(query.ChainUpgradeV3_2_5) // cached per endpoint
+```
+
+For a version to show people, read `.version` from
+`https://download.qore.host/<net>/latest.json` (`mainnet` or `testnet`).
 
 ### Derive accounts
 
@@ -224,7 +268,7 @@ it never guesses.
 import "github.com/qorechain/qorechain-sdk/packages/go/qorechain/signbytes"
 
 // Resolve, then build (pure).
-v, err := signbytes.Resolve(ctx, "https://api.qore.host", "qorechain-vladi", signbytes.Auto) // v2 since v3.2.0
+v, err := signbytes.Resolve(ctx, networks.Networks["mainnet"].Endpoints.REST, "qorechain-vladi", signbytes.Auto) // v2 since v3.2.0
 // Note the order: restURL FIRST, then chainID. The other language bindings take
 // (chainId, rest). Swapping them is refused with ErrUnresolvedVersion rather
 // than silently answering v2 - the form mainnet refuses.
@@ -236,7 +280,7 @@ built, err := tx.BuildHybridMessages(tx.BuildHybridMessagesParams{
 // Or resolve + sign + broadcast + one retry on a pqc 21 refusal.
 out, err := tx.BroadcastHybridAndWait(tx.BroadcastHybridParams{
     Build:   tx.BuildHybridMessagesParams{ /* … SignBytesVersion left empty = auto */ },
-    RestURL: "https://api-testnet.qore.host", // testnet → v2
+    RestURL: networks.Networks["testnet"].Endpoints.REST, // testnet → v2
 })
 fmt.Println(out.Built.SignBytesVersion, out.Retried)
 
@@ -284,7 +328,7 @@ open, err := messages.NewOpenEVMWindow(sender, 300, 5, "2000000")
 // … hybrid-sign and broadcast `open` like any other message …
 
 // 2. Read the status (200 with found:false when there is none, so polling is safe).
-rest := query.NewRestClient("https://api-testnet.qore.host", nil)
+rest := query.NewRestClient(networks.Networks["testnet"].Endpoints.REST, nil)
 status, err := rest.GetEVMWindowStatus(sender)
 fmt.Println(status.Found, status.Live, status.RemainingTxs, status.RemainingValue)
 
@@ -366,7 +410,7 @@ import (
     "github.com/qorechain/qorechain-sdk/packages/go/qorechain/query"
 )
 
-rest := query.NewRestClient("https://api.qore.host", nil)
+rest := query.NewRestClient(networks.Networks["mainnet"].Endpoints.REST, nil)
 params, _ := rest.GetStakingTierParams()
 // params.LockTiers → [{Months: 3, BonusBps: 150}, {Months: 6, BonusBps: 300}, …]
 
@@ -395,7 +439,7 @@ import (
     "github.com/qorechain/qorechain-sdk/packages/go/qorechain/query"
 )
 
-rest := query.NewRestClient("https://api.qore.host", nil)
+rest := query.NewRestClient(networks.Networks["mainnet"].Endpoints.REST, nil)
 
 // The nonce a linked authenticator key must sign next (MsgExecuteEVM / MsgExecuteCosmos).
 n, _ := rest.GetAuthNonce(address, pubkey) // n.Nonce, n.Linked; GetAuthNonceHex takes hex
@@ -405,9 +449,72 @@ on, _ := rest.IsProtocolFeatureEnabled("pqc-sign-bytes-v2")
 features, _ := rest.GetProtocolFeatures() // features.Features, features.Height
 
 // Whether the account's PQC key was proven by a proof of possession (nil when not reported).
-status, _ := pqcdx.FetchPQCStatus("https://api.qore.host", address)
+status, _ := pqcdx.FetchPQCStatus(networks.Networks["mainnet"].Endpoints.REST, address)
 proven := status.PossessionProven
 ```
+
+### Chain v3.2.5 (v0.12.0)
+
+**Exact gas for hybrid transactions.** From v3.2.5 a simulation already
+charges the post-quantum verification (once per signer), so a hybrid
+transaction's gas limit is set close to what it uses. On the native lane the
+fee is the gas limit times the price, so a generous limit costs real fees.
+Set `Fee.Gas` to `tx.GasAuto` and `tx.BroadcastHybridAndWait` simulates the
+transaction as it will be sent and signs `tx.HybridGasWanted`:
+
+- network has applied `v3.2.5` (looked up once per REST endpoint):
+  `ceil(simulated * 1.02) + 2000` (`tx.ExactHybridGas`);
+- older node, or the lookup failed: `simulated * 1.4`, as before;
+- `GasMultiplier > 0`: `ceil(simulated * GasMultiplier)`, your choice.
+
+```go
+out, err := tx.BroadcastHybridAndWait(tx.BroadcastHybridParams{
+    Build: tx.BuildHybridMessagesParams{
+        Account: acc, PQCKeypair: kp, Messages: msgs,
+        Fee:     tx.Fee{Gas: tx.GasAuto}, // priced at tx.DefaultGasPrice unless GasPrice is set
+        ChainID: "qorechain-vladi", AccountNumber: num, Sequence: seq,
+    },
+    RestURL: networks.Networks["mainnet"].Endpoints.REST,
+})
+fmt.Println(out.Gas.Simulated, out.Gas.GasWanted, out.Gas.Exact, out.Result.GasUsed)
+```
+
+`tx.EstimateHybridFee` does the same for a tx you broadcast yourself. Classical
+transactions keep `tx.EstimateFee`.
+
+**KEM key registry.** An account can publish one ML-KEM-1024 (FIPS 203)
+encapsulation key so that anyone can encrypt to it. It is not a signing key and
+needs no proof of possession: the registration is authenticated by the
+account's hybrid signature, so both messages must be sent hybrid-signed (the
+account needs a registered ML-DSA-87 key). Sending a key again replaces it.
+The SDK carries the chain messages and the read; encryption is up to the
+application.
+
+```go
+msg, err := messages.NewRegisterKEMKey(acc.Address, kemPublicKey) // 1568 bytes, FIPS 203 checks
+rm := messages.Pqc.RemoveKEMKey(acc.Address)
+key, err := rest.GetKEMKey(acc.Address) // key.Found, key.Key.PublicKey, key.Key.RegisteredHeight
+```
+
+The registry's refusals are named: `pqc` 250 (registry not enabled), 251
+(invalid KEM public key), 252 (no key to remove), 253 (the same key is already
+published), 254 (the account has no usable post-quantum signature key).
+
+**Spending rules.** The chain now checks a rule's bounds when it is saved and
+refuses a failing rule with `abstractaccount` code 8 (invalid spending rule).
+That includes EVM token denoms: an `erc20/`, `erc721/` or `erc1155/` denom must
+name a `0x` 20-byte contract address, and an `erc20/` denom takes no `/token`
+tail. `messages.NewUpdateSpendingRules` applies the same checks before signing
+(`messages.ValidateEVMDenom`). New reads: `rest.GetSpendingRules(address)`
+(the stored rules, account-wide and per linked key) and
+`rest.GetAuthenticators(address)` (linked keys, revoked ones included).
+
+**Governance messages.** `messages.NewUpdateConfig` (abstractaccount
+configuration, wholesale), `messages.NewCrossVMUpdateParams` (crossvm
+parameters, including the EVM bridge allowlist of `cosmwasm:<contract>`
+targets) and `messages.NewRdkUpdateParams` (rdk parameters) build checked
+proposal messages; the authority is the governance module account.
+`rest.GetCrossVMParams()` reads the crossvm parameters.
 
 ### Sidechains, paychains & rollups (v0.4.0)
 
@@ -558,7 +665,7 @@ pdx := pqcdx.New(pqcdx.Signer{
 	Account:       account,
 	PQCKeypair:    pqcKey,
 	ChainID:       "qorechain-vladi",
-	RestURL:       "https://api.qore.host", // the status check reads REST from here
+	RestURL:       networks.Networks["mainnet"].Endpoints.REST, // the status check reads REST from here
 	AccountNumber: accountNumber,           // from /cosmos/auth/v1beta1/accounts/{address}
 	Sequence:      sequence,
 	// Registration carries a 2592-byte key and a 4627-byte proof of possession.
@@ -601,7 +708,7 @@ account.Svm    // "<base58>" - 20 bytes + 12 zero pad
 
 // Sign a QoreChain Native tx from the unified eth key (hybrid PQC path).
 // The sign-bytes form is per network (see "Hybrid sign-bytes v1 / v2").
-v, _ := signbytes.Resolve(ctx, "https://api.qore.host", "qorechain-vladi", signbytes.Auto)
+v, _ := signbytes.Resolve(ctx, networks.Networks["mainnet"].Endpoints.REST, "qorechain-vladi", signbytes.Auto)
 txBytes, _ := unified.SignHybridEth(unified.EthSignParams{
     Account:          account,
     ChainID:          "qorechain-vladi",

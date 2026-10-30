@@ -6,9 +6,12 @@
 // query.QorClient) plus a fee-estimate convenience.
 //
 // Network resolution rules:
-//   - The default network is "testnet". Both "testnet" and "mainnet" are live
-//     and ship localhost endpoint defaults; callers can override them with real
-//     hostnames.
+//   - The default network is "testnet". "mainnet" and "testnet" use the public
+//     endpoints (networks.Networks); "localnet" uses a node on this machine.
+//   - An explicit override in Options.Endpoints replaces the preset value.
+//   - An endpoint the preset leaves empty (gRPC and SVM on the public networks,
+//     the EVM WebSocket on mainnet) is reported as not configured by the
+//     accessors below; it never falls back to localhost.
 package client
 
 import (
@@ -37,7 +40,8 @@ type EndpointOverrides struct {
 type Options struct {
 	// Network is the preset to target. Empty means "testnet".
 	Network string
-	// Endpoints holds optional endpoint overrides. Both presets default to localhost.
+	// Endpoints holds optional endpoint overrides; empty fields keep the
+	// preset's value.
 	Endpoints EndpointOverrides
 	// ChainID overrides the resolved chain ID.
 	ChainID string
@@ -170,7 +174,7 @@ func resolveNetwork(network string, overrides map[string]string, chainID string)
 		return networks.NetworkConfig{}, fmt.Errorf("unknown network: %s", network)
 	}
 
-	// Live preset (testnet or mainnet): overlay endpoint overrides onto the defaults.
+	// Overlay endpoint overrides onto the preset's values.
 	current := *base.Endpoints // copy
 	if v, ok := overrides["rest"]; ok {
 		current.REST = v
@@ -197,11 +201,35 @@ func resolveNetwork(network string, overrides map[string]string, chainID string)
 	return base, nil
 }
 
-func requireEndpoint(key, value string) (string, error) {
-	if value == "" {
-		return "", fmt.Errorf("endpoint %q is not configured - pass it via CreateClient Endpoints", key)
+// GRPCEndpoint returns the network's gRPC endpoint, or a
+// *networks.EndpointNotConfiguredError when it has none (the public presets
+// expose no gRPC; pass Options.Endpoints.GRPC for your own node).
+func (c *Client) GRPCEndpoint() (string, error) {
+	return c.Network.Endpoint(networks.EndpointGRPC)
+}
+
+// EVMWSEndpoint returns the network's EVM WebSocket endpoint, or a
+// *networks.EndpointNotConfiguredError when it has none (mainnet has no
+// public EVM WebSocket; poll over EVMRPC or pass Options.Endpoints.EVMWS).
+func (c *Client) EVMWSEndpoint() (string, error) {
+	return c.Network.Endpoint(networks.EndpointEVMWS)
+}
+
+// SVMRPCEndpoint returns the network's SVM endpoint, or a
+// *networks.EndpointNotConfiguredError when it has none (SVM transactions are
+// not open on the public networks, so no preset names one).
+func (c *Client) SVMRPCEndpoint() (string, error) {
+	return c.Network.Endpoint(networks.EndpointSVMRPC)
+}
+
+// NewGRPCClient dials the network's gRPC endpoint. It fails with a
+// *networks.EndpointNotConfiguredError when the network has none.
+func (c *Client) NewGRPCClient() (*query.GRPCClient, error) {
+	endpoint, err := c.GRPCEndpoint()
+	if err != nil {
+		return nil, err
 	}
-	return value, nil
+	return query.NewGRPCClient(endpoint)
 }
 
 // CreateClient creates a composed Client. It returns an error if the network is
@@ -215,11 +243,11 @@ func CreateClient(opts Options) (*Client, error) {
 	if err != nil {
 		return nil, err
 	}
-	restURL, err := requireEndpoint("rest", resolved.Endpoints.REST)
+	restURL, err := resolved.Endpoint(networks.EndpointREST)
 	if err != nil {
 		return nil, err
 	}
-	evmURL, err := requireEndpoint("evm_rpc", resolved.Endpoints.EVMRPC)
+	evmURL, err := resolved.Endpoint(networks.EndpointEVMRPC)
 	if err != nil {
 		return nil, err
 	}

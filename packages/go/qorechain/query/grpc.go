@@ -2,6 +2,7 @@ package query
 
 import (
 	"crypto/tls"
+	"fmt"
 	"strings"
 
 	"google.golang.org/grpc"
@@ -40,7 +41,13 @@ type GRPCClient struct {
 // If the endpoint uses an https:// scheme TLS is enabled; otherwise (http:// or
 // bare host:port) the connection is insecure, which is the common local-node
 // case. Additional dial options may be supplied to override the defaults.
+//
+// An empty endpoint is refused: the public network presets expose no gRPC, so
+// pass your own node's address.
 func NewGRPCClient(endpoint string, opts ...grpc.DialOption) (*GRPCClient, error) {
+	if strings.TrimSpace(endpoint) == "" {
+		return nil, fmt.Errorf("grpc endpoint is not configured; the public presets expose no gRPC, set Endpoints.GRPC to your own node")
+	}
 	target, secure := normalizeGRPCTarget(endpoint)
 	dialOpts := []grpc.DialOption{}
 	if secure {

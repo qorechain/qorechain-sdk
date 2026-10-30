@@ -2,9 +2,13 @@ package client
 
 import (
 	"encoding/json"
+	"errors"
 	"net/http"
 	"net/http/httptest"
+	"strings"
 	"testing"
+
+	"github.com/qorechain/qorechain-sdk/packages/go/qorechain/networks"
 )
 
 func TestCreateClientTestnetDefault(t *testing.T) {
@@ -34,8 +38,56 @@ func TestCreateClientMainnetDefault(t *testing.T) {
 	if c.Network.ChainID != "qorechain-vladi" {
 		t.Errorf("chain id = %q, want qorechain-vladi", c.Network.ChainID)
 	}
-	if c.Network.Endpoints.REST != "http://localhost:1317" {
+	if c.Network.Endpoints.REST != networks.Networks["mainnet"].Endpoints.REST {
 		t.Errorf("rest = %q", c.Network.Endpoints.REST)
+	}
+}
+
+func TestCreateClientLocalnet(t *testing.T) {
+	c, err := CreateClient(Options{Network: "localnet"})
+	if err != nil {
+		t.Fatal(err)
+	}
+	if c.Network.Endpoints.REST != "http://localhost:1317" || c.Network.Endpoints.GRPC != "http://localhost:9090" {
+		t.Errorf("localnet endpoints = %+v", *c.Network.Endpoints)
+	}
+	if got, err := c.GRPCEndpoint(); err != nil || got != "http://localhost:9090" {
+		t.Errorf("grpc = %q, %v", got, err)
+	}
+}
+
+func TestMissingEndpointsAreNotConfiguredNotLocalhost(t *testing.T) {
+	c, err := CreateClient(Options{Network: "mainnet"})
+	if err != nil {
+		t.Fatal(err)
+	}
+	for name, get := range map[string]func() (string, error){
+		"grpc": c.GRPCEndpoint, "evm ws": c.EVMWSEndpoint, "svm rpc": c.SVMRPCEndpoint,
+	} {
+		v, err := get()
+		var nc *networks.EndpointNotConfiguredError
+		if !errors.As(err, &nc) || v != "" {
+			t.Errorf("%s: got %q, %v", name, v, err)
+		}
+	}
+	if _, err := c.NewGRPCClient(); err == nil || !strings.Contains(err.Error(), "not configured for the mainnet preset") {
+		t.Errorf("NewGRPCClient err = %v", err)
+	}
+	// An explicit override is used as before.
+	c, err = CreateClient(Options{Network: "mainnet", Endpoints: EndpointOverrides{GRPC: "https://grpc.example:443", EVMWS: "wss://ws.example"}})
+	if err != nil {
+		t.Fatal(err)
+	}
+	if v, err := c.GRPCEndpoint(); err != nil || v != "https://grpc.example:443" {
+		t.Errorf("grpc override = %q, %v", v, err)
+	}
+	if v, err := c.EVMWSEndpoint(); err != nil || v != "wss://ws.example" {
+		t.Errorf("ws override = %q, %v", v, err)
+	}
+	// testnet has a public EVM WebSocket.
+	c, _ = CreateClient(Options{Network: "testnet"})
+	if v, err := c.EVMWSEndpoint(); err != nil || v != networks.Networks["testnet"].Endpoints.EVMWS {
+		t.Errorf("testnet ws = %q, %v", v, err)
 	}
 }
 
@@ -70,7 +122,7 @@ func TestCreateClientOverrideApplied(t *testing.T) {
 		t.Errorf("override not applied: %q", c.Network.Endpoints.REST)
 	}
 	// Non-overridden endpoint keeps its default.
-	if c.Network.Endpoints.EVMRPC != "http://localhost:8545" {
+	if c.Network.Endpoints.EVMRPC != networks.Networks["testnet"].Endpoints.EVMRPC {
 		t.Errorf("default lost: %q", c.Network.Endpoints.EVMRPC)
 	}
 }
