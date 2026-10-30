@@ -5,7 +5,7 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [0.12.0] - Unreleased
+## [0.12.0] - 2026-10-30
 
 Client support for chain v3.2.5, applied on mainnet at height 3,906,833 on
 29 October 2026 (testnet runs v3.2.6). All five SDKs (TypeScript, Python, Go,
