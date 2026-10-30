@@ -79,6 +79,15 @@ const SDK_CODES: Record<number, { kind: string; message: string }> = {
  * spending rule, its session TTL, or its replay-protecting nonce.
  */
 const ABSTRACTACCOUNT_CODES: Record<number, { kind: string; message: string }> = {
+  8: {
+    kind: "invalid_spending_rule",
+    message:
+      "invalid spending rule - from chain v3.2.5 a rule must bound something, a denom limit must set an amount, and an erc20/, erc721/ or erc1155/ denom must name a 0x contract address",
+  },
+  9: {
+    kind: "abstractaccount_disabled",
+    message: "the abstract-account module is disabled by governance",
+  },
   5: {
     kind: "spending_limit_exceeded",
     message:
@@ -141,6 +150,28 @@ const PQC_CODES: Record<number, { kind: string; message: string }> = {
     kind: "pqc_maintenance_needs_hybrid",
     message:
       "an account with a registered PQC key must send key registration or migration with the hybrid signature - use migratePqcKeyHybrid",
+  },
+  250: {
+    kind: "kem_registry_not_enabled",
+    message: "the KEM key registry is not enabled on this network yet (chain v3.2.5)",
+  },
+  251: {
+    kind: "kem_key_invalid",
+    message:
+      "invalid KEM public key - an ML-KEM-1024 key (algorithm 2) is 1568 bytes with every coefficient below 3329 and not all zero",
+  },
+  252: {
+    kind: "kem_key_not_found",
+    message: "no KEM key published for this account - nothing to remove",
+  },
+  253: {
+    kind: "kem_key_unchanged",
+    message: "this KEM key is already published for this account",
+  },
+  254: {
+    kind: "kem_needs_signature_key",
+    message:
+      "publishing a KEM key needs a registered post-quantum signature key - register the account's ML-DSA-87 key first",
   },
   61: {
     kind: "evm_delegation_invalid",
@@ -254,10 +285,16 @@ const REGISTERED_ERRORS: ReadonlyArray<readonly [codespace: string, code: number
   ["pqc", 60, "no post-quantum consent for this EIP-7702 delegation"],
   ["pqc", 61, "invalid EIP-7702 delegation request"],
   ["pqc", 231, "PQC proof of possession does not verify"],
+  ["pqc", 250, "the KEM key registry is not enabled on this chain yet"],
+  ["pqc", 251, "invalid KEM public key"],
+  ["pqc", 252, "no KEM key published for this account"],
+  ["pqc", 253, "this KEM key is already published for this account"],
+  ["pqc", 254, "publishing a KEM key needs a registered post-quantum signature key"],
   ["abstractaccount", 2, "abstract account not found"],
   ["abstractaccount", 5, "spending limit exceeded"],
   ["abstractaccount", 6, "session key expired"],
   ["abstractaccount", 8, "invalid spending rule"],
+  ["abstractaccount", 9, "abstract account module is disabled"],
   ["abstractaccount", 10, "authenticator not permitted for this action"],
   ["abstractaccount", 11, "authenticator signature replay binding mismatch"],
   ["stakingtier", 3, "staking tiers are not active on this chain yet"],

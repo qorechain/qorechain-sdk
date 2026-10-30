@@ -40,6 +40,11 @@ export interface PendingCrossVmMessagesResponse {
 /** Response of the module params route. */
 export interface CrossVmParamsResponse {
   params?: Record<string, unknown>;
+  /**
+   * The CosmWasm contracts the EVM bridge precompile may call, each
+   * `"cosmwasm:<contract>"`; empty keeps the bridge shut (chain v3.2.5).
+   */
+  bridge_allowed_targets?: string[];
   [key: string]: unknown;
 }
 

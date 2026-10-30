@@ -85,6 +85,8 @@ export interface AbstractAccountView {
   account_type?: string;
   spending_rules_count?: number;
   session_keys_count?: number;
+  /** Linked keys that are not revoked (chain v3.2.5). */
+  authenticators_count?: number;
   created_at?: string;
   owner?: string;
 }
@@ -245,5 +247,35 @@ export class RestClient {
     return this.get<T>(
       `/qorechain/abstractaccount/v1/accounts/${encodeURIComponent(address)}`,
     );
+  }
+
+  /**
+   * The spending rules an account stored, account-wide and per linked key
+   * (`/qorechain/abstractaccount/v1/accounts/{address}/spending_rules`, chain
+   * v3.2.5). Raw JSON; `fetchSpendingRules` returns it typed.
+   */
+  getAbstractAccountSpendingRules<T = unknown>(address: string): Promise<T> {
+    return this.get<T>(
+      `/qorechain/abstractaccount/v1/accounts/${encodeURIComponent(address)}/spending_rules`,
+    );
+  }
+
+  /**
+   * The keys linked to an account, revoked ones included
+   * (`/qorechain/abstractaccount/v1/accounts/{address}/authenticators`, chain
+   * v3.2.5). Raw JSON; `fetchAuthenticators` returns it typed.
+   */
+  getAbstractAccountAuthenticators<T = unknown>(address: string): Promise<T> {
+    return this.get<T>(
+      `/qorechain/abstractaccount/v1/accounts/${encodeURIComponent(address)}/authenticators`,
+    );
+  }
+
+  /**
+   * The KEM key an address published (`/qorechain/pqc/v1/kem/{address}`, chain
+   * v3.2.5; bech32 or `0x`). Raw JSON; `fetchKemKey` returns it typed.
+   */
+  getKemKey<T = { found: boolean; key: Record<string, unknown> | null }>(address: string): Promise<T> {
+    return this.get<T>(`/qorechain/pqc/v1/kem/${encodeURIComponent(address)}`);
   }
 }

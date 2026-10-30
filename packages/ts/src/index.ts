@@ -8,7 +8,7 @@
  */
 
 /** SDK version. */
-export const VERSION = "0.11.0";
+export const VERSION = "0.12.0";
 
 // Top-level factory: the recommended entrypoint that resolves a network and
 // composes the read clients, fee helper, and a lazy signing entrypoint.
@@ -249,8 +249,12 @@ export {
   DEFAULT_GAS_MULTIPLIER,
   DEFAULT_GAS_PRICE,
   HYBRID_VERIFY_GAS,
+  EXACT_GAS_MULTIPLIER,
+  EXACT_GAS_HEADROOM,
+  exactHybridGas,
 } from "./tx/builder";
 export type {
+  GasEstimate,
   SigningClientLike,
   HybridSigningOptions,
   TxClientOptions,
@@ -406,6 +410,7 @@ export {
   CHAIN_UPGRADE_V3_2_2,
   CHAIN_UPGRADE_V3_2_3,
   CHAIN_UPGRADE_V3_2_4,
+  CHAIN_UPGRADE_V3_2_5,
   fetchUpgradeAppliedHeight,
   isUpgradeApplied,
   requireUpgradeApplied,
@@ -428,6 +433,44 @@ export {
   fetchStakingTierPool,
 } from "./stakingtier";
 export type { StakingTierParams, StakingLock, StakingLocks, StakingTierPool } from "./stakingtier";
+
+// KEM key registry (chain v3.2.5): publish, read and withdraw an account's
+// ML-KEM-1024 encapsulation key. The messages are `msg.pqc.registerKemKey` and
+// `msg.pqc.removeKemKey`.
+export {
+  KEM_ALGORITHM_ML_KEM_1024,
+  ML_KEM_1024_PUBLIC_KEY_SIZE,
+  REGISTER_KEM_KEY_TYPE_URL,
+  REMOVE_KEM_KEY_TYPE_URL,
+  validateKemPublicKey,
+  parseKemKey,
+  fetchKemKey,
+} from "./pqc/kem";
+export type { KemKey, KemKeyResult } from "./pqc/kem";
+
+// Abstract-account reads and the MsgUpdateConfig checks (chain v3.2.5).
+export {
+  fetchSpendingRules,
+  fetchAuthenticators,
+  parseSpendingRules,
+  parseAuthenticators,
+  validateUpdateConfig,
+} from "./abstractaccount";
+export type { SpendingRules, SpendingRuleView, AuthenticatorRuleView, AuthenticatorView } from "./abstractaccount";
+
+// Checks for the crossvm and rdk governance MsgUpdateParams (chain v3.2.5).
+export {
+  validateCrossVmUpdateParams,
+  validateRdkUpdateParams,
+  CROSSVM_MAX_MESSAGE_SIZE,
+  CROSSVM_MAX_QUEUE_SIZE,
+  CROSSVM_MAX_QUEUE_TIMEOUT_BLOCKS,
+  CROSSVM_MAX_BRIDGE_ALLOWED_TARGETS,
+  CROSSVM_MAX_BRIDGE_ALLOWED_TARGET_SIZE,
+  RDK_MIN_CHALLENGE_WINDOW_SEC,
+  RDK_MAX_CHALLENGE_WINDOW_SEC,
+  RDK_MAX_DA_BLOB_SIZE,
+} from "./governance";
 
 export { buildHybridTx, signAndBroadcastHybrid } from "./tx/hybrid-tx";
 
@@ -537,6 +580,7 @@ export {
   rlconsensus,
   stakingtier,
   validateSpendingRules,
+  validateEvmDenom,
   MAX_DENOM_LIMITS,
   MAX_ALLOWED_EVM_CALLS,
 } from "./messages";

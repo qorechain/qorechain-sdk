@@ -9,9 +9,9 @@
  * {@link TxClient}.
  *
  * Network resolution rules:
- *  - The default network is `testnet`. Both `testnet` and `mainnet` are live and
- *    ship localhost endpoint defaults; pass `endpoints` to point at real
- *    hostnames.
+ *  - The default network is `testnet`. `mainnet` and `testnet` default to the
+ *    public endpoints, `localnet` to a node on this machine; `endpoints`
+ *    overrides any of them.
  *
  * Read sub-clients are lazy getters: each only needs its own endpoint, so
  * accessing one whose endpoint is missing throws a clear, actionable error
@@ -22,6 +22,7 @@ import type { OfflineDirectSigner, GeneratedType } from "@cosmjs/proto-signing";
 import type { StdFee } from "@cosmjs/amino";
 import {
   getNetwork,
+  requireNetworkEndpoint,
   type NetworkConfig,
   type NetworkEndpoints,
   type NetworkName,
@@ -50,8 +51,9 @@ export interface CreateClientOptions {
   /** Network preset to target. Defaults to `"testnet"`. */
   network?: NetworkName;
   /**
-   * Endpoint overrides, merged over the preset's defaults. Both `testnet` and
-   * `mainnet` default to localhost; pass real hostnames here to override them.
+   * Endpoint overrides, merged over the preset's defaults. `mainnet` and
+   * `testnet` default to the public endpoints (no gRPC, no SVM, and an EVM
+   * WebSocket on testnet only); `localnet` defaults to localhost.
    */
   endpoints?: Partial<NetworkEndpoints>;
   /**
@@ -140,7 +142,7 @@ export interface QoreChainClient {
 /**
  * Resolve the effective {@link NetworkConfig} for the given options.
  *
- * Starts from the live preset (`testnet` or `mainnet`) and overlays
+ * Starts from the preset (`testnet`, `mainnet` or `localnet`) and overlays
  * `opts.endpoints` and an optional `opts.chainId`.
  */
 function resolveNetwork(opts: CreateClientOptions): NetworkConfig {
@@ -156,17 +158,8 @@ function resolveNetwork(opts: CreateClientOptions): NetworkConfig {
 }
 
 /** Read a required endpoint or throw an actionable error naming it. */
-function requireEndpoint(
-  endpoints: NetworkEndpoints,
-  key: keyof NetworkEndpoints,
-): string {
-  const value = endpoints?.[key];
-  if (!value) {
-    throw new Error(
-      `endpoint "${key}" is not configured - pass it via createClient({ endpoints: { ${key}: "..." } })`,
-    );
-  }
-  return value;
+function requireEndpoint(network: NetworkConfig, key: keyof NetworkEndpoints): string {
+  return requireNetworkEndpoint(network, key);
 }
 
 /**
@@ -187,7 +180,7 @@ export function createClient(opts: CreateClientOptions = {}): QoreChainClient {
   const getRest = (): RestClient => {
     if (!restClient) {
       restClient = new RestClient(
-        requireEndpoint(network.endpoints, "rest"),
+        requireEndpoint(network, "rest"),
         httpOptions,
       );
     }
@@ -196,7 +189,7 @@ export function createClient(opts: CreateClientOptions = {}): QoreChainClient {
   const getEvm = (): JsonRpcClient => {
     if (!evmClient) {
       evmClient = new JsonRpcClient(
-        requireEndpoint(network.endpoints, "evmRpc"),
+        requireEndpoint(network, "evmRpc"),
         httpOptions,
       );
     }
@@ -205,7 +198,7 @@ export function createClient(opts: CreateClientOptions = {}): QoreChainClient {
   const getQor = (): QorClient => {
     if (!qorClient) {
       qorClient = new QorClient(
-        requireEndpoint(network.endpoints, "evmRpc"),
+        requireEndpoint(network, "evmRpc"),
         httpOptions,
       );
     }
@@ -241,14 +234,14 @@ export function createClient(opts: CreateClientOptions = {}): QoreChainClient {
     cosmwasm() {
       if (!cosmWasmClient) {
         cosmWasmClient = createCosmWasmClient(
-          requireEndpoint(network.endpoints, "rpc"),
+          requireEndpoint(network, "rpc"),
         );
       }
       return cosmWasmClient;
     },
     connectTx(signer: OfflineDirectSigner, txOpts: ConnectTxOptions = {}) {
       return TxClient.connect({
-        rpcEndpoint: requireEndpoint(network.endpoints, "rpc"),
+        rpcEndpoint: requireEndpoint(network, "rpc"),
         signer,
         registryTypes: txOpts.registryTypes,
         ...(txOpts.pqcKeypair

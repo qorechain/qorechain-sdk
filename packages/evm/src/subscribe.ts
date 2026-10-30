@@ -26,7 +26,8 @@ import {
 /** Subset of a qorechain-sdk network's endpoints relevant to EVM subscriptions. */
 export interface EvmWsEndpoints {
   /** EVM JSON-RPC WebSocket endpoint. */
-  evmWs: string;
+  /** EVM WebSocket URL. The public `mainnet` preset sets none. */
+  evmWs?: string;
 }
 
 /** Options for {@link createEvmSubscriptionClient}. */
@@ -49,7 +50,8 @@ function resolveTransport(opts: CreateEvmSubscriptionClientOptions): Transport {
   const url = opts.wsUrl ?? opts.endpoints?.evmWs;
   if (!url) {
     throw new Error(
-      "createEvmSubscriptionClient: provide `wsUrl`, `endpoints.evmWs`, or a `transport`",
+      "createEvmSubscriptionClient: no EVM WebSocket is configured (the public mainnet preset has none); " +
+        "provide `wsUrl`, `endpoints.evmWs` (your own node), or a `transport`",
     );
   }
   return webSocket(url);

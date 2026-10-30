@@ -73,6 +73,7 @@ export const qorechainRegistryTypes: ReadonlyArray<[string, GeneratedType]> = [
   ["/qorechain.rdk.v1.MsgResumeRollup", rdk.MsgResumeRollup],
   ["/qorechain.rdk.v1.MsgStopRollup", rdk.MsgStopRollup],
   ["/qorechain.rdk.v1.MsgExecuteWithdrawal", rdk.MsgExecuteWithdrawal],
+  ["/qorechain.rdk.v1.MsgUpdateParams", rdk.MsgUpdateParams],
   // multilayer
   [
     "/qorechain.multilayer.v1.MsgRegisterSidechain",
@@ -98,6 +99,8 @@ export const qorechainRegistryTypes: ReadonlyArray<[string, GeneratedType]> = [
   ["/qorechain.pqc.v1.MsgRegisterPQCKeyV2", pqc.MsgRegisterPQCKeyV2],
   ["/qorechain.pqc.v1.MsgMigratePQCKey", pqc.MsgMigratePQCKey],
   ["/qorechain.pqc.v1.MsgRotatePQCKey", pqc.MsgRotatePQCKey],
+  ["/qorechain.pqc.v1.MsgRegisterKEMKey", pqc.MsgRegisterKEMKey],
+  ["/qorechain.pqc.v1.MsgRemoveKEMKey", pqc.MsgRemoveKEMKey],
   ["/qorechain.pqc.v1.MsgOpenEVMWindow", pqc.MsgOpenEVMWindow],
   ["/qorechain.pqc.v1.MsgCloseEVMWindow", pqc.MsgCloseEVMWindow],
   [
@@ -152,9 +155,11 @@ export const qorechainRegistryTypes: ReadonlyArray<[string, GeneratedType]> = [
     "/qorechain.abstractaccount.v1.MsgExecuteCosmos",
     abstractaccount.MsgExecuteCosmos,
   ],
+  ["/qorechain.abstractaccount.v1.MsgUpdateConfig", abstractaccount.MsgUpdateConfig],
   // crossvm
   ["/qorechain.crossvm.v1.MsgCrossVMCall", crossvm.MsgCrossVMCall],
   ["/qorechain.crossvm.v1.MsgProcessQueue", crossvm.MsgProcessQueue],
+  ["/qorechain.crossvm.v1.MsgUpdateParams", crossvm.MsgUpdateParams],
   // stakingtier (chain v3.2.4)
   ["/qorechain.stakingtier.v1.MsgLockDelegation", stakingtier.MsgLockDelegation],
   ["/qorechain.stakingtier.v1.MsgUnlockEarly", stakingtier.MsgUnlockEarly],

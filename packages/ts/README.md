@@ -41,26 +41,29 @@ npm install @qorechain/sdk
 ### Connect
 
 `createClient()` targets the public testnet (chain id `qorechain-diana`) by
-default. The defaults point at localhost, so pass `endpoints` to talk to a real
-node.
+default. From 0.12.0 the `mainnet` and `testnet` presets use the public
+endpoints (`PUBLIC_ENDPOINTS`) and `localnet` a node on your machine
+(`LOCALNET_ENDPOINTS`).
 
 ```ts
 import { createClient } from "@qorechain/sdk";
 
-const client = createClient(); // testnet, localhost defaults
+const client = createClient();                         // testnet, public endpoints
+const main = createClient({ network: "mainnet" });     // mainnet, public endpoints
+const local = createClient({ network: "localnet" });   // localhost ports
 
-const remote = createClient({
-  endpoints: {
-    rest: "https://api-testnet.qore.host", // Native REST (LCD)
-    rpc: "https://rpc-testnet.qore.host",    // consensus RPC (for signing)
-    evmRpc: "https://evm-testnet.qore.host", // EVM + qor_ JSON-RPC
-  },
+// Your own node: override any endpoint; the rest keep the preset's values.
+const mine = createClient({
+  network: "mainnet",
+  endpoints: { rest: "https://lcd.my-node.example", rpc: "https://rpc.my-node.example" },
 });
 ```
 
-Mainnet (chain id `qorechain-vladi`) is live; target it with
-`createClient({ network: "mainnet", endpoints })`, overriding the localhost
-defaults with your node URLs.
+The public presets set no gRPC and no SVM endpoint (SVM transactions are not
+open), and mainnet no EVM WebSocket. Code that needs one throws an error that
+names the endpoint to pass (`requireNetworkEndpoint`), instead of falling back
+to localhost. The public testnet endpoints are rate limited per IP; production
+traffic should run or use its own node.
 
 ### Accounts
 
@@ -289,6 +292,48 @@ const on = await isProtocolFeatureEnabled({ rest, name: "pqc-sign-bytes-v2" });
 // Whether the account's PQC key was proven by a proof of possession.
 const { possessionProven } = await fetchPqcStatus({ rest, address });
 ```
+
+### Chain v3.2.5 (0.12.0)
+
+**Exact gas for hybrid transactions.** On a network that has applied `v3.2.5`
+(mainnet and testnet today) the `"auto"` fee of a hybrid transaction is
+`ceil(simulated × 1.02) + 2000` (`exactHybridGas`): the simulation already
+charges the post-quantum verification. Below `v3.2.5` the older rule stays,
+`(simulated + HYBRID_VERIFY_GAS) × DEFAULT_GAS_MULTIPLIER`. A `gasMultiplier`
+you pass replaces either rule.
+
+```ts
+const { simulated, gasWanted, exact } = await tx.estimateGasDetails([message]);
+```
+
+**KEM key registry.** Publish, read and withdraw an account's ML-KEM-1024
+encapsulation key (algorithm 2, 1568 bytes, one per account). Both messages
+need the hybrid signature; the SDK does not encrypt.
+
+```ts
+import { msg, fetchKemKey } from "@qorechain/sdk";
+
+await tx.signAndBroadcast([msg.pqc.registerKemKey({ sender: address, publicKey })], "auto");
+const { found, key } = await fetchKemKey({ rest, address }); // bech32 or 0x
+await tx.signAndBroadcast([msg.pqc.removeKemKey({ sender: address })], "auto");
+```
+
+**Abstract accounts.** `fetchSpendingRules` and `fetchAuthenticators` read back
+what an account stored. Spending rules are checked when saved
+(`abstractaccount` code 8): `validateEvmDenom` refuses an `erc20/`, `erc721/`
+or `erc1155/` denom whose contract address does not parse.
+`msg.abstractaccount.updateConfig` (governance) switches the module.
+
+**Governance parameters.** `msg.crossvm.updateParams` (including the CosmWasm
+contracts the EVM bridge precompile may call) and `msg.rdk.updateParams`, each
+checked against the chain's bounds before signing.
+
+**Feature detection.** Nodes do not report their binary version
+(`application_version` is empty on purpose). Ask by plan name, every name
+that brings the feature: `isUpgradeApplied({ rest, upgrade: CHAIN_UPGRADE_V3_2_5 })`.
+Mainnet has applied `v3.2.5`, testnet `v3.2.5` and `v3.2.6`; sign-bytes v2 is
+`v3.2.0` on mainnet and `v3.1.98` on testnet. For a human-readable version,
+read `.version` from `https://download.qore.host/<net>/latest.json`.
 
 ### CosmWasm contracts
 
@@ -650,7 +695,9 @@ full lifecycle (register → spend → rotate → revoke).
 - Mainnet chain id: `qorechain-vladi` (live).
 - Testnet chain id: `qorechain-diana` (live).
 - Token: `QOR` / `uqor` (10^6 base units per QOR).
-- Default endpoints point at localhost - override them to reach a real node.
+- `mainnet` and `testnet` use the public endpoints; `localnet` uses localhost.
+  Override any endpoint with `endpoints`.
+- Mainnet runs chain v3.2.5, testnet v3.2.6 (see feature detection above).
 
 ## License
 

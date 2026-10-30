@@ -28,7 +28,9 @@ pnpm add @qorechain/svm @solana/web3.js
 ```ts
 import { createSvmClient } from "@qorechain/svm";
 
-// Defaults to the testnet localhost endpoint (http://localhost:8899).
+// With no options it targets a node on this machine (http://localhost:8899).
+// The public mainnet and testnet presets set no SVM endpoint: SVM transactions
+// are not open on either network.
 const client = createSvmClient({ rpcUrl: "http://localhost:8899" });
 // Or pass a qorechain-sdk endpoints object: { endpoints: { svmRpc } }
 

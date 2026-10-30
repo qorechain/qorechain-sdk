@@ -12,6 +12,10 @@
  * only "bounds" are denom limits with empty or zero amounts permits
  * everything while showing as an active spending limit.
  *
+ * From chain v3.2.5 the chain refuses these shapes itself when a rule is saved
+ * (`abstractaccount` code 8, invalid spending rule), together with an EVM
+ * denom whose contract address does not parse ({@link validateEvmDenom}).
+ *
  * A denom limit with both amounts empty or zero is refused too, whatever else
  * the rule sets. When a denom has an entry the chain applies only that entry
  * and skips the rule-level limits for the denom, so such an entry silently
@@ -55,6 +59,32 @@ function limitAmount(s: string | undefined, what: string, i: number): bigint {
   return BigInt(s);
 }
 
+const EVM_DENOM_PREFIXES = ["erc20/", "erc721/", "erc1155/"] as const;
+
+/**
+ * The chain's check on an EVM token denom in a spending rule (chain v3.2.5):
+ * a denom that starts with `erc20/`, `erc721/` or `erc1155/` (any case) must
+ * continue with a `0x`-prefixed 20-byte contract address; an `erc20/` denom is
+ * the address alone, while `erc721/` and `erc1155/` may add `/<token id>`.
+ * Other denoms pass. Throws an `Error` naming the denom.
+ */
+export function validateEvmDenom(denom: string): void {
+  const lower = denom.toLowerCase();
+  for (const p of EVM_DENOM_PREFIXES) {
+    if (!lower.startsWith(p)) continue;
+    const rest = denom.slice(p.length);
+    const slash = rest.indexOf("/");
+    const addr = slash < 0 ? rest : rest.slice(0, slash);
+    if (!/^0[xX][0-9a-fA-F]{40}$/.test(addr)) {
+      throw new Error(`denom ${JSON.stringify(denom)}: ${p} must be followed by a 0x-prefixed 20-byte contract address`);
+    }
+    if (p === "erc20/" && slash >= 0) {
+      throw new Error(`denom ${JSON.stringify(denom)}: an erc20/ denom is the contract address alone`);
+    }
+    return;
+  }
+}
+
 /**
  * Check the rules of a `MsgUpdateSpendingRules`. Throws an `Error` naming the
  * rule and the problem; returns nothing when the rules are acceptable.
@@ -79,6 +109,11 @@ export function validateSpendingRules(rules: readonly RuleInput[] | undefined): 
       if (denom.length > 256 || /[\x00-\x20\x7f]/.test(denom)) {
         throw new Error(`spending rule ${i}: denom ${JSON.stringify(denom)} is too long or contains whitespace`);
       }
+      try {
+        validateEvmDenom(denom);
+      } catch (e) {
+        throw new Error(`spending rule ${i}: ${(e as Error).message}`);
+      }
       const key = denom.toLowerCase();
       if (seen.has(key)) throw new Error(`spending rule ${i}: denom ${denom} has more than one limit`);
       seen.add(key);
@@ -91,6 +126,13 @@ export function validateSpendingRules(rules: readonly RuleInput[] | undefined): 
         );
       }
       boundingDenomLimit = true;
+    }
+    for (const d of rule.allowedDenoms ?? []) {
+      try {
+        validateEvmDenom(d);
+      } catch (e) {
+        throw new Error(`spending rule ${i}: ${(e as Error).message}`);
+      }
     }
     const bounded =
       daily > 0n || perTx > 0n || (rule.allowedDenoms ?? []).length > 0 || calls.length > 0 || boundingDenomLimit;

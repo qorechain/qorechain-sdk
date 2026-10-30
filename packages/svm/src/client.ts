@@ -28,11 +28,15 @@ import {
 
 /** Subset of a qorechain-sdk network's endpoints relevant to the SVM runtime. */
 export interface SvmEndpoints {
-  /** Solana-compatible JSON-RPC HTTP endpoint. */
-  svmRpc: string;
+  /**
+   * Solana-compatible JSON-RPC HTTP endpoint. The public `mainnet` and
+   * `testnet` presets leave it unset: SVM transactions are not open on either
+   * network.
+   */
+  svmRpc?: string;
 }
 
-/** Default testnet SVM RPC endpoint (Solana-compatible JSON-RPC, port 8899). */
+/** The SVM RPC port of a node on this machine (the `localnet` preset). */
 export const DEFAULT_SVM_RPC_URL = "http://localhost:8899";
 
 /** Options for {@link createSvmClient}. */
@@ -110,6 +114,14 @@ export interface SvmClient {
 
 function resolveConnection(opts: CreateSvmClientOptions): Connection {
   if (opts.connection) return opts.connection;
+  if (!opts.rpcUrl && opts.endpoints && !opts.endpoints.svmRpc) {
+    // A network's endpoints without an SVM endpoint (the public presets): say
+    // so instead of quietly talking to localhost.
+    throw new Error(
+      "createSvmClient: endpoints.svmRpc is not configured for this network (SVM transactions are not open " +
+        "on the public networks); pass `rpcUrl` or `endpoints.svmRpc` for your own node",
+    );
+  }
   const url = opts.rpcUrl ?? opts.endpoints?.svmRpc ?? DEFAULT_SVM_RPC_URL;
   return new Connection(url, opts.commitment ?? "confirmed");
 }
@@ -117,8 +129,10 @@ function resolveConnection(opts: CreateSvmClientOptions): Connection {
 /**
  * Create a QoreChain SVM client bundle.
  *
- * With no options it targets the testnet localhost endpoint
- * (`http://localhost:8899`) at `confirmed` commitment.
+ * With no options it targets a node on this machine (`http://localhost:8899`)
+ * at `confirmed` commitment. Given a network's `endpoints` without `svmRpc`
+ * (the public presets set none), it throws instead of falling back to
+ * localhost.
  */
 export function createSvmClient(opts: CreateSvmClientOptions = {}): SvmClient {
   const connection = resolveConnection(opts);

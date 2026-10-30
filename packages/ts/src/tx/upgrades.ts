@@ -37,6 +37,14 @@ export const CHAIN_UPGRADE_V3_2_3 = "v3.2.3";
  */
 export const CHAIN_UPGRADE_V3_2_4 = "v3.2.4";
 
+/**
+ * The KEM key registry, simulation that already charges the post-quantum
+ * verification (see `exactHybridGas`), spending-rule bounds checked when
+ * a rule is saved, `MsgUpdateConfig` (abstract accounts) and the governance
+ * `MsgUpdateParams` of crossvm and rdk.
+ */
+export const CHAIN_UPGRADE_V3_2_5 = "v3.2.5";
+
 /** How long a "not applied yet" answer is trusted before asking again. */
 const NOT_APPLIED_TTL_MS = 60_000;
 

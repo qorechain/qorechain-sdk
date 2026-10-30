@@ -48,6 +48,8 @@ import { buildHybridTx, signAndBroadcastHybrid, type HybridBroadcaster } from ".
 import type { SignBytesVersionOption } from "./signbytes";
 import type { PqcKeypair } from "../accounts/pqc";
 import type { FetchLike } from "../query/http";
+import { CHAIN_UPGRADE_V3_2_5, isUpgradeApplied } from "./upgrades";
+import { QueryAppliedPlanRequest, QueryAppliedPlanResponse } from "cosmjs-types/cosmos/upgrade/v1beta1/query";
 
 /** The `/cosmos.bank.v1beta1.MsgSend` type URL. */
 export const MSG_SEND_TYPE_URL = "/cosmos.bank.v1beta1.MsgSend";
@@ -71,7 +73,11 @@ export type FeeInput = StdFee | "auto";
 
 /** Auto-fee tuning, used when a fee of `"auto"` is supplied. */
 export interface AutoFeeOptions {
-  /** Multiplier applied to the simulated gas. Defaults to {@link DEFAULT_GAS_MULTIPLIER}. */
+  /**
+   * Multiplier applied to the simulated gas. When left out, a hybrid
+   * transaction on a v3.2.5 network gets {@link exactHybridGas} and anything
+   * else {@link DEFAULT_GAS_MULTIPLIER}.
+   */
   gasMultiplier?: number;
   /**
    * Gas price (base denom per gas unit) used to price the fee. A
@@ -166,10 +172,41 @@ function toBase64(bytes: Uint8Array): string {
 
 /**
  * Gas a hybrid transaction spends in the block beyond what its simulation
- * reports: the ML-DSA-87 verification is not charged in simulation. Measured on
- * the chain (a hybrid MsgSend simulates at about 129k and uses about 164k).
+ * reports, on a node below chain v3.2.5: there the ML-DSA-87 verification is
+ * not charged in simulation. Measured on the chain (a hybrid MsgSend simulates
+ * at about 129k and uses about 164k). Not added from v3.2.5, whose simulation
+ * already charges it.
  */
 export const HYBRID_VERIFY_GAS = 40_000;
+
+/** Multiplier of the exact gas rule for hybrid transactions from chain v3.2.5. */
+export const EXACT_GAS_MULTIPLIER = 1.02;
+
+/** Gas added once by the exact gas rule for hybrid transactions from chain v3.2.5. */
+export const EXACT_GAS_HEADROOM = 2_000;
+
+/**
+ * The gas limit for a hybrid transaction on a network that has applied chain
+ * v3.2.5: `ceil(simulated × 1.02) + 2000`. From v3.2.5 the simulation already
+ * charges the post-quantum verification (once per signer), so nothing is added
+ * per signer. Computed in integers.
+ */
+export function exactHybridGas(simulated: number): number {
+  if (!Number.isSafeInteger(simulated) || simulated < 0) {
+    throw new Error(`simulated gas must be a non-negative integer, got ${simulated}`);
+  }
+  return Math.floor((simulated * 102 + 99) / 100) + EXACT_GAS_HEADROOM;
+}
+
+/** A gas estimate with the simulation it came from. */
+export interface GasEstimate {
+  /** Gas the simulation reported (plus {@link HYBRID_VERIFY_GAS} for a hybrid tx on a node below v3.2.5). */
+  simulated: number;
+  /** The gas limit to send. */
+  gasWanted: number;
+  /** Whether the v3.2.5 exact rule ({@link exactHybridGas}) set `gasWanted`. */
+  exact: boolean;
+}
 
 /** Messages the chain accepts with a classical signature only: PQC key registration. */
 const PQC_REGISTRATION_TYPE_URLS = new Set([
@@ -315,6 +352,9 @@ function cloneMessages(messages: readonly EncodeObject[]): EncodeObject[] {
 export class TxClient {
   private readonly client: SigningClientLike;
   private readonly hybrid?: HybridSigningOptions;
+  // Whether the node has applied v3.2.5, asked over the client's own connection
+  // when no `rest` is known. An applied plan stays applied, so a yes is kept.
+  private exactGasApplied?: boolean;
   /** The signing/sending bech32 address. */
   readonly senderAddress: string;
 
@@ -322,6 +362,37 @@ export class TxClient {
     this.client = opts.signingClient;
     this.senderAddress = opts.senderAddress;
     this.hybrid = opts.hybrid;
+  }
+
+  /**
+   * Whether the exact gas rule applies: the network has applied chain v3.2.5.
+   * Asked over `rest` (cached per endpoint) or, without one, over the client's
+   * query connection. A failed lookup answers `false`, which keeps the older,
+   * larger estimate.
+   */
+  private async exactGasApplies(): Promise<boolean> {
+    const h = this.hybrid;
+    try {
+      if (h?.rest) {
+        return await isUpgradeApplied({ rest: h.rest, upgrade: CHAIN_UPGRADE_V3_2_5, fetch: h.fetch });
+      }
+      if (this.exactGasApplied) return true;
+      const query = (
+        this.client as {
+          forceGetQueryClient?: () => { queryAbci(path: string, data: Uint8Array): Promise<{ value: Uint8Array }> };
+        }
+      ).forceGetQueryClient?.();
+      if (!query) return false;
+      const res = await query.queryAbci(
+        "/cosmos.upgrade.v1beta1.Query/AppliedPlan",
+        QueryAppliedPlanRequest.encode(QueryAppliedPlanRequest.fromPartial({ name: CHAIN_UPGRADE_V3_2_5 })).finish(),
+      );
+      const applied = QueryAppliedPlanResponse.decode(res.value).height > 0n;
+      if (applied) this.exactGasApplied = true;
+      return applied;
+    } catch {
+      return false;
+    }
   }
 
   /** The ML-DSA-87 keypair this client signs with, when it signs hybrid. */
@@ -352,7 +423,10 @@ export class TxClient {
    * signature and its verification cost gas that a signature-less simulation
    * does not see.
    */
-  private async simulateHybrid(messages: readonly EncodeObject[], memo: string | undefined): Promise<number> {
+  private async simulateHybrid(
+    messages: readonly EncodeObject[],
+    memo: string | undefined,
+  ): Promise<{ gas: number; exact: boolean }> {
     const h = this.hybrid!;
     const ctx = await this.accountContext();
     const built = await buildHybridTx({
@@ -368,7 +442,8 @@ export class TxClient {
       fetch: h.fetch,
       signBytesVersion: h.signBytesVersion,
     });
-    return (await this.simulateTxBytes(built.txRawBytes)) + HYBRID_VERIFY_GAS;
+    const [gas, exact] = await Promise.all([this.simulateTxBytes(built.txRawBytes), this.exactGasApplies()]);
+    return { gas: exact ? gas : gas + HYBRID_VERIFY_GAS, exact };
   }
 
   /**
@@ -449,29 +524,59 @@ export class TxClient {
   /**
    * Simulate the given messages and return the estimated gas units.
    *
+   * For a hybrid transaction on a node below chain v3.2.5 this includes
+   * {@link HYBRID_VERIFY_GAS}, which such a node does not charge in simulation;
+   * from v3.2.5 it is the node's own figure.
+   *
    * Use the result (with a safety multiplier) as the `gas` for `estimateFee`,
    * or let {@link estimateGas}/the `"auto"` fee path apply the multiplier.
    */
-  simulate(
+  async simulate(
     messages: readonly EncodeObject[],
     opts: SimulateOptions = {},
   ): Promise<number> {
-    if (this.signsHybrid(messages)) return this.simulateHybrid(messages, opts.memo);
+    if (this.signsHybrid(messages)) return (await this.simulateHybrid(messages, opts.memo)).gas;
     return this.client.simulate(this.senderAddress, messages, opts.memo);
   }
 
   /**
-   * Estimate the gas limit for `messages` by simulating and applying a safety
-   * multiplier (default {@link DEFAULT_GAS_MULTIPLIER}). Returns the gas units,
-   * rounded up.
+   * Estimate the gas limit for `messages` and report the simulation behind it.
+   *
+   * - A hybrid transaction on a network that has applied chain v3.2.5:
+   *   {@link exactHybridGas}, `ceil(simulated × 1.02) + 2000`.
+   * - Anything else (a classical transaction, an older node, or a node that
+   *   could not be asked): `ceil(simulated × DEFAULT_GAS_MULTIPLIER)`, where a
+   *   hybrid simulation includes {@link HYBRID_VERIFY_GAS}.
+   * - A `gasMultiplier` passed by the caller replaces either rule:
+   *   `ceil(simulated × gasMultiplier)`.
+   */
+  async estimateGasDetails(
+    messages: readonly EncodeObject[],
+    memo?: string,
+    gasMultiplier?: number,
+  ): Promise<GasEstimate> {
+    if (this.signsHybrid(messages)) {
+      const { gas, exact } = await this.simulateHybrid(messages, memo);
+      if (gasMultiplier !== undefined) {
+        return { simulated: gas, gasWanted: Math.ceil(gas * gasMultiplier), exact: false };
+      }
+      if (exact) return { simulated: gas, gasWanted: exactHybridGas(gas), exact: true };
+      return { simulated: gas, gasWanted: Math.ceil(gas * DEFAULT_GAS_MULTIPLIER), exact: false };
+    }
+    const gas = await this.client.simulate(this.senderAddress, messages, memo);
+    return { simulated: gas, gasWanted: Math.ceil(gas * (gasMultiplier ?? DEFAULT_GAS_MULTIPLIER)), exact: false };
+  }
+
+  /**
+   * Estimate the gas limit for `messages`; see {@link estimateGasDetails} for
+   * the rule. Returns the gas units, rounded up.
    */
   async estimateGas(
     messages: readonly EncodeObject[],
     memo?: string,
-    gasMultiplier: number = DEFAULT_GAS_MULTIPLIER,
+    gasMultiplier?: number,
   ): Promise<number> {
-    const gasUsed = await this.simulate(messages, { memo });
-    return Math.ceil(gasUsed * gasMultiplier);
+    return (await this.estimateGasDetails(messages, memo, gasMultiplier)).gasWanted;
   }
 
   /**
@@ -484,8 +589,9 @@ export class TxClient {
 
   /**
    * Resolve a {@link FeeInput} to a concrete {@link StdFee}. For `"auto"`,
-   * simulates `messages`, multiplies the gas by `gasMultiplier`, and prices it
-   * with `gasPrice` via {@link calculateFee}.
+   * estimates the gas with {@link estimateGasDetails} (the exact v3.2.5 rule
+   * for a hybrid transaction unless `gasMultiplier` is set) and prices it with
+   * `gasPrice` via {@link calculateFee}.
    */
   async resolveFee(
     messages: readonly EncodeObject[],
@@ -494,11 +600,7 @@ export class TxClient {
     autoFee: AutoFeeOptions = {},
   ): Promise<StdFee> {
     if (fee !== "auto") return fee;
-    const gas = await this.estimateGas(
-      messages,
-      memo,
-      autoFee.gasMultiplier ?? DEFAULT_GAS_MULTIPLIER,
-    );
+    const gas = await this.estimateGas(messages, memo, autoFee.gasMultiplier);
     return calculateFee(gas, autoFee.gasPrice ?? DEFAULT_GAS_PRICE);
   }
 

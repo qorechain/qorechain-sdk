@@ -28,6 +28,9 @@ import * as stakingtierTx from "../codegen/qorechain/stakingtier/v1/tx";
 import { validateLockDelegation } from "../stakingtier";
 import * as crossvmTx from "../codegen/qorechain/crossvm/v1/tx";
 import * as rlconsensusTx from "../codegen/qorechain/rlconsensus/v1/tx";
+import { validateKemPublicKey, KEM_ALGORITHM_ML_KEM_1024 } from "../pqc/kem";
+import { validateUpdateConfig } from "../abstractaccount";
+import { validateCrossVmUpdateParams, validateRdkUpdateParams } from "../governance";
 
 /**
  * A generated message type with the methods the composers use.
@@ -180,6 +183,14 @@ export const rdk = {
     "/qorechain.rdk.v1.MsgExecuteWithdrawal",
     rdkTx.MsgExecuteWithdrawal,
   ),
+  /**
+   * Governance (chain v3.2.5): replace the rdk parameters wholesale. Checked
+   * first ({@link validateRdkUpdateParams}).
+   */
+  updateParams: (value: PartialMsg<rdkTx.MsgUpdateParams>): EncodeObject => {
+    validateRdkUpdateParams(value);
+    return composer("/qorechain.rdk.v1.MsgUpdateParams", rdkTx.MsgUpdateParams)(value);
+  },
 };
 
 /** Multilayer (sidechain / paychain anchoring) message composers. */
@@ -293,6 +304,24 @@ export const pqc = {
     "/qorechain.pqc.v1.MsgClearEVMDelegation",
     pqcTx.MsgClearEVMDelegation,
   ),
+  /**
+   * Publish the sender's KEM (key-encapsulation) public key so anyone can
+   * encrypt to the account (chain v3.2.5). `algorithmId` defaults to
+   * ML-KEM-1024 (2), whose key is 1568 bytes and is checked first
+   * ({@link validateKemPublicKey}). Sending it again replaces the key. Needs the
+   * account's hybrid signature.
+   */
+  registerKemKey: (value: PartialMsg<pqcTx.MsgRegisterKEMKey>): EncodeObject => {
+    const algorithmId = value.algorithmId ?? KEM_ALGORITHM_ML_KEM_1024;
+    if (!value.sender) throw new Error("registerKemKey: sender is required");
+    validateKemPublicKey(value.publicKey as Uint8Array | undefined, algorithmId);
+    return composer("/qorechain.pqc.v1.MsgRegisterKEMKey", pqcTx.MsgRegisterKEMKey)({ ...value, algorithmId });
+  },
+  /** Withdraw the sender's published KEM key (chain v3.2.5). Needs the hybrid signature. */
+  removeKemKey: (value: PartialMsg<pqcTx.MsgRemoveKEMKey>): EncodeObject => {
+    if (!value.sender) throw new Error("removeKemKey: sender is required");
+    return composer("/qorechain.pqc.v1.MsgRemoveKEMKey", pqcTx.MsgRemoveKEMKey)(value);
+  },
 };
 
 /** SVM (virtual machine programs/accounts) message composers. */
@@ -429,6 +458,14 @@ export const abstractaccount = {
     "/qorechain.abstractaccount.v1.MsgExecuteCosmos",
     abstractaccountTx.MsgExecuteCosmos,
   ),
+  /**
+   * Governance (chain v3.2.5): replace the module configuration wholesale,
+   * among it the `enabled` switch. Checked first ({@link validateUpdateConfig}).
+   */
+  updateConfig: (value: PartialMsg<abstractaccountTx.MsgUpdateConfig>): EncodeObject => {
+    validateUpdateConfig(value);
+    return composer("/qorechain.abstractaccount.v1.MsgUpdateConfig", abstractaccountTx.MsgUpdateConfig)(value);
+  },
 };
 
 /** Cross-VM message composers. */
@@ -441,6 +478,15 @@ export const crossvm = {
     "/qorechain.crossvm.v1.MsgProcessQueue",
     crossvmTx.MsgProcessQueue,
   ),
+  /**
+   * Governance (chain v3.2.5): replace the crossvm parameters wholesale, among
+   * them the allowlist of CosmWasm contracts the EVM bridge precompile may call.
+   * Checked first ({@link validateCrossVmUpdateParams}).
+   */
+  updateParams: (value: PartialMsg<crossvmTx.MsgUpdateParams>): EncodeObject => {
+    validateCrossVmUpdateParams(value);
+    return composer("/qorechain.crossvm.v1.MsgUpdateParams", crossvmTx.MsgUpdateParams)(value);
+  },
 };
 
 /** RL-consensus (governance authority) message composers. */

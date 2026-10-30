@@ -1,6 +1,9 @@
 import { describe, it, expect, vi } from "vitest";
 import { createClient } from "../src/client";
-import { NETWORKS } from "../src/config/networks";
+import { NETWORKS, PUBLIC_ENDPOINTS } from "../src/config/networks";
+
+const TESTNET = PUBLIC_ENDPOINTS.testnet;
+const MAINNET = PUBLIC_ENDPOINTS.mainnet;
 import * as sdk from "../src/index";
 
 function jsonResponse(body: unknown) {
@@ -29,9 +32,7 @@ describe("createClient network resolution", () => {
     const fetchMock = vi.fn(async () => jsonResponse({ balances: [] }));
     const client = createClient({ fetch: fetchMock });
     await client.rest.getAllBalances("qor1abc");
-    expect(calledUrl(fetchMock)).toBe(
-      "http://localhost:1317/cosmos/bank/v1beta1/balances/qor1abc",
-    );
+    expect(calledUrl(fetchMock)).toBe(`${TESTNET.rest}/cosmos/bank/v1beta1/balances/qor1abc`);
   });
 
   it("constructs the evm and qor clients against the testnet evmRpc endpoint", async () => {
@@ -40,9 +41,9 @@ describe("createClient network resolution", () => {
     );
     const client = createClient({ fetch: fetchMock });
     await client.evm.ethChainId();
-    expect(calledUrl(fetchMock)).toBe("http://localhost:8545");
+    expect(calledUrl(fetchMock)).toBe(TESTNET.evmRpc);
     await client.qor.getAiStats();
-    expect(calledUrl(fetchMock, 1)).toBe("http://localhost:8545");
+    expect(calledUrl(fetchMock, 1)).toBe(TESTNET.evmRpc);
   });
 
   it("applies a partial endpoint override on testnet", async () => {
@@ -53,23 +54,24 @@ describe("createClient network resolution", () => {
     });
     expect(client.network.endpoints?.rest).toBe("https://rest.example");
     // Non-overridden endpoints keep the testnet defaults.
-    expect(client.network.endpoints?.evmRpc).toBe("http://localhost:8545");
+    expect(client.network.endpoints?.evmRpc).toBe(TESTNET.evmRpc);
     await client.rest.getAllBalances("qor1abc");
     expect(calledUrl(fetchMock)).toBe(
       "https://rest.example/cosmos/bank/v1beta1/balances/qor1abc",
     );
   });
 
-  it("builds a working mainnet client with localhost defaults", async () => {
+  it("builds a working mainnet client on the public endpoints", async () => {
     const fetchMock = vi.fn(async () => jsonResponse({ balances: [] }));
     const client = createClient({ network: "mainnet", fetch: fetchMock });
     expect(client.network.name).toBe("mainnet");
     expect(client.network.chainId).toBe("qorechain-vladi");
     expect(client.network.endpoints).toEqual(NETWORKS.mainnet.endpoints);
+    expect(client.network.endpoints.grpc).toBeUndefined();
+    expect(client.network.endpoints.evmWs).toBeUndefined();
+    expect(client.network.endpoints.svmRpc).toBeUndefined();
     await client.rest.getAllBalances("qor1abc");
-    expect(calledUrl(fetchMock)).toBe(
-      "http://localhost:1317/cosmos/bank/v1beta1/balances/qor1abc",
-    );
+    expect(calledUrl(fetchMock)).toBe(`${MAINNET.rest}/cosmos/bank/v1beta1/balances/qor1abc`);
   });
 
   it("builds a working client for mainnet with custom endpoints", async () => {
@@ -111,7 +113,7 @@ describe("createClient sub-clients and fees", () => {
     const client = createClient({ fetch: fetchMock });
     const fee = await client.fees.estimate("fast");
     expect(calledUrl(fetchMock)).toBe(
-      "http://localhost:1317/qorechain/ai/v1/fee-estimate?urgency=fast",
+      `${TESTNET.rest}/qorechain/ai/v1/fee-estimate?urgency=fast`,
     );
     expect(fee.amount).toEqual([{ denom: "uqor", amount: "1200" }]);
   });
@@ -121,7 +123,7 @@ describe("createClient sub-clients and fees", () => {
     const client = createClient({ fetch: fetchMock });
     await client.crossvm.message("5");
     expect(calledUrl(fetchMock)).toBe(
-      "http://localhost:1317/qorechain/crossvm/v1/message/5",
+      `${TESTNET.rest}/qorechain/crossvm/v1/message/5`,
     );
   });
 
@@ -130,11 +132,11 @@ describe("createClient sub-clients and fees", () => {
     const client = createClient({ fetch: fetchMock });
     await client.crossvm.pending();
     expect(calledUrl(fetchMock, 0)).toBe(
-      "http://localhost:1317/qorechain/crossvm/v1/pending",
+      `${TESTNET.rest}/qorechain/crossvm/v1/pending`,
     );
     await client.crossvm.params();
     expect(calledUrl(fetchMock, 1)).toBe(
-      "http://localhost:1317/qorechain/crossvm/v1/params",
+      `${TESTNET.rest}/qorechain/crossvm/v1/params`,
     );
   });
 
@@ -150,7 +152,7 @@ describe("createClient sub-clients and fees", () => {
     const b = await client.cosmwasm();
     expect(a).toBe(b);
     expect(connectSpy).toHaveBeenCalledTimes(1);
-    expect(connectSpy).toHaveBeenCalledWith("http://localhost:26657");
+    expect(connectSpy).toHaveBeenCalledWith(TESTNET.rpc);
     connectSpy.mockRestore();
   });
 
@@ -228,7 +230,7 @@ describe("createClient sub-clients and fees", () => {
     const signer = { getAccounts: async () => [] } as never;
     await client.connectTx(signer);
     expect(connectSpy).toHaveBeenCalledWith(
-      expect.objectContaining({ rpcEndpoint: "http://localhost:26657", signer }),
+      expect.objectContaining({ rpcEndpoint: TESTNET.rpc, signer }),
     );
     connectSpy.mockRestore();
   });

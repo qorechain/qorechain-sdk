@@ -1,10 +1,20 @@
 /**
  * Network presets for the QoreChain SDK.
  *
- * Both the `testnet` and `mainnet` presets are fully populated and live. Their
- * endpoints default to localhost ports so the SDK works out of the box against a
- * locally running node; callers override these with real hostnames when creating
- * a client. {@link getNetwork} returns either preset.
+ * - `mainnet` and `testnet` point at the public QoreChain endpoints, listed once
+ *   in {@link PUBLIC_ENDPOINTS}. The testnet endpoints carry a per-IP rate limit
+ *   at the edge; production traffic should run or use its own node and pass
+ *   `endpoints`.
+ * - `localnet` keeps the localhost ports of a node on your own machine (this
+ *   was the default of every preset before 0.12.0).
+ *
+ * No preset sets a gRPC endpoint or an SVM endpoint (SVM transactions are not
+ * open on either network), and mainnet has no public EVM WebSocket. Code that
+ * needs one of those fails with an error naming the endpoint to pass instead of
+ * falling back to localhost.
+ *
+ * `https://download.qore.host/<net>/latest.json` is a manifest (release
+ * version, peers, state sync), not an API endpoint.
  */
 
 /** Bech32 human-readable prefixes used across QoreChain address types. */
@@ -31,16 +41,16 @@ export interface CoinInfo {
 export interface NetworkEndpoints {
   /** Native REST (LCD) endpoint. */
   rest: string;
-  /** Native gRPC endpoint. */
-  grpc: string;
+  /** Native gRPC endpoint. Not set by the public presets. */
+  grpc?: string;
   /** Consensus RPC endpoint. */
   rpc: string;
   /** EVM JSON-RPC HTTP endpoint. */
   evmRpc: string;
-  /** EVM JSON-RPC WebSocket endpoint. */
-  evmWs: string;
-  /** SVM JSON-RPC endpoint. */
-  svmRpc: string;
+  /** EVM JSON-RPC WebSocket endpoint. Set by `testnet` and `localnet` only. */
+  evmWs?: string;
+  /** SVM JSON-RPC endpoint. Set by `localnet` only (SVM transactions are not open). */
+  svmRpc?: string;
 }
 
 /** A fully described network preset. */
@@ -51,6 +61,8 @@ export interface NetworkConfig {
   live: boolean;
   /** Chain ID. */
   chainId: string;
+  /** EVM chain id (EIP-155), when known for the preset. */
+  evmChainId?: number;
   /** Bech32 prefixes for address encoding. */
   bech32: Bech32Prefixes;
   /** Staking coin metadata. */
@@ -72,7 +84,7 @@ export interface NetworkConfig {
 }
 
 /** Known network preset names. */
-export type NetworkName = "testnet" | "mainnet";
+export type NetworkName = "testnet" | "mainnet" | "localnet";
 
 /**
  * QoreChain uses the same token and address prefixes on every network, so these
@@ -90,44 +102,91 @@ const COIN: CoinInfo = {
   exponent: 6,
 };
 
+/**
+ * The public endpoints of the two networks: the only place their hostnames are
+ * written. Endpoints a network does not serve publicly are left out.
+ */
+export const PUBLIC_ENDPOINTS: Readonly<Record<"mainnet" | "testnet", Readonly<NetworkEndpoints>>> = {
+  mainnet: {
+    rest: "https://api.qore.host",
+    rpc: "https://rpc.qore.host",
+    evmRpc: "https://evm.qore.host",
+  },
+  testnet: {
+    rest: "https://api-testnet.qore.host",
+    rpc: "https://rpc-testnet.qore.host",
+    evmRpc: "https://evm-testnet.qore.host",
+    evmWs: "wss://evm-ws-testnet.qore.host",
+  },
+};
+
+/** The default ports of a node running on this machine (the `localnet` preset). */
+export const LOCALNET_ENDPOINTS: Readonly<NetworkEndpoints> = {
+  rest: "http://localhost:1317",
+  grpc: "http://localhost:9090",
+  rpc: "http://localhost:26657",
+  evmRpc: "http://localhost:8545",
+  evmWs: "ws://localhost:8546",
+  svmRpc: "http://localhost:8899",
+};
+
 /** The set of built-in network presets, keyed by name. */
 export const NETWORKS: Record<NetworkName, NetworkConfig> = {
   testnet: {
     name: "testnet",
     live: true,
     chainId: "qorechain-diana",
+    evmChainId: 9800,
     bech32: BECH32,
     coin: COIN,
-    endpoints: {
-      rest: "http://localhost:1317",
-      grpc: "http://localhost:9090",
-      rpc: "http://localhost:26657",
-      evmRpc: "http://localhost:8545",
-      evmWs: "ws://localhost:8546",
-      svmRpc: "http://localhost:8899",
-    },
+    endpoints: { ...PUBLIC_ENDPOINTS.testnet },
   },
   mainnet: {
     name: "mainnet",
     live: true,
     chainId: "qorechain-vladi",
+    evmChainId: 9801,
     bech32: BECH32,
     coin: COIN,
-    endpoints: {
-      rest: "http://localhost:1317",
-      grpc: "http://localhost:9090",
-      rpc: "http://localhost:26657",
-      evmRpc: "http://localhost:8545",
-      evmWs: "ws://localhost:8546",
-      svmRpc: "http://localhost:8899",
-    },
+    endpoints: { ...PUBLIC_ENDPOINTS.mainnet },
+  },
+  localnet: {
+    name: "localnet",
+    live: true,
+    // The chain id of the core repository's local devnet; pass `chainId` to
+    // createClient when your local chain uses another.
+    chainId: "qorechain-devnet",
+    bech32: BECH32,
+    coin: COIN,
+    endpoints: { ...LOCALNET_ENDPOINTS },
   },
 };
 
 /**
+ * Read an endpoint a feature needs, or throw an error that names it.
+ *
+ * @param network - The resolved network (its `name` is used in the message).
+ * @param key - The endpoint the caller needs.
+ */
+export function requireNetworkEndpoint(
+  network: Pick<NetworkConfig, "name" | "endpoints">,
+  key: keyof NetworkEndpoints,
+): string {
+  const value = network.endpoints?.[key];
+  if (!value) {
+    const svm = key === "svmRpc" ? " SVM transactions are not open on the public networks." : "";
+    throw new Error(
+      `endpoint "${key}" is not configured for the ${network.name} preset; pass it via ` +
+        `createClient({ endpoints: { ${key}: "..." } }) (or use your own node).${svm}`,
+    );
+  }
+  return value;
+}
+
+/**
  * Resolve a network preset by name.
  *
- * @returns The requested {@link NetworkConfig}, guaranteed to be live and usable.
+ * @returns The requested {@link NetworkConfig}.
  */
 export function getNetwork(name: NetworkName): NetworkConfig {
   return NETWORKS[name];

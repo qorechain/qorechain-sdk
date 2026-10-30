@@ -21,7 +21,7 @@ function fakeConnection(overrides: Record<string, unknown> = {}) {
 }
 
 describe("createSvmClient", () => {
-  it("defaults the RPC endpoint to the testnet localhost:8899", () => {
+  it("defaults the RPC endpoint to localhost:8899", () => {
     const client = createSvmClient();
     expect(client.connection.rpcEndpoint).toBe("http://localhost:8899");
   });
@@ -35,6 +35,10 @@ describe("createSvmClient", () => {
   it("accepts a qorechain-sdk endpoints object (svmRpc)", () => {
     const client = createSvmClient({ endpoints: { svmRpc: "http://svm-node:8899" } });
     expect(client.connection.rpcEndpoint).toBe("http://svm-node:8899");
+  });
+
+  it("refuses a network's endpoints without svmRpc instead of using localhost", () => {
+    expect(() => createSvmClient({ endpoints: {} })).toThrow(/svmRpc is not configured/);
   });
 
   it("uses an injected connection as-is (for testing)", () => {
