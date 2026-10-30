@@ -7,6 +7,19 @@ denom/address utilities, HD account derivation (native / EVM / SVM), post-quantu
 
 from __future__ import annotations
 
+from .abstractaccount import (
+    AuthenticatorRule,
+    AuthenticatorView,
+    SpendingRules,
+    authenticators_path,
+    fetch_authenticators,
+    fetch_authenticators_async,
+    fetch_spending_rules,
+    fetch_spending_rules_async,
+    parse_authenticators,
+    parse_spending_rules,
+    spending_rules_path,
+)
 from .accounts import (
     Ed25519Account,
     Secp256k1Account,
@@ -125,14 +138,33 @@ from .fees import estimate_fee
 from .gas import (
     DEFAULT_GAS_MULTIPLIER,
     DEFAULT_GAS_PRICE,
+    EXACT_GAS_HEADROOM,
+    EXACT_GAS_MULTIPLIER,
     GasPrice,
     SimulationRefusedError,
     auto_fee,
     calculate_fee,
     estimate_gas,
+    exact_hybrid_gas,
     simulate_gas_used,
+    simulation_charges_pqc_verify,
+)
+from .governance import (
+    validate_crossvm_update_params,
+    validate_rdk_update_params,
 )
 from .jsonrpc import AsyncJsonRpcClient, JsonRpcClient, JsonRpcError
+from .kem import (
+    KEM_ALGORITHM_ML_KEM_1024,
+    ML_KEM_1024_PUBLIC_KEY_SIZE,
+    KemKey,
+    KemKeyResult,
+    fetch_kem_key,
+    fetch_kem_key_async,
+    kem_key_path,
+    parse_kem_key,
+    validate_kem_public_key,
+)
 from .key_integrity import (
     KEY_TYPE_CLASSICAL_ONLY,
     PROOF_OF_POSSESSION_DOMAIN,
@@ -154,16 +186,22 @@ from .messages import (
     msg,
     qorechain_registry,
     resolve_message_type,
+    validate_evm_denom,
     validate_spending_rules,
 )
 from .networks import (
+    EVM_CHAIN_IDS,
+    LOCALNET_ENDPOINTS,
     NETWORKS,
+    PUBLIC_ENDPOINTS,
     Bech32Prefixes,
     CoinInfo,
+    EndpointNotConfiguredError,
     NetworkConfig,
     NetworkEndpoints,
     get_network,
     list_networks,
+    require_endpoint,
 )
 from .pqc import (
     ALGORITHM_DILITHIUM5,
@@ -319,6 +357,7 @@ from .upgrades import (
     CHAIN_UPGRADE_V3_2_2,
     CHAIN_UPGRADE_V3_2_3,
     CHAIN_UPGRADE_V3_2_4,
+    CHAIN_UPGRADE_V3_2_5,
     applied_plan_path,
     clear_upgrade_cache,
     is_upgrade_applied,
@@ -341,7 +380,7 @@ from .utils import (
     to_checksum_address,
 )
 
-__version__ = "0.10.0"
+__version__ = "0.12.0"
 
 __all__ = [
     "__version__",
@@ -352,6 +391,11 @@ __all__ = [
     "NetworkConfig",
     "NetworkEndpoints",
     "get_network",
+    "PUBLIC_ENDPOINTS",
+    "LOCALNET_ENDPOINTS",
+    "EVM_CHAIN_IDS",
+    "EndpointNotConfiguredError",
+    "require_endpoint",
     "list_networks",
     # denom
     "to_base",
@@ -495,6 +539,7 @@ __all__ = [
     "QORECHAIN_REGISTRY_TYPES",
     "COSMOS_REGISTRY_TYPES",
     "validate_spending_rules",
+    "validate_evm_denom",
     "MAX_DENOM_LIMITS",
     "MAX_ALLOWED_EVM_CALLS",
     # typed query clients
@@ -508,6 +553,10 @@ __all__ = [
     "auto_fee",
     "SimulationRefusedError",
     "DEFAULT_GAS_MULTIPLIER",
+    "EXACT_GAS_MULTIPLIER",
+    "EXACT_GAS_HEADROOM",
+    "exact_hybrid_gas",
+    "simulation_charges_pqc_verify",
     "DEFAULT_GAS_PRICE",
     # v3.2.0 EVM authorisation window (x/pqc)
     "OPEN_EVM_WINDOW_TYPE_URL",
@@ -557,6 +606,7 @@ __all__ = [
     "CHAIN_UPGRADE_V3_2_2",
     "CHAIN_UPGRADE_V3_2_3",
     "CHAIN_UPGRADE_V3_2_4",
+    "CHAIN_UPGRADE_V3_2_5",
     # chain v3.2.4: protocol feature switches
     "PROTOCOL_FEATURES_PATH",
     "ProtocolFeature",
@@ -667,4 +717,28 @@ __all__ = [
     "create_cross_vm_client",
     "decode_cross_vm_response",
     "decode_cross_vm_responses",
+    # chain v3.2.5: KEM key registry
+    "KEM_ALGORITHM_ML_KEM_1024",
+    "ML_KEM_1024_PUBLIC_KEY_SIZE",
+    "KemKey",
+    "KemKeyResult",
+    "kem_key_path",
+    "parse_kem_key",
+    "fetch_kem_key",
+    "fetch_kem_key_async",
+    "validate_kem_public_key",
+    # chain v3.2.5: abstract-account reads and governance checks
+    "AuthenticatorRule",
+    "AuthenticatorView",
+    "SpendingRules",
+    "spending_rules_path",
+    "authenticators_path",
+    "parse_spending_rules",
+    "parse_authenticators",
+    "fetch_spending_rules",
+    "fetch_spending_rules_async",
+    "fetch_authenticators",
+    "fetch_authenticators_async",
+    "validate_crossvm_update_params",
+    "validate_rdk_update_params",
 ]

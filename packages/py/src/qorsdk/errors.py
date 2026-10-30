@@ -75,6 +75,17 @@ MODULE_CODES: dict[str, dict[int, tuple[str, str]]] = {
             "authenticator session key expired - re-register the linked key with a "
             "fresh expiry",
         ),
+        # From v3.2.5 also refused when a rule is saved: a rule that bounds
+        # nothing, a denom limit without an amount, or an EVM token denom whose
+        # contract address does not parse.
+        8: (
+            "invalid_spending_rule",
+            "invalid spending rule - see the message for the rule and the field",
+        ),
+        9: (
+            "abstractaccount_disabled",
+            "the abstract account module is switched off by governance",
+        ),
         10: (
             "permission_denied",
             "authenticator permission denied - the linked key lacks the required "
@@ -140,6 +151,26 @@ MODULE_CODES: dict[str, dict[int, tuple[str, str]]] = {
             "pqc_maintenance_needs_hybrid",
             "an account with a registered PQC key must send key registration or "
             "migration with the hybrid signature - pass pqc_keypair to migrate_pqc_key",
+        ),
+        # v3.2.5 KEM key registry (qorsdk.kem).
+        250: (
+            "kem_registry_not_enabled",
+            "the KEM key registry is not enabled on this network yet",
+        ),
+        251: (
+            "kem_key_invalid",
+            "invalid KEM public key - an ML-KEM-1024 key is 1568 bytes and must pass "
+            "the FIPS 203 encapsulation key check",
+        ),
+        252: ("kem_key_not_found", "no KEM key published for this account, nothing to remove"),
+        253: (
+            "kem_key_unchanged",
+            "this KEM key is already published for this account",
+        ),
+        254: (
+            "kem_needs_signature_key",
+            "publishing a KEM key needs a registered post-quantum signature key - "
+            "register an ML-DSA-87 key first and sign hybrid",
         ),
         61: (
             "evm_delegation_invalid",
@@ -257,10 +288,16 @@ REGISTERED_ERRORS: tuple[tuple[str, int, str], ...] = (
     ("pqc", 60, "no post-quantum consent for this EIP-7702 delegation"),
     ("pqc", 61, "invalid EIP-7702 delegation request"),
     ("pqc", 231, "PQC proof of possession does not verify"),
+    ("pqc", 250, "the KEM key registry is not enabled on this chain yet"),
+    ("pqc", 251, "invalid KEM public key"),
+    ("pqc", 252, "no KEM key published for this account"),
+    ("pqc", 253, "this KEM key is already published for this account"),
+    ("pqc", 254, "publishing a KEM key needs a registered post-quantum signature key"),
     ("abstractaccount", 2, "abstract account not found"),
     ("abstractaccount", 5, "spending limit exceeded"),
     ("abstractaccount", 6, "session key expired"),
     ("abstractaccount", 8, "invalid spending rule"),
+    ("abstractaccount", 9, "abstract account module is disabled"),
     ("abstractaccount", 10, "authenticator not permitted for this action"),
     ("abstractaccount", 11, "authenticator signature replay binding mismatch"),
     ("stakingtier", 3, "staking tiers are not active on this chain yet"),

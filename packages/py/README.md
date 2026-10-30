@@ -22,7 +22,7 @@ Python 3.10+ is required. The package ships type hints and a `py.typed` marker.
 ```python
 from qorsdk import create_client
 
-# Defaults to the testnet preset (localhost endpoints).
+# Defaults to the testnet preset (the public testnet endpoints).
 client = create_client()
 print(client.network.chain_id)  # "qorechain-diana"
 
@@ -38,19 +38,55 @@ fee = client.fees.estimate("fast")
 client.close()
 ```
 
-Mainnet (chain id `qorechain-vladi`) is live; select it and override the
-localhost defaults with your node URLs:
+### Network presets (v0.12.0)
+
+| Preset | Chain id | REST, RPC, EVM | EVM WebSocket | gRPC, SVM |
+|---|---|---|---|---|
+| `mainnet` | `qorechain-vladi` (EVM 9801) | public | not offered (poll `evm_rpc`) | not preset |
+| `testnet` | `qorechain-diana` (EVM 9800) | public | public | not preset |
+| `localnet` | `qorechain-devnet` | `localhost` (1317, 26657, 8545) | `ws://localhost:8546` | `localhost` (9090, 8899) |
+
+The public hostnames are defined once, in `qorsdk.networks.PUBLIC_ENDPOINTS`
+(`get_network("mainnet").endpoints.rest` and so on). `endpoints` overrides any
+single endpoint, as before:
 
 ```python
-client = create_client(
-    network="mainnet",
-    endpoints={
-        "rest": "https://api.qore.host",
-        "evm_rpc": "https://evm.qore.host",
-    },
-)
-print(client.network.chain_id)  # "qorechain-vladi"
+from qorsdk import create_client, require_endpoint
+
+client = create_client(network="mainnet")
+client = create_client(network="mainnet", endpoints={"rest": "https://my-node.example:1317"})
+client = create_client(network="localnet")  # the localhost defaults of earlier releases
+
+# An endpoint the preset leaves unset is None. Code that needs it raises
+# EndpointNotConfiguredError (a ValueError) instead of falling back to localhost:
+require_endpoint(client.network, "grpc")
 ```
+
+- **Behaviour change in 0.12.0:** `mainnet` and `testnet` used to default to
+  localhost. To keep talking to a local node, use `network="localnet"` or pass
+  `endpoints`.
+- The testnet endpoints are rate limited per IP at the edge. For production
+  traffic, run or use your own node and pass its URLs as `endpoints`.
+- SVM transactions are not open on either network, so no SVM endpoint is preset.
+- `https://download.qore.host/<network>/latest.json` is a release manifest
+  (version, peers, state sync), not an endpoint.
+
+### Which chain release a network runs
+
+Nodes do not report their binary version: `node_info`'s `application_version`
+is empty on purpose, so a node cannot be fingerprinted by release. Detect a
+feature by its upgrade plan instead, with `is_upgrade_applied(rest, name)`
+(`GET /cosmos/upgrade/v1beta1/applied_plan/<name>`, height above 0 = applied),
+and ask for EVERY plan name that can carry it, since the networks did not all
+use the same names:
+
+- mainnet has applied `v3.2.5` (height 3,906,833); the testnet has applied
+  `v3.2.5` and `v3.2.6`;
+- the sign-bytes v2 change is `v3.2.0` on mainnet and `v3.1.98` on the testnet
+  (the SDK asks for both).
+
+For a human-readable version, read `.version` from
+`https://download.qore.host/<network>/latest.json` (`mainnet` or `testnet`).
 
 ### Derive accounts
 
@@ -319,10 +355,10 @@ On the native lane QoreChain requires hybrid post-quantum signatures
 import httpx
 from qorsdk import (
     fetch_pqc_status, ensure_pqc_registered, migrate_to_hybrid, migrate_pqc_key,
-    derive_native_account, derive_pqc_canonical,
+    derive_native_account, derive_pqc_canonical, get_network,
 )
 
-REST = "https://api.qore.host"
+REST = get_network("mainnet").endpoints.rest
 native = derive_native_account(mnemonic, 0)
 # The recoverable PQC key: derived from the same mnemonic, bound to the address.
 pqc_keypair = derive_pqc_canonical(native.address, mnemonic)
@@ -400,11 +436,12 @@ two networks, the SDK raises `SignBytesVersionError` instead of guessing.
 ```python
 from qorsdk import (
     build_hybrid_tx, hybrid_sign_and_broadcast, resolve_sign_bytes_version,
-    SignBytesResolver, clear_sign_bytes_cache,
+    SignBytesResolver, clear_sign_bytes_cache, get_network,
 )
 
 # 1. Resolve explicitly, then build (the builders are pure: no network).
-version = resolve_sign_bytes_version("qorechain-diana", rest_url="https://api-testnet.qore.host")
+TESTNET_REST = get_network("testnet").endpoints.rest
+version = resolve_sign_bytes_version("qorechain-diana", rest_url=TESTNET_REST)
 built = build_hybrid_tx(..., chain_id="qorechain-diana", sign_bytes_version=version)
 built.sign_bytes_version  # "v2"
 
@@ -414,7 +451,7 @@ built.sign_bytes_version  # "v2"
 resp = hybrid_sign_and_broadcast(
     lambda v: build_hybrid_tx(..., chain_id="qorechain-diana", sign_bytes_version=v),
     chain_id="qorechain-diana",
-    rest_url="https://api-testnet.qore.host",
+    rest_url=TESTNET_REST,
     sign_bytes_version="auto",   # or "v1" / "v2" to override (no lookup, no retry)
 )
 
@@ -484,7 +521,7 @@ built = sign_hybrid_eth(
     fee=fee,
     sequence=sequence,
     sign_bytes_version=resolve_sign_bytes_version(
-        "qorechain-vladi", rest_url="https://api.qore.host"
+        "qorechain-vladi", rest_url=get_network("mainnet").endpoints.rest
     ),
 )
 
@@ -515,8 +552,10 @@ from qorsdk import (
     get_tx, get_block, search_txs, build_events_query,  # search
 )
 
-# Simulate -> gas_used x 1.4 x 0.15uqor.
-fee = auto_fee("http://localhost:1317", built)
+# Simulate -> gas limit -> x 0.15uqor. A hybrid-signed tx on a v3.2.5+ network
+# gets ceil(gas_used x 1.02) + 2000 (see "Exact gas" below); otherwise
+# ceil(gas_used x 1.4).
+fee = auto_fee(client.network.endpoints.rest, built)
 calculate_fee(200000, GasPrice.from_string("0.15uqor"))
 
 # A simulation the chain refuses with a registered error raises
@@ -667,7 +706,7 @@ from qorsdk import (
 )
 
 # 1. Check what the account has. 200 with found:false when absent - safe to poll.
-rest = RestClient("https://api.qore.host")
+rest = RestClient(get_network("mainnet").endpoints.rest)
 status = get_evm_window(rest, "qor1…")
 status.found, status.live          # bool
 status.remaining_blocks            # int
@@ -756,9 +795,9 @@ total cap; leaving early burns a penalty and forfeits the bonus. The terms are
 governance parameters: read them rather than hard-coding them.
 
 ```python
-from qorsdk import RestClient, msg, fetch_staking_tier_params, fetch_staking_locks
+from qorsdk import RestClient, get_network, msg, fetch_staking_tier_params, fetch_staking_locks
 
-rest = RestClient("https://api.qore.host")
+rest = RestClient(get_network("mainnet").endpoints.rest)
 params = fetch_staking_tier_params(rest)
 # params.lock_tiers -> (StakingLockTier(months=3, bonus_bps=150), StakingLockTier(months=6, ...), ...)
 
@@ -784,10 +823,10 @@ pool; every read has an `_async` twin.
 ```python
 from qorsdk import (
     RestClient, fetch_auth_nonce, fetch_protocol_features,
-    is_protocol_feature_enabled, fetch_pqc_status,
+    is_protocol_feature_enabled, fetch_pqc_status, get_network,
 )
 
-rest = RestClient("https://api.qore.host")
+rest = RestClient(get_network("mainnet").endpoints.rest)
 
 # The nonce a linked authenticator key must sign next (MsgExecuteEVM / MsgExecuteCosmos).
 n = fetch_auth_nonce(rest, address, pubkey)  # n.nonce, n.linked
@@ -797,8 +836,65 @@ on = is_protocol_feature_enabled(rest, "pqc-sign-bytes-v2")
 features = fetch_protocol_features(rest)  # features.features, features.height
 
 # Whether the account's PQC key was proven by a proof of possession.
-proven = fetch_pqc_status("https://api.qore.host", address).get("possession_proven")
+proven = fetch_pqc_status(get_network("mainnet").endpoints.rest, address).get("possession_proven")
 ```
+
+### Chain v3.2.5 (v0.12.0)
+
+Mainnet applied v3.2.5 at height 3,906,833; the testnet runs v3.2.6.
+
+#### Exact gas for hybrid transactions
+
+From v3.2.5 the fee simulation charges the post-quantum signature check, so its
+result is exact up to small variance. For a hybrid-signed transaction on a
+network that has applied `v3.2.5`, `estimate_gas` / `auto_fee` use
+`exact_hybrid_gas(gas_used)` = `ceil(gas_used x 1.02) + 2000`
+(`EXACT_GAS_MULTIPLIER`, `EXACT_GAS_HEADROOM`; once per transaction, not per
+signer). A native-lane transaction pays its whole gas limit times the gas
+price, so the tighter limit is a lower fee. Classical transactions, networks
+below v3.2.5 and a node that cannot be asked keep `ceil(gas_used x 1.4)`. An
+explicit `gas_multiplier` always gives `ceil(gas_used x gas_multiplier)`. The
+plan lookup is cached per REST URL.
+
+#### KEM key registry
+
+An account can publish one ML-KEM-1024 (FIPS 203) public key so that anyone
+can encrypt to it. The chain stores and serves the raw key; the encryption is
+not part of this SDK.
+
+```python
+from qorsdk import RestClient, fetch_kem_key, get_network, msg
+
+register = msg.pqc.register_kem_key(sender=address, public_key=kem_public_key)  # 1568 bytes
+remove = msg.pqc.remove_kem_key(sender=address)
+# Both always need the hybrid signature (build_hybrid_tx).
+
+got = fetch_kem_key(RestClient(get_network("mainnet").endpoints.rest), address)  # bech32 or 0x
+# got.found, got.key.public_key, got.key.algorithm_id (2), got.key.registered_height
+```
+
+- One key per account; registering again replaces it (`replaced` in the
+  response). No proof of possession: the hybrid signature authenticates it,
+  and the account needs a registered post-quantum signature key.
+- `register_kem_key` checks the key before anything is signed: 1568 bytes,
+  every coefficient below 3329 (the FIPS 203 modulus check), not all zero.
+- Refusals are named: `pqc` 250 (registry not enabled), 251 (invalid key), 252
+  (nothing to remove), 253 (the same key is already published), 254 (no
+  post-quantum signature key).
+
+#### Spending rules, governance messages and new reads
+
+- `update_spending_rules` also checks EVM token denoms the way v3.2.5 does when
+  a rule is saved: an `erc20/`, `erc721/` or `erc1155/` denom carries a
+  `0x`-prefixed 20-byte contract address, and an `erc20/` denom is the address
+  alone (`validate_evm_denom`). The chain refuses such a rule with
+  `abstractaccount` code 8 (`invalid_spending_rule`).
+- `fetch_spending_rules(rest, address)` and `fetch_authenticators(rest,
+  address)` read what an account stored and which keys it linked.
+- Governance-only composers: `msg.abstractaccount.update_config`,
+  `msg.crossvm.update_params` (with the EVM bridge allowlist,
+  `"cosmwasm:<contract>"` entries) and `msg.rdk.update_params`, each checked
+  against the chain's bounds before a proposal is built.
 
 ## Regenerating protobuf code (maintainers)
 

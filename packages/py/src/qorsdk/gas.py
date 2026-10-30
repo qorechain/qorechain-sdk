@@ -7,10 +7,21 @@ floating-point drift, and :func:`calculate_fee` turns a gas limit plus a gas
 price into a Native ``StdFee``-shaped dict.
 
 The auto-gas path simulates a transaction against the REST
-``/cosmos/tx/v1beta1/simulate`` endpoint to discover ``gas_used``, applies a
-safety multiplier (default ``1.4``), and prices it at a gas price (default
-``0.025uqor``). :func:`estimate_gas` returns the multiplied gas; :func:`auto_fee`
-returns the priced fee.
+``/cosmos/tx/v1beta1/simulate`` endpoint to discover ``gas_used``, sizes the gas
+limit from it, and prices it at a gas price (default ``0.15uqor``).
+:func:`estimate_gas` returns the gas limit; :func:`auto_fee` returns the priced
+fee.
+
+How the limit is sized:
+
+* A hybrid-signed transaction on a network that has applied chain v3.2.5:
+  :func:`exact_hybrid_gas`, ``ceil(gas_used * 1.02) + 2000``. From v3.2.5 the
+  simulation already charges the post-quantum signature check, so the estimate
+  is exact up to small variance. Native-lane transactions pay the full gas
+  limit times the gas price, so a tight limit is a lower fee.
+* Everything else (a classical transaction, a network below v3.2.5, or when
+  the network cannot be asked): ``ceil(gas_used * 1.4)``, as before.
+* An explicit ``gas_multiplier`` always gives ``ceil(gas_used * gas_multiplier)``.
 """
 
 from __future__ import annotations
@@ -25,9 +36,15 @@ import httpx
 
 from .errors import DecodedTxError, QoreTxError, decode_tx_error, error_from_text
 from .tx import BuiltTx
+from .upgrades import CHAIN_UPGRADE_V3_2_5, upgrade_applied_height
 
-#: Default gas-used safety multiplier applied to a simulation result.
+#: Default gas-used safety multiplier applied to a simulation result (every
+#: transaction below chain v3.2.5, and classical transactions).
 DEFAULT_GAS_MULTIPLIER = 1.4
+#: Multiplier of the exact rule for hybrid transactions on chain v3.2.5+.
+EXACT_GAS_MULTIPLIER = 1.02
+#: Fixed headroom of the exact rule, added once per transaction (not per signer).
+EXACT_GAS_HEADROOM = 2000
 #: Default gas price (base denom per unit of gas). The chain enforces a genesis
 #: min-gas-price (BaseFee) of ``0.1uqor``/gas on both networks; the default sits
 #: above the floor for headroom.
@@ -194,36 +211,105 @@ def simulate_gas_used(
     return int(gas_used)
 
 
+def exact_hybrid_gas(simulated: int) -> int:
+    """The gas limit for a hybrid transaction on chain v3.2.5+:
+    ``ceil(simulated * 1.02) + 2000``.
+
+    From v3.2.5 the simulation charges the post-quantum verification itself, so
+    nothing is added for it. Computed in integers, so no float rounding.
+    """
+    if simulated < 0:
+        raise ValueError(f"simulated gas must be non-negative, got {simulated}")
+    return -(-simulated * 102 // 100) + EXACT_GAS_HEADROOM
+
+
+class _HttpGet:
+    """``get(path) -> JSON`` over an httpx client, for the upgrade lookup."""
+
+    def __init__(self, rest_url: str, client: httpx.Client, timeout: float) -> None:
+        self._base = rest_url.rstrip("/")
+        self._client = client
+        self._timeout = timeout
+
+    def get(self, path: str, params: dict[str, Any] | None = None) -> Any:
+        resp = self._client.get(self._base + path, params=params, timeout=self._timeout)
+        resp.raise_for_status()
+        return resp.json()
+
+
+def simulation_charges_pqc_verify(
+    rest_url: str, *, timeout: float = 30.0, client: httpx.Client | None = None
+) -> bool:
+    """Whether the network behind ``rest_url`` has applied chain v3.2.5, so its
+    simulation charges the post-quantum verification.
+
+    The answer is cached per REST URL (an applied plan for the life of the
+    process, "not applied" for a minute). A node that cannot be asked counts as
+    not applied, which keeps the older, larger estimate.
+    """
+    owns_client = client is None
+    http = client or httpx.Client(timeout=timeout)
+    try:
+        height = upgrade_applied_height(
+            _HttpGet(rest_url, http, timeout),
+            CHAIN_UPGRADE_V3_2_5,
+            cache_key=rest_url.rstrip("/"),
+        )
+        return height > 0
+    except Exception:  # noqa: BLE001 - any failure keeps the conservative path
+        return False
+    finally:
+        if owns_client:
+            http.close()
+
+
+def _gas_limit(
+    rest_url: str,
+    built: BuiltTx,
+    gas_used: int,
+    gas_multiplier: float | None,
+    timeout: float,
+    client: httpx.Client | None,
+) -> int:
+    if gas_multiplier is not None:
+        return math.ceil(gas_used * gas_multiplier)
+    if built.pqc_signature and simulation_charges_pqc_verify(
+        rest_url, timeout=timeout, client=client
+    ):
+        return exact_hybrid_gas(gas_used)
+    return math.ceil(gas_used * DEFAULT_GAS_MULTIPLIER)
+
+
 def estimate_gas(
     rest_url: str,
     built: BuiltTx,
     *,
-    gas_multiplier: float = DEFAULT_GAS_MULTIPLIER,
+    gas_multiplier: float | None = None,
     timeout: float = 30.0,
     client: httpx.Client | None = None,
 ) -> int:
-    """Simulate ``built`` and return ``ceil(gas_used * gas_multiplier)``.
+    """Simulate ``built`` and return the gas limit to sign.
 
-    The multiplier provides headroom over the simulated estimate, which a node
-    can exceed slightly at execution time.
+    With no ``gas_multiplier``: :func:`exact_hybrid_gas` for a hybrid-signed
+    ``built`` on a network that has applied v3.2.5, otherwise
+    ``ceil(gas_used * DEFAULT_GAS_MULTIPLIER)``. With one:
+    ``ceil(gas_used * gas_multiplier)``.
     """
     gas_used = simulate_gas_used(rest_url, built, timeout=timeout, client=client)
-    return math.ceil(gas_used * gas_multiplier)
+    return _gas_limit(rest_url, built, gas_used, gas_multiplier, timeout, client)
 
 
 def auto_fee(
     rest_url: str,
     built: BuiltTx,
     *,
-    gas_multiplier: float = DEFAULT_GAS_MULTIPLIER,
+    gas_multiplier: float | None = None,
     gas_price: GasPrice | str = DEFAULT_GAS_PRICE,
     timeout: float = 30.0,
     client: httpx.Client | None = None,
 ) -> FeeDict:
-    """Simulate, multiply the gas, and price it into a Native ``StdFee`` dict.
-
-    Mirrors the ``fee="auto"`` path: simulate ``built`` to discover ``gas_used``,
-    apply ``gas_multiplier``, and compute ``ceil(gas * gas_price)``.
+    """Simulate, size the gas limit (see :func:`estimate_gas`), and price it into
+    a Native ``StdFee`` dict: ``ceil(gas * gas_price)``.
     """
     gas = estimate_gas(
         rest_url, built, gas_multiplier=gas_multiplier, timeout=timeout, client=client

@@ -94,6 +94,7 @@ QORECHAIN_REGISTRY_TYPES: dict[str, ProtoType] = {
     "/qorechain.rdk.v1.MsgResumeRollup": rdk_tx.MsgResumeRollup,
     "/qorechain.rdk.v1.MsgStopRollup": rdk_tx.MsgStopRollup,
     "/qorechain.rdk.v1.MsgExecuteWithdrawal": rdk_tx.MsgExecuteWithdrawal,
+    "/qorechain.rdk.v1.MsgUpdateParams": rdk_tx.MsgUpdateParams,
     # multilayer
     "/qorechain.multilayer.v1.MsgRegisterSidechain": (
         multilayer_tx.MsgRegisterSidechain
@@ -117,6 +118,8 @@ QORECHAIN_REGISTRY_TYPES: dict[str, ProtoType] = {
     "/qorechain.pqc.v1.MsgCloseEVMWindow": pqc_tx.MsgCloseEVMWindow,
     "/qorechain.pqc.v1.MsgAuthorizeEVMDelegation": pqc_tx.MsgAuthorizeEVMDelegation,
     "/qorechain.pqc.v1.MsgClearEVMDelegation": pqc_tx.MsgClearEVMDelegation,
+    "/qorechain.pqc.v1.MsgRegisterKEMKey": pqc_tx.MsgRegisterKEMKey,
+    "/qorechain.pqc.v1.MsgRemoveKEMKey": pqc_tx.MsgRemoveKEMKey,
     # svm
     "/qorechain.svm.v1.MsgDeployProgram": svm_tx.MsgDeployProgram,
     "/qorechain.svm.v1.MsgCreateAccount": svm_tx.MsgCreateAccount,
@@ -154,12 +157,14 @@ QORECHAIN_REGISTRY_TYPES: dict[str, ProtoType] = {
         abstractaccount_tx.MsgRevokeAuthenticator
     ),
     "/qorechain.abstractaccount.v1.MsgExecuteEVM": abstractaccount_tx.MsgExecuteEVM,
+    "/qorechain.abstractaccount.v1.MsgUpdateConfig": abstractaccount_tx.MsgUpdateConfig,
     "/qorechain.abstractaccount.v1.MsgExecuteCosmos": (
         abstractaccount_tx.MsgExecuteCosmos
     ),
     # crossvm
     "/qorechain.crossvm.v1.MsgCrossVMCall": crossvm_tx.MsgCrossVMCall,
     "/qorechain.crossvm.v1.MsgProcessQueue": crossvm_tx.MsgProcessQueue,
+    "/qorechain.crossvm.v1.MsgUpdateParams": crossvm_tx.MsgUpdateParams,
     # stakingtier (chain v3.2.4)
     "/qorechain.stakingtier.v1.MsgLockDelegation": stakingtier_tx.MsgLockDelegation,
     "/qorechain.stakingtier.v1.MsgUnlockEarly": stakingtier_tx.MsgUnlockEarly,

@@ -34,6 +34,13 @@ CHAIN_UPGRADE_V3_2_3 = "v3.2.3"
 #: ``possession_proven``, and the bridge validator's proof of possession.
 CHAIN_UPGRADE_V3_2_4 = "v3.2.4"
 
+#: The KEM key registry (``MsgRegisterKEMKey`` / ``MsgRemoveKEMKey``), exact
+#: simulation gas (simulate charges the post-quantum verification, see
+#: :func:`qorsdk.gas.exact_hybrid_gas`), spending-rule bounds checked when a
+#: rule is saved, ``MsgUpdateConfig`` (abstractaccount) and the crossvm / rdk
+#: ``MsgUpdateParams``.
+CHAIN_UPGRADE_V3_2_5 = "v3.2.5"
+
 #: How long a "not applied yet" answer is trusted before asking again, seconds.
 NOT_APPLIED_TTL_S = 60.0
 

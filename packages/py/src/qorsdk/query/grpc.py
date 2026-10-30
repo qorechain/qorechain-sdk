@@ -153,9 +153,17 @@ class PqcQueryClient:
             channel, self._SERVICE, "Account",
             pqc_q.QueryAccountRequest, pqc_q.QueryAccountResponse,
         )
+        self._kem_key = _unary(
+            channel, self._SERVICE, "KEMKey",
+            pqc_q.QueryKEMKeyRequest, pqc_q.QueryKEMKeyResponse,
+        )
 
     def account(self, address: str) -> Any:
         return self._account(pqc_q.QueryAccountRequest(address=address))
+
+    def kem_key(self, address: str) -> Any:
+        """The KEM key ``address`` published (chain v3.2.5; bech32 or ``0x``)."""
+        return self._kem_key(pqc_q.QueryKEMKeyRequest(address=address))
 
 
 class QcaQueryClient:
@@ -540,6 +548,16 @@ class AbstractAccountQueryClient:
             abstractaccount_q.QueryPermissionSchemaRequest,
             abstractaccount_q.QueryPermissionSchemaResponse,
         )
+        self._spending_rules = _unary(
+            channel, self._SERVICE, "SpendingRules",
+            abstractaccount_q.QuerySpendingRulesRequest,
+            abstractaccount_q.QuerySpendingRulesResponse,
+        )
+        self._authenticators = _unary(
+            channel, self._SERVICE, "Authenticators",
+            abstractaccount_q.QueryAuthenticatorsRequest,
+            abstractaccount_q.QueryAuthenticatorsResponse,
+        )
 
     def config(self) -> Any:
         return self._config(abstractaccount_q.QueryConfigRequest())
@@ -561,6 +579,18 @@ class AbstractAccountQueryClient:
         """
         return self._permission_schema(
             abstractaccount_q.QueryPermissionSchemaRequest()
+        )
+
+    def spending_rules(self, address: str) -> Any:
+        """The account-wide and per-key spending rules (chain v3.2.5)."""
+        return self._spending_rules(
+            abstractaccount_q.QuerySpendingRulesRequest(address=address)
+        )
+
+    def authenticators(self, address: str) -> Any:
+        """The keys linked to an account, revoked ones included (chain v3.2.5)."""
+        return self._authenticators(
+            abstractaccount_q.QueryAuthenticatorsRequest(address=address)
         )
 
 

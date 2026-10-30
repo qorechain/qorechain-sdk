@@ -50,6 +50,7 @@ from .registry import (
 from .spending_rules import (
     MAX_ALLOWED_EVM_CALLS,
     MAX_DENOM_LIMITS,
+    validate_evm_denom,
     validate_spending_rules,
 )
 
@@ -113,6 +114,7 @@ __all__ = [
     "QORECHAIN_REGISTRY_TYPES",
     "COSMOS_REGISTRY_TYPES",
     # client-side checks run by the abstract-account spending-rules composer
+    "validate_evm_denom",
     "validate_spending_rules",
     "MAX_DENOM_LIMITS",
     "MAX_ALLOWED_EVM_CALLS",

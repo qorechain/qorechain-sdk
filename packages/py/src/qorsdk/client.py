@@ -6,9 +6,11 @@
 plus a fee-estimate convenience.
 
 Network resolution rules:
-  - The default network is ``testnet``. Both ``testnet`` and ``mainnet`` are live
-    and ship localhost endpoint defaults; callers can override them with real
-    hostnames.
+  - The default network is ``testnet``. ``testnet`` and ``mainnet`` use the
+    public endpoints (:data:`~qorsdk.networks.PUBLIC_ENDPOINTS`); ``localnet``
+    uses a node on this machine. ``endpoints`` overrides any single endpoint.
+  - An endpoint the preset leaves unset (``grpc``, ``svm_rpc``, and ``evm_ws``
+    on mainnet) stays ``None`` and is never replaced by a localhost default.
 """
 
 from __future__ import annotations
@@ -17,7 +19,7 @@ from dataclasses import dataclass, replace
 from typing import Any
 
 from .fees import estimate_fee
-from .networks import NETWORKS, NetworkConfig, NetworkEndpoints
+from .networks import NETWORKS, NetworkConfig, NetworkEndpoints, require_endpoint
 from .qor import QorClient
 from .rest import FeeUrgency, RestClient
 
@@ -71,7 +73,7 @@ def _resolve_network(
     if base is None:
         raise ValueError(f"unknown network: {network}")
 
-    # Live preset (testnet or mainnet): overlay endpoint overrides onto the defaults.
+    # Overlay endpoint overrides onto the preset's endpoints.
     current = {k: getattr(base.endpoints, k) for k in _ENDPOINT_KEYS}
     current.update(overrides)
     return replace(
@@ -82,13 +84,7 @@ def _resolve_network(
 
 
 def _require_endpoint(network: NetworkConfig, key: str) -> str:
-    value: str | None = getattr(network.endpoints, key, None) if network.endpoints else None
-    if not value:
-        raise ValueError(
-            f'endpoint "{key}" is not configured - pass it via '
-            f"create_client(endpoints={{'{key}': '...'}})"
-        )
-    return value
+    return require_endpoint(network, key)
 
 
 def create_client(
@@ -102,9 +98,12 @@ def create_client(
 
     :param network: Network preset to target. Defaults to ``"testnet"``.
     :param endpoints: Endpoint overrides (keys: ``rest``, ``grpc``, ``rpc``,
-        ``evm_rpc``, ``evm_ws``, ``svm_rpc``). Both presets default to localhost.
+        ``evm_rpc``, ``evm_ws``, ``svm_rpc``). ``testnet`` and ``mainnet``
+        default to the public endpoints, ``localnet`` to localhost.
     :param chain_id: Chain ID override.
     :raises ValueError: If the network or an endpoint key is unknown.
+    :raises ~qorsdk.networks.EndpointNotConfiguredError: If ``rest`` or
+        ``evm_rpc`` is unset (a ``ValueError``).
     """
     resolved = _resolve_network(network, endpoints, chain_id)
     rest = RestClient(_require_endpoint(resolved, "rest"), timeout=timeout)

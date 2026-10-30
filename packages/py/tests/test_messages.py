@@ -44,6 +44,9 @@ TEST_MNEMONIC = (
 CHAIN_ID = "qorechain-diana"
 FEE = {"amount": [{"denom": "uqor", "amount": "5000"}], "gas": "200000"}
 
+# A valid-shaped ML-KEM-1024 key: every 12-bit coefficient 1 (< 3329), then rho.
+V325_KEM_KEY = bytes([0x01, 0x10, 0x00]) * 512 + bytes(32)
+
 # Every QoreChain composer call -> the exact typeUrl it must emit. Covers all 66.
 QORECHAIN_COMPOSER_CASES = [
     # amm (7)
@@ -231,13 +234,41 @@ QORECHAIN_COMPOSER_CASES = [
         msg.stakingtier.update_params(authority="qor1"),
         "/qorechain.stakingtier.v1.MsgUpdateParams",
     ),
+    # chain v3.2.5 (full field checks in test_v325.py)
+    (
+        msg.pqc.register_kem_key(sender="qor1", public_key=V325_KEM_KEY),
+        "/qorechain.pqc.v1.MsgRegisterKEMKey",
+    ),
+    (msg.pqc.remove_kem_key(sender="qor1"), "/qorechain.pqc.v1.MsgRemoveKEMKey"),
+    (
+        msg.abstractaccount.update_config(
+            authority="qor1", enabled=True, max_session_keys=10,
+            max_spending_rules=5, default_session_ttl=86400,
+        ),
+        "/qorechain.abstractaccount.v1.MsgUpdateConfig",
+    ),
+    (
+        msg.crossvm.update_params(
+            authority="qor1", max_message_size=65536, max_queue_size=1000,
+            queue_timeout_blocks=100, enabled=True,
+        ),
+        "/qorechain.crossvm.v1.MsgUpdateParams",
+    ),
+    (
+        msg.rdk.update_params(
+            authority="qor1", max_rollups=100, min_stake_for_rollup=1,
+            rollup_creation_burn_rate="0.01", default_challenge_window=604800,
+            max_da_blob_size=1 << 20, blob_retention_blocks=1000, max_batches_per_block=10,
+        ),
+        "/qorechain.rdk.v1.MsgUpdateParams",
+    ),
 ]
 
 
-def test_all_70_qorechain_composers_covered():
-    assert len(QORECHAIN_COMPOSER_CASES) == 70
+def test_all_75_qorechain_composers_covered():
+    assert len(QORECHAIN_COMPOSER_CASES) == 75
     type_urls = {tu for _m, tu in QORECHAIN_COMPOSER_CASES}
-    assert len(type_urls) == 70
+    assert len(type_urls) == 75
 
 
 @pytest.mark.parametrize("built_msg,type_url", QORECHAIN_COMPOSER_CASES)
@@ -277,11 +308,11 @@ def test_cosmos_composer_returns_exact_type_url(built_msg, type_url):
     assert built_msg.type_url == type_url
 
 
-def test_registry_covers_all_70_qorechain_and_18_cosmos():
+def test_registry_covers_all_75_qorechain_and_18_cosmos():
     reg = qorechain_registry()
     qc = [k for k in reg if k.startswith("/qorechain.")]
-    assert len(qc) == 70
-    assert len(reg) == 70 + 18
+    assert len(qc) == 75
+    assert len(reg) == 75 + 18
 
 
 def test_registry_extra_types_override():

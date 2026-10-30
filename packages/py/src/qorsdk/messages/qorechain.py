@@ -14,6 +14,10 @@ from __future__ import annotations
 from types import SimpleNamespace
 from typing import Any
 
+from ..abstractaccount import (
+    UPDATE_ABSTRACT_ACCOUNT_CONFIG_TYPE_URL,
+    validate_update_config,
+)
 from ..evm_delegation import (
     AUTHORIZE_EVM_DELEGATION_TYPE_URL,
     CLEAR_EVM_DELEGATION_TYPE_URL,
@@ -24,6 +28,18 @@ from ..evm_window import (
     OPEN_EVM_WINDOW_TYPE_URL,
     validate_evm_window_params,
     validate_evm_window_targets,
+)
+from ..governance import (
+    UPDATE_CROSSVM_PARAMS_TYPE_URL,
+    UPDATE_RDK_PARAMS_TYPE_URL,
+    validate_crossvm_update_params,
+    validate_rdk_update_params,
+)
+from ..kem import (
+    KEM_ALGORITHM_ML_KEM_1024,
+    REGISTER_KEM_KEY_TYPE_URL,
+    REMOVE_KEM_KEY_TYPE_URL,
+    validate_kem_public_key,
 )
 from ..proto.qorechain.abstractaccount.v1 import tx_pb2 as abstractaccount_tx
 from ..proto.qorechain.amm.v1 import tx_pb2 as amm_tx
@@ -107,6 +123,42 @@ bridge = SimpleNamespace(
 # --------------------------------------------------------------------------- #
 # RDK (rollup development kit)
 # --------------------------------------------------------------------------- #
+
+
+def _rdk_update_params(
+    *,
+    authority: str,
+    max_rollups: int,
+    min_stake_for_rollup: int,
+    rollup_creation_burn_rate: str,
+    default_challenge_window: int,
+    max_da_blob_size: int,
+    blob_retention_blocks: int,
+    max_batches_per_block: int,
+) -> Msg:
+    """Build rdk ``MsgUpdateParams`` (chain v3.2.5, governance only): replaces
+    every rdk parameter at once.
+
+    :raises ValueError: Naming the field, from
+        :func:`~qorsdk.governance.validate_rdk_update_params`.
+    """
+    fields: dict[str, Any] = dict(
+        authority=authority,
+        max_rollups=max_rollups,
+        min_stake_for_rollup=min_stake_for_rollup,
+        rollup_creation_burn_rate=rollup_creation_burn_rate,
+        default_challenge_window=default_challenge_window,
+        max_da_blob_size=max_da_blob_size,
+        blob_retention_blocks=blob_retention_blocks,
+        max_batches_per_block=max_batches_per_block,
+    )
+    validate_rdk_update_params(**fields)
+    return Msg(type_url=UPDATE_RDK_PARAMS_TYPE_URL, value=rdk_tx.MsgUpdateParams(**fields))
+
+
+_rdk_update_params.__name__ = "MsgUpdateParams"
+_rdk_update_params.__qualname__ = "MsgUpdateParams"
+
 rdk = SimpleNamespace(
     create_rollup=composer("/qorechain.rdk.v1.MsgCreateRollup", rdk_tx.MsgCreateRollup),
     submit_batch=composer("/qorechain.rdk.v1.MsgSubmitBatch", rdk_tx.MsgSubmitBatch),
@@ -122,6 +174,8 @@ rdk = SimpleNamespace(
     execute_withdrawal=composer(
         "/qorechain.rdk.v1.MsgExecuteWithdrawal", rdk_tx.MsgExecuteWithdrawal
     ),
+    # v3.2.5: replace the module parameters. Governance only.
+    update_params=_rdk_update_params,
 )
 
 # --------------------------------------------------------------------------- #
@@ -262,6 +316,39 @@ _open_evm_window.__qualname__ = "MsgOpenEVMWindow"
 _close_evm_window.__name__ = "MsgCloseEVMWindow"
 _close_evm_window.__qualname__ = "MsgCloseEVMWindow"
 
+def _register_kem_key(
+    *, sender: str, public_key: bytes, algorithm_id: int = KEM_ALGORITHM_ML_KEM_1024
+) -> Msg:
+    """Build ``MsgRegisterKEMKey`` (chain v3.2.5): publish the sender's
+    key-encapsulation public key (ML-KEM-1024 by default, 1568 bytes). Sending
+    it again replaces the published key. Always needs the hybrid signature.
+
+    :raises ValueError: From :func:`~qorsdk.kem.validate_kem_public_key`.
+    """
+    if not sender:
+        raise ValueError("register_kem_key: sender is required")
+    validate_kem_public_key(bytes(public_key), algorithm_id)
+    return Msg(
+        type_url=REGISTER_KEM_KEY_TYPE_URL,
+        value=pqc_tx.MsgRegisterKEMKey(
+            sender=sender, algorithm_id=algorithm_id, public_key=bytes(public_key)
+        ),
+    )
+
+
+def _remove_kem_key(*, sender: str) -> Msg:
+    """Build ``MsgRemoveKEMKey`` (chain v3.2.5): withdraw the sender's published
+    KEM key. Always needs the hybrid signature."""
+    if not sender:
+        raise ValueError("remove_kem_key: sender is required")
+    return Msg(type_url=REMOVE_KEM_KEY_TYPE_URL, value=pqc_tx.MsgRemoveKEMKey(sender=sender))
+
+
+_register_kem_key.__name__ = "MsgRegisterKEMKey"
+_register_kem_key.__qualname__ = "MsgRegisterKEMKey"
+_remove_kem_key.__name__ = "MsgRemoveKEMKey"
+_remove_kem_key.__qualname__ = "MsgRemoveKEMKey"
+
 pqc = SimpleNamespace(
     register_pqc_key=composer(
         "/qorechain.pqc.v1.MsgRegisterPQCKey", pqc_tx.MsgRegisterPQCKey
@@ -289,6 +376,9 @@ pqc = SimpleNamespace(
     # v3.2.2 EIP-7702 delegation consent.
     authorize_evm_delegation=_authorize_evm_delegation,
     clear_evm_delegation=_clear_evm_delegation,
+    # v3.2.5 KEM key registry.
+    register_kem_key=_register_kem_key,
+    remove_kem_key=_remove_kem_key,
 )
 
 # --------------------------------------------------------------------------- #
@@ -383,6 +473,41 @@ def _update_spending_rules(**fields: Any) -> Msg:
 _update_spending_rules.__name__ = "MsgUpdateSpendingRules"
 _update_spending_rules.__qualname__ = "MsgUpdateSpendingRules"
 
+def _update_config(
+    *,
+    authority: str,
+    enabled: bool,
+    max_session_keys: int,
+    max_spending_rules: int,
+    default_session_ttl: int,
+) -> Msg:
+    """Build ``MsgUpdateConfig`` (chain v3.2.5, governance only): replace the
+    abstractaccount configuration wholesale. ``enabled`` gates account
+    creation, authenticator registration and both execute lanes.
+
+    :raises ValueError: From :func:`~qorsdk.abstractaccount.validate_update_config`.
+    """
+    validate_update_config(
+        authority=authority,
+        max_session_keys=max_session_keys,
+        max_spending_rules=max_spending_rules,
+        default_session_ttl=default_session_ttl,
+    )
+    return Msg(
+        type_url=UPDATE_ABSTRACT_ACCOUNT_CONFIG_TYPE_URL,
+        value=abstractaccount_tx.MsgUpdateConfig(
+            authority=authority,
+            enabled=bool(enabled),
+            max_session_keys=max_session_keys,
+            max_spending_rules=max_spending_rules,
+            default_session_ttl=default_session_ttl,
+        ),
+    )
+
+
+_update_config.__name__ = "MsgUpdateConfig"
+_update_config.__qualname__ = "MsgUpdateConfig"
+
 abstractaccount = SimpleNamespace(
     create_abstract_account=composer(
         "/qorechain.abstractaccount.v1.MsgCreateAbstractAccount",
@@ -405,11 +530,54 @@ abstractaccount = SimpleNamespace(
         "/qorechain.abstractaccount.v1.MsgExecuteCosmos",
         abstractaccount_tx.MsgExecuteCosmos,
     ),
+    # v3.2.5: replace the module configuration. Governance only.
+    update_config=_update_config,
 )
 
 # --------------------------------------------------------------------------- #
 # Cross-VM (inter-VM messaging)
 # --------------------------------------------------------------------------- #
+def _crossvm_update_params(
+    *,
+    authority: str,
+    max_message_size: int,
+    max_queue_size: int,
+    queue_timeout_blocks: int,
+    enabled: bool,
+    bridge_allowed_targets: list[str] | tuple[str, ...] | None = None,
+) -> Msg:
+    """Build crossvm ``MsgUpdateParams`` (chain v3.2.5, governance only):
+    replaces every crossvm parameter at once, among them the allowlist of
+    ``"cosmwasm:<contract>"`` targets the EVM bridge precompile may call.
+
+    :raises ValueError: From
+        :func:`~qorsdk.governance.validate_crossvm_update_params`.
+    """
+    targets = list(bridge_allowed_targets or ())
+    validate_crossvm_update_params(
+        authority=authority,
+        max_message_size=max_message_size,
+        max_queue_size=max_queue_size,
+        queue_timeout_blocks=queue_timeout_blocks,
+        enabled=enabled,
+        bridge_allowed_targets=targets,
+    )
+    return Msg(
+        type_url=UPDATE_CROSSVM_PARAMS_TYPE_URL,
+        value=crossvm_tx.MsgUpdateParams(
+            authority=authority,
+            max_message_size=max_message_size,
+            max_queue_size=max_queue_size,
+            queue_timeout_blocks=queue_timeout_blocks,
+            enabled=bool(enabled),
+            bridge_allowed_targets=targets,
+        ),
+    )
+
+
+_crossvm_update_params.__name__ = "MsgUpdateParams"
+_crossvm_update_params.__qualname__ = "MsgUpdateParams"
+
 crossvm = SimpleNamespace(
     cross_vm_call=composer(
         "/qorechain.crossvm.v1.MsgCrossVMCall", crossvm_tx.MsgCrossVMCall
@@ -417,6 +585,8 @@ crossvm = SimpleNamespace(
     process_queue=composer(
         "/qorechain.crossvm.v1.MsgProcessQueue", crossvm_tx.MsgProcessQueue
     ),
+    # v3.2.5: replace the module parameters. Governance only.
+    update_params=_crossvm_update_params,
 )
 
 # --------------------------------------------------------------------------- #

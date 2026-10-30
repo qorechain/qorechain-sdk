@@ -14,6 +14,14 @@ does not yet:
   When a denom has an entry the chain applies only that entry and skips the
   rule-level limits for the denom, so such an entry silently removes every
   limit on it while the rule still reads as limited.
+
+From chain v3.2.5 the chain refuses both shapes itself when a rule is saved
+(``abstractaccount`` code 8, "invalid spending rule"), and also an EVM token
+denom whose address does not parse: an ``erc20/``, ``erc721/`` or ``erc1155/``
+denom (prefix in any case), in ``denom_limits`` or ``allowed_denoms``, must
+carry a ``0x``-prefixed 20-byte contract address, and an ``erc20/`` denom is
+the address alone (no ``/<token id>`` tail). :func:`validate_evm_denom` is that
+check.
 """
 
 from __future__ import annotations
@@ -29,6 +37,34 @@ MAX_DENOM_LIMITS = 64
 MAX_ALLOWED_EVM_CALLS = 64
 
 _DECIMAL = re.compile(r"[0-9]+")
+_EVM_ADDRESS = re.compile(r"0[xX][0-9a-fA-F]{40}")
+
+#: Denom prefixes of EVM tokens in a spending rule.
+EVM_DENOM_PREFIXES = ("erc20/", "erc721/", "erc1155/")
+
+
+def validate_evm_denom(denom: str) -> None:
+    """Refuse an EVM token denom whose contract address does not parse
+    (chain v3.2.5 ``ValidateEVMDenom``). Other denoms pass.
+
+    :raises ValueError: Naming the denom.
+    """
+    lower = denom.lower()
+    for prefix in EVM_DENOM_PREFIXES:
+        if not lower.startswith(prefix):
+            continue
+        rest = denom[len(prefix):]
+        addr, slash, _tail = rest.partition("/")
+        if not _EVM_ADDRESS.fullmatch(addr):
+            raise ValueError(
+                f"denom {_quote(denom)}: {prefix} must be followed by a 0x-prefixed "
+                "20-byte contract address"
+            )
+        if prefix == "erc20/" and slash:
+            raise ValueError(
+                f"denom {_quote(denom)}: an erc20/ denom is the contract address alone"
+            )
+        return
 _WHITESPACE_OR_CONTROL = re.compile(r"[\x00-\x20\x7f]")
 
 
@@ -105,6 +141,10 @@ def validate_spending_rules(rules: Iterable[Any] | None) -> None:
                 raise ValueError(
                     f"spending rule {i}: denom {_quote(denom)} is too long or contains whitespace"
                 )
+            try:
+                validate_evm_denom(denom)
+            except ValueError as err:
+                raise ValueError(f"spending rule {i}: {err}") from None
             key = denom.lower()
             if key in seen:
                 raise ValueError(f"spending rule {i}: denom {denom} has more than one limit")
@@ -118,10 +158,16 @@ def validate_spending_rules(rules: Iterable[Any] | None) -> None:
                     "rule-level limits for its denom); set an amount or drop the entry"
                 )
             bounding_denom_limit = True
+        allowed_denoms = list(_field(rule, "allowed_denoms") or ())
+        for d in allowed_denoms:
+            try:
+                validate_evm_denom(d or "")
+            except ValueError as err:
+                raise ValueError(f"spending rule {i}: {err}") from None
         bounded = (
             daily > 0
             or per_tx > 0
-            or len(list(_field(rule, "allowed_denoms") or ())) > 0
+            or len(allowed_denoms) > 0
             or len(calls) > 0
             or bounding_denom_limit
         )
@@ -134,4 +180,10 @@ def validate_spending_rules(rules: Iterable[Any] | None) -> None:
             )
 
 
-__all__ = ["MAX_ALLOWED_EVM_CALLS", "MAX_DENOM_LIMITS", "validate_spending_rules"]
+__all__ = [
+    "EVM_DENOM_PREFIXES",
+    "MAX_ALLOWED_EVM_CALLS",
+    "MAX_DENOM_LIMITS",
+    "validate_evm_denom",
+    "validate_spending_rules",
+]
