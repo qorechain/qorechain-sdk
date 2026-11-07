@@ -260,6 +260,29 @@ async fn status_without_a_key_is_not_counted_as_a_match() {
 }
 
 #[tokio::test]
+async fn migrate_to_hybrid_reports_whether_the_key_was_verified() {
+    let mine = mine();
+    // The answer carries this signer's key: verified.
+    let server = MockServer::start(vec![Some(mine.public_key.clone())], OK_BROADCAST).await;
+    let path = make_dx(&server.base_url, &mine)
+        .migrate_to_hybrid()
+        .await
+        .unwrap();
+    assert!(path.already_registered);
+    assert_eq!(path.key_verified, Some(true));
+
+    // No answer carries the key: registered, but not verified as yours.
+    let server = MockServer::start(vec![Some(Vec::new())], OK_BROADCAST).await;
+    let path = make_dx(&server.base_url, &mine)
+        .migrate_to_hybrid()
+        .await
+        .unwrap();
+    assert!(path.already_registered);
+    assert_eq!(path.key_verified, Some(false));
+    assert_eq!(server.broadcasts(), 0);
+}
+
+#[tokio::test]
 async fn migrate_to_hybrid_refuses_a_keypair_the_chain_does_not_hold() {
     let (mine, other) = (mine(), other());
     let server = MockServer::start(vec![Some(other.public_key.clone())], OK_BROADCAST).await;

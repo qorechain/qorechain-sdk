@@ -17,7 +17,7 @@ from collections.abc import Callable
 from dataclasses import dataclass
 from typing import Any
 
-from .errors import tx_error_from
+from .errors import parse_tx_code, tx_error_from, unreadable_code_error
 from .rest import QoreHttpError, RestClient
 from .search import get_tx
 
@@ -57,14 +57,29 @@ def _is_not_found(err: Exception) -> bool:
 
 
 def _to_included_tx(tx_hash: str, res: Any) -> IncludedTx | None:
-    """Map a REST tx response into an :class:`IncludedTx`, or ``None`` if pending."""
+    """Map a REST tx response into an :class:`IncludedTx`, or ``None`` if pending.
+
+    An answer without a ``tx_response`` object, or whose ``tx_response`` has no
+    ``txhash``, is not an inclusion and reads as pending. A ``code`` that is not
+    an integer raises :class:`~qorsdk.errors.QoreTxError`; an absent code is
+    ``0`` (proto3 JSON leaves a zero field out).
+    """
     r = res.get("tx_response") if isinstance(res, dict) else None
-    if not r:
+    if not isinstance(r, dict) or not r.get("txhash"):
         return None
+    raw_code = r.get("code")
+    code = parse_tx_code(raw_code)
+    if code is None:
+        raise unreadable_code_error(
+            raw_code,
+            codespace=r.get("codespace") or None,
+            raw_log=r.get("raw_log") or None,
+            tx_hash=str(r["txhash"]),
+        )
     return IncludedTx(
-        tx_hash=r.get("txhash") or tx_hash,
+        tx_hash=str(r["txhash"]),
         height=int(r["height"]) if r.get("height") else 0,
-        code=int(r.get("code", 0)),
+        code=code,
         gas_used=int(r["gas_used"]) if r.get("gas_used") else None,
         gas_wanted=int(r["gas_wanted"]) if r.get("gas_wanted") else None,
         raw_log=r.get("raw_log"),
@@ -87,7 +102,8 @@ def wait_for_tx(
     :param timeout: Total seconds to wait before giving up.
     :param poll_interval: Seconds between polls.
     :returns: The decoded :class:`IncludedTx` once found.
-    :raises QoreTxError: If the tx is included with a non-zero code.
+    :raises QoreTxError: If the tx is included with a non-zero code, or with a
+        code that is not an integer.
     :raises TimeoutError: If the tx is not included within ``timeout``.
     """
     if isinstance(fetcher, RestClient):

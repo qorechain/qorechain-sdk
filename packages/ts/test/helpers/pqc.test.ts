@@ -75,6 +75,18 @@ describe("getPqcStatus / isPqcRegistered", () => {
     await expect(isPqcRegistered(nullQor, ADDR)).rejects.toThrow(/cannot tell/);
   });
 
+  it("throws on an answer without a registered field instead of reading it as 'not registered'", async () => {
+    for (const payload of [{}, { algorithmId: 1 }, { status: "ok" }, { registered: null }]) {
+      const { qor } = fakeQor(payload);
+      await expect(getPqcStatus(qor, ADDR)).rejects.toThrow(/cannot tell/);
+    }
+  });
+
+  it("reads isRegistered / is_registered as the registration field", async () => {
+    expect((await getPqcStatus(fakeQor({ isRegistered: true }).qor, ADDR)).registered).toBe(true);
+    expect((await getPqcStatus(fakeQor({ is_registered: false }).qor, ADDR)).registered).toBe(false);
+  });
+
   it("accepts a source exposing `.qor` (composed client)", async () => {
     const { qor, getPqcKeyStatus } = fakeQor({ registered: true });
     const source = { qor };
@@ -257,6 +269,8 @@ describe("migrateToHybrid", () => {
       statusSource: qor,
     });
     expect(path.alreadyRegistered).toBe(true);
+    // The qor_* answer carried no key and there is no REST to read it from.
+    expect(path.keyVerified).toBe(false);
     expect(path.pqcKeypair).toBe(kp);
     expect(typeof path.buildHybridTx).toBe("function");
     expect(typeof path.signAndBroadcastHybrid).toBe("function");
@@ -318,5 +332,30 @@ describe("ensurePqcRegistered: proof of possession (chain v3.2.3)", () => {
   it("leaves it off before v3.2.3 (an older node refuses the field)", async () => {
     const { msg } = await register({});
     expect(msg.value.proofOfPossession.length).toBe(0);
+  });
+});
+
+describe("migrateToHybrid keyVerified", () => {
+  it("passes keyVerified: true through when the registered key is the caller's", async () => {
+    const { tx } = fakeTx();
+    const kp = generatePqcKeypair();
+    const path = await migrateToHybrid(tx, {
+      pqcKeypair: kp,
+      status: { registered: true, pubkey: kp.publicKey },
+    });
+    expect(path.alreadyRegistered).toBe(true);
+    expect(path.keyVerified).toBe(true);
+  });
+
+  it("leaves keyVerified absent when a registration was sent", async () => {
+    const { tx } = fakeTx();
+    const path = await migrateToHybrid(tx, {
+      pqcKeypair: generatePqcKeypair(),
+      ecdsaPubkey: ECDSA,
+      statusSource: fakeQor({ registered: false }).qor,
+    });
+    expect(path.alreadyRegistered).toBe(false);
+    expect(path.registrationTxHash).toBe("DEADBEEF");
+    expect(path.keyVerified).toBeUndefined();
   });
 });

@@ -46,11 +46,11 @@ def test_derive_unified_account_mnemonic_known_answer():
 
 
 def test_unified_account_from_seed_known_answer():
-    b = unified_account_from_seed(SEED32)
+    b = unified_account_from_seed(SEED32, legacy_seed_derivation=True)
     assert b.cosmos == SEED_COSMOS
     assert b.evm == SEED_EVM
     assert b.svm == SEED_SVM
-    # Seed path: privkey == seed verbatim; PQC seed uses the "seed:" prefix.
+    # Seed path: privkey == seed verbatim; the legacy PQC seed uses the "seed:" prefix.
     assert b.private_key == SEED32
     assert b.pqc.public_key[:8].hex() == SEED_PQC_PUB_PREFIX
 

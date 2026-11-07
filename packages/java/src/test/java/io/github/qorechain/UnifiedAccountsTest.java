@@ -44,14 +44,15 @@ class UnifiedAccountsTest {
     void seed0x01MatchesReference() {
         byte[] seed = new byte[32];
         Arrays.fill(seed, (byte) 1);
-        UnifiedAccount a = UnifiedAccounts.unifiedAccountFromSeed(seed);
+        UnifiedAccount a =
+                UnifiedAccounts.unifiedAccountFromSeed(seed, UnifiedAccounts.SeedPqcOptions.legacy());
         assertEquals("qor1rfjz7r3u8t65teavh5utquj3kwvsj983hh5zaj", a.cosmos);
         assertEquals("0x1a642f0E3c3aF545E7AcBD38b07251B3990914F1", a.evm);
         assertEquals("2n2Cnc7fib6rm4Azo1mbvMuHB3iCb1J254kEQDcrHyPu", a.svm);
         assertEquals(null, a.mnemonic);
         // The seed IS the private key.
         assertArrayEquals(seed, a.privateKey);
-        // PQC seed carries the literal "seed:" prefix before hex(privkey).
+        // Legacy derivation: the PQC seed carries the literal "seed:" prefix before hex(privkey).
         assertEquals("2d7f888fecbe5b24", Hex.encode(Arrays.copyOf(a.pqc.publicKey, 8)));
     }
 
@@ -120,6 +121,8 @@ class UnifiedAccountsTest {
     void seedMustBe32Bytes() {
         assertThrows(
                 IllegalArgumentException.class,
-                () -> UnifiedAccounts.unifiedAccountFromSeed(new byte[16]));
+                () ->
+                        UnifiedAccounts.unifiedAccountFromSeed(
+                                new byte[16], UnifiedAccounts.SeedPqcOptions.legacy()));
     }
 }

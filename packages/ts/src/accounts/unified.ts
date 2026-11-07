@@ -41,6 +41,7 @@ import { shake256 } from "@qorechain/pqc";
 import { bytesToBech32, bech32ToHex } from "../utils/address";
 import { validateMnemonic } from "./wallet";
 import { generatePqcKeypair, type PqcKeypair } from "./pqc";
+import { decodeRecoveryCode, pqcKeyFromRecoverySecret } from "./recovery";
 
 /** Bech32 human-readable prefix for QoreChain account addresses. */
 const HRP = "qor";
@@ -194,8 +195,8 @@ function bech32DataBytes(addr: string): Uint8Array {
  * The domain-separation context for the deterministic PQC seed. The 32-byte
  * SHAKE-256 of `"qorechain:pqc:v1|" + <cosmos-addr> + "|" + <secret>` is used as
  * the ML-DSA-87 keygen seed, so the PQC key is recoverable from the account and
- * the same secret. `<secret>` is the mnemonic for mnemonic-derived accounts and
- * the hex of the 32-byte seed for seed-derived accounts.
+ * the same secret. `<secret>` is the mnemonic for mnemonic-derived accounts and,
+ * only under `legacySeedDerivation`, `"seed:"` + the hex of the 32-byte seed.
  */
 const PQC_SEED_CONTEXT = "qorechain:pqc:v1|";
 
@@ -208,19 +209,34 @@ function derivePqc(cosmosAddr: string, secret: string): PqcKeypair {
   return generatePqcKeypair(seed);
 }
 
-/** Build the address + PQC bundle from a 32-byte secp256k1 private key + secret. */
-function accountFromPrivateKey(
+/** Constant-time equality of two byte arrays of the same length. */
+function sameBytes(a: Uint8Array, b: Uint8Array): boolean {
+  if (a.length !== b.length) return false;
+  let diff = 0;
+  for (let i = 0; i < a.length; i++) diff |= a[i] ^ b[i];
+  return diff === 0;
+}
+
+/** Derive the address encodings + compressed public key of a secp256k1 private key. */
+function addressFromPrivateKey(
   privkey: Uint8Array,
-  pqcSecret: string,
-): { addresses: UnifiedAddresses; publicKey: Uint8Array; pqc: PqcKeypair } {
+): { addresses: UnifiedAddresses; publicKey: Uint8Array } {
   // Compressed (33B) public key for the SignerInfo pubkey; uncompressed (65B) for
   // the keccak address derivation.
   const compressed = secp256k1.getPublicKey(privkey, true); // 33 bytes
   const uncompressed = secp256k1.getPublicKey(privkey, false); // 65 bytes: 0x04||X||Y
   const addr20 = keccak_256(uncompressed.slice(1)).slice(12); // last 20 bytes
-  const addresses = addressesFrom20(addr20);
+  return { addresses: addressesFrom20(addr20), publicKey: compressed };
+}
+
+/** Build the address + PQC bundle from a 32-byte secp256k1 private key + secret. */
+function accountFromPrivateKey(
+  privkey: Uint8Array,
+  pqcSecret: string,
+): { addresses: UnifiedAddresses; publicKey: Uint8Array; pqc: PqcKeypair } {
+  const { addresses, publicKey } = addressFromPrivateKey(privkey);
   const pqc = derivePqc(addresses.cosmos, pqcSecret);
-  return { addresses, publicKey: compressed, pqc };
+  return { addresses, publicKey, pqc };
 }
 
 /**
@@ -261,13 +277,47 @@ export async function deriveUnifiedAccount(
 }
 
 /**
+ * Where the PQC key of a seed-derived account comes from
+ * ({@link unifiedAccountFromSeed}). Give exactly one of `recoveryCode`,
+ * `pqcSecret` or `legacySeedDerivation: true`.
+ */
+export interface SeedPqcOptions {
+  /**
+   * A `QRC1-…` PQC recovery code (see `generatePqcRecoveryCode`). The PQC key is
+   * derived from it and the account address, the same key
+   * `pqcKeyFromRecoveryCode(code, cosmos)` gives.
+   */
+  recoveryCode?: string;
+  /**
+   * 32 bytes of secret entropy, independent of `seed32`. Gives the same key as
+   * the recovery code `pqcRecoveryCodeFromSecret(pqcSecret)`.
+   */
+  pqcSecret?: Uint8Array;
+  /**
+   * Derive the PQC key from `seed32` itself, as releases before 0.13.0 did.
+   * Use this only to recover the PQC key of an account created before 0.13.0,
+   * so you can rotate it (MsgRotatePQCKey) to a key from a recovery code; never
+   * for new accounts: with it, whoever holds the classical key also holds the
+   * PQC key.
+   */
+  legacySeedDerivation?: boolean;
+}
+
+/**
  * Build a unified eth-native account directly from a 32-byte seed used AS the
  * secp256k1 private key (no HD derivation).
  *
- * Same address derivation as {@link deriveUnifiedAccount}; the PQC key is derived
- * from `shake256("qorechain:pqc:v1|" + cosmos + "|seed:" + hex(seed32), 32)` (note
- * the literal `"seed:"` prefix, so a seed-derived PQC key never collides with a
- * mnemonic-derived one).
+ * Same address derivation as {@link deriveUnifiedAccount}. The PQC key needs a
+ * second secret that `seed32` says nothing about, given in `opts`:
+ *
+ *  - `recoveryCode`: a `QRC1-…` recovery code, or
+ *  - `pqcSecret`: 32 bytes of independent secret entropy,
+ *
+ * both derived as
+ * `ML-DSA-87 keygen(shake256("qorechain:pqc:recovery:v1|" + cosmos + "|" ‖ secret32, 32))`.
+ * `legacySeedDerivation: true` instead keeps the pre-0.13.0 derivation
+ * (`shake256("qorechain:pqc:v1|" + cosmos + "|seed:" + hex(seed32), 32)`), only to
+ * recover an older account's PQC key so it can be rotated.
  *
  * SAFETY: `seed32` becomes the account's spend key, so it MUST be real secret
  * entropy - a CSPRNG seed (`crypto.getRandomValues`) or a key derived from a
@@ -276,25 +326,76 @@ export async function deriveUnifiedAccount(
  * is a bearer secret, and whoever obtains it controls the account. To let an
  * external wallet key act for an account, use the authenticator lanes
  * (`MsgRegisterAuthenticator` + `MsgExecuteCosmos` / `MsgExecuteEVM`) instead.
+ * Keep the recovery code (or `pqcSecret`) apart from `seed32`.
  *
  * @param seed32 - Exactly 32 bytes of secret entropy, used directly as the
  *   secp256k1 private key.
- * @throws if `seed32` is not 32 bytes or is not a valid secp256k1 scalar.
+ * @param opts - Exactly one of `recoveryCode`, `pqcSecret` or
+ *   `legacySeedDerivation: true`. A `pqcSecret` (or the secret of a
+ *   `recoveryCode`) equal to `seed32` is refused.
+ * @throws if `seed32` is not 32 bytes or is not a valid secp256k1 scalar, if
+ *   `opts` does not name exactly one PQC key source, or if the recovery code or
+ *   secret is malformed.
  */
-export function unifiedAccountFromSeed(seed32: Uint8Array): UnifiedAccount {
+export function unifiedAccountFromSeed(
+  seed32: Uint8Array,
+  opts?: SeedPqcOptions,
+): UnifiedAccount {
   if (seed32.length !== 32) {
     throw new Error(`seed must be 32 bytes, got ${seed32.length}`);
   }
   if (!secp256k1.utils.isValidPrivateKey(seed32)) {
     throw new Error("seed is not a valid secp256k1 private key");
   }
-  // Seed-derived accounts prefix the private-key hex with a literal "seed:" in
-  // the PQC seed context (matches the reference wallet-adapter `walletFromSeed`),
-  // so a seed-derived PQC key never collides with a mnemonic-derived one.
-  const { addresses, publicKey, pqc } = accountFromPrivateKey(
-    seed32,
-    `seed:${toHex(seed32)}`,
-  );
+  const chosen = [
+    opts?.recoveryCode !== undefined,
+    opts?.pqcSecret !== undefined,
+    opts?.legacySeedDerivation === true,
+  ].filter(Boolean).length;
+  if (chosen === 0) {
+    throw new Error(
+      "unifiedAccountFromSeed needs a second secret for the PQC key: pass { recoveryCode } (a QRC1 code from " +
+        "generatePqcRecoveryCode), or { pqcSecret } (32 bytes of independent secret entropy), or, only to recover " +
+        "the PQC key of an account created before 0.13.0 so it can be rotated, { legacySeedDerivation: true }",
+    );
+  }
+  if (chosen > 1) {
+    throw new Error(
+      "unifiedAccountFromSeed: pass only one of recoveryCode, pqcSecret or legacySeedDerivation",
+    );
+  }
+
+  const { addresses, publicKey } = addressFromPrivateKey(seed32);
+  let pqc: PqcKeypair;
+  if (opts!.legacySeedDerivation === true) {
+    // Pre-0.13.0 derivation, byte for byte: the "seed:" prefix keeps it apart
+    // from the mnemonic-derived key (matches the old wallet-adapter `walletFromSeed`).
+    pqc = derivePqc(addresses.cosmos, `seed:${toHex(seed32)}`);
+  } else if (opts!.recoveryCode !== undefined) {
+    const secret = decodeRecoveryCode(opts!.recoveryCode);
+    try {
+      if (sameBytes(secret, seed32)) {
+        throw new Error(
+          "recoveryCode encodes the same 32 bytes as seed32: the PQC key would follow from the classical key; " +
+            "use an independent recovery code",
+        );
+      }
+      pqc = pqcKeyFromRecoverySecret(secret, addresses.cosmos);
+    } finally {
+      secret.fill(0);
+    }
+  } else {
+    if (!(opts!.pqcSecret instanceof Uint8Array) || opts!.pqcSecret.length !== 32) {
+      throw new Error("pqcSecret must be 32 bytes");
+    }
+    if (sameBytes(opts!.pqcSecret, seed32)) {
+      throw new Error(
+        "pqcSecret must not equal seed32: the PQC key would follow from the classical key; " +
+          "use 32 bytes of independent secret entropy",
+      );
+    }
+    pqc = pqcKeyFromRecoverySecret(opts!.pqcSecret, addresses.cosmos);
+  }
   return {
     privateKey: toHexPrefixed(seed32),
     publicKey: toHexPrefixed(publicKey),

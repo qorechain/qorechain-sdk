@@ -332,13 +332,28 @@ def _as_int(payload: Mapping[str, Any], field: str) -> int:
     raise ValueError(f"evm_window field {field!r} is not an integer: {raw!r}")
 
 
+def _as_bool(payload: Mapping[str, Any], field: str) -> bool:
+    """Read a JSON boolean field. Absent is ``False`` (proto3 JSON leaves a false
+    field out); anything that is not a JSON boolean (a string, a number) raises."""
+    raw = payload.get(field)
+    if raw is None:
+        return False
+    if not isinstance(raw, bool):
+        raise ValueError(f"evm_window field {field!r} is not a boolean: {raw!r}")
+    return raw
+
+
 def parse_evm_window(payload: Mapping[str, Any]) -> EVMWindowStatus:
     """Parse an ``evm_window`` REST/gRPC-gateway payload into a typed status.
 
     Handles both shapes the route returns: ``{"found": false}`` when no window is
     stored, and the full live shape. Integers keep full precision.
+
+    :raises ValueError: When ``found`` (or, for a stored window, ``live``) is not
+        a JSON boolean. A string such as ``"false"`` is refused rather than read
+        as true.
     """
-    found = bool(payload.get("found", False))
+    found = _as_bool(payload, "found")
     if not found:
         return EVMWindowStatus(
             found=False,
@@ -355,7 +370,7 @@ def parse_evm_window(payload: Mapping[str, Any]) -> EVMWindowStatus:
         )
     return EVMWindowStatus(
         found=True,
-        live=bool(payload.get("live", False)),
+        live=_as_bool(payload, "live"),
         opened_height=_as_int(payload, "opened_height"),
         expiry_height=_as_int(payload, "expiry_height"),
         max_txs=_as_int(payload, "max_txs"),

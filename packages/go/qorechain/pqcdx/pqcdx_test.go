@@ -444,6 +444,9 @@ func TestMigrateToHybridAlreadyRegistered(t *testing.T) {
 	if !res.AlreadyRegistered {
 		t.Error("expected AlreadyRegistered=true")
 	}
+	if !res.KeyVerified {
+		t.Error("expected KeyVerified=true: the REST status carries the signer's key")
+	}
 	if res.RegisterTxHash != "" {
 		t.Error("expected no register tx")
 	}

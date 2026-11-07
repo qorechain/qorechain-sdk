@@ -93,7 +93,20 @@ export {
 export type {
   UnifiedAccount,
   UnifiedAddresses,
+  SeedPqcOptions,
 } from "./accounts/unified";
+// PQC recovery codes (QRC1): a second secret, independent of the classical key,
+// that the account's ML-DSA-87 key is derived from (same format as the
+// wallet-adapter).
+export {
+  generatePqcRecoveryCode,
+  isValidRecoveryCode,
+  normalizeRecoveryCode,
+  pqcKeyFromRecoveryCode,
+  pqcRecoveryCodeFromSecret,
+  PQC_RECOVERY_CODE_PREFIX,
+  PQC_RECOVERY_SECRET_LENGTH,
+} from "./accounts/recovery";
 // REMOVED in v0.8.0: deriving a spend key from a wallet signature is unsafe.
 // Both functions are retained as throwing stubs so existing imports fail loudly.
 // Link an external wallet key through the authenticator lanes instead.

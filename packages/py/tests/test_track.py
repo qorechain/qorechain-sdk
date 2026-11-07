@@ -114,3 +114,47 @@ def test_with_retry_respects_should_retry_predicate():
     with pytest.raises(ValueError):
         with_retry(fn, retries=5, backoff=0.0, should_retry=lambda _e, _a: False)
     assert attempts["n"] == 1
+
+
+@pytest.mark.parametrize(
+    "answer",
+    [
+        {},
+        {"tx_response": None},
+        {"tx_response": {}},
+        {"tx_response": {"height": "5", "code": 0}},
+        {"tx_response": {"txhash": "", "height": "5", "code": 0}},
+        {"tx_response": "HASH"},
+    ],
+)
+def test_wait_for_tx_needs_tx_response_and_txhash(answer):
+    # An answer without a tx_response carrying a txhash is not an inclusion.
+    with pytest.raises(TimeoutError):
+        wait_for_tx(lambda _h: answer, "HASH", timeout=0.05, poll_interval=0.02)
+
+
+@pytest.mark.parametrize("code", ["abc", "1.0", 1.0, 0.0, True, False, -1, "", [0], {}])
+def test_wait_for_tx_treats_a_non_integer_code_as_an_error(code):
+    def fetcher(_hash):
+        return {"tx_response": {"txhash": "HASH", "height": "3", "code": code}}
+
+    with pytest.raises(QoreTxError) as exc:
+        wait_for_tx(fetcher, "HASH", timeout=5, poll_interval=0.01)
+    assert exc.value.kind == "unreadable_code"
+    assert exc.value.tx_hash == "HASH"
+
+
+def test_wait_for_tx_reads_an_absent_code_as_zero():
+    def fetcher(_hash):
+        return {"tx_response": {"txhash": "HASH", "height": "3"}}
+
+    assert wait_for_tx(fetcher, "HASH", timeout=5, poll_interval=0.01).code == 0
+
+
+def test_wait_for_tx_accepts_a_string_code():
+    def fetcher(_hash):
+        return {"tx_response": {"txhash": "HASH", "height": "3", "code": "5", "codespace": "sdk"}}
+
+    with pytest.raises(QoreTxError) as exc:
+        wait_for_tx(fetcher, "HASH", timeout=5, poll_interval=0.01)
+    assert exc.value.code == 5

@@ -593,6 +593,39 @@ derived helpers `unifiedAccountFromPhantomSignature` / `connectPhantomUnified`
 were removed in v0.8.0 for exactly that reason and now throw.) To let an
 external wallet key act for an account, use the authenticator lanes below.
 
+#### PQC key of a seed-derived account (0.13.0)
+
+The PQC key of a seed-derived account now needs a second secret that the
+32-byte seed says nothing about, so holding the classical key alone is not
+enough to produce the hybrid signature. Pass exactly one of:
+
+- `recoveryCode`: a `QRC1-…` recovery code from `generatePqcRecoveryCode()`
+  (Crockford base32 with a checksum, same format as the wallet-adapter), or
+- `pqcSecret`: 32 bytes of independent secret entropy (the same key as the code
+  `pqcRecoveryCodeFromSecret(pqcSecret)`), or
+- `legacySeedDerivation: true`: only to recover the PQC key of an account created
+  before 0.13.0, so you can rotate it (MsgRotatePQCKey) to a key from a recovery
+  code; never for new accounts.
+
+Calling it with no option, or with more than one, throws.
+
+```ts
+import {
+  generatePqcRecoveryCode,
+  isValidRecoveryCode,
+  pqcKeyFromRecoveryCode,
+  unifiedAccountFromSeed,
+} from "@qorechain/sdk";
+
+const recoveryCode = generatePqcRecoveryCode(); // show once, store apart from the seed
+const account = unifiedAccountFromSeed(seed32, { recoveryCode });
+
+isValidRecoveryCode(recoveryCode); // true (typing case, spaces, O/I/L are tolerated)
+pqcKeyFromRecoveryCode(recoveryCode, account.cosmos); // the same ML-DSA-87 keypair
+```
+
+The mnemonic path (`deriveUnifiedAccount`) is unchanged.
+
 See the [unified-wallet](https://github.com/qorechain/qorechain-sdk/blob/main/docs/docs/guides/unified-wallet.md) guide.
 
 ### Cross-VM message reads

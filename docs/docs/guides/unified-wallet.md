@@ -70,16 +70,34 @@ const same = addressesFrom20(account.addressBytes);
 
 ### Accounts from a raw seed
 
-`unifiedAccountFromSeed(seed32)` uses 32 bytes directly as the secp256k1 private
-key (same address derivation). The PQC seed context prefixes the key hex with a
-literal `"seed:"`:
-`shake256("qorechain:pqc:v1|" + cosmos + "|seed:" + hex(seed32), 32)`.
+`unifiedAccountFromSeed(seed32, opts)` uses 32 bytes directly as the secp256k1
+private key (same address derivation). From 0.13.0 the PQC key needs a second
+secret that the seed says nothing about. Pass exactly one of:
+
+- `recoveryCode`: a `QRC1-…` recovery code (`generatePqcRecoveryCode()`), or
+- `pqcSecret`: 32 bytes of independent secret entropy,
+
+both derived as
+`ML-DSA-87 keygen(shake256("qorechain:pqc:recovery:v1|" + cosmos + "|" ‖ secret32, 32))`,
+the same key `pqcKeyFromRecoveryCode(code, cosmos)` gives. The third choice,
+`legacySeedDerivation: true`, keeps the old derivation
+(`shake256("qorechain:pqc:v1|" + cosmos + "|seed:" + hex(seed32), 32)`): use it
+only to recover the PQC key of an account created before 0.13.0, so you can
+rotate it (MsgRotatePQCKey) to a key from a recovery code; never for new
+accounts. No option, or more than one, throws.
 
 ```ts
-import { unifiedAccountFromSeed } from "@qorechain/sdk";
+import { generatePqcRecoveryCode, unifiedAccountFromSeed } from "@qorechain/sdk";
 
-const account = unifiedAccountFromSeed(new Uint8Array(32).fill(1));
+const recoveryCode = generatePqcRecoveryCode(); // show once, store apart from the seed
+const account = unifiedAccountFromSeed(seed32, { recoveryCode });
 ```
+
+A recovery code is 56 Crockford base32 characters after `QRC1-` (256 secret bits
+and a checksum, in groups of 4). Case, spaces and separators are tolerated, and
+O / I / L are read as 0 / 1; a mistyped character fails the checksum.
+`isValidRecoveryCode(code)` checks one, and `pqcRecoveryCodeFromSecret(secret32)`
+encodes 32 bytes an app already holds.
 
 ## eth_secp256k1 native-lane signing
 

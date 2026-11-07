@@ -24,6 +24,8 @@ import {
   deriveUnifiedAccount,
   unifiedAccountFromSeed,
   qoreAddresses,
+  pqcRecoveryCodeFromSecret,
+  isValidRecoveryCode,
 } from "@qorechain/sdk";
 
 // A PUBLIC, well-known dev mnemonic - NEVER use a funded mnemonic in code.
@@ -66,12 +68,19 @@ async function main(): Promise<void> {
   //    printable demo constant, not a usable key.) To let an external wallet key
   //    act for an account, use the authenticator lanes instead - see the
   //    authenticator-spend example.
-  const seedAccount = unifiedAccountFromSeed(new Uint8Array(32).fill(1));
+  //    The PQC key needs a second secret the seed says nothing about: a QRC1
+  //    recovery code. A real app generates it once (generatePqcRecoveryCode()),
+  //    shows it to the user, and keeps it apart from the seed. The code below is
+  //    the printable demo encoding of 0x07 × 32.
+  const recoveryCode = pqcRecoveryCodeFromSecret(new Uint8Array(32).fill(7));
+  const seedAccount = unifiedAccountFromSeed(new Uint8Array(32).fill(1), { recoveryCode });
   console.log();
   console.log("Seed-derived account (0x01 × 32):");
   console.log("  cosmos :", seedAccount.cosmos);
   console.log("  evm    :", seedAccount.evm);
   console.log("  svm    :", seedAccount.svm);
+  console.log("  recovery code valid:", isValidRecoveryCode(recoveryCode));
+  console.log("  pqc.publicKey  bytes:", seedAccount.pqc.publicKey.length);
 }
 
 main().catch((err) => {

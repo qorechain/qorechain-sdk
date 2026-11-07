@@ -27,6 +27,8 @@
 //! - [`unified`] - the unified eth-native wallet: one secp256k1 key rendered as
 //!   all three address encodings (native/EVM/SVM) plus a deterministic ML-DSA-87
 //!   keypair, so a single identity shares one balance across all lanes.
+//! - [`recovery`] - `QRC1-…` PQC recovery codes: the second secret a raw-seed
+//!   unified account's ML-DSA-87 key is derived from.
 //! - [`sign_eth`] - `eth_secp256k1` native-lane signing (classical + hybrid) for
 //!   the unified account: secp256k1 over `keccak256(SignDoc)` with the
 //!   `eth_secp256k1` pubkey type.
@@ -70,6 +72,7 @@ pub mod pqc_dx;
 pub mod proto;
 pub mod protocol_features;
 pub mod query;
+pub mod recovery;
 pub mod sign_eth;
 pub mod signbytes;
 pub mod stakingtier;
@@ -113,7 +116,12 @@ pub use authenticator::{
 
 pub use unified::{
     addresses_from_20, derive_unified_account, qore_addresses, unified_account_from_seed,
-    UnifiedAccount, UnifiedAddresses,
+    SeedPqcOptions, UnifiedAccount, UnifiedAddresses,
+};
+
+pub use recovery::{
+    generate_pqc_recovery_code, is_valid_recovery_code, normalize_recovery_code,
+    pqc_key_from_recovery_code, pqc_recovery_code_from_secret, PQC_RECOVERY_CODE_PREFIX,
 };
 
 pub use sign_eth::{

@@ -49,7 +49,7 @@ func TestDeriveUnifiedAccountKAT(t *testing.T) {
 
 func TestUnifiedAccountFromSeedKAT(t *testing.T) {
 	seed := bytes.Repeat([]byte{0x01}, 32)
-	acc, err := UnifiedAccountFromSeed(seed)
+	acc, err := UnifiedAccountFromSeed(seed, SeedPQCOptions{LegacySeedDerivation: true})
 	if err != nil {
 		t.Fatalf("from seed: %v", err)
 	}
@@ -65,7 +65,7 @@ func TestUnifiedAccountFromSeedKAT(t *testing.T) {
 	if len(acc.Pqc.PublicKey) != 2592 || len(acc.Pqc.SecretKey) != 4896 {
 		t.Errorf("pqc lengths = %d/%d, want 2592/4896", len(acc.Pqc.PublicKey), len(acc.Pqc.SecretKey))
 	}
-	// PQC-pubkey determinism for the seed path (uses the "seed:"+hex(priv) suffix).
+	// PQC-pubkey determinism for the legacy seed path (uses the "seed:"+hex(priv) suffix).
 	if got, want := hex.EncodeToString(acc.Pqc.PublicKey[:8]), "2d7f888fecbe5b24"; got != want {
 		t.Errorf("pqc pubkey prefix = %s, want %s", got, want)
 	}

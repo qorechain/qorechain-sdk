@@ -200,6 +200,22 @@ class PqcKeyMismatchTest {
     }
 
     @Test
+    void migrateToHybridCarriesKeyVerified() {
+        PqcDx.PqcStatus keyless = new PqcDx.PqcStatus(true, PqcAlgorithm.ALGORITHM_DILITHIUM5, null);
+        // Registered, but the key could not be checked: the path says so.
+        PqcDx.HybridSendPath unchecked = PqcDx.migrateToHybrid(signer(false), bc(), null, withStatus(keyless));
+        assertTrue(unchecked.alreadyRegistered);
+        assertEquals(Boolean.FALSE, unchecked.keyVerified);
+        // Registered with the signer's key.
+        PqcDx.HybridSendPath checked =
+                PqcDx.migrateToHybrid(
+                        signer(false), bc(), null,
+                        withStatus(new PqcDx.PqcStatus(true, PqcAlgorithm.ALGORITHM_DILITHIUM5, MINE.publicKey)));
+        assertEquals(Boolean.TRUE, checked.keyVerified);
+        assertEquals(0, broadcasts.size());
+    }
+
+    @Test
     void doesNotCountAStatusWithoutAKeyAsAMatch() {
         PqcDx.PqcStatus keyless = new PqcDx.PqcStatus(true, PqcAlgorithm.ALGORITHM_DILITHIUM5, null);
         // Nothing to read the key from: registered, but not verified as the signer's.

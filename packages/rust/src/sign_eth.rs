@@ -350,7 +350,7 @@ fn eth_sign_direct(
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::unified::unified_account_from_seed;
+    use crate::unified::{unified_account_from_seed, SeedPqcOptions};
     use k256::ecdsa::signature::hazmat::PrehashVerifier;
     use k256::ecdsa::VerifyingKey;
 
@@ -397,7 +397,9 @@ mod tests {
 
     #[test]
     fn classical_sig_verifies_over_keccak() {
-        let acct = unified_account_from_seed([0x01u8; 32]).unwrap();
+        let acct =
+            unified_account_from_seed([0x01u8; 32], SeedPqcOptions::legacy_seed_derivation())
+                .unwrap();
         let built = sign_classical_eth(test_params(&acct)).unwrap();
         assert!(built.pqc_signature.is_empty());
         assert!(verify_eth_sig(
@@ -410,7 +412,9 @@ mod tests {
 
     #[test]
     fn hybrid_b0_excludes_extension() {
-        let acct = unified_account_from_seed([0x01u8; 32]).unwrap();
+        let acct =
+            unified_account_from_seed([0x01u8; 32], SeedPqcOptions::legacy_seed_derivation())
+                .unwrap();
         let built = sign_hybrid_eth(test_params(&acct), &acct.pqc, false).unwrap();
         // The PQC signed message frames B0 (no extension); the final body carries
         // the extension, so the two bodies differ.
@@ -452,7 +456,9 @@ mod tests {
 
     #[test]
     fn eth_pubkey_any_roundtrips() {
-        let acct = unified_account_from_seed([0x01u8; 32]).unwrap();
+        let acct =
+            unified_account_from_seed([0x01u8; 32], SeedPqcOptions::legacy_seed_derivation())
+                .unwrap();
         let any = ethsecp256k1_pubkey_any(&acct.public_key);
         assert_eq!(any.type_url, ETHSECP256K1_PUBKEY_TYPE);
         assert!(is_ethsecp256k1_pubkey_type(&any.type_url));

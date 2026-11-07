@@ -16,6 +16,7 @@ non-zero code, carrying the decoded fields so callers can branch on
 from __future__ import annotations
 
 from dataclasses import dataclass
+from typing import Any
 
 #: The default codespace for results that do not name one.
 DEFAULT_CODESPACE = "sdk"
@@ -464,3 +465,50 @@ def tx_error_from(
 ) -> QoreTxError:
     """Decode the failed-tx fields and return a ready-to-raise :class:`QoreTxError`."""
     return QoreTxError(decode_tx_error(code, codespace, raw_log), tx_hash)
+
+
+#: :attr:`QoreTxError.kind` for a result whose ``code`` field is not an integer.
+UNREADABLE_CODE_KIND = "unreadable_code"
+
+
+def parse_tx_code(raw: Any) -> int | None:
+    """Read an ABCI result ``code`` from a JSON tx response.
+
+    An absent code (``None``) is ``0``: proto3 JSON leaves a zero field out. A
+    non-negative integer, or a string of decimal digits, is that number. Anything
+    else (a boolean, a float, a negative number, other text) returns ``None``:
+    the answer cannot be read as a success.
+    """
+    if raw is None:
+        return 0
+    if isinstance(raw, bool):
+        return None
+    if isinstance(raw, int):
+        return raw if raw >= 0 else None
+    if isinstance(raw, str) and raw.isascii() and raw.isdigit():
+        return int(raw, 10)
+    return None
+
+
+def unreadable_code_error(
+    raw_code: Any,
+    codespace: str | None = None,
+    raw_log: str | None = None,
+    tx_hash: str | None = None,
+) -> QoreTxError:
+    """A :class:`QoreTxError` for a tx result whose ``code`` is not an integer.
+
+    Such an answer is not proof of success, so it is raised like a failure.
+    ``code`` is ``-1`` and ``kind`` is :data:`UNREADABLE_CODE_KIND`.
+    """
+    message = f"the transaction result has a code that is not an integer: {raw_code!r}"
+    if raw_log:
+        message += f" ({raw_log})"
+    decoded = DecodedTxError(
+        code=-1,
+        codespace=codespace or DEFAULT_CODESPACE,
+        message=message,
+        kind=UNREADABLE_CODE_KIND,
+        raw_log=raw_log,
+    )
+    return QoreTxError(decoded, tx_hash)

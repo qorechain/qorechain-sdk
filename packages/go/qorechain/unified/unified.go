@@ -26,9 +26,11 @@
 package unified
 
 import (
+	"crypto/subtle"
 	"encoding/hex"
 	"errors"
 	"fmt"
+	"strings"
 
 	"github.com/btcsuite/btcd/btcutil/bech32"
 	"github.com/cloudflare/circl/sign/mldsa/mldsa87"
@@ -120,12 +122,28 @@ func DeriveUnifiedAccount(mnemonic string, index uint32) (UnifiedAccount, error)
 // and use the authenticator lanes (MsgRegisterAuthenticator +
 // MsgExecuteCosmos / MsgExecuteEVM) instead of deriving an account from it.
 //
-// The PQC seed is shake256("qorechain:pqc:v1|"+cosmos+"|seed:"+hex(seed32)) -
-// the literal "seed:" prefix plus the lowercase-hex 32-byte private key stands
-// in for the mnemonic, matching the wallet adapter's walletFromSeed contract.
-func UnifiedAccountFromSeed(seed32 []byte) (UnifiedAccount, error) {
+// The ML-DSA-87 key needs a second secret that seed32 says nothing about, given
+// in opts (exactly one of RecoveryCode, PQCSecret or LegacySeedDerivation):
+//
+//   - RecoveryCode: a QRC1 recovery code (see GeneratePQCRecoveryCode). The key
+//     is the one PQCKeyFromRecoveryCode derives for the account address.
+//   - PQCSecret: 32 raw bytes of independent secret entropy. Same derivation as
+//     a recovery code holding those bytes, so both give the same key.
+//   - LegacySeedDerivation: the derivation used before 0.13.0,
+//     shake256("qorechain:pqc:v1|"+cosmos+"|seed:"+hex(seed32)), which anyone
+//     holding seed32 can reproduce. Use it only to recover the PQC key of an
+//     account created before 0.13.0, so you can rotate it (MsgRotatePQCKey) to a
+//     key from a recovery code; never for new accounts.
+func UnifiedAccountFromSeed(seed32 []byte, opts SeedPQCOptions) (UnifiedAccount, error) {
 	if len(seed32) != 32 {
 		return UnifiedAccount{}, fmt.Errorf("seed must be 32 bytes, got %d", len(seed32))
+	}
+	if err := opts.validate(); err != nil {
+		return UnifiedAccount{}, err
+	}
+	if opts.PQCSecret != nil && subtle.ConstantTimeCompare(opts.PQCSecret, seed32) == 1 {
+		return UnifiedAccount{}, errors.New("SeedPQCOptions.PQCSecret must not equal seed32: " +
+			"the PQC key would be derivable from the classical key again; use independent entropy or a recovery code")
 	}
 	priv := secp256k1.PrivKeyFromBytes(seed32)
 	compressed := priv.PubKey().SerializeCompressed()
@@ -137,8 +155,7 @@ func UnifiedAccountFromSeed(seed32 []byte) (UnifiedAccount, error) {
 	if err != nil {
 		return UnifiedAccount{}, err
 	}
-	pqcSeed := shake256([]byte("qorechain:pqc:v1|"+enc.Cosmos+"|seed:"+hex.EncodeToString(seed32)), 32)
-	pqc, err := pqcFromSeed(pqcSeed)
+	pqc, err := opts.derive(seed32, enc.Cosmos)
 	if err != nil {
 		return UnifiedAccount{}, err
 	}
@@ -153,6 +170,69 @@ func UnifiedAccountFromSeed(seed32 []byte) (UnifiedAccount, error) {
 		Svm:          enc.Svm,
 		Pqc:          pqc,
 	}, nil
+}
+
+// SeedPQCOptions selects where UnifiedAccountFromSeed takes the account's
+// ML-DSA-87 key from. Set exactly one field.
+type SeedPQCOptions struct {
+	// RecoveryCode is a QRC1 recovery code ("QRC1-XXXX-…") held by the user.
+	RecoveryCode string
+	// PQCSecret is 32 raw bytes of secret entropy independent of seed32 (a
+	// value equal to seed32 is rejected). The slice is not modified; zero it
+	// yourself when done.
+	PQCSecret []byte
+	// LegacySeedDerivation keeps the derivation used before 0.13.0 byte for
+	// byte. Use it only to recover the PQC key of an account created before
+	// 0.13.0, so you can rotate it (MsgRotatePQCKey) to a key from a recovery
+	// code; never for new accounts.
+	LegacySeedDerivation bool
+}
+
+func (o SeedPQCOptions) validate() error {
+	n := 0
+	if o.RecoveryCode != "" {
+		n++
+	}
+	if o.PQCSecret != nil {
+		n++
+	}
+	if o.LegacySeedDerivation {
+		n++
+	}
+	switch {
+	case n == 0:
+		return errors.New("UnifiedAccountFromSeed needs a second secret for the PQC key: " +
+			"set SeedPQCOptions.RecoveryCode (a QRC1 recovery code, see GeneratePQCRecoveryCode), " +
+			"SeedPQCOptions.PQCSecret (32 bytes of independent secret entropy), or " +
+			"SeedPQCOptions.LegacySeedDerivation (only to recover the PQC key of an account created before 0.13.0 and rotate it)")
+	case n > 1:
+		return errors.New("UnifiedAccountFromSeed: set only one of SeedPQCOptions.RecoveryCode, PQCSecret or LegacySeedDerivation")
+	}
+	if o.PQCSecret != nil && len(o.PQCSecret) != recoverySecretBytes {
+		return fmt.Errorf("SeedPQCOptions.PQCSecret must be %d bytes, got %d", recoverySecretBytes, len(o.PQCSecret))
+	}
+	return nil
+}
+
+// derive returns the PQC keypair for the account; validate must have passed.
+func (o SeedPQCOptions) derive(seed32 []byte, cosmos string) (PQCKeypair, error) {
+	switch {
+	case o.LegacySeedDerivation:
+		in := []byte("qorechain:pqc:v1|" + cosmos + "|seed:" + hex.EncodeToString(seed32))
+		seed := shake256(in, 32)
+		zero(in)
+		defer zero(seed)
+		return pqcFromSeed(seed)
+	case o.PQCSecret != nil:
+		return pqcFromRecoverySecret(o.PQCSecret, strings.ToLower(cosmos))
+	default:
+		secret, err := decodeRecoveryCode(o.RecoveryCode)
+		if err != nil {
+			return PQCKeypair{}, err
+		}
+		defer zero(secret)
+		return pqcFromRecoverySecret(secret, strings.ToLower(cosmos))
+	}
 }
 
 // Addresses holds the three address encodings of a single 20-byte account.
@@ -257,6 +337,7 @@ func pqcFromSeed(seed []byte) (PQCKeypair, error) {
 	var s [mldsa87.SeedSize]byte
 	copy(s[:], seed)
 	pub, priv := mldsa87.NewKeyFromSeed(&s)
+	clear(s[:])
 	pubBytes, err := pub.MarshalBinary()
 	if err != nil {
 		return PQCKeypair{}, err

@@ -333,6 +333,8 @@ async fn migrate_to_hybrid_ensures_then_binds_keypair() {
 
     let path = dx.migrate_to_hybrid().await.unwrap();
     assert!(!path.already_registered);
+    // A registration was sent, so nothing was compared.
+    assert_eq!(path.key_verified, None);
     assert_eq!(path.registration_tx_hash, Some("MIGR".to_string()));
     // The bound DX carries the same PQC key material.
     assert_eq!(path.dx.pqc_public_key, dx.pqc_public_key);

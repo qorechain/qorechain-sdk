@@ -206,17 +206,21 @@ public final class PqcDx {
      *
      * <p>The chain returns a rich JSON object; this normalizes the common fields
      * ({@code registered}, {@code algorithmId}/{@code algorithm_id},
-     * {@code pubkey}/{@code public_key}) into a {@link PqcStatus}. Unknown shapes
-     * degrade to {@code registered = false}.
+     * {@code pubkey}/{@code public_key}) into a {@link PqcStatus}. An answer
+     * without a registration flag ({@code registered}, {@code isRegistered},
+     * {@code is_registered} or {@code has_pqc_key}) is unknown and throws, like
+     * {@link #fetchPqcStatus}; it is never read as "not registered".
+     *
+     * @throws IllegalStateException when the answer carries no registration flag.
      */
     public static PqcStatus getPqcStatus(QorClient qor, String address) {
         JsonNode raw = qor.getPqcKeyStatus(address);
         // No answer is not "not registered": reading it that way makes a client
-        // re-register a key the chain already has, and pay the fee each time.
+        // re-register a key the chain already has, and pay the fee each time. A key
+        // without a flag is not an answer either: only the flag says "registered".
         if (raw == null
                 || !raw.isObject()
-                || firstOf(raw, "registered", "isRegistered", "is_registered", "has_pqc_key",
-                                "pubkey", "publicKey", "public_key")
+                || firstOf(raw, "registered", "isRegistered", "is_registered", "has_pqc_key")
                         == null) {
             throw new IllegalStateException(
                     "qor_getPQCKeyStatus gave no usable answer for " + address
@@ -658,9 +662,11 @@ public final class PqcDx {
     }
 
     /**
-     * A hybrid send path returned by {@link #migrateToHybrid}: the PQC key is
-     * guaranteed registered, and {@link #send(List)} builds and broadcasts a hybrid
-     * (classical secp256k1 + ML-DSA-87) transaction via {@link HybridTx}.
+     * A hybrid send path returned by {@link #migrateToHybrid}: the account has a
+     * registered PQC key, and {@link #send(List)} builds and broadcasts a hybrid
+     * (classical secp256k1 + ML-DSA-87) transaction via {@link HybridTx}. The
+     * registered key is known to be {@link #pqcKeypair}'s only when
+     * {@link #keyVerified} is {@code TRUE}.
      *
      * <p>The signer (incl. its bound {@code pqcKeypair}) is captured, so callers
      * just pass the messages to send.
@@ -668,6 +674,13 @@ public final class PqcDx {
     public static final class HybridSendPath {
         /** Whether the PQC key was already registered before this call. */
         public final boolean alreadyRegistered;
+        /**
+         * Whether the registered key was compared with {@link #pqcKeypair} and
+         * matched, as reported by {@link EnsureResult#keyVerified}. {@code FALSE}
+         * when the account has a key that could not be checked (do not assume it is
+         * the signer's); {@code null} when a registration was sent by this call.
+         */
+        public final Boolean keyVerified;
         /** The registration tx hash, when a registration was broadcast; else {@code null}. */
         public final String registrationTxHash;
         /** The bound ML-DSA-87 keypair used for the hybrid half. */
@@ -678,10 +691,12 @@ public final class PqcDx {
 
         HybridSendPath(
                 boolean alreadyRegistered,
+                Boolean keyVerified,
                 String registrationTxHash,
                 Signer signer,
                 Broadcaster broadcaster) {
             this.alreadyRegistered = alreadyRegistered;
+            this.keyVerified = keyVerified;
             this.registrationTxHash = registrationTxHash;
             this.pqcKeypair = signer.pqcKeypair;
             this.signer = signer;
@@ -828,8 +843,9 @@ public final class PqcDx {
      * <p>Ensures the signer's PQC key is registered (idempotent - see
      * {@link #ensurePqcRegistered}), then returns a {@link HybridSendPath} bound to
      * the signer's keypair and broadcaster. After this call, the dApp's
-     * transactions can carry a verified hybrid signature via
-     * {@link HybridSendPath#send(List)}.
+     * transactions can carry a hybrid signature via {@link HybridSendPath#send(List)}.
+     * The registered key is verified to be the signer's only when
+     * {@link HybridSendPath#keyVerified} is {@code TRUE}.
      *
      * @param signer the signing context (incl. the bound {@code pqcKeypair}).
      * @param bc the consensus-RPC broadcaster.
@@ -841,7 +857,7 @@ public final class PqcDx {
             Signer signer, Broadcaster bc, QorClient qor, EnsureOptions opts) {
         EnsureResult ensured = ensurePqcRegistered(signer, bc, qor, opts);
         return new HybridSendPath(
-                ensured.alreadyRegistered, ensured.txHash, signer, bc);
+                ensured.alreadyRegistered, ensured.keyVerified, ensured.txHash, signer, bc);
     }
 
     // ---- JSON normalization helpers ----

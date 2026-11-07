@@ -28,11 +28,13 @@ import org.bouncycastle.asn1.x9.X9ECParameters;
  * accounts are a distinct, opt-in identity model built on the eth-native (coin-60)
  * key.
  *
- * <p>The deterministic ML-DSA-87 (Dilithium-5) PQC keypair is bound to
- * {@code shake256("qorechain:pqc:v1|" + cosmos + "|" + secret, 32)} - the secret
- * is the mnemonic for mnemonic-derived accounts and the hex of the 32-byte seed
- * for seed-derived accounts - so it is recoverable from the account and the same
- * secret, and portable across the QoreChain SDKs (byte-identical FIPS-204 keygen).
+ * <p>The deterministic ML-DSA-87 (Dilithium-5) PQC keypair of a mnemonic-derived
+ * account is bound to {@code shake256("qorechain:pqc:v1|" + cosmos + "|" + mnemonic, 32)},
+ * so it is recoverable from the account and the same mnemonic, and portable across
+ * the QoreChain SDKs (byte-identical FIPS-204 keygen). A seed-derived account takes
+ * its PQC key from a second, independent secret (a recovery code or 32 secret
+ * bytes, see {@link SeedPqcOptions} and {@link PqcRecovery}), because the seed is
+ * the classical private key.
  */
 public final class UnifiedAccounts {
 
@@ -185,11 +187,98 @@ public final class UnifiedAccounts {
     }
 
     /**
+     * Where the PQC key of a seed-derived account comes from (see
+     * {@link #unifiedAccountFromSeed(byte[], SeedPqcOptions)}).
+     *
+     * <p>Set exactly one of {@link #recoveryCode}, {@link #pqcSecret} or
+     * {@link #legacySeedDerivation}. The seed is the secp256k1 private key, so the
+     * PQC key needs a second, independent secret: a {@code QRC1-...} recovery code
+     * (see {@link PqcRecovery#generatePqcRecoveryCode}) or 32 raw bytes of separate
+     * secret entropy.
+     *
+     * <pre>{@code
+     * UnifiedAccounts.unifiedAccountFromSeed(seed32, SeedPqcOptions.withRecoveryCode(code));
+     * UnifiedAccounts.unifiedAccountFromSeed(seed32, new SeedPqcOptions().pqcSecret(secret32));
+     * }</pre>
+     */
+    public static final class SeedPqcOptions {
+        private String recoveryCode;
+        private byte[] pqcSecret;
+        private boolean legacySeedDerivation;
+
+        /** An empty options object; set exactly one source before use. */
+        public SeedPqcOptions() {}
+
+        /** Derive the PQC key from a {@code QRC1-...} recovery code. */
+        public SeedPqcOptions recoveryCode(String code) {
+            this.recoveryCode = code;
+            return this;
+        }
+
+        /**
+         * Derive the PQC key from 32 raw bytes of independent secret entropy (the
+         * same key the recovery code for those bytes gives). The array is copied;
+         * the caller keeps ownership of it.
+         */
+        public SeedPqcOptions pqcSecret(byte[] secret32) {
+            this.pqcSecret = secret32 == null ? null : secret32.clone();
+            return this;
+        }
+
+        /**
+         * Keep the pre-0.13.0 derivation, where the PQC key is computed from the seed
+         * itself. Use this only to recover the PQC key of an account created before
+         * 0.13.0, so you can rotate it (MsgRotatePQCKey) to a key from a recovery
+         * code; never for new accounts.
+         */
+        public SeedPqcOptions legacySeedDerivation(boolean legacy) {
+            this.legacySeedDerivation = legacy;
+            return this;
+        }
+
+        /** Shorthand for {@code new SeedPqcOptions().recoveryCode(code)}. */
+        public static SeedPqcOptions withRecoveryCode(String code) {
+            return new SeedPqcOptions().recoveryCode(code);
+        }
+
+        /** Shorthand for {@code new SeedPqcOptions().pqcSecret(secret32)}. */
+        public static SeedPqcOptions withPqcSecret(byte[] secret32) {
+            return new SeedPqcOptions().pqcSecret(secret32);
+        }
+
+        /** Shorthand for {@code new SeedPqcOptions().legacySeedDerivation(true)}. */
+        public static SeedPqcOptions legacy() {
+            return new SeedPqcOptions().legacySeedDerivation(true);
+        }
+    }
+
+    /** The error for a seed-path call that does not say where the PQC key comes from. */
+    private static final String SEED_PQC_CHOICES =
+            " Pass exactly one of: recoveryCode (a QRC1 recovery code, see"
+                    + " PqcRecovery.generatePqcRecoveryCode), pqcSecret (32 bytes of independent"
+                    + " secret entropy), or legacySeedDerivation(true) (only to recover the PQC key"
+                    + " of an account created before 0.13.0, so you can rotate it with"
+                    + " MsgRotatePQCKey; never for new accounts).";
+
+    /**
      * Build a unified eth-native account directly from a 32-byte seed used AS the
      * secp256k1 private key (no HD derivation).
      *
-     * <p>Same address derivation as {@link #deriveUnifiedAccount}; the PQC key is
-     * derived from {@code shake256("qorechain:pqc:v1|" + cosmos + "|" + hex(seed32), 32)}.
+     * <p>Same address derivation as {@link #deriveUnifiedAccount}. The seed is the
+     * classical private key, so the PQC key needs a second, independent secret,
+     * chosen with {@code opts} (exactly one):
+     *
+     * <ul>
+     *   <li>{@code recoveryCode}: a {@code QRC1-...} recovery code; the PQC key is
+     *       {@link PqcRecovery#pqcKeyFromRecoveryCode}{@code (code, cosmos)}.
+     *   <li>{@code pqcSecret}: 32 raw bytes; the PQC key is the one the recovery
+     *       code for those bytes gives (same derivation).
+     *   <li>{@code legacySeedDerivation}: the pre-0.13.0 derivation
+     *       {@code shake256("qorechain:pqc:v1|" + cosmos + "|seed:" + hex(seed32), 32)}.
+     *       Only to recover the PQC key of an account created before 0.13.0, so you
+     *       can rotate it (MsgRotatePQCKey) to a key from a recovery code; never for
+     *       new accounts.
+     * </ul>
      *
      * <p><b>SAFETY - the seed IS the private key.</b> {@code seed32} MUST be real
      * secret entropy: a CSPRNG draw, or a seed derived from a secret only the owner
@@ -201,21 +290,61 @@ public final class UnifiedAccounts {
      * {@code MsgExecuteEVM} instead of turning it into a seed.
      *
      * @throws IllegalArgumentException if {@code seed32} is not 32 bytes or is not a
-     *     valid secp256k1 scalar.
+     *     valid secp256k1 scalar, if {@code opts} sets no PQC source or more than
+     *     one, if the recovery code or {@code pqcSecret} is malformed, or if the PQC
+     *     secret is byte-identical to {@code seed32}.
      */
-    public static UnifiedAccount unifiedAccountFromSeed(byte[] seed32) {
+    public static UnifiedAccount unifiedAccountFromSeed(byte[] seed32, SeedPqcOptions opts) {
         if (seed32 == null || seed32.length != 32) {
             throw new IllegalArgumentException(
                     "seed must be 32 bytes, got " + (seed32 == null ? "null" : seed32.length));
+        }
+        int chosen = 0;
+        if (opts != null) {
+            chosen += opts.recoveryCode != null ? 1 : 0;
+            chosen += opts.pqcSecret != null ? 1 : 0;
+            chosen += opts.legacySeedDerivation ? 1 : 0;
+        }
+        if (chosen == 0) {
+            throw new IllegalArgumentException(
+                    "unifiedAccountFromSeed needs a second secret for the PQC key, because the"
+                            + " seed is the classical private key." + SEED_PQC_CHOICES);
+        }
+        if (chosen > 1) {
+            throw new IllegalArgumentException(
+                    "unifiedAccountFromSeed: more than one PQC key source was given." + SEED_PQC_CHOICES);
         }
         BigInteger scalar = new BigInteger(1, seed32);
         if (scalar.signum() == 0 || scalar.compareTo(CURVE_N) >= 0) {
             throw new IllegalArgumentException("seed is not a valid secp256k1 private key");
         }
         byte[] compressed = SECP256K1.getG().multiply(scalar).normalize().getEncoded(true);
-        // PQC secret for seed-derived accounts carries the literal "seed:" prefix
-        // before the lowercase-hex private key (matches the reference adapter).
-        return build(null, seed32.clone(), compressed, "seed:" + Hex.encode(seed32));
+        AddressTriple addrs = addressesFor(compressed);
+        PqcKeypair pqc;
+        if (opts.legacySeedDerivation) {
+            // Pre-0.13.0: the PQC secret is the literal "seed:" prefix before the
+            // lowercase-hex private key (matches the reference adapter).
+            pqc = legacyPqc(addrs.cosmos, "seed:" + Hex.encode(seed32));
+        } else {
+            byte[] secret =
+                    opts.recoveryCode != null
+                            ? PqcRecovery.decodeRecoveryCode(opts.recoveryCode)
+                            : opts.pqcSecret.clone();
+            try {
+                PqcRecovery.requireSecret(secret, "pqcSecret");
+                if (java.security.MessageDigest.isEqual(secret, seed32)) {
+                    throw new IllegalArgumentException(
+                            "unifiedAccountFromSeed: the PQC secret must not be the seed itself;"
+                                    + " that would make the PQC key derivable from the classical"
+                                    + " private key. Use an independent secret, such as a new"
+                                    + " recovery code from PqcRecovery.generatePqcRecoveryCode.");
+                }
+                pqc = PqcRecovery.keyFromSecret(secret, addrs.cosmos);
+            } finally {
+                Arrays.fill(secret, (byte) 0);
+            }
+        }
+        return new UnifiedAccount(null, seed32.clone(), compressed, addrs, pqc);
     }
 
     /**
@@ -252,14 +381,27 @@ public final class UnifiedAccounts {
     /** Build the address + PQC bundle from a 32-byte secp256k1 private key + PQC secret. */
     private static UnifiedAccount build(
             String mnemonic, byte[] privkey, byte[] compressedPubkey, String pqcSecret) {
+        AddressTriple addrs = addressesFor(compressedPubkey);
+        PqcKeypair pqc = legacyPqc(addrs.cosmos, pqcSecret);
+        return new UnifiedAccount(mnemonic, privkey, compressedPubkey, addrs, pqc);
+    }
+
+    /** The three address encodings of a compressed secp256k1 public key (keccak derivation). */
+    private static AddressTriple addressesFor(byte[] compressedPubkey) {
         byte[] uncompressed = Hd.decompressPublicKey(compressedPubkey); // 65 bytes: 0x04 || X || Y
         byte[] body = Arrays.copyOfRange(uncompressed, 1, uncompressed.length); // 64 bytes
         byte[] hash = Hashing.keccak256(body);
         byte[] addr20 = Arrays.copyOfRange(hash, hash.length - 20, hash.length);
-        AddressTriple addrs = addressesFrom20(addr20);
-        byte[] pqcSeed =
-                Hashing.shake256(PQC_SEED_CONTEXT + addrs.cosmos + "|" + pqcSecret, 32);
-        PqcKeypair pqc = Pqc.generatePqcKeypair(pqcSeed);
-        return new UnifiedAccount(mnemonic, privkey, compressedPubkey, addrs, pqc);
+        return addressesFrom20(addr20);
+    }
+
+    /** {@code ML-DSA-87 keygen(shake256("qorechain:pqc:v1|" + cosmos + "|" + secret, 32))}. */
+    private static PqcKeypair legacyPqc(String cosmos, String pqcSecret) {
+        byte[] pqcSeed = Hashing.shake256(PQC_SEED_CONTEXT + cosmos + "|" + pqcSecret, 32);
+        try {
+            return Pqc.generatePqcKeypair(pqcSeed);
+        } finally {
+            Arrays.fill(pqcSeed, (byte) 0);
+        }
     }
 }

@@ -549,7 +549,14 @@ One `eth_secp256k1` key = ONE 20-byte identity rendered three ways - `qor1…`
 bytes to 32). A deposit to any of the three lands in the **same** balance, and the
 key spends on **all** lanes. `unified::derive_unified_account` uses the Ethereum HD
 path (`m/44'/60'/0'/0/{index}`); `unified::unified_account_from_seed` builds one
-directly from a 32-byte secret. `unified::addresses_from_20` /
+directly from a 32-byte secret. Since 0.13.0 the seed path needs a second,
+independent secret for the account's ML-DSA-87 key (the seed is the classical
+key, so it cannot be the only input): pass `SeedPqcOptions::recovery_code` (a
+`QRC1-…` recovery code from `recovery::generate_pqc_recovery_code`) or
+`SeedPqcOptions::pqc_secret` (32 bytes of independent secret entropy).
+`SeedPqcOptions::legacy_seed_derivation` keeps the old derivation, only to
+recover the PQC key of an account created before 0.13.0, so you can rotate it
+(MsgRotatePQCKey) to a key from a recovery code; never for new accounts. `unified::addresses_from_20` /
 `unified::qore_addresses` convert between the three encodings. The legacy
 coin-type-118 `derive_native_account` still works (additive).
 
@@ -560,7 +567,8 @@ ML-DSA-87 post-quantum signature over the hybrid sign-bytes in
 `EthSignParams::sign_bytes_version` (v1 / v2, see above). Account parsing accepts eth_secp256k1 public keys.
 
 ```rust,no_run
-use qorechain::unified::{derive_unified_account, unified_account_from_seed};
+use qorechain::recovery::generate_pqc_recovery_code;
+use qorechain::unified::{derive_unified_account, unified_account_from_seed, SeedPqcOptions};
 use qorechain::sign_eth::{sign_hybrid_eth, EthSignParams};
 
 # fn run(mnemonic: &str, secret_entropy: [u8; 32]) -> qorechain::Result<()> {
@@ -572,7 +580,10 @@ account.svm;    // "<base58>" - 20 bytes + 12 zero pad
 // Or build one directly from a 32-byte seed. The seed IS the spend key, so it
 // must be real secret entropy (CSPRNG / HSM / a mnemonic), never a wallet
 // signature or anything else a third party can ask a wallet to produce.
-let from_seed = unified_account_from_seed(secret_entropy)?;
+// The PQC key comes from a recovery code: show it to the user once and keep it
+// apart from the seed.
+let code = generate_pqc_recovery_code()?;
+let from_seed = unified_account_from_seed(secret_entropy, SeedPqcOptions::recovery_code(&code))?;
 let _ = (account, from_seed);
 # Ok(())
 # }

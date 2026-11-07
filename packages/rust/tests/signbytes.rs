@@ -43,7 +43,7 @@ use qorechain::tx::{
     build_hybrid_tx, BroadcastMode, BuildHybridTxParams, Coin, Fee, Message as TxMessage,
     QoreTxError,
 };
-use qorechain::unified::unified_account_from_seed;
+use qorechain::unified::{unified_account_from_seed, SeedPqcOptions};
 use qorechain::Error;
 
 /// Public test mnemonic only (BIP-39 test vector); never a real secret.
@@ -1042,7 +1042,8 @@ fn hybrid_tx_without_version_fails_on_legacy_and_is_v2_elsewhere() {
 
 #[test]
 fn eth_hybrid_v2_signature_verifies_over_v2_not_v1() {
-    let acct = unified_account_from_seed([0x07u8; 32]).unwrap();
+    let acct =
+        unified_account_from_seed([0x07u8; 32], SeedPqcOptions::legacy_seed_derivation()).unwrap();
     let params = |version| EthSignParams {
         private_key: acct.private_key,
         public_key: acct.public_key.clone(),

@@ -261,6 +261,14 @@ from .protocol_features import (
 )
 from .qor import QOR_METHODS, AsyncQorClient, QorClient
 from .query import QueryClients, connect_query_clients
+from .recovery import (
+    PQC_RECOVERY_CODE_PREFIX,
+    generate_pqc_recovery_code,
+    is_valid_recovery_code,
+    normalize_recovery_code,
+    pqc_key_from_recovery_code,
+    pqc_recovery_code_from_secret,
+)
 from .rest import AsyncRestClient, QoreHttpError, RestClient
 from .search import (
     build_events_query,
@@ -417,6 +425,13 @@ __all__ = [
     "UnifiedAccount",
     "derive_unified_account",
     "unified_account_from_seed",
+    # PQC recovery codes (the second secret for a seed-built account's PQC key)
+    "PQC_RECOVERY_CODE_PREFIX",
+    "generate_pqc_recovery_code",
+    "is_valid_recovery_code",
+    "normalize_recovery_code",
+    "pqc_key_from_recovery_code",
+    "pqc_recovery_code_from_secret",
     # REMOVED in v0.8.0 (unsafe signature-derived spend key) - raises when called.
     "unified_account_from_phantom_signature",
     "addresses_from_20",

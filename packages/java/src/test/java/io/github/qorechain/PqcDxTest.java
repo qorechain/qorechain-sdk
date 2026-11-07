@@ -173,6 +173,19 @@ class PqcDxTest {
         assertThrows(IllegalStateException.class, () -> PqcDx.getPqcStatus(qor(), "qor1addr"));
     }
 
+    @Test
+    void getPqcStatusRefusesAnAnswerWithoutARegistrationFlag() {
+        // A key without registered / isRegistered / is_registered is unknown, not "false".
+        statusResultJson = "{\"public_key\":\"0x0a0b0c\",\"algorithm_id\":1}";
+        assertThrows(IllegalStateException.class, () -> PqcDx.getPqcStatus(qor(), "qor1addr"));
+        assertThrows(IllegalStateException.class, () -> PqcDx.isPqcRegistered(qor(), "qor1addr"));
+        // Each flag spelling is an answer.
+        statusResultJson = "{\"isRegistered\":true}";
+        assertTrue(PqcDx.getPqcStatus(qor(), "qor1addr").registered);
+        statusResultJson = "{\"is_registered\":false}";
+        assertFalse(PqcDx.getPqcStatus(qor(), "qor1addr").registered);
+    }
+
     // ---- ensurePqcRegistered ----
 
     @Test
@@ -341,6 +354,8 @@ class PqcDxTest {
         PqcDx.HybridSendPath path =
                 PqcDx.migrateToHybrid(signer(kp), new Broadcaster(baseUrl), qor(), null);
         assertFalse(path.alreadyRegistered);
+        // This call sent the registration: nothing was compared.
+        assertNull(path.keyVerified);
         assertEquals("DEADBEEF", path.registrationTxHash);
         // 1 broadcast so far: the registration tx.
         assertEquals(1, broadcastTxs.size());

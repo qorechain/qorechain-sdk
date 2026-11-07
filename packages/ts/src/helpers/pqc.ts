@@ -146,7 +146,9 @@ function asNumber(v: unknown): number | undefined {
  *
  * The chain returns a rich JSON object; this helper normalizes the common
  * fields (`registered`, `algorithmId`/`algorithm_id`, `pubkey`/`public_key`)
- * into a {@link PqcStatus}. Unknown shapes degrade to `{ registered: false }`.
+ * into a {@link PqcStatus}. An answer without any of `registered` /
+ * `isRegistered` / `is_registered` throws: it is unknown, never read as
+ * "not registered".
  *
  * Alternative: on the EVM side, call the `pqcKeyStatus(address)` precompile at
  * {@link PQC_KEY_STATUS_PRECOMPILE_ADDRESS} (via `@qorechain/evm`).
@@ -169,9 +171,15 @@ export async function getPqcStatus(
     throw new Error(`qor_getPQCKeyStatus gave no usable answer for ${address}; cannot tell whether a PQC key is registered`);
   }
 
-  const registered = asBool(
-    raw.registered ?? raw.isRegistered ?? raw.is_registered,
-  );
+  // An answer without a registration field is unknown, not "not registered"
+  // (same rule as fetchPqcStatus).
+  const registeredRaw = raw.registered ?? raw.isRegistered ?? raw.is_registered;
+  if (registeredRaw == null) {
+    throw new Error(
+      `qor_getPQCKeyStatus answer for ${address} has no "registered" field; cannot tell whether a PQC key is registered`,
+    );
+  }
+  const registered = asBool(registeredRaw);
   const algorithmId = asNumber(raw.algorithmId ?? raw.algorithm_id);
   const pubkeyRaw = raw.pubkey ?? raw.publicKey ?? raw.public_key;
   const pubkey =
@@ -671,8 +679,9 @@ export interface MigrateToHybridOptions extends EnsurePqcRegisteredOptions {
 }
 
 /**
- * A hybrid send path returned by {@link migrateToHybrid}: the PQC key is
- * guaranteed registered, and these methods build / broadcast hybrid (classical +
+ * A hybrid send path returned by {@link migrateToHybrid}: the account has a
+ * registered PQC key (it is checked to be `pqcKeypair`'s only when `keyVerified`
+ * is `true`), and these methods build / broadcast hybrid (classical +
  * ML-DSA-87) transactions via {@link buildHybridTx} / {@link signAndBroadcastHybrid}.
  *
  * The `pqcKeypair` is bound, so callers pass everything else hybrid signing
@@ -681,6 +690,13 @@ export interface MigrateToHybridOptions extends EnsurePqcRegisteredOptions {
 export interface HybridSendPath {
   /** Whether the PQC key was already registered before this call. */
   alreadyRegistered: boolean;
+  /**
+   * Whether the registered key was compared with `pqcKeypair` and matched
+   * (see {@link EnsurePqcRegisteredResult.keyVerified}). `false` means the
+   * account has a key that could not be checked: do not assume it is yours.
+   * Absent when a registration was sent.
+   */
+  keyVerified?: boolean;
   /** The registration tx hash, when a registration was broadcast. */
   registrationTxHash?: string;
   /** The bound ML-DSA-87 keypair used for the hybrid half. */
@@ -701,8 +717,9 @@ export interface HybridSendPath {
  * Ensures the signer's PQC key is registered (idempotent - see
  * {@link ensurePqcRegistered}), then returns a {@link HybridSendPath} with the
  * keypair pre-bound to the existing {@link buildHybridTx} /
- * {@link signAndBroadcastHybrid} builders. After this call, the dApp's
- * transactions can carry a verified hybrid signature.
+ * {@link signAndBroadcastHybrid} builders. When the account already had a key,
+ * check `keyVerified` on the result: only `true` means the registered key was
+ * confirmed to be `pqcKeypair`'s, so the hybrid signatures will verify.
  *
  * @param tx - A connected signing client (used for the registration tx).
  * @param opts - The PQC keypair and registration/idempotency options.
@@ -716,6 +733,7 @@ export async function migrateToHybrid(
 
   return {
     alreadyRegistered: ensured.alreadyRegistered,
+    ...(ensured.keyVerified !== undefined ? { keyVerified: ensured.keyVerified } : {}),
     registrationTxHash: ensured.txHash,
     pqcKeypair,
     buildHybridTx: (o) => buildHybridTx({ ...o, pqcKeypair }),

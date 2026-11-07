@@ -9,8 +9,10 @@
 //! the account, visible under all three.
 //!
 //! The account also carries a deterministic ML-DSA-87 (Dilithium-5) PQC keypair
-//! for the on-chain hybrid ante, seeded from `{cosmos address, mnemonic}` so it
-//! is recoverable without extra secret storage.
+//! for the on-chain hybrid ante. From a mnemonic it is seeded from
+//! `{cosmos address, mnemonic}`, so it is recoverable without extra secret
+//! storage. From a raw 32-byte seed it needs a second, independent secret (a
+//! recovery code, see [`crate::recovery`]), because the seed is the classical key.
 //!
 //! This is ADDITIVE: the coin-118 native derivation in [`crate::accounts`] is
 //! unchanged. Use this module when you want one identity shared across all lanes
@@ -18,7 +20,7 @@
 
 use crate::accounts::{derive_eth_key, NATIVE_PREFIX};
 use crate::address::bytes_to_bech32;
-use crate::error::Result;
+use crate::error::{Error, Result};
 use crate::pqc::{pqc_keypair_from_seed, PqcKeypair};
 use k256::elliptic_curve::sec1::ToEncodedPoint;
 use k256::SecretKey;
@@ -169,12 +171,13 @@ fn derive_pqc(cosmos: &str, secret: &str) -> PqcKeypair {
 }
 
 /// Builds a [`UnifiedAccount`] from a compressed/uncompressed secp256k1 pubkey,
-/// a private key, and the `secret` string mixed into the PQC seed.
+/// a private key, and a function that derives the PQC keypair from the
+/// account's `cosmos` address.
 fn build_account(
     private_key: [u8; 32],
     compressed: Vec<u8>,
     uncompressed: &[u8],
-    pqc_secret: &str,
+    pqc: impl FnOnce(&str) -> Result<PqcKeypair>,
 ) -> Result<UnifiedAccount> {
     // Ethereum address = last 20 bytes of keccak256 of the 64-byte pubkey body
     // (drop the 0x04 prefix).
@@ -183,7 +186,7 @@ fn build_account(
     addr20.copy_from_slice(&digest[12..]);
 
     let enc = addresses_from_20(addr20)?;
-    let pqc = derive_pqc(&enc.cosmos, pqc_secret);
+    let pqc = pqc(&enc.cosmos)?;
 
     Ok(UnifiedAccount {
         private_key,
@@ -213,15 +216,107 @@ fn pubkeys_from_private(private_key: &[u8; 32]) -> Result<(Vec<u8>, Vec<u8>)> {
 /// The PQC seed mixes the derived `cosmos` address with the `mnemonic`.
 pub fn derive_unified_account(mnemonic: &str, index: u32) -> Result<UnifiedAccount> {
     let (private_key, compressed, uncompressed) = derive_eth_key(mnemonic, index)?;
-    build_account(private_key, compressed, &uncompressed, mnemonic)
+    build_account(private_key, compressed, &uncompressed, |cosmos| {
+        Ok(derive_pqc(cosmos, mnemonic))
+    })
+}
+
+/// Where [`unified_account_from_seed`] takes the account's ML-DSA-87 key from.
+///
+/// `seed32` is the account's secp256k1 private key, so the PQC key needs a
+/// second, independent secret. Set exactly one of:
+///
+/// - [`recovery_code`](Self::recovery_code): a `QRC1-…` recovery code (see
+///   [`crate::recovery`]);
+/// - [`pqc_secret`](Self::pqc_secret): 32 raw bytes of independent secret
+///   entropy;
+/// - [`legacy_seed_derivation`](Self::legacy_seed_derivation): the derivation
+///   used before 0.13.0, where the PQC key comes from `seed32` itself.
+///
+/// Use legacy derivation only to recover the PQC key of an account created
+/// before 0.13.0, so you can rotate it (`MsgRotatePQCKey`) to a key from a
+/// recovery code; never for new accounts.
+///
+/// ```
+/// use qorechain::unified::SeedPqcOptions;
+/// let opts = SeedPqcOptions::recovery_code("QRC1-...");
+/// let opts = SeedPqcOptions::pqc_secret([0u8; 32]);
+/// let opts = SeedPqcOptions::legacy_seed_derivation();
+/// ```
+#[derive(Clone, Default)]
+pub struct SeedPqcOptions {
+    /// A `QRC1-…` recovery code.
+    pub recovery_code: Option<String>,
+    /// 32 bytes of secret entropy, independent of `seed32`.
+    pub pqc_secret: Option<[u8; 32]>,
+    /// Keep the pre-0.13.0 derivation from `seed32` (recovery of old accounts
+    /// only, see the type docs).
+    pub legacy_seed_derivation: bool,
+}
+
+impl std::fmt::Debug for SeedPqcOptions {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        f.debug_struct("SeedPqcOptions")
+            .field(
+                "recovery_code",
+                &self.recovery_code.as_ref().map(|_| "<redacted>"),
+            )
+            .field(
+                "pqc_secret",
+                &self.pqc_secret.as_ref().map(|_| "<redacted>"),
+            )
+            .field("legacy_seed_derivation", &self.legacy_seed_derivation)
+            .finish()
+    }
+}
+
+impl SeedPqcOptions {
+    /// Take the PQC key from a `QRC1-…` recovery code.
+    pub fn recovery_code(code: impl Into<String>) -> Self {
+        Self {
+            recovery_code: Some(code.into()),
+            ..Self::default()
+        }
+    }
+
+    /// Take the PQC key from 32 bytes of independent secret entropy.
+    pub fn pqc_secret(secret32: [u8; 32]) -> Self {
+        Self {
+            pqc_secret: Some(secret32),
+            ..Self::default()
+        }
+    }
+
+    /// Keep the pre-0.13.0 derivation from `seed32`. Only to recover the PQC
+    /// key of an account created before 0.13.0, so you can rotate it
+    /// (`MsgRotatePQCKey`) to a key from a recovery code; never for new accounts.
+    pub fn legacy_seed_derivation() -> Self {
+        Self {
+            legacy_seed_derivation: true,
+            ..Self::default()
+        }
+    }
+
+    fn wipe(&mut self) {
+        if let Some(code) = self.recovery_code.as_mut() {
+            crate::recovery::wipe_string(code);
+        }
+        if let Some(secret) = self.pqc_secret.as_mut() {
+            crate::recovery::wipe(secret);
+        }
+    }
 }
 
 /// Builds a unified account directly from a 32-byte secp256k1 seed used as the
 /// private key.
 ///
-/// The PQC seed mixes the derived `cosmos` address with the `"seed:"`-prefixed
-/// lowercase-hex encoding of the 32-byte private key (so a raw-seed account's PQC
-/// key is still deterministic and recoverable from the seed alone).
+/// The account's ML-DSA-87 key comes from a second, independent secret chosen
+/// in `opts` (see [`SeedPqcOptions`]): a recovery code or 32 bytes of secret
+/// entropy, mixed with the derived `cosmos` address as
+/// `shake256("qorechain:pqc:recovery:v1|" + cosmos + "|" || secret32, 32)`. The
+/// same secret given as a recovery code or as raw bytes yields the same key.
+/// Exactly one choice must be set; none, or more than one, is an error. A PQC
+/// secret (raw or from a recovery code) equal to `seed32` is refused.
 ///
 /// # Safety of the seed
 ///
@@ -238,14 +333,74 @@ pub fn derive_unified_account(mnemonic: &str, index: u32) -> Result<UnifiedAccou
 /// wallet keys through the authenticator lanes (`MsgRegisterAuthenticator` +
 /// `MsgExecuteCosmos` / `MsgExecuteEVM`) instead, where an external signature
 /// authorizes a spend but never becomes key material.
-pub fn unified_account_from_seed(seed32: [u8; 32]) -> Result<UnifiedAccount> {
-    let (compressed, uncompressed) = pubkeys_from_private(&seed32)?;
-    build_account(
-        seed32,
-        compressed,
-        &uncompressed,
-        &format!("seed:{}", hex::encode(seed32)),
-    )
+pub fn unified_account_from_seed(
+    seed32: [u8; 32],
+    mut opts: SeedPqcOptions,
+) -> Result<UnifiedAccount> {
+    let chosen = usize::from(opts.recovery_code.is_some())
+        + usize::from(opts.pqc_secret.is_some())
+        + usize::from(opts.legacy_seed_derivation);
+    if chosen != 1 {
+        opts.wipe();
+    }
+    if chosen == 0 {
+        return Err(Error::InvalidInput(
+            "unified_account_from_seed needs a second secret for the PQC key: pass \
+             SeedPqcOptions::recovery_code (a QRC1 recovery code, see \
+             generate_pqc_recovery_code), SeedPqcOptions::pqc_secret (32 bytes of \
+             independent secret entropy), or SeedPqcOptions::legacy_seed_derivation \
+             (only to recover the PQC key of an account created before 0.13.0, so \
+             you can rotate it to a key from a recovery code; never for new accounts)"
+                .into(),
+        ));
+    }
+    if chosen > 1 {
+        return Err(Error::InvalidInput(
+            "unified_account_from_seed: set exactly one of recovery_code, pqc_secret, \
+             legacy_seed_derivation"
+                .into(),
+        ));
+    }
+    let (compressed, uncompressed) = match pubkeys_from_private(&seed32) {
+        Ok(keys) => keys,
+        Err(e) => {
+            opts.wipe();
+            return Err(e);
+        }
+    };
+    let result = build_account(seed32, compressed, &uncompressed, |cosmos| {
+        if opts.legacy_seed_derivation {
+            let mut secret = format!("seed:{}", hex::encode(seed32));
+            let kp = derive_pqc(cosmos, &secret);
+            crate::recovery::wipe_string(&mut secret);
+            return Ok(kp);
+        }
+        let mut secret = match (&opts.recovery_code, &opts.pqc_secret) {
+            (Some(code), None) => crate::recovery::decode_recovery_code(code)?,
+            (None, Some(bytes)) => *bytes,
+            _ => unreachable!("exactly one option checked above"),
+        };
+        // The second secret must not be the classical key itself: that would
+        // make the PQC key derivable from seed32 again. Constant-time compare.
+        let same = secret
+            .iter()
+            .zip(seed32.iter())
+            .fold(0u8, |acc, (a, b)| acc | (a ^ b))
+            == 0;
+        if same {
+            crate::recovery::wipe(&mut secret);
+            return Err(Error::InvalidInput(
+                "unified_account_from_seed: the PQC secret must be independent of seed32, \
+                 not the same 32 bytes (the PQC key would then follow from the classical key)"
+                    .into(),
+            ));
+        }
+        let kp = crate::recovery::pqc_key_from_secret(&secret, cosmos);
+        crate::recovery::wipe(&mut secret);
+        kp
+    });
+    opts.wipe();
+    result
 }
 
 #[cfg(test)]
@@ -267,9 +422,13 @@ mod tests {
         assert_eq!(hex::encode(&acct.pqc.public_key[..8]), "4a685622f2a99d54");
     }
 
+    fn legacy() -> SeedPqcOptions {
+        SeedPqcOptions::legacy_seed_derivation()
+    }
+
     #[test]
     fn kat_seed_0x01() {
-        let acct = unified_account_from_seed([0x01u8; 32]).unwrap();
+        let acct = unified_account_from_seed([0x01u8; 32], legacy()).unwrap();
         assert_eq!(acct.cosmos, "qor1rfjz7r3u8t65teavh5utquj3kwvsj983hh5zaj");
         assert_eq!(acct.evm, "0x1a642f0E3c3aF545E7AcBD38b07251B3990914F1");
         assert_eq!(acct.svm, "2n2Cnc7fib6rm4Azo1mbvMuHB3iCb1J254kEQDcrHyPu");
@@ -282,7 +441,7 @@ mod tests {
 
     #[test]
     fn addresses_from_20_roundtrip() {
-        let acct = unified_account_from_seed([0x01u8; 32]).unwrap();
+        let acct = unified_account_from_seed([0x01u8; 32], legacy()).unwrap();
         let enc = addresses_from_20(acct.address_bytes).unwrap();
         assert_eq!(enc.cosmos, acct.cosmos);
         assert_eq!(enc.evm, acct.evm);
@@ -291,7 +450,7 @@ mod tests {
 
     #[test]
     fn qore_addresses_from_each_form() {
-        let acct = unified_account_from_seed([0x01u8; 32]).unwrap();
+        let acct = unified_account_from_seed([0x01u8; 32], legacy()).unwrap();
         let from_evm = qore_addresses(None, Some(&acct.evm), None).unwrap();
         assert_eq!(from_evm.cosmos, acct.cosmos);
         let hex_addr = hex::encode(acct.address_bytes);

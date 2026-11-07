@@ -41,7 +41,7 @@ from urllib.parse import quote
 
 from .accounts import Secp256k1Account
 from .classical_key import validate_classical_key_for_sender
-from .errors import tx_error_from
+from .errors import parse_tx_code, tx_error_from, unreadable_code_error
 from .key_integrity import sign_proof_of_possession, validate_registered_pqc_key
 from .messages import msg
 from .messages._composer import Msg
@@ -123,7 +123,12 @@ def _resolve_status(raw: Any, address: str) -> PqcStatus:
             "whether a PQC key is registered"
         )
     data: dict[str, Any] = raw
-    registered = bool(data.get("has_pqc_key", False))
+    if not isinstance(data["has_pqc_key"], bool):
+        raise ValueError(
+            f"qor_getPQCKeyStatus answered has_pqc_key={data['has_pqc_key']!r} for "
+            f"{address}, not a boolean; cannot tell whether a PQC key is registered"
+        )
+    registered = data["has_pqc_key"]
     status: PqcStatus = {"registered": registered}
     if registered:
         key_type = data.get("key_type")
@@ -148,6 +153,9 @@ def get_pqc_status(client: Any, address: str) -> PqcStatus:
     ``get_pqc_key_status(address)``). Returns a :class:`PqcStatus` with
     ``registered`` plus, when registered, ``key_type`` / ``algorithm_id`` /
     ``created_at_height``.
+
+    :raises ValueError: When the answer has no ``has_pqc_key`` boolean. An
+        unknown answer is never read as "not registered".
     """
     raw = client.get_pqc_key_status(address)
     return _resolve_status(raw, address)
@@ -319,7 +327,9 @@ def _is_already_registered(response: Any) -> bool:
 
 def _raise_if_check_tx_failed(response: Any) -> None:
     """Raise :class:`~qorsdk.errors.QoreTxError` when the broadcast answer
-    carries a non-zero CheckTx code.
+    carries a non-zero CheckTx code, or a code that is not an integer (that is
+    not proof of success either; ``kind`` is ``"unreadable_code"``). An absent
+    code is ``0``.
 
     Only the broadcast answer is read: in ``sync`` mode a failure inside the
     block is not known yet and is left to the caller's tracking.
@@ -327,10 +337,15 @@ def _raise_if_check_tx_failed(response: Any) -> None:
     tx = response.get("tx_response", response) if isinstance(response, dict) else {}
     if not isinstance(tx, dict):
         return
-    try:
-        code = int(tx.get("code") or 0)
-    except (TypeError, ValueError):
-        return
+    raw_code = tx.get("code")
+    code = parse_tx_code(raw_code)
+    if code is None:
+        raise unreadable_code_error(
+            raw_code,
+            codespace=tx.get("codespace") or None,
+            raw_log=tx.get("raw_log") or tx.get("log") or None,
+            tx_hash=_extract_tx_hash(response),
+        )
     if code != 0:
         raise tx_error_from(
             code,

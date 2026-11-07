@@ -324,13 +324,16 @@ impl PqcDx {
     /// bound PQC keypair, ready to build hybrid (classical + ML-DSA-87)
     /// transactions.
     ///
-    /// After this call the dApp's transactions can carry a verified hybrid
-    /// signature. Fails with [`Error::PqcKeyMismatch`] (nothing sent) when the
-    /// account is registered with a different key.
+    /// After this call the dApp's transactions can carry a hybrid signature the
+    /// chain accepts, provided the registered key is this signer's: that is
+    /// confirmed only when [`HybridSendPath::key_verified`] is `Some(true)`.
+    /// Fails with [`Error::PqcKeyMismatch`] (nothing sent) when the account is
+    /// registered with a different key.
     pub async fn migrate_to_hybrid(&self) -> Result<HybridSendPath> {
         let ensured = self.ensure_pqc_registered().await?;
         Ok(HybridSendPath {
             already_registered: ensured.already_registered,
+            key_verified: ensured.key_verified,
             registration_tx_hash: ensured.tx_hash,
             dx: self.clone(),
         })
@@ -516,13 +519,19 @@ pub struct MigrateKeyOptions {
     pub new_signature: Vec<u8>,
 }
 
-/// A hybrid send path returned by [`PqcDx::migrate_to_hybrid`]: the PQC key is
-/// guaranteed registered, and the bound [`PqcDx`] builds / broadcasts hybrid
-/// (classical + ML-DSA-87) transactions.
+/// A hybrid send path returned by [`PqcDx::migrate_to_hybrid`]: the account has
+/// a registered PQC key (this signer's key only when
+/// [`key_verified`](Self::key_verified) is `Some(true)`), and the bound [`PqcDx`]
+/// builds / broadcasts hybrid (classical + ML-DSA-87) transactions.
 #[derive(Debug, Clone)]
 pub struct HybridSendPath {
     /// Whether the PQC key was already registered before this call.
     pub already_registered: bool,
+    /// Copied from [`EnsureResult::key_verified`]: `Some(true)` when the
+    /// registered key was compared with this signer's and matched,
+    /// `Some(false)` when it could not be compared (do not assume it is yours),
+    /// `None` when a registration was sent by this call.
+    pub key_verified: Option<bool>,
     /// The registration tx hash, when a registration was broadcast.
     pub registration_tx_hash: Option<String>,
     /// The bound DX context (PQC key material pre-bound).

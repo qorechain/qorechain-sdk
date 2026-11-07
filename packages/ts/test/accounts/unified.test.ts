@@ -80,18 +80,20 @@ describe("deriveUnifiedAccount", () => {
 
 describe("unifiedAccountFromSeed", () => {
   it("matches the 0x01×32 known-answer addresses exactly", () => {
-    const s = unifiedAccountFromSeed(new Uint8Array(32).fill(1));
+    const s = unifiedAccountFromSeed(new Uint8Array(32).fill(1), { legacySeedDerivation: true });
     expect(s.cosmos).toBe(KAT_SEED.cosmos);
     expect(s.evm).toBe(KAT_SEED.evm);
     expect(s.svm).toBe(KAT_SEED.svm);
     expect(s.mnemonic).toBeUndefined();
     expect(s.pqc.publicKey.length).toBe(2592);
-    // Seed-path PQC determinism (uses the "seed:" prefix in the PQC seed context).
+    // Legacy seed-path PQC determinism (the "seed:" prefix in the PQC seed context).
     expect(toHex(s.pqc.publicKey.slice(0, 8))).toBe("2d7f888fecbe5b24");
   });
 
   it("rejects a non-32-byte seed", () => {
-    expect(() => unifiedAccountFromSeed(new Uint8Array(31))).toThrow(/32 bytes/);
+    expect(() =>
+      unifiedAccountFromSeed(new Uint8Array(31), { legacySeedDerivation: true }),
+    ).toThrow(/32 bytes/);
   });
 });
 

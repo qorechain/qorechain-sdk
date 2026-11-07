@@ -36,7 +36,7 @@ FEE = {"amount": [{"denom": "uqor", "amount": "200"}], "gas": "100000"}
 
 
 def _account():
-    return unified_account_from_seed(bytes([1]) * 32)
+    return unified_account_from_seed(bytes([1]) * 32, legacy_seed_derivation=True)
 
 
 def _msg(acct):

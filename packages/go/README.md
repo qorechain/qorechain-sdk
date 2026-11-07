@@ -724,6 +724,33 @@ txBytes, _ := unified.SignHybridEth(unified.EthSignParams{
 entropy (32 CSPRNG bytes, or a secret only the owner holds). Never derive that
 seed from a wallet signature or any other value a third party can request.
 
+Since 0.13.0 the seed path's ML-DSA-87 key needs a **second secret** that the
+private key says nothing about. Pass exactly one field of `unified.SeedPQCOptions`:
+
+- `RecoveryCode`: a QRC1 recovery code (`QRC1-XXXX-…`, 14 groups of 4) that the
+  user writes down. Generate one with `unified.GeneratePQCRecoveryCode()`, or
+  encode 32 bytes you already hold with `unified.PQCRecoveryCodeFromSecret`.
+- `PQCSecret`: 32 raw bytes of independent secret entropy (gives the same key as
+  a recovery code holding those bytes).
+- `LegacySeedDerivation: true`: the derivation used before 0.13.0, only to
+  recover the PQC key of an account created before 0.13.0, so you can rotate it
+  (`MsgRotatePQCKey`) to a key from a recovery code; never for new accounts.
+
+With no option, or more than one, the call returns an error. The mnemonic path
+(`DeriveUnifiedAccount`) is unchanged.
+
+```go
+code, _ := unified.GeneratePQCRecoveryCode() // show it to the user once
+account, _ := unified.UnifiedAccountFromSeed(seed32, unified.SeedPQCOptions{RecoveryCode: code})
+
+unified.IsValidRecoveryCode(code)                            // checksum check for a UI
+pqcKey, _ := unified.PQCKeyFromRecoveryCode(code, account.Cosmos) // same key as account.Pqc
+```
+
+Recovery codes are case-insensitive, ignore spaces and separators, and read
+O as 0 and I or L as 1; a mistyped character fails the checksum instead of
+deriving a different key. Store the code apart from the account's private key.
+
 > **Removed in v0.8.0 - `unified.UnifiedAccountFromPhantomSignature`.** It now
 > returns an error and derives no account. Turning a browser-wallet signature
 > into a spend key is unsafe: the signature is a bearer secret any page can ask

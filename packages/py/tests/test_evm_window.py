@@ -234,6 +234,23 @@ def test_parse_refuses_a_float_field() -> None:
         parse_evm_window(dict(LIVE_PAYLOAD, max_value=2000000.0))
 
 
+@pytest.mark.parametrize("value", ["false", "true", 0, 1, "", [], {}])
+def test_parse_refuses_a_non_boolean_found(value: object) -> None:
+    with pytest.raises(ValueError, match="found"):
+        parse_evm_window({"found": value})
+
+
+@pytest.mark.parametrize("value", ["false", "true", 0, 1])
+def test_parse_refuses_a_non_boolean_live(value: object) -> None:
+    with pytest.raises(ValueError, match="live"):
+        parse_evm_window(dict(LIVE_PAYLOAD, live=value))
+
+
+def test_parse_reads_absent_booleans_as_false() -> None:
+    assert parse_evm_window({}).found is False
+    assert parse_evm_window({"found": True}).live is False
+
+
 def test_evm_window_path_is_the_documented_route() -> None:
     assert evm_window_path(ADDR) == f"/qorechain/pqc/v1/evm_window/{ADDR}"
 

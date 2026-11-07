@@ -525,6 +525,25 @@ def test_ensure_returns_the_hash_on_check_tx_code_zero():
     assert res == {"already_registered": False, "tx_hash": "OK0"}
 
 
+@pytest.mark.parametrize("code", ["abc", 1.5, True, -3, [13]])
+@respx.mock
+def test_ensure_raises_on_an_unreadable_check_tx_code(code):
+    _, kwargs = _ctx()
+    _mock_check_tx({"code": code, "txhash": "BAD", "raw_log": "?"})
+    with pytest.raises(QoreTxError) as info:
+        ensure_pqc_registered(pqc_keypair=generate_pqc_keypair(), **kwargs)
+    assert info.value.kind == "unreadable_code"
+    assert info.value.tx_hash == "BAD"
+
+
+@respx.mock
+def test_ensure_reads_an_absent_check_tx_code_as_zero():
+    _, kwargs = _ctx()
+    _mock_check_tx({"txhash": "OK1"})
+    res = ensure_pqc_registered(pqc_keypair=generate_pqc_keypair(), **kwargs)
+    assert res == {"already_registered": False, "tx_hash": "OK1"}
+
+
 @respx.mock
 def test_migrate_to_hybrid_stops_when_the_registration_is_refused():
     _, kwargs = _ctx()
@@ -566,3 +585,25 @@ def test_ensure_attaches_proof_of_possession_once_v323_is_applied():
 @respx.mock
 def test_ensure_leaves_proof_of_possession_off_before_v323():
     assert _registered_pop("0") == b""
+
+
+# --- get_pqc_status refuses an unknown answer ---------------------------------
+
+
+@pytest.mark.parametrize(
+    "answer",
+    [
+        None,
+        {},
+        {"address": "qor1abc"},
+        {"registered": True},
+        {"has_pqc_key": "false"},
+        {"has_pqc_key": 1},
+        {"has_pqc_key": None},
+    ],
+)
+def test_get_pqc_status_raises_on_an_unknown_answer(answer):
+    with pytest.raises(ValueError, match="cannot tell"):
+        get_pqc_status(_FakeQor(answer), "qor1abc")
+    with pytest.raises(ValueError, match="cannot tell"):
+        is_pqc_registered(_FakeQor(answer), "qor1abc")

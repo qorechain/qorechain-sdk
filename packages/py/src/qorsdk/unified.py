@@ -29,6 +29,7 @@ the classical coin-118 native derivation in :mod:`qorsdk.accounts` is unchanged.
 from __future__ import annotations
 
 import hashlib
+import hmac
 from dataclasses import dataclass
 
 import base58
@@ -38,6 +39,7 @@ from ecdsa import SECP256k1, SigningKey
 from .accounts import validate_mnemonic
 from .address import DEFAULT_PREFIX
 from .pqc import PqcKeypair
+from .recovery import _decode_recovery_code, _pqc_key_from_secret
 from .utils.hash import keccak256
 
 try:  # dilithium-py exposes seeded keygen as ML_DSA_87.key_derive(seed32)
@@ -137,13 +139,27 @@ def _derive_pqc(cosmos_addr: str, secret_material: str) -> PqcKeypair:
     return PqcKeypair(public_key=bytes(public_key), secret_key=bytes(secret_key))
 
 
-def _account_from_privkey(private_key: bytes, secret_material: str) -> UnifiedAccount:
-    """Build a :class:`UnifiedAccount` from a 32-byte secp256k1 private key."""
+def _account_from_privkey(
+    private_key: bytes,
+    secret_material: str | None,
+    pqc_secret: bytes | bytearray | None = None,
+) -> UnifiedAccount:
+    """Build a :class:`UnifiedAccount` from a 32-byte secp256k1 private key.
+
+    The PQC key comes from ``secret_material`` (the ``qorechain:pqc:v1`` string
+    derivation) or, when ``pqc_secret`` is given instead, from that independent
+    32-byte secret (the recovery-code derivation).
+    """
     vk = SigningKey.from_string(private_key, curve=SECP256k1).get_verifying_key()
     uncompressed = vk.to_string("raw")  # 64 bytes: X || Y (no 0x04 prefix)
     compressed = vk.to_string("compressed")  # 33 bytes
     addr20 = keccak256(uncompressed)[12:]  # keccak of the 64-byte X||Y
     enc = addresses_from_20(addr20)
+    if pqc_secret is not None:
+        pqc = _pqc_key_from_secret(pqc_secret, enc["cosmos"].lower())
+    else:
+        assert secret_material is not None
+        pqc = _derive_pqc(enc["cosmos"], secret_material)
     return UnifiedAccount(
         private_key=bytes(private_key),
         public_key=bytes(compressed),
@@ -151,7 +167,7 @@ def _account_from_privkey(private_key: bytes, secret_material: str) -> UnifiedAc
         cosmos=enc["cosmos"],
         evm=enc["evm"],
         svm=enc["svm"],
-        pqc=_derive_pqc(enc["cosmos"], secret_material),
+        pqc=pqc,
     )
 
 
@@ -178,13 +194,44 @@ def derive_unified_account(mnemonic: str, index: int = 0) -> UnifiedAccount:
     return _account_from_privkey(private_key, mnemonic)
 
 
-def unified_account_from_seed(seed32: bytes) -> UnifiedAccount:
+#: The error raised when :func:`unified_account_from_seed` gets no PQC option.
+_SEED_PQC_OPTION_REQUIRED = (
+    "unified_account_from_seed needs a second secret for the PQC key, because the "
+    "32-byte seed is the classical spend key. Pass exactly one of: "
+    "recovery_code=<a QRC1 recovery code, see generate_pqc_recovery_code()>, "
+    "pqc_secret=<32 bytes of independent secret entropy>, or "
+    "legacy_seed_derivation=True (only to recover the PQC key of an account created "
+    "before 0.13.0, so you can rotate it with MsgRotatePQCKey; never for new accounts)"
+)
+
+
+def unified_account_from_seed(
+    seed32: bytes,
+    *,
+    recovery_code: str | None = None,
+    pqc_secret: bytes | None = None,
+    legacy_seed_derivation: bool = False,
+) -> UnifiedAccount:
     """Build a unified account from a 32-byte seed used directly as the privkey.
 
     ``seed32`` is used verbatim as the secp256k1 private key (no HD derivation).
-    The PQC seed's trailing segment is ``"seed:" + seed32.hex()`` (lowercase, no
-    ``0x``) in place of the mnemonic, so the account is fully recoverable from the
-    32-byte seed alone.
+    The ML-DSA-87 key needs a second, independent secret, given as exactly one
+    of these keyword arguments:
+
+    - ``recovery_code``: a ``QRC1-...`` recovery code
+      (:func:`~qorsdk.recovery.generate_pqc_recovery_code`). The PQC key is
+      :func:`~qorsdk.recovery.pqc_key_from_recovery_code` for the account's
+      ``qor1`` address.
+    - ``pqc_secret``: 32 bytes of independent secret entropy, the same secret a
+      recovery code carries (:func:`~qorsdk.recovery.pqc_recovery_code_from_secret`
+      encodes it as one). A code and its secret give the same key.
+    - ``legacy_seed_derivation=True``: the derivation used before 0.13.0, where
+      the PQC seed's trailing segment is ``"seed:" + seed32.hex()``, so the PQC
+      key follows from ``seed32`` alone. Use it only to recover the PQC key of an
+      account created before 0.13.0, so you can rotate it (``MsgRotatePQCKey``)
+      to a key from a recovery code; never for new accounts.
+
+    The mnemonic path (:func:`derive_unified_account`) is unchanged.
 
     .. warning::
 
@@ -199,11 +246,41 @@ def unified_account_from_seed(seed32: bytes) -> UnifiedAccount:
        ``MsgRegisterAuthenticator`` and use the authenticator lanes
        (``MsgExecuteCosmos`` / ``MsgExecuteEVM``) instead of deriving a new key.
 
-    :raises ValueError: If ``seed32`` is not exactly 32 bytes.
+    :raises ValueError: If ``seed32`` is not exactly 32 bytes, if none or more
+        than one of the PQC options is given, if ``pqc_secret`` is not 32 bytes
+        or is identical to ``seed32``, or if ``recovery_code`` is malformed or fails its checksum.
     """
     if len(seed32) != 32:
         raise ValueError("seed must be 32 bytes")
-    return _account_from_privkey(bytes(seed32), "seed:" + seed32.hex())
+    if not isinstance(legacy_seed_derivation, bool):
+        raise ValueError("legacy_seed_derivation must be True or False")
+    chosen = sum(
+        (recovery_code is not None, pqc_secret is not None, legacy_seed_derivation is True)
+    )
+    if chosen == 0:
+        raise ValueError(_SEED_PQC_OPTION_REQUIRED)
+    if chosen > 1:
+        raise ValueError(
+            "unified_account_from_seed: pass only one of recovery_code, pqc_secret "
+            "or legacy_seed_derivation=True"
+        )
+    if legacy_seed_derivation is True:
+        return _account_from_privkey(bytes(seed32), "seed:" + bytes(seed32).hex())
+    if pqc_secret is not None:
+        if not isinstance(pqc_secret, (bytes, bytearray)) or len(pqc_secret) != 32:
+            raise ValueError("pqc_secret must be 32 bytes")
+        if hmac.compare_digest(bytes(pqc_secret), bytes(seed32)):
+            raise ValueError(
+                "pqc_secret must be independent of seed32: the same bytes would make the "
+                "PQC key derivable from the classical key"
+            )
+        return _account_from_privkey(bytes(seed32), None, pqc_secret=pqc_secret)
+    assert recovery_code is not None
+    secret = _decode_recovery_code(recovery_code)
+    try:
+        return _account_from_privkey(bytes(seed32), None, pqc_secret=secret)
+    finally:
+        secret[:] = bytes(len(secret))
 
 
 #: The error raised by the removed signature-derivation entry point.

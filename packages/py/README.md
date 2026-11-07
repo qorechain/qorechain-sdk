@@ -525,10 +525,32 @@ built = sign_hybrid_eth(
     ),
 )
 
-# A unified account's seed MUST be real secret entropy.
+# A unified account's seed MUST be real secret entropy, and its PQC key needs a
+# second, independent secret: a recovery code the user writes down.
 import secrets
-fresh = unified_account_from_seed(secrets.token_bytes(32))
+from qorsdk import generate_pqc_recovery_code, pqc_key_from_recovery_code
+
+code = generate_pqc_recovery_code()  # "QRC1-XXXX-..."; show it to the user once
+fresh = unified_account_from_seed(secrets.token_bytes(32), recovery_code=code)
+same_key = pqc_key_from_recovery_code(code, fresh.cosmos)  # recover the PQC key later
 ```
+
+The PQC key of a seed-built account needs a second secret, because the 32-byte
+seed is the classical spend key. Pass exactly one keyword argument:
+
+- `recovery_code=` a `QRC1-...` recovery code (`generate_pqc_recovery_code()`,
+  checked with `is_valid_recovery_code()`; typing mistakes such as lowercase,
+  spaces, O for 0 and I/L for 1 are accepted, a wrong character fails its checksum);
+- `pqc_secret=` 32 bytes of independent secret entropy (the same secret a code
+  carries: `pqc_recovery_code_from_secret()` encodes it as one, and both give the
+  same key; it must not be the seed itself);
+- `legacy_seed_derivation=True` the derivation used before 0.13.0, where the PQC
+  key follows from the seed alone. Use it only to recover the PQC key of an
+  account created before 0.13.0, so you can rotate it (`MsgRotatePQCKey`) to a key
+  from a recovery code; never for new accounts.
+
+Calling it with none of these, or more than one, raises `ValueError`. The
+mnemonic path (`derive_unified_account`) is unchanged.
 
 `unified_account_from_seed` uses its seed verbatim as the spend key, so the seed
 must be a CSPRNG draw or key material the user already keeps secret. Never derive

@@ -727,6 +727,11 @@ type MigrateToHybridResult struct {
 	// AlreadyRegistered mirrors EnsureResult.AlreadyRegistered from the pre-flight
 	// registration step.
 	AlreadyRegistered bool
+	// KeyVerified mirrors EnsureResult.KeyVerified: when AlreadyRegistered is
+	// true, the registered key was compared with Signer.PQCKeypair and matched
+	// only when KeyVerified is true. When it is false the key could not be
+	// checked, so do not assume it is yours.
+	KeyVerified bool
 	// RegisterTxHash is the registration tx hash (empty when AlreadyRegistered).
 	RegisterTxHash string
 	// Result is the confirmed hybrid transaction result.
@@ -742,6 +747,9 @@ type MigrateToHybridResult struct {
 // PQC key is registered (returning EnsurePQCRegistered's *PQCKeyMismatchError
 // when the account holds a different key), then builds and broadcasts the given messages as a
 // hybrid (classical + ML-DSA-87) transaction using the signer's PQC keypair.
+// When the account was already registered, the result's KeyVerified says
+// whether the registered key was checked against the Signer's; the key is
+// verified only when KeyVerified is true.
 //
 // The messages are any module messages (e.g. a bank send from the composers);
 // they are sent under the hybrid signature so the account's first hybrid tx and
@@ -790,6 +798,7 @@ func (c *Client) MigrateToHybrid(msgs []sdk.Msg, opts MigrateToHybridOptions) (*
 	}
 	return &MigrateToHybridResult{
 		AlreadyRegistered: ensure.AlreadyRegistered,
+		KeyVerified:       ensure.KeyVerified,
 		RegisterTxHash:    ensure.TxHash,
 		Result:            out.Result,
 		SignBytesVersion:  out.Built.SignBytesVersion,

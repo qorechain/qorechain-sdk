@@ -310,7 +310,8 @@ import io.github.qorechain.query.QorClient;
 
 QorClient qor = new QorClient("https://evm.example");
 
-// Read-only status (over the qor_ namespace).
+// Read-only status (over the qor_ namespace). An answer without a registration
+// flag throws IllegalStateException instead of reading as "not registered".
 boolean registered = PqcDx.isPqcRegistered(qor, account.address());
 PqcDx.PqcStatus status = PqcDx.getPqcStatus(qor, account.address());
 
@@ -324,6 +325,9 @@ PqcDx.EnsureResult ensure =
 // Migrate a classical account to hybrid signing, then sign hybrid.
 PqcDx.HybridSendPath path =
         PqcDx.migrateToHybrid(signer, broadcaster, qor, new PqcDx.EnsureOptions());
+// The registered key is known to be the signer's only when keyVerified is TRUE
+// (FALSE: it could not be checked; null: this call sent the registration).
+Boolean keyVerified = path.keyVerified;
 
 // Rotate an account's on-chain PQC key (MsgMigratePQCKey).
 PqcDx.migratePqcKey(signer, broadcaster, new PqcDx.MigrateOptions());
@@ -593,7 +597,8 @@ One `eth_secp256k1` key = ONE 20-byte identity rendered three ways - `qor1…`
 bytes to 32). A deposit to any of the three lands in the **same** balance, and the
 key spends on **all** lanes. `UnifiedAccounts.deriveUnifiedAccount` uses the
 Ethereum HD path (`m/44'/60'/0'/0/{index}`); `UnifiedAccounts.unifiedAccountFromSeed`
-builds one directly from a 32-byte secret. `UnifiedAccounts.addressesFrom20` /
+builds one directly from a 32-byte secret (see "Seed-derived accounts and PQC
+recovery codes" below). `UnifiedAccounts.addressesFrom20` /
 `UnifiedAccounts.qoreAddresses` convert between the three encodings. The legacy
 coin-type-118 `Accounts.deriveNativeAccount` still works (additive).
 
@@ -641,6 +646,45 @@ SignEth.Built built = SignEth.signHybridEth(opts);
 > The seed passed to `UnifiedAccounts.unifiedAccountFromSeed` **is** the private
 > key: it must be real secret entropy, never a wallet signature or any value a
 > third party can request.
+
+### Seed-derived accounts and PQC recovery codes (v0.13.0)
+
+Because the seed is the classical secp256k1 private key, the PQC key of a
+seed-derived account now needs a second, independent secret.
+`unifiedAccountFromSeed(seed32, opts)` takes a `SeedPqcOptions` that sets exactly
+one of:
+
+- `recoveryCode`: a `QRC1-...` recovery code (56 Crockford base32 characters in
+  14 groups of 4, with a checksum that catches a mistyped character);
+- `pqcSecret`: 32 raw bytes of independent secret entropy (gives the same key as
+  the recovery code for those bytes);
+- `legacySeedDerivation(true)`: the derivation used before 0.13.0. Use it only to
+  recover the PQC key of an account created before 0.13.0, so you can rotate it
+  (MsgRotatePQCKey) to a key from a recovery code; never for new accounts.
+
+No option, or more than one, throws `IllegalArgumentException`, and so does a
+PQC secret that is byte-identical to the seed. The one-argument
+form is gone. The mnemonic path (`deriveUnifiedAccount`) is unchanged.
+
+```java
+import io.github.qorechain.accounts.PqcRecovery;
+import io.github.qorechain.accounts.UnifiedAccounts;
+import io.github.qorechain.accounts.UnifiedAccounts.SeedPqcOptions;
+
+// New account: generate a recovery code once and have the user write it down.
+// Never store it next to the seed.
+String code = PqcRecovery.generatePqcRecoveryCode(); // "QRC1-XXXX-...-XXXX"
+UnifiedAccount account =
+        UnifiedAccounts.unifiedAccountFromSeed(seed32, SeedPqcOptions.withRecoveryCode(code));
+
+// Helpers.
+boolean ok = PqcRecovery.isValidRecoveryCode(typedByUser); // case, spaces, O/I/L tolerated
+PqcKeypair pqc = PqcRecovery.pqcKeyFromRecoveryCode(code, account.cosmos);
+String fromBytes = PqcRecovery.pqcRecoveryCodeFromSecret(secret32); // apps holding 32 bytes
+
+// Account created before 0.13.0: recover the old PQC key to rotate it.
+UnifiedAccount old = UnifiedAccounts.unifiedAccountFromSeed(seed32, SeedPqcOptions.legacy());
+```
 
 See the [unified-wallet](https://github.com/qorechain/qorechain-sdk/blob/main/docs/docs/guides/unified-wallet.md) guide.
 
