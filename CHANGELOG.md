@@ -5,6 +5,85 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.13.0] - 2026-11-10
+
+All five SDKs (TypeScript, Python, Go, Rust, Java) move to 0.13.0, with
+`@qorechain/react`, `@qorechain/evm`, `@qorechain/svm` and
+`create-qorechain-dapp`. This release contains one breaking change, to the
+seed-path account helper. Accounts derived from a mnemonic are unchanged.
+
+### Changed (breaking)
+
+- **Seed-path accounts take a second secret for the PQC key.**
+  `unifiedAccountFromSeed` (TypeScript), `unified_account_from_seed` (Python,
+  Rust), `unified.UnifiedAccountFromSeed` (Go) and
+  `UnifiedAccounts.unifiedAccountFromSeed` (Java) now need exactly one of:
+  a `QRC1` recovery code, or an independent 32-byte PQC secret. The ML-DSA-87
+  key is derived from that second secret. The option `legacySeedDerivation`
+  (Python `legacy_seed_derivation=True`, Go `LegacySeedDerivation`, Rust
+  `SeedPqcOptions::legacy_seed_derivation()`, Java `SeedPqcOptions.legacy()`)
+  keeps the previous derivation only to recover the
+  PQC key of an account created before 0.13.0 and rotate it with
+  `MsgRotatePQCKey`; do not use it for new accounts. Calling the helper with
+  no option, or with more than one, raises an error. Security details will be
+  published separately.
+
+### Added
+
+- **PQC recovery codes (`QRC1`)** in every language: generate one
+  (`generatePqcRecoveryCode`), check and normalise one (`isValidRecoveryCode`,
+  `normalizeRecoveryCode`), derive the account's ML-DSA-87 key from one
+  (`pqcKeyFromRecoveryCode`), and turn a 32-byte secret into its code
+  (`pqcRecoveryCodeFromSecret`). TypeScript and Java names are shown; Python
+  and Rust use the snake_case forms, Go has `GeneratePQCRecoveryCode`,
+  `IsValidRecoveryCode`, `PQCKeyFromRecoveryCode` and
+  `PQCRecoveryCodeFromSecret`. The format matches the wallet-adapter.
+- `migrateToHybrid` reports `keyVerified` (TypeScript, Go, Java; Rust
+  `key_verified`): whether the key already registered on chain was confirmed
+  to be the signer's.
+- **Templates:** `pnpm window recovery-code` in the Foundry and Hardhat
+  templates prints a new recovery code. With `PRIVATE_KEY`, `pnpm window` now
+  reads the code from `QORE_PQC_RECOVERY_CODE` and stops with a message when it
+  is missing; with `QORE_MNEMONIC` nothing changes.
+
+### Changed
+
+- **Sign-bytes version** on `qorechain-vladi` and `qorechain-diana` (all five
+  languages): `"auto"` first reads the `pqc-sign-bytes-v2` protocol feature from
+  `/qorechain/pqc/v1/protocol_features` and falls back to the applied upgrade
+  plans only when that read fails. A network started from genesis under one of
+  those chain ids, with every feature on and no upgrade plan applied, now
+  resolves to v2.
+- `getPqcStatus` (TypeScript, Java) and `get_pqc_status` (Python) raise an
+  error when the node's answer carries no registration flag, instead of
+  reporting "not registered".
+  Security details will be published separately.
+- **Python:** stricter parsing of transaction result codes (a code that is not
+  an integer raises `QoreTxError` with kind `unreadable_code`) and of the EVM
+  window fields `found` and `live` (must be JSON booleans); `wait_for_tx`
+  treats an answer without `tx_response` or `txhash` as still pending. Security
+  details will be published separately.
+- Templates depend on `^0.13.0`.
+
+### Migrating from 0.12
+
+Only code that builds an account from a raw 32-byte seed needs a change. In
+TypeScript:
+
+```ts
+import { generatePqcRecoveryCode, unifiedAccountFromSeed } from "@qorechain/sdk";
+
+// 0.12: unifiedAccountFromSeed(seed32)
+const recoveryCode = generatePqcRecoveryCode(); // once; store it apart from the seed
+const account = unifiedAccountFromSeed(seed32, { recoveryCode });
+```
+
+An account that registered its PQC key with 0.12 or earlier loads the old key
+with `unifiedAccountFromSeed(seed32, { legacySeedDerivation: true })` and
+rotates it to the recovery-code key with `rotatePqcKeyMsg`
+(`MsgRotatePQCKey`). Keep the recovery code: a different code gives a
+different ML-DSA-87 key.
+
 ## [0.12.0] - 2026-10-30
 
 Client support for chain v3.2.5, applied on mainnet at height 3,906,833 on

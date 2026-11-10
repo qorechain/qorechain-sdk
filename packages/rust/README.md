@@ -13,7 +13,7 @@ Python, and Go SDK surfaces for the native chain.
 
 ```toml
 [dependencies]
-qorechain-sdk = "0.12" # imported as `qorechain`
+qorechain-sdk = "0.13" # imported as `qorechain`
 tokio = { version = "1", features = ["macros", "rt-multi-thread"] }
 ```
 
