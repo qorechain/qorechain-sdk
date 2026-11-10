@@ -170,9 +170,17 @@ const res = await signAndBroadcastHybrid({
 });
 ```
 
-- `"auto"` reads `GET {rest}/cosmos/upgrade/v1beta1/applied_plan/<name>` for each
+- `"auto"` first reads `GET {rest}/qorechain/pqc/v1/protocol_features` (chain
+  v3.2.4 and later): v2 when the listed feature `pqc-sign-bytes-v2`
+  (`PQC_SIGN_BYTES_V2_FEATURE`) is enabled, v1 when the node lists its features
+  and that one is disabled or absent. This also covers a fresh network that
+  reuses one of those chain ids: it enables every feature at genesis and never
+  applies an upgrade plan.
+- Only when that query cannot answer (an older node, a transport error, an
+  unexpected or empty payload) does `"auto"` read
+  `GET {rest}/cosmos/upgrade/v1beta1/applied_plan/<name>` for each
   name in `SIGN_BYTES_V2_UPGRADES` (`"v3.2.0"`, then `"v3.1.98"`), stopping at the
-  first applied height above 0, and caches the answer for about a minute. Both
+  first applied height above 0. Either answer is cached for about a minute. Both
   names matter: the testnet switched under `v3.1.98` and keeps that record,
   mainnet switches under `v3.2.0`. A client that asks for only one answers v1 on
   the other network, and the chain then refuses every hybrid tx with `pqc` code 21.

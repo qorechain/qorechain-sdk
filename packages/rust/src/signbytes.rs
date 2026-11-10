@@ -30,6 +30,15 @@
 //! refused with `pqc` code 21. The answer is cached briefly, because a network
 //! can upgrade while a wallet is open.
 //!
+//! Before the plans, the resolver reads the node's protocol feature switches
+//! (`/qorechain/pqc/v1/protocol_features`, chain v3.2.4 and later): v2 when
+//! [`PQC_SIGN_BYTES_V2_FEATURE`] is listed and enabled, v1 when the node lists
+//! its features and that one is disabled or absent. This also covers a fresh
+//! network that reuses a legacy chain id: it enables every feature at genesis
+//! and never applies an upgrade plan. Only when that query cannot answer
+//! (older node, transport error, unexpected or empty payload) does the resolver
+//! fall back to the plans.
+//!
 //! The resolver never guesses: a legacy chain with no REST URL, or a failed
 //! query, is an error that asks for a REST URL or an explicit
 //! [`SignBytesMode::V1`] / [`SignBytesMode::V2`].
@@ -44,6 +53,7 @@ use std::time::{Duration, Instant};
 use serde_json::Value;
 
 use crate::error::{Error, Result};
+use crate::protocol_features::{parse_protocol_features, PROTOCOL_FEATURES_PATH};
 use crate::query::RestClient;
 
 /// Domain tag that opens the v2 hybrid-tx sign-bytes.
@@ -69,6 +79,9 @@ pub const SIGN_BYTES_V2_UPGRADES: &[&str] = &["v3.2.0", "v3.1.98"];
 /// The chains that were running before v2 existed; they switch to v2 only once
 /// one of [`SIGN_BYTES_V2_UPGRADES`] is applied on them.
 pub const LEGACY_SIGN_BYTES_CHAINS: &[&str] = &["qorechain-vladi", "qorechain-diana"];
+
+/// The protocol feature switch that moves a network to the v2 sign-bytes.
+pub const PQC_SIGN_BYTES_V2_FEATURE: &str = "pqc-sign-bytes-v2";
 
 /// How long a resolved version is cached per `(rest_url, chain_id)` by default.
 pub const DEFAULT_SIGN_BYTES_CACHE_TTL: Duration = Duration::from_secs(60);
@@ -427,11 +440,12 @@ pub fn bridge_attestation_sign_bytes(
 /// [`DEFAULT_SIGN_BYTES_CACHE_TTL`]).
 ///
 /// For a non-legacy chain the answer is v2 with no network call. For a legacy
-/// chain it asks `GET {rest_url}/cosmos/upgrade/v1beta1/applied_plan/{name}`
+/// chain it first reads `GET {rest_url}/qorechain/pqc/v1/protocol_features`
+/// (see [`sign_bytes_version_from_protocol_features`]). When that cannot answer,
+/// it asks `GET {rest_url}/cosmos/upgrade/v1beta1/applied_plan/{name}`
 /// (`{"height":"<n>"}`; a missing height means `0`) for every name in
 /// [`SIGN_BYTES_V2_UPGRADES`], stopping at the first positive height, and
-/// applies [`sign_bytes_version_for`]. Mainnet therefore costs one request once
-/// it has upgraded, and the testnet two.
+/// applies [`sign_bytes_version_for`].
 #[derive(Debug)]
 pub struct SignBytesResolver {
     http: reqwest::Client,
@@ -477,8 +491,9 @@ impl SignBytesResolver {
     /// - `V1` / `V2` → returned as-is, no network.
     /// - `Auto` on a non-legacy chain → v2, no network.
     /// - `Auto` on a legacy chain → the cached answer for `(rest_url, chain_id)`
-    ///   when fresh, else the node is asked. No `rest_url`, or a failed query, is
-    ///   an error (never a guess).
+    ///   when fresh, else the node is asked: its protocol feature switches first,
+    ///   the upgrade plans when those cannot answer. No `rest_url`, or a failed
+    ///   plan query, is an error (never a guess).
     pub async fn resolve(
         &self,
         mode: SignBytesMode,
@@ -566,9 +581,27 @@ impl SignBytesResolver {
         Ok(0)
     }
 
+    /// The version `rest_url`'s node reports through its protocol feature
+    /// switches, or `None` when they cannot answer (route not served, request
+    /// failed, unexpected or empty payload). See
+    /// [`sign_bytes_version_from_protocol_features`].
+    pub async fn fetch_version_from_protocol_features(
+        &self,
+        rest_url: &str,
+    ) -> Option<SignBytesVersion> {
+        let rest = RestClient::with_client(rest_url, self.http.clone());
+        let body = rest.get(PROTOCOL_FEATURES_PATH, &[]).await.ok()?;
+        sign_bytes_version_from_protocol_features(&body)
+    }
+
     async fn fetch_and_store(&self, chain_id: &str, rest_url: &str) -> Result<SignBytesVersion> {
-        let height = self.fetch_v2_applied_height_any(rest_url).await?;
-        let v = sign_bytes_version_for(chain_id, height);
+        let v = match self.fetch_version_from_protocol_features(rest_url).await {
+            Some(v) => v,
+            None => {
+                let height = self.fetch_v2_applied_height_any(rest_url).await?;
+                sign_bytes_version_for(chain_id, height)
+            }
+        };
         if !self.ttl.is_zero() {
             self.lock_cache()
                 .insert(cache_key(rest_url, chain_id), (v, Instant::now()));
@@ -596,6 +629,22 @@ impl SignBytesResolver {
         // itself is still a valid cache.
         self.cache.lock().unwrap_or_else(|p| p.into_inner())
     }
+}
+
+/// The version a `protocol_features` payload implies: v2 when
+/// [`PQC_SIGN_BYTES_V2_FEATURE`] is listed and enabled, v1 when the payload
+/// lists features and that one is disabled or absent, `None` when it lists no
+/// features or cannot be parsed (the caller then asks the upgrade plans).
+pub fn sign_bytes_version_from_protocol_features(body: &Value) -> Option<SignBytesVersion> {
+    let parsed = parse_protocol_features(body).ok()?;
+    if parsed.features.is_empty() {
+        return None;
+    }
+    Some(if parsed.is_enabled(PQC_SIGN_BYTES_V2_FEATURE) {
+        SignBytesVersion::V2
+    } else {
+        SignBytesVersion::V1
+    })
 }
 
 /// The process-wide resolver used by the high-level sign-and-broadcast paths.

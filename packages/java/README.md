@@ -364,13 +364,20 @@ published clients up to 0.8.0 do.
 **The auto rule** (`SignBytes.Mode.AUTO`, the default in `PqcDx`):
 
 1. chain id not `qorechain-vladi` / `qorechain-diana` → v2, no network call;
-2. otherwise `GET {restUrl}/cosmos/upgrade/v1beta1/applied_plan/{name}` for
+2. otherwise `GET {restUrl}/qorechain/pqc/v1/protocol_features` (chain v3.2.4
+   and later): v2 when the listed feature `pqc-sign-bytes-v2`
+   (`SignBytesResolver.PQC_SIGN_BYTES_V2_FEATURE`) is enabled, v1 when the node
+   lists its features and that one is disabled or absent. This also covers a
+   fresh network that reuses one of those chain ids: it enables every feature at
+   genesis and never applies an upgrade plan;
+3. only when that query cannot answer (an older node, a transport error, an
+   unexpected or empty payload): `GET {restUrl}/cosmos/upgrade/v1beta1/applied_plan/{name}` for
    **every** name in `SignBytes.SIGN_BYTES_V2_UPGRADES` (`v3.2.0`, then
    `v3.1.98`), stopping at the first whose **numeric** `height` is `> 0` → v2;
-   `"0"`, `{}` or no height counts as 0, and v1 only when every name answers 0.
-   Mainnet after its own upgrade therefore costs one request and diana two;
-3. no `restUrl`, or any query fails → `SignBytesResolutionException` (it never
-   guesses; pass a `restUrl` or an explicit version).
+   `"0"`, `{}` or no height counts as 0, and v1 only when every name answers 0;
+4. no `restUrl`, or an applied-plan query fails after the features could not
+   answer → `SignBytesResolutionException` (it never guesses; pass a `restUrl`
+   or an explicit version).
 
 One answer per resolve (not per name) is cached per `(restUrl, chainId)` for 60 s (`new SignBytesResolver(ttlMs)`
 to change; `resolve(..., true)` forces a refresh; `clearCache()` empties it).

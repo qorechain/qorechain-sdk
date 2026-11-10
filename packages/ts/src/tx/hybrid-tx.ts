@@ -25,7 +25,9 @@
  *    A network verifies exactly one form at any height. `qorechain-vladi` and
  *    `qorechain-diana` switch from v1 to v2 when their v3.1.98 upgrade is
  *    applied (at different heights); other chains are v2 from genesis. The
- *    default `signBytesVersion: "auto"` asks the network (needs `rest`).
+ *    default `signBytesVersion: "auto"` asks the network (needs `rest`): its
+ *    `pqc-sign-bytes-v2` protocol feature first, the upgrade plans when the
+ *    node does not serve the feature switches.
  *  - PQC signature       = `ml_dsa87.sign(pqcSecretKey, message)` (pure
  *    ML-DSA-87, empty context) - 4627 bytes for Dilithium-5.
  *  - The `PQCHybridSignature` extension is then added to

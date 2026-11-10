@@ -78,10 +78,10 @@ public final class SignBytes {
      *
      * <p>The chain registers ONE handler under all of these names (qorechain-core
      * {@code x/pqc/types.SignBytesV2Upgrades}): mainnet applies {@code v3.2.0}, while
-     * the testnet already applied {@code v3.1.98} and keeps answering under it. A
-     * resolver queries {@code /cosmos/upgrade/v1beta1/applied_plan/{name}} for each
-     * name in this order and takes v2 as soon as one answers a height greater than
-     * zero.
+     * the testnet already applied {@code v3.1.98} and keeps answering under it. When a
+     * node cannot answer through its protocol feature switches, {@link SignBytesResolver}
+     * queries {@code /cosmos/upgrade/v1beta1/applied_plan/{name}} for each name in this
+     * order and takes v2 as soon as one answers a height greater than zero.
      */
     public static final List<String> SIGN_BYTES_V2_UPGRADES = List.of("v3.2.0", "v3.1.98");
 

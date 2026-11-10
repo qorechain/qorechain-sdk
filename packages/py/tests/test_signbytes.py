@@ -24,6 +24,7 @@ from qorsdk.pqc import generate_pqc_keypair, pqc_verify
 from qorsdk.sign_eth import sign_hybrid_eth
 from qorsdk.signbytes import (
     HYBRID_SIGN_BYTES_DOMAIN,
+    PQC_SIGN_BYTES_V2_FEATURE,
     SIGN_BYTES_V2_UPGRADE,
     SIGN_BYTES_V2_UPGRADES,
     SignBytesResolver,
@@ -40,8 +41,10 @@ from qorsdk.signbytes import (
     migration_sign_bytes_v1,
     migration_sign_bytes_v2,
     pick_build_sign_bytes_version,
+    protocol_features_url,
     resolve_sign_bytes_version,
     sign_bytes_version_for,
+    sign_bytes_version_from_protocol_features,
 )
 from qorsdk.tx import build_hybrid_tx, hybrid_sign_and_broadcast
 from qorsdk.unified import derive_unified_account
@@ -59,6 +62,12 @@ FEE = {"amount": [{"denom": "uqor", "amount": "5000"}], "gas": "200000"}
 REST = "http://node.test:1317"
 PLAN_PREFIX = f"{REST}/cosmos/upgrade/v1beta1/applied_plan/"
 TXS_URL = f"{REST}/cosmos/tx/v1beta1/txs"
+FEATURES_URL = f"{REST}/qorechain/pqc/v1/protocol_features"
+
+
+def _not_served() -> httpx.Response:
+    """404, as a node below chain v3.2.4 answers the protocol features route."""
+    return httpx.Response(404, json={"code": 12, "message": "Not Implemented"})
 
 
 # --------------------------------------------------------------------------- #
@@ -205,7 +214,9 @@ class _Plan:
 
     ``body`` answers EVERY upgrade name; ``bodies`` overrides it per name (so a
     test can make one name answer 0 and another a real height). Every requested
-    plan name is recorded in order in ``names``.
+    plan name is recorded in order in ``names``. The node does not serve the
+    protocol features route (404), so the resolver falls back to the plans;
+    ``feature_calls`` counts those requests.
     """
 
     def __init__(self, body=None, status=200, bodies=None):
@@ -213,10 +224,14 @@ class _Plan:
         self.bodies = dict(bodies or {})
         self.status = status
         self.calls = 0
+        self.feature_calls = 0
         self.names: list[str] = []
 
     def handler(self, request: httpx.Request) -> httpx.Response:
         url = str(request.url)
+        if url == FEATURES_URL:
+            self.feature_calls += 1
+            return _not_served()
         assert url.startswith(PLAN_PREFIX), url
         name = url[len(PLAN_PREFIX) :]
         assert name in SIGN_BYTES_V2_UPGRADES, f"unknown plan name {name!r}"
@@ -286,6 +301,8 @@ def test_resolver_error_when_a_later_name_fails():
     """A failing query still raises even though an earlier name answered 0."""
 
     def handler(request: httpx.Request) -> httpx.Response:
+        if str(request.url) == FEATURES_URL:
+            return _not_served()
         if str(request.url).endswith("/v3.1.98"):
             return httpx.Response(500, json={"message": "boom"})
         return httpx.Response(200, json={"height": "0"})
@@ -332,6 +349,142 @@ def test_resolver_transport_error_errors():
     client = httpx.Client(transport=httpx.MockTransport(boom))
     with pytest.raises(SignBytesVersionError):
         SignBytesResolver().resolve("qorechain-diana", rest_url=REST, client=client)
+
+
+# --------------------------------------------------------------------------- #
+# resolver: protocol features first
+# --------------------------------------------------------------------------- #
+V2_ON = {"name": PQC_SIGN_BYTES_V2_FEATURE, "enabled": True, "known": True, "staged": False}
+V2_OFF = {"name": PQC_SIGN_BYTES_V2_FEATURE, "enabled": False, "known": True, "staged": False}
+OTHER = {"name": "evm-locked-balance-scaling", "enabled": True, "known": True, "staged": False}
+
+
+class _Features:
+    """A fake node serving the protocol features route; any plan request fails the test."""
+
+    def __init__(self, features):
+        self.features = list(features)
+        self.calls = 0
+
+    def handler(self, request: httpx.Request) -> httpx.Response:
+        assert str(request.url) == FEATURES_URL, str(request.url)
+        self.calls += 1
+        return httpx.Response(200, json={"features": self.features, "height": "120"})
+
+    def client(self) -> httpx.Client:
+        return httpx.Client(transport=httpx.MockTransport(self.handler))
+
+
+def test_feature_name_matches_the_chain():
+    assert PQC_SIGN_BYTES_V2_FEATURE == "pqc-sign-bytes-v2"
+    assert protocol_features_url(REST + "/") == FEATURES_URL
+
+
+@pytest.mark.parametrize("chain_id", ["qorechain-diana", "qorechain-vladi"])
+def test_resolver_feature_enabled_is_v2_without_an_applied_plan(chain_id):
+    """A fresh network reusing a legacy chain id enables every feature at genesis."""
+    node = _Features([OTHER, V2_ON])
+    got = SignBytesResolver().resolve(chain_id, rest_url=REST, client=node.client())
+    assert got == "v2"
+    assert node.calls == 1
+
+
+def test_resolver_feature_disabled_is_v1_without_asking_the_plans():
+    node = _Features([OTHER, V2_OFF])
+    got = SignBytesResolver().resolve("qorechain-diana", rest_url=REST, client=node.client())
+    assert got == "v1"
+    assert node.calls == 1
+
+
+def test_resolver_feature_absent_from_a_listing_is_v1():
+    node = _Features([OTHER])
+    got = SignBytesResolver().resolve("qorechain-vladi", rest_url=REST, client=node.client())
+    assert got == "v1"
+
+
+@pytest.mark.parametrize(
+    ("bodies", "want"),
+    [
+        ({"v3.2.0": {"height": "9100000"}, "v3.1.98": {"height": "0"}}, "v2"),
+        ({"v3.2.0": {"height": "0"}, "v3.1.98": {"height": "5746000"}}, "v2"),
+        ({"v3.2.0": {"height": "0"}, "v3.1.98": {"height": "0"}}, "v1"),
+    ],
+)
+def test_resolver_features_404_falls_back_to_the_plans(bodies, want):
+    plan = _Plan(bodies=bodies)
+    got = SignBytesResolver().resolve("qorechain-diana", rest_url=REST, client=plan.client())
+    assert got == want
+    assert plan.feature_calls == 1
+    assert plan.names[0] == "v3.2.0"
+
+
+def _connect_error(request: httpx.Request) -> httpx.Response:
+    raise httpx.ConnectError("unreachable", request=request)
+
+
+@pytest.mark.parametrize(
+    "features_answer",
+    [
+        lambda req: httpx.Response(501, json={"message": "not implemented"}),
+        lambda req: httpx.Response(200, text="<html>"),
+        lambda req: httpx.Response(200, json={"features": []}),
+        lambda req: httpx.Response(200, json=["unexpected"]),
+        _connect_error,
+    ],
+    ids=["501", "unparseable", "empty-list", "not-an-object", "transport-error"],
+)
+def test_resolver_features_unusable_falls_back_to_the_plans(features_answer):
+    asked: list[str] = []
+
+    def handler(request: httpx.Request) -> httpx.Response:
+        if str(request.url) == FEATURES_URL:
+            return features_answer(request)
+        asked.append(str(request.url))
+        return httpx.Response(200, json={"height": "5746000"})
+
+    client = httpx.Client(transport=httpx.MockTransport(handler))
+    got = SignBytesResolver().resolve("qorechain-vladi", rest_url=REST, client=client)
+    assert got == "v2"
+    assert asked == [f"{PLAN_PREFIX}v3.2.0"]
+
+
+def test_resolver_explicit_version_beats_the_features():
+    node = _Features([V2_ON])
+    got = SignBytesResolver().resolve(
+        "qorechain-diana", rest_url=REST, sign_bytes_version="v1", client=node.client()
+    )
+    assert got == "v1"
+    assert node.calls == 0
+
+
+def test_resolver_caches_the_features_answer():
+    node = _Features([V2_ON])
+    r = SignBytesResolver()
+    for _ in range(2):
+        assert r.resolve("qorechain-diana", rest_url=REST, client=node.client()) == "v2"
+    assert node.calls == 1
+    r.resolve("qorechain-diana", rest_url=REST, client=node.client(), force_refresh=True)
+    assert node.calls == 2
+
+
+async def test_resolver_async_reads_the_features():
+    node = _Features([V2_ON])
+    client = httpx.AsyncClient(transport=httpx.MockTransport(node.handler))
+    got = await SignBytesResolver().resolve_async(
+        "qorechain-vladi", rest_url=REST, client=client
+    )
+    assert got == "v2"
+    assert node.calls == 1
+
+
+def test_sign_bytes_version_from_protocol_features_payloads():
+    assert sign_bytes_version_from_protocol_features({"features": [V2_ON]}) == "v2"
+    assert sign_bytes_version_from_protocol_features({"features": [V2_OFF]}) == "v1"
+    assert sign_bytes_version_from_protocol_features({"features": [OTHER]}) == "v1"
+    assert sign_bytes_version_from_protocol_features({"features": []}) is None
+    assert sign_bytes_version_from_protocol_features({}) is None
+    assert sign_bytes_version_from_protocol_features(None) is None
+    assert sign_bytes_version_from_protocol_features({"features": [V2_ON], "height": "x"}) is None
 
 
 def test_resolver_rejects_bad_option():
@@ -579,6 +732,8 @@ class _Node:
         self.broadcasts: list[bytes] = []
 
     def handler(self, request: httpx.Request) -> httpx.Response:
+        if str(request.url) == FEATURES_URL:
+            return _not_served()
         if "/applied_plan/" in request.url.path:
             name = request.url.path.rsplit("/", 1)[-1]
             assert name in SIGN_BYTES_V2_UPGRADES, f"unknown plan name {name!r}"

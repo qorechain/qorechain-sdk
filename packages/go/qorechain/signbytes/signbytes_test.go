@@ -275,15 +275,21 @@ func TestParseVersion(t *testing.T) {
 // planServer is an applied-plan endpoint that answers per PLAN NAME. A name with
 // no body configured answers `{}` (the plan was never applied on this network),
 // which is what each real network answers for the name it did not take.
+//
+// The protocol features route answers 404 (a node below chain v3.2.4) unless
+// setFeatures gave it a status and body.
 type planServer struct {
 	*httptest.Server
-	requests atomic.Int32 // every applied-plan request
-	rounds   atomic.Int32 // requests for V2Upgrades[0] - one per resolve round
-	status   atomic.Int32
+	requests        atomic.Int32 // every applied-plan request
+	rounds          atomic.Int32 // requests for V2Upgrades[0] - one per resolve round
+	featureRequests atomic.Int32 // every protocol features request
+	status          atomic.Int32
 
-	mu    sync.Mutex
-	plans map[string]string
-	asked []string
+	mu             sync.Mutex
+	plans          map[string]string
+	asked          []string
+	featuresStatus int
+	featuresBody   string
 }
 
 func newPlanServer(t *testing.T, plans map[string]string) *planServer {
@@ -295,6 +301,19 @@ func newPlanServer(t *testing.T, plans map[string]string) *planServer {
 	ps.status.Store(http.StatusOK)
 	const prefix = "/cosmos/upgrade/v1beta1/applied_plan/"
 	ps.Server = httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		if r.URL.Path == "/qorechain/pqc/v1/protocol_features" {
+			ps.featureRequests.Add(1)
+			ps.mu.Lock()
+			status, body := ps.featuresStatus, ps.featuresBody
+			ps.mu.Unlock()
+			if status == 0 {
+				http.NotFound(w, r)
+				return
+			}
+			w.WriteHeader(status)
+			_, _ = w.Write([]byte(body))
+			return
+		}
 		if !strings.HasPrefix(r.URL.Path, prefix) {
 			http.NotFound(w, r)
 			return
@@ -328,6 +347,12 @@ func newLegacyPlanServer(t *testing.T, legacyBody string) *planServer {
 func (ps *planServer) setPlan(name, body string) {
 	ps.mu.Lock()
 	ps.plans[name] = body
+	ps.mu.Unlock()
+}
+
+func (ps *planServer) setFeatures(status int, body string) {
+	ps.mu.Lock()
+	ps.featuresStatus, ps.featuresBody = status, body
 	ps.mu.Unlock()
 }
 
@@ -569,6 +594,157 @@ func TestResolverCacheTTLRefreshAndClear(t *testing.T) {
 	_, _ = r.Resolve(ctx, ps.URL, "qorechain-diana", Auto)
 	if n := ps.rounds.Load(); n != 5 {
 		t.Fatalf("rounds after clear = %d, want 5", n)
+	}
+}
+
+const (
+	featureV2On  = `{"name":"pqc-sign-bytes-v2","enabled":true,"known":true,"staged":false}`
+	featureV2Off = `{"name":"pqc-sign-bytes-v2","enabled":false,"known":true,"staged":false}`
+	featureOther = `{"name":"evm-locked-balance-scaling","enabled":true,"known":true,"staged":false}`
+)
+
+func featuresBody(items ...string) string {
+	return `{"features":[` + strings.Join(items, ",") + `],"height":"120"}`
+}
+
+func TestFeatureV2Name(t *testing.T) {
+	if FeatureV2 != "pqc-sign-bytes-v2" {
+		t.Fatalf("FeatureV2 = %q", FeatureV2)
+	}
+}
+
+// A fresh network that reuses a legacy chain id enables every feature at
+// genesis and applies no upgrade plan: the features decide v2 and no plan is
+// asked.
+func TestResolverFeatureEnabledIsV2WithoutAppliedPlan(t *testing.T) {
+	for _, chainID := range []string{"qorechain-diana", "qorechain-vladi"} {
+		t.Run(chainID, func(t *testing.T) {
+			ps := newPlanServer(t, nil)
+			ps.setFeatures(http.StatusOK, featuresBody(featureOther, featureV2On))
+			got, err := NewResolver(ResolverOptions{}).Resolve(context.Background(), ps.URL, chainID, Auto)
+			if err != nil || got != V2 {
+				t.Fatalf("got %s, %v; want v2", got, err)
+			}
+			if n := ps.featureRequests.Load(); n != 1 {
+				t.Fatalf("feature requests = %d, want 1", n)
+			}
+			if n := ps.requests.Load(); n != 0 {
+				t.Fatalf("plan requests = %d, want 0", n)
+			}
+		})
+	}
+}
+
+func TestResolverFeatureDisabledOrAbsentIsV1(t *testing.T) {
+	for name, body := range map[string]string{
+		"disabled": featuresBody(featureOther, featureV2Off),
+		"absent":   featuresBody(featureOther),
+	} {
+		t.Run(name, func(t *testing.T) {
+			// A plan record saying v2 must not override the features.
+			ps := newLegacyPlanServer(t, `{"height":"5746000"}`)
+			ps.setFeatures(http.StatusOK, body)
+			got, err := NewResolver(ResolverOptions{}).Resolve(context.Background(), ps.URL, "qorechain-diana", Auto)
+			if err != nil || got != V1 {
+				t.Fatalf("got %s, %v; want v1", got, err)
+			}
+			if n := ps.requests.Load(); n != 0 {
+				t.Fatalf("plan requests = %d, want 0", n)
+			}
+		})
+	}
+}
+
+// A node that cannot answer the features falls back to the applied-plan logic,
+// with both outcomes as before.
+func TestResolverFeaturesUnusableFallsBackToPlans(t *testing.T) {
+	cases := []struct {
+		name   string
+		status int
+		body   string
+	}{
+		{"404", 0, ""},
+		{"501", http.StatusNotImplemented, `{"code":12,"message":"Not Implemented"}`},
+		{"unparseable", http.StatusOK, `<html>`},
+		{"empty list", http.StatusOK, `{"features":[],"height":"1"}`},
+		{"no list", http.StatusOK, `{}`},
+	}
+	for _, c := range cases {
+		for _, plan := range []struct {
+			body string
+			want Version
+		}{
+			{`{"height":"5746000"}`, V2},
+			{`{"height":"0"}`, V1},
+		} {
+			t.Run(c.name+"/"+string(plan.want), func(t *testing.T) {
+				ps := newLegacyPlanServer(t, plan.body)
+				ps.setFeatures(c.status, c.body)
+				got, err := NewResolver(ResolverOptions{}).Resolve(context.Background(), ps.URL, "qorechain-diana", Auto)
+				if err != nil || got != plan.want {
+					t.Fatalf("got %s, %v; want %s", got, err, plan.want)
+				}
+				if n := ps.featureRequests.Load(); n != 1 {
+					t.Fatalf("feature requests = %d, want 1", n)
+				}
+				if asked := ps.askedNames(); len(asked) != 2 {
+					t.Fatalf("asked %v, want both plan names", asked)
+				}
+			})
+		}
+	}
+}
+
+func TestResolverExplicitVersionBeatsFeatures(t *testing.T) {
+	ps := newPlanServer(t, nil)
+	ps.setFeatures(http.StatusOK, featuresBody(featureV2On))
+	got, err := NewResolver(ResolverOptions{}).Resolve(context.Background(), ps.URL, "qorechain-diana", V1)
+	if err != nil || got != V1 {
+		t.Fatalf("got %s, %v; want v1", got, err)
+	}
+	if n := ps.featureRequests.Load(); n != 0 {
+		t.Fatalf("feature requests = %d, want 0", n)
+	}
+}
+
+func TestResolverCachesFeaturesAnswer(t *testing.T) {
+	ps := newPlanServer(t, nil)
+	ps.setFeatures(http.StatusOK, featuresBody(featureV2On))
+	r := NewResolver(ResolverOptions{})
+	ctx := context.Background()
+	for i := 0; i < 2; i++ {
+		if v, err := r.Resolve(ctx, ps.URL, "qorechain-diana", Auto); err != nil || v != V2 {
+			t.Fatalf("resolve %d = %s, %v", i, v, err)
+		}
+	}
+	if n := ps.featureRequests.Load(); n != 1 {
+		t.Fatalf("feature requests = %d, want 1 (cached)", n)
+	}
+	if _, err := r.Refresh(ctx, ps.URL, "qorechain-diana", Auto); err != nil {
+		t.Fatal(err)
+	}
+	if n := ps.featureRequests.Load(); n != 2 {
+		t.Fatalf("feature requests after refresh = %d, want 2", n)
+	}
+}
+
+func TestVersionFromFeatures(t *testing.T) {
+	for _, c := range []struct {
+		body string
+		want Version
+		ok   bool
+	}{
+		{featuresBody(featureV2On), V2, true},
+		{featuresBody(featureV2Off), V1, true},
+		{featuresBody(featureOther), V1, true},
+		{featuresBody(), "", false},
+		{`{}`, "", false},
+		{`not json`, "", false},
+	} {
+		got, ok := VersionFromFeatures([]byte(c.body))
+		if got != c.want || ok != c.ok {
+			t.Errorf("%s: got %s, %v; want %s, %v", c.body, got, ok, c.want, c.ok)
+		}
 	}
 }
 

@@ -22,7 +22,11 @@
 // "v3.2.0". The chain registers one handler under both, so a client must ask
 // applied_plan for every name and take v2 when any of them answers a height
 // greater than zero. Clients must not hardcode a form: use VersionFor, or a
-// Resolver that asks the node whether one of the plans is applied.
+// Resolver that asks the node. The Resolver first reads the protocol feature
+// switch FeatureV2 ("pqc-sign-bytes-v2", chain v3.2.4 and later), which also
+// answers for a fresh network that reuses a legacy chain id and enables every
+// feature at genesis; only when the node cannot answer that does it ask
+// whether one of the plans is applied.
 //
 // Byte layouts (all lengths big-endian, strings UTF-8, no terminators):
 //
@@ -87,7 +91,8 @@ func v2UpgradeNames() string { return strings.Join(V2Upgrades, " / ") }
 // V1 and V2 are resolved versions. Auto (or the zero value "") asks the SDK to
 // decide: offline builders decide only when the chain id alone is enough (a
 // non-legacy chain is always V2) and fail otherwise; a Resolver additionally
-// asks the node whether one of V2Upgrades has been applied.
+// asks the node: its FeatureV2 protocol feature, else whether one of
+// V2Upgrades has been applied.
 type Version string
 
 // Sign-bytes versions.

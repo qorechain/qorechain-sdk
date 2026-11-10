@@ -36,6 +36,16 @@ Choosing the form (:func:`sign_bytes_version_for`, mirroring the chain's
 (height > 0) OR the chain is not one of the networks that existed before v2
 (``qorechain-vladi`` / ``qorechain-diana``); otherwise v1.
 
+For those two chain ids :class:`SignBytesResolver` first reads the protocol
+feature switches (chain v3.2.4 and later), ``GET
+{rest}/qorechain/pqc/v1/protocol_features``: v2 when the listed feature
+``pqc-sign-bytes-v2`` (:data:`PQC_SIGN_BYTES_V2_FEATURE`) is enabled, v1 when
+the node lists its features and that one is disabled or absent. This also
+covers a fresh network that reuses one of those chain ids: it enables every
+feature at genesis and never applies an upgrade plan. Only when that query
+cannot answer (older node, transport error, unexpected or empty payload) does
+the resolver fall back to the upgrade plans below.
+
 The switch shipped under TWO plan names (:data:`SIGN_BYTES_V2_UPGRADES`): the
 testnet took it as ``v3.1.98`` and keeps that record forever, while mainnet
 takes it as ``v3.2.0``. Both names run the same handler, so a client must ask
@@ -54,6 +64,8 @@ from collections.abc import Callable
 from typing import Any, Literal
 
 import httpx
+
+from .protocol_features import PROTOCOL_FEATURES_PATH, parse_protocol_features
 
 #: Domain tag prefixed to the v2 hybrid tx sign-bytes.
 HYBRID_SIGN_BYTES_DOMAIN = "qorechain-pqc-hybrid-v2"
@@ -77,6 +89,9 @@ SIGN_BYTES_V2_UPGRADES: tuple[str, ...] = ("v3.2.0", "v3.1.98")
 #: Networks that existed before v2 and switch to it only at one of
 #: :data:`SIGN_BYTES_V2_UPGRADES`. Every other chain verifies v2 from block one.
 LEGACY_SIGN_BYTES_CHAINS: frozenset[str] = frozenset({"qorechain-vladi", "qorechain-diana"})
+
+#: The protocol feature switch that moves a network to the v2 sign-bytes.
+PQC_SIGN_BYTES_V2_FEATURE = "pqc-sign-bytes-v2"
 
 #: Default resolver cache lifetime, in seconds.
 DEFAULT_SIGN_BYTES_CACHE_TTL = 60.0
@@ -363,6 +378,39 @@ def applied_plan_url(rest_url: str, plan_name: str = SIGN_BYTES_V2_UPGRADE) -> s
     return f"{rest_url.rstrip('/')}/cosmos/upgrade/v1beta1/applied_plan/{plan_name}"
 
 
+def protocol_features_url(rest_url: str) -> str:
+    """The protocol feature switches endpoint, read first by the resolver."""
+    return f"{rest_url.rstrip('/')}{PROTOCOL_FEATURES_PATH}"
+
+
+def sign_bytes_version_from_protocol_features(payload: Any) -> SignBytesVersion | None:
+    """The form a ``protocol_features`` payload implies, or ``None`` if it cannot tell.
+
+    ``"v2"`` when :data:`PQC_SIGN_BYTES_V2_FEATURE` is listed and enabled,
+    ``"v1"`` when the payload lists features and that one is disabled or absent,
+    ``None`` for anything else (not an object, no feature list, empty list), in
+    which case the caller falls back to the upgrade plans.
+    """
+    if not isinstance(payload, dict):
+        return None
+    try:
+        parsed = parse_protocol_features(payload)
+    except (TypeError, ValueError, KeyError):
+        return None
+    if not parsed.features:
+        return None
+    return "v2" if parsed.is_enabled(PQC_SIGN_BYTES_V2_FEATURE) else "v1"
+
+
+def _features_answer(resp: Any) -> SignBytesVersion | None:
+    """Read a features response; ``None`` on any status or parse failure."""
+    try:
+        resp.raise_for_status()
+        return sign_bytes_version_from_protocol_features(resp.json())
+    except Exception:  # noqa: BLE001 - any failure means "ask the plans"
+        return None
+
+
 def _missing_rest_url_error(chain_id: str) -> SignBytesVersionError:
     return SignBytesVersionError(
         f"cannot resolve the sign-bytes form for {chain_id} without a node: pass rest_url "
@@ -383,10 +431,11 @@ def _query_failed_error(
 class SignBytesResolver:
     """Resolves ``"auto"`` to the form a network verifies, with a short cache.
 
-    A lookup asks ``applied_plan`` for every name in
-    :data:`SIGN_BYTES_V2_UPGRADES`, in order, and stops at the first positive
-    height: mainnet (``v3.2.0``) costs one request, the testnet (``v3.1.98``)
-    two, and a chain on neither name two.
+    A lookup first reads the protocol feature switches
+    (:func:`sign_bytes_version_from_protocol_features`); a node on chain v3.2.4
+    or later answers there in one request. When that route cannot answer, it
+    asks ``applied_plan`` for every name in :data:`SIGN_BYTES_V2_UPGRADES`, in
+    order, and stops at the first positive height.
 
     Answers are cached per ``(rest_url, chain_id)`` for ``ttl`` seconds (default
     60), not for a whole session, because a network can upgrade while a wallet
@@ -430,7 +479,11 @@ class SignBytesResolver:
         return None
 
     def _store(self, rest_url: str, chain_id: str, height: int) -> SignBytesVersion:
-        version = sign_bytes_version_for(chain_id, height)
+        return self._store_version(rest_url, chain_id, sign_bytes_version_for(chain_id, height))
+
+    def _store_version(
+        self, rest_url: str, chain_id: str, version: SignBytesVersion
+    ) -> SignBytesVersion:
         self._cache[(rest_url.rstrip("/"), chain_id)] = (version, self._clock() + self.ttl)
         return version
 
@@ -446,7 +499,8 @@ class SignBytesResolver:
         """Resolve ``sign_bytes_version`` (``"auto"`` | ``"v1"`` | ``"v2"``) for ``chain_id``.
 
         :raises SignBytesVersionError: For a legacy chain when ``rest_url`` is
-            missing or the node cannot be queried.
+            missing, or when neither the protocol features nor the upgrade
+            plans can be read from the node.
         """
         pre = self._pre(chain_id, rest_url, sign_bytes_version, force_refresh)
         if pre is not None:
@@ -455,6 +509,12 @@ class SignBytesResolver:
         owns = client is None
         http = client or httpx.Client(timeout=self._timeout)
         try:
+            try:
+                from_features = _features_answer(http.get(protocol_features_url(rest_url)))
+            except Exception:  # noqa: BLE001 - transport failure: ask the plans
+                from_features = None
+            if from_features is not None:
+                return self._store_version(rest_url, chain_id, from_features)
             height = 0
             # Every name that switched a network to v2; any positive height wins.
             for plan_name in SIGN_BYTES_V2_UPGRADES:
@@ -488,6 +548,14 @@ class SignBytesResolver:
         owns = client is None
         http = client or httpx.AsyncClient(timeout=self._timeout)
         try:
+            try:
+                from_features = _features_answer(
+                    await http.get(protocol_features_url(rest_url))
+                )
+            except Exception:  # noqa: BLE001 - transport failure: ask the plans
+                from_features = None
+            if from_features is not None:
+                return self._store_version(rest_url, chain_id, from_features)
             height = 0
             # Every name that switched a network to v2; any positive height wins.
             for plan_name in SIGN_BYTES_V2_UPGRADES:
@@ -621,6 +689,7 @@ __all__ = [
     "BRIDGE_ATTESTATION_SIGN_BYTES_DOMAIN",
     "SIGN_BYTES_V2_UPGRADE",
     "SIGN_BYTES_V2_UPGRADES",
+    "PQC_SIGN_BYTES_V2_FEATURE",
     "LEGACY_SIGN_BYTES_CHAINS",
     "DEFAULT_SIGN_BYTES_CACHE_TTL",
     "HYBRID_REJECTION_CODESPACE",
@@ -640,6 +709,8 @@ __all__ = [
     "bridge_attestation_sign_bytes",
     "is_legacy_sign_bytes_chain",
     "applied_plan_url",
+    "protocol_features_url",
+    "sign_bytes_version_from_protocol_features",
     "sign_bytes_version_for",
     "pick_build_sign_bytes_version",
     "SignBytesResolver",

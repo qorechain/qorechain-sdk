@@ -287,6 +287,8 @@ describe("eth-native hybrid sign-bytes form", () => {
         txLookups.push(url);
         return new Response(JSON.stringify({ tx_response: { code: 21, codespace: "pqc" } }));
       }
+      // A node below chain v3.2.4: no protocol features route.
+      if (url.endsWith("/qorechain/pqc/v1/protocol_features")) return new Response("", { status: 404 });
       asked += 1;
       return new Response(JSON.stringify({ height: asked <= 2 ? "0" : "5746000" }));
     });

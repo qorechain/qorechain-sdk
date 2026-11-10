@@ -288,6 +288,7 @@ from .signbytes import (
     HYBRID_SIGN_BYTES_DOMAIN,
     LEGACY_SIGN_BYTES_CHAINS,
     MIGRATION_SIGN_BYTES_DOMAIN,
+    PQC_SIGN_BYTES_V2_FEATURE,
     SIGN_BYTES_V2_UPGRADE,
     SIGN_BYTES_V2_UPGRADES,
     SignBytesOption,
@@ -310,6 +311,7 @@ from .signbytes import (
     resolve_sign_bytes_version,
     resolve_sign_bytes_version_async,
     sign_bytes_version_for,
+    sign_bytes_version_from_protocol_features,
 )
 from .stakingtier import (
     CLAIM_BONUS_TYPE_URL,
@@ -523,6 +525,8 @@ __all__ = [
     "BRIDGE_ATTESTATION_SIGN_BYTES_DOMAIN",
     "SIGN_BYTES_V2_UPGRADE",
     "SIGN_BYTES_V2_UPGRADES",
+    "PQC_SIGN_BYTES_V2_FEATURE",
+    "sign_bytes_version_from_protocol_features",
     "LEGACY_SIGN_BYTES_CHAINS",
     "SignBytesVersion",
     "SignBytesOption",

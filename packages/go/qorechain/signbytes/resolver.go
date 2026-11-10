@@ -10,20 +10,27 @@ import (
 	"strings"
 	"sync"
 	"time"
+
+	"github.com/qorechain/qorechain-sdk/packages/go/qorechain/query"
 )
+
+// FeatureV2 is the protocol feature switch that moves a network to the v2
+// sign-bytes. The Resolver reads it first, from
+// GET {restURL}/qorechain/pqc/v1/protocol_features (chain v3.2.4 and later).
+const FeatureV2 = "pqc-sign-bytes-v2"
 
 // DefaultTTL is how long a Resolver trusts a node's answer. It is short on
 // purpose: a network can apply one of V2Upgrades while a wallet or service is
 // running.
 const DefaultTTL = 60 * time.Second
 
-// defaultHTTPTimeout bounds the applied-plan query when the Resolver builds its
+// defaultHTTPTimeout bounds each node query when the Resolver builds its
 // own HTTP client.
 const defaultHTTPTimeout = 10 * time.Second
 
 // ResolverOptions configures NewResolver. Zero values use the defaults.
 type ResolverOptions struct {
-	// HTTPClient performs the applied-plan query. Nil uses a client with a 10s
+	// HTTPClient performs the node queries. Nil uses a client with a 10s
 	// timeout.
 	HTTPClient *http.Client
 	// TTL is how long an answer is cached per (REST URL, chain id). Zero uses
@@ -33,8 +40,9 @@ type ResolverOptions struct {
 	Now func() time.Time
 }
 
-// Resolver decides the sign-bytes version per network, asking the node whether
-// any of V2Upgrades has been applied when the chain id alone is not enough, and
+// Resolver decides the sign-bytes version per network, asking the node (its
+// FeatureV2 protocol feature, else whether any of V2Upgrades has been applied)
+// when the chain id alone is not enough, and
 // caching the answer per (REST URL, chain id) for a short TTL. It is safe for
 // concurrent use.
 type Resolver struct {
@@ -84,13 +92,21 @@ var DefaultResolver = NewResolver(ResolverOptions{})
 // Resolve returns the version to sign for chainID.
 //
 //   - An explicit V1 / V2 is returned as-is, with no network access.
-//   - Auto (or ""): a non-legacy chain is V2 with no network access; a legacy
-//     chain is decided by GET {restURL}/cosmos/upgrade/v1beta1/applied_plan/{name}
-//     for every name in V2Upgrades, in order, stopping at the first that answers
-//     a height greater than zero (V2). A missing height counts as 0; V1 only when
-//     every name answers 0. The answer is cached for the TTL.
+//   - Auto (or ""): a non-legacy chain is V2 with no network access. A legacy
+//     chain is first decided by its protocol feature switches,
+//     GET {restURL}/qorechain/pqc/v1/protocol_features: V2 when FeatureV2 is
+//     listed and enabled, V1 when the node lists its features and FeatureV2 is
+//     disabled or absent. This also covers a fresh network that reuses a legacy
+//     chain id: it enables every feature at genesis and applies no plan.
+//     Only when that query cannot answer (older node, transport error,
+//     unexpected or empty payload) is the chain decided by
+//     GET {restURL}/cosmos/upgrade/v1beta1/applied_plan/{name} for every name in
+//     V2Upgrades, in order, stopping at the first that answers a height greater
+//     than zero (V2). A missing height counts as 0; V1 only when every name
+//     answers 0. The answer is cached for the TTL.
 //
-// A legacy chain with an empty restURL, or a failed query, returns an error
+// A legacy chain with an empty restURL, or a failed applied-plan query after
+// the features could not answer, returns an error
 // wrapping ErrUnresolvedVersion: pass a REST URL or an explicit V1 / V2. The
 // Resolver never guesses.
 func (r *Resolver) Resolve(ctx context.Context, restURL, chainID string, requested Version) (Version, error) {
@@ -152,18 +168,61 @@ func (r *Resolver) resolve(ctx context.Context, restURL, chainID string, request
 			return e.version, nil
 		}
 	}
-	height, err := r.appliedPlanHeight(ctx, base)
-	if err != nil {
-		return "", fmt.Errorf("%w for chain %q: cannot ask %s whether upgrade %s is applied (%v); "+
-			"pass signbytes.V1 or signbytes.V2 explicitly", ErrUnresolvedVersion, chainID, base, v2UpgradeNames(), err)
+	v, ok := r.featuresVersion(ctx, base)
+	if !ok {
+		height, err := r.appliedPlanHeight(ctx, base)
+		if err != nil {
+			return "", fmt.Errorf("%w for chain %q: cannot ask %s whether upgrade %s is applied (%v); "+
+				"pass signbytes.V1 or signbytes.V2 explicitly", ErrUnresolvedVersion, chainID, base, v2UpgradeNames(), err)
+		}
+		v = VersionFor(chainID, height)
 	}
-	v := VersionFor(chainID, height)
 	if r.ttl > 0 {
 		r.mu.Lock()
 		r.cache[key] = cacheEntry{version: v, expires: r.now().Add(r.ttl)}
 		r.mu.Unlock()
 	}
 	return v, nil
+}
+
+// featuresVersion reads the node's protocol feature switches. ok is false when
+// they cannot answer: the route is not served (below chain v3.2.4), the request
+// fails, or the payload is unexpected or lists no features. The caller then
+// falls back to the applied-plan query.
+func (r *Resolver) featuresVersion(ctx context.Context, base string) (v Version, ok bool) {
+	if ctx == nil {
+		ctx = context.Background()
+	}
+	req, err := http.NewRequestWithContext(ctx, http.MethodGet, base+query.ProtocolFeaturesPath, nil)
+	if err != nil {
+		return "", false
+	}
+	req.Header.Set("Accept", "application/json")
+	resp, err := r.httpClient.Do(req)
+	if err != nil {
+		return "", false
+	}
+	defer resp.Body.Close()
+	body, err := io.ReadAll(io.LimitReader(resp.Body, 1<<20))
+	if err != nil || resp.StatusCode < 200 || resp.StatusCode >= 300 {
+		return "", false
+	}
+	return VersionFromFeatures(body)
+}
+
+// VersionFromFeatures decides the version from a protocol_features response
+// body: V2 when FeatureV2 is listed and enabled, V1 when the body lists
+// features and FeatureV2 is disabled or absent. ok is false when the body
+// cannot be parsed or lists no features.
+func VersionFromFeatures(body []byte) (v Version, ok bool) {
+	p, err := query.ParseProtocolFeatures(body)
+	if err != nil || p == nil || len(p.Features) == 0 {
+		return "", false
+	}
+	if p.Enabled(FeatureV2) {
+		return V2, true
+	}
+	return V1, true
 }
 
 // appliedPlanHeight asks the node about EVERY name in V2Upgrades and returns the

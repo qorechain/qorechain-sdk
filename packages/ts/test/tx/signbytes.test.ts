@@ -20,6 +20,8 @@ import {
   isHybridSignBytesRejection,
   SIGN_BYTES_V2_UPGRADE,
   SIGN_BYTES_V2_UPGRADES,
+  PQC_SIGN_BYTES_V2_FEATURE,
+  fetchSignBytesVersionFromProtocolFeatures,
 } from "../../src/tx/signbytes";
 import { buildHybridTx, signAndBroadcastHybrid } from "../../src/tx/hybrid-tx";
 import { directSignerFromPrivateKey } from "../../src/tx/signer-adapter";
@@ -170,11 +172,29 @@ describe("signBytesVersionFor - mirror of the chain's switch", () => {
   });
 });
 
-/** A fake fetch answering applied_plan with the given body. */
+const FEATURES_PATH = "/qorechain/pqc/v1/protocol_features";
+
+/** 404, as a node below chain v3.2.4 answers the protocol features route. */
+const notServed = () => new Response("Not Implemented", { status: 404 });
+
+/**
+ * A fake fetch answering applied_plan with the given body, on a node that does
+ * not serve the protocol features route (so the resolver falls back to plans).
+ */
 function planFetch(body: unknown, status = 200) {
-  return vi.fn(async () =>
-    new Response(JSON.stringify(body), { status, headers: { "content-type": "application/json" } }),
+  return vi.fn(async (url: string) =>
+    url.endsWith(FEATURES_PATH)
+      ? notServed()
+      : new Response(JSON.stringify(body), { status, headers: { "content-type": "application/json" } }),
   );
+}
+
+/** A fake fetch serving the given protocol features; any other URL fails the test. */
+function featuresFetch(features: unknown[]) {
+  return vi.fn(async (url: string) => {
+    if (!url.endsWith(FEATURES_PATH)) throw new Error(`unexpected request ${url}`);
+    return new Response(JSON.stringify({ features, height: "120" }));
+  });
 }
 
 describe("resolveSignBytesVersion", () => {
@@ -197,21 +217,26 @@ describe("resolveSignBytesVersion", () => {
   // pqc code 21.
   it("uses v2 when the CURRENT plan name is applied, asking once", async () => {
     const f = vi.fn(async (url: string) =>
-      new Response(JSON.stringify({ height: url.endsWith("v3.2.0") ? "9000000" : "0" })));
+      url.endsWith(FEATURES_PATH)
+        ? notServed()
+        : new Response(JSON.stringify({ height: url.endsWith("v3.2.0") ? "9000000" : "0" })));
     await expect(
       resolveSignBytesVersion({ chainId: "qorechain-vladi", rest: REST, fetch: f }),
     ).resolves.toBe("v2");
-    expect(f).toHaveBeenCalledTimes(1);
+    // The features route first (not served), then one plan name.
+    expect(f).toHaveBeenCalledTimes(2);
     expect(f).toHaveBeenCalledWith(`${REST}/cosmos/upgrade/v1beta1/applied_plan/v3.2.0`);
   });
 
   it("uses v2 when only the EARLIER plan name is applied (the testnet today)", async () => {
     const f = vi.fn(async (url: string) =>
-      new Response(JSON.stringify({ height: url.endsWith("v3.1.98") ? "5746000" : "0" })));
+      url.endsWith(FEATURES_PATH)
+        ? notServed()
+        : new Response(JSON.stringify({ height: url.endsWith("v3.1.98") ? "5746000" : "0" })));
     await expect(
       resolveSignBytesVersion({ chainId: "qorechain-diana", rest: REST, fetch: f }),
     ).resolves.toBe("v2");
-    expect(f).toHaveBeenCalledTimes(2);
+    expect(f).toHaveBeenCalledTimes(3);
   });
 
   it("exposes both names, newest first", () => {
@@ -276,14 +301,15 @@ describe("resolveSignBytesVersion", () => {
   it("caches per (rest, chainId) within the TTL and re-asks on forceRefresh", async () => {
     const f = planFetch({ height: "0" });
     const o = { chainId: "qorechain-vladi", rest: REST, fetch: f };
-    // Not upgraded: both plan names are asked, so each resolve costs 2 requests.
+    // Not upgraded on a node without the features route: the route, then both
+    // plan names, so each resolve costs 3 requests.
     await resolveSignBytesVersion(o);
     await resolveSignBytesVersion(o);
-    expect(f).toHaveBeenCalledTimes(2);
+    expect(f).toHaveBeenCalledTimes(3);
     await resolveSignBytesVersion({ ...o, forceRefresh: true });
-    expect(f).toHaveBeenCalledTimes(4);
-    await resolveSignBytesVersion({ ...o, rest: "https://other.example" });
     expect(f).toHaveBeenCalledTimes(6);
+    await resolveSignBytesVersion({ ...o, rest: "https://other.example" });
+    expect(f).toHaveBeenCalledTimes(9);
   });
 
   it("re-asks once the TTL has passed", async () => {
@@ -291,7 +317,103 @@ describe("resolveSignBytesVersion", () => {
     const o = { chainId: "qorechain-vladi", rest: REST, fetch: f, ttlMs: 0 };
     await resolveSignBytesVersion(o);
     await resolveSignBytesVersion(o);
-    expect(f).toHaveBeenCalledTimes(4); // 2 plan names per resolve
+    expect(f).toHaveBeenCalledTimes(6); // features route + 2 plan names per resolve
+  });
+});
+
+describe("resolveSignBytesVersion reads the protocol features first", () => {
+  beforeEach(() => clearSignBytesCache());
+  const REST = "https://lcd.example";
+  const v2On = { name: PQC_SIGN_BYTES_V2_FEATURE, enabled: true, known: true, staged: false };
+  const v2Off = { name: PQC_SIGN_BYTES_V2_FEATURE, enabled: false, known: true, staged: false };
+  const other = { name: "evm-locked-balance-scaling", enabled: true, known: true, staged: false };
+
+  it("names the switch the chain uses", () => {
+    expect(PQC_SIGN_BYTES_V2_FEATURE).toBe("pqc-sign-bytes-v2");
+  });
+
+  // A fresh network that reuses a legacy chain id enables every feature at
+  // genesis and never applies an upgrade plan; it verifies v2.
+  it.each(["qorechain-diana", "qorechain-vladi"])(
+    "answers v2 on %s with no applied plan when the feature is enabled",
+    async (chainId) => {
+      const f = featuresFetch([other, v2On]);
+      await expect(resolveSignBytesVersion({ chainId, rest: REST, fetch: f })).resolves.toBe("v2");
+      expect(f).toHaveBeenCalledTimes(1);
+      expect(f).toHaveBeenCalledWith(`${REST}${FEATURES_PATH}`);
+    },
+  );
+
+  it("answers v1 when the feature is listed but disabled, without asking the plans", async () => {
+    const f = featuresFetch([other, v2Off]);
+    await expect(
+      resolveSignBytesVersion({ chainId: "qorechain-diana", rest: REST, fetch: f }),
+    ).resolves.toBe("v1");
+    expect(f).toHaveBeenCalledTimes(1);
+  });
+
+  it("answers v1 when the node lists its features and the switch is absent", async () => {
+    await expect(
+      resolveSignBytesVersion({ chainId: "qorechain-vladi", rest: REST, fetch: featuresFetch([other]) }),
+    ).resolves.toBe("v1");
+  });
+
+  it.each([
+    ["v3.2.0", "v2"],
+    ["v3.1.98", "v2"],
+    [null, "v1"],
+  ] as const)("falls back to the plans on a 404 (applied: %s -> %s)", async (applied, want) => {
+    const f = vi.fn(async (url: string) =>
+      url.endsWith(FEATURES_PATH)
+        ? notServed()
+        : new Response(JSON.stringify({ height: applied && url.endsWith(applied) ? "5746000" : "0" })),
+    );
+    await expect(
+      resolveSignBytesVersion({ chainId: "qorechain-diana", rest: REST, fetch: f }),
+    ).resolves.toBe(want);
+    expect(f).toHaveBeenCalledWith(`${REST}${FEATURES_PATH}`);
+    expect(f).toHaveBeenCalledWith(`${REST}/cosmos/upgrade/v1beta1/applied_plan/v3.2.0`);
+  });
+
+  it.each([
+    ["a transport error", () => Promise.reject(new TypeError("fetch failed"))],
+    ["a 501", () => Promise.resolve(new Response("{}", { status: 501 }))],
+    ["an unparseable body", () => Promise.resolve(new Response("<html>", { status: 200 }))],
+    ["an empty feature list", () => Promise.resolve(new Response(JSON.stringify({ features: [] })))],
+  ] as const)("falls back to the plans on %s", async (_label, answer) => {
+    const f = vi.fn(async (url: string) =>
+      url.endsWith(FEATURES_PATH) ? answer() : new Response(JSON.stringify({ height: "5746000" })),
+    );
+    await expect(
+      resolveSignBytesVersion({ chainId: "qorechain-vladi", rest: REST, fetch: f }),
+    ).resolves.toBe("v2");
+    expect(f).toHaveBeenCalledWith(`${REST}/cosmos/upgrade/v1beta1/applied_plan/v3.2.0`);
+  });
+
+  it("still lets an explicit version win without any request", async () => {
+    const f = featuresFetch([v2On]);
+    await expect(
+      resolveSignBytesVersion({ chainId: "qorechain-diana", rest: REST, fetch: f, signBytesVersion: "v1" }),
+    ).resolves.toBe("v1");
+    expect(f).not.toHaveBeenCalled();
+  });
+
+  it("caches the features answer per (rest, chainId)", async () => {
+    const f = featuresFetch([v2On]);
+    const o = { chainId: "qorechain-diana", rest: REST, fetch: f };
+    await resolveSignBytesVersion(o);
+    await resolveSignBytesVersion(o);
+    expect(f).toHaveBeenCalledTimes(1);
+    await resolveSignBytesVersion({ ...o, forceRefresh: true });
+    expect(f).toHaveBeenCalledTimes(2);
+  });
+
+  it("exposes the features lookup on its own", async () => {
+    await expect(fetchSignBytesVersionFromProtocolFeatures(REST, featuresFetch([v2On]))).resolves.toBe("v2");
+    await expect(fetchSignBytesVersionFromProtocolFeatures(REST, featuresFetch([v2Off]))).resolves.toBe("v1");
+    await expect(
+      fetchSignBytesVersionFromProtocolFeatures(REST, vi.fn(async () => notServed())),
+    ).resolves.toBeUndefined();
   });
 });
 
@@ -395,10 +517,11 @@ describe("signAndBroadcastHybrid retries once on a pqc code-21 refusal", () => {
 
   it("re-resolves past the cache and resends with the new form", async () => {
     const fx = await hybridFixture();
-    // First resolve: neither plan applied (2 requests, cached as v1). The
-    // network then upgrades, so the re-resolve sees the current plan applied.
+    // First resolve: no features route, neither plan applied (cached as v1).
+    // The network then upgrades, so the re-resolve sees the current plan applied.
     let asked = 0;
-    const f = vi.fn(async () => {
+    const f = vi.fn(async (url: string) => {
+      if (url.endsWith(FEATURES_PATH)) return notServed();
       asked += 1;
       return new Response(JSON.stringify({ height: asked <= 2 ? "0" : "5746000" }));
     });
@@ -412,7 +535,10 @@ describe("signAndBroadcastHybrid retries once on a pqc code-21 refusal", () => {
     });
     expect(res.transactionHash).toBe("OK");
     expect(transport.broadcastTx).toHaveBeenCalledTimes(2);
-    expect(f).toHaveBeenCalledTimes(3); // 2 for the first resolve, 1 for the refresh
+    // Plans: 2 for the first resolve, 1 for the refresh; plus the features
+    // route once per resolve.
+    expect(asked).toBe(3);
+    expect(f).toHaveBeenCalledTimes(5);
     const [first] = transport.broadcastTx.mock.calls[0] as [Uint8Array];
     const [second] = transport.broadcastTx.mock.calls[1] as [Uint8Array];
     expect(toHex(first)).not.toBe(toHex(second));

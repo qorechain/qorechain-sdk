@@ -422,7 +422,16 @@ network:
 A client that asks only one name reads height 0 on the other network, signs v1,
 and every hybrid transaction there is refused with `pqc` code 21.
 
-The `"auto"` rule (the chain's own `SignBytesVersionFor`): for EVERY name in
+The `"auto"` rule for `qorechain-vladi` / `qorechain-diana` first reads the
+node's protocol feature switches, `GET {rest}/qorechain/pqc/v1/protocol_features`
+(chain v3.2.4 and later): v2 when the listed feature `pqc-sign-bytes-v2`
+(`PQC_SIGN_BYTES_V2_FEATURE`) is enabled, v1 when the node lists its features and
+that one is disabled or absent. This also covers a fresh network that reuses one
+of those chain ids: it enables every feature at genesis and never applies an
+upgrade plan. Only when that query cannot answer (an older node, a transport
+error, an unexpected or empty payload) does the SDK fall back to the plans.
+
+The plan fallback (the chain's own `SignBytesVersionFor`): for EVERY name in
 `SIGN_BYTES_V2_UPGRADES`, ask the node
 `GET {rest}/cosmos/upgrade/v1beta1/applied_plan/{name}` and compare the height
 **numerically** (it is a string, and `{"height":"0"}` is truthy). If ANY of them
@@ -430,8 +439,9 @@ is above 0 → v2; else if the chain is `qorechain-vladi` / `qorechain-diana` �
 else → v2. The names are asked in order and the lookup stops at the first
 positive height, so mainnet costs one request after its upgrade and the testnet
 two. The answer is cached per `(rest_url, chain_id)` for 60 s (a network can
-upgrade while an app is running). If the node cannot be asked for one of those
-two networks, the SDK raises `SignBytesVersionError` instead of guessing.
+upgrade while an app is running). If neither the features nor the plans can be
+read for one of those two networks, the SDK raises `SignBytesVersionError`
+instead of guessing.
 
 ```python
 from qorsdk import (

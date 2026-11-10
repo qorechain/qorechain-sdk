@@ -511,6 +511,8 @@ export {
   signBytesVersionFor,
   fetchSignBytesV2AppliedHeight,
   fetchSignBytesV2AppliedHeightAny,
+  fetchSignBytesVersionFromProtocolFeatures,
+  PQC_SIGN_BYTES_V2_FEATURE,
   resolveSignBytesVersion,
   clearSignBytesCache,
   isHybridSignBytesRejection,

@@ -232,14 +232,21 @@ class SignBytesTest {
      * name with no body configured answers {@code {}} - the plan was never applied on
      * this network, which is what each real network answers for the name it did not
      * take.
+     *
+     * <p>The protocol features route answers HTTP 404 (a node below chain v3.2.4) unless
+     * {@code features} holds a body; those requests are counted in {@code featureCalls},
+     * not in {@code calls}.
      */
-    private static final class FakeFetcher implements SignBytesResolver.PlanFetcher {
+    private static class FakeFetcher implements SignBytesResolver.PlanFetcher {
         final Map<String, String> plans = new ConcurrentHashMap<>();
         volatile boolean fail = false;
         /** When set, only this plan name fails; null fails every name. */
         volatile String failFor = null;
+        /** The protocol features body; null answers HTTP 404. */
+        volatile String features = null;
 
         final List<String> calls = new ArrayList<>();
+        final AtomicLong featureCalls = new AtomicLong();
 
         /** diana today: the record lives under the name the testnet actually took. */
         static FakeFetcher legacyName(String body) {
@@ -250,6 +257,14 @@ class SignBytesTest {
 
         @Override
         public JsonNode get(String restUrl, String path) throws Exception {
+            if (path.equals(FEATURES_PATH)) {
+                featureCalls.incrementAndGet();
+                if (features == null) {
+                    throw new io.github.qorechain.query.Http.QoreHttpException(
+                            404, restUrl + path, "{\"code\":12,\"message\":\"Not Implemented\"}");
+                }
+                return MAPPER.readTree(features);
+            }
             calls.add(restUrl + path);
             String name = path.substring(path.lastIndexOf('/') + 1);
             if (fail && (failFor == null || failFor.equals(name))) {
@@ -270,6 +285,7 @@ class SignBytesTest {
         }
     }
 
+    private static final String FEATURES_PATH = "/qorechain/pqc/v1/protocol_features";
     private static final String PRIMARY_NAME = "v3.2.0";
     private static final String LEGACY_NAME = "v3.1.98";
 
@@ -492,6 +508,140 @@ class SignBytesTest {
         r.clearCache();
         r.resolve(SignBytes.Mode.AUTO, "qorechain-diana", "http://rest");
         assertEquals(6, f.rounds());
+    }
+
+    // ---- protocol features first ----
+
+    private static final String FEATURE_V2_ON =
+            "{\"name\":\"pqc-sign-bytes-v2\",\"enabled\":true,\"known\":true,\"staged\":false}";
+    private static final String FEATURE_V2_OFF =
+            "{\"name\":\"pqc-sign-bytes-v2\",\"enabled\":false,\"known\":true,\"staged\":false}";
+    private static final String FEATURE_OTHER =
+            "{\"name\":\"evm-locked-balance-scaling\",\"enabled\":true,\"known\":true,\"staged\":false}";
+
+    private static String featuresBody(String... items) {
+        return "{\"features\":[" + String.join(",", items) + "],\"height\":\"120\"}";
+    }
+
+    @Test
+    void featureNameMatchesTheChain() {
+        assertEquals("pqc-sign-bytes-v2", SignBytesResolver.PQC_SIGN_BYTES_V2_FEATURE);
+    }
+
+    /**
+     * A fresh network that reuses a legacy chain id enables every feature at genesis and
+     * applies no upgrade plan: the features decide v2 and no plan is asked.
+     */
+    @Test
+    void resolverFeatureEnabledIsV2WithoutAppliedPlan() {
+        for (String chainId : List.of("qorechain-diana", "qorechain-vladi")) {
+            FakeFetcher f = new FakeFetcher();
+            f.features = featuresBody(FEATURE_OTHER, FEATURE_V2_ON);
+            SignBytesResolver r = new SignBytesResolver(f, 60_000, () -> 0L);
+            assertEquals(Version.V2, r.resolve(SignBytes.Mode.AUTO, chainId, "http://rest"));
+            assertEquals(1, f.featureCalls.get());
+            assertTrue(f.calls.isEmpty(), "no plan asked");
+        }
+    }
+
+    @Test
+    void resolverFeatureDisabledOrAbsentIsV1() {
+        for (String body :
+                List.of(featuresBody(FEATURE_OTHER, FEATURE_V2_OFF), featuresBody(FEATURE_OTHER))) {
+            // A plan record saying v2 must not override the features.
+            FakeFetcher f = FakeFetcher.legacyName("{\"height\":\"5746000\"}");
+            f.features = body;
+            SignBytesResolver r = new SignBytesResolver(f, 60_000, () -> 0L);
+            assertEquals(
+                    Version.V1, r.resolve(SignBytes.Mode.AUTO, "qorechain-diana", "http://rest"));
+            assertTrue(f.calls.isEmpty(), "no plan asked");
+        }
+    }
+
+    /** A node that cannot answer the features falls back to the plans, both outcomes as before. */
+    @Test
+    void resolverFeaturesUnusableFallsBackToPlans() {
+        List<String> unusable =
+                Arrays.asList(
+                        null, // HTTP 404
+                        "[\"unexpected\"]",
+                        "\"text\"",
+                        "{\"features\":[],\"height\":\"1\"}",
+                        "{}",
+                        "{\"features\":[" + FEATURE_V2_ON + "],\"height\":\"x\"}");
+        for (String features : unusable) {
+            for (String[] c :
+                    new String[][] {{"{\"height\":\"5746000\"}", "V2"}, {"{\"height\":\"0\"}", "V1"}}) {
+                FakeFetcher f = FakeFetcher.legacyName(c[0]);
+                f.features = features;
+                SignBytesResolver r = new SignBytesResolver(f, 60_000, () -> 0L);
+                assertEquals(
+                        Version.valueOf(c[1]),
+                        r.resolve(SignBytes.Mode.AUTO, "qorechain-diana", "http://rest"),
+                        "features " + features + ", plan " + c[0]);
+                assertEquals(1, f.featureCalls.get());
+                assertEquals(2, f.calls.size(), "both plan names asked");
+            }
+        }
+    }
+
+    @Test
+    void resolverFeaturesTransportFailureFallsBackToPlans() {
+        FakeFetcher f =
+                new FakeFetcher() {
+                    @Override
+                    public JsonNode get(String restUrl, String path) throws Exception {
+                        if (path.equals(FEATURES_PATH)) {
+                            throw new java.io.IOException("connection reset");
+                        }
+                        return super.get(restUrl, path);
+                    }
+                };
+        f.plans.put(PRIMARY_NAME, "{\"height\":\"7000000\"}");
+        SignBytesResolver r = new SignBytesResolver(f, 60_000, () -> 0L);
+        assertEquals(Version.V2, r.resolve(SignBytes.Mode.AUTO, "qorechain-vladi", "http://rest"));
+        assertEquals(1, f.calls.size());
+    }
+
+    @Test
+    void resolverExplicitVersionBeatsFeatures() {
+        FakeFetcher f = new FakeFetcher();
+        f.features = featuresBody(FEATURE_V2_ON);
+        SignBytesResolver r = new SignBytesResolver(f, 60_000, () -> 0L);
+        assertEquals(Version.V1, r.resolve(SignBytes.Mode.V1, "qorechain-diana", "http://rest"));
+        assertEquals(0, f.featureCalls.get());
+    }
+
+    @Test
+    void resolverCachesFeaturesAnswer() {
+        FakeFetcher f = new FakeFetcher();
+        f.features = featuresBody(FEATURE_V2_ON);
+        SignBytesResolver r = new SignBytesResolver(f, 60_000, () -> 0L);
+        assertEquals(Version.V2, r.resolve(SignBytes.Mode.AUTO, "qorechain-diana", "http://rest"));
+        assertEquals(Version.V2, r.resolve(SignBytes.Mode.AUTO, "qorechain-diana", "http://rest"));
+        assertEquals(1, f.featureCalls.get());
+        r.resolve(SignBytes.Mode.AUTO, "qorechain-diana", "http://rest", true);
+        assertEquals(2, f.featureCalls.get());
+    }
+
+    @Test
+    void versionFromProtocolFeaturesPayloads() throws Exception {
+        assertEquals(
+                Version.V2,
+                SignBytesResolver.versionFromProtocolFeatures(
+                        MAPPER.readTree(featuresBody(FEATURE_V2_ON))));
+        assertEquals(
+                Version.V1,
+                SignBytesResolver.versionFromProtocolFeatures(
+                        MAPPER.readTree(featuresBody(FEATURE_V2_OFF))));
+        assertEquals(
+                Version.V1,
+                SignBytesResolver.versionFromProtocolFeatures(
+                        MAPPER.readTree(featuresBody(FEATURE_OTHER))));
+        assertEquals(
+                null, SignBytesResolver.versionFromProtocolFeatures(MAPPER.readTree(featuresBody())));
+        assertEquals(null, SignBytesResolver.versionFromProtocolFeatures(MAPPER.readTree("{}")));
+        assertEquals(null, SignBytesResolver.versionFromProtocolFeatures(null));
     }
 
     // ---- rejection detection ----

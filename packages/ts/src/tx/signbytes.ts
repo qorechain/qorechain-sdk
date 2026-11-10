@@ -12,7 +12,18 @@
  * `qorechain-diana`) verify v1 until a v2 upgrade plan is applied on that
  * network, and v2 from then on. Any other chain verifies v2 from its first
  * block. The testnet and mainnet switch at different heights, so a client must
- * ask the target network rather than hardcode either form:
+ * ask the target network rather than hardcode either form.
+ *
+ * For those two chain ids the resolver first reads the protocol feature
+ * switches (chain v3.2.4 and later):
+ *
+ *     GET {rest}/qorechain/pqc/v1/protocol_features
+ *     v2 iff the listed feature "pqc-sign-bytes-v2" is enabled, else v1.
+ *
+ * This also covers a fresh network that reuses one of those chain ids: it
+ * enables every feature at genesis and never applies an upgrade plan. Only
+ * when that query cannot answer (older node, transport error, unexpected or
+ * empty payload) does the resolver fall back to the upgrade plans:
  *
  *     GET {rest}/cosmos/upgrade/v1beta1/applied_plan/<name> -> {"height":"<n>"}
  *     for each name in SIGN_BYTES_V2_UPGRADES ("v3.2.0", then "v3.1.98")
@@ -32,6 +43,7 @@
  */
 
 import type { FetchLike } from "../query/http";
+import { fetchProtocolFeatures } from "../pqc/protocol-features";
 
 /** A concrete sign-bytes form. */
 export type SignBytesVersion = "v1" | "v2";
@@ -326,6 +338,32 @@ export async function fetchSignBytesV2AppliedHeightAny(
   return 0n;
 }
 
+/** The protocol feature switch that moves a network to the v2 sign-bytes. */
+export const PQC_SIGN_BYTES_V2_FEATURE = "pqc-sign-bytes-v2";
+
+/**
+ * The form a network verifies, read from its protocol feature switches:
+ * `"v2"` when {@link PQC_SIGN_BYTES_V2_FEATURE} is listed and enabled, `"v1"`
+ * when the node lists its features and that one is disabled or absent.
+ *
+ * Returns `undefined` when the switches cannot answer: the node does not serve
+ * the route (below chain v3.2.4), the request fails, or the payload lists no
+ * features. Callers then fall back to the upgrade plans.
+ */
+export async function fetchSignBytesVersionFromProtocolFeatures(
+  rest: string,
+  fetchImpl: FetchLike = globalThis.fetch as FetchLike,
+): Promise<SignBytesVersion | undefined> {
+  let features;
+  try {
+    ({ features } = await fetchProtocolFeatures({ rest, fetch: fetchImpl }));
+  } catch {
+    return undefined;
+  }
+  if (features.length === 0) return undefined;
+  return features.some((f) => f.name === PQC_SIGN_BYTES_V2_FEATURE && f.enabled) ? "v2" : "v1";
+}
+
 /** Options for {@link resolveSignBytesVersion}. */
 export interface ResolveSignBytesVersionOptions {
   chainId: string;
@@ -353,11 +391,14 @@ export function clearSignBytesCache(): void {
  *
  * - `"v1"` / `"v2"`: returned unchanged, no network call.
  * - `"auto"` on a chain that is not a legacy network: `"v2"`, no network call.
- * - `"auto"` on `qorechain-vladi` / `qorechain-diana`: asks `rest` whether the
- *   v3.1.98 plan is applied; the answer is cached per (rest, chainId) for
- *   `ttlMs` because a network can upgrade while a wallet stays open.
+ * - `"auto"` on `qorechain-vladi` / `qorechain-diana`: reads the network's
+ *   protocol feature switches (see
+ *   {@link fetchSignBytesVersionFromProtocolFeatures}); when they cannot
+ *   answer, asks `rest` whether any of {@link SIGN_BYTES_V2_UPGRADES} is
+ *   applied. The answer is cached per (rest, chainId) for `ttlMs` because a
+ *   network can upgrade while a wallet stays open.
  *
- * @throws when a legacy network has no `rest`, or the query fails. Pass an
+ * @throws when a legacy network has no `rest`, or both queries fail. Pass an
  * explicit `"v1"`/`"v2"` in that case - a wrong guess is refused on-chain.
  */
 export async function resolveSignBytesVersion(
@@ -379,6 +420,12 @@ export async function resolveSignBytesVersion(
   const ttl = opts.ttlMs ?? 60_000;
   const hit = cache.get(key);
   if (!opts.forceRefresh && hit && Date.now() - hit.at < ttl) return hit.version;
+
+  const fromFeatures = await fetchSignBytesVersionFromProtocolFeatures(opts.rest, opts.fetch);
+  if (fromFeatures !== undefined) {
+    cache.set(key, { version: fromFeatures, at: Date.now() });
+    return fromFeatures;
+  }
 
   let height: bigint;
   try {

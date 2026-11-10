@@ -241,16 +241,22 @@ published clients up to v0.8.1 do.
 
 **The auto rule** (`signbytes.Auto`, the default): an explicit `signbytes.V1` /
 `signbytes.V2` is used as given; otherwise a non-legacy chain id is v2 with no
-network call, and for `qorechain-vladi` / `qorechain-diana` the SDK asks the node
+network call, and for `qorechain-vladi` / `qorechain-diana` the SDK first reads
+`GET {rest}/qorechain/pqc/v1/protocol_features` (chain v3.2.4 and later): v2 when
+the listed feature `pqc-sign-bytes-v2` (`signbytes.FeatureV2`) is enabled, v1 when
+the node lists its features and that one is disabled or absent. This also covers
+a fresh network that reuses one of those chain ids: it enables every feature at
+genesis and never applies an upgrade plan. Only when that query cannot answer (an
+older node, a transport error, an unexpected or empty payload) does it ask
 `GET {rest}/cosmos/upgrade/v1beta1/applied_plan/{name}` **for every name in
 `signbytes.V2Upgrades`** (`v3.2.0`, then `v3.1.98`), stopping at the first whose
 **numeric** `height` is greater than 0 - that means v2. `"0"`, `{}` or a missing
-height counts as 0, and v1 is answered only when every name answers 0. Mainnet
-after its own upgrade therefore costs one request and diana two. The answer (one
+height counts as 0, and v1 is answered only when every name answers 0. The answer (one
 per resolve, not one per name) is cached per (REST URL, chain id) for 60 s
 (`signbytes.ResolverOptions.TTL`; `Refresh` forces a new query,
-`ClearCache` drops the cache). If a legacy chain has no REST URL, or the query
-fails, resolution returns an error wrapping `signbytes.ErrUnresolvedVersion` -
+`ClearCache` drops the cache). If a legacy chain has no REST URL, or the
+applied-plan query fails after the features could not answer, resolution
+returns an error wrapping `signbytes.ErrUnresolvedVersion` -
 it never guesses.
 
 - The pure builders (`tx.BuildHybridTx`, `tx.BuildHybridMessages`,

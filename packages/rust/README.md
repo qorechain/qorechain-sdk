@@ -258,20 +258,28 @@ record forever. A client that asks one name only reads height 0 on the other
 network, signs v1, and has every hybrid transaction there refused with `pqc`
 code 21.
 
-With `SignBytesMode::Auto` (the default on the async paths) the SDK asks the
-node, for each name in order,
+With `SignBytesMode::Auto` (the default on the async paths) the SDK first reads
+the node's protocol feature switches (chain v3.2.4 and later),
+
+    GET {rest}/qorechain/pqc/v1/protocol_features
+
+and signs v2 when the listed feature `pqc-sign-bytes-v2`
+(`PQC_SIGN_BYTES_V2_FEATURE`) is enabled, v1 when the node lists its features and
+that one is disabled or absent. This also covers a fresh network that reuses one
+of the legacy chain ids: it enables every feature at genesis and never applies
+an upgrade plan. Only when that query cannot answer (an older node, a transport
+error, an unexpected or empty payload) does it ask, for each name in order,
 
     GET {rest}/cosmos/upgrade/v1beta1/applied_plan/{name}  ->  {"height":"<n>"}
 
-and signs v2 when **any** `n > 0` (compared numerically - the height is a
+and sign v2 when **any** `n > 0` (compared numerically - the height is a
 string, and a missing one counts as 0). The lookup stops at the first positive
-height, so mainnet costs one request after its upgrade and the testnet two. The
-answer is cached per `(rest URL, chain id)` for about a minute
+height. The answer is cached per `(rest URL, chain id)` for about a minute
 (`SignBytesResolver::with_ttl`, `force_refresh`, `clear_cache`). If the chain
 still refuses the tx with `pqc` code 21 ("hybrid PQC signature verification
 failed"), the SDK re-asks the node, re-signs and broadcasts **once** more. A
-legacy chain with no REST URL, or a failed query, is an error - the SDK never
-guesses.
+legacy chain with no REST URL, or a failed plan query after the features could
+not answer, is an error - the SDK never guesses.
 
 **Today:** both networks verify **v2 only**: the testnet applied `v3.1.98`,
 mainnet applied `v3.2.0`.

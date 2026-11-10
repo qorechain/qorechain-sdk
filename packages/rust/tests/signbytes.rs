@@ -36,8 +36,9 @@ use qorechain::signbytes::{
     hybrid_sign_bytes_v1, hybrid_sign_bytes_v2, is_hybrid_sign_bytes_rejection,
     is_hybrid_sign_bytes_rejection_error, is_hybrid_sign_bytes_rejection_response,
     migration_sign_bytes, migration_sign_bytes_v1, migration_sign_bytes_v2, sign_bytes_version_for,
-    BridgeAttestationSignFields, MigrationSignFields, SignBytesMode, SignBytesResolver,
-    SignBytesVersion, HYBRID_SIGN_BYTES_DOMAIN, SIGN_BYTES_V2_UPGRADE, SIGN_BYTES_V2_UPGRADES,
+    sign_bytes_version_from_protocol_features, BridgeAttestationSignFields, MigrationSignFields,
+    SignBytesMode, SignBytesResolver, SignBytesVersion, HYBRID_SIGN_BYTES_DOMAIN,
+    PQC_SIGN_BYTES_V2_FEATURE, SIGN_BYTES_V2_UPGRADE, SIGN_BYTES_V2_UPGRADES,
 };
 use qorechain::tx::{
     build_hybrid_tx, BroadcastMode, BuildHybridTxParams, Coin, Fee, Message as TxMessage,
@@ -265,11 +266,14 @@ fn version_for_truth_table() {
 
 /// A mock node: every `applied_plan` name answers `(status, plan_body)` (both
 /// mutable), unless `set_plan_for` overrides one name; each broadcast POST pops
-/// the next queued response (the last one repeats).
+/// the next queued response (the last one repeats). The protocol features
+/// route answers 404 (a node below chain v3.2.4) unless `set_features` gave it
+/// an answer.
 struct MockNode {
     base_url: String,
     plan: Arc<Mutex<(u16, String)>>,
     plan_overrides: Arc<Mutex<HashMap<String, (u16, String)>>>,
+    features: Arc<Mutex<Option<(u16, String)>>>,
     hits: Arc<Mutex<Vec<(String, String)>>>,
     _shutdown: tokio::sync::oneshot::Sender<()>,
 }
@@ -285,13 +289,15 @@ impl MockNode {
             broadcasts.iter().map(|b| b.to_string()).collect::<Vec<_>>(),
         ));
         let hits: Arc<Mutex<Vec<(String, String)>>> = Arc::new(Mutex::new(Vec::new()));
+        let features: Arc<Mutex<Option<(u16, String)>>> = Arc::new(Mutex::new(None));
         let (tx, mut rx) = tokio::sync::oneshot::channel::<()>();
 
-        let (plan_c, over_c, queued_c, hits_c) = (
+        let (plan_c, over_c, queued_c, hits_c, feat_c) = (
             plan.clone(),
             plan_overrides.clone(),
             queued.clone(),
             hits.clone(),
+            features.clone(),
         );
         tokio::spawn(async move {
             loop {
@@ -299,12 +305,22 @@ impl MockNode {
                     _ = &mut rx => break,
                     accepted = listener.accept() => {
                         let Ok((stream, _)) = accepted else { continue };
-                        let (plan, over, queued, hits) =
-                            (plan_c.clone(), over_c.clone(), queued_c.clone(), hits_c.clone());
+                        let (plan, over, queued, hits, feat) = (
+                            plan_c.clone(),
+                            over_c.clone(),
+                            queued_c.clone(),
+                            hits_c.clone(),
+                            feat_c.clone(),
+                        );
                         tokio::spawn(async move {
                             let svc = service_fn(move |req: Request<hyper::body::Incoming>| {
-                                let (plan, over, queued, hits) =
-                                    (plan.clone(), over.clone(), queued.clone(), hits.clone());
+                                let (plan, over, queued, hits, feat) = (
+                                    plan.clone(),
+                                    over.clone(),
+                                    queued.clone(),
+                                    hits.clone(),
+                                    feat.clone(),
+                                );
                                 async move {
                                     let path = req.uri().path().to_string();
                                     let bytes = req.into_body().collect().await.unwrap().to_bytes();
@@ -318,6 +334,11 @@ impl MockNode {
                                             .get(name)
                                             .cloned()
                                             .unwrap_or_else(|| plan.lock().unwrap().clone())
+                                    } else if path == FEATURES_PATH {
+                                        feat.lock()
+                                            .unwrap()
+                                            .clone()
+                                            .unwrap_or((404, r#"{"code":12,"message":"Not Implemented"}"#.to_string()))
                                     } else if path == BROADCAST_PATH {
                                         let mut q = queued.lock().unwrap();
                                         let next = if q.len() > 1 { q.remove(0) } else { q[0].clone() };
@@ -343,6 +364,7 @@ impl MockNode {
             base_url,
             plan,
             plan_overrides,
+            features,
             hits,
             _shutdown: tx,
         }
@@ -351,6 +373,16 @@ impl MockNode {
     /// The answer every `applied_plan` name gives (unless overridden).
     fn set_plan(&self, status: u16, body: &str) {
         *self.plan.lock().unwrap() = (status, body.to_string());
+    }
+
+    /// The answer the protocol features route gives.
+    fn set_features(&self, status: u16, body: &str) {
+        *self.features.lock().unwrap() = Some((status, body.to_string()));
+    }
+
+    /// How many times the protocol features route was asked.
+    fn feature_hits(&self) -> usize {
+        self.hits_on(FEATURES_PATH).len()
     }
 
     /// The answer ONE plan name gives, e.g. only `v3.1.98` (as on the testnet).
@@ -670,6 +702,156 @@ async fn resolver_expired_ttl_requeries() {
     );
     // Two requests for the first (unapplied) lookup, one for the re-query.
     assert_eq!(node.plan_hits().len(), 3);
+}
+
+// ---------------------------------------------------------------------------
+// Resolver: protocol features first
+// ---------------------------------------------------------------------------
+
+const FEATURES_PATH: &str = "/qorechain/pqc/v1/protocol_features";
+const FEATURE_V2_ON: &str =
+    r#"{"name":"pqc-sign-bytes-v2","enabled":true,"known":true,"staged":false}"#;
+const FEATURE_V2_OFF: &str =
+    r#"{"name":"pqc-sign-bytes-v2","enabled":false,"known":true,"staged":false}"#;
+const FEATURE_OTHER: &str =
+    r#"{"name":"evm-locked-balance-scaling","enabled":true,"known":true,"staged":false}"#;
+
+fn features_body(items: &[&str]) -> String {
+    format!(r#"{{"features":[{}],"height":"120"}}"#, items.join(","))
+}
+
+#[test]
+fn feature_name_matches_the_chain() {
+    assert_eq!(PQC_SIGN_BYTES_V2_FEATURE, "pqc-sign-bytes-v2");
+}
+
+/// A fresh network that reuses a legacy chain id enables every feature at
+/// genesis and applies no upgrade plan: the features decide v2.
+#[tokio::test]
+async fn resolver_feature_enabled_is_v2_without_an_applied_plan() {
+    for chain in ["qorechain-diana", "qorechain-vladi"] {
+        let node = MockNode::start(r#"{"height":"0"}"#, &["{}"]).await;
+        node.set_features(200, &features_body(&[FEATURE_OTHER, FEATURE_V2_ON]));
+        let got = SignBytesResolver::new()
+            .resolve(SignBytesMode::Auto, chain, Some(&node.base_url))
+            .await
+            .unwrap();
+        assert_eq!(got, SignBytesVersion::V2, "{chain}");
+        assert_eq!(node.feature_hits(), 1);
+        assert!(node.plan_hits().is_empty(), "no plan asked");
+    }
+}
+
+#[tokio::test]
+async fn resolver_feature_disabled_or_absent_is_v1() {
+    for body in [
+        features_body(&[FEATURE_OTHER, FEATURE_V2_OFF]),
+        features_body(&[FEATURE_OTHER]),
+    ] {
+        // A plan record saying v2 must not override the features.
+        let node = MockNode::start(r#"{"height":"5746000"}"#, &["{}"]).await;
+        node.set_features(200, &body);
+        let got = SignBytesResolver::new()
+            .resolve(SignBytesMode::Auto, "qorechain-diana", Some(&node.base_url))
+            .await
+            .unwrap();
+        assert_eq!(got, SignBytesVersion::V1, "{body}");
+        assert!(node.plan_hits().is_empty());
+    }
+}
+
+#[tokio::test]
+async fn resolver_features_unusable_falls_back_to_the_plans() {
+    let cases: [(Option<(u16, &str)>, &str); 5] = [
+        (None, "404"),
+        (
+            Some((501, r#"{"code":12,"message":"Not Implemented"}"#)),
+            "501",
+        ),
+        (Some((200, "<html>")), "unparseable"),
+        (Some((200, r#"{"features":[],"height":"1"}"#)), "empty list"),
+        (Some((200, "{}")), "no list"),
+    ];
+    for (features, label) in cases {
+        for (plan, want) in [
+            (r#"{"height":"5746000"}"#, SignBytesVersion::V2),
+            (r#"{"height":"0"}"#, SignBytesVersion::V1),
+        ] {
+            let node = MockNode::start(plan, &["{}"]).await;
+            if let Some((status, body)) = features {
+                node.set_features(status, body);
+            }
+            let got = SignBytesResolver::new()
+                .resolve(SignBytesMode::Auto, "qorechain-diana", Some(&node.base_url))
+                .await
+                .unwrap();
+            assert_eq!(got, want, "{label} / {plan}");
+            assert_eq!(node.feature_hits(), 1, "{label}");
+            assert_eq!(node.plan_hits()[0], PLAN_PATH_PRIMARY, "{label}");
+        }
+    }
+}
+
+#[tokio::test]
+async fn resolver_explicit_version_beats_the_features() {
+    let node = MockNode::start(r#"{"height":"0"}"#, &["{}"]).await;
+    node.set_features(200, &features_body(&[FEATURE_V2_ON]));
+    let got = SignBytesResolver::new()
+        .resolve(SignBytesMode::V1, "qorechain-diana", Some(&node.base_url))
+        .await
+        .unwrap();
+    assert_eq!(got, SignBytesVersion::V1);
+    assert_eq!(node.feature_hits(), 0);
+}
+
+#[tokio::test]
+async fn resolver_caches_the_features_answer() {
+    let node = MockNode::start(r#"{"height":"0"}"#, &["{}"]).await;
+    node.set_features(200, &features_body(&[FEATURE_V2_ON]));
+    let r = SignBytesResolver::new();
+    let url = Some(node.base_url.as_str());
+    for _ in 0..2 {
+        assert_eq!(
+            r.resolve(SignBytesMode::Auto, "qorechain-diana", url)
+                .await
+                .unwrap(),
+            SignBytesVersion::V2
+        );
+    }
+    assert_eq!(node.feature_hits(), 1);
+    r.force_refresh("qorechain-diana", url).await.unwrap();
+    assert_eq!(node.feature_hits(), 2);
+}
+
+#[test]
+fn version_from_protocol_features_payloads() {
+    let parse = |s: &str| serde_json::from_str::<Value>(s).unwrap();
+    assert_eq!(
+        sign_bytes_version_from_protocol_features(&parse(&features_body(&[FEATURE_V2_ON]))),
+        Some(SignBytesVersion::V2)
+    );
+    assert_eq!(
+        sign_bytes_version_from_protocol_features(&parse(&features_body(&[FEATURE_V2_OFF]))),
+        Some(SignBytesVersion::V1)
+    );
+    assert_eq!(
+        sign_bytes_version_from_protocol_features(&parse(&features_body(&[FEATURE_OTHER]))),
+        Some(SignBytesVersion::V1)
+    );
+    assert_eq!(
+        sign_bytes_version_from_protocol_features(&parse(&features_body(&[]))),
+        None
+    );
+    assert_eq!(
+        sign_bytes_version_from_protocol_features(&parse("{}")),
+        None
+    );
+    assert_eq!(
+        sign_bytes_version_from_protocol_features(&parse(
+            r#"{"features":[{"name":"pqc-sign-bytes-v2","enabled":true}],"height":"x"}"#
+        )),
+        None
+    );
 }
 
 // ---------------------------------------------------------------------------

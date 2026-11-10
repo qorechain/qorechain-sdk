@@ -133,9 +133,9 @@ pub use signbytes::{
     bridge_attestation_sign_bytes, broadcast_with_sign_bytes_retry, clear_sign_bytes_cache,
     default_sign_bytes_resolver, hybrid_sign_bytes, is_hybrid_sign_bytes_rejection,
     is_legacy_sign_bytes_chain, migration_sign_bytes, resolve_sign_bytes_version,
-    sign_bytes_version_for, BridgeAttestationSignFields, HybridBroadcast, MigrationSignFields,
-    SignBytesMode, SignBytesResolver, SignBytesVersion, SIGN_BYTES_V2_UPGRADE,
-    SIGN_BYTES_V2_UPGRADES,
+    sign_bytes_version_for, sign_bytes_version_from_protocol_features, BridgeAttestationSignFields,
+    HybridBroadcast, MigrationSignFields, SignBytesMode, SignBytesResolver, SignBytesVersion,
+    PQC_SIGN_BYTES_V2_FEATURE, SIGN_BYTES_V2_UPGRADE, SIGN_BYTES_V2_UPGRADES,
 };
 
 pub use evm_window::{

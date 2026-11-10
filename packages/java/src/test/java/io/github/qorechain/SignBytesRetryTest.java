@@ -92,6 +92,16 @@ class SignBytesRetryTest {
                                     ? "{\"height\":\"" + appliedHeight + "\"}"
                                     : "{}");
                 });
+        // A node below chain v3.2.4: the protocol features route is not served, so the
+        // resolver falls back to the applied-plan lookup above.
+        server.createContext(
+                "/qorechain/pqc/v1/protocol_features",
+                ex -> {
+                    byte[] nf = "{\"code\":12,\"message\":\"Not Implemented\"}".getBytes(StandardCharsets.UTF_8);
+                    ex.sendResponseHeaders(404, nf.length);
+                    ex.getResponseBody().write(nf);
+                    ex.close();
+                });
         server.createContext(
                 "/",
                 ex -> {
