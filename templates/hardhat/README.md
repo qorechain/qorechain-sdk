@@ -50,10 +50,24 @@ pnpm window register   # once per account: registers its ML-DSA-87 key
 pnpm window open       # opens a window: 600 blocks, 5 transactions
 ```
 
-The helper derives the account from `PRIVATE_KEY` (or from `QORE_MNEMONIC`
-when set) and derives its ML-DSA-87 key from the same secret, so keep using the
-same one. If the account already has a key registered by another wallet, open
-the window from that wallet instead.
+With `QORE_MNEMONIC` set, the helper derives the account and its ML-DSA-87 key
+from the mnemonic. Otherwise it uses `PRIVATE_KEY` for the account and a PQC
+recovery code, `QORE_PQC_RECOVERY_CODE`, for the ML-DSA-87 key; it stops with a
+message if the code is missing. Create a code once and put it in `.env`:
+
+```sh
+pnpm window recovery-code   # prints a new QRC1 code (generatePqcRecoveryCode)
+```
+
+Keep a copy of the code apart from the private key and keep using the same
+one: a different code gives the account a different ML-DSA-87 key. If the
+account already has a key registered by another wallet, open the window from
+that wallet instead. An account registered with this helper before SDK 0.13.0
+has a different key registered; `pnpm window status` then shows
+"registered, but NOT this key". Rotate it to the recovery-code key with
+`rotatePqcKeyMsg` (MsgRotatePQCKey), loading the old key with
+`unifiedAccountFromSeed(seed, { legacySeedDerivation: true })` (see the
+`@qorechain/sdk` README).
 
 - The window bounds blocks, EVM transactions, and the total they may spend:
   value **plus** the maximum fee (gas limit x fee cap) of each transaction.

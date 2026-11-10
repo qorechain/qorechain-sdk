@@ -10,10 +10,12 @@
  *   pnpm window status     show the account, its PQC key and its window
  *   pnpm window register   register the account's ML-DSA-87 key (once)
  *   pnpm window open       open a window sized for a few deploys
+ *   pnpm window recovery-code   print a new PQC recovery code (QRC1)
  *
- * The account comes from QORE_MNEMONIC (BIP-44 m/44'/60'/0'/0/0) or, if unset,
- * from PRIVATE_KEY. Its ML-DSA-87 key is derived deterministically from the
- * same secret, so keep using the same one.
+ * The account comes from QORE_MNEMONIC (BIP-44 m/44'/60'/0'/0/0), whose
+ * ML-DSA-87 key is derived from the same mnemonic, or, if unset, from
+ * PRIVATE_KEY together with QORE_PQC_RECOVERY_CODE: the recovery code is a
+ * second secret the ML-DSA-87 key is derived from. Keep using the same ones.
  */
 import { StargateClient } from "@cosmjs/stargate";
 import {
@@ -22,7 +24,9 @@ import {
   buildRegisterPqcKeyMsg,
   deriveUnifiedAccount,
   fetchPqcStatus,
+  generatePqcRecoveryCode,
   isRegisteredPqcKey,
+  isValidRecoveryCode,
   openEvmWindowMsg,
   signProofOfPossession,
   unifiedAccountFromSeed,
@@ -62,7 +66,18 @@ async function account(): Promise<UnifiedAccount> {
   if (!key || !/^0x[0-9a-fA-F]{64}$/.test(key)) {
     throw new Error("Set QORE_MNEMONIC, or PRIVATE_KEY as 0x followed by 64 hex characters, in .env");
   }
-  return unifiedAccountFromSeed(Uint8Array.from(Buffer.from(key.slice(2), "hex")));
+  const recoveryCode = process.env.QORE_PQC_RECOVERY_CODE?.trim();
+  if (!recoveryCode) {
+    throw new Error(
+      "Set QORE_PQC_RECOVERY_CODE in .env: with PRIVATE_KEY the account's ML-DSA-87 key comes from a separate " +
+        "recovery code. Create one with `pnpm window recovery-code` (generatePqcRecoveryCode from @qorechain/sdk) " +
+        "and store it apart from the private key, or set QORE_MNEMONIC instead.",
+    );
+  }
+  if (!isValidRecoveryCode(recoveryCode)) {
+    throw new Error("QORE_PQC_RECOVERY_CODE is not a valid QRC1 recovery code (check for a typo)");
+  }
+  return unifiedAccountFromSeed(Uint8Array.from(Buffer.from(key.slice(2), "hex")), { recoveryCode });
 }
 
 /** account_number and sequence over REST; zero for an account never seen. */
@@ -148,11 +163,17 @@ async function open(): Promise<void> {
   console.log("Opening advanced the account's nonce; deploy now.");
 }
 
-const commands: Record<string, () => Promise<void>> = { status, register, open };
+async function recoveryCode(): Promise<void> {
+  console.log(generatePqcRecoveryCode());
+  console.log("Put it in .env as QORE_PQC_RECOVERY_CODE and keep a copy apart from PRIVATE_KEY.");
+  console.log("Use the same code every time: a new code gives the account a different ML-DSA-87 key.");
+}
+
+const commands: Record<string, () => Promise<void>> = { status, register, open, "recovery-code": recoveryCode };
 const cmd = process.argv[2] ?? "status";
 const run = commands[cmd];
 if (!run) {
-  console.error(`Unknown command "${cmd}". Use: status | register | open`);
+  console.error(`Unknown command "${cmd}". Use: status | register | open | recovery-code`);
   process.exit(1);
 }
 run().catch((err: unknown) => {
