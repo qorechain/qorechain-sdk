@@ -28,7 +28,7 @@ import {
 } from "./scaffold.js";
 import { findTemplate, TEMPLATES, templateIdList } from "./templates.js";
 
-const VERSION = "0.5.1";
+const VERSION = "0.13.0";
 
 function isEmptyOrMissing(dir: string): boolean {
   if (!existsSync(dir)) return true;
