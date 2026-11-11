@@ -111,6 +111,13 @@ export interface MsgRegisterAuthenticator {
   /** unix seconds; must be within MaxSessionTTL */
   expiryUnix: string;
   label: string;
+  /**
+   * possession_proof is a signature by the linked key, under its scheme, over
+   * the link message (types.AuthenticatorLinkMessage: chain id, account,
+   * scheme and key). Required from v3.2.8
+   * (abstractaccount-authenticator-possession), ignored before.
+   */
+  possessionProof: Uint8Array;
 }
 
 export interface MsgRegisterAuthenticatorResponse {
@@ -162,6 +169,15 @@ export interface MsgExecuteEVM {
   nonce: string;
 }
 
+/**
+ * MsgExecuteEVMResponse. From v3.2.8 (abstractaccount-failed-execution-burns-nonce)
+ * an execution that fails after the signature, the key, its permission and the
+ * nonce were accepted (call policy, value cap, a reverted call, deploy scope,
+ * measured spend) consumes the nonce and returns success=false with the reason
+ * in vm_error; the transaction itself succeeds and the call's state is dropped.
+ * Relayers must treat success=false as final: the same signature cannot be
+ * relayed again.
+ */
 export interface MsgExecuteEVMResponse {
   success: boolean;
   ret: Uint8Array;
@@ -200,6 +216,13 @@ export interface MsgExecuteCosmos {
   nonce: string;
 }
 
+/**
+ * MsgExecuteCosmosResponse. From v3.2.8 (abstractaccount-failed-execution-burns-nonce)
+ * a transfer that fails after the signature, the key, its permission and the
+ * nonce were accepted (spending rule, bank send) consumes the nonce and returns
+ * success=false; the reason is in the abstractaccount_execution_failed event.
+ * Relayers must treat success=false as final.
+ */
 export interface MsgExecuteCosmosResponse {
   success: boolean;
 }
@@ -799,6 +822,7 @@ function createBaseMsgRegisterAuthenticator(): MsgRegisterAuthenticator {
     permissions: [],
     expiryUnix: "0",
     label: "",
+    possessionProof: new Uint8Array(0),
   };
 }
 
@@ -824,6 +848,9 @@ export const MsgRegisterAuthenticator: MessageFns<MsgRegisterAuthenticator> = {
     }
     if (message.label !== "") {
       writer.uint32(58).string(message.label);
+    }
+    if (message.possessionProof.length !== 0) {
+      writer.uint32(66).bytes(message.possessionProof);
     }
     return writer;
   },
@@ -891,6 +918,14 @@ export const MsgRegisterAuthenticator: MessageFns<MsgRegisterAuthenticator> = {
           message.label = reader.string();
           continue;
         }
+        case 8: {
+          if (tag !== 66) {
+            break;
+          }
+
+          message.possessionProof = reader.bytes();
+          continue;
+        }
       }
       if ((tag & 7) === 4 || tag === 0) {
         break;
@@ -919,6 +954,11 @@ export const MsgRegisterAuthenticator: MessageFns<MsgRegisterAuthenticator> = {
         ? globalThis.String(object.expiry_unix)
         : "0",
       label: isSet(object.label) ? globalThis.String(object.label) : "",
+      possessionProof: isSet(object.possessionProof)
+        ? bytesFromBase64(object.possessionProof)
+        : isSet(object.possession_proof)
+        ? bytesFromBase64(object.possession_proof)
+        : new Uint8Array(0),
     };
   },
 
@@ -945,6 +985,9 @@ export const MsgRegisterAuthenticator: MessageFns<MsgRegisterAuthenticator> = {
     if (message.label !== "") {
       obj.label = message.label;
     }
+    if (message.possessionProof.length !== 0) {
+      obj.possessionProof = base64FromBytes(message.possessionProof);
+    }
     return obj;
   },
 
@@ -960,6 +1003,7 @@ export const MsgRegisterAuthenticator: MessageFns<MsgRegisterAuthenticator> = {
     message.permissions = object.permissions?.map((e) => e) || [];
     message.expiryUnix = object.expiryUnix ?? "0";
     message.label = object.label ?? "";
+    message.possessionProof = object.possessionProof ?? new Uint8Array(0);
     return message;
   },
 };

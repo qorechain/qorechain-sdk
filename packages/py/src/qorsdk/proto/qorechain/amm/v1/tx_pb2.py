@@ -26,9 +26,10 @@ from cosmpy.protos.cosmos.msg.v1 import msg_pb2 as cosmos_dot_msg_dot_v1_dot_msg
 from cosmpy.protos.cosmos_proto import cosmos_pb2 as cosmos__proto_dot_cosmos__pb2
 from cosmpy.protos.cosmos.base.v1beta1 import coin_pb2 as cosmos_dot_base_dot_v1beta1_dot_coin__pb2
 from cosmpy.protos.gogoproto import gogo_pb2 as gogoproto_dot_gogo__pb2
+from qorsdk.proto.qorechain.amm.v1 import query_pb2 as qorechain_dot_amm_dot_v1_dot_query__pb2
 
 
-DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\x19qorechain/amm/v1/tx.proto\x12\x10qorechain.amm.v1\x1a\x17\x63osmos/msg/v1/msg.proto\x1a\x19\x63osmos_proto/cosmos.proto\x1a\x1e\x63osmos/base/v1beta1/coin.proto\x1a\x14gogoproto/gogo.proto\"\xd3\x02\n\rMsgCreatePool\x12\x32\n\x07\x63reator\x18\x01 \x01(\tB\x18\xd2\xb4-\x14\x63osmos.AddressStringR\x07\x63reator\x12)\n\tpool_type\x18\x02 \x01(\tB\x0c\xfa\xde\x1f\x08PoolTypeR\x08poolType\x12K\n\x11initial_deposit_a\x18\x03 \x01(\x0b\x32\x19.cosmos.base.v1beta1.CoinB\x04\xc8\xde\x1f\x00R\x0finitialDepositA\x12K\n\x11initial_deposit_b\x18\x04 \x01(\x0b\x32\x19.cosmos.base.v1beta1.CoinB\x04\xc8\xde\x1f\x00R\x0finitialDepositB\x12;\n\x19\x61mplification_coefficient\x18\x05 \x01(\rR\x18\x61mplificationCoefficient:\x0c\x82\xe7\xb0*\x07\x63reator\"<\n\x15MsgCreatePoolResponse\x12#\n\x07pool_id\x18\x01 \x01(\x04\x42\n\xe2\xde\x1f\x06PoolIDR\x06poolId\"\xb6\x02\n\x0fMsgAddLiquidity\x12\x30\n\x06sender\x18\x01 \x01(\tB\x18\xd2\xb4-\x14\x63osmos.AddressStringR\x06sender\x12#\n\x07pool_id\x18\x02 \x01(\x04\x42\n\xe2\xde\x1f\x06PoolIDR\x06poolId\x12:\n\x08\x61mount_a\x18\x03 \x01(\x0b\x32\x19.cosmos.base.v1beta1.CoinB\x04\xc8\xde\x1f\x00R\x07\x61mountA\x12:\n\x08\x61mount_b\x18\x04 \x01(\x0b\x32\x19.cosmos.base.v1beta1.CoinB\x04\xc8\xde\x1f\x00R\x07\x61mountB\x12G\n\nmin_lp_out\x18\x05 \x01(\tB)\xc8\xde\x1f\x00\xda\xde\x1f\x15\x63osmossdk.io/math.Int\xe2\xde\x1f\x08MinLPOutR\x08minLpOut:\x0b\x82\xe7\xb0*\x06sender\"\x19\n\x17MsgAddLiquidityResponse\"\xc2\x02\n\x12MsgRemoveLiquidity\x12\x30\n\x06sender\x18\x01 \x01(\tB\x18\xd2\xb4-\x14\x63osmos.AddressStringR\x06sender\x12#\n\x07pool_id\x18\x02 \x01(\x04\x42\n\xe2\xde\x1f\x06PoolIDR\x06poolId\x12\x46\n\tlp_amount\x18\x03 \x01(\tB)\xc8\xde\x1f\x00\xda\xde\x1f\x15\x63osmossdk.io/math.Int\xe2\xde\x1f\x08LPAmountR\x08lpAmount\x12?\n\x0cmin_amount_a\x18\x04 \x01(\tB\x1d\xc8\xde\x1f\x00\xda\xde\x1f\x15\x63osmossdk.io/math.IntR\nminAmountA\x12?\n\x0cmin_amount_b\x18\x05 \x01(\tB\x1d\xc8\xde\x1f\x00\xda\xde\x1f\x15\x63osmossdk.io/math.IntR\nminAmountB:\x0b\x82\xe7\xb0*\x06sender\"\x1c\n\x1aMsgRemoveLiquidityResponse\"\x85\x02\n\x0eMsgSwapExactIn\x12\x30\n\x06sender\x18\x01 \x01(\tB\x18\xd2\xb4-\x14\x63osmos.AddressStringR\x06sender\x12#\n\x07pool_id\x18\x02 \x01(\x04\x42\n\xe2\xde\x1f\x06PoolIDR\x06poolId\x12:\n\x08token_in\x18\x03 \x01(\x0b\x32\x19.cosmos.base.v1beta1.CoinB\x04\xc8\xde\x1f\x00R\x07tokenIn\x12\x1b\n\tdenom_out\x18\x04 \x01(\tR\x08\x64\x65nomOut\x12\x36\n\x07min_out\x18\x05 \x01(\tB\x1d\xc8\xde\x1f\x00\xda\xde\x1f\x15\x63osmossdk.io/math.IntR\x06minOut:\x0b\x82\xe7\xb0*\x06sender\"\x18\n\x16MsgSwapExactInResponse\"\x84\x02\n\x0fMsgSwapExactOut\x12\x30\n\x06sender\x18\x01 \x01(\tB\x18\xd2\xb4-\x14\x63osmos.AddressStringR\x06sender\x12#\n\x07pool_id\x18\x02 \x01(\x04\x42\n\xe2\xde\x1f\x06PoolIDR\x06poolId\x12\x19\n\x08\x64\x65nom_in\x18\x03 \x01(\tR\x07\x64\x65nomIn\x12<\n\ttoken_out\x18\x04 \x01(\x0b\x32\x19.cosmos.base.v1beta1.CoinB\x04\xc8\xde\x1f\x00R\x08tokenOut\x12\x34\n\x06max_in\x18\x05 \x01(\tB\x1d\xc8\xde\x1f\x00\xda\xde\x1f\x15\x63osmossdk.io/math.IntR\x05maxIn:\x0b\x82\xe7\xb0*\x06sender\"\x19\n\x17MsgSwapExactOutResponse\"\x93\x01\n\x0cMsgPausePool\x12\x36\n\tauthority\x18\x01 \x01(\tB\x18\xd2\xb4-\x14\x63osmos.AddressStringR\tauthority\x12#\n\x07pool_id\x18\x02 \x01(\x04\x42\n\xe2\xde\x1f\x06PoolIDR\x06poolId\x12\x16\n\x06reason\x18\x03 \x01(\tR\x06reason:\x0e\x82\xe7\xb0*\tauthority\"\x16\n\x14MsgPausePoolResponse\"|\n\rMsgResumePool\x12\x36\n\tauthority\x18\x01 \x01(\tB\x18\xd2\xb4-\x14\x63osmos.AddressStringR\tauthority\x12#\n\x07pool_id\x18\x02 \x01(\x04\x42\n\xe2\xde\x1f\x06PoolIDR\x06poolId:\x0e\x82\xe7\xb0*\tauthority\"\x17\n\x15MsgResumePoolResponse2\x8f\x05\n\x03Msg\x12V\n\nCreatePool\x12\x1f.qorechain.amm.v1.MsgCreatePool\x1a\'.qorechain.amm.v1.MsgCreatePoolResponse\x12\\\n\x0c\x41\x64\x64Liquidity\x12!.qorechain.amm.v1.MsgAddLiquidity\x1a).qorechain.amm.v1.MsgAddLiquidityResponse\x12\x65\n\x0fRemoveLiquidity\x12$.qorechain.amm.v1.MsgRemoveLiquidity\x1a,.qorechain.amm.v1.MsgRemoveLiquidityResponse\x12Y\n\x0bSwapExactIn\x12 .qorechain.amm.v1.MsgSwapExactIn\x1a(.qorechain.amm.v1.MsgSwapExactInResponse\x12\\\n\x0cSwapExactOut\x12!.qorechain.amm.v1.MsgSwapExactOut\x1a).qorechain.amm.v1.MsgSwapExactOutResponse\x12S\n\tPausePool\x12\x1e.qorechain.amm.v1.MsgPausePool\x1a&.qorechain.amm.v1.MsgPausePoolResponse\x12V\n\nResumePool\x12\x1f.qorechain.amm.v1.MsgResumePool\x1a\'.qorechain.amm.v1.MsgResumePoolResponse\x1a\x05\x80\xe7\xb0*\x01\x42\xb2\x01\n\x14\x63om.qorechain.amm.v1B\x07TxProtoP\x01Z/github.com/qorechain/qorechain-core/x/amm/types\xa2\x02\x03QAX\xaa\x02\x10Qorechain.Amm.V1\xca\x02\x10Qorechain\\Amm\\V1\xe2\x02\x1cQorechain\\Amm\\V1\\GPBMetadata\xea\x02\x12Qorechain::Amm::V1b\x06proto3')
+DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\x19qorechain/amm/v1/tx.proto\x12\x10qorechain.amm.v1\x1a\x17\x63osmos/msg/v1/msg.proto\x1a\x19\x63osmos_proto/cosmos.proto\x1a\x1e\x63osmos/base/v1beta1/coin.proto\x1a\x14gogoproto/gogo.proto\x1a\x1cqorechain/amm/v1/query.proto\"\xd3\x02\n\rMsgCreatePool\x12\x32\n\x07\x63reator\x18\x01 \x01(\tB\x18\xd2\xb4-\x14\x63osmos.AddressStringR\x07\x63reator\x12)\n\tpool_type\x18\x02 \x01(\tB\x0c\xfa\xde\x1f\x08PoolTypeR\x08poolType\x12K\n\x11initial_deposit_a\x18\x03 \x01(\x0b\x32\x19.cosmos.base.v1beta1.CoinB\x04\xc8\xde\x1f\x00R\x0finitialDepositA\x12K\n\x11initial_deposit_b\x18\x04 \x01(\x0b\x32\x19.cosmos.base.v1beta1.CoinB\x04\xc8\xde\x1f\x00R\x0finitialDepositB\x12;\n\x19\x61mplification_coefficient\x18\x05 \x01(\rR\x18\x61mplificationCoefficient:\x0c\x82\xe7\xb0*\x07\x63reator\"<\n\x15MsgCreatePoolResponse\x12#\n\x07pool_id\x18\x01 \x01(\x04\x42\n\xe2\xde\x1f\x06PoolIDR\x06poolId\"\xb6\x02\n\x0fMsgAddLiquidity\x12\x30\n\x06sender\x18\x01 \x01(\tB\x18\xd2\xb4-\x14\x63osmos.AddressStringR\x06sender\x12#\n\x07pool_id\x18\x02 \x01(\x04\x42\n\xe2\xde\x1f\x06PoolIDR\x06poolId\x12:\n\x08\x61mount_a\x18\x03 \x01(\x0b\x32\x19.cosmos.base.v1beta1.CoinB\x04\xc8\xde\x1f\x00R\x07\x61mountA\x12:\n\x08\x61mount_b\x18\x04 \x01(\x0b\x32\x19.cosmos.base.v1beta1.CoinB\x04\xc8\xde\x1f\x00R\x07\x61mountB\x12G\n\nmin_lp_out\x18\x05 \x01(\tB)\xc8\xde\x1f\x00\xda\xde\x1f\x15\x63osmossdk.io/math.Int\xe2\xde\x1f\x08MinLPOutR\x08minLpOut:\x0b\x82\xe7\xb0*\x06sender\"\x19\n\x17MsgAddLiquidityResponse\"\xc2\x02\n\x12MsgRemoveLiquidity\x12\x30\n\x06sender\x18\x01 \x01(\tB\x18\xd2\xb4-\x14\x63osmos.AddressStringR\x06sender\x12#\n\x07pool_id\x18\x02 \x01(\x04\x42\n\xe2\xde\x1f\x06PoolIDR\x06poolId\x12\x46\n\tlp_amount\x18\x03 \x01(\tB)\xc8\xde\x1f\x00\xda\xde\x1f\x15\x63osmossdk.io/math.Int\xe2\xde\x1f\x08LPAmountR\x08lpAmount\x12?\n\x0cmin_amount_a\x18\x04 \x01(\tB\x1d\xc8\xde\x1f\x00\xda\xde\x1f\x15\x63osmossdk.io/math.IntR\nminAmountA\x12?\n\x0cmin_amount_b\x18\x05 \x01(\tB\x1d\xc8\xde\x1f\x00\xda\xde\x1f\x15\x63osmossdk.io/math.IntR\nminAmountB:\x0b\x82\xe7\xb0*\x06sender\"\x1c\n\x1aMsgRemoveLiquidityResponse\"\x85\x02\n\x0eMsgSwapExactIn\x12\x30\n\x06sender\x18\x01 \x01(\tB\x18\xd2\xb4-\x14\x63osmos.AddressStringR\x06sender\x12#\n\x07pool_id\x18\x02 \x01(\x04\x42\n\xe2\xde\x1f\x06PoolIDR\x06poolId\x12:\n\x08token_in\x18\x03 \x01(\x0b\x32\x19.cosmos.base.v1beta1.CoinB\x04\xc8\xde\x1f\x00R\x07tokenIn\x12\x1b\n\tdenom_out\x18\x04 \x01(\tR\x08\x64\x65nomOut\x12\x36\n\x07min_out\x18\x05 \x01(\tB\x1d\xc8\xde\x1f\x00\xda\xde\x1f\x15\x63osmossdk.io/math.IntR\x06minOut:\x0b\x82\xe7\xb0*\x06sender\"\x18\n\x16MsgSwapExactInResponse\"\x84\x02\n\x0fMsgSwapExactOut\x12\x30\n\x06sender\x18\x01 \x01(\tB\x18\xd2\xb4-\x14\x63osmos.AddressStringR\x06sender\x12#\n\x07pool_id\x18\x02 \x01(\x04\x42\n\xe2\xde\x1f\x06PoolIDR\x06poolId\x12\x19\n\x08\x64\x65nom_in\x18\x03 \x01(\tR\x07\x64\x65nomIn\x12<\n\ttoken_out\x18\x04 \x01(\x0b\x32\x19.cosmos.base.v1beta1.CoinB\x04\xc8\xde\x1f\x00R\x08tokenOut\x12\x34\n\x06max_in\x18\x05 \x01(\tB\x1d\xc8\xde\x1f\x00\xda\xde\x1f\x15\x63osmossdk.io/math.IntR\x05maxIn:\x0b\x82\xe7\xb0*\x06sender\"\x19\n\x17MsgSwapExactOutResponse\"\x93\x01\n\x0cMsgPausePool\x12\x36\n\tauthority\x18\x01 \x01(\tB\x18\xd2\xb4-\x14\x63osmos.AddressStringR\tauthority\x12#\n\x07pool_id\x18\x02 \x01(\x04\x42\n\xe2\xde\x1f\x06PoolIDR\x06poolId\x12\x16\n\x06reason\x18\x03 \x01(\tR\x06reason:\x0e\x82\xe7\xb0*\tauthority\"\x16\n\x14MsgPausePoolResponse\"|\n\rMsgResumePool\x12\x36\n\tauthority\x18\x01 \x01(\tB\x18\xd2\xb4-\x14\x63osmos.AddressStringR\tauthority\x12#\n\x07pool_id\x18\x02 \x01(\x04\x42\n\xe2\xde\x1f\x06PoolIDR\x06poolId:\x0e\x82\xe7\xb0*\tauthority\"\x17\n\x15MsgResumePoolResponse\"\x95\x01\n\x0fMsgUpdateParams\x12\x36\n\tauthority\x18\x01 \x01(\tB\x18\xd2\xb4-\x14\x63osmos.AddressStringR\tauthority\x12:\n\x06params\x18\x02 \x01(\x0b\x32\x1c.qorechain.amm.v1.ParamsViewB\x04\xc8\xde\x1f\x00R\x06params:\x0e\x82\xe7\xb0*\tauthority\"\x19\n\x17MsgUpdateParamsResponse2\xed\x05\n\x03Msg\x12V\n\nCreatePool\x12\x1f.qorechain.amm.v1.MsgCreatePool\x1a\'.qorechain.amm.v1.MsgCreatePoolResponse\x12\\\n\x0c\x41\x64\x64Liquidity\x12!.qorechain.amm.v1.MsgAddLiquidity\x1a).qorechain.amm.v1.MsgAddLiquidityResponse\x12\x65\n\x0fRemoveLiquidity\x12$.qorechain.amm.v1.MsgRemoveLiquidity\x1a,.qorechain.amm.v1.MsgRemoveLiquidityResponse\x12Y\n\x0bSwapExactIn\x12 .qorechain.amm.v1.MsgSwapExactIn\x1a(.qorechain.amm.v1.MsgSwapExactInResponse\x12\\\n\x0cSwapExactOut\x12!.qorechain.amm.v1.MsgSwapExactOut\x1a).qorechain.amm.v1.MsgSwapExactOutResponse\x12S\n\tPausePool\x12\x1e.qorechain.amm.v1.MsgPausePool\x1a&.qorechain.amm.v1.MsgPausePoolResponse\x12V\n\nResumePool\x12\x1f.qorechain.amm.v1.MsgResumePool\x1a\'.qorechain.amm.v1.MsgResumePoolResponse\x12\\\n\x0cUpdateParams\x12!.qorechain.amm.v1.MsgUpdateParams\x1a).qorechain.amm.v1.MsgUpdateParamsResponse\x1a\x05\x80\xe7\xb0*\x01\x42\xb2\x01\n\x14\x63om.qorechain.amm.v1B\x07TxProtoP\x01Z/github.com/qorechain/qorechain-core/x/amm/types\xa2\x02\x03QAX\xaa\x02\x10Qorechain.Amm.V1\xca\x02\x10Qorechain\\Amm\\V1\xe2\x02\x1cQorechain\\Amm\\V1\\GPBMetadata\xea\x02\x12Qorechain::Amm::V1b\x06proto3')
 
 _globals = globals()
 _builder.BuildMessageAndEnumDescriptors(DESCRIPTOR, _globals)
@@ -104,36 +105,46 @@ if not _descriptor._USE_C_DESCRIPTORS:
   _globals['_MSGRESUMEPOOL'].fields_by_name['pool_id']._serialized_options = b'\342\336\037\006PoolID'
   _globals['_MSGRESUMEPOOL']._loaded_options = None
   _globals['_MSGRESUMEPOOL']._serialized_options = b'\202\347\260*\tauthority'
+  _globals['_MSGUPDATEPARAMS'].fields_by_name['authority']._loaded_options = None
+  _globals['_MSGUPDATEPARAMS'].fields_by_name['authority']._serialized_options = b'\322\264-\024cosmos.AddressString'
+  _globals['_MSGUPDATEPARAMS'].fields_by_name['params']._loaded_options = None
+  _globals['_MSGUPDATEPARAMS'].fields_by_name['params']._serialized_options = b'\310\336\037\000'
+  _globals['_MSGUPDATEPARAMS']._loaded_options = None
+  _globals['_MSGUPDATEPARAMS']._serialized_options = b'\202\347\260*\tauthority'
   _globals['_MSG']._loaded_options = None
   _globals['_MSG']._serialized_options = b'\200\347\260*\001'
-  _globals['_MSGCREATEPOOL']._serialized_start=154
-  _globals['_MSGCREATEPOOL']._serialized_end=493
-  _globals['_MSGCREATEPOOLRESPONSE']._serialized_start=495
-  _globals['_MSGCREATEPOOLRESPONSE']._serialized_end=555
-  _globals['_MSGADDLIQUIDITY']._serialized_start=558
-  _globals['_MSGADDLIQUIDITY']._serialized_end=868
-  _globals['_MSGADDLIQUIDITYRESPONSE']._serialized_start=870
-  _globals['_MSGADDLIQUIDITYRESPONSE']._serialized_end=895
-  _globals['_MSGREMOVELIQUIDITY']._serialized_start=898
-  _globals['_MSGREMOVELIQUIDITY']._serialized_end=1220
-  _globals['_MSGREMOVELIQUIDITYRESPONSE']._serialized_start=1222
-  _globals['_MSGREMOVELIQUIDITYRESPONSE']._serialized_end=1250
-  _globals['_MSGSWAPEXACTIN']._serialized_start=1253
-  _globals['_MSGSWAPEXACTIN']._serialized_end=1514
-  _globals['_MSGSWAPEXACTINRESPONSE']._serialized_start=1516
-  _globals['_MSGSWAPEXACTINRESPONSE']._serialized_end=1540
-  _globals['_MSGSWAPEXACTOUT']._serialized_start=1543
-  _globals['_MSGSWAPEXACTOUT']._serialized_end=1803
-  _globals['_MSGSWAPEXACTOUTRESPONSE']._serialized_start=1805
-  _globals['_MSGSWAPEXACTOUTRESPONSE']._serialized_end=1830
-  _globals['_MSGPAUSEPOOL']._serialized_start=1833
-  _globals['_MSGPAUSEPOOL']._serialized_end=1980
-  _globals['_MSGPAUSEPOOLRESPONSE']._serialized_start=1982
-  _globals['_MSGPAUSEPOOLRESPONSE']._serialized_end=2004
-  _globals['_MSGRESUMEPOOL']._serialized_start=2006
-  _globals['_MSGRESUMEPOOL']._serialized_end=2130
-  _globals['_MSGRESUMEPOOLRESPONSE']._serialized_start=2132
-  _globals['_MSGRESUMEPOOLRESPONSE']._serialized_end=2155
-  _globals['_MSG']._serialized_start=2158
-  _globals['_MSG']._serialized_end=2813
+  _globals['_MSGCREATEPOOL']._serialized_start=184
+  _globals['_MSGCREATEPOOL']._serialized_end=523
+  _globals['_MSGCREATEPOOLRESPONSE']._serialized_start=525
+  _globals['_MSGCREATEPOOLRESPONSE']._serialized_end=585
+  _globals['_MSGADDLIQUIDITY']._serialized_start=588
+  _globals['_MSGADDLIQUIDITY']._serialized_end=898
+  _globals['_MSGADDLIQUIDITYRESPONSE']._serialized_start=900
+  _globals['_MSGADDLIQUIDITYRESPONSE']._serialized_end=925
+  _globals['_MSGREMOVELIQUIDITY']._serialized_start=928
+  _globals['_MSGREMOVELIQUIDITY']._serialized_end=1250
+  _globals['_MSGREMOVELIQUIDITYRESPONSE']._serialized_start=1252
+  _globals['_MSGREMOVELIQUIDITYRESPONSE']._serialized_end=1280
+  _globals['_MSGSWAPEXACTIN']._serialized_start=1283
+  _globals['_MSGSWAPEXACTIN']._serialized_end=1544
+  _globals['_MSGSWAPEXACTINRESPONSE']._serialized_start=1546
+  _globals['_MSGSWAPEXACTINRESPONSE']._serialized_end=1570
+  _globals['_MSGSWAPEXACTOUT']._serialized_start=1573
+  _globals['_MSGSWAPEXACTOUT']._serialized_end=1833
+  _globals['_MSGSWAPEXACTOUTRESPONSE']._serialized_start=1835
+  _globals['_MSGSWAPEXACTOUTRESPONSE']._serialized_end=1860
+  _globals['_MSGPAUSEPOOL']._serialized_start=1863
+  _globals['_MSGPAUSEPOOL']._serialized_end=2010
+  _globals['_MSGPAUSEPOOLRESPONSE']._serialized_start=2012
+  _globals['_MSGPAUSEPOOLRESPONSE']._serialized_end=2034
+  _globals['_MSGRESUMEPOOL']._serialized_start=2036
+  _globals['_MSGRESUMEPOOL']._serialized_end=2160
+  _globals['_MSGRESUMEPOOLRESPONSE']._serialized_start=2162
+  _globals['_MSGRESUMEPOOLRESPONSE']._serialized_end=2185
+  _globals['_MSGUPDATEPARAMS']._serialized_start=2188
+  _globals['_MSGUPDATEPARAMS']._serialized_end=2337
+  _globals['_MSGUPDATEPARAMSRESPONSE']._serialized_start=2339
+  _globals['_MSGUPDATEPARAMSRESPONSE']._serialized_end=2364
+  _globals['_MSG']._serialized_start=2367
+  _globals['_MSG']._serialized_end=3116
 # @@protoc_insertion_point(module_scope)

@@ -51,6 +51,28 @@ export interface MsgUpdateRewardWeights {
 export interface MsgUpdateRewardWeightsResponse {
 }
 
+/**
+ * MsgUpdateGasFloorBand sets the band within which the agent's gas price floor
+ * moves the x/feemarket min_gas_price. Decimals as strings, in min_gas_price
+ * units. With apply_enabled false nothing is applied and the band fields may
+ * be empty.
+ */
+export interface MsgUpdateGasFloorBand {
+  authority: string;
+  applyEnabled: boolean;
+  /** min_gas_price and max_gas_price bound the applied value absolutely. */
+  minGasPrice: string;
+  maxGasPrice: string;
+  /**
+   * max_step_change bounds one step's change relative to the current value,
+   * in (0, 0.5].
+   */
+  maxStepChange: string;
+}
+
+export interface MsgUpdateGasFloorBandResponse {
+}
+
 function createBaseMsgSetAgentMode(): MsgSetAgentMode {
   return { authority: "", mode: 0 };
 }
@@ -581,6 +603,189 @@ export const MsgUpdateRewardWeightsResponse: MessageFns<MsgUpdateRewardWeightsRe
   },
 };
 
+function createBaseMsgUpdateGasFloorBand(): MsgUpdateGasFloorBand {
+  return { authority: "", applyEnabled: false, minGasPrice: "", maxGasPrice: "", maxStepChange: "" };
+}
+
+export const MsgUpdateGasFloorBand: MessageFns<MsgUpdateGasFloorBand> = {
+  encode(message: MsgUpdateGasFloorBand, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.authority !== "") {
+      writer.uint32(10).string(message.authority);
+    }
+    if (message.applyEnabled !== false) {
+      writer.uint32(16).bool(message.applyEnabled);
+    }
+    if (message.minGasPrice !== "") {
+      writer.uint32(26).string(message.minGasPrice);
+    }
+    if (message.maxGasPrice !== "") {
+      writer.uint32(34).string(message.maxGasPrice);
+    }
+    if (message.maxStepChange !== "") {
+      writer.uint32(42).string(message.maxStepChange);
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): MsgUpdateGasFloorBand {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseMsgUpdateGasFloorBand();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.authority = reader.string();
+          continue;
+        }
+        case 2: {
+          if (tag !== 16) {
+            break;
+          }
+
+          message.applyEnabled = reader.bool();
+          continue;
+        }
+        case 3: {
+          if (tag !== 26) {
+            break;
+          }
+
+          message.minGasPrice = reader.string();
+          continue;
+        }
+        case 4: {
+          if (tag !== 34) {
+            break;
+          }
+
+          message.maxGasPrice = reader.string();
+          continue;
+        }
+        case 5: {
+          if (tag !== 42) {
+            break;
+          }
+
+          message.maxStepChange = reader.string();
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(object: any): MsgUpdateGasFloorBand {
+    return {
+      authority: isSet(object.authority) ? globalThis.String(object.authority) : "",
+      applyEnabled: isSet(object.applyEnabled)
+        ? globalThis.Boolean(object.applyEnabled)
+        : isSet(object.apply_enabled)
+        ? globalThis.Boolean(object.apply_enabled)
+        : false,
+      minGasPrice: isSet(object.minGasPrice)
+        ? globalThis.String(object.minGasPrice)
+        : isSet(object.min_gas_price)
+        ? globalThis.String(object.min_gas_price)
+        : "",
+      maxGasPrice: isSet(object.maxGasPrice)
+        ? globalThis.String(object.maxGasPrice)
+        : isSet(object.max_gas_price)
+        ? globalThis.String(object.max_gas_price)
+        : "",
+      maxStepChange: isSet(object.maxStepChange)
+        ? globalThis.String(object.maxStepChange)
+        : isSet(object.max_step_change)
+        ? globalThis.String(object.max_step_change)
+        : "",
+    };
+  },
+
+  toJSON(message: MsgUpdateGasFloorBand): unknown {
+    const obj: any = {};
+    if (message.authority !== "") {
+      obj.authority = message.authority;
+    }
+    if (message.applyEnabled !== false) {
+      obj.applyEnabled = message.applyEnabled;
+    }
+    if (message.minGasPrice !== "") {
+      obj.minGasPrice = message.minGasPrice;
+    }
+    if (message.maxGasPrice !== "") {
+      obj.maxGasPrice = message.maxGasPrice;
+    }
+    if (message.maxStepChange !== "") {
+      obj.maxStepChange = message.maxStepChange;
+    }
+    return obj;
+  },
+
+  create(base?: DeepPartial<MsgUpdateGasFloorBand>): MsgUpdateGasFloorBand {
+    return MsgUpdateGasFloorBand.fromPartial(base ?? {});
+  },
+  fromPartial(object: DeepPartial<MsgUpdateGasFloorBand>): MsgUpdateGasFloorBand {
+    const message = createBaseMsgUpdateGasFloorBand();
+    message.authority = object.authority ?? "";
+    message.applyEnabled = object.applyEnabled ?? false;
+    message.minGasPrice = object.minGasPrice ?? "";
+    message.maxGasPrice = object.maxGasPrice ?? "";
+    message.maxStepChange = object.maxStepChange ?? "";
+    return message;
+  },
+};
+
+function createBaseMsgUpdateGasFloorBandResponse(): MsgUpdateGasFloorBandResponse {
+  return {};
+}
+
+export const MsgUpdateGasFloorBandResponse: MessageFns<MsgUpdateGasFloorBandResponse> = {
+  encode(_: MsgUpdateGasFloorBandResponse, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): MsgUpdateGasFloorBandResponse {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseMsgUpdateGasFloorBandResponse();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(_: any): MsgUpdateGasFloorBandResponse {
+    return {};
+  },
+
+  toJSON(_: MsgUpdateGasFloorBandResponse): unknown {
+    const obj: any = {};
+    return obj;
+  },
+
+  create(base?: DeepPartial<MsgUpdateGasFloorBandResponse>): MsgUpdateGasFloorBandResponse {
+    return MsgUpdateGasFloorBandResponse.fromPartial(base ?? {});
+  },
+  fromPartial(_: DeepPartial<MsgUpdateGasFloorBandResponse>): MsgUpdateGasFloorBandResponse {
+    const message = createBaseMsgUpdateGasFloorBandResponse();
+    return message;
+  },
+};
+
 /** Msg defines the rlconsensus module's governance-authority transactions. */
 export type MsgDefinition = typeof MsgDefinition;
 export const MsgDefinition = {
@@ -620,6 +825,19 @@ export const MsgDefinition = {
       requestType: MsgUpdateRewardWeights as typeof MsgUpdateRewardWeights,
       requestStream: false,
       responseType: MsgUpdateRewardWeightsResponse as typeof MsgUpdateRewardWeightsResponse,
+      responseStream: false,
+      options: {},
+    },
+    /**
+     * UpdateGasFloorBand sets whether, and inside which band, the agent's gas
+     * price floor is applied to the x/feemarket minimum gas price
+     * (rl-apply-gas-floor). Governance only.
+     */
+    updateGasFloorBand: {
+      name: "UpdateGasFloorBand",
+      requestType: MsgUpdateGasFloorBand as typeof MsgUpdateGasFloorBand,
+      requestStream: false,
+      responseType: MsgUpdateGasFloorBandResponse as typeof MsgUpdateGasFloorBandResponse,
       responseStream: false,
       options: {},
     },

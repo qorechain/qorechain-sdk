@@ -6,6 +6,36 @@ from typing import ClassVar as _ClassVar, Iterable as _Iterable, Mapping as _Map
 
 DESCRIPTOR: _descriptor.FileDescriptor
 
+class QueryParamsRequest(_message.Message):
+    __slots__ = ()
+    def __init__(self) -> None: ...
+
+class QueryParamsResponse(_message.Message):
+    __slots__ = ("params",)
+    PARAMS_FIELD_NUMBER: _ClassVar[int]
+    params: ParamsView
+    def __init__(self, params: _Optional[_Union[ParamsView, _Mapping]] = ...) -> None: ...
+
+class ParamsView(_message.Message):
+    __slots__ = ("pqc_primary", "allow_classical_fallback", "min_security_level", "default_migration_blocks", "default_signature_algo", "default_signature_algo_name", "hybrid_signature_mode", "hybrid_signature_mode_name")
+    PQC_PRIMARY_FIELD_NUMBER: _ClassVar[int]
+    ALLOW_CLASSICAL_FALLBACK_FIELD_NUMBER: _ClassVar[int]
+    MIN_SECURITY_LEVEL_FIELD_NUMBER: _ClassVar[int]
+    DEFAULT_MIGRATION_BLOCKS_FIELD_NUMBER: _ClassVar[int]
+    DEFAULT_SIGNATURE_ALGO_FIELD_NUMBER: _ClassVar[int]
+    DEFAULT_SIGNATURE_ALGO_NAME_FIELD_NUMBER: _ClassVar[int]
+    HYBRID_SIGNATURE_MODE_FIELD_NUMBER: _ClassVar[int]
+    HYBRID_SIGNATURE_MODE_NAME_FIELD_NUMBER: _ClassVar[int]
+    pqc_primary: bool
+    allow_classical_fallback: bool
+    min_security_level: int
+    default_migration_blocks: int
+    default_signature_algo: int
+    default_signature_algo_name: str
+    hybrid_signature_mode: int
+    hybrid_signature_mode_name: str
+    def __init__(self, pqc_primary: bool = ..., allow_classical_fallback: bool = ..., min_security_level: _Optional[int] = ..., default_migration_blocks: _Optional[int] = ..., default_signature_algo: _Optional[int] = ..., default_signature_algo_name: _Optional[str] = ..., hybrid_signature_mode: _Optional[int] = ..., hybrid_signature_mode_name: _Optional[str] = ...) -> None: ...
+
 class QueryKEMKeyRequest(_message.Message):
     __slots__ = ("address",)
     ADDRESS_FIELD_NUMBER: _ClassVar[int]

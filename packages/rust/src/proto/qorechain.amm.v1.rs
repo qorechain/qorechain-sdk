@@ -245,4 +245,17 @@ pub struct MsgResumePool {
 #[derive(Clone, Copy, PartialEq, ::prost::Message)]
 pub struct MsgResumePoolResponse {
 }
+/// MsgUpdateParams replaces every AMM parameter. The authority must be the gov
+/// module account; all fields are required (copy the current values from
+/// GET /qorechain/amm/v1/params and change what is meant to change).
+#[derive(Clone, PartialEq, ::prost::Message)]
+pub struct MsgUpdateParams {
+    #[prost(string, tag="1")]
+    pub authority: ::prost::alloc::string::String,
+    #[prost(message, optional, tag="2")]
+    pub params: ::core::option::Option<ParamsView>,
+}
+#[derive(Clone, Copy, PartialEq, ::prost::Message)]
+pub struct MsgUpdateParamsResponse {
+}
 // @@protoc_insertion_point(module)

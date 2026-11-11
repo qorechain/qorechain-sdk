@@ -109,6 +109,12 @@ pub struct MsgRegisterAuthenticator {
     pub expiry_unix: i64,
     #[prost(string, tag="7")]
     pub label: ::prost::alloc::string::String,
+    /// possession_proof is a signature by the linked key, under its scheme, over
+    /// the link message (types.AuthenticatorLinkMessage: chain id, account,
+    /// scheme and key). Required from v3.2.8
+    /// (abstractaccount-authenticator-possession), ignored before.
+    #[prost(bytes="vec", tag="8")]
+    pub possession_proof: ::prost::alloc::vec::Vec<u8>,
 }
 #[derive(Clone, Copy, PartialEq, ::prost::Message)]
 pub struct MsgRegisterAuthenticatorResponse {
@@ -169,6 +175,13 @@ pub struct MsgExecuteEvm {
     #[prost(uint64, tag="10")]
     pub nonce: u64,
 }
+/// MsgExecuteEVMResponse. From v3.2.8 (abstractaccount-failed-execution-burns-nonce)
+/// an execution that fails after the signature, the key, its permission and the
+/// nonce were accepted (call policy, value cap, a reverted call, deploy scope,
+/// measured spend) consumes the nonce and returns success=false with the reason
+/// in vm_error; the transaction itself succeeds and the call's state is dropped.
+/// Relayers must treat success=false as final: the same signature cannot be
+/// relayed again.
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct MsgExecuteEvmResponse {
     #[prost(bool, tag="1")]
@@ -217,6 +230,11 @@ pub struct MsgExecuteCosmos {
     #[prost(uint64, tag="8")]
     pub nonce: u64,
 }
+/// MsgExecuteCosmosResponse. From v3.2.8 (abstractaccount-failed-execution-burns-nonce)
+/// a transfer that fails after the signature, the key, its permission and the
+/// nonce were accepted (spending rule, bank send) consumes the nonce and returns
+/// success=false; the reason is in the abstractaccount_execution_failed event.
+/// Relayers must treat success=false as final.
 #[derive(Clone, Copy, PartialEq, ::prost::Message)]
 pub struct MsgExecuteCosmosResponse {
     #[prost(bool, tag="1")]

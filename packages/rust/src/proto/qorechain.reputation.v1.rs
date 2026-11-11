@@ -18,4 +18,62 @@ pub struct QueryParamsResponse {
     #[prost(string, tag="6")]
     pub min_score: ::prost::alloc::string::String,
 }
+/// ReputationRecord mirrors the stored record (x/reputation/types.ValidatorReputation),
+/// plus the operator address resolved through x/staking.
+#[derive(Clone, PartialEq, ::prost::Message)]
+pub struct ReputationRecord {
+    /// consensus_address is the record key (qorvalcons...).
+    #[prost(string, tag="1")]
+    pub consensus_address: ::prost::alloc::string::String,
+    /// operator_address is the qorvaloper... address; empty when x/staking no longer knows the validator.
+    #[prost(string, tag="2")]
+    pub operator_address: ::prost::alloc::string::String,
+    #[prost(string, tag="3")]
+    pub stake_score: ::prost::alloc::string::String,
+    #[prost(string, tag="4")]
+    pub performance_score: ::prost::alloc::string::String,
+    #[prost(string, tag="5")]
+    pub contribution_score: ::prost::alloc::string::String,
+    #[prost(string, tag="6")]
+    pub time_score: ::prost::alloc::string::String,
+    /// composite_score is R_i (LegacyDec string).
+    #[prost(string, tag="7")]
+    pub composite_score: ::prost::alloc::string::String,
+    #[prost(int64, tag="8")]
+    pub last_updated_height: i64,
+    #[prost(uint64, tag="9")]
+    pub uptime_blocks: u64,
+    #[prost(uint64, tag="10")]
+    pub proposed_blocks: u64,
+    #[prost(uint64, tag="11")]
+    pub missed_blocks: u64,
+    #[prost(uint64, tag="12")]
+    pub slashing_events: u64,
+    #[prost(int64, tag="13")]
+    pub community_votes: i64,
+    #[prost(int64, tag="14")]
+    pub joined_at_height: i64,
+    #[prost(string, tag="15")]
+    pub gov_participation: ::prost::alloc::string::String,
+    #[prost(int64, tag="16")]
+    pub inactive_since: i64,
+}
+#[derive(Clone, PartialEq, ::prost::Message)]
+pub struct QueryReputationRequest {
+    #[prost(string, tag="1")]
+    pub validator_address: ::prost::alloc::string::String,
+}
+#[derive(Clone, PartialEq, ::prost::Message)]
+pub struct QueryReputationResponse {
+    #[prost(message, optional, tag="1")]
+    pub reputation: ::core::option::Option<ReputationRecord>,
+}
+#[derive(Clone, Copy, PartialEq, ::prost::Message)]
+pub struct QueryReputationsRequest {
+}
+#[derive(Clone, PartialEq, ::prost::Message)]
+pub struct QueryReputationsResponse {
+    #[prost(message, repeated, tag="1")]
+    pub reputations: ::prost::alloc::vec::Vec<ReputationRecord>,
+}
 // @@protoc_insertion_point(module)

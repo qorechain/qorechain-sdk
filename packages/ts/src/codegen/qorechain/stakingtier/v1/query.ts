@@ -116,6 +116,195 @@ export interface QueryPoolResponse {
   lockCount: string;
 }
 
+/**
+ * AprBase is the base yield the module measured at its latest settlement, and
+ * how that settlement was funded. Every rate is a decimal string in basis
+ * points a year.
+ */
+export interface AprBase {
+  /**
+   * gross_base_apr_bps is the pool's last_base_apy_bps: the yield the epoch's
+   * base emission gives the bonded stake through the fee split
+   * (validator_share + staker_share), before commission. It leaves out fees
+   * and is measured once per settlement, not live.
+   */
+  grossBaseAprBps: string;
+  /**
+   * computed_height and computed_time (unix seconds) are the settlement that
+   * measured it.
+   */
+  computedHeight: string;
+  computedTime: string;
+  /**
+   * source is "emission" when the base emission is paying a yield,
+   * "fees_only" when the latest settlement measured none (the emission cap is
+   * reached or the target is zero: stakers earn fees only), and
+   * "not_settled" before the first settlement.
+   */
+  source: string;
+  /**
+   * last_owed and last_funded (uqor) are the bonus the latest settlement owed
+   * and what it could fund.
+   */
+  lastOwed: string;
+  lastFunded: string;
+  /**
+   * bonus_funding_ratio is last_funded / last_owed, 1 when nothing was owed.
+   * Below 1, every bonus was paid pro rata by this factor.
+   */
+  bonusFundingRatio: string;
+  /**
+   * bonus_enabled is false when the protocol feature or the enabled param is
+   * off: no bonus accrues.
+   */
+  bonusEnabled: boolean;
+  maxTotalApyBps: number;
+}
+
+export interface QueryAprRequest {
+  /** validator (optional, qorvaloper) states the base net of its commission. */
+  validator: string;
+}
+
+/** TierAprView is one lock term as a new lock on the queried base would earn. */
+export interface TierAprView {
+  months: number;
+  /** bonus_bps is the term's bonus as configured. */
+  bonusBps: number;
+  /**
+   * effective_bonus_bps is bonus_bps cut to the room left under
+   * max_total_apy_bps above the base; zero when the bonus is disabled.
+   */
+  effectiveBonusBps: string;
+  /** effective_apr_bps is the base plus effective_bonus_bps. */
+  effectiveAprBps: string;
+}
+
+export interface QueryAprResponse {
+  base?:
+    | AprBase
+    | undefined;
+  /**
+   * validator and commission echo the request; commission is empty without
+   * one.
+   */
+  validator: string;
+  commission: string;
+  /**
+   * base_apr_bps is the base the tiers are stated against: the gross base,
+   * or the validator's delegators' base net of commission.
+   */
+  baseAprBps: string;
+  tiers: TierAprView[];
+  /**
+   * light_node_bonus_bps is added to the locks of a holder that runs an
+   * active light node, before the ceiling.
+   */
+  lightNodeBonusBps: number;
+  /**
+   * validator_bonus_bps is paid on an active validator's whole self-bond;
+   * validator_effective_bonus_bps is what it pays after the ceiling over the
+   * gross base (a self-bond's base is gross).
+   */
+  validatorBonusBps: number;
+  validatorEffectiveBonusBps: string;
+}
+
+export interface QueryDelegatorAprRequest {
+  delegator: string;
+  /** validator (optional, qorvaloper) limits the answer to that delegation. */
+  validator: string;
+}
+
+/**
+ * AprPosition is one part of a delegation and the yield it earns going
+ * forward, as the next settlement would pay it.
+ */
+export interface AprPosition {
+  /**
+   * kind is "lock" (an open lock) or "unlocked" (the rest of the delegation,
+   * expired locks included).
+   */
+  kind: string;
+  lockId: string;
+  months: number;
+  endTime: string;
+  /** amount (uqor) is what the position covers today. */
+  amount: string;
+  /**
+   * base_apr_bps is the position's base: net of commission for a delegator,
+   * gross on a validator's own self-bond.
+   */
+  baseAprBps: string;
+  /** tier_bonus_bps is the lock term's bonus fixed when the lock was made. */
+  tierBonusBps: number;
+  /**
+   * light_node_bonus_bps is the light node bonus added to this lock, zero
+   * when the holder does not qualify or the position is unlocked.
+   */
+  lightNodeBonusBps: number;
+  /** lock_bonus_bps is tier plus light node bonus after the ceiling. */
+  lockBonusBps: string;
+  /**
+   * validator_bonus_bps is the validator bonus after the ceiling, on an
+   * active validator's own self-bond.
+   */
+  validatorBonusBps: string;
+  /** bonus_bps is lock_bonus_bps plus validator_bonus_bps. */
+  bonusBps: string;
+  /** effective_apr_bps is base_apr_bps plus bonus_bps. */
+  effectiveAprBps: string;
+  /**
+   * effective_apr_at_last_funding_bps scales the bonus by the latest
+   * settlement's bonus_funding_ratio.
+   */
+  effectiveAprAtLastFundingBps: string;
+  /** capped is true when the ceiling cut the bonus. */
+  capped: boolean;
+  /** reason says in words which bonuses apply and why. */
+  reason: string;
+}
+
+export interface DelegationApr {
+  validator: string;
+  commission: string;
+  /** validator_active is bonded and not jailed: the validator bonus condition. */
+  validatorActive: boolean;
+  /** self_bond is true when the delegator is the validator's operator. */
+  selfBond: boolean;
+  delegatedAmount: string;
+  /** locked_amount is what the open locks cover. */
+  lockedAmount: string;
+  /**
+   * effective_apr_bps and effective_apr_at_last_funding_bps are the
+   * positions' rates weighted by amount.
+   */
+  effectiveAprBps: string;
+  effectiveAprAtLastFundingBps: string;
+  positions: AprPosition[];
+}
+
+export interface QueryDelegatorAprResponse {
+  delegator: string;
+  base?:
+    | AprBase
+    | undefined;
+  /**
+   * light_node_bonus is true when the delegator qualifies for the light node
+   * bonus on their locks; light_node_reason says why or why not.
+   */
+  lightNodeBonus: boolean;
+  lightNodeReason: string;
+  delegations: DelegationApr[];
+  totalDelegated: string;
+  /**
+   * effective_apr_bps and effective_apr_at_last_funding_bps are weighted by
+   * amount over every delegation listed.
+   */
+  effectiveAprBps: string;
+  effectiveAprAtLastFundingBps: string;
+}
+
 function createBaseQueryParamsRequest(): QueryParamsRequest {
   return {};
 }
@@ -1295,6 +1484,1454 @@ export const QueryPoolResponse: MessageFns<QueryPoolResponse> = {
   },
 };
 
+function createBaseAprBase(): AprBase {
+  return {
+    grossBaseAprBps: "",
+    computedHeight: "0",
+    computedTime: "0",
+    source: "",
+    lastOwed: "",
+    lastFunded: "",
+    bonusFundingRatio: "",
+    bonusEnabled: false,
+    maxTotalApyBps: 0,
+  };
+}
+
+export const AprBase: MessageFns<AprBase> = {
+  encode(message: AprBase, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.grossBaseAprBps !== "") {
+      writer.uint32(10).string(message.grossBaseAprBps);
+    }
+    if (message.computedHeight !== "0") {
+      writer.uint32(16).int64(message.computedHeight);
+    }
+    if (message.computedTime !== "0") {
+      writer.uint32(24).int64(message.computedTime);
+    }
+    if (message.source !== "") {
+      writer.uint32(34).string(message.source);
+    }
+    if (message.lastOwed !== "") {
+      writer.uint32(42).string(message.lastOwed);
+    }
+    if (message.lastFunded !== "") {
+      writer.uint32(50).string(message.lastFunded);
+    }
+    if (message.bonusFundingRatio !== "") {
+      writer.uint32(58).string(message.bonusFundingRatio);
+    }
+    if (message.bonusEnabled !== false) {
+      writer.uint32(64).bool(message.bonusEnabled);
+    }
+    if (message.maxTotalApyBps !== 0) {
+      writer.uint32(72).uint32(message.maxTotalApyBps);
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): AprBase {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseAprBase();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.grossBaseAprBps = reader.string();
+          continue;
+        }
+        case 2: {
+          if (tag !== 16) {
+            break;
+          }
+
+          message.computedHeight = reader.int64().toString();
+          continue;
+        }
+        case 3: {
+          if (tag !== 24) {
+            break;
+          }
+
+          message.computedTime = reader.int64().toString();
+          continue;
+        }
+        case 4: {
+          if (tag !== 34) {
+            break;
+          }
+
+          message.source = reader.string();
+          continue;
+        }
+        case 5: {
+          if (tag !== 42) {
+            break;
+          }
+
+          message.lastOwed = reader.string();
+          continue;
+        }
+        case 6: {
+          if (tag !== 50) {
+            break;
+          }
+
+          message.lastFunded = reader.string();
+          continue;
+        }
+        case 7: {
+          if (tag !== 58) {
+            break;
+          }
+
+          message.bonusFundingRatio = reader.string();
+          continue;
+        }
+        case 8: {
+          if (tag !== 64) {
+            break;
+          }
+
+          message.bonusEnabled = reader.bool();
+          continue;
+        }
+        case 9: {
+          if (tag !== 72) {
+            break;
+          }
+
+          message.maxTotalApyBps = reader.uint32();
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(object: any): AprBase {
+    return {
+      grossBaseAprBps: isSet(object.grossBaseAprBps)
+        ? globalThis.String(object.grossBaseAprBps)
+        : isSet(object.gross_base_apr_bps)
+        ? globalThis.String(object.gross_base_apr_bps)
+        : "",
+      computedHeight: isSet(object.computedHeight)
+        ? globalThis.String(object.computedHeight)
+        : isSet(object.computed_height)
+        ? globalThis.String(object.computed_height)
+        : "0",
+      computedTime: isSet(object.computedTime)
+        ? globalThis.String(object.computedTime)
+        : isSet(object.computed_time)
+        ? globalThis.String(object.computed_time)
+        : "0",
+      source: isSet(object.source) ? globalThis.String(object.source) : "",
+      lastOwed: isSet(object.lastOwed)
+        ? globalThis.String(object.lastOwed)
+        : isSet(object.last_owed)
+        ? globalThis.String(object.last_owed)
+        : "",
+      lastFunded: isSet(object.lastFunded)
+        ? globalThis.String(object.lastFunded)
+        : isSet(object.last_funded)
+        ? globalThis.String(object.last_funded)
+        : "",
+      bonusFundingRatio: isSet(object.bonusFundingRatio)
+        ? globalThis.String(object.bonusFundingRatio)
+        : isSet(object.bonus_funding_ratio)
+        ? globalThis.String(object.bonus_funding_ratio)
+        : "",
+      bonusEnabled: isSet(object.bonusEnabled)
+        ? globalThis.Boolean(object.bonusEnabled)
+        : isSet(object.bonus_enabled)
+        ? globalThis.Boolean(object.bonus_enabled)
+        : false,
+      maxTotalApyBps: isSet(object.maxTotalApyBps)
+        ? globalThis.Number(object.maxTotalApyBps)
+        : isSet(object.max_total_apy_bps)
+        ? globalThis.Number(object.max_total_apy_bps)
+        : 0,
+    };
+  },
+
+  toJSON(message: AprBase): unknown {
+    const obj: any = {};
+    if (message.grossBaseAprBps !== "") {
+      obj.grossBaseAprBps = message.grossBaseAprBps;
+    }
+    if (message.computedHeight !== "0") {
+      obj.computedHeight = message.computedHeight;
+    }
+    if (message.computedTime !== "0") {
+      obj.computedTime = message.computedTime;
+    }
+    if (message.source !== "") {
+      obj.source = message.source;
+    }
+    if (message.lastOwed !== "") {
+      obj.lastOwed = message.lastOwed;
+    }
+    if (message.lastFunded !== "") {
+      obj.lastFunded = message.lastFunded;
+    }
+    if (message.bonusFundingRatio !== "") {
+      obj.bonusFundingRatio = message.bonusFundingRatio;
+    }
+    if (message.bonusEnabled !== false) {
+      obj.bonusEnabled = message.bonusEnabled;
+    }
+    if (message.maxTotalApyBps !== 0) {
+      obj.maxTotalApyBps = Math.round(message.maxTotalApyBps);
+    }
+    return obj;
+  },
+
+  create(base?: DeepPartial<AprBase>): AprBase {
+    return AprBase.fromPartial(base ?? {});
+  },
+  fromPartial(object: DeepPartial<AprBase>): AprBase {
+    const message = createBaseAprBase();
+    message.grossBaseAprBps = object.grossBaseAprBps ?? "";
+    message.computedHeight = object.computedHeight ?? "0";
+    message.computedTime = object.computedTime ?? "0";
+    message.source = object.source ?? "";
+    message.lastOwed = object.lastOwed ?? "";
+    message.lastFunded = object.lastFunded ?? "";
+    message.bonusFundingRatio = object.bonusFundingRatio ?? "";
+    message.bonusEnabled = object.bonusEnabled ?? false;
+    message.maxTotalApyBps = object.maxTotalApyBps ?? 0;
+    return message;
+  },
+};
+
+function createBaseQueryAprRequest(): QueryAprRequest {
+  return { validator: "" };
+}
+
+export const QueryAprRequest: MessageFns<QueryAprRequest> = {
+  encode(message: QueryAprRequest, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.validator !== "") {
+      writer.uint32(10).string(message.validator);
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): QueryAprRequest {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseQueryAprRequest();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.validator = reader.string();
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(object: any): QueryAprRequest {
+    return { validator: isSet(object.validator) ? globalThis.String(object.validator) : "" };
+  },
+
+  toJSON(message: QueryAprRequest): unknown {
+    const obj: any = {};
+    if (message.validator !== "") {
+      obj.validator = message.validator;
+    }
+    return obj;
+  },
+
+  create(base?: DeepPartial<QueryAprRequest>): QueryAprRequest {
+    return QueryAprRequest.fromPartial(base ?? {});
+  },
+  fromPartial(object: DeepPartial<QueryAprRequest>): QueryAprRequest {
+    const message = createBaseQueryAprRequest();
+    message.validator = object.validator ?? "";
+    return message;
+  },
+};
+
+function createBaseTierAprView(): TierAprView {
+  return { months: 0, bonusBps: 0, effectiveBonusBps: "", effectiveAprBps: "" };
+}
+
+export const TierAprView: MessageFns<TierAprView> = {
+  encode(message: TierAprView, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.months !== 0) {
+      writer.uint32(8).uint32(message.months);
+    }
+    if (message.bonusBps !== 0) {
+      writer.uint32(16).uint32(message.bonusBps);
+    }
+    if (message.effectiveBonusBps !== "") {
+      writer.uint32(26).string(message.effectiveBonusBps);
+    }
+    if (message.effectiveAprBps !== "") {
+      writer.uint32(34).string(message.effectiveAprBps);
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): TierAprView {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseTierAprView();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 8) {
+            break;
+          }
+
+          message.months = reader.uint32();
+          continue;
+        }
+        case 2: {
+          if (tag !== 16) {
+            break;
+          }
+
+          message.bonusBps = reader.uint32();
+          continue;
+        }
+        case 3: {
+          if (tag !== 26) {
+            break;
+          }
+
+          message.effectiveBonusBps = reader.string();
+          continue;
+        }
+        case 4: {
+          if (tag !== 34) {
+            break;
+          }
+
+          message.effectiveAprBps = reader.string();
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(object: any): TierAprView {
+    return {
+      months: isSet(object.months) ? globalThis.Number(object.months) : 0,
+      bonusBps: isSet(object.bonusBps)
+        ? globalThis.Number(object.bonusBps)
+        : isSet(object.bonus_bps)
+        ? globalThis.Number(object.bonus_bps)
+        : 0,
+      effectiveBonusBps: isSet(object.effectiveBonusBps)
+        ? globalThis.String(object.effectiveBonusBps)
+        : isSet(object.effective_bonus_bps)
+        ? globalThis.String(object.effective_bonus_bps)
+        : "",
+      effectiveAprBps: isSet(object.effectiveAprBps)
+        ? globalThis.String(object.effectiveAprBps)
+        : isSet(object.effective_apr_bps)
+        ? globalThis.String(object.effective_apr_bps)
+        : "",
+    };
+  },
+
+  toJSON(message: TierAprView): unknown {
+    const obj: any = {};
+    if (message.months !== 0) {
+      obj.months = Math.round(message.months);
+    }
+    if (message.bonusBps !== 0) {
+      obj.bonusBps = Math.round(message.bonusBps);
+    }
+    if (message.effectiveBonusBps !== "") {
+      obj.effectiveBonusBps = message.effectiveBonusBps;
+    }
+    if (message.effectiveAprBps !== "") {
+      obj.effectiveAprBps = message.effectiveAprBps;
+    }
+    return obj;
+  },
+
+  create(base?: DeepPartial<TierAprView>): TierAprView {
+    return TierAprView.fromPartial(base ?? {});
+  },
+  fromPartial(object: DeepPartial<TierAprView>): TierAprView {
+    const message = createBaseTierAprView();
+    message.months = object.months ?? 0;
+    message.bonusBps = object.bonusBps ?? 0;
+    message.effectiveBonusBps = object.effectiveBonusBps ?? "";
+    message.effectiveAprBps = object.effectiveAprBps ?? "";
+    return message;
+  },
+};
+
+function createBaseQueryAprResponse(): QueryAprResponse {
+  return {
+    base: undefined,
+    validator: "",
+    commission: "",
+    baseAprBps: "",
+    tiers: [],
+    lightNodeBonusBps: 0,
+    validatorBonusBps: 0,
+    validatorEffectiveBonusBps: "",
+  };
+}
+
+export const QueryAprResponse: MessageFns<QueryAprResponse> = {
+  encode(message: QueryAprResponse, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.base !== undefined) {
+      AprBase.encode(message.base, writer.uint32(10).fork()).join();
+    }
+    if (message.validator !== "") {
+      writer.uint32(18).string(message.validator);
+    }
+    if (message.commission !== "") {
+      writer.uint32(26).string(message.commission);
+    }
+    if (message.baseAprBps !== "") {
+      writer.uint32(34).string(message.baseAprBps);
+    }
+    for (const v of message.tiers) {
+      TierAprView.encode(v!, writer.uint32(42).fork()).join();
+    }
+    if (message.lightNodeBonusBps !== 0) {
+      writer.uint32(48).uint32(message.lightNodeBonusBps);
+    }
+    if (message.validatorBonusBps !== 0) {
+      writer.uint32(56).uint32(message.validatorBonusBps);
+    }
+    if (message.validatorEffectiveBonusBps !== "") {
+      writer.uint32(66).string(message.validatorEffectiveBonusBps);
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): QueryAprResponse {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseQueryAprResponse();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.base = AprBase.decode(reader, reader.uint32());
+          continue;
+        }
+        case 2: {
+          if (tag !== 18) {
+            break;
+          }
+
+          message.validator = reader.string();
+          continue;
+        }
+        case 3: {
+          if (tag !== 26) {
+            break;
+          }
+
+          message.commission = reader.string();
+          continue;
+        }
+        case 4: {
+          if (tag !== 34) {
+            break;
+          }
+
+          message.baseAprBps = reader.string();
+          continue;
+        }
+        case 5: {
+          if (tag !== 42) {
+            break;
+          }
+
+          message.tiers.push(TierAprView.decode(reader, reader.uint32()));
+          continue;
+        }
+        case 6: {
+          if (tag !== 48) {
+            break;
+          }
+
+          message.lightNodeBonusBps = reader.uint32();
+          continue;
+        }
+        case 7: {
+          if (tag !== 56) {
+            break;
+          }
+
+          message.validatorBonusBps = reader.uint32();
+          continue;
+        }
+        case 8: {
+          if (tag !== 66) {
+            break;
+          }
+
+          message.validatorEffectiveBonusBps = reader.string();
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(object: any): QueryAprResponse {
+    return {
+      base: isSet(object.base) ? AprBase.fromJSON(object.base) : undefined,
+      validator: isSet(object.validator) ? globalThis.String(object.validator) : "",
+      commission: isSet(object.commission) ? globalThis.String(object.commission) : "",
+      baseAprBps: isSet(object.baseAprBps)
+        ? globalThis.String(object.baseAprBps)
+        : isSet(object.base_apr_bps)
+        ? globalThis.String(object.base_apr_bps)
+        : "",
+      tiers: globalThis.Array.isArray(object?.tiers) ? object.tiers.map((e: any) => TierAprView.fromJSON(e)) : [],
+      lightNodeBonusBps: isSet(object.lightNodeBonusBps)
+        ? globalThis.Number(object.lightNodeBonusBps)
+        : isSet(object.light_node_bonus_bps)
+        ? globalThis.Number(object.light_node_bonus_bps)
+        : 0,
+      validatorBonusBps: isSet(object.validatorBonusBps)
+        ? globalThis.Number(object.validatorBonusBps)
+        : isSet(object.validator_bonus_bps)
+        ? globalThis.Number(object.validator_bonus_bps)
+        : 0,
+      validatorEffectiveBonusBps: isSet(object.validatorEffectiveBonusBps)
+        ? globalThis.String(object.validatorEffectiveBonusBps)
+        : isSet(object.validator_effective_bonus_bps)
+        ? globalThis.String(object.validator_effective_bonus_bps)
+        : "",
+    };
+  },
+
+  toJSON(message: QueryAprResponse): unknown {
+    const obj: any = {};
+    if (message.base !== undefined) {
+      obj.base = AprBase.toJSON(message.base);
+    }
+    if (message.validator !== "") {
+      obj.validator = message.validator;
+    }
+    if (message.commission !== "") {
+      obj.commission = message.commission;
+    }
+    if (message.baseAprBps !== "") {
+      obj.baseAprBps = message.baseAprBps;
+    }
+    if (message.tiers?.length) {
+      obj.tiers = message.tiers.map((e) => TierAprView.toJSON(e));
+    }
+    if (message.lightNodeBonusBps !== 0) {
+      obj.lightNodeBonusBps = Math.round(message.lightNodeBonusBps);
+    }
+    if (message.validatorBonusBps !== 0) {
+      obj.validatorBonusBps = Math.round(message.validatorBonusBps);
+    }
+    if (message.validatorEffectiveBonusBps !== "") {
+      obj.validatorEffectiveBonusBps = message.validatorEffectiveBonusBps;
+    }
+    return obj;
+  },
+
+  create(base?: DeepPartial<QueryAprResponse>): QueryAprResponse {
+    return QueryAprResponse.fromPartial(base ?? {});
+  },
+  fromPartial(object: DeepPartial<QueryAprResponse>): QueryAprResponse {
+    const message = createBaseQueryAprResponse();
+    message.base = (object.base !== undefined && object.base !== null) ? AprBase.fromPartial(object.base) : undefined;
+    message.validator = object.validator ?? "";
+    message.commission = object.commission ?? "";
+    message.baseAprBps = object.baseAprBps ?? "";
+    message.tiers = object.tiers?.map((e) => TierAprView.fromPartial(e)) || [];
+    message.lightNodeBonusBps = object.lightNodeBonusBps ?? 0;
+    message.validatorBonusBps = object.validatorBonusBps ?? 0;
+    message.validatorEffectiveBonusBps = object.validatorEffectiveBonusBps ?? "";
+    return message;
+  },
+};
+
+function createBaseQueryDelegatorAprRequest(): QueryDelegatorAprRequest {
+  return { delegator: "", validator: "" };
+}
+
+export const QueryDelegatorAprRequest: MessageFns<QueryDelegatorAprRequest> = {
+  encode(message: QueryDelegatorAprRequest, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.delegator !== "") {
+      writer.uint32(10).string(message.delegator);
+    }
+    if (message.validator !== "") {
+      writer.uint32(18).string(message.validator);
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): QueryDelegatorAprRequest {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseQueryDelegatorAprRequest();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.delegator = reader.string();
+          continue;
+        }
+        case 2: {
+          if (tag !== 18) {
+            break;
+          }
+
+          message.validator = reader.string();
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(object: any): QueryDelegatorAprRequest {
+    return {
+      delegator: isSet(object.delegator) ? globalThis.String(object.delegator) : "",
+      validator: isSet(object.validator) ? globalThis.String(object.validator) : "",
+    };
+  },
+
+  toJSON(message: QueryDelegatorAprRequest): unknown {
+    const obj: any = {};
+    if (message.delegator !== "") {
+      obj.delegator = message.delegator;
+    }
+    if (message.validator !== "") {
+      obj.validator = message.validator;
+    }
+    return obj;
+  },
+
+  create(base?: DeepPartial<QueryDelegatorAprRequest>): QueryDelegatorAprRequest {
+    return QueryDelegatorAprRequest.fromPartial(base ?? {});
+  },
+  fromPartial(object: DeepPartial<QueryDelegatorAprRequest>): QueryDelegatorAprRequest {
+    const message = createBaseQueryDelegatorAprRequest();
+    message.delegator = object.delegator ?? "";
+    message.validator = object.validator ?? "";
+    return message;
+  },
+};
+
+function createBaseAprPosition(): AprPosition {
+  return {
+    kind: "",
+    lockId: "0",
+    months: 0,
+    endTime: "0",
+    amount: "",
+    baseAprBps: "",
+    tierBonusBps: 0,
+    lightNodeBonusBps: 0,
+    lockBonusBps: "",
+    validatorBonusBps: "",
+    bonusBps: "",
+    effectiveAprBps: "",
+    effectiveAprAtLastFundingBps: "",
+    capped: false,
+    reason: "",
+  };
+}
+
+export const AprPosition: MessageFns<AprPosition> = {
+  encode(message: AprPosition, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.kind !== "") {
+      writer.uint32(10).string(message.kind);
+    }
+    if (message.lockId !== "0") {
+      writer.uint32(16).uint64(message.lockId);
+    }
+    if (message.months !== 0) {
+      writer.uint32(24).uint32(message.months);
+    }
+    if (message.endTime !== "0") {
+      writer.uint32(32).int64(message.endTime);
+    }
+    if (message.amount !== "") {
+      writer.uint32(42).string(message.amount);
+    }
+    if (message.baseAprBps !== "") {
+      writer.uint32(50).string(message.baseAprBps);
+    }
+    if (message.tierBonusBps !== 0) {
+      writer.uint32(56).uint32(message.tierBonusBps);
+    }
+    if (message.lightNodeBonusBps !== 0) {
+      writer.uint32(64).uint32(message.lightNodeBonusBps);
+    }
+    if (message.lockBonusBps !== "") {
+      writer.uint32(74).string(message.lockBonusBps);
+    }
+    if (message.validatorBonusBps !== "") {
+      writer.uint32(82).string(message.validatorBonusBps);
+    }
+    if (message.bonusBps !== "") {
+      writer.uint32(90).string(message.bonusBps);
+    }
+    if (message.effectiveAprBps !== "") {
+      writer.uint32(98).string(message.effectiveAprBps);
+    }
+    if (message.effectiveAprAtLastFundingBps !== "") {
+      writer.uint32(106).string(message.effectiveAprAtLastFundingBps);
+    }
+    if (message.capped !== false) {
+      writer.uint32(112).bool(message.capped);
+    }
+    if (message.reason !== "") {
+      writer.uint32(122).string(message.reason);
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): AprPosition {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseAprPosition();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.kind = reader.string();
+          continue;
+        }
+        case 2: {
+          if (tag !== 16) {
+            break;
+          }
+
+          message.lockId = reader.uint64().toString();
+          continue;
+        }
+        case 3: {
+          if (tag !== 24) {
+            break;
+          }
+
+          message.months = reader.uint32();
+          continue;
+        }
+        case 4: {
+          if (tag !== 32) {
+            break;
+          }
+
+          message.endTime = reader.int64().toString();
+          continue;
+        }
+        case 5: {
+          if (tag !== 42) {
+            break;
+          }
+
+          message.amount = reader.string();
+          continue;
+        }
+        case 6: {
+          if (tag !== 50) {
+            break;
+          }
+
+          message.baseAprBps = reader.string();
+          continue;
+        }
+        case 7: {
+          if (tag !== 56) {
+            break;
+          }
+
+          message.tierBonusBps = reader.uint32();
+          continue;
+        }
+        case 8: {
+          if (tag !== 64) {
+            break;
+          }
+
+          message.lightNodeBonusBps = reader.uint32();
+          continue;
+        }
+        case 9: {
+          if (tag !== 74) {
+            break;
+          }
+
+          message.lockBonusBps = reader.string();
+          continue;
+        }
+        case 10: {
+          if (tag !== 82) {
+            break;
+          }
+
+          message.validatorBonusBps = reader.string();
+          continue;
+        }
+        case 11: {
+          if (tag !== 90) {
+            break;
+          }
+
+          message.bonusBps = reader.string();
+          continue;
+        }
+        case 12: {
+          if (tag !== 98) {
+            break;
+          }
+
+          message.effectiveAprBps = reader.string();
+          continue;
+        }
+        case 13: {
+          if (tag !== 106) {
+            break;
+          }
+
+          message.effectiveAprAtLastFundingBps = reader.string();
+          continue;
+        }
+        case 14: {
+          if (tag !== 112) {
+            break;
+          }
+
+          message.capped = reader.bool();
+          continue;
+        }
+        case 15: {
+          if (tag !== 122) {
+            break;
+          }
+
+          message.reason = reader.string();
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(object: any): AprPosition {
+    return {
+      kind: isSet(object.kind) ? globalThis.String(object.kind) : "",
+      lockId: isSet(object.lockId)
+        ? globalThis.String(object.lockId)
+        : isSet(object.lock_id)
+        ? globalThis.String(object.lock_id)
+        : "0",
+      months: isSet(object.months) ? globalThis.Number(object.months) : 0,
+      endTime: isSet(object.endTime)
+        ? globalThis.String(object.endTime)
+        : isSet(object.end_time)
+        ? globalThis.String(object.end_time)
+        : "0",
+      amount: isSet(object.amount) ? globalThis.String(object.amount) : "",
+      baseAprBps: isSet(object.baseAprBps)
+        ? globalThis.String(object.baseAprBps)
+        : isSet(object.base_apr_bps)
+        ? globalThis.String(object.base_apr_bps)
+        : "",
+      tierBonusBps: isSet(object.tierBonusBps)
+        ? globalThis.Number(object.tierBonusBps)
+        : isSet(object.tier_bonus_bps)
+        ? globalThis.Number(object.tier_bonus_bps)
+        : 0,
+      lightNodeBonusBps: isSet(object.lightNodeBonusBps)
+        ? globalThis.Number(object.lightNodeBonusBps)
+        : isSet(object.light_node_bonus_bps)
+        ? globalThis.Number(object.light_node_bonus_bps)
+        : 0,
+      lockBonusBps: isSet(object.lockBonusBps)
+        ? globalThis.String(object.lockBonusBps)
+        : isSet(object.lock_bonus_bps)
+        ? globalThis.String(object.lock_bonus_bps)
+        : "",
+      validatorBonusBps: isSet(object.validatorBonusBps)
+        ? globalThis.String(object.validatorBonusBps)
+        : isSet(object.validator_bonus_bps)
+        ? globalThis.String(object.validator_bonus_bps)
+        : "",
+      bonusBps: isSet(object.bonusBps)
+        ? globalThis.String(object.bonusBps)
+        : isSet(object.bonus_bps)
+        ? globalThis.String(object.bonus_bps)
+        : "",
+      effectiveAprBps: isSet(object.effectiveAprBps)
+        ? globalThis.String(object.effectiveAprBps)
+        : isSet(object.effective_apr_bps)
+        ? globalThis.String(object.effective_apr_bps)
+        : "",
+      effectiveAprAtLastFundingBps: isSet(object.effectiveAprAtLastFundingBps)
+        ? globalThis.String(object.effectiveAprAtLastFundingBps)
+        : isSet(object.effective_apr_at_last_funding_bps)
+        ? globalThis.String(object.effective_apr_at_last_funding_bps)
+        : "",
+      capped: isSet(object.capped) ? globalThis.Boolean(object.capped) : false,
+      reason: isSet(object.reason) ? globalThis.String(object.reason) : "",
+    };
+  },
+
+  toJSON(message: AprPosition): unknown {
+    const obj: any = {};
+    if (message.kind !== "") {
+      obj.kind = message.kind;
+    }
+    if (message.lockId !== "0") {
+      obj.lockId = message.lockId;
+    }
+    if (message.months !== 0) {
+      obj.months = Math.round(message.months);
+    }
+    if (message.endTime !== "0") {
+      obj.endTime = message.endTime;
+    }
+    if (message.amount !== "") {
+      obj.amount = message.amount;
+    }
+    if (message.baseAprBps !== "") {
+      obj.baseAprBps = message.baseAprBps;
+    }
+    if (message.tierBonusBps !== 0) {
+      obj.tierBonusBps = Math.round(message.tierBonusBps);
+    }
+    if (message.lightNodeBonusBps !== 0) {
+      obj.lightNodeBonusBps = Math.round(message.lightNodeBonusBps);
+    }
+    if (message.lockBonusBps !== "") {
+      obj.lockBonusBps = message.lockBonusBps;
+    }
+    if (message.validatorBonusBps !== "") {
+      obj.validatorBonusBps = message.validatorBonusBps;
+    }
+    if (message.bonusBps !== "") {
+      obj.bonusBps = message.bonusBps;
+    }
+    if (message.effectiveAprBps !== "") {
+      obj.effectiveAprBps = message.effectiveAprBps;
+    }
+    if (message.effectiveAprAtLastFundingBps !== "") {
+      obj.effectiveAprAtLastFundingBps = message.effectiveAprAtLastFundingBps;
+    }
+    if (message.capped !== false) {
+      obj.capped = message.capped;
+    }
+    if (message.reason !== "") {
+      obj.reason = message.reason;
+    }
+    return obj;
+  },
+
+  create(base?: DeepPartial<AprPosition>): AprPosition {
+    return AprPosition.fromPartial(base ?? {});
+  },
+  fromPartial(object: DeepPartial<AprPosition>): AprPosition {
+    const message = createBaseAprPosition();
+    message.kind = object.kind ?? "";
+    message.lockId = object.lockId ?? "0";
+    message.months = object.months ?? 0;
+    message.endTime = object.endTime ?? "0";
+    message.amount = object.amount ?? "";
+    message.baseAprBps = object.baseAprBps ?? "";
+    message.tierBonusBps = object.tierBonusBps ?? 0;
+    message.lightNodeBonusBps = object.lightNodeBonusBps ?? 0;
+    message.lockBonusBps = object.lockBonusBps ?? "";
+    message.validatorBonusBps = object.validatorBonusBps ?? "";
+    message.bonusBps = object.bonusBps ?? "";
+    message.effectiveAprBps = object.effectiveAprBps ?? "";
+    message.effectiveAprAtLastFundingBps = object.effectiveAprAtLastFundingBps ?? "";
+    message.capped = object.capped ?? false;
+    message.reason = object.reason ?? "";
+    return message;
+  },
+};
+
+function createBaseDelegationApr(): DelegationApr {
+  return {
+    validator: "",
+    commission: "",
+    validatorActive: false,
+    selfBond: false,
+    delegatedAmount: "",
+    lockedAmount: "",
+    effectiveAprBps: "",
+    effectiveAprAtLastFundingBps: "",
+    positions: [],
+  };
+}
+
+export const DelegationApr: MessageFns<DelegationApr> = {
+  encode(message: DelegationApr, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.validator !== "") {
+      writer.uint32(10).string(message.validator);
+    }
+    if (message.commission !== "") {
+      writer.uint32(18).string(message.commission);
+    }
+    if (message.validatorActive !== false) {
+      writer.uint32(24).bool(message.validatorActive);
+    }
+    if (message.selfBond !== false) {
+      writer.uint32(32).bool(message.selfBond);
+    }
+    if (message.delegatedAmount !== "") {
+      writer.uint32(42).string(message.delegatedAmount);
+    }
+    if (message.lockedAmount !== "") {
+      writer.uint32(50).string(message.lockedAmount);
+    }
+    if (message.effectiveAprBps !== "") {
+      writer.uint32(58).string(message.effectiveAprBps);
+    }
+    if (message.effectiveAprAtLastFundingBps !== "") {
+      writer.uint32(66).string(message.effectiveAprAtLastFundingBps);
+    }
+    for (const v of message.positions) {
+      AprPosition.encode(v!, writer.uint32(74).fork()).join();
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): DelegationApr {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseDelegationApr();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.validator = reader.string();
+          continue;
+        }
+        case 2: {
+          if (tag !== 18) {
+            break;
+          }
+
+          message.commission = reader.string();
+          continue;
+        }
+        case 3: {
+          if (tag !== 24) {
+            break;
+          }
+
+          message.validatorActive = reader.bool();
+          continue;
+        }
+        case 4: {
+          if (tag !== 32) {
+            break;
+          }
+
+          message.selfBond = reader.bool();
+          continue;
+        }
+        case 5: {
+          if (tag !== 42) {
+            break;
+          }
+
+          message.delegatedAmount = reader.string();
+          continue;
+        }
+        case 6: {
+          if (tag !== 50) {
+            break;
+          }
+
+          message.lockedAmount = reader.string();
+          continue;
+        }
+        case 7: {
+          if (tag !== 58) {
+            break;
+          }
+
+          message.effectiveAprBps = reader.string();
+          continue;
+        }
+        case 8: {
+          if (tag !== 66) {
+            break;
+          }
+
+          message.effectiveAprAtLastFundingBps = reader.string();
+          continue;
+        }
+        case 9: {
+          if (tag !== 74) {
+            break;
+          }
+
+          message.positions.push(AprPosition.decode(reader, reader.uint32()));
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(object: any): DelegationApr {
+    return {
+      validator: isSet(object.validator) ? globalThis.String(object.validator) : "",
+      commission: isSet(object.commission) ? globalThis.String(object.commission) : "",
+      validatorActive: isSet(object.validatorActive)
+        ? globalThis.Boolean(object.validatorActive)
+        : isSet(object.validator_active)
+        ? globalThis.Boolean(object.validator_active)
+        : false,
+      selfBond: isSet(object.selfBond)
+        ? globalThis.Boolean(object.selfBond)
+        : isSet(object.self_bond)
+        ? globalThis.Boolean(object.self_bond)
+        : false,
+      delegatedAmount: isSet(object.delegatedAmount)
+        ? globalThis.String(object.delegatedAmount)
+        : isSet(object.delegated_amount)
+        ? globalThis.String(object.delegated_amount)
+        : "",
+      lockedAmount: isSet(object.lockedAmount)
+        ? globalThis.String(object.lockedAmount)
+        : isSet(object.locked_amount)
+        ? globalThis.String(object.locked_amount)
+        : "",
+      effectiveAprBps: isSet(object.effectiveAprBps)
+        ? globalThis.String(object.effectiveAprBps)
+        : isSet(object.effective_apr_bps)
+        ? globalThis.String(object.effective_apr_bps)
+        : "",
+      effectiveAprAtLastFundingBps: isSet(object.effectiveAprAtLastFundingBps)
+        ? globalThis.String(object.effectiveAprAtLastFundingBps)
+        : isSet(object.effective_apr_at_last_funding_bps)
+        ? globalThis.String(object.effective_apr_at_last_funding_bps)
+        : "",
+      positions: globalThis.Array.isArray(object?.positions)
+        ? object.positions.map((e: any) => AprPosition.fromJSON(e))
+        : [],
+    };
+  },
+
+  toJSON(message: DelegationApr): unknown {
+    const obj: any = {};
+    if (message.validator !== "") {
+      obj.validator = message.validator;
+    }
+    if (message.commission !== "") {
+      obj.commission = message.commission;
+    }
+    if (message.validatorActive !== false) {
+      obj.validatorActive = message.validatorActive;
+    }
+    if (message.selfBond !== false) {
+      obj.selfBond = message.selfBond;
+    }
+    if (message.delegatedAmount !== "") {
+      obj.delegatedAmount = message.delegatedAmount;
+    }
+    if (message.lockedAmount !== "") {
+      obj.lockedAmount = message.lockedAmount;
+    }
+    if (message.effectiveAprBps !== "") {
+      obj.effectiveAprBps = message.effectiveAprBps;
+    }
+    if (message.effectiveAprAtLastFundingBps !== "") {
+      obj.effectiveAprAtLastFundingBps = message.effectiveAprAtLastFundingBps;
+    }
+    if (message.positions?.length) {
+      obj.positions = message.positions.map((e) => AprPosition.toJSON(e));
+    }
+    return obj;
+  },
+
+  create(base?: DeepPartial<DelegationApr>): DelegationApr {
+    return DelegationApr.fromPartial(base ?? {});
+  },
+  fromPartial(object: DeepPartial<DelegationApr>): DelegationApr {
+    const message = createBaseDelegationApr();
+    message.validator = object.validator ?? "";
+    message.commission = object.commission ?? "";
+    message.validatorActive = object.validatorActive ?? false;
+    message.selfBond = object.selfBond ?? false;
+    message.delegatedAmount = object.delegatedAmount ?? "";
+    message.lockedAmount = object.lockedAmount ?? "";
+    message.effectiveAprBps = object.effectiveAprBps ?? "";
+    message.effectiveAprAtLastFundingBps = object.effectiveAprAtLastFundingBps ?? "";
+    message.positions = object.positions?.map((e) => AprPosition.fromPartial(e)) || [];
+    return message;
+  },
+};
+
+function createBaseQueryDelegatorAprResponse(): QueryDelegatorAprResponse {
+  return {
+    delegator: "",
+    base: undefined,
+    lightNodeBonus: false,
+    lightNodeReason: "",
+    delegations: [],
+    totalDelegated: "",
+    effectiveAprBps: "",
+    effectiveAprAtLastFundingBps: "",
+  };
+}
+
+export const QueryDelegatorAprResponse: MessageFns<QueryDelegatorAprResponse> = {
+  encode(message: QueryDelegatorAprResponse, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.delegator !== "") {
+      writer.uint32(10).string(message.delegator);
+    }
+    if (message.base !== undefined) {
+      AprBase.encode(message.base, writer.uint32(18).fork()).join();
+    }
+    if (message.lightNodeBonus !== false) {
+      writer.uint32(24).bool(message.lightNodeBonus);
+    }
+    if (message.lightNodeReason !== "") {
+      writer.uint32(34).string(message.lightNodeReason);
+    }
+    for (const v of message.delegations) {
+      DelegationApr.encode(v!, writer.uint32(42).fork()).join();
+    }
+    if (message.totalDelegated !== "") {
+      writer.uint32(50).string(message.totalDelegated);
+    }
+    if (message.effectiveAprBps !== "") {
+      writer.uint32(58).string(message.effectiveAprBps);
+    }
+    if (message.effectiveAprAtLastFundingBps !== "") {
+      writer.uint32(66).string(message.effectiveAprAtLastFundingBps);
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): QueryDelegatorAprResponse {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseQueryDelegatorAprResponse();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.delegator = reader.string();
+          continue;
+        }
+        case 2: {
+          if (tag !== 18) {
+            break;
+          }
+
+          message.base = AprBase.decode(reader, reader.uint32());
+          continue;
+        }
+        case 3: {
+          if (tag !== 24) {
+            break;
+          }
+
+          message.lightNodeBonus = reader.bool();
+          continue;
+        }
+        case 4: {
+          if (tag !== 34) {
+            break;
+          }
+
+          message.lightNodeReason = reader.string();
+          continue;
+        }
+        case 5: {
+          if (tag !== 42) {
+            break;
+          }
+
+          message.delegations.push(DelegationApr.decode(reader, reader.uint32()));
+          continue;
+        }
+        case 6: {
+          if (tag !== 50) {
+            break;
+          }
+
+          message.totalDelegated = reader.string();
+          continue;
+        }
+        case 7: {
+          if (tag !== 58) {
+            break;
+          }
+
+          message.effectiveAprBps = reader.string();
+          continue;
+        }
+        case 8: {
+          if (tag !== 66) {
+            break;
+          }
+
+          message.effectiveAprAtLastFundingBps = reader.string();
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(object: any): QueryDelegatorAprResponse {
+    return {
+      delegator: isSet(object.delegator) ? globalThis.String(object.delegator) : "",
+      base: isSet(object.base) ? AprBase.fromJSON(object.base) : undefined,
+      lightNodeBonus: isSet(object.lightNodeBonus)
+        ? globalThis.Boolean(object.lightNodeBonus)
+        : isSet(object.light_node_bonus)
+        ? globalThis.Boolean(object.light_node_bonus)
+        : false,
+      lightNodeReason: isSet(object.lightNodeReason)
+        ? globalThis.String(object.lightNodeReason)
+        : isSet(object.light_node_reason)
+        ? globalThis.String(object.light_node_reason)
+        : "",
+      delegations: globalThis.Array.isArray(object?.delegations)
+        ? object.delegations.map((e: any) => DelegationApr.fromJSON(e))
+        : [],
+      totalDelegated: isSet(object.totalDelegated)
+        ? globalThis.String(object.totalDelegated)
+        : isSet(object.total_delegated)
+        ? globalThis.String(object.total_delegated)
+        : "",
+      effectiveAprBps: isSet(object.effectiveAprBps)
+        ? globalThis.String(object.effectiveAprBps)
+        : isSet(object.effective_apr_bps)
+        ? globalThis.String(object.effective_apr_bps)
+        : "",
+      effectiveAprAtLastFundingBps: isSet(object.effectiveAprAtLastFundingBps)
+        ? globalThis.String(object.effectiveAprAtLastFundingBps)
+        : isSet(object.effective_apr_at_last_funding_bps)
+        ? globalThis.String(object.effective_apr_at_last_funding_bps)
+        : "",
+    };
+  },
+
+  toJSON(message: QueryDelegatorAprResponse): unknown {
+    const obj: any = {};
+    if (message.delegator !== "") {
+      obj.delegator = message.delegator;
+    }
+    if (message.base !== undefined) {
+      obj.base = AprBase.toJSON(message.base);
+    }
+    if (message.lightNodeBonus !== false) {
+      obj.lightNodeBonus = message.lightNodeBonus;
+    }
+    if (message.lightNodeReason !== "") {
+      obj.lightNodeReason = message.lightNodeReason;
+    }
+    if (message.delegations?.length) {
+      obj.delegations = message.delegations.map((e) => DelegationApr.toJSON(e));
+    }
+    if (message.totalDelegated !== "") {
+      obj.totalDelegated = message.totalDelegated;
+    }
+    if (message.effectiveAprBps !== "") {
+      obj.effectiveAprBps = message.effectiveAprBps;
+    }
+    if (message.effectiveAprAtLastFundingBps !== "") {
+      obj.effectiveAprAtLastFundingBps = message.effectiveAprAtLastFundingBps;
+    }
+    return obj;
+  },
+
+  create(base?: DeepPartial<QueryDelegatorAprResponse>): QueryDelegatorAprResponse {
+    return QueryDelegatorAprResponse.fromPartial(base ?? {});
+  },
+  fromPartial(object: DeepPartial<QueryDelegatorAprResponse>): QueryDelegatorAprResponse {
+    const message = createBaseQueryDelegatorAprResponse();
+    message.delegator = object.delegator ?? "";
+    message.base = (object.base !== undefined && object.base !== null) ? AprBase.fromPartial(object.base) : undefined;
+    message.lightNodeBonus = object.lightNodeBonus ?? false;
+    message.lightNodeReason = object.lightNodeReason ?? "";
+    message.delegations = object.delegations?.map((e) => DelegationApr.fromPartial(e)) || [];
+    message.totalDelegated = object.totalDelegated ?? "";
+    message.effectiveAprBps = object.effectiveAprBps ?? "";
+    message.effectiveAprAtLastFundingBps = object.effectiveAprAtLastFundingBps ?? "";
+    return message;
+  },
+};
+
 /**
  * Query defines the stakingtier module's read-only query service. Amounts are
  * uqor strings; rates are decimal strings in basis points.
@@ -1461,6 +3098,123 @@ export const QueryDefinition = {
               111,
               111,
               108,
+            ]) as Uint8Array,
+          ],
+        },
+      },
+    },
+    /**
+     * Apr returns the network base APR the module last measured and the bonus
+     * schedule: each lock term's bonus, and what it adds after the
+     * max_total_apy_bps ceiling. With validator set, the base is that
+     * validator's delegators' base (net of its commission).
+     */
+    apr: {
+      name: "Apr",
+      requestType: QueryAprRequest as typeof QueryAprRequest,
+      requestStream: false,
+      responseType: QueryAprResponse as typeof QueryAprResponse,
+      responseStream: false,
+      options: {
+        _unknownFields: {
+          578365826: [
+            new Uint8Array([
+              31,
+              18,
+              29,
+              47,
+              113,
+              111,
+              114,
+              101,
+              99,
+              104,
+              97,
+              105,
+              110,
+              47,
+              115,
+              116,
+              97,
+              107,
+              105,
+              110,
+              103,
+              116,
+              105,
+              101,
+              114,
+              47,
+              118,
+              49,
+              47,
+              97,
+              112,
+              114,
+            ]) as Uint8Array,
+          ],
+        },
+      },
+    },
+    /**
+     * DelegatorApr returns a delegator's effective APR per delegation and per
+     * position (each open lock, and the unlocked rest of the delegation): the
+     * base plus the bonus the settlement pays that position, with the reason.
+     */
+    delegatorApr: {
+      name: "DelegatorApr",
+      requestType: QueryDelegatorAprRequest as typeof QueryDelegatorAprRequest,
+      requestStream: false,
+      responseType: QueryDelegatorAprResponse as typeof QueryDelegatorAprResponse,
+      responseStream: false,
+      options: {
+        _unknownFields: {
+          578365826: [
+            new Uint8Array([
+              43,
+              18,
+              41,
+              47,
+              113,
+              111,
+              114,
+              101,
+              99,
+              104,
+              97,
+              105,
+              110,
+              47,
+              115,
+              116,
+              97,
+              107,
+              105,
+              110,
+              103,
+              116,
+              105,
+              101,
+              114,
+              47,
+              118,
+              49,
+              47,
+              97,
+              112,
+              114,
+              47,
+              123,
+              100,
+              101,
+              108,
+              101,
+              103,
+              97,
+              116,
+              111,
+              114,
+              125,
             ]) as Uint8Array,
           ],
         },

@@ -8805,6 +8805,12036 @@ public final class QueryOuterClass extends com.google.protobuf.GeneratedFile {
 
   }
 
+  public interface AprBaseOrBuilder extends
+      // @@protoc_insertion_point(interface_extends:qorechain.stakingtier.v1.AprBase)
+      com.google.protobuf.MessageOrBuilder {
+
+    /**
+     * <pre>
+     * gross_base_apr_bps is the pool's last_base_apy_bps: the yield the epoch's
+     * base emission gives the bonded stake through the fee split
+     * (validator_share + staker_share), before commission. It leaves out fees
+     * and is measured once per settlement, not live.
+     * </pre>
+     *
+     * <code>string gross_base_apr_bps = 1 [json_name = "grossBaseAprBps"];</code>
+     * @return The grossBaseAprBps.
+     */
+    java.lang.String getGrossBaseAprBps();
+    /**
+     * <pre>
+     * gross_base_apr_bps is the pool's last_base_apy_bps: the yield the epoch's
+     * base emission gives the bonded stake through the fee split
+     * (validator_share + staker_share), before commission. It leaves out fees
+     * and is measured once per settlement, not live.
+     * </pre>
+     *
+     * <code>string gross_base_apr_bps = 1 [json_name = "grossBaseAprBps"];</code>
+     * @return The bytes for grossBaseAprBps.
+     */
+    com.google.protobuf.ByteString
+        getGrossBaseAprBpsBytes();
+
+    /**
+     * <pre>
+     * computed_height and computed_time (unix seconds) are the settlement that
+     * measured it.
+     * </pre>
+     *
+     * <code>int64 computed_height = 2 [json_name = "computedHeight"];</code>
+     * @return The computedHeight.
+     */
+    long getComputedHeight();
+
+    /**
+     * <code>int64 computed_time = 3 [json_name = "computedTime"];</code>
+     * @return The computedTime.
+     */
+    long getComputedTime();
+
+    /**
+     * <pre>
+     * source is "emission" when the base emission is paying a yield,
+     * "fees_only" when the latest settlement measured none (the emission cap is
+     * reached or the target is zero: stakers earn fees only), and
+     * "not_settled" before the first settlement.
+     * </pre>
+     *
+     * <code>string source = 4 [json_name = "source"];</code>
+     * @return The source.
+     */
+    java.lang.String getSource();
+    /**
+     * <pre>
+     * source is "emission" when the base emission is paying a yield,
+     * "fees_only" when the latest settlement measured none (the emission cap is
+     * reached or the target is zero: stakers earn fees only), and
+     * "not_settled" before the first settlement.
+     * </pre>
+     *
+     * <code>string source = 4 [json_name = "source"];</code>
+     * @return The bytes for source.
+     */
+    com.google.protobuf.ByteString
+        getSourceBytes();
+
+    /**
+     * <pre>
+     * last_owed and last_funded (uqor) are the bonus the latest settlement owed
+     * and what it could fund.
+     * </pre>
+     *
+     * <code>string last_owed = 5 [json_name = "lastOwed"];</code>
+     * @return The lastOwed.
+     */
+    java.lang.String getLastOwed();
+    /**
+     * <pre>
+     * last_owed and last_funded (uqor) are the bonus the latest settlement owed
+     * and what it could fund.
+     * </pre>
+     *
+     * <code>string last_owed = 5 [json_name = "lastOwed"];</code>
+     * @return The bytes for lastOwed.
+     */
+    com.google.protobuf.ByteString
+        getLastOwedBytes();
+
+    /**
+     * <code>string last_funded = 6 [json_name = "lastFunded"];</code>
+     * @return The lastFunded.
+     */
+    java.lang.String getLastFunded();
+    /**
+     * <code>string last_funded = 6 [json_name = "lastFunded"];</code>
+     * @return The bytes for lastFunded.
+     */
+    com.google.protobuf.ByteString
+        getLastFundedBytes();
+
+    /**
+     * <pre>
+     * bonus_funding_ratio is last_funded / last_owed, 1 when nothing was owed.
+     * Below 1, every bonus was paid pro rata by this factor.
+     * </pre>
+     *
+     * <code>string bonus_funding_ratio = 7 [json_name = "bonusFundingRatio"];</code>
+     * @return The bonusFundingRatio.
+     */
+    java.lang.String getBonusFundingRatio();
+    /**
+     * <pre>
+     * bonus_funding_ratio is last_funded / last_owed, 1 when nothing was owed.
+     * Below 1, every bonus was paid pro rata by this factor.
+     * </pre>
+     *
+     * <code>string bonus_funding_ratio = 7 [json_name = "bonusFundingRatio"];</code>
+     * @return The bytes for bonusFundingRatio.
+     */
+    com.google.protobuf.ByteString
+        getBonusFundingRatioBytes();
+
+    /**
+     * <pre>
+     * bonus_enabled is false when the protocol feature or the enabled param is
+     * off: no bonus accrues.
+     * </pre>
+     *
+     * <code>bool bonus_enabled = 8 [json_name = "bonusEnabled"];</code>
+     * @return The bonusEnabled.
+     */
+    boolean getBonusEnabled();
+
+    /**
+     * <code>uint32 max_total_apy_bps = 9 [json_name = "maxTotalApyBps"];</code>
+     * @return The maxTotalApyBps.
+     */
+    int getMaxTotalApyBps();
+  }
+  /**
+   * <pre>
+   * AprBase is the base yield the module measured at its latest settlement, and
+   * how that settlement was funded. Every rate is a decimal string in basis
+   * points a year.
+   * </pre>
+   *
+   * Protobuf type {@code qorechain.stakingtier.v1.AprBase}
+   */
+  public static final class AprBase extends
+      com.google.protobuf.GeneratedMessage implements
+      // @@protoc_insertion_point(message_implements:qorechain.stakingtier.v1.AprBase)
+      AprBaseOrBuilder {
+  private static final long serialVersionUID = 0L;
+    static {
+      com.google.protobuf.RuntimeVersion.validateProtobufGencodeVersion(
+        com.google.protobuf.RuntimeVersion.RuntimeDomain.PUBLIC,
+        /* major= */ 4,
+        /* minor= */ 35,
+        /* patch= */ 1,
+        /* suffix= */ "",
+        "AprBase");
+    }
+    // Use AprBase.newBuilder() to construct.
+    private AprBase(com.google.protobuf.GeneratedMessage.Builder<?> builder) {
+      super(builder);
+    }
+    private AprBase() {
+      grossBaseAprBps_ = "";
+      source_ = "";
+      lastOwed_ = "";
+      lastFunded_ = "";
+      bonusFundingRatio_ = "";
+    }
+
+    public static final com.google.protobuf.Descriptors.Descriptor
+        getDescriptor() {
+      return qorechain.stakingtier.v1.QueryOuterClass.internal_static_qorechain_stakingtier_v1_AprBase_descriptor;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Descriptors.Descriptor getDescriptorForType() {
+      return qorechain.stakingtier.v1.QueryOuterClass.internal_static_qorechain_stakingtier_v1_AprBase_descriptor;
+    }
+
+    @java.lang.Override
+    protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+        internalGetFieldAccessorTable() {
+      return qorechain.stakingtier.v1.QueryOuterClass.internal_static_qorechain_stakingtier_v1_AprBase_fieldAccessorTable
+          .ensureFieldAccessorsInitialized(
+              qorechain.stakingtier.v1.QueryOuterClass.AprBase.class, qorechain.stakingtier.v1.QueryOuterClass.AprBase.Builder.class);
+    }
+
+    public static final int GROSS_BASE_APR_BPS_FIELD_NUMBER = 1;
+    @SuppressWarnings("serial")
+    private volatile java.lang.Object grossBaseAprBps_ = "";
+    /**
+     * <pre>
+     * gross_base_apr_bps is the pool's last_base_apy_bps: the yield the epoch's
+     * base emission gives the bonded stake through the fee split
+     * (validator_share + staker_share), before commission. It leaves out fees
+     * and is measured once per settlement, not live.
+     * </pre>
+     *
+     * <code>string gross_base_apr_bps = 1 [json_name = "grossBaseAprBps"];</code>
+     * @return The grossBaseAprBps.
+     */
+    @java.lang.Override
+    public java.lang.String getGrossBaseAprBps() {
+      java.lang.Object ref = grossBaseAprBps_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        grossBaseAprBps_ = s;
+        return s;
+      }
+    }
+    /**
+     * <pre>
+     * gross_base_apr_bps is the pool's last_base_apy_bps: the yield the epoch's
+     * base emission gives the bonded stake through the fee split
+     * (validator_share + staker_share), before commission. It leaves out fees
+     * and is measured once per settlement, not live.
+     * </pre>
+     *
+     * <code>string gross_base_apr_bps = 1 [json_name = "grossBaseAprBps"];</code>
+     * @return The bytes for grossBaseAprBps.
+     */
+    @java.lang.Override
+    public com.google.protobuf.ByteString
+        getGrossBaseAprBpsBytes() {
+      java.lang.Object ref = grossBaseAprBps_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        grossBaseAprBps_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
+    public static final int COMPUTED_HEIGHT_FIELD_NUMBER = 2;
+    private long computedHeight_ = 0L;
+    /**
+     * <pre>
+     * computed_height and computed_time (unix seconds) are the settlement that
+     * measured it.
+     * </pre>
+     *
+     * <code>int64 computed_height = 2 [json_name = "computedHeight"];</code>
+     * @return The computedHeight.
+     */
+    @java.lang.Override
+    public long getComputedHeight() {
+      return computedHeight_;
+    }
+
+    public static final int COMPUTED_TIME_FIELD_NUMBER = 3;
+    private long computedTime_ = 0L;
+    /**
+     * <code>int64 computed_time = 3 [json_name = "computedTime"];</code>
+     * @return The computedTime.
+     */
+    @java.lang.Override
+    public long getComputedTime() {
+      return computedTime_;
+    }
+
+    public static final int SOURCE_FIELD_NUMBER = 4;
+    @SuppressWarnings("serial")
+    private volatile java.lang.Object source_ = "";
+    /**
+     * <pre>
+     * source is "emission" when the base emission is paying a yield,
+     * "fees_only" when the latest settlement measured none (the emission cap is
+     * reached or the target is zero: stakers earn fees only), and
+     * "not_settled" before the first settlement.
+     * </pre>
+     *
+     * <code>string source = 4 [json_name = "source"];</code>
+     * @return The source.
+     */
+    @java.lang.Override
+    public java.lang.String getSource() {
+      java.lang.Object ref = source_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        source_ = s;
+        return s;
+      }
+    }
+    /**
+     * <pre>
+     * source is "emission" when the base emission is paying a yield,
+     * "fees_only" when the latest settlement measured none (the emission cap is
+     * reached or the target is zero: stakers earn fees only), and
+     * "not_settled" before the first settlement.
+     * </pre>
+     *
+     * <code>string source = 4 [json_name = "source"];</code>
+     * @return The bytes for source.
+     */
+    @java.lang.Override
+    public com.google.protobuf.ByteString
+        getSourceBytes() {
+      java.lang.Object ref = source_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        source_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
+    public static final int LAST_OWED_FIELD_NUMBER = 5;
+    @SuppressWarnings("serial")
+    private volatile java.lang.Object lastOwed_ = "";
+    /**
+     * <pre>
+     * last_owed and last_funded (uqor) are the bonus the latest settlement owed
+     * and what it could fund.
+     * </pre>
+     *
+     * <code>string last_owed = 5 [json_name = "lastOwed"];</code>
+     * @return The lastOwed.
+     */
+    @java.lang.Override
+    public java.lang.String getLastOwed() {
+      java.lang.Object ref = lastOwed_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        lastOwed_ = s;
+        return s;
+      }
+    }
+    /**
+     * <pre>
+     * last_owed and last_funded (uqor) are the bonus the latest settlement owed
+     * and what it could fund.
+     * </pre>
+     *
+     * <code>string last_owed = 5 [json_name = "lastOwed"];</code>
+     * @return The bytes for lastOwed.
+     */
+    @java.lang.Override
+    public com.google.protobuf.ByteString
+        getLastOwedBytes() {
+      java.lang.Object ref = lastOwed_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        lastOwed_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
+    public static final int LAST_FUNDED_FIELD_NUMBER = 6;
+    @SuppressWarnings("serial")
+    private volatile java.lang.Object lastFunded_ = "";
+    /**
+     * <code>string last_funded = 6 [json_name = "lastFunded"];</code>
+     * @return The lastFunded.
+     */
+    @java.lang.Override
+    public java.lang.String getLastFunded() {
+      java.lang.Object ref = lastFunded_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        lastFunded_ = s;
+        return s;
+      }
+    }
+    /**
+     * <code>string last_funded = 6 [json_name = "lastFunded"];</code>
+     * @return The bytes for lastFunded.
+     */
+    @java.lang.Override
+    public com.google.protobuf.ByteString
+        getLastFundedBytes() {
+      java.lang.Object ref = lastFunded_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        lastFunded_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
+    public static final int BONUS_FUNDING_RATIO_FIELD_NUMBER = 7;
+    @SuppressWarnings("serial")
+    private volatile java.lang.Object bonusFundingRatio_ = "";
+    /**
+     * <pre>
+     * bonus_funding_ratio is last_funded / last_owed, 1 when nothing was owed.
+     * Below 1, every bonus was paid pro rata by this factor.
+     * </pre>
+     *
+     * <code>string bonus_funding_ratio = 7 [json_name = "bonusFundingRatio"];</code>
+     * @return The bonusFundingRatio.
+     */
+    @java.lang.Override
+    public java.lang.String getBonusFundingRatio() {
+      java.lang.Object ref = bonusFundingRatio_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        bonusFundingRatio_ = s;
+        return s;
+      }
+    }
+    /**
+     * <pre>
+     * bonus_funding_ratio is last_funded / last_owed, 1 when nothing was owed.
+     * Below 1, every bonus was paid pro rata by this factor.
+     * </pre>
+     *
+     * <code>string bonus_funding_ratio = 7 [json_name = "bonusFundingRatio"];</code>
+     * @return The bytes for bonusFundingRatio.
+     */
+    @java.lang.Override
+    public com.google.protobuf.ByteString
+        getBonusFundingRatioBytes() {
+      java.lang.Object ref = bonusFundingRatio_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        bonusFundingRatio_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
+    public static final int BONUS_ENABLED_FIELD_NUMBER = 8;
+    private boolean bonusEnabled_ = false;
+    /**
+     * <pre>
+     * bonus_enabled is false when the protocol feature or the enabled param is
+     * off: no bonus accrues.
+     * </pre>
+     *
+     * <code>bool bonus_enabled = 8 [json_name = "bonusEnabled"];</code>
+     * @return The bonusEnabled.
+     */
+    @java.lang.Override
+    public boolean getBonusEnabled() {
+      return bonusEnabled_;
+    }
+
+    public static final int MAX_TOTAL_APY_BPS_FIELD_NUMBER = 9;
+    private int maxTotalApyBps_ = 0;
+    /**
+     * <code>uint32 max_total_apy_bps = 9 [json_name = "maxTotalApyBps"];</code>
+     * @return The maxTotalApyBps.
+     */
+    @java.lang.Override
+    public int getMaxTotalApyBps() {
+      return maxTotalApyBps_;
+    }
+
+    private byte memoizedIsInitialized = -1;
+    @java.lang.Override
+    public final boolean isInitialized() {
+      byte isInitialized = memoizedIsInitialized;
+      if (isInitialized == 1) return true;
+      if (isInitialized == 0) return false;
+
+      memoizedIsInitialized = 1;
+      return true;
+    }
+
+    @java.lang.Override
+    public void writeTo(com.google.protobuf.CodedOutputStream output)
+                        throws java.io.IOException {
+      if (!com.google.protobuf.GeneratedMessage.isStringEmpty(grossBaseAprBps_)) {
+        com.google.protobuf.GeneratedMessage.writeString(output, 1, grossBaseAprBps_);
+      }
+      if (computedHeight_ != 0L) {
+        output.writeInt64(2, computedHeight_);
+      }
+      if (computedTime_ != 0L) {
+        output.writeInt64(3, computedTime_);
+      }
+      if (!com.google.protobuf.GeneratedMessage.isStringEmpty(source_)) {
+        com.google.protobuf.GeneratedMessage.writeString(output, 4, source_);
+      }
+      if (!com.google.protobuf.GeneratedMessage.isStringEmpty(lastOwed_)) {
+        com.google.protobuf.GeneratedMessage.writeString(output, 5, lastOwed_);
+      }
+      if (!com.google.protobuf.GeneratedMessage.isStringEmpty(lastFunded_)) {
+        com.google.protobuf.GeneratedMessage.writeString(output, 6, lastFunded_);
+      }
+      if (!com.google.protobuf.GeneratedMessage.isStringEmpty(bonusFundingRatio_)) {
+        com.google.protobuf.GeneratedMessage.writeString(output, 7, bonusFundingRatio_);
+      }
+      if (bonusEnabled_ != false) {
+        output.writeBool(8, bonusEnabled_);
+      }
+      if (maxTotalApyBps_ != 0) {
+        output.writeUInt32(9, maxTotalApyBps_);
+      }
+      getUnknownFields().writeTo(output);
+    }
+    private int computeSerializedSize_0() {
+      int size = 0;
+      if (!com.google.protobuf.GeneratedMessage.isStringEmpty(grossBaseAprBps_)) {
+        size += com.google.protobuf.GeneratedMessage.computeStringSize(1, grossBaseAprBps_);
+      }
+      if (computedHeight_ != 0L) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeInt64Size(2, computedHeight_);
+      }
+      if (computedTime_ != 0L) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeInt64Size(3, computedTime_);
+      }
+      if (!com.google.protobuf.GeneratedMessage.isStringEmpty(source_)) {
+        size += com.google.protobuf.GeneratedMessage.computeStringSize(4, source_);
+      }
+      if (!com.google.protobuf.GeneratedMessage.isStringEmpty(lastOwed_)) {
+        size += com.google.protobuf.GeneratedMessage.computeStringSize(5, lastOwed_);
+      }
+      if (!com.google.protobuf.GeneratedMessage.isStringEmpty(lastFunded_)) {
+        size += com.google.protobuf.GeneratedMessage.computeStringSize(6, lastFunded_);
+      }
+      if (!com.google.protobuf.GeneratedMessage.isStringEmpty(bonusFundingRatio_)) {
+        size += com.google.protobuf.GeneratedMessage.computeStringSize(7, bonusFundingRatio_);
+      }
+      if (bonusEnabled_ != false) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeBoolSize(8, bonusEnabled_);
+      }
+      if (maxTotalApyBps_ != 0) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeUInt32Size(9, maxTotalApyBps_);
+      }
+      return size;
+    }
+    @java.lang.Override
+    public int getSerializedSize() {
+      int size = memoizedSize;
+      if (size != -1) return size;
+
+      size = 0;
+      size += computeSerializedSize_0();
+      size += getUnknownFields().getSerializedSize();
+      memoizedSize = size;
+      return size;
+    }
+
+    @java.lang.Override
+    public boolean equals(final java.lang.Object obj) {
+      if (obj == this) {
+       return true;
+      }
+      if (!(obj instanceof qorechain.stakingtier.v1.QueryOuterClass.AprBase)) {
+        return super.equals(obj);
+      }
+      qorechain.stakingtier.v1.QueryOuterClass.AprBase other = (qorechain.stakingtier.v1.QueryOuterClass.AprBase) obj;
+
+      if (!getGrossBaseAprBps()
+          .equals(other.getGrossBaseAprBps())) return false;
+      if (getComputedHeight()
+          != other.getComputedHeight()) return false;
+      if (getComputedTime()
+          != other.getComputedTime()) return false;
+      if (!getSource()
+          .equals(other.getSource())) return false;
+      if (!getLastOwed()
+          .equals(other.getLastOwed())) return false;
+      if (!getLastFunded()
+          .equals(other.getLastFunded())) return false;
+      if (!getBonusFundingRatio()
+          .equals(other.getBonusFundingRatio())) return false;
+      if (getBonusEnabled()
+          != other.getBonusEnabled()) return false;
+      if (getMaxTotalApyBps()
+          != other.getMaxTotalApyBps()) return false;
+      if (!getUnknownFields().equals(other.getUnknownFields())) return false;
+      return true;
+    }
+
+    @java.lang.Override
+    public int hashCode() {
+      if (memoizedHashCode != 0) {
+        return memoizedHashCode;
+      }
+      int hash = 41;
+      hash = (19 * hash) + getDescriptor().hashCode();
+      hash = (37 * hash) + GROSS_BASE_APR_BPS_FIELD_NUMBER;
+      hash = (53 * hash) + getGrossBaseAprBps().hashCode();
+      hash = (37 * hash) + COMPUTED_HEIGHT_FIELD_NUMBER;
+      hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
+          getComputedHeight());
+      hash = (37 * hash) + COMPUTED_TIME_FIELD_NUMBER;
+      hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
+          getComputedTime());
+      hash = (37 * hash) + SOURCE_FIELD_NUMBER;
+      hash = (53 * hash) + getSource().hashCode();
+      hash = (37 * hash) + LAST_OWED_FIELD_NUMBER;
+      hash = (53 * hash) + getLastOwed().hashCode();
+      hash = (37 * hash) + LAST_FUNDED_FIELD_NUMBER;
+      hash = (53 * hash) + getLastFunded().hashCode();
+      hash = (37 * hash) + BONUS_FUNDING_RATIO_FIELD_NUMBER;
+      hash = (53 * hash) + getBonusFundingRatio().hashCode();
+      hash = (37 * hash) + BONUS_ENABLED_FIELD_NUMBER;
+      hash = (53 * hash) + com.google.protobuf.Internal.hashBoolean(
+          getBonusEnabled());
+      hash = (37 * hash) + MAX_TOTAL_APY_BPS_FIELD_NUMBER;
+      hash = (53 * hash) + getMaxTotalApyBps();
+      hash = (29 * hash) + getUnknownFields().hashCode();
+      memoizedHashCode = hash;
+      return hash;
+    }
+
+    public static qorechain.stakingtier.v1.QueryOuterClass.AprBase parseFrom(
+        java.nio.ByteBuffer data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static qorechain.stakingtier.v1.QueryOuterClass.AprBase parseFrom(
+        java.nio.ByteBuffer data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static qorechain.stakingtier.v1.QueryOuterClass.AprBase parseFrom(
+        com.google.protobuf.ByteString data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static qorechain.stakingtier.v1.QueryOuterClass.AprBase parseFrom(
+        com.google.protobuf.ByteString data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static qorechain.stakingtier.v1.QueryOuterClass.AprBase parseFrom(byte[] data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static qorechain.stakingtier.v1.QueryOuterClass.AprBase parseFrom(
+        byte[] data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static qorechain.stakingtier.v1.QueryOuterClass.AprBase parseFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input);
+    }
+    public static qorechain.stakingtier.v1.QueryOuterClass.AprBase parseFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    public static qorechain.stakingtier.v1.QueryOuterClass.AprBase parseDelimitedFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseDelimitedWithIOException(PARSER, input);
+    }
+
+    public static qorechain.stakingtier.v1.QueryOuterClass.AprBase parseDelimitedFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static qorechain.stakingtier.v1.QueryOuterClass.AprBase parseFrom(
+        com.google.protobuf.CodedInputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input);
+    }
+    public static qorechain.stakingtier.v1.QueryOuterClass.AprBase parseFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    @java.lang.Override
+    public Builder newBuilderForType() { return newBuilder(); }
+    public static Builder newBuilder() {
+      return DEFAULT_INSTANCE.toBuilder();
+    }
+    public static Builder newBuilder(qorechain.stakingtier.v1.QueryOuterClass.AprBase prototype) {
+      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+    }
+    @java.lang.Override
+    public Builder toBuilder() {
+      return this == DEFAULT_INSTANCE
+          ? new Builder() : new Builder().mergeFrom(this);
+    }
+
+    @java.lang.Override
+    protected Builder newBuilderForType(
+        com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+      Builder builder = new Builder(parent);
+      return builder;
+    }
+    /**
+     * <pre>
+     * AprBase is the base yield the module measured at its latest settlement, and
+     * how that settlement was funded. Every rate is a decimal string in basis
+     * points a year.
+     * </pre>
+     *
+     * Protobuf type {@code qorechain.stakingtier.v1.AprBase}
+     */
+    public static final class Builder extends
+        com.google.protobuf.GeneratedMessage.Builder<Builder> implements
+        // @@protoc_insertion_point(builder_implements:qorechain.stakingtier.v1.AprBase)
+        qorechain.stakingtier.v1.QueryOuterClass.AprBaseOrBuilder {
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return qorechain.stakingtier.v1.QueryOuterClass.internal_static_qorechain_stakingtier_v1_AprBase_descriptor;
+      }
+
+      @java.lang.Override
+      protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return qorechain.stakingtier.v1.QueryOuterClass.internal_static_qorechain_stakingtier_v1_AprBase_fieldAccessorTable
+            .ensureFieldAccessorsInitialized(
+                qorechain.stakingtier.v1.QueryOuterClass.AprBase.class, qorechain.stakingtier.v1.QueryOuterClass.AprBase.Builder.class);
+      }
+
+      // Construct using qorechain.stakingtier.v1.QueryOuterClass.AprBase.newBuilder()
+      private Builder() {
+
+      }
+
+      private Builder(
+          com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+        super(parent);
+
+      }
+      @java.lang.Override
+      public Builder clear() {
+        super.clear();
+        bitField0_ = 0;
+        grossBaseAprBps_ = "";
+        computedHeight_ = 0L;
+        computedTime_ = 0L;
+        source_ = "";
+        lastOwed_ = "";
+        lastFunded_ = "";
+        bonusFundingRatio_ = "";
+        bonusEnabled_ = false;
+        maxTotalApyBps_ = 0;
+        return this;
+      }
+
+      @java.lang.Override
+      public com.google.protobuf.Descriptors.Descriptor
+          getDescriptorForType() {
+        return qorechain.stakingtier.v1.QueryOuterClass.internal_static_qorechain_stakingtier_v1_AprBase_descriptor;
+      }
+
+      @java.lang.Override
+      public qorechain.stakingtier.v1.QueryOuterClass.AprBase getDefaultInstanceForType() {
+        return qorechain.stakingtier.v1.QueryOuterClass.AprBase.getDefaultInstance();
+      }
+
+      @java.lang.Override
+      public qorechain.stakingtier.v1.QueryOuterClass.AprBase build() {
+        qorechain.stakingtier.v1.QueryOuterClass.AprBase result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(result);
+        }
+        return result;
+      }
+
+      @java.lang.Override
+      public qorechain.stakingtier.v1.QueryOuterClass.AprBase buildPartial() {
+        qorechain.stakingtier.v1.QueryOuterClass.AprBase result = new qorechain.stakingtier.v1.QueryOuterClass.AprBase(this);
+        if (bitField0_ != 0) { buildPartial0(result); }
+        onBuilt();
+        return result;
+      }
+
+      private void buildPartial0(qorechain.stakingtier.v1.QueryOuterClass.AprBase result) {
+        int from_bitField0_ = bitField0_;
+        if (((from_bitField0_ & 0x00000001) != 0)) {
+          result.grossBaseAprBps_ = grossBaseAprBps_;
+        }
+        if (((from_bitField0_ & 0x00000002) != 0)) {
+          result.computedHeight_ = computedHeight_;
+        }
+        if (((from_bitField0_ & 0x00000004) != 0)) {
+          result.computedTime_ = computedTime_;
+        }
+        if (((from_bitField0_ & 0x00000008) != 0)) {
+          result.source_ = source_;
+        }
+        if (((from_bitField0_ & 0x00000010) != 0)) {
+          result.lastOwed_ = lastOwed_;
+        }
+        if (((from_bitField0_ & 0x00000020) != 0)) {
+          result.lastFunded_ = lastFunded_;
+        }
+        if (((from_bitField0_ & 0x00000040) != 0)) {
+          result.bonusFundingRatio_ = bonusFundingRatio_;
+        }
+        if (((from_bitField0_ & 0x00000080) != 0)) {
+          result.bonusEnabled_ = bonusEnabled_;
+        }
+        if (((from_bitField0_ & 0x00000100) != 0)) {
+          result.maxTotalApyBps_ = maxTotalApyBps_;
+        }
+      }
+
+      @java.lang.Override
+      public Builder mergeFrom(com.google.protobuf.Message other) {
+        if (other instanceof qorechain.stakingtier.v1.QueryOuterClass.AprBase) {
+          return mergeFrom((qorechain.stakingtier.v1.QueryOuterClass.AprBase)other);
+        } else {
+          super.mergeFrom(other);
+          return this;
+        }
+      }
+
+      public Builder mergeFrom(qorechain.stakingtier.v1.QueryOuterClass.AprBase other) {
+        if (other == qorechain.stakingtier.v1.QueryOuterClass.AprBase.getDefaultInstance()) return this;
+        if (!other.getGrossBaseAprBps().isEmpty()) {
+          grossBaseAprBps_ = other.grossBaseAprBps_;
+          bitField0_ |= 0x00000001;
+          onChanged();
+        }
+        if (other.getComputedHeight() != 0L) {
+          setComputedHeight(other.getComputedHeight());
+        }
+        if (other.getComputedTime() != 0L) {
+          setComputedTime(other.getComputedTime());
+        }
+        if (!other.getSource().isEmpty()) {
+          source_ = other.source_;
+          bitField0_ |= 0x00000008;
+          onChanged();
+        }
+        if (!other.getLastOwed().isEmpty()) {
+          lastOwed_ = other.lastOwed_;
+          bitField0_ |= 0x00000010;
+          onChanged();
+        }
+        if (!other.getLastFunded().isEmpty()) {
+          lastFunded_ = other.lastFunded_;
+          bitField0_ |= 0x00000020;
+          onChanged();
+        }
+        if (!other.getBonusFundingRatio().isEmpty()) {
+          bonusFundingRatio_ = other.bonusFundingRatio_;
+          bitField0_ |= 0x00000040;
+          onChanged();
+        }
+        if (other.getBonusEnabled() != false) {
+          setBonusEnabled(other.getBonusEnabled());
+        }
+        if (other.getMaxTotalApyBps() != 0) {
+          setMaxTotalApyBps(other.getMaxTotalApyBps());
+        }
+        this.mergeUnknownFields(other.getUnknownFields());
+        onChanged();
+        return this;
+      }
+
+      @java.lang.Override
+      public final boolean isInitialized() {
+        return true;
+      }
+
+      @java.lang.Override
+      public Builder mergeFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        if (extensionRegistry == null) {
+          throw new java.lang.NullPointerException();
+        }
+        try {
+          boolean done = false;
+          while (!done) {
+            int tag = input.readTag();
+            switch (tag) {
+              case 0:
+                done = true;
+                break;
+              case 10: {
+                grossBaseAprBps_ = input.readStringRequireUtf8();
+                bitField0_ |= 0x00000001;
+                break;
+              } // case 10
+              case 16: {
+                computedHeight_ = input.readInt64();
+                bitField0_ |= 0x00000002;
+                break;
+              } // case 16
+              case 24: {
+                computedTime_ = input.readInt64();
+                bitField0_ |= 0x00000004;
+                break;
+              } // case 24
+              case 34: {
+                source_ = input.readStringRequireUtf8();
+                bitField0_ |= 0x00000008;
+                break;
+              } // case 34
+              case 42: {
+                lastOwed_ = input.readStringRequireUtf8();
+                bitField0_ |= 0x00000010;
+                break;
+              } // case 42
+              case 50: {
+                lastFunded_ = input.readStringRequireUtf8();
+                bitField0_ |= 0x00000020;
+                break;
+              } // case 50
+              case 58: {
+                bonusFundingRatio_ = input.readStringRequireUtf8();
+                bitField0_ |= 0x00000040;
+                break;
+              } // case 58
+              case 64: {
+                bonusEnabled_ = input.readBool();
+                bitField0_ |= 0x00000080;
+                break;
+              } // case 64
+              case 72: {
+                maxTotalApyBps_ = input.readUInt32();
+                bitField0_ |= 0x00000100;
+                break;
+              } // case 72
+              default: {
+                if (!super.parseUnknownField(input, extensionRegistry, tag)) {
+                  done = true; // was an endgroup tag
+                }
+                break;
+              } // default:
+            } // switch (tag)
+          } // while (!done)
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          throw e.unwrapIOException();
+        } finally {
+          onChanged();
+        } // finally
+        return this;
+      }
+      private int bitField0_;
+
+      private java.lang.Object grossBaseAprBps_ = "";
+      /**
+       * <pre>
+       * gross_base_apr_bps is the pool's last_base_apy_bps: the yield the epoch's
+       * base emission gives the bonded stake through the fee split
+       * (validator_share + staker_share), before commission. It leaves out fees
+       * and is measured once per settlement, not live.
+       * </pre>
+       *
+       * <code>string gross_base_apr_bps = 1 [json_name = "grossBaseAprBps"];</code>
+       * @return The grossBaseAprBps.
+       */
+      public java.lang.String getGrossBaseAprBps() {
+        java.lang.Object ref = grossBaseAprBps_;
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          grossBaseAprBps_ = s;
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
+      }
+      /**
+       * <pre>
+       * gross_base_apr_bps is the pool's last_base_apy_bps: the yield the epoch's
+       * base emission gives the bonded stake through the fee split
+       * (validator_share + staker_share), before commission. It leaves out fees
+       * and is measured once per settlement, not live.
+       * </pre>
+       *
+       * <code>string gross_base_apr_bps = 1 [json_name = "grossBaseAprBps"];</code>
+       * @return The bytes for grossBaseAprBps.
+       */
+      public com.google.protobuf.ByteString
+          getGrossBaseAprBpsBytes() {
+        java.lang.Object ref = grossBaseAprBps_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          grossBaseAprBps_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <pre>
+       * gross_base_apr_bps is the pool's last_base_apy_bps: the yield the epoch's
+       * base emission gives the bonded stake through the fee split
+       * (validator_share + staker_share), before commission. It leaves out fees
+       * and is measured once per settlement, not live.
+       * </pre>
+       *
+       * <code>string gross_base_apr_bps = 1 [json_name = "grossBaseAprBps"];</code>
+       * @param value The grossBaseAprBps to set.
+       * @return This builder for chaining.
+       */
+      public Builder setGrossBaseAprBps(
+          java.lang.String value) {
+        if (value == null) { throw new NullPointerException(); }
+        grossBaseAprBps_ = value;
+        bitField0_ |= 0x00000001;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * gross_base_apr_bps is the pool's last_base_apy_bps: the yield the epoch's
+       * base emission gives the bonded stake through the fee split
+       * (validator_share + staker_share), before commission. It leaves out fees
+       * and is measured once per settlement, not live.
+       * </pre>
+       *
+       * <code>string gross_base_apr_bps = 1 [json_name = "grossBaseAprBps"];</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearGrossBaseAprBps() {
+        grossBaseAprBps_ = getDefaultInstance().getGrossBaseAprBps();
+        bitField0_ = (bitField0_ & ~0x00000001);
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * gross_base_apr_bps is the pool's last_base_apy_bps: the yield the epoch's
+       * base emission gives the bonded stake through the fee split
+       * (validator_share + staker_share), before commission. It leaves out fees
+       * and is measured once per settlement, not live.
+       * </pre>
+       *
+       * <code>string gross_base_apr_bps = 1 [json_name = "grossBaseAprBps"];</code>
+       * @param value The bytes for grossBaseAprBps to set.
+       * @return This builder for chaining.
+       */
+      public Builder setGrossBaseAprBpsBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) { throw new NullPointerException(); }
+        checkByteStringIsUtf8(value);
+        grossBaseAprBps_ = value;
+        bitField0_ |= 0x00000001;
+        onChanged();
+        return this;
+      }
+
+      private long computedHeight_ ;
+      /**
+       * <pre>
+       * computed_height and computed_time (unix seconds) are the settlement that
+       * measured it.
+       * </pre>
+       *
+       * <code>int64 computed_height = 2 [json_name = "computedHeight"];</code>
+       * @return The computedHeight.
+       */
+      @java.lang.Override
+      public long getComputedHeight() {
+        return computedHeight_;
+      }
+      /**
+       * <pre>
+       * computed_height and computed_time (unix seconds) are the settlement that
+       * measured it.
+       * </pre>
+       *
+       * <code>int64 computed_height = 2 [json_name = "computedHeight"];</code>
+       * @param value The computedHeight to set.
+       * @return This builder for chaining.
+       */
+      public Builder setComputedHeight(long value) {
+
+        computedHeight_ = value;
+        bitField0_ |= 0x00000002;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * computed_height and computed_time (unix seconds) are the settlement that
+       * measured it.
+       * </pre>
+       *
+       * <code>int64 computed_height = 2 [json_name = "computedHeight"];</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearComputedHeight() {
+        bitField0_ = (bitField0_ & ~0x00000002);
+        computedHeight_ = 0L;
+        onChanged();
+        return this;
+      }
+
+      private long computedTime_ ;
+      /**
+       * <code>int64 computed_time = 3 [json_name = "computedTime"];</code>
+       * @return The computedTime.
+       */
+      @java.lang.Override
+      public long getComputedTime() {
+        return computedTime_;
+      }
+      /**
+       * <code>int64 computed_time = 3 [json_name = "computedTime"];</code>
+       * @param value The computedTime to set.
+       * @return This builder for chaining.
+       */
+      public Builder setComputedTime(long value) {
+
+        computedTime_ = value;
+        bitField0_ |= 0x00000004;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>int64 computed_time = 3 [json_name = "computedTime"];</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearComputedTime() {
+        bitField0_ = (bitField0_ & ~0x00000004);
+        computedTime_ = 0L;
+        onChanged();
+        return this;
+      }
+
+      private java.lang.Object source_ = "";
+      /**
+       * <pre>
+       * source is "emission" when the base emission is paying a yield,
+       * "fees_only" when the latest settlement measured none (the emission cap is
+       * reached or the target is zero: stakers earn fees only), and
+       * "not_settled" before the first settlement.
+       * </pre>
+       *
+       * <code>string source = 4 [json_name = "source"];</code>
+       * @return The source.
+       */
+      public java.lang.String getSource() {
+        java.lang.Object ref = source_;
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          source_ = s;
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
+      }
+      /**
+       * <pre>
+       * source is "emission" when the base emission is paying a yield,
+       * "fees_only" when the latest settlement measured none (the emission cap is
+       * reached or the target is zero: stakers earn fees only), and
+       * "not_settled" before the first settlement.
+       * </pre>
+       *
+       * <code>string source = 4 [json_name = "source"];</code>
+       * @return The bytes for source.
+       */
+      public com.google.protobuf.ByteString
+          getSourceBytes() {
+        java.lang.Object ref = source_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          source_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <pre>
+       * source is "emission" when the base emission is paying a yield,
+       * "fees_only" when the latest settlement measured none (the emission cap is
+       * reached or the target is zero: stakers earn fees only), and
+       * "not_settled" before the first settlement.
+       * </pre>
+       *
+       * <code>string source = 4 [json_name = "source"];</code>
+       * @param value The source to set.
+       * @return This builder for chaining.
+       */
+      public Builder setSource(
+          java.lang.String value) {
+        if (value == null) { throw new NullPointerException(); }
+        source_ = value;
+        bitField0_ |= 0x00000008;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * source is "emission" when the base emission is paying a yield,
+       * "fees_only" when the latest settlement measured none (the emission cap is
+       * reached or the target is zero: stakers earn fees only), and
+       * "not_settled" before the first settlement.
+       * </pre>
+       *
+       * <code>string source = 4 [json_name = "source"];</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearSource() {
+        source_ = getDefaultInstance().getSource();
+        bitField0_ = (bitField0_ & ~0x00000008);
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * source is "emission" when the base emission is paying a yield,
+       * "fees_only" when the latest settlement measured none (the emission cap is
+       * reached or the target is zero: stakers earn fees only), and
+       * "not_settled" before the first settlement.
+       * </pre>
+       *
+       * <code>string source = 4 [json_name = "source"];</code>
+       * @param value The bytes for source to set.
+       * @return This builder for chaining.
+       */
+      public Builder setSourceBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) { throw new NullPointerException(); }
+        checkByteStringIsUtf8(value);
+        source_ = value;
+        bitField0_ |= 0x00000008;
+        onChanged();
+        return this;
+      }
+
+      private java.lang.Object lastOwed_ = "";
+      /**
+       * <pre>
+       * last_owed and last_funded (uqor) are the bonus the latest settlement owed
+       * and what it could fund.
+       * </pre>
+       *
+       * <code>string last_owed = 5 [json_name = "lastOwed"];</code>
+       * @return The lastOwed.
+       */
+      public java.lang.String getLastOwed() {
+        java.lang.Object ref = lastOwed_;
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          lastOwed_ = s;
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
+      }
+      /**
+       * <pre>
+       * last_owed and last_funded (uqor) are the bonus the latest settlement owed
+       * and what it could fund.
+       * </pre>
+       *
+       * <code>string last_owed = 5 [json_name = "lastOwed"];</code>
+       * @return The bytes for lastOwed.
+       */
+      public com.google.protobuf.ByteString
+          getLastOwedBytes() {
+        java.lang.Object ref = lastOwed_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          lastOwed_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <pre>
+       * last_owed and last_funded (uqor) are the bonus the latest settlement owed
+       * and what it could fund.
+       * </pre>
+       *
+       * <code>string last_owed = 5 [json_name = "lastOwed"];</code>
+       * @param value The lastOwed to set.
+       * @return This builder for chaining.
+       */
+      public Builder setLastOwed(
+          java.lang.String value) {
+        if (value == null) { throw new NullPointerException(); }
+        lastOwed_ = value;
+        bitField0_ |= 0x00000010;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * last_owed and last_funded (uqor) are the bonus the latest settlement owed
+       * and what it could fund.
+       * </pre>
+       *
+       * <code>string last_owed = 5 [json_name = "lastOwed"];</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearLastOwed() {
+        lastOwed_ = getDefaultInstance().getLastOwed();
+        bitField0_ = (bitField0_ & ~0x00000010);
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * last_owed and last_funded (uqor) are the bonus the latest settlement owed
+       * and what it could fund.
+       * </pre>
+       *
+       * <code>string last_owed = 5 [json_name = "lastOwed"];</code>
+       * @param value The bytes for lastOwed to set.
+       * @return This builder for chaining.
+       */
+      public Builder setLastOwedBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) { throw new NullPointerException(); }
+        checkByteStringIsUtf8(value);
+        lastOwed_ = value;
+        bitField0_ |= 0x00000010;
+        onChanged();
+        return this;
+      }
+
+      private java.lang.Object lastFunded_ = "";
+      /**
+       * <code>string last_funded = 6 [json_name = "lastFunded"];</code>
+       * @return The lastFunded.
+       */
+      public java.lang.String getLastFunded() {
+        java.lang.Object ref = lastFunded_;
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          lastFunded_ = s;
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
+      }
+      /**
+       * <code>string last_funded = 6 [json_name = "lastFunded"];</code>
+       * @return The bytes for lastFunded.
+       */
+      public com.google.protobuf.ByteString
+          getLastFundedBytes() {
+        java.lang.Object ref = lastFunded_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          lastFunded_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <code>string last_funded = 6 [json_name = "lastFunded"];</code>
+       * @param value The lastFunded to set.
+       * @return This builder for chaining.
+       */
+      public Builder setLastFunded(
+          java.lang.String value) {
+        if (value == null) { throw new NullPointerException(); }
+        lastFunded_ = value;
+        bitField0_ |= 0x00000020;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>string last_funded = 6 [json_name = "lastFunded"];</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearLastFunded() {
+        lastFunded_ = getDefaultInstance().getLastFunded();
+        bitField0_ = (bitField0_ & ~0x00000020);
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>string last_funded = 6 [json_name = "lastFunded"];</code>
+       * @param value The bytes for lastFunded to set.
+       * @return This builder for chaining.
+       */
+      public Builder setLastFundedBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) { throw new NullPointerException(); }
+        checkByteStringIsUtf8(value);
+        lastFunded_ = value;
+        bitField0_ |= 0x00000020;
+        onChanged();
+        return this;
+      }
+
+      private java.lang.Object bonusFundingRatio_ = "";
+      /**
+       * <pre>
+       * bonus_funding_ratio is last_funded / last_owed, 1 when nothing was owed.
+       * Below 1, every bonus was paid pro rata by this factor.
+       * </pre>
+       *
+       * <code>string bonus_funding_ratio = 7 [json_name = "bonusFundingRatio"];</code>
+       * @return The bonusFundingRatio.
+       */
+      public java.lang.String getBonusFundingRatio() {
+        java.lang.Object ref = bonusFundingRatio_;
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          bonusFundingRatio_ = s;
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
+      }
+      /**
+       * <pre>
+       * bonus_funding_ratio is last_funded / last_owed, 1 when nothing was owed.
+       * Below 1, every bonus was paid pro rata by this factor.
+       * </pre>
+       *
+       * <code>string bonus_funding_ratio = 7 [json_name = "bonusFundingRatio"];</code>
+       * @return The bytes for bonusFundingRatio.
+       */
+      public com.google.protobuf.ByteString
+          getBonusFundingRatioBytes() {
+        java.lang.Object ref = bonusFundingRatio_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          bonusFundingRatio_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <pre>
+       * bonus_funding_ratio is last_funded / last_owed, 1 when nothing was owed.
+       * Below 1, every bonus was paid pro rata by this factor.
+       * </pre>
+       *
+       * <code>string bonus_funding_ratio = 7 [json_name = "bonusFundingRatio"];</code>
+       * @param value The bonusFundingRatio to set.
+       * @return This builder for chaining.
+       */
+      public Builder setBonusFundingRatio(
+          java.lang.String value) {
+        if (value == null) { throw new NullPointerException(); }
+        bonusFundingRatio_ = value;
+        bitField0_ |= 0x00000040;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * bonus_funding_ratio is last_funded / last_owed, 1 when nothing was owed.
+       * Below 1, every bonus was paid pro rata by this factor.
+       * </pre>
+       *
+       * <code>string bonus_funding_ratio = 7 [json_name = "bonusFundingRatio"];</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearBonusFundingRatio() {
+        bonusFundingRatio_ = getDefaultInstance().getBonusFundingRatio();
+        bitField0_ = (bitField0_ & ~0x00000040);
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * bonus_funding_ratio is last_funded / last_owed, 1 when nothing was owed.
+       * Below 1, every bonus was paid pro rata by this factor.
+       * </pre>
+       *
+       * <code>string bonus_funding_ratio = 7 [json_name = "bonusFundingRatio"];</code>
+       * @param value The bytes for bonusFundingRatio to set.
+       * @return This builder for chaining.
+       */
+      public Builder setBonusFundingRatioBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) { throw new NullPointerException(); }
+        checkByteStringIsUtf8(value);
+        bonusFundingRatio_ = value;
+        bitField0_ |= 0x00000040;
+        onChanged();
+        return this;
+      }
+
+      private boolean bonusEnabled_ ;
+      /**
+       * <pre>
+       * bonus_enabled is false when the protocol feature or the enabled param is
+       * off: no bonus accrues.
+       * </pre>
+       *
+       * <code>bool bonus_enabled = 8 [json_name = "bonusEnabled"];</code>
+       * @return The bonusEnabled.
+       */
+      @java.lang.Override
+      public boolean getBonusEnabled() {
+        return bonusEnabled_;
+      }
+      /**
+       * <pre>
+       * bonus_enabled is false when the protocol feature or the enabled param is
+       * off: no bonus accrues.
+       * </pre>
+       *
+       * <code>bool bonus_enabled = 8 [json_name = "bonusEnabled"];</code>
+       * @param value The bonusEnabled to set.
+       * @return This builder for chaining.
+       */
+      public Builder setBonusEnabled(boolean value) {
+
+        bonusEnabled_ = value;
+        bitField0_ |= 0x00000080;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * bonus_enabled is false when the protocol feature or the enabled param is
+       * off: no bonus accrues.
+       * </pre>
+       *
+       * <code>bool bonus_enabled = 8 [json_name = "bonusEnabled"];</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearBonusEnabled() {
+        bitField0_ = (bitField0_ & ~0x00000080);
+        bonusEnabled_ = false;
+        onChanged();
+        return this;
+      }
+
+      private int maxTotalApyBps_ ;
+      /**
+       * <code>uint32 max_total_apy_bps = 9 [json_name = "maxTotalApyBps"];</code>
+       * @return The maxTotalApyBps.
+       */
+      @java.lang.Override
+      public int getMaxTotalApyBps() {
+        return maxTotalApyBps_;
+      }
+      /**
+       * <code>uint32 max_total_apy_bps = 9 [json_name = "maxTotalApyBps"];</code>
+       * @param value The maxTotalApyBps to set.
+       * @return This builder for chaining.
+       */
+      public Builder setMaxTotalApyBps(int value) {
+
+        maxTotalApyBps_ = value;
+        bitField0_ |= 0x00000100;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>uint32 max_total_apy_bps = 9 [json_name = "maxTotalApyBps"];</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearMaxTotalApyBps() {
+        bitField0_ = (bitField0_ & ~0x00000100);
+        maxTotalApyBps_ = 0;
+        onChanged();
+        return this;
+      }
+
+      // @@protoc_insertion_point(builder_scope:qorechain.stakingtier.v1.AprBase)
+    }
+
+    // @@protoc_insertion_point(class_scope:qorechain.stakingtier.v1.AprBase)
+    private static final qorechain.stakingtier.v1.QueryOuterClass.AprBase DEFAULT_INSTANCE;
+    static {
+      DEFAULT_INSTANCE = new qorechain.stakingtier.v1.QueryOuterClass.AprBase();
+    }
+
+    public static qorechain.stakingtier.v1.QueryOuterClass.AprBase getDefaultInstance() {
+      return DEFAULT_INSTANCE;
+    }
+
+    private static final com.google.protobuf.Parser<AprBase>
+        PARSER = new com.google.protobuf.AbstractParser<AprBase>() {
+      @java.lang.Override
+      public AprBase parsePartialFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        Builder builder = newBuilder();
+        try {
+          builder.mergeFrom(input, extensionRegistry);
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          throw e.setUnfinishedMessage(builder.buildPartial());
+        } catch (com.google.protobuf.UninitializedMessageException e) {
+          throw e.asInvalidProtocolBufferException().setUnfinishedMessage(builder.buildPartial());
+        } catch (java.io.IOException e) {
+          throw new com.google.protobuf.InvalidProtocolBufferException(e)
+              .setUnfinishedMessage(builder.buildPartial());
+        }
+        return builder.buildPartial();
+      }
+    };
+
+    public static com.google.protobuf.Parser<AprBase> parser() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Parser<AprBase> getParserForType() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public qorechain.stakingtier.v1.QueryOuterClass.AprBase getDefaultInstanceForType() {
+      return DEFAULT_INSTANCE;
+    }
+
+  }
+
+  public interface QueryAprRequestOrBuilder extends
+      // @@protoc_insertion_point(interface_extends:qorechain.stakingtier.v1.QueryAprRequest)
+      com.google.protobuf.MessageOrBuilder {
+
+    /**
+     * <pre>
+     * validator (optional, qorvaloper) states the base net of its commission.
+     * </pre>
+     *
+     * <code>string validator = 1 [json_name = "validator"];</code>
+     * @return The validator.
+     */
+    java.lang.String getValidator();
+    /**
+     * <pre>
+     * validator (optional, qorvaloper) states the base net of its commission.
+     * </pre>
+     *
+     * <code>string validator = 1 [json_name = "validator"];</code>
+     * @return The bytes for validator.
+     */
+    com.google.protobuf.ByteString
+        getValidatorBytes();
+  }
+  /**
+   * Protobuf type {@code qorechain.stakingtier.v1.QueryAprRequest}
+   */
+  public static final class QueryAprRequest extends
+      com.google.protobuf.GeneratedMessage implements
+      // @@protoc_insertion_point(message_implements:qorechain.stakingtier.v1.QueryAprRequest)
+      QueryAprRequestOrBuilder {
+  private static final long serialVersionUID = 0L;
+    static {
+      com.google.protobuf.RuntimeVersion.validateProtobufGencodeVersion(
+        com.google.protobuf.RuntimeVersion.RuntimeDomain.PUBLIC,
+        /* major= */ 4,
+        /* minor= */ 35,
+        /* patch= */ 1,
+        /* suffix= */ "",
+        "QueryAprRequest");
+    }
+    // Use QueryAprRequest.newBuilder() to construct.
+    private QueryAprRequest(com.google.protobuf.GeneratedMessage.Builder<?> builder) {
+      super(builder);
+    }
+    private QueryAprRequest() {
+      validator_ = "";
+    }
+
+    public static final com.google.protobuf.Descriptors.Descriptor
+        getDescriptor() {
+      return qorechain.stakingtier.v1.QueryOuterClass.internal_static_qorechain_stakingtier_v1_QueryAprRequest_descriptor;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Descriptors.Descriptor getDescriptorForType() {
+      return qorechain.stakingtier.v1.QueryOuterClass.internal_static_qorechain_stakingtier_v1_QueryAprRequest_descriptor;
+    }
+
+    @java.lang.Override
+    protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+        internalGetFieldAccessorTable() {
+      return qorechain.stakingtier.v1.QueryOuterClass.internal_static_qorechain_stakingtier_v1_QueryAprRequest_fieldAccessorTable
+          .ensureFieldAccessorsInitialized(
+              qorechain.stakingtier.v1.QueryOuterClass.QueryAprRequest.class, qorechain.stakingtier.v1.QueryOuterClass.QueryAprRequest.Builder.class);
+    }
+
+    public static final int VALIDATOR_FIELD_NUMBER = 1;
+    @SuppressWarnings("serial")
+    private volatile java.lang.Object validator_ = "";
+    /**
+     * <pre>
+     * validator (optional, qorvaloper) states the base net of its commission.
+     * </pre>
+     *
+     * <code>string validator = 1 [json_name = "validator"];</code>
+     * @return The validator.
+     */
+    @java.lang.Override
+    public java.lang.String getValidator() {
+      java.lang.Object ref = validator_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        validator_ = s;
+        return s;
+      }
+    }
+    /**
+     * <pre>
+     * validator (optional, qorvaloper) states the base net of its commission.
+     * </pre>
+     *
+     * <code>string validator = 1 [json_name = "validator"];</code>
+     * @return The bytes for validator.
+     */
+    @java.lang.Override
+    public com.google.protobuf.ByteString
+        getValidatorBytes() {
+      java.lang.Object ref = validator_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        validator_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
+    private byte memoizedIsInitialized = -1;
+    @java.lang.Override
+    public final boolean isInitialized() {
+      byte isInitialized = memoizedIsInitialized;
+      if (isInitialized == 1) return true;
+      if (isInitialized == 0) return false;
+
+      memoizedIsInitialized = 1;
+      return true;
+    }
+
+    @java.lang.Override
+    public void writeTo(com.google.protobuf.CodedOutputStream output)
+                        throws java.io.IOException {
+      if (!com.google.protobuf.GeneratedMessage.isStringEmpty(validator_)) {
+        com.google.protobuf.GeneratedMessage.writeString(output, 1, validator_);
+      }
+      getUnknownFields().writeTo(output);
+    }
+    private int computeSerializedSize_0() {
+      int size = 0;
+      if (!com.google.protobuf.GeneratedMessage.isStringEmpty(validator_)) {
+        size += com.google.protobuf.GeneratedMessage.computeStringSize(1, validator_);
+      }
+      return size;
+    }
+    @java.lang.Override
+    public int getSerializedSize() {
+      int size = memoizedSize;
+      if (size != -1) return size;
+
+      size = 0;
+      size += computeSerializedSize_0();
+      size += getUnknownFields().getSerializedSize();
+      memoizedSize = size;
+      return size;
+    }
+
+    @java.lang.Override
+    public boolean equals(final java.lang.Object obj) {
+      if (obj == this) {
+       return true;
+      }
+      if (!(obj instanceof qorechain.stakingtier.v1.QueryOuterClass.QueryAprRequest)) {
+        return super.equals(obj);
+      }
+      qorechain.stakingtier.v1.QueryOuterClass.QueryAprRequest other = (qorechain.stakingtier.v1.QueryOuterClass.QueryAprRequest) obj;
+
+      if (!getValidator()
+          .equals(other.getValidator())) return false;
+      if (!getUnknownFields().equals(other.getUnknownFields())) return false;
+      return true;
+    }
+
+    @java.lang.Override
+    public int hashCode() {
+      if (memoizedHashCode != 0) {
+        return memoizedHashCode;
+      }
+      int hash = 41;
+      hash = (19 * hash) + getDescriptor().hashCode();
+      hash = (37 * hash) + VALIDATOR_FIELD_NUMBER;
+      hash = (53 * hash) + getValidator().hashCode();
+      hash = (29 * hash) + getUnknownFields().hashCode();
+      memoizedHashCode = hash;
+      return hash;
+    }
+
+    public static qorechain.stakingtier.v1.QueryOuterClass.QueryAprRequest parseFrom(
+        java.nio.ByteBuffer data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static qorechain.stakingtier.v1.QueryOuterClass.QueryAprRequest parseFrom(
+        java.nio.ByteBuffer data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static qorechain.stakingtier.v1.QueryOuterClass.QueryAprRequest parseFrom(
+        com.google.protobuf.ByteString data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static qorechain.stakingtier.v1.QueryOuterClass.QueryAprRequest parseFrom(
+        com.google.protobuf.ByteString data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static qorechain.stakingtier.v1.QueryOuterClass.QueryAprRequest parseFrom(byte[] data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static qorechain.stakingtier.v1.QueryOuterClass.QueryAprRequest parseFrom(
+        byte[] data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static qorechain.stakingtier.v1.QueryOuterClass.QueryAprRequest parseFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input);
+    }
+    public static qorechain.stakingtier.v1.QueryOuterClass.QueryAprRequest parseFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    public static qorechain.stakingtier.v1.QueryOuterClass.QueryAprRequest parseDelimitedFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseDelimitedWithIOException(PARSER, input);
+    }
+
+    public static qorechain.stakingtier.v1.QueryOuterClass.QueryAprRequest parseDelimitedFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static qorechain.stakingtier.v1.QueryOuterClass.QueryAprRequest parseFrom(
+        com.google.protobuf.CodedInputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input);
+    }
+    public static qorechain.stakingtier.v1.QueryOuterClass.QueryAprRequest parseFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    @java.lang.Override
+    public Builder newBuilderForType() { return newBuilder(); }
+    public static Builder newBuilder() {
+      return DEFAULT_INSTANCE.toBuilder();
+    }
+    public static Builder newBuilder(qorechain.stakingtier.v1.QueryOuterClass.QueryAprRequest prototype) {
+      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+    }
+    @java.lang.Override
+    public Builder toBuilder() {
+      return this == DEFAULT_INSTANCE
+          ? new Builder() : new Builder().mergeFrom(this);
+    }
+
+    @java.lang.Override
+    protected Builder newBuilderForType(
+        com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+      Builder builder = new Builder(parent);
+      return builder;
+    }
+    /**
+     * Protobuf type {@code qorechain.stakingtier.v1.QueryAprRequest}
+     */
+    public static final class Builder extends
+        com.google.protobuf.GeneratedMessage.Builder<Builder> implements
+        // @@protoc_insertion_point(builder_implements:qorechain.stakingtier.v1.QueryAprRequest)
+        qorechain.stakingtier.v1.QueryOuterClass.QueryAprRequestOrBuilder {
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return qorechain.stakingtier.v1.QueryOuterClass.internal_static_qorechain_stakingtier_v1_QueryAprRequest_descriptor;
+      }
+
+      @java.lang.Override
+      protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return qorechain.stakingtier.v1.QueryOuterClass.internal_static_qorechain_stakingtier_v1_QueryAprRequest_fieldAccessorTable
+            .ensureFieldAccessorsInitialized(
+                qorechain.stakingtier.v1.QueryOuterClass.QueryAprRequest.class, qorechain.stakingtier.v1.QueryOuterClass.QueryAprRequest.Builder.class);
+      }
+
+      // Construct using qorechain.stakingtier.v1.QueryOuterClass.QueryAprRequest.newBuilder()
+      private Builder() {
+
+      }
+
+      private Builder(
+          com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+        super(parent);
+
+      }
+      @java.lang.Override
+      public Builder clear() {
+        super.clear();
+        bitField0_ = 0;
+        validator_ = "";
+        return this;
+      }
+
+      @java.lang.Override
+      public com.google.protobuf.Descriptors.Descriptor
+          getDescriptorForType() {
+        return qorechain.stakingtier.v1.QueryOuterClass.internal_static_qorechain_stakingtier_v1_QueryAprRequest_descriptor;
+      }
+
+      @java.lang.Override
+      public qorechain.stakingtier.v1.QueryOuterClass.QueryAprRequest getDefaultInstanceForType() {
+        return qorechain.stakingtier.v1.QueryOuterClass.QueryAprRequest.getDefaultInstance();
+      }
+
+      @java.lang.Override
+      public qorechain.stakingtier.v1.QueryOuterClass.QueryAprRequest build() {
+        qorechain.stakingtier.v1.QueryOuterClass.QueryAprRequest result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(result);
+        }
+        return result;
+      }
+
+      @java.lang.Override
+      public qorechain.stakingtier.v1.QueryOuterClass.QueryAprRequest buildPartial() {
+        qorechain.stakingtier.v1.QueryOuterClass.QueryAprRequest result = new qorechain.stakingtier.v1.QueryOuterClass.QueryAprRequest(this);
+        if (bitField0_ != 0) { buildPartial0(result); }
+        onBuilt();
+        return result;
+      }
+
+      private void buildPartial0(qorechain.stakingtier.v1.QueryOuterClass.QueryAprRequest result) {
+        int from_bitField0_ = bitField0_;
+        if (((from_bitField0_ & 0x00000001) != 0)) {
+          result.validator_ = validator_;
+        }
+      }
+
+      @java.lang.Override
+      public Builder mergeFrom(com.google.protobuf.Message other) {
+        if (other instanceof qorechain.stakingtier.v1.QueryOuterClass.QueryAprRequest) {
+          return mergeFrom((qorechain.stakingtier.v1.QueryOuterClass.QueryAprRequest)other);
+        } else {
+          super.mergeFrom(other);
+          return this;
+        }
+      }
+
+      public Builder mergeFrom(qorechain.stakingtier.v1.QueryOuterClass.QueryAprRequest other) {
+        if (other == qorechain.stakingtier.v1.QueryOuterClass.QueryAprRequest.getDefaultInstance()) return this;
+        if (!other.getValidator().isEmpty()) {
+          validator_ = other.validator_;
+          bitField0_ |= 0x00000001;
+          onChanged();
+        }
+        this.mergeUnknownFields(other.getUnknownFields());
+        onChanged();
+        return this;
+      }
+
+      @java.lang.Override
+      public final boolean isInitialized() {
+        return true;
+      }
+
+      @java.lang.Override
+      public Builder mergeFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        if (extensionRegistry == null) {
+          throw new java.lang.NullPointerException();
+        }
+        try {
+          boolean done = false;
+          while (!done) {
+            int tag = input.readTag();
+            switch (tag) {
+              case 0:
+                done = true;
+                break;
+              case 10: {
+                validator_ = input.readStringRequireUtf8();
+                bitField0_ |= 0x00000001;
+                break;
+              } // case 10
+              default: {
+                if (!super.parseUnknownField(input, extensionRegistry, tag)) {
+                  done = true; // was an endgroup tag
+                }
+                break;
+              } // default:
+            } // switch (tag)
+          } // while (!done)
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          throw e.unwrapIOException();
+        } finally {
+          onChanged();
+        } // finally
+        return this;
+      }
+      private int bitField0_;
+
+      private java.lang.Object validator_ = "";
+      /**
+       * <pre>
+       * validator (optional, qorvaloper) states the base net of its commission.
+       * </pre>
+       *
+       * <code>string validator = 1 [json_name = "validator"];</code>
+       * @return The validator.
+       */
+      public java.lang.String getValidator() {
+        java.lang.Object ref = validator_;
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          validator_ = s;
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
+      }
+      /**
+       * <pre>
+       * validator (optional, qorvaloper) states the base net of its commission.
+       * </pre>
+       *
+       * <code>string validator = 1 [json_name = "validator"];</code>
+       * @return The bytes for validator.
+       */
+      public com.google.protobuf.ByteString
+          getValidatorBytes() {
+        java.lang.Object ref = validator_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          validator_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <pre>
+       * validator (optional, qorvaloper) states the base net of its commission.
+       * </pre>
+       *
+       * <code>string validator = 1 [json_name = "validator"];</code>
+       * @param value The validator to set.
+       * @return This builder for chaining.
+       */
+      public Builder setValidator(
+          java.lang.String value) {
+        if (value == null) { throw new NullPointerException(); }
+        validator_ = value;
+        bitField0_ |= 0x00000001;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * validator (optional, qorvaloper) states the base net of its commission.
+       * </pre>
+       *
+       * <code>string validator = 1 [json_name = "validator"];</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearValidator() {
+        validator_ = getDefaultInstance().getValidator();
+        bitField0_ = (bitField0_ & ~0x00000001);
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * validator (optional, qorvaloper) states the base net of its commission.
+       * </pre>
+       *
+       * <code>string validator = 1 [json_name = "validator"];</code>
+       * @param value The bytes for validator to set.
+       * @return This builder for chaining.
+       */
+      public Builder setValidatorBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) { throw new NullPointerException(); }
+        checkByteStringIsUtf8(value);
+        validator_ = value;
+        bitField0_ |= 0x00000001;
+        onChanged();
+        return this;
+      }
+
+      // @@protoc_insertion_point(builder_scope:qorechain.stakingtier.v1.QueryAprRequest)
+    }
+
+    // @@protoc_insertion_point(class_scope:qorechain.stakingtier.v1.QueryAprRequest)
+    private static final qorechain.stakingtier.v1.QueryOuterClass.QueryAprRequest DEFAULT_INSTANCE;
+    static {
+      DEFAULT_INSTANCE = new qorechain.stakingtier.v1.QueryOuterClass.QueryAprRequest();
+    }
+
+    public static qorechain.stakingtier.v1.QueryOuterClass.QueryAprRequest getDefaultInstance() {
+      return DEFAULT_INSTANCE;
+    }
+
+    private static final com.google.protobuf.Parser<QueryAprRequest>
+        PARSER = new com.google.protobuf.AbstractParser<QueryAprRequest>() {
+      @java.lang.Override
+      public QueryAprRequest parsePartialFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        Builder builder = newBuilder();
+        try {
+          builder.mergeFrom(input, extensionRegistry);
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          throw e.setUnfinishedMessage(builder.buildPartial());
+        } catch (com.google.protobuf.UninitializedMessageException e) {
+          throw e.asInvalidProtocolBufferException().setUnfinishedMessage(builder.buildPartial());
+        } catch (java.io.IOException e) {
+          throw new com.google.protobuf.InvalidProtocolBufferException(e)
+              .setUnfinishedMessage(builder.buildPartial());
+        }
+        return builder.buildPartial();
+      }
+    };
+
+    public static com.google.protobuf.Parser<QueryAprRequest> parser() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Parser<QueryAprRequest> getParserForType() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public qorechain.stakingtier.v1.QueryOuterClass.QueryAprRequest getDefaultInstanceForType() {
+      return DEFAULT_INSTANCE;
+    }
+
+  }
+
+  public interface TierAprViewOrBuilder extends
+      // @@protoc_insertion_point(interface_extends:qorechain.stakingtier.v1.TierAprView)
+      com.google.protobuf.MessageOrBuilder {
+
+    /**
+     * <code>uint32 months = 1 [json_name = "months"];</code>
+     * @return The months.
+     */
+    int getMonths();
+
+    /**
+     * <pre>
+     * bonus_bps is the term's bonus as configured.
+     * </pre>
+     *
+     * <code>uint32 bonus_bps = 2 [json_name = "bonusBps"];</code>
+     * @return The bonusBps.
+     */
+    int getBonusBps();
+
+    /**
+     * <pre>
+     * effective_bonus_bps is bonus_bps cut to the room left under
+     * max_total_apy_bps above the base; zero when the bonus is disabled.
+     * </pre>
+     *
+     * <code>string effective_bonus_bps = 3 [json_name = "effectiveBonusBps"];</code>
+     * @return The effectiveBonusBps.
+     */
+    java.lang.String getEffectiveBonusBps();
+    /**
+     * <pre>
+     * effective_bonus_bps is bonus_bps cut to the room left under
+     * max_total_apy_bps above the base; zero when the bonus is disabled.
+     * </pre>
+     *
+     * <code>string effective_bonus_bps = 3 [json_name = "effectiveBonusBps"];</code>
+     * @return The bytes for effectiveBonusBps.
+     */
+    com.google.protobuf.ByteString
+        getEffectiveBonusBpsBytes();
+
+    /**
+     * <pre>
+     * effective_apr_bps is the base plus effective_bonus_bps.
+     * </pre>
+     *
+     * <code>string effective_apr_bps = 4 [json_name = "effectiveAprBps"];</code>
+     * @return The effectiveAprBps.
+     */
+    java.lang.String getEffectiveAprBps();
+    /**
+     * <pre>
+     * effective_apr_bps is the base plus effective_bonus_bps.
+     * </pre>
+     *
+     * <code>string effective_apr_bps = 4 [json_name = "effectiveAprBps"];</code>
+     * @return The bytes for effectiveAprBps.
+     */
+    com.google.protobuf.ByteString
+        getEffectiveAprBpsBytes();
+  }
+  /**
+   * <pre>
+   * TierAprView is one lock term as a new lock on the queried base would earn.
+   * </pre>
+   *
+   * Protobuf type {@code qorechain.stakingtier.v1.TierAprView}
+   */
+  public static final class TierAprView extends
+      com.google.protobuf.GeneratedMessage implements
+      // @@protoc_insertion_point(message_implements:qorechain.stakingtier.v1.TierAprView)
+      TierAprViewOrBuilder {
+  private static final long serialVersionUID = 0L;
+    static {
+      com.google.protobuf.RuntimeVersion.validateProtobufGencodeVersion(
+        com.google.protobuf.RuntimeVersion.RuntimeDomain.PUBLIC,
+        /* major= */ 4,
+        /* minor= */ 35,
+        /* patch= */ 1,
+        /* suffix= */ "",
+        "TierAprView");
+    }
+    // Use TierAprView.newBuilder() to construct.
+    private TierAprView(com.google.protobuf.GeneratedMessage.Builder<?> builder) {
+      super(builder);
+    }
+    private TierAprView() {
+      effectiveBonusBps_ = "";
+      effectiveAprBps_ = "";
+    }
+
+    public static final com.google.protobuf.Descriptors.Descriptor
+        getDescriptor() {
+      return qorechain.stakingtier.v1.QueryOuterClass.internal_static_qorechain_stakingtier_v1_TierAprView_descriptor;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Descriptors.Descriptor getDescriptorForType() {
+      return qorechain.stakingtier.v1.QueryOuterClass.internal_static_qorechain_stakingtier_v1_TierAprView_descriptor;
+    }
+
+    @java.lang.Override
+    protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+        internalGetFieldAccessorTable() {
+      return qorechain.stakingtier.v1.QueryOuterClass.internal_static_qorechain_stakingtier_v1_TierAprView_fieldAccessorTable
+          .ensureFieldAccessorsInitialized(
+              qorechain.stakingtier.v1.QueryOuterClass.TierAprView.class, qorechain.stakingtier.v1.QueryOuterClass.TierAprView.Builder.class);
+    }
+
+    public static final int MONTHS_FIELD_NUMBER = 1;
+    private int months_ = 0;
+    /**
+     * <code>uint32 months = 1 [json_name = "months"];</code>
+     * @return The months.
+     */
+    @java.lang.Override
+    public int getMonths() {
+      return months_;
+    }
+
+    public static final int BONUS_BPS_FIELD_NUMBER = 2;
+    private int bonusBps_ = 0;
+    /**
+     * <pre>
+     * bonus_bps is the term's bonus as configured.
+     * </pre>
+     *
+     * <code>uint32 bonus_bps = 2 [json_name = "bonusBps"];</code>
+     * @return The bonusBps.
+     */
+    @java.lang.Override
+    public int getBonusBps() {
+      return bonusBps_;
+    }
+
+    public static final int EFFECTIVE_BONUS_BPS_FIELD_NUMBER = 3;
+    @SuppressWarnings("serial")
+    private volatile java.lang.Object effectiveBonusBps_ = "";
+    /**
+     * <pre>
+     * effective_bonus_bps is bonus_bps cut to the room left under
+     * max_total_apy_bps above the base; zero when the bonus is disabled.
+     * </pre>
+     *
+     * <code>string effective_bonus_bps = 3 [json_name = "effectiveBonusBps"];</code>
+     * @return The effectiveBonusBps.
+     */
+    @java.lang.Override
+    public java.lang.String getEffectiveBonusBps() {
+      java.lang.Object ref = effectiveBonusBps_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        effectiveBonusBps_ = s;
+        return s;
+      }
+    }
+    /**
+     * <pre>
+     * effective_bonus_bps is bonus_bps cut to the room left under
+     * max_total_apy_bps above the base; zero when the bonus is disabled.
+     * </pre>
+     *
+     * <code>string effective_bonus_bps = 3 [json_name = "effectiveBonusBps"];</code>
+     * @return The bytes for effectiveBonusBps.
+     */
+    @java.lang.Override
+    public com.google.protobuf.ByteString
+        getEffectiveBonusBpsBytes() {
+      java.lang.Object ref = effectiveBonusBps_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        effectiveBonusBps_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
+    public static final int EFFECTIVE_APR_BPS_FIELD_NUMBER = 4;
+    @SuppressWarnings("serial")
+    private volatile java.lang.Object effectiveAprBps_ = "";
+    /**
+     * <pre>
+     * effective_apr_bps is the base plus effective_bonus_bps.
+     * </pre>
+     *
+     * <code>string effective_apr_bps = 4 [json_name = "effectiveAprBps"];</code>
+     * @return The effectiveAprBps.
+     */
+    @java.lang.Override
+    public java.lang.String getEffectiveAprBps() {
+      java.lang.Object ref = effectiveAprBps_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        effectiveAprBps_ = s;
+        return s;
+      }
+    }
+    /**
+     * <pre>
+     * effective_apr_bps is the base plus effective_bonus_bps.
+     * </pre>
+     *
+     * <code>string effective_apr_bps = 4 [json_name = "effectiveAprBps"];</code>
+     * @return The bytes for effectiveAprBps.
+     */
+    @java.lang.Override
+    public com.google.protobuf.ByteString
+        getEffectiveAprBpsBytes() {
+      java.lang.Object ref = effectiveAprBps_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        effectiveAprBps_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
+    private byte memoizedIsInitialized = -1;
+    @java.lang.Override
+    public final boolean isInitialized() {
+      byte isInitialized = memoizedIsInitialized;
+      if (isInitialized == 1) return true;
+      if (isInitialized == 0) return false;
+
+      memoizedIsInitialized = 1;
+      return true;
+    }
+
+    @java.lang.Override
+    public void writeTo(com.google.protobuf.CodedOutputStream output)
+                        throws java.io.IOException {
+      if (months_ != 0) {
+        output.writeUInt32(1, months_);
+      }
+      if (bonusBps_ != 0) {
+        output.writeUInt32(2, bonusBps_);
+      }
+      if (!com.google.protobuf.GeneratedMessage.isStringEmpty(effectiveBonusBps_)) {
+        com.google.protobuf.GeneratedMessage.writeString(output, 3, effectiveBonusBps_);
+      }
+      if (!com.google.protobuf.GeneratedMessage.isStringEmpty(effectiveAprBps_)) {
+        com.google.protobuf.GeneratedMessage.writeString(output, 4, effectiveAprBps_);
+      }
+      getUnknownFields().writeTo(output);
+    }
+    private int computeSerializedSize_0() {
+      int size = 0;
+      if (months_ != 0) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeUInt32Size(1, months_);
+      }
+      if (bonusBps_ != 0) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeUInt32Size(2, bonusBps_);
+      }
+      if (!com.google.protobuf.GeneratedMessage.isStringEmpty(effectiveBonusBps_)) {
+        size += com.google.protobuf.GeneratedMessage.computeStringSize(3, effectiveBonusBps_);
+      }
+      if (!com.google.protobuf.GeneratedMessage.isStringEmpty(effectiveAprBps_)) {
+        size += com.google.protobuf.GeneratedMessage.computeStringSize(4, effectiveAprBps_);
+      }
+      return size;
+    }
+    @java.lang.Override
+    public int getSerializedSize() {
+      int size = memoizedSize;
+      if (size != -1) return size;
+
+      size = 0;
+      size += computeSerializedSize_0();
+      size += getUnknownFields().getSerializedSize();
+      memoizedSize = size;
+      return size;
+    }
+
+    @java.lang.Override
+    public boolean equals(final java.lang.Object obj) {
+      if (obj == this) {
+       return true;
+      }
+      if (!(obj instanceof qorechain.stakingtier.v1.QueryOuterClass.TierAprView)) {
+        return super.equals(obj);
+      }
+      qorechain.stakingtier.v1.QueryOuterClass.TierAprView other = (qorechain.stakingtier.v1.QueryOuterClass.TierAprView) obj;
+
+      if (getMonths()
+          != other.getMonths()) return false;
+      if (getBonusBps()
+          != other.getBonusBps()) return false;
+      if (!getEffectiveBonusBps()
+          .equals(other.getEffectiveBonusBps())) return false;
+      if (!getEffectiveAprBps()
+          .equals(other.getEffectiveAprBps())) return false;
+      if (!getUnknownFields().equals(other.getUnknownFields())) return false;
+      return true;
+    }
+
+    @java.lang.Override
+    public int hashCode() {
+      if (memoizedHashCode != 0) {
+        return memoizedHashCode;
+      }
+      int hash = 41;
+      hash = (19 * hash) + getDescriptor().hashCode();
+      hash = (37 * hash) + MONTHS_FIELD_NUMBER;
+      hash = (53 * hash) + getMonths();
+      hash = (37 * hash) + BONUS_BPS_FIELD_NUMBER;
+      hash = (53 * hash) + getBonusBps();
+      hash = (37 * hash) + EFFECTIVE_BONUS_BPS_FIELD_NUMBER;
+      hash = (53 * hash) + getEffectiveBonusBps().hashCode();
+      hash = (37 * hash) + EFFECTIVE_APR_BPS_FIELD_NUMBER;
+      hash = (53 * hash) + getEffectiveAprBps().hashCode();
+      hash = (29 * hash) + getUnknownFields().hashCode();
+      memoizedHashCode = hash;
+      return hash;
+    }
+
+    public static qorechain.stakingtier.v1.QueryOuterClass.TierAprView parseFrom(
+        java.nio.ByteBuffer data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static qorechain.stakingtier.v1.QueryOuterClass.TierAprView parseFrom(
+        java.nio.ByteBuffer data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static qorechain.stakingtier.v1.QueryOuterClass.TierAprView parseFrom(
+        com.google.protobuf.ByteString data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static qorechain.stakingtier.v1.QueryOuterClass.TierAprView parseFrom(
+        com.google.protobuf.ByteString data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static qorechain.stakingtier.v1.QueryOuterClass.TierAprView parseFrom(byte[] data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static qorechain.stakingtier.v1.QueryOuterClass.TierAprView parseFrom(
+        byte[] data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static qorechain.stakingtier.v1.QueryOuterClass.TierAprView parseFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input);
+    }
+    public static qorechain.stakingtier.v1.QueryOuterClass.TierAprView parseFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    public static qorechain.stakingtier.v1.QueryOuterClass.TierAprView parseDelimitedFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseDelimitedWithIOException(PARSER, input);
+    }
+
+    public static qorechain.stakingtier.v1.QueryOuterClass.TierAprView parseDelimitedFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static qorechain.stakingtier.v1.QueryOuterClass.TierAprView parseFrom(
+        com.google.protobuf.CodedInputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input);
+    }
+    public static qorechain.stakingtier.v1.QueryOuterClass.TierAprView parseFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    @java.lang.Override
+    public Builder newBuilderForType() { return newBuilder(); }
+    public static Builder newBuilder() {
+      return DEFAULT_INSTANCE.toBuilder();
+    }
+    public static Builder newBuilder(qorechain.stakingtier.v1.QueryOuterClass.TierAprView prototype) {
+      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+    }
+    @java.lang.Override
+    public Builder toBuilder() {
+      return this == DEFAULT_INSTANCE
+          ? new Builder() : new Builder().mergeFrom(this);
+    }
+
+    @java.lang.Override
+    protected Builder newBuilderForType(
+        com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+      Builder builder = new Builder(parent);
+      return builder;
+    }
+    /**
+     * <pre>
+     * TierAprView is one lock term as a new lock on the queried base would earn.
+     * </pre>
+     *
+     * Protobuf type {@code qorechain.stakingtier.v1.TierAprView}
+     */
+    public static final class Builder extends
+        com.google.protobuf.GeneratedMessage.Builder<Builder> implements
+        // @@protoc_insertion_point(builder_implements:qorechain.stakingtier.v1.TierAprView)
+        qorechain.stakingtier.v1.QueryOuterClass.TierAprViewOrBuilder {
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return qorechain.stakingtier.v1.QueryOuterClass.internal_static_qorechain_stakingtier_v1_TierAprView_descriptor;
+      }
+
+      @java.lang.Override
+      protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return qorechain.stakingtier.v1.QueryOuterClass.internal_static_qorechain_stakingtier_v1_TierAprView_fieldAccessorTable
+            .ensureFieldAccessorsInitialized(
+                qorechain.stakingtier.v1.QueryOuterClass.TierAprView.class, qorechain.stakingtier.v1.QueryOuterClass.TierAprView.Builder.class);
+      }
+
+      // Construct using qorechain.stakingtier.v1.QueryOuterClass.TierAprView.newBuilder()
+      private Builder() {
+
+      }
+
+      private Builder(
+          com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+        super(parent);
+
+      }
+      @java.lang.Override
+      public Builder clear() {
+        super.clear();
+        bitField0_ = 0;
+        months_ = 0;
+        bonusBps_ = 0;
+        effectiveBonusBps_ = "";
+        effectiveAprBps_ = "";
+        return this;
+      }
+
+      @java.lang.Override
+      public com.google.protobuf.Descriptors.Descriptor
+          getDescriptorForType() {
+        return qorechain.stakingtier.v1.QueryOuterClass.internal_static_qorechain_stakingtier_v1_TierAprView_descriptor;
+      }
+
+      @java.lang.Override
+      public qorechain.stakingtier.v1.QueryOuterClass.TierAprView getDefaultInstanceForType() {
+        return qorechain.stakingtier.v1.QueryOuterClass.TierAprView.getDefaultInstance();
+      }
+
+      @java.lang.Override
+      public qorechain.stakingtier.v1.QueryOuterClass.TierAprView build() {
+        qorechain.stakingtier.v1.QueryOuterClass.TierAprView result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(result);
+        }
+        return result;
+      }
+
+      @java.lang.Override
+      public qorechain.stakingtier.v1.QueryOuterClass.TierAprView buildPartial() {
+        qorechain.stakingtier.v1.QueryOuterClass.TierAprView result = new qorechain.stakingtier.v1.QueryOuterClass.TierAprView(this);
+        if (bitField0_ != 0) { buildPartial0(result); }
+        onBuilt();
+        return result;
+      }
+
+      private void buildPartial0(qorechain.stakingtier.v1.QueryOuterClass.TierAprView result) {
+        int from_bitField0_ = bitField0_;
+        if (((from_bitField0_ & 0x00000001) != 0)) {
+          result.months_ = months_;
+        }
+        if (((from_bitField0_ & 0x00000002) != 0)) {
+          result.bonusBps_ = bonusBps_;
+        }
+        if (((from_bitField0_ & 0x00000004) != 0)) {
+          result.effectiveBonusBps_ = effectiveBonusBps_;
+        }
+        if (((from_bitField0_ & 0x00000008) != 0)) {
+          result.effectiveAprBps_ = effectiveAprBps_;
+        }
+      }
+
+      @java.lang.Override
+      public Builder mergeFrom(com.google.protobuf.Message other) {
+        if (other instanceof qorechain.stakingtier.v1.QueryOuterClass.TierAprView) {
+          return mergeFrom((qorechain.stakingtier.v1.QueryOuterClass.TierAprView)other);
+        } else {
+          super.mergeFrom(other);
+          return this;
+        }
+      }
+
+      public Builder mergeFrom(qorechain.stakingtier.v1.QueryOuterClass.TierAprView other) {
+        if (other == qorechain.stakingtier.v1.QueryOuterClass.TierAprView.getDefaultInstance()) return this;
+        if (other.getMonths() != 0) {
+          setMonths(other.getMonths());
+        }
+        if (other.getBonusBps() != 0) {
+          setBonusBps(other.getBonusBps());
+        }
+        if (!other.getEffectiveBonusBps().isEmpty()) {
+          effectiveBonusBps_ = other.effectiveBonusBps_;
+          bitField0_ |= 0x00000004;
+          onChanged();
+        }
+        if (!other.getEffectiveAprBps().isEmpty()) {
+          effectiveAprBps_ = other.effectiveAprBps_;
+          bitField0_ |= 0x00000008;
+          onChanged();
+        }
+        this.mergeUnknownFields(other.getUnknownFields());
+        onChanged();
+        return this;
+      }
+
+      @java.lang.Override
+      public final boolean isInitialized() {
+        return true;
+      }
+
+      @java.lang.Override
+      public Builder mergeFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        if (extensionRegistry == null) {
+          throw new java.lang.NullPointerException();
+        }
+        try {
+          boolean done = false;
+          while (!done) {
+            int tag = input.readTag();
+            switch (tag) {
+              case 0:
+                done = true;
+                break;
+              case 8: {
+                months_ = input.readUInt32();
+                bitField0_ |= 0x00000001;
+                break;
+              } // case 8
+              case 16: {
+                bonusBps_ = input.readUInt32();
+                bitField0_ |= 0x00000002;
+                break;
+              } // case 16
+              case 26: {
+                effectiveBonusBps_ = input.readStringRequireUtf8();
+                bitField0_ |= 0x00000004;
+                break;
+              } // case 26
+              case 34: {
+                effectiveAprBps_ = input.readStringRequireUtf8();
+                bitField0_ |= 0x00000008;
+                break;
+              } // case 34
+              default: {
+                if (!super.parseUnknownField(input, extensionRegistry, tag)) {
+                  done = true; // was an endgroup tag
+                }
+                break;
+              } // default:
+            } // switch (tag)
+          } // while (!done)
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          throw e.unwrapIOException();
+        } finally {
+          onChanged();
+        } // finally
+        return this;
+      }
+      private int bitField0_;
+
+      private int months_ ;
+      /**
+       * <code>uint32 months = 1 [json_name = "months"];</code>
+       * @return The months.
+       */
+      @java.lang.Override
+      public int getMonths() {
+        return months_;
+      }
+      /**
+       * <code>uint32 months = 1 [json_name = "months"];</code>
+       * @param value The months to set.
+       * @return This builder for chaining.
+       */
+      public Builder setMonths(int value) {
+
+        months_ = value;
+        bitField0_ |= 0x00000001;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>uint32 months = 1 [json_name = "months"];</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearMonths() {
+        bitField0_ = (bitField0_ & ~0x00000001);
+        months_ = 0;
+        onChanged();
+        return this;
+      }
+
+      private int bonusBps_ ;
+      /**
+       * <pre>
+       * bonus_bps is the term's bonus as configured.
+       * </pre>
+       *
+       * <code>uint32 bonus_bps = 2 [json_name = "bonusBps"];</code>
+       * @return The bonusBps.
+       */
+      @java.lang.Override
+      public int getBonusBps() {
+        return bonusBps_;
+      }
+      /**
+       * <pre>
+       * bonus_bps is the term's bonus as configured.
+       * </pre>
+       *
+       * <code>uint32 bonus_bps = 2 [json_name = "bonusBps"];</code>
+       * @param value The bonusBps to set.
+       * @return This builder for chaining.
+       */
+      public Builder setBonusBps(int value) {
+
+        bonusBps_ = value;
+        bitField0_ |= 0x00000002;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * bonus_bps is the term's bonus as configured.
+       * </pre>
+       *
+       * <code>uint32 bonus_bps = 2 [json_name = "bonusBps"];</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearBonusBps() {
+        bitField0_ = (bitField0_ & ~0x00000002);
+        bonusBps_ = 0;
+        onChanged();
+        return this;
+      }
+
+      private java.lang.Object effectiveBonusBps_ = "";
+      /**
+       * <pre>
+       * effective_bonus_bps is bonus_bps cut to the room left under
+       * max_total_apy_bps above the base; zero when the bonus is disabled.
+       * </pre>
+       *
+       * <code>string effective_bonus_bps = 3 [json_name = "effectiveBonusBps"];</code>
+       * @return The effectiveBonusBps.
+       */
+      public java.lang.String getEffectiveBonusBps() {
+        java.lang.Object ref = effectiveBonusBps_;
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          effectiveBonusBps_ = s;
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
+      }
+      /**
+       * <pre>
+       * effective_bonus_bps is bonus_bps cut to the room left under
+       * max_total_apy_bps above the base; zero when the bonus is disabled.
+       * </pre>
+       *
+       * <code>string effective_bonus_bps = 3 [json_name = "effectiveBonusBps"];</code>
+       * @return The bytes for effectiveBonusBps.
+       */
+      public com.google.protobuf.ByteString
+          getEffectiveBonusBpsBytes() {
+        java.lang.Object ref = effectiveBonusBps_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          effectiveBonusBps_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <pre>
+       * effective_bonus_bps is bonus_bps cut to the room left under
+       * max_total_apy_bps above the base; zero when the bonus is disabled.
+       * </pre>
+       *
+       * <code>string effective_bonus_bps = 3 [json_name = "effectiveBonusBps"];</code>
+       * @param value The effectiveBonusBps to set.
+       * @return This builder for chaining.
+       */
+      public Builder setEffectiveBonusBps(
+          java.lang.String value) {
+        if (value == null) { throw new NullPointerException(); }
+        effectiveBonusBps_ = value;
+        bitField0_ |= 0x00000004;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * effective_bonus_bps is bonus_bps cut to the room left under
+       * max_total_apy_bps above the base; zero when the bonus is disabled.
+       * </pre>
+       *
+       * <code>string effective_bonus_bps = 3 [json_name = "effectiveBonusBps"];</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearEffectiveBonusBps() {
+        effectiveBonusBps_ = getDefaultInstance().getEffectiveBonusBps();
+        bitField0_ = (bitField0_ & ~0x00000004);
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * effective_bonus_bps is bonus_bps cut to the room left under
+       * max_total_apy_bps above the base; zero when the bonus is disabled.
+       * </pre>
+       *
+       * <code>string effective_bonus_bps = 3 [json_name = "effectiveBonusBps"];</code>
+       * @param value The bytes for effectiveBonusBps to set.
+       * @return This builder for chaining.
+       */
+      public Builder setEffectiveBonusBpsBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) { throw new NullPointerException(); }
+        checkByteStringIsUtf8(value);
+        effectiveBonusBps_ = value;
+        bitField0_ |= 0x00000004;
+        onChanged();
+        return this;
+      }
+
+      private java.lang.Object effectiveAprBps_ = "";
+      /**
+       * <pre>
+       * effective_apr_bps is the base plus effective_bonus_bps.
+       * </pre>
+       *
+       * <code>string effective_apr_bps = 4 [json_name = "effectiveAprBps"];</code>
+       * @return The effectiveAprBps.
+       */
+      public java.lang.String getEffectiveAprBps() {
+        java.lang.Object ref = effectiveAprBps_;
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          effectiveAprBps_ = s;
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
+      }
+      /**
+       * <pre>
+       * effective_apr_bps is the base plus effective_bonus_bps.
+       * </pre>
+       *
+       * <code>string effective_apr_bps = 4 [json_name = "effectiveAprBps"];</code>
+       * @return The bytes for effectiveAprBps.
+       */
+      public com.google.protobuf.ByteString
+          getEffectiveAprBpsBytes() {
+        java.lang.Object ref = effectiveAprBps_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          effectiveAprBps_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <pre>
+       * effective_apr_bps is the base plus effective_bonus_bps.
+       * </pre>
+       *
+       * <code>string effective_apr_bps = 4 [json_name = "effectiveAprBps"];</code>
+       * @param value The effectiveAprBps to set.
+       * @return This builder for chaining.
+       */
+      public Builder setEffectiveAprBps(
+          java.lang.String value) {
+        if (value == null) { throw new NullPointerException(); }
+        effectiveAprBps_ = value;
+        bitField0_ |= 0x00000008;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * effective_apr_bps is the base plus effective_bonus_bps.
+       * </pre>
+       *
+       * <code>string effective_apr_bps = 4 [json_name = "effectiveAprBps"];</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearEffectiveAprBps() {
+        effectiveAprBps_ = getDefaultInstance().getEffectiveAprBps();
+        bitField0_ = (bitField0_ & ~0x00000008);
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * effective_apr_bps is the base plus effective_bonus_bps.
+       * </pre>
+       *
+       * <code>string effective_apr_bps = 4 [json_name = "effectiveAprBps"];</code>
+       * @param value The bytes for effectiveAprBps to set.
+       * @return This builder for chaining.
+       */
+      public Builder setEffectiveAprBpsBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) { throw new NullPointerException(); }
+        checkByteStringIsUtf8(value);
+        effectiveAprBps_ = value;
+        bitField0_ |= 0x00000008;
+        onChanged();
+        return this;
+      }
+
+      // @@protoc_insertion_point(builder_scope:qorechain.stakingtier.v1.TierAprView)
+    }
+
+    // @@protoc_insertion_point(class_scope:qorechain.stakingtier.v1.TierAprView)
+    private static final qorechain.stakingtier.v1.QueryOuterClass.TierAprView DEFAULT_INSTANCE;
+    static {
+      DEFAULT_INSTANCE = new qorechain.stakingtier.v1.QueryOuterClass.TierAprView();
+    }
+
+    public static qorechain.stakingtier.v1.QueryOuterClass.TierAprView getDefaultInstance() {
+      return DEFAULT_INSTANCE;
+    }
+
+    private static final com.google.protobuf.Parser<TierAprView>
+        PARSER = new com.google.protobuf.AbstractParser<TierAprView>() {
+      @java.lang.Override
+      public TierAprView parsePartialFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        Builder builder = newBuilder();
+        try {
+          builder.mergeFrom(input, extensionRegistry);
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          throw e.setUnfinishedMessage(builder.buildPartial());
+        } catch (com.google.protobuf.UninitializedMessageException e) {
+          throw e.asInvalidProtocolBufferException().setUnfinishedMessage(builder.buildPartial());
+        } catch (java.io.IOException e) {
+          throw new com.google.protobuf.InvalidProtocolBufferException(e)
+              .setUnfinishedMessage(builder.buildPartial());
+        }
+        return builder.buildPartial();
+      }
+    };
+
+    public static com.google.protobuf.Parser<TierAprView> parser() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Parser<TierAprView> getParserForType() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public qorechain.stakingtier.v1.QueryOuterClass.TierAprView getDefaultInstanceForType() {
+      return DEFAULT_INSTANCE;
+    }
+
+  }
+
+  public interface QueryAprResponseOrBuilder extends
+      // @@protoc_insertion_point(interface_extends:qorechain.stakingtier.v1.QueryAprResponse)
+      com.google.protobuf.MessageOrBuilder {
+
+    /**
+     * <code>.qorechain.stakingtier.v1.AprBase base = 1 [json_name = "base"];</code>
+     * @return Whether the base field is set.
+     */
+    boolean hasBase();
+    /**
+     * <code>.qorechain.stakingtier.v1.AprBase base = 1 [json_name = "base"];</code>
+     * @return The base.
+     */
+    qorechain.stakingtier.v1.QueryOuterClass.AprBase getBase();
+    /**
+     * <code>.qorechain.stakingtier.v1.AprBase base = 1 [json_name = "base"];</code>
+     */
+    qorechain.stakingtier.v1.QueryOuterClass.AprBaseOrBuilder getBaseOrBuilder();
+
+    /**
+     * <pre>
+     * validator and commission echo the request; commission is empty without
+     * one.
+     * </pre>
+     *
+     * <code>string validator = 2 [json_name = "validator"];</code>
+     * @return The validator.
+     */
+    java.lang.String getValidator();
+    /**
+     * <pre>
+     * validator and commission echo the request; commission is empty without
+     * one.
+     * </pre>
+     *
+     * <code>string validator = 2 [json_name = "validator"];</code>
+     * @return The bytes for validator.
+     */
+    com.google.protobuf.ByteString
+        getValidatorBytes();
+
+    /**
+     * <code>string commission = 3 [json_name = "commission"];</code>
+     * @return The commission.
+     */
+    java.lang.String getCommission();
+    /**
+     * <code>string commission = 3 [json_name = "commission"];</code>
+     * @return The bytes for commission.
+     */
+    com.google.protobuf.ByteString
+        getCommissionBytes();
+
+    /**
+     * <pre>
+     * base_apr_bps is the base the tiers are stated against: the gross base,
+     * or the validator's delegators' base net of commission.
+     * </pre>
+     *
+     * <code>string base_apr_bps = 4 [json_name = "baseAprBps"];</code>
+     * @return The baseAprBps.
+     */
+    java.lang.String getBaseAprBps();
+    /**
+     * <pre>
+     * base_apr_bps is the base the tiers are stated against: the gross base,
+     * or the validator's delegators' base net of commission.
+     * </pre>
+     *
+     * <code>string base_apr_bps = 4 [json_name = "baseAprBps"];</code>
+     * @return The bytes for baseAprBps.
+     */
+    com.google.protobuf.ByteString
+        getBaseAprBpsBytes();
+
+    /**
+     * <code>repeated .qorechain.stakingtier.v1.TierAprView tiers = 5 [json_name = "tiers"];</code>
+     */
+    java.util.List<qorechain.stakingtier.v1.QueryOuterClass.TierAprView> 
+        getTiersList();
+    /**
+     * <code>repeated .qorechain.stakingtier.v1.TierAprView tiers = 5 [json_name = "tiers"];</code>
+     */
+    qorechain.stakingtier.v1.QueryOuterClass.TierAprView getTiers(int index);
+    /**
+     * <code>repeated .qorechain.stakingtier.v1.TierAprView tiers = 5 [json_name = "tiers"];</code>
+     */
+    int getTiersCount();
+    /**
+     * <code>repeated .qorechain.stakingtier.v1.TierAprView tiers = 5 [json_name = "tiers"];</code>
+     */
+    java.util.List<? extends qorechain.stakingtier.v1.QueryOuterClass.TierAprViewOrBuilder> 
+        getTiersOrBuilderList();
+    /**
+     * <code>repeated .qorechain.stakingtier.v1.TierAprView tiers = 5 [json_name = "tiers"];</code>
+     */
+    qorechain.stakingtier.v1.QueryOuterClass.TierAprViewOrBuilder getTiersOrBuilder(
+        int index);
+
+    /**
+     * <pre>
+     * light_node_bonus_bps is added to the locks of a holder that runs an
+     * active light node, before the ceiling.
+     * </pre>
+     *
+     * <code>uint32 light_node_bonus_bps = 6 [json_name = "lightNodeBonusBps"];</code>
+     * @return The lightNodeBonusBps.
+     */
+    int getLightNodeBonusBps();
+
+    /**
+     * <pre>
+     * validator_bonus_bps is paid on an active validator's whole self-bond;
+     * validator_effective_bonus_bps is what it pays after the ceiling over the
+     * gross base (a self-bond's base is gross).
+     * </pre>
+     *
+     * <code>uint32 validator_bonus_bps = 7 [json_name = "validatorBonusBps"];</code>
+     * @return The validatorBonusBps.
+     */
+    int getValidatorBonusBps();
+
+    /**
+     * <code>string validator_effective_bonus_bps = 8 [json_name = "validatorEffectiveBonusBps"];</code>
+     * @return The validatorEffectiveBonusBps.
+     */
+    java.lang.String getValidatorEffectiveBonusBps();
+    /**
+     * <code>string validator_effective_bonus_bps = 8 [json_name = "validatorEffectiveBonusBps"];</code>
+     * @return The bytes for validatorEffectiveBonusBps.
+     */
+    com.google.protobuf.ByteString
+        getValidatorEffectiveBonusBpsBytes();
+  }
+  /**
+   * Protobuf type {@code qorechain.stakingtier.v1.QueryAprResponse}
+   */
+  public static final class QueryAprResponse extends
+      com.google.protobuf.GeneratedMessage implements
+      // @@protoc_insertion_point(message_implements:qorechain.stakingtier.v1.QueryAprResponse)
+      QueryAprResponseOrBuilder {
+  private static final long serialVersionUID = 0L;
+    static {
+      com.google.protobuf.RuntimeVersion.validateProtobufGencodeVersion(
+        com.google.protobuf.RuntimeVersion.RuntimeDomain.PUBLIC,
+        /* major= */ 4,
+        /* minor= */ 35,
+        /* patch= */ 1,
+        /* suffix= */ "",
+        "QueryAprResponse");
+    }
+    // Use QueryAprResponse.newBuilder() to construct.
+    private QueryAprResponse(com.google.protobuf.GeneratedMessage.Builder<?> builder) {
+      super(builder);
+    }
+    private QueryAprResponse() {
+      validator_ = "";
+      commission_ = "";
+      baseAprBps_ = "";
+      tiers_ = java.util.Collections.emptyList();
+      validatorEffectiveBonusBps_ = "";
+    }
+
+    public static final com.google.protobuf.Descriptors.Descriptor
+        getDescriptor() {
+      return qorechain.stakingtier.v1.QueryOuterClass.internal_static_qorechain_stakingtier_v1_QueryAprResponse_descriptor;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Descriptors.Descriptor getDescriptorForType() {
+      return qorechain.stakingtier.v1.QueryOuterClass.internal_static_qorechain_stakingtier_v1_QueryAprResponse_descriptor;
+    }
+
+    @java.lang.Override
+    protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+        internalGetFieldAccessorTable() {
+      return qorechain.stakingtier.v1.QueryOuterClass.internal_static_qorechain_stakingtier_v1_QueryAprResponse_fieldAccessorTable
+          .ensureFieldAccessorsInitialized(
+              qorechain.stakingtier.v1.QueryOuterClass.QueryAprResponse.class, qorechain.stakingtier.v1.QueryOuterClass.QueryAprResponse.Builder.class);
+    }
+
+    private int bitField0_;
+    public static final int BASE_FIELD_NUMBER = 1;
+    private qorechain.stakingtier.v1.QueryOuterClass.AprBase base_;
+    /**
+     * <code>.qorechain.stakingtier.v1.AprBase base = 1 [json_name = "base"];</code>
+     * @return Whether the base field is set.
+     */
+    @java.lang.Override
+    public boolean hasBase() {
+      return ((bitField0_ & 0x00000001) != 0);
+    }
+    /**
+     * <code>.qorechain.stakingtier.v1.AprBase base = 1 [json_name = "base"];</code>
+     * @return The base.
+     */
+    @java.lang.Override
+    public qorechain.stakingtier.v1.QueryOuterClass.AprBase getBase() {
+      return base_ == null ? qorechain.stakingtier.v1.QueryOuterClass.AprBase.getDefaultInstance() : base_;
+    }
+    /**
+     * <code>.qorechain.stakingtier.v1.AprBase base = 1 [json_name = "base"];</code>
+     */
+    @java.lang.Override
+    public qorechain.stakingtier.v1.QueryOuterClass.AprBaseOrBuilder getBaseOrBuilder() {
+      return base_ == null ? qorechain.stakingtier.v1.QueryOuterClass.AprBase.getDefaultInstance() : base_;
+    }
+
+    public static final int VALIDATOR_FIELD_NUMBER = 2;
+    @SuppressWarnings("serial")
+    private volatile java.lang.Object validator_ = "";
+    /**
+     * <pre>
+     * validator and commission echo the request; commission is empty without
+     * one.
+     * </pre>
+     *
+     * <code>string validator = 2 [json_name = "validator"];</code>
+     * @return The validator.
+     */
+    @java.lang.Override
+    public java.lang.String getValidator() {
+      java.lang.Object ref = validator_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        validator_ = s;
+        return s;
+      }
+    }
+    /**
+     * <pre>
+     * validator and commission echo the request; commission is empty without
+     * one.
+     * </pre>
+     *
+     * <code>string validator = 2 [json_name = "validator"];</code>
+     * @return The bytes for validator.
+     */
+    @java.lang.Override
+    public com.google.protobuf.ByteString
+        getValidatorBytes() {
+      java.lang.Object ref = validator_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        validator_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
+    public static final int COMMISSION_FIELD_NUMBER = 3;
+    @SuppressWarnings("serial")
+    private volatile java.lang.Object commission_ = "";
+    /**
+     * <code>string commission = 3 [json_name = "commission"];</code>
+     * @return The commission.
+     */
+    @java.lang.Override
+    public java.lang.String getCommission() {
+      java.lang.Object ref = commission_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        commission_ = s;
+        return s;
+      }
+    }
+    /**
+     * <code>string commission = 3 [json_name = "commission"];</code>
+     * @return The bytes for commission.
+     */
+    @java.lang.Override
+    public com.google.protobuf.ByteString
+        getCommissionBytes() {
+      java.lang.Object ref = commission_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        commission_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
+    public static final int BASE_APR_BPS_FIELD_NUMBER = 4;
+    @SuppressWarnings("serial")
+    private volatile java.lang.Object baseAprBps_ = "";
+    /**
+     * <pre>
+     * base_apr_bps is the base the tiers are stated against: the gross base,
+     * or the validator's delegators' base net of commission.
+     * </pre>
+     *
+     * <code>string base_apr_bps = 4 [json_name = "baseAprBps"];</code>
+     * @return The baseAprBps.
+     */
+    @java.lang.Override
+    public java.lang.String getBaseAprBps() {
+      java.lang.Object ref = baseAprBps_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        baseAprBps_ = s;
+        return s;
+      }
+    }
+    /**
+     * <pre>
+     * base_apr_bps is the base the tiers are stated against: the gross base,
+     * or the validator's delegators' base net of commission.
+     * </pre>
+     *
+     * <code>string base_apr_bps = 4 [json_name = "baseAprBps"];</code>
+     * @return The bytes for baseAprBps.
+     */
+    @java.lang.Override
+    public com.google.protobuf.ByteString
+        getBaseAprBpsBytes() {
+      java.lang.Object ref = baseAprBps_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        baseAprBps_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
+    public static final int TIERS_FIELD_NUMBER = 5;
+    @SuppressWarnings("serial")
+    private java.util.List<qorechain.stakingtier.v1.QueryOuterClass.TierAprView> tiers_;
+    /**
+     * <code>repeated .qorechain.stakingtier.v1.TierAprView tiers = 5 [json_name = "tiers"];</code>
+     */
+    @java.lang.Override
+    public java.util.List<qorechain.stakingtier.v1.QueryOuterClass.TierAprView> getTiersList() {
+      return tiers_;
+    }
+    /**
+     * <code>repeated .qorechain.stakingtier.v1.TierAprView tiers = 5 [json_name = "tiers"];</code>
+     */
+    @java.lang.Override
+    public java.util.List<? extends qorechain.stakingtier.v1.QueryOuterClass.TierAprViewOrBuilder> 
+        getTiersOrBuilderList() {
+      return tiers_;
+    }
+    /**
+     * <code>repeated .qorechain.stakingtier.v1.TierAprView tiers = 5 [json_name = "tiers"];</code>
+     */
+    @java.lang.Override
+    public int getTiersCount() {
+      return tiers_.size();
+    }
+    /**
+     * <code>repeated .qorechain.stakingtier.v1.TierAprView tiers = 5 [json_name = "tiers"];</code>
+     */
+    @java.lang.Override
+    public qorechain.stakingtier.v1.QueryOuterClass.TierAprView getTiers(int index) {
+      return tiers_.get(index);
+    }
+    /**
+     * <code>repeated .qorechain.stakingtier.v1.TierAprView tiers = 5 [json_name = "tiers"];</code>
+     */
+    @java.lang.Override
+    public qorechain.stakingtier.v1.QueryOuterClass.TierAprViewOrBuilder getTiersOrBuilder(
+        int index) {
+      return tiers_.get(index);
+    }
+
+    public static final int LIGHT_NODE_BONUS_BPS_FIELD_NUMBER = 6;
+    private int lightNodeBonusBps_ = 0;
+    /**
+     * <pre>
+     * light_node_bonus_bps is added to the locks of a holder that runs an
+     * active light node, before the ceiling.
+     * </pre>
+     *
+     * <code>uint32 light_node_bonus_bps = 6 [json_name = "lightNodeBonusBps"];</code>
+     * @return The lightNodeBonusBps.
+     */
+    @java.lang.Override
+    public int getLightNodeBonusBps() {
+      return lightNodeBonusBps_;
+    }
+
+    public static final int VALIDATOR_BONUS_BPS_FIELD_NUMBER = 7;
+    private int validatorBonusBps_ = 0;
+    /**
+     * <pre>
+     * validator_bonus_bps is paid on an active validator's whole self-bond;
+     * validator_effective_bonus_bps is what it pays after the ceiling over the
+     * gross base (a self-bond's base is gross).
+     * </pre>
+     *
+     * <code>uint32 validator_bonus_bps = 7 [json_name = "validatorBonusBps"];</code>
+     * @return The validatorBonusBps.
+     */
+    @java.lang.Override
+    public int getValidatorBonusBps() {
+      return validatorBonusBps_;
+    }
+
+    public static final int VALIDATOR_EFFECTIVE_BONUS_BPS_FIELD_NUMBER = 8;
+    @SuppressWarnings("serial")
+    private volatile java.lang.Object validatorEffectiveBonusBps_ = "";
+    /**
+     * <code>string validator_effective_bonus_bps = 8 [json_name = "validatorEffectiveBonusBps"];</code>
+     * @return The validatorEffectiveBonusBps.
+     */
+    @java.lang.Override
+    public java.lang.String getValidatorEffectiveBonusBps() {
+      java.lang.Object ref = validatorEffectiveBonusBps_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        validatorEffectiveBonusBps_ = s;
+        return s;
+      }
+    }
+    /**
+     * <code>string validator_effective_bonus_bps = 8 [json_name = "validatorEffectiveBonusBps"];</code>
+     * @return The bytes for validatorEffectiveBonusBps.
+     */
+    @java.lang.Override
+    public com.google.protobuf.ByteString
+        getValidatorEffectiveBonusBpsBytes() {
+      java.lang.Object ref = validatorEffectiveBonusBps_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        validatorEffectiveBonusBps_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
+    private byte memoizedIsInitialized = -1;
+    @java.lang.Override
+    public final boolean isInitialized() {
+      byte isInitialized = memoizedIsInitialized;
+      if (isInitialized == 1) return true;
+      if (isInitialized == 0) return false;
+
+      memoizedIsInitialized = 1;
+      return true;
+    }
+
+    @java.lang.Override
+    public void writeTo(com.google.protobuf.CodedOutputStream output)
+                        throws java.io.IOException {
+      if (((bitField0_ & 0x00000001) != 0)) {
+        output.writeMessage(1, getBase());
+      }
+      if (!com.google.protobuf.GeneratedMessage.isStringEmpty(validator_)) {
+        com.google.protobuf.GeneratedMessage.writeString(output, 2, validator_);
+      }
+      if (!com.google.protobuf.GeneratedMessage.isStringEmpty(commission_)) {
+        com.google.protobuf.GeneratedMessage.writeString(output, 3, commission_);
+      }
+      if (!com.google.protobuf.GeneratedMessage.isStringEmpty(baseAprBps_)) {
+        com.google.protobuf.GeneratedMessage.writeString(output, 4, baseAprBps_);
+      }
+      for (int i = 0; i < tiers_.size(); i++) {
+        output.writeMessage(5, tiers_.get(i));
+      }
+      if (lightNodeBonusBps_ != 0) {
+        output.writeUInt32(6, lightNodeBonusBps_);
+      }
+      if (validatorBonusBps_ != 0) {
+        output.writeUInt32(7, validatorBonusBps_);
+      }
+      if (!com.google.protobuf.GeneratedMessage.isStringEmpty(validatorEffectiveBonusBps_)) {
+        com.google.protobuf.GeneratedMessage.writeString(output, 8, validatorEffectiveBonusBps_);
+      }
+      getUnknownFields().writeTo(output);
+    }
+    private int computeSerializedSize_0() {
+      int size = 0;
+      if (((bitField0_ & 0x00000001) != 0)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeMessageSize(1, getBase());
+      }
+      if (!com.google.protobuf.GeneratedMessage.isStringEmpty(validator_)) {
+        size += com.google.protobuf.GeneratedMessage.computeStringSize(2, validator_);
+      }
+      if (!com.google.protobuf.GeneratedMessage.isStringEmpty(commission_)) {
+        size += com.google.protobuf.GeneratedMessage.computeStringSize(3, commission_);
+      }
+      if (!com.google.protobuf.GeneratedMessage.isStringEmpty(baseAprBps_)) {
+        size += com.google.protobuf.GeneratedMessage.computeStringSize(4, baseAprBps_);
+      }
+
+          {
+            final int count = tiers_.size();
+            for (int i = 0; i < count; i++) {
+              size += com.google.protobuf.CodedOutputStream
+                .computeMessageSizeNoTag(tiers_.get(i));
+            }
+            size += 1 * count;
+          }
+      if (lightNodeBonusBps_ != 0) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeUInt32Size(6, lightNodeBonusBps_);
+      }
+      if (validatorBonusBps_ != 0) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeUInt32Size(7, validatorBonusBps_);
+      }
+      if (!com.google.protobuf.GeneratedMessage.isStringEmpty(validatorEffectiveBonusBps_)) {
+        size += com.google.protobuf.GeneratedMessage.computeStringSize(8, validatorEffectiveBonusBps_);
+      }
+      return size;
+    }
+    @java.lang.Override
+    public int getSerializedSize() {
+      int size = memoizedSize;
+      if (size != -1) return size;
+
+      size = 0;
+      size += computeSerializedSize_0();
+      size += getUnknownFields().getSerializedSize();
+      memoizedSize = size;
+      return size;
+    }
+
+    @java.lang.Override
+    public boolean equals(final java.lang.Object obj) {
+      if (obj == this) {
+       return true;
+      }
+      if (!(obj instanceof qorechain.stakingtier.v1.QueryOuterClass.QueryAprResponse)) {
+        return super.equals(obj);
+      }
+      qorechain.stakingtier.v1.QueryOuterClass.QueryAprResponse other = (qorechain.stakingtier.v1.QueryOuterClass.QueryAprResponse) obj;
+
+      if (hasBase() != other.hasBase()) return false;
+      if (hasBase()) {
+        if (!getBase()
+            .equals(other.getBase())) return false;
+      }
+      if (!getValidator()
+          .equals(other.getValidator())) return false;
+      if (!getCommission()
+          .equals(other.getCommission())) return false;
+      if (!getBaseAprBps()
+          .equals(other.getBaseAprBps())) return false;
+      if (!getTiersList()
+          .equals(other.getTiersList())) return false;
+      if (getLightNodeBonusBps()
+          != other.getLightNodeBonusBps()) return false;
+      if (getValidatorBonusBps()
+          != other.getValidatorBonusBps()) return false;
+      if (!getValidatorEffectiveBonusBps()
+          .equals(other.getValidatorEffectiveBonusBps())) return false;
+      if (!getUnknownFields().equals(other.getUnknownFields())) return false;
+      return true;
+    }
+
+    @java.lang.Override
+    public int hashCode() {
+      if (memoizedHashCode != 0) {
+        return memoizedHashCode;
+      }
+      int hash = 41;
+      hash = (19 * hash) + getDescriptor().hashCode();
+      if (hasBase()) {
+        hash = (37 * hash) + BASE_FIELD_NUMBER;
+        hash = (53 * hash) + getBase().hashCode();
+      }
+      hash = (37 * hash) + VALIDATOR_FIELD_NUMBER;
+      hash = (53 * hash) + getValidator().hashCode();
+      hash = (37 * hash) + COMMISSION_FIELD_NUMBER;
+      hash = (53 * hash) + getCommission().hashCode();
+      hash = (37 * hash) + BASE_APR_BPS_FIELD_NUMBER;
+      hash = (53 * hash) + getBaseAprBps().hashCode();
+      if (getTiersCount() > 0) {
+        hash = (37 * hash) + TIERS_FIELD_NUMBER;
+        hash = (53 * hash) + getTiersList().hashCode();
+      }
+      hash = (37 * hash) + LIGHT_NODE_BONUS_BPS_FIELD_NUMBER;
+      hash = (53 * hash) + getLightNodeBonusBps();
+      hash = (37 * hash) + VALIDATOR_BONUS_BPS_FIELD_NUMBER;
+      hash = (53 * hash) + getValidatorBonusBps();
+      hash = (37 * hash) + VALIDATOR_EFFECTIVE_BONUS_BPS_FIELD_NUMBER;
+      hash = (53 * hash) + getValidatorEffectiveBonusBps().hashCode();
+      hash = (29 * hash) + getUnknownFields().hashCode();
+      memoizedHashCode = hash;
+      return hash;
+    }
+
+    public static qorechain.stakingtier.v1.QueryOuterClass.QueryAprResponse parseFrom(
+        java.nio.ByteBuffer data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static qorechain.stakingtier.v1.QueryOuterClass.QueryAprResponse parseFrom(
+        java.nio.ByteBuffer data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static qorechain.stakingtier.v1.QueryOuterClass.QueryAprResponse parseFrom(
+        com.google.protobuf.ByteString data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static qorechain.stakingtier.v1.QueryOuterClass.QueryAprResponse parseFrom(
+        com.google.protobuf.ByteString data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static qorechain.stakingtier.v1.QueryOuterClass.QueryAprResponse parseFrom(byte[] data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static qorechain.stakingtier.v1.QueryOuterClass.QueryAprResponse parseFrom(
+        byte[] data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static qorechain.stakingtier.v1.QueryOuterClass.QueryAprResponse parseFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input);
+    }
+    public static qorechain.stakingtier.v1.QueryOuterClass.QueryAprResponse parseFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    public static qorechain.stakingtier.v1.QueryOuterClass.QueryAprResponse parseDelimitedFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseDelimitedWithIOException(PARSER, input);
+    }
+
+    public static qorechain.stakingtier.v1.QueryOuterClass.QueryAprResponse parseDelimitedFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static qorechain.stakingtier.v1.QueryOuterClass.QueryAprResponse parseFrom(
+        com.google.protobuf.CodedInputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input);
+    }
+    public static qorechain.stakingtier.v1.QueryOuterClass.QueryAprResponse parseFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    @java.lang.Override
+    public Builder newBuilderForType() { return newBuilder(); }
+    public static Builder newBuilder() {
+      return DEFAULT_INSTANCE.toBuilder();
+    }
+    public static Builder newBuilder(qorechain.stakingtier.v1.QueryOuterClass.QueryAprResponse prototype) {
+      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+    }
+    @java.lang.Override
+    public Builder toBuilder() {
+      return this == DEFAULT_INSTANCE
+          ? new Builder() : new Builder().mergeFrom(this);
+    }
+
+    @java.lang.Override
+    protected Builder newBuilderForType(
+        com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+      Builder builder = new Builder(parent);
+      return builder;
+    }
+    /**
+     * Protobuf type {@code qorechain.stakingtier.v1.QueryAprResponse}
+     */
+    public static final class Builder extends
+        com.google.protobuf.GeneratedMessage.Builder<Builder> implements
+        // @@protoc_insertion_point(builder_implements:qorechain.stakingtier.v1.QueryAprResponse)
+        qorechain.stakingtier.v1.QueryOuterClass.QueryAprResponseOrBuilder {
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return qorechain.stakingtier.v1.QueryOuterClass.internal_static_qorechain_stakingtier_v1_QueryAprResponse_descriptor;
+      }
+
+      @java.lang.Override
+      protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return qorechain.stakingtier.v1.QueryOuterClass.internal_static_qorechain_stakingtier_v1_QueryAprResponse_fieldAccessorTable
+            .ensureFieldAccessorsInitialized(
+                qorechain.stakingtier.v1.QueryOuterClass.QueryAprResponse.class, qorechain.stakingtier.v1.QueryOuterClass.QueryAprResponse.Builder.class);
+      }
+
+      // Construct using qorechain.stakingtier.v1.QueryOuterClass.QueryAprResponse.newBuilder()
+      private Builder() {
+        maybeForceBuilderInitialization();
+      }
+
+      private Builder(
+          com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+        super(parent);
+        maybeForceBuilderInitialization();
+      }
+      private void maybeForceBuilderInitialization() {
+        if (com.google.protobuf.GeneratedMessage
+                .alwaysUseFieldBuilders) {
+          internalGetBaseFieldBuilder();
+          internalGetTiersFieldBuilder();
+        }
+      }
+      @java.lang.Override
+      public Builder clear() {
+        super.clear();
+        bitField0_ = 0;
+        base_ = null;
+        if (baseBuilder_ != null) {
+          baseBuilder_.dispose();
+          baseBuilder_ = null;
+        }
+        validator_ = "";
+        commission_ = "";
+        baseAprBps_ = "";
+        if (tiersBuilder_ == null) {
+          tiers_ = java.util.Collections.emptyList();
+        } else {
+          tiers_ = null;
+          tiersBuilder_.clear();
+        }
+        bitField0_ = (bitField0_ & ~0x00000010);
+        lightNodeBonusBps_ = 0;
+        validatorBonusBps_ = 0;
+        validatorEffectiveBonusBps_ = "";
+        return this;
+      }
+
+      @java.lang.Override
+      public com.google.protobuf.Descriptors.Descriptor
+          getDescriptorForType() {
+        return qorechain.stakingtier.v1.QueryOuterClass.internal_static_qorechain_stakingtier_v1_QueryAprResponse_descriptor;
+      }
+
+      @java.lang.Override
+      public qorechain.stakingtier.v1.QueryOuterClass.QueryAprResponse getDefaultInstanceForType() {
+        return qorechain.stakingtier.v1.QueryOuterClass.QueryAprResponse.getDefaultInstance();
+      }
+
+      @java.lang.Override
+      public qorechain.stakingtier.v1.QueryOuterClass.QueryAprResponse build() {
+        qorechain.stakingtier.v1.QueryOuterClass.QueryAprResponse result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(result);
+        }
+        return result;
+      }
+
+      @java.lang.Override
+      public qorechain.stakingtier.v1.QueryOuterClass.QueryAprResponse buildPartial() {
+        qorechain.stakingtier.v1.QueryOuterClass.QueryAprResponse result = new qorechain.stakingtier.v1.QueryOuterClass.QueryAprResponse(this);
+        buildPartialRepeatedFields(result);
+        if (bitField0_ != 0) { buildPartial0(result); }
+        onBuilt();
+        return result;
+      }
+
+      private void buildPartialRepeatedFields(qorechain.stakingtier.v1.QueryOuterClass.QueryAprResponse result) {
+        if (tiersBuilder_ == null) {
+          if (((bitField0_ & 0x00000010) != 0)) {
+            tiers_ = java.util.Collections.unmodifiableList(tiers_);
+            bitField0_ = (bitField0_ & ~0x00000010);
+          }
+          result.tiers_ = tiers_;
+        } else {
+          result.tiers_ = tiersBuilder_.build();
+        }
+      }
+
+      private void buildPartial0(qorechain.stakingtier.v1.QueryOuterClass.QueryAprResponse result) {
+        int from_bitField0_ = bitField0_;
+        int to_bitField0_ = 0;
+        if (((from_bitField0_ & 0x00000001) != 0)) {
+          result.base_ = baseBuilder_ == null
+              ? base_
+              : baseBuilder_.build();
+          to_bitField0_ |= 0x00000001;
+        }
+        if (((from_bitField0_ & 0x00000002) != 0)) {
+          result.validator_ = validator_;
+        }
+        if (((from_bitField0_ & 0x00000004) != 0)) {
+          result.commission_ = commission_;
+        }
+        if (((from_bitField0_ & 0x00000008) != 0)) {
+          result.baseAprBps_ = baseAprBps_;
+        }
+        if (((from_bitField0_ & 0x00000020) != 0)) {
+          result.lightNodeBonusBps_ = lightNodeBonusBps_;
+        }
+        if (((from_bitField0_ & 0x00000040) != 0)) {
+          result.validatorBonusBps_ = validatorBonusBps_;
+        }
+        if (((from_bitField0_ & 0x00000080) != 0)) {
+          result.validatorEffectiveBonusBps_ = validatorEffectiveBonusBps_;
+        }
+        result.bitField0_ |= to_bitField0_;
+      }
+
+      @java.lang.Override
+      public Builder mergeFrom(com.google.protobuf.Message other) {
+        if (other instanceof qorechain.stakingtier.v1.QueryOuterClass.QueryAprResponse) {
+          return mergeFrom((qorechain.stakingtier.v1.QueryOuterClass.QueryAprResponse)other);
+        } else {
+          super.mergeFrom(other);
+          return this;
+        }
+      }
+
+      public Builder mergeFrom(qorechain.stakingtier.v1.QueryOuterClass.QueryAprResponse other) {
+        if (other == qorechain.stakingtier.v1.QueryOuterClass.QueryAprResponse.getDefaultInstance()) return this;
+        if (other.hasBase()) {
+          mergeBase(other.getBase());
+        }
+        if (!other.getValidator().isEmpty()) {
+          validator_ = other.validator_;
+          bitField0_ |= 0x00000002;
+          onChanged();
+        }
+        if (!other.getCommission().isEmpty()) {
+          commission_ = other.commission_;
+          bitField0_ |= 0x00000004;
+          onChanged();
+        }
+        if (!other.getBaseAprBps().isEmpty()) {
+          baseAprBps_ = other.baseAprBps_;
+          bitField0_ |= 0x00000008;
+          onChanged();
+        }
+        if (tiersBuilder_ == null) {
+          if (!other.tiers_.isEmpty()) {
+            if (tiers_.isEmpty()) {
+              tiers_ = other.tiers_;
+              bitField0_ = (bitField0_ & ~0x00000010);
+            } else {
+              ensureTiersIsMutable();
+              tiers_.addAll(other.tiers_);
+            }
+            onChanged();
+          }
+        } else {
+          if (!other.tiers_.isEmpty()) {
+            if (tiersBuilder_.isEmpty()) {
+              tiersBuilder_.dispose();
+              tiersBuilder_ = null;
+              tiers_ = other.tiers_;
+              bitField0_ = (bitField0_ & ~0x00000010);
+              tiersBuilder_ = 
+                com.google.protobuf.GeneratedMessage.alwaysUseFieldBuilders ?
+                   internalGetTiersFieldBuilder() : null;
+            } else {
+              tiersBuilder_.addAllMessages(other.tiers_);
+            }
+          }
+        }
+        if (other.getLightNodeBonusBps() != 0) {
+          setLightNodeBonusBps(other.getLightNodeBonusBps());
+        }
+        if (other.getValidatorBonusBps() != 0) {
+          setValidatorBonusBps(other.getValidatorBonusBps());
+        }
+        if (!other.getValidatorEffectiveBonusBps().isEmpty()) {
+          validatorEffectiveBonusBps_ = other.validatorEffectiveBonusBps_;
+          bitField0_ |= 0x00000080;
+          onChanged();
+        }
+        this.mergeUnknownFields(other.getUnknownFields());
+        onChanged();
+        return this;
+      }
+
+      @java.lang.Override
+      public final boolean isInitialized() {
+        return true;
+      }
+
+      @java.lang.Override
+      public Builder mergeFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        if (extensionRegistry == null) {
+          throw new java.lang.NullPointerException();
+        }
+        try {
+          boolean done = false;
+          while (!done) {
+            int tag = input.readTag();
+            switch (tag) {
+              case 0:
+                done = true;
+                break;
+              case 10: {
+                input.readMessage(
+                    internalGetBaseFieldBuilder().getBuilder(),
+                    extensionRegistry);
+                bitField0_ |= 0x00000001;
+                break;
+              } // case 10
+              case 18: {
+                validator_ = input.readStringRequireUtf8();
+                bitField0_ |= 0x00000002;
+                break;
+              } // case 18
+              case 26: {
+                commission_ = input.readStringRequireUtf8();
+                bitField0_ |= 0x00000004;
+                break;
+              } // case 26
+              case 34: {
+                baseAprBps_ = input.readStringRequireUtf8();
+                bitField0_ |= 0x00000008;
+                break;
+              } // case 34
+              case 42: {
+                qorechain.stakingtier.v1.QueryOuterClass.TierAprView m =
+                    input.readMessage(
+                        qorechain.stakingtier.v1.QueryOuterClass.TierAprView.parser(),
+                        extensionRegistry);
+                if (tiersBuilder_ == null) {
+                  ensureTiersIsMutable();
+                  tiers_.add(m);
+                } else {
+                  tiersBuilder_.addMessage(m);
+                }
+                break;
+              } // case 42
+              case 48: {
+                lightNodeBonusBps_ = input.readUInt32();
+                bitField0_ |= 0x00000020;
+                break;
+              } // case 48
+              case 56: {
+                validatorBonusBps_ = input.readUInt32();
+                bitField0_ |= 0x00000040;
+                break;
+              } // case 56
+              case 66: {
+                validatorEffectiveBonusBps_ = input.readStringRequireUtf8();
+                bitField0_ |= 0x00000080;
+                break;
+              } // case 66
+              default: {
+                if (!super.parseUnknownField(input, extensionRegistry, tag)) {
+                  done = true; // was an endgroup tag
+                }
+                break;
+              } // default:
+            } // switch (tag)
+          } // while (!done)
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          throw e.unwrapIOException();
+        } finally {
+          onChanged();
+        } // finally
+        return this;
+      }
+      private int bitField0_;
+
+      private qorechain.stakingtier.v1.QueryOuterClass.AprBase base_;
+      private com.google.protobuf.SingleFieldBuilder<
+          qorechain.stakingtier.v1.QueryOuterClass.AprBase, qorechain.stakingtier.v1.QueryOuterClass.AprBase.Builder, qorechain.stakingtier.v1.QueryOuterClass.AprBaseOrBuilder> baseBuilder_;
+      /**
+       * <code>.qorechain.stakingtier.v1.AprBase base = 1 [json_name = "base"];</code>
+       * @return Whether the base field is set.
+       */
+      public boolean hasBase() {
+        return ((bitField0_ & 0x00000001) != 0);
+      }
+      /**
+       * <code>.qorechain.stakingtier.v1.AprBase base = 1 [json_name = "base"];</code>
+       * @return The base.
+       */
+      public qorechain.stakingtier.v1.QueryOuterClass.AprBase getBase() {
+        if (baseBuilder_ == null) {
+          return base_ == null ? qorechain.stakingtier.v1.QueryOuterClass.AprBase.getDefaultInstance() : base_;
+        } else {
+          return baseBuilder_.getMessage();
+        }
+      }
+      /**
+       * <code>.qorechain.stakingtier.v1.AprBase base = 1 [json_name = "base"];</code>
+       */
+      public Builder setBase(qorechain.stakingtier.v1.QueryOuterClass.AprBase value) {
+        if (baseBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          base_ = value;
+        } else {
+          baseBuilder_.setMessage(value);
+        }
+        bitField0_ |= 0x00000001;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>.qorechain.stakingtier.v1.AprBase base = 1 [json_name = "base"];</code>
+       */
+      public Builder setBase(
+          qorechain.stakingtier.v1.QueryOuterClass.AprBase.Builder builderForValue) {
+        if (baseBuilder_ == null) {
+          base_ = builderForValue.build();
+        } else {
+          baseBuilder_.setMessage(builderForValue.build());
+        }
+        bitField0_ |= 0x00000001;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>.qorechain.stakingtier.v1.AprBase base = 1 [json_name = "base"];</code>
+       */
+      public Builder mergeBase(qorechain.stakingtier.v1.QueryOuterClass.AprBase value) {
+        if (baseBuilder_ == null) {
+          if (((bitField0_ & 0x00000001) != 0) &&
+            base_ != null &&
+            base_ != qorechain.stakingtier.v1.QueryOuterClass.AprBase.getDefaultInstance()) {
+            getBaseBuilder().mergeFrom(value);
+          } else {
+            base_ = value;
+          }
+        } else {
+          baseBuilder_.mergeFrom(value);
+        }
+        if (base_ != null) {
+          bitField0_ |= 0x00000001;
+          onChanged();
+        }
+        return this;
+      }
+      /**
+       * <code>.qorechain.stakingtier.v1.AprBase base = 1 [json_name = "base"];</code>
+       */
+      public Builder clearBase() {
+        bitField0_ = (bitField0_ & ~0x00000001);
+        base_ = null;
+        if (baseBuilder_ != null) {
+          baseBuilder_.dispose();
+          baseBuilder_ = null;
+        }
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>.qorechain.stakingtier.v1.AprBase base = 1 [json_name = "base"];</code>
+       */
+      public qorechain.stakingtier.v1.QueryOuterClass.AprBase.Builder getBaseBuilder() {
+        bitField0_ |= 0x00000001;
+        onChanged();
+        return internalGetBaseFieldBuilder().getBuilder();
+      }
+      /**
+       * <code>.qorechain.stakingtier.v1.AprBase base = 1 [json_name = "base"];</code>
+       */
+      public qorechain.stakingtier.v1.QueryOuterClass.AprBaseOrBuilder getBaseOrBuilder() {
+        if (baseBuilder_ != null) {
+          return baseBuilder_.getMessageOrBuilder();
+        } else {
+          return base_ == null ?
+              qorechain.stakingtier.v1.QueryOuterClass.AprBase.getDefaultInstance() : base_;
+        }
+      }
+      /**
+       * <code>.qorechain.stakingtier.v1.AprBase base = 1 [json_name = "base"];</code>
+       */
+      private com.google.protobuf.SingleFieldBuilder<
+          qorechain.stakingtier.v1.QueryOuterClass.AprBase, qorechain.stakingtier.v1.QueryOuterClass.AprBase.Builder, qorechain.stakingtier.v1.QueryOuterClass.AprBaseOrBuilder> 
+          internalGetBaseFieldBuilder() {
+        if (baseBuilder_ == null) {
+          baseBuilder_ = new com.google.protobuf.SingleFieldBuilder<
+              qorechain.stakingtier.v1.QueryOuterClass.AprBase, qorechain.stakingtier.v1.QueryOuterClass.AprBase.Builder, qorechain.stakingtier.v1.QueryOuterClass.AprBaseOrBuilder>(
+                  getBase(),
+                  getParentForChildren(),
+                  isClean());
+          base_ = null;
+        }
+        return baseBuilder_;
+      }
+
+      private java.lang.Object validator_ = "";
+      /**
+       * <pre>
+       * validator and commission echo the request; commission is empty without
+       * one.
+       * </pre>
+       *
+       * <code>string validator = 2 [json_name = "validator"];</code>
+       * @return The validator.
+       */
+      public java.lang.String getValidator() {
+        java.lang.Object ref = validator_;
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          validator_ = s;
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
+      }
+      /**
+       * <pre>
+       * validator and commission echo the request; commission is empty without
+       * one.
+       * </pre>
+       *
+       * <code>string validator = 2 [json_name = "validator"];</code>
+       * @return The bytes for validator.
+       */
+      public com.google.protobuf.ByteString
+          getValidatorBytes() {
+        java.lang.Object ref = validator_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          validator_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <pre>
+       * validator and commission echo the request; commission is empty without
+       * one.
+       * </pre>
+       *
+       * <code>string validator = 2 [json_name = "validator"];</code>
+       * @param value The validator to set.
+       * @return This builder for chaining.
+       */
+      public Builder setValidator(
+          java.lang.String value) {
+        if (value == null) { throw new NullPointerException(); }
+        validator_ = value;
+        bitField0_ |= 0x00000002;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * validator and commission echo the request; commission is empty without
+       * one.
+       * </pre>
+       *
+       * <code>string validator = 2 [json_name = "validator"];</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearValidator() {
+        validator_ = getDefaultInstance().getValidator();
+        bitField0_ = (bitField0_ & ~0x00000002);
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * validator and commission echo the request; commission is empty without
+       * one.
+       * </pre>
+       *
+       * <code>string validator = 2 [json_name = "validator"];</code>
+       * @param value The bytes for validator to set.
+       * @return This builder for chaining.
+       */
+      public Builder setValidatorBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) { throw new NullPointerException(); }
+        checkByteStringIsUtf8(value);
+        validator_ = value;
+        bitField0_ |= 0x00000002;
+        onChanged();
+        return this;
+      }
+
+      private java.lang.Object commission_ = "";
+      /**
+       * <code>string commission = 3 [json_name = "commission"];</code>
+       * @return The commission.
+       */
+      public java.lang.String getCommission() {
+        java.lang.Object ref = commission_;
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          commission_ = s;
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
+      }
+      /**
+       * <code>string commission = 3 [json_name = "commission"];</code>
+       * @return The bytes for commission.
+       */
+      public com.google.protobuf.ByteString
+          getCommissionBytes() {
+        java.lang.Object ref = commission_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          commission_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <code>string commission = 3 [json_name = "commission"];</code>
+       * @param value The commission to set.
+       * @return This builder for chaining.
+       */
+      public Builder setCommission(
+          java.lang.String value) {
+        if (value == null) { throw new NullPointerException(); }
+        commission_ = value;
+        bitField0_ |= 0x00000004;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>string commission = 3 [json_name = "commission"];</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearCommission() {
+        commission_ = getDefaultInstance().getCommission();
+        bitField0_ = (bitField0_ & ~0x00000004);
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>string commission = 3 [json_name = "commission"];</code>
+       * @param value The bytes for commission to set.
+       * @return This builder for chaining.
+       */
+      public Builder setCommissionBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) { throw new NullPointerException(); }
+        checkByteStringIsUtf8(value);
+        commission_ = value;
+        bitField0_ |= 0x00000004;
+        onChanged();
+        return this;
+      }
+
+      private java.lang.Object baseAprBps_ = "";
+      /**
+       * <pre>
+       * base_apr_bps is the base the tiers are stated against: the gross base,
+       * or the validator's delegators' base net of commission.
+       * </pre>
+       *
+       * <code>string base_apr_bps = 4 [json_name = "baseAprBps"];</code>
+       * @return The baseAprBps.
+       */
+      public java.lang.String getBaseAprBps() {
+        java.lang.Object ref = baseAprBps_;
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          baseAprBps_ = s;
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
+      }
+      /**
+       * <pre>
+       * base_apr_bps is the base the tiers are stated against: the gross base,
+       * or the validator's delegators' base net of commission.
+       * </pre>
+       *
+       * <code>string base_apr_bps = 4 [json_name = "baseAprBps"];</code>
+       * @return The bytes for baseAprBps.
+       */
+      public com.google.protobuf.ByteString
+          getBaseAprBpsBytes() {
+        java.lang.Object ref = baseAprBps_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          baseAprBps_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <pre>
+       * base_apr_bps is the base the tiers are stated against: the gross base,
+       * or the validator's delegators' base net of commission.
+       * </pre>
+       *
+       * <code>string base_apr_bps = 4 [json_name = "baseAprBps"];</code>
+       * @param value The baseAprBps to set.
+       * @return This builder for chaining.
+       */
+      public Builder setBaseAprBps(
+          java.lang.String value) {
+        if (value == null) { throw new NullPointerException(); }
+        baseAprBps_ = value;
+        bitField0_ |= 0x00000008;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * base_apr_bps is the base the tiers are stated against: the gross base,
+       * or the validator's delegators' base net of commission.
+       * </pre>
+       *
+       * <code>string base_apr_bps = 4 [json_name = "baseAprBps"];</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearBaseAprBps() {
+        baseAprBps_ = getDefaultInstance().getBaseAprBps();
+        bitField0_ = (bitField0_ & ~0x00000008);
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * base_apr_bps is the base the tiers are stated against: the gross base,
+       * or the validator's delegators' base net of commission.
+       * </pre>
+       *
+       * <code>string base_apr_bps = 4 [json_name = "baseAprBps"];</code>
+       * @param value The bytes for baseAprBps to set.
+       * @return This builder for chaining.
+       */
+      public Builder setBaseAprBpsBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) { throw new NullPointerException(); }
+        checkByteStringIsUtf8(value);
+        baseAprBps_ = value;
+        bitField0_ |= 0x00000008;
+        onChanged();
+        return this;
+      }
+
+      private java.util.List<qorechain.stakingtier.v1.QueryOuterClass.TierAprView> tiers_ =
+        java.util.Collections.emptyList();
+      private void ensureTiersIsMutable() {
+        if (!((bitField0_ & 0x00000010) != 0)) {
+          tiers_ = new java.util.ArrayList<qorechain.stakingtier.v1.QueryOuterClass.TierAprView>(tiers_);
+          bitField0_ |= 0x00000010;
+         }
+      }
+
+      private com.google.protobuf.RepeatedFieldBuilder<
+          qorechain.stakingtier.v1.QueryOuterClass.TierAprView, qorechain.stakingtier.v1.QueryOuterClass.TierAprView.Builder, qorechain.stakingtier.v1.QueryOuterClass.TierAprViewOrBuilder> tiersBuilder_;
+
+      /**
+       * <code>repeated .qorechain.stakingtier.v1.TierAprView tiers = 5 [json_name = "tiers"];</code>
+       */
+      public java.util.List<qorechain.stakingtier.v1.QueryOuterClass.TierAprView> getTiersList() {
+        if (tiersBuilder_ == null) {
+          return java.util.Collections.unmodifiableList(tiers_);
+        } else {
+          return tiersBuilder_.getMessageList();
+        }
+      }
+      /**
+       * <code>repeated .qorechain.stakingtier.v1.TierAprView tiers = 5 [json_name = "tiers"];</code>
+       */
+      public int getTiersCount() {
+        if (tiersBuilder_ == null) {
+          return tiers_.size();
+        } else {
+          return tiersBuilder_.getCount();
+        }
+      }
+      /**
+       * <code>repeated .qorechain.stakingtier.v1.TierAprView tiers = 5 [json_name = "tiers"];</code>
+       */
+      public qorechain.stakingtier.v1.QueryOuterClass.TierAprView getTiers(int index) {
+        if (tiersBuilder_ == null) {
+          return tiers_.get(index);
+        } else {
+          return tiersBuilder_.getMessage(index);
+        }
+      }
+      /**
+       * <code>repeated .qorechain.stakingtier.v1.TierAprView tiers = 5 [json_name = "tiers"];</code>
+       */
+      public Builder setTiers(
+          int index, qorechain.stakingtier.v1.QueryOuterClass.TierAprView value) {
+        if (tiersBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          ensureTiersIsMutable();
+          tiers_.set(index, value);
+          onChanged();
+        } else {
+          tiersBuilder_.setMessage(index, value);
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .qorechain.stakingtier.v1.TierAprView tiers = 5 [json_name = "tiers"];</code>
+       */
+      public Builder setTiers(
+          int index, qorechain.stakingtier.v1.QueryOuterClass.TierAprView.Builder builderForValue) {
+        if (tiersBuilder_ == null) {
+          ensureTiersIsMutable();
+          tiers_.set(index, builderForValue.build());
+          onChanged();
+        } else {
+          tiersBuilder_.setMessage(index, builderForValue.build());
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .qorechain.stakingtier.v1.TierAprView tiers = 5 [json_name = "tiers"];</code>
+       */
+      public Builder addTiers(qorechain.stakingtier.v1.QueryOuterClass.TierAprView value) {
+        if (tiersBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          ensureTiersIsMutable();
+          tiers_.add(value);
+          onChanged();
+        } else {
+          tiersBuilder_.addMessage(value);
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .qorechain.stakingtier.v1.TierAprView tiers = 5 [json_name = "tiers"];</code>
+       */
+      public Builder addTiers(
+          int index, qorechain.stakingtier.v1.QueryOuterClass.TierAprView value) {
+        if (tiersBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          ensureTiersIsMutable();
+          tiers_.add(index, value);
+          onChanged();
+        } else {
+          tiersBuilder_.addMessage(index, value);
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .qorechain.stakingtier.v1.TierAprView tiers = 5 [json_name = "tiers"];</code>
+       */
+      public Builder addTiers(
+          qorechain.stakingtier.v1.QueryOuterClass.TierAprView.Builder builderForValue) {
+        if (tiersBuilder_ == null) {
+          ensureTiersIsMutable();
+          tiers_.add(builderForValue.build());
+          onChanged();
+        } else {
+          tiersBuilder_.addMessage(builderForValue.build());
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .qorechain.stakingtier.v1.TierAprView tiers = 5 [json_name = "tiers"];</code>
+       */
+      public Builder addTiers(
+          int index, qorechain.stakingtier.v1.QueryOuterClass.TierAprView.Builder builderForValue) {
+        if (tiersBuilder_ == null) {
+          ensureTiersIsMutable();
+          tiers_.add(index, builderForValue.build());
+          onChanged();
+        } else {
+          tiersBuilder_.addMessage(index, builderForValue.build());
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .qorechain.stakingtier.v1.TierAprView tiers = 5 [json_name = "tiers"];</code>
+       */
+      public Builder addAllTiers(
+          java.lang.Iterable<? extends qorechain.stakingtier.v1.QueryOuterClass.TierAprView> values) {
+        if (tiersBuilder_ == null) {
+          ensureTiersIsMutable();
+          com.google.protobuf.AbstractMessageLite.Builder.addAll(
+              values, tiers_);
+          onChanged();
+        } else {
+          tiersBuilder_.addAllMessages(values);
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .qorechain.stakingtier.v1.TierAprView tiers = 5 [json_name = "tiers"];</code>
+       */
+      public Builder clearTiers() {
+        if (tiersBuilder_ == null) {
+          tiers_ = java.util.Collections.emptyList();
+          bitField0_ = (bitField0_ & ~0x00000010);
+          onChanged();
+        } else {
+          tiersBuilder_.clear();
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .qorechain.stakingtier.v1.TierAprView tiers = 5 [json_name = "tiers"];</code>
+       */
+      public Builder removeTiers(int index) {
+        if (tiersBuilder_ == null) {
+          ensureTiersIsMutable();
+          tiers_.remove(index);
+          onChanged();
+        } else {
+          tiersBuilder_.remove(index);
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .qorechain.stakingtier.v1.TierAprView tiers = 5 [json_name = "tiers"];</code>
+       */
+      public qorechain.stakingtier.v1.QueryOuterClass.TierAprView.Builder getTiersBuilder(
+          int index) {
+        return internalGetTiersFieldBuilder().getBuilder(index);
+      }
+      /**
+       * <code>repeated .qorechain.stakingtier.v1.TierAprView tiers = 5 [json_name = "tiers"];</code>
+       */
+      public qorechain.stakingtier.v1.QueryOuterClass.TierAprViewOrBuilder getTiersOrBuilder(
+          int index) {
+        if (tiersBuilder_ == null) {
+          return tiers_.get(index);  } else {
+          return tiersBuilder_.getMessageOrBuilder(index);
+        }
+      }
+      /**
+       * <code>repeated .qorechain.stakingtier.v1.TierAprView tiers = 5 [json_name = "tiers"];</code>
+       */
+      public java.util.List<? extends qorechain.stakingtier.v1.QueryOuterClass.TierAprViewOrBuilder> 
+           getTiersOrBuilderList() {
+        if (tiersBuilder_ != null) {
+          return tiersBuilder_.getMessageOrBuilderList();
+        } else {
+          return java.util.Collections.unmodifiableList(tiers_);
+        }
+      }
+      /**
+       * <code>repeated .qorechain.stakingtier.v1.TierAprView tiers = 5 [json_name = "tiers"];</code>
+       */
+      public qorechain.stakingtier.v1.QueryOuterClass.TierAprView.Builder addTiersBuilder() {
+        return internalGetTiersFieldBuilder().addBuilder(
+            qorechain.stakingtier.v1.QueryOuterClass.TierAprView.getDefaultInstance());
+      }
+      /**
+       * <code>repeated .qorechain.stakingtier.v1.TierAprView tiers = 5 [json_name = "tiers"];</code>
+       */
+      public qorechain.stakingtier.v1.QueryOuterClass.TierAprView.Builder addTiersBuilder(
+          int index) {
+        return internalGetTiersFieldBuilder().addBuilder(
+            index, qorechain.stakingtier.v1.QueryOuterClass.TierAprView.getDefaultInstance());
+      }
+      /**
+       * <code>repeated .qorechain.stakingtier.v1.TierAprView tiers = 5 [json_name = "tiers"];</code>
+       */
+      public java.util.List<qorechain.stakingtier.v1.QueryOuterClass.TierAprView.Builder> 
+           getTiersBuilderList() {
+        return internalGetTiersFieldBuilder().getBuilderList();
+      }
+      private com.google.protobuf.RepeatedFieldBuilder<
+          qorechain.stakingtier.v1.QueryOuterClass.TierAprView, qorechain.stakingtier.v1.QueryOuterClass.TierAprView.Builder, qorechain.stakingtier.v1.QueryOuterClass.TierAprViewOrBuilder> 
+          internalGetTiersFieldBuilder() {
+        if (tiersBuilder_ == null) {
+          tiersBuilder_ = new com.google.protobuf.RepeatedFieldBuilder<
+              qorechain.stakingtier.v1.QueryOuterClass.TierAprView, qorechain.stakingtier.v1.QueryOuterClass.TierAprView.Builder, qorechain.stakingtier.v1.QueryOuterClass.TierAprViewOrBuilder>(
+                  tiers_,
+                  ((bitField0_ & 0x00000010) != 0),
+                  getParentForChildren(),
+                  isClean());
+          tiers_ = null;
+        }
+        return tiersBuilder_;
+      }
+
+      private int lightNodeBonusBps_ ;
+      /**
+       * <pre>
+       * light_node_bonus_bps is added to the locks of a holder that runs an
+       * active light node, before the ceiling.
+       * </pre>
+       *
+       * <code>uint32 light_node_bonus_bps = 6 [json_name = "lightNodeBonusBps"];</code>
+       * @return The lightNodeBonusBps.
+       */
+      @java.lang.Override
+      public int getLightNodeBonusBps() {
+        return lightNodeBonusBps_;
+      }
+      /**
+       * <pre>
+       * light_node_bonus_bps is added to the locks of a holder that runs an
+       * active light node, before the ceiling.
+       * </pre>
+       *
+       * <code>uint32 light_node_bonus_bps = 6 [json_name = "lightNodeBonusBps"];</code>
+       * @param value The lightNodeBonusBps to set.
+       * @return This builder for chaining.
+       */
+      public Builder setLightNodeBonusBps(int value) {
+
+        lightNodeBonusBps_ = value;
+        bitField0_ |= 0x00000020;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * light_node_bonus_bps is added to the locks of a holder that runs an
+       * active light node, before the ceiling.
+       * </pre>
+       *
+       * <code>uint32 light_node_bonus_bps = 6 [json_name = "lightNodeBonusBps"];</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearLightNodeBonusBps() {
+        bitField0_ = (bitField0_ & ~0x00000020);
+        lightNodeBonusBps_ = 0;
+        onChanged();
+        return this;
+      }
+
+      private int validatorBonusBps_ ;
+      /**
+       * <pre>
+       * validator_bonus_bps is paid on an active validator's whole self-bond;
+       * validator_effective_bonus_bps is what it pays after the ceiling over the
+       * gross base (a self-bond's base is gross).
+       * </pre>
+       *
+       * <code>uint32 validator_bonus_bps = 7 [json_name = "validatorBonusBps"];</code>
+       * @return The validatorBonusBps.
+       */
+      @java.lang.Override
+      public int getValidatorBonusBps() {
+        return validatorBonusBps_;
+      }
+      /**
+       * <pre>
+       * validator_bonus_bps is paid on an active validator's whole self-bond;
+       * validator_effective_bonus_bps is what it pays after the ceiling over the
+       * gross base (a self-bond's base is gross).
+       * </pre>
+       *
+       * <code>uint32 validator_bonus_bps = 7 [json_name = "validatorBonusBps"];</code>
+       * @param value The validatorBonusBps to set.
+       * @return This builder for chaining.
+       */
+      public Builder setValidatorBonusBps(int value) {
+
+        validatorBonusBps_ = value;
+        bitField0_ |= 0x00000040;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * validator_bonus_bps is paid on an active validator's whole self-bond;
+       * validator_effective_bonus_bps is what it pays after the ceiling over the
+       * gross base (a self-bond's base is gross).
+       * </pre>
+       *
+       * <code>uint32 validator_bonus_bps = 7 [json_name = "validatorBonusBps"];</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearValidatorBonusBps() {
+        bitField0_ = (bitField0_ & ~0x00000040);
+        validatorBonusBps_ = 0;
+        onChanged();
+        return this;
+      }
+
+      private java.lang.Object validatorEffectiveBonusBps_ = "";
+      /**
+       * <code>string validator_effective_bonus_bps = 8 [json_name = "validatorEffectiveBonusBps"];</code>
+       * @return The validatorEffectiveBonusBps.
+       */
+      public java.lang.String getValidatorEffectiveBonusBps() {
+        java.lang.Object ref = validatorEffectiveBonusBps_;
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          validatorEffectiveBonusBps_ = s;
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
+      }
+      /**
+       * <code>string validator_effective_bonus_bps = 8 [json_name = "validatorEffectiveBonusBps"];</code>
+       * @return The bytes for validatorEffectiveBonusBps.
+       */
+      public com.google.protobuf.ByteString
+          getValidatorEffectiveBonusBpsBytes() {
+        java.lang.Object ref = validatorEffectiveBonusBps_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          validatorEffectiveBonusBps_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <code>string validator_effective_bonus_bps = 8 [json_name = "validatorEffectiveBonusBps"];</code>
+       * @param value The validatorEffectiveBonusBps to set.
+       * @return This builder for chaining.
+       */
+      public Builder setValidatorEffectiveBonusBps(
+          java.lang.String value) {
+        if (value == null) { throw new NullPointerException(); }
+        validatorEffectiveBonusBps_ = value;
+        bitField0_ |= 0x00000080;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>string validator_effective_bonus_bps = 8 [json_name = "validatorEffectiveBonusBps"];</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearValidatorEffectiveBonusBps() {
+        validatorEffectiveBonusBps_ = getDefaultInstance().getValidatorEffectiveBonusBps();
+        bitField0_ = (bitField0_ & ~0x00000080);
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>string validator_effective_bonus_bps = 8 [json_name = "validatorEffectiveBonusBps"];</code>
+       * @param value The bytes for validatorEffectiveBonusBps to set.
+       * @return This builder for chaining.
+       */
+      public Builder setValidatorEffectiveBonusBpsBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) { throw new NullPointerException(); }
+        checkByteStringIsUtf8(value);
+        validatorEffectiveBonusBps_ = value;
+        bitField0_ |= 0x00000080;
+        onChanged();
+        return this;
+      }
+
+      // @@protoc_insertion_point(builder_scope:qorechain.stakingtier.v1.QueryAprResponse)
+    }
+
+    // @@protoc_insertion_point(class_scope:qorechain.stakingtier.v1.QueryAprResponse)
+    private static final qorechain.stakingtier.v1.QueryOuterClass.QueryAprResponse DEFAULT_INSTANCE;
+    static {
+      DEFAULT_INSTANCE = new qorechain.stakingtier.v1.QueryOuterClass.QueryAprResponse();
+    }
+
+    public static qorechain.stakingtier.v1.QueryOuterClass.QueryAprResponse getDefaultInstance() {
+      return DEFAULT_INSTANCE;
+    }
+
+    private static final com.google.protobuf.Parser<QueryAprResponse>
+        PARSER = new com.google.protobuf.AbstractParser<QueryAprResponse>() {
+      @java.lang.Override
+      public QueryAprResponse parsePartialFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        Builder builder = newBuilder();
+        try {
+          builder.mergeFrom(input, extensionRegistry);
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          throw e.setUnfinishedMessage(builder.buildPartial());
+        } catch (com.google.protobuf.UninitializedMessageException e) {
+          throw e.asInvalidProtocolBufferException().setUnfinishedMessage(builder.buildPartial());
+        } catch (java.io.IOException e) {
+          throw new com.google.protobuf.InvalidProtocolBufferException(e)
+              .setUnfinishedMessage(builder.buildPartial());
+        }
+        return builder.buildPartial();
+      }
+    };
+
+    public static com.google.protobuf.Parser<QueryAprResponse> parser() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Parser<QueryAprResponse> getParserForType() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public qorechain.stakingtier.v1.QueryOuterClass.QueryAprResponse getDefaultInstanceForType() {
+      return DEFAULT_INSTANCE;
+    }
+
+  }
+
+  public interface QueryDelegatorAprRequestOrBuilder extends
+      // @@protoc_insertion_point(interface_extends:qorechain.stakingtier.v1.QueryDelegatorAprRequest)
+      com.google.protobuf.MessageOrBuilder {
+
+    /**
+     * <code>string delegator = 1 [json_name = "delegator"];</code>
+     * @return The delegator.
+     */
+    java.lang.String getDelegator();
+    /**
+     * <code>string delegator = 1 [json_name = "delegator"];</code>
+     * @return The bytes for delegator.
+     */
+    com.google.protobuf.ByteString
+        getDelegatorBytes();
+
+    /**
+     * <pre>
+     * validator (optional, qorvaloper) limits the answer to that delegation.
+     * </pre>
+     *
+     * <code>string validator = 2 [json_name = "validator"];</code>
+     * @return The validator.
+     */
+    java.lang.String getValidator();
+    /**
+     * <pre>
+     * validator (optional, qorvaloper) limits the answer to that delegation.
+     * </pre>
+     *
+     * <code>string validator = 2 [json_name = "validator"];</code>
+     * @return The bytes for validator.
+     */
+    com.google.protobuf.ByteString
+        getValidatorBytes();
+  }
+  /**
+   * Protobuf type {@code qorechain.stakingtier.v1.QueryDelegatorAprRequest}
+   */
+  public static final class QueryDelegatorAprRequest extends
+      com.google.protobuf.GeneratedMessage implements
+      // @@protoc_insertion_point(message_implements:qorechain.stakingtier.v1.QueryDelegatorAprRequest)
+      QueryDelegatorAprRequestOrBuilder {
+  private static final long serialVersionUID = 0L;
+    static {
+      com.google.protobuf.RuntimeVersion.validateProtobufGencodeVersion(
+        com.google.protobuf.RuntimeVersion.RuntimeDomain.PUBLIC,
+        /* major= */ 4,
+        /* minor= */ 35,
+        /* patch= */ 1,
+        /* suffix= */ "",
+        "QueryDelegatorAprRequest");
+    }
+    // Use QueryDelegatorAprRequest.newBuilder() to construct.
+    private QueryDelegatorAprRequest(com.google.protobuf.GeneratedMessage.Builder<?> builder) {
+      super(builder);
+    }
+    private QueryDelegatorAprRequest() {
+      delegator_ = "";
+      validator_ = "";
+    }
+
+    public static final com.google.protobuf.Descriptors.Descriptor
+        getDescriptor() {
+      return qorechain.stakingtier.v1.QueryOuterClass.internal_static_qorechain_stakingtier_v1_QueryDelegatorAprRequest_descriptor;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Descriptors.Descriptor getDescriptorForType() {
+      return qorechain.stakingtier.v1.QueryOuterClass.internal_static_qorechain_stakingtier_v1_QueryDelegatorAprRequest_descriptor;
+    }
+
+    @java.lang.Override
+    protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+        internalGetFieldAccessorTable() {
+      return qorechain.stakingtier.v1.QueryOuterClass.internal_static_qorechain_stakingtier_v1_QueryDelegatorAprRequest_fieldAccessorTable
+          .ensureFieldAccessorsInitialized(
+              qorechain.stakingtier.v1.QueryOuterClass.QueryDelegatorAprRequest.class, qorechain.stakingtier.v1.QueryOuterClass.QueryDelegatorAprRequest.Builder.class);
+    }
+
+    public static final int DELEGATOR_FIELD_NUMBER = 1;
+    @SuppressWarnings("serial")
+    private volatile java.lang.Object delegator_ = "";
+    /**
+     * <code>string delegator = 1 [json_name = "delegator"];</code>
+     * @return The delegator.
+     */
+    @java.lang.Override
+    public java.lang.String getDelegator() {
+      java.lang.Object ref = delegator_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        delegator_ = s;
+        return s;
+      }
+    }
+    /**
+     * <code>string delegator = 1 [json_name = "delegator"];</code>
+     * @return The bytes for delegator.
+     */
+    @java.lang.Override
+    public com.google.protobuf.ByteString
+        getDelegatorBytes() {
+      java.lang.Object ref = delegator_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        delegator_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
+    public static final int VALIDATOR_FIELD_NUMBER = 2;
+    @SuppressWarnings("serial")
+    private volatile java.lang.Object validator_ = "";
+    /**
+     * <pre>
+     * validator (optional, qorvaloper) limits the answer to that delegation.
+     * </pre>
+     *
+     * <code>string validator = 2 [json_name = "validator"];</code>
+     * @return The validator.
+     */
+    @java.lang.Override
+    public java.lang.String getValidator() {
+      java.lang.Object ref = validator_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        validator_ = s;
+        return s;
+      }
+    }
+    /**
+     * <pre>
+     * validator (optional, qorvaloper) limits the answer to that delegation.
+     * </pre>
+     *
+     * <code>string validator = 2 [json_name = "validator"];</code>
+     * @return The bytes for validator.
+     */
+    @java.lang.Override
+    public com.google.protobuf.ByteString
+        getValidatorBytes() {
+      java.lang.Object ref = validator_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        validator_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
+    private byte memoizedIsInitialized = -1;
+    @java.lang.Override
+    public final boolean isInitialized() {
+      byte isInitialized = memoizedIsInitialized;
+      if (isInitialized == 1) return true;
+      if (isInitialized == 0) return false;
+
+      memoizedIsInitialized = 1;
+      return true;
+    }
+
+    @java.lang.Override
+    public void writeTo(com.google.protobuf.CodedOutputStream output)
+                        throws java.io.IOException {
+      if (!com.google.protobuf.GeneratedMessage.isStringEmpty(delegator_)) {
+        com.google.protobuf.GeneratedMessage.writeString(output, 1, delegator_);
+      }
+      if (!com.google.protobuf.GeneratedMessage.isStringEmpty(validator_)) {
+        com.google.protobuf.GeneratedMessage.writeString(output, 2, validator_);
+      }
+      getUnknownFields().writeTo(output);
+    }
+    private int computeSerializedSize_0() {
+      int size = 0;
+      if (!com.google.protobuf.GeneratedMessage.isStringEmpty(delegator_)) {
+        size += com.google.protobuf.GeneratedMessage.computeStringSize(1, delegator_);
+      }
+      if (!com.google.protobuf.GeneratedMessage.isStringEmpty(validator_)) {
+        size += com.google.protobuf.GeneratedMessage.computeStringSize(2, validator_);
+      }
+      return size;
+    }
+    @java.lang.Override
+    public int getSerializedSize() {
+      int size = memoizedSize;
+      if (size != -1) return size;
+
+      size = 0;
+      size += computeSerializedSize_0();
+      size += getUnknownFields().getSerializedSize();
+      memoizedSize = size;
+      return size;
+    }
+
+    @java.lang.Override
+    public boolean equals(final java.lang.Object obj) {
+      if (obj == this) {
+       return true;
+      }
+      if (!(obj instanceof qorechain.stakingtier.v1.QueryOuterClass.QueryDelegatorAprRequest)) {
+        return super.equals(obj);
+      }
+      qorechain.stakingtier.v1.QueryOuterClass.QueryDelegatorAprRequest other = (qorechain.stakingtier.v1.QueryOuterClass.QueryDelegatorAprRequest) obj;
+
+      if (!getDelegator()
+          .equals(other.getDelegator())) return false;
+      if (!getValidator()
+          .equals(other.getValidator())) return false;
+      if (!getUnknownFields().equals(other.getUnknownFields())) return false;
+      return true;
+    }
+
+    @java.lang.Override
+    public int hashCode() {
+      if (memoizedHashCode != 0) {
+        return memoizedHashCode;
+      }
+      int hash = 41;
+      hash = (19 * hash) + getDescriptor().hashCode();
+      hash = (37 * hash) + DELEGATOR_FIELD_NUMBER;
+      hash = (53 * hash) + getDelegator().hashCode();
+      hash = (37 * hash) + VALIDATOR_FIELD_NUMBER;
+      hash = (53 * hash) + getValidator().hashCode();
+      hash = (29 * hash) + getUnknownFields().hashCode();
+      memoizedHashCode = hash;
+      return hash;
+    }
+
+    public static qorechain.stakingtier.v1.QueryOuterClass.QueryDelegatorAprRequest parseFrom(
+        java.nio.ByteBuffer data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static qorechain.stakingtier.v1.QueryOuterClass.QueryDelegatorAprRequest parseFrom(
+        java.nio.ByteBuffer data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static qorechain.stakingtier.v1.QueryOuterClass.QueryDelegatorAprRequest parseFrom(
+        com.google.protobuf.ByteString data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static qorechain.stakingtier.v1.QueryOuterClass.QueryDelegatorAprRequest parseFrom(
+        com.google.protobuf.ByteString data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static qorechain.stakingtier.v1.QueryOuterClass.QueryDelegatorAprRequest parseFrom(byte[] data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static qorechain.stakingtier.v1.QueryOuterClass.QueryDelegatorAprRequest parseFrom(
+        byte[] data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static qorechain.stakingtier.v1.QueryOuterClass.QueryDelegatorAprRequest parseFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input);
+    }
+    public static qorechain.stakingtier.v1.QueryOuterClass.QueryDelegatorAprRequest parseFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    public static qorechain.stakingtier.v1.QueryOuterClass.QueryDelegatorAprRequest parseDelimitedFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseDelimitedWithIOException(PARSER, input);
+    }
+
+    public static qorechain.stakingtier.v1.QueryOuterClass.QueryDelegatorAprRequest parseDelimitedFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static qorechain.stakingtier.v1.QueryOuterClass.QueryDelegatorAprRequest parseFrom(
+        com.google.protobuf.CodedInputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input);
+    }
+    public static qorechain.stakingtier.v1.QueryOuterClass.QueryDelegatorAprRequest parseFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    @java.lang.Override
+    public Builder newBuilderForType() { return newBuilder(); }
+    public static Builder newBuilder() {
+      return DEFAULT_INSTANCE.toBuilder();
+    }
+    public static Builder newBuilder(qorechain.stakingtier.v1.QueryOuterClass.QueryDelegatorAprRequest prototype) {
+      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+    }
+    @java.lang.Override
+    public Builder toBuilder() {
+      return this == DEFAULT_INSTANCE
+          ? new Builder() : new Builder().mergeFrom(this);
+    }
+
+    @java.lang.Override
+    protected Builder newBuilderForType(
+        com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+      Builder builder = new Builder(parent);
+      return builder;
+    }
+    /**
+     * Protobuf type {@code qorechain.stakingtier.v1.QueryDelegatorAprRequest}
+     */
+    public static final class Builder extends
+        com.google.protobuf.GeneratedMessage.Builder<Builder> implements
+        // @@protoc_insertion_point(builder_implements:qorechain.stakingtier.v1.QueryDelegatorAprRequest)
+        qorechain.stakingtier.v1.QueryOuterClass.QueryDelegatorAprRequestOrBuilder {
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return qorechain.stakingtier.v1.QueryOuterClass.internal_static_qorechain_stakingtier_v1_QueryDelegatorAprRequest_descriptor;
+      }
+
+      @java.lang.Override
+      protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return qorechain.stakingtier.v1.QueryOuterClass.internal_static_qorechain_stakingtier_v1_QueryDelegatorAprRequest_fieldAccessorTable
+            .ensureFieldAccessorsInitialized(
+                qorechain.stakingtier.v1.QueryOuterClass.QueryDelegatorAprRequest.class, qorechain.stakingtier.v1.QueryOuterClass.QueryDelegatorAprRequest.Builder.class);
+      }
+
+      // Construct using qorechain.stakingtier.v1.QueryOuterClass.QueryDelegatorAprRequest.newBuilder()
+      private Builder() {
+
+      }
+
+      private Builder(
+          com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+        super(parent);
+
+      }
+      @java.lang.Override
+      public Builder clear() {
+        super.clear();
+        bitField0_ = 0;
+        delegator_ = "";
+        validator_ = "";
+        return this;
+      }
+
+      @java.lang.Override
+      public com.google.protobuf.Descriptors.Descriptor
+          getDescriptorForType() {
+        return qorechain.stakingtier.v1.QueryOuterClass.internal_static_qorechain_stakingtier_v1_QueryDelegatorAprRequest_descriptor;
+      }
+
+      @java.lang.Override
+      public qorechain.stakingtier.v1.QueryOuterClass.QueryDelegatorAprRequest getDefaultInstanceForType() {
+        return qorechain.stakingtier.v1.QueryOuterClass.QueryDelegatorAprRequest.getDefaultInstance();
+      }
+
+      @java.lang.Override
+      public qorechain.stakingtier.v1.QueryOuterClass.QueryDelegatorAprRequest build() {
+        qorechain.stakingtier.v1.QueryOuterClass.QueryDelegatorAprRequest result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(result);
+        }
+        return result;
+      }
+
+      @java.lang.Override
+      public qorechain.stakingtier.v1.QueryOuterClass.QueryDelegatorAprRequest buildPartial() {
+        qorechain.stakingtier.v1.QueryOuterClass.QueryDelegatorAprRequest result = new qorechain.stakingtier.v1.QueryOuterClass.QueryDelegatorAprRequest(this);
+        if (bitField0_ != 0) { buildPartial0(result); }
+        onBuilt();
+        return result;
+      }
+
+      private void buildPartial0(qorechain.stakingtier.v1.QueryOuterClass.QueryDelegatorAprRequest result) {
+        int from_bitField0_ = bitField0_;
+        if (((from_bitField0_ & 0x00000001) != 0)) {
+          result.delegator_ = delegator_;
+        }
+        if (((from_bitField0_ & 0x00000002) != 0)) {
+          result.validator_ = validator_;
+        }
+      }
+
+      @java.lang.Override
+      public Builder mergeFrom(com.google.protobuf.Message other) {
+        if (other instanceof qorechain.stakingtier.v1.QueryOuterClass.QueryDelegatorAprRequest) {
+          return mergeFrom((qorechain.stakingtier.v1.QueryOuterClass.QueryDelegatorAprRequest)other);
+        } else {
+          super.mergeFrom(other);
+          return this;
+        }
+      }
+
+      public Builder mergeFrom(qorechain.stakingtier.v1.QueryOuterClass.QueryDelegatorAprRequest other) {
+        if (other == qorechain.stakingtier.v1.QueryOuterClass.QueryDelegatorAprRequest.getDefaultInstance()) return this;
+        if (!other.getDelegator().isEmpty()) {
+          delegator_ = other.delegator_;
+          bitField0_ |= 0x00000001;
+          onChanged();
+        }
+        if (!other.getValidator().isEmpty()) {
+          validator_ = other.validator_;
+          bitField0_ |= 0x00000002;
+          onChanged();
+        }
+        this.mergeUnknownFields(other.getUnknownFields());
+        onChanged();
+        return this;
+      }
+
+      @java.lang.Override
+      public final boolean isInitialized() {
+        return true;
+      }
+
+      @java.lang.Override
+      public Builder mergeFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        if (extensionRegistry == null) {
+          throw new java.lang.NullPointerException();
+        }
+        try {
+          boolean done = false;
+          while (!done) {
+            int tag = input.readTag();
+            switch (tag) {
+              case 0:
+                done = true;
+                break;
+              case 10: {
+                delegator_ = input.readStringRequireUtf8();
+                bitField0_ |= 0x00000001;
+                break;
+              } // case 10
+              case 18: {
+                validator_ = input.readStringRequireUtf8();
+                bitField0_ |= 0x00000002;
+                break;
+              } // case 18
+              default: {
+                if (!super.parseUnknownField(input, extensionRegistry, tag)) {
+                  done = true; // was an endgroup tag
+                }
+                break;
+              } // default:
+            } // switch (tag)
+          } // while (!done)
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          throw e.unwrapIOException();
+        } finally {
+          onChanged();
+        } // finally
+        return this;
+      }
+      private int bitField0_;
+
+      private java.lang.Object delegator_ = "";
+      /**
+       * <code>string delegator = 1 [json_name = "delegator"];</code>
+       * @return The delegator.
+       */
+      public java.lang.String getDelegator() {
+        java.lang.Object ref = delegator_;
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          delegator_ = s;
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
+      }
+      /**
+       * <code>string delegator = 1 [json_name = "delegator"];</code>
+       * @return The bytes for delegator.
+       */
+      public com.google.protobuf.ByteString
+          getDelegatorBytes() {
+        java.lang.Object ref = delegator_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          delegator_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <code>string delegator = 1 [json_name = "delegator"];</code>
+       * @param value The delegator to set.
+       * @return This builder for chaining.
+       */
+      public Builder setDelegator(
+          java.lang.String value) {
+        if (value == null) { throw new NullPointerException(); }
+        delegator_ = value;
+        bitField0_ |= 0x00000001;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>string delegator = 1 [json_name = "delegator"];</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearDelegator() {
+        delegator_ = getDefaultInstance().getDelegator();
+        bitField0_ = (bitField0_ & ~0x00000001);
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>string delegator = 1 [json_name = "delegator"];</code>
+       * @param value The bytes for delegator to set.
+       * @return This builder for chaining.
+       */
+      public Builder setDelegatorBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) { throw new NullPointerException(); }
+        checkByteStringIsUtf8(value);
+        delegator_ = value;
+        bitField0_ |= 0x00000001;
+        onChanged();
+        return this;
+      }
+
+      private java.lang.Object validator_ = "";
+      /**
+       * <pre>
+       * validator (optional, qorvaloper) limits the answer to that delegation.
+       * </pre>
+       *
+       * <code>string validator = 2 [json_name = "validator"];</code>
+       * @return The validator.
+       */
+      public java.lang.String getValidator() {
+        java.lang.Object ref = validator_;
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          validator_ = s;
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
+      }
+      /**
+       * <pre>
+       * validator (optional, qorvaloper) limits the answer to that delegation.
+       * </pre>
+       *
+       * <code>string validator = 2 [json_name = "validator"];</code>
+       * @return The bytes for validator.
+       */
+      public com.google.protobuf.ByteString
+          getValidatorBytes() {
+        java.lang.Object ref = validator_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          validator_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <pre>
+       * validator (optional, qorvaloper) limits the answer to that delegation.
+       * </pre>
+       *
+       * <code>string validator = 2 [json_name = "validator"];</code>
+       * @param value The validator to set.
+       * @return This builder for chaining.
+       */
+      public Builder setValidator(
+          java.lang.String value) {
+        if (value == null) { throw new NullPointerException(); }
+        validator_ = value;
+        bitField0_ |= 0x00000002;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * validator (optional, qorvaloper) limits the answer to that delegation.
+       * </pre>
+       *
+       * <code>string validator = 2 [json_name = "validator"];</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearValidator() {
+        validator_ = getDefaultInstance().getValidator();
+        bitField0_ = (bitField0_ & ~0x00000002);
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * validator (optional, qorvaloper) limits the answer to that delegation.
+       * </pre>
+       *
+       * <code>string validator = 2 [json_name = "validator"];</code>
+       * @param value The bytes for validator to set.
+       * @return This builder for chaining.
+       */
+      public Builder setValidatorBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) { throw new NullPointerException(); }
+        checkByteStringIsUtf8(value);
+        validator_ = value;
+        bitField0_ |= 0x00000002;
+        onChanged();
+        return this;
+      }
+
+      // @@protoc_insertion_point(builder_scope:qorechain.stakingtier.v1.QueryDelegatorAprRequest)
+    }
+
+    // @@protoc_insertion_point(class_scope:qorechain.stakingtier.v1.QueryDelegatorAprRequest)
+    private static final qorechain.stakingtier.v1.QueryOuterClass.QueryDelegatorAprRequest DEFAULT_INSTANCE;
+    static {
+      DEFAULT_INSTANCE = new qorechain.stakingtier.v1.QueryOuterClass.QueryDelegatorAprRequest();
+    }
+
+    public static qorechain.stakingtier.v1.QueryOuterClass.QueryDelegatorAprRequest getDefaultInstance() {
+      return DEFAULT_INSTANCE;
+    }
+
+    private static final com.google.protobuf.Parser<QueryDelegatorAprRequest>
+        PARSER = new com.google.protobuf.AbstractParser<QueryDelegatorAprRequest>() {
+      @java.lang.Override
+      public QueryDelegatorAprRequest parsePartialFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        Builder builder = newBuilder();
+        try {
+          builder.mergeFrom(input, extensionRegistry);
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          throw e.setUnfinishedMessage(builder.buildPartial());
+        } catch (com.google.protobuf.UninitializedMessageException e) {
+          throw e.asInvalidProtocolBufferException().setUnfinishedMessage(builder.buildPartial());
+        } catch (java.io.IOException e) {
+          throw new com.google.protobuf.InvalidProtocolBufferException(e)
+              .setUnfinishedMessage(builder.buildPartial());
+        }
+        return builder.buildPartial();
+      }
+    };
+
+    public static com.google.protobuf.Parser<QueryDelegatorAprRequest> parser() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Parser<QueryDelegatorAprRequest> getParserForType() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public qorechain.stakingtier.v1.QueryOuterClass.QueryDelegatorAprRequest getDefaultInstanceForType() {
+      return DEFAULT_INSTANCE;
+    }
+
+  }
+
+  public interface AprPositionOrBuilder extends
+      // @@protoc_insertion_point(interface_extends:qorechain.stakingtier.v1.AprPosition)
+      com.google.protobuf.MessageOrBuilder {
+
+    /**
+     * <pre>
+     * kind is "lock" (an open lock) or "unlocked" (the rest of the delegation,
+     * expired locks included).
+     * </pre>
+     *
+     * <code>string kind = 1 [json_name = "kind"];</code>
+     * @return The kind.
+     */
+    java.lang.String getKind();
+    /**
+     * <pre>
+     * kind is "lock" (an open lock) or "unlocked" (the rest of the delegation,
+     * expired locks included).
+     * </pre>
+     *
+     * <code>string kind = 1 [json_name = "kind"];</code>
+     * @return The bytes for kind.
+     */
+    com.google.protobuf.ByteString
+        getKindBytes();
+
+    /**
+     * <code>uint64 lock_id = 2 [json_name = "lockId"];</code>
+     * @return The lockId.
+     */
+    long getLockId();
+
+    /**
+     * <code>uint32 months = 3 [json_name = "months"];</code>
+     * @return The months.
+     */
+    int getMonths();
+
+    /**
+     * <code>int64 end_time = 4 [json_name = "endTime"];</code>
+     * @return The endTime.
+     */
+    long getEndTime();
+
+    /**
+     * <pre>
+     * amount (uqor) is what the position covers today.
+     * </pre>
+     *
+     * <code>string amount = 5 [json_name = "amount"];</code>
+     * @return The amount.
+     */
+    java.lang.String getAmount();
+    /**
+     * <pre>
+     * amount (uqor) is what the position covers today.
+     * </pre>
+     *
+     * <code>string amount = 5 [json_name = "amount"];</code>
+     * @return The bytes for amount.
+     */
+    com.google.protobuf.ByteString
+        getAmountBytes();
+
+    /**
+     * <pre>
+     * base_apr_bps is the position's base: net of commission for a delegator,
+     * gross on a validator's own self-bond.
+     * </pre>
+     *
+     * <code>string base_apr_bps = 6 [json_name = "baseAprBps"];</code>
+     * @return The baseAprBps.
+     */
+    java.lang.String getBaseAprBps();
+    /**
+     * <pre>
+     * base_apr_bps is the position's base: net of commission for a delegator,
+     * gross on a validator's own self-bond.
+     * </pre>
+     *
+     * <code>string base_apr_bps = 6 [json_name = "baseAprBps"];</code>
+     * @return The bytes for baseAprBps.
+     */
+    com.google.protobuf.ByteString
+        getBaseAprBpsBytes();
+
+    /**
+     * <pre>
+     * tier_bonus_bps is the lock term's bonus fixed when the lock was made.
+     * </pre>
+     *
+     * <code>uint32 tier_bonus_bps = 7 [json_name = "tierBonusBps"];</code>
+     * @return The tierBonusBps.
+     */
+    int getTierBonusBps();
+
+    /**
+     * <pre>
+     * light_node_bonus_bps is the light node bonus added to this lock, zero
+     * when the holder does not qualify or the position is unlocked.
+     * </pre>
+     *
+     * <code>uint32 light_node_bonus_bps = 8 [json_name = "lightNodeBonusBps"];</code>
+     * @return The lightNodeBonusBps.
+     */
+    int getLightNodeBonusBps();
+
+    /**
+     * <pre>
+     * lock_bonus_bps is tier plus light node bonus after the ceiling.
+     * </pre>
+     *
+     * <code>string lock_bonus_bps = 9 [json_name = "lockBonusBps"];</code>
+     * @return The lockBonusBps.
+     */
+    java.lang.String getLockBonusBps();
+    /**
+     * <pre>
+     * lock_bonus_bps is tier plus light node bonus after the ceiling.
+     * </pre>
+     *
+     * <code>string lock_bonus_bps = 9 [json_name = "lockBonusBps"];</code>
+     * @return The bytes for lockBonusBps.
+     */
+    com.google.protobuf.ByteString
+        getLockBonusBpsBytes();
+
+    /**
+     * <pre>
+     * validator_bonus_bps is the validator bonus after the ceiling, on an
+     * active validator's own self-bond.
+     * </pre>
+     *
+     * <code>string validator_bonus_bps = 10 [json_name = "validatorBonusBps"];</code>
+     * @return The validatorBonusBps.
+     */
+    java.lang.String getValidatorBonusBps();
+    /**
+     * <pre>
+     * validator_bonus_bps is the validator bonus after the ceiling, on an
+     * active validator's own self-bond.
+     * </pre>
+     *
+     * <code>string validator_bonus_bps = 10 [json_name = "validatorBonusBps"];</code>
+     * @return The bytes for validatorBonusBps.
+     */
+    com.google.protobuf.ByteString
+        getValidatorBonusBpsBytes();
+
+    /**
+     * <pre>
+     * bonus_bps is lock_bonus_bps plus validator_bonus_bps.
+     * </pre>
+     *
+     * <code>string bonus_bps = 11 [json_name = "bonusBps"];</code>
+     * @return The bonusBps.
+     */
+    java.lang.String getBonusBps();
+    /**
+     * <pre>
+     * bonus_bps is lock_bonus_bps plus validator_bonus_bps.
+     * </pre>
+     *
+     * <code>string bonus_bps = 11 [json_name = "bonusBps"];</code>
+     * @return The bytes for bonusBps.
+     */
+    com.google.protobuf.ByteString
+        getBonusBpsBytes();
+
+    /**
+     * <pre>
+     * effective_apr_bps is base_apr_bps plus bonus_bps.
+     * </pre>
+     *
+     * <code>string effective_apr_bps = 12 [json_name = "effectiveAprBps"];</code>
+     * @return The effectiveAprBps.
+     */
+    java.lang.String getEffectiveAprBps();
+    /**
+     * <pre>
+     * effective_apr_bps is base_apr_bps plus bonus_bps.
+     * </pre>
+     *
+     * <code>string effective_apr_bps = 12 [json_name = "effectiveAprBps"];</code>
+     * @return The bytes for effectiveAprBps.
+     */
+    com.google.protobuf.ByteString
+        getEffectiveAprBpsBytes();
+
+    /**
+     * <pre>
+     * effective_apr_at_last_funding_bps scales the bonus by the latest
+     * settlement's bonus_funding_ratio.
+     * </pre>
+     *
+     * <code>string effective_apr_at_last_funding_bps = 13 [json_name = "effectiveAprAtLastFundingBps"];</code>
+     * @return The effectiveAprAtLastFundingBps.
+     */
+    java.lang.String getEffectiveAprAtLastFundingBps();
+    /**
+     * <pre>
+     * effective_apr_at_last_funding_bps scales the bonus by the latest
+     * settlement's bonus_funding_ratio.
+     * </pre>
+     *
+     * <code>string effective_apr_at_last_funding_bps = 13 [json_name = "effectiveAprAtLastFundingBps"];</code>
+     * @return The bytes for effectiveAprAtLastFundingBps.
+     */
+    com.google.protobuf.ByteString
+        getEffectiveAprAtLastFundingBpsBytes();
+
+    /**
+     * <pre>
+     * capped is true when the ceiling cut the bonus.
+     * </pre>
+     *
+     * <code>bool capped = 14 [json_name = "capped"];</code>
+     * @return The capped.
+     */
+    boolean getCapped();
+
+    /**
+     * <pre>
+     * reason says in words which bonuses apply and why.
+     * </pre>
+     *
+     * <code>string reason = 15 [json_name = "reason"];</code>
+     * @return The reason.
+     */
+    java.lang.String getReason();
+    /**
+     * <pre>
+     * reason says in words which bonuses apply and why.
+     * </pre>
+     *
+     * <code>string reason = 15 [json_name = "reason"];</code>
+     * @return The bytes for reason.
+     */
+    com.google.protobuf.ByteString
+        getReasonBytes();
+  }
+  /**
+   * <pre>
+   * AprPosition is one part of a delegation and the yield it earns going
+   * forward, as the next settlement would pay it.
+   * </pre>
+   *
+   * Protobuf type {@code qorechain.stakingtier.v1.AprPosition}
+   */
+  public static final class AprPosition extends
+      com.google.protobuf.GeneratedMessage implements
+      // @@protoc_insertion_point(message_implements:qorechain.stakingtier.v1.AprPosition)
+      AprPositionOrBuilder {
+  private static final long serialVersionUID = 0L;
+    static {
+      com.google.protobuf.RuntimeVersion.validateProtobufGencodeVersion(
+        com.google.protobuf.RuntimeVersion.RuntimeDomain.PUBLIC,
+        /* major= */ 4,
+        /* minor= */ 35,
+        /* patch= */ 1,
+        /* suffix= */ "",
+        "AprPosition");
+    }
+    // Use AprPosition.newBuilder() to construct.
+    private AprPosition(com.google.protobuf.GeneratedMessage.Builder<?> builder) {
+      super(builder);
+    }
+    private AprPosition() {
+      kind_ = "";
+      amount_ = "";
+      baseAprBps_ = "";
+      lockBonusBps_ = "";
+      validatorBonusBps_ = "";
+      bonusBps_ = "";
+      effectiveAprBps_ = "";
+      effectiveAprAtLastFundingBps_ = "";
+      reason_ = "";
+    }
+
+    public static final com.google.protobuf.Descriptors.Descriptor
+        getDescriptor() {
+      return qorechain.stakingtier.v1.QueryOuterClass.internal_static_qorechain_stakingtier_v1_AprPosition_descriptor;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Descriptors.Descriptor getDescriptorForType() {
+      return qorechain.stakingtier.v1.QueryOuterClass.internal_static_qorechain_stakingtier_v1_AprPosition_descriptor;
+    }
+
+    @java.lang.Override
+    protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+        internalGetFieldAccessorTable() {
+      return qorechain.stakingtier.v1.QueryOuterClass.internal_static_qorechain_stakingtier_v1_AprPosition_fieldAccessorTable
+          .ensureFieldAccessorsInitialized(
+              qorechain.stakingtier.v1.QueryOuterClass.AprPosition.class, qorechain.stakingtier.v1.QueryOuterClass.AprPosition.Builder.class);
+    }
+
+    public static final int KIND_FIELD_NUMBER = 1;
+    @SuppressWarnings("serial")
+    private volatile java.lang.Object kind_ = "";
+    /**
+     * <pre>
+     * kind is "lock" (an open lock) or "unlocked" (the rest of the delegation,
+     * expired locks included).
+     * </pre>
+     *
+     * <code>string kind = 1 [json_name = "kind"];</code>
+     * @return The kind.
+     */
+    @java.lang.Override
+    public java.lang.String getKind() {
+      java.lang.Object ref = kind_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        kind_ = s;
+        return s;
+      }
+    }
+    /**
+     * <pre>
+     * kind is "lock" (an open lock) or "unlocked" (the rest of the delegation,
+     * expired locks included).
+     * </pre>
+     *
+     * <code>string kind = 1 [json_name = "kind"];</code>
+     * @return The bytes for kind.
+     */
+    @java.lang.Override
+    public com.google.protobuf.ByteString
+        getKindBytes() {
+      java.lang.Object ref = kind_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        kind_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
+    public static final int LOCK_ID_FIELD_NUMBER = 2;
+    private long lockId_ = 0L;
+    /**
+     * <code>uint64 lock_id = 2 [json_name = "lockId"];</code>
+     * @return The lockId.
+     */
+    @java.lang.Override
+    public long getLockId() {
+      return lockId_;
+    }
+
+    public static final int MONTHS_FIELD_NUMBER = 3;
+    private int months_ = 0;
+    /**
+     * <code>uint32 months = 3 [json_name = "months"];</code>
+     * @return The months.
+     */
+    @java.lang.Override
+    public int getMonths() {
+      return months_;
+    }
+
+    public static final int END_TIME_FIELD_NUMBER = 4;
+    private long endTime_ = 0L;
+    /**
+     * <code>int64 end_time = 4 [json_name = "endTime"];</code>
+     * @return The endTime.
+     */
+    @java.lang.Override
+    public long getEndTime() {
+      return endTime_;
+    }
+
+    public static final int AMOUNT_FIELD_NUMBER = 5;
+    @SuppressWarnings("serial")
+    private volatile java.lang.Object amount_ = "";
+    /**
+     * <pre>
+     * amount (uqor) is what the position covers today.
+     * </pre>
+     *
+     * <code>string amount = 5 [json_name = "amount"];</code>
+     * @return The amount.
+     */
+    @java.lang.Override
+    public java.lang.String getAmount() {
+      java.lang.Object ref = amount_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        amount_ = s;
+        return s;
+      }
+    }
+    /**
+     * <pre>
+     * amount (uqor) is what the position covers today.
+     * </pre>
+     *
+     * <code>string amount = 5 [json_name = "amount"];</code>
+     * @return The bytes for amount.
+     */
+    @java.lang.Override
+    public com.google.protobuf.ByteString
+        getAmountBytes() {
+      java.lang.Object ref = amount_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        amount_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
+    public static final int BASE_APR_BPS_FIELD_NUMBER = 6;
+    @SuppressWarnings("serial")
+    private volatile java.lang.Object baseAprBps_ = "";
+    /**
+     * <pre>
+     * base_apr_bps is the position's base: net of commission for a delegator,
+     * gross on a validator's own self-bond.
+     * </pre>
+     *
+     * <code>string base_apr_bps = 6 [json_name = "baseAprBps"];</code>
+     * @return The baseAprBps.
+     */
+    @java.lang.Override
+    public java.lang.String getBaseAprBps() {
+      java.lang.Object ref = baseAprBps_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        baseAprBps_ = s;
+        return s;
+      }
+    }
+    /**
+     * <pre>
+     * base_apr_bps is the position's base: net of commission for a delegator,
+     * gross on a validator's own self-bond.
+     * </pre>
+     *
+     * <code>string base_apr_bps = 6 [json_name = "baseAprBps"];</code>
+     * @return The bytes for baseAprBps.
+     */
+    @java.lang.Override
+    public com.google.protobuf.ByteString
+        getBaseAprBpsBytes() {
+      java.lang.Object ref = baseAprBps_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        baseAprBps_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
+    public static final int TIER_BONUS_BPS_FIELD_NUMBER = 7;
+    private int tierBonusBps_ = 0;
+    /**
+     * <pre>
+     * tier_bonus_bps is the lock term's bonus fixed when the lock was made.
+     * </pre>
+     *
+     * <code>uint32 tier_bonus_bps = 7 [json_name = "tierBonusBps"];</code>
+     * @return The tierBonusBps.
+     */
+    @java.lang.Override
+    public int getTierBonusBps() {
+      return tierBonusBps_;
+    }
+
+    public static final int LIGHT_NODE_BONUS_BPS_FIELD_NUMBER = 8;
+    private int lightNodeBonusBps_ = 0;
+    /**
+     * <pre>
+     * light_node_bonus_bps is the light node bonus added to this lock, zero
+     * when the holder does not qualify or the position is unlocked.
+     * </pre>
+     *
+     * <code>uint32 light_node_bonus_bps = 8 [json_name = "lightNodeBonusBps"];</code>
+     * @return The lightNodeBonusBps.
+     */
+    @java.lang.Override
+    public int getLightNodeBonusBps() {
+      return lightNodeBonusBps_;
+    }
+
+    public static final int LOCK_BONUS_BPS_FIELD_NUMBER = 9;
+    @SuppressWarnings("serial")
+    private volatile java.lang.Object lockBonusBps_ = "";
+    /**
+     * <pre>
+     * lock_bonus_bps is tier plus light node bonus after the ceiling.
+     * </pre>
+     *
+     * <code>string lock_bonus_bps = 9 [json_name = "lockBonusBps"];</code>
+     * @return The lockBonusBps.
+     */
+    @java.lang.Override
+    public java.lang.String getLockBonusBps() {
+      java.lang.Object ref = lockBonusBps_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        lockBonusBps_ = s;
+        return s;
+      }
+    }
+    /**
+     * <pre>
+     * lock_bonus_bps is tier plus light node bonus after the ceiling.
+     * </pre>
+     *
+     * <code>string lock_bonus_bps = 9 [json_name = "lockBonusBps"];</code>
+     * @return The bytes for lockBonusBps.
+     */
+    @java.lang.Override
+    public com.google.protobuf.ByteString
+        getLockBonusBpsBytes() {
+      java.lang.Object ref = lockBonusBps_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        lockBonusBps_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
+    public static final int VALIDATOR_BONUS_BPS_FIELD_NUMBER = 10;
+    @SuppressWarnings("serial")
+    private volatile java.lang.Object validatorBonusBps_ = "";
+    /**
+     * <pre>
+     * validator_bonus_bps is the validator bonus after the ceiling, on an
+     * active validator's own self-bond.
+     * </pre>
+     *
+     * <code>string validator_bonus_bps = 10 [json_name = "validatorBonusBps"];</code>
+     * @return The validatorBonusBps.
+     */
+    @java.lang.Override
+    public java.lang.String getValidatorBonusBps() {
+      java.lang.Object ref = validatorBonusBps_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        validatorBonusBps_ = s;
+        return s;
+      }
+    }
+    /**
+     * <pre>
+     * validator_bonus_bps is the validator bonus after the ceiling, on an
+     * active validator's own self-bond.
+     * </pre>
+     *
+     * <code>string validator_bonus_bps = 10 [json_name = "validatorBonusBps"];</code>
+     * @return The bytes for validatorBonusBps.
+     */
+    @java.lang.Override
+    public com.google.protobuf.ByteString
+        getValidatorBonusBpsBytes() {
+      java.lang.Object ref = validatorBonusBps_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        validatorBonusBps_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
+    public static final int BONUS_BPS_FIELD_NUMBER = 11;
+    @SuppressWarnings("serial")
+    private volatile java.lang.Object bonusBps_ = "";
+    /**
+     * <pre>
+     * bonus_bps is lock_bonus_bps plus validator_bonus_bps.
+     * </pre>
+     *
+     * <code>string bonus_bps = 11 [json_name = "bonusBps"];</code>
+     * @return The bonusBps.
+     */
+    @java.lang.Override
+    public java.lang.String getBonusBps() {
+      java.lang.Object ref = bonusBps_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        bonusBps_ = s;
+        return s;
+      }
+    }
+    /**
+     * <pre>
+     * bonus_bps is lock_bonus_bps plus validator_bonus_bps.
+     * </pre>
+     *
+     * <code>string bonus_bps = 11 [json_name = "bonusBps"];</code>
+     * @return The bytes for bonusBps.
+     */
+    @java.lang.Override
+    public com.google.protobuf.ByteString
+        getBonusBpsBytes() {
+      java.lang.Object ref = bonusBps_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        bonusBps_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
+    public static final int EFFECTIVE_APR_BPS_FIELD_NUMBER = 12;
+    @SuppressWarnings("serial")
+    private volatile java.lang.Object effectiveAprBps_ = "";
+    /**
+     * <pre>
+     * effective_apr_bps is base_apr_bps plus bonus_bps.
+     * </pre>
+     *
+     * <code>string effective_apr_bps = 12 [json_name = "effectiveAprBps"];</code>
+     * @return The effectiveAprBps.
+     */
+    @java.lang.Override
+    public java.lang.String getEffectiveAprBps() {
+      java.lang.Object ref = effectiveAprBps_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        effectiveAprBps_ = s;
+        return s;
+      }
+    }
+    /**
+     * <pre>
+     * effective_apr_bps is base_apr_bps plus bonus_bps.
+     * </pre>
+     *
+     * <code>string effective_apr_bps = 12 [json_name = "effectiveAprBps"];</code>
+     * @return The bytes for effectiveAprBps.
+     */
+    @java.lang.Override
+    public com.google.protobuf.ByteString
+        getEffectiveAprBpsBytes() {
+      java.lang.Object ref = effectiveAprBps_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        effectiveAprBps_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
+    public static final int EFFECTIVE_APR_AT_LAST_FUNDING_BPS_FIELD_NUMBER = 13;
+    @SuppressWarnings("serial")
+    private volatile java.lang.Object effectiveAprAtLastFundingBps_ = "";
+    /**
+     * <pre>
+     * effective_apr_at_last_funding_bps scales the bonus by the latest
+     * settlement's bonus_funding_ratio.
+     * </pre>
+     *
+     * <code>string effective_apr_at_last_funding_bps = 13 [json_name = "effectiveAprAtLastFundingBps"];</code>
+     * @return The effectiveAprAtLastFundingBps.
+     */
+    @java.lang.Override
+    public java.lang.String getEffectiveAprAtLastFundingBps() {
+      java.lang.Object ref = effectiveAprAtLastFundingBps_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        effectiveAprAtLastFundingBps_ = s;
+        return s;
+      }
+    }
+    /**
+     * <pre>
+     * effective_apr_at_last_funding_bps scales the bonus by the latest
+     * settlement's bonus_funding_ratio.
+     * </pre>
+     *
+     * <code>string effective_apr_at_last_funding_bps = 13 [json_name = "effectiveAprAtLastFundingBps"];</code>
+     * @return The bytes for effectiveAprAtLastFundingBps.
+     */
+    @java.lang.Override
+    public com.google.protobuf.ByteString
+        getEffectiveAprAtLastFundingBpsBytes() {
+      java.lang.Object ref = effectiveAprAtLastFundingBps_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        effectiveAprAtLastFundingBps_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
+    public static final int CAPPED_FIELD_NUMBER = 14;
+    private boolean capped_ = false;
+    /**
+     * <pre>
+     * capped is true when the ceiling cut the bonus.
+     * </pre>
+     *
+     * <code>bool capped = 14 [json_name = "capped"];</code>
+     * @return The capped.
+     */
+    @java.lang.Override
+    public boolean getCapped() {
+      return capped_;
+    }
+
+    public static final int REASON_FIELD_NUMBER = 15;
+    @SuppressWarnings("serial")
+    private volatile java.lang.Object reason_ = "";
+    /**
+     * <pre>
+     * reason says in words which bonuses apply and why.
+     * </pre>
+     *
+     * <code>string reason = 15 [json_name = "reason"];</code>
+     * @return The reason.
+     */
+    @java.lang.Override
+    public java.lang.String getReason() {
+      java.lang.Object ref = reason_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        reason_ = s;
+        return s;
+      }
+    }
+    /**
+     * <pre>
+     * reason says in words which bonuses apply and why.
+     * </pre>
+     *
+     * <code>string reason = 15 [json_name = "reason"];</code>
+     * @return The bytes for reason.
+     */
+    @java.lang.Override
+    public com.google.protobuf.ByteString
+        getReasonBytes() {
+      java.lang.Object ref = reason_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        reason_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
+    private byte memoizedIsInitialized = -1;
+    @java.lang.Override
+    public final boolean isInitialized() {
+      byte isInitialized = memoizedIsInitialized;
+      if (isInitialized == 1) return true;
+      if (isInitialized == 0) return false;
+
+      memoizedIsInitialized = 1;
+      return true;
+    }
+
+    @java.lang.Override
+    public void writeTo(com.google.protobuf.CodedOutputStream output)
+                        throws java.io.IOException {
+      if (!com.google.protobuf.GeneratedMessage.isStringEmpty(kind_)) {
+        com.google.protobuf.GeneratedMessage.writeString(output, 1, kind_);
+      }
+      if (lockId_ != 0L) {
+        output.writeUInt64(2, lockId_);
+      }
+      if (months_ != 0) {
+        output.writeUInt32(3, months_);
+      }
+      if (endTime_ != 0L) {
+        output.writeInt64(4, endTime_);
+      }
+      if (!com.google.protobuf.GeneratedMessage.isStringEmpty(amount_)) {
+        com.google.protobuf.GeneratedMessage.writeString(output, 5, amount_);
+      }
+      if (!com.google.protobuf.GeneratedMessage.isStringEmpty(baseAprBps_)) {
+        com.google.protobuf.GeneratedMessage.writeString(output, 6, baseAprBps_);
+      }
+      if (tierBonusBps_ != 0) {
+        output.writeUInt32(7, tierBonusBps_);
+      }
+      if (lightNodeBonusBps_ != 0) {
+        output.writeUInt32(8, lightNodeBonusBps_);
+      }
+      if (!com.google.protobuf.GeneratedMessage.isStringEmpty(lockBonusBps_)) {
+        com.google.protobuf.GeneratedMessage.writeString(output, 9, lockBonusBps_);
+      }
+      if (!com.google.protobuf.GeneratedMessage.isStringEmpty(validatorBonusBps_)) {
+        com.google.protobuf.GeneratedMessage.writeString(output, 10, validatorBonusBps_);
+      }
+      if (!com.google.protobuf.GeneratedMessage.isStringEmpty(bonusBps_)) {
+        com.google.protobuf.GeneratedMessage.writeString(output, 11, bonusBps_);
+      }
+      if (!com.google.protobuf.GeneratedMessage.isStringEmpty(effectiveAprBps_)) {
+        com.google.protobuf.GeneratedMessage.writeString(output, 12, effectiveAprBps_);
+      }
+      if (!com.google.protobuf.GeneratedMessage.isStringEmpty(effectiveAprAtLastFundingBps_)) {
+        com.google.protobuf.GeneratedMessage.writeString(output, 13, effectiveAprAtLastFundingBps_);
+      }
+      if (capped_ != false) {
+        output.writeBool(14, capped_);
+      }
+      if (!com.google.protobuf.GeneratedMessage.isStringEmpty(reason_)) {
+        com.google.protobuf.GeneratedMessage.writeString(output, 15, reason_);
+      }
+      getUnknownFields().writeTo(output);
+    }
+    private int computeSerializedSize_0() {
+      int size = 0;
+      if (!com.google.protobuf.GeneratedMessage.isStringEmpty(kind_)) {
+        size += com.google.protobuf.GeneratedMessage.computeStringSize(1, kind_);
+      }
+      if (lockId_ != 0L) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeUInt64Size(2, lockId_);
+      }
+      if (months_ != 0) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeUInt32Size(3, months_);
+      }
+      if (endTime_ != 0L) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeInt64Size(4, endTime_);
+      }
+      if (!com.google.protobuf.GeneratedMessage.isStringEmpty(amount_)) {
+        size += com.google.protobuf.GeneratedMessage.computeStringSize(5, amount_);
+      }
+      if (!com.google.protobuf.GeneratedMessage.isStringEmpty(baseAprBps_)) {
+        size += com.google.protobuf.GeneratedMessage.computeStringSize(6, baseAprBps_);
+      }
+      if (tierBonusBps_ != 0) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeUInt32Size(7, tierBonusBps_);
+      }
+      if (lightNodeBonusBps_ != 0) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeUInt32Size(8, lightNodeBonusBps_);
+      }
+      if (!com.google.protobuf.GeneratedMessage.isStringEmpty(lockBonusBps_)) {
+        size += com.google.protobuf.GeneratedMessage.computeStringSize(9, lockBonusBps_);
+      }
+      if (!com.google.protobuf.GeneratedMessage.isStringEmpty(validatorBonusBps_)) {
+        size += com.google.protobuf.GeneratedMessage.computeStringSize(10, validatorBonusBps_);
+      }
+      if (!com.google.protobuf.GeneratedMessage.isStringEmpty(bonusBps_)) {
+        size += com.google.protobuf.GeneratedMessage.computeStringSize(11, bonusBps_);
+      }
+      if (!com.google.protobuf.GeneratedMessage.isStringEmpty(effectiveAprBps_)) {
+        size += com.google.protobuf.GeneratedMessage.computeStringSize(12, effectiveAprBps_);
+      }
+      if (!com.google.protobuf.GeneratedMessage.isStringEmpty(effectiveAprAtLastFundingBps_)) {
+        size += com.google.protobuf.GeneratedMessage.computeStringSize(13, effectiveAprAtLastFundingBps_);
+      }
+      if (capped_ != false) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeBoolSize(14, capped_);
+      }
+      if (!com.google.protobuf.GeneratedMessage.isStringEmpty(reason_)) {
+        size += com.google.protobuf.GeneratedMessage.computeStringSize(15, reason_);
+      }
+      return size;
+    }
+    @java.lang.Override
+    public int getSerializedSize() {
+      int size = memoizedSize;
+      if (size != -1) return size;
+
+      size = 0;
+      size += computeSerializedSize_0();
+      size += getUnknownFields().getSerializedSize();
+      memoizedSize = size;
+      return size;
+    }
+
+    @java.lang.Override
+    public boolean equals(final java.lang.Object obj) {
+      if (obj == this) {
+       return true;
+      }
+      if (!(obj instanceof qorechain.stakingtier.v1.QueryOuterClass.AprPosition)) {
+        return super.equals(obj);
+      }
+      qorechain.stakingtier.v1.QueryOuterClass.AprPosition other = (qorechain.stakingtier.v1.QueryOuterClass.AprPosition) obj;
+
+      if (!getKind()
+          .equals(other.getKind())) return false;
+      if (getLockId()
+          != other.getLockId()) return false;
+      if (getMonths()
+          != other.getMonths()) return false;
+      if (getEndTime()
+          != other.getEndTime()) return false;
+      if (!getAmount()
+          .equals(other.getAmount())) return false;
+      if (!getBaseAprBps()
+          .equals(other.getBaseAprBps())) return false;
+      if (getTierBonusBps()
+          != other.getTierBonusBps()) return false;
+      if (getLightNodeBonusBps()
+          != other.getLightNodeBonusBps()) return false;
+      if (!getLockBonusBps()
+          .equals(other.getLockBonusBps())) return false;
+      if (!getValidatorBonusBps()
+          .equals(other.getValidatorBonusBps())) return false;
+      if (!getBonusBps()
+          .equals(other.getBonusBps())) return false;
+      if (!getEffectiveAprBps()
+          .equals(other.getEffectiveAprBps())) return false;
+      if (!getEffectiveAprAtLastFundingBps()
+          .equals(other.getEffectiveAprAtLastFundingBps())) return false;
+      if (getCapped()
+          != other.getCapped()) return false;
+      if (!getReason()
+          .equals(other.getReason())) return false;
+      if (!getUnknownFields().equals(other.getUnknownFields())) return false;
+      return true;
+    }
+
+    @java.lang.Override
+    public int hashCode() {
+      if (memoizedHashCode != 0) {
+        return memoizedHashCode;
+      }
+      int hash = 41;
+      hash = (19 * hash) + getDescriptor().hashCode();
+      hash = (37 * hash) + KIND_FIELD_NUMBER;
+      hash = (53 * hash) + getKind().hashCode();
+      hash = (37 * hash) + LOCK_ID_FIELD_NUMBER;
+      hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
+          getLockId());
+      hash = (37 * hash) + MONTHS_FIELD_NUMBER;
+      hash = (53 * hash) + getMonths();
+      hash = (37 * hash) + END_TIME_FIELD_NUMBER;
+      hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
+          getEndTime());
+      hash = (37 * hash) + AMOUNT_FIELD_NUMBER;
+      hash = (53 * hash) + getAmount().hashCode();
+      hash = (37 * hash) + BASE_APR_BPS_FIELD_NUMBER;
+      hash = (53 * hash) + getBaseAprBps().hashCode();
+      hash = (37 * hash) + TIER_BONUS_BPS_FIELD_NUMBER;
+      hash = (53 * hash) + getTierBonusBps();
+      hash = (37 * hash) + LIGHT_NODE_BONUS_BPS_FIELD_NUMBER;
+      hash = (53 * hash) + getLightNodeBonusBps();
+      hash = (37 * hash) + LOCK_BONUS_BPS_FIELD_NUMBER;
+      hash = (53 * hash) + getLockBonusBps().hashCode();
+      hash = (37 * hash) + VALIDATOR_BONUS_BPS_FIELD_NUMBER;
+      hash = (53 * hash) + getValidatorBonusBps().hashCode();
+      hash = (37 * hash) + BONUS_BPS_FIELD_NUMBER;
+      hash = (53 * hash) + getBonusBps().hashCode();
+      hash = (37 * hash) + EFFECTIVE_APR_BPS_FIELD_NUMBER;
+      hash = (53 * hash) + getEffectiveAprBps().hashCode();
+      hash = (37 * hash) + EFFECTIVE_APR_AT_LAST_FUNDING_BPS_FIELD_NUMBER;
+      hash = (53 * hash) + getEffectiveAprAtLastFundingBps().hashCode();
+      hash = (37 * hash) + CAPPED_FIELD_NUMBER;
+      hash = (53 * hash) + com.google.protobuf.Internal.hashBoolean(
+          getCapped());
+      hash = (37 * hash) + REASON_FIELD_NUMBER;
+      hash = (53 * hash) + getReason().hashCode();
+      hash = (29 * hash) + getUnknownFields().hashCode();
+      memoizedHashCode = hash;
+      return hash;
+    }
+
+    public static qorechain.stakingtier.v1.QueryOuterClass.AprPosition parseFrom(
+        java.nio.ByteBuffer data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static qorechain.stakingtier.v1.QueryOuterClass.AprPosition parseFrom(
+        java.nio.ByteBuffer data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static qorechain.stakingtier.v1.QueryOuterClass.AprPosition parseFrom(
+        com.google.protobuf.ByteString data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static qorechain.stakingtier.v1.QueryOuterClass.AprPosition parseFrom(
+        com.google.protobuf.ByteString data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static qorechain.stakingtier.v1.QueryOuterClass.AprPosition parseFrom(byte[] data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static qorechain.stakingtier.v1.QueryOuterClass.AprPosition parseFrom(
+        byte[] data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static qorechain.stakingtier.v1.QueryOuterClass.AprPosition parseFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input);
+    }
+    public static qorechain.stakingtier.v1.QueryOuterClass.AprPosition parseFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    public static qorechain.stakingtier.v1.QueryOuterClass.AprPosition parseDelimitedFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseDelimitedWithIOException(PARSER, input);
+    }
+
+    public static qorechain.stakingtier.v1.QueryOuterClass.AprPosition parseDelimitedFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static qorechain.stakingtier.v1.QueryOuterClass.AprPosition parseFrom(
+        com.google.protobuf.CodedInputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input);
+    }
+    public static qorechain.stakingtier.v1.QueryOuterClass.AprPosition parseFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    @java.lang.Override
+    public Builder newBuilderForType() { return newBuilder(); }
+    public static Builder newBuilder() {
+      return DEFAULT_INSTANCE.toBuilder();
+    }
+    public static Builder newBuilder(qorechain.stakingtier.v1.QueryOuterClass.AprPosition prototype) {
+      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+    }
+    @java.lang.Override
+    public Builder toBuilder() {
+      return this == DEFAULT_INSTANCE
+          ? new Builder() : new Builder().mergeFrom(this);
+    }
+
+    @java.lang.Override
+    protected Builder newBuilderForType(
+        com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+      Builder builder = new Builder(parent);
+      return builder;
+    }
+    /**
+     * <pre>
+     * AprPosition is one part of a delegation and the yield it earns going
+     * forward, as the next settlement would pay it.
+     * </pre>
+     *
+     * Protobuf type {@code qorechain.stakingtier.v1.AprPosition}
+     */
+    public static final class Builder extends
+        com.google.protobuf.GeneratedMessage.Builder<Builder> implements
+        // @@protoc_insertion_point(builder_implements:qorechain.stakingtier.v1.AprPosition)
+        qorechain.stakingtier.v1.QueryOuterClass.AprPositionOrBuilder {
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return qorechain.stakingtier.v1.QueryOuterClass.internal_static_qorechain_stakingtier_v1_AprPosition_descriptor;
+      }
+
+      @java.lang.Override
+      protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return qorechain.stakingtier.v1.QueryOuterClass.internal_static_qorechain_stakingtier_v1_AprPosition_fieldAccessorTable
+            .ensureFieldAccessorsInitialized(
+                qorechain.stakingtier.v1.QueryOuterClass.AprPosition.class, qorechain.stakingtier.v1.QueryOuterClass.AprPosition.Builder.class);
+      }
+
+      // Construct using qorechain.stakingtier.v1.QueryOuterClass.AprPosition.newBuilder()
+      private Builder() {
+
+      }
+
+      private Builder(
+          com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+        super(parent);
+
+      }
+      @java.lang.Override
+      public Builder clear() {
+        super.clear();
+        bitField0_ = 0;
+        kind_ = "";
+        lockId_ = 0L;
+        months_ = 0;
+        endTime_ = 0L;
+        amount_ = "";
+        baseAprBps_ = "";
+        tierBonusBps_ = 0;
+        lightNodeBonusBps_ = 0;
+        lockBonusBps_ = "";
+        validatorBonusBps_ = "";
+        bonusBps_ = "";
+        effectiveAprBps_ = "";
+        effectiveAprAtLastFundingBps_ = "";
+        capped_ = false;
+        reason_ = "";
+        return this;
+      }
+
+      @java.lang.Override
+      public com.google.protobuf.Descriptors.Descriptor
+          getDescriptorForType() {
+        return qorechain.stakingtier.v1.QueryOuterClass.internal_static_qorechain_stakingtier_v1_AprPosition_descriptor;
+      }
+
+      @java.lang.Override
+      public qorechain.stakingtier.v1.QueryOuterClass.AprPosition getDefaultInstanceForType() {
+        return qorechain.stakingtier.v1.QueryOuterClass.AprPosition.getDefaultInstance();
+      }
+
+      @java.lang.Override
+      public qorechain.stakingtier.v1.QueryOuterClass.AprPosition build() {
+        qorechain.stakingtier.v1.QueryOuterClass.AprPosition result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(result);
+        }
+        return result;
+      }
+
+      @java.lang.Override
+      public qorechain.stakingtier.v1.QueryOuterClass.AprPosition buildPartial() {
+        qorechain.stakingtier.v1.QueryOuterClass.AprPosition result = new qorechain.stakingtier.v1.QueryOuterClass.AprPosition(this);
+        if (bitField0_ != 0) { buildPartial0(result); }
+        onBuilt();
+        return result;
+      }
+
+      private void buildPartial0(qorechain.stakingtier.v1.QueryOuterClass.AprPosition result) {
+        int from_bitField0_ = bitField0_;
+        if (((from_bitField0_ & 0x00000001) != 0)) {
+          result.kind_ = kind_;
+        }
+        if (((from_bitField0_ & 0x00000002) != 0)) {
+          result.lockId_ = lockId_;
+        }
+        if (((from_bitField0_ & 0x00000004) != 0)) {
+          result.months_ = months_;
+        }
+        if (((from_bitField0_ & 0x00000008) != 0)) {
+          result.endTime_ = endTime_;
+        }
+        if (((from_bitField0_ & 0x00000010) != 0)) {
+          result.amount_ = amount_;
+        }
+        if (((from_bitField0_ & 0x00000020) != 0)) {
+          result.baseAprBps_ = baseAprBps_;
+        }
+        if (((from_bitField0_ & 0x00000040) != 0)) {
+          result.tierBonusBps_ = tierBonusBps_;
+        }
+        if (((from_bitField0_ & 0x00000080) != 0)) {
+          result.lightNodeBonusBps_ = lightNodeBonusBps_;
+        }
+        if (((from_bitField0_ & 0x00000100) != 0)) {
+          result.lockBonusBps_ = lockBonusBps_;
+        }
+        if (((from_bitField0_ & 0x00000200) != 0)) {
+          result.validatorBonusBps_ = validatorBonusBps_;
+        }
+        if (((from_bitField0_ & 0x00000400) != 0)) {
+          result.bonusBps_ = bonusBps_;
+        }
+        if (((from_bitField0_ & 0x00000800) != 0)) {
+          result.effectiveAprBps_ = effectiveAprBps_;
+        }
+        if (((from_bitField0_ & 0x00001000) != 0)) {
+          result.effectiveAprAtLastFundingBps_ = effectiveAprAtLastFundingBps_;
+        }
+        if (((from_bitField0_ & 0x00002000) != 0)) {
+          result.capped_ = capped_;
+        }
+        if (((from_bitField0_ & 0x00004000) != 0)) {
+          result.reason_ = reason_;
+        }
+      }
+
+      @java.lang.Override
+      public Builder mergeFrom(com.google.protobuf.Message other) {
+        if (other instanceof qorechain.stakingtier.v1.QueryOuterClass.AprPosition) {
+          return mergeFrom((qorechain.stakingtier.v1.QueryOuterClass.AprPosition)other);
+        } else {
+          super.mergeFrom(other);
+          return this;
+        }
+      }
+
+      public Builder mergeFrom(qorechain.stakingtier.v1.QueryOuterClass.AprPosition other) {
+        if (other == qorechain.stakingtier.v1.QueryOuterClass.AprPosition.getDefaultInstance()) return this;
+        if (!other.getKind().isEmpty()) {
+          kind_ = other.kind_;
+          bitField0_ |= 0x00000001;
+          onChanged();
+        }
+        if (other.getLockId() != 0L) {
+          setLockId(other.getLockId());
+        }
+        if (other.getMonths() != 0) {
+          setMonths(other.getMonths());
+        }
+        if (other.getEndTime() != 0L) {
+          setEndTime(other.getEndTime());
+        }
+        if (!other.getAmount().isEmpty()) {
+          amount_ = other.amount_;
+          bitField0_ |= 0x00000010;
+          onChanged();
+        }
+        if (!other.getBaseAprBps().isEmpty()) {
+          baseAprBps_ = other.baseAprBps_;
+          bitField0_ |= 0x00000020;
+          onChanged();
+        }
+        if (other.getTierBonusBps() != 0) {
+          setTierBonusBps(other.getTierBonusBps());
+        }
+        if (other.getLightNodeBonusBps() != 0) {
+          setLightNodeBonusBps(other.getLightNodeBonusBps());
+        }
+        if (!other.getLockBonusBps().isEmpty()) {
+          lockBonusBps_ = other.lockBonusBps_;
+          bitField0_ |= 0x00000100;
+          onChanged();
+        }
+        if (!other.getValidatorBonusBps().isEmpty()) {
+          validatorBonusBps_ = other.validatorBonusBps_;
+          bitField0_ |= 0x00000200;
+          onChanged();
+        }
+        if (!other.getBonusBps().isEmpty()) {
+          bonusBps_ = other.bonusBps_;
+          bitField0_ |= 0x00000400;
+          onChanged();
+        }
+        if (!other.getEffectiveAprBps().isEmpty()) {
+          effectiveAprBps_ = other.effectiveAprBps_;
+          bitField0_ |= 0x00000800;
+          onChanged();
+        }
+        if (!other.getEffectiveAprAtLastFundingBps().isEmpty()) {
+          effectiveAprAtLastFundingBps_ = other.effectiveAprAtLastFundingBps_;
+          bitField0_ |= 0x00001000;
+          onChanged();
+        }
+        if (other.getCapped() != false) {
+          setCapped(other.getCapped());
+        }
+        if (!other.getReason().isEmpty()) {
+          reason_ = other.reason_;
+          bitField0_ |= 0x00004000;
+          onChanged();
+        }
+        this.mergeUnknownFields(other.getUnknownFields());
+        onChanged();
+        return this;
+      }
+
+      @java.lang.Override
+      public final boolean isInitialized() {
+        return true;
+      }
+
+      @java.lang.Override
+      public Builder mergeFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        if (extensionRegistry == null) {
+          throw new java.lang.NullPointerException();
+        }
+        try {
+          boolean done = false;
+          while (!done) {
+            int tag = input.readTag();
+            switch (tag) {
+              case 0:
+                done = true;
+                break;
+              case 10: {
+                kind_ = input.readStringRequireUtf8();
+                bitField0_ |= 0x00000001;
+                break;
+              } // case 10
+              case 16: {
+                lockId_ = input.readUInt64();
+                bitField0_ |= 0x00000002;
+                break;
+              } // case 16
+              case 24: {
+                months_ = input.readUInt32();
+                bitField0_ |= 0x00000004;
+                break;
+              } // case 24
+              case 32: {
+                endTime_ = input.readInt64();
+                bitField0_ |= 0x00000008;
+                break;
+              } // case 32
+              case 42: {
+                amount_ = input.readStringRequireUtf8();
+                bitField0_ |= 0x00000010;
+                break;
+              } // case 42
+              case 50: {
+                baseAprBps_ = input.readStringRequireUtf8();
+                bitField0_ |= 0x00000020;
+                break;
+              } // case 50
+              case 56: {
+                tierBonusBps_ = input.readUInt32();
+                bitField0_ |= 0x00000040;
+                break;
+              } // case 56
+              case 64: {
+                lightNodeBonusBps_ = input.readUInt32();
+                bitField0_ |= 0x00000080;
+                break;
+              } // case 64
+              case 74: {
+                lockBonusBps_ = input.readStringRequireUtf8();
+                bitField0_ |= 0x00000100;
+                break;
+              } // case 74
+              case 82: {
+                validatorBonusBps_ = input.readStringRequireUtf8();
+                bitField0_ |= 0x00000200;
+                break;
+              } // case 82
+              case 90: {
+                bonusBps_ = input.readStringRequireUtf8();
+                bitField0_ |= 0x00000400;
+                break;
+              } // case 90
+              case 98: {
+                effectiveAprBps_ = input.readStringRequireUtf8();
+                bitField0_ |= 0x00000800;
+                break;
+              } // case 98
+              case 106: {
+                effectiveAprAtLastFundingBps_ = input.readStringRequireUtf8();
+                bitField0_ |= 0x00001000;
+                break;
+              } // case 106
+              case 112: {
+                capped_ = input.readBool();
+                bitField0_ |= 0x00002000;
+                break;
+              } // case 112
+              case 122: {
+                reason_ = input.readStringRequireUtf8();
+                bitField0_ |= 0x00004000;
+                break;
+              } // case 122
+              default: {
+                if (!super.parseUnknownField(input, extensionRegistry, tag)) {
+                  done = true; // was an endgroup tag
+                }
+                break;
+              } // default:
+            } // switch (tag)
+          } // while (!done)
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          throw e.unwrapIOException();
+        } finally {
+          onChanged();
+        } // finally
+        return this;
+      }
+      private int bitField0_;
+
+      private java.lang.Object kind_ = "";
+      /**
+       * <pre>
+       * kind is "lock" (an open lock) or "unlocked" (the rest of the delegation,
+       * expired locks included).
+       * </pre>
+       *
+       * <code>string kind = 1 [json_name = "kind"];</code>
+       * @return The kind.
+       */
+      public java.lang.String getKind() {
+        java.lang.Object ref = kind_;
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          kind_ = s;
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
+      }
+      /**
+       * <pre>
+       * kind is "lock" (an open lock) or "unlocked" (the rest of the delegation,
+       * expired locks included).
+       * </pre>
+       *
+       * <code>string kind = 1 [json_name = "kind"];</code>
+       * @return The bytes for kind.
+       */
+      public com.google.protobuf.ByteString
+          getKindBytes() {
+        java.lang.Object ref = kind_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          kind_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <pre>
+       * kind is "lock" (an open lock) or "unlocked" (the rest of the delegation,
+       * expired locks included).
+       * </pre>
+       *
+       * <code>string kind = 1 [json_name = "kind"];</code>
+       * @param value The kind to set.
+       * @return This builder for chaining.
+       */
+      public Builder setKind(
+          java.lang.String value) {
+        if (value == null) { throw new NullPointerException(); }
+        kind_ = value;
+        bitField0_ |= 0x00000001;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * kind is "lock" (an open lock) or "unlocked" (the rest of the delegation,
+       * expired locks included).
+       * </pre>
+       *
+       * <code>string kind = 1 [json_name = "kind"];</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearKind() {
+        kind_ = getDefaultInstance().getKind();
+        bitField0_ = (bitField0_ & ~0x00000001);
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * kind is "lock" (an open lock) or "unlocked" (the rest of the delegation,
+       * expired locks included).
+       * </pre>
+       *
+       * <code>string kind = 1 [json_name = "kind"];</code>
+       * @param value The bytes for kind to set.
+       * @return This builder for chaining.
+       */
+      public Builder setKindBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) { throw new NullPointerException(); }
+        checkByteStringIsUtf8(value);
+        kind_ = value;
+        bitField0_ |= 0x00000001;
+        onChanged();
+        return this;
+      }
+
+      private long lockId_ ;
+      /**
+       * <code>uint64 lock_id = 2 [json_name = "lockId"];</code>
+       * @return The lockId.
+       */
+      @java.lang.Override
+      public long getLockId() {
+        return lockId_;
+      }
+      /**
+       * <code>uint64 lock_id = 2 [json_name = "lockId"];</code>
+       * @param value The lockId to set.
+       * @return This builder for chaining.
+       */
+      public Builder setLockId(long value) {
+
+        lockId_ = value;
+        bitField0_ |= 0x00000002;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>uint64 lock_id = 2 [json_name = "lockId"];</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearLockId() {
+        bitField0_ = (bitField0_ & ~0x00000002);
+        lockId_ = 0L;
+        onChanged();
+        return this;
+      }
+
+      private int months_ ;
+      /**
+       * <code>uint32 months = 3 [json_name = "months"];</code>
+       * @return The months.
+       */
+      @java.lang.Override
+      public int getMonths() {
+        return months_;
+      }
+      /**
+       * <code>uint32 months = 3 [json_name = "months"];</code>
+       * @param value The months to set.
+       * @return This builder for chaining.
+       */
+      public Builder setMonths(int value) {
+
+        months_ = value;
+        bitField0_ |= 0x00000004;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>uint32 months = 3 [json_name = "months"];</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearMonths() {
+        bitField0_ = (bitField0_ & ~0x00000004);
+        months_ = 0;
+        onChanged();
+        return this;
+      }
+
+      private long endTime_ ;
+      /**
+       * <code>int64 end_time = 4 [json_name = "endTime"];</code>
+       * @return The endTime.
+       */
+      @java.lang.Override
+      public long getEndTime() {
+        return endTime_;
+      }
+      /**
+       * <code>int64 end_time = 4 [json_name = "endTime"];</code>
+       * @param value The endTime to set.
+       * @return This builder for chaining.
+       */
+      public Builder setEndTime(long value) {
+
+        endTime_ = value;
+        bitField0_ |= 0x00000008;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>int64 end_time = 4 [json_name = "endTime"];</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearEndTime() {
+        bitField0_ = (bitField0_ & ~0x00000008);
+        endTime_ = 0L;
+        onChanged();
+        return this;
+      }
+
+      private java.lang.Object amount_ = "";
+      /**
+       * <pre>
+       * amount (uqor) is what the position covers today.
+       * </pre>
+       *
+       * <code>string amount = 5 [json_name = "amount"];</code>
+       * @return The amount.
+       */
+      public java.lang.String getAmount() {
+        java.lang.Object ref = amount_;
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          amount_ = s;
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
+      }
+      /**
+       * <pre>
+       * amount (uqor) is what the position covers today.
+       * </pre>
+       *
+       * <code>string amount = 5 [json_name = "amount"];</code>
+       * @return The bytes for amount.
+       */
+      public com.google.protobuf.ByteString
+          getAmountBytes() {
+        java.lang.Object ref = amount_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          amount_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <pre>
+       * amount (uqor) is what the position covers today.
+       * </pre>
+       *
+       * <code>string amount = 5 [json_name = "amount"];</code>
+       * @param value The amount to set.
+       * @return This builder for chaining.
+       */
+      public Builder setAmount(
+          java.lang.String value) {
+        if (value == null) { throw new NullPointerException(); }
+        amount_ = value;
+        bitField0_ |= 0x00000010;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * amount (uqor) is what the position covers today.
+       * </pre>
+       *
+       * <code>string amount = 5 [json_name = "amount"];</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearAmount() {
+        amount_ = getDefaultInstance().getAmount();
+        bitField0_ = (bitField0_ & ~0x00000010);
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * amount (uqor) is what the position covers today.
+       * </pre>
+       *
+       * <code>string amount = 5 [json_name = "amount"];</code>
+       * @param value The bytes for amount to set.
+       * @return This builder for chaining.
+       */
+      public Builder setAmountBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) { throw new NullPointerException(); }
+        checkByteStringIsUtf8(value);
+        amount_ = value;
+        bitField0_ |= 0x00000010;
+        onChanged();
+        return this;
+      }
+
+      private java.lang.Object baseAprBps_ = "";
+      /**
+       * <pre>
+       * base_apr_bps is the position's base: net of commission for a delegator,
+       * gross on a validator's own self-bond.
+       * </pre>
+       *
+       * <code>string base_apr_bps = 6 [json_name = "baseAprBps"];</code>
+       * @return The baseAprBps.
+       */
+      public java.lang.String getBaseAprBps() {
+        java.lang.Object ref = baseAprBps_;
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          baseAprBps_ = s;
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
+      }
+      /**
+       * <pre>
+       * base_apr_bps is the position's base: net of commission for a delegator,
+       * gross on a validator's own self-bond.
+       * </pre>
+       *
+       * <code>string base_apr_bps = 6 [json_name = "baseAprBps"];</code>
+       * @return The bytes for baseAprBps.
+       */
+      public com.google.protobuf.ByteString
+          getBaseAprBpsBytes() {
+        java.lang.Object ref = baseAprBps_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          baseAprBps_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <pre>
+       * base_apr_bps is the position's base: net of commission for a delegator,
+       * gross on a validator's own self-bond.
+       * </pre>
+       *
+       * <code>string base_apr_bps = 6 [json_name = "baseAprBps"];</code>
+       * @param value The baseAprBps to set.
+       * @return This builder for chaining.
+       */
+      public Builder setBaseAprBps(
+          java.lang.String value) {
+        if (value == null) { throw new NullPointerException(); }
+        baseAprBps_ = value;
+        bitField0_ |= 0x00000020;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * base_apr_bps is the position's base: net of commission for a delegator,
+       * gross on a validator's own self-bond.
+       * </pre>
+       *
+       * <code>string base_apr_bps = 6 [json_name = "baseAprBps"];</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearBaseAprBps() {
+        baseAprBps_ = getDefaultInstance().getBaseAprBps();
+        bitField0_ = (bitField0_ & ~0x00000020);
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * base_apr_bps is the position's base: net of commission for a delegator,
+       * gross on a validator's own self-bond.
+       * </pre>
+       *
+       * <code>string base_apr_bps = 6 [json_name = "baseAprBps"];</code>
+       * @param value The bytes for baseAprBps to set.
+       * @return This builder for chaining.
+       */
+      public Builder setBaseAprBpsBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) { throw new NullPointerException(); }
+        checkByteStringIsUtf8(value);
+        baseAprBps_ = value;
+        bitField0_ |= 0x00000020;
+        onChanged();
+        return this;
+      }
+
+      private int tierBonusBps_ ;
+      /**
+       * <pre>
+       * tier_bonus_bps is the lock term's bonus fixed when the lock was made.
+       * </pre>
+       *
+       * <code>uint32 tier_bonus_bps = 7 [json_name = "tierBonusBps"];</code>
+       * @return The tierBonusBps.
+       */
+      @java.lang.Override
+      public int getTierBonusBps() {
+        return tierBonusBps_;
+      }
+      /**
+       * <pre>
+       * tier_bonus_bps is the lock term's bonus fixed when the lock was made.
+       * </pre>
+       *
+       * <code>uint32 tier_bonus_bps = 7 [json_name = "tierBonusBps"];</code>
+       * @param value The tierBonusBps to set.
+       * @return This builder for chaining.
+       */
+      public Builder setTierBonusBps(int value) {
+
+        tierBonusBps_ = value;
+        bitField0_ |= 0x00000040;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * tier_bonus_bps is the lock term's bonus fixed when the lock was made.
+       * </pre>
+       *
+       * <code>uint32 tier_bonus_bps = 7 [json_name = "tierBonusBps"];</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearTierBonusBps() {
+        bitField0_ = (bitField0_ & ~0x00000040);
+        tierBonusBps_ = 0;
+        onChanged();
+        return this;
+      }
+
+      private int lightNodeBonusBps_ ;
+      /**
+       * <pre>
+       * light_node_bonus_bps is the light node bonus added to this lock, zero
+       * when the holder does not qualify or the position is unlocked.
+       * </pre>
+       *
+       * <code>uint32 light_node_bonus_bps = 8 [json_name = "lightNodeBonusBps"];</code>
+       * @return The lightNodeBonusBps.
+       */
+      @java.lang.Override
+      public int getLightNodeBonusBps() {
+        return lightNodeBonusBps_;
+      }
+      /**
+       * <pre>
+       * light_node_bonus_bps is the light node bonus added to this lock, zero
+       * when the holder does not qualify or the position is unlocked.
+       * </pre>
+       *
+       * <code>uint32 light_node_bonus_bps = 8 [json_name = "lightNodeBonusBps"];</code>
+       * @param value The lightNodeBonusBps to set.
+       * @return This builder for chaining.
+       */
+      public Builder setLightNodeBonusBps(int value) {
+
+        lightNodeBonusBps_ = value;
+        bitField0_ |= 0x00000080;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * light_node_bonus_bps is the light node bonus added to this lock, zero
+       * when the holder does not qualify or the position is unlocked.
+       * </pre>
+       *
+       * <code>uint32 light_node_bonus_bps = 8 [json_name = "lightNodeBonusBps"];</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearLightNodeBonusBps() {
+        bitField0_ = (bitField0_ & ~0x00000080);
+        lightNodeBonusBps_ = 0;
+        onChanged();
+        return this;
+      }
+
+      private java.lang.Object lockBonusBps_ = "";
+      /**
+       * <pre>
+       * lock_bonus_bps is tier plus light node bonus after the ceiling.
+       * </pre>
+       *
+       * <code>string lock_bonus_bps = 9 [json_name = "lockBonusBps"];</code>
+       * @return The lockBonusBps.
+       */
+      public java.lang.String getLockBonusBps() {
+        java.lang.Object ref = lockBonusBps_;
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          lockBonusBps_ = s;
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
+      }
+      /**
+       * <pre>
+       * lock_bonus_bps is tier plus light node bonus after the ceiling.
+       * </pre>
+       *
+       * <code>string lock_bonus_bps = 9 [json_name = "lockBonusBps"];</code>
+       * @return The bytes for lockBonusBps.
+       */
+      public com.google.protobuf.ByteString
+          getLockBonusBpsBytes() {
+        java.lang.Object ref = lockBonusBps_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          lockBonusBps_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <pre>
+       * lock_bonus_bps is tier plus light node bonus after the ceiling.
+       * </pre>
+       *
+       * <code>string lock_bonus_bps = 9 [json_name = "lockBonusBps"];</code>
+       * @param value The lockBonusBps to set.
+       * @return This builder for chaining.
+       */
+      public Builder setLockBonusBps(
+          java.lang.String value) {
+        if (value == null) { throw new NullPointerException(); }
+        lockBonusBps_ = value;
+        bitField0_ |= 0x00000100;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * lock_bonus_bps is tier plus light node bonus after the ceiling.
+       * </pre>
+       *
+       * <code>string lock_bonus_bps = 9 [json_name = "lockBonusBps"];</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearLockBonusBps() {
+        lockBonusBps_ = getDefaultInstance().getLockBonusBps();
+        bitField0_ = (bitField0_ & ~0x00000100);
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * lock_bonus_bps is tier plus light node bonus after the ceiling.
+       * </pre>
+       *
+       * <code>string lock_bonus_bps = 9 [json_name = "lockBonusBps"];</code>
+       * @param value The bytes for lockBonusBps to set.
+       * @return This builder for chaining.
+       */
+      public Builder setLockBonusBpsBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) { throw new NullPointerException(); }
+        checkByteStringIsUtf8(value);
+        lockBonusBps_ = value;
+        bitField0_ |= 0x00000100;
+        onChanged();
+        return this;
+      }
+
+      private java.lang.Object validatorBonusBps_ = "";
+      /**
+       * <pre>
+       * validator_bonus_bps is the validator bonus after the ceiling, on an
+       * active validator's own self-bond.
+       * </pre>
+       *
+       * <code>string validator_bonus_bps = 10 [json_name = "validatorBonusBps"];</code>
+       * @return The validatorBonusBps.
+       */
+      public java.lang.String getValidatorBonusBps() {
+        java.lang.Object ref = validatorBonusBps_;
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          validatorBonusBps_ = s;
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
+      }
+      /**
+       * <pre>
+       * validator_bonus_bps is the validator bonus after the ceiling, on an
+       * active validator's own self-bond.
+       * </pre>
+       *
+       * <code>string validator_bonus_bps = 10 [json_name = "validatorBonusBps"];</code>
+       * @return The bytes for validatorBonusBps.
+       */
+      public com.google.protobuf.ByteString
+          getValidatorBonusBpsBytes() {
+        java.lang.Object ref = validatorBonusBps_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          validatorBonusBps_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <pre>
+       * validator_bonus_bps is the validator bonus after the ceiling, on an
+       * active validator's own self-bond.
+       * </pre>
+       *
+       * <code>string validator_bonus_bps = 10 [json_name = "validatorBonusBps"];</code>
+       * @param value The validatorBonusBps to set.
+       * @return This builder for chaining.
+       */
+      public Builder setValidatorBonusBps(
+          java.lang.String value) {
+        if (value == null) { throw new NullPointerException(); }
+        validatorBonusBps_ = value;
+        bitField0_ |= 0x00000200;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * validator_bonus_bps is the validator bonus after the ceiling, on an
+       * active validator's own self-bond.
+       * </pre>
+       *
+       * <code>string validator_bonus_bps = 10 [json_name = "validatorBonusBps"];</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearValidatorBonusBps() {
+        validatorBonusBps_ = getDefaultInstance().getValidatorBonusBps();
+        bitField0_ = (bitField0_ & ~0x00000200);
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * validator_bonus_bps is the validator bonus after the ceiling, on an
+       * active validator's own self-bond.
+       * </pre>
+       *
+       * <code>string validator_bonus_bps = 10 [json_name = "validatorBonusBps"];</code>
+       * @param value The bytes for validatorBonusBps to set.
+       * @return This builder for chaining.
+       */
+      public Builder setValidatorBonusBpsBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) { throw new NullPointerException(); }
+        checkByteStringIsUtf8(value);
+        validatorBonusBps_ = value;
+        bitField0_ |= 0x00000200;
+        onChanged();
+        return this;
+      }
+
+      private java.lang.Object bonusBps_ = "";
+      /**
+       * <pre>
+       * bonus_bps is lock_bonus_bps plus validator_bonus_bps.
+       * </pre>
+       *
+       * <code>string bonus_bps = 11 [json_name = "bonusBps"];</code>
+       * @return The bonusBps.
+       */
+      public java.lang.String getBonusBps() {
+        java.lang.Object ref = bonusBps_;
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          bonusBps_ = s;
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
+      }
+      /**
+       * <pre>
+       * bonus_bps is lock_bonus_bps plus validator_bonus_bps.
+       * </pre>
+       *
+       * <code>string bonus_bps = 11 [json_name = "bonusBps"];</code>
+       * @return The bytes for bonusBps.
+       */
+      public com.google.protobuf.ByteString
+          getBonusBpsBytes() {
+        java.lang.Object ref = bonusBps_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          bonusBps_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <pre>
+       * bonus_bps is lock_bonus_bps plus validator_bonus_bps.
+       * </pre>
+       *
+       * <code>string bonus_bps = 11 [json_name = "bonusBps"];</code>
+       * @param value The bonusBps to set.
+       * @return This builder for chaining.
+       */
+      public Builder setBonusBps(
+          java.lang.String value) {
+        if (value == null) { throw new NullPointerException(); }
+        bonusBps_ = value;
+        bitField0_ |= 0x00000400;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * bonus_bps is lock_bonus_bps plus validator_bonus_bps.
+       * </pre>
+       *
+       * <code>string bonus_bps = 11 [json_name = "bonusBps"];</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearBonusBps() {
+        bonusBps_ = getDefaultInstance().getBonusBps();
+        bitField0_ = (bitField0_ & ~0x00000400);
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * bonus_bps is lock_bonus_bps plus validator_bonus_bps.
+       * </pre>
+       *
+       * <code>string bonus_bps = 11 [json_name = "bonusBps"];</code>
+       * @param value The bytes for bonusBps to set.
+       * @return This builder for chaining.
+       */
+      public Builder setBonusBpsBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) { throw new NullPointerException(); }
+        checkByteStringIsUtf8(value);
+        bonusBps_ = value;
+        bitField0_ |= 0x00000400;
+        onChanged();
+        return this;
+      }
+
+      private java.lang.Object effectiveAprBps_ = "";
+      /**
+       * <pre>
+       * effective_apr_bps is base_apr_bps plus bonus_bps.
+       * </pre>
+       *
+       * <code>string effective_apr_bps = 12 [json_name = "effectiveAprBps"];</code>
+       * @return The effectiveAprBps.
+       */
+      public java.lang.String getEffectiveAprBps() {
+        java.lang.Object ref = effectiveAprBps_;
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          effectiveAprBps_ = s;
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
+      }
+      /**
+       * <pre>
+       * effective_apr_bps is base_apr_bps plus bonus_bps.
+       * </pre>
+       *
+       * <code>string effective_apr_bps = 12 [json_name = "effectiveAprBps"];</code>
+       * @return The bytes for effectiveAprBps.
+       */
+      public com.google.protobuf.ByteString
+          getEffectiveAprBpsBytes() {
+        java.lang.Object ref = effectiveAprBps_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          effectiveAprBps_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <pre>
+       * effective_apr_bps is base_apr_bps plus bonus_bps.
+       * </pre>
+       *
+       * <code>string effective_apr_bps = 12 [json_name = "effectiveAprBps"];</code>
+       * @param value The effectiveAprBps to set.
+       * @return This builder for chaining.
+       */
+      public Builder setEffectiveAprBps(
+          java.lang.String value) {
+        if (value == null) { throw new NullPointerException(); }
+        effectiveAprBps_ = value;
+        bitField0_ |= 0x00000800;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * effective_apr_bps is base_apr_bps plus bonus_bps.
+       * </pre>
+       *
+       * <code>string effective_apr_bps = 12 [json_name = "effectiveAprBps"];</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearEffectiveAprBps() {
+        effectiveAprBps_ = getDefaultInstance().getEffectiveAprBps();
+        bitField0_ = (bitField0_ & ~0x00000800);
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * effective_apr_bps is base_apr_bps plus bonus_bps.
+       * </pre>
+       *
+       * <code>string effective_apr_bps = 12 [json_name = "effectiveAprBps"];</code>
+       * @param value The bytes for effectiveAprBps to set.
+       * @return This builder for chaining.
+       */
+      public Builder setEffectiveAprBpsBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) { throw new NullPointerException(); }
+        checkByteStringIsUtf8(value);
+        effectiveAprBps_ = value;
+        bitField0_ |= 0x00000800;
+        onChanged();
+        return this;
+      }
+
+      private java.lang.Object effectiveAprAtLastFundingBps_ = "";
+      /**
+       * <pre>
+       * effective_apr_at_last_funding_bps scales the bonus by the latest
+       * settlement's bonus_funding_ratio.
+       * </pre>
+       *
+       * <code>string effective_apr_at_last_funding_bps = 13 [json_name = "effectiveAprAtLastFundingBps"];</code>
+       * @return The effectiveAprAtLastFundingBps.
+       */
+      public java.lang.String getEffectiveAprAtLastFundingBps() {
+        java.lang.Object ref = effectiveAprAtLastFundingBps_;
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          effectiveAprAtLastFundingBps_ = s;
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
+      }
+      /**
+       * <pre>
+       * effective_apr_at_last_funding_bps scales the bonus by the latest
+       * settlement's bonus_funding_ratio.
+       * </pre>
+       *
+       * <code>string effective_apr_at_last_funding_bps = 13 [json_name = "effectiveAprAtLastFundingBps"];</code>
+       * @return The bytes for effectiveAprAtLastFundingBps.
+       */
+      public com.google.protobuf.ByteString
+          getEffectiveAprAtLastFundingBpsBytes() {
+        java.lang.Object ref = effectiveAprAtLastFundingBps_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          effectiveAprAtLastFundingBps_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <pre>
+       * effective_apr_at_last_funding_bps scales the bonus by the latest
+       * settlement's bonus_funding_ratio.
+       * </pre>
+       *
+       * <code>string effective_apr_at_last_funding_bps = 13 [json_name = "effectiveAprAtLastFundingBps"];</code>
+       * @param value The effectiveAprAtLastFundingBps to set.
+       * @return This builder for chaining.
+       */
+      public Builder setEffectiveAprAtLastFundingBps(
+          java.lang.String value) {
+        if (value == null) { throw new NullPointerException(); }
+        effectiveAprAtLastFundingBps_ = value;
+        bitField0_ |= 0x00001000;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * effective_apr_at_last_funding_bps scales the bonus by the latest
+       * settlement's bonus_funding_ratio.
+       * </pre>
+       *
+       * <code>string effective_apr_at_last_funding_bps = 13 [json_name = "effectiveAprAtLastFundingBps"];</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearEffectiveAprAtLastFundingBps() {
+        effectiveAprAtLastFundingBps_ = getDefaultInstance().getEffectiveAprAtLastFundingBps();
+        bitField0_ = (bitField0_ & ~0x00001000);
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * effective_apr_at_last_funding_bps scales the bonus by the latest
+       * settlement's bonus_funding_ratio.
+       * </pre>
+       *
+       * <code>string effective_apr_at_last_funding_bps = 13 [json_name = "effectiveAprAtLastFundingBps"];</code>
+       * @param value The bytes for effectiveAprAtLastFundingBps to set.
+       * @return This builder for chaining.
+       */
+      public Builder setEffectiveAprAtLastFundingBpsBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) { throw new NullPointerException(); }
+        checkByteStringIsUtf8(value);
+        effectiveAprAtLastFundingBps_ = value;
+        bitField0_ |= 0x00001000;
+        onChanged();
+        return this;
+      }
+
+      private boolean capped_ ;
+      /**
+       * <pre>
+       * capped is true when the ceiling cut the bonus.
+       * </pre>
+       *
+       * <code>bool capped = 14 [json_name = "capped"];</code>
+       * @return The capped.
+       */
+      @java.lang.Override
+      public boolean getCapped() {
+        return capped_;
+      }
+      /**
+       * <pre>
+       * capped is true when the ceiling cut the bonus.
+       * </pre>
+       *
+       * <code>bool capped = 14 [json_name = "capped"];</code>
+       * @param value The capped to set.
+       * @return This builder for chaining.
+       */
+      public Builder setCapped(boolean value) {
+
+        capped_ = value;
+        bitField0_ |= 0x00002000;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * capped is true when the ceiling cut the bonus.
+       * </pre>
+       *
+       * <code>bool capped = 14 [json_name = "capped"];</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearCapped() {
+        bitField0_ = (bitField0_ & ~0x00002000);
+        capped_ = false;
+        onChanged();
+        return this;
+      }
+
+      private java.lang.Object reason_ = "";
+      /**
+       * <pre>
+       * reason says in words which bonuses apply and why.
+       * </pre>
+       *
+       * <code>string reason = 15 [json_name = "reason"];</code>
+       * @return The reason.
+       */
+      public java.lang.String getReason() {
+        java.lang.Object ref = reason_;
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          reason_ = s;
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
+      }
+      /**
+       * <pre>
+       * reason says in words which bonuses apply and why.
+       * </pre>
+       *
+       * <code>string reason = 15 [json_name = "reason"];</code>
+       * @return The bytes for reason.
+       */
+      public com.google.protobuf.ByteString
+          getReasonBytes() {
+        java.lang.Object ref = reason_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          reason_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <pre>
+       * reason says in words which bonuses apply and why.
+       * </pre>
+       *
+       * <code>string reason = 15 [json_name = "reason"];</code>
+       * @param value The reason to set.
+       * @return This builder for chaining.
+       */
+      public Builder setReason(
+          java.lang.String value) {
+        if (value == null) { throw new NullPointerException(); }
+        reason_ = value;
+        bitField0_ |= 0x00004000;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * reason says in words which bonuses apply and why.
+       * </pre>
+       *
+       * <code>string reason = 15 [json_name = "reason"];</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearReason() {
+        reason_ = getDefaultInstance().getReason();
+        bitField0_ = (bitField0_ & ~0x00004000);
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * reason says in words which bonuses apply and why.
+       * </pre>
+       *
+       * <code>string reason = 15 [json_name = "reason"];</code>
+       * @param value The bytes for reason to set.
+       * @return This builder for chaining.
+       */
+      public Builder setReasonBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) { throw new NullPointerException(); }
+        checkByteStringIsUtf8(value);
+        reason_ = value;
+        bitField0_ |= 0x00004000;
+        onChanged();
+        return this;
+      }
+
+      // @@protoc_insertion_point(builder_scope:qorechain.stakingtier.v1.AprPosition)
+    }
+
+    // @@protoc_insertion_point(class_scope:qorechain.stakingtier.v1.AprPosition)
+    private static final qorechain.stakingtier.v1.QueryOuterClass.AprPosition DEFAULT_INSTANCE;
+    static {
+      DEFAULT_INSTANCE = new qorechain.stakingtier.v1.QueryOuterClass.AprPosition();
+    }
+
+    public static qorechain.stakingtier.v1.QueryOuterClass.AprPosition getDefaultInstance() {
+      return DEFAULT_INSTANCE;
+    }
+
+    private static final com.google.protobuf.Parser<AprPosition>
+        PARSER = new com.google.protobuf.AbstractParser<AprPosition>() {
+      @java.lang.Override
+      public AprPosition parsePartialFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        Builder builder = newBuilder();
+        try {
+          builder.mergeFrom(input, extensionRegistry);
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          throw e.setUnfinishedMessage(builder.buildPartial());
+        } catch (com.google.protobuf.UninitializedMessageException e) {
+          throw e.asInvalidProtocolBufferException().setUnfinishedMessage(builder.buildPartial());
+        } catch (java.io.IOException e) {
+          throw new com.google.protobuf.InvalidProtocolBufferException(e)
+              .setUnfinishedMessage(builder.buildPartial());
+        }
+        return builder.buildPartial();
+      }
+    };
+
+    public static com.google.protobuf.Parser<AprPosition> parser() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Parser<AprPosition> getParserForType() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public qorechain.stakingtier.v1.QueryOuterClass.AprPosition getDefaultInstanceForType() {
+      return DEFAULT_INSTANCE;
+    }
+
+  }
+
+  public interface DelegationAprOrBuilder extends
+      // @@protoc_insertion_point(interface_extends:qorechain.stakingtier.v1.DelegationApr)
+      com.google.protobuf.MessageOrBuilder {
+
+    /**
+     * <code>string validator = 1 [json_name = "validator"];</code>
+     * @return The validator.
+     */
+    java.lang.String getValidator();
+    /**
+     * <code>string validator = 1 [json_name = "validator"];</code>
+     * @return The bytes for validator.
+     */
+    com.google.protobuf.ByteString
+        getValidatorBytes();
+
+    /**
+     * <code>string commission = 2 [json_name = "commission"];</code>
+     * @return The commission.
+     */
+    java.lang.String getCommission();
+    /**
+     * <code>string commission = 2 [json_name = "commission"];</code>
+     * @return The bytes for commission.
+     */
+    com.google.protobuf.ByteString
+        getCommissionBytes();
+
+    /**
+     * <pre>
+     * validator_active is bonded and not jailed: the validator bonus condition.
+     * </pre>
+     *
+     * <code>bool validator_active = 3 [json_name = "validatorActive"];</code>
+     * @return The validatorActive.
+     */
+    boolean getValidatorActive();
+
+    /**
+     * <pre>
+     * self_bond is true when the delegator is the validator's operator.
+     * </pre>
+     *
+     * <code>bool self_bond = 4 [json_name = "selfBond"];</code>
+     * @return The selfBond.
+     */
+    boolean getSelfBond();
+
+    /**
+     * <code>string delegated_amount = 5 [json_name = "delegatedAmount"];</code>
+     * @return The delegatedAmount.
+     */
+    java.lang.String getDelegatedAmount();
+    /**
+     * <code>string delegated_amount = 5 [json_name = "delegatedAmount"];</code>
+     * @return The bytes for delegatedAmount.
+     */
+    com.google.protobuf.ByteString
+        getDelegatedAmountBytes();
+
+    /**
+     * <pre>
+     * locked_amount is what the open locks cover.
+     * </pre>
+     *
+     * <code>string locked_amount = 6 [json_name = "lockedAmount"];</code>
+     * @return The lockedAmount.
+     */
+    java.lang.String getLockedAmount();
+    /**
+     * <pre>
+     * locked_amount is what the open locks cover.
+     * </pre>
+     *
+     * <code>string locked_amount = 6 [json_name = "lockedAmount"];</code>
+     * @return The bytes for lockedAmount.
+     */
+    com.google.protobuf.ByteString
+        getLockedAmountBytes();
+
+    /**
+     * <pre>
+     * effective_apr_bps and effective_apr_at_last_funding_bps are the
+     * positions' rates weighted by amount.
+     * </pre>
+     *
+     * <code>string effective_apr_bps = 7 [json_name = "effectiveAprBps"];</code>
+     * @return The effectiveAprBps.
+     */
+    java.lang.String getEffectiveAprBps();
+    /**
+     * <pre>
+     * effective_apr_bps and effective_apr_at_last_funding_bps are the
+     * positions' rates weighted by amount.
+     * </pre>
+     *
+     * <code>string effective_apr_bps = 7 [json_name = "effectiveAprBps"];</code>
+     * @return The bytes for effectiveAprBps.
+     */
+    com.google.protobuf.ByteString
+        getEffectiveAprBpsBytes();
+
+    /**
+     * <code>string effective_apr_at_last_funding_bps = 8 [json_name = "effectiveAprAtLastFundingBps"];</code>
+     * @return The effectiveAprAtLastFundingBps.
+     */
+    java.lang.String getEffectiveAprAtLastFundingBps();
+    /**
+     * <code>string effective_apr_at_last_funding_bps = 8 [json_name = "effectiveAprAtLastFundingBps"];</code>
+     * @return The bytes for effectiveAprAtLastFundingBps.
+     */
+    com.google.protobuf.ByteString
+        getEffectiveAprAtLastFundingBpsBytes();
+
+    /**
+     * <code>repeated .qorechain.stakingtier.v1.AprPosition positions = 9 [json_name = "positions"];</code>
+     */
+    java.util.List<qorechain.stakingtier.v1.QueryOuterClass.AprPosition> 
+        getPositionsList();
+    /**
+     * <code>repeated .qorechain.stakingtier.v1.AprPosition positions = 9 [json_name = "positions"];</code>
+     */
+    qorechain.stakingtier.v1.QueryOuterClass.AprPosition getPositions(int index);
+    /**
+     * <code>repeated .qorechain.stakingtier.v1.AprPosition positions = 9 [json_name = "positions"];</code>
+     */
+    int getPositionsCount();
+    /**
+     * <code>repeated .qorechain.stakingtier.v1.AprPosition positions = 9 [json_name = "positions"];</code>
+     */
+    java.util.List<? extends qorechain.stakingtier.v1.QueryOuterClass.AprPositionOrBuilder> 
+        getPositionsOrBuilderList();
+    /**
+     * <code>repeated .qorechain.stakingtier.v1.AprPosition positions = 9 [json_name = "positions"];</code>
+     */
+    qorechain.stakingtier.v1.QueryOuterClass.AprPositionOrBuilder getPositionsOrBuilder(
+        int index);
+  }
+  /**
+   * Protobuf type {@code qorechain.stakingtier.v1.DelegationApr}
+   */
+  public static final class DelegationApr extends
+      com.google.protobuf.GeneratedMessage implements
+      // @@protoc_insertion_point(message_implements:qorechain.stakingtier.v1.DelegationApr)
+      DelegationAprOrBuilder {
+  private static final long serialVersionUID = 0L;
+    static {
+      com.google.protobuf.RuntimeVersion.validateProtobufGencodeVersion(
+        com.google.protobuf.RuntimeVersion.RuntimeDomain.PUBLIC,
+        /* major= */ 4,
+        /* minor= */ 35,
+        /* patch= */ 1,
+        /* suffix= */ "",
+        "DelegationApr");
+    }
+    // Use DelegationApr.newBuilder() to construct.
+    private DelegationApr(com.google.protobuf.GeneratedMessage.Builder<?> builder) {
+      super(builder);
+    }
+    private DelegationApr() {
+      validator_ = "";
+      commission_ = "";
+      delegatedAmount_ = "";
+      lockedAmount_ = "";
+      effectiveAprBps_ = "";
+      effectiveAprAtLastFundingBps_ = "";
+      positions_ = java.util.Collections.emptyList();
+    }
+
+    public static final com.google.protobuf.Descriptors.Descriptor
+        getDescriptor() {
+      return qorechain.stakingtier.v1.QueryOuterClass.internal_static_qorechain_stakingtier_v1_DelegationApr_descriptor;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Descriptors.Descriptor getDescriptorForType() {
+      return qorechain.stakingtier.v1.QueryOuterClass.internal_static_qorechain_stakingtier_v1_DelegationApr_descriptor;
+    }
+
+    @java.lang.Override
+    protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+        internalGetFieldAccessorTable() {
+      return qorechain.stakingtier.v1.QueryOuterClass.internal_static_qorechain_stakingtier_v1_DelegationApr_fieldAccessorTable
+          .ensureFieldAccessorsInitialized(
+              qorechain.stakingtier.v1.QueryOuterClass.DelegationApr.class, qorechain.stakingtier.v1.QueryOuterClass.DelegationApr.Builder.class);
+    }
+
+    public static final int VALIDATOR_FIELD_NUMBER = 1;
+    @SuppressWarnings("serial")
+    private volatile java.lang.Object validator_ = "";
+    /**
+     * <code>string validator = 1 [json_name = "validator"];</code>
+     * @return The validator.
+     */
+    @java.lang.Override
+    public java.lang.String getValidator() {
+      java.lang.Object ref = validator_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        validator_ = s;
+        return s;
+      }
+    }
+    /**
+     * <code>string validator = 1 [json_name = "validator"];</code>
+     * @return The bytes for validator.
+     */
+    @java.lang.Override
+    public com.google.protobuf.ByteString
+        getValidatorBytes() {
+      java.lang.Object ref = validator_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        validator_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
+    public static final int COMMISSION_FIELD_NUMBER = 2;
+    @SuppressWarnings("serial")
+    private volatile java.lang.Object commission_ = "";
+    /**
+     * <code>string commission = 2 [json_name = "commission"];</code>
+     * @return The commission.
+     */
+    @java.lang.Override
+    public java.lang.String getCommission() {
+      java.lang.Object ref = commission_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        commission_ = s;
+        return s;
+      }
+    }
+    /**
+     * <code>string commission = 2 [json_name = "commission"];</code>
+     * @return The bytes for commission.
+     */
+    @java.lang.Override
+    public com.google.protobuf.ByteString
+        getCommissionBytes() {
+      java.lang.Object ref = commission_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        commission_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
+    public static final int VALIDATOR_ACTIVE_FIELD_NUMBER = 3;
+    private boolean validatorActive_ = false;
+    /**
+     * <pre>
+     * validator_active is bonded and not jailed: the validator bonus condition.
+     * </pre>
+     *
+     * <code>bool validator_active = 3 [json_name = "validatorActive"];</code>
+     * @return The validatorActive.
+     */
+    @java.lang.Override
+    public boolean getValidatorActive() {
+      return validatorActive_;
+    }
+
+    public static final int SELF_BOND_FIELD_NUMBER = 4;
+    private boolean selfBond_ = false;
+    /**
+     * <pre>
+     * self_bond is true when the delegator is the validator's operator.
+     * </pre>
+     *
+     * <code>bool self_bond = 4 [json_name = "selfBond"];</code>
+     * @return The selfBond.
+     */
+    @java.lang.Override
+    public boolean getSelfBond() {
+      return selfBond_;
+    }
+
+    public static final int DELEGATED_AMOUNT_FIELD_NUMBER = 5;
+    @SuppressWarnings("serial")
+    private volatile java.lang.Object delegatedAmount_ = "";
+    /**
+     * <code>string delegated_amount = 5 [json_name = "delegatedAmount"];</code>
+     * @return The delegatedAmount.
+     */
+    @java.lang.Override
+    public java.lang.String getDelegatedAmount() {
+      java.lang.Object ref = delegatedAmount_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        delegatedAmount_ = s;
+        return s;
+      }
+    }
+    /**
+     * <code>string delegated_amount = 5 [json_name = "delegatedAmount"];</code>
+     * @return The bytes for delegatedAmount.
+     */
+    @java.lang.Override
+    public com.google.protobuf.ByteString
+        getDelegatedAmountBytes() {
+      java.lang.Object ref = delegatedAmount_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        delegatedAmount_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
+    public static final int LOCKED_AMOUNT_FIELD_NUMBER = 6;
+    @SuppressWarnings("serial")
+    private volatile java.lang.Object lockedAmount_ = "";
+    /**
+     * <pre>
+     * locked_amount is what the open locks cover.
+     * </pre>
+     *
+     * <code>string locked_amount = 6 [json_name = "lockedAmount"];</code>
+     * @return The lockedAmount.
+     */
+    @java.lang.Override
+    public java.lang.String getLockedAmount() {
+      java.lang.Object ref = lockedAmount_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        lockedAmount_ = s;
+        return s;
+      }
+    }
+    /**
+     * <pre>
+     * locked_amount is what the open locks cover.
+     * </pre>
+     *
+     * <code>string locked_amount = 6 [json_name = "lockedAmount"];</code>
+     * @return The bytes for lockedAmount.
+     */
+    @java.lang.Override
+    public com.google.protobuf.ByteString
+        getLockedAmountBytes() {
+      java.lang.Object ref = lockedAmount_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        lockedAmount_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
+    public static final int EFFECTIVE_APR_BPS_FIELD_NUMBER = 7;
+    @SuppressWarnings("serial")
+    private volatile java.lang.Object effectiveAprBps_ = "";
+    /**
+     * <pre>
+     * effective_apr_bps and effective_apr_at_last_funding_bps are the
+     * positions' rates weighted by amount.
+     * </pre>
+     *
+     * <code>string effective_apr_bps = 7 [json_name = "effectiveAprBps"];</code>
+     * @return The effectiveAprBps.
+     */
+    @java.lang.Override
+    public java.lang.String getEffectiveAprBps() {
+      java.lang.Object ref = effectiveAprBps_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        effectiveAprBps_ = s;
+        return s;
+      }
+    }
+    /**
+     * <pre>
+     * effective_apr_bps and effective_apr_at_last_funding_bps are the
+     * positions' rates weighted by amount.
+     * </pre>
+     *
+     * <code>string effective_apr_bps = 7 [json_name = "effectiveAprBps"];</code>
+     * @return The bytes for effectiveAprBps.
+     */
+    @java.lang.Override
+    public com.google.protobuf.ByteString
+        getEffectiveAprBpsBytes() {
+      java.lang.Object ref = effectiveAprBps_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        effectiveAprBps_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
+    public static final int EFFECTIVE_APR_AT_LAST_FUNDING_BPS_FIELD_NUMBER = 8;
+    @SuppressWarnings("serial")
+    private volatile java.lang.Object effectiveAprAtLastFundingBps_ = "";
+    /**
+     * <code>string effective_apr_at_last_funding_bps = 8 [json_name = "effectiveAprAtLastFundingBps"];</code>
+     * @return The effectiveAprAtLastFundingBps.
+     */
+    @java.lang.Override
+    public java.lang.String getEffectiveAprAtLastFundingBps() {
+      java.lang.Object ref = effectiveAprAtLastFundingBps_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        effectiveAprAtLastFundingBps_ = s;
+        return s;
+      }
+    }
+    /**
+     * <code>string effective_apr_at_last_funding_bps = 8 [json_name = "effectiveAprAtLastFundingBps"];</code>
+     * @return The bytes for effectiveAprAtLastFundingBps.
+     */
+    @java.lang.Override
+    public com.google.protobuf.ByteString
+        getEffectiveAprAtLastFundingBpsBytes() {
+      java.lang.Object ref = effectiveAprAtLastFundingBps_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        effectiveAprAtLastFundingBps_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
+    public static final int POSITIONS_FIELD_NUMBER = 9;
+    @SuppressWarnings("serial")
+    private java.util.List<qorechain.stakingtier.v1.QueryOuterClass.AprPosition> positions_;
+    /**
+     * <code>repeated .qorechain.stakingtier.v1.AprPosition positions = 9 [json_name = "positions"];</code>
+     */
+    @java.lang.Override
+    public java.util.List<qorechain.stakingtier.v1.QueryOuterClass.AprPosition> getPositionsList() {
+      return positions_;
+    }
+    /**
+     * <code>repeated .qorechain.stakingtier.v1.AprPosition positions = 9 [json_name = "positions"];</code>
+     */
+    @java.lang.Override
+    public java.util.List<? extends qorechain.stakingtier.v1.QueryOuterClass.AprPositionOrBuilder> 
+        getPositionsOrBuilderList() {
+      return positions_;
+    }
+    /**
+     * <code>repeated .qorechain.stakingtier.v1.AprPosition positions = 9 [json_name = "positions"];</code>
+     */
+    @java.lang.Override
+    public int getPositionsCount() {
+      return positions_.size();
+    }
+    /**
+     * <code>repeated .qorechain.stakingtier.v1.AprPosition positions = 9 [json_name = "positions"];</code>
+     */
+    @java.lang.Override
+    public qorechain.stakingtier.v1.QueryOuterClass.AprPosition getPositions(int index) {
+      return positions_.get(index);
+    }
+    /**
+     * <code>repeated .qorechain.stakingtier.v1.AprPosition positions = 9 [json_name = "positions"];</code>
+     */
+    @java.lang.Override
+    public qorechain.stakingtier.v1.QueryOuterClass.AprPositionOrBuilder getPositionsOrBuilder(
+        int index) {
+      return positions_.get(index);
+    }
+
+    private byte memoizedIsInitialized = -1;
+    @java.lang.Override
+    public final boolean isInitialized() {
+      byte isInitialized = memoizedIsInitialized;
+      if (isInitialized == 1) return true;
+      if (isInitialized == 0) return false;
+
+      memoizedIsInitialized = 1;
+      return true;
+    }
+
+    @java.lang.Override
+    public void writeTo(com.google.protobuf.CodedOutputStream output)
+                        throws java.io.IOException {
+      if (!com.google.protobuf.GeneratedMessage.isStringEmpty(validator_)) {
+        com.google.protobuf.GeneratedMessage.writeString(output, 1, validator_);
+      }
+      if (!com.google.protobuf.GeneratedMessage.isStringEmpty(commission_)) {
+        com.google.protobuf.GeneratedMessage.writeString(output, 2, commission_);
+      }
+      if (validatorActive_ != false) {
+        output.writeBool(3, validatorActive_);
+      }
+      if (selfBond_ != false) {
+        output.writeBool(4, selfBond_);
+      }
+      if (!com.google.protobuf.GeneratedMessage.isStringEmpty(delegatedAmount_)) {
+        com.google.protobuf.GeneratedMessage.writeString(output, 5, delegatedAmount_);
+      }
+      if (!com.google.protobuf.GeneratedMessage.isStringEmpty(lockedAmount_)) {
+        com.google.protobuf.GeneratedMessage.writeString(output, 6, lockedAmount_);
+      }
+      if (!com.google.protobuf.GeneratedMessage.isStringEmpty(effectiveAprBps_)) {
+        com.google.protobuf.GeneratedMessage.writeString(output, 7, effectiveAprBps_);
+      }
+      if (!com.google.protobuf.GeneratedMessage.isStringEmpty(effectiveAprAtLastFundingBps_)) {
+        com.google.protobuf.GeneratedMessage.writeString(output, 8, effectiveAprAtLastFundingBps_);
+      }
+      for (int i = 0; i < positions_.size(); i++) {
+        output.writeMessage(9, positions_.get(i));
+      }
+      getUnknownFields().writeTo(output);
+    }
+    private int computeSerializedSize_0() {
+      int size = 0;
+      if (!com.google.protobuf.GeneratedMessage.isStringEmpty(validator_)) {
+        size += com.google.protobuf.GeneratedMessage.computeStringSize(1, validator_);
+      }
+      if (!com.google.protobuf.GeneratedMessage.isStringEmpty(commission_)) {
+        size += com.google.protobuf.GeneratedMessage.computeStringSize(2, commission_);
+      }
+      if (validatorActive_ != false) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeBoolSize(3, validatorActive_);
+      }
+      if (selfBond_ != false) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeBoolSize(4, selfBond_);
+      }
+      if (!com.google.protobuf.GeneratedMessage.isStringEmpty(delegatedAmount_)) {
+        size += com.google.protobuf.GeneratedMessage.computeStringSize(5, delegatedAmount_);
+      }
+      if (!com.google.protobuf.GeneratedMessage.isStringEmpty(lockedAmount_)) {
+        size += com.google.protobuf.GeneratedMessage.computeStringSize(6, lockedAmount_);
+      }
+      if (!com.google.protobuf.GeneratedMessage.isStringEmpty(effectiveAprBps_)) {
+        size += com.google.protobuf.GeneratedMessage.computeStringSize(7, effectiveAprBps_);
+      }
+      if (!com.google.protobuf.GeneratedMessage.isStringEmpty(effectiveAprAtLastFundingBps_)) {
+        size += com.google.protobuf.GeneratedMessage.computeStringSize(8, effectiveAprAtLastFundingBps_);
+      }
+
+          {
+            final int count = positions_.size();
+            for (int i = 0; i < count; i++) {
+              size += com.google.protobuf.CodedOutputStream
+                .computeMessageSizeNoTag(positions_.get(i));
+            }
+            size += 1 * count;
+          }
+      return size;
+    }
+    @java.lang.Override
+    public int getSerializedSize() {
+      int size = memoizedSize;
+      if (size != -1) return size;
+
+      size = 0;
+      size += computeSerializedSize_0();
+      size += getUnknownFields().getSerializedSize();
+      memoizedSize = size;
+      return size;
+    }
+
+    @java.lang.Override
+    public boolean equals(final java.lang.Object obj) {
+      if (obj == this) {
+       return true;
+      }
+      if (!(obj instanceof qorechain.stakingtier.v1.QueryOuterClass.DelegationApr)) {
+        return super.equals(obj);
+      }
+      qorechain.stakingtier.v1.QueryOuterClass.DelegationApr other = (qorechain.stakingtier.v1.QueryOuterClass.DelegationApr) obj;
+
+      if (!getValidator()
+          .equals(other.getValidator())) return false;
+      if (!getCommission()
+          .equals(other.getCommission())) return false;
+      if (getValidatorActive()
+          != other.getValidatorActive()) return false;
+      if (getSelfBond()
+          != other.getSelfBond()) return false;
+      if (!getDelegatedAmount()
+          .equals(other.getDelegatedAmount())) return false;
+      if (!getLockedAmount()
+          .equals(other.getLockedAmount())) return false;
+      if (!getEffectiveAprBps()
+          .equals(other.getEffectiveAprBps())) return false;
+      if (!getEffectiveAprAtLastFundingBps()
+          .equals(other.getEffectiveAprAtLastFundingBps())) return false;
+      if (!getPositionsList()
+          .equals(other.getPositionsList())) return false;
+      if (!getUnknownFields().equals(other.getUnknownFields())) return false;
+      return true;
+    }
+
+    @java.lang.Override
+    public int hashCode() {
+      if (memoizedHashCode != 0) {
+        return memoizedHashCode;
+      }
+      int hash = 41;
+      hash = (19 * hash) + getDescriptor().hashCode();
+      hash = (37 * hash) + VALIDATOR_FIELD_NUMBER;
+      hash = (53 * hash) + getValidator().hashCode();
+      hash = (37 * hash) + COMMISSION_FIELD_NUMBER;
+      hash = (53 * hash) + getCommission().hashCode();
+      hash = (37 * hash) + VALIDATOR_ACTIVE_FIELD_NUMBER;
+      hash = (53 * hash) + com.google.protobuf.Internal.hashBoolean(
+          getValidatorActive());
+      hash = (37 * hash) + SELF_BOND_FIELD_NUMBER;
+      hash = (53 * hash) + com.google.protobuf.Internal.hashBoolean(
+          getSelfBond());
+      hash = (37 * hash) + DELEGATED_AMOUNT_FIELD_NUMBER;
+      hash = (53 * hash) + getDelegatedAmount().hashCode();
+      hash = (37 * hash) + LOCKED_AMOUNT_FIELD_NUMBER;
+      hash = (53 * hash) + getLockedAmount().hashCode();
+      hash = (37 * hash) + EFFECTIVE_APR_BPS_FIELD_NUMBER;
+      hash = (53 * hash) + getEffectiveAprBps().hashCode();
+      hash = (37 * hash) + EFFECTIVE_APR_AT_LAST_FUNDING_BPS_FIELD_NUMBER;
+      hash = (53 * hash) + getEffectiveAprAtLastFundingBps().hashCode();
+      if (getPositionsCount() > 0) {
+        hash = (37 * hash) + POSITIONS_FIELD_NUMBER;
+        hash = (53 * hash) + getPositionsList().hashCode();
+      }
+      hash = (29 * hash) + getUnknownFields().hashCode();
+      memoizedHashCode = hash;
+      return hash;
+    }
+
+    public static qorechain.stakingtier.v1.QueryOuterClass.DelegationApr parseFrom(
+        java.nio.ByteBuffer data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static qorechain.stakingtier.v1.QueryOuterClass.DelegationApr parseFrom(
+        java.nio.ByteBuffer data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static qorechain.stakingtier.v1.QueryOuterClass.DelegationApr parseFrom(
+        com.google.protobuf.ByteString data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static qorechain.stakingtier.v1.QueryOuterClass.DelegationApr parseFrom(
+        com.google.protobuf.ByteString data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static qorechain.stakingtier.v1.QueryOuterClass.DelegationApr parseFrom(byte[] data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static qorechain.stakingtier.v1.QueryOuterClass.DelegationApr parseFrom(
+        byte[] data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static qorechain.stakingtier.v1.QueryOuterClass.DelegationApr parseFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input);
+    }
+    public static qorechain.stakingtier.v1.QueryOuterClass.DelegationApr parseFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    public static qorechain.stakingtier.v1.QueryOuterClass.DelegationApr parseDelimitedFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseDelimitedWithIOException(PARSER, input);
+    }
+
+    public static qorechain.stakingtier.v1.QueryOuterClass.DelegationApr parseDelimitedFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static qorechain.stakingtier.v1.QueryOuterClass.DelegationApr parseFrom(
+        com.google.protobuf.CodedInputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input);
+    }
+    public static qorechain.stakingtier.v1.QueryOuterClass.DelegationApr parseFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    @java.lang.Override
+    public Builder newBuilderForType() { return newBuilder(); }
+    public static Builder newBuilder() {
+      return DEFAULT_INSTANCE.toBuilder();
+    }
+    public static Builder newBuilder(qorechain.stakingtier.v1.QueryOuterClass.DelegationApr prototype) {
+      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+    }
+    @java.lang.Override
+    public Builder toBuilder() {
+      return this == DEFAULT_INSTANCE
+          ? new Builder() : new Builder().mergeFrom(this);
+    }
+
+    @java.lang.Override
+    protected Builder newBuilderForType(
+        com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+      Builder builder = new Builder(parent);
+      return builder;
+    }
+    /**
+     * Protobuf type {@code qorechain.stakingtier.v1.DelegationApr}
+     */
+    public static final class Builder extends
+        com.google.protobuf.GeneratedMessage.Builder<Builder> implements
+        // @@protoc_insertion_point(builder_implements:qorechain.stakingtier.v1.DelegationApr)
+        qorechain.stakingtier.v1.QueryOuterClass.DelegationAprOrBuilder {
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return qorechain.stakingtier.v1.QueryOuterClass.internal_static_qorechain_stakingtier_v1_DelegationApr_descriptor;
+      }
+
+      @java.lang.Override
+      protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return qorechain.stakingtier.v1.QueryOuterClass.internal_static_qorechain_stakingtier_v1_DelegationApr_fieldAccessorTable
+            .ensureFieldAccessorsInitialized(
+                qorechain.stakingtier.v1.QueryOuterClass.DelegationApr.class, qorechain.stakingtier.v1.QueryOuterClass.DelegationApr.Builder.class);
+      }
+
+      // Construct using qorechain.stakingtier.v1.QueryOuterClass.DelegationApr.newBuilder()
+      private Builder() {
+
+      }
+
+      private Builder(
+          com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+        super(parent);
+
+      }
+      @java.lang.Override
+      public Builder clear() {
+        super.clear();
+        bitField0_ = 0;
+        validator_ = "";
+        commission_ = "";
+        validatorActive_ = false;
+        selfBond_ = false;
+        delegatedAmount_ = "";
+        lockedAmount_ = "";
+        effectiveAprBps_ = "";
+        effectiveAprAtLastFundingBps_ = "";
+        if (positionsBuilder_ == null) {
+          positions_ = java.util.Collections.emptyList();
+        } else {
+          positions_ = null;
+          positionsBuilder_.clear();
+        }
+        bitField0_ = (bitField0_ & ~0x00000100);
+        return this;
+      }
+
+      @java.lang.Override
+      public com.google.protobuf.Descriptors.Descriptor
+          getDescriptorForType() {
+        return qorechain.stakingtier.v1.QueryOuterClass.internal_static_qorechain_stakingtier_v1_DelegationApr_descriptor;
+      }
+
+      @java.lang.Override
+      public qorechain.stakingtier.v1.QueryOuterClass.DelegationApr getDefaultInstanceForType() {
+        return qorechain.stakingtier.v1.QueryOuterClass.DelegationApr.getDefaultInstance();
+      }
+
+      @java.lang.Override
+      public qorechain.stakingtier.v1.QueryOuterClass.DelegationApr build() {
+        qorechain.stakingtier.v1.QueryOuterClass.DelegationApr result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(result);
+        }
+        return result;
+      }
+
+      @java.lang.Override
+      public qorechain.stakingtier.v1.QueryOuterClass.DelegationApr buildPartial() {
+        qorechain.stakingtier.v1.QueryOuterClass.DelegationApr result = new qorechain.stakingtier.v1.QueryOuterClass.DelegationApr(this);
+        buildPartialRepeatedFields(result);
+        if (bitField0_ != 0) { buildPartial0(result); }
+        onBuilt();
+        return result;
+      }
+
+      private void buildPartialRepeatedFields(qorechain.stakingtier.v1.QueryOuterClass.DelegationApr result) {
+        if (positionsBuilder_ == null) {
+          if (((bitField0_ & 0x00000100) != 0)) {
+            positions_ = java.util.Collections.unmodifiableList(positions_);
+            bitField0_ = (bitField0_ & ~0x00000100);
+          }
+          result.positions_ = positions_;
+        } else {
+          result.positions_ = positionsBuilder_.build();
+        }
+      }
+
+      private void buildPartial0(qorechain.stakingtier.v1.QueryOuterClass.DelegationApr result) {
+        int from_bitField0_ = bitField0_;
+        if (((from_bitField0_ & 0x00000001) != 0)) {
+          result.validator_ = validator_;
+        }
+        if (((from_bitField0_ & 0x00000002) != 0)) {
+          result.commission_ = commission_;
+        }
+        if (((from_bitField0_ & 0x00000004) != 0)) {
+          result.validatorActive_ = validatorActive_;
+        }
+        if (((from_bitField0_ & 0x00000008) != 0)) {
+          result.selfBond_ = selfBond_;
+        }
+        if (((from_bitField0_ & 0x00000010) != 0)) {
+          result.delegatedAmount_ = delegatedAmount_;
+        }
+        if (((from_bitField0_ & 0x00000020) != 0)) {
+          result.lockedAmount_ = lockedAmount_;
+        }
+        if (((from_bitField0_ & 0x00000040) != 0)) {
+          result.effectiveAprBps_ = effectiveAprBps_;
+        }
+        if (((from_bitField0_ & 0x00000080) != 0)) {
+          result.effectiveAprAtLastFundingBps_ = effectiveAprAtLastFundingBps_;
+        }
+      }
+
+      @java.lang.Override
+      public Builder mergeFrom(com.google.protobuf.Message other) {
+        if (other instanceof qorechain.stakingtier.v1.QueryOuterClass.DelegationApr) {
+          return mergeFrom((qorechain.stakingtier.v1.QueryOuterClass.DelegationApr)other);
+        } else {
+          super.mergeFrom(other);
+          return this;
+        }
+      }
+
+      public Builder mergeFrom(qorechain.stakingtier.v1.QueryOuterClass.DelegationApr other) {
+        if (other == qorechain.stakingtier.v1.QueryOuterClass.DelegationApr.getDefaultInstance()) return this;
+        if (!other.getValidator().isEmpty()) {
+          validator_ = other.validator_;
+          bitField0_ |= 0x00000001;
+          onChanged();
+        }
+        if (!other.getCommission().isEmpty()) {
+          commission_ = other.commission_;
+          bitField0_ |= 0x00000002;
+          onChanged();
+        }
+        if (other.getValidatorActive() != false) {
+          setValidatorActive(other.getValidatorActive());
+        }
+        if (other.getSelfBond() != false) {
+          setSelfBond(other.getSelfBond());
+        }
+        if (!other.getDelegatedAmount().isEmpty()) {
+          delegatedAmount_ = other.delegatedAmount_;
+          bitField0_ |= 0x00000010;
+          onChanged();
+        }
+        if (!other.getLockedAmount().isEmpty()) {
+          lockedAmount_ = other.lockedAmount_;
+          bitField0_ |= 0x00000020;
+          onChanged();
+        }
+        if (!other.getEffectiveAprBps().isEmpty()) {
+          effectiveAprBps_ = other.effectiveAprBps_;
+          bitField0_ |= 0x00000040;
+          onChanged();
+        }
+        if (!other.getEffectiveAprAtLastFundingBps().isEmpty()) {
+          effectiveAprAtLastFundingBps_ = other.effectiveAprAtLastFundingBps_;
+          bitField0_ |= 0x00000080;
+          onChanged();
+        }
+        if (positionsBuilder_ == null) {
+          if (!other.positions_.isEmpty()) {
+            if (positions_.isEmpty()) {
+              positions_ = other.positions_;
+              bitField0_ = (bitField0_ & ~0x00000100);
+            } else {
+              ensurePositionsIsMutable();
+              positions_.addAll(other.positions_);
+            }
+            onChanged();
+          }
+        } else {
+          if (!other.positions_.isEmpty()) {
+            if (positionsBuilder_.isEmpty()) {
+              positionsBuilder_.dispose();
+              positionsBuilder_ = null;
+              positions_ = other.positions_;
+              bitField0_ = (bitField0_ & ~0x00000100);
+              positionsBuilder_ = 
+                com.google.protobuf.GeneratedMessage.alwaysUseFieldBuilders ?
+                   internalGetPositionsFieldBuilder() : null;
+            } else {
+              positionsBuilder_.addAllMessages(other.positions_);
+            }
+          }
+        }
+        this.mergeUnknownFields(other.getUnknownFields());
+        onChanged();
+        return this;
+      }
+
+      @java.lang.Override
+      public final boolean isInitialized() {
+        return true;
+      }
+
+      @java.lang.Override
+      public Builder mergeFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        if (extensionRegistry == null) {
+          throw new java.lang.NullPointerException();
+        }
+        try {
+          boolean done = false;
+          while (!done) {
+            int tag = input.readTag();
+            switch (tag) {
+              case 0:
+                done = true;
+                break;
+              case 10: {
+                validator_ = input.readStringRequireUtf8();
+                bitField0_ |= 0x00000001;
+                break;
+              } // case 10
+              case 18: {
+                commission_ = input.readStringRequireUtf8();
+                bitField0_ |= 0x00000002;
+                break;
+              } // case 18
+              case 24: {
+                validatorActive_ = input.readBool();
+                bitField0_ |= 0x00000004;
+                break;
+              } // case 24
+              case 32: {
+                selfBond_ = input.readBool();
+                bitField0_ |= 0x00000008;
+                break;
+              } // case 32
+              case 42: {
+                delegatedAmount_ = input.readStringRequireUtf8();
+                bitField0_ |= 0x00000010;
+                break;
+              } // case 42
+              case 50: {
+                lockedAmount_ = input.readStringRequireUtf8();
+                bitField0_ |= 0x00000020;
+                break;
+              } // case 50
+              case 58: {
+                effectiveAprBps_ = input.readStringRequireUtf8();
+                bitField0_ |= 0x00000040;
+                break;
+              } // case 58
+              case 66: {
+                effectiveAprAtLastFundingBps_ = input.readStringRequireUtf8();
+                bitField0_ |= 0x00000080;
+                break;
+              } // case 66
+              case 74: {
+                qorechain.stakingtier.v1.QueryOuterClass.AprPosition m =
+                    input.readMessage(
+                        qorechain.stakingtier.v1.QueryOuterClass.AprPosition.parser(),
+                        extensionRegistry);
+                if (positionsBuilder_ == null) {
+                  ensurePositionsIsMutable();
+                  positions_.add(m);
+                } else {
+                  positionsBuilder_.addMessage(m);
+                }
+                break;
+              } // case 74
+              default: {
+                if (!super.parseUnknownField(input, extensionRegistry, tag)) {
+                  done = true; // was an endgroup tag
+                }
+                break;
+              } // default:
+            } // switch (tag)
+          } // while (!done)
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          throw e.unwrapIOException();
+        } finally {
+          onChanged();
+        } // finally
+        return this;
+      }
+      private int bitField0_;
+
+      private java.lang.Object validator_ = "";
+      /**
+       * <code>string validator = 1 [json_name = "validator"];</code>
+       * @return The validator.
+       */
+      public java.lang.String getValidator() {
+        java.lang.Object ref = validator_;
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          validator_ = s;
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
+      }
+      /**
+       * <code>string validator = 1 [json_name = "validator"];</code>
+       * @return The bytes for validator.
+       */
+      public com.google.protobuf.ByteString
+          getValidatorBytes() {
+        java.lang.Object ref = validator_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          validator_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <code>string validator = 1 [json_name = "validator"];</code>
+       * @param value The validator to set.
+       * @return This builder for chaining.
+       */
+      public Builder setValidator(
+          java.lang.String value) {
+        if (value == null) { throw new NullPointerException(); }
+        validator_ = value;
+        bitField0_ |= 0x00000001;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>string validator = 1 [json_name = "validator"];</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearValidator() {
+        validator_ = getDefaultInstance().getValidator();
+        bitField0_ = (bitField0_ & ~0x00000001);
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>string validator = 1 [json_name = "validator"];</code>
+       * @param value The bytes for validator to set.
+       * @return This builder for chaining.
+       */
+      public Builder setValidatorBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) { throw new NullPointerException(); }
+        checkByteStringIsUtf8(value);
+        validator_ = value;
+        bitField0_ |= 0x00000001;
+        onChanged();
+        return this;
+      }
+
+      private java.lang.Object commission_ = "";
+      /**
+       * <code>string commission = 2 [json_name = "commission"];</code>
+       * @return The commission.
+       */
+      public java.lang.String getCommission() {
+        java.lang.Object ref = commission_;
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          commission_ = s;
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
+      }
+      /**
+       * <code>string commission = 2 [json_name = "commission"];</code>
+       * @return The bytes for commission.
+       */
+      public com.google.protobuf.ByteString
+          getCommissionBytes() {
+        java.lang.Object ref = commission_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          commission_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <code>string commission = 2 [json_name = "commission"];</code>
+       * @param value The commission to set.
+       * @return This builder for chaining.
+       */
+      public Builder setCommission(
+          java.lang.String value) {
+        if (value == null) { throw new NullPointerException(); }
+        commission_ = value;
+        bitField0_ |= 0x00000002;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>string commission = 2 [json_name = "commission"];</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearCommission() {
+        commission_ = getDefaultInstance().getCommission();
+        bitField0_ = (bitField0_ & ~0x00000002);
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>string commission = 2 [json_name = "commission"];</code>
+       * @param value The bytes for commission to set.
+       * @return This builder for chaining.
+       */
+      public Builder setCommissionBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) { throw new NullPointerException(); }
+        checkByteStringIsUtf8(value);
+        commission_ = value;
+        bitField0_ |= 0x00000002;
+        onChanged();
+        return this;
+      }
+
+      private boolean validatorActive_ ;
+      /**
+       * <pre>
+       * validator_active is bonded and not jailed: the validator bonus condition.
+       * </pre>
+       *
+       * <code>bool validator_active = 3 [json_name = "validatorActive"];</code>
+       * @return The validatorActive.
+       */
+      @java.lang.Override
+      public boolean getValidatorActive() {
+        return validatorActive_;
+      }
+      /**
+       * <pre>
+       * validator_active is bonded and not jailed: the validator bonus condition.
+       * </pre>
+       *
+       * <code>bool validator_active = 3 [json_name = "validatorActive"];</code>
+       * @param value The validatorActive to set.
+       * @return This builder for chaining.
+       */
+      public Builder setValidatorActive(boolean value) {
+
+        validatorActive_ = value;
+        bitField0_ |= 0x00000004;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * validator_active is bonded and not jailed: the validator bonus condition.
+       * </pre>
+       *
+       * <code>bool validator_active = 3 [json_name = "validatorActive"];</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearValidatorActive() {
+        bitField0_ = (bitField0_ & ~0x00000004);
+        validatorActive_ = false;
+        onChanged();
+        return this;
+      }
+
+      private boolean selfBond_ ;
+      /**
+       * <pre>
+       * self_bond is true when the delegator is the validator's operator.
+       * </pre>
+       *
+       * <code>bool self_bond = 4 [json_name = "selfBond"];</code>
+       * @return The selfBond.
+       */
+      @java.lang.Override
+      public boolean getSelfBond() {
+        return selfBond_;
+      }
+      /**
+       * <pre>
+       * self_bond is true when the delegator is the validator's operator.
+       * </pre>
+       *
+       * <code>bool self_bond = 4 [json_name = "selfBond"];</code>
+       * @param value The selfBond to set.
+       * @return This builder for chaining.
+       */
+      public Builder setSelfBond(boolean value) {
+
+        selfBond_ = value;
+        bitField0_ |= 0x00000008;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * self_bond is true when the delegator is the validator's operator.
+       * </pre>
+       *
+       * <code>bool self_bond = 4 [json_name = "selfBond"];</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearSelfBond() {
+        bitField0_ = (bitField0_ & ~0x00000008);
+        selfBond_ = false;
+        onChanged();
+        return this;
+      }
+
+      private java.lang.Object delegatedAmount_ = "";
+      /**
+       * <code>string delegated_amount = 5 [json_name = "delegatedAmount"];</code>
+       * @return The delegatedAmount.
+       */
+      public java.lang.String getDelegatedAmount() {
+        java.lang.Object ref = delegatedAmount_;
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          delegatedAmount_ = s;
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
+      }
+      /**
+       * <code>string delegated_amount = 5 [json_name = "delegatedAmount"];</code>
+       * @return The bytes for delegatedAmount.
+       */
+      public com.google.protobuf.ByteString
+          getDelegatedAmountBytes() {
+        java.lang.Object ref = delegatedAmount_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          delegatedAmount_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <code>string delegated_amount = 5 [json_name = "delegatedAmount"];</code>
+       * @param value The delegatedAmount to set.
+       * @return This builder for chaining.
+       */
+      public Builder setDelegatedAmount(
+          java.lang.String value) {
+        if (value == null) { throw new NullPointerException(); }
+        delegatedAmount_ = value;
+        bitField0_ |= 0x00000010;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>string delegated_amount = 5 [json_name = "delegatedAmount"];</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearDelegatedAmount() {
+        delegatedAmount_ = getDefaultInstance().getDelegatedAmount();
+        bitField0_ = (bitField0_ & ~0x00000010);
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>string delegated_amount = 5 [json_name = "delegatedAmount"];</code>
+       * @param value The bytes for delegatedAmount to set.
+       * @return This builder for chaining.
+       */
+      public Builder setDelegatedAmountBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) { throw new NullPointerException(); }
+        checkByteStringIsUtf8(value);
+        delegatedAmount_ = value;
+        bitField0_ |= 0x00000010;
+        onChanged();
+        return this;
+      }
+
+      private java.lang.Object lockedAmount_ = "";
+      /**
+       * <pre>
+       * locked_amount is what the open locks cover.
+       * </pre>
+       *
+       * <code>string locked_amount = 6 [json_name = "lockedAmount"];</code>
+       * @return The lockedAmount.
+       */
+      public java.lang.String getLockedAmount() {
+        java.lang.Object ref = lockedAmount_;
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          lockedAmount_ = s;
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
+      }
+      /**
+       * <pre>
+       * locked_amount is what the open locks cover.
+       * </pre>
+       *
+       * <code>string locked_amount = 6 [json_name = "lockedAmount"];</code>
+       * @return The bytes for lockedAmount.
+       */
+      public com.google.protobuf.ByteString
+          getLockedAmountBytes() {
+        java.lang.Object ref = lockedAmount_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          lockedAmount_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <pre>
+       * locked_amount is what the open locks cover.
+       * </pre>
+       *
+       * <code>string locked_amount = 6 [json_name = "lockedAmount"];</code>
+       * @param value The lockedAmount to set.
+       * @return This builder for chaining.
+       */
+      public Builder setLockedAmount(
+          java.lang.String value) {
+        if (value == null) { throw new NullPointerException(); }
+        lockedAmount_ = value;
+        bitField0_ |= 0x00000020;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * locked_amount is what the open locks cover.
+       * </pre>
+       *
+       * <code>string locked_amount = 6 [json_name = "lockedAmount"];</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearLockedAmount() {
+        lockedAmount_ = getDefaultInstance().getLockedAmount();
+        bitField0_ = (bitField0_ & ~0x00000020);
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * locked_amount is what the open locks cover.
+       * </pre>
+       *
+       * <code>string locked_amount = 6 [json_name = "lockedAmount"];</code>
+       * @param value The bytes for lockedAmount to set.
+       * @return This builder for chaining.
+       */
+      public Builder setLockedAmountBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) { throw new NullPointerException(); }
+        checkByteStringIsUtf8(value);
+        lockedAmount_ = value;
+        bitField0_ |= 0x00000020;
+        onChanged();
+        return this;
+      }
+
+      private java.lang.Object effectiveAprBps_ = "";
+      /**
+       * <pre>
+       * effective_apr_bps and effective_apr_at_last_funding_bps are the
+       * positions' rates weighted by amount.
+       * </pre>
+       *
+       * <code>string effective_apr_bps = 7 [json_name = "effectiveAprBps"];</code>
+       * @return The effectiveAprBps.
+       */
+      public java.lang.String getEffectiveAprBps() {
+        java.lang.Object ref = effectiveAprBps_;
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          effectiveAprBps_ = s;
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
+      }
+      /**
+       * <pre>
+       * effective_apr_bps and effective_apr_at_last_funding_bps are the
+       * positions' rates weighted by amount.
+       * </pre>
+       *
+       * <code>string effective_apr_bps = 7 [json_name = "effectiveAprBps"];</code>
+       * @return The bytes for effectiveAprBps.
+       */
+      public com.google.protobuf.ByteString
+          getEffectiveAprBpsBytes() {
+        java.lang.Object ref = effectiveAprBps_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          effectiveAprBps_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <pre>
+       * effective_apr_bps and effective_apr_at_last_funding_bps are the
+       * positions' rates weighted by amount.
+       * </pre>
+       *
+       * <code>string effective_apr_bps = 7 [json_name = "effectiveAprBps"];</code>
+       * @param value The effectiveAprBps to set.
+       * @return This builder for chaining.
+       */
+      public Builder setEffectiveAprBps(
+          java.lang.String value) {
+        if (value == null) { throw new NullPointerException(); }
+        effectiveAprBps_ = value;
+        bitField0_ |= 0x00000040;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * effective_apr_bps and effective_apr_at_last_funding_bps are the
+       * positions' rates weighted by amount.
+       * </pre>
+       *
+       * <code>string effective_apr_bps = 7 [json_name = "effectiveAprBps"];</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearEffectiveAprBps() {
+        effectiveAprBps_ = getDefaultInstance().getEffectiveAprBps();
+        bitField0_ = (bitField0_ & ~0x00000040);
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * effective_apr_bps and effective_apr_at_last_funding_bps are the
+       * positions' rates weighted by amount.
+       * </pre>
+       *
+       * <code>string effective_apr_bps = 7 [json_name = "effectiveAprBps"];</code>
+       * @param value The bytes for effectiveAprBps to set.
+       * @return This builder for chaining.
+       */
+      public Builder setEffectiveAprBpsBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) { throw new NullPointerException(); }
+        checkByteStringIsUtf8(value);
+        effectiveAprBps_ = value;
+        bitField0_ |= 0x00000040;
+        onChanged();
+        return this;
+      }
+
+      private java.lang.Object effectiveAprAtLastFundingBps_ = "";
+      /**
+       * <code>string effective_apr_at_last_funding_bps = 8 [json_name = "effectiveAprAtLastFundingBps"];</code>
+       * @return The effectiveAprAtLastFundingBps.
+       */
+      public java.lang.String getEffectiveAprAtLastFundingBps() {
+        java.lang.Object ref = effectiveAprAtLastFundingBps_;
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          effectiveAprAtLastFundingBps_ = s;
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
+      }
+      /**
+       * <code>string effective_apr_at_last_funding_bps = 8 [json_name = "effectiveAprAtLastFundingBps"];</code>
+       * @return The bytes for effectiveAprAtLastFundingBps.
+       */
+      public com.google.protobuf.ByteString
+          getEffectiveAprAtLastFundingBpsBytes() {
+        java.lang.Object ref = effectiveAprAtLastFundingBps_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          effectiveAprAtLastFundingBps_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <code>string effective_apr_at_last_funding_bps = 8 [json_name = "effectiveAprAtLastFundingBps"];</code>
+       * @param value The effectiveAprAtLastFundingBps to set.
+       * @return This builder for chaining.
+       */
+      public Builder setEffectiveAprAtLastFundingBps(
+          java.lang.String value) {
+        if (value == null) { throw new NullPointerException(); }
+        effectiveAprAtLastFundingBps_ = value;
+        bitField0_ |= 0x00000080;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>string effective_apr_at_last_funding_bps = 8 [json_name = "effectiveAprAtLastFundingBps"];</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearEffectiveAprAtLastFundingBps() {
+        effectiveAprAtLastFundingBps_ = getDefaultInstance().getEffectiveAprAtLastFundingBps();
+        bitField0_ = (bitField0_ & ~0x00000080);
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>string effective_apr_at_last_funding_bps = 8 [json_name = "effectiveAprAtLastFundingBps"];</code>
+       * @param value The bytes for effectiveAprAtLastFundingBps to set.
+       * @return This builder for chaining.
+       */
+      public Builder setEffectiveAprAtLastFundingBpsBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) { throw new NullPointerException(); }
+        checkByteStringIsUtf8(value);
+        effectiveAprAtLastFundingBps_ = value;
+        bitField0_ |= 0x00000080;
+        onChanged();
+        return this;
+      }
+
+      private java.util.List<qorechain.stakingtier.v1.QueryOuterClass.AprPosition> positions_ =
+        java.util.Collections.emptyList();
+      private void ensurePositionsIsMutable() {
+        if (!((bitField0_ & 0x00000100) != 0)) {
+          positions_ = new java.util.ArrayList<qorechain.stakingtier.v1.QueryOuterClass.AprPosition>(positions_);
+          bitField0_ |= 0x00000100;
+         }
+      }
+
+      private com.google.protobuf.RepeatedFieldBuilder<
+          qorechain.stakingtier.v1.QueryOuterClass.AprPosition, qorechain.stakingtier.v1.QueryOuterClass.AprPosition.Builder, qorechain.stakingtier.v1.QueryOuterClass.AprPositionOrBuilder> positionsBuilder_;
+
+      /**
+       * <code>repeated .qorechain.stakingtier.v1.AprPosition positions = 9 [json_name = "positions"];</code>
+       */
+      public java.util.List<qorechain.stakingtier.v1.QueryOuterClass.AprPosition> getPositionsList() {
+        if (positionsBuilder_ == null) {
+          return java.util.Collections.unmodifiableList(positions_);
+        } else {
+          return positionsBuilder_.getMessageList();
+        }
+      }
+      /**
+       * <code>repeated .qorechain.stakingtier.v1.AprPosition positions = 9 [json_name = "positions"];</code>
+       */
+      public int getPositionsCount() {
+        if (positionsBuilder_ == null) {
+          return positions_.size();
+        } else {
+          return positionsBuilder_.getCount();
+        }
+      }
+      /**
+       * <code>repeated .qorechain.stakingtier.v1.AprPosition positions = 9 [json_name = "positions"];</code>
+       */
+      public qorechain.stakingtier.v1.QueryOuterClass.AprPosition getPositions(int index) {
+        if (positionsBuilder_ == null) {
+          return positions_.get(index);
+        } else {
+          return positionsBuilder_.getMessage(index);
+        }
+      }
+      /**
+       * <code>repeated .qorechain.stakingtier.v1.AprPosition positions = 9 [json_name = "positions"];</code>
+       */
+      public Builder setPositions(
+          int index, qorechain.stakingtier.v1.QueryOuterClass.AprPosition value) {
+        if (positionsBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          ensurePositionsIsMutable();
+          positions_.set(index, value);
+          onChanged();
+        } else {
+          positionsBuilder_.setMessage(index, value);
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .qorechain.stakingtier.v1.AprPosition positions = 9 [json_name = "positions"];</code>
+       */
+      public Builder setPositions(
+          int index, qorechain.stakingtier.v1.QueryOuterClass.AprPosition.Builder builderForValue) {
+        if (positionsBuilder_ == null) {
+          ensurePositionsIsMutable();
+          positions_.set(index, builderForValue.build());
+          onChanged();
+        } else {
+          positionsBuilder_.setMessage(index, builderForValue.build());
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .qorechain.stakingtier.v1.AprPosition positions = 9 [json_name = "positions"];</code>
+       */
+      public Builder addPositions(qorechain.stakingtier.v1.QueryOuterClass.AprPosition value) {
+        if (positionsBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          ensurePositionsIsMutable();
+          positions_.add(value);
+          onChanged();
+        } else {
+          positionsBuilder_.addMessage(value);
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .qorechain.stakingtier.v1.AprPosition positions = 9 [json_name = "positions"];</code>
+       */
+      public Builder addPositions(
+          int index, qorechain.stakingtier.v1.QueryOuterClass.AprPosition value) {
+        if (positionsBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          ensurePositionsIsMutable();
+          positions_.add(index, value);
+          onChanged();
+        } else {
+          positionsBuilder_.addMessage(index, value);
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .qorechain.stakingtier.v1.AprPosition positions = 9 [json_name = "positions"];</code>
+       */
+      public Builder addPositions(
+          qorechain.stakingtier.v1.QueryOuterClass.AprPosition.Builder builderForValue) {
+        if (positionsBuilder_ == null) {
+          ensurePositionsIsMutable();
+          positions_.add(builderForValue.build());
+          onChanged();
+        } else {
+          positionsBuilder_.addMessage(builderForValue.build());
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .qorechain.stakingtier.v1.AprPosition positions = 9 [json_name = "positions"];</code>
+       */
+      public Builder addPositions(
+          int index, qorechain.stakingtier.v1.QueryOuterClass.AprPosition.Builder builderForValue) {
+        if (positionsBuilder_ == null) {
+          ensurePositionsIsMutable();
+          positions_.add(index, builderForValue.build());
+          onChanged();
+        } else {
+          positionsBuilder_.addMessage(index, builderForValue.build());
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .qorechain.stakingtier.v1.AprPosition positions = 9 [json_name = "positions"];</code>
+       */
+      public Builder addAllPositions(
+          java.lang.Iterable<? extends qorechain.stakingtier.v1.QueryOuterClass.AprPosition> values) {
+        if (positionsBuilder_ == null) {
+          ensurePositionsIsMutable();
+          com.google.protobuf.AbstractMessageLite.Builder.addAll(
+              values, positions_);
+          onChanged();
+        } else {
+          positionsBuilder_.addAllMessages(values);
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .qorechain.stakingtier.v1.AprPosition positions = 9 [json_name = "positions"];</code>
+       */
+      public Builder clearPositions() {
+        if (positionsBuilder_ == null) {
+          positions_ = java.util.Collections.emptyList();
+          bitField0_ = (bitField0_ & ~0x00000100);
+          onChanged();
+        } else {
+          positionsBuilder_.clear();
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .qorechain.stakingtier.v1.AprPosition positions = 9 [json_name = "positions"];</code>
+       */
+      public Builder removePositions(int index) {
+        if (positionsBuilder_ == null) {
+          ensurePositionsIsMutable();
+          positions_.remove(index);
+          onChanged();
+        } else {
+          positionsBuilder_.remove(index);
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .qorechain.stakingtier.v1.AprPosition positions = 9 [json_name = "positions"];</code>
+       */
+      public qorechain.stakingtier.v1.QueryOuterClass.AprPosition.Builder getPositionsBuilder(
+          int index) {
+        return internalGetPositionsFieldBuilder().getBuilder(index);
+      }
+      /**
+       * <code>repeated .qorechain.stakingtier.v1.AprPosition positions = 9 [json_name = "positions"];</code>
+       */
+      public qorechain.stakingtier.v1.QueryOuterClass.AprPositionOrBuilder getPositionsOrBuilder(
+          int index) {
+        if (positionsBuilder_ == null) {
+          return positions_.get(index);  } else {
+          return positionsBuilder_.getMessageOrBuilder(index);
+        }
+      }
+      /**
+       * <code>repeated .qorechain.stakingtier.v1.AprPosition positions = 9 [json_name = "positions"];</code>
+       */
+      public java.util.List<? extends qorechain.stakingtier.v1.QueryOuterClass.AprPositionOrBuilder> 
+           getPositionsOrBuilderList() {
+        if (positionsBuilder_ != null) {
+          return positionsBuilder_.getMessageOrBuilderList();
+        } else {
+          return java.util.Collections.unmodifiableList(positions_);
+        }
+      }
+      /**
+       * <code>repeated .qorechain.stakingtier.v1.AprPosition positions = 9 [json_name = "positions"];</code>
+       */
+      public qorechain.stakingtier.v1.QueryOuterClass.AprPosition.Builder addPositionsBuilder() {
+        return internalGetPositionsFieldBuilder().addBuilder(
+            qorechain.stakingtier.v1.QueryOuterClass.AprPosition.getDefaultInstance());
+      }
+      /**
+       * <code>repeated .qorechain.stakingtier.v1.AprPosition positions = 9 [json_name = "positions"];</code>
+       */
+      public qorechain.stakingtier.v1.QueryOuterClass.AprPosition.Builder addPositionsBuilder(
+          int index) {
+        return internalGetPositionsFieldBuilder().addBuilder(
+            index, qorechain.stakingtier.v1.QueryOuterClass.AprPosition.getDefaultInstance());
+      }
+      /**
+       * <code>repeated .qorechain.stakingtier.v1.AprPosition positions = 9 [json_name = "positions"];</code>
+       */
+      public java.util.List<qorechain.stakingtier.v1.QueryOuterClass.AprPosition.Builder> 
+           getPositionsBuilderList() {
+        return internalGetPositionsFieldBuilder().getBuilderList();
+      }
+      private com.google.protobuf.RepeatedFieldBuilder<
+          qorechain.stakingtier.v1.QueryOuterClass.AprPosition, qorechain.stakingtier.v1.QueryOuterClass.AprPosition.Builder, qorechain.stakingtier.v1.QueryOuterClass.AprPositionOrBuilder> 
+          internalGetPositionsFieldBuilder() {
+        if (positionsBuilder_ == null) {
+          positionsBuilder_ = new com.google.protobuf.RepeatedFieldBuilder<
+              qorechain.stakingtier.v1.QueryOuterClass.AprPosition, qorechain.stakingtier.v1.QueryOuterClass.AprPosition.Builder, qorechain.stakingtier.v1.QueryOuterClass.AprPositionOrBuilder>(
+                  positions_,
+                  ((bitField0_ & 0x00000100) != 0),
+                  getParentForChildren(),
+                  isClean());
+          positions_ = null;
+        }
+        return positionsBuilder_;
+      }
+
+      // @@protoc_insertion_point(builder_scope:qorechain.stakingtier.v1.DelegationApr)
+    }
+
+    // @@protoc_insertion_point(class_scope:qorechain.stakingtier.v1.DelegationApr)
+    private static final qorechain.stakingtier.v1.QueryOuterClass.DelegationApr DEFAULT_INSTANCE;
+    static {
+      DEFAULT_INSTANCE = new qorechain.stakingtier.v1.QueryOuterClass.DelegationApr();
+    }
+
+    public static qorechain.stakingtier.v1.QueryOuterClass.DelegationApr getDefaultInstance() {
+      return DEFAULT_INSTANCE;
+    }
+
+    private static final com.google.protobuf.Parser<DelegationApr>
+        PARSER = new com.google.protobuf.AbstractParser<DelegationApr>() {
+      @java.lang.Override
+      public DelegationApr parsePartialFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        Builder builder = newBuilder();
+        try {
+          builder.mergeFrom(input, extensionRegistry);
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          throw e.setUnfinishedMessage(builder.buildPartial());
+        } catch (com.google.protobuf.UninitializedMessageException e) {
+          throw e.asInvalidProtocolBufferException().setUnfinishedMessage(builder.buildPartial());
+        } catch (java.io.IOException e) {
+          throw new com.google.protobuf.InvalidProtocolBufferException(e)
+              .setUnfinishedMessage(builder.buildPartial());
+        }
+        return builder.buildPartial();
+      }
+    };
+
+    public static com.google.protobuf.Parser<DelegationApr> parser() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Parser<DelegationApr> getParserForType() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public qorechain.stakingtier.v1.QueryOuterClass.DelegationApr getDefaultInstanceForType() {
+      return DEFAULT_INSTANCE;
+    }
+
+  }
+
+  public interface QueryDelegatorAprResponseOrBuilder extends
+      // @@protoc_insertion_point(interface_extends:qorechain.stakingtier.v1.QueryDelegatorAprResponse)
+      com.google.protobuf.MessageOrBuilder {
+
+    /**
+     * <code>string delegator = 1 [json_name = "delegator"];</code>
+     * @return The delegator.
+     */
+    java.lang.String getDelegator();
+    /**
+     * <code>string delegator = 1 [json_name = "delegator"];</code>
+     * @return The bytes for delegator.
+     */
+    com.google.protobuf.ByteString
+        getDelegatorBytes();
+
+    /**
+     * <code>.qorechain.stakingtier.v1.AprBase base = 2 [json_name = "base"];</code>
+     * @return Whether the base field is set.
+     */
+    boolean hasBase();
+    /**
+     * <code>.qorechain.stakingtier.v1.AprBase base = 2 [json_name = "base"];</code>
+     * @return The base.
+     */
+    qorechain.stakingtier.v1.QueryOuterClass.AprBase getBase();
+    /**
+     * <code>.qorechain.stakingtier.v1.AprBase base = 2 [json_name = "base"];</code>
+     */
+    qorechain.stakingtier.v1.QueryOuterClass.AprBaseOrBuilder getBaseOrBuilder();
+
+    /**
+     * <pre>
+     * light_node_bonus is true when the delegator qualifies for the light node
+     * bonus on their locks; light_node_reason says why or why not.
+     * </pre>
+     *
+     * <code>bool light_node_bonus = 3 [json_name = "lightNodeBonus"];</code>
+     * @return The lightNodeBonus.
+     */
+    boolean getLightNodeBonus();
+
+    /**
+     * <code>string light_node_reason = 4 [json_name = "lightNodeReason"];</code>
+     * @return The lightNodeReason.
+     */
+    java.lang.String getLightNodeReason();
+    /**
+     * <code>string light_node_reason = 4 [json_name = "lightNodeReason"];</code>
+     * @return The bytes for lightNodeReason.
+     */
+    com.google.protobuf.ByteString
+        getLightNodeReasonBytes();
+
+    /**
+     * <code>repeated .qorechain.stakingtier.v1.DelegationApr delegations = 5 [json_name = "delegations"];</code>
+     */
+    java.util.List<qorechain.stakingtier.v1.QueryOuterClass.DelegationApr> 
+        getDelegationsList();
+    /**
+     * <code>repeated .qorechain.stakingtier.v1.DelegationApr delegations = 5 [json_name = "delegations"];</code>
+     */
+    qorechain.stakingtier.v1.QueryOuterClass.DelegationApr getDelegations(int index);
+    /**
+     * <code>repeated .qorechain.stakingtier.v1.DelegationApr delegations = 5 [json_name = "delegations"];</code>
+     */
+    int getDelegationsCount();
+    /**
+     * <code>repeated .qorechain.stakingtier.v1.DelegationApr delegations = 5 [json_name = "delegations"];</code>
+     */
+    java.util.List<? extends qorechain.stakingtier.v1.QueryOuterClass.DelegationAprOrBuilder> 
+        getDelegationsOrBuilderList();
+    /**
+     * <code>repeated .qorechain.stakingtier.v1.DelegationApr delegations = 5 [json_name = "delegations"];</code>
+     */
+    qorechain.stakingtier.v1.QueryOuterClass.DelegationAprOrBuilder getDelegationsOrBuilder(
+        int index);
+
+    /**
+     * <code>string total_delegated = 6 [json_name = "totalDelegated"];</code>
+     * @return The totalDelegated.
+     */
+    java.lang.String getTotalDelegated();
+    /**
+     * <code>string total_delegated = 6 [json_name = "totalDelegated"];</code>
+     * @return The bytes for totalDelegated.
+     */
+    com.google.protobuf.ByteString
+        getTotalDelegatedBytes();
+
+    /**
+     * <pre>
+     * effective_apr_bps and effective_apr_at_last_funding_bps are weighted by
+     * amount over every delegation listed.
+     * </pre>
+     *
+     * <code>string effective_apr_bps = 7 [json_name = "effectiveAprBps"];</code>
+     * @return The effectiveAprBps.
+     */
+    java.lang.String getEffectiveAprBps();
+    /**
+     * <pre>
+     * effective_apr_bps and effective_apr_at_last_funding_bps are weighted by
+     * amount over every delegation listed.
+     * </pre>
+     *
+     * <code>string effective_apr_bps = 7 [json_name = "effectiveAprBps"];</code>
+     * @return The bytes for effectiveAprBps.
+     */
+    com.google.protobuf.ByteString
+        getEffectiveAprBpsBytes();
+
+    /**
+     * <code>string effective_apr_at_last_funding_bps = 8 [json_name = "effectiveAprAtLastFundingBps"];</code>
+     * @return The effectiveAprAtLastFundingBps.
+     */
+    java.lang.String getEffectiveAprAtLastFundingBps();
+    /**
+     * <code>string effective_apr_at_last_funding_bps = 8 [json_name = "effectiveAprAtLastFundingBps"];</code>
+     * @return The bytes for effectiveAprAtLastFundingBps.
+     */
+    com.google.protobuf.ByteString
+        getEffectiveAprAtLastFundingBpsBytes();
+  }
+  /**
+   * Protobuf type {@code qorechain.stakingtier.v1.QueryDelegatorAprResponse}
+   */
+  public static final class QueryDelegatorAprResponse extends
+      com.google.protobuf.GeneratedMessage implements
+      // @@protoc_insertion_point(message_implements:qorechain.stakingtier.v1.QueryDelegatorAprResponse)
+      QueryDelegatorAprResponseOrBuilder {
+  private static final long serialVersionUID = 0L;
+    static {
+      com.google.protobuf.RuntimeVersion.validateProtobufGencodeVersion(
+        com.google.protobuf.RuntimeVersion.RuntimeDomain.PUBLIC,
+        /* major= */ 4,
+        /* minor= */ 35,
+        /* patch= */ 1,
+        /* suffix= */ "",
+        "QueryDelegatorAprResponse");
+    }
+    // Use QueryDelegatorAprResponse.newBuilder() to construct.
+    private QueryDelegatorAprResponse(com.google.protobuf.GeneratedMessage.Builder<?> builder) {
+      super(builder);
+    }
+    private QueryDelegatorAprResponse() {
+      delegator_ = "";
+      lightNodeReason_ = "";
+      delegations_ = java.util.Collections.emptyList();
+      totalDelegated_ = "";
+      effectiveAprBps_ = "";
+      effectiveAprAtLastFundingBps_ = "";
+    }
+
+    public static final com.google.protobuf.Descriptors.Descriptor
+        getDescriptor() {
+      return qorechain.stakingtier.v1.QueryOuterClass.internal_static_qorechain_stakingtier_v1_QueryDelegatorAprResponse_descriptor;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Descriptors.Descriptor getDescriptorForType() {
+      return qorechain.stakingtier.v1.QueryOuterClass.internal_static_qorechain_stakingtier_v1_QueryDelegatorAprResponse_descriptor;
+    }
+
+    @java.lang.Override
+    protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+        internalGetFieldAccessorTable() {
+      return qorechain.stakingtier.v1.QueryOuterClass.internal_static_qorechain_stakingtier_v1_QueryDelegatorAprResponse_fieldAccessorTable
+          .ensureFieldAccessorsInitialized(
+              qorechain.stakingtier.v1.QueryOuterClass.QueryDelegatorAprResponse.class, qorechain.stakingtier.v1.QueryOuterClass.QueryDelegatorAprResponse.Builder.class);
+    }
+
+    private int bitField0_;
+    public static final int DELEGATOR_FIELD_NUMBER = 1;
+    @SuppressWarnings("serial")
+    private volatile java.lang.Object delegator_ = "";
+    /**
+     * <code>string delegator = 1 [json_name = "delegator"];</code>
+     * @return The delegator.
+     */
+    @java.lang.Override
+    public java.lang.String getDelegator() {
+      java.lang.Object ref = delegator_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        delegator_ = s;
+        return s;
+      }
+    }
+    /**
+     * <code>string delegator = 1 [json_name = "delegator"];</code>
+     * @return The bytes for delegator.
+     */
+    @java.lang.Override
+    public com.google.protobuf.ByteString
+        getDelegatorBytes() {
+      java.lang.Object ref = delegator_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        delegator_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
+    public static final int BASE_FIELD_NUMBER = 2;
+    private qorechain.stakingtier.v1.QueryOuterClass.AprBase base_;
+    /**
+     * <code>.qorechain.stakingtier.v1.AprBase base = 2 [json_name = "base"];</code>
+     * @return Whether the base field is set.
+     */
+    @java.lang.Override
+    public boolean hasBase() {
+      return ((bitField0_ & 0x00000001) != 0);
+    }
+    /**
+     * <code>.qorechain.stakingtier.v1.AprBase base = 2 [json_name = "base"];</code>
+     * @return The base.
+     */
+    @java.lang.Override
+    public qorechain.stakingtier.v1.QueryOuterClass.AprBase getBase() {
+      return base_ == null ? qorechain.stakingtier.v1.QueryOuterClass.AprBase.getDefaultInstance() : base_;
+    }
+    /**
+     * <code>.qorechain.stakingtier.v1.AprBase base = 2 [json_name = "base"];</code>
+     */
+    @java.lang.Override
+    public qorechain.stakingtier.v1.QueryOuterClass.AprBaseOrBuilder getBaseOrBuilder() {
+      return base_ == null ? qorechain.stakingtier.v1.QueryOuterClass.AprBase.getDefaultInstance() : base_;
+    }
+
+    public static final int LIGHT_NODE_BONUS_FIELD_NUMBER = 3;
+    private boolean lightNodeBonus_ = false;
+    /**
+     * <pre>
+     * light_node_bonus is true when the delegator qualifies for the light node
+     * bonus on their locks; light_node_reason says why or why not.
+     * </pre>
+     *
+     * <code>bool light_node_bonus = 3 [json_name = "lightNodeBonus"];</code>
+     * @return The lightNodeBonus.
+     */
+    @java.lang.Override
+    public boolean getLightNodeBonus() {
+      return lightNodeBonus_;
+    }
+
+    public static final int LIGHT_NODE_REASON_FIELD_NUMBER = 4;
+    @SuppressWarnings("serial")
+    private volatile java.lang.Object lightNodeReason_ = "";
+    /**
+     * <code>string light_node_reason = 4 [json_name = "lightNodeReason"];</code>
+     * @return The lightNodeReason.
+     */
+    @java.lang.Override
+    public java.lang.String getLightNodeReason() {
+      java.lang.Object ref = lightNodeReason_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        lightNodeReason_ = s;
+        return s;
+      }
+    }
+    /**
+     * <code>string light_node_reason = 4 [json_name = "lightNodeReason"];</code>
+     * @return The bytes for lightNodeReason.
+     */
+    @java.lang.Override
+    public com.google.protobuf.ByteString
+        getLightNodeReasonBytes() {
+      java.lang.Object ref = lightNodeReason_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        lightNodeReason_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
+    public static final int DELEGATIONS_FIELD_NUMBER = 5;
+    @SuppressWarnings("serial")
+    private java.util.List<qorechain.stakingtier.v1.QueryOuterClass.DelegationApr> delegations_;
+    /**
+     * <code>repeated .qorechain.stakingtier.v1.DelegationApr delegations = 5 [json_name = "delegations"];</code>
+     */
+    @java.lang.Override
+    public java.util.List<qorechain.stakingtier.v1.QueryOuterClass.DelegationApr> getDelegationsList() {
+      return delegations_;
+    }
+    /**
+     * <code>repeated .qorechain.stakingtier.v1.DelegationApr delegations = 5 [json_name = "delegations"];</code>
+     */
+    @java.lang.Override
+    public java.util.List<? extends qorechain.stakingtier.v1.QueryOuterClass.DelegationAprOrBuilder> 
+        getDelegationsOrBuilderList() {
+      return delegations_;
+    }
+    /**
+     * <code>repeated .qorechain.stakingtier.v1.DelegationApr delegations = 5 [json_name = "delegations"];</code>
+     */
+    @java.lang.Override
+    public int getDelegationsCount() {
+      return delegations_.size();
+    }
+    /**
+     * <code>repeated .qorechain.stakingtier.v1.DelegationApr delegations = 5 [json_name = "delegations"];</code>
+     */
+    @java.lang.Override
+    public qorechain.stakingtier.v1.QueryOuterClass.DelegationApr getDelegations(int index) {
+      return delegations_.get(index);
+    }
+    /**
+     * <code>repeated .qorechain.stakingtier.v1.DelegationApr delegations = 5 [json_name = "delegations"];</code>
+     */
+    @java.lang.Override
+    public qorechain.stakingtier.v1.QueryOuterClass.DelegationAprOrBuilder getDelegationsOrBuilder(
+        int index) {
+      return delegations_.get(index);
+    }
+
+    public static final int TOTAL_DELEGATED_FIELD_NUMBER = 6;
+    @SuppressWarnings("serial")
+    private volatile java.lang.Object totalDelegated_ = "";
+    /**
+     * <code>string total_delegated = 6 [json_name = "totalDelegated"];</code>
+     * @return The totalDelegated.
+     */
+    @java.lang.Override
+    public java.lang.String getTotalDelegated() {
+      java.lang.Object ref = totalDelegated_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        totalDelegated_ = s;
+        return s;
+      }
+    }
+    /**
+     * <code>string total_delegated = 6 [json_name = "totalDelegated"];</code>
+     * @return The bytes for totalDelegated.
+     */
+    @java.lang.Override
+    public com.google.protobuf.ByteString
+        getTotalDelegatedBytes() {
+      java.lang.Object ref = totalDelegated_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        totalDelegated_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
+    public static final int EFFECTIVE_APR_BPS_FIELD_NUMBER = 7;
+    @SuppressWarnings("serial")
+    private volatile java.lang.Object effectiveAprBps_ = "";
+    /**
+     * <pre>
+     * effective_apr_bps and effective_apr_at_last_funding_bps are weighted by
+     * amount over every delegation listed.
+     * </pre>
+     *
+     * <code>string effective_apr_bps = 7 [json_name = "effectiveAprBps"];</code>
+     * @return The effectiveAprBps.
+     */
+    @java.lang.Override
+    public java.lang.String getEffectiveAprBps() {
+      java.lang.Object ref = effectiveAprBps_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        effectiveAprBps_ = s;
+        return s;
+      }
+    }
+    /**
+     * <pre>
+     * effective_apr_bps and effective_apr_at_last_funding_bps are weighted by
+     * amount over every delegation listed.
+     * </pre>
+     *
+     * <code>string effective_apr_bps = 7 [json_name = "effectiveAprBps"];</code>
+     * @return The bytes for effectiveAprBps.
+     */
+    @java.lang.Override
+    public com.google.protobuf.ByteString
+        getEffectiveAprBpsBytes() {
+      java.lang.Object ref = effectiveAprBps_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        effectiveAprBps_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
+    public static final int EFFECTIVE_APR_AT_LAST_FUNDING_BPS_FIELD_NUMBER = 8;
+    @SuppressWarnings("serial")
+    private volatile java.lang.Object effectiveAprAtLastFundingBps_ = "";
+    /**
+     * <code>string effective_apr_at_last_funding_bps = 8 [json_name = "effectiveAprAtLastFundingBps"];</code>
+     * @return The effectiveAprAtLastFundingBps.
+     */
+    @java.lang.Override
+    public java.lang.String getEffectiveAprAtLastFundingBps() {
+      java.lang.Object ref = effectiveAprAtLastFundingBps_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        effectiveAprAtLastFundingBps_ = s;
+        return s;
+      }
+    }
+    /**
+     * <code>string effective_apr_at_last_funding_bps = 8 [json_name = "effectiveAprAtLastFundingBps"];</code>
+     * @return The bytes for effectiveAprAtLastFundingBps.
+     */
+    @java.lang.Override
+    public com.google.protobuf.ByteString
+        getEffectiveAprAtLastFundingBpsBytes() {
+      java.lang.Object ref = effectiveAprAtLastFundingBps_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        effectiveAprAtLastFundingBps_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
+    private byte memoizedIsInitialized = -1;
+    @java.lang.Override
+    public final boolean isInitialized() {
+      byte isInitialized = memoizedIsInitialized;
+      if (isInitialized == 1) return true;
+      if (isInitialized == 0) return false;
+
+      memoizedIsInitialized = 1;
+      return true;
+    }
+
+    @java.lang.Override
+    public void writeTo(com.google.protobuf.CodedOutputStream output)
+                        throws java.io.IOException {
+      if (!com.google.protobuf.GeneratedMessage.isStringEmpty(delegator_)) {
+        com.google.protobuf.GeneratedMessage.writeString(output, 1, delegator_);
+      }
+      if (((bitField0_ & 0x00000001) != 0)) {
+        output.writeMessage(2, getBase());
+      }
+      if (lightNodeBonus_ != false) {
+        output.writeBool(3, lightNodeBonus_);
+      }
+      if (!com.google.protobuf.GeneratedMessage.isStringEmpty(lightNodeReason_)) {
+        com.google.protobuf.GeneratedMessage.writeString(output, 4, lightNodeReason_);
+      }
+      for (int i = 0; i < delegations_.size(); i++) {
+        output.writeMessage(5, delegations_.get(i));
+      }
+      if (!com.google.protobuf.GeneratedMessage.isStringEmpty(totalDelegated_)) {
+        com.google.protobuf.GeneratedMessage.writeString(output, 6, totalDelegated_);
+      }
+      if (!com.google.protobuf.GeneratedMessage.isStringEmpty(effectiveAprBps_)) {
+        com.google.protobuf.GeneratedMessage.writeString(output, 7, effectiveAprBps_);
+      }
+      if (!com.google.protobuf.GeneratedMessage.isStringEmpty(effectiveAprAtLastFundingBps_)) {
+        com.google.protobuf.GeneratedMessage.writeString(output, 8, effectiveAprAtLastFundingBps_);
+      }
+      getUnknownFields().writeTo(output);
+    }
+    private int computeSerializedSize_0() {
+      int size = 0;
+      if (!com.google.protobuf.GeneratedMessage.isStringEmpty(delegator_)) {
+        size += com.google.protobuf.GeneratedMessage.computeStringSize(1, delegator_);
+      }
+      if (((bitField0_ & 0x00000001) != 0)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeMessageSize(2, getBase());
+      }
+      if (lightNodeBonus_ != false) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeBoolSize(3, lightNodeBonus_);
+      }
+      if (!com.google.protobuf.GeneratedMessage.isStringEmpty(lightNodeReason_)) {
+        size += com.google.protobuf.GeneratedMessage.computeStringSize(4, lightNodeReason_);
+      }
+
+          {
+            final int count = delegations_.size();
+            for (int i = 0; i < count; i++) {
+              size += com.google.protobuf.CodedOutputStream
+                .computeMessageSizeNoTag(delegations_.get(i));
+            }
+            size += 1 * count;
+          }
+      if (!com.google.protobuf.GeneratedMessage.isStringEmpty(totalDelegated_)) {
+        size += com.google.protobuf.GeneratedMessage.computeStringSize(6, totalDelegated_);
+      }
+      if (!com.google.protobuf.GeneratedMessage.isStringEmpty(effectiveAprBps_)) {
+        size += com.google.protobuf.GeneratedMessage.computeStringSize(7, effectiveAprBps_);
+      }
+      if (!com.google.protobuf.GeneratedMessage.isStringEmpty(effectiveAprAtLastFundingBps_)) {
+        size += com.google.protobuf.GeneratedMessage.computeStringSize(8, effectiveAprAtLastFundingBps_);
+      }
+      return size;
+    }
+    @java.lang.Override
+    public int getSerializedSize() {
+      int size = memoizedSize;
+      if (size != -1) return size;
+
+      size = 0;
+      size += computeSerializedSize_0();
+      size += getUnknownFields().getSerializedSize();
+      memoizedSize = size;
+      return size;
+    }
+
+    @java.lang.Override
+    public boolean equals(final java.lang.Object obj) {
+      if (obj == this) {
+       return true;
+      }
+      if (!(obj instanceof qorechain.stakingtier.v1.QueryOuterClass.QueryDelegatorAprResponse)) {
+        return super.equals(obj);
+      }
+      qorechain.stakingtier.v1.QueryOuterClass.QueryDelegatorAprResponse other = (qorechain.stakingtier.v1.QueryOuterClass.QueryDelegatorAprResponse) obj;
+
+      if (!getDelegator()
+          .equals(other.getDelegator())) return false;
+      if (hasBase() != other.hasBase()) return false;
+      if (hasBase()) {
+        if (!getBase()
+            .equals(other.getBase())) return false;
+      }
+      if (getLightNodeBonus()
+          != other.getLightNodeBonus()) return false;
+      if (!getLightNodeReason()
+          .equals(other.getLightNodeReason())) return false;
+      if (!getDelegationsList()
+          .equals(other.getDelegationsList())) return false;
+      if (!getTotalDelegated()
+          .equals(other.getTotalDelegated())) return false;
+      if (!getEffectiveAprBps()
+          .equals(other.getEffectiveAprBps())) return false;
+      if (!getEffectiveAprAtLastFundingBps()
+          .equals(other.getEffectiveAprAtLastFundingBps())) return false;
+      if (!getUnknownFields().equals(other.getUnknownFields())) return false;
+      return true;
+    }
+
+    @java.lang.Override
+    public int hashCode() {
+      if (memoizedHashCode != 0) {
+        return memoizedHashCode;
+      }
+      int hash = 41;
+      hash = (19 * hash) + getDescriptor().hashCode();
+      hash = (37 * hash) + DELEGATOR_FIELD_NUMBER;
+      hash = (53 * hash) + getDelegator().hashCode();
+      if (hasBase()) {
+        hash = (37 * hash) + BASE_FIELD_NUMBER;
+        hash = (53 * hash) + getBase().hashCode();
+      }
+      hash = (37 * hash) + LIGHT_NODE_BONUS_FIELD_NUMBER;
+      hash = (53 * hash) + com.google.protobuf.Internal.hashBoolean(
+          getLightNodeBonus());
+      hash = (37 * hash) + LIGHT_NODE_REASON_FIELD_NUMBER;
+      hash = (53 * hash) + getLightNodeReason().hashCode();
+      if (getDelegationsCount() > 0) {
+        hash = (37 * hash) + DELEGATIONS_FIELD_NUMBER;
+        hash = (53 * hash) + getDelegationsList().hashCode();
+      }
+      hash = (37 * hash) + TOTAL_DELEGATED_FIELD_NUMBER;
+      hash = (53 * hash) + getTotalDelegated().hashCode();
+      hash = (37 * hash) + EFFECTIVE_APR_BPS_FIELD_NUMBER;
+      hash = (53 * hash) + getEffectiveAprBps().hashCode();
+      hash = (37 * hash) + EFFECTIVE_APR_AT_LAST_FUNDING_BPS_FIELD_NUMBER;
+      hash = (53 * hash) + getEffectiveAprAtLastFundingBps().hashCode();
+      hash = (29 * hash) + getUnknownFields().hashCode();
+      memoizedHashCode = hash;
+      return hash;
+    }
+
+    public static qorechain.stakingtier.v1.QueryOuterClass.QueryDelegatorAprResponse parseFrom(
+        java.nio.ByteBuffer data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static qorechain.stakingtier.v1.QueryOuterClass.QueryDelegatorAprResponse parseFrom(
+        java.nio.ByteBuffer data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static qorechain.stakingtier.v1.QueryOuterClass.QueryDelegatorAprResponse parseFrom(
+        com.google.protobuf.ByteString data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static qorechain.stakingtier.v1.QueryOuterClass.QueryDelegatorAprResponse parseFrom(
+        com.google.protobuf.ByteString data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static qorechain.stakingtier.v1.QueryOuterClass.QueryDelegatorAprResponse parseFrom(byte[] data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static qorechain.stakingtier.v1.QueryOuterClass.QueryDelegatorAprResponse parseFrom(
+        byte[] data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static qorechain.stakingtier.v1.QueryOuterClass.QueryDelegatorAprResponse parseFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input);
+    }
+    public static qorechain.stakingtier.v1.QueryOuterClass.QueryDelegatorAprResponse parseFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    public static qorechain.stakingtier.v1.QueryOuterClass.QueryDelegatorAprResponse parseDelimitedFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseDelimitedWithIOException(PARSER, input);
+    }
+
+    public static qorechain.stakingtier.v1.QueryOuterClass.QueryDelegatorAprResponse parseDelimitedFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static qorechain.stakingtier.v1.QueryOuterClass.QueryDelegatorAprResponse parseFrom(
+        com.google.protobuf.CodedInputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input);
+    }
+    public static qorechain.stakingtier.v1.QueryOuterClass.QueryDelegatorAprResponse parseFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    @java.lang.Override
+    public Builder newBuilderForType() { return newBuilder(); }
+    public static Builder newBuilder() {
+      return DEFAULT_INSTANCE.toBuilder();
+    }
+    public static Builder newBuilder(qorechain.stakingtier.v1.QueryOuterClass.QueryDelegatorAprResponse prototype) {
+      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+    }
+    @java.lang.Override
+    public Builder toBuilder() {
+      return this == DEFAULT_INSTANCE
+          ? new Builder() : new Builder().mergeFrom(this);
+    }
+
+    @java.lang.Override
+    protected Builder newBuilderForType(
+        com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+      Builder builder = new Builder(parent);
+      return builder;
+    }
+    /**
+     * Protobuf type {@code qorechain.stakingtier.v1.QueryDelegatorAprResponse}
+     */
+    public static final class Builder extends
+        com.google.protobuf.GeneratedMessage.Builder<Builder> implements
+        // @@protoc_insertion_point(builder_implements:qorechain.stakingtier.v1.QueryDelegatorAprResponse)
+        qorechain.stakingtier.v1.QueryOuterClass.QueryDelegatorAprResponseOrBuilder {
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return qorechain.stakingtier.v1.QueryOuterClass.internal_static_qorechain_stakingtier_v1_QueryDelegatorAprResponse_descriptor;
+      }
+
+      @java.lang.Override
+      protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return qorechain.stakingtier.v1.QueryOuterClass.internal_static_qorechain_stakingtier_v1_QueryDelegatorAprResponse_fieldAccessorTable
+            .ensureFieldAccessorsInitialized(
+                qorechain.stakingtier.v1.QueryOuterClass.QueryDelegatorAprResponse.class, qorechain.stakingtier.v1.QueryOuterClass.QueryDelegatorAprResponse.Builder.class);
+      }
+
+      // Construct using qorechain.stakingtier.v1.QueryOuterClass.QueryDelegatorAprResponse.newBuilder()
+      private Builder() {
+        maybeForceBuilderInitialization();
+      }
+
+      private Builder(
+          com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+        super(parent);
+        maybeForceBuilderInitialization();
+      }
+      private void maybeForceBuilderInitialization() {
+        if (com.google.protobuf.GeneratedMessage
+                .alwaysUseFieldBuilders) {
+          internalGetBaseFieldBuilder();
+          internalGetDelegationsFieldBuilder();
+        }
+      }
+      @java.lang.Override
+      public Builder clear() {
+        super.clear();
+        bitField0_ = 0;
+        delegator_ = "";
+        base_ = null;
+        if (baseBuilder_ != null) {
+          baseBuilder_.dispose();
+          baseBuilder_ = null;
+        }
+        lightNodeBonus_ = false;
+        lightNodeReason_ = "";
+        if (delegationsBuilder_ == null) {
+          delegations_ = java.util.Collections.emptyList();
+        } else {
+          delegations_ = null;
+          delegationsBuilder_.clear();
+        }
+        bitField0_ = (bitField0_ & ~0x00000010);
+        totalDelegated_ = "";
+        effectiveAprBps_ = "";
+        effectiveAprAtLastFundingBps_ = "";
+        return this;
+      }
+
+      @java.lang.Override
+      public com.google.protobuf.Descriptors.Descriptor
+          getDescriptorForType() {
+        return qorechain.stakingtier.v1.QueryOuterClass.internal_static_qorechain_stakingtier_v1_QueryDelegatorAprResponse_descriptor;
+      }
+
+      @java.lang.Override
+      public qorechain.stakingtier.v1.QueryOuterClass.QueryDelegatorAprResponse getDefaultInstanceForType() {
+        return qorechain.stakingtier.v1.QueryOuterClass.QueryDelegatorAprResponse.getDefaultInstance();
+      }
+
+      @java.lang.Override
+      public qorechain.stakingtier.v1.QueryOuterClass.QueryDelegatorAprResponse build() {
+        qorechain.stakingtier.v1.QueryOuterClass.QueryDelegatorAprResponse result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(result);
+        }
+        return result;
+      }
+
+      @java.lang.Override
+      public qorechain.stakingtier.v1.QueryOuterClass.QueryDelegatorAprResponse buildPartial() {
+        qorechain.stakingtier.v1.QueryOuterClass.QueryDelegatorAprResponse result = new qorechain.stakingtier.v1.QueryOuterClass.QueryDelegatorAprResponse(this);
+        buildPartialRepeatedFields(result);
+        if (bitField0_ != 0) { buildPartial0(result); }
+        onBuilt();
+        return result;
+      }
+
+      private void buildPartialRepeatedFields(qorechain.stakingtier.v1.QueryOuterClass.QueryDelegatorAprResponse result) {
+        if (delegationsBuilder_ == null) {
+          if (((bitField0_ & 0x00000010) != 0)) {
+            delegations_ = java.util.Collections.unmodifiableList(delegations_);
+            bitField0_ = (bitField0_ & ~0x00000010);
+          }
+          result.delegations_ = delegations_;
+        } else {
+          result.delegations_ = delegationsBuilder_.build();
+        }
+      }
+
+      private void buildPartial0(qorechain.stakingtier.v1.QueryOuterClass.QueryDelegatorAprResponse result) {
+        int from_bitField0_ = bitField0_;
+        if (((from_bitField0_ & 0x00000001) != 0)) {
+          result.delegator_ = delegator_;
+        }
+        int to_bitField0_ = 0;
+        if (((from_bitField0_ & 0x00000002) != 0)) {
+          result.base_ = baseBuilder_ == null
+              ? base_
+              : baseBuilder_.build();
+          to_bitField0_ |= 0x00000001;
+        }
+        if (((from_bitField0_ & 0x00000004) != 0)) {
+          result.lightNodeBonus_ = lightNodeBonus_;
+        }
+        if (((from_bitField0_ & 0x00000008) != 0)) {
+          result.lightNodeReason_ = lightNodeReason_;
+        }
+        if (((from_bitField0_ & 0x00000020) != 0)) {
+          result.totalDelegated_ = totalDelegated_;
+        }
+        if (((from_bitField0_ & 0x00000040) != 0)) {
+          result.effectiveAprBps_ = effectiveAprBps_;
+        }
+        if (((from_bitField0_ & 0x00000080) != 0)) {
+          result.effectiveAprAtLastFundingBps_ = effectiveAprAtLastFundingBps_;
+        }
+        result.bitField0_ |= to_bitField0_;
+      }
+
+      @java.lang.Override
+      public Builder mergeFrom(com.google.protobuf.Message other) {
+        if (other instanceof qorechain.stakingtier.v1.QueryOuterClass.QueryDelegatorAprResponse) {
+          return mergeFrom((qorechain.stakingtier.v1.QueryOuterClass.QueryDelegatorAprResponse)other);
+        } else {
+          super.mergeFrom(other);
+          return this;
+        }
+      }
+
+      public Builder mergeFrom(qorechain.stakingtier.v1.QueryOuterClass.QueryDelegatorAprResponse other) {
+        if (other == qorechain.stakingtier.v1.QueryOuterClass.QueryDelegatorAprResponse.getDefaultInstance()) return this;
+        if (!other.getDelegator().isEmpty()) {
+          delegator_ = other.delegator_;
+          bitField0_ |= 0x00000001;
+          onChanged();
+        }
+        if (other.hasBase()) {
+          mergeBase(other.getBase());
+        }
+        if (other.getLightNodeBonus() != false) {
+          setLightNodeBonus(other.getLightNodeBonus());
+        }
+        if (!other.getLightNodeReason().isEmpty()) {
+          lightNodeReason_ = other.lightNodeReason_;
+          bitField0_ |= 0x00000008;
+          onChanged();
+        }
+        if (delegationsBuilder_ == null) {
+          if (!other.delegations_.isEmpty()) {
+            if (delegations_.isEmpty()) {
+              delegations_ = other.delegations_;
+              bitField0_ = (bitField0_ & ~0x00000010);
+            } else {
+              ensureDelegationsIsMutable();
+              delegations_.addAll(other.delegations_);
+            }
+            onChanged();
+          }
+        } else {
+          if (!other.delegations_.isEmpty()) {
+            if (delegationsBuilder_.isEmpty()) {
+              delegationsBuilder_.dispose();
+              delegationsBuilder_ = null;
+              delegations_ = other.delegations_;
+              bitField0_ = (bitField0_ & ~0x00000010);
+              delegationsBuilder_ = 
+                com.google.protobuf.GeneratedMessage.alwaysUseFieldBuilders ?
+                   internalGetDelegationsFieldBuilder() : null;
+            } else {
+              delegationsBuilder_.addAllMessages(other.delegations_);
+            }
+          }
+        }
+        if (!other.getTotalDelegated().isEmpty()) {
+          totalDelegated_ = other.totalDelegated_;
+          bitField0_ |= 0x00000020;
+          onChanged();
+        }
+        if (!other.getEffectiveAprBps().isEmpty()) {
+          effectiveAprBps_ = other.effectiveAprBps_;
+          bitField0_ |= 0x00000040;
+          onChanged();
+        }
+        if (!other.getEffectiveAprAtLastFundingBps().isEmpty()) {
+          effectiveAprAtLastFundingBps_ = other.effectiveAprAtLastFundingBps_;
+          bitField0_ |= 0x00000080;
+          onChanged();
+        }
+        this.mergeUnknownFields(other.getUnknownFields());
+        onChanged();
+        return this;
+      }
+
+      @java.lang.Override
+      public final boolean isInitialized() {
+        return true;
+      }
+
+      @java.lang.Override
+      public Builder mergeFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        if (extensionRegistry == null) {
+          throw new java.lang.NullPointerException();
+        }
+        try {
+          boolean done = false;
+          while (!done) {
+            int tag = input.readTag();
+            switch (tag) {
+              case 0:
+                done = true;
+                break;
+              case 10: {
+                delegator_ = input.readStringRequireUtf8();
+                bitField0_ |= 0x00000001;
+                break;
+              } // case 10
+              case 18: {
+                input.readMessage(
+                    internalGetBaseFieldBuilder().getBuilder(),
+                    extensionRegistry);
+                bitField0_ |= 0x00000002;
+                break;
+              } // case 18
+              case 24: {
+                lightNodeBonus_ = input.readBool();
+                bitField0_ |= 0x00000004;
+                break;
+              } // case 24
+              case 34: {
+                lightNodeReason_ = input.readStringRequireUtf8();
+                bitField0_ |= 0x00000008;
+                break;
+              } // case 34
+              case 42: {
+                qorechain.stakingtier.v1.QueryOuterClass.DelegationApr m =
+                    input.readMessage(
+                        qorechain.stakingtier.v1.QueryOuterClass.DelegationApr.parser(),
+                        extensionRegistry);
+                if (delegationsBuilder_ == null) {
+                  ensureDelegationsIsMutable();
+                  delegations_.add(m);
+                } else {
+                  delegationsBuilder_.addMessage(m);
+                }
+                break;
+              } // case 42
+              case 50: {
+                totalDelegated_ = input.readStringRequireUtf8();
+                bitField0_ |= 0x00000020;
+                break;
+              } // case 50
+              case 58: {
+                effectiveAprBps_ = input.readStringRequireUtf8();
+                bitField0_ |= 0x00000040;
+                break;
+              } // case 58
+              case 66: {
+                effectiveAprAtLastFundingBps_ = input.readStringRequireUtf8();
+                bitField0_ |= 0x00000080;
+                break;
+              } // case 66
+              default: {
+                if (!super.parseUnknownField(input, extensionRegistry, tag)) {
+                  done = true; // was an endgroup tag
+                }
+                break;
+              } // default:
+            } // switch (tag)
+          } // while (!done)
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          throw e.unwrapIOException();
+        } finally {
+          onChanged();
+        } // finally
+        return this;
+      }
+      private int bitField0_;
+
+      private java.lang.Object delegator_ = "";
+      /**
+       * <code>string delegator = 1 [json_name = "delegator"];</code>
+       * @return The delegator.
+       */
+      public java.lang.String getDelegator() {
+        java.lang.Object ref = delegator_;
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          delegator_ = s;
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
+      }
+      /**
+       * <code>string delegator = 1 [json_name = "delegator"];</code>
+       * @return The bytes for delegator.
+       */
+      public com.google.protobuf.ByteString
+          getDelegatorBytes() {
+        java.lang.Object ref = delegator_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          delegator_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <code>string delegator = 1 [json_name = "delegator"];</code>
+       * @param value The delegator to set.
+       * @return This builder for chaining.
+       */
+      public Builder setDelegator(
+          java.lang.String value) {
+        if (value == null) { throw new NullPointerException(); }
+        delegator_ = value;
+        bitField0_ |= 0x00000001;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>string delegator = 1 [json_name = "delegator"];</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearDelegator() {
+        delegator_ = getDefaultInstance().getDelegator();
+        bitField0_ = (bitField0_ & ~0x00000001);
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>string delegator = 1 [json_name = "delegator"];</code>
+       * @param value The bytes for delegator to set.
+       * @return This builder for chaining.
+       */
+      public Builder setDelegatorBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) { throw new NullPointerException(); }
+        checkByteStringIsUtf8(value);
+        delegator_ = value;
+        bitField0_ |= 0x00000001;
+        onChanged();
+        return this;
+      }
+
+      private qorechain.stakingtier.v1.QueryOuterClass.AprBase base_;
+      private com.google.protobuf.SingleFieldBuilder<
+          qorechain.stakingtier.v1.QueryOuterClass.AprBase, qorechain.stakingtier.v1.QueryOuterClass.AprBase.Builder, qorechain.stakingtier.v1.QueryOuterClass.AprBaseOrBuilder> baseBuilder_;
+      /**
+       * <code>.qorechain.stakingtier.v1.AprBase base = 2 [json_name = "base"];</code>
+       * @return Whether the base field is set.
+       */
+      public boolean hasBase() {
+        return ((bitField0_ & 0x00000002) != 0);
+      }
+      /**
+       * <code>.qorechain.stakingtier.v1.AprBase base = 2 [json_name = "base"];</code>
+       * @return The base.
+       */
+      public qorechain.stakingtier.v1.QueryOuterClass.AprBase getBase() {
+        if (baseBuilder_ == null) {
+          return base_ == null ? qorechain.stakingtier.v1.QueryOuterClass.AprBase.getDefaultInstance() : base_;
+        } else {
+          return baseBuilder_.getMessage();
+        }
+      }
+      /**
+       * <code>.qorechain.stakingtier.v1.AprBase base = 2 [json_name = "base"];</code>
+       */
+      public Builder setBase(qorechain.stakingtier.v1.QueryOuterClass.AprBase value) {
+        if (baseBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          base_ = value;
+        } else {
+          baseBuilder_.setMessage(value);
+        }
+        bitField0_ |= 0x00000002;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>.qorechain.stakingtier.v1.AprBase base = 2 [json_name = "base"];</code>
+       */
+      public Builder setBase(
+          qorechain.stakingtier.v1.QueryOuterClass.AprBase.Builder builderForValue) {
+        if (baseBuilder_ == null) {
+          base_ = builderForValue.build();
+        } else {
+          baseBuilder_.setMessage(builderForValue.build());
+        }
+        bitField0_ |= 0x00000002;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>.qorechain.stakingtier.v1.AprBase base = 2 [json_name = "base"];</code>
+       */
+      public Builder mergeBase(qorechain.stakingtier.v1.QueryOuterClass.AprBase value) {
+        if (baseBuilder_ == null) {
+          if (((bitField0_ & 0x00000002) != 0) &&
+            base_ != null &&
+            base_ != qorechain.stakingtier.v1.QueryOuterClass.AprBase.getDefaultInstance()) {
+            getBaseBuilder().mergeFrom(value);
+          } else {
+            base_ = value;
+          }
+        } else {
+          baseBuilder_.mergeFrom(value);
+        }
+        if (base_ != null) {
+          bitField0_ |= 0x00000002;
+          onChanged();
+        }
+        return this;
+      }
+      /**
+       * <code>.qorechain.stakingtier.v1.AprBase base = 2 [json_name = "base"];</code>
+       */
+      public Builder clearBase() {
+        bitField0_ = (bitField0_ & ~0x00000002);
+        base_ = null;
+        if (baseBuilder_ != null) {
+          baseBuilder_.dispose();
+          baseBuilder_ = null;
+        }
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>.qorechain.stakingtier.v1.AprBase base = 2 [json_name = "base"];</code>
+       */
+      public qorechain.stakingtier.v1.QueryOuterClass.AprBase.Builder getBaseBuilder() {
+        bitField0_ |= 0x00000002;
+        onChanged();
+        return internalGetBaseFieldBuilder().getBuilder();
+      }
+      /**
+       * <code>.qorechain.stakingtier.v1.AprBase base = 2 [json_name = "base"];</code>
+       */
+      public qorechain.stakingtier.v1.QueryOuterClass.AprBaseOrBuilder getBaseOrBuilder() {
+        if (baseBuilder_ != null) {
+          return baseBuilder_.getMessageOrBuilder();
+        } else {
+          return base_ == null ?
+              qorechain.stakingtier.v1.QueryOuterClass.AprBase.getDefaultInstance() : base_;
+        }
+      }
+      /**
+       * <code>.qorechain.stakingtier.v1.AprBase base = 2 [json_name = "base"];</code>
+       */
+      private com.google.protobuf.SingleFieldBuilder<
+          qorechain.stakingtier.v1.QueryOuterClass.AprBase, qorechain.stakingtier.v1.QueryOuterClass.AprBase.Builder, qorechain.stakingtier.v1.QueryOuterClass.AprBaseOrBuilder> 
+          internalGetBaseFieldBuilder() {
+        if (baseBuilder_ == null) {
+          baseBuilder_ = new com.google.protobuf.SingleFieldBuilder<
+              qorechain.stakingtier.v1.QueryOuterClass.AprBase, qorechain.stakingtier.v1.QueryOuterClass.AprBase.Builder, qorechain.stakingtier.v1.QueryOuterClass.AprBaseOrBuilder>(
+                  getBase(),
+                  getParentForChildren(),
+                  isClean());
+          base_ = null;
+        }
+        return baseBuilder_;
+      }
+
+      private boolean lightNodeBonus_ ;
+      /**
+       * <pre>
+       * light_node_bonus is true when the delegator qualifies for the light node
+       * bonus on their locks; light_node_reason says why or why not.
+       * </pre>
+       *
+       * <code>bool light_node_bonus = 3 [json_name = "lightNodeBonus"];</code>
+       * @return The lightNodeBonus.
+       */
+      @java.lang.Override
+      public boolean getLightNodeBonus() {
+        return lightNodeBonus_;
+      }
+      /**
+       * <pre>
+       * light_node_bonus is true when the delegator qualifies for the light node
+       * bonus on their locks; light_node_reason says why or why not.
+       * </pre>
+       *
+       * <code>bool light_node_bonus = 3 [json_name = "lightNodeBonus"];</code>
+       * @param value The lightNodeBonus to set.
+       * @return This builder for chaining.
+       */
+      public Builder setLightNodeBonus(boolean value) {
+
+        lightNodeBonus_ = value;
+        bitField0_ |= 0x00000004;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * light_node_bonus is true when the delegator qualifies for the light node
+       * bonus on their locks; light_node_reason says why or why not.
+       * </pre>
+       *
+       * <code>bool light_node_bonus = 3 [json_name = "lightNodeBonus"];</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearLightNodeBonus() {
+        bitField0_ = (bitField0_ & ~0x00000004);
+        lightNodeBonus_ = false;
+        onChanged();
+        return this;
+      }
+
+      private java.lang.Object lightNodeReason_ = "";
+      /**
+       * <code>string light_node_reason = 4 [json_name = "lightNodeReason"];</code>
+       * @return The lightNodeReason.
+       */
+      public java.lang.String getLightNodeReason() {
+        java.lang.Object ref = lightNodeReason_;
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          lightNodeReason_ = s;
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
+      }
+      /**
+       * <code>string light_node_reason = 4 [json_name = "lightNodeReason"];</code>
+       * @return The bytes for lightNodeReason.
+       */
+      public com.google.protobuf.ByteString
+          getLightNodeReasonBytes() {
+        java.lang.Object ref = lightNodeReason_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          lightNodeReason_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <code>string light_node_reason = 4 [json_name = "lightNodeReason"];</code>
+       * @param value The lightNodeReason to set.
+       * @return This builder for chaining.
+       */
+      public Builder setLightNodeReason(
+          java.lang.String value) {
+        if (value == null) { throw new NullPointerException(); }
+        lightNodeReason_ = value;
+        bitField0_ |= 0x00000008;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>string light_node_reason = 4 [json_name = "lightNodeReason"];</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearLightNodeReason() {
+        lightNodeReason_ = getDefaultInstance().getLightNodeReason();
+        bitField0_ = (bitField0_ & ~0x00000008);
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>string light_node_reason = 4 [json_name = "lightNodeReason"];</code>
+       * @param value The bytes for lightNodeReason to set.
+       * @return This builder for chaining.
+       */
+      public Builder setLightNodeReasonBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) { throw new NullPointerException(); }
+        checkByteStringIsUtf8(value);
+        lightNodeReason_ = value;
+        bitField0_ |= 0x00000008;
+        onChanged();
+        return this;
+      }
+
+      private java.util.List<qorechain.stakingtier.v1.QueryOuterClass.DelegationApr> delegations_ =
+        java.util.Collections.emptyList();
+      private void ensureDelegationsIsMutable() {
+        if (!((bitField0_ & 0x00000010) != 0)) {
+          delegations_ = new java.util.ArrayList<qorechain.stakingtier.v1.QueryOuterClass.DelegationApr>(delegations_);
+          bitField0_ |= 0x00000010;
+         }
+      }
+
+      private com.google.protobuf.RepeatedFieldBuilder<
+          qorechain.stakingtier.v1.QueryOuterClass.DelegationApr, qorechain.stakingtier.v1.QueryOuterClass.DelegationApr.Builder, qorechain.stakingtier.v1.QueryOuterClass.DelegationAprOrBuilder> delegationsBuilder_;
+
+      /**
+       * <code>repeated .qorechain.stakingtier.v1.DelegationApr delegations = 5 [json_name = "delegations"];</code>
+       */
+      public java.util.List<qorechain.stakingtier.v1.QueryOuterClass.DelegationApr> getDelegationsList() {
+        if (delegationsBuilder_ == null) {
+          return java.util.Collections.unmodifiableList(delegations_);
+        } else {
+          return delegationsBuilder_.getMessageList();
+        }
+      }
+      /**
+       * <code>repeated .qorechain.stakingtier.v1.DelegationApr delegations = 5 [json_name = "delegations"];</code>
+       */
+      public int getDelegationsCount() {
+        if (delegationsBuilder_ == null) {
+          return delegations_.size();
+        } else {
+          return delegationsBuilder_.getCount();
+        }
+      }
+      /**
+       * <code>repeated .qorechain.stakingtier.v1.DelegationApr delegations = 5 [json_name = "delegations"];</code>
+       */
+      public qorechain.stakingtier.v1.QueryOuterClass.DelegationApr getDelegations(int index) {
+        if (delegationsBuilder_ == null) {
+          return delegations_.get(index);
+        } else {
+          return delegationsBuilder_.getMessage(index);
+        }
+      }
+      /**
+       * <code>repeated .qorechain.stakingtier.v1.DelegationApr delegations = 5 [json_name = "delegations"];</code>
+       */
+      public Builder setDelegations(
+          int index, qorechain.stakingtier.v1.QueryOuterClass.DelegationApr value) {
+        if (delegationsBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          ensureDelegationsIsMutable();
+          delegations_.set(index, value);
+          onChanged();
+        } else {
+          delegationsBuilder_.setMessage(index, value);
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .qorechain.stakingtier.v1.DelegationApr delegations = 5 [json_name = "delegations"];</code>
+       */
+      public Builder setDelegations(
+          int index, qorechain.stakingtier.v1.QueryOuterClass.DelegationApr.Builder builderForValue) {
+        if (delegationsBuilder_ == null) {
+          ensureDelegationsIsMutable();
+          delegations_.set(index, builderForValue.build());
+          onChanged();
+        } else {
+          delegationsBuilder_.setMessage(index, builderForValue.build());
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .qorechain.stakingtier.v1.DelegationApr delegations = 5 [json_name = "delegations"];</code>
+       */
+      public Builder addDelegations(qorechain.stakingtier.v1.QueryOuterClass.DelegationApr value) {
+        if (delegationsBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          ensureDelegationsIsMutable();
+          delegations_.add(value);
+          onChanged();
+        } else {
+          delegationsBuilder_.addMessage(value);
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .qorechain.stakingtier.v1.DelegationApr delegations = 5 [json_name = "delegations"];</code>
+       */
+      public Builder addDelegations(
+          int index, qorechain.stakingtier.v1.QueryOuterClass.DelegationApr value) {
+        if (delegationsBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          ensureDelegationsIsMutable();
+          delegations_.add(index, value);
+          onChanged();
+        } else {
+          delegationsBuilder_.addMessage(index, value);
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .qorechain.stakingtier.v1.DelegationApr delegations = 5 [json_name = "delegations"];</code>
+       */
+      public Builder addDelegations(
+          qorechain.stakingtier.v1.QueryOuterClass.DelegationApr.Builder builderForValue) {
+        if (delegationsBuilder_ == null) {
+          ensureDelegationsIsMutable();
+          delegations_.add(builderForValue.build());
+          onChanged();
+        } else {
+          delegationsBuilder_.addMessage(builderForValue.build());
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .qorechain.stakingtier.v1.DelegationApr delegations = 5 [json_name = "delegations"];</code>
+       */
+      public Builder addDelegations(
+          int index, qorechain.stakingtier.v1.QueryOuterClass.DelegationApr.Builder builderForValue) {
+        if (delegationsBuilder_ == null) {
+          ensureDelegationsIsMutable();
+          delegations_.add(index, builderForValue.build());
+          onChanged();
+        } else {
+          delegationsBuilder_.addMessage(index, builderForValue.build());
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .qorechain.stakingtier.v1.DelegationApr delegations = 5 [json_name = "delegations"];</code>
+       */
+      public Builder addAllDelegations(
+          java.lang.Iterable<? extends qorechain.stakingtier.v1.QueryOuterClass.DelegationApr> values) {
+        if (delegationsBuilder_ == null) {
+          ensureDelegationsIsMutable();
+          com.google.protobuf.AbstractMessageLite.Builder.addAll(
+              values, delegations_);
+          onChanged();
+        } else {
+          delegationsBuilder_.addAllMessages(values);
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .qorechain.stakingtier.v1.DelegationApr delegations = 5 [json_name = "delegations"];</code>
+       */
+      public Builder clearDelegations() {
+        if (delegationsBuilder_ == null) {
+          delegations_ = java.util.Collections.emptyList();
+          bitField0_ = (bitField0_ & ~0x00000010);
+          onChanged();
+        } else {
+          delegationsBuilder_.clear();
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .qorechain.stakingtier.v1.DelegationApr delegations = 5 [json_name = "delegations"];</code>
+       */
+      public Builder removeDelegations(int index) {
+        if (delegationsBuilder_ == null) {
+          ensureDelegationsIsMutable();
+          delegations_.remove(index);
+          onChanged();
+        } else {
+          delegationsBuilder_.remove(index);
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .qorechain.stakingtier.v1.DelegationApr delegations = 5 [json_name = "delegations"];</code>
+       */
+      public qorechain.stakingtier.v1.QueryOuterClass.DelegationApr.Builder getDelegationsBuilder(
+          int index) {
+        return internalGetDelegationsFieldBuilder().getBuilder(index);
+      }
+      /**
+       * <code>repeated .qorechain.stakingtier.v1.DelegationApr delegations = 5 [json_name = "delegations"];</code>
+       */
+      public qorechain.stakingtier.v1.QueryOuterClass.DelegationAprOrBuilder getDelegationsOrBuilder(
+          int index) {
+        if (delegationsBuilder_ == null) {
+          return delegations_.get(index);  } else {
+          return delegationsBuilder_.getMessageOrBuilder(index);
+        }
+      }
+      /**
+       * <code>repeated .qorechain.stakingtier.v1.DelegationApr delegations = 5 [json_name = "delegations"];</code>
+       */
+      public java.util.List<? extends qorechain.stakingtier.v1.QueryOuterClass.DelegationAprOrBuilder> 
+           getDelegationsOrBuilderList() {
+        if (delegationsBuilder_ != null) {
+          return delegationsBuilder_.getMessageOrBuilderList();
+        } else {
+          return java.util.Collections.unmodifiableList(delegations_);
+        }
+      }
+      /**
+       * <code>repeated .qorechain.stakingtier.v1.DelegationApr delegations = 5 [json_name = "delegations"];</code>
+       */
+      public qorechain.stakingtier.v1.QueryOuterClass.DelegationApr.Builder addDelegationsBuilder() {
+        return internalGetDelegationsFieldBuilder().addBuilder(
+            qorechain.stakingtier.v1.QueryOuterClass.DelegationApr.getDefaultInstance());
+      }
+      /**
+       * <code>repeated .qorechain.stakingtier.v1.DelegationApr delegations = 5 [json_name = "delegations"];</code>
+       */
+      public qorechain.stakingtier.v1.QueryOuterClass.DelegationApr.Builder addDelegationsBuilder(
+          int index) {
+        return internalGetDelegationsFieldBuilder().addBuilder(
+            index, qorechain.stakingtier.v1.QueryOuterClass.DelegationApr.getDefaultInstance());
+      }
+      /**
+       * <code>repeated .qorechain.stakingtier.v1.DelegationApr delegations = 5 [json_name = "delegations"];</code>
+       */
+      public java.util.List<qorechain.stakingtier.v1.QueryOuterClass.DelegationApr.Builder> 
+           getDelegationsBuilderList() {
+        return internalGetDelegationsFieldBuilder().getBuilderList();
+      }
+      private com.google.protobuf.RepeatedFieldBuilder<
+          qorechain.stakingtier.v1.QueryOuterClass.DelegationApr, qorechain.stakingtier.v1.QueryOuterClass.DelegationApr.Builder, qorechain.stakingtier.v1.QueryOuterClass.DelegationAprOrBuilder> 
+          internalGetDelegationsFieldBuilder() {
+        if (delegationsBuilder_ == null) {
+          delegationsBuilder_ = new com.google.protobuf.RepeatedFieldBuilder<
+              qorechain.stakingtier.v1.QueryOuterClass.DelegationApr, qorechain.stakingtier.v1.QueryOuterClass.DelegationApr.Builder, qorechain.stakingtier.v1.QueryOuterClass.DelegationAprOrBuilder>(
+                  delegations_,
+                  ((bitField0_ & 0x00000010) != 0),
+                  getParentForChildren(),
+                  isClean());
+          delegations_ = null;
+        }
+        return delegationsBuilder_;
+      }
+
+      private java.lang.Object totalDelegated_ = "";
+      /**
+       * <code>string total_delegated = 6 [json_name = "totalDelegated"];</code>
+       * @return The totalDelegated.
+       */
+      public java.lang.String getTotalDelegated() {
+        java.lang.Object ref = totalDelegated_;
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          totalDelegated_ = s;
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
+      }
+      /**
+       * <code>string total_delegated = 6 [json_name = "totalDelegated"];</code>
+       * @return The bytes for totalDelegated.
+       */
+      public com.google.protobuf.ByteString
+          getTotalDelegatedBytes() {
+        java.lang.Object ref = totalDelegated_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          totalDelegated_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <code>string total_delegated = 6 [json_name = "totalDelegated"];</code>
+       * @param value The totalDelegated to set.
+       * @return This builder for chaining.
+       */
+      public Builder setTotalDelegated(
+          java.lang.String value) {
+        if (value == null) { throw new NullPointerException(); }
+        totalDelegated_ = value;
+        bitField0_ |= 0x00000020;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>string total_delegated = 6 [json_name = "totalDelegated"];</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearTotalDelegated() {
+        totalDelegated_ = getDefaultInstance().getTotalDelegated();
+        bitField0_ = (bitField0_ & ~0x00000020);
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>string total_delegated = 6 [json_name = "totalDelegated"];</code>
+       * @param value The bytes for totalDelegated to set.
+       * @return This builder for chaining.
+       */
+      public Builder setTotalDelegatedBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) { throw new NullPointerException(); }
+        checkByteStringIsUtf8(value);
+        totalDelegated_ = value;
+        bitField0_ |= 0x00000020;
+        onChanged();
+        return this;
+      }
+
+      private java.lang.Object effectiveAprBps_ = "";
+      /**
+       * <pre>
+       * effective_apr_bps and effective_apr_at_last_funding_bps are weighted by
+       * amount over every delegation listed.
+       * </pre>
+       *
+       * <code>string effective_apr_bps = 7 [json_name = "effectiveAprBps"];</code>
+       * @return The effectiveAprBps.
+       */
+      public java.lang.String getEffectiveAprBps() {
+        java.lang.Object ref = effectiveAprBps_;
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          effectiveAprBps_ = s;
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
+      }
+      /**
+       * <pre>
+       * effective_apr_bps and effective_apr_at_last_funding_bps are weighted by
+       * amount over every delegation listed.
+       * </pre>
+       *
+       * <code>string effective_apr_bps = 7 [json_name = "effectiveAprBps"];</code>
+       * @return The bytes for effectiveAprBps.
+       */
+      public com.google.protobuf.ByteString
+          getEffectiveAprBpsBytes() {
+        java.lang.Object ref = effectiveAprBps_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          effectiveAprBps_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <pre>
+       * effective_apr_bps and effective_apr_at_last_funding_bps are weighted by
+       * amount over every delegation listed.
+       * </pre>
+       *
+       * <code>string effective_apr_bps = 7 [json_name = "effectiveAprBps"];</code>
+       * @param value The effectiveAprBps to set.
+       * @return This builder for chaining.
+       */
+      public Builder setEffectiveAprBps(
+          java.lang.String value) {
+        if (value == null) { throw new NullPointerException(); }
+        effectiveAprBps_ = value;
+        bitField0_ |= 0x00000040;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * effective_apr_bps and effective_apr_at_last_funding_bps are weighted by
+       * amount over every delegation listed.
+       * </pre>
+       *
+       * <code>string effective_apr_bps = 7 [json_name = "effectiveAprBps"];</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearEffectiveAprBps() {
+        effectiveAprBps_ = getDefaultInstance().getEffectiveAprBps();
+        bitField0_ = (bitField0_ & ~0x00000040);
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * effective_apr_bps and effective_apr_at_last_funding_bps are weighted by
+       * amount over every delegation listed.
+       * </pre>
+       *
+       * <code>string effective_apr_bps = 7 [json_name = "effectiveAprBps"];</code>
+       * @param value The bytes for effectiveAprBps to set.
+       * @return This builder for chaining.
+       */
+      public Builder setEffectiveAprBpsBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) { throw new NullPointerException(); }
+        checkByteStringIsUtf8(value);
+        effectiveAprBps_ = value;
+        bitField0_ |= 0x00000040;
+        onChanged();
+        return this;
+      }
+
+      private java.lang.Object effectiveAprAtLastFundingBps_ = "";
+      /**
+       * <code>string effective_apr_at_last_funding_bps = 8 [json_name = "effectiveAprAtLastFundingBps"];</code>
+       * @return The effectiveAprAtLastFundingBps.
+       */
+      public java.lang.String getEffectiveAprAtLastFundingBps() {
+        java.lang.Object ref = effectiveAprAtLastFundingBps_;
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          effectiveAprAtLastFundingBps_ = s;
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
+      }
+      /**
+       * <code>string effective_apr_at_last_funding_bps = 8 [json_name = "effectiveAprAtLastFundingBps"];</code>
+       * @return The bytes for effectiveAprAtLastFundingBps.
+       */
+      public com.google.protobuf.ByteString
+          getEffectiveAprAtLastFundingBpsBytes() {
+        java.lang.Object ref = effectiveAprAtLastFundingBps_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          effectiveAprAtLastFundingBps_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <code>string effective_apr_at_last_funding_bps = 8 [json_name = "effectiveAprAtLastFundingBps"];</code>
+       * @param value The effectiveAprAtLastFundingBps to set.
+       * @return This builder for chaining.
+       */
+      public Builder setEffectiveAprAtLastFundingBps(
+          java.lang.String value) {
+        if (value == null) { throw new NullPointerException(); }
+        effectiveAprAtLastFundingBps_ = value;
+        bitField0_ |= 0x00000080;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>string effective_apr_at_last_funding_bps = 8 [json_name = "effectiveAprAtLastFundingBps"];</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearEffectiveAprAtLastFundingBps() {
+        effectiveAprAtLastFundingBps_ = getDefaultInstance().getEffectiveAprAtLastFundingBps();
+        bitField0_ = (bitField0_ & ~0x00000080);
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>string effective_apr_at_last_funding_bps = 8 [json_name = "effectiveAprAtLastFundingBps"];</code>
+       * @param value The bytes for effectiveAprAtLastFundingBps to set.
+       * @return This builder for chaining.
+       */
+      public Builder setEffectiveAprAtLastFundingBpsBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) { throw new NullPointerException(); }
+        checkByteStringIsUtf8(value);
+        effectiveAprAtLastFundingBps_ = value;
+        bitField0_ |= 0x00000080;
+        onChanged();
+        return this;
+      }
+
+      // @@protoc_insertion_point(builder_scope:qorechain.stakingtier.v1.QueryDelegatorAprResponse)
+    }
+
+    // @@protoc_insertion_point(class_scope:qorechain.stakingtier.v1.QueryDelegatorAprResponse)
+    private static final qorechain.stakingtier.v1.QueryOuterClass.QueryDelegatorAprResponse DEFAULT_INSTANCE;
+    static {
+      DEFAULT_INSTANCE = new qorechain.stakingtier.v1.QueryOuterClass.QueryDelegatorAprResponse();
+    }
+
+    public static qorechain.stakingtier.v1.QueryOuterClass.QueryDelegatorAprResponse getDefaultInstance() {
+      return DEFAULT_INSTANCE;
+    }
+
+    private static final com.google.protobuf.Parser<QueryDelegatorAprResponse>
+        PARSER = new com.google.protobuf.AbstractParser<QueryDelegatorAprResponse>() {
+      @java.lang.Override
+      public QueryDelegatorAprResponse parsePartialFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        Builder builder = newBuilder();
+        try {
+          builder.mergeFrom(input, extensionRegistry);
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          throw e.setUnfinishedMessage(builder.buildPartial());
+        } catch (com.google.protobuf.UninitializedMessageException e) {
+          throw e.asInvalidProtocolBufferException().setUnfinishedMessage(builder.buildPartial());
+        } catch (java.io.IOException e) {
+          throw new com.google.protobuf.InvalidProtocolBufferException(e)
+              .setUnfinishedMessage(builder.buildPartial());
+        }
+        return builder.buildPartial();
+      }
+    };
+
+    public static com.google.protobuf.Parser<QueryDelegatorAprResponse> parser() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Parser<QueryDelegatorAprResponse> getParserForType() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public qorechain.stakingtier.v1.QueryOuterClass.QueryDelegatorAprResponse getDefaultInstanceForType() {
+      return DEFAULT_INSTANCE;
+    }
+
+  }
+
   private static final com.google.protobuf.Descriptors.Descriptor
     internal_static_qorechain_stakingtier_v1_QueryParamsRequest_descriptor;
   private static final 
@@ -8845,6 +20875,46 @@ public final class QueryOuterClass extends com.google.protobuf.GeneratedFile {
   private static final 
     com.google.protobuf.GeneratedMessage.FieldAccessorTable
       internal_static_qorechain_stakingtier_v1_QueryPoolResponse_fieldAccessorTable;
+  private static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_qorechain_stakingtier_v1_AprBase_descriptor;
+  private static final 
+    com.google.protobuf.GeneratedMessage.FieldAccessorTable
+      internal_static_qorechain_stakingtier_v1_AprBase_fieldAccessorTable;
+  private static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_qorechain_stakingtier_v1_QueryAprRequest_descriptor;
+  private static final 
+    com.google.protobuf.GeneratedMessage.FieldAccessorTable
+      internal_static_qorechain_stakingtier_v1_QueryAprRequest_fieldAccessorTable;
+  private static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_qorechain_stakingtier_v1_TierAprView_descriptor;
+  private static final 
+    com.google.protobuf.GeneratedMessage.FieldAccessorTable
+      internal_static_qorechain_stakingtier_v1_TierAprView_fieldAccessorTable;
+  private static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_qorechain_stakingtier_v1_QueryAprResponse_descriptor;
+  private static final 
+    com.google.protobuf.GeneratedMessage.FieldAccessorTable
+      internal_static_qorechain_stakingtier_v1_QueryAprResponse_fieldAccessorTable;
+  private static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_qorechain_stakingtier_v1_QueryDelegatorAprRequest_descriptor;
+  private static final 
+    com.google.protobuf.GeneratedMessage.FieldAccessorTable
+      internal_static_qorechain_stakingtier_v1_QueryDelegatorAprRequest_fieldAccessorTable;
+  private static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_qorechain_stakingtier_v1_AprPosition_descriptor;
+  private static final 
+    com.google.protobuf.GeneratedMessage.FieldAccessorTable
+      internal_static_qorechain_stakingtier_v1_AprPosition_fieldAccessorTable;
+  private static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_qorechain_stakingtier_v1_DelegationApr_descriptor;
+  private static final 
+    com.google.protobuf.GeneratedMessage.FieldAccessorTable
+      internal_static_qorechain_stakingtier_v1_DelegationApr_fieldAccessorTable;
+  private static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_qorechain_stakingtier_v1_QueryDelegatorAprResponse_descriptor;
+  private static final 
+    com.google.protobuf.GeneratedMessage.FieldAccessorTable
+      internal_static_qorechain_stakingtier_v1_QueryDelegatorAprResponse_fieldAccessorTable;
 
   public static com.google.protobuf.Descriptors.FileDescriptor
       getDescriptor() {
@@ -8899,20 +20969,89 @@ public final class QueryOuterClass extends com.google.protobuf.GeneratedFile {
       "wed\030\n \001(\tR\010lastOwed\022\037\n\013last_funded\030\013 \001(\t" +
       "R\nlastFunded\022\037\n\013last_minted\030\014 \001(\tR\nlastM" +
       "inted\022)\n\021last_base_apy_bps\030\r \001(\tR\016lastBa" +
-      "seApyBps\022\035\n\nlock_count\030\016 \001(\004R\tlockCount2" +
-      "\272\003\n\005Query\022\217\001\n\006Params\022,.qorechain.staking" +
-      "tier.v1.QueryParamsRequest\032-.qorechain.s" +
-      "takingtier.v1.QueryParamsResponse\"(\202\323\344\223\002" +
-      "\"\022 /qorechain/stakingtier/v1/params\022\224\001\n\005" +
-      "Locks\022+.qorechain.stakingtier.v1.QueryLo" +
-      "cksRequest\032,.qorechain.stakingtier.v1.Qu" +
-      "eryLocksResponse\"0\202\323\344\223\002*\022(/qorechain/sta" +
-      "kingtier/v1/locks/{holder}\022\207\001\n\004Pool\022*.qo" +
-      "rechain.stakingtier.v1.QueryPoolRequest\032" +
-      "+.qorechain.stakingtier.v1.QueryPoolResp" +
-      "onse\"&\202\323\344\223\002 \022\036/qorechain/stakingtier/v1/" +
-      "poolB9Z7github.com/qorechain/qorechain-c" +
-      "ore/x/stakingtier/typesb\006proto3"
+      "seApyBps\022\035\n\nlock_count\030\016 \001(\004R\tlockCount\"" +
+      "\332\002\n\007AprBase\022+\n\022gross_base_apr_bps\030\001 \001(\tR" +
+      "\017grossBaseAprBps\022\'\n\017computed_height\030\002 \001(" +
+      "\003R\016computedHeight\022#\n\rcomputed_time\030\003 \001(\003" +
+      "R\014computedTime\022\026\n\006source\030\004 \001(\tR\006source\022\033" +
+      "\n\tlast_owed\030\005 \001(\tR\010lastOwed\022\037\n\013last_fund" +
+      "ed\030\006 \001(\tR\nlastFunded\022.\n\023bonus_funding_ra" +
+      "tio\030\007 \001(\tR\021bonusFundingRatio\022#\n\rbonus_en" +
+      "abled\030\010 \001(\010R\014bonusEnabled\022)\n\021max_total_a" +
+      "py_bps\030\t \001(\rR\016maxTotalApyBps\"/\n\017QueryApr" +
+      "Request\022\034\n\tvalidator\030\001 \001(\tR\tvalidator\"\236\001" +
+      "\n\013TierAprView\022\026\n\006months\030\001 \001(\rR\006months\022\033\n" +
+      "\tbonus_bps\030\002 \001(\rR\010bonusBps\022.\n\023effective_" +
+      "bonus_bps\030\003 \001(\tR\021effectiveBonusBps\022*\n\021ef" +
+      "fective_apr_bps\030\004 \001(\tR\017effectiveAprBps\"\212" +
+      "\003\n\020QueryAprResponse\0225\n\004base\030\001 \001(\0132!.qore" +
+      "chain.stakingtier.v1.AprBaseR\004base\022\034\n\tva" +
+      "lidator\030\002 \001(\tR\tvalidator\022\036\n\ncommission\030\003" +
+      " \001(\tR\ncommission\022 \n\014base_apr_bps\030\004 \001(\tR\n" +
+      "baseAprBps\022;\n\005tiers\030\005 \003(\0132%.qorechain.st" +
+      "akingtier.v1.TierAprViewR\005tiers\022/\n\024light" +
+      "_node_bonus_bps\030\006 \001(\rR\021lightNodeBonusBps" +
+      "\022.\n\023validator_bonus_bps\030\007 \001(\rR\021validator" +
+      "BonusBps\022A\n\035validator_effective_bonus_bp" +
+      "s\030\010 \001(\tR\032validatorEffectiveBonusBps\"V\n\030Q" +
+      "ueryDelegatorAprRequest\022\034\n\tdelegator\030\001 \001" +
+      "(\tR\tdelegator\022\034\n\tvalidator\030\002 \001(\tR\tvalida" +
+      "tor\"\226\004\n\013AprPosition\022\022\n\004kind\030\001 \001(\tR\004kind\022" +
+      "\027\n\007lock_id\030\002 \001(\004R\006lockId\022\026\n\006months\030\003 \001(\r" +
+      "R\006months\022\031\n\010end_time\030\004 \001(\003R\007endTime\022\026\n\006a" +
+      "mount\030\005 \001(\tR\006amount\022 \n\014base_apr_bps\030\006 \001(" +
+      "\tR\nbaseAprBps\022$\n\016tier_bonus_bps\030\007 \001(\rR\014t" +
+      "ierBonusBps\022/\n\024light_node_bonus_bps\030\010 \001(" +
+      "\rR\021lightNodeBonusBps\022$\n\016lock_bonus_bps\030\t" +
+      " \001(\tR\014lockBonusBps\022.\n\023validator_bonus_bp" +
+      "s\030\n \001(\tR\021validatorBonusBps\022\033\n\tbonus_bps\030" +
+      "\013 \001(\tR\010bonusBps\022*\n\021effective_apr_bps\030\014 \001" +
+      "(\tR\017effectiveAprBps\022G\n!effective_apr_at_" +
+      "last_funding_bps\030\r \001(\tR\034effectiveAprAtLa" +
+      "stFundingBps\022\026\n\006capped\030\016 \001(\010R\006capped\022\026\n\006" +
+      "reason\030\017 \001(\tR\006reason\"\237\003\n\rDelegationApr\022\034" +
+      "\n\tvalidator\030\001 \001(\tR\tvalidator\022\036\n\ncommissi" +
+      "on\030\002 \001(\tR\ncommission\022)\n\020validator_active" +
+      "\030\003 \001(\010R\017validatorActive\022\033\n\tself_bond\030\004 \001" +
+      "(\010R\010selfBond\022)\n\020delegated_amount\030\005 \001(\tR\017" +
+      "delegatedAmount\022#\n\rlocked_amount\030\006 \001(\tR\014" +
+      "lockedAmount\022*\n\021effective_apr_bps\030\007 \001(\tR" +
+      "\017effectiveAprBps\022G\n!effective_apr_at_las" +
+      "t_funding_bps\030\010 \001(\tR\034effectiveAprAtLastF" +
+      "undingBps\022C\n\tpositions\030\t \003(\0132%.qorechain" +
+      ".stakingtier.v1.AprPositionR\tpositions\"\257" +
+      "\003\n\031QueryDelegatorAprResponse\022\034\n\tdelegato" +
+      "r\030\001 \001(\tR\tdelegator\0225\n\004base\030\002 \001(\0132!.qorec" +
+      "hain.stakingtier.v1.AprBaseR\004base\022(\n\020lig" +
+      "ht_node_bonus\030\003 \001(\010R\016lightNodeBonus\022*\n\021l" +
+      "ight_node_reason\030\004 \001(\tR\017lightNodeReason\022" +
+      "I\n\013delegations\030\005 \003(\0132\'.qorechain.staking" +
+      "tier.v1.DelegationAprR\013delegations\022\'\n\017to" +
+      "tal_delegated\030\006 \001(\tR\016totalDelegated\022*\n\021e" +
+      "ffective_apr_bps\030\007 \001(\tR\017effectiveAprBps\022" +
+      "G\n!effective_apr_at_last_funding_bps\030\010 \001" +
+      "(\tR\034effectiveAprAtLastFundingBps2\355\005\n\005Que" +
+      "ry\022\217\001\n\006Params\022,.qorechain.stakingtier.v1" +
+      ".QueryParamsRequest\032-.qorechain.stakingt" +
+      "ier.v1.QueryParamsResponse\"(\202\323\344\223\002\"\022 /qor" +
+      "echain/stakingtier/v1/params\022\224\001\n\005Locks\022+" +
+      ".qorechain.stakingtier.v1.QueryLocksRequ" +
+      "est\032,.qorechain.stakingtier.v1.QueryLock" +
+      "sResponse\"0\202\323\344\223\002*\022(/qorechain/stakingtie" +
+      "r/v1/locks/{holder}\022\207\001\n\004Pool\022*.qorechain" +
+      ".stakingtier.v1.QueryPoolRequest\032+.qorec" +
+      "hain.stakingtier.v1.QueryPoolResponse\"&\202" +
+      "\323\344\223\002 \022\036/qorechain/stakingtier/v1/pool\022\203\001" +
+      "\n\003Apr\022).qorechain.stakingtier.v1.QueryAp" +
+      "rRequest\032*.qorechain.stakingtier.v1.Quer" +
+      "yAprResponse\"%\202\323\344\223\002\037\022\035/qorechain/staking" +
+      "tier/v1/apr\022\252\001\n\014DelegatorApr\0222.qorechain" +
+      ".stakingtier.v1.QueryDelegatorAprRequest" +
+      "\0323.qorechain.stakingtier.v1.QueryDelegat" +
+      "orAprResponse\"1\202\323\344\223\002+\022)/qorechain/stakin" +
+      "gtier/v1/apr/{delegator}B9Z7github.com/q" +
+      "orechain/qorechain-core/x/stakingtier/ty" +
+      "pesb\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
@@ -8967,6 +21106,54 @@ public final class QueryOuterClass extends com.google.protobuf.GeneratedFile {
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_qorechain_stakingtier_v1_QueryPoolResponse_descriptor,
         new java.lang.String[] { "Balance", "Outstanding", "Surplus", "TotalMinted", "TotalPaid", "TotalForfeited", "TotalPenaltyBurned", "LastSettleTime", "LastSettleHeight", "LastOwed", "LastFunded", "LastMinted", "LastBaseApyBps", "LockCount", });
+    internal_static_qorechain_stakingtier_v1_AprBase_descriptor =
+      getDescriptor().getMessageType(8);
+    internal_static_qorechain_stakingtier_v1_AprBase_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessage.FieldAccessorTable(
+        internal_static_qorechain_stakingtier_v1_AprBase_descriptor,
+        new java.lang.String[] { "GrossBaseAprBps", "ComputedHeight", "ComputedTime", "Source", "LastOwed", "LastFunded", "BonusFundingRatio", "BonusEnabled", "MaxTotalApyBps", });
+    internal_static_qorechain_stakingtier_v1_QueryAprRequest_descriptor =
+      getDescriptor().getMessageType(9);
+    internal_static_qorechain_stakingtier_v1_QueryAprRequest_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessage.FieldAccessorTable(
+        internal_static_qorechain_stakingtier_v1_QueryAprRequest_descriptor,
+        new java.lang.String[] { "Validator", });
+    internal_static_qorechain_stakingtier_v1_TierAprView_descriptor =
+      getDescriptor().getMessageType(10);
+    internal_static_qorechain_stakingtier_v1_TierAprView_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessage.FieldAccessorTable(
+        internal_static_qorechain_stakingtier_v1_TierAprView_descriptor,
+        new java.lang.String[] { "Months", "BonusBps", "EffectiveBonusBps", "EffectiveAprBps", });
+    internal_static_qorechain_stakingtier_v1_QueryAprResponse_descriptor =
+      getDescriptor().getMessageType(11);
+    internal_static_qorechain_stakingtier_v1_QueryAprResponse_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessage.FieldAccessorTable(
+        internal_static_qorechain_stakingtier_v1_QueryAprResponse_descriptor,
+        new java.lang.String[] { "Base", "Validator", "Commission", "BaseAprBps", "Tiers", "LightNodeBonusBps", "ValidatorBonusBps", "ValidatorEffectiveBonusBps", });
+    internal_static_qorechain_stakingtier_v1_QueryDelegatorAprRequest_descriptor =
+      getDescriptor().getMessageType(12);
+    internal_static_qorechain_stakingtier_v1_QueryDelegatorAprRequest_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessage.FieldAccessorTable(
+        internal_static_qorechain_stakingtier_v1_QueryDelegatorAprRequest_descriptor,
+        new java.lang.String[] { "Delegator", "Validator", });
+    internal_static_qorechain_stakingtier_v1_AprPosition_descriptor =
+      getDescriptor().getMessageType(13);
+    internal_static_qorechain_stakingtier_v1_AprPosition_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessage.FieldAccessorTable(
+        internal_static_qorechain_stakingtier_v1_AprPosition_descriptor,
+        new java.lang.String[] { "Kind", "LockId", "Months", "EndTime", "Amount", "BaseAprBps", "TierBonusBps", "LightNodeBonusBps", "LockBonusBps", "ValidatorBonusBps", "BonusBps", "EffectiveAprBps", "EffectiveAprAtLastFundingBps", "Capped", "Reason", });
+    internal_static_qorechain_stakingtier_v1_DelegationApr_descriptor =
+      getDescriptor().getMessageType(14);
+    internal_static_qorechain_stakingtier_v1_DelegationApr_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessage.FieldAccessorTable(
+        internal_static_qorechain_stakingtier_v1_DelegationApr_descriptor,
+        new java.lang.String[] { "Validator", "Commission", "ValidatorActive", "SelfBond", "DelegatedAmount", "LockedAmount", "EffectiveAprBps", "EffectiveAprAtLastFundingBps", "Positions", });
+    internal_static_qorechain_stakingtier_v1_QueryDelegatorAprResponse_descriptor =
+      getDescriptor().getMessageType(15);
+    internal_static_qorechain_stakingtier_v1_QueryDelegatorAprResponse_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessage.FieldAccessorTable(
+        internal_static_qorechain_stakingtier_v1_QueryDelegatorAprResponse_descriptor,
+        new java.lang.String[] { "Delegator", "Base", "LightNodeBonus", "LightNodeReason", "Delegations", "TotalDelegated", "EffectiveAprBps", "EffectiveAprAtLastFundingBps", });
     descriptor.resolveAllFeaturesImmutable();
     com.google.api.AnnotationsProto.getDescriptor();
     com.google.protobuf.ExtensionRegistry registry =

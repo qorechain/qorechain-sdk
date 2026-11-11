@@ -5693,6 +5693,19 @@ public final class Tx extends com.google.protobuf.GeneratedFile {
      */
     com.google.protobuf.ByteString
         getLabelBytes();
+
+    /**
+     * <pre>
+     * possession_proof is a signature by the linked key, under its scheme, over
+     * the link message (types.AuthenticatorLinkMessage: chain id, account,
+     * scheme and key). Required from v3.2.8
+     * (abstractaccount-authenticator-possession), ignored before.
+     * </pre>
+     *
+     * <code>bytes possession_proof = 8 [json_name = "possessionProof"];</code>
+     * @return The possessionProof.
+     */
+    com.google.protobuf.ByteString getPossessionProof();
   }
   /**
    * <pre>
@@ -5729,6 +5742,7 @@ public final class Tx extends com.google.protobuf.GeneratedFile {
       permissions_ =
           com.google.protobuf.LazyStringArrayList.emptyList();
       label_ = "";
+      possessionProof_ = com.google.protobuf.ByteString.EMPTY;
     }
 
     public static final com.google.protobuf.Descriptors.Descriptor
@@ -5996,6 +6010,24 @@ public final class Tx extends com.google.protobuf.GeneratedFile {
       }
     }
 
+    public static final int POSSESSION_PROOF_FIELD_NUMBER = 8;
+    private com.google.protobuf.ByteString possessionProof_ = com.google.protobuf.ByteString.EMPTY;
+    /**
+     * <pre>
+     * possession_proof is a signature by the linked key, under its scheme, over
+     * the link message (types.AuthenticatorLinkMessage: chain id, account,
+     * scheme and key). Required from v3.2.8
+     * (abstractaccount-authenticator-possession), ignored before.
+     * </pre>
+     *
+     * <code>bytes possession_proof = 8 [json_name = "possessionProof"];</code>
+     * @return The possessionProof.
+     */
+    @java.lang.Override
+    public com.google.protobuf.ByteString getPossessionProof() {
+      return possessionProof_;
+    }
+
     private byte memoizedIsInitialized = -1;
     @java.lang.Override
     public final boolean isInitialized() {
@@ -6031,6 +6063,9 @@ public final class Tx extends com.google.protobuf.GeneratedFile {
       if (!com.google.protobuf.GeneratedMessage.isStringEmpty(label_)) {
         com.google.protobuf.GeneratedMessage.writeString(output, 7, label_);
       }
+      if (!possessionProof_.isEmpty()) {
+        output.writeBytes(8, possessionProof_);
+      }
       getUnknownFields().writeTo(output);
     }
     private int computeSerializedSize_0() {
@@ -6062,6 +6097,10 @@ public final class Tx extends com.google.protobuf.GeneratedFile {
       }
       if (!com.google.protobuf.GeneratedMessage.isStringEmpty(label_)) {
         size += com.google.protobuf.GeneratedMessage.computeStringSize(7, label_);
+      }
+      if (!possessionProof_.isEmpty()) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeBytesSize(8, possessionProof_);
       }
       return size;
     }
@@ -6101,6 +6140,8 @@ public final class Tx extends com.google.protobuf.GeneratedFile {
           != other.getExpiryUnix()) return false;
       if (!getLabel()
           .equals(other.getLabel())) return false;
+      if (!getPossessionProof()
+          .equals(other.getPossessionProof())) return false;
       if (!getUnknownFields().equals(other.getUnknownFields())) return false;
       return true;
     }
@@ -6129,6 +6170,8 @@ public final class Tx extends com.google.protobuf.GeneratedFile {
           getExpiryUnix());
       hash = (37 * hash) + LABEL_FIELD_NUMBER;
       hash = (53 * hash) + getLabel().hashCode();
+      hash = (37 * hash) + POSSESSION_PROOF_FIELD_NUMBER;
+      hash = (53 * hash) + getPossessionProof().hashCode();
       hash = (29 * hash) + getUnknownFields().hashCode();
       memoizedHashCode = hash;
       return hash;
@@ -6274,6 +6317,7 @@ public final class Tx extends com.google.protobuf.GeneratedFile {
             com.google.protobuf.LazyStringArrayList.emptyList();
         expiryUnix_ = 0L;
         label_ = "";
+        possessionProof_ = com.google.protobuf.ByteString.EMPTY;
         return this;
       }
 
@@ -6329,6 +6373,9 @@ public final class Tx extends com.google.protobuf.GeneratedFile {
         if (((from_bitField0_ & 0x00000040) != 0)) {
           result.label_ = label_;
         }
+        if (((from_bitField0_ & 0x00000080) != 0)) {
+          result.possessionProof_ = possessionProof_;
+        }
       }
 
       @java.lang.Override
@@ -6378,6 +6425,9 @@ public final class Tx extends com.google.protobuf.GeneratedFile {
           label_ = other.label_;
           bitField0_ |= 0x00000040;
           onChanged();
+        }
+        if (!other.getPossessionProof().isEmpty()) {
+          setPossessionProof(other.getPossessionProof());
         }
         this.mergeUnknownFields(other.getUnknownFields());
         onChanged();
@@ -6440,6 +6490,11 @@ public final class Tx extends com.google.protobuf.GeneratedFile {
                 bitField0_ |= 0x00000040;
                 break;
               } // case 58
+              case 66: {
+                possessionProof_ = input.readBytes();
+                bitField0_ |= 0x00000080;
+                break;
+              } // case 66
               default: {
                 if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                   done = true; // was an endgroup tag
@@ -6996,6 +7051,59 @@ public final class Tx extends com.google.protobuf.GeneratedFile {
         checkByteStringIsUtf8(value);
         label_ = value;
         bitField0_ |= 0x00000040;
+        onChanged();
+        return this;
+      }
+
+      private com.google.protobuf.ByteString possessionProof_ = com.google.protobuf.ByteString.EMPTY;
+      /**
+       * <pre>
+       * possession_proof is a signature by the linked key, under its scheme, over
+       * the link message (types.AuthenticatorLinkMessage: chain id, account,
+       * scheme and key). Required from v3.2.8
+       * (abstractaccount-authenticator-possession), ignored before.
+       * </pre>
+       *
+       * <code>bytes possession_proof = 8 [json_name = "possessionProof"];</code>
+       * @return The possessionProof.
+       */
+      @java.lang.Override
+      public com.google.protobuf.ByteString getPossessionProof() {
+        return possessionProof_;
+      }
+      /**
+       * <pre>
+       * possession_proof is a signature by the linked key, under its scheme, over
+       * the link message (types.AuthenticatorLinkMessage: chain id, account,
+       * scheme and key). Required from v3.2.8
+       * (abstractaccount-authenticator-possession), ignored before.
+       * </pre>
+       *
+       * <code>bytes possession_proof = 8 [json_name = "possessionProof"];</code>
+       * @param value The possessionProof to set.
+       * @return This builder for chaining.
+       */
+      public Builder setPossessionProof(com.google.protobuf.ByteString value) {
+        if (value == null) { throw new NullPointerException(); }
+        possessionProof_ = value;
+        bitField0_ |= 0x00000080;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * possession_proof is a signature by the linked key, under its scheme, over
+       * the link message (types.AuthenticatorLinkMessage: chain id, account,
+       * scheme and key). Required from v3.2.8
+       * (abstractaccount-authenticator-possession), ignored before.
+       * </pre>
+       *
+       * <code>bytes possession_proof = 8 [json_name = "possessionProof"];</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearPossessionProof() {
+        bitField0_ = (bitField0_ & ~0x00000080);
+        possessionProof_ = getDefaultInstance().getPossessionProof();
         onChanged();
         return this;
       }
@@ -10426,6 +10534,16 @@ public final class Tx extends com.google.protobuf.GeneratedFile {
         getVmErrorBytes();
   }
   /**
+   * <pre>
+   * MsgExecuteEVMResponse. From v3.2.8 (abstractaccount-failed-execution-burns-nonce)
+   * an execution that fails after the signature, the key, its permission and the
+   * nonce were accepted (call policy, value cap, a reverted call, deploy scope,
+   * measured spend) consumes the nonce and returns success=false with the reason
+   * in vm_error; the transaction itself succeeds and the call's state is dropped.
+   * Relayers must treat success=false as final: the same signature cannot be
+   * relayed again.
+   * </pre>
+   *
    * Protobuf type {@code qorechain.abstractaccount.v1.MsgExecuteEVMResponse}
    */
   public static final class MsgExecuteEVMResponse extends
@@ -10737,6 +10855,16 @@ public final class Tx extends com.google.protobuf.GeneratedFile {
       return builder;
     }
     /**
+     * <pre>
+     * MsgExecuteEVMResponse. From v3.2.8 (abstractaccount-failed-execution-burns-nonce)
+     * an execution that fails after the signature, the key, its permission and the
+     * nonce were accepted (call policy, value cap, a reverted call, deploy scope,
+     * measured spend) consumes the nonce and returns success=false with the reason
+     * in vm_error; the transaction itself succeeds and the call's state is dropped.
+     * Relayers must treat success=false as final: the same signature cannot be
+     * relayed again.
+     * </pre>
+     *
      * Protobuf type {@code qorechain.abstractaccount.v1.MsgExecuteEVMResponse}
      */
     public static final class Builder extends
@@ -12903,6 +13031,14 @@ public final class Tx extends com.google.protobuf.GeneratedFile {
     boolean getSuccess();
   }
   /**
+   * <pre>
+   * MsgExecuteCosmosResponse. From v3.2.8 (abstractaccount-failed-execution-burns-nonce)
+   * a transfer that fails after the signature, the key, its permission and the
+   * nonce were accepted (spending rule, bank send) consumes the nonce and returns
+   * success=false; the reason is in the abstractaccount_execution_failed event.
+   * Relayers must treat success=false as final.
+   * </pre>
+   *
    * Protobuf type {@code qorechain.abstractaccount.v1.MsgExecuteCosmosResponse}
    */
   public static final class MsgExecuteCosmosResponse extends
@@ -13118,6 +13254,14 @@ public final class Tx extends com.google.protobuf.GeneratedFile {
       return builder;
     }
     /**
+     * <pre>
+     * MsgExecuteCosmosResponse. From v3.2.8 (abstractaccount-failed-execution-burns-nonce)
+     * a transfer that fails after the signature, the key, its permission and the
+     * nonce were accepted (spending rule, bank send) consumes the nonce and returns
+     * success=false; the reason is in the abstractaccount_execution_failed event.
+     * Relayers must treat success=false as final.
+     * </pre>
+     *
      * Protobuf type {@code qorechain.abstractaccount.v1.MsgExecuteCosmosResponse}
      */
     public static final class Builder extends
@@ -14715,73 +14859,74 @@ public final class Tx extends com.google.protobuf.GeneratedFile {
       "unt_address\030\002 \001(\tR\016accountAddress\022F\n\005rul" +
       "es\030\003 \003(\0132*.qorechain.abstractaccount.v1." +
       "SpendingRuleB\004\310\336\037\000R\005rules:\n\202\347\260*\005owner\" \n" +
-      "\036MsgUpdateSpendingRulesResponse\"\210\002\n\030MsgR" +
+      "\036MsgUpdateSpendingRulesResponse\"\263\002\n\030MsgR" +
       "egisterAuthenticator\022.\n\005owner\030\001 \001(\tB\030\322\264-" +
       "\024cosmos.AddressStringR\005owner\022\'\n\017account_" +
       "address\030\002 \001(\tR\016accountAddress\022\026\n\006scheme\030" +
       "\003 \001(\tR\006scheme\022\026\n\006pubkey\030\004 \001(\014R\006pubkey\022 \n" +
       "\013permissions\030\005 \003(\tR\013permissions\022\037\n\013expir" +
       "y_unix\030\006 \001(\003R\nexpiryUnix\022\024\n\005label\030\007 \001(\tR" +
-      "\005label:\n\202\347\260*\005owner\"\"\n MsgRegisterAuthent" +
-      "icatorResponse\"\255\001\n\026MsgRevokeAuthenticato" +
-      "r\022.\n\005owner\030\001 \001(\tB\030\322\264-\024cosmos.AddressStri" +
-      "ngR\005owner\022\'\n\017account_address\030\002 \001(\tR\016acco" +
-      "untAddress\022\026\n\006scheme\030\003 \001(\tR\006scheme\022\026\n\006pu" +
-      "bkey\030\004 \001(\014R\006pubkey:\n\202\347\260*\005owner\" \n\036MsgRev" +
-      "okeAuthenticatorResponse\"\246\002\n\rMsgExecuteE" +
-      "VM\0222\n\007relayer\030\001 \001(\tB\030\322\264-\024cosmos.AddressS" +
-      "tringR\007relayer\022\030\n\007account\030\002 \001(\tR\007account" +
-      "\022\026\n\006scheme\030\003 \001(\tR\006scheme\022\026\n\006pubkey\030\004 \001(\014" +
-      "R\006pubkey\022\034\n\tsignature\030\005 \001(\014R\tsignature\022\016" +
-      "\n\002to\030\006 \001(\tR\002to\022\024\n\005value\030\007 \001(\tR\005value\022\022\n\004" +
-      "data\030\010 \001(\014R\004data\022\033\n\tgas_limit\030\t \001(\004R\010gas" +
-      "Limit\022\024\n\005nonce\030\n \001(\004R\005nonce:\014\202\347\260*\007relaye" +
-      "r\"y\n\025MsgExecuteEVMResponse\022\030\n\007success\030\001 " +
-      "\001(\010R\007success\022\020\n\003ret\030\002 \001(\014R\003ret\022\031\n\010gas_us" +
-      "ed\030\003 \001(\004R\007gasUsed\022\031\n\010vm_error\030\004 \001(\tR\007vmE" +
-      "rror\"\341\002\n\020MsgExecuteCosmos\0222\n\007relayer\030\001 \001" +
-      "(\tB\030\322\264-\024cosmos.AddressStringR\007relayer\022\030\n" +
-      "\007account\030\002 \001(\tR\007account\022\026\n\006scheme\030\003 \001(\tR" +
-      "\006scheme\022\026\n\006pubkey\030\004 \001(\014R\006pubkey\022\034\n\tsigna" +
-      "ture\030\005 \001(\014R\tsignature\022(\n\002to\030\006 \001(\tB\030\322\264-\024c" +
-      "osmos.AddressStringR\002to\022c\n\006amount\030\007 \003(\0132" +
-      "\031.cosmos.base.v1beta1.CoinB0\310\336\037\000\252\337\037(gith" +
-      "ub.com/cosmos/cosmos-sdk/types.CoinsR\006am" +
-      "ount\022\024\n\005nonce\030\010 \001(\004R\005nonce:\014\202\347\260*\007relayer" +
-      "\"4\n\030MsgExecuteCosmosResponse\022\030\n\007success\030" +
-      "\001 \001(\010R\007success\"\373\001\n\017MsgUpdateConfig\0226\n\tau" +
-      "thority\030\001 \001(\tB\030\322\264-\024cosmos.AddressStringR" +
-      "\tauthority\022\030\n\007enabled\030\002 \001(\010R\007enabled\022(\n\020" +
-      "max_session_keys\030\003 \001(\005R\016maxSessionKeys\022," +
-      "\n\022max_spending_rules\030\004 \001(\005R\020maxSpendingR" +
-      "ules\022.\n\023default_session_ttl\030\005 \001(\003R\021defau" +
-      "ltSessionTtl:\016\202\347\260*\tauthority\"\031\n\027MsgUpdat" +
-      "eConfigResponse2\247\007\n\003Msg\022\217\001\n\025CreateAbstra" +
-      "ctAccount\0226.qorechain.abstractaccount.v1" +
-      ".MsgCreateAbstractAccount\032>.qorechain.ab" +
-      "stractaccount.v1.MsgCreateAbstractAccoun" +
-      "tResponse\022\211\001\n\023UpdateSpendingRules\0224.qore" +
-      "chain.abstractaccount.v1.MsgUpdateSpendi" +
-      "ngRules\032<.qorechain.abstractaccount.v1.M" +
-      "sgUpdateSpendingRulesResponse\022\217\001\n\025Regist" +
-      "erAuthenticator\0226.qorechain.abstractacco" +
-      "unt.v1.MsgRegisterAuthenticator\032>.qorech" +
-      "ain.abstractaccount.v1.MsgRegisterAuthen" +
-      "ticatorResponse\022\211\001\n\023RevokeAuthenticator\022" +
-      "4.qorechain.abstractaccount.v1.MsgRevoke" +
-      "Authenticator\032<.qorechain.abstractaccoun" +
-      "t.v1.MsgRevokeAuthenticatorResponse\022n\n\nE" +
-      "xecuteEVM\022+.qorechain.abstractaccount.v1" +
-      ".MsgExecuteEVM\0323.qorechain.abstractaccou" +
-      "nt.v1.MsgExecuteEVMResponse\022w\n\rExecuteCo" +
-      "smos\022..qorechain.abstractaccount.v1.MsgE" +
-      "xecuteCosmos\0326.qorechain.abstractaccount" +
-      ".v1.MsgExecuteCosmosResponse\022t\n\014UpdateCo" +
-      "nfig\022-.qorechain.abstractaccount.v1.MsgU" +
-      "pdateConfig\0325.qorechain.abstractaccount." +
-      "v1.MsgUpdateConfigResponse\032\005\200\347\260*\001B=Z;git" +
-      "hub.com/qorechain/qorechain-core/x/abstr" +
-      "actaccount/typesb\006proto3"
+      "\005label\022)\n\020possession_proof\030\010 \001(\014R\017posses" +
+      "sionProof:\n\202\347\260*\005owner\"\"\n MsgRegisterAuth" +
+      "enticatorResponse\"\255\001\n\026MsgRevokeAuthentic" +
+      "ator\022.\n\005owner\030\001 \001(\tB\030\322\264-\024cosmos.AddressS" +
+      "tringR\005owner\022\'\n\017account_address\030\002 \001(\tR\016a" +
+      "ccountAddress\022\026\n\006scheme\030\003 \001(\tR\006scheme\022\026\n" +
+      "\006pubkey\030\004 \001(\014R\006pubkey:\n\202\347\260*\005owner\" \n\036Msg" +
+      "RevokeAuthenticatorResponse\"\246\002\n\rMsgExecu" +
+      "teEVM\0222\n\007relayer\030\001 \001(\tB\030\322\264-\024cosmos.Addre" +
+      "ssStringR\007relayer\022\030\n\007account\030\002 \001(\tR\007acco" +
+      "unt\022\026\n\006scheme\030\003 \001(\tR\006scheme\022\026\n\006pubkey\030\004 " +
+      "\001(\014R\006pubkey\022\034\n\tsignature\030\005 \001(\014R\tsignatur" +
+      "e\022\016\n\002to\030\006 \001(\tR\002to\022\024\n\005value\030\007 \001(\tR\005value\022" +
+      "\022\n\004data\030\010 \001(\014R\004data\022\033\n\tgas_limit\030\t \001(\004R\010" +
+      "gasLimit\022\024\n\005nonce\030\n \001(\004R\005nonce:\014\202\347\260*\007rel" +
+      "ayer\"y\n\025MsgExecuteEVMResponse\022\030\n\007success" +
+      "\030\001 \001(\010R\007success\022\020\n\003ret\030\002 \001(\014R\003ret\022\031\n\010gas" +
+      "_used\030\003 \001(\004R\007gasUsed\022\031\n\010vm_error\030\004 \001(\tR\007" +
+      "vmError\"\341\002\n\020MsgExecuteCosmos\0222\n\007relayer\030" +
+      "\001 \001(\tB\030\322\264-\024cosmos.AddressStringR\007relayer" +
+      "\022\030\n\007account\030\002 \001(\tR\007account\022\026\n\006scheme\030\003 \001" +
+      "(\tR\006scheme\022\026\n\006pubkey\030\004 \001(\014R\006pubkey\022\034\n\tsi" +
+      "gnature\030\005 \001(\014R\tsignature\022(\n\002to\030\006 \001(\tB\030\322\264" +
+      "-\024cosmos.AddressStringR\002to\022c\n\006amount\030\007 \003" +
+      "(\0132\031.cosmos.base.v1beta1.CoinB0\310\336\037\000\252\337\037(g" +
+      "ithub.com/cosmos/cosmos-sdk/types.CoinsR" +
+      "\006amount\022\024\n\005nonce\030\010 \001(\004R\005nonce:\014\202\347\260*\007rela" +
+      "yer\"4\n\030MsgExecuteCosmosResponse\022\030\n\007succe" +
+      "ss\030\001 \001(\010R\007success\"\373\001\n\017MsgUpdateConfig\0226\n" +
+      "\tauthority\030\001 \001(\tB\030\322\264-\024cosmos.AddressStri" +
+      "ngR\tauthority\022\030\n\007enabled\030\002 \001(\010R\007enabled\022" +
+      "(\n\020max_session_keys\030\003 \001(\005R\016maxSessionKey" +
+      "s\022,\n\022max_spending_rules\030\004 \001(\005R\020maxSpendi" +
+      "ngRules\022.\n\023default_session_ttl\030\005 \001(\003R\021de" +
+      "faultSessionTtl:\016\202\347\260*\tauthority\"\031\n\027MsgUp" +
+      "dateConfigResponse2\247\007\n\003Msg\022\217\001\n\025CreateAbs" +
+      "tractAccount\0226.qorechain.abstractaccount" +
+      ".v1.MsgCreateAbstractAccount\032>.qorechain" +
+      ".abstractaccount.v1.MsgCreateAbstractAcc" +
+      "ountResponse\022\211\001\n\023UpdateSpendingRules\0224.q" +
+      "orechain.abstractaccount.v1.MsgUpdateSpe" +
+      "ndingRules\032<.qorechain.abstractaccount.v" +
+      "1.MsgUpdateSpendingRulesResponse\022\217\001\n\025Reg" +
+      "isterAuthenticator\0226.qorechain.abstracta" +
+      "ccount.v1.MsgRegisterAuthenticator\032>.qor" +
+      "echain.abstractaccount.v1.MsgRegisterAut" +
+      "henticatorResponse\022\211\001\n\023RevokeAuthenticat" +
+      "or\0224.qorechain.abstractaccount.v1.MsgRev" +
+      "okeAuthenticator\032<.qorechain.abstractacc" +
+      "ount.v1.MsgRevokeAuthenticatorResponse\022n" +
+      "\n\nExecuteEVM\022+.qorechain.abstractaccount" +
+      ".v1.MsgExecuteEVM\0323.qorechain.abstractac" +
+      "count.v1.MsgExecuteEVMResponse\022w\n\rExecut" +
+      "eCosmos\022..qorechain.abstractaccount.v1.M" +
+      "sgExecuteCosmos\0326.qorechain.abstractacco" +
+      "unt.v1.MsgExecuteCosmosResponse\022t\n\014Updat" +
+      "eConfig\022-.qorechain.abstractaccount.v1.M" +
+      "sgUpdateConfig\0325.qorechain.abstractaccou" +
+      "nt.v1.MsgUpdateConfigResponse\032\005\200\347\260*\001B=Z;" +
+      "github.com/qorechain/qorechain-core/x/ab" +
+      "stractaccount/typesb\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
@@ -14832,7 +14977,7 @@ public final class Tx extends com.google.protobuf.GeneratedFile {
     internal_static_qorechain_abstractaccount_v1_MsgRegisterAuthenticator_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_qorechain_abstractaccount_v1_MsgRegisterAuthenticator_descriptor,
-        new java.lang.String[] { "Owner", "AccountAddress", "Scheme", "Pubkey", "Permissions", "ExpiryUnix", "Label", });
+        new java.lang.String[] { "Owner", "AccountAddress", "Scheme", "Pubkey", "Permissions", "ExpiryUnix", "Label", "PossessionProof", });
     internal_static_qorechain_abstractaccount_v1_MsgRegisterAuthenticatorResponse_descriptor =
       getDescriptor().getMessageType(7);
     internal_static_qorechain_abstractaccount_v1_MsgRegisterAuthenticatorResponse_fieldAccessorTable = new

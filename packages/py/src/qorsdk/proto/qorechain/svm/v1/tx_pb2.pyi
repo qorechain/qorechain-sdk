@@ -97,7 +97,7 @@ class MsgRegisterSVMPQCKeyResponse(_message.Message):
     def __init__(self) -> None: ...
 
 class SVMParams(_message.Message):
-    __slots__ = ("max_program_size", "max_account_data_size", "compute_budget_max", "lamports_per_byte", "rent_exemption_multi", "enabled", "svm_slot_offset", "default_sig_scheme", "max_cpi")
+    __slots__ = ("max_program_size", "max_account_data_size", "compute_budget_max", "lamports_per_byte", "rent_exemption_multi", "enabled", "svm_slot_offset", "default_sig_scheme", "max_cpi", "max_custody_uqor", "max_custody_hard_uqor", "max_account_excess_uqor")
     MAX_PROGRAM_SIZE_FIELD_NUMBER: _ClassVar[int]
     MAX_ACCOUNT_DATA_SIZE_FIELD_NUMBER: _ClassVar[int]
     COMPUTE_BUDGET_MAX_FIELD_NUMBER: _ClassVar[int]
@@ -107,6 +107,9 @@ class SVMParams(_message.Message):
     SVM_SLOT_OFFSET_FIELD_NUMBER: _ClassVar[int]
     DEFAULT_SIG_SCHEME_FIELD_NUMBER: _ClassVar[int]
     MAX_CPI_FIELD_NUMBER: _ClassVar[int]
+    MAX_CUSTODY_UQOR_FIELD_NUMBER: _ClassVar[int]
+    MAX_CUSTODY_HARD_UQOR_FIELD_NUMBER: _ClassVar[int]
+    MAX_ACCOUNT_EXCESS_UQOR_FIELD_NUMBER: _ClassVar[int]
     max_program_size: int
     max_account_data_size: int
     compute_budget_max: int
@@ -116,7 +119,10 @@ class SVMParams(_message.Message):
     svm_slot_offset: int
     default_sig_scheme: int
     max_cpi: int
-    def __init__(self, max_program_size: _Optional[int] = ..., max_account_data_size: _Optional[int] = ..., compute_budget_max: _Optional[int] = ..., lamports_per_byte: _Optional[int] = ..., rent_exemption_multi: _Optional[str] = ..., enabled: bool = ..., svm_slot_offset: _Optional[int] = ..., default_sig_scheme: _Optional[int] = ..., max_cpi: _Optional[int] = ...) -> None: ...
+    max_custody_uqor: int
+    max_custody_hard_uqor: int
+    max_account_excess_uqor: int
+    def __init__(self, max_program_size: _Optional[int] = ..., max_account_data_size: _Optional[int] = ..., compute_budget_max: _Optional[int] = ..., lamports_per_byte: _Optional[int] = ..., rent_exemption_multi: _Optional[str] = ..., enabled: bool = ..., svm_slot_offset: _Optional[int] = ..., default_sig_scheme: _Optional[int] = ..., max_cpi: _Optional[int] = ..., max_custody_uqor: _Optional[int] = ..., max_custody_hard_uqor: _Optional[int] = ..., max_account_excess_uqor: _Optional[int] = ...) -> None: ...
 
 class MsgUpdateParams(_message.Message):
     __slots__ = ("authority", "params")

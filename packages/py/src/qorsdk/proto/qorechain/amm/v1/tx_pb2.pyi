@@ -2,6 +2,7 @@ from cosmos.msg.v1 import msg_pb2 as _msg_pb2
 from cosmos_proto import cosmos_pb2 as _cosmos_pb2
 from cosmos.base.v1beta1 import coin_pb2 as _coin_pb2
 from gogoproto import gogo_pb2 as _gogo_pb2
+from qorsdk.proto.qorechain.amm.v1 import query_pb2 as _query_pb2
 from google.protobuf import descriptor as _descriptor
 from google.protobuf import message as _message
 from typing import ClassVar as _ClassVar, Mapping as _Mapping, Optional as _Optional, Union as _Union
@@ -123,5 +124,17 @@ class MsgResumePool(_message.Message):
     def __init__(self, authority: _Optional[str] = ..., pool_id: _Optional[int] = ...) -> None: ...
 
 class MsgResumePoolResponse(_message.Message):
+    __slots__ = ()
+    def __init__(self) -> None: ...
+
+class MsgUpdateParams(_message.Message):
+    __slots__ = ("authority", "params")
+    AUTHORITY_FIELD_NUMBER: _ClassVar[int]
+    PARAMS_FIELD_NUMBER: _ClassVar[int]
+    authority: str
+    params: _query_pb2.ParamsView
+    def __init__(self, authority: _Optional[str] = ..., params: _Optional[_Union[_query_pb2.ParamsView, _Mapping]] = ...) -> None: ...
+
+class MsgUpdateParamsResponse(_message.Message):
     __slots__ = ()
     def __init__(self) -> None: ...

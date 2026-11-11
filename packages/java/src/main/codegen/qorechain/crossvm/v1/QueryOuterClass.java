@@ -2306,6 +2306,181 @@ public final class QueryOuterClass extends com.google.protobuf.GeneratedFile {
      */
     com.google.protobuf.ByteString
         getBridgeAllowedTargetsBytes(int index);
+
+    /**
+     * <pre>
+     * bridge_target_pins lists the code each pinned allowlist entry must run.
+     * </pre>
+     *
+     * <code>repeated .qorechain.crossvm.v1.BridgeTargetPin bridge_target_pins = 6 [json_name = "bridgeTargetPins", (.gogoproto.nullable) = false];</code>
+     */
+    java.util.List<qorechain.crossvm.v1.Tx.BridgeTargetPin> 
+        getBridgeTargetPinsList();
+    /**
+     * <pre>
+     * bridge_target_pins lists the code each pinned allowlist entry must run.
+     * </pre>
+     *
+     * <code>repeated .qorechain.crossvm.v1.BridgeTargetPin bridge_target_pins = 6 [json_name = "bridgeTargetPins", (.gogoproto.nullable) = false];</code>
+     */
+    qorechain.crossvm.v1.Tx.BridgeTargetPin getBridgeTargetPins(int index);
+    /**
+     * <pre>
+     * bridge_target_pins lists the code each pinned allowlist entry must run.
+     * </pre>
+     *
+     * <code>repeated .qorechain.crossvm.v1.BridgeTargetPin bridge_target_pins = 6 [json_name = "bridgeTargetPins", (.gogoproto.nullable) = false];</code>
+     */
+    int getBridgeTargetPinsCount();
+    /**
+     * <pre>
+     * bridge_target_pins lists the code each pinned allowlist entry must run.
+     * </pre>
+     *
+     * <code>repeated .qorechain.crossvm.v1.BridgeTargetPin bridge_target_pins = 6 [json_name = "bridgeTargetPins", (.gogoproto.nullable) = false];</code>
+     */
+    java.util.List<? extends qorechain.crossvm.v1.Tx.BridgeTargetPinOrBuilder> 
+        getBridgeTargetPinsOrBuilderList();
+    /**
+     * <pre>
+     * bridge_target_pins lists the code each pinned allowlist entry must run.
+     * </pre>
+     *
+     * <code>repeated .qorechain.crossvm.v1.BridgeTargetPin bridge_target_pins = 6 [json_name = "bridgeTargetPins", (.gogoproto.nullable) = false];</code>
+     */
+    qorechain.crossvm.v1.Tx.BridgeTargetPinOrBuilder getBridgeTargetPinsOrBuilder(
+        int index);
+
+    /**
+     * <pre>
+     * max_pending_per_sender is the per-sender bound on queued async calls in
+     * force (the default when the stored value is zero).
+     * </pre>
+     *
+     * <code>uint32 max_pending_per_sender = 7 [json_name = "maxPendingPerSender"];</code>
+     * @return The maxPendingPerSender.
+     */
+    int getMaxPendingPerSender();
+
+    /**
+     * <pre>
+     * max_cosmos_tx_gas is the per-transaction gas bound on the Cosmos lane in
+     * force (the default when the stored value is zero).
+     * </pre>
+     *
+     * <code>uint64 max_cosmos_tx_gas = 8 [json_name = "maxCosmosTxGas"];</code>
+     * @return The maxCosmosTxGas.
+     */
+    long getMaxCosmosTxGas();
+
+    /**
+     * <pre>
+     * record_retention_blocks is the retention of finished queued call records
+     * in force (the default when the stored value is zero).
+     * </pre>
+     *
+     * <code>uint64 record_retention_blocks = 9 [json_name = "recordRetentionBlocks"];</code>
+     * @return The recordRetentionBlocks.
+     */
+    long getRecordRetentionBlocks();
+
+    /**
+     * <pre>
+     * max_block_wasm_gas is the per-block CosmWasm execution budget in force
+     * (the default when the stored value is zero).
+     * </pre>
+     *
+     * <code>uint64 max_block_wasm_gas = 10 [json_name = "maxBlockWasmGas"];</code>
+     * @return The maxBlockWasmGas.
+     */
+    long getMaxBlockWasmGas();
+
+    /**
+     * <pre>
+     * max_tx_wasm_share_bps is the per-transaction share of the block wasm
+     * budget in force, in basis points.
+     * </pre>
+     *
+     * <code>uint32 max_tx_wasm_share_bps = 11 [json_name = "maxTxWasmShareBps"];</code>
+     * @return The maxTxWasmShareBps.
+     */
+    int getMaxTxWasmShareBps();
+
+    /**
+     * <pre>
+     * max_block_level_wasm_gas is the bound on one contract call made outside
+     * a transaction in force.
+     * </pre>
+     *
+     * <code>uint64 max_block_level_wasm_gas = 12 [json_name = "maxBlockLevelWasmGas"];</code>
+     * @return The maxBlockLevelWasmGas.
+     */
+    long getMaxBlockLevelWasmGas();
+
+    /**
+     * <pre>
+     * queue_wasm_reserve_bps is the queue's reserved share of the block wasm
+     * budget in force, in basis points.
+     * </pre>
+     *
+     * <code>uint32 queue_wasm_reserve_bps = 13 [json_name = "queueWasmReserveBps"];</code>
+     * @return The queueWasmReserveBps.
+     */
+    int getQueueWasmReserveBps();
+
+    /**
+     * <pre>
+     * wasm_congestion_max_factor is the bound on the congestion factor in
+     * force.
+     * </pre>
+     *
+     * <code>uint32 wasm_congestion_max_factor = 14 [json_name = "wasmCongestionMaxFactor"];</code>
+     * @return The wasmCongestionMaxFactor.
+     */
+    int getWasmCongestionMaxFactor();
+
+    /**
+     * <pre>
+     * wasm_congestion_target_bps is the congestion target in force.
+     * </pre>
+     *
+     * <code>uint32 wasm_congestion_target_bps = 15 [json_name = "wasmCongestionTargetBps"];</code>
+     * @return The wasmCongestionTargetBps.
+     */
+    int getWasmCongestionTargetBps();
+
+    /**
+     * <pre>
+     * wasm_congestion_factor_micro is the congestion factor the next block
+     * uses, in millionths (1,000,000 is the base price).
+     * </pre>
+     *
+     * <code>uint64 wasm_congestion_factor_micro = 16 [json_name = "wasmCongestionFactorMicro"];</code>
+     * @return The wasmCongestionFactorMicro.
+     */
+    long getWasmCongestionFactorMicro();
+
+    /**
+     * <pre>
+     * max_block_upload_bps is the code-upload pool in force, in basis points
+     * of the transactions' wasm pool.
+     * </pre>
+     *
+     * <code>uint32 max_block_upload_bps = 17 [json_name = "maxBlockUploadBps"];</code>
+     * @return The maxBlockUploadBps.
+     */
+    int getMaxBlockUploadBps();
+
+    /**
+     * <pre>
+     * max_queue_timeouts_per_block is how many queued calls one block times
+     * out in force.
+     * </pre>
+     *
+     * <code>uint32 max_queue_timeouts_per_block = 18 [json_name = "maxQueueTimeoutsPerBlock"];</code>
+     * @return The maxQueueTimeoutsPerBlock.
+     */
+    int getMaxQueueTimeoutsPerBlock();
   }
   /**
    * Protobuf type {@code qorechain.crossvm.v1.QueryParamsResponse}
@@ -2331,6 +2506,7 @@ public final class QueryOuterClass extends com.google.protobuf.GeneratedFile {
     private QueryParamsResponse() {
       bridgeAllowedTargets_ =
           com.google.protobuf.LazyStringArrayList.emptyList();
+      bridgeTargetPins_ = java.util.Collections.emptyList();
     }
 
     public static final com.google.protobuf.Descriptors.Descriptor
@@ -2452,6 +2628,258 @@ public final class QueryOuterClass extends com.google.protobuf.GeneratedFile {
       return bridgeAllowedTargets_.getByteString(index);
     }
 
+    public static final int BRIDGE_TARGET_PINS_FIELD_NUMBER = 6;
+    @SuppressWarnings("serial")
+    private java.util.List<qorechain.crossvm.v1.Tx.BridgeTargetPin> bridgeTargetPins_;
+    /**
+     * <pre>
+     * bridge_target_pins lists the code each pinned allowlist entry must run.
+     * </pre>
+     *
+     * <code>repeated .qorechain.crossvm.v1.BridgeTargetPin bridge_target_pins = 6 [json_name = "bridgeTargetPins", (.gogoproto.nullable) = false];</code>
+     */
+    @java.lang.Override
+    public java.util.List<qorechain.crossvm.v1.Tx.BridgeTargetPin> getBridgeTargetPinsList() {
+      return bridgeTargetPins_;
+    }
+    /**
+     * <pre>
+     * bridge_target_pins lists the code each pinned allowlist entry must run.
+     * </pre>
+     *
+     * <code>repeated .qorechain.crossvm.v1.BridgeTargetPin bridge_target_pins = 6 [json_name = "bridgeTargetPins", (.gogoproto.nullable) = false];</code>
+     */
+    @java.lang.Override
+    public java.util.List<? extends qorechain.crossvm.v1.Tx.BridgeTargetPinOrBuilder> 
+        getBridgeTargetPinsOrBuilderList() {
+      return bridgeTargetPins_;
+    }
+    /**
+     * <pre>
+     * bridge_target_pins lists the code each pinned allowlist entry must run.
+     * </pre>
+     *
+     * <code>repeated .qorechain.crossvm.v1.BridgeTargetPin bridge_target_pins = 6 [json_name = "bridgeTargetPins", (.gogoproto.nullable) = false];</code>
+     */
+    @java.lang.Override
+    public int getBridgeTargetPinsCount() {
+      return bridgeTargetPins_.size();
+    }
+    /**
+     * <pre>
+     * bridge_target_pins lists the code each pinned allowlist entry must run.
+     * </pre>
+     *
+     * <code>repeated .qorechain.crossvm.v1.BridgeTargetPin bridge_target_pins = 6 [json_name = "bridgeTargetPins", (.gogoproto.nullable) = false];</code>
+     */
+    @java.lang.Override
+    public qorechain.crossvm.v1.Tx.BridgeTargetPin getBridgeTargetPins(int index) {
+      return bridgeTargetPins_.get(index);
+    }
+    /**
+     * <pre>
+     * bridge_target_pins lists the code each pinned allowlist entry must run.
+     * </pre>
+     *
+     * <code>repeated .qorechain.crossvm.v1.BridgeTargetPin bridge_target_pins = 6 [json_name = "bridgeTargetPins", (.gogoproto.nullable) = false];</code>
+     */
+    @java.lang.Override
+    public qorechain.crossvm.v1.Tx.BridgeTargetPinOrBuilder getBridgeTargetPinsOrBuilder(
+        int index) {
+      return bridgeTargetPins_.get(index);
+    }
+
+    public static final int MAX_PENDING_PER_SENDER_FIELD_NUMBER = 7;
+    private int maxPendingPerSender_ = 0;
+    /**
+     * <pre>
+     * max_pending_per_sender is the per-sender bound on queued async calls in
+     * force (the default when the stored value is zero).
+     * </pre>
+     *
+     * <code>uint32 max_pending_per_sender = 7 [json_name = "maxPendingPerSender"];</code>
+     * @return The maxPendingPerSender.
+     */
+    @java.lang.Override
+    public int getMaxPendingPerSender() {
+      return maxPendingPerSender_;
+    }
+
+    public static final int MAX_COSMOS_TX_GAS_FIELD_NUMBER = 8;
+    private long maxCosmosTxGas_ = 0L;
+    /**
+     * <pre>
+     * max_cosmos_tx_gas is the per-transaction gas bound on the Cosmos lane in
+     * force (the default when the stored value is zero).
+     * </pre>
+     *
+     * <code>uint64 max_cosmos_tx_gas = 8 [json_name = "maxCosmosTxGas"];</code>
+     * @return The maxCosmosTxGas.
+     */
+    @java.lang.Override
+    public long getMaxCosmosTxGas() {
+      return maxCosmosTxGas_;
+    }
+
+    public static final int RECORD_RETENTION_BLOCKS_FIELD_NUMBER = 9;
+    private long recordRetentionBlocks_ = 0L;
+    /**
+     * <pre>
+     * record_retention_blocks is the retention of finished queued call records
+     * in force (the default when the stored value is zero).
+     * </pre>
+     *
+     * <code>uint64 record_retention_blocks = 9 [json_name = "recordRetentionBlocks"];</code>
+     * @return The recordRetentionBlocks.
+     */
+    @java.lang.Override
+    public long getRecordRetentionBlocks() {
+      return recordRetentionBlocks_;
+    }
+
+    public static final int MAX_BLOCK_WASM_GAS_FIELD_NUMBER = 10;
+    private long maxBlockWasmGas_ = 0L;
+    /**
+     * <pre>
+     * max_block_wasm_gas is the per-block CosmWasm execution budget in force
+     * (the default when the stored value is zero).
+     * </pre>
+     *
+     * <code>uint64 max_block_wasm_gas = 10 [json_name = "maxBlockWasmGas"];</code>
+     * @return The maxBlockWasmGas.
+     */
+    @java.lang.Override
+    public long getMaxBlockWasmGas() {
+      return maxBlockWasmGas_;
+    }
+
+    public static final int MAX_TX_WASM_SHARE_BPS_FIELD_NUMBER = 11;
+    private int maxTxWasmShareBps_ = 0;
+    /**
+     * <pre>
+     * max_tx_wasm_share_bps is the per-transaction share of the block wasm
+     * budget in force, in basis points.
+     * </pre>
+     *
+     * <code>uint32 max_tx_wasm_share_bps = 11 [json_name = "maxTxWasmShareBps"];</code>
+     * @return The maxTxWasmShareBps.
+     */
+    @java.lang.Override
+    public int getMaxTxWasmShareBps() {
+      return maxTxWasmShareBps_;
+    }
+
+    public static final int MAX_BLOCK_LEVEL_WASM_GAS_FIELD_NUMBER = 12;
+    private long maxBlockLevelWasmGas_ = 0L;
+    /**
+     * <pre>
+     * max_block_level_wasm_gas is the bound on one contract call made outside
+     * a transaction in force.
+     * </pre>
+     *
+     * <code>uint64 max_block_level_wasm_gas = 12 [json_name = "maxBlockLevelWasmGas"];</code>
+     * @return The maxBlockLevelWasmGas.
+     */
+    @java.lang.Override
+    public long getMaxBlockLevelWasmGas() {
+      return maxBlockLevelWasmGas_;
+    }
+
+    public static final int QUEUE_WASM_RESERVE_BPS_FIELD_NUMBER = 13;
+    private int queueWasmReserveBps_ = 0;
+    /**
+     * <pre>
+     * queue_wasm_reserve_bps is the queue's reserved share of the block wasm
+     * budget in force, in basis points.
+     * </pre>
+     *
+     * <code>uint32 queue_wasm_reserve_bps = 13 [json_name = "queueWasmReserveBps"];</code>
+     * @return The queueWasmReserveBps.
+     */
+    @java.lang.Override
+    public int getQueueWasmReserveBps() {
+      return queueWasmReserveBps_;
+    }
+
+    public static final int WASM_CONGESTION_MAX_FACTOR_FIELD_NUMBER = 14;
+    private int wasmCongestionMaxFactor_ = 0;
+    /**
+     * <pre>
+     * wasm_congestion_max_factor is the bound on the congestion factor in
+     * force.
+     * </pre>
+     *
+     * <code>uint32 wasm_congestion_max_factor = 14 [json_name = "wasmCongestionMaxFactor"];</code>
+     * @return The wasmCongestionMaxFactor.
+     */
+    @java.lang.Override
+    public int getWasmCongestionMaxFactor() {
+      return wasmCongestionMaxFactor_;
+    }
+
+    public static final int WASM_CONGESTION_TARGET_BPS_FIELD_NUMBER = 15;
+    private int wasmCongestionTargetBps_ = 0;
+    /**
+     * <pre>
+     * wasm_congestion_target_bps is the congestion target in force.
+     * </pre>
+     *
+     * <code>uint32 wasm_congestion_target_bps = 15 [json_name = "wasmCongestionTargetBps"];</code>
+     * @return The wasmCongestionTargetBps.
+     */
+    @java.lang.Override
+    public int getWasmCongestionTargetBps() {
+      return wasmCongestionTargetBps_;
+    }
+
+    public static final int WASM_CONGESTION_FACTOR_MICRO_FIELD_NUMBER = 16;
+    private long wasmCongestionFactorMicro_ = 0L;
+    /**
+     * <pre>
+     * wasm_congestion_factor_micro is the congestion factor the next block
+     * uses, in millionths (1,000,000 is the base price).
+     * </pre>
+     *
+     * <code>uint64 wasm_congestion_factor_micro = 16 [json_name = "wasmCongestionFactorMicro"];</code>
+     * @return The wasmCongestionFactorMicro.
+     */
+    @java.lang.Override
+    public long getWasmCongestionFactorMicro() {
+      return wasmCongestionFactorMicro_;
+    }
+
+    public static final int MAX_BLOCK_UPLOAD_BPS_FIELD_NUMBER = 17;
+    private int maxBlockUploadBps_ = 0;
+    /**
+     * <pre>
+     * max_block_upload_bps is the code-upload pool in force, in basis points
+     * of the transactions' wasm pool.
+     * </pre>
+     *
+     * <code>uint32 max_block_upload_bps = 17 [json_name = "maxBlockUploadBps"];</code>
+     * @return The maxBlockUploadBps.
+     */
+    @java.lang.Override
+    public int getMaxBlockUploadBps() {
+      return maxBlockUploadBps_;
+    }
+
+    public static final int MAX_QUEUE_TIMEOUTS_PER_BLOCK_FIELD_NUMBER = 18;
+    private int maxQueueTimeoutsPerBlock_ = 0;
+    /**
+     * <pre>
+     * max_queue_timeouts_per_block is how many queued calls one block times
+     * out in force.
+     * </pre>
+     *
+     * <code>uint32 max_queue_timeouts_per_block = 18 [json_name = "maxQueueTimeoutsPerBlock"];</code>
+     * @return The maxQueueTimeoutsPerBlock.
+     */
+    @java.lang.Override
+    public int getMaxQueueTimeoutsPerBlock() {
+      return maxQueueTimeoutsPerBlock_;
+    }
+
     private byte memoizedIsInitialized = -1;
     @java.lang.Override
     public final boolean isInitialized() {
@@ -2481,6 +2909,45 @@ public final class QueryOuterClass extends com.google.protobuf.GeneratedFile {
       for (int i = 0; i < bridgeAllowedTargets_.size(); i++) {
         com.google.protobuf.GeneratedMessage.writeString(output, 5, bridgeAllowedTargets_.getRaw(i));
       }
+      for (int i = 0; i < bridgeTargetPins_.size(); i++) {
+        output.writeMessage(6, bridgeTargetPins_.get(i));
+      }
+      if (maxPendingPerSender_ != 0) {
+        output.writeUInt32(7, maxPendingPerSender_);
+      }
+      if (maxCosmosTxGas_ != 0L) {
+        output.writeUInt64(8, maxCosmosTxGas_);
+      }
+      if (recordRetentionBlocks_ != 0L) {
+        output.writeUInt64(9, recordRetentionBlocks_);
+      }
+      if (maxBlockWasmGas_ != 0L) {
+        output.writeUInt64(10, maxBlockWasmGas_);
+      }
+      if (maxTxWasmShareBps_ != 0) {
+        output.writeUInt32(11, maxTxWasmShareBps_);
+      }
+      if (maxBlockLevelWasmGas_ != 0L) {
+        output.writeUInt64(12, maxBlockLevelWasmGas_);
+      }
+      if (queueWasmReserveBps_ != 0) {
+        output.writeUInt32(13, queueWasmReserveBps_);
+      }
+      if (wasmCongestionMaxFactor_ != 0) {
+        output.writeUInt32(14, wasmCongestionMaxFactor_);
+      }
+      if (wasmCongestionTargetBps_ != 0) {
+        output.writeUInt32(15, wasmCongestionTargetBps_);
+      }
+      if (wasmCongestionFactorMicro_ != 0L) {
+        output.writeUInt64(16, wasmCongestionFactorMicro_);
+      }
+      if (maxBlockUploadBps_ != 0) {
+        output.writeUInt32(17, maxBlockUploadBps_);
+      }
+      if (maxQueueTimeoutsPerBlock_ != 0) {
+        output.writeUInt32(18, maxQueueTimeoutsPerBlock_);
+      }
       getUnknownFields().writeTo(output);
     }
     private int computeSerializedSize_0() {
@@ -2508,6 +2975,63 @@ public final class QueryOuterClass extends com.google.protobuf.GeneratedFile {
         }
         size += dataSize;
         size += 1 * getBridgeAllowedTargetsList().size();
+      }
+
+          {
+            final int count = bridgeTargetPins_.size();
+            for (int i = 0; i < count; i++) {
+              size += com.google.protobuf.CodedOutputStream
+                .computeMessageSizeNoTag(bridgeTargetPins_.get(i));
+            }
+            size += 1 * count;
+          }
+      if (maxPendingPerSender_ != 0) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeUInt32Size(7, maxPendingPerSender_);
+      }
+      if (maxCosmosTxGas_ != 0L) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeUInt64Size(8, maxCosmosTxGas_);
+      }
+      if (recordRetentionBlocks_ != 0L) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeUInt64Size(9, recordRetentionBlocks_);
+      }
+      if (maxBlockWasmGas_ != 0L) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeUInt64Size(10, maxBlockWasmGas_);
+      }
+      if (maxTxWasmShareBps_ != 0) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeUInt32Size(11, maxTxWasmShareBps_);
+      }
+      if (maxBlockLevelWasmGas_ != 0L) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeUInt64Size(12, maxBlockLevelWasmGas_);
+      }
+      if (queueWasmReserveBps_ != 0) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeUInt32Size(13, queueWasmReserveBps_);
+      }
+      if (wasmCongestionMaxFactor_ != 0) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeUInt32Size(14, wasmCongestionMaxFactor_);
+      }
+      if (wasmCongestionTargetBps_ != 0) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeUInt32Size(15, wasmCongestionTargetBps_);
+      }
+      if (wasmCongestionFactorMicro_ != 0L) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeUInt64Size(16, wasmCongestionFactorMicro_);
+      }
+      if (maxBlockUploadBps_ != 0) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeUInt32Size(17, maxBlockUploadBps_);
+      }
+      if (maxQueueTimeoutsPerBlock_ != 0) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeUInt32Size(18, maxQueueTimeoutsPerBlock_);
       }
       return size;
     }
@@ -2543,6 +3067,32 @@ public final class QueryOuterClass extends com.google.protobuf.GeneratedFile {
           != other.getEnabled()) return false;
       if (!getBridgeAllowedTargetsList()
           .equals(other.getBridgeAllowedTargetsList())) return false;
+      if (!getBridgeTargetPinsList()
+          .equals(other.getBridgeTargetPinsList())) return false;
+      if (getMaxPendingPerSender()
+          != other.getMaxPendingPerSender()) return false;
+      if (getMaxCosmosTxGas()
+          != other.getMaxCosmosTxGas()) return false;
+      if (getRecordRetentionBlocks()
+          != other.getRecordRetentionBlocks()) return false;
+      if (getMaxBlockWasmGas()
+          != other.getMaxBlockWasmGas()) return false;
+      if (getMaxTxWasmShareBps()
+          != other.getMaxTxWasmShareBps()) return false;
+      if (getMaxBlockLevelWasmGas()
+          != other.getMaxBlockLevelWasmGas()) return false;
+      if (getQueueWasmReserveBps()
+          != other.getQueueWasmReserveBps()) return false;
+      if (getWasmCongestionMaxFactor()
+          != other.getWasmCongestionMaxFactor()) return false;
+      if (getWasmCongestionTargetBps()
+          != other.getWasmCongestionTargetBps()) return false;
+      if (getWasmCongestionFactorMicro()
+          != other.getWasmCongestionFactorMicro()) return false;
+      if (getMaxBlockUploadBps()
+          != other.getMaxBlockUploadBps()) return false;
+      if (getMaxQueueTimeoutsPerBlock()
+          != other.getMaxQueueTimeoutsPerBlock()) return false;
       if (!getUnknownFields().equals(other.getUnknownFields())) return false;
       return true;
     }
@@ -2569,6 +3119,39 @@ public final class QueryOuterClass extends com.google.protobuf.GeneratedFile {
         hash = (37 * hash) + BRIDGE_ALLOWED_TARGETS_FIELD_NUMBER;
         hash = (53 * hash) + getBridgeAllowedTargetsList().hashCode();
       }
+      if (getBridgeTargetPinsCount() > 0) {
+        hash = (37 * hash) + BRIDGE_TARGET_PINS_FIELD_NUMBER;
+        hash = (53 * hash) + getBridgeTargetPinsList().hashCode();
+      }
+      hash = (37 * hash) + MAX_PENDING_PER_SENDER_FIELD_NUMBER;
+      hash = (53 * hash) + getMaxPendingPerSender();
+      hash = (37 * hash) + MAX_COSMOS_TX_GAS_FIELD_NUMBER;
+      hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
+          getMaxCosmosTxGas());
+      hash = (37 * hash) + RECORD_RETENTION_BLOCKS_FIELD_NUMBER;
+      hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
+          getRecordRetentionBlocks());
+      hash = (37 * hash) + MAX_BLOCK_WASM_GAS_FIELD_NUMBER;
+      hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
+          getMaxBlockWasmGas());
+      hash = (37 * hash) + MAX_TX_WASM_SHARE_BPS_FIELD_NUMBER;
+      hash = (53 * hash) + getMaxTxWasmShareBps();
+      hash = (37 * hash) + MAX_BLOCK_LEVEL_WASM_GAS_FIELD_NUMBER;
+      hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
+          getMaxBlockLevelWasmGas());
+      hash = (37 * hash) + QUEUE_WASM_RESERVE_BPS_FIELD_NUMBER;
+      hash = (53 * hash) + getQueueWasmReserveBps();
+      hash = (37 * hash) + WASM_CONGESTION_MAX_FACTOR_FIELD_NUMBER;
+      hash = (53 * hash) + getWasmCongestionMaxFactor();
+      hash = (37 * hash) + WASM_CONGESTION_TARGET_BPS_FIELD_NUMBER;
+      hash = (53 * hash) + getWasmCongestionTargetBps();
+      hash = (37 * hash) + WASM_CONGESTION_FACTOR_MICRO_FIELD_NUMBER;
+      hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
+          getWasmCongestionFactorMicro());
+      hash = (37 * hash) + MAX_BLOCK_UPLOAD_BPS_FIELD_NUMBER;
+      hash = (53 * hash) + getMaxBlockUploadBps();
+      hash = (37 * hash) + MAX_QUEUE_TIMEOUTS_PER_BLOCK_FIELD_NUMBER;
+      hash = (53 * hash) + getMaxQueueTimeoutsPerBlock();
       hash = (29 * hash) + getUnknownFields().hashCode();
       memoizedHashCode = hash;
       return hash;
@@ -2706,6 +3289,25 @@ public final class QueryOuterClass extends com.google.protobuf.GeneratedFile {
         enabled_ = false;
         bridgeAllowedTargets_ =
             com.google.protobuf.LazyStringArrayList.emptyList();
+        if (bridgeTargetPinsBuilder_ == null) {
+          bridgeTargetPins_ = java.util.Collections.emptyList();
+        } else {
+          bridgeTargetPins_ = null;
+          bridgeTargetPinsBuilder_.clear();
+        }
+        bitField0_ = (bitField0_ & ~0x00000020);
+        maxPendingPerSender_ = 0;
+        maxCosmosTxGas_ = 0L;
+        recordRetentionBlocks_ = 0L;
+        maxBlockWasmGas_ = 0L;
+        maxTxWasmShareBps_ = 0;
+        maxBlockLevelWasmGas_ = 0L;
+        queueWasmReserveBps_ = 0;
+        wasmCongestionMaxFactor_ = 0;
+        wasmCongestionTargetBps_ = 0;
+        wasmCongestionFactorMicro_ = 0L;
+        maxBlockUploadBps_ = 0;
+        maxQueueTimeoutsPerBlock_ = 0;
         return this;
       }
 
@@ -2732,9 +3334,22 @@ public final class QueryOuterClass extends com.google.protobuf.GeneratedFile {
       @java.lang.Override
       public qorechain.crossvm.v1.QueryOuterClass.QueryParamsResponse buildPartial() {
         qorechain.crossvm.v1.QueryOuterClass.QueryParamsResponse result = new qorechain.crossvm.v1.QueryOuterClass.QueryParamsResponse(this);
+        buildPartialRepeatedFields(result);
         if (bitField0_ != 0) { buildPartial0(result); }
         onBuilt();
         return result;
+      }
+
+      private void buildPartialRepeatedFields(qorechain.crossvm.v1.QueryOuterClass.QueryParamsResponse result) {
+        if (bridgeTargetPinsBuilder_ == null) {
+          if (((bitField0_ & 0x00000020) != 0)) {
+            bridgeTargetPins_ = java.util.Collections.unmodifiableList(bridgeTargetPins_);
+            bitField0_ = (bitField0_ & ~0x00000020);
+          }
+          result.bridgeTargetPins_ = bridgeTargetPins_;
+        } else {
+          result.bridgeTargetPins_ = bridgeTargetPinsBuilder_.build();
+        }
       }
 
       private void buildPartial0(qorechain.crossvm.v1.QueryOuterClass.QueryParamsResponse result) {
@@ -2754,6 +3369,42 @@ public final class QueryOuterClass extends com.google.protobuf.GeneratedFile {
         if (((from_bitField0_ & 0x00000010) != 0)) {
           bridgeAllowedTargets_.makeImmutable();
           result.bridgeAllowedTargets_ = bridgeAllowedTargets_;
+        }
+        if (((from_bitField0_ & 0x00000040) != 0)) {
+          result.maxPendingPerSender_ = maxPendingPerSender_;
+        }
+        if (((from_bitField0_ & 0x00000080) != 0)) {
+          result.maxCosmosTxGas_ = maxCosmosTxGas_;
+        }
+        if (((from_bitField0_ & 0x00000100) != 0)) {
+          result.recordRetentionBlocks_ = recordRetentionBlocks_;
+        }
+        if (((from_bitField0_ & 0x00000200) != 0)) {
+          result.maxBlockWasmGas_ = maxBlockWasmGas_;
+        }
+        if (((from_bitField0_ & 0x00000400) != 0)) {
+          result.maxTxWasmShareBps_ = maxTxWasmShareBps_;
+        }
+        if (((from_bitField0_ & 0x00000800) != 0)) {
+          result.maxBlockLevelWasmGas_ = maxBlockLevelWasmGas_;
+        }
+        if (((from_bitField0_ & 0x00001000) != 0)) {
+          result.queueWasmReserveBps_ = queueWasmReserveBps_;
+        }
+        if (((from_bitField0_ & 0x00002000) != 0)) {
+          result.wasmCongestionMaxFactor_ = wasmCongestionMaxFactor_;
+        }
+        if (((from_bitField0_ & 0x00004000) != 0)) {
+          result.wasmCongestionTargetBps_ = wasmCongestionTargetBps_;
+        }
+        if (((from_bitField0_ & 0x00008000) != 0)) {
+          result.wasmCongestionFactorMicro_ = wasmCongestionFactorMicro_;
+        }
+        if (((from_bitField0_ & 0x00010000) != 0)) {
+          result.maxBlockUploadBps_ = maxBlockUploadBps_;
+        }
+        if (((from_bitField0_ & 0x00020000) != 0)) {
+          result.maxQueueTimeoutsPerBlock_ = maxQueueTimeoutsPerBlock_;
         }
       }
 
@@ -2790,6 +3441,68 @@ public final class QueryOuterClass extends com.google.protobuf.GeneratedFile {
             bridgeAllowedTargets_.addAll(other.bridgeAllowedTargets_);
           }
           onChanged();
+        }
+        if (bridgeTargetPinsBuilder_ == null) {
+          if (!other.bridgeTargetPins_.isEmpty()) {
+            if (bridgeTargetPins_.isEmpty()) {
+              bridgeTargetPins_ = other.bridgeTargetPins_;
+              bitField0_ = (bitField0_ & ~0x00000020);
+            } else {
+              ensureBridgeTargetPinsIsMutable();
+              bridgeTargetPins_.addAll(other.bridgeTargetPins_);
+            }
+            onChanged();
+          }
+        } else {
+          if (!other.bridgeTargetPins_.isEmpty()) {
+            if (bridgeTargetPinsBuilder_.isEmpty()) {
+              bridgeTargetPinsBuilder_.dispose();
+              bridgeTargetPinsBuilder_ = null;
+              bridgeTargetPins_ = other.bridgeTargetPins_;
+              bitField0_ = (bitField0_ & ~0x00000020);
+              bridgeTargetPinsBuilder_ = 
+                com.google.protobuf.GeneratedMessage.alwaysUseFieldBuilders ?
+                   internalGetBridgeTargetPinsFieldBuilder() : null;
+            } else {
+              bridgeTargetPinsBuilder_.addAllMessages(other.bridgeTargetPins_);
+            }
+          }
+        }
+        if (other.getMaxPendingPerSender() != 0) {
+          setMaxPendingPerSender(other.getMaxPendingPerSender());
+        }
+        if (other.getMaxCosmosTxGas() != 0L) {
+          setMaxCosmosTxGas(other.getMaxCosmosTxGas());
+        }
+        if (other.getRecordRetentionBlocks() != 0L) {
+          setRecordRetentionBlocks(other.getRecordRetentionBlocks());
+        }
+        if (other.getMaxBlockWasmGas() != 0L) {
+          setMaxBlockWasmGas(other.getMaxBlockWasmGas());
+        }
+        if (other.getMaxTxWasmShareBps() != 0) {
+          setMaxTxWasmShareBps(other.getMaxTxWasmShareBps());
+        }
+        if (other.getMaxBlockLevelWasmGas() != 0L) {
+          setMaxBlockLevelWasmGas(other.getMaxBlockLevelWasmGas());
+        }
+        if (other.getQueueWasmReserveBps() != 0) {
+          setQueueWasmReserveBps(other.getQueueWasmReserveBps());
+        }
+        if (other.getWasmCongestionMaxFactor() != 0) {
+          setWasmCongestionMaxFactor(other.getWasmCongestionMaxFactor());
+        }
+        if (other.getWasmCongestionTargetBps() != 0) {
+          setWasmCongestionTargetBps(other.getWasmCongestionTargetBps());
+        }
+        if (other.getWasmCongestionFactorMicro() != 0L) {
+          setWasmCongestionFactorMicro(other.getWasmCongestionFactorMicro());
+        }
+        if (other.getMaxBlockUploadBps() != 0) {
+          setMaxBlockUploadBps(other.getMaxBlockUploadBps());
+        }
+        if (other.getMaxQueueTimeoutsPerBlock() != 0) {
+          setMaxQueueTimeoutsPerBlock(other.getMaxQueueTimeoutsPerBlock());
         }
         this.mergeUnknownFields(other.getUnknownFields());
         onChanged();
@@ -2842,6 +3555,79 @@ public final class QueryOuterClass extends com.google.protobuf.GeneratedFile {
                 bridgeAllowedTargets_.add(input.readStringRequireUtf8());
                 break;
               } // case 42
+              case 50: {
+                qorechain.crossvm.v1.Tx.BridgeTargetPin m =
+                    input.readMessage(
+                        qorechain.crossvm.v1.Tx.BridgeTargetPin.parser(),
+                        extensionRegistry);
+                if (bridgeTargetPinsBuilder_ == null) {
+                  ensureBridgeTargetPinsIsMutable();
+                  bridgeTargetPins_.add(m);
+                } else {
+                  bridgeTargetPinsBuilder_.addMessage(m);
+                }
+                break;
+              } // case 50
+              case 56: {
+                maxPendingPerSender_ = input.readUInt32();
+                bitField0_ |= 0x00000040;
+                break;
+              } // case 56
+              case 64: {
+                maxCosmosTxGas_ = input.readUInt64();
+                bitField0_ |= 0x00000080;
+                break;
+              } // case 64
+              case 72: {
+                recordRetentionBlocks_ = input.readUInt64();
+                bitField0_ |= 0x00000100;
+                break;
+              } // case 72
+              case 80: {
+                maxBlockWasmGas_ = input.readUInt64();
+                bitField0_ |= 0x00000200;
+                break;
+              } // case 80
+              case 88: {
+                maxTxWasmShareBps_ = input.readUInt32();
+                bitField0_ |= 0x00000400;
+                break;
+              } // case 88
+              case 96: {
+                maxBlockLevelWasmGas_ = input.readUInt64();
+                bitField0_ |= 0x00000800;
+                break;
+              } // case 96
+              case 104: {
+                queueWasmReserveBps_ = input.readUInt32();
+                bitField0_ |= 0x00001000;
+                break;
+              } // case 104
+              case 112: {
+                wasmCongestionMaxFactor_ = input.readUInt32();
+                bitField0_ |= 0x00002000;
+                break;
+              } // case 112
+              case 120: {
+                wasmCongestionTargetBps_ = input.readUInt32();
+                bitField0_ |= 0x00004000;
+                break;
+              } // case 120
+              case 128: {
+                wasmCongestionFactorMicro_ = input.readUInt64();
+                bitField0_ |= 0x00008000;
+                break;
+              } // case 128
+              case 136: {
+                maxBlockUploadBps_ = input.readUInt32();
+                bitField0_ |= 0x00010000;
+                break;
+              } // case 136
+              case 144: {
+                maxQueueTimeoutsPerBlock_ = input.readUInt32();
+                bitField0_ |= 0x00020000;
+                break;
+              } // case 144
               default: {
                 if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                   done = true; // was an endgroup tag
@@ -3143,6 +3929,879 @@ public final class QueryOuterClass extends com.google.protobuf.GeneratedFile {
         return this;
       }
 
+      private java.util.List<qorechain.crossvm.v1.Tx.BridgeTargetPin> bridgeTargetPins_ =
+        java.util.Collections.emptyList();
+      private void ensureBridgeTargetPinsIsMutable() {
+        if (!((bitField0_ & 0x00000020) != 0)) {
+          bridgeTargetPins_ = new java.util.ArrayList<qorechain.crossvm.v1.Tx.BridgeTargetPin>(bridgeTargetPins_);
+          bitField0_ |= 0x00000020;
+         }
+      }
+
+      private com.google.protobuf.RepeatedFieldBuilder<
+          qorechain.crossvm.v1.Tx.BridgeTargetPin, qorechain.crossvm.v1.Tx.BridgeTargetPin.Builder, qorechain.crossvm.v1.Tx.BridgeTargetPinOrBuilder> bridgeTargetPinsBuilder_;
+
+      /**
+       * <pre>
+       * bridge_target_pins lists the code each pinned allowlist entry must run.
+       * </pre>
+       *
+       * <code>repeated .qorechain.crossvm.v1.BridgeTargetPin bridge_target_pins = 6 [json_name = "bridgeTargetPins", (.gogoproto.nullable) = false];</code>
+       */
+      public java.util.List<qorechain.crossvm.v1.Tx.BridgeTargetPin> getBridgeTargetPinsList() {
+        if (bridgeTargetPinsBuilder_ == null) {
+          return java.util.Collections.unmodifiableList(bridgeTargetPins_);
+        } else {
+          return bridgeTargetPinsBuilder_.getMessageList();
+        }
+      }
+      /**
+       * <pre>
+       * bridge_target_pins lists the code each pinned allowlist entry must run.
+       * </pre>
+       *
+       * <code>repeated .qorechain.crossvm.v1.BridgeTargetPin bridge_target_pins = 6 [json_name = "bridgeTargetPins", (.gogoproto.nullable) = false];</code>
+       */
+      public int getBridgeTargetPinsCount() {
+        if (bridgeTargetPinsBuilder_ == null) {
+          return bridgeTargetPins_.size();
+        } else {
+          return bridgeTargetPinsBuilder_.getCount();
+        }
+      }
+      /**
+       * <pre>
+       * bridge_target_pins lists the code each pinned allowlist entry must run.
+       * </pre>
+       *
+       * <code>repeated .qorechain.crossvm.v1.BridgeTargetPin bridge_target_pins = 6 [json_name = "bridgeTargetPins", (.gogoproto.nullable) = false];</code>
+       */
+      public qorechain.crossvm.v1.Tx.BridgeTargetPin getBridgeTargetPins(int index) {
+        if (bridgeTargetPinsBuilder_ == null) {
+          return bridgeTargetPins_.get(index);
+        } else {
+          return bridgeTargetPinsBuilder_.getMessage(index);
+        }
+      }
+      /**
+       * <pre>
+       * bridge_target_pins lists the code each pinned allowlist entry must run.
+       * </pre>
+       *
+       * <code>repeated .qorechain.crossvm.v1.BridgeTargetPin bridge_target_pins = 6 [json_name = "bridgeTargetPins", (.gogoproto.nullable) = false];</code>
+       */
+      public Builder setBridgeTargetPins(
+          int index, qorechain.crossvm.v1.Tx.BridgeTargetPin value) {
+        if (bridgeTargetPinsBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          ensureBridgeTargetPinsIsMutable();
+          bridgeTargetPins_.set(index, value);
+          onChanged();
+        } else {
+          bridgeTargetPinsBuilder_.setMessage(index, value);
+        }
+        return this;
+      }
+      /**
+       * <pre>
+       * bridge_target_pins lists the code each pinned allowlist entry must run.
+       * </pre>
+       *
+       * <code>repeated .qorechain.crossvm.v1.BridgeTargetPin bridge_target_pins = 6 [json_name = "bridgeTargetPins", (.gogoproto.nullable) = false];</code>
+       */
+      public Builder setBridgeTargetPins(
+          int index, qorechain.crossvm.v1.Tx.BridgeTargetPin.Builder builderForValue) {
+        if (bridgeTargetPinsBuilder_ == null) {
+          ensureBridgeTargetPinsIsMutable();
+          bridgeTargetPins_.set(index, builderForValue.build());
+          onChanged();
+        } else {
+          bridgeTargetPinsBuilder_.setMessage(index, builderForValue.build());
+        }
+        return this;
+      }
+      /**
+       * <pre>
+       * bridge_target_pins lists the code each pinned allowlist entry must run.
+       * </pre>
+       *
+       * <code>repeated .qorechain.crossvm.v1.BridgeTargetPin bridge_target_pins = 6 [json_name = "bridgeTargetPins", (.gogoproto.nullable) = false];</code>
+       */
+      public Builder addBridgeTargetPins(qorechain.crossvm.v1.Tx.BridgeTargetPin value) {
+        if (bridgeTargetPinsBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          ensureBridgeTargetPinsIsMutable();
+          bridgeTargetPins_.add(value);
+          onChanged();
+        } else {
+          bridgeTargetPinsBuilder_.addMessage(value);
+        }
+        return this;
+      }
+      /**
+       * <pre>
+       * bridge_target_pins lists the code each pinned allowlist entry must run.
+       * </pre>
+       *
+       * <code>repeated .qorechain.crossvm.v1.BridgeTargetPin bridge_target_pins = 6 [json_name = "bridgeTargetPins", (.gogoproto.nullable) = false];</code>
+       */
+      public Builder addBridgeTargetPins(
+          int index, qorechain.crossvm.v1.Tx.BridgeTargetPin value) {
+        if (bridgeTargetPinsBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          ensureBridgeTargetPinsIsMutable();
+          bridgeTargetPins_.add(index, value);
+          onChanged();
+        } else {
+          bridgeTargetPinsBuilder_.addMessage(index, value);
+        }
+        return this;
+      }
+      /**
+       * <pre>
+       * bridge_target_pins lists the code each pinned allowlist entry must run.
+       * </pre>
+       *
+       * <code>repeated .qorechain.crossvm.v1.BridgeTargetPin bridge_target_pins = 6 [json_name = "bridgeTargetPins", (.gogoproto.nullable) = false];</code>
+       */
+      public Builder addBridgeTargetPins(
+          qorechain.crossvm.v1.Tx.BridgeTargetPin.Builder builderForValue) {
+        if (bridgeTargetPinsBuilder_ == null) {
+          ensureBridgeTargetPinsIsMutable();
+          bridgeTargetPins_.add(builderForValue.build());
+          onChanged();
+        } else {
+          bridgeTargetPinsBuilder_.addMessage(builderForValue.build());
+        }
+        return this;
+      }
+      /**
+       * <pre>
+       * bridge_target_pins lists the code each pinned allowlist entry must run.
+       * </pre>
+       *
+       * <code>repeated .qorechain.crossvm.v1.BridgeTargetPin bridge_target_pins = 6 [json_name = "bridgeTargetPins", (.gogoproto.nullable) = false];</code>
+       */
+      public Builder addBridgeTargetPins(
+          int index, qorechain.crossvm.v1.Tx.BridgeTargetPin.Builder builderForValue) {
+        if (bridgeTargetPinsBuilder_ == null) {
+          ensureBridgeTargetPinsIsMutable();
+          bridgeTargetPins_.add(index, builderForValue.build());
+          onChanged();
+        } else {
+          bridgeTargetPinsBuilder_.addMessage(index, builderForValue.build());
+        }
+        return this;
+      }
+      /**
+       * <pre>
+       * bridge_target_pins lists the code each pinned allowlist entry must run.
+       * </pre>
+       *
+       * <code>repeated .qorechain.crossvm.v1.BridgeTargetPin bridge_target_pins = 6 [json_name = "bridgeTargetPins", (.gogoproto.nullable) = false];</code>
+       */
+      public Builder addAllBridgeTargetPins(
+          java.lang.Iterable<? extends qorechain.crossvm.v1.Tx.BridgeTargetPin> values) {
+        if (bridgeTargetPinsBuilder_ == null) {
+          ensureBridgeTargetPinsIsMutable();
+          com.google.protobuf.AbstractMessageLite.Builder.addAll(
+              values, bridgeTargetPins_);
+          onChanged();
+        } else {
+          bridgeTargetPinsBuilder_.addAllMessages(values);
+        }
+        return this;
+      }
+      /**
+       * <pre>
+       * bridge_target_pins lists the code each pinned allowlist entry must run.
+       * </pre>
+       *
+       * <code>repeated .qorechain.crossvm.v1.BridgeTargetPin bridge_target_pins = 6 [json_name = "bridgeTargetPins", (.gogoproto.nullable) = false];</code>
+       */
+      public Builder clearBridgeTargetPins() {
+        if (bridgeTargetPinsBuilder_ == null) {
+          bridgeTargetPins_ = java.util.Collections.emptyList();
+          bitField0_ = (bitField0_ & ~0x00000020);
+          onChanged();
+        } else {
+          bridgeTargetPinsBuilder_.clear();
+        }
+        return this;
+      }
+      /**
+       * <pre>
+       * bridge_target_pins lists the code each pinned allowlist entry must run.
+       * </pre>
+       *
+       * <code>repeated .qorechain.crossvm.v1.BridgeTargetPin bridge_target_pins = 6 [json_name = "bridgeTargetPins", (.gogoproto.nullable) = false];</code>
+       */
+      public Builder removeBridgeTargetPins(int index) {
+        if (bridgeTargetPinsBuilder_ == null) {
+          ensureBridgeTargetPinsIsMutable();
+          bridgeTargetPins_.remove(index);
+          onChanged();
+        } else {
+          bridgeTargetPinsBuilder_.remove(index);
+        }
+        return this;
+      }
+      /**
+       * <pre>
+       * bridge_target_pins lists the code each pinned allowlist entry must run.
+       * </pre>
+       *
+       * <code>repeated .qorechain.crossvm.v1.BridgeTargetPin bridge_target_pins = 6 [json_name = "bridgeTargetPins", (.gogoproto.nullable) = false];</code>
+       */
+      public qorechain.crossvm.v1.Tx.BridgeTargetPin.Builder getBridgeTargetPinsBuilder(
+          int index) {
+        return internalGetBridgeTargetPinsFieldBuilder().getBuilder(index);
+      }
+      /**
+       * <pre>
+       * bridge_target_pins lists the code each pinned allowlist entry must run.
+       * </pre>
+       *
+       * <code>repeated .qorechain.crossvm.v1.BridgeTargetPin bridge_target_pins = 6 [json_name = "bridgeTargetPins", (.gogoproto.nullable) = false];</code>
+       */
+      public qorechain.crossvm.v1.Tx.BridgeTargetPinOrBuilder getBridgeTargetPinsOrBuilder(
+          int index) {
+        if (bridgeTargetPinsBuilder_ == null) {
+          return bridgeTargetPins_.get(index);  } else {
+          return bridgeTargetPinsBuilder_.getMessageOrBuilder(index);
+        }
+      }
+      /**
+       * <pre>
+       * bridge_target_pins lists the code each pinned allowlist entry must run.
+       * </pre>
+       *
+       * <code>repeated .qorechain.crossvm.v1.BridgeTargetPin bridge_target_pins = 6 [json_name = "bridgeTargetPins", (.gogoproto.nullable) = false];</code>
+       */
+      public java.util.List<? extends qorechain.crossvm.v1.Tx.BridgeTargetPinOrBuilder> 
+           getBridgeTargetPinsOrBuilderList() {
+        if (bridgeTargetPinsBuilder_ != null) {
+          return bridgeTargetPinsBuilder_.getMessageOrBuilderList();
+        } else {
+          return java.util.Collections.unmodifiableList(bridgeTargetPins_);
+        }
+      }
+      /**
+       * <pre>
+       * bridge_target_pins lists the code each pinned allowlist entry must run.
+       * </pre>
+       *
+       * <code>repeated .qorechain.crossvm.v1.BridgeTargetPin bridge_target_pins = 6 [json_name = "bridgeTargetPins", (.gogoproto.nullable) = false];</code>
+       */
+      public qorechain.crossvm.v1.Tx.BridgeTargetPin.Builder addBridgeTargetPinsBuilder() {
+        return internalGetBridgeTargetPinsFieldBuilder().addBuilder(
+            qorechain.crossvm.v1.Tx.BridgeTargetPin.getDefaultInstance());
+      }
+      /**
+       * <pre>
+       * bridge_target_pins lists the code each pinned allowlist entry must run.
+       * </pre>
+       *
+       * <code>repeated .qorechain.crossvm.v1.BridgeTargetPin bridge_target_pins = 6 [json_name = "bridgeTargetPins", (.gogoproto.nullable) = false];</code>
+       */
+      public qorechain.crossvm.v1.Tx.BridgeTargetPin.Builder addBridgeTargetPinsBuilder(
+          int index) {
+        return internalGetBridgeTargetPinsFieldBuilder().addBuilder(
+            index, qorechain.crossvm.v1.Tx.BridgeTargetPin.getDefaultInstance());
+      }
+      /**
+       * <pre>
+       * bridge_target_pins lists the code each pinned allowlist entry must run.
+       * </pre>
+       *
+       * <code>repeated .qorechain.crossvm.v1.BridgeTargetPin bridge_target_pins = 6 [json_name = "bridgeTargetPins", (.gogoproto.nullable) = false];</code>
+       */
+      public java.util.List<qorechain.crossvm.v1.Tx.BridgeTargetPin.Builder> 
+           getBridgeTargetPinsBuilderList() {
+        return internalGetBridgeTargetPinsFieldBuilder().getBuilderList();
+      }
+      private com.google.protobuf.RepeatedFieldBuilder<
+          qorechain.crossvm.v1.Tx.BridgeTargetPin, qorechain.crossvm.v1.Tx.BridgeTargetPin.Builder, qorechain.crossvm.v1.Tx.BridgeTargetPinOrBuilder> 
+          internalGetBridgeTargetPinsFieldBuilder() {
+        if (bridgeTargetPinsBuilder_ == null) {
+          bridgeTargetPinsBuilder_ = new com.google.protobuf.RepeatedFieldBuilder<
+              qorechain.crossvm.v1.Tx.BridgeTargetPin, qorechain.crossvm.v1.Tx.BridgeTargetPin.Builder, qorechain.crossvm.v1.Tx.BridgeTargetPinOrBuilder>(
+                  bridgeTargetPins_,
+                  ((bitField0_ & 0x00000020) != 0),
+                  getParentForChildren(),
+                  isClean());
+          bridgeTargetPins_ = null;
+        }
+        return bridgeTargetPinsBuilder_;
+      }
+
+      private int maxPendingPerSender_ ;
+      /**
+       * <pre>
+       * max_pending_per_sender is the per-sender bound on queued async calls in
+       * force (the default when the stored value is zero).
+       * </pre>
+       *
+       * <code>uint32 max_pending_per_sender = 7 [json_name = "maxPendingPerSender"];</code>
+       * @return The maxPendingPerSender.
+       */
+      @java.lang.Override
+      public int getMaxPendingPerSender() {
+        return maxPendingPerSender_;
+      }
+      /**
+       * <pre>
+       * max_pending_per_sender is the per-sender bound on queued async calls in
+       * force (the default when the stored value is zero).
+       * </pre>
+       *
+       * <code>uint32 max_pending_per_sender = 7 [json_name = "maxPendingPerSender"];</code>
+       * @param value The maxPendingPerSender to set.
+       * @return This builder for chaining.
+       */
+      public Builder setMaxPendingPerSender(int value) {
+
+        maxPendingPerSender_ = value;
+        bitField0_ |= 0x00000040;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * max_pending_per_sender is the per-sender bound on queued async calls in
+       * force (the default when the stored value is zero).
+       * </pre>
+       *
+       * <code>uint32 max_pending_per_sender = 7 [json_name = "maxPendingPerSender"];</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearMaxPendingPerSender() {
+        bitField0_ = (bitField0_ & ~0x00000040);
+        maxPendingPerSender_ = 0;
+        onChanged();
+        return this;
+      }
+
+      private long maxCosmosTxGas_ ;
+      /**
+       * <pre>
+       * max_cosmos_tx_gas is the per-transaction gas bound on the Cosmos lane in
+       * force (the default when the stored value is zero).
+       * </pre>
+       *
+       * <code>uint64 max_cosmos_tx_gas = 8 [json_name = "maxCosmosTxGas"];</code>
+       * @return The maxCosmosTxGas.
+       */
+      @java.lang.Override
+      public long getMaxCosmosTxGas() {
+        return maxCosmosTxGas_;
+      }
+      /**
+       * <pre>
+       * max_cosmos_tx_gas is the per-transaction gas bound on the Cosmos lane in
+       * force (the default when the stored value is zero).
+       * </pre>
+       *
+       * <code>uint64 max_cosmos_tx_gas = 8 [json_name = "maxCosmosTxGas"];</code>
+       * @param value The maxCosmosTxGas to set.
+       * @return This builder for chaining.
+       */
+      public Builder setMaxCosmosTxGas(long value) {
+
+        maxCosmosTxGas_ = value;
+        bitField0_ |= 0x00000080;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * max_cosmos_tx_gas is the per-transaction gas bound on the Cosmos lane in
+       * force (the default when the stored value is zero).
+       * </pre>
+       *
+       * <code>uint64 max_cosmos_tx_gas = 8 [json_name = "maxCosmosTxGas"];</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearMaxCosmosTxGas() {
+        bitField0_ = (bitField0_ & ~0x00000080);
+        maxCosmosTxGas_ = 0L;
+        onChanged();
+        return this;
+      }
+
+      private long recordRetentionBlocks_ ;
+      /**
+       * <pre>
+       * record_retention_blocks is the retention of finished queued call records
+       * in force (the default when the stored value is zero).
+       * </pre>
+       *
+       * <code>uint64 record_retention_blocks = 9 [json_name = "recordRetentionBlocks"];</code>
+       * @return The recordRetentionBlocks.
+       */
+      @java.lang.Override
+      public long getRecordRetentionBlocks() {
+        return recordRetentionBlocks_;
+      }
+      /**
+       * <pre>
+       * record_retention_blocks is the retention of finished queued call records
+       * in force (the default when the stored value is zero).
+       * </pre>
+       *
+       * <code>uint64 record_retention_blocks = 9 [json_name = "recordRetentionBlocks"];</code>
+       * @param value The recordRetentionBlocks to set.
+       * @return This builder for chaining.
+       */
+      public Builder setRecordRetentionBlocks(long value) {
+
+        recordRetentionBlocks_ = value;
+        bitField0_ |= 0x00000100;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * record_retention_blocks is the retention of finished queued call records
+       * in force (the default when the stored value is zero).
+       * </pre>
+       *
+       * <code>uint64 record_retention_blocks = 9 [json_name = "recordRetentionBlocks"];</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearRecordRetentionBlocks() {
+        bitField0_ = (bitField0_ & ~0x00000100);
+        recordRetentionBlocks_ = 0L;
+        onChanged();
+        return this;
+      }
+
+      private long maxBlockWasmGas_ ;
+      /**
+       * <pre>
+       * max_block_wasm_gas is the per-block CosmWasm execution budget in force
+       * (the default when the stored value is zero).
+       * </pre>
+       *
+       * <code>uint64 max_block_wasm_gas = 10 [json_name = "maxBlockWasmGas"];</code>
+       * @return The maxBlockWasmGas.
+       */
+      @java.lang.Override
+      public long getMaxBlockWasmGas() {
+        return maxBlockWasmGas_;
+      }
+      /**
+       * <pre>
+       * max_block_wasm_gas is the per-block CosmWasm execution budget in force
+       * (the default when the stored value is zero).
+       * </pre>
+       *
+       * <code>uint64 max_block_wasm_gas = 10 [json_name = "maxBlockWasmGas"];</code>
+       * @param value The maxBlockWasmGas to set.
+       * @return This builder for chaining.
+       */
+      public Builder setMaxBlockWasmGas(long value) {
+
+        maxBlockWasmGas_ = value;
+        bitField0_ |= 0x00000200;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * max_block_wasm_gas is the per-block CosmWasm execution budget in force
+       * (the default when the stored value is zero).
+       * </pre>
+       *
+       * <code>uint64 max_block_wasm_gas = 10 [json_name = "maxBlockWasmGas"];</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearMaxBlockWasmGas() {
+        bitField0_ = (bitField0_ & ~0x00000200);
+        maxBlockWasmGas_ = 0L;
+        onChanged();
+        return this;
+      }
+
+      private int maxTxWasmShareBps_ ;
+      /**
+       * <pre>
+       * max_tx_wasm_share_bps is the per-transaction share of the block wasm
+       * budget in force, in basis points.
+       * </pre>
+       *
+       * <code>uint32 max_tx_wasm_share_bps = 11 [json_name = "maxTxWasmShareBps"];</code>
+       * @return The maxTxWasmShareBps.
+       */
+      @java.lang.Override
+      public int getMaxTxWasmShareBps() {
+        return maxTxWasmShareBps_;
+      }
+      /**
+       * <pre>
+       * max_tx_wasm_share_bps is the per-transaction share of the block wasm
+       * budget in force, in basis points.
+       * </pre>
+       *
+       * <code>uint32 max_tx_wasm_share_bps = 11 [json_name = "maxTxWasmShareBps"];</code>
+       * @param value The maxTxWasmShareBps to set.
+       * @return This builder for chaining.
+       */
+      public Builder setMaxTxWasmShareBps(int value) {
+
+        maxTxWasmShareBps_ = value;
+        bitField0_ |= 0x00000400;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * max_tx_wasm_share_bps is the per-transaction share of the block wasm
+       * budget in force, in basis points.
+       * </pre>
+       *
+       * <code>uint32 max_tx_wasm_share_bps = 11 [json_name = "maxTxWasmShareBps"];</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearMaxTxWasmShareBps() {
+        bitField0_ = (bitField0_ & ~0x00000400);
+        maxTxWasmShareBps_ = 0;
+        onChanged();
+        return this;
+      }
+
+      private long maxBlockLevelWasmGas_ ;
+      /**
+       * <pre>
+       * max_block_level_wasm_gas is the bound on one contract call made outside
+       * a transaction in force.
+       * </pre>
+       *
+       * <code>uint64 max_block_level_wasm_gas = 12 [json_name = "maxBlockLevelWasmGas"];</code>
+       * @return The maxBlockLevelWasmGas.
+       */
+      @java.lang.Override
+      public long getMaxBlockLevelWasmGas() {
+        return maxBlockLevelWasmGas_;
+      }
+      /**
+       * <pre>
+       * max_block_level_wasm_gas is the bound on one contract call made outside
+       * a transaction in force.
+       * </pre>
+       *
+       * <code>uint64 max_block_level_wasm_gas = 12 [json_name = "maxBlockLevelWasmGas"];</code>
+       * @param value The maxBlockLevelWasmGas to set.
+       * @return This builder for chaining.
+       */
+      public Builder setMaxBlockLevelWasmGas(long value) {
+
+        maxBlockLevelWasmGas_ = value;
+        bitField0_ |= 0x00000800;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * max_block_level_wasm_gas is the bound on one contract call made outside
+       * a transaction in force.
+       * </pre>
+       *
+       * <code>uint64 max_block_level_wasm_gas = 12 [json_name = "maxBlockLevelWasmGas"];</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearMaxBlockLevelWasmGas() {
+        bitField0_ = (bitField0_ & ~0x00000800);
+        maxBlockLevelWasmGas_ = 0L;
+        onChanged();
+        return this;
+      }
+
+      private int queueWasmReserveBps_ ;
+      /**
+       * <pre>
+       * queue_wasm_reserve_bps is the queue's reserved share of the block wasm
+       * budget in force, in basis points.
+       * </pre>
+       *
+       * <code>uint32 queue_wasm_reserve_bps = 13 [json_name = "queueWasmReserveBps"];</code>
+       * @return The queueWasmReserveBps.
+       */
+      @java.lang.Override
+      public int getQueueWasmReserveBps() {
+        return queueWasmReserveBps_;
+      }
+      /**
+       * <pre>
+       * queue_wasm_reserve_bps is the queue's reserved share of the block wasm
+       * budget in force, in basis points.
+       * </pre>
+       *
+       * <code>uint32 queue_wasm_reserve_bps = 13 [json_name = "queueWasmReserveBps"];</code>
+       * @param value The queueWasmReserveBps to set.
+       * @return This builder for chaining.
+       */
+      public Builder setQueueWasmReserveBps(int value) {
+
+        queueWasmReserveBps_ = value;
+        bitField0_ |= 0x00001000;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * queue_wasm_reserve_bps is the queue's reserved share of the block wasm
+       * budget in force, in basis points.
+       * </pre>
+       *
+       * <code>uint32 queue_wasm_reserve_bps = 13 [json_name = "queueWasmReserveBps"];</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearQueueWasmReserveBps() {
+        bitField0_ = (bitField0_ & ~0x00001000);
+        queueWasmReserveBps_ = 0;
+        onChanged();
+        return this;
+      }
+
+      private int wasmCongestionMaxFactor_ ;
+      /**
+       * <pre>
+       * wasm_congestion_max_factor is the bound on the congestion factor in
+       * force.
+       * </pre>
+       *
+       * <code>uint32 wasm_congestion_max_factor = 14 [json_name = "wasmCongestionMaxFactor"];</code>
+       * @return The wasmCongestionMaxFactor.
+       */
+      @java.lang.Override
+      public int getWasmCongestionMaxFactor() {
+        return wasmCongestionMaxFactor_;
+      }
+      /**
+       * <pre>
+       * wasm_congestion_max_factor is the bound on the congestion factor in
+       * force.
+       * </pre>
+       *
+       * <code>uint32 wasm_congestion_max_factor = 14 [json_name = "wasmCongestionMaxFactor"];</code>
+       * @param value The wasmCongestionMaxFactor to set.
+       * @return This builder for chaining.
+       */
+      public Builder setWasmCongestionMaxFactor(int value) {
+
+        wasmCongestionMaxFactor_ = value;
+        bitField0_ |= 0x00002000;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * wasm_congestion_max_factor is the bound on the congestion factor in
+       * force.
+       * </pre>
+       *
+       * <code>uint32 wasm_congestion_max_factor = 14 [json_name = "wasmCongestionMaxFactor"];</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearWasmCongestionMaxFactor() {
+        bitField0_ = (bitField0_ & ~0x00002000);
+        wasmCongestionMaxFactor_ = 0;
+        onChanged();
+        return this;
+      }
+
+      private int wasmCongestionTargetBps_ ;
+      /**
+       * <pre>
+       * wasm_congestion_target_bps is the congestion target in force.
+       * </pre>
+       *
+       * <code>uint32 wasm_congestion_target_bps = 15 [json_name = "wasmCongestionTargetBps"];</code>
+       * @return The wasmCongestionTargetBps.
+       */
+      @java.lang.Override
+      public int getWasmCongestionTargetBps() {
+        return wasmCongestionTargetBps_;
+      }
+      /**
+       * <pre>
+       * wasm_congestion_target_bps is the congestion target in force.
+       * </pre>
+       *
+       * <code>uint32 wasm_congestion_target_bps = 15 [json_name = "wasmCongestionTargetBps"];</code>
+       * @param value The wasmCongestionTargetBps to set.
+       * @return This builder for chaining.
+       */
+      public Builder setWasmCongestionTargetBps(int value) {
+
+        wasmCongestionTargetBps_ = value;
+        bitField0_ |= 0x00004000;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * wasm_congestion_target_bps is the congestion target in force.
+       * </pre>
+       *
+       * <code>uint32 wasm_congestion_target_bps = 15 [json_name = "wasmCongestionTargetBps"];</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearWasmCongestionTargetBps() {
+        bitField0_ = (bitField0_ & ~0x00004000);
+        wasmCongestionTargetBps_ = 0;
+        onChanged();
+        return this;
+      }
+
+      private long wasmCongestionFactorMicro_ ;
+      /**
+       * <pre>
+       * wasm_congestion_factor_micro is the congestion factor the next block
+       * uses, in millionths (1,000,000 is the base price).
+       * </pre>
+       *
+       * <code>uint64 wasm_congestion_factor_micro = 16 [json_name = "wasmCongestionFactorMicro"];</code>
+       * @return The wasmCongestionFactorMicro.
+       */
+      @java.lang.Override
+      public long getWasmCongestionFactorMicro() {
+        return wasmCongestionFactorMicro_;
+      }
+      /**
+       * <pre>
+       * wasm_congestion_factor_micro is the congestion factor the next block
+       * uses, in millionths (1,000,000 is the base price).
+       * </pre>
+       *
+       * <code>uint64 wasm_congestion_factor_micro = 16 [json_name = "wasmCongestionFactorMicro"];</code>
+       * @param value The wasmCongestionFactorMicro to set.
+       * @return This builder for chaining.
+       */
+      public Builder setWasmCongestionFactorMicro(long value) {
+
+        wasmCongestionFactorMicro_ = value;
+        bitField0_ |= 0x00008000;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * wasm_congestion_factor_micro is the congestion factor the next block
+       * uses, in millionths (1,000,000 is the base price).
+       * </pre>
+       *
+       * <code>uint64 wasm_congestion_factor_micro = 16 [json_name = "wasmCongestionFactorMicro"];</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearWasmCongestionFactorMicro() {
+        bitField0_ = (bitField0_ & ~0x00008000);
+        wasmCongestionFactorMicro_ = 0L;
+        onChanged();
+        return this;
+      }
+
+      private int maxBlockUploadBps_ ;
+      /**
+       * <pre>
+       * max_block_upload_bps is the code-upload pool in force, in basis points
+       * of the transactions' wasm pool.
+       * </pre>
+       *
+       * <code>uint32 max_block_upload_bps = 17 [json_name = "maxBlockUploadBps"];</code>
+       * @return The maxBlockUploadBps.
+       */
+      @java.lang.Override
+      public int getMaxBlockUploadBps() {
+        return maxBlockUploadBps_;
+      }
+      /**
+       * <pre>
+       * max_block_upload_bps is the code-upload pool in force, in basis points
+       * of the transactions' wasm pool.
+       * </pre>
+       *
+       * <code>uint32 max_block_upload_bps = 17 [json_name = "maxBlockUploadBps"];</code>
+       * @param value The maxBlockUploadBps to set.
+       * @return This builder for chaining.
+       */
+      public Builder setMaxBlockUploadBps(int value) {
+
+        maxBlockUploadBps_ = value;
+        bitField0_ |= 0x00010000;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * max_block_upload_bps is the code-upload pool in force, in basis points
+       * of the transactions' wasm pool.
+       * </pre>
+       *
+       * <code>uint32 max_block_upload_bps = 17 [json_name = "maxBlockUploadBps"];</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearMaxBlockUploadBps() {
+        bitField0_ = (bitField0_ & ~0x00010000);
+        maxBlockUploadBps_ = 0;
+        onChanged();
+        return this;
+      }
+
+      private int maxQueueTimeoutsPerBlock_ ;
+      /**
+       * <pre>
+       * max_queue_timeouts_per_block is how many queued calls one block times
+       * out in force.
+       * </pre>
+       *
+       * <code>uint32 max_queue_timeouts_per_block = 18 [json_name = "maxQueueTimeoutsPerBlock"];</code>
+       * @return The maxQueueTimeoutsPerBlock.
+       */
+      @java.lang.Override
+      public int getMaxQueueTimeoutsPerBlock() {
+        return maxQueueTimeoutsPerBlock_;
+      }
+      /**
+       * <pre>
+       * max_queue_timeouts_per_block is how many queued calls one block times
+       * out in force.
+       * </pre>
+       *
+       * <code>uint32 max_queue_timeouts_per_block = 18 [json_name = "maxQueueTimeoutsPerBlock"];</code>
+       * @param value The maxQueueTimeoutsPerBlock to set.
+       * @return This builder for chaining.
+       */
+      public Builder setMaxQueueTimeoutsPerBlock(int value) {
+
+        maxQueueTimeoutsPerBlock_ = value;
+        bitField0_ |= 0x00020000;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * max_queue_timeouts_per_block is how many queued calls one block times
+       * out in force.
+       * </pre>
+       *
+       * <code>uint32 max_queue_timeouts_per_block = 18 [json_name = "maxQueueTimeoutsPerBlock"];</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearMaxQueueTimeoutsPerBlock() {
+        bitField0_ = (bitField0_ & ~0x00020000);
+        maxQueueTimeoutsPerBlock_ = 0;
+        onChanged();
+        return this;
+      }
+
       // @@protoc_insertion_point(builder_scope:qorechain.crossvm.v1.QueryParamsResponse)
     }
 
@@ -3197,8 +4856,29 @@ public final class QueryOuterClass extends com.google.protobuf.GeneratedFile {
   public interface QueryPendingMessagesRequestOrBuilder extends
       // @@protoc_insertion_point(interface_extends:qorechain.crossvm.v1.QueryPendingMessagesRequest)
       com.google.protobuf.MessageOrBuilder {
+
+    /**
+     * <code>.cosmos.base.query.v1beta1.PageRequest pagination = 1 [json_name = "pagination"];</code>
+     * @return Whether the pagination field is set.
+     */
+    boolean hasPagination();
+    /**
+     * <code>.cosmos.base.query.v1beta1.PageRequest pagination = 1 [json_name = "pagination"];</code>
+     * @return The pagination.
+     */
+    cosmos.base.query.v1beta1.Pagination.PageRequest getPagination();
+    /**
+     * <code>.cosmos.base.query.v1beta1.PageRequest pagination = 1 [json_name = "pagination"];</code>
+     */
+    cosmos.base.query.v1beta1.Pagination.PageRequestOrBuilder getPaginationOrBuilder();
   }
   /**
+   * <pre>
+   * QueryPendingMessagesRequest pages through the queue in key order. A page
+   * holds at most 100 messages (the default is 100); payload_hex in the list
+   * view is cut to its first 1,024 bytes (use Message for the whole payload).
+   * </pre>
+   *
    * Protobuf type {@code qorechain.crossvm.v1.QueryPendingMessagesRequest}
    */
   public static final class QueryPendingMessagesRequest extends
@@ -3240,6 +4920,33 @@ public final class QueryOuterClass extends com.google.protobuf.GeneratedFile {
               qorechain.crossvm.v1.QueryOuterClass.QueryPendingMessagesRequest.class, qorechain.crossvm.v1.QueryOuterClass.QueryPendingMessagesRequest.Builder.class);
     }
 
+    private int bitField0_;
+    public static final int PAGINATION_FIELD_NUMBER = 1;
+    private cosmos.base.query.v1beta1.Pagination.PageRequest pagination_;
+    /**
+     * <code>.cosmos.base.query.v1beta1.PageRequest pagination = 1 [json_name = "pagination"];</code>
+     * @return Whether the pagination field is set.
+     */
+    @java.lang.Override
+    public boolean hasPagination() {
+      return ((bitField0_ & 0x00000001) != 0);
+    }
+    /**
+     * <code>.cosmos.base.query.v1beta1.PageRequest pagination = 1 [json_name = "pagination"];</code>
+     * @return The pagination.
+     */
+    @java.lang.Override
+    public cosmos.base.query.v1beta1.Pagination.PageRequest getPagination() {
+      return pagination_ == null ? cosmos.base.query.v1beta1.Pagination.PageRequest.getDefaultInstance() : pagination_;
+    }
+    /**
+     * <code>.cosmos.base.query.v1beta1.PageRequest pagination = 1 [json_name = "pagination"];</code>
+     */
+    @java.lang.Override
+    public cosmos.base.query.v1beta1.Pagination.PageRequestOrBuilder getPaginationOrBuilder() {
+      return pagination_ == null ? cosmos.base.query.v1beta1.Pagination.PageRequest.getDefaultInstance() : pagination_;
+    }
+
     private byte memoizedIsInitialized = -1;
     @java.lang.Override
     public final boolean isInitialized() {
@@ -3254,7 +4961,18 @@ public final class QueryOuterClass extends com.google.protobuf.GeneratedFile {
     @java.lang.Override
     public void writeTo(com.google.protobuf.CodedOutputStream output)
                         throws java.io.IOException {
+      if (((bitField0_ & 0x00000001) != 0)) {
+        output.writeMessage(1, getPagination());
+      }
       getUnknownFields().writeTo(output);
+    }
+    private int computeSerializedSize_0() {
+      int size = 0;
+      if (((bitField0_ & 0x00000001) != 0)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeMessageSize(1, getPagination());
+      }
+      return size;
     }
     @java.lang.Override
     public int getSerializedSize() {
@@ -3262,6 +4980,7 @@ public final class QueryOuterClass extends com.google.protobuf.GeneratedFile {
       if (size != -1) return size;
 
       size = 0;
+      size += computeSerializedSize_0();
       size += getUnknownFields().getSerializedSize();
       memoizedSize = size;
       return size;
@@ -3277,6 +4996,11 @@ public final class QueryOuterClass extends com.google.protobuf.GeneratedFile {
       }
       qorechain.crossvm.v1.QueryOuterClass.QueryPendingMessagesRequest other = (qorechain.crossvm.v1.QueryOuterClass.QueryPendingMessagesRequest) obj;
 
+      if (hasPagination() != other.hasPagination()) return false;
+      if (hasPagination()) {
+        if (!getPagination()
+            .equals(other.getPagination())) return false;
+      }
       if (!getUnknownFields().equals(other.getUnknownFields())) return false;
       return true;
     }
@@ -3288,6 +5012,10 @@ public final class QueryOuterClass extends com.google.protobuf.GeneratedFile {
       }
       int hash = 41;
       hash = (19 * hash) + getDescriptor().hashCode();
+      if (hasPagination()) {
+        hash = (37 * hash) + PAGINATION_FIELD_NUMBER;
+        hash = (53 * hash) + getPagination().hashCode();
+      }
       hash = (29 * hash) + getUnknownFields().hashCode();
       memoizedHashCode = hash;
       return hash;
@@ -3386,6 +5114,12 @@ public final class QueryOuterClass extends com.google.protobuf.GeneratedFile {
       return builder;
     }
     /**
+     * <pre>
+     * QueryPendingMessagesRequest pages through the queue in key order. A page
+     * holds at most 100 messages (the default is 100); payload_hex in the list
+     * view is cut to its first 1,024 bytes (use Message for the whole payload).
+     * </pre>
+     *
      * Protobuf type {@code qorechain.crossvm.v1.QueryPendingMessagesRequest}
      */
     public static final class Builder extends
@@ -3407,17 +5141,29 @@ public final class QueryOuterClass extends com.google.protobuf.GeneratedFile {
 
       // Construct using qorechain.crossvm.v1.QueryOuterClass.QueryPendingMessagesRequest.newBuilder()
       private Builder() {
-
+        maybeForceBuilderInitialization();
       }
 
       private Builder(
           com.google.protobuf.GeneratedMessage.BuilderParent parent) {
         super(parent);
-
+        maybeForceBuilderInitialization();
+      }
+      private void maybeForceBuilderInitialization() {
+        if (com.google.protobuf.GeneratedMessage
+                .alwaysUseFieldBuilders) {
+          internalGetPaginationFieldBuilder();
+        }
       }
       @java.lang.Override
       public Builder clear() {
         super.clear();
+        bitField0_ = 0;
+        pagination_ = null;
+        if (paginationBuilder_ != null) {
+          paginationBuilder_.dispose();
+          paginationBuilder_ = null;
+        }
         return this;
       }
 
@@ -3444,8 +5190,21 @@ public final class QueryOuterClass extends com.google.protobuf.GeneratedFile {
       @java.lang.Override
       public qorechain.crossvm.v1.QueryOuterClass.QueryPendingMessagesRequest buildPartial() {
         qorechain.crossvm.v1.QueryOuterClass.QueryPendingMessagesRequest result = new qorechain.crossvm.v1.QueryOuterClass.QueryPendingMessagesRequest(this);
+        if (bitField0_ != 0) { buildPartial0(result); }
         onBuilt();
         return result;
+      }
+
+      private void buildPartial0(qorechain.crossvm.v1.QueryOuterClass.QueryPendingMessagesRequest result) {
+        int from_bitField0_ = bitField0_;
+        int to_bitField0_ = 0;
+        if (((from_bitField0_ & 0x00000001) != 0)) {
+          result.pagination_ = paginationBuilder_ == null
+              ? pagination_
+              : paginationBuilder_.build();
+          to_bitField0_ |= 0x00000001;
+        }
+        result.bitField0_ |= to_bitField0_;
       }
 
       @java.lang.Override
@@ -3460,6 +5219,9 @@ public final class QueryOuterClass extends com.google.protobuf.GeneratedFile {
 
       public Builder mergeFrom(qorechain.crossvm.v1.QueryOuterClass.QueryPendingMessagesRequest other) {
         if (other == qorechain.crossvm.v1.QueryOuterClass.QueryPendingMessagesRequest.getDefaultInstance()) return this;
+        if (other.hasPagination()) {
+          mergePagination(other.getPagination());
+        }
         this.mergeUnknownFields(other.getUnknownFields());
         onChanged();
         return this;
@@ -3486,6 +5248,13 @@ public final class QueryOuterClass extends com.google.protobuf.GeneratedFile {
               case 0:
                 done = true;
                 break;
+              case 10: {
+                input.readMessage(
+                    internalGetPaginationFieldBuilder().getBuilder(),
+                    extensionRegistry);
+                bitField0_ |= 0x00000001;
+                break;
+              } // case 10
               default: {
                 if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                   done = true; // was an endgroup tag
@@ -3500,6 +5269,128 @@ public final class QueryOuterClass extends com.google.protobuf.GeneratedFile {
           onChanged();
         } // finally
         return this;
+      }
+      private int bitField0_;
+
+      private cosmos.base.query.v1beta1.Pagination.PageRequest pagination_;
+      private com.google.protobuf.SingleFieldBuilder<
+          cosmos.base.query.v1beta1.Pagination.PageRequest, cosmos.base.query.v1beta1.Pagination.PageRequest.Builder, cosmos.base.query.v1beta1.Pagination.PageRequestOrBuilder> paginationBuilder_;
+      /**
+       * <code>.cosmos.base.query.v1beta1.PageRequest pagination = 1 [json_name = "pagination"];</code>
+       * @return Whether the pagination field is set.
+       */
+      public boolean hasPagination() {
+        return ((bitField0_ & 0x00000001) != 0);
+      }
+      /**
+       * <code>.cosmos.base.query.v1beta1.PageRequest pagination = 1 [json_name = "pagination"];</code>
+       * @return The pagination.
+       */
+      public cosmos.base.query.v1beta1.Pagination.PageRequest getPagination() {
+        if (paginationBuilder_ == null) {
+          return pagination_ == null ? cosmos.base.query.v1beta1.Pagination.PageRequest.getDefaultInstance() : pagination_;
+        } else {
+          return paginationBuilder_.getMessage();
+        }
+      }
+      /**
+       * <code>.cosmos.base.query.v1beta1.PageRequest pagination = 1 [json_name = "pagination"];</code>
+       */
+      public Builder setPagination(cosmos.base.query.v1beta1.Pagination.PageRequest value) {
+        if (paginationBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          pagination_ = value;
+        } else {
+          paginationBuilder_.setMessage(value);
+        }
+        bitField0_ |= 0x00000001;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>.cosmos.base.query.v1beta1.PageRequest pagination = 1 [json_name = "pagination"];</code>
+       */
+      public Builder setPagination(
+          cosmos.base.query.v1beta1.Pagination.PageRequest.Builder builderForValue) {
+        if (paginationBuilder_ == null) {
+          pagination_ = builderForValue.build();
+        } else {
+          paginationBuilder_.setMessage(builderForValue.build());
+        }
+        bitField0_ |= 0x00000001;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>.cosmos.base.query.v1beta1.PageRequest pagination = 1 [json_name = "pagination"];</code>
+       */
+      public Builder mergePagination(cosmos.base.query.v1beta1.Pagination.PageRequest value) {
+        if (paginationBuilder_ == null) {
+          if (((bitField0_ & 0x00000001) != 0) &&
+            pagination_ != null &&
+            pagination_ != cosmos.base.query.v1beta1.Pagination.PageRequest.getDefaultInstance()) {
+            getPaginationBuilder().mergeFrom(value);
+          } else {
+            pagination_ = value;
+          }
+        } else {
+          paginationBuilder_.mergeFrom(value);
+        }
+        if (pagination_ != null) {
+          bitField0_ |= 0x00000001;
+          onChanged();
+        }
+        return this;
+      }
+      /**
+       * <code>.cosmos.base.query.v1beta1.PageRequest pagination = 1 [json_name = "pagination"];</code>
+       */
+      public Builder clearPagination() {
+        bitField0_ = (bitField0_ & ~0x00000001);
+        pagination_ = null;
+        if (paginationBuilder_ != null) {
+          paginationBuilder_.dispose();
+          paginationBuilder_ = null;
+        }
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>.cosmos.base.query.v1beta1.PageRequest pagination = 1 [json_name = "pagination"];</code>
+       */
+      public cosmos.base.query.v1beta1.Pagination.PageRequest.Builder getPaginationBuilder() {
+        bitField0_ |= 0x00000001;
+        onChanged();
+        return internalGetPaginationFieldBuilder().getBuilder();
+      }
+      /**
+       * <code>.cosmos.base.query.v1beta1.PageRequest pagination = 1 [json_name = "pagination"];</code>
+       */
+      public cosmos.base.query.v1beta1.Pagination.PageRequestOrBuilder getPaginationOrBuilder() {
+        if (paginationBuilder_ != null) {
+          return paginationBuilder_.getMessageOrBuilder();
+        } else {
+          return pagination_ == null ?
+              cosmos.base.query.v1beta1.Pagination.PageRequest.getDefaultInstance() : pagination_;
+        }
+      }
+      /**
+       * <code>.cosmos.base.query.v1beta1.PageRequest pagination = 1 [json_name = "pagination"];</code>
+       */
+      private com.google.protobuf.SingleFieldBuilder<
+          cosmos.base.query.v1beta1.Pagination.PageRequest, cosmos.base.query.v1beta1.Pagination.PageRequest.Builder, cosmos.base.query.v1beta1.Pagination.PageRequestOrBuilder> 
+          internalGetPaginationFieldBuilder() {
+        if (paginationBuilder_ == null) {
+          paginationBuilder_ = new com.google.protobuf.SingleFieldBuilder<
+              cosmos.base.query.v1beta1.Pagination.PageRequest, cosmos.base.query.v1beta1.Pagination.PageRequest.Builder, cosmos.base.query.v1beta1.Pagination.PageRequestOrBuilder>(
+                  getPagination(),
+                  getParentForChildren(),
+                  isClean());
+          pagination_ = null;
+        }
+        return paginationBuilder_;
       }
 
       // @@protoc_insertion_point(builder_scope:qorechain.crossvm.v1.QueryPendingMessagesRequest)
@@ -3582,10 +5473,29 @@ public final class QueryOuterClass extends com.google.protobuf.GeneratedFile {
         int index);
 
     /**
+     * <pre>
+     * count is the number of messages in this page.
+     * </pre>
+     *
      * <code>uint32 count = 2 [json_name = "count"];</code>
      * @return The count.
      */
     int getCount();
+
+    /**
+     * <code>.cosmos.base.query.v1beta1.PageResponse pagination = 3 [json_name = "pagination"];</code>
+     * @return Whether the pagination field is set.
+     */
+    boolean hasPagination();
+    /**
+     * <code>.cosmos.base.query.v1beta1.PageResponse pagination = 3 [json_name = "pagination"];</code>
+     * @return The pagination.
+     */
+    cosmos.base.query.v1beta1.Pagination.PageResponse getPagination();
+    /**
+     * <code>.cosmos.base.query.v1beta1.PageResponse pagination = 3 [json_name = "pagination"];</code>
+     */
+    cosmos.base.query.v1beta1.Pagination.PageResponseOrBuilder getPaginationOrBuilder();
   }
   /**
    * Protobuf type {@code qorechain.crossvm.v1.QueryPendingMessagesResponse}
@@ -3630,6 +5540,7 @@ public final class QueryOuterClass extends com.google.protobuf.GeneratedFile {
               qorechain.crossvm.v1.QueryOuterClass.QueryPendingMessagesResponse.class, qorechain.crossvm.v1.QueryOuterClass.QueryPendingMessagesResponse.Builder.class);
     }
 
+    private int bitField0_;
     public static final int MESSAGES_FIELD_NUMBER = 1;
     @SuppressWarnings("serial")
     private java.util.List<qorechain.crossvm.v1.QueryOuterClass.CrossVMMessageView> messages_;
@@ -3674,12 +5585,42 @@ public final class QueryOuterClass extends com.google.protobuf.GeneratedFile {
     public static final int COUNT_FIELD_NUMBER = 2;
     private int count_ = 0;
     /**
+     * <pre>
+     * count is the number of messages in this page.
+     * </pre>
+     *
      * <code>uint32 count = 2 [json_name = "count"];</code>
      * @return The count.
      */
     @java.lang.Override
     public int getCount() {
       return count_;
+    }
+
+    public static final int PAGINATION_FIELD_NUMBER = 3;
+    private cosmos.base.query.v1beta1.Pagination.PageResponse pagination_;
+    /**
+     * <code>.cosmos.base.query.v1beta1.PageResponse pagination = 3 [json_name = "pagination"];</code>
+     * @return Whether the pagination field is set.
+     */
+    @java.lang.Override
+    public boolean hasPagination() {
+      return ((bitField0_ & 0x00000001) != 0);
+    }
+    /**
+     * <code>.cosmos.base.query.v1beta1.PageResponse pagination = 3 [json_name = "pagination"];</code>
+     * @return The pagination.
+     */
+    @java.lang.Override
+    public cosmos.base.query.v1beta1.Pagination.PageResponse getPagination() {
+      return pagination_ == null ? cosmos.base.query.v1beta1.Pagination.PageResponse.getDefaultInstance() : pagination_;
+    }
+    /**
+     * <code>.cosmos.base.query.v1beta1.PageResponse pagination = 3 [json_name = "pagination"];</code>
+     */
+    @java.lang.Override
+    public cosmos.base.query.v1beta1.Pagination.PageResponseOrBuilder getPaginationOrBuilder() {
+      return pagination_ == null ? cosmos.base.query.v1beta1.Pagination.PageResponse.getDefaultInstance() : pagination_;
     }
 
     private byte memoizedIsInitialized = -1;
@@ -3702,6 +5643,9 @@ public final class QueryOuterClass extends com.google.protobuf.GeneratedFile {
       if (count_ != 0) {
         output.writeUInt32(2, count_);
       }
+      if (((bitField0_ & 0x00000001) != 0)) {
+        output.writeMessage(3, getPagination());
+      }
       getUnknownFields().writeTo(output);
     }
     private int computeSerializedSize_0() {
@@ -3718,6 +5662,10 @@ public final class QueryOuterClass extends com.google.protobuf.GeneratedFile {
       if (count_ != 0) {
         size += com.google.protobuf.CodedOutputStream
           .computeUInt32Size(2, count_);
+      }
+      if (((bitField0_ & 0x00000001) != 0)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeMessageSize(3, getPagination());
       }
       return size;
     }
@@ -3747,6 +5695,11 @@ public final class QueryOuterClass extends com.google.protobuf.GeneratedFile {
           .equals(other.getMessagesList())) return false;
       if (getCount()
           != other.getCount()) return false;
+      if (hasPagination() != other.hasPagination()) return false;
+      if (hasPagination()) {
+        if (!getPagination()
+            .equals(other.getPagination())) return false;
+      }
       if (!getUnknownFields().equals(other.getUnknownFields())) return false;
       return true;
     }
@@ -3764,6 +5717,10 @@ public final class QueryOuterClass extends com.google.protobuf.GeneratedFile {
       }
       hash = (37 * hash) + COUNT_FIELD_NUMBER;
       hash = (53 * hash) + getCount();
+      if (hasPagination()) {
+        hash = (37 * hash) + PAGINATION_FIELD_NUMBER;
+        hash = (53 * hash) + getPagination().hashCode();
+      }
       hash = (29 * hash) + getUnknownFields().hashCode();
       memoizedHashCode = hash;
       return hash;
@@ -3883,13 +5840,20 @@ public final class QueryOuterClass extends com.google.protobuf.GeneratedFile {
 
       // Construct using qorechain.crossvm.v1.QueryOuterClass.QueryPendingMessagesResponse.newBuilder()
       private Builder() {
-
+        maybeForceBuilderInitialization();
       }
 
       private Builder(
           com.google.protobuf.GeneratedMessage.BuilderParent parent) {
         super(parent);
-
+        maybeForceBuilderInitialization();
+      }
+      private void maybeForceBuilderInitialization() {
+        if (com.google.protobuf.GeneratedMessage
+                .alwaysUseFieldBuilders) {
+          internalGetMessagesFieldBuilder();
+          internalGetPaginationFieldBuilder();
+        }
       }
       @java.lang.Override
       public Builder clear() {
@@ -3903,6 +5867,11 @@ public final class QueryOuterClass extends com.google.protobuf.GeneratedFile {
         }
         bitField0_ = (bitField0_ & ~0x00000001);
         count_ = 0;
+        pagination_ = null;
+        if (paginationBuilder_ != null) {
+          paginationBuilder_.dispose();
+          paginationBuilder_ = null;
+        }
         return this;
       }
 
@@ -3952,6 +5921,14 @@ public final class QueryOuterClass extends com.google.protobuf.GeneratedFile {
         if (((from_bitField0_ & 0x00000002) != 0)) {
           result.count_ = count_;
         }
+        int to_bitField0_ = 0;
+        if (((from_bitField0_ & 0x00000004) != 0)) {
+          result.pagination_ = paginationBuilder_ == null
+              ? pagination_
+              : paginationBuilder_.build();
+          to_bitField0_ |= 0x00000001;
+        }
+        result.bitField0_ |= to_bitField0_;
       }
 
       @java.lang.Override
@@ -3994,6 +5971,9 @@ public final class QueryOuterClass extends com.google.protobuf.GeneratedFile {
         }
         if (other.getCount() != 0) {
           setCount(other.getCount());
+        }
+        if (other.hasPagination()) {
+          mergePagination(other.getPagination());
         }
         this.mergeUnknownFields(other.getUnknownFields());
         onChanged();
@@ -4039,6 +6019,13 @@ public final class QueryOuterClass extends com.google.protobuf.GeneratedFile {
                 bitField0_ |= 0x00000002;
                 break;
               } // case 16
+              case 26: {
+                input.readMessage(
+                    internalGetPaginationFieldBuilder().getBuilder(),
+                    extensionRegistry);
+                bitField0_ |= 0x00000004;
+                break;
+              } // case 26
               default: {
                 if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                   done = true; // was an endgroup tag
@@ -4298,6 +6285,10 @@ public final class QueryOuterClass extends com.google.protobuf.GeneratedFile {
 
       private int count_ ;
       /**
+       * <pre>
+       * count is the number of messages in this page.
+       * </pre>
+       *
        * <code>uint32 count = 2 [json_name = "count"];</code>
        * @return The count.
        */
@@ -4306,6 +6297,10 @@ public final class QueryOuterClass extends com.google.protobuf.GeneratedFile {
         return count_;
       }
       /**
+       * <pre>
+       * count is the number of messages in this page.
+       * </pre>
+       *
        * <code>uint32 count = 2 [json_name = "count"];</code>
        * @param value The count to set.
        * @return This builder for chaining.
@@ -4318,6 +6313,10 @@ public final class QueryOuterClass extends com.google.protobuf.GeneratedFile {
         return this;
       }
       /**
+       * <pre>
+       * count is the number of messages in this page.
+       * </pre>
+       *
        * <code>uint32 count = 2 [json_name = "count"];</code>
        * @return This builder for chaining.
        */
@@ -4326,6 +6325,127 @@ public final class QueryOuterClass extends com.google.protobuf.GeneratedFile {
         count_ = 0;
         onChanged();
         return this;
+      }
+
+      private cosmos.base.query.v1beta1.Pagination.PageResponse pagination_;
+      private com.google.protobuf.SingleFieldBuilder<
+          cosmos.base.query.v1beta1.Pagination.PageResponse, cosmos.base.query.v1beta1.Pagination.PageResponse.Builder, cosmos.base.query.v1beta1.Pagination.PageResponseOrBuilder> paginationBuilder_;
+      /**
+       * <code>.cosmos.base.query.v1beta1.PageResponse pagination = 3 [json_name = "pagination"];</code>
+       * @return Whether the pagination field is set.
+       */
+      public boolean hasPagination() {
+        return ((bitField0_ & 0x00000004) != 0);
+      }
+      /**
+       * <code>.cosmos.base.query.v1beta1.PageResponse pagination = 3 [json_name = "pagination"];</code>
+       * @return The pagination.
+       */
+      public cosmos.base.query.v1beta1.Pagination.PageResponse getPagination() {
+        if (paginationBuilder_ == null) {
+          return pagination_ == null ? cosmos.base.query.v1beta1.Pagination.PageResponse.getDefaultInstance() : pagination_;
+        } else {
+          return paginationBuilder_.getMessage();
+        }
+      }
+      /**
+       * <code>.cosmos.base.query.v1beta1.PageResponse pagination = 3 [json_name = "pagination"];</code>
+       */
+      public Builder setPagination(cosmos.base.query.v1beta1.Pagination.PageResponse value) {
+        if (paginationBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          pagination_ = value;
+        } else {
+          paginationBuilder_.setMessage(value);
+        }
+        bitField0_ |= 0x00000004;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>.cosmos.base.query.v1beta1.PageResponse pagination = 3 [json_name = "pagination"];</code>
+       */
+      public Builder setPagination(
+          cosmos.base.query.v1beta1.Pagination.PageResponse.Builder builderForValue) {
+        if (paginationBuilder_ == null) {
+          pagination_ = builderForValue.build();
+        } else {
+          paginationBuilder_.setMessage(builderForValue.build());
+        }
+        bitField0_ |= 0x00000004;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>.cosmos.base.query.v1beta1.PageResponse pagination = 3 [json_name = "pagination"];</code>
+       */
+      public Builder mergePagination(cosmos.base.query.v1beta1.Pagination.PageResponse value) {
+        if (paginationBuilder_ == null) {
+          if (((bitField0_ & 0x00000004) != 0) &&
+            pagination_ != null &&
+            pagination_ != cosmos.base.query.v1beta1.Pagination.PageResponse.getDefaultInstance()) {
+            getPaginationBuilder().mergeFrom(value);
+          } else {
+            pagination_ = value;
+          }
+        } else {
+          paginationBuilder_.mergeFrom(value);
+        }
+        if (pagination_ != null) {
+          bitField0_ |= 0x00000004;
+          onChanged();
+        }
+        return this;
+      }
+      /**
+       * <code>.cosmos.base.query.v1beta1.PageResponse pagination = 3 [json_name = "pagination"];</code>
+       */
+      public Builder clearPagination() {
+        bitField0_ = (bitField0_ & ~0x00000004);
+        pagination_ = null;
+        if (paginationBuilder_ != null) {
+          paginationBuilder_.dispose();
+          paginationBuilder_ = null;
+        }
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>.cosmos.base.query.v1beta1.PageResponse pagination = 3 [json_name = "pagination"];</code>
+       */
+      public cosmos.base.query.v1beta1.Pagination.PageResponse.Builder getPaginationBuilder() {
+        bitField0_ |= 0x00000004;
+        onChanged();
+        return internalGetPaginationFieldBuilder().getBuilder();
+      }
+      /**
+       * <code>.cosmos.base.query.v1beta1.PageResponse pagination = 3 [json_name = "pagination"];</code>
+       */
+      public cosmos.base.query.v1beta1.Pagination.PageResponseOrBuilder getPaginationOrBuilder() {
+        if (paginationBuilder_ != null) {
+          return paginationBuilder_.getMessageOrBuilder();
+        } else {
+          return pagination_ == null ?
+              cosmos.base.query.v1beta1.Pagination.PageResponse.getDefaultInstance() : pagination_;
+        }
+      }
+      /**
+       * <code>.cosmos.base.query.v1beta1.PageResponse pagination = 3 [json_name = "pagination"];</code>
+       */
+      private com.google.protobuf.SingleFieldBuilder<
+          cosmos.base.query.v1beta1.Pagination.PageResponse, cosmos.base.query.v1beta1.Pagination.PageResponse.Builder, cosmos.base.query.v1beta1.Pagination.PageResponseOrBuilder> 
+          internalGetPaginationFieldBuilder() {
+        if (paginationBuilder_ == null) {
+          paginationBuilder_ = new com.google.protobuf.SingleFieldBuilder<
+              cosmos.base.query.v1beta1.Pagination.PageResponse, cosmos.base.query.v1beta1.Pagination.PageResponse.Builder, cosmos.base.query.v1beta1.Pagination.PageResponseOrBuilder>(
+                  getPagination(),
+                  getParentForChildren(),
+                  isClean());
+          pagination_ = null;
+        }
+        return paginationBuilder_;
       }
 
       // @@protoc_insertion_point(builder_scope:qorechain.crossvm.v1.QueryPendingMessagesResponse)
@@ -5596,48 +7716,75 @@ public final class QueryOuterClass extends com.google.protobuf.GeneratedFile {
     java.lang.String[] descriptorData = {
       "\n qorechain/crossvm/v1/query.proto\022\024qore" +
       "chain.crossvm.v1\032\034google/api/annotations" +
-      ".proto\"\347\002\n\022CrossVMMessageView\022\016\n\002id\030\001 \001(" +
-      "\tR\002id\022\033\n\tsource_vm\030\002 \001(\tR\010sourceVm\022\033\n\tta" +
-      "rget_vm\030\003 \001(\tR\010targetVm\022\026\n\006sender\030\004 \001(\tR" +
-      "\006sender\022\'\n\017source_contract\030\005 \001(\tR\016source" +
-      "Contract\022\'\n\017target_contract\030\006 \001(\tR\016targe" +
-      "tContract\022\037\n\013payload_hex\030\007 \001(\tR\npayloadH" +
-      "ex\022\026\n\006status\030\010 \001(\tR\006status\022%\n\016created_he" +
-      "ight\030\t \001(\003R\rcreatedHeight\022\'\n\017executed_he" +
-      "ight\030\n \001(\003R\016executedHeight\022\024\n\005error\030\013 \001(" +
-      "\tR\005error\"\024\n\022QueryParamsRequest\"\347\001\n\023Query" +
-      "ParamsResponse\022(\n\020max_message_size\030\001 \001(\004" +
-      "R\016maxMessageSize\022$\n\016max_queue_size\030\002 \001(\r" +
-      "R\014maxQueueSize\0220\n\024queue_timeout_blocks\030\003" +
-      " \001(\003R\022queueTimeoutBlocks\022\030\n\007enabled\030\004 \001(" +
-      "\010R\007enabled\0224\n\026bridge_allowed_targets\030\005 \003" +
-      "(\tR\024bridgeAllowedTargets\"\035\n\033QueryPending" +
-      "MessagesRequest\"z\n\034QueryPendingMessagesR" +
-      "esponse\022D\n\010messages\030\001 \003(\0132(.qorechain.cr" +
-      "ossvm.v1.CrossVMMessageViewR\010messages\022\024\n" +
-      "\005count\030\002 \001(\rR\005count\"%\n\023QueryMessageReque" +
-      "st\022\016\n\002id\030\001 \001(\tR\002id\"p\n\024QueryMessageRespon" +
-      "se\022B\n\007message\030\001 \001(\0132(.qorechain.crossvm." +
-      "v1.CrossVMMessageViewR\007message\022\024\n\005found\030" +
-      "\002 \001(\010R\005found2\276\003\n\005Query\022\203\001\n\006Params\022(.qore" +
-      "chain.crossvm.v1.QueryParamsRequest\032).qo" +
-      "rechain.crossvm.v1.QueryParamsResponse\"$" +
-      "\202\323\344\223\002\036\022\034/qorechain/crossvm/v1/params\022\237\001\n" +
-      "\017PendingMessages\0221.qorechain.crossvm.v1." +
-      "QueryPendingMessagesRequest\0322.qorechain." +
-      "crossvm.v1.QueryPendingMessagesResponse\"" +
-      "%\202\323\344\223\002\037\022\035/qorechain/crossvm/v1/pending\022\214" +
-      "\001\n\007Message\022).qorechain.crossvm.v1.QueryM" +
-      "essageRequest\032*.qorechain.crossvm.v1.Que" +
-      "ryMessageResponse\"*\202\323\344\223\002$\022\"/qorechain/cr" +
-      "ossvm/v1/message/{id}B5Z3github.com/qore" +
-      "chain/qorechain-core/x/crossvm/typesb\006pr" +
-      "oto3"
+      ".proto\032\024gogoproto/gogo.proto\032*cosmos/bas" +
+      "e/query/v1beta1/pagination.proto\032\035qorech" +
+      "ain/crossvm/v1/tx.proto\"\347\002\n\022CrossVMMessa" +
+      "geView\022\016\n\002id\030\001 \001(\tR\002id\022\033\n\tsource_vm\030\002 \001(" +
+      "\tR\010sourceVm\022\033\n\ttarget_vm\030\003 \001(\tR\010targetVm" +
+      "\022\026\n\006sender\030\004 \001(\tR\006sender\022\'\n\017source_contr" +
+      "act\030\005 \001(\tR\016sourceContract\022\'\n\017target_cont" +
+      "ract\030\006 \001(\tR\016targetContract\022\037\n\013payload_he" +
+      "x\030\007 \001(\tR\npayloadHex\022\026\n\006status\030\010 \001(\tR\006sta" +
+      "tus\022%\n\016created_height\030\t \001(\003R\rcreatedHeig" +
+      "ht\022\'\n\017executed_height\030\n \001(\003R\016executedHei" +
+      "ght\022\024\n\005error\030\013 \001(\tR\005error\"\024\n\022QueryParams" +
+      "Request\"\322\007\n\023QueryParamsResponse\022(\n\020max_m" +
+      "essage_size\030\001 \001(\004R\016maxMessageSize\022$\n\016max" +
+      "_queue_size\030\002 \001(\rR\014maxQueueSize\0220\n\024queue" +
+      "_timeout_blocks\030\003 \001(\003R\022queueTimeoutBlock" +
+      "s\022\030\n\007enabled\030\004 \001(\010R\007enabled\0224\n\026bridge_al" +
+      "lowed_targets\030\005 \003(\tR\024bridgeAllowedTarget" +
+      "s\022Y\n\022bridge_target_pins\030\006 \003(\0132%.qorechai" +
+      "n.crossvm.v1.BridgeTargetPinB\004\310\336\037\000R\020brid" +
+      "geTargetPins\0223\n\026max_pending_per_sender\030\007" +
+      " \001(\rR\023maxPendingPerSender\022)\n\021max_cosmos_" +
+      "tx_gas\030\010 \001(\004R\016maxCosmosTxGas\0226\n\027record_r" +
+      "etention_blocks\030\t \001(\004R\025recordRetentionBl" +
+      "ocks\022+\n\022max_block_wasm_gas\030\n \001(\004R\017maxBlo" +
+      "ckWasmGas\0220\n\025max_tx_wasm_share_bps\030\013 \001(\r" +
+      "R\021maxTxWasmShareBps\0226\n\030max_block_level_w" +
+      "asm_gas\030\014 \001(\004R\024maxBlockLevelWasmGas\0223\n\026q" +
+      "ueue_wasm_reserve_bps\030\r \001(\rR\023queueWasmRe" +
+      "serveBps\022;\n\032wasm_congestion_max_factor\030\016" +
+      " \001(\rR\027wasmCongestionMaxFactor\022;\n\032wasm_co" +
+      "ngestion_target_bps\030\017 \001(\rR\027wasmCongestio" +
+      "nTargetBps\022?\n\034wasm_congestion_factor_mic" +
+      "ro\030\020 \001(\004R\031wasmCongestionFactorMicro\022/\n\024m" +
+      "ax_block_upload_bps\030\021 \001(\rR\021maxBlockUploa" +
+      "dBps\022>\n\034max_queue_timeouts_per_block\030\022 \001" +
+      "(\rR\030maxQueueTimeoutsPerBlock\"e\n\033QueryPen" +
+      "dingMessagesRequest\022F\n\npagination\030\001 \001(\0132" +
+      "&.cosmos.base.query.v1beta1.PageRequestR" +
+      "\npagination\"\303\001\n\034QueryPendingMessagesResp" +
+      "onse\022D\n\010messages\030\001 \003(\0132(.qorechain.cross" +
+      "vm.v1.CrossVMMessageViewR\010messages\022\024\n\005co" +
+      "unt\030\002 \001(\rR\005count\022G\n\npagination\030\003 \001(\0132\'.c" +
+      "osmos.base.query.v1beta1.PageResponseR\np" +
+      "agination\"%\n\023QueryMessageRequest\022\016\n\002id\030\001" +
+      " \001(\tR\002id\"p\n\024QueryMessageResponse\022B\n\007mess" +
+      "age\030\001 \001(\0132(.qorechain.crossvm.v1.CrossVM" +
+      "MessageViewR\007message\022\024\n\005found\030\002 \001(\010R\005fou" +
+      "nd2\276\003\n\005Query\022\203\001\n\006Params\022(.qorechain.cros" +
+      "svm.v1.QueryParamsRequest\032).qorechain.cr" +
+      "ossvm.v1.QueryParamsResponse\"$\202\323\344\223\002\036\022\034/q" +
+      "orechain/crossvm/v1/params\022\237\001\n\017PendingMe" +
+      "ssages\0221.qorechain.crossvm.v1.QueryPendi" +
+      "ngMessagesRequest\0322.qorechain.crossvm.v1" +
+      ".QueryPendingMessagesResponse\"%\202\323\344\223\002\037\022\035/" +
+      "qorechain/crossvm/v1/pending\022\214\001\n\007Message" +
+      "\022).qorechain.crossvm.v1.QueryMessageRequ" +
+      "est\032*.qorechain.crossvm.v1.QueryMessageR" +
+      "esponse\"*\202\323\344\223\002$\022\"/qorechain/crossvm/v1/m" +
+      "essage/{id}B5Z3github.com/qorechain/qore" +
+      "chain-core/x/crossvm/typesb\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
         new com.google.protobuf.Descriptors.FileDescriptor[] {
           com.google.api.AnnotationsProto.getDescriptor(),
+          com.google.protobuf.GoGoProtos.getDescriptor(),
+          cosmos.base.query.v1beta1.Pagination.getDescriptor(),
+          qorechain.crossvm.v1.Tx.getDescriptor(),
         });
     internal_static_qorechain_crossvm_v1_CrossVMMessageView_descriptor =
       getDescriptor().getMessageType(0);
@@ -5656,19 +7803,19 @@ public final class QueryOuterClass extends com.google.protobuf.GeneratedFile {
     internal_static_qorechain_crossvm_v1_QueryParamsResponse_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_qorechain_crossvm_v1_QueryParamsResponse_descriptor,
-        new java.lang.String[] { "MaxMessageSize", "MaxQueueSize", "QueueTimeoutBlocks", "Enabled", "BridgeAllowedTargets", });
+        new java.lang.String[] { "MaxMessageSize", "MaxQueueSize", "QueueTimeoutBlocks", "Enabled", "BridgeAllowedTargets", "BridgeTargetPins", "MaxPendingPerSender", "MaxCosmosTxGas", "RecordRetentionBlocks", "MaxBlockWasmGas", "MaxTxWasmShareBps", "MaxBlockLevelWasmGas", "QueueWasmReserveBps", "WasmCongestionMaxFactor", "WasmCongestionTargetBps", "WasmCongestionFactorMicro", "MaxBlockUploadBps", "MaxQueueTimeoutsPerBlock", });
     internal_static_qorechain_crossvm_v1_QueryPendingMessagesRequest_descriptor =
       getDescriptor().getMessageType(3);
     internal_static_qorechain_crossvm_v1_QueryPendingMessagesRequest_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_qorechain_crossvm_v1_QueryPendingMessagesRequest_descriptor,
-        new java.lang.String[] { });
+        new java.lang.String[] { "Pagination", });
     internal_static_qorechain_crossvm_v1_QueryPendingMessagesResponse_descriptor =
       getDescriptor().getMessageType(4);
     internal_static_qorechain_crossvm_v1_QueryPendingMessagesResponse_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_qorechain_crossvm_v1_QueryPendingMessagesResponse_descriptor,
-        new java.lang.String[] { "Messages", "Count", });
+        new java.lang.String[] { "Messages", "Count", "Pagination", });
     internal_static_qorechain_crossvm_v1_QueryMessageRequest_descriptor =
       getDescriptor().getMessageType(5);
     internal_static_qorechain_crossvm_v1_QueryMessageRequest_fieldAccessorTable = new
@@ -5683,8 +7830,12 @@ public final class QueryOuterClass extends com.google.protobuf.GeneratedFile {
         new java.lang.String[] { "Message", "Found", });
     descriptor.resolveAllFeaturesImmutable();
     com.google.api.AnnotationsProto.getDescriptor();
+    com.google.protobuf.GoGoProtos.getDescriptor();
+    cosmos.base.query.v1beta1.Pagination.getDescriptor();
+    qorechain.crossvm.v1.Tx.getDescriptor();
     com.google.protobuf.ExtensionRegistry registry =
         com.google.protobuf.ExtensionRegistry.newInstance();
+    registry.add(com.google.protobuf.GoGoProtos.nullable);
     registry.add(com.google.api.AnnotationsProto.http);
     com.google.protobuf.Descriptors.FileDescriptor
         .internalUpdateFileDescriptor(descriptor, registry);

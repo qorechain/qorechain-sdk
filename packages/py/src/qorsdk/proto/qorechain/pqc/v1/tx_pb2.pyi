@@ -113,20 +113,26 @@ class MsgDisableAlgorithmResponse(_message.Message):
     def __init__(self) -> None: ...
 
 class MsgOpenEVMWindow(_message.Message):
-    __slots__ = ("sender", "blocks", "max_txs", "max_value", "native_only", "allowed_targets")
+    __slots__ = ("sender", "blocks", "max_txs", "max_value", "native_only", "allowed_targets", "validators", "staking_validators", "ibc_receivers")
     SENDER_FIELD_NUMBER: _ClassVar[int]
     BLOCKS_FIELD_NUMBER: _ClassVar[int]
     MAX_TXS_FIELD_NUMBER: _ClassVar[int]
     MAX_VALUE_FIELD_NUMBER: _ClassVar[int]
     NATIVE_ONLY_FIELD_NUMBER: _ClassVar[int]
     ALLOWED_TARGETS_FIELD_NUMBER: _ClassVar[int]
+    VALIDATORS_FIELD_NUMBER: _ClassVar[int]
+    STAKING_VALIDATORS_FIELD_NUMBER: _ClassVar[int]
+    IBC_RECEIVERS_FIELD_NUMBER: _ClassVar[int]
     sender: str
     blocks: int
     max_txs: int
     max_value: str
     native_only: bool
     allowed_targets: _containers.RepeatedScalarFieldContainer[str]
-    def __init__(self, sender: _Optional[str] = ..., blocks: _Optional[int] = ..., max_txs: _Optional[int] = ..., max_value: _Optional[str] = ..., native_only: bool = ..., allowed_targets: _Optional[_Iterable[str]] = ...) -> None: ...
+    validators: _containers.RepeatedScalarFieldContainer[str]
+    staking_validators: _containers.RepeatedScalarFieldContainer[str]
+    ibc_receivers: _containers.RepeatedScalarFieldContainer[str]
+    def __init__(self, sender: _Optional[str] = ..., blocks: _Optional[int] = ..., max_txs: _Optional[int] = ..., max_value: _Optional[str] = ..., native_only: bool = ..., allowed_targets: _Optional[_Iterable[str]] = ..., validators: _Optional[_Iterable[str]] = ..., staking_validators: _Optional[_Iterable[str]] = ..., ibc_receivers: _Optional[_Iterable[str]] = ...) -> None: ...
 
 class MsgOpenEVMWindowResponse(_message.Message):
     __slots__ = ("expiry_height",)

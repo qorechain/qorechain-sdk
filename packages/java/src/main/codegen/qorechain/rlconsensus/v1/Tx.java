@@ -4569,6 +4569,1496 @@ public final class Tx extends com.google.protobuf.GeneratedFile {
 
   }
 
+  public interface MsgUpdateGasFloorBandOrBuilder extends
+      // @@protoc_insertion_point(interface_extends:qorechain.rlconsensus.v1.MsgUpdateGasFloorBand)
+      com.google.protobuf.MessageOrBuilder {
+
+    /**
+     * <code>string authority = 1 [json_name = "authority"];</code>
+     * @return The authority.
+     */
+    java.lang.String getAuthority();
+    /**
+     * <code>string authority = 1 [json_name = "authority"];</code>
+     * @return The bytes for authority.
+     */
+    com.google.protobuf.ByteString
+        getAuthorityBytes();
+
+    /**
+     * <code>bool apply_enabled = 2 [json_name = "applyEnabled"];</code>
+     * @return The applyEnabled.
+     */
+    boolean getApplyEnabled();
+
+    /**
+     * <pre>
+     * min_gas_price and max_gas_price bound the applied value absolutely.
+     * </pre>
+     *
+     * <code>string min_gas_price = 3 [json_name = "minGasPrice"];</code>
+     * @return The minGasPrice.
+     */
+    java.lang.String getMinGasPrice();
+    /**
+     * <pre>
+     * min_gas_price and max_gas_price bound the applied value absolutely.
+     * </pre>
+     *
+     * <code>string min_gas_price = 3 [json_name = "minGasPrice"];</code>
+     * @return The bytes for minGasPrice.
+     */
+    com.google.protobuf.ByteString
+        getMinGasPriceBytes();
+
+    /**
+     * <code>string max_gas_price = 4 [json_name = "maxGasPrice"];</code>
+     * @return The maxGasPrice.
+     */
+    java.lang.String getMaxGasPrice();
+    /**
+     * <code>string max_gas_price = 4 [json_name = "maxGasPrice"];</code>
+     * @return The bytes for maxGasPrice.
+     */
+    com.google.protobuf.ByteString
+        getMaxGasPriceBytes();
+
+    /**
+     * <pre>
+     * max_step_change bounds one step's change relative to the current value,
+     * in (0, 0.5].
+     * </pre>
+     *
+     * <code>string max_step_change = 5 [json_name = "maxStepChange"];</code>
+     * @return The maxStepChange.
+     */
+    java.lang.String getMaxStepChange();
+    /**
+     * <pre>
+     * max_step_change bounds one step's change relative to the current value,
+     * in (0, 0.5].
+     * </pre>
+     *
+     * <code>string max_step_change = 5 [json_name = "maxStepChange"];</code>
+     * @return The bytes for maxStepChange.
+     */
+    com.google.protobuf.ByteString
+        getMaxStepChangeBytes();
+  }
+  /**
+   * <pre>
+   * MsgUpdateGasFloorBand sets the band within which the agent's gas price floor
+   * moves the x/feemarket min_gas_price. Decimals as strings, in min_gas_price
+   * units. With apply_enabled false nothing is applied and the band fields may
+   * be empty.
+   * </pre>
+   *
+   * Protobuf type {@code qorechain.rlconsensus.v1.MsgUpdateGasFloorBand}
+   */
+  public static final class MsgUpdateGasFloorBand extends
+      com.google.protobuf.GeneratedMessage implements
+      // @@protoc_insertion_point(message_implements:qorechain.rlconsensus.v1.MsgUpdateGasFloorBand)
+      MsgUpdateGasFloorBandOrBuilder {
+  private static final long serialVersionUID = 0L;
+    static {
+      com.google.protobuf.RuntimeVersion.validateProtobufGencodeVersion(
+        com.google.protobuf.RuntimeVersion.RuntimeDomain.PUBLIC,
+        /* major= */ 4,
+        /* minor= */ 35,
+        /* patch= */ 1,
+        /* suffix= */ "",
+        "MsgUpdateGasFloorBand");
+    }
+    // Use MsgUpdateGasFloorBand.newBuilder() to construct.
+    private MsgUpdateGasFloorBand(com.google.protobuf.GeneratedMessage.Builder<?> builder) {
+      super(builder);
+    }
+    private MsgUpdateGasFloorBand() {
+      authority_ = "";
+      minGasPrice_ = "";
+      maxGasPrice_ = "";
+      maxStepChange_ = "";
+    }
+
+    public static final com.google.protobuf.Descriptors.Descriptor
+        getDescriptor() {
+      return qorechain.rlconsensus.v1.Tx.internal_static_qorechain_rlconsensus_v1_MsgUpdateGasFloorBand_descriptor;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Descriptors.Descriptor getDescriptorForType() {
+      return qorechain.rlconsensus.v1.Tx.internal_static_qorechain_rlconsensus_v1_MsgUpdateGasFloorBand_descriptor;
+    }
+
+    @java.lang.Override
+    protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+        internalGetFieldAccessorTable() {
+      return qorechain.rlconsensus.v1.Tx.internal_static_qorechain_rlconsensus_v1_MsgUpdateGasFloorBand_fieldAccessorTable
+          .ensureFieldAccessorsInitialized(
+              qorechain.rlconsensus.v1.Tx.MsgUpdateGasFloorBand.class, qorechain.rlconsensus.v1.Tx.MsgUpdateGasFloorBand.Builder.class);
+    }
+
+    public static final int AUTHORITY_FIELD_NUMBER = 1;
+    @SuppressWarnings("serial")
+    private volatile java.lang.Object authority_ = "";
+    /**
+     * <code>string authority = 1 [json_name = "authority"];</code>
+     * @return The authority.
+     */
+    @java.lang.Override
+    public java.lang.String getAuthority() {
+      java.lang.Object ref = authority_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        authority_ = s;
+        return s;
+      }
+    }
+    /**
+     * <code>string authority = 1 [json_name = "authority"];</code>
+     * @return The bytes for authority.
+     */
+    @java.lang.Override
+    public com.google.protobuf.ByteString
+        getAuthorityBytes() {
+      java.lang.Object ref = authority_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        authority_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
+    public static final int APPLY_ENABLED_FIELD_NUMBER = 2;
+    private boolean applyEnabled_ = false;
+    /**
+     * <code>bool apply_enabled = 2 [json_name = "applyEnabled"];</code>
+     * @return The applyEnabled.
+     */
+    @java.lang.Override
+    public boolean getApplyEnabled() {
+      return applyEnabled_;
+    }
+
+    public static final int MIN_GAS_PRICE_FIELD_NUMBER = 3;
+    @SuppressWarnings("serial")
+    private volatile java.lang.Object minGasPrice_ = "";
+    /**
+     * <pre>
+     * min_gas_price and max_gas_price bound the applied value absolutely.
+     * </pre>
+     *
+     * <code>string min_gas_price = 3 [json_name = "minGasPrice"];</code>
+     * @return The minGasPrice.
+     */
+    @java.lang.Override
+    public java.lang.String getMinGasPrice() {
+      java.lang.Object ref = minGasPrice_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        minGasPrice_ = s;
+        return s;
+      }
+    }
+    /**
+     * <pre>
+     * min_gas_price and max_gas_price bound the applied value absolutely.
+     * </pre>
+     *
+     * <code>string min_gas_price = 3 [json_name = "minGasPrice"];</code>
+     * @return The bytes for minGasPrice.
+     */
+    @java.lang.Override
+    public com.google.protobuf.ByteString
+        getMinGasPriceBytes() {
+      java.lang.Object ref = minGasPrice_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        minGasPrice_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
+    public static final int MAX_GAS_PRICE_FIELD_NUMBER = 4;
+    @SuppressWarnings("serial")
+    private volatile java.lang.Object maxGasPrice_ = "";
+    /**
+     * <code>string max_gas_price = 4 [json_name = "maxGasPrice"];</code>
+     * @return The maxGasPrice.
+     */
+    @java.lang.Override
+    public java.lang.String getMaxGasPrice() {
+      java.lang.Object ref = maxGasPrice_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        maxGasPrice_ = s;
+        return s;
+      }
+    }
+    /**
+     * <code>string max_gas_price = 4 [json_name = "maxGasPrice"];</code>
+     * @return The bytes for maxGasPrice.
+     */
+    @java.lang.Override
+    public com.google.protobuf.ByteString
+        getMaxGasPriceBytes() {
+      java.lang.Object ref = maxGasPrice_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        maxGasPrice_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
+    public static final int MAX_STEP_CHANGE_FIELD_NUMBER = 5;
+    @SuppressWarnings("serial")
+    private volatile java.lang.Object maxStepChange_ = "";
+    /**
+     * <pre>
+     * max_step_change bounds one step's change relative to the current value,
+     * in (0, 0.5].
+     * </pre>
+     *
+     * <code>string max_step_change = 5 [json_name = "maxStepChange"];</code>
+     * @return The maxStepChange.
+     */
+    @java.lang.Override
+    public java.lang.String getMaxStepChange() {
+      java.lang.Object ref = maxStepChange_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        maxStepChange_ = s;
+        return s;
+      }
+    }
+    /**
+     * <pre>
+     * max_step_change bounds one step's change relative to the current value,
+     * in (0, 0.5].
+     * </pre>
+     *
+     * <code>string max_step_change = 5 [json_name = "maxStepChange"];</code>
+     * @return The bytes for maxStepChange.
+     */
+    @java.lang.Override
+    public com.google.protobuf.ByteString
+        getMaxStepChangeBytes() {
+      java.lang.Object ref = maxStepChange_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        maxStepChange_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
+    private byte memoizedIsInitialized = -1;
+    @java.lang.Override
+    public final boolean isInitialized() {
+      byte isInitialized = memoizedIsInitialized;
+      if (isInitialized == 1) return true;
+      if (isInitialized == 0) return false;
+
+      memoizedIsInitialized = 1;
+      return true;
+    }
+
+    @java.lang.Override
+    public void writeTo(com.google.protobuf.CodedOutputStream output)
+                        throws java.io.IOException {
+      if (!com.google.protobuf.GeneratedMessage.isStringEmpty(authority_)) {
+        com.google.protobuf.GeneratedMessage.writeString(output, 1, authority_);
+      }
+      if (applyEnabled_ != false) {
+        output.writeBool(2, applyEnabled_);
+      }
+      if (!com.google.protobuf.GeneratedMessage.isStringEmpty(minGasPrice_)) {
+        com.google.protobuf.GeneratedMessage.writeString(output, 3, minGasPrice_);
+      }
+      if (!com.google.protobuf.GeneratedMessage.isStringEmpty(maxGasPrice_)) {
+        com.google.protobuf.GeneratedMessage.writeString(output, 4, maxGasPrice_);
+      }
+      if (!com.google.protobuf.GeneratedMessage.isStringEmpty(maxStepChange_)) {
+        com.google.protobuf.GeneratedMessage.writeString(output, 5, maxStepChange_);
+      }
+      getUnknownFields().writeTo(output);
+    }
+    private int computeSerializedSize_0() {
+      int size = 0;
+      if (!com.google.protobuf.GeneratedMessage.isStringEmpty(authority_)) {
+        size += com.google.protobuf.GeneratedMessage.computeStringSize(1, authority_);
+      }
+      if (applyEnabled_ != false) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeBoolSize(2, applyEnabled_);
+      }
+      if (!com.google.protobuf.GeneratedMessage.isStringEmpty(minGasPrice_)) {
+        size += com.google.protobuf.GeneratedMessage.computeStringSize(3, minGasPrice_);
+      }
+      if (!com.google.protobuf.GeneratedMessage.isStringEmpty(maxGasPrice_)) {
+        size += com.google.protobuf.GeneratedMessage.computeStringSize(4, maxGasPrice_);
+      }
+      if (!com.google.protobuf.GeneratedMessage.isStringEmpty(maxStepChange_)) {
+        size += com.google.protobuf.GeneratedMessage.computeStringSize(5, maxStepChange_);
+      }
+      return size;
+    }
+    @java.lang.Override
+    public int getSerializedSize() {
+      int size = memoizedSize;
+      if (size != -1) return size;
+
+      size = 0;
+      size += computeSerializedSize_0();
+      size += getUnknownFields().getSerializedSize();
+      memoizedSize = size;
+      return size;
+    }
+
+    @java.lang.Override
+    public boolean equals(final java.lang.Object obj) {
+      if (obj == this) {
+       return true;
+      }
+      if (!(obj instanceof qorechain.rlconsensus.v1.Tx.MsgUpdateGasFloorBand)) {
+        return super.equals(obj);
+      }
+      qorechain.rlconsensus.v1.Tx.MsgUpdateGasFloorBand other = (qorechain.rlconsensus.v1.Tx.MsgUpdateGasFloorBand) obj;
+
+      if (!getAuthority()
+          .equals(other.getAuthority())) return false;
+      if (getApplyEnabled()
+          != other.getApplyEnabled()) return false;
+      if (!getMinGasPrice()
+          .equals(other.getMinGasPrice())) return false;
+      if (!getMaxGasPrice()
+          .equals(other.getMaxGasPrice())) return false;
+      if (!getMaxStepChange()
+          .equals(other.getMaxStepChange())) return false;
+      if (!getUnknownFields().equals(other.getUnknownFields())) return false;
+      return true;
+    }
+
+    @java.lang.Override
+    public int hashCode() {
+      if (memoizedHashCode != 0) {
+        return memoizedHashCode;
+      }
+      int hash = 41;
+      hash = (19 * hash) + getDescriptor().hashCode();
+      hash = (37 * hash) + AUTHORITY_FIELD_NUMBER;
+      hash = (53 * hash) + getAuthority().hashCode();
+      hash = (37 * hash) + APPLY_ENABLED_FIELD_NUMBER;
+      hash = (53 * hash) + com.google.protobuf.Internal.hashBoolean(
+          getApplyEnabled());
+      hash = (37 * hash) + MIN_GAS_PRICE_FIELD_NUMBER;
+      hash = (53 * hash) + getMinGasPrice().hashCode();
+      hash = (37 * hash) + MAX_GAS_PRICE_FIELD_NUMBER;
+      hash = (53 * hash) + getMaxGasPrice().hashCode();
+      hash = (37 * hash) + MAX_STEP_CHANGE_FIELD_NUMBER;
+      hash = (53 * hash) + getMaxStepChange().hashCode();
+      hash = (29 * hash) + getUnknownFields().hashCode();
+      memoizedHashCode = hash;
+      return hash;
+    }
+
+    public static qorechain.rlconsensus.v1.Tx.MsgUpdateGasFloorBand parseFrom(
+        java.nio.ByteBuffer data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static qorechain.rlconsensus.v1.Tx.MsgUpdateGasFloorBand parseFrom(
+        java.nio.ByteBuffer data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static qorechain.rlconsensus.v1.Tx.MsgUpdateGasFloorBand parseFrom(
+        com.google.protobuf.ByteString data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static qorechain.rlconsensus.v1.Tx.MsgUpdateGasFloorBand parseFrom(
+        com.google.protobuf.ByteString data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static qorechain.rlconsensus.v1.Tx.MsgUpdateGasFloorBand parseFrom(byte[] data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static qorechain.rlconsensus.v1.Tx.MsgUpdateGasFloorBand parseFrom(
+        byte[] data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static qorechain.rlconsensus.v1.Tx.MsgUpdateGasFloorBand parseFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input);
+    }
+    public static qorechain.rlconsensus.v1.Tx.MsgUpdateGasFloorBand parseFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    public static qorechain.rlconsensus.v1.Tx.MsgUpdateGasFloorBand parseDelimitedFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseDelimitedWithIOException(PARSER, input);
+    }
+
+    public static qorechain.rlconsensus.v1.Tx.MsgUpdateGasFloorBand parseDelimitedFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static qorechain.rlconsensus.v1.Tx.MsgUpdateGasFloorBand parseFrom(
+        com.google.protobuf.CodedInputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input);
+    }
+    public static qorechain.rlconsensus.v1.Tx.MsgUpdateGasFloorBand parseFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    @java.lang.Override
+    public Builder newBuilderForType() { return newBuilder(); }
+    public static Builder newBuilder() {
+      return DEFAULT_INSTANCE.toBuilder();
+    }
+    public static Builder newBuilder(qorechain.rlconsensus.v1.Tx.MsgUpdateGasFloorBand prototype) {
+      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+    }
+    @java.lang.Override
+    public Builder toBuilder() {
+      return this == DEFAULT_INSTANCE
+          ? new Builder() : new Builder().mergeFrom(this);
+    }
+
+    @java.lang.Override
+    protected Builder newBuilderForType(
+        com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+      Builder builder = new Builder(parent);
+      return builder;
+    }
+    /**
+     * <pre>
+     * MsgUpdateGasFloorBand sets the band within which the agent's gas price floor
+     * moves the x/feemarket min_gas_price. Decimals as strings, in min_gas_price
+     * units. With apply_enabled false nothing is applied and the band fields may
+     * be empty.
+     * </pre>
+     *
+     * Protobuf type {@code qorechain.rlconsensus.v1.MsgUpdateGasFloorBand}
+     */
+    public static final class Builder extends
+        com.google.protobuf.GeneratedMessage.Builder<Builder> implements
+        // @@protoc_insertion_point(builder_implements:qorechain.rlconsensus.v1.MsgUpdateGasFloorBand)
+        qorechain.rlconsensus.v1.Tx.MsgUpdateGasFloorBandOrBuilder {
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return qorechain.rlconsensus.v1.Tx.internal_static_qorechain_rlconsensus_v1_MsgUpdateGasFloorBand_descriptor;
+      }
+
+      @java.lang.Override
+      protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return qorechain.rlconsensus.v1.Tx.internal_static_qorechain_rlconsensus_v1_MsgUpdateGasFloorBand_fieldAccessorTable
+            .ensureFieldAccessorsInitialized(
+                qorechain.rlconsensus.v1.Tx.MsgUpdateGasFloorBand.class, qorechain.rlconsensus.v1.Tx.MsgUpdateGasFloorBand.Builder.class);
+      }
+
+      // Construct using qorechain.rlconsensus.v1.Tx.MsgUpdateGasFloorBand.newBuilder()
+      private Builder() {
+
+      }
+
+      private Builder(
+          com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+        super(parent);
+
+      }
+      @java.lang.Override
+      public Builder clear() {
+        super.clear();
+        bitField0_ = 0;
+        authority_ = "";
+        applyEnabled_ = false;
+        minGasPrice_ = "";
+        maxGasPrice_ = "";
+        maxStepChange_ = "";
+        return this;
+      }
+
+      @java.lang.Override
+      public com.google.protobuf.Descriptors.Descriptor
+          getDescriptorForType() {
+        return qorechain.rlconsensus.v1.Tx.internal_static_qorechain_rlconsensus_v1_MsgUpdateGasFloorBand_descriptor;
+      }
+
+      @java.lang.Override
+      public qorechain.rlconsensus.v1.Tx.MsgUpdateGasFloorBand getDefaultInstanceForType() {
+        return qorechain.rlconsensus.v1.Tx.MsgUpdateGasFloorBand.getDefaultInstance();
+      }
+
+      @java.lang.Override
+      public qorechain.rlconsensus.v1.Tx.MsgUpdateGasFloorBand build() {
+        qorechain.rlconsensus.v1.Tx.MsgUpdateGasFloorBand result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(result);
+        }
+        return result;
+      }
+
+      @java.lang.Override
+      public qorechain.rlconsensus.v1.Tx.MsgUpdateGasFloorBand buildPartial() {
+        qorechain.rlconsensus.v1.Tx.MsgUpdateGasFloorBand result = new qorechain.rlconsensus.v1.Tx.MsgUpdateGasFloorBand(this);
+        if (bitField0_ != 0) { buildPartial0(result); }
+        onBuilt();
+        return result;
+      }
+
+      private void buildPartial0(qorechain.rlconsensus.v1.Tx.MsgUpdateGasFloorBand result) {
+        int from_bitField0_ = bitField0_;
+        if (((from_bitField0_ & 0x00000001) != 0)) {
+          result.authority_ = authority_;
+        }
+        if (((from_bitField0_ & 0x00000002) != 0)) {
+          result.applyEnabled_ = applyEnabled_;
+        }
+        if (((from_bitField0_ & 0x00000004) != 0)) {
+          result.minGasPrice_ = minGasPrice_;
+        }
+        if (((from_bitField0_ & 0x00000008) != 0)) {
+          result.maxGasPrice_ = maxGasPrice_;
+        }
+        if (((from_bitField0_ & 0x00000010) != 0)) {
+          result.maxStepChange_ = maxStepChange_;
+        }
+      }
+
+      @java.lang.Override
+      public Builder mergeFrom(com.google.protobuf.Message other) {
+        if (other instanceof qorechain.rlconsensus.v1.Tx.MsgUpdateGasFloorBand) {
+          return mergeFrom((qorechain.rlconsensus.v1.Tx.MsgUpdateGasFloorBand)other);
+        } else {
+          super.mergeFrom(other);
+          return this;
+        }
+      }
+
+      public Builder mergeFrom(qorechain.rlconsensus.v1.Tx.MsgUpdateGasFloorBand other) {
+        if (other == qorechain.rlconsensus.v1.Tx.MsgUpdateGasFloorBand.getDefaultInstance()) return this;
+        if (!other.getAuthority().isEmpty()) {
+          authority_ = other.authority_;
+          bitField0_ |= 0x00000001;
+          onChanged();
+        }
+        if (other.getApplyEnabled() != false) {
+          setApplyEnabled(other.getApplyEnabled());
+        }
+        if (!other.getMinGasPrice().isEmpty()) {
+          minGasPrice_ = other.minGasPrice_;
+          bitField0_ |= 0x00000004;
+          onChanged();
+        }
+        if (!other.getMaxGasPrice().isEmpty()) {
+          maxGasPrice_ = other.maxGasPrice_;
+          bitField0_ |= 0x00000008;
+          onChanged();
+        }
+        if (!other.getMaxStepChange().isEmpty()) {
+          maxStepChange_ = other.maxStepChange_;
+          bitField0_ |= 0x00000010;
+          onChanged();
+        }
+        this.mergeUnknownFields(other.getUnknownFields());
+        onChanged();
+        return this;
+      }
+
+      @java.lang.Override
+      public final boolean isInitialized() {
+        return true;
+      }
+
+      @java.lang.Override
+      public Builder mergeFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        if (extensionRegistry == null) {
+          throw new java.lang.NullPointerException();
+        }
+        try {
+          boolean done = false;
+          while (!done) {
+            int tag = input.readTag();
+            switch (tag) {
+              case 0:
+                done = true;
+                break;
+              case 10: {
+                authority_ = input.readStringRequireUtf8();
+                bitField0_ |= 0x00000001;
+                break;
+              } // case 10
+              case 16: {
+                applyEnabled_ = input.readBool();
+                bitField0_ |= 0x00000002;
+                break;
+              } // case 16
+              case 26: {
+                minGasPrice_ = input.readStringRequireUtf8();
+                bitField0_ |= 0x00000004;
+                break;
+              } // case 26
+              case 34: {
+                maxGasPrice_ = input.readStringRequireUtf8();
+                bitField0_ |= 0x00000008;
+                break;
+              } // case 34
+              case 42: {
+                maxStepChange_ = input.readStringRequireUtf8();
+                bitField0_ |= 0x00000010;
+                break;
+              } // case 42
+              default: {
+                if (!super.parseUnknownField(input, extensionRegistry, tag)) {
+                  done = true; // was an endgroup tag
+                }
+                break;
+              } // default:
+            } // switch (tag)
+          } // while (!done)
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          throw e.unwrapIOException();
+        } finally {
+          onChanged();
+        } // finally
+        return this;
+      }
+      private int bitField0_;
+
+      private java.lang.Object authority_ = "";
+      /**
+       * <code>string authority = 1 [json_name = "authority"];</code>
+       * @return The authority.
+       */
+      public java.lang.String getAuthority() {
+        java.lang.Object ref = authority_;
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          authority_ = s;
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
+      }
+      /**
+       * <code>string authority = 1 [json_name = "authority"];</code>
+       * @return The bytes for authority.
+       */
+      public com.google.protobuf.ByteString
+          getAuthorityBytes() {
+        java.lang.Object ref = authority_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          authority_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <code>string authority = 1 [json_name = "authority"];</code>
+       * @param value The authority to set.
+       * @return This builder for chaining.
+       */
+      public Builder setAuthority(
+          java.lang.String value) {
+        if (value == null) { throw new NullPointerException(); }
+        authority_ = value;
+        bitField0_ |= 0x00000001;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>string authority = 1 [json_name = "authority"];</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearAuthority() {
+        authority_ = getDefaultInstance().getAuthority();
+        bitField0_ = (bitField0_ & ~0x00000001);
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>string authority = 1 [json_name = "authority"];</code>
+       * @param value The bytes for authority to set.
+       * @return This builder for chaining.
+       */
+      public Builder setAuthorityBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) { throw new NullPointerException(); }
+        checkByteStringIsUtf8(value);
+        authority_ = value;
+        bitField0_ |= 0x00000001;
+        onChanged();
+        return this;
+      }
+
+      private boolean applyEnabled_ ;
+      /**
+       * <code>bool apply_enabled = 2 [json_name = "applyEnabled"];</code>
+       * @return The applyEnabled.
+       */
+      @java.lang.Override
+      public boolean getApplyEnabled() {
+        return applyEnabled_;
+      }
+      /**
+       * <code>bool apply_enabled = 2 [json_name = "applyEnabled"];</code>
+       * @param value The applyEnabled to set.
+       * @return This builder for chaining.
+       */
+      public Builder setApplyEnabled(boolean value) {
+
+        applyEnabled_ = value;
+        bitField0_ |= 0x00000002;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>bool apply_enabled = 2 [json_name = "applyEnabled"];</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearApplyEnabled() {
+        bitField0_ = (bitField0_ & ~0x00000002);
+        applyEnabled_ = false;
+        onChanged();
+        return this;
+      }
+
+      private java.lang.Object minGasPrice_ = "";
+      /**
+       * <pre>
+       * min_gas_price and max_gas_price bound the applied value absolutely.
+       * </pre>
+       *
+       * <code>string min_gas_price = 3 [json_name = "minGasPrice"];</code>
+       * @return The minGasPrice.
+       */
+      public java.lang.String getMinGasPrice() {
+        java.lang.Object ref = minGasPrice_;
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          minGasPrice_ = s;
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
+      }
+      /**
+       * <pre>
+       * min_gas_price and max_gas_price bound the applied value absolutely.
+       * </pre>
+       *
+       * <code>string min_gas_price = 3 [json_name = "minGasPrice"];</code>
+       * @return The bytes for minGasPrice.
+       */
+      public com.google.protobuf.ByteString
+          getMinGasPriceBytes() {
+        java.lang.Object ref = minGasPrice_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          minGasPrice_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <pre>
+       * min_gas_price and max_gas_price bound the applied value absolutely.
+       * </pre>
+       *
+       * <code>string min_gas_price = 3 [json_name = "minGasPrice"];</code>
+       * @param value The minGasPrice to set.
+       * @return This builder for chaining.
+       */
+      public Builder setMinGasPrice(
+          java.lang.String value) {
+        if (value == null) { throw new NullPointerException(); }
+        minGasPrice_ = value;
+        bitField0_ |= 0x00000004;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * min_gas_price and max_gas_price bound the applied value absolutely.
+       * </pre>
+       *
+       * <code>string min_gas_price = 3 [json_name = "minGasPrice"];</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearMinGasPrice() {
+        minGasPrice_ = getDefaultInstance().getMinGasPrice();
+        bitField0_ = (bitField0_ & ~0x00000004);
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * min_gas_price and max_gas_price bound the applied value absolutely.
+       * </pre>
+       *
+       * <code>string min_gas_price = 3 [json_name = "minGasPrice"];</code>
+       * @param value The bytes for minGasPrice to set.
+       * @return This builder for chaining.
+       */
+      public Builder setMinGasPriceBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) { throw new NullPointerException(); }
+        checkByteStringIsUtf8(value);
+        minGasPrice_ = value;
+        bitField0_ |= 0x00000004;
+        onChanged();
+        return this;
+      }
+
+      private java.lang.Object maxGasPrice_ = "";
+      /**
+       * <code>string max_gas_price = 4 [json_name = "maxGasPrice"];</code>
+       * @return The maxGasPrice.
+       */
+      public java.lang.String getMaxGasPrice() {
+        java.lang.Object ref = maxGasPrice_;
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          maxGasPrice_ = s;
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
+      }
+      /**
+       * <code>string max_gas_price = 4 [json_name = "maxGasPrice"];</code>
+       * @return The bytes for maxGasPrice.
+       */
+      public com.google.protobuf.ByteString
+          getMaxGasPriceBytes() {
+        java.lang.Object ref = maxGasPrice_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          maxGasPrice_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <code>string max_gas_price = 4 [json_name = "maxGasPrice"];</code>
+       * @param value The maxGasPrice to set.
+       * @return This builder for chaining.
+       */
+      public Builder setMaxGasPrice(
+          java.lang.String value) {
+        if (value == null) { throw new NullPointerException(); }
+        maxGasPrice_ = value;
+        bitField0_ |= 0x00000008;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>string max_gas_price = 4 [json_name = "maxGasPrice"];</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearMaxGasPrice() {
+        maxGasPrice_ = getDefaultInstance().getMaxGasPrice();
+        bitField0_ = (bitField0_ & ~0x00000008);
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>string max_gas_price = 4 [json_name = "maxGasPrice"];</code>
+       * @param value The bytes for maxGasPrice to set.
+       * @return This builder for chaining.
+       */
+      public Builder setMaxGasPriceBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) { throw new NullPointerException(); }
+        checkByteStringIsUtf8(value);
+        maxGasPrice_ = value;
+        bitField0_ |= 0x00000008;
+        onChanged();
+        return this;
+      }
+
+      private java.lang.Object maxStepChange_ = "";
+      /**
+       * <pre>
+       * max_step_change bounds one step's change relative to the current value,
+       * in (0, 0.5].
+       * </pre>
+       *
+       * <code>string max_step_change = 5 [json_name = "maxStepChange"];</code>
+       * @return The maxStepChange.
+       */
+      public java.lang.String getMaxStepChange() {
+        java.lang.Object ref = maxStepChange_;
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          maxStepChange_ = s;
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
+      }
+      /**
+       * <pre>
+       * max_step_change bounds one step's change relative to the current value,
+       * in (0, 0.5].
+       * </pre>
+       *
+       * <code>string max_step_change = 5 [json_name = "maxStepChange"];</code>
+       * @return The bytes for maxStepChange.
+       */
+      public com.google.protobuf.ByteString
+          getMaxStepChangeBytes() {
+        java.lang.Object ref = maxStepChange_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          maxStepChange_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <pre>
+       * max_step_change bounds one step's change relative to the current value,
+       * in (0, 0.5].
+       * </pre>
+       *
+       * <code>string max_step_change = 5 [json_name = "maxStepChange"];</code>
+       * @param value The maxStepChange to set.
+       * @return This builder for chaining.
+       */
+      public Builder setMaxStepChange(
+          java.lang.String value) {
+        if (value == null) { throw new NullPointerException(); }
+        maxStepChange_ = value;
+        bitField0_ |= 0x00000010;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * max_step_change bounds one step's change relative to the current value,
+       * in (0, 0.5].
+       * </pre>
+       *
+       * <code>string max_step_change = 5 [json_name = "maxStepChange"];</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearMaxStepChange() {
+        maxStepChange_ = getDefaultInstance().getMaxStepChange();
+        bitField0_ = (bitField0_ & ~0x00000010);
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * max_step_change bounds one step's change relative to the current value,
+       * in (0, 0.5].
+       * </pre>
+       *
+       * <code>string max_step_change = 5 [json_name = "maxStepChange"];</code>
+       * @param value The bytes for maxStepChange to set.
+       * @return This builder for chaining.
+       */
+      public Builder setMaxStepChangeBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) { throw new NullPointerException(); }
+        checkByteStringIsUtf8(value);
+        maxStepChange_ = value;
+        bitField0_ |= 0x00000010;
+        onChanged();
+        return this;
+      }
+
+      // @@protoc_insertion_point(builder_scope:qorechain.rlconsensus.v1.MsgUpdateGasFloorBand)
+    }
+
+    // @@protoc_insertion_point(class_scope:qorechain.rlconsensus.v1.MsgUpdateGasFloorBand)
+    private static final qorechain.rlconsensus.v1.Tx.MsgUpdateGasFloorBand DEFAULT_INSTANCE;
+    static {
+      DEFAULT_INSTANCE = new qorechain.rlconsensus.v1.Tx.MsgUpdateGasFloorBand();
+    }
+
+    public static qorechain.rlconsensus.v1.Tx.MsgUpdateGasFloorBand getDefaultInstance() {
+      return DEFAULT_INSTANCE;
+    }
+
+    private static final com.google.protobuf.Parser<MsgUpdateGasFloorBand>
+        PARSER = new com.google.protobuf.AbstractParser<MsgUpdateGasFloorBand>() {
+      @java.lang.Override
+      public MsgUpdateGasFloorBand parsePartialFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        Builder builder = newBuilder();
+        try {
+          builder.mergeFrom(input, extensionRegistry);
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          throw e.setUnfinishedMessage(builder.buildPartial());
+        } catch (com.google.protobuf.UninitializedMessageException e) {
+          throw e.asInvalidProtocolBufferException().setUnfinishedMessage(builder.buildPartial());
+        } catch (java.io.IOException e) {
+          throw new com.google.protobuf.InvalidProtocolBufferException(e)
+              .setUnfinishedMessage(builder.buildPartial());
+        }
+        return builder.buildPartial();
+      }
+    };
+
+    public static com.google.protobuf.Parser<MsgUpdateGasFloorBand> parser() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Parser<MsgUpdateGasFloorBand> getParserForType() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public qorechain.rlconsensus.v1.Tx.MsgUpdateGasFloorBand getDefaultInstanceForType() {
+      return DEFAULT_INSTANCE;
+    }
+
+  }
+
+  public interface MsgUpdateGasFloorBandResponseOrBuilder extends
+      // @@protoc_insertion_point(interface_extends:qorechain.rlconsensus.v1.MsgUpdateGasFloorBandResponse)
+      com.google.protobuf.MessageOrBuilder {
+  }
+  /**
+   * Protobuf type {@code qorechain.rlconsensus.v1.MsgUpdateGasFloorBandResponse}
+   */
+  public static final class MsgUpdateGasFloorBandResponse extends
+      com.google.protobuf.GeneratedMessage implements
+      // @@protoc_insertion_point(message_implements:qorechain.rlconsensus.v1.MsgUpdateGasFloorBandResponse)
+      MsgUpdateGasFloorBandResponseOrBuilder {
+  private static final long serialVersionUID = 0L;
+    static {
+      com.google.protobuf.RuntimeVersion.validateProtobufGencodeVersion(
+        com.google.protobuf.RuntimeVersion.RuntimeDomain.PUBLIC,
+        /* major= */ 4,
+        /* minor= */ 35,
+        /* patch= */ 1,
+        /* suffix= */ "",
+        "MsgUpdateGasFloorBandResponse");
+    }
+    // Use MsgUpdateGasFloorBandResponse.newBuilder() to construct.
+    private MsgUpdateGasFloorBandResponse(com.google.protobuf.GeneratedMessage.Builder<?> builder) {
+      super(builder);
+    }
+    private MsgUpdateGasFloorBandResponse() {
+    }
+
+    public static final com.google.protobuf.Descriptors.Descriptor
+        getDescriptor() {
+      return qorechain.rlconsensus.v1.Tx.internal_static_qorechain_rlconsensus_v1_MsgUpdateGasFloorBandResponse_descriptor;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Descriptors.Descriptor getDescriptorForType() {
+      return qorechain.rlconsensus.v1.Tx.internal_static_qorechain_rlconsensus_v1_MsgUpdateGasFloorBandResponse_descriptor;
+    }
+
+    @java.lang.Override
+    protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+        internalGetFieldAccessorTable() {
+      return qorechain.rlconsensus.v1.Tx.internal_static_qorechain_rlconsensus_v1_MsgUpdateGasFloorBandResponse_fieldAccessorTable
+          .ensureFieldAccessorsInitialized(
+              qorechain.rlconsensus.v1.Tx.MsgUpdateGasFloorBandResponse.class, qorechain.rlconsensus.v1.Tx.MsgUpdateGasFloorBandResponse.Builder.class);
+    }
+
+    private byte memoizedIsInitialized = -1;
+    @java.lang.Override
+    public final boolean isInitialized() {
+      byte isInitialized = memoizedIsInitialized;
+      if (isInitialized == 1) return true;
+      if (isInitialized == 0) return false;
+
+      memoizedIsInitialized = 1;
+      return true;
+    }
+
+    @java.lang.Override
+    public void writeTo(com.google.protobuf.CodedOutputStream output)
+                        throws java.io.IOException {
+      getUnknownFields().writeTo(output);
+    }
+    @java.lang.Override
+    public int getSerializedSize() {
+      int size = memoizedSize;
+      if (size != -1) return size;
+
+      size = 0;
+      size += getUnknownFields().getSerializedSize();
+      memoizedSize = size;
+      return size;
+    }
+
+    @java.lang.Override
+    public boolean equals(final java.lang.Object obj) {
+      if (obj == this) {
+       return true;
+      }
+      if (!(obj instanceof qorechain.rlconsensus.v1.Tx.MsgUpdateGasFloorBandResponse)) {
+        return super.equals(obj);
+      }
+      qorechain.rlconsensus.v1.Tx.MsgUpdateGasFloorBandResponse other = (qorechain.rlconsensus.v1.Tx.MsgUpdateGasFloorBandResponse) obj;
+
+      if (!getUnknownFields().equals(other.getUnknownFields())) return false;
+      return true;
+    }
+
+    @java.lang.Override
+    public int hashCode() {
+      if (memoizedHashCode != 0) {
+        return memoizedHashCode;
+      }
+      int hash = 41;
+      hash = (19 * hash) + getDescriptor().hashCode();
+      hash = (29 * hash) + getUnknownFields().hashCode();
+      memoizedHashCode = hash;
+      return hash;
+    }
+
+    public static qorechain.rlconsensus.v1.Tx.MsgUpdateGasFloorBandResponse parseFrom(
+        java.nio.ByteBuffer data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static qorechain.rlconsensus.v1.Tx.MsgUpdateGasFloorBandResponse parseFrom(
+        java.nio.ByteBuffer data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static qorechain.rlconsensus.v1.Tx.MsgUpdateGasFloorBandResponse parseFrom(
+        com.google.protobuf.ByteString data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static qorechain.rlconsensus.v1.Tx.MsgUpdateGasFloorBandResponse parseFrom(
+        com.google.protobuf.ByteString data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static qorechain.rlconsensus.v1.Tx.MsgUpdateGasFloorBandResponse parseFrom(byte[] data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static qorechain.rlconsensus.v1.Tx.MsgUpdateGasFloorBandResponse parseFrom(
+        byte[] data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static qorechain.rlconsensus.v1.Tx.MsgUpdateGasFloorBandResponse parseFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input);
+    }
+    public static qorechain.rlconsensus.v1.Tx.MsgUpdateGasFloorBandResponse parseFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    public static qorechain.rlconsensus.v1.Tx.MsgUpdateGasFloorBandResponse parseDelimitedFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseDelimitedWithIOException(PARSER, input);
+    }
+
+    public static qorechain.rlconsensus.v1.Tx.MsgUpdateGasFloorBandResponse parseDelimitedFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static qorechain.rlconsensus.v1.Tx.MsgUpdateGasFloorBandResponse parseFrom(
+        com.google.protobuf.CodedInputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input);
+    }
+    public static qorechain.rlconsensus.v1.Tx.MsgUpdateGasFloorBandResponse parseFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    @java.lang.Override
+    public Builder newBuilderForType() { return newBuilder(); }
+    public static Builder newBuilder() {
+      return DEFAULT_INSTANCE.toBuilder();
+    }
+    public static Builder newBuilder(qorechain.rlconsensus.v1.Tx.MsgUpdateGasFloorBandResponse prototype) {
+      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+    }
+    @java.lang.Override
+    public Builder toBuilder() {
+      return this == DEFAULT_INSTANCE
+          ? new Builder() : new Builder().mergeFrom(this);
+    }
+
+    @java.lang.Override
+    protected Builder newBuilderForType(
+        com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+      Builder builder = new Builder(parent);
+      return builder;
+    }
+    /**
+     * Protobuf type {@code qorechain.rlconsensus.v1.MsgUpdateGasFloorBandResponse}
+     */
+    public static final class Builder extends
+        com.google.protobuf.GeneratedMessage.Builder<Builder> implements
+        // @@protoc_insertion_point(builder_implements:qorechain.rlconsensus.v1.MsgUpdateGasFloorBandResponse)
+        qorechain.rlconsensus.v1.Tx.MsgUpdateGasFloorBandResponseOrBuilder {
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return qorechain.rlconsensus.v1.Tx.internal_static_qorechain_rlconsensus_v1_MsgUpdateGasFloorBandResponse_descriptor;
+      }
+
+      @java.lang.Override
+      protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return qorechain.rlconsensus.v1.Tx.internal_static_qorechain_rlconsensus_v1_MsgUpdateGasFloorBandResponse_fieldAccessorTable
+            .ensureFieldAccessorsInitialized(
+                qorechain.rlconsensus.v1.Tx.MsgUpdateGasFloorBandResponse.class, qorechain.rlconsensus.v1.Tx.MsgUpdateGasFloorBandResponse.Builder.class);
+      }
+
+      // Construct using qorechain.rlconsensus.v1.Tx.MsgUpdateGasFloorBandResponse.newBuilder()
+      private Builder() {
+
+      }
+
+      private Builder(
+          com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+        super(parent);
+
+      }
+      @java.lang.Override
+      public Builder clear() {
+        super.clear();
+        return this;
+      }
+
+      @java.lang.Override
+      public com.google.protobuf.Descriptors.Descriptor
+          getDescriptorForType() {
+        return qorechain.rlconsensus.v1.Tx.internal_static_qorechain_rlconsensus_v1_MsgUpdateGasFloorBandResponse_descriptor;
+      }
+
+      @java.lang.Override
+      public qorechain.rlconsensus.v1.Tx.MsgUpdateGasFloorBandResponse getDefaultInstanceForType() {
+        return qorechain.rlconsensus.v1.Tx.MsgUpdateGasFloorBandResponse.getDefaultInstance();
+      }
+
+      @java.lang.Override
+      public qorechain.rlconsensus.v1.Tx.MsgUpdateGasFloorBandResponse build() {
+        qorechain.rlconsensus.v1.Tx.MsgUpdateGasFloorBandResponse result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(result);
+        }
+        return result;
+      }
+
+      @java.lang.Override
+      public qorechain.rlconsensus.v1.Tx.MsgUpdateGasFloorBandResponse buildPartial() {
+        qorechain.rlconsensus.v1.Tx.MsgUpdateGasFloorBandResponse result = new qorechain.rlconsensus.v1.Tx.MsgUpdateGasFloorBandResponse(this);
+        onBuilt();
+        return result;
+      }
+
+      @java.lang.Override
+      public Builder mergeFrom(com.google.protobuf.Message other) {
+        if (other instanceof qorechain.rlconsensus.v1.Tx.MsgUpdateGasFloorBandResponse) {
+          return mergeFrom((qorechain.rlconsensus.v1.Tx.MsgUpdateGasFloorBandResponse)other);
+        } else {
+          super.mergeFrom(other);
+          return this;
+        }
+      }
+
+      public Builder mergeFrom(qorechain.rlconsensus.v1.Tx.MsgUpdateGasFloorBandResponse other) {
+        if (other == qorechain.rlconsensus.v1.Tx.MsgUpdateGasFloorBandResponse.getDefaultInstance()) return this;
+        this.mergeUnknownFields(other.getUnknownFields());
+        onChanged();
+        return this;
+      }
+
+      @java.lang.Override
+      public final boolean isInitialized() {
+        return true;
+      }
+
+      @java.lang.Override
+      public Builder mergeFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        if (extensionRegistry == null) {
+          throw new java.lang.NullPointerException();
+        }
+        try {
+          boolean done = false;
+          while (!done) {
+            int tag = input.readTag();
+            switch (tag) {
+              case 0:
+                done = true;
+                break;
+              default: {
+                if (!super.parseUnknownField(input, extensionRegistry, tag)) {
+                  done = true; // was an endgroup tag
+                }
+                break;
+              } // default:
+            } // switch (tag)
+          } // while (!done)
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          throw e.unwrapIOException();
+        } finally {
+          onChanged();
+        } // finally
+        return this;
+      }
+
+      // @@protoc_insertion_point(builder_scope:qorechain.rlconsensus.v1.MsgUpdateGasFloorBandResponse)
+    }
+
+    // @@protoc_insertion_point(class_scope:qorechain.rlconsensus.v1.MsgUpdateGasFloorBandResponse)
+    private static final qorechain.rlconsensus.v1.Tx.MsgUpdateGasFloorBandResponse DEFAULT_INSTANCE;
+    static {
+      DEFAULT_INSTANCE = new qorechain.rlconsensus.v1.Tx.MsgUpdateGasFloorBandResponse();
+    }
+
+    public static qorechain.rlconsensus.v1.Tx.MsgUpdateGasFloorBandResponse getDefaultInstance() {
+      return DEFAULT_INSTANCE;
+    }
+
+    private static final com.google.protobuf.Parser<MsgUpdateGasFloorBandResponse>
+        PARSER = new com.google.protobuf.AbstractParser<MsgUpdateGasFloorBandResponse>() {
+      @java.lang.Override
+      public MsgUpdateGasFloorBandResponse parsePartialFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        Builder builder = newBuilder();
+        try {
+          builder.mergeFrom(input, extensionRegistry);
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          throw e.setUnfinishedMessage(builder.buildPartial());
+        } catch (com.google.protobuf.UninitializedMessageException e) {
+          throw e.asInvalidProtocolBufferException().setUnfinishedMessage(builder.buildPartial());
+        } catch (java.io.IOException e) {
+          throw new com.google.protobuf.InvalidProtocolBufferException(e)
+              .setUnfinishedMessage(builder.buildPartial());
+        }
+        return builder.buildPartial();
+      }
+    };
+
+    public static com.google.protobuf.Parser<MsgUpdateGasFloorBandResponse> parser() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Parser<MsgUpdateGasFloorBandResponse> getParserForType() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public qorechain.rlconsensus.v1.Tx.MsgUpdateGasFloorBandResponse getDefaultInstanceForType() {
+      return DEFAULT_INSTANCE;
+    }
+
+  }
+
   private static final com.google.protobuf.Descriptors.Descriptor
     internal_static_qorechain_rlconsensus_v1_MsgSetAgentMode_descriptor;
   private static final 
@@ -4609,6 +6099,16 @@ public final class Tx extends com.google.protobuf.GeneratedFile {
   private static final 
     com.google.protobuf.GeneratedMessage.FieldAccessorTable
       internal_static_qorechain_rlconsensus_v1_MsgUpdateRewardWeightsResponse_fieldAccessorTable;
+  private static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_qorechain_rlconsensus_v1_MsgUpdateGasFloorBand_descriptor;
+  private static final 
+    com.google.protobuf.GeneratedMessage.FieldAccessorTable
+      internal_static_qorechain_rlconsensus_v1_MsgUpdateGasFloorBand_fieldAccessorTable;
+  private static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_qorechain_rlconsensus_v1_MsgUpdateGasFloorBandResponse_descriptor;
+  private static final 
+    com.google.protobuf.GeneratedMessage.FieldAccessorTable
+      internal_static_qorechain_rlconsensus_v1_MsgUpdateGasFloorBandResponse_fieldAccessorTable;
 
   public static com.google.protobuf.Descriptors.FileDescriptor
       getDescriptor() {
@@ -4635,21 +6135,30 @@ public final class Tx extends com.google.protobuf.GeneratedFile {
       "lity\022*\n\020decentralization\030\004 \001(\tR\020decentra" +
       "lization\022\031\n\003mev\030\005 \001(\tB\007\342\336\037\003MEVR\003mev\022\035\n\nf" +
       "ailed_txs\030\006 \001(\tR\tfailedTxs:\016\202\347\260*\tauthori" +
-      "ty\" \n\036MsgUpdateRewardWeightsResponse2\327\003\n" +
-      "\003Msg\022l\n\014SetAgentMode\022).qorechain.rlconse" +
-      "nsus.v1.MsgSetAgentMode\0321.qorechain.rlco" +
-      "nsensus.v1.MsgSetAgentModeResponse\022i\n\013Re" +
-      "sumeAgent\022(.qorechain.rlconsensus.v1.Msg" +
-      "ResumeAgent\0320.qorechain.rlconsensus.v1.M" +
-      "sgResumeAgentResponse\022l\n\014UpdatePolicy\022)." +
-      "qorechain.rlconsensus.v1.MsgUpdatePolicy" +
-      "\0321.qorechain.rlconsensus.v1.MsgUpdatePol" +
-      "icyResponse\022\201\001\n\023UpdateRewardWeights\0220.qo" +
-      "rechain.rlconsensus.v1.MsgUpdateRewardWe" +
-      "ights\0328.qorechain.rlconsensus.v1.MsgUpda" +
-      "teRewardWeightsResponse\032\005\200\347\260*\001B9Z7github" +
-      ".com/qorechain/qorechain-core/x/rlconsen" +
-      "sus/typesb\006proto3"
+      "ty\" \n\036MsgUpdateRewardWeightsResponse\"\332\001\n" +
+      "\025MsgUpdateGasFloorBand\022\034\n\tauthority\030\001 \001(" +
+      "\tR\tauthority\022#\n\rapply_enabled\030\002 \001(\010R\014app" +
+      "lyEnabled\022\"\n\rmin_gas_price\030\003 \001(\tR\013minGas" +
+      "Price\022\"\n\rmax_gas_price\030\004 \001(\tR\013maxGasPric" +
+      "e\022&\n\017max_step_change\030\005 \001(\tR\rmaxStepChang" +
+      "e:\016\202\347\260*\tauthority\"\037\n\035MsgUpdateGasFloorBa" +
+      "ndResponse2\327\004\n\003Msg\022l\n\014SetAgentMode\022).qor" +
+      "echain.rlconsensus.v1.MsgSetAgentMode\0321." +
+      "qorechain.rlconsensus.v1.MsgSetAgentMode" +
+      "Response\022i\n\013ResumeAgent\022(.qorechain.rlco" +
+      "nsensus.v1.MsgResumeAgent\0320.qorechain.rl" +
+      "consensus.v1.MsgResumeAgentResponse\022l\n\014U" +
+      "pdatePolicy\022).qorechain.rlconsensus.v1.M" +
+      "sgUpdatePolicy\0321.qorechain.rlconsensus.v" +
+      "1.MsgUpdatePolicyResponse\022\201\001\n\023UpdateRewa" +
+      "rdWeights\0220.qorechain.rlconsensus.v1.Msg" +
+      "UpdateRewardWeights\0328.qorechain.rlconsen" +
+      "sus.v1.MsgUpdateRewardWeightsResponse\022~\n" +
+      "\022UpdateGasFloorBand\022/.qorechain.rlconsen" +
+      "sus.v1.MsgUpdateGasFloorBand\0327.qorechain" +
+      ".rlconsensus.v1.MsgUpdateGasFloorBandRes" +
+      "ponse\032\005\200\347\260*\001B9Z7github.com/qorechain/qor" +
+      "echain-core/x/rlconsensus/typesb\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
@@ -4704,6 +6213,18 @@ public final class Tx extends com.google.protobuf.GeneratedFile {
     internal_static_qorechain_rlconsensus_v1_MsgUpdateRewardWeightsResponse_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_qorechain_rlconsensus_v1_MsgUpdateRewardWeightsResponse_descriptor,
+        new java.lang.String[] { });
+    internal_static_qorechain_rlconsensus_v1_MsgUpdateGasFloorBand_descriptor =
+      getDescriptor().getMessageType(8);
+    internal_static_qorechain_rlconsensus_v1_MsgUpdateGasFloorBand_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessage.FieldAccessorTable(
+        internal_static_qorechain_rlconsensus_v1_MsgUpdateGasFloorBand_descriptor,
+        new java.lang.String[] { "Authority", "ApplyEnabled", "MinGasPrice", "MaxGasPrice", "MaxStepChange", });
+    internal_static_qorechain_rlconsensus_v1_MsgUpdateGasFloorBandResponse_descriptor =
+      getDescriptor().getMessageType(9);
+    internal_static_qorechain_rlconsensus_v1_MsgUpdateGasFloorBandResponse_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessage.FieldAccessorTable(
+        internal_static_qorechain_rlconsensus_v1_MsgUpdateGasFloorBandResponse_descriptor,
         new java.lang.String[] { });
     descriptor.resolveAllFeaturesImmutable();
     cosmos.msg.v1.Msg.getDescriptor();

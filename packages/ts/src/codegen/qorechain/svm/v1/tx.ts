@@ -87,6 +87,25 @@ export interface SVMParams {
   svmSlotOffset: string;
   defaultSigScheme: number;
   maxCpi: number;
+  /**
+   * max_custody_uqor caps the uqor balance of the svm module account (the
+   * custody backing program, PDA and data-account lamports). 0 means no cap.
+   * Enforced only while the svm-lane-governed protocol feature is on.
+   */
+  maxCustodyUqor: string;
+  /**
+   * max_custody_hard_uqor is the absolute ceiling on the svm module account's
+   * raw uqor balance (rent reserves, pre-funding and donations included):
+   * with svm-custody-hard-ceiling any operation that would leave the balance
+   * above it is refused. 0 means no ceiling; governance must set one before
+   * opening the lane on any network. It should be well above max_custody_uqor.
+   */
+  maxCustodyHardUqor: string;
+  /**
+   * max_account_excess_uqor caps, per store account, the uqor above its
+   * rent-exempt minimum (svm-account-excess-cap); 0 means no cap.
+   */
+  maxAccountExcessUqor: string;
 }
 
 /**
@@ -969,6 +988,9 @@ function createBaseSVMParams(): SVMParams {
     svmSlotOffset: "0",
     defaultSigScheme: 0,
     maxCpi: 0,
+    maxCustodyUqor: "0",
+    maxCustodyHardUqor: "0",
+    maxAccountExcessUqor: "0",
   };
 }
 
@@ -1000,6 +1022,15 @@ export const SVMParams: MessageFns<SVMParams> = {
     }
     if (message.maxCpi !== 0) {
       writer.uint32(72).uint32(message.maxCpi);
+    }
+    if (message.maxCustodyUqor !== "0") {
+      writer.uint32(80).uint64(message.maxCustodyUqor);
+    }
+    if (message.maxCustodyHardUqor !== "0") {
+      writer.uint32(88).uint64(message.maxCustodyHardUqor);
+    }
+    if (message.maxAccountExcessUqor !== "0") {
+      writer.uint32(96).uint64(message.maxAccountExcessUqor);
     }
     return writer;
   },
@@ -1083,6 +1114,30 @@ export const SVMParams: MessageFns<SVMParams> = {
           message.maxCpi = reader.uint32();
           continue;
         }
+        case 10: {
+          if (tag !== 80) {
+            break;
+          }
+
+          message.maxCustodyUqor = reader.uint64().toString();
+          continue;
+        }
+        case 11: {
+          if (tag !== 88) {
+            break;
+          }
+
+          message.maxCustodyHardUqor = reader.uint64().toString();
+          continue;
+        }
+        case 12: {
+          if (tag !== 96) {
+            break;
+          }
+
+          message.maxAccountExcessUqor = reader.uint64().toString();
+          continue;
+        }
       }
       if ((tag & 7) === 4 || tag === 0) {
         break;
@@ -1135,6 +1190,21 @@ export const SVMParams: MessageFns<SVMParams> = {
         : isSet(object.max_cpi)
         ? globalThis.Number(object.max_cpi)
         : 0,
+      maxCustodyUqor: isSet(object.maxCustodyUqor)
+        ? globalThis.String(object.maxCustodyUqor)
+        : isSet(object.max_custody_uqor)
+        ? globalThis.String(object.max_custody_uqor)
+        : "0",
+      maxCustodyHardUqor: isSet(object.maxCustodyHardUqor)
+        ? globalThis.String(object.maxCustodyHardUqor)
+        : isSet(object.max_custody_hard_uqor)
+        ? globalThis.String(object.max_custody_hard_uqor)
+        : "0",
+      maxAccountExcessUqor: isSet(object.maxAccountExcessUqor)
+        ? globalThis.String(object.maxAccountExcessUqor)
+        : isSet(object.max_account_excess_uqor)
+        ? globalThis.String(object.max_account_excess_uqor)
+        : "0",
     };
   },
 
@@ -1167,6 +1237,15 @@ export const SVMParams: MessageFns<SVMParams> = {
     if (message.maxCpi !== 0) {
       obj.maxCpi = Math.round(message.maxCpi);
     }
+    if (message.maxCustodyUqor !== "0") {
+      obj.maxCustodyUqor = message.maxCustodyUqor;
+    }
+    if (message.maxCustodyHardUqor !== "0") {
+      obj.maxCustodyHardUqor = message.maxCustodyHardUqor;
+    }
+    if (message.maxAccountExcessUqor !== "0") {
+      obj.maxAccountExcessUqor = message.maxAccountExcessUqor;
+    }
     return obj;
   },
 
@@ -1184,6 +1263,9 @@ export const SVMParams: MessageFns<SVMParams> = {
     message.svmSlotOffset = object.svmSlotOffset ?? "0";
     message.defaultSigScheme = object.defaultSigScheme ?? 0;
     message.maxCpi = object.maxCpi ?? 0;
+    message.maxCustodyUqor = object.maxCustodyUqor ?? "0";
+    message.maxCustodyHardUqor = object.maxCustodyHardUqor ?? "0";
+    message.maxAccountExcessUqor = object.maxAccountExcessUqor ?? "0";
     return message;
   },
 };

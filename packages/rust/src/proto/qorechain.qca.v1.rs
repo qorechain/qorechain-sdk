@@ -46,4 +46,23 @@ pub struct QueryConfigResponse {
     #[prost(string, tag="18")]
     pub qdrw_rep_max_multiplier: ::prost::alloc::string::String,
 }
+/// MsgUpdateQDRWConfig sets the QDRW tally configuration. The tally is used
+/// only while gov-qdrw-tally is on and enabled is true; otherwise governance
+/// tallies with the stock rules.
+#[derive(Clone, PartialEq, ::prost::Message)]
+pub struct MsgUpdateQdrwConfig {
+    #[prost(string, tag="1")]
+    pub authority: ::prost::alloc::string::String,
+    #[prost(bool, tag="2")]
+    pub enabled: bool,
+    /// rep_min_multiplier and rep_max_multiplier bound the reputation
+    /// multiplier, within \[0.5, 2\] and min <= max.
+    #[prost(string, tag="3")]
+    pub rep_min_multiplier: ::prost::alloc::string::String,
+    #[prost(string, tag="4")]
+    pub rep_max_multiplier: ::prost::alloc::string::String,
+}
+#[derive(Clone, Copy, PartialEq, ::prost::Message)]
+pub struct MsgUpdateQdrwConfigResponse {
+}
 // @@protoc_insertion_point(module)

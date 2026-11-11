@@ -5106,6 +5106,1588 @@ public final class QueryOuterClass extends com.google.protobuf.GeneratedFile {
 
   }
 
+  public interface QueryClusterInfoRequestOrBuilder extends
+      // @@protoc_insertion_point(interface_extends:qorechain.svm.v1.QueryClusterInfoRequest)
+      com.google.protobuf.MessageOrBuilder {
+  }
+  /**
+   * Protobuf type {@code qorechain.svm.v1.QueryClusterInfoRequest}
+   */
+  public static final class QueryClusterInfoRequest extends
+      com.google.protobuf.GeneratedMessage implements
+      // @@protoc_insertion_point(message_implements:qorechain.svm.v1.QueryClusterInfoRequest)
+      QueryClusterInfoRequestOrBuilder {
+  private static final long serialVersionUID = 0L;
+    static {
+      com.google.protobuf.RuntimeVersion.validateProtobufGencodeVersion(
+        com.google.protobuf.RuntimeVersion.RuntimeDomain.PUBLIC,
+        /* major= */ 4,
+        /* minor= */ 35,
+        /* patch= */ 1,
+        /* suffix= */ "",
+        "QueryClusterInfoRequest");
+    }
+    // Use QueryClusterInfoRequest.newBuilder() to construct.
+    private QueryClusterInfoRequest(com.google.protobuf.GeneratedMessage.Builder<?> builder) {
+      super(builder);
+    }
+    private QueryClusterInfoRequest() {
+    }
+
+    public static final com.google.protobuf.Descriptors.Descriptor
+        getDescriptor() {
+      return qorechain.svm.v1.QueryOuterClass.internal_static_qorechain_svm_v1_QueryClusterInfoRequest_descriptor;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Descriptors.Descriptor getDescriptorForType() {
+      return qorechain.svm.v1.QueryOuterClass.internal_static_qorechain_svm_v1_QueryClusterInfoRequest_descriptor;
+    }
+
+    @java.lang.Override
+    protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+        internalGetFieldAccessorTable() {
+      return qorechain.svm.v1.QueryOuterClass.internal_static_qorechain_svm_v1_QueryClusterInfoRequest_fieldAccessorTable
+          .ensureFieldAccessorsInitialized(
+              qorechain.svm.v1.QueryOuterClass.QueryClusterInfoRequest.class, qorechain.svm.v1.QueryOuterClass.QueryClusterInfoRequest.Builder.class);
+    }
+
+    private byte memoizedIsInitialized = -1;
+    @java.lang.Override
+    public final boolean isInitialized() {
+      byte isInitialized = memoizedIsInitialized;
+      if (isInitialized == 1) return true;
+      if (isInitialized == 0) return false;
+
+      memoizedIsInitialized = 1;
+      return true;
+    }
+
+    @java.lang.Override
+    public void writeTo(com.google.protobuf.CodedOutputStream output)
+                        throws java.io.IOException {
+      getUnknownFields().writeTo(output);
+    }
+    @java.lang.Override
+    public int getSerializedSize() {
+      int size = memoizedSize;
+      if (size != -1) return size;
+
+      size = 0;
+      size += getUnknownFields().getSerializedSize();
+      memoizedSize = size;
+      return size;
+    }
+
+    @java.lang.Override
+    public boolean equals(final java.lang.Object obj) {
+      if (obj == this) {
+       return true;
+      }
+      if (!(obj instanceof qorechain.svm.v1.QueryOuterClass.QueryClusterInfoRequest)) {
+        return super.equals(obj);
+      }
+      qorechain.svm.v1.QueryOuterClass.QueryClusterInfoRequest other = (qorechain.svm.v1.QueryOuterClass.QueryClusterInfoRequest) obj;
+
+      if (!getUnknownFields().equals(other.getUnknownFields())) return false;
+      return true;
+    }
+
+    @java.lang.Override
+    public int hashCode() {
+      if (memoizedHashCode != 0) {
+        return memoizedHashCode;
+      }
+      int hash = 41;
+      hash = (19 * hash) + getDescriptor().hashCode();
+      hash = (29 * hash) + getUnknownFields().hashCode();
+      memoizedHashCode = hash;
+      return hash;
+    }
+
+    public static qorechain.svm.v1.QueryOuterClass.QueryClusterInfoRequest parseFrom(
+        java.nio.ByteBuffer data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static qorechain.svm.v1.QueryOuterClass.QueryClusterInfoRequest parseFrom(
+        java.nio.ByteBuffer data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static qorechain.svm.v1.QueryOuterClass.QueryClusterInfoRequest parseFrom(
+        com.google.protobuf.ByteString data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static qorechain.svm.v1.QueryOuterClass.QueryClusterInfoRequest parseFrom(
+        com.google.protobuf.ByteString data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static qorechain.svm.v1.QueryOuterClass.QueryClusterInfoRequest parseFrom(byte[] data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static qorechain.svm.v1.QueryOuterClass.QueryClusterInfoRequest parseFrom(
+        byte[] data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static qorechain.svm.v1.QueryOuterClass.QueryClusterInfoRequest parseFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input);
+    }
+    public static qorechain.svm.v1.QueryOuterClass.QueryClusterInfoRequest parseFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    public static qorechain.svm.v1.QueryOuterClass.QueryClusterInfoRequest parseDelimitedFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseDelimitedWithIOException(PARSER, input);
+    }
+
+    public static qorechain.svm.v1.QueryOuterClass.QueryClusterInfoRequest parseDelimitedFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static qorechain.svm.v1.QueryOuterClass.QueryClusterInfoRequest parseFrom(
+        com.google.protobuf.CodedInputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input);
+    }
+    public static qorechain.svm.v1.QueryOuterClass.QueryClusterInfoRequest parseFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    @java.lang.Override
+    public Builder newBuilderForType() { return newBuilder(); }
+    public static Builder newBuilder() {
+      return DEFAULT_INSTANCE.toBuilder();
+    }
+    public static Builder newBuilder(qorechain.svm.v1.QueryOuterClass.QueryClusterInfoRequest prototype) {
+      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+    }
+    @java.lang.Override
+    public Builder toBuilder() {
+      return this == DEFAULT_INSTANCE
+          ? new Builder() : new Builder().mergeFrom(this);
+    }
+
+    @java.lang.Override
+    protected Builder newBuilderForType(
+        com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+      Builder builder = new Builder(parent);
+      return builder;
+    }
+    /**
+     * Protobuf type {@code qorechain.svm.v1.QueryClusterInfoRequest}
+     */
+    public static final class Builder extends
+        com.google.protobuf.GeneratedMessage.Builder<Builder> implements
+        // @@protoc_insertion_point(builder_implements:qorechain.svm.v1.QueryClusterInfoRequest)
+        qorechain.svm.v1.QueryOuterClass.QueryClusterInfoRequestOrBuilder {
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return qorechain.svm.v1.QueryOuterClass.internal_static_qorechain_svm_v1_QueryClusterInfoRequest_descriptor;
+      }
+
+      @java.lang.Override
+      protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return qorechain.svm.v1.QueryOuterClass.internal_static_qorechain_svm_v1_QueryClusterInfoRequest_fieldAccessorTable
+            .ensureFieldAccessorsInitialized(
+                qorechain.svm.v1.QueryOuterClass.QueryClusterInfoRequest.class, qorechain.svm.v1.QueryOuterClass.QueryClusterInfoRequest.Builder.class);
+      }
+
+      // Construct using qorechain.svm.v1.QueryOuterClass.QueryClusterInfoRequest.newBuilder()
+      private Builder() {
+
+      }
+
+      private Builder(
+          com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+        super(parent);
+
+      }
+      @java.lang.Override
+      public Builder clear() {
+        super.clear();
+        return this;
+      }
+
+      @java.lang.Override
+      public com.google.protobuf.Descriptors.Descriptor
+          getDescriptorForType() {
+        return qorechain.svm.v1.QueryOuterClass.internal_static_qorechain_svm_v1_QueryClusterInfoRequest_descriptor;
+      }
+
+      @java.lang.Override
+      public qorechain.svm.v1.QueryOuterClass.QueryClusterInfoRequest getDefaultInstanceForType() {
+        return qorechain.svm.v1.QueryOuterClass.QueryClusterInfoRequest.getDefaultInstance();
+      }
+
+      @java.lang.Override
+      public qorechain.svm.v1.QueryOuterClass.QueryClusterInfoRequest build() {
+        qorechain.svm.v1.QueryOuterClass.QueryClusterInfoRequest result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(result);
+        }
+        return result;
+      }
+
+      @java.lang.Override
+      public qorechain.svm.v1.QueryOuterClass.QueryClusterInfoRequest buildPartial() {
+        qorechain.svm.v1.QueryOuterClass.QueryClusterInfoRequest result = new qorechain.svm.v1.QueryOuterClass.QueryClusterInfoRequest(this);
+        onBuilt();
+        return result;
+      }
+
+      @java.lang.Override
+      public Builder mergeFrom(com.google.protobuf.Message other) {
+        if (other instanceof qorechain.svm.v1.QueryOuterClass.QueryClusterInfoRequest) {
+          return mergeFrom((qorechain.svm.v1.QueryOuterClass.QueryClusterInfoRequest)other);
+        } else {
+          super.mergeFrom(other);
+          return this;
+        }
+      }
+
+      public Builder mergeFrom(qorechain.svm.v1.QueryOuterClass.QueryClusterInfoRequest other) {
+        if (other == qorechain.svm.v1.QueryOuterClass.QueryClusterInfoRequest.getDefaultInstance()) return this;
+        this.mergeUnknownFields(other.getUnknownFields());
+        onChanged();
+        return this;
+      }
+
+      @java.lang.Override
+      public final boolean isInitialized() {
+        return true;
+      }
+
+      @java.lang.Override
+      public Builder mergeFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        if (extensionRegistry == null) {
+          throw new java.lang.NullPointerException();
+        }
+        try {
+          boolean done = false;
+          while (!done) {
+            int tag = input.readTag();
+            switch (tag) {
+              case 0:
+                done = true;
+                break;
+              default: {
+                if (!super.parseUnknownField(input, extensionRegistry, tag)) {
+                  done = true; // was an endgroup tag
+                }
+                break;
+              } // default:
+            } // switch (tag)
+          } // while (!done)
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          throw e.unwrapIOException();
+        } finally {
+          onChanged();
+        } // finally
+        return this;
+      }
+
+      // @@protoc_insertion_point(builder_scope:qorechain.svm.v1.QueryClusterInfoRequest)
+    }
+
+    // @@protoc_insertion_point(class_scope:qorechain.svm.v1.QueryClusterInfoRequest)
+    private static final qorechain.svm.v1.QueryOuterClass.QueryClusterInfoRequest DEFAULT_INSTANCE;
+    static {
+      DEFAULT_INSTANCE = new qorechain.svm.v1.QueryOuterClass.QueryClusterInfoRequest();
+    }
+
+    public static qorechain.svm.v1.QueryOuterClass.QueryClusterInfoRequest getDefaultInstance() {
+      return DEFAULT_INSTANCE;
+    }
+
+    private static final com.google.protobuf.Parser<QueryClusterInfoRequest>
+        PARSER = new com.google.protobuf.AbstractParser<QueryClusterInfoRequest>() {
+      @java.lang.Override
+      public QueryClusterInfoRequest parsePartialFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        Builder builder = newBuilder();
+        try {
+          builder.mergeFrom(input, extensionRegistry);
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          throw e.setUnfinishedMessage(builder.buildPartial());
+        } catch (com.google.protobuf.UninitializedMessageException e) {
+          throw e.asInvalidProtocolBufferException().setUnfinishedMessage(builder.buildPartial());
+        } catch (java.io.IOException e) {
+          throw new com.google.protobuf.InvalidProtocolBufferException(e)
+              .setUnfinishedMessage(builder.buildPartial());
+        }
+        return builder.buildPartial();
+      }
+    };
+
+    public static com.google.protobuf.Parser<QueryClusterInfoRequest> parser() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Parser<QueryClusterInfoRequest> getParserForType() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public qorechain.svm.v1.QueryOuterClass.QueryClusterInfoRequest getDefaultInstanceForType() {
+      return DEFAULT_INSTANCE;
+    }
+
+  }
+
+  public interface QueryClusterInfoResponseOrBuilder extends
+      // @@protoc_insertion_point(interface_extends:qorechain.svm.v1.QueryClusterInfoResponse)
+      com.google.protobuf.MessageOrBuilder {
+
+    /**
+     * <pre>
+     * chain_id is the network's chain id the identity is derived from.
+     * </pre>
+     *
+     * <code>string chain_id = 1 [json_name = "chainId"];</code>
+     * @return The chainId.
+     */
+    java.lang.String getChainId();
+    /**
+     * <pre>
+     * chain_id is the network's chain id the identity is derived from.
+     * </pre>
+     *
+     * <code>string chain_id = 1 [json_name = "chainId"];</code>
+     * @return The bytes for chainId.
+     */
+    com.google.protobuf.ByteString
+        getChainIdBytes();
+
+    /**
+     * <pre>
+     * genesis_hash is base58 of SHA-256(domain || chain_id), 32 bytes, as the
+     * SVM JSON-RPC method getGenesisHash returns it.
+     * </pre>
+     *
+     * <code>string genesis_hash = 2 [json_name = "genesisHash"];</code>
+     * @return The genesisHash.
+     */
+    java.lang.String getGenesisHash();
+    /**
+     * <pre>
+     * genesis_hash is base58 of SHA-256(domain || chain_id), 32 bytes, as the
+     * SVM JSON-RPC method getGenesisHash returns it.
+     * </pre>
+     *
+     * <code>string genesis_hash = 2 [json_name = "genesisHash"];</code>
+     * @return The bytes for genesisHash.
+     */
+    com.google.protobuf.ByteString
+        getGenesisHashBytes();
+
+    /**
+     * <pre>
+     * caip2_chain_id is "solana:" plus the first 32 characters of genesis_hash,
+     * the chain string Solana Wallet Standard wallets use.
+     * </pre>
+     *
+     * <code>string caip2_chain_id = 3 [json_name = "caip2ChainId"];</code>
+     * @return The caip2ChainId.
+     */
+    java.lang.String getCaip2ChainId();
+    /**
+     * <pre>
+     * caip2_chain_id is "solana:" plus the first 32 characters of genesis_hash,
+     * the chain string Solana Wallet Standard wallets use.
+     * </pre>
+     *
+     * <code>string caip2_chain_id = 3 [json_name = "caip2ChainId"];</code>
+     * @return The bytes for caip2ChainId.
+     */
+    com.google.protobuf.ByteString
+        getCaip2ChainIdBytes();
+
+    /**
+     * <pre>
+     * derivation describes how genesis_hash is computed.
+     * </pre>
+     *
+     * <code>string derivation = 4 [json_name = "derivation"];</code>
+     * @return The derivation.
+     */
+    java.lang.String getDerivation();
+    /**
+     * <pre>
+     * derivation describes how genesis_hash is computed.
+     * </pre>
+     *
+     * <code>string derivation = 4 [json_name = "derivation"];</code>
+     * @return The bytes for derivation.
+     */
+    com.google.protobuf.ByteString
+        getDerivationBytes();
+
+    /**
+     * <pre>
+     * execution_enabled reports whether SVM execution is enabled on this
+     * network. It is false while the SVM lane is disabled.
+     * </pre>
+     *
+     * <code>bool execution_enabled = 5 [json_name = "executionEnabled"];</code>
+     * @return The executionEnabled.
+     */
+    boolean getExecutionEnabled();
+  }
+  /**
+   * Protobuf type {@code qorechain.svm.v1.QueryClusterInfoResponse}
+   */
+  public static final class QueryClusterInfoResponse extends
+      com.google.protobuf.GeneratedMessage implements
+      // @@protoc_insertion_point(message_implements:qorechain.svm.v1.QueryClusterInfoResponse)
+      QueryClusterInfoResponseOrBuilder {
+  private static final long serialVersionUID = 0L;
+    static {
+      com.google.protobuf.RuntimeVersion.validateProtobufGencodeVersion(
+        com.google.protobuf.RuntimeVersion.RuntimeDomain.PUBLIC,
+        /* major= */ 4,
+        /* minor= */ 35,
+        /* patch= */ 1,
+        /* suffix= */ "",
+        "QueryClusterInfoResponse");
+    }
+    // Use QueryClusterInfoResponse.newBuilder() to construct.
+    private QueryClusterInfoResponse(com.google.protobuf.GeneratedMessage.Builder<?> builder) {
+      super(builder);
+    }
+    private QueryClusterInfoResponse() {
+      chainId_ = "";
+      genesisHash_ = "";
+      caip2ChainId_ = "";
+      derivation_ = "";
+    }
+
+    public static final com.google.protobuf.Descriptors.Descriptor
+        getDescriptor() {
+      return qorechain.svm.v1.QueryOuterClass.internal_static_qorechain_svm_v1_QueryClusterInfoResponse_descriptor;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Descriptors.Descriptor getDescriptorForType() {
+      return qorechain.svm.v1.QueryOuterClass.internal_static_qorechain_svm_v1_QueryClusterInfoResponse_descriptor;
+    }
+
+    @java.lang.Override
+    protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+        internalGetFieldAccessorTable() {
+      return qorechain.svm.v1.QueryOuterClass.internal_static_qorechain_svm_v1_QueryClusterInfoResponse_fieldAccessorTable
+          .ensureFieldAccessorsInitialized(
+              qorechain.svm.v1.QueryOuterClass.QueryClusterInfoResponse.class, qorechain.svm.v1.QueryOuterClass.QueryClusterInfoResponse.Builder.class);
+    }
+
+    public static final int CHAIN_ID_FIELD_NUMBER = 1;
+    @SuppressWarnings("serial")
+    private volatile java.lang.Object chainId_ = "";
+    /**
+     * <pre>
+     * chain_id is the network's chain id the identity is derived from.
+     * </pre>
+     *
+     * <code>string chain_id = 1 [json_name = "chainId"];</code>
+     * @return The chainId.
+     */
+    @java.lang.Override
+    public java.lang.String getChainId() {
+      java.lang.Object ref = chainId_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        chainId_ = s;
+        return s;
+      }
+    }
+    /**
+     * <pre>
+     * chain_id is the network's chain id the identity is derived from.
+     * </pre>
+     *
+     * <code>string chain_id = 1 [json_name = "chainId"];</code>
+     * @return The bytes for chainId.
+     */
+    @java.lang.Override
+    public com.google.protobuf.ByteString
+        getChainIdBytes() {
+      java.lang.Object ref = chainId_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        chainId_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
+    public static final int GENESIS_HASH_FIELD_NUMBER = 2;
+    @SuppressWarnings("serial")
+    private volatile java.lang.Object genesisHash_ = "";
+    /**
+     * <pre>
+     * genesis_hash is base58 of SHA-256(domain || chain_id), 32 bytes, as the
+     * SVM JSON-RPC method getGenesisHash returns it.
+     * </pre>
+     *
+     * <code>string genesis_hash = 2 [json_name = "genesisHash"];</code>
+     * @return The genesisHash.
+     */
+    @java.lang.Override
+    public java.lang.String getGenesisHash() {
+      java.lang.Object ref = genesisHash_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        genesisHash_ = s;
+        return s;
+      }
+    }
+    /**
+     * <pre>
+     * genesis_hash is base58 of SHA-256(domain || chain_id), 32 bytes, as the
+     * SVM JSON-RPC method getGenesisHash returns it.
+     * </pre>
+     *
+     * <code>string genesis_hash = 2 [json_name = "genesisHash"];</code>
+     * @return The bytes for genesisHash.
+     */
+    @java.lang.Override
+    public com.google.protobuf.ByteString
+        getGenesisHashBytes() {
+      java.lang.Object ref = genesisHash_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        genesisHash_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
+    public static final int CAIP2_CHAIN_ID_FIELD_NUMBER = 3;
+    @SuppressWarnings("serial")
+    private volatile java.lang.Object caip2ChainId_ = "";
+    /**
+     * <pre>
+     * caip2_chain_id is "solana:" plus the first 32 characters of genesis_hash,
+     * the chain string Solana Wallet Standard wallets use.
+     * </pre>
+     *
+     * <code>string caip2_chain_id = 3 [json_name = "caip2ChainId"];</code>
+     * @return The caip2ChainId.
+     */
+    @java.lang.Override
+    public java.lang.String getCaip2ChainId() {
+      java.lang.Object ref = caip2ChainId_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        caip2ChainId_ = s;
+        return s;
+      }
+    }
+    /**
+     * <pre>
+     * caip2_chain_id is "solana:" plus the first 32 characters of genesis_hash,
+     * the chain string Solana Wallet Standard wallets use.
+     * </pre>
+     *
+     * <code>string caip2_chain_id = 3 [json_name = "caip2ChainId"];</code>
+     * @return The bytes for caip2ChainId.
+     */
+    @java.lang.Override
+    public com.google.protobuf.ByteString
+        getCaip2ChainIdBytes() {
+      java.lang.Object ref = caip2ChainId_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        caip2ChainId_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
+    public static final int DERIVATION_FIELD_NUMBER = 4;
+    @SuppressWarnings("serial")
+    private volatile java.lang.Object derivation_ = "";
+    /**
+     * <pre>
+     * derivation describes how genesis_hash is computed.
+     * </pre>
+     *
+     * <code>string derivation = 4 [json_name = "derivation"];</code>
+     * @return The derivation.
+     */
+    @java.lang.Override
+    public java.lang.String getDerivation() {
+      java.lang.Object ref = derivation_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        derivation_ = s;
+        return s;
+      }
+    }
+    /**
+     * <pre>
+     * derivation describes how genesis_hash is computed.
+     * </pre>
+     *
+     * <code>string derivation = 4 [json_name = "derivation"];</code>
+     * @return The bytes for derivation.
+     */
+    @java.lang.Override
+    public com.google.protobuf.ByteString
+        getDerivationBytes() {
+      java.lang.Object ref = derivation_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        derivation_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
+    public static final int EXECUTION_ENABLED_FIELD_NUMBER = 5;
+    private boolean executionEnabled_ = false;
+    /**
+     * <pre>
+     * execution_enabled reports whether SVM execution is enabled on this
+     * network. It is false while the SVM lane is disabled.
+     * </pre>
+     *
+     * <code>bool execution_enabled = 5 [json_name = "executionEnabled"];</code>
+     * @return The executionEnabled.
+     */
+    @java.lang.Override
+    public boolean getExecutionEnabled() {
+      return executionEnabled_;
+    }
+
+    private byte memoizedIsInitialized = -1;
+    @java.lang.Override
+    public final boolean isInitialized() {
+      byte isInitialized = memoizedIsInitialized;
+      if (isInitialized == 1) return true;
+      if (isInitialized == 0) return false;
+
+      memoizedIsInitialized = 1;
+      return true;
+    }
+
+    @java.lang.Override
+    public void writeTo(com.google.protobuf.CodedOutputStream output)
+                        throws java.io.IOException {
+      if (!com.google.protobuf.GeneratedMessage.isStringEmpty(chainId_)) {
+        com.google.protobuf.GeneratedMessage.writeString(output, 1, chainId_);
+      }
+      if (!com.google.protobuf.GeneratedMessage.isStringEmpty(genesisHash_)) {
+        com.google.protobuf.GeneratedMessage.writeString(output, 2, genesisHash_);
+      }
+      if (!com.google.protobuf.GeneratedMessage.isStringEmpty(caip2ChainId_)) {
+        com.google.protobuf.GeneratedMessage.writeString(output, 3, caip2ChainId_);
+      }
+      if (!com.google.protobuf.GeneratedMessage.isStringEmpty(derivation_)) {
+        com.google.protobuf.GeneratedMessage.writeString(output, 4, derivation_);
+      }
+      if (executionEnabled_ != false) {
+        output.writeBool(5, executionEnabled_);
+      }
+      getUnknownFields().writeTo(output);
+    }
+    private int computeSerializedSize_0() {
+      int size = 0;
+      if (!com.google.protobuf.GeneratedMessage.isStringEmpty(chainId_)) {
+        size += com.google.protobuf.GeneratedMessage.computeStringSize(1, chainId_);
+      }
+      if (!com.google.protobuf.GeneratedMessage.isStringEmpty(genesisHash_)) {
+        size += com.google.protobuf.GeneratedMessage.computeStringSize(2, genesisHash_);
+      }
+      if (!com.google.protobuf.GeneratedMessage.isStringEmpty(caip2ChainId_)) {
+        size += com.google.protobuf.GeneratedMessage.computeStringSize(3, caip2ChainId_);
+      }
+      if (!com.google.protobuf.GeneratedMessage.isStringEmpty(derivation_)) {
+        size += com.google.protobuf.GeneratedMessage.computeStringSize(4, derivation_);
+      }
+      if (executionEnabled_ != false) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeBoolSize(5, executionEnabled_);
+      }
+      return size;
+    }
+    @java.lang.Override
+    public int getSerializedSize() {
+      int size = memoizedSize;
+      if (size != -1) return size;
+
+      size = 0;
+      size += computeSerializedSize_0();
+      size += getUnknownFields().getSerializedSize();
+      memoizedSize = size;
+      return size;
+    }
+
+    @java.lang.Override
+    public boolean equals(final java.lang.Object obj) {
+      if (obj == this) {
+       return true;
+      }
+      if (!(obj instanceof qorechain.svm.v1.QueryOuterClass.QueryClusterInfoResponse)) {
+        return super.equals(obj);
+      }
+      qorechain.svm.v1.QueryOuterClass.QueryClusterInfoResponse other = (qorechain.svm.v1.QueryOuterClass.QueryClusterInfoResponse) obj;
+
+      if (!getChainId()
+          .equals(other.getChainId())) return false;
+      if (!getGenesisHash()
+          .equals(other.getGenesisHash())) return false;
+      if (!getCaip2ChainId()
+          .equals(other.getCaip2ChainId())) return false;
+      if (!getDerivation()
+          .equals(other.getDerivation())) return false;
+      if (getExecutionEnabled()
+          != other.getExecutionEnabled()) return false;
+      if (!getUnknownFields().equals(other.getUnknownFields())) return false;
+      return true;
+    }
+
+    @java.lang.Override
+    public int hashCode() {
+      if (memoizedHashCode != 0) {
+        return memoizedHashCode;
+      }
+      int hash = 41;
+      hash = (19 * hash) + getDescriptor().hashCode();
+      hash = (37 * hash) + CHAIN_ID_FIELD_NUMBER;
+      hash = (53 * hash) + getChainId().hashCode();
+      hash = (37 * hash) + GENESIS_HASH_FIELD_NUMBER;
+      hash = (53 * hash) + getGenesisHash().hashCode();
+      hash = (37 * hash) + CAIP2_CHAIN_ID_FIELD_NUMBER;
+      hash = (53 * hash) + getCaip2ChainId().hashCode();
+      hash = (37 * hash) + DERIVATION_FIELD_NUMBER;
+      hash = (53 * hash) + getDerivation().hashCode();
+      hash = (37 * hash) + EXECUTION_ENABLED_FIELD_NUMBER;
+      hash = (53 * hash) + com.google.protobuf.Internal.hashBoolean(
+          getExecutionEnabled());
+      hash = (29 * hash) + getUnknownFields().hashCode();
+      memoizedHashCode = hash;
+      return hash;
+    }
+
+    public static qorechain.svm.v1.QueryOuterClass.QueryClusterInfoResponse parseFrom(
+        java.nio.ByteBuffer data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static qorechain.svm.v1.QueryOuterClass.QueryClusterInfoResponse parseFrom(
+        java.nio.ByteBuffer data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static qorechain.svm.v1.QueryOuterClass.QueryClusterInfoResponse parseFrom(
+        com.google.protobuf.ByteString data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static qorechain.svm.v1.QueryOuterClass.QueryClusterInfoResponse parseFrom(
+        com.google.protobuf.ByteString data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static qorechain.svm.v1.QueryOuterClass.QueryClusterInfoResponse parseFrom(byte[] data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static qorechain.svm.v1.QueryOuterClass.QueryClusterInfoResponse parseFrom(
+        byte[] data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static qorechain.svm.v1.QueryOuterClass.QueryClusterInfoResponse parseFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input);
+    }
+    public static qorechain.svm.v1.QueryOuterClass.QueryClusterInfoResponse parseFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    public static qorechain.svm.v1.QueryOuterClass.QueryClusterInfoResponse parseDelimitedFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseDelimitedWithIOException(PARSER, input);
+    }
+
+    public static qorechain.svm.v1.QueryOuterClass.QueryClusterInfoResponse parseDelimitedFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static qorechain.svm.v1.QueryOuterClass.QueryClusterInfoResponse parseFrom(
+        com.google.protobuf.CodedInputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input);
+    }
+    public static qorechain.svm.v1.QueryOuterClass.QueryClusterInfoResponse parseFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    @java.lang.Override
+    public Builder newBuilderForType() { return newBuilder(); }
+    public static Builder newBuilder() {
+      return DEFAULT_INSTANCE.toBuilder();
+    }
+    public static Builder newBuilder(qorechain.svm.v1.QueryOuterClass.QueryClusterInfoResponse prototype) {
+      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+    }
+    @java.lang.Override
+    public Builder toBuilder() {
+      return this == DEFAULT_INSTANCE
+          ? new Builder() : new Builder().mergeFrom(this);
+    }
+
+    @java.lang.Override
+    protected Builder newBuilderForType(
+        com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+      Builder builder = new Builder(parent);
+      return builder;
+    }
+    /**
+     * Protobuf type {@code qorechain.svm.v1.QueryClusterInfoResponse}
+     */
+    public static final class Builder extends
+        com.google.protobuf.GeneratedMessage.Builder<Builder> implements
+        // @@protoc_insertion_point(builder_implements:qorechain.svm.v1.QueryClusterInfoResponse)
+        qorechain.svm.v1.QueryOuterClass.QueryClusterInfoResponseOrBuilder {
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return qorechain.svm.v1.QueryOuterClass.internal_static_qorechain_svm_v1_QueryClusterInfoResponse_descriptor;
+      }
+
+      @java.lang.Override
+      protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return qorechain.svm.v1.QueryOuterClass.internal_static_qorechain_svm_v1_QueryClusterInfoResponse_fieldAccessorTable
+            .ensureFieldAccessorsInitialized(
+                qorechain.svm.v1.QueryOuterClass.QueryClusterInfoResponse.class, qorechain.svm.v1.QueryOuterClass.QueryClusterInfoResponse.Builder.class);
+      }
+
+      // Construct using qorechain.svm.v1.QueryOuterClass.QueryClusterInfoResponse.newBuilder()
+      private Builder() {
+
+      }
+
+      private Builder(
+          com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+        super(parent);
+
+      }
+      @java.lang.Override
+      public Builder clear() {
+        super.clear();
+        bitField0_ = 0;
+        chainId_ = "";
+        genesisHash_ = "";
+        caip2ChainId_ = "";
+        derivation_ = "";
+        executionEnabled_ = false;
+        return this;
+      }
+
+      @java.lang.Override
+      public com.google.protobuf.Descriptors.Descriptor
+          getDescriptorForType() {
+        return qorechain.svm.v1.QueryOuterClass.internal_static_qorechain_svm_v1_QueryClusterInfoResponse_descriptor;
+      }
+
+      @java.lang.Override
+      public qorechain.svm.v1.QueryOuterClass.QueryClusterInfoResponse getDefaultInstanceForType() {
+        return qorechain.svm.v1.QueryOuterClass.QueryClusterInfoResponse.getDefaultInstance();
+      }
+
+      @java.lang.Override
+      public qorechain.svm.v1.QueryOuterClass.QueryClusterInfoResponse build() {
+        qorechain.svm.v1.QueryOuterClass.QueryClusterInfoResponse result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(result);
+        }
+        return result;
+      }
+
+      @java.lang.Override
+      public qorechain.svm.v1.QueryOuterClass.QueryClusterInfoResponse buildPartial() {
+        qorechain.svm.v1.QueryOuterClass.QueryClusterInfoResponse result = new qorechain.svm.v1.QueryOuterClass.QueryClusterInfoResponse(this);
+        if (bitField0_ != 0) { buildPartial0(result); }
+        onBuilt();
+        return result;
+      }
+
+      private void buildPartial0(qorechain.svm.v1.QueryOuterClass.QueryClusterInfoResponse result) {
+        int from_bitField0_ = bitField0_;
+        if (((from_bitField0_ & 0x00000001) != 0)) {
+          result.chainId_ = chainId_;
+        }
+        if (((from_bitField0_ & 0x00000002) != 0)) {
+          result.genesisHash_ = genesisHash_;
+        }
+        if (((from_bitField0_ & 0x00000004) != 0)) {
+          result.caip2ChainId_ = caip2ChainId_;
+        }
+        if (((from_bitField0_ & 0x00000008) != 0)) {
+          result.derivation_ = derivation_;
+        }
+        if (((from_bitField0_ & 0x00000010) != 0)) {
+          result.executionEnabled_ = executionEnabled_;
+        }
+      }
+
+      @java.lang.Override
+      public Builder mergeFrom(com.google.protobuf.Message other) {
+        if (other instanceof qorechain.svm.v1.QueryOuterClass.QueryClusterInfoResponse) {
+          return mergeFrom((qorechain.svm.v1.QueryOuterClass.QueryClusterInfoResponse)other);
+        } else {
+          super.mergeFrom(other);
+          return this;
+        }
+      }
+
+      public Builder mergeFrom(qorechain.svm.v1.QueryOuterClass.QueryClusterInfoResponse other) {
+        if (other == qorechain.svm.v1.QueryOuterClass.QueryClusterInfoResponse.getDefaultInstance()) return this;
+        if (!other.getChainId().isEmpty()) {
+          chainId_ = other.chainId_;
+          bitField0_ |= 0x00000001;
+          onChanged();
+        }
+        if (!other.getGenesisHash().isEmpty()) {
+          genesisHash_ = other.genesisHash_;
+          bitField0_ |= 0x00000002;
+          onChanged();
+        }
+        if (!other.getCaip2ChainId().isEmpty()) {
+          caip2ChainId_ = other.caip2ChainId_;
+          bitField0_ |= 0x00000004;
+          onChanged();
+        }
+        if (!other.getDerivation().isEmpty()) {
+          derivation_ = other.derivation_;
+          bitField0_ |= 0x00000008;
+          onChanged();
+        }
+        if (other.getExecutionEnabled() != false) {
+          setExecutionEnabled(other.getExecutionEnabled());
+        }
+        this.mergeUnknownFields(other.getUnknownFields());
+        onChanged();
+        return this;
+      }
+
+      @java.lang.Override
+      public final boolean isInitialized() {
+        return true;
+      }
+
+      @java.lang.Override
+      public Builder mergeFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        if (extensionRegistry == null) {
+          throw new java.lang.NullPointerException();
+        }
+        try {
+          boolean done = false;
+          while (!done) {
+            int tag = input.readTag();
+            switch (tag) {
+              case 0:
+                done = true;
+                break;
+              case 10: {
+                chainId_ = input.readStringRequireUtf8();
+                bitField0_ |= 0x00000001;
+                break;
+              } // case 10
+              case 18: {
+                genesisHash_ = input.readStringRequireUtf8();
+                bitField0_ |= 0x00000002;
+                break;
+              } // case 18
+              case 26: {
+                caip2ChainId_ = input.readStringRequireUtf8();
+                bitField0_ |= 0x00000004;
+                break;
+              } // case 26
+              case 34: {
+                derivation_ = input.readStringRequireUtf8();
+                bitField0_ |= 0x00000008;
+                break;
+              } // case 34
+              case 40: {
+                executionEnabled_ = input.readBool();
+                bitField0_ |= 0x00000010;
+                break;
+              } // case 40
+              default: {
+                if (!super.parseUnknownField(input, extensionRegistry, tag)) {
+                  done = true; // was an endgroup tag
+                }
+                break;
+              } // default:
+            } // switch (tag)
+          } // while (!done)
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          throw e.unwrapIOException();
+        } finally {
+          onChanged();
+        } // finally
+        return this;
+      }
+      private int bitField0_;
+
+      private java.lang.Object chainId_ = "";
+      /**
+       * <pre>
+       * chain_id is the network's chain id the identity is derived from.
+       * </pre>
+       *
+       * <code>string chain_id = 1 [json_name = "chainId"];</code>
+       * @return The chainId.
+       */
+      public java.lang.String getChainId() {
+        java.lang.Object ref = chainId_;
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          chainId_ = s;
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
+      }
+      /**
+       * <pre>
+       * chain_id is the network's chain id the identity is derived from.
+       * </pre>
+       *
+       * <code>string chain_id = 1 [json_name = "chainId"];</code>
+       * @return The bytes for chainId.
+       */
+      public com.google.protobuf.ByteString
+          getChainIdBytes() {
+        java.lang.Object ref = chainId_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          chainId_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <pre>
+       * chain_id is the network's chain id the identity is derived from.
+       * </pre>
+       *
+       * <code>string chain_id = 1 [json_name = "chainId"];</code>
+       * @param value The chainId to set.
+       * @return This builder for chaining.
+       */
+      public Builder setChainId(
+          java.lang.String value) {
+        if (value == null) { throw new NullPointerException(); }
+        chainId_ = value;
+        bitField0_ |= 0x00000001;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * chain_id is the network's chain id the identity is derived from.
+       * </pre>
+       *
+       * <code>string chain_id = 1 [json_name = "chainId"];</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearChainId() {
+        chainId_ = getDefaultInstance().getChainId();
+        bitField0_ = (bitField0_ & ~0x00000001);
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * chain_id is the network's chain id the identity is derived from.
+       * </pre>
+       *
+       * <code>string chain_id = 1 [json_name = "chainId"];</code>
+       * @param value The bytes for chainId to set.
+       * @return This builder for chaining.
+       */
+      public Builder setChainIdBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) { throw new NullPointerException(); }
+        checkByteStringIsUtf8(value);
+        chainId_ = value;
+        bitField0_ |= 0x00000001;
+        onChanged();
+        return this;
+      }
+
+      private java.lang.Object genesisHash_ = "";
+      /**
+       * <pre>
+       * genesis_hash is base58 of SHA-256(domain || chain_id), 32 bytes, as the
+       * SVM JSON-RPC method getGenesisHash returns it.
+       * </pre>
+       *
+       * <code>string genesis_hash = 2 [json_name = "genesisHash"];</code>
+       * @return The genesisHash.
+       */
+      public java.lang.String getGenesisHash() {
+        java.lang.Object ref = genesisHash_;
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          genesisHash_ = s;
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
+      }
+      /**
+       * <pre>
+       * genesis_hash is base58 of SHA-256(domain || chain_id), 32 bytes, as the
+       * SVM JSON-RPC method getGenesisHash returns it.
+       * </pre>
+       *
+       * <code>string genesis_hash = 2 [json_name = "genesisHash"];</code>
+       * @return The bytes for genesisHash.
+       */
+      public com.google.protobuf.ByteString
+          getGenesisHashBytes() {
+        java.lang.Object ref = genesisHash_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          genesisHash_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <pre>
+       * genesis_hash is base58 of SHA-256(domain || chain_id), 32 bytes, as the
+       * SVM JSON-RPC method getGenesisHash returns it.
+       * </pre>
+       *
+       * <code>string genesis_hash = 2 [json_name = "genesisHash"];</code>
+       * @param value The genesisHash to set.
+       * @return This builder for chaining.
+       */
+      public Builder setGenesisHash(
+          java.lang.String value) {
+        if (value == null) { throw new NullPointerException(); }
+        genesisHash_ = value;
+        bitField0_ |= 0x00000002;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * genesis_hash is base58 of SHA-256(domain || chain_id), 32 bytes, as the
+       * SVM JSON-RPC method getGenesisHash returns it.
+       * </pre>
+       *
+       * <code>string genesis_hash = 2 [json_name = "genesisHash"];</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearGenesisHash() {
+        genesisHash_ = getDefaultInstance().getGenesisHash();
+        bitField0_ = (bitField0_ & ~0x00000002);
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * genesis_hash is base58 of SHA-256(domain || chain_id), 32 bytes, as the
+       * SVM JSON-RPC method getGenesisHash returns it.
+       * </pre>
+       *
+       * <code>string genesis_hash = 2 [json_name = "genesisHash"];</code>
+       * @param value The bytes for genesisHash to set.
+       * @return This builder for chaining.
+       */
+      public Builder setGenesisHashBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) { throw new NullPointerException(); }
+        checkByteStringIsUtf8(value);
+        genesisHash_ = value;
+        bitField0_ |= 0x00000002;
+        onChanged();
+        return this;
+      }
+
+      private java.lang.Object caip2ChainId_ = "";
+      /**
+       * <pre>
+       * caip2_chain_id is "solana:" plus the first 32 characters of genesis_hash,
+       * the chain string Solana Wallet Standard wallets use.
+       * </pre>
+       *
+       * <code>string caip2_chain_id = 3 [json_name = "caip2ChainId"];</code>
+       * @return The caip2ChainId.
+       */
+      public java.lang.String getCaip2ChainId() {
+        java.lang.Object ref = caip2ChainId_;
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          caip2ChainId_ = s;
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
+      }
+      /**
+       * <pre>
+       * caip2_chain_id is "solana:" plus the first 32 characters of genesis_hash,
+       * the chain string Solana Wallet Standard wallets use.
+       * </pre>
+       *
+       * <code>string caip2_chain_id = 3 [json_name = "caip2ChainId"];</code>
+       * @return The bytes for caip2ChainId.
+       */
+      public com.google.protobuf.ByteString
+          getCaip2ChainIdBytes() {
+        java.lang.Object ref = caip2ChainId_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          caip2ChainId_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <pre>
+       * caip2_chain_id is "solana:" plus the first 32 characters of genesis_hash,
+       * the chain string Solana Wallet Standard wallets use.
+       * </pre>
+       *
+       * <code>string caip2_chain_id = 3 [json_name = "caip2ChainId"];</code>
+       * @param value The caip2ChainId to set.
+       * @return This builder for chaining.
+       */
+      public Builder setCaip2ChainId(
+          java.lang.String value) {
+        if (value == null) { throw new NullPointerException(); }
+        caip2ChainId_ = value;
+        bitField0_ |= 0x00000004;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * caip2_chain_id is "solana:" plus the first 32 characters of genesis_hash,
+       * the chain string Solana Wallet Standard wallets use.
+       * </pre>
+       *
+       * <code>string caip2_chain_id = 3 [json_name = "caip2ChainId"];</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearCaip2ChainId() {
+        caip2ChainId_ = getDefaultInstance().getCaip2ChainId();
+        bitField0_ = (bitField0_ & ~0x00000004);
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * caip2_chain_id is "solana:" plus the first 32 characters of genesis_hash,
+       * the chain string Solana Wallet Standard wallets use.
+       * </pre>
+       *
+       * <code>string caip2_chain_id = 3 [json_name = "caip2ChainId"];</code>
+       * @param value The bytes for caip2ChainId to set.
+       * @return This builder for chaining.
+       */
+      public Builder setCaip2ChainIdBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) { throw new NullPointerException(); }
+        checkByteStringIsUtf8(value);
+        caip2ChainId_ = value;
+        bitField0_ |= 0x00000004;
+        onChanged();
+        return this;
+      }
+
+      private java.lang.Object derivation_ = "";
+      /**
+       * <pre>
+       * derivation describes how genesis_hash is computed.
+       * </pre>
+       *
+       * <code>string derivation = 4 [json_name = "derivation"];</code>
+       * @return The derivation.
+       */
+      public java.lang.String getDerivation() {
+        java.lang.Object ref = derivation_;
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          derivation_ = s;
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
+      }
+      /**
+       * <pre>
+       * derivation describes how genesis_hash is computed.
+       * </pre>
+       *
+       * <code>string derivation = 4 [json_name = "derivation"];</code>
+       * @return The bytes for derivation.
+       */
+      public com.google.protobuf.ByteString
+          getDerivationBytes() {
+        java.lang.Object ref = derivation_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          derivation_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <pre>
+       * derivation describes how genesis_hash is computed.
+       * </pre>
+       *
+       * <code>string derivation = 4 [json_name = "derivation"];</code>
+       * @param value The derivation to set.
+       * @return This builder for chaining.
+       */
+      public Builder setDerivation(
+          java.lang.String value) {
+        if (value == null) { throw new NullPointerException(); }
+        derivation_ = value;
+        bitField0_ |= 0x00000008;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * derivation describes how genesis_hash is computed.
+       * </pre>
+       *
+       * <code>string derivation = 4 [json_name = "derivation"];</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearDerivation() {
+        derivation_ = getDefaultInstance().getDerivation();
+        bitField0_ = (bitField0_ & ~0x00000008);
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * derivation describes how genesis_hash is computed.
+       * </pre>
+       *
+       * <code>string derivation = 4 [json_name = "derivation"];</code>
+       * @param value The bytes for derivation to set.
+       * @return This builder for chaining.
+       */
+      public Builder setDerivationBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) { throw new NullPointerException(); }
+        checkByteStringIsUtf8(value);
+        derivation_ = value;
+        bitField0_ |= 0x00000008;
+        onChanged();
+        return this;
+      }
+
+      private boolean executionEnabled_ ;
+      /**
+       * <pre>
+       * execution_enabled reports whether SVM execution is enabled on this
+       * network. It is false while the SVM lane is disabled.
+       * </pre>
+       *
+       * <code>bool execution_enabled = 5 [json_name = "executionEnabled"];</code>
+       * @return The executionEnabled.
+       */
+      @java.lang.Override
+      public boolean getExecutionEnabled() {
+        return executionEnabled_;
+      }
+      /**
+       * <pre>
+       * execution_enabled reports whether SVM execution is enabled on this
+       * network. It is false while the SVM lane is disabled.
+       * </pre>
+       *
+       * <code>bool execution_enabled = 5 [json_name = "executionEnabled"];</code>
+       * @param value The executionEnabled to set.
+       * @return This builder for chaining.
+       */
+      public Builder setExecutionEnabled(boolean value) {
+
+        executionEnabled_ = value;
+        bitField0_ |= 0x00000010;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * execution_enabled reports whether SVM execution is enabled on this
+       * network. It is false while the SVM lane is disabled.
+       * </pre>
+       *
+       * <code>bool execution_enabled = 5 [json_name = "executionEnabled"];</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearExecutionEnabled() {
+        bitField0_ = (bitField0_ & ~0x00000010);
+        executionEnabled_ = false;
+        onChanged();
+        return this;
+      }
+
+      // @@protoc_insertion_point(builder_scope:qorechain.svm.v1.QueryClusterInfoResponse)
+    }
+
+    // @@protoc_insertion_point(class_scope:qorechain.svm.v1.QueryClusterInfoResponse)
+    private static final qorechain.svm.v1.QueryOuterClass.QueryClusterInfoResponse DEFAULT_INSTANCE;
+    static {
+      DEFAULT_INSTANCE = new qorechain.svm.v1.QueryOuterClass.QueryClusterInfoResponse();
+    }
+
+    public static qorechain.svm.v1.QueryOuterClass.QueryClusterInfoResponse getDefaultInstance() {
+      return DEFAULT_INSTANCE;
+    }
+
+    private static final com.google.protobuf.Parser<QueryClusterInfoResponse>
+        PARSER = new com.google.protobuf.AbstractParser<QueryClusterInfoResponse>() {
+      @java.lang.Override
+      public QueryClusterInfoResponse parsePartialFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        Builder builder = newBuilder();
+        try {
+          builder.mergeFrom(input, extensionRegistry);
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          throw e.setUnfinishedMessage(builder.buildPartial());
+        } catch (com.google.protobuf.UninitializedMessageException e) {
+          throw e.asInvalidProtocolBufferException().setUnfinishedMessage(builder.buildPartial());
+        } catch (java.io.IOException e) {
+          throw new com.google.protobuf.InvalidProtocolBufferException(e)
+              .setUnfinishedMessage(builder.buildPartial());
+        }
+        return builder.buildPartial();
+      }
+    };
+
+    public static com.google.protobuf.Parser<QueryClusterInfoResponse> parser() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Parser<QueryClusterInfoResponse> getParserForType() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public qorechain.svm.v1.QueryOuterClass.QueryClusterInfoResponse getDefaultInstanceForType() {
+      return DEFAULT_INSTANCE;
+    }
+
+  }
+
   private static final com.google.protobuf.Descriptors.Descriptor
     internal_static_qorechain_svm_v1_QuerySlotRequest_descriptor;
   private static final 
@@ -5146,6 +6728,16 @@ public final class QueryOuterClass extends com.google.protobuf.GeneratedFile {
   private static final 
     com.google.protobuf.GeneratedMessage.FieldAccessorTable
       internal_static_qorechain_svm_v1_ProgramInfo_fieldAccessorTable;
+  private static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_qorechain_svm_v1_QueryClusterInfoRequest_descriptor;
+  private static final 
+    com.google.protobuf.GeneratedMessage.FieldAccessorTable
+      internal_static_qorechain_svm_v1_QueryClusterInfoRequest_fieldAccessorTable;
+  private static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_qorechain_svm_v1_QueryClusterInfoResponse_descriptor;
+  private static final 
+    com.google.protobuf.GeneratedMessage.FieldAccessorTable
+      internal_static_qorechain_svm_v1_QueryClusterInfoResponse_fieldAccessorTable;
 
   public static com.google.protobuf.Descriptors.FileDescriptor
       getDescriptor() {
@@ -5156,37 +6748,49 @@ public final class QueryOuterClass extends com.google.protobuf.GeneratedFile {
   static {
     java.lang.String[] descriptorData = {
       "\n\034qorechain/svm/v1/query.proto\022\020qorechai" +
-      "n.svm.v1\"\022\n\020QuerySlotRequest\"\'\n\021QuerySlo" +
-      "tResponse\022\022\n\004slot\030\001 \001(\004R\004slot\"/\n\023QueryAc" +
-      "countRequest\022\030\n\007address\030\001 \001(\tR\007address\"R" +
-      "\n\024QueryAccountResponse\022:\n\007account\030\001 \001(\0132" +
-      " .qorechain.svm.v1.SVMAccountInfoR\007accou" +
-      "nt\"/\n\023QueryProgramRequest\022\030\n\007address\030\001 \001" +
-      "(\tR\007address\"O\n\024QueryProgramResponse\0227\n\007p" +
-      "rogram\030\001 \001(\0132\035.qorechain.svm.v1.ProgramI" +
-      "nfoR\007program\"\312\001\n\016SVMAccountInfo\022\030\n\007addre" +
-      "ss\030\001 \001(\tR\007address\022\032\n\010lamports\030\002 \001(\004R\010lam" +
-      "ports\022\031\n\010data_len\030\003 \001(\004R\007dataLen\022\022\n\004data" +
-      "\030\004 \001(\014R\004data\022\024\n\005owner\030\005 \001(\tR\005owner\022\036\n\nex" +
-      "ecutable\030\006 \001(\010R\nexecutable\022\035\n\nrent_epoch" +
-      "\030\007 \001(\004R\trentEpoch\"\321\001\n\013ProgramInfo\022\'\n\017pro" +
-      "gram_address\030\001 \001(\tR\016programAddress\022+\n\021up" +
-      "grade_authority\030\002 \001(\tR\020upgradeAuthority\022" +
-      "\037\n\013deploy_slot\030\003 \001(\004R\ndeploySlot\022(\n\020last" +
-      "_deploy_slot\030\004 \001(\004R\016lastDeploySlot\022!\n\014da" +
-      "ta_account\030\005 \001(\tR\013dataAccount2\214\002\n\005Query\022" +
-      "O\n\004Slot\022\".qorechain.svm.v1.QuerySlotRequ" +
-      "est\032#.qorechain.svm.v1.QuerySlotResponse" +
-      "\022X\n\007Account\022%.qorechain.svm.v1.QueryAcco" +
-      "untRequest\032&.qorechain.svm.v1.QueryAccou" +
-      "ntResponse\022X\n\007Program\022%.qorechain.svm.v1" +
-      ".QueryProgramRequest\032&.qorechain.svm.v1." +
-      "QueryProgramResponseB1Z/github.com/qorec" +
-      "hain/qorechain-core/x/svm/typesb\006proto3"
+      "n.svm.v1\032\034google/api/annotations.proto\"\022" +
+      "\n\020QuerySlotRequest\"\'\n\021QuerySlotResponse\022" +
+      "\022\n\004slot\030\001 \001(\004R\004slot\"/\n\023QueryAccountReque" +
+      "st\022\030\n\007address\030\001 \001(\tR\007address\"R\n\024QueryAcc" +
+      "ountResponse\022:\n\007account\030\001 \001(\0132 .qorechai" +
+      "n.svm.v1.SVMAccountInfoR\007account\"/\n\023Quer" +
+      "yProgramRequest\022\030\n\007address\030\001 \001(\tR\007addres" +
+      "s\"O\n\024QueryProgramResponse\0227\n\007program\030\001 \001" +
+      "(\0132\035.qorechain.svm.v1.ProgramInfoR\007progr" +
+      "am\"\312\001\n\016SVMAccountInfo\022\030\n\007address\030\001 \001(\tR\007" +
+      "address\022\032\n\010lamports\030\002 \001(\004R\010lamports\022\031\n\010d" +
+      "ata_len\030\003 \001(\004R\007dataLen\022\022\n\004data\030\004 \001(\014R\004da" +
+      "ta\022\024\n\005owner\030\005 \001(\tR\005owner\022\036\n\nexecutable\030\006" +
+      " \001(\010R\nexecutable\022\035\n\nrent_epoch\030\007 \001(\004R\tre" +
+      "ntEpoch\"\321\001\n\013ProgramInfo\022\'\n\017program_addre" +
+      "ss\030\001 \001(\tR\016programAddress\022+\n\021upgrade_auth" +
+      "ority\030\002 \001(\tR\020upgradeAuthority\022\037\n\013deploy_" +
+      "slot\030\003 \001(\004R\ndeploySlot\022(\n\020last_deploy_sl" +
+      "ot\030\004 \001(\004R\016lastDeploySlot\022!\n\014data_account" +
+      "\030\005 \001(\tR\013dataAccount\"\031\n\027QueryClusterInfoR" +
+      "equest\"\313\001\n\030QueryClusterInfoResponse\022\031\n\010c" +
+      "hain_id\030\001 \001(\tR\007chainId\022!\n\014genesis_hash\030\002" +
+      " \001(\tR\013genesisHash\022$\n\016caip2_chain_id\030\003 \001(" +
+      "\tR\014caip2ChainId\022\036\n\nderivation\030\004 \001(\tR\nder" +
+      "ivation\022+\n\021execution_enabled\030\005 \001(\010R\020exec" +
+      "utionEnabled2\233\003\n\005Query\022O\n\004Slot\022\".qorecha" +
+      "in.svm.v1.QuerySlotRequest\032#.qorechain.s" +
+      "vm.v1.QuerySlotResponse\022X\n\007Account\022%.qor" +
+      "echain.svm.v1.QueryAccountRequest\032&.qore" +
+      "chain.svm.v1.QueryAccountResponse\022X\n\007Pro" +
+      "gram\022%.qorechain.svm.v1.QueryProgramRequ" +
+      "est\032&.qorechain.svm.v1.QueryProgramRespo" +
+      "nse\022\214\001\n\013ClusterInfo\022).qorechain.svm.v1.Q" +
+      "ueryClusterInfoRequest\032*.qorechain.svm.v" +
+      "1.QueryClusterInfoResponse\"&\202\323\344\223\002 \022\036/qor" +
+      "echain/svm/v1/cluster_infoB1Z/github.com" +
+      "/qorechain/qorechain-core/x/svm/typesb\006p" +
+      "roto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
         new com.google.protobuf.Descriptors.FileDescriptor[] {
+          com.google.api.AnnotationsProto.getDescriptor(),
         });
     internal_static_qorechain_svm_v1_QuerySlotRequest_descriptor =
       getDescriptor().getMessageType(0);
@@ -5236,7 +6840,25 @@ public final class QueryOuterClass extends com.google.protobuf.GeneratedFile {
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_qorechain_svm_v1_ProgramInfo_descriptor,
         new java.lang.String[] { "ProgramAddress", "UpgradeAuthority", "DeploySlot", "LastDeploySlot", "DataAccount", });
+    internal_static_qorechain_svm_v1_QueryClusterInfoRequest_descriptor =
+      getDescriptor().getMessageType(8);
+    internal_static_qorechain_svm_v1_QueryClusterInfoRequest_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessage.FieldAccessorTable(
+        internal_static_qorechain_svm_v1_QueryClusterInfoRequest_descriptor,
+        new java.lang.String[] { });
+    internal_static_qorechain_svm_v1_QueryClusterInfoResponse_descriptor =
+      getDescriptor().getMessageType(9);
+    internal_static_qorechain_svm_v1_QueryClusterInfoResponse_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessage.FieldAccessorTable(
+        internal_static_qorechain_svm_v1_QueryClusterInfoResponse_descriptor,
+        new java.lang.String[] { "ChainId", "GenesisHash", "Caip2ChainId", "Derivation", "ExecutionEnabled", });
     descriptor.resolveAllFeaturesImmutable();
+    com.google.api.AnnotationsProto.getDescriptor();
+    com.google.protobuf.ExtensionRegistry registry =
+        com.google.protobuf.ExtensionRegistry.newInstance();
+    registry.add(com.google.api.AnnotationsProto.http);
+    com.google.protobuf.Descriptors.FileDescriptor
+        .internalUpdateFileDescriptor(descriptor, registry);
   }
 
   // @@protoc_insertion_point(outer_class_scope)

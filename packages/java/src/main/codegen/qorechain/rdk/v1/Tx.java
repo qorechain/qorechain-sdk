@@ -83,6 +83,97 @@ public final class Tx extends com.google.protobuf.GeneratedFile {
      * @return The stakeAmount.
      */
     long getStakeAmount();
+
+    /**
+     * <pre>
+     * verification_key optionally registers the rollup's ZK verification key at
+     * creation, in the encoding MsgSetVerificationKey takes for the profile's
+     * proof system. Accepted from v3.2.7 (rdk-zk-verification-key); below it a
+     * message that carries one is refused.
+     * </pre>
+     *
+     * <code>bytes verification_key = 6 [json_name = "verificationKey"];</code>
+     * @return The verificationKey.
+     */
+    com.google.protobuf.ByteString getVerificationKey();
+
+    /**
+     * <pre>
+     * sequencing is "" (the rollup's sequencer settles, as before) or "based":
+     * the rollup's transactions are ordered by their inclusion in this chain
+     * (MsgPostRollupData, which anyone may send) and every batch must consume
+     * the inbox in order. Accepted from v3.2.8 (rdk-based-sequencing), for zk
+     * (snark) and based settlement only; below it a message that sets it is
+     * refused.
+     * </pre>
+     *
+     * <code>string sequencing = 7 [json_name = "sequencing"];</code>
+     * @return The sequencing.
+     */
+    java.lang.String getSequencing();
+    /**
+     * <pre>
+     * sequencing is "" (the rollup's sequencer settles, as before) or "based":
+     * the rollup's transactions are ordered by their inclusion in this chain
+     * (MsgPostRollupData, which anyone may send) and every batch must consume
+     * the inbox in order. Accepted from v3.2.8 (rdk-based-sequencing), for zk
+     * (snark) and based settlement only; below it a message that sets it is
+     * refused.
+     * </pre>
+     *
+     * <code>string sequencing = 7 [json_name = "sequencing"];</code>
+     * @return The bytes for sequencing.
+     */
+    com.google.protobuf.ByteString
+        getSequencingBytes();
+
+    /**
+     * <pre>
+     * execution_vm is "" or "qledger-v1" (v3.2.8, rdk-optimistic-reexec): an
+     * optimistic rollup whose batches the chain can re-execute in a fraud
+     * proof. It must be based.
+     * </pre>
+     *
+     * <code>string execution_vm = 8 [json_name = "executionVm"];</code>
+     * @return The executionVm.
+     */
+    java.lang.String getExecutionVm();
+    /**
+     * <pre>
+     * execution_vm is "" or "qledger-v1" (v3.2.8, rdk-optimistic-reexec): an
+     * optimistic rollup whose batches the chain can re-execute in a fraud
+     * proof. It must be based.
+     * </pre>
+     *
+     * <code>string execution_vm = 8 [json_name = "executionVm"];</code>
+     * @return The bytes for executionVm.
+     */
+    com.google.protobuf.ByteString
+        getExecutionVmBytes();
+
+    /**
+     * <pre>
+     * privacy is "" or "encapsulated" (v3.2.8, rdk-private-rollups): every
+     * post is an ML-KEM-1024 envelope to the rollup's members. zk with a
+     * Groth16 key only.
+     * </pre>
+     *
+     * <code>string privacy = 9 [json_name = "privacy"];</code>
+     * @return The privacy.
+     */
+    java.lang.String getPrivacy();
+    /**
+     * <pre>
+     * privacy is "" or "encapsulated" (v3.2.8, rdk-private-rollups): every
+     * post is an ML-KEM-1024 envelope to the rollup's members. zk with a
+     * Groth16 key only.
+     * </pre>
+     *
+     * <code>string privacy = 9 [json_name = "privacy"];</code>
+     * @return The bytes for privacy.
+     */
+    com.google.protobuf.ByteString
+        getPrivacyBytes();
   }
   /**
    * Protobuf type {@code qorechain.rdk.v1.MsgCreateRollup}
@@ -110,6 +201,10 @@ public final class Tx extends com.google.protobuf.GeneratedFile {
       rollupId_ = "";
       profile_ = "";
       vmType_ = "";
+      verificationKey_ = com.google.protobuf.ByteString.EMPTY;
+      sequencing_ = "";
+      executionVm_ = "";
+      privacy_ = "";
     }
 
     public static final com.google.protobuf.Descriptors.Descriptor
@@ -297,6 +392,183 @@ public final class Tx extends com.google.protobuf.GeneratedFile {
       return stakeAmount_;
     }
 
+    public static final int VERIFICATION_KEY_FIELD_NUMBER = 6;
+    private com.google.protobuf.ByteString verificationKey_ = com.google.protobuf.ByteString.EMPTY;
+    /**
+     * <pre>
+     * verification_key optionally registers the rollup's ZK verification key at
+     * creation, in the encoding MsgSetVerificationKey takes for the profile's
+     * proof system. Accepted from v3.2.7 (rdk-zk-verification-key); below it a
+     * message that carries one is refused.
+     * </pre>
+     *
+     * <code>bytes verification_key = 6 [json_name = "verificationKey"];</code>
+     * @return The verificationKey.
+     */
+    @java.lang.Override
+    public com.google.protobuf.ByteString getVerificationKey() {
+      return verificationKey_;
+    }
+
+    public static final int SEQUENCING_FIELD_NUMBER = 7;
+    @SuppressWarnings("serial")
+    private volatile java.lang.Object sequencing_ = "";
+    /**
+     * <pre>
+     * sequencing is "" (the rollup's sequencer settles, as before) or "based":
+     * the rollup's transactions are ordered by their inclusion in this chain
+     * (MsgPostRollupData, which anyone may send) and every batch must consume
+     * the inbox in order. Accepted from v3.2.8 (rdk-based-sequencing), for zk
+     * (snark) and based settlement only; below it a message that sets it is
+     * refused.
+     * </pre>
+     *
+     * <code>string sequencing = 7 [json_name = "sequencing"];</code>
+     * @return The sequencing.
+     */
+    @java.lang.Override
+    public java.lang.String getSequencing() {
+      java.lang.Object ref = sequencing_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        sequencing_ = s;
+        return s;
+      }
+    }
+    /**
+     * <pre>
+     * sequencing is "" (the rollup's sequencer settles, as before) or "based":
+     * the rollup's transactions are ordered by their inclusion in this chain
+     * (MsgPostRollupData, which anyone may send) and every batch must consume
+     * the inbox in order. Accepted from v3.2.8 (rdk-based-sequencing), for zk
+     * (snark) and based settlement only; below it a message that sets it is
+     * refused.
+     * </pre>
+     *
+     * <code>string sequencing = 7 [json_name = "sequencing"];</code>
+     * @return The bytes for sequencing.
+     */
+    @java.lang.Override
+    public com.google.protobuf.ByteString
+        getSequencingBytes() {
+      java.lang.Object ref = sequencing_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        sequencing_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
+    public static final int EXECUTION_VM_FIELD_NUMBER = 8;
+    @SuppressWarnings("serial")
+    private volatile java.lang.Object executionVm_ = "";
+    /**
+     * <pre>
+     * execution_vm is "" or "qledger-v1" (v3.2.8, rdk-optimistic-reexec): an
+     * optimistic rollup whose batches the chain can re-execute in a fraud
+     * proof. It must be based.
+     * </pre>
+     *
+     * <code>string execution_vm = 8 [json_name = "executionVm"];</code>
+     * @return The executionVm.
+     */
+    @java.lang.Override
+    public java.lang.String getExecutionVm() {
+      java.lang.Object ref = executionVm_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        executionVm_ = s;
+        return s;
+      }
+    }
+    /**
+     * <pre>
+     * execution_vm is "" or "qledger-v1" (v3.2.8, rdk-optimistic-reexec): an
+     * optimistic rollup whose batches the chain can re-execute in a fraud
+     * proof. It must be based.
+     * </pre>
+     *
+     * <code>string execution_vm = 8 [json_name = "executionVm"];</code>
+     * @return The bytes for executionVm.
+     */
+    @java.lang.Override
+    public com.google.protobuf.ByteString
+        getExecutionVmBytes() {
+      java.lang.Object ref = executionVm_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        executionVm_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
+    public static final int PRIVACY_FIELD_NUMBER = 9;
+    @SuppressWarnings("serial")
+    private volatile java.lang.Object privacy_ = "";
+    /**
+     * <pre>
+     * privacy is "" or "encapsulated" (v3.2.8, rdk-private-rollups): every
+     * post is an ML-KEM-1024 envelope to the rollup's members. zk with a
+     * Groth16 key only.
+     * </pre>
+     *
+     * <code>string privacy = 9 [json_name = "privacy"];</code>
+     * @return The privacy.
+     */
+    @java.lang.Override
+    public java.lang.String getPrivacy() {
+      java.lang.Object ref = privacy_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        privacy_ = s;
+        return s;
+      }
+    }
+    /**
+     * <pre>
+     * privacy is "" or "encapsulated" (v3.2.8, rdk-private-rollups): every
+     * post is an ML-KEM-1024 envelope to the rollup's members. zk with a
+     * Groth16 key only.
+     * </pre>
+     *
+     * <code>string privacy = 9 [json_name = "privacy"];</code>
+     * @return The bytes for privacy.
+     */
+    @java.lang.Override
+    public com.google.protobuf.ByteString
+        getPrivacyBytes() {
+      java.lang.Object ref = privacy_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        privacy_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
     private byte memoizedIsInitialized = -1;
     @java.lang.Override
     public final boolean isInitialized() {
@@ -326,6 +598,18 @@ public final class Tx extends com.google.protobuf.GeneratedFile {
       if (stakeAmount_ != 0L) {
         output.writeInt64(5, stakeAmount_);
       }
+      if (!verificationKey_.isEmpty()) {
+        output.writeBytes(6, verificationKey_);
+      }
+      if (!com.google.protobuf.GeneratedMessage.isStringEmpty(sequencing_)) {
+        com.google.protobuf.GeneratedMessage.writeString(output, 7, sequencing_);
+      }
+      if (!com.google.protobuf.GeneratedMessage.isStringEmpty(executionVm_)) {
+        com.google.protobuf.GeneratedMessage.writeString(output, 8, executionVm_);
+      }
+      if (!com.google.protobuf.GeneratedMessage.isStringEmpty(privacy_)) {
+        com.google.protobuf.GeneratedMessage.writeString(output, 9, privacy_);
+      }
       getUnknownFields().writeTo(output);
     }
     private int computeSerializedSize_0() {
@@ -345,6 +629,19 @@ public final class Tx extends com.google.protobuf.GeneratedFile {
       if (stakeAmount_ != 0L) {
         size += com.google.protobuf.CodedOutputStream
           .computeInt64Size(5, stakeAmount_);
+      }
+      if (!verificationKey_.isEmpty()) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeBytesSize(6, verificationKey_);
+      }
+      if (!com.google.protobuf.GeneratedMessage.isStringEmpty(sequencing_)) {
+        size += com.google.protobuf.GeneratedMessage.computeStringSize(7, sequencing_);
+      }
+      if (!com.google.protobuf.GeneratedMessage.isStringEmpty(executionVm_)) {
+        size += com.google.protobuf.GeneratedMessage.computeStringSize(8, executionVm_);
+      }
+      if (!com.google.protobuf.GeneratedMessage.isStringEmpty(privacy_)) {
+        size += com.google.protobuf.GeneratedMessage.computeStringSize(9, privacy_);
       }
       return size;
     }
@@ -380,6 +677,14 @@ public final class Tx extends com.google.protobuf.GeneratedFile {
           .equals(other.getVmType())) return false;
       if (getStakeAmount()
           != other.getStakeAmount()) return false;
+      if (!getVerificationKey()
+          .equals(other.getVerificationKey())) return false;
+      if (!getSequencing()
+          .equals(other.getSequencing())) return false;
+      if (!getExecutionVm()
+          .equals(other.getExecutionVm())) return false;
+      if (!getPrivacy()
+          .equals(other.getPrivacy())) return false;
       if (!getUnknownFields().equals(other.getUnknownFields())) return false;
       return true;
     }
@@ -402,6 +707,14 @@ public final class Tx extends com.google.protobuf.GeneratedFile {
       hash = (37 * hash) + STAKE_AMOUNT_FIELD_NUMBER;
       hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
           getStakeAmount());
+      hash = (37 * hash) + VERIFICATION_KEY_FIELD_NUMBER;
+      hash = (53 * hash) + getVerificationKey().hashCode();
+      hash = (37 * hash) + SEQUENCING_FIELD_NUMBER;
+      hash = (53 * hash) + getSequencing().hashCode();
+      hash = (37 * hash) + EXECUTION_VM_FIELD_NUMBER;
+      hash = (53 * hash) + getExecutionVm().hashCode();
+      hash = (37 * hash) + PRIVACY_FIELD_NUMBER;
+      hash = (53 * hash) + getPrivacy().hashCode();
       hash = (29 * hash) + getUnknownFields().hashCode();
       memoizedHashCode = hash;
       return hash;
@@ -538,6 +851,10 @@ public final class Tx extends com.google.protobuf.GeneratedFile {
         profile_ = "";
         vmType_ = "";
         stakeAmount_ = 0L;
+        verificationKey_ = com.google.protobuf.ByteString.EMPTY;
+        sequencing_ = "";
+        executionVm_ = "";
+        privacy_ = "";
         return this;
       }
 
@@ -586,6 +903,18 @@ public final class Tx extends com.google.protobuf.GeneratedFile {
         if (((from_bitField0_ & 0x00000010) != 0)) {
           result.stakeAmount_ = stakeAmount_;
         }
+        if (((from_bitField0_ & 0x00000020) != 0)) {
+          result.verificationKey_ = verificationKey_;
+        }
+        if (((from_bitField0_ & 0x00000040) != 0)) {
+          result.sequencing_ = sequencing_;
+        }
+        if (((from_bitField0_ & 0x00000080) != 0)) {
+          result.executionVm_ = executionVm_;
+        }
+        if (((from_bitField0_ & 0x00000100) != 0)) {
+          result.privacy_ = privacy_;
+        }
       }
 
       @java.lang.Override
@@ -622,6 +951,24 @@ public final class Tx extends com.google.protobuf.GeneratedFile {
         }
         if (other.getStakeAmount() != 0L) {
           setStakeAmount(other.getStakeAmount());
+        }
+        if (!other.getVerificationKey().isEmpty()) {
+          setVerificationKey(other.getVerificationKey());
+        }
+        if (!other.getSequencing().isEmpty()) {
+          sequencing_ = other.sequencing_;
+          bitField0_ |= 0x00000040;
+          onChanged();
+        }
+        if (!other.getExecutionVm().isEmpty()) {
+          executionVm_ = other.executionVm_;
+          bitField0_ |= 0x00000080;
+          onChanged();
+        }
+        if (!other.getPrivacy().isEmpty()) {
+          privacy_ = other.privacy_;
+          bitField0_ |= 0x00000100;
+          onChanged();
         }
         this.mergeUnknownFields(other.getUnknownFields());
         onChanged();
@@ -674,6 +1021,26 @@ public final class Tx extends com.google.protobuf.GeneratedFile {
                 bitField0_ |= 0x00000010;
                 break;
               } // case 40
+              case 50: {
+                verificationKey_ = input.readBytes();
+                bitField0_ |= 0x00000020;
+                break;
+              } // case 50
+              case 58: {
+                sequencing_ = input.readStringRequireUtf8();
+                bitField0_ |= 0x00000040;
+                break;
+              } // case 58
+              case 66: {
+                executionVm_ = input.readStringRequireUtf8();
+                bitField0_ |= 0x00000080;
+                break;
+              } // case 66
+              case 74: {
+                privacy_ = input.readStringRequireUtf8();
+                bitField0_ |= 0x00000100;
+                break;
+              } // case 74
               default: {
                 if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                   done = true; // was an endgroup tag
@@ -1007,6 +1374,380 @@ public final class Tx extends com.google.protobuf.GeneratedFile {
       public Builder clearStakeAmount() {
         bitField0_ = (bitField0_ & ~0x00000010);
         stakeAmount_ = 0L;
+        onChanged();
+        return this;
+      }
+
+      private com.google.protobuf.ByteString verificationKey_ = com.google.protobuf.ByteString.EMPTY;
+      /**
+       * <pre>
+       * verification_key optionally registers the rollup's ZK verification key at
+       * creation, in the encoding MsgSetVerificationKey takes for the profile's
+       * proof system. Accepted from v3.2.7 (rdk-zk-verification-key); below it a
+       * message that carries one is refused.
+       * </pre>
+       *
+       * <code>bytes verification_key = 6 [json_name = "verificationKey"];</code>
+       * @return The verificationKey.
+       */
+      @java.lang.Override
+      public com.google.protobuf.ByteString getVerificationKey() {
+        return verificationKey_;
+      }
+      /**
+       * <pre>
+       * verification_key optionally registers the rollup's ZK verification key at
+       * creation, in the encoding MsgSetVerificationKey takes for the profile's
+       * proof system. Accepted from v3.2.7 (rdk-zk-verification-key); below it a
+       * message that carries one is refused.
+       * </pre>
+       *
+       * <code>bytes verification_key = 6 [json_name = "verificationKey"];</code>
+       * @param value The verificationKey to set.
+       * @return This builder for chaining.
+       */
+      public Builder setVerificationKey(com.google.protobuf.ByteString value) {
+        if (value == null) { throw new NullPointerException(); }
+        verificationKey_ = value;
+        bitField0_ |= 0x00000020;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * verification_key optionally registers the rollup's ZK verification key at
+       * creation, in the encoding MsgSetVerificationKey takes for the profile's
+       * proof system. Accepted from v3.2.7 (rdk-zk-verification-key); below it a
+       * message that carries one is refused.
+       * </pre>
+       *
+       * <code>bytes verification_key = 6 [json_name = "verificationKey"];</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearVerificationKey() {
+        bitField0_ = (bitField0_ & ~0x00000020);
+        verificationKey_ = getDefaultInstance().getVerificationKey();
+        onChanged();
+        return this;
+      }
+
+      private java.lang.Object sequencing_ = "";
+      /**
+       * <pre>
+       * sequencing is "" (the rollup's sequencer settles, as before) or "based":
+       * the rollup's transactions are ordered by their inclusion in this chain
+       * (MsgPostRollupData, which anyone may send) and every batch must consume
+       * the inbox in order. Accepted from v3.2.8 (rdk-based-sequencing), for zk
+       * (snark) and based settlement only; below it a message that sets it is
+       * refused.
+       * </pre>
+       *
+       * <code>string sequencing = 7 [json_name = "sequencing"];</code>
+       * @return The sequencing.
+       */
+      public java.lang.String getSequencing() {
+        java.lang.Object ref = sequencing_;
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          sequencing_ = s;
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
+      }
+      /**
+       * <pre>
+       * sequencing is "" (the rollup's sequencer settles, as before) or "based":
+       * the rollup's transactions are ordered by their inclusion in this chain
+       * (MsgPostRollupData, which anyone may send) and every batch must consume
+       * the inbox in order. Accepted from v3.2.8 (rdk-based-sequencing), for zk
+       * (snark) and based settlement only; below it a message that sets it is
+       * refused.
+       * </pre>
+       *
+       * <code>string sequencing = 7 [json_name = "sequencing"];</code>
+       * @return The bytes for sequencing.
+       */
+      public com.google.protobuf.ByteString
+          getSequencingBytes() {
+        java.lang.Object ref = sequencing_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          sequencing_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <pre>
+       * sequencing is "" (the rollup's sequencer settles, as before) or "based":
+       * the rollup's transactions are ordered by their inclusion in this chain
+       * (MsgPostRollupData, which anyone may send) and every batch must consume
+       * the inbox in order. Accepted from v3.2.8 (rdk-based-sequencing), for zk
+       * (snark) and based settlement only; below it a message that sets it is
+       * refused.
+       * </pre>
+       *
+       * <code>string sequencing = 7 [json_name = "sequencing"];</code>
+       * @param value The sequencing to set.
+       * @return This builder for chaining.
+       */
+      public Builder setSequencing(
+          java.lang.String value) {
+        if (value == null) { throw new NullPointerException(); }
+        sequencing_ = value;
+        bitField0_ |= 0x00000040;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * sequencing is "" (the rollup's sequencer settles, as before) or "based":
+       * the rollup's transactions are ordered by their inclusion in this chain
+       * (MsgPostRollupData, which anyone may send) and every batch must consume
+       * the inbox in order. Accepted from v3.2.8 (rdk-based-sequencing), for zk
+       * (snark) and based settlement only; below it a message that sets it is
+       * refused.
+       * </pre>
+       *
+       * <code>string sequencing = 7 [json_name = "sequencing"];</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearSequencing() {
+        sequencing_ = getDefaultInstance().getSequencing();
+        bitField0_ = (bitField0_ & ~0x00000040);
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * sequencing is "" (the rollup's sequencer settles, as before) or "based":
+       * the rollup's transactions are ordered by their inclusion in this chain
+       * (MsgPostRollupData, which anyone may send) and every batch must consume
+       * the inbox in order. Accepted from v3.2.8 (rdk-based-sequencing), for zk
+       * (snark) and based settlement only; below it a message that sets it is
+       * refused.
+       * </pre>
+       *
+       * <code>string sequencing = 7 [json_name = "sequencing"];</code>
+       * @param value The bytes for sequencing to set.
+       * @return This builder for chaining.
+       */
+      public Builder setSequencingBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) { throw new NullPointerException(); }
+        checkByteStringIsUtf8(value);
+        sequencing_ = value;
+        bitField0_ |= 0x00000040;
+        onChanged();
+        return this;
+      }
+
+      private java.lang.Object executionVm_ = "";
+      /**
+       * <pre>
+       * execution_vm is "" or "qledger-v1" (v3.2.8, rdk-optimistic-reexec): an
+       * optimistic rollup whose batches the chain can re-execute in a fraud
+       * proof. It must be based.
+       * </pre>
+       *
+       * <code>string execution_vm = 8 [json_name = "executionVm"];</code>
+       * @return The executionVm.
+       */
+      public java.lang.String getExecutionVm() {
+        java.lang.Object ref = executionVm_;
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          executionVm_ = s;
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
+      }
+      /**
+       * <pre>
+       * execution_vm is "" or "qledger-v1" (v3.2.8, rdk-optimistic-reexec): an
+       * optimistic rollup whose batches the chain can re-execute in a fraud
+       * proof. It must be based.
+       * </pre>
+       *
+       * <code>string execution_vm = 8 [json_name = "executionVm"];</code>
+       * @return The bytes for executionVm.
+       */
+      public com.google.protobuf.ByteString
+          getExecutionVmBytes() {
+        java.lang.Object ref = executionVm_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          executionVm_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <pre>
+       * execution_vm is "" or "qledger-v1" (v3.2.8, rdk-optimistic-reexec): an
+       * optimistic rollup whose batches the chain can re-execute in a fraud
+       * proof. It must be based.
+       * </pre>
+       *
+       * <code>string execution_vm = 8 [json_name = "executionVm"];</code>
+       * @param value The executionVm to set.
+       * @return This builder for chaining.
+       */
+      public Builder setExecutionVm(
+          java.lang.String value) {
+        if (value == null) { throw new NullPointerException(); }
+        executionVm_ = value;
+        bitField0_ |= 0x00000080;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * execution_vm is "" or "qledger-v1" (v3.2.8, rdk-optimistic-reexec): an
+       * optimistic rollup whose batches the chain can re-execute in a fraud
+       * proof. It must be based.
+       * </pre>
+       *
+       * <code>string execution_vm = 8 [json_name = "executionVm"];</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearExecutionVm() {
+        executionVm_ = getDefaultInstance().getExecutionVm();
+        bitField0_ = (bitField0_ & ~0x00000080);
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * execution_vm is "" or "qledger-v1" (v3.2.8, rdk-optimistic-reexec): an
+       * optimistic rollup whose batches the chain can re-execute in a fraud
+       * proof. It must be based.
+       * </pre>
+       *
+       * <code>string execution_vm = 8 [json_name = "executionVm"];</code>
+       * @param value The bytes for executionVm to set.
+       * @return This builder for chaining.
+       */
+      public Builder setExecutionVmBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) { throw new NullPointerException(); }
+        checkByteStringIsUtf8(value);
+        executionVm_ = value;
+        bitField0_ |= 0x00000080;
+        onChanged();
+        return this;
+      }
+
+      private java.lang.Object privacy_ = "";
+      /**
+       * <pre>
+       * privacy is "" or "encapsulated" (v3.2.8, rdk-private-rollups): every
+       * post is an ML-KEM-1024 envelope to the rollup's members. zk with a
+       * Groth16 key only.
+       * </pre>
+       *
+       * <code>string privacy = 9 [json_name = "privacy"];</code>
+       * @return The privacy.
+       */
+      public java.lang.String getPrivacy() {
+        java.lang.Object ref = privacy_;
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          privacy_ = s;
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
+      }
+      /**
+       * <pre>
+       * privacy is "" or "encapsulated" (v3.2.8, rdk-private-rollups): every
+       * post is an ML-KEM-1024 envelope to the rollup's members. zk with a
+       * Groth16 key only.
+       * </pre>
+       *
+       * <code>string privacy = 9 [json_name = "privacy"];</code>
+       * @return The bytes for privacy.
+       */
+      public com.google.protobuf.ByteString
+          getPrivacyBytes() {
+        java.lang.Object ref = privacy_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          privacy_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <pre>
+       * privacy is "" or "encapsulated" (v3.2.8, rdk-private-rollups): every
+       * post is an ML-KEM-1024 envelope to the rollup's members. zk with a
+       * Groth16 key only.
+       * </pre>
+       *
+       * <code>string privacy = 9 [json_name = "privacy"];</code>
+       * @param value The privacy to set.
+       * @return This builder for chaining.
+       */
+      public Builder setPrivacy(
+          java.lang.String value) {
+        if (value == null) { throw new NullPointerException(); }
+        privacy_ = value;
+        bitField0_ |= 0x00000100;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * privacy is "" or "encapsulated" (v3.2.8, rdk-private-rollups): every
+       * post is an ML-KEM-1024 envelope to the rollup's members. zk with a
+       * Groth16 key only.
+       * </pre>
+       *
+       * <code>string privacy = 9 [json_name = "privacy"];</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearPrivacy() {
+        privacy_ = getDefaultInstance().getPrivacy();
+        bitField0_ = (bitField0_ & ~0x00000100);
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * privacy is "" or "encapsulated" (v3.2.8, rdk-private-rollups): every
+       * post is an ML-KEM-1024 envelope to the rollup's members. zk with a
+       * Groth16 key only.
+       * </pre>
+       *
+       * <code>string privacy = 9 [json_name = "privacy"];</code>
+       * @param value The bytes for privacy to set.
+       * @return This builder for chaining.
+       */
+      public Builder setPrivacyBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) { throw new NullPointerException(); }
+        checkByteStringIsUtf8(value);
+        privacy_ = value;
+        bitField0_ |= 0x00000100;
         onChanged();
         return this;
       }
@@ -1680,6 +2421,20 @@ public final class Tx extends com.google.protobuf.GeneratedFile {
      * @return The validatorSetHash.
      */
     com.google.protobuf.ByteString getValidatorSetHash();
+
+    /**
+     * <pre>
+     * inbox_end is, for a based rollup, the sequence number of the last posted
+     * data item this batch consumes; the batch covers the posts after the
+     * rollup's consumed sequence up to it, and data_hash must be their inbox
+     * range commitment. Zero and ignored for every other rollup. Accepted from
+     * v3.2.8 (rdk-based-sequencing); below it a non-zero value is refused.
+     * </pre>
+     *
+     * <code>uint64 inbox_end = 12 [json_name = "inboxEnd"];</code>
+     * @return The inboxEnd.
+     */
+    long getInboxEnd();
   }
   /**
    * Protobuf type {@code qorechain.rdk.v1.MsgSubmitBatch}
@@ -1927,6 +2682,25 @@ public final class Tx extends com.google.protobuf.GeneratedFile {
       return validatorSetHash_;
     }
 
+    public static final int INBOX_END_FIELD_NUMBER = 12;
+    private long inboxEnd_ = 0L;
+    /**
+     * <pre>
+     * inbox_end is, for a based rollup, the sequence number of the last posted
+     * data item this batch consumes; the batch covers the posts after the
+     * rollup's consumed sequence up to it, and data_hash must be their inbox
+     * range commitment. Zero and ignored for every other rollup. Accepted from
+     * v3.2.8 (rdk-based-sequencing); below it a non-zero value is refused.
+     * </pre>
+     *
+     * <code>uint64 inbox_end = 12 [json_name = "inboxEnd"];</code>
+     * @return The inboxEnd.
+     */
+    @java.lang.Override
+    public long getInboxEnd() {
+      return inboxEnd_;
+    }
+
     private byte memoizedIsInitialized = -1;
     @java.lang.Override
     public final boolean isInitialized() {
@@ -1974,6 +2748,9 @@ public final class Tx extends com.google.protobuf.GeneratedFile {
       if (!validatorSetHash_.isEmpty()) {
         output.writeBytes(11, validatorSetHash_);
       }
+      if (inboxEnd_ != 0L) {
+        output.writeUInt64(12, inboxEnd_);
+      }
       getUnknownFields().writeTo(output);
     }
     private int computeSerializedSize_0() {
@@ -2019,6 +2796,10 @@ public final class Tx extends com.google.protobuf.GeneratedFile {
       if (!validatorSetHash_.isEmpty()) {
         size += com.google.protobuf.CodedOutputStream
           .computeBytesSize(11, validatorSetHash_);
+      }
+      if (inboxEnd_ != 0L) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeUInt64Size(12, inboxEnd_);
       }
       return size;
     }
@@ -2066,6 +2847,8 @@ public final class Tx extends com.google.protobuf.GeneratedFile {
           .equals(other.getAnchorSignature())) return false;
       if (!getValidatorSetHash()
           .equals(other.getValidatorSetHash())) return false;
+      if (getInboxEnd()
+          != other.getInboxEnd()) return false;
       if (!getUnknownFields().equals(other.getUnknownFields())) return false;
       return true;
     }
@@ -2101,6 +2884,9 @@ public final class Tx extends com.google.protobuf.GeneratedFile {
       hash = (53 * hash) + getAnchorSignature().hashCode();
       hash = (37 * hash) + VALIDATOR_SET_HASH_FIELD_NUMBER;
       hash = (53 * hash) + getValidatorSetHash().hashCode();
+      hash = (37 * hash) + INBOX_END_FIELD_NUMBER;
+      hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
+          getInboxEnd());
       hash = (29 * hash) + getUnknownFields().hashCode();
       memoizedHashCode = hash;
       return hash;
@@ -2243,6 +3029,7 @@ public final class Tx extends com.google.protobuf.GeneratedFile {
         withdrawalsRoot_ = com.google.protobuf.ByteString.EMPTY;
         anchorSignature_ = com.google.protobuf.ByteString.EMPTY;
         validatorSetHash_ = com.google.protobuf.ByteString.EMPTY;
+        inboxEnd_ = 0L;
         return this;
       }
 
@@ -2309,6 +3096,9 @@ public final class Tx extends com.google.protobuf.GeneratedFile {
         if (((from_bitField0_ & 0x00000400) != 0)) {
           result.validatorSetHash_ = validatorSetHash_;
         }
+        if (((from_bitField0_ & 0x00000800) != 0)) {
+          result.inboxEnd_ = inboxEnd_;
+        }
       }
 
       @java.lang.Override
@@ -2359,6 +3149,9 @@ public final class Tx extends com.google.protobuf.GeneratedFile {
         }
         if (!other.getValidatorSetHash().isEmpty()) {
           setValidatorSetHash(other.getValidatorSetHash());
+        }
+        if (other.getInboxEnd() != 0L) {
+          setInboxEnd(other.getInboxEnd());
         }
         this.mergeUnknownFields(other.getUnknownFields());
         onChanged();
@@ -2441,6 +3234,11 @@ public final class Tx extends com.google.protobuf.GeneratedFile {
                 bitField0_ |= 0x00000400;
                 break;
               } // case 90
+              case 96: {
+                inboxEnd_ = input.readUInt64();
+                bitField0_ |= 0x00000800;
+                break;
+              } // case 96
               default: {
                 if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                   done = true; // was an endgroup tag
@@ -2940,6 +3738,62 @@ public final class Tx extends com.google.protobuf.GeneratedFile {
       public Builder clearValidatorSetHash() {
         bitField0_ = (bitField0_ & ~0x00000400);
         validatorSetHash_ = getDefaultInstance().getValidatorSetHash();
+        onChanged();
+        return this;
+      }
+
+      private long inboxEnd_ ;
+      /**
+       * <pre>
+       * inbox_end is, for a based rollup, the sequence number of the last posted
+       * data item this batch consumes; the batch covers the posts after the
+       * rollup's consumed sequence up to it, and data_hash must be their inbox
+       * range commitment. Zero and ignored for every other rollup. Accepted from
+       * v3.2.8 (rdk-based-sequencing); below it a non-zero value is refused.
+       * </pre>
+       *
+       * <code>uint64 inbox_end = 12 [json_name = "inboxEnd"];</code>
+       * @return The inboxEnd.
+       */
+      @java.lang.Override
+      public long getInboxEnd() {
+        return inboxEnd_;
+      }
+      /**
+       * <pre>
+       * inbox_end is, for a based rollup, the sequence number of the last posted
+       * data item this batch consumes; the batch covers the posts after the
+       * rollup's consumed sequence up to it, and data_hash must be their inbox
+       * range commitment. Zero and ignored for every other rollup. Accepted from
+       * v3.2.8 (rdk-based-sequencing); below it a non-zero value is refused.
+       * </pre>
+       *
+       * <code>uint64 inbox_end = 12 [json_name = "inboxEnd"];</code>
+       * @param value The inboxEnd to set.
+       * @return This builder for chaining.
+       */
+      public Builder setInboxEnd(long value) {
+
+        inboxEnd_ = value;
+        bitField0_ |= 0x00000800;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * inbox_end is, for a based rollup, the sequence number of the last posted
+       * data item this batch consumes; the batch covers the posts after the
+       * rollup's consumed sequence up to it, and data_hash must be their inbox
+       * range commitment. Zero and ignored for every other rollup. Accepted from
+       * v3.2.8 (rdk-based-sequencing); below it a non-zero value is refused.
+       * </pre>
+       *
+       * <code>uint64 inbox_end = 12 [json_name = "inboxEnd"];</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearInboxEnd() {
+        bitField0_ = (bitField0_ & ~0x00000800);
+        inboxEnd_ = 0L;
         onChanged();
         return this;
       }
@@ -10829,6 +11683,74 @@ public final class Tx extends com.google.protobuf.GeneratedFile {
      * @return The maxBatchesPerBlock.
      */
     int getMaxBatchesPerBlock();
+
+    /**
+     * <pre>
+     * finalized_batch_retention_blocks is how many blocks a finalized batch
+     * keeps its proof before it is compacted; 0 means the default. A non-zero
+     * value is refused before v3.2.8 (rdk-batch-compaction).
+     * </pre>
+     *
+     * <code>uint64 finalized_batch_retention_blocks = 9 [json_name = "finalizedBatchRetentionBlocks"];</code>
+     * @return The finalizedBatchRetentionBlocks.
+     */
+    long getFinalizedBatchRetentionBlocks();
+
+    /**
+     * <pre>
+     * The posted-data parameters (v3.2.8, rdk-post-rollup-data). Zero means
+     * the default for each; a non-zero value is refused before the switch.
+     * max_posted_data_bytes caps one MsgPostRollupData payload.
+     * </pre>
+     *
+     * <code>uint64 max_posted_data_bytes = 10 [json_name = "maxPostedDataBytes"];</code>
+     * @return The maxPostedDataBytes.
+     */
+    long getMaxPostedDataBytes();
+
+    /**
+     * <pre>
+     * max_posted_data_bytes_per_block caps the billable bytes posted in one
+     * block, all rollups together.
+     * </pre>
+     *
+     * <code>uint64 max_posted_data_bytes_per_block = 11 [json_name = "maxPostedDataBytesPerBlock"];</code>
+     * @return The maxPostedDataBytesPerBlock.
+     */
+    long getMaxPostedDataBytesPerBlock();
+
+    /**
+     * <pre>
+     * posted_data_fee_per_byte is the uqor fee per billable byte.
+     * </pre>
+     *
+     * <code>uint64 posted_data_fee_per_byte = 12 [json_name = "postedDataFeePerByte"];</code>
+     * @return The postedDataFeePerByte.
+     */
+    long getPostedDataFeePerByte();
+
+    /**
+     * <pre>
+     * posted_data_retention_blocks is how long a posted-data commitment stays
+     * in state.
+     * </pre>
+     *
+     * <code>uint64 posted_data_retention_blocks = 13 [json_name = "postedDataRetentionBlocks"];</code>
+     * @return The postedDataRetentionBlocks.
+     */
+    long getPostedDataRetentionBlocks();
+
+    /**
+     * <pre>
+     * min_submitter_bond is the uqor bond a qledger-v1 rollup's batch
+     * submitter must hold (v3.2.8, rdk-optimistic-reexec); 0 means the
+     * default. A non-zero value is refused before the switch.
+     * </pre>
+     *
+     * <code>uint64 min_submitter_bond = 14 [json_name = "minSubmitterBond"];</code>
+     * @return The minSubmitterBond.
+     */
+    long getMinSubmitterBond();
   }
   /**
    * <pre>
@@ -11043,6 +11965,104 @@ public final class Tx extends com.google.protobuf.GeneratedFile {
       return maxBatchesPerBlock_;
     }
 
+    public static final int FINALIZED_BATCH_RETENTION_BLOCKS_FIELD_NUMBER = 9;
+    private long finalizedBatchRetentionBlocks_ = 0L;
+    /**
+     * <pre>
+     * finalized_batch_retention_blocks is how many blocks a finalized batch
+     * keeps its proof before it is compacted; 0 means the default. A non-zero
+     * value is refused before v3.2.8 (rdk-batch-compaction).
+     * </pre>
+     *
+     * <code>uint64 finalized_batch_retention_blocks = 9 [json_name = "finalizedBatchRetentionBlocks"];</code>
+     * @return The finalizedBatchRetentionBlocks.
+     */
+    @java.lang.Override
+    public long getFinalizedBatchRetentionBlocks() {
+      return finalizedBatchRetentionBlocks_;
+    }
+
+    public static final int MAX_POSTED_DATA_BYTES_FIELD_NUMBER = 10;
+    private long maxPostedDataBytes_ = 0L;
+    /**
+     * <pre>
+     * The posted-data parameters (v3.2.8, rdk-post-rollup-data). Zero means
+     * the default for each; a non-zero value is refused before the switch.
+     * max_posted_data_bytes caps one MsgPostRollupData payload.
+     * </pre>
+     *
+     * <code>uint64 max_posted_data_bytes = 10 [json_name = "maxPostedDataBytes"];</code>
+     * @return The maxPostedDataBytes.
+     */
+    @java.lang.Override
+    public long getMaxPostedDataBytes() {
+      return maxPostedDataBytes_;
+    }
+
+    public static final int MAX_POSTED_DATA_BYTES_PER_BLOCK_FIELD_NUMBER = 11;
+    private long maxPostedDataBytesPerBlock_ = 0L;
+    /**
+     * <pre>
+     * max_posted_data_bytes_per_block caps the billable bytes posted in one
+     * block, all rollups together.
+     * </pre>
+     *
+     * <code>uint64 max_posted_data_bytes_per_block = 11 [json_name = "maxPostedDataBytesPerBlock"];</code>
+     * @return The maxPostedDataBytesPerBlock.
+     */
+    @java.lang.Override
+    public long getMaxPostedDataBytesPerBlock() {
+      return maxPostedDataBytesPerBlock_;
+    }
+
+    public static final int POSTED_DATA_FEE_PER_BYTE_FIELD_NUMBER = 12;
+    private long postedDataFeePerByte_ = 0L;
+    /**
+     * <pre>
+     * posted_data_fee_per_byte is the uqor fee per billable byte.
+     * </pre>
+     *
+     * <code>uint64 posted_data_fee_per_byte = 12 [json_name = "postedDataFeePerByte"];</code>
+     * @return The postedDataFeePerByte.
+     */
+    @java.lang.Override
+    public long getPostedDataFeePerByte() {
+      return postedDataFeePerByte_;
+    }
+
+    public static final int POSTED_DATA_RETENTION_BLOCKS_FIELD_NUMBER = 13;
+    private long postedDataRetentionBlocks_ = 0L;
+    /**
+     * <pre>
+     * posted_data_retention_blocks is how long a posted-data commitment stays
+     * in state.
+     * </pre>
+     *
+     * <code>uint64 posted_data_retention_blocks = 13 [json_name = "postedDataRetentionBlocks"];</code>
+     * @return The postedDataRetentionBlocks.
+     */
+    @java.lang.Override
+    public long getPostedDataRetentionBlocks() {
+      return postedDataRetentionBlocks_;
+    }
+
+    public static final int MIN_SUBMITTER_BOND_FIELD_NUMBER = 14;
+    private long minSubmitterBond_ = 0L;
+    /**
+     * <pre>
+     * min_submitter_bond is the uqor bond a qledger-v1 rollup's batch
+     * submitter must hold (v3.2.8, rdk-optimistic-reexec); 0 means the
+     * default. A non-zero value is refused before the switch.
+     * </pre>
+     *
+     * <code>uint64 min_submitter_bond = 14 [json_name = "minSubmitterBond"];</code>
+     * @return The minSubmitterBond.
+     */
+    @java.lang.Override
+    public long getMinSubmitterBond() {
+      return minSubmitterBond_;
+    }
+
     private byte memoizedIsInitialized = -1;
     @java.lang.Override
     public final boolean isInitialized() {
@@ -11081,6 +12101,24 @@ public final class Tx extends com.google.protobuf.GeneratedFile {
       if (maxBatchesPerBlock_ != 0) {
         output.writeUInt32(8, maxBatchesPerBlock_);
       }
+      if (finalizedBatchRetentionBlocks_ != 0L) {
+        output.writeUInt64(9, finalizedBatchRetentionBlocks_);
+      }
+      if (maxPostedDataBytes_ != 0L) {
+        output.writeUInt64(10, maxPostedDataBytes_);
+      }
+      if (maxPostedDataBytesPerBlock_ != 0L) {
+        output.writeUInt64(11, maxPostedDataBytesPerBlock_);
+      }
+      if (postedDataFeePerByte_ != 0L) {
+        output.writeUInt64(12, postedDataFeePerByte_);
+      }
+      if (postedDataRetentionBlocks_ != 0L) {
+        output.writeUInt64(13, postedDataRetentionBlocks_);
+      }
+      if (minSubmitterBond_ != 0L) {
+        output.writeUInt64(14, minSubmitterBond_);
+      }
       getUnknownFields().writeTo(output);
     }
     private int computeSerializedSize_0() {
@@ -11114,6 +12152,30 @@ public final class Tx extends com.google.protobuf.GeneratedFile {
       if (maxBatchesPerBlock_ != 0) {
         size += com.google.protobuf.CodedOutputStream
           .computeUInt32Size(8, maxBatchesPerBlock_);
+      }
+      if (finalizedBatchRetentionBlocks_ != 0L) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeUInt64Size(9, finalizedBatchRetentionBlocks_);
+      }
+      if (maxPostedDataBytes_ != 0L) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeUInt64Size(10, maxPostedDataBytes_);
+      }
+      if (maxPostedDataBytesPerBlock_ != 0L) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeUInt64Size(11, maxPostedDataBytesPerBlock_);
+      }
+      if (postedDataFeePerByte_ != 0L) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeUInt64Size(12, postedDataFeePerByte_);
+      }
+      if (postedDataRetentionBlocks_ != 0L) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeUInt64Size(13, postedDataRetentionBlocks_);
+      }
+      if (minSubmitterBond_ != 0L) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeUInt64Size(14, minSubmitterBond_);
       }
       return size;
     }
@@ -11155,6 +12217,18 @@ public final class Tx extends com.google.protobuf.GeneratedFile {
           != other.getBlobRetentionBlocks()) return false;
       if (getMaxBatchesPerBlock()
           != other.getMaxBatchesPerBlock()) return false;
+      if (getFinalizedBatchRetentionBlocks()
+          != other.getFinalizedBatchRetentionBlocks()) return false;
+      if (getMaxPostedDataBytes()
+          != other.getMaxPostedDataBytes()) return false;
+      if (getMaxPostedDataBytesPerBlock()
+          != other.getMaxPostedDataBytesPerBlock()) return false;
+      if (getPostedDataFeePerByte()
+          != other.getPostedDataFeePerByte()) return false;
+      if (getPostedDataRetentionBlocks()
+          != other.getPostedDataRetentionBlocks()) return false;
+      if (getMinSubmitterBond()
+          != other.getMinSubmitterBond()) return false;
       if (!getUnknownFields().equals(other.getUnknownFields())) return false;
       return true;
     }
@@ -11186,6 +12260,24 @@ public final class Tx extends com.google.protobuf.GeneratedFile {
           getBlobRetentionBlocks());
       hash = (37 * hash) + MAX_BATCHES_PER_BLOCK_FIELD_NUMBER;
       hash = (53 * hash) + getMaxBatchesPerBlock();
+      hash = (37 * hash) + FINALIZED_BATCH_RETENTION_BLOCKS_FIELD_NUMBER;
+      hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
+          getFinalizedBatchRetentionBlocks());
+      hash = (37 * hash) + MAX_POSTED_DATA_BYTES_FIELD_NUMBER;
+      hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
+          getMaxPostedDataBytes());
+      hash = (37 * hash) + MAX_POSTED_DATA_BYTES_PER_BLOCK_FIELD_NUMBER;
+      hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
+          getMaxPostedDataBytesPerBlock());
+      hash = (37 * hash) + POSTED_DATA_FEE_PER_BYTE_FIELD_NUMBER;
+      hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
+          getPostedDataFeePerByte());
+      hash = (37 * hash) + POSTED_DATA_RETENTION_BLOCKS_FIELD_NUMBER;
+      hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
+          getPostedDataRetentionBlocks());
+      hash = (37 * hash) + MIN_SUBMITTER_BOND_FIELD_NUMBER;
+      hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
+          getMinSubmitterBond());
       hash = (29 * hash) + getUnknownFields().hashCode();
       memoizedHashCode = hash;
       return hash;
@@ -11333,6 +12425,12 @@ public final class Tx extends com.google.protobuf.GeneratedFile {
         maxDaBlobSize_ = 0L;
         blobRetentionBlocks_ = 0L;
         maxBatchesPerBlock_ = 0;
+        finalizedBatchRetentionBlocks_ = 0L;
+        maxPostedDataBytes_ = 0L;
+        maxPostedDataBytesPerBlock_ = 0L;
+        postedDataFeePerByte_ = 0L;
+        postedDataRetentionBlocks_ = 0L;
+        minSubmitterBond_ = 0L;
         return this;
       }
 
@@ -11390,6 +12488,24 @@ public final class Tx extends com.google.protobuf.GeneratedFile {
         if (((from_bitField0_ & 0x00000080) != 0)) {
           result.maxBatchesPerBlock_ = maxBatchesPerBlock_;
         }
+        if (((from_bitField0_ & 0x00000100) != 0)) {
+          result.finalizedBatchRetentionBlocks_ = finalizedBatchRetentionBlocks_;
+        }
+        if (((from_bitField0_ & 0x00000200) != 0)) {
+          result.maxPostedDataBytes_ = maxPostedDataBytes_;
+        }
+        if (((from_bitField0_ & 0x00000400) != 0)) {
+          result.maxPostedDataBytesPerBlock_ = maxPostedDataBytesPerBlock_;
+        }
+        if (((from_bitField0_ & 0x00000800) != 0)) {
+          result.postedDataFeePerByte_ = postedDataFeePerByte_;
+        }
+        if (((from_bitField0_ & 0x00001000) != 0)) {
+          result.postedDataRetentionBlocks_ = postedDataRetentionBlocks_;
+        }
+        if (((from_bitField0_ & 0x00002000) != 0)) {
+          result.minSubmitterBond_ = minSubmitterBond_;
+        }
       }
 
       @java.lang.Override
@@ -11431,6 +12547,24 @@ public final class Tx extends com.google.protobuf.GeneratedFile {
         }
         if (other.getMaxBatchesPerBlock() != 0) {
           setMaxBatchesPerBlock(other.getMaxBatchesPerBlock());
+        }
+        if (other.getFinalizedBatchRetentionBlocks() != 0L) {
+          setFinalizedBatchRetentionBlocks(other.getFinalizedBatchRetentionBlocks());
+        }
+        if (other.getMaxPostedDataBytes() != 0L) {
+          setMaxPostedDataBytes(other.getMaxPostedDataBytes());
+        }
+        if (other.getMaxPostedDataBytesPerBlock() != 0L) {
+          setMaxPostedDataBytesPerBlock(other.getMaxPostedDataBytesPerBlock());
+        }
+        if (other.getPostedDataFeePerByte() != 0L) {
+          setPostedDataFeePerByte(other.getPostedDataFeePerByte());
+        }
+        if (other.getPostedDataRetentionBlocks() != 0L) {
+          setPostedDataRetentionBlocks(other.getPostedDataRetentionBlocks());
+        }
+        if (other.getMinSubmitterBond() != 0L) {
+          setMinSubmitterBond(other.getMinSubmitterBond());
         }
         this.mergeUnknownFields(other.getUnknownFields());
         onChanged();
@@ -11498,6 +12632,36 @@ public final class Tx extends com.google.protobuf.GeneratedFile {
                 bitField0_ |= 0x00000080;
                 break;
               } // case 64
+              case 72: {
+                finalizedBatchRetentionBlocks_ = input.readUInt64();
+                bitField0_ |= 0x00000100;
+                break;
+              } // case 72
+              case 80: {
+                maxPostedDataBytes_ = input.readUInt64();
+                bitField0_ |= 0x00000200;
+                break;
+              } // case 80
+              case 88: {
+                maxPostedDataBytesPerBlock_ = input.readUInt64();
+                bitField0_ |= 0x00000400;
+                break;
+              } // case 88
+              case 96: {
+                postedDataFeePerByte_ = input.readUInt64();
+                bitField0_ |= 0x00000800;
+                break;
+              } // case 96
+              case 104: {
+                postedDataRetentionBlocks_ = input.readUInt64();
+                bitField0_ |= 0x00001000;
+                break;
+              } // case 104
+              case 112: {
+                minSubmitterBond_ = input.readUInt64();
+                bitField0_ |= 0x00002000;
+                break;
+              } // case 112
               default: {
                 if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                   done = true; // was an endgroup tag
@@ -11894,6 +13058,294 @@ public final class Tx extends com.google.protobuf.GeneratedFile {
       public Builder clearMaxBatchesPerBlock() {
         bitField0_ = (bitField0_ & ~0x00000080);
         maxBatchesPerBlock_ = 0;
+        onChanged();
+        return this;
+      }
+
+      private long finalizedBatchRetentionBlocks_ ;
+      /**
+       * <pre>
+       * finalized_batch_retention_blocks is how many blocks a finalized batch
+       * keeps its proof before it is compacted; 0 means the default. A non-zero
+       * value is refused before v3.2.8 (rdk-batch-compaction).
+       * </pre>
+       *
+       * <code>uint64 finalized_batch_retention_blocks = 9 [json_name = "finalizedBatchRetentionBlocks"];</code>
+       * @return The finalizedBatchRetentionBlocks.
+       */
+      @java.lang.Override
+      public long getFinalizedBatchRetentionBlocks() {
+        return finalizedBatchRetentionBlocks_;
+      }
+      /**
+       * <pre>
+       * finalized_batch_retention_blocks is how many blocks a finalized batch
+       * keeps its proof before it is compacted; 0 means the default. A non-zero
+       * value is refused before v3.2.8 (rdk-batch-compaction).
+       * </pre>
+       *
+       * <code>uint64 finalized_batch_retention_blocks = 9 [json_name = "finalizedBatchRetentionBlocks"];</code>
+       * @param value The finalizedBatchRetentionBlocks to set.
+       * @return This builder for chaining.
+       */
+      public Builder setFinalizedBatchRetentionBlocks(long value) {
+
+        finalizedBatchRetentionBlocks_ = value;
+        bitField0_ |= 0x00000100;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * finalized_batch_retention_blocks is how many blocks a finalized batch
+       * keeps its proof before it is compacted; 0 means the default. A non-zero
+       * value is refused before v3.2.8 (rdk-batch-compaction).
+       * </pre>
+       *
+       * <code>uint64 finalized_batch_retention_blocks = 9 [json_name = "finalizedBatchRetentionBlocks"];</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearFinalizedBatchRetentionBlocks() {
+        bitField0_ = (bitField0_ & ~0x00000100);
+        finalizedBatchRetentionBlocks_ = 0L;
+        onChanged();
+        return this;
+      }
+
+      private long maxPostedDataBytes_ ;
+      /**
+       * <pre>
+       * The posted-data parameters (v3.2.8, rdk-post-rollup-data). Zero means
+       * the default for each; a non-zero value is refused before the switch.
+       * max_posted_data_bytes caps one MsgPostRollupData payload.
+       * </pre>
+       *
+       * <code>uint64 max_posted_data_bytes = 10 [json_name = "maxPostedDataBytes"];</code>
+       * @return The maxPostedDataBytes.
+       */
+      @java.lang.Override
+      public long getMaxPostedDataBytes() {
+        return maxPostedDataBytes_;
+      }
+      /**
+       * <pre>
+       * The posted-data parameters (v3.2.8, rdk-post-rollup-data). Zero means
+       * the default for each; a non-zero value is refused before the switch.
+       * max_posted_data_bytes caps one MsgPostRollupData payload.
+       * </pre>
+       *
+       * <code>uint64 max_posted_data_bytes = 10 [json_name = "maxPostedDataBytes"];</code>
+       * @param value The maxPostedDataBytes to set.
+       * @return This builder for chaining.
+       */
+      public Builder setMaxPostedDataBytes(long value) {
+
+        maxPostedDataBytes_ = value;
+        bitField0_ |= 0x00000200;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * The posted-data parameters (v3.2.8, rdk-post-rollup-data). Zero means
+       * the default for each; a non-zero value is refused before the switch.
+       * max_posted_data_bytes caps one MsgPostRollupData payload.
+       * </pre>
+       *
+       * <code>uint64 max_posted_data_bytes = 10 [json_name = "maxPostedDataBytes"];</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearMaxPostedDataBytes() {
+        bitField0_ = (bitField0_ & ~0x00000200);
+        maxPostedDataBytes_ = 0L;
+        onChanged();
+        return this;
+      }
+
+      private long maxPostedDataBytesPerBlock_ ;
+      /**
+       * <pre>
+       * max_posted_data_bytes_per_block caps the billable bytes posted in one
+       * block, all rollups together.
+       * </pre>
+       *
+       * <code>uint64 max_posted_data_bytes_per_block = 11 [json_name = "maxPostedDataBytesPerBlock"];</code>
+       * @return The maxPostedDataBytesPerBlock.
+       */
+      @java.lang.Override
+      public long getMaxPostedDataBytesPerBlock() {
+        return maxPostedDataBytesPerBlock_;
+      }
+      /**
+       * <pre>
+       * max_posted_data_bytes_per_block caps the billable bytes posted in one
+       * block, all rollups together.
+       * </pre>
+       *
+       * <code>uint64 max_posted_data_bytes_per_block = 11 [json_name = "maxPostedDataBytesPerBlock"];</code>
+       * @param value The maxPostedDataBytesPerBlock to set.
+       * @return This builder for chaining.
+       */
+      public Builder setMaxPostedDataBytesPerBlock(long value) {
+
+        maxPostedDataBytesPerBlock_ = value;
+        bitField0_ |= 0x00000400;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * max_posted_data_bytes_per_block caps the billable bytes posted in one
+       * block, all rollups together.
+       * </pre>
+       *
+       * <code>uint64 max_posted_data_bytes_per_block = 11 [json_name = "maxPostedDataBytesPerBlock"];</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearMaxPostedDataBytesPerBlock() {
+        bitField0_ = (bitField0_ & ~0x00000400);
+        maxPostedDataBytesPerBlock_ = 0L;
+        onChanged();
+        return this;
+      }
+
+      private long postedDataFeePerByte_ ;
+      /**
+       * <pre>
+       * posted_data_fee_per_byte is the uqor fee per billable byte.
+       * </pre>
+       *
+       * <code>uint64 posted_data_fee_per_byte = 12 [json_name = "postedDataFeePerByte"];</code>
+       * @return The postedDataFeePerByte.
+       */
+      @java.lang.Override
+      public long getPostedDataFeePerByte() {
+        return postedDataFeePerByte_;
+      }
+      /**
+       * <pre>
+       * posted_data_fee_per_byte is the uqor fee per billable byte.
+       * </pre>
+       *
+       * <code>uint64 posted_data_fee_per_byte = 12 [json_name = "postedDataFeePerByte"];</code>
+       * @param value The postedDataFeePerByte to set.
+       * @return This builder for chaining.
+       */
+      public Builder setPostedDataFeePerByte(long value) {
+
+        postedDataFeePerByte_ = value;
+        bitField0_ |= 0x00000800;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * posted_data_fee_per_byte is the uqor fee per billable byte.
+       * </pre>
+       *
+       * <code>uint64 posted_data_fee_per_byte = 12 [json_name = "postedDataFeePerByte"];</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearPostedDataFeePerByte() {
+        bitField0_ = (bitField0_ & ~0x00000800);
+        postedDataFeePerByte_ = 0L;
+        onChanged();
+        return this;
+      }
+
+      private long postedDataRetentionBlocks_ ;
+      /**
+       * <pre>
+       * posted_data_retention_blocks is how long a posted-data commitment stays
+       * in state.
+       * </pre>
+       *
+       * <code>uint64 posted_data_retention_blocks = 13 [json_name = "postedDataRetentionBlocks"];</code>
+       * @return The postedDataRetentionBlocks.
+       */
+      @java.lang.Override
+      public long getPostedDataRetentionBlocks() {
+        return postedDataRetentionBlocks_;
+      }
+      /**
+       * <pre>
+       * posted_data_retention_blocks is how long a posted-data commitment stays
+       * in state.
+       * </pre>
+       *
+       * <code>uint64 posted_data_retention_blocks = 13 [json_name = "postedDataRetentionBlocks"];</code>
+       * @param value The postedDataRetentionBlocks to set.
+       * @return This builder for chaining.
+       */
+      public Builder setPostedDataRetentionBlocks(long value) {
+
+        postedDataRetentionBlocks_ = value;
+        bitField0_ |= 0x00001000;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * posted_data_retention_blocks is how long a posted-data commitment stays
+       * in state.
+       * </pre>
+       *
+       * <code>uint64 posted_data_retention_blocks = 13 [json_name = "postedDataRetentionBlocks"];</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearPostedDataRetentionBlocks() {
+        bitField0_ = (bitField0_ & ~0x00001000);
+        postedDataRetentionBlocks_ = 0L;
+        onChanged();
+        return this;
+      }
+
+      private long minSubmitterBond_ ;
+      /**
+       * <pre>
+       * min_submitter_bond is the uqor bond a qledger-v1 rollup's batch
+       * submitter must hold (v3.2.8, rdk-optimistic-reexec); 0 means the
+       * default. A non-zero value is refused before the switch.
+       * </pre>
+       *
+       * <code>uint64 min_submitter_bond = 14 [json_name = "minSubmitterBond"];</code>
+       * @return The minSubmitterBond.
+       */
+      @java.lang.Override
+      public long getMinSubmitterBond() {
+        return minSubmitterBond_;
+      }
+      /**
+       * <pre>
+       * min_submitter_bond is the uqor bond a qledger-v1 rollup's batch
+       * submitter must hold (v3.2.8, rdk-optimistic-reexec); 0 means the
+       * default. A non-zero value is refused before the switch.
+       * </pre>
+       *
+       * <code>uint64 min_submitter_bond = 14 [json_name = "minSubmitterBond"];</code>
+       * @param value The minSubmitterBond to set.
+       * @return This builder for chaining.
+       */
+      public Builder setMinSubmitterBond(long value) {
+
+        minSubmitterBond_ = value;
+        bitField0_ |= 0x00002000;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * min_submitter_bond is the uqor bond a qledger-v1 rollup's batch
+       * submitter must hold (v3.2.8, rdk-optimistic-reexec); 0 means the
+       * default. A non-zero value is refused before the switch.
+       * </pre>
+       *
+       * <code>uint64 min_submitter_bond = 14 [json_name = "minSubmitterBond"];</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearMinSubmitterBond() {
+        bitField0_ = (bitField0_ & ~0x00002000);
+        minSubmitterBond_ = 0L;
         onChanged();
         return this;
       }
@@ -12308,6 +13760,10081 @@ public final class Tx extends com.google.protobuf.GeneratedFile {
 
   }
 
+  public interface MsgSetVerificationKeyOrBuilder extends
+      // @@protoc_insertion_point(interface_extends:qorechain.rdk.v1.MsgSetVerificationKey)
+      com.google.protobuf.MessageOrBuilder {
+
+    /**
+     * <code>string creator = 1 [json_name = "creator", (.cosmos_proto.scalar) = "cosmos.AddressString"];</code>
+     * @return The creator.
+     */
+    java.lang.String getCreator();
+    /**
+     * <code>string creator = 1 [json_name = "creator", (.cosmos_proto.scalar) = "cosmos.AddressString"];</code>
+     * @return The bytes for creator.
+     */
+    com.google.protobuf.ByteString
+        getCreatorBytes();
+
+    /**
+     * <code>string rollup_id = 2 [json_name = "rollupId", (.gogoproto.customname) = "RollupID"];</code>
+     * @return The rollupId.
+     */
+    java.lang.String getRollupId();
+    /**
+     * <code>string rollup_id = 2 [json_name = "rollupId", (.gogoproto.customname) = "RollupID"];</code>
+     * @return The bytes for rollupId.
+     */
+    com.google.protobuf.ByteString
+        getRollupIdBytes();
+
+    /**
+     * <code>bytes verification_key = 3 [json_name = "verificationKey"];</code>
+     * @return The verificationKey.
+     */
+    com.google.protobuf.ByteString getVerificationKey();
+
+    /**
+     * <pre>
+     * proof_system is "snark" or "stark". Empty keeps the rollup's current
+     * proof system.
+     * </pre>
+     *
+     * <code>string proof_system = 4 [json_name = "proofSystem"];</code>
+     * @return The proofSystem.
+     */
+    java.lang.String getProofSystem();
+    /**
+     * <pre>
+     * proof_system is "snark" or "stark". Empty keeps the rollup's current
+     * proof system.
+     * </pre>
+     *
+     * <code>string proof_system = 4 [json_name = "proofSystem"];</code>
+     * @return The bytes for proofSystem.
+     */
+    com.google.protobuf.ByteString
+        getProofSystemBytes();
+  }
+  /**
+   * <pre>
+   * MsgSetVerificationKey registers or replaces the ZK verification key of a
+   * zk-settlement rollup. Signed by the rollup's creator, and only before the
+   * rollup's first batch; after that the key changes only through
+   * MsgUpdateVerificationKey. Served from v3.2.7 (rdk-zk-verification-key).
+   *
+   * verification_key is, for proof system "snark", a Groth16 BLS12-381
+   * verifying key in gnark's binary encoding (VerifyingKey.WriteTo) for a
+   * circuit with exactly four public inputs (prev_state_root, state_root,
+   * data_hash, withdrawals_root); for "stark", the 16-byte QSTK key of the
+   * transparent verifier. A key that does not decode is refused.
+   * </pre>
+   *
+   * Protobuf type {@code qorechain.rdk.v1.MsgSetVerificationKey}
+   */
+  public static final class MsgSetVerificationKey extends
+      com.google.protobuf.GeneratedMessage implements
+      // @@protoc_insertion_point(message_implements:qorechain.rdk.v1.MsgSetVerificationKey)
+      MsgSetVerificationKeyOrBuilder {
+  private static final long serialVersionUID = 0L;
+    static {
+      com.google.protobuf.RuntimeVersion.validateProtobufGencodeVersion(
+        com.google.protobuf.RuntimeVersion.RuntimeDomain.PUBLIC,
+        /* major= */ 4,
+        /* minor= */ 35,
+        /* patch= */ 1,
+        /* suffix= */ "",
+        "MsgSetVerificationKey");
+    }
+    // Use MsgSetVerificationKey.newBuilder() to construct.
+    private MsgSetVerificationKey(com.google.protobuf.GeneratedMessage.Builder<?> builder) {
+      super(builder);
+    }
+    private MsgSetVerificationKey() {
+      creator_ = "";
+      rollupId_ = "";
+      verificationKey_ = com.google.protobuf.ByteString.EMPTY;
+      proofSystem_ = "";
+    }
+
+    public static final com.google.protobuf.Descriptors.Descriptor
+        getDescriptor() {
+      return qorechain.rdk.v1.Tx.internal_static_qorechain_rdk_v1_MsgSetVerificationKey_descriptor;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Descriptors.Descriptor getDescriptorForType() {
+      return qorechain.rdk.v1.Tx.internal_static_qorechain_rdk_v1_MsgSetVerificationKey_descriptor;
+    }
+
+    @java.lang.Override
+    protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+        internalGetFieldAccessorTable() {
+      return qorechain.rdk.v1.Tx.internal_static_qorechain_rdk_v1_MsgSetVerificationKey_fieldAccessorTable
+          .ensureFieldAccessorsInitialized(
+              qorechain.rdk.v1.Tx.MsgSetVerificationKey.class, qorechain.rdk.v1.Tx.MsgSetVerificationKey.Builder.class);
+    }
+
+    public static final int CREATOR_FIELD_NUMBER = 1;
+    @SuppressWarnings("serial")
+    private volatile java.lang.Object creator_ = "";
+    /**
+     * <code>string creator = 1 [json_name = "creator", (.cosmos_proto.scalar) = "cosmos.AddressString"];</code>
+     * @return The creator.
+     */
+    @java.lang.Override
+    public java.lang.String getCreator() {
+      java.lang.Object ref = creator_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        creator_ = s;
+        return s;
+      }
+    }
+    /**
+     * <code>string creator = 1 [json_name = "creator", (.cosmos_proto.scalar) = "cosmos.AddressString"];</code>
+     * @return The bytes for creator.
+     */
+    @java.lang.Override
+    public com.google.protobuf.ByteString
+        getCreatorBytes() {
+      java.lang.Object ref = creator_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        creator_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
+    public static final int ROLLUP_ID_FIELD_NUMBER = 2;
+    @SuppressWarnings("serial")
+    private volatile java.lang.Object rollupId_ = "";
+    /**
+     * <code>string rollup_id = 2 [json_name = "rollupId", (.gogoproto.customname) = "RollupID"];</code>
+     * @return The rollupId.
+     */
+    @java.lang.Override
+    public java.lang.String getRollupId() {
+      java.lang.Object ref = rollupId_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        rollupId_ = s;
+        return s;
+      }
+    }
+    /**
+     * <code>string rollup_id = 2 [json_name = "rollupId", (.gogoproto.customname) = "RollupID"];</code>
+     * @return The bytes for rollupId.
+     */
+    @java.lang.Override
+    public com.google.protobuf.ByteString
+        getRollupIdBytes() {
+      java.lang.Object ref = rollupId_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        rollupId_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
+    public static final int VERIFICATION_KEY_FIELD_NUMBER = 3;
+    private com.google.protobuf.ByteString verificationKey_ = com.google.protobuf.ByteString.EMPTY;
+    /**
+     * <code>bytes verification_key = 3 [json_name = "verificationKey"];</code>
+     * @return The verificationKey.
+     */
+    @java.lang.Override
+    public com.google.protobuf.ByteString getVerificationKey() {
+      return verificationKey_;
+    }
+
+    public static final int PROOF_SYSTEM_FIELD_NUMBER = 4;
+    @SuppressWarnings("serial")
+    private volatile java.lang.Object proofSystem_ = "";
+    /**
+     * <pre>
+     * proof_system is "snark" or "stark". Empty keeps the rollup's current
+     * proof system.
+     * </pre>
+     *
+     * <code>string proof_system = 4 [json_name = "proofSystem"];</code>
+     * @return The proofSystem.
+     */
+    @java.lang.Override
+    public java.lang.String getProofSystem() {
+      java.lang.Object ref = proofSystem_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        proofSystem_ = s;
+        return s;
+      }
+    }
+    /**
+     * <pre>
+     * proof_system is "snark" or "stark". Empty keeps the rollup's current
+     * proof system.
+     * </pre>
+     *
+     * <code>string proof_system = 4 [json_name = "proofSystem"];</code>
+     * @return The bytes for proofSystem.
+     */
+    @java.lang.Override
+    public com.google.protobuf.ByteString
+        getProofSystemBytes() {
+      java.lang.Object ref = proofSystem_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        proofSystem_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
+    private byte memoizedIsInitialized = -1;
+    @java.lang.Override
+    public final boolean isInitialized() {
+      byte isInitialized = memoizedIsInitialized;
+      if (isInitialized == 1) return true;
+      if (isInitialized == 0) return false;
+
+      memoizedIsInitialized = 1;
+      return true;
+    }
+
+    @java.lang.Override
+    public void writeTo(com.google.protobuf.CodedOutputStream output)
+                        throws java.io.IOException {
+      if (!com.google.protobuf.GeneratedMessage.isStringEmpty(creator_)) {
+        com.google.protobuf.GeneratedMessage.writeString(output, 1, creator_);
+      }
+      if (!com.google.protobuf.GeneratedMessage.isStringEmpty(rollupId_)) {
+        com.google.protobuf.GeneratedMessage.writeString(output, 2, rollupId_);
+      }
+      if (!verificationKey_.isEmpty()) {
+        output.writeBytes(3, verificationKey_);
+      }
+      if (!com.google.protobuf.GeneratedMessage.isStringEmpty(proofSystem_)) {
+        com.google.protobuf.GeneratedMessage.writeString(output, 4, proofSystem_);
+      }
+      getUnknownFields().writeTo(output);
+    }
+    private int computeSerializedSize_0() {
+      int size = 0;
+      if (!com.google.protobuf.GeneratedMessage.isStringEmpty(creator_)) {
+        size += com.google.protobuf.GeneratedMessage.computeStringSize(1, creator_);
+      }
+      if (!com.google.protobuf.GeneratedMessage.isStringEmpty(rollupId_)) {
+        size += com.google.protobuf.GeneratedMessage.computeStringSize(2, rollupId_);
+      }
+      if (!verificationKey_.isEmpty()) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeBytesSize(3, verificationKey_);
+      }
+      if (!com.google.protobuf.GeneratedMessage.isStringEmpty(proofSystem_)) {
+        size += com.google.protobuf.GeneratedMessage.computeStringSize(4, proofSystem_);
+      }
+      return size;
+    }
+    @java.lang.Override
+    public int getSerializedSize() {
+      int size = memoizedSize;
+      if (size != -1) return size;
+
+      size = 0;
+      size += computeSerializedSize_0();
+      size += getUnknownFields().getSerializedSize();
+      memoizedSize = size;
+      return size;
+    }
+
+    @java.lang.Override
+    public boolean equals(final java.lang.Object obj) {
+      if (obj == this) {
+       return true;
+      }
+      if (!(obj instanceof qorechain.rdk.v1.Tx.MsgSetVerificationKey)) {
+        return super.equals(obj);
+      }
+      qorechain.rdk.v1.Tx.MsgSetVerificationKey other = (qorechain.rdk.v1.Tx.MsgSetVerificationKey) obj;
+
+      if (!getCreator()
+          .equals(other.getCreator())) return false;
+      if (!getRollupId()
+          .equals(other.getRollupId())) return false;
+      if (!getVerificationKey()
+          .equals(other.getVerificationKey())) return false;
+      if (!getProofSystem()
+          .equals(other.getProofSystem())) return false;
+      if (!getUnknownFields().equals(other.getUnknownFields())) return false;
+      return true;
+    }
+
+    @java.lang.Override
+    public int hashCode() {
+      if (memoizedHashCode != 0) {
+        return memoizedHashCode;
+      }
+      int hash = 41;
+      hash = (19 * hash) + getDescriptor().hashCode();
+      hash = (37 * hash) + CREATOR_FIELD_NUMBER;
+      hash = (53 * hash) + getCreator().hashCode();
+      hash = (37 * hash) + ROLLUP_ID_FIELD_NUMBER;
+      hash = (53 * hash) + getRollupId().hashCode();
+      hash = (37 * hash) + VERIFICATION_KEY_FIELD_NUMBER;
+      hash = (53 * hash) + getVerificationKey().hashCode();
+      hash = (37 * hash) + PROOF_SYSTEM_FIELD_NUMBER;
+      hash = (53 * hash) + getProofSystem().hashCode();
+      hash = (29 * hash) + getUnknownFields().hashCode();
+      memoizedHashCode = hash;
+      return hash;
+    }
+
+    public static qorechain.rdk.v1.Tx.MsgSetVerificationKey parseFrom(
+        java.nio.ByteBuffer data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static qorechain.rdk.v1.Tx.MsgSetVerificationKey parseFrom(
+        java.nio.ByteBuffer data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static qorechain.rdk.v1.Tx.MsgSetVerificationKey parseFrom(
+        com.google.protobuf.ByteString data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static qorechain.rdk.v1.Tx.MsgSetVerificationKey parseFrom(
+        com.google.protobuf.ByteString data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static qorechain.rdk.v1.Tx.MsgSetVerificationKey parseFrom(byte[] data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static qorechain.rdk.v1.Tx.MsgSetVerificationKey parseFrom(
+        byte[] data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static qorechain.rdk.v1.Tx.MsgSetVerificationKey parseFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input);
+    }
+    public static qorechain.rdk.v1.Tx.MsgSetVerificationKey parseFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    public static qorechain.rdk.v1.Tx.MsgSetVerificationKey parseDelimitedFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseDelimitedWithIOException(PARSER, input);
+    }
+
+    public static qorechain.rdk.v1.Tx.MsgSetVerificationKey parseDelimitedFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static qorechain.rdk.v1.Tx.MsgSetVerificationKey parseFrom(
+        com.google.protobuf.CodedInputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input);
+    }
+    public static qorechain.rdk.v1.Tx.MsgSetVerificationKey parseFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    @java.lang.Override
+    public Builder newBuilderForType() { return newBuilder(); }
+    public static Builder newBuilder() {
+      return DEFAULT_INSTANCE.toBuilder();
+    }
+    public static Builder newBuilder(qorechain.rdk.v1.Tx.MsgSetVerificationKey prototype) {
+      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+    }
+    @java.lang.Override
+    public Builder toBuilder() {
+      return this == DEFAULT_INSTANCE
+          ? new Builder() : new Builder().mergeFrom(this);
+    }
+
+    @java.lang.Override
+    protected Builder newBuilderForType(
+        com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+      Builder builder = new Builder(parent);
+      return builder;
+    }
+    /**
+     * <pre>
+     * MsgSetVerificationKey registers or replaces the ZK verification key of a
+     * zk-settlement rollup. Signed by the rollup's creator, and only before the
+     * rollup's first batch; after that the key changes only through
+     * MsgUpdateVerificationKey. Served from v3.2.7 (rdk-zk-verification-key).
+     *
+     * verification_key is, for proof system "snark", a Groth16 BLS12-381
+     * verifying key in gnark's binary encoding (VerifyingKey.WriteTo) for a
+     * circuit with exactly four public inputs (prev_state_root, state_root,
+     * data_hash, withdrawals_root); for "stark", the 16-byte QSTK key of the
+     * transparent verifier. A key that does not decode is refused.
+     * </pre>
+     *
+     * Protobuf type {@code qorechain.rdk.v1.MsgSetVerificationKey}
+     */
+    public static final class Builder extends
+        com.google.protobuf.GeneratedMessage.Builder<Builder> implements
+        // @@protoc_insertion_point(builder_implements:qorechain.rdk.v1.MsgSetVerificationKey)
+        qorechain.rdk.v1.Tx.MsgSetVerificationKeyOrBuilder {
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return qorechain.rdk.v1.Tx.internal_static_qorechain_rdk_v1_MsgSetVerificationKey_descriptor;
+      }
+
+      @java.lang.Override
+      protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return qorechain.rdk.v1.Tx.internal_static_qorechain_rdk_v1_MsgSetVerificationKey_fieldAccessorTable
+            .ensureFieldAccessorsInitialized(
+                qorechain.rdk.v1.Tx.MsgSetVerificationKey.class, qorechain.rdk.v1.Tx.MsgSetVerificationKey.Builder.class);
+      }
+
+      // Construct using qorechain.rdk.v1.Tx.MsgSetVerificationKey.newBuilder()
+      private Builder() {
+
+      }
+
+      private Builder(
+          com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+        super(parent);
+
+      }
+      @java.lang.Override
+      public Builder clear() {
+        super.clear();
+        bitField0_ = 0;
+        creator_ = "";
+        rollupId_ = "";
+        verificationKey_ = com.google.protobuf.ByteString.EMPTY;
+        proofSystem_ = "";
+        return this;
+      }
+
+      @java.lang.Override
+      public com.google.protobuf.Descriptors.Descriptor
+          getDescriptorForType() {
+        return qorechain.rdk.v1.Tx.internal_static_qorechain_rdk_v1_MsgSetVerificationKey_descriptor;
+      }
+
+      @java.lang.Override
+      public qorechain.rdk.v1.Tx.MsgSetVerificationKey getDefaultInstanceForType() {
+        return qorechain.rdk.v1.Tx.MsgSetVerificationKey.getDefaultInstance();
+      }
+
+      @java.lang.Override
+      public qorechain.rdk.v1.Tx.MsgSetVerificationKey build() {
+        qorechain.rdk.v1.Tx.MsgSetVerificationKey result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(result);
+        }
+        return result;
+      }
+
+      @java.lang.Override
+      public qorechain.rdk.v1.Tx.MsgSetVerificationKey buildPartial() {
+        qorechain.rdk.v1.Tx.MsgSetVerificationKey result = new qorechain.rdk.v1.Tx.MsgSetVerificationKey(this);
+        if (bitField0_ != 0) { buildPartial0(result); }
+        onBuilt();
+        return result;
+      }
+
+      private void buildPartial0(qorechain.rdk.v1.Tx.MsgSetVerificationKey result) {
+        int from_bitField0_ = bitField0_;
+        if (((from_bitField0_ & 0x00000001) != 0)) {
+          result.creator_ = creator_;
+        }
+        if (((from_bitField0_ & 0x00000002) != 0)) {
+          result.rollupId_ = rollupId_;
+        }
+        if (((from_bitField0_ & 0x00000004) != 0)) {
+          result.verificationKey_ = verificationKey_;
+        }
+        if (((from_bitField0_ & 0x00000008) != 0)) {
+          result.proofSystem_ = proofSystem_;
+        }
+      }
+
+      @java.lang.Override
+      public Builder mergeFrom(com.google.protobuf.Message other) {
+        if (other instanceof qorechain.rdk.v1.Tx.MsgSetVerificationKey) {
+          return mergeFrom((qorechain.rdk.v1.Tx.MsgSetVerificationKey)other);
+        } else {
+          super.mergeFrom(other);
+          return this;
+        }
+      }
+
+      public Builder mergeFrom(qorechain.rdk.v1.Tx.MsgSetVerificationKey other) {
+        if (other == qorechain.rdk.v1.Tx.MsgSetVerificationKey.getDefaultInstance()) return this;
+        if (!other.getCreator().isEmpty()) {
+          creator_ = other.creator_;
+          bitField0_ |= 0x00000001;
+          onChanged();
+        }
+        if (!other.getRollupId().isEmpty()) {
+          rollupId_ = other.rollupId_;
+          bitField0_ |= 0x00000002;
+          onChanged();
+        }
+        if (!other.getVerificationKey().isEmpty()) {
+          setVerificationKey(other.getVerificationKey());
+        }
+        if (!other.getProofSystem().isEmpty()) {
+          proofSystem_ = other.proofSystem_;
+          bitField0_ |= 0x00000008;
+          onChanged();
+        }
+        this.mergeUnknownFields(other.getUnknownFields());
+        onChanged();
+        return this;
+      }
+
+      @java.lang.Override
+      public final boolean isInitialized() {
+        return true;
+      }
+
+      @java.lang.Override
+      public Builder mergeFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        if (extensionRegistry == null) {
+          throw new java.lang.NullPointerException();
+        }
+        try {
+          boolean done = false;
+          while (!done) {
+            int tag = input.readTag();
+            switch (tag) {
+              case 0:
+                done = true;
+                break;
+              case 10: {
+                creator_ = input.readStringRequireUtf8();
+                bitField0_ |= 0x00000001;
+                break;
+              } // case 10
+              case 18: {
+                rollupId_ = input.readStringRequireUtf8();
+                bitField0_ |= 0x00000002;
+                break;
+              } // case 18
+              case 26: {
+                verificationKey_ = input.readBytes();
+                bitField0_ |= 0x00000004;
+                break;
+              } // case 26
+              case 34: {
+                proofSystem_ = input.readStringRequireUtf8();
+                bitField0_ |= 0x00000008;
+                break;
+              } // case 34
+              default: {
+                if (!super.parseUnknownField(input, extensionRegistry, tag)) {
+                  done = true; // was an endgroup tag
+                }
+                break;
+              } // default:
+            } // switch (tag)
+          } // while (!done)
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          throw e.unwrapIOException();
+        } finally {
+          onChanged();
+        } // finally
+        return this;
+      }
+      private int bitField0_;
+
+      private java.lang.Object creator_ = "";
+      /**
+       * <code>string creator = 1 [json_name = "creator", (.cosmos_proto.scalar) = "cosmos.AddressString"];</code>
+       * @return The creator.
+       */
+      public java.lang.String getCreator() {
+        java.lang.Object ref = creator_;
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          creator_ = s;
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
+      }
+      /**
+       * <code>string creator = 1 [json_name = "creator", (.cosmos_proto.scalar) = "cosmos.AddressString"];</code>
+       * @return The bytes for creator.
+       */
+      public com.google.protobuf.ByteString
+          getCreatorBytes() {
+        java.lang.Object ref = creator_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          creator_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <code>string creator = 1 [json_name = "creator", (.cosmos_proto.scalar) = "cosmos.AddressString"];</code>
+       * @param value The creator to set.
+       * @return This builder for chaining.
+       */
+      public Builder setCreator(
+          java.lang.String value) {
+        if (value == null) { throw new NullPointerException(); }
+        creator_ = value;
+        bitField0_ |= 0x00000001;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>string creator = 1 [json_name = "creator", (.cosmos_proto.scalar) = "cosmos.AddressString"];</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearCreator() {
+        creator_ = getDefaultInstance().getCreator();
+        bitField0_ = (bitField0_ & ~0x00000001);
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>string creator = 1 [json_name = "creator", (.cosmos_proto.scalar) = "cosmos.AddressString"];</code>
+       * @param value The bytes for creator to set.
+       * @return This builder for chaining.
+       */
+      public Builder setCreatorBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) { throw new NullPointerException(); }
+        checkByteStringIsUtf8(value);
+        creator_ = value;
+        bitField0_ |= 0x00000001;
+        onChanged();
+        return this;
+      }
+
+      private java.lang.Object rollupId_ = "";
+      /**
+       * <code>string rollup_id = 2 [json_name = "rollupId", (.gogoproto.customname) = "RollupID"];</code>
+       * @return The rollupId.
+       */
+      public java.lang.String getRollupId() {
+        java.lang.Object ref = rollupId_;
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          rollupId_ = s;
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
+      }
+      /**
+       * <code>string rollup_id = 2 [json_name = "rollupId", (.gogoproto.customname) = "RollupID"];</code>
+       * @return The bytes for rollupId.
+       */
+      public com.google.protobuf.ByteString
+          getRollupIdBytes() {
+        java.lang.Object ref = rollupId_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          rollupId_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <code>string rollup_id = 2 [json_name = "rollupId", (.gogoproto.customname) = "RollupID"];</code>
+       * @param value The rollupId to set.
+       * @return This builder for chaining.
+       */
+      public Builder setRollupId(
+          java.lang.String value) {
+        if (value == null) { throw new NullPointerException(); }
+        rollupId_ = value;
+        bitField0_ |= 0x00000002;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>string rollup_id = 2 [json_name = "rollupId", (.gogoproto.customname) = "RollupID"];</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearRollupId() {
+        rollupId_ = getDefaultInstance().getRollupId();
+        bitField0_ = (bitField0_ & ~0x00000002);
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>string rollup_id = 2 [json_name = "rollupId", (.gogoproto.customname) = "RollupID"];</code>
+       * @param value The bytes for rollupId to set.
+       * @return This builder for chaining.
+       */
+      public Builder setRollupIdBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) { throw new NullPointerException(); }
+        checkByteStringIsUtf8(value);
+        rollupId_ = value;
+        bitField0_ |= 0x00000002;
+        onChanged();
+        return this;
+      }
+
+      private com.google.protobuf.ByteString verificationKey_ = com.google.protobuf.ByteString.EMPTY;
+      /**
+       * <code>bytes verification_key = 3 [json_name = "verificationKey"];</code>
+       * @return The verificationKey.
+       */
+      @java.lang.Override
+      public com.google.protobuf.ByteString getVerificationKey() {
+        return verificationKey_;
+      }
+      /**
+       * <code>bytes verification_key = 3 [json_name = "verificationKey"];</code>
+       * @param value The verificationKey to set.
+       * @return This builder for chaining.
+       */
+      public Builder setVerificationKey(com.google.protobuf.ByteString value) {
+        if (value == null) { throw new NullPointerException(); }
+        verificationKey_ = value;
+        bitField0_ |= 0x00000004;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>bytes verification_key = 3 [json_name = "verificationKey"];</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearVerificationKey() {
+        bitField0_ = (bitField0_ & ~0x00000004);
+        verificationKey_ = getDefaultInstance().getVerificationKey();
+        onChanged();
+        return this;
+      }
+
+      private java.lang.Object proofSystem_ = "";
+      /**
+       * <pre>
+       * proof_system is "snark" or "stark". Empty keeps the rollup's current
+       * proof system.
+       * </pre>
+       *
+       * <code>string proof_system = 4 [json_name = "proofSystem"];</code>
+       * @return The proofSystem.
+       */
+      public java.lang.String getProofSystem() {
+        java.lang.Object ref = proofSystem_;
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          proofSystem_ = s;
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
+      }
+      /**
+       * <pre>
+       * proof_system is "snark" or "stark". Empty keeps the rollup's current
+       * proof system.
+       * </pre>
+       *
+       * <code>string proof_system = 4 [json_name = "proofSystem"];</code>
+       * @return The bytes for proofSystem.
+       */
+      public com.google.protobuf.ByteString
+          getProofSystemBytes() {
+        java.lang.Object ref = proofSystem_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          proofSystem_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <pre>
+       * proof_system is "snark" or "stark". Empty keeps the rollup's current
+       * proof system.
+       * </pre>
+       *
+       * <code>string proof_system = 4 [json_name = "proofSystem"];</code>
+       * @param value The proofSystem to set.
+       * @return This builder for chaining.
+       */
+      public Builder setProofSystem(
+          java.lang.String value) {
+        if (value == null) { throw new NullPointerException(); }
+        proofSystem_ = value;
+        bitField0_ |= 0x00000008;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * proof_system is "snark" or "stark". Empty keeps the rollup's current
+       * proof system.
+       * </pre>
+       *
+       * <code>string proof_system = 4 [json_name = "proofSystem"];</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearProofSystem() {
+        proofSystem_ = getDefaultInstance().getProofSystem();
+        bitField0_ = (bitField0_ & ~0x00000008);
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * proof_system is "snark" or "stark". Empty keeps the rollup's current
+       * proof system.
+       * </pre>
+       *
+       * <code>string proof_system = 4 [json_name = "proofSystem"];</code>
+       * @param value The bytes for proofSystem to set.
+       * @return This builder for chaining.
+       */
+      public Builder setProofSystemBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) { throw new NullPointerException(); }
+        checkByteStringIsUtf8(value);
+        proofSystem_ = value;
+        bitField0_ |= 0x00000008;
+        onChanged();
+        return this;
+      }
+
+      // @@protoc_insertion_point(builder_scope:qorechain.rdk.v1.MsgSetVerificationKey)
+    }
+
+    // @@protoc_insertion_point(class_scope:qorechain.rdk.v1.MsgSetVerificationKey)
+    private static final qorechain.rdk.v1.Tx.MsgSetVerificationKey DEFAULT_INSTANCE;
+    static {
+      DEFAULT_INSTANCE = new qorechain.rdk.v1.Tx.MsgSetVerificationKey();
+    }
+
+    public static qorechain.rdk.v1.Tx.MsgSetVerificationKey getDefaultInstance() {
+      return DEFAULT_INSTANCE;
+    }
+
+    private static final com.google.protobuf.Parser<MsgSetVerificationKey>
+        PARSER = new com.google.protobuf.AbstractParser<MsgSetVerificationKey>() {
+      @java.lang.Override
+      public MsgSetVerificationKey parsePartialFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        Builder builder = newBuilder();
+        try {
+          builder.mergeFrom(input, extensionRegistry);
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          throw e.setUnfinishedMessage(builder.buildPartial());
+        } catch (com.google.protobuf.UninitializedMessageException e) {
+          throw e.asInvalidProtocolBufferException().setUnfinishedMessage(builder.buildPartial());
+        } catch (java.io.IOException e) {
+          throw new com.google.protobuf.InvalidProtocolBufferException(e)
+              .setUnfinishedMessage(builder.buildPartial());
+        }
+        return builder.buildPartial();
+      }
+    };
+
+    public static com.google.protobuf.Parser<MsgSetVerificationKey> parser() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Parser<MsgSetVerificationKey> getParserForType() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public qorechain.rdk.v1.Tx.MsgSetVerificationKey getDefaultInstanceForType() {
+      return DEFAULT_INSTANCE;
+    }
+
+  }
+
+  public interface MsgSetVerificationKeyResponseOrBuilder extends
+      // @@protoc_insertion_point(interface_extends:qorechain.rdk.v1.MsgSetVerificationKeyResponse)
+      com.google.protobuf.MessageOrBuilder {
+  }
+  /**
+   * Protobuf type {@code qorechain.rdk.v1.MsgSetVerificationKeyResponse}
+   */
+  public static final class MsgSetVerificationKeyResponse extends
+      com.google.protobuf.GeneratedMessage implements
+      // @@protoc_insertion_point(message_implements:qorechain.rdk.v1.MsgSetVerificationKeyResponse)
+      MsgSetVerificationKeyResponseOrBuilder {
+  private static final long serialVersionUID = 0L;
+    static {
+      com.google.protobuf.RuntimeVersion.validateProtobufGencodeVersion(
+        com.google.protobuf.RuntimeVersion.RuntimeDomain.PUBLIC,
+        /* major= */ 4,
+        /* minor= */ 35,
+        /* patch= */ 1,
+        /* suffix= */ "",
+        "MsgSetVerificationKeyResponse");
+    }
+    // Use MsgSetVerificationKeyResponse.newBuilder() to construct.
+    private MsgSetVerificationKeyResponse(com.google.protobuf.GeneratedMessage.Builder<?> builder) {
+      super(builder);
+    }
+    private MsgSetVerificationKeyResponse() {
+    }
+
+    public static final com.google.protobuf.Descriptors.Descriptor
+        getDescriptor() {
+      return qorechain.rdk.v1.Tx.internal_static_qorechain_rdk_v1_MsgSetVerificationKeyResponse_descriptor;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Descriptors.Descriptor getDescriptorForType() {
+      return qorechain.rdk.v1.Tx.internal_static_qorechain_rdk_v1_MsgSetVerificationKeyResponse_descriptor;
+    }
+
+    @java.lang.Override
+    protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+        internalGetFieldAccessorTable() {
+      return qorechain.rdk.v1.Tx.internal_static_qorechain_rdk_v1_MsgSetVerificationKeyResponse_fieldAccessorTable
+          .ensureFieldAccessorsInitialized(
+              qorechain.rdk.v1.Tx.MsgSetVerificationKeyResponse.class, qorechain.rdk.v1.Tx.MsgSetVerificationKeyResponse.Builder.class);
+    }
+
+    private byte memoizedIsInitialized = -1;
+    @java.lang.Override
+    public final boolean isInitialized() {
+      byte isInitialized = memoizedIsInitialized;
+      if (isInitialized == 1) return true;
+      if (isInitialized == 0) return false;
+
+      memoizedIsInitialized = 1;
+      return true;
+    }
+
+    @java.lang.Override
+    public void writeTo(com.google.protobuf.CodedOutputStream output)
+                        throws java.io.IOException {
+      getUnknownFields().writeTo(output);
+    }
+    @java.lang.Override
+    public int getSerializedSize() {
+      int size = memoizedSize;
+      if (size != -1) return size;
+
+      size = 0;
+      size += getUnknownFields().getSerializedSize();
+      memoizedSize = size;
+      return size;
+    }
+
+    @java.lang.Override
+    public boolean equals(final java.lang.Object obj) {
+      if (obj == this) {
+       return true;
+      }
+      if (!(obj instanceof qorechain.rdk.v1.Tx.MsgSetVerificationKeyResponse)) {
+        return super.equals(obj);
+      }
+      qorechain.rdk.v1.Tx.MsgSetVerificationKeyResponse other = (qorechain.rdk.v1.Tx.MsgSetVerificationKeyResponse) obj;
+
+      if (!getUnknownFields().equals(other.getUnknownFields())) return false;
+      return true;
+    }
+
+    @java.lang.Override
+    public int hashCode() {
+      if (memoizedHashCode != 0) {
+        return memoizedHashCode;
+      }
+      int hash = 41;
+      hash = (19 * hash) + getDescriptor().hashCode();
+      hash = (29 * hash) + getUnknownFields().hashCode();
+      memoizedHashCode = hash;
+      return hash;
+    }
+
+    public static qorechain.rdk.v1.Tx.MsgSetVerificationKeyResponse parseFrom(
+        java.nio.ByteBuffer data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static qorechain.rdk.v1.Tx.MsgSetVerificationKeyResponse parseFrom(
+        java.nio.ByteBuffer data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static qorechain.rdk.v1.Tx.MsgSetVerificationKeyResponse parseFrom(
+        com.google.protobuf.ByteString data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static qorechain.rdk.v1.Tx.MsgSetVerificationKeyResponse parseFrom(
+        com.google.protobuf.ByteString data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static qorechain.rdk.v1.Tx.MsgSetVerificationKeyResponse parseFrom(byte[] data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static qorechain.rdk.v1.Tx.MsgSetVerificationKeyResponse parseFrom(
+        byte[] data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static qorechain.rdk.v1.Tx.MsgSetVerificationKeyResponse parseFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input);
+    }
+    public static qorechain.rdk.v1.Tx.MsgSetVerificationKeyResponse parseFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    public static qorechain.rdk.v1.Tx.MsgSetVerificationKeyResponse parseDelimitedFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseDelimitedWithIOException(PARSER, input);
+    }
+
+    public static qorechain.rdk.v1.Tx.MsgSetVerificationKeyResponse parseDelimitedFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static qorechain.rdk.v1.Tx.MsgSetVerificationKeyResponse parseFrom(
+        com.google.protobuf.CodedInputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input);
+    }
+    public static qorechain.rdk.v1.Tx.MsgSetVerificationKeyResponse parseFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    @java.lang.Override
+    public Builder newBuilderForType() { return newBuilder(); }
+    public static Builder newBuilder() {
+      return DEFAULT_INSTANCE.toBuilder();
+    }
+    public static Builder newBuilder(qorechain.rdk.v1.Tx.MsgSetVerificationKeyResponse prototype) {
+      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+    }
+    @java.lang.Override
+    public Builder toBuilder() {
+      return this == DEFAULT_INSTANCE
+          ? new Builder() : new Builder().mergeFrom(this);
+    }
+
+    @java.lang.Override
+    protected Builder newBuilderForType(
+        com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+      Builder builder = new Builder(parent);
+      return builder;
+    }
+    /**
+     * Protobuf type {@code qorechain.rdk.v1.MsgSetVerificationKeyResponse}
+     */
+    public static final class Builder extends
+        com.google.protobuf.GeneratedMessage.Builder<Builder> implements
+        // @@protoc_insertion_point(builder_implements:qorechain.rdk.v1.MsgSetVerificationKeyResponse)
+        qorechain.rdk.v1.Tx.MsgSetVerificationKeyResponseOrBuilder {
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return qorechain.rdk.v1.Tx.internal_static_qorechain_rdk_v1_MsgSetVerificationKeyResponse_descriptor;
+      }
+
+      @java.lang.Override
+      protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return qorechain.rdk.v1.Tx.internal_static_qorechain_rdk_v1_MsgSetVerificationKeyResponse_fieldAccessorTable
+            .ensureFieldAccessorsInitialized(
+                qorechain.rdk.v1.Tx.MsgSetVerificationKeyResponse.class, qorechain.rdk.v1.Tx.MsgSetVerificationKeyResponse.Builder.class);
+      }
+
+      // Construct using qorechain.rdk.v1.Tx.MsgSetVerificationKeyResponse.newBuilder()
+      private Builder() {
+
+      }
+
+      private Builder(
+          com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+        super(parent);
+
+      }
+      @java.lang.Override
+      public Builder clear() {
+        super.clear();
+        return this;
+      }
+
+      @java.lang.Override
+      public com.google.protobuf.Descriptors.Descriptor
+          getDescriptorForType() {
+        return qorechain.rdk.v1.Tx.internal_static_qorechain_rdk_v1_MsgSetVerificationKeyResponse_descriptor;
+      }
+
+      @java.lang.Override
+      public qorechain.rdk.v1.Tx.MsgSetVerificationKeyResponse getDefaultInstanceForType() {
+        return qorechain.rdk.v1.Tx.MsgSetVerificationKeyResponse.getDefaultInstance();
+      }
+
+      @java.lang.Override
+      public qorechain.rdk.v1.Tx.MsgSetVerificationKeyResponse build() {
+        qorechain.rdk.v1.Tx.MsgSetVerificationKeyResponse result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(result);
+        }
+        return result;
+      }
+
+      @java.lang.Override
+      public qorechain.rdk.v1.Tx.MsgSetVerificationKeyResponse buildPartial() {
+        qorechain.rdk.v1.Tx.MsgSetVerificationKeyResponse result = new qorechain.rdk.v1.Tx.MsgSetVerificationKeyResponse(this);
+        onBuilt();
+        return result;
+      }
+
+      @java.lang.Override
+      public Builder mergeFrom(com.google.protobuf.Message other) {
+        if (other instanceof qorechain.rdk.v1.Tx.MsgSetVerificationKeyResponse) {
+          return mergeFrom((qorechain.rdk.v1.Tx.MsgSetVerificationKeyResponse)other);
+        } else {
+          super.mergeFrom(other);
+          return this;
+        }
+      }
+
+      public Builder mergeFrom(qorechain.rdk.v1.Tx.MsgSetVerificationKeyResponse other) {
+        if (other == qorechain.rdk.v1.Tx.MsgSetVerificationKeyResponse.getDefaultInstance()) return this;
+        this.mergeUnknownFields(other.getUnknownFields());
+        onChanged();
+        return this;
+      }
+
+      @java.lang.Override
+      public final boolean isInitialized() {
+        return true;
+      }
+
+      @java.lang.Override
+      public Builder mergeFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        if (extensionRegistry == null) {
+          throw new java.lang.NullPointerException();
+        }
+        try {
+          boolean done = false;
+          while (!done) {
+            int tag = input.readTag();
+            switch (tag) {
+              case 0:
+                done = true;
+                break;
+              default: {
+                if (!super.parseUnknownField(input, extensionRegistry, tag)) {
+                  done = true; // was an endgroup tag
+                }
+                break;
+              } // default:
+            } // switch (tag)
+          } // while (!done)
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          throw e.unwrapIOException();
+        } finally {
+          onChanged();
+        } // finally
+        return this;
+      }
+
+      // @@protoc_insertion_point(builder_scope:qorechain.rdk.v1.MsgSetVerificationKeyResponse)
+    }
+
+    // @@protoc_insertion_point(class_scope:qorechain.rdk.v1.MsgSetVerificationKeyResponse)
+    private static final qorechain.rdk.v1.Tx.MsgSetVerificationKeyResponse DEFAULT_INSTANCE;
+    static {
+      DEFAULT_INSTANCE = new qorechain.rdk.v1.Tx.MsgSetVerificationKeyResponse();
+    }
+
+    public static qorechain.rdk.v1.Tx.MsgSetVerificationKeyResponse getDefaultInstance() {
+      return DEFAULT_INSTANCE;
+    }
+
+    private static final com.google.protobuf.Parser<MsgSetVerificationKeyResponse>
+        PARSER = new com.google.protobuf.AbstractParser<MsgSetVerificationKeyResponse>() {
+      @java.lang.Override
+      public MsgSetVerificationKeyResponse parsePartialFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        Builder builder = newBuilder();
+        try {
+          builder.mergeFrom(input, extensionRegistry);
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          throw e.setUnfinishedMessage(builder.buildPartial());
+        } catch (com.google.protobuf.UninitializedMessageException e) {
+          throw e.asInvalidProtocolBufferException().setUnfinishedMessage(builder.buildPartial());
+        } catch (java.io.IOException e) {
+          throw new com.google.protobuf.InvalidProtocolBufferException(e)
+              .setUnfinishedMessage(builder.buildPartial());
+        }
+        return builder.buildPartial();
+      }
+    };
+
+    public static com.google.protobuf.Parser<MsgSetVerificationKeyResponse> parser() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Parser<MsgSetVerificationKeyResponse> getParserForType() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public qorechain.rdk.v1.Tx.MsgSetVerificationKeyResponse getDefaultInstanceForType() {
+      return DEFAULT_INSTANCE;
+    }
+
+  }
+
+  public interface MsgUpdateVerificationKeyOrBuilder extends
+      // @@protoc_insertion_point(interface_extends:qorechain.rdk.v1.MsgUpdateVerificationKey)
+      com.google.protobuf.MessageOrBuilder {
+
+    /**
+     * <code>string authority = 1 [json_name = "authority", (.cosmos_proto.scalar) = "cosmos.AddressString"];</code>
+     * @return The authority.
+     */
+    java.lang.String getAuthority();
+    /**
+     * <code>string authority = 1 [json_name = "authority", (.cosmos_proto.scalar) = "cosmos.AddressString"];</code>
+     * @return The bytes for authority.
+     */
+    com.google.protobuf.ByteString
+        getAuthorityBytes();
+
+    /**
+     * <code>string rollup_id = 2 [json_name = "rollupId", (.gogoproto.customname) = "RollupID"];</code>
+     * @return The rollupId.
+     */
+    java.lang.String getRollupId();
+    /**
+     * <code>string rollup_id = 2 [json_name = "rollupId", (.gogoproto.customname) = "RollupID"];</code>
+     * @return The bytes for rollupId.
+     */
+    com.google.protobuf.ByteString
+        getRollupIdBytes();
+
+    /**
+     * <code>bytes verification_key = 3 [json_name = "verificationKey"];</code>
+     * @return The verificationKey.
+     */
+    com.google.protobuf.ByteString getVerificationKey();
+
+    /**
+     * <pre>
+     * proof_system is "snark" or "stark". Empty keeps the rollup's current
+     * proof system.
+     * </pre>
+     *
+     * <code>string proof_system = 4 [json_name = "proofSystem"];</code>
+     * @return The proofSystem.
+     */
+    java.lang.String getProofSystem();
+    /**
+     * <pre>
+     * proof_system is "snark" or "stark". Empty keeps the rollup's current
+     * proof system.
+     * </pre>
+     *
+     * <code>string proof_system = 4 [json_name = "proofSystem"];</code>
+     * @return The bytes for proofSystem.
+     */
+    com.google.protobuf.ByteString
+        getProofSystemBytes();
+  }
+  /**
+   * <pre>
+   * MsgUpdateVerificationKey replaces a zk-settlement rollup's verification key
+   * at any point of its life. Governance only: authority must be the gov module
+   * account. The key is validated as in MsgSetVerificationKey. Served from
+   * v3.2.7 (rdk-zk-verification-key).
+   * </pre>
+   *
+   * Protobuf type {@code qorechain.rdk.v1.MsgUpdateVerificationKey}
+   */
+  public static final class MsgUpdateVerificationKey extends
+      com.google.protobuf.GeneratedMessage implements
+      // @@protoc_insertion_point(message_implements:qorechain.rdk.v1.MsgUpdateVerificationKey)
+      MsgUpdateVerificationKeyOrBuilder {
+  private static final long serialVersionUID = 0L;
+    static {
+      com.google.protobuf.RuntimeVersion.validateProtobufGencodeVersion(
+        com.google.protobuf.RuntimeVersion.RuntimeDomain.PUBLIC,
+        /* major= */ 4,
+        /* minor= */ 35,
+        /* patch= */ 1,
+        /* suffix= */ "",
+        "MsgUpdateVerificationKey");
+    }
+    // Use MsgUpdateVerificationKey.newBuilder() to construct.
+    private MsgUpdateVerificationKey(com.google.protobuf.GeneratedMessage.Builder<?> builder) {
+      super(builder);
+    }
+    private MsgUpdateVerificationKey() {
+      authority_ = "";
+      rollupId_ = "";
+      verificationKey_ = com.google.protobuf.ByteString.EMPTY;
+      proofSystem_ = "";
+    }
+
+    public static final com.google.protobuf.Descriptors.Descriptor
+        getDescriptor() {
+      return qorechain.rdk.v1.Tx.internal_static_qorechain_rdk_v1_MsgUpdateVerificationKey_descriptor;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Descriptors.Descriptor getDescriptorForType() {
+      return qorechain.rdk.v1.Tx.internal_static_qorechain_rdk_v1_MsgUpdateVerificationKey_descriptor;
+    }
+
+    @java.lang.Override
+    protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+        internalGetFieldAccessorTable() {
+      return qorechain.rdk.v1.Tx.internal_static_qorechain_rdk_v1_MsgUpdateVerificationKey_fieldAccessorTable
+          .ensureFieldAccessorsInitialized(
+              qorechain.rdk.v1.Tx.MsgUpdateVerificationKey.class, qorechain.rdk.v1.Tx.MsgUpdateVerificationKey.Builder.class);
+    }
+
+    public static final int AUTHORITY_FIELD_NUMBER = 1;
+    @SuppressWarnings("serial")
+    private volatile java.lang.Object authority_ = "";
+    /**
+     * <code>string authority = 1 [json_name = "authority", (.cosmos_proto.scalar) = "cosmos.AddressString"];</code>
+     * @return The authority.
+     */
+    @java.lang.Override
+    public java.lang.String getAuthority() {
+      java.lang.Object ref = authority_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        authority_ = s;
+        return s;
+      }
+    }
+    /**
+     * <code>string authority = 1 [json_name = "authority", (.cosmos_proto.scalar) = "cosmos.AddressString"];</code>
+     * @return The bytes for authority.
+     */
+    @java.lang.Override
+    public com.google.protobuf.ByteString
+        getAuthorityBytes() {
+      java.lang.Object ref = authority_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        authority_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
+    public static final int ROLLUP_ID_FIELD_NUMBER = 2;
+    @SuppressWarnings("serial")
+    private volatile java.lang.Object rollupId_ = "";
+    /**
+     * <code>string rollup_id = 2 [json_name = "rollupId", (.gogoproto.customname) = "RollupID"];</code>
+     * @return The rollupId.
+     */
+    @java.lang.Override
+    public java.lang.String getRollupId() {
+      java.lang.Object ref = rollupId_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        rollupId_ = s;
+        return s;
+      }
+    }
+    /**
+     * <code>string rollup_id = 2 [json_name = "rollupId", (.gogoproto.customname) = "RollupID"];</code>
+     * @return The bytes for rollupId.
+     */
+    @java.lang.Override
+    public com.google.protobuf.ByteString
+        getRollupIdBytes() {
+      java.lang.Object ref = rollupId_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        rollupId_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
+    public static final int VERIFICATION_KEY_FIELD_NUMBER = 3;
+    private com.google.protobuf.ByteString verificationKey_ = com.google.protobuf.ByteString.EMPTY;
+    /**
+     * <code>bytes verification_key = 3 [json_name = "verificationKey"];</code>
+     * @return The verificationKey.
+     */
+    @java.lang.Override
+    public com.google.protobuf.ByteString getVerificationKey() {
+      return verificationKey_;
+    }
+
+    public static final int PROOF_SYSTEM_FIELD_NUMBER = 4;
+    @SuppressWarnings("serial")
+    private volatile java.lang.Object proofSystem_ = "";
+    /**
+     * <pre>
+     * proof_system is "snark" or "stark". Empty keeps the rollup's current
+     * proof system.
+     * </pre>
+     *
+     * <code>string proof_system = 4 [json_name = "proofSystem"];</code>
+     * @return The proofSystem.
+     */
+    @java.lang.Override
+    public java.lang.String getProofSystem() {
+      java.lang.Object ref = proofSystem_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        proofSystem_ = s;
+        return s;
+      }
+    }
+    /**
+     * <pre>
+     * proof_system is "snark" or "stark". Empty keeps the rollup's current
+     * proof system.
+     * </pre>
+     *
+     * <code>string proof_system = 4 [json_name = "proofSystem"];</code>
+     * @return The bytes for proofSystem.
+     */
+    @java.lang.Override
+    public com.google.protobuf.ByteString
+        getProofSystemBytes() {
+      java.lang.Object ref = proofSystem_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        proofSystem_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
+    private byte memoizedIsInitialized = -1;
+    @java.lang.Override
+    public final boolean isInitialized() {
+      byte isInitialized = memoizedIsInitialized;
+      if (isInitialized == 1) return true;
+      if (isInitialized == 0) return false;
+
+      memoizedIsInitialized = 1;
+      return true;
+    }
+
+    @java.lang.Override
+    public void writeTo(com.google.protobuf.CodedOutputStream output)
+                        throws java.io.IOException {
+      if (!com.google.protobuf.GeneratedMessage.isStringEmpty(authority_)) {
+        com.google.protobuf.GeneratedMessage.writeString(output, 1, authority_);
+      }
+      if (!com.google.protobuf.GeneratedMessage.isStringEmpty(rollupId_)) {
+        com.google.protobuf.GeneratedMessage.writeString(output, 2, rollupId_);
+      }
+      if (!verificationKey_.isEmpty()) {
+        output.writeBytes(3, verificationKey_);
+      }
+      if (!com.google.protobuf.GeneratedMessage.isStringEmpty(proofSystem_)) {
+        com.google.protobuf.GeneratedMessage.writeString(output, 4, proofSystem_);
+      }
+      getUnknownFields().writeTo(output);
+    }
+    private int computeSerializedSize_0() {
+      int size = 0;
+      if (!com.google.protobuf.GeneratedMessage.isStringEmpty(authority_)) {
+        size += com.google.protobuf.GeneratedMessage.computeStringSize(1, authority_);
+      }
+      if (!com.google.protobuf.GeneratedMessage.isStringEmpty(rollupId_)) {
+        size += com.google.protobuf.GeneratedMessage.computeStringSize(2, rollupId_);
+      }
+      if (!verificationKey_.isEmpty()) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeBytesSize(3, verificationKey_);
+      }
+      if (!com.google.protobuf.GeneratedMessage.isStringEmpty(proofSystem_)) {
+        size += com.google.protobuf.GeneratedMessage.computeStringSize(4, proofSystem_);
+      }
+      return size;
+    }
+    @java.lang.Override
+    public int getSerializedSize() {
+      int size = memoizedSize;
+      if (size != -1) return size;
+
+      size = 0;
+      size += computeSerializedSize_0();
+      size += getUnknownFields().getSerializedSize();
+      memoizedSize = size;
+      return size;
+    }
+
+    @java.lang.Override
+    public boolean equals(final java.lang.Object obj) {
+      if (obj == this) {
+       return true;
+      }
+      if (!(obj instanceof qorechain.rdk.v1.Tx.MsgUpdateVerificationKey)) {
+        return super.equals(obj);
+      }
+      qorechain.rdk.v1.Tx.MsgUpdateVerificationKey other = (qorechain.rdk.v1.Tx.MsgUpdateVerificationKey) obj;
+
+      if (!getAuthority()
+          .equals(other.getAuthority())) return false;
+      if (!getRollupId()
+          .equals(other.getRollupId())) return false;
+      if (!getVerificationKey()
+          .equals(other.getVerificationKey())) return false;
+      if (!getProofSystem()
+          .equals(other.getProofSystem())) return false;
+      if (!getUnknownFields().equals(other.getUnknownFields())) return false;
+      return true;
+    }
+
+    @java.lang.Override
+    public int hashCode() {
+      if (memoizedHashCode != 0) {
+        return memoizedHashCode;
+      }
+      int hash = 41;
+      hash = (19 * hash) + getDescriptor().hashCode();
+      hash = (37 * hash) + AUTHORITY_FIELD_NUMBER;
+      hash = (53 * hash) + getAuthority().hashCode();
+      hash = (37 * hash) + ROLLUP_ID_FIELD_NUMBER;
+      hash = (53 * hash) + getRollupId().hashCode();
+      hash = (37 * hash) + VERIFICATION_KEY_FIELD_NUMBER;
+      hash = (53 * hash) + getVerificationKey().hashCode();
+      hash = (37 * hash) + PROOF_SYSTEM_FIELD_NUMBER;
+      hash = (53 * hash) + getProofSystem().hashCode();
+      hash = (29 * hash) + getUnknownFields().hashCode();
+      memoizedHashCode = hash;
+      return hash;
+    }
+
+    public static qorechain.rdk.v1.Tx.MsgUpdateVerificationKey parseFrom(
+        java.nio.ByteBuffer data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static qorechain.rdk.v1.Tx.MsgUpdateVerificationKey parseFrom(
+        java.nio.ByteBuffer data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static qorechain.rdk.v1.Tx.MsgUpdateVerificationKey parseFrom(
+        com.google.protobuf.ByteString data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static qorechain.rdk.v1.Tx.MsgUpdateVerificationKey parseFrom(
+        com.google.protobuf.ByteString data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static qorechain.rdk.v1.Tx.MsgUpdateVerificationKey parseFrom(byte[] data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static qorechain.rdk.v1.Tx.MsgUpdateVerificationKey parseFrom(
+        byte[] data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static qorechain.rdk.v1.Tx.MsgUpdateVerificationKey parseFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input);
+    }
+    public static qorechain.rdk.v1.Tx.MsgUpdateVerificationKey parseFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    public static qorechain.rdk.v1.Tx.MsgUpdateVerificationKey parseDelimitedFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseDelimitedWithIOException(PARSER, input);
+    }
+
+    public static qorechain.rdk.v1.Tx.MsgUpdateVerificationKey parseDelimitedFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static qorechain.rdk.v1.Tx.MsgUpdateVerificationKey parseFrom(
+        com.google.protobuf.CodedInputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input);
+    }
+    public static qorechain.rdk.v1.Tx.MsgUpdateVerificationKey parseFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    @java.lang.Override
+    public Builder newBuilderForType() { return newBuilder(); }
+    public static Builder newBuilder() {
+      return DEFAULT_INSTANCE.toBuilder();
+    }
+    public static Builder newBuilder(qorechain.rdk.v1.Tx.MsgUpdateVerificationKey prototype) {
+      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+    }
+    @java.lang.Override
+    public Builder toBuilder() {
+      return this == DEFAULT_INSTANCE
+          ? new Builder() : new Builder().mergeFrom(this);
+    }
+
+    @java.lang.Override
+    protected Builder newBuilderForType(
+        com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+      Builder builder = new Builder(parent);
+      return builder;
+    }
+    /**
+     * <pre>
+     * MsgUpdateVerificationKey replaces a zk-settlement rollup's verification key
+     * at any point of its life. Governance only: authority must be the gov module
+     * account. The key is validated as in MsgSetVerificationKey. Served from
+     * v3.2.7 (rdk-zk-verification-key).
+     * </pre>
+     *
+     * Protobuf type {@code qorechain.rdk.v1.MsgUpdateVerificationKey}
+     */
+    public static final class Builder extends
+        com.google.protobuf.GeneratedMessage.Builder<Builder> implements
+        // @@protoc_insertion_point(builder_implements:qorechain.rdk.v1.MsgUpdateVerificationKey)
+        qorechain.rdk.v1.Tx.MsgUpdateVerificationKeyOrBuilder {
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return qorechain.rdk.v1.Tx.internal_static_qorechain_rdk_v1_MsgUpdateVerificationKey_descriptor;
+      }
+
+      @java.lang.Override
+      protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return qorechain.rdk.v1.Tx.internal_static_qorechain_rdk_v1_MsgUpdateVerificationKey_fieldAccessorTable
+            .ensureFieldAccessorsInitialized(
+                qorechain.rdk.v1.Tx.MsgUpdateVerificationKey.class, qorechain.rdk.v1.Tx.MsgUpdateVerificationKey.Builder.class);
+      }
+
+      // Construct using qorechain.rdk.v1.Tx.MsgUpdateVerificationKey.newBuilder()
+      private Builder() {
+
+      }
+
+      private Builder(
+          com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+        super(parent);
+
+      }
+      @java.lang.Override
+      public Builder clear() {
+        super.clear();
+        bitField0_ = 0;
+        authority_ = "";
+        rollupId_ = "";
+        verificationKey_ = com.google.protobuf.ByteString.EMPTY;
+        proofSystem_ = "";
+        return this;
+      }
+
+      @java.lang.Override
+      public com.google.protobuf.Descriptors.Descriptor
+          getDescriptorForType() {
+        return qorechain.rdk.v1.Tx.internal_static_qorechain_rdk_v1_MsgUpdateVerificationKey_descriptor;
+      }
+
+      @java.lang.Override
+      public qorechain.rdk.v1.Tx.MsgUpdateVerificationKey getDefaultInstanceForType() {
+        return qorechain.rdk.v1.Tx.MsgUpdateVerificationKey.getDefaultInstance();
+      }
+
+      @java.lang.Override
+      public qorechain.rdk.v1.Tx.MsgUpdateVerificationKey build() {
+        qorechain.rdk.v1.Tx.MsgUpdateVerificationKey result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(result);
+        }
+        return result;
+      }
+
+      @java.lang.Override
+      public qorechain.rdk.v1.Tx.MsgUpdateVerificationKey buildPartial() {
+        qorechain.rdk.v1.Tx.MsgUpdateVerificationKey result = new qorechain.rdk.v1.Tx.MsgUpdateVerificationKey(this);
+        if (bitField0_ != 0) { buildPartial0(result); }
+        onBuilt();
+        return result;
+      }
+
+      private void buildPartial0(qorechain.rdk.v1.Tx.MsgUpdateVerificationKey result) {
+        int from_bitField0_ = bitField0_;
+        if (((from_bitField0_ & 0x00000001) != 0)) {
+          result.authority_ = authority_;
+        }
+        if (((from_bitField0_ & 0x00000002) != 0)) {
+          result.rollupId_ = rollupId_;
+        }
+        if (((from_bitField0_ & 0x00000004) != 0)) {
+          result.verificationKey_ = verificationKey_;
+        }
+        if (((from_bitField0_ & 0x00000008) != 0)) {
+          result.proofSystem_ = proofSystem_;
+        }
+      }
+
+      @java.lang.Override
+      public Builder mergeFrom(com.google.protobuf.Message other) {
+        if (other instanceof qorechain.rdk.v1.Tx.MsgUpdateVerificationKey) {
+          return mergeFrom((qorechain.rdk.v1.Tx.MsgUpdateVerificationKey)other);
+        } else {
+          super.mergeFrom(other);
+          return this;
+        }
+      }
+
+      public Builder mergeFrom(qorechain.rdk.v1.Tx.MsgUpdateVerificationKey other) {
+        if (other == qorechain.rdk.v1.Tx.MsgUpdateVerificationKey.getDefaultInstance()) return this;
+        if (!other.getAuthority().isEmpty()) {
+          authority_ = other.authority_;
+          bitField0_ |= 0x00000001;
+          onChanged();
+        }
+        if (!other.getRollupId().isEmpty()) {
+          rollupId_ = other.rollupId_;
+          bitField0_ |= 0x00000002;
+          onChanged();
+        }
+        if (!other.getVerificationKey().isEmpty()) {
+          setVerificationKey(other.getVerificationKey());
+        }
+        if (!other.getProofSystem().isEmpty()) {
+          proofSystem_ = other.proofSystem_;
+          bitField0_ |= 0x00000008;
+          onChanged();
+        }
+        this.mergeUnknownFields(other.getUnknownFields());
+        onChanged();
+        return this;
+      }
+
+      @java.lang.Override
+      public final boolean isInitialized() {
+        return true;
+      }
+
+      @java.lang.Override
+      public Builder mergeFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        if (extensionRegistry == null) {
+          throw new java.lang.NullPointerException();
+        }
+        try {
+          boolean done = false;
+          while (!done) {
+            int tag = input.readTag();
+            switch (tag) {
+              case 0:
+                done = true;
+                break;
+              case 10: {
+                authority_ = input.readStringRequireUtf8();
+                bitField0_ |= 0x00000001;
+                break;
+              } // case 10
+              case 18: {
+                rollupId_ = input.readStringRequireUtf8();
+                bitField0_ |= 0x00000002;
+                break;
+              } // case 18
+              case 26: {
+                verificationKey_ = input.readBytes();
+                bitField0_ |= 0x00000004;
+                break;
+              } // case 26
+              case 34: {
+                proofSystem_ = input.readStringRequireUtf8();
+                bitField0_ |= 0x00000008;
+                break;
+              } // case 34
+              default: {
+                if (!super.parseUnknownField(input, extensionRegistry, tag)) {
+                  done = true; // was an endgroup tag
+                }
+                break;
+              } // default:
+            } // switch (tag)
+          } // while (!done)
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          throw e.unwrapIOException();
+        } finally {
+          onChanged();
+        } // finally
+        return this;
+      }
+      private int bitField0_;
+
+      private java.lang.Object authority_ = "";
+      /**
+       * <code>string authority = 1 [json_name = "authority", (.cosmos_proto.scalar) = "cosmos.AddressString"];</code>
+       * @return The authority.
+       */
+      public java.lang.String getAuthority() {
+        java.lang.Object ref = authority_;
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          authority_ = s;
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
+      }
+      /**
+       * <code>string authority = 1 [json_name = "authority", (.cosmos_proto.scalar) = "cosmos.AddressString"];</code>
+       * @return The bytes for authority.
+       */
+      public com.google.protobuf.ByteString
+          getAuthorityBytes() {
+        java.lang.Object ref = authority_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          authority_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <code>string authority = 1 [json_name = "authority", (.cosmos_proto.scalar) = "cosmos.AddressString"];</code>
+       * @param value The authority to set.
+       * @return This builder for chaining.
+       */
+      public Builder setAuthority(
+          java.lang.String value) {
+        if (value == null) { throw new NullPointerException(); }
+        authority_ = value;
+        bitField0_ |= 0x00000001;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>string authority = 1 [json_name = "authority", (.cosmos_proto.scalar) = "cosmos.AddressString"];</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearAuthority() {
+        authority_ = getDefaultInstance().getAuthority();
+        bitField0_ = (bitField0_ & ~0x00000001);
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>string authority = 1 [json_name = "authority", (.cosmos_proto.scalar) = "cosmos.AddressString"];</code>
+       * @param value The bytes for authority to set.
+       * @return This builder for chaining.
+       */
+      public Builder setAuthorityBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) { throw new NullPointerException(); }
+        checkByteStringIsUtf8(value);
+        authority_ = value;
+        bitField0_ |= 0x00000001;
+        onChanged();
+        return this;
+      }
+
+      private java.lang.Object rollupId_ = "";
+      /**
+       * <code>string rollup_id = 2 [json_name = "rollupId", (.gogoproto.customname) = "RollupID"];</code>
+       * @return The rollupId.
+       */
+      public java.lang.String getRollupId() {
+        java.lang.Object ref = rollupId_;
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          rollupId_ = s;
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
+      }
+      /**
+       * <code>string rollup_id = 2 [json_name = "rollupId", (.gogoproto.customname) = "RollupID"];</code>
+       * @return The bytes for rollupId.
+       */
+      public com.google.protobuf.ByteString
+          getRollupIdBytes() {
+        java.lang.Object ref = rollupId_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          rollupId_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <code>string rollup_id = 2 [json_name = "rollupId", (.gogoproto.customname) = "RollupID"];</code>
+       * @param value The rollupId to set.
+       * @return This builder for chaining.
+       */
+      public Builder setRollupId(
+          java.lang.String value) {
+        if (value == null) { throw new NullPointerException(); }
+        rollupId_ = value;
+        bitField0_ |= 0x00000002;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>string rollup_id = 2 [json_name = "rollupId", (.gogoproto.customname) = "RollupID"];</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearRollupId() {
+        rollupId_ = getDefaultInstance().getRollupId();
+        bitField0_ = (bitField0_ & ~0x00000002);
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>string rollup_id = 2 [json_name = "rollupId", (.gogoproto.customname) = "RollupID"];</code>
+       * @param value The bytes for rollupId to set.
+       * @return This builder for chaining.
+       */
+      public Builder setRollupIdBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) { throw new NullPointerException(); }
+        checkByteStringIsUtf8(value);
+        rollupId_ = value;
+        bitField0_ |= 0x00000002;
+        onChanged();
+        return this;
+      }
+
+      private com.google.protobuf.ByteString verificationKey_ = com.google.protobuf.ByteString.EMPTY;
+      /**
+       * <code>bytes verification_key = 3 [json_name = "verificationKey"];</code>
+       * @return The verificationKey.
+       */
+      @java.lang.Override
+      public com.google.protobuf.ByteString getVerificationKey() {
+        return verificationKey_;
+      }
+      /**
+       * <code>bytes verification_key = 3 [json_name = "verificationKey"];</code>
+       * @param value The verificationKey to set.
+       * @return This builder for chaining.
+       */
+      public Builder setVerificationKey(com.google.protobuf.ByteString value) {
+        if (value == null) { throw new NullPointerException(); }
+        verificationKey_ = value;
+        bitField0_ |= 0x00000004;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>bytes verification_key = 3 [json_name = "verificationKey"];</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearVerificationKey() {
+        bitField0_ = (bitField0_ & ~0x00000004);
+        verificationKey_ = getDefaultInstance().getVerificationKey();
+        onChanged();
+        return this;
+      }
+
+      private java.lang.Object proofSystem_ = "";
+      /**
+       * <pre>
+       * proof_system is "snark" or "stark". Empty keeps the rollup's current
+       * proof system.
+       * </pre>
+       *
+       * <code>string proof_system = 4 [json_name = "proofSystem"];</code>
+       * @return The proofSystem.
+       */
+      public java.lang.String getProofSystem() {
+        java.lang.Object ref = proofSystem_;
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          proofSystem_ = s;
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
+      }
+      /**
+       * <pre>
+       * proof_system is "snark" or "stark". Empty keeps the rollup's current
+       * proof system.
+       * </pre>
+       *
+       * <code>string proof_system = 4 [json_name = "proofSystem"];</code>
+       * @return The bytes for proofSystem.
+       */
+      public com.google.protobuf.ByteString
+          getProofSystemBytes() {
+        java.lang.Object ref = proofSystem_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          proofSystem_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <pre>
+       * proof_system is "snark" or "stark". Empty keeps the rollup's current
+       * proof system.
+       * </pre>
+       *
+       * <code>string proof_system = 4 [json_name = "proofSystem"];</code>
+       * @param value The proofSystem to set.
+       * @return This builder for chaining.
+       */
+      public Builder setProofSystem(
+          java.lang.String value) {
+        if (value == null) { throw new NullPointerException(); }
+        proofSystem_ = value;
+        bitField0_ |= 0x00000008;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * proof_system is "snark" or "stark". Empty keeps the rollup's current
+       * proof system.
+       * </pre>
+       *
+       * <code>string proof_system = 4 [json_name = "proofSystem"];</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearProofSystem() {
+        proofSystem_ = getDefaultInstance().getProofSystem();
+        bitField0_ = (bitField0_ & ~0x00000008);
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * proof_system is "snark" or "stark". Empty keeps the rollup's current
+       * proof system.
+       * </pre>
+       *
+       * <code>string proof_system = 4 [json_name = "proofSystem"];</code>
+       * @param value The bytes for proofSystem to set.
+       * @return This builder for chaining.
+       */
+      public Builder setProofSystemBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) { throw new NullPointerException(); }
+        checkByteStringIsUtf8(value);
+        proofSystem_ = value;
+        bitField0_ |= 0x00000008;
+        onChanged();
+        return this;
+      }
+
+      // @@protoc_insertion_point(builder_scope:qorechain.rdk.v1.MsgUpdateVerificationKey)
+    }
+
+    // @@protoc_insertion_point(class_scope:qorechain.rdk.v1.MsgUpdateVerificationKey)
+    private static final qorechain.rdk.v1.Tx.MsgUpdateVerificationKey DEFAULT_INSTANCE;
+    static {
+      DEFAULT_INSTANCE = new qorechain.rdk.v1.Tx.MsgUpdateVerificationKey();
+    }
+
+    public static qorechain.rdk.v1.Tx.MsgUpdateVerificationKey getDefaultInstance() {
+      return DEFAULT_INSTANCE;
+    }
+
+    private static final com.google.protobuf.Parser<MsgUpdateVerificationKey>
+        PARSER = new com.google.protobuf.AbstractParser<MsgUpdateVerificationKey>() {
+      @java.lang.Override
+      public MsgUpdateVerificationKey parsePartialFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        Builder builder = newBuilder();
+        try {
+          builder.mergeFrom(input, extensionRegistry);
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          throw e.setUnfinishedMessage(builder.buildPartial());
+        } catch (com.google.protobuf.UninitializedMessageException e) {
+          throw e.asInvalidProtocolBufferException().setUnfinishedMessage(builder.buildPartial());
+        } catch (java.io.IOException e) {
+          throw new com.google.protobuf.InvalidProtocolBufferException(e)
+              .setUnfinishedMessage(builder.buildPartial());
+        }
+        return builder.buildPartial();
+      }
+    };
+
+    public static com.google.protobuf.Parser<MsgUpdateVerificationKey> parser() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Parser<MsgUpdateVerificationKey> getParserForType() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public qorechain.rdk.v1.Tx.MsgUpdateVerificationKey getDefaultInstanceForType() {
+      return DEFAULT_INSTANCE;
+    }
+
+  }
+
+  public interface MsgUpdateVerificationKeyResponseOrBuilder extends
+      // @@protoc_insertion_point(interface_extends:qorechain.rdk.v1.MsgUpdateVerificationKeyResponse)
+      com.google.protobuf.MessageOrBuilder {
+  }
+  /**
+   * Protobuf type {@code qorechain.rdk.v1.MsgUpdateVerificationKeyResponse}
+   */
+  public static final class MsgUpdateVerificationKeyResponse extends
+      com.google.protobuf.GeneratedMessage implements
+      // @@protoc_insertion_point(message_implements:qorechain.rdk.v1.MsgUpdateVerificationKeyResponse)
+      MsgUpdateVerificationKeyResponseOrBuilder {
+  private static final long serialVersionUID = 0L;
+    static {
+      com.google.protobuf.RuntimeVersion.validateProtobufGencodeVersion(
+        com.google.protobuf.RuntimeVersion.RuntimeDomain.PUBLIC,
+        /* major= */ 4,
+        /* minor= */ 35,
+        /* patch= */ 1,
+        /* suffix= */ "",
+        "MsgUpdateVerificationKeyResponse");
+    }
+    // Use MsgUpdateVerificationKeyResponse.newBuilder() to construct.
+    private MsgUpdateVerificationKeyResponse(com.google.protobuf.GeneratedMessage.Builder<?> builder) {
+      super(builder);
+    }
+    private MsgUpdateVerificationKeyResponse() {
+    }
+
+    public static final com.google.protobuf.Descriptors.Descriptor
+        getDescriptor() {
+      return qorechain.rdk.v1.Tx.internal_static_qorechain_rdk_v1_MsgUpdateVerificationKeyResponse_descriptor;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Descriptors.Descriptor getDescriptorForType() {
+      return qorechain.rdk.v1.Tx.internal_static_qorechain_rdk_v1_MsgUpdateVerificationKeyResponse_descriptor;
+    }
+
+    @java.lang.Override
+    protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+        internalGetFieldAccessorTable() {
+      return qorechain.rdk.v1.Tx.internal_static_qorechain_rdk_v1_MsgUpdateVerificationKeyResponse_fieldAccessorTable
+          .ensureFieldAccessorsInitialized(
+              qorechain.rdk.v1.Tx.MsgUpdateVerificationKeyResponse.class, qorechain.rdk.v1.Tx.MsgUpdateVerificationKeyResponse.Builder.class);
+    }
+
+    private byte memoizedIsInitialized = -1;
+    @java.lang.Override
+    public final boolean isInitialized() {
+      byte isInitialized = memoizedIsInitialized;
+      if (isInitialized == 1) return true;
+      if (isInitialized == 0) return false;
+
+      memoizedIsInitialized = 1;
+      return true;
+    }
+
+    @java.lang.Override
+    public void writeTo(com.google.protobuf.CodedOutputStream output)
+                        throws java.io.IOException {
+      getUnknownFields().writeTo(output);
+    }
+    @java.lang.Override
+    public int getSerializedSize() {
+      int size = memoizedSize;
+      if (size != -1) return size;
+
+      size = 0;
+      size += getUnknownFields().getSerializedSize();
+      memoizedSize = size;
+      return size;
+    }
+
+    @java.lang.Override
+    public boolean equals(final java.lang.Object obj) {
+      if (obj == this) {
+       return true;
+      }
+      if (!(obj instanceof qorechain.rdk.v1.Tx.MsgUpdateVerificationKeyResponse)) {
+        return super.equals(obj);
+      }
+      qorechain.rdk.v1.Tx.MsgUpdateVerificationKeyResponse other = (qorechain.rdk.v1.Tx.MsgUpdateVerificationKeyResponse) obj;
+
+      if (!getUnknownFields().equals(other.getUnknownFields())) return false;
+      return true;
+    }
+
+    @java.lang.Override
+    public int hashCode() {
+      if (memoizedHashCode != 0) {
+        return memoizedHashCode;
+      }
+      int hash = 41;
+      hash = (19 * hash) + getDescriptor().hashCode();
+      hash = (29 * hash) + getUnknownFields().hashCode();
+      memoizedHashCode = hash;
+      return hash;
+    }
+
+    public static qorechain.rdk.v1.Tx.MsgUpdateVerificationKeyResponse parseFrom(
+        java.nio.ByteBuffer data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static qorechain.rdk.v1.Tx.MsgUpdateVerificationKeyResponse parseFrom(
+        java.nio.ByteBuffer data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static qorechain.rdk.v1.Tx.MsgUpdateVerificationKeyResponse parseFrom(
+        com.google.protobuf.ByteString data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static qorechain.rdk.v1.Tx.MsgUpdateVerificationKeyResponse parseFrom(
+        com.google.protobuf.ByteString data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static qorechain.rdk.v1.Tx.MsgUpdateVerificationKeyResponse parseFrom(byte[] data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static qorechain.rdk.v1.Tx.MsgUpdateVerificationKeyResponse parseFrom(
+        byte[] data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static qorechain.rdk.v1.Tx.MsgUpdateVerificationKeyResponse parseFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input);
+    }
+    public static qorechain.rdk.v1.Tx.MsgUpdateVerificationKeyResponse parseFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    public static qorechain.rdk.v1.Tx.MsgUpdateVerificationKeyResponse parseDelimitedFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseDelimitedWithIOException(PARSER, input);
+    }
+
+    public static qorechain.rdk.v1.Tx.MsgUpdateVerificationKeyResponse parseDelimitedFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static qorechain.rdk.v1.Tx.MsgUpdateVerificationKeyResponse parseFrom(
+        com.google.protobuf.CodedInputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input);
+    }
+    public static qorechain.rdk.v1.Tx.MsgUpdateVerificationKeyResponse parseFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    @java.lang.Override
+    public Builder newBuilderForType() { return newBuilder(); }
+    public static Builder newBuilder() {
+      return DEFAULT_INSTANCE.toBuilder();
+    }
+    public static Builder newBuilder(qorechain.rdk.v1.Tx.MsgUpdateVerificationKeyResponse prototype) {
+      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+    }
+    @java.lang.Override
+    public Builder toBuilder() {
+      return this == DEFAULT_INSTANCE
+          ? new Builder() : new Builder().mergeFrom(this);
+    }
+
+    @java.lang.Override
+    protected Builder newBuilderForType(
+        com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+      Builder builder = new Builder(parent);
+      return builder;
+    }
+    /**
+     * Protobuf type {@code qorechain.rdk.v1.MsgUpdateVerificationKeyResponse}
+     */
+    public static final class Builder extends
+        com.google.protobuf.GeneratedMessage.Builder<Builder> implements
+        // @@protoc_insertion_point(builder_implements:qorechain.rdk.v1.MsgUpdateVerificationKeyResponse)
+        qorechain.rdk.v1.Tx.MsgUpdateVerificationKeyResponseOrBuilder {
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return qorechain.rdk.v1.Tx.internal_static_qorechain_rdk_v1_MsgUpdateVerificationKeyResponse_descriptor;
+      }
+
+      @java.lang.Override
+      protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return qorechain.rdk.v1.Tx.internal_static_qorechain_rdk_v1_MsgUpdateVerificationKeyResponse_fieldAccessorTable
+            .ensureFieldAccessorsInitialized(
+                qorechain.rdk.v1.Tx.MsgUpdateVerificationKeyResponse.class, qorechain.rdk.v1.Tx.MsgUpdateVerificationKeyResponse.Builder.class);
+      }
+
+      // Construct using qorechain.rdk.v1.Tx.MsgUpdateVerificationKeyResponse.newBuilder()
+      private Builder() {
+
+      }
+
+      private Builder(
+          com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+        super(parent);
+
+      }
+      @java.lang.Override
+      public Builder clear() {
+        super.clear();
+        return this;
+      }
+
+      @java.lang.Override
+      public com.google.protobuf.Descriptors.Descriptor
+          getDescriptorForType() {
+        return qorechain.rdk.v1.Tx.internal_static_qorechain_rdk_v1_MsgUpdateVerificationKeyResponse_descriptor;
+      }
+
+      @java.lang.Override
+      public qorechain.rdk.v1.Tx.MsgUpdateVerificationKeyResponse getDefaultInstanceForType() {
+        return qorechain.rdk.v1.Tx.MsgUpdateVerificationKeyResponse.getDefaultInstance();
+      }
+
+      @java.lang.Override
+      public qorechain.rdk.v1.Tx.MsgUpdateVerificationKeyResponse build() {
+        qorechain.rdk.v1.Tx.MsgUpdateVerificationKeyResponse result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(result);
+        }
+        return result;
+      }
+
+      @java.lang.Override
+      public qorechain.rdk.v1.Tx.MsgUpdateVerificationKeyResponse buildPartial() {
+        qorechain.rdk.v1.Tx.MsgUpdateVerificationKeyResponse result = new qorechain.rdk.v1.Tx.MsgUpdateVerificationKeyResponse(this);
+        onBuilt();
+        return result;
+      }
+
+      @java.lang.Override
+      public Builder mergeFrom(com.google.protobuf.Message other) {
+        if (other instanceof qorechain.rdk.v1.Tx.MsgUpdateVerificationKeyResponse) {
+          return mergeFrom((qorechain.rdk.v1.Tx.MsgUpdateVerificationKeyResponse)other);
+        } else {
+          super.mergeFrom(other);
+          return this;
+        }
+      }
+
+      public Builder mergeFrom(qorechain.rdk.v1.Tx.MsgUpdateVerificationKeyResponse other) {
+        if (other == qorechain.rdk.v1.Tx.MsgUpdateVerificationKeyResponse.getDefaultInstance()) return this;
+        this.mergeUnknownFields(other.getUnknownFields());
+        onChanged();
+        return this;
+      }
+
+      @java.lang.Override
+      public final boolean isInitialized() {
+        return true;
+      }
+
+      @java.lang.Override
+      public Builder mergeFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        if (extensionRegistry == null) {
+          throw new java.lang.NullPointerException();
+        }
+        try {
+          boolean done = false;
+          while (!done) {
+            int tag = input.readTag();
+            switch (tag) {
+              case 0:
+                done = true;
+                break;
+              default: {
+                if (!super.parseUnknownField(input, extensionRegistry, tag)) {
+                  done = true; // was an endgroup tag
+                }
+                break;
+              } // default:
+            } // switch (tag)
+          } // while (!done)
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          throw e.unwrapIOException();
+        } finally {
+          onChanged();
+        } // finally
+        return this;
+      }
+
+      // @@protoc_insertion_point(builder_scope:qorechain.rdk.v1.MsgUpdateVerificationKeyResponse)
+    }
+
+    // @@protoc_insertion_point(class_scope:qorechain.rdk.v1.MsgUpdateVerificationKeyResponse)
+    private static final qorechain.rdk.v1.Tx.MsgUpdateVerificationKeyResponse DEFAULT_INSTANCE;
+    static {
+      DEFAULT_INSTANCE = new qorechain.rdk.v1.Tx.MsgUpdateVerificationKeyResponse();
+    }
+
+    public static qorechain.rdk.v1.Tx.MsgUpdateVerificationKeyResponse getDefaultInstance() {
+      return DEFAULT_INSTANCE;
+    }
+
+    private static final com.google.protobuf.Parser<MsgUpdateVerificationKeyResponse>
+        PARSER = new com.google.protobuf.AbstractParser<MsgUpdateVerificationKeyResponse>() {
+      @java.lang.Override
+      public MsgUpdateVerificationKeyResponse parsePartialFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        Builder builder = newBuilder();
+        try {
+          builder.mergeFrom(input, extensionRegistry);
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          throw e.setUnfinishedMessage(builder.buildPartial());
+        } catch (com.google.protobuf.UninitializedMessageException e) {
+          throw e.asInvalidProtocolBufferException().setUnfinishedMessage(builder.buildPartial());
+        } catch (java.io.IOException e) {
+          throw new com.google.protobuf.InvalidProtocolBufferException(e)
+              .setUnfinishedMessage(builder.buildPartial());
+        }
+        return builder.buildPartial();
+      }
+    };
+
+    public static com.google.protobuf.Parser<MsgUpdateVerificationKeyResponse> parser() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Parser<MsgUpdateVerificationKeyResponse> getParserForType() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public qorechain.rdk.v1.Tx.MsgUpdateVerificationKeyResponse getDefaultInstanceForType() {
+      return DEFAULT_INSTANCE;
+    }
+
+  }
+
+  public interface MsgPostRollupDataOrBuilder extends
+      // @@protoc_insertion_point(interface_extends:qorechain.rdk.v1.MsgPostRollupData)
+      com.google.protobuf.MessageOrBuilder {
+
+    /**
+     * <code>string poster = 1 [json_name = "poster", (.cosmos_proto.scalar) = "cosmos.AddressString"];</code>
+     * @return The poster.
+     */
+    java.lang.String getPoster();
+    /**
+     * <code>string poster = 1 [json_name = "poster", (.cosmos_proto.scalar) = "cosmos.AddressString"];</code>
+     * @return The bytes for poster.
+     */
+    com.google.protobuf.ByteString
+        getPosterBytes();
+
+    /**
+     * <code>string rollup_id = 2 [json_name = "rollupId", (.gogoproto.customname) = "RollupID"];</code>
+     * @return The rollupId.
+     */
+    java.lang.String getRollupId();
+    /**
+     * <code>string rollup_id = 2 [json_name = "rollupId", (.gogoproto.customname) = "RollupID"];</code>
+     * @return The bytes for rollupId.
+     */
+    com.google.protobuf.ByteString
+        getRollupIdBytes();
+
+    /**
+     * <code>bytes data = 3 [json_name = "data"];</code>
+     * @return The data.
+     */
+    com.google.protobuf.ByteString getData();
+  }
+  /**
+   * <pre>
+   * MsgPostRollupData puts rollup data on chain (v3.2.8, rdk-post-rollup-data).
+   * The payload stays in this transaction, which is in the block; the chain
+   * stores a commitment (SHA-256 of data, size, poster, height) under the next
+   * sequence number of the rollup's inbox and extends the inbox accumulator.
+   * The poster pays a fee per billable byte (at least 1 KiB per post) into the
+   * fee collector. Who may post: the rollup's sequencer (or its creator when no
+   * sequencer address is set); anyone for a based rollup.
+   * </pre>
+   *
+   * Protobuf type {@code qorechain.rdk.v1.MsgPostRollupData}
+   */
+  public static final class MsgPostRollupData extends
+      com.google.protobuf.GeneratedMessage implements
+      // @@protoc_insertion_point(message_implements:qorechain.rdk.v1.MsgPostRollupData)
+      MsgPostRollupDataOrBuilder {
+  private static final long serialVersionUID = 0L;
+    static {
+      com.google.protobuf.RuntimeVersion.validateProtobufGencodeVersion(
+        com.google.protobuf.RuntimeVersion.RuntimeDomain.PUBLIC,
+        /* major= */ 4,
+        /* minor= */ 35,
+        /* patch= */ 1,
+        /* suffix= */ "",
+        "MsgPostRollupData");
+    }
+    // Use MsgPostRollupData.newBuilder() to construct.
+    private MsgPostRollupData(com.google.protobuf.GeneratedMessage.Builder<?> builder) {
+      super(builder);
+    }
+    private MsgPostRollupData() {
+      poster_ = "";
+      rollupId_ = "";
+      data_ = com.google.protobuf.ByteString.EMPTY;
+    }
+
+    public static final com.google.protobuf.Descriptors.Descriptor
+        getDescriptor() {
+      return qorechain.rdk.v1.Tx.internal_static_qorechain_rdk_v1_MsgPostRollupData_descriptor;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Descriptors.Descriptor getDescriptorForType() {
+      return qorechain.rdk.v1.Tx.internal_static_qorechain_rdk_v1_MsgPostRollupData_descriptor;
+    }
+
+    @java.lang.Override
+    protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+        internalGetFieldAccessorTable() {
+      return qorechain.rdk.v1.Tx.internal_static_qorechain_rdk_v1_MsgPostRollupData_fieldAccessorTable
+          .ensureFieldAccessorsInitialized(
+              qorechain.rdk.v1.Tx.MsgPostRollupData.class, qorechain.rdk.v1.Tx.MsgPostRollupData.Builder.class);
+    }
+
+    public static final int POSTER_FIELD_NUMBER = 1;
+    @SuppressWarnings("serial")
+    private volatile java.lang.Object poster_ = "";
+    /**
+     * <code>string poster = 1 [json_name = "poster", (.cosmos_proto.scalar) = "cosmos.AddressString"];</code>
+     * @return The poster.
+     */
+    @java.lang.Override
+    public java.lang.String getPoster() {
+      java.lang.Object ref = poster_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        poster_ = s;
+        return s;
+      }
+    }
+    /**
+     * <code>string poster = 1 [json_name = "poster", (.cosmos_proto.scalar) = "cosmos.AddressString"];</code>
+     * @return The bytes for poster.
+     */
+    @java.lang.Override
+    public com.google.protobuf.ByteString
+        getPosterBytes() {
+      java.lang.Object ref = poster_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        poster_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
+    public static final int ROLLUP_ID_FIELD_NUMBER = 2;
+    @SuppressWarnings("serial")
+    private volatile java.lang.Object rollupId_ = "";
+    /**
+     * <code>string rollup_id = 2 [json_name = "rollupId", (.gogoproto.customname) = "RollupID"];</code>
+     * @return The rollupId.
+     */
+    @java.lang.Override
+    public java.lang.String getRollupId() {
+      java.lang.Object ref = rollupId_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        rollupId_ = s;
+        return s;
+      }
+    }
+    /**
+     * <code>string rollup_id = 2 [json_name = "rollupId", (.gogoproto.customname) = "RollupID"];</code>
+     * @return The bytes for rollupId.
+     */
+    @java.lang.Override
+    public com.google.protobuf.ByteString
+        getRollupIdBytes() {
+      java.lang.Object ref = rollupId_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        rollupId_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
+    public static final int DATA_FIELD_NUMBER = 3;
+    private com.google.protobuf.ByteString data_ = com.google.protobuf.ByteString.EMPTY;
+    /**
+     * <code>bytes data = 3 [json_name = "data"];</code>
+     * @return The data.
+     */
+    @java.lang.Override
+    public com.google.protobuf.ByteString getData() {
+      return data_;
+    }
+
+    private byte memoizedIsInitialized = -1;
+    @java.lang.Override
+    public final boolean isInitialized() {
+      byte isInitialized = memoizedIsInitialized;
+      if (isInitialized == 1) return true;
+      if (isInitialized == 0) return false;
+
+      memoizedIsInitialized = 1;
+      return true;
+    }
+
+    @java.lang.Override
+    public void writeTo(com.google.protobuf.CodedOutputStream output)
+                        throws java.io.IOException {
+      if (!com.google.protobuf.GeneratedMessage.isStringEmpty(poster_)) {
+        com.google.protobuf.GeneratedMessage.writeString(output, 1, poster_);
+      }
+      if (!com.google.protobuf.GeneratedMessage.isStringEmpty(rollupId_)) {
+        com.google.protobuf.GeneratedMessage.writeString(output, 2, rollupId_);
+      }
+      if (!data_.isEmpty()) {
+        output.writeBytes(3, data_);
+      }
+      getUnknownFields().writeTo(output);
+    }
+    private int computeSerializedSize_0() {
+      int size = 0;
+      if (!com.google.protobuf.GeneratedMessage.isStringEmpty(poster_)) {
+        size += com.google.protobuf.GeneratedMessage.computeStringSize(1, poster_);
+      }
+      if (!com.google.protobuf.GeneratedMessage.isStringEmpty(rollupId_)) {
+        size += com.google.protobuf.GeneratedMessage.computeStringSize(2, rollupId_);
+      }
+      if (!data_.isEmpty()) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeBytesSize(3, data_);
+      }
+      return size;
+    }
+    @java.lang.Override
+    public int getSerializedSize() {
+      int size = memoizedSize;
+      if (size != -1) return size;
+
+      size = 0;
+      size += computeSerializedSize_0();
+      size += getUnknownFields().getSerializedSize();
+      memoizedSize = size;
+      return size;
+    }
+
+    @java.lang.Override
+    public boolean equals(final java.lang.Object obj) {
+      if (obj == this) {
+       return true;
+      }
+      if (!(obj instanceof qorechain.rdk.v1.Tx.MsgPostRollupData)) {
+        return super.equals(obj);
+      }
+      qorechain.rdk.v1.Tx.MsgPostRollupData other = (qorechain.rdk.v1.Tx.MsgPostRollupData) obj;
+
+      if (!getPoster()
+          .equals(other.getPoster())) return false;
+      if (!getRollupId()
+          .equals(other.getRollupId())) return false;
+      if (!getData()
+          .equals(other.getData())) return false;
+      if (!getUnknownFields().equals(other.getUnknownFields())) return false;
+      return true;
+    }
+
+    @java.lang.Override
+    public int hashCode() {
+      if (memoizedHashCode != 0) {
+        return memoizedHashCode;
+      }
+      int hash = 41;
+      hash = (19 * hash) + getDescriptor().hashCode();
+      hash = (37 * hash) + POSTER_FIELD_NUMBER;
+      hash = (53 * hash) + getPoster().hashCode();
+      hash = (37 * hash) + ROLLUP_ID_FIELD_NUMBER;
+      hash = (53 * hash) + getRollupId().hashCode();
+      hash = (37 * hash) + DATA_FIELD_NUMBER;
+      hash = (53 * hash) + getData().hashCode();
+      hash = (29 * hash) + getUnknownFields().hashCode();
+      memoizedHashCode = hash;
+      return hash;
+    }
+
+    public static qorechain.rdk.v1.Tx.MsgPostRollupData parseFrom(
+        java.nio.ByteBuffer data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static qorechain.rdk.v1.Tx.MsgPostRollupData parseFrom(
+        java.nio.ByteBuffer data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static qorechain.rdk.v1.Tx.MsgPostRollupData parseFrom(
+        com.google.protobuf.ByteString data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static qorechain.rdk.v1.Tx.MsgPostRollupData parseFrom(
+        com.google.protobuf.ByteString data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static qorechain.rdk.v1.Tx.MsgPostRollupData parseFrom(byte[] data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static qorechain.rdk.v1.Tx.MsgPostRollupData parseFrom(
+        byte[] data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static qorechain.rdk.v1.Tx.MsgPostRollupData parseFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input);
+    }
+    public static qorechain.rdk.v1.Tx.MsgPostRollupData parseFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    public static qorechain.rdk.v1.Tx.MsgPostRollupData parseDelimitedFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseDelimitedWithIOException(PARSER, input);
+    }
+
+    public static qorechain.rdk.v1.Tx.MsgPostRollupData parseDelimitedFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static qorechain.rdk.v1.Tx.MsgPostRollupData parseFrom(
+        com.google.protobuf.CodedInputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input);
+    }
+    public static qorechain.rdk.v1.Tx.MsgPostRollupData parseFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    @java.lang.Override
+    public Builder newBuilderForType() { return newBuilder(); }
+    public static Builder newBuilder() {
+      return DEFAULT_INSTANCE.toBuilder();
+    }
+    public static Builder newBuilder(qorechain.rdk.v1.Tx.MsgPostRollupData prototype) {
+      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+    }
+    @java.lang.Override
+    public Builder toBuilder() {
+      return this == DEFAULT_INSTANCE
+          ? new Builder() : new Builder().mergeFrom(this);
+    }
+
+    @java.lang.Override
+    protected Builder newBuilderForType(
+        com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+      Builder builder = new Builder(parent);
+      return builder;
+    }
+    /**
+     * <pre>
+     * MsgPostRollupData puts rollup data on chain (v3.2.8, rdk-post-rollup-data).
+     * The payload stays in this transaction, which is in the block; the chain
+     * stores a commitment (SHA-256 of data, size, poster, height) under the next
+     * sequence number of the rollup's inbox and extends the inbox accumulator.
+     * The poster pays a fee per billable byte (at least 1 KiB per post) into the
+     * fee collector. Who may post: the rollup's sequencer (or its creator when no
+     * sequencer address is set); anyone for a based rollup.
+     * </pre>
+     *
+     * Protobuf type {@code qorechain.rdk.v1.MsgPostRollupData}
+     */
+    public static final class Builder extends
+        com.google.protobuf.GeneratedMessage.Builder<Builder> implements
+        // @@protoc_insertion_point(builder_implements:qorechain.rdk.v1.MsgPostRollupData)
+        qorechain.rdk.v1.Tx.MsgPostRollupDataOrBuilder {
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return qorechain.rdk.v1.Tx.internal_static_qorechain_rdk_v1_MsgPostRollupData_descriptor;
+      }
+
+      @java.lang.Override
+      protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return qorechain.rdk.v1.Tx.internal_static_qorechain_rdk_v1_MsgPostRollupData_fieldAccessorTable
+            .ensureFieldAccessorsInitialized(
+                qorechain.rdk.v1.Tx.MsgPostRollupData.class, qorechain.rdk.v1.Tx.MsgPostRollupData.Builder.class);
+      }
+
+      // Construct using qorechain.rdk.v1.Tx.MsgPostRollupData.newBuilder()
+      private Builder() {
+
+      }
+
+      private Builder(
+          com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+        super(parent);
+
+      }
+      @java.lang.Override
+      public Builder clear() {
+        super.clear();
+        bitField0_ = 0;
+        poster_ = "";
+        rollupId_ = "";
+        data_ = com.google.protobuf.ByteString.EMPTY;
+        return this;
+      }
+
+      @java.lang.Override
+      public com.google.protobuf.Descriptors.Descriptor
+          getDescriptorForType() {
+        return qorechain.rdk.v1.Tx.internal_static_qorechain_rdk_v1_MsgPostRollupData_descriptor;
+      }
+
+      @java.lang.Override
+      public qorechain.rdk.v1.Tx.MsgPostRollupData getDefaultInstanceForType() {
+        return qorechain.rdk.v1.Tx.MsgPostRollupData.getDefaultInstance();
+      }
+
+      @java.lang.Override
+      public qorechain.rdk.v1.Tx.MsgPostRollupData build() {
+        qorechain.rdk.v1.Tx.MsgPostRollupData result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(result);
+        }
+        return result;
+      }
+
+      @java.lang.Override
+      public qorechain.rdk.v1.Tx.MsgPostRollupData buildPartial() {
+        qorechain.rdk.v1.Tx.MsgPostRollupData result = new qorechain.rdk.v1.Tx.MsgPostRollupData(this);
+        if (bitField0_ != 0) { buildPartial0(result); }
+        onBuilt();
+        return result;
+      }
+
+      private void buildPartial0(qorechain.rdk.v1.Tx.MsgPostRollupData result) {
+        int from_bitField0_ = bitField0_;
+        if (((from_bitField0_ & 0x00000001) != 0)) {
+          result.poster_ = poster_;
+        }
+        if (((from_bitField0_ & 0x00000002) != 0)) {
+          result.rollupId_ = rollupId_;
+        }
+        if (((from_bitField0_ & 0x00000004) != 0)) {
+          result.data_ = data_;
+        }
+      }
+
+      @java.lang.Override
+      public Builder mergeFrom(com.google.protobuf.Message other) {
+        if (other instanceof qorechain.rdk.v1.Tx.MsgPostRollupData) {
+          return mergeFrom((qorechain.rdk.v1.Tx.MsgPostRollupData)other);
+        } else {
+          super.mergeFrom(other);
+          return this;
+        }
+      }
+
+      public Builder mergeFrom(qorechain.rdk.v1.Tx.MsgPostRollupData other) {
+        if (other == qorechain.rdk.v1.Tx.MsgPostRollupData.getDefaultInstance()) return this;
+        if (!other.getPoster().isEmpty()) {
+          poster_ = other.poster_;
+          bitField0_ |= 0x00000001;
+          onChanged();
+        }
+        if (!other.getRollupId().isEmpty()) {
+          rollupId_ = other.rollupId_;
+          bitField0_ |= 0x00000002;
+          onChanged();
+        }
+        if (!other.getData().isEmpty()) {
+          setData(other.getData());
+        }
+        this.mergeUnknownFields(other.getUnknownFields());
+        onChanged();
+        return this;
+      }
+
+      @java.lang.Override
+      public final boolean isInitialized() {
+        return true;
+      }
+
+      @java.lang.Override
+      public Builder mergeFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        if (extensionRegistry == null) {
+          throw new java.lang.NullPointerException();
+        }
+        try {
+          boolean done = false;
+          while (!done) {
+            int tag = input.readTag();
+            switch (tag) {
+              case 0:
+                done = true;
+                break;
+              case 10: {
+                poster_ = input.readStringRequireUtf8();
+                bitField0_ |= 0x00000001;
+                break;
+              } // case 10
+              case 18: {
+                rollupId_ = input.readStringRequireUtf8();
+                bitField0_ |= 0x00000002;
+                break;
+              } // case 18
+              case 26: {
+                data_ = input.readBytes();
+                bitField0_ |= 0x00000004;
+                break;
+              } // case 26
+              default: {
+                if (!super.parseUnknownField(input, extensionRegistry, tag)) {
+                  done = true; // was an endgroup tag
+                }
+                break;
+              } // default:
+            } // switch (tag)
+          } // while (!done)
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          throw e.unwrapIOException();
+        } finally {
+          onChanged();
+        } // finally
+        return this;
+      }
+      private int bitField0_;
+
+      private java.lang.Object poster_ = "";
+      /**
+       * <code>string poster = 1 [json_name = "poster", (.cosmos_proto.scalar) = "cosmos.AddressString"];</code>
+       * @return The poster.
+       */
+      public java.lang.String getPoster() {
+        java.lang.Object ref = poster_;
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          poster_ = s;
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
+      }
+      /**
+       * <code>string poster = 1 [json_name = "poster", (.cosmos_proto.scalar) = "cosmos.AddressString"];</code>
+       * @return The bytes for poster.
+       */
+      public com.google.protobuf.ByteString
+          getPosterBytes() {
+        java.lang.Object ref = poster_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          poster_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <code>string poster = 1 [json_name = "poster", (.cosmos_proto.scalar) = "cosmos.AddressString"];</code>
+       * @param value The poster to set.
+       * @return This builder for chaining.
+       */
+      public Builder setPoster(
+          java.lang.String value) {
+        if (value == null) { throw new NullPointerException(); }
+        poster_ = value;
+        bitField0_ |= 0x00000001;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>string poster = 1 [json_name = "poster", (.cosmos_proto.scalar) = "cosmos.AddressString"];</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearPoster() {
+        poster_ = getDefaultInstance().getPoster();
+        bitField0_ = (bitField0_ & ~0x00000001);
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>string poster = 1 [json_name = "poster", (.cosmos_proto.scalar) = "cosmos.AddressString"];</code>
+       * @param value The bytes for poster to set.
+       * @return This builder for chaining.
+       */
+      public Builder setPosterBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) { throw new NullPointerException(); }
+        checkByteStringIsUtf8(value);
+        poster_ = value;
+        bitField0_ |= 0x00000001;
+        onChanged();
+        return this;
+      }
+
+      private java.lang.Object rollupId_ = "";
+      /**
+       * <code>string rollup_id = 2 [json_name = "rollupId", (.gogoproto.customname) = "RollupID"];</code>
+       * @return The rollupId.
+       */
+      public java.lang.String getRollupId() {
+        java.lang.Object ref = rollupId_;
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          rollupId_ = s;
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
+      }
+      /**
+       * <code>string rollup_id = 2 [json_name = "rollupId", (.gogoproto.customname) = "RollupID"];</code>
+       * @return The bytes for rollupId.
+       */
+      public com.google.protobuf.ByteString
+          getRollupIdBytes() {
+        java.lang.Object ref = rollupId_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          rollupId_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <code>string rollup_id = 2 [json_name = "rollupId", (.gogoproto.customname) = "RollupID"];</code>
+       * @param value The rollupId to set.
+       * @return This builder for chaining.
+       */
+      public Builder setRollupId(
+          java.lang.String value) {
+        if (value == null) { throw new NullPointerException(); }
+        rollupId_ = value;
+        bitField0_ |= 0x00000002;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>string rollup_id = 2 [json_name = "rollupId", (.gogoproto.customname) = "RollupID"];</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearRollupId() {
+        rollupId_ = getDefaultInstance().getRollupId();
+        bitField0_ = (bitField0_ & ~0x00000002);
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>string rollup_id = 2 [json_name = "rollupId", (.gogoproto.customname) = "RollupID"];</code>
+       * @param value The bytes for rollupId to set.
+       * @return This builder for chaining.
+       */
+      public Builder setRollupIdBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) { throw new NullPointerException(); }
+        checkByteStringIsUtf8(value);
+        rollupId_ = value;
+        bitField0_ |= 0x00000002;
+        onChanged();
+        return this;
+      }
+
+      private com.google.protobuf.ByteString data_ = com.google.protobuf.ByteString.EMPTY;
+      /**
+       * <code>bytes data = 3 [json_name = "data"];</code>
+       * @return The data.
+       */
+      @java.lang.Override
+      public com.google.protobuf.ByteString getData() {
+        return data_;
+      }
+      /**
+       * <code>bytes data = 3 [json_name = "data"];</code>
+       * @param value The data to set.
+       * @return This builder for chaining.
+       */
+      public Builder setData(com.google.protobuf.ByteString value) {
+        if (value == null) { throw new NullPointerException(); }
+        data_ = value;
+        bitField0_ |= 0x00000004;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>bytes data = 3 [json_name = "data"];</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearData() {
+        bitField0_ = (bitField0_ & ~0x00000004);
+        data_ = getDefaultInstance().getData();
+        onChanged();
+        return this;
+      }
+
+      // @@protoc_insertion_point(builder_scope:qorechain.rdk.v1.MsgPostRollupData)
+    }
+
+    // @@protoc_insertion_point(class_scope:qorechain.rdk.v1.MsgPostRollupData)
+    private static final qorechain.rdk.v1.Tx.MsgPostRollupData DEFAULT_INSTANCE;
+    static {
+      DEFAULT_INSTANCE = new qorechain.rdk.v1.Tx.MsgPostRollupData();
+    }
+
+    public static qorechain.rdk.v1.Tx.MsgPostRollupData getDefaultInstance() {
+      return DEFAULT_INSTANCE;
+    }
+
+    private static final com.google.protobuf.Parser<MsgPostRollupData>
+        PARSER = new com.google.protobuf.AbstractParser<MsgPostRollupData>() {
+      @java.lang.Override
+      public MsgPostRollupData parsePartialFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        Builder builder = newBuilder();
+        try {
+          builder.mergeFrom(input, extensionRegistry);
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          throw e.setUnfinishedMessage(builder.buildPartial());
+        } catch (com.google.protobuf.UninitializedMessageException e) {
+          throw e.asInvalidProtocolBufferException().setUnfinishedMessage(builder.buildPartial());
+        } catch (java.io.IOException e) {
+          throw new com.google.protobuf.InvalidProtocolBufferException(e)
+              .setUnfinishedMessage(builder.buildPartial());
+        }
+        return builder.buildPartial();
+      }
+    };
+
+    public static com.google.protobuf.Parser<MsgPostRollupData> parser() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Parser<MsgPostRollupData> getParserForType() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public qorechain.rdk.v1.Tx.MsgPostRollupData getDefaultInstanceForType() {
+      return DEFAULT_INSTANCE;
+    }
+
+  }
+
+  public interface MsgPostRollupDataResponseOrBuilder extends
+      // @@protoc_insertion_point(interface_extends:qorechain.rdk.v1.MsgPostRollupDataResponse)
+      com.google.protobuf.MessageOrBuilder {
+
+    /**
+     * <pre>
+     * sequence is the inbox sequence number the post was given (from 1).
+     * </pre>
+     *
+     * <code>uint64 sequence = 1 [json_name = "sequence"];</code>
+     * @return The sequence.
+     */
+    long getSequence();
+
+    /**
+     * <pre>
+     * data_hash is SHA-256(data), the hash a batch references.
+     * </pre>
+     *
+     * <code>bytes data_hash = 2 [json_name = "dataHash"];</code>
+     * @return The dataHash.
+     */
+    com.google.protobuf.ByteString getDataHash();
+  }
+  /**
+   * Protobuf type {@code qorechain.rdk.v1.MsgPostRollupDataResponse}
+   */
+  public static final class MsgPostRollupDataResponse extends
+      com.google.protobuf.GeneratedMessage implements
+      // @@protoc_insertion_point(message_implements:qorechain.rdk.v1.MsgPostRollupDataResponse)
+      MsgPostRollupDataResponseOrBuilder {
+  private static final long serialVersionUID = 0L;
+    static {
+      com.google.protobuf.RuntimeVersion.validateProtobufGencodeVersion(
+        com.google.protobuf.RuntimeVersion.RuntimeDomain.PUBLIC,
+        /* major= */ 4,
+        /* minor= */ 35,
+        /* patch= */ 1,
+        /* suffix= */ "",
+        "MsgPostRollupDataResponse");
+    }
+    // Use MsgPostRollupDataResponse.newBuilder() to construct.
+    private MsgPostRollupDataResponse(com.google.protobuf.GeneratedMessage.Builder<?> builder) {
+      super(builder);
+    }
+    private MsgPostRollupDataResponse() {
+      dataHash_ = com.google.protobuf.ByteString.EMPTY;
+    }
+
+    public static final com.google.protobuf.Descriptors.Descriptor
+        getDescriptor() {
+      return qorechain.rdk.v1.Tx.internal_static_qorechain_rdk_v1_MsgPostRollupDataResponse_descriptor;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Descriptors.Descriptor getDescriptorForType() {
+      return qorechain.rdk.v1.Tx.internal_static_qorechain_rdk_v1_MsgPostRollupDataResponse_descriptor;
+    }
+
+    @java.lang.Override
+    protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+        internalGetFieldAccessorTable() {
+      return qorechain.rdk.v1.Tx.internal_static_qorechain_rdk_v1_MsgPostRollupDataResponse_fieldAccessorTable
+          .ensureFieldAccessorsInitialized(
+              qorechain.rdk.v1.Tx.MsgPostRollupDataResponse.class, qorechain.rdk.v1.Tx.MsgPostRollupDataResponse.Builder.class);
+    }
+
+    public static final int SEQUENCE_FIELD_NUMBER = 1;
+    private long sequence_ = 0L;
+    /**
+     * <pre>
+     * sequence is the inbox sequence number the post was given (from 1).
+     * </pre>
+     *
+     * <code>uint64 sequence = 1 [json_name = "sequence"];</code>
+     * @return The sequence.
+     */
+    @java.lang.Override
+    public long getSequence() {
+      return sequence_;
+    }
+
+    public static final int DATA_HASH_FIELD_NUMBER = 2;
+    private com.google.protobuf.ByteString dataHash_ = com.google.protobuf.ByteString.EMPTY;
+    /**
+     * <pre>
+     * data_hash is SHA-256(data), the hash a batch references.
+     * </pre>
+     *
+     * <code>bytes data_hash = 2 [json_name = "dataHash"];</code>
+     * @return The dataHash.
+     */
+    @java.lang.Override
+    public com.google.protobuf.ByteString getDataHash() {
+      return dataHash_;
+    }
+
+    private byte memoizedIsInitialized = -1;
+    @java.lang.Override
+    public final boolean isInitialized() {
+      byte isInitialized = memoizedIsInitialized;
+      if (isInitialized == 1) return true;
+      if (isInitialized == 0) return false;
+
+      memoizedIsInitialized = 1;
+      return true;
+    }
+
+    @java.lang.Override
+    public void writeTo(com.google.protobuf.CodedOutputStream output)
+                        throws java.io.IOException {
+      if (sequence_ != 0L) {
+        output.writeUInt64(1, sequence_);
+      }
+      if (!dataHash_.isEmpty()) {
+        output.writeBytes(2, dataHash_);
+      }
+      getUnknownFields().writeTo(output);
+    }
+    private int computeSerializedSize_0() {
+      int size = 0;
+      if (sequence_ != 0L) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeUInt64Size(1, sequence_);
+      }
+      if (!dataHash_.isEmpty()) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeBytesSize(2, dataHash_);
+      }
+      return size;
+    }
+    @java.lang.Override
+    public int getSerializedSize() {
+      int size = memoizedSize;
+      if (size != -1) return size;
+
+      size = 0;
+      size += computeSerializedSize_0();
+      size += getUnknownFields().getSerializedSize();
+      memoizedSize = size;
+      return size;
+    }
+
+    @java.lang.Override
+    public boolean equals(final java.lang.Object obj) {
+      if (obj == this) {
+       return true;
+      }
+      if (!(obj instanceof qorechain.rdk.v1.Tx.MsgPostRollupDataResponse)) {
+        return super.equals(obj);
+      }
+      qorechain.rdk.v1.Tx.MsgPostRollupDataResponse other = (qorechain.rdk.v1.Tx.MsgPostRollupDataResponse) obj;
+
+      if (getSequence()
+          != other.getSequence()) return false;
+      if (!getDataHash()
+          .equals(other.getDataHash())) return false;
+      if (!getUnknownFields().equals(other.getUnknownFields())) return false;
+      return true;
+    }
+
+    @java.lang.Override
+    public int hashCode() {
+      if (memoizedHashCode != 0) {
+        return memoizedHashCode;
+      }
+      int hash = 41;
+      hash = (19 * hash) + getDescriptor().hashCode();
+      hash = (37 * hash) + SEQUENCE_FIELD_NUMBER;
+      hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
+          getSequence());
+      hash = (37 * hash) + DATA_HASH_FIELD_NUMBER;
+      hash = (53 * hash) + getDataHash().hashCode();
+      hash = (29 * hash) + getUnknownFields().hashCode();
+      memoizedHashCode = hash;
+      return hash;
+    }
+
+    public static qorechain.rdk.v1.Tx.MsgPostRollupDataResponse parseFrom(
+        java.nio.ByteBuffer data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static qorechain.rdk.v1.Tx.MsgPostRollupDataResponse parseFrom(
+        java.nio.ByteBuffer data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static qorechain.rdk.v1.Tx.MsgPostRollupDataResponse parseFrom(
+        com.google.protobuf.ByteString data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static qorechain.rdk.v1.Tx.MsgPostRollupDataResponse parseFrom(
+        com.google.protobuf.ByteString data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static qorechain.rdk.v1.Tx.MsgPostRollupDataResponse parseFrom(byte[] data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static qorechain.rdk.v1.Tx.MsgPostRollupDataResponse parseFrom(
+        byte[] data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static qorechain.rdk.v1.Tx.MsgPostRollupDataResponse parseFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input);
+    }
+    public static qorechain.rdk.v1.Tx.MsgPostRollupDataResponse parseFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    public static qorechain.rdk.v1.Tx.MsgPostRollupDataResponse parseDelimitedFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseDelimitedWithIOException(PARSER, input);
+    }
+
+    public static qorechain.rdk.v1.Tx.MsgPostRollupDataResponse parseDelimitedFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static qorechain.rdk.v1.Tx.MsgPostRollupDataResponse parseFrom(
+        com.google.protobuf.CodedInputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input);
+    }
+    public static qorechain.rdk.v1.Tx.MsgPostRollupDataResponse parseFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    @java.lang.Override
+    public Builder newBuilderForType() { return newBuilder(); }
+    public static Builder newBuilder() {
+      return DEFAULT_INSTANCE.toBuilder();
+    }
+    public static Builder newBuilder(qorechain.rdk.v1.Tx.MsgPostRollupDataResponse prototype) {
+      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+    }
+    @java.lang.Override
+    public Builder toBuilder() {
+      return this == DEFAULT_INSTANCE
+          ? new Builder() : new Builder().mergeFrom(this);
+    }
+
+    @java.lang.Override
+    protected Builder newBuilderForType(
+        com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+      Builder builder = new Builder(parent);
+      return builder;
+    }
+    /**
+     * Protobuf type {@code qorechain.rdk.v1.MsgPostRollupDataResponse}
+     */
+    public static final class Builder extends
+        com.google.protobuf.GeneratedMessage.Builder<Builder> implements
+        // @@protoc_insertion_point(builder_implements:qorechain.rdk.v1.MsgPostRollupDataResponse)
+        qorechain.rdk.v1.Tx.MsgPostRollupDataResponseOrBuilder {
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return qorechain.rdk.v1.Tx.internal_static_qorechain_rdk_v1_MsgPostRollupDataResponse_descriptor;
+      }
+
+      @java.lang.Override
+      protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return qorechain.rdk.v1.Tx.internal_static_qorechain_rdk_v1_MsgPostRollupDataResponse_fieldAccessorTable
+            .ensureFieldAccessorsInitialized(
+                qorechain.rdk.v1.Tx.MsgPostRollupDataResponse.class, qorechain.rdk.v1.Tx.MsgPostRollupDataResponse.Builder.class);
+      }
+
+      // Construct using qorechain.rdk.v1.Tx.MsgPostRollupDataResponse.newBuilder()
+      private Builder() {
+
+      }
+
+      private Builder(
+          com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+        super(parent);
+
+      }
+      @java.lang.Override
+      public Builder clear() {
+        super.clear();
+        bitField0_ = 0;
+        sequence_ = 0L;
+        dataHash_ = com.google.protobuf.ByteString.EMPTY;
+        return this;
+      }
+
+      @java.lang.Override
+      public com.google.protobuf.Descriptors.Descriptor
+          getDescriptorForType() {
+        return qorechain.rdk.v1.Tx.internal_static_qorechain_rdk_v1_MsgPostRollupDataResponse_descriptor;
+      }
+
+      @java.lang.Override
+      public qorechain.rdk.v1.Tx.MsgPostRollupDataResponse getDefaultInstanceForType() {
+        return qorechain.rdk.v1.Tx.MsgPostRollupDataResponse.getDefaultInstance();
+      }
+
+      @java.lang.Override
+      public qorechain.rdk.v1.Tx.MsgPostRollupDataResponse build() {
+        qorechain.rdk.v1.Tx.MsgPostRollupDataResponse result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(result);
+        }
+        return result;
+      }
+
+      @java.lang.Override
+      public qorechain.rdk.v1.Tx.MsgPostRollupDataResponse buildPartial() {
+        qorechain.rdk.v1.Tx.MsgPostRollupDataResponse result = new qorechain.rdk.v1.Tx.MsgPostRollupDataResponse(this);
+        if (bitField0_ != 0) { buildPartial0(result); }
+        onBuilt();
+        return result;
+      }
+
+      private void buildPartial0(qorechain.rdk.v1.Tx.MsgPostRollupDataResponse result) {
+        int from_bitField0_ = bitField0_;
+        if (((from_bitField0_ & 0x00000001) != 0)) {
+          result.sequence_ = sequence_;
+        }
+        if (((from_bitField0_ & 0x00000002) != 0)) {
+          result.dataHash_ = dataHash_;
+        }
+      }
+
+      @java.lang.Override
+      public Builder mergeFrom(com.google.protobuf.Message other) {
+        if (other instanceof qorechain.rdk.v1.Tx.MsgPostRollupDataResponse) {
+          return mergeFrom((qorechain.rdk.v1.Tx.MsgPostRollupDataResponse)other);
+        } else {
+          super.mergeFrom(other);
+          return this;
+        }
+      }
+
+      public Builder mergeFrom(qorechain.rdk.v1.Tx.MsgPostRollupDataResponse other) {
+        if (other == qorechain.rdk.v1.Tx.MsgPostRollupDataResponse.getDefaultInstance()) return this;
+        if (other.getSequence() != 0L) {
+          setSequence(other.getSequence());
+        }
+        if (!other.getDataHash().isEmpty()) {
+          setDataHash(other.getDataHash());
+        }
+        this.mergeUnknownFields(other.getUnknownFields());
+        onChanged();
+        return this;
+      }
+
+      @java.lang.Override
+      public final boolean isInitialized() {
+        return true;
+      }
+
+      @java.lang.Override
+      public Builder mergeFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        if (extensionRegistry == null) {
+          throw new java.lang.NullPointerException();
+        }
+        try {
+          boolean done = false;
+          while (!done) {
+            int tag = input.readTag();
+            switch (tag) {
+              case 0:
+                done = true;
+                break;
+              case 8: {
+                sequence_ = input.readUInt64();
+                bitField0_ |= 0x00000001;
+                break;
+              } // case 8
+              case 18: {
+                dataHash_ = input.readBytes();
+                bitField0_ |= 0x00000002;
+                break;
+              } // case 18
+              default: {
+                if (!super.parseUnknownField(input, extensionRegistry, tag)) {
+                  done = true; // was an endgroup tag
+                }
+                break;
+              } // default:
+            } // switch (tag)
+          } // while (!done)
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          throw e.unwrapIOException();
+        } finally {
+          onChanged();
+        } // finally
+        return this;
+      }
+      private int bitField0_;
+
+      private long sequence_ ;
+      /**
+       * <pre>
+       * sequence is the inbox sequence number the post was given (from 1).
+       * </pre>
+       *
+       * <code>uint64 sequence = 1 [json_name = "sequence"];</code>
+       * @return The sequence.
+       */
+      @java.lang.Override
+      public long getSequence() {
+        return sequence_;
+      }
+      /**
+       * <pre>
+       * sequence is the inbox sequence number the post was given (from 1).
+       * </pre>
+       *
+       * <code>uint64 sequence = 1 [json_name = "sequence"];</code>
+       * @param value The sequence to set.
+       * @return This builder for chaining.
+       */
+      public Builder setSequence(long value) {
+
+        sequence_ = value;
+        bitField0_ |= 0x00000001;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * sequence is the inbox sequence number the post was given (from 1).
+       * </pre>
+       *
+       * <code>uint64 sequence = 1 [json_name = "sequence"];</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearSequence() {
+        bitField0_ = (bitField0_ & ~0x00000001);
+        sequence_ = 0L;
+        onChanged();
+        return this;
+      }
+
+      private com.google.protobuf.ByteString dataHash_ = com.google.protobuf.ByteString.EMPTY;
+      /**
+       * <pre>
+       * data_hash is SHA-256(data), the hash a batch references.
+       * </pre>
+       *
+       * <code>bytes data_hash = 2 [json_name = "dataHash"];</code>
+       * @return The dataHash.
+       */
+      @java.lang.Override
+      public com.google.protobuf.ByteString getDataHash() {
+        return dataHash_;
+      }
+      /**
+       * <pre>
+       * data_hash is SHA-256(data), the hash a batch references.
+       * </pre>
+       *
+       * <code>bytes data_hash = 2 [json_name = "dataHash"];</code>
+       * @param value The dataHash to set.
+       * @return This builder for chaining.
+       */
+      public Builder setDataHash(com.google.protobuf.ByteString value) {
+        if (value == null) { throw new NullPointerException(); }
+        dataHash_ = value;
+        bitField0_ |= 0x00000002;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * data_hash is SHA-256(data), the hash a batch references.
+       * </pre>
+       *
+       * <code>bytes data_hash = 2 [json_name = "dataHash"];</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearDataHash() {
+        bitField0_ = (bitField0_ & ~0x00000002);
+        dataHash_ = getDefaultInstance().getDataHash();
+        onChanged();
+        return this;
+      }
+
+      // @@protoc_insertion_point(builder_scope:qorechain.rdk.v1.MsgPostRollupDataResponse)
+    }
+
+    // @@protoc_insertion_point(class_scope:qorechain.rdk.v1.MsgPostRollupDataResponse)
+    private static final qorechain.rdk.v1.Tx.MsgPostRollupDataResponse DEFAULT_INSTANCE;
+    static {
+      DEFAULT_INSTANCE = new qorechain.rdk.v1.Tx.MsgPostRollupDataResponse();
+    }
+
+    public static qorechain.rdk.v1.Tx.MsgPostRollupDataResponse getDefaultInstance() {
+      return DEFAULT_INSTANCE;
+    }
+
+    private static final com.google.protobuf.Parser<MsgPostRollupDataResponse>
+        PARSER = new com.google.protobuf.AbstractParser<MsgPostRollupDataResponse>() {
+      @java.lang.Override
+      public MsgPostRollupDataResponse parsePartialFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        Builder builder = newBuilder();
+        try {
+          builder.mergeFrom(input, extensionRegistry);
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          throw e.setUnfinishedMessage(builder.buildPartial());
+        } catch (com.google.protobuf.UninitializedMessageException e) {
+          throw e.asInvalidProtocolBufferException().setUnfinishedMessage(builder.buildPartial());
+        } catch (java.io.IOException e) {
+          throw new com.google.protobuf.InvalidProtocolBufferException(e)
+              .setUnfinishedMessage(builder.buildPartial());
+        }
+        return builder.buildPartial();
+      }
+    };
+
+    public static com.google.protobuf.Parser<MsgPostRollupDataResponse> parser() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Parser<MsgPostRollupDataResponse> getParserForType() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public qorechain.rdk.v1.Tx.MsgPostRollupDataResponse getDefaultInstanceForType() {
+      return DEFAULT_INSTANCE;
+    }
+
+  }
+
+  public interface MsgSetRollupSequencingOrBuilder extends
+      // @@protoc_insertion_point(interface_extends:qorechain.rdk.v1.MsgSetRollupSequencing)
+      com.google.protobuf.MessageOrBuilder {
+
+    /**
+     * <code>string authority = 1 [json_name = "authority", (.cosmos_proto.scalar) = "cosmos.AddressString"];</code>
+     * @return The authority.
+     */
+    java.lang.String getAuthority();
+    /**
+     * <code>string authority = 1 [json_name = "authority", (.cosmos_proto.scalar) = "cosmos.AddressString"];</code>
+     * @return The bytes for authority.
+     */
+    com.google.protobuf.ByteString
+        getAuthorityBytes();
+
+    /**
+     * <code>string rollup_id = 2 [json_name = "rollupId", (.gogoproto.customname) = "RollupID"];</code>
+     * @return The rollupId.
+     */
+    java.lang.String getRollupId();
+    /**
+     * <code>string rollup_id = 2 [json_name = "rollupId", (.gogoproto.customname) = "RollupID"];</code>
+     * @return The bytes for rollupId.
+     */
+    com.google.protobuf.ByteString
+        getRollupIdBytes();
+
+    /**
+     * <code>string sequencing = 3 [json_name = "sequencing"];</code>
+     * @return The sequencing.
+     */
+    java.lang.String getSequencing();
+    /**
+     * <code>string sequencing = 3 [json_name = "sequencing"];</code>
+     * @return The bytes for sequencing.
+     */
+    com.google.protobuf.ByteString
+        getSequencingBytes();
+  }
+  /**
+   * <pre>
+   * MsgSetRollupSequencing moves a rollup to based sequencing ("based") or back
+   * to its sequencer (""). Governance only: authority must be the gov module
+   * account. Moving to based starts the inbox at its current head. Served from
+   * v3.2.8 (rdk-based-sequencing).
+   * </pre>
+   *
+   * Protobuf type {@code qorechain.rdk.v1.MsgSetRollupSequencing}
+   */
+  public static final class MsgSetRollupSequencing extends
+      com.google.protobuf.GeneratedMessage implements
+      // @@protoc_insertion_point(message_implements:qorechain.rdk.v1.MsgSetRollupSequencing)
+      MsgSetRollupSequencingOrBuilder {
+  private static final long serialVersionUID = 0L;
+    static {
+      com.google.protobuf.RuntimeVersion.validateProtobufGencodeVersion(
+        com.google.protobuf.RuntimeVersion.RuntimeDomain.PUBLIC,
+        /* major= */ 4,
+        /* minor= */ 35,
+        /* patch= */ 1,
+        /* suffix= */ "",
+        "MsgSetRollupSequencing");
+    }
+    // Use MsgSetRollupSequencing.newBuilder() to construct.
+    private MsgSetRollupSequencing(com.google.protobuf.GeneratedMessage.Builder<?> builder) {
+      super(builder);
+    }
+    private MsgSetRollupSequencing() {
+      authority_ = "";
+      rollupId_ = "";
+      sequencing_ = "";
+    }
+
+    public static final com.google.protobuf.Descriptors.Descriptor
+        getDescriptor() {
+      return qorechain.rdk.v1.Tx.internal_static_qorechain_rdk_v1_MsgSetRollupSequencing_descriptor;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Descriptors.Descriptor getDescriptorForType() {
+      return qorechain.rdk.v1.Tx.internal_static_qorechain_rdk_v1_MsgSetRollupSequencing_descriptor;
+    }
+
+    @java.lang.Override
+    protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+        internalGetFieldAccessorTable() {
+      return qorechain.rdk.v1.Tx.internal_static_qorechain_rdk_v1_MsgSetRollupSequencing_fieldAccessorTable
+          .ensureFieldAccessorsInitialized(
+              qorechain.rdk.v1.Tx.MsgSetRollupSequencing.class, qorechain.rdk.v1.Tx.MsgSetRollupSequencing.Builder.class);
+    }
+
+    public static final int AUTHORITY_FIELD_NUMBER = 1;
+    @SuppressWarnings("serial")
+    private volatile java.lang.Object authority_ = "";
+    /**
+     * <code>string authority = 1 [json_name = "authority", (.cosmos_proto.scalar) = "cosmos.AddressString"];</code>
+     * @return The authority.
+     */
+    @java.lang.Override
+    public java.lang.String getAuthority() {
+      java.lang.Object ref = authority_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        authority_ = s;
+        return s;
+      }
+    }
+    /**
+     * <code>string authority = 1 [json_name = "authority", (.cosmos_proto.scalar) = "cosmos.AddressString"];</code>
+     * @return The bytes for authority.
+     */
+    @java.lang.Override
+    public com.google.protobuf.ByteString
+        getAuthorityBytes() {
+      java.lang.Object ref = authority_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        authority_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
+    public static final int ROLLUP_ID_FIELD_NUMBER = 2;
+    @SuppressWarnings("serial")
+    private volatile java.lang.Object rollupId_ = "";
+    /**
+     * <code>string rollup_id = 2 [json_name = "rollupId", (.gogoproto.customname) = "RollupID"];</code>
+     * @return The rollupId.
+     */
+    @java.lang.Override
+    public java.lang.String getRollupId() {
+      java.lang.Object ref = rollupId_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        rollupId_ = s;
+        return s;
+      }
+    }
+    /**
+     * <code>string rollup_id = 2 [json_name = "rollupId", (.gogoproto.customname) = "RollupID"];</code>
+     * @return The bytes for rollupId.
+     */
+    @java.lang.Override
+    public com.google.protobuf.ByteString
+        getRollupIdBytes() {
+      java.lang.Object ref = rollupId_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        rollupId_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
+    public static final int SEQUENCING_FIELD_NUMBER = 3;
+    @SuppressWarnings("serial")
+    private volatile java.lang.Object sequencing_ = "";
+    /**
+     * <code>string sequencing = 3 [json_name = "sequencing"];</code>
+     * @return The sequencing.
+     */
+    @java.lang.Override
+    public java.lang.String getSequencing() {
+      java.lang.Object ref = sequencing_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        sequencing_ = s;
+        return s;
+      }
+    }
+    /**
+     * <code>string sequencing = 3 [json_name = "sequencing"];</code>
+     * @return The bytes for sequencing.
+     */
+    @java.lang.Override
+    public com.google.protobuf.ByteString
+        getSequencingBytes() {
+      java.lang.Object ref = sequencing_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        sequencing_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
+    private byte memoizedIsInitialized = -1;
+    @java.lang.Override
+    public final boolean isInitialized() {
+      byte isInitialized = memoizedIsInitialized;
+      if (isInitialized == 1) return true;
+      if (isInitialized == 0) return false;
+
+      memoizedIsInitialized = 1;
+      return true;
+    }
+
+    @java.lang.Override
+    public void writeTo(com.google.protobuf.CodedOutputStream output)
+                        throws java.io.IOException {
+      if (!com.google.protobuf.GeneratedMessage.isStringEmpty(authority_)) {
+        com.google.protobuf.GeneratedMessage.writeString(output, 1, authority_);
+      }
+      if (!com.google.protobuf.GeneratedMessage.isStringEmpty(rollupId_)) {
+        com.google.protobuf.GeneratedMessage.writeString(output, 2, rollupId_);
+      }
+      if (!com.google.protobuf.GeneratedMessage.isStringEmpty(sequencing_)) {
+        com.google.protobuf.GeneratedMessage.writeString(output, 3, sequencing_);
+      }
+      getUnknownFields().writeTo(output);
+    }
+    private int computeSerializedSize_0() {
+      int size = 0;
+      if (!com.google.protobuf.GeneratedMessage.isStringEmpty(authority_)) {
+        size += com.google.protobuf.GeneratedMessage.computeStringSize(1, authority_);
+      }
+      if (!com.google.protobuf.GeneratedMessage.isStringEmpty(rollupId_)) {
+        size += com.google.protobuf.GeneratedMessage.computeStringSize(2, rollupId_);
+      }
+      if (!com.google.protobuf.GeneratedMessage.isStringEmpty(sequencing_)) {
+        size += com.google.protobuf.GeneratedMessage.computeStringSize(3, sequencing_);
+      }
+      return size;
+    }
+    @java.lang.Override
+    public int getSerializedSize() {
+      int size = memoizedSize;
+      if (size != -1) return size;
+
+      size = 0;
+      size += computeSerializedSize_0();
+      size += getUnknownFields().getSerializedSize();
+      memoizedSize = size;
+      return size;
+    }
+
+    @java.lang.Override
+    public boolean equals(final java.lang.Object obj) {
+      if (obj == this) {
+       return true;
+      }
+      if (!(obj instanceof qorechain.rdk.v1.Tx.MsgSetRollupSequencing)) {
+        return super.equals(obj);
+      }
+      qorechain.rdk.v1.Tx.MsgSetRollupSequencing other = (qorechain.rdk.v1.Tx.MsgSetRollupSequencing) obj;
+
+      if (!getAuthority()
+          .equals(other.getAuthority())) return false;
+      if (!getRollupId()
+          .equals(other.getRollupId())) return false;
+      if (!getSequencing()
+          .equals(other.getSequencing())) return false;
+      if (!getUnknownFields().equals(other.getUnknownFields())) return false;
+      return true;
+    }
+
+    @java.lang.Override
+    public int hashCode() {
+      if (memoizedHashCode != 0) {
+        return memoizedHashCode;
+      }
+      int hash = 41;
+      hash = (19 * hash) + getDescriptor().hashCode();
+      hash = (37 * hash) + AUTHORITY_FIELD_NUMBER;
+      hash = (53 * hash) + getAuthority().hashCode();
+      hash = (37 * hash) + ROLLUP_ID_FIELD_NUMBER;
+      hash = (53 * hash) + getRollupId().hashCode();
+      hash = (37 * hash) + SEQUENCING_FIELD_NUMBER;
+      hash = (53 * hash) + getSequencing().hashCode();
+      hash = (29 * hash) + getUnknownFields().hashCode();
+      memoizedHashCode = hash;
+      return hash;
+    }
+
+    public static qorechain.rdk.v1.Tx.MsgSetRollupSequencing parseFrom(
+        java.nio.ByteBuffer data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static qorechain.rdk.v1.Tx.MsgSetRollupSequencing parseFrom(
+        java.nio.ByteBuffer data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static qorechain.rdk.v1.Tx.MsgSetRollupSequencing parseFrom(
+        com.google.protobuf.ByteString data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static qorechain.rdk.v1.Tx.MsgSetRollupSequencing parseFrom(
+        com.google.protobuf.ByteString data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static qorechain.rdk.v1.Tx.MsgSetRollupSequencing parseFrom(byte[] data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static qorechain.rdk.v1.Tx.MsgSetRollupSequencing parseFrom(
+        byte[] data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static qorechain.rdk.v1.Tx.MsgSetRollupSequencing parseFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input);
+    }
+    public static qorechain.rdk.v1.Tx.MsgSetRollupSequencing parseFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    public static qorechain.rdk.v1.Tx.MsgSetRollupSequencing parseDelimitedFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseDelimitedWithIOException(PARSER, input);
+    }
+
+    public static qorechain.rdk.v1.Tx.MsgSetRollupSequencing parseDelimitedFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static qorechain.rdk.v1.Tx.MsgSetRollupSequencing parseFrom(
+        com.google.protobuf.CodedInputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input);
+    }
+    public static qorechain.rdk.v1.Tx.MsgSetRollupSequencing parseFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    @java.lang.Override
+    public Builder newBuilderForType() { return newBuilder(); }
+    public static Builder newBuilder() {
+      return DEFAULT_INSTANCE.toBuilder();
+    }
+    public static Builder newBuilder(qorechain.rdk.v1.Tx.MsgSetRollupSequencing prototype) {
+      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+    }
+    @java.lang.Override
+    public Builder toBuilder() {
+      return this == DEFAULT_INSTANCE
+          ? new Builder() : new Builder().mergeFrom(this);
+    }
+
+    @java.lang.Override
+    protected Builder newBuilderForType(
+        com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+      Builder builder = new Builder(parent);
+      return builder;
+    }
+    /**
+     * <pre>
+     * MsgSetRollupSequencing moves a rollup to based sequencing ("based") or back
+     * to its sequencer (""). Governance only: authority must be the gov module
+     * account. Moving to based starts the inbox at its current head. Served from
+     * v3.2.8 (rdk-based-sequencing).
+     * </pre>
+     *
+     * Protobuf type {@code qorechain.rdk.v1.MsgSetRollupSequencing}
+     */
+    public static final class Builder extends
+        com.google.protobuf.GeneratedMessage.Builder<Builder> implements
+        // @@protoc_insertion_point(builder_implements:qorechain.rdk.v1.MsgSetRollupSequencing)
+        qorechain.rdk.v1.Tx.MsgSetRollupSequencingOrBuilder {
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return qorechain.rdk.v1.Tx.internal_static_qorechain_rdk_v1_MsgSetRollupSequencing_descriptor;
+      }
+
+      @java.lang.Override
+      protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return qorechain.rdk.v1.Tx.internal_static_qorechain_rdk_v1_MsgSetRollupSequencing_fieldAccessorTable
+            .ensureFieldAccessorsInitialized(
+                qorechain.rdk.v1.Tx.MsgSetRollupSequencing.class, qorechain.rdk.v1.Tx.MsgSetRollupSequencing.Builder.class);
+      }
+
+      // Construct using qorechain.rdk.v1.Tx.MsgSetRollupSequencing.newBuilder()
+      private Builder() {
+
+      }
+
+      private Builder(
+          com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+        super(parent);
+
+      }
+      @java.lang.Override
+      public Builder clear() {
+        super.clear();
+        bitField0_ = 0;
+        authority_ = "";
+        rollupId_ = "";
+        sequencing_ = "";
+        return this;
+      }
+
+      @java.lang.Override
+      public com.google.protobuf.Descriptors.Descriptor
+          getDescriptorForType() {
+        return qorechain.rdk.v1.Tx.internal_static_qorechain_rdk_v1_MsgSetRollupSequencing_descriptor;
+      }
+
+      @java.lang.Override
+      public qorechain.rdk.v1.Tx.MsgSetRollupSequencing getDefaultInstanceForType() {
+        return qorechain.rdk.v1.Tx.MsgSetRollupSequencing.getDefaultInstance();
+      }
+
+      @java.lang.Override
+      public qorechain.rdk.v1.Tx.MsgSetRollupSequencing build() {
+        qorechain.rdk.v1.Tx.MsgSetRollupSequencing result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(result);
+        }
+        return result;
+      }
+
+      @java.lang.Override
+      public qorechain.rdk.v1.Tx.MsgSetRollupSequencing buildPartial() {
+        qorechain.rdk.v1.Tx.MsgSetRollupSequencing result = new qorechain.rdk.v1.Tx.MsgSetRollupSequencing(this);
+        if (bitField0_ != 0) { buildPartial0(result); }
+        onBuilt();
+        return result;
+      }
+
+      private void buildPartial0(qorechain.rdk.v1.Tx.MsgSetRollupSequencing result) {
+        int from_bitField0_ = bitField0_;
+        if (((from_bitField0_ & 0x00000001) != 0)) {
+          result.authority_ = authority_;
+        }
+        if (((from_bitField0_ & 0x00000002) != 0)) {
+          result.rollupId_ = rollupId_;
+        }
+        if (((from_bitField0_ & 0x00000004) != 0)) {
+          result.sequencing_ = sequencing_;
+        }
+      }
+
+      @java.lang.Override
+      public Builder mergeFrom(com.google.protobuf.Message other) {
+        if (other instanceof qorechain.rdk.v1.Tx.MsgSetRollupSequencing) {
+          return mergeFrom((qorechain.rdk.v1.Tx.MsgSetRollupSequencing)other);
+        } else {
+          super.mergeFrom(other);
+          return this;
+        }
+      }
+
+      public Builder mergeFrom(qorechain.rdk.v1.Tx.MsgSetRollupSequencing other) {
+        if (other == qorechain.rdk.v1.Tx.MsgSetRollupSequencing.getDefaultInstance()) return this;
+        if (!other.getAuthority().isEmpty()) {
+          authority_ = other.authority_;
+          bitField0_ |= 0x00000001;
+          onChanged();
+        }
+        if (!other.getRollupId().isEmpty()) {
+          rollupId_ = other.rollupId_;
+          bitField0_ |= 0x00000002;
+          onChanged();
+        }
+        if (!other.getSequencing().isEmpty()) {
+          sequencing_ = other.sequencing_;
+          bitField0_ |= 0x00000004;
+          onChanged();
+        }
+        this.mergeUnknownFields(other.getUnknownFields());
+        onChanged();
+        return this;
+      }
+
+      @java.lang.Override
+      public final boolean isInitialized() {
+        return true;
+      }
+
+      @java.lang.Override
+      public Builder mergeFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        if (extensionRegistry == null) {
+          throw new java.lang.NullPointerException();
+        }
+        try {
+          boolean done = false;
+          while (!done) {
+            int tag = input.readTag();
+            switch (tag) {
+              case 0:
+                done = true;
+                break;
+              case 10: {
+                authority_ = input.readStringRequireUtf8();
+                bitField0_ |= 0x00000001;
+                break;
+              } // case 10
+              case 18: {
+                rollupId_ = input.readStringRequireUtf8();
+                bitField0_ |= 0x00000002;
+                break;
+              } // case 18
+              case 26: {
+                sequencing_ = input.readStringRequireUtf8();
+                bitField0_ |= 0x00000004;
+                break;
+              } // case 26
+              default: {
+                if (!super.parseUnknownField(input, extensionRegistry, tag)) {
+                  done = true; // was an endgroup tag
+                }
+                break;
+              } // default:
+            } // switch (tag)
+          } // while (!done)
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          throw e.unwrapIOException();
+        } finally {
+          onChanged();
+        } // finally
+        return this;
+      }
+      private int bitField0_;
+
+      private java.lang.Object authority_ = "";
+      /**
+       * <code>string authority = 1 [json_name = "authority", (.cosmos_proto.scalar) = "cosmos.AddressString"];</code>
+       * @return The authority.
+       */
+      public java.lang.String getAuthority() {
+        java.lang.Object ref = authority_;
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          authority_ = s;
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
+      }
+      /**
+       * <code>string authority = 1 [json_name = "authority", (.cosmos_proto.scalar) = "cosmos.AddressString"];</code>
+       * @return The bytes for authority.
+       */
+      public com.google.protobuf.ByteString
+          getAuthorityBytes() {
+        java.lang.Object ref = authority_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          authority_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <code>string authority = 1 [json_name = "authority", (.cosmos_proto.scalar) = "cosmos.AddressString"];</code>
+       * @param value The authority to set.
+       * @return This builder for chaining.
+       */
+      public Builder setAuthority(
+          java.lang.String value) {
+        if (value == null) { throw new NullPointerException(); }
+        authority_ = value;
+        bitField0_ |= 0x00000001;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>string authority = 1 [json_name = "authority", (.cosmos_proto.scalar) = "cosmos.AddressString"];</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearAuthority() {
+        authority_ = getDefaultInstance().getAuthority();
+        bitField0_ = (bitField0_ & ~0x00000001);
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>string authority = 1 [json_name = "authority", (.cosmos_proto.scalar) = "cosmos.AddressString"];</code>
+       * @param value The bytes for authority to set.
+       * @return This builder for chaining.
+       */
+      public Builder setAuthorityBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) { throw new NullPointerException(); }
+        checkByteStringIsUtf8(value);
+        authority_ = value;
+        bitField0_ |= 0x00000001;
+        onChanged();
+        return this;
+      }
+
+      private java.lang.Object rollupId_ = "";
+      /**
+       * <code>string rollup_id = 2 [json_name = "rollupId", (.gogoproto.customname) = "RollupID"];</code>
+       * @return The rollupId.
+       */
+      public java.lang.String getRollupId() {
+        java.lang.Object ref = rollupId_;
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          rollupId_ = s;
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
+      }
+      /**
+       * <code>string rollup_id = 2 [json_name = "rollupId", (.gogoproto.customname) = "RollupID"];</code>
+       * @return The bytes for rollupId.
+       */
+      public com.google.protobuf.ByteString
+          getRollupIdBytes() {
+        java.lang.Object ref = rollupId_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          rollupId_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <code>string rollup_id = 2 [json_name = "rollupId", (.gogoproto.customname) = "RollupID"];</code>
+       * @param value The rollupId to set.
+       * @return This builder for chaining.
+       */
+      public Builder setRollupId(
+          java.lang.String value) {
+        if (value == null) { throw new NullPointerException(); }
+        rollupId_ = value;
+        bitField0_ |= 0x00000002;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>string rollup_id = 2 [json_name = "rollupId", (.gogoproto.customname) = "RollupID"];</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearRollupId() {
+        rollupId_ = getDefaultInstance().getRollupId();
+        bitField0_ = (bitField0_ & ~0x00000002);
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>string rollup_id = 2 [json_name = "rollupId", (.gogoproto.customname) = "RollupID"];</code>
+       * @param value The bytes for rollupId to set.
+       * @return This builder for chaining.
+       */
+      public Builder setRollupIdBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) { throw new NullPointerException(); }
+        checkByteStringIsUtf8(value);
+        rollupId_ = value;
+        bitField0_ |= 0x00000002;
+        onChanged();
+        return this;
+      }
+
+      private java.lang.Object sequencing_ = "";
+      /**
+       * <code>string sequencing = 3 [json_name = "sequencing"];</code>
+       * @return The sequencing.
+       */
+      public java.lang.String getSequencing() {
+        java.lang.Object ref = sequencing_;
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          sequencing_ = s;
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
+      }
+      /**
+       * <code>string sequencing = 3 [json_name = "sequencing"];</code>
+       * @return The bytes for sequencing.
+       */
+      public com.google.protobuf.ByteString
+          getSequencingBytes() {
+        java.lang.Object ref = sequencing_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          sequencing_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <code>string sequencing = 3 [json_name = "sequencing"];</code>
+       * @param value The sequencing to set.
+       * @return This builder for chaining.
+       */
+      public Builder setSequencing(
+          java.lang.String value) {
+        if (value == null) { throw new NullPointerException(); }
+        sequencing_ = value;
+        bitField0_ |= 0x00000004;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>string sequencing = 3 [json_name = "sequencing"];</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearSequencing() {
+        sequencing_ = getDefaultInstance().getSequencing();
+        bitField0_ = (bitField0_ & ~0x00000004);
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>string sequencing = 3 [json_name = "sequencing"];</code>
+       * @param value The bytes for sequencing to set.
+       * @return This builder for chaining.
+       */
+      public Builder setSequencingBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) { throw new NullPointerException(); }
+        checkByteStringIsUtf8(value);
+        sequencing_ = value;
+        bitField0_ |= 0x00000004;
+        onChanged();
+        return this;
+      }
+
+      // @@protoc_insertion_point(builder_scope:qorechain.rdk.v1.MsgSetRollupSequencing)
+    }
+
+    // @@protoc_insertion_point(class_scope:qorechain.rdk.v1.MsgSetRollupSequencing)
+    private static final qorechain.rdk.v1.Tx.MsgSetRollupSequencing DEFAULT_INSTANCE;
+    static {
+      DEFAULT_INSTANCE = new qorechain.rdk.v1.Tx.MsgSetRollupSequencing();
+    }
+
+    public static qorechain.rdk.v1.Tx.MsgSetRollupSequencing getDefaultInstance() {
+      return DEFAULT_INSTANCE;
+    }
+
+    private static final com.google.protobuf.Parser<MsgSetRollupSequencing>
+        PARSER = new com.google.protobuf.AbstractParser<MsgSetRollupSequencing>() {
+      @java.lang.Override
+      public MsgSetRollupSequencing parsePartialFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        Builder builder = newBuilder();
+        try {
+          builder.mergeFrom(input, extensionRegistry);
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          throw e.setUnfinishedMessage(builder.buildPartial());
+        } catch (com.google.protobuf.UninitializedMessageException e) {
+          throw e.asInvalidProtocolBufferException().setUnfinishedMessage(builder.buildPartial());
+        } catch (java.io.IOException e) {
+          throw new com.google.protobuf.InvalidProtocolBufferException(e)
+              .setUnfinishedMessage(builder.buildPartial());
+        }
+        return builder.buildPartial();
+      }
+    };
+
+    public static com.google.protobuf.Parser<MsgSetRollupSequencing> parser() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Parser<MsgSetRollupSequencing> getParserForType() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public qorechain.rdk.v1.Tx.MsgSetRollupSequencing getDefaultInstanceForType() {
+      return DEFAULT_INSTANCE;
+    }
+
+  }
+
+  public interface MsgSetRollupSequencingResponseOrBuilder extends
+      // @@protoc_insertion_point(interface_extends:qorechain.rdk.v1.MsgSetRollupSequencingResponse)
+      com.google.protobuf.MessageOrBuilder {
+  }
+  /**
+   * Protobuf type {@code qorechain.rdk.v1.MsgSetRollupSequencingResponse}
+   */
+  public static final class MsgSetRollupSequencingResponse extends
+      com.google.protobuf.GeneratedMessage implements
+      // @@protoc_insertion_point(message_implements:qorechain.rdk.v1.MsgSetRollupSequencingResponse)
+      MsgSetRollupSequencingResponseOrBuilder {
+  private static final long serialVersionUID = 0L;
+    static {
+      com.google.protobuf.RuntimeVersion.validateProtobufGencodeVersion(
+        com.google.protobuf.RuntimeVersion.RuntimeDomain.PUBLIC,
+        /* major= */ 4,
+        /* minor= */ 35,
+        /* patch= */ 1,
+        /* suffix= */ "",
+        "MsgSetRollupSequencingResponse");
+    }
+    // Use MsgSetRollupSequencingResponse.newBuilder() to construct.
+    private MsgSetRollupSequencingResponse(com.google.protobuf.GeneratedMessage.Builder<?> builder) {
+      super(builder);
+    }
+    private MsgSetRollupSequencingResponse() {
+    }
+
+    public static final com.google.protobuf.Descriptors.Descriptor
+        getDescriptor() {
+      return qorechain.rdk.v1.Tx.internal_static_qorechain_rdk_v1_MsgSetRollupSequencingResponse_descriptor;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Descriptors.Descriptor getDescriptorForType() {
+      return qorechain.rdk.v1.Tx.internal_static_qorechain_rdk_v1_MsgSetRollupSequencingResponse_descriptor;
+    }
+
+    @java.lang.Override
+    protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+        internalGetFieldAccessorTable() {
+      return qorechain.rdk.v1.Tx.internal_static_qorechain_rdk_v1_MsgSetRollupSequencingResponse_fieldAccessorTable
+          .ensureFieldAccessorsInitialized(
+              qorechain.rdk.v1.Tx.MsgSetRollupSequencingResponse.class, qorechain.rdk.v1.Tx.MsgSetRollupSequencingResponse.Builder.class);
+    }
+
+    private byte memoizedIsInitialized = -1;
+    @java.lang.Override
+    public final boolean isInitialized() {
+      byte isInitialized = memoizedIsInitialized;
+      if (isInitialized == 1) return true;
+      if (isInitialized == 0) return false;
+
+      memoizedIsInitialized = 1;
+      return true;
+    }
+
+    @java.lang.Override
+    public void writeTo(com.google.protobuf.CodedOutputStream output)
+                        throws java.io.IOException {
+      getUnknownFields().writeTo(output);
+    }
+    @java.lang.Override
+    public int getSerializedSize() {
+      int size = memoizedSize;
+      if (size != -1) return size;
+
+      size = 0;
+      size += getUnknownFields().getSerializedSize();
+      memoizedSize = size;
+      return size;
+    }
+
+    @java.lang.Override
+    public boolean equals(final java.lang.Object obj) {
+      if (obj == this) {
+       return true;
+      }
+      if (!(obj instanceof qorechain.rdk.v1.Tx.MsgSetRollupSequencingResponse)) {
+        return super.equals(obj);
+      }
+      qorechain.rdk.v1.Tx.MsgSetRollupSequencingResponse other = (qorechain.rdk.v1.Tx.MsgSetRollupSequencingResponse) obj;
+
+      if (!getUnknownFields().equals(other.getUnknownFields())) return false;
+      return true;
+    }
+
+    @java.lang.Override
+    public int hashCode() {
+      if (memoizedHashCode != 0) {
+        return memoizedHashCode;
+      }
+      int hash = 41;
+      hash = (19 * hash) + getDescriptor().hashCode();
+      hash = (29 * hash) + getUnknownFields().hashCode();
+      memoizedHashCode = hash;
+      return hash;
+    }
+
+    public static qorechain.rdk.v1.Tx.MsgSetRollupSequencingResponse parseFrom(
+        java.nio.ByteBuffer data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static qorechain.rdk.v1.Tx.MsgSetRollupSequencingResponse parseFrom(
+        java.nio.ByteBuffer data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static qorechain.rdk.v1.Tx.MsgSetRollupSequencingResponse parseFrom(
+        com.google.protobuf.ByteString data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static qorechain.rdk.v1.Tx.MsgSetRollupSequencingResponse parseFrom(
+        com.google.protobuf.ByteString data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static qorechain.rdk.v1.Tx.MsgSetRollupSequencingResponse parseFrom(byte[] data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static qorechain.rdk.v1.Tx.MsgSetRollupSequencingResponse parseFrom(
+        byte[] data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static qorechain.rdk.v1.Tx.MsgSetRollupSequencingResponse parseFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input);
+    }
+    public static qorechain.rdk.v1.Tx.MsgSetRollupSequencingResponse parseFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    public static qorechain.rdk.v1.Tx.MsgSetRollupSequencingResponse parseDelimitedFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseDelimitedWithIOException(PARSER, input);
+    }
+
+    public static qorechain.rdk.v1.Tx.MsgSetRollupSequencingResponse parseDelimitedFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static qorechain.rdk.v1.Tx.MsgSetRollupSequencingResponse parseFrom(
+        com.google.protobuf.CodedInputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input);
+    }
+    public static qorechain.rdk.v1.Tx.MsgSetRollupSequencingResponse parseFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    @java.lang.Override
+    public Builder newBuilderForType() { return newBuilder(); }
+    public static Builder newBuilder() {
+      return DEFAULT_INSTANCE.toBuilder();
+    }
+    public static Builder newBuilder(qorechain.rdk.v1.Tx.MsgSetRollupSequencingResponse prototype) {
+      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+    }
+    @java.lang.Override
+    public Builder toBuilder() {
+      return this == DEFAULT_INSTANCE
+          ? new Builder() : new Builder().mergeFrom(this);
+    }
+
+    @java.lang.Override
+    protected Builder newBuilderForType(
+        com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+      Builder builder = new Builder(parent);
+      return builder;
+    }
+    /**
+     * Protobuf type {@code qorechain.rdk.v1.MsgSetRollupSequencingResponse}
+     */
+    public static final class Builder extends
+        com.google.protobuf.GeneratedMessage.Builder<Builder> implements
+        // @@protoc_insertion_point(builder_implements:qorechain.rdk.v1.MsgSetRollupSequencingResponse)
+        qorechain.rdk.v1.Tx.MsgSetRollupSequencingResponseOrBuilder {
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return qorechain.rdk.v1.Tx.internal_static_qorechain_rdk_v1_MsgSetRollupSequencingResponse_descriptor;
+      }
+
+      @java.lang.Override
+      protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return qorechain.rdk.v1.Tx.internal_static_qorechain_rdk_v1_MsgSetRollupSequencingResponse_fieldAccessorTable
+            .ensureFieldAccessorsInitialized(
+                qorechain.rdk.v1.Tx.MsgSetRollupSequencingResponse.class, qorechain.rdk.v1.Tx.MsgSetRollupSequencingResponse.Builder.class);
+      }
+
+      // Construct using qorechain.rdk.v1.Tx.MsgSetRollupSequencingResponse.newBuilder()
+      private Builder() {
+
+      }
+
+      private Builder(
+          com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+        super(parent);
+
+      }
+      @java.lang.Override
+      public Builder clear() {
+        super.clear();
+        return this;
+      }
+
+      @java.lang.Override
+      public com.google.protobuf.Descriptors.Descriptor
+          getDescriptorForType() {
+        return qorechain.rdk.v1.Tx.internal_static_qorechain_rdk_v1_MsgSetRollupSequencingResponse_descriptor;
+      }
+
+      @java.lang.Override
+      public qorechain.rdk.v1.Tx.MsgSetRollupSequencingResponse getDefaultInstanceForType() {
+        return qorechain.rdk.v1.Tx.MsgSetRollupSequencingResponse.getDefaultInstance();
+      }
+
+      @java.lang.Override
+      public qorechain.rdk.v1.Tx.MsgSetRollupSequencingResponse build() {
+        qorechain.rdk.v1.Tx.MsgSetRollupSequencingResponse result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(result);
+        }
+        return result;
+      }
+
+      @java.lang.Override
+      public qorechain.rdk.v1.Tx.MsgSetRollupSequencingResponse buildPartial() {
+        qorechain.rdk.v1.Tx.MsgSetRollupSequencingResponse result = new qorechain.rdk.v1.Tx.MsgSetRollupSequencingResponse(this);
+        onBuilt();
+        return result;
+      }
+
+      @java.lang.Override
+      public Builder mergeFrom(com.google.protobuf.Message other) {
+        if (other instanceof qorechain.rdk.v1.Tx.MsgSetRollupSequencingResponse) {
+          return mergeFrom((qorechain.rdk.v1.Tx.MsgSetRollupSequencingResponse)other);
+        } else {
+          super.mergeFrom(other);
+          return this;
+        }
+      }
+
+      public Builder mergeFrom(qorechain.rdk.v1.Tx.MsgSetRollupSequencingResponse other) {
+        if (other == qorechain.rdk.v1.Tx.MsgSetRollupSequencingResponse.getDefaultInstance()) return this;
+        this.mergeUnknownFields(other.getUnknownFields());
+        onChanged();
+        return this;
+      }
+
+      @java.lang.Override
+      public final boolean isInitialized() {
+        return true;
+      }
+
+      @java.lang.Override
+      public Builder mergeFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        if (extensionRegistry == null) {
+          throw new java.lang.NullPointerException();
+        }
+        try {
+          boolean done = false;
+          while (!done) {
+            int tag = input.readTag();
+            switch (tag) {
+              case 0:
+                done = true;
+                break;
+              default: {
+                if (!super.parseUnknownField(input, extensionRegistry, tag)) {
+                  done = true; // was an endgroup tag
+                }
+                break;
+              } // default:
+            } // switch (tag)
+          } // while (!done)
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          throw e.unwrapIOException();
+        } finally {
+          onChanged();
+        } // finally
+        return this;
+      }
+
+      // @@protoc_insertion_point(builder_scope:qorechain.rdk.v1.MsgSetRollupSequencingResponse)
+    }
+
+    // @@protoc_insertion_point(class_scope:qorechain.rdk.v1.MsgSetRollupSequencingResponse)
+    private static final qorechain.rdk.v1.Tx.MsgSetRollupSequencingResponse DEFAULT_INSTANCE;
+    static {
+      DEFAULT_INSTANCE = new qorechain.rdk.v1.Tx.MsgSetRollupSequencingResponse();
+    }
+
+    public static qorechain.rdk.v1.Tx.MsgSetRollupSequencingResponse getDefaultInstance() {
+      return DEFAULT_INSTANCE;
+    }
+
+    private static final com.google.protobuf.Parser<MsgSetRollupSequencingResponse>
+        PARSER = new com.google.protobuf.AbstractParser<MsgSetRollupSequencingResponse>() {
+      @java.lang.Override
+      public MsgSetRollupSequencingResponse parsePartialFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        Builder builder = newBuilder();
+        try {
+          builder.mergeFrom(input, extensionRegistry);
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          throw e.setUnfinishedMessage(builder.buildPartial());
+        } catch (com.google.protobuf.UninitializedMessageException e) {
+          throw e.asInvalidProtocolBufferException().setUnfinishedMessage(builder.buildPartial());
+        } catch (java.io.IOException e) {
+          throw new com.google.protobuf.InvalidProtocolBufferException(e)
+              .setUnfinishedMessage(builder.buildPartial());
+        }
+        return builder.buildPartial();
+      }
+    };
+
+    public static com.google.protobuf.Parser<MsgSetRollupSequencingResponse> parser() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Parser<MsgSetRollupSequencingResponse> getParserForType() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public qorechain.rdk.v1.Tx.MsgSetRollupSequencingResponse getDefaultInstanceForType() {
+      return DEFAULT_INSTANCE;
+    }
+
+  }
+
+  public interface MsgDepositToRollupOrBuilder extends
+      // @@protoc_insertion_point(interface_extends:qorechain.rdk.v1.MsgDepositToRollup)
+      com.google.protobuf.MessageOrBuilder {
+
+    /**
+     * <code>string depositor = 1 [json_name = "depositor", (.cosmos_proto.scalar) = "cosmos.AddressString"];</code>
+     * @return The depositor.
+     */
+    java.lang.String getDepositor();
+    /**
+     * <code>string depositor = 1 [json_name = "depositor", (.cosmos_proto.scalar) = "cosmos.AddressString"];</code>
+     * @return The bytes for depositor.
+     */
+    com.google.protobuf.ByteString
+        getDepositorBytes();
+
+    /**
+     * <code>string rollup_id = 2 [json_name = "rollupId", (.gogoproto.customname) = "RollupID"];</code>
+     * @return The rollupId.
+     */
+    java.lang.String getRollupId();
+    /**
+     * <code>string rollup_id = 2 [json_name = "rollupId", (.gogoproto.customname) = "RollupID"];</code>
+     * @return The bytes for rollupId.
+     */
+    com.google.protobuf.ByteString
+        getRollupIdBytes();
+
+    /**
+     * <code>bytes account = 3 [json_name = "account"];</code>
+     * @return The account.
+     */
+    com.google.protobuf.ByteString getAccount();
+
+    /**
+     * <code>uint64 amount = 4 [json_name = "amount"];</code>
+     * @return The amount.
+     */
+    long getAmount();
+  }
+  /**
+   * <pre>
+   * MsgDepositToRollup moves amount uqor from depositor into a qledger-v1
+   * rollup's deposit pool and credits the L2 account (32-byte qledger-v1
+   * account id) through the rollup's inbox. Served from v3.2.8
+   * (rdk-optimistic-reexec).
+   * </pre>
+   *
+   * Protobuf type {@code qorechain.rdk.v1.MsgDepositToRollup}
+   */
+  public static final class MsgDepositToRollup extends
+      com.google.protobuf.GeneratedMessage implements
+      // @@protoc_insertion_point(message_implements:qorechain.rdk.v1.MsgDepositToRollup)
+      MsgDepositToRollupOrBuilder {
+  private static final long serialVersionUID = 0L;
+    static {
+      com.google.protobuf.RuntimeVersion.validateProtobufGencodeVersion(
+        com.google.protobuf.RuntimeVersion.RuntimeDomain.PUBLIC,
+        /* major= */ 4,
+        /* minor= */ 35,
+        /* patch= */ 1,
+        /* suffix= */ "",
+        "MsgDepositToRollup");
+    }
+    // Use MsgDepositToRollup.newBuilder() to construct.
+    private MsgDepositToRollup(com.google.protobuf.GeneratedMessage.Builder<?> builder) {
+      super(builder);
+    }
+    private MsgDepositToRollup() {
+      depositor_ = "";
+      rollupId_ = "";
+      account_ = com.google.protobuf.ByteString.EMPTY;
+    }
+
+    public static final com.google.protobuf.Descriptors.Descriptor
+        getDescriptor() {
+      return qorechain.rdk.v1.Tx.internal_static_qorechain_rdk_v1_MsgDepositToRollup_descriptor;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Descriptors.Descriptor getDescriptorForType() {
+      return qorechain.rdk.v1.Tx.internal_static_qorechain_rdk_v1_MsgDepositToRollup_descriptor;
+    }
+
+    @java.lang.Override
+    protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+        internalGetFieldAccessorTable() {
+      return qorechain.rdk.v1.Tx.internal_static_qorechain_rdk_v1_MsgDepositToRollup_fieldAccessorTable
+          .ensureFieldAccessorsInitialized(
+              qorechain.rdk.v1.Tx.MsgDepositToRollup.class, qorechain.rdk.v1.Tx.MsgDepositToRollup.Builder.class);
+    }
+
+    public static final int DEPOSITOR_FIELD_NUMBER = 1;
+    @SuppressWarnings("serial")
+    private volatile java.lang.Object depositor_ = "";
+    /**
+     * <code>string depositor = 1 [json_name = "depositor", (.cosmos_proto.scalar) = "cosmos.AddressString"];</code>
+     * @return The depositor.
+     */
+    @java.lang.Override
+    public java.lang.String getDepositor() {
+      java.lang.Object ref = depositor_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        depositor_ = s;
+        return s;
+      }
+    }
+    /**
+     * <code>string depositor = 1 [json_name = "depositor", (.cosmos_proto.scalar) = "cosmos.AddressString"];</code>
+     * @return The bytes for depositor.
+     */
+    @java.lang.Override
+    public com.google.protobuf.ByteString
+        getDepositorBytes() {
+      java.lang.Object ref = depositor_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        depositor_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
+    public static final int ROLLUP_ID_FIELD_NUMBER = 2;
+    @SuppressWarnings("serial")
+    private volatile java.lang.Object rollupId_ = "";
+    /**
+     * <code>string rollup_id = 2 [json_name = "rollupId", (.gogoproto.customname) = "RollupID"];</code>
+     * @return The rollupId.
+     */
+    @java.lang.Override
+    public java.lang.String getRollupId() {
+      java.lang.Object ref = rollupId_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        rollupId_ = s;
+        return s;
+      }
+    }
+    /**
+     * <code>string rollup_id = 2 [json_name = "rollupId", (.gogoproto.customname) = "RollupID"];</code>
+     * @return The bytes for rollupId.
+     */
+    @java.lang.Override
+    public com.google.protobuf.ByteString
+        getRollupIdBytes() {
+      java.lang.Object ref = rollupId_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        rollupId_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
+    public static final int ACCOUNT_FIELD_NUMBER = 3;
+    private com.google.protobuf.ByteString account_ = com.google.protobuf.ByteString.EMPTY;
+    /**
+     * <code>bytes account = 3 [json_name = "account"];</code>
+     * @return The account.
+     */
+    @java.lang.Override
+    public com.google.protobuf.ByteString getAccount() {
+      return account_;
+    }
+
+    public static final int AMOUNT_FIELD_NUMBER = 4;
+    private long amount_ = 0L;
+    /**
+     * <code>uint64 amount = 4 [json_name = "amount"];</code>
+     * @return The amount.
+     */
+    @java.lang.Override
+    public long getAmount() {
+      return amount_;
+    }
+
+    private byte memoizedIsInitialized = -1;
+    @java.lang.Override
+    public final boolean isInitialized() {
+      byte isInitialized = memoizedIsInitialized;
+      if (isInitialized == 1) return true;
+      if (isInitialized == 0) return false;
+
+      memoizedIsInitialized = 1;
+      return true;
+    }
+
+    @java.lang.Override
+    public void writeTo(com.google.protobuf.CodedOutputStream output)
+                        throws java.io.IOException {
+      if (!com.google.protobuf.GeneratedMessage.isStringEmpty(depositor_)) {
+        com.google.protobuf.GeneratedMessage.writeString(output, 1, depositor_);
+      }
+      if (!com.google.protobuf.GeneratedMessage.isStringEmpty(rollupId_)) {
+        com.google.protobuf.GeneratedMessage.writeString(output, 2, rollupId_);
+      }
+      if (!account_.isEmpty()) {
+        output.writeBytes(3, account_);
+      }
+      if (amount_ != 0L) {
+        output.writeUInt64(4, amount_);
+      }
+      getUnknownFields().writeTo(output);
+    }
+    private int computeSerializedSize_0() {
+      int size = 0;
+      if (!com.google.protobuf.GeneratedMessage.isStringEmpty(depositor_)) {
+        size += com.google.protobuf.GeneratedMessage.computeStringSize(1, depositor_);
+      }
+      if (!com.google.protobuf.GeneratedMessage.isStringEmpty(rollupId_)) {
+        size += com.google.protobuf.GeneratedMessage.computeStringSize(2, rollupId_);
+      }
+      if (!account_.isEmpty()) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeBytesSize(3, account_);
+      }
+      if (amount_ != 0L) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeUInt64Size(4, amount_);
+      }
+      return size;
+    }
+    @java.lang.Override
+    public int getSerializedSize() {
+      int size = memoizedSize;
+      if (size != -1) return size;
+
+      size = 0;
+      size += computeSerializedSize_0();
+      size += getUnknownFields().getSerializedSize();
+      memoizedSize = size;
+      return size;
+    }
+
+    @java.lang.Override
+    public boolean equals(final java.lang.Object obj) {
+      if (obj == this) {
+       return true;
+      }
+      if (!(obj instanceof qorechain.rdk.v1.Tx.MsgDepositToRollup)) {
+        return super.equals(obj);
+      }
+      qorechain.rdk.v1.Tx.MsgDepositToRollup other = (qorechain.rdk.v1.Tx.MsgDepositToRollup) obj;
+
+      if (!getDepositor()
+          .equals(other.getDepositor())) return false;
+      if (!getRollupId()
+          .equals(other.getRollupId())) return false;
+      if (!getAccount()
+          .equals(other.getAccount())) return false;
+      if (getAmount()
+          != other.getAmount()) return false;
+      if (!getUnknownFields().equals(other.getUnknownFields())) return false;
+      return true;
+    }
+
+    @java.lang.Override
+    public int hashCode() {
+      if (memoizedHashCode != 0) {
+        return memoizedHashCode;
+      }
+      int hash = 41;
+      hash = (19 * hash) + getDescriptor().hashCode();
+      hash = (37 * hash) + DEPOSITOR_FIELD_NUMBER;
+      hash = (53 * hash) + getDepositor().hashCode();
+      hash = (37 * hash) + ROLLUP_ID_FIELD_NUMBER;
+      hash = (53 * hash) + getRollupId().hashCode();
+      hash = (37 * hash) + ACCOUNT_FIELD_NUMBER;
+      hash = (53 * hash) + getAccount().hashCode();
+      hash = (37 * hash) + AMOUNT_FIELD_NUMBER;
+      hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
+          getAmount());
+      hash = (29 * hash) + getUnknownFields().hashCode();
+      memoizedHashCode = hash;
+      return hash;
+    }
+
+    public static qorechain.rdk.v1.Tx.MsgDepositToRollup parseFrom(
+        java.nio.ByteBuffer data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static qorechain.rdk.v1.Tx.MsgDepositToRollup parseFrom(
+        java.nio.ByteBuffer data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static qorechain.rdk.v1.Tx.MsgDepositToRollup parseFrom(
+        com.google.protobuf.ByteString data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static qorechain.rdk.v1.Tx.MsgDepositToRollup parseFrom(
+        com.google.protobuf.ByteString data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static qorechain.rdk.v1.Tx.MsgDepositToRollup parseFrom(byte[] data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static qorechain.rdk.v1.Tx.MsgDepositToRollup parseFrom(
+        byte[] data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static qorechain.rdk.v1.Tx.MsgDepositToRollup parseFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input);
+    }
+    public static qorechain.rdk.v1.Tx.MsgDepositToRollup parseFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    public static qorechain.rdk.v1.Tx.MsgDepositToRollup parseDelimitedFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseDelimitedWithIOException(PARSER, input);
+    }
+
+    public static qorechain.rdk.v1.Tx.MsgDepositToRollup parseDelimitedFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static qorechain.rdk.v1.Tx.MsgDepositToRollup parseFrom(
+        com.google.protobuf.CodedInputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input);
+    }
+    public static qorechain.rdk.v1.Tx.MsgDepositToRollup parseFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    @java.lang.Override
+    public Builder newBuilderForType() { return newBuilder(); }
+    public static Builder newBuilder() {
+      return DEFAULT_INSTANCE.toBuilder();
+    }
+    public static Builder newBuilder(qorechain.rdk.v1.Tx.MsgDepositToRollup prototype) {
+      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+    }
+    @java.lang.Override
+    public Builder toBuilder() {
+      return this == DEFAULT_INSTANCE
+          ? new Builder() : new Builder().mergeFrom(this);
+    }
+
+    @java.lang.Override
+    protected Builder newBuilderForType(
+        com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+      Builder builder = new Builder(parent);
+      return builder;
+    }
+    /**
+     * <pre>
+     * MsgDepositToRollup moves amount uqor from depositor into a qledger-v1
+     * rollup's deposit pool and credits the L2 account (32-byte qledger-v1
+     * account id) through the rollup's inbox. Served from v3.2.8
+     * (rdk-optimistic-reexec).
+     * </pre>
+     *
+     * Protobuf type {@code qorechain.rdk.v1.MsgDepositToRollup}
+     */
+    public static final class Builder extends
+        com.google.protobuf.GeneratedMessage.Builder<Builder> implements
+        // @@protoc_insertion_point(builder_implements:qorechain.rdk.v1.MsgDepositToRollup)
+        qorechain.rdk.v1.Tx.MsgDepositToRollupOrBuilder {
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return qorechain.rdk.v1.Tx.internal_static_qorechain_rdk_v1_MsgDepositToRollup_descriptor;
+      }
+
+      @java.lang.Override
+      protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return qorechain.rdk.v1.Tx.internal_static_qorechain_rdk_v1_MsgDepositToRollup_fieldAccessorTable
+            .ensureFieldAccessorsInitialized(
+                qorechain.rdk.v1.Tx.MsgDepositToRollup.class, qorechain.rdk.v1.Tx.MsgDepositToRollup.Builder.class);
+      }
+
+      // Construct using qorechain.rdk.v1.Tx.MsgDepositToRollup.newBuilder()
+      private Builder() {
+
+      }
+
+      private Builder(
+          com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+        super(parent);
+
+      }
+      @java.lang.Override
+      public Builder clear() {
+        super.clear();
+        bitField0_ = 0;
+        depositor_ = "";
+        rollupId_ = "";
+        account_ = com.google.protobuf.ByteString.EMPTY;
+        amount_ = 0L;
+        return this;
+      }
+
+      @java.lang.Override
+      public com.google.protobuf.Descriptors.Descriptor
+          getDescriptorForType() {
+        return qorechain.rdk.v1.Tx.internal_static_qorechain_rdk_v1_MsgDepositToRollup_descriptor;
+      }
+
+      @java.lang.Override
+      public qorechain.rdk.v1.Tx.MsgDepositToRollup getDefaultInstanceForType() {
+        return qorechain.rdk.v1.Tx.MsgDepositToRollup.getDefaultInstance();
+      }
+
+      @java.lang.Override
+      public qorechain.rdk.v1.Tx.MsgDepositToRollup build() {
+        qorechain.rdk.v1.Tx.MsgDepositToRollup result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(result);
+        }
+        return result;
+      }
+
+      @java.lang.Override
+      public qorechain.rdk.v1.Tx.MsgDepositToRollup buildPartial() {
+        qorechain.rdk.v1.Tx.MsgDepositToRollup result = new qorechain.rdk.v1.Tx.MsgDepositToRollup(this);
+        if (bitField0_ != 0) { buildPartial0(result); }
+        onBuilt();
+        return result;
+      }
+
+      private void buildPartial0(qorechain.rdk.v1.Tx.MsgDepositToRollup result) {
+        int from_bitField0_ = bitField0_;
+        if (((from_bitField0_ & 0x00000001) != 0)) {
+          result.depositor_ = depositor_;
+        }
+        if (((from_bitField0_ & 0x00000002) != 0)) {
+          result.rollupId_ = rollupId_;
+        }
+        if (((from_bitField0_ & 0x00000004) != 0)) {
+          result.account_ = account_;
+        }
+        if (((from_bitField0_ & 0x00000008) != 0)) {
+          result.amount_ = amount_;
+        }
+      }
+
+      @java.lang.Override
+      public Builder mergeFrom(com.google.protobuf.Message other) {
+        if (other instanceof qorechain.rdk.v1.Tx.MsgDepositToRollup) {
+          return mergeFrom((qorechain.rdk.v1.Tx.MsgDepositToRollup)other);
+        } else {
+          super.mergeFrom(other);
+          return this;
+        }
+      }
+
+      public Builder mergeFrom(qorechain.rdk.v1.Tx.MsgDepositToRollup other) {
+        if (other == qorechain.rdk.v1.Tx.MsgDepositToRollup.getDefaultInstance()) return this;
+        if (!other.getDepositor().isEmpty()) {
+          depositor_ = other.depositor_;
+          bitField0_ |= 0x00000001;
+          onChanged();
+        }
+        if (!other.getRollupId().isEmpty()) {
+          rollupId_ = other.rollupId_;
+          bitField0_ |= 0x00000002;
+          onChanged();
+        }
+        if (!other.getAccount().isEmpty()) {
+          setAccount(other.getAccount());
+        }
+        if (other.getAmount() != 0L) {
+          setAmount(other.getAmount());
+        }
+        this.mergeUnknownFields(other.getUnknownFields());
+        onChanged();
+        return this;
+      }
+
+      @java.lang.Override
+      public final boolean isInitialized() {
+        return true;
+      }
+
+      @java.lang.Override
+      public Builder mergeFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        if (extensionRegistry == null) {
+          throw new java.lang.NullPointerException();
+        }
+        try {
+          boolean done = false;
+          while (!done) {
+            int tag = input.readTag();
+            switch (tag) {
+              case 0:
+                done = true;
+                break;
+              case 10: {
+                depositor_ = input.readStringRequireUtf8();
+                bitField0_ |= 0x00000001;
+                break;
+              } // case 10
+              case 18: {
+                rollupId_ = input.readStringRequireUtf8();
+                bitField0_ |= 0x00000002;
+                break;
+              } // case 18
+              case 26: {
+                account_ = input.readBytes();
+                bitField0_ |= 0x00000004;
+                break;
+              } // case 26
+              case 32: {
+                amount_ = input.readUInt64();
+                bitField0_ |= 0x00000008;
+                break;
+              } // case 32
+              default: {
+                if (!super.parseUnknownField(input, extensionRegistry, tag)) {
+                  done = true; // was an endgroup tag
+                }
+                break;
+              } // default:
+            } // switch (tag)
+          } // while (!done)
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          throw e.unwrapIOException();
+        } finally {
+          onChanged();
+        } // finally
+        return this;
+      }
+      private int bitField0_;
+
+      private java.lang.Object depositor_ = "";
+      /**
+       * <code>string depositor = 1 [json_name = "depositor", (.cosmos_proto.scalar) = "cosmos.AddressString"];</code>
+       * @return The depositor.
+       */
+      public java.lang.String getDepositor() {
+        java.lang.Object ref = depositor_;
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          depositor_ = s;
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
+      }
+      /**
+       * <code>string depositor = 1 [json_name = "depositor", (.cosmos_proto.scalar) = "cosmos.AddressString"];</code>
+       * @return The bytes for depositor.
+       */
+      public com.google.protobuf.ByteString
+          getDepositorBytes() {
+        java.lang.Object ref = depositor_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          depositor_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <code>string depositor = 1 [json_name = "depositor", (.cosmos_proto.scalar) = "cosmos.AddressString"];</code>
+       * @param value The depositor to set.
+       * @return This builder for chaining.
+       */
+      public Builder setDepositor(
+          java.lang.String value) {
+        if (value == null) { throw new NullPointerException(); }
+        depositor_ = value;
+        bitField0_ |= 0x00000001;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>string depositor = 1 [json_name = "depositor", (.cosmos_proto.scalar) = "cosmos.AddressString"];</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearDepositor() {
+        depositor_ = getDefaultInstance().getDepositor();
+        bitField0_ = (bitField0_ & ~0x00000001);
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>string depositor = 1 [json_name = "depositor", (.cosmos_proto.scalar) = "cosmos.AddressString"];</code>
+       * @param value The bytes for depositor to set.
+       * @return This builder for chaining.
+       */
+      public Builder setDepositorBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) { throw new NullPointerException(); }
+        checkByteStringIsUtf8(value);
+        depositor_ = value;
+        bitField0_ |= 0x00000001;
+        onChanged();
+        return this;
+      }
+
+      private java.lang.Object rollupId_ = "";
+      /**
+       * <code>string rollup_id = 2 [json_name = "rollupId", (.gogoproto.customname) = "RollupID"];</code>
+       * @return The rollupId.
+       */
+      public java.lang.String getRollupId() {
+        java.lang.Object ref = rollupId_;
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          rollupId_ = s;
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
+      }
+      /**
+       * <code>string rollup_id = 2 [json_name = "rollupId", (.gogoproto.customname) = "RollupID"];</code>
+       * @return The bytes for rollupId.
+       */
+      public com.google.protobuf.ByteString
+          getRollupIdBytes() {
+        java.lang.Object ref = rollupId_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          rollupId_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <code>string rollup_id = 2 [json_name = "rollupId", (.gogoproto.customname) = "RollupID"];</code>
+       * @param value The rollupId to set.
+       * @return This builder for chaining.
+       */
+      public Builder setRollupId(
+          java.lang.String value) {
+        if (value == null) { throw new NullPointerException(); }
+        rollupId_ = value;
+        bitField0_ |= 0x00000002;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>string rollup_id = 2 [json_name = "rollupId", (.gogoproto.customname) = "RollupID"];</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearRollupId() {
+        rollupId_ = getDefaultInstance().getRollupId();
+        bitField0_ = (bitField0_ & ~0x00000002);
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>string rollup_id = 2 [json_name = "rollupId", (.gogoproto.customname) = "RollupID"];</code>
+       * @param value The bytes for rollupId to set.
+       * @return This builder for chaining.
+       */
+      public Builder setRollupIdBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) { throw new NullPointerException(); }
+        checkByteStringIsUtf8(value);
+        rollupId_ = value;
+        bitField0_ |= 0x00000002;
+        onChanged();
+        return this;
+      }
+
+      private com.google.protobuf.ByteString account_ = com.google.protobuf.ByteString.EMPTY;
+      /**
+       * <code>bytes account = 3 [json_name = "account"];</code>
+       * @return The account.
+       */
+      @java.lang.Override
+      public com.google.protobuf.ByteString getAccount() {
+        return account_;
+      }
+      /**
+       * <code>bytes account = 3 [json_name = "account"];</code>
+       * @param value The account to set.
+       * @return This builder for chaining.
+       */
+      public Builder setAccount(com.google.protobuf.ByteString value) {
+        if (value == null) { throw new NullPointerException(); }
+        account_ = value;
+        bitField0_ |= 0x00000004;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>bytes account = 3 [json_name = "account"];</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearAccount() {
+        bitField0_ = (bitField0_ & ~0x00000004);
+        account_ = getDefaultInstance().getAccount();
+        onChanged();
+        return this;
+      }
+
+      private long amount_ ;
+      /**
+       * <code>uint64 amount = 4 [json_name = "amount"];</code>
+       * @return The amount.
+       */
+      @java.lang.Override
+      public long getAmount() {
+        return amount_;
+      }
+      /**
+       * <code>uint64 amount = 4 [json_name = "amount"];</code>
+       * @param value The amount to set.
+       * @return This builder for chaining.
+       */
+      public Builder setAmount(long value) {
+
+        amount_ = value;
+        bitField0_ |= 0x00000008;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>uint64 amount = 4 [json_name = "amount"];</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearAmount() {
+        bitField0_ = (bitField0_ & ~0x00000008);
+        amount_ = 0L;
+        onChanged();
+        return this;
+      }
+
+      // @@protoc_insertion_point(builder_scope:qorechain.rdk.v1.MsgDepositToRollup)
+    }
+
+    // @@protoc_insertion_point(class_scope:qorechain.rdk.v1.MsgDepositToRollup)
+    private static final qorechain.rdk.v1.Tx.MsgDepositToRollup DEFAULT_INSTANCE;
+    static {
+      DEFAULT_INSTANCE = new qorechain.rdk.v1.Tx.MsgDepositToRollup();
+    }
+
+    public static qorechain.rdk.v1.Tx.MsgDepositToRollup getDefaultInstance() {
+      return DEFAULT_INSTANCE;
+    }
+
+    private static final com.google.protobuf.Parser<MsgDepositToRollup>
+        PARSER = new com.google.protobuf.AbstractParser<MsgDepositToRollup>() {
+      @java.lang.Override
+      public MsgDepositToRollup parsePartialFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        Builder builder = newBuilder();
+        try {
+          builder.mergeFrom(input, extensionRegistry);
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          throw e.setUnfinishedMessage(builder.buildPartial());
+        } catch (com.google.protobuf.UninitializedMessageException e) {
+          throw e.asInvalidProtocolBufferException().setUnfinishedMessage(builder.buildPartial());
+        } catch (java.io.IOException e) {
+          throw new com.google.protobuf.InvalidProtocolBufferException(e)
+              .setUnfinishedMessage(builder.buildPartial());
+        }
+        return builder.buildPartial();
+      }
+    };
+
+    public static com.google.protobuf.Parser<MsgDepositToRollup> parser() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Parser<MsgDepositToRollup> getParserForType() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public qorechain.rdk.v1.Tx.MsgDepositToRollup getDefaultInstanceForType() {
+      return DEFAULT_INSTANCE;
+    }
+
+  }
+
+  public interface MsgDepositToRollupResponseOrBuilder extends
+      // @@protoc_insertion_point(interface_extends:qorechain.rdk.v1.MsgDepositToRollupResponse)
+      com.google.protobuf.MessageOrBuilder {
+
+    /**
+     * <pre>
+     * sequence is the inbox sequence of the deposit entry.
+     * </pre>
+     *
+     * <code>uint64 sequence = 1 [json_name = "sequence"];</code>
+     * @return The sequence.
+     */
+    long getSequence();
+  }
+  /**
+   * Protobuf type {@code qorechain.rdk.v1.MsgDepositToRollupResponse}
+   */
+  public static final class MsgDepositToRollupResponse extends
+      com.google.protobuf.GeneratedMessage implements
+      // @@protoc_insertion_point(message_implements:qorechain.rdk.v1.MsgDepositToRollupResponse)
+      MsgDepositToRollupResponseOrBuilder {
+  private static final long serialVersionUID = 0L;
+    static {
+      com.google.protobuf.RuntimeVersion.validateProtobufGencodeVersion(
+        com.google.protobuf.RuntimeVersion.RuntimeDomain.PUBLIC,
+        /* major= */ 4,
+        /* minor= */ 35,
+        /* patch= */ 1,
+        /* suffix= */ "",
+        "MsgDepositToRollupResponse");
+    }
+    // Use MsgDepositToRollupResponse.newBuilder() to construct.
+    private MsgDepositToRollupResponse(com.google.protobuf.GeneratedMessage.Builder<?> builder) {
+      super(builder);
+    }
+    private MsgDepositToRollupResponse() {
+    }
+
+    public static final com.google.protobuf.Descriptors.Descriptor
+        getDescriptor() {
+      return qorechain.rdk.v1.Tx.internal_static_qorechain_rdk_v1_MsgDepositToRollupResponse_descriptor;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Descriptors.Descriptor getDescriptorForType() {
+      return qorechain.rdk.v1.Tx.internal_static_qorechain_rdk_v1_MsgDepositToRollupResponse_descriptor;
+    }
+
+    @java.lang.Override
+    protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+        internalGetFieldAccessorTable() {
+      return qorechain.rdk.v1.Tx.internal_static_qorechain_rdk_v1_MsgDepositToRollupResponse_fieldAccessorTable
+          .ensureFieldAccessorsInitialized(
+              qorechain.rdk.v1.Tx.MsgDepositToRollupResponse.class, qorechain.rdk.v1.Tx.MsgDepositToRollupResponse.Builder.class);
+    }
+
+    public static final int SEQUENCE_FIELD_NUMBER = 1;
+    private long sequence_ = 0L;
+    /**
+     * <pre>
+     * sequence is the inbox sequence of the deposit entry.
+     * </pre>
+     *
+     * <code>uint64 sequence = 1 [json_name = "sequence"];</code>
+     * @return The sequence.
+     */
+    @java.lang.Override
+    public long getSequence() {
+      return sequence_;
+    }
+
+    private byte memoizedIsInitialized = -1;
+    @java.lang.Override
+    public final boolean isInitialized() {
+      byte isInitialized = memoizedIsInitialized;
+      if (isInitialized == 1) return true;
+      if (isInitialized == 0) return false;
+
+      memoizedIsInitialized = 1;
+      return true;
+    }
+
+    @java.lang.Override
+    public void writeTo(com.google.protobuf.CodedOutputStream output)
+                        throws java.io.IOException {
+      if (sequence_ != 0L) {
+        output.writeUInt64(1, sequence_);
+      }
+      getUnknownFields().writeTo(output);
+    }
+    private int computeSerializedSize_0() {
+      int size = 0;
+      if (sequence_ != 0L) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeUInt64Size(1, sequence_);
+      }
+      return size;
+    }
+    @java.lang.Override
+    public int getSerializedSize() {
+      int size = memoizedSize;
+      if (size != -1) return size;
+
+      size = 0;
+      size += computeSerializedSize_0();
+      size += getUnknownFields().getSerializedSize();
+      memoizedSize = size;
+      return size;
+    }
+
+    @java.lang.Override
+    public boolean equals(final java.lang.Object obj) {
+      if (obj == this) {
+       return true;
+      }
+      if (!(obj instanceof qorechain.rdk.v1.Tx.MsgDepositToRollupResponse)) {
+        return super.equals(obj);
+      }
+      qorechain.rdk.v1.Tx.MsgDepositToRollupResponse other = (qorechain.rdk.v1.Tx.MsgDepositToRollupResponse) obj;
+
+      if (getSequence()
+          != other.getSequence()) return false;
+      if (!getUnknownFields().equals(other.getUnknownFields())) return false;
+      return true;
+    }
+
+    @java.lang.Override
+    public int hashCode() {
+      if (memoizedHashCode != 0) {
+        return memoizedHashCode;
+      }
+      int hash = 41;
+      hash = (19 * hash) + getDescriptor().hashCode();
+      hash = (37 * hash) + SEQUENCE_FIELD_NUMBER;
+      hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
+          getSequence());
+      hash = (29 * hash) + getUnknownFields().hashCode();
+      memoizedHashCode = hash;
+      return hash;
+    }
+
+    public static qorechain.rdk.v1.Tx.MsgDepositToRollupResponse parseFrom(
+        java.nio.ByteBuffer data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static qorechain.rdk.v1.Tx.MsgDepositToRollupResponse parseFrom(
+        java.nio.ByteBuffer data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static qorechain.rdk.v1.Tx.MsgDepositToRollupResponse parseFrom(
+        com.google.protobuf.ByteString data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static qorechain.rdk.v1.Tx.MsgDepositToRollupResponse parseFrom(
+        com.google.protobuf.ByteString data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static qorechain.rdk.v1.Tx.MsgDepositToRollupResponse parseFrom(byte[] data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static qorechain.rdk.v1.Tx.MsgDepositToRollupResponse parseFrom(
+        byte[] data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static qorechain.rdk.v1.Tx.MsgDepositToRollupResponse parseFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input);
+    }
+    public static qorechain.rdk.v1.Tx.MsgDepositToRollupResponse parseFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    public static qorechain.rdk.v1.Tx.MsgDepositToRollupResponse parseDelimitedFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseDelimitedWithIOException(PARSER, input);
+    }
+
+    public static qorechain.rdk.v1.Tx.MsgDepositToRollupResponse parseDelimitedFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static qorechain.rdk.v1.Tx.MsgDepositToRollupResponse parseFrom(
+        com.google.protobuf.CodedInputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input);
+    }
+    public static qorechain.rdk.v1.Tx.MsgDepositToRollupResponse parseFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    @java.lang.Override
+    public Builder newBuilderForType() { return newBuilder(); }
+    public static Builder newBuilder() {
+      return DEFAULT_INSTANCE.toBuilder();
+    }
+    public static Builder newBuilder(qorechain.rdk.v1.Tx.MsgDepositToRollupResponse prototype) {
+      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+    }
+    @java.lang.Override
+    public Builder toBuilder() {
+      return this == DEFAULT_INSTANCE
+          ? new Builder() : new Builder().mergeFrom(this);
+    }
+
+    @java.lang.Override
+    protected Builder newBuilderForType(
+        com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+      Builder builder = new Builder(parent);
+      return builder;
+    }
+    /**
+     * Protobuf type {@code qorechain.rdk.v1.MsgDepositToRollupResponse}
+     */
+    public static final class Builder extends
+        com.google.protobuf.GeneratedMessage.Builder<Builder> implements
+        // @@protoc_insertion_point(builder_implements:qorechain.rdk.v1.MsgDepositToRollupResponse)
+        qorechain.rdk.v1.Tx.MsgDepositToRollupResponseOrBuilder {
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return qorechain.rdk.v1.Tx.internal_static_qorechain_rdk_v1_MsgDepositToRollupResponse_descriptor;
+      }
+
+      @java.lang.Override
+      protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return qorechain.rdk.v1.Tx.internal_static_qorechain_rdk_v1_MsgDepositToRollupResponse_fieldAccessorTable
+            .ensureFieldAccessorsInitialized(
+                qorechain.rdk.v1.Tx.MsgDepositToRollupResponse.class, qorechain.rdk.v1.Tx.MsgDepositToRollupResponse.Builder.class);
+      }
+
+      // Construct using qorechain.rdk.v1.Tx.MsgDepositToRollupResponse.newBuilder()
+      private Builder() {
+
+      }
+
+      private Builder(
+          com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+        super(parent);
+
+      }
+      @java.lang.Override
+      public Builder clear() {
+        super.clear();
+        bitField0_ = 0;
+        sequence_ = 0L;
+        return this;
+      }
+
+      @java.lang.Override
+      public com.google.protobuf.Descriptors.Descriptor
+          getDescriptorForType() {
+        return qorechain.rdk.v1.Tx.internal_static_qorechain_rdk_v1_MsgDepositToRollupResponse_descriptor;
+      }
+
+      @java.lang.Override
+      public qorechain.rdk.v1.Tx.MsgDepositToRollupResponse getDefaultInstanceForType() {
+        return qorechain.rdk.v1.Tx.MsgDepositToRollupResponse.getDefaultInstance();
+      }
+
+      @java.lang.Override
+      public qorechain.rdk.v1.Tx.MsgDepositToRollupResponse build() {
+        qorechain.rdk.v1.Tx.MsgDepositToRollupResponse result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(result);
+        }
+        return result;
+      }
+
+      @java.lang.Override
+      public qorechain.rdk.v1.Tx.MsgDepositToRollupResponse buildPartial() {
+        qorechain.rdk.v1.Tx.MsgDepositToRollupResponse result = new qorechain.rdk.v1.Tx.MsgDepositToRollupResponse(this);
+        if (bitField0_ != 0) { buildPartial0(result); }
+        onBuilt();
+        return result;
+      }
+
+      private void buildPartial0(qorechain.rdk.v1.Tx.MsgDepositToRollupResponse result) {
+        int from_bitField0_ = bitField0_;
+        if (((from_bitField0_ & 0x00000001) != 0)) {
+          result.sequence_ = sequence_;
+        }
+      }
+
+      @java.lang.Override
+      public Builder mergeFrom(com.google.protobuf.Message other) {
+        if (other instanceof qorechain.rdk.v1.Tx.MsgDepositToRollupResponse) {
+          return mergeFrom((qorechain.rdk.v1.Tx.MsgDepositToRollupResponse)other);
+        } else {
+          super.mergeFrom(other);
+          return this;
+        }
+      }
+
+      public Builder mergeFrom(qorechain.rdk.v1.Tx.MsgDepositToRollupResponse other) {
+        if (other == qorechain.rdk.v1.Tx.MsgDepositToRollupResponse.getDefaultInstance()) return this;
+        if (other.getSequence() != 0L) {
+          setSequence(other.getSequence());
+        }
+        this.mergeUnknownFields(other.getUnknownFields());
+        onChanged();
+        return this;
+      }
+
+      @java.lang.Override
+      public final boolean isInitialized() {
+        return true;
+      }
+
+      @java.lang.Override
+      public Builder mergeFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        if (extensionRegistry == null) {
+          throw new java.lang.NullPointerException();
+        }
+        try {
+          boolean done = false;
+          while (!done) {
+            int tag = input.readTag();
+            switch (tag) {
+              case 0:
+                done = true;
+                break;
+              case 8: {
+                sequence_ = input.readUInt64();
+                bitField0_ |= 0x00000001;
+                break;
+              } // case 8
+              default: {
+                if (!super.parseUnknownField(input, extensionRegistry, tag)) {
+                  done = true; // was an endgroup tag
+                }
+                break;
+              } // default:
+            } // switch (tag)
+          } // while (!done)
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          throw e.unwrapIOException();
+        } finally {
+          onChanged();
+        } // finally
+        return this;
+      }
+      private int bitField0_;
+
+      private long sequence_ ;
+      /**
+       * <pre>
+       * sequence is the inbox sequence of the deposit entry.
+       * </pre>
+       *
+       * <code>uint64 sequence = 1 [json_name = "sequence"];</code>
+       * @return The sequence.
+       */
+      @java.lang.Override
+      public long getSequence() {
+        return sequence_;
+      }
+      /**
+       * <pre>
+       * sequence is the inbox sequence of the deposit entry.
+       * </pre>
+       *
+       * <code>uint64 sequence = 1 [json_name = "sequence"];</code>
+       * @param value The sequence to set.
+       * @return This builder for chaining.
+       */
+      public Builder setSequence(long value) {
+
+        sequence_ = value;
+        bitField0_ |= 0x00000001;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * sequence is the inbox sequence of the deposit entry.
+       * </pre>
+       *
+       * <code>uint64 sequence = 1 [json_name = "sequence"];</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearSequence() {
+        bitField0_ = (bitField0_ & ~0x00000001);
+        sequence_ = 0L;
+        onChanged();
+        return this;
+      }
+
+      // @@protoc_insertion_point(builder_scope:qorechain.rdk.v1.MsgDepositToRollupResponse)
+    }
+
+    // @@protoc_insertion_point(class_scope:qorechain.rdk.v1.MsgDepositToRollupResponse)
+    private static final qorechain.rdk.v1.Tx.MsgDepositToRollupResponse DEFAULT_INSTANCE;
+    static {
+      DEFAULT_INSTANCE = new qorechain.rdk.v1.Tx.MsgDepositToRollupResponse();
+    }
+
+    public static qorechain.rdk.v1.Tx.MsgDepositToRollupResponse getDefaultInstance() {
+      return DEFAULT_INSTANCE;
+    }
+
+    private static final com.google.protobuf.Parser<MsgDepositToRollupResponse>
+        PARSER = new com.google.protobuf.AbstractParser<MsgDepositToRollupResponse>() {
+      @java.lang.Override
+      public MsgDepositToRollupResponse parsePartialFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        Builder builder = newBuilder();
+        try {
+          builder.mergeFrom(input, extensionRegistry);
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          throw e.setUnfinishedMessage(builder.buildPartial());
+        } catch (com.google.protobuf.UninitializedMessageException e) {
+          throw e.asInvalidProtocolBufferException().setUnfinishedMessage(builder.buildPartial());
+        } catch (java.io.IOException e) {
+          throw new com.google.protobuf.InvalidProtocolBufferException(e)
+              .setUnfinishedMessage(builder.buildPartial());
+        }
+        return builder.buildPartial();
+      }
+    };
+
+    public static com.google.protobuf.Parser<MsgDepositToRollupResponse> parser() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Parser<MsgDepositToRollupResponse> getParserForType() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public qorechain.rdk.v1.Tx.MsgDepositToRollupResponse getDefaultInstanceForType() {
+      return DEFAULT_INSTANCE;
+    }
+
+  }
+
+  public interface MsgBondRollupSubmitterOrBuilder extends
+      // @@protoc_insertion_point(interface_extends:qorechain.rdk.v1.MsgBondRollupSubmitter)
+      com.google.protobuf.MessageOrBuilder {
+
+    /**
+     * <code>string submitter = 1 [json_name = "submitter", (.cosmos_proto.scalar) = "cosmos.AddressString"];</code>
+     * @return The submitter.
+     */
+    java.lang.String getSubmitter();
+    /**
+     * <code>string submitter = 1 [json_name = "submitter", (.cosmos_proto.scalar) = "cosmos.AddressString"];</code>
+     * @return The bytes for submitter.
+     */
+    com.google.protobuf.ByteString
+        getSubmitterBytes();
+
+    /**
+     * <code>string rollup_id = 2 [json_name = "rollupId", (.gogoproto.customname) = "RollupID"];</code>
+     * @return The rollupId.
+     */
+    java.lang.String getRollupId();
+    /**
+     * <code>string rollup_id = 2 [json_name = "rollupId", (.gogoproto.customname) = "RollupID"];</code>
+     * @return The bytes for rollupId.
+     */
+    com.google.protobuf.ByteString
+        getRollupIdBytes();
+
+    /**
+     * <code>uint64 amount = 3 [json_name = "amount"];</code>
+     * @return The amount.
+     */
+    long getAmount();
+  }
+  /**
+   * <pre>
+   * MsgBondRollupSubmitter adds amount uqor to submitter's bond on a
+   * qledger-v1 rollup. Served from v3.2.8 (rdk-optimistic-reexec).
+   * </pre>
+   *
+   * Protobuf type {@code qorechain.rdk.v1.MsgBondRollupSubmitter}
+   */
+  public static final class MsgBondRollupSubmitter extends
+      com.google.protobuf.GeneratedMessage implements
+      // @@protoc_insertion_point(message_implements:qorechain.rdk.v1.MsgBondRollupSubmitter)
+      MsgBondRollupSubmitterOrBuilder {
+  private static final long serialVersionUID = 0L;
+    static {
+      com.google.protobuf.RuntimeVersion.validateProtobufGencodeVersion(
+        com.google.protobuf.RuntimeVersion.RuntimeDomain.PUBLIC,
+        /* major= */ 4,
+        /* minor= */ 35,
+        /* patch= */ 1,
+        /* suffix= */ "",
+        "MsgBondRollupSubmitter");
+    }
+    // Use MsgBondRollupSubmitter.newBuilder() to construct.
+    private MsgBondRollupSubmitter(com.google.protobuf.GeneratedMessage.Builder<?> builder) {
+      super(builder);
+    }
+    private MsgBondRollupSubmitter() {
+      submitter_ = "";
+      rollupId_ = "";
+    }
+
+    public static final com.google.protobuf.Descriptors.Descriptor
+        getDescriptor() {
+      return qorechain.rdk.v1.Tx.internal_static_qorechain_rdk_v1_MsgBondRollupSubmitter_descriptor;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Descriptors.Descriptor getDescriptorForType() {
+      return qorechain.rdk.v1.Tx.internal_static_qorechain_rdk_v1_MsgBondRollupSubmitter_descriptor;
+    }
+
+    @java.lang.Override
+    protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+        internalGetFieldAccessorTable() {
+      return qorechain.rdk.v1.Tx.internal_static_qorechain_rdk_v1_MsgBondRollupSubmitter_fieldAccessorTable
+          .ensureFieldAccessorsInitialized(
+              qorechain.rdk.v1.Tx.MsgBondRollupSubmitter.class, qorechain.rdk.v1.Tx.MsgBondRollupSubmitter.Builder.class);
+    }
+
+    public static final int SUBMITTER_FIELD_NUMBER = 1;
+    @SuppressWarnings("serial")
+    private volatile java.lang.Object submitter_ = "";
+    /**
+     * <code>string submitter = 1 [json_name = "submitter", (.cosmos_proto.scalar) = "cosmos.AddressString"];</code>
+     * @return The submitter.
+     */
+    @java.lang.Override
+    public java.lang.String getSubmitter() {
+      java.lang.Object ref = submitter_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        submitter_ = s;
+        return s;
+      }
+    }
+    /**
+     * <code>string submitter = 1 [json_name = "submitter", (.cosmos_proto.scalar) = "cosmos.AddressString"];</code>
+     * @return The bytes for submitter.
+     */
+    @java.lang.Override
+    public com.google.protobuf.ByteString
+        getSubmitterBytes() {
+      java.lang.Object ref = submitter_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        submitter_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
+    public static final int ROLLUP_ID_FIELD_NUMBER = 2;
+    @SuppressWarnings("serial")
+    private volatile java.lang.Object rollupId_ = "";
+    /**
+     * <code>string rollup_id = 2 [json_name = "rollupId", (.gogoproto.customname) = "RollupID"];</code>
+     * @return The rollupId.
+     */
+    @java.lang.Override
+    public java.lang.String getRollupId() {
+      java.lang.Object ref = rollupId_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        rollupId_ = s;
+        return s;
+      }
+    }
+    /**
+     * <code>string rollup_id = 2 [json_name = "rollupId", (.gogoproto.customname) = "RollupID"];</code>
+     * @return The bytes for rollupId.
+     */
+    @java.lang.Override
+    public com.google.protobuf.ByteString
+        getRollupIdBytes() {
+      java.lang.Object ref = rollupId_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        rollupId_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
+    public static final int AMOUNT_FIELD_NUMBER = 3;
+    private long amount_ = 0L;
+    /**
+     * <code>uint64 amount = 3 [json_name = "amount"];</code>
+     * @return The amount.
+     */
+    @java.lang.Override
+    public long getAmount() {
+      return amount_;
+    }
+
+    private byte memoizedIsInitialized = -1;
+    @java.lang.Override
+    public final boolean isInitialized() {
+      byte isInitialized = memoizedIsInitialized;
+      if (isInitialized == 1) return true;
+      if (isInitialized == 0) return false;
+
+      memoizedIsInitialized = 1;
+      return true;
+    }
+
+    @java.lang.Override
+    public void writeTo(com.google.protobuf.CodedOutputStream output)
+                        throws java.io.IOException {
+      if (!com.google.protobuf.GeneratedMessage.isStringEmpty(submitter_)) {
+        com.google.protobuf.GeneratedMessage.writeString(output, 1, submitter_);
+      }
+      if (!com.google.protobuf.GeneratedMessage.isStringEmpty(rollupId_)) {
+        com.google.protobuf.GeneratedMessage.writeString(output, 2, rollupId_);
+      }
+      if (amount_ != 0L) {
+        output.writeUInt64(3, amount_);
+      }
+      getUnknownFields().writeTo(output);
+    }
+    private int computeSerializedSize_0() {
+      int size = 0;
+      if (!com.google.protobuf.GeneratedMessage.isStringEmpty(submitter_)) {
+        size += com.google.protobuf.GeneratedMessage.computeStringSize(1, submitter_);
+      }
+      if (!com.google.protobuf.GeneratedMessage.isStringEmpty(rollupId_)) {
+        size += com.google.protobuf.GeneratedMessage.computeStringSize(2, rollupId_);
+      }
+      if (amount_ != 0L) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeUInt64Size(3, amount_);
+      }
+      return size;
+    }
+    @java.lang.Override
+    public int getSerializedSize() {
+      int size = memoizedSize;
+      if (size != -1) return size;
+
+      size = 0;
+      size += computeSerializedSize_0();
+      size += getUnknownFields().getSerializedSize();
+      memoizedSize = size;
+      return size;
+    }
+
+    @java.lang.Override
+    public boolean equals(final java.lang.Object obj) {
+      if (obj == this) {
+       return true;
+      }
+      if (!(obj instanceof qorechain.rdk.v1.Tx.MsgBondRollupSubmitter)) {
+        return super.equals(obj);
+      }
+      qorechain.rdk.v1.Tx.MsgBondRollupSubmitter other = (qorechain.rdk.v1.Tx.MsgBondRollupSubmitter) obj;
+
+      if (!getSubmitter()
+          .equals(other.getSubmitter())) return false;
+      if (!getRollupId()
+          .equals(other.getRollupId())) return false;
+      if (getAmount()
+          != other.getAmount()) return false;
+      if (!getUnknownFields().equals(other.getUnknownFields())) return false;
+      return true;
+    }
+
+    @java.lang.Override
+    public int hashCode() {
+      if (memoizedHashCode != 0) {
+        return memoizedHashCode;
+      }
+      int hash = 41;
+      hash = (19 * hash) + getDescriptor().hashCode();
+      hash = (37 * hash) + SUBMITTER_FIELD_NUMBER;
+      hash = (53 * hash) + getSubmitter().hashCode();
+      hash = (37 * hash) + ROLLUP_ID_FIELD_NUMBER;
+      hash = (53 * hash) + getRollupId().hashCode();
+      hash = (37 * hash) + AMOUNT_FIELD_NUMBER;
+      hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
+          getAmount());
+      hash = (29 * hash) + getUnknownFields().hashCode();
+      memoizedHashCode = hash;
+      return hash;
+    }
+
+    public static qorechain.rdk.v1.Tx.MsgBondRollupSubmitter parseFrom(
+        java.nio.ByteBuffer data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static qorechain.rdk.v1.Tx.MsgBondRollupSubmitter parseFrom(
+        java.nio.ByteBuffer data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static qorechain.rdk.v1.Tx.MsgBondRollupSubmitter parseFrom(
+        com.google.protobuf.ByteString data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static qorechain.rdk.v1.Tx.MsgBondRollupSubmitter parseFrom(
+        com.google.protobuf.ByteString data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static qorechain.rdk.v1.Tx.MsgBondRollupSubmitter parseFrom(byte[] data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static qorechain.rdk.v1.Tx.MsgBondRollupSubmitter parseFrom(
+        byte[] data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static qorechain.rdk.v1.Tx.MsgBondRollupSubmitter parseFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input);
+    }
+    public static qorechain.rdk.v1.Tx.MsgBondRollupSubmitter parseFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    public static qorechain.rdk.v1.Tx.MsgBondRollupSubmitter parseDelimitedFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseDelimitedWithIOException(PARSER, input);
+    }
+
+    public static qorechain.rdk.v1.Tx.MsgBondRollupSubmitter parseDelimitedFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static qorechain.rdk.v1.Tx.MsgBondRollupSubmitter parseFrom(
+        com.google.protobuf.CodedInputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input);
+    }
+    public static qorechain.rdk.v1.Tx.MsgBondRollupSubmitter parseFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    @java.lang.Override
+    public Builder newBuilderForType() { return newBuilder(); }
+    public static Builder newBuilder() {
+      return DEFAULT_INSTANCE.toBuilder();
+    }
+    public static Builder newBuilder(qorechain.rdk.v1.Tx.MsgBondRollupSubmitter prototype) {
+      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+    }
+    @java.lang.Override
+    public Builder toBuilder() {
+      return this == DEFAULT_INSTANCE
+          ? new Builder() : new Builder().mergeFrom(this);
+    }
+
+    @java.lang.Override
+    protected Builder newBuilderForType(
+        com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+      Builder builder = new Builder(parent);
+      return builder;
+    }
+    /**
+     * <pre>
+     * MsgBondRollupSubmitter adds amount uqor to submitter's bond on a
+     * qledger-v1 rollup. Served from v3.2.8 (rdk-optimistic-reexec).
+     * </pre>
+     *
+     * Protobuf type {@code qorechain.rdk.v1.MsgBondRollupSubmitter}
+     */
+    public static final class Builder extends
+        com.google.protobuf.GeneratedMessage.Builder<Builder> implements
+        // @@protoc_insertion_point(builder_implements:qorechain.rdk.v1.MsgBondRollupSubmitter)
+        qorechain.rdk.v1.Tx.MsgBondRollupSubmitterOrBuilder {
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return qorechain.rdk.v1.Tx.internal_static_qorechain_rdk_v1_MsgBondRollupSubmitter_descriptor;
+      }
+
+      @java.lang.Override
+      protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return qorechain.rdk.v1.Tx.internal_static_qorechain_rdk_v1_MsgBondRollupSubmitter_fieldAccessorTable
+            .ensureFieldAccessorsInitialized(
+                qorechain.rdk.v1.Tx.MsgBondRollupSubmitter.class, qorechain.rdk.v1.Tx.MsgBondRollupSubmitter.Builder.class);
+      }
+
+      // Construct using qorechain.rdk.v1.Tx.MsgBondRollupSubmitter.newBuilder()
+      private Builder() {
+
+      }
+
+      private Builder(
+          com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+        super(parent);
+
+      }
+      @java.lang.Override
+      public Builder clear() {
+        super.clear();
+        bitField0_ = 0;
+        submitter_ = "";
+        rollupId_ = "";
+        amount_ = 0L;
+        return this;
+      }
+
+      @java.lang.Override
+      public com.google.protobuf.Descriptors.Descriptor
+          getDescriptorForType() {
+        return qorechain.rdk.v1.Tx.internal_static_qorechain_rdk_v1_MsgBondRollupSubmitter_descriptor;
+      }
+
+      @java.lang.Override
+      public qorechain.rdk.v1.Tx.MsgBondRollupSubmitter getDefaultInstanceForType() {
+        return qorechain.rdk.v1.Tx.MsgBondRollupSubmitter.getDefaultInstance();
+      }
+
+      @java.lang.Override
+      public qorechain.rdk.v1.Tx.MsgBondRollupSubmitter build() {
+        qorechain.rdk.v1.Tx.MsgBondRollupSubmitter result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(result);
+        }
+        return result;
+      }
+
+      @java.lang.Override
+      public qorechain.rdk.v1.Tx.MsgBondRollupSubmitter buildPartial() {
+        qorechain.rdk.v1.Tx.MsgBondRollupSubmitter result = new qorechain.rdk.v1.Tx.MsgBondRollupSubmitter(this);
+        if (bitField0_ != 0) { buildPartial0(result); }
+        onBuilt();
+        return result;
+      }
+
+      private void buildPartial0(qorechain.rdk.v1.Tx.MsgBondRollupSubmitter result) {
+        int from_bitField0_ = bitField0_;
+        if (((from_bitField0_ & 0x00000001) != 0)) {
+          result.submitter_ = submitter_;
+        }
+        if (((from_bitField0_ & 0x00000002) != 0)) {
+          result.rollupId_ = rollupId_;
+        }
+        if (((from_bitField0_ & 0x00000004) != 0)) {
+          result.amount_ = amount_;
+        }
+      }
+
+      @java.lang.Override
+      public Builder mergeFrom(com.google.protobuf.Message other) {
+        if (other instanceof qorechain.rdk.v1.Tx.MsgBondRollupSubmitter) {
+          return mergeFrom((qorechain.rdk.v1.Tx.MsgBondRollupSubmitter)other);
+        } else {
+          super.mergeFrom(other);
+          return this;
+        }
+      }
+
+      public Builder mergeFrom(qorechain.rdk.v1.Tx.MsgBondRollupSubmitter other) {
+        if (other == qorechain.rdk.v1.Tx.MsgBondRollupSubmitter.getDefaultInstance()) return this;
+        if (!other.getSubmitter().isEmpty()) {
+          submitter_ = other.submitter_;
+          bitField0_ |= 0x00000001;
+          onChanged();
+        }
+        if (!other.getRollupId().isEmpty()) {
+          rollupId_ = other.rollupId_;
+          bitField0_ |= 0x00000002;
+          onChanged();
+        }
+        if (other.getAmount() != 0L) {
+          setAmount(other.getAmount());
+        }
+        this.mergeUnknownFields(other.getUnknownFields());
+        onChanged();
+        return this;
+      }
+
+      @java.lang.Override
+      public final boolean isInitialized() {
+        return true;
+      }
+
+      @java.lang.Override
+      public Builder mergeFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        if (extensionRegistry == null) {
+          throw new java.lang.NullPointerException();
+        }
+        try {
+          boolean done = false;
+          while (!done) {
+            int tag = input.readTag();
+            switch (tag) {
+              case 0:
+                done = true;
+                break;
+              case 10: {
+                submitter_ = input.readStringRequireUtf8();
+                bitField0_ |= 0x00000001;
+                break;
+              } // case 10
+              case 18: {
+                rollupId_ = input.readStringRequireUtf8();
+                bitField0_ |= 0x00000002;
+                break;
+              } // case 18
+              case 24: {
+                amount_ = input.readUInt64();
+                bitField0_ |= 0x00000004;
+                break;
+              } // case 24
+              default: {
+                if (!super.parseUnknownField(input, extensionRegistry, tag)) {
+                  done = true; // was an endgroup tag
+                }
+                break;
+              } // default:
+            } // switch (tag)
+          } // while (!done)
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          throw e.unwrapIOException();
+        } finally {
+          onChanged();
+        } // finally
+        return this;
+      }
+      private int bitField0_;
+
+      private java.lang.Object submitter_ = "";
+      /**
+       * <code>string submitter = 1 [json_name = "submitter", (.cosmos_proto.scalar) = "cosmos.AddressString"];</code>
+       * @return The submitter.
+       */
+      public java.lang.String getSubmitter() {
+        java.lang.Object ref = submitter_;
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          submitter_ = s;
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
+      }
+      /**
+       * <code>string submitter = 1 [json_name = "submitter", (.cosmos_proto.scalar) = "cosmos.AddressString"];</code>
+       * @return The bytes for submitter.
+       */
+      public com.google.protobuf.ByteString
+          getSubmitterBytes() {
+        java.lang.Object ref = submitter_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          submitter_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <code>string submitter = 1 [json_name = "submitter", (.cosmos_proto.scalar) = "cosmos.AddressString"];</code>
+       * @param value The submitter to set.
+       * @return This builder for chaining.
+       */
+      public Builder setSubmitter(
+          java.lang.String value) {
+        if (value == null) { throw new NullPointerException(); }
+        submitter_ = value;
+        bitField0_ |= 0x00000001;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>string submitter = 1 [json_name = "submitter", (.cosmos_proto.scalar) = "cosmos.AddressString"];</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearSubmitter() {
+        submitter_ = getDefaultInstance().getSubmitter();
+        bitField0_ = (bitField0_ & ~0x00000001);
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>string submitter = 1 [json_name = "submitter", (.cosmos_proto.scalar) = "cosmos.AddressString"];</code>
+       * @param value The bytes for submitter to set.
+       * @return This builder for chaining.
+       */
+      public Builder setSubmitterBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) { throw new NullPointerException(); }
+        checkByteStringIsUtf8(value);
+        submitter_ = value;
+        bitField0_ |= 0x00000001;
+        onChanged();
+        return this;
+      }
+
+      private java.lang.Object rollupId_ = "";
+      /**
+       * <code>string rollup_id = 2 [json_name = "rollupId", (.gogoproto.customname) = "RollupID"];</code>
+       * @return The rollupId.
+       */
+      public java.lang.String getRollupId() {
+        java.lang.Object ref = rollupId_;
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          rollupId_ = s;
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
+      }
+      /**
+       * <code>string rollup_id = 2 [json_name = "rollupId", (.gogoproto.customname) = "RollupID"];</code>
+       * @return The bytes for rollupId.
+       */
+      public com.google.protobuf.ByteString
+          getRollupIdBytes() {
+        java.lang.Object ref = rollupId_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          rollupId_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <code>string rollup_id = 2 [json_name = "rollupId", (.gogoproto.customname) = "RollupID"];</code>
+       * @param value The rollupId to set.
+       * @return This builder for chaining.
+       */
+      public Builder setRollupId(
+          java.lang.String value) {
+        if (value == null) { throw new NullPointerException(); }
+        rollupId_ = value;
+        bitField0_ |= 0x00000002;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>string rollup_id = 2 [json_name = "rollupId", (.gogoproto.customname) = "RollupID"];</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearRollupId() {
+        rollupId_ = getDefaultInstance().getRollupId();
+        bitField0_ = (bitField0_ & ~0x00000002);
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>string rollup_id = 2 [json_name = "rollupId", (.gogoproto.customname) = "RollupID"];</code>
+       * @param value The bytes for rollupId to set.
+       * @return This builder for chaining.
+       */
+      public Builder setRollupIdBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) { throw new NullPointerException(); }
+        checkByteStringIsUtf8(value);
+        rollupId_ = value;
+        bitField0_ |= 0x00000002;
+        onChanged();
+        return this;
+      }
+
+      private long amount_ ;
+      /**
+       * <code>uint64 amount = 3 [json_name = "amount"];</code>
+       * @return The amount.
+       */
+      @java.lang.Override
+      public long getAmount() {
+        return amount_;
+      }
+      /**
+       * <code>uint64 amount = 3 [json_name = "amount"];</code>
+       * @param value The amount to set.
+       * @return This builder for chaining.
+       */
+      public Builder setAmount(long value) {
+
+        amount_ = value;
+        bitField0_ |= 0x00000004;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>uint64 amount = 3 [json_name = "amount"];</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearAmount() {
+        bitField0_ = (bitField0_ & ~0x00000004);
+        amount_ = 0L;
+        onChanged();
+        return this;
+      }
+
+      // @@protoc_insertion_point(builder_scope:qorechain.rdk.v1.MsgBondRollupSubmitter)
+    }
+
+    // @@protoc_insertion_point(class_scope:qorechain.rdk.v1.MsgBondRollupSubmitter)
+    private static final qorechain.rdk.v1.Tx.MsgBondRollupSubmitter DEFAULT_INSTANCE;
+    static {
+      DEFAULT_INSTANCE = new qorechain.rdk.v1.Tx.MsgBondRollupSubmitter();
+    }
+
+    public static qorechain.rdk.v1.Tx.MsgBondRollupSubmitter getDefaultInstance() {
+      return DEFAULT_INSTANCE;
+    }
+
+    private static final com.google.protobuf.Parser<MsgBondRollupSubmitter>
+        PARSER = new com.google.protobuf.AbstractParser<MsgBondRollupSubmitter>() {
+      @java.lang.Override
+      public MsgBondRollupSubmitter parsePartialFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        Builder builder = newBuilder();
+        try {
+          builder.mergeFrom(input, extensionRegistry);
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          throw e.setUnfinishedMessage(builder.buildPartial());
+        } catch (com.google.protobuf.UninitializedMessageException e) {
+          throw e.asInvalidProtocolBufferException().setUnfinishedMessage(builder.buildPartial());
+        } catch (java.io.IOException e) {
+          throw new com.google.protobuf.InvalidProtocolBufferException(e)
+              .setUnfinishedMessage(builder.buildPartial());
+        }
+        return builder.buildPartial();
+      }
+    };
+
+    public static com.google.protobuf.Parser<MsgBondRollupSubmitter> parser() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Parser<MsgBondRollupSubmitter> getParserForType() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public qorechain.rdk.v1.Tx.MsgBondRollupSubmitter getDefaultInstanceForType() {
+      return DEFAULT_INSTANCE;
+    }
+
+  }
+
+  public interface MsgBondRollupSubmitterResponseOrBuilder extends
+      // @@protoc_insertion_point(interface_extends:qorechain.rdk.v1.MsgBondRollupSubmitterResponse)
+      com.google.protobuf.MessageOrBuilder {
+
+    /**
+     * <code>uint64 bond = 1 [json_name = "bond"];</code>
+     * @return The bond.
+     */
+    long getBond();
+  }
+  /**
+   * Protobuf type {@code qorechain.rdk.v1.MsgBondRollupSubmitterResponse}
+   */
+  public static final class MsgBondRollupSubmitterResponse extends
+      com.google.protobuf.GeneratedMessage implements
+      // @@protoc_insertion_point(message_implements:qorechain.rdk.v1.MsgBondRollupSubmitterResponse)
+      MsgBondRollupSubmitterResponseOrBuilder {
+  private static final long serialVersionUID = 0L;
+    static {
+      com.google.protobuf.RuntimeVersion.validateProtobufGencodeVersion(
+        com.google.protobuf.RuntimeVersion.RuntimeDomain.PUBLIC,
+        /* major= */ 4,
+        /* minor= */ 35,
+        /* patch= */ 1,
+        /* suffix= */ "",
+        "MsgBondRollupSubmitterResponse");
+    }
+    // Use MsgBondRollupSubmitterResponse.newBuilder() to construct.
+    private MsgBondRollupSubmitterResponse(com.google.protobuf.GeneratedMessage.Builder<?> builder) {
+      super(builder);
+    }
+    private MsgBondRollupSubmitterResponse() {
+    }
+
+    public static final com.google.protobuf.Descriptors.Descriptor
+        getDescriptor() {
+      return qorechain.rdk.v1.Tx.internal_static_qorechain_rdk_v1_MsgBondRollupSubmitterResponse_descriptor;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Descriptors.Descriptor getDescriptorForType() {
+      return qorechain.rdk.v1.Tx.internal_static_qorechain_rdk_v1_MsgBondRollupSubmitterResponse_descriptor;
+    }
+
+    @java.lang.Override
+    protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+        internalGetFieldAccessorTable() {
+      return qorechain.rdk.v1.Tx.internal_static_qorechain_rdk_v1_MsgBondRollupSubmitterResponse_fieldAccessorTable
+          .ensureFieldAccessorsInitialized(
+              qorechain.rdk.v1.Tx.MsgBondRollupSubmitterResponse.class, qorechain.rdk.v1.Tx.MsgBondRollupSubmitterResponse.Builder.class);
+    }
+
+    public static final int BOND_FIELD_NUMBER = 1;
+    private long bond_ = 0L;
+    /**
+     * <code>uint64 bond = 1 [json_name = "bond"];</code>
+     * @return The bond.
+     */
+    @java.lang.Override
+    public long getBond() {
+      return bond_;
+    }
+
+    private byte memoizedIsInitialized = -1;
+    @java.lang.Override
+    public final boolean isInitialized() {
+      byte isInitialized = memoizedIsInitialized;
+      if (isInitialized == 1) return true;
+      if (isInitialized == 0) return false;
+
+      memoizedIsInitialized = 1;
+      return true;
+    }
+
+    @java.lang.Override
+    public void writeTo(com.google.protobuf.CodedOutputStream output)
+                        throws java.io.IOException {
+      if (bond_ != 0L) {
+        output.writeUInt64(1, bond_);
+      }
+      getUnknownFields().writeTo(output);
+    }
+    private int computeSerializedSize_0() {
+      int size = 0;
+      if (bond_ != 0L) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeUInt64Size(1, bond_);
+      }
+      return size;
+    }
+    @java.lang.Override
+    public int getSerializedSize() {
+      int size = memoizedSize;
+      if (size != -1) return size;
+
+      size = 0;
+      size += computeSerializedSize_0();
+      size += getUnknownFields().getSerializedSize();
+      memoizedSize = size;
+      return size;
+    }
+
+    @java.lang.Override
+    public boolean equals(final java.lang.Object obj) {
+      if (obj == this) {
+       return true;
+      }
+      if (!(obj instanceof qorechain.rdk.v1.Tx.MsgBondRollupSubmitterResponse)) {
+        return super.equals(obj);
+      }
+      qorechain.rdk.v1.Tx.MsgBondRollupSubmitterResponse other = (qorechain.rdk.v1.Tx.MsgBondRollupSubmitterResponse) obj;
+
+      if (getBond()
+          != other.getBond()) return false;
+      if (!getUnknownFields().equals(other.getUnknownFields())) return false;
+      return true;
+    }
+
+    @java.lang.Override
+    public int hashCode() {
+      if (memoizedHashCode != 0) {
+        return memoizedHashCode;
+      }
+      int hash = 41;
+      hash = (19 * hash) + getDescriptor().hashCode();
+      hash = (37 * hash) + BOND_FIELD_NUMBER;
+      hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
+          getBond());
+      hash = (29 * hash) + getUnknownFields().hashCode();
+      memoizedHashCode = hash;
+      return hash;
+    }
+
+    public static qorechain.rdk.v1.Tx.MsgBondRollupSubmitterResponse parseFrom(
+        java.nio.ByteBuffer data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static qorechain.rdk.v1.Tx.MsgBondRollupSubmitterResponse parseFrom(
+        java.nio.ByteBuffer data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static qorechain.rdk.v1.Tx.MsgBondRollupSubmitterResponse parseFrom(
+        com.google.protobuf.ByteString data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static qorechain.rdk.v1.Tx.MsgBondRollupSubmitterResponse parseFrom(
+        com.google.protobuf.ByteString data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static qorechain.rdk.v1.Tx.MsgBondRollupSubmitterResponse parseFrom(byte[] data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static qorechain.rdk.v1.Tx.MsgBondRollupSubmitterResponse parseFrom(
+        byte[] data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static qorechain.rdk.v1.Tx.MsgBondRollupSubmitterResponse parseFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input);
+    }
+    public static qorechain.rdk.v1.Tx.MsgBondRollupSubmitterResponse parseFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    public static qorechain.rdk.v1.Tx.MsgBondRollupSubmitterResponse parseDelimitedFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseDelimitedWithIOException(PARSER, input);
+    }
+
+    public static qorechain.rdk.v1.Tx.MsgBondRollupSubmitterResponse parseDelimitedFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static qorechain.rdk.v1.Tx.MsgBondRollupSubmitterResponse parseFrom(
+        com.google.protobuf.CodedInputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input);
+    }
+    public static qorechain.rdk.v1.Tx.MsgBondRollupSubmitterResponse parseFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    @java.lang.Override
+    public Builder newBuilderForType() { return newBuilder(); }
+    public static Builder newBuilder() {
+      return DEFAULT_INSTANCE.toBuilder();
+    }
+    public static Builder newBuilder(qorechain.rdk.v1.Tx.MsgBondRollupSubmitterResponse prototype) {
+      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+    }
+    @java.lang.Override
+    public Builder toBuilder() {
+      return this == DEFAULT_INSTANCE
+          ? new Builder() : new Builder().mergeFrom(this);
+    }
+
+    @java.lang.Override
+    protected Builder newBuilderForType(
+        com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+      Builder builder = new Builder(parent);
+      return builder;
+    }
+    /**
+     * Protobuf type {@code qorechain.rdk.v1.MsgBondRollupSubmitterResponse}
+     */
+    public static final class Builder extends
+        com.google.protobuf.GeneratedMessage.Builder<Builder> implements
+        // @@protoc_insertion_point(builder_implements:qorechain.rdk.v1.MsgBondRollupSubmitterResponse)
+        qorechain.rdk.v1.Tx.MsgBondRollupSubmitterResponseOrBuilder {
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return qorechain.rdk.v1.Tx.internal_static_qorechain_rdk_v1_MsgBondRollupSubmitterResponse_descriptor;
+      }
+
+      @java.lang.Override
+      protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return qorechain.rdk.v1.Tx.internal_static_qorechain_rdk_v1_MsgBondRollupSubmitterResponse_fieldAccessorTable
+            .ensureFieldAccessorsInitialized(
+                qorechain.rdk.v1.Tx.MsgBondRollupSubmitterResponse.class, qorechain.rdk.v1.Tx.MsgBondRollupSubmitterResponse.Builder.class);
+      }
+
+      // Construct using qorechain.rdk.v1.Tx.MsgBondRollupSubmitterResponse.newBuilder()
+      private Builder() {
+
+      }
+
+      private Builder(
+          com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+        super(parent);
+
+      }
+      @java.lang.Override
+      public Builder clear() {
+        super.clear();
+        bitField0_ = 0;
+        bond_ = 0L;
+        return this;
+      }
+
+      @java.lang.Override
+      public com.google.protobuf.Descriptors.Descriptor
+          getDescriptorForType() {
+        return qorechain.rdk.v1.Tx.internal_static_qorechain_rdk_v1_MsgBondRollupSubmitterResponse_descriptor;
+      }
+
+      @java.lang.Override
+      public qorechain.rdk.v1.Tx.MsgBondRollupSubmitterResponse getDefaultInstanceForType() {
+        return qorechain.rdk.v1.Tx.MsgBondRollupSubmitterResponse.getDefaultInstance();
+      }
+
+      @java.lang.Override
+      public qorechain.rdk.v1.Tx.MsgBondRollupSubmitterResponse build() {
+        qorechain.rdk.v1.Tx.MsgBondRollupSubmitterResponse result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(result);
+        }
+        return result;
+      }
+
+      @java.lang.Override
+      public qorechain.rdk.v1.Tx.MsgBondRollupSubmitterResponse buildPartial() {
+        qorechain.rdk.v1.Tx.MsgBondRollupSubmitterResponse result = new qorechain.rdk.v1.Tx.MsgBondRollupSubmitterResponse(this);
+        if (bitField0_ != 0) { buildPartial0(result); }
+        onBuilt();
+        return result;
+      }
+
+      private void buildPartial0(qorechain.rdk.v1.Tx.MsgBondRollupSubmitterResponse result) {
+        int from_bitField0_ = bitField0_;
+        if (((from_bitField0_ & 0x00000001) != 0)) {
+          result.bond_ = bond_;
+        }
+      }
+
+      @java.lang.Override
+      public Builder mergeFrom(com.google.protobuf.Message other) {
+        if (other instanceof qorechain.rdk.v1.Tx.MsgBondRollupSubmitterResponse) {
+          return mergeFrom((qorechain.rdk.v1.Tx.MsgBondRollupSubmitterResponse)other);
+        } else {
+          super.mergeFrom(other);
+          return this;
+        }
+      }
+
+      public Builder mergeFrom(qorechain.rdk.v1.Tx.MsgBondRollupSubmitterResponse other) {
+        if (other == qorechain.rdk.v1.Tx.MsgBondRollupSubmitterResponse.getDefaultInstance()) return this;
+        if (other.getBond() != 0L) {
+          setBond(other.getBond());
+        }
+        this.mergeUnknownFields(other.getUnknownFields());
+        onChanged();
+        return this;
+      }
+
+      @java.lang.Override
+      public final boolean isInitialized() {
+        return true;
+      }
+
+      @java.lang.Override
+      public Builder mergeFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        if (extensionRegistry == null) {
+          throw new java.lang.NullPointerException();
+        }
+        try {
+          boolean done = false;
+          while (!done) {
+            int tag = input.readTag();
+            switch (tag) {
+              case 0:
+                done = true;
+                break;
+              case 8: {
+                bond_ = input.readUInt64();
+                bitField0_ |= 0x00000001;
+                break;
+              } // case 8
+              default: {
+                if (!super.parseUnknownField(input, extensionRegistry, tag)) {
+                  done = true; // was an endgroup tag
+                }
+                break;
+              } // default:
+            } // switch (tag)
+          } // while (!done)
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          throw e.unwrapIOException();
+        } finally {
+          onChanged();
+        } // finally
+        return this;
+      }
+      private int bitField0_;
+
+      private long bond_ ;
+      /**
+       * <code>uint64 bond = 1 [json_name = "bond"];</code>
+       * @return The bond.
+       */
+      @java.lang.Override
+      public long getBond() {
+        return bond_;
+      }
+      /**
+       * <code>uint64 bond = 1 [json_name = "bond"];</code>
+       * @param value The bond to set.
+       * @return This builder for chaining.
+       */
+      public Builder setBond(long value) {
+
+        bond_ = value;
+        bitField0_ |= 0x00000001;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>uint64 bond = 1 [json_name = "bond"];</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearBond() {
+        bitField0_ = (bitField0_ & ~0x00000001);
+        bond_ = 0L;
+        onChanged();
+        return this;
+      }
+
+      // @@protoc_insertion_point(builder_scope:qorechain.rdk.v1.MsgBondRollupSubmitterResponse)
+    }
+
+    // @@protoc_insertion_point(class_scope:qorechain.rdk.v1.MsgBondRollupSubmitterResponse)
+    private static final qorechain.rdk.v1.Tx.MsgBondRollupSubmitterResponse DEFAULT_INSTANCE;
+    static {
+      DEFAULT_INSTANCE = new qorechain.rdk.v1.Tx.MsgBondRollupSubmitterResponse();
+    }
+
+    public static qorechain.rdk.v1.Tx.MsgBondRollupSubmitterResponse getDefaultInstance() {
+      return DEFAULT_INSTANCE;
+    }
+
+    private static final com.google.protobuf.Parser<MsgBondRollupSubmitterResponse>
+        PARSER = new com.google.protobuf.AbstractParser<MsgBondRollupSubmitterResponse>() {
+      @java.lang.Override
+      public MsgBondRollupSubmitterResponse parsePartialFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        Builder builder = newBuilder();
+        try {
+          builder.mergeFrom(input, extensionRegistry);
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          throw e.setUnfinishedMessage(builder.buildPartial());
+        } catch (com.google.protobuf.UninitializedMessageException e) {
+          throw e.asInvalidProtocolBufferException().setUnfinishedMessage(builder.buildPartial());
+        } catch (java.io.IOException e) {
+          throw new com.google.protobuf.InvalidProtocolBufferException(e)
+              .setUnfinishedMessage(builder.buildPartial());
+        }
+        return builder.buildPartial();
+      }
+    };
+
+    public static com.google.protobuf.Parser<MsgBondRollupSubmitterResponse> parser() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Parser<MsgBondRollupSubmitterResponse> getParserForType() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public qorechain.rdk.v1.Tx.MsgBondRollupSubmitterResponse getDefaultInstanceForType() {
+      return DEFAULT_INSTANCE;
+    }
+
+  }
+
+  public interface MsgUnbondRollupSubmitterOrBuilder extends
+      // @@protoc_insertion_point(interface_extends:qorechain.rdk.v1.MsgUnbondRollupSubmitter)
+      com.google.protobuf.MessageOrBuilder {
+
+    /**
+     * <code>string submitter = 1 [json_name = "submitter", (.cosmos_proto.scalar) = "cosmos.AddressString"];</code>
+     * @return The submitter.
+     */
+    java.lang.String getSubmitter();
+    /**
+     * <code>string submitter = 1 [json_name = "submitter", (.cosmos_proto.scalar) = "cosmos.AddressString"];</code>
+     * @return The bytes for submitter.
+     */
+    com.google.protobuf.ByteString
+        getSubmitterBytes();
+
+    /**
+     * <code>string rollup_id = 2 [json_name = "rollupId", (.gogoproto.customname) = "RollupID"];</code>
+     * @return The rollupId.
+     */
+    java.lang.String getRollupId();
+    /**
+     * <code>string rollup_id = 2 [json_name = "rollupId", (.gogoproto.customname) = "RollupID"];</code>
+     * @return The bytes for rollupId.
+     */
+    com.google.protobuf.ByteString
+        getRollupIdBytes();
+  }
+  /**
+   * <pre>
+   * MsgUnbondRollupSubmitter returns submitter's whole bond once a full
+   * challenge window has passed since its last batch. Served from v3.2.8
+   * (rdk-optimistic-reexec).
+   * </pre>
+   *
+   * Protobuf type {@code qorechain.rdk.v1.MsgUnbondRollupSubmitter}
+   */
+  public static final class MsgUnbondRollupSubmitter extends
+      com.google.protobuf.GeneratedMessage implements
+      // @@protoc_insertion_point(message_implements:qorechain.rdk.v1.MsgUnbondRollupSubmitter)
+      MsgUnbondRollupSubmitterOrBuilder {
+  private static final long serialVersionUID = 0L;
+    static {
+      com.google.protobuf.RuntimeVersion.validateProtobufGencodeVersion(
+        com.google.protobuf.RuntimeVersion.RuntimeDomain.PUBLIC,
+        /* major= */ 4,
+        /* minor= */ 35,
+        /* patch= */ 1,
+        /* suffix= */ "",
+        "MsgUnbondRollupSubmitter");
+    }
+    // Use MsgUnbondRollupSubmitter.newBuilder() to construct.
+    private MsgUnbondRollupSubmitter(com.google.protobuf.GeneratedMessage.Builder<?> builder) {
+      super(builder);
+    }
+    private MsgUnbondRollupSubmitter() {
+      submitter_ = "";
+      rollupId_ = "";
+    }
+
+    public static final com.google.protobuf.Descriptors.Descriptor
+        getDescriptor() {
+      return qorechain.rdk.v1.Tx.internal_static_qorechain_rdk_v1_MsgUnbondRollupSubmitter_descriptor;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Descriptors.Descriptor getDescriptorForType() {
+      return qorechain.rdk.v1.Tx.internal_static_qorechain_rdk_v1_MsgUnbondRollupSubmitter_descriptor;
+    }
+
+    @java.lang.Override
+    protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+        internalGetFieldAccessorTable() {
+      return qorechain.rdk.v1.Tx.internal_static_qorechain_rdk_v1_MsgUnbondRollupSubmitter_fieldAccessorTable
+          .ensureFieldAccessorsInitialized(
+              qorechain.rdk.v1.Tx.MsgUnbondRollupSubmitter.class, qorechain.rdk.v1.Tx.MsgUnbondRollupSubmitter.Builder.class);
+    }
+
+    public static final int SUBMITTER_FIELD_NUMBER = 1;
+    @SuppressWarnings("serial")
+    private volatile java.lang.Object submitter_ = "";
+    /**
+     * <code>string submitter = 1 [json_name = "submitter", (.cosmos_proto.scalar) = "cosmos.AddressString"];</code>
+     * @return The submitter.
+     */
+    @java.lang.Override
+    public java.lang.String getSubmitter() {
+      java.lang.Object ref = submitter_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        submitter_ = s;
+        return s;
+      }
+    }
+    /**
+     * <code>string submitter = 1 [json_name = "submitter", (.cosmos_proto.scalar) = "cosmos.AddressString"];</code>
+     * @return The bytes for submitter.
+     */
+    @java.lang.Override
+    public com.google.protobuf.ByteString
+        getSubmitterBytes() {
+      java.lang.Object ref = submitter_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        submitter_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
+    public static final int ROLLUP_ID_FIELD_NUMBER = 2;
+    @SuppressWarnings("serial")
+    private volatile java.lang.Object rollupId_ = "";
+    /**
+     * <code>string rollup_id = 2 [json_name = "rollupId", (.gogoproto.customname) = "RollupID"];</code>
+     * @return The rollupId.
+     */
+    @java.lang.Override
+    public java.lang.String getRollupId() {
+      java.lang.Object ref = rollupId_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        rollupId_ = s;
+        return s;
+      }
+    }
+    /**
+     * <code>string rollup_id = 2 [json_name = "rollupId", (.gogoproto.customname) = "RollupID"];</code>
+     * @return The bytes for rollupId.
+     */
+    @java.lang.Override
+    public com.google.protobuf.ByteString
+        getRollupIdBytes() {
+      java.lang.Object ref = rollupId_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        rollupId_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
+    private byte memoizedIsInitialized = -1;
+    @java.lang.Override
+    public final boolean isInitialized() {
+      byte isInitialized = memoizedIsInitialized;
+      if (isInitialized == 1) return true;
+      if (isInitialized == 0) return false;
+
+      memoizedIsInitialized = 1;
+      return true;
+    }
+
+    @java.lang.Override
+    public void writeTo(com.google.protobuf.CodedOutputStream output)
+                        throws java.io.IOException {
+      if (!com.google.protobuf.GeneratedMessage.isStringEmpty(submitter_)) {
+        com.google.protobuf.GeneratedMessage.writeString(output, 1, submitter_);
+      }
+      if (!com.google.protobuf.GeneratedMessage.isStringEmpty(rollupId_)) {
+        com.google.protobuf.GeneratedMessage.writeString(output, 2, rollupId_);
+      }
+      getUnknownFields().writeTo(output);
+    }
+    private int computeSerializedSize_0() {
+      int size = 0;
+      if (!com.google.protobuf.GeneratedMessage.isStringEmpty(submitter_)) {
+        size += com.google.protobuf.GeneratedMessage.computeStringSize(1, submitter_);
+      }
+      if (!com.google.protobuf.GeneratedMessage.isStringEmpty(rollupId_)) {
+        size += com.google.protobuf.GeneratedMessage.computeStringSize(2, rollupId_);
+      }
+      return size;
+    }
+    @java.lang.Override
+    public int getSerializedSize() {
+      int size = memoizedSize;
+      if (size != -1) return size;
+
+      size = 0;
+      size += computeSerializedSize_0();
+      size += getUnknownFields().getSerializedSize();
+      memoizedSize = size;
+      return size;
+    }
+
+    @java.lang.Override
+    public boolean equals(final java.lang.Object obj) {
+      if (obj == this) {
+       return true;
+      }
+      if (!(obj instanceof qorechain.rdk.v1.Tx.MsgUnbondRollupSubmitter)) {
+        return super.equals(obj);
+      }
+      qorechain.rdk.v1.Tx.MsgUnbondRollupSubmitter other = (qorechain.rdk.v1.Tx.MsgUnbondRollupSubmitter) obj;
+
+      if (!getSubmitter()
+          .equals(other.getSubmitter())) return false;
+      if (!getRollupId()
+          .equals(other.getRollupId())) return false;
+      if (!getUnknownFields().equals(other.getUnknownFields())) return false;
+      return true;
+    }
+
+    @java.lang.Override
+    public int hashCode() {
+      if (memoizedHashCode != 0) {
+        return memoizedHashCode;
+      }
+      int hash = 41;
+      hash = (19 * hash) + getDescriptor().hashCode();
+      hash = (37 * hash) + SUBMITTER_FIELD_NUMBER;
+      hash = (53 * hash) + getSubmitter().hashCode();
+      hash = (37 * hash) + ROLLUP_ID_FIELD_NUMBER;
+      hash = (53 * hash) + getRollupId().hashCode();
+      hash = (29 * hash) + getUnknownFields().hashCode();
+      memoizedHashCode = hash;
+      return hash;
+    }
+
+    public static qorechain.rdk.v1.Tx.MsgUnbondRollupSubmitter parseFrom(
+        java.nio.ByteBuffer data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static qorechain.rdk.v1.Tx.MsgUnbondRollupSubmitter parseFrom(
+        java.nio.ByteBuffer data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static qorechain.rdk.v1.Tx.MsgUnbondRollupSubmitter parseFrom(
+        com.google.protobuf.ByteString data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static qorechain.rdk.v1.Tx.MsgUnbondRollupSubmitter parseFrom(
+        com.google.protobuf.ByteString data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static qorechain.rdk.v1.Tx.MsgUnbondRollupSubmitter parseFrom(byte[] data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static qorechain.rdk.v1.Tx.MsgUnbondRollupSubmitter parseFrom(
+        byte[] data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static qorechain.rdk.v1.Tx.MsgUnbondRollupSubmitter parseFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input);
+    }
+    public static qorechain.rdk.v1.Tx.MsgUnbondRollupSubmitter parseFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    public static qorechain.rdk.v1.Tx.MsgUnbondRollupSubmitter parseDelimitedFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseDelimitedWithIOException(PARSER, input);
+    }
+
+    public static qorechain.rdk.v1.Tx.MsgUnbondRollupSubmitter parseDelimitedFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static qorechain.rdk.v1.Tx.MsgUnbondRollupSubmitter parseFrom(
+        com.google.protobuf.CodedInputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input);
+    }
+    public static qorechain.rdk.v1.Tx.MsgUnbondRollupSubmitter parseFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    @java.lang.Override
+    public Builder newBuilderForType() { return newBuilder(); }
+    public static Builder newBuilder() {
+      return DEFAULT_INSTANCE.toBuilder();
+    }
+    public static Builder newBuilder(qorechain.rdk.v1.Tx.MsgUnbondRollupSubmitter prototype) {
+      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+    }
+    @java.lang.Override
+    public Builder toBuilder() {
+      return this == DEFAULT_INSTANCE
+          ? new Builder() : new Builder().mergeFrom(this);
+    }
+
+    @java.lang.Override
+    protected Builder newBuilderForType(
+        com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+      Builder builder = new Builder(parent);
+      return builder;
+    }
+    /**
+     * <pre>
+     * MsgUnbondRollupSubmitter returns submitter's whole bond once a full
+     * challenge window has passed since its last batch. Served from v3.2.8
+     * (rdk-optimistic-reexec).
+     * </pre>
+     *
+     * Protobuf type {@code qorechain.rdk.v1.MsgUnbondRollupSubmitter}
+     */
+    public static final class Builder extends
+        com.google.protobuf.GeneratedMessage.Builder<Builder> implements
+        // @@protoc_insertion_point(builder_implements:qorechain.rdk.v1.MsgUnbondRollupSubmitter)
+        qorechain.rdk.v1.Tx.MsgUnbondRollupSubmitterOrBuilder {
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return qorechain.rdk.v1.Tx.internal_static_qorechain_rdk_v1_MsgUnbondRollupSubmitter_descriptor;
+      }
+
+      @java.lang.Override
+      protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return qorechain.rdk.v1.Tx.internal_static_qorechain_rdk_v1_MsgUnbondRollupSubmitter_fieldAccessorTable
+            .ensureFieldAccessorsInitialized(
+                qorechain.rdk.v1.Tx.MsgUnbondRollupSubmitter.class, qorechain.rdk.v1.Tx.MsgUnbondRollupSubmitter.Builder.class);
+      }
+
+      // Construct using qorechain.rdk.v1.Tx.MsgUnbondRollupSubmitter.newBuilder()
+      private Builder() {
+
+      }
+
+      private Builder(
+          com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+        super(parent);
+
+      }
+      @java.lang.Override
+      public Builder clear() {
+        super.clear();
+        bitField0_ = 0;
+        submitter_ = "";
+        rollupId_ = "";
+        return this;
+      }
+
+      @java.lang.Override
+      public com.google.protobuf.Descriptors.Descriptor
+          getDescriptorForType() {
+        return qorechain.rdk.v1.Tx.internal_static_qorechain_rdk_v1_MsgUnbondRollupSubmitter_descriptor;
+      }
+
+      @java.lang.Override
+      public qorechain.rdk.v1.Tx.MsgUnbondRollupSubmitter getDefaultInstanceForType() {
+        return qorechain.rdk.v1.Tx.MsgUnbondRollupSubmitter.getDefaultInstance();
+      }
+
+      @java.lang.Override
+      public qorechain.rdk.v1.Tx.MsgUnbondRollupSubmitter build() {
+        qorechain.rdk.v1.Tx.MsgUnbondRollupSubmitter result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(result);
+        }
+        return result;
+      }
+
+      @java.lang.Override
+      public qorechain.rdk.v1.Tx.MsgUnbondRollupSubmitter buildPartial() {
+        qorechain.rdk.v1.Tx.MsgUnbondRollupSubmitter result = new qorechain.rdk.v1.Tx.MsgUnbondRollupSubmitter(this);
+        if (bitField0_ != 0) { buildPartial0(result); }
+        onBuilt();
+        return result;
+      }
+
+      private void buildPartial0(qorechain.rdk.v1.Tx.MsgUnbondRollupSubmitter result) {
+        int from_bitField0_ = bitField0_;
+        if (((from_bitField0_ & 0x00000001) != 0)) {
+          result.submitter_ = submitter_;
+        }
+        if (((from_bitField0_ & 0x00000002) != 0)) {
+          result.rollupId_ = rollupId_;
+        }
+      }
+
+      @java.lang.Override
+      public Builder mergeFrom(com.google.protobuf.Message other) {
+        if (other instanceof qorechain.rdk.v1.Tx.MsgUnbondRollupSubmitter) {
+          return mergeFrom((qorechain.rdk.v1.Tx.MsgUnbondRollupSubmitter)other);
+        } else {
+          super.mergeFrom(other);
+          return this;
+        }
+      }
+
+      public Builder mergeFrom(qorechain.rdk.v1.Tx.MsgUnbondRollupSubmitter other) {
+        if (other == qorechain.rdk.v1.Tx.MsgUnbondRollupSubmitter.getDefaultInstance()) return this;
+        if (!other.getSubmitter().isEmpty()) {
+          submitter_ = other.submitter_;
+          bitField0_ |= 0x00000001;
+          onChanged();
+        }
+        if (!other.getRollupId().isEmpty()) {
+          rollupId_ = other.rollupId_;
+          bitField0_ |= 0x00000002;
+          onChanged();
+        }
+        this.mergeUnknownFields(other.getUnknownFields());
+        onChanged();
+        return this;
+      }
+
+      @java.lang.Override
+      public final boolean isInitialized() {
+        return true;
+      }
+
+      @java.lang.Override
+      public Builder mergeFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        if (extensionRegistry == null) {
+          throw new java.lang.NullPointerException();
+        }
+        try {
+          boolean done = false;
+          while (!done) {
+            int tag = input.readTag();
+            switch (tag) {
+              case 0:
+                done = true;
+                break;
+              case 10: {
+                submitter_ = input.readStringRequireUtf8();
+                bitField0_ |= 0x00000001;
+                break;
+              } // case 10
+              case 18: {
+                rollupId_ = input.readStringRequireUtf8();
+                bitField0_ |= 0x00000002;
+                break;
+              } // case 18
+              default: {
+                if (!super.parseUnknownField(input, extensionRegistry, tag)) {
+                  done = true; // was an endgroup tag
+                }
+                break;
+              } // default:
+            } // switch (tag)
+          } // while (!done)
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          throw e.unwrapIOException();
+        } finally {
+          onChanged();
+        } // finally
+        return this;
+      }
+      private int bitField0_;
+
+      private java.lang.Object submitter_ = "";
+      /**
+       * <code>string submitter = 1 [json_name = "submitter", (.cosmos_proto.scalar) = "cosmos.AddressString"];</code>
+       * @return The submitter.
+       */
+      public java.lang.String getSubmitter() {
+        java.lang.Object ref = submitter_;
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          submitter_ = s;
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
+      }
+      /**
+       * <code>string submitter = 1 [json_name = "submitter", (.cosmos_proto.scalar) = "cosmos.AddressString"];</code>
+       * @return The bytes for submitter.
+       */
+      public com.google.protobuf.ByteString
+          getSubmitterBytes() {
+        java.lang.Object ref = submitter_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          submitter_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <code>string submitter = 1 [json_name = "submitter", (.cosmos_proto.scalar) = "cosmos.AddressString"];</code>
+       * @param value The submitter to set.
+       * @return This builder for chaining.
+       */
+      public Builder setSubmitter(
+          java.lang.String value) {
+        if (value == null) { throw new NullPointerException(); }
+        submitter_ = value;
+        bitField0_ |= 0x00000001;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>string submitter = 1 [json_name = "submitter", (.cosmos_proto.scalar) = "cosmos.AddressString"];</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearSubmitter() {
+        submitter_ = getDefaultInstance().getSubmitter();
+        bitField0_ = (bitField0_ & ~0x00000001);
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>string submitter = 1 [json_name = "submitter", (.cosmos_proto.scalar) = "cosmos.AddressString"];</code>
+       * @param value The bytes for submitter to set.
+       * @return This builder for chaining.
+       */
+      public Builder setSubmitterBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) { throw new NullPointerException(); }
+        checkByteStringIsUtf8(value);
+        submitter_ = value;
+        bitField0_ |= 0x00000001;
+        onChanged();
+        return this;
+      }
+
+      private java.lang.Object rollupId_ = "";
+      /**
+       * <code>string rollup_id = 2 [json_name = "rollupId", (.gogoproto.customname) = "RollupID"];</code>
+       * @return The rollupId.
+       */
+      public java.lang.String getRollupId() {
+        java.lang.Object ref = rollupId_;
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          rollupId_ = s;
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
+      }
+      /**
+       * <code>string rollup_id = 2 [json_name = "rollupId", (.gogoproto.customname) = "RollupID"];</code>
+       * @return The bytes for rollupId.
+       */
+      public com.google.protobuf.ByteString
+          getRollupIdBytes() {
+        java.lang.Object ref = rollupId_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          rollupId_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <code>string rollup_id = 2 [json_name = "rollupId", (.gogoproto.customname) = "RollupID"];</code>
+       * @param value The rollupId to set.
+       * @return This builder for chaining.
+       */
+      public Builder setRollupId(
+          java.lang.String value) {
+        if (value == null) { throw new NullPointerException(); }
+        rollupId_ = value;
+        bitField0_ |= 0x00000002;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>string rollup_id = 2 [json_name = "rollupId", (.gogoproto.customname) = "RollupID"];</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearRollupId() {
+        rollupId_ = getDefaultInstance().getRollupId();
+        bitField0_ = (bitField0_ & ~0x00000002);
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>string rollup_id = 2 [json_name = "rollupId", (.gogoproto.customname) = "RollupID"];</code>
+       * @param value The bytes for rollupId to set.
+       * @return This builder for chaining.
+       */
+      public Builder setRollupIdBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) { throw new NullPointerException(); }
+        checkByteStringIsUtf8(value);
+        rollupId_ = value;
+        bitField0_ |= 0x00000002;
+        onChanged();
+        return this;
+      }
+
+      // @@protoc_insertion_point(builder_scope:qorechain.rdk.v1.MsgUnbondRollupSubmitter)
+    }
+
+    // @@protoc_insertion_point(class_scope:qorechain.rdk.v1.MsgUnbondRollupSubmitter)
+    private static final qorechain.rdk.v1.Tx.MsgUnbondRollupSubmitter DEFAULT_INSTANCE;
+    static {
+      DEFAULT_INSTANCE = new qorechain.rdk.v1.Tx.MsgUnbondRollupSubmitter();
+    }
+
+    public static qorechain.rdk.v1.Tx.MsgUnbondRollupSubmitter getDefaultInstance() {
+      return DEFAULT_INSTANCE;
+    }
+
+    private static final com.google.protobuf.Parser<MsgUnbondRollupSubmitter>
+        PARSER = new com.google.protobuf.AbstractParser<MsgUnbondRollupSubmitter>() {
+      @java.lang.Override
+      public MsgUnbondRollupSubmitter parsePartialFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        Builder builder = newBuilder();
+        try {
+          builder.mergeFrom(input, extensionRegistry);
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          throw e.setUnfinishedMessage(builder.buildPartial());
+        } catch (com.google.protobuf.UninitializedMessageException e) {
+          throw e.asInvalidProtocolBufferException().setUnfinishedMessage(builder.buildPartial());
+        } catch (java.io.IOException e) {
+          throw new com.google.protobuf.InvalidProtocolBufferException(e)
+              .setUnfinishedMessage(builder.buildPartial());
+        }
+        return builder.buildPartial();
+      }
+    };
+
+    public static com.google.protobuf.Parser<MsgUnbondRollupSubmitter> parser() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Parser<MsgUnbondRollupSubmitter> getParserForType() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public qorechain.rdk.v1.Tx.MsgUnbondRollupSubmitter getDefaultInstanceForType() {
+      return DEFAULT_INSTANCE;
+    }
+
+  }
+
+  public interface MsgUnbondRollupSubmitterResponseOrBuilder extends
+      // @@protoc_insertion_point(interface_extends:qorechain.rdk.v1.MsgUnbondRollupSubmitterResponse)
+      com.google.protobuf.MessageOrBuilder {
+
+    /**
+     * <code>uint64 returned = 1 [json_name = "returned"];</code>
+     * @return The returned.
+     */
+    long getReturned();
+  }
+  /**
+   * Protobuf type {@code qorechain.rdk.v1.MsgUnbondRollupSubmitterResponse}
+   */
+  public static final class MsgUnbondRollupSubmitterResponse extends
+      com.google.protobuf.GeneratedMessage implements
+      // @@protoc_insertion_point(message_implements:qorechain.rdk.v1.MsgUnbondRollupSubmitterResponse)
+      MsgUnbondRollupSubmitterResponseOrBuilder {
+  private static final long serialVersionUID = 0L;
+    static {
+      com.google.protobuf.RuntimeVersion.validateProtobufGencodeVersion(
+        com.google.protobuf.RuntimeVersion.RuntimeDomain.PUBLIC,
+        /* major= */ 4,
+        /* minor= */ 35,
+        /* patch= */ 1,
+        /* suffix= */ "",
+        "MsgUnbondRollupSubmitterResponse");
+    }
+    // Use MsgUnbondRollupSubmitterResponse.newBuilder() to construct.
+    private MsgUnbondRollupSubmitterResponse(com.google.protobuf.GeneratedMessage.Builder<?> builder) {
+      super(builder);
+    }
+    private MsgUnbondRollupSubmitterResponse() {
+    }
+
+    public static final com.google.protobuf.Descriptors.Descriptor
+        getDescriptor() {
+      return qorechain.rdk.v1.Tx.internal_static_qorechain_rdk_v1_MsgUnbondRollupSubmitterResponse_descriptor;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Descriptors.Descriptor getDescriptorForType() {
+      return qorechain.rdk.v1.Tx.internal_static_qorechain_rdk_v1_MsgUnbondRollupSubmitterResponse_descriptor;
+    }
+
+    @java.lang.Override
+    protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+        internalGetFieldAccessorTable() {
+      return qorechain.rdk.v1.Tx.internal_static_qorechain_rdk_v1_MsgUnbondRollupSubmitterResponse_fieldAccessorTable
+          .ensureFieldAccessorsInitialized(
+              qorechain.rdk.v1.Tx.MsgUnbondRollupSubmitterResponse.class, qorechain.rdk.v1.Tx.MsgUnbondRollupSubmitterResponse.Builder.class);
+    }
+
+    public static final int RETURNED_FIELD_NUMBER = 1;
+    private long returned_ = 0L;
+    /**
+     * <code>uint64 returned = 1 [json_name = "returned"];</code>
+     * @return The returned.
+     */
+    @java.lang.Override
+    public long getReturned() {
+      return returned_;
+    }
+
+    private byte memoizedIsInitialized = -1;
+    @java.lang.Override
+    public final boolean isInitialized() {
+      byte isInitialized = memoizedIsInitialized;
+      if (isInitialized == 1) return true;
+      if (isInitialized == 0) return false;
+
+      memoizedIsInitialized = 1;
+      return true;
+    }
+
+    @java.lang.Override
+    public void writeTo(com.google.protobuf.CodedOutputStream output)
+                        throws java.io.IOException {
+      if (returned_ != 0L) {
+        output.writeUInt64(1, returned_);
+      }
+      getUnknownFields().writeTo(output);
+    }
+    private int computeSerializedSize_0() {
+      int size = 0;
+      if (returned_ != 0L) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeUInt64Size(1, returned_);
+      }
+      return size;
+    }
+    @java.lang.Override
+    public int getSerializedSize() {
+      int size = memoizedSize;
+      if (size != -1) return size;
+
+      size = 0;
+      size += computeSerializedSize_0();
+      size += getUnknownFields().getSerializedSize();
+      memoizedSize = size;
+      return size;
+    }
+
+    @java.lang.Override
+    public boolean equals(final java.lang.Object obj) {
+      if (obj == this) {
+       return true;
+      }
+      if (!(obj instanceof qorechain.rdk.v1.Tx.MsgUnbondRollupSubmitterResponse)) {
+        return super.equals(obj);
+      }
+      qorechain.rdk.v1.Tx.MsgUnbondRollupSubmitterResponse other = (qorechain.rdk.v1.Tx.MsgUnbondRollupSubmitterResponse) obj;
+
+      if (getReturned()
+          != other.getReturned()) return false;
+      if (!getUnknownFields().equals(other.getUnknownFields())) return false;
+      return true;
+    }
+
+    @java.lang.Override
+    public int hashCode() {
+      if (memoizedHashCode != 0) {
+        return memoizedHashCode;
+      }
+      int hash = 41;
+      hash = (19 * hash) + getDescriptor().hashCode();
+      hash = (37 * hash) + RETURNED_FIELD_NUMBER;
+      hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
+          getReturned());
+      hash = (29 * hash) + getUnknownFields().hashCode();
+      memoizedHashCode = hash;
+      return hash;
+    }
+
+    public static qorechain.rdk.v1.Tx.MsgUnbondRollupSubmitterResponse parseFrom(
+        java.nio.ByteBuffer data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static qorechain.rdk.v1.Tx.MsgUnbondRollupSubmitterResponse parseFrom(
+        java.nio.ByteBuffer data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static qorechain.rdk.v1.Tx.MsgUnbondRollupSubmitterResponse parseFrom(
+        com.google.protobuf.ByteString data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static qorechain.rdk.v1.Tx.MsgUnbondRollupSubmitterResponse parseFrom(
+        com.google.protobuf.ByteString data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static qorechain.rdk.v1.Tx.MsgUnbondRollupSubmitterResponse parseFrom(byte[] data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static qorechain.rdk.v1.Tx.MsgUnbondRollupSubmitterResponse parseFrom(
+        byte[] data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static qorechain.rdk.v1.Tx.MsgUnbondRollupSubmitterResponse parseFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input);
+    }
+    public static qorechain.rdk.v1.Tx.MsgUnbondRollupSubmitterResponse parseFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    public static qorechain.rdk.v1.Tx.MsgUnbondRollupSubmitterResponse parseDelimitedFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseDelimitedWithIOException(PARSER, input);
+    }
+
+    public static qorechain.rdk.v1.Tx.MsgUnbondRollupSubmitterResponse parseDelimitedFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static qorechain.rdk.v1.Tx.MsgUnbondRollupSubmitterResponse parseFrom(
+        com.google.protobuf.CodedInputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input);
+    }
+    public static qorechain.rdk.v1.Tx.MsgUnbondRollupSubmitterResponse parseFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    @java.lang.Override
+    public Builder newBuilderForType() { return newBuilder(); }
+    public static Builder newBuilder() {
+      return DEFAULT_INSTANCE.toBuilder();
+    }
+    public static Builder newBuilder(qorechain.rdk.v1.Tx.MsgUnbondRollupSubmitterResponse prototype) {
+      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+    }
+    @java.lang.Override
+    public Builder toBuilder() {
+      return this == DEFAULT_INSTANCE
+          ? new Builder() : new Builder().mergeFrom(this);
+    }
+
+    @java.lang.Override
+    protected Builder newBuilderForType(
+        com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+      Builder builder = new Builder(parent);
+      return builder;
+    }
+    /**
+     * Protobuf type {@code qorechain.rdk.v1.MsgUnbondRollupSubmitterResponse}
+     */
+    public static final class Builder extends
+        com.google.protobuf.GeneratedMessage.Builder<Builder> implements
+        // @@protoc_insertion_point(builder_implements:qorechain.rdk.v1.MsgUnbondRollupSubmitterResponse)
+        qorechain.rdk.v1.Tx.MsgUnbondRollupSubmitterResponseOrBuilder {
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return qorechain.rdk.v1.Tx.internal_static_qorechain_rdk_v1_MsgUnbondRollupSubmitterResponse_descriptor;
+      }
+
+      @java.lang.Override
+      protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return qorechain.rdk.v1.Tx.internal_static_qorechain_rdk_v1_MsgUnbondRollupSubmitterResponse_fieldAccessorTable
+            .ensureFieldAccessorsInitialized(
+                qorechain.rdk.v1.Tx.MsgUnbondRollupSubmitterResponse.class, qorechain.rdk.v1.Tx.MsgUnbondRollupSubmitterResponse.Builder.class);
+      }
+
+      // Construct using qorechain.rdk.v1.Tx.MsgUnbondRollupSubmitterResponse.newBuilder()
+      private Builder() {
+
+      }
+
+      private Builder(
+          com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+        super(parent);
+
+      }
+      @java.lang.Override
+      public Builder clear() {
+        super.clear();
+        bitField0_ = 0;
+        returned_ = 0L;
+        return this;
+      }
+
+      @java.lang.Override
+      public com.google.protobuf.Descriptors.Descriptor
+          getDescriptorForType() {
+        return qorechain.rdk.v1.Tx.internal_static_qorechain_rdk_v1_MsgUnbondRollupSubmitterResponse_descriptor;
+      }
+
+      @java.lang.Override
+      public qorechain.rdk.v1.Tx.MsgUnbondRollupSubmitterResponse getDefaultInstanceForType() {
+        return qorechain.rdk.v1.Tx.MsgUnbondRollupSubmitterResponse.getDefaultInstance();
+      }
+
+      @java.lang.Override
+      public qorechain.rdk.v1.Tx.MsgUnbondRollupSubmitterResponse build() {
+        qorechain.rdk.v1.Tx.MsgUnbondRollupSubmitterResponse result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(result);
+        }
+        return result;
+      }
+
+      @java.lang.Override
+      public qorechain.rdk.v1.Tx.MsgUnbondRollupSubmitterResponse buildPartial() {
+        qorechain.rdk.v1.Tx.MsgUnbondRollupSubmitterResponse result = new qorechain.rdk.v1.Tx.MsgUnbondRollupSubmitterResponse(this);
+        if (bitField0_ != 0) { buildPartial0(result); }
+        onBuilt();
+        return result;
+      }
+
+      private void buildPartial0(qorechain.rdk.v1.Tx.MsgUnbondRollupSubmitterResponse result) {
+        int from_bitField0_ = bitField0_;
+        if (((from_bitField0_ & 0x00000001) != 0)) {
+          result.returned_ = returned_;
+        }
+      }
+
+      @java.lang.Override
+      public Builder mergeFrom(com.google.protobuf.Message other) {
+        if (other instanceof qorechain.rdk.v1.Tx.MsgUnbondRollupSubmitterResponse) {
+          return mergeFrom((qorechain.rdk.v1.Tx.MsgUnbondRollupSubmitterResponse)other);
+        } else {
+          super.mergeFrom(other);
+          return this;
+        }
+      }
+
+      public Builder mergeFrom(qorechain.rdk.v1.Tx.MsgUnbondRollupSubmitterResponse other) {
+        if (other == qorechain.rdk.v1.Tx.MsgUnbondRollupSubmitterResponse.getDefaultInstance()) return this;
+        if (other.getReturned() != 0L) {
+          setReturned(other.getReturned());
+        }
+        this.mergeUnknownFields(other.getUnknownFields());
+        onChanged();
+        return this;
+      }
+
+      @java.lang.Override
+      public final boolean isInitialized() {
+        return true;
+      }
+
+      @java.lang.Override
+      public Builder mergeFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        if (extensionRegistry == null) {
+          throw new java.lang.NullPointerException();
+        }
+        try {
+          boolean done = false;
+          while (!done) {
+            int tag = input.readTag();
+            switch (tag) {
+              case 0:
+                done = true;
+                break;
+              case 8: {
+                returned_ = input.readUInt64();
+                bitField0_ |= 0x00000001;
+                break;
+              } // case 8
+              default: {
+                if (!super.parseUnknownField(input, extensionRegistry, tag)) {
+                  done = true; // was an endgroup tag
+                }
+                break;
+              } // default:
+            } // switch (tag)
+          } // while (!done)
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          throw e.unwrapIOException();
+        } finally {
+          onChanged();
+        } // finally
+        return this;
+      }
+      private int bitField0_;
+
+      private long returned_ ;
+      /**
+       * <code>uint64 returned = 1 [json_name = "returned"];</code>
+       * @return The returned.
+       */
+      @java.lang.Override
+      public long getReturned() {
+        return returned_;
+      }
+      /**
+       * <code>uint64 returned = 1 [json_name = "returned"];</code>
+       * @param value The returned to set.
+       * @return This builder for chaining.
+       */
+      public Builder setReturned(long value) {
+
+        returned_ = value;
+        bitField0_ |= 0x00000001;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>uint64 returned = 1 [json_name = "returned"];</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearReturned() {
+        bitField0_ = (bitField0_ & ~0x00000001);
+        returned_ = 0L;
+        onChanged();
+        return this;
+      }
+
+      // @@protoc_insertion_point(builder_scope:qorechain.rdk.v1.MsgUnbondRollupSubmitterResponse)
+    }
+
+    // @@protoc_insertion_point(class_scope:qorechain.rdk.v1.MsgUnbondRollupSubmitterResponse)
+    private static final qorechain.rdk.v1.Tx.MsgUnbondRollupSubmitterResponse DEFAULT_INSTANCE;
+    static {
+      DEFAULT_INSTANCE = new qorechain.rdk.v1.Tx.MsgUnbondRollupSubmitterResponse();
+    }
+
+    public static qorechain.rdk.v1.Tx.MsgUnbondRollupSubmitterResponse getDefaultInstance() {
+      return DEFAULT_INSTANCE;
+    }
+
+    private static final com.google.protobuf.Parser<MsgUnbondRollupSubmitterResponse>
+        PARSER = new com.google.protobuf.AbstractParser<MsgUnbondRollupSubmitterResponse>() {
+      @java.lang.Override
+      public MsgUnbondRollupSubmitterResponse parsePartialFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        Builder builder = newBuilder();
+        try {
+          builder.mergeFrom(input, extensionRegistry);
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          throw e.setUnfinishedMessage(builder.buildPartial());
+        } catch (com.google.protobuf.UninitializedMessageException e) {
+          throw e.asInvalidProtocolBufferException().setUnfinishedMessage(builder.buildPartial());
+        } catch (java.io.IOException e) {
+          throw new com.google.protobuf.InvalidProtocolBufferException(e)
+              .setUnfinishedMessage(builder.buildPartial());
+        }
+        return builder.buildPartial();
+      }
+    };
+
+    public static com.google.protobuf.Parser<MsgUnbondRollupSubmitterResponse> parser() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Parser<MsgUnbondRollupSubmitterResponse> getParserForType() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public qorechain.rdk.v1.Tx.MsgUnbondRollupSubmitterResponse getDefaultInstanceForType() {
+      return DEFAULT_INSTANCE;
+    }
+
+  }
+
+  public interface MsgSetRollupMembersOrBuilder extends
+      // @@protoc_insertion_point(interface_extends:qorechain.rdk.v1.MsgSetRollupMembers)
+      com.google.protobuf.MessageOrBuilder {
+
+    /**
+     * <code>string creator = 1 [json_name = "creator", (.cosmos_proto.scalar) = "cosmos.AddressString"];</code>
+     * @return The creator.
+     */
+    java.lang.String getCreator();
+    /**
+     * <code>string creator = 1 [json_name = "creator", (.cosmos_proto.scalar) = "cosmos.AddressString"];</code>
+     * @return The bytes for creator.
+     */
+    com.google.protobuf.ByteString
+        getCreatorBytes();
+
+    /**
+     * <code>string rollup_id = 2 [json_name = "rollupId", (.gogoproto.customname) = "RollupID"];</code>
+     * @return The rollupId.
+     */
+    java.lang.String getRollupId();
+    /**
+     * <code>string rollup_id = 2 [json_name = "rollupId", (.gogoproto.customname) = "RollupID"];</code>
+     * @return The bytes for rollupId.
+     */
+    com.google.protobuf.ByteString
+        getRollupIdBytes();
+
+    /**
+     * <code>repeated string members = 3 [json_name = "members"];</code>
+     * @return A list containing the members.
+     */
+    java.util.List<java.lang.String>
+        getMembersList();
+    /**
+     * <code>repeated string members = 3 [json_name = "members"];</code>
+     * @return The count of members.
+     */
+    int getMembersCount();
+    /**
+     * <code>repeated string members = 3 [json_name = "members"];</code>
+     * @param index The index of the element to return.
+     * @return The members at the given index.
+     */
+    java.lang.String getMembers(int index);
+    /**
+     * <code>repeated string members = 3 [json_name = "members"];</code>
+     * @param index The index of the value to return.
+     * @return The bytes of the members at the given index.
+     */
+    com.google.protobuf.ByteString
+        getMembersBytes(int index);
+  }
+  /**
+   * <pre>
+   * MsgSetRollupMembers sets the member list of a private rollup (each member
+   * must publish an ML-KEM-1024 key in the x/pqc KEM registry) and starts a
+   * new membership epoch. Signed by the rollup's creator. Served from v3.2.8
+   * (rdk-private-rollups).
+   * </pre>
+   *
+   * Protobuf type {@code qorechain.rdk.v1.MsgSetRollupMembers}
+   */
+  public static final class MsgSetRollupMembers extends
+      com.google.protobuf.GeneratedMessage implements
+      // @@protoc_insertion_point(message_implements:qorechain.rdk.v1.MsgSetRollupMembers)
+      MsgSetRollupMembersOrBuilder {
+  private static final long serialVersionUID = 0L;
+    static {
+      com.google.protobuf.RuntimeVersion.validateProtobufGencodeVersion(
+        com.google.protobuf.RuntimeVersion.RuntimeDomain.PUBLIC,
+        /* major= */ 4,
+        /* minor= */ 35,
+        /* patch= */ 1,
+        /* suffix= */ "",
+        "MsgSetRollupMembers");
+    }
+    // Use MsgSetRollupMembers.newBuilder() to construct.
+    private MsgSetRollupMembers(com.google.protobuf.GeneratedMessage.Builder<?> builder) {
+      super(builder);
+    }
+    private MsgSetRollupMembers() {
+      creator_ = "";
+      rollupId_ = "";
+      members_ =
+          com.google.protobuf.LazyStringArrayList.emptyList();
+    }
+
+    public static final com.google.protobuf.Descriptors.Descriptor
+        getDescriptor() {
+      return qorechain.rdk.v1.Tx.internal_static_qorechain_rdk_v1_MsgSetRollupMembers_descriptor;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Descriptors.Descriptor getDescriptorForType() {
+      return qorechain.rdk.v1.Tx.internal_static_qorechain_rdk_v1_MsgSetRollupMembers_descriptor;
+    }
+
+    @java.lang.Override
+    protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+        internalGetFieldAccessorTable() {
+      return qorechain.rdk.v1.Tx.internal_static_qorechain_rdk_v1_MsgSetRollupMembers_fieldAccessorTable
+          .ensureFieldAccessorsInitialized(
+              qorechain.rdk.v1.Tx.MsgSetRollupMembers.class, qorechain.rdk.v1.Tx.MsgSetRollupMembers.Builder.class);
+    }
+
+    public static final int CREATOR_FIELD_NUMBER = 1;
+    @SuppressWarnings("serial")
+    private volatile java.lang.Object creator_ = "";
+    /**
+     * <code>string creator = 1 [json_name = "creator", (.cosmos_proto.scalar) = "cosmos.AddressString"];</code>
+     * @return The creator.
+     */
+    @java.lang.Override
+    public java.lang.String getCreator() {
+      java.lang.Object ref = creator_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        creator_ = s;
+        return s;
+      }
+    }
+    /**
+     * <code>string creator = 1 [json_name = "creator", (.cosmos_proto.scalar) = "cosmos.AddressString"];</code>
+     * @return The bytes for creator.
+     */
+    @java.lang.Override
+    public com.google.protobuf.ByteString
+        getCreatorBytes() {
+      java.lang.Object ref = creator_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        creator_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
+    public static final int ROLLUP_ID_FIELD_NUMBER = 2;
+    @SuppressWarnings("serial")
+    private volatile java.lang.Object rollupId_ = "";
+    /**
+     * <code>string rollup_id = 2 [json_name = "rollupId", (.gogoproto.customname) = "RollupID"];</code>
+     * @return The rollupId.
+     */
+    @java.lang.Override
+    public java.lang.String getRollupId() {
+      java.lang.Object ref = rollupId_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        rollupId_ = s;
+        return s;
+      }
+    }
+    /**
+     * <code>string rollup_id = 2 [json_name = "rollupId", (.gogoproto.customname) = "RollupID"];</code>
+     * @return The bytes for rollupId.
+     */
+    @java.lang.Override
+    public com.google.protobuf.ByteString
+        getRollupIdBytes() {
+      java.lang.Object ref = rollupId_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        rollupId_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
+    public static final int MEMBERS_FIELD_NUMBER = 3;
+    @SuppressWarnings("serial")
+    private com.google.protobuf.LazyStringArrayList members_ =
+        com.google.protobuf.LazyStringArrayList.emptyList();
+    /**
+     * <code>repeated string members = 3 [json_name = "members"];</code>
+     * @return A list containing the members.
+     */
+    public com.google.protobuf.ProtocolStringList
+        getMembersList() {
+      return members_;
+    }
+    /**
+     * <code>repeated string members = 3 [json_name = "members"];</code>
+     * @return The count of members.
+     */
+    public int getMembersCount() {
+      return members_.size();
+    }
+    /**
+     * <code>repeated string members = 3 [json_name = "members"];</code>
+     * @param index The index of the element to return.
+     * @return The members at the given index.
+     */
+    public java.lang.String getMembers(int index) {
+      return members_.get(index);
+    }
+    /**
+     * <code>repeated string members = 3 [json_name = "members"];</code>
+     * @param index The index of the value to return.
+     * @return The bytes of the members at the given index.
+     */
+    public com.google.protobuf.ByteString
+        getMembersBytes(int index) {
+      return members_.getByteString(index);
+    }
+
+    private byte memoizedIsInitialized = -1;
+    @java.lang.Override
+    public final boolean isInitialized() {
+      byte isInitialized = memoizedIsInitialized;
+      if (isInitialized == 1) return true;
+      if (isInitialized == 0) return false;
+
+      memoizedIsInitialized = 1;
+      return true;
+    }
+
+    @java.lang.Override
+    public void writeTo(com.google.protobuf.CodedOutputStream output)
+                        throws java.io.IOException {
+      if (!com.google.protobuf.GeneratedMessage.isStringEmpty(creator_)) {
+        com.google.protobuf.GeneratedMessage.writeString(output, 1, creator_);
+      }
+      if (!com.google.protobuf.GeneratedMessage.isStringEmpty(rollupId_)) {
+        com.google.protobuf.GeneratedMessage.writeString(output, 2, rollupId_);
+      }
+      for (int i = 0; i < members_.size(); i++) {
+        com.google.protobuf.GeneratedMessage.writeString(output, 3, members_.getRaw(i));
+      }
+      getUnknownFields().writeTo(output);
+    }
+    private int computeSerializedSize_0() {
+      int size = 0;
+      if (!com.google.protobuf.GeneratedMessage.isStringEmpty(creator_)) {
+        size += com.google.protobuf.GeneratedMessage.computeStringSize(1, creator_);
+      }
+      if (!com.google.protobuf.GeneratedMessage.isStringEmpty(rollupId_)) {
+        size += com.google.protobuf.GeneratedMessage.computeStringSize(2, rollupId_);
+      }
+      {
+        int dataSize = 0;
+        for (int i = 0; i < members_.size(); i++) {
+          dataSize += computeStringSizeNoTag(members_.getRaw(i));
+        }
+        size += dataSize;
+        size += 1 * getMembersList().size();
+      }
+      return size;
+    }
+    @java.lang.Override
+    public int getSerializedSize() {
+      int size = memoizedSize;
+      if (size != -1) return size;
+
+      size = 0;
+      size += computeSerializedSize_0();
+      size += getUnknownFields().getSerializedSize();
+      memoizedSize = size;
+      return size;
+    }
+
+    @java.lang.Override
+    public boolean equals(final java.lang.Object obj) {
+      if (obj == this) {
+       return true;
+      }
+      if (!(obj instanceof qorechain.rdk.v1.Tx.MsgSetRollupMembers)) {
+        return super.equals(obj);
+      }
+      qorechain.rdk.v1.Tx.MsgSetRollupMembers other = (qorechain.rdk.v1.Tx.MsgSetRollupMembers) obj;
+
+      if (!getCreator()
+          .equals(other.getCreator())) return false;
+      if (!getRollupId()
+          .equals(other.getRollupId())) return false;
+      if (!getMembersList()
+          .equals(other.getMembersList())) return false;
+      if (!getUnknownFields().equals(other.getUnknownFields())) return false;
+      return true;
+    }
+
+    @java.lang.Override
+    public int hashCode() {
+      if (memoizedHashCode != 0) {
+        return memoizedHashCode;
+      }
+      int hash = 41;
+      hash = (19 * hash) + getDescriptor().hashCode();
+      hash = (37 * hash) + CREATOR_FIELD_NUMBER;
+      hash = (53 * hash) + getCreator().hashCode();
+      hash = (37 * hash) + ROLLUP_ID_FIELD_NUMBER;
+      hash = (53 * hash) + getRollupId().hashCode();
+      if (getMembersCount() > 0) {
+        hash = (37 * hash) + MEMBERS_FIELD_NUMBER;
+        hash = (53 * hash) + getMembersList().hashCode();
+      }
+      hash = (29 * hash) + getUnknownFields().hashCode();
+      memoizedHashCode = hash;
+      return hash;
+    }
+
+    public static qorechain.rdk.v1.Tx.MsgSetRollupMembers parseFrom(
+        java.nio.ByteBuffer data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static qorechain.rdk.v1.Tx.MsgSetRollupMembers parseFrom(
+        java.nio.ByteBuffer data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static qorechain.rdk.v1.Tx.MsgSetRollupMembers parseFrom(
+        com.google.protobuf.ByteString data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static qorechain.rdk.v1.Tx.MsgSetRollupMembers parseFrom(
+        com.google.protobuf.ByteString data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static qorechain.rdk.v1.Tx.MsgSetRollupMembers parseFrom(byte[] data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static qorechain.rdk.v1.Tx.MsgSetRollupMembers parseFrom(
+        byte[] data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static qorechain.rdk.v1.Tx.MsgSetRollupMembers parseFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input);
+    }
+    public static qorechain.rdk.v1.Tx.MsgSetRollupMembers parseFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    public static qorechain.rdk.v1.Tx.MsgSetRollupMembers parseDelimitedFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseDelimitedWithIOException(PARSER, input);
+    }
+
+    public static qorechain.rdk.v1.Tx.MsgSetRollupMembers parseDelimitedFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static qorechain.rdk.v1.Tx.MsgSetRollupMembers parseFrom(
+        com.google.protobuf.CodedInputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input);
+    }
+    public static qorechain.rdk.v1.Tx.MsgSetRollupMembers parseFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    @java.lang.Override
+    public Builder newBuilderForType() { return newBuilder(); }
+    public static Builder newBuilder() {
+      return DEFAULT_INSTANCE.toBuilder();
+    }
+    public static Builder newBuilder(qorechain.rdk.v1.Tx.MsgSetRollupMembers prototype) {
+      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+    }
+    @java.lang.Override
+    public Builder toBuilder() {
+      return this == DEFAULT_INSTANCE
+          ? new Builder() : new Builder().mergeFrom(this);
+    }
+
+    @java.lang.Override
+    protected Builder newBuilderForType(
+        com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+      Builder builder = new Builder(parent);
+      return builder;
+    }
+    /**
+     * <pre>
+     * MsgSetRollupMembers sets the member list of a private rollup (each member
+     * must publish an ML-KEM-1024 key in the x/pqc KEM registry) and starts a
+     * new membership epoch. Signed by the rollup's creator. Served from v3.2.8
+     * (rdk-private-rollups).
+     * </pre>
+     *
+     * Protobuf type {@code qorechain.rdk.v1.MsgSetRollupMembers}
+     */
+    public static final class Builder extends
+        com.google.protobuf.GeneratedMessage.Builder<Builder> implements
+        // @@protoc_insertion_point(builder_implements:qorechain.rdk.v1.MsgSetRollupMembers)
+        qorechain.rdk.v1.Tx.MsgSetRollupMembersOrBuilder {
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return qorechain.rdk.v1.Tx.internal_static_qorechain_rdk_v1_MsgSetRollupMembers_descriptor;
+      }
+
+      @java.lang.Override
+      protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return qorechain.rdk.v1.Tx.internal_static_qorechain_rdk_v1_MsgSetRollupMembers_fieldAccessorTable
+            .ensureFieldAccessorsInitialized(
+                qorechain.rdk.v1.Tx.MsgSetRollupMembers.class, qorechain.rdk.v1.Tx.MsgSetRollupMembers.Builder.class);
+      }
+
+      // Construct using qorechain.rdk.v1.Tx.MsgSetRollupMembers.newBuilder()
+      private Builder() {
+
+      }
+
+      private Builder(
+          com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+        super(parent);
+
+      }
+      @java.lang.Override
+      public Builder clear() {
+        super.clear();
+        bitField0_ = 0;
+        creator_ = "";
+        rollupId_ = "";
+        members_ =
+            com.google.protobuf.LazyStringArrayList.emptyList();
+        return this;
+      }
+
+      @java.lang.Override
+      public com.google.protobuf.Descriptors.Descriptor
+          getDescriptorForType() {
+        return qorechain.rdk.v1.Tx.internal_static_qorechain_rdk_v1_MsgSetRollupMembers_descriptor;
+      }
+
+      @java.lang.Override
+      public qorechain.rdk.v1.Tx.MsgSetRollupMembers getDefaultInstanceForType() {
+        return qorechain.rdk.v1.Tx.MsgSetRollupMembers.getDefaultInstance();
+      }
+
+      @java.lang.Override
+      public qorechain.rdk.v1.Tx.MsgSetRollupMembers build() {
+        qorechain.rdk.v1.Tx.MsgSetRollupMembers result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(result);
+        }
+        return result;
+      }
+
+      @java.lang.Override
+      public qorechain.rdk.v1.Tx.MsgSetRollupMembers buildPartial() {
+        qorechain.rdk.v1.Tx.MsgSetRollupMembers result = new qorechain.rdk.v1.Tx.MsgSetRollupMembers(this);
+        if (bitField0_ != 0) { buildPartial0(result); }
+        onBuilt();
+        return result;
+      }
+
+      private void buildPartial0(qorechain.rdk.v1.Tx.MsgSetRollupMembers result) {
+        int from_bitField0_ = bitField0_;
+        if (((from_bitField0_ & 0x00000001) != 0)) {
+          result.creator_ = creator_;
+        }
+        if (((from_bitField0_ & 0x00000002) != 0)) {
+          result.rollupId_ = rollupId_;
+        }
+        if (((from_bitField0_ & 0x00000004) != 0)) {
+          members_.makeImmutable();
+          result.members_ = members_;
+        }
+      }
+
+      @java.lang.Override
+      public Builder mergeFrom(com.google.protobuf.Message other) {
+        if (other instanceof qorechain.rdk.v1.Tx.MsgSetRollupMembers) {
+          return mergeFrom((qorechain.rdk.v1.Tx.MsgSetRollupMembers)other);
+        } else {
+          super.mergeFrom(other);
+          return this;
+        }
+      }
+
+      public Builder mergeFrom(qorechain.rdk.v1.Tx.MsgSetRollupMembers other) {
+        if (other == qorechain.rdk.v1.Tx.MsgSetRollupMembers.getDefaultInstance()) return this;
+        if (!other.getCreator().isEmpty()) {
+          creator_ = other.creator_;
+          bitField0_ |= 0x00000001;
+          onChanged();
+        }
+        if (!other.getRollupId().isEmpty()) {
+          rollupId_ = other.rollupId_;
+          bitField0_ |= 0x00000002;
+          onChanged();
+        }
+        if (!other.members_.isEmpty()) {
+          if (members_.isEmpty()) {
+            members_ = other.members_;
+            bitField0_ |= 0x00000004;
+          } else {
+            ensureMembersIsMutable();
+            members_.addAll(other.members_);
+          }
+          onChanged();
+        }
+        this.mergeUnknownFields(other.getUnknownFields());
+        onChanged();
+        return this;
+      }
+
+      @java.lang.Override
+      public final boolean isInitialized() {
+        return true;
+      }
+
+      @java.lang.Override
+      public Builder mergeFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        if (extensionRegistry == null) {
+          throw new java.lang.NullPointerException();
+        }
+        try {
+          boolean done = false;
+          while (!done) {
+            int tag = input.readTag();
+            switch (tag) {
+              case 0:
+                done = true;
+                break;
+              case 10: {
+                creator_ = input.readStringRequireUtf8();
+                bitField0_ |= 0x00000001;
+                break;
+              } // case 10
+              case 18: {
+                rollupId_ = input.readStringRequireUtf8();
+                bitField0_ |= 0x00000002;
+                break;
+              } // case 18
+              case 26: {
+                ensureMembersIsMutable();
+                members_.add(input.readStringRequireUtf8());
+                break;
+              } // case 26
+              default: {
+                if (!super.parseUnknownField(input, extensionRegistry, tag)) {
+                  done = true; // was an endgroup tag
+                }
+                break;
+              } // default:
+            } // switch (tag)
+          } // while (!done)
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          throw e.unwrapIOException();
+        } finally {
+          onChanged();
+        } // finally
+        return this;
+      }
+      private int bitField0_;
+
+      private java.lang.Object creator_ = "";
+      /**
+       * <code>string creator = 1 [json_name = "creator", (.cosmos_proto.scalar) = "cosmos.AddressString"];</code>
+       * @return The creator.
+       */
+      public java.lang.String getCreator() {
+        java.lang.Object ref = creator_;
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          creator_ = s;
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
+      }
+      /**
+       * <code>string creator = 1 [json_name = "creator", (.cosmos_proto.scalar) = "cosmos.AddressString"];</code>
+       * @return The bytes for creator.
+       */
+      public com.google.protobuf.ByteString
+          getCreatorBytes() {
+        java.lang.Object ref = creator_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          creator_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <code>string creator = 1 [json_name = "creator", (.cosmos_proto.scalar) = "cosmos.AddressString"];</code>
+       * @param value The creator to set.
+       * @return This builder for chaining.
+       */
+      public Builder setCreator(
+          java.lang.String value) {
+        if (value == null) { throw new NullPointerException(); }
+        creator_ = value;
+        bitField0_ |= 0x00000001;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>string creator = 1 [json_name = "creator", (.cosmos_proto.scalar) = "cosmos.AddressString"];</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearCreator() {
+        creator_ = getDefaultInstance().getCreator();
+        bitField0_ = (bitField0_ & ~0x00000001);
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>string creator = 1 [json_name = "creator", (.cosmos_proto.scalar) = "cosmos.AddressString"];</code>
+       * @param value The bytes for creator to set.
+       * @return This builder for chaining.
+       */
+      public Builder setCreatorBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) { throw new NullPointerException(); }
+        checkByteStringIsUtf8(value);
+        creator_ = value;
+        bitField0_ |= 0x00000001;
+        onChanged();
+        return this;
+      }
+
+      private java.lang.Object rollupId_ = "";
+      /**
+       * <code>string rollup_id = 2 [json_name = "rollupId", (.gogoproto.customname) = "RollupID"];</code>
+       * @return The rollupId.
+       */
+      public java.lang.String getRollupId() {
+        java.lang.Object ref = rollupId_;
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          rollupId_ = s;
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
+      }
+      /**
+       * <code>string rollup_id = 2 [json_name = "rollupId", (.gogoproto.customname) = "RollupID"];</code>
+       * @return The bytes for rollupId.
+       */
+      public com.google.protobuf.ByteString
+          getRollupIdBytes() {
+        java.lang.Object ref = rollupId_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          rollupId_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <code>string rollup_id = 2 [json_name = "rollupId", (.gogoproto.customname) = "RollupID"];</code>
+       * @param value The rollupId to set.
+       * @return This builder for chaining.
+       */
+      public Builder setRollupId(
+          java.lang.String value) {
+        if (value == null) { throw new NullPointerException(); }
+        rollupId_ = value;
+        bitField0_ |= 0x00000002;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>string rollup_id = 2 [json_name = "rollupId", (.gogoproto.customname) = "RollupID"];</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearRollupId() {
+        rollupId_ = getDefaultInstance().getRollupId();
+        bitField0_ = (bitField0_ & ~0x00000002);
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>string rollup_id = 2 [json_name = "rollupId", (.gogoproto.customname) = "RollupID"];</code>
+       * @param value The bytes for rollupId to set.
+       * @return This builder for chaining.
+       */
+      public Builder setRollupIdBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) { throw new NullPointerException(); }
+        checkByteStringIsUtf8(value);
+        rollupId_ = value;
+        bitField0_ |= 0x00000002;
+        onChanged();
+        return this;
+      }
+
+      private com.google.protobuf.LazyStringArrayList members_ =
+          com.google.protobuf.LazyStringArrayList.emptyList();
+      private void ensureMembersIsMutable() {
+        if (!members_.isModifiable()) {
+          members_ = new com.google.protobuf.LazyStringArrayList(members_);
+        }
+        bitField0_ |= 0x00000004;
+      }
+      /**
+       * <code>repeated string members = 3 [json_name = "members"];</code>
+       * @return A list containing the members.
+       */
+      public com.google.protobuf.ProtocolStringList
+          getMembersList() {
+        members_.makeImmutable();
+        return members_;
+      }
+      /**
+       * <code>repeated string members = 3 [json_name = "members"];</code>
+       * @return The count of members.
+       */
+      public int getMembersCount() {
+        return members_.size();
+      }
+      /**
+       * <code>repeated string members = 3 [json_name = "members"];</code>
+       * @param index The index of the element to return.
+       * @return The members at the given index.
+       */
+      public java.lang.String getMembers(int index) {
+        return members_.get(index);
+      }
+      /**
+       * <code>repeated string members = 3 [json_name = "members"];</code>
+       * @param index The index of the value to return.
+       * @return The bytes of the members at the given index.
+       */
+      public com.google.protobuf.ByteString
+          getMembersBytes(int index) {
+        return members_.getByteString(index);
+      }
+      /**
+       * <code>repeated string members = 3 [json_name = "members"];</code>
+       * @param index The index to set the value at.
+       * @param value The members to set.
+       * @return This builder for chaining.
+       */
+      public Builder setMembers(
+          int index, java.lang.String value) {
+        if (value == null) { throw new NullPointerException(); }
+        ensureMembersIsMutable();
+        members_.set(index, value);
+        bitField0_ |= 0x00000004;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>repeated string members = 3 [json_name = "members"];</code>
+       * @param value The members to add.
+       * @return This builder for chaining.
+       */
+      public Builder addMembers(
+          java.lang.String value) {
+        if (value == null) { throw new NullPointerException(); }
+        ensureMembersIsMutable();
+        members_.add(value);
+        bitField0_ |= 0x00000004;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>repeated string members = 3 [json_name = "members"];</code>
+       * @param values The members to add.
+       * @return This builder for chaining.
+       */
+      public Builder addAllMembers(
+          java.lang.Iterable<java.lang.String> values) {
+        ensureMembersIsMutable();
+        com.google.protobuf.AbstractMessageLite.Builder.addAll(
+            values, members_);
+        bitField0_ |= 0x00000004;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>repeated string members = 3 [json_name = "members"];</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearMembers() {
+        members_ =
+          com.google.protobuf.LazyStringArrayList.emptyList();
+        bitField0_ = (bitField0_ & ~0x00000004);;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>repeated string members = 3 [json_name = "members"];</code>
+       * @param value The bytes of the members to add.
+       * @return This builder for chaining.
+       */
+      public Builder addMembersBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) { throw new NullPointerException(); }
+        checkByteStringIsUtf8(value);
+        ensureMembersIsMutable();
+        members_.add(value);
+        bitField0_ |= 0x00000004;
+        onChanged();
+        return this;
+      }
+
+      // @@protoc_insertion_point(builder_scope:qorechain.rdk.v1.MsgSetRollupMembers)
+    }
+
+    // @@protoc_insertion_point(class_scope:qorechain.rdk.v1.MsgSetRollupMembers)
+    private static final qorechain.rdk.v1.Tx.MsgSetRollupMembers DEFAULT_INSTANCE;
+    static {
+      DEFAULT_INSTANCE = new qorechain.rdk.v1.Tx.MsgSetRollupMembers();
+    }
+
+    public static qorechain.rdk.v1.Tx.MsgSetRollupMembers getDefaultInstance() {
+      return DEFAULT_INSTANCE;
+    }
+
+    private static final com.google.protobuf.Parser<MsgSetRollupMembers>
+        PARSER = new com.google.protobuf.AbstractParser<MsgSetRollupMembers>() {
+      @java.lang.Override
+      public MsgSetRollupMembers parsePartialFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        Builder builder = newBuilder();
+        try {
+          builder.mergeFrom(input, extensionRegistry);
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          throw e.setUnfinishedMessage(builder.buildPartial());
+        } catch (com.google.protobuf.UninitializedMessageException e) {
+          throw e.asInvalidProtocolBufferException().setUnfinishedMessage(builder.buildPartial());
+        } catch (java.io.IOException e) {
+          throw new com.google.protobuf.InvalidProtocolBufferException(e)
+              .setUnfinishedMessage(builder.buildPartial());
+        }
+        return builder.buildPartial();
+      }
+    };
+
+    public static com.google.protobuf.Parser<MsgSetRollupMembers> parser() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Parser<MsgSetRollupMembers> getParserForType() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public qorechain.rdk.v1.Tx.MsgSetRollupMembers getDefaultInstanceForType() {
+      return DEFAULT_INSTANCE;
+    }
+
+  }
+
+  public interface MsgSetRollupMembersResponseOrBuilder extends
+      // @@protoc_insertion_point(interface_extends:qorechain.rdk.v1.MsgSetRollupMembersResponse)
+      com.google.protobuf.MessageOrBuilder {
+
+    /**
+     * <code>uint64 epoch = 1 [json_name = "epoch"];</code>
+     * @return The epoch.
+     */
+    long getEpoch();
+  }
+  /**
+   * Protobuf type {@code qorechain.rdk.v1.MsgSetRollupMembersResponse}
+   */
+  public static final class MsgSetRollupMembersResponse extends
+      com.google.protobuf.GeneratedMessage implements
+      // @@protoc_insertion_point(message_implements:qorechain.rdk.v1.MsgSetRollupMembersResponse)
+      MsgSetRollupMembersResponseOrBuilder {
+  private static final long serialVersionUID = 0L;
+    static {
+      com.google.protobuf.RuntimeVersion.validateProtobufGencodeVersion(
+        com.google.protobuf.RuntimeVersion.RuntimeDomain.PUBLIC,
+        /* major= */ 4,
+        /* minor= */ 35,
+        /* patch= */ 1,
+        /* suffix= */ "",
+        "MsgSetRollupMembersResponse");
+    }
+    // Use MsgSetRollupMembersResponse.newBuilder() to construct.
+    private MsgSetRollupMembersResponse(com.google.protobuf.GeneratedMessage.Builder<?> builder) {
+      super(builder);
+    }
+    private MsgSetRollupMembersResponse() {
+    }
+
+    public static final com.google.protobuf.Descriptors.Descriptor
+        getDescriptor() {
+      return qorechain.rdk.v1.Tx.internal_static_qorechain_rdk_v1_MsgSetRollupMembersResponse_descriptor;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Descriptors.Descriptor getDescriptorForType() {
+      return qorechain.rdk.v1.Tx.internal_static_qorechain_rdk_v1_MsgSetRollupMembersResponse_descriptor;
+    }
+
+    @java.lang.Override
+    protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+        internalGetFieldAccessorTable() {
+      return qorechain.rdk.v1.Tx.internal_static_qorechain_rdk_v1_MsgSetRollupMembersResponse_fieldAccessorTable
+          .ensureFieldAccessorsInitialized(
+              qorechain.rdk.v1.Tx.MsgSetRollupMembersResponse.class, qorechain.rdk.v1.Tx.MsgSetRollupMembersResponse.Builder.class);
+    }
+
+    public static final int EPOCH_FIELD_NUMBER = 1;
+    private long epoch_ = 0L;
+    /**
+     * <code>uint64 epoch = 1 [json_name = "epoch"];</code>
+     * @return The epoch.
+     */
+    @java.lang.Override
+    public long getEpoch() {
+      return epoch_;
+    }
+
+    private byte memoizedIsInitialized = -1;
+    @java.lang.Override
+    public final boolean isInitialized() {
+      byte isInitialized = memoizedIsInitialized;
+      if (isInitialized == 1) return true;
+      if (isInitialized == 0) return false;
+
+      memoizedIsInitialized = 1;
+      return true;
+    }
+
+    @java.lang.Override
+    public void writeTo(com.google.protobuf.CodedOutputStream output)
+                        throws java.io.IOException {
+      if (epoch_ != 0L) {
+        output.writeUInt64(1, epoch_);
+      }
+      getUnknownFields().writeTo(output);
+    }
+    private int computeSerializedSize_0() {
+      int size = 0;
+      if (epoch_ != 0L) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeUInt64Size(1, epoch_);
+      }
+      return size;
+    }
+    @java.lang.Override
+    public int getSerializedSize() {
+      int size = memoizedSize;
+      if (size != -1) return size;
+
+      size = 0;
+      size += computeSerializedSize_0();
+      size += getUnknownFields().getSerializedSize();
+      memoizedSize = size;
+      return size;
+    }
+
+    @java.lang.Override
+    public boolean equals(final java.lang.Object obj) {
+      if (obj == this) {
+       return true;
+      }
+      if (!(obj instanceof qorechain.rdk.v1.Tx.MsgSetRollupMembersResponse)) {
+        return super.equals(obj);
+      }
+      qorechain.rdk.v1.Tx.MsgSetRollupMembersResponse other = (qorechain.rdk.v1.Tx.MsgSetRollupMembersResponse) obj;
+
+      if (getEpoch()
+          != other.getEpoch()) return false;
+      if (!getUnknownFields().equals(other.getUnknownFields())) return false;
+      return true;
+    }
+
+    @java.lang.Override
+    public int hashCode() {
+      if (memoizedHashCode != 0) {
+        return memoizedHashCode;
+      }
+      int hash = 41;
+      hash = (19 * hash) + getDescriptor().hashCode();
+      hash = (37 * hash) + EPOCH_FIELD_NUMBER;
+      hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
+          getEpoch());
+      hash = (29 * hash) + getUnknownFields().hashCode();
+      memoizedHashCode = hash;
+      return hash;
+    }
+
+    public static qorechain.rdk.v1.Tx.MsgSetRollupMembersResponse parseFrom(
+        java.nio.ByteBuffer data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static qorechain.rdk.v1.Tx.MsgSetRollupMembersResponse parseFrom(
+        java.nio.ByteBuffer data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static qorechain.rdk.v1.Tx.MsgSetRollupMembersResponse parseFrom(
+        com.google.protobuf.ByteString data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static qorechain.rdk.v1.Tx.MsgSetRollupMembersResponse parseFrom(
+        com.google.protobuf.ByteString data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static qorechain.rdk.v1.Tx.MsgSetRollupMembersResponse parseFrom(byte[] data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static qorechain.rdk.v1.Tx.MsgSetRollupMembersResponse parseFrom(
+        byte[] data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static qorechain.rdk.v1.Tx.MsgSetRollupMembersResponse parseFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input);
+    }
+    public static qorechain.rdk.v1.Tx.MsgSetRollupMembersResponse parseFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    public static qorechain.rdk.v1.Tx.MsgSetRollupMembersResponse parseDelimitedFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseDelimitedWithIOException(PARSER, input);
+    }
+
+    public static qorechain.rdk.v1.Tx.MsgSetRollupMembersResponse parseDelimitedFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static qorechain.rdk.v1.Tx.MsgSetRollupMembersResponse parseFrom(
+        com.google.protobuf.CodedInputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input);
+    }
+    public static qorechain.rdk.v1.Tx.MsgSetRollupMembersResponse parseFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    @java.lang.Override
+    public Builder newBuilderForType() { return newBuilder(); }
+    public static Builder newBuilder() {
+      return DEFAULT_INSTANCE.toBuilder();
+    }
+    public static Builder newBuilder(qorechain.rdk.v1.Tx.MsgSetRollupMembersResponse prototype) {
+      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+    }
+    @java.lang.Override
+    public Builder toBuilder() {
+      return this == DEFAULT_INSTANCE
+          ? new Builder() : new Builder().mergeFrom(this);
+    }
+
+    @java.lang.Override
+    protected Builder newBuilderForType(
+        com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+      Builder builder = new Builder(parent);
+      return builder;
+    }
+    /**
+     * Protobuf type {@code qorechain.rdk.v1.MsgSetRollupMembersResponse}
+     */
+    public static final class Builder extends
+        com.google.protobuf.GeneratedMessage.Builder<Builder> implements
+        // @@protoc_insertion_point(builder_implements:qorechain.rdk.v1.MsgSetRollupMembersResponse)
+        qorechain.rdk.v1.Tx.MsgSetRollupMembersResponseOrBuilder {
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return qorechain.rdk.v1.Tx.internal_static_qorechain_rdk_v1_MsgSetRollupMembersResponse_descriptor;
+      }
+
+      @java.lang.Override
+      protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return qorechain.rdk.v1.Tx.internal_static_qorechain_rdk_v1_MsgSetRollupMembersResponse_fieldAccessorTable
+            .ensureFieldAccessorsInitialized(
+                qorechain.rdk.v1.Tx.MsgSetRollupMembersResponse.class, qorechain.rdk.v1.Tx.MsgSetRollupMembersResponse.Builder.class);
+      }
+
+      // Construct using qorechain.rdk.v1.Tx.MsgSetRollupMembersResponse.newBuilder()
+      private Builder() {
+
+      }
+
+      private Builder(
+          com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+        super(parent);
+
+      }
+      @java.lang.Override
+      public Builder clear() {
+        super.clear();
+        bitField0_ = 0;
+        epoch_ = 0L;
+        return this;
+      }
+
+      @java.lang.Override
+      public com.google.protobuf.Descriptors.Descriptor
+          getDescriptorForType() {
+        return qorechain.rdk.v1.Tx.internal_static_qorechain_rdk_v1_MsgSetRollupMembersResponse_descriptor;
+      }
+
+      @java.lang.Override
+      public qorechain.rdk.v1.Tx.MsgSetRollupMembersResponse getDefaultInstanceForType() {
+        return qorechain.rdk.v1.Tx.MsgSetRollupMembersResponse.getDefaultInstance();
+      }
+
+      @java.lang.Override
+      public qorechain.rdk.v1.Tx.MsgSetRollupMembersResponse build() {
+        qorechain.rdk.v1.Tx.MsgSetRollupMembersResponse result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(result);
+        }
+        return result;
+      }
+
+      @java.lang.Override
+      public qorechain.rdk.v1.Tx.MsgSetRollupMembersResponse buildPartial() {
+        qorechain.rdk.v1.Tx.MsgSetRollupMembersResponse result = new qorechain.rdk.v1.Tx.MsgSetRollupMembersResponse(this);
+        if (bitField0_ != 0) { buildPartial0(result); }
+        onBuilt();
+        return result;
+      }
+
+      private void buildPartial0(qorechain.rdk.v1.Tx.MsgSetRollupMembersResponse result) {
+        int from_bitField0_ = bitField0_;
+        if (((from_bitField0_ & 0x00000001) != 0)) {
+          result.epoch_ = epoch_;
+        }
+      }
+
+      @java.lang.Override
+      public Builder mergeFrom(com.google.protobuf.Message other) {
+        if (other instanceof qorechain.rdk.v1.Tx.MsgSetRollupMembersResponse) {
+          return mergeFrom((qorechain.rdk.v1.Tx.MsgSetRollupMembersResponse)other);
+        } else {
+          super.mergeFrom(other);
+          return this;
+        }
+      }
+
+      public Builder mergeFrom(qorechain.rdk.v1.Tx.MsgSetRollupMembersResponse other) {
+        if (other == qorechain.rdk.v1.Tx.MsgSetRollupMembersResponse.getDefaultInstance()) return this;
+        if (other.getEpoch() != 0L) {
+          setEpoch(other.getEpoch());
+        }
+        this.mergeUnknownFields(other.getUnknownFields());
+        onChanged();
+        return this;
+      }
+
+      @java.lang.Override
+      public final boolean isInitialized() {
+        return true;
+      }
+
+      @java.lang.Override
+      public Builder mergeFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        if (extensionRegistry == null) {
+          throw new java.lang.NullPointerException();
+        }
+        try {
+          boolean done = false;
+          while (!done) {
+            int tag = input.readTag();
+            switch (tag) {
+              case 0:
+                done = true;
+                break;
+              case 8: {
+                epoch_ = input.readUInt64();
+                bitField0_ |= 0x00000001;
+                break;
+              } // case 8
+              default: {
+                if (!super.parseUnknownField(input, extensionRegistry, tag)) {
+                  done = true; // was an endgroup tag
+                }
+                break;
+              } // default:
+            } // switch (tag)
+          } // while (!done)
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          throw e.unwrapIOException();
+        } finally {
+          onChanged();
+        } // finally
+        return this;
+      }
+      private int bitField0_;
+
+      private long epoch_ ;
+      /**
+       * <code>uint64 epoch = 1 [json_name = "epoch"];</code>
+       * @return The epoch.
+       */
+      @java.lang.Override
+      public long getEpoch() {
+        return epoch_;
+      }
+      /**
+       * <code>uint64 epoch = 1 [json_name = "epoch"];</code>
+       * @param value The epoch to set.
+       * @return This builder for chaining.
+       */
+      public Builder setEpoch(long value) {
+
+        epoch_ = value;
+        bitField0_ |= 0x00000001;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>uint64 epoch = 1 [json_name = "epoch"];</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearEpoch() {
+        bitField0_ = (bitField0_ & ~0x00000001);
+        epoch_ = 0L;
+        onChanged();
+        return this;
+      }
+
+      // @@protoc_insertion_point(builder_scope:qorechain.rdk.v1.MsgSetRollupMembersResponse)
+    }
+
+    // @@protoc_insertion_point(class_scope:qorechain.rdk.v1.MsgSetRollupMembersResponse)
+    private static final qorechain.rdk.v1.Tx.MsgSetRollupMembersResponse DEFAULT_INSTANCE;
+    static {
+      DEFAULT_INSTANCE = new qorechain.rdk.v1.Tx.MsgSetRollupMembersResponse();
+    }
+
+    public static qorechain.rdk.v1.Tx.MsgSetRollupMembersResponse getDefaultInstance() {
+      return DEFAULT_INSTANCE;
+    }
+
+    private static final com.google.protobuf.Parser<MsgSetRollupMembersResponse>
+        PARSER = new com.google.protobuf.AbstractParser<MsgSetRollupMembersResponse>() {
+      @java.lang.Override
+      public MsgSetRollupMembersResponse parsePartialFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        Builder builder = newBuilder();
+        try {
+          builder.mergeFrom(input, extensionRegistry);
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          throw e.setUnfinishedMessage(builder.buildPartial());
+        } catch (com.google.protobuf.UninitializedMessageException e) {
+          throw e.asInvalidProtocolBufferException().setUnfinishedMessage(builder.buildPartial());
+        } catch (java.io.IOException e) {
+          throw new com.google.protobuf.InvalidProtocolBufferException(e)
+              .setUnfinishedMessage(builder.buildPartial());
+        }
+        return builder.buildPartial();
+      }
+    };
+
+    public static com.google.protobuf.Parser<MsgSetRollupMembersResponse> parser() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Parser<MsgSetRollupMembersResponse> getParserForType() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public qorechain.rdk.v1.Tx.MsgSetRollupMembersResponse getDefaultInstanceForType() {
+      return DEFAULT_INSTANCE;
+    }
+
+  }
+
   private static final com.google.protobuf.Descriptors.Descriptor
     internal_static_qorechain_rdk_v1_MsgCreateRollup_descriptor;
   private static final 
@@ -12398,6 +23925,86 @@ public final class Tx extends com.google.protobuf.GeneratedFile {
   private static final 
     com.google.protobuf.GeneratedMessage.FieldAccessorTable
       internal_static_qorechain_rdk_v1_MsgUpdateParamsResponse_fieldAccessorTable;
+  private static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_qorechain_rdk_v1_MsgSetVerificationKey_descriptor;
+  private static final 
+    com.google.protobuf.GeneratedMessage.FieldAccessorTable
+      internal_static_qorechain_rdk_v1_MsgSetVerificationKey_fieldAccessorTable;
+  private static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_qorechain_rdk_v1_MsgSetVerificationKeyResponse_descriptor;
+  private static final 
+    com.google.protobuf.GeneratedMessage.FieldAccessorTable
+      internal_static_qorechain_rdk_v1_MsgSetVerificationKeyResponse_fieldAccessorTable;
+  private static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_qorechain_rdk_v1_MsgUpdateVerificationKey_descriptor;
+  private static final 
+    com.google.protobuf.GeneratedMessage.FieldAccessorTable
+      internal_static_qorechain_rdk_v1_MsgUpdateVerificationKey_fieldAccessorTable;
+  private static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_qorechain_rdk_v1_MsgUpdateVerificationKeyResponse_descriptor;
+  private static final 
+    com.google.protobuf.GeneratedMessage.FieldAccessorTable
+      internal_static_qorechain_rdk_v1_MsgUpdateVerificationKeyResponse_fieldAccessorTable;
+  private static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_qorechain_rdk_v1_MsgPostRollupData_descriptor;
+  private static final 
+    com.google.protobuf.GeneratedMessage.FieldAccessorTable
+      internal_static_qorechain_rdk_v1_MsgPostRollupData_fieldAccessorTable;
+  private static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_qorechain_rdk_v1_MsgPostRollupDataResponse_descriptor;
+  private static final 
+    com.google.protobuf.GeneratedMessage.FieldAccessorTable
+      internal_static_qorechain_rdk_v1_MsgPostRollupDataResponse_fieldAccessorTable;
+  private static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_qorechain_rdk_v1_MsgSetRollupSequencing_descriptor;
+  private static final 
+    com.google.protobuf.GeneratedMessage.FieldAccessorTable
+      internal_static_qorechain_rdk_v1_MsgSetRollupSequencing_fieldAccessorTable;
+  private static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_qorechain_rdk_v1_MsgSetRollupSequencingResponse_descriptor;
+  private static final 
+    com.google.protobuf.GeneratedMessage.FieldAccessorTable
+      internal_static_qorechain_rdk_v1_MsgSetRollupSequencingResponse_fieldAccessorTable;
+  private static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_qorechain_rdk_v1_MsgDepositToRollup_descriptor;
+  private static final 
+    com.google.protobuf.GeneratedMessage.FieldAccessorTable
+      internal_static_qorechain_rdk_v1_MsgDepositToRollup_fieldAccessorTable;
+  private static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_qorechain_rdk_v1_MsgDepositToRollupResponse_descriptor;
+  private static final 
+    com.google.protobuf.GeneratedMessage.FieldAccessorTable
+      internal_static_qorechain_rdk_v1_MsgDepositToRollupResponse_fieldAccessorTable;
+  private static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_qorechain_rdk_v1_MsgBondRollupSubmitter_descriptor;
+  private static final 
+    com.google.protobuf.GeneratedMessage.FieldAccessorTable
+      internal_static_qorechain_rdk_v1_MsgBondRollupSubmitter_fieldAccessorTable;
+  private static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_qorechain_rdk_v1_MsgBondRollupSubmitterResponse_descriptor;
+  private static final 
+    com.google.protobuf.GeneratedMessage.FieldAccessorTable
+      internal_static_qorechain_rdk_v1_MsgBondRollupSubmitterResponse_fieldAccessorTable;
+  private static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_qorechain_rdk_v1_MsgUnbondRollupSubmitter_descriptor;
+  private static final 
+    com.google.protobuf.GeneratedMessage.FieldAccessorTable
+      internal_static_qorechain_rdk_v1_MsgUnbondRollupSubmitter_fieldAccessorTable;
+  private static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_qorechain_rdk_v1_MsgUnbondRollupSubmitterResponse_descriptor;
+  private static final 
+    com.google.protobuf.GeneratedMessage.FieldAccessorTable
+      internal_static_qorechain_rdk_v1_MsgUnbondRollupSubmitterResponse_fieldAccessorTable;
+  private static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_qorechain_rdk_v1_MsgSetRollupMembers_descriptor;
+  private static final 
+    com.google.protobuf.GeneratedMessage.FieldAccessorTable
+      internal_static_qorechain_rdk_v1_MsgSetRollupMembers_fieldAccessorTable;
+  private static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_qorechain_rdk_v1_MsgSetRollupMembersResponse_descriptor;
+  private static final 
+    com.google.protobuf.GeneratedMessage.FieldAccessorTable
+      internal_static_qorechain_rdk_v1_MsgSetRollupMembersResponse_fieldAccessorTable;
 
   public static com.google.protobuf.Descriptors.FileDescriptor
       getDescriptor() {
@@ -12410,93 +24017,175 @@ public final class Tx extends com.google.protobuf.GeneratedFile {
       "\n\031qorechain/rdk/v1/tx.proto\022\020qorechain.r" +
       "dk.v1\032\027cosmos/msg/v1/msg.proto\032\031cosmos_p" +
       "roto/cosmos.proto\032\024gogoproto/gogo.proto\"" +
-      "\324\001\n\017MsgCreateRollup\0222\n\007creator\030\001 \001(\tB\030\322\264" +
+      "\334\002\n\017MsgCreateRollup\0222\n\007creator\030\001 \001(\tB\030\322\264" +
       "-\024cosmos.AddressStringR\007creator\022)\n\trollu" +
       "p_id\030\002 \001(\tB\014\342\336\037\010RollupIDR\010rollupId\022\030\n\007pr" +
       "ofile\030\003 \001(\tR\007profile\022\027\n\007vm_type\030\004 \001(\tR\006v" +
       "mType\022!\n\014stake_amount\030\005 \001(\003R\013stakeAmount" +
-      ":\014\202\347\260*\007creator\"D\n\027MsgCreateRollupRespons" +
-      "e\022)\n\trollup_id\030\001 \001(\tB\014\342\336\037\010RollupIDR\010roll" +
-      "upId\"\275\003\n\016MsgSubmitBatch\0226\n\tsequencer\030\001 \001" +
-      "(\tB\030\322\264-\024cosmos.AddressStringR\tsequencer\022" +
-      ")\n\trollup_id\030\002 \001(\tB\014\342\336\037\010RollupIDR\010rollup" +
-      "Id\022\037\n\013batch_index\030\003 \001(\004R\nbatchIndex\022\035\n\ns" +
-      "tate_root\030\004 \001(\014R\tstateRoot\022&\n\017prev_state" +
-      "_root\030\005 \001(\014R\rprevStateRoot\022\031\n\010tx_count\030\006" +
-      " \001(\004R\007txCount\022\033\n\tdata_hash\030\007 \001(\014R\010dataHa" +
-      "sh\022\024\n\005proof\030\010 \001(\014R\005proof\022)\n\020withdrawals_" +
-      "root\030\t \001(\014R\017withdrawalsRoot\022)\n\020anchor_si" +
-      "gnature\030\n \001(\014R\017anchorSignature\022,\n\022valida" +
-      "tor_set_hash\030\013 \001(\014R\020validatorSetHash:\016\202\347" +
-      "\260*\tsequencer\"\030\n\026MsgSubmitBatchResponse\"\300" +
-      "\001\n\021MsgChallengeBatch\0228\n\nchallenger\030\001 \001(\t" +
-      "B\030\322\264-\024cosmos.AddressStringR\nchallenger\022)" +
-      "\n\trollup_id\030\002 \001(\tB\014\342\336\037\010RollupIDR\010rollupI" +
-      "d\022\037\n\013batch_index\030\003 \001(\004R\nbatchIndex\022\024\n\005pr" +
-      "oof\030\004 \001(\014R\005proof:\017\202\347\260*\nchallenger\"\033\n\031Msg" +
-      "ChallengeBatchResponse\"\311\001\n\023MsgResolveCha" +
-      "llenge\0224\n\010resolver\030\001 \001(\tB\030\322\264-\024cosmos.Add" +
-      "ressStringR\010resolver\022)\n\trollup_id\030\002 \001(\tB" +
-      "\014\342\336\037\010RollupIDR\010rollupId\022\037\n\013batch_index\030\003" +
-      " \001(\004R\nbatchIndex\022!\n\014fraud_upheld\030\004 \001(\010R\013" +
-      "fraudUpheld:\r\202\347\260*\010resolver\"\035\n\033MsgResolve" +
-      "ChallengeResponse\"\225\001\n\016MsgPauseRollup\0222\n\007" +
-      "creator\030\001 \001(\tB\030\322\264-\024cosmos.AddressStringR" +
-      "\007creator\022)\n\trollup_id\030\002 \001(\tB\014\342\336\037\010RollupI" +
-      "DR\010rollupId\022\026\n\006reason\030\003 \001(\tR\006reason:\014\202\347\260" +
-      "*\007creator\"\030\n\026MsgPauseRollupResponse\"~\n\017M" +
-      "sgResumeRollup\0222\n\007creator\030\001 \001(\tB\030\322\264-\024cos" +
-      "mos.AddressStringR\007creator\022)\n\trollup_id\030" +
-      "\002 \001(\tB\014\342\336\037\010RollupIDR\010rollupId:\014\202\347\260*\007crea" +
-      "tor\"\031\n\027MsgResumeRollupResponse\"|\n\rMsgSto" +
-      "pRollup\0222\n\007creator\030\001 \001(\tB\030\322\264-\024cosmos.Add" +
-      "ressStringR\007creator\022)\n\trollup_id\030\002 \001(\tB\014" +
-      "\342\336\037\010RollupIDR\010rollupId:\014\202\347\260*\007creator\"\027\n\025" +
-      "MsgStopRollupResponse\"\321\002\n\024MsgExecuteWith" +
-      "drawal\0226\n\tsubmitter\030\001 \001(\tB\030\322\264-\024cosmos.Ad" +
-      "dressStringR\tsubmitter\022)\n\trollup_id\030\002 \001(" +
-      "\tB\014\342\336\037\010RollupIDR\010rollupId\022\037\n\013batch_index" +
-      "\030\003 \001(\004R\nbatchIndex\022)\n\020withdrawal_index\030\004" +
-      " \001(\004R\017withdrawalIndex\0226\n\trecipient\030\005 \001(\t" +
-      "B\030\322\264-\024cosmos.AddressStringR\trecipient\022\024\n" +
-      "\005denom\030\006 \001(\tR\005denom\022\026\n\006amount\030\007 \001(\003R\006amo" +
-      "unt\022\024\n\005proof\030\010 \003(\014R\005proof:\016\202\347\260*\tsubmitte" +
-      "r\"\036\n\034MsgExecuteWithdrawalResponse\"\260\003\n\017Ms" +
-      "gUpdateParams\0226\n\tauthority\030\001 \001(\tB\030\322\264-\024co" +
-      "smos.AddressStringR\tauthority\022\037\n\013max_rol" +
-      "lups\030\002 \001(\rR\nmaxRollups\022/\n\024min_stake_for_" +
-      "rollup\030\003 \001(\003R\021minStakeForRollup\0229\n\031rollu" +
-      "p_creation_burn_rate\030\004 \001(\tR\026rollupCreati" +
-      "onBurnRate\0228\n\030default_challenge_window\030\005" +
-      " \001(\004R\026defaultChallengeWindow\022\'\n\020max_da_b" +
-      "lob_size\030\006 \001(\004R\rmaxDaBlobSize\0222\n\025blob_re" +
-      "tention_blocks\030\007 \001(\004R\023blobRetentionBlock" +
-      "s\0221\n\025max_batches_per_block\030\010 \001(\rR\022maxBat" +
-      "chesPerBlock:\016\202\347\260*\tauthority\"\031\n\027MsgUpdat" +
-      "eParamsResponse2\357\006\n\003Msg\022\\\n\014CreateRollup\022" +
-      "!.qorechain.rdk.v1.MsgCreateRollup\032).qor" +
-      "echain.rdk.v1.MsgCreateRollupResponse\022Y\n" +
-      "\013SubmitBatch\022 .qorechain.rdk.v1.MsgSubmi" +
-      "tBatch\032(.qorechain.rdk.v1.MsgSubmitBatch" +
-      "Response\022b\n\016ChallengeBatch\022#.qorechain.r" +
-      "dk.v1.MsgChallengeBatch\032+.qorechain.rdk." +
-      "v1.MsgChallengeBatchResponse\022h\n\020ResolveC" +
-      "hallenge\022%.qorechain.rdk.v1.MsgResolveCh" +
-      "allenge\032-.qorechain.rdk.v1.MsgResolveCha" +
-      "llengeResponse\022Y\n\013PauseRollup\022 .qorechai" +
-      "n.rdk.v1.MsgPauseRollup\032(.qorechain.rdk." +
-      "v1.MsgPauseRollupResponse\022\\\n\014ResumeRollu" +
-      "p\022!.qorechain.rdk.v1.MsgResumeRollup\032).q" +
-      "orechain.rdk.v1.MsgResumeRollupResponse\022" +
-      "V\n\nStopRollup\022\037.qorechain.rdk.v1.MsgStop" +
-      "Rollup\032\'.qorechain.rdk.v1.MsgStopRollupR" +
-      "esponse\022k\n\021ExecuteWithdrawal\022&.qorechain" +
-      ".rdk.v1.MsgExecuteWithdrawal\032..qorechain" +
-      ".rdk.v1.MsgExecuteWithdrawalResponse\022\\\n\014" +
-      "UpdateParams\022!.qorechain.rdk.v1.MsgUpdat" +
-      "eParams\032).qorechain.rdk.v1.MsgUpdatePara" +
-      "msResponse\032\005\200\347\260*\001B1Z/github.com/qorechai" +
-      "n/qorechain-core/x/rdk/typesb\006proto3"
+      "\022)\n\020verification_key\030\006 \001(\014R\017verification" +
+      "Key\022\036\n\nsequencing\030\007 \001(\tR\nsequencing\022!\n\014e" +
+      "xecution_vm\030\010 \001(\tR\013executionVm\022\030\n\007privac" +
+      "y\030\t \001(\tR\007privacy:\014\202\347\260*\007creator\"D\n\027MsgCre" +
+      "ateRollupResponse\022)\n\trollup_id\030\001 \001(\tB\014\342\336" +
+      "\037\010RollupIDR\010rollupId\"\332\003\n\016MsgSubmitBatch\022" +
+      "6\n\tsequencer\030\001 \001(\tB\030\322\264-\024cosmos.AddressSt" +
+      "ringR\tsequencer\022)\n\trollup_id\030\002 \001(\tB\014\342\336\037\010" +
+      "RollupIDR\010rollupId\022\037\n\013batch_index\030\003 \001(\004R" +
+      "\nbatchIndex\022\035\n\nstate_root\030\004 \001(\014R\tstateRo" +
+      "ot\022&\n\017prev_state_root\030\005 \001(\014R\rprevStateRo" +
+      "ot\022\031\n\010tx_count\030\006 \001(\004R\007txCount\022\033\n\tdata_ha" +
+      "sh\030\007 \001(\014R\010dataHash\022\024\n\005proof\030\010 \001(\014R\005proof" +
+      "\022)\n\020withdrawals_root\030\t \001(\014R\017withdrawalsR" +
+      "oot\022)\n\020anchor_signature\030\n \001(\014R\017anchorSig" +
+      "nature\022,\n\022validator_set_hash\030\013 \001(\014R\020vali" +
+      "datorSetHash\022\033\n\tinbox_end\030\014 \001(\004R\010inboxEn" +
+      "d:\016\202\347\260*\tsequencer\"\030\n\026MsgSubmitBatchRespo" +
+      "nse\"\300\001\n\021MsgChallengeBatch\0228\n\nchallenger\030" +
+      "\001 \001(\tB\030\322\264-\024cosmos.AddressStringR\nchallen" +
+      "ger\022)\n\trollup_id\030\002 \001(\tB\014\342\336\037\010RollupIDR\010ro" +
+      "llupId\022\037\n\013batch_index\030\003 \001(\004R\nbatchIndex\022" +
+      "\024\n\005proof\030\004 \001(\014R\005proof:\017\202\347\260*\nchallenger\"\033" +
+      "\n\031MsgChallengeBatchResponse\"\311\001\n\023MsgResol" +
+      "veChallenge\0224\n\010resolver\030\001 \001(\tB\030\322\264-\024cosmo" +
+      "s.AddressStringR\010resolver\022)\n\trollup_id\030\002" +
+      " \001(\tB\014\342\336\037\010RollupIDR\010rollupId\022\037\n\013batch_in" +
+      "dex\030\003 \001(\004R\nbatchIndex\022!\n\014fraud_upheld\030\004 " +
+      "\001(\010R\013fraudUpheld:\r\202\347\260*\010resolver\"\035\n\033MsgRe" +
+      "solveChallengeResponse\"\225\001\n\016MsgPauseRollu" +
+      "p\0222\n\007creator\030\001 \001(\tB\030\322\264-\024cosmos.AddressSt" +
+      "ringR\007creator\022)\n\trollup_id\030\002 \001(\tB\014\342\336\037\010Ro" +
+      "llupIDR\010rollupId\022\026\n\006reason\030\003 \001(\tR\006reason" +
+      ":\014\202\347\260*\007creator\"\030\n\026MsgPauseRollupResponse" +
+      "\"~\n\017MsgResumeRollup\0222\n\007creator\030\001 \001(\tB\030\322\264" +
+      "-\024cosmos.AddressStringR\007creator\022)\n\trollu" +
+      "p_id\030\002 \001(\tB\014\342\336\037\010RollupIDR\010rollupId:\014\202\347\260*" +
+      "\007creator\"\031\n\027MsgResumeRollupResponse\"|\n\rM" +
+      "sgStopRollup\0222\n\007creator\030\001 \001(\tB\030\322\264-\024cosmo" +
+      "s.AddressStringR\007creator\022)\n\trollup_id\030\002 " +
+      "\001(\tB\014\342\336\037\010RollupIDR\010rollupId:\014\202\347\260*\007creato" +
+      "r\"\027\n\025MsgStopRollupResponse\"\321\002\n\024MsgExecut" +
+      "eWithdrawal\0226\n\tsubmitter\030\001 \001(\tB\030\322\264-\024cosm" +
+      "os.AddressStringR\tsubmitter\022)\n\trollup_id" +
+      "\030\002 \001(\tB\014\342\336\037\010RollupIDR\010rollupId\022\037\n\013batch_" +
+      "index\030\003 \001(\004R\nbatchIndex\022)\n\020withdrawal_in" +
+      "dex\030\004 \001(\004R\017withdrawalIndex\0226\n\trecipient\030" +
+      "\005 \001(\tB\030\322\264-\024cosmos.AddressStringR\trecipie" +
+      "nt\022\024\n\005denom\030\006 \001(\tR\005denom\022\026\n\006amount\030\007 \001(\003" +
+      "R\006amount\022\024\n\005proof\030\010 \003(\014R\005proof:\016\202\347\260*\tsub" +
+      "mitter\"\036\n\034MsgExecuteWithdrawalResponse\"\230" +
+      "\006\n\017MsgUpdateParams\0226\n\tauthority\030\001 \001(\tB\030\322" +
+      "\264-\024cosmos.AddressStringR\tauthority\022\037\n\013ma" +
+      "x_rollups\030\002 \001(\rR\nmaxRollups\022/\n\024min_stake" +
+      "_for_rollup\030\003 \001(\003R\021minStakeForRollup\0229\n\031" +
+      "rollup_creation_burn_rate\030\004 \001(\tR\026rollupC" +
+      "reationBurnRate\0228\n\030default_challenge_win" +
+      "dow\030\005 \001(\004R\026defaultChallengeWindow\022\'\n\020max" +
+      "_da_blob_size\030\006 \001(\004R\rmaxDaBlobSize\0222\n\025bl" +
+      "ob_retention_blocks\030\007 \001(\004R\023blobRetention" +
+      "Blocks\0221\n\025max_batches_per_block\030\010 \001(\rR\022m" +
+      "axBatchesPerBlock\022G\n finalized_batch_ret" +
+      "ention_blocks\030\t \001(\004R\035finalizedBatchReten" +
+      "tionBlocks\0221\n\025max_posted_data_bytes\030\n \001(" +
+      "\004R\022maxPostedDataBytes\022C\n\037max_posted_data" +
+      "_bytes_per_block\030\013 \001(\004R\032maxPostedDataByt" +
+      "esPerBlock\0226\n\030posted_data_fee_per_byte\030\014" +
+      " \001(\004R\024postedDataFeePerByte\022?\n\034posted_dat" +
+      "a_retention_blocks\030\r \001(\004R\031postedDataRete" +
+      "ntionBlocks\022,\n\022min_submitter_bond\030\016 \001(\004R" +
+      "\020minSubmitterBond:\016\202\347\260*\tauthority\"\031\n\027Msg" +
+      "UpdateParamsResponse\"\322\001\n\025MsgSetVerificat" +
+      "ionKey\0222\n\007creator\030\001 \001(\tB\030\322\264-\024cosmos.Addr" +
+      "essStringR\007creator\022)\n\trollup_id\030\002 \001(\tB\014\342" +
+      "\336\037\010RollupIDR\010rollupId\022)\n\020verification_ke" +
+      "y\030\003 \001(\014R\017verificationKey\022!\n\014proof_system" +
+      "\030\004 \001(\tR\013proofSystem:\014\202\347\260*\007creator\"\037\n\035Msg" +
+      "SetVerificationKeyResponse\"\333\001\n\030MsgUpdate" +
+      "VerificationKey\0226\n\tauthority\030\001 \001(\tB\030\322\264-\024" +
+      "cosmos.AddressStringR\tauthority\022)\n\trollu" +
+      "p_id\030\002 \001(\tB\014\342\336\037\010RollupIDR\010rollupId\022)\n\020ve" +
+      "rification_key\030\003 \001(\014R\017verificationKey\022!\n" +
+      "\014proof_system\030\004 \001(\tR\013proofSystem:\016\202\347\260*\ta" +
+      "uthority\"\"\n MsgUpdateVerificationKeyResp" +
+      "onse\"\221\001\n\021MsgPostRollupData\0220\n\006poster\030\001 \001" +
+      "(\tB\030\322\264-\024cosmos.AddressStringR\006poster\022)\n\t" +
+      "rollup_id\030\002 \001(\tB\014\342\336\037\010RollupIDR\010rollupId\022" +
+      "\022\n\004data\030\003 \001(\014R\004data:\013\202\347\260*\006poster\"T\n\031MsgP" +
+      "ostRollupDataResponse\022\032\n\010sequence\030\001 \001(\004R" +
+      "\010sequence\022\033\n\tdata_hash\030\002 \001(\014R\010dataHash\"\253" +
+      "\001\n\026MsgSetRollupSequencing\0226\n\tauthority\030\001" +
+      " \001(\tB\030\322\264-\024cosmos.AddressStringR\tauthorit" +
+      "y\022)\n\trollup_id\030\002 \001(\tB\014\342\336\037\010RollupIDR\010roll" +
+      "upId\022\036\n\nsequencing\030\003 \001(\tR\nsequencing:\016\202\347" +
+      "\260*\tauthority\" \n\036MsgSetRollupSequencingRe" +
+      "sponse\"\271\001\n\022MsgDepositToRollup\0226\n\tdeposit" +
+      "or\030\001 \001(\tB\030\322\264-\024cosmos.AddressStringR\tdepo" +
+      "sitor\022)\n\trollup_id\030\002 \001(\tB\014\342\336\037\010RollupIDR\010" +
+      "rollupId\022\030\n\007account\030\003 \001(\014R\007account\022\026\n\006am" +
+      "ount\030\004 \001(\004R\006amount:\016\202\347\260*\tdepositor\"8\n\032Ms" +
+      "gDepositToRollupResponse\022\032\n\010sequence\030\001 \001" +
+      "(\004R\010sequence\"\243\001\n\026MsgBondRollupSubmitter\022" +
+      "6\n\tsubmitter\030\001 \001(\tB\030\322\264-\024cosmos.AddressSt" +
+      "ringR\tsubmitter\022)\n\trollup_id\030\002 \001(\tB\014\342\336\037\010" +
+      "RollupIDR\010rollupId\022\026\n\006amount\030\003 \001(\004R\006amou" +
+      "nt:\016\202\347\260*\tsubmitter\"4\n\036MsgBondRollupSubmi" +
+      "tterResponse\022\022\n\004bond\030\001 \001(\004R\004bond\"\215\001\n\030Msg" +
+      "UnbondRollupSubmitter\0226\n\tsubmitter\030\001 \001(\t" +
+      "B\030\322\264-\024cosmos.AddressStringR\tsubmitter\022)\n" +
+      "\trollup_id\030\002 \001(\tB\014\342\336\037\010RollupIDR\010rollupId" +
+      ":\016\202\347\260*\tsubmitter\">\n MsgUnbondRollupSubmi" +
+      "tterResponse\022\032\n\010returned\030\001 \001(\004R\010returned" +
+      "\"\234\001\n\023MsgSetRollupMembers\0222\n\007creator\030\001 \001(" +
+      "\tB\030\322\264-\024cosmos.AddressStringR\007creator\022)\n\t" +
+      "rollup_id\030\002 \001(\tB\014\342\336\037\010RollupIDR\010rollupId\022" +
+      "\030\n\007members\030\003 \003(\tR\007members:\014\202\347\260*\007creator\"" +
+      "3\n\033MsgSetRollupMembersResponse\022\024\n\005epoch\030" +
+      "\001 \001(\004R\005epoch2\354\r\n\003Msg\022\\\n\014CreateRollup\022!.q" +
+      "orechain.rdk.v1.MsgCreateRollup\032).qorech" +
+      "ain.rdk.v1.MsgCreateRollupResponse\022Y\n\013Su" +
+      "bmitBatch\022 .qorechain.rdk.v1.MsgSubmitBa" +
+      "tch\032(.qorechain.rdk.v1.MsgSubmitBatchRes" +
+      "ponse\022b\n\016ChallengeBatch\022#.qorechain.rdk." +
+      "v1.MsgChallengeBatch\032+.qorechain.rdk.v1." +
+      "MsgChallengeBatchResponse\022h\n\020ResolveChal" +
+      "lenge\022%.qorechain.rdk.v1.MsgResolveChall" +
+      "enge\032-.qorechain.rdk.v1.MsgResolveChalle" +
+      "ngeResponse\022Y\n\013PauseRollup\022 .qorechain.r" +
+      "dk.v1.MsgPauseRollup\032(.qorechain.rdk.v1." +
+      "MsgPauseRollupResponse\022\\\n\014ResumeRollup\022!" +
+      ".qorechain.rdk.v1.MsgResumeRollup\032).qore" +
+      "chain.rdk.v1.MsgResumeRollupResponse\022V\n\n" +
+      "StopRollup\022\037.qorechain.rdk.v1.MsgStopRol" +
+      "lup\032\'.qorechain.rdk.v1.MsgStopRollupResp" +
+      "onse\022k\n\021ExecuteWithdrawal\022&.qorechain.rd" +
+      "k.v1.MsgExecuteWithdrawal\032..qorechain.rd" +
+      "k.v1.MsgExecuteWithdrawalResponse\022\\\n\014Upd" +
+      "ateParams\022!.qorechain.rdk.v1.MsgUpdatePa" +
+      "rams\032).qorechain.rdk.v1.MsgUpdateParamsR" +
+      "esponse\022n\n\022SetVerificationKey\022\'.qorechai" +
+      "n.rdk.v1.MsgSetVerificationKey\032/.qorecha" +
+      "in.rdk.v1.MsgSetVerificationKeyResponse\022" +
+      "w\n\025UpdateVerificationKey\022*.qorechain.rdk" +
+      ".v1.MsgUpdateVerificationKey\0322.qorechain" +
+      ".rdk.v1.MsgUpdateVerificationKeyResponse" +
+      "\022b\n\016PostRollupData\022#.qorechain.rdk.v1.Ms" +
+      "gPostRollupData\032+.qorechain.rdk.v1.MsgPo" +
+      "stRollupDataResponse\022q\n\023SetRollupSequenc" +
+      "ing\022(.qorechain.rdk.v1.MsgSetRollupSeque" +
+      "ncing\0320.qorechain.rdk.v1.MsgSetRollupSeq" +
+      "uencingResponse\022e\n\017DepositToRollup\022$.qor" +
+      "echain.rdk.v1.MsgDepositToRollup\032,.qorec" +
+      "hain.rdk.v1.MsgDepositToRollupResponse\022q" +
+      "\n\023BondRollupSubmitter\022(.qorechain.rdk.v1" +
+      ".MsgBondRollupSubmitter\0320.qorechain.rdk." +
+      "v1.MsgBondRollupSubmitterResponse\022w\n\025Unb" +
+      "ondRollupSubmitter\022*.qorechain.rdk.v1.Ms" +
+      "gUnbondRollupSubmitter\0322.qorechain.rdk.v" +
+      "1.MsgUnbondRollupSubmitterResponse\022h\n\020Se" +
+      "tRollupMembers\022%.qorechain.rdk.v1.MsgSet" +
+      "RollupMembers\032-.qorechain.rdk.v1.MsgSetR" +
+      "ollupMembersResponse\032\005\200\347\260*\001B1Z/github.co" +
+      "m/qorechain/qorechain-core/x/rdk/typesb\006" +
+      "proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
@@ -12510,7 +24199,7 @@ public final class Tx extends com.google.protobuf.GeneratedFile {
     internal_static_qorechain_rdk_v1_MsgCreateRollup_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_qorechain_rdk_v1_MsgCreateRollup_descriptor,
-        new java.lang.String[] { "Creator", "RollupId", "Profile", "VmType", "StakeAmount", });
+        new java.lang.String[] { "Creator", "RollupId", "Profile", "VmType", "StakeAmount", "VerificationKey", "Sequencing", "ExecutionVm", "Privacy", });
     internal_static_qorechain_rdk_v1_MsgCreateRollupResponse_descriptor =
       getDescriptor().getMessageType(1);
     internal_static_qorechain_rdk_v1_MsgCreateRollupResponse_fieldAccessorTable = new
@@ -12522,7 +24211,7 @@ public final class Tx extends com.google.protobuf.GeneratedFile {
     internal_static_qorechain_rdk_v1_MsgSubmitBatch_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_qorechain_rdk_v1_MsgSubmitBatch_descriptor,
-        new java.lang.String[] { "Sequencer", "RollupId", "BatchIndex", "StateRoot", "PrevStateRoot", "TxCount", "DataHash", "Proof", "WithdrawalsRoot", "AnchorSignature", "ValidatorSetHash", });
+        new java.lang.String[] { "Sequencer", "RollupId", "BatchIndex", "StateRoot", "PrevStateRoot", "TxCount", "DataHash", "Proof", "WithdrawalsRoot", "AnchorSignature", "ValidatorSetHash", "InboxEnd", });
     internal_static_qorechain_rdk_v1_MsgSubmitBatchResponse_descriptor =
       getDescriptor().getMessageType(3);
     internal_static_qorechain_rdk_v1_MsgSubmitBatchResponse_fieldAccessorTable = new
@@ -12606,13 +24295,109 @@ public final class Tx extends com.google.protobuf.GeneratedFile {
     internal_static_qorechain_rdk_v1_MsgUpdateParams_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_qorechain_rdk_v1_MsgUpdateParams_descriptor,
-        new java.lang.String[] { "Authority", "MaxRollups", "MinStakeForRollup", "RollupCreationBurnRate", "DefaultChallengeWindow", "MaxDaBlobSize", "BlobRetentionBlocks", "MaxBatchesPerBlock", });
+        new java.lang.String[] { "Authority", "MaxRollups", "MinStakeForRollup", "RollupCreationBurnRate", "DefaultChallengeWindow", "MaxDaBlobSize", "BlobRetentionBlocks", "MaxBatchesPerBlock", "FinalizedBatchRetentionBlocks", "MaxPostedDataBytes", "MaxPostedDataBytesPerBlock", "PostedDataFeePerByte", "PostedDataRetentionBlocks", "MinSubmitterBond", });
     internal_static_qorechain_rdk_v1_MsgUpdateParamsResponse_descriptor =
       getDescriptor().getMessageType(17);
     internal_static_qorechain_rdk_v1_MsgUpdateParamsResponse_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_qorechain_rdk_v1_MsgUpdateParamsResponse_descriptor,
         new java.lang.String[] { });
+    internal_static_qorechain_rdk_v1_MsgSetVerificationKey_descriptor =
+      getDescriptor().getMessageType(18);
+    internal_static_qorechain_rdk_v1_MsgSetVerificationKey_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessage.FieldAccessorTable(
+        internal_static_qorechain_rdk_v1_MsgSetVerificationKey_descriptor,
+        new java.lang.String[] { "Creator", "RollupId", "VerificationKey", "ProofSystem", });
+    internal_static_qorechain_rdk_v1_MsgSetVerificationKeyResponse_descriptor =
+      getDescriptor().getMessageType(19);
+    internal_static_qorechain_rdk_v1_MsgSetVerificationKeyResponse_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessage.FieldAccessorTable(
+        internal_static_qorechain_rdk_v1_MsgSetVerificationKeyResponse_descriptor,
+        new java.lang.String[] { });
+    internal_static_qorechain_rdk_v1_MsgUpdateVerificationKey_descriptor =
+      getDescriptor().getMessageType(20);
+    internal_static_qorechain_rdk_v1_MsgUpdateVerificationKey_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessage.FieldAccessorTable(
+        internal_static_qorechain_rdk_v1_MsgUpdateVerificationKey_descriptor,
+        new java.lang.String[] { "Authority", "RollupId", "VerificationKey", "ProofSystem", });
+    internal_static_qorechain_rdk_v1_MsgUpdateVerificationKeyResponse_descriptor =
+      getDescriptor().getMessageType(21);
+    internal_static_qorechain_rdk_v1_MsgUpdateVerificationKeyResponse_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessage.FieldAccessorTable(
+        internal_static_qorechain_rdk_v1_MsgUpdateVerificationKeyResponse_descriptor,
+        new java.lang.String[] { });
+    internal_static_qorechain_rdk_v1_MsgPostRollupData_descriptor =
+      getDescriptor().getMessageType(22);
+    internal_static_qorechain_rdk_v1_MsgPostRollupData_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessage.FieldAccessorTable(
+        internal_static_qorechain_rdk_v1_MsgPostRollupData_descriptor,
+        new java.lang.String[] { "Poster", "RollupId", "Data", });
+    internal_static_qorechain_rdk_v1_MsgPostRollupDataResponse_descriptor =
+      getDescriptor().getMessageType(23);
+    internal_static_qorechain_rdk_v1_MsgPostRollupDataResponse_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessage.FieldAccessorTable(
+        internal_static_qorechain_rdk_v1_MsgPostRollupDataResponse_descriptor,
+        new java.lang.String[] { "Sequence", "DataHash", });
+    internal_static_qorechain_rdk_v1_MsgSetRollupSequencing_descriptor =
+      getDescriptor().getMessageType(24);
+    internal_static_qorechain_rdk_v1_MsgSetRollupSequencing_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessage.FieldAccessorTable(
+        internal_static_qorechain_rdk_v1_MsgSetRollupSequencing_descriptor,
+        new java.lang.String[] { "Authority", "RollupId", "Sequencing", });
+    internal_static_qorechain_rdk_v1_MsgSetRollupSequencingResponse_descriptor =
+      getDescriptor().getMessageType(25);
+    internal_static_qorechain_rdk_v1_MsgSetRollupSequencingResponse_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessage.FieldAccessorTable(
+        internal_static_qorechain_rdk_v1_MsgSetRollupSequencingResponse_descriptor,
+        new java.lang.String[] { });
+    internal_static_qorechain_rdk_v1_MsgDepositToRollup_descriptor =
+      getDescriptor().getMessageType(26);
+    internal_static_qorechain_rdk_v1_MsgDepositToRollup_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessage.FieldAccessorTable(
+        internal_static_qorechain_rdk_v1_MsgDepositToRollup_descriptor,
+        new java.lang.String[] { "Depositor", "RollupId", "Account", "Amount", });
+    internal_static_qorechain_rdk_v1_MsgDepositToRollupResponse_descriptor =
+      getDescriptor().getMessageType(27);
+    internal_static_qorechain_rdk_v1_MsgDepositToRollupResponse_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessage.FieldAccessorTable(
+        internal_static_qorechain_rdk_v1_MsgDepositToRollupResponse_descriptor,
+        new java.lang.String[] { "Sequence", });
+    internal_static_qorechain_rdk_v1_MsgBondRollupSubmitter_descriptor =
+      getDescriptor().getMessageType(28);
+    internal_static_qorechain_rdk_v1_MsgBondRollupSubmitter_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessage.FieldAccessorTable(
+        internal_static_qorechain_rdk_v1_MsgBondRollupSubmitter_descriptor,
+        new java.lang.String[] { "Submitter", "RollupId", "Amount", });
+    internal_static_qorechain_rdk_v1_MsgBondRollupSubmitterResponse_descriptor =
+      getDescriptor().getMessageType(29);
+    internal_static_qorechain_rdk_v1_MsgBondRollupSubmitterResponse_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessage.FieldAccessorTable(
+        internal_static_qorechain_rdk_v1_MsgBondRollupSubmitterResponse_descriptor,
+        new java.lang.String[] { "Bond", });
+    internal_static_qorechain_rdk_v1_MsgUnbondRollupSubmitter_descriptor =
+      getDescriptor().getMessageType(30);
+    internal_static_qorechain_rdk_v1_MsgUnbondRollupSubmitter_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessage.FieldAccessorTable(
+        internal_static_qorechain_rdk_v1_MsgUnbondRollupSubmitter_descriptor,
+        new java.lang.String[] { "Submitter", "RollupId", });
+    internal_static_qorechain_rdk_v1_MsgUnbondRollupSubmitterResponse_descriptor =
+      getDescriptor().getMessageType(31);
+    internal_static_qorechain_rdk_v1_MsgUnbondRollupSubmitterResponse_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessage.FieldAccessorTable(
+        internal_static_qorechain_rdk_v1_MsgUnbondRollupSubmitterResponse_descriptor,
+        new java.lang.String[] { "Returned", });
+    internal_static_qorechain_rdk_v1_MsgSetRollupMembers_descriptor =
+      getDescriptor().getMessageType(32);
+    internal_static_qorechain_rdk_v1_MsgSetRollupMembers_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessage.FieldAccessorTable(
+        internal_static_qorechain_rdk_v1_MsgSetRollupMembers_descriptor,
+        new java.lang.String[] { "Creator", "RollupId", "Members", });
+    internal_static_qorechain_rdk_v1_MsgSetRollupMembersResponse_descriptor =
+      getDescriptor().getMessageType(33);
+    internal_static_qorechain_rdk_v1_MsgSetRollupMembersResponse_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessage.FieldAccessorTable(
+        internal_static_qorechain_rdk_v1_MsgSetRollupMembersResponse_descriptor,
+        new java.lang.String[] { "Epoch", });
     descriptor.resolveAllFeaturesImmutable();
     cosmos.msg.v1.Msg.getDescriptor();
     cosmos_proto.Cosmos.getDescriptor();

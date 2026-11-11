@@ -7618,6 +7618,2746 @@ public final class QueryOuterClass extends com.google.protobuf.GeneratedFile {
 
   }
 
+  public interface QueryAppliedParamsRequestOrBuilder extends
+      // @@protoc_insertion_point(interface_extends:qorechain.rlconsensus.v1.QueryAppliedParamsRequest)
+      com.google.protobuf.MessageOrBuilder {
+  }
+  /**
+   * Protobuf type {@code qorechain.rlconsensus.v1.QueryAppliedParamsRequest}
+   */
+  public static final class QueryAppliedParamsRequest extends
+      com.google.protobuf.GeneratedMessage implements
+      // @@protoc_insertion_point(message_implements:qorechain.rlconsensus.v1.QueryAppliedParamsRequest)
+      QueryAppliedParamsRequestOrBuilder {
+  private static final long serialVersionUID = 0L;
+    static {
+      com.google.protobuf.RuntimeVersion.validateProtobufGencodeVersion(
+        com.google.protobuf.RuntimeVersion.RuntimeDomain.PUBLIC,
+        /* major= */ 4,
+        /* minor= */ 35,
+        /* patch= */ 1,
+        /* suffix= */ "",
+        "QueryAppliedParamsRequest");
+    }
+    // Use QueryAppliedParamsRequest.newBuilder() to construct.
+    private QueryAppliedParamsRequest(com.google.protobuf.GeneratedMessage.Builder<?> builder) {
+      super(builder);
+    }
+    private QueryAppliedParamsRequest() {
+    }
+
+    public static final com.google.protobuf.Descriptors.Descriptor
+        getDescriptor() {
+      return qorechain.rlconsensus.v1.QueryOuterClass.internal_static_qorechain_rlconsensus_v1_QueryAppliedParamsRequest_descriptor;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Descriptors.Descriptor getDescriptorForType() {
+      return qorechain.rlconsensus.v1.QueryOuterClass.internal_static_qorechain_rlconsensus_v1_QueryAppliedParamsRequest_descriptor;
+    }
+
+    @java.lang.Override
+    protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+        internalGetFieldAccessorTable() {
+      return qorechain.rlconsensus.v1.QueryOuterClass.internal_static_qorechain_rlconsensus_v1_QueryAppliedParamsRequest_fieldAccessorTable
+          .ensureFieldAccessorsInitialized(
+              qorechain.rlconsensus.v1.QueryOuterClass.QueryAppliedParamsRequest.class, qorechain.rlconsensus.v1.QueryOuterClass.QueryAppliedParamsRequest.Builder.class);
+    }
+
+    private byte memoizedIsInitialized = -1;
+    @java.lang.Override
+    public final boolean isInitialized() {
+      byte isInitialized = memoizedIsInitialized;
+      if (isInitialized == 1) return true;
+      if (isInitialized == 0) return false;
+
+      memoizedIsInitialized = 1;
+      return true;
+    }
+
+    @java.lang.Override
+    public void writeTo(com.google.protobuf.CodedOutputStream output)
+                        throws java.io.IOException {
+      getUnknownFields().writeTo(output);
+    }
+    @java.lang.Override
+    public int getSerializedSize() {
+      int size = memoizedSize;
+      if (size != -1) return size;
+
+      size = 0;
+      size += getUnknownFields().getSerializedSize();
+      memoizedSize = size;
+      return size;
+    }
+
+    @java.lang.Override
+    public boolean equals(final java.lang.Object obj) {
+      if (obj == this) {
+       return true;
+      }
+      if (!(obj instanceof qorechain.rlconsensus.v1.QueryOuterClass.QueryAppliedParamsRequest)) {
+        return super.equals(obj);
+      }
+      qorechain.rlconsensus.v1.QueryOuterClass.QueryAppliedParamsRequest other = (qorechain.rlconsensus.v1.QueryOuterClass.QueryAppliedParamsRequest) obj;
+
+      if (!getUnknownFields().equals(other.getUnknownFields())) return false;
+      return true;
+    }
+
+    @java.lang.Override
+    public int hashCode() {
+      if (memoizedHashCode != 0) {
+        return memoizedHashCode;
+      }
+      int hash = 41;
+      hash = (19 * hash) + getDescriptor().hashCode();
+      hash = (29 * hash) + getUnknownFields().hashCode();
+      memoizedHashCode = hash;
+      return hash;
+    }
+
+    public static qorechain.rlconsensus.v1.QueryOuterClass.QueryAppliedParamsRequest parseFrom(
+        java.nio.ByteBuffer data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static qorechain.rlconsensus.v1.QueryOuterClass.QueryAppliedParamsRequest parseFrom(
+        java.nio.ByteBuffer data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static qorechain.rlconsensus.v1.QueryOuterClass.QueryAppliedParamsRequest parseFrom(
+        com.google.protobuf.ByteString data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static qorechain.rlconsensus.v1.QueryOuterClass.QueryAppliedParamsRequest parseFrom(
+        com.google.protobuf.ByteString data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static qorechain.rlconsensus.v1.QueryOuterClass.QueryAppliedParamsRequest parseFrom(byte[] data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static qorechain.rlconsensus.v1.QueryOuterClass.QueryAppliedParamsRequest parseFrom(
+        byte[] data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static qorechain.rlconsensus.v1.QueryOuterClass.QueryAppliedParamsRequest parseFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input);
+    }
+    public static qorechain.rlconsensus.v1.QueryOuterClass.QueryAppliedParamsRequest parseFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    public static qorechain.rlconsensus.v1.QueryOuterClass.QueryAppliedParamsRequest parseDelimitedFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseDelimitedWithIOException(PARSER, input);
+    }
+
+    public static qorechain.rlconsensus.v1.QueryOuterClass.QueryAppliedParamsRequest parseDelimitedFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static qorechain.rlconsensus.v1.QueryOuterClass.QueryAppliedParamsRequest parseFrom(
+        com.google.protobuf.CodedInputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input);
+    }
+    public static qorechain.rlconsensus.v1.QueryOuterClass.QueryAppliedParamsRequest parseFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    @java.lang.Override
+    public Builder newBuilderForType() { return newBuilder(); }
+    public static Builder newBuilder() {
+      return DEFAULT_INSTANCE.toBuilder();
+    }
+    public static Builder newBuilder(qorechain.rlconsensus.v1.QueryOuterClass.QueryAppliedParamsRequest prototype) {
+      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+    }
+    @java.lang.Override
+    public Builder toBuilder() {
+      return this == DEFAULT_INSTANCE
+          ? new Builder() : new Builder().mergeFrom(this);
+    }
+
+    @java.lang.Override
+    protected Builder newBuilderForType(
+        com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+      Builder builder = new Builder(parent);
+      return builder;
+    }
+    /**
+     * Protobuf type {@code qorechain.rlconsensus.v1.QueryAppliedParamsRequest}
+     */
+    public static final class Builder extends
+        com.google.protobuf.GeneratedMessage.Builder<Builder> implements
+        // @@protoc_insertion_point(builder_implements:qorechain.rlconsensus.v1.QueryAppliedParamsRequest)
+        qorechain.rlconsensus.v1.QueryOuterClass.QueryAppliedParamsRequestOrBuilder {
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return qorechain.rlconsensus.v1.QueryOuterClass.internal_static_qorechain_rlconsensus_v1_QueryAppliedParamsRequest_descriptor;
+      }
+
+      @java.lang.Override
+      protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return qorechain.rlconsensus.v1.QueryOuterClass.internal_static_qorechain_rlconsensus_v1_QueryAppliedParamsRequest_fieldAccessorTable
+            .ensureFieldAccessorsInitialized(
+                qorechain.rlconsensus.v1.QueryOuterClass.QueryAppliedParamsRequest.class, qorechain.rlconsensus.v1.QueryOuterClass.QueryAppliedParamsRequest.Builder.class);
+      }
+
+      // Construct using qorechain.rlconsensus.v1.QueryOuterClass.QueryAppliedParamsRequest.newBuilder()
+      private Builder() {
+
+      }
+
+      private Builder(
+          com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+        super(parent);
+
+      }
+      @java.lang.Override
+      public Builder clear() {
+        super.clear();
+        return this;
+      }
+
+      @java.lang.Override
+      public com.google.protobuf.Descriptors.Descriptor
+          getDescriptorForType() {
+        return qorechain.rlconsensus.v1.QueryOuterClass.internal_static_qorechain_rlconsensus_v1_QueryAppliedParamsRequest_descriptor;
+      }
+
+      @java.lang.Override
+      public qorechain.rlconsensus.v1.QueryOuterClass.QueryAppliedParamsRequest getDefaultInstanceForType() {
+        return qorechain.rlconsensus.v1.QueryOuterClass.QueryAppliedParamsRequest.getDefaultInstance();
+      }
+
+      @java.lang.Override
+      public qorechain.rlconsensus.v1.QueryOuterClass.QueryAppliedParamsRequest build() {
+        qorechain.rlconsensus.v1.QueryOuterClass.QueryAppliedParamsRequest result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(result);
+        }
+        return result;
+      }
+
+      @java.lang.Override
+      public qorechain.rlconsensus.v1.QueryOuterClass.QueryAppliedParamsRequest buildPartial() {
+        qorechain.rlconsensus.v1.QueryOuterClass.QueryAppliedParamsRequest result = new qorechain.rlconsensus.v1.QueryOuterClass.QueryAppliedParamsRequest(this);
+        onBuilt();
+        return result;
+      }
+
+      @java.lang.Override
+      public Builder mergeFrom(com.google.protobuf.Message other) {
+        if (other instanceof qorechain.rlconsensus.v1.QueryOuterClass.QueryAppliedParamsRequest) {
+          return mergeFrom((qorechain.rlconsensus.v1.QueryOuterClass.QueryAppliedParamsRequest)other);
+        } else {
+          super.mergeFrom(other);
+          return this;
+        }
+      }
+
+      public Builder mergeFrom(qorechain.rlconsensus.v1.QueryOuterClass.QueryAppliedParamsRequest other) {
+        if (other == qorechain.rlconsensus.v1.QueryOuterClass.QueryAppliedParamsRequest.getDefaultInstance()) return this;
+        this.mergeUnknownFields(other.getUnknownFields());
+        onChanged();
+        return this;
+      }
+
+      @java.lang.Override
+      public final boolean isInitialized() {
+        return true;
+      }
+
+      @java.lang.Override
+      public Builder mergeFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        if (extensionRegistry == null) {
+          throw new java.lang.NullPointerException();
+        }
+        try {
+          boolean done = false;
+          while (!done) {
+            int tag = input.readTag();
+            switch (tag) {
+              case 0:
+                done = true;
+                break;
+              default: {
+                if (!super.parseUnknownField(input, extensionRegistry, tag)) {
+                  done = true; // was an endgroup tag
+                }
+                break;
+              } // default:
+            } // switch (tag)
+          } // while (!done)
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          throw e.unwrapIOException();
+        } finally {
+          onChanged();
+        } // finally
+        return this;
+      }
+
+      // @@protoc_insertion_point(builder_scope:qorechain.rlconsensus.v1.QueryAppliedParamsRequest)
+    }
+
+    // @@protoc_insertion_point(class_scope:qorechain.rlconsensus.v1.QueryAppliedParamsRequest)
+    private static final qorechain.rlconsensus.v1.QueryOuterClass.QueryAppliedParamsRequest DEFAULT_INSTANCE;
+    static {
+      DEFAULT_INSTANCE = new qorechain.rlconsensus.v1.QueryOuterClass.QueryAppliedParamsRequest();
+    }
+
+    public static qorechain.rlconsensus.v1.QueryOuterClass.QueryAppliedParamsRequest getDefaultInstance() {
+      return DEFAULT_INSTANCE;
+    }
+
+    private static final com.google.protobuf.Parser<QueryAppliedParamsRequest>
+        PARSER = new com.google.protobuf.AbstractParser<QueryAppliedParamsRequest>() {
+      @java.lang.Override
+      public QueryAppliedParamsRequest parsePartialFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        Builder builder = newBuilder();
+        try {
+          builder.mergeFrom(input, extensionRegistry);
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          throw e.setUnfinishedMessage(builder.buildPartial());
+        } catch (com.google.protobuf.UninitializedMessageException e) {
+          throw e.asInvalidProtocolBufferException().setUnfinishedMessage(builder.buildPartial());
+        } catch (java.io.IOException e) {
+          throw new com.google.protobuf.InvalidProtocolBufferException(e)
+              .setUnfinishedMessage(builder.buildPartial());
+        }
+        return builder.buildPartial();
+      }
+    };
+
+    public static com.google.protobuf.Parser<QueryAppliedParamsRequest> parser() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Parser<QueryAppliedParamsRequest> getParserForType() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public qorechain.rlconsensus.v1.QueryOuterClass.QueryAppliedParamsRequest getDefaultInstanceForType() {
+      return DEFAULT_INSTANCE;
+    }
+
+  }
+
+  public interface QueryAppliedParamsResponseOrBuilder extends
+      // @@protoc_insertion_point(interface_extends:qorechain.rlconsensus.v1.QueryAppliedParamsResponse)
+      com.google.protobuf.MessageOrBuilder {
+
+    /**
+     * <code>int64 block_time_ms = 1 [json_name = "blockTimeMs"];</code>
+     * @return The blockTimeMs.
+     */
+    long getBlockTimeMs();
+
+    /**
+     * <code>int64 gas_limit = 2 [json_name = "gasLimit"];</code>
+     * @return The gasLimit.
+     */
+    long getGasLimit();
+
+    /**
+     * <code>string gas_price_floor = 3 [json_name = "gasPriceFloor"];</code>
+     * @return The gasPriceFloor.
+     */
+    java.lang.String getGasPriceFloor();
+    /**
+     * <code>string gas_price_floor = 3 [json_name = "gasPriceFloor"];</code>
+     * @return The bytes for gasPriceFloor.
+     */
+    com.google.protobuf.ByteString
+        getGasPriceFloorBytes();
+
+    /**
+     * <code>string pool_weight_rpos = 4 [json_name = "poolWeightRpos", (.gogoproto.customname) = "PoolWeightRPoS"];</code>
+     * @return The poolWeightRpos.
+     */
+    java.lang.String getPoolWeightRpos();
+    /**
+     * <code>string pool_weight_rpos = 4 [json_name = "poolWeightRpos", (.gogoproto.customname) = "PoolWeightRPoS"];</code>
+     * @return The bytes for poolWeightRpos.
+     */
+    com.google.protobuf.ByteString
+        getPoolWeightRposBytes();
+
+    /**
+     * <code>string pool_weight_dpos = 5 [json_name = "poolWeightDpos", (.gogoproto.customname) = "PoolWeightDPoS"];</code>
+     * @return The poolWeightDpos.
+     */
+    java.lang.String getPoolWeightDpos();
+    /**
+     * <code>string pool_weight_dpos = 5 [json_name = "poolWeightDpos", (.gogoproto.customname) = "PoolWeightDPoS"];</code>
+     * @return The bytes for poolWeightDpos.
+     */
+    com.google.protobuf.ByteString
+        getPoolWeightDposBytes();
+  }
+  /**
+   * Protobuf type {@code qorechain.rlconsensus.v1.QueryAppliedParamsResponse}
+   */
+  public static final class QueryAppliedParamsResponse extends
+      com.google.protobuf.GeneratedMessage implements
+      // @@protoc_insertion_point(message_implements:qorechain.rlconsensus.v1.QueryAppliedParamsResponse)
+      QueryAppliedParamsResponseOrBuilder {
+  private static final long serialVersionUID = 0L;
+    static {
+      com.google.protobuf.RuntimeVersion.validateProtobufGencodeVersion(
+        com.google.protobuf.RuntimeVersion.RuntimeDomain.PUBLIC,
+        /* major= */ 4,
+        /* minor= */ 35,
+        /* patch= */ 1,
+        /* suffix= */ "",
+        "QueryAppliedParamsResponse");
+    }
+    // Use QueryAppliedParamsResponse.newBuilder() to construct.
+    private QueryAppliedParamsResponse(com.google.protobuf.GeneratedMessage.Builder<?> builder) {
+      super(builder);
+    }
+    private QueryAppliedParamsResponse() {
+      gasPriceFloor_ = "";
+      poolWeightRpos_ = "";
+      poolWeightDpos_ = "";
+    }
+
+    public static final com.google.protobuf.Descriptors.Descriptor
+        getDescriptor() {
+      return qorechain.rlconsensus.v1.QueryOuterClass.internal_static_qorechain_rlconsensus_v1_QueryAppliedParamsResponse_descriptor;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Descriptors.Descriptor getDescriptorForType() {
+      return qorechain.rlconsensus.v1.QueryOuterClass.internal_static_qorechain_rlconsensus_v1_QueryAppliedParamsResponse_descriptor;
+    }
+
+    @java.lang.Override
+    protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+        internalGetFieldAccessorTable() {
+      return qorechain.rlconsensus.v1.QueryOuterClass.internal_static_qorechain_rlconsensus_v1_QueryAppliedParamsResponse_fieldAccessorTable
+          .ensureFieldAccessorsInitialized(
+              qorechain.rlconsensus.v1.QueryOuterClass.QueryAppliedParamsResponse.class, qorechain.rlconsensus.v1.QueryOuterClass.QueryAppliedParamsResponse.Builder.class);
+    }
+
+    public static final int BLOCK_TIME_MS_FIELD_NUMBER = 1;
+    private long blockTimeMs_ = 0L;
+    /**
+     * <code>int64 block_time_ms = 1 [json_name = "blockTimeMs"];</code>
+     * @return The blockTimeMs.
+     */
+    @java.lang.Override
+    public long getBlockTimeMs() {
+      return blockTimeMs_;
+    }
+
+    public static final int GAS_LIMIT_FIELD_NUMBER = 2;
+    private long gasLimit_ = 0L;
+    /**
+     * <code>int64 gas_limit = 2 [json_name = "gasLimit"];</code>
+     * @return The gasLimit.
+     */
+    @java.lang.Override
+    public long getGasLimit() {
+      return gasLimit_;
+    }
+
+    public static final int GAS_PRICE_FLOOR_FIELD_NUMBER = 3;
+    @SuppressWarnings("serial")
+    private volatile java.lang.Object gasPriceFloor_ = "";
+    /**
+     * <code>string gas_price_floor = 3 [json_name = "gasPriceFloor"];</code>
+     * @return The gasPriceFloor.
+     */
+    @java.lang.Override
+    public java.lang.String getGasPriceFloor() {
+      java.lang.Object ref = gasPriceFloor_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        gasPriceFloor_ = s;
+        return s;
+      }
+    }
+    /**
+     * <code>string gas_price_floor = 3 [json_name = "gasPriceFloor"];</code>
+     * @return The bytes for gasPriceFloor.
+     */
+    @java.lang.Override
+    public com.google.protobuf.ByteString
+        getGasPriceFloorBytes() {
+      java.lang.Object ref = gasPriceFloor_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        gasPriceFloor_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
+    public static final int POOL_WEIGHT_RPOS_FIELD_NUMBER = 4;
+    @SuppressWarnings("serial")
+    private volatile java.lang.Object poolWeightRpos_ = "";
+    /**
+     * <code>string pool_weight_rpos = 4 [json_name = "poolWeightRpos", (.gogoproto.customname) = "PoolWeightRPoS"];</code>
+     * @return The poolWeightRpos.
+     */
+    @java.lang.Override
+    public java.lang.String getPoolWeightRpos() {
+      java.lang.Object ref = poolWeightRpos_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        poolWeightRpos_ = s;
+        return s;
+      }
+    }
+    /**
+     * <code>string pool_weight_rpos = 4 [json_name = "poolWeightRpos", (.gogoproto.customname) = "PoolWeightRPoS"];</code>
+     * @return The bytes for poolWeightRpos.
+     */
+    @java.lang.Override
+    public com.google.protobuf.ByteString
+        getPoolWeightRposBytes() {
+      java.lang.Object ref = poolWeightRpos_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        poolWeightRpos_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
+    public static final int POOL_WEIGHT_DPOS_FIELD_NUMBER = 5;
+    @SuppressWarnings("serial")
+    private volatile java.lang.Object poolWeightDpos_ = "";
+    /**
+     * <code>string pool_weight_dpos = 5 [json_name = "poolWeightDpos", (.gogoproto.customname) = "PoolWeightDPoS"];</code>
+     * @return The poolWeightDpos.
+     */
+    @java.lang.Override
+    public java.lang.String getPoolWeightDpos() {
+      java.lang.Object ref = poolWeightDpos_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        poolWeightDpos_ = s;
+        return s;
+      }
+    }
+    /**
+     * <code>string pool_weight_dpos = 5 [json_name = "poolWeightDpos", (.gogoproto.customname) = "PoolWeightDPoS"];</code>
+     * @return The bytes for poolWeightDpos.
+     */
+    @java.lang.Override
+    public com.google.protobuf.ByteString
+        getPoolWeightDposBytes() {
+      java.lang.Object ref = poolWeightDpos_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        poolWeightDpos_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
+    private byte memoizedIsInitialized = -1;
+    @java.lang.Override
+    public final boolean isInitialized() {
+      byte isInitialized = memoizedIsInitialized;
+      if (isInitialized == 1) return true;
+      if (isInitialized == 0) return false;
+
+      memoizedIsInitialized = 1;
+      return true;
+    }
+
+    @java.lang.Override
+    public void writeTo(com.google.protobuf.CodedOutputStream output)
+                        throws java.io.IOException {
+      if (blockTimeMs_ != 0L) {
+        output.writeInt64(1, blockTimeMs_);
+      }
+      if (gasLimit_ != 0L) {
+        output.writeInt64(2, gasLimit_);
+      }
+      if (!com.google.protobuf.GeneratedMessage.isStringEmpty(gasPriceFloor_)) {
+        com.google.protobuf.GeneratedMessage.writeString(output, 3, gasPriceFloor_);
+      }
+      if (!com.google.protobuf.GeneratedMessage.isStringEmpty(poolWeightRpos_)) {
+        com.google.protobuf.GeneratedMessage.writeString(output, 4, poolWeightRpos_);
+      }
+      if (!com.google.protobuf.GeneratedMessage.isStringEmpty(poolWeightDpos_)) {
+        com.google.protobuf.GeneratedMessage.writeString(output, 5, poolWeightDpos_);
+      }
+      getUnknownFields().writeTo(output);
+    }
+    private int computeSerializedSize_0() {
+      int size = 0;
+      if (blockTimeMs_ != 0L) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeInt64Size(1, blockTimeMs_);
+      }
+      if (gasLimit_ != 0L) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeInt64Size(2, gasLimit_);
+      }
+      if (!com.google.protobuf.GeneratedMessage.isStringEmpty(gasPriceFloor_)) {
+        size += com.google.protobuf.GeneratedMessage.computeStringSize(3, gasPriceFloor_);
+      }
+      if (!com.google.protobuf.GeneratedMessage.isStringEmpty(poolWeightRpos_)) {
+        size += com.google.protobuf.GeneratedMessage.computeStringSize(4, poolWeightRpos_);
+      }
+      if (!com.google.protobuf.GeneratedMessage.isStringEmpty(poolWeightDpos_)) {
+        size += com.google.protobuf.GeneratedMessage.computeStringSize(5, poolWeightDpos_);
+      }
+      return size;
+    }
+    @java.lang.Override
+    public int getSerializedSize() {
+      int size = memoizedSize;
+      if (size != -1) return size;
+
+      size = 0;
+      size += computeSerializedSize_0();
+      size += getUnknownFields().getSerializedSize();
+      memoizedSize = size;
+      return size;
+    }
+
+    @java.lang.Override
+    public boolean equals(final java.lang.Object obj) {
+      if (obj == this) {
+       return true;
+      }
+      if (!(obj instanceof qorechain.rlconsensus.v1.QueryOuterClass.QueryAppliedParamsResponse)) {
+        return super.equals(obj);
+      }
+      qorechain.rlconsensus.v1.QueryOuterClass.QueryAppliedParamsResponse other = (qorechain.rlconsensus.v1.QueryOuterClass.QueryAppliedParamsResponse) obj;
+
+      if (getBlockTimeMs()
+          != other.getBlockTimeMs()) return false;
+      if (getGasLimit()
+          != other.getGasLimit()) return false;
+      if (!getGasPriceFloor()
+          .equals(other.getGasPriceFloor())) return false;
+      if (!getPoolWeightRpos()
+          .equals(other.getPoolWeightRpos())) return false;
+      if (!getPoolWeightDpos()
+          .equals(other.getPoolWeightDpos())) return false;
+      if (!getUnknownFields().equals(other.getUnknownFields())) return false;
+      return true;
+    }
+
+    @java.lang.Override
+    public int hashCode() {
+      if (memoizedHashCode != 0) {
+        return memoizedHashCode;
+      }
+      int hash = 41;
+      hash = (19 * hash) + getDescriptor().hashCode();
+      hash = (37 * hash) + BLOCK_TIME_MS_FIELD_NUMBER;
+      hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
+          getBlockTimeMs());
+      hash = (37 * hash) + GAS_LIMIT_FIELD_NUMBER;
+      hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
+          getGasLimit());
+      hash = (37 * hash) + GAS_PRICE_FLOOR_FIELD_NUMBER;
+      hash = (53 * hash) + getGasPriceFloor().hashCode();
+      hash = (37 * hash) + POOL_WEIGHT_RPOS_FIELD_NUMBER;
+      hash = (53 * hash) + getPoolWeightRpos().hashCode();
+      hash = (37 * hash) + POOL_WEIGHT_DPOS_FIELD_NUMBER;
+      hash = (53 * hash) + getPoolWeightDpos().hashCode();
+      hash = (29 * hash) + getUnknownFields().hashCode();
+      memoizedHashCode = hash;
+      return hash;
+    }
+
+    public static qorechain.rlconsensus.v1.QueryOuterClass.QueryAppliedParamsResponse parseFrom(
+        java.nio.ByteBuffer data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static qorechain.rlconsensus.v1.QueryOuterClass.QueryAppliedParamsResponse parseFrom(
+        java.nio.ByteBuffer data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static qorechain.rlconsensus.v1.QueryOuterClass.QueryAppliedParamsResponse parseFrom(
+        com.google.protobuf.ByteString data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static qorechain.rlconsensus.v1.QueryOuterClass.QueryAppliedParamsResponse parseFrom(
+        com.google.protobuf.ByteString data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static qorechain.rlconsensus.v1.QueryOuterClass.QueryAppliedParamsResponse parseFrom(byte[] data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static qorechain.rlconsensus.v1.QueryOuterClass.QueryAppliedParamsResponse parseFrom(
+        byte[] data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static qorechain.rlconsensus.v1.QueryOuterClass.QueryAppliedParamsResponse parseFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input);
+    }
+    public static qorechain.rlconsensus.v1.QueryOuterClass.QueryAppliedParamsResponse parseFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    public static qorechain.rlconsensus.v1.QueryOuterClass.QueryAppliedParamsResponse parseDelimitedFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseDelimitedWithIOException(PARSER, input);
+    }
+
+    public static qorechain.rlconsensus.v1.QueryOuterClass.QueryAppliedParamsResponse parseDelimitedFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static qorechain.rlconsensus.v1.QueryOuterClass.QueryAppliedParamsResponse parseFrom(
+        com.google.protobuf.CodedInputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input);
+    }
+    public static qorechain.rlconsensus.v1.QueryOuterClass.QueryAppliedParamsResponse parseFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    @java.lang.Override
+    public Builder newBuilderForType() { return newBuilder(); }
+    public static Builder newBuilder() {
+      return DEFAULT_INSTANCE.toBuilder();
+    }
+    public static Builder newBuilder(qorechain.rlconsensus.v1.QueryOuterClass.QueryAppliedParamsResponse prototype) {
+      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+    }
+    @java.lang.Override
+    public Builder toBuilder() {
+      return this == DEFAULT_INSTANCE
+          ? new Builder() : new Builder().mergeFrom(this);
+    }
+
+    @java.lang.Override
+    protected Builder newBuilderForType(
+        com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+      Builder builder = new Builder(parent);
+      return builder;
+    }
+    /**
+     * Protobuf type {@code qorechain.rlconsensus.v1.QueryAppliedParamsResponse}
+     */
+    public static final class Builder extends
+        com.google.protobuf.GeneratedMessage.Builder<Builder> implements
+        // @@protoc_insertion_point(builder_implements:qorechain.rlconsensus.v1.QueryAppliedParamsResponse)
+        qorechain.rlconsensus.v1.QueryOuterClass.QueryAppliedParamsResponseOrBuilder {
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return qorechain.rlconsensus.v1.QueryOuterClass.internal_static_qorechain_rlconsensus_v1_QueryAppliedParamsResponse_descriptor;
+      }
+
+      @java.lang.Override
+      protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return qorechain.rlconsensus.v1.QueryOuterClass.internal_static_qorechain_rlconsensus_v1_QueryAppliedParamsResponse_fieldAccessorTable
+            .ensureFieldAccessorsInitialized(
+                qorechain.rlconsensus.v1.QueryOuterClass.QueryAppliedParamsResponse.class, qorechain.rlconsensus.v1.QueryOuterClass.QueryAppliedParamsResponse.Builder.class);
+      }
+
+      // Construct using qorechain.rlconsensus.v1.QueryOuterClass.QueryAppliedParamsResponse.newBuilder()
+      private Builder() {
+
+      }
+
+      private Builder(
+          com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+        super(parent);
+
+      }
+      @java.lang.Override
+      public Builder clear() {
+        super.clear();
+        bitField0_ = 0;
+        blockTimeMs_ = 0L;
+        gasLimit_ = 0L;
+        gasPriceFloor_ = "";
+        poolWeightRpos_ = "";
+        poolWeightDpos_ = "";
+        return this;
+      }
+
+      @java.lang.Override
+      public com.google.protobuf.Descriptors.Descriptor
+          getDescriptorForType() {
+        return qorechain.rlconsensus.v1.QueryOuterClass.internal_static_qorechain_rlconsensus_v1_QueryAppliedParamsResponse_descriptor;
+      }
+
+      @java.lang.Override
+      public qorechain.rlconsensus.v1.QueryOuterClass.QueryAppliedParamsResponse getDefaultInstanceForType() {
+        return qorechain.rlconsensus.v1.QueryOuterClass.QueryAppliedParamsResponse.getDefaultInstance();
+      }
+
+      @java.lang.Override
+      public qorechain.rlconsensus.v1.QueryOuterClass.QueryAppliedParamsResponse build() {
+        qorechain.rlconsensus.v1.QueryOuterClass.QueryAppliedParamsResponse result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(result);
+        }
+        return result;
+      }
+
+      @java.lang.Override
+      public qorechain.rlconsensus.v1.QueryOuterClass.QueryAppliedParamsResponse buildPartial() {
+        qorechain.rlconsensus.v1.QueryOuterClass.QueryAppliedParamsResponse result = new qorechain.rlconsensus.v1.QueryOuterClass.QueryAppliedParamsResponse(this);
+        if (bitField0_ != 0) { buildPartial0(result); }
+        onBuilt();
+        return result;
+      }
+
+      private void buildPartial0(qorechain.rlconsensus.v1.QueryOuterClass.QueryAppliedParamsResponse result) {
+        int from_bitField0_ = bitField0_;
+        if (((from_bitField0_ & 0x00000001) != 0)) {
+          result.blockTimeMs_ = blockTimeMs_;
+        }
+        if (((from_bitField0_ & 0x00000002) != 0)) {
+          result.gasLimit_ = gasLimit_;
+        }
+        if (((from_bitField0_ & 0x00000004) != 0)) {
+          result.gasPriceFloor_ = gasPriceFloor_;
+        }
+        if (((from_bitField0_ & 0x00000008) != 0)) {
+          result.poolWeightRpos_ = poolWeightRpos_;
+        }
+        if (((from_bitField0_ & 0x00000010) != 0)) {
+          result.poolWeightDpos_ = poolWeightDpos_;
+        }
+      }
+
+      @java.lang.Override
+      public Builder mergeFrom(com.google.protobuf.Message other) {
+        if (other instanceof qorechain.rlconsensus.v1.QueryOuterClass.QueryAppliedParamsResponse) {
+          return mergeFrom((qorechain.rlconsensus.v1.QueryOuterClass.QueryAppliedParamsResponse)other);
+        } else {
+          super.mergeFrom(other);
+          return this;
+        }
+      }
+
+      public Builder mergeFrom(qorechain.rlconsensus.v1.QueryOuterClass.QueryAppliedParamsResponse other) {
+        if (other == qorechain.rlconsensus.v1.QueryOuterClass.QueryAppliedParamsResponse.getDefaultInstance()) return this;
+        if (other.getBlockTimeMs() != 0L) {
+          setBlockTimeMs(other.getBlockTimeMs());
+        }
+        if (other.getGasLimit() != 0L) {
+          setGasLimit(other.getGasLimit());
+        }
+        if (!other.getGasPriceFloor().isEmpty()) {
+          gasPriceFloor_ = other.gasPriceFloor_;
+          bitField0_ |= 0x00000004;
+          onChanged();
+        }
+        if (!other.getPoolWeightRpos().isEmpty()) {
+          poolWeightRpos_ = other.poolWeightRpos_;
+          bitField0_ |= 0x00000008;
+          onChanged();
+        }
+        if (!other.getPoolWeightDpos().isEmpty()) {
+          poolWeightDpos_ = other.poolWeightDpos_;
+          bitField0_ |= 0x00000010;
+          onChanged();
+        }
+        this.mergeUnknownFields(other.getUnknownFields());
+        onChanged();
+        return this;
+      }
+
+      @java.lang.Override
+      public final boolean isInitialized() {
+        return true;
+      }
+
+      @java.lang.Override
+      public Builder mergeFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        if (extensionRegistry == null) {
+          throw new java.lang.NullPointerException();
+        }
+        try {
+          boolean done = false;
+          while (!done) {
+            int tag = input.readTag();
+            switch (tag) {
+              case 0:
+                done = true;
+                break;
+              case 8: {
+                blockTimeMs_ = input.readInt64();
+                bitField0_ |= 0x00000001;
+                break;
+              } // case 8
+              case 16: {
+                gasLimit_ = input.readInt64();
+                bitField0_ |= 0x00000002;
+                break;
+              } // case 16
+              case 26: {
+                gasPriceFloor_ = input.readStringRequireUtf8();
+                bitField0_ |= 0x00000004;
+                break;
+              } // case 26
+              case 34: {
+                poolWeightRpos_ = input.readStringRequireUtf8();
+                bitField0_ |= 0x00000008;
+                break;
+              } // case 34
+              case 42: {
+                poolWeightDpos_ = input.readStringRequireUtf8();
+                bitField0_ |= 0x00000010;
+                break;
+              } // case 42
+              default: {
+                if (!super.parseUnknownField(input, extensionRegistry, tag)) {
+                  done = true; // was an endgroup tag
+                }
+                break;
+              } // default:
+            } // switch (tag)
+          } // while (!done)
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          throw e.unwrapIOException();
+        } finally {
+          onChanged();
+        } // finally
+        return this;
+      }
+      private int bitField0_;
+
+      private long blockTimeMs_ ;
+      /**
+       * <code>int64 block_time_ms = 1 [json_name = "blockTimeMs"];</code>
+       * @return The blockTimeMs.
+       */
+      @java.lang.Override
+      public long getBlockTimeMs() {
+        return blockTimeMs_;
+      }
+      /**
+       * <code>int64 block_time_ms = 1 [json_name = "blockTimeMs"];</code>
+       * @param value The blockTimeMs to set.
+       * @return This builder for chaining.
+       */
+      public Builder setBlockTimeMs(long value) {
+
+        blockTimeMs_ = value;
+        bitField0_ |= 0x00000001;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>int64 block_time_ms = 1 [json_name = "blockTimeMs"];</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearBlockTimeMs() {
+        bitField0_ = (bitField0_ & ~0x00000001);
+        blockTimeMs_ = 0L;
+        onChanged();
+        return this;
+      }
+
+      private long gasLimit_ ;
+      /**
+       * <code>int64 gas_limit = 2 [json_name = "gasLimit"];</code>
+       * @return The gasLimit.
+       */
+      @java.lang.Override
+      public long getGasLimit() {
+        return gasLimit_;
+      }
+      /**
+       * <code>int64 gas_limit = 2 [json_name = "gasLimit"];</code>
+       * @param value The gasLimit to set.
+       * @return This builder for chaining.
+       */
+      public Builder setGasLimit(long value) {
+
+        gasLimit_ = value;
+        bitField0_ |= 0x00000002;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>int64 gas_limit = 2 [json_name = "gasLimit"];</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearGasLimit() {
+        bitField0_ = (bitField0_ & ~0x00000002);
+        gasLimit_ = 0L;
+        onChanged();
+        return this;
+      }
+
+      private java.lang.Object gasPriceFloor_ = "";
+      /**
+       * <code>string gas_price_floor = 3 [json_name = "gasPriceFloor"];</code>
+       * @return The gasPriceFloor.
+       */
+      public java.lang.String getGasPriceFloor() {
+        java.lang.Object ref = gasPriceFloor_;
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          gasPriceFloor_ = s;
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
+      }
+      /**
+       * <code>string gas_price_floor = 3 [json_name = "gasPriceFloor"];</code>
+       * @return The bytes for gasPriceFloor.
+       */
+      public com.google.protobuf.ByteString
+          getGasPriceFloorBytes() {
+        java.lang.Object ref = gasPriceFloor_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          gasPriceFloor_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <code>string gas_price_floor = 3 [json_name = "gasPriceFloor"];</code>
+       * @param value The gasPriceFloor to set.
+       * @return This builder for chaining.
+       */
+      public Builder setGasPriceFloor(
+          java.lang.String value) {
+        if (value == null) { throw new NullPointerException(); }
+        gasPriceFloor_ = value;
+        bitField0_ |= 0x00000004;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>string gas_price_floor = 3 [json_name = "gasPriceFloor"];</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearGasPriceFloor() {
+        gasPriceFloor_ = getDefaultInstance().getGasPriceFloor();
+        bitField0_ = (bitField0_ & ~0x00000004);
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>string gas_price_floor = 3 [json_name = "gasPriceFloor"];</code>
+       * @param value The bytes for gasPriceFloor to set.
+       * @return This builder for chaining.
+       */
+      public Builder setGasPriceFloorBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) { throw new NullPointerException(); }
+        checkByteStringIsUtf8(value);
+        gasPriceFloor_ = value;
+        bitField0_ |= 0x00000004;
+        onChanged();
+        return this;
+      }
+
+      private java.lang.Object poolWeightRpos_ = "";
+      /**
+       * <code>string pool_weight_rpos = 4 [json_name = "poolWeightRpos", (.gogoproto.customname) = "PoolWeightRPoS"];</code>
+       * @return The poolWeightRpos.
+       */
+      public java.lang.String getPoolWeightRpos() {
+        java.lang.Object ref = poolWeightRpos_;
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          poolWeightRpos_ = s;
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
+      }
+      /**
+       * <code>string pool_weight_rpos = 4 [json_name = "poolWeightRpos", (.gogoproto.customname) = "PoolWeightRPoS"];</code>
+       * @return The bytes for poolWeightRpos.
+       */
+      public com.google.protobuf.ByteString
+          getPoolWeightRposBytes() {
+        java.lang.Object ref = poolWeightRpos_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          poolWeightRpos_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <code>string pool_weight_rpos = 4 [json_name = "poolWeightRpos", (.gogoproto.customname) = "PoolWeightRPoS"];</code>
+       * @param value The poolWeightRpos to set.
+       * @return This builder for chaining.
+       */
+      public Builder setPoolWeightRpos(
+          java.lang.String value) {
+        if (value == null) { throw new NullPointerException(); }
+        poolWeightRpos_ = value;
+        bitField0_ |= 0x00000008;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>string pool_weight_rpos = 4 [json_name = "poolWeightRpos", (.gogoproto.customname) = "PoolWeightRPoS"];</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearPoolWeightRpos() {
+        poolWeightRpos_ = getDefaultInstance().getPoolWeightRpos();
+        bitField0_ = (bitField0_ & ~0x00000008);
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>string pool_weight_rpos = 4 [json_name = "poolWeightRpos", (.gogoproto.customname) = "PoolWeightRPoS"];</code>
+       * @param value The bytes for poolWeightRpos to set.
+       * @return This builder for chaining.
+       */
+      public Builder setPoolWeightRposBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) { throw new NullPointerException(); }
+        checkByteStringIsUtf8(value);
+        poolWeightRpos_ = value;
+        bitField0_ |= 0x00000008;
+        onChanged();
+        return this;
+      }
+
+      private java.lang.Object poolWeightDpos_ = "";
+      /**
+       * <code>string pool_weight_dpos = 5 [json_name = "poolWeightDpos", (.gogoproto.customname) = "PoolWeightDPoS"];</code>
+       * @return The poolWeightDpos.
+       */
+      public java.lang.String getPoolWeightDpos() {
+        java.lang.Object ref = poolWeightDpos_;
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          poolWeightDpos_ = s;
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
+      }
+      /**
+       * <code>string pool_weight_dpos = 5 [json_name = "poolWeightDpos", (.gogoproto.customname) = "PoolWeightDPoS"];</code>
+       * @return The bytes for poolWeightDpos.
+       */
+      public com.google.protobuf.ByteString
+          getPoolWeightDposBytes() {
+        java.lang.Object ref = poolWeightDpos_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          poolWeightDpos_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <code>string pool_weight_dpos = 5 [json_name = "poolWeightDpos", (.gogoproto.customname) = "PoolWeightDPoS"];</code>
+       * @param value The poolWeightDpos to set.
+       * @return This builder for chaining.
+       */
+      public Builder setPoolWeightDpos(
+          java.lang.String value) {
+        if (value == null) { throw new NullPointerException(); }
+        poolWeightDpos_ = value;
+        bitField0_ |= 0x00000010;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>string pool_weight_dpos = 5 [json_name = "poolWeightDpos", (.gogoproto.customname) = "PoolWeightDPoS"];</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearPoolWeightDpos() {
+        poolWeightDpos_ = getDefaultInstance().getPoolWeightDpos();
+        bitField0_ = (bitField0_ & ~0x00000010);
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>string pool_weight_dpos = 5 [json_name = "poolWeightDpos", (.gogoproto.customname) = "PoolWeightDPoS"];</code>
+       * @param value The bytes for poolWeightDpos to set.
+       * @return This builder for chaining.
+       */
+      public Builder setPoolWeightDposBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) { throw new NullPointerException(); }
+        checkByteStringIsUtf8(value);
+        poolWeightDpos_ = value;
+        bitField0_ |= 0x00000010;
+        onChanged();
+        return this;
+      }
+
+      // @@protoc_insertion_point(builder_scope:qorechain.rlconsensus.v1.QueryAppliedParamsResponse)
+    }
+
+    // @@protoc_insertion_point(class_scope:qorechain.rlconsensus.v1.QueryAppliedParamsResponse)
+    private static final qorechain.rlconsensus.v1.QueryOuterClass.QueryAppliedParamsResponse DEFAULT_INSTANCE;
+    static {
+      DEFAULT_INSTANCE = new qorechain.rlconsensus.v1.QueryOuterClass.QueryAppliedParamsResponse();
+    }
+
+    public static qorechain.rlconsensus.v1.QueryOuterClass.QueryAppliedParamsResponse getDefaultInstance() {
+      return DEFAULT_INSTANCE;
+    }
+
+    private static final com.google.protobuf.Parser<QueryAppliedParamsResponse>
+        PARSER = new com.google.protobuf.AbstractParser<QueryAppliedParamsResponse>() {
+      @java.lang.Override
+      public QueryAppliedParamsResponse parsePartialFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        Builder builder = newBuilder();
+        try {
+          builder.mergeFrom(input, extensionRegistry);
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          throw e.setUnfinishedMessage(builder.buildPartial());
+        } catch (com.google.protobuf.UninitializedMessageException e) {
+          throw e.asInvalidProtocolBufferException().setUnfinishedMessage(builder.buildPartial());
+        } catch (java.io.IOException e) {
+          throw new com.google.protobuf.InvalidProtocolBufferException(e)
+              .setUnfinishedMessage(builder.buildPartial());
+        }
+        return builder.buildPartial();
+      }
+    };
+
+    public static com.google.protobuf.Parser<QueryAppliedParamsResponse> parser() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Parser<QueryAppliedParamsResponse> getParserForType() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public qorechain.rlconsensus.v1.QueryOuterClass.QueryAppliedParamsResponse getDefaultInstanceForType() {
+      return DEFAULT_INSTANCE;
+    }
+
+  }
+
+  public interface QueryLastActionRequestOrBuilder extends
+      // @@protoc_insertion_point(interface_extends:qorechain.rlconsensus.v1.QueryLastActionRequest)
+      com.google.protobuf.MessageOrBuilder {
+  }
+  /**
+   * Protobuf type {@code qorechain.rlconsensus.v1.QueryLastActionRequest}
+   */
+  public static final class QueryLastActionRequest extends
+      com.google.protobuf.GeneratedMessage implements
+      // @@protoc_insertion_point(message_implements:qorechain.rlconsensus.v1.QueryLastActionRequest)
+      QueryLastActionRequestOrBuilder {
+  private static final long serialVersionUID = 0L;
+    static {
+      com.google.protobuf.RuntimeVersion.validateProtobufGencodeVersion(
+        com.google.protobuf.RuntimeVersion.RuntimeDomain.PUBLIC,
+        /* major= */ 4,
+        /* minor= */ 35,
+        /* patch= */ 1,
+        /* suffix= */ "",
+        "QueryLastActionRequest");
+    }
+    // Use QueryLastActionRequest.newBuilder() to construct.
+    private QueryLastActionRequest(com.google.protobuf.GeneratedMessage.Builder<?> builder) {
+      super(builder);
+    }
+    private QueryLastActionRequest() {
+    }
+
+    public static final com.google.protobuf.Descriptors.Descriptor
+        getDescriptor() {
+      return qorechain.rlconsensus.v1.QueryOuterClass.internal_static_qorechain_rlconsensus_v1_QueryLastActionRequest_descriptor;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Descriptors.Descriptor getDescriptorForType() {
+      return qorechain.rlconsensus.v1.QueryOuterClass.internal_static_qorechain_rlconsensus_v1_QueryLastActionRequest_descriptor;
+    }
+
+    @java.lang.Override
+    protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+        internalGetFieldAccessorTable() {
+      return qorechain.rlconsensus.v1.QueryOuterClass.internal_static_qorechain_rlconsensus_v1_QueryLastActionRequest_fieldAccessorTable
+          .ensureFieldAccessorsInitialized(
+              qorechain.rlconsensus.v1.QueryOuterClass.QueryLastActionRequest.class, qorechain.rlconsensus.v1.QueryOuterClass.QueryLastActionRequest.Builder.class);
+    }
+
+    private byte memoizedIsInitialized = -1;
+    @java.lang.Override
+    public final boolean isInitialized() {
+      byte isInitialized = memoizedIsInitialized;
+      if (isInitialized == 1) return true;
+      if (isInitialized == 0) return false;
+
+      memoizedIsInitialized = 1;
+      return true;
+    }
+
+    @java.lang.Override
+    public void writeTo(com.google.protobuf.CodedOutputStream output)
+                        throws java.io.IOException {
+      getUnknownFields().writeTo(output);
+    }
+    @java.lang.Override
+    public int getSerializedSize() {
+      int size = memoizedSize;
+      if (size != -1) return size;
+
+      size = 0;
+      size += getUnknownFields().getSerializedSize();
+      memoizedSize = size;
+      return size;
+    }
+
+    @java.lang.Override
+    public boolean equals(final java.lang.Object obj) {
+      if (obj == this) {
+       return true;
+      }
+      if (!(obj instanceof qorechain.rlconsensus.v1.QueryOuterClass.QueryLastActionRequest)) {
+        return super.equals(obj);
+      }
+      qorechain.rlconsensus.v1.QueryOuterClass.QueryLastActionRequest other = (qorechain.rlconsensus.v1.QueryOuterClass.QueryLastActionRequest) obj;
+
+      if (!getUnknownFields().equals(other.getUnknownFields())) return false;
+      return true;
+    }
+
+    @java.lang.Override
+    public int hashCode() {
+      if (memoizedHashCode != 0) {
+        return memoizedHashCode;
+      }
+      int hash = 41;
+      hash = (19 * hash) + getDescriptor().hashCode();
+      hash = (29 * hash) + getUnknownFields().hashCode();
+      memoizedHashCode = hash;
+      return hash;
+    }
+
+    public static qorechain.rlconsensus.v1.QueryOuterClass.QueryLastActionRequest parseFrom(
+        java.nio.ByteBuffer data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static qorechain.rlconsensus.v1.QueryOuterClass.QueryLastActionRequest parseFrom(
+        java.nio.ByteBuffer data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static qorechain.rlconsensus.v1.QueryOuterClass.QueryLastActionRequest parseFrom(
+        com.google.protobuf.ByteString data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static qorechain.rlconsensus.v1.QueryOuterClass.QueryLastActionRequest parseFrom(
+        com.google.protobuf.ByteString data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static qorechain.rlconsensus.v1.QueryOuterClass.QueryLastActionRequest parseFrom(byte[] data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static qorechain.rlconsensus.v1.QueryOuterClass.QueryLastActionRequest parseFrom(
+        byte[] data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static qorechain.rlconsensus.v1.QueryOuterClass.QueryLastActionRequest parseFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input);
+    }
+    public static qorechain.rlconsensus.v1.QueryOuterClass.QueryLastActionRequest parseFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    public static qorechain.rlconsensus.v1.QueryOuterClass.QueryLastActionRequest parseDelimitedFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseDelimitedWithIOException(PARSER, input);
+    }
+
+    public static qorechain.rlconsensus.v1.QueryOuterClass.QueryLastActionRequest parseDelimitedFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static qorechain.rlconsensus.v1.QueryOuterClass.QueryLastActionRequest parseFrom(
+        com.google.protobuf.CodedInputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input);
+    }
+    public static qorechain.rlconsensus.v1.QueryOuterClass.QueryLastActionRequest parseFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    @java.lang.Override
+    public Builder newBuilderForType() { return newBuilder(); }
+    public static Builder newBuilder() {
+      return DEFAULT_INSTANCE.toBuilder();
+    }
+    public static Builder newBuilder(qorechain.rlconsensus.v1.QueryOuterClass.QueryLastActionRequest prototype) {
+      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+    }
+    @java.lang.Override
+    public Builder toBuilder() {
+      return this == DEFAULT_INSTANCE
+          ? new Builder() : new Builder().mergeFrom(this);
+    }
+
+    @java.lang.Override
+    protected Builder newBuilderForType(
+        com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+      Builder builder = new Builder(parent);
+      return builder;
+    }
+    /**
+     * Protobuf type {@code qorechain.rlconsensus.v1.QueryLastActionRequest}
+     */
+    public static final class Builder extends
+        com.google.protobuf.GeneratedMessage.Builder<Builder> implements
+        // @@protoc_insertion_point(builder_implements:qorechain.rlconsensus.v1.QueryLastActionRequest)
+        qorechain.rlconsensus.v1.QueryOuterClass.QueryLastActionRequestOrBuilder {
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return qorechain.rlconsensus.v1.QueryOuterClass.internal_static_qorechain_rlconsensus_v1_QueryLastActionRequest_descriptor;
+      }
+
+      @java.lang.Override
+      protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return qorechain.rlconsensus.v1.QueryOuterClass.internal_static_qorechain_rlconsensus_v1_QueryLastActionRequest_fieldAccessorTable
+            .ensureFieldAccessorsInitialized(
+                qorechain.rlconsensus.v1.QueryOuterClass.QueryLastActionRequest.class, qorechain.rlconsensus.v1.QueryOuterClass.QueryLastActionRequest.Builder.class);
+      }
+
+      // Construct using qorechain.rlconsensus.v1.QueryOuterClass.QueryLastActionRequest.newBuilder()
+      private Builder() {
+
+      }
+
+      private Builder(
+          com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+        super(parent);
+
+      }
+      @java.lang.Override
+      public Builder clear() {
+        super.clear();
+        return this;
+      }
+
+      @java.lang.Override
+      public com.google.protobuf.Descriptors.Descriptor
+          getDescriptorForType() {
+        return qorechain.rlconsensus.v1.QueryOuterClass.internal_static_qorechain_rlconsensus_v1_QueryLastActionRequest_descriptor;
+      }
+
+      @java.lang.Override
+      public qorechain.rlconsensus.v1.QueryOuterClass.QueryLastActionRequest getDefaultInstanceForType() {
+        return qorechain.rlconsensus.v1.QueryOuterClass.QueryLastActionRequest.getDefaultInstance();
+      }
+
+      @java.lang.Override
+      public qorechain.rlconsensus.v1.QueryOuterClass.QueryLastActionRequest build() {
+        qorechain.rlconsensus.v1.QueryOuterClass.QueryLastActionRequest result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(result);
+        }
+        return result;
+      }
+
+      @java.lang.Override
+      public qorechain.rlconsensus.v1.QueryOuterClass.QueryLastActionRequest buildPartial() {
+        qorechain.rlconsensus.v1.QueryOuterClass.QueryLastActionRequest result = new qorechain.rlconsensus.v1.QueryOuterClass.QueryLastActionRequest(this);
+        onBuilt();
+        return result;
+      }
+
+      @java.lang.Override
+      public Builder mergeFrom(com.google.protobuf.Message other) {
+        if (other instanceof qorechain.rlconsensus.v1.QueryOuterClass.QueryLastActionRequest) {
+          return mergeFrom((qorechain.rlconsensus.v1.QueryOuterClass.QueryLastActionRequest)other);
+        } else {
+          super.mergeFrom(other);
+          return this;
+        }
+      }
+
+      public Builder mergeFrom(qorechain.rlconsensus.v1.QueryOuterClass.QueryLastActionRequest other) {
+        if (other == qorechain.rlconsensus.v1.QueryOuterClass.QueryLastActionRequest.getDefaultInstance()) return this;
+        this.mergeUnknownFields(other.getUnknownFields());
+        onChanged();
+        return this;
+      }
+
+      @java.lang.Override
+      public final boolean isInitialized() {
+        return true;
+      }
+
+      @java.lang.Override
+      public Builder mergeFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        if (extensionRegistry == null) {
+          throw new java.lang.NullPointerException();
+        }
+        try {
+          boolean done = false;
+          while (!done) {
+            int tag = input.readTag();
+            switch (tag) {
+              case 0:
+                done = true;
+                break;
+              default: {
+                if (!super.parseUnknownField(input, extensionRegistry, tag)) {
+                  done = true; // was an endgroup tag
+                }
+                break;
+              } // default:
+            } // switch (tag)
+          } // while (!done)
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          throw e.unwrapIOException();
+        } finally {
+          onChanged();
+        } // finally
+        return this;
+      }
+
+      // @@protoc_insertion_point(builder_scope:qorechain.rlconsensus.v1.QueryLastActionRequest)
+    }
+
+    // @@protoc_insertion_point(class_scope:qorechain.rlconsensus.v1.QueryLastActionRequest)
+    private static final qorechain.rlconsensus.v1.QueryOuterClass.QueryLastActionRequest DEFAULT_INSTANCE;
+    static {
+      DEFAULT_INSTANCE = new qorechain.rlconsensus.v1.QueryOuterClass.QueryLastActionRequest();
+    }
+
+    public static qorechain.rlconsensus.v1.QueryOuterClass.QueryLastActionRequest getDefaultInstance() {
+      return DEFAULT_INSTANCE;
+    }
+
+    private static final com.google.protobuf.Parser<QueryLastActionRequest>
+        PARSER = new com.google.protobuf.AbstractParser<QueryLastActionRequest>() {
+      @java.lang.Override
+      public QueryLastActionRequest parsePartialFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        Builder builder = newBuilder();
+        try {
+          builder.mergeFrom(input, extensionRegistry);
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          throw e.setUnfinishedMessage(builder.buildPartial());
+        } catch (com.google.protobuf.UninitializedMessageException e) {
+          throw e.asInvalidProtocolBufferException().setUnfinishedMessage(builder.buildPartial());
+        } catch (java.io.IOException e) {
+          throw new com.google.protobuf.InvalidProtocolBufferException(e)
+              .setUnfinishedMessage(builder.buildPartial());
+        }
+        return builder.buildPartial();
+      }
+    };
+
+    public static com.google.protobuf.Parser<QueryLastActionRequest> parser() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Parser<QueryLastActionRequest> getParserForType() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public qorechain.rlconsensus.v1.QueryOuterClass.QueryLastActionRequest getDefaultInstanceForType() {
+      return DEFAULT_INSTANCE;
+    }
+
+  }
+
+  public interface QueryLastActionResponseOrBuilder extends
+      // @@protoc_insertion_point(interface_extends:qorechain.rlconsensus.v1.QueryLastActionResponse)
+      com.google.protobuf.MessageOrBuilder {
+
+    /**
+     * <pre>
+     * height is the block of the step; 0 when no action has been recorded.
+     * </pre>
+     *
+     * <code>int64 height = 1 [json_name = "height"];</code>
+     * @return The height.
+     */
+    long getHeight();
+
+    /**
+     * <pre>
+     * mode is the agent mode at that step.
+     * </pre>
+     *
+     * <code>string mode = 2 [json_name = "mode"];</code>
+     * @return The mode.
+     */
+    java.lang.String getMode();
+    /**
+     * <pre>
+     * mode is the agent mode at that step.
+     * </pre>
+     *
+     * <code>string mode = 2 [json_name = "mode"];</code>
+     * @return The bytes for mode.
+     */
+    com.google.protobuf.ByteString
+        getModeBytes();
+
+    /**
+     * <pre>
+     * values are the five raw action outputs, in the order block_time_delta,
+     * gas_price_delta, validator_set_size_delta, pool_weight_rpos_delta,
+     * pool_weight_dpos_delta, before the mode's clamp.
+     * </pre>
+     *
+     * <code>repeated string values = 3 [json_name = "values"];</code>
+     * @return A list containing the values.
+     */
+    java.util.List<java.lang.String>
+        getValuesList();
+    /**
+     * <pre>
+     * values are the five raw action outputs, in the order block_time_delta,
+     * gas_price_delta, validator_set_size_delta, pool_weight_rpos_delta,
+     * pool_weight_dpos_delta, before the mode's clamp.
+     * </pre>
+     *
+     * <code>repeated string values = 3 [json_name = "values"];</code>
+     * @return The count of values.
+     */
+    int getValuesCount();
+    /**
+     * <pre>
+     * values are the five raw action outputs, in the order block_time_delta,
+     * gas_price_delta, validator_set_size_delta, pool_weight_rpos_delta,
+     * pool_weight_dpos_delta, before the mode's clamp.
+     * </pre>
+     *
+     * <code>repeated string values = 3 [json_name = "values"];</code>
+     * @param index The index of the element to return.
+     * @return The values at the given index.
+     */
+    java.lang.String getValues(int index);
+    /**
+     * <pre>
+     * values are the five raw action outputs, in the order block_time_delta,
+     * gas_price_delta, validator_set_size_delta, pool_weight_rpos_delta,
+     * pool_weight_dpos_delta, before the mode's clamp.
+     * </pre>
+     *
+     * <code>repeated string values = 3 [json_name = "values"];</code>
+     * @param index The index of the value to return.
+     * @return The bytes of the values at the given index.
+     */
+    com.google.protobuf.ByteString
+        getValuesBytes(int index);
+
+    /**
+     * <pre>
+     * applied is true when the step changed the applied values (conservative
+     * or autonomous mode, circuit breaker clear).
+     * </pre>
+     *
+     * <code>bool applied = 4 [json_name = "applied"];</code>
+     * @return The applied.
+     */
+    boolean getApplied();
+  }
+  /**
+   * Protobuf type {@code qorechain.rlconsensus.v1.QueryLastActionResponse}
+   */
+  public static final class QueryLastActionResponse extends
+      com.google.protobuf.GeneratedMessage implements
+      // @@protoc_insertion_point(message_implements:qorechain.rlconsensus.v1.QueryLastActionResponse)
+      QueryLastActionResponseOrBuilder {
+  private static final long serialVersionUID = 0L;
+    static {
+      com.google.protobuf.RuntimeVersion.validateProtobufGencodeVersion(
+        com.google.protobuf.RuntimeVersion.RuntimeDomain.PUBLIC,
+        /* major= */ 4,
+        /* minor= */ 35,
+        /* patch= */ 1,
+        /* suffix= */ "",
+        "QueryLastActionResponse");
+    }
+    // Use QueryLastActionResponse.newBuilder() to construct.
+    private QueryLastActionResponse(com.google.protobuf.GeneratedMessage.Builder<?> builder) {
+      super(builder);
+    }
+    private QueryLastActionResponse() {
+      mode_ = "";
+      values_ =
+          com.google.protobuf.LazyStringArrayList.emptyList();
+    }
+
+    public static final com.google.protobuf.Descriptors.Descriptor
+        getDescriptor() {
+      return qorechain.rlconsensus.v1.QueryOuterClass.internal_static_qorechain_rlconsensus_v1_QueryLastActionResponse_descriptor;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Descriptors.Descriptor getDescriptorForType() {
+      return qorechain.rlconsensus.v1.QueryOuterClass.internal_static_qorechain_rlconsensus_v1_QueryLastActionResponse_descriptor;
+    }
+
+    @java.lang.Override
+    protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+        internalGetFieldAccessorTable() {
+      return qorechain.rlconsensus.v1.QueryOuterClass.internal_static_qorechain_rlconsensus_v1_QueryLastActionResponse_fieldAccessorTable
+          .ensureFieldAccessorsInitialized(
+              qorechain.rlconsensus.v1.QueryOuterClass.QueryLastActionResponse.class, qorechain.rlconsensus.v1.QueryOuterClass.QueryLastActionResponse.Builder.class);
+    }
+
+    public static final int HEIGHT_FIELD_NUMBER = 1;
+    private long height_ = 0L;
+    /**
+     * <pre>
+     * height is the block of the step; 0 when no action has been recorded.
+     * </pre>
+     *
+     * <code>int64 height = 1 [json_name = "height"];</code>
+     * @return The height.
+     */
+    @java.lang.Override
+    public long getHeight() {
+      return height_;
+    }
+
+    public static final int MODE_FIELD_NUMBER = 2;
+    @SuppressWarnings("serial")
+    private volatile java.lang.Object mode_ = "";
+    /**
+     * <pre>
+     * mode is the agent mode at that step.
+     * </pre>
+     *
+     * <code>string mode = 2 [json_name = "mode"];</code>
+     * @return The mode.
+     */
+    @java.lang.Override
+    public java.lang.String getMode() {
+      java.lang.Object ref = mode_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        mode_ = s;
+        return s;
+      }
+    }
+    /**
+     * <pre>
+     * mode is the agent mode at that step.
+     * </pre>
+     *
+     * <code>string mode = 2 [json_name = "mode"];</code>
+     * @return The bytes for mode.
+     */
+    @java.lang.Override
+    public com.google.protobuf.ByteString
+        getModeBytes() {
+      java.lang.Object ref = mode_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        mode_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
+    public static final int VALUES_FIELD_NUMBER = 3;
+    @SuppressWarnings("serial")
+    private com.google.protobuf.LazyStringArrayList values_ =
+        com.google.protobuf.LazyStringArrayList.emptyList();
+    /**
+     * <pre>
+     * values are the five raw action outputs, in the order block_time_delta,
+     * gas_price_delta, validator_set_size_delta, pool_weight_rpos_delta,
+     * pool_weight_dpos_delta, before the mode's clamp.
+     * </pre>
+     *
+     * <code>repeated string values = 3 [json_name = "values"];</code>
+     * @return A list containing the values.
+     */
+    public com.google.protobuf.ProtocolStringList
+        getValuesList() {
+      return values_;
+    }
+    /**
+     * <pre>
+     * values are the five raw action outputs, in the order block_time_delta,
+     * gas_price_delta, validator_set_size_delta, pool_weight_rpos_delta,
+     * pool_weight_dpos_delta, before the mode's clamp.
+     * </pre>
+     *
+     * <code>repeated string values = 3 [json_name = "values"];</code>
+     * @return The count of values.
+     */
+    public int getValuesCount() {
+      return values_.size();
+    }
+    /**
+     * <pre>
+     * values are the five raw action outputs, in the order block_time_delta,
+     * gas_price_delta, validator_set_size_delta, pool_weight_rpos_delta,
+     * pool_weight_dpos_delta, before the mode's clamp.
+     * </pre>
+     *
+     * <code>repeated string values = 3 [json_name = "values"];</code>
+     * @param index The index of the element to return.
+     * @return The values at the given index.
+     */
+    public java.lang.String getValues(int index) {
+      return values_.get(index);
+    }
+    /**
+     * <pre>
+     * values are the five raw action outputs, in the order block_time_delta,
+     * gas_price_delta, validator_set_size_delta, pool_weight_rpos_delta,
+     * pool_weight_dpos_delta, before the mode's clamp.
+     * </pre>
+     *
+     * <code>repeated string values = 3 [json_name = "values"];</code>
+     * @param index The index of the value to return.
+     * @return The bytes of the values at the given index.
+     */
+    public com.google.protobuf.ByteString
+        getValuesBytes(int index) {
+      return values_.getByteString(index);
+    }
+
+    public static final int APPLIED_FIELD_NUMBER = 4;
+    private boolean applied_ = false;
+    /**
+     * <pre>
+     * applied is true when the step changed the applied values (conservative
+     * or autonomous mode, circuit breaker clear).
+     * </pre>
+     *
+     * <code>bool applied = 4 [json_name = "applied"];</code>
+     * @return The applied.
+     */
+    @java.lang.Override
+    public boolean getApplied() {
+      return applied_;
+    }
+
+    private byte memoizedIsInitialized = -1;
+    @java.lang.Override
+    public final boolean isInitialized() {
+      byte isInitialized = memoizedIsInitialized;
+      if (isInitialized == 1) return true;
+      if (isInitialized == 0) return false;
+
+      memoizedIsInitialized = 1;
+      return true;
+    }
+
+    @java.lang.Override
+    public void writeTo(com.google.protobuf.CodedOutputStream output)
+                        throws java.io.IOException {
+      if (height_ != 0L) {
+        output.writeInt64(1, height_);
+      }
+      if (!com.google.protobuf.GeneratedMessage.isStringEmpty(mode_)) {
+        com.google.protobuf.GeneratedMessage.writeString(output, 2, mode_);
+      }
+      for (int i = 0; i < values_.size(); i++) {
+        com.google.protobuf.GeneratedMessage.writeString(output, 3, values_.getRaw(i));
+      }
+      if (applied_ != false) {
+        output.writeBool(4, applied_);
+      }
+      getUnknownFields().writeTo(output);
+    }
+    private int computeSerializedSize_0() {
+      int size = 0;
+      if (height_ != 0L) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeInt64Size(1, height_);
+      }
+      if (!com.google.protobuf.GeneratedMessage.isStringEmpty(mode_)) {
+        size += com.google.protobuf.GeneratedMessage.computeStringSize(2, mode_);
+      }
+      {
+        int dataSize = 0;
+        for (int i = 0; i < values_.size(); i++) {
+          dataSize += computeStringSizeNoTag(values_.getRaw(i));
+        }
+        size += dataSize;
+        size += 1 * getValuesList().size();
+      }
+      if (applied_ != false) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeBoolSize(4, applied_);
+      }
+      return size;
+    }
+    @java.lang.Override
+    public int getSerializedSize() {
+      int size = memoizedSize;
+      if (size != -1) return size;
+
+      size = 0;
+      size += computeSerializedSize_0();
+      size += getUnknownFields().getSerializedSize();
+      memoizedSize = size;
+      return size;
+    }
+
+    @java.lang.Override
+    public boolean equals(final java.lang.Object obj) {
+      if (obj == this) {
+       return true;
+      }
+      if (!(obj instanceof qorechain.rlconsensus.v1.QueryOuterClass.QueryLastActionResponse)) {
+        return super.equals(obj);
+      }
+      qorechain.rlconsensus.v1.QueryOuterClass.QueryLastActionResponse other = (qorechain.rlconsensus.v1.QueryOuterClass.QueryLastActionResponse) obj;
+
+      if (getHeight()
+          != other.getHeight()) return false;
+      if (!getMode()
+          .equals(other.getMode())) return false;
+      if (!getValuesList()
+          .equals(other.getValuesList())) return false;
+      if (getApplied()
+          != other.getApplied()) return false;
+      if (!getUnknownFields().equals(other.getUnknownFields())) return false;
+      return true;
+    }
+
+    @java.lang.Override
+    public int hashCode() {
+      if (memoizedHashCode != 0) {
+        return memoizedHashCode;
+      }
+      int hash = 41;
+      hash = (19 * hash) + getDescriptor().hashCode();
+      hash = (37 * hash) + HEIGHT_FIELD_NUMBER;
+      hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
+          getHeight());
+      hash = (37 * hash) + MODE_FIELD_NUMBER;
+      hash = (53 * hash) + getMode().hashCode();
+      if (getValuesCount() > 0) {
+        hash = (37 * hash) + VALUES_FIELD_NUMBER;
+        hash = (53 * hash) + getValuesList().hashCode();
+      }
+      hash = (37 * hash) + APPLIED_FIELD_NUMBER;
+      hash = (53 * hash) + com.google.protobuf.Internal.hashBoolean(
+          getApplied());
+      hash = (29 * hash) + getUnknownFields().hashCode();
+      memoizedHashCode = hash;
+      return hash;
+    }
+
+    public static qorechain.rlconsensus.v1.QueryOuterClass.QueryLastActionResponse parseFrom(
+        java.nio.ByteBuffer data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static qorechain.rlconsensus.v1.QueryOuterClass.QueryLastActionResponse parseFrom(
+        java.nio.ByteBuffer data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static qorechain.rlconsensus.v1.QueryOuterClass.QueryLastActionResponse parseFrom(
+        com.google.protobuf.ByteString data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static qorechain.rlconsensus.v1.QueryOuterClass.QueryLastActionResponse parseFrom(
+        com.google.protobuf.ByteString data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static qorechain.rlconsensus.v1.QueryOuterClass.QueryLastActionResponse parseFrom(byte[] data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static qorechain.rlconsensus.v1.QueryOuterClass.QueryLastActionResponse parseFrom(
+        byte[] data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static qorechain.rlconsensus.v1.QueryOuterClass.QueryLastActionResponse parseFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input);
+    }
+    public static qorechain.rlconsensus.v1.QueryOuterClass.QueryLastActionResponse parseFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    public static qorechain.rlconsensus.v1.QueryOuterClass.QueryLastActionResponse parseDelimitedFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseDelimitedWithIOException(PARSER, input);
+    }
+
+    public static qorechain.rlconsensus.v1.QueryOuterClass.QueryLastActionResponse parseDelimitedFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static qorechain.rlconsensus.v1.QueryOuterClass.QueryLastActionResponse parseFrom(
+        com.google.protobuf.CodedInputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input);
+    }
+    public static qorechain.rlconsensus.v1.QueryOuterClass.QueryLastActionResponse parseFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    @java.lang.Override
+    public Builder newBuilderForType() { return newBuilder(); }
+    public static Builder newBuilder() {
+      return DEFAULT_INSTANCE.toBuilder();
+    }
+    public static Builder newBuilder(qorechain.rlconsensus.v1.QueryOuterClass.QueryLastActionResponse prototype) {
+      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+    }
+    @java.lang.Override
+    public Builder toBuilder() {
+      return this == DEFAULT_INSTANCE
+          ? new Builder() : new Builder().mergeFrom(this);
+    }
+
+    @java.lang.Override
+    protected Builder newBuilderForType(
+        com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+      Builder builder = new Builder(parent);
+      return builder;
+    }
+    /**
+     * Protobuf type {@code qorechain.rlconsensus.v1.QueryLastActionResponse}
+     */
+    public static final class Builder extends
+        com.google.protobuf.GeneratedMessage.Builder<Builder> implements
+        // @@protoc_insertion_point(builder_implements:qorechain.rlconsensus.v1.QueryLastActionResponse)
+        qorechain.rlconsensus.v1.QueryOuterClass.QueryLastActionResponseOrBuilder {
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return qorechain.rlconsensus.v1.QueryOuterClass.internal_static_qorechain_rlconsensus_v1_QueryLastActionResponse_descriptor;
+      }
+
+      @java.lang.Override
+      protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return qorechain.rlconsensus.v1.QueryOuterClass.internal_static_qorechain_rlconsensus_v1_QueryLastActionResponse_fieldAccessorTable
+            .ensureFieldAccessorsInitialized(
+                qorechain.rlconsensus.v1.QueryOuterClass.QueryLastActionResponse.class, qorechain.rlconsensus.v1.QueryOuterClass.QueryLastActionResponse.Builder.class);
+      }
+
+      // Construct using qorechain.rlconsensus.v1.QueryOuterClass.QueryLastActionResponse.newBuilder()
+      private Builder() {
+
+      }
+
+      private Builder(
+          com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+        super(parent);
+
+      }
+      @java.lang.Override
+      public Builder clear() {
+        super.clear();
+        bitField0_ = 0;
+        height_ = 0L;
+        mode_ = "";
+        values_ =
+            com.google.protobuf.LazyStringArrayList.emptyList();
+        applied_ = false;
+        return this;
+      }
+
+      @java.lang.Override
+      public com.google.protobuf.Descriptors.Descriptor
+          getDescriptorForType() {
+        return qorechain.rlconsensus.v1.QueryOuterClass.internal_static_qorechain_rlconsensus_v1_QueryLastActionResponse_descriptor;
+      }
+
+      @java.lang.Override
+      public qorechain.rlconsensus.v1.QueryOuterClass.QueryLastActionResponse getDefaultInstanceForType() {
+        return qorechain.rlconsensus.v1.QueryOuterClass.QueryLastActionResponse.getDefaultInstance();
+      }
+
+      @java.lang.Override
+      public qorechain.rlconsensus.v1.QueryOuterClass.QueryLastActionResponse build() {
+        qorechain.rlconsensus.v1.QueryOuterClass.QueryLastActionResponse result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(result);
+        }
+        return result;
+      }
+
+      @java.lang.Override
+      public qorechain.rlconsensus.v1.QueryOuterClass.QueryLastActionResponse buildPartial() {
+        qorechain.rlconsensus.v1.QueryOuterClass.QueryLastActionResponse result = new qorechain.rlconsensus.v1.QueryOuterClass.QueryLastActionResponse(this);
+        if (bitField0_ != 0) { buildPartial0(result); }
+        onBuilt();
+        return result;
+      }
+
+      private void buildPartial0(qorechain.rlconsensus.v1.QueryOuterClass.QueryLastActionResponse result) {
+        int from_bitField0_ = bitField0_;
+        if (((from_bitField0_ & 0x00000001) != 0)) {
+          result.height_ = height_;
+        }
+        if (((from_bitField0_ & 0x00000002) != 0)) {
+          result.mode_ = mode_;
+        }
+        if (((from_bitField0_ & 0x00000004) != 0)) {
+          values_.makeImmutable();
+          result.values_ = values_;
+        }
+        if (((from_bitField0_ & 0x00000008) != 0)) {
+          result.applied_ = applied_;
+        }
+      }
+
+      @java.lang.Override
+      public Builder mergeFrom(com.google.protobuf.Message other) {
+        if (other instanceof qorechain.rlconsensus.v1.QueryOuterClass.QueryLastActionResponse) {
+          return mergeFrom((qorechain.rlconsensus.v1.QueryOuterClass.QueryLastActionResponse)other);
+        } else {
+          super.mergeFrom(other);
+          return this;
+        }
+      }
+
+      public Builder mergeFrom(qorechain.rlconsensus.v1.QueryOuterClass.QueryLastActionResponse other) {
+        if (other == qorechain.rlconsensus.v1.QueryOuterClass.QueryLastActionResponse.getDefaultInstance()) return this;
+        if (other.getHeight() != 0L) {
+          setHeight(other.getHeight());
+        }
+        if (!other.getMode().isEmpty()) {
+          mode_ = other.mode_;
+          bitField0_ |= 0x00000002;
+          onChanged();
+        }
+        if (!other.values_.isEmpty()) {
+          if (values_.isEmpty()) {
+            values_ = other.values_;
+            bitField0_ |= 0x00000004;
+          } else {
+            ensureValuesIsMutable();
+            values_.addAll(other.values_);
+          }
+          onChanged();
+        }
+        if (other.getApplied() != false) {
+          setApplied(other.getApplied());
+        }
+        this.mergeUnknownFields(other.getUnknownFields());
+        onChanged();
+        return this;
+      }
+
+      @java.lang.Override
+      public final boolean isInitialized() {
+        return true;
+      }
+
+      @java.lang.Override
+      public Builder mergeFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        if (extensionRegistry == null) {
+          throw new java.lang.NullPointerException();
+        }
+        try {
+          boolean done = false;
+          while (!done) {
+            int tag = input.readTag();
+            switch (tag) {
+              case 0:
+                done = true;
+                break;
+              case 8: {
+                height_ = input.readInt64();
+                bitField0_ |= 0x00000001;
+                break;
+              } // case 8
+              case 18: {
+                mode_ = input.readStringRequireUtf8();
+                bitField0_ |= 0x00000002;
+                break;
+              } // case 18
+              case 26: {
+                ensureValuesIsMutable();
+                values_.add(input.readStringRequireUtf8());
+                break;
+              } // case 26
+              case 32: {
+                applied_ = input.readBool();
+                bitField0_ |= 0x00000008;
+                break;
+              } // case 32
+              default: {
+                if (!super.parseUnknownField(input, extensionRegistry, tag)) {
+                  done = true; // was an endgroup tag
+                }
+                break;
+              } // default:
+            } // switch (tag)
+          } // while (!done)
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          throw e.unwrapIOException();
+        } finally {
+          onChanged();
+        } // finally
+        return this;
+      }
+      private int bitField0_;
+
+      private long height_ ;
+      /**
+       * <pre>
+       * height is the block of the step; 0 when no action has been recorded.
+       * </pre>
+       *
+       * <code>int64 height = 1 [json_name = "height"];</code>
+       * @return The height.
+       */
+      @java.lang.Override
+      public long getHeight() {
+        return height_;
+      }
+      /**
+       * <pre>
+       * height is the block of the step; 0 when no action has been recorded.
+       * </pre>
+       *
+       * <code>int64 height = 1 [json_name = "height"];</code>
+       * @param value The height to set.
+       * @return This builder for chaining.
+       */
+      public Builder setHeight(long value) {
+
+        height_ = value;
+        bitField0_ |= 0x00000001;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * height is the block of the step; 0 when no action has been recorded.
+       * </pre>
+       *
+       * <code>int64 height = 1 [json_name = "height"];</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearHeight() {
+        bitField0_ = (bitField0_ & ~0x00000001);
+        height_ = 0L;
+        onChanged();
+        return this;
+      }
+
+      private java.lang.Object mode_ = "";
+      /**
+       * <pre>
+       * mode is the agent mode at that step.
+       * </pre>
+       *
+       * <code>string mode = 2 [json_name = "mode"];</code>
+       * @return The mode.
+       */
+      public java.lang.String getMode() {
+        java.lang.Object ref = mode_;
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          mode_ = s;
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
+      }
+      /**
+       * <pre>
+       * mode is the agent mode at that step.
+       * </pre>
+       *
+       * <code>string mode = 2 [json_name = "mode"];</code>
+       * @return The bytes for mode.
+       */
+      public com.google.protobuf.ByteString
+          getModeBytes() {
+        java.lang.Object ref = mode_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          mode_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <pre>
+       * mode is the agent mode at that step.
+       * </pre>
+       *
+       * <code>string mode = 2 [json_name = "mode"];</code>
+       * @param value The mode to set.
+       * @return This builder for chaining.
+       */
+      public Builder setMode(
+          java.lang.String value) {
+        if (value == null) { throw new NullPointerException(); }
+        mode_ = value;
+        bitField0_ |= 0x00000002;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * mode is the agent mode at that step.
+       * </pre>
+       *
+       * <code>string mode = 2 [json_name = "mode"];</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearMode() {
+        mode_ = getDefaultInstance().getMode();
+        bitField0_ = (bitField0_ & ~0x00000002);
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * mode is the agent mode at that step.
+       * </pre>
+       *
+       * <code>string mode = 2 [json_name = "mode"];</code>
+       * @param value The bytes for mode to set.
+       * @return This builder for chaining.
+       */
+      public Builder setModeBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) { throw new NullPointerException(); }
+        checkByteStringIsUtf8(value);
+        mode_ = value;
+        bitField0_ |= 0x00000002;
+        onChanged();
+        return this;
+      }
+
+      private com.google.protobuf.LazyStringArrayList values_ =
+          com.google.protobuf.LazyStringArrayList.emptyList();
+      private void ensureValuesIsMutable() {
+        if (!values_.isModifiable()) {
+          values_ = new com.google.protobuf.LazyStringArrayList(values_);
+        }
+        bitField0_ |= 0x00000004;
+      }
+      /**
+       * <pre>
+       * values are the five raw action outputs, in the order block_time_delta,
+       * gas_price_delta, validator_set_size_delta, pool_weight_rpos_delta,
+       * pool_weight_dpos_delta, before the mode's clamp.
+       * </pre>
+       *
+       * <code>repeated string values = 3 [json_name = "values"];</code>
+       * @return A list containing the values.
+       */
+      public com.google.protobuf.ProtocolStringList
+          getValuesList() {
+        values_.makeImmutable();
+        return values_;
+      }
+      /**
+       * <pre>
+       * values are the five raw action outputs, in the order block_time_delta,
+       * gas_price_delta, validator_set_size_delta, pool_weight_rpos_delta,
+       * pool_weight_dpos_delta, before the mode's clamp.
+       * </pre>
+       *
+       * <code>repeated string values = 3 [json_name = "values"];</code>
+       * @return The count of values.
+       */
+      public int getValuesCount() {
+        return values_.size();
+      }
+      /**
+       * <pre>
+       * values are the five raw action outputs, in the order block_time_delta,
+       * gas_price_delta, validator_set_size_delta, pool_weight_rpos_delta,
+       * pool_weight_dpos_delta, before the mode's clamp.
+       * </pre>
+       *
+       * <code>repeated string values = 3 [json_name = "values"];</code>
+       * @param index The index of the element to return.
+       * @return The values at the given index.
+       */
+      public java.lang.String getValues(int index) {
+        return values_.get(index);
+      }
+      /**
+       * <pre>
+       * values are the five raw action outputs, in the order block_time_delta,
+       * gas_price_delta, validator_set_size_delta, pool_weight_rpos_delta,
+       * pool_weight_dpos_delta, before the mode's clamp.
+       * </pre>
+       *
+       * <code>repeated string values = 3 [json_name = "values"];</code>
+       * @param index The index of the value to return.
+       * @return The bytes of the values at the given index.
+       */
+      public com.google.protobuf.ByteString
+          getValuesBytes(int index) {
+        return values_.getByteString(index);
+      }
+      /**
+       * <pre>
+       * values are the five raw action outputs, in the order block_time_delta,
+       * gas_price_delta, validator_set_size_delta, pool_weight_rpos_delta,
+       * pool_weight_dpos_delta, before the mode's clamp.
+       * </pre>
+       *
+       * <code>repeated string values = 3 [json_name = "values"];</code>
+       * @param index The index to set the value at.
+       * @param value The values to set.
+       * @return This builder for chaining.
+       */
+      public Builder setValues(
+          int index, java.lang.String value) {
+        if (value == null) { throw new NullPointerException(); }
+        ensureValuesIsMutable();
+        values_.set(index, value);
+        bitField0_ |= 0x00000004;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * values are the five raw action outputs, in the order block_time_delta,
+       * gas_price_delta, validator_set_size_delta, pool_weight_rpos_delta,
+       * pool_weight_dpos_delta, before the mode's clamp.
+       * </pre>
+       *
+       * <code>repeated string values = 3 [json_name = "values"];</code>
+       * @param value The values to add.
+       * @return This builder for chaining.
+       */
+      public Builder addValues(
+          java.lang.String value) {
+        if (value == null) { throw new NullPointerException(); }
+        ensureValuesIsMutable();
+        values_.add(value);
+        bitField0_ |= 0x00000004;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * values are the five raw action outputs, in the order block_time_delta,
+       * gas_price_delta, validator_set_size_delta, pool_weight_rpos_delta,
+       * pool_weight_dpos_delta, before the mode's clamp.
+       * </pre>
+       *
+       * <code>repeated string values = 3 [json_name = "values"];</code>
+       * @param values The values to add.
+       * @return This builder for chaining.
+       */
+      public Builder addAllValues(
+          java.lang.Iterable<java.lang.String> values) {
+        ensureValuesIsMutable();
+        com.google.protobuf.AbstractMessageLite.Builder.addAll(
+            values, values_);
+        bitField0_ |= 0x00000004;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * values are the five raw action outputs, in the order block_time_delta,
+       * gas_price_delta, validator_set_size_delta, pool_weight_rpos_delta,
+       * pool_weight_dpos_delta, before the mode's clamp.
+       * </pre>
+       *
+       * <code>repeated string values = 3 [json_name = "values"];</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearValues() {
+        values_ =
+          com.google.protobuf.LazyStringArrayList.emptyList();
+        bitField0_ = (bitField0_ & ~0x00000004);;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * values are the five raw action outputs, in the order block_time_delta,
+       * gas_price_delta, validator_set_size_delta, pool_weight_rpos_delta,
+       * pool_weight_dpos_delta, before the mode's clamp.
+       * </pre>
+       *
+       * <code>repeated string values = 3 [json_name = "values"];</code>
+       * @param value The bytes of the values to add.
+       * @return This builder for chaining.
+       */
+      public Builder addValuesBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) { throw new NullPointerException(); }
+        checkByteStringIsUtf8(value);
+        ensureValuesIsMutable();
+        values_.add(value);
+        bitField0_ |= 0x00000004;
+        onChanged();
+        return this;
+      }
+
+      private boolean applied_ ;
+      /**
+       * <pre>
+       * applied is true when the step changed the applied values (conservative
+       * or autonomous mode, circuit breaker clear).
+       * </pre>
+       *
+       * <code>bool applied = 4 [json_name = "applied"];</code>
+       * @return The applied.
+       */
+      @java.lang.Override
+      public boolean getApplied() {
+        return applied_;
+      }
+      /**
+       * <pre>
+       * applied is true when the step changed the applied values (conservative
+       * or autonomous mode, circuit breaker clear).
+       * </pre>
+       *
+       * <code>bool applied = 4 [json_name = "applied"];</code>
+       * @param value The applied to set.
+       * @return This builder for chaining.
+       */
+      public Builder setApplied(boolean value) {
+
+        applied_ = value;
+        bitField0_ |= 0x00000008;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * applied is true when the step changed the applied values (conservative
+       * or autonomous mode, circuit breaker clear).
+       * </pre>
+       *
+       * <code>bool applied = 4 [json_name = "applied"];</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearApplied() {
+        bitField0_ = (bitField0_ & ~0x00000008);
+        applied_ = false;
+        onChanged();
+        return this;
+      }
+
+      // @@protoc_insertion_point(builder_scope:qorechain.rlconsensus.v1.QueryLastActionResponse)
+    }
+
+    // @@protoc_insertion_point(class_scope:qorechain.rlconsensus.v1.QueryLastActionResponse)
+    private static final qorechain.rlconsensus.v1.QueryOuterClass.QueryLastActionResponse DEFAULT_INSTANCE;
+    static {
+      DEFAULT_INSTANCE = new qorechain.rlconsensus.v1.QueryOuterClass.QueryLastActionResponse();
+    }
+
+    public static qorechain.rlconsensus.v1.QueryOuterClass.QueryLastActionResponse getDefaultInstance() {
+      return DEFAULT_INSTANCE;
+    }
+
+    private static final com.google.protobuf.Parser<QueryLastActionResponse>
+        PARSER = new com.google.protobuf.AbstractParser<QueryLastActionResponse>() {
+      @java.lang.Override
+      public QueryLastActionResponse parsePartialFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        Builder builder = newBuilder();
+        try {
+          builder.mergeFrom(input, extensionRegistry);
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          throw e.setUnfinishedMessage(builder.buildPartial());
+        } catch (com.google.protobuf.UninitializedMessageException e) {
+          throw e.asInvalidProtocolBufferException().setUnfinishedMessage(builder.buildPartial());
+        } catch (java.io.IOException e) {
+          throw new com.google.protobuf.InvalidProtocolBufferException(e)
+              .setUnfinishedMessage(builder.buildPartial());
+        }
+        return builder.buildPartial();
+      }
+    };
+
+    public static com.google.protobuf.Parser<QueryLastActionResponse> parser() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Parser<QueryLastActionResponse> getParserForType() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public qorechain.rlconsensus.v1.QueryOuterClass.QueryLastActionResponse getDefaultInstanceForType() {
+      return DEFAULT_INSTANCE;
+    }
+
+  }
+
   private static final com.google.protobuf.Descriptors.Descriptor
     internal_static_qorechain_rlconsensus_v1_QueryObservationRequest_descriptor;
   private static final 
@@ -7668,6 +10408,26 @@ public final class QueryOuterClass extends com.google.protobuf.GeneratedFile {
   private static final 
     com.google.protobuf.GeneratedMessage.FieldAccessorTable
       internal_static_qorechain_rlconsensus_v1_QueryParamsResponse_fieldAccessorTable;
+  private static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_qorechain_rlconsensus_v1_QueryAppliedParamsRequest_descriptor;
+  private static final 
+    com.google.protobuf.GeneratedMessage.FieldAccessorTable
+      internal_static_qorechain_rlconsensus_v1_QueryAppliedParamsRequest_fieldAccessorTable;
+  private static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_qorechain_rlconsensus_v1_QueryAppliedParamsResponse_descriptor;
+  private static final 
+    com.google.protobuf.GeneratedMessage.FieldAccessorTable
+      internal_static_qorechain_rlconsensus_v1_QueryAppliedParamsResponse_fieldAccessorTable;
+  private static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_qorechain_rlconsensus_v1_QueryLastActionRequest_descriptor;
+  private static final 
+    com.google.protobuf.GeneratedMessage.FieldAccessorTable
+      internal_static_qorechain_rlconsensus_v1_QueryLastActionRequest_fieldAccessorTable;
+  private static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_qorechain_rlconsensus_v1_QueryLastActionResponse_descriptor;
+  private static final 
+    com.google.protobuf.GeneratedMessage.FieldAccessorTable
+      internal_static_qorechain_rlconsensus_v1_QueryLastActionResponse_fieldAccessorTable;
 
   public static com.google.protobuf.Descriptors.FileDescriptor
       getDescriptor() {
@@ -7679,71 +10439,97 @@ public final class QueryOuterClass extends com.google.protobuf.GeneratedFile {
     java.lang.String[] descriptorData = {
       "\n$qorechain/rlconsensus/v1/query.proto\022\030" +
       "qorechain.rlconsensus.v1\032\024gogoproto/gogo" +
-      ".proto\"\031\n\027QueryObservationRequest\"J\n\030Que" +
-      "ryObservationResponse\022\026\n\006height\030\001 \001(\003R\006h" +
-      "eight\022\026\n\006values\030\002 \003(\tR\006values\"\024\n\022QueryRe" +
-      "wardRequest\"\265\002\n\023QueryRewardResponse\022\026\n\006h" +
-      "eight\030\001 \001(\003R\006height\022!\n\014total_reward\030\002 \001(" +
-      "\tR\013totalReward\022)\n\020throughput_delta\030\003 \001(\t" +
-      "R\017throughputDelta\022%\n\016finality_delta\030\004 \001(" +
-      "\tR\rfinalityDelta\0225\n\026decentralization_del" +
-      "ta\030\005 \001(\tR\025decentralizationDelta\0222\n\014mev_e" +
-      "stimate\030\006 \001(\tB\017\342\336\037\013MEVEstimateR\013mevEstim" +
-      "ate\022&\n\017failed_tx_ratio\030\007 \001(\tR\rfailedTxRa" +
-      "tio\"\024\n\022QueryPolicyRequest\"m\n\023QueryPolicy" +
-      "Response\022\024\n\005epoch\030\001 \001(\004R\005epoch\022\035\n\nupdate" +
-      "d_at\030\002 \001(\003R\tupdatedAt\022!\n\014weight_count\030\003 " +
-      "\001(\004R\013weightCount\"\031\n\027QueryAgentStatusRequ" +
-      "est\"\260\002\n\030QueryAgentStatusResponse\022\022\n\004mode" +
-      "\030\001 \001(\tR\004mode\022#\n\rcurrent_epoch\030\002 \001(\004R\014cur" +
-      "rentEpoch\022\037\n\013total_steps\030\003 \001(\004R\ntotalSte" +
-      "ps\022.\n\023last_observation_at\030\004 \001(\003R\021lastObs" +
-      "ervationAt\022$\n\016last_action_at\030\005 \001(\003R\014last" +
-      "ActionAt\0224\n\026circuit_breaker_active\030\006 \001(\010" +
-      "R\024circuitBreakerActive\022.\n\023blocks_since_r" +
-      "evert\030\007 \001(\003R\021blocksSinceRevert\"\024\n\022QueryP" +
-      "aramsRequest\"\264\006\n\023QueryParamsResponse\022\030\n\007" +
-      "enabled\030\001 \001(\010R\007enabled\0221\n\024observation_in" +
-      "terval\030\002 \001(\004R\023observationInterval\022\035\n\nage" +
-      "nt_mode\030\003 \001(\tR\tagentMode\0226\n\027max_change_c" +
-      "onservative\030\004 \001(\tR\025maxChangeConservative" +
-      "\0222\n\025max_change_autonomous\030\005 \001(\tR\023maxChan" +
-      "geAutonomous\0224\n\026circuit_breaker_window\030\006" +
-      " \001(\004R\024circuitBreakerWindow\022:\n\031circuit_br" +
-      "eaker_threshold\030\007 \001(\tR\027circuitBreakerThr" +
-      "eshold\0228\n\030reward_weight_throughput\030\010 \001(\t" +
-      "R\026rewardWeightThroughput\0224\n\026reward_weigh" +
-      "t_finality\030\t \001(\tR\024rewardWeightFinality\022D" +
-      "\n\036reward_weight_decentralization\030\n \001(\tR\034" +
-      "rewardWeightDecentralization\022?\n\021reward_w" +
-      "eight_mev\030\013 \001(\tB\023\342\336\037\017RewardWeightMEVR\017re" +
-      "wardWeightMev\0227\n\030reward_weight_failed_tx" +
-      "s\030\014 \001(\tR\025rewardWeightFailedTxs\0221\n\025defaul" +
-      "t_block_time_ms\030\r \001(\003R\022defaultBlockTimeM" +
-      "s\0223\n\026default_base_gas_price\030\016 \001(\tR\023defau" +
-      "ltBaseGasPrice\022;\n\032default_validator_set_" +
-      "size\030\017 \001(\004R\027defaultValidatorSetSize2\250\004\n\005" +
-      "Query\022t\n\013AgentStatus\0221.qorechain.rlconse" +
-      "nsus.v1.QueryAgentStatusRequest\0322.qorech" +
-      "ain.rlconsensus.v1.QueryAgentStatusRespo" +
-      "nse\022e\n\006Params\022,.qorechain.rlconsensus.v1" +
-      ".QueryParamsRequest\032-.qorechain.rlconsen" +
-      "sus.v1.QueryParamsResponse\022t\n\013Observatio" +
-      "n\0221.qorechain.rlconsensus.v1.QueryObserv" +
-      "ationRequest\0322.qorechain.rlconsensus.v1." +
-      "QueryObservationResponse\022e\n\006Reward\022,.qor" +
+      ".proto\032\034google/api/annotations.proto\"\031\n\027" +
+      "QueryObservationRequest\"J\n\030QueryObservat" +
+      "ionResponse\022\026\n\006height\030\001 \001(\003R\006height\022\026\n\006v" +
+      "alues\030\002 \003(\tR\006values\"\024\n\022QueryRewardReques" +
+      "t\"\265\002\n\023QueryRewardResponse\022\026\n\006height\030\001 \001(" +
+      "\003R\006height\022!\n\014total_reward\030\002 \001(\tR\013totalRe" +
+      "ward\022)\n\020throughput_delta\030\003 \001(\tR\017throughp" +
+      "utDelta\022%\n\016finality_delta\030\004 \001(\tR\rfinalit" +
+      "yDelta\0225\n\026decentralization_delta\030\005 \001(\tR\025" +
+      "decentralizationDelta\0222\n\014mev_estimate\030\006 " +
+      "\001(\tB\017\342\336\037\013MEVEstimateR\013mevEstimate\022&\n\017fai" +
+      "led_tx_ratio\030\007 \001(\tR\rfailedTxRatio\"\024\n\022Que" +
+      "ryPolicyRequest\"m\n\023QueryPolicyResponse\022\024" +
+      "\n\005epoch\030\001 \001(\004R\005epoch\022\035\n\nupdated_at\030\002 \001(\003" +
+      "R\tupdatedAt\022!\n\014weight_count\030\003 \001(\004R\013weigh" +
+      "tCount\"\031\n\027QueryAgentStatusRequest\"\260\002\n\030Qu" +
+      "eryAgentStatusResponse\022\022\n\004mode\030\001 \001(\tR\004mo" +
+      "de\022#\n\rcurrent_epoch\030\002 \001(\004R\014currentEpoch\022" +
+      "\037\n\013total_steps\030\003 \001(\004R\ntotalSteps\022.\n\023last" +
+      "_observation_at\030\004 \001(\003R\021lastObservationAt" +
+      "\022$\n\016last_action_at\030\005 \001(\003R\014lastActionAt\0224" +
+      "\n\026circuit_breaker_active\030\006 \001(\010R\024circuitB" +
+      "reakerActive\022.\n\023blocks_since_revert\030\007 \001(" +
+      "\003R\021blocksSinceRevert\"\024\n\022QueryParamsReque" +
+      "st\"\264\006\n\023QueryParamsResponse\022\030\n\007enabled\030\001 " +
+      "\001(\010R\007enabled\0221\n\024observation_interval\030\002 \001" +
+      "(\004R\023observationInterval\022\035\n\nagent_mode\030\003 " +
+      "\001(\tR\tagentMode\0226\n\027max_change_conservativ" +
+      "e\030\004 \001(\tR\025maxChangeConservative\0222\n\025max_ch" +
+      "ange_autonomous\030\005 \001(\tR\023maxChangeAutonomo" +
+      "us\0224\n\026circuit_breaker_window\030\006 \001(\004R\024circ" +
+      "uitBreakerWindow\022:\n\031circuit_breaker_thre" +
+      "shold\030\007 \001(\tR\027circuitBreakerThreshold\0228\n\030" +
+      "reward_weight_throughput\030\010 \001(\tR\026rewardWe" +
+      "ightThroughput\0224\n\026reward_weight_finality" +
+      "\030\t \001(\tR\024rewardWeightFinality\022D\n\036reward_w" +
+      "eight_decentralization\030\n \001(\tR\034rewardWeig" +
+      "htDecentralization\022?\n\021reward_weight_mev\030" +
+      "\013 \001(\tB\023\342\336\037\017RewardWeightMEVR\017rewardWeight" +
+      "Mev\0227\n\030reward_weight_failed_txs\030\014 \001(\tR\025r" +
+      "ewardWeightFailedTxs\0221\n\025default_block_ti" +
+      "me_ms\030\r \001(\003R\022defaultBlockTimeMs\0223\n\026defau" +
+      "lt_base_gas_price\030\016 \001(\tR\023defaultBaseGasP" +
+      "rice\022;\n\032default_validator_set_size\030\017 \001(\004" +
+      "R\027defaultValidatorSetSize\"\033\n\031QueryApplie" +
+      "dParamsRequest\"\201\002\n\032QueryAppliedParamsRes" +
+      "ponse\022\"\n\rblock_time_ms\030\001 \001(\003R\013blockTimeM" +
+      "s\022\033\n\tgas_limit\030\002 \001(\003R\010gasLimit\022&\n\017gas_pr" +
+      "ice_floor\030\003 \001(\tR\rgasPriceFloor\022<\n\020pool_w" +
+      "eight_rpos\030\004 \001(\tB\022\342\336\037\016PoolWeightRPoSR\016po" +
+      "olWeightRpos\022<\n\020pool_weight_dpos\030\005 \001(\tB\022" +
+      "\342\336\037\016PoolWeightDPoSR\016poolWeightDpos\"\030\n\026Qu" +
+      "eryLastActionRequest\"w\n\027QueryLastActionR" +
+      "esponse\022\026\n\006height\030\001 \001(\003R\006height\022\022\n\004mode\030" +
+      "\002 \001(\tR\004mode\022\026\n\006values\030\003 \003(\tR\006values\022\030\n\007a" +
+      "pplied\030\004 \001(\010R\007applied2\325\010\n\005Query\022\235\001\n\013Agen" +
+      "tStatus\0221.qorechain.rlconsensus.v1.Query" +
+      "AgentStatusRequest\0322.qorechain.rlconsens" +
+      "us.v1.QueryAgentStatusResponse\"\'\202\323\344\223\002!\022\037" +
+      "/qorechain/rlconsensus/v1/agent\022\217\001\n\006Para" +
+      "ms\022,.qorechain.rlconsensus.v1.QueryParam" +
+      "sRequest\032-.qorechain.rlconsensus.v1.Quer" +
+      "yParamsResponse\"(\202\323\344\223\002\"\022 /qorechain/rlco" +
+      "nsensus/v1/params\022\243\001\n\013Observation\0221.qore" +
+      "chain.rlconsensus.v1.QueryObservationReq" +
+      "uest\0322.qorechain.rlconsensus.v1.QueryObs" +
+      "ervationResponse\"-\202\323\344\223\002\'\022%/qorechain/rlc" +
+      "onsensus/v1/observation\022\217\001\n\006Reward\022,.qor" +
       "echain.rlconsensus.v1.QueryRewardRequest" +
       "\032-.qorechain.rlconsensus.v1.QueryRewardR" +
-      "esponse\022e\n\006Policy\022,.qorechain.rlconsensu" +
-      "s.v1.QueryPolicyRequest\032-.qorechain.rlco" +
-      "nsensus.v1.QueryPolicyResponseB9Z7github" +
-      ".com/qorechain/qorechain-core/x/rlconsen" +
-      "sus/typesb\006proto3"
+      "esponse\"(\202\323\344\223\002\"\022 /qorechain/rlconsensus/" +
+      "v1/reward\022\217\001\n\006Policy\022,.qorechain.rlconse" +
+      "nsus.v1.QueryPolicyRequest\032-.qorechain.r" +
+      "lconsensus.v1.QueryPolicyResponse\"(\202\323\344\223\002" +
+      "\"\022 /qorechain/rlconsensus/v1/policy\022\254\001\n\r" +
+      "AppliedParams\0223.qorechain.rlconsensus.v1" +
+      ".QueryAppliedParamsRequest\0324.qorechain.r" +
+      "lconsensus.v1.QueryAppliedParamsResponse" +
+      "\"0\202\323\344\223\002*\022(/qorechain/rlconsensus/v1/appl" +
+      "ied_params\022\240\001\n\nLastAction\0220.qorechain.rl" +
+      "consensus.v1.QueryLastActionRequest\0321.qo" +
+      "rechain.rlconsensus.v1.QueryLastActionRe" +
+      "sponse\"-\202\323\344\223\002\'\022%/qorechain/rlconsensus/v" +
+      "1/last_actionB9Z7github.com/qorechain/qo" +
+      "rechain-core/x/rlconsensus/typesb\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
         new com.google.protobuf.Descriptors.FileDescriptor[] {
           com.google.protobuf.GoGoProtos.getDescriptor(),
+          com.google.api.AnnotationsProto.getDescriptor(),
         });
     internal_static_qorechain_rlconsensus_v1_QueryObservationRequest_descriptor =
       getDescriptor().getMessageType(0);
@@ -7805,11 +10591,37 @@ public final class QueryOuterClass extends com.google.protobuf.GeneratedFile {
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_qorechain_rlconsensus_v1_QueryParamsResponse_descriptor,
         new java.lang.String[] { "Enabled", "ObservationInterval", "AgentMode", "MaxChangeConservative", "MaxChangeAutonomous", "CircuitBreakerWindow", "CircuitBreakerThreshold", "RewardWeightThroughput", "RewardWeightFinality", "RewardWeightDecentralization", "RewardWeightMev", "RewardWeightFailedTxs", "DefaultBlockTimeMs", "DefaultBaseGasPrice", "DefaultValidatorSetSize", });
+    internal_static_qorechain_rlconsensus_v1_QueryAppliedParamsRequest_descriptor =
+      getDescriptor().getMessageType(10);
+    internal_static_qorechain_rlconsensus_v1_QueryAppliedParamsRequest_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessage.FieldAccessorTable(
+        internal_static_qorechain_rlconsensus_v1_QueryAppliedParamsRequest_descriptor,
+        new java.lang.String[] { });
+    internal_static_qorechain_rlconsensus_v1_QueryAppliedParamsResponse_descriptor =
+      getDescriptor().getMessageType(11);
+    internal_static_qorechain_rlconsensus_v1_QueryAppliedParamsResponse_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessage.FieldAccessorTable(
+        internal_static_qorechain_rlconsensus_v1_QueryAppliedParamsResponse_descriptor,
+        new java.lang.String[] { "BlockTimeMs", "GasLimit", "GasPriceFloor", "PoolWeightRpos", "PoolWeightDpos", });
+    internal_static_qorechain_rlconsensus_v1_QueryLastActionRequest_descriptor =
+      getDescriptor().getMessageType(12);
+    internal_static_qorechain_rlconsensus_v1_QueryLastActionRequest_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessage.FieldAccessorTable(
+        internal_static_qorechain_rlconsensus_v1_QueryLastActionRequest_descriptor,
+        new java.lang.String[] { });
+    internal_static_qorechain_rlconsensus_v1_QueryLastActionResponse_descriptor =
+      getDescriptor().getMessageType(13);
+    internal_static_qorechain_rlconsensus_v1_QueryLastActionResponse_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessage.FieldAccessorTable(
+        internal_static_qorechain_rlconsensus_v1_QueryLastActionResponse_descriptor,
+        new java.lang.String[] { "Height", "Mode", "Values", "Applied", });
     descriptor.resolveAllFeaturesImmutable();
     com.google.protobuf.GoGoProtos.getDescriptor();
+    com.google.api.AnnotationsProto.getDescriptor();
     com.google.protobuf.ExtensionRegistry registry =
         com.google.protobuf.ExtensionRegistry.newInstance();
     registry.add(com.google.protobuf.GoGoProtos.customname);
+    registry.add(com.google.api.AnnotationsProto.http);
     com.google.protobuf.Descriptors.FileDescriptor
         .internalUpdateFileDescriptor(descriptor, registry);
   }

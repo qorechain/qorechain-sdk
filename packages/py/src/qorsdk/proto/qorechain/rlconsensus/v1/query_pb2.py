@@ -23,9 +23,10 @@ _sym_db = _symbol_database.Default()
 
 
 from cosmpy.protos.gogoproto import gogo_pb2 as gogoproto_dot_gogo__pb2
+from google.api import annotations_pb2 as google_dot_api_dot_annotations__pb2
 
 
-DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n$qorechain/rlconsensus/v1/query.proto\x12\x18qorechain.rlconsensus.v1\x1a\x14gogoproto/gogo.proto\"\x19\n\x17QueryObservationRequest\"J\n\x18QueryObservationResponse\x12\x16\n\x06height\x18\x01 \x01(\x03R\x06height\x12\x16\n\x06values\x18\x02 \x03(\tR\x06values\"\x14\n\x12QueryRewardRequest\"\xb5\x02\n\x13QueryRewardResponse\x12\x16\n\x06height\x18\x01 \x01(\x03R\x06height\x12!\n\x0ctotal_reward\x18\x02 \x01(\tR\x0btotalReward\x12)\n\x10throughput_delta\x18\x03 \x01(\tR\x0fthroughputDelta\x12%\n\x0e\x66inality_delta\x18\x04 \x01(\tR\rfinalityDelta\x12\x35\n\x16\x64\x65\x63\x65ntralization_delta\x18\x05 \x01(\tR\x15\x64\x65\x63\x65ntralizationDelta\x12\x32\n\x0cmev_estimate\x18\x06 \x01(\tB\x0f\xe2\xde\x1f\x0bMEVEstimateR\x0bmevEstimate\x12&\n\x0f\x66\x61iled_tx_ratio\x18\x07 \x01(\tR\rfailedTxRatio\"\x14\n\x12QueryPolicyRequest\"m\n\x13QueryPolicyResponse\x12\x14\n\x05\x65poch\x18\x01 \x01(\x04R\x05\x65poch\x12\x1d\n\nupdated_at\x18\x02 \x01(\x03R\tupdatedAt\x12!\n\x0cweight_count\x18\x03 \x01(\x04R\x0bweightCount\"\x19\n\x17QueryAgentStatusRequest\"\xb0\x02\n\x18QueryAgentStatusResponse\x12\x12\n\x04mode\x18\x01 \x01(\tR\x04mode\x12#\n\rcurrent_epoch\x18\x02 \x01(\x04R\x0c\x63urrentEpoch\x12\x1f\n\x0btotal_steps\x18\x03 \x01(\x04R\ntotalSteps\x12.\n\x13last_observation_at\x18\x04 \x01(\x03R\x11lastObservationAt\x12$\n\x0elast_action_at\x18\x05 \x01(\x03R\x0clastActionAt\x12\x34\n\x16\x63ircuit_breaker_active\x18\x06 \x01(\x08R\x14\x63ircuitBreakerActive\x12.\n\x13\x62locks_since_revert\x18\x07 \x01(\x03R\x11\x62locksSinceRevert\"\x14\n\x12QueryParamsRequest\"\xb4\x06\n\x13QueryParamsResponse\x12\x18\n\x07\x65nabled\x18\x01 \x01(\x08R\x07\x65nabled\x12\x31\n\x14observation_interval\x18\x02 \x01(\x04R\x13observationInterval\x12\x1d\n\nagent_mode\x18\x03 \x01(\tR\tagentMode\x12\x36\n\x17max_change_conservative\x18\x04 \x01(\tR\x15maxChangeConservative\x12\x32\n\x15max_change_autonomous\x18\x05 \x01(\tR\x13maxChangeAutonomous\x12\x34\n\x16\x63ircuit_breaker_window\x18\x06 \x01(\x04R\x14\x63ircuitBreakerWindow\x12:\n\x19\x63ircuit_breaker_threshold\x18\x07 \x01(\tR\x17\x63ircuitBreakerThreshold\x12\x38\n\x18reward_weight_throughput\x18\x08 \x01(\tR\x16rewardWeightThroughput\x12\x34\n\x16reward_weight_finality\x18\t \x01(\tR\x14rewardWeightFinality\x12\x44\n\x1ereward_weight_decentralization\x18\n \x01(\tR\x1crewardWeightDecentralization\x12?\n\x11reward_weight_mev\x18\x0b \x01(\tB\x13\xe2\xde\x1f\x0fRewardWeightMEVR\x0frewardWeightMev\x12\x37\n\x18reward_weight_failed_txs\x18\x0c \x01(\tR\x15rewardWeightFailedTxs\x12\x31\n\x15\x64\x65\x66\x61ult_block_time_ms\x18\r \x01(\x03R\x12\x64\x65\x66\x61ultBlockTimeMs\x12\x33\n\x16\x64\x65\x66\x61ult_base_gas_price\x18\x0e \x01(\tR\x13\x64\x65\x66\x61ultBaseGasPrice\x12;\n\x1a\x64\x65\x66\x61ult_validator_set_size\x18\x0f \x01(\x04R\x17\x64\x65\x66\x61ultValidatorSetSize2\xa8\x04\n\x05Query\x12t\n\x0b\x41gentStatus\x12\x31.qorechain.rlconsensus.v1.QueryAgentStatusRequest\x1a\x32.qorechain.rlconsensus.v1.QueryAgentStatusResponse\x12\x65\n\x06Params\x12,.qorechain.rlconsensus.v1.QueryParamsRequest\x1a-.qorechain.rlconsensus.v1.QueryParamsResponse\x12t\n\x0bObservation\x12\x31.qorechain.rlconsensus.v1.QueryObservationRequest\x1a\x32.qorechain.rlconsensus.v1.QueryObservationResponse\x12\x65\n\x06Reward\x12,.qorechain.rlconsensus.v1.QueryRewardRequest\x1a-.qorechain.rlconsensus.v1.QueryRewardResponse\x12\x65\n\x06Policy\x12,.qorechain.rlconsensus.v1.QueryPolicyRequest\x1a-.qorechain.rlconsensus.v1.QueryPolicyResponseB\xe5\x01\n\x1c\x63om.qorechain.rlconsensus.v1B\nQueryProtoP\x01Z7github.com/qorechain/qorechain-core/x/rlconsensus/types\xa2\x02\x03QRX\xaa\x02\x18Qorechain.Rlconsensus.V1\xca\x02\x18Qorechain\\Rlconsensus\\V1\xe2\x02$Qorechain\\Rlconsensus\\V1\\GPBMetadata\xea\x02\x1aQorechain::Rlconsensus::V1b\x06proto3')
+DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n$qorechain/rlconsensus/v1/query.proto\x12\x18qorechain.rlconsensus.v1\x1a\x14gogoproto/gogo.proto\x1a\x1cgoogle/api/annotations.proto\"\x19\n\x17QueryObservationRequest\"J\n\x18QueryObservationResponse\x12\x16\n\x06height\x18\x01 \x01(\x03R\x06height\x12\x16\n\x06values\x18\x02 \x03(\tR\x06values\"\x14\n\x12QueryRewardRequest\"\xb5\x02\n\x13QueryRewardResponse\x12\x16\n\x06height\x18\x01 \x01(\x03R\x06height\x12!\n\x0ctotal_reward\x18\x02 \x01(\tR\x0btotalReward\x12)\n\x10throughput_delta\x18\x03 \x01(\tR\x0fthroughputDelta\x12%\n\x0e\x66inality_delta\x18\x04 \x01(\tR\rfinalityDelta\x12\x35\n\x16\x64\x65\x63\x65ntralization_delta\x18\x05 \x01(\tR\x15\x64\x65\x63\x65ntralizationDelta\x12\x32\n\x0cmev_estimate\x18\x06 \x01(\tB\x0f\xe2\xde\x1f\x0bMEVEstimateR\x0bmevEstimate\x12&\n\x0f\x66\x61iled_tx_ratio\x18\x07 \x01(\tR\rfailedTxRatio\"\x14\n\x12QueryPolicyRequest\"m\n\x13QueryPolicyResponse\x12\x14\n\x05\x65poch\x18\x01 \x01(\x04R\x05\x65poch\x12\x1d\n\nupdated_at\x18\x02 \x01(\x03R\tupdatedAt\x12!\n\x0cweight_count\x18\x03 \x01(\x04R\x0bweightCount\"\x19\n\x17QueryAgentStatusRequest\"\xb0\x02\n\x18QueryAgentStatusResponse\x12\x12\n\x04mode\x18\x01 \x01(\tR\x04mode\x12#\n\rcurrent_epoch\x18\x02 \x01(\x04R\x0c\x63urrentEpoch\x12\x1f\n\x0btotal_steps\x18\x03 \x01(\x04R\ntotalSteps\x12.\n\x13last_observation_at\x18\x04 \x01(\x03R\x11lastObservationAt\x12$\n\x0elast_action_at\x18\x05 \x01(\x03R\x0clastActionAt\x12\x34\n\x16\x63ircuit_breaker_active\x18\x06 \x01(\x08R\x14\x63ircuitBreakerActive\x12.\n\x13\x62locks_since_revert\x18\x07 \x01(\x03R\x11\x62locksSinceRevert\"\x14\n\x12QueryParamsRequest\"\xb4\x06\n\x13QueryParamsResponse\x12\x18\n\x07\x65nabled\x18\x01 \x01(\x08R\x07\x65nabled\x12\x31\n\x14observation_interval\x18\x02 \x01(\x04R\x13observationInterval\x12\x1d\n\nagent_mode\x18\x03 \x01(\tR\tagentMode\x12\x36\n\x17max_change_conservative\x18\x04 \x01(\tR\x15maxChangeConservative\x12\x32\n\x15max_change_autonomous\x18\x05 \x01(\tR\x13maxChangeAutonomous\x12\x34\n\x16\x63ircuit_breaker_window\x18\x06 \x01(\x04R\x14\x63ircuitBreakerWindow\x12:\n\x19\x63ircuit_breaker_threshold\x18\x07 \x01(\tR\x17\x63ircuitBreakerThreshold\x12\x38\n\x18reward_weight_throughput\x18\x08 \x01(\tR\x16rewardWeightThroughput\x12\x34\n\x16reward_weight_finality\x18\t \x01(\tR\x14rewardWeightFinality\x12\x44\n\x1ereward_weight_decentralization\x18\n \x01(\tR\x1crewardWeightDecentralization\x12?\n\x11reward_weight_mev\x18\x0b \x01(\tB\x13\xe2\xde\x1f\x0fRewardWeightMEVR\x0frewardWeightMev\x12\x37\n\x18reward_weight_failed_txs\x18\x0c \x01(\tR\x15rewardWeightFailedTxs\x12\x31\n\x15\x64\x65\x66\x61ult_block_time_ms\x18\r \x01(\x03R\x12\x64\x65\x66\x61ultBlockTimeMs\x12\x33\n\x16\x64\x65\x66\x61ult_base_gas_price\x18\x0e \x01(\tR\x13\x64\x65\x66\x61ultBaseGasPrice\x12;\n\x1a\x64\x65\x66\x61ult_validator_set_size\x18\x0f \x01(\x04R\x17\x64\x65\x66\x61ultValidatorSetSize\"\x1b\n\x19QueryAppliedParamsRequest\"\x81\x02\n\x1aQueryAppliedParamsResponse\x12\"\n\rblock_time_ms\x18\x01 \x01(\x03R\x0b\x62lockTimeMs\x12\x1b\n\tgas_limit\x18\x02 \x01(\x03R\x08gasLimit\x12&\n\x0fgas_price_floor\x18\x03 \x01(\tR\rgasPriceFloor\x12<\n\x10pool_weight_rpos\x18\x04 \x01(\tB\x12\xe2\xde\x1f\x0ePoolWeightRPoSR\x0epoolWeightRpos\x12<\n\x10pool_weight_dpos\x18\x05 \x01(\tB\x12\xe2\xde\x1f\x0ePoolWeightDPoSR\x0epoolWeightDpos\"\x18\n\x16QueryLastActionRequest\"w\n\x17QueryLastActionResponse\x12\x16\n\x06height\x18\x01 \x01(\x03R\x06height\x12\x12\n\x04mode\x18\x02 \x01(\tR\x04mode\x12\x16\n\x06values\x18\x03 \x03(\tR\x06values\x12\x18\n\x07\x61pplied\x18\x04 \x01(\x08R\x07\x61pplied2\xd5\x08\n\x05Query\x12\x9d\x01\n\x0b\x41gentStatus\x12\x31.qorechain.rlconsensus.v1.QueryAgentStatusRequest\x1a\x32.qorechain.rlconsensus.v1.QueryAgentStatusResponse\"\'\x82\xd3\xe4\x93\x02!\x12\x1f/qorechain/rlconsensus/v1/agent\x12\x8f\x01\n\x06Params\x12,.qorechain.rlconsensus.v1.QueryParamsRequest\x1a-.qorechain.rlconsensus.v1.QueryParamsResponse\"(\x82\xd3\xe4\x93\x02\"\x12 /qorechain/rlconsensus/v1/params\x12\xa3\x01\n\x0bObservation\x12\x31.qorechain.rlconsensus.v1.QueryObservationRequest\x1a\x32.qorechain.rlconsensus.v1.QueryObservationResponse\"-\x82\xd3\xe4\x93\x02\'\x12%/qorechain/rlconsensus/v1/observation\x12\x8f\x01\n\x06Reward\x12,.qorechain.rlconsensus.v1.QueryRewardRequest\x1a-.qorechain.rlconsensus.v1.QueryRewardResponse\"(\x82\xd3\xe4\x93\x02\"\x12 /qorechain/rlconsensus/v1/reward\x12\x8f\x01\n\x06Policy\x12,.qorechain.rlconsensus.v1.QueryPolicyRequest\x1a-.qorechain.rlconsensus.v1.QueryPolicyResponse\"(\x82\xd3\xe4\x93\x02\"\x12 /qorechain/rlconsensus/v1/policy\x12\xac\x01\n\rAppliedParams\x12\x33.qorechain.rlconsensus.v1.QueryAppliedParamsRequest\x1a\x34.qorechain.rlconsensus.v1.QueryAppliedParamsResponse\"0\x82\xd3\xe4\x93\x02*\x12(/qorechain/rlconsensus/v1/applied_params\x12\xa0\x01\n\nLastAction\x12\x30.qorechain.rlconsensus.v1.QueryLastActionRequest\x1a\x31.qorechain.rlconsensus.v1.QueryLastActionResponse\"-\x82\xd3\xe4\x93\x02\'\x12%/qorechain/rlconsensus/v1/last_actionB\xe5\x01\n\x1c\x63om.qorechain.rlconsensus.v1B\nQueryProtoP\x01Z7github.com/qorechain/qorechain-core/x/rlconsensus/types\xa2\x02\x03QRX\xaa\x02\x18Qorechain.Rlconsensus.V1\xca\x02\x18Qorechain\\Rlconsensus\\V1\xe2\x02$Qorechain\\Rlconsensus\\V1\\GPBMetadata\xea\x02\x1aQorechain::Rlconsensus::V1b\x06proto3')
 
 _globals = globals()
 _builder.BuildMessageAndEnumDescriptors(DESCRIPTOR, _globals)
@@ -37,26 +38,52 @@ if not _descriptor._USE_C_DESCRIPTORS:
   _globals['_QUERYREWARDRESPONSE'].fields_by_name['mev_estimate']._serialized_options = b'\342\336\037\013MEVEstimate'
   _globals['_QUERYPARAMSRESPONSE'].fields_by_name['reward_weight_mev']._loaded_options = None
   _globals['_QUERYPARAMSRESPONSE'].fields_by_name['reward_weight_mev']._serialized_options = b'\342\336\037\017RewardWeightMEV'
-  _globals['_QUERYOBSERVATIONREQUEST']._serialized_start=88
-  _globals['_QUERYOBSERVATIONREQUEST']._serialized_end=113
-  _globals['_QUERYOBSERVATIONRESPONSE']._serialized_start=115
-  _globals['_QUERYOBSERVATIONRESPONSE']._serialized_end=189
-  _globals['_QUERYREWARDREQUEST']._serialized_start=191
-  _globals['_QUERYREWARDREQUEST']._serialized_end=211
-  _globals['_QUERYREWARDRESPONSE']._serialized_start=214
-  _globals['_QUERYREWARDRESPONSE']._serialized_end=523
-  _globals['_QUERYPOLICYREQUEST']._serialized_start=525
-  _globals['_QUERYPOLICYREQUEST']._serialized_end=545
-  _globals['_QUERYPOLICYRESPONSE']._serialized_start=547
-  _globals['_QUERYPOLICYRESPONSE']._serialized_end=656
-  _globals['_QUERYAGENTSTATUSREQUEST']._serialized_start=658
-  _globals['_QUERYAGENTSTATUSREQUEST']._serialized_end=683
-  _globals['_QUERYAGENTSTATUSRESPONSE']._serialized_start=686
-  _globals['_QUERYAGENTSTATUSRESPONSE']._serialized_end=990
-  _globals['_QUERYPARAMSREQUEST']._serialized_start=992
-  _globals['_QUERYPARAMSREQUEST']._serialized_end=1012
-  _globals['_QUERYPARAMSRESPONSE']._serialized_start=1015
-  _globals['_QUERYPARAMSRESPONSE']._serialized_end=1835
-  _globals['_QUERY']._serialized_start=1838
-  _globals['_QUERY']._serialized_end=2390
+  _globals['_QUERYAPPLIEDPARAMSRESPONSE'].fields_by_name['pool_weight_rpos']._loaded_options = None
+  _globals['_QUERYAPPLIEDPARAMSRESPONSE'].fields_by_name['pool_weight_rpos']._serialized_options = b'\342\336\037\016PoolWeightRPoS'
+  _globals['_QUERYAPPLIEDPARAMSRESPONSE'].fields_by_name['pool_weight_dpos']._loaded_options = None
+  _globals['_QUERYAPPLIEDPARAMSRESPONSE'].fields_by_name['pool_weight_dpos']._serialized_options = b'\342\336\037\016PoolWeightDPoS'
+  _globals['_QUERY'].methods_by_name['AgentStatus']._loaded_options = None
+  _globals['_QUERY'].methods_by_name['AgentStatus']._serialized_options = b'\202\323\344\223\002!\022\037/qorechain/rlconsensus/v1/agent'
+  _globals['_QUERY'].methods_by_name['Params']._loaded_options = None
+  _globals['_QUERY'].methods_by_name['Params']._serialized_options = b'\202\323\344\223\002\"\022 /qorechain/rlconsensus/v1/params'
+  _globals['_QUERY'].methods_by_name['Observation']._loaded_options = None
+  _globals['_QUERY'].methods_by_name['Observation']._serialized_options = b'\202\323\344\223\002\'\022%/qorechain/rlconsensus/v1/observation'
+  _globals['_QUERY'].methods_by_name['Reward']._loaded_options = None
+  _globals['_QUERY'].methods_by_name['Reward']._serialized_options = b'\202\323\344\223\002\"\022 /qorechain/rlconsensus/v1/reward'
+  _globals['_QUERY'].methods_by_name['Policy']._loaded_options = None
+  _globals['_QUERY'].methods_by_name['Policy']._serialized_options = b'\202\323\344\223\002\"\022 /qorechain/rlconsensus/v1/policy'
+  _globals['_QUERY'].methods_by_name['AppliedParams']._loaded_options = None
+  _globals['_QUERY'].methods_by_name['AppliedParams']._serialized_options = b'\202\323\344\223\002*\022(/qorechain/rlconsensus/v1/applied_params'
+  _globals['_QUERY'].methods_by_name['LastAction']._loaded_options = None
+  _globals['_QUERY'].methods_by_name['LastAction']._serialized_options = b'\202\323\344\223\002\'\022%/qorechain/rlconsensus/v1/last_action'
+  _globals['_QUERYOBSERVATIONREQUEST']._serialized_start=118
+  _globals['_QUERYOBSERVATIONREQUEST']._serialized_end=143
+  _globals['_QUERYOBSERVATIONRESPONSE']._serialized_start=145
+  _globals['_QUERYOBSERVATIONRESPONSE']._serialized_end=219
+  _globals['_QUERYREWARDREQUEST']._serialized_start=221
+  _globals['_QUERYREWARDREQUEST']._serialized_end=241
+  _globals['_QUERYREWARDRESPONSE']._serialized_start=244
+  _globals['_QUERYREWARDRESPONSE']._serialized_end=553
+  _globals['_QUERYPOLICYREQUEST']._serialized_start=555
+  _globals['_QUERYPOLICYREQUEST']._serialized_end=575
+  _globals['_QUERYPOLICYRESPONSE']._serialized_start=577
+  _globals['_QUERYPOLICYRESPONSE']._serialized_end=686
+  _globals['_QUERYAGENTSTATUSREQUEST']._serialized_start=688
+  _globals['_QUERYAGENTSTATUSREQUEST']._serialized_end=713
+  _globals['_QUERYAGENTSTATUSRESPONSE']._serialized_start=716
+  _globals['_QUERYAGENTSTATUSRESPONSE']._serialized_end=1020
+  _globals['_QUERYPARAMSREQUEST']._serialized_start=1022
+  _globals['_QUERYPARAMSREQUEST']._serialized_end=1042
+  _globals['_QUERYPARAMSRESPONSE']._serialized_start=1045
+  _globals['_QUERYPARAMSRESPONSE']._serialized_end=1865
+  _globals['_QUERYAPPLIEDPARAMSREQUEST']._serialized_start=1867
+  _globals['_QUERYAPPLIEDPARAMSREQUEST']._serialized_end=1894
+  _globals['_QUERYAPPLIEDPARAMSRESPONSE']._serialized_start=1897
+  _globals['_QUERYAPPLIEDPARAMSRESPONSE']._serialized_end=2154
+  _globals['_QUERYLASTACTIONREQUEST']._serialized_start=2156
+  _globals['_QUERYLASTACTIONREQUEST']._serialized_end=2180
+  _globals['_QUERYLASTACTIONRESPONSE']._serialized_start=2182
+  _globals['_QUERYLASTACTIONRESPONSE']._serialized_end=2301
+  _globals['_QUERY']._serialized_start=2304
+  _globals['_QUERY']._serialized_end=3413
 # @@protoc_insertion_point(module_scope)

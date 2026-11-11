@@ -62,6 +62,30 @@ pub struct ProgramInfo {
     #[prost(string, tag="5")]
     pub data_account: ::prost::alloc::string::String,
 }
+#[derive(Clone, Copy, PartialEq, ::prost::Message)]
+pub struct QueryClusterInfoRequest {
+}
+#[derive(Clone, PartialEq, ::prost::Message)]
+pub struct QueryClusterInfoResponse {
+    /// chain_id is the network's chain id the identity is derived from.
+    #[prost(string, tag="1")]
+    pub chain_id: ::prost::alloc::string::String,
+    /// genesis_hash is base58 of SHA-256(domain || chain_id), 32 bytes, as the
+    /// SVM JSON-RPC method getGenesisHash returns it.
+    #[prost(string, tag="2")]
+    pub genesis_hash: ::prost::alloc::string::String,
+    /// caip2_chain_id is "solana:" plus the first 32 characters of genesis_hash,
+    /// the chain string Solana Wallet Standard wallets use.
+    #[prost(string, tag="3")]
+    pub caip2_chain_id: ::prost::alloc::string::String,
+    /// derivation describes how genesis_hash is computed.
+    #[prost(string, tag="4")]
+    pub derivation: ::prost::alloc::string::String,
+    /// execution_enabled reports whether SVM execution is enabled on this
+    /// network. It is false while the SVM lane is disabled.
+    #[prost(bool, tag="5")]
+    pub execution_enabled: bool,
+}
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct MsgDeployProgram {
     #[prost(string, tag="1")]
@@ -170,6 +194,22 @@ pub struct SvmParams {
     pub default_sig_scheme: u32,
     #[prost(uint32, tag="9")]
     pub max_cpi: u32,
+    /// max_custody_uqor caps the uqor balance of the svm module account (the
+    /// custody backing program, PDA and data-account lamports). 0 means no cap.
+    /// Enforced only while the svm-lane-governed protocol feature is on.
+    #[prost(uint64, tag="10")]
+    pub max_custody_uqor: u64,
+    /// max_custody_hard_uqor is the absolute ceiling on the svm module account's
+    /// raw uqor balance (rent reserves, pre-funding and donations included):
+    /// with svm-custody-hard-ceiling any operation that would leave the balance
+    /// above it is refused. 0 means no ceiling; governance must set one before
+    /// opening the lane on any network. It should be well above max_custody_uqor.
+    #[prost(uint64, tag="11")]
+    pub max_custody_hard_uqor: u64,
+    /// max_account_excess_uqor caps, per store account, the uqor above its
+    /// rent-exempt minimum (svm-account-excess-cap); 0 means no cap.
+    #[prost(uint64, tag="12")]
+    pub max_account_excess_uqor: u64,
 }
 /// MsgUpdateParams replaces the SVM runtime parameters wholesale.
 ///

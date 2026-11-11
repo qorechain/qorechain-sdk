@@ -22,9 +22,10 @@ _runtime_version.ValidateProtobufRuntimeVersion(
 _sym_db = _symbol_database.Default()
 
 
+from google.api import annotations_pb2 as google_dot_api_dot_annotations__pb2
 
 
-DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\x1cqorechain/svm/v1/query.proto\x12\x10qorechain.svm.v1\"\x12\n\x10QuerySlotRequest\"\'\n\x11QuerySlotResponse\x12\x12\n\x04slot\x18\x01 \x01(\x04R\x04slot\"/\n\x13QueryAccountRequest\x12\x18\n\x07\x61\x64\x64ress\x18\x01 \x01(\tR\x07\x61\x64\x64ress\"R\n\x14QueryAccountResponse\x12:\n\x07\x61\x63\x63ount\x18\x01 \x01(\x0b\x32 .qorechain.svm.v1.SVMAccountInfoR\x07\x61\x63\x63ount\"/\n\x13QueryProgramRequest\x12\x18\n\x07\x61\x64\x64ress\x18\x01 \x01(\tR\x07\x61\x64\x64ress\"O\n\x14QueryProgramResponse\x12\x37\n\x07program\x18\x01 \x01(\x0b\x32\x1d.qorechain.svm.v1.ProgramInfoR\x07program\"\xca\x01\n\x0eSVMAccountInfo\x12\x18\n\x07\x61\x64\x64ress\x18\x01 \x01(\tR\x07\x61\x64\x64ress\x12\x1a\n\x08lamports\x18\x02 \x01(\x04R\x08lamports\x12\x19\n\x08\x64\x61ta_len\x18\x03 \x01(\x04R\x07\x64\x61taLen\x12\x12\n\x04\x64\x61ta\x18\x04 \x01(\x0cR\x04\x64\x61ta\x12\x14\n\x05owner\x18\x05 \x01(\tR\x05owner\x12\x1e\n\nexecutable\x18\x06 \x01(\x08R\nexecutable\x12\x1d\n\nrent_epoch\x18\x07 \x01(\x04R\trentEpoch\"\xd1\x01\n\x0bProgramInfo\x12\'\n\x0fprogram_address\x18\x01 \x01(\tR\x0eprogramAddress\x12+\n\x11upgrade_authority\x18\x02 \x01(\tR\x10upgradeAuthority\x12\x1f\n\x0b\x64\x65ploy_slot\x18\x03 \x01(\x04R\ndeploySlot\x12(\n\x10last_deploy_slot\x18\x04 \x01(\x04R\x0elastDeploySlot\x12!\n\x0c\x64\x61ta_account\x18\x05 \x01(\tR\x0b\x64\x61taAccount2\x8c\x02\n\x05Query\x12O\n\x04Slot\x12\".qorechain.svm.v1.QuerySlotRequest\x1a#.qorechain.svm.v1.QuerySlotResponse\x12X\n\x07\x41\x63\x63ount\x12%.qorechain.svm.v1.QueryAccountRequest\x1a&.qorechain.svm.v1.QueryAccountResponse\x12X\n\x07Program\x12%.qorechain.svm.v1.QueryProgramRequest\x1a&.qorechain.svm.v1.QueryProgramResponseB\xb5\x01\n\x14\x63om.qorechain.svm.v1B\nQueryProtoP\x01Z/github.com/qorechain/qorechain-core/x/svm/types\xa2\x02\x03QSX\xaa\x02\x10Qorechain.Svm.V1\xca\x02\x10Qorechain\\Svm\\V1\xe2\x02\x1cQorechain\\Svm\\V1\\GPBMetadata\xea\x02\x12Qorechain::Svm::V1b\x06proto3')
+DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\x1cqorechain/svm/v1/query.proto\x12\x10qorechain.svm.v1\x1a\x1cgoogle/api/annotations.proto\"\x12\n\x10QuerySlotRequest\"\'\n\x11QuerySlotResponse\x12\x12\n\x04slot\x18\x01 \x01(\x04R\x04slot\"/\n\x13QueryAccountRequest\x12\x18\n\x07\x61\x64\x64ress\x18\x01 \x01(\tR\x07\x61\x64\x64ress\"R\n\x14QueryAccountResponse\x12:\n\x07\x61\x63\x63ount\x18\x01 \x01(\x0b\x32 .qorechain.svm.v1.SVMAccountInfoR\x07\x61\x63\x63ount\"/\n\x13QueryProgramRequest\x12\x18\n\x07\x61\x64\x64ress\x18\x01 \x01(\tR\x07\x61\x64\x64ress\"O\n\x14QueryProgramResponse\x12\x37\n\x07program\x18\x01 \x01(\x0b\x32\x1d.qorechain.svm.v1.ProgramInfoR\x07program\"\xca\x01\n\x0eSVMAccountInfo\x12\x18\n\x07\x61\x64\x64ress\x18\x01 \x01(\tR\x07\x61\x64\x64ress\x12\x1a\n\x08lamports\x18\x02 \x01(\x04R\x08lamports\x12\x19\n\x08\x64\x61ta_len\x18\x03 \x01(\x04R\x07\x64\x61taLen\x12\x12\n\x04\x64\x61ta\x18\x04 \x01(\x0cR\x04\x64\x61ta\x12\x14\n\x05owner\x18\x05 \x01(\tR\x05owner\x12\x1e\n\nexecutable\x18\x06 \x01(\x08R\nexecutable\x12\x1d\n\nrent_epoch\x18\x07 \x01(\x04R\trentEpoch\"\xd1\x01\n\x0bProgramInfo\x12\'\n\x0fprogram_address\x18\x01 \x01(\tR\x0eprogramAddress\x12+\n\x11upgrade_authority\x18\x02 \x01(\tR\x10upgradeAuthority\x12\x1f\n\x0b\x64\x65ploy_slot\x18\x03 \x01(\x04R\ndeploySlot\x12(\n\x10last_deploy_slot\x18\x04 \x01(\x04R\x0elastDeploySlot\x12!\n\x0c\x64\x61ta_account\x18\x05 \x01(\tR\x0b\x64\x61taAccount\"\x19\n\x17QueryClusterInfoRequest\"\xcb\x01\n\x18QueryClusterInfoResponse\x12\x19\n\x08\x63hain_id\x18\x01 \x01(\tR\x07\x63hainId\x12!\n\x0cgenesis_hash\x18\x02 \x01(\tR\x0bgenesisHash\x12$\n\x0e\x63\x61ip2_chain_id\x18\x03 \x01(\tR\x0c\x63\x61ip2ChainId\x12\x1e\n\nderivation\x18\x04 \x01(\tR\nderivation\x12+\n\x11\x65xecution_enabled\x18\x05 \x01(\x08R\x10\x65xecutionEnabled2\x9b\x03\n\x05Query\x12O\n\x04Slot\x12\".qorechain.svm.v1.QuerySlotRequest\x1a#.qorechain.svm.v1.QuerySlotResponse\x12X\n\x07\x41\x63\x63ount\x12%.qorechain.svm.v1.QueryAccountRequest\x1a&.qorechain.svm.v1.QueryAccountResponse\x12X\n\x07Program\x12%.qorechain.svm.v1.QueryProgramRequest\x1a&.qorechain.svm.v1.QueryProgramResponse\x12\x8c\x01\n\x0b\x43lusterInfo\x12).qorechain.svm.v1.QueryClusterInfoRequest\x1a*.qorechain.svm.v1.QueryClusterInfoResponse\"&\x82\xd3\xe4\x93\x02 \x12\x1e/qorechain/svm/v1/cluster_infoB\xb5\x01\n\x14\x63om.qorechain.svm.v1B\nQueryProtoP\x01Z/github.com/qorechain/qorechain-core/x/svm/types\xa2\x02\x03QSX\xaa\x02\x10Qorechain.Svm.V1\xca\x02\x10Qorechain\\Svm\\V1\xe2\x02\x1cQorechain\\Svm\\V1\\GPBMetadata\xea\x02\x12Qorechain::Svm::V1b\x06proto3')
 
 _globals = globals()
 _builder.BuildMessageAndEnumDescriptors(DESCRIPTOR, _globals)
@@ -32,22 +33,28 @@ _builder.BuildTopDescriptorsAndMessages(DESCRIPTOR, 'qorechain.svm.v1.query_pb2'
 if not _descriptor._USE_C_DESCRIPTORS:
   _globals['DESCRIPTOR']._loaded_options = None
   _globals['DESCRIPTOR']._serialized_options = b'\n\024com.qorechain.svm.v1B\nQueryProtoP\001Z/github.com/qorechain/qorechain-core/x/svm/types\242\002\003QSX\252\002\020Qorechain.Svm.V1\312\002\020Qorechain\\Svm\\V1\342\002\034Qorechain\\Svm\\V1\\GPBMetadata\352\002\022Qorechain::Svm::V1'
-  _globals['_QUERYSLOTREQUEST']._serialized_start=50
-  _globals['_QUERYSLOTREQUEST']._serialized_end=68
-  _globals['_QUERYSLOTRESPONSE']._serialized_start=70
-  _globals['_QUERYSLOTRESPONSE']._serialized_end=109
-  _globals['_QUERYACCOUNTREQUEST']._serialized_start=111
-  _globals['_QUERYACCOUNTREQUEST']._serialized_end=158
-  _globals['_QUERYACCOUNTRESPONSE']._serialized_start=160
-  _globals['_QUERYACCOUNTRESPONSE']._serialized_end=242
-  _globals['_QUERYPROGRAMREQUEST']._serialized_start=244
-  _globals['_QUERYPROGRAMREQUEST']._serialized_end=291
-  _globals['_QUERYPROGRAMRESPONSE']._serialized_start=293
-  _globals['_QUERYPROGRAMRESPONSE']._serialized_end=372
-  _globals['_SVMACCOUNTINFO']._serialized_start=375
-  _globals['_SVMACCOUNTINFO']._serialized_end=577
-  _globals['_PROGRAMINFO']._serialized_start=580
-  _globals['_PROGRAMINFO']._serialized_end=789
-  _globals['_QUERY']._serialized_start=792
-  _globals['_QUERY']._serialized_end=1060
+  _globals['_QUERY'].methods_by_name['ClusterInfo']._loaded_options = None
+  _globals['_QUERY'].methods_by_name['ClusterInfo']._serialized_options = b'\202\323\344\223\002 \022\036/qorechain/svm/v1/cluster_info'
+  _globals['_QUERYSLOTREQUEST']._serialized_start=80
+  _globals['_QUERYSLOTREQUEST']._serialized_end=98
+  _globals['_QUERYSLOTRESPONSE']._serialized_start=100
+  _globals['_QUERYSLOTRESPONSE']._serialized_end=139
+  _globals['_QUERYACCOUNTREQUEST']._serialized_start=141
+  _globals['_QUERYACCOUNTREQUEST']._serialized_end=188
+  _globals['_QUERYACCOUNTRESPONSE']._serialized_start=190
+  _globals['_QUERYACCOUNTRESPONSE']._serialized_end=272
+  _globals['_QUERYPROGRAMREQUEST']._serialized_start=274
+  _globals['_QUERYPROGRAMREQUEST']._serialized_end=321
+  _globals['_QUERYPROGRAMRESPONSE']._serialized_start=323
+  _globals['_QUERYPROGRAMRESPONSE']._serialized_end=402
+  _globals['_SVMACCOUNTINFO']._serialized_start=405
+  _globals['_SVMACCOUNTINFO']._serialized_end=607
+  _globals['_PROGRAMINFO']._serialized_start=610
+  _globals['_PROGRAMINFO']._serialized_end=819
+  _globals['_QUERYCLUSTERINFOREQUEST']._serialized_start=821
+  _globals['_QUERYCLUSTERINFOREQUEST']._serialized_end=846
+  _globals['_QUERYCLUSTERINFORESPONSE']._serialized_start=849
+  _globals['_QUERYCLUSTERINFORESPONSE']._serialized_end=1052
+  _globals['_QUERY']._serialized_start=1055
+  _globals['_QUERY']._serialized_end=1466
 # @@protoc_insertion_point(module_scope)

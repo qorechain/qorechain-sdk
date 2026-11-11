@@ -133,6 +133,38 @@ public final class Tx extends com.google.protobuf.GeneratedFile {
      * @return The async.
      */
     boolean getAsync();
+
+    /**
+     * <pre>
+     * async_gas_limit is, for an async call into CosmWasm, the contract
+     * execution it may use, in base gas units (what it would cost with no
+     * congestion). Zero means 500,000; a set value is 250,000 to
+     * 10,000,000, and at most what the queue can run in a block. The call
+     * prepays it times the wasm congestion factor at submission, and runs on
+     * exactly that much execution. Set from the crossvm-async-gas-priced switch; refused for
+     * synchronous calls and for other lanes.
+     * </pre>
+     *
+     * <code>uint64 async_gas_limit = 8 [json_name = "asyncGasLimit"];</code>
+     * @return The asyncGasLimit.
+     */
+    long getAsyncGasLimit();
+
+    /**
+     * <pre>
+     * async_max_factor is, for an async call into CosmWasm, the highest wasm
+     * congestion factor (in millionths, 1,000,000 = 1x) the sender is willing
+     * to pay: the call is held in escrow at async_gas_limit times this factor
+     * and runs while the factor in force is at or below it. Zero means four
+     * times the factor at submission; any value is capped at the chain's
+     * maximum factor, and a value below the factor in force is refused. What the call did not use is refunded when it finishes. Set from
+     * the crossvm-async-escrow switch.
+     * </pre>
+     *
+     * <code>uint64 async_max_factor = 9 [json_name = "asyncMaxFactor"];</code>
+     * @return The asyncMaxFactor.
+     */
+    long getAsyncMaxFactor();
   }
   /**
    * Protobuf type {@code qorechain.crossvm.v1.MsgCrossVMCall}
@@ -421,6 +453,48 @@ public final class Tx extends com.google.protobuf.GeneratedFile {
       return async_;
     }
 
+    public static final int ASYNC_GAS_LIMIT_FIELD_NUMBER = 8;
+    private long asyncGasLimit_ = 0L;
+    /**
+     * <pre>
+     * async_gas_limit is, for an async call into CosmWasm, the contract
+     * execution it may use, in base gas units (what it would cost with no
+     * congestion). Zero means 500,000; a set value is 250,000 to
+     * 10,000,000, and at most what the queue can run in a block. The call
+     * prepays it times the wasm congestion factor at submission, and runs on
+     * exactly that much execution. Set from the crossvm-async-gas-priced switch; refused for
+     * synchronous calls and for other lanes.
+     * </pre>
+     *
+     * <code>uint64 async_gas_limit = 8 [json_name = "asyncGasLimit"];</code>
+     * @return The asyncGasLimit.
+     */
+    @java.lang.Override
+    public long getAsyncGasLimit() {
+      return asyncGasLimit_;
+    }
+
+    public static final int ASYNC_MAX_FACTOR_FIELD_NUMBER = 9;
+    private long asyncMaxFactor_ = 0L;
+    /**
+     * <pre>
+     * async_max_factor is, for an async call into CosmWasm, the highest wasm
+     * congestion factor (in millionths, 1,000,000 = 1x) the sender is willing
+     * to pay: the call is held in escrow at async_gas_limit times this factor
+     * and runs while the factor in force is at or below it. Zero means four
+     * times the factor at submission; any value is capped at the chain's
+     * maximum factor, and a value below the factor in force is refused. What the call did not use is refunded when it finishes. Set from
+     * the crossvm-async-escrow switch.
+     * </pre>
+     *
+     * <code>uint64 async_max_factor = 9 [json_name = "asyncMaxFactor"];</code>
+     * @return The asyncMaxFactor.
+     */
+    @java.lang.Override
+    public long getAsyncMaxFactor() {
+      return asyncMaxFactor_;
+    }
+
     private byte memoizedIsInitialized = -1;
     @java.lang.Override
     public final boolean isInitialized() {
@@ -456,6 +530,12 @@ public final class Tx extends com.google.protobuf.GeneratedFile {
       if (async_ != false) {
         output.writeBool(7, async_);
       }
+      if (asyncGasLimit_ != 0L) {
+        output.writeUInt64(8, asyncGasLimit_);
+      }
+      if (asyncMaxFactor_ != 0L) {
+        output.writeUInt64(9, asyncMaxFactor_);
+      }
       getUnknownFields().writeTo(output);
     }
     private int computeSerializedSize_0() {
@@ -488,6 +568,14 @@ public final class Tx extends com.google.protobuf.GeneratedFile {
       if (async_ != false) {
         size += com.google.protobuf.CodedOutputStream
           .computeBoolSize(7, async_);
+      }
+      if (asyncGasLimit_ != 0L) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeUInt64Size(8, asyncGasLimit_);
+      }
+      if (asyncMaxFactor_ != 0L) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeUInt64Size(9, asyncMaxFactor_);
       }
       return size;
     }
@@ -527,6 +615,10 @@ public final class Tx extends com.google.protobuf.GeneratedFile {
           .equals(other.getFundsList())) return false;
       if (getAsync()
           != other.getAsync()) return false;
+      if (getAsyncGasLimit()
+          != other.getAsyncGasLimit()) return false;
+      if (getAsyncMaxFactor()
+          != other.getAsyncMaxFactor()) return false;
       if (!getUnknownFields().equals(other.getUnknownFields())) return false;
       return true;
     }
@@ -555,6 +647,12 @@ public final class Tx extends com.google.protobuf.GeneratedFile {
       hash = (37 * hash) + ASYNC_FIELD_NUMBER;
       hash = (53 * hash) + com.google.protobuf.Internal.hashBoolean(
           getAsync());
+      hash = (37 * hash) + ASYNC_GAS_LIMIT_FIELD_NUMBER;
+      hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
+          getAsyncGasLimit());
+      hash = (37 * hash) + ASYNC_MAX_FACTOR_FIELD_NUMBER;
+      hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
+          getAsyncMaxFactor());
       hash = (29 * hash) + getUnknownFields().hashCode();
       memoizedHashCode = hash;
       return hash;
@@ -699,6 +797,8 @@ public final class Tx extends com.google.protobuf.GeneratedFile {
         }
         bitField0_ = (bitField0_ & ~0x00000020);
         async_ = false;
+        asyncGasLimit_ = 0L;
+        asyncMaxFactor_ = 0L;
         return this;
       }
 
@@ -762,6 +862,12 @@ public final class Tx extends com.google.protobuf.GeneratedFile {
         }
         if (((from_bitField0_ & 0x00000040) != 0)) {
           result.async_ = async_;
+        }
+        if (((from_bitField0_ & 0x00000080) != 0)) {
+          result.asyncGasLimit_ = asyncGasLimit_;
+        }
+        if (((from_bitField0_ & 0x00000100) != 0)) {
+          result.asyncMaxFactor_ = asyncMaxFactor_;
         }
       }
 
@@ -828,6 +934,12 @@ public final class Tx extends com.google.protobuf.GeneratedFile {
         }
         if (other.getAsync() != false) {
           setAsync(other.getAsync());
+        }
+        if (other.getAsyncGasLimit() != 0L) {
+          setAsyncGasLimit(other.getAsyncGasLimit());
+        }
+        if (other.getAsyncMaxFactor() != 0L) {
+          setAsyncMaxFactor(other.getAsyncMaxFactor());
         }
         this.mergeUnknownFields(other.getUnknownFields());
         onChanged();
@@ -898,6 +1010,16 @@ public final class Tx extends com.google.protobuf.GeneratedFile {
                 bitField0_ |= 0x00000040;
                 break;
               } // case 56
+              case 64: {
+                asyncGasLimit_ = input.readUInt64();
+                bitField0_ |= 0x00000080;
+                break;
+              } // case 64
+              case 72: {
+                asyncMaxFactor_ = input.readUInt64();
+                bitField0_ |= 0x00000100;
+                break;
+              } // case 72
               default: {
                 if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                   done = true; // was an endgroup tag
@@ -1556,6 +1678,130 @@ public final class Tx extends com.google.protobuf.GeneratedFile {
       public Builder clearAsync() {
         bitField0_ = (bitField0_ & ~0x00000040);
         async_ = false;
+        onChanged();
+        return this;
+      }
+
+      private long asyncGasLimit_ ;
+      /**
+       * <pre>
+       * async_gas_limit is, for an async call into CosmWasm, the contract
+       * execution it may use, in base gas units (what it would cost with no
+       * congestion). Zero means 500,000; a set value is 250,000 to
+       * 10,000,000, and at most what the queue can run in a block. The call
+       * prepays it times the wasm congestion factor at submission, and runs on
+       * exactly that much execution. Set from the crossvm-async-gas-priced switch; refused for
+       * synchronous calls and for other lanes.
+       * </pre>
+       *
+       * <code>uint64 async_gas_limit = 8 [json_name = "asyncGasLimit"];</code>
+       * @return The asyncGasLimit.
+       */
+      @java.lang.Override
+      public long getAsyncGasLimit() {
+        return asyncGasLimit_;
+      }
+      /**
+       * <pre>
+       * async_gas_limit is, for an async call into CosmWasm, the contract
+       * execution it may use, in base gas units (what it would cost with no
+       * congestion). Zero means 500,000; a set value is 250,000 to
+       * 10,000,000, and at most what the queue can run in a block. The call
+       * prepays it times the wasm congestion factor at submission, and runs on
+       * exactly that much execution. Set from the crossvm-async-gas-priced switch; refused for
+       * synchronous calls and for other lanes.
+       * </pre>
+       *
+       * <code>uint64 async_gas_limit = 8 [json_name = "asyncGasLimit"];</code>
+       * @param value The asyncGasLimit to set.
+       * @return This builder for chaining.
+       */
+      public Builder setAsyncGasLimit(long value) {
+
+        asyncGasLimit_ = value;
+        bitField0_ |= 0x00000080;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * async_gas_limit is, for an async call into CosmWasm, the contract
+       * execution it may use, in base gas units (what it would cost with no
+       * congestion). Zero means 500,000; a set value is 250,000 to
+       * 10,000,000, and at most what the queue can run in a block. The call
+       * prepays it times the wasm congestion factor at submission, and runs on
+       * exactly that much execution. Set from the crossvm-async-gas-priced switch; refused for
+       * synchronous calls and for other lanes.
+       * </pre>
+       *
+       * <code>uint64 async_gas_limit = 8 [json_name = "asyncGasLimit"];</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearAsyncGasLimit() {
+        bitField0_ = (bitField0_ & ~0x00000080);
+        asyncGasLimit_ = 0L;
+        onChanged();
+        return this;
+      }
+
+      private long asyncMaxFactor_ ;
+      /**
+       * <pre>
+       * async_max_factor is, for an async call into CosmWasm, the highest wasm
+       * congestion factor (in millionths, 1,000,000 = 1x) the sender is willing
+       * to pay: the call is held in escrow at async_gas_limit times this factor
+       * and runs while the factor in force is at or below it. Zero means four
+       * times the factor at submission; any value is capped at the chain's
+       * maximum factor, and a value below the factor in force is refused. What the call did not use is refunded when it finishes. Set from
+       * the crossvm-async-escrow switch.
+       * </pre>
+       *
+       * <code>uint64 async_max_factor = 9 [json_name = "asyncMaxFactor"];</code>
+       * @return The asyncMaxFactor.
+       */
+      @java.lang.Override
+      public long getAsyncMaxFactor() {
+        return asyncMaxFactor_;
+      }
+      /**
+       * <pre>
+       * async_max_factor is, for an async call into CosmWasm, the highest wasm
+       * congestion factor (in millionths, 1,000,000 = 1x) the sender is willing
+       * to pay: the call is held in escrow at async_gas_limit times this factor
+       * and runs while the factor in force is at or below it. Zero means four
+       * times the factor at submission; any value is capped at the chain's
+       * maximum factor, and a value below the factor in force is refused. What the call did not use is refunded when it finishes. Set from
+       * the crossvm-async-escrow switch.
+       * </pre>
+       *
+       * <code>uint64 async_max_factor = 9 [json_name = "asyncMaxFactor"];</code>
+       * @param value The asyncMaxFactor to set.
+       * @return This builder for chaining.
+       */
+      public Builder setAsyncMaxFactor(long value) {
+
+        asyncMaxFactor_ = value;
+        bitField0_ |= 0x00000100;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * async_max_factor is, for an async call into CosmWasm, the highest wasm
+       * congestion factor (in millionths, 1,000,000 = 1x) the sender is willing
+       * to pay: the call is held in escrow at async_gas_limit times this factor
+       * and runs while the factor in force is at or below it. Zero means four
+       * times the factor at submission; any value is capped at the chain's
+       * maximum factor, and a value below the factor in force is refused. What the call did not use is refunded when it finishes. Set from
+       * the crossvm-async-escrow switch.
+       * </pre>
+       *
+       * <code>uint64 async_max_factor = 9 [json_name = "asyncMaxFactor"];</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearAsyncMaxFactor() {
+        bitField0_ = (bitField0_ & ~0x00000100);
+        asyncMaxFactor_ = 0L;
         onChanged();
         return this;
       }
@@ -3368,6 +3614,216 @@ public final class Tx extends com.google.protobuf.GeneratedFile {
      */
     com.google.protobuf.ByteString
         getBridgeAllowedTargetsBytes(int index);
+
+    /**
+     * <pre>
+     * bridge_target_pins binds allowlist entries to code: the bridge calls a
+     * pinned entry only while its contract runs the pinned code ID. An entry
+     * whose contract has an admin other than governance must be pinned. Set
+     * from the crossvm-bridge-code-pin switch; below it the update is refused
+     * when this is not empty.
+     * </pre>
+     *
+     * <code>repeated .qorechain.crossvm.v1.BridgeTargetPin bridge_target_pins = 7 [json_name = "bridgeTargetPins", (.gogoproto.nullable) = false];</code>
+     */
+    java.util.List<qorechain.crossvm.v1.Tx.BridgeTargetPin> 
+        getBridgeTargetPinsList();
+    /**
+     * <pre>
+     * bridge_target_pins binds allowlist entries to code: the bridge calls a
+     * pinned entry only while its contract runs the pinned code ID. An entry
+     * whose contract has an admin other than governance must be pinned. Set
+     * from the crossvm-bridge-code-pin switch; below it the update is refused
+     * when this is not empty.
+     * </pre>
+     *
+     * <code>repeated .qorechain.crossvm.v1.BridgeTargetPin bridge_target_pins = 7 [json_name = "bridgeTargetPins", (.gogoproto.nullable) = false];</code>
+     */
+    qorechain.crossvm.v1.Tx.BridgeTargetPin getBridgeTargetPins(int index);
+    /**
+     * <pre>
+     * bridge_target_pins binds allowlist entries to code: the bridge calls a
+     * pinned entry only while its contract runs the pinned code ID. An entry
+     * whose contract has an admin other than governance must be pinned. Set
+     * from the crossvm-bridge-code-pin switch; below it the update is refused
+     * when this is not empty.
+     * </pre>
+     *
+     * <code>repeated .qorechain.crossvm.v1.BridgeTargetPin bridge_target_pins = 7 [json_name = "bridgeTargetPins", (.gogoproto.nullable) = false];</code>
+     */
+    int getBridgeTargetPinsCount();
+    /**
+     * <pre>
+     * bridge_target_pins binds allowlist entries to code: the bridge calls a
+     * pinned entry only while its contract runs the pinned code ID. An entry
+     * whose contract has an admin other than governance must be pinned. Set
+     * from the crossvm-bridge-code-pin switch; below it the update is refused
+     * when this is not empty.
+     * </pre>
+     *
+     * <code>repeated .qorechain.crossvm.v1.BridgeTargetPin bridge_target_pins = 7 [json_name = "bridgeTargetPins", (.gogoproto.nullable) = false];</code>
+     */
+    java.util.List<? extends qorechain.crossvm.v1.Tx.BridgeTargetPinOrBuilder> 
+        getBridgeTargetPinsOrBuilderList();
+    /**
+     * <pre>
+     * bridge_target_pins binds allowlist entries to code: the bridge calls a
+     * pinned entry only while its contract runs the pinned code ID. An entry
+     * whose contract has an admin other than governance must be pinned. Set
+     * from the crossvm-bridge-code-pin switch; below it the update is refused
+     * when this is not empty.
+     * </pre>
+     *
+     * <code>repeated .qorechain.crossvm.v1.BridgeTargetPin bridge_target_pins = 7 [json_name = "bridgeTargetPins", (.gogoproto.nullable) = false];</code>
+     */
+    qorechain.crossvm.v1.Tx.BridgeTargetPinOrBuilder getBridgeTargetPinsOrBuilder(
+        int index);
+
+    /**
+     * <pre>
+     * max_pending_per_sender bounds how many async calls one sender may have
+     * queued at a time. Zero means the default. Set from the
+     * crossvm-queue-sender-cap switch; below it the update is refused when this
+     * is not zero.
+     * </pre>
+     *
+     * <code>uint32 max_pending_per_sender = 8 [json_name = "maxPendingPerSender"];</code>
+     * @return The maxPendingPerSender.
+     */
+    int getMaxPendingPerSender();
+
+    /**
+     * <pre>
+     * max_cosmos_tx_gas bounds the gas limit one Cosmos-lane transaction may
+     * declare. Zero means the default (50,000,000); a set value is at least
+     * 10,000,000 and at most 1,000,000,000. Set from the cosmos-tx-gas-cap
+     * switch; below it the update is
+     * refused when this is not zero.
+     * </pre>
+     *
+     * <code>uint64 max_cosmos_tx_gas = 9 [json_name = "maxCosmosTxGas"];</code>
+     * @return The maxCosmosTxGas.
+     */
+    long getMaxCosmosTxGas();
+
+    /**
+     * <pre>
+     * record_retention_blocks is how many blocks the record of a finished
+     * queued call is kept before it is pruned. Zero means the default
+     * (100,000). Set from the crossvm-record-prune switch; below it the update
+     * is refused when this is not zero.
+     * </pre>
+     *
+     * <code>uint64 record_retention_blocks = 10 [json_name = "recordRetentionBlocks"];</code>
+     * @return The recordRetentionBlocks.
+     */
+    long getRecordRetentionBlocks();
+
+    /**
+     * <pre>
+     * max_block_wasm_gas bounds the CosmWasm execution (VM gas, counted in SDK
+     * gas units) all transactions of one block may use together. Zero means
+     * the default (3,000,000); a set value is 1,000,000 to 50,000,000. Set from the
+     * wasm-block-gas-budget switch; below it the update is refused when this is
+     * not zero.
+     * </pre>
+     *
+     * <code>uint64 max_block_wasm_gas = 11 [json_name = "maxBlockWasmGas"];</code>
+     * @return The maxBlockWasmGas.
+     */
+    long getMaxBlockWasmGas();
+
+    /**
+     * <pre>
+     * max_tx_wasm_share_bps is the share of the block wasm budget, in basis
+     * points, one transaction may use. Zero means the default (5,000, half);
+     * a set value is 1 to 10,000. Set from the wasm-block-gas-budget switch.
+     * </pre>
+     *
+     * <code>uint32 max_tx_wasm_share_bps = 12 [json_name = "maxTxWasmShareBps"];</code>
+     * @return The maxTxWasmShareBps.
+     */
+    int getMaxTxWasmShareBps();
+
+    /**
+     * <pre>
+     * max_block_level_wasm_gas bounds the CosmWasm execution of one contract
+     * call made outside a transaction (a governance proposal executed at the
+     * end of the block). Zero means the default (10,000,000); a set value is
+     * 1,000,000 to 100,000,000. Set from the wasm-block-gas-budget switch.
+     * </pre>
+     *
+     * <code>uint64 max_block_level_wasm_gas = 13 [json_name = "maxBlockLevelWasmGas"];</code>
+     * @return The maxBlockLevelWasmGas.
+     */
+    long getMaxBlockLevelWasmGas();
+
+    /**
+     * <pre>
+     * queue_wasm_reserve_bps is the share of the block wasm budget, in basis
+     * points, reserved for the end-of-block async queue (transactions cannot
+     * use it). Zero means the default (2,500); a set value is 1 to 9,000. Set
+     * from the wasm-block-gas-budget switch.
+     * </pre>
+     *
+     * <code>uint32 queue_wasm_reserve_bps = 14 [json_name = "queueWasmReserveBps"];</code>
+     * @return The queueWasmReserveBps.
+     */
+    int getQueueWasmReserveBps();
+
+    /**
+     * <pre>
+     * wasm_congestion_max_factor bounds the CosmWasm congestion factor (how
+     * many times the base price one unit of contract execution costs). Zero
+     * means the default (1,000); a set value is 1 to 10,000. Set from the
+     * wasm-congestion-pricing switch.
+     * </pre>
+     *
+     * <code>uint32 wasm_congestion_max_factor = 15 [json_name = "wasmCongestionMaxFactor"];</code>
+     * @return The wasmCongestionMaxFactor.
+     */
+    int getWasmCongestionMaxFactor();
+
+    /**
+     * <pre>
+     * wasm_congestion_target_bps is the block wasm budget use, in basis
+     * points, above which the factor rises by 1/8 for the next block and below
+     * which it falls by 1/9. Zero means the default (5,000); a set value is 1 to
+     * 10,000. Set from the wasm-congestion-pricing switch.
+     * </pre>
+     *
+     * <code>uint32 wasm_congestion_target_bps = 16 [json_name = "wasmCongestionTargetBps"];</code>
+     * @return The wasmCongestionTargetBps.
+     */
+    int getWasmCongestionTargetBps();
+
+    /**
+     * <pre>
+     * max_block_upload_bps is the code-upload pool of a block, in basis
+     * points of the transactions' wasm pool: compiling uploads draws from it,
+     * not from the execution pool, and does not count towards congestion. Zero
+     * means the default (5,000, enough for the largest release contract); a set
+     * value is 1 to 10,000. Set from the wasm-block-gas-budget switch.
+     * </pre>
+     *
+     * <code>uint32 max_block_upload_bps = 17 [json_name = "maxBlockUploadBps"];</code>
+     * @return The maxBlockUploadBps.
+     */
+    int getMaxBlockUploadBps();
+
+    /**
+     * <pre>
+     * max_queue_timeouts_per_block bounds how many queued calls one block
+     * times out, oldest first; the rest time out in the following blocks.
+     * Zero means the default (100); a set value is at most 1,000. Set from the
+     * crossvm-queue-height-index switch; below it the update is refused when
+     * this is not zero.
+     * </pre>
+     *
+     * <code>uint32 max_queue_timeouts_per_block = 18 [json_name = "maxQueueTimeoutsPerBlock"];</code>
+     * @return The maxQueueTimeoutsPerBlock.
+     */
+    int getMaxQueueTimeoutsPerBlock();
   }
   /**
    * <pre>
@@ -3401,6 +3857,7 @@ public final class Tx extends com.google.protobuf.GeneratedFile {
       authority_ = "";
       bridgeAllowedTargets_ =
           com.google.protobuf.LazyStringArrayList.emptyList();
+      bridgeTargetPins_ = java.util.Collections.emptyList();
     }
 
     public static final com.google.protobuf.Descriptors.Descriptor
@@ -3573,6 +4030,288 @@ public final class Tx extends com.google.protobuf.GeneratedFile {
       return bridgeAllowedTargets_.getByteString(index);
     }
 
+    public static final int BRIDGE_TARGET_PINS_FIELD_NUMBER = 7;
+    @SuppressWarnings("serial")
+    private java.util.List<qorechain.crossvm.v1.Tx.BridgeTargetPin> bridgeTargetPins_;
+    /**
+     * <pre>
+     * bridge_target_pins binds allowlist entries to code: the bridge calls a
+     * pinned entry only while its contract runs the pinned code ID. An entry
+     * whose contract has an admin other than governance must be pinned. Set
+     * from the crossvm-bridge-code-pin switch; below it the update is refused
+     * when this is not empty.
+     * </pre>
+     *
+     * <code>repeated .qorechain.crossvm.v1.BridgeTargetPin bridge_target_pins = 7 [json_name = "bridgeTargetPins", (.gogoproto.nullable) = false];</code>
+     */
+    @java.lang.Override
+    public java.util.List<qorechain.crossvm.v1.Tx.BridgeTargetPin> getBridgeTargetPinsList() {
+      return bridgeTargetPins_;
+    }
+    /**
+     * <pre>
+     * bridge_target_pins binds allowlist entries to code: the bridge calls a
+     * pinned entry only while its contract runs the pinned code ID. An entry
+     * whose contract has an admin other than governance must be pinned. Set
+     * from the crossvm-bridge-code-pin switch; below it the update is refused
+     * when this is not empty.
+     * </pre>
+     *
+     * <code>repeated .qorechain.crossvm.v1.BridgeTargetPin bridge_target_pins = 7 [json_name = "bridgeTargetPins", (.gogoproto.nullable) = false];</code>
+     */
+    @java.lang.Override
+    public java.util.List<? extends qorechain.crossvm.v1.Tx.BridgeTargetPinOrBuilder> 
+        getBridgeTargetPinsOrBuilderList() {
+      return bridgeTargetPins_;
+    }
+    /**
+     * <pre>
+     * bridge_target_pins binds allowlist entries to code: the bridge calls a
+     * pinned entry only while its contract runs the pinned code ID. An entry
+     * whose contract has an admin other than governance must be pinned. Set
+     * from the crossvm-bridge-code-pin switch; below it the update is refused
+     * when this is not empty.
+     * </pre>
+     *
+     * <code>repeated .qorechain.crossvm.v1.BridgeTargetPin bridge_target_pins = 7 [json_name = "bridgeTargetPins", (.gogoproto.nullable) = false];</code>
+     */
+    @java.lang.Override
+    public int getBridgeTargetPinsCount() {
+      return bridgeTargetPins_.size();
+    }
+    /**
+     * <pre>
+     * bridge_target_pins binds allowlist entries to code: the bridge calls a
+     * pinned entry only while its contract runs the pinned code ID. An entry
+     * whose contract has an admin other than governance must be pinned. Set
+     * from the crossvm-bridge-code-pin switch; below it the update is refused
+     * when this is not empty.
+     * </pre>
+     *
+     * <code>repeated .qorechain.crossvm.v1.BridgeTargetPin bridge_target_pins = 7 [json_name = "bridgeTargetPins", (.gogoproto.nullable) = false];</code>
+     */
+    @java.lang.Override
+    public qorechain.crossvm.v1.Tx.BridgeTargetPin getBridgeTargetPins(int index) {
+      return bridgeTargetPins_.get(index);
+    }
+    /**
+     * <pre>
+     * bridge_target_pins binds allowlist entries to code: the bridge calls a
+     * pinned entry only while its contract runs the pinned code ID. An entry
+     * whose contract has an admin other than governance must be pinned. Set
+     * from the crossvm-bridge-code-pin switch; below it the update is refused
+     * when this is not empty.
+     * </pre>
+     *
+     * <code>repeated .qorechain.crossvm.v1.BridgeTargetPin bridge_target_pins = 7 [json_name = "bridgeTargetPins", (.gogoproto.nullable) = false];</code>
+     */
+    @java.lang.Override
+    public qorechain.crossvm.v1.Tx.BridgeTargetPinOrBuilder getBridgeTargetPinsOrBuilder(
+        int index) {
+      return bridgeTargetPins_.get(index);
+    }
+
+    public static final int MAX_PENDING_PER_SENDER_FIELD_NUMBER = 8;
+    private int maxPendingPerSender_ = 0;
+    /**
+     * <pre>
+     * max_pending_per_sender bounds how many async calls one sender may have
+     * queued at a time. Zero means the default. Set from the
+     * crossvm-queue-sender-cap switch; below it the update is refused when this
+     * is not zero.
+     * </pre>
+     *
+     * <code>uint32 max_pending_per_sender = 8 [json_name = "maxPendingPerSender"];</code>
+     * @return The maxPendingPerSender.
+     */
+    @java.lang.Override
+    public int getMaxPendingPerSender() {
+      return maxPendingPerSender_;
+    }
+
+    public static final int MAX_COSMOS_TX_GAS_FIELD_NUMBER = 9;
+    private long maxCosmosTxGas_ = 0L;
+    /**
+     * <pre>
+     * max_cosmos_tx_gas bounds the gas limit one Cosmos-lane transaction may
+     * declare. Zero means the default (50,000,000); a set value is at least
+     * 10,000,000 and at most 1,000,000,000. Set from the cosmos-tx-gas-cap
+     * switch; below it the update is
+     * refused when this is not zero.
+     * </pre>
+     *
+     * <code>uint64 max_cosmos_tx_gas = 9 [json_name = "maxCosmosTxGas"];</code>
+     * @return The maxCosmosTxGas.
+     */
+    @java.lang.Override
+    public long getMaxCosmosTxGas() {
+      return maxCosmosTxGas_;
+    }
+
+    public static final int RECORD_RETENTION_BLOCKS_FIELD_NUMBER = 10;
+    private long recordRetentionBlocks_ = 0L;
+    /**
+     * <pre>
+     * record_retention_blocks is how many blocks the record of a finished
+     * queued call is kept before it is pruned. Zero means the default
+     * (100,000). Set from the crossvm-record-prune switch; below it the update
+     * is refused when this is not zero.
+     * </pre>
+     *
+     * <code>uint64 record_retention_blocks = 10 [json_name = "recordRetentionBlocks"];</code>
+     * @return The recordRetentionBlocks.
+     */
+    @java.lang.Override
+    public long getRecordRetentionBlocks() {
+      return recordRetentionBlocks_;
+    }
+
+    public static final int MAX_BLOCK_WASM_GAS_FIELD_NUMBER = 11;
+    private long maxBlockWasmGas_ = 0L;
+    /**
+     * <pre>
+     * max_block_wasm_gas bounds the CosmWasm execution (VM gas, counted in SDK
+     * gas units) all transactions of one block may use together. Zero means
+     * the default (3,000,000); a set value is 1,000,000 to 50,000,000. Set from the
+     * wasm-block-gas-budget switch; below it the update is refused when this is
+     * not zero.
+     * </pre>
+     *
+     * <code>uint64 max_block_wasm_gas = 11 [json_name = "maxBlockWasmGas"];</code>
+     * @return The maxBlockWasmGas.
+     */
+    @java.lang.Override
+    public long getMaxBlockWasmGas() {
+      return maxBlockWasmGas_;
+    }
+
+    public static final int MAX_TX_WASM_SHARE_BPS_FIELD_NUMBER = 12;
+    private int maxTxWasmShareBps_ = 0;
+    /**
+     * <pre>
+     * max_tx_wasm_share_bps is the share of the block wasm budget, in basis
+     * points, one transaction may use. Zero means the default (5,000, half);
+     * a set value is 1 to 10,000. Set from the wasm-block-gas-budget switch.
+     * </pre>
+     *
+     * <code>uint32 max_tx_wasm_share_bps = 12 [json_name = "maxTxWasmShareBps"];</code>
+     * @return The maxTxWasmShareBps.
+     */
+    @java.lang.Override
+    public int getMaxTxWasmShareBps() {
+      return maxTxWasmShareBps_;
+    }
+
+    public static final int MAX_BLOCK_LEVEL_WASM_GAS_FIELD_NUMBER = 13;
+    private long maxBlockLevelWasmGas_ = 0L;
+    /**
+     * <pre>
+     * max_block_level_wasm_gas bounds the CosmWasm execution of one contract
+     * call made outside a transaction (a governance proposal executed at the
+     * end of the block). Zero means the default (10,000,000); a set value is
+     * 1,000,000 to 100,000,000. Set from the wasm-block-gas-budget switch.
+     * </pre>
+     *
+     * <code>uint64 max_block_level_wasm_gas = 13 [json_name = "maxBlockLevelWasmGas"];</code>
+     * @return The maxBlockLevelWasmGas.
+     */
+    @java.lang.Override
+    public long getMaxBlockLevelWasmGas() {
+      return maxBlockLevelWasmGas_;
+    }
+
+    public static final int QUEUE_WASM_RESERVE_BPS_FIELD_NUMBER = 14;
+    private int queueWasmReserveBps_ = 0;
+    /**
+     * <pre>
+     * queue_wasm_reserve_bps is the share of the block wasm budget, in basis
+     * points, reserved for the end-of-block async queue (transactions cannot
+     * use it). Zero means the default (2,500); a set value is 1 to 9,000. Set
+     * from the wasm-block-gas-budget switch.
+     * </pre>
+     *
+     * <code>uint32 queue_wasm_reserve_bps = 14 [json_name = "queueWasmReserveBps"];</code>
+     * @return The queueWasmReserveBps.
+     */
+    @java.lang.Override
+    public int getQueueWasmReserveBps() {
+      return queueWasmReserveBps_;
+    }
+
+    public static final int WASM_CONGESTION_MAX_FACTOR_FIELD_NUMBER = 15;
+    private int wasmCongestionMaxFactor_ = 0;
+    /**
+     * <pre>
+     * wasm_congestion_max_factor bounds the CosmWasm congestion factor (how
+     * many times the base price one unit of contract execution costs). Zero
+     * means the default (1,000); a set value is 1 to 10,000. Set from the
+     * wasm-congestion-pricing switch.
+     * </pre>
+     *
+     * <code>uint32 wasm_congestion_max_factor = 15 [json_name = "wasmCongestionMaxFactor"];</code>
+     * @return The wasmCongestionMaxFactor.
+     */
+    @java.lang.Override
+    public int getWasmCongestionMaxFactor() {
+      return wasmCongestionMaxFactor_;
+    }
+
+    public static final int WASM_CONGESTION_TARGET_BPS_FIELD_NUMBER = 16;
+    private int wasmCongestionTargetBps_ = 0;
+    /**
+     * <pre>
+     * wasm_congestion_target_bps is the block wasm budget use, in basis
+     * points, above which the factor rises by 1/8 for the next block and below
+     * which it falls by 1/9. Zero means the default (5,000); a set value is 1 to
+     * 10,000. Set from the wasm-congestion-pricing switch.
+     * </pre>
+     *
+     * <code>uint32 wasm_congestion_target_bps = 16 [json_name = "wasmCongestionTargetBps"];</code>
+     * @return The wasmCongestionTargetBps.
+     */
+    @java.lang.Override
+    public int getWasmCongestionTargetBps() {
+      return wasmCongestionTargetBps_;
+    }
+
+    public static final int MAX_BLOCK_UPLOAD_BPS_FIELD_NUMBER = 17;
+    private int maxBlockUploadBps_ = 0;
+    /**
+     * <pre>
+     * max_block_upload_bps is the code-upload pool of a block, in basis
+     * points of the transactions' wasm pool: compiling uploads draws from it,
+     * not from the execution pool, and does not count towards congestion. Zero
+     * means the default (5,000, enough for the largest release contract); a set
+     * value is 1 to 10,000. Set from the wasm-block-gas-budget switch.
+     * </pre>
+     *
+     * <code>uint32 max_block_upload_bps = 17 [json_name = "maxBlockUploadBps"];</code>
+     * @return The maxBlockUploadBps.
+     */
+    @java.lang.Override
+    public int getMaxBlockUploadBps() {
+      return maxBlockUploadBps_;
+    }
+
+    public static final int MAX_QUEUE_TIMEOUTS_PER_BLOCK_FIELD_NUMBER = 18;
+    private int maxQueueTimeoutsPerBlock_ = 0;
+    /**
+     * <pre>
+     * max_queue_timeouts_per_block bounds how many queued calls one block
+     * times out, oldest first; the rest time out in the following blocks.
+     * Zero means the default (100); a set value is at most 1,000. Set from the
+     * crossvm-queue-height-index switch; below it the update is refused when
+     * this is not zero.
+     * </pre>
+     *
+     * <code>uint32 max_queue_timeouts_per_block = 18 [json_name = "maxQueueTimeoutsPerBlock"];</code>
+     * @return The maxQueueTimeoutsPerBlock.
+     */
+    @java.lang.Override
+    public int getMaxQueueTimeoutsPerBlock() {
+      return maxQueueTimeoutsPerBlock_;
+    }
+
     private byte memoizedIsInitialized = -1;
     @java.lang.Override
     public final boolean isInitialized() {
@@ -3605,6 +4344,42 @@ public final class Tx extends com.google.protobuf.GeneratedFile {
       for (int i = 0; i < bridgeAllowedTargets_.size(); i++) {
         com.google.protobuf.GeneratedMessage.writeString(output, 6, bridgeAllowedTargets_.getRaw(i));
       }
+      for (int i = 0; i < bridgeTargetPins_.size(); i++) {
+        output.writeMessage(7, bridgeTargetPins_.get(i));
+      }
+      if (maxPendingPerSender_ != 0) {
+        output.writeUInt32(8, maxPendingPerSender_);
+      }
+      if (maxCosmosTxGas_ != 0L) {
+        output.writeUInt64(9, maxCosmosTxGas_);
+      }
+      if (recordRetentionBlocks_ != 0L) {
+        output.writeUInt64(10, recordRetentionBlocks_);
+      }
+      if (maxBlockWasmGas_ != 0L) {
+        output.writeUInt64(11, maxBlockWasmGas_);
+      }
+      if (maxTxWasmShareBps_ != 0) {
+        output.writeUInt32(12, maxTxWasmShareBps_);
+      }
+      if (maxBlockLevelWasmGas_ != 0L) {
+        output.writeUInt64(13, maxBlockLevelWasmGas_);
+      }
+      if (queueWasmReserveBps_ != 0) {
+        output.writeUInt32(14, queueWasmReserveBps_);
+      }
+      if (wasmCongestionMaxFactor_ != 0) {
+        output.writeUInt32(15, wasmCongestionMaxFactor_);
+      }
+      if (wasmCongestionTargetBps_ != 0) {
+        output.writeUInt32(16, wasmCongestionTargetBps_);
+      }
+      if (maxBlockUploadBps_ != 0) {
+        output.writeUInt32(17, maxBlockUploadBps_);
+      }
+      if (maxQueueTimeoutsPerBlock_ != 0) {
+        output.writeUInt32(18, maxQueueTimeoutsPerBlock_);
+      }
       getUnknownFields().writeTo(output);
     }
     private int computeSerializedSize_0() {
@@ -3635,6 +4410,59 @@ public final class Tx extends com.google.protobuf.GeneratedFile {
         }
         size += dataSize;
         size += 1 * getBridgeAllowedTargetsList().size();
+      }
+
+          {
+            final int count = bridgeTargetPins_.size();
+            for (int i = 0; i < count; i++) {
+              size += com.google.protobuf.CodedOutputStream
+                .computeMessageSizeNoTag(bridgeTargetPins_.get(i));
+            }
+            size += 1 * count;
+          }
+      if (maxPendingPerSender_ != 0) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeUInt32Size(8, maxPendingPerSender_);
+      }
+      if (maxCosmosTxGas_ != 0L) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeUInt64Size(9, maxCosmosTxGas_);
+      }
+      if (recordRetentionBlocks_ != 0L) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeUInt64Size(10, recordRetentionBlocks_);
+      }
+      if (maxBlockWasmGas_ != 0L) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeUInt64Size(11, maxBlockWasmGas_);
+      }
+      if (maxTxWasmShareBps_ != 0) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeUInt32Size(12, maxTxWasmShareBps_);
+      }
+      if (maxBlockLevelWasmGas_ != 0L) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeUInt64Size(13, maxBlockLevelWasmGas_);
+      }
+      if (queueWasmReserveBps_ != 0) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeUInt32Size(14, queueWasmReserveBps_);
+      }
+      if (wasmCongestionMaxFactor_ != 0) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeUInt32Size(15, wasmCongestionMaxFactor_);
+      }
+      if (wasmCongestionTargetBps_ != 0) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeUInt32Size(16, wasmCongestionTargetBps_);
+      }
+      if (maxBlockUploadBps_ != 0) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeUInt32Size(17, maxBlockUploadBps_);
+      }
+      if (maxQueueTimeoutsPerBlock_ != 0) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeUInt32Size(18, maxQueueTimeoutsPerBlock_);
       }
       return size;
     }
@@ -3672,6 +4500,30 @@ public final class Tx extends com.google.protobuf.GeneratedFile {
           != other.getEnabled()) return false;
       if (!getBridgeAllowedTargetsList()
           .equals(other.getBridgeAllowedTargetsList())) return false;
+      if (!getBridgeTargetPinsList()
+          .equals(other.getBridgeTargetPinsList())) return false;
+      if (getMaxPendingPerSender()
+          != other.getMaxPendingPerSender()) return false;
+      if (getMaxCosmosTxGas()
+          != other.getMaxCosmosTxGas()) return false;
+      if (getRecordRetentionBlocks()
+          != other.getRecordRetentionBlocks()) return false;
+      if (getMaxBlockWasmGas()
+          != other.getMaxBlockWasmGas()) return false;
+      if (getMaxTxWasmShareBps()
+          != other.getMaxTxWasmShareBps()) return false;
+      if (getMaxBlockLevelWasmGas()
+          != other.getMaxBlockLevelWasmGas()) return false;
+      if (getQueueWasmReserveBps()
+          != other.getQueueWasmReserveBps()) return false;
+      if (getWasmCongestionMaxFactor()
+          != other.getWasmCongestionMaxFactor()) return false;
+      if (getWasmCongestionTargetBps()
+          != other.getWasmCongestionTargetBps()) return false;
+      if (getMaxBlockUploadBps()
+          != other.getMaxBlockUploadBps()) return false;
+      if (getMaxQueueTimeoutsPerBlock()
+          != other.getMaxQueueTimeoutsPerBlock()) return false;
       if (!getUnknownFields().equals(other.getUnknownFields())) return false;
       return true;
     }
@@ -3700,6 +4552,36 @@ public final class Tx extends com.google.protobuf.GeneratedFile {
         hash = (37 * hash) + BRIDGE_ALLOWED_TARGETS_FIELD_NUMBER;
         hash = (53 * hash) + getBridgeAllowedTargetsList().hashCode();
       }
+      if (getBridgeTargetPinsCount() > 0) {
+        hash = (37 * hash) + BRIDGE_TARGET_PINS_FIELD_NUMBER;
+        hash = (53 * hash) + getBridgeTargetPinsList().hashCode();
+      }
+      hash = (37 * hash) + MAX_PENDING_PER_SENDER_FIELD_NUMBER;
+      hash = (53 * hash) + getMaxPendingPerSender();
+      hash = (37 * hash) + MAX_COSMOS_TX_GAS_FIELD_NUMBER;
+      hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
+          getMaxCosmosTxGas());
+      hash = (37 * hash) + RECORD_RETENTION_BLOCKS_FIELD_NUMBER;
+      hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
+          getRecordRetentionBlocks());
+      hash = (37 * hash) + MAX_BLOCK_WASM_GAS_FIELD_NUMBER;
+      hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
+          getMaxBlockWasmGas());
+      hash = (37 * hash) + MAX_TX_WASM_SHARE_BPS_FIELD_NUMBER;
+      hash = (53 * hash) + getMaxTxWasmShareBps();
+      hash = (37 * hash) + MAX_BLOCK_LEVEL_WASM_GAS_FIELD_NUMBER;
+      hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
+          getMaxBlockLevelWasmGas());
+      hash = (37 * hash) + QUEUE_WASM_RESERVE_BPS_FIELD_NUMBER;
+      hash = (53 * hash) + getQueueWasmReserveBps();
+      hash = (37 * hash) + WASM_CONGESTION_MAX_FACTOR_FIELD_NUMBER;
+      hash = (53 * hash) + getWasmCongestionMaxFactor();
+      hash = (37 * hash) + WASM_CONGESTION_TARGET_BPS_FIELD_NUMBER;
+      hash = (53 * hash) + getWasmCongestionTargetBps();
+      hash = (37 * hash) + MAX_BLOCK_UPLOAD_BPS_FIELD_NUMBER;
+      hash = (53 * hash) + getMaxBlockUploadBps();
+      hash = (37 * hash) + MAX_QUEUE_TIMEOUTS_PER_BLOCK_FIELD_NUMBER;
+      hash = (53 * hash) + getMaxQueueTimeoutsPerBlock();
       hash = (29 * hash) + getUnknownFields().hashCode();
       memoizedHashCode = hash;
       return hash;
@@ -3845,6 +4727,24 @@ public final class Tx extends com.google.protobuf.GeneratedFile {
         enabled_ = false;
         bridgeAllowedTargets_ =
             com.google.protobuf.LazyStringArrayList.emptyList();
+        if (bridgeTargetPinsBuilder_ == null) {
+          bridgeTargetPins_ = java.util.Collections.emptyList();
+        } else {
+          bridgeTargetPins_ = null;
+          bridgeTargetPinsBuilder_.clear();
+        }
+        bitField0_ = (bitField0_ & ~0x00000040);
+        maxPendingPerSender_ = 0;
+        maxCosmosTxGas_ = 0L;
+        recordRetentionBlocks_ = 0L;
+        maxBlockWasmGas_ = 0L;
+        maxTxWasmShareBps_ = 0;
+        maxBlockLevelWasmGas_ = 0L;
+        queueWasmReserveBps_ = 0;
+        wasmCongestionMaxFactor_ = 0;
+        wasmCongestionTargetBps_ = 0;
+        maxBlockUploadBps_ = 0;
+        maxQueueTimeoutsPerBlock_ = 0;
         return this;
       }
 
@@ -3871,9 +4771,22 @@ public final class Tx extends com.google.protobuf.GeneratedFile {
       @java.lang.Override
       public qorechain.crossvm.v1.Tx.MsgUpdateParams buildPartial() {
         qorechain.crossvm.v1.Tx.MsgUpdateParams result = new qorechain.crossvm.v1.Tx.MsgUpdateParams(this);
+        buildPartialRepeatedFields(result);
         if (bitField0_ != 0) { buildPartial0(result); }
         onBuilt();
         return result;
+      }
+
+      private void buildPartialRepeatedFields(qorechain.crossvm.v1.Tx.MsgUpdateParams result) {
+        if (bridgeTargetPinsBuilder_ == null) {
+          if (((bitField0_ & 0x00000040) != 0)) {
+            bridgeTargetPins_ = java.util.Collections.unmodifiableList(bridgeTargetPins_);
+            bitField0_ = (bitField0_ & ~0x00000040);
+          }
+          result.bridgeTargetPins_ = bridgeTargetPins_;
+        } else {
+          result.bridgeTargetPins_ = bridgeTargetPinsBuilder_.build();
+        }
       }
 
       private void buildPartial0(qorechain.crossvm.v1.Tx.MsgUpdateParams result) {
@@ -3896,6 +4809,39 @@ public final class Tx extends com.google.protobuf.GeneratedFile {
         if (((from_bitField0_ & 0x00000020) != 0)) {
           bridgeAllowedTargets_.makeImmutable();
           result.bridgeAllowedTargets_ = bridgeAllowedTargets_;
+        }
+        if (((from_bitField0_ & 0x00000080) != 0)) {
+          result.maxPendingPerSender_ = maxPendingPerSender_;
+        }
+        if (((from_bitField0_ & 0x00000100) != 0)) {
+          result.maxCosmosTxGas_ = maxCosmosTxGas_;
+        }
+        if (((from_bitField0_ & 0x00000200) != 0)) {
+          result.recordRetentionBlocks_ = recordRetentionBlocks_;
+        }
+        if (((from_bitField0_ & 0x00000400) != 0)) {
+          result.maxBlockWasmGas_ = maxBlockWasmGas_;
+        }
+        if (((from_bitField0_ & 0x00000800) != 0)) {
+          result.maxTxWasmShareBps_ = maxTxWasmShareBps_;
+        }
+        if (((from_bitField0_ & 0x00001000) != 0)) {
+          result.maxBlockLevelWasmGas_ = maxBlockLevelWasmGas_;
+        }
+        if (((from_bitField0_ & 0x00002000) != 0)) {
+          result.queueWasmReserveBps_ = queueWasmReserveBps_;
+        }
+        if (((from_bitField0_ & 0x00004000) != 0)) {
+          result.wasmCongestionMaxFactor_ = wasmCongestionMaxFactor_;
+        }
+        if (((from_bitField0_ & 0x00008000) != 0)) {
+          result.wasmCongestionTargetBps_ = wasmCongestionTargetBps_;
+        }
+        if (((from_bitField0_ & 0x00010000) != 0)) {
+          result.maxBlockUploadBps_ = maxBlockUploadBps_;
+        }
+        if (((from_bitField0_ & 0x00020000) != 0)) {
+          result.maxQueueTimeoutsPerBlock_ = maxQueueTimeoutsPerBlock_;
         }
       }
 
@@ -3937,6 +4883,65 @@ public final class Tx extends com.google.protobuf.GeneratedFile {
             bridgeAllowedTargets_.addAll(other.bridgeAllowedTargets_);
           }
           onChanged();
+        }
+        if (bridgeTargetPinsBuilder_ == null) {
+          if (!other.bridgeTargetPins_.isEmpty()) {
+            if (bridgeTargetPins_.isEmpty()) {
+              bridgeTargetPins_ = other.bridgeTargetPins_;
+              bitField0_ = (bitField0_ & ~0x00000040);
+            } else {
+              ensureBridgeTargetPinsIsMutable();
+              bridgeTargetPins_.addAll(other.bridgeTargetPins_);
+            }
+            onChanged();
+          }
+        } else {
+          if (!other.bridgeTargetPins_.isEmpty()) {
+            if (bridgeTargetPinsBuilder_.isEmpty()) {
+              bridgeTargetPinsBuilder_.dispose();
+              bridgeTargetPinsBuilder_ = null;
+              bridgeTargetPins_ = other.bridgeTargetPins_;
+              bitField0_ = (bitField0_ & ~0x00000040);
+              bridgeTargetPinsBuilder_ = 
+                com.google.protobuf.GeneratedMessage.alwaysUseFieldBuilders ?
+                   internalGetBridgeTargetPinsFieldBuilder() : null;
+            } else {
+              bridgeTargetPinsBuilder_.addAllMessages(other.bridgeTargetPins_);
+            }
+          }
+        }
+        if (other.getMaxPendingPerSender() != 0) {
+          setMaxPendingPerSender(other.getMaxPendingPerSender());
+        }
+        if (other.getMaxCosmosTxGas() != 0L) {
+          setMaxCosmosTxGas(other.getMaxCosmosTxGas());
+        }
+        if (other.getRecordRetentionBlocks() != 0L) {
+          setRecordRetentionBlocks(other.getRecordRetentionBlocks());
+        }
+        if (other.getMaxBlockWasmGas() != 0L) {
+          setMaxBlockWasmGas(other.getMaxBlockWasmGas());
+        }
+        if (other.getMaxTxWasmShareBps() != 0) {
+          setMaxTxWasmShareBps(other.getMaxTxWasmShareBps());
+        }
+        if (other.getMaxBlockLevelWasmGas() != 0L) {
+          setMaxBlockLevelWasmGas(other.getMaxBlockLevelWasmGas());
+        }
+        if (other.getQueueWasmReserveBps() != 0) {
+          setQueueWasmReserveBps(other.getQueueWasmReserveBps());
+        }
+        if (other.getWasmCongestionMaxFactor() != 0) {
+          setWasmCongestionMaxFactor(other.getWasmCongestionMaxFactor());
+        }
+        if (other.getWasmCongestionTargetBps() != 0) {
+          setWasmCongestionTargetBps(other.getWasmCongestionTargetBps());
+        }
+        if (other.getMaxBlockUploadBps() != 0) {
+          setMaxBlockUploadBps(other.getMaxBlockUploadBps());
+        }
+        if (other.getMaxQueueTimeoutsPerBlock() != 0) {
+          setMaxQueueTimeoutsPerBlock(other.getMaxQueueTimeoutsPerBlock());
         }
         this.mergeUnknownFields(other.getUnknownFields());
         onChanged();
@@ -3994,6 +4999,74 @@ public final class Tx extends com.google.protobuf.GeneratedFile {
                 bridgeAllowedTargets_.add(input.readStringRequireUtf8());
                 break;
               } // case 50
+              case 58: {
+                qorechain.crossvm.v1.Tx.BridgeTargetPin m =
+                    input.readMessage(
+                        qorechain.crossvm.v1.Tx.BridgeTargetPin.parser(),
+                        extensionRegistry);
+                if (bridgeTargetPinsBuilder_ == null) {
+                  ensureBridgeTargetPinsIsMutable();
+                  bridgeTargetPins_.add(m);
+                } else {
+                  bridgeTargetPinsBuilder_.addMessage(m);
+                }
+                break;
+              } // case 58
+              case 64: {
+                maxPendingPerSender_ = input.readUInt32();
+                bitField0_ |= 0x00000080;
+                break;
+              } // case 64
+              case 72: {
+                maxCosmosTxGas_ = input.readUInt64();
+                bitField0_ |= 0x00000100;
+                break;
+              } // case 72
+              case 80: {
+                recordRetentionBlocks_ = input.readUInt64();
+                bitField0_ |= 0x00000200;
+                break;
+              } // case 80
+              case 88: {
+                maxBlockWasmGas_ = input.readUInt64();
+                bitField0_ |= 0x00000400;
+                break;
+              } // case 88
+              case 96: {
+                maxTxWasmShareBps_ = input.readUInt32();
+                bitField0_ |= 0x00000800;
+                break;
+              } // case 96
+              case 104: {
+                maxBlockLevelWasmGas_ = input.readUInt64();
+                bitField0_ |= 0x00001000;
+                break;
+              } // case 104
+              case 112: {
+                queueWasmReserveBps_ = input.readUInt32();
+                bitField0_ |= 0x00002000;
+                break;
+              } // case 112
+              case 120: {
+                wasmCongestionMaxFactor_ = input.readUInt32();
+                bitField0_ |= 0x00004000;
+                break;
+              } // case 120
+              case 128: {
+                wasmCongestionTargetBps_ = input.readUInt32();
+                bitField0_ |= 0x00008000;
+                break;
+              } // case 128
+              case 136: {
+                maxBlockUploadBps_ = input.readUInt32();
+                bitField0_ |= 0x00010000;
+                break;
+              } // case 136
+              case 144: {
+                maxQueueTimeoutsPerBlock_ = input.readUInt32();
+                bitField0_ |= 0x00020000;
+                break;
+              } // case 144
               default: {
                 if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                   done = true; // was an endgroup tag
@@ -4392,6 +5465,982 @@ public final class Tx extends com.google.protobuf.GeneratedFile {
         ensureBridgeAllowedTargetsIsMutable();
         bridgeAllowedTargets_.add(value);
         bitField0_ |= 0x00000020;
+        onChanged();
+        return this;
+      }
+
+      private java.util.List<qorechain.crossvm.v1.Tx.BridgeTargetPin> bridgeTargetPins_ =
+        java.util.Collections.emptyList();
+      private void ensureBridgeTargetPinsIsMutable() {
+        if (!((bitField0_ & 0x00000040) != 0)) {
+          bridgeTargetPins_ = new java.util.ArrayList<qorechain.crossvm.v1.Tx.BridgeTargetPin>(bridgeTargetPins_);
+          bitField0_ |= 0x00000040;
+         }
+      }
+
+      private com.google.protobuf.RepeatedFieldBuilder<
+          qorechain.crossvm.v1.Tx.BridgeTargetPin, qorechain.crossvm.v1.Tx.BridgeTargetPin.Builder, qorechain.crossvm.v1.Tx.BridgeTargetPinOrBuilder> bridgeTargetPinsBuilder_;
+
+      /**
+       * <pre>
+       * bridge_target_pins binds allowlist entries to code: the bridge calls a
+       * pinned entry only while its contract runs the pinned code ID. An entry
+       * whose contract has an admin other than governance must be pinned. Set
+       * from the crossvm-bridge-code-pin switch; below it the update is refused
+       * when this is not empty.
+       * </pre>
+       *
+       * <code>repeated .qorechain.crossvm.v1.BridgeTargetPin bridge_target_pins = 7 [json_name = "bridgeTargetPins", (.gogoproto.nullable) = false];</code>
+       */
+      public java.util.List<qorechain.crossvm.v1.Tx.BridgeTargetPin> getBridgeTargetPinsList() {
+        if (bridgeTargetPinsBuilder_ == null) {
+          return java.util.Collections.unmodifiableList(bridgeTargetPins_);
+        } else {
+          return bridgeTargetPinsBuilder_.getMessageList();
+        }
+      }
+      /**
+       * <pre>
+       * bridge_target_pins binds allowlist entries to code: the bridge calls a
+       * pinned entry only while its contract runs the pinned code ID. An entry
+       * whose contract has an admin other than governance must be pinned. Set
+       * from the crossvm-bridge-code-pin switch; below it the update is refused
+       * when this is not empty.
+       * </pre>
+       *
+       * <code>repeated .qorechain.crossvm.v1.BridgeTargetPin bridge_target_pins = 7 [json_name = "bridgeTargetPins", (.gogoproto.nullable) = false];</code>
+       */
+      public int getBridgeTargetPinsCount() {
+        if (bridgeTargetPinsBuilder_ == null) {
+          return bridgeTargetPins_.size();
+        } else {
+          return bridgeTargetPinsBuilder_.getCount();
+        }
+      }
+      /**
+       * <pre>
+       * bridge_target_pins binds allowlist entries to code: the bridge calls a
+       * pinned entry only while its contract runs the pinned code ID. An entry
+       * whose contract has an admin other than governance must be pinned. Set
+       * from the crossvm-bridge-code-pin switch; below it the update is refused
+       * when this is not empty.
+       * </pre>
+       *
+       * <code>repeated .qorechain.crossvm.v1.BridgeTargetPin bridge_target_pins = 7 [json_name = "bridgeTargetPins", (.gogoproto.nullable) = false];</code>
+       */
+      public qorechain.crossvm.v1.Tx.BridgeTargetPin getBridgeTargetPins(int index) {
+        if (bridgeTargetPinsBuilder_ == null) {
+          return bridgeTargetPins_.get(index);
+        } else {
+          return bridgeTargetPinsBuilder_.getMessage(index);
+        }
+      }
+      /**
+       * <pre>
+       * bridge_target_pins binds allowlist entries to code: the bridge calls a
+       * pinned entry only while its contract runs the pinned code ID. An entry
+       * whose contract has an admin other than governance must be pinned. Set
+       * from the crossvm-bridge-code-pin switch; below it the update is refused
+       * when this is not empty.
+       * </pre>
+       *
+       * <code>repeated .qorechain.crossvm.v1.BridgeTargetPin bridge_target_pins = 7 [json_name = "bridgeTargetPins", (.gogoproto.nullable) = false];</code>
+       */
+      public Builder setBridgeTargetPins(
+          int index, qorechain.crossvm.v1.Tx.BridgeTargetPin value) {
+        if (bridgeTargetPinsBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          ensureBridgeTargetPinsIsMutable();
+          bridgeTargetPins_.set(index, value);
+          onChanged();
+        } else {
+          bridgeTargetPinsBuilder_.setMessage(index, value);
+        }
+        return this;
+      }
+      /**
+       * <pre>
+       * bridge_target_pins binds allowlist entries to code: the bridge calls a
+       * pinned entry only while its contract runs the pinned code ID. An entry
+       * whose contract has an admin other than governance must be pinned. Set
+       * from the crossvm-bridge-code-pin switch; below it the update is refused
+       * when this is not empty.
+       * </pre>
+       *
+       * <code>repeated .qorechain.crossvm.v1.BridgeTargetPin bridge_target_pins = 7 [json_name = "bridgeTargetPins", (.gogoproto.nullable) = false];</code>
+       */
+      public Builder setBridgeTargetPins(
+          int index, qorechain.crossvm.v1.Tx.BridgeTargetPin.Builder builderForValue) {
+        if (bridgeTargetPinsBuilder_ == null) {
+          ensureBridgeTargetPinsIsMutable();
+          bridgeTargetPins_.set(index, builderForValue.build());
+          onChanged();
+        } else {
+          bridgeTargetPinsBuilder_.setMessage(index, builderForValue.build());
+        }
+        return this;
+      }
+      /**
+       * <pre>
+       * bridge_target_pins binds allowlist entries to code: the bridge calls a
+       * pinned entry only while its contract runs the pinned code ID. An entry
+       * whose contract has an admin other than governance must be pinned. Set
+       * from the crossvm-bridge-code-pin switch; below it the update is refused
+       * when this is not empty.
+       * </pre>
+       *
+       * <code>repeated .qorechain.crossvm.v1.BridgeTargetPin bridge_target_pins = 7 [json_name = "bridgeTargetPins", (.gogoproto.nullable) = false];</code>
+       */
+      public Builder addBridgeTargetPins(qorechain.crossvm.v1.Tx.BridgeTargetPin value) {
+        if (bridgeTargetPinsBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          ensureBridgeTargetPinsIsMutable();
+          bridgeTargetPins_.add(value);
+          onChanged();
+        } else {
+          bridgeTargetPinsBuilder_.addMessage(value);
+        }
+        return this;
+      }
+      /**
+       * <pre>
+       * bridge_target_pins binds allowlist entries to code: the bridge calls a
+       * pinned entry only while its contract runs the pinned code ID. An entry
+       * whose contract has an admin other than governance must be pinned. Set
+       * from the crossvm-bridge-code-pin switch; below it the update is refused
+       * when this is not empty.
+       * </pre>
+       *
+       * <code>repeated .qorechain.crossvm.v1.BridgeTargetPin bridge_target_pins = 7 [json_name = "bridgeTargetPins", (.gogoproto.nullable) = false];</code>
+       */
+      public Builder addBridgeTargetPins(
+          int index, qorechain.crossvm.v1.Tx.BridgeTargetPin value) {
+        if (bridgeTargetPinsBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          ensureBridgeTargetPinsIsMutable();
+          bridgeTargetPins_.add(index, value);
+          onChanged();
+        } else {
+          bridgeTargetPinsBuilder_.addMessage(index, value);
+        }
+        return this;
+      }
+      /**
+       * <pre>
+       * bridge_target_pins binds allowlist entries to code: the bridge calls a
+       * pinned entry only while its contract runs the pinned code ID. An entry
+       * whose contract has an admin other than governance must be pinned. Set
+       * from the crossvm-bridge-code-pin switch; below it the update is refused
+       * when this is not empty.
+       * </pre>
+       *
+       * <code>repeated .qorechain.crossvm.v1.BridgeTargetPin bridge_target_pins = 7 [json_name = "bridgeTargetPins", (.gogoproto.nullable) = false];</code>
+       */
+      public Builder addBridgeTargetPins(
+          qorechain.crossvm.v1.Tx.BridgeTargetPin.Builder builderForValue) {
+        if (bridgeTargetPinsBuilder_ == null) {
+          ensureBridgeTargetPinsIsMutable();
+          bridgeTargetPins_.add(builderForValue.build());
+          onChanged();
+        } else {
+          bridgeTargetPinsBuilder_.addMessage(builderForValue.build());
+        }
+        return this;
+      }
+      /**
+       * <pre>
+       * bridge_target_pins binds allowlist entries to code: the bridge calls a
+       * pinned entry only while its contract runs the pinned code ID. An entry
+       * whose contract has an admin other than governance must be pinned. Set
+       * from the crossvm-bridge-code-pin switch; below it the update is refused
+       * when this is not empty.
+       * </pre>
+       *
+       * <code>repeated .qorechain.crossvm.v1.BridgeTargetPin bridge_target_pins = 7 [json_name = "bridgeTargetPins", (.gogoproto.nullable) = false];</code>
+       */
+      public Builder addBridgeTargetPins(
+          int index, qorechain.crossvm.v1.Tx.BridgeTargetPin.Builder builderForValue) {
+        if (bridgeTargetPinsBuilder_ == null) {
+          ensureBridgeTargetPinsIsMutable();
+          bridgeTargetPins_.add(index, builderForValue.build());
+          onChanged();
+        } else {
+          bridgeTargetPinsBuilder_.addMessage(index, builderForValue.build());
+        }
+        return this;
+      }
+      /**
+       * <pre>
+       * bridge_target_pins binds allowlist entries to code: the bridge calls a
+       * pinned entry only while its contract runs the pinned code ID. An entry
+       * whose contract has an admin other than governance must be pinned. Set
+       * from the crossvm-bridge-code-pin switch; below it the update is refused
+       * when this is not empty.
+       * </pre>
+       *
+       * <code>repeated .qorechain.crossvm.v1.BridgeTargetPin bridge_target_pins = 7 [json_name = "bridgeTargetPins", (.gogoproto.nullable) = false];</code>
+       */
+      public Builder addAllBridgeTargetPins(
+          java.lang.Iterable<? extends qorechain.crossvm.v1.Tx.BridgeTargetPin> values) {
+        if (bridgeTargetPinsBuilder_ == null) {
+          ensureBridgeTargetPinsIsMutable();
+          com.google.protobuf.AbstractMessageLite.Builder.addAll(
+              values, bridgeTargetPins_);
+          onChanged();
+        } else {
+          bridgeTargetPinsBuilder_.addAllMessages(values);
+        }
+        return this;
+      }
+      /**
+       * <pre>
+       * bridge_target_pins binds allowlist entries to code: the bridge calls a
+       * pinned entry only while its contract runs the pinned code ID. An entry
+       * whose contract has an admin other than governance must be pinned. Set
+       * from the crossvm-bridge-code-pin switch; below it the update is refused
+       * when this is not empty.
+       * </pre>
+       *
+       * <code>repeated .qorechain.crossvm.v1.BridgeTargetPin bridge_target_pins = 7 [json_name = "bridgeTargetPins", (.gogoproto.nullable) = false];</code>
+       */
+      public Builder clearBridgeTargetPins() {
+        if (bridgeTargetPinsBuilder_ == null) {
+          bridgeTargetPins_ = java.util.Collections.emptyList();
+          bitField0_ = (bitField0_ & ~0x00000040);
+          onChanged();
+        } else {
+          bridgeTargetPinsBuilder_.clear();
+        }
+        return this;
+      }
+      /**
+       * <pre>
+       * bridge_target_pins binds allowlist entries to code: the bridge calls a
+       * pinned entry only while its contract runs the pinned code ID. An entry
+       * whose contract has an admin other than governance must be pinned. Set
+       * from the crossvm-bridge-code-pin switch; below it the update is refused
+       * when this is not empty.
+       * </pre>
+       *
+       * <code>repeated .qorechain.crossvm.v1.BridgeTargetPin bridge_target_pins = 7 [json_name = "bridgeTargetPins", (.gogoproto.nullable) = false];</code>
+       */
+      public Builder removeBridgeTargetPins(int index) {
+        if (bridgeTargetPinsBuilder_ == null) {
+          ensureBridgeTargetPinsIsMutable();
+          bridgeTargetPins_.remove(index);
+          onChanged();
+        } else {
+          bridgeTargetPinsBuilder_.remove(index);
+        }
+        return this;
+      }
+      /**
+       * <pre>
+       * bridge_target_pins binds allowlist entries to code: the bridge calls a
+       * pinned entry only while its contract runs the pinned code ID. An entry
+       * whose contract has an admin other than governance must be pinned. Set
+       * from the crossvm-bridge-code-pin switch; below it the update is refused
+       * when this is not empty.
+       * </pre>
+       *
+       * <code>repeated .qorechain.crossvm.v1.BridgeTargetPin bridge_target_pins = 7 [json_name = "bridgeTargetPins", (.gogoproto.nullable) = false];</code>
+       */
+      public qorechain.crossvm.v1.Tx.BridgeTargetPin.Builder getBridgeTargetPinsBuilder(
+          int index) {
+        return internalGetBridgeTargetPinsFieldBuilder().getBuilder(index);
+      }
+      /**
+       * <pre>
+       * bridge_target_pins binds allowlist entries to code: the bridge calls a
+       * pinned entry only while its contract runs the pinned code ID. An entry
+       * whose contract has an admin other than governance must be pinned. Set
+       * from the crossvm-bridge-code-pin switch; below it the update is refused
+       * when this is not empty.
+       * </pre>
+       *
+       * <code>repeated .qorechain.crossvm.v1.BridgeTargetPin bridge_target_pins = 7 [json_name = "bridgeTargetPins", (.gogoproto.nullable) = false];</code>
+       */
+      public qorechain.crossvm.v1.Tx.BridgeTargetPinOrBuilder getBridgeTargetPinsOrBuilder(
+          int index) {
+        if (bridgeTargetPinsBuilder_ == null) {
+          return bridgeTargetPins_.get(index);  } else {
+          return bridgeTargetPinsBuilder_.getMessageOrBuilder(index);
+        }
+      }
+      /**
+       * <pre>
+       * bridge_target_pins binds allowlist entries to code: the bridge calls a
+       * pinned entry only while its contract runs the pinned code ID. An entry
+       * whose contract has an admin other than governance must be pinned. Set
+       * from the crossvm-bridge-code-pin switch; below it the update is refused
+       * when this is not empty.
+       * </pre>
+       *
+       * <code>repeated .qorechain.crossvm.v1.BridgeTargetPin bridge_target_pins = 7 [json_name = "bridgeTargetPins", (.gogoproto.nullable) = false];</code>
+       */
+      public java.util.List<? extends qorechain.crossvm.v1.Tx.BridgeTargetPinOrBuilder> 
+           getBridgeTargetPinsOrBuilderList() {
+        if (bridgeTargetPinsBuilder_ != null) {
+          return bridgeTargetPinsBuilder_.getMessageOrBuilderList();
+        } else {
+          return java.util.Collections.unmodifiableList(bridgeTargetPins_);
+        }
+      }
+      /**
+       * <pre>
+       * bridge_target_pins binds allowlist entries to code: the bridge calls a
+       * pinned entry only while its contract runs the pinned code ID. An entry
+       * whose contract has an admin other than governance must be pinned. Set
+       * from the crossvm-bridge-code-pin switch; below it the update is refused
+       * when this is not empty.
+       * </pre>
+       *
+       * <code>repeated .qorechain.crossvm.v1.BridgeTargetPin bridge_target_pins = 7 [json_name = "bridgeTargetPins", (.gogoproto.nullable) = false];</code>
+       */
+      public qorechain.crossvm.v1.Tx.BridgeTargetPin.Builder addBridgeTargetPinsBuilder() {
+        return internalGetBridgeTargetPinsFieldBuilder().addBuilder(
+            qorechain.crossvm.v1.Tx.BridgeTargetPin.getDefaultInstance());
+      }
+      /**
+       * <pre>
+       * bridge_target_pins binds allowlist entries to code: the bridge calls a
+       * pinned entry only while its contract runs the pinned code ID. An entry
+       * whose contract has an admin other than governance must be pinned. Set
+       * from the crossvm-bridge-code-pin switch; below it the update is refused
+       * when this is not empty.
+       * </pre>
+       *
+       * <code>repeated .qorechain.crossvm.v1.BridgeTargetPin bridge_target_pins = 7 [json_name = "bridgeTargetPins", (.gogoproto.nullable) = false];</code>
+       */
+      public qorechain.crossvm.v1.Tx.BridgeTargetPin.Builder addBridgeTargetPinsBuilder(
+          int index) {
+        return internalGetBridgeTargetPinsFieldBuilder().addBuilder(
+            index, qorechain.crossvm.v1.Tx.BridgeTargetPin.getDefaultInstance());
+      }
+      /**
+       * <pre>
+       * bridge_target_pins binds allowlist entries to code: the bridge calls a
+       * pinned entry only while its contract runs the pinned code ID. An entry
+       * whose contract has an admin other than governance must be pinned. Set
+       * from the crossvm-bridge-code-pin switch; below it the update is refused
+       * when this is not empty.
+       * </pre>
+       *
+       * <code>repeated .qorechain.crossvm.v1.BridgeTargetPin bridge_target_pins = 7 [json_name = "bridgeTargetPins", (.gogoproto.nullable) = false];</code>
+       */
+      public java.util.List<qorechain.crossvm.v1.Tx.BridgeTargetPin.Builder> 
+           getBridgeTargetPinsBuilderList() {
+        return internalGetBridgeTargetPinsFieldBuilder().getBuilderList();
+      }
+      private com.google.protobuf.RepeatedFieldBuilder<
+          qorechain.crossvm.v1.Tx.BridgeTargetPin, qorechain.crossvm.v1.Tx.BridgeTargetPin.Builder, qorechain.crossvm.v1.Tx.BridgeTargetPinOrBuilder> 
+          internalGetBridgeTargetPinsFieldBuilder() {
+        if (bridgeTargetPinsBuilder_ == null) {
+          bridgeTargetPinsBuilder_ = new com.google.protobuf.RepeatedFieldBuilder<
+              qorechain.crossvm.v1.Tx.BridgeTargetPin, qorechain.crossvm.v1.Tx.BridgeTargetPin.Builder, qorechain.crossvm.v1.Tx.BridgeTargetPinOrBuilder>(
+                  bridgeTargetPins_,
+                  ((bitField0_ & 0x00000040) != 0),
+                  getParentForChildren(),
+                  isClean());
+          bridgeTargetPins_ = null;
+        }
+        return bridgeTargetPinsBuilder_;
+      }
+
+      private int maxPendingPerSender_ ;
+      /**
+       * <pre>
+       * max_pending_per_sender bounds how many async calls one sender may have
+       * queued at a time. Zero means the default. Set from the
+       * crossvm-queue-sender-cap switch; below it the update is refused when this
+       * is not zero.
+       * </pre>
+       *
+       * <code>uint32 max_pending_per_sender = 8 [json_name = "maxPendingPerSender"];</code>
+       * @return The maxPendingPerSender.
+       */
+      @java.lang.Override
+      public int getMaxPendingPerSender() {
+        return maxPendingPerSender_;
+      }
+      /**
+       * <pre>
+       * max_pending_per_sender bounds how many async calls one sender may have
+       * queued at a time. Zero means the default. Set from the
+       * crossvm-queue-sender-cap switch; below it the update is refused when this
+       * is not zero.
+       * </pre>
+       *
+       * <code>uint32 max_pending_per_sender = 8 [json_name = "maxPendingPerSender"];</code>
+       * @param value The maxPendingPerSender to set.
+       * @return This builder for chaining.
+       */
+      public Builder setMaxPendingPerSender(int value) {
+
+        maxPendingPerSender_ = value;
+        bitField0_ |= 0x00000080;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * max_pending_per_sender bounds how many async calls one sender may have
+       * queued at a time. Zero means the default. Set from the
+       * crossvm-queue-sender-cap switch; below it the update is refused when this
+       * is not zero.
+       * </pre>
+       *
+       * <code>uint32 max_pending_per_sender = 8 [json_name = "maxPendingPerSender"];</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearMaxPendingPerSender() {
+        bitField0_ = (bitField0_ & ~0x00000080);
+        maxPendingPerSender_ = 0;
+        onChanged();
+        return this;
+      }
+
+      private long maxCosmosTxGas_ ;
+      /**
+       * <pre>
+       * max_cosmos_tx_gas bounds the gas limit one Cosmos-lane transaction may
+       * declare. Zero means the default (50,000,000); a set value is at least
+       * 10,000,000 and at most 1,000,000,000. Set from the cosmos-tx-gas-cap
+       * switch; below it the update is
+       * refused when this is not zero.
+       * </pre>
+       *
+       * <code>uint64 max_cosmos_tx_gas = 9 [json_name = "maxCosmosTxGas"];</code>
+       * @return The maxCosmosTxGas.
+       */
+      @java.lang.Override
+      public long getMaxCosmosTxGas() {
+        return maxCosmosTxGas_;
+      }
+      /**
+       * <pre>
+       * max_cosmos_tx_gas bounds the gas limit one Cosmos-lane transaction may
+       * declare. Zero means the default (50,000,000); a set value is at least
+       * 10,000,000 and at most 1,000,000,000. Set from the cosmos-tx-gas-cap
+       * switch; below it the update is
+       * refused when this is not zero.
+       * </pre>
+       *
+       * <code>uint64 max_cosmos_tx_gas = 9 [json_name = "maxCosmosTxGas"];</code>
+       * @param value The maxCosmosTxGas to set.
+       * @return This builder for chaining.
+       */
+      public Builder setMaxCosmosTxGas(long value) {
+
+        maxCosmosTxGas_ = value;
+        bitField0_ |= 0x00000100;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * max_cosmos_tx_gas bounds the gas limit one Cosmos-lane transaction may
+       * declare. Zero means the default (50,000,000); a set value is at least
+       * 10,000,000 and at most 1,000,000,000. Set from the cosmos-tx-gas-cap
+       * switch; below it the update is
+       * refused when this is not zero.
+       * </pre>
+       *
+       * <code>uint64 max_cosmos_tx_gas = 9 [json_name = "maxCosmosTxGas"];</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearMaxCosmosTxGas() {
+        bitField0_ = (bitField0_ & ~0x00000100);
+        maxCosmosTxGas_ = 0L;
+        onChanged();
+        return this;
+      }
+
+      private long recordRetentionBlocks_ ;
+      /**
+       * <pre>
+       * record_retention_blocks is how many blocks the record of a finished
+       * queued call is kept before it is pruned. Zero means the default
+       * (100,000). Set from the crossvm-record-prune switch; below it the update
+       * is refused when this is not zero.
+       * </pre>
+       *
+       * <code>uint64 record_retention_blocks = 10 [json_name = "recordRetentionBlocks"];</code>
+       * @return The recordRetentionBlocks.
+       */
+      @java.lang.Override
+      public long getRecordRetentionBlocks() {
+        return recordRetentionBlocks_;
+      }
+      /**
+       * <pre>
+       * record_retention_blocks is how many blocks the record of a finished
+       * queued call is kept before it is pruned. Zero means the default
+       * (100,000). Set from the crossvm-record-prune switch; below it the update
+       * is refused when this is not zero.
+       * </pre>
+       *
+       * <code>uint64 record_retention_blocks = 10 [json_name = "recordRetentionBlocks"];</code>
+       * @param value The recordRetentionBlocks to set.
+       * @return This builder for chaining.
+       */
+      public Builder setRecordRetentionBlocks(long value) {
+
+        recordRetentionBlocks_ = value;
+        bitField0_ |= 0x00000200;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * record_retention_blocks is how many blocks the record of a finished
+       * queued call is kept before it is pruned. Zero means the default
+       * (100,000). Set from the crossvm-record-prune switch; below it the update
+       * is refused when this is not zero.
+       * </pre>
+       *
+       * <code>uint64 record_retention_blocks = 10 [json_name = "recordRetentionBlocks"];</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearRecordRetentionBlocks() {
+        bitField0_ = (bitField0_ & ~0x00000200);
+        recordRetentionBlocks_ = 0L;
+        onChanged();
+        return this;
+      }
+
+      private long maxBlockWasmGas_ ;
+      /**
+       * <pre>
+       * max_block_wasm_gas bounds the CosmWasm execution (VM gas, counted in SDK
+       * gas units) all transactions of one block may use together. Zero means
+       * the default (3,000,000); a set value is 1,000,000 to 50,000,000. Set from the
+       * wasm-block-gas-budget switch; below it the update is refused when this is
+       * not zero.
+       * </pre>
+       *
+       * <code>uint64 max_block_wasm_gas = 11 [json_name = "maxBlockWasmGas"];</code>
+       * @return The maxBlockWasmGas.
+       */
+      @java.lang.Override
+      public long getMaxBlockWasmGas() {
+        return maxBlockWasmGas_;
+      }
+      /**
+       * <pre>
+       * max_block_wasm_gas bounds the CosmWasm execution (VM gas, counted in SDK
+       * gas units) all transactions of one block may use together. Zero means
+       * the default (3,000,000); a set value is 1,000,000 to 50,000,000. Set from the
+       * wasm-block-gas-budget switch; below it the update is refused when this is
+       * not zero.
+       * </pre>
+       *
+       * <code>uint64 max_block_wasm_gas = 11 [json_name = "maxBlockWasmGas"];</code>
+       * @param value The maxBlockWasmGas to set.
+       * @return This builder for chaining.
+       */
+      public Builder setMaxBlockWasmGas(long value) {
+
+        maxBlockWasmGas_ = value;
+        bitField0_ |= 0x00000400;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * max_block_wasm_gas bounds the CosmWasm execution (VM gas, counted in SDK
+       * gas units) all transactions of one block may use together. Zero means
+       * the default (3,000,000); a set value is 1,000,000 to 50,000,000. Set from the
+       * wasm-block-gas-budget switch; below it the update is refused when this is
+       * not zero.
+       * </pre>
+       *
+       * <code>uint64 max_block_wasm_gas = 11 [json_name = "maxBlockWasmGas"];</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearMaxBlockWasmGas() {
+        bitField0_ = (bitField0_ & ~0x00000400);
+        maxBlockWasmGas_ = 0L;
+        onChanged();
+        return this;
+      }
+
+      private int maxTxWasmShareBps_ ;
+      /**
+       * <pre>
+       * max_tx_wasm_share_bps is the share of the block wasm budget, in basis
+       * points, one transaction may use. Zero means the default (5,000, half);
+       * a set value is 1 to 10,000. Set from the wasm-block-gas-budget switch.
+       * </pre>
+       *
+       * <code>uint32 max_tx_wasm_share_bps = 12 [json_name = "maxTxWasmShareBps"];</code>
+       * @return The maxTxWasmShareBps.
+       */
+      @java.lang.Override
+      public int getMaxTxWasmShareBps() {
+        return maxTxWasmShareBps_;
+      }
+      /**
+       * <pre>
+       * max_tx_wasm_share_bps is the share of the block wasm budget, in basis
+       * points, one transaction may use. Zero means the default (5,000, half);
+       * a set value is 1 to 10,000. Set from the wasm-block-gas-budget switch.
+       * </pre>
+       *
+       * <code>uint32 max_tx_wasm_share_bps = 12 [json_name = "maxTxWasmShareBps"];</code>
+       * @param value The maxTxWasmShareBps to set.
+       * @return This builder for chaining.
+       */
+      public Builder setMaxTxWasmShareBps(int value) {
+
+        maxTxWasmShareBps_ = value;
+        bitField0_ |= 0x00000800;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * max_tx_wasm_share_bps is the share of the block wasm budget, in basis
+       * points, one transaction may use. Zero means the default (5,000, half);
+       * a set value is 1 to 10,000. Set from the wasm-block-gas-budget switch.
+       * </pre>
+       *
+       * <code>uint32 max_tx_wasm_share_bps = 12 [json_name = "maxTxWasmShareBps"];</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearMaxTxWasmShareBps() {
+        bitField0_ = (bitField0_ & ~0x00000800);
+        maxTxWasmShareBps_ = 0;
+        onChanged();
+        return this;
+      }
+
+      private long maxBlockLevelWasmGas_ ;
+      /**
+       * <pre>
+       * max_block_level_wasm_gas bounds the CosmWasm execution of one contract
+       * call made outside a transaction (a governance proposal executed at the
+       * end of the block). Zero means the default (10,000,000); a set value is
+       * 1,000,000 to 100,000,000. Set from the wasm-block-gas-budget switch.
+       * </pre>
+       *
+       * <code>uint64 max_block_level_wasm_gas = 13 [json_name = "maxBlockLevelWasmGas"];</code>
+       * @return The maxBlockLevelWasmGas.
+       */
+      @java.lang.Override
+      public long getMaxBlockLevelWasmGas() {
+        return maxBlockLevelWasmGas_;
+      }
+      /**
+       * <pre>
+       * max_block_level_wasm_gas bounds the CosmWasm execution of one contract
+       * call made outside a transaction (a governance proposal executed at the
+       * end of the block). Zero means the default (10,000,000); a set value is
+       * 1,000,000 to 100,000,000. Set from the wasm-block-gas-budget switch.
+       * </pre>
+       *
+       * <code>uint64 max_block_level_wasm_gas = 13 [json_name = "maxBlockLevelWasmGas"];</code>
+       * @param value The maxBlockLevelWasmGas to set.
+       * @return This builder for chaining.
+       */
+      public Builder setMaxBlockLevelWasmGas(long value) {
+
+        maxBlockLevelWasmGas_ = value;
+        bitField0_ |= 0x00001000;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * max_block_level_wasm_gas bounds the CosmWasm execution of one contract
+       * call made outside a transaction (a governance proposal executed at the
+       * end of the block). Zero means the default (10,000,000); a set value is
+       * 1,000,000 to 100,000,000. Set from the wasm-block-gas-budget switch.
+       * </pre>
+       *
+       * <code>uint64 max_block_level_wasm_gas = 13 [json_name = "maxBlockLevelWasmGas"];</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearMaxBlockLevelWasmGas() {
+        bitField0_ = (bitField0_ & ~0x00001000);
+        maxBlockLevelWasmGas_ = 0L;
+        onChanged();
+        return this;
+      }
+
+      private int queueWasmReserveBps_ ;
+      /**
+       * <pre>
+       * queue_wasm_reserve_bps is the share of the block wasm budget, in basis
+       * points, reserved for the end-of-block async queue (transactions cannot
+       * use it). Zero means the default (2,500); a set value is 1 to 9,000. Set
+       * from the wasm-block-gas-budget switch.
+       * </pre>
+       *
+       * <code>uint32 queue_wasm_reserve_bps = 14 [json_name = "queueWasmReserveBps"];</code>
+       * @return The queueWasmReserveBps.
+       */
+      @java.lang.Override
+      public int getQueueWasmReserveBps() {
+        return queueWasmReserveBps_;
+      }
+      /**
+       * <pre>
+       * queue_wasm_reserve_bps is the share of the block wasm budget, in basis
+       * points, reserved for the end-of-block async queue (transactions cannot
+       * use it). Zero means the default (2,500); a set value is 1 to 9,000. Set
+       * from the wasm-block-gas-budget switch.
+       * </pre>
+       *
+       * <code>uint32 queue_wasm_reserve_bps = 14 [json_name = "queueWasmReserveBps"];</code>
+       * @param value The queueWasmReserveBps to set.
+       * @return This builder for chaining.
+       */
+      public Builder setQueueWasmReserveBps(int value) {
+
+        queueWasmReserveBps_ = value;
+        bitField0_ |= 0x00002000;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * queue_wasm_reserve_bps is the share of the block wasm budget, in basis
+       * points, reserved for the end-of-block async queue (transactions cannot
+       * use it). Zero means the default (2,500); a set value is 1 to 9,000. Set
+       * from the wasm-block-gas-budget switch.
+       * </pre>
+       *
+       * <code>uint32 queue_wasm_reserve_bps = 14 [json_name = "queueWasmReserveBps"];</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearQueueWasmReserveBps() {
+        bitField0_ = (bitField0_ & ~0x00002000);
+        queueWasmReserveBps_ = 0;
+        onChanged();
+        return this;
+      }
+
+      private int wasmCongestionMaxFactor_ ;
+      /**
+       * <pre>
+       * wasm_congestion_max_factor bounds the CosmWasm congestion factor (how
+       * many times the base price one unit of contract execution costs). Zero
+       * means the default (1,000); a set value is 1 to 10,000. Set from the
+       * wasm-congestion-pricing switch.
+       * </pre>
+       *
+       * <code>uint32 wasm_congestion_max_factor = 15 [json_name = "wasmCongestionMaxFactor"];</code>
+       * @return The wasmCongestionMaxFactor.
+       */
+      @java.lang.Override
+      public int getWasmCongestionMaxFactor() {
+        return wasmCongestionMaxFactor_;
+      }
+      /**
+       * <pre>
+       * wasm_congestion_max_factor bounds the CosmWasm congestion factor (how
+       * many times the base price one unit of contract execution costs). Zero
+       * means the default (1,000); a set value is 1 to 10,000. Set from the
+       * wasm-congestion-pricing switch.
+       * </pre>
+       *
+       * <code>uint32 wasm_congestion_max_factor = 15 [json_name = "wasmCongestionMaxFactor"];</code>
+       * @param value The wasmCongestionMaxFactor to set.
+       * @return This builder for chaining.
+       */
+      public Builder setWasmCongestionMaxFactor(int value) {
+
+        wasmCongestionMaxFactor_ = value;
+        bitField0_ |= 0x00004000;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * wasm_congestion_max_factor bounds the CosmWasm congestion factor (how
+       * many times the base price one unit of contract execution costs). Zero
+       * means the default (1,000); a set value is 1 to 10,000. Set from the
+       * wasm-congestion-pricing switch.
+       * </pre>
+       *
+       * <code>uint32 wasm_congestion_max_factor = 15 [json_name = "wasmCongestionMaxFactor"];</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearWasmCongestionMaxFactor() {
+        bitField0_ = (bitField0_ & ~0x00004000);
+        wasmCongestionMaxFactor_ = 0;
+        onChanged();
+        return this;
+      }
+
+      private int wasmCongestionTargetBps_ ;
+      /**
+       * <pre>
+       * wasm_congestion_target_bps is the block wasm budget use, in basis
+       * points, above which the factor rises by 1/8 for the next block and below
+       * which it falls by 1/9. Zero means the default (5,000); a set value is 1 to
+       * 10,000. Set from the wasm-congestion-pricing switch.
+       * </pre>
+       *
+       * <code>uint32 wasm_congestion_target_bps = 16 [json_name = "wasmCongestionTargetBps"];</code>
+       * @return The wasmCongestionTargetBps.
+       */
+      @java.lang.Override
+      public int getWasmCongestionTargetBps() {
+        return wasmCongestionTargetBps_;
+      }
+      /**
+       * <pre>
+       * wasm_congestion_target_bps is the block wasm budget use, in basis
+       * points, above which the factor rises by 1/8 for the next block and below
+       * which it falls by 1/9. Zero means the default (5,000); a set value is 1 to
+       * 10,000. Set from the wasm-congestion-pricing switch.
+       * </pre>
+       *
+       * <code>uint32 wasm_congestion_target_bps = 16 [json_name = "wasmCongestionTargetBps"];</code>
+       * @param value The wasmCongestionTargetBps to set.
+       * @return This builder for chaining.
+       */
+      public Builder setWasmCongestionTargetBps(int value) {
+
+        wasmCongestionTargetBps_ = value;
+        bitField0_ |= 0x00008000;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * wasm_congestion_target_bps is the block wasm budget use, in basis
+       * points, above which the factor rises by 1/8 for the next block and below
+       * which it falls by 1/9. Zero means the default (5,000); a set value is 1 to
+       * 10,000. Set from the wasm-congestion-pricing switch.
+       * </pre>
+       *
+       * <code>uint32 wasm_congestion_target_bps = 16 [json_name = "wasmCongestionTargetBps"];</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearWasmCongestionTargetBps() {
+        bitField0_ = (bitField0_ & ~0x00008000);
+        wasmCongestionTargetBps_ = 0;
+        onChanged();
+        return this;
+      }
+
+      private int maxBlockUploadBps_ ;
+      /**
+       * <pre>
+       * max_block_upload_bps is the code-upload pool of a block, in basis
+       * points of the transactions' wasm pool: compiling uploads draws from it,
+       * not from the execution pool, and does not count towards congestion. Zero
+       * means the default (5,000, enough for the largest release contract); a set
+       * value is 1 to 10,000. Set from the wasm-block-gas-budget switch.
+       * </pre>
+       *
+       * <code>uint32 max_block_upload_bps = 17 [json_name = "maxBlockUploadBps"];</code>
+       * @return The maxBlockUploadBps.
+       */
+      @java.lang.Override
+      public int getMaxBlockUploadBps() {
+        return maxBlockUploadBps_;
+      }
+      /**
+       * <pre>
+       * max_block_upload_bps is the code-upload pool of a block, in basis
+       * points of the transactions' wasm pool: compiling uploads draws from it,
+       * not from the execution pool, and does not count towards congestion. Zero
+       * means the default (5,000, enough for the largest release contract); a set
+       * value is 1 to 10,000. Set from the wasm-block-gas-budget switch.
+       * </pre>
+       *
+       * <code>uint32 max_block_upload_bps = 17 [json_name = "maxBlockUploadBps"];</code>
+       * @param value The maxBlockUploadBps to set.
+       * @return This builder for chaining.
+       */
+      public Builder setMaxBlockUploadBps(int value) {
+
+        maxBlockUploadBps_ = value;
+        bitField0_ |= 0x00010000;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * max_block_upload_bps is the code-upload pool of a block, in basis
+       * points of the transactions' wasm pool: compiling uploads draws from it,
+       * not from the execution pool, and does not count towards congestion. Zero
+       * means the default (5,000, enough for the largest release contract); a set
+       * value is 1 to 10,000. Set from the wasm-block-gas-budget switch.
+       * </pre>
+       *
+       * <code>uint32 max_block_upload_bps = 17 [json_name = "maxBlockUploadBps"];</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearMaxBlockUploadBps() {
+        bitField0_ = (bitField0_ & ~0x00010000);
+        maxBlockUploadBps_ = 0;
+        onChanged();
+        return this;
+      }
+
+      private int maxQueueTimeoutsPerBlock_ ;
+      /**
+       * <pre>
+       * max_queue_timeouts_per_block bounds how many queued calls one block
+       * times out, oldest first; the rest time out in the following blocks.
+       * Zero means the default (100); a set value is at most 1,000. Set from the
+       * crossvm-queue-height-index switch; below it the update is refused when
+       * this is not zero.
+       * </pre>
+       *
+       * <code>uint32 max_queue_timeouts_per_block = 18 [json_name = "maxQueueTimeoutsPerBlock"];</code>
+       * @return The maxQueueTimeoutsPerBlock.
+       */
+      @java.lang.Override
+      public int getMaxQueueTimeoutsPerBlock() {
+        return maxQueueTimeoutsPerBlock_;
+      }
+      /**
+       * <pre>
+       * max_queue_timeouts_per_block bounds how many queued calls one block
+       * times out, oldest first; the rest time out in the following blocks.
+       * Zero means the default (100); a set value is at most 1,000. Set from the
+       * crossvm-queue-height-index switch; below it the update is refused when
+       * this is not zero.
+       * </pre>
+       *
+       * <code>uint32 max_queue_timeouts_per_block = 18 [json_name = "maxQueueTimeoutsPerBlock"];</code>
+       * @param value The maxQueueTimeoutsPerBlock to set.
+       * @return This builder for chaining.
+       */
+      public Builder setMaxQueueTimeoutsPerBlock(int value) {
+
+        maxQueueTimeoutsPerBlock_ = value;
+        bitField0_ |= 0x00020000;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * max_queue_timeouts_per_block bounds how many queued calls one block
+       * times out, oldest first; the rest time out in the following blocks.
+       * Zero means the default (100); a set value is at most 1,000. Set from the
+       * crossvm-queue-height-index switch; below it the update is refused when
+       * this is not zero.
+       * </pre>
+       *
+       * <code>uint32 max_queue_timeouts_per_block = 18 [json_name = "maxQueueTimeoutsPerBlock"];</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearMaxQueueTimeoutsPerBlock() {
+        bitField0_ = (bitField0_ & ~0x00020000);
+        maxQueueTimeoutsPerBlock_ = 0;
         onChanged();
         return this;
       }
@@ -4806,6 +6855,779 @@ public final class Tx extends com.google.protobuf.GeneratedFile {
 
   }
 
+  public interface BridgeTargetPinOrBuilder extends
+      // @@protoc_insertion_point(interface_extends:qorechain.crossvm.v1.BridgeTargetPin)
+      com.google.protobuf.MessageOrBuilder {
+
+    /**
+     * <pre>
+     * target is the allowlist entry, "&lt;vm&gt;:&lt;contract&gt;", exactly as listed in
+     * bridge_allowed_targets.
+     * </pre>
+     *
+     * <code>string target = 1 [json_name = "target"];</code>
+     * @return The target.
+     */
+    java.lang.String getTarget();
+    /**
+     * <pre>
+     * target is the allowlist entry, "&lt;vm&gt;:&lt;contract&gt;", exactly as listed in
+     * bridge_allowed_targets.
+     * </pre>
+     *
+     * <code>string target = 1 [json_name = "target"];</code>
+     * @return The bytes for target.
+     */
+    com.google.protobuf.ByteString
+        getTargetBytes();
+
+    /**
+     * <pre>
+     * code_id is the code the contract must run for the bridge to call it.
+     * </pre>
+     *
+     * <code>uint64 code_id = 2 [json_name = "codeId", (.gogoproto.customname) = "CodeID"];</code>
+     * @return The codeId.
+     */
+    long getCodeId();
+
+    /**
+     * <pre>
+     * history_len is the length of the contract's code history (wasmd
+     * ContractCodeHistory) the pin was taken at. Every migration appends to the
+     * history, so a contract migrated away and back to code_id (which lets
+     * other code rewrite its state) no longer matches the pin.
+     * </pre>
+     *
+     * <code>uint64 history_len = 3 [json_name = "historyLen", (.gogoproto.customname) = "HistoryLen"];</code>
+     * @return The historyLen.
+     */
+    long getHistoryLen();
+  }
+  /**
+   * <pre>
+   * BridgeTargetPin pins one bridge allowlist entry to a CosmWasm code ID.
+   * </pre>
+   *
+   * Protobuf type {@code qorechain.crossvm.v1.BridgeTargetPin}
+   */
+  public static final class BridgeTargetPin extends
+      com.google.protobuf.GeneratedMessage implements
+      // @@protoc_insertion_point(message_implements:qorechain.crossvm.v1.BridgeTargetPin)
+      BridgeTargetPinOrBuilder {
+  private static final long serialVersionUID = 0L;
+    static {
+      com.google.protobuf.RuntimeVersion.validateProtobufGencodeVersion(
+        com.google.protobuf.RuntimeVersion.RuntimeDomain.PUBLIC,
+        /* major= */ 4,
+        /* minor= */ 35,
+        /* patch= */ 1,
+        /* suffix= */ "",
+        "BridgeTargetPin");
+    }
+    // Use BridgeTargetPin.newBuilder() to construct.
+    private BridgeTargetPin(com.google.protobuf.GeneratedMessage.Builder<?> builder) {
+      super(builder);
+    }
+    private BridgeTargetPin() {
+      target_ = "";
+    }
+
+    public static final com.google.protobuf.Descriptors.Descriptor
+        getDescriptor() {
+      return qorechain.crossvm.v1.Tx.internal_static_qorechain_crossvm_v1_BridgeTargetPin_descriptor;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Descriptors.Descriptor getDescriptorForType() {
+      return qorechain.crossvm.v1.Tx.internal_static_qorechain_crossvm_v1_BridgeTargetPin_descriptor;
+    }
+
+    @java.lang.Override
+    protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+        internalGetFieldAccessorTable() {
+      return qorechain.crossvm.v1.Tx.internal_static_qorechain_crossvm_v1_BridgeTargetPin_fieldAccessorTable
+          .ensureFieldAccessorsInitialized(
+              qorechain.crossvm.v1.Tx.BridgeTargetPin.class, qorechain.crossvm.v1.Tx.BridgeTargetPin.Builder.class);
+    }
+
+    public static final int TARGET_FIELD_NUMBER = 1;
+    @SuppressWarnings("serial")
+    private volatile java.lang.Object target_ = "";
+    /**
+     * <pre>
+     * target is the allowlist entry, "&lt;vm&gt;:&lt;contract&gt;", exactly as listed in
+     * bridge_allowed_targets.
+     * </pre>
+     *
+     * <code>string target = 1 [json_name = "target"];</code>
+     * @return The target.
+     */
+    @java.lang.Override
+    public java.lang.String getTarget() {
+      java.lang.Object ref = target_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        target_ = s;
+        return s;
+      }
+    }
+    /**
+     * <pre>
+     * target is the allowlist entry, "&lt;vm&gt;:&lt;contract&gt;", exactly as listed in
+     * bridge_allowed_targets.
+     * </pre>
+     *
+     * <code>string target = 1 [json_name = "target"];</code>
+     * @return The bytes for target.
+     */
+    @java.lang.Override
+    public com.google.protobuf.ByteString
+        getTargetBytes() {
+      java.lang.Object ref = target_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        target_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
+    public static final int CODE_ID_FIELD_NUMBER = 2;
+    private long codeId_ = 0L;
+    /**
+     * <pre>
+     * code_id is the code the contract must run for the bridge to call it.
+     * </pre>
+     *
+     * <code>uint64 code_id = 2 [json_name = "codeId", (.gogoproto.customname) = "CodeID"];</code>
+     * @return The codeId.
+     */
+    @java.lang.Override
+    public long getCodeId() {
+      return codeId_;
+    }
+
+    public static final int HISTORY_LEN_FIELD_NUMBER = 3;
+    private long historyLen_ = 0L;
+    /**
+     * <pre>
+     * history_len is the length of the contract's code history (wasmd
+     * ContractCodeHistory) the pin was taken at. Every migration appends to the
+     * history, so a contract migrated away and back to code_id (which lets
+     * other code rewrite its state) no longer matches the pin.
+     * </pre>
+     *
+     * <code>uint64 history_len = 3 [json_name = "historyLen", (.gogoproto.customname) = "HistoryLen"];</code>
+     * @return The historyLen.
+     */
+    @java.lang.Override
+    public long getHistoryLen() {
+      return historyLen_;
+    }
+
+    private byte memoizedIsInitialized = -1;
+    @java.lang.Override
+    public final boolean isInitialized() {
+      byte isInitialized = memoizedIsInitialized;
+      if (isInitialized == 1) return true;
+      if (isInitialized == 0) return false;
+
+      memoizedIsInitialized = 1;
+      return true;
+    }
+
+    @java.lang.Override
+    public void writeTo(com.google.protobuf.CodedOutputStream output)
+                        throws java.io.IOException {
+      if (!com.google.protobuf.GeneratedMessage.isStringEmpty(target_)) {
+        com.google.protobuf.GeneratedMessage.writeString(output, 1, target_);
+      }
+      if (codeId_ != 0L) {
+        output.writeUInt64(2, codeId_);
+      }
+      if (historyLen_ != 0L) {
+        output.writeUInt64(3, historyLen_);
+      }
+      getUnknownFields().writeTo(output);
+    }
+    private int computeSerializedSize_0() {
+      int size = 0;
+      if (!com.google.protobuf.GeneratedMessage.isStringEmpty(target_)) {
+        size += com.google.protobuf.GeneratedMessage.computeStringSize(1, target_);
+      }
+      if (codeId_ != 0L) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeUInt64Size(2, codeId_);
+      }
+      if (historyLen_ != 0L) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeUInt64Size(3, historyLen_);
+      }
+      return size;
+    }
+    @java.lang.Override
+    public int getSerializedSize() {
+      int size = memoizedSize;
+      if (size != -1) return size;
+
+      size = 0;
+      size += computeSerializedSize_0();
+      size += getUnknownFields().getSerializedSize();
+      memoizedSize = size;
+      return size;
+    }
+
+    @java.lang.Override
+    public boolean equals(final java.lang.Object obj) {
+      if (obj == this) {
+       return true;
+      }
+      if (!(obj instanceof qorechain.crossvm.v1.Tx.BridgeTargetPin)) {
+        return super.equals(obj);
+      }
+      qorechain.crossvm.v1.Tx.BridgeTargetPin other = (qorechain.crossvm.v1.Tx.BridgeTargetPin) obj;
+
+      if (!getTarget()
+          .equals(other.getTarget())) return false;
+      if (getCodeId()
+          != other.getCodeId()) return false;
+      if (getHistoryLen()
+          != other.getHistoryLen()) return false;
+      if (!getUnknownFields().equals(other.getUnknownFields())) return false;
+      return true;
+    }
+
+    @java.lang.Override
+    public int hashCode() {
+      if (memoizedHashCode != 0) {
+        return memoizedHashCode;
+      }
+      int hash = 41;
+      hash = (19 * hash) + getDescriptor().hashCode();
+      hash = (37 * hash) + TARGET_FIELD_NUMBER;
+      hash = (53 * hash) + getTarget().hashCode();
+      hash = (37 * hash) + CODE_ID_FIELD_NUMBER;
+      hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
+          getCodeId());
+      hash = (37 * hash) + HISTORY_LEN_FIELD_NUMBER;
+      hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
+          getHistoryLen());
+      hash = (29 * hash) + getUnknownFields().hashCode();
+      memoizedHashCode = hash;
+      return hash;
+    }
+
+    public static qorechain.crossvm.v1.Tx.BridgeTargetPin parseFrom(
+        java.nio.ByteBuffer data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static qorechain.crossvm.v1.Tx.BridgeTargetPin parseFrom(
+        java.nio.ByteBuffer data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static qorechain.crossvm.v1.Tx.BridgeTargetPin parseFrom(
+        com.google.protobuf.ByteString data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static qorechain.crossvm.v1.Tx.BridgeTargetPin parseFrom(
+        com.google.protobuf.ByteString data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static qorechain.crossvm.v1.Tx.BridgeTargetPin parseFrom(byte[] data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static qorechain.crossvm.v1.Tx.BridgeTargetPin parseFrom(
+        byte[] data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static qorechain.crossvm.v1.Tx.BridgeTargetPin parseFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input);
+    }
+    public static qorechain.crossvm.v1.Tx.BridgeTargetPin parseFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    public static qorechain.crossvm.v1.Tx.BridgeTargetPin parseDelimitedFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseDelimitedWithIOException(PARSER, input);
+    }
+
+    public static qorechain.crossvm.v1.Tx.BridgeTargetPin parseDelimitedFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static qorechain.crossvm.v1.Tx.BridgeTargetPin parseFrom(
+        com.google.protobuf.CodedInputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input);
+    }
+    public static qorechain.crossvm.v1.Tx.BridgeTargetPin parseFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    @java.lang.Override
+    public Builder newBuilderForType() { return newBuilder(); }
+    public static Builder newBuilder() {
+      return DEFAULT_INSTANCE.toBuilder();
+    }
+    public static Builder newBuilder(qorechain.crossvm.v1.Tx.BridgeTargetPin prototype) {
+      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+    }
+    @java.lang.Override
+    public Builder toBuilder() {
+      return this == DEFAULT_INSTANCE
+          ? new Builder() : new Builder().mergeFrom(this);
+    }
+
+    @java.lang.Override
+    protected Builder newBuilderForType(
+        com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+      Builder builder = new Builder(parent);
+      return builder;
+    }
+    /**
+     * <pre>
+     * BridgeTargetPin pins one bridge allowlist entry to a CosmWasm code ID.
+     * </pre>
+     *
+     * Protobuf type {@code qorechain.crossvm.v1.BridgeTargetPin}
+     */
+    public static final class Builder extends
+        com.google.protobuf.GeneratedMessage.Builder<Builder> implements
+        // @@protoc_insertion_point(builder_implements:qorechain.crossvm.v1.BridgeTargetPin)
+        qorechain.crossvm.v1.Tx.BridgeTargetPinOrBuilder {
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return qorechain.crossvm.v1.Tx.internal_static_qorechain_crossvm_v1_BridgeTargetPin_descriptor;
+      }
+
+      @java.lang.Override
+      protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return qorechain.crossvm.v1.Tx.internal_static_qorechain_crossvm_v1_BridgeTargetPin_fieldAccessorTable
+            .ensureFieldAccessorsInitialized(
+                qorechain.crossvm.v1.Tx.BridgeTargetPin.class, qorechain.crossvm.v1.Tx.BridgeTargetPin.Builder.class);
+      }
+
+      // Construct using qorechain.crossvm.v1.Tx.BridgeTargetPin.newBuilder()
+      private Builder() {
+
+      }
+
+      private Builder(
+          com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+        super(parent);
+
+      }
+      @java.lang.Override
+      public Builder clear() {
+        super.clear();
+        bitField0_ = 0;
+        target_ = "";
+        codeId_ = 0L;
+        historyLen_ = 0L;
+        return this;
+      }
+
+      @java.lang.Override
+      public com.google.protobuf.Descriptors.Descriptor
+          getDescriptorForType() {
+        return qorechain.crossvm.v1.Tx.internal_static_qorechain_crossvm_v1_BridgeTargetPin_descriptor;
+      }
+
+      @java.lang.Override
+      public qorechain.crossvm.v1.Tx.BridgeTargetPin getDefaultInstanceForType() {
+        return qorechain.crossvm.v1.Tx.BridgeTargetPin.getDefaultInstance();
+      }
+
+      @java.lang.Override
+      public qorechain.crossvm.v1.Tx.BridgeTargetPin build() {
+        qorechain.crossvm.v1.Tx.BridgeTargetPin result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(result);
+        }
+        return result;
+      }
+
+      @java.lang.Override
+      public qorechain.crossvm.v1.Tx.BridgeTargetPin buildPartial() {
+        qorechain.crossvm.v1.Tx.BridgeTargetPin result = new qorechain.crossvm.v1.Tx.BridgeTargetPin(this);
+        if (bitField0_ != 0) { buildPartial0(result); }
+        onBuilt();
+        return result;
+      }
+
+      private void buildPartial0(qorechain.crossvm.v1.Tx.BridgeTargetPin result) {
+        int from_bitField0_ = bitField0_;
+        if (((from_bitField0_ & 0x00000001) != 0)) {
+          result.target_ = target_;
+        }
+        if (((from_bitField0_ & 0x00000002) != 0)) {
+          result.codeId_ = codeId_;
+        }
+        if (((from_bitField0_ & 0x00000004) != 0)) {
+          result.historyLen_ = historyLen_;
+        }
+      }
+
+      @java.lang.Override
+      public Builder mergeFrom(com.google.protobuf.Message other) {
+        if (other instanceof qorechain.crossvm.v1.Tx.BridgeTargetPin) {
+          return mergeFrom((qorechain.crossvm.v1.Tx.BridgeTargetPin)other);
+        } else {
+          super.mergeFrom(other);
+          return this;
+        }
+      }
+
+      public Builder mergeFrom(qorechain.crossvm.v1.Tx.BridgeTargetPin other) {
+        if (other == qorechain.crossvm.v1.Tx.BridgeTargetPin.getDefaultInstance()) return this;
+        if (!other.getTarget().isEmpty()) {
+          target_ = other.target_;
+          bitField0_ |= 0x00000001;
+          onChanged();
+        }
+        if (other.getCodeId() != 0L) {
+          setCodeId(other.getCodeId());
+        }
+        if (other.getHistoryLen() != 0L) {
+          setHistoryLen(other.getHistoryLen());
+        }
+        this.mergeUnknownFields(other.getUnknownFields());
+        onChanged();
+        return this;
+      }
+
+      @java.lang.Override
+      public final boolean isInitialized() {
+        return true;
+      }
+
+      @java.lang.Override
+      public Builder mergeFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        if (extensionRegistry == null) {
+          throw new java.lang.NullPointerException();
+        }
+        try {
+          boolean done = false;
+          while (!done) {
+            int tag = input.readTag();
+            switch (tag) {
+              case 0:
+                done = true;
+                break;
+              case 10: {
+                target_ = input.readStringRequireUtf8();
+                bitField0_ |= 0x00000001;
+                break;
+              } // case 10
+              case 16: {
+                codeId_ = input.readUInt64();
+                bitField0_ |= 0x00000002;
+                break;
+              } // case 16
+              case 24: {
+                historyLen_ = input.readUInt64();
+                bitField0_ |= 0x00000004;
+                break;
+              } // case 24
+              default: {
+                if (!super.parseUnknownField(input, extensionRegistry, tag)) {
+                  done = true; // was an endgroup tag
+                }
+                break;
+              } // default:
+            } // switch (tag)
+          } // while (!done)
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          throw e.unwrapIOException();
+        } finally {
+          onChanged();
+        } // finally
+        return this;
+      }
+      private int bitField0_;
+
+      private java.lang.Object target_ = "";
+      /**
+       * <pre>
+       * target is the allowlist entry, "&lt;vm&gt;:&lt;contract&gt;", exactly as listed in
+       * bridge_allowed_targets.
+       * </pre>
+       *
+       * <code>string target = 1 [json_name = "target"];</code>
+       * @return The target.
+       */
+      public java.lang.String getTarget() {
+        java.lang.Object ref = target_;
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          target_ = s;
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
+      }
+      /**
+       * <pre>
+       * target is the allowlist entry, "&lt;vm&gt;:&lt;contract&gt;", exactly as listed in
+       * bridge_allowed_targets.
+       * </pre>
+       *
+       * <code>string target = 1 [json_name = "target"];</code>
+       * @return The bytes for target.
+       */
+      public com.google.protobuf.ByteString
+          getTargetBytes() {
+        java.lang.Object ref = target_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          target_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <pre>
+       * target is the allowlist entry, "&lt;vm&gt;:&lt;contract&gt;", exactly as listed in
+       * bridge_allowed_targets.
+       * </pre>
+       *
+       * <code>string target = 1 [json_name = "target"];</code>
+       * @param value The target to set.
+       * @return This builder for chaining.
+       */
+      public Builder setTarget(
+          java.lang.String value) {
+        if (value == null) { throw new NullPointerException(); }
+        target_ = value;
+        bitField0_ |= 0x00000001;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * target is the allowlist entry, "&lt;vm&gt;:&lt;contract&gt;", exactly as listed in
+       * bridge_allowed_targets.
+       * </pre>
+       *
+       * <code>string target = 1 [json_name = "target"];</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearTarget() {
+        target_ = getDefaultInstance().getTarget();
+        bitField0_ = (bitField0_ & ~0x00000001);
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * target is the allowlist entry, "&lt;vm&gt;:&lt;contract&gt;", exactly as listed in
+       * bridge_allowed_targets.
+       * </pre>
+       *
+       * <code>string target = 1 [json_name = "target"];</code>
+       * @param value The bytes for target to set.
+       * @return This builder for chaining.
+       */
+      public Builder setTargetBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) { throw new NullPointerException(); }
+        checkByteStringIsUtf8(value);
+        target_ = value;
+        bitField0_ |= 0x00000001;
+        onChanged();
+        return this;
+      }
+
+      private long codeId_ ;
+      /**
+       * <pre>
+       * code_id is the code the contract must run for the bridge to call it.
+       * </pre>
+       *
+       * <code>uint64 code_id = 2 [json_name = "codeId", (.gogoproto.customname) = "CodeID"];</code>
+       * @return The codeId.
+       */
+      @java.lang.Override
+      public long getCodeId() {
+        return codeId_;
+      }
+      /**
+       * <pre>
+       * code_id is the code the contract must run for the bridge to call it.
+       * </pre>
+       *
+       * <code>uint64 code_id = 2 [json_name = "codeId", (.gogoproto.customname) = "CodeID"];</code>
+       * @param value The codeId to set.
+       * @return This builder for chaining.
+       */
+      public Builder setCodeId(long value) {
+
+        codeId_ = value;
+        bitField0_ |= 0x00000002;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * code_id is the code the contract must run for the bridge to call it.
+       * </pre>
+       *
+       * <code>uint64 code_id = 2 [json_name = "codeId", (.gogoproto.customname) = "CodeID"];</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearCodeId() {
+        bitField0_ = (bitField0_ & ~0x00000002);
+        codeId_ = 0L;
+        onChanged();
+        return this;
+      }
+
+      private long historyLen_ ;
+      /**
+       * <pre>
+       * history_len is the length of the contract's code history (wasmd
+       * ContractCodeHistory) the pin was taken at. Every migration appends to the
+       * history, so a contract migrated away and back to code_id (which lets
+       * other code rewrite its state) no longer matches the pin.
+       * </pre>
+       *
+       * <code>uint64 history_len = 3 [json_name = "historyLen", (.gogoproto.customname) = "HistoryLen"];</code>
+       * @return The historyLen.
+       */
+      @java.lang.Override
+      public long getHistoryLen() {
+        return historyLen_;
+      }
+      /**
+       * <pre>
+       * history_len is the length of the contract's code history (wasmd
+       * ContractCodeHistory) the pin was taken at. Every migration appends to the
+       * history, so a contract migrated away and back to code_id (which lets
+       * other code rewrite its state) no longer matches the pin.
+       * </pre>
+       *
+       * <code>uint64 history_len = 3 [json_name = "historyLen", (.gogoproto.customname) = "HistoryLen"];</code>
+       * @param value The historyLen to set.
+       * @return This builder for chaining.
+       */
+      public Builder setHistoryLen(long value) {
+
+        historyLen_ = value;
+        bitField0_ |= 0x00000004;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * history_len is the length of the contract's code history (wasmd
+       * ContractCodeHistory) the pin was taken at. Every migration appends to the
+       * history, so a contract migrated away and back to code_id (which lets
+       * other code rewrite its state) no longer matches the pin.
+       * </pre>
+       *
+       * <code>uint64 history_len = 3 [json_name = "historyLen", (.gogoproto.customname) = "HistoryLen"];</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearHistoryLen() {
+        bitField0_ = (bitField0_ & ~0x00000004);
+        historyLen_ = 0L;
+        onChanged();
+        return this;
+      }
+
+      // @@protoc_insertion_point(builder_scope:qorechain.crossvm.v1.BridgeTargetPin)
+    }
+
+    // @@protoc_insertion_point(class_scope:qorechain.crossvm.v1.BridgeTargetPin)
+    private static final qorechain.crossvm.v1.Tx.BridgeTargetPin DEFAULT_INSTANCE;
+    static {
+      DEFAULT_INSTANCE = new qorechain.crossvm.v1.Tx.BridgeTargetPin();
+    }
+
+    public static qorechain.crossvm.v1.Tx.BridgeTargetPin getDefaultInstance() {
+      return DEFAULT_INSTANCE;
+    }
+
+    private static final com.google.protobuf.Parser<BridgeTargetPin>
+        PARSER = new com.google.protobuf.AbstractParser<BridgeTargetPin>() {
+      @java.lang.Override
+      public BridgeTargetPin parsePartialFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        Builder builder = newBuilder();
+        try {
+          builder.mergeFrom(input, extensionRegistry);
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          throw e.setUnfinishedMessage(builder.buildPartial());
+        } catch (com.google.protobuf.UninitializedMessageException e) {
+          throw e.asInvalidProtocolBufferException().setUnfinishedMessage(builder.buildPartial());
+        } catch (java.io.IOException e) {
+          throw new com.google.protobuf.InvalidProtocolBufferException(e)
+              .setUnfinishedMessage(builder.buildPartial());
+        }
+        return builder.buildPartial();
+      }
+    };
+
+    public static com.google.protobuf.Parser<BridgeTargetPin> parser() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Parser<BridgeTargetPin> getParserForType() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public qorechain.crossvm.v1.Tx.BridgeTargetPin getDefaultInstanceForType() {
+      return DEFAULT_INSTANCE;
+    }
+
+  }
+
   private static final com.google.protobuf.Descriptors.Descriptor
     internal_static_qorechain_crossvm_v1_MsgCrossVMCall_descriptor;
   private static final 
@@ -4836,6 +7658,11 @@ public final class Tx extends com.google.protobuf.GeneratedFile {
   private static final 
     com.google.protobuf.GeneratedMessage.FieldAccessorTable
       internal_static_qorechain_crossvm_v1_MsgUpdateParamsResponse_fieldAccessorTable;
+  private static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_qorechain_crossvm_v1_BridgeTargetPin_descriptor;
+  private static final 
+    com.google.protobuf.GeneratedMessage.FieldAccessorTable
+      internal_static_qorechain_crossvm_v1_BridgeTargetPin_fieldAccessorTable;
 
   public static com.google.protobuf.Descriptors.FileDescriptor
       getDescriptor() {
@@ -4849,7 +7676,7 @@ public final class Tx extends com.google.protobuf.GeneratedFile {
       "in.crossvm.v1\032\027cosmos/msg/v1/msg.proto\032\031" +
       "cosmos_proto/cosmos.proto\032\036cosmos/base/v" +
       "1beta1/coin.proto\032\024gogoproto/gogo.proto\"" +
-      "\365\002\n\016MsgCrossVMCall\0220\n\006sender\030\001 \001(\tB\030\322\264-\024" +
+      "\307\003\n\016MsgCrossVMCall\0220\n\006sender\030\001 \001(\tB\030\322\264-\024" +
       "cosmos.AddressStringR\006sender\0223\n\tsource_v" +
       "m\030\002 \001(\tB\026\342\336\037\010SourceVM\372\336\037\006VMTypeR\010sourceV" +
       "m\0223\n\ttarget_vm\030\003 \001(\tB\026\342\336\037\010TargetVM\372\336\037\006VM" +
@@ -4858,31 +7685,54 @@ public final class Tx extends com.google.protobuf.GeneratedFile {
       "d\022a\n\005funds\030\006 \003(\0132\031.cosmos.base.v1beta1.C" +
       "oinB0\310\336\037\000\252\337\037(github.com/cosmos/cosmos-sd" +
       "k/types.CoinsR\005funds\022\024\n\005async\030\007 \001(\010R\005asy" +
-      "nc:\013\202\347\260*\006sender\"\221\001\n\026MsgCrossVMCallRespon" +
-      "se\022,\n\nmessage_id\030\001 \001(\tB\r\342\336\037\tMessageIDR\tm" +
-      "essageId\022\032\n\010executed\030\002 \001(\010R\010executed\022\022\n\004" +
-      "data\030\003 \001(\014R\004data\022\031\n\010gas_used\030\004 \001(\004R\007gasU" +
-      "sed\"Y\n\017MsgProcessQueue\0226\n\tauthority\030\001 \001(" +
-      "\tB\030\322\264-\024cosmos.AddressStringR\tauthority:\016" +
-      "\202\347\260*\tauthority\"\031\n\027MsgProcessQueueRespons" +
-      "e\"\253\002\n\017MsgUpdateParams\0226\n\tauthority\030\001 \001(\t" +
-      "B\030\322\264-\024cosmos.AddressStringR\tauthority\022(\n" +
-      "\020max_message_size\030\002 \001(\004R\016maxMessageSize\022" +
-      "$\n\016max_queue_size\030\003 \001(\rR\014maxQueueSize\0220\n" +
-      "\024queue_timeout_blocks\030\004 \001(\003R\022queueTimeou" +
-      "tBlocks\022\030\n\007enabled\030\005 \001(\010R\007enabled\0224\n\026bri" +
-      "dge_allowed_targets\030\006 \003(\tR\024bridgeAllowed" +
-      "Targets:\016\202\347\260*\tauthority\"\031\n\027MsgUpdatePara" +
-      "msResponse2\273\002\n\003Msg\022a\n\013CrossVMCall\022$.qore" +
-      "chain.crossvm.v1.MsgCrossVMCall\032,.qorech" +
-      "ain.crossvm.v1.MsgCrossVMCallResponse\022d\n" +
-      "\014ProcessQueue\022%.qorechain.crossvm.v1.Msg" +
-      "ProcessQueue\032-.qorechain.crossvm.v1.MsgP" +
-      "rocessQueueResponse\022d\n\014UpdateParams\022%.qo" +
-      "rechain.crossvm.v1.MsgUpdateParams\032-.qor" +
-      "echain.crossvm.v1.MsgUpdateParamsRespons" +
-      "e\032\005\200\347\260*\001B5Z3github.com/qorechain/qorecha" +
-      "in-core/x/crossvm/typesb\006proto3"
+      "nc\022&\n\017async_gas_limit\030\010 \001(\004R\rasyncGasLim" +
+      "it\022(\n\020async_max_factor\030\t \001(\004R\016asyncMaxFa" +
+      "ctor:\013\202\347\260*\006sender\"\221\001\n\026MsgCrossVMCallResp" +
+      "onse\022,\n\nmessage_id\030\001 \001(\tB\r\342\336\037\tMessageIDR" +
+      "\tmessageId\022\032\n\010executed\030\002 \001(\010R\010executed\022\022" +
+      "\n\004data\030\003 \001(\014R\004data\022\031\n\010gas_used\030\004 \001(\004R\007ga" +
+      "sUsed\"Y\n\017MsgProcessQueue\0226\n\tauthority\030\001 " +
+      "\001(\tB\030\322\264-\024cosmos.AddressStringR\tauthority" +
+      ":\016\202\347\260*\tauthority\"\031\n\027MsgProcessQueueRespo" +
+      "nse\"\325\007\n\017MsgUpdateParams\0226\n\tauthority\030\001 \001" +
+      "(\tB\030\322\264-\024cosmos.AddressStringR\tauthority\022" +
+      "(\n\020max_message_size\030\002 \001(\004R\016maxMessageSiz" +
+      "e\022$\n\016max_queue_size\030\003 \001(\rR\014maxQueueSize\022" +
+      "0\n\024queue_timeout_blocks\030\004 \001(\003R\022queueTime" +
+      "outBlocks\022\030\n\007enabled\030\005 \001(\010R\007enabled\0224\n\026b" +
+      "ridge_allowed_targets\030\006 \003(\tR\024bridgeAllow" +
+      "edTargets\022Y\n\022bridge_target_pins\030\007 \003(\0132%." +
+      "qorechain.crossvm.v1.BridgeTargetPinB\004\310\336" +
+      "\037\000R\020bridgeTargetPins\0223\n\026max_pending_per_" +
+      "sender\030\010 \001(\rR\023maxPendingPerSender\022)\n\021max" +
+      "_cosmos_tx_gas\030\t \001(\004R\016maxCosmosTxGas\0226\n\027" +
+      "record_retention_blocks\030\n \001(\004R\025recordRet" +
+      "entionBlocks\022+\n\022max_block_wasm_gas\030\013 \001(\004" +
+      "R\017maxBlockWasmGas\0220\n\025max_tx_wasm_share_b" +
+      "ps\030\014 \001(\rR\021maxTxWasmShareBps\0226\n\030max_block" +
+      "_level_wasm_gas\030\r \001(\004R\024maxBlockLevelWasm" +
+      "Gas\0223\n\026queue_wasm_reserve_bps\030\016 \001(\rR\023que" +
+      "ueWasmReserveBps\022;\n\032wasm_congestion_max_" +
+      "factor\030\017 \001(\rR\027wasmCongestionMaxFactor\022;\n" +
+      "\032wasm_congestion_target_bps\030\020 \001(\rR\027wasmC" +
+      "ongestionTargetBps\022/\n\024max_block_upload_b" +
+      "ps\030\021 \001(\rR\021maxBlockUploadBps\022>\n\034max_queue" +
+      "_timeouts_per_block\030\022 \001(\rR\030maxQueueTimeo" +
+      "utsPerBlock:\016\202\347\260*\tauthority\"\031\n\027MsgUpdate" +
+      "ParamsResponse\"\177\n\017BridgeTargetPin\022\026\n\006tar" +
+      "get\030\001 \001(\tR\006target\022#\n\007code_id\030\002 \001(\004B\n\342\336\037\006" +
+      "CodeIDR\006codeId\022/\n\013history_len\030\003 \001(\004B\016\342\336\037" +
+      "\nHistoryLenR\nhistoryLen2\273\002\n\003Msg\022a\n\013Cross" +
+      "VMCall\022$.qorechain.crossvm.v1.MsgCrossVM" +
+      "Call\032,.qorechain.crossvm.v1.MsgCrossVMCa" +
+      "llResponse\022d\n\014ProcessQueue\022%.qorechain.c" +
+      "rossvm.v1.MsgProcessQueue\032-.qorechain.cr" +
+      "ossvm.v1.MsgProcessQueueResponse\022d\n\014Upda" +
+      "teParams\022%.qorechain.crossvm.v1.MsgUpdat" +
+      "eParams\032-.qorechain.crossvm.v1.MsgUpdate" +
+      "ParamsResponse\032\005\200\347\260*\001B5Z3github.com/qore" +
+      "chain/qorechain-core/x/crossvm/typesb\006pr" +
+      "oto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
@@ -4897,7 +7747,7 @@ public final class Tx extends com.google.protobuf.GeneratedFile {
     internal_static_qorechain_crossvm_v1_MsgCrossVMCall_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_qorechain_crossvm_v1_MsgCrossVMCall_descriptor,
-        new java.lang.String[] { "Sender", "SourceVm", "TargetVm", "TargetContract", "Payload", "Funds", "Async", });
+        new java.lang.String[] { "Sender", "SourceVm", "TargetVm", "TargetContract", "Payload", "Funds", "Async", "AsyncGasLimit", "AsyncMaxFactor", });
     internal_static_qorechain_crossvm_v1_MsgCrossVMCallResponse_descriptor =
       getDescriptor().getMessageType(1);
     internal_static_qorechain_crossvm_v1_MsgCrossVMCallResponse_fieldAccessorTable = new
@@ -4921,13 +7771,19 @@ public final class Tx extends com.google.protobuf.GeneratedFile {
     internal_static_qorechain_crossvm_v1_MsgUpdateParams_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_qorechain_crossvm_v1_MsgUpdateParams_descriptor,
-        new java.lang.String[] { "Authority", "MaxMessageSize", "MaxQueueSize", "QueueTimeoutBlocks", "Enabled", "BridgeAllowedTargets", });
+        new java.lang.String[] { "Authority", "MaxMessageSize", "MaxQueueSize", "QueueTimeoutBlocks", "Enabled", "BridgeAllowedTargets", "BridgeTargetPins", "MaxPendingPerSender", "MaxCosmosTxGas", "RecordRetentionBlocks", "MaxBlockWasmGas", "MaxTxWasmShareBps", "MaxBlockLevelWasmGas", "QueueWasmReserveBps", "WasmCongestionMaxFactor", "WasmCongestionTargetBps", "MaxBlockUploadBps", "MaxQueueTimeoutsPerBlock", });
     internal_static_qorechain_crossvm_v1_MsgUpdateParamsResponse_descriptor =
       getDescriptor().getMessageType(5);
     internal_static_qorechain_crossvm_v1_MsgUpdateParamsResponse_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_qorechain_crossvm_v1_MsgUpdateParamsResponse_descriptor,
         new java.lang.String[] { });
+    internal_static_qorechain_crossvm_v1_BridgeTargetPin_descriptor =
+      getDescriptor().getMessageType(6);
+    internal_static_qorechain_crossvm_v1_BridgeTargetPin_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessage.FieldAccessorTable(
+        internal_static_qorechain_crossvm_v1_BridgeTargetPin_descriptor,
+        new java.lang.String[] { "Target", "CodeId", "HistoryLen", });
     descriptor.resolveAllFeaturesImmutable();
     cosmos.msg.v1.Msg.getDescriptor();
     cosmos_proto.Cosmos.getDescriptor();

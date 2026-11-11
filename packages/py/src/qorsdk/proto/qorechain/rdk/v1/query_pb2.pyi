@@ -7,7 +7,7 @@ from typing import ClassVar as _ClassVar, Iterable as _Iterable, Mapping as _Map
 DESCRIPTOR: _descriptor.FileDescriptor
 
 class ParamsView(_message.Message):
-    __slots__ = ("max_rollups", "min_stake_for_rollup", "rollup_creation_burn_rate", "default_challenge_window", "max_da_blob_size", "blob_retention_blocks", "max_batches_per_block")
+    __slots__ = ("max_rollups", "min_stake_for_rollup", "rollup_creation_burn_rate", "default_challenge_window", "max_da_blob_size", "blob_retention_blocks", "max_batches_per_block", "finalized_batch_retention_blocks", "max_posted_data_bytes", "max_posted_data_bytes_per_block", "posted_data_fee_per_byte", "posted_data_retention_blocks", "min_submitter_bond")
     MAX_ROLLUPS_FIELD_NUMBER: _ClassVar[int]
     MIN_STAKE_FOR_ROLLUP_FIELD_NUMBER: _ClassVar[int]
     ROLLUP_CREATION_BURN_RATE_FIELD_NUMBER: _ClassVar[int]
@@ -15,6 +15,12 @@ class ParamsView(_message.Message):
     MAX_DA_BLOB_SIZE_FIELD_NUMBER: _ClassVar[int]
     BLOB_RETENTION_BLOCKS_FIELD_NUMBER: _ClassVar[int]
     MAX_BATCHES_PER_BLOCK_FIELD_NUMBER: _ClassVar[int]
+    FINALIZED_BATCH_RETENTION_BLOCKS_FIELD_NUMBER: _ClassVar[int]
+    MAX_POSTED_DATA_BYTES_FIELD_NUMBER: _ClassVar[int]
+    MAX_POSTED_DATA_BYTES_PER_BLOCK_FIELD_NUMBER: _ClassVar[int]
+    POSTED_DATA_FEE_PER_BYTE_FIELD_NUMBER: _ClassVar[int]
+    POSTED_DATA_RETENTION_BLOCKS_FIELD_NUMBER: _ClassVar[int]
+    MIN_SUBMITTER_BOND_FIELD_NUMBER: _ClassVar[int]
     max_rollups: int
     min_stake_for_rollup: int
     rollup_creation_burn_rate: str
@@ -22,10 +28,16 @@ class ParamsView(_message.Message):
     max_da_blob_size: int
     blob_retention_blocks: int
     max_batches_per_block: int
-    def __init__(self, max_rollups: _Optional[int] = ..., min_stake_for_rollup: _Optional[int] = ..., rollup_creation_burn_rate: _Optional[str] = ..., default_challenge_window: _Optional[int] = ..., max_da_blob_size: _Optional[int] = ..., blob_retention_blocks: _Optional[int] = ..., max_batches_per_block: _Optional[int] = ...) -> None: ...
+    finalized_batch_retention_blocks: int
+    max_posted_data_bytes: int
+    max_posted_data_bytes_per_block: int
+    posted_data_fee_per_byte: int
+    posted_data_retention_blocks: int
+    min_submitter_bond: int
+    def __init__(self, max_rollups: _Optional[int] = ..., min_stake_for_rollup: _Optional[int] = ..., rollup_creation_burn_rate: _Optional[str] = ..., default_challenge_window: _Optional[int] = ..., max_da_blob_size: _Optional[int] = ..., blob_retention_blocks: _Optional[int] = ..., max_batches_per_block: _Optional[int] = ..., finalized_batch_retention_blocks: _Optional[int] = ..., max_posted_data_bytes: _Optional[int] = ..., max_posted_data_bytes_per_block: _Optional[int] = ..., posted_data_fee_per_byte: _Optional[int] = ..., posted_data_retention_blocks: _Optional[int] = ..., min_submitter_bond: _Optional[int] = ...) -> None: ...
 
 class RollupView(_message.Message):
-    __slots__ = ("rollup_id", "creator", "profile", "settlement_mode", "da_backend", "block_time_ms", "max_tx_per_block", "vm_type", "status", "stake_amount", "layer_id", "created_height", "escrow_balance", "challenge_window_sec", "challenge_bond", "proof_system")
+    __slots__ = ("rollup_id", "creator", "profile", "settlement_mode", "da_backend", "block_time_ms", "max_tx_per_block", "vm_type", "status", "stake_amount", "layer_id", "created_height", "escrow_balance", "challenge_window_sec", "challenge_bond", "proof_system", "has_verification_key", "sequencing", "execution_vm", "privacy", "members", "members_epoch", "deposit_pool")
     ROLLUP_ID_FIELD_NUMBER: _ClassVar[int]
     CREATOR_FIELD_NUMBER: _ClassVar[int]
     PROFILE_FIELD_NUMBER: _ClassVar[int]
@@ -42,6 +54,13 @@ class RollupView(_message.Message):
     CHALLENGE_WINDOW_SEC_FIELD_NUMBER: _ClassVar[int]
     CHALLENGE_BOND_FIELD_NUMBER: _ClassVar[int]
     PROOF_SYSTEM_FIELD_NUMBER: _ClassVar[int]
+    HAS_VERIFICATION_KEY_FIELD_NUMBER: _ClassVar[int]
+    SEQUENCING_FIELD_NUMBER: _ClassVar[int]
+    EXECUTION_VM_FIELD_NUMBER: _ClassVar[int]
+    PRIVACY_FIELD_NUMBER: _ClassVar[int]
+    MEMBERS_FIELD_NUMBER: _ClassVar[int]
+    MEMBERS_EPOCH_FIELD_NUMBER: _ClassVar[int]
+    DEPOSIT_POOL_FIELD_NUMBER: _ClassVar[int]
     rollup_id: str
     creator: str
     profile: str
@@ -58,10 +77,17 @@ class RollupView(_message.Message):
     challenge_window_sec: int
     challenge_bond: int
     proof_system: str
-    def __init__(self, rollup_id: _Optional[str] = ..., creator: _Optional[str] = ..., profile: _Optional[str] = ..., settlement_mode: _Optional[str] = ..., da_backend: _Optional[str] = ..., block_time_ms: _Optional[int] = ..., max_tx_per_block: _Optional[int] = ..., vm_type: _Optional[str] = ..., status: _Optional[str] = ..., stake_amount: _Optional[int] = ..., layer_id: _Optional[str] = ..., created_height: _Optional[int] = ..., escrow_balance: _Optional[int] = ..., challenge_window_sec: _Optional[int] = ..., challenge_bond: _Optional[int] = ..., proof_system: _Optional[str] = ...) -> None: ...
+    has_verification_key: bool
+    sequencing: str
+    execution_vm: str
+    privacy: str
+    members: _containers.RepeatedScalarFieldContainer[str]
+    members_epoch: int
+    deposit_pool: int
+    def __init__(self, rollup_id: _Optional[str] = ..., creator: _Optional[str] = ..., profile: _Optional[str] = ..., settlement_mode: _Optional[str] = ..., da_backend: _Optional[str] = ..., block_time_ms: _Optional[int] = ..., max_tx_per_block: _Optional[int] = ..., vm_type: _Optional[str] = ..., status: _Optional[str] = ..., stake_amount: _Optional[int] = ..., layer_id: _Optional[str] = ..., created_height: _Optional[int] = ..., escrow_balance: _Optional[int] = ..., challenge_window_sec: _Optional[int] = ..., challenge_bond: _Optional[int] = ..., proof_system: _Optional[str] = ..., has_verification_key: bool = ..., sequencing: _Optional[str] = ..., execution_vm: _Optional[str] = ..., privacy: _Optional[str] = ..., members: _Optional[_Iterable[str]] = ..., members_epoch: _Optional[int] = ..., deposit_pool: _Optional[int] = ...) -> None: ...
 
 class BatchView(_message.Message):
-    __slots__ = ("rollup_id", "batch_index", "state_root", "prev_state_root", "tx_count", "data_hash", "proof_type", "status", "submitted_at", "finalized_at", "withdrawals_root", "submitted_time")
+    __slots__ = ("rollup_id", "batch_index", "state_root", "prev_state_root", "tx_count", "data_hash", "proof_type", "status", "submitted_at", "finalized_at", "withdrawals_root", "submitted_time", "withdrawals_bound", "inbox_start", "inbox_end")
     ROLLUP_ID_FIELD_NUMBER: _ClassVar[int]
     BATCH_INDEX_FIELD_NUMBER: _ClassVar[int]
     STATE_ROOT_FIELD_NUMBER: _ClassVar[int]
@@ -74,6 +100,9 @@ class BatchView(_message.Message):
     FINALIZED_AT_FIELD_NUMBER: _ClassVar[int]
     WITHDRAWALS_ROOT_FIELD_NUMBER: _ClassVar[int]
     SUBMITTED_TIME_FIELD_NUMBER: _ClassVar[int]
+    WITHDRAWALS_BOUND_FIELD_NUMBER: _ClassVar[int]
+    INBOX_START_FIELD_NUMBER: _ClassVar[int]
+    INBOX_END_FIELD_NUMBER: _ClassVar[int]
     rollup_id: str
     batch_index: int
     state_root: str
@@ -86,7 +115,10 @@ class BatchView(_message.Message):
     finalized_at: int
     withdrawals_root: str
     submitted_time: int
-    def __init__(self, rollup_id: _Optional[str] = ..., batch_index: _Optional[int] = ..., state_root: _Optional[str] = ..., prev_state_root: _Optional[str] = ..., tx_count: _Optional[int] = ..., data_hash: _Optional[str] = ..., proof_type: _Optional[str] = ..., status: _Optional[str] = ..., submitted_at: _Optional[int] = ..., finalized_at: _Optional[int] = ..., withdrawals_root: _Optional[str] = ..., submitted_time: _Optional[int] = ...) -> None: ...
+    withdrawals_bound: bool
+    inbox_start: int
+    inbox_end: int
+    def __init__(self, rollup_id: _Optional[str] = ..., batch_index: _Optional[int] = ..., state_root: _Optional[str] = ..., prev_state_root: _Optional[str] = ..., tx_count: _Optional[int] = ..., data_hash: _Optional[str] = ..., proof_type: _Optional[str] = ..., status: _Optional[str] = ..., submitted_at: _Optional[int] = ..., finalized_at: _Optional[int] = ..., withdrawals_root: _Optional[str] = ..., submitted_time: _Optional[int] = ..., withdrawals_bound: bool = ..., inbox_start: _Optional[int] = ..., inbox_end: _Optional[int] = ...) -> None: ...
 
 class QueryParamsRequest(_message.Message):
     __slots__ = ()
@@ -197,3 +229,89 @@ class QueryBlobResponse(_message.Message):
     BLOB_FIELD_NUMBER: _ClassVar[int]
     blob: BlobView
     def __init__(self, blob: _Optional[_Union[BlobView, _Mapping]] = ...) -> None: ...
+
+class PostedDataView(_message.Message):
+    __slots__ = ("rollup_id", "sequence", "data_hash", "size", "poster", "height", "inbox_acc", "expires_at_height")
+    ROLLUP_ID_FIELD_NUMBER: _ClassVar[int]
+    SEQUENCE_FIELD_NUMBER: _ClassVar[int]
+    DATA_HASH_FIELD_NUMBER: _ClassVar[int]
+    SIZE_FIELD_NUMBER: _ClassVar[int]
+    POSTER_FIELD_NUMBER: _ClassVar[int]
+    HEIGHT_FIELD_NUMBER: _ClassVar[int]
+    INBOX_ACC_FIELD_NUMBER: _ClassVar[int]
+    EXPIRES_AT_HEIGHT_FIELD_NUMBER: _ClassVar[int]
+    rollup_id: str
+    sequence: int
+    data_hash: str
+    size: int
+    poster: str
+    height: int
+    inbox_acc: str
+    expires_at_height: int
+    def __init__(self, rollup_id: _Optional[str] = ..., sequence: _Optional[int] = ..., data_hash: _Optional[str] = ..., size: _Optional[int] = ..., poster: _Optional[str] = ..., height: _Optional[int] = ..., inbox_acc: _Optional[str] = ..., expires_at_height: _Optional[int] = ...) -> None: ...
+
+class QueryPostedDataRequest(_message.Message):
+    __slots__ = ("rollup_id", "sequence")
+    ROLLUP_ID_FIELD_NUMBER: _ClassVar[int]
+    SEQUENCE_FIELD_NUMBER: _ClassVar[int]
+    rollup_id: str
+    sequence: int
+    def __init__(self, rollup_id: _Optional[str] = ..., sequence: _Optional[int] = ...) -> None: ...
+
+class QueryPostedDataResponse(_message.Message):
+    __slots__ = ("posted_data",)
+    POSTED_DATA_FIELD_NUMBER: _ClassVar[int]
+    posted_data: PostedDataView
+    def __init__(self, posted_data: _Optional[_Union[PostedDataView, _Mapping]] = ...) -> None: ...
+
+class InboxView(_message.Message):
+    __slots__ = ("rollup_id", "sequencing", "head_sequence", "head_acc", "consumed_sequence", "consumed_acc", "range_end", "range_data_hash")
+    ROLLUP_ID_FIELD_NUMBER: _ClassVar[int]
+    SEQUENCING_FIELD_NUMBER: _ClassVar[int]
+    HEAD_SEQUENCE_FIELD_NUMBER: _ClassVar[int]
+    HEAD_ACC_FIELD_NUMBER: _ClassVar[int]
+    CONSUMED_SEQUENCE_FIELD_NUMBER: _ClassVar[int]
+    CONSUMED_ACC_FIELD_NUMBER: _ClassVar[int]
+    RANGE_END_FIELD_NUMBER: _ClassVar[int]
+    RANGE_DATA_HASH_FIELD_NUMBER: _ClassVar[int]
+    rollup_id: str
+    sequencing: str
+    head_sequence: int
+    head_acc: str
+    consumed_sequence: int
+    consumed_acc: str
+    range_end: int
+    range_data_hash: str
+    def __init__(self, rollup_id: _Optional[str] = ..., sequencing: _Optional[str] = ..., head_sequence: _Optional[int] = ..., head_acc: _Optional[str] = ..., consumed_sequence: _Optional[int] = ..., consumed_acc: _Optional[str] = ..., range_end: _Optional[int] = ..., range_data_hash: _Optional[str] = ...) -> None: ...
+
+class QueryInboxRequest(_message.Message):
+    __slots__ = ("rollup_id", "inbox_end")
+    ROLLUP_ID_FIELD_NUMBER: _ClassVar[int]
+    INBOX_END_FIELD_NUMBER: _ClassVar[int]
+    rollup_id: str
+    inbox_end: int
+    def __init__(self, rollup_id: _Optional[str] = ..., inbox_end: _Optional[int] = ...) -> None: ...
+
+class QueryInboxResponse(_message.Message):
+    __slots__ = ("inbox",)
+    INBOX_FIELD_NUMBER: _ClassVar[int]
+    inbox: InboxView
+    def __init__(self, inbox: _Optional[_Union[InboxView, _Mapping]] = ...) -> None: ...
+
+class QuerySubmitterBondRequest(_message.Message):
+    __slots__ = ("rollup_id", "submitter")
+    ROLLUP_ID_FIELD_NUMBER: _ClassVar[int]
+    SUBMITTER_FIELD_NUMBER: _ClassVar[int]
+    rollup_id: str
+    submitter: str
+    def __init__(self, rollup_id: _Optional[str] = ..., submitter: _Optional[str] = ...) -> None: ...
+
+class QuerySubmitterBondResponse(_message.Message):
+    __slots__ = ("amount", "last_submit_time", "unbond_after")
+    AMOUNT_FIELD_NUMBER: _ClassVar[int]
+    LAST_SUBMIT_TIME_FIELD_NUMBER: _ClassVar[int]
+    UNBOND_AFTER_FIELD_NUMBER: _ClassVar[int]
+    amount: int
+    last_submit_time: int
+    unbond_after: int
+    def __init__(self, amount: _Optional[int] = ..., last_submit_time: _Optional[int] = ..., unbond_after: _Optional[int] = ...) -> None: ...

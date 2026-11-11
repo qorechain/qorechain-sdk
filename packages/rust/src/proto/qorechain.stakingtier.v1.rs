@@ -133,6 +133,205 @@ pub struct QueryPoolResponse {
     #[prost(uint64, tag="14")]
     pub lock_count: u64,
 }
+/// AprBase is the base yield the module measured at its latest settlement, and
+/// how that settlement was funded. Every rate is a decimal string in basis
+/// points a year.
+#[derive(Clone, PartialEq, ::prost::Message)]
+pub struct AprBase {
+    /// gross_base_apr_bps is the pool's last_base_apy_bps: the yield the epoch's
+    /// base emission gives the bonded stake through the fee split
+    /// (validator_share + staker_share), before commission. It leaves out fees
+    /// and is measured once per settlement, not live.
+    #[prost(string, tag="1")]
+    pub gross_base_apr_bps: ::prost::alloc::string::String,
+    /// computed_height and computed_time (unix seconds) are the settlement that
+    /// measured it.
+    #[prost(int64, tag="2")]
+    pub computed_height: i64,
+    #[prost(int64, tag="3")]
+    pub computed_time: i64,
+    /// source is "emission" when the base emission is paying a yield,
+    /// "fees_only" when the latest settlement measured none (the emission cap is
+    /// reached or the target is zero: stakers earn fees only), and
+    /// "not_settled" before the first settlement.
+    #[prost(string, tag="4")]
+    pub source: ::prost::alloc::string::String,
+    /// last_owed and last_funded (uqor) are the bonus the latest settlement owed
+    /// and what it could fund.
+    #[prost(string, tag="5")]
+    pub last_owed: ::prost::alloc::string::String,
+    #[prost(string, tag="6")]
+    pub last_funded: ::prost::alloc::string::String,
+    /// bonus_funding_ratio is last_funded / last_owed, 1 when nothing was owed.
+    /// Below 1, every bonus was paid pro rata by this factor.
+    #[prost(string, tag="7")]
+    pub bonus_funding_ratio: ::prost::alloc::string::String,
+    /// bonus_enabled is false when the protocol feature or the enabled param is
+    /// off: no bonus accrues.
+    #[prost(bool, tag="8")]
+    pub bonus_enabled: bool,
+    #[prost(uint32, tag="9")]
+    pub max_total_apy_bps: u32,
+}
+#[derive(Clone, PartialEq, ::prost::Message)]
+pub struct QueryAprRequest {
+    /// validator (optional, qorvaloper) states the base net of its commission.
+    #[prost(string, tag="1")]
+    pub validator: ::prost::alloc::string::String,
+}
+/// TierAprView is one lock term as a new lock on the queried base would earn.
+#[derive(Clone, PartialEq, ::prost::Message)]
+pub struct TierAprView {
+    #[prost(uint32, tag="1")]
+    pub months: u32,
+    /// bonus_bps is the term's bonus as configured.
+    #[prost(uint32, tag="2")]
+    pub bonus_bps: u32,
+    /// effective_bonus_bps is bonus_bps cut to the room left under
+    /// max_total_apy_bps above the base; zero when the bonus is disabled.
+    #[prost(string, tag="3")]
+    pub effective_bonus_bps: ::prost::alloc::string::String,
+    /// effective_apr_bps is the base plus effective_bonus_bps.
+    #[prost(string, tag="4")]
+    pub effective_apr_bps: ::prost::alloc::string::String,
+}
+#[derive(Clone, PartialEq, ::prost::Message)]
+pub struct QueryAprResponse {
+    #[prost(message, optional, tag="1")]
+    pub base: ::core::option::Option<AprBase>,
+    /// validator and commission echo the request; commission is empty without
+    /// one.
+    #[prost(string, tag="2")]
+    pub validator: ::prost::alloc::string::String,
+    #[prost(string, tag="3")]
+    pub commission: ::prost::alloc::string::String,
+    /// base_apr_bps is the base the tiers are stated against: the gross base,
+    /// or the validator's delegators' base net of commission.
+    #[prost(string, tag="4")]
+    pub base_apr_bps: ::prost::alloc::string::String,
+    #[prost(message, repeated, tag="5")]
+    pub tiers: ::prost::alloc::vec::Vec<TierAprView>,
+    /// light_node_bonus_bps is added to the locks of a holder that runs an
+    /// active light node, before the ceiling.
+    #[prost(uint32, tag="6")]
+    pub light_node_bonus_bps: u32,
+    /// validator_bonus_bps is paid on an active validator's whole self-bond;
+    /// validator_effective_bonus_bps is what it pays after the ceiling over the
+    /// gross base (a self-bond's base is gross).
+    #[prost(uint32, tag="7")]
+    pub validator_bonus_bps: u32,
+    #[prost(string, tag="8")]
+    pub validator_effective_bonus_bps: ::prost::alloc::string::String,
+}
+#[derive(Clone, PartialEq, ::prost::Message)]
+pub struct QueryDelegatorAprRequest {
+    #[prost(string, tag="1")]
+    pub delegator: ::prost::alloc::string::String,
+    /// validator (optional, qorvaloper) limits the answer to that delegation.
+    #[prost(string, tag="2")]
+    pub validator: ::prost::alloc::string::String,
+}
+/// AprPosition is one part of a delegation and the yield it earns going
+/// forward, as the next settlement would pay it.
+#[derive(Clone, PartialEq, ::prost::Message)]
+pub struct AprPosition {
+    /// kind is "lock" (an open lock) or "unlocked" (the rest of the delegation,
+    /// expired locks included).
+    #[prost(string, tag="1")]
+    pub kind: ::prost::alloc::string::String,
+    #[prost(uint64, tag="2")]
+    pub lock_id: u64,
+    #[prost(uint32, tag="3")]
+    pub months: u32,
+    #[prost(int64, tag="4")]
+    pub end_time: i64,
+    /// amount (uqor) is what the position covers today.
+    #[prost(string, tag="5")]
+    pub amount: ::prost::alloc::string::String,
+    /// base_apr_bps is the position's base: net of commission for a delegator,
+    /// gross on a validator's own self-bond.
+    #[prost(string, tag="6")]
+    pub base_apr_bps: ::prost::alloc::string::String,
+    /// tier_bonus_bps is the lock term's bonus fixed when the lock was made.
+    #[prost(uint32, tag="7")]
+    pub tier_bonus_bps: u32,
+    /// light_node_bonus_bps is the light node bonus added to this lock, zero
+    /// when the holder does not qualify or the position is unlocked.
+    #[prost(uint32, tag="8")]
+    pub light_node_bonus_bps: u32,
+    /// lock_bonus_bps is tier plus light node bonus after the ceiling.
+    #[prost(string, tag="9")]
+    pub lock_bonus_bps: ::prost::alloc::string::String,
+    /// validator_bonus_bps is the validator bonus after the ceiling, on an
+    /// active validator's own self-bond.
+    #[prost(string, tag="10")]
+    pub validator_bonus_bps: ::prost::alloc::string::String,
+    /// bonus_bps is lock_bonus_bps plus validator_bonus_bps.
+    #[prost(string, tag="11")]
+    pub bonus_bps: ::prost::alloc::string::String,
+    /// effective_apr_bps is base_apr_bps plus bonus_bps.
+    #[prost(string, tag="12")]
+    pub effective_apr_bps: ::prost::alloc::string::String,
+    /// effective_apr_at_last_funding_bps scales the bonus by the latest
+    /// settlement's bonus_funding_ratio.
+    #[prost(string, tag="13")]
+    pub effective_apr_at_last_funding_bps: ::prost::alloc::string::String,
+    /// capped is true when the ceiling cut the bonus.
+    #[prost(bool, tag="14")]
+    pub capped: bool,
+    /// reason says in words which bonuses apply and why.
+    #[prost(string, tag="15")]
+    pub reason: ::prost::alloc::string::String,
+}
+#[derive(Clone, PartialEq, ::prost::Message)]
+pub struct DelegationApr {
+    #[prost(string, tag="1")]
+    pub validator: ::prost::alloc::string::String,
+    #[prost(string, tag="2")]
+    pub commission: ::prost::alloc::string::String,
+    /// validator_active is bonded and not jailed: the validator bonus condition.
+    #[prost(bool, tag="3")]
+    pub validator_active: bool,
+    /// self_bond is true when the delegator is the validator's operator.
+    #[prost(bool, tag="4")]
+    pub self_bond: bool,
+    #[prost(string, tag="5")]
+    pub delegated_amount: ::prost::alloc::string::String,
+    /// locked_amount is what the open locks cover.
+    #[prost(string, tag="6")]
+    pub locked_amount: ::prost::alloc::string::String,
+    /// effective_apr_bps and effective_apr_at_last_funding_bps are the
+    /// positions' rates weighted by amount.
+    #[prost(string, tag="7")]
+    pub effective_apr_bps: ::prost::alloc::string::String,
+    #[prost(string, tag="8")]
+    pub effective_apr_at_last_funding_bps: ::prost::alloc::string::String,
+    #[prost(message, repeated, tag="9")]
+    pub positions: ::prost::alloc::vec::Vec<AprPosition>,
+}
+#[derive(Clone, PartialEq, ::prost::Message)]
+pub struct QueryDelegatorAprResponse {
+    #[prost(string, tag="1")]
+    pub delegator: ::prost::alloc::string::String,
+    #[prost(message, optional, tag="2")]
+    pub base: ::core::option::Option<AprBase>,
+    /// light_node_bonus is true when the delegator qualifies for the light node
+    /// bonus on their locks; light_node_reason says why or why not.
+    #[prost(bool, tag="3")]
+    pub light_node_bonus: bool,
+    #[prost(string, tag="4")]
+    pub light_node_reason: ::prost::alloc::string::String,
+    #[prost(message, repeated, tag="5")]
+    pub delegations: ::prost::alloc::vec::Vec<DelegationApr>,
+    #[prost(string, tag="6")]
+    pub total_delegated: ::prost::alloc::string::String,
+    /// effective_apr_bps and effective_apr_at_last_funding_bps are weighted by
+    /// amount over every delegation listed.
+    #[prost(string, tag="7")]
+    pub effective_apr_bps: ::prost::alloc::string::String,
+    #[prost(string, tag="8")]
+    pub effective_apr_at_last_funding_bps: ::prost::alloc::string::String,
+}
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct MsgLockDelegation {
     #[prost(string, tag="1")]

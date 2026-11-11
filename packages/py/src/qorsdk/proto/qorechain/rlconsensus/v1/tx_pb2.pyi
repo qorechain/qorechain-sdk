@@ -59,3 +59,21 @@ class MsgUpdateRewardWeights(_message.Message):
 class MsgUpdateRewardWeightsResponse(_message.Message):
     __slots__ = ()
     def __init__(self) -> None: ...
+
+class MsgUpdateGasFloorBand(_message.Message):
+    __slots__ = ("authority", "apply_enabled", "min_gas_price", "max_gas_price", "max_step_change")
+    AUTHORITY_FIELD_NUMBER: _ClassVar[int]
+    APPLY_ENABLED_FIELD_NUMBER: _ClassVar[int]
+    MIN_GAS_PRICE_FIELD_NUMBER: _ClassVar[int]
+    MAX_GAS_PRICE_FIELD_NUMBER: _ClassVar[int]
+    MAX_STEP_CHANGE_FIELD_NUMBER: _ClassVar[int]
+    authority: str
+    apply_enabled: bool
+    min_gas_price: str
+    max_gas_price: str
+    max_step_change: str
+    def __init__(self, authority: _Optional[str] = ..., apply_enabled: bool = ..., min_gas_price: _Optional[str] = ..., max_gas_price: _Optional[str] = ..., max_step_change: _Optional[str] = ...) -> None: ...
+
+class MsgUpdateGasFloorBandResponse(_message.Message):
+    __slots__ = ()
+    def __init__(self) -> None: ...

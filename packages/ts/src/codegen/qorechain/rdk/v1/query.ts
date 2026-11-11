@@ -18,6 +18,21 @@ export interface ParamsView {
   maxDaBlobSize: string;
   blobRetentionBlocks: string;
   maxBatchesPerBlock: number;
+  /**
+   * finalized_batch_retention_blocks is the effective retention, with the
+   * default filled in for a stored 0.
+   */
+  finalizedBatchRetentionBlocks: string;
+  /**
+   * The posted-data parameters (v3.2.8), effective values with the defaults
+   * filled in for a stored 0.
+   */
+  maxPostedDataBytes: string;
+  maxPostedDataBytesPerBlock: string;
+  postedDataFeePerByte: string;
+  postedDataRetentionBlocks: string;
+  /** min_submitter_bond (v3.2.8), effective value. */
+  minSubmitterBond: string;
 }
 
 /** RollupView is the query-facing view of a rollup config (scalar fields). */
@@ -49,6 +64,33 @@ export interface RollupView {
   challengeWindowSec: string;
   challengeBond: string;
   proofSystem: string;
+  /**
+   * has_verification_key is true when the rollup has a ZK verification key
+   * registered (from v3.2.7 a zk rollup can register one). A zk batch of a
+   * rollup without one is refused.
+   */
+  hasVerificationKey: boolean;
+  /**
+   * sequencing is "" (the rollup's sequencer settles) or "based" (v3.2.8,
+   * rdk-based-sequencing): anyone posts data, batches consume the inbox in
+   * order, and a zk (snark) based rollup accepts batches from anyone.
+   */
+  sequencing: string;
+  /**
+   * execution_vm (v3.2.8): "qledger-v1" for an optimistic rollup whose
+   * batches a fraud proof re-executes, else empty.
+   */
+  executionVm: string;
+  /** privacy (v3.2.8): "encapsulated" for a private rollup, else empty. */
+  privacy: string;
+  /** members and members_epoch: a private rollup's member list and epoch. */
+  members: string[];
+  membersEpoch: string;
+  /**
+   * deposit_pool: uqor deposited into a qledger-v1 rollup and not yet
+   * withdrawn.
+   */
+  depositPool: string;
 }
 
 /** BatchView is the query-facing view of a settlement batch. */
@@ -73,6 +115,19 @@ export interface BatchView {
    * challenge_window_sec.
    */
   submittedTime: string;
+  /**
+   * withdrawals_bound marks a batch settled from rdk-withdrawals-binding
+   * (v3.2.5): its transition binding and proofs commit the withdrawals root
+   * and the chain id, and its withdrawal leaves start with the chain id. False
+   * for a batch settled before the switch, whose leaves are the v1 form.
+   */
+  withdrawalsBound: boolean;
+  /**
+   * inbox_start and inbox_end are, for a batch of a based rollup (v3.2.8),
+   * the inbox range it consumed: the posts after inbox_start up to inbox_end.
+   */
+  inboxStart: string;
+  inboxEnd: string;
 }
 
 export interface QueryParamsRequest {
@@ -156,6 +211,80 @@ export interface QueryBlobResponse {
   blob?: BlobView | undefined;
 }
 
+/** PostedDataView is one posted-data commitment (v3.2.8). */
+export interface PostedDataView {
+  rollupId: string;
+  sequence: string;
+  /** data_hash is SHA-256 of the payload, hex. */
+  dataHash: string;
+  size: string;
+  poster: string;
+  /** height is the block whose transaction carries the payload. */
+  height: string;
+  /** inbox_acc is the inbox accumulator after this post, hex. */
+  inboxAcc: string;
+  /** expires_at_height is the height from which the commitment is pruned. */
+  expiresAtHeight: string;
+}
+
+export interface QueryPostedDataRequest {
+  rollupId: string;
+  sequence: string;
+}
+
+export interface QueryPostedDataResponse {
+  postedData?: PostedDataView | undefined;
+}
+
+/** InboxView is a rollup's inbox (v3.2.8). */
+export interface InboxView {
+  rollupId: string;
+  sequencing: string;
+  /** head_sequence is the sequence of the last post (0 = none yet). */
+  headSequence: string;
+  headAcc: string;
+  /** consumed_sequence is where the next based batch starts. */
+  consumedSequence: string;
+  consumedAcc: string;
+  /**
+   * range_end and range_data_hash: the data_hash a based batch with
+   * inbox_end = range_end must carry (hex). Empty when the end's commitment
+   * is no longer retained.
+   */
+  rangeEnd: string;
+  rangeDataHash: string;
+}
+
+export interface QueryInboxRequest {
+  rollupId: string;
+  /** inbox_end selects the range end for range_data_hash; 0 means the head. */
+  inboxEnd: string;
+}
+
+export interface QueryInboxResponse {
+  inbox?: InboxView | undefined;
+}
+
+export interface QuerySubmitterBondRequest {
+  rollupId: string;
+  submitter: string;
+}
+
+export interface QuerySubmitterBondResponse {
+  /** amount is the bond in uqor (0 when there is none). */
+  amount: string;
+  /**
+   * last_submit_time is the block time (unix seconds) of the submitter's
+   * last batch on the rollup, 0 when none.
+   */
+  lastSubmitTime: string;
+  /**
+   * unbond_after is the block time from which MsgUnbondRollupSubmitter
+   * succeeds.
+   */
+  unbondAfter: string;
+}
+
 function createBaseParamsView(): ParamsView {
   return {
     maxRollups: 0,
@@ -165,6 +294,12 @@ function createBaseParamsView(): ParamsView {
     maxDaBlobSize: "0",
     blobRetentionBlocks: "0",
     maxBatchesPerBlock: 0,
+    finalizedBatchRetentionBlocks: "0",
+    maxPostedDataBytes: "0",
+    maxPostedDataBytesPerBlock: "0",
+    postedDataFeePerByte: "0",
+    postedDataRetentionBlocks: "0",
+    minSubmitterBond: "0",
   };
 }
 
@@ -190,6 +325,24 @@ export const ParamsView: MessageFns<ParamsView> = {
     }
     if (message.maxBatchesPerBlock !== 0) {
       writer.uint32(56).uint32(message.maxBatchesPerBlock);
+    }
+    if (message.finalizedBatchRetentionBlocks !== "0") {
+      writer.uint32(64).uint64(message.finalizedBatchRetentionBlocks);
+    }
+    if (message.maxPostedDataBytes !== "0") {
+      writer.uint32(72).uint64(message.maxPostedDataBytes);
+    }
+    if (message.maxPostedDataBytesPerBlock !== "0") {
+      writer.uint32(80).uint64(message.maxPostedDataBytesPerBlock);
+    }
+    if (message.postedDataFeePerByte !== "0") {
+      writer.uint32(88).uint64(message.postedDataFeePerByte);
+    }
+    if (message.postedDataRetentionBlocks !== "0") {
+      writer.uint32(96).uint64(message.postedDataRetentionBlocks);
+    }
+    if (message.minSubmitterBond !== "0") {
+      writer.uint32(104).uint64(message.minSubmitterBond);
     }
     return writer;
   },
@@ -257,6 +410,54 @@ export const ParamsView: MessageFns<ParamsView> = {
           message.maxBatchesPerBlock = reader.uint32();
           continue;
         }
+        case 8: {
+          if (tag !== 64) {
+            break;
+          }
+
+          message.finalizedBatchRetentionBlocks = reader.uint64().toString();
+          continue;
+        }
+        case 9: {
+          if (tag !== 72) {
+            break;
+          }
+
+          message.maxPostedDataBytes = reader.uint64().toString();
+          continue;
+        }
+        case 10: {
+          if (tag !== 80) {
+            break;
+          }
+
+          message.maxPostedDataBytesPerBlock = reader.uint64().toString();
+          continue;
+        }
+        case 11: {
+          if (tag !== 88) {
+            break;
+          }
+
+          message.postedDataFeePerByte = reader.uint64().toString();
+          continue;
+        }
+        case 12: {
+          if (tag !== 96) {
+            break;
+          }
+
+          message.postedDataRetentionBlocks = reader.uint64().toString();
+          continue;
+        }
+        case 13: {
+          if (tag !== 104) {
+            break;
+          }
+
+          message.minSubmitterBond = reader.uint64().toString();
+          continue;
+        }
       }
       if ((tag & 7) === 4 || tag === 0) {
         break;
@@ -303,6 +504,36 @@ export const ParamsView: MessageFns<ParamsView> = {
         : isSet(object.max_batches_per_block)
         ? globalThis.Number(object.max_batches_per_block)
         : 0,
+      finalizedBatchRetentionBlocks: isSet(object.finalizedBatchRetentionBlocks)
+        ? globalThis.String(object.finalizedBatchRetentionBlocks)
+        : isSet(object.finalized_batch_retention_blocks)
+        ? globalThis.String(object.finalized_batch_retention_blocks)
+        : "0",
+      maxPostedDataBytes: isSet(object.maxPostedDataBytes)
+        ? globalThis.String(object.maxPostedDataBytes)
+        : isSet(object.max_posted_data_bytes)
+        ? globalThis.String(object.max_posted_data_bytes)
+        : "0",
+      maxPostedDataBytesPerBlock: isSet(object.maxPostedDataBytesPerBlock)
+        ? globalThis.String(object.maxPostedDataBytesPerBlock)
+        : isSet(object.max_posted_data_bytes_per_block)
+        ? globalThis.String(object.max_posted_data_bytes_per_block)
+        : "0",
+      postedDataFeePerByte: isSet(object.postedDataFeePerByte)
+        ? globalThis.String(object.postedDataFeePerByte)
+        : isSet(object.posted_data_fee_per_byte)
+        ? globalThis.String(object.posted_data_fee_per_byte)
+        : "0",
+      postedDataRetentionBlocks: isSet(object.postedDataRetentionBlocks)
+        ? globalThis.String(object.postedDataRetentionBlocks)
+        : isSet(object.posted_data_retention_blocks)
+        ? globalThis.String(object.posted_data_retention_blocks)
+        : "0",
+      minSubmitterBond: isSet(object.minSubmitterBond)
+        ? globalThis.String(object.minSubmitterBond)
+        : isSet(object.min_submitter_bond)
+        ? globalThis.String(object.min_submitter_bond)
+        : "0",
     };
   },
 
@@ -329,6 +560,24 @@ export const ParamsView: MessageFns<ParamsView> = {
     if (message.maxBatchesPerBlock !== 0) {
       obj.maxBatchesPerBlock = Math.round(message.maxBatchesPerBlock);
     }
+    if (message.finalizedBatchRetentionBlocks !== "0") {
+      obj.finalizedBatchRetentionBlocks = message.finalizedBatchRetentionBlocks;
+    }
+    if (message.maxPostedDataBytes !== "0") {
+      obj.maxPostedDataBytes = message.maxPostedDataBytes;
+    }
+    if (message.maxPostedDataBytesPerBlock !== "0") {
+      obj.maxPostedDataBytesPerBlock = message.maxPostedDataBytesPerBlock;
+    }
+    if (message.postedDataFeePerByte !== "0") {
+      obj.postedDataFeePerByte = message.postedDataFeePerByte;
+    }
+    if (message.postedDataRetentionBlocks !== "0") {
+      obj.postedDataRetentionBlocks = message.postedDataRetentionBlocks;
+    }
+    if (message.minSubmitterBond !== "0") {
+      obj.minSubmitterBond = message.minSubmitterBond;
+    }
     return obj;
   },
 
@@ -344,6 +593,12 @@ export const ParamsView: MessageFns<ParamsView> = {
     message.maxDaBlobSize = object.maxDaBlobSize ?? "0";
     message.blobRetentionBlocks = object.blobRetentionBlocks ?? "0";
     message.maxBatchesPerBlock = object.maxBatchesPerBlock ?? 0;
+    message.finalizedBatchRetentionBlocks = object.finalizedBatchRetentionBlocks ?? "0";
+    message.maxPostedDataBytes = object.maxPostedDataBytes ?? "0";
+    message.maxPostedDataBytesPerBlock = object.maxPostedDataBytesPerBlock ?? "0";
+    message.postedDataFeePerByte = object.postedDataFeePerByte ?? "0";
+    message.postedDataRetentionBlocks = object.postedDataRetentionBlocks ?? "0";
+    message.minSubmitterBond = object.minSubmitterBond ?? "0";
     return message;
   },
 };
@@ -366,6 +621,13 @@ function createBaseRollupView(): RollupView {
     challengeWindowSec: "0",
     challengeBond: "0",
     proofSystem: "",
+    hasVerificationKey: false,
+    sequencing: "",
+    executionVm: "",
+    privacy: "",
+    members: [],
+    membersEpoch: "0",
+    depositPool: "0",
   };
 }
 
@@ -418,6 +680,27 @@ export const RollupView: MessageFns<RollupView> = {
     }
     if (message.proofSystem !== "") {
       writer.uint32(130).string(message.proofSystem);
+    }
+    if (message.hasVerificationKey !== false) {
+      writer.uint32(136).bool(message.hasVerificationKey);
+    }
+    if (message.sequencing !== "") {
+      writer.uint32(146).string(message.sequencing);
+    }
+    if (message.executionVm !== "") {
+      writer.uint32(154).string(message.executionVm);
+    }
+    if (message.privacy !== "") {
+      writer.uint32(162).string(message.privacy);
+    }
+    for (const v of message.members) {
+      writer.uint32(170).string(v!);
+    }
+    if (message.membersEpoch !== "0") {
+      writer.uint32(176).uint64(message.membersEpoch);
+    }
+    if (message.depositPool !== "0") {
+      writer.uint32(184).uint64(message.depositPool);
     }
     return writer;
   },
@@ -557,6 +840,62 @@ export const RollupView: MessageFns<RollupView> = {
           message.proofSystem = reader.string();
           continue;
         }
+        case 17: {
+          if (tag !== 136) {
+            break;
+          }
+
+          message.hasVerificationKey = reader.bool();
+          continue;
+        }
+        case 18: {
+          if (tag !== 146) {
+            break;
+          }
+
+          message.sequencing = reader.string();
+          continue;
+        }
+        case 19: {
+          if (tag !== 154) {
+            break;
+          }
+
+          message.executionVm = reader.string();
+          continue;
+        }
+        case 20: {
+          if (tag !== 162) {
+            break;
+          }
+
+          message.privacy = reader.string();
+          continue;
+        }
+        case 21: {
+          if (tag !== 170) {
+            break;
+          }
+
+          message.members.push(reader.string());
+          continue;
+        }
+        case 22: {
+          if (tag !== 176) {
+            break;
+          }
+
+          message.membersEpoch = reader.uint64().toString();
+          continue;
+        }
+        case 23: {
+          if (tag !== 184) {
+            break;
+          }
+
+          message.depositPool = reader.uint64().toString();
+          continue;
+        }
       }
       if ((tag & 7) === 4 || tag === 0) {
         break;
@@ -636,6 +975,31 @@ export const RollupView: MessageFns<RollupView> = {
         : isSet(object.proof_system)
         ? globalThis.String(object.proof_system)
         : "",
+      hasVerificationKey: isSet(object.hasVerificationKey)
+        ? globalThis.Boolean(object.hasVerificationKey)
+        : isSet(object.has_verification_key)
+        ? globalThis.Boolean(object.has_verification_key)
+        : false,
+      sequencing: isSet(object.sequencing) ? globalThis.String(object.sequencing) : "",
+      executionVm: isSet(object.executionVm)
+        ? globalThis.String(object.executionVm)
+        : isSet(object.execution_vm)
+        ? globalThis.String(object.execution_vm)
+        : "",
+      privacy: isSet(object.privacy) ? globalThis.String(object.privacy) : "",
+      members: globalThis.Array.isArray(object?.members)
+        ? object.members.map((e: any) => globalThis.String(e))
+        : [],
+      membersEpoch: isSet(object.membersEpoch)
+        ? globalThis.String(object.membersEpoch)
+        : isSet(object.members_epoch)
+        ? globalThis.String(object.members_epoch)
+        : "0",
+      depositPool: isSet(object.depositPool)
+        ? globalThis.String(object.depositPool)
+        : isSet(object.deposit_pool)
+        ? globalThis.String(object.deposit_pool)
+        : "0",
     };
   },
 
@@ -689,6 +1053,27 @@ export const RollupView: MessageFns<RollupView> = {
     if (message.proofSystem !== "") {
       obj.proofSystem = message.proofSystem;
     }
+    if (message.hasVerificationKey !== false) {
+      obj.hasVerificationKey = message.hasVerificationKey;
+    }
+    if (message.sequencing !== "") {
+      obj.sequencing = message.sequencing;
+    }
+    if (message.executionVm !== "") {
+      obj.executionVm = message.executionVm;
+    }
+    if (message.privacy !== "") {
+      obj.privacy = message.privacy;
+    }
+    if (message.members?.length) {
+      obj.members = message.members;
+    }
+    if (message.membersEpoch !== "0") {
+      obj.membersEpoch = message.membersEpoch;
+    }
+    if (message.depositPool !== "0") {
+      obj.depositPool = message.depositPool;
+    }
     return obj;
   },
 
@@ -713,6 +1098,13 @@ export const RollupView: MessageFns<RollupView> = {
     message.challengeWindowSec = object.challengeWindowSec ?? "0";
     message.challengeBond = object.challengeBond ?? "0";
     message.proofSystem = object.proofSystem ?? "";
+    message.hasVerificationKey = object.hasVerificationKey ?? false;
+    message.sequencing = object.sequencing ?? "";
+    message.executionVm = object.executionVm ?? "";
+    message.privacy = object.privacy ?? "";
+    message.members = object.members?.map((e) => e) || [];
+    message.membersEpoch = object.membersEpoch ?? "0";
+    message.depositPool = object.depositPool ?? "0";
     return message;
   },
 };
@@ -731,6 +1123,9 @@ function createBaseBatchView(): BatchView {
     finalizedAt: "0",
     withdrawalsRoot: "",
     submittedTime: "0",
+    withdrawalsBound: false,
+    inboxStart: "0",
+    inboxEnd: "0",
   };
 }
 
@@ -771,6 +1166,15 @@ export const BatchView: MessageFns<BatchView> = {
     }
     if (message.submittedTime !== "0") {
       writer.uint32(96).int64(message.submittedTime);
+    }
+    if (message.withdrawalsBound !== false) {
+      writer.uint32(104).bool(message.withdrawalsBound);
+    }
+    if (message.inboxStart !== "0") {
+      writer.uint32(112).uint64(message.inboxStart);
+    }
+    if (message.inboxEnd !== "0") {
+      writer.uint32(120).uint64(message.inboxEnd);
     }
     return writer;
   },
@@ -878,6 +1282,30 @@ export const BatchView: MessageFns<BatchView> = {
           message.submittedTime = reader.int64().toString();
           continue;
         }
+        case 13: {
+          if (tag !== 104) {
+            break;
+          }
+
+          message.withdrawalsBound = reader.bool();
+          continue;
+        }
+        case 14: {
+          if (tag !== 112) {
+            break;
+          }
+
+          message.inboxStart = reader.uint64().toString();
+          continue;
+        }
+        case 15: {
+          if (tag !== 120) {
+            break;
+          }
+
+          message.inboxEnd = reader.uint64().toString();
+          continue;
+        }
       }
       if ((tag & 7) === 4 || tag === 0) {
         break;
@@ -945,6 +1373,21 @@ export const BatchView: MessageFns<BatchView> = {
         : isSet(object.submitted_time)
         ? globalThis.String(object.submitted_time)
         : "0",
+      withdrawalsBound: isSet(object.withdrawalsBound)
+        ? globalThis.Boolean(object.withdrawalsBound)
+        : isSet(object.withdrawals_bound)
+        ? globalThis.Boolean(object.withdrawals_bound)
+        : false,
+      inboxStart: isSet(object.inboxStart)
+        ? globalThis.String(object.inboxStart)
+        : isSet(object.inbox_start)
+        ? globalThis.String(object.inbox_start)
+        : "0",
+      inboxEnd: isSet(object.inboxEnd)
+        ? globalThis.String(object.inboxEnd)
+        : isSet(object.inbox_end)
+        ? globalThis.String(object.inbox_end)
+        : "0",
     };
   },
 
@@ -986,6 +1429,15 @@ export const BatchView: MessageFns<BatchView> = {
     if (message.submittedTime !== "0") {
       obj.submittedTime = message.submittedTime;
     }
+    if (message.withdrawalsBound !== false) {
+      obj.withdrawalsBound = message.withdrawalsBound;
+    }
+    if (message.inboxStart !== "0") {
+      obj.inboxStart = message.inboxStart;
+    }
+    if (message.inboxEnd !== "0") {
+      obj.inboxEnd = message.inboxEnd;
+    }
     return obj;
   },
 
@@ -1006,6 +1458,9 @@ export const BatchView: MessageFns<BatchView> = {
     message.finalizedAt = object.finalizedAt ?? "0";
     message.withdrawalsRoot = object.withdrawalsRoot ?? "";
     message.submittedTime = object.submittedTime ?? "0";
+    message.withdrawalsBound = object.withdrawalsBound ?? false;
+    message.inboxStart = object.inboxStart ?? "0";
+    message.inboxEnd = object.inboxEnd ?? "0";
     return message;
   },
 };
@@ -2131,6 +2586,882 @@ export const QueryBlobResponse: MessageFns<QueryBlobResponse> = {
   },
 };
 
+function createBasePostedDataView(): PostedDataView {
+  return {
+    rollupId: "",
+    sequence: "0",
+    dataHash: "",
+    size: "0",
+    poster: "",
+    height: "0",
+    inboxAcc: "",
+    expiresAtHeight: "0",
+  };
+}
+
+export const PostedDataView: MessageFns<PostedDataView> = {
+  encode(message: PostedDataView, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.rollupId !== "") {
+      writer.uint32(10).string(message.rollupId);
+    }
+    if (message.sequence !== "0") {
+      writer.uint32(16).uint64(message.sequence);
+    }
+    if (message.dataHash !== "") {
+      writer.uint32(26).string(message.dataHash);
+    }
+    if (message.size !== "0") {
+      writer.uint32(32).uint64(message.size);
+    }
+    if (message.poster !== "") {
+      writer.uint32(42).string(message.poster);
+    }
+    if (message.height !== "0") {
+      writer.uint32(48).int64(message.height);
+    }
+    if (message.inboxAcc !== "") {
+      writer.uint32(58).string(message.inboxAcc);
+    }
+    if (message.expiresAtHeight !== "0") {
+      writer.uint32(64).int64(message.expiresAtHeight);
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): PostedDataView {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBasePostedDataView();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.rollupId = reader.string();
+          continue;
+        }
+        case 2: {
+          if (tag !== 16) {
+            break;
+          }
+
+          message.sequence = reader.uint64().toString();
+          continue;
+        }
+        case 3: {
+          if (tag !== 26) {
+            break;
+          }
+
+          message.dataHash = reader.string();
+          continue;
+        }
+        case 4: {
+          if (tag !== 32) {
+            break;
+          }
+
+          message.size = reader.uint64().toString();
+          continue;
+        }
+        case 5: {
+          if (tag !== 42) {
+            break;
+          }
+
+          message.poster = reader.string();
+          continue;
+        }
+        case 6: {
+          if (tag !== 48) {
+            break;
+          }
+
+          message.height = reader.int64().toString();
+          continue;
+        }
+        case 7: {
+          if (tag !== 58) {
+            break;
+          }
+
+          message.inboxAcc = reader.string();
+          continue;
+        }
+        case 8: {
+          if (tag !== 64) {
+            break;
+          }
+
+          message.expiresAtHeight = reader.int64().toString();
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(object: any): PostedDataView {
+    return {
+      rollupId: isSet(object.rollupId)
+        ? globalThis.String(object.rollupId)
+        : isSet(object.rollup_id)
+        ? globalThis.String(object.rollup_id)
+        : "",
+      sequence: isSet(object.sequence) ? globalThis.String(object.sequence) : "0",
+      dataHash: isSet(object.dataHash)
+        ? globalThis.String(object.dataHash)
+        : isSet(object.data_hash)
+        ? globalThis.String(object.data_hash)
+        : "",
+      size: isSet(object.size) ? globalThis.String(object.size) : "0",
+      poster: isSet(object.poster) ? globalThis.String(object.poster) : "",
+      height: isSet(object.height) ? globalThis.String(object.height) : "0",
+      inboxAcc: isSet(object.inboxAcc)
+        ? globalThis.String(object.inboxAcc)
+        : isSet(object.inbox_acc)
+        ? globalThis.String(object.inbox_acc)
+        : "",
+      expiresAtHeight: isSet(object.expiresAtHeight)
+        ? globalThis.String(object.expiresAtHeight)
+        : isSet(object.expires_at_height)
+        ? globalThis.String(object.expires_at_height)
+        : "0",
+    };
+  },
+
+  toJSON(message: PostedDataView): unknown {
+    const obj: any = {};
+    if (message.rollupId !== "") {
+      obj.rollupId = message.rollupId;
+    }
+    if (message.sequence !== "0") {
+      obj.sequence = message.sequence;
+    }
+    if (message.dataHash !== "") {
+      obj.dataHash = message.dataHash;
+    }
+    if (message.size !== "0") {
+      obj.size = message.size;
+    }
+    if (message.poster !== "") {
+      obj.poster = message.poster;
+    }
+    if (message.height !== "0") {
+      obj.height = message.height;
+    }
+    if (message.inboxAcc !== "") {
+      obj.inboxAcc = message.inboxAcc;
+    }
+    if (message.expiresAtHeight !== "0") {
+      obj.expiresAtHeight = message.expiresAtHeight;
+    }
+    return obj;
+  },
+
+  create(base?: DeepPartial<PostedDataView>): PostedDataView {
+    return PostedDataView.fromPartial(base ?? {});
+  },
+  fromPartial(object: DeepPartial<PostedDataView>): PostedDataView {
+    const message = createBasePostedDataView();
+    message.rollupId = object.rollupId ?? "";
+    message.sequence = object.sequence ?? "0";
+    message.dataHash = object.dataHash ?? "";
+    message.size = object.size ?? "0";
+    message.poster = object.poster ?? "";
+    message.height = object.height ?? "0";
+    message.inboxAcc = object.inboxAcc ?? "";
+    message.expiresAtHeight = object.expiresAtHeight ?? "0";
+    return message;
+  },
+};
+
+function createBaseQueryPostedDataRequest(): QueryPostedDataRequest {
+  return { rollupId: "", sequence: "0" };
+}
+
+export const QueryPostedDataRequest: MessageFns<QueryPostedDataRequest> = {
+  encode(message: QueryPostedDataRequest, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.rollupId !== "") {
+      writer.uint32(10).string(message.rollupId);
+    }
+    if (message.sequence !== "0") {
+      writer.uint32(16).uint64(message.sequence);
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): QueryPostedDataRequest {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseQueryPostedDataRequest();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.rollupId = reader.string();
+          continue;
+        }
+        case 2: {
+          if (tag !== 16) {
+            break;
+          }
+
+          message.sequence = reader.uint64().toString();
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(object: any): QueryPostedDataRequest {
+    return {
+      rollupId: isSet(object.rollupId)
+        ? globalThis.String(object.rollupId)
+        : isSet(object.rollup_id)
+        ? globalThis.String(object.rollup_id)
+        : "",
+      sequence: isSet(object.sequence) ? globalThis.String(object.sequence) : "0",
+    };
+  },
+
+  toJSON(message: QueryPostedDataRequest): unknown {
+    const obj: any = {};
+    if (message.rollupId !== "") {
+      obj.rollupId = message.rollupId;
+    }
+    if (message.sequence !== "0") {
+      obj.sequence = message.sequence;
+    }
+    return obj;
+  },
+
+  create(base?: DeepPartial<QueryPostedDataRequest>): QueryPostedDataRequest {
+    return QueryPostedDataRequest.fromPartial(base ?? {});
+  },
+  fromPartial(object: DeepPartial<QueryPostedDataRequest>): QueryPostedDataRequest {
+    const message = createBaseQueryPostedDataRequest();
+    message.rollupId = object.rollupId ?? "";
+    message.sequence = object.sequence ?? "0";
+    return message;
+  },
+};
+
+function createBaseQueryPostedDataResponse(): QueryPostedDataResponse {
+  return { postedData: undefined };
+}
+
+export const QueryPostedDataResponse: MessageFns<QueryPostedDataResponse> = {
+  encode(message: QueryPostedDataResponse, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.postedData !== undefined) {
+      PostedDataView.encode(message.postedData, writer.uint32(10).fork()).join();
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): QueryPostedDataResponse {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseQueryPostedDataResponse();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.postedData = PostedDataView.decode(reader, reader.uint32());
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(object: any): QueryPostedDataResponse {
+    return {
+      postedData: isSet(object.postedData)
+        ? PostedDataView.fromJSON(object.postedData)
+        : isSet(object.posted_data)
+        ? PostedDataView.fromJSON(object.posted_data)
+        : undefined,
+    };
+  },
+
+  toJSON(message: QueryPostedDataResponse): unknown {
+    const obj: any = {};
+    if (message.postedData !== undefined) {
+      obj.postedData = PostedDataView.toJSON(message.postedData);
+    }
+    return obj;
+  },
+
+  create(base?: DeepPartial<QueryPostedDataResponse>): QueryPostedDataResponse {
+    return QueryPostedDataResponse.fromPartial(base ?? {});
+  },
+  fromPartial(object: DeepPartial<QueryPostedDataResponse>): QueryPostedDataResponse {
+    const message = createBaseQueryPostedDataResponse();
+    message.postedData = (object.postedData !== undefined && object.postedData !== null)
+      ? PostedDataView.fromPartial(object.postedData)
+      : undefined;
+    return message;
+  },
+};
+
+function createBaseInboxView(): InboxView {
+  return {
+    rollupId: "",
+    sequencing: "",
+    headSequence: "0",
+    headAcc: "",
+    consumedSequence: "0",
+    consumedAcc: "",
+    rangeEnd: "0",
+    rangeDataHash: "",
+  };
+}
+
+export const InboxView: MessageFns<InboxView> = {
+  encode(message: InboxView, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.rollupId !== "") {
+      writer.uint32(10).string(message.rollupId);
+    }
+    if (message.sequencing !== "") {
+      writer.uint32(18).string(message.sequencing);
+    }
+    if (message.headSequence !== "0") {
+      writer.uint32(24).uint64(message.headSequence);
+    }
+    if (message.headAcc !== "") {
+      writer.uint32(34).string(message.headAcc);
+    }
+    if (message.consumedSequence !== "0") {
+      writer.uint32(40).uint64(message.consumedSequence);
+    }
+    if (message.consumedAcc !== "") {
+      writer.uint32(50).string(message.consumedAcc);
+    }
+    if (message.rangeEnd !== "0") {
+      writer.uint32(56).uint64(message.rangeEnd);
+    }
+    if (message.rangeDataHash !== "") {
+      writer.uint32(66).string(message.rangeDataHash);
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): InboxView {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseInboxView();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.rollupId = reader.string();
+          continue;
+        }
+        case 2: {
+          if (tag !== 18) {
+            break;
+          }
+
+          message.sequencing = reader.string();
+          continue;
+        }
+        case 3: {
+          if (tag !== 24) {
+            break;
+          }
+
+          message.headSequence = reader.uint64().toString();
+          continue;
+        }
+        case 4: {
+          if (tag !== 34) {
+            break;
+          }
+
+          message.headAcc = reader.string();
+          continue;
+        }
+        case 5: {
+          if (tag !== 40) {
+            break;
+          }
+
+          message.consumedSequence = reader.uint64().toString();
+          continue;
+        }
+        case 6: {
+          if (tag !== 50) {
+            break;
+          }
+
+          message.consumedAcc = reader.string();
+          continue;
+        }
+        case 7: {
+          if (tag !== 56) {
+            break;
+          }
+
+          message.rangeEnd = reader.uint64().toString();
+          continue;
+        }
+        case 8: {
+          if (tag !== 66) {
+            break;
+          }
+
+          message.rangeDataHash = reader.string();
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(object: any): InboxView {
+    return {
+      rollupId: isSet(object.rollupId)
+        ? globalThis.String(object.rollupId)
+        : isSet(object.rollup_id)
+        ? globalThis.String(object.rollup_id)
+        : "",
+      sequencing: isSet(object.sequencing) ? globalThis.String(object.sequencing) : "",
+      headSequence: isSet(object.headSequence)
+        ? globalThis.String(object.headSequence)
+        : isSet(object.head_sequence)
+        ? globalThis.String(object.head_sequence)
+        : "0",
+      headAcc: isSet(object.headAcc)
+        ? globalThis.String(object.headAcc)
+        : isSet(object.head_acc)
+        ? globalThis.String(object.head_acc)
+        : "",
+      consumedSequence: isSet(object.consumedSequence)
+        ? globalThis.String(object.consumedSequence)
+        : isSet(object.consumed_sequence)
+        ? globalThis.String(object.consumed_sequence)
+        : "0",
+      consumedAcc: isSet(object.consumedAcc)
+        ? globalThis.String(object.consumedAcc)
+        : isSet(object.consumed_acc)
+        ? globalThis.String(object.consumed_acc)
+        : "",
+      rangeEnd: isSet(object.rangeEnd)
+        ? globalThis.String(object.rangeEnd)
+        : isSet(object.range_end)
+        ? globalThis.String(object.range_end)
+        : "0",
+      rangeDataHash: isSet(object.rangeDataHash)
+        ? globalThis.String(object.rangeDataHash)
+        : isSet(object.range_data_hash)
+        ? globalThis.String(object.range_data_hash)
+        : "",
+    };
+  },
+
+  toJSON(message: InboxView): unknown {
+    const obj: any = {};
+    if (message.rollupId !== "") {
+      obj.rollupId = message.rollupId;
+    }
+    if (message.sequencing !== "") {
+      obj.sequencing = message.sequencing;
+    }
+    if (message.headSequence !== "0") {
+      obj.headSequence = message.headSequence;
+    }
+    if (message.headAcc !== "") {
+      obj.headAcc = message.headAcc;
+    }
+    if (message.consumedSequence !== "0") {
+      obj.consumedSequence = message.consumedSequence;
+    }
+    if (message.consumedAcc !== "") {
+      obj.consumedAcc = message.consumedAcc;
+    }
+    if (message.rangeEnd !== "0") {
+      obj.rangeEnd = message.rangeEnd;
+    }
+    if (message.rangeDataHash !== "") {
+      obj.rangeDataHash = message.rangeDataHash;
+    }
+    return obj;
+  },
+
+  create(base?: DeepPartial<InboxView>): InboxView {
+    return InboxView.fromPartial(base ?? {});
+  },
+  fromPartial(object: DeepPartial<InboxView>): InboxView {
+    const message = createBaseInboxView();
+    message.rollupId = object.rollupId ?? "";
+    message.sequencing = object.sequencing ?? "";
+    message.headSequence = object.headSequence ?? "0";
+    message.headAcc = object.headAcc ?? "";
+    message.consumedSequence = object.consumedSequence ?? "0";
+    message.consumedAcc = object.consumedAcc ?? "";
+    message.rangeEnd = object.rangeEnd ?? "0";
+    message.rangeDataHash = object.rangeDataHash ?? "";
+    return message;
+  },
+};
+
+function createBaseQueryInboxRequest(): QueryInboxRequest {
+  return { rollupId: "", inboxEnd: "0" };
+}
+
+export const QueryInboxRequest: MessageFns<QueryInboxRequest> = {
+  encode(message: QueryInboxRequest, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.rollupId !== "") {
+      writer.uint32(10).string(message.rollupId);
+    }
+    if (message.inboxEnd !== "0") {
+      writer.uint32(16).uint64(message.inboxEnd);
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): QueryInboxRequest {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseQueryInboxRequest();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.rollupId = reader.string();
+          continue;
+        }
+        case 2: {
+          if (tag !== 16) {
+            break;
+          }
+
+          message.inboxEnd = reader.uint64().toString();
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(object: any): QueryInboxRequest {
+    return {
+      rollupId: isSet(object.rollupId)
+        ? globalThis.String(object.rollupId)
+        : isSet(object.rollup_id)
+        ? globalThis.String(object.rollup_id)
+        : "",
+      inboxEnd: isSet(object.inboxEnd)
+        ? globalThis.String(object.inboxEnd)
+        : isSet(object.inbox_end)
+        ? globalThis.String(object.inbox_end)
+        : "0",
+    };
+  },
+
+  toJSON(message: QueryInboxRequest): unknown {
+    const obj: any = {};
+    if (message.rollupId !== "") {
+      obj.rollupId = message.rollupId;
+    }
+    if (message.inboxEnd !== "0") {
+      obj.inboxEnd = message.inboxEnd;
+    }
+    return obj;
+  },
+
+  create(base?: DeepPartial<QueryInboxRequest>): QueryInboxRequest {
+    return QueryInboxRequest.fromPartial(base ?? {});
+  },
+  fromPartial(object: DeepPartial<QueryInboxRequest>): QueryInboxRequest {
+    const message = createBaseQueryInboxRequest();
+    message.rollupId = object.rollupId ?? "";
+    message.inboxEnd = object.inboxEnd ?? "0";
+    return message;
+  },
+};
+
+function createBaseQueryInboxResponse(): QueryInboxResponse {
+  return { inbox: undefined };
+}
+
+export const QueryInboxResponse: MessageFns<QueryInboxResponse> = {
+  encode(message: QueryInboxResponse, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.inbox !== undefined) {
+      InboxView.encode(message.inbox, writer.uint32(10).fork()).join();
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): QueryInboxResponse {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseQueryInboxResponse();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.inbox = InboxView.decode(reader, reader.uint32());
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(object: any): QueryInboxResponse {
+    return { inbox: isSet(object.inbox) ? InboxView.fromJSON(object.inbox) : undefined };
+  },
+
+  toJSON(message: QueryInboxResponse): unknown {
+    const obj: any = {};
+    if (message.inbox !== undefined) {
+      obj.inbox = InboxView.toJSON(message.inbox);
+    }
+    return obj;
+  },
+
+  create(base?: DeepPartial<QueryInboxResponse>): QueryInboxResponse {
+    return QueryInboxResponse.fromPartial(base ?? {});
+  },
+  fromPartial(object: DeepPartial<QueryInboxResponse>): QueryInboxResponse {
+    const message = createBaseQueryInboxResponse();
+    message.inbox = (object.inbox !== undefined && object.inbox !== null)
+      ? InboxView.fromPartial(object.inbox)
+      : undefined;
+    return message;
+  },
+};
+
+function createBaseQuerySubmitterBondRequest(): QuerySubmitterBondRequest {
+  return { rollupId: "", submitter: "" };
+}
+
+export const QuerySubmitterBondRequest: MessageFns<QuerySubmitterBondRequest> = {
+  encode(message: QuerySubmitterBondRequest, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.rollupId !== "") {
+      writer.uint32(10).string(message.rollupId);
+    }
+    if (message.submitter !== "") {
+      writer.uint32(18).string(message.submitter);
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): QuerySubmitterBondRequest {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseQuerySubmitterBondRequest();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.rollupId = reader.string();
+          continue;
+        }
+        case 2: {
+          if (tag !== 18) {
+            break;
+          }
+
+          message.submitter = reader.string();
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(object: any): QuerySubmitterBondRequest {
+    return {
+      rollupId: isSet(object.rollupId)
+        ? globalThis.String(object.rollupId)
+        : isSet(object.rollup_id)
+        ? globalThis.String(object.rollup_id)
+        : "",
+      submitter: isSet(object.submitter) ? globalThis.String(object.submitter) : "",
+    };
+  },
+
+  toJSON(message: QuerySubmitterBondRequest): unknown {
+    const obj: any = {};
+    if (message.rollupId !== "") {
+      obj.rollupId = message.rollupId;
+    }
+    if (message.submitter !== "") {
+      obj.submitter = message.submitter;
+    }
+    return obj;
+  },
+
+  create(base?: DeepPartial<QuerySubmitterBondRequest>): QuerySubmitterBondRequest {
+    return QuerySubmitterBondRequest.fromPartial(base ?? {});
+  },
+  fromPartial(object: DeepPartial<QuerySubmitterBondRequest>): QuerySubmitterBondRequest {
+    const message = createBaseQuerySubmitterBondRequest();
+    message.rollupId = object.rollupId ?? "";
+    message.submitter = object.submitter ?? "";
+    return message;
+  },
+};
+
+function createBaseQuerySubmitterBondResponse(): QuerySubmitterBondResponse {
+  return { amount: "0", lastSubmitTime: "0", unbondAfter: "0" };
+}
+
+export const QuerySubmitterBondResponse: MessageFns<QuerySubmitterBondResponse> = {
+  encode(message: QuerySubmitterBondResponse, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.amount !== "0") {
+      writer.uint32(8).uint64(message.amount);
+    }
+    if (message.lastSubmitTime !== "0") {
+      writer.uint32(16).int64(message.lastSubmitTime);
+    }
+    if (message.unbondAfter !== "0") {
+      writer.uint32(24).int64(message.unbondAfter);
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): QuerySubmitterBondResponse {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseQuerySubmitterBondResponse();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 8) {
+            break;
+          }
+
+          message.amount = reader.uint64().toString();
+          continue;
+        }
+        case 2: {
+          if (tag !== 16) {
+            break;
+          }
+
+          message.lastSubmitTime = reader.int64().toString();
+          continue;
+        }
+        case 3: {
+          if (tag !== 24) {
+            break;
+          }
+
+          message.unbondAfter = reader.int64().toString();
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(object: any): QuerySubmitterBondResponse {
+    return {
+      amount: isSet(object.amount) ? globalThis.String(object.amount) : "0",
+      lastSubmitTime: isSet(object.lastSubmitTime)
+        ? globalThis.String(object.lastSubmitTime)
+        : isSet(object.last_submit_time)
+        ? globalThis.String(object.last_submit_time)
+        : "0",
+      unbondAfter: isSet(object.unbondAfter)
+        ? globalThis.String(object.unbondAfter)
+        : isSet(object.unbond_after)
+        ? globalThis.String(object.unbond_after)
+        : "0",
+    };
+  },
+
+  toJSON(message: QuerySubmitterBondResponse): unknown {
+    const obj: any = {};
+    if (message.amount !== "0") {
+      obj.amount = message.amount;
+    }
+    if (message.lastSubmitTime !== "0") {
+      obj.lastSubmitTime = message.lastSubmitTime;
+    }
+    if (message.unbondAfter !== "0") {
+      obj.unbondAfter = message.unbondAfter;
+    }
+    return obj;
+  },
+
+  create(base?: DeepPartial<QuerySubmitterBondResponse>): QuerySubmitterBondResponse {
+    return QuerySubmitterBondResponse.fromPartial(base ?? {});
+  },
+  fromPartial(object: DeepPartial<QuerySubmitterBondResponse>): QuerySubmitterBondResponse {
+    const message = createBaseQuerySubmitterBondResponse();
+    message.amount = object.amount ?? "0";
+    message.lastSubmitTime = object.lastSubmitTime ?? "0";
+    message.unbondAfter = object.unbondAfter ?? "0";
+    return message;
+  },
+};
+
 /**
  * Query defines the gRPC query service for the rdk (rollup) module.
  *
@@ -2533,6 +3864,217 @@ export const QueryDefinition = {
               100,
               101,
               120,
+              125,
+            ]) as Uint8Array,
+          ],
+        },
+      },
+    },
+    /**
+     * PostedData returns one posted-data commitment (v3.2.8,
+     * rdk-post-rollup-data). The payload is in the transaction of the block at
+     * height.
+     */
+    postedData: {
+      name: "PostedData",
+      requestType: QueryPostedDataRequest as typeof QueryPostedDataRequest,
+      requestStream: false,
+      responseType: QueryPostedDataResponse as typeof QueryPostedDataResponse,
+      responseStream: false,
+      options: {
+        _unknownFields: {
+          578365826: [
+            new Uint8Array([
+              54,
+              18,
+              52,
+              47,
+              113,
+              111,
+              114,
+              101,
+              99,
+              104,
+              97,
+              105,
+              110,
+              47,
+              114,
+              100,
+              107,
+              47,
+              118,
+              49,
+              47,
+              112,
+              111,
+              115,
+              116,
+              101,
+              100,
+              95,
+              100,
+              97,
+              116,
+              97,
+              47,
+              123,
+              114,
+              111,
+              108,
+              108,
+              117,
+              112,
+              95,
+              105,
+              100,
+              125,
+              47,
+              123,
+              115,
+              101,
+              113,
+              117,
+              101,
+              110,
+              99,
+              101,
+              125,
+            ]) as Uint8Array,
+          ],
+        },
+      },
+    },
+    /**
+     * Inbox returns a rollup's inbox: head, consumed position, accumulators and
+     * the data_hash a based batch ending at inbox_end (0 = the head) must carry.
+     */
+    inbox: {
+      name: "Inbox",
+      requestType: QueryInboxRequest as typeof QueryInboxRequest,
+      requestStream: false,
+      responseType: QueryInboxResponse as typeof QueryInboxResponse,
+      responseStream: false,
+      options: {
+        _unknownFields: {
+          578365826: [
+            new Uint8Array([
+              37,
+              18,
+              35,
+              47,
+              113,
+              111,
+              114,
+              101,
+              99,
+              104,
+              97,
+              105,
+              110,
+              47,
+              114,
+              100,
+              107,
+              47,
+              118,
+              49,
+              47,
+              105,
+              110,
+              98,
+              111,
+              120,
+              47,
+              123,
+              114,
+              111,
+              108,
+              108,
+              117,
+              112,
+              95,
+              105,
+              100,
+              125,
+            ]) as Uint8Array,
+          ],
+        },
+      },
+    },
+    /**
+     * SubmitterBond returns an account's submitter bond on a qledger-v1
+     * rollup and the earliest block time it can be unbonded (v3.2.8,
+     * rdk-optimistic-reexec).
+     */
+    submitterBond: {
+      name: "SubmitterBond",
+      requestType: QuerySubmitterBondRequest as typeof QuerySubmitterBondRequest,
+      requestStream: false,
+      responseType: QuerySubmitterBondResponse as typeof QuerySubmitterBondResponse,
+      responseStream: false,
+      options: {
+        _unknownFields: {
+          578365826: [
+            new Uint8Array([
+              58,
+              18,
+              56,
+              47,
+              113,
+              111,
+              114,
+              101,
+              99,
+              104,
+              97,
+              105,
+              110,
+              47,
+              114,
+              100,
+              107,
+              47,
+              118,
+              49,
+              47,
+              115,
+              117,
+              98,
+              109,
+              105,
+              116,
+              116,
+              101,
+              114,
+              95,
+              98,
+              111,
+              110,
+              100,
+              47,
+              123,
+              114,
+              111,
+              108,
+              108,
+              117,
+              112,
+              95,
+              105,
+              100,
+              125,
+              47,
+              123,
+              115,
+              117,
+              98,
+              109,
+              105,
+              116,
+              116,
+              101,
+              114,
               125,
             ]) as Uint8Array,
           ],

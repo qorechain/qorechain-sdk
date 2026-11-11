@@ -17,6 +17,23 @@ pub struct ParamsView {
     pub blob_retention_blocks: u64,
     #[prost(uint32, tag="7")]
     pub max_batches_per_block: u32,
+    /// finalized_batch_retention_blocks is the effective retention, with the
+    /// default filled in for a stored 0.
+    #[prost(uint64, tag="8")]
+    pub finalized_batch_retention_blocks: u64,
+    /// The posted-data parameters (v3.2.8), effective values with the defaults
+    /// filled in for a stored 0.
+    #[prost(uint64, tag="9")]
+    pub max_posted_data_bytes: u64,
+    #[prost(uint64, tag="10")]
+    pub max_posted_data_bytes_per_block: u64,
+    #[prost(uint64, tag="11")]
+    pub posted_data_fee_per_byte: u64,
+    #[prost(uint64, tag="12")]
+    pub posted_data_retention_blocks: u64,
+    /// min_submitter_bond (v3.2.8), effective value.
+    #[prost(uint64, tag="13")]
+    pub min_submitter_bond: u64,
 }
 /// RollupView is the query-facing view of a rollup config (scalar fields).
 #[derive(Clone, PartialEq, ::prost::Message)]
@@ -60,6 +77,32 @@ pub struct RollupView {
     pub challenge_bond: i64,
     #[prost(string, tag="16")]
     pub proof_system: ::prost::alloc::string::String,
+    /// has_verification_key is true when the rollup has a ZK verification key
+    /// registered (from v3.2.7 a zk rollup can register one). A zk batch of a
+    /// rollup without one is refused.
+    #[prost(bool, tag="17")]
+    pub has_verification_key: bool,
+    /// sequencing is "" (the rollup's sequencer settles) or "based" (v3.2.8,
+    /// rdk-based-sequencing): anyone posts data, batches consume the inbox in
+    /// order, and a zk (snark) based rollup accepts batches from anyone.
+    #[prost(string, tag="18")]
+    pub sequencing: ::prost::alloc::string::String,
+    /// execution_vm (v3.2.8): "qledger-v1" for an optimistic rollup whose
+    /// batches a fraud proof re-executes, else empty.
+    #[prost(string, tag="19")]
+    pub execution_vm: ::prost::alloc::string::String,
+    /// privacy (v3.2.8): "encapsulated" for a private rollup, else empty.
+    #[prost(string, tag="20")]
+    pub privacy: ::prost::alloc::string::String,
+    /// members and members_epoch: a private rollup's member list and epoch.
+    #[prost(string, repeated, tag="21")]
+    pub members: ::prost::alloc::vec::Vec<::prost::alloc::string::String>,
+    #[prost(uint64, tag="22")]
+    pub members_epoch: u64,
+    /// deposit_pool: uqor deposited into a qledger-v1 rollup and not yet
+    /// withdrawn.
+    #[prost(uint64, tag="23")]
+    pub deposit_pool: u64,
 }
 /// BatchView is the query-facing view of a settlement batch.
 #[derive(Clone, PartialEq, ::prost::Message)]
@@ -94,6 +137,18 @@ pub struct BatchView {
     /// challenge_window_sec.
     #[prost(int64, tag="12")]
     pub submitted_time: i64,
+    /// withdrawals_bound marks a batch settled from rdk-withdrawals-binding
+    /// (v3.2.5): its transition binding and proofs commit the withdrawals root
+    /// and the chain id, and its withdrawal leaves start with the chain id. False
+    /// for a batch settled before the switch, whose leaves are the v1 form.
+    #[prost(bool, tag="13")]
+    pub withdrawals_bound: bool,
+    /// inbox_start and inbox_end are, for a batch of a based rollup (v3.2.8),
+    /// the inbox range it consumed: the posts after inbox_start up to inbox_end.
+    #[prost(uint64, tag="14")]
+    pub inbox_start: u64,
+    #[prost(uint64, tag="15")]
+    pub inbox_end: u64,
 }
 #[derive(Clone, Copy, PartialEq, ::prost::Message)]
 pub struct QueryParamsRequest {
@@ -197,6 +252,101 @@ pub struct QueryBlobResponse {
     #[prost(message, optional, tag="1")]
     pub blob: ::core::option::Option<BlobView>,
 }
+/// PostedDataView is one posted-data commitment (v3.2.8).
+#[derive(Clone, PartialEq, ::prost::Message)]
+pub struct PostedDataView {
+    #[prost(string, tag="1")]
+    pub rollup_id: ::prost::alloc::string::String,
+    #[prost(uint64, tag="2")]
+    pub sequence: u64,
+    /// data_hash is SHA-256 of the payload, hex.
+    #[prost(string, tag="3")]
+    pub data_hash: ::prost::alloc::string::String,
+    #[prost(uint64, tag="4")]
+    pub size: u64,
+    #[prost(string, tag="5")]
+    pub poster: ::prost::alloc::string::String,
+    /// height is the block whose transaction carries the payload.
+    #[prost(int64, tag="6")]
+    pub height: i64,
+    /// inbox_acc is the inbox accumulator after this post, hex.
+    #[prost(string, tag="7")]
+    pub inbox_acc: ::prost::alloc::string::String,
+    /// expires_at_height is the height from which the commitment is pruned.
+    #[prost(int64, tag="8")]
+    pub expires_at_height: i64,
+}
+#[derive(Clone, PartialEq, ::prost::Message)]
+pub struct QueryPostedDataRequest {
+    #[prost(string, tag="1")]
+    pub rollup_id: ::prost::alloc::string::String,
+    #[prost(uint64, tag="2")]
+    pub sequence: u64,
+}
+#[derive(Clone, PartialEq, ::prost::Message)]
+pub struct QueryPostedDataResponse {
+    #[prost(message, optional, tag="1")]
+    pub posted_data: ::core::option::Option<PostedDataView>,
+}
+/// InboxView is a rollup's inbox (v3.2.8).
+#[derive(Clone, PartialEq, ::prost::Message)]
+pub struct InboxView {
+    #[prost(string, tag="1")]
+    pub rollup_id: ::prost::alloc::string::String,
+    #[prost(string, tag="2")]
+    pub sequencing: ::prost::alloc::string::String,
+    /// head_sequence is the sequence of the last post (0 = none yet).
+    #[prost(uint64, tag="3")]
+    pub head_sequence: u64,
+    #[prost(string, tag="4")]
+    pub head_acc: ::prost::alloc::string::String,
+    /// consumed_sequence is where the next based batch starts.
+    #[prost(uint64, tag="5")]
+    pub consumed_sequence: u64,
+    #[prost(string, tag="6")]
+    pub consumed_acc: ::prost::alloc::string::String,
+    /// range_end and range_data_hash: the data_hash a based batch with
+    /// inbox_end = range_end must carry (hex). Empty when the end's commitment
+    /// is no longer retained.
+    #[prost(uint64, tag="7")]
+    pub range_end: u64,
+    #[prost(string, tag="8")]
+    pub range_data_hash: ::prost::alloc::string::String,
+}
+#[derive(Clone, PartialEq, ::prost::Message)]
+pub struct QueryInboxRequest {
+    #[prost(string, tag="1")]
+    pub rollup_id: ::prost::alloc::string::String,
+    /// inbox_end selects the range end for range_data_hash; 0 means the head.
+    #[prost(uint64, tag="2")]
+    pub inbox_end: u64,
+}
+#[derive(Clone, PartialEq, ::prost::Message)]
+pub struct QueryInboxResponse {
+    #[prost(message, optional, tag="1")]
+    pub inbox: ::core::option::Option<InboxView>,
+}
+#[derive(Clone, PartialEq, ::prost::Message)]
+pub struct QuerySubmitterBondRequest {
+    #[prost(string, tag="1")]
+    pub rollup_id: ::prost::alloc::string::String,
+    #[prost(string, tag="2")]
+    pub submitter: ::prost::alloc::string::String,
+}
+#[derive(Clone, Copy, PartialEq, ::prost::Message)]
+pub struct QuerySubmitterBondResponse {
+    /// amount is the bond in uqor (0 when there is none).
+    #[prost(uint64, tag="1")]
+    pub amount: u64,
+    /// last_submit_time is the block time (unix seconds) of the submitter's
+    /// last batch on the rollup, 0 when none.
+    #[prost(int64, tag="2")]
+    pub last_submit_time: i64,
+    /// unbond_after is the block time from which MsgUnbondRollupSubmitter
+    /// succeeds.
+    #[prost(int64, tag="3")]
+    pub unbond_after: i64,
+}
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct MsgCreateRollup {
     #[prost(string, tag="1")]
@@ -209,6 +359,30 @@ pub struct MsgCreateRollup {
     pub vm_type: ::prost::alloc::string::String,
     #[prost(int64, tag="5")]
     pub stake_amount: i64,
+    /// verification_key optionally registers the rollup's ZK verification key at
+    /// creation, in the encoding MsgSetVerificationKey takes for the profile's
+    /// proof system. Accepted from v3.2.7 (rdk-zk-verification-key); below it a
+    /// message that carries one is refused.
+    #[prost(bytes="vec", tag="6")]
+    pub verification_key: ::prost::alloc::vec::Vec<u8>,
+    /// sequencing is "" (the rollup's sequencer settles, as before) or "based":
+    /// the rollup's transactions are ordered by their inclusion in this chain
+    /// (MsgPostRollupData, which anyone may send) and every batch must consume
+    /// the inbox in order. Accepted from v3.2.8 (rdk-based-sequencing), for zk
+    /// (snark) and based settlement only; below it a message that sets it is
+    /// refused.
+    #[prost(string, tag="7")]
+    pub sequencing: ::prost::alloc::string::String,
+    /// execution_vm is "" or "qledger-v1" (v3.2.8, rdk-optimistic-reexec): an
+    /// optimistic rollup whose batches the chain can re-execute in a fraud
+    /// proof. It must be based.
+    #[prost(string, tag="8")]
+    pub execution_vm: ::prost::alloc::string::String,
+    /// privacy is "" or "encapsulated" (v3.2.8, rdk-private-rollups): every
+    /// post is an ML-KEM-1024 envelope to the rollup's members. zk with a
+    /// Groth16 key only.
+    #[prost(string, tag="9")]
+    pub privacy: ::prost::alloc::string::String,
 }
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct MsgCreateRollupResponse {
@@ -248,6 +422,13 @@ pub struct MsgSubmitBatch {
     /// the anchor. Optional; covered by anchor_signature.
     #[prost(bytes="vec", tag="11")]
     pub validator_set_hash: ::prost::alloc::vec::Vec<u8>,
+    /// inbox_end is, for a based rollup, the sequence number of the last posted
+    /// data item this batch consumes; the batch covers the posts after the
+    /// rollup's consumed sequence up to it, and data_hash must be their inbox
+    /// range commitment. Zero and ignored for every other rollup. Accepted from
+    /// v3.2.8 (rdk-based-sequencing); below it a non-zero value is refused.
+    #[prost(uint64, tag="12")]
+    pub inbox_end: u64,
 }
 #[derive(Clone, Copy, PartialEq, ::prost::Message)]
 pub struct MsgSubmitBatchResponse {
@@ -373,8 +554,191 @@ pub struct MsgUpdateParams {
     pub blob_retention_blocks: u64,
     #[prost(uint32, tag="8")]
     pub max_batches_per_block: u32,
+    /// finalized_batch_retention_blocks is how many blocks a finalized batch
+    /// keeps its proof before it is compacted; 0 means the default. A non-zero
+    /// value is refused before v3.2.8 (rdk-batch-compaction).
+    #[prost(uint64, tag="9")]
+    pub finalized_batch_retention_blocks: u64,
+    /// The posted-data parameters (v3.2.8, rdk-post-rollup-data). Zero means
+    /// the default for each; a non-zero value is refused before the switch.
+    /// max_posted_data_bytes caps one MsgPostRollupData payload.
+    #[prost(uint64, tag="10")]
+    pub max_posted_data_bytes: u64,
+    /// max_posted_data_bytes_per_block caps the billable bytes posted in one
+    /// block, all rollups together.
+    #[prost(uint64, tag="11")]
+    pub max_posted_data_bytes_per_block: u64,
+    /// posted_data_fee_per_byte is the uqor fee per billable byte.
+    #[prost(uint64, tag="12")]
+    pub posted_data_fee_per_byte: u64,
+    /// posted_data_retention_blocks is how long a posted-data commitment stays
+    /// in state.
+    #[prost(uint64, tag="13")]
+    pub posted_data_retention_blocks: u64,
+    /// min_submitter_bond is the uqor bond a qledger-v1 rollup's batch
+    /// submitter must hold (v3.2.8, rdk-optimistic-reexec); 0 means the
+    /// default. A non-zero value is refused before the switch.
+    #[prost(uint64, tag="14")]
+    pub min_submitter_bond: u64,
 }
 #[derive(Clone, Copy, PartialEq, ::prost::Message)]
 pub struct MsgUpdateParamsResponse {
+}
+/// MsgSetVerificationKey registers or replaces the ZK verification key of a
+/// zk-settlement rollup. Signed by the rollup's creator, and only before the
+/// rollup's first batch; after that the key changes only through
+/// MsgUpdateVerificationKey. Served from v3.2.7 (rdk-zk-verification-key).
+///
+/// verification_key is, for proof system "snark", a Groth16 BLS12-381
+/// verifying key in gnark's binary encoding (VerifyingKey.WriteTo) for a
+/// circuit with exactly four public inputs (prev_state_root, state_root,
+/// data_hash, withdrawals_root); for "stark", the 16-byte QSTK key of the
+/// transparent verifier. A key that does not decode is refused.
+#[derive(Clone, PartialEq, ::prost::Message)]
+pub struct MsgSetVerificationKey {
+    #[prost(string, tag="1")]
+    pub creator: ::prost::alloc::string::String,
+    #[prost(string, tag="2")]
+    pub rollup_id: ::prost::alloc::string::String,
+    #[prost(bytes="vec", tag="3")]
+    pub verification_key: ::prost::alloc::vec::Vec<u8>,
+    /// proof_system is "snark" or "stark". Empty keeps the rollup's current
+    /// proof system.
+    #[prost(string, tag="4")]
+    pub proof_system: ::prost::alloc::string::String,
+}
+#[derive(Clone, Copy, PartialEq, ::prost::Message)]
+pub struct MsgSetVerificationKeyResponse {
+}
+/// MsgUpdateVerificationKey replaces a zk-settlement rollup's verification key
+/// at any point of its life. Governance only: authority must be the gov module
+/// account. The key is validated as in MsgSetVerificationKey. Served from
+/// v3.2.7 (rdk-zk-verification-key).
+#[derive(Clone, PartialEq, ::prost::Message)]
+pub struct MsgUpdateVerificationKey {
+    #[prost(string, tag="1")]
+    pub authority: ::prost::alloc::string::String,
+    #[prost(string, tag="2")]
+    pub rollup_id: ::prost::alloc::string::String,
+    #[prost(bytes="vec", tag="3")]
+    pub verification_key: ::prost::alloc::vec::Vec<u8>,
+    /// proof_system is "snark" or "stark". Empty keeps the rollup's current
+    /// proof system.
+    #[prost(string, tag="4")]
+    pub proof_system: ::prost::alloc::string::String,
+}
+#[derive(Clone, Copy, PartialEq, ::prost::Message)]
+pub struct MsgUpdateVerificationKeyResponse {
+}
+/// MsgPostRollupData puts rollup data on chain (v3.2.8, rdk-post-rollup-data).
+/// The payload stays in this transaction, which is in the block; the chain
+/// stores a commitment (SHA-256 of data, size, poster, height) under the next
+/// sequence number of the rollup's inbox and extends the inbox accumulator.
+/// The poster pays a fee per billable byte (at least 1 KiB per post) into the
+/// fee collector. Who may post: the rollup's sequencer (or its creator when no
+/// sequencer address is set); anyone for a based rollup.
+#[derive(Clone, PartialEq, ::prost::Message)]
+pub struct MsgPostRollupData {
+    #[prost(string, tag="1")]
+    pub poster: ::prost::alloc::string::String,
+    #[prost(string, tag="2")]
+    pub rollup_id: ::prost::alloc::string::String,
+    #[prost(bytes="vec", tag="3")]
+    pub data: ::prost::alloc::vec::Vec<u8>,
+}
+#[derive(Clone, PartialEq, ::prost::Message)]
+pub struct MsgPostRollupDataResponse {
+    /// sequence is the inbox sequence number the post was given (from 1).
+    #[prost(uint64, tag="1")]
+    pub sequence: u64,
+    /// data_hash is SHA-256(data), the hash a batch references.
+    #[prost(bytes="vec", tag="2")]
+    pub data_hash: ::prost::alloc::vec::Vec<u8>,
+}
+/// MsgSetRollupSequencing moves a rollup to based sequencing ("based") or back
+/// to its sequencer (""). Governance only: authority must be the gov module
+/// account. Moving to based starts the inbox at its current head. Served from
+/// v3.2.8 (rdk-based-sequencing).
+#[derive(Clone, PartialEq, ::prost::Message)]
+pub struct MsgSetRollupSequencing {
+    #[prost(string, tag="1")]
+    pub authority: ::prost::alloc::string::String,
+    #[prost(string, tag="2")]
+    pub rollup_id: ::prost::alloc::string::String,
+    #[prost(string, tag="3")]
+    pub sequencing: ::prost::alloc::string::String,
+}
+#[derive(Clone, Copy, PartialEq, ::prost::Message)]
+pub struct MsgSetRollupSequencingResponse {
+}
+/// MsgDepositToRollup moves amount uqor from depositor into a qledger-v1
+/// rollup's deposit pool and credits the L2 account (32-byte qledger-v1
+/// account id) through the rollup's inbox. Served from v3.2.8
+/// (rdk-optimistic-reexec).
+#[derive(Clone, PartialEq, ::prost::Message)]
+pub struct MsgDepositToRollup {
+    #[prost(string, tag="1")]
+    pub depositor: ::prost::alloc::string::String,
+    #[prost(string, tag="2")]
+    pub rollup_id: ::prost::alloc::string::String,
+    #[prost(bytes="vec", tag="3")]
+    pub account: ::prost::alloc::vec::Vec<u8>,
+    #[prost(uint64, tag="4")]
+    pub amount: u64,
+}
+#[derive(Clone, Copy, PartialEq, ::prost::Message)]
+pub struct MsgDepositToRollupResponse {
+    /// sequence is the inbox sequence of the deposit entry.
+    #[prost(uint64, tag="1")]
+    pub sequence: u64,
+}
+/// MsgBondRollupSubmitter adds amount uqor to submitter's bond on a
+/// qledger-v1 rollup. Served from v3.2.8 (rdk-optimistic-reexec).
+#[derive(Clone, PartialEq, ::prost::Message)]
+pub struct MsgBondRollupSubmitter {
+    #[prost(string, tag="1")]
+    pub submitter: ::prost::alloc::string::String,
+    #[prost(string, tag="2")]
+    pub rollup_id: ::prost::alloc::string::String,
+    #[prost(uint64, tag="3")]
+    pub amount: u64,
+}
+#[derive(Clone, Copy, PartialEq, ::prost::Message)]
+pub struct MsgBondRollupSubmitterResponse {
+    #[prost(uint64, tag="1")]
+    pub bond: u64,
+}
+/// MsgUnbondRollupSubmitter returns submitter's whole bond once a full
+/// challenge window has passed since its last batch. Served from v3.2.8
+/// (rdk-optimistic-reexec).
+#[derive(Clone, PartialEq, ::prost::Message)]
+pub struct MsgUnbondRollupSubmitter {
+    #[prost(string, tag="1")]
+    pub submitter: ::prost::alloc::string::String,
+    #[prost(string, tag="2")]
+    pub rollup_id: ::prost::alloc::string::String,
+}
+#[derive(Clone, Copy, PartialEq, ::prost::Message)]
+pub struct MsgUnbondRollupSubmitterResponse {
+    #[prost(uint64, tag="1")]
+    pub returned: u64,
+}
+/// MsgSetRollupMembers sets the member list of a private rollup (each member
+/// must publish an ML-KEM-1024 key in the x/pqc KEM registry) and starts a
+/// new membership epoch. Signed by the rollup's creator. Served from v3.2.8
+/// (rdk-private-rollups).
+#[derive(Clone, PartialEq, ::prost::Message)]
+pub struct MsgSetRollupMembers {
+    #[prost(string, tag="1")]
+    pub creator: ::prost::alloc::string::String,
+    #[prost(string, tag="2")]
+    pub rollup_id: ::prost::alloc::string::String,
+    #[prost(string, repeated, tag="3")]
+    pub members: ::prost::alloc::vec::Vec<::prost::alloc::string::String>,
+}
+#[derive(Clone, Copy, PartialEq, ::prost::Message)]
+pub struct MsgSetRollupMembersResponse {
+    #[prost(uint64, tag="1")]
+    pub epoch: u64,
 }
 // @@protoc_insertion_point(module)

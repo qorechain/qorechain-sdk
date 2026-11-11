@@ -54,6 +54,31 @@ export interface ProgramInfo {
   dataAccount: string;
 }
 
+export interface QueryClusterInfoRequest {
+}
+
+export interface QueryClusterInfoResponse {
+  /** chain_id is the network's chain id the identity is derived from. */
+  chainId: string;
+  /**
+   * genesis_hash is base58 of SHA-256(domain || chain_id), 32 bytes, as the
+   * SVM JSON-RPC method getGenesisHash returns it.
+   */
+  genesisHash: string;
+  /**
+   * caip2_chain_id is "solana:" plus the first 32 characters of genesis_hash,
+   * the chain string Solana Wallet Standard wallets use.
+   */
+  caip2ChainId: string;
+  /** derivation describes how genesis_hash is computed. */
+  derivation: string;
+  /**
+   * execution_enabled reports whether SVM execution is enabled on this
+   * network. It is false while the SVM lane is disabled.
+   */
+  executionEnabled: boolean;
+}
+
 function createBaseQuerySlotRequest(): QuerySlotRequest {
   return {};
 }
@@ -707,6 +732,189 @@ export const ProgramInfo: MessageFns<ProgramInfo> = {
   },
 };
 
+function createBaseQueryClusterInfoRequest(): QueryClusterInfoRequest {
+  return {};
+}
+
+export const QueryClusterInfoRequest: MessageFns<QueryClusterInfoRequest> = {
+  encode(_: QueryClusterInfoRequest, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): QueryClusterInfoRequest {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseQueryClusterInfoRequest();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(_: any): QueryClusterInfoRequest {
+    return {};
+  },
+
+  toJSON(_: QueryClusterInfoRequest): unknown {
+    const obj: any = {};
+    return obj;
+  },
+
+  create(base?: DeepPartial<QueryClusterInfoRequest>): QueryClusterInfoRequest {
+    return QueryClusterInfoRequest.fromPartial(base ?? {});
+  },
+  fromPartial(_: DeepPartial<QueryClusterInfoRequest>): QueryClusterInfoRequest {
+    const message = createBaseQueryClusterInfoRequest();
+    return message;
+  },
+};
+
+function createBaseQueryClusterInfoResponse(): QueryClusterInfoResponse {
+  return { chainId: "", genesisHash: "", caip2ChainId: "", derivation: "", executionEnabled: false };
+}
+
+export const QueryClusterInfoResponse: MessageFns<QueryClusterInfoResponse> = {
+  encode(message: QueryClusterInfoResponse, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.chainId !== "") {
+      writer.uint32(10).string(message.chainId);
+    }
+    if (message.genesisHash !== "") {
+      writer.uint32(18).string(message.genesisHash);
+    }
+    if (message.caip2ChainId !== "") {
+      writer.uint32(26).string(message.caip2ChainId);
+    }
+    if (message.derivation !== "") {
+      writer.uint32(34).string(message.derivation);
+    }
+    if (message.executionEnabled !== false) {
+      writer.uint32(40).bool(message.executionEnabled);
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): QueryClusterInfoResponse {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseQueryClusterInfoResponse();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.chainId = reader.string();
+          continue;
+        }
+        case 2: {
+          if (tag !== 18) {
+            break;
+          }
+
+          message.genesisHash = reader.string();
+          continue;
+        }
+        case 3: {
+          if (tag !== 26) {
+            break;
+          }
+
+          message.caip2ChainId = reader.string();
+          continue;
+        }
+        case 4: {
+          if (tag !== 34) {
+            break;
+          }
+
+          message.derivation = reader.string();
+          continue;
+        }
+        case 5: {
+          if (tag !== 40) {
+            break;
+          }
+
+          message.executionEnabled = reader.bool();
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(object: any): QueryClusterInfoResponse {
+    return {
+      chainId: isSet(object.chainId)
+        ? globalThis.String(object.chainId)
+        : isSet(object.chain_id)
+        ? globalThis.String(object.chain_id)
+        : "",
+      genesisHash: isSet(object.genesisHash)
+        ? globalThis.String(object.genesisHash)
+        : isSet(object.genesis_hash)
+        ? globalThis.String(object.genesis_hash)
+        : "",
+      caip2ChainId: isSet(object.caip2ChainId)
+        ? globalThis.String(object.caip2ChainId)
+        : isSet(object.caip2_chain_id)
+        ? globalThis.String(object.caip2_chain_id)
+        : "",
+      derivation: isSet(object.derivation) ? globalThis.String(object.derivation) : "",
+      executionEnabled: isSet(object.executionEnabled)
+        ? globalThis.Boolean(object.executionEnabled)
+        : isSet(object.execution_enabled)
+        ? globalThis.Boolean(object.execution_enabled)
+        : false,
+    };
+  },
+
+  toJSON(message: QueryClusterInfoResponse): unknown {
+    const obj: any = {};
+    if (message.chainId !== "") {
+      obj.chainId = message.chainId;
+    }
+    if (message.genesisHash !== "") {
+      obj.genesisHash = message.genesisHash;
+    }
+    if (message.caip2ChainId !== "") {
+      obj.caip2ChainId = message.caip2ChainId;
+    }
+    if (message.derivation !== "") {
+      obj.derivation = message.derivation;
+    }
+    if (message.executionEnabled !== false) {
+      obj.executionEnabled = message.executionEnabled;
+    }
+    return obj;
+  },
+
+  create(base?: DeepPartial<QueryClusterInfoResponse>): QueryClusterInfoResponse {
+    return QueryClusterInfoResponse.fromPartial(base ?? {});
+  },
+  fromPartial(object: DeepPartial<QueryClusterInfoResponse>): QueryClusterInfoResponse {
+    const message = createBaseQueryClusterInfoResponse();
+    message.chainId = object.chainId ?? "";
+    message.genesisHash = object.genesisHash ?? "";
+    message.caip2ChainId = object.caip2ChainId ?? "";
+    message.derivation = object.derivation ?? "";
+    message.executionEnabled = object.executionEnabled ?? false;
+    return message;
+  },
+};
+
 /** Query defines the gRPC query service for the SVM module. */
 export type QueryDefinition = typeof QueryDefinition;
 export const QueryDefinition = {
@@ -739,6 +947,60 @@ export const QueryDefinition = {
       responseType: QueryProgramResponse as typeof QueryProgramResponse,
       responseStream: false,
       options: {},
+    },
+    /**
+     * ClusterInfo returns the SVM cluster identity wallets use to recognise the
+     * network: the genesis hash getGenesisHash reports and the Wallet Standard
+     * (CAIP-2) chain string. It is derived from the chain id alone and reads no
+     * SVM account or program state.
+     */
+    clusterInfo: {
+      name: "ClusterInfo",
+      requestType: QueryClusterInfoRequest as typeof QueryClusterInfoRequest,
+      requestStream: false,
+      responseType: QueryClusterInfoResponse as typeof QueryClusterInfoResponse,
+      responseStream: false,
+      options: {
+        _unknownFields: {
+          578365826: [
+            new Uint8Array([
+              32,
+              18,
+              30,
+              47,
+              113,
+              111,
+              114,
+              101,
+              99,
+              104,
+              97,
+              105,
+              110,
+              47,
+              115,
+              118,
+              109,
+              47,
+              118,
+              49,
+              47,
+              99,
+              108,
+              117,
+              115,
+              116,
+              101,
+              114,
+              95,
+              105,
+              110,
+              102,
+              111,
+            ]) as Uint8Array,
+          ],
+        },
+      },
     },
   },
 } as const;

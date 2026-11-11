@@ -1644,6 +1644,4474 @@ public final class QueryOuterClass extends com.google.protobuf.GeneratedFile {
 
   }
 
+  public interface ReputationRecordOrBuilder extends
+      // @@protoc_insertion_point(interface_extends:qorechain.reputation.v1.ReputationRecord)
+      com.google.protobuf.MessageOrBuilder {
+
+    /**
+     * <pre>
+     * consensus_address is the record key (qorvalcons...).
+     * </pre>
+     *
+     * <code>string consensus_address = 1 [json_name = "consensusAddress"];</code>
+     * @return The consensusAddress.
+     */
+    java.lang.String getConsensusAddress();
+    /**
+     * <pre>
+     * consensus_address is the record key (qorvalcons...).
+     * </pre>
+     *
+     * <code>string consensus_address = 1 [json_name = "consensusAddress"];</code>
+     * @return The bytes for consensusAddress.
+     */
+    com.google.protobuf.ByteString
+        getConsensusAddressBytes();
+
+    /**
+     * <pre>
+     * operator_address is the qorvaloper... address; empty when x/staking no longer knows the validator.
+     * </pre>
+     *
+     * <code>string operator_address = 2 [json_name = "operatorAddress"];</code>
+     * @return The operatorAddress.
+     */
+    java.lang.String getOperatorAddress();
+    /**
+     * <pre>
+     * operator_address is the qorvaloper... address; empty when x/staking no longer knows the validator.
+     * </pre>
+     *
+     * <code>string operator_address = 2 [json_name = "operatorAddress"];</code>
+     * @return The bytes for operatorAddress.
+     */
+    com.google.protobuf.ByteString
+        getOperatorAddressBytes();
+
+    /**
+     * <code>string stake_score = 3 [json_name = "stakeScore"];</code>
+     * @return The stakeScore.
+     */
+    java.lang.String getStakeScore();
+    /**
+     * <code>string stake_score = 3 [json_name = "stakeScore"];</code>
+     * @return The bytes for stakeScore.
+     */
+    com.google.protobuf.ByteString
+        getStakeScoreBytes();
+
+    /**
+     * <code>string performance_score = 4 [json_name = "performanceScore"];</code>
+     * @return The performanceScore.
+     */
+    java.lang.String getPerformanceScore();
+    /**
+     * <code>string performance_score = 4 [json_name = "performanceScore"];</code>
+     * @return The bytes for performanceScore.
+     */
+    com.google.protobuf.ByteString
+        getPerformanceScoreBytes();
+
+    /**
+     * <code>string contribution_score = 5 [json_name = "contributionScore"];</code>
+     * @return The contributionScore.
+     */
+    java.lang.String getContributionScore();
+    /**
+     * <code>string contribution_score = 5 [json_name = "contributionScore"];</code>
+     * @return The bytes for contributionScore.
+     */
+    com.google.protobuf.ByteString
+        getContributionScoreBytes();
+
+    /**
+     * <code>string time_score = 6 [json_name = "timeScore"];</code>
+     * @return The timeScore.
+     */
+    java.lang.String getTimeScore();
+    /**
+     * <code>string time_score = 6 [json_name = "timeScore"];</code>
+     * @return The bytes for timeScore.
+     */
+    com.google.protobuf.ByteString
+        getTimeScoreBytes();
+
+    /**
+     * <pre>
+     * composite_score is R_i (LegacyDec string).
+     * </pre>
+     *
+     * <code>string composite_score = 7 [json_name = "compositeScore"];</code>
+     * @return The compositeScore.
+     */
+    java.lang.String getCompositeScore();
+    /**
+     * <pre>
+     * composite_score is R_i (LegacyDec string).
+     * </pre>
+     *
+     * <code>string composite_score = 7 [json_name = "compositeScore"];</code>
+     * @return The bytes for compositeScore.
+     */
+    com.google.protobuf.ByteString
+        getCompositeScoreBytes();
+
+    /**
+     * <code>int64 last_updated_height = 8 [json_name = "lastUpdatedHeight"];</code>
+     * @return The lastUpdatedHeight.
+     */
+    long getLastUpdatedHeight();
+
+    /**
+     * <code>uint64 uptime_blocks = 9 [json_name = "uptimeBlocks"];</code>
+     * @return The uptimeBlocks.
+     */
+    long getUptimeBlocks();
+
+    /**
+     * <code>uint64 proposed_blocks = 10 [json_name = "proposedBlocks"];</code>
+     * @return The proposedBlocks.
+     */
+    long getProposedBlocks();
+
+    /**
+     * <code>uint64 missed_blocks = 11 [json_name = "missedBlocks"];</code>
+     * @return The missedBlocks.
+     */
+    long getMissedBlocks();
+
+    /**
+     * <code>uint64 slashing_events = 12 [json_name = "slashingEvents"];</code>
+     * @return The slashingEvents.
+     */
+    long getSlashingEvents();
+
+    /**
+     * <code>int64 community_votes = 13 [json_name = "communityVotes"];</code>
+     * @return The communityVotes.
+     */
+    long getCommunityVotes();
+
+    /**
+     * <code>int64 joined_at_height = 14 [json_name = "joinedAtHeight"];</code>
+     * @return The joinedAtHeight.
+     */
+    long getJoinedAtHeight();
+
+    /**
+     * <code>string gov_participation = 15 [json_name = "govParticipation"];</code>
+     * @return The govParticipation.
+     */
+    java.lang.String getGovParticipation();
+    /**
+     * <code>string gov_participation = 15 [json_name = "govParticipation"];</code>
+     * @return The bytes for govParticipation.
+     */
+    com.google.protobuf.ByteString
+        getGovParticipationBytes();
+
+    /**
+     * <code>int64 inactive_since = 16 [json_name = "inactiveSince"];</code>
+     * @return The inactiveSince.
+     */
+    long getInactiveSince();
+  }
+  /**
+   * <pre>
+   * ReputationRecord mirrors the stored record (x/reputation/types.ValidatorReputation),
+   * plus the operator address resolved through x/staking.
+   * </pre>
+   *
+   * Protobuf type {@code qorechain.reputation.v1.ReputationRecord}
+   */
+  public static final class ReputationRecord extends
+      com.google.protobuf.GeneratedMessage implements
+      // @@protoc_insertion_point(message_implements:qorechain.reputation.v1.ReputationRecord)
+      ReputationRecordOrBuilder {
+  private static final long serialVersionUID = 0L;
+    static {
+      com.google.protobuf.RuntimeVersion.validateProtobufGencodeVersion(
+        com.google.protobuf.RuntimeVersion.RuntimeDomain.PUBLIC,
+        /* major= */ 4,
+        /* minor= */ 35,
+        /* patch= */ 1,
+        /* suffix= */ "",
+        "ReputationRecord");
+    }
+    // Use ReputationRecord.newBuilder() to construct.
+    private ReputationRecord(com.google.protobuf.GeneratedMessage.Builder<?> builder) {
+      super(builder);
+    }
+    private ReputationRecord() {
+      consensusAddress_ = "";
+      operatorAddress_ = "";
+      stakeScore_ = "";
+      performanceScore_ = "";
+      contributionScore_ = "";
+      timeScore_ = "";
+      compositeScore_ = "";
+      govParticipation_ = "";
+    }
+
+    public static final com.google.protobuf.Descriptors.Descriptor
+        getDescriptor() {
+      return qorechain.reputation.v1.QueryOuterClass.internal_static_qorechain_reputation_v1_ReputationRecord_descriptor;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Descriptors.Descriptor getDescriptorForType() {
+      return qorechain.reputation.v1.QueryOuterClass.internal_static_qorechain_reputation_v1_ReputationRecord_descriptor;
+    }
+
+    @java.lang.Override
+    protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+        internalGetFieldAccessorTable() {
+      return qorechain.reputation.v1.QueryOuterClass.internal_static_qorechain_reputation_v1_ReputationRecord_fieldAccessorTable
+          .ensureFieldAccessorsInitialized(
+              qorechain.reputation.v1.QueryOuterClass.ReputationRecord.class, qorechain.reputation.v1.QueryOuterClass.ReputationRecord.Builder.class);
+    }
+
+    public static final int CONSENSUS_ADDRESS_FIELD_NUMBER = 1;
+    @SuppressWarnings("serial")
+    private volatile java.lang.Object consensusAddress_ = "";
+    /**
+     * <pre>
+     * consensus_address is the record key (qorvalcons...).
+     * </pre>
+     *
+     * <code>string consensus_address = 1 [json_name = "consensusAddress"];</code>
+     * @return The consensusAddress.
+     */
+    @java.lang.Override
+    public java.lang.String getConsensusAddress() {
+      java.lang.Object ref = consensusAddress_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        consensusAddress_ = s;
+        return s;
+      }
+    }
+    /**
+     * <pre>
+     * consensus_address is the record key (qorvalcons...).
+     * </pre>
+     *
+     * <code>string consensus_address = 1 [json_name = "consensusAddress"];</code>
+     * @return The bytes for consensusAddress.
+     */
+    @java.lang.Override
+    public com.google.protobuf.ByteString
+        getConsensusAddressBytes() {
+      java.lang.Object ref = consensusAddress_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        consensusAddress_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
+    public static final int OPERATOR_ADDRESS_FIELD_NUMBER = 2;
+    @SuppressWarnings("serial")
+    private volatile java.lang.Object operatorAddress_ = "";
+    /**
+     * <pre>
+     * operator_address is the qorvaloper... address; empty when x/staking no longer knows the validator.
+     * </pre>
+     *
+     * <code>string operator_address = 2 [json_name = "operatorAddress"];</code>
+     * @return The operatorAddress.
+     */
+    @java.lang.Override
+    public java.lang.String getOperatorAddress() {
+      java.lang.Object ref = operatorAddress_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        operatorAddress_ = s;
+        return s;
+      }
+    }
+    /**
+     * <pre>
+     * operator_address is the qorvaloper... address; empty when x/staking no longer knows the validator.
+     * </pre>
+     *
+     * <code>string operator_address = 2 [json_name = "operatorAddress"];</code>
+     * @return The bytes for operatorAddress.
+     */
+    @java.lang.Override
+    public com.google.protobuf.ByteString
+        getOperatorAddressBytes() {
+      java.lang.Object ref = operatorAddress_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        operatorAddress_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
+    public static final int STAKE_SCORE_FIELD_NUMBER = 3;
+    @SuppressWarnings("serial")
+    private volatile java.lang.Object stakeScore_ = "";
+    /**
+     * <code>string stake_score = 3 [json_name = "stakeScore"];</code>
+     * @return The stakeScore.
+     */
+    @java.lang.Override
+    public java.lang.String getStakeScore() {
+      java.lang.Object ref = stakeScore_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        stakeScore_ = s;
+        return s;
+      }
+    }
+    /**
+     * <code>string stake_score = 3 [json_name = "stakeScore"];</code>
+     * @return The bytes for stakeScore.
+     */
+    @java.lang.Override
+    public com.google.protobuf.ByteString
+        getStakeScoreBytes() {
+      java.lang.Object ref = stakeScore_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        stakeScore_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
+    public static final int PERFORMANCE_SCORE_FIELD_NUMBER = 4;
+    @SuppressWarnings("serial")
+    private volatile java.lang.Object performanceScore_ = "";
+    /**
+     * <code>string performance_score = 4 [json_name = "performanceScore"];</code>
+     * @return The performanceScore.
+     */
+    @java.lang.Override
+    public java.lang.String getPerformanceScore() {
+      java.lang.Object ref = performanceScore_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        performanceScore_ = s;
+        return s;
+      }
+    }
+    /**
+     * <code>string performance_score = 4 [json_name = "performanceScore"];</code>
+     * @return The bytes for performanceScore.
+     */
+    @java.lang.Override
+    public com.google.protobuf.ByteString
+        getPerformanceScoreBytes() {
+      java.lang.Object ref = performanceScore_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        performanceScore_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
+    public static final int CONTRIBUTION_SCORE_FIELD_NUMBER = 5;
+    @SuppressWarnings("serial")
+    private volatile java.lang.Object contributionScore_ = "";
+    /**
+     * <code>string contribution_score = 5 [json_name = "contributionScore"];</code>
+     * @return The contributionScore.
+     */
+    @java.lang.Override
+    public java.lang.String getContributionScore() {
+      java.lang.Object ref = contributionScore_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        contributionScore_ = s;
+        return s;
+      }
+    }
+    /**
+     * <code>string contribution_score = 5 [json_name = "contributionScore"];</code>
+     * @return The bytes for contributionScore.
+     */
+    @java.lang.Override
+    public com.google.protobuf.ByteString
+        getContributionScoreBytes() {
+      java.lang.Object ref = contributionScore_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        contributionScore_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
+    public static final int TIME_SCORE_FIELD_NUMBER = 6;
+    @SuppressWarnings("serial")
+    private volatile java.lang.Object timeScore_ = "";
+    /**
+     * <code>string time_score = 6 [json_name = "timeScore"];</code>
+     * @return The timeScore.
+     */
+    @java.lang.Override
+    public java.lang.String getTimeScore() {
+      java.lang.Object ref = timeScore_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        timeScore_ = s;
+        return s;
+      }
+    }
+    /**
+     * <code>string time_score = 6 [json_name = "timeScore"];</code>
+     * @return The bytes for timeScore.
+     */
+    @java.lang.Override
+    public com.google.protobuf.ByteString
+        getTimeScoreBytes() {
+      java.lang.Object ref = timeScore_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        timeScore_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
+    public static final int COMPOSITE_SCORE_FIELD_NUMBER = 7;
+    @SuppressWarnings("serial")
+    private volatile java.lang.Object compositeScore_ = "";
+    /**
+     * <pre>
+     * composite_score is R_i (LegacyDec string).
+     * </pre>
+     *
+     * <code>string composite_score = 7 [json_name = "compositeScore"];</code>
+     * @return The compositeScore.
+     */
+    @java.lang.Override
+    public java.lang.String getCompositeScore() {
+      java.lang.Object ref = compositeScore_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        compositeScore_ = s;
+        return s;
+      }
+    }
+    /**
+     * <pre>
+     * composite_score is R_i (LegacyDec string).
+     * </pre>
+     *
+     * <code>string composite_score = 7 [json_name = "compositeScore"];</code>
+     * @return The bytes for compositeScore.
+     */
+    @java.lang.Override
+    public com.google.protobuf.ByteString
+        getCompositeScoreBytes() {
+      java.lang.Object ref = compositeScore_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        compositeScore_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
+    public static final int LAST_UPDATED_HEIGHT_FIELD_NUMBER = 8;
+    private long lastUpdatedHeight_ = 0L;
+    /**
+     * <code>int64 last_updated_height = 8 [json_name = "lastUpdatedHeight"];</code>
+     * @return The lastUpdatedHeight.
+     */
+    @java.lang.Override
+    public long getLastUpdatedHeight() {
+      return lastUpdatedHeight_;
+    }
+
+    public static final int UPTIME_BLOCKS_FIELD_NUMBER = 9;
+    private long uptimeBlocks_ = 0L;
+    /**
+     * <code>uint64 uptime_blocks = 9 [json_name = "uptimeBlocks"];</code>
+     * @return The uptimeBlocks.
+     */
+    @java.lang.Override
+    public long getUptimeBlocks() {
+      return uptimeBlocks_;
+    }
+
+    public static final int PROPOSED_BLOCKS_FIELD_NUMBER = 10;
+    private long proposedBlocks_ = 0L;
+    /**
+     * <code>uint64 proposed_blocks = 10 [json_name = "proposedBlocks"];</code>
+     * @return The proposedBlocks.
+     */
+    @java.lang.Override
+    public long getProposedBlocks() {
+      return proposedBlocks_;
+    }
+
+    public static final int MISSED_BLOCKS_FIELD_NUMBER = 11;
+    private long missedBlocks_ = 0L;
+    /**
+     * <code>uint64 missed_blocks = 11 [json_name = "missedBlocks"];</code>
+     * @return The missedBlocks.
+     */
+    @java.lang.Override
+    public long getMissedBlocks() {
+      return missedBlocks_;
+    }
+
+    public static final int SLASHING_EVENTS_FIELD_NUMBER = 12;
+    private long slashingEvents_ = 0L;
+    /**
+     * <code>uint64 slashing_events = 12 [json_name = "slashingEvents"];</code>
+     * @return The slashingEvents.
+     */
+    @java.lang.Override
+    public long getSlashingEvents() {
+      return slashingEvents_;
+    }
+
+    public static final int COMMUNITY_VOTES_FIELD_NUMBER = 13;
+    private long communityVotes_ = 0L;
+    /**
+     * <code>int64 community_votes = 13 [json_name = "communityVotes"];</code>
+     * @return The communityVotes.
+     */
+    @java.lang.Override
+    public long getCommunityVotes() {
+      return communityVotes_;
+    }
+
+    public static final int JOINED_AT_HEIGHT_FIELD_NUMBER = 14;
+    private long joinedAtHeight_ = 0L;
+    /**
+     * <code>int64 joined_at_height = 14 [json_name = "joinedAtHeight"];</code>
+     * @return The joinedAtHeight.
+     */
+    @java.lang.Override
+    public long getJoinedAtHeight() {
+      return joinedAtHeight_;
+    }
+
+    public static final int GOV_PARTICIPATION_FIELD_NUMBER = 15;
+    @SuppressWarnings("serial")
+    private volatile java.lang.Object govParticipation_ = "";
+    /**
+     * <code>string gov_participation = 15 [json_name = "govParticipation"];</code>
+     * @return The govParticipation.
+     */
+    @java.lang.Override
+    public java.lang.String getGovParticipation() {
+      java.lang.Object ref = govParticipation_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        govParticipation_ = s;
+        return s;
+      }
+    }
+    /**
+     * <code>string gov_participation = 15 [json_name = "govParticipation"];</code>
+     * @return The bytes for govParticipation.
+     */
+    @java.lang.Override
+    public com.google.protobuf.ByteString
+        getGovParticipationBytes() {
+      java.lang.Object ref = govParticipation_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        govParticipation_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
+    public static final int INACTIVE_SINCE_FIELD_NUMBER = 16;
+    private long inactiveSince_ = 0L;
+    /**
+     * <code>int64 inactive_since = 16 [json_name = "inactiveSince"];</code>
+     * @return The inactiveSince.
+     */
+    @java.lang.Override
+    public long getInactiveSince() {
+      return inactiveSince_;
+    }
+
+    private byte memoizedIsInitialized = -1;
+    @java.lang.Override
+    public final boolean isInitialized() {
+      byte isInitialized = memoizedIsInitialized;
+      if (isInitialized == 1) return true;
+      if (isInitialized == 0) return false;
+
+      memoizedIsInitialized = 1;
+      return true;
+    }
+
+    @java.lang.Override
+    public void writeTo(com.google.protobuf.CodedOutputStream output)
+                        throws java.io.IOException {
+      if (!com.google.protobuf.GeneratedMessage.isStringEmpty(consensusAddress_)) {
+        com.google.protobuf.GeneratedMessage.writeString(output, 1, consensusAddress_);
+      }
+      if (!com.google.protobuf.GeneratedMessage.isStringEmpty(operatorAddress_)) {
+        com.google.protobuf.GeneratedMessage.writeString(output, 2, operatorAddress_);
+      }
+      if (!com.google.protobuf.GeneratedMessage.isStringEmpty(stakeScore_)) {
+        com.google.protobuf.GeneratedMessage.writeString(output, 3, stakeScore_);
+      }
+      if (!com.google.protobuf.GeneratedMessage.isStringEmpty(performanceScore_)) {
+        com.google.protobuf.GeneratedMessage.writeString(output, 4, performanceScore_);
+      }
+      if (!com.google.protobuf.GeneratedMessage.isStringEmpty(contributionScore_)) {
+        com.google.protobuf.GeneratedMessage.writeString(output, 5, contributionScore_);
+      }
+      if (!com.google.protobuf.GeneratedMessage.isStringEmpty(timeScore_)) {
+        com.google.protobuf.GeneratedMessage.writeString(output, 6, timeScore_);
+      }
+      if (!com.google.protobuf.GeneratedMessage.isStringEmpty(compositeScore_)) {
+        com.google.protobuf.GeneratedMessage.writeString(output, 7, compositeScore_);
+      }
+      if (lastUpdatedHeight_ != 0L) {
+        output.writeInt64(8, lastUpdatedHeight_);
+      }
+      if (uptimeBlocks_ != 0L) {
+        output.writeUInt64(9, uptimeBlocks_);
+      }
+      if (proposedBlocks_ != 0L) {
+        output.writeUInt64(10, proposedBlocks_);
+      }
+      if (missedBlocks_ != 0L) {
+        output.writeUInt64(11, missedBlocks_);
+      }
+      if (slashingEvents_ != 0L) {
+        output.writeUInt64(12, slashingEvents_);
+      }
+      if (communityVotes_ != 0L) {
+        output.writeInt64(13, communityVotes_);
+      }
+      if (joinedAtHeight_ != 0L) {
+        output.writeInt64(14, joinedAtHeight_);
+      }
+      if (!com.google.protobuf.GeneratedMessage.isStringEmpty(govParticipation_)) {
+        com.google.protobuf.GeneratedMessage.writeString(output, 15, govParticipation_);
+      }
+      if (inactiveSince_ != 0L) {
+        output.writeInt64(16, inactiveSince_);
+      }
+      getUnknownFields().writeTo(output);
+    }
+    private int computeSerializedSize_0() {
+      int size = 0;
+      if (!com.google.protobuf.GeneratedMessage.isStringEmpty(consensusAddress_)) {
+        size += com.google.protobuf.GeneratedMessage.computeStringSize(1, consensusAddress_);
+      }
+      if (!com.google.protobuf.GeneratedMessage.isStringEmpty(operatorAddress_)) {
+        size += com.google.protobuf.GeneratedMessage.computeStringSize(2, operatorAddress_);
+      }
+      if (!com.google.protobuf.GeneratedMessage.isStringEmpty(stakeScore_)) {
+        size += com.google.protobuf.GeneratedMessage.computeStringSize(3, stakeScore_);
+      }
+      if (!com.google.protobuf.GeneratedMessage.isStringEmpty(performanceScore_)) {
+        size += com.google.protobuf.GeneratedMessage.computeStringSize(4, performanceScore_);
+      }
+      if (!com.google.protobuf.GeneratedMessage.isStringEmpty(contributionScore_)) {
+        size += com.google.protobuf.GeneratedMessage.computeStringSize(5, contributionScore_);
+      }
+      if (!com.google.protobuf.GeneratedMessage.isStringEmpty(timeScore_)) {
+        size += com.google.protobuf.GeneratedMessage.computeStringSize(6, timeScore_);
+      }
+      if (!com.google.protobuf.GeneratedMessage.isStringEmpty(compositeScore_)) {
+        size += com.google.protobuf.GeneratedMessage.computeStringSize(7, compositeScore_);
+      }
+      if (lastUpdatedHeight_ != 0L) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeInt64Size(8, lastUpdatedHeight_);
+      }
+      if (uptimeBlocks_ != 0L) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeUInt64Size(9, uptimeBlocks_);
+      }
+      if (proposedBlocks_ != 0L) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeUInt64Size(10, proposedBlocks_);
+      }
+      if (missedBlocks_ != 0L) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeUInt64Size(11, missedBlocks_);
+      }
+      if (slashingEvents_ != 0L) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeUInt64Size(12, slashingEvents_);
+      }
+      if (communityVotes_ != 0L) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeInt64Size(13, communityVotes_);
+      }
+      if (joinedAtHeight_ != 0L) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeInt64Size(14, joinedAtHeight_);
+      }
+      if (!com.google.protobuf.GeneratedMessage.isStringEmpty(govParticipation_)) {
+        size += com.google.protobuf.GeneratedMessage.computeStringSize(15, govParticipation_);
+      }
+      if (inactiveSince_ != 0L) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeInt64Size(16, inactiveSince_);
+      }
+      return size;
+    }
+    @java.lang.Override
+    public int getSerializedSize() {
+      int size = memoizedSize;
+      if (size != -1) return size;
+
+      size = 0;
+      size += computeSerializedSize_0();
+      size += getUnknownFields().getSerializedSize();
+      memoizedSize = size;
+      return size;
+    }
+
+    @java.lang.Override
+    public boolean equals(final java.lang.Object obj) {
+      if (obj == this) {
+       return true;
+      }
+      if (!(obj instanceof qorechain.reputation.v1.QueryOuterClass.ReputationRecord)) {
+        return super.equals(obj);
+      }
+      qorechain.reputation.v1.QueryOuterClass.ReputationRecord other = (qorechain.reputation.v1.QueryOuterClass.ReputationRecord) obj;
+
+      if (!getConsensusAddress()
+          .equals(other.getConsensusAddress())) return false;
+      if (!getOperatorAddress()
+          .equals(other.getOperatorAddress())) return false;
+      if (!getStakeScore()
+          .equals(other.getStakeScore())) return false;
+      if (!getPerformanceScore()
+          .equals(other.getPerformanceScore())) return false;
+      if (!getContributionScore()
+          .equals(other.getContributionScore())) return false;
+      if (!getTimeScore()
+          .equals(other.getTimeScore())) return false;
+      if (!getCompositeScore()
+          .equals(other.getCompositeScore())) return false;
+      if (getLastUpdatedHeight()
+          != other.getLastUpdatedHeight()) return false;
+      if (getUptimeBlocks()
+          != other.getUptimeBlocks()) return false;
+      if (getProposedBlocks()
+          != other.getProposedBlocks()) return false;
+      if (getMissedBlocks()
+          != other.getMissedBlocks()) return false;
+      if (getSlashingEvents()
+          != other.getSlashingEvents()) return false;
+      if (getCommunityVotes()
+          != other.getCommunityVotes()) return false;
+      if (getJoinedAtHeight()
+          != other.getJoinedAtHeight()) return false;
+      if (!getGovParticipation()
+          .equals(other.getGovParticipation())) return false;
+      if (getInactiveSince()
+          != other.getInactiveSince()) return false;
+      if (!getUnknownFields().equals(other.getUnknownFields())) return false;
+      return true;
+    }
+
+    @java.lang.Override
+    public int hashCode() {
+      if (memoizedHashCode != 0) {
+        return memoizedHashCode;
+      }
+      int hash = 41;
+      hash = (19 * hash) + getDescriptor().hashCode();
+      hash = (37 * hash) + CONSENSUS_ADDRESS_FIELD_NUMBER;
+      hash = (53 * hash) + getConsensusAddress().hashCode();
+      hash = (37 * hash) + OPERATOR_ADDRESS_FIELD_NUMBER;
+      hash = (53 * hash) + getOperatorAddress().hashCode();
+      hash = (37 * hash) + STAKE_SCORE_FIELD_NUMBER;
+      hash = (53 * hash) + getStakeScore().hashCode();
+      hash = (37 * hash) + PERFORMANCE_SCORE_FIELD_NUMBER;
+      hash = (53 * hash) + getPerformanceScore().hashCode();
+      hash = (37 * hash) + CONTRIBUTION_SCORE_FIELD_NUMBER;
+      hash = (53 * hash) + getContributionScore().hashCode();
+      hash = (37 * hash) + TIME_SCORE_FIELD_NUMBER;
+      hash = (53 * hash) + getTimeScore().hashCode();
+      hash = (37 * hash) + COMPOSITE_SCORE_FIELD_NUMBER;
+      hash = (53 * hash) + getCompositeScore().hashCode();
+      hash = (37 * hash) + LAST_UPDATED_HEIGHT_FIELD_NUMBER;
+      hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
+          getLastUpdatedHeight());
+      hash = (37 * hash) + UPTIME_BLOCKS_FIELD_NUMBER;
+      hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
+          getUptimeBlocks());
+      hash = (37 * hash) + PROPOSED_BLOCKS_FIELD_NUMBER;
+      hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
+          getProposedBlocks());
+      hash = (37 * hash) + MISSED_BLOCKS_FIELD_NUMBER;
+      hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
+          getMissedBlocks());
+      hash = (37 * hash) + SLASHING_EVENTS_FIELD_NUMBER;
+      hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
+          getSlashingEvents());
+      hash = (37 * hash) + COMMUNITY_VOTES_FIELD_NUMBER;
+      hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
+          getCommunityVotes());
+      hash = (37 * hash) + JOINED_AT_HEIGHT_FIELD_NUMBER;
+      hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
+          getJoinedAtHeight());
+      hash = (37 * hash) + GOV_PARTICIPATION_FIELD_NUMBER;
+      hash = (53 * hash) + getGovParticipation().hashCode();
+      hash = (37 * hash) + INACTIVE_SINCE_FIELD_NUMBER;
+      hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
+          getInactiveSince());
+      hash = (29 * hash) + getUnknownFields().hashCode();
+      memoizedHashCode = hash;
+      return hash;
+    }
+
+    public static qorechain.reputation.v1.QueryOuterClass.ReputationRecord parseFrom(
+        java.nio.ByteBuffer data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static qorechain.reputation.v1.QueryOuterClass.ReputationRecord parseFrom(
+        java.nio.ByteBuffer data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static qorechain.reputation.v1.QueryOuterClass.ReputationRecord parseFrom(
+        com.google.protobuf.ByteString data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static qorechain.reputation.v1.QueryOuterClass.ReputationRecord parseFrom(
+        com.google.protobuf.ByteString data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static qorechain.reputation.v1.QueryOuterClass.ReputationRecord parseFrom(byte[] data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static qorechain.reputation.v1.QueryOuterClass.ReputationRecord parseFrom(
+        byte[] data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static qorechain.reputation.v1.QueryOuterClass.ReputationRecord parseFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input);
+    }
+    public static qorechain.reputation.v1.QueryOuterClass.ReputationRecord parseFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    public static qorechain.reputation.v1.QueryOuterClass.ReputationRecord parseDelimitedFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseDelimitedWithIOException(PARSER, input);
+    }
+
+    public static qorechain.reputation.v1.QueryOuterClass.ReputationRecord parseDelimitedFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static qorechain.reputation.v1.QueryOuterClass.ReputationRecord parseFrom(
+        com.google.protobuf.CodedInputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input);
+    }
+    public static qorechain.reputation.v1.QueryOuterClass.ReputationRecord parseFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    @java.lang.Override
+    public Builder newBuilderForType() { return newBuilder(); }
+    public static Builder newBuilder() {
+      return DEFAULT_INSTANCE.toBuilder();
+    }
+    public static Builder newBuilder(qorechain.reputation.v1.QueryOuterClass.ReputationRecord prototype) {
+      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+    }
+    @java.lang.Override
+    public Builder toBuilder() {
+      return this == DEFAULT_INSTANCE
+          ? new Builder() : new Builder().mergeFrom(this);
+    }
+
+    @java.lang.Override
+    protected Builder newBuilderForType(
+        com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+      Builder builder = new Builder(parent);
+      return builder;
+    }
+    /**
+     * <pre>
+     * ReputationRecord mirrors the stored record (x/reputation/types.ValidatorReputation),
+     * plus the operator address resolved through x/staking.
+     * </pre>
+     *
+     * Protobuf type {@code qorechain.reputation.v1.ReputationRecord}
+     */
+    public static final class Builder extends
+        com.google.protobuf.GeneratedMessage.Builder<Builder> implements
+        // @@protoc_insertion_point(builder_implements:qorechain.reputation.v1.ReputationRecord)
+        qorechain.reputation.v1.QueryOuterClass.ReputationRecordOrBuilder {
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return qorechain.reputation.v1.QueryOuterClass.internal_static_qorechain_reputation_v1_ReputationRecord_descriptor;
+      }
+
+      @java.lang.Override
+      protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return qorechain.reputation.v1.QueryOuterClass.internal_static_qorechain_reputation_v1_ReputationRecord_fieldAccessorTable
+            .ensureFieldAccessorsInitialized(
+                qorechain.reputation.v1.QueryOuterClass.ReputationRecord.class, qorechain.reputation.v1.QueryOuterClass.ReputationRecord.Builder.class);
+      }
+
+      // Construct using qorechain.reputation.v1.QueryOuterClass.ReputationRecord.newBuilder()
+      private Builder() {
+
+      }
+
+      private Builder(
+          com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+        super(parent);
+
+      }
+      @java.lang.Override
+      public Builder clear() {
+        super.clear();
+        bitField0_ = 0;
+        consensusAddress_ = "";
+        operatorAddress_ = "";
+        stakeScore_ = "";
+        performanceScore_ = "";
+        contributionScore_ = "";
+        timeScore_ = "";
+        compositeScore_ = "";
+        lastUpdatedHeight_ = 0L;
+        uptimeBlocks_ = 0L;
+        proposedBlocks_ = 0L;
+        missedBlocks_ = 0L;
+        slashingEvents_ = 0L;
+        communityVotes_ = 0L;
+        joinedAtHeight_ = 0L;
+        govParticipation_ = "";
+        inactiveSince_ = 0L;
+        return this;
+      }
+
+      @java.lang.Override
+      public com.google.protobuf.Descriptors.Descriptor
+          getDescriptorForType() {
+        return qorechain.reputation.v1.QueryOuterClass.internal_static_qorechain_reputation_v1_ReputationRecord_descriptor;
+      }
+
+      @java.lang.Override
+      public qorechain.reputation.v1.QueryOuterClass.ReputationRecord getDefaultInstanceForType() {
+        return qorechain.reputation.v1.QueryOuterClass.ReputationRecord.getDefaultInstance();
+      }
+
+      @java.lang.Override
+      public qorechain.reputation.v1.QueryOuterClass.ReputationRecord build() {
+        qorechain.reputation.v1.QueryOuterClass.ReputationRecord result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(result);
+        }
+        return result;
+      }
+
+      @java.lang.Override
+      public qorechain.reputation.v1.QueryOuterClass.ReputationRecord buildPartial() {
+        qorechain.reputation.v1.QueryOuterClass.ReputationRecord result = new qorechain.reputation.v1.QueryOuterClass.ReputationRecord(this);
+        if (bitField0_ != 0) { buildPartial0(result); }
+        onBuilt();
+        return result;
+      }
+
+      private void buildPartial0(qorechain.reputation.v1.QueryOuterClass.ReputationRecord result) {
+        int from_bitField0_ = bitField0_;
+        if (((from_bitField0_ & 0x00000001) != 0)) {
+          result.consensusAddress_ = consensusAddress_;
+        }
+        if (((from_bitField0_ & 0x00000002) != 0)) {
+          result.operatorAddress_ = operatorAddress_;
+        }
+        if (((from_bitField0_ & 0x00000004) != 0)) {
+          result.stakeScore_ = stakeScore_;
+        }
+        if (((from_bitField0_ & 0x00000008) != 0)) {
+          result.performanceScore_ = performanceScore_;
+        }
+        if (((from_bitField0_ & 0x00000010) != 0)) {
+          result.contributionScore_ = contributionScore_;
+        }
+        if (((from_bitField0_ & 0x00000020) != 0)) {
+          result.timeScore_ = timeScore_;
+        }
+        if (((from_bitField0_ & 0x00000040) != 0)) {
+          result.compositeScore_ = compositeScore_;
+        }
+        if (((from_bitField0_ & 0x00000080) != 0)) {
+          result.lastUpdatedHeight_ = lastUpdatedHeight_;
+        }
+        if (((from_bitField0_ & 0x00000100) != 0)) {
+          result.uptimeBlocks_ = uptimeBlocks_;
+        }
+        if (((from_bitField0_ & 0x00000200) != 0)) {
+          result.proposedBlocks_ = proposedBlocks_;
+        }
+        if (((from_bitField0_ & 0x00000400) != 0)) {
+          result.missedBlocks_ = missedBlocks_;
+        }
+        if (((from_bitField0_ & 0x00000800) != 0)) {
+          result.slashingEvents_ = slashingEvents_;
+        }
+        if (((from_bitField0_ & 0x00001000) != 0)) {
+          result.communityVotes_ = communityVotes_;
+        }
+        if (((from_bitField0_ & 0x00002000) != 0)) {
+          result.joinedAtHeight_ = joinedAtHeight_;
+        }
+        if (((from_bitField0_ & 0x00004000) != 0)) {
+          result.govParticipation_ = govParticipation_;
+        }
+        if (((from_bitField0_ & 0x00008000) != 0)) {
+          result.inactiveSince_ = inactiveSince_;
+        }
+      }
+
+      @java.lang.Override
+      public Builder mergeFrom(com.google.protobuf.Message other) {
+        if (other instanceof qorechain.reputation.v1.QueryOuterClass.ReputationRecord) {
+          return mergeFrom((qorechain.reputation.v1.QueryOuterClass.ReputationRecord)other);
+        } else {
+          super.mergeFrom(other);
+          return this;
+        }
+      }
+
+      public Builder mergeFrom(qorechain.reputation.v1.QueryOuterClass.ReputationRecord other) {
+        if (other == qorechain.reputation.v1.QueryOuterClass.ReputationRecord.getDefaultInstance()) return this;
+        if (!other.getConsensusAddress().isEmpty()) {
+          consensusAddress_ = other.consensusAddress_;
+          bitField0_ |= 0x00000001;
+          onChanged();
+        }
+        if (!other.getOperatorAddress().isEmpty()) {
+          operatorAddress_ = other.operatorAddress_;
+          bitField0_ |= 0x00000002;
+          onChanged();
+        }
+        if (!other.getStakeScore().isEmpty()) {
+          stakeScore_ = other.stakeScore_;
+          bitField0_ |= 0x00000004;
+          onChanged();
+        }
+        if (!other.getPerformanceScore().isEmpty()) {
+          performanceScore_ = other.performanceScore_;
+          bitField0_ |= 0x00000008;
+          onChanged();
+        }
+        if (!other.getContributionScore().isEmpty()) {
+          contributionScore_ = other.contributionScore_;
+          bitField0_ |= 0x00000010;
+          onChanged();
+        }
+        if (!other.getTimeScore().isEmpty()) {
+          timeScore_ = other.timeScore_;
+          bitField0_ |= 0x00000020;
+          onChanged();
+        }
+        if (!other.getCompositeScore().isEmpty()) {
+          compositeScore_ = other.compositeScore_;
+          bitField0_ |= 0x00000040;
+          onChanged();
+        }
+        if (other.getLastUpdatedHeight() != 0L) {
+          setLastUpdatedHeight(other.getLastUpdatedHeight());
+        }
+        if (other.getUptimeBlocks() != 0L) {
+          setUptimeBlocks(other.getUptimeBlocks());
+        }
+        if (other.getProposedBlocks() != 0L) {
+          setProposedBlocks(other.getProposedBlocks());
+        }
+        if (other.getMissedBlocks() != 0L) {
+          setMissedBlocks(other.getMissedBlocks());
+        }
+        if (other.getSlashingEvents() != 0L) {
+          setSlashingEvents(other.getSlashingEvents());
+        }
+        if (other.getCommunityVotes() != 0L) {
+          setCommunityVotes(other.getCommunityVotes());
+        }
+        if (other.getJoinedAtHeight() != 0L) {
+          setJoinedAtHeight(other.getJoinedAtHeight());
+        }
+        if (!other.getGovParticipation().isEmpty()) {
+          govParticipation_ = other.govParticipation_;
+          bitField0_ |= 0x00004000;
+          onChanged();
+        }
+        if (other.getInactiveSince() != 0L) {
+          setInactiveSince(other.getInactiveSince());
+        }
+        this.mergeUnknownFields(other.getUnknownFields());
+        onChanged();
+        return this;
+      }
+
+      @java.lang.Override
+      public final boolean isInitialized() {
+        return true;
+      }
+
+      @java.lang.Override
+      public Builder mergeFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        if (extensionRegistry == null) {
+          throw new java.lang.NullPointerException();
+        }
+        try {
+          boolean done = false;
+          while (!done) {
+            int tag = input.readTag();
+            switch (tag) {
+              case 0:
+                done = true;
+                break;
+              case 10: {
+                consensusAddress_ = input.readStringRequireUtf8();
+                bitField0_ |= 0x00000001;
+                break;
+              } // case 10
+              case 18: {
+                operatorAddress_ = input.readStringRequireUtf8();
+                bitField0_ |= 0x00000002;
+                break;
+              } // case 18
+              case 26: {
+                stakeScore_ = input.readStringRequireUtf8();
+                bitField0_ |= 0x00000004;
+                break;
+              } // case 26
+              case 34: {
+                performanceScore_ = input.readStringRequireUtf8();
+                bitField0_ |= 0x00000008;
+                break;
+              } // case 34
+              case 42: {
+                contributionScore_ = input.readStringRequireUtf8();
+                bitField0_ |= 0x00000010;
+                break;
+              } // case 42
+              case 50: {
+                timeScore_ = input.readStringRequireUtf8();
+                bitField0_ |= 0x00000020;
+                break;
+              } // case 50
+              case 58: {
+                compositeScore_ = input.readStringRequireUtf8();
+                bitField0_ |= 0x00000040;
+                break;
+              } // case 58
+              case 64: {
+                lastUpdatedHeight_ = input.readInt64();
+                bitField0_ |= 0x00000080;
+                break;
+              } // case 64
+              case 72: {
+                uptimeBlocks_ = input.readUInt64();
+                bitField0_ |= 0x00000100;
+                break;
+              } // case 72
+              case 80: {
+                proposedBlocks_ = input.readUInt64();
+                bitField0_ |= 0x00000200;
+                break;
+              } // case 80
+              case 88: {
+                missedBlocks_ = input.readUInt64();
+                bitField0_ |= 0x00000400;
+                break;
+              } // case 88
+              case 96: {
+                slashingEvents_ = input.readUInt64();
+                bitField0_ |= 0x00000800;
+                break;
+              } // case 96
+              case 104: {
+                communityVotes_ = input.readInt64();
+                bitField0_ |= 0x00001000;
+                break;
+              } // case 104
+              case 112: {
+                joinedAtHeight_ = input.readInt64();
+                bitField0_ |= 0x00002000;
+                break;
+              } // case 112
+              case 122: {
+                govParticipation_ = input.readStringRequireUtf8();
+                bitField0_ |= 0x00004000;
+                break;
+              } // case 122
+              case 128: {
+                inactiveSince_ = input.readInt64();
+                bitField0_ |= 0x00008000;
+                break;
+              } // case 128
+              default: {
+                if (!super.parseUnknownField(input, extensionRegistry, tag)) {
+                  done = true; // was an endgroup tag
+                }
+                break;
+              } // default:
+            } // switch (tag)
+          } // while (!done)
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          throw e.unwrapIOException();
+        } finally {
+          onChanged();
+        } // finally
+        return this;
+      }
+      private int bitField0_;
+
+      private java.lang.Object consensusAddress_ = "";
+      /**
+       * <pre>
+       * consensus_address is the record key (qorvalcons...).
+       * </pre>
+       *
+       * <code>string consensus_address = 1 [json_name = "consensusAddress"];</code>
+       * @return The consensusAddress.
+       */
+      public java.lang.String getConsensusAddress() {
+        java.lang.Object ref = consensusAddress_;
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          consensusAddress_ = s;
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
+      }
+      /**
+       * <pre>
+       * consensus_address is the record key (qorvalcons...).
+       * </pre>
+       *
+       * <code>string consensus_address = 1 [json_name = "consensusAddress"];</code>
+       * @return The bytes for consensusAddress.
+       */
+      public com.google.protobuf.ByteString
+          getConsensusAddressBytes() {
+        java.lang.Object ref = consensusAddress_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          consensusAddress_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <pre>
+       * consensus_address is the record key (qorvalcons...).
+       * </pre>
+       *
+       * <code>string consensus_address = 1 [json_name = "consensusAddress"];</code>
+       * @param value The consensusAddress to set.
+       * @return This builder for chaining.
+       */
+      public Builder setConsensusAddress(
+          java.lang.String value) {
+        if (value == null) { throw new NullPointerException(); }
+        consensusAddress_ = value;
+        bitField0_ |= 0x00000001;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * consensus_address is the record key (qorvalcons...).
+       * </pre>
+       *
+       * <code>string consensus_address = 1 [json_name = "consensusAddress"];</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearConsensusAddress() {
+        consensusAddress_ = getDefaultInstance().getConsensusAddress();
+        bitField0_ = (bitField0_ & ~0x00000001);
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * consensus_address is the record key (qorvalcons...).
+       * </pre>
+       *
+       * <code>string consensus_address = 1 [json_name = "consensusAddress"];</code>
+       * @param value The bytes for consensusAddress to set.
+       * @return This builder for chaining.
+       */
+      public Builder setConsensusAddressBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) { throw new NullPointerException(); }
+        checkByteStringIsUtf8(value);
+        consensusAddress_ = value;
+        bitField0_ |= 0x00000001;
+        onChanged();
+        return this;
+      }
+
+      private java.lang.Object operatorAddress_ = "";
+      /**
+       * <pre>
+       * operator_address is the qorvaloper... address; empty when x/staking no longer knows the validator.
+       * </pre>
+       *
+       * <code>string operator_address = 2 [json_name = "operatorAddress"];</code>
+       * @return The operatorAddress.
+       */
+      public java.lang.String getOperatorAddress() {
+        java.lang.Object ref = operatorAddress_;
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          operatorAddress_ = s;
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
+      }
+      /**
+       * <pre>
+       * operator_address is the qorvaloper... address; empty when x/staking no longer knows the validator.
+       * </pre>
+       *
+       * <code>string operator_address = 2 [json_name = "operatorAddress"];</code>
+       * @return The bytes for operatorAddress.
+       */
+      public com.google.protobuf.ByteString
+          getOperatorAddressBytes() {
+        java.lang.Object ref = operatorAddress_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          operatorAddress_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <pre>
+       * operator_address is the qorvaloper... address; empty when x/staking no longer knows the validator.
+       * </pre>
+       *
+       * <code>string operator_address = 2 [json_name = "operatorAddress"];</code>
+       * @param value The operatorAddress to set.
+       * @return This builder for chaining.
+       */
+      public Builder setOperatorAddress(
+          java.lang.String value) {
+        if (value == null) { throw new NullPointerException(); }
+        operatorAddress_ = value;
+        bitField0_ |= 0x00000002;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * operator_address is the qorvaloper... address; empty when x/staking no longer knows the validator.
+       * </pre>
+       *
+       * <code>string operator_address = 2 [json_name = "operatorAddress"];</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearOperatorAddress() {
+        operatorAddress_ = getDefaultInstance().getOperatorAddress();
+        bitField0_ = (bitField0_ & ~0x00000002);
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * operator_address is the qorvaloper... address; empty when x/staking no longer knows the validator.
+       * </pre>
+       *
+       * <code>string operator_address = 2 [json_name = "operatorAddress"];</code>
+       * @param value The bytes for operatorAddress to set.
+       * @return This builder for chaining.
+       */
+      public Builder setOperatorAddressBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) { throw new NullPointerException(); }
+        checkByteStringIsUtf8(value);
+        operatorAddress_ = value;
+        bitField0_ |= 0x00000002;
+        onChanged();
+        return this;
+      }
+
+      private java.lang.Object stakeScore_ = "";
+      /**
+       * <code>string stake_score = 3 [json_name = "stakeScore"];</code>
+       * @return The stakeScore.
+       */
+      public java.lang.String getStakeScore() {
+        java.lang.Object ref = stakeScore_;
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          stakeScore_ = s;
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
+      }
+      /**
+       * <code>string stake_score = 3 [json_name = "stakeScore"];</code>
+       * @return The bytes for stakeScore.
+       */
+      public com.google.protobuf.ByteString
+          getStakeScoreBytes() {
+        java.lang.Object ref = stakeScore_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          stakeScore_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <code>string stake_score = 3 [json_name = "stakeScore"];</code>
+       * @param value The stakeScore to set.
+       * @return This builder for chaining.
+       */
+      public Builder setStakeScore(
+          java.lang.String value) {
+        if (value == null) { throw new NullPointerException(); }
+        stakeScore_ = value;
+        bitField0_ |= 0x00000004;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>string stake_score = 3 [json_name = "stakeScore"];</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearStakeScore() {
+        stakeScore_ = getDefaultInstance().getStakeScore();
+        bitField0_ = (bitField0_ & ~0x00000004);
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>string stake_score = 3 [json_name = "stakeScore"];</code>
+       * @param value The bytes for stakeScore to set.
+       * @return This builder for chaining.
+       */
+      public Builder setStakeScoreBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) { throw new NullPointerException(); }
+        checkByteStringIsUtf8(value);
+        stakeScore_ = value;
+        bitField0_ |= 0x00000004;
+        onChanged();
+        return this;
+      }
+
+      private java.lang.Object performanceScore_ = "";
+      /**
+       * <code>string performance_score = 4 [json_name = "performanceScore"];</code>
+       * @return The performanceScore.
+       */
+      public java.lang.String getPerformanceScore() {
+        java.lang.Object ref = performanceScore_;
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          performanceScore_ = s;
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
+      }
+      /**
+       * <code>string performance_score = 4 [json_name = "performanceScore"];</code>
+       * @return The bytes for performanceScore.
+       */
+      public com.google.protobuf.ByteString
+          getPerformanceScoreBytes() {
+        java.lang.Object ref = performanceScore_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          performanceScore_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <code>string performance_score = 4 [json_name = "performanceScore"];</code>
+       * @param value The performanceScore to set.
+       * @return This builder for chaining.
+       */
+      public Builder setPerformanceScore(
+          java.lang.String value) {
+        if (value == null) { throw new NullPointerException(); }
+        performanceScore_ = value;
+        bitField0_ |= 0x00000008;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>string performance_score = 4 [json_name = "performanceScore"];</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearPerformanceScore() {
+        performanceScore_ = getDefaultInstance().getPerformanceScore();
+        bitField0_ = (bitField0_ & ~0x00000008);
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>string performance_score = 4 [json_name = "performanceScore"];</code>
+       * @param value The bytes for performanceScore to set.
+       * @return This builder for chaining.
+       */
+      public Builder setPerformanceScoreBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) { throw new NullPointerException(); }
+        checkByteStringIsUtf8(value);
+        performanceScore_ = value;
+        bitField0_ |= 0x00000008;
+        onChanged();
+        return this;
+      }
+
+      private java.lang.Object contributionScore_ = "";
+      /**
+       * <code>string contribution_score = 5 [json_name = "contributionScore"];</code>
+       * @return The contributionScore.
+       */
+      public java.lang.String getContributionScore() {
+        java.lang.Object ref = contributionScore_;
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          contributionScore_ = s;
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
+      }
+      /**
+       * <code>string contribution_score = 5 [json_name = "contributionScore"];</code>
+       * @return The bytes for contributionScore.
+       */
+      public com.google.protobuf.ByteString
+          getContributionScoreBytes() {
+        java.lang.Object ref = contributionScore_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          contributionScore_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <code>string contribution_score = 5 [json_name = "contributionScore"];</code>
+       * @param value The contributionScore to set.
+       * @return This builder for chaining.
+       */
+      public Builder setContributionScore(
+          java.lang.String value) {
+        if (value == null) { throw new NullPointerException(); }
+        contributionScore_ = value;
+        bitField0_ |= 0x00000010;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>string contribution_score = 5 [json_name = "contributionScore"];</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearContributionScore() {
+        contributionScore_ = getDefaultInstance().getContributionScore();
+        bitField0_ = (bitField0_ & ~0x00000010);
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>string contribution_score = 5 [json_name = "contributionScore"];</code>
+       * @param value The bytes for contributionScore to set.
+       * @return This builder for chaining.
+       */
+      public Builder setContributionScoreBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) { throw new NullPointerException(); }
+        checkByteStringIsUtf8(value);
+        contributionScore_ = value;
+        bitField0_ |= 0x00000010;
+        onChanged();
+        return this;
+      }
+
+      private java.lang.Object timeScore_ = "";
+      /**
+       * <code>string time_score = 6 [json_name = "timeScore"];</code>
+       * @return The timeScore.
+       */
+      public java.lang.String getTimeScore() {
+        java.lang.Object ref = timeScore_;
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          timeScore_ = s;
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
+      }
+      /**
+       * <code>string time_score = 6 [json_name = "timeScore"];</code>
+       * @return The bytes for timeScore.
+       */
+      public com.google.protobuf.ByteString
+          getTimeScoreBytes() {
+        java.lang.Object ref = timeScore_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          timeScore_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <code>string time_score = 6 [json_name = "timeScore"];</code>
+       * @param value The timeScore to set.
+       * @return This builder for chaining.
+       */
+      public Builder setTimeScore(
+          java.lang.String value) {
+        if (value == null) { throw new NullPointerException(); }
+        timeScore_ = value;
+        bitField0_ |= 0x00000020;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>string time_score = 6 [json_name = "timeScore"];</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearTimeScore() {
+        timeScore_ = getDefaultInstance().getTimeScore();
+        bitField0_ = (bitField0_ & ~0x00000020);
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>string time_score = 6 [json_name = "timeScore"];</code>
+       * @param value The bytes for timeScore to set.
+       * @return This builder for chaining.
+       */
+      public Builder setTimeScoreBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) { throw new NullPointerException(); }
+        checkByteStringIsUtf8(value);
+        timeScore_ = value;
+        bitField0_ |= 0x00000020;
+        onChanged();
+        return this;
+      }
+
+      private java.lang.Object compositeScore_ = "";
+      /**
+       * <pre>
+       * composite_score is R_i (LegacyDec string).
+       * </pre>
+       *
+       * <code>string composite_score = 7 [json_name = "compositeScore"];</code>
+       * @return The compositeScore.
+       */
+      public java.lang.String getCompositeScore() {
+        java.lang.Object ref = compositeScore_;
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          compositeScore_ = s;
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
+      }
+      /**
+       * <pre>
+       * composite_score is R_i (LegacyDec string).
+       * </pre>
+       *
+       * <code>string composite_score = 7 [json_name = "compositeScore"];</code>
+       * @return The bytes for compositeScore.
+       */
+      public com.google.protobuf.ByteString
+          getCompositeScoreBytes() {
+        java.lang.Object ref = compositeScore_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          compositeScore_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <pre>
+       * composite_score is R_i (LegacyDec string).
+       * </pre>
+       *
+       * <code>string composite_score = 7 [json_name = "compositeScore"];</code>
+       * @param value The compositeScore to set.
+       * @return This builder for chaining.
+       */
+      public Builder setCompositeScore(
+          java.lang.String value) {
+        if (value == null) { throw new NullPointerException(); }
+        compositeScore_ = value;
+        bitField0_ |= 0x00000040;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * composite_score is R_i (LegacyDec string).
+       * </pre>
+       *
+       * <code>string composite_score = 7 [json_name = "compositeScore"];</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearCompositeScore() {
+        compositeScore_ = getDefaultInstance().getCompositeScore();
+        bitField0_ = (bitField0_ & ~0x00000040);
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * composite_score is R_i (LegacyDec string).
+       * </pre>
+       *
+       * <code>string composite_score = 7 [json_name = "compositeScore"];</code>
+       * @param value The bytes for compositeScore to set.
+       * @return This builder for chaining.
+       */
+      public Builder setCompositeScoreBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) { throw new NullPointerException(); }
+        checkByteStringIsUtf8(value);
+        compositeScore_ = value;
+        bitField0_ |= 0x00000040;
+        onChanged();
+        return this;
+      }
+
+      private long lastUpdatedHeight_ ;
+      /**
+       * <code>int64 last_updated_height = 8 [json_name = "lastUpdatedHeight"];</code>
+       * @return The lastUpdatedHeight.
+       */
+      @java.lang.Override
+      public long getLastUpdatedHeight() {
+        return lastUpdatedHeight_;
+      }
+      /**
+       * <code>int64 last_updated_height = 8 [json_name = "lastUpdatedHeight"];</code>
+       * @param value The lastUpdatedHeight to set.
+       * @return This builder for chaining.
+       */
+      public Builder setLastUpdatedHeight(long value) {
+
+        lastUpdatedHeight_ = value;
+        bitField0_ |= 0x00000080;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>int64 last_updated_height = 8 [json_name = "lastUpdatedHeight"];</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearLastUpdatedHeight() {
+        bitField0_ = (bitField0_ & ~0x00000080);
+        lastUpdatedHeight_ = 0L;
+        onChanged();
+        return this;
+      }
+
+      private long uptimeBlocks_ ;
+      /**
+       * <code>uint64 uptime_blocks = 9 [json_name = "uptimeBlocks"];</code>
+       * @return The uptimeBlocks.
+       */
+      @java.lang.Override
+      public long getUptimeBlocks() {
+        return uptimeBlocks_;
+      }
+      /**
+       * <code>uint64 uptime_blocks = 9 [json_name = "uptimeBlocks"];</code>
+       * @param value The uptimeBlocks to set.
+       * @return This builder for chaining.
+       */
+      public Builder setUptimeBlocks(long value) {
+
+        uptimeBlocks_ = value;
+        bitField0_ |= 0x00000100;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>uint64 uptime_blocks = 9 [json_name = "uptimeBlocks"];</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearUptimeBlocks() {
+        bitField0_ = (bitField0_ & ~0x00000100);
+        uptimeBlocks_ = 0L;
+        onChanged();
+        return this;
+      }
+
+      private long proposedBlocks_ ;
+      /**
+       * <code>uint64 proposed_blocks = 10 [json_name = "proposedBlocks"];</code>
+       * @return The proposedBlocks.
+       */
+      @java.lang.Override
+      public long getProposedBlocks() {
+        return proposedBlocks_;
+      }
+      /**
+       * <code>uint64 proposed_blocks = 10 [json_name = "proposedBlocks"];</code>
+       * @param value The proposedBlocks to set.
+       * @return This builder for chaining.
+       */
+      public Builder setProposedBlocks(long value) {
+
+        proposedBlocks_ = value;
+        bitField0_ |= 0x00000200;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>uint64 proposed_blocks = 10 [json_name = "proposedBlocks"];</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearProposedBlocks() {
+        bitField0_ = (bitField0_ & ~0x00000200);
+        proposedBlocks_ = 0L;
+        onChanged();
+        return this;
+      }
+
+      private long missedBlocks_ ;
+      /**
+       * <code>uint64 missed_blocks = 11 [json_name = "missedBlocks"];</code>
+       * @return The missedBlocks.
+       */
+      @java.lang.Override
+      public long getMissedBlocks() {
+        return missedBlocks_;
+      }
+      /**
+       * <code>uint64 missed_blocks = 11 [json_name = "missedBlocks"];</code>
+       * @param value The missedBlocks to set.
+       * @return This builder for chaining.
+       */
+      public Builder setMissedBlocks(long value) {
+
+        missedBlocks_ = value;
+        bitField0_ |= 0x00000400;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>uint64 missed_blocks = 11 [json_name = "missedBlocks"];</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearMissedBlocks() {
+        bitField0_ = (bitField0_ & ~0x00000400);
+        missedBlocks_ = 0L;
+        onChanged();
+        return this;
+      }
+
+      private long slashingEvents_ ;
+      /**
+       * <code>uint64 slashing_events = 12 [json_name = "slashingEvents"];</code>
+       * @return The slashingEvents.
+       */
+      @java.lang.Override
+      public long getSlashingEvents() {
+        return slashingEvents_;
+      }
+      /**
+       * <code>uint64 slashing_events = 12 [json_name = "slashingEvents"];</code>
+       * @param value The slashingEvents to set.
+       * @return This builder for chaining.
+       */
+      public Builder setSlashingEvents(long value) {
+
+        slashingEvents_ = value;
+        bitField0_ |= 0x00000800;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>uint64 slashing_events = 12 [json_name = "slashingEvents"];</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearSlashingEvents() {
+        bitField0_ = (bitField0_ & ~0x00000800);
+        slashingEvents_ = 0L;
+        onChanged();
+        return this;
+      }
+
+      private long communityVotes_ ;
+      /**
+       * <code>int64 community_votes = 13 [json_name = "communityVotes"];</code>
+       * @return The communityVotes.
+       */
+      @java.lang.Override
+      public long getCommunityVotes() {
+        return communityVotes_;
+      }
+      /**
+       * <code>int64 community_votes = 13 [json_name = "communityVotes"];</code>
+       * @param value The communityVotes to set.
+       * @return This builder for chaining.
+       */
+      public Builder setCommunityVotes(long value) {
+
+        communityVotes_ = value;
+        bitField0_ |= 0x00001000;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>int64 community_votes = 13 [json_name = "communityVotes"];</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearCommunityVotes() {
+        bitField0_ = (bitField0_ & ~0x00001000);
+        communityVotes_ = 0L;
+        onChanged();
+        return this;
+      }
+
+      private long joinedAtHeight_ ;
+      /**
+       * <code>int64 joined_at_height = 14 [json_name = "joinedAtHeight"];</code>
+       * @return The joinedAtHeight.
+       */
+      @java.lang.Override
+      public long getJoinedAtHeight() {
+        return joinedAtHeight_;
+      }
+      /**
+       * <code>int64 joined_at_height = 14 [json_name = "joinedAtHeight"];</code>
+       * @param value The joinedAtHeight to set.
+       * @return This builder for chaining.
+       */
+      public Builder setJoinedAtHeight(long value) {
+
+        joinedAtHeight_ = value;
+        bitField0_ |= 0x00002000;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>int64 joined_at_height = 14 [json_name = "joinedAtHeight"];</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearJoinedAtHeight() {
+        bitField0_ = (bitField0_ & ~0x00002000);
+        joinedAtHeight_ = 0L;
+        onChanged();
+        return this;
+      }
+
+      private java.lang.Object govParticipation_ = "";
+      /**
+       * <code>string gov_participation = 15 [json_name = "govParticipation"];</code>
+       * @return The govParticipation.
+       */
+      public java.lang.String getGovParticipation() {
+        java.lang.Object ref = govParticipation_;
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          govParticipation_ = s;
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
+      }
+      /**
+       * <code>string gov_participation = 15 [json_name = "govParticipation"];</code>
+       * @return The bytes for govParticipation.
+       */
+      public com.google.protobuf.ByteString
+          getGovParticipationBytes() {
+        java.lang.Object ref = govParticipation_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          govParticipation_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <code>string gov_participation = 15 [json_name = "govParticipation"];</code>
+       * @param value The govParticipation to set.
+       * @return This builder for chaining.
+       */
+      public Builder setGovParticipation(
+          java.lang.String value) {
+        if (value == null) { throw new NullPointerException(); }
+        govParticipation_ = value;
+        bitField0_ |= 0x00004000;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>string gov_participation = 15 [json_name = "govParticipation"];</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearGovParticipation() {
+        govParticipation_ = getDefaultInstance().getGovParticipation();
+        bitField0_ = (bitField0_ & ~0x00004000);
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>string gov_participation = 15 [json_name = "govParticipation"];</code>
+       * @param value The bytes for govParticipation to set.
+       * @return This builder for chaining.
+       */
+      public Builder setGovParticipationBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) { throw new NullPointerException(); }
+        checkByteStringIsUtf8(value);
+        govParticipation_ = value;
+        bitField0_ |= 0x00004000;
+        onChanged();
+        return this;
+      }
+
+      private long inactiveSince_ ;
+      /**
+       * <code>int64 inactive_since = 16 [json_name = "inactiveSince"];</code>
+       * @return The inactiveSince.
+       */
+      @java.lang.Override
+      public long getInactiveSince() {
+        return inactiveSince_;
+      }
+      /**
+       * <code>int64 inactive_since = 16 [json_name = "inactiveSince"];</code>
+       * @param value The inactiveSince to set.
+       * @return This builder for chaining.
+       */
+      public Builder setInactiveSince(long value) {
+
+        inactiveSince_ = value;
+        bitField0_ |= 0x00008000;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>int64 inactive_since = 16 [json_name = "inactiveSince"];</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearInactiveSince() {
+        bitField0_ = (bitField0_ & ~0x00008000);
+        inactiveSince_ = 0L;
+        onChanged();
+        return this;
+      }
+
+      // @@protoc_insertion_point(builder_scope:qorechain.reputation.v1.ReputationRecord)
+    }
+
+    // @@protoc_insertion_point(class_scope:qorechain.reputation.v1.ReputationRecord)
+    private static final qorechain.reputation.v1.QueryOuterClass.ReputationRecord DEFAULT_INSTANCE;
+    static {
+      DEFAULT_INSTANCE = new qorechain.reputation.v1.QueryOuterClass.ReputationRecord();
+    }
+
+    public static qorechain.reputation.v1.QueryOuterClass.ReputationRecord getDefaultInstance() {
+      return DEFAULT_INSTANCE;
+    }
+
+    private static final com.google.protobuf.Parser<ReputationRecord>
+        PARSER = new com.google.protobuf.AbstractParser<ReputationRecord>() {
+      @java.lang.Override
+      public ReputationRecord parsePartialFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        Builder builder = newBuilder();
+        try {
+          builder.mergeFrom(input, extensionRegistry);
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          throw e.setUnfinishedMessage(builder.buildPartial());
+        } catch (com.google.protobuf.UninitializedMessageException e) {
+          throw e.asInvalidProtocolBufferException().setUnfinishedMessage(builder.buildPartial());
+        } catch (java.io.IOException e) {
+          throw new com.google.protobuf.InvalidProtocolBufferException(e)
+              .setUnfinishedMessage(builder.buildPartial());
+        }
+        return builder.buildPartial();
+      }
+    };
+
+    public static com.google.protobuf.Parser<ReputationRecord> parser() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Parser<ReputationRecord> getParserForType() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public qorechain.reputation.v1.QueryOuterClass.ReputationRecord getDefaultInstanceForType() {
+      return DEFAULT_INSTANCE;
+    }
+
+  }
+
+  public interface QueryReputationRequestOrBuilder extends
+      // @@protoc_insertion_point(interface_extends:qorechain.reputation.v1.QueryReputationRequest)
+      com.google.protobuf.MessageOrBuilder {
+
+    /**
+     * <code>string validator_address = 1 [json_name = "validatorAddress"];</code>
+     * @return The validatorAddress.
+     */
+    java.lang.String getValidatorAddress();
+    /**
+     * <code>string validator_address = 1 [json_name = "validatorAddress"];</code>
+     * @return The bytes for validatorAddress.
+     */
+    com.google.protobuf.ByteString
+        getValidatorAddressBytes();
+  }
+  /**
+   * Protobuf type {@code qorechain.reputation.v1.QueryReputationRequest}
+   */
+  public static final class QueryReputationRequest extends
+      com.google.protobuf.GeneratedMessage implements
+      // @@protoc_insertion_point(message_implements:qorechain.reputation.v1.QueryReputationRequest)
+      QueryReputationRequestOrBuilder {
+  private static final long serialVersionUID = 0L;
+    static {
+      com.google.protobuf.RuntimeVersion.validateProtobufGencodeVersion(
+        com.google.protobuf.RuntimeVersion.RuntimeDomain.PUBLIC,
+        /* major= */ 4,
+        /* minor= */ 35,
+        /* patch= */ 1,
+        /* suffix= */ "",
+        "QueryReputationRequest");
+    }
+    // Use QueryReputationRequest.newBuilder() to construct.
+    private QueryReputationRequest(com.google.protobuf.GeneratedMessage.Builder<?> builder) {
+      super(builder);
+    }
+    private QueryReputationRequest() {
+      validatorAddress_ = "";
+    }
+
+    public static final com.google.protobuf.Descriptors.Descriptor
+        getDescriptor() {
+      return qorechain.reputation.v1.QueryOuterClass.internal_static_qorechain_reputation_v1_QueryReputationRequest_descriptor;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Descriptors.Descriptor getDescriptorForType() {
+      return qorechain.reputation.v1.QueryOuterClass.internal_static_qorechain_reputation_v1_QueryReputationRequest_descriptor;
+    }
+
+    @java.lang.Override
+    protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+        internalGetFieldAccessorTable() {
+      return qorechain.reputation.v1.QueryOuterClass.internal_static_qorechain_reputation_v1_QueryReputationRequest_fieldAccessorTable
+          .ensureFieldAccessorsInitialized(
+              qorechain.reputation.v1.QueryOuterClass.QueryReputationRequest.class, qorechain.reputation.v1.QueryOuterClass.QueryReputationRequest.Builder.class);
+    }
+
+    public static final int VALIDATOR_ADDRESS_FIELD_NUMBER = 1;
+    @SuppressWarnings("serial")
+    private volatile java.lang.Object validatorAddress_ = "";
+    /**
+     * <code>string validator_address = 1 [json_name = "validatorAddress"];</code>
+     * @return The validatorAddress.
+     */
+    @java.lang.Override
+    public java.lang.String getValidatorAddress() {
+      java.lang.Object ref = validatorAddress_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        validatorAddress_ = s;
+        return s;
+      }
+    }
+    /**
+     * <code>string validator_address = 1 [json_name = "validatorAddress"];</code>
+     * @return The bytes for validatorAddress.
+     */
+    @java.lang.Override
+    public com.google.protobuf.ByteString
+        getValidatorAddressBytes() {
+      java.lang.Object ref = validatorAddress_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        validatorAddress_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
+    private byte memoizedIsInitialized = -1;
+    @java.lang.Override
+    public final boolean isInitialized() {
+      byte isInitialized = memoizedIsInitialized;
+      if (isInitialized == 1) return true;
+      if (isInitialized == 0) return false;
+
+      memoizedIsInitialized = 1;
+      return true;
+    }
+
+    @java.lang.Override
+    public void writeTo(com.google.protobuf.CodedOutputStream output)
+                        throws java.io.IOException {
+      if (!com.google.protobuf.GeneratedMessage.isStringEmpty(validatorAddress_)) {
+        com.google.protobuf.GeneratedMessage.writeString(output, 1, validatorAddress_);
+      }
+      getUnknownFields().writeTo(output);
+    }
+    private int computeSerializedSize_0() {
+      int size = 0;
+      if (!com.google.protobuf.GeneratedMessage.isStringEmpty(validatorAddress_)) {
+        size += com.google.protobuf.GeneratedMessage.computeStringSize(1, validatorAddress_);
+      }
+      return size;
+    }
+    @java.lang.Override
+    public int getSerializedSize() {
+      int size = memoizedSize;
+      if (size != -1) return size;
+
+      size = 0;
+      size += computeSerializedSize_0();
+      size += getUnknownFields().getSerializedSize();
+      memoizedSize = size;
+      return size;
+    }
+
+    @java.lang.Override
+    public boolean equals(final java.lang.Object obj) {
+      if (obj == this) {
+       return true;
+      }
+      if (!(obj instanceof qorechain.reputation.v1.QueryOuterClass.QueryReputationRequest)) {
+        return super.equals(obj);
+      }
+      qorechain.reputation.v1.QueryOuterClass.QueryReputationRequest other = (qorechain.reputation.v1.QueryOuterClass.QueryReputationRequest) obj;
+
+      if (!getValidatorAddress()
+          .equals(other.getValidatorAddress())) return false;
+      if (!getUnknownFields().equals(other.getUnknownFields())) return false;
+      return true;
+    }
+
+    @java.lang.Override
+    public int hashCode() {
+      if (memoizedHashCode != 0) {
+        return memoizedHashCode;
+      }
+      int hash = 41;
+      hash = (19 * hash) + getDescriptor().hashCode();
+      hash = (37 * hash) + VALIDATOR_ADDRESS_FIELD_NUMBER;
+      hash = (53 * hash) + getValidatorAddress().hashCode();
+      hash = (29 * hash) + getUnknownFields().hashCode();
+      memoizedHashCode = hash;
+      return hash;
+    }
+
+    public static qorechain.reputation.v1.QueryOuterClass.QueryReputationRequest parseFrom(
+        java.nio.ByteBuffer data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static qorechain.reputation.v1.QueryOuterClass.QueryReputationRequest parseFrom(
+        java.nio.ByteBuffer data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static qorechain.reputation.v1.QueryOuterClass.QueryReputationRequest parseFrom(
+        com.google.protobuf.ByteString data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static qorechain.reputation.v1.QueryOuterClass.QueryReputationRequest parseFrom(
+        com.google.protobuf.ByteString data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static qorechain.reputation.v1.QueryOuterClass.QueryReputationRequest parseFrom(byte[] data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static qorechain.reputation.v1.QueryOuterClass.QueryReputationRequest parseFrom(
+        byte[] data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static qorechain.reputation.v1.QueryOuterClass.QueryReputationRequest parseFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input);
+    }
+    public static qorechain.reputation.v1.QueryOuterClass.QueryReputationRequest parseFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    public static qorechain.reputation.v1.QueryOuterClass.QueryReputationRequest parseDelimitedFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseDelimitedWithIOException(PARSER, input);
+    }
+
+    public static qorechain.reputation.v1.QueryOuterClass.QueryReputationRequest parseDelimitedFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static qorechain.reputation.v1.QueryOuterClass.QueryReputationRequest parseFrom(
+        com.google.protobuf.CodedInputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input);
+    }
+    public static qorechain.reputation.v1.QueryOuterClass.QueryReputationRequest parseFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    @java.lang.Override
+    public Builder newBuilderForType() { return newBuilder(); }
+    public static Builder newBuilder() {
+      return DEFAULT_INSTANCE.toBuilder();
+    }
+    public static Builder newBuilder(qorechain.reputation.v1.QueryOuterClass.QueryReputationRequest prototype) {
+      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+    }
+    @java.lang.Override
+    public Builder toBuilder() {
+      return this == DEFAULT_INSTANCE
+          ? new Builder() : new Builder().mergeFrom(this);
+    }
+
+    @java.lang.Override
+    protected Builder newBuilderForType(
+        com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+      Builder builder = new Builder(parent);
+      return builder;
+    }
+    /**
+     * Protobuf type {@code qorechain.reputation.v1.QueryReputationRequest}
+     */
+    public static final class Builder extends
+        com.google.protobuf.GeneratedMessage.Builder<Builder> implements
+        // @@protoc_insertion_point(builder_implements:qorechain.reputation.v1.QueryReputationRequest)
+        qorechain.reputation.v1.QueryOuterClass.QueryReputationRequestOrBuilder {
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return qorechain.reputation.v1.QueryOuterClass.internal_static_qorechain_reputation_v1_QueryReputationRequest_descriptor;
+      }
+
+      @java.lang.Override
+      protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return qorechain.reputation.v1.QueryOuterClass.internal_static_qorechain_reputation_v1_QueryReputationRequest_fieldAccessorTable
+            .ensureFieldAccessorsInitialized(
+                qorechain.reputation.v1.QueryOuterClass.QueryReputationRequest.class, qorechain.reputation.v1.QueryOuterClass.QueryReputationRequest.Builder.class);
+      }
+
+      // Construct using qorechain.reputation.v1.QueryOuterClass.QueryReputationRequest.newBuilder()
+      private Builder() {
+
+      }
+
+      private Builder(
+          com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+        super(parent);
+
+      }
+      @java.lang.Override
+      public Builder clear() {
+        super.clear();
+        bitField0_ = 0;
+        validatorAddress_ = "";
+        return this;
+      }
+
+      @java.lang.Override
+      public com.google.protobuf.Descriptors.Descriptor
+          getDescriptorForType() {
+        return qorechain.reputation.v1.QueryOuterClass.internal_static_qorechain_reputation_v1_QueryReputationRequest_descriptor;
+      }
+
+      @java.lang.Override
+      public qorechain.reputation.v1.QueryOuterClass.QueryReputationRequest getDefaultInstanceForType() {
+        return qorechain.reputation.v1.QueryOuterClass.QueryReputationRequest.getDefaultInstance();
+      }
+
+      @java.lang.Override
+      public qorechain.reputation.v1.QueryOuterClass.QueryReputationRequest build() {
+        qorechain.reputation.v1.QueryOuterClass.QueryReputationRequest result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(result);
+        }
+        return result;
+      }
+
+      @java.lang.Override
+      public qorechain.reputation.v1.QueryOuterClass.QueryReputationRequest buildPartial() {
+        qorechain.reputation.v1.QueryOuterClass.QueryReputationRequest result = new qorechain.reputation.v1.QueryOuterClass.QueryReputationRequest(this);
+        if (bitField0_ != 0) { buildPartial0(result); }
+        onBuilt();
+        return result;
+      }
+
+      private void buildPartial0(qorechain.reputation.v1.QueryOuterClass.QueryReputationRequest result) {
+        int from_bitField0_ = bitField0_;
+        if (((from_bitField0_ & 0x00000001) != 0)) {
+          result.validatorAddress_ = validatorAddress_;
+        }
+      }
+
+      @java.lang.Override
+      public Builder mergeFrom(com.google.protobuf.Message other) {
+        if (other instanceof qorechain.reputation.v1.QueryOuterClass.QueryReputationRequest) {
+          return mergeFrom((qorechain.reputation.v1.QueryOuterClass.QueryReputationRequest)other);
+        } else {
+          super.mergeFrom(other);
+          return this;
+        }
+      }
+
+      public Builder mergeFrom(qorechain.reputation.v1.QueryOuterClass.QueryReputationRequest other) {
+        if (other == qorechain.reputation.v1.QueryOuterClass.QueryReputationRequest.getDefaultInstance()) return this;
+        if (!other.getValidatorAddress().isEmpty()) {
+          validatorAddress_ = other.validatorAddress_;
+          bitField0_ |= 0x00000001;
+          onChanged();
+        }
+        this.mergeUnknownFields(other.getUnknownFields());
+        onChanged();
+        return this;
+      }
+
+      @java.lang.Override
+      public final boolean isInitialized() {
+        return true;
+      }
+
+      @java.lang.Override
+      public Builder mergeFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        if (extensionRegistry == null) {
+          throw new java.lang.NullPointerException();
+        }
+        try {
+          boolean done = false;
+          while (!done) {
+            int tag = input.readTag();
+            switch (tag) {
+              case 0:
+                done = true;
+                break;
+              case 10: {
+                validatorAddress_ = input.readStringRequireUtf8();
+                bitField0_ |= 0x00000001;
+                break;
+              } // case 10
+              default: {
+                if (!super.parseUnknownField(input, extensionRegistry, tag)) {
+                  done = true; // was an endgroup tag
+                }
+                break;
+              } // default:
+            } // switch (tag)
+          } // while (!done)
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          throw e.unwrapIOException();
+        } finally {
+          onChanged();
+        } // finally
+        return this;
+      }
+      private int bitField0_;
+
+      private java.lang.Object validatorAddress_ = "";
+      /**
+       * <code>string validator_address = 1 [json_name = "validatorAddress"];</code>
+       * @return The validatorAddress.
+       */
+      public java.lang.String getValidatorAddress() {
+        java.lang.Object ref = validatorAddress_;
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          validatorAddress_ = s;
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
+      }
+      /**
+       * <code>string validator_address = 1 [json_name = "validatorAddress"];</code>
+       * @return The bytes for validatorAddress.
+       */
+      public com.google.protobuf.ByteString
+          getValidatorAddressBytes() {
+        java.lang.Object ref = validatorAddress_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          validatorAddress_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <code>string validator_address = 1 [json_name = "validatorAddress"];</code>
+       * @param value The validatorAddress to set.
+       * @return This builder for chaining.
+       */
+      public Builder setValidatorAddress(
+          java.lang.String value) {
+        if (value == null) { throw new NullPointerException(); }
+        validatorAddress_ = value;
+        bitField0_ |= 0x00000001;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>string validator_address = 1 [json_name = "validatorAddress"];</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearValidatorAddress() {
+        validatorAddress_ = getDefaultInstance().getValidatorAddress();
+        bitField0_ = (bitField0_ & ~0x00000001);
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>string validator_address = 1 [json_name = "validatorAddress"];</code>
+       * @param value The bytes for validatorAddress to set.
+       * @return This builder for chaining.
+       */
+      public Builder setValidatorAddressBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) { throw new NullPointerException(); }
+        checkByteStringIsUtf8(value);
+        validatorAddress_ = value;
+        bitField0_ |= 0x00000001;
+        onChanged();
+        return this;
+      }
+
+      // @@protoc_insertion_point(builder_scope:qorechain.reputation.v1.QueryReputationRequest)
+    }
+
+    // @@protoc_insertion_point(class_scope:qorechain.reputation.v1.QueryReputationRequest)
+    private static final qorechain.reputation.v1.QueryOuterClass.QueryReputationRequest DEFAULT_INSTANCE;
+    static {
+      DEFAULT_INSTANCE = new qorechain.reputation.v1.QueryOuterClass.QueryReputationRequest();
+    }
+
+    public static qorechain.reputation.v1.QueryOuterClass.QueryReputationRequest getDefaultInstance() {
+      return DEFAULT_INSTANCE;
+    }
+
+    private static final com.google.protobuf.Parser<QueryReputationRequest>
+        PARSER = new com.google.protobuf.AbstractParser<QueryReputationRequest>() {
+      @java.lang.Override
+      public QueryReputationRequest parsePartialFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        Builder builder = newBuilder();
+        try {
+          builder.mergeFrom(input, extensionRegistry);
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          throw e.setUnfinishedMessage(builder.buildPartial());
+        } catch (com.google.protobuf.UninitializedMessageException e) {
+          throw e.asInvalidProtocolBufferException().setUnfinishedMessage(builder.buildPartial());
+        } catch (java.io.IOException e) {
+          throw new com.google.protobuf.InvalidProtocolBufferException(e)
+              .setUnfinishedMessage(builder.buildPartial());
+        }
+        return builder.buildPartial();
+      }
+    };
+
+    public static com.google.protobuf.Parser<QueryReputationRequest> parser() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Parser<QueryReputationRequest> getParserForType() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public qorechain.reputation.v1.QueryOuterClass.QueryReputationRequest getDefaultInstanceForType() {
+      return DEFAULT_INSTANCE;
+    }
+
+  }
+
+  public interface QueryReputationResponseOrBuilder extends
+      // @@protoc_insertion_point(interface_extends:qorechain.reputation.v1.QueryReputationResponse)
+      com.google.protobuf.MessageOrBuilder {
+
+    /**
+     * <code>.qorechain.reputation.v1.ReputationRecord reputation = 1 [json_name = "reputation"];</code>
+     * @return Whether the reputation field is set.
+     */
+    boolean hasReputation();
+    /**
+     * <code>.qorechain.reputation.v1.ReputationRecord reputation = 1 [json_name = "reputation"];</code>
+     * @return The reputation.
+     */
+    qorechain.reputation.v1.QueryOuterClass.ReputationRecord getReputation();
+    /**
+     * <code>.qorechain.reputation.v1.ReputationRecord reputation = 1 [json_name = "reputation"];</code>
+     */
+    qorechain.reputation.v1.QueryOuterClass.ReputationRecordOrBuilder getReputationOrBuilder();
+  }
+  /**
+   * Protobuf type {@code qorechain.reputation.v1.QueryReputationResponse}
+   */
+  public static final class QueryReputationResponse extends
+      com.google.protobuf.GeneratedMessage implements
+      // @@protoc_insertion_point(message_implements:qorechain.reputation.v1.QueryReputationResponse)
+      QueryReputationResponseOrBuilder {
+  private static final long serialVersionUID = 0L;
+    static {
+      com.google.protobuf.RuntimeVersion.validateProtobufGencodeVersion(
+        com.google.protobuf.RuntimeVersion.RuntimeDomain.PUBLIC,
+        /* major= */ 4,
+        /* minor= */ 35,
+        /* patch= */ 1,
+        /* suffix= */ "",
+        "QueryReputationResponse");
+    }
+    // Use QueryReputationResponse.newBuilder() to construct.
+    private QueryReputationResponse(com.google.protobuf.GeneratedMessage.Builder<?> builder) {
+      super(builder);
+    }
+    private QueryReputationResponse() {
+    }
+
+    public static final com.google.protobuf.Descriptors.Descriptor
+        getDescriptor() {
+      return qorechain.reputation.v1.QueryOuterClass.internal_static_qorechain_reputation_v1_QueryReputationResponse_descriptor;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Descriptors.Descriptor getDescriptorForType() {
+      return qorechain.reputation.v1.QueryOuterClass.internal_static_qorechain_reputation_v1_QueryReputationResponse_descriptor;
+    }
+
+    @java.lang.Override
+    protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+        internalGetFieldAccessorTable() {
+      return qorechain.reputation.v1.QueryOuterClass.internal_static_qorechain_reputation_v1_QueryReputationResponse_fieldAccessorTable
+          .ensureFieldAccessorsInitialized(
+              qorechain.reputation.v1.QueryOuterClass.QueryReputationResponse.class, qorechain.reputation.v1.QueryOuterClass.QueryReputationResponse.Builder.class);
+    }
+
+    private int bitField0_;
+    public static final int REPUTATION_FIELD_NUMBER = 1;
+    private qorechain.reputation.v1.QueryOuterClass.ReputationRecord reputation_;
+    /**
+     * <code>.qorechain.reputation.v1.ReputationRecord reputation = 1 [json_name = "reputation"];</code>
+     * @return Whether the reputation field is set.
+     */
+    @java.lang.Override
+    public boolean hasReputation() {
+      return ((bitField0_ & 0x00000001) != 0);
+    }
+    /**
+     * <code>.qorechain.reputation.v1.ReputationRecord reputation = 1 [json_name = "reputation"];</code>
+     * @return The reputation.
+     */
+    @java.lang.Override
+    public qorechain.reputation.v1.QueryOuterClass.ReputationRecord getReputation() {
+      return reputation_ == null ? qorechain.reputation.v1.QueryOuterClass.ReputationRecord.getDefaultInstance() : reputation_;
+    }
+    /**
+     * <code>.qorechain.reputation.v1.ReputationRecord reputation = 1 [json_name = "reputation"];</code>
+     */
+    @java.lang.Override
+    public qorechain.reputation.v1.QueryOuterClass.ReputationRecordOrBuilder getReputationOrBuilder() {
+      return reputation_ == null ? qorechain.reputation.v1.QueryOuterClass.ReputationRecord.getDefaultInstance() : reputation_;
+    }
+
+    private byte memoizedIsInitialized = -1;
+    @java.lang.Override
+    public final boolean isInitialized() {
+      byte isInitialized = memoizedIsInitialized;
+      if (isInitialized == 1) return true;
+      if (isInitialized == 0) return false;
+
+      memoizedIsInitialized = 1;
+      return true;
+    }
+
+    @java.lang.Override
+    public void writeTo(com.google.protobuf.CodedOutputStream output)
+                        throws java.io.IOException {
+      if (((bitField0_ & 0x00000001) != 0)) {
+        output.writeMessage(1, getReputation());
+      }
+      getUnknownFields().writeTo(output);
+    }
+    private int computeSerializedSize_0() {
+      int size = 0;
+      if (((bitField0_ & 0x00000001) != 0)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeMessageSize(1, getReputation());
+      }
+      return size;
+    }
+    @java.lang.Override
+    public int getSerializedSize() {
+      int size = memoizedSize;
+      if (size != -1) return size;
+
+      size = 0;
+      size += computeSerializedSize_0();
+      size += getUnknownFields().getSerializedSize();
+      memoizedSize = size;
+      return size;
+    }
+
+    @java.lang.Override
+    public boolean equals(final java.lang.Object obj) {
+      if (obj == this) {
+       return true;
+      }
+      if (!(obj instanceof qorechain.reputation.v1.QueryOuterClass.QueryReputationResponse)) {
+        return super.equals(obj);
+      }
+      qorechain.reputation.v1.QueryOuterClass.QueryReputationResponse other = (qorechain.reputation.v1.QueryOuterClass.QueryReputationResponse) obj;
+
+      if (hasReputation() != other.hasReputation()) return false;
+      if (hasReputation()) {
+        if (!getReputation()
+            .equals(other.getReputation())) return false;
+      }
+      if (!getUnknownFields().equals(other.getUnknownFields())) return false;
+      return true;
+    }
+
+    @java.lang.Override
+    public int hashCode() {
+      if (memoizedHashCode != 0) {
+        return memoizedHashCode;
+      }
+      int hash = 41;
+      hash = (19 * hash) + getDescriptor().hashCode();
+      if (hasReputation()) {
+        hash = (37 * hash) + REPUTATION_FIELD_NUMBER;
+        hash = (53 * hash) + getReputation().hashCode();
+      }
+      hash = (29 * hash) + getUnknownFields().hashCode();
+      memoizedHashCode = hash;
+      return hash;
+    }
+
+    public static qorechain.reputation.v1.QueryOuterClass.QueryReputationResponse parseFrom(
+        java.nio.ByteBuffer data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static qorechain.reputation.v1.QueryOuterClass.QueryReputationResponse parseFrom(
+        java.nio.ByteBuffer data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static qorechain.reputation.v1.QueryOuterClass.QueryReputationResponse parseFrom(
+        com.google.protobuf.ByteString data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static qorechain.reputation.v1.QueryOuterClass.QueryReputationResponse parseFrom(
+        com.google.protobuf.ByteString data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static qorechain.reputation.v1.QueryOuterClass.QueryReputationResponse parseFrom(byte[] data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static qorechain.reputation.v1.QueryOuterClass.QueryReputationResponse parseFrom(
+        byte[] data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static qorechain.reputation.v1.QueryOuterClass.QueryReputationResponse parseFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input);
+    }
+    public static qorechain.reputation.v1.QueryOuterClass.QueryReputationResponse parseFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    public static qorechain.reputation.v1.QueryOuterClass.QueryReputationResponse parseDelimitedFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseDelimitedWithIOException(PARSER, input);
+    }
+
+    public static qorechain.reputation.v1.QueryOuterClass.QueryReputationResponse parseDelimitedFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static qorechain.reputation.v1.QueryOuterClass.QueryReputationResponse parseFrom(
+        com.google.protobuf.CodedInputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input);
+    }
+    public static qorechain.reputation.v1.QueryOuterClass.QueryReputationResponse parseFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    @java.lang.Override
+    public Builder newBuilderForType() { return newBuilder(); }
+    public static Builder newBuilder() {
+      return DEFAULT_INSTANCE.toBuilder();
+    }
+    public static Builder newBuilder(qorechain.reputation.v1.QueryOuterClass.QueryReputationResponse prototype) {
+      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+    }
+    @java.lang.Override
+    public Builder toBuilder() {
+      return this == DEFAULT_INSTANCE
+          ? new Builder() : new Builder().mergeFrom(this);
+    }
+
+    @java.lang.Override
+    protected Builder newBuilderForType(
+        com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+      Builder builder = new Builder(parent);
+      return builder;
+    }
+    /**
+     * Protobuf type {@code qorechain.reputation.v1.QueryReputationResponse}
+     */
+    public static final class Builder extends
+        com.google.protobuf.GeneratedMessage.Builder<Builder> implements
+        // @@protoc_insertion_point(builder_implements:qorechain.reputation.v1.QueryReputationResponse)
+        qorechain.reputation.v1.QueryOuterClass.QueryReputationResponseOrBuilder {
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return qorechain.reputation.v1.QueryOuterClass.internal_static_qorechain_reputation_v1_QueryReputationResponse_descriptor;
+      }
+
+      @java.lang.Override
+      protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return qorechain.reputation.v1.QueryOuterClass.internal_static_qorechain_reputation_v1_QueryReputationResponse_fieldAccessorTable
+            .ensureFieldAccessorsInitialized(
+                qorechain.reputation.v1.QueryOuterClass.QueryReputationResponse.class, qorechain.reputation.v1.QueryOuterClass.QueryReputationResponse.Builder.class);
+      }
+
+      // Construct using qorechain.reputation.v1.QueryOuterClass.QueryReputationResponse.newBuilder()
+      private Builder() {
+        maybeForceBuilderInitialization();
+      }
+
+      private Builder(
+          com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+        super(parent);
+        maybeForceBuilderInitialization();
+      }
+      private void maybeForceBuilderInitialization() {
+        if (com.google.protobuf.GeneratedMessage
+                .alwaysUseFieldBuilders) {
+          internalGetReputationFieldBuilder();
+        }
+      }
+      @java.lang.Override
+      public Builder clear() {
+        super.clear();
+        bitField0_ = 0;
+        reputation_ = null;
+        if (reputationBuilder_ != null) {
+          reputationBuilder_.dispose();
+          reputationBuilder_ = null;
+        }
+        return this;
+      }
+
+      @java.lang.Override
+      public com.google.protobuf.Descriptors.Descriptor
+          getDescriptorForType() {
+        return qorechain.reputation.v1.QueryOuterClass.internal_static_qorechain_reputation_v1_QueryReputationResponse_descriptor;
+      }
+
+      @java.lang.Override
+      public qorechain.reputation.v1.QueryOuterClass.QueryReputationResponse getDefaultInstanceForType() {
+        return qorechain.reputation.v1.QueryOuterClass.QueryReputationResponse.getDefaultInstance();
+      }
+
+      @java.lang.Override
+      public qorechain.reputation.v1.QueryOuterClass.QueryReputationResponse build() {
+        qorechain.reputation.v1.QueryOuterClass.QueryReputationResponse result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(result);
+        }
+        return result;
+      }
+
+      @java.lang.Override
+      public qorechain.reputation.v1.QueryOuterClass.QueryReputationResponse buildPartial() {
+        qorechain.reputation.v1.QueryOuterClass.QueryReputationResponse result = new qorechain.reputation.v1.QueryOuterClass.QueryReputationResponse(this);
+        if (bitField0_ != 0) { buildPartial0(result); }
+        onBuilt();
+        return result;
+      }
+
+      private void buildPartial0(qorechain.reputation.v1.QueryOuterClass.QueryReputationResponse result) {
+        int from_bitField0_ = bitField0_;
+        int to_bitField0_ = 0;
+        if (((from_bitField0_ & 0x00000001) != 0)) {
+          result.reputation_ = reputationBuilder_ == null
+              ? reputation_
+              : reputationBuilder_.build();
+          to_bitField0_ |= 0x00000001;
+        }
+        result.bitField0_ |= to_bitField0_;
+      }
+
+      @java.lang.Override
+      public Builder mergeFrom(com.google.protobuf.Message other) {
+        if (other instanceof qorechain.reputation.v1.QueryOuterClass.QueryReputationResponse) {
+          return mergeFrom((qorechain.reputation.v1.QueryOuterClass.QueryReputationResponse)other);
+        } else {
+          super.mergeFrom(other);
+          return this;
+        }
+      }
+
+      public Builder mergeFrom(qorechain.reputation.v1.QueryOuterClass.QueryReputationResponse other) {
+        if (other == qorechain.reputation.v1.QueryOuterClass.QueryReputationResponse.getDefaultInstance()) return this;
+        if (other.hasReputation()) {
+          mergeReputation(other.getReputation());
+        }
+        this.mergeUnknownFields(other.getUnknownFields());
+        onChanged();
+        return this;
+      }
+
+      @java.lang.Override
+      public final boolean isInitialized() {
+        return true;
+      }
+
+      @java.lang.Override
+      public Builder mergeFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        if (extensionRegistry == null) {
+          throw new java.lang.NullPointerException();
+        }
+        try {
+          boolean done = false;
+          while (!done) {
+            int tag = input.readTag();
+            switch (tag) {
+              case 0:
+                done = true;
+                break;
+              case 10: {
+                input.readMessage(
+                    internalGetReputationFieldBuilder().getBuilder(),
+                    extensionRegistry);
+                bitField0_ |= 0x00000001;
+                break;
+              } // case 10
+              default: {
+                if (!super.parseUnknownField(input, extensionRegistry, tag)) {
+                  done = true; // was an endgroup tag
+                }
+                break;
+              } // default:
+            } // switch (tag)
+          } // while (!done)
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          throw e.unwrapIOException();
+        } finally {
+          onChanged();
+        } // finally
+        return this;
+      }
+      private int bitField0_;
+
+      private qorechain.reputation.v1.QueryOuterClass.ReputationRecord reputation_;
+      private com.google.protobuf.SingleFieldBuilder<
+          qorechain.reputation.v1.QueryOuterClass.ReputationRecord, qorechain.reputation.v1.QueryOuterClass.ReputationRecord.Builder, qorechain.reputation.v1.QueryOuterClass.ReputationRecordOrBuilder> reputationBuilder_;
+      /**
+       * <code>.qorechain.reputation.v1.ReputationRecord reputation = 1 [json_name = "reputation"];</code>
+       * @return Whether the reputation field is set.
+       */
+      public boolean hasReputation() {
+        return ((bitField0_ & 0x00000001) != 0);
+      }
+      /**
+       * <code>.qorechain.reputation.v1.ReputationRecord reputation = 1 [json_name = "reputation"];</code>
+       * @return The reputation.
+       */
+      public qorechain.reputation.v1.QueryOuterClass.ReputationRecord getReputation() {
+        if (reputationBuilder_ == null) {
+          return reputation_ == null ? qorechain.reputation.v1.QueryOuterClass.ReputationRecord.getDefaultInstance() : reputation_;
+        } else {
+          return reputationBuilder_.getMessage();
+        }
+      }
+      /**
+       * <code>.qorechain.reputation.v1.ReputationRecord reputation = 1 [json_name = "reputation"];</code>
+       */
+      public Builder setReputation(qorechain.reputation.v1.QueryOuterClass.ReputationRecord value) {
+        if (reputationBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          reputation_ = value;
+        } else {
+          reputationBuilder_.setMessage(value);
+        }
+        bitField0_ |= 0x00000001;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>.qorechain.reputation.v1.ReputationRecord reputation = 1 [json_name = "reputation"];</code>
+       */
+      public Builder setReputation(
+          qorechain.reputation.v1.QueryOuterClass.ReputationRecord.Builder builderForValue) {
+        if (reputationBuilder_ == null) {
+          reputation_ = builderForValue.build();
+        } else {
+          reputationBuilder_.setMessage(builderForValue.build());
+        }
+        bitField0_ |= 0x00000001;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>.qorechain.reputation.v1.ReputationRecord reputation = 1 [json_name = "reputation"];</code>
+       */
+      public Builder mergeReputation(qorechain.reputation.v1.QueryOuterClass.ReputationRecord value) {
+        if (reputationBuilder_ == null) {
+          if (((bitField0_ & 0x00000001) != 0) &&
+            reputation_ != null &&
+            reputation_ != qorechain.reputation.v1.QueryOuterClass.ReputationRecord.getDefaultInstance()) {
+            getReputationBuilder().mergeFrom(value);
+          } else {
+            reputation_ = value;
+          }
+        } else {
+          reputationBuilder_.mergeFrom(value);
+        }
+        if (reputation_ != null) {
+          bitField0_ |= 0x00000001;
+          onChanged();
+        }
+        return this;
+      }
+      /**
+       * <code>.qorechain.reputation.v1.ReputationRecord reputation = 1 [json_name = "reputation"];</code>
+       */
+      public Builder clearReputation() {
+        bitField0_ = (bitField0_ & ~0x00000001);
+        reputation_ = null;
+        if (reputationBuilder_ != null) {
+          reputationBuilder_.dispose();
+          reputationBuilder_ = null;
+        }
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>.qorechain.reputation.v1.ReputationRecord reputation = 1 [json_name = "reputation"];</code>
+       */
+      public qorechain.reputation.v1.QueryOuterClass.ReputationRecord.Builder getReputationBuilder() {
+        bitField0_ |= 0x00000001;
+        onChanged();
+        return internalGetReputationFieldBuilder().getBuilder();
+      }
+      /**
+       * <code>.qorechain.reputation.v1.ReputationRecord reputation = 1 [json_name = "reputation"];</code>
+       */
+      public qorechain.reputation.v1.QueryOuterClass.ReputationRecordOrBuilder getReputationOrBuilder() {
+        if (reputationBuilder_ != null) {
+          return reputationBuilder_.getMessageOrBuilder();
+        } else {
+          return reputation_ == null ?
+              qorechain.reputation.v1.QueryOuterClass.ReputationRecord.getDefaultInstance() : reputation_;
+        }
+      }
+      /**
+       * <code>.qorechain.reputation.v1.ReputationRecord reputation = 1 [json_name = "reputation"];</code>
+       */
+      private com.google.protobuf.SingleFieldBuilder<
+          qorechain.reputation.v1.QueryOuterClass.ReputationRecord, qorechain.reputation.v1.QueryOuterClass.ReputationRecord.Builder, qorechain.reputation.v1.QueryOuterClass.ReputationRecordOrBuilder> 
+          internalGetReputationFieldBuilder() {
+        if (reputationBuilder_ == null) {
+          reputationBuilder_ = new com.google.protobuf.SingleFieldBuilder<
+              qorechain.reputation.v1.QueryOuterClass.ReputationRecord, qorechain.reputation.v1.QueryOuterClass.ReputationRecord.Builder, qorechain.reputation.v1.QueryOuterClass.ReputationRecordOrBuilder>(
+                  getReputation(),
+                  getParentForChildren(),
+                  isClean());
+          reputation_ = null;
+        }
+        return reputationBuilder_;
+      }
+
+      // @@protoc_insertion_point(builder_scope:qorechain.reputation.v1.QueryReputationResponse)
+    }
+
+    // @@protoc_insertion_point(class_scope:qorechain.reputation.v1.QueryReputationResponse)
+    private static final qorechain.reputation.v1.QueryOuterClass.QueryReputationResponse DEFAULT_INSTANCE;
+    static {
+      DEFAULT_INSTANCE = new qorechain.reputation.v1.QueryOuterClass.QueryReputationResponse();
+    }
+
+    public static qorechain.reputation.v1.QueryOuterClass.QueryReputationResponse getDefaultInstance() {
+      return DEFAULT_INSTANCE;
+    }
+
+    private static final com.google.protobuf.Parser<QueryReputationResponse>
+        PARSER = new com.google.protobuf.AbstractParser<QueryReputationResponse>() {
+      @java.lang.Override
+      public QueryReputationResponse parsePartialFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        Builder builder = newBuilder();
+        try {
+          builder.mergeFrom(input, extensionRegistry);
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          throw e.setUnfinishedMessage(builder.buildPartial());
+        } catch (com.google.protobuf.UninitializedMessageException e) {
+          throw e.asInvalidProtocolBufferException().setUnfinishedMessage(builder.buildPartial());
+        } catch (java.io.IOException e) {
+          throw new com.google.protobuf.InvalidProtocolBufferException(e)
+              .setUnfinishedMessage(builder.buildPartial());
+        }
+        return builder.buildPartial();
+      }
+    };
+
+    public static com.google.protobuf.Parser<QueryReputationResponse> parser() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Parser<QueryReputationResponse> getParserForType() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public qorechain.reputation.v1.QueryOuterClass.QueryReputationResponse getDefaultInstanceForType() {
+      return DEFAULT_INSTANCE;
+    }
+
+  }
+
+  public interface QueryReputationsRequestOrBuilder extends
+      // @@protoc_insertion_point(interface_extends:qorechain.reputation.v1.QueryReputationsRequest)
+      com.google.protobuf.MessageOrBuilder {
+  }
+  /**
+   * Protobuf type {@code qorechain.reputation.v1.QueryReputationsRequest}
+   */
+  public static final class QueryReputationsRequest extends
+      com.google.protobuf.GeneratedMessage implements
+      // @@protoc_insertion_point(message_implements:qorechain.reputation.v1.QueryReputationsRequest)
+      QueryReputationsRequestOrBuilder {
+  private static final long serialVersionUID = 0L;
+    static {
+      com.google.protobuf.RuntimeVersion.validateProtobufGencodeVersion(
+        com.google.protobuf.RuntimeVersion.RuntimeDomain.PUBLIC,
+        /* major= */ 4,
+        /* minor= */ 35,
+        /* patch= */ 1,
+        /* suffix= */ "",
+        "QueryReputationsRequest");
+    }
+    // Use QueryReputationsRequest.newBuilder() to construct.
+    private QueryReputationsRequest(com.google.protobuf.GeneratedMessage.Builder<?> builder) {
+      super(builder);
+    }
+    private QueryReputationsRequest() {
+    }
+
+    public static final com.google.protobuf.Descriptors.Descriptor
+        getDescriptor() {
+      return qorechain.reputation.v1.QueryOuterClass.internal_static_qorechain_reputation_v1_QueryReputationsRequest_descriptor;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Descriptors.Descriptor getDescriptorForType() {
+      return qorechain.reputation.v1.QueryOuterClass.internal_static_qorechain_reputation_v1_QueryReputationsRequest_descriptor;
+    }
+
+    @java.lang.Override
+    protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+        internalGetFieldAccessorTable() {
+      return qorechain.reputation.v1.QueryOuterClass.internal_static_qorechain_reputation_v1_QueryReputationsRequest_fieldAccessorTable
+          .ensureFieldAccessorsInitialized(
+              qorechain.reputation.v1.QueryOuterClass.QueryReputationsRequest.class, qorechain.reputation.v1.QueryOuterClass.QueryReputationsRequest.Builder.class);
+    }
+
+    private byte memoizedIsInitialized = -1;
+    @java.lang.Override
+    public final boolean isInitialized() {
+      byte isInitialized = memoizedIsInitialized;
+      if (isInitialized == 1) return true;
+      if (isInitialized == 0) return false;
+
+      memoizedIsInitialized = 1;
+      return true;
+    }
+
+    @java.lang.Override
+    public void writeTo(com.google.protobuf.CodedOutputStream output)
+                        throws java.io.IOException {
+      getUnknownFields().writeTo(output);
+    }
+    @java.lang.Override
+    public int getSerializedSize() {
+      int size = memoizedSize;
+      if (size != -1) return size;
+
+      size = 0;
+      size += getUnknownFields().getSerializedSize();
+      memoizedSize = size;
+      return size;
+    }
+
+    @java.lang.Override
+    public boolean equals(final java.lang.Object obj) {
+      if (obj == this) {
+       return true;
+      }
+      if (!(obj instanceof qorechain.reputation.v1.QueryOuterClass.QueryReputationsRequest)) {
+        return super.equals(obj);
+      }
+      qorechain.reputation.v1.QueryOuterClass.QueryReputationsRequest other = (qorechain.reputation.v1.QueryOuterClass.QueryReputationsRequest) obj;
+
+      if (!getUnknownFields().equals(other.getUnknownFields())) return false;
+      return true;
+    }
+
+    @java.lang.Override
+    public int hashCode() {
+      if (memoizedHashCode != 0) {
+        return memoizedHashCode;
+      }
+      int hash = 41;
+      hash = (19 * hash) + getDescriptor().hashCode();
+      hash = (29 * hash) + getUnknownFields().hashCode();
+      memoizedHashCode = hash;
+      return hash;
+    }
+
+    public static qorechain.reputation.v1.QueryOuterClass.QueryReputationsRequest parseFrom(
+        java.nio.ByteBuffer data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static qorechain.reputation.v1.QueryOuterClass.QueryReputationsRequest parseFrom(
+        java.nio.ByteBuffer data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static qorechain.reputation.v1.QueryOuterClass.QueryReputationsRequest parseFrom(
+        com.google.protobuf.ByteString data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static qorechain.reputation.v1.QueryOuterClass.QueryReputationsRequest parseFrom(
+        com.google.protobuf.ByteString data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static qorechain.reputation.v1.QueryOuterClass.QueryReputationsRequest parseFrom(byte[] data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static qorechain.reputation.v1.QueryOuterClass.QueryReputationsRequest parseFrom(
+        byte[] data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static qorechain.reputation.v1.QueryOuterClass.QueryReputationsRequest parseFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input);
+    }
+    public static qorechain.reputation.v1.QueryOuterClass.QueryReputationsRequest parseFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    public static qorechain.reputation.v1.QueryOuterClass.QueryReputationsRequest parseDelimitedFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseDelimitedWithIOException(PARSER, input);
+    }
+
+    public static qorechain.reputation.v1.QueryOuterClass.QueryReputationsRequest parseDelimitedFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static qorechain.reputation.v1.QueryOuterClass.QueryReputationsRequest parseFrom(
+        com.google.protobuf.CodedInputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input);
+    }
+    public static qorechain.reputation.v1.QueryOuterClass.QueryReputationsRequest parseFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    @java.lang.Override
+    public Builder newBuilderForType() { return newBuilder(); }
+    public static Builder newBuilder() {
+      return DEFAULT_INSTANCE.toBuilder();
+    }
+    public static Builder newBuilder(qorechain.reputation.v1.QueryOuterClass.QueryReputationsRequest prototype) {
+      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+    }
+    @java.lang.Override
+    public Builder toBuilder() {
+      return this == DEFAULT_INSTANCE
+          ? new Builder() : new Builder().mergeFrom(this);
+    }
+
+    @java.lang.Override
+    protected Builder newBuilderForType(
+        com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+      Builder builder = new Builder(parent);
+      return builder;
+    }
+    /**
+     * Protobuf type {@code qorechain.reputation.v1.QueryReputationsRequest}
+     */
+    public static final class Builder extends
+        com.google.protobuf.GeneratedMessage.Builder<Builder> implements
+        // @@protoc_insertion_point(builder_implements:qorechain.reputation.v1.QueryReputationsRequest)
+        qorechain.reputation.v1.QueryOuterClass.QueryReputationsRequestOrBuilder {
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return qorechain.reputation.v1.QueryOuterClass.internal_static_qorechain_reputation_v1_QueryReputationsRequest_descriptor;
+      }
+
+      @java.lang.Override
+      protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return qorechain.reputation.v1.QueryOuterClass.internal_static_qorechain_reputation_v1_QueryReputationsRequest_fieldAccessorTable
+            .ensureFieldAccessorsInitialized(
+                qorechain.reputation.v1.QueryOuterClass.QueryReputationsRequest.class, qorechain.reputation.v1.QueryOuterClass.QueryReputationsRequest.Builder.class);
+      }
+
+      // Construct using qorechain.reputation.v1.QueryOuterClass.QueryReputationsRequest.newBuilder()
+      private Builder() {
+
+      }
+
+      private Builder(
+          com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+        super(parent);
+
+      }
+      @java.lang.Override
+      public Builder clear() {
+        super.clear();
+        return this;
+      }
+
+      @java.lang.Override
+      public com.google.protobuf.Descriptors.Descriptor
+          getDescriptorForType() {
+        return qorechain.reputation.v1.QueryOuterClass.internal_static_qorechain_reputation_v1_QueryReputationsRequest_descriptor;
+      }
+
+      @java.lang.Override
+      public qorechain.reputation.v1.QueryOuterClass.QueryReputationsRequest getDefaultInstanceForType() {
+        return qorechain.reputation.v1.QueryOuterClass.QueryReputationsRequest.getDefaultInstance();
+      }
+
+      @java.lang.Override
+      public qorechain.reputation.v1.QueryOuterClass.QueryReputationsRequest build() {
+        qorechain.reputation.v1.QueryOuterClass.QueryReputationsRequest result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(result);
+        }
+        return result;
+      }
+
+      @java.lang.Override
+      public qorechain.reputation.v1.QueryOuterClass.QueryReputationsRequest buildPartial() {
+        qorechain.reputation.v1.QueryOuterClass.QueryReputationsRequest result = new qorechain.reputation.v1.QueryOuterClass.QueryReputationsRequest(this);
+        onBuilt();
+        return result;
+      }
+
+      @java.lang.Override
+      public Builder mergeFrom(com.google.protobuf.Message other) {
+        if (other instanceof qorechain.reputation.v1.QueryOuterClass.QueryReputationsRequest) {
+          return mergeFrom((qorechain.reputation.v1.QueryOuterClass.QueryReputationsRequest)other);
+        } else {
+          super.mergeFrom(other);
+          return this;
+        }
+      }
+
+      public Builder mergeFrom(qorechain.reputation.v1.QueryOuterClass.QueryReputationsRequest other) {
+        if (other == qorechain.reputation.v1.QueryOuterClass.QueryReputationsRequest.getDefaultInstance()) return this;
+        this.mergeUnknownFields(other.getUnknownFields());
+        onChanged();
+        return this;
+      }
+
+      @java.lang.Override
+      public final boolean isInitialized() {
+        return true;
+      }
+
+      @java.lang.Override
+      public Builder mergeFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        if (extensionRegistry == null) {
+          throw new java.lang.NullPointerException();
+        }
+        try {
+          boolean done = false;
+          while (!done) {
+            int tag = input.readTag();
+            switch (tag) {
+              case 0:
+                done = true;
+                break;
+              default: {
+                if (!super.parseUnknownField(input, extensionRegistry, tag)) {
+                  done = true; // was an endgroup tag
+                }
+                break;
+              } // default:
+            } // switch (tag)
+          } // while (!done)
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          throw e.unwrapIOException();
+        } finally {
+          onChanged();
+        } // finally
+        return this;
+      }
+
+      // @@protoc_insertion_point(builder_scope:qorechain.reputation.v1.QueryReputationsRequest)
+    }
+
+    // @@protoc_insertion_point(class_scope:qorechain.reputation.v1.QueryReputationsRequest)
+    private static final qorechain.reputation.v1.QueryOuterClass.QueryReputationsRequest DEFAULT_INSTANCE;
+    static {
+      DEFAULT_INSTANCE = new qorechain.reputation.v1.QueryOuterClass.QueryReputationsRequest();
+    }
+
+    public static qorechain.reputation.v1.QueryOuterClass.QueryReputationsRequest getDefaultInstance() {
+      return DEFAULT_INSTANCE;
+    }
+
+    private static final com.google.protobuf.Parser<QueryReputationsRequest>
+        PARSER = new com.google.protobuf.AbstractParser<QueryReputationsRequest>() {
+      @java.lang.Override
+      public QueryReputationsRequest parsePartialFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        Builder builder = newBuilder();
+        try {
+          builder.mergeFrom(input, extensionRegistry);
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          throw e.setUnfinishedMessage(builder.buildPartial());
+        } catch (com.google.protobuf.UninitializedMessageException e) {
+          throw e.asInvalidProtocolBufferException().setUnfinishedMessage(builder.buildPartial());
+        } catch (java.io.IOException e) {
+          throw new com.google.protobuf.InvalidProtocolBufferException(e)
+              .setUnfinishedMessage(builder.buildPartial());
+        }
+        return builder.buildPartial();
+      }
+    };
+
+    public static com.google.protobuf.Parser<QueryReputationsRequest> parser() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Parser<QueryReputationsRequest> getParserForType() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public qorechain.reputation.v1.QueryOuterClass.QueryReputationsRequest getDefaultInstanceForType() {
+      return DEFAULT_INSTANCE;
+    }
+
+  }
+
+  public interface QueryReputationsResponseOrBuilder extends
+      // @@protoc_insertion_point(interface_extends:qorechain.reputation.v1.QueryReputationsResponse)
+      com.google.protobuf.MessageOrBuilder {
+
+    /**
+     * <code>repeated .qorechain.reputation.v1.ReputationRecord reputations = 1 [json_name = "reputations"];</code>
+     */
+    java.util.List<qorechain.reputation.v1.QueryOuterClass.ReputationRecord> 
+        getReputationsList();
+    /**
+     * <code>repeated .qorechain.reputation.v1.ReputationRecord reputations = 1 [json_name = "reputations"];</code>
+     */
+    qorechain.reputation.v1.QueryOuterClass.ReputationRecord getReputations(int index);
+    /**
+     * <code>repeated .qorechain.reputation.v1.ReputationRecord reputations = 1 [json_name = "reputations"];</code>
+     */
+    int getReputationsCount();
+    /**
+     * <code>repeated .qorechain.reputation.v1.ReputationRecord reputations = 1 [json_name = "reputations"];</code>
+     */
+    java.util.List<? extends qorechain.reputation.v1.QueryOuterClass.ReputationRecordOrBuilder> 
+        getReputationsOrBuilderList();
+    /**
+     * <code>repeated .qorechain.reputation.v1.ReputationRecord reputations = 1 [json_name = "reputations"];</code>
+     */
+    qorechain.reputation.v1.QueryOuterClass.ReputationRecordOrBuilder getReputationsOrBuilder(
+        int index);
+  }
+  /**
+   * Protobuf type {@code qorechain.reputation.v1.QueryReputationsResponse}
+   */
+  public static final class QueryReputationsResponse extends
+      com.google.protobuf.GeneratedMessage implements
+      // @@protoc_insertion_point(message_implements:qorechain.reputation.v1.QueryReputationsResponse)
+      QueryReputationsResponseOrBuilder {
+  private static final long serialVersionUID = 0L;
+    static {
+      com.google.protobuf.RuntimeVersion.validateProtobufGencodeVersion(
+        com.google.protobuf.RuntimeVersion.RuntimeDomain.PUBLIC,
+        /* major= */ 4,
+        /* minor= */ 35,
+        /* patch= */ 1,
+        /* suffix= */ "",
+        "QueryReputationsResponse");
+    }
+    // Use QueryReputationsResponse.newBuilder() to construct.
+    private QueryReputationsResponse(com.google.protobuf.GeneratedMessage.Builder<?> builder) {
+      super(builder);
+    }
+    private QueryReputationsResponse() {
+      reputations_ = java.util.Collections.emptyList();
+    }
+
+    public static final com.google.protobuf.Descriptors.Descriptor
+        getDescriptor() {
+      return qorechain.reputation.v1.QueryOuterClass.internal_static_qorechain_reputation_v1_QueryReputationsResponse_descriptor;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Descriptors.Descriptor getDescriptorForType() {
+      return qorechain.reputation.v1.QueryOuterClass.internal_static_qorechain_reputation_v1_QueryReputationsResponse_descriptor;
+    }
+
+    @java.lang.Override
+    protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+        internalGetFieldAccessorTable() {
+      return qorechain.reputation.v1.QueryOuterClass.internal_static_qorechain_reputation_v1_QueryReputationsResponse_fieldAccessorTable
+          .ensureFieldAccessorsInitialized(
+              qorechain.reputation.v1.QueryOuterClass.QueryReputationsResponse.class, qorechain.reputation.v1.QueryOuterClass.QueryReputationsResponse.Builder.class);
+    }
+
+    public static final int REPUTATIONS_FIELD_NUMBER = 1;
+    @SuppressWarnings("serial")
+    private java.util.List<qorechain.reputation.v1.QueryOuterClass.ReputationRecord> reputations_;
+    /**
+     * <code>repeated .qorechain.reputation.v1.ReputationRecord reputations = 1 [json_name = "reputations"];</code>
+     */
+    @java.lang.Override
+    public java.util.List<qorechain.reputation.v1.QueryOuterClass.ReputationRecord> getReputationsList() {
+      return reputations_;
+    }
+    /**
+     * <code>repeated .qorechain.reputation.v1.ReputationRecord reputations = 1 [json_name = "reputations"];</code>
+     */
+    @java.lang.Override
+    public java.util.List<? extends qorechain.reputation.v1.QueryOuterClass.ReputationRecordOrBuilder> 
+        getReputationsOrBuilderList() {
+      return reputations_;
+    }
+    /**
+     * <code>repeated .qorechain.reputation.v1.ReputationRecord reputations = 1 [json_name = "reputations"];</code>
+     */
+    @java.lang.Override
+    public int getReputationsCount() {
+      return reputations_.size();
+    }
+    /**
+     * <code>repeated .qorechain.reputation.v1.ReputationRecord reputations = 1 [json_name = "reputations"];</code>
+     */
+    @java.lang.Override
+    public qorechain.reputation.v1.QueryOuterClass.ReputationRecord getReputations(int index) {
+      return reputations_.get(index);
+    }
+    /**
+     * <code>repeated .qorechain.reputation.v1.ReputationRecord reputations = 1 [json_name = "reputations"];</code>
+     */
+    @java.lang.Override
+    public qorechain.reputation.v1.QueryOuterClass.ReputationRecordOrBuilder getReputationsOrBuilder(
+        int index) {
+      return reputations_.get(index);
+    }
+
+    private byte memoizedIsInitialized = -1;
+    @java.lang.Override
+    public final boolean isInitialized() {
+      byte isInitialized = memoizedIsInitialized;
+      if (isInitialized == 1) return true;
+      if (isInitialized == 0) return false;
+
+      memoizedIsInitialized = 1;
+      return true;
+    }
+
+    @java.lang.Override
+    public void writeTo(com.google.protobuf.CodedOutputStream output)
+                        throws java.io.IOException {
+      for (int i = 0; i < reputations_.size(); i++) {
+        output.writeMessage(1, reputations_.get(i));
+      }
+      getUnknownFields().writeTo(output);
+    }
+    private int computeSerializedSize_0() {
+      int size = 0;
+
+          {
+            final int count = reputations_.size();
+            for (int i = 0; i < count; i++) {
+              size += com.google.protobuf.CodedOutputStream
+                .computeMessageSizeNoTag(reputations_.get(i));
+            }
+            size += 1 * count;
+          }
+      return size;
+    }
+    @java.lang.Override
+    public int getSerializedSize() {
+      int size = memoizedSize;
+      if (size != -1) return size;
+
+      size = 0;
+      size += computeSerializedSize_0();
+      size += getUnknownFields().getSerializedSize();
+      memoizedSize = size;
+      return size;
+    }
+
+    @java.lang.Override
+    public boolean equals(final java.lang.Object obj) {
+      if (obj == this) {
+       return true;
+      }
+      if (!(obj instanceof qorechain.reputation.v1.QueryOuterClass.QueryReputationsResponse)) {
+        return super.equals(obj);
+      }
+      qorechain.reputation.v1.QueryOuterClass.QueryReputationsResponse other = (qorechain.reputation.v1.QueryOuterClass.QueryReputationsResponse) obj;
+
+      if (!getReputationsList()
+          .equals(other.getReputationsList())) return false;
+      if (!getUnknownFields().equals(other.getUnknownFields())) return false;
+      return true;
+    }
+
+    @java.lang.Override
+    public int hashCode() {
+      if (memoizedHashCode != 0) {
+        return memoizedHashCode;
+      }
+      int hash = 41;
+      hash = (19 * hash) + getDescriptor().hashCode();
+      if (getReputationsCount() > 0) {
+        hash = (37 * hash) + REPUTATIONS_FIELD_NUMBER;
+        hash = (53 * hash) + getReputationsList().hashCode();
+      }
+      hash = (29 * hash) + getUnknownFields().hashCode();
+      memoizedHashCode = hash;
+      return hash;
+    }
+
+    public static qorechain.reputation.v1.QueryOuterClass.QueryReputationsResponse parseFrom(
+        java.nio.ByteBuffer data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static qorechain.reputation.v1.QueryOuterClass.QueryReputationsResponse parseFrom(
+        java.nio.ByteBuffer data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static qorechain.reputation.v1.QueryOuterClass.QueryReputationsResponse parseFrom(
+        com.google.protobuf.ByteString data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static qorechain.reputation.v1.QueryOuterClass.QueryReputationsResponse parseFrom(
+        com.google.protobuf.ByteString data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static qorechain.reputation.v1.QueryOuterClass.QueryReputationsResponse parseFrom(byte[] data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static qorechain.reputation.v1.QueryOuterClass.QueryReputationsResponse parseFrom(
+        byte[] data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static qorechain.reputation.v1.QueryOuterClass.QueryReputationsResponse parseFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input);
+    }
+    public static qorechain.reputation.v1.QueryOuterClass.QueryReputationsResponse parseFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    public static qorechain.reputation.v1.QueryOuterClass.QueryReputationsResponse parseDelimitedFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseDelimitedWithIOException(PARSER, input);
+    }
+
+    public static qorechain.reputation.v1.QueryOuterClass.QueryReputationsResponse parseDelimitedFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static qorechain.reputation.v1.QueryOuterClass.QueryReputationsResponse parseFrom(
+        com.google.protobuf.CodedInputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input);
+    }
+    public static qorechain.reputation.v1.QueryOuterClass.QueryReputationsResponse parseFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    @java.lang.Override
+    public Builder newBuilderForType() { return newBuilder(); }
+    public static Builder newBuilder() {
+      return DEFAULT_INSTANCE.toBuilder();
+    }
+    public static Builder newBuilder(qorechain.reputation.v1.QueryOuterClass.QueryReputationsResponse prototype) {
+      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+    }
+    @java.lang.Override
+    public Builder toBuilder() {
+      return this == DEFAULT_INSTANCE
+          ? new Builder() : new Builder().mergeFrom(this);
+    }
+
+    @java.lang.Override
+    protected Builder newBuilderForType(
+        com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+      Builder builder = new Builder(parent);
+      return builder;
+    }
+    /**
+     * Protobuf type {@code qorechain.reputation.v1.QueryReputationsResponse}
+     */
+    public static final class Builder extends
+        com.google.protobuf.GeneratedMessage.Builder<Builder> implements
+        // @@protoc_insertion_point(builder_implements:qorechain.reputation.v1.QueryReputationsResponse)
+        qorechain.reputation.v1.QueryOuterClass.QueryReputationsResponseOrBuilder {
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return qorechain.reputation.v1.QueryOuterClass.internal_static_qorechain_reputation_v1_QueryReputationsResponse_descriptor;
+      }
+
+      @java.lang.Override
+      protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return qorechain.reputation.v1.QueryOuterClass.internal_static_qorechain_reputation_v1_QueryReputationsResponse_fieldAccessorTable
+            .ensureFieldAccessorsInitialized(
+                qorechain.reputation.v1.QueryOuterClass.QueryReputationsResponse.class, qorechain.reputation.v1.QueryOuterClass.QueryReputationsResponse.Builder.class);
+      }
+
+      // Construct using qorechain.reputation.v1.QueryOuterClass.QueryReputationsResponse.newBuilder()
+      private Builder() {
+
+      }
+
+      private Builder(
+          com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+        super(parent);
+
+      }
+      @java.lang.Override
+      public Builder clear() {
+        super.clear();
+        bitField0_ = 0;
+        if (reputationsBuilder_ == null) {
+          reputations_ = java.util.Collections.emptyList();
+        } else {
+          reputations_ = null;
+          reputationsBuilder_.clear();
+        }
+        bitField0_ = (bitField0_ & ~0x00000001);
+        return this;
+      }
+
+      @java.lang.Override
+      public com.google.protobuf.Descriptors.Descriptor
+          getDescriptorForType() {
+        return qorechain.reputation.v1.QueryOuterClass.internal_static_qorechain_reputation_v1_QueryReputationsResponse_descriptor;
+      }
+
+      @java.lang.Override
+      public qorechain.reputation.v1.QueryOuterClass.QueryReputationsResponse getDefaultInstanceForType() {
+        return qorechain.reputation.v1.QueryOuterClass.QueryReputationsResponse.getDefaultInstance();
+      }
+
+      @java.lang.Override
+      public qorechain.reputation.v1.QueryOuterClass.QueryReputationsResponse build() {
+        qorechain.reputation.v1.QueryOuterClass.QueryReputationsResponse result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(result);
+        }
+        return result;
+      }
+
+      @java.lang.Override
+      public qorechain.reputation.v1.QueryOuterClass.QueryReputationsResponse buildPartial() {
+        qorechain.reputation.v1.QueryOuterClass.QueryReputationsResponse result = new qorechain.reputation.v1.QueryOuterClass.QueryReputationsResponse(this);
+        buildPartialRepeatedFields(result);
+        if (bitField0_ != 0) { buildPartial0(result); }
+        onBuilt();
+        return result;
+      }
+
+      private void buildPartialRepeatedFields(qorechain.reputation.v1.QueryOuterClass.QueryReputationsResponse result) {
+        if (reputationsBuilder_ == null) {
+          if (((bitField0_ & 0x00000001) != 0)) {
+            reputations_ = java.util.Collections.unmodifiableList(reputations_);
+            bitField0_ = (bitField0_ & ~0x00000001);
+          }
+          result.reputations_ = reputations_;
+        } else {
+          result.reputations_ = reputationsBuilder_.build();
+        }
+      }
+
+      private void buildPartial0(qorechain.reputation.v1.QueryOuterClass.QueryReputationsResponse result) {
+        int from_bitField0_ = bitField0_;
+      }
+
+      @java.lang.Override
+      public Builder mergeFrom(com.google.protobuf.Message other) {
+        if (other instanceof qorechain.reputation.v1.QueryOuterClass.QueryReputationsResponse) {
+          return mergeFrom((qorechain.reputation.v1.QueryOuterClass.QueryReputationsResponse)other);
+        } else {
+          super.mergeFrom(other);
+          return this;
+        }
+      }
+
+      public Builder mergeFrom(qorechain.reputation.v1.QueryOuterClass.QueryReputationsResponse other) {
+        if (other == qorechain.reputation.v1.QueryOuterClass.QueryReputationsResponse.getDefaultInstance()) return this;
+        if (reputationsBuilder_ == null) {
+          if (!other.reputations_.isEmpty()) {
+            if (reputations_.isEmpty()) {
+              reputations_ = other.reputations_;
+              bitField0_ = (bitField0_ & ~0x00000001);
+            } else {
+              ensureReputationsIsMutable();
+              reputations_.addAll(other.reputations_);
+            }
+            onChanged();
+          }
+        } else {
+          if (!other.reputations_.isEmpty()) {
+            if (reputationsBuilder_.isEmpty()) {
+              reputationsBuilder_.dispose();
+              reputationsBuilder_ = null;
+              reputations_ = other.reputations_;
+              bitField0_ = (bitField0_ & ~0x00000001);
+              reputationsBuilder_ = 
+                com.google.protobuf.GeneratedMessage.alwaysUseFieldBuilders ?
+                   internalGetReputationsFieldBuilder() : null;
+            } else {
+              reputationsBuilder_.addAllMessages(other.reputations_);
+            }
+          }
+        }
+        this.mergeUnknownFields(other.getUnknownFields());
+        onChanged();
+        return this;
+      }
+
+      @java.lang.Override
+      public final boolean isInitialized() {
+        return true;
+      }
+
+      @java.lang.Override
+      public Builder mergeFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        if (extensionRegistry == null) {
+          throw new java.lang.NullPointerException();
+        }
+        try {
+          boolean done = false;
+          while (!done) {
+            int tag = input.readTag();
+            switch (tag) {
+              case 0:
+                done = true;
+                break;
+              case 10: {
+                qorechain.reputation.v1.QueryOuterClass.ReputationRecord m =
+                    input.readMessage(
+                        qorechain.reputation.v1.QueryOuterClass.ReputationRecord.parser(),
+                        extensionRegistry);
+                if (reputationsBuilder_ == null) {
+                  ensureReputationsIsMutable();
+                  reputations_.add(m);
+                } else {
+                  reputationsBuilder_.addMessage(m);
+                }
+                break;
+              } // case 10
+              default: {
+                if (!super.parseUnknownField(input, extensionRegistry, tag)) {
+                  done = true; // was an endgroup tag
+                }
+                break;
+              } // default:
+            } // switch (tag)
+          } // while (!done)
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          throw e.unwrapIOException();
+        } finally {
+          onChanged();
+        } // finally
+        return this;
+      }
+      private int bitField0_;
+
+      private java.util.List<qorechain.reputation.v1.QueryOuterClass.ReputationRecord> reputations_ =
+        java.util.Collections.emptyList();
+      private void ensureReputationsIsMutable() {
+        if (!((bitField0_ & 0x00000001) != 0)) {
+          reputations_ = new java.util.ArrayList<qorechain.reputation.v1.QueryOuterClass.ReputationRecord>(reputations_);
+          bitField0_ |= 0x00000001;
+         }
+      }
+
+      private com.google.protobuf.RepeatedFieldBuilder<
+          qorechain.reputation.v1.QueryOuterClass.ReputationRecord, qorechain.reputation.v1.QueryOuterClass.ReputationRecord.Builder, qorechain.reputation.v1.QueryOuterClass.ReputationRecordOrBuilder> reputationsBuilder_;
+
+      /**
+       * <code>repeated .qorechain.reputation.v1.ReputationRecord reputations = 1 [json_name = "reputations"];</code>
+       */
+      public java.util.List<qorechain.reputation.v1.QueryOuterClass.ReputationRecord> getReputationsList() {
+        if (reputationsBuilder_ == null) {
+          return java.util.Collections.unmodifiableList(reputations_);
+        } else {
+          return reputationsBuilder_.getMessageList();
+        }
+      }
+      /**
+       * <code>repeated .qorechain.reputation.v1.ReputationRecord reputations = 1 [json_name = "reputations"];</code>
+       */
+      public int getReputationsCount() {
+        if (reputationsBuilder_ == null) {
+          return reputations_.size();
+        } else {
+          return reputationsBuilder_.getCount();
+        }
+      }
+      /**
+       * <code>repeated .qorechain.reputation.v1.ReputationRecord reputations = 1 [json_name = "reputations"];</code>
+       */
+      public qorechain.reputation.v1.QueryOuterClass.ReputationRecord getReputations(int index) {
+        if (reputationsBuilder_ == null) {
+          return reputations_.get(index);
+        } else {
+          return reputationsBuilder_.getMessage(index);
+        }
+      }
+      /**
+       * <code>repeated .qorechain.reputation.v1.ReputationRecord reputations = 1 [json_name = "reputations"];</code>
+       */
+      public Builder setReputations(
+          int index, qorechain.reputation.v1.QueryOuterClass.ReputationRecord value) {
+        if (reputationsBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          ensureReputationsIsMutable();
+          reputations_.set(index, value);
+          onChanged();
+        } else {
+          reputationsBuilder_.setMessage(index, value);
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .qorechain.reputation.v1.ReputationRecord reputations = 1 [json_name = "reputations"];</code>
+       */
+      public Builder setReputations(
+          int index, qorechain.reputation.v1.QueryOuterClass.ReputationRecord.Builder builderForValue) {
+        if (reputationsBuilder_ == null) {
+          ensureReputationsIsMutable();
+          reputations_.set(index, builderForValue.build());
+          onChanged();
+        } else {
+          reputationsBuilder_.setMessage(index, builderForValue.build());
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .qorechain.reputation.v1.ReputationRecord reputations = 1 [json_name = "reputations"];</code>
+       */
+      public Builder addReputations(qorechain.reputation.v1.QueryOuterClass.ReputationRecord value) {
+        if (reputationsBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          ensureReputationsIsMutable();
+          reputations_.add(value);
+          onChanged();
+        } else {
+          reputationsBuilder_.addMessage(value);
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .qorechain.reputation.v1.ReputationRecord reputations = 1 [json_name = "reputations"];</code>
+       */
+      public Builder addReputations(
+          int index, qorechain.reputation.v1.QueryOuterClass.ReputationRecord value) {
+        if (reputationsBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          ensureReputationsIsMutable();
+          reputations_.add(index, value);
+          onChanged();
+        } else {
+          reputationsBuilder_.addMessage(index, value);
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .qorechain.reputation.v1.ReputationRecord reputations = 1 [json_name = "reputations"];</code>
+       */
+      public Builder addReputations(
+          qorechain.reputation.v1.QueryOuterClass.ReputationRecord.Builder builderForValue) {
+        if (reputationsBuilder_ == null) {
+          ensureReputationsIsMutable();
+          reputations_.add(builderForValue.build());
+          onChanged();
+        } else {
+          reputationsBuilder_.addMessage(builderForValue.build());
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .qorechain.reputation.v1.ReputationRecord reputations = 1 [json_name = "reputations"];</code>
+       */
+      public Builder addReputations(
+          int index, qorechain.reputation.v1.QueryOuterClass.ReputationRecord.Builder builderForValue) {
+        if (reputationsBuilder_ == null) {
+          ensureReputationsIsMutable();
+          reputations_.add(index, builderForValue.build());
+          onChanged();
+        } else {
+          reputationsBuilder_.addMessage(index, builderForValue.build());
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .qorechain.reputation.v1.ReputationRecord reputations = 1 [json_name = "reputations"];</code>
+       */
+      public Builder addAllReputations(
+          java.lang.Iterable<? extends qorechain.reputation.v1.QueryOuterClass.ReputationRecord> values) {
+        if (reputationsBuilder_ == null) {
+          ensureReputationsIsMutable();
+          com.google.protobuf.AbstractMessageLite.Builder.addAll(
+              values, reputations_);
+          onChanged();
+        } else {
+          reputationsBuilder_.addAllMessages(values);
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .qorechain.reputation.v1.ReputationRecord reputations = 1 [json_name = "reputations"];</code>
+       */
+      public Builder clearReputations() {
+        if (reputationsBuilder_ == null) {
+          reputations_ = java.util.Collections.emptyList();
+          bitField0_ = (bitField0_ & ~0x00000001);
+          onChanged();
+        } else {
+          reputationsBuilder_.clear();
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .qorechain.reputation.v1.ReputationRecord reputations = 1 [json_name = "reputations"];</code>
+       */
+      public Builder removeReputations(int index) {
+        if (reputationsBuilder_ == null) {
+          ensureReputationsIsMutable();
+          reputations_.remove(index);
+          onChanged();
+        } else {
+          reputationsBuilder_.remove(index);
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .qorechain.reputation.v1.ReputationRecord reputations = 1 [json_name = "reputations"];</code>
+       */
+      public qorechain.reputation.v1.QueryOuterClass.ReputationRecord.Builder getReputationsBuilder(
+          int index) {
+        return internalGetReputationsFieldBuilder().getBuilder(index);
+      }
+      /**
+       * <code>repeated .qorechain.reputation.v1.ReputationRecord reputations = 1 [json_name = "reputations"];</code>
+       */
+      public qorechain.reputation.v1.QueryOuterClass.ReputationRecordOrBuilder getReputationsOrBuilder(
+          int index) {
+        if (reputationsBuilder_ == null) {
+          return reputations_.get(index);  } else {
+          return reputationsBuilder_.getMessageOrBuilder(index);
+        }
+      }
+      /**
+       * <code>repeated .qorechain.reputation.v1.ReputationRecord reputations = 1 [json_name = "reputations"];</code>
+       */
+      public java.util.List<? extends qorechain.reputation.v1.QueryOuterClass.ReputationRecordOrBuilder> 
+           getReputationsOrBuilderList() {
+        if (reputationsBuilder_ != null) {
+          return reputationsBuilder_.getMessageOrBuilderList();
+        } else {
+          return java.util.Collections.unmodifiableList(reputations_);
+        }
+      }
+      /**
+       * <code>repeated .qorechain.reputation.v1.ReputationRecord reputations = 1 [json_name = "reputations"];</code>
+       */
+      public qorechain.reputation.v1.QueryOuterClass.ReputationRecord.Builder addReputationsBuilder() {
+        return internalGetReputationsFieldBuilder().addBuilder(
+            qorechain.reputation.v1.QueryOuterClass.ReputationRecord.getDefaultInstance());
+      }
+      /**
+       * <code>repeated .qorechain.reputation.v1.ReputationRecord reputations = 1 [json_name = "reputations"];</code>
+       */
+      public qorechain.reputation.v1.QueryOuterClass.ReputationRecord.Builder addReputationsBuilder(
+          int index) {
+        return internalGetReputationsFieldBuilder().addBuilder(
+            index, qorechain.reputation.v1.QueryOuterClass.ReputationRecord.getDefaultInstance());
+      }
+      /**
+       * <code>repeated .qorechain.reputation.v1.ReputationRecord reputations = 1 [json_name = "reputations"];</code>
+       */
+      public java.util.List<qorechain.reputation.v1.QueryOuterClass.ReputationRecord.Builder> 
+           getReputationsBuilderList() {
+        return internalGetReputationsFieldBuilder().getBuilderList();
+      }
+      private com.google.protobuf.RepeatedFieldBuilder<
+          qorechain.reputation.v1.QueryOuterClass.ReputationRecord, qorechain.reputation.v1.QueryOuterClass.ReputationRecord.Builder, qorechain.reputation.v1.QueryOuterClass.ReputationRecordOrBuilder> 
+          internalGetReputationsFieldBuilder() {
+        if (reputationsBuilder_ == null) {
+          reputationsBuilder_ = new com.google.protobuf.RepeatedFieldBuilder<
+              qorechain.reputation.v1.QueryOuterClass.ReputationRecord, qorechain.reputation.v1.QueryOuterClass.ReputationRecord.Builder, qorechain.reputation.v1.QueryOuterClass.ReputationRecordOrBuilder>(
+                  reputations_,
+                  ((bitField0_ & 0x00000001) != 0),
+                  getParentForChildren(),
+                  isClean());
+          reputations_ = null;
+        }
+        return reputationsBuilder_;
+      }
+
+      // @@protoc_insertion_point(builder_scope:qorechain.reputation.v1.QueryReputationsResponse)
+    }
+
+    // @@protoc_insertion_point(class_scope:qorechain.reputation.v1.QueryReputationsResponse)
+    private static final qorechain.reputation.v1.QueryOuterClass.QueryReputationsResponse DEFAULT_INSTANCE;
+    static {
+      DEFAULT_INSTANCE = new qorechain.reputation.v1.QueryOuterClass.QueryReputationsResponse();
+    }
+
+    public static qorechain.reputation.v1.QueryOuterClass.QueryReputationsResponse getDefaultInstance() {
+      return DEFAULT_INSTANCE;
+    }
+
+    private static final com.google.protobuf.Parser<QueryReputationsResponse>
+        PARSER = new com.google.protobuf.AbstractParser<QueryReputationsResponse>() {
+      @java.lang.Override
+      public QueryReputationsResponse parsePartialFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        Builder builder = newBuilder();
+        try {
+          builder.mergeFrom(input, extensionRegistry);
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          throw e.setUnfinishedMessage(builder.buildPartial());
+        } catch (com.google.protobuf.UninitializedMessageException e) {
+          throw e.asInvalidProtocolBufferException().setUnfinishedMessage(builder.buildPartial());
+        } catch (java.io.IOException e) {
+          throw new com.google.protobuf.InvalidProtocolBufferException(e)
+              .setUnfinishedMessage(builder.buildPartial());
+        }
+        return builder.buildPartial();
+      }
+    };
+
+    public static com.google.protobuf.Parser<QueryReputationsResponse> parser() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Parser<QueryReputationsResponse> getParserForType() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public qorechain.reputation.v1.QueryOuterClass.QueryReputationsResponse getDefaultInstanceForType() {
+      return DEFAULT_INSTANCE;
+    }
+
+  }
+
   private static final com.google.protobuf.Descriptors.Descriptor
     internal_static_qorechain_reputation_v1_QueryParamsRequest_descriptor;
   private static final 
@@ -1654,6 +6122,31 @@ public final class QueryOuterClass extends com.google.protobuf.GeneratedFile {
   private static final 
     com.google.protobuf.GeneratedMessage.FieldAccessorTable
       internal_static_qorechain_reputation_v1_QueryParamsResponse_fieldAccessorTable;
+  private static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_qorechain_reputation_v1_ReputationRecord_descriptor;
+  private static final 
+    com.google.protobuf.GeneratedMessage.FieldAccessorTable
+      internal_static_qorechain_reputation_v1_ReputationRecord_fieldAccessorTable;
+  private static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_qorechain_reputation_v1_QueryReputationRequest_descriptor;
+  private static final 
+    com.google.protobuf.GeneratedMessage.FieldAccessorTable
+      internal_static_qorechain_reputation_v1_QueryReputationRequest_fieldAccessorTable;
+  private static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_qorechain_reputation_v1_QueryReputationResponse_descriptor;
+  private static final 
+    com.google.protobuf.GeneratedMessage.FieldAccessorTable
+      internal_static_qorechain_reputation_v1_QueryReputationResponse_fieldAccessorTable;
+  private static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_qorechain_reputation_v1_QueryReputationsRequest_descriptor;
+  private static final 
+    com.google.protobuf.GeneratedMessage.FieldAccessorTable
+      internal_static_qorechain_reputation_v1_QueryReputationsRequest_fieldAccessorTable;
+  private static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_qorechain_reputation_v1_QueryReputationsResponse_descriptor;
+  private static final 
+    com.google.protobuf.GeneratedMessage.FieldAccessorTable
+      internal_static_qorechain_reputation_v1_QueryReputationsResponse_fieldAccessorTable;
 
   public static com.google.protobuf.Descriptors.FileDescriptor
       getDescriptor() {
@@ -1664,20 +6157,56 @@ public final class QueryOuterClass extends com.google.protobuf.GeneratedFile {
   static {
     java.lang.String[] descriptorData = {
       "\n#qorechain/reputation/v1/query.proto\022\027q" +
-      "orechain.reputation.v1\"\024\n\022QueryParamsReq" +
-      "uest\"\240\001\n\023QueryParamsResponse\022\024\n\005alpha\030\001 " +
-      "\001(\tR\005alpha\022\022\n\004beta\030\002 \001(\tR\004beta\022\024\n\005gamma\030" +
-      "\003 \001(\tR\005gamma\022\024\n\005delta\030\004 \001(\tR\005delta\022\026\n\006la" +
-      "mbda\030\005 \001(\tR\006lambda\022\033\n\tmin_score\030\006 \001(\tR\010m" +
-      "inScore2l\n\005Query\022c\n\006Params\022+.qorechain.r" +
-      "eputation.v1.QueryParamsRequest\032,.qorech" +
-      "ain.reputation.v1.QueryParamsResponseB8Z" +
-      "6github.com/qorechain/qorechain-core/x/r" +
-      "eputation/typesb\006proto3"
+      "orechain.reputation.v1\032\034google/api/annot" +
+      "ations.proto\"\024\n\022QueryParamsRequest\"\240\001\n\023Q" +
+      "ueryParamsResponse\022\024\n\005alpha\030\001 \001(\tR\005alpha" +
+      "\022\022\n\004beta\030\002 \001(\tR\004beta\022\024\n\005gamma\030\003 \001(\tR\005gam" +
+      "ma\022\024\n\005delta\030\004 \001(\tR\005delta\022\026\n\006lambda\030\005 \001(\t" +
+      "R\006lambda\022\033\n\tmin_score\030\006 \001(\tR\010minScore\"\242\005" +
+      "\n\020ReputationRecord\022+\n\021consensus_address\030" +
+      "\001 \001(\tR\020consensusAddress\022)\n\020operator_addr" +
+      "ess\030\002 \001(\tR\017operatorAddress\022\037\n\013stake_scor" +
+      "e\030\003 \001(\tR\nstakeScore\022+\n\021performance_score" +
+      "\030\004 \001(\tR\020performanceScore\022-\n\022contribution" +
+      "_score\030\005 \001(\tR\021contributionScore\022\035\n\ntime_" +
+      "score\030\006 \001(\tR\ttimeScore\022\'\n\017composite_scor" +
+      "e\030\007 \001(\tR\016compositeScore\022.\n\023last_updated_" +
+      "height\030\010 \001(\003R\021lastUpdatedHeight\022#\n\ruptim" +
+      "e_blocks\030\t \001(\004R\014uptimeBlocks\022\'\n\017proposed" +
+      "_blocks\030\n \001(\004R\016proposedBlocks\022#\n\rmissed_" +
+      "blocks\030\013 \001(\004R\014missedBlocks\022\'\n\017slashing_e" +
+      "vents\030\014 \001(\004R\016slashingEvents\022\'\n\017community" +
+      "_votes\030\r \001(\003R\016communityVotes\022(\n\020joined_a" +
+      "t_height\030\016 \001(\003R\016joinedAtHeight\022+\n\021gov_pa" +
+      "rticipation\030\017 \001(\tR\020govParticipation\022%\n\016i" +
+      "nactive_since\030\020 \001(\003R\rinactiveSince\"E\n\026Qu" +
+      "eryReputationRequest\022+\n\021validator_addres" +
+      "s\030\001 \001(\tR\020validatorAddress\"d\n\027QueryReputa" +
+      "tionResponse\022I\n\nreputation\030\001 \001(\0132).qorec" +
+      "hain.reputation.v1.ReputationRecordR\nrep" +
+      "utation\"\031\n\027QueryReputationsRequest\"g\n\030Qu" +
+      "eryReputationsResponse\022K\n\013reputations\030\001 " +
+      "\003(\0132).qorechain.reputation.v1.Reputation" +
+      "RecordR\013reputations2\352\003\n\005Query\022\214\001\n\006Params" +
+      "\022+.qorechain.reputation.v1.QueryParamsRe" +
+      "quest\032,.qorechain.reputation.v1.QueryPar" +
+      "amsResponse\"\'\202\323\344\223\002!\022\037/qorechain/reputati" +
+      "on/v1/params\022\257\001\n\nReputation\022/.qorechain." +
+      "reputation.v1.QueryReputationRequest\0320.q" +
+      "orechain.reputation.v1.QueryReputationRe" +
+      "sponse\">\202\323\344\223\0028\0226/qorechain/reputation/v1" +
+      "/validator/{validator_address}\022\237\001\n\013Reput" +
+      "ations\0220.qorechain.reputation.v1.QueryRe" +
+      "putationsRequest\0321.qorechain.reputation." +
+      "v1.QueryReputationsResponse\"+\202\323\344\223\002%\022#/qo" +
+      "rechain/reputation/v1/validatorsB8Z6gith" +
+      "ub.com/qorechain/qorechain-core/x/reputa" +
+      "tion/typesb\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
         new com.google.protobuf.Descriptors.FileDescriptor[] {
+          com.google.api.AnnotationsProto.getDescriptor(),
         });
     internal_static_qorechain_reputation_v1_QueryParamsRequest_descriptor =
       getDescriptor().getMessageType(0);
@@ -1691,7 +6220,43 @@ public final class QueryOuterClass extends com.google.protobuf.GeneratedFile {
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_qorechain_reputation_v1_QueryParamsResponse_descriptor,
         new java.lang.String[] { "Alpha", "Beta", "Gamma", "Delta", "Lambda", "MinScore", });
+    internal_static_qorechain_reputation_v1_ReputationRecord_descriptor =
+      getDescriptor().getMessageType(2);
+    internal_static_qorechain_reputation_v1_ReputationRecord_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessage.FieldAccessorTable(
+        internal_static_qorechain_reputation_v1_ReputationRecord_descriptor,
+        new java.lang.String[] { "ConsensusAddress", "OperatorAddress", "StakeScore", "PerformanceScore", "ContributionScore", "TimeScore", "CompositeScore", "LastUpdatedHeight", "UptimeBlocks", "ProposedBlocks", "MissedBlocks", "SlashingEvents", "CommunityVotes", "JoinedAtHeight", "GovParticipation", "InactiveSince", });
+    internal_static_qorechain_reputation_v1_QueryReputationRequest_descriptor =
+      getDescriptor().getMessageType(3);
+    internal_static_qorechain_reputation_v1_QueryReputationRequest_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessage.FieldAccessorTable(
+        internal_static_qorechain_reputation_v1_QueryReputationRequest_descriptor,
+        new java.lang.String[] { "ValidatorAddress", });
+    internal_static_qorechain_reputation_v1_QueryReputationResponse_descriptor =
+      getDescriptor().getMessageType(4);
+    internal_static_qorechain_reputation_v1_QueryReputationResponse_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessage.FieldAccessorTable(
+        internal_static_qorechain_reputation_v1_QueryReputationResponse_descriptor,
+        new java.lang.String[] { "Reputation", });
+    internal_static_qorechain_reputation_v1_QueryReputationsRequest_descriptor =
+      getDescriptor().getMessageType(5);
+    internal_static_qorechain_reputation_v1_QueryReputationsRequest_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessage.FieldAccessorTable(
+        internal_static_qorechain_reputation_v1_QueryReputationsRequest_descriptor,
+        new java.lang.String[] { });
+    internal_static_qorechain_reputation_v1_QueryReputationsResponse_descriptor =
+      getDescriptor().getMessageType(6);
+    internal_static_qorechain_reputation_v1_QueryReputationsResponse_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessage.FieldAccessorTable(
+        internal_static_qorechain_reputation_v1_QueryReputationsResponse_descriptor,
+        new java.lang.String[] { "Reputations", });
     descriptor.resolveAllFeaturesImmutable();
+    com.google.api.AnnotationsProto.getDescriptor();
+    com.google.protobuf.ExtensionRegistry registry =
+        com.google.protobuf.ExtensionRegistry.newInstance();
+    registry.add(com.google.api.AnnotationsProto.http);
+    com.google.protobuf.Descriptors.FileDescriptor
+        .internalUpdateFileDescriptor(descriptor, registry);
   }
 
   // @@protoc_insertion_point(outer_class_scope)

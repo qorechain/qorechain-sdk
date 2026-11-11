@@ -100,6 +100,43 @@ pub struct QueryParamsResponse {
     #[prost(uint64, tag="15")]
     pub default_validator_set_size: u64,
 }
+#[derive(Clone, Copy, PartialEq, ::prost::Message)]
+pub struct QueryAppliedParamsRequest {
+}
+#[derive(Clone, PartialEq, ::prost::Message)]
+pub struct QueryAppliedParamsResponse {
+    #[prost(int64, tag="1")]
+    pub block_time_ms: i64,
+    #[prost(int64, tag="2")]
+    pub gas_limit: i64,
+    #[prost(string, tag="3")]
+    pub gas_price_floor: ::prost::alloc::string::String,
+    #[prost(string, tag="4")]
+    pub pool_weight_rpos: ::prost::alloc::string::String,
+    #[prost(string, tag="5")]
+    pub pool_weight_dpos: ::prost::alloc::string::String,
+}
+#[derive(Clone, Copy, PartialEq, ::prost::Message)]
+pub struct QueryLastActionRequest {
+}
+#[derive(Clone, PartialEq, ::prost::Message)]
+pub struct QueryLastActionResponse {
+    /// height is the block of the step; 0 when no action has been recorded.
+    #[prost(int64, tag="1")]
+    pub height: i64,
+    /// mode is the agent mode at that step.
+    #[prost(string, tag="2")]
+    pub mode: ::prost::alloc::string::String,
+    /// values are the five raw action outputs, in the order block_time_delta,
+    /// gas_price_delta, validator_set_size_delta, pool_weight_rpos_delta,
+    /// pool_weight_dpos_delta, before the mode's clamp.
+    #[prost(string, repeated, tag="3")]
+    pub values: ::prost::alloc::vec::Vec<::prost::alloc::string::String>,
+    /// applied is true when the step changed the applied values (conservative
+    /// or autonomous mode, circuit breaker clear).
+    #[prost(bool, tag="4")]
+    pub applied: bool,
+}
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct MsgSetAgentMode {
     #[prost(string, tag="1")]
@@ -150,5 +187,28 @@ pub struct MsgUpdateRewardWeights {
 }
 #[derive(Clone, Copy, PartialEq, ::prost::Message)]
 pub struct MsgUpdateRewardWeightsResponse {
+}
+/// MsgUpdateGasFloorBand sets the band within which the agent's gas price floor
+/// moves the x/feemarket min_gas_price. Decimals as strings, in min_gas_price
+/// units. With apply_enabled false nothing is applied and the band fields may
+/// be empty.
+#[derive(Clone, PartialEq, ::prost::Message)]
+pub struct MsgUpdateGasFloorBand {
+    #[prost(string, tag="1")]
+    pub authority: ::prost::alloc::string::String,
+    #[prost(bool, tag="2")]
+    pub apply_enabled: bool,
+    /// min_gas_price and max_gas_price bound the applied value absolutely.
+    #[prost(string, tag="3")]
+    pub min_gas_price: ::prost::alloc::string::String,
+    #[prost(string, tag="4")]
+    pub max_gas_price: ::prost::alloc::string::String,
+    /// max_step_change bounds one step's change relative to the current value,
+    /// in (0, 0.5].
+    #[prost(string, tag="5")]
+    pub max_step_change: ::prost::alloc::string::String,
+}
+#[derive(Clone, Copy, PartialEq, ::prost::Message)]
+pub struct MsgUpdateGasFloorBandResponse {
 }
 // @@protoc_insertion_point(module)

@@ -23,9 +23,12 @@ _sym_db = _symbol_database.Default()
 
 
 from google.api import annotations_pb2 as google_dot_api_dot_annotations__pb2
+from cosmpy.protos.gogoproto import gogo_pb2 as gogoproto_dot_gogo__pb2
+from cosmos.base.query.v1beta1 import pagination_pb2 as cosmos_dot_base_dot_query_dot_v1beta1_dot_pagination__pb2
+from qorsdk.proto.qorechain.crossvm.v1 import tx_pb2 as qorechain_dot_crossvm_dot_v1_dot_tx__pb2
 
 
-DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n qorechain/crossvm/v1/query.proto\x12\x14qorechain.crossvm.v1\x1a\x1cgoogle/api/annotations.proto\"\xe7\x02\n\x12\x43rossVMMessageView\x12\x0e\n\x02id\x18\x01 \x01(\tR\x02id\x12\x1b\n\tsource_vm\x18\x02 \x01(\tR\x08sourceVm\x12\x1b\n\ttarget_vm\x18\x03 \x01(\tR\x08targetVm\x12\x16\n\x06sender\x18\x04 \x01(\tR\x06sender\x12\'\n\x0fsource_contract\x18\x05 \x01(\tR\x0esourceContract\x12\'\n\x0ftarget_contract\x18\x06 \x01(\tR\x0etargetContract\x12\x1f\n\x0bpayload_hex\x18\x07 \x01(\tR\npayloadHex\x12\x16\n\x06status\x18\x08 \x01(\tR\x06status\x12%\n\x0e\x63reated_height\x18\t \x01(\x03R\rcreatedHeight\x12\'\n\x0f\x65xecuted_height\x18\n \x01(\x03R\x0e\x65xecutedHeight\x12\x14\n\x05\x65rror\x18\x0b \x01(\tR\x05\x65rror\"\x14\n\x12QueryParamsRequest\"\xe7\x01\n\x13QueryParamsResponse\x12(\n\x10max_message_size\x18\x01 \x01(\x04R\x0emaxMessageSize\x12$\n\x0emax_queue_size\x18\x02 \x01(\rR\x0cmaxQueueSize\x12\x30\n\x14queue_timeout_blocks\x18\x03 \x01(\x03R\x12queueTimeoutBlocks\x12\x18\n\x07\x65nabled\x18\x04 \x01(\x08R\x07\x65nabled\x12\x34\n\x16\x62ridge_allowed_targets\x18\x05 \x03(\tR\x14\x62ridgeAllowedTargets\"\x1d\n\x1bQueryPendingMessagesRequest\"z\n\x1cQueryPendingMessagesResponse\x12\x44\n\x08messages\x18\x01 \x03(\x0b\x32(.qorechain.crossvm.v1.CrossVMMessageViewR\x08messages\x12\x14\n\x05\x63ount\x18\x02 \x01(\rR\x05\x63ount\"%\n\x13QueryMessageRequest\x12\x0e\n\x02id\x18\x01 \x01(\tR\x02id\"p\n\x14QueryMessageResponse\x12\x42\n\x07message\x18\x01 \x01(\x0b\x32(.qorechain.crossvm.v1.CrossVMMessageViewR\x07message\x12\x14\n\x05\x66ound\x18\x02 \x01(\x08R\x05\x66ound2\xbe\x03\n\x05Query\x12\x83\x01\n\x06Params\x12(.qorechain.crossvm.v1.QueryParamsRequest\x1a).qorechain.crossvm.v1.QueryParamsResponse\"$\x82\xd3\xe4\x93\x02\x1e\x12\x1c/qorechain/crossvm/v1/params\x12\x9f\x01\n\x0fPendingMessages\x12\x31.qorechain.crossvm.v1.QueryPendingMessagesRequest\x1a\x32.qorechain.crossvm.v1.QueryPendingMessagesResponse\"%\x82\xd3\xe4\x93\x02\x1f\x12\x1d/qorechain/crossvm/v1/pending\x12\x8c\x01\n\x07Message\x12).qorechain.crossvm.v1.QueryMessageRequest\x1a*.qorechain.crossvm.v1.QueryMessageResponse\"*\x82\xd3\xe4\x93\x02$\x12\"/qorechain/crossvm/v1/message/{id}B\xcd\x01\n\x18\x63om.qorechain.crossvm.v1B\nQueryProtoP\x01Z3github.com/qorechain/qorechain-core/x/crossvm/types\xa2\x02\x03QCX\xaa\x02\x14Qorechain.Crossvm.V1\xca\x02\x14Qorechain\\Crossvm\\V1\xe2\x02 Qorechain\\Crossvm\\V1\\GPBMetadata\xea\x02\x16Qorechain::Crossvm::V1b\x06proto3')
+DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n qorechain/crossvm/v1/query.proto\x12\x14qorechain.crossvm.v1\x1a\x1cgoogle/api/annotations.proto\x1a\x14gogoproto/gogo.proto\x1a*cosmos/base/query/v1beta1/pagination.proto\x1a\x1dqorechain/crossvm/v1/tx.proto\"\xe7\x02\n\x12\x43rossVMMessageView\x12\x0e\n\x02id\x18\x01 \x01(\tR\x02id\x12\x1b\n\tsource_vm\x18\x02 \x01(\tR\x08sourceVm\x12\x1b\n\ttarget_vm\x18\x03 \x01(\tR\x08targetVm\x12\x16\n\x06sender\x18\x04 \x01(\tR\x06sender\x12\'\n\x0fsource_contract\x18\x05 \x01(\tR\x0esourceContract\x12\'\n\x0ftarget_contract\x18\x06 \x01(\tR\x0etargetContract\x12\x1f\n\x0bpayload_hex\x18\x07 \x01(\tR\npayloadHex\x12\x16\n\x06status\x18\x08 \x01(\tR\x06status\x12%\n\x0e\x63reated_height\x18\t \x01(\x03R\rcreatedHeight\x12\'\n\x0f\x65xecuted_height\x18\n \x01(\x03R\x0e\x65xecutedHeight\x12\x14\n\x05\x65rror\x18\x0b \x01(\tR\x05\x65rror\"\x14\n\x12QueryParamsRequest\"\xd2\x07\n\x13QueryParamsResponse\x12(\n\x10max_message_size\x18\x01 \x01(\x04R\x0emaxMessageSize\x12$\n\x0emax_queue_size\x18\x02 \x01(\rR\x0cmaxQueueSize\x12\x30\n\x14queue_timeout_blocks\x18\x03 \x01(\x03R\x12queueTimeoutBlocks\x12\x18\n\x07\x65nabled\x18\x04 \x01(\x08R\x07\x65nabled\x12\x34\n\x16\x62ridge_allowed_targets\x18\x05 \x03(\tR\x14\x62ridgeAllowedTargets\x12Y\n\x12\x62ridge_target_pins\x18\x06 \x03(\x0b\x32%.qorechain.crossvm.v1.BridgeTargetPinB\x04\xc8\xde\x1f\x00R\x10\x62ridgeTargetPins\x12\x33\n\x16max_pending_per_sender\x18\x07 \x01(\rR\x13maxPendingPerSender\x12)\n\x11max_cosmos_tx_gas\x18\x08 \x01(\x04R\x0emaxCosmosTxGas\x12\x36\n\x17record_retention_blocks\x18\t \x01(\x04R\x15recordRetentionBlocks\x12+\n\x12max_block_wasm_gas\x18\n \x01(\x04R\x0fmaxBlockWasmGas\x12\x30\n\x15max_tx_wasm_share_bps\x18\x0b \x01(\rR\x11maxTxWasmShareBps\x12\x36\n\x18max_block_level_wasm_gas\x18\x0c \x01(\x04R\x14maxBlockLevelWasmGas\x12\x33\n\x16queue_wasm_reserve_bps\x18\r \x01(\rR\x13queueWasmReserveBps\x12;\n\x1awasm_congestion_max_factor\x18\x0e \x01(\rR\x17wasmCongestionMaxFactor\x12;\n\x1awasm_congestion_target_bps\x18\x0f \x01(\rR\x17wasmCongestionTargetBps\x12?\n\x1cwasm_congestion_factor_micro\x18\x10 \x01(\x04R\x19wasmCongestionFactorMicro\x12/\n\x14max_block_upload_bps\x18\x11 \x01(\rR\x11maxBlockUploadBps\x12>\n\x1cmax_queue_timeouts_per_block\x18\x12 \x01(\rR\x18maxQueueTimeoutsPerBlock\"e\n\x1bQueryPendingMessagesRequest\x12\x46\n\npagination\x18\x01 \x01(\x0b\x32&.cosmos.base.query.v1beta1.PageRequestR\npagination\"\xc3\x01\n\x1cQueryPendingMessagesResponse\x12\x44\n\x08messages\x18\x01 \x03(\x0b\x32(.qorechain.crossvm.v1.CrossVMMessageViewR\x08messages\x12\x14\n\x05\x63ount\x18\x02 \x01(\rR\x05\x63ount\x12G\n\npagination\x18\x03 \x01(\x0b\x32\'.cosmos.base.query.v1beta1.PageResponseR\npagination\"%\n\x13QueryMessageRequest\x12\x0e\n\x02id\x18\x01 \x01(\tR\x02id\"p\n\x14QueryMessageResponse\x12\x42\n\x07message\x18\x01 \x01(\x0b\x32(.qorechain.crossvm.v1.CrossVMMessageViewR\x07message\x12\x14\n\x05\x66ound\x18\x02 \x01(\x08R\x05\x66ound2\xbe\x03\n\x05Query\x12\x83\x01\n\x06Params\x12(.qorechain.crossvm.v1.QueryParamsRequest\x1a).qorechain.crossvm.v1.QueryParamsResponse\"$\x82\xd3\xe4\x93\x02\x1e\x12\x1c/qorechain/crossvm/v1/params\x12\x9f\x01\n\x0fPendingMessages\x12\x31.qorechain.crossvm.v1.QueryPendingMessagesRequest\x1a\x32.qorechain.crossvm.v1.QueryPendingMessagesResponse\"%\x82\xd3\xe4\x93\x02\x1f\x12\x1d/qorechain/crossvm/v1/pending\x12\x8c\x01\n\x07Message\x12).qorechain.crossvm.v1.QueryMessageRequest\x1a*.qorechain.crossvm.v1.QueryMessageResponse\"*\x82\xd3\xe4\x93\x02$\x12\"/qorechain/crossvm/v1/message/{id}B\xcd\x01\n\x18\x63om.qorechain.crossvm.v1B\nQueryProtoP\x01Z3github.com/qorechain/qorechain-core/x/crossvm/types\xa2\x02\x03QCX\xaa\x02\x14Qorechain.Crossvm.V1\xca\x02\x14Qorechain\\Crossvm\\V1\xe2\x02 Qorechain\\Crossvm\\V1\\GPBMetadata\xea\x02\x16Qorechain::Crossvm::V1b\x06proto3')
 
 _globals = globals()
 _builder.BuildMessageAndEnumDescriptors(DESCRIPTOR, _globals)
@@ -33,26 +36,28 @@ _builder.BuildTopDescriptorsAndMessages(DESCRIPTOR, 'qorechain.crossvm.v1.query_
 if not _descriptor._USE_C_DESCRIPTORS:
   _globals['DESCRIPTOR']._loaded_options = None
   _globals['DESCRIPTOR']._serialized_options = b'\n\030com.qorechain.crossvm.v1B\nQueryProtoP\001Z3github.com/qorechain/qorechain-core/x/crossvm/types\242\002\003QCX\252\002\024Qorechain.Crossvm.V1\312\002\024Qorechain\\Crossvm\\V1\342\002 Qorechain\\Crossvm\\V1\\GPBMetadata\352\002\026Qorechain::Crossvm::V1'
+  _globals['_QUERYPARAMSRESPONSE'].fields_by_name['bridge_target_pins']._loaded_options = None
+  _globals['_QUERYPARAMSRESPONSE'].fields_by_name['bridge_target_pins']._serialized_options = b'\310\336\037\000'
   _globals['_QUERY'].methods_by_name['Params']._loaded_options = None
   _globals['_QUERY'].methods_by_name['Params']._serialized_options = b'\202\323\344\223\002\036\022\034/qorechain/crossvm/v1/params'
   _globals['_QUERY'].methods_by_name['PendingMessages']._loaded_options = None
   _globals['_QUERY'].methods_by_name['PendingMessages']._serialized_options = b'\202\323\344\223\002\037\022\035/qorechain/crossvm/v1/pending'
   _globals['_QUERY'].methods_by_name['Message']._loaded_options = None
   _globals['_QUERY'].methods_by_name['Message']._serialized_options = b'\202\323\344\223\002$\022\"/qorechain/crossvm/v1/message/{id}'
-  _globals['_CROSSVMMESSAGEVIEW']._serialized_start=89
-  _globals['_CROSSVMMESSAGEVIEW']._serialized_end=448
-  _globals['_QUERYPARAMSREQUEST']._serialized_start=450
-  _globals['_QUERYPARAMSREQUEST']._serialized_end=470
-  _globals['_QUERYPARAMSRESPONSE']._serialized_start=473
-  _globals['_QUERYPARAMSRESPONSE']._serialized_end=704
-  _globals['_QUERYPENDINGMESSAGESREQUEST']._serialized_start=706
-  _globals['_QUERYPENDINGMESSAGESREQUEST']._serialized_end=735
-  _globals['_QUERYPENDINGMESSAGESRESPONSE']._serialized_start=737
-  _globals['_QUERYPENDINGMESSAGESRESPONSE']._serialized_end=859
-  _globals['_QUERYMESSAGEREQUEST']._serialized_start=861
-  _globals['_QUERYMESSAGEREQUEST']._serialized_end=898
-  _globals['_QUERYMESSAGERESPONSE']._serialized_start=900
-  _globals['_QUERYMESSAGERESPONSE']._serialized_end=1012
-  _globals['_QUERY']._serialized_start=1015
-  _globals['_QUERY']._serialized_end=1461
+  _globals['_CROSSVMMESSAGEVIEW']._serialized_start=186
+  _globals['_CROSSVMMESSAGEVIEW']._serialized_end=545
+  _globals['_QUERYPARAMSREQUEST']._serialized_start=547
+  _globals['_QUERYPARAMSREQUEST']._serialized_end=567
+  _globals['_QUERYPARAMSRESPONSE']._serialized_start=570
+  _globals['_QUERYPARAMSRESPONSE']._serialized_end=1548
+  _globals['_QUERYPENDINGMESSAGESREQUEST']._serialized_start=1550
+  _globals['_QUERYPENDINGMESSAGESREQUEST']._serialized_end=1651
+  _globals['_QUERYPENDINGMESSAGESRESPONSE']._serialized_start=1654
+  _globals['_QUERYPENDINGMESSAGESRESPONSE']._serialized_end=1849
+  _globals['_QUERYMESSAGEREQUEST']._serialized_start=1851
+  _globals['_QUERYMESSAGEREQUEST']._serialized_end=1888
+  _globals['_QUERYMESSAGERESPONSE']._serialized_start=1890
+  _globals['_QUERYMESSAGERESPONSE']._serialized_end=2002
+  _globals['_QUERY']._serialized_start=2005
+  _globals['_QUERY']._serialized_end=2451
 # @@protoc_insertion_point(module_scope)

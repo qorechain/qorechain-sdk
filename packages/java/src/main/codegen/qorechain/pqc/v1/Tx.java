@@ -7339,6 +7339,197 @@ public final class Tx extends com.google.protobuf.GeneratedFile {
      */
     com.google.protobuf.ByteString
         getAllowedTargetsBytes(int index);
+
+    /**
+     * <pre>
+     * validators, when non-empty, names the contracts (0x-prefixed 20-byte
+     * addresses) whose check of the account's signature counts for the
+     * account's own actions: a validator module its code consults with a
+     * STATICCALL, or an entry point that validates and then executes it in
+     * separate calls (ERC-4337). It does not narrow where the account's
+     * transactions or code may go. Optional; honoured from the
+     * evm-window-validators feature on.
+     * </pre>
+     *
+     * <code>repeated string validators = 7 [json_name = "validators"];</code>
+     * @return A list containing the validators.
+     */
+    java.util.List<java.lang.String>
+        getValidatorsList();
+    /**
+     * <pre>
+     * validators, when non-empty, names the contracts (0x-prefixed 20-byte
+     * addresses) whose check of the account's signature counts for the
+     * account's own actions: a validator module its code consults with a
+     * STATICCALL, or an entry point that validates and then executes it in
+     * separate calls (ERC-4337). It does not narrow where the account's
+     * transactions or code may go. Optional; honoured from the
+     * evm-window-validators feature on.
+     * </pre>
+     *
+     * <code>repeated string validators = 7 [json_name = "validators"];</code>
+     * @return The count of validators.
+     */
+    int getValidatorsCount();
+    /**
+     * <pre>
+     * validators, when non-empty, names the contracts (0x-prefixed 20-byte
+     * addresses) whose check of the account's signature counts for the
+     * account's own actions: a validator module its code consults with a
+     * STATICCALL, or an entry point that validates and then executes it in
+     * separate calls (ERC-4337). It does not narrow where the account's
+     * transactions or code may go. Optional; honoured from the
+     * evm-window-validators feature on.
+     * </pre>
+     *
+     * <code>repeated string validators = 7 [json_name = "validators"];</code>
+     * @param index The index of the element to return.
+     * @return The validators at the given index.
+     */
+    java.lang.String getValidators(int index);
+    /**
+     * <pre>
+     * validators, when non-empty, names the contracts (0x-prefixed 20-byte
+     * addresses) whose check of the account's signature counts for the
+     * account's own actions: a validator module its code consults with a
+     * STATICCALL, or an entry point that validates and then executes it in
+     * separate calls (ERC-4337). It does not narrow where the account's
+     * transactions or code may go. Optional; honoured from the
+     * evm-window-validators feature on.
+     * </pre>
+     *
+     * <code>repeated string validators = 7 [json_name = "validators"];</code>
+     * @param index The index of the value to return.
+     * @return The bytes of the validators at the given index.
+     */
+    com.google.protobuf.ByteString
+        getValidatorsBytes(int index);
+
+    /**
+     * <pre>
+     * staking_validators, when non-empty, names the validators (bech32
+     * operator addresses) the account's stake may be delegated or redelegated
+     * to through this window, by its EVM transactions or its EIP-7702 code.
+     * Empty: delegate and redelegate are refused through the window and remain
+     * available as post-quantum signed Cosmos transactions. Optional; honoured
+     * from the evm-window-staking-validators feature on.
+     * </pre>
+     *
+     * <code>repeated string staking_validators = 8 [json_name = "stakingValidators"];</code>
+     * @return A list containing the stakingValidators.
+     */
+    java.util.List<java.lang.String>
+        getStakingValidatorsList();
+    /**
+     * <pre>
+     * staking_validators, when non-empty, names the validators (bech32
+     * operator addresses) the account's stake may be delegated or redelegated
+     * to through this window, by its EVM transactions or its EIP-7702 code.
+     * Empty: delegate and redelegate are refused through the window and remain
+     * available as post-quantum signed Cosmos transactions. Optional; honoured
+     * from the evm-window-staking-validators feature on.
+     * </pre>
+     *
+     * <code>repeated string staking_validators = 8 [json_name = "stakingValidators"];</code>
+     * @return The count of stakingValidators.
+     */
+    int getStakingValidatorsCount();
+    /**
+     * <pre>
+     * staking_validators, when non-empty, names the validators (bech32
+     * operator addresses) the account's stake may be delegated or redelegated
+     * to through this window, by its EVM transactions or its EIP-7702 code.
+     * Empty: delegate and redelegate are refused through the window and remain
+     * available as post-quantum signed Cosmos transactions. Optional; honoured
+     * from the evm-window-staking-validators feature on.
+     * </pre>
+     *
+     * <code>repeated string staking_validators = 8 [json_name = "stakingValidators"];</code>
+     * @param index The index of the element to return.
+     * @return The stakingValidators at the given index.
+     */
+    java.lang.String getStakingValidators(int index);
+    /**
+     * <pre>
+     * staking_validators, when non-empty, names the validators (bech32
+     * operator addresses) the account's stake may be delegated or redelegated
+     * to through this window, by its EVM transactions or its EIP-7702 code.
+     * Empty: delegate and redelegate are refused through the window and remain
+     * available as post-quantum signed Cosmos transactions. Optional; honoured
+     * from the evm-window-staking-validators feature on.
+     * </pre>
+     *
+     * <code>repeated string staking_validators = 8 [json_name = "stakingValidators"];</code>
+     * @param index The index of the value to return.
+     * @return The bytes of the stakingValidators at the given index.
+     */
+    com.google.protobuf.ByteString
+        getStakingValidatorsBytes(int index);
+
+    /**
+     * <pre>
+     * ibc_receivers, when non-empty, names the IBC destinations native QOR may
+     * be sent to through this window with the ICS-20 precompile, each as
+     * "&lt;source channel&gt;/&lt;receiver&gt;" (the channel on this chain and the
+     * receiving address on the other chain). Empty: ICS-20 transfers are
+     * refused through the window and remain available as post-quantum signed
+     * Cosmos transactions. Optional; honoured from the
+     * evm-precompile-method-allowlist feature on.
+     * </pre>
+     *
+     * <code>repeated string ibc_receivers = 9 [json_name = "ibcReceivers"];</code>
+     * @return A list containing the ibcReceivers.
+     */
+    java.util.List<java.lang.String>
+        getIbcReceiversList();
+    /**
+     * <pre>
+     * ibc_receivers, when non-empty, names the IBC destinations native QOR may
+     * be sent to through this window with the ICS-20 precompile, each as
+     * "&lt;source channel&gt;/&lt;receiver&gt;" (the channel on this chain and the
+     * receiving address on the other chain). Empty: ICS-20 transfers are
+     * refused through the window and remain available as post-quantum signed
+     * Cosmos transactions. Optional; honoured from the
+     * evm-precompile-method-allowlist feature on.
+     * </pre>
+     *
+     * <code>repeated string ibc_receivers = 9 [json_name = "ibcReceivers"];</code>
+     * @return The count of ibcReceivers.
+     */
+    int getIbcReceiversCount();
+    /**
+     * <pre>
+     * ibc_receivers, when non-empty, names the IBC destinations native QOR may
+     * be sent to through this window with the ICS-20 precompile, each as
+     * "&lt;source channel&gt;/&lt;receiver&gt;" (the channel on this chain and the
+     * receiving address on the other chain). Empty: ICS-20 transfers are
+     * refused through the window and remain available as post-quantum signed
+     * Cosmos transactions. Optional; honoured from the
+     * evm-precompile-method-allowlist feature on.
+     * </pre>
+     *
+     * <code>repeated string ibc_receivers = 9 [json_name = "ibcReceivers"];</code>
+     * @param index The index of the element to return.
+     * @return The ibcReceivers at the given index.
+     */
+    java.lang.String getIbcReceivers(int index);
+    /**
+     * <pre>
+     * ibc_receivers, when non-empty, names the IBC destinations native QOR may
+     * be sent to through this window with the ICS-20 precompile, each as
+     * "&lt;source channel&gt;/&lt;receiver&gt;" (the channel on this chain and the
+     * receiving address on the other chain). Empty: ICS-20 transfers are
+     * refused through the window and remain available as post-quantum signed
+     * Cosmos transactions. Optional; honoured from the
+     * evm-precompile-method-allowlist feature on.
+     * </pre>
+     *
+     * <code>repeated string ibc_receivers = 9 [json_name = "ibcReceivers"];</code>
+     * @param index The index of the value to return.
+     * @return The bytes of the ibcReceivers at the given index.
+     */
+    com.google.protobuf.ByteString
+        getIbcReceiversBytes(int index);
   }
   /**
    * <pre>
@@ -7371,6 +7562,12 @@ public final class Tx extends com.google.protobuf.GeneratedFile {
       sender_ = "";
       maxValue_ = "";
       allowedTargets_ =
+          com.google.protobuf.LazyStringArrayList.emptyList();
+      validators_ =
+          com.google.protobuf.LazyStringArrayList.emptyList();
+      stakingValidators_ =
+          com.google.protobuf.LazyStringArrayList.emptyList();
+      ibcReceivers_ =
           com.google.protobuf.LazyStringArrayList.emptyList();
     }
 
@@ -7597,6 +7794,233 @@ public final class Tx extends com.google.protobuf.GeneratedFile {
       return allowedTargets_.getByteString(index);
     }
 
+    public static final int VALIDATORS_FIELD_NUMBER = 7;
+    @SuppressWarnings("serial")
+    private com.google.protobuf.LazyStringArrayList validators_ =
+        com.google.protobuf.LazyStringArrayList.emptyList();
+    /**
+     * <pre>
+     * validators, when non-empty, names the contracts (0x-prefixed 20-byte
+     * addresses) whose check of the account's signature counts for the
+     * account's own actions: a validator module its code consults with a
+     * STATICCALL, or an entry point that validates and then executes it in
+     * separate calls (ERC-4337). It does not narrow where the account's
+     * transactions or code may go. Optional; honoured from the
+     * evm-window-validators feature on.
+     * </pre>
+     *
+     * <code>repeated string validators = 7 [json_name = "validators"];</code>
+     * @return A list containing the validators.
+     */
+    public com.google.protobuf.ProtocolStringList
+        getValidatorsList() {
+      return validators_;
+    }
+    /**
+     * <pre>
+     * validators, when non-empty, names the contracts (0x-prefixed 20-byte
+     * addresses) whose check of the account's signature counts for the
+     * account's own actions: a validator module its code consults with a
+     * STATICCALL, or an entry point that validates and then executes it in
+     * separate calls (ERC-4337). It does not narrow where the account's
+     * transactions or code may go. Optional; honoured from the
+     * evm-window-validators feature on.
+     * </pre>
+     *
+     * <code>repeated string validators = 7 [json_name = "validators"];</code>
+     * @return The count of validators.
+     */
+    public int getValidatorsCount() {
+      return validators_.size();
+    }
+    /**
+     * <pre>
+     * validators, when non-empty, names the contracts (0x-prefixed 20-byte
+     * addresses) whose check of the account's signature counts for the
+     * account's own actions: a validator module its code consults with a
+     * STATICCALL, or an entry point that validates and then executes it in
+     * separate calls (ERC-4337). It does not narrow where the account's
+     * transactions or code may go. Optional; honoured from the
+     * evm-window-validators feature on.
+     * </pre>
+     *
+     * <code>repeated string validators = 7 [json_name = "validators"];</code>
+     * @param index The index of the element to return.
+     * @return The validators at the given index.
+     */
+    public java.lang.String getValidators(int index) {
+      return validators_.get(index);
+    }
+    /**
+     * <pre>
+     * validators, when non-empty, names the contracts (0x-prefixed 20-byte
+     * addresses) whose check of the account's signature counts for the
+     * account's own actions: a validator module its code consults with a
+     * STATICCALL, or an entry point that validates and then executes it in
+     * separate calls (ERC-4337). It does not narrow where the account's
+     * transactions or code may go. Optional; honoured from the
+     * evm-window-validators feature on.
+     * </pre>
+     *
+     * <code>repeated string validators = 7 [json_name = "validators"];</code>
+     * @param index The index of the value to return.
+     * @return The bytes of the validators at the given index.
+     */
+    public com.google.protobuf.ByteString
+        getValidatorsBytes(int index) {
+      return validators_.getByteString(index);
+    }
+
+    public static final int STAKING_VALIDATORS_FIELD_NUMBER = 8;
+    @SuppressWarnings("serial")
+    private com.google.protobuf.LazyStringArrayList stakingValidators_ =
+        com.google.protobuf.LazyStringArrayList.emptyList();
+    /**
+     * <pre>
+     * staking_validators, when non-empty, names the validators (bech32
+     * operator addresses) the account's stake may be delegated or redelegated
+     * to through this window, by its EVM transactions or its EIP-7702 code.
+     * Empty: delegate and redelegate are refused through the window and remain
+     * available as post-quantum signed Cosmos transactions. Optional; honoured
+     * from the evm-window-staking-validators feature on.
+     * </pre>
+     *
+     * <code>repeated string staking_validators = 8 [json_name = "stakingValidators"];</code>
+     * @return A list containing the stakingValidators.
+     */
+    public com.google.protobuf.ProtocolStringList
+        getStakingValidatorsList() {
+      return stakingValidators_;
+    }
+    /**
+     * <pre>
+     * staking_validators, when non-empty, names the validators (bech32
+     * operator addresses) the account's stake may be delegated or redelegated
+     * to through this window, by its EVM transactions or its EIP-7702 code.
+     * Empty: delegate and redelegate are refused through the window and remain
+     * available as post-quantum signed Cosmos transactions. Optional; honoured
+     * from the evm-window-staking-validators feature on.
+     * </pre>
+     *
+     * <code>repeated string staking_validators = 8 [json_name = "stakingValidators"];</code>
+     * @return The count of stakingValidators.
+     */
+    public int getStakingValidatorsCount() {
+      return stakingValidators_.size();
+    }
+    /**
+     * <pre>
+     * staking_validators, when non-empty, names the validators (bech32
+     * operator addresses) the account's stake may be delegated or redelegated
+     * to through this window, by its EVM transactions or its EIP-7702 code.
+     * Empty: delegate and redelegate are refused through the window and remain
+     * available as post-quantum signed Cosmos transactions. Optional; honoured
+     * from the evm-window-staking-validators feature on.
+     * </pre>
+     *
+     * <code>repeated string staking_validators = 8 [json_name = "stakingValidators"];</code>
+     * @param index The index of the element to return.
+     * @return The stakingValidators at the given index.
+     */
+    public java.lang.String getStakingValidators(int index) {
+      return stakingValidators_.get(index);
+    }
+    /**
+     * <pre>
+     * staking_validators, when non-empty, names the validators (bech32
+     * operator addresses) the account's stake may be delegated or redelegated
+     * to through this window, by its EVM transactions or its EIP-7702 code.
+     * Empty: delegate and redelegate are refused through the window and remain
+     * available as post-quantum signed Cosmos transactions. Optional; honoured
+     * from the evm-window-staking-validators feature on.
+     * </pre>
+     *
+     * <code>repeated string staking_validators = 8 [json_name = "stakingValidators"];</code>
+     * @param index The index of the value to return.
+     * @return The bytes of the stakingValidators at the given index.
+     */
+    public com.google.protobuf.ByteString
+        getStakingValidatorsBytes(int index) {
+      return stakingValidators_.getByteString(index);
+    }
+
+    public static final int IBC_RECEIVERS_FIELD_NUMBER = 9;
+    @SuppressWarnings("serial")
+    private com.google.protobuf.LazyStringArrayList ibcReceivers_ =
+        com.google.protobuf.LazyStringArrayList.emptyList();
+    /**
+     * <pre>
+     * ibc_receivers, when non-empty, names the IBC destinations native QOR may
+     * be sent to through this window with the ICS-20 precompile, each as
+     * "&lt;source channel&gt;/&lt;receiver&gt;" (the channel on this chain and the
+     * receiving address on the other chain). Empty: ICS-20 transfers are
+     * refused through the window and remain available as post-quantum signed
+     * Cosmos transactions. Optional; honoured from the
+     * evm-precompile-method-allowlist feature on.
+     * </pre>
+     *
+     * <code>repeated string ibc_receivers = 9 [json_name = "ibcReceivers"];</code>
+     * @return A list containing the ibcReceivers.
+     */
+    public com.google.protobuf.ProtocolStringList
+        getIbcReceiversList() {
+      return ibcReceivers_;
+    }
+    /**
+     * <pre>
+     * ibc_receivers, when non-empty, names the IBC destinations native QOR may
+     * be sent to through this window with the ICS-20 precompile, each as
+     * "&lt;source channel&gt;/&lt;receiver&gt;" (the channel on this chain and the
+     * receiving address on the other chain). Empty: ICS-20 transfers are
+     * refused through the window and remain available as post-quantum signed
+     * Cosmos transactions. Optional; honoured from the
+     * evm-precompile-method-allowlist feature on.
+     * </pre>
+     *
+     * <code>repeated string ibc_receivers = 9 [json_name = "ibcReceivers"];</code>
+     * @return The count of ibcReceivers.
+     */
+    public int getIbcReceiversCount() {
+      return ibcReceivers_.size();
+    }
+    /**
+     * <pre>
+     * ibc_receivers, when non-empty, names the IBC destinations native QOR may
+     * be sent to through this window with the ICS-20 precompile, each as
+     * "&lt;source channel&gt;/&lt;receiver&gt;" (the channel on this chain and the
+     * receiving address on the other chain). Empty: ICS-20 transfers are
+     * refused through the window and remain available as post-quantum signed
+     * Cosmos transactions. Optional; honoured from the
+     * evm-precompile-method-allowlist feature on.
+     * </pre>
+     *
+     * <code>repeated string ibc_receivers = 9 [json_name = "ibcReceivers"];</code>
+     * @param index The index of the element to return.
+     * @return The ibcReceivers at the given index.
+     */
+    public java.lang.String getIbcReceivers(int index) {
+      return ibcReceivers_.get(index);
+    }
+    /**
+     * <pre>
+     * ibc_receivers, when non-empty, names the IBC destinations native QOR may
+     * be sent to through this window with the ICS-20 precompile, each as
+     * "&lt;source channel&gt;/&lt;receiver&gt;" (the channel on this chain and the
+     * receiving address on the other chain). Empty: ICS-20 transfers are
+     * refused through the window and remain available as post-quantum signed
+     * Cosmos transactions. Optional; honoured from the
+     * evm-precompile-method-allowlist feature on.
+     * </pre>
+     *
+     * <code>repeated string ibc_receivers = 9 [json_name = "ibcReceivers"];</code>
+     * @param index The index of the value to return.
+     * @return The bytes of the ibcReceivers at the given index.
+     */
+    public com.google.protobuf.ByteString
+        getIbcReceiversBytes(int index) {
+      return ibcReceivers_.getByteString(index);
+    }
+
     private byte memoizedIsInitialized = -1;
     @java.lang.Override
     public final boolean isInitialized() {
@@ -7629,6 +8053,15 @@ public final class Tx extends com.google.protobuf.GeneratedFile {
       for (int i = 0; i < allowedTargets_.size(); i++) {
         com.google.protobuf.GeneratedMessage.writeString(output, 6, allowedTargets_.getRaw(i));
       }
+      for (int i = 0; i < validators_.size(); i++) {
+        com.google.protobuf.GeneratedMessage.writeString(output, 7, validators_.getRaw(i));
+      }
+      for (int i = 0; i < stakingValidators_.size(); i++) {
+        com.google.protobuf.GeneratedMessage.writeString(output, 8, stakingValidators_.getRaw(i));
+      }
+      for (int i = 0; i < ibcReceivers_.size(); i++) {
+        com.google.protobuf.GeneratedMessage.writeString(output, 9, ibcReceivers_.getRaw(i));
+      }
       getUnknownFields().writeTo(output);
     }
     private int computeSerializedSize_0() {
@@ -7658,6 +8091,30 @@ public final class Tx extends com.google.protobuf.GeneratedFile {
         }
         size += dataSize;
         size += 1 * getAllowedTargetsList().size();
+      }
+      {
+        int dataSize = 0;
+        for (int i = 0; i < validators_.size(); i++) {
+          dataSize += computeStringSizeNoTag(validators_.getRaw(i));
+        }
+        size += dataSize;
+        size += 1 * getValidatorsList().size();
+      }
+      {
+        int dataSize = 0;
+        for (int i = 0; i < stakingValidators_.size(); i++) {
+          dataSize += computeStringSizeNoTag(stakingValidators_.getRaw(i));
+        }
+        size += dataSize;
+        size += 1 * getStakingValidatorsList().size();
+      }
+      {
+        int dataSize = 0;
+        for (int i = 0; i < ibcReceivers_.size(); i++) {
+          dataSize += computeStringSizeNoTag(ibcReceivers_.getRaw(i));
+        }
+        size += dataSize;
+        size += 1 * getIbcReceiversList().size();
       }
       return size;
     }
@@ -7695,6 +8152,12 @@ public final class Tx extends com.google.protobuf.GeneratedFile {
           != other.getNativeOnly()) return false;
       if (!getAllowedTargetsList()
           .equals(other.getAllowedTargetsList())) return false;
+      if (!getValidatorsList()
+          .equals(other.getValidatorsList())) return false;
+      if (!getStakingValidatorsList()
+          .equals(other.getStakingValidatorsList())) return false;
+      if (!getIbcReceiversList()
+          .equals(other.getIbcReceiversList())) return false;
       if (!getUnknownFields().equals(other.getUnknownFields())) return false;
       return true;
     }
@@ -7722,6 +8185,18 @@ public final class Tx extends com.google.protobuf.GeneratedFile {
       if (getAllowedTargetsCount() > 0) {
         hash = (37 * hash) + ALLOWED_TARGETS_FIELD_NUMBER;
         hash = (53 * hash) + getAllowedTargetsList().hashCode();
+      }
+      if (getValidatorsCount() > 0) {
+        hash = (37 * hash) + VALIDATORS_FIELD_NUMBER;
+        hash = (53 * hash) + getValidatorsList().hashCode();
+      }
+      if (getStakingValidatorsCount() > 0) {
+        hash = (37 * hash) + STAKING_VALIDATORS_FIELD_NUMBER;
+        hash = (53 * hash) + getStakingValidatorsList().hashCode();
+      }
+      if (getIbcReceiversCount() > 0) {
+        hash = (37 * hash) + IBC_RECEIVERS_FIELD_NUMBER;
+        hash = (53 * hash) + getIbcReceiversList().hashCode();
       }
       hash = (29 * hash) + getUnknownFields().hashCode();
       memoizedHashCode = hash;
@@ -7867,6 +8342,12 @@ public final class Tx extends com.google.protobuf.GeneratedFile {
         nativeOnly_ = false;
         allowedTargets_ =
             com.google.protobuf.LazyStringArrayList.emptyList();
+        validators_ =
+            com.google.protobuf.LazyStringArrayList.emptyList();
+        stakingValidators_ =
+            com.google.protobuf.LazyStringArrayList.emptyList();
+        ibcReceivers_ =
+            com.google.protobuf.LazyStringArrayList.emptyList();
         return this;
       }
 
@@ -7919,6 +8400,18 @@ public final class Tx extends com.google.protobuf.GeneratedFile {
           allowedTargets_.makeImmutable();
           result.allowedTargets_ = allowedTargets_;
         }
+        if (((from_bitField0_ & 0x00000040) != 0)) {
+          validators_.makeImmutable();
+          result.validators_ = validators_;
+        }
+        if (((from_bitField0_ & 0x00000080) != 0)) {
+          stakingValidators_.makeImmutable();
+          result.stakingValidators_ = stakingValidators_;
+        }
+        if (((from_bitField0_ & 0x00000100) != 0)) {
+          ibcReceivers_.makeImmutable();
+          result.ibcReceivers_ = ibcReceivers_;
+        }
       }
 
       @java.lang.Override
@@ -7959,6 +8452,36 @@ public final class Tx extends com.google.protobuf.GeneratedFile {
           } else {
             ensureAllowedTargetsIsMutable();
             allowedTargets_.addAll(other.allowedTargets_);
+          }
+          onChanged();
+        }
+        if (!other.validators_.isEmpty()) {
+          if (validators_.isEmpty()) {
+            validators_ = other.validators_;
+            bitField0_ |= 0x00000040;
+          } else {
+            ensureValidatorsIsMutable();
+            validators_.addAll(other.validators_);
+          }
+          onChanged();
+        }
+        if (!other.stakingValidators_.isEmpty()) {
+          if (stakingValidators_.isEmpty()) {
+            stakingValidators_ = other.stakingValidators_;
+            bitField0_ |= 0x00000080;
+          } else {
+            ensureStakingValidatorsIsMutable();
+            stakingValidators_.addAll(other.stakingValidators_);
+          }
+          onChanged();
+        }
+        if (!other.ibcReceivers_.isEmpty()) {
+          if (ibcReceivers_.isEmpty()) {
+            ibcReceivers_ = other.ibcReceivers_;
+            bitField0_ |= 0x00000100;
+          } else {
+            ensureIbcReceiversIsMutable();
+            ibcReceivers_.addAll(other.ibcReceivers_);
           }
           onChanged();
         }
@@ -8018,6 +8541,21 @@ public final class Tx extends com.google.protobuf.GeneratedFile {
                 allowedTargets_.add(input.readStringRequireUtf8());
                 break;
               } // case 50
+              case 58: {
+                ensureValidatorsIsMutable();
+                validators_.add(input.readStringRequireUtf8());
+                break;
+              } // case 58
+              case 66: {
+                ensureStakingValidatorsIsMutable();
+                stakingValidators_.add(input.readStringRequireUtf8());
+                break;
+              } // case 66
+              case 74: {
+                ensureIbcReceiversIsMutable();
+                ibcReceivers_.add(input.readStringRequireUtf8());
+                break;
+              } // case 74
               default: {
                 if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                   done = true; // was an endgroup tag
@@ -8526,6 +9064,600 @@ public final class Tx extends com.google.protobuf.GeneratedFile {
         ensureAllowedTargetsIsMutable();
         allowedTargets_.add(value);
         bitField0_ |= 0x00000020;
+        onChanged();
+        return this;
+      }
+
+      private com.google.protobuf.LazyStringArrayList validators_ =
+          com.google.protobuf.LazyStringArrayList.emptyList();
+      private void ensureValidatorsIsMutable() {
+        if (!validators_.isModifiable()) {
+          validators_ = new com.google.protobuf.LazyStringArrayList(validators_);
+        }
+        bitField0_ |= 0x00000040;
+      }
+      /**
+       * <pre>
+       * validators, when non-empty, names the contracts (0x-prefixed 20-byte
+       * addresses) whose check of the account's signature counts for the
+       * account's own actions: a validator module its code consults with a
+       * STATICCALL, or an entry point that validates and then executes it in
+       * separate calls (ERC-4337). It does not narrow where the account's
+       * transactions or code may go. Optional; honoured from the
+       * evm-window-validators feature on.
+       * </pre>
+       *
+       * <code>repeated string validators = 7 [json_name = "validators"];</code>
+       * @return A list containing the validators.
+       */
+      public com.google.protobuf.ProtocolStringList
+          getValidatorsList() {
+        validators_.makeImmutable();
+        return validators_;
+      }
+      /**
+       * <pre>
+       * validators, when non-empty, names the contracts (0x-prefixed 20-byte
+       * addresses) whose check of the account's signature counts for the
+       * account's own actions: a validator module its code consults with a
+       * STATICCALL, or an entry point that validates and then executes it in
+       * separate calls (ERC-4337). It does not narrow where the account's
+       * transactions or code may go. Optional; honoured from the
+       * evm-window-validators feature on.
+       * </pre>
+       *
+       * <code>repeated string validators = 7 [json_name = "validators"];</code>
+       * @return The count of validators.
+       */
+      public int getValidatorsCount() {
+        return validators_.size();
+      }
+      /**
+       * <pre>
+       * validators, when non-empty, names the contracts (0x-prefixed 20-byte
+       * addresses) whose check of the account's signature counts for the
+       * account's own actions: a validator module its code consults with a
+       * STATICCALL, or an entry point that validates and then executes it in
+       * separate calls (ERC-4337). It does not narrow where the account's
+       * transactions or code may go. Optional; honoured from the
+       * evm-window-validators feature on.
+       * </pre>
+       *
+       * <code>repeated string validators = 7 [json_name = "validators"];</code>
+       * @param index The index of the element to return.
+       * @return The validators at the given index.
+       */
+      public java.lang.String getValidators(int index) {
+        return validators_.get(index);
+      }
+      /**
+       * <pre>
+       * validators, when non-empty, names the contracts (0x-prefixed 20-byte
+       * addresses) whose check of the account's signature counts for the
+       * account's own actions: a validator module its code consults with a
+       * STATICCALL, or an entry point that validates and then executes it in
+       * separate calls (ERC-4337). It does not narrow where the account's
+       * transactions or code may go. Optional; honoured from the
+       * evm-window-validators feature on.
+       * </pre>
+       *
+       * <code>repeated string validators = 7 [json_name = "validators"];</code>
+       * @param index The index of the value to return.
+       * @return The bytes of the validators at the given index.
+       */
+      public com.google.protobuf.ByteString
+          getValidatorsBytes(int index) {
+        return validators_.getByteString(index);
+      }
+      /**
+       * <pre>
+       * validators, when non-empty, names the contracts (0x-prefixed 20-byte
+       * addresses) whose check of the account's signature counts for the
+       * account's own actions: a validator module its code consults with a
+       * STATICCALL, or an entry point that validates and then executes it in
+       * separate calls (ERC-4337). It does not narrow where the account's
+       * transactions or code may go. Optional; honoured from the
+       * evm-window-validators feature on.
+       * </pre>
+       *
+       * <code>repeated string validators = 7 [json_name = "validators"];</code>
+       * @param index The index to set the value at.
+       * @param value The validators to set.
+       * @return This builder for chaining.
+       */
+      public Builder setValidators(
+          int index, java.lang.String value) {
+        if (value == null) { throw new NullPointerException(); }
+        ensureValidatorsIsMutable();
+        validators_.set(index, value);
+        bitField0_ |= 0x00000040;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * validators, when non-empty, names the contracts (0x-prefixed 20-byte
+       * addresses) whose check of the account's signature counts for the
+       * account's own actions: a validator module its code consults with a
+       * STATICCALL, or an entry point that validates and then executes it in
+       * separate calls (ERC-4337). It does not narrow where the account's
+       * transactions or code may go. Optional; honoured from the
+       * evm-window-validators feature on.
+       * </pre>
+       *
+       * <code>repeated string validators = 7 [json_name = "validators"];</code>
+       * @param value The validators to add.
+       * @return This builder for chaining.
+       */
+      public Builder addValidators(
+          java.lang.String value) {
+        if (value == null) { throw new NullPointerException(); }
+        ensureValidatorsIsMutable();
+        validators_.add(value);
+        bitField0_ |= 0x00000040;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * validators, when non-empty, names the contracts (0x-prefixed 20-byte
+       * addresses) whose check of the account's signature counts for the
+       * account's own actions: a validator module its code consults with a
+       * STATICCALL, or an entry point that validates and then executes it in
+       * separate calls (ERC-4337). It does not narrow where the account's
+       * transactions or code may go. Optional; honoured from the
+       * evm-window-validators feature on.
+       * </pre>
+       *
+       * <code>repeated string validators = 7 [json_name = "validators"];</code>
+       * @param values The validators to add.
+       * @return This builder for chaining.
+       */
+      public Builder addAllValidators(
+          java.lang.Iterable<java.lang.String> values) {
+        ensureValidatorsIsMutable();
+        com.google.protobuf.AbstractMessageLite.Builder.addAll(
+            values, validators_);
+        bitField0_ |= 0x00000040;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * validators, when non-empty, names the contracts (0x-prefixed 20-byte
+       * addresses) whose check of the account's signature counts for the
+       * account's own actions: a validator module its code consults with a
+       * STATICCALL, or an entry point that validates and then executes it in
+       * separate calls (ERC-4337). It does not narrow where the account's
+       * transactions or code may go. Optional; honoured from the
+       * evm-window-validators feature on.
+       * </pre>
+       *
+       * <code>repeated string validators = 7 [json_name = "validators"];</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearValidators() {
+        validators_ =
+          com.google.protobuf.LazyStringArrayList.emptyList();
+        bitField0_ = (bitField0_ & ~0x00000040);;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * validators, when non-empty, names the contracts (0x-prefixed 20-byte
+       * addresses) whose check of the account's signature counts for the
+       * account's own actions: a validator module its code consults with a
+       * STATICCALL, or an entry point that validates and then executes it in
+       * separate calls (ERC-4337). It does not narrow where the account's
+       * transactions or code may go. Optional; honoured from the
+       * evm-window-validators feature on.
+       * </pre>
+       *
+       * <code>repeated string validators = 7 [json_name = "validators"];</code>
+       * @param value The bytes of the validators to add.
+       * @return This builder for chaining.
+       */
+      public Builder addValidatorsBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) { throw new NullPointerException(); }
+        checkByteStringIsUtf8(value);
+        ensureValidatorsIsMutable();
+        validators_.add(value);
+        bitField0_ |= 0x00000040;
+        onChanged();
+        return this;
+      }
+
+      private com.google.protobuf.LazyStringArrayList stakingValidators_ =
+          com.google.protobuf.LazyStringArrayList.emptyList();
+      private void ensureStakingValidatorsIsMutable() {
+        if (!stakingValidators_.isModifiable()) {
+          stakingValidators_ = new com.google.protobuf.LazyStringArrayList(stakingValidators_);
+        }
+        bitField0_ |= 0x00000080;
+      }
+      /**
+       * <pre>
+       * staking_validators, when non-empty, names the validators (bech32
+       * operator addresses) the account's stake may be delegated or redelegated
+       * to through this window, by its EVM transactions or its EIP-7702 code.
+       * Empty: delegate and redelegate are refused through the window and remain
+       * available as post-quantum signed Cosmos transactions. Optional; honoured
+       * from the evm-window-staking-validators feature on.
+       * </pre>
+       *
+       * <code>repeated string staking_validators = 8 [json_name = "stakingValidators"];</code>
+       * @return A list containing the stakingValidators.
+       */
+      public com.google.protobuf.ProtocolStringList
+          getStakingValidatorsList() {
+        stakingValidators_.makeImmutable();
+        return stakingValidators_;
+      }
+      /**
+       * <pre>
+       * staking_validators, when non-empty, names the validators (bech32
+       * operator addresses) the account's stake may be delegated or redelegated
+       * to through this window, by its EVM transactions or its EIP-7702 code.
+       * Empty: delegate and redelegate are refused through the window and remain
+       * available as post-quantum signed Cosmos transactions. Optional; honoured
+       * from the evm-window-staking-validators feature on.
+       * </pre>
+       *
+       * <code>repeated string staking_validators = 8 [json_name = "stakingValidators"];</code>
+       * @return The count of stakingValidators.
+       */
+      public int getStakingValidatorsCount() {
+        return stakingValidators_.size();
+      }
+      /**
+       * <pre>
+       * staking_validators, when non-empty, names the validators (bech32
+       * operator addresses) the account's stake may be delegated or redelegated
+       * to through this window, by its EVM transactions or its EIP-7702 code.
+       * Empty: delegate and redelegate are refused through the window and remain
+       * available as post-quantum signed Cosmos transactions. Optional; honoured
+       * from the evm-window-staking-validators feature on.
+       * </pre>
+       *
+       * <code>repeated string staking_validators = 8 [json_name = "stakingValidators"];</code>
+       * @param index The index of the element to return.
+       * @return The stakingValidators at the given index.
+       */
+      public java.lang.String getStakingValidators(int index) {
+        return stakingValidators_.get(index);
+      }
+      /**
+       * <pre>
+       * staking_validators, when non-empty, names the validators (bech32
+       * operator addresses) the account's stake may be delegated or redelegated
+       * to through this window, by its EVM transactions or its EIP-7702 code.
+       * Empty: delegate and redelegate are refused through the window and remain
+       * available as post-quantum signed Cosmos transactions. Optional; honoured
+       * from the evm-window-staking-validators feature on.
+       * </pre>
+       *
+       * <code>repeated string staking_validators = 8 [json_name = "stakingValidators"];</code>
+       * @param index The index of the value to return.
+       * @return The bytes of the stakingValidators at the given index.
+       */
+      public com.google.protobuf.ByteString
+          getStakingValidatorsBytes(int index) {
+        return stakingValidators_.getByteString(index);
+      }
+      /**
+       * <pre>
+       * staking_validators, when non-empty, names the validators (bech32
+       * operator addresses) the account's stake may be delegated or redelegated
+       * to through this window, by its EVM transactions or its EIP-7702 code.
+       * Empty: delegate and redelegate are refused through the window and remain
+       * available as post-quantum signed Cosmos transactions. Optional; honoured
+       * from the evm-window-staking-validators feature on.
+       * </pre>
+       *
+       * <code>repeated string staking_validators = 8 [json_name = "stakingValidators"];</code>
+       * @param index The index to set the value at.
+       * @param value The stakingValidators to set.
+       * @return This builder for chaining.
+       */
+      public Builder setStakingValidators(
+          int index, java.lang.String value) {
+        if (value == null) { throw new NullPointerException(); }
+        ensureStakingValidatorsIsMutable();
+        stakingValidators_.set(index, value);
+        bitField0_ |= 0x00000080;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * staking_validators, when non-empty, names the validators (bech32
+       * operator addresses) the account's stake may be delegated or redelegated
+       * to through this window, by its EVM transactions or its EIP-7702 code.
+       * Empty: delegate and redelegate are refused through the window and remain
+       * available as post-quantum signed Cosmos transactions. Optional; honoured
+       * from the evm-window-staking-validators feature on.
+       * </pre>
+       *
+       * <code>repeated string staking_validators = 8 [json_name = "stakingValidators"];</code>
+       * @param value The stakingValidators to add.
+       * @return This builder for chaining.
+       */
+      public Builder addStakingValidators(
+          java.lang.String value) {
+        if (value == null) { throw new NullPointerException(); }
+        ensureStakingValidatorsIsMutable();
+        stakingValidators_.add(value);
+        bitField0_ |= 0x00000080;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * staking_validators, when non-empty, names the validators (bech32
+       * operator addresses) the account's stake may be delegated or redelegated
+       * to through this window, by its EVM transactions or its EIP-7702 code.
+       * Empty: delegate and redelegate are refused through the window and remain
+       * available as post-quantum signed Cosmos transactions. Optional; honoured
+       * from the evm-window-staking-validators feature on.
+       * </pre>
+       *
+       * <code>repeated string staking_validators = 8 [json_name = "stakingValidators"];</code>
+       * @param values The stakingValidators to add.
+       * @return This builder for chaining.
+       */
+      public Builder addAllStakingValidators(
+          java.lang.Iterable<java.lang.String> values) {
+        ensureStakingValidatorsIsMutable();
+        com.google.protobuf.AbstractMessageLite.Builder.addAll(
+            values, stakingValidators_);
+        bitField0_ |= 0x00000080;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * staking_validators, when non-empty, names the validators (bech32
+       * operator addresses) the account's stake may be delegated or redelegated
+       * to through this window, by its EVM transactions or its EIP-7702 code.
+       * Empty: delegate and redelegate are refused through the window and remain
+       * available as post-quantum signed Cosmos transactions. Optional; honoured
+       * from the evm-window-staking-validators feature on.
+       * </pre>
+       *
+       * <code>repeated string staking_validators = 8 [json_name = "stakingValidators"];</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearStakingValidators() {
+        stakingValidators_ =
+          com.google.protobuf.LazyStringArrayList.emptyList();
+        bitField0_ = (bitField0_ & ~0x00000080);;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * staking_validators, when non-empty, names the validators (bech32
+       * operator addresses) the account's stake may be delegated or redelegated
+       * to through this window, by its EVM transactions or its EIP-7702 code.
+       * Empty: delegate and redelegate are refused through the window and remain
+       * available as post-quantum signed Cosmos transactions. Optional; honoured
+       * from the evm-window-staking-validators feature on.
+       * </pre>
+       *
+       * <code>repeated string staking_validators = 8 [json_name = "stakingValidators"];</code>
+       * @param value The bytes of the stakingValidators to add.
+       * @return This builder for chaining.
+       */
+      public Builder addStakingValidatorsBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) { throw new NullPointerException(); }
+        checkByteStringIsUtf8(value);
+        ensureStakingValidatorsIsMutable();
+        stakingValidators_.add(value);
+        bitField0_ |= 0x00000080;
+        onChanged();
+        return this;
+      }
+
+      private com.google.protobuf.LazyStringArrayList ibcReceivers_ =
+          com.google.protobuf.LazyStringArrayList.emptyList();
+      private void ensureIbcReceiversIsMutable() {
+        if (!ibcReceivers_.isModifiable()) {
+          ibcReceivers_ = new com.google.protobuf.LazyStringArrayList(ibcReceivers_);
+        }
+        bitField0_ |= 0x00000100;
+      }
+      /**
+       * <pre>
+       * ibc_receivers, when non-empty, names the IBC destinations native QOR may
+       * be sent to through this window with the ICS-20 precompile, each as
+       * "&lt;source channel&gt;/&lt;receiver&gt;" (the channel on this chain and the
+       * receiving address on the other chain). Empty: ICS-20 transfers are
+       * refused through the window and remain available as post-quantum signed
+       * Cosmos transactions. Optional; honoured from the
+       * evm-precompile-method-allowlist feature on.
+       * </pre>
+       *
+       * <code>repeated string ibc_receivers = 9 [json_name = "ibcReceivers"];</code>
+       * @return A list containing the ibcReceivers.
+       */
+      public com.google.protobuf.ProtocolStringList
+          getIbcReceiversList() {
+        ibcReceivers_.makeImmutable();
+        return ibcReceivers_;
+      }
+      /**
+       * <pre>
+       * ibc_receivers, when non-empty, names the IBC destinations native QOR may
+       * be sent to through this window with the ICS-20 precompile, each as
+       * "&lt;source channel&gt;/&lt;receiver&gt;" (the channel on this chain and the
+       * receiving address on the other chain). Empty: ICS-20 transfers are
+       * refused through the window and remain available as post-quantum signed
+       * Cosmos transactions. Optional; honoured from the
+       * evm-precompile-method-allowlist feature on.
+       * </pre>
+       *
+       * <code>repeated string ibc_receivers = 9 [json_name = "ibcReceivers"];</code>
+       * @return The count of ibcReceivers.
+       */
+      public int getIbcReceiversCount() {
+        return ibcReceivers_.size();
+      }
+      /**
+       * <pre>
+       * ibc_receivers, when non-empty, names the IBC destinations native QOR may
+       * be sent to through this window with the ICS-20 precompile, each as
+       * "&lt;source channel&gt;/&lt;receiver&gt;" (the channel on this chain and the
+       * receiving address on the other chain). Empty: ICS-20 transfers are
+       * refused through the window and remain available as post-quantum signed
+       * Cosmos transactions. Optional; honoured from the
+       * evm-precompile-method-allowlist feature on.
+       * </pre>
+       *
+       * <code>repeated string ibc_receivers = 9 [json_name = "ibcReceivers"];</code>
+       * @param index The index of the element to return.
+       * @return The ibcReceivers at the given index.
+       */
+      public java.lang.String getIbcReceivers(int index) {
+        return ibcReceivers_.get(index);
+      }
+      /**
+       * <pre>
+       * ibc_receivers, when non-empty, names the IBC destinations native QOR may
+       * be sent to through this window with the ICS-20 precompile, each as
+       * "&lt;source channel&gt;/&lt;receiver&gt;" (the channel on this chain and the
+       * receiving address on the other chain). Empty: ICS-20 transfers are
+       * refused through the window and remain available as post-quantum signed
+       * Cosmos transactions. Optional; honoured from the
+       * evm-precompile-method-allowlist feature on.
+       * </pre>
+       *
+       * <code>repeated string ibc_receivers = 9 [json_name = "ibcReceivers"];</code>
+       * @param index The index of the value to return.
+       * @return The bytes of the ibcReceivers at the given index.
+       */
+      public com.google.protobuf.ByteString
+          getIbcReceiversBytes(int index) {
+        return ibcReceivers_.getByteString(index);
+      }
+      /**
+       * <pre>
+       * ibc_receivers, when non-empty, names the IBC destinations native QOR may
+       * be sent to through this window with the ICS-20 precompile, each as
+       * "&lt;source channel&gt;/&lt;receiver&gt;" (the channel on this chain and the
+       * receiving address on the other chain). Empty: ICS-20 transfers are
+       * refused through the window and remain available as post-quantum signed
+       * Cosmos transactions. Optional; honoured from the
+       * evm-precompile-method-allowlist feature on.
+       * </pre>
+       *
+       * <code>repeated string ibc_receivers = 9 [json_name = "ibcReceivers"];</code>
+       * @param index The index to set the value at.
+       * @param value The ibcReceivers to set.
+       * @return This builder for chaining.
+       */
+      public Builder setIbcReceivers(
+          int index, java.lang.String value) {
+        if (value == null) { throw new NullPointerException(); }
+        ensureIbcReceiversIsMutable();
+        ibcReceivers_.set(index, value);
+        bitField0_ |= 0x00000100;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * ibc_receivers, when non-empty, names the IBC destinations native QOR may
+       * be sent to through this window with the ICS-20 precompile, each as
+       * "&lt;source channel&gt;/&lt;receiver&gt;" (the channel on this chain and the
+       * receiving address on the other chain). Empty: ICS-20 transfers are
+       * refused through the window and remain available as post-quantum signed
+       * Cosmos transactions. Optional; honoured from the
+       * evm-precompile-method-allowlist feature on.
+       * </pre>
+       *
+       * <code>repeated string ibc_receivers = 9 [json_name = "ibcReceivers"];</code>
+       * @param value The ibcReceivers to add.
+       * @return This builder for chaining.
+       */
+      public Builder addIbcReceivers(
+          java.lang.String value) {
+        if (value == null) { throw new NullPointerException(); }
+        ensureIbcReceiversIsMutable();
+        ibcReceivers_.add(value);
+        bitField0_ |= 0x00000100;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * ibc_receivers, when non-empty, names the IBC destinations native QOR may
+       * be sent to through this window with the ICS-20 precompile, each as
+       * "&lt;source channel&gt;/&lt;receiver&gt;" (the channel on this chain and the
+       * receiving address on the other chain). Empty: ICS-20 transfers are
+       * refused through the window and remain available as post-quantum signed
+       * Cosmos transactions. Optional; honoured from the
+       * evm-precompile-method-allowlist feature on.
+       * </pre>
+       *
+       * <code>repeated string ibc_receivers = 9 [json_name = "ibcReceivers"];</code>
+       * @param values The ibcReceivers to add.
+       * @return This builder for chaining.
+       */
+      public Builder addAllIbcReceivers(
+          java.lang.Iterable<java.lang.String> values) {
+        ensureIbcReceiversIsMutable();
+        com.google.protobuf.AbstractMessageLite.Builder.addAll(
+            values, ibcReceivers_);
+        bitField0_ |= 0x00000100;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * ibc_receivers, when non-empty, names the IBC destinations native QOR may
+       * be sent to through this window with the ICS-20 precompile, each as
+       * "&lt;source channel&gt;/&lt;receiver&gt;" (the channel on this chain and the
+       * receiving address on the other chain). Empty: ICS-20 transfers are
+       * refused through the window and remain available as post-quantum signed
+       * Cosmos transactions. Optional; honoured from the
+       * evm-precompile-method-allowlist feature on.
+       * </pre>
+       *
+       * <code>repeated string ibc_receivers = 9 [json_name = "ibcReceivers"];</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearIbcReceivers() {
+        ibcReceivers_ =
+          com.google.protobuf.LazyStringArrayList.emptyList();
+        bitField0_ = (bitField0_ & ~0x00000100);;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * ibc_receivers, when non-empty, names the IBC destinations native QOR may
+       * be sent to through this window with the ICS-20 precompile, each as
+       * "&lt;source channel&gt;/&lt;receiver&gt;" (the channel on this chain and the
+       * receiving address on the other chain). Empty: ICS-20 transfers are
+       * refused through the window and remain available as post-quantum signed
+       * Cosmos transactions. Optional; honoured from the
+       * evm-precompile-method-allowlist feature on.
+       * </pre>
+       *
+       * <code>repeated string ibc_receivers = 9 [json_name = "ibcReceivers"];</code>
+       * @param value The bytes of the ibcReceivers to add.
+       * @return This builder for chaining.
+       */
+      public Builder addIbcReceiversBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) { throw new NullPointerException(); }
+        checkByteStringIsUtf8(value);
+        ensureIbcReceiversIsMutable();
+        ibcReceivers_.add(value);
+        bitField0_ |= 0x00000100;
         onChanged();
         return this;
       }
@@ -14306,68 +15438,71 @@ public final class Tx extends com.google.protobuf.GeneratedFile {
       "orithm_id\030\002 \001(\rB\036\342\336\037\013AlgorithmID\372\336\037\013Algo" +
       "rithmIDR\013algorithmId\022\026\n\006reason\030\003 \001(\tR\006re" +
       "ason:\016\202\347\260*\tauthority\"\035\n\033MsgDisableAlgori" +
-      "thmResponse\"\226\002\n\020MsgOpenEVMWindow\0220\n\006send" +
+      "thmResponse\"\212\003\n\020MsgOpenEVMWindow\0220\n\006send" +
       "er\030\001 \001(\tB\030\322\264-\024cosmos.AddressStringR\006send" +
       "er\022\026\n\006blocks\030\002 \001(\004R\006blocks\022\027\n\007max_txs\030\003 " +
       "\001(\004R\006maxTxs\022H\n\tmax_value\030\004 \001(\tB+\310\336\037\000\332\336\037\025" +
       "cosmossdk.io/math.Int\322\264-\ncosmos.IntR\010max" +
       "Value\022\037\n\013native_only\030\005 \001(\010R\nnativeOnly\022\'" +
-      "\n\017allowed_targets\030\006 \003(\tR\016allowedTargets:" +
-      "\013\202\347\260*\006sender\"?\n\030MsgOpenEVMWindowResponse" +
-      "\022#\n\rexpiry_height\030\001 \001(\004R\014expiryHeight\"R\n" +
-      "\021MsgCloseEVMWindow\0220\n\006sender\030\001 \001(\tB\030\322\264-\024" +
-      "cosmos.AddressStringR\006sender:\013\202\347\260*\006sende" +
-      "r\"\033\n\031MsgCloseEVMWindowResponse\"\216\001\n\031MsgAu" +
-      "thorizeEVMDelegation\0220\n\006sender\030\001 \001(\tB\030\322\264" +
-      "-\024cosmos.AddressStringR\006sender\022\032\n\010delega" +
-      "te\030\002 \001(\tR\010delegate\022\026\n\006blocks\030\003 \001(\004R\006bloc" +
-      "ks:\013\202\347\260*\006sender\"H\n!MsgAuthorizeEVMDelega" +
-      "tionResponse\022#\n\rexpiry_height\030\001 \001(\004R\014exp" +
-      "iryHeight\"V\n\025MsgClearEVMDelegation\0220\n\006se" +
-      "nder\030\001 \001(\tB\030\322\264-\024cosmos.AddressStringR\006se" +
-      "nder:\013\202\347\260*\006sender\"\037\n\035MsgClearEVMDelegati" +
-      "onResponse\"\264\001\n\021MsgRegisterKEMKey\0220\n\006send" +
-      "er\030\001 \001(\tB\030\322\264-\024cosmos.AddressStringR\006send" +
-      "er\022A\n\014algorithm_id\030\002 \001(\rB\036\342\336\037\013AlgorithmI" +
-      "D\372\336\037\013AlgorithmIDR\013algorithmId\022\035\n\npublic_" +
-      "key\030\003 \001(\014R\tpublicKey:\013\202\347\260*\006sender\"7\n\031Msg" +
-      "RegisterKEMKeyResponse\022\032\n\010replaced\030\001 \001(\010" +
-      "R\010replaced\"P\n\017MsgRemoveKEMKey\0220\n\006sender\030" +
-      "\001 \001(\tB\030\322\264-\024cosmos.AddressStringR\006sender:" +
-      "\013\202\347\260*\006sender\"\031\n\027MsgRemoveKEMKeyResponse2" +
-      "\346\t\n\003Msg\022b\n\016RegisterPQCKey\022#.qorechain.pq" +
-      "c.v1.MsgRegisterPQCKey\032+.qorechain.pqc.v" +
-      "1.MsgRegisterPQCKeyResponse\022h\n\020RegisterP" +
-      "QCKeyV2\022%.qorechain.pqc.v1.MsgRegisterPQ" +
-      "CKeyV2\032-.qorechain.pqc.v1.MsgRegisterPQC" +
-      "KeyV2Response\022_\n\rMigratePQCKey\022\".qorecha" +
-      "in.pqc.v1.MsgMigratePQCKey\032*.qorechain.p" +
-      "qc.v1.MsgMigratePQCKeyResponse\022\\\n\014Rotate" +
-      "PQCKey\022!.qorechain.pqc.v1.MsgRotatePQCKe" +
-      "y\032).qorechain.pqc.v1.MsgRotatePQCKeyResp" +
-      "onse\022n\n\022DeprecateAlgorithm\022\'.qorechain.p" +
-      "qc.v1.MsgDeprecateAlgorithm\032/.qorechain." +
-      "pqc.v1.MsgDeprecateAlgorithmResponse\022h\n\020" +
-      "DisableAlgorithm\022%.qorechain.pqc.v1.MsgD" +
-      "isableAlgorithm\032-.qorechain.pqc.v1.MsgDi" +
-      "sableAlgorithmResponse\022_\n\rOpenEVMWindow\022" +
-      "\".qorechain.pqc.v1.MsgOpenEVMWindow\032*.qo" +
-      "rechain.pqc.v1.MsgOpenEVMWindowResponse\022" +
-      "b\n\016CloseEVMWindow\022#.qorechain.pqc.v1.Msg" +
-      "CloseEVMWindow\032+.qorechain.pqc.v1.MsgClo" +
-      "seEVMWindowResponse\022z\n\026AuthorizeEVMDeleg" +
-      "ation\022+.qorechain.pqc.v1.MsgAuthorizeEVM" +
-      "Delegation\0323.qorechain.pqc.v1.MsgAuthori" +
-      "zeEVMDelegationResponse\022n\n\022ClearEVMDeleg" +
-      "ation\022\'.qorechain.pqc.v1.MsgClearEVMDele" +
-      "gation\032/.qorechain.pqc.v1.MsgClearEVMDel" +
-      "egationResponse\022b\n\016RegisterKEMKey\022#.qore" +
-      "chain.pqc.v1.MsgRegisterKEMKey\032+.qorecha" +
-      "in.pqc.v1.MsgRegisterKEMKeyResponse\022\\\n\014R" +
-      "emoveKEMKey\022!.qorechain.pqc.v1.MsgRemove" +
-      "KEMKey\032).qorechain.pqc.v1.MsgRemoveKEMKe" +
-      "yResponse\032\005\200\347\260*\001B1Z/github.com/qorechain" +
-      "/qorechain-core/x/pqc/typesb\006proto3"
+      "\n\017allowed_targets\030\006 \003(\tR\016allowedTargets\022" +
+      "\036\n\nvalidators\030\007 \003(\tR\nvalidators\022-\n\022staki" +
+      "ng_validators\030\010 \003(\tR\021stakingValidators\022#" +
+      "\n\ribc_receivers\030\t \003(\tR\014ibcReceivers:\013\202\347\260" +
+      "*\006sender\"?\n\030MsgOpenEVMWindowResponse\022#\n\r" +
+      "expiry_height\030\001 \001(\004R\014expiryHeight\"R\n\021Msg" +
+      "CloseEVMWindow\0220\n\006sender\030\001 \001(\tB\030\322\264-\024cosm" +
+      "os.AddressStringR\006sender:\013\202\347\260*\006sender\"\033\n" +
+      "\031MsgCloseEVMWindowResponse\"\216\001\n\031MsgAuthor" +
+      "izeEVMDelegation\0220\n\006sender\030\001 \001(\tB\030\322\264-\024co" +
+      "smos.AddressStringR\006sender\022\032\n\010delegate\030\002" +
+      " \001(\tR\010delegate\022\026\n\006blocks\030\003 \001(\004R\006blocks:\013" +
+      "\202\347\260*\006sender\"H\n!MsgAuthorizeEVMDelegation" +
+      "Response\022#\n\rexpiry_height\030\001 \001(\004R\014expiryH" +
+      "eight\"V\n\025MsgClearEVMDelegation\0220\n\006sender" +
+      "\030\001 \001(\tB\030\322\264-\024cosmos.AddressStringR\006sender" +
+      ":\013\202\347\260*\006sender\"\037\n\035MsgClearEVMDelegationRe" +
+      "sponse\"\264\001\n\021MsgRegisterKEMKey\0220\n\006sender\030\001" +
+      " \001(\tB\030\322\264-\024cosmos.AddressStringR\006sender\022A" +
+      "\n\014algorithm_id\030\002 \001(\rB\036\342\336\037\013AlgorithmID\372\336\037" +
+      "\013AlgorithmIDR\013algorithmId\022\035\n\npublic_key\030" +
+      "\003 \001(\014R\tpublicKey:\013\202\347\260*\006sender\"7\n\031MsgRegi" +
+      "sterKEMKeyResponse\022\032\n\010replaced\030\001 \001(\010R\010re" +
+      "placed\"P\n\017MsgRemoveKEMKey\0220\n\006sender\030\001 \001(" +
+      "\tB\030\322\264-\024cosmos.AddressStringR\006sender:\013\202\347\260" +
+      "*\006sender\"\031\n\027MsgRemoveKEMKeyResponse2\346\t\n\003" +
+      "Msg\022b\n\016RegisterPQCKey\022#.qorechain.pqc.v1" +
+      ".MsgRegisterPQCKey\032+.qorechain.pqc.v1.Ms" +
+      "gRegisterPQCKeyResponse\022h\n\020RegisterPQCKe" +
+      "yV2\022%.qorechain.pqc.v1.MsgRegisterPQCKey" +
+      "V2\032-.qorechain.pqc.v1.MsgRegisterPQCKeyV" +
+      "2Response\022_\n\rMigratePQCKey\022\".qorechain.p" +
+      "qc.v1.MsgMigratePQCKey\032*.qorechain.pqc.v" +
+      "1.MsgMigratePQCKeyResponse\022\\\n\014RotatePQCK" +
+      "ey\022!.qorechain.pqc.v1.MsgRotatePQCKey\032)." +
+      "qorechain.pqc.v1.MsgRotatePQCKeyResponse" +
+      "\022n\n\022DeprecateAlgorithm\022\'.qorechain.pqc.v" +
+      "1.MsgDeprecateAlgorithm\032/.qorechain.pqc." +
+      "v1.MsgDeprecateAlgorithmResponse\022h\n\020Disa" +
+      "bleAlgorithm\022%.qorechain.pqc.v1.MsgDisab" +
+      "leAlgorithm\032-.qorechain.pqc.v1.MsgDisabl" +
+      "eAlgorithmResponse\022_\n\rOpenEVMWindow\022\".qo" +
+      "rechain.pqc.v1.MsgOpenEVMWindow\032*.qorech" +
+      "ain.pqc.v1.MsgOpenEVMWindowResponse\022b\n\016C" +
+      "loseEVMWindow\022#.qorechain.pqc.v1.MsgClos" +
+      "eEVMWindow\032+.qorechain.pqc.v1.MsgCloseEV" +
+      "MWindowResponse\022z\n\026AuthorizeEVMDelegatio" +
+      "n\022+.qorechain.pqc.v1.MsgAuthorizeEVMDele" +
+      "gation\0323.qorechain.pqc.v1.MsgAuthorizeEV" +
+      "MDelegationResponse\022n\n\022ClearEVMDelegatio" +
+      "n\022\'.qorechain.pqc.v1.MsgClearEVMDelegati" +
+      "on\032/.qorechain.pqc.v1.MsgClearEVMDelegat" +
+      "ionResponse\022b\n\016RegisterKEMKey\022#.qorechai" +
+      "n.pqc.v1.MsgRegisterKEMKey\032+.qorechain.p" +
+      "qc.v1.MsgRegisterKEMKeyResponse\022\\\n\014Remov" +
+      "eKEMKey\022!.qorechain.pqc.v1.MsgRemoveKEMK" +
+      "ey\032).qorechain.pqc.v1.MsgRemoveKEMKeyRes" +
+      "ponse\032\005\200\347\260*\001B1Z/github.com/qorechain/qor" +
+      "echain-core/x/pqc/typesb\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
@@ -14453,7 +15588,7 @@ public final class Tx extends com.google.protobuf.GeneratedFile {
     internal_static_qorechain_pqc_v1_MsgOpenEVMWindow_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_qorechain_pqc_v1_MsgOpenEVMWindow_descriptor,
-        new java.lang.String[] { "Sender", "Blocks", "MaxTxs", "MaxValue", "NativeOnly", "AllowedTargets", });
+        new java.lang.String[] { "Sender", "Blocks", "MaxTxs", "MaxValue", "NativeOnly", "AllowedTargets", "Validators", "StakingValidators", "IbcReceivers", });
     internal_static_qorechain_pqc_v1_MsgOpenEVMWindowResponse_descriptor =
       getDescriptor().getMessageType(13);
     internal_static_qorechain_pqc_v1_MsgOpenEVMWindowResponse_fieldAccessorTable = new

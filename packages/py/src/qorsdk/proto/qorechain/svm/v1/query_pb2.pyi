@@ -1,3 +1,4 @@
+from google.api import annotations_pb2 as _annotations_pb2
 from google.protobuf import descriptor as _descriptor
 from google.protobuf import message as _message
 from typing import ClassVar as _ClassVar, Mapping as _Mapping, Optional as _Optional, Union as _Union
@@ -69,3 +70,21 @@ class ProgramInfo(_message.Message):
     last_deploy_slot: int
     data_account: str
     def __init__(self, program_address: _Optional[str] = ..., upgrade_authority: _Optional[str] = ..., deploy_slot: _Optional[int] = ..., last_deploy_slot: _Optional[int] = ..., data_account: _Optional[str] = ...) -> None: ...
+
+class QueryClusterInfoRequest(_message.Message):
+    __slots__ = ()
+    def __init__(self) -> None: ...
+
+class QueryClusterInfoResponse(_message.Message):
+    __slots__ = ("chain_id", "genesis_hash", "caip2_chain_id", "derivation", "execution_enabled")
+    CHAIN_ID_FIELD_NUMBER: _ClassVar[int]
+    GENESIS_HASH_FIELD_NUMBER: _ClassVar[int]
+    CAIP2_CHAIN_ID_FIELD_NUMBER: _ClassVar[int]
+    DERIVATION_FIELD_NUMBER: _ClassVar[int]
+    EXECUTION_ENABLED_FIELD_NUMBER: _ClassVar[int]
+    chain_id: str
+    genesis_hash: str
+    caip2_chain_id: str
+    derivation: str
+    execution_enabled: bool
+    def __init__(self, chain_id: _Optional[str] = ..., genesis_hash: _Optional[str] = ..., caip2_chain_id: _Optional[str] = ..., derivation: _Optional[str] = ..., execution_enabled: bool = ...) -> None: ...

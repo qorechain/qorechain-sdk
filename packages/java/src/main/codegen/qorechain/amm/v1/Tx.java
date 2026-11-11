@@ -9479,6 +9479,1104 @@ public final class Tx extends com.google.protobuf.GeneratedFile {
 
   }
 
+  public interface MsgUpdateParamsOrBuilder extends
+      // @@protoc_insertion_point(interface_extends:qorechain.amm.v1.MsgUpdateParams)
+      com.google.protobuf.MessageOrBuilder {
+
+    /**
+     * <code>string authority = 1 [json_name = "authority", (.cosmos_proto.scalar) = "cosmos.AddressString"];</code>
+     * @return The authority.
+     */
+    java.lang.String getAuthority();
+    /**
+     * <code>string authority = 1 [json_name = "authority", (.cosmos_proto.scalar) = "cosmos.AddressString"];</code>
+     * @return The bytes for authority.
+     */
+    com.google.protobuf.ByteString
+        getAuthorityBytes();
+
+    /**
+     * <code>.qorechain.amm.v1.ParamsView params = 2 [json_name = "params", (.gogoproto.nullable) = false];</code>
+     * @return Whether the params field is set.
+     */
+    boolean hasParams();
+    /**
+     * <code>.qorechain.amm.v1.ParamsView params = 2 [json_name = "params", (.gogoproto.nullable) = false];</code>
+     * @return The params.
+     */
+    qorechain.amm.v1.QueryOuterClass.ParamsView getParams();
+    /**
+     * <code>.qorechain.amm.v1.ParamsView params = 2 [json_name = "params", (.gogoproto.nullable) = false];</code>
+     */
+    qorechain.amm.v1.QueryOuterClass.ParamsViewOrBuilder getParamsOrBuilder();
+  }
+  /**
+   * <pre>
+   * MsgUpdateParams replaces every AMM parameter. The authority must be the gov
+   * module account; all fields are required (copy the current values from
+   * GET /qorechain/amm/v1/params and change what is meant to change).
+   * </pre>
+   *
+   * Protobuf type {@code qorechain.amm.v1.MsgUpdateParams}
+   */
+  public static final class MsgUpdateParams extends
+      com.google.protobuf.GeneratedMessage implements
+      // @@protoc_insertion_point(message_implements:qorechain.amm.v1.MsgUpdateParams)
+      MsgUpdateParamsOrBuilder {
+  private static final long serialVersionUID = 0L;
+    static {
+      com.google.protobuf.RuntimeVersion.validateProtobufGencodeVersion(
+        com.google.protobuf.RuntimeVersion.RuntimeDomain.PUBLIC,
+        /* major= */ 4,
+        /* minor= */ 35,
+        /* patch= */ 1,
+        /* suffix= */ "",
+        "MsgUpdateParams");
+    }
+    // Use MsgUpdateParams.newBuilder() to construct.
+    private MsgUpdateParams(com.google.protobuf.GeneratedMessage.Builder<?> builder) {
+      super(builder);
+    }
+    private MsgUpdateParams() {
+      authority_ = "";
+    }
+
+    public static final com.google.protobuf.Descriptors.Descriptor
+        getDescriptor() {
+      return qorechain.amm.v1.Tx.internal_static_qorechain_amm_v1_MsgUpdateParams_descriptor;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Descriptors.Descriptor getDescriptorForType() {
+      return qorechain.amm.v1.Tx.internal_static_qorechain_amm_v1_MsgUpdateParams_descriptor;
+    }
+
+    @java.lang.Override
+    protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+        internalGetFieldAccessorTable() {
+      return qorechain.amm.v1.Tx.internal_static_qorechain_amm_v1_MsgUpdateParams_fieldAccessorTable
+          .ensureFieldAccessorsInitialized(
+              qorechain.amm.v1.Tx.MsgUpdateParams.class, qorechain.amm.v1.Tx.MsgUpdateParams.Builder.class);
+    }
+
+    private int bitField0_;
+    public static final int AUTHORITY_FIELD_NUMBER = 1;
+    @SuppressWarnings("serial")
+    private volatile java.lang.Object authority_ = "";
+    /**
+     * <code>string authority = 1 [json_name = "authority", (.cosmos_proto.scalar) = "cosmos.AddressString"];</code>
+     * @return The authority.
+     */
+    @java.lang.Override
+    public java.lang.String getAuthority() {
+      java.lang.Object ref = authority_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        authority_ = s;
+        return s;
+      }
+    }
+    /**
+     * <code>string authority = 1 [json_name = "authority", (.cosmos_proto.scalar) = "cosmos.AddressString"];</code>
+     * @return The bytes for authority.
+     */
+    @java.lang.Override
+    public com.google.protobuf.ByteString
+        getAuthorityBytes() {
+      java.lang.Object ref = authority_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        authority_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
+    public static final int PARAMS_FIELD_NUMBER = 2;
+    private qorechain.amm.v1.QueryOuterClass.ParamsView params_;
+    /**
+     * <code>.qorechain.amm.v1.ParamsView params = 2 [json_name = "params", (.gogoproto.nullable) = false];</code>
+     * @return Whether the params field is set.
+     */
+    @java.lang.Override
+    public boolean hasParams() {
+      return ((bitField0_ & 0x00000001) != 0);
+    }
+    /**
+     * <code>.qorechain.amm.v1.ParamsView params = 2 [json_name = "params", (.gogoproto.nullable) = false];</code>
+     * @return The params.
+     */
+    @java.lang.Override
+    public qorechain.amm.v1.QueryOuterClass.ParamsView getParams() {
+      return params_ == null ? qorechain.amm.v1.QueryOuterClass.ParamsView.getDefaultInstance() : params_;
+    }
+    /**
+     * <code>.qorechain.amm.v1.ParamsView params = 2 [json_name = "params", (.gogoproto.nullable) = false];</code>
+     */
+    @java.lang.Override
+    public qorechain.amm.v1.QueryOuterClass.ParamsViewOrBuilder getParamsOrBuilder() {
+      return params_ == null ? qorechain.amm.v1.QueryOuterClass.ParamsView.getDefaultInstance() : params_;
+    }
+
+    private byte memoizedIsInitialized = -1;
+    @java.lang.Override
+    public final boolean isInitialized() {
+      byte isInitialized = memoizedIsInitialized;
+      if (isInitialized == 1) return true;
+      if (isInitialized == 0) return false;
+
+      memoizedIsInitialized = 1;
+      return true;
+    }
+
+    @java.lang.Override
+    public void writeTo(com.google.protobuf.CodedOutputStream output)
+                        throws java.io.IOException {
+      if (!com.google.protobuf.GeneratedMessage.isStringEmpty(authority_)) {
+        com.google.protobuf.GeneratedMessage.writeString(output, 1, authority_);
+      }
+      if (((bitField0_ & 0x00000001) != 0)) {
+        output.writeMessage(2, getParams());
+      }
+      getUnknownFields().writeTo(output);
+    }
+    private int computeSerializedSize_0() {
+      int size = 0;
+      if (!com.google.protobuf.GeneratedMessage.isStringEmpty(authority_)) {
+        size += com.google.protobuf.GeneratedMessage.computeStringSize(1, authority_);
+      }
+      if (((bitField0_ & 0x00000001) != 0)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeMessageSize(2, getParams());
+      }
+      return size;
+    }
+    @java.lang.Override
+    public int getSerializedSize() {
+      int size = memoizedSize;
+      if (size != -1) return size;
+
+      size = 0;
+      size += computeSerializedSize_0();
+      size += getUnknownFields().getSerializedSize();
+      memoizedSize = size;
+      return size;
+    }
+
+    @java.lang.Override
+    public boolean equals(final java.lang.Object obj) {
+      if (obj == this) {
+       return true;
+      }
+      if (!(obj instanceof qorechain.amm.v1.Tx.MsgUpdateParams)) {
+        return super.equals(obj);
+      }
+      qorechain.amm.v1.Tx.MsgUpdateParams other = (qorechain.amm.v1.Tx.MsgUpdateParams) obj;
+
+      if (!getAuthority()
+          .equals(other.getAuthority())) return false;
+      if (hasParams() != other.hasParams()) return false;
+      if (hasParams()) {
+        if (!getParams()
+            .equals(other.getParams())) return false;
+      }
+      if (!getUnknownFields().equals(other.getUnknownFields())) return false;
+      return true;
+    }
+
+    @java.lang.Override
+    public int hashCode() {
+      if (memoizedHashCode != 0) {
+        return memoizedHashCode;
+      }
+      int hash = 41;
+      hash = (19 * hash) + getDescriptor().hashCode();
+      hash = (37 * hash) + AUTHORITY_FIELD_NUMBER;
+      hash = (53 * hash) + getAuthority().hashCode();
+      if (hasParams()) {
+        hash = (37 * hash) + PARAMS_FIELD_NUMBER;
+        hash = (53 * hash) + getParams().hashCode();
+      }
+      hash = (29 * hash) + getUnknownFields().hashCode();
+      memoizedHashCode = hash;
+      return hash;
+    }
+
+    public static qorechain.amm.v1.Tx.MsgUpdateParams parseFrom(
+        java.nio.ByteBuffer data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static qorechain.amm.v1.Tx.MsgUpdateParams parseFrom(
+        java.nio.ByteBuffer data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static qorechain.amm.v1.Tx.MsgUpdateParams parseFrom(
+        com.google.protobuf.ByteString data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static qorechain.amm.v1.Tx.MsgUpdateParams parseFrom(
+        com.google.protobuf.ByteString data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static qorechain.amm.v1.Tx.MsgUpdateParams parseFrom(byte[] data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static qorechain.amm.v1.Tx.MsgUpdateParams parseFrom(
+        byte[] data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static qorechain.amm.v1.Tx.MsgUpdateParams parseFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input);
+    }
+    public static qorechain.amm.v1.Tx.MsgUpdateParams parseFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    public static qorechain.amm.v1.Tx.MsgUpdateParams parseDelimitedFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseDelimitedWithIOException(PARSER, input);
+    }
+
+    public static qorechain.amm.v1.Tx.MsgUpdateParams parseDelimitedFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static qorechain.amm.v1.Tx.MsgUpdateParams parseFrom(
+        com.google.protobuf.CodedInputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input);
+    }
+    public static qorechain.amm.v1.Tx.MsgUpdateParams parseFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    @java.lang.Override
+    public Builder newBuilderForType() { return newBuilder(); }
+    public static Builder newBuilder() {
+      return DEFAULT_INSTANCE.toBuilder();
+    }
+    public static Builder newBuilder(qorechain.amm.v1.Tx.MsgUpdateParams prototype) {
+      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+    }
+    @java.lang.Override
+    public Builder toBuilder() {
+      return this == DEFAULT_INSTANCE
+          ? new Builder() : new Builder().mergeFrom(this);
+    }
+
+    @java.lang.Override
+    protected Builder newBuilderForType(
+        com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+      Builder builder = new Builder(parent);
+      return builder;
+    }
+    /**
+     * <pre>
+     * MsgUpdateParams replaces every AMM parameter. The authority must be the gov
+     * module account; all fields are required (copy the current values from
+     * GET /qorechain/amm/v1/params and change what is meant to change).
+     * </pre>
+     *
+     * Protobuf type {@code qorechain.amm.v1.MsgUpdateParams}
+     */
+    public static final class Builder extends
+        com.google.protobuf.GeneratedMessage.Builder<Builder> implements
+        // @@protoc_insertion_point(builder_implements:qorechain.amm.v1.MsgUpdateParams)
+        qorechain.amm.v1.Tx.MsgUpdateParamsOrBuilder {
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return qorechain.amm.v1.Tx.internal_static_qorechain_amm_v1_MsgUpdateParams_descriptor;
+      }
+
+      @java.lang.Override
+      protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return qorechain.amm.v1.Tx.internal_static_qorechain_amm_v1_MsgUpdateParams_fieldAccessorTable
+            .ensureFieldAccessorsInitialized(
+                qorechain.amm.v1.Tx.MsgUpdateParams.class, qorechain.amm.v1.Tx.MsgUpdateParams.Builder.class);
+      }
+
+      // Construct using qorechain.amm.v1.Tx.MsgUpdateParams.newBuilder()
+      private Builder() {
+        maybeForceBuilderInitialization();
+      }
+
+      private Builder(
+          com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+        super(parent);
+        maybeForceBuilderInitialization();
+      }
+      private void maybeForceBuilderInitialization() {
+        if (com.google.protobuf.GeneratedMessage
+                .alwaysUseFieldBuilders) {
+          internalGetParamsFieldBuilder();
+        }
+      }
+      @java.lang.Override
+      public Builder clear() {
+        super.clear();
+        bitField0_ = 0;
+        authority_ = "";
+        params_ = null;
+        if (paramsBuilder_ != null) {
+          paramsBuilder_.dispose();
+          paramsBuilder_ = null;
+        }
+        return this;
+      }
+
+      @java.lang.Override
+      public com.google.protobuf.Descriptors.Descriptor
+          getDescriptorForType() {
+        return qorechain.amm.v1.Tx.internal_static_qorechain_amm_v1_MsgUpdateParams_descriptor;
+      }
+
+      @java.lang.Override
+      public qorechain.amm.v1.Tx.MsgUpdateParams getDefaultInstanceForType() {
+        return qorechain.amm.v1.Tx.MsgUpdateParams.getDefaultInstance();
+      }
+
+      @java.lang.Override
+      public qorechain.amm.v1.Tx.MsgUpdateParams build() {
+        qorechain.amm.v1.Tx.MsgUpdateParams result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(result);
+        }
+        return result;
+      }
+
+      @java.lang.Override
+      public qorechain.amm.v1.Tx.MsgUpdateParams buildPartial() {
+        qorechain.amm.v1.Tx.MsgUpdateParams result = new qorechain.amm.v1.Tx.MsgUpdateParams(this);
+        if (bitField0_ != 0) { buildPartial0(result); }
+        onBuilt();
+        return result;
+      }
+
+      private void buildPartial0(qorechain.amm.v1.Tx.MsgUpdateParams result) {
+        int from_bitField0_ = bitField0_;
+        if (((from_bitField0_ & 0x00000001) != 0)) {
+          result.authority_ = authority_;
+        }
+        int to_bitField0_ = 0;
+        if (((from_bitField0_ & 0x00000002) != 0)) {
+          result.params_ = paramsBuilder_ == null
+              ? params_
+              : paramsBuilder_.build();
+          to_bitField0_ |= 0x00000001;
+        }
+        result.bitField0_ |= to_bitField0_;
+      }
+
+      @java.lang.Override
+      public Builder mergeFrom(com.google.protobuf.Message other) {
+        if (other instanceof qorechain.amm.v1.Tx.MsgUpdateParams) {
+          return mergeFrom((qorechain.amm.v1.Tx.MsgUpdateParams)other);
+        } else {
+          super.mergeFrom(other);
+          return this;
+        }
+      }
+
+      public Builder mergeFrom(qorechain.amm.v1.Tx.MsgUpdateParams other) {
+        if (other == qorechain.amm.v1.Tx.MsgUpdateParams.getDefaultInstance()) return this;
+        if (!other.getAuthority().isEmpty()) {
+          authority_ = other.authority_;
+          bitField0_ |= 0x00000001;
+          onChanged();
+        }
+        if (other.hasParams()) {
+          mergeParams(other.getParams());
+        }
+        this.mergeUnknownFields(other.getUnknownFields());
+        onChanged();
+        return this;
+      }
+
+      @java.lang.Override
+      public final boolean isInitialized() {
+        return true;
+      }
+
+      @java.lang.Override
+      public Builder mergeFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        if (extensionRegistry == null) {
+          throw new java.lang.NullPointerException();
+        }
+        try {
+          boolean done = false;
+          while (!done) {
+            int tag = input.readTag();
+            switch (tag) {
+              case 0:
+                done = true;
+                break;
+              case 10: {
+                authority_ = input.readStringRequireUtf8();
+                bitField0_ |= 0x00000001;
+                break;
+              } // case 10
+              case 18: {
+                input.readMessage(
+                    internalGetParamsFieldBuilder().getBuilder(),
+                    extensionRegistry);
+                bitField0_ |= 0x00000002;
+                break;
+              } // case 18
+              default: {
+                if (!super.parseUnknownField(input, extensionRegistry, tag)) {
+                  done = true; // was an endgroup tag
+                }
+                break;
+              } // default:
+            } // switch (tag)
+          } // while (!done)
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          throw e.unwrapIOException();
+        } finally {
+          onChanged();
+        } // finally
+        return this;
+      }
+      private int bitField0_;
+
+      private java.lang.Object authority_ = "";
+      /**
+       * <code>string authority = 1 [json_name = "authority", (.cosmos_proto.scalar) = "cosmos.AddressString"];</code>
+       * @return The authority.
+       */
+      public java.lang.String getAuthority() {
+        java.lang.Object ref = authority_;
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          authority_ = s;
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
+      }
+      /**
+       * <code>string authority = 1 [json_name = "authority", (.cosmos_proto.scalar) = "cosmos.AddressString"];</code>
+       * @return The bytes for authority.
+       */
+      public com.google.protobuf.ByteString
+          getAuthorityBytes() {
+        java.lang.Object ref = authority_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          authority_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <code>string authority = 1 [json_name = "authority", (.cosmos_proto.scalar) = "cosmos.AddressString"];</code>
+       * @param value The authority to set.
+       * @return This builder for chaining.
+       */
+      public Builder setAuthority(
+          java.lang.String value) {
+        if (value == null) { throw new NullPointerException(); }
+        authority_ = value;
+        bitField0_ |= 0x00000001;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>string authority = 1 [json_name = "authority", (.cosmos_proto.scalar) = "cosmos.AddressString"];</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearAuthority() {
+        authority_ = getDefaultInstance().getAuthority();
+        bitField0_ = (bitField0_ & ~0x00000001);
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>string authority = 1 [json_name = "authority", (.cosmos_proto.scalar) = "cosmos.AddressString"];</code>
+       * @param value The bytes for authority to set.
+       * @return This builder for chaining.
+       */
+      public Builder setAuthorityBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) { throw new NullPointerException(); }
+        checkByteStringIsUtf8(value);
+        authority_ = value;
+        bitField0_ |= 0x00000001;
+        onChanged();
+        return this;
+      }
+
+      private qorechain.amm.v1.QueryOuterClass.ParamsView params_;
+      private com.google.protobuf.SingleFieldBuilder<
+          qorechain.amm.v1.QueryOuterClass.ParamsView, qorechain.amm.v1.QueryOuterClass.ParamsView.Builder, qorechain.amm.v1.QueryOuterClass.ParamsViewOrBuilder> paramsBuilder_;
+      /**
+       * <code>.qorechain.amm.v1.ParamsView params = 2 [json_name = "params", (.gogoproto.nullable) = false];</code>
+       * @return Whether the params field is set.
+       */
+      public boolean hasParams() {
+        return ((bitField0_ & 0x00000002) != 0);
+      }
+      /**
+       * <code>.qorechain.amm.v1.ParamsView params = 2 [json_name = "params", (.gogoproto.nullable) = false];</code>
+       * @return The params.
+       */
+      public qorechain.amm.v1.QueryOuterClass.ParamsView getParams() {
+        if (paramsBuilder_ == null) {
+          return params_ == null ? qorechain.amm.v1.QueryOuterClass.ParamsView.getDefaultInstance() : params_;
+        } else {
+          return paramsBuilder_.getMessage();
+        }
+      }
+      /**
+       * <code>.qorechain.amm.v1.ParamsView params = 2 [json_name = "params", (.gogoproto.nullable) = false];</code>
+       */
+      public Builder setParams(qorechain.amm.v1.QueryOuterClass.ParamsView value) {
+        if (paramsBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          params_ = value;
+        } else {
+          paramsBuilder_.setMessage(value);
+        }
+        bitField0_ |= 0x00000002;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>.qorechain.amm.v1.ParamsView params = 2 [json_name = "params", (.gogoproto.nullable) = false];</code>
+       */
+      public Builder setParams(
+          qorechain.amm.v1.QueryOuterClass.ParamsView.Builder builderForValue) {
+        if (paramsBuilder_ == null) {
+          params_ = builderForValue.build();
+        } else {
+          paramsBuilder_.setMessage(builderForValue.build());
+        }
+        bitField0_ |= 0x00000002;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>.qorechain.amm.v1.ParamsView params = 2 [json_name = "params", (.gogoproto.nullable) = false];</code>
+       */
+      public Builder mergeParams(qorechain.amm.v1.QueryOuterClass.ParamsView value) {
+        if (paramsBuilder_ == null) {
+          if (((bitField0_ & 0x00000002) != 0) &&
+            params_ != null &&
+            params_ != qorechain.amm.v1.QueryOuterClass.ParamsView.getDefaultInstance()) {
+            getParamsBuilder().mergeFrom(value);
+          } else {
+            params_ = value;
+          }
+        } else {
+          paramsBuilder_.mergeFrom(value);
+        }
+        if (params_ != null) {
+          bitField0_ |= 0x00000002;
+          onChanged();
+        }
+        return this;
+      }
+      /**
+       * <code>.qorechain.amm.v1.ParamsView params = 2 [json_name = "params", (.gogoproto.nullable) = false];</code>
+       */
+      public Builder clearParams() {
+        bitField0_ = (bitField0_ & ~0x00000002);
+        params_ = null;
+        if (paramsBuilder_ != null) {
+          paramsBuilder_.dispose();
+          paramsBuilder_ = null;
+        }
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>.qorechain.amm.v1.ParamsView params = 2 [json_name = "params", (.gogoproto.nullable) = false];</code>
+       */
+      public qorechain.amm.v1.QueryOuterClass.ParamsView.Builder getParamsBuilder() {
+        bitField0_ |= 0x00000002;
+        onChanged();
+        return internalGetParamsFieldBuilder().getBuilder();
+      }
+      /**
+       * <code>.qorechain.amm.v1.ParamsView params = 2 [json_name = "params", (.gogoproto.nullable) = false];</code>
+       */
+      public qorechain.amm.v1.QueryOuterClass.ParamsViewOrBuilder getParamsOrBuilder() {
+        if (paramsBuilder_ != null) {
+          return paramsBuilder_.getMessageOrBuilder();
+        } else {
+          return params_ == null ?
+              qorechain.amm.v1.QueryOuterClass.ParamsView.getDefaultInstance() : params_;
+        }
+      }
+      /**
+       * <code>.qorechain.amm.v1.ParamsView params = 2 [json_name = "params", (.gogoproto.nullable) = false];</code>
+       */
+      private com.google.protobuf.SingleFieldBuilder<
+          qorechain.amm.v1.QueryOuterClass.ParamsView, qorechain.amm.v1.QueryOuterClass.ParamsView.Builder, qorechain.amm.v1.QueryOuterClass.ParamsViewOrBuilder> 
+          internalGetParamsFieldBuilder() {
+        if (paramsBuilder_ == null) {
+          paramsBuilder_ = new com.google.protobuf.SingleFieldBuilder<
+              qorechain.amm.v1.QueryOuterClass.ParamsView, qorechain.amm.v1.QueryOuterClass.ParamsView.Builder, qorechain.amm.v1.QueryOuterClass.ParamsViewOrBuilder>(
+                  getParams(),
+                  getParentForChildren(),
+                  isClean());
+          params_ = null;
+        }
+        return paramsBuilder_;
+      }
+
+      // @@protoc_insertion_point(builder_scope:qorechain.amm.v1.MsgUpdateParams)
+    }
+
+    // @@protoc_insertion_point(class_scope:qorechain.amm.v1.MsgUpdateParams)
+    private static final qorechain.amm.v1.Tx.MsgUpdateParams DEFAULT_INSTANCE;
+    static {
+      DEFAULT_INSTANCE = new qorechain.amm.v1.Tx.MsgUpdateParams();
+    }
+
+    public static qorechain.amm.v1.Tx.MsgUpdateParams getDefaultInstance() {
+      return DEFAULT_INSTANCE;
+    }
+
+    private static final com.google.protobuf.Parser<MsgUpdateParams>
+        PARSER = new com.google.protobuf.AbstractParser<MsgUpdateParams>() {
+      @java.lang.Override
+      public MsgUpdateParams parsePartialFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        Builder builder = newBuilder();
+        try {
+          builder.mergeFrom(input, extensionRegistry);
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          throw e.setUnfinishedMessage(builder.buildPartial());
+        } catch (com.google.protobuf.UninitializedMessageException e) {
+          throw e.asInvalidProtocolBufferException().setUnfinishedMessage(builder.buildPartial());
+        } catch (java.io.IOException e) {
+          throw new com.google.protobuf.InvalidProtocolBufferException(e)
+              .setUnfinishedMessage(builder.buildPartial());
+        }
+        return builder.buildPartial();
+      }
+    };
+
+    public static com.google.protobuf.Parser<MsgUpdateParams> parser() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Parser<MsgUpdateParams> getParserForType() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public qorechain.amm.v1.Tx.MsgUpdateParams getDefaultInstanceForType() {
+      return DEFAULT_INSTANCE;
+    }
+
+  }
+
+  public interface MsgUpdateParamsResponseOrBuilder extends
+      // @@protoc_insertion_point(interface_extends:qorechain.amm.v1.MsgUpdateParamsResponse)
+      com.google.protobuf.MessageOrBuilder {
+  }
+  /**
+   * Protobuf type {@code qorechain.amm.v1.MsgUpdateParamsResponse}
+   */
+  public static final class MsgUpdateParamsResponse extends
+      com.google.protobuf.GeneratedMessage implements
+      // @@protoc_insertion_point(message_implements:qorechain.amm.v1.MsgUpdateParamsResponse)
+      MsgUpdateParamsResponseOrBuilder {
+  private static final long serialVersionUID = 0L;
+    static {
+      com.google.protobuf.RuntimeVersion.validateProtobufGencodeVersion(
+        com.google.protobuf.RuntimeVersion.RuntimeDomain.PUBLIC,
+        /* major= */ 4,
+        /* minor= */ 35,
+        /* patch= */ 1,
+        /* suffix= */ "",
+        "MsgUpdateParamsResponse");
+    }
+    // Use MsgUpdateParamsResponse.newBuilder() to construct.
+    private MsgUpdateParamsResponse(com.google.protobuf.GeneratedMessage.Builder<?> builder) {
+      super(builder);
+    }
+    private MsgUpdateParamsResponse() {
+    }
+
+    public static final com.google.protobuf.Descriptors.Descriptor
+        getDescriptor() {
+      return qorechain.amm.v1.Tx.internal_static_qorechain_amm_v1_MsgUpdateParamsResponse_descriptor;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Descriptors.Descriptor getDescriptorForType() {
+      return qorechain.amm.v1.Tx.internal_static_qorechain_amm_v1_MsgUpdateParamsResponse_descriptor;
+    }
+
+    @java.lang.Override
+    protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+        internalGetFieldAccessorTable() {
+      return qorechain.amm.v1.Tx.internal_static_qorechain_amm_v1_MsgUpdateParamsResponse_fieldAccessorTable
+          .ensureFieldAccessorsInitialized(
+              qorechain.amm.v1.Tx.MsgUpdateParamsResponse.class, qorechain.amm.v1.Tx.MsgUpdateParamsResponse.Builder.class);
+    }
+
+    private byte memoizedIsInitialized = -1;
+    @java.lang.Override
+    public final boolean isInitialized() {
+      byte isInitialized = memoizedIsInitialized;
+      if (isInitialized == 1) return true;
+      if (isInitialized == 0) return false;
+
+      memoizedIsInitialized = 1;
+      return true;
+    }
+
+    @java.lang.Override
+    public void writeTo(com.google.protobuf.CodedOutputStream output)
+                        throws java.io.IOException {
+      getUnknownFields().writeTo(output);
+    }
+    @java.lang.Override
+    public int getSerializedSize() {
+      int size = memoizedSize;
+      if (size != -1) return size;
+
+      size = 0;
+      size += getUnknownFields().getSerializedSize();
+      memoizedSize = size;
+      return size;
+    }
+
+    @java.lang.Override
+    public boolean equals(final java.lang.Object obj) {
+      if (obj == this) {
+       return true;
+      }
+      if (!(obj instanceof qorechain.amm.v1.Tx.MsgUpdateParamsResponse)) {
+        return super.equals(obj);
+      }
+      qorechain.amm.v1.Tx.MsgUpdateParamsResponse other = (qorechain.amm.v1.Tx.MsgUpdateParamsResponse) obj;
+
+      if (!getUnknownFields().equals(other.getUnknownFields())) return false;
+      return true;
+    }
+
+    @java.lang.Override
+    public int hashCode() {
+      if (memoizedHashCode != 0) {
+        return memoizedHashCode;
+      }
+      int hash = 41;
+      hash = (19 * hash) + getDescriptor().hashCode();
+      hash = (29 * hash) + getUnknownFields().hashCode();
+      memoizedHashCode = hash;
+      return hash;
+    }
+
+    public static qorechain.amm.v1.Tx.MsgUpdateParamsResponse parseFrom(
+        java.nio.ByteBuffer data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static qorechain.amm.v1.Tx.MsgUpdateParamsResponse parseFrom(
+        java.nio.ByteBuffer data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static qorechain.amm.v1.Tx.MsgUpdateParamsResponse parseFrom(
+        com.google.protobuf.ByteString data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static qorechain.amm.v1.Tx.MsgUpdateParamsResponse parseFrom(
+        com.google.protobuf.ByteString data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static qorechain.amm.v1.Tx.MsgUpdateParamsResponse parseFrom(byte[] data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static qorechain.amm.v1.Tx.MsgUpdateParamsResponse parseFrom(
+        byte[] data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static qorechain.amm.v1.Tx.MsgUpdateParamsResponse parseFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input);
+    }
+    public static qorechain.amm.v1.Tx.MsgUpdateParamsResponse parseFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    public static qorechain.amm.v1.Tx.MsgUpdateParamsResponse parseDelimitedFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseDelimitedWithIOException(PARSER, input);
+    }
+
+    public static qorechain.amm.v1.Tx.MsgUpdateParamsResponse parseDelimitedFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static qorechain.amm.v1.Tx.MsgUpdateParamsResponse parseFrom(
+        com.google.protobuf.CodedInputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input);
+    }
+    public static qorechain.amm.v1.Tx.MsgUpdateParamsResponse parseFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    @java.lang.Override
+    public Builder newBuilderForType() { return newBuilder(); }
+    public static Builder newBuilder() {
+      return DEFAULT_INSTANCE.toBuilder();
+    }
+    public static Builder newBuilder(qorechain.amm.v1.Tx.MsgUpdateParamsResponse prototype) {
+      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+    }
+    @java.lang.Override
+    public Builder toBuilder() {
+      return this == DEFAULT_INSTANCE
+          ? new Builder() : new Builder().mergeFrom(this);
+    }
+
+    @java.lang.Override
+    protected Builder newBuilderForType(
+        com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+      Builder builder = new Builder(parent);
+      return builder;
+    }
+    /**
+     * Protobuf type {@code qorechain.amm.v1.MsgUpdateParamsResponse}
+     */
+    public static final class Builder extends
+        com.google.protobuf.GeneratedMessage.Builder<Builder> implements
+        // @@protoc_insertion_point(builder_implements:qorechain.amm.v1.MsgUpdateParamsResponse)
+        qorechain.amm.v1.Tx.MsgUpdateParamsResponseOrBuilder {
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return qorechain.amm.v1.Tx.internal_static_qorechain_amm_v1_MsgUpdateParamsResponse_descriptor;
+      }
+
+      @java.lang.Override
+      protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return qorechain.amm.v1.Tx.internal_static_qorechain_amm_v1_MsgUpdateParamsResponse_fieldAccessorTable
+            .ensureFieldAccessorsInitialized(
+                qorechain.amm.v1.Tx.MsgUpdateParamsResponse.class, qorechain.amm.v1.Tx.MsgUpdateParamsResponse.Builder.class);
+      }
+
+      // Construct using qorechain.amm.v1.Tx.MsgUpdateParamsResponse.newBuilder()
+      private Builder() {
+
+      }
+
+      private Builder(
+          com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+        super(parent);
+
+      }
+      @java.lang.Override
+      public Builder clear() {
+        super.clear();
+        return this;
+      }
+
+      @java.lang.Override
+      public com.google.protobuf.Descriptors.Descriptor
+          getDescriptorForType() {
+        return qorechain.amm.v1.Tx.internal_static_qorechain_amm_v1_MsgUpdateParamsResponse_descriptor;
+      }
+
+      @java.lang.Override
+      public qorechain.amm.v1.Tx.MsgUpdateParamsResponse getDefaultInstanceForType() {
+        return qorechain.amm.v1.Tx.MsgUpdateParamsResponse.getDefaultInstance();
+      }
+
+      @java.lang.Override
+      public qorechain.amm.v1.Tx.MsgUpdateParamsResponse build() {
+        qorechain.amm.v1.Tx.MsgUpdateParamsResponse result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(result);
+        }
+        return result;
+      }
+
+      @java.lang.Override
+      public qorechain.amm.v1.Tx.MsgUpdateParamsResponse buildPartial() {
+        qorechain.amm.v1.Tx.MsgUpdateParamsResponse result = new qorechain.amm.v1.Tx.MsgUpdateParamsResponse(this);
+        onBuilt();
+        return result;
+      }
+
+      @java.lang.Override
+      public Builder mergeFrom(com.google.protobuf.Message other) {
+        if (other instanceof qorechain.amm.v1.Tx.MsgUpdateParamsResponse) {
+          return mergeFrom((qorechain.amm.v1.Tx.MsgUpdateParamsResponse)other);
+        } else {
+          super.mergeFrom(other);
+          return this;
+        }
+      }
+
+      public Builder mergeFrom(qorechain.amm.v1.Tx.MsgUpdateParamsResponse other) {
+        if (other == qorechain.amm.v1.Tx.MsgUpdateParamsResponse.getDefaultInstance()) return this;
+        this.mergeUnknownFields(other.getUnknownFields());
+        onChanged();
+        return this;
+      }
+
+      @java.lang.Override
+      public final boolean isInitialized() {
+        return true;
+      }
+
+      @java.lang.Override
+      public Builder mergeFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        if (extensionRegistry == null) {
+          throw new java.lang.NullPointerException();
+        }
+        try {
+          boolean done = false;
+          while (!done) {
+            int tag = input.readTag();
+            switch (tag) {
+              case 0:
+                done = true;
+                break;
+              default: {
+                if (!super.parseUnknownField(input, extensionRegistry, tag)) {
+                  done = true; // was an endgroup tag
+                }
+                break;
+              } // default:
+            } // switch (tag)
+          } // while (!done)
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          throw e.unwrapIOException();
+        } finally {
+          onChanged();
+        } // finally
+        return this;
+      }
+
+      // @@protoc_insertion_point(builder_scope:qorechain.amm.v1.MsgUpdateParamsResponse)
+    }
+
+    // @@protoc_insertion_point(class_scope:qorechain.amm.v1.MsgUpdateParamsResponse)
+    private static final qorechain.amm.v1.Tx.MsgUpdateParamsResponse DEFAULT_INSTANCE;
+    static {
+      DEFAULT_INSTANCE = new qorechain.amm.v1.Tx.MsgUpdateParamsResponse();
+    }
+
+    public static qorechain.amm.v1.Tx.MsgUpdateParamsResponse getDefaultInstance() {
+      return DEFAULT_INSTANCE;
+    }
+
+    private static final com.google.protobuf.Parser<MsgUpdateParamsResponse>
+        PARSER = new com.google.protobuf.AbstractParser<MsgUpdateParamsResponse>() {
+      @java.lang.Override
+      public MsgUpdateParamsResponse parsePartialFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        Builder builder = newBuilder();
+        try {
+          builder.mergeFrom(input, extensionRegistry);
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          throw e.setUnfinishedMessage(builder.buildPartial());
+        } catch (com.google.protobuf.UninitializedMessageException e) {
+          throw e.asInvalidProtocolBufferException().setUnfinishedMessage(builder.buildPartial());
+        } catch (java.io.IOException e) {
+          throw new com.google.protobuf.InvalidProtocolBufferException(e)
+              .setUnfinishedMessage(builder.buildPartial());
+        }
+        return builder.buildPartial();
+      }
+    };
+
+    public static com.google.protobuf.Parser<MsgUpdateParamsResponse> parser() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Parser<MsgUpdateParamsResponse> getParserForType() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public qorechain.amm.v1.Tx.MsgUpdateParamsResponse getDefaultInstanceForType() {
+      return DEFAULT_INSTANCE;
+    }
+
+  }
+
   private static final com.google.protobuf.Descriptors.Descriptor
     internal_static_qorechain_amm_v1_MsgCreatePool_descriptor;
   private static final 
@@ -9549,6 +10647,16 @@ public final class Tx extends com.google.protobuf.GeneratedFile {
   private static final 
     com.google.protobuf.GeneratedMessage.FieldAccessorTable
       internal_static_qorechain_amm_v1_MsgResumePoolResponse_fieldAccessorTable;
+  private static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_qorechain_amm_v1_MsgUpdateParams_descriptor;
+  private static final 
+    com.google.protobuf.GeneratedMessage.FieldAccessorTable
+      internal_static_qorechain_amm_v1_MsgUpdateParams_fieldAccessorTable;
+  private static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_qorechain_amm_v1_MsgUpdateParamsResponse_descriptor;
+  private static final 
+    com.google.protobuf.GeneratedMessage.FieldAccessorTable
+      internal_static_qorechain_amm_v1_MsgUpdateParamsResponse_fieldAccessorTable;
 
   public static com.google.protobuf.Descriptors.FileDescriptor
       getDescriptor() {
@@ -9561,75 +10669,83 @@ public final class Tx extends com.google.protobuf.GeneratedFile {
       "\n\031qorechain/amm/v1/tx.proto\022\020qorechain.a" +
       "mm.v1\032\027cosmos/msg/v1/msg.proto\032\031cosmos_p" +
       "roto/cosmos.proto\032\036cosmos/base/v1beta1/c" +
-      "oin.proto\032\024gogoproto/gogo.proto\"\323\002\n\rMsgC" +
-      "reatePool\0222\n\007creator\030\001 \001(\tB\030\322\264-\024cosmos.A" +
-      "ddressStringR\007creator\022)\n\tpool_type\030\002 \001(\t" +
-      "B\014\372\336\037\010PoolTypeR\010poolType\022K\n\021initial_depo" +
-      "sit_a\030\003 \001(\0132\031.cosmos.base.v1beta1.CoinB\004" +
-      "\310\336\037\000R\017initialDepositA\022K\n\021initial_deposit" +
-      "_b\030\004 \001(\0132\031.cosmos.base.v1beta1.CoinB\004\310\336\037" +
-      "\000R\017initialDepositB\022;\n\031amplification_coef" +
-      "ficient\030\005 \001(\rR\030amplificationCoefficient:" +
-      "\014\202\347\260*\007creator\"<\n\025MsgCreatePoolResponse\022#" +
-      "\n\007pool_id\030\001 \001(\004B\n\342\336\037\006PoolIDR\006poolId\"\266\002\n\017" +
-      "MsgAddLiquidity\0220\n\006sender\030\001 \001(\tB\030\322\264-\024cos" +
-      "mos.AddressStringR\006sender\022#\n\007pool_id\030\002 \001" +
-      "(\004B\n\342\336\037\006PoolIDR\006poolId\022:\n\010amount_a\030\003 \001(\013" +
-      "2\031.cosmos.base.v1beta1.CoinB\004\310\336\037\000R\007amoun" +
-      "tA\022:\n\010amount_b\030\004 \001(\0132\031.cosmos.base.v1bet" +
-      "a1.CoinB\004\310\336\037\000R\007amountB\022G\n\nmin_lp_out\030\005 \001" +
-      "(\tB)\310\336\037\000\332\336\037\025cosmossdk.io/math.Int\342\336\037\010Min" +
-      "LPOutR\010minLpOut:\013\202\347\260*\006sender\"\031\n\027MsgAddLi" +
-      "quidityResponse\"\302\002\n\022MsgRemoveLiquidity\0220" +
-      "\n\006sender\030\001 \001(\tB\030\322\264-\024cosmos.AddressString" +
-      "R\006sender\022#\n\007pool_id\030\002 \001(\004B\n\342\336\037\006PoolIDR\006p" +
-      "oolId\022F\n\tlp_amount\030\003 \001(\tB)\310\336\037\000\332\336\037\025cosmos" +
-      "sdk.io/math.Int\342\336\037\010LPAmountR\010lpAmount\022?\n" +
-      "\014min_amount_a\030\004 \001(\tB\035\310\336\037\000\332\336\037\025cosmossdk.i" +
-      "o/math.IntR\nminAmountA\022?\n\014min_amount_b\030\005" +
-      " \001(\tB\035\310\336\037\000\332\336\037\025cosmossdk.io/math.IntR\nmin" +
-      "AmountB:\013\202\347\260*\006sender\"\034\n\032MsgRemoveLiquidi" +
-      "tyResponse\"\205\002\n\016MsgSwapExactIn\0220\n\006sender\030" +
-      "\001 \001(\tB\030\322\264-\024cosmos.AddressStringR\006sender\022" +
-      "#\n\007pool_id\030\002 \001(\004B\n\342\336\037\006PoolIDR\006poolId\022:\n\010" +
-      "token_in\030\003 \001(\0132\031.cosmos.base.v1beta1.Coi" +
-      "nB\004\310\336\037\000R\007tokenIn\022\033\n\tdenom_out\030\004 \001(\tR\010den" +
-      "omOut\0226\n\007min_out\030\005 \001(\tB\035\310\336\037\000\332\336\037\025cosmossd" +
-      "k.io/math.IntR\006minOut:\013\202\347\260*\006sender\"\030\n\026Ms" +
-      "gSwapExactInResponse\"\204\002\n\017MsgSwapExactOut" +
-      "\0220\n\006sender\030\001 \001(\tB\030\322\264-\024cosmos.AddressStri" +
-      "ngR\006sender\022#\n\007pool_id\030\002 \001(\004B\n\342\336\037\006PoolIDR" +
-      "\006poolId\022\031\n\010denom_in\030\003 \001(\tR\007denomIn\022<\n\tto" +
-      "ken_out\030\004 \001(\0132\031.cosmos.base.v1beta1.Coin" +
-      "B\004\310\336\037\000R\010tokenOut\0224\n\006max_in\030\005 \001(\tB\035\310\336\037\000\332\336" +
-      "\037\025cosmossdk.io/math.IntR\005maxIn:\013\202\347\260*\006sen" +
-      "der\"\031\n\027MsgSwapExactOutResponse\"\223\001\n\014MsgPa" +
-      "usePool\0226\n\tauthority\030\001 \001(\tB\030\322\264-\024cosmos.A" +
-      "ddressStringR\tauthority\022#\n\007pool_id\030\002 \001(\004" +
-      "B\n\342\336\037\006PoolIDR\006poolId\022\026\n\006reason\030\003 \001(\tR\006re" +
-      "ason:\016\202\347\260*\tauthority\"\026\n\024MsgPausePoolResp" +
-      "onse\"|\n\rMsgResumePool\0226\n\tauthority\030\001 \001(\t" +
-      "B\030\322\264-\024cosmos.AddressStringR\tauthority\022#\n" +
-      "\007pool_id\030\002 \001(\004B\n\342\336\037\006PoolIDR\006poolId:\016\202\347\260*" +
-      "\tauthority\"\027\n\025MsgResumePoolResponse2\217\005\n\003" +
-      "Msg\022V\n\nCreatePool\022\037.qorechain.amm.v1.Msg" +
-      "CreatePool\032\'.qorechain.amm.v1.MsgCreateP" +
-      "oolResponse\022\\\n\014AddLiquidity\022!.qorechain." +
-      "amm.v1.MsgAddLiquidity\032).qorechain.amm.v" +
-      "1.MsgAddLiquidityResponse\022e\n\017RemoveLiqui" +
-      "dity\022$.qorechain.amm.v1.MsgRemoveLiquidi" +
-      "ty\032,.qorechain.amm.v1.MsgRemoveLiquidity" +
-      "Response\022Y\n\013SwapExactIn\022 .qorechain.amm." +
-      "v1.MsgSwapExactIn\032(.qorechain.amm.v1.Msg" +
-      "SwapExactInResponse\022\\\n\014SwapExactOut\022!.qo" +
-      "rechain.amm.v1.MsgSwapExactOut\032).qorecha" +
-      "in.amm.v1.MsgSwapExactOutResponse\022S\n\tPau" +
-      "sePool\022\036.qorechain.amm.v1.MsgPausePool\032&" +
-      ".qorechain.amm.v1.MsgPausePoolResponse\022V" +
-      "\n\nResumePool\022\037.qorechain.amm.v1.MsgResum" +
-      "ePool\032\'.qorechain.amm.v1.MsgResumePoolRe" +
-      "sponse\032\005\200\347\260*\001B1Z/github.com/qorechain/qo" +
-      "rechain-core/x/amm/typesb\006proto3"
+      "oin.proto\032\024gogoproto/gogo.proto\032\034qorecha" +
+      "in/amm/v1/query.proto\"\323\002\n\rMsgCreatePool\022" +
+      "2\n\007creator\030\001 \001(\tB\030\322\264-\024cosmos.AddressStri" +
+      "ngR\007creator\022)\n\tpool_type\030\002 \001(\tB\014\372\336\037\010Pool" +
+      "TypeR\010poolType\022K\n\021initial_deposit_a\030\003 \001(" +
+      "\0132\031.cosmos.base.v1beta1.CoinB\004\310\336\037\000R\017init" +
+      "ialDepositA\022K\n\021initial_deposit_b\030\004 \001(\0132\031" +
+      ".cosmos.base.v1beta1.CoinB\004\310\336\037\000R\017initial" +
+      "DepositB\022;\n\031amplification_coefficient\030\005 " +
+      "\001(\rR\030amplificationCoefficient:\014\202\347\260*\007crea" +
+      "tor\"<\n\025MsgCreatePoolResponse\022#\n\007pool_id\030" +
+      "\001 \001(\004B\n\342\336\037\006PoolIDR\006poolId\"\266\002\n\017MsgAddLiqu" +
+      "idity\0220\n\006sender\030\001 \001(\tB\030\322\264-\024cosmos.Addres" +
+      "sStringR\006sender\022#\n\007pool_id\030\002 \001(\004B\n\342\336\037\006Po" +
+      "olIDR\006poolId\022:\n\010amount_a\030\003 \001(\0132\031.cosmos." +
+      "base.v1beta1.CoinB\004\310\336\037\000R\007amountA\022:\n\010amou" +
+      "nt_b\030\004 \001(\0132\031.cosmos.base.v1beta1.CoinB\004\310" +
+      "\336\037\000R\007amountB\022G\n\nmin_lp_out\030\005 \001(\tB)\310\336\037\000\332\336" +
+      "\037\025cosmossdk.io/math.Int\342\336\037\010MinLPOutR\010min" +
+      "LpOut:\013\202\347\260*\006sender\"\031\n\027MsgAddLiquidityRes" +
+      "ponse\"\302\002\n\022MsgRemoveLiquidity\0220\n\006sender\030\001" +
+      " \001(\tB\030\322\264-\024cosmos.AddressStringR\006sender\022#" +
+      "\n\007pool_id\030\002 \001(\004B\n\342\336\037\006PoolIDR\006poolId\022F\n\tl" +
+      "p_amount\030\003 \001(\tB)\310\336\037\000\332\336\037\025cosmossdk.io/mat" +
+      "h.Int\342\336\037\010LPAmountR\010lpAmount\022?\n\014min_amoun" +
+      "t_a\030\004 \001(\tB\035\310\336\037\000\332\336\037\025cosmossdk.io/math.Int" +
+      "R\nminAmountA\022?\n\014min_amount_b\030\005 \001(\tB\035\310\336\037\000" +
+      "\332\336\037\025cosmossdk.io/math.IntR\nminAmountB:\013\202" +
+      "\347\260*\006sender\"\034\n\032MsgRemoveLiquidityResponse" +
+      "\"\205\002\n\016MsgSwapExactIn\0220\n\006sender\030\001 \001(\tB\030\322\264-" +
+      "\024cosmos.AddressStringR\006sender\022#\n\007pool_id" +
+      "\030\002 \001(\004B\n\342\336\037\006PoolIDR\006poolId\022:\n\010token_in\030\003" +
+      " \001(\0132\031.cosmos.base.v1beta1.CoinB\004\310\336\037\000R\007t" +
+      "okenIn\022\033\n\tdenom_out\030\004 \001(\tR\010denomOut\0226\n\007m" +
+      "in_out\030\005 \001(\tB\035\310\336\037\000\332\336\037\025cosmossdk.io/math." +
+      "IntR\006minOut:\013\202\347\260*\006sender\"\030\n\026MsgSwapExact" +
+      "InResponse\"\204\002\n\017MsgSwapExactOut\0220\n\006sender" +
+      "\030\001 \001(\tB\030\322\264-\024cosmos.AddressStringR\006sender" +
+      "\022#\n\007pool_id\030\002 \001(\004B\n\342\336\037\006PoolIDR\006poolId\022\031\n" +
+      "\010denom_in\030\003 \001(\tR\007denomIn\022<\n\ttoken_out\030\004 " +
+      "\001(\0132\031.cosmos.base.v1beta1.CoinB\004\310\336\037\000R\010to" +
+      "kenOut\0224\n\006max_in\030\005 \001(\tB\035\310\336\037\000\332\336\037\025cosmossd" +
+      "k.io/math.IntR\005maxIn:\013\202\347\260*\006sender\"\031\n\027Msg" +
+      "SwapExactOutResponse\"\223\001\n\014MsgPausePool\0226\n" +
+      "\tauthority\030\001 \001(\tB\030\322\264-\024cosmos.AddressStri" +
+      "ngR\tauthority\022#\n\007pool_id\030\002 \001(\004B\n\342\336\037\006Pool" +
+      "IDR\006poolId\022\026\n\006reason\030\003 \001(\tR\006reason:\016\202\347\260*" +
+      "\tauthority\"\026\n\024MsgPausePoolResponse\"|\n\rMs" +
+      "gResumePool\0226\n\tauthority\030\001 \001(\tB\030\322\264-\024cosm" +
+      "os.AddressStringR\tauthority\022#\n\007pool_id\030\002" +
+      " \001(\004B\n\342\336\037\006PoolIDR\006poolId:\016\202\347\260*\tauthority" +
+      "\"\027\n\025MsgResumePoolResponse\"\225\001\n\017MsgUpdateP" +
+      "arams\0226\n\tauthority\030\001 \001(\tB\030\322\264-\024cosmos.Add" +
+      "ressStringR\tauthority\022:\n\006params\030\002 \001(\0132\034." +
+      "qorechain.amm.v1.ParamsViewB\004\310\336\037\000R\006param" +
+      "s:\016\202\347\260*\tauthority\"\031\n\027MsgUpdateParamsResp" +
+      "onse2\355\005\n\003Msg\022V\n\nCreatePool\022\037.qorechain.a" +
+      "mm.v1.MsgCreatePool\032\'.qorechain.amm.v1.M" +
+      "sgCreatePoolResponse\022\\\n\014AddLiquidity\022!.q" +
+      "orechain.amm.v1.MsgAddLiquidity\032).qorech" +
+      "ain.amm.v1.MsgAddLiquidityResponse\022e\n\017Re" +
+      "moveLiquidity\022$.qorechain.amm.v1.MsgRemo" +
+      "veLiquidity\032,.qorechain.amm.v1.MsgRemove" +
+      "LiquidityResponse\022Y\n\013SwapExactIn\022 .qorec" +
+      "hain.amm.v1.MsgSwapExactIn\032(.qorechain.a" +
+      "mm.v1.MsgSwapExactInResponse\022\\\n\014SwapExac" +
+      "tOut\022!.qorechain.amm.v1.MsgSwapExactOut\032" +
+      ").qorechain.amm.v1.MsgSwapExactOutRespon" +
+      "se\022S\n\tPausePool\022\036.qorechain.amm.v1.MsgPa" +
+      "usePool\032&.qorechain.amm.v1.MsgPausePoolR" +
+      "esponse\022V\n\nResumePool\022\037.qorechain.amm.v1" +
+      ".MsgResumePool\032\'.qorechain.amm.v1.MsgRes" +
+      "umePoolResponse\022\\\n\014UpdateParams\022!.qorech" +
+      "ain.amm.v1.MsgUpdateParams\032).qorechain.a" +
+      "mm.v1.MsgUpdateParamsResponse\032\005\200\347\260*\001B1Z/" +
+      "github.com/qorechain/qorechain-core/x/am" +
+      "m/typesb\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
@@ -9638,6 +10754,7 @@ public final class Tx extends com.google.protobuf.GeneratedFile {
           cosmos_proto.Cosmos.getDescriptor(),
           cosmos.base.v1beta1.CoinOuterClass.getDescriptor(),
           com.google.protobuf.GoGoProtos.getDescriptor(),
+          qorechain.amm.v1.QueryOuterClass.getDescriptor(),
         });
     internal_static_qorechain_amm_v1_MsgCreatePool_descriptor =
       getDescriptor().getMessageType(0);
@@ -9723,11 +10840,24 @@ public final class Tx extends com.google.protobuf.GeneratedFile {
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_qorechain_amm_v1_MsgResumePoolResponse_descriptor,
         new java.lang.String[] { });
+    internal_static_qorechain_amm_v1_MsgUpdateParams_descriptor =
+      getDescriptor().getMessageType(14);
+    internal_static_qorechain_amm_v1_MsgUpdateParams_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessage.FieldAccessorTable(
+        internal_static_qorechain_amm_v1_MsgUpdateParams_descriptor,
+        new java.lang.String[] { "Authority", "Params", });
+    internal_static_qorechain_amm_v1_MsgUpdateParamsResponse_descriptor =
+      getDescriptor().getMessageType(15);
+    internal_static_qorechain_amm_v1_MsgUpdateParamsResponse_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessage.FieldAccessorTable(
+        internal_static_qorechain_amm_v1_MsgUpdateParamsResponse_descriptor,
+        new java.lang.String[] { });
     descriptor.resolveAllFeaturesImmutable();
     cosmos.msg.v1.Msg.getDescriptor();
     cosmos_proto.Cosmos.getDescriptor();
     cosmos.base.v1beta1.CoinOuterClass.getDescriptor();
     com.google.protobuf.GoGoProtos.getDescriptor();
+    qorechain.amm.v1.QueryOuterClass.getDescriptor();
     com.google.protobuf.ExtensionRegistry registry =
         com.google.protobuf.ExtensionRegistry.newInstance();
     registry.add(cosmos.msg.v1.Msg.service);

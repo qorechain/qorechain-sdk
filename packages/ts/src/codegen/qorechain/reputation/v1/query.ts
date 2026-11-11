@@ -21,6 +21,47 @@ export interface QueryParamsResponse {
   minScore: string;
 }
 
+/**
+ * ReputationRecord mirrors the stored record (x/reputation/types.ValidatorReputation),
+ * plus the operator address resolved through x/staking.
+ */
+export interface ReputationRecord {
+  /** consensus_address is the record key (qorvalcons...). */
+  consensusAddress: string;
+  /** operator_address is the qorvaloper... address; empty when x/staking no longer knows the validator. */
+  operatorAddress: string;
+  stakeScore: string;
+  performanceScore: string;
+  contributionScore: string;
+  timeScore: string;
+  /** composite_score is R_i (LegacyDec string). */
+  compositeScore: string;
+  lastUpdatedHeight: string;
+  uptimeBlocks: string;
+  proposedBlocks: string;
+  missedBlocks: string;
+  slashingEvents: string;
+  communityVotes: string;
+  joinedAtHeight: string;
+  govParticipation: string;
+  inactiveSince: string;
+}
+
+export interface QueryReputationRequest {
+  validatorAddress: string;
+}
+
+export interface QueryReputationResponse {
+  reputation?: ReputationRecord | undefined;
+}
+
+export interface QueryReputationsRequest {
+}
+
+export interface QueryReputationsResponse {
+  reputations: ReputationRecord[];
+}
+
 function createBaseQueryParamsRequest(): QueryParamsRequest {
   return {};
 }
@@ -208,6 +249,616 @@ export const QueryParamsResponse: MessageFns<QueryParamsResponse> = {
   },
 };
 
+function createBaseReputationRecord(): ReputationRecord {
+  return {
+    consensusAddress: "",
+    operatorAddress: "",
+    stakeScore: "",
+    performanceScore: "",
+    contributionScore: "",
+    timeScore: "",
+    compositeScore: "",
+    lastUpdatedHeight: "0",
+    uptimeBlocks: "0",
+    proposedBlocks: "0",
+    missedBlocks: "0",
+    slashingEvents: "0",
+    communityVotes: "0",
+    joinedAtHeight: "0",
+    govParticipation: "",
+    inactiveSince: "0",
+  };
+}
+
+export const ReputationRecord: MessageFns<ReputationRecord> = {
+  encode(message: ReputationRecord, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.consensusAddress !== "") {
+      writer.uint32(10).string(message.consensusAddress);
+    }
+    if (message.operatorAddress !== "") {
+      writer.uint32(18).string(message.operatorAddress);
+    }
+    if (message.stakeScore !== "") {
+      writer.uint32(26).string(message.stakeScore);
+    }
+    if (message.performanceScore !== "") {
+      writer.uint32(34).string(message.performanceScore);
+    }
+    if (message.contributionScore !== "") {
+      writer.uint32(42).string(message.contributionScore);
+    }
+    if (message.timeScore !== "") {
+      writer.uint32(50).string(message.timeScore);
+    }
+    if (message.compositeScore !== "") {
+      writer.uint32(58).string(message.compositeScore);
+    }
+    if (message.lastUpdatedHeight !== "0") {
+      writer.uint32(64).int64(message.lastUpdatedHeight);
+    }
+    if (message.uptimeBlocks !== "0") {
+      writer.uint32(72).uint64(message.uptimeBlocks);
+    }
+    if (message.proposedBlocks !== "0") {
+      writer.uint32(80).uint64(message.proposedBlocks);
+    }
+    if (message.missedBlocks !== "0") {
+      writer.uint32(88).uint64(message.missedBlocks);
+    }
+    if (message.slashingEvents !== "0") {
+      writer.uint32(96).uint64(message.slashingEvents);
+    }
+    if (message.communityVotes !== "0") {
+      writer.uint32(104).int64(message.communityVotes);
+    }
+    if (message.joinedAtHeight !== "0") {
+      writer.uint32(112).int64(message.joinedAtHeight);
+    }
+    if (message.govParticipation !== "") {
+      writer.uint32(122).string(message.govParticipation);
+    }
+    if (message.inactiveSince !== "0") {
+      writer.uint32(128).int64(message.inactiveSince);
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): ReputationRecord {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseReputationRecord();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.consensusAddress = reader.string();
+          continue;
+        }
+        case 2: {
+          if (tag !== 18) {
+            break;
+          }
+
+          message.operatorAddress = reader.string();
+          continue;
+        }
+        case 3: {
+          if (tag !== 26) {
+            break;
+          }
+
+          message.stakeScore = reader.string();
+          continue;
+        }
+        case 4: {
+          if (tag !== 34) {
+            break;
+          }
+
+          message.performanceScore = reader.string();
+          continue;
+        }
+        case 5: {
+          if (tag !== 42) {
+            break;
+          }
+
+          message.contributionScore = reader.string();
+          continue;
+        }
+        case 6: {
+          if (tag !== 50) {
+            break;
+          }
+
+          message.timeScore = reader.string();
+          continue;
+        }
+        case 7: {
+          if (tag !== 58) {
+            break;
+          }
+
+          message.compositeScore = reader.string();
+          continue;
+        }
+        case 8: {
+          if (tag !== 64) {
+            break;
+          }
+
+          message.lastUpdatedHeight = reader.int64().toString();
+          continue;
+        }
+        case 9: {
+          if (tag !== 72) {
+            break;
+          }
+
+          message.uptimeBlocks = reader.uint64().toString();
+          continue;
+        }
+        case 10: {
+          if (tag !== 80) {
+            break;
+          }
+
+          message.proposedBlocks = reader.uint64().toString();
+          continue;
+        }
+        case 11: {
+          if (tag !== 88) {
+            break;
+          }
+
+          message.missedBlocks = reader.uint64().toString();
+          continue;
+        }
+        case 12: {
+          if (tag !== 96) {
+            break;
+          }
+
+          message.slashingEvents = reader.uint64().toString();
+          continue;
+        }
+        case 13: {
+          if (tag !== 104) {
+            break;
+          }
+
+          message.communityVotes = reader.int64().toString();
+          continue;
+        }
+        case 14: {
+          if (tag !== 112) {
+            break;
+          }
+
+          message.joinedAtHeight = reader.int64().toString();
+          continue;
+        }
+        case 15: {
+          if (tag !== 122) {
+            break;
+          }
+
+          message.govParticipation = reader.string();
+          continue;
+        }
+        case 16: {
+          if (tag !== 128) {
+            break;
+          }
+
+          message.inactiveSince = reader.int64().toString();
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(object: any): ReputationRecord {
+    return {
+      consensusAddress: isSet(object.consensusAddress)
+        ? globalThis.String(object.consensusAddress)
+        : isSet(object.consensus_address)
+        ? globalThis.String(object.consensus_address)
+        : "",
+      operatorAddress: isSet(object.operatorAddress)
+        ? globalThis.String(object.operatorAddress)
+        : isSet(object.operator_address)
+        ? globalThis.String(object.operator_address)
+        : "",
+      stakeScore: isSet(object.stakeScore)
+        ? globalThis.String(object.stakeScore)
+        : isSet(object.stake_score)
+        ? globalThis.String(object.stake_score)
+        : "",
+      performanceScore: isSet(object.performanceScore)
+        ? globalThis.String(object.performanceScore)
+        : isSet(object.performance_score)
+        ? globalThis.String(object.performance_score)
+        : "",
+      contributionScore: isSet(object.contributionScore)
+        ? globalThis.String(object.contributionScore)
+        : isSet(object.contribution_score)
+        ? globalThis.String(object.contribution_score)
+        : "",
+      timeScore: isSet(object.timeScore)
+        ? globalThis.String(object.timeScore)
+        : isSet(object.time_score)
+        ? globalThis.String(object.time_score)
+        : "",
+      compositeScore: isSet(object.compositeScore)
+        ? globalThis.String(object.compositeScore)
+        : isSet(object.composite_score)
+        ? globalThis.String(object.composite_score)
+        : "",
+      lastUpdatedHeight: isSet(object.lastUpdatedHeight)
+        ? globalThis.String(object.lastUpdatedHeight)
+        : isSet(object.last_updated_height)
+        ? globalThis.String(object.last_updated_height)
+        : "0",
+      uptimeBlocks: isSet(object.uptimeBlocks)
+        ? globalThis.String(object.uptimeBlocks)
+        : isSet(object.uptime_blocks)
+        ? globalThis.String(object.uptime_blocks)
+        : "0",
+      proposedBlocks: isSet(object.proposedBlocks)
+        ? globalThis.String(object.proposedBlocks)
+        : isSet(object.proposed_blocks)
+        ? globalThis.String(object.proposed_blocks)
+        : "0",
+      missedBlocks: isSet(object.missedBlocks)
+        ? globalThis.String(object.missedBlocks)
+        : isSet(object.missed_blocks)
+        ? globalThis.String(object.missed_blocks)
+        : "0",
+      slashingEvents: isSet(object.slashingEvents)
+        ? globalThis.String(object.slashingEvents)
+        : isSet(object.slashing_events)
+        ? globalThis.String(object.slashing_events)
+        : "0",
+      communityVotes: isSet(object.communityVotes)
+        ? globalThis.String(object.communityVotes)
+        : isSet(object.community_votes)
+        ? globalThis.String(object.community_votes)
+        : "0",
+      joinedAtHeight: isSet(object.joinedAtHeight)
+        ? globalThis.String(object.joinedAtHeight)
+        : isSet(object.joined_at_height)
+        ? globalThis.String(object.joined_at_height)
+        : "0",
+      govParticipation: isSet(object.govParticipation)
+        ? globalThis.String(object.govParticipation)
+        : isSet(object.gov_participation)
+        ? globalThis.String(object.gov_participation)
+        : "",
+      inactiveSince: isSet(object.inactiveSince)
+        ? globalThis.String(object.inactiveSince)
+        : isSet(object.inactive_since)
+        ? globalThis.String(object.inactive_since)
+        : "0",
+    };
+  },
+
+  toJSON(message: ReputationRecord): unknown {
+    const obj: any = {};
+    if (message.consensusAddress !== "") {
+      obj.consensusAddress = message.consensusAddress;
+    }
+    if (message.operatorAddress !== "") {
+      obj.operatorAddress = message.operatorAddress;
+    }
+    if (message.stakeScore !== "") {
+      obj.stakeScore = message.stakeScore;
+    }
+    if (message.performanceScore !== "") {
+      obj.performanceScore = message.performanceScore;
+    }
+    if (message.contributionScore !== "") {
+      obj.contributionScore = message.contributionScore;
+    }
+    if (message.timeScore !== "") {
+      obj.timeScore = message.timeScore;
+    }
+    if (message.compositeScore !== "") {
+      obj.compositeScore = message.compositeScore;
+    }
+    if (message.lastUpdatedHeight !== "0") {
+      obj.lastUpdatedHeight = message.lastUpdatedHeight;
+    }
+    if (message.uptimeBlocks !== "0") {
+      obj.uptimeBlocks = message.uptimeBlocks;
+    }
+    if (message.proposedBlocks !== "0") {
+      obj.proposedBlocks = message.proposedBlocks;
+    }
+    if (message.missedBlocks !== "0") {
+      obj.missedBlocks = message.missedBlocks;
+    }
+    if (message.slashingEvents !== "0") {
+      obj.slashingEvents = message.slashingEvents;
+    }
+    if (message.communityVotes !== "0") {
+      obj.communityVotes = message.communityVotes;
+    }
+    if (message.joinedAtHeight !== "0") {
+      obj.joinedAtHeight = message.joinedAtHeight;
+    }
+    if (message.govParticipation !== "") {
+      obj.govParticipation = message.govParticipation;
+    }
+    if (message.inactiveSince !== "0") {
+      obj.inactiveSince = message.inactiveSince;
+    }
+    return obj;
+  },
+
+  create(base?: DeepPartial<ReputationRecord>): ReputationRecord {
+    return ReputationRecord.fromPartial(base ?? {});
+  },
+  fromPartial(object: DeepPartial<ReputationRecord>): ReputationRecord {
+    const message = createBaseReputationRecord();
+    message.consensusAddress = object.consensusAddress ?? "";
+    message.operatorAddress = object.operatorAddress ?? "";
+    message.stakeScore = object.stakeScore ?? "";
+    message.performanceScore = object.performanceScore ?? "";
+    message.contributionScore = object.contributionScore ?? "";
+    message.timeScore = object.timeScore ?? "";
+    message.compositeScore = object.compositeScore ?? "";
+    message.lastUpdatedHeight = object.lastUpdatedHeight ?? "0";
+    message.uptimeBlocks = object.uptimeBlocks ?? "0";
+    message.proposedBlocks = object.proposedBlocks ?? "0";
+    message.missedBlocks = object.missedBlocks ?? "0";
+    message.slashingEvents = object.slashingEvents ?? "0";
+    message.communityVotes = object.communityVotes ?? "0";
+    message.joinedAtHeight = object.joinedAtHeight ?? "0";
+    message.govParticipation = object.govParticipation ?? "";
+    message.inactiveSince = object.inactiveSince ?? "0";
+    return message;
+  },
+};
+
+function createBaseQueryReputationRequest(): QueryReputationRequest {
+  return { validatorAddress: "" };
+}
+
+export const QueryReputationRequest: MessageFns<QueryReputationRequest> = {
+  encode(message: QueryReputationRequest, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.validatorAddress !== "") {
+      writer.uint32(10).string(message.validatorAddress);
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): QueryReputationRequest {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseQueryReputationRequest();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.validatorAddress = reader.string();
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(object: any): QueryReputationRequest {
+    return {
+      validatorAddress: isSet(object.validatorAddress)
+        ? globalThis.String(object.validatorAddress)
+        : isSet(object.validator_address)
+        ? globalThis.String(object.validator_address)
+        : "",
+    };
+  },
+
+  toJSON(message: QueryReputationRequest): unknown {
+    const obj: any = {};
+    if (message.validatorAddress !== "") {
+      obj.validatorAddress = message.validatorAddress;
+    }
+    return obj;
+  },
+
+  create(base?: DeepPartial<QueryReputationRequest>): QueryReputationRequest {
+    return QueryReputationRequest.fromPartial(base ?? {});
+  },
+  fromPartial(object: DeepPartial<QueryReputationRequest>): QueryReputationRequest {
+    const message = createBaseQueryReputationRequest();
+    message.validatorAddress = object.validatorAddress ?? "";
+    return message;
+  },
+};
+
+function createBaseQueryReputationResponse(): QueryReputationResponse {
+  return { reputation: undefined };
+}
+
+export const QueryReputationResponse: MessageFns<QueryReputationResponse> = {
+  encode(message: QueryReputationResponse, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.reputation !== undefined) {
+      ReputationRecord.encode(message.reputation, writer.uint32(10).fork()).join();
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): QueryReputationResponse {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseQueryReputationResponse();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.reputation = ReputationRecord.decode(reader, reader.uint32());
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(object: any): QueryReputationResponse {
+    return { reputation: isSet(object.reputation) ? ReputationRecord.fromJSON(object.reputation) : undefined };
+  },
+
+  toJSON(message: QueryReputationResponse): unknown {
+    const obj: any = {};
+    if (message.reputation !== undefined) {
+      obj.reputation = ReputationRecord.toJSON(message.reputation);
+    }
+    return obj;
+  },
+
+  create(base?: DeepPartial<QueryReputationResponse>): QueryReputationResponse {
+    return QueryReputationResponse.fromPartial(base ?? {});
+  },
+  fromPartial(object: DeepPartial<QueryReputationResponse>): QueryReputationResponse {
+    const message = createBaseQueryReputationResponse();
+    message.reputation = (object.reputation !== undefined && object.reputation !== null)
+      ? ReputationRecord.fromPartial(object.reputation)
+      : undefined;
+    return message;
+  },
+};
+
+function createBaseQueryReputationsRequest(): QueryReputationsRequest {
+  return {};
+}
+
+export const QueryReputationsRequest: MessageFns<QueryReputationsRequest> = {
+  encode(_: QueryReputationsRequest, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): QueryReputationsRequest {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseQueryReputationsRequest();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(_: any): QueryReputationsRequest {
+    return {};
+  },
+
+  toJSON(_: QueryReputationsRequest): unknown {
+    const obj: any = {};
+    return obj;
+  },
+
+  create(base?: DeepPartial<QueryReputationsRequest>): QueryReputationsRequest {
+    return QueryReputationsRequest.fromPartial(base ?? {});
+  },
+  fromPartial(_: DeepPartial<QueryReputationsRequest>): QueryReputationsRequest {
+    const message = createBaseQueryReputationsRequest();
+    return message;
+  },
+};
+
+function createBaseQueryReputationsResponse(): QueryReputationsResponse {
+  return { reputations: [] };
+}
+
+export const QueryReputationsResponse: MessageFns<QueryReputationsResponse> = {
+  encode(message: QueryReputationsResponse, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    for (const v of message.reputations) {
+      ReputationRecord.encode(v!, writer.uint32(10).fork()).join();
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): QueryReputationsResponse {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseQueryReputationsResponse();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.reputations.push(ReputationRecord.decode(reader, reader.uint32()));
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(object: any): QueryReputationsResponse {
+    return {
+      reputations: globalThis.Array.isArray(object?.reputations)
+        ? object.reputations.map((e: any) => ReputationRecord.fromJSON(e))
+        : [],
+    };
+  },
+
+  toJSON(message: QueryReputationsResponse): unknown {
+    const obj: any = {};
+    if (message.reputations?.length) {
+      obj.reputations = message.reputations.map((e) => ReputationRecord.toJSON(e));
+    }
+    return obj;
+  },
+
+  create(base?: DeepPartial<QueryReputationsResponse>): QueryReputationsResponse {
+    return QueryReputationsResponse.fromPartial(base ?? {});
+  },
+  fromPartial(object: DeepPartial<QueryReputationsResponse>): QueryReputationsResponse {
+    const message = createBaseQueryReputationsResponse();
+    message.reputations = object.reputations?.map((e) => ReputationRecord.fromPartial(e)) || [];
+    return message;
+  },
+};
+
 /** Query defines the reputation module's gRPC query service. */
 export type QueryDefinition = typeof QueryDefinition;
 export const QueryDefinition = {
@@ -221,7 +872,178 @@ export const QueryDefinition = {
       requestStream: false,
       responseType: QueryParamsResponse as typeof QueryParamsResponse,
       responseStream: false,
-      options: {},
+      options: {
+        _unknownFields: {
+          578365826: [
+            new Uint8Array([
+              33,
+              18,
+              31,
+              47,
+              113,
+              111,
+              114,
+              101,
+              99,
+              104,
+              97,
+              105,
+              110,
+              47,
+              114,
+              101,
+              112,
+              117,
+              116,
+              97,
+              116,
+              105,
+              111,
+              110,
+              47,
+              118,
+              49,
+              47,
+              112,
+              97,
+              114,
+              97,
+              109,
+              115,
+            ]) as Uint8Array,
+          ],
+        },
+      },
+    },
+    /**
+     * Reputation returns one validator's reputation record. validator_address
+     * may be the operator (qorvaloper...) or the consensus (qorvalcons...) address.
+     */
+    reputation: {
+      name: "Reputation",
+      requestType: QueryReputationRequest as typeof QueryReputationRequest,
+      requestStream: false,
+      responseType: QueryReputationResponse as typeof QueryReputationResponse,
+      responseStream: false,
+      options: {
+        _unknownFields: {
+          578365826: [
+            new Uint8Array([
+              56,
+              18,
+              54,
+              47,
+              113,
+              111,
+              114,
+              101,
+              99,
+              104,
+              97,
+              105,
+              110,
+              47,
+              114,
+              101,
+              112,
+              117,
+              116,
+              97,
+              116,
+              105,
+              111,
+              110,
+              47,
+              118,
+              49,
+              47,
+              118,
+              97,
+              108,
+              105,
+              100,
+              97,
+              116,
+              111,
+              114,
+              47,
+              123,
+              118,
+              97,
+              108,
+              105,
+              100,
+              97,
+              116,
+              111,
+              114,
+              95,
+              97,
+              100,
+              100,
+              114,
+              101,
+              115,
+              115,
+              125,
+            ]) as Uint8Array,
+          ],
+        },
+      },
+    },
+    /** Reputations returns every stored reputation record, ordered by consensus address. */
+    reputations: {
+      name: "Reputations",
+      requestType: QueryReputationsRequest as typeof QueryReputationsRequest,
+      requestStream: false,
+      responseType: QueryReputationsResponse as typeof QueryReputationsResponse,
+      responseStream: false,
+      options: {
+        _unknownFields: {
+          578365826: [
+            new Uint8Array([
+              37,
+              18,
+              35,
+              47,
+              113,
+              111,
+              114,
+              101,
+              99,
+              104,
+              97,
+              105,
+              110,
+              47,
+              114,
+              101,
+              112,
+              117,
+              116,
+              97,
+              116,
+              105,
+              111,
+              110,
+              47,
+              118,
+              49,
+              47,
+              118,
+              97,
+              108,
+              105,
+              100,
+              97,
+              116,
+              111,
+              114,
+              115,
+            ]) as Uint8Array,
+          ],
+        },
+      },
     },
   },
 } as const;

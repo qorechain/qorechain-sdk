@@ -6480,6 +6480,43 @@ public final class Tx extends com.google.protobuf.GeneratedFile {
      * @return The maxCpi.
      */
     int getMaxCpi();
+
+    /**
+     * <pre>
+     * max_custody_uqor caps the uqor balance of the svm module account (the
+     * custody backing program, PDA and data-account lamports). 0 means no cap.
+     * Enforced only while the svm-lane-governed protocol feature is on.
+     * </pre>
+     *
+     * <code>uint64 max_custody_uqor = 10 [json_name = "maxCustodyUqor"];</code>
+     * @return The maxCustodyUqor.
+     */
+    long getMaxCustodyUqor();
+
+    /**
+     * <pre>
+     * max_custody_hard_uqor is the absolute ceiling on the svm module account's
+     * raw uqor balance (rent reserves, pre-funding and donations included):
+     * with svm-custody-hard-ceiling any operation that would leave the balance
+     * above it is refused. 0 means no ceiling; governance must set one before
+     * opening the lane on any network. It should be well above max_custody_uqor.
+     * </pre>
+     *
+     * <code>uint64 max_custody_hard_uqor = 11 [json_name = "maxCustodyHardUqor"];</code>
+     * @return The maxCustodyHardUqor.
+     */
+    long getMaxCustodyHardUqor();
+
+    /**
+     * <pre>
+     * max_account_excess_uqor caps, per store account, the uqor above its
+     * rent-exempt minimum (svm-account-excess-cap); 0 means no cap.
+     * </pre>
+     *
+     * <code>uint64 max_account_excess_uqor = 12 [json_name = "maxAccountExcessUqor"];</code>
+     * @return The maxAccountExcessUqor.
+     */
+    long getMaxAccountExcessUqor();
   }
   /**
    * <pre>
@@ -6656,6 +6693,58 @@ public final class Tx extends com.google.protobuf.GeneratedFile {
       return maxCpi_;
     }
 
+    public static final int MAX_CUSTODY_UQOR_FIELD_NUMBER = 10;
+    private long maxCustodyUqor_ = 0L;
+    /**
+     * <pre>
+     * max_custody_uqor caps the uqor balance of the svm module account (the
+     * custody backing program, PDA and data-account lamports). 0 means no cap.
+     * Enforced only while the svm-lane-governed protocol feature is on.
+     * </pre>
+     *
+     * <code>uint64 max_custody_uqor = 10 [json_name = "maxCustodyUqor"];</code>
+     * @return The maxCustodyUqor.
+     */
+    @java.lang.Override
+    public long getMaxCustodyUqor() {
+      return maxCustodyUqor_;
+    }
+
+    public static final int MAX_CUSTODY_HARD_UQOR_FIELD_NUMBER = 11;
+    private long maxCustodyHardUqor_ = 0L;
+    /**
+     * <pre>
+     * max_custody_hard_uqor is the absolute ceiling on the svm module account's
+     * raw uqor balance (rent reserves, pre-funding and donations included):
+     * with svm-custody-hard-ceiling any operation that would leave the balance
+     * above it is refused. 0 means no ceiling; governance must set one before
+     * opening the lane on any network. It should be well above max_custody_uqor.
+     * </pre>
+     *
+     * <code>uint64 max_custody_hard_uqor = 11 [json_name = "maxCustodyHardUqor"];</code>
+     * @return The maxCustodyHardUqor.
+     */
+    @java.lang.Override
+    public long getMaxCustodyHardUqor() {
+      return maxCustodyHardUqor_;
+    }
+
+    public static final int MAX_ACCOUNT_EXCESS_UQOR_FIELD_NUMBER = 12;
+    private long maxAccountExcessUqor_ = 0L;
+    /**
+     * <pre>
+     * max_account_excess_uqor caps, per store account, the uqor above its
+     * rent-exempt minimum (svm-account-excess-cap); 0 means no cap.
+     * </pre>
+     *
+     * <code>uint64 max_account_excess_uqor = 12 [json_name = "maxAccountExcessUqor"];</code>
+     * @return The maxAccountExcessUqor.
+     */
+    @java.lang.Override
+    public long getMaxAccountExcessUqor() {
+      return maxAccountExcessUqor_;
+    }
+
     private byte memoizedIsInitialized = -1;
     @java.lang.Override
     public final boolean isInitialized() {
@@ -6697,6 +6786,15 @@ public final class Tx extends com.google.protobuf.GeneratedFile {
       if (maxCpi_ != 0) {
         output.writeUInt32(9, maxCpi_);
       }
+      if (maxCustodyUqor_ != 0L) {
+        output.writeUInt64(10, maxCustodyUqor_);
+      }
+      if (maxCustodyHardUqor_ != 0L) {
+        output.writeUInt64(11, maxCustodyHardUqor_);
+      }
+      if (maxAccountExcessUqor_ != 0L) {
+        output.writeUInt64(12, maxAccountExcessUqor_);
+      }
       getUnknownFields().writeTo(output);
     }
     private int computeSerializedSize_0() {
@@ -6735,6 +6833,18 @@ public final class Tx extends com.google.protobuf.GeneratedFile {
       if (maxCpi_ != 0) {
         size += com.google.protobuf.CodedOutputStream
           .computeUInt32Size(9, maxCpi_);
+      }
+      if (maxCustodyUqor_ != 0L) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeUInt64Size(10, maxCustodyUqor_);
+      }
+      if (maxCustodyHardUqor_ != 0L) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeUInt64Size(11, maxCustodyHardUqor_);
+      }
+      if (maxAccountExcessUqor_ != 0L) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeUInt64Size(12, maxAccountExcessUqor_);
       }
       return size;
     }
@@ -6778,6 +6888,12 @@ public final class Tx extends com.google.protobuf.GeneratedFile {
           != other.getDefaultSigScheme()) return false;
       if (getMaxCpi()
           != other.getMaxCpi()) return false;
+      if (getMaxCustodyUqor()
+          != other.getMaxCustodyUqor()) return false;
+      if (getMaxCustodyHardUqor()
+          != other.getMaxCustodyHardUqor()) return false;
+      if (getMaxAccountExcessUqor()
+          != other.getMaxAccountExcessUqor()) return false;
       if (!getUnknownFields().equals(other.getUnknownFields())) return false;
       return true;
     }
@@ -6813,6 +6929,15 @@ public final class Tx extends com.google.protobuf.GeneratedFile {
       hash = (53 * hash) + getDefaultSigScheme();
       hash = (37 * hash) + MAX_CPI_FIELD_NUMBER;
       hash = (53 * hash) + getMaxCpi();
+      hash = (37 * hash) + MAX_CUSTODY_UQOR_FIELD_NUMBER;
+      hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
+          getMaxCustodyUqor());
+      hash = (37 * hash) + MAX_CUSTODY_HARD_UQOR_FIELD_NUMBER;
+      hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
+          getMaxCustodyHardUqor());
+      hash = (37 * hash) + MAX_ACCOUNT_EXCESS_UQOR_FIELD_NUMBER;
+      hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
+          getMaxAccountExcessUqor());
       hash = (29 * hash) + getUnknownFields().hashCode();
       memoizedHashCode = hash;
       return hash;
@@ -6958,6 +7083,9 @@ public final class Tx extends com.google.protobuf.GeneratedFile {
         svmSlotOffset_ = 0L;
         defaultSigScheme_ = 0;
         maxCpi_ = 0;
+        maxCustodyUqor_ = 0L;
+        maxCustodyHardUqor_ = 0L;
+        maxAccountExcessUqor_ = 0L;
         return this;
       }
 
@@ -7018,6 +7146,15 @@ public final class Tx extends com.google.protobuf.GeneratedFile {
         if (((from_bitField0_ & 0x00000100) != 0)) {
           result.maxCpi_ = maxCpi_;
         }
+        if (((from_bitField0_ & 0x00000200) != 0)) {
+          result.maxCustodyUqor_ = maxCustodyUqor_;
+        }
+        if (((from_bitField0_ & 0x00000400) != 0)) {
+          result.maxCustodyHardUqor_ = maxCustodyHardUqor_;
+        }
+        if (((from_bitField0_ & 0x00000800) != 0)) {
+          result.maxAccountExcessUqor_ = maxAccountExcessUqor_;
+        }
       }
 
       @java.lang.Override
@@ -7060,6 +7197,15 @@ public final class Tx extends com.google.protobuf.GeneratedFile {
         }
         if (other.getMaxCpi() != 0) {
           setMaxCpi(other.getMaxCpi());
+        }
+        if (other.getMaxCustodyUqor() != 0L) {
+          setMaxCustodyUqor(other.getMaxCustodyUqor());
+        }
+        if (other.getMaxCustodyHardUqor() != 0L) {
+          setMaxCustodyHardUqor(other.getMaxCustodyHardUqor());
+        }
+        if (other.getMaxAccountExcessUqor() != 0L) {
+          setMaxAccountExcessUqor(other.getMaxAccountExcessUqor());
         }
         this.mergeUnknownFields(other.getUnknownFields());
         onChanged();
@@ -7132,6 +7278,21 @@ public final class Tx extends com.google.protobuf.GeneratedFile {
                 bitField0_ |= 0x00000100;
                 break;
               } // case 72
+              case 80: {
+                maxCustodyUqor_ = input.readUInt64();
+                bitField0_ |= 0x00000200;
+                break;
+              } // case 80
+              case 88: {
+                maxCustodyHardUqor_ = input.readUInt64();
+                bitField0_ |= 0x00000400;
+                break;
+              } // case 88
+              case 96: {
+                maxAccountExcessUqor_ = input.readUInt64();
+                bitField0_ |= 0x00000800;
+                break;
+              } // case 96
               default: {
                 if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                   done = true; // was an endgroup tag
@@ -7473,6 +7634,159 @@ public final class Tx extends com.google.protobuf.GeneratedFile {
       public Builder clearMaxCpi() {
         bitField0_ = (bitField0_ & ~0x00000100);
         maxCpi_ = 0;
+        onChanged();
+        return this;
+      }
+
+      private long maxCustodyUqor_ ;
+      /**
+       * <pre>
+       * max_custody_uqor caps the uqor balance of the svm module account (the
+       * custody backing program, PDA and data-account lamports). 0 means no cap.
+       * Enforced only while the svm-lane-governed protocol feature is on.
+       * </pre>
+       *
+       * <code>uint64 max_custody_uqor = 10 [json_name = "maxCustodyUqor"];</code>
+       * @return The maxCustodyUqor.
+       */
+      @java.lang.Override
+      public long getMaxCustodyUqor() {
+        return maxCustodyUqor_;
+      }
+      /**
+       * <pre>
+       * max_custody_uqor caps the uqor balance of the svm module account (the
+       * custody backing program, PDA and data-account lamports). 0 means no cap.
+       * Enforced only while the svm-lane-governed protocol feature is on.
+       * </pre>
+       *
+       * <code>uint64 max_custody_uqor = 10 [json_name = "maxCustodyUqor"];</code>
+       * @param value The maxCustodyUqor to set.
+       * @return This builder for chaining.
+       */
+      public Builder setMaxCustodyUqor(long value) {
+
+        maxCustodyUqor_ = value;
+        bitField0_ |= 0x00000200;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * max_custody_uqor caps the uqor balance of the svm module account (the
+       * custody backing program, PDA and data-account lamports). 0 means no cap.
+       * Enforced only while the svm-lane-governed protocol feature is on.
+       * </pre>
+       *
+       * <code>uint64 max_custody_uqor = 10 [json_name = "maxCustodyUqor"];</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearMaxCustodyUqor() {
+        bitField0_ = (bitField0_ & ~0x00000200);
+        maxCustodyUqor_ = 0L;
+        onChanged();
+        return this;
+      }
+
+      private long maxCustodyHardUqor_ ;
+      /**
+       * <pre>
+       * max_custody_hard_uqor is the absolute ceiling on the svm module account's
+       * raw uqor balance (rent reserves, pre-funding and donations included):
+       * with svm-custody-hard-ceiling any operation that would leave the balance
+       * above it is refused. 0 means no ceiling; governance must set one before
+       * opening the lane on any network. It should be well above max_custody_uqor.
+       * </pre>
+       *
+       * <code>uint64 max_custody_hard_uqor = 11 [json_name = "maxCustodyHardUqor"];</code>
+       * @return The maxCustodyHardUqor.
+       */
+      @java.lang.Override
+      public long getMaxCustodyHardUqor() {
+        return maxCustodyHardUqor_;
+      }
+      /**
+       * <pre>
+       * max_custody_hard_uqor is the absolute ceiling on the svm module account's
+       * raw uqor balance (rent reserves, pre-funding and donations included):
+       * with svm-custody-hard-ceiling any operation that would leave the balance
+       * above it is refused. 0 means no ceiling; governance must set one before
+       * opening the lane on any network. It should be well above max_custody_uqor.
+       * </pre>
+       *
+       * <code>uint64 max_custody_hard_uqor = 11 [json_name = "maxCustodyHardUqor"];</code>
+       * @param value The maxCustodyHardUqor to set.
+       * @return This builder for chaining.
+       */
+      public Builder setMaxCustodyHardUqor(long value) {
+
+        maxCustodyHardUqor_ = value;
+        bitField0_ |= 0x00000400;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * max_custody_hard_uqor is the absolute ceiling on the svm module account's
+       * raw uqor balance (rent reserves, pre-funding and donations included):
+       * with svm-custody-hard-ceiling any operation that would leave the balance
+       * above it is refused. 0 means no ceiling; governance must set one before
+       * opening the lane on any network. It should be well above max_custody_uqor.
+       * </pre>
+       *
+       * <code>uint64 max_custody_hard_uqor = 11 [json_name = "maxCustodyHardUqor"];</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearMaxCustodyHardUqor() {
+        bitField0_ = (bitField0_ & ~0x00000400);
+        maxCustodyHardUqor_ = 0L;
+        onChanged();
+        return this;
+      }
+
+      private long maxAccountExcessUqor_ ;
+      /**
+       * <pre>
+       * max_account_excess_uqor caps, per store account, the uqor above its
+       * rent-exempt minimum (svm-account-excess-cap); 0 means no cap.
+       * </pre>
+       *
+       * <code>uint64 max_account_excess_uqor = 12 [json_name = "maxAccountExcessUqor"];</code>
+       * @return The maxAccountExcessUqor.
+       */
+      @java.lang.Override
+      public long getMaxAccountExcessUqor() {
+        return maxAccountExcessUqor_;
+      }
+      /**
+       * <pre>
+       * max_account_excess_uqor caps, per store account, the uqor above its
+       * rent-exempt minimum (svm-account-excess-cap); 0 means no cap.
+       * </pre>
+       *
+       * <code>uint64 max_account_excess_uqor = 12 [json_name = "maxAccountExcessUqor"];</code>
+       * @param value The maxAccountExcessUqor to set.
+       * @return This builder for chaining.
+       */
+      public Builder setMaxAccountExcessUqor(long value) {
+
+        maxAccountExcessUqor_ = value;
+        bitField0_ |= 0x00000800;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * max_account_excess_uqor caps, per store account, the uqor above its
+       * rent-exempt minimum (svm-account-excess-cap); 0 means no cap.
+       * </pre>
+       *
+       * <code>uint64 max_account_excess_uqor = 12 [json_name = "maxAccountExcessUqor"];</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearMaxAccountExcessUqor() {
+        bitField0_ = (bitField0_ & ~0x00000800);
+        maxAccountExcessUqor_ = 0L;
         onChanged();
         return this;
       }
@@ -8779,7 +9093,7 @@ public final class Tx extends com.google.protobuf.GeneratedFile {
       "ender\0225\n\010svm_addr\030\002 \001(\014B\032\310\336\037\000\332\336\037\007Bytes32" +
       "\342\336\037\007SVMAddrR\007svmAddr\022-\n\013pqc_pub_key\030\003 \001(" +
       "\014B\r\342\336\037\tPQCPubKeyR\tpqcPubKey:\013\202\347\260*\006sender" +
-      "\"\036\n\034MsgRegisterSVMPQCKeyResponse\"\242\003\n\tSVM" +
+      "\"\036\n\034MsgRegisterSVMPQCKeyResponse\"\266\004\n\tSVM" +
       "Params\022(\n\020max_program_size\030\001 \001(\004R\016maxPro" +
       "gramSize\0221\n\025max_account_data_size\030\002 \001(\004R" +
       "\022maxAccountDataSize\022,\n\022compute_budget_ma" +
@@ -8790,26 +9104,29 @@ public final class Tx extends com.google.protobuf.GeneratedFile {
       "enabled\030\006 \001(\010R\007enabled\022&\n\017svm_slot_offse" +
       "t\030\007 \001(\003R\rsvmSlotOffset\022,\n\022default_sig_sc" +
       "heme\030\010 \001(\rR\020defaultSigScheme\022\027\n\007max_cpi\030" +
-      "\t \001(\rR\006maxCpi\"\224\001\n\017MsgUpdateParams\0226\n\taut" +
-      "hority\030\001 \001(\tB\030\322\264-\024cosmos.AddressStringR\t" +
-      "authority\0229\n\006params\030\002 \001(\0132\033.qorechain.sv" +
-      "m.v1.SVMParamsB\004\310\336\037\000R\006params:\016\202\347\260*\tautho" +
-      "rity\"\031\n\027MsgUpdateParamsResponse2\375\003\n\003Msg\022" +
-      "_\n\rDeployProgram\022\".qorechain.svm.v1.MsgD" +
-      "eployProgram\032*.qorechain.svm.v1.MsgDeplo" +
-      "yProgramResponse\022_\n\rCreateAccount\022\".qore" +
-      "chain.svm.v1.MsgCreateAccount\032*.qorechai" +
-      "n.svm.v1.MsgCreateAccountResponse\022b\n\016Exe" +
-      "cuteProgram\022#.qorechain.svm.v1.MsgExecut" +
-      "eProgram\032+.qorechain.svm.v1.MsgExecutePr" +
-      "ogramResponse\022k\n\021RegisterSVMPQCKey\022&.qor" +
-      "echain.svm.v1.MsgRegisterSVMPQCKey\032..qor" +
-      "echain.svm.v1.MsgRegisterSVMPQCKeyRespon" +
-      "se\022\\\n\014UpdateParams\022!.qorechain.svm.v1.Ms" +
-      "gUpdateParams\032).qorechain.svm.v1.MsgUpda" +
-      "teParamsResponse\032\005\200\347\260*\001B1Z/github.com/qo" +
-      "rechain/qorechain-core/x/svm/typesb\006prot" +
-      "o3"
+      "\t \001(\rR\006maxCpi\022(\n\020max_custody_uqor\030\n \001(\004R" +
+      "\016maxCustodyUqor\0221\n\025max_custody_hard_uqor" +
+      "\030\013 \001(\004R\022maxCustodyHardUqor\0225\n\027max_accoun" +
+      "t_excess_uqor\030\014 \001(\004R\024maxAccountExcessUqo" +
+      "r\"\224\001\n\017MsgUpdateParams\0226\n\tauthority\030\001 \001(\t" +
+      "B\030\322\264-\024cosmos.AddressStringR\tauthority\0229\n" +
+      "\006params\030\002 \001(\0132\033.qorechain.svm.v1.SVMPara" +
+      "msB\004\310\336\037\000R\006params:\016\202\347\260*\tauthority\"\031\n\027MsgU" +
+      "pdateParamsResponse2\375\003\n\003Msg\022_\n\rDeployPro" +
+      "gram\022\".qorechain.svm.v1.MsgDeployProgram" +
+      "\032*.qorechain.svm.v1.MsgDeployProgramResp" +
+      "onse\022_\n\rCreateAccount\022\".qorechain.svm.v1" +
+      ".MsgCreateAccount\032*.qorechain.svm.v1.Msg" +
+      "CreateAccountResponse\022b\n\016ExecuteProgram\022" +
+      "#.qorechain.svm.v1.MsgExecuteProgram\032+.q" +
+      "orechain.svm.v1.MsgExecuteProgramRespons" +
+      "e\022k\n\021RegisterSVMPQCKey\022&.qorechain.svm.v" +
+      "1.MsgRegisterSVMPQCKey\032..qorechain.svm.v" +
+      "1.MsgRegisterSVMPQCKeyResponse\022\\\n\014Update" +
+      "Params\022!.qorechain.svm.v1.MsgUpdateParam" +
+      "s\032).qorechain.svm.v1.MsgUpdateParamsResp" +
+      "onse\032\005\200\347\260*\001B1Z/github.com/qorechain/qore" +
+      "chain-core/x/svm/typesb\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
@@ -8883,7 +9200,7 @@ public final class Tx extends com.google.protobuf.GeneratedFile {
     internal_static_qorechain_svm_v1_SVMParams_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_qorechain_svm_v1_SVMParams_descriptor,
-        new java.lang.String[] { "MaxProgramSize", "MaxAccountDataSize", "ComputeBudgetMax", "LamportsPerByte", "RentExemptionMulti", "Enabled", "SvmSlotOffset", "DefaultSigScheme", "MaxCpi", });
+        new java.lang.String[] { "MaxProgramSize", "MaxAccountDataSize", "ComputeBudgetMax", "LamportsPerByte", "RentExemptionMulti", "Enabled", "SvmSlotOffset", "DefaultSigScheme", "MaxCpi", "MaxCustodyUqor", "MaxCustodyHardUqor", "MaxAccountExcessUqor", });
     internal_static_qorechain_svm_v1_MsgUpdateParams_descriptor =
       getDescriptor().getMessageType(11);
     internal_static_qorechain_svm_v1_MsgUpdateParams_fieldAccessorTable = new

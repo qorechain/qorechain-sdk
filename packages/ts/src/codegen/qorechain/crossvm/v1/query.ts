@@ -6,6 +6,8 @@
 
 /* eslint-disable */
 import { BinaryReader, BinaryWriter } from "@bufbuild/protobuf/wire";
+import { PageRequest, PageResponse } from "../../../cosmos/base/query/v1beta1/pagination";
+import { BridgeTargetPin } from "./tx";
 
 export const protobufPackage = "qorechain.crossvm.v1";
 
@@ -36,14 +38,81 @@ export interface QueryParamsResponse {
    * entry "<vm>:<contract>". Empty means the bridge reaches nothing.
    */
   bridgeAllowedTargets: string[];
+  /** bridge_target_pins lists the code each pinned allowlist entry must run. */
+  bridgeTargetPins: BridgeTargetPin[];
+  /**
+   * max_pending_per_sender is the per-sender bound on queued async calls in
+   * force (the default when the stored value is zero).
+   */
+  maxPendingPerSender: number;
+  /**
+   * max_cosmos_tx_gas is the per-transaction gas bound on the Cosmos lane in
+   * force (the default when the stored value is zero).
+   */
+  maxCosmosTxGas: string;
+  /**
+   * record_retention_blocks is the retention of finished queued call records
+   * in force (the default when the stored value is zero).
+   */
+  recordRetentionBlocks: string;
+  /**
+   * max_block_wasm_gas is the per-block CosmWasm execution budget in force
+   * (the default when the stored value is zero).
+   */
+  maxBlockWasmGas: string;
+  /**
+   * max_tx_wasm_share_bps is the per-transaction share of the block wasm
+   * budget in force, in basis points.
+   */
+  maxTxWasmShareBps: number;
+  /**
+   * max_block_level_wasm_gas is the bound on one contract call made outside
+   * a transaction in force.
+   */
+  maxBlockLevelWasmGas: string;
+  /**
+   * queue_wasm_reserve_bps is the queue's reserved share of the block wasm
+   * budget in force, in basis points.
+   */
+  queueWasmReserveBps: number;
+  /**
+   * wasm_congestion_max_factor is the bound on the congestion factor in
+   * force.
+   */
+  wasmCongestionMaxFactor: number;
+  /** wasm_congestion_target_bps is the congestion target in force. */
+  wasmCongestionTargetBps: number;
+  /**
+   * wasm_congestion_factor_micro is the congestion factor the next block
+   * uses, in millionths (1,000,000 is the base price).
+   */
+  wasmCongestionFactorMicro: string;
+  /**
+   * max_block_upload_bps is the code-upload pool in force, in basis points
+   * of the transactions' wasm pool.
+   */
+  maxBlockUploadBps: number;
+  /**
+   * max_queue_timeouts_per_block is how many queued calls one block times
+   * out in force.
+   */
+  maxQueueTimeoutsPerBlock: number;
 }
 
+/**
+ * QueryPendingMessagesRequest pages through the queue in key order. A page
+ * holds at most 100 messages (the default is 100); payload_hex in the list
+ * view is cut to its first 1,024 bytes (use Message for the whole payload).
+ */
 export interface QueryPendingMessagesRequest {
+  pagination?: PageRequest | undefined;
 }
 
 export interface QueryPendingMessagesResponse {
   messages: CrossVMMessageView[];
+  /** count is the number of messages in this page. */
   count: number;
+  pagination?: PageResponse | undefined;
 }
 
 export interface QueryMessageRequest {
@@ -359,7 +428,26 @@ export const QueryParamsRequest: MessageFns<QueryParamsRequest> = {
 };
 
 function createBaseQueryParamsResponse(): QueryParamsResponse {
-  return { maxMessageSize: "0", maxQueueSize: 0, queueTimeoutBlocks: "0", enabled: false, bridgeAllowedTargets: [] };
+  return {
+    maxMessageSize: "0",
+    maxQueueSize: 0,
+    queueTimeoutBlocks: "0",
+    enabled: false,
+    bridgeAllowedTargets: [],
+    bridgeTargetPins: [],
+    maxPendingPerSender: 0,
+    maxCosmosTxGas: "0",
+    recordRetentionBlocks: "0",
+    maxBlockWasmGas: "0",
+    maxTxWasmShareBps: 0,
+    maxBlockLevelWasmGas: "0",
+    queueWasmReserveBps: 0,
+    wasmCongestionMaxFactor: 0,
+    wasmCongestionTargetBps: 0,
+    wasmCongestionFactorMicro: "0",
+    maxBlockUploadBps: 0,
+    maxQueueTimeoutsPerBlock: 0,
+  };
 }
 
 export const QueryParamsResponse: MessageFns<QueryParamsResponse> = {
@@ -378,6 +466,45 @@ export const QueryParamsResponse: MessageFns<QueryParamsResponse> = {
     }
     for (const v of message.bridgeAllowedTargets) {
       writer.uint32(42).string(v!);
+    }
+    for (const v of message.bridgeTargetPins) {
+      BridgeTargetPin.encode(v!, writer.uint32(50).fork()).join();
+    }
+    if (message.maxPendingPerSender !== 0) {
+      writer.uint32(56).uint32(message.maxPendingPerSender);
+    }
+    if (message.maxCosmosTxGas !== "0") {
+      writer.uint32(64).uint64(message.maxCosmosTxGas);
+    }
+    if (message.recordRetentionBlocks !== "0") {
+      writer.uint32(72).uint64(message.recordRetentionBlocks);
+    }
+    if (message.maxBlockWasmGas !== "0") {
+      writer.uint32(80).uint64(message.maxBlockWasmGas);
+    }
+    if (message.maxTxWasmShareBps !== 0) {
+      writer.uint32(88).uint32(message.maxTxWasmShareBps);
+    }
+    if (message.maxBlockLevelWasmGas !== "0") {
+      writer.uint32(96).uint64(message.maxBlockLevelWasmGas);
+    }
+    if (message.queueWasmReserveBps !== 0) {
+      writer.uint32(104).uint32(message.queueWasmReserveBps);
+    }
+    if (message.wasmCongestionMaxFactor !== 0) {
+      writer.uint32(112).uint32(message.wasmCongestionMaxFactor);
+    }
+    if (message.wasmCongestionTargetBps !== 0) {
+      writer.uint32(120).uint32(message.wasmCongestionTargetBps);
+    }
+    if (message.wasmCongestionFactorMicro !== "0") {
+      writer.uint32(128).uint64(message.wasmCongestionFactorMicro);
+    }
+    if (message.maxBlockUploadBps !== 0) {
+      writer.uint32(136).uint32(message.maxBlockUploadBps);
+    }
+    if (message.maxQueueTimeoutsPerBlock !== 0) {
+      writer.uint32(144).uint32(message.maxQueueTimeoutsPerBlock);
     }
     return writer;
   },
@@ -429,6 +556,110 @@ export const QueryParamsResponse: MessageFns<QueryParamsResponse> = {
           message.bridgeAllowedTargets.push(reader.string());
           continue;
         }
+        case 6: {
+          if (tag !== 50) {
+            break;
+          }
+
+          message.bridgeTargetPins.push(BridgeTargetPin.decode(reader, reader.uint32()));
+          continue;
+        }
+        case 7: {
+          if (tag !== 56) {
+            break;
+          }
+
+          message.maxPendingPerSender = reader.uint32();
+          continue;
+        }
+        case 8: {
+          if (tag !== 64) {
+            break;
+          }
+
+          message.maxCosmosTxGas = reader.uint64().toString();
+          continue;
+        }
+        case 9: {
+          if (tag !== 72) {
+            break;
+          }
+
+          message.recordRetentionBlocks = reader.uint64().toString();
+          continue;
+        }
+        case 10: {
+          if (tag !== 80) {
+            break;
+          }
+
+          message.maxBlockWasmGas = reader.uint64().toString();
+          continue;
+        }
+        case 11: {
+          if (tag !== 88) {
+            break;
+          }
+
+          message.maxTxWasmShareBps = reader.uint32();
+          continue;
+        }
+        case 12: {
+          if (tag !== 96) {
+            break;
+          }
+
+          message.maxBlockLevelWasmGas = reader.uint64().toString();
+          continue;
+        }
+        case 13: {
+          if (tag !== 104) {
+            break;
+          }
+
+          message.queueWasmReserveBps = reader.uint32();
+          continue;
+        }
+        case 14: {
+          if (tag !== 112) {
+            break;
+          }
+
+          message.wasmCongestionMaxFactor = reader.uint32();
+          continue;
+        }
+        case 15: {
+          if (tag !== 120) {
+            break;
+          }
+
+          message.wasmCongestionTargetBps = reader.uint32();
+          continue;
+        }
+        case 16: {
+          if (tag !== 128) {
+            break;
+          }
+
+          message.wasmCongestionFactorMicro = reader.uint64().toString();
+          continue;
+        }
+        case 17: {
+          if (tag !== 136) {
+            break;
+          }
+
+          message.maxBlockUploadBps = reader.uint32();
+          continue;
+        }
+        case 18: {
+          if (tag !== 144) {
+            break;
+          }
+
+          message.maxQueueTimeoutsPerBlock = reader.uint32();
+          continue;
+        }
       }
       if ((tag & 7) === 4 || tag === 0) {
         break;
@@ -461,6 +692,71 @@ export const QueryParamsResponse: MessageFns<QueryParamsResponse> = {
         : globalThis.Array.isArray(object?.bridge_allowed_targets)
         ? object.bridge_allowed_targets.map((e: any) => globalThis.String(e))
         : [],
+      bridgeTargetPins: globalThis.Array.isArray(object?.bridgeTargetPins)
+        ? object.bridgeTargetPins.map((e: any) => BridgeTargetPin.fromJSON(e))
+        : globalThis.Array.isArray(object?.bridge_target_pins)
+        ? object.bridge_target_pins.map((e: any) => BridgeTargetPin.fromJSON(e))
+        : [],
+      maxPendingPerSender: isSet(object.maxPendingPerSender)
+        ? globalThis.Number(object.maxPendingPerSender)
+        : isSet(object.max_pending_per_sender)
+        ? globalThis.Number(object.max_pending_per_sender)
+        : 0,
+      maxCosmosTxGas: isSet(object.maxCosmosTxGas)
+        ? globalThis.String(object.maxCosmosTxGas)
+        : isSet(object.max_cosmos_tx_gas)
+        ? globalThis.String(object.max_cosmos_tx_gas)
+        : "0",
+      recordRetentionBlocks: isSet(object.recordRetentionBlocks)
+        ? globalThis.String(object.recordRetentionBlocks)
+        : isSet(object.record_retention_blocks)
+        ? globalThis.String(object.record_retention_blocks)
+        : "0",
+      maxBlockWasmGas: isSet(object.maxBlockWasmGas)
+        ? globalThis.String(object.maxBlockWasmGas)
+        : isSet(object.max_block_wasm_gas)
+        ? globalThis.String(object.max_block_wasm_gas)
+        : "0",
+      maxTxWasmShareBps: isSet(object.maxTxWasmShareBps)
+        ? globalThis.Number(object.maxTxWasmShareBps)
+        : isSet(object.max_tx_wasm_share_bps)
+        ? globalThis.Number(object.max_tx_wasm_share_bps)
+        : 0,
+      maxBlockLevelWasmGas: isSet(object.maxBlockLevelWasmGas)
+        ? globalThis.String(object.maxBlockLevelWasmGas)
+        : isSet(object.max_block_level_wasm_gas)
+        ? globalThis.String(object.max_block_level_wasm_gas)
+        : "0",
+      queueWasmReserveBps: isSet(object.queueWasmReserveBps)
+        ? globalThis.Number(object.queueWasmReserveBps)
+        : isSet(object.queue_wasm_reserve_bps)
+        ? globalThis.Number(object.queue_wasm_reserve_bps)
+        : 0,
+      wasmCongestionMaxFactor: isSet(object.wasmCongestionMaxFactor)
+        ? globalThis.Number(object.wasmCongestionMaxFactor)
+        : isSet(object.wasm_congestion_max_factor)
+        ? globalThis.Number(object.wasm_congestion_max_factor)
+        : 0,
+      wasmCongestionTargetBps: isSet(object.wasmCongestionTargetBps)
+        ? globalThis.Number(object.wasmCongestionTargetBps)
+        : isSet(object.wasm_congestion_target_bps)
+        ? globalThis.Number(object.wasm_congestion_target_bps)
+        : 0,
+      wasmCongestionFactorMicro: isSet(object.wasmCongestionFactorMicro)
+        ? globalThis.String(object.wasmCongestionFactorMicro)
+        : isSet(object.wasm_congestion_factor_micro)
+        ? globalThis.String(object.wasm_congestion_factor_micro)
+        : "0",
+      maxBlockUploadBps: isSet(object.maxBlockUploadBps)
+        ? globalThis.Number(object.maxBlockUploadBps)
+        : isSet(object.max_block_upload_bps)
+        ? globalThis.Number(object.max_block_upload_bps)
+        : 0,
+      maxQueueTimeoutsPerBlock: isSet(object.maxQueueTimeoutsPerBlock)
+        ? globalThis.Number(object.maxQueueTimeoutsPerBlock)
+        : isSet(object.max_queue_timeouts_per_block)
+        ? globalThis.Number(object.max_queue_timeouts_per_block)
+        : 0,
     };
   },
 
@@ -481,6 +777,45 @@ export const QueryParamsResponse: MessageFns<QueryParamsResponse> = {
     if (message.bridgeAllowedTargets?.length) {
       obj.bridgeAllowedTargets = message.bridgeAllowedTargets;
     }
+    if (message.bridgeTargetPins?.length) {
+      obj.bridgeTargetPins = message.bridgeTargetPins.map((e) => BridgeTargetPin.toJSON(e));
+    }
+    if (message.maxPendingPerSender !== 0) {
+      obj.maxPendingPerSender = Math.round(message.maxPendingPerSender);
+    }
+    if (message.maxCosmosTxGas !== "0") {
+      obj.maxCosmosTxGas = message.maxCosmosTxGas;
+    }
+    if (message.recordRetentionBlocks !== "0") {
+      obj.recordRetentionBlocks = message.recordRetentionBlocks;
+    }
+    if (message.maxBlockWasmGas !== "0") {
+      obj.maxBlockWasmGas = message.maxBlockWasmGas;
+    }
+    if (message.maxTxWasmShareBps !== 0) {
+      obj.maxTxWasmShareBps = Math.round(message.maxTxWasmShareBps);
+    }
+    if (message.maxBlockLevelWasmGas !== "0") {
+      obj.maxBlockLevelWasmGas = message.maxBlockLevelWasmGas;
+    }
+    if (message.queueWasmReserveBps !== 0) {
+      obj.queueWasmReserveBps = Math.round(message.queueWasmReserveBps);
+    }
+    if (message.wasmCongestionMaxFactor !== 0) {
+      obj.wasmCongestionMaxFactor = Math.round(message.wasmCongestionMaxFactor);
+    }
+    if (message.wasmCongestionTargetBps !== 0) {
+      obj.wasmCongestionTargetBps = Math.round(message.wasmCongestionTargetBps);
+    }
+    if (message.wasmCongestionFactorMicro !== "0") {
+      obj.wasmCongestionFactorMicro = message.wasmCongestionFactorMicro;
+    }
+    if (message.maxBlockUploadBps !== 0) {
+      obj.maxBlockUploadBps = Math.round(message.maxBlockUploadBps);
+    }
+    if (message.maxQueueTimeoutsPerBlock !== 0) {
+      obj.maxQueueTimeoutsPerBlock = Math.round(message.maxQueueTimeoutsPerBlock);
+    }
     return obj;
   },
 
@@ -494,16 +829,32 @@ export const QueryParamsResponse: MessageFns<QueryParamsResponse> = {
     message.queueTimeoutBlocks = object.queueTimeoutBlocks ?? "0";
     message.enabled = object.enabled ?? false;
     message.bridgeAllowedTargets = object.bridgeAllowedTargets?.map((e) => e) || [];
+    message.bridgeTargetPins = object.bridgeTargetPins?.map((e) => BridgeTargetPin.fromPartial(e)) || [];
+    message.maxPendingPerSender = object.maxPendingPerSender ?? 0;
+    message.maxCosmosTxGas = object.maxCosmosTxGas ?? "0";
+    message.recordRetentionBlocks = object.recordRetentionBlocks ?? "0";
+    message.maxBlockWasmGas = object.maxBlockWasmGas ?? "0";
+    message.maxTxWasmShareBps = object.maxTxWasmShareBps ?? 0;
+    message.maxBlockLevelWasmGas = object.maxBlockLevelWasmGas ?? "0";
+    message.queueWasmReserveBps = object.queueWasmReserveBps ?? 0;
+    message.wasmCongestionMaxFactor = object.wasmCongestionMaxFactor ?? 0;
+    message.wasmCongestionTargetBps = object.wasmCongestionTargetBps ?? 0;
+    message.wasmCongestionFactorMicro = object.wasmCongestionFactorMicro ?? "0";
+    message.maxBlockUploadBps = object.maxBlockUploadBps ?? 0;
+    message.maxQueueTimeoutsPerBlock = object.maxQueueTimeoutsPerBlock ?? 0;
     return message;
   },
 };
 
 function createBaseQueryPendingMessagesRequest(): QueryPendingMessagesRequest {
-  return {};
+  return { pagination: undefined };
 }
 
 export const QueryPendingMessagesRequest: MessageFns<QueryPendingMessagesRequest> = {
-  encode(_: QueryPendingMessagesRequest, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+  encode(message: QueryPendingMessagesRequest, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.pagination !== undefined) {
+      PageRequest.encode(message.pagination, writer.uint32(10).fork()).join();
+    }
     return writer;
   },
 
@@ -514,6 +865,14 @@ export const QueryPendingMessagesRequest: MessageFns<QueryPendingMessagesRequest
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.pagination = PageRequest.decode(reader, reader.uint32());
+          continue;
+        }
       }
       if ((tag & 7) === 4 || tag === 0) {
         break;
@@ -523,26 +882,32 @@ export const QueryPendingMessagesRequest: MessageFns<QueryPendingMessagesRequest
     return message;
   },
 
-  fromJSON(_: any): QueryPendingMessagesRequest {
-    return {};
+  fromJSON(object: any): QueryPendingMessagesRequest {
+    return { pagination: isSet(object.pagination) ? PageRequest.fromJSON(object.pagination) : undefined };
   },
 
-  toJSON(_: QueryPendingMessagesRequest): unknown {
+  toJSON(message: QueryPendingMessagesRequest): unknown {
     const obj: any = {};
+    if (message.pagination !== undefined) {
+      obj.pagination = PageRequest.toJSON(message.pagination);
+    }
     return obj;
   },
 
   create(base?: DeepPartial<QueryPendingMessagesRequest>): QueryPendingMessagesRequest {
     return QueryPendingMessagesRequest.fromPartial(base ?? {});
   },
-  fromPartial(_: DeepPartial<QueryPendingMessagesRequest>): QueryPendingMessagesRequest {
+  fromPartial(object: DeepPartial<QueryPendingMessagesRequest>): QueryPendingMessagesRequest {
     const message = createBaseQueryPendingMessagesRequest();
+    message.pagination = (object.pagination !== undefined && object.pagination !== null)
+      ? PageRequest.fromPartial(object.pagination)
+      : undefined;
     return message;
   },
 };
 
 function createBaseQueryPendingMessagesResponse(): QueryPendingMessagesResponse {
-  return { messages: [], count: 0 };
+  return { messages: [], count: 0, pagination: undefined };
 }
 
 export const QueryPendingMessagesResponse: MessageFns<QueryPendingMessagesResponse> = {
@@ -552,6 +917,9 @@ export const QueryPendingMessagesResponse: MessageFns<QueryPendingMessagesRespon
     }
     if (message.count !== 0) {
       writer.uint32(16).uint32(message.count);
+    }
+    if (message.pagination !== undefined) {
+      PageResponse.encode(message.pagination, writer.uint32(26).fork()).join();
     }
     return writer;
   },
@@ -579,6 +947,14 @@ export const QueryPendingMessagesResponse: MessageFns<QueryPendingMessagesRespon
           message.count = reader.uint32();
           continue;
         }
+        case 3: {
+          if (tag !== 26) {
+            break;
+          }
+
+          message.pagination = PageResponse.decode(reader, reader.uint32());
+          continue;
+        }
       }
       if ((tag & 7) === 4 || tag === 0) {
         break;
@@ -594,6 +970,7 @@ export const QueryPendingMessagesResponse: MessageFns<QueryPendingMessagesRespon
         ? object.messages.map((e: any) => CrossVMMessageView.fromJSON(e))
         : [],
       count: isSet(object.count) ? globalThis.Number(object.count) : 0,
+      pagination: isSet(object.pagination) ? PageResponse.fromJSON(object.pagination) : undefined,
     };
   },
 
@@ -605,6 +982,9 @@ export const QueryPendingMessagesResponse: MessageFns<QueryPendingMessagesRespon
     if (message.count !== 0) {
       obj.count = Math.round(message.count);
     }
+    if (message.pagination !== undefined) {
+      obj.pagination = PageResponse.toJSON(message.pagination);
+    }
     return obj;
   },
 
@@ -615,6 +995,9 @@ export const QueryPendingMessagesResponse: MessageFns<QueryPendingMessagesRespon
     const message = createBaseQueryPendingMessagesResponse();
     message.messages = object.messages?.map((e) => CrossVMMessageView.fromPartial(e)) || [];
     message.count = object.count ?? 0;
+    message.pagination = (object.pagination !== undefined && object.pagination !== null)
+      ? PageResponse.fromPartial(object.pagination)
+      : undefined;
     return message;
   },
 };

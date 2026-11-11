@@ -132,6 +132,35 @@ export interface MsgOpenEVMWindow {
    * Honoured from the evm-pqc-window-targets feature on.
    */
   allowedTargets: string[];
+  /**
+   * validators, when non-empty, names the contracts (0x-prefixed 20-byte
+   * addresses) whose check of the account's signature counts for the
+   * account's own actions: a validator module its code consults with a
+   * STATICCALL, or an entry point that validates and then executes it in
+   * separate calls (ERC-4337). It does not narrow where the account's
+   * transactions or code may go. Optional; honoured from the
+   * evm-window-validators feature on.
+   */
+  validators: string[];
+  /**
+   * staking_validators, when non-empty, names the validators (bech32
+   * operator addresses) the account's stake may be delegated or redelegated
+   * to through this window, by its EVM transactions or its EIP-7702 code.
+   * Empty: delegate and redelegate are refused through the window and remain
+   * available as post-quantum signed Cosmos transactions. Optional; honoured
+   * from the evm-window-staking-validators feature on.
+   */
+  stakingValidators: string[];
+  /**
+   * ibc_receivers, when non-empty, names the IBC destinations native QOR may
+   * be sent to through this window with the ICS-20 precompile, each as
+   * "<source channel>/<receiver>" (the channel on this chain and the
+   * receiving address on the other chain). Empty: ICS-20 transfers are
+   * refused through the window and remain available as post-quantum signed
+   * Cosmos transactions. Optional; honoured from the
+   * evm-precompile-method-allowlist feature on.
+   */
+  ibcReceivers: string[];
 }
 
 export interface MsgOpenEVMWindowResponse {
@@ -1283,7 +1312,17 @@ export const MsgDisableAlgorithmResponse: MessageFns<MsgDisableAlgorithmResponse
 };
 
 function createBaseMsgOpenEVMWindow(): MsgOpenEVMWindow {
-  return { sender: "", blocks: "0", maxTxs: "0", maxValue: "", nativeOnly: false, allowedTargets: [] };
+  return {
+    sender: "",
+    blocks: "0",
+    maxTxs: "0",
+    maxValue: "",
+    nativeOnly: false,
+    allowedTargets: [],
+    validators: [],
+    stakingValidators: [],
+    ibcReceivers: [],
+  };
 }
 
 export const MsgOpenEVMWindow: MessageFns<MsgOpenEVMWindow> = {
@@ -1305,6 +1344,15 @@ export const MsgOpenEVMWindow: MessageFns<MsgOpenEVMWindow> = {
     }
     for (const v of message.allowedTargets) {
       writer.uint32(50).string(v!);
+    }
+    for (const v of message.validators) {
+      writer.uint32(58).string(v!);
+    }
+    for (const v of message.stakingValidators) {
+      writer.uint32(66).string(v!);
+    }
+    for (const v of message.ibcReceivers) {
+      writer.uint32(74).string(v!);
     }
     return writer;
   },
@@ -1364,6 +1412,30 @@ export const MsgOpenEVMWindow: MessageFns<MsgOpenEVMWindow> = {
           message.allowedTargets.push(reader.string());
           continue;
         }
+        case 7: {
+          if (tag !== 58) {
+            break;
+          }
+
+          message.validators.push(reader.string());
+          continue;
+        }
+        case 8: {
+          if (tag !== 66) {
+            break;
+          }
+
+          message.stakingValidators.push(reader.string());
+          continue;
+        }
+        case 9: {
+          if (tag !== 74) {
+            break;
+          }
+
+          message.ibcReceivers.push(reader.string());
+          continue;
+        }
       }
       if ((tag & 7) === 4 || tag === 0) {
         break;
@@ -1397,6 +1469,19 @@ export const MsgOpenEVMWindow: MessageFns<MsgOpenEVMWindow> = {
         : globalThis.Array.isArray(object?.allowed_targets)
         ? object.allowed_targets.map((e: any) => globalThis.String(e))
         : [],
+      validators: globalThis.Array.isArray(object?.validators)
+        ? object.validators.map((e: any) => globalThis.String(e))
+        : [],
+      stakingValidators: globalThis.Array.isArray(object?.stakingValidators)
+        ? object.stakingValidators.map((e: any) => globalThis.String(e))
+        : globalThis.Array.isArray(object?.staking_validators)
+        ? object.staking_validators.map((e: any) => globalThis.String(e))
+        : [],
+      ibcReceivers: globalThis.Array.isArray(object?.ibcReceivers)
+        ? object.ibcReceivers.map((e: any) => globalThis.String(e))
+        : globalThis.Array.isArray(object?.ibc_receivers)
+        ? object.ibc_receivers.map((e: any) => globalThis.String(e))
+        : [],
     };
   },
 
@@ -1420,6 +1505,15 @@ export const MsgOpenEVMWindow: MessageFns<MsgOpenEVMWindow> = {
     if (message.allowedTargets?.length) {
       obj.allowedTargets = message.allowedTargets;
     }
+    if (message.validators?.length) {
+      obj.validators = message.validators;
+    }
+    if (message.stakingValidators?.length) {
+      obj.stakingValidators = message.stakingValidators;
+    }
+    if (message.ibcReceivers?.length) {
+      obj.ibcReceivers = message.ibcReceivers;
+    }
     return obj;
   },
 
@@ -1434,6 +1528,9 @@ export const MsgOpenEVMWindow: MessageFns<MsgOpenEVMWindow> = {
     message.maxValue = object.maxValue ?? "";
     message.nativeOnly = object.nativeOnly ?? false;
     message.allowedTargets = object.allowedTargets?.map((e) => e) || [];
+    message.validators = object.validators?.map((e) => e) || [];
+    message.stakingValidators = object.stakingValidators?.map((e) => e) || [];
+    message.ibcReceivers = object.ibcReceivers?.map((e) => e) || [];
     return message;
   },
 };

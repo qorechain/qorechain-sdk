@@ -15,6 +15,34 @@ export interface MsgCreateRollup {
   profile: string;
   vmType: string;
   stakeAmount: string;
+  /**
+   * verification_key optionally registers the rollup's ZK verification key at
+   * creation, in the encoding MsgSetVerificationKey takes for the profile's
+   * proof system. Accepted from v3.2.7 (rdk-zk-verification-key); below it a
+   * message that carries one is refused.
+   */
+  verificationKey: Uint8Array;
+  /**
+   * sequencing is "" (the rollup's sequencer settles, as before) or "based":
+   * the rollup's transactions are ordered by their inclusion in this chain
+   * (MsgPostRollupData, which anyone may send) and every batch must consume
+   * the inbox in order. Accepted from v3.2.8 (rdk-based-sequencing), for zk
+   * (snark) and based settlement only; below it a message that sets it is
+   * refused.
+   */
+  sequencing: string;
+  /**
+   * execution_vm is "" or "qledger-v1" (v3.2.8, rdk-optimistic-reexec): an
+   * optimistic rollup whose batches the chain can re-execute in a fraud
+   * proof. It must be based.
+   */
+  executionVm: string;
+  /**
+   * privacy is "" or "encapsulated" (v3.2.8, rdk-private-rollups): every
+   * post is an ML-KEM-1024 envelope to the rollup's members. zk with a
+   * Groth16 key only.
+   */
+  privacy: string;
 }
 
 export interface MsgCreateRollupResponse {
@@ -48,6 +76,14 @@ export interface MsgSubmitBatch {
    * the anchor. Optional; covered by anchor_signature.
    */
   validatorSetHash: Uint8Array;
+  /**
+   * inbox_end is, for a based rollup, the sequence number of the last posted
+   * data item this batch consumes; the batch covers the posts after the
+   * rollup's consumed sequence up to it, and data_hash must be their inbox
+   * range commitment. Zero and ignored for every other rollup. Accepted from
+   * v3.2.8 (rdk-based-sequencing); below it a non-zero value is refused.
+   */
+  inboxEnd: string;
 }
 
 export interface MsgSubmitBatchResponse {
@@ -150,13 +186,198 @@ export interface MsgUpdateParams {
   maxDaBlobSize: string;
   blobRetentionBlocks: string;
   maxBatchesPerBlock: number;
+  /**
+   * finalized_batch_retention_blocks is how many blocks a finalized batch
+   * keeps its proof before it is compacted; 0 means the default. A non-zero
+   * value is refused before v3.2.8 (rdk-batch-compaction).
+   */
+  finalizedBatchRetentionBlocks: string;
+  /**
+   * The posted-data parameters (v3.2.8, rdk-post-rollup-data). Zero means
+   * the default for each; a non-zero value is refused before the switch.
+   * max_posted_data_bytes caps one MsgPostRollupData payload.
+   */
+  maxPostedDataBytes: string;
+  /**
+   * max_posted_data_bytes_per_block caps the billable bytes posted in one
+   * block, all rollups together.
+   */
+  maxPostedDataBytesPerBlock: string;
+  /** posted_data_fee_per_byte is the uqor fee per billable byte. */
+  postedDataFeePerByte: string;
+  /**
+   * posted_data_retention_blocks is how long a posted-data commitment stays
+   * in state.
+   */
+  postedDataRetentionBlocks: string;
+  /**
+   * min_submitter_bond is the uqor bond a qledger-v1 rollup's batch
+   * submitter must hold (v3.2.8, rdk-optimistic-reexec); 0 means the
+   * default. A non-zero value is refused before the switch.
+   */
+  minSubmitterBond: string;
 }
 
 export interface MsgUpdateParamsResponse {
 }
 
+/**
+ * MsgSetVerificationKey registers or replaces the ZK verification key of a
+ * zk-settlement rollup. Signed by the rollup's creator, and only before the
+ * rollup's first batch; after that the key changes only through
+ * MsgUpdateVerificationKey. Served from v3.2.7 (rdk-zk-verification-key).
+ *
+ * verification_key is, for proof system "snark", a Groth16 BLS12-381
+ * verifying key in gnark's binary encoding (VerifyingKey.WriteTo) for a
+ * circuit with exactly four public inputs (prev_state_root, state_root,
+ * data_hash, withdrawals_root); for "stark", the 16-byte QSTK key of the
+ * transparent verifier. A key that does not decode is refused.
+ */
+export interface MsgSetVerificationKey {
+  creator: string;
+  rollupId: string;
+  verificationKey: Uint8Array;
+  /**
+   * proof_system is "snark" or "stark". Empty keeps the rollup's current
+   * proof system.
+   */
+  proofSystem: string;
+}
+
+export interface MsgSetVerificationKeyResponse {
+}
+
+/**
+ * MsgUpdateVerificationKey replaces a zk-settlement rollup's verification key
+ * at any point of its life. Governance only: authority must be the gov module
+ * account. The key is validated as in MsgSetVerificationKey. Served from
+ * v3.2.7 (rdk-zk-verification-key).
+ */
+export interface MsgUpdateVerificationKey {
+  authority: string;
+  rollupId: string;
+  verificationKey: Uint8Array;
+  /**
+   * proof_system is "snark" or "stark". Empty keeps the rollup's current
+   * proof system.
+   */
+  proofSystem: string;
+}
+
+export interface MsgUpdateVerificationKeyResponse {
+}
+
+/**
+ * MsgPostRollupData puts rollup data on chain (v3.2.8, rdk-post-rollup-data).
+ * The payload stays in this transaction, which is in the block; the chain
+ * stores a commitment (SHA-256 of data, size, poster, height) under the next
+ * sequence number of the rollup's inbox and extends the inbox accumulator.
+ * The poster pays a fee per billable byte (at least 1 KiB per post) into the
+ * fee collector. Who may post: the rollup's sequencer (or its creator when no
+ * sequencer address is set); anyone for a based rollup.
+ */
+export interface MsgPostRollupData {
+  poster: string;
+  rollupId: string;
+  data: Uint8Array;
+}
+
+export interface MsgPostRollupDataResponse {
+  /** sequence is the inbox sequence number the post was given (from 1). */
+  sequence: string;
+  /** data_hash is SHA-256(data), the hash a batch references. */
+  dataHash: Uint8Array;
+}
+
+/**
+ * MsgSetRollupSequencing moves a rollup to based sequencing ("based") or back
+ * to its sequencer (""). Governance only: authority must be the gov module
+ * account. Moving to based starts the inbox at its current head. Served from
+ * v3.2.8 (rdk-based-sequencing).
+ */
+export interface MsgSetRollupSequencing {
+  authority: string;
+  rollupId: string;
+  sequencing: string;
+}
+
+export interface MsgSetRollupSequencingResponse {
+}
+
+/**
+ * MsgDepositToRollup moves amount uqor from depositor into a qledger-v1
+ * rollup's deposit pool and credits the L2 account (32-byte qledger-v1
+ * account id) through the rollup's inbox. Served from v3.2.8
+ * (rdk-optimistic-reexec).
+ */
+export interface MsgDepositToRollup {
+  depositor: string;
+  rollupId: string;
+  account: Uint8Array;
+  amount: string;
+}
+
+export interface MsgDepositToRollupResponse {
+  /** sequence is the inbox sequence of the deposit entry. */
+  sequence: string;
+}
+
+/**
+ * MsgBondRollupSubmitter adds amount uqor to submitter's bond on a
+ * qledger-v1 rollup. Served from v3.2.8 (rdk-optimistic-reexec).
+ */
+export interface MsgBondRollupSubmitter {
+  submitter: string;
+  rollupId: string;
+  amount: string;
+}
+
+export interface MsgBondRollupSubmitterResponse {
+  bond: string;
+}
+
+/**
+ * MsgUnbondRollupSubmitter returns submitter's whole bond once a full
+ * challenge window has passed since its last batch. Served from v3.2.8
+ * (rdk-optimistic-reexec).
+ */
+export interface MsgUnbondRollupSubmitter {
+  submitter: string;
+  rollupId: string;
+}
+
+export interface MsgUnbondRollupSubmitterResponse {
+  returned: string;
+}
+
+/**
+ * MsgSetRollupMembers sets the member list of a private rollup (each member
+ * must publish an ML-KEM-1024 key in the x/pqc KEM registry) and starts a
+ * new membership epoch. Signed by the rollup's creator. Served from v3.2.8
+ * (rdk-private-rollups).
+ */
+export interface MsgSetRollupMembers {
+  creator: string;
+  rollupId: string;
+  members: string[];
+}
+
+export interface MsgSetRollupMembersResponse {
+  epoch: string;
+}
+
 function createBaseMsgCreateRollup(): MsgCreateRollup {
-  return { creator: "", rollupId: "", profile: "", vmType: "", stakeAmount: "0" };
+  return {
+    creator: "",
+    rollupId: "",
+    profile: "",
+    vmType: "",
+    stakeAmount: "0",
+    verificationKey: new Uint8Array(0),
+    sequencing: "",
+    executionVm: "",
+    privacy: "",
+  };
 }
 
 export const MsgCreateRollup: MessageFns<MsgCreateRollup> = {
@@ -175,6 +396,18 @@ export const MsgCreateRollup: MessageFns<MsgCreateRollup> = {
     }
     if (message.stakeAmount !== "0") {
       writer.uint32(40).int64(message.stakeAmount);
+    }
+    if (message.verificationKey.length !== 0) {
+      writer.uint32(50).bytes(message.verificationKey);
+    }
+    if (message.sequencing !== "") {
+      writer.uint32(58).string(message.sequencing);
+    }
+    if (message.executionVm !== "") {
+      writer.uint32(66).string(message.executionVm);
+    }
+    if (message.privacy !== "") {
+      writer.uint32(74).string(message.privacy);
     }
     return writer;
   },
@@ -226,6 +459,38 @@ export const MsgCreateRollup: MessageFns<MsgCreateRollup> = {
           message.stakeAmount = reader.int64().toString();
           continue;
         }
+        case 6: {
+          if (tag !== 50) {
+            break;
+          }
+
+          message.verificationKey = reader.bytes();
+          continue;
+        }
+        case 7: {
+          if (tag !== 58) {
+            break;
+          }
+
+          message.sequencing = reader.string();
+          continue;
+        }
+        case 8: {
+          if (tag !== 66) {
+            break;
+          }
+
+          message.executionVm = reader.string();
+          continue;
+        }
+        case 9: {
+          if (tag !== 74) {
+            break;
+          }
+
+          message.privacy = reader.string();
+          continue;
+        }
       }
       if ((tag & 7) === 4 || tag === 0) {
         break;
@@ -254,6 +519,18 @@ export const MsgCreateRollup: MessageFns<MsgCreateRollup> = {
         : isSet(object.stake_amount)
         ? globalThis.String(object.stake_amount)
         : "0",
+      verificationKey: isSet(object.verificationKey)
+        ? bytesFromBase64(object.verificationKey)
+        : isSet(object.verification_key)
+        ? bytesFromBase64(object.verification_key)
+        : new Uint8Array(0),
+      sequencing: isSet(object.sequencing) ? globalThis.String(object.sequencing) : "",
+      executionVm: isSet(object.executionVm)
+        ? globalThis.String(object.executionVm)
+        : isSet(object.execution_vm)
+        ? globalThis.String(object.execution_vm)
+        : "",
+      privacy: isSet(object.privacy) ? globalThis.String(object.privacy) : "",
     };
   },
 
@@ -274,6 +551,18 @@ export const MsgCreateRollup: MessageFns<MsgCreateRollup> = {
     if (message.stakeAmount !== "0") {
       obj.stakeAmount = message.stakeAmount;
     }
+    if (message.verificationKey.length !== 0) {
+      obj.verificationKey = base64FromBytes(message.verificationKey);
+    }
+    if (message.sequencing !== "") {
+      obj.sequencing = message.sequencing;
+    }
+    if (message.executionVm !== "") {
+      obj.executionVm = message.executionVm;
+    }
+    if (message.privacy !== "") {
+      obj.privacy = message.privacy;
+    }
     return obj;
   },
 
@@ -287,6 +576,10 @@ export const MsgCreateRollup: MessageFns<MsgCreateRollup> = {
     message.profile = object.profile ?? "";
     message.vmType = object.vmType ?? "";
     message.stakeAmount = object.stakeAmount ?? "0";
+    message.verificationKey = object.verificationKey ?? new Uint8Array(0);
+    message.sequencing = object.sequencing ?? "";
+    message.executionVm = object.executionVm ?? "";
+    message.privacy = object.privacy ?? "";
     return message;
   },
 };
@@ -368,6 +661,7 @@ function createBaseMsgSubmitBatch(): MsgSubmitBatch {
     withdrawalsRoot: new Uint8Array(0),
     anchorSignature: new Uint8Array(0),
     validatorSetHash: new Uint8Array(0),
+    inboxEnd: "0",
   };
 }
 
@@ -405,6 +699,9 @@ export const MsgSubmitBatch: MessageFns<MsgSubmitBatch> = {
     }
     if (message.validatorSetHash.length !== 0) {
       writer.uint32(90).bytes(message.validatorSetHash);
+    }
+    if (message.inboxEnd !== "0") {
+      writer.uint32(96).uint64(message.inboxEnd);
     }
     return writer;
   },
@@ -504,6 +801,14 @@ export const MsgSubmitBatch: MessageFns<MsgSubmitBatch> = {
           message.validatorSetHash = reader.bytes();
           continue;
         }
+        case 12: {
+          if (tag !== 96) {
+            break;
+          }
+
+          message.inboxEnd = reader.uint64().toString();
+          continue;
+        }
       }
       if ((tag & 7) === 4 || tag === 0) {
         break;
@@ -562,6 +867,11 @@ export const MsgSubmitBatch: MessageFns<MsgSubmitBatch> = {
         : isSet(object.validator_set_hash)
         ? bytesFromBase64(object.validator_set_hash)
         : new Uint8Array(0),
+      inboxEnd: isSet(object.inboxEnd)
+        ? globalThis.String(object.inboxEnd)
+        : isSet(object.inbox_end)
+        ? globalThis.String(object.inbox_end)
+        : "0",
     };
   },
 
@@ -600,6 +910,9 @@ export const MsgSubmitBatch: MessageFns<MsgSubmitBatch> = {
     if (message.validatorSetHash.length !== 0) {
       obj.validatorSetHash = base64FromBytes(message.validatorSetHash);
     }
+    if (message.inboxEnd !== "0") {
+      obj.inboxEnd = message.inboxEnd;
+    }
     return obj;
   },
 
@@ -619,6 +932,7 @@ export const MsgSubmitBatch: MessageFns<MsgSubmitBatch> = {
     message.withdrawalsRoot = object.withdrawalsRoot ?? new Uint8Array(0);
     message.anchorSignature = object.anchorSignature ?? new Uint8Array(0);
     message.validatorSetHash = object.validatorSetHash ?? new Uint8Array(0);
+    message.inboxEnd = object.inboxEnd ?? "0";
     return message;
   },
 };
@@ -1619,6 +1933,12 @@ function createBaseMsgUpdateParams(): MsgUpdateParams {
     maxDaBlobSize: "0",
     blobRetentionBlocks: "0",
     maxBatchesPerBlock: 0,
+    finalizedBatchRetentionBlocks: "0",
+    maxPostedDataBytes: "0",
+    maxPostedDataBytesPerBlock: "0",
+    postedDataFeePerByte: "0",
+    postedDataRetentionBlocks: "0",
+    minSubmitterBond: "0",
   };
 }
 
@@ -1647,6 +1967,24 @@ export const MsgUpdateParams: MessageFns<MsgUpdateParams> = {
     }
     if (message.maxBatchesPerBlock !== 0) {
       writer.uint32(64).uint32(message.maxBatchesPerBlock);
+    }
+    if (message.finalizedBatchRetentionBlocks !== "0") {
+      writer.uint32(72).uint64(message.finalizedBatchRetentionBlocks);
+    }
+    if (message.maxPostedDataBytes !== "0") {
+      writer.uint32(80).uint64(message.maxPostedDataBytes);
+    }
+    if (message.maxPostedDataBytesPerBlock !== "0") {
+      writer.uint32(88).uint64(message.maxPostedDataBytesPerBlock);
+    }
+    if (message.postedDataFeePerByte !== "0") {
+      writer.uint32(96).uint64(message.postedDataFeePerByte);
+    }
+    if (message.postedDataRetentionBlocks !== "0") {
+      writer.uint32(104).uint64(message.postedDataRetentionBlocks);
+    }
+    if (message.minSubmitterBond !== "0") {
+      writer.uint32(112).uint64(message.minSubmitterBond);
     }
     return writer;
   },
@@ -1722,6 +2060,54 @@ export const MsgUpdateParams: MessageFns<MsgUpdateParams> = {
           message.maxBatchesPerBlock = reader.uint32();
           continue;
         }
+        case 9: {
+          if (tag !== 72) {
+            break;
+          }
+
+          message.finalizedBatchRetentionBlocks = reader.uint64().toString();
+          continue;
+        }
+        case 10: {
+          if (tag !== 80) {
+            break;
+          }
+
+          message.maxPostedDataBytes = reader.uint64().toString();
+          continue;
+        }
+        case 11: {
+          if (tag !== 88) {
+            break;
+          }
+
+          message.maxPostedDataBytesPerBlock = reader.uint64().toString();
+          continue;
+        }
+        case 12: {
+          if (tag !== 96) {
+            break;
+          }
+
+          message.postedDataFeePerByte = reader.uint64().toString();
+          continue;
+        }
+        case 13: {
+          if (tag !== 104) {
+            break;
+          }
+
+          message.postedDataRetentionBlocks = reader.uint64().toString();
+          continue;
+        }
+        case 14: {
+          if (tag !== 112) {
+            break;
+          }
+
+          message.minSubmitterBond = reader.uint64().toString();
+          continue;
+        }
       }
       if ((tag & 7) === 4 || tag === 0) {
         break;
@@ -1769,6 +2155,36 @@ export const MsgUpdateParams: MessageFns<MsgUpdateParams> = {
         : isSet(object.max_batches_per_block)
         ? globalThis.Number(object.max_batches_per_block)
         : 0,
+      finalizedBatchRetentionBlocks: isSet(object.finalizedBatchRetentionBlocks)
+        ? globalThis.String(object.finalizedBatchRetentionBlocks)
+        : isSet(object.finalized_batch_retention_blocks)
+        ? globalThis.String(object.finalized_batch_retention_blocks)
+        : "0",
+      maxPostedDataBytes: isSet(object.maxPostedDataBytes)
+        ? globalThis.String(object.maxPostedDataBytes)
+        : isSet(object.max_posted_data_bytes)
+        ? globalThis.String(object.max_posted_data_bytes)
+        : "0",
+      maxPostedDataBytesPerBlock: isSet(object.maxPostedDataBytesPerBlock)
+        ? globalThis.String(object.maxPostedDataBytesPerBlock)
+        : isSet(object.max_posted_data_bytes_per_block)
+        ? globalThis.String(object.max_posted_data_bytes_per_block)
+        : "0",
+      postedDataFeePerByte: isSet(object.postedDataFeePerByte)
+        ? globalThis.String(object.postedDataFeePerByte)
+        : isSet(object.posted_data_fee_per_byte)
+        ? globalThis.String(object.posted_data_fee_per_byte)
+        : "0",
+      postedDataRetentionBlocks: isSet(object.postedDataRetentionBlocks)
+        ? globalThis.String(object.postedDataRetentionBlocks)
+        : isSet(object.posted_data_retention_blocks)
+        ? globalThis.String(object.posted_data_retention_blocks)
+        : "0",
+      minSubmitterBond: isSet(object.minSubmitterBond)
+        ? globalThis.String(object.minSubmitterBond)
+        : isSet(object.min_submitter_bond)
+        ? globalThis.String(object.min_submitter_bond)
+        : "0",
     };
   },
 
@@ -1798,6 +2214,24 @@ export const MsgUpdateParams: MessageFns<MsgUpdateParams> = {
     if (message.maxBatchesPerBlock !== 0) {
       obj.maxBatchesPerBlock = Math.round(message.maxBatchesPerBlock);
     }
+    if (message.finalizedBatchRetentionBlocks !== "0") {
+      obj.finalizedBatchRetentionBlocks = message.finalizedBatchRetentionBlocks;
+    }
+    if (message.maxPostedDataBytes !== "0") {
+      obj.maxPostedDataBytes = message.maxPostedDataBytes;
+    }
+    if (message.maxPostedDataBytesPerBlock !== "0") {
+      obj.maxPostedDataBytesPerBlock = message.maxPostedDataBytesPerBlock;
+    }
+    if (message.postedDataFeePerByte !== "0") {
+      obj.postedDataFeePerByte = message.postedDataFeePerByte;
+    }
+    if (message.postedDataRetentionBlocks !== "0") {
+      obj.postedDataRetentionBlocks = message.postedDataRetentionBlocks;
+    }
+    if (message.minSubmitterBond !== "0") {
+      obj.minSubmitterBond = message.minSubmitterBond;
+    }
     return obj;
   },
 
@@ -1814,6 +2248,12 @@ export const MsgUpdateParams: MessageFns<MsgUpdateParams> = {
     message.maxDaBlobSize = object.maxDaBlobSize ?? "0";
     message.blobRetentionBlocks = object.blobRetentionBlocks ?? "0";
     message.maxBatchesPerBlock = object.maxBatchesPerBlock ?? 0;
+    message.finalizedBatchRetentionBlocks = object.finalizedBatchRetentionBlocks ?? "0";
+    message.maxPostedDataBytes = object.maxPostedDataBytes ?? "0";
+    message.maxPostedDataBytesPerBlock = object.maxPostedDataBytesPerBlock ?? "0";
+    message.postedDataFeePerByte = object.postedDataFeePerByte ?? "0";
+    message.postedDataRetentionBlocks = object.postedDataRetentionBlocks ?? "0";
+    message.minSubmitterBond = object.minSubmitterBond ?? "0";
     return message;
   },
 };
@@ -1857,6 +2297,1263 @@ export const MsgUpdateParamsResponse: MessageFns<MsgUpdateParamsResponse> = {
   },
   fromPartial(_: DeepPartial<MsgUpdateParamsResponse>): MsgUpdateParamsResponse {
     const message = createBaseMsgUpdateParamsResponse();
+    return message;
+  },
+};
+
+function createBaseMsgSetVerificationKey(): MsgSetVerificationKey {
+  return { creator: "", rollupId: "", verificationKey: new Uint8Array(0), proofSystem: "" };
+}
+
+export const MsgSetVerificationKey: MessageFns<MsgSetVerificationKey> = {
+  encode(message: MsgSetVerificationKey, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.creator !== "") {
+      writer.uint32(10).string(message.creator);
+    }
+    if (message.rollupId !== "") {
+      writer.uint32(18).string(message.rollupId);
+    }
+    if (message.verificationKey.length !== 0) {
+      writer.uint32(26).bytes(message.verificationKey);
+    }
+    if (message.proofSystem !== "") {
+      writer.uint32(34).string(message.proofSystem);
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): MsgSetVerificationKey {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseMsgSetVerificationKey();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.creator = reader.string();
+          continue;
+        }
+        case 2: {
+          if (tag !== 18) {
+            break;
+          }
+
+          message.rollupId = reader.string();
+          continue;
+        }
+        case 3: {
+          if (tag !== 26) {
+            break;
+          }
+
+          message.verificationKey = reader.bytes();
+          continue;
+        }
+        case 4: {
+          if (tag !== 34) {
+            break;
+          }
+
+          message.proofSystem = reader.string();
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(object: any): MsgSetVerificationKey {
+    return {
+      creator: isSet(object.creator) ? globalThis.String(object.creator) : "",
+      rollupId: isSet(object.rollupId)
+        ? globalThis.String(object.rollupId)
+        : isSet(object.rollup_id)
+        ? globalThis.String(object.rollup_id)
+        : "",
+      verificationKey: isSet(object.verificationKey)
+        ? bytesFromBase64(object.verificationKey)
+        : isSet(object.verification_key)
+        ? bytesFromBase64(object.verification_key)
+        : new Uint8Array(0),
+      proofSystem: isSet(object.proofSystem)
+        ? globalThis.String(object.proofSystem)
+        : isSet(object.proof_system)
+        ? globalThis.String(object.proof_system)
+        : "",
+    };
+  },
+
+  toJSON(message: MsgSetVerificationKey): unknown {
+    const obj: any = {};
+    if (message.creator !== "") {
+      obj.creator = message.creator;
+    }
+    if (message.rollupId !== "") {
+      obj.rollupId = message.rollupId;
+    }
+    if (message.verificationKey.length !== 0) {
+      obj.verificationKey = base64FromBytes(message.verificationKey);
+    }
+    if (message.proofSystem !== "") {
+      obj.proofSystem = message.proofSystem;
+    }
+    return obj;
+  },
+
+  create(base?: DeepPartial<MsgSetVerificationKey>): MsgSetVerificationKey {
+    return MsgSetVerificationKey.fromPartial(base ?? {});
+  },
+  fromPartial(object: DeepPartial<MsgSetVerificationKey>): MsgSetVerificationKey {
+    const message = createBaseMsgSetVerificationKey();
+    message.creator = object.creator ?? "";
+    message.rollupId = object.rollupId ?? "";
+    message.verificationKey = object.verificationKey ?? new Uint8Array(0);
+    message.proofSystem = object.proofSystem ?? "";
+    return message;
+  },
+};
+
+function createBaseMsgSetVerificationKeyResponse(): MsgSetVerificationKeyResponse {
+  return {};
+}
+
+export const MsgSetVerificationKeyResponse: MessageFns<MsgSetVerificationKeyResponse> = {
+  encode(_: MsgSetVerificationKeyResponse, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): MsgSetVerificationKeyResponse {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseMsgSetVerificationKeyResponse();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(_: any): MsgSetVerificationKeyResponse {
+    return {};
+  },
+
+  toJSON(_: MsgSetVerificationKeyResponse): unknown {
+    const obj: any = {};
+    return obj;
+  },
+
+  create(base?: DeepPartial<MsgSetVerificationKeyResponse>): MsgSetVerificationKeyResponse {
+    return MsgSetVerificationKeyResponse.fromPartial(base ?? {});
+  },
+  fromPartial(_: DeepPartial<MsgSetVerificationKeyResponse>): MsgSetVerificationKeyResponse {
+    const message = createBaseMsgSetVerificationKeyResponse();
+    return message;
+  },
+};
+
+function createBaseMsgUpdateVerificationKey(): MsgUpdateVerificationKey {
+  return { authority: "", rollupId: "", verificationKey: new Uint8Array(0), proofSystem: "" };
+}
+
+export const MsgUpdateVerificationKey: MessageFns<MsgUpdateVerificationKey> = {
+  encode(message: MsgUpdateVerificationKey, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.authority !== "") {
+      writer.uint32(10).string(message.authority);
+    }
+    if (message.rollupId !== "") {
+      writer.uint32(18).string(message.rollupId);
+    }
+    if (message.verificationKey.length !== 0) {
+      writer.uint32(26).bytes(message.verificationKey);
+    }
+    if (message.proofSystem !== "") {
+      writer.uint32(34).string(message.proofSystem);
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): MsgUpdateVerificationKey {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseMsgUpdateVerificationKey();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.authority = reader.string();
+          continue;
+        }
+        case 2: {
+          if (tag !== 18) {
+            break;
+          }
+
+          message.rollupId = reader.string();
+          continue;
+        }
+        case 3: {
+          if (tag !== 26) {
+            break;
+          }
+
+          message.verificationKey = reader.bytes();
+          continue;
+        }
+        case 4: {
+          if (tag !== 34) {
+            break;
+          }
+
+          message.proofSystem = reader.string();
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(object: any): MsgUpdateVerificationKey {
+    return {
+      authority: isSet(object.authority) ? globalThis.String(object.authority) : "",
+      rollupId: isSet(object.rollupId)
+        ? globalThis.String(object.rollupId)
+        : isSet(object.rollup_id)
+        ? globalThis.String(object.rollup_id)
+        : "",
+      verificationKey: isSet(object.verificationKey)
+        ? bytesFromBase64(object.verificationKey)
+        : isSet(object.verification_key)
+        ? bytesFromBase64(object.verification_key)
+        : new Uint8Array(0),
+      proofSystem: isSet(object.proofSystem)
+        ? globalThis.String(object.proofSystem)
+        : isSet(object.proof_system)
+        ? globalThis.String(object.proof_system)
+        : "",
+    };
+  },
+
+  toJSON(message: MsgUpdateVerificationKey): unknown {
+    const obj: any = {};
+    if (message.authority !== "") {
+      obj.authority = message.authority;
+    }
+    if (message.rollupId !== "") {
+      obj.rollupId = message.rollupId;
+    }
+    if (message.verificationKey.length !== 0) {
+      obj.verificationKey = base64FromBytes(message.verificationKey);
+    }
+    if (message.proofSystem !== "") {
+      obj.proofSystem = message.proofSystem;
+    }
+    return obj;
+  },
+
+  create(base?: DeepPartial<MsgUpdateVerificationKey>): MsgUpdateVerificationKey {
+    return MsgUpdateVerificationKey.fromPartial(base ?? {});
+  },
+  fromPartial(object: DeepPartial<MsgUpdateVerificationKey>): MsgUpdateVerificationKey {
+    const message = createBaseMsgUpdateVerificationKey();
+    message.authority = object.authority ?? "";
+    message.rollupId = object.rollupId ?? "";
+    message.verificationKey = object.verificationKey ?? new Uint8Array(0);
+    message.proofSystem = object.proofSystem ?? "";
+    return message;
+  },
+};
+
+function createBaseMsgUpdateVerificationKeyResponse(): MsgUpdateVerificationKeyResponse {
+  return {};
+}
+
+export const MsgUpdateVerificationKeyResponse: MessageFns<MsgUpdateVerificationKeyResponse> = {
+  encode(_: MsgUpdateVerificationKeyResponse, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): MsgUpdateVerificationKeyResponse {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseMsgUpdateVerificationKeyResponse();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(_: any): MsgUpdateVerificationKeyResponse {
+    return {};
+  },
+
+  toJSON(_: MsgUpdateVerificationKeyResponse): unknown {
+    const obj: any = {};
+    return obj;
+  },
+
+  create(base?: DeepPartial<MsgUpdateVerificationKeyResponse>): MsgUpdateVerificationKeyResponse {
+    return MsgUpdateVerificationKeyResponse.fromPartial(base ?? {});
+  },
+  fromPartial(_: DeepPartial<MsgUpdateVerificationKeyResponse>): MsgUpdateVerificationKeyResponse {
+    const message = createBaseMsgUpdateVerificationKeyResponse();
+    return message;
+  },
+};
+
+function createBaseMsgPostRollupData(): MsgPostRollupData {
+  return { poster: "", rollupId: "", data: new Uint8Array(0) };
+}
+
+export const MsgPostRollupData: MessageFns<MsgPostRollupData> = {
+  encode(message: MsgPostRollupData, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.poster !== "") {
+      writer.uint32(10).string(message.poster);
+    }
+    if (message.rollupId !== "") {
+      writer.uint32(18).string(message.rollupId);
+    }
+    if (message.data.length !== 0) {
+      writer.uint32(26).bytes(message.data);
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): MsgPostRollupData {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseMsgPostRollupData();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.poster = reader.string();
+          continue;
+        }
+        case 2: {
+          if (tag !== 18) {
+            break;
+          }
+
+          message.rollupId = reader.string();
+          continue;
+        }
+        case 3: {
+          if (tag !== 26) {
+            break;
+          }
+
+          message.data = reader.bytes();
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(object: any): MsgPostRollupData {
+    return {
+      poster: isSet(object.poster) ? globalThis.String(object.poster) : "",
+      rollupId: isSet(object.rollupId)
+        ? globalThis.String(object.rollupId)
+        : isSet(object.rollup_id)
+        ? globalThis.String(object.rollup_id)
+        : "",
+      data: isSet(object.data) ? bytesFromBase64(object.data) : new Uint8Array(0),
+    };
+  },
+
+  toJSON(message: MsgPostRollupData): unknown {
+    const obj: any = {};
+    if (message.poster !== "") {
+      obj.poster = message.poster;
+    }
+    if (message.rollupId !== "") {
+      obj.rollupId = message.rollupId;
+    }
+    if (message.data.length !== 0) {
+      obj.data = base64FromBytes(message.data);
+    }
+    return obj;
+  },
+
+  create(base?: DeepPartial<MsgPostRollupData>): MsgPostRollupData {
+    return MsgPostRollupData.fromPartial(base ?? {});
+  },
+  fromPartial(object: DeepPartial<MsgPostRollupData>): MsgPostRollupData {
+    const message = createBaseMsgPostRollupData();
+    message.poster = object.poster ?? "";
+    message.rollupId = object.rollupId ?? "";
+    message.data = object.data ?? new Uint8Array(0);
+    return message;
+  },
+};
+
+function createBaseMsgPostRollupDataResponse(): MsgPostRollupDataResponse {
+  return { sequence: "0", dataHash: new Uint8Array(0) };
+}
+
+export const MsgPostRollupDataResponse: MessageFns<MsgPostRollupDataResponse> = {
+  encode(message: MsgPostRollupDataResponse, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.sequence !== "0") {
+      writer.uint32(8).uint64(message.sequence);
+    }
+    if (message.dataHash.length !== 0) {
+      writer.uint32(18).bytes(message.dataHash);
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): MsgPostRollupDataResponse {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseMsgPostRollupDataResponse();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 8) {
+            break;
+          }
+
+          message.sequence = reader.uint64().toString();
+          continue;
+        }
+        case 2: {
+          if (tag !== 18) {
+            break;
+          }
+
+          message.dataHash = reader.bytes();
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(object: any): MsgPostRollupDataResponse {
+    return {
+      sequence: isSet(object.sequence) ? globalThis.String(object.sequence) : "0",
+      dataHash: isSet(object.dataHash)
+        ? bytesFromBase64(object.dataHash)
+        : isSet(object.data_hash)
+        ? bytesFromBase64(object.data_hash)
+        : new Uint8Array(0),
+    };
+  },
+
+  toJSON(message: MsgPostRollupDataResponse): unknown {
+    const obj: any = {};
+    if (message.sequence !== "0") {
+      obj.sequence = message.sequence;
+    }
+    if (message.dataHash.length !== 0) {
+      obj.dataHash = base64FromBytes(message.dataHash);
+    }
+    return obj;
+  },
+
+  create(base?: DeepPartial<MsgPostRollupDataResponse>): MsgPostRollupDataResponse {
+    return MsgPostRollupDataResponse.fromPartial(base ?? {});
+  },
+  fromPartial(object: DeepPartial<MsgPostRollupDataResponse>): MsgPostRollupDataResponse {
+    const message = createBaseMsgPostRollupDataResponse();
+    message.sequence = object.sequence ?? "0";
+    message.dataHash = object.dataHash ?? new Uint8Array(0);
+    return message;
+  },
+};
+
+function createBaseMsgSetRollupSequencing(): MsgSetRollupSequencing {
+  return { authority: "", rollupId: "", sequencing: "" };
+}
+
+export const MsgSetRollupSequencing: MessageFns<MsgSetRollupSequencing> = {
+  encode(message: MsgSetRollupSequencing, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.authority !== "") {
+      writer.uint32(10).string(message.authority);
+    }
+    if (message.rollupId !== "") {
+      writer.uint32(18).string(message.rollupId);
+    }
+    if (message.sequencing !== "") {
+      writer.uint32(26).string(message.sequencing);
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): MsgSetRollupSequencing {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseMsgSetRollupSequencing();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.authority = reader.string();
+          continue;
+        }
+        case 2: {
+          if (tag !== 18) {
+            break;
+          }
+
+          message.rollupId = reader.string();
+          continue;
+        }
+        case 3: {
+          if (tag !== 26) {
+            break;
+          }
+
+          message.sequencing = reader.string();
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(object: any): MsgSetRollupSequencing {
+    return {
+      authority: isSet(object.authority) ? globalThis.String(object.authority) : "",
+      rollupId: isSet(object.rollupId)
+        ? globalThis.String(object.rollupId)
+        : isSet(object.rollup_id)
+        ? globalThis.String(object.rollup_id)
+        : "",
+      sequencing: isSet(object.sequencing) ? globalThis.String(object.sequencing) : "",
+    };
+  },
+
+  toJSON(message: MsgSetRollupSequencing): unknown {
+    const obj: any = {};
+    if (message.authority !== "") {
+      obj.authority = message.authority;
+    }
+    if (message.rollupId !== "") {
+      obj.rollupId = message.rollupId;
+    }
+    if (message.sequencing !== "") {
+      obj.sequencing = message.sequencing;
+    }
+    return obj;
+  },
+
+  create(base?: DeepPartial<MsgSetRollupSequencing>): MsgSetRollupSequencing {
+    return MsgSetRollupSequencing.fromPartial(base ?? {});
+  },
+  fromPartial(object: DeepPartial<MsgSetRollupSequencing>): MsgSetRollupSequencing {
+    const message = createBaseMsgSetRollupSequencing();
+    message.authority = object.authority ?? "";
+    message.rollupId = object.rollupId ?? "";
+    message.sequencing = object.sequencing ?? "";
+    return message;
+  },
+};
+
+function createBaseMsgSetRollupSequencingResponse(): MsgSetRollupSequencingResponse {
+  return {};
+}
+
+export const MsgSetRollupSequencingResponse: MessageFns<MsgSetRollupSequencingResponse> = {
+  encode(_: MsgSetRollupSequencingResponse, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): MsgSetRollupSequencingResponse {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseMsgSetRollupSequencingResponse();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(_: any): MsgSetRollupSequencingResponse {
+    return {};
+  },
+
+  toJSON(_: MsgSetRollupSequencingResponse): unknown {
+    const obj: any = {};
+    return obj;
+  },
+
+  create(base?: DeepPartial<MsgSetRollupSequencingResponse>): MsgSetRollupSequencingResponse {
+    return MsgSetRollupSequencingResponse.fromPartial(base ?? {});
+  },
+  fromPartial(_: DeepPartial<MsgSetRollupSequencingResponse>): MsgSetRollupSequencingResponse {
+    const message = createBaseMsgSetRollupSequencingResponse();
+    return message;
+  },
+};
+
+function createBaseMsgDepositToRollup(): MsgDepositToRollup {
+  return { depositor: "", rollupId: "", account: new Uint8Array(0), amount: "0" };
+}
+
+export const MsgDepositToRollup: MessageFns<MsgDepositToRollup> = {
+  encode(message: MsgDepositToRollup, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.depositor !== "") {
+      writer.uint32(10).string(message.depositor);
+    }
+    if (message.rollupId !== "") {
+      writer.uint32(18).string(message.rollupId);
+    }
+    if (message.account.length !== 0) {
+      writer.uint32(26).bytes(message.account);
+    }
+    if (message.amount !== "0") {
+      writer.uint32(32).uint64(message.amount);
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): MsgDepositToRollup {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseMsgDepositToRollup();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.depositor = reader.string();
+          continue;
+        }
+        case 2: {
+          if (tag !== 18) {
+            break;
+          }
+
+          message.rollupId = reader.string();
+          continue;
+        }
+        case 3: {
+          if (tag !== 26) {
+            break;
+          }
+
+          message.account = reader.bytes();
+          continue;
+        }
+        case 4: {
+          if (tag !== 32) {
+            break;
+          }
+
+          message.amount = reader.uint64().toString();
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(object: any): MsgDepositToRollup {
+    return {
+      depositor: isSet(object.depositor) ? globalThis.String(object.depositor) : "",
+      rollupId: isSet(object.rollupId)
+        ? globalThis.String(object.rollupId)
+        : isSet(object.rollup_id)
+        ? globalThis.String(object.rollup_id)
+        : "",
+      account: isSet(object.account) ? bytesFromBase64(object.account) : new Uint8Array(0),
+      amount: isSet(object.amount) ? globalThis.String(object.amount) : "0",
+    };
+  },
+
+  toJSON(message: MsgDepositToRollup): unknown {
+    const obj: any = {};
+    if (message.depositor !== "") {
+      obj.depositor = message.depositor;
+    }
+    if (message.rollupId !== "") {
+      obj.rollupId = message.rollupId;
+    }
+    if (message.account.length !== 0) {
+      obj.account = base64FromBytes(message.account);
+    }
+    if (message.amount !== "0") {
+      obj.amount = message.amount;
+    }
+    return obj;
+  },
+
+  create(base?: DeepPartial<MsgDepositToRollup>): MsgDepositToRollup {
+    return MsgDepositToRollup.fromPartial(base ?? {});
+  },
+  fromPartial(object: DeepPartial<MsgDepositToRollup>): MsgDepositToRollup {
+    const message = createBaseMsgDepositToRollup();
+    message.depositor = object.depositor ?? "";
+    message.rollupId = object.rollupId ?? "";
+    message.account = object.account ?? new Uint8Array(0);
+    message.amount = object.amount ?? "0";
+    return message;
+  },
+};
+
+function createBaseMsgDepositToRollupResponse(): MsgDepositToRollupResponse {
+  return { sequence: "0" };
+}
+
+export const MsgDepositToRollupResponse: MessageFns<MsgDepositToRollupResponse> = {
+  encode(message: MsgDepositToRollupResponse, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.sequence !== "0") {
+      writer.uint32(8).uint64(message.sequence);
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): MsgDepositToRollupResponse {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseMsgDepositToRollupResponse();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 8) {
+            break;
+          }
+
+          message.sequence = reader.uint64().toString();
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(object: any): MsgDepositToRollupResponse {
+    return { sequence: isSet(object.sequence) ? globalThis.String(object.sequence) : "0" };
+  },
+
+  toJSON(message: MsgDepositToRollupResponse): unknown {
+    const obj: any = {};
+    if (message.sequence !== "0") {
+      obj.sequence = message.sequence;
+    }
+    return obj;
+  },
+
+  create(base?: DeepPartial<MsgDepositToRollupResponse>): MsgDepositToRollupResponse {
+    return MsgDepositToRollupResponse.fromPartial(base ?? {});
+  },
+  fromPartial(object: DeepPartial<MsgDepositToRollupResponse>): MsgDepositToRollupResponse {
+    const message = createBaseMsgDepositToRollupResponse();
+    message.sequence = object.sequence ?? "0";
+    return message;
+  },
+};
+
+function createBaseMsgBondRollupSubmitter(): MsgBondRollupSubmitter {
+  return { submitter: "", rollupId: "", amount: "0" };
+}
+
+export const MsgBondRollupSubmitter: MessageFns<MsgBondRollupSubmitter> = {
+  encode(message: MsgBondRollupSubmitter, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.submitter !== "") {
+      writer.uint32(10).string(message.submitter);
+    }
+    if (message.rollupId !== "") {
+      writer.uint32(18).string(message.rollupId);
+    }
+    if (message.amount !== "0") {
+      writer.uint32(24).uint64(message.amount);
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): MsgBondRollupSubmitter {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseMsgBondRollupSubmitter();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.submitter = reader.string();
+          continue;
+        }
+        case 2: {
+          if (tag !== 18) {
+            break;
+          }
+
+          message.rollupId = reader.string();
+          continue;
+        }
+        case 3: {
+          if (tag !== 24) {
+            break;
+          }
+
+          message.amount = reader.uint64().toString();
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(object: any): MsgBondRollupSubmitter {
+    return {
+      submitter: isSet(object.submitter) ? globalThis.String(object.submitter) : "",
+      rollupId: isSet(object.rollupId)
+        ? globalThis.String(object.rollupId)
+        : isSet(object.rollup_id)
+        ? globalThis.String(object.rollup_id)
+        : "",
+      amount: isSet(object.amount) ? globalThis.String(object.amount) : "0",
+    };
+  },
+
+  toJSON(message: MsgBondRollupSubmitter): unknown {
+    const obj: any = {};
+    if (message.submitter !== "") {
+      obj.submitter = message.submitter;
+    }
+    if (message.rollupId !== "") {
+      obj.rollupId = message.rollupId;
+    }
+    if (message.amount !== "0") {
+      obj.amount = message.amount;
+    }
+    return obj;
+  },
+
+  create(base?: DeepPartial<MsgBondRollupSubmitter>): MsgBondRollupSubmitter {
+    return MsgBondRollupSubmitter.fromPartial(base ?? {});
+  },
+  fromPartial(object: DeepPartial<MsgBondRollupSubmitter>): MsgBondRollupSubmitter {
+    const message = createBaseMsgBondRollupSubmitter();
+    message.submitter = object.submitter ?? "";
+    message.rollupId = object.rollupId ?? "";
+    message.amount = object.amount ?? "0";
+    return message;
+  },
+};
+
+function createBaseMsgBondRollupSubmitterResponse(): MsgBondRollupSubmitterResponse {
+  return { bond: "0" };
+}
+
+export const MsgBondRollupSubmitterResponse: MessageFns<MsgBondRollupSubmitterResponse> = {
+  encode(message: MsgBondRollupSubmitterResponse, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.bond !== "0") {
+      writer.uint32(8).uint64(message.bond);
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): MsgBondRollupSubmitterResponse {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseMsgBondRollupSubmitterResponse();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 8) {
+            break;
+          }
+
+          message.bond = reader.uint64().toString();
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(object: any): MsgBondRollupSubmitterResponse {
+    return { bond: isSet(object.bond) ? globalThis.String(object.bond) : "0" };
+  },
+
+  toJSON(message: MsgBondRollupSubmitterResponse): unknown {
+    const obj: any = {};
+    if (message.bond !== "0") {
+      obj.bond = message.bond;
+    }
+    return obj;
+  },
+
+  create(base?: DeepPartial<MsgBondRollupSubmitterResponse>): MsgBondRollupSubmitterResponse {
+    return MsgBondRollupSubmitterResponse.fromPartial(base ?? {});
+  },
+  fromPartial(object: DeepPartial<MsgBondRollupSubmitterResponse>): MsgBondRollupSubmitterResponse {
+    const message = createBaseMsgBondRollupSubmitterResponse();
+    message.bond = object.bond ?? "0";
+    return message;
+  },
+};
+
+function createBaseMsgUnbondRollupSubmitter(): MsgUnbondRollupSubmitter {
+  return { submitter: "", rollupId: "" };
+}
+
+export const MsgUnbondRollupSubmitter: MessageFns<MsgUnbondRollupSubmitter> = {
+  encode(message: MsgUnbondRollupSubmitter, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.submitter !== "") {
+      writer.uint32(10).string(message.submitter);
+    }
+    if (message.rollupId !== "") {
+      writer.uint32(18).string(message.rollupId);
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): MsgUnbondRollupSubmitter {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseMsgUnbondRollupSubmitter();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.submitter = reader.string();
+          continue;
+        }
+        case 2: {
+          if (tag !== 18) {
+            break;
+          }
+
+          message.rollupId = reader.string();
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(object: any): MsgUnbondRollupSubmitter {
+    return {
+      submitter: isSet(object.submitter) ? globalThis.String(object.submitter) : "",
+      rollupId: isSet(object.rollupId)
+        ? globalThis.String(object.rollupId)
+        : isSet(object.rollup_id)
+        ? globalThis.String(object.rollup_id)
+        : "",
+    };
+  },
+
+  toJSON(message: MsgUnbondRollupSubmitter): unknown {
+    const obj: any = {};
+    if (message.submitter !== "") {
+      obj.submitter = message.submitter;
+    }
+    if (message.rollupId !== "") {
+      obj.rollupId = message.rollupId;
+    }
+    return obj;
+  },
+
+  create(base?: DeepPartial<MsgUnbondRollupSubmitter>): MsgUnbondRollupSubmitter {
+    return MsgUnbondRollupSubmitter.fromPartial(base ?? {});
+  },
+  fromPartial(object: DeepPartial<MsgUnbondRollupSubmitter>): MsgUnbondRollupSubmitter {
+    const message = createBaseMsgUnbondRollupSubmitter();
+    message.submitter = object.submitter ?? "";
+    message.rollupId = object.rollupId ?? "";
+    return message;
+  },
+};
+
+function createBaseMsgUnbondRollupSubmitterResponse(): MsgUnbondRollupSubmitterResponse {
+  return { returned: "0" };
+}
+
+export const MsgUnbondRollupSubmitterResponse: MessageFns<MsgUnbondRollupSubmitterResponse> = {
+  encode(message: MsgUnbondRollupSubmitterResponse, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.returned !== "0") {
+      writer.uint32(8).uint64(message.returned);
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): MsgUnbondRollupSubmitterResponse {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseMsgUnbondRollupSubmitterResponse();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 8) {
+            break;
+          }
+
+          message.returned = reader.uint64().toString();
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(object: any): MsgUnbondRollupSubmitterResponse {
+    return { returned: isSet(object.returned) ? globalThis.String(object.returned) : "0" };
+  },
+
+  toJSON(message: MsgUnbondRollupSubmitterResponse): unknown {
+    const obj: any = {};
+    if (message.returned !== "0") {
+      obj.returned = message.returned;
+    }
+    return obj;
+  },
+
+  create(base?: DeepPartial<MsgUnbondRollupSubmitterResponse>): MsgUnbondRollupSubmitterResponse {
+    return MsgUnbondRollupSubmitterResponse.fromPartial(base ?? {});
+  },
+  fromPartial(object: DeepPartial<MsgUnbondRollupSubmitterResponse>): MsgUnbondRollupSubmitterResponse {
+    const message = createBaseMsgUnbondRollupSubmitterResponse();
+    message.returned = object.returned ?? "0";
+    return message;
+  },
+};
+
+function createBaseMsgSetRollupMembers(): MsgSetRollupMembers {
+  return { creator: "", rollupId: "", members: [] };
+}
+
+export const MsgSetRollupMembers: MessageFns<MsgSetRollupMembers> = {
+  encode(message: MsgSetRollupMembers, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.creator !== "") {
+      writer.uint32(10).string(message.creator);
+    }
+    if (message.rollupId !== "") {
+      writer.uint32(18).string(message.rollupId);
+    }
+    for (const v of message.members) {
+      writer.uint32(26).string(v!);
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): MsgSetRollupMembers {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseMsgSetRollupMembers();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.creator = reader.string();
+          continue;
+        }
+        case 2: {
+          if (tag !== 18) {
+            break;
+          }
+
+          message.rollupId = reader.string();
+          continue;
+        }
+        case 3: {
+          if (tag !== 26) {
+            break;
+          }
+
+          message.members.push(reader.string());
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(object: any): MsgSetRollupMembers {
+    return {
+      creator: isSet(object.creator) ? globalThis.String(object.creator) : "",
+      rollupId: isSet(object.rollupId)
+        ? globalThis.String(object.rollupId)
+        : isSet(object.rollup_id)
+        ? globalThis.String(object.rollup_id)
+        : "",
+      members: globalThis.Array.isArray(object?.members) ? object.members.map((e: any) => globalThis.String(e)) : [],
+    };
+  },
+
+  toJSON(message: MsgSetRollupMembers): unknown {
+    const obj: any = {};
+    if (message.creator !== "") {
+      obj.creator = message.creator;
+    }
+    if (message.rollupId !== "") {
+      obj.rollupId = message.rollupId;
+    }
+    if (message.members?.length) {
+      obj.members = message.members;
+    }
+    return obj;
+  },
+
+  create(base?: DeepPartial<MsgSetRollupMembers>): MsgSetRollupMembers {
+    return MsgSetRollupMembers.fromPartial(base ?? {});
+  },
+  fromPartial(object: DeepPartial<MsgSetRollupMembers>): MsgSetRollupMembers {
+    const message = createBaseMsgSetRollupMembers();
+    message.creator = object.creator ?? "";
+    message.rollupId = object.rollupId ?? "";
+    message.members = object.members?.map((e) => e) || [];
+    return message;
+  },
+};
+
+function createBaseMsgSetRollupMembersResponse(): MsgSetRollupMembersResponse {
+  return { epoch: "0" };
+}
+
+export const MsgSetRollupMembersResponse: MessageFns<MsgSetRollupMembersResponse> = {
+  encode(message: MsgSetRollupMembersResponse, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.epoch !== "0") {
+      writer.uint32(8).uint64(message.epoch);
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): MsgSetRollupMembersResponse {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseMsgSetRollupMembersResponse();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 8) {
+            break;
+          }
+
+          message.epoch = reader.uint64().toString();
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(object: any): MsgSetRollupMembersResponse {
+    return { epoch: isSet(object.epoch) ? globalThis.String(object.epoch) : "0" };
+  },
+
+  toJSON(message: MsgSetRollupMembersResponse): unknown {
+    const obj: any = {};
+    if (message.epoch !== "0") {
+      obj.epoch = message.epoch;
+    }
+    return obj;
+  },
+
+  create(base?: DeepPartial<MsgSetRollupMembersResponse>): MsgSetRollupMembersResponse {
+    return MsgSetRollupMembersResponse.fromPartial(base ?? {});
+  },
+  fromPartial(object: DeepPartial<MsgSetRollupMembersResponse>): MsgSetRollupMembersResponse {
+    const message = createBaseMsgSetRollupMembersResponse();
+    message.epoch = object.epoch ?? "0";
     return message;
   },
 };
@@ -1937,6 +3634,103 @@ export const MsgDefinition = {
       requestType: MsgUpdateParams as typeof MsgUpdateParams,
       requestStream: false,
       responseType: MsgUpdateParamsResponse as typeof MsgUpdateParamsResponse,
+      responseStream: false,
+      options: {},
+    },
+    /**
+     * SetVerificationKey is served from v3.2.7 (rdk-zk-verification-key). The
+     * rollup's creator registers or replaces its ZK verification key until the
+     * rollup's first batch is submitted.
+     */
+    setVerificationKey: {
+      name: "SetVerificationKey",
+      requestType: MsgSetVerificationKey as typeof MsgSetVerificationKey,
+      requestStream: false,
+      responseType: MsgSetVerificationKeyResponse as typeof MsgSetVerificationKeyResponse,
+      responseStream: false,
+      options: {},
+    },
+    /**
+     * UpdateVerificationKey is served from v3.2.7 (rdk-zk-verification-key).
+     * Governance only; it may change a rollup's key at any time.
+     */
+    updateVerificationKey: {
+      name: "UpdateVerificationKey",
+      requestType: MsgUpdateVerificationKey as typeof MsgUpdateVerificationKey,
+      requestStream: false,
+      responseType: MsgUpdateVerificationKeyResponse as typeof MsgUpdateVerificationKeyResponse,
+      responseStream: false,
+      options: {},
+    },
+    /**
+     * PostRollupData is served from v3.2.8 (rdk-post-rollup-data). It puts a
+     * rollup's data on chain: the payload stays in the transaction, the chain
+     * keeps a commitment and extends the rollup's inbox.
+     */
+    postRollupData: {
+      name: "PostRollupData",
+      requestType: MsgPostRollupData as typeof MsgPostRollupData,
+      requestStream: false,
+      responseType: MsgPostRollupDataResponse as typeof MsgPostRollupDataResponse,
+      responseStream: false,
+      options: {},
+    },
+    /**
+     * SetRollupSequencing is served from v3.2.8 (rdk-based-sequencing).
+     * Governance only; it moves an existing rollup to or from based sequencing.
+     */
+    setRollupSequencing: {
+      name: "SetRollupSequencing",
+      requestType: MsgSetRollupSequencing as typeof MsgSetRollupSequencing,
+      requestStream: false,
+      responseType: MsgSetRollupSequencingResponse as typeof MsgSetRollupSequencingResponse,
+      responseStream: false,
+      options: {},
+    },
+    /**
+     * DepositToRollup is served from v3.2.8 (rdk-optimistic-reexec). It moves
+     * uqor into a qledger-v1 rollup's deposit pool and appends a deposit entry
+     * to its inbox.
+     */
+    depositToRollup: {
+      name: "DepositToRollup",
+      requestType: MsgDepositToRollup as typeof MsgDepositToRollup,
+      requestStream: false,
+      responseType: MsgDepositToRollupResponse as typeof MsgDepositToRollupResponse,
+      responseStream: false,
+      options: {},
+    },
+    /**
+     * BondRollupSubmitter and UnbondRollupSubmitter are served from v3.2.8
+     * (rdk-optimistic-reexec): a qledger-v1 rollup takes batches from any
+     * account holding a submitter bond, which an upheld fraud proof pays to
+     * the challenger.
+     */
+    bondRollupSubmitter: {
+      name: "BondRollupSubmitter",
+      requestType: MsgBondRollupSubmitter as typeof MsgBondRollupSubmitter,
+      requestStream: false,
+      responseType: MsgBondRollupSubmitterResponse as typeof MsgBondRollupSubmitterResponse,
+      responseStream: false,
+      options: {},
+    },
+    unbondRollupSubmitter: {
+      name: "UnbondRollupSubmitter",
+      requestType: MsgUnbondRollupSubmitter as typeof MsgUnbondRollupSubmitter,
+      requestStream: false,
+      responseType: MsgUnbondRollupSubmitterResponse as typeof MsgUnbondRollupSubmitterResponse,
+      responseStream: false,
+      options: {},
+    },
+    /**
+     * SetRollupMembers is served from v3.2.8 (rdk-private-rollups). The
+     * creator of a private rollup sets its member list.
+     */
+    setRollupMembers: {
+      name: "SetRollupMembers",
+      requestType: MsgSetRollupMembers as typeof MsgSetRollupMembers,
+      requestStream: false,
+      responseType: MsgSetRollupMembersResponse as typeof MsgSetRollupMembersResponse,
       responseStream: false,
       options: {},
     },

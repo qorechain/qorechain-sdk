@@ -9,6 +9,37 @@ import { BinaryReader, BinaryWriter } from "@bufbuild/protobuf/wire";
 
 export const protobufPackage = "qorechain.pqc.v1";
 
+export interface QueryParamsRequest {
+}
+
+export interface QueryParamsResponse {
+  params?: ParamsView | undefined;
+}
+
+/** ParamsView is the query-facing view of the x/pqc parameters. */
+export interface ParamsView {
+  pqcPrimary: boolean;
+  /**
+   * allow_classical_fallback reports whether an account without a registered
+   * PQC key may still sign classically where the hybrid mode allows it.
+   */
+  allowClassicalFallback: boolean;
+  minSecurityLevel: number;
+  /**
+   * default_migration_blocks is the dual-signature period of an algorithm
+   * migration, in blocks.
+   */
+  defaultMigrationBlocks: string;
+  defaultSignatureAlgo: number;
+  defaultSignatureAlgoName: string;
+  /**
+   * hybrid_signature_mode is 0 (disabled), 1 (optional) or 2 (required);
+   * hybrid_signature_mode_name spells it.
+   */
+  hybridSignatureMode: number;
+  hybridSignatureModeName: string;
+}
+
 export interface QueryKEMKeyRequest {
   /** address is bech32 or 0x-prefixed hex. */
   address: string;
@@ -161,6 +192,322 @@ export interface PQCAccountView {
    */
   possessionProven: boolean;
 }
+
+function createBaseQueryParamsRequest(): QueryParamsRequest {
+  return {};
+}
+
+export const QueryParamsRequest: MessageFns<QueryParamsRequest> = {
+  encode(_: QueryParamsRequest, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): QueryParamsRequest {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseQueryParamsRequest();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(_: any): QueryParamsRequest {
+    return {};
+  },
+
+  toJSON(_: QueryParamsRequest): unknown {
+    const obj: any = {};
+    return obj;
+  },
+
+  create(base?: DeepPartial<QueryParamsRequest>): QueryParamsRequest {
+    return QueryParamsRequest.fromPartial(base ?? {});
+  },
+  fromPartial(_: DeepPartial<QueryParamsRequest>): QueryParamsRequest {
+    const message = createBaseQueryParamsRequest();
+    return message;
+  },
+};
+
+function createBaseQueryParamsResponse(): QueryParamsResponse {
+  return { params: undefined };
+}
+
+export const QueryParamsResponse: MessageFns<QueryParamsResponse> = {
+  encode(message: QueryParamsResponse, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.params !== undefined) {
+      ParamsView.encode(message.params, writer.uint32(10).fork()).join();
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): QueryParamsResponse {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseQueryParamsResponse();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.params = ParamsView.decode(reader, reader.uint32());
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(object: any): QueryParamsResponse {
+    return { params: isSet(object.params) ? ParamsView.fromJSON(object.params) : undefined };
+  },
+
+  toJSON(message: QueryParamsResponse): unknown {
+    const obj: any = {};
+    if (message.params !== undefined) {
+      obj.params = ParamsView.toJSON(message.params);
+    }
+    return obj;
+  },
+
+  create(base?: DeepPartial<QueryParamsResponse>): QueryParamsResponse {
+    return QueryParamsResponse.fromPartial(base ?? {});
+  },
+  fromPartial(object: DeepPartial<QueryParamsResponse>): QueryParamsResponse {
+    const message = createBaseQueryParamsResponse();
+    message.params = (object.params !== undefined && object.params !== null)
+      ? ParamsView.fromPartial(object.params)
+      : undefined;
+    return message;
+  },
+};
+
+function createBaseParamsView(): ParamsView {
+  return {
+    pqcPrimary: false,
+    allowClassicalFallback: false,
+    minSecurityLevel: 0,
+    defaultMigrationBlocks: "0",
+    defaultSignatureAlgo: 0,
+    defaultSignatureAlgoName: "",
+    hybridSignatureMode: 0,
+    hybridSignatureModeName: "",
+  };
+}
+
+export const ParamsView: MessageFns<ParamsView> = {
+  encode(message: ParamsView, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.pqcPrimary !== false) {
+      writer.uint32(8).bool(message.pqcPrimary);
+    }
+    if (message.allowClassicalFallback !== false) {
+      writer.uint32(16).bool(message.allowClassicalFallback);
+    }
+    if (message.minSecurityLevel !== 0) {
+      writer.uint32(24).int32(message.minSecurityLevel);
+    }
+    if (message.defaultMigrationBlocks !== "0") {
+      writer.uint32(32).int64(message.defaultMigrationBlocks);
+    }
+    if (message.defaultSignatureAlgo !== 0) {
+      writer.uint32(40).uint32(message.defaultSignatureAlgo);
+    }
+    if (message.defaultSignatureAlgoName !== "") {
+      writer.uint32(50).string(message.defaultSignatureAlgoName);
+    }
+    if (message.hybridSignatureMode !== 0) {
+      writer.uint32(56).uint32(message.hybridSignatureMode);
+    }
+    if (message.hybridSignatureModeName !== "") {
+      writer.uint32(66).string(message.hybridSignatureModeName);
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): ParamsView {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseParamsView();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 8) {
+            break;
+          }
+
+          message.pqcPrimary = reader.bool();
+          continue;
+        }
+        case 2: {
+          if (tag !== 16) {
+            break;
+          }
+
+          message.allowClassicalFallback = reader.bool();
+          continue;
+        }
+        case 3: {
+          if (tag !== 24) {
+            break;
+          }
+
+          message.minSecurityLevel = reader.int32();
+          continue;
+        }
+        case 4: {
+          if (tag !== 32) {
+            break;
+          }
+
+          message.defaultMigrationBlocks = reader.int64().toString();
+          continue;
+        }
+        case 5: {
+          if (tag !== 40) {
+            break;
+          }
+
+          message.defaultSignatureAlgo = reader.uint32();
+          continue;
+        }
+        case 6: {
+          if (tag !== 50) {
+            break;
+          }
+
+          message.defaultSignatureAlgoName = reader.string();
+          continue;
+        }
+        case 7: {
+          if (tag !== 56) {
+            break;
+          }
+
+          message.hybridSignatureMode = reader.uint32();
+          continue;
+        }
+        case 8: {
+          if (tag !== 66) {
+            break;
+          }
+
+          message.hybridSignatureModeName = reader.string();
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(object: any): ParamsView {
+    return {
+      pqcPrimary: isSet(object.pqcPrimary)
+        ? globalThis.Boolean(object.pqcPrimary)
+        : isSet(object.pqc_primary)
+        ? globalThis.Boolean(object.pqc_primary)
+        : false,
+      allowClassicalFallback: isSet(object.allowClassicalFallback)
+        ? globalThis.Boolean(object.allowClassicalFallback)
+        : isSet(object.allow_classical_fallback)
+        ? globalThis.Boolean(object.allow_classical_fallback)
+        : false,
+      minSecurityLevel: isSet(object.minSecurityLevel)
+        ? globalThis.Number(object.minSecurityLevel)
+        : isSet(object.min_security_level)
+        ? globalThis.Number(object.min_security_level)
+        : 0,
+      defaultMigrationBlocks: isSet(object.defaultMigrationBlocks)
+        ? globalThis.String(object.defaultMigrationBlocks)
+        : isSet(object.default_migration_blocks)
+        ? globalThis.String(object.default_migration_blocks)
+        : "0",
+      defaultSignatureAlgo: isSet(object.defaultSignatureAlgo)
+        ? globalThis.Number(object.defaultSignatureAlgo)
+        : isSet(object.default_signature_algo)
+        ? globalThis.Number(object.default_signature_algo)
+        : 0,
+      defaultSignatureAlgoName: isSet(object.defaultSignatureAlgoName)
+        ? globalThis.String(object.defaultSignatureAlgoName)
+        : isSet(object.default_signature_algo_name)
+        ? globalThis.String(object.default_signature_algo_name)
+        : "",
+      hybridSignatureMode: isSet(object.hybridSignatureMode)
+        ? globalThis.Number(object.hybridSignatureMode)
+        : isSet(object.hybrid_signature_mode)
+        ? globalThis.Number(object.hybrid_signature_mode)
+        : 0,
+      hybridSignatureModeName: isSet(object.hybridSignatureModeName)
+        ? globalThis.String(object.hybridSignatureModeName)
+        : isSet(object.hybrid_signature_mode_name)
+        ? globalThis.String(object.hybrid_signature_mode_name)
+        : "",
+    };
+  },
+
+  toJSON(message: ParamsView): unknown {
+    const obj: any = {};
+    if (message.pqcPrimary !== false) {
+      obj.pqcPrimary = message.pqcPrimary;
+    }
+    if (message.allowClassicalFallback !== false) {
+      obj.allowClassicalFallback = message.allowClassicalFallback;
+    }
+    if (message.minSecurityLevel !== 0) {
+      obj.minSecurityLevel = Math.round(message.minSecurityLevel);
+    }
+    if (message.defaultMigrationBlocks !== "0") {
+      obj.defaultMigrationBlocks = message.defaultMigrationBlocks;
+    }
+    if (message.defaultSignatureAlgo !== 0) {
+      obj.defaultSignatureAlgo = Math.round(message.defaultSignatureAlgo);
+    }
+    if (message.defaultSignatureAlgoName !== "") {
+      obj.defaultSignatureAlgoName = message.defaultSignatureAlgoName;
+    }
+    if (message.hybridSignatureMode !== 0) {
+      obj.hybridSignatureMode = Math.round(message.hybridSignatureMode);
+    }
+    if (message.hybridSignatureModeName !== "") {
+      obj.hybridSignatureModeName = message.hybridSignatureModeName;
+    }
+    return obj;
+  },
+
+  create(base?: DeepPartial<ParamsView>): ParamsView {
+    return ParamsView.fromPartial(base ?? {});
+  },
+  fromPartial(object: DeepPartial<ParamsView>): ParamsView {
+    const message = createBaseParamsView();
+    message.pqcPrimary = object.pqcPrimary ?? false;
+    message.allowClassicalFallback = object.allowClassicalFallback ?? false;
+    message.minSecurityLevel = object.minSecurityLevel ?? 0;
+    message.defaultMigrationBlocks = object.defaultMigrationBlocks ?? "0";
+    message.defaultSignatureAlgo = object.defaultSignatureAlgo ?? 0;
+    message.defaultSignatureAlgoName = object.defaultSignatureAlgoName ?? "";
+    message.hybridSignatureMode = object.hybridSignatureMode ?? 0;
+    message.hybridSignatureModeName = object.hybridSignatureModeName ?? "";
+    return message;
+  },
+};
 
 function createBaseQueryKEMKeyRequest(): QueryKEMKeyRequest {
   return { address: "" };
@@ -1974,6 +2321,53 @@ export const QueryDefinition = {
               115,
               115,
               125,
+            ]) as Uint8Array,
+          ],
+        },
+      },
+    },
+    /**
+     * Params returns the module parameters, including the chain-wide hybrid
+     * signature mode, so a client can tell whether a post-quantum signature is
+     * required before it builds a transaction.
+     */
+    params: {
+      name: "Params",
+      requestType: QueryParamsRequest as typeof QueryParamsRequest,
+      requestStream: false,
+      responseType: QueryParamsResponse as typeof QueryParamsResponse,
+      responseStream: false,
+      options: {
+        _unknownFields: {
+          578365826: [
+            new Uint8Array([
+              26,
+              18,
+              24,
+              47,
+              113,
+              111,
+              114,
+              101,
+              99,
+              104,
+              97,
+              105,
+              110,
+              47,
+              112,
+              113,
+              99,
+              47,
+              118,
+              49,
+              47,
+              112,
+              97,
+              114,
+              97,
+              109,
+              115,
             ]) as Uint8Array,
           ],
         },

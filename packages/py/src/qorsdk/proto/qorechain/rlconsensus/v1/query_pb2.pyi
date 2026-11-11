@@ -1,4 +1,5 @@
 from gogoproto import gogo_pb2 as _gogo_pb2
+from google.api import annotations_pb2 as _annotations_pb2
 from google.protobuf.internal import containers as _containers
 from google.protobuf import descriptor as _descriptor
 from google.protobuf import message as _message
@@ -113,3 +114,37 @@ class QueryParamsResponse(_message.Message):
     default_base_gas_price: str
     default_validator_set_size: int
     def __init__(self, enabled: bool = ..., observation_interval: _Optional[int] = ..., agent_mode: _Optional[str] = ..., max_change_conservative: _Optional[str] = ..., max_change_autonomous: _Optional[str] = ..., circuit_breaker_window: _Optional[int] = ..., circuit_breaker_threshold: _Optional[str] = ..., reward_weight_throughput: _Optional[str] = ..., reward_weight_finality: _Optional[str] = ..., reward_weight_decentralization: _Optional[str] = ..., reward_weight_mev: _Optional[str] = ..., reward_weight_failed_txs: _Optional[str] = ..., default_block_time_ms: _Optional[int] = ..., default_base_gas_price: _Optional[str] = ..., default_validator_set_size: _Optional[int] = ...) -> None: ...
+
+class QueryAppliedParamsRequest(_message.Message):
+    __slots__ = ()
+    def __init__(self) -> None: ...
+
+class QueryAppliedParamsResponse(_message.Message):
+    __slots__ = ("block_time_ms", "gas_limit", "gas_price_floor", "pool_weight_rpos", "pool_weight_dpos")
+    BLOCK_TIME_MS_FIELD_NUMBER: _ClassVar[int]
+    GAS_LIMIT_FIELD_NUMBER: _ClassVar[int]
+    GAS_PRICE_FLOOR_FIELD_NUMBER: _ClassVar[int]
+    POOL_WEIGHT_RPOS_FIELD_NUMBER: _ClassVar[int]
+    POOL_WEIGHT_DPOS_FIELD_NUMBER: _ClassVar[int]
+    block_time_ms: int
+    gas_limit: int
+    gas_price_floor: str
+    pool_weight_rpos: str
+    pool_weight_dpos: str
+    def __init__(self, block_time_ms: _Optional[int] = ..., gas_limit: _Optional[int] = ..., gas_price_floor: _Optional[str] = ..., pool_weight_rpos: _Optional[str] = ..., pool_weight_dpos: _Optional[str] = ...) -> None: ...
+
+class QueryLastActionRequest(_message.Message):
+    __slots__ = ()
+    def __init__(self) -> None: ...
+
+class QueryLastActionResponse(_message.Message):
+    __slots__ = ("height", "mode", "values", "applied")
+    HEIGHT_FIELD_NUMBER: _ClassVar[int]
+    MODE_FIELD_NUMBER: _ClassVar[int]
+    VALUES_FIELD_NUMBER: _ClassVar[int]
+    APPLIED_FIELD_NUMBER: _ClassVar[int]
+    height: int
+    mode: str
+    values: _containers.RepeatedScalarFieldContainer[str]
+    applied: bool
+    def __init__(self, height: _Optional[int] = ..., mode: _Optional[str] = ..., values: _Optional[_Iterable[str]] = ..., applied: bool = ...) -> None: ...

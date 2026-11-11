@@ -22,9 +22,10 @@ _runtime_version.ValidateProtobufRuntimeVersion(
 _sym_db = _symbol_database.Default()
 
 
+from google.api import annotations_pb2 as google_dot_api_dot_annotations__pb2
 
 
-DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n#qorechain/reputation/v1/query.proto\x12\x17qorechain.reputation.v1\"\x14\n\x12QueryParamsRequest\"\xa0\x01\n\x13QueryParamsResponse\x12\x14\n\x05\x61lpha\x18\x01 \x01(\tR\x05\x61lpha\x12\x12\n\x04\x62\x65ta\x18\x02 \x01(\tR\x04\x62\x65ta\x12\x14\n\x05gamma\x18\x03 \x01(\tR\x05gamma\x12\x14\n\x05\x64\x65lta\x18\x04 \x01(\tR\x05\x64\x65lta\x12\x16\n\x06lambda\x18\x05 \x01(\tR\x06lambda\x12\x1b\n\tmin_score\x18\x06 \x01(\tR\x08minScore2l\n\x05Query\x12\x63\n\x06Params\x12+.qorechain.reputation.v1.QueryParamsRequest\x1a,.qorechain.reputation.v1.QueryParamsResponseB\xdf\x01\n\x1b\x63om.qorechain.reputation.v1B\nQueryProtoP\x01Z6github.com/qorechain/qorechain-core/x/reputation/types\xa2\x02\x03QRX\xaa\x02\x17Qorechain.Reputation.V1\xca\x02\x17Qorechain\\Reputation\\V1\xe2\x02#Qorechain\\Reputation\\V1\\GPBMetadata\xea\x02\x19Qorechain::Reputation::V1b\x06proto3')
+DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n#qorechain/reputation/v1/query.proto\x12\x17qorechain.reputation.v1\x1a\x1cgoogle/api/annotations.proto\"\x14\n\x12QueryParamsRequest\"\xa0\x01\n\x13QueryParamsResponse\x12\x14\n\x05\x61lpha\x18\x01 \x01(\tR\x05\x61lpha\x12\x12\n\x04\x62\x65ta\x18\x02 \x01(\tR\x04\x62\x65ta\x12\x14\n\x05gamma\x18\x03 \x01(\tR\x05gamma\x12\x14\n\x05\x64\x65lta\x18\x04 \x01(\tR\x05\x64\x65lta\x12\x16\n\x06lambda\x18\x05 \x01(\tR\x06lambda\x12\x1b\n\tmin_score\x18\x06 \x01(\tR\x08minScore\"\xa2\x05\n\x10ReputationRecord\x12+\n\x11\x63onsensus_address\x18\x01 \x01(\tR\x10\x63onsensusAddress\x12)\n\x10operator_address\x18\x02 \x01(\tR\x0foperatorAddress\x12\x1f\n\x0bstake_score\x18\x03 \x01(\tR\nstakeScore\x12+\n\x11performance_score\x18\x04 \x01(\tR\x10performanceScore\x12-\n\x12\x63ontribution_score\x18\x05 \x01(\tR\x11\x63ontributionScore\x12\x1d\n\ntime_score\x18\x06 \x01(\tR\ttimeScore\x12\'\n\x0f\x63omposite_score\x18\x07 \x01(\tR\x0e\x63ompositeScore\x12.\n\x13last_updated_height\x18\x08 \x01(\x03R\x11lastUpdatedHeight\x12#\n\ruptime_blocks\x18\t \x01(\x04R\x0cuptimeBlocks\x12\'\n\x0fproposed_blocks\x18\n \x01(\x04R\x0eproposedBlocks\x12#\n\rmissed_blocks\x18\x0b \x01(\x04R\x0cmissedBlocks\x12\'\n\x0fslashing_events\x18\x0c \x01(\x04R\x0eslashingEvents\x12\'\n\x0f\x63ommunity_votes\x18\r \x01(\x03R\x0e\x63ommunityVotes\x12(\n\x10joined_at_height\x18\x0e \x01(\x03R\x0ejoinedAtHeight\x12+\n\x11gov_participation\x18\x0f \x01(\tR\x10govParticipation\x12%\n\x0einactive_since\x18\x10 \x01(\x03R\rinactiveSince\"E\n\x16QueryReputationRequest\x12+\n\x11validator_address\x18\x01 \x01(\tR\x10validatorAddress\"d\n\x17QueryReputationResponse\x12I\n\nreputation\x18\x01 \x01(\x0b\x32).qorechain.reputation.v1.ReputationRecordR\nreputation\"\x19\n\x17QueryReputationsRequest\"g\n\x18QueryReputationsResponse\x12K\n\x0breputations\x18\x01 \x03(\x0b\x32).qorechain.reputation.v1.ReputationRecordR\x0breputations2\xea\x03\n\x05Query\x12\x8c\x01\n\x06Params\x12+.qorechain.reputation.v1.QueryParamsRequest\x1a,.qorechain.reputation.v1.QueryParamsResponse\"\'\x82\xd3\xe4\x93\x02!\x12\x1f/qorechain/reputation/v1/params\x12\xaf\x01\n\nReputation\x12/.qorechain.reputation.v1.QueryReputationRequest\x1a\x30.qorechain.reputation.v1.QueryReputationResponse\">\x82\xd3\xe4\x93\x02\x38\x12\x36/qorechain/reputation/v1/validator/{validator_address}\x12\x9f\x01\n\x0bReputations\x12\x30.qorechain.reputation.v1.QueryReputationsRequest\x1a\x31.qorechain.reputation.v1.QueryReputationsResponse\"+\x82\xd3\xe4\x93\x02%\x12#/qorechain/reputation/v1/validatorsB\xdf\x01\n\x1b\x63om.qorechain.reputation.v1B\nQueryProtoP\x01Z6github.com/qorechain/qorechain-core/x/reputation/types\xa2\x02\x03QRX\xaa\x02\x17Qorechain.Reputation.V1\xca\x02\x17Qorechain\\Reputation\\V1\xe2\x02#Qorechain\\Reputation\\V1\\GPBMetadata\xea\x02\x19Qorechain::Reputation::V1b\x06proto3')
 
 _globals = globals()
 _builder.BuildMessageAndEnumDescriptors(DESCRIPTOR, _globals)
@@ -32,10 +33,26 @@ _builder.BuildTopDescriptorsAndMessages(DESCRIPTOR, 'qorechain.reputation.v1.que
 if not _descriptor._USE_C_DESCRIPTORS:
   _globals['DESCRIPTOR']._loaded_options = None
   _globals['DESCRIPTOR']._serialized_options = b'\n\033com.qorechain.reputation.v1B\nQueryProtoP\001Z6github.com/qorechain/qorechain-core/x/reputation/types\242\002\003QRX\252\002\027Qorechain.Reputation.V1\312\002\027Qorechain\\Reputation\\V1\342\002#Qorechain\\Reputation\\V1\\GPBMetadata\352\002\031Qorechain::Reputation::V1'
-  _globals['_QUERYPARAMSREQUEST']._serialized_start=64
-  _globals['_QUERYPARAMSREQUEST']._serialized_end=84
-  _globals['_QUERYPARAMSRESPONSE']._serialized_start=87
-  _globals['_QUERYPARAMSRESPONSE']._serialized_end=247
-  _globals['_QUERY']._serialized_start=249
-  _globals['_QUERY']._serialized_end=357
+  _globals['_QUERY'].methods_by_name['Params']._loaded_options = None
+  _globals['_QUERY'].methods_by_name['Params']._serialized_options = b'\202\323\344\223\002!\022\037/qorechain/reputation/v1/params'
+  _globals['_QUERY'].methods_by_name['Reputation']._loaded_options = None
+  _globals['_QUERY'].methods_by_name['Reputation']._serialized_options = b'\202\323\344\223\0028\0226/qorechain/reputation/v1/validator/{validator_address}'
+  _globals['_QUERY'].methods_by_name['Reputations']._loaded_options = None
+  _globals['_QUERY'].methods_by_name['Reputations']._serialized_options = b'\202\323\344\223\002%\022#/qorechain/reputation/v1/validators'
+  _globals['_QUERYPARAMSREQUEST']._serialized_start=94
+  _globals['_QUERYPARAMSREQUEST']._serialized_end=114
+  _globals['_QUERYPARAMSRESPONSE']._serialized_start=117
+  _globals['_QUERYPARAMSRESPONSE']._serialized_end=277
+  _globals['_REPUTATIONRECORD']._serialized_start=280
+  _globals['_REPUTATIONRECORD']._serialized_end=954
+  _globals['_QUERYREPUTATIONREQUEST']._serialized_start=956
+  _globals['_QUERYREPUTATIONREQUEST']._serialized_end=1025
+  _globals['_QUERYREPUTATIONRESPONSE']._serialized_start=1027
+  _globals['_QUERYREPUTATIONRESPONSE']._serialized_end=1127
+  _globals['_QUERYREPUTATIONSREQUEST']._serialized_start=1129
+  _globals['_QUERYREPUTATIONSREQUEST']._serialized_end=1154
+  _globals['_QUERYREPUTATIONSRESPONSE']._serialized_start=1156
+  _globals['_QUERYREPUTATIONSRESPONSE']._serialized_end=1259
+  _globals['_QUERY']._serialized_start=1262
+  _globals['_QUERY']._serialized_end=1752
 # @@protoc_insertion_point(module_scope)

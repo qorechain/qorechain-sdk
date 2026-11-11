@@ -36,6 +36,26 @@ type MsgCreateRollup struct {
 	Profile     string `protobuf:"bytes,3,opt,name=profile,proto3" json:"profile,omitempty"`
 	VmType      string `protobuf:"bytes,4,opt,name=vm_type,json=vmType,proto3" json:"vm_type,omitempty"`
 	StakeAmount int64  `protobuf:"varint,5,opt,name=stake_amount,json=stakeAmount,proto3" json:"stake_amount,omitempty"`
+	// verification_key optionally registers the rollup's ZK verification key at
+	// creation, in the encoding MsgSetVerificationKey takes for the profile's
+	// proof system. Accepted from v3.2.7 (rdk-zk-verification-key); below it a
+	// message that carries one is refused.
+	VerificationKey []byte `protobuf:"bytes,6,opt,name=verification_key,json=verificationKey,proto3" json:"verification_key,omitempty"`
+	// sequencing is "" (the rollup's sequencer settles, as before) or "based":
+	// the rollup's transactions are ordered by their inclusion in this chain
+	// (MsgPostRollupData, which anyone may send) and every batch must consume
+	// the inbox in order. Accepted from v3.2.8 (rdk-based-sequencing), for zk
+	// (snark) and based settlement only; below it a message that sets it is
+	// refused.
+	Sequencing string `protobuf:"bytes,7,opt,name=sequencing,proto3" json:"sequencing,omitempty"`
+	// execution_vm is "" or "qledger-v1" (v3.2.8, rdk-optimistic-reexec): an
+	// optimistic rollup whose batches the chain can re-execute in a fraud
+	// proof. It must be based.
+	ExecutionVm string `protobuf:"bytes,8,opt,name=execution_vm,json=executionVm,proto3" json:"execution_vm,omitempty"`
+	// privacy is "" or "encapsulated" (v3.2.8, rdk-private-rollups): every
+	// post is an ML-KEM-1024 envelope to the rollup's members. zk with a
+	// Groth16 key only.
+	Privacy string `protobuf:"bytes,9,opt,name=privacy,proto3" json:"privacy,omitempty"`
 }
 
 func (m *MsgCreateRollup) Reset()         { *m = MsgCreateRollup{} }
@@ -106,6 +126,34 @@ func (m *MsgCreateRollup) GetStakeAmount() int64 {
 	return 0
 }
 
+func (m *MsgCreateRollup) GetVerificationKey() []byte {
+	if m != nil {
+		return m.VerificationKey
+	}
+	return nil
+}
+
+func (m *MsgCreateRollup) GetSequencing() string {
+	if m != nil {
+		return m.Sequencing
+	}
+	return ""
+}
+
+func (m *MsgCreateRollup) GetExecutionVm() string {
+	if m != nil {
+		return m.ExecutionVm
+	}
+	return ""
+}
+
+func (m *MsgCreateRollup) GetPrivacy() string {
+	if m != nil {
+		return m.Privacy
+	}
+	return ""
+}
+
 type MsgCreateRollupResponse struct {
 	RollupID string `protobuf:"bytes,1,opt,name=rollup_id,json=rollupId,proto3" json:"rollup_id,omitempty"`
 }
@@ -171,6 +219,12 @@ type MsgSubmitBatch struct {
 	// validator_set_hash is the rollup's validator-set commitment carried in
 	// the anchor. Optional; covered by anchor_signature.
 	ValidatorSetHash []byte `protobuf:"bytes,11,opt,name=validator_set_hash,json=validatorSetHash,proto3" json:"validator_set_hash,omitempty"`
+	// inbox_end is, for a based rollup, the sequence number of the last posted
+	// data item this batch consumes; the batch covers the posts after the
+	// rollup's consumed sequence up to it, and data_hash must be their inbox
+	// range commitment. Zero and ignored for every other rollup. Accepted from
+	// v3.2.8 (rdk-based-sequencing); below it a non-zero value is refused.
+	InboxEnd uint64 `protobuf:"varint,12,opt,name=inbox_end,json=inboxEnd,proto3" json:"inbox_end,omitempty"`
 }
 
 func (m *MsgSubmitBatch) Reset()         { *m = MsgSubmitBatch{} }
@@ -281,6 +335,13 @@ func (m *MsgSubmitBatch) GetValidatorSetHash() []byte {
 		return m.ValidatorSetHash
 	}
 	return nil
+}
+
+func (m *MsgSubmitBatch) GetInboxEnd() uint64 {
+	if m != nil {
+		return m.InboxEnd
+	}
+	return 0
 }
 
 type MsgSubmitBatchResponse struct {
@@ -965,6 +1026,26 @@ type MsgUpdateParams struct {
 	MaxDaBlobSize          uint64 `protobuf:"varint,6,opt,name=max_da_blob_size,json=maxDaBlobSize,proto3" json:"max_da_blob_size,omitempty"`
 	BlobRetentionBlocks    uint64 `protobuf:"varint,7,opt,name=blob_retention_blocks,json=blobRetentionBlocks,proto3" json:"blob_retention_blocks,omitempty"`
 	MaxBatchesPerBlock     uint32 `protobuf:"varint,8,opt,name=max_batches_per_block,json=maxBatchesPerBlock,proto3" json:"max_batches_per_block,omitempty"`
+	// finalized_batch_retention_blocks is how many blocks a finalized batch
+	// keeps its proof before it is compacted; 0 means the default. A non-zero
+	// value is refused before v3.2.8 (rdk-batch-compaction).
+	FinalizedBatchRetentionBlocks uint64 `protobuf:"varint,9,opt,name=finalized_batch_retention_blocks,json=finalizedBatchRetentionBlocks,proto3" json:"finalized_batch_retention_blocks,omitempty"`
+	// The posted-data parameters (v3.2.8, rdk-post-rollup-data). Zero means
+	// the default for each; a non-zero value is refused before the switch.
+	// max_posted_data_bytes caps one MsgPostRollupData payload.
+	MaxPostedDataBytes uint64 `protobuf:"varint,10,opt,name=max_posted_data_bytes,json=maxPostedDataBytes,proto3" json:"max_posted_data_bytes,omitempty"`
+	// max_posted_data_bytes_per_block caps the billable bytes posted in one
+	// block, all rollups together.
+	MaxPostedDataBytesPerBlock uint64 `protobuf:"varint,11,opt,name=max_posted_data_bytes_per_block,json=maxPostedDataBytesPerBlock,proto3" json:"max_posted_data_bytes_per_block,omitempty"`
+	// posted_data_fee_per_byte is the uqor fee per billable byte.
+	PostedDataFeePerByte uint64 `protobuf:"varint,12,opt,name=posted_data_fee_per_byte,json=postedDataFeePerByte,proto3" json:"posted_data_fee_per_byte,omitempty"`
+	// posted_data_retention_blocks is how long a posted-data commitment stays
+	// in state.
+	PostedDataRetentionBlocks uint64 `protobuf:"varint,13,opt,name=posted_data_retention_blocks,json=postedDataRetentionBlocks,proto3" json:"posted_data_retention_blocks,omitempty"`
+	// min_submitter_bond is the uqor bond a qledger-v1 rollup's batch
+	// submitter must hold (v3.2.8, rdk-optimistic-reexec); 0 means the
+	// default. A non-zero value is refused before the switch.
+	MinSubmitterBond uint64 `protobuf:"varint,14,opt,name=min_submitter_bond,json=minSubmitterBond,proto3" json:"min_submitter_bond,omitempty"`
 }
 
 func (m *MsgUpdateParams) Reset()         { *m = MsgUpdateParams{} }
@@ -1056,6 +1137,48 @@ func (m *MsgUpdateParams) GetMaxBatchesPerBlock() uint32 {
 	return 0
 }
 
+func (m *MsgUpdateParams) GetFinalizedBatchRetentionBlocks() uint64 {
+	if m != nil {
+		return m.FinalizedBatchRetentionBlocks
+	}
+	return 0
+}
+
+func (m *MsgUpdateParams) GetMaxPostedDataBytes() uint64 {
+	if m != nil {
+		return m.MaxPostedDataBytes
+	}
+	return 0
+}
+
+func (m *MsgUpdateParams) GetMaxPostedDataBytesPerBlock() uint64 {
+	if m != nil {
+		return m.MaxPostedDataBytesPerBlock
+	}
+	return 0
+}
+
+func (m *MsgUpdateParams) GetPostedDataFeePerByte() uint64 {
+	if m != nil {
+		return m.PostedDataFeePerByte
+	}
+	return 0
+}
+
+func (m *MsgUpdateParams) GetPostedDataRetentionBlocks() uint64 {
+	if m != nil {
+		return m.PostedDataRetentionBlocks
+	}
+	return 0
+}
+
+func (m *MsgUpdateParams) GetMinSubmitterBond() uint64 {
+	if m != nil {
+		return m.MinSubmitterBond
+	}
+	return 0
+}
+
 type MsgUpdateParamsResponse struct {
 }
 
@@ -1092,6 +1215,883 @@ func (m *MsgUpdateParamsResponse) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_MsgUpdateParamsResponse proto.InternalMessageInfo
 
+// MsgSetVerificationKey registers or replaces the ZK verification key of a
+// zk-settlement rollup. Signed by the rollup's creator, and only before the
+// rollup's first batch; after that the key changes only through
+// MsgUpdateVerificationKey. Served from v3.2.7 (rdk-zk-verification-key).
+//
+// verification_key is, for proof system "snark", a Groth16 BLS12-381
+// verifying key in gnark's binary encoding (VerifyingKey.WriteTo) for a
+// circuit with exactly four public inputs (prev_state_root, state_root,
+// data_hash, withdrawals_root); for "stark", the 16-byte QSTK key of the
+// transparent verifier. A key that does not decode is refused.
+type MsgSetVerificationKey struct {
+	Creator         string `protobuf:"bytes,1,opt,name=creator,proto3" json:"creator,omitempty"`
+	RollupID        string `protobuf:"bytes,2,opt,name=rollup_id,json=rollupId,proto3" json:"rollup_id,omitempty"`
+	VerificationKey []byte `protobuf:"bytes,3,opt,name=verification_key,json=verificationKey,proto3" json:"verification_key,omitempty"`
+	// proof_system is "snark" or "stark". Empty keeps the rollup's current
+	// proof system.
+	ProofSystem string `protobuf:"bytes,4,opt,name=proof_system,json=proofSystem,proto3" json:"proof_system,omitempty"`
+}
+
+func (m *MsgSetVerificationKey) Reset()         { *m = MsgSetVerificationKey{} }
+func (m *MsgSetVerificationKey) String() string { return proto.CompactTextString(m) }
+func (*MsgSetVerificationKey) ProtoMessage()    {}
+func (*MsgSetVerificationKey) Descriptor() ([]byte, []int) {
+	return fileDescriptor_8226b2780a73a9c7, []int{18}
+}
+func (m *MsgSetVerificationKey) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *MsgSetVerificationKey) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_MsgSetVerificationKey.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *MsgSetVerificationKey) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_MsgSetVerificationKey.Merge(m, src)
+}
+func (m *MsgSetVerificationKey) XXX_Size() int {
+	return m.Size()
+}
+func (m *MsgSetVerificationKey) XXX_DiscardUnknown() {
+	xxx_messageInfo_MsgSetVerificationKey.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_MsgSetVerificationKey proto.InternalMessageInfo
+
+func (m *MsgSetVerificationKey) GetCreator() string {
+	if m != nil {
+		return m.Creator
+	}
+	return ""
+}
+
+func (m *MsgSetVerificationKey) GetRollupID() string {
+	if m != nil {
+		return m.RollupID
+	}
+	return ""
+}
+
+func (m *MsgSetVerificationKey) GetVerificationKey() []byte {
+	if m != nil {
+		return m.VerificationKey
+	}
+	return nil
+}
+
+func (m *MsgSetVerificationKey) GetProofSystem() string {
+	if m != nil {
+		return m.ProofSystem
+	}
+	return ""
+}
+
+type MsgSetVerificationKeyResponse struct {
+}
+
+func (m *MsgSetVerificationKeyResponse) Reset()         { *m = MsgSetVerificationKeyResponse{} }
+func (m *MsgSetVerificationKeyResponse) String() string { return proto.CompactTextString(m) }
+func (*MsgSetVerificationKeyResponse) ProtoMessage()    {}
+func (*MsgSetVerificationKeyResponse) Descriptor() ([]byte, []int) {
+	return fileDescriptor_8226b2780a73a9c7, []int{19}
+}
+func (m *MsgSetVerificationKeyResponse) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *MsgSetVerificationKeyResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_MsgSetVerificationKeyResponse.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *MsgSetVerificationKeyResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_MsgSetVerificationKeyResponse.Merge(m, src)
+}
+func (m *MsgSetVerificationKeyResponse) XXX_Size() int {
+	return m.Size()
+}
+func (m *MsgSetVerificationKeyResponse) XXX_DiscardUnknown() {
+	xxx_messageInfo_MsgSetVerificationKeyResponse.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_MsgSetVerificationKeyResponse proto.InternalMessageInfo
+
+// MsgUpdateVerificationKey replaces a zk-settlement rollup's verification key
+// at any point of its life. Governance only: authority must be the gov module
+// account. The key is validated as in MsgSetVerificationKey. Served from
+// v3.2.7 (rdk-zk-verification-key).
+type MsgUpdateVerificationKey struct {
+	Authority       string `protobuf:"bytes,1,opt,name=authority,proto3" json:"authority,omitempty"`
+	RollupID        string `protobuf:"bytes,2,opt,name=rollup_id,json=rollupId,proto3" json:"rollup_id,omitempty"`
+	VerificationKey []byte `protobuf:"bytes,3,opt,name=verification_key,json=verificationKey,proto3" json:"verification_key,omitempty"`
+	// proof_system is "snark" or "stark". Empty keeps the rollup's current
+	// proof system.
+	ProofSystem string `protobuf:"bytes,4,opt,name=proof_system,json=proofSystem,proto3" json:"proof_system,omitempty"`
+}
+
+func (m *MsgUpdateVerificationKey) Reset()         { *m = MsgUpdateVerificationKey{} }
+func (m *MsgUpdateVerificationKey) String() string { return proto.CompactTextString(m) }
+func (*MsgUpdateVerificationKey) ProtoMessage()    {}
+func (*MsgUpdateVerificationKey) Descriptor() ([]byte, []int) {
+	return fileDescriptor_8226b2780a73a9c7, []int{20}
+}
+func (m *MsgUpdateVerificationKey) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *MsgUpdateVerificationKey) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_MsgUpdateVerificationKey.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *MsgUpdateVerificationKey) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_MsgUpdateVerificationKey.Merge(m, src)
+}
+func (m *MsgUpdateVerificationKey) XXX_Size() int {
+	return m.Size()
+}
+func (m *MsgUpdateVerificationKey) XXX_DiscardUnknown() {
+	xxx_messageInfo_MsgUpdateVerificationKey.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_MsgUpdateVerificationKey proto.InternalMessageInfo
+
+func (m *MsgUpdateVerificationKey) GetAuthority() string {
+	if m != nil {
+		return m.Authority
+	}
+	return ""
+}
+
+func (m *MsgUpdateVerificationKey) GetRollupID() string {
+	if m != nil {
+		return m.RollupID
+	}
+	return ""
+}
+
+func (m *MsgUpdateVerificationKey) GetVerificationKey() []byte {
+	if m != nil {
+		return m.VerificationKey
+	}
+	return nil
+}
+
+func (m *MsgUpdateVerificationKey) GetProofSystem() string {
+	if m != nil {
+		return m.ProofSystem
+	}
+	return ""
+}
+
+type MsgUpdateVerificationKeyResponse struct {
+}
+
+func (m *MsgUpdateVerificationKeyResponse) Reset()         { *m = MsgUpdateVerificationKeyResponse{} }
+func (m *MsgUpdateVerificationKeyResponse) String() string { return proto.CompactTextString(m) }
+func (*MsgUpdateVerificationKeyResponse) ProtoMessage()    {}
+func (*MsgUpdateVerificationKeyResponse) Descriptor() ([]byte, []int) {
+	return fileDescriptor_8226b2780a73a9c7, []int{21}
+}
+func (m *MsgUpdateVerificationKeyResponse) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *MsgUpdateVerificationKeyResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_MsgUpdateVerificationKeyResponse.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *MsgUpdateVerificationKeyResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_MsgUpdateVerificationKeyResponse.Merge(m, src)
+}
+func (m *MsgUpdateVerificationKeyResponse) XXX_Size() int {
+	return m.Size()
+}
+func (m *MsgUpdateVerificationKeyResponse) XXX_DiscardUnknown() {
+	xxx_messageInfo_MsgUpdateVerificationKeyResponse.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_MsgUpdateVerificationKeyResponse proto.InternalMessageInfo
+
+// MsgPostRollupData puts rollup data on chain (v3.2.8, rdk-post-rollup-data).
+// The payload stays in this transaction, which is in the block; the chain
+// stores a commitment (SHA-256 of data, size, poster, height) under the next
+// sequence number of the rollup's inbox and extends the inbox accumulator.
+// The poster pays a fee per billable byte (at least 1 KiB per post) into the
+// fee collector. Who may post: the rollup's sequencer (or its creator when no
+// sequencer address is set); anyone for a based rollup.
+type MsgPostRollupData struct {
+	Poster   string `protobuf:"bytes,1,opt,name=poster,proto3" json:"poster,omitempty"`
+	RollupID string `protobuf:"bytes,2,opt,name=rollup_id,json=rollupId,proto3" json:"rollup_id,omitempty"`
+	Data     []byte `protobuf:"bytes,3,opt,name=data,proto3" json:"data,omitempty"`
+}
+
+func (m *MsgPostRollupData) Reset()         { *m = MsgPostRollupData{} }
+func (m *MsgPostRollupData) String() string { return proto.CompactTextString(m) }
+func (*MsgPostRollupData) ProtoMessage()    {}
+func (*MsgPostRollupData) Descriptor() ([]byte, []int) {
+	return fileDescriptor_8226b2780a73a9c7, []int{22}
+}
+func (m *MsgPostRollupData) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *MsgPostRollupData) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_MsgPostRollupData.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *MsgPostRollupData) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_MsgPostRollupData.Merge(m, src)
+}
+func (m *MsgPostRollupData) XXX_Size() int {
+	return m.Size()
+}
+func (m *MsgPostRollupData) XXX_DiscardUnknown() {
+	xxx_messageInfo_MsgPostRollupData.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_MsgPostRollupData proto.InternalMessageInfo
+
+func (m *MsgPostRollupData) GetPoster() string {
+	if m != nil {
+		return m.Poster
+	}
+	return ""
+}
+
+func (m *MsgPostRollupData) GetRollupID() string {
+	if m != nil {
+		return m.RollupID
+	}
+	return ""
+}
+
+func (m *MsgPostRollupData) GetData() []byte {
+	if m != nil {
+		return m.Data
+	}
+	return nil
+}
+
+type MsgPostRollupDataResponse struct {
+	// sequence is the inbox sequence number the post was given (from 1).
+	Sequence uint64 `protobuf:"varint,1,opt,name=sequence,proto3" json:"sequence,omitempty"`
+	// data_hash is SHA-256(data), the hash a batch references.
+	DataHash []byte `protobuf:"bytes,2,opt,name=data_hash,json=dataHash,proto3" json:"data_hash,omitempty"`
+}
+
+func (m *MsgPostRollupDataResponse) Reset()         { *m = MsgPostRollupDataResponse{} }
+func (m *MsgPostRollupDataResponse) String() string { return proto.CompactTextString(m) }
+func (*MsgPostRollupDataResponse) ProtoMessage()    {}
+func (*MsgPostRollupDataResponse) Descriptor() ([]byte, []int) {
+	return fileDescriptor_8226b2780a73a9c7, []int{23}
+}
+func (m *MsgPostRollupDataResponse) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *MsgPostRollupDataResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_MsgPostRollupDataResponse.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *MsgPostRollupDataResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_MsgPostRollupDataResponse.Merge(m, src)
+}
+func (m *MsgPostRollupDataResponse) XXX_Size() int {
+	return m.Size()
+}
+func (m *MsgPostRollupDataResponse) XXX_DiscardUnknown() {
+	xxx_messageInfo_MsgPostRollupDataResponse.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_MsgPostRollupDataResponse proto.InternalMessageInfo
+
+func (m *MsgPostRollupDataResponse) GetSequence() uint64 {
+	if m != nil {
+		return m.Sequence
+	}
+	return 0
+}
+
+func (m *MsgPostRollupDataResponse) GetDataHash() []byte {
+	if m != nil {
+		return m.DataHash
+	}
+	return nil
+}
+
+// MsgSetRollupSequencing moves a rollup to based sequencing ("based") or back
+// to its sequencer (""). Governance only: authority must be the gov module
+// account. Moving to based starts the inbox at its current head. Served from
+// v3.2.8 (rdk-based-sequencing).
+type MsgSetRollupSequencing struct {
+	Authority  string `protobuf:"bytes,1,opt,name=authority,proto3" json:"authority,omitempty"`
+	RollupID   string `protobuf:"bytes,2,opt,name=rollup_id,json=rollupId,proto3" json:"rollup_id,omitempty"`
+	Sequencing string `protobuf:"bytes,3,opt,name=sequencing,proto3" json:"sequencing,omitempty"`
+}
+
+func (m *MsgSetRollupSequencing) Reset()         { *m = MsgSetRollupSequencing{} }
+func (m *MsgSetRollupSequencing) String() string { return proto.CompactTextString(m) }
+func (*MsgSetRollupSequencing) ProtoMessage()    {}
+func (*MsgSetRollupSequencing) Descriptor() ([]byte, []int) {
+	return fileDescriptor_8226b2780a73a9c7, []int{24}
+}
+func (m *MsgSetRollupSequencing) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *MsgSetRollupSequencing) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_MsgSetRollupSequencing.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *MsgSetRollupSequencing) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_MsgSetRollupSequencing.Merge(m, src)
+}
+func (m *MsgSetRollupSequencing) XXX_Size() int {
+	return m.Size()
+}
+func (m *MsgSetRollupSequencing) XXX_DiscardUnknown() {
+	xxx_messageInfo_MsgSetRollupSequencing.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_MsgSetRollupSequencing proto.InternalMessageInfo
+
+func (m *MsgSetRollupSequencing) GetAuthority() string {
+	if m != nil {
+		return m.Authority
+	}
+	return ""
+}
+
+func (m *MsgSetRollupSequencing) GetRollupID() string {
+	if m != nil {
+		return m.RollupID
+	}
+	return ""
+}
+
+func (m *MsgSetRollupSequencing) GetSequencing() string {
+	if m != nil {
+		return m.Sequencing
+	}
+	return ""
+}
+
+type MsgSetRollupSequencingResponse struct {
+}
+
+func (m *MsgSetRollupSequencingResponse) Reset()         { *m = MsgSetRollupSequencingResponse{} }
+func (m *MsgSetRollupSequencingResponse) String() string { return proto.CompactTextString(m) }
+func (*MsgSetRollupSequencingResponse) ProtoMessage()    {}
+func (*MsgSetRollupSequencingResponse) Descriptor() ([]byte, []int) {
+	return fileDescriptor_8226b2780a73a9c7, []int{25}
+}
+func (m *MsgSetRollupSequencingResponse) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *MsgSetRollupSequencingResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_MsgSetRollupSequencingResponse.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *MsgSetRollupSequencingResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_MsgSetRollupSequencingResponse.Merge(m, src)
+}
+func (m *MsgSetRollupSequencingResponse) XXX_Size() int {
+	return m.Size()
+}
+func (m *MsgSetRollupSequencingResponse) XXX_DiscardUnknown() {
+	xxx_messageInfo_MsgSetRollupSequencingResponse.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_MsgSetRollupSequencingResponse proto.InternalMessageInfo
+
+// MsgDepositToRollup moves amount uqor from depositor into a qledger-v1
+// rollup's deposit pool and credits the L2 account (32-byte qledger-v1
+// account id) through the rollup's inbox. Served from v3.2.8
+// (rdk-optimistic-reexec).
+type MsgDepositToRollup struct {
+	Depositor string `protobuf:"bytes,1,opt,name=depositor,proto3" json:"depositor,omitempty"`
+	RollupID  string `protobuf:"bytes,2,opt,name=rollup_id,json=rollupId,proto3" json:"rollup_id,omitempty"`
+	Account   []byte `protobuf:"bytes,3,opt,name=account,proto3" json:"account,omitempty"`
+	Amount    uint64 `protobuf:"varint,4,opt,name=amount,proto3" json:"amount,omitempty"`
+}
+
+func (m *MsgDepositToRollup) Reset()         { *m = MsgDepositToRollup{} }
+func (m *MsgDepositToRollup) String() string { return proto.CompactTextString(m) }
+func (*MsgDepositToRollup) ProtoMessage()    {}
+func (*MsgDepositToRollup) Descriptor() ([]byte, []int) {
+	return fileDescriptor_8226b2780a73a9c7, []int{26}
+}
+func (m *MsgDepositToRollup) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *MsgDepositToRollup) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_MsgDepositToRollup.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *MsgDepositToRollup) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_MsgDepositToRollup.Merge(m, src)
+}
+func (m *MsgDepositToRollup) XXX_Size() int {
+	return m.Size()
+}
+func (m *MsgDepositToRollup) XXX_DiscardUnknown() {
+	xxx_messageInfo_MsgDepositToRollup.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_MsgDepositToRollup proto.InternalMessageInfo
+
+func (m *MsgDepositToRollup) GetDepositor() string {
+	if m != nil {
+		return m.Depositor
+	}
+	return ""
+}
+
+func (m *MsgDepositToRollup) GetRollupID() string {
+	if m != nil {
+		return m.RollupID
+	}
+	return ""
+}
+
+func (m *MsgDepositToRollup) GetAccount() []byte {
+	if m != nil {
+		return m.Account
+	}
+	return nil
+}
+
+func (m *MsgDepositToRollup) GetAmount() uint64 {
+	if m != nil {
+		return m.Amount
+	}
+	return 0
+}
+
+type MsgDepositToRollupResponse struct {
+	// sequence is the inbox sequence of the deposit entry.
+	Sequence uint64 `protobuf:"varint,1,opt,name=sequence,proto3" json:"sequence,omitempty"`
+}
+
+func (m *MsgDepositToRollupResponse) Reset()         { *m = MsgDepositToRollupResponse{} }
+func (m *MsgDepositToRollupResponse) String() string { return proto.CompactTextString(m) }
+func (*MsgDepositToRollupResponse) ProtoMessage()    {}
+func (*MsgDepositToRollupResponse) Descriptor() ([]byte, []int) {
+	return fileDescriptor_8226b2780a73a9c7, []int{27}
+}
+func (m *MsgDepositToRollupResponse) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *MsgDepositToRollupResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_MsgDepositToRollupResponse.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *MsgDepositToRollupResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_MsgDepositToRollupResponse.Merge(m, src)
+}
+func (m *MsgDepositToRollupResponse) XXX_Size() int {
+	return m.Size()
+}
+func (m *MsgDepositToRollupResponse) XXX_DiscardUnknown() {
+	xxx_messageInfo_MsgDepositToRollupResponse.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_MsgDepositToRollupResponse proto.InternalMessageInfo
+
+func (m *MsgDepositToRollupResponse) GetSequence() uint64 {
+	if m != nil {
+		return m.Sequence
+	}
+	return 0
+}
+
+// MsgBondRollupSubmitter adds amount uqor to submitter's bond on a
+// qledger-v1 rollup. Served from v3.2.8 (rdk-optimistic-reexec).
+type MsgBondRollupSubmitter struct {
+	Submitter string `protobuf:"bytes,1,opt,name=submitter,proto3" json:"submitter,omitempty"`
+	RollupID  string `protobuf:"bytes,2,opt,name=rollup_id,json=rollupId,proto3" json:"rollup_id,omitempty"`
+	Amount    uint64 `protobuf:"varint,3,opt,name=amount,proto3" json:"amount,omitempty"`
+}
+
+func (m *MsgBondRollupSubmitter) Reset()         { *m = MsgBondRollupSubmitter{} }
+func (m *MsgBondRollupSubmitter) String() string { return proto.CompactTextString(m) }
+func (*MsgBondRollupSubmitter) ProtoMessage()    {}
+func (*MsgBondRollupSubmitter) Descriptor() ([]byte, []int) {
+	return fileDescriptor_8226b2780a73a9c7, []int{28}
+}
+func (m *MsgBondRollupSubmitter) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *MsgBondRollupSubmitter) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_MsgBondRollupSubmitter.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *MsgBondRollupSubmitter) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_MsgBondRollupSubmitter.Merge(m, src)
+}
+func (m *MsgBondRollupSubmitter) XXX_Size() int {
+	return m.Size()
+}
+func (m *MsgBondRollupSubmitter) XXX_DiscardUnknown() {
+	xxx_messageInfo_MsgBondRollupSubmitter.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_MsgBondRollupSubmitter proto.InternalMessageInfo
+
+func (m *MsgBondRollupSubmitter) GetSubmitter() string {
+	if m != nil {
+		return m.Submitter
+	}
+	return ""
+}
+
+func (m *MsgBondRollupSubmitter) GetRollupID() string {
+	if m != nil {
+		return m.RollupID
+	}
+	return ""
+}
+
+func (m *MsgBondRollupSubmitter) GetAmount() uint64 {
+	if m != nil {
+		return m.Amount
+	}
+	return 0
+}
+
+type MsgBondRollupSubmitterResponse struct {
+	Bond uint64 `protobuf:"varint,1,opt,name=bond,proto3" json:"bond,omitempty"`
+}
+
+func (m *MsgBondRollupSubmitterResponse) Reset()         { *m = MsgBondRollupSubmitterResponse{} }
+func (m *MsgBondRollupSubmitterResponse) String() string { return proto.CompactTextString(m) }
+func (*MsgBondRollupSubmitterResponse) ProtoMessage()    {}
+func (*MsgBondRollupSubmitterResponse) Descriptor() ([]byte, []int) {
+	return fileDescriptor_8226b2780a73a9c7, []int{29}
+}
+func (m *MsgBondRollupSubmitterResponse) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *MsgBondRollupSubmitterResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_MsgBondRollupSubmitterResponse.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *MsgBondRollupSubmitterResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_MsgBondRollupSubmitterResponse.Merge(m, src)
+}
+func (m *MsgBondRollupSubmitterResponse) XXX_Size() int {
+	return m.Size()
+}
+func (m *MsgBondRollupSubmitterResponse) XXX_DiscardUnknown() {
+	xxx_messageInfo_MsgBondRollupSubmitterResponse.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_MsgBondRollupSubmitterResponse proto.InternalMessageInfo
+
+func (m *MsgBondRollupSubmitterResponse) GetBond() uint64 {
+	if m != nil {
+		return m.Bond
+	}
+	return 0
+}
+
+// MsgUnbondRollupSubmitter returns submitter's whole bond once a full
+// challenge window has passed since its last batch. Served from v3.2.8
+// (rdk-optimistic-reexec).
+type MsgUnbondRollupSubmitter struct {
+	Submitter string `protobuf:"bytes,1,opt,name=submitter,proto3" json:"submitter,omitempty"`
+	RollupID  string `protobuf:"bytes,2,opt,name=rollup_id,json=rollupId,proto3" json:"rollup_id,omitempty"`
+}
+
+func (m *MsgUnbondRollupSubmitter) Reset()         { *m = MsgUnbondRollupSubmitter{} }
+func (m *MsgUnbondRollupSubmitter) String() string { return proto.CompactTextString(m) }
+func (*MsgUnbondRollupSubmitter) ProtoMessage()    {}
+func (*MsgUnbondRollupSubmitter) Descriptor() ([]byte, []int) {
+	return fileDescriptor_8226b2780a73a9c7, []int{30}
+}
+func (m *MsgUnbondRollupSubmitter) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *MsgUnbondRollupSubmitter) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_MsgUnbondRollupSubmitter.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *MsgUnbondRollupSubmitter) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_MsgUnbondRollupSubmitter.Merge(m, src)
+}
+func (m *MsgUnbondRollupSubmitter) XXX_Size() int {
+	return m.Size()
+}
+func (m *MsgUnbondRollupSubmitter) XXX_DiscardUnknown() {
+	xxx_messageInfo_MsgUnbondRollupSubmitter.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_MsgUnbondRollupSubmitter proto.InternalMessageInfo
+
+func (m *MsgUnbondRollupSubmitter) GetSubmitter() string {
+	if m != nil {
+		return m.Submitter
+	}
+	return ""
+}
+
+func (m *MsgUnbondRollupSubmitter) GetRollupID() string {
+	if m != nil {
+		return m.RollupID
+	}
+	return ""
+}
+
+type MsgUnbondRollupSubmitterResponse struct {
+	Returned uint64 `protobuf:"varint,1,opt,name=returned,proto3" json:"returned,omitempty"`
+}
+
+func (m *MsgUnbondRollupSubmitterResponse) Reset()         { *m = MsgUnbondRollupSubmitterResponse{} }
+func (m *MsgUnbondRollupSubmitterResponse) String() string { return proto.CompactTextString(m) }
+func (*MsgUnbondRollupSubmitterResponse) ProtoMessage()    {}
+func (*MsgUnbondRollupSubmitterResponse) Descriptor() ([]byte, []int) {
+	return fileDescriptor_8226b2780a73a9c7, []int{31}
+}
+func (m *MsgUnbondRollupSubmitterResponse) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *MsgUnbondRollupSubmitterResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_MsgUnbondRollupSubmitterResponse.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *MsgUnbondRollupSubmitterResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_MsgUnbondRollupSubmitterResponse.Merge(m, src)
+}
+func (m *MsgUnbondRollupSubmitterResponse) XXX_Size() int {
+	return m.Size()
+}
+func (m *MsgUnbondRollupSubmitterResponse) XXX_DiscardUnknown() {
+	xxx_messageInfo_MsgUnbondRollupSubmitterResponse.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_MsgUnbondRollupSubmitterResponse proto.InternalMessageInfo
+
+func (m *MsgUnbondRollupSubmitterResponse) GetReturned() uint64 {
+	if m != nil {
+		return m.Returned
+	}
+	return 0
+}
+
+// MsgSetRollupMembers sets the member list of a private rollup (each member
+// must publish an ML-KEM-1024 key in the x/pqc KEM registry) and starts a
+// new membership epoch. Signed by the rollup's creator. Served from v3.2.8
+// (rdk-private-rollups).
+type MsgSetRollupMembers struct {
+	Creator  string   `protobuf:"bytes,1,opt,name=creator,proto3" json:"creator,omitempty"`
+	RollupID string   `protobuf:"bytes,2,opt,name=rollup_id,json=rollupId,proto3" json:"rollup_id,omitempty"`
+	Members  []string `protobuf:"bytes,3,rep,name=members,proto3" json:"members,omitempty"`
+}
+
+func (m *MsgSetRollupMembers) Reset()         { *m = MsgSetRollupMembers{} }
+func (m *MsgSetRollupMembers) String() string { return proto.CompactTextString(m) }
+func (*MsgSetRollupMembers) ProtoMessage()    {}
+func (*MsgSetRollupMembers) Descriptor() ([]byte, []int) {
+	return fileDescriptor_8226b2780a73a9c7, []int{32}
+}
+func (m *MsgSetRollupMembers) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *MsgSetRollupMembers) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_MsgSetRollupMembers.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *MsgSetRollupMembers) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_MsgSetRollupMembers.Merge(m, src)
+}
+func (m *MsgSetRollupMembers) XXX_Size() int {
+	return m.Size()
+}
+func (m *MsgSetRollupMembers) XXX_DiscardUnknown() {
+	xxx_messageInfo_MsgSetRollupMembers.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_MsgSetRollupMembers proto.InternalMessageInfo
+
+func (m *MsgSetRollupMembers) GetCreator() string {
+	if m != nil {
+		return m.Creator
+	}
+	return ""
+}
+
+func (m *MsgSetRollupMembers) GetRollupID() string {
+	if m != nil {
+		return m.RollupID
+	}
+	return ""
+}
+
+func (m *MsgSetRollupMembers) GetMembers() []string {
+	if m != nil {
+		return m.Members
+	}
+	return nil
+}
+
+type MsgSetRollupMembersResponse struct {
+	Epoch uint64 `protobuf:"varint,1,opt,name=epoch,proto3" json:"epoch,omitempty"`
+}
+
+func (m *MsgSetRollupMembersResponse) Reset()         { *m = MsgSetRollupMembersResponse{} }
+func (m *MsgSetRollupMembersResponse) String() string { return proto.CompactTextString(m) }
+func (*MsgSetRollupMembersResponse) ProtoMessage()    {}
+func (*MsgSetRollupMembersResponse) Descriptor() ([]byte, []int) {
+	return fileDescriptor_8226b2780a73a9c7, []int{33}
+}
+func (m *MsgSetRollupMembersResponse) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *MsgSetRollupMembersResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_MsgSetRollupMembersResponse.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *MsgSetRollupMembersResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_MsgSetRollupMembersResponse.Merge(m, src)
+}
+func (m *MsgSetRollupMembersResponse) XXX_Size() int {
+	return m.Size()
+}
+func (m *MsgSetRollupMembersResponse) XXX_DiscardUnknown() {
+	xxx_messageInfo_MsgSetRollupMembersResponse.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_MsgSetRollupMembersResponse proto.InternalMessageInfo
+
+func (m *MsgSetRollupMembersResponse) GetEpoch() uint64 {
+	if m != nil {
+		return m.Epoch
+	}
+	return 0
+}
+
 func init() {
 	proto.RegisterType((*MsgCreateRollup)(nil), "qorechain.rdk.v1.MsgCreateRollup")
 	proto.RegisterType((*MsgCreateRollupResponse)(nil), "qorechain.rdk.v1.MsgCreateRollupResponse")
@@ -1111,95 +2111,153 @@ func init() {
 	proto.RegisterType((*MsgExecuteWithdrawalResponse)(nil), "qorechain.rdk.v1.MsgExecuteWithdrawalResponse")
 	proto.RegisterType((*MsgUpdateParams)(nil), "qorechain.rdk.v1.MsgUpdateParams")
 	proto.RegisterType((*MsgUpdateParamsResponse)(nil), "qorechain.rdk.v1.MsgUpdateParamsResponse")
+	proto.RegisterType((*MsgSetVerificationKey)(nil), "qorechain.rdk.v1.MsgSetVerificationKey")
+	proto.RegisterType((*MsgSetVerificationKeyResponse)(nil), "qorechain.rdk.v1.MsgSetVerificationKeyResponse")
+	proto.RegisterType((*MsgUpdateVerificationKey)(nil), "qorechain.rdk.v1.MsgUpdateVerificationKey")
+	proto.RegisterType((*MsgUpdateVerificationKeyResponse)(nil), "qorechain.rdk.v1.MsgUpdateVerificationKeyResponse")
+	proto.RegisterType((*MsgPostRollupData)(nil), "qorechain.rdk.v1.MsgPostRollupData")
+	proto.RegisterType((*MsgPostRollupDataResponse)(nil), "qorechain.rdk.v1.MsgPostRollupDataResponse")
+	proto.RegisterType((*MsgSetRollupSequencing)(nil), "qorechain.rdk.v1.MsgSetRollupSequencing")
+	proto.RegisterType((*MsgSetRollupSequencingResponse)(nil), "qorechain.rdk.v1.MsgSetRollupSequencingResponse")
+	proto.RegisterType((*MsgDepositToRollup)(nil), "qorechain.rdk.v1.MsgDepositToRollup")
+	proto.RegisterType((*MsgDepositToRollupResponse)(nil), "qorechain.rdk.v1.MsgDepositToRollupResponse")
+	proto.RegisterType((*MsgBondRollupSubmitter)(nil), "qorechain.rdk.v1.MsgBondRollupSubmitter")
+	proto.RegisterType((*MsgBondRollupSubmitterResponse)(nil), "qorechain.rdk.v1.MsgBondRollupSubmitterResponse")
+	proto.RegisterType((*MsgUnbondRollupSubmitter)(nil), "qorechain.rdk.v1.MsgUnbondRollupSubmitter")
+	proto.RegisterType((*MsgUnbondRollupSubmitterResponse)(nil), "qorechain.rdk.v1.MsgUnbondRollupSubmitterResponse")
+	proto.RegisterType((*MsgSetRollupMembers)(nil), "qorechain.rdk.v1.MsgSetRollupMembers")
+	proto.RegisterType((*MsgSetRollupMembersResponse)(nil), "qorechain.rdk.v1.MsgSetRollupMembersResponse")
 }
 
 func init() { proto.RegisterFile("qorechain/rdk/v1/tx.proto", fileDescriptor_8226b2780a73a9c7) }
 
 var fileDescriptor_8226b2780a73a9c7 = []byte{
-	// 1325 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xc4, 0x57, 0xcf, 0x6f, 0x1b, 0xc5,
-	0x17, 0xef, 0xc6, 0x49, 0x6c, 0xbf, 0x24, 0x8d, 0xbb, 0x4d, 0x13, 0xc7, 0x6d, 0xdd, 0xc6, 0x5f,
-	0x7d, 0xdb, 0xa6, 0x50, 0x5b, 0x2e, 0xa8, 0x2a, 0xe6, 0x54, 0xb7, 0xfc, 0xe8, 0x21, 0x92, 0xbb,
-	0x6e, 0x53, 0x40, 0x91, 0x56, 0xe3, 0xdd, 0xc9, 0x7a, 0xe5, 0xdd, 0x9d, 0xed, 0xcc, 0xac, 0xe3,
-	0x56, 0x08, 0x21, 0xfe, 0x02, 0x2e, 0xfc, 0x03, 0x1c, 0x39, 0xf5, 0xc0, 0x15, 0x89, 0x23, 0x70,
-	0x2a, 0x88, 0x03, 0x27, 0x84, 0xd2, 0x43, 0x25, 0x2e, 0xf0, 0x27, 0xa0, 0x99, 0x5d, 0x4f, 0xd6,
-	0x8e, 0x53, 0x07, 0xa9, 0x2a, 0xb7, 0x9d, 0xf7, 0x3e, 0x33, 0xef, 0xbd, 0xcf, 0x7b, 0xfb, 0xde,
-	0x0c, 0xac, 0x3f, 0x22, 0x14, 0x5b, 0x5d, 0xe4, 0x06, 0x35, 0x6a, 0xf7, 0x6a, 0xfd, 0x7a, 0x8d,
-	0x0f, 0xaa, 0x21, 0x25, 0x9c, 0xe8, 0x05, 0xa5, 0xaa, 0x52, 0xbb, 0x57, 0xed, 0xd7, 0x4b, 0x6b,
-	0x16, 0x61, 0x3e, 0x61, 0x35, 0x9f, 0x39, 0x02, 0xe9, 0x33, 0x27, 0x86, 0x96, 0xd6, 0x63, 0x85,
-	0x29, 0x57, 0xb5, 0x78, 0x91, 0xa8, 0x56, 0x1c, 0xe2, 0x90, 0x58, 0x2e, 0xbe, 0x62, 0x69, 0xe5,
-	0x57, 0x0d, 0x96, 0xb7, 0x98, 0x73, 0x9b, 0x62, 0xc4, 0xb1, 0x41, 0x3c, 0x2f, 0x0a, 0xf5, 0xeb,
-	0x90, 0xb5, 0xc4, 0x9a, 0xd0, 0xa2, 0x76, 0x51, 0xbb, 0x92, 0x6f, 0x16, 0x7f, 0xf9, 0xf6, 0xda,
-	0x4a, 0x72, 0xd8, 0x2d, 0xdb, 0xa6, 0x98, 0xb1, 0x36, 0xa7, 0x6e, 0xe0, 0x18, 0x43, 0xa0, 0xbe,
-	0x09, 0x79, 0x2a, 0x77, 0x9b, 0xae, 0x5d, 0x9c, 0x91, 0xbb, 0x16, 0xf7, 0x7f, 0xbf, 0x90, 0x8b,
-	0x8f, 0xbc, 0x7b, 0xc7, 0xc8, 0xc5, 0xea, 0xbb, 0xb6, 0x5e, 0x84, 0x6c, 0x48, 0xc9, 0xae, 0xeb,
-	0xe1, 0x62, 0x46, 0x00, 0x8d, 0xe1, 0x52, 0x5f, 0x83, 0x6c, 0xdf, 0x37, 0xf9, 0xe3, 0x10, 0x17,
-	0x67, 0xa5, 0x66, 0xbe, 0xef, 0xdf, 0x7f, 0x1c, 0x62, 0x7d, 0x03, 0x16, 0x19, 0x47, 0x3d, 0x6c,
-	0x22, 0x9f, 0x44, 0x01, 0x2f, 0xce, 0x5d, 0xd4, 0xae, 0x64, 0x8c, 0x05, 0x29, 0xbb, 0x25, 0x45,
-	0x8d, 0xc5, 0x2f, 0x5e, 0x3c, 0xbd, 0x3a, 0x74, 0xa7, 0x72, 0x07, 0xd6, 0xc6, 0xa2, 0x32, 0x30,
-	0x0b, 0x49, 0xc0, 0xf0, 0xa8, 0xa7, 0xda, 0xcb, 0x3c, 0xad, 0x7c, 0x97, 0x81, 0x93, 0x5b, 0xcc,
-	0x69, 0x47, 0x1d, 0xdf, 0xe5, 0x4d, 0xc4, 0xad, 0xae, 0x7e, 0x03, 0xf2, 0x0c, 0x3f, 0x8a, 0x70,
-	0x60, 0xe1, 0xe9, 0xec, 0x1c, 0x40, 0xff, 0x0d, 0x3f, 0x17, 0x60, 0xa1, 0x23, 0x6c, 0x99, 0x6e,
-	0x60, 0xe3, 0x81, 0xe4, 0x68, 0xd6, 0x00, 0x29, 0xba, 0x2b, 0x24, 0xfa, 0x79, 0x00, 0xc6, 0x11,
-	0xc7, 0x26, 0x25, 0x84, 0x4b, 0xa6, 0x16, 0x8d, 0xbc, 0x94, 0x18, 0x84, 0x70, 0xfd, 0x12, 0x2c,
-	0x87, 0x14, 0xf7, 0xcd, 0x14, 0x66, 0x4e, 0x62, 0x96, 0x84, 0xb8, 0xad, 0x70, 0xeb, 0x90, 0xe3,
-	0x03, 0xd3, 0x92, 0x84, 0xce, 0x4b, 0x23, 0x59, 0x3e, 0xb8, 0x2d, 0x96, 0xfa, 0x59, 0xc8, 0xdb,
-	0x88, 0x23, 0xb3, 0x8b, 0x58, 0xb7, 0x98, 0x95, 0x9b, 0x73, 0x42, 0xf0, 0x21, 0x62, 0x5d, 0x7d,
-	0x05, 0xe6, 0x42, 0x4a, 0xc8, 0x6e, 0x31, 0x27, 0x15, 0xf1, 0x42, 0xdf, 0x84, 0xc2, 0x9e, 0xcb,
-	0xbb, 0x36, 0x45, 0x7b, 0xc8, 0x63, 0xb1, 0xd9, 0xbc, 0x04, 0x2c, 0xa7, 0xe4, 0xd2, 0xf0, 0x26,
-	0x14, 0x50, 0x60, 0x75, 0x09, 0x35, 0x99, 0xeb, 0x04, 0x88, 0x47, 0x14, 0x17, 0x21, 0x86, 0xc6,
-	0xf2, 0xf6, 0x50, 0xac, 0xbf, 0x09, 0x7a, 0x1f, 0x79, 0xae, 0x2d, 0x92, 0x6a, 0x32, 0xcc, 0x63,
-	0x8f, 0x16, 0x24, 0xb8, 0xa0, 0x34, 0x6d, 0xcc, 0x85, 0x67, 0x8d, 0x93, 0xa2, 0x06, 0x0e, 0x48,
-	0xaf, 0x14, 0x61, 0x75, 0x34, 0x7d, 0xc3, 0x22, 0xa8, 0x7c, 0xaf, 0xc1, 0x29, 0x51, 0x20, 0x5d,
-	0xe4, 0x79, 0x38, 0x70, 0x70, 0x9c, 0xdc, 0x9b, 0x00, 0xd6, 0x50, 0x32, 0x3d, 0xbb, 0x29, 0xec,
-	0x2b, 0x4d, 0xaf, 0xe2, 0x77, 0x36, 0xc5, 0x6f, 0x63, 0x59, 0xc4, 0x96, 0x32, 0x59, 0x39, 0x0b,
-	0xeb, 0x87, 0x22, 0x50, 0xf1, 0xfd, 0xa8, 0xc1, 0xe9, 0x2d, 0xe6, 0x18, 0x98, 0x11, 0xaf, 0x8f,
-	0x15, 0x48, 0x7f, 0x1b, 0x72, 0x34, 0x96, 0x4d, 0x8f, 0x4f, 0x21, 0x5f, 0x69, 0x74, 0x1b, 0xb0,
-	0xb8, 0x4b, 0x51, 0x64, 0x9b, 0x51, 0xd8, 0xc5, 0x9e, 0x2d, 0x83, 0xcc, 0x19, 0x0b, 0x52, 0xf6,
-	0x40, 0x8a, 0x1a, 0x4b, 0x22, 0x54, 0x65, 0xbd, 0x72, 0x1e, 0xce, 0x4e, 0x08, 0x45, 0x85, 0xfa,
-	0x95, 0x26, 0x7f, 0xd2, 0x16, 0x8a, 0xd8, 0x6b, 0x6a, 0x60, 0xab, 0x30, 0x4f, 0x31, 0x62, 0x24,
-	0x48, 0xfa, 0x57, 0xb2, 0x1a, 0x6b, 0x41, 0x71, 0xf1, 0xa5, 0xdc, 0x52, 0x1e, 0x7f, 0x26, 0x5b,
-	0xae, 0x81, 0x59, 0xe4, 0xbf, 0x1e, 0x8f, 0xc7, 0x3c, 0x5b, 0x97, 0xcd, 0x31, 0x6d, 0x5f, 0xb9,
-	0xf6, 0x29, 0x2c, 0x89, 0x3f, 0x86, 0x93, 0xf0, 0xbf, 0x70, 0x6c, 0x0d, 0xce, 0x8c, 0x58, 0x57,
-	0x6e, 0xfd, 0x3c, 0x03, 0x2b, 0x5b, 0xcc, 0x79, 0x6f, 0x80, 0xad, 0x88, 0xe3, 0x87, 0xaa, 0x9f,
-	0xc8, 0x76, 0x2c, 0x7f, 0x6f, 0x7e, 0xac, 0x76, 0x3c, 0x84, 0xbe, 0xd2, 0x8a, 0x1e, 0xe9, 0x7c,
-	0x09, 0x6a, 0x56, 0xa2, 0x52, 0x9d, 0x2f, 0x86, 0xde, 0x80, 0x3c, 0xc5, 0x96, 0x1b, 0xba, 0x38,
-	0x19, 0x62, 0x2f, 0x75, 0x57, 0x41, 0x45, 0x4b, 0xb0, 0x71, 0x40, 0x7c, 0xd9, 0xa7, 0xf3, 0x46,
-	0xbc, 0x10, 0x75, 0x98, 0xcc, 0xc3, 0xac, 0x9c, 0x87, 0xc9, 0x2a, 0xdd, 0xa0, 0x33, 0x07, 0x0d,
-	0x24, 0x69, 0x8e, 0x43, 0x0a, 0x2a, 0x65, 0x38, 0x37, 0x89, 0x52, 0xc5, 0xf9, 0xd3, 0x8c, 0x2c,
-	0xd3, 0x07, 0xa1, 0x8d, 0x38, 0x6e, 0x21, 0x8a, 0x7c, 0x26, 0xfc, 0x47, 0x11, 0xef, 0x12, 0xea,
-	0xf2, 0xc7, 0xd3, 0xe9, 0x56, 0x50, 0xc1, 0xa1, 0x8f, 0x06, 0x66, 0xcc, 0x29, 0x93, 0x84, 0x2f,
-	0x19, 0xe0, 0xa3, 0x41, 0xcc, 0x37, 0xd3, 0x6b, 0xb0, 0xe2, 0xbb, 0x81, 0x19, 0x0f, 0xf9, 0x5d,
-	0x42, 0x13, 0xa8, 0x64, 0x3b, 0x63, 0x9c, 0xf2, 0xdd, 0xa0, 0x2d, 0x54, 0xef, 0x13, 0x9a, 0xd4,
-	0xe5, 0x3b, 0xb0, 0x9e, 0x24, 0x50, 0x16, 0x8f, 0x4b, 0x02, 0xb3, 0x13, 0xd1, 0xc0, 0xa4, 0x88,
-	0x0f, 0x2f, 0x0f, 0xab, 0x31, 0xe0, 0x76, 0xa2, 0x6f, 0x46, 0x34, 0x30, 0x10, 0xc7, 0xfa, 0x4d,
-	0x28, 0xda, 0x78, 0x17, 0x45, 0x1e, 0x37, 0x55, 0x3b, 0x35, 0xf7, 0xdc, 0xc0, 0x26, 0x7b, 0x32,
-	0x27, 0xb3, 0xc6, 0x6a, 0xa2, 0x57, 0xcd, 0xe6, 0xa1, 0xd4, 0xea, 0x97, 0xa1, 0x20, 0xc2, 0xb0,
-	0x91, 0xd9, 0xf1, 0x48, 0xc7, 0x64, 0xee, 0x13, 0x9c, 0x4c, 0xce, 0x25, 0x1f, 0x0d, 0xee, 0xa0,
-	0xa6, 0x47, 0x3a, 0x6d, 0xf7, 0x09, 0xd6, 0xaf, 0xc3, 0x19, 0x89, 0xa0, 0x98, 0xe3, 0x20, 0x76,
-	0xce, 0x23, 0x56, 0x8f, 0xc9, 0x44, 0xcd, 0x1a, 0xa7, 0x85, 0xd2, 0x18, 0xea, 0x9a, 0x52, 0xa5,
-	0xd7, 0xe1, 0x8c, 0x38, 0x5c, 0x16, 0x16, 0x66, 0x66, 0x88, 0x69, 0xbc, 0x49, 0x8e, 0xd9, 0x25,
-	0x43, 0xf7, 0xd1, 0xa0, 0x19, 0xeb, 0x5a, 0x98, 0xca, 0x3d, 0x49, 0x4a, 0x15, 0xcd, 0xc9, 0x8f,
-	0x9d, 0xce, 0xd8, 0x30, 0x9b, 0xd7, 0xff, 0x9a, 0x87, 0xcc, 0x16, 0x73, 0xf4, 0x1d, 0x58, 0x1c,
-	0xb9, 0xeb, 0x6d, 0x54, 0xc7, 0x2f, 0x97, 0xd5, 0xb1, 0x8b, 0x53, 0x69, 0x73, 0x2a, 0x44, 0xdd,
-	0xad, 0x3e, 0x86, 0x85, 0xf4, 0x65, 0xe9, 0xe2, 0xc4, 0x9d, 0x29, 0x44, 0xe9, 0xca, 0x34, 0x84,
-	0x3a, 0xba, 0x03, 0x27, 0xc7, 0xa6, 0xf5, 0xff, 0x26, 0xfb, 0x35, 0x02, 0x2a, 0xbd, 0x71, 0x0c,
-	0x90, 0xb2, 0xd1, 0x85, 0xc2, 0xa1, 0x89, 0xf9, 0xff, 0x89, 0x07, 0x8c, 0xc3, 0x4a, 0xd7, 0x8e,
-	0x05, 0x4b, 0x13, 0x95, 0x1e, 0x58, 0x93, 0x89, 0x4a, 0x21, 0x8e, 0x20, 0x6a, 0xc2, 0x74, 0x11,
-	0x19, 0x1e, 0x19, 0x2d, 0x1b, 0x47, 0x79, 0xa6, 0x20, 0x47, 0x64, 0x78, 0xd2, 0x80, 0xd0, 0xb7,
-	0x01, 0x52, 0xd3, 0xe1, 0xc2, 0xe4, 0xf4, 0x29, 0x40, 0xe9, 0xf2, 0x14, 0x80, 0x3a, 0xb7, 0x07,
-	0xa7, 0x0e, 0x77, 0xf7, 0x4b, 0x13, 0x77, 0x1f, 0xc2, 0x95, 0xaa, 0xc7, 0xc3, 0xa5, 0x29, 0x1a,
-	0x69, 0x6b, 0x93, 0x29, 0x4a, 0x43, 0x8e, 0xa0, 0x68, 0xd2, 0xaf, 0x56, 0x9a, 0xfb, 0xfc, 0xc5,
-	0xd3, 0xab, 0x5a, 0xf3, 0x6f, 0xed, 0x87, 0xfd, 0xb2, 0xf6, 0x6c, 0xbf, 0xac, 0xfd, 0xb1, 0x5f,
-	0xd6, 0xbe, 0x7c, 0x5e, 0x3e, 0xf1, 0xec, 0x79, 0xf9, 0xc4, 0x6f, 0xcf, 0xcb, 0x27, 0x60, 0xc5,
-	0x22, 0xfe, 0xa1, 0xf3, 0x9a, 0xd9, 0xfb, 0x83, 0x96, 0x78, 0x93, 0xb5, 0xb4, 0x4f, 0x1e, 0x38,
-	0x2e, 0xef, 0x46, 0x9d, 0xaa, 0x45, 0xfc, 0xda, 0xc1, 0xbb, 0x50, 0x7d, 0x5d, 0x63, 0x76, 0xaf,
-	0x16, 0x22, 0xab, 0x87, 0x1c, 0xcc, 0x6a, 0x0e, 0x49, 0x61, 0xe2, 0x07, 0xde, 0xf8, 0x5b, 0xf2,
-	0x5d, 0x6a, 0xf7, 0xfa, 0xf5, 0xaf, 0x67, 0x32, 0xf7, 0x8c, 0x8f, 0xbe, 0x99, 0x29, 0xdc, 0x53,
-	0xa6, 0x0d, 0xbb, 0x57, 0xdd, 0xae, 0xff, 0x94, 0x12, 0xed, 0x18, 0x76, 0x6f, 0x67, 0xbb, 0xbe,
-	0x3f, 0x73, 0x6e, 0x5c, 0xb4, 0xf3, 0x41, 0xab, 0xb9, 0x85, 0x39, 0x12, 0x0f, 0x81, 0x3f, 0x67,
-	0x74, 0xa5, 0x6e, 0x34, 0x0c, 0xbb, 0xd7, 0x68, 0x6c, 0xd7, 0x3b, 0xf3, 0xd2, 0xfa, 0x5b, 0xff,
-	0x04, 0x00, 0x00, 0xff, 0xff, 0x6d, 0xc9, 0xb8, 0x07, 0xcc, 0x0e, 0x00, 0x00,
+	// 1997 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xc4, 0x59, 0xcb, 0x8f, 0x1b, 0x49,
+	0x19, 0x4f, 0x8f, 0x3d, 0x0f, 0x7f, 0xe3, 0xc9, 0x4c, 0x3a, 0x93, 0xa4, 0xc7, 0x49, 0xe6, 0x61,
+	0xd8, 0xdd, 0x49, 0x48, 0xc6, 0x3b, 0xd9, 0x55, 0x14, 0x06, 0x09, 0xb4, 0xce, 0xec, 0x2e, 0x11,
+	0x1a, 0x69, 0xb6, 0x27, 0x99, 0x05, 0x14, 0xa9, 0x55, 0xee, 0xae, 0xb1, 0x5b, 0x76, 0x77, 0x75,
+	0xaa, 0xca, 0x1e, 0x3b, 0x42, 0x08, 0x71, 0x47, 0x82, 0x03, 0x12, 0x07, 0x4e, 0x70, 0x83, 0xcb,
+	0x1e, 0xb8, 0x70, 0xe3, 0x08, 0x9c, 0x96, 0x3d, 0x21, 0x40, 0x08, 0x4d, 0x0e, 0x91, 0x10, 0x07,
+	0xfe, 0x04, 0x54, 0x55, 0xed, 0x72, 0xbb, 0xdd, 0x9e, 0x71, 0x50, 0x76, 0x72, 0x73, 0x7d, 0xf5,
+	0xab, 0xfa, 0x9e, 0xf5, 0x3d, 0xda, 0xb0, 0xf2, 0x8c, 0x50, 0xec, 0x36, 0x90, 0x1f, 0x56, 0xa8,
+	0xd7, 0xac, 0x74, 0xb6, 0x2b, 0xbc, 0xbb, 0x15, 0x51, 0xc2, 0x89, 0xb9, 0xa4, 0xb7, 0xb6, 0xa8,
+	0xd7, 0xdc, 0xea, 0x6c, 0x97, 0xae, 0xb9, 0x84, 0x05, 0x84, 0x55, 0x02, 0x56, 0x17, 0xc8, 0x80,
+	0xd5, 0x15, 0xb4, 0xb4, 0xa2, 0x36, 0x1c, 0xb9, 0xaa, 0xa8, 0x45, 0xbc, 0xb5, 0x5c, 0x27, 0x75,
+	0xa2, 0xe8, 0xe2, 0x97, 0xa2, 0x96, 0xff, 0x31, 0x05, 0x8b, 0x7b, 0xac, 0xfe, 0x90, 0x62, 0xc4,
+	0xb1, 0x4d, 0x5a, 0xad, 0x76, 0x64, 0xde, 0x83, 0x59, 0x57, 0xac, 0x09, 0xb5, 0x8c, 0x75, 0x63,
+	0xb3, 0x50, 0xb5, 0xbe, 0xf8, 0xdd, 0xdd, 0xe5, 0xf8, 0xb2, 0x0f, 0x3c, 0x8f, 0x62, 0xc6, 0x0e,
+	0x38, 0xf5, 0xc3, 0xba, 0xdd, 0x07, 0x9a, 0xb7, 0xa0, 0x40, 0xe5, 0x69, 0xc7, 0xf7, 0xac, 0x29,
+	0x79, 0xaa, 0x78, 0xf2, 0xcf, 0xb5, 0x39, 0x75, 0xe5, 0xa3, 0x5d, 0x7b, 0x4e, 0x6d, 0x3f, 0xf2,
+	0x4c, 0x0b, 0x66, 0x23, 0x4a, 0x8e, 0xfc, 0x16, 0xb6, 0x72, 0x02, 0x68, 0xf7, 0x97, 0xe6, 0x35,
+	0x98, 0xed, 0x04, 0x0e, 0xef, 0x45, 0xd8, 0xca, 0xcb, 0x9d, 0x99, 0x4e, 0xf0, 0xb8, 0x17, 0x61,
+	0x73, 0x03, 0x8a, 0x8c, 0xa3, 0x26, 0x76, 0x50, 0x40, 0xda, 0x21, 0xb7, 0xa6, 0xd7, 0x8d, 0xcd,
+	0x9c, 0x3d, 0x2f, 0x69, 0x1f, 0x48, 0x92, 0x79, 0x0b, 0x96, 0x3a, 0x98, 0xfa, 0x47, 0xbe, 0x8b,
+	0xb8, 0x4f, 0x42, 0xa7, 0x89, 0x7b, 0xd6, 0xcc, 0xba, 0xb1, 0x59, 0xb4, 0x17, 0x93, 0xf4, 0xef,
+	0xe0, 0x9e, 0xb9, 0x0a, 0xc0, 0xf0, 0xb3, 0x36, 0x0e, 0x5d, 0x3f, 0xac, 0x5b, 0xb3, 0x92, 0x53,
+	0x82, 0x22, 0xb8, 0xe1, 0x2e, 0x76, 0xdb, 0xf2, 0x9e, 0x4e, 0x60, 0xcd, 0x49, 0xc4, 0xbc, 0xa6,
+	0x1d, 0x06, 0x4a, 0x07, 0xbf, 0x83, 0xdc, 0x9e, 0x55, 0xe8, 0xeb, 0x20, 0x97, 0x3b, 0xc5, 0x1f,
+	0xbf, 0xfc, 0xec, 0x76, 0xdf, 0x2c, 0xe5, 0x5d, 0xb8, 0x96, 0xb2, 0xae, 0x8d, 0x59, 0x44, 0x42,
+	0x86, 0x87, 0x2d, 0x66, 0x9c, 0x66, 0xb1, 0xf2, 0xdf, 0x72, 0x70, 0x71, 0x8f, 0xd5, 0x0f, 0xda,
+	0xb5, 0xc0, 0xe7, 0x55, 0xc4, 0xdd, 0x86, 0x79, 0x1f, 0x0a, 0xb1, 0xc4, 0xf8, 0x6c, 0x2f, 0x0d,
+	0xa0, 0xaf, 0xe2, 0xa7, 0x35, 0x98, 0xaf, 0x09, 0x5e, 0x8e, 0x1f, 0x7a, 0xb8, 0x2b, 0x7d, 0x95,
+	0xb7, 0x41, 0x92, 0x1e, 0x09, 0x8a, 0x79, 0x13, 0x80, 0x71, 0xc4, 0xb1, 0x43, 0x09, 0xe1, 0xd2,
+	0x63, 0x45, 0xbb, 0x20, 0x29, 0x36, 0x21, 0xdc, 0x7c, 0x1b, 0x16, 0x23, 0x8a, 0x3b, 0x4e, 0x02,
+	0x33, 0x2d, 0x31, 0x0b, 0x82, 0x7c, 0xa0, 0x71, 0x2b, 0x30, 0xc7, 0xbb, 0x8e, 0x2b, 0x1d, 0x3b,
+	0x23, 0x99, 0xcc, 0xf2, 0xee, 0x43, 0xe9, 0xd4, 0xeb, 0x50, 0xf0, 0x10, 0x47, 0x4e, 0x03, 0xb1,
+	0x86, 0x74, 0x54, 0xd1, 0x9e, 0x13, 0x84, 0x6f, 0x23, 0xd6, 0x30, 0x97, 0x61, 0x3a, 0xa2, 0x84,
+	0x1c, 0x49, 0xff, 0x14, 0x6d, 0xb5, 0x10, 0x71, 0x70, 0xec, 0xf3, 0x86, 0x47, 0xd1, 0x31, 0x6a,
+	0x31, 0xc5, 0xb6, 0xa0, 0xe2, 0x20, 0x41, 0x97, 0x8c, 0x6f, 0xc1, 0x12, 0x0a, 0xdd, 0x06, 0xa1,
+	0x0e, 0xf3, 0xeb, 0x21, 0xe2, 0x6d, 0x8a, 0x2d, 0x50, 0x50, 0x45, 0x3f, 0xe8, 0x93, 0xcd, 0x3b,
+	0x60, 0x76, 0x50, 0xcb, 0xf7, 0x84, 0x53, 0x1d, 0x86, 0xb9, 0x92, 0x68, 0x5e, 0x82, 0x97, 0xf4,
+	0xce, 0x01, 0xe6, 0x52, 0xb2, 0xeb, 0x50, 0xf0, 0xc3, 0x1a, 0xe9, 0x3a, 0x38, 0xf4, 0xac, 0xa2,
+	0x54, 0x69, 0x4e, 0x12, 0x3e, 0x0c, 0xbd, 0x9d, 0x8b, 0x22, 0x40, 0x06, 0x1e, 0x29, 0x5b, 0x70,
+	0x75, 0xd8, 0xb7, 0xfd, 0x08, 0x29, 0xff, 0xc1, 0x80, 0x4b, 0x22, 0x7a, 0x1a, 0xa8, 0xd5, 0xc2,
+	0x61, 0x1d, 0x2b, 0xcf, 0x3f, 0x00, 0x70, 0xfb, 0x94, 0xb3, 0x5d, 0x9f, 0xc0, 0xbe, 0x56, 0xdf,
+	0x6b, 0xe3, 0xe7, 0x13, 0xc6, 0xdf, 0x59, 0x14, 0xba, 0x25, 0x58, 0x96, 0xaf, 0xc3, 0xca, 0x88,
+	0x06, 0x5a, 0xbf, 0x3f, 0x19, 0x70, 0x79, 0x8f, 0xd5, 0x6d, 0xcc, 0x48, 0xab, 0x83, 0x35, 0xc8,
+	0x7c, 0x1f, 0xe6, 0xa8, 0xa2, 0x9d, 0xad, 0x9f, 0x46, 0xbe, 0x56, 0xed, 0x36, 0xa0, 0x78, 0x44,
+	0x51, 0xdb, 0x73, 0xda, 0x51, 0x03, 0xb7, 0x3c, 0xa9, 0xe4, 0x9c, 0x3d, 0x2f, 0x69, 0x4f, 0x24,
+	0x69, 0x67, 0x41, 0xa8, 0xaa, 0xb9, 0x97, 0x6f, 0xc2, 0xf5, 0x0c, 0x55, 0xb4, 0xaa, 0x3f, 0x37,
+	0xe4, 0x0b, 0xde, 0x47, 0x6d, 0x76, 0x4e, 0x59, 0xf6, 0x2a, 0xcc, 0x50, 0x8c, 0x18, 0x09, 0xe3,
+	0x24, 0x1b, 0xaf, 0x52, 0xf9, 0x49, 0x05, 0x5f, 0x42, 0x2c, 0x2d, 0xf1, 0x0f, 0x65, 0x5d, 0xb0,
+	0x31, 0x6b, 0x07, 0xe7, 0x23, 0x71, 0x4a, 0xb2, 0x15, 0x99, 0x39, 0x93, 0xfc, 0xb5, 0x68, 0x3f,
+	0x80, 0x05, 0xf1, 0x62, 0x38, 0x89, 0xde, 0x84, 0x60, 0xd7, 0xe0, 0xca, 0x10, 0x77, 0x2d, 0xd6,
+	0x5f, 0xa6, 0x60, 0x79, 0x8f, 0xd5, 0x3f, 0x94, 0x65, 0x02, 0x7f, 0xaa, 0x93, 0x8d, 0xcc, 0xd5,
+	0xf2, 0x79, 0xf3, 0x89, 0x72, 0x75, 0x1f, 0xfa, 0x5a, 0x23, 0x7a, 0x28, 0x2d, 0xc6, 0xa8, 0xbc,
+	0x44, 0x25, 0xd2, 0xa2, 0x82, 0xde, 0x87, 0x02, 0xc5, 0xae, 0x1f, 0xf9, 0x38, 0xae, 0xb4, 0xa7,
+	0x8a, 0xab, 0xa1, 0x22, 0x25, 0x78, 0x38, 0x24, 0x81, 0x4c, 0xe2, 0x05, 0x5b, 0x2d, 0x44, 0x1c,
+	0xc6, 0x45, 0x7b, 0x56, 0x16, 0xed, 0x78, 0x95, 0xcc, 0xde, 0xb9, 0x41, 0x02, 0x89, 0x93, 0x63,
+	0xdf, 0x04, 0xe5, 0x55, 0xb8, 0x91, 0x65, 0x52, 0x6d, 0xf3, 0x5f, 0xcc, 0xc8, 0x30, 0x7d, 0x12,
+	0x79, 0x88, 0xe3, 0x7d, 0x44, 0x51, 0xc0, 0x84, 0xfc, 0xa8, 0xcd, 0x1b, 0x84, 0xfa, 0xbc, 0x77,
+	0xb6, 0xb9, 0x35, 0x54, 0xd8, 0x30, 0x40, 0x5d, 0x47, 0xd9, 0x94, 0x49, 0x83, 0x2f, 0xd8, 0x10,
+	0xa0, 0xae, 0xb2, 0x37, 0x33, 0x2b, 0xb0, 0x1c, 0xf8, 0xa1, 0xa3, 0x3a, 0x91, 0x23, 0x42, 0x63,
+	0xa8, 0xb4, 0x76, 0xce, 0xbe, 0x14, 0xf8, 0xe1, 0x81, 0xd8, 0xfa, 0x88, 0xd0, 0x38, 0x2e, 0xbf,
+	0x0e, 0x2b, 0xb1, 0x03, 0x65, 0xf0, 0x88, 0x76, 0xa2, 0xd6, 0xa6, 0xa1, 0x43, 0x11, 0xef, 0x77,
+	0x38, 0x57, 0x15, 0xe0, 0x61, 0xbc, 0x5f, 0x6d, 0xd3, 0xd0, 0x46, 0x1c, 0x9b, 0x0f, 0xc0, 0xf2,
+	0xf0, 0x11, 0x6a, 0xb7, 0xb8, 0xa3, 0xd3, 0xa9, 0x73, 0xec, 0x87, 0x1e, 0x39, 0x96, 0x3e, 0xc9,
+	0xdb, 0x57, 0xe3, 0x7d, 0x9d, 0x6c, 0x3e, 0x95, 0xbb, 0xe6, 0x3b, 0xb0, 0x24, 0xd4, 0xf0, 0x90,
+	0x53, 0x6b, 0x91, 0x9a, 0xc3, 0xfc, 0xe7, 0x38, 0x2e, 0xab, 0x0b, 0x01, 0xea, 0xee, 0xa2, 0x6a,
+	0x8b, 0xd4, 0x0e, 0xfc, 0xe7, 0xd8, 0xbc, 0x07, 0x57, 0x24, 0x82, 0x62, 0x8e, 0x43, 0x25, 0x5c,
+	0x8b, 0xb8, 0x4d, 0x26, 0x1d, 0x95, 0xb7, 0x2f, 0x8b, 0x4d, 0xbb, 0xbf, 0x57, 0x95, 0x5b, 0xe6,
+	0x36, 0x5c, 0x11, 0x97, 0xcb, 0xc0, 0xc2, 0xcc, 0x89, 0x30, 0x55, 0x87, 0x64, 0x0d, 0x5e, 0xb0,
+	0xcd, 0x00, 0x75, 0xab, 0x6a, 0x6f, 0x1f, 0x53, 0x79, 0xc6, 0xfc, 0x18, 0xd6, 0x8f, 0xfc, 0x10,
+	0xb5, 0xfc, 0xe7, 0xd8, 0x53, 0x07, 0x47, 0x39, 0x16, 0x24, 0xc7, 0x9b, 0x1a, 0x17, 0xd7, 0x89,
+	0x4c, 0xde, 0x11, 0x61, 0x1c, 0x7b, 0x8e, 0xec, 0x0b, 0x6a, 0x3d, 0x8e, 0x99, 0xac, 0xd9, 0x79,
+	0xc9, 0x7b, 0x5f, 0xee, 0xed, 0x22, 0x8e, 0xaa, 0x62, 0xc7, 0x7c, 0x08, 0x6b, 0x99, 0x47, 0x12,
+	0x82, 0xcf, 0xcb, 0xc3, 0xa5, 0xd1, 0xc3, 0x5a, 0x81, 0xfb, 0x60, 0x25, 0x2f, 0x38, 0xc2, 0x58,
+	0x1d, 0xef, 0x71, 0x1c, 0x17, 0xf7, 0xe5, 0x48, 0x1f, 0xfd, 0x08, 0x63, 0x71, 0xb0, 0xc7, 0xb1,
+	0xf9, 0x2d, 0xb8, 0x91, 0x3c, 0x37, 0xa2, 0xf4, 0x82, 0x3c, 0xbb, 0x32, 0x38, 0x9b, 0x56, 0xf8,
+	0x0e, 0x98, 0x32, 0xde, 0xfa, 0xaf, 0xc1, 0xa9, 0x91, 0xd0, 0xb3, 0x2e, 0xca, 0x63, 0x4b, 0x22,
+	0xda, 0xfa, 0x1b, 0x55, 0xa2, 0xfb, 0x0a, 0x1d, 0xce, 0x71, 0x02, 0x4d, 0xbe, 0x0c, 0xfd, 0x6a,
+	0xbe, 0x30, 0x54, 0x0e, 0xc3, 0xfc, 0x30, 0xd5, 0x1a, 0x7f, 0xc9, 0x45, 0x29, 0xab, 0x49, 0xcf,
+	0x65, 0x37, 0xe9, 0x1b, 0x50, 0x94, 0x29, 0xc1, 0x61, 0x3d, 0xc6, 0x71, 0x10, 0x3f, 0x97, 0x79,
+	0x49, 0x3b, 0x90, 0xa4, 0x54, 0x5e, 0x5e, 0x83, 0x9b, 0x99, 0x3a, 0x69, 0xad, 0xff, 0x6e, 0x80,
+	0xa5, 0x2d, 0x92, 0x56, 0xfc, 0xff, 0x4d, 0x1a, 0x6f, 0x4c, 0xf9, 0xb4, 0xbb, 0xcb, 0xb0, 0x3e,
+	0x4e, 0x39, 0x6d, 0x81, 0x9f, 0xa9, 0x86, 0x52, 0x04, 0xba, 0x92, 0x4f, 0x44, 0x9d, 0xf9, 0x2e,
+	0xcc, 0xc8, 0x18, 0x3c, 0xdb, 0xe5, 0x31, 0xee, 0x55, 0x94, 0x36, 0x21, 0x2f, 0xa2, 0x3f, 0x56,
+	0x54, 0xfe, 0xde, 0x99, 0x17, 0xa2, 0xc7, 0x77, 0x95, 0x1f, 0xcb, 0x0e, 0x71, 0x58, 0x24, 0x3d,
+	0x23, 0x95, 0x60, 0xae, 0xdf, 0x28, 0x4b, 0xe1, 0xf2, 0xb6, 0x5e, 0x0f, 0xcf, 0x06, 0x53, 0xc3,
+	0xb3, 0x41, 0xf9, 0xb7, 0x86, 0xea, 0xaa, 0x71, 0x7c, 0xeb, 0xc1, 0x60, 0xba, 0x3b, 0x07, 0x4f,
+	0x0f, 0x0f, 0x98, 0xb9, 0xf4, 0x80, 0x39, 0xe2, 0xbb, 0x75, 0x58, 0xcd, 0x16, 0x56, 0x7b, 0xee,
+	0xf7, 0x06, 0x98, 0x7b, 0xac, 0xbe, 0x8b, 0x23, 0xc2, 0x7c, 0xfe, 0x98, 0xc4, 0x05, 0xe6, 0x3e,
+	0x14, 0x3c, 0x45, 0x9a, 0xe0, 0xc1, 0x0e, 0xa0, 0xaf, 0x38, 0xad, 0x23, 0x57, 0x0d, 0x67, 0xca,
+	0x87, 0xfd, 0x65, 0xa2, 0xb2, 0xab, 0x46, 0x22, 0x5e, 0xc5, 0xda, 0x69, 0x66, 0xe5, 0x07, 0x50,
+	0x1a, 0x15, 0x7d, 0x12, 0x17, 0x97, 0x7f, 0xad, 0xbc, 0x28, 0xd2, 0x5b, 0x6c, 0x19, 0xdd, 0x1b,
+	0x9d, 0x43, 0x4f, 0x35, 0xd0, 0x2f, 0x97, 0xa1, 0xdf, 0xa0, 0x47, 0x79, 0x5f, 0x7a, 0x2f, 0x43,
+	0x48, 0xad, 0xa3, 0x09, 0x79, 0x99, 0xba, 0x95, 0x7e, 0xf2, 0x77, 0xf9, 0x27, 0x71, 0x36, 0x0a,
+	0x6b, 0x6f, 0x44, 0xbb, 0x11, 0x2d, 0xbe, 0xa9, 0xf2, 0x47, 0x96, 0x38, 0x49, 0x5f, 0x51, 0xcc,
+	0xdb, 0x34, 0xc4, 0x7d, 0x5d, 0xf4, 0xba, 0xfc, 0x4b, 0x35, 0xcc, 0xe9, 0x20, 0xde, 0xc3, 0x41,
+	0x0d, 0x53, 0x76, 0x0e, 0x1f, 0x93, 0x02, 0xc5, 0xc9, 0xca, 0xad, 0xe7, 0x36, 0x0b, 0x76, 0x7f,
+	0x99, 0xaa, 0x0e, 0xef, 0xc9, 0xf9, 0x2c, 0x2d, 0x9d, 0xd6, 0x6c, 0x19, 0xa6, 0x71, 0x44, 0xdc,
+	0x46, 0xac, 0x96, 0x5a, 0xdc, 0xfb, 0xcf, 0x02, 0xe4, 0xf6, 0x58, 0xdd, 0x7c, 0x0a, 0xc5, 0xa1,
+	0x0f, 0x64, 0x1b, 0x5b, 0xe9, 0x2f, 0x72, 0x5b, 0xa9, 0xaf, 0x3c, 0xa5, 0x5b, 0x67, 0x42, 0x34,
+	0xef, 0xef, 0xc1, 0x7c, 0xf2, 0xcb, 0xce, 0x7a, 0xe6, 0xc9, 0x04, 0xa2, 0xb4, 0x79, 0x16, 0x42,
+	0x5f, 0x5d, 0x83, 0x8b, 0xa9, 0xaf, 0x07, 0x5f, 0xc9, 0x96, 0x6b, 0x08, 0x54, 0xfa, 0xda, 0x04,
+	0x20, 0xcd, 0xa3, 0x01, 0x4b, 0x23, 0x13, 0xfc, 0x5b, 0x99, 0x17, 0xa4, 0x61, 0xa5, 0xbb, 0x13,
+	0xc1, 0x92, 0x86, 0x4a, 0x0e, 0xd0, 0xd9, 0x86, 0x4a, 0x20, 0xc6, 0x18, 0x2a, 0x63, 0xda, 0x15,
+	0x1e, 0x1e, 0x1a, 0x75, 0x37, 0xc6, 0x49, 0xa6, 0x21, 0x63, 0x3c, 0x9c, 0x35, 0xb0, 0x9a, 0x87,
+	0x00, 0x89, 0x69, 0x75, 0x2d, 0xdb, 0x7d, 0x1a, 0x50, 0x7a, 0xe7, 0x0c, 0x80, 0xbe, 0xb7, 0x09,
+	0x97, 0x46, 0xa7, 0xcd, 0xb7, 0x33, 0x4f, 0x8f, 0xe0, 0x4a, 0x5b, 0x93, 0xe1, 0x92, 0x26, 0x1a,
+	0x1a, 0xb3, 0xb2, 0x4d, 0x94, 0x84, 0x8c, 0x31, 0x51, 0x56, 0x4b, 0x6a, 0x86, 0x60, 0x66, 0xb4,
+	0xa3, 0x63, 0x2c, 0x31, 0x02, 0x2c, 0x55, 0x26, 0x04, 0x6a, 0x7e, 0xc7, 0x70, 0x25, 0xbb, 0x11,
+	0xbc, 0x7d, 0x8a, 0xcc, 0x69, 0xae, 0xf7, 0x26, 0xc7, 0x26, 0x9f, 0x64, 0xaa, 0xff, 0xca, 0x7e,
+	0x92, 0xc3, 0xa0, 0x31, 0x4f, 0x72, 0x4c, 0xdb, 0xf4, 0x0c, 0x2e, 0x67, 0x75, 0x3e, 0x9b, 0xe3,
+	0x8c, 0x94, 0x46, 0x96, 0xde, 0x9d, 0x14, 0xa9, 0x59, 0x62, 0x58, 0x4c, 0x37, 0x27, 0x5f, 0xcd,
+	0xbc, 0x24, 0x85, 0x2a, 0xdd, 0x99, 0x04, 0x95, 0xd4, 0x2c, 0xab, 0x1b, 0xc8, 0xd6, 0x2c, 0x03,
+	0x39, 0x46, 0xb3, 0xd3, 0x8a, 0xb7, 0x88, 0x94, 0xcc, 0x22, 0x3d, 0x26, 0x52, 0xb2, 0xb0, 0xe3,
+	0x22, 0xe5, 0xd4, 0x6a, 0xdb, 0x80, 0xa5, 0x91, 0x6a, 0xfa, 0xd6, 0xe9, 0x8e, 0x89, 0x61, 0x63,
+	0x12, 0xeb, 0xb8, 0xea, 0x57, 0x9a, 0xfe, 0xd1, 0xcb, 0xcf, 0x6e, 0x1b, 0xd5, 0xff, 0x1a, 0x7f,
+	0x3c, 0x59, 0x35, 0x3e, 0x3f, 0x59, 0x35, 0xfe, 0x75, 0xb2, 0x6a, 0xfc, 0xf4, 0xc5, 0xea, 0x85,
+	0xcf, 0x5f, 0xac, 0x5e, 0xf8, 0xeb, 0x8b, 0xd5, 0x0b, 0xb0, 0xec, 0x92, 0x60, 0xe4, 0xce, 0xea,
+	0xec, 0xe3, 0xee, 0x3e, 0x25, 0x9c, 0xec, 0x1b, 0xdf, 0x7f, 0x52, 0xf7, 0x79, 0xa3, 0x5d, 0xdb,
+	0x72, 0x49, 0x50, 0x19, 0xfc, 0x93, 0xa5, 0x7f, 0xdd, 0x65, 0x5e, 0xb3, 0x12, 0x21, 0xb7, 0x89,
+	0xea, 0x98, 0x55, 0xea, 0x24, 0x81, 0x51, 0x7f, 0x49, 0xa5, 0xff, 0xfd, 0xfa, 0x06, 0xf5, 0x9a,
+	0x9d, 0xed, 0x5f, 0x4d, 0xe5, 0x3e, 0xb1, 0xbf, 0xfb, 0x9b, 0xa9, 0xa5, 0x4f, 0x34, 0x6b, 0xdb,
+	0x6b, 0x6e, 0x1d, 0x6e, 0xff, 0x39, 0x41, 0x7a, 0x6a, 0x7b, 0xcd, 0xa7, 0x87, 0xdb, 0x27, 0x53,
+	0x37, 0xd2, 0xa4, 0xa7, 0x1f, 0xef, 0x57, 0xf7, 0x30, 0x47, 0x62, 0x2c, 0xf8, 0xf7, 0x94, 0xa9,
+	0xb7, 0x77, 0x76, 0x6c, 0xaf, 0xb9, 0xb3, 0x73, 0xb8, 0x5d, 0x9b, 0x91, 0xdc, 0xdf, 0xfb, 0x5f,
+	0x00, 0x00, 0x00, 0xff, 0xff, 0x13, 0x74, 0x70, 0xb1, 0x7e, 0x1b, 0x00, 0x00,
 }
 
 // Reference imports to suppress errors if they are not otherwise used.
@@ -1224,6 +2282,33 @@ type MsgClient interface {
 	ExecuteWithdrawal(ctx context.Context, in *MsgExecuteWithdrawal, opts ...grpc.CallOption) (*MsgExecuteWithdrawalResponse, error)
 	// UpdateParams is served from v3.2.5 (rdk-params-route). Governance only.
 	UpdateParams(ctx context.Context, in *MsgUpdateParams, opts ...grpc.CallOption) (*MsgUpdateParamsResponse, error)
+	// SetVerificationKey is served from v3.2.7 (rdk-zk-verification-key). The
+	// rollup's creator registers or replaces its ZK verification key until the
+	// rollup's first batch is submitted.
+	SetVerificationKey(ctx context.Context, in *MsgSetVerificationKey, opts ...grpc.CallOption) (*MsgSetVerificationKeyResponse, error)
+	// UpdateVerificationKey is served from v3.2.7 (rdk-zk-verification-key).
+	// Governance only; it may change a rollup's key at any time.
+	UpdateVerificationKey(ctx context.Context, in *MsgUpdateVerificationKey, opts ...grpc.CallOption) (*MsgUpdateVerificationKeyResponse, error)
+	// PostRollupData is served from v3.2.8 (rdk-post-rollup-data). It puts a
+	// rollup's data on chain: the payload stays in the transaction, the chain
+	// keeps a commitment and extends the rollup's inbox.
+	PostRollupData(ctx context.Context, in *MsgPostRollupData, opts ...grpc.CallOption) (*MsgPostRollupDataResponse, error)
+	// SetRollupSequencing is served from v3.2.8 (rdk-based-sequencing).
+	// Governance only; it moves an existing rollup to or from based sequencing.
+	SetRollupSequencing(ctx context.Context, in *MsgSetRollupSequencing, opts ...grpc.CallOption) (*MsgSetRollupSequencingResponse, error)
+	// DepositToRollup is served from v3.2.8 (rdk-optimistic-reexec). It moves
+	// uqor into a qledger-v1 rollup's deposit pool and appends a deposit entry
+	// to its inbox.
+	DepositToRollup(ctx context.Context, in *MsgDepositToRollup, opts ...grpc.CallOption) (*MsgDepositToRollupResponse, error)
+	// BondRollupSubmitter and UnbondRollupSubmitter are served from v3.2.8
+	// (rdk-optimistic-reexec): a qledger-v1 rollup takes batches from any
+	// account holding a submitter bond, which an upheld fraud proof pays to
+	// the challenger.
+	BondRollupSubmitter(ctx context.Context, in *MsgBondRollupSubmitter, opts ...grpc.CallOption) (*MsgBondRollupSubmitterResponse, error)
+	UnbondRollupSubmitter(ctx context.Context, in *MsgUnbondRollupSubmitter, opts ...grpc.CallOption) (*MsgUnbondRollupSubmitterResponse, error)
+	// SetRollupMembers is served from v3.2.8 (rdk-private-rollups). The
+	// creator of a private rollup sets its member list.
+	SetRollupMembers(ctx context.Context, in *MsgSetRollupMembers, opts ...grpc.CallOption) (*MsgSetRollupMembersResponse, error)
 }
 
 type msgClient struct {
@@ -1315,6 +2400,78 @@ func (c *msgClient) UpdateParams(ctx context.Context, in *MsgUpdateParams, opts 
 	return out, nil
 }
 
+func (c *msgClient) SetVerificationKey(ctx context.Context, in *MsgSetVerificationKey, opts ...grpc.CallOption) (*MsgSetVerificationKeyResponse, error) {
+	out := new(MsgSetVerificationKeyResponse)
+	err := c.cc.Invoke(ctx, "/qorechain.rdk.v1.Msg/SetVerificationKey", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *msgClient) UpdateVerificationKey(ctx context.Context, in *MsgUpdateVerificationKey, opts ...grpc.CallOption) (*MsgUpdateVerificationKeyResponse, error) {
+	out := new(MsgUpdateVerificationKeyResponse)
+	err := c.cc.Invoke(ctx, "/qorechain.rdk.v1.Msg/UpdateVerificationKey", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *msgClient) PostRollupData(ctx context.Context, in *MsgPostRollupData, opts ...grpc.CallOption) (*MsgPostRollupDataResponse, error) {
+	out := new(MsgPostRollupDataResponse)
+	err := c.cc.Invoke(ctx, "/qorechain.rdk.v1.Msg/PostRollupData", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *msgClient) SetRollupSequencing(ctx context.Context, in *MsgSetRollupSequencing, opts ...grpc.CallOption) (*MsgSetRollupSequencingResponse, error) {
+	out := new(MsgSetRollupSequencingResponse)
+	err := c.cc.Invoke(ctx, "/qorechain.rdk.v1.Msg/SetRollupSequencing", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *msgClient) DepositToRollup(ctx context.Context, in *MsgDepositToRollup, opts ...grpc.CallOption) (*MsgDepositToRollupResponse, error) {
+	out := new(MsgDepositToRollupResponse)
+	err := c.cc.Invoke(ctx, "/qorechain.rdk.v1.Msg/DepositToRollup", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *msgClient) BondRollupSubmitter(ctx context.Context, in *MsgBondRollupSubmitter, opts ...grpc.CallOption) (*MsgBondRollupSubmitterResponse, error) {
+	out := new(MsgBondRollupSubmitterResponse)
+	err := c.cc.Invoke(ctx, "/qorechain.rdk.v1.Msg/BondRollupSubmitter", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *msgClient) UnbondRollupSubmitter(ctx context.Context, in *MsgUnbondRollupSubmitter, opts ...grpc.CallOption) (*MsgUnbondRollupSubmitterResponse, error) {
+	out := new(MsgUnbondRollupSubmitterResponse)
+	err := c.cc.Invoke(ctx, "/qorechain.rdk.v1.Msg/UnbondRollupSubmitter", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *msgClient) SetRollupMembers(ctx context.Context, in *MsgSetRollupMembers, opts ...grpc.CallOption) (*MsgSetRollupMembersResponse, error) {
+	out := new(MsgSetRollupMembersResponse)
+	err := c.cc.Invoke(ctx, "/qorechain.rdk.v1.Msg/SetRollupMembers", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // MsgServer is the server API for Msg service.
 type MsgServer interface {
 	CreateRollup(context.Context, *MsgCreateRollup) (*MsgCreateRollupResponse, error)
@@ -1327,6 +2484,33 @@ type MsgServer interface {
 	ExecuteWithdrawal(context.Context, *MsgExecuteWithdrawal) (*MsgExecuteWithdrawalResponse, error)
 	// UpdateParams is served from v3.2.5 (rdk-params-route). Governance only.
 	UpdateParams(context.Context, *MsgUpdateParams) (*MsgUpdateParamsResponse, error)
+	// SetVerificationKey is served from v3.2.7 (rdk-zk-verification-key). The
+	// rollup's creator registers or replaces its ZK verification key until the
+	// rollup's first batch is submitted.
+	SetVerificationKey(context.Context, *MsgSetVerificationKey) (*MsgSetVerificationKeyResponse, error)
+	// UpdateVerificationKey is served from v3.2.7 (rdk-zk-verification-key).
+	// Governance only; it may change a rollup's key at any time.
+	UpdateVerificationKey(context.Context, *MsgUpdateVerificationKey) (*MsgUpdateVerificationKeyResponse, error)
+	// PostRollupData is served from v3.2.8 (rdk-post-rollup-data). It puts a
+	// rollup's data on chain: the payload stays in the transaction, the chain
+	// keeps a commitment and extends the rollup's inbox.
+	PostRollupData(context.Context, *MsgPostRollupData) (*MsgPostRollupDataResponse, error)
+	// SetRollupSequencing is served from v3.2.8 (rdk-based-sequencing).
+	// Governance only; it moves an existing rollup to or from based sequencing.
+	SetRollupSequencing(context.Context, *MsgSetRollupSequencing) (*MsgSetRollupSequencingResponse, error)
+	// DepositToRollup is served from v3.2.8 (rdk-optimistic-reexec). It moves
+	// uqor into a qledger-v1 rollup's deposit pool and appends a deposit entry
+	// to its inbox.
+	DepositToRollup(context.Context, *MsgDepositToRollup) (*MsgDepositToRollupResponse, error)
+	// BondRollupSubmitter and UnbondRollupSubmitter are served from v3.2.8
+	// (rdk-optimistic-reexec): a qledger-v1 rollup takes batches from any
+	// account holding a submitter bond, which an upheld fraud proof pays to
+	// the challenger.
+	BondRollupSubmitter(context.Context, *MsgBondRollupSubmitter) (*MsgBondRollupSubmitterResponse, error)
+	UnbondRollupSubmitter(context.Context, *MsgUnbondRollupSubmitter) (*MsgUnbondRollupSubmitterResponse, error)
+	// SetRollupMembers is served from v3.2.8 (rdk-private-rollups). The
+	// creator of a private rollup sets its member list.
+	SetRollupMembers(context.Context, *MsgSetRollupMembers) (*MsgSetRollupMembersResponse, error)
 }
 
 // UnimplementedMsgServer can be embedded to have forward compatible implementations.
@@ -1359,6 +2543,30 @@ func (*UnimplementedMsgServer) ExecuteWithdrawal(ctx context.Context, req *MsgEx
 }
 func (*UnimplementedMsgServer) UpdateParams(ctx context.Context, req *MsgUpdateParams) (*MsgUpdateParamsResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method UpdateParams not implemented")
+}
+func (*UnimplementedMsgServer) SetVerificationKey(ctx context.Context, req *MsgSetVerificationKey) (*MsgSetVerificationKeyResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method SetVerificationKey not implemented")
+}
+func (*UnimplementedMsgServer) UpdateVerificationKey(ctx context.Context, req *MsgUpdateVerificationKey) (*MsgUpdateVerificationKeyResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UpdateVerificationKey not implemented")
+}
+func (*UnimplementedMsgServer) PostRollupData(ctx context.Context, req *MsgPostRollupData) (*MsgPostRollupDataResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method PostRollupData not implemented")
+}
+func (*UnimplementedMsgServer) SetRollupSequencing(ctx context.Context, req *MsgSetRollupSequencing) (*MsgSetRollupSequencingResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method SetRollupSequencing not implemented")
+}
+func (*UnimplementedMsgServer) DepositToRollup(ctx context.Context, req *MsgDepositToRollup) (*MsgDepositToRollupResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method DepositToRollup not implemented")
+}
+func (*UnimplementedMsgServer) BondRollupSubmitter(ctx context.Context, req *MsgBondRollupSubmitter) (*MsgBondRollupSubmitterResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method BondRollupSubmitter not implemented")
+}
+func (*UnimplementedMsgServer) UnbondRollupSubmitter(ctx context.Context, req *MsgUnbondRollupSubmitter) (*MsgUnbondRollupSubmitterResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UnbondRollupSubmitter not implemented")
+}
+func (*UnimplementedMsgServer) SetRollupMembers(ctx context.Context, req *MsgSetRollupMembers) (*MsgSetRollupMembersResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method SetRollupMembers not implemented")
 }
 
 func RegisterMsgServer(s grpc1.Server, srv MsgServer) {
@@ -1527,6 +2735,150 @@ func _Msg_UpdateParams_Handler(srv interface{}, ctx context.Context, dec func(in
 	return interceptor(ctx, in, info, handler)
 }
 
+func _Msg_SetVerificationKey_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(MsgSetVerificationKey)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MsgServer).SetVerificationKey(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/qorechain.rdk.v1.Msg/SetVerificationKey",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MsgServer).SetVerificationKey(ctx, req.(*MsgSetVerificationKey))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Msg_UpdateVerificationKey_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(MsgUpdateVerificationKey)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MsgServer).UpdateVerificationKey(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/qorechain.rdk.v1.Msg/UpdateVerificationKey",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MsgServer).UpdateVerificationKey(ctx, req.(*MsgUpdateVerificationKey))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Msg_PostRollupData_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(MsgPostRollupData)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MsgServer).PostRollupData(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/qorechain.rdk.v1.Msg/PostRollupData",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MsgServer).PostRollupData(ctx, req.(*MsgPostRollupData))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Msg_SetRollupSequencing_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(MsgSetRollupSequencing)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MsgServer).SetRollupSequencing(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/qorechain.rdk.v1.Msg/SetRollupSequencing",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MsgServer).SetRollupSequencing(ctx, req.(*MsgSetRollupSequencing))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Msg_DepositToRollup_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(MsgDepositToRollup)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MsgServer).DepositToRollup(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/qorechain.rdk.v1.Msg/DepositToRollup",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MsgServer).DepositToRollup(ctx, req.(*MsgDepositToRollup))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Msg_BondRollupSubmitter_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(MsgBondRollupSubmitter)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MsgServer).BondRollupSubmitter(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/qorechain.rdk.v1.Msg/BondRollupSubmitter",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MsgServer).BondRollupSubmitter(ctx, req.(*MsgBondRollupSubmitter))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Msg_UnbondRollupSubmitter_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(MsgUnbondRollupSubmitter)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MsgServer).UnbondRollupSubmitter(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/qorechain.rdk.v1.Msg/UnbondRollupSubmitter",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MsgServer).UnbondRollupSubmitter(ctx, req.(*MsgUnbondRollupSubmitter))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Msg_SetRollupMembers_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(MsgSetRollupMembers)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MsgServer).SetRollupMembers(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/qorechain.rdk.v1.Msg/SetRollupMembers",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MsgServer).SetRollupMembers(ctx, req.(*MsgSetRollupMembers))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 var Msg_serviceDesc = _Msg_serviceDesc
 var _Msg_serviceDesc = grpc.ServiceDesc{
 	ServiceName: "qorechain.rdk.v1.Msg",
@@ -1568,6 +2920,38 @@ var _Msg_serviceDesc = grpc.ServiceDesc{
 			MethodName: "UpdateParams",
 			Handler:    _Msg_UpdateParams_Handler,
 		},
+		{
+			MethodName: "SetVerificationKey",
+			Handler:    _Msg_SetVerificationKey_Handler,
+		},
+		{
+			MethodName: "UpdateVerificationKey",
+			Handler:    _Msg_UpdateVerificationKey_Handler,
+		},
+		{
+			MethodName: "PostRollupData",
+			Handler:    _Msg_PostRollupData_Handler,
+		},
+		{
+			MethodName: "SetRollupSequencing",
+			Handler:    _Msg_SetRollupSequencing_Handler,
+		},
+		{
+			MethodName: "DepositToRollup",
+			Handler:    _Msg_DepositToRollup_Handler,
+		},
+		{
+			MethodName: "BondRollupSubmitter",
+			Handler:    _Msg_BondRollupSubmitter_Handler,
+		},
+		{
+			MethodName: "UnbondRollupSubmitter",
+			Handler:    _Msg_UnbondRollupSubmitter_Handler,
+		},
+		{
+			MethodName: "SetRollupMembers",
+			Handler:    _Msg_SetRollupMembers_Handler,
+		},
 	},
 	Streams:  []grpc.StreamDesc{},
 	Metadata: "qorechain/rdk/v1/tx.proto",
@@ -1593,6 +2977,34 @@ func (m *MsgCreateRollup) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	_ = i
 	var l int
 	_ = l
+	if len(m.Privacy) > 0 {
+		i -= len(m.Privacy)
+		copy(dAtA[i:], m.Privacy)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.Privacy)))
+		i--
+		dAtA[i] = 0x4a
+	}
+	if len(m.ExecutionVm) > 0 {
+		i -= len(m.ExecutionVm)
+		copy(dAtA[i:], m.ExecutionVm)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.ExecutionVm)))
+		i--
+		dAtA[i] = 0x42
+	}
+	if len(m.Sequencing) > 0 {
+		i -= len(m.Sequencing)
+		copy(dAtA[i:], m.Sequencing)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.Sequencing)))
+		i--
+		dAtA[i] = 0x3a
+	}
+	if len(m.VerificationKey) > 0 {
+		i -= len(m.VerificationKey)
+		copy(dAtA[i:], m.VerificationKey)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.VerificationKey)))
+		i--
+		dAtA[i] = 0x32
+	}
 	if m.StakeAmount != 0 {
 		i = encodeVarintTx(dAtA, i, uint64(m.StakeAmount))
 		i--
@@ -1679,6 +3091,11 @@ func (m *MsgSubmitBatch) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	_ = i
 	var l int
 	_ = l
+	if m.InboxEnd != 0 {
+		i = encodeVarintTx(dAtA, i, uint64(m.InboxEnd))
+		i--
+		dAtA[i] = 0x60
+	}
 	if len(m.ValidatorSetHash) > 0 {
 		i -= len(m.ValidatorSetHash)
 		copy(dAtA[i:], m.ValidatorSetHash)
@@ -2230,6 +3647,36 @@ func (m *MsgUpdateParams) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	_ = i
 	var l int
 	_ = l
+	if m.MinSubmitterBond != 0 {
+		i = encodeVarintTx(dAtA, i, uint64(m.MinSubmitterBond))
+		i--
+		dAtA[i] = 0x70
+	}
+	if m.PostedDataRetentionBlocks != 0 {
+		i = encodeVarintTx(dAtA, i, uint64(m.PostedDataRetentionBlocks))
+		i--
+		dAtA[i] = 0x68
+	}
+	if m.PostedDataFeePerByte != 0 {
+		i = encodeVarintTx(dAtA, i, uint64(m.PostedDataFeePerByte))
+		i--
+		dAtA[i] = 0x60
+	}
+	if m.MaxPostedDataBytesPerBlock != 0 {
+		i = encodeVarintTx(dAtA, i, uint64(m.MaxPostedDataBytesPerBlock))
+		i--
+		dAtA[i] = 0x58
+	}
+	if m.MaxPostedDataBytes != 0 {
+		i = encodeVarintTx(dAtA, i, uint64(m.MaxPostedDataBytes))
+		i--
+		dAtA[i] = 0x50
+	}
+	if m.FinalizedBatchRetentionBlocks != 0 {
+		i = encodeVarintTx(dAtA, i, uint64(m.FinalizedBatchRetentionBlocks))
+		i--
+		dAtA[i] = 0x48
+	}
 	if m.MaxBatchesPerBlock != 0 {
 		i = encodeVarintTx(dAtA, i, uint64(m.MaxBatchesPerBlock))
 		i--
@@ -2300,6 +3747,586 @@ func (m *MsgUpdateParamsResponse) MarshalToSizedBuffer(dAtA []byte) (int, error)
 	return len(dAtA) - i, nil
 }
 
+func (m *MsgSetVerificationKey) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *MsgSetVerificationKey) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *MsgSetVerificationKey) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if len(m.ProofSystem) > 0 {
+		i -= len(m.ProofSystem)
+		copy(dAtA[i:], m.ProofSystem)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.ProofSystem)))
+		i--
+		dAtA[i] = 0x22
+	}
+	if len(m.VerificationKey) > 0 {
+		i -= len(m.VerificationKey)
+		copy(dAtA[i:], m.VerificationKey)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.VerificationKey)))
+		i--
+		dAtA[i] = 0x1a
+	}
+	if len(m.RollupID) > 0 {
+		i -= len(m.RollupID)
+		copy(dAtA[i:], m.RollupID)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.RollupID)))
+		i--
+		dAtA[i] = 0x12
+	}
+	if len(m.Creator) > 0 {
+		i -= len(m.Creator)
+		copy(dAtA[i:], m.Creator)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.Creator)))
+		i--
+		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *MsgSetVerificationKeyResponse) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *MsgSetVerificationKeyResponse) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *MsgSetVerificationKeyResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	return len(dAtA) - i, nil
+}
+
+func (m *MsgUpdateVerificationKey) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *MsgUpdateVerificationKey) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *MsgUpdateVerificationKey) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if len(m.ProofSystem) > 0 {
+		i -= len(m.ProofSystem)
+		copy(dAtA[i:], m.ProofSystem)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.ProofSystem)))
+		i--
+		dAtA[i] = 0x22
+	}
+	if len(m.VerificationKey) > 0 {
+		i -= len(m.VerificationKey)
+		copy(dAtA[i:], m.VerificationKey)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.VerificationKey)))
+		i--
+		dAtA[i] = 0x1a
+	}
+	if len(m.RollupID) > 0 {
+		i -= len(m.RollupID)
+		copy(dAtA[i:], m.RollupID)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.RollupID)))
+		i--
+		dAtA[i] = 0x12
+	}
+	if len(m.Authority) > 0 {
+		i -= len(m.Authority)
+		copy(dAtA[i:], m.Authority)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.Authority)))
+		i--
+		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *MsgUpdateVerificationKeyResponse) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *MsgUpdateVerificationKeyResponse) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *MsgUpdateVerificationKeyResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	return len(dAtA) - i, nil
+}
+
+func (m *MsgPostRollupData) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *MsgPostRollupData) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *MsgPostRollupData) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if len(m.Data) > 0 {
+		i -= len(m.Data)
+		copy(dAtA[i:], m.Data)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.Data)))
+		i--
+		dAtA[i] = 0x1a
+	}
+	if len(m.RollupID) > 0 {
+		i -= len(m.RollupID)
+		copy(dAtA[i:], m.RollupID)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.RollupID)))
+		i--
+		dAtA[i] = 0x12
+	}
+	if len(m.Poster) > 0 {
+		i -= len(m.Poster)
+		copy(dAtA[i:], m.Poster)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.Poster)))
+		i--
+		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *MsgPostRollupDataResponse) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *MsgPostRollupDataResponse) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *MsgPostRollupDataResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if len(m.DataHash) > 0 {
+		i -= len(m.DataHash)
+		copy(dAtA[i:], m.DataHash)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.DataHash)))
+		i--
+		dAtA[i] = 0x12
+	}
+	if m.Sequence != 0 {
+		i = encodeVarintTx(dAtA, i, uint64(m.Sequence))
+		i--
+		dAtA[i] = 0x8
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *MsgSetRollupSequencing) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *MsgSetRollupSequencing) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *MsgSetRollupSequencing) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if len(m.Sequencing) > 0 {
+		i -= len(m.Sequencing)
+		copy(dAtA[i:], m.Sequencing)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.Sequencing)))
+		i--
+		dAtA[i] = 0x1a
+	}
+	if len(m.RollupID) > 0 {
+		i -= len(m.RollupID)
+		copy(dAtA[i:], m.RollupID)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.RollupID)))
+		i--
+		dAtA[i] = 0x12
+	}
+	if len(m.Authority) > 0 {
+		i -= len(m.Authority)
+		copy(dAtA[i:], m.Authority)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.Authority)))
+		i--
+		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *MsgSetRollupSequencingResponse) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *MsgSetRollupSequencingResponse) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *MsgSetRollupSequencingResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	return len(dAtA) - i, nil
+}
+
+func (m *MsgDepositToRollup) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *MsgDepositToRollup) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *MsgDepositToRollup) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if m.Amount != 0 {
+		i = encodeVarintTx(dAtA, i, uint64(m.Amount))
+		i--
+		dAtA[i] = 0x20
+	}
+	if len(m.Account) > 0 {
+		i -= len(m.Account)
+		copy(dAtA[i:], m.Account)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.Account)))
+		i--
+		dAtA[i] = 0x1a
+	}
+	if len(m.RollupID) > 0 {
+		i -= len(m.RollupID)
+		copy(dAtA[i:], m.RollupID)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.RollupID)))
+		i--
+		dAtA[i] = 0x12
+	}
+	if len(m.Depositor) > 0 {
+		i -= len(m.Depositor)
+		copy(dAtA[i:], m.Depositor)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.Depositor)))
+		i--
+		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *MsgDepositToRollupResponse) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *MsgDepositToRollupResponse) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *MsgDepositToRollupResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if m.Sequence != 0 {
+		i = encodeVarintTx(dAtA, i, uint64(m.Sequence))
+		i--
+		dAtA[i] = 0x8
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *MsgBondRollupSubmitter) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *MsgBondRollupSubmitter) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *MsgBondRollupSubmitter) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if m.Amount != 0 {
+		i = encodeVarintTx(dAtA, i, uint64(m.Amount))
+		i--
+		dAtA[i] = 0x18
+	}
+	if len(m.RollupID) > 0 {
+		i -= len(m.RollupID)
+		copy(dAtA[i:], m.RollupID)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.RollupID)))
+		i--
+		dAtA[i] = 0x12
+	}
+	if len(m.Submitter) > 0 {
+		i -= len(m.Submitter)
+		copy(dAtA[i:], m.Submitter)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.Submitter)))
+		i--
+		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *MsgBondRollupSubmitterResponse) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *MsgBondRollupSubmitterResponse) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *MsgBondRollupSubmitterResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if m.Bond != 0 {
+		i = encodeVarintTx(dAtA, i, uint64(m.Bond))
+		i--
+		dAtA[i] = 0x8
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *MsgUnbondRollupSubmitter) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *MsgUnbondRollupSubmitter) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *MsgUnbondRollupSubmitter) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if len(m.RollupID) > 0 {
+		i -= len(m.RollupID)
+		copy(dAtA[i:], m.RollupID)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.RollupID)))
+		i--
+		dAtA[i] = 0x12
+	}
+	if len(m.Submitter) > 0 {
+		i -= len(m.Submitter)
+		copy(dAtA[i:], m.Submitter)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.Submitter)))
+		i--
+		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *MsgUnbondRollupSubmitterResponse) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *MsgUnbondRollupSubmitterResponse) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *MsgUnbondRollupSubmitterResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if m.Returned != 0 {
+		i = encodeVarintTx(dAtA, i, uint64(m.Returned))
+		i--
+		dAtA[i] = 0x8
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *MsgSetRollupMembers) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *MsgSetRollupMembers) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *MsgSetRollupMembers) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if len(m.Members) > 0 {
+		for iNdEx := len(m.Members) - 1; iNdEx >= 0; iNdEx-- {
+			i -= len(m.Members[iNdEx])
+			copy(dAtA[i:], m.Members[iNdEx])
+			i = encodeVarintTx(dAtA, i, uint64(len(m.Members[iNdEx])))
+			i--
+			dAtA[i] = 0x1a
+		}
+	}
+	if len(m.RollupID) > 0 {
+		i -= len(m.RollupID)
+		copy(dAtA[i:], m.RollupID)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.RollupID)))
+		i--
+		dAtA[i] = 0x12
+	}
+	if len(m.Creator) > 0 {
+		i -= len(m.Creator)
+		copy(dAtA[i:], m.Creator)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.Creator)))
+		i--
+		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *MsgSetRollupMembersResponse) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *MsgSetRollupMembersResponse) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *MsgSetRollupMembersResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if m.Epoch != 0 {
+		i = encodeVarintTx(dAtA, i, uint64(m.Epoch))
+		i--
+		dAtA[i] = 0x8
+	}
+	return len(dAtA) - i, nil
+}
+
 func encodeVarintTx(dAtA []byte, offset int, v uint64) int {
 	offset -= sovTx(v)
 	base := offset
@@ -2335,6 +4362,22 @@ func (m *MsgCreateRollup) Size() (n int) {
 	}
 	if m.StakeAmount != 0 {
 		n += 1 + sovTx(uint64(m.StakeAmount))
+	}
+	l = len(m.VerificationKey)
+	if l > 0 {
+		n += 1 + l + sovTx(uint64(l))
+	}
+	l = len(m.Sequencing)
+	if l > 0 {
+		n += 1 + l + sovTx(uint64(l))
+	}
+	l = len(m.ExecutionVm)
+	if l > 0 {
+		n += 1 + l + sovTx(uint64(l))
+	}
+	l = len(m.Privacy)
+	if l > 0 {
+		n += 1 + l + sovTx(uint64(l))
 	}
 	return n
 }
@@ -2399,6 +4442,9 @@ func (m *MsgSubmitBatch) Size() (n int) {
 	l = len(m.ValidatorSetHash)
 	if l > 0 {
 		n += 1 + l + sovTx(uint64(l))
+	}
+	if m.InboxEnd != 0 {
+		n += 1 + sovTx(uint64(m.InboxEnd))
 	}
 	return n
 }
@@ -2640,6 +4686,24 @@ func (m *MsgUpdateParams) Size() (n int) {
 	if m.MaxBatchesPerBlock != 0 {
 		n += 1 + sovTx(uint64(m.MaxBatchesPerBlock))
 	}
+	if m.FinalizedBatchRetentionBlocks != 0 {
+		n += 1 + sovTx(uint64(m.FinalizedBatchRetentionBlocks))
+	}
+	if m.MaxPostedDataBytes != 0 {
+		n += 1 + sovTx(uint64(m.MaxPostedDataBytes))
+	}
+	if m.MaxPostedDataBytesPerBlock != 0 {
+		n += 1 + sovTx(uint64(m.MaxPostedDataBytesPerBlock))
+	}
+	if m.PostedDataFeePerByte != 0 {
+		n += 1 + sovTx(uint64(m.PostedDataFeePerByte))
+	}
+	if m.PostedDataRetentionBlocks != 0 {
+		n += 1 + sovTx(uint64(m.PostedDataRetentionBlocks))
+	}
+	if m.MinSubmitterBond != 0 {
+		n += 1 + sovTx(uint64(m.MinSubmitterBond))
+	}
 	return n
 }
 
@@ -2649,6 +4713,273 @@ func (m *MsgUpdateParamsResponse) Size() (n int) {
 	}
 	var l int
 	_ = l
+	return n
+}
+
+func (m *MsgSetVerificationKey) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	l = len(m.Creator)
+	if l > 0 {
+		n += 1 + l + sovTx(uint64(l))
+	}
+	l = len(m.RollupID)
+	if l > 0 {
+		n += 1 + l + sovTx(uint64(l))
+	}
+	l = len(m.VerificationKey)
+	if l > 0 {
+		n += 1 + l + sovTx(uint64(l))
+	}
+	l = len(m.ProofSystem)
+	if l > 0 {
+		n += 1 + l + sovTx(uint64(l))
+	}
+	return n
+}
+
+func (m *MsgSetVerificationKeyResponse) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	return n
+}
+
+func (m *MsgUpdateVerificationKey) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	l = len(m.Authority)
+	if l > 0 {
+		n += 1 + l + sovTx(uint64(l))
+	}
+	l = len(m.RollupID)
+	if l > 0 {
+		n += 1 + l + sovTx(uint64(l))
+	}
+	l = len(m.VerificationKey)
+	if l > 0 {
+		n += 1 + l + sovTx(uint64(l))
+	}
+	l = len(m.ProofSystem)
+	if l > 0 {
+		n += 1 + l + sovTx(uint64(l))
+	}
+	return n
+}
+
+func (m *MsgUpdateVerificationKeyResponse) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	return n
+}
+
+func (m *MsgPostRollupData) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	l = len(m.Poster)
+	if l > 0 {
+		n += 1 + l + sovTx(uint64(l))
+	}
+	l = len(m.RollupID)
+	if l > 0 {
+		n += 1 + l + sovTx(uint64(l))
+	}
+	l = len(m.Data)
+	if l > 0 {
+		n += 1 + l + sovTx(uint64(l))
+	}
+	return n
+}
+
+func (m *MsgPostRollupDataResponse) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	if m.Sequence != 0 {
+		n += 1 + sovTx(uint64(m.Sequence))
+	}
+	l = len(m.DataHash)
+	if l > 0 {
+		n += 1 + l + sovTx(uint64(l))
+	}
+	return n
+}
+
+func (m *MsgSetRollupSequencing) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	l = len(m.Authority)
+	if l > 0 {
+		n += 1 + l + sovTx(uint64(l))
+	}
+	l = len(m.RollupID)
+	if l > 0 {
+		n += 1 + l + sovTx(uint64(l))
+	}
+	l = len(m.Sequencing)
+	if l > 0 {
+		n += 1 + l + sovTx(uint64(l))
+	}
+	return n
+}
+
+func (m *MsgSetRollupSequencingResponse) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	return n
+}
+
+func (m *MsgDepositToRollup) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	l = len(m.Depositor)
+	if l > 0 {
+		n += 1 + l + sovTx(uint64(l))
+	}
+	l = len(m.RollupID)
+	if l > 0 {
+		n += 1 + l + sovTx(uint64(l))
+	}
+	l = len(m.Account)
+	if l > 0 {
+		n += 1 + l + sovTx(uint64(l))
+	}
+	if m.Amount != 0 {
+		n += 1 + sovTx(uint64(m.Amount))
+	}
+	return n
+}
+
+func (m *MsgDepositToRollupResponse) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	if m.Sequence != 0 {
+		n += 1 + sovTx(uint64(m.Sequence))
+	}
+	return n
+}
+
+func (m *MsgBondRollupSubmitter) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	l = len(m.Submitter)
+	if l > 0 {
+		n += 1 + l + sovTx(uint64(l))
+	}
+	l = len(m.RollupID)
+	if l > 0 {
+		n += 1 + l + sovTx(uint64(l))
+	}
+	if m.Amount != 0 {
+		n += 1 + sovTx(uint64(m.Amount))
+	}
+	return n
+}
+
+func (m *MsgBondRollupSubmitterResponse) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	if m.Bond != 0 {
+		n += 1 + sovTx(uint64(m.Bond))
+	}
+	return n
+}
+
+func (m *MsgUnbondRollupSubmitter) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	l = len(m.Submitter)
+	if l > 0 {
+		n += 1 + l + sovTx(uint64(l))
+	}
+	l = len(m.RollupID)
+	if l > 0 {
+		n += 1 + l + sovTx(uint64(l))
+	}
+	return n
+}
+
+func (m *MsgUnbondRollupSubmitterResponse) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	if m.Returned != 0 {
+		n += 1 + sovTx(uint64(m.Returned))
+	}
+	return n
+}
+
+func (m *MsgSetRollupMembers) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	l = len(m.Creator)
+	if l > 0 {
+		n += 1 + l + sovTx(uint64(l))
+	}
+	l = len(m.RollupID)
+	if l > 0 {
+		n += 1 + l + sovTx(uint64(l))
+	}
+	if len(m.Members) > 0 {
+		for _, s := range m.Members {
+			l = len(s)
+			n += 1 + l + sovTx(uint64(l))
+		}
+	}
+	return n
+}
+
+func (m *MsgSetRollupMembersResponse) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	if m.Epoch != 0 {
+		n += 1 + sovTx(uint64(m.Epoch))
+	}
 	return n
 }
 
@@ -2834,6 +5165,136 @@ func (m *MsgCreateRollup) Unmarshal(dAtA []byte) error {
 					break
 				}
 			}
+		case 6:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field VerificationKey", wireType)
+			}
+			var byteLen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				byteLen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if byteLen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + byteLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.VerificationKey = append(m.VerificationKey[:0], dAtA[iNdEx:postIndex]...)
+			if m.VerificationKey == nil {
+				m.VerificationKey = []byte{}
+			}
+			iNdEx = postIndex
+		case 7:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Sequencing", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Sequencing = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 8:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field ExecutionVm", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.ExecutionVm = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 9:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Privacy", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Privacy = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
 		default:
 			iNdEx = preIndex
 			skippy, err := skipTx(dAtA[iNdEx:])
@@ -3306,6 +5767,25 @@ func (m *MsgSubmitBatch) Unmarshal(dAtA []byte) error {
 				m.ValidatorSetHash = []byte{}
 			}
 			iNdEx = postIndex
+		case 12:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field InboxEnd", wireType)
+			}
+			m.InboxEnd = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.InboxEnd |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
 		default:
 			iNdEx = preIndex
 			skippy, err := skipTx(dAtA[iNdEx:])
@@ -4845,6 +7325,120 @@ func (m *MsgUpdateParams) Unmarshal(dAtA []byte) error {
 					break
 				}
 			}
+		case 9:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field FinalizedBatchRetentionBlocks", wireType)
+			}
+			m.FinalizedBatchRetentionBlocks = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.FinalizedBatchRetentionBlocks |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		case 10:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field MaxPostedDataBytes", wireType)
+			}
+			m.MaxPostedDataBytes = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.MaxPostedDataBytes |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		case 11:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field MaxPostedDataBytesPerBlock", wireType)
+			}
+			m.MaxPostedDataBytesPerBlock = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.MaxPostedDataBytesPerBlock |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		case 12:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field PostedDataFeePerByte", wireType)
+			}
+			m.PostedDataFeePerByte = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.PostedDataFeePerByte |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		case 13:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field PostedDataRetentionBlocks", wireType)
+			}
+			m.PostedDataRetentionBlocks = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.PostedDataRetentionBlocks |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		case 14:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field MinSubmitterBond", wireType)
+			}
+			m.MinSubmitterBond = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.MinSubmitterBond |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
 		default:
 			iNdEx = preIndex
 			skippy, err := skipTx(dAtA[iNdEx:])
@@ -4895,6 +7489,1749 @@ func (m *MsgUpdateParamsResponse) Unmarshal(dAtA []byte) error {
 			return fmt.Errorf("proto: MsgUpdateParamsResponse: illegal tag %d (wire type %d)", fieldNum, wire)
 		}
 		switch fieldNum {
+		default:
+			iNdEx = preIndex
+			skippy, err := skipTx(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthTx
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *MsgSetVerificationKey) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowTx
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: MsgSetVerificationKey: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: MsgSetVerificationKey: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Creator", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Creator = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field RollupID", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.RollupID = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 3:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field VerificationKey", wireType)
+			}
+			var byteLen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				byteLen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if byteLen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + byteLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.VerificationKey = append(m.VerificationKey[:0], dAtA[iNdEx:postIndex]...)
+			if m.VerificationKey == nil {
+				m.VerificationKey = []byte{}
+			}
+			iNdEx = postIndex
+		case 4:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field ProofSystem", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.ProofSystem = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipTx(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthTx
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *MsgSetVerificationKeyResponse) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowTx
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: MsgSetVerificationKeyResponse: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: MsgSetVerificationKeyResponse: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		default:
+			iNdEx = preIndex
+			skippy, err := skipTx(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthTx
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *MsgUpdateVerificationKey) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowTx
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: MsgUpdateVerificationKey: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: MsgUpdateVerificationKey: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Authority", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Authority = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field RollupID", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.RollupID = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 3:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field VerificationKey", wireType)
+			}
+			var byteLen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				byteLen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if byteLen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + byteLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.VerificationKey = append(m.VerificationKey[:0], dAtA[iNdEx:postIndex]...)
+			if m.VerificationKey == nil {
+				m.VerificationKey = []byte{}
+			}
+			iNdEx = postIndex
+		case 4:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field ProofSystem", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.ProofSystem = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipTx(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthTx
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *MsgUpdateVerificationKeyResponse) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowTx
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: MsgUpdateVerificationKeyResponse: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: MsgUpdateVerificationKeyResponse: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		default:
+			iNdEx = preIndex
+			skippy, err := skipTx(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthTx
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *MsgPostRollupData) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowTx
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: MsgPostRollupData: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: MsgPostRollupData: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Poster", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Poster = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field RollupID", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.RollupID = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 3:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Data", wireType)
+			}
+			var byteLen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				byteLen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if byteLen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + byteLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Data = append(m.Data[:0], dAtA[iNdEx:postIndex]...)
+			if m.Data == nil {
+				m.Data = []byte{}
+			}
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipTx(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthTx
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *MsgPostRollupDataResponse) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowTx
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: MsgPostRollupDataResponse: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: MsgPostRollupDataResponse: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Sequence", wireType)
+			}
+			m.Sequence = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.Sequence |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field DataHash", wireType)
+			}
+			var byteLen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				byteLen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if byteLen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + byteLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.DataHash = append(m.DataHash[:0], dAtA[iNdEx:postIndex]...)
+			if m.DataHash == nil {
+				m.DataHash = []byte{}
+			}
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipTx(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthTx
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *MsgSetRollupSequencing) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowTx
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: MsgSetRollupSequencing: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: MsgSetRollupSequencing: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Authority", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Authority = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field RollupID", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.RollupID = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 3:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Sequencing", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Sequencing = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipTx(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthTx
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *MsgSetRollupSequencingResponse) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowTx
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: MsgSetRollupSequencingResponse: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: MsgSetRollupSequencingResponse: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		default:
+			iNdEx = preIndex
+			skippy, err := skipTx(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthTx
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *MsgDepositToRollup) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowTx
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: MsgDepositToRollup: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: MsgDepositToRollup: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Depositor", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Depositor = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field RollupID", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.RollupID = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 3:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Account", wireType)
+			}
+			var byteLen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				byteLen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if byteLen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + byteLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Account = append(m.Account[:0], dAtA[iNdEx:postIndex]...)
+			if m.Account == nil {
+				m.Account = []byte{}
+			}
+			iNdEx = postIndex
+		case 4:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Amount", wireType)
+			}
+			m.Amount = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.Amount |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		default:
+			iNdEx = preIndex
+			skippy, err := skipTx(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthTx
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *MsgDepositToRollupResponse) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowTx
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: MsgDepositToRollupResponse: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: MsgDepositToRollupResponse: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Sequence", wireType)
+			}
+			m.Sequence = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.Sequence |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		default:
+			iNdEx = preIndex
+			skippy, err := skipTx(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthTx
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *MsgBondRollupSubmitter) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowTx
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: MsgBondRollupSubmitter: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: MsgBondRollupSubmitter: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Submitter", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Submitter = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field RollupID", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.RollupID = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 3:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Amount", wireType)
+			}
+			m.Amount = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.Amount |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		default:
+			iNdEx = preIndex
+			skippy, err := skipTx(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthTx
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *MsgBondRollupSubmitterResponse) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowTx
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: MsgBondRollupSubmitterResponse: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: MsgBondRollupSubmitterResponse: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Bond", wireType)
+			}
+			m.Bond = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.Bond |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		default:
+			iNdEx = preIndex
+			skippy, err := skipTx(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthTx
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *MsgUnbondRollupSubmitter) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowTx
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: MsgUnbondRollupSubmitter: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: MsgUnbondRollupSubmitter: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Submitter", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Submitter = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field RollupID", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.RollupID = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipTx(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthTx
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *MsgUnbondRollupSubmitterResponse) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowTx
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: MsgUnbondRollupSubmitterResponse: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: MsgUnbondRollupSubmitterResponse: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Returned", wireType)
+			}
+			m.Returned = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.Returned |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		default:
+			iNdEx = preIndex
+			skippy, err := skipTx(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthTx
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *MsgSetRollupMembers) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowTx
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: MsgSetRollupMembers: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: MsgSetRollupMembers: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Creator", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Creator = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field RollupID", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.RollupID = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 3:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Members", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Members = append(m.Members, string(dAtA[iNdEx:postIndex]))
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipTx(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthTx
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *MsgSetRollupMembersResponse) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowTx
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: MsgSetRollupMembersResponse: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: MsgSetRollupMembersResponse: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Epoch", wireType)
+			}
+			m.Epoch = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.Epoch |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
 		default:
 			iNdEx = preIndex
 			skippy, err := skipTx(dAtA[iNdEx:])

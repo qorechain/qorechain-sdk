@@ -28,7 +28,7 @@ from cosmpy.protos.cosmos.base.v1beta1 import coin_pb2 as cosmos_dot_base_dot_v1
 from cosmpy.protos.gogoproto import gogo_pb2 as gogoproto_dot_gogo__pb2
 
 
-DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\x1dqorechain/crossvm/v1/tx.proto\x12\x14qorechain.crossvm.v1\x1a\x17\x63osmos/msg/v1/msg.proto\x1a\x19\x63osmos_proto/cosmos.proto\x1a\x1e\x63osmos/base/v1beta1/coin.proto\x1a\x14gogoproto/gogo.proto\"\xf5\x02\n\x0eMsgCrossVMCall\x12\x30\n\x06sender\x18\x01 \x01(\tB\x18\xd2\xb4-\x14\x63osmos.AddressStringR\x06sender\x12\x33\n\tsource_vm\x18\x02 \x01(\tB\x16\xe2\xde\x1f\x08SourceVM\xfa\xde\x1f\x06VMTypeR\x08sourceVm\x12\x33\n\ttarget_vm\x18\x03 \x01(\tB\x16\xe2\xde\x1f\x08TargetVM\xfa\xde\x1f\x06VMTypeR\x08targetVm\x12\'\n\x0ftarget_contract\x18\x04 \x01(\tR\x0etargetContract\x12\x18\n\x07payload\x18\x05 \x01(\x0cR\x07payload\x12\x61\n\x05\x66unds\x18\x06 \x03(\x0b\x32\x19.cosmos.base.v1beta1.CoinB0\xc8\xde\x1f\x00\xaa\xdf\x1f(github.com/cosmos/cosmos-sdk/types.CoinsR\x05\x66unds\x12\x14\n\x05\x61sync\x18\x07 \x01(\x08R\x05\x61sync:\x0b\x82\xe7\xb0*\x06sender\"\x91\x01\n\x16MsgCrossVMCallResponse\x12,\n\nmessage_id\x18\x01 \x01(\tB\r\xe2\xde\x1f\tMessageIDR\tmessageId\x12\x1a\n\x08\x65xecuted\x18\x02 \x01(\x08R\x08\x65xecuted\x12\x12\n\x04\x64\x61ta\x18\x03 \x01(\x0cR\x04\x64\x61ta\x12\x19\n\x08gas_used\x18\x04 \x01(\x04R\x07gasUsed\"Y\n\x0fMsgProcessQueue\x12\x36\n\tauthority\x18\x01 \x01(\tB\x18\xd2\xb4-\x14\x63osmos.AddressStringR\tauthority:\x0e\x82\xe7\xb0*\tauthority\"\x19\n\x17MsgProcessQueueResponse\"\xab\x02\n\x0fMsgUpdateParams\x12\x36\n\tauthority\x18\x01 \x01(\tB\x18\xd2\xb4-\x14\x63osmos.AddressStringR\tauthority\x12(\n\x10max_message_size\x18\x02 \x01(\x04R\x0emaxMessageSize\x12$\n\x0emax_queue_size\x18\x03 \x01(\rR\x0cmaxQueueSize\x12\x30\n\x14queue_timeout_blocks\x18\x04 \x01(\x03R\x12queueTimeoutBlocks\x12\x18\n\x07\x65nabled\x18\x05 \x01(\x08R\x07\x65nabled\x12\x34\n\x16\x62ridge_allowed_targets\x18\x06 \x03(\tR\x14\x62ridgeAllowedTargets:\x0e\x82\xe7\xb0*\tauthority\"\x19\n\x17MsgUpdateParamsResponse2\xbb\x02\n\x03Msg\x12\x61\n\x0b\x43rossVMCall\x12$.qorechain.crossvm.v1.MsgCrossVMCall\x1a,.qorechain.crossvm.v1.MsgCrossVMCallResponse\x12\x64\n\x0cProcessQueue\x12%.qorechain.crossvm.v1.MsgProcessQueue\x1a-.qorechain.crossvm.v1.MsgProcessQueueResponse\x12\x64\n\x0cUpdateParams\x12%.qorechain.crossvm.v1.MsgUpdateParams\x1a-.qorechain.crossvm.v1.MsgUpdateParamsResponse\x1a\x05\x80\xe7\xb0*\x01\x42\xca\x01\n\x18\x63om.qorechain.crossvm.v1B\x07TxProtoP\x01Z3github.com/qorechain/qorechain-core/x/crossvm/types\xa2\x02\x03QCX\xaa\x02\x14Qorechain.Crossvm.V1\xca\x02\x14Qorechain\\Crossvm\\V1\xe2\x02 Qorechain\\Crossvm\\V1\\GPBMetadata\xea\x02\x16Qorechain::Crossvm::V1b\x06proto3')
+DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\x1dqorechain/crossvm/v1/tx.proto\x12\x14qorechain.crossvm.v1\x1a\x17\x63osmos/msg/v1/msg.proto\x1a\x19\x63osmos_proto/cosmos.proto\x1a\x1e\x63osmos/base/v1beta1/coin.proto\x1a\x14gogoproto/gogo.proto\"\xc7\x03\n\x0eMsgCrossVMCall\x12\x30\n\x06sender\x18\x01 \x01(\tB\x18\xd2\xb4-\x14\x63osmos.AddressStringR\x06sender\x12\x33\n\tsource_vm\x18\x02 \x01(\tB\x16\xe2\xde\x1f\x08SourceVM\xfa\xde\x1f\x06VMTypeR\x08sourceVm\x12\x33\n\ttarget_vm\x18\x03 \x01(\tB\x16\xe2\xde\x1f\x08TargetVM\xfa\xde\x1f\x06VMTypeR\x08targetVm\x12\'\n\x0ftarget_contract\x18\x04 \x01(\tR\x0etargetContract\x12\x18\n\x07payload\x18\x05 \x01(\x0cR\x07payload\x12\x61\n\x05\x66unds\x18\x06 \x03(\x0b\x32\x19.cosmos.base.v1beta1.CoinB0\xc8\xde\x1f\x00\xaa\xdf\x1f(github.com/cosmos/cosmos-sdk/types.CoinsR\x05\x66unds\x12\x14\n\x05\x61sync\x18\x07 \x01(\x08R\x05\x61sync\x12&\n\x0f\x61sync_gas_limit\x18\x08 \x01(\x04R\rasyncGasLimit\x12(\n\x10\x61sync_max_factor\x18\t \x01(\x04R\x0e\x61syncMaxFactor:\x0b\x82\xe7\xb0*\x06sender\"\x91\x01\n\x16MsgCrossVMCallResponse\x12,\n\nmessage_id\x18\x01 \x01(\tB\r\xe2\xde\x1f\tMessageIDR\tmessageId\x12\x1a\n\x08\x65xecuted\x18\x02 \x01(\x08R\x08\x65xecuted\x12\x12\n\x04\x64\x61ta\x18\x03 \x01(\x0cR\x04\x64\x61ta\x12\x19\n\x08gas_used\x18\x04 \x01(\x04R\x07gasUsed\"Y\n\x0fMsgProcessQueue\x12\x36\n\tauthority\x18\x01 \x01(\tB\x18\xd2\xb4-\x14\x63osmos.AddressStringR\tauthority:\x0e\x82\xe7\xb0*\tauthority\"\x19\n\x17MsgProcessQueueResponse\"\xd5\x07\n\x0fMsgUpdateParams\x12\x36\n\tauthority\x18\x01 \x01(\tB\x18\xd2\xb4-\x14\x63osmos.AddressStringR\tauthority\x12(\n\x10max_message_size\x18\x02 \x01(\x04R\x0emaxMessageSize\x12$\n\x0emax_queue_size\x18\x03 \x01(\rR\x0cmaxQueueSize\x12\x30\n\x14queue_timeout_blocks\x18\x04 \x01(\x03R\x12queueTimeoutBlocks\x12\x18\n\x07\x65nabled\x18\x05 \x01(\x08R\x07\x65nabled\x12\x34\n\x16\x62ridge_allowed_targets\x18\x06 \x03(\tR\x14\x62ridgeAllowedTargets\x12Y\n\x12\x62ridge_target_pins\x18\x07 \x03(\x0b\x32%.qorechain.crossvm.v1.BridgeTargetPinB\x04\xc8\xde\x1f\x00R\x10\x62ridgeTargetPins\x12\x33\n\x16max_pending_per_sender\x18\x08 \x01(\rR\x13maxPendingPerSender\x12)\n\x11max_cosmos_tx_gas\x18\t \x01(\x04R\x0emaxCosmosTxGas\x12\x36\n\x17record_retention_blocks\x18\n \x01(\x04R\x15recordRetentionBlocks\x12+\n\x12max_block_wasm_gas\x18\x0b \x01(\x04R\x0fmaxBlockWasmGas\x12\x30\n\x15max_tx_wasm_share_bps\x18\x0c \x01(\rR\x11maxTxWasmShareBps\x12\x36\n\x18max_block_level_wasm_gas\x18\r \x01(\x04R\x14maxBlockLevelWasmGas\x12\x33\n\x16queue_wasm_reserve_bps\x18\x0e \x01(\rR\x13queueWasmReserveBps\x12;\n\x1awasm_congestion_max_factor\x18\x0f \x01(\rR\x17wasmCongestionMaxFactor\x12;\n\x1awasm_congestion_target_bps\x18\x10 \x01(\rR\x17wasmCongestionTargetBps\x12/\n\x14max_block_upload_bps\x18\x11 \x01(\rR\x11maxBlockUploadBps\x12>\n\x1cmax_queue_timeouts_per_block\x18\x12 \x01(\rR\x18maxQueueTimeoutsPerBlock:\x0e\x82\xe7\xb0*\tauthority\"\x19\n\x17MsgUpdateParamsResponse\"\x7f\n\x0f\x42ridgeTargetPin\x12\x16\n\x06target\x18\x01 \x01(\tR\x06target\x12#\n\x07\x63ode_id\x18\x02 \x01(\x04\x42\n\xe2\xde\x1f\x06\x43odeIDR\x06\x63odeId\x12/\n\x0bhistory_len\x18\x03 \x01(\x04\x42\x0e\xe2\xde\x1f\nHistoryLenR\nhistoryLen2\xbb\x02\n\x03Msg\x12\x61\n\x0b\x43rossVMCall\x12$.qorechain.crossvm.v1.MsgCrossVMCall\x1a,.qorechain.crossvm.v1.MsgCrossVMCallResponse\x12\x64\n\x0cProcessQueue\x12%.qorechain.crossvm.v1.MsgProcessQueue\x1a-.qorechain.crossvm.v1.MsgProcessQueueResponse\x12\x64\n\x0cUpdateParams\x12%.qorechain.crossvm.v1.MsgUpdateParams\x1a-.qorechain.crossvm.v1.MsgUpdateParamsResponse\x1a\x05\x80\xe7\xb0*\x01\x42\xca\x01\n\x18\x63om.qorechain.crossvm.v1B\x07TxProtoP\x01Z3github.com/qorechain/qorechain-core/x/crossvm/types\xa2\x02\x03QCX\xaa\x02\x14Qorechain.Crossvm.V1\xca\x02\x14Qorechain\\Crossvm\\V1\xe2\x02 Qorechain\\Crossvm\\V1\\GPBMetadata\xea\x02\x16Qorechain::Crossvm::V1b\x06proto3')
 
 _globals = globals()
 _builder.BuildMessageAndEnumDescriptors(DESCRIPTOR, _globals)
@@ -54,22 +54,30 @@ if not _descriptor._USE_C_DESCRIPTORS:
   _globals['_MSGPROCESSQUEUE']._serialized_options = b'\202\347\260*\tauthority'
   _globals['_MSGUPDATEPARAMS'].fields_by_name['authority']._loaded_options = None
   _globals['_MSGUPDATEPARAMS'].fields_by_name['authority']._serialized_options = b'\322\264-\024cosmos.AddressString'
+  _globals['_MSGUPDATEPARAMS'].fields_by_name['bridge_target_pins']._loaded_options = None
+  _globals['_MSGUPDATEPARAMS'].fields_by_name['bridge_target_pins']._serialized_options = b'\310\336\037\000'
   _globals['_MSGUPDATEPARAMS']._loaded_options = None
   _globals['_MSGUPDATEPARAMS']._serialized_options = b'\202\347\260*\tauthority'
+  _globals['_BRIDGETARGETPIN'].fields_by_name['code_id']._loaded_options = None
+  _globals['_BRIDGETARGETPIN'].fields_by_name['code_id']._serialized_options = b'\342\336\037\006CodeID'
+  _globals['_BRIDGETARGETPIN'].fields_by_name['history_len']._loaded_options = None
+  _globals['_BRIDGETARGETPIN'].fields_by_name['history_len']._serialized_options = b'\342\336\037\nHistoryLen'
   _globals['_MSG']._loaded_options = None
   _globals['_MSG']._serialized_options = b'\200\347\260*\001'
   _globals['_MSGCROSSVMCALL']._serialized_start=162
-  _globals['_MSGCROSSVMCALL']._serialized_end=535
-  _globals['_MSGCROSSVMCALLRESPONSE']._serialized_start=538
-  _globals['_MSGCROSSVMCALLRESPONSE']._serialized_end=683
-  _globals['_MSGPROCESSQUEUE']._serialized_start=685
-  _globals['_MSGPROCESSQUEUE']._serialized_end=774
-  _globals['_MSGPROCESSQUEUERESPONSE']._serialized_start=776
-  _globals['_MSGPROCESSQUEUERESPONSE']._serialized_end=801
-  _globals['_MSGUPDATEPARAMS']._serialized_start=804
-  _globals['_MSGUPDATEPARAMS']._serialized_end=1103
-  _globals['_MSGUPDATEPARAMSRESPONSE']._serialized_start=1105
-  _globals['_MSGUPDATEPARAMSRESPONSE']._serialized_end=1130
-  _globals['_MSG']._serialized_start=1133
-  _globals['_MSG']._serialized_end=1448
+  _globals['_MSGCROSSVMCALL']._serialized_end=617
+  _globals['_MSGCROSSVMCALLRESPONSE']._serialized_start=620
+  _globals['_MSGCROSSVMCALLRESPONSE']._serialized_end=765
+  _globals['_MSGPROCESSQUEUE']._serialized_start=767
+  _globals['_MSGPROCESSQUEUE']._serialized_end=856
+  _globals['_MSGPROCESSQUEUERESPONSE']._serialized_start=858
+  _globals['_MSGPROCESSQUEUERESPONSE']._serialized_end=883
+  _globals['_MSGUPDATEPARAMS']._serialized_start=886
+  _globals['_MSGUPDATEPARAMS']._serialized_end=1867
+  _globals['_MSGUPDATEPARAMSRESPONSE']._serialized_start=1869
+  _globals['_MSGUPDATEPARAMSRESPONSE']._serialized_end=1894
+  _globals['_BRIDGETARGETPIN']._serialized_start=1896
+  _globals['_BRIDGETARGETPIN']._serialized_end=2023
+  _globals['_MSG']._serialized_start=2026
+  _globals['_MSG']._serialized_end=2341
 # @@protoc_insertion_point(module_scope)

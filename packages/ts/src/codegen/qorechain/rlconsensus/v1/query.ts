@@ -77,6 +77,38 @@ export interface QueryParamsResponse {
   defaultValidatorSetSize: string;
 }
 
+export interface QueryAppliedParamsRequest {
+}
+
+export interface QueryAppliedParamsResponse {
+  blockTimeMs: string;
+  gasLimit: string;
+  gasPriceFloor: string;
+  poolWeightRpos: string;
+  poolWeightDpos: string;
+}
+
+export interface QueryLastActionRequest {
+}
+
+export interface QueryLastActionResponse {
+  /** height is the block of the step; 0 when no action has been recorded. */
+  height: string;
+  /** mode is the agent mode at that step. */
+  mode: string;
+  /**
+   * values are the five raw action outputs, in the order block_time_delta,
+   * gas_price_delta, validator_set_size_delta, pool_weight_rpos_delta,
+   * pool_weight_dpos_delta, before the mode's clamp.
+   */
+  values: string[];
+  /**
+   * applied is true when the step changed the applied values (conservative
+   * or autonomous mode, circuit breaker clear).
+   */
+  applied: boolean;
+}
+
 function createBaseQueryObservationRequest(): QueryObservationRequest {
   return {};
 }
@@ -1200,6 +1232,344 @@ export const QueryParamsResponse: MessageFns<QueryParamsResponse> = {
   },
 };
 
+function createBaseQueryAppliedParamsRequest(): QueryAppliedParamsRequest {
+  return {};
+}
+
+export const QueryAppliedParamsRequest: MessageFns<QueryAppliedParamsRequest> = {
+  encode(_: QueryAppliedParamsRequest, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): QueryAppliedParamsRequest {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseQueryAppliedParamsRequest();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(_: any): QueryAppliedParamsRequest {
+    return {};
+  },
+
+  toJSON(_: QueryAppliedParamsRequest): unknown {
+    const obj: any = {};
+    return obj;
+  },
+
+  create(base?: DeepPartial<QueryAppliedParamsRequest>): QueryAppliedParamsRequest {
+    return QueryAppliedParamsRequest.fromPartial(base ?? {});
+  },
+  fromPartial(_: DeepPartial<QueryAppliedParamsRequest>): QueryAppliedParamsRequest {
+    const message = createBaseQueryAppliedParamsRequest();
+    return message;
+  },
+};
+
+function createBaseQueryAppliedParamsResponse(): QueryAppliedParamsResponse {
+  return { blockTimeMs: "0", gasLimit: "0", gasPriceFloor: "", poolWeightRpos: "", poolWeightDpos: "" };
+}
+
+export const QueryAppliedParamsResponse: MessageFns<QueryAppliedParamsResponse> = {
+  encode(message: QueryAppliedParamsResponse, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.blockTimeMs !== "0") {
+      writer.uint32(8).int64(message.blockTimeMs);
+    }
+    if (message.gasLimit !== "0") {
+      writer.uint32(16).int64(message.gasLimit);
+    }
+    if (message.gasPriceFloor !== "") {
+      writer.uint32(26).string(message.gasPriceFloor);
+    }
+    if (message.poolWeightRpos !== "") {
+      writer.uint32(34).string(message.poolWeightRpos);
+    }
+    if (message.poolWeightDpos !== "") {
+      writer.uint32(42).string(message.poolWeightDpos);
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): QueryAppliedParamsResponse {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseQueryAppliedParamsResponse();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 8) {
+            break;
+          }
+
+          message.blockTimeMs = reader.int64().toString();
+          continue;
+        }
+        case 2: {
+          if (tag !== 16) {
+            break;
+          }
+
+          message.gasLimit = reader.int64().toString();
+          continue;
+        }
+        case 3: {
+          if (tag !== 26) {
+            break;
+          }
+
+          message.gasPriceFloor = reader.string();
+          continue;
+        }
+        case 4: {
+          if (tag !== 34) {
+            break;
+          }
+
+          message.poolWeightRpos = reader.string();
+          continue;
+        }
+        case 5: {
+          if (tag !== 42) {
+            break;
+          }
+
+          message.poolWeightDpos = reader.string();
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(object: any): QueryAppliedParamsResponse {
+    return {
+      blockTimeMs: isSet(object.blockTimeMs)
+        ? globalThis.String(object.blockTimeMs)
+        : isSet(object.block_time_ms)
+        ? globalThis.String(object.block_time_ms)
+        : "0",
+      gasLimit: isSet(object.gasLimit)
+        ? globalThis.String(object.gasLimit)
+        : isSet(object.gas_limit)
+        ? globalThis.String(object.gas_limit)
+        : "0",
+      gasPriceFloor: isSet(object.gasPriceFloor)
+        ? globalThis.String(object.gasPriceFloor)
+        : isSet(object.gas_price_floor)
+        ? globalThis.String(object.gas_price_floor)
+        : "",
+      poolWeightRpos: isSet(object.poolWeightRpos)
+        ? globalThis.String(object.poolWeightRpos)
+        : isSet(object.pool_weight_rpos)
+        ? globalThis.String(object.pool_weight_rpos)
+        : "",
+      poolWeightDpos: isSet(object.poolWeightDpos)
+        ? globalThis.String(object.poolWeightDpos)
+        : isSet(object.pool_weight_dpos)
+        ? globalThis.String(object.pool_weight_dpos)
+        : "",
+    };
+  },
+
+  toJSON(message: QueryAppliedParamsResponse): unknown {
+    const obj: any = {};
+    if (message.blockTimeMs !== "0") {
+      obj.blockTimeMs = message.blockTimeMs;
+    }
+    if (message.gasLimit !== "0") {
+      obj.gasLimit = message.gasLimit;
+    }
+    if (message.gasPriceFloor !== "") {
+      obj.gasPriceFloor = message.gasPriceFloor;
+    }
+    if (message.poolWeightRpos !== "") {
+      obj.poolWeightRpos = message.poolWeightRpos;
+    }
+    if (message.poolWeightDpos !== "") {
+      obj.poolWeightDpos = message.poolWeightDpos;
+    }
+    return obj;
+  },
+
+  create(base?: DeepPartial<QueryAppliedParamsResponse>): QueryAppliedParamsResponse {
+    return QueryAppliedParamsResponse.fromPartial(base ?? {});
+  },
+  fromPartial(object: DeepPartial<QueryAppliedParamsResponse>): QueryAppliedParamsResponse {
+    const message = createBaseQueryAppliedParamsResponse();
+    message.blockTimeMs = object.blockTimeMs ?? "0";
+    message.gasLimit = object.gasLimit ?? "0";
+    message.gasPriceFloor = object.gasPriceFloor ?? "";
+    message.poolWeightRpos = object.poolWeightRpos ?? "";
+    message.poolWeightDpos = object.poolWeightDpos ?? "";
+    return message;
+  },
+};
+
+function createBaseQueryLastActionRequest(): QueryLastActionRequest {
+  return {};
+}
+
+export const QueryLastActionRequest: MessageFns<QueryLastActionRequest> = {
+  encode(_: QueryLastActionRequest, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): QueryLastActionRequest {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseQueryLastActionRequest();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(_: any): QueryLastActionRequest {
+    return {};
+  },
+
+  toJSON(_: QueryLastActionRequest): unknown {
+    const obj: any = {};
+    return obj;
+  },
+
+  create(base?: DeepPartial<QueryLastActionRequest>): QueryLastActionRequest {
+    return QueryLastActionRequest.fromPartial(base ?? {});
+  },
+  fromPartial(_: DeepPartial<QueryLastActionRequest>): QueryLastActionRequest {
+    const message = createBaseQueryLastActionRequest();
+    return message;
+  },
+};
+
+function createBaseQueryLastActionResponse(): QueryLastActionResponse {
+  return { height: "0", mode: "", values: [], applied: false };
+}
+
+export const QueryLastActionResponse: MessageFns<QueryLastActionResponse> = {
+  encode(message: QueryLastActionResponse, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.height !== "0") {
+      writer.uint32(8).int64(message.height);
+    }
+    if (message.mode !== "") {
+      writer.uint32(18).string(message.mode);
+    }
+    for (const v of message.values) {
+      writer.uint32(26).string(v!);
+    }
+    if (message.applied !== false) {
+      writer.uint32(32).bool(message.applied);
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): QueryLastActionResponse {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseQueryLastActionResponse();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 8) {
+            break;
+          }
+
+          message.height = reader.int64().toString();
+          continue;
+        }
+        case 2: {
+          if (tag !== 18) {
+            break;
+          }
+
+          message.mode = reader.string();
+          continue;
+        }
+        case 3: {
+          if (tag !== 26) {
+            break;
+          }
+
+          message.values.push(reader.string());
+          continue;
+        }
+        case 4: {
+          if (tag !== 32) {
+            break;
+          }
+
+          message.applied = reader.bool();
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(object: any): QueryLastActionResponse {
+    return {
+      height: isSet(object.height) ? globalThis.String(object.height) : "0",
+      mode: isSet(object.mode) ? globalThis.String(object.mode) : "",
+      values: globalThis.Array.isArray(object?.values) ? object.values.map((e: any) => globalThis.String(e)) : [],
+      applied: isSet(object.applied) ? globalThis.Boolean(object.applied) : false,
+    };
+  },
+
+  toJSON(message: QueryLastActionResponse): unknown {
+    const obj: any = {};
+    if (message.height !== "0") {
+      obj.height = message.height;
+    }
+    if (message.mode !== "") {
+      obj.mode = message.mode;
+    }
+    if (message.values?.length) {
+      obj.values = message.values;
+    }
+    if (message.applied !== false) {
+      obj.applied = message.applied;
+    }
+    return obj;
+  },
+
+  create(base?: DeepPartial<QueryLastActionResponse>): QueryLastActionResponse {
+    return QueryLastActionResponse.fromPartial(base ?? {});
+  },
+  fromPartial(object: DeepPartial<QueryLastActionResponse>): QueryLastActionResponse {
+    const message = createBaseQueryLastActionResponse();
+    message.height = object.height ?? "0";
+    message.mode = object.mode ?? "";
+    message.values = object.values?.map((e) => e) || [];
+    message.applied = object.applied ?? false;
+    return message;
+  },
+};
+
 /** Query defines the rlconsensus module's gRPC query service. */
 export type QueryDefinition = typeof QueryDefinition;
 export const QueryDefinition = {
@@ -1213,7 +1583,48 @@ export const QueryDefinition = {
       requestStream: false,
       responseType: QueryAgentStatusResponse as typeof QueryAgentStatusResponse,
       responseStream: false,
-      options: {},
+      options: {
+        _unknownFields: {
+          578365826: [
+            new Uint8Array([
+              33,
+              18,
+              31,
+              47,
+              113,
+              111,
+              114,
+              101,
+              99,
+              104,
+              97,
+              105,
+              110,
+              47,
+              114,
+              108,
+              99,
+              111,
+              110,
+              115,
+              101,
+              110,
+              115,
+              117,
+              115,
+              47,
+              118,
+              49,
+              47,
+              97,
+              103,
+              101,
+              110,
+              116,
+            ]) as Uint8Array,
+          ],
+        },
+      },
     },
     /** Params returns the rlconsensus module parameters. */
     params: {
@@ -1222,7 +1633,49 @@ export const QueryDefinition = {
       requestStream: false,
       responseType: QueryParamsResponse as typeof QueryParamsResponse,
       responseStream: false,
-      options: {},
+      options: {
+        _unknownFields: {
+          578365826: [
+            new Uint8Array([
+              34,
+              18,
+              32,
+              47,
+              113,
+              111,
+              114,
+              101,
+              99,
+              104,
+              97,
+              105,
+              110,
+              47,
+              114,
+              108,
+              99,
+              111,
+              110,
+              115,
+              101,
+              110,
+              115,
+              117,
+              115,
+              47,
+              118,
+              49,
+              47,
+              112,
+              97,
+              114,
+              97,
+              109,
+              115,
+            ]) as Uint8Array,
+          ],
+        },
+      },
     },
     /** Observation returns the latest 25-dim observation vector captured by the agent. */
     observation: {
@@ -1231,7 +1684,54 @@ export const QueryDefinition = {
       requestStream: false,
       responseType: QueryObservationResponse as typeof QueryObservationResponse,
       responseStream: false,
-      options: {},
+      options: {
+        _unknownFields: {
+          578365826: [
+            new Uint8Array([
+              39,
+              18,
+              37,
+              47,
+              113,
+              111,
+              114,
+              101,
+              99,
+              104,
+              97,
+              105,
+              110,
+              47,
+              114,
+              108,
+              99,
+              111,
+              110,
+              115,
+              101,
+              110,
+              115,
+              117,
+              115,
+              47,
+              118,
+              49,
+              47,
+              111,
+              98,
+              115,
+              101,
+              114,
+              118,
+              97,
+              116,
+              105,
+              111,
+              110,
+            ]) as Uint8Array,
+          ],
+        },
+      },
     },
     /** Reward returns the latest reward signal (total + per-component deltas). */
     reward: {
@@ -1240,7 +1740,49 @@ export const QueryDefinition = {
       requestStream: false,
       responseType: QueryRewardResponse as typeof QueryRewardResponse,
       responseStream: false,
-      options: {},
+      options: {
+        _unknownFields: {
+          578365826: [
+            new Uint8Array([
+              34,
+              18,
+              32,
+              47,
+              113,
+              111,
+              114,
+              101,
+              99,
+              104,
+              97,
+              105,
+              110,
+              47,
+              114,
+              108,
+              99,
+              111,
+              110,
+              115,
+              101,
+              110,
+              115,
+              117,
+              115,
+              47,
+              118,
+              49,
+              47,
+              114,
+              101,
+              119,
+              97,
+              114,
+              100,
+            ]) as Uint8Array,
+          ],
+        },
+      },
     },
     /** Policy returns the current policy network summary (epoch, params, update height). */
     policy: {
@@ -1249,7 +1791,172 @@ export const QueryDefinition = {
       requestStream: false,
       responseType: QueryPolicyResponse as typeof QueryPolicyResponse,
       responseStream: false,
-      options: {},
+      options: {
+        _unknownFields: {
+          578365826: [
+            new Uint8Array([
+              34,
+              18,
+              32,
+              47,
+              113,
+              111,
+              114,
+              101,
+              99,
+              104,
+              97,
+              105,
+              110,
+              47,
+              114,
+              108,
+              99,
+              111,
+              110,
+              115,
+              101,
+              110,
+              115,
+              117,
+              115,
+              47,
+              118,
+              49,
+              47,
+              112,
+              111,
+              108,
+              105,
+              99,
+              121,
+            ]) as Uint8Array,
+          ],
+        },
+      },
+    },
+    /**
+     * AppliedParams returns the values the agent holds as applied: the block
+     * time and gas price floor targets and the two pool weights. They are the
+     * values the rlConsensusParams precompile reports; no other module reads
+     * them.
+     */
+    appliedParams: {
+      name: "AppliedParams",
+      requestType: QueryAppliedParamsRequest as typeof QueryAppliedParamsRequest,
+      requestStream: false,
+      responseType: QueryAppliedParamsResponse as typeof QueryAppliedParamsResponse,
+      responseStream: false,
+      options: {
+        _unknownFields: {
+          578365826: [
+            new Uint8Array([
+              42,
+              18,
+              40,
+              47,
+              113,
+              111,
+              114,
+              101,
+              99,
+              104,
+              97,
+              105,
+              110,
+              47,
+              114,
+              108,
+              99,
+              111,
+              110,
+              115,
+              101,
+              110,
+              115,
+              117,
+              115,
+              47,
+              118,
+              49,
+              47,
+              97,
+              112,
+              112,
+              108,
+              105,
+              101,
+              100,
+              95,
+              112,
+              97,
+              114,
+              97,
+              109,
+              115,
+            ]) as Uint8Array,
+          ],
+        },
+      },
+    },
+    /**
+     * LastAction returns the action vector the agent proposed at its last step,
+     * in every mode including shadow, and whether it was applied.
+     */
+    lastAction: {
+      name: "LastAction",
+      requestType: QueryLastActionRequest as typeof QueryLastActionRequest,
+      requestStream: false,
+      responseType: QueryLastActionResponse as typeof QueryLastActionResponse,
+      responseStream: false,
+      options: {
+        _unknownFields: {
+          578365826: [
+            new Uint8Array([
+              39,
+              18,
+              37,
+              47,
+              113,
+              111,
+              114,
+              101,
+              99,
+              104,
+              97,
+              105,
+              110,
+              47,
+              114,
+              108,
+              99,
+              111,
+              110,
+              115,
+              101,
+              110,
+              115,
+              117,
+              115,
+              47,
+              118,
+              49,
+              47,
+              108,
+              97,
+              115,
+              116,
+              95,
+              97,
+              99,
+              116,
+              105,
+              111,
+              110,
+            ]) as Uint8Array,
+          ],
+        },
+      },
     },
   },
 } as const;
