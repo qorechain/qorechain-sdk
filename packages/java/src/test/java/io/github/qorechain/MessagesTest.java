@@ -220,6 +220,9 @@ class MessagesTest {
                         .setSvmSlotOffset(42)
                         .setDefaultSigScheme(1)
                         .setMaxCpi(4)
+                        .setMaxCustodyUqor(1_000_000)
+                        .setMaxCustodyHardUqor(5_000_000)
+                        .setMaxAccountExcessUqor(10_000)
                         .build();
         qorechain.svm.v1.Tx.MsgUpdateParams msg =
                 qorechain.svm.v1.Tx.MsgUpdateParams.newBuilder()
@@ -227,7 +230,7 @@ class MessagesTest {
                         .setParams(params)
                         .build();
 
-        TypedMessage tm = QorechainMessages.svm.updateParams(msg);
+        TypedMessage tm = QorechainMessages.svm.updateParams(msg, java.util.Set.of("enabled"));
         assertEquals("/qorechain.svm.v1.MsgUpdateParams", tm.typeUrl);
 
         Any any = Messages.pack(tm);

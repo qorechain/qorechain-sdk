@@ -142,6 +142,7 @@ public final class Authenticator {
             throw new IllegalArgumentException(
                     "gasLimit must be set (non-zero): the v2 digest binds it and the chain refuses 0");
         }
+        GasLimits.checkEvmTxGas(gasLimit);
         ByteArrayOutputStream body = new ByteArrayOutputStream();
         write(body, utf8(EVM_DOMAIN_V2));
         write(body, lp(utf8(chainId)));
@@ -284,6 +285,13 @@ public final class Authenticator {
      * Build a {@code MsgExecuteEVM} the relayer broadcasts. The {@code relayer} is
      * the message signer/fee payer (a DIFFERENT account than {@code account}); the
      * authenticator {@code (scheme, pubkey, signature)} carries the authorization.
+     *
+     * <p>From chain v3.2.8 a failed execution still lands in a code-0 tx with
+     * {@code success=false} and consumes the nonce: check the delivered result with
+     * {@link #requireExecutionsSucceeded}.
+     *
+     * @throws IllegalArgumentException when {@code gasLimit} is above the chain's EVM
+     *     gas cap ({@link GasLimits#DEFAULT_EVM_TX_MAX_GAS}).
      */
     public static TypedMessage executeEvmMsg(
             String relayer,
@@ -296,6 +304,7 @@ public final class Authenticator {
             byte[] data,
             long gasLimit,
             long nonce) {
+        GasLimits.checkEvmTxGas(gasLimit);
         qorechain.abstractaccount.v1.Tx.MsgExecuteEVM msg =
                 qorechain.abstractaccount.v1.Tx.MsgExecuteEVM.newBuilder()
                         .setRelayer(relayer == null ? "" : relayer)
@@ -314,7 +323,9 @@ public final class Authenticator {
 
     /**
      * Build a {@code MsgExecuteCosmos} the relayer broadcasts. {@code amount} is a
-     * single-coin string like {@code "100uqor"}.
+     * single-coin string like {@code "100uqor"}. Check the delivered result with
+     * {@link #requireExecutionsSucceeded} (a failed execution lands with code 0 from
+     * chain v3.2.8).
      */
     public static TypedMessage executeCosmosMsg(
             String relayer,
@@ -490,6 +501,327 @@ public final class Authenticator {
     public static RotationResult rotatePqcKeyMsgFromMnemonic(
             String account, String mnemonic, String chainId) {
         return rotatePqcKeyMsgFromMnemonic(account, mnemonic, chainId, 1);
+    }
+
+    // ---- linking a key: possession proof + spending rule (chain v3.2.8) ----
+
+    /** The first line of the authenticator link message. */
+    public static final String LINK_MESSAGE_HEADER = "QoreChain authenticator link v1";
+
+    /**
+     * The exact text the key being linked signs for {@code possession_proof} (chain
+     * v3.2.8), lines joined with {@code "\n"} and no trailing newline:
+     *
+     * <pre>
+     * QoreChain authenticator link v1
+     * chain: &lt;chainId&gt;
+     * account: &lt;accountAddress&gt;
+     * scheme: &lt;scheme&gt;
+     * key: &lt;lowercase hex of pubkey&gt;
+     * </pre>
+     *
+     * {@code pubkey} is exactly the bytes put in {@code MsgRegisterAuthenticator.pubkey}:
+     * a 32-byte ed25519 key, a 33-byte compressed secp256k1 key, or the 20-byte
+     * Ethereum address for a MetaMask-style link. A browser wallet signs this text
+     * itself (Phantom {@code signMessage}, MetaMask {@code personal_sign}).
+     */
+    public static String authenticatorLinkMessage(
+            String chainId, String accountAddress, String scheme, byte[] pubkey) {
+        return LINK_MESSAGE_HEADER
+                + "\nchain: " + (chainId == null ? "" : chainId)
+                + "\naccount: " + (accountAddress == null ? "" : accountAddress)
+                + "\nscheme: " + (scheme == null ? "" : scheme)
+                + "\nkey: " + Hex.encode(nz(pubkey)).toLowerCase(java.util.Locale.ROOT);
+    }
+
+    /** {@link #authenticatorLinkMessage} as UTF-8 bytes (what is signed). */
+    public static byte[] authenticatorLinkMessageBytes(
+            String chainId, String accountAddress, String scheme, byte[] pubkey) {
+        return utf8(authenticatorLinkMessage(chainId, accountAddress, scheme, pubkey));
+    }
+
+    /** A linked key's public key bytes and the possession proof it made. */
+    public static final class PossessionProof {
+        /** The scheme, {@code "ed25519"} or {@code "secp256k1"}. */
+        public final String scheme;
+        /** The bytes to put in {@code pubkey} (32-byte ed25519, 33-byte secp256k1 or 20-byte address). */
+        public final byte[] pubkey;
+        /** The signature to put in {@code possession_proof}. */
+        public final byte[] proof;
+
+        public PossessionProof(String scheme, byte[] pubkey, byte[] proof) {
+            this.scheme = scheme;
+            this.pubkey = pubkey;
+            this.proof = proof;
+        }
+    }
+
+    /**
+     * Possession proof by an ed25519 key: an ed25519 signature over the raw link
+     * message bytes (what Phantom {@code signMessage(text)} makes).
+     *
+     * @param privateKey the 32-byte ed25519 seed (private key).
+     */
+    public static PossessionProof ed25519PossessionProof(byte[] privateKey, String chainId, String accountAddress) {
+        if (privateKey == null || privateKey.length != 32) {
+            throw new IllegalArgumentException("ed25519 possession proof: the private key must be a 32-byte seed");
+        }
+        byte[] pub = new byte[org.bouncycastle.math.ec.rfc8032.Ed25519.PUBLIC_KEY_SIZE];
+        org.bouncycastle.math.ec.rfc8032.Ed25519.generatePublicKey(privateKey, 0, pub, 0);
+        byte[] msg = authenticatorLinkMessageBytes(chainId, accountAddress, "ed25519", pub);
+        byte[] sig = new byte[org.bouncycastle.math.ec.rfc8032.Ed25519.SIGNATURE_SIZE];
+        org.bouncycastle.math.ec.rfc8032.Ed25519.sign(privateKey, 0, msg, 0, msg.length, sig, 0);
+        return new PossessionProof("ed25519", pub, sig);
+    }
+
+    /**
+     * Possession proof by a secp256k1 key linked by its 33-byte compressed public key:
+     * a 64-byte low-S {@code r || s} ECDSA signature over {@code sha256(text)}.
+     */
+    public static PossessionProof secp256k1PossessionProof(byte[] privateKey, String chainId, String accountAddress) {
+        byte[] pub = io.github.qorechain.accounts.Secp256k1.publicKey(privateKey, true);
+        byte[] msg = authenticatorLinkMessageBytes(chainId, accountAddress, "secp256k1", pub);
+        return new PossessionProof("secp256k1", pub, io.github.qorechain.accounts.Secp256k1.signCosmos(privateKey, msg));
+    }
+
+    /**
+     * Possession proof by a secp256k1 key linked by its 20-byte Ethereum address
+     * (MetaMask style): an EIP-191 {@code personal_sign} of the link text,
+     * {@code keccak256("\x19Ethereum Signed Message:\n" + len(text) + text)}, as the
+     * 65-byte {@code r || s || v} with {@code v} = 27 or 28.
+     */
+    public static PossessionProof eip191PossessionProof(byte[] privateKey, String chainId, String accountAddress) {
+        byte[] addr = io.github.qorechain.accounts.Secp256k1.ethAddress(privateKey);
+        byte[] msg = authenticatorLinkMessageBytes(chainId, accountAddress, "secp256k1", addr);
+        byte[] sig = io.github.qorechain.accounts.Secp256k1.signHashRecoverable(privateKey, eip191Hash(msg));
+        sig[64] = (byte) (sig[64] + 27);
+        return new PossessionProof("secp256k1", addr, sig);
+    }
+
+    /** {@code keccak256("\x19Ethereum Signed Message:\n" + len(message) + message)}. */
+    public static byte[] eip191Hash(byte[] message) {
+        byte[] prefix = utf8("\u0019Ethereum Signed Message:\n" + message.length);
+        byte[] all = new byte[prefix.length + message.length];
+        System.arraycopy(prefix, 0, all, 0, prefix.length);
+        System.arraycopy(message, 0, all, prefix.length, message.length);
+        return Hashing.keccak256(all);
+    }
+
+    /** Options for {@link #linkAuthenticatorMsgs}. */
+    public static final class LinkOptions {
+        /** The account owner (root key) signing both messages. */
+        public String owner;
+        /** The account the key is linked to; defaults to {@link #owner}. */
+        public String accountAddress;
+        /** {@code "ed25519"} or {@code "secp256k1"}. */
+        public String scheme;
+        /** The linked key's bytes (see {@link #authenticatorLinkMessage}). */
+        public byte[] pubkey;
+        /** e.g. {@code "send"}, {@code "evm"}, {@code "svm"}. */
+        public java.util.List<String> permissions = java.util.List.of();
+        /** Unix seconds; within the chain's maximum session lifetime. */
+        public long expiryUnix;
+        public String label = "";
+        /** The linked key's signature over {@link #authenticatorLinkMessage}; required. */
+        public byte[] possessionProof;
+        /**
+         * The account's complete spending rules. {@code MsgUpdateSpendingRules}
+         * REPLACES the account's rules wholesale, so pass every rule the account
+         * should keep. Required (and its first enabled rule must bound every denom)
+         * when {@link #permissions} holds a value permission; {@code null} sends no
+         * rules update.
+         */
+        public java.util.List<qorechain.abstractaccount.v1.Tx.SpendingRule> spendingRules;
+    }
+
+    /**
+     * The messages that link a key from chain v3.2.8, to send in ONE transaction signed
+     * by the owner as top-level messages (not through authz):
+     * {@code [MsgUpdateSpendingRules, MsgRegisterAuthenticator]}. The rules message
+     * comes first; it may be sent for an account that does not exist yet when
+     * {@code account_address == owner} (it creates the account).
+     *
+     * <p>A key with any of {@code send}, {@code evm}, {@code deploy}, {@code svm},
+     * {@code all} needs an enabled rule on the account bounding every denom; this is
+     * checked here ({@link io.github.qorechain.messages.SpendingRules#requireValueBound}).
+     * Note that {@code MsgUpdateSpendingRules} replaces the account's rules wholesale.
+     * Without a value permission and with {@code spendingRules == null}, only the
+     * register message is returned.
+     *
+     * @throws IllegalArgumentException when the proof is empty or the rules do not bound value.
+     */
+    public static java.util.List<TypedMessage> linkAuthenticatorMsgs(LinkOptions o) {
+        if (o == null || o.owner == null || o.owner.isEmpty()) {
+            throw new IllegalArgumentException("linkAuthenticatorMsgs: owner is required");
+        }
+        String account = o.accountAddress == null || o.accountAddress.isEmpty() ? o.owner : o.accountAddress;
+        java.util.List<String> perms = o.permissions == null ? java.util.List.of() : o.permissions;
+        java.util.List<TypedMessage> out = new java.util.ArrayList<>();
+        if (io.github.qorechain.messages.SpendingRules.hasValuePermission(perms) || o.spendingRules != null) {
+            io.github.qorechain.messages.SpendingRules.requireValueBound(o.spendingRules, perms);
+            out.add(QorechainMessages.abstractaccount.updateSpendingRules(
+                    qorechain.abstractaccount.v1.Tx.MsgUpdateSpendingRules.newBuilder()
+                            .setOwner(o.owner)
+                            .setAccountAddress(account)
+                            .addAllRules(o.spendingRules == null ? java.util.List.of() : o.spendingRules)
+                            .build()));
+        }
+        out.add(QorechainMessages.abstractaccount.registerAuthenticator(
+                qorechain.abstractaccount.v1.Tx.MsgRegisterAuthenticator.newBuilder()
+                        .setOwner(o.owner)
+                        .setAccountAddress(account)
+                        .setScheme(o.scheme == null ? "" : o.scheme)
+                        .setPubkey(ByteString.copyFrom(nz(o.pubkey)))
+                        .addAllPermissions(perms)
+                        .setExpiryUnix(o.expiryUnix)
+                        .setLabel(o.label == null ? "" : o.label)
+                        .setPossessionProof(ByteString.copyFrom(nz(o.possessionProof)))
+                        .build()));
+        return out;
+    }
+
+    // ---- execution results (chain v3.2.8) ----
+
+    /** The event type the chain emits for an authorised execution that failed. */
+    public static final String EXECUTION_FAILED_EVENT = "abstractaccount_execution_failed";
+
+    private static final String EXECUTE_EVM_RESPONSE = "/qorechain.abstractaccount.v1.MsgExecuteEVMResponse";
+    private static final String EXECUTE_COSMOS_RESPONSE = "/qorechain.abstractaccount.v1.MsgExecuteCosmosResponse";
+
+    /** The outcome of one {@code MsgExecuteEVM} / {@code MsgExecuteCosmos} in a delivered tx. */
+    public static final class ExecutionResult {
+        /** {@code "evm"} or {@code "cosmos"}. */
+        public final String lane;
+        public final boolean success;
+        /** The EVM return data (empty for the Cosmos lane). */
+        public final byte[] ret;
+        public final long gasUsed;
+        /** The EVM error string, if any. */
+        public final String vmError;
+        /**
+         * The {@code reason} of the matching {@value #EXECUTION_FAILED_EVENT} event for a
+         * failed execution (the k-th failed execution takes the k-th such event), else
+         * {@code ""}.
+         */
+        public final String reason;
+
+        public ExecutionResult(String lane, boolean success, byte[] ret, long gasUsed, String vmError, String reason) {
+            this.lane = lane;
+            this.success = success;
+            this.ret = ret;
+            this.gasUsed = gasUsed;
+            this.vmError = vmError;
+            this.reason = reason;
+        }
+    }
+
+    /** Thrown by {@link #requireExecutionsSucceeded} when an execution failed inside a code-0 tx. */
+    public static final class ExecutionFailedException extends RuntimeException {
+        public final java.util.List<ExecutionResult> results;
+
+        public ExecutionFailedException(String message, java.util.List<ExecutionResult> results) {
+            super(message);
+            this.results = results;
+        }
+    }
+
+    /**
+     * The per-message outcome of every {@code MsgExecuteEVM} / {@code MsgExecuteCosmos}
+     * in a delivered tx, in message order. From chain v3.2.8 an authorised execution
+     * that fails returns {@code success=false} inside a tx with code 0 and emits a
+     * {@value #EXECUTION_FAILED_EVENT} event; its nonce is consumed, so the same
+     * signature cannot be relayed again. Needs a {@link Broadcaster.Mode#COMMIT} result
+     * (the only mode that carries the responses).
+     */
+    public static java.util.List<ExecutionResult> executionResults(Broadcaster.Result result) {
+        if (result == null) {
+            return java.util.List.of();
+        }
+        return executionResults(result.data, result.events);
+    }
+
+    /** {@link #executionResults(Broadcaster.Result)} from a tx result's {@code data} (TxMsgData) and events. */
+    public static java.util.List<ExecutionResult> executionResults(
+            byte[] txResultData, java.util.List<Broadcaster.Event> events) {
+        java.util.List<String> reasons = new java.util.ArrayList<>();
+        if (events != null) {
+            for (Broadcaster.Event e : events) {
+                if (EXECUTION_FAILED_EVENT.equals(e.type)) {
+                    String r = e.attribute("reason");
+                    reasons.add(r == null ? "" : r);
+                }
+            }
+        }
+        java.util.List<ExecutionResult> out = new java.util.ArrayList<>();
+        int failed = 0;
+        for (com.google.protobuf.Any any : msgResponses(txResultData)) {
+            try {
+                if (EXECUTE_EVM_RESPONSE.equals(any.getTypeUrl())) {
+                    var r = qorechain.abstractaccount.v1.Tx.MsgExecuteEVMResponse.parseFrom(any.getValue());
+                    String reason = !r.getSuccess() && failed < reasons.size() ? reasons.get(failed) : "";
+                    if (!r.getSuccess()) failed++;
+                    out.add(new ExecutionResult("evm", r.getSuccess(), r.getRet().toByteArray(),
+                            r.getGasUsed(), r.getVmError(), reason));
+                } else if (EXECUTE_COSMOS_RESPONSE.equals(any.getTypeUrl())) {
+                    var r = qorechain.abstractaccount.v1.Tx.MsgExecuteCosmosResponse.parseFrom(any.getValue());
+                    String reason = !r.getSuccess() && failed < reasons.size() ? reasons.get(failed) : "";
+                    if (!r.getSuccess()) failed++;
+                    out.add(new ExecutionResult("cosmos", r.getSuccess(), new byte[0], 0L, "", reason));
+                }
+            } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+                throw new IllegalArgumentException("failed to decode " + any.getTypeUrl(), e);
+            }
+        }
+        return out;
+    }
+
+    /**
+     * {@link #executionResults(Broadcaster.Result)}, throwing when any execution failed
+     * even though the tx code is 0.
+     *
+     * @throws ExecutionFailedException naming the failed executions and their reasons.
+     */
+    public static java.util.List<ExecutionResult> requireExecutionsSucceeded(Broadcaster.Result result) {
+        java.util.List<ExecutionResult> rs = executionResults(result);
+        StringBuilder msg = new StringBuilder();
+        for (int i = 0; i < rs.size(); i++) {
+            ExecutionResult r = rs.get(i);
+            if (!r.success) {
+                msg.append(msg.length() == 0 ? "" : "; ")
+                        .append("execution ").append(i).append(" (").append(r.lane).append(") failed");
+                String why = !r.reason.isEmpty() ? r.reason : r.vmError;
+                if (!why.isEmpty()) msg.append(": ").append(why);
+            }
+        }
+        if (msg.length() > 0) {
+            throw new ExecutionFailedException(
+                    msg + " (the tx itself succeeded and the nonce was consumed; sign a new execution"
+                            + " with the next nonce to retry)", rs);
+        }
+        return rs;
+    }
+
+    /** The {@code msg_responses} (field 2) of a {@code TxMsgData}. */
+    static java.util.List<com.google.protobuf.Any> msgResponses(byte[] txMsgData) {
+        java.util.List<com.google.protobuf.Any> out = new java.util.ArrayList<>();
+        if (txMsgData == null || txMsgData.length == 0) {
+            return out;
+        }
+        try {
+            com.google.protobuf.CodedInputStream in = com.google.protobuf.CodedInputStream.newInstance(txMsgData);
+            while (true) {
+                int tag = in.readTag();
+                if (tag == 0) break;
+                if (tag == ((2 << 3) | 2)) {
+                    out.add(com.google.protobuf.Any.parseFrom(in.readBytes()));
+                } else if (!in.skipField(tag)) {
+                    break;
+                }
+            }
+        } catch (java.io.IOException e) {
+            throw new IllegalArgumentException("failed to decode tx result data (TxMsgData)", e);
+        }
+        return out;
     }
 
     private static void write(ByteArrayOutputStream out, byte[] b) {

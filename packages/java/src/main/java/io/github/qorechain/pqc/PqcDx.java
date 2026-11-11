@@ -7,6 +7,7 @@ import io.github.qorechain.messages.TypedMessage;
 import io.github.qorechain.query.QorClient;
 import io.github.qorechain.tx.AutoGas;
 import io.github.qorechain.tx.Broadcaster;
+import io.github.qorechain.tx.GasLimits;
 import io.github.qorechain.tx.GasPrice;
 import io.github.qorechain.tx.HybridTx;
 import io.github.qorechain.tx.NativeTx;
@@ -780,7 +781,8 @@ public final class PqcDx {
          * Simulate the hybrid tx for {@code messages} as it will be sent (with its
          * ML-DSA-87 signature) and choose its gas limit ({@link AutoGas}): on a
          * network that has applied chain v3.2.5, {@code ceil(simulated * 1.02) + 2000};
-         * otherwise {@code ceil(simulated * 1.4)}. Needs {@link Signer#restUrl}.
+         * otherwise {@code ceil(simulated * 1.4)}. Needs {@link Signer#restUrl}. A transaction
+         * carrying CosmWasm or a cross-VM call gets at least {@code ceil(simulated * 1.3)}.
          *
          * @param multiplier an explicit multiplier, or {@code null} for the default rule.
          */
@@ -788,7 +790,9 @@ public final class PqcDx {
             SignBytes.Version version = resolveSignBytesVersion(false);
             // Simulation runs without a gas limit or a fee check.
             HybridTx.Built built = buildHybridTx(messages, version, new StdFee(List.of(), "0"));
-            return AutoGas.estimate(signer.restUrl, built.txRawBytes, true, multiplier, null);
+            return AutoGas.estimate(
+                    signer.restUrl, built.txRawBytes, true, multiplier, null,
+                    GasLimits.carriesWasmOrCrossVm(messages));
         }
 
         /** The result of {@link #sendAuto}. */

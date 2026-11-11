@@ -54,6 +54,106 @@ export JAVA_HOME="$(/usr/libexec/java_home -v 21 2>/dev/null || echo /opt/homebr
 ./gradlew publishToMavenLocal   # validate packaging (main + sources + javadoc jars)
 ```
 
+## Chain v3.2.8
+
+### Linking a key: possession proof and spending rule
+
+From v3.2.8 `MsgRegisterAuthenticator` needs `possession_proof`: a signature by
+the key being linked over `Authenticator.authenticatorLinkMessage(chainId,
+accountAddress, scheme, pubkey)` (five lines, `"\n"`-joined, no trailing newline;
+`key` is the lowercase hex of exactly the `pubkey` bytes). The composer refuses an
+empty proof and a 65-byte uncompressed secp256k1 key.
+
+- `Authenticator.ed25519PossessionProof(seed32, chainId, account)`: ed25519 over
+  the text (what Phantom `signMessage` produces).
+- `Authenticator.secp256k1PossessionProof(privKey, ...)`: 33-byte compressed key,
+  64-byte low-S `r || s` over `sha256(text)`.
+- `Authenticator.eip191PossessionProof(privKey, ...)`: 20-byte Ethereum address as
+  the key, EIP-191 `personal_sign`, 65 bytes with `v` = 27/28.
+- A browser wallet signs `authenticatorLinkMessage(...)` itself.
+
+A key with `send`, `evm`, `deploy`, `svm` or `all` needs an enabled spending rule on
+the ACCOUNT, and the chain applies the account's first enabled rule: it must set
+`per_tx_limit > 0` or `daily_limit > 0`, or (both 0) list `allowed_denoms` where
+every denom has a `denom_limits` entry with an amount. Send both messages in ONE
+transaction, signed by the owner as top-level messages:
+
+```java
+Authenticator.PossessionProof p = Authenticator.ed25519PossessionProof(seed, chainId, owner);
+Authenticator.LinkOptions o = new Authenticator.LinkOptions();
+o.owner = owner; o.scheme = p.scheme; o.pubkey = p.pubkey; o.possessionProof = p.proof;
+o.permissions = List.of("send"); o.expiryUnix = expiry; o.label = "phantom";
+o.spendingRules = List.of(SpendingRule.newBuilder().setId("main").setEnabled(true).setDailyLimit(5_000_000).build());
+List<TypedMessage> msgs = Authenticator.linkAuthenticatorMsgs(o); // [MsgUpdateSpendingRules, MsgRegisterAuthenticator]
+```
+
+`MsgUpdateSpendingRules` replaces the account's rules wholesale: pass every rule
+the account should keep. It may be sent for an account that does not exist yet
+when `account_address == owner` (it creates the account).
+`SpendingRules.requireValueBound(rules, permissions)` runs the same check alone.
+
+### Execution results
+
+A failed `MsgExecuteEVM` / `MsgExecuteCosmos` now lands in a code-0 transaction with
+`success=false` and an `abstractaccount_execution_failed` event; the nonce is
+consumed. With a `COMMIT` broadcast (`Broadcaster.Result.events` and `data` are
+filled), `Authenticator.executionResults(result)` returns per execution
+`{lane, success, ret, gasUsed, vmError, reason}` and
+`Authenticator.requireExecutionsSucceeded(result)` throws `ExecutionFailedException`
+when any execution failed.
+
+### Governance params proposals
+
+`crossvm.updateParams`, `svm.updateParams` and `rdk.updateParams` replace the
+parameters wholesale, so every field must now be set: a field still at zero, empty
+or `false` is refused as missing unless named in the `explicitZero` set of the
+two-argument overload. Build a proposal from the values in force:
+
+```java
+TypedMessage m = QorechainMessages.crossvm.updateParamsFromCurrent(rest, govAuthority,
+        Map.of("max_pending_per_sender", 50));
+TypedMessage r = QorechainMessages.rdk.updateParamsFromCurrent(rest, govAuthority,
+        Map.of("max_rollups", 200));
+```
+
+The crossvm query lists the values in force (defaults filled in), which is correct
+to copy. svm refuses `enabled = true` with `max_custody_hard_uqor == 0`; the chain
+has no svm params REST route, so svm proposals are built from known values.
+
+### Cross-VM
+
+`CallOptions.asyncGasLimit` (0 = 500,000, else 250,000..10,000,000) and
+`asyncMaxFactor` (millionths, 0 = four times the factor at submission) apply only to
+async calls into CosmWasm. An async call holds an escrow (about `asyncGasLimit x
+factor x gas price`, by default about 0.2 QOR) refunded when it finishes, pays a
+queue-slot fee, and a sender may have at most 100 pending calls.
+`CrossVMClient.listPending(rest)` follows `pagination.next_key` (page cap 1000);
+`payload_hex` in the list is cut to 1,024 bytes, so use
+`CrossVMClient.getMessageRest(rest, id)` for the full payload.
+
+### EVM window policy
+
+`EvmWindow.openWithPolicy(..., validators, stakingValidators, ibcReceivers)` sets
+fields 7..9. Standard precompile methods are deny-by-default through a window:
+staking delegate/redelegate need `stakingValidators` (`qorvaloper...`), ICS-20
+needs `ibcReceivers` (`"channel-0/cosmos1..."`), and undelegate, votes and
+withdraw-address changes are refused through the window (send a PQC-signed Cosmos
+transaction). Rotating, migrating or re-registering the PQC key closes the window.
+
+### Gas
+
+- Cosmos transactions above 50,000,000 gas are refused before signing
+  (`GasLimits.MAX_COSMOS_TX_GAS`).
+- EVM: the chain refuses a transaction above its EVM gas cap (30,000,000 on
+  v3.2.8). `rest.evmLimits()` reads `/qorechain/pqc/v1/evm_limits`;
+  `Authenticator.executeEvmMsg`, `evmAuthSignBytesV2` and
+  `EvmPrecompiles.simulateWithRiskScore` refuse a larger gas limit.
+- Use auto (simulation) or an explicit gas limit for wasm and cross-VM gas: the
+  first call of a contract code in a block costs much more (a cw20 transfer about
+  533k gas, repeats about 84k). Simulated wasm and cross-VM transactions get at
+  least `ceil(simulated * 1.3)`. `CrossVMClient` with `Signer.fee == null`
+  simulates against `Signer.restUrl` and refuses to send without either.
+
 ## Chain v3.2.5 (0.12.0)
 
 Mainnet (`qorechain-vladi`) applied v3.2.5 at height 3,906,833; the testnet
@@ -131,6 +231,14 @@ rule lives in `AutoGas`:
 Native-lane transactions pay gas limit x gas price, so the tighter limit is a
 smaller fee. `Signer.restUrl` must be set.
 
+The default gas price stays `GasPrice.DEFAULT_GAS_PRICE` (`0.15uqor`). The chain
+may later move its minimum inside a governance band; to follow it, opt in to
+`GasPrice.fetchMinGasPriceUqor(rest)` (reads `params.min_gas_price` from
+`/cosmos/evm/feemarket/v1/params`, divides by 10^12 exactly, never below 0.1) or
+`GasPrice.recommendedGasPriceUqor(rest)` (`max(0.15, minimum x 1.5)`, margin
+configurable). Both return a `BigDecimal` of uqor per gas; nothing calls them by
+default.
+
 ### KEM key registry
 
 An account can publish one ML-KEM-1024 (FIPS 203) encapsulation key so that
@@ -167,7 +275,8 @@ path.sendAuto(List.of(KemRegistry.removeKemKey(address)), null, null);
   `RestClient.getSpendingRules` / `getAuthenticators` over REST).
 - Governance composers: `abstractaccount.updateConfig`, `crossvm.updateParams`
   (with the EVM bridge target allowlist, each `<vm>:<contract>`) and
-  `rdk.updateParams` (burn rate a decimal in [0, 1)).
+  `rdk.updateParams` (burn rate a decimal in [0, 1)). From v3.2.8 every field is
+  required; see "Governance params proposals" above.
 
 ## Sidechains, paychains & rollups (v0.4.0)
 

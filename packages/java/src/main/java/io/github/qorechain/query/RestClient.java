@@ -137,6 +137,15 @@ public final class RestClient {
         return io.github.qorechain.evm.EvmDelegationConsent.of(getEvmDelegationConsent(address));
     }
 
+    /**
+     * {@code /qorechain/pqc/v1/evm_limits} (chain v3.2.8) - the EVM gas cap and the
+     * precompile input bound in force, decoded. An EVM transaction above
+     * {@code txMaxGas} is refused.
+     */
+    public io.github.qorechain.evm.EvmLimits evmLimits() {
+        return io.github.qorechain.evm.EvmLimits.fetch(this);
+    }
+
     /** {@code /qorechain/reputation/v1/validators/{address}}. */
     public JsonNode getReputation(String validatorAddress) {
         return get("/qorechain/reputation/v1/validators/" + enc(validatorAddress));

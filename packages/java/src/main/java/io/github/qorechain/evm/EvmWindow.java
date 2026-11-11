@@ -106,6 +106,54 @@ public final class EvmWindow {
         return QorechainMessages.pqc.openEvmWindow(msg);
     }
 
+    /**
+     * Build a validated {@code MsgOpenEVMWindow} with the chain v3.2.8 policy fields
+     * (each list optional; {@code null} or empty leaves it unset):
+     *
+     * <ul>
+     *   <li>{@code validators}: contracts ({@code 0x} 20-byte addresses) whose check of
+     *       the account's signature counts for its own actions (a validator module or
+     *       an ERC-4337 entry point).
+     *   <li>{@code stakingValidators}: the validators ({@code qorvaloper...}) the
+     *       account's stake may be delegated or redelegated to through the window.
+     *   <li>{@code ibcReceivers}: the destinations native QOR may be sent to with the
+     *       ICS-20 precompile, each {@code "<source channel>/<receiver>"}, e.g.
+     *       {@code "channel-0/cosmos1..."}.
+     * </ul>
+     *
+     * <p>Standard precompile methods are deny-by-default through a window: staking
+     * delegate/redelegate need {@code stakingValidators}, ICS-20 transfers need
+     * {@code ibcReceivers}, and undelegate, governance votes and withdraw-address
+     * changes are refused through the window (send them as PQC-signed Cosmos
+     * transactions). Rotating, migrating or re-registering the PQC key closes the
+     * window. A node below v3.2.8 does not honour these fields.
+     */
+    public static TypedMessage openWithPolicy(
+            String sender,
+            long blocks,
+            long maxTxs,
+            String maxValueUqor,
+            boolean nativeOnly,
+            java.util.List<String> allowedTargets,
+            java.util.List<String> validators,
+            java.util.List<String> stakingValidators,
+            java.util.List<String> ibcReceivers) {
+        Tx.MsgOpenEVMWindow msg =
+                openMessage(sender, blocks, maxTxs, maxValueUqor).toBuilder()
+                        .setNativeOnly(nativeOnly)
+                        .addAllAllowedTargets(orEmpty(allowedTargets))
+                        .addAllValidators(orEmpty(validators))
+                        .addAllStakingValidators(orEmpty(stakingValidators))
+                        .addAllIbcReceivers(orEmpty(ibcReceivers))
+                        .build();
+        validateOpen(msg);
+        return QorechainMessages.pqc.openEvmWindow(msg);
+    }
+
+    private static java.util.List<String> orEmpty(java.util.List<String> l) {
+        return l == null ? java.util.List.of() : l;
+    }
+
     /** The same as {@link #open} , returning the bare protobuf message. */
     public static Tx.MsgOpenEVMWindow openMessage(
             String sender, long blocks, long maxTxs, String maxValueUqor) {
@@ -195,6 +243,38 @@ public final class EvmWindow {
             }
             if (!seen.add(t.toLowerCase(java.util.Locale.ROOT))) {
                 throw new IllegalArgumentException("open evm window: allowed_targets lists " + t + " more than once");
+            }
+        }
+        java.util.Set<String> seenValidators = new java.util.HashSet<>();
+        for (String v : msg.getValidatorsList()) {
+            if (!v.matches("^0x[0-9a-fA-F]{40}$")) {
+                throw new IllegalArgumentException(
+                        "open evm window: validators: \"" + v + "\" is not a 0x-prefixed 20-byte address");
+            }
+            if (!seenValidators.add(v.toLowerCase(java.util.Locale.ROOT))) {
+                throw new IllegalArgumentException("open evm window: validators lists " + v + " more than once");
+            }
+        }
+        java.util.Set<String> seenStaking = new java.util.HashSet<>();
+        for (String v : msg.getStakingValidatorsList()) {
+            if (!Address.isValidBech32(v, "qorvaloper")) {
+                throw new IllegalArgumentException(
+                        "open evm window: staking_validators: \"" + v + "\" is not a qorvaloper address");
+            }
+            if (!seenStaking.add(v)) {
+                throw new IllegalArgumentException("open evm window: staking_validators lists " + v + " more than once");
+            }
+        }
+        java.util.Set<String> seenIbc = new java.util.HashSet<>();
+        for (String r : msg.getIbcReceiversList()) {
+            int slash = r.indexOf('/');
+            if (slash <= 0 || slash == r.length() - 1 || !r.substring(0, slash).matches("^channel-\\d+$")
+                    || r.chars().anyMatch(c -> c <= 0x20 || c == 0x7f)) {
+                throw new IllegalArgumentException("open evm window: ibc_receivers: \"" + r
+                        + "\" is not \"<source channel>/<receiver>\" (e.g. \"channel-0/cosmos1...\")");
+            }
+            if (!seenIbc.add(r)) {
+                throw new IllegalArgumentException("open evm window: ibc_receivers lists " + r + " more than once");
             }
         }
     }

@@ -10,6 +10,9 @@ import com.google.protobuf.InvalidProtocolBufferException;
 import io.github.qorechain.messages.QorechainMessages;
 import io.github.qorechain.messages.TypedMessage;
 import io.github.qorechain.query.QorClient;
+import io.github.qorechain.query.RestClient;
+import io.github.qorechain.tx.AutoGas;
+import io.github.qorechain.tx.GasPrice;
 import io.github.qorechain.tx.Broadcaster;
 import io.github.qorechain.tx.NativeTx;
 import io.github.qorechain.tx.StdFee;
@@ -54,6 +57,13 @@ public final class CrossVMClient {
 
     private static final ObjectMapper MAPPER = new ObjectMapper();
 
+    /** The smallest non-zero {@link CallOptions#asyncGasLimit}. */
+    public static final long MIN_ASYNC_GAS_LIMIT = 250_000L;
+    /** The largest {@link CallOptions#asyncGasLimit}. */
+    public static final long MAX_ASYNC_GAS_LIMIT = 10_000_000L;
+    /** The default {@link CallOptions#asyncGasLimit} the chain applies for {@code 0}. */
+    public static final long DEFAULT_ASYNC_GAS_LIMIT = 500_000L;
+
     /** Per-call cross-VM options. */
     public static final class CallOptions {
         /** Sender bech32 address (defaults to the signing context's sender). */
@@ -84,6 +94,24 @@ public final class CrossVMClient {
          */
         public boolean async = false;
 
+        /**
+         * For an {@link #async} call into CosmWasm only (chain v3.2.8): the contract
+         * execution the queued call may use, in base gas units. {@code 0} = the chain
+         * default (500,000); a set value is {@value #MIN_ASYNC_GAS_LIMIT} to
+         * {@value #MAX_ASYNC_GAS_LIMIT}.
+         *
+         * <p>An async call holds an escrow of about {@code asyncGasLimit x factor x gas
+         * price} (default about 0.2 QOR), refunded when it finishes, pays a queue-slot
+         * fee, and a sender may have at most 100 pending calls.
+         */
+        public long asyncGasLimit = 0L;
+        /**
+         * For an {@link #async} call into CosmWasm only: the highest wasm congestion
+         * factor the sender accepts, in millionths ({@code 1_000_000} = 1x). {@code 0} =
+         * four times the factor at submission.
+         */
+        public long asyncMaxFactor = 0L;
+
         /** Raw payload bytes (mutually exclusive with {@link #cosmwasm}). */
         public byte[] payload;
         /** A CosmWasm message object serialized to UTF-8 JSON (mutually exclusive with {@link #payload}). */
@@ -99,7 +127,17 @@ public final class CrossVMClient {
         public String sender;
         public byte[] secp256k1PrivateKey;
         public byte[] secp256k1PublicKey;
+        /**
+         * The fee and gas limit. {@code null}: simulate against {@link #restUrl} and price
+         * the result at {@link #gasPrice} (cross-VM gas varies: the first call of a
+         * contract code in a block costs much more, so there is no fixed default). With
+         * neither a fee nor a {@code restUrl} the call is refused.
+         */
         public StdFee fee;
+        /** The network's REST endpoint, for simulation when {@link #fee} is {@code null}. */
+        public String restUrl;
+        /** The gas price for a simulated fee (default {@link io.github.qorechain.tx.GasPrice#DEFAULT_GAS_PRICE}). */
+        public String gasPrice;
         public String memo = "";
         public String chainId;
         public long accountNumber;
@@ -161,6 +199,7 @@ public final class CrossVMClient {
 
     /** Build a single {@code MsgCrossVMCall} {@link TypedMessage} (no signing). */
     public TypedMessage buildCall(CallOptions opts) {
+        validateAsyncOptions(opts);
         String sender = opts.sender != null ? opts.sender : (signer != null ? signer.sender : null);
         String sourceVm = opts.sourceVm != null ? opts.sourceVm : VMType.EVM;
 
@@ -171,7 +210,9 @@ public final class CrossVMClient {
                         .setTargetVm(opts.targetVm == null ? "" : opts.targetVm)
                         .setTargetContract(opts.targetContract == null ? "" : opts.targetContract)
                         .setPayload(ByteString.copyFrom(resolvePayload(opts)))
-                        .setAsync(opts.async);
+                        .setAsync(opts.async)
+                        .setAsyncGasLimit(opts.asyncGasLimit)
+                        .setAsyncMaxFactor(opts.asyncMaxFactor);
 
         if (opts.funds != null) {
             for (StdFee.Coin c : opts.funds) {
@@ -205,11 +246,25 @@ public final class CrossVMClient {
         txOpts.secp256k1PrivateKey = signer.secp256k1PrivateKey;
         txOpts.secp256k1PublicKey = signer.secp256k1PublicKey;
         txOpts.fee = signer.fee;
+        if (txOpts.fee == null) {
+            if (signer.restUrl == null || signer.restUrl.isEmpty()) {
+                throw new IllegalArgumentException(
+                        "cross-VM calls need simulated gas or an explicit gas limit: set Signer.restUrl to"
+                                + " simulate, or Signer.fee with a gas limit (there is no fixed default)");
+            }
+            txOpts.fee = new StdFee(List.of(), "0");
+        }
         txOpts.memo = signer.memo;
         txOpts.chainId = signer.chainId;
         txOpts.accountNumber = signer.accountNumber;
         txOpts.sequence = signer.sequence;
         txOpts.timeoutHeight = signer.timeoutHeight;
+        if (signer.fee == null) {
+            NativeTx.Built sim = NativeTx.buildAndSign(txOpts);
+            AutoGas.Estimate est = AutoGas.estimate(signer.restUrl, sim.txRawBytes, false, null, null, true);
+            txOpts.fee = GasPrice.calculateFee(
+                    est.gasWanted, signer.gasPrice == null ? GasPrice.DEFAULT_GAS_PRICE : signer.gasPrice);
+        }
 
         NativeTx.Built built = NativeTx.buildAndSign(txOpts);
         Broadcaster.Mode mode =
@@ -289,6 +344,89 @@ public final class CrossVMClient {
                     "CrossVMClient was constructed without a QorClient; cannot getMessage");
         }
         return qor.getCrossVmMessage(id);
+    }
+
+    /**
+     * Check {@link CallOptions#asyncGasLimit} / {@link CallOptions#asyncMaxFactor}: they
+     * apply only to an async call into CosmWasm, and a set gas limit is in
+     * {@value #MIN_ASYNC_GAS_LIMIT}..{@value #MAX_ASYNC_GAS_LIMIT}.
+     *
+     * @throws IllegalArgumentException naming the problem.
+     */
+    public static void validateAsyncOptions(CallOptions opts) {
+        if (opts.asyncGasLimit < 0 || opts.asyncMaxFactor < 0) {
+            throw new IllegalArgumentException("asyncGasLimit and asyncMaxFactor must be non-negative");
+        }
+        if (opts.asyncGasLimit == 0 && opts.asyncMaxFactor == 0) {
+            return;
+        }
+        if (!opts.async) {
+            throw new IllegalArgumentException(
+                    "asyncGasLimit / asyncMaxFactor apply only to async calls (set async = true)");
+        }
+        if (!VMType.COSMWASM.equals(opts.targetVm)) {
+            throw new IllegalArgumentException(
+                    "asyncGasLimit / asyncMaxFactor apply only to async calls into CosmWasm, not \""
+                            + opts.targetVm + "\"");
+        }
+        if (opts.asyncGasLimit != 0
+                && (opts.asyncGasLimit < MIN_ASYNC_GAS_LIMIT || opts.asyncGasLimit > MAX_ASYNC_GAS_LIMIT)) {
+            throw new IllegalArgumentException("asyncGasLimit must be 0 (default 500,000) or between "
+                    + MIN_ASYNC_GAS_LIMIT + " and " + MAX_ASYNC_GAS_LIMIT + ", got " + opts.asyncGasLimit);
+        }
+    }
+
+    /** The REST route of the pending queue (paginated, at most 100 per page). */
+    public static final String PENDING_PATH = "/qorechain/crossvm/v1/pending";
+
+    /** The page cap of {@link #listPending(RestClient)}. */
+    public static final int DEFAULT_MAX_PENDING_PAGES = 1000;
+
+    /**
+     * Every queued cross-VM message, following {@code pagination.next_key} until it is
+     * empty (at most {@value #DEFAULT_MAX_PENDING_PAGES} pages). {@code payload_hex} in
+     * the list is cut to its first 1,024 bytes: fetch one message with
+     * {@link #getMessageRest} for the whole payload.
+     */
+    public static List<JsonNode> listPending(RestClient rest) {
+        return listPending(rest, DEFAULT_MAX_PENDING_PAGES);
+    }
+
+    /**
+     * As {@link #listPending(RestClient)} with an explicit page cap.
+     *
+     * @throws IllegalStateException when the queue has more than {@code maxPages} pages.
+     */
+    public static List<JsonNode> listPending(RestClient rest, int maxPages) {
+        List<JsonNode> out = new ArrayList<>();
+        String key = null;
+        for (int page = 0; page < maxPages; page++) {
+            java.util.Map<String, String> q = io.github.qorechain.query.Http.query();
+            q.put("pagination.limit", "100");
+            if (key != null) {
+                q.put("pagination.key", key);
+            }
+            JsonNode body = rest.get(PENDING_PATH, q);
+            JsonNode msgs = body == null ? null : body.get("messages");
+            if (msgs != null && msgs.isArray()) {
+                msgs.forEach(out::add);
+            }
+            JsonNode next = body == null ? null : body.path("pagination").get("next_key");
+            if (next == null || next.isNull() || next.asText().isEmpty()) {
+                return out;
+            }
+            key = next.asText();
+        }
+        throw new IllegalStateException("crossvm pending queue has more than " + maxPages + " pages");
+    }
+
+    /**
+     * One cross-VM message with its full payload, over REST
+     * ({@code /qorechain/crossvm/v1/message/{id}}): {@code {"message": ..., "found": bool}}.
+     */
+    public static JsonNode getMessageRest(RestClient rest, String id) {
+        return rest.get("/qorechain/crossvm/v1/message/"
+                + java.net.URLEncoder.encode(id, java.nio.charset.StandardCharsets.UTF_8));
     }
 
     /** Resolve the call payload: raw bytes, or Jackson-serialized cosmwasm JSON (UTF-8). */

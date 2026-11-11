@@ -155,17 +155,37 @@ public final class QorechainMessages {
             return new TypedMessage("/qorechain.rdk.v1.MsgExecuteWithdrawal", m);
         }
 
+        /** The REST route of the rdk parameters in force. */
+        public static final String PARAMS_PATH = "/qorechain/rdk/v1/params";
+
         /**
          * {@code MsgUpdateParams} (chain v3.2.5) - governance: replace the rdk
          * parameters wholesale. {@code rollup_creation_burn_rate} is a decimal in
          * [0, 1); {@code default_challenge_window} is in seconds.
          *
+         * <p>Every field must be set: one at zero is refused as missing
+         * ({@link ParamsUpdates}); use {@link #updateParams(qorechain.rdk.v1.Tx.MsgUpdateParams, java.util.Set)}
+         * to send a zero on purpose. Build a proposal with
+         * {@link #updateParamsFromCurrent}.
+         *
          * @throws IllegalArgumentException naming the problem.
          */
         public static TypedMessage updateParams(qorechain.rdk.v1.Tx.MsgUpdateParams m) {
+            return updateParams(m, java.util.Set.of());
+        }
+
+        /**
+         * As {@link #updateParams(qorechain.rdk.v1.Tx.MsgUpdateParams)}, with the fields
+         * (proto names, e.g. {@code "min_submitter_bond"}) meant to be zero listed in
+         * {@code explicitZero}. Zero means the chain default for the v3.2.8 fields 9..14.
+         */
+        public static TypedMessage updateParams(
+                qorechain.rdk.v1.Tx.MsgUpdateParams m, java.util.Set<String> explicitZero) {
             if (m.getAuthority().isEmpty()) {
                 throw new IllegalArgumentException("authority (the governance module account) is required");
             }
+            ParamsUpdates.requireAll("rdk MsgUpdateParams", m, java.util.Set.of("authority"), explicitZero,
+                    "rdk.updateParamsFromCurrent");
             if (m.getMinStakeForRollup() < 0) {
                 throw new IllegalArgumentException("min_stake_for_rollup must be non-negative");
             }
@@ -180,6 +200,30 @@ public final class QorechainMessages {
                 throw new IllegalArgumentException("rollup_creation_burn_rate must be in [0, 1)");
             }
             return new TypedMessage("/qorechain.rdk.v1.MsgUpdateParams", m);
+        }
+
+        /**
+         * The way to build an rdk params proposal: read the parameters in force from
+         * {@value #PARAMS_PATH}, apply {@code changes} (proto field name to value, e.g.
+         * {@code Map.of("max_rollups", 200)}) and compose the update. Every field not
+         * changed keeps its current value.
+         */
+        public static TypedMessage updateParamsFromCurrent(
+                io.github.qorechain.query.RestClient rest, String authority, java.util.Map<String, ?> changes) {
+            return updateParamsFromCurrent(rest.get(PARAMS_PATH), authority, changes);
+        }
+
+        /** {@link #updateParamsFromCurrent(io.github.qorechain.query.RestClient, String, java.util.Map)} from a fetched body. */
+        public static TypedMessage updateParamsFromCurrent(
+                com.fasterxml.jackson.databind.JsonNode current, String authority, java.util.Map<String, ?> changes) {
+            var b = qorechain.rdk.v1.Tx.MsgUpdateParams.newBuilder().setAuthority(authority == null ? "" : authority);
+            com.fasterxml.jackson.databind.JsonNode p = current == null ? null : current.get("params");
+            if (p == null || !p.isObject()) {
+                throw new IllegalArgumentException("rdk params query: no params object in the answer");
+            }
+            ParamsUpdates.applyJson(b, p, java.util.Set.of("authority"));
+            ParamsUpdates.applyChanges("rdk MsgUpdateParams", b, changes);
+            return updateParams(b.build(), ParamsUpdates.allFieldNames(b));
         }
     }
 
@@ -335,8 +379,38 @@ public final class QorechainMessages {
          * account, so it only lands through a passed proposal. It is the transaction that
          * can turn the SVM lane on or off ({@code params.enabled}) without a binary
          * release.
+         *
+         * <p>Every field of {@code params} must be set: one at zero (or {@code false})
+         * is refused as missing ({@link ParamsUpdates}), because leaving out a v3.2.8
+         * field ({@code max_custody_uqor}, {@code max_custody_hard_uqor},
+         * {@code max_account_excess_uqor}) would remove that custody ceiling. Name the
+         * fields meant to be zero in {@code explicitZero}. {@code enabled = true} with
+         * {@code max_custody_hard_uqor == 0} is refused. The chain has no REST params
+         * route for svm, so copy the current values from the chain's genesis export or
+         * the last params proposal.
+         *
+         * @throws IllegalArgumentException naming the problem.
          */
         public static TypedMessage updateParams(qorechain.svm.v1.Tx.MsgUpdateParams m) {
+            return updateParams(m, java.util.Set.of());
+        }
+
+        /** As {@link #updateParams(qorechain.svm.v1.Tx.MsgUpdateParams)}, with deliberate zeros named. */
+        public static TypedMessage updateParams(
+                qorechain.svm.v1.Tx.MsgUpdateParams m, java.util.Set<String> explicitZero) {
+            if (m.getAuthority().isEmpty()) {
+                throw new IllegalArgumentException("authority (the governance module account) is required");
+            }
+            if (!m.hasParams()) {
+                throw new IllegalArgumentException("svm MsgUpdateParams: params is required");
+            }
+            ParamsUpdates.requireAll("svm MsgUpdateParams", m.getParams(), java.util.Set.of(), explicitZero,
+                    "the current svm params");
+            if (m.getParams().getEnabled() && m.getParams().getMaxCustodyHardUqor() == 0) {
+                throw new IllegalArgumentException(
+                        "governance must set a hard custody ceiling before opening the lane"
+                                + " (enabled = true needs max_custody_hard_uqor > 0)");
+            }
             return new TypedMessage("/qorechain.svm.v1.MsgUpdateParams", m);
         }
     }
@@ -414,8 +488,30 @@ public final class QorechainMessages {
             return new TypedMessage("/qorechain.abstractaccount.v1.MsgUpdateSpendingRules", m);
         }
 
+        /**
+         * Link a foreign-scheme key to an account. From chain v3.2.8
+         * {@code possession_proof} is required: the key being linked signs
+         * {@link io.github.qorechain.tx.Authenticator#authenticatorLinkMessage}
+         * (helpers: {@code Authenticator.ed25519PossessionProof},
+         * {@code secp256k1PossessionProof}, {@code eip191PossessionProof}). A key with a
+         * value permission also needs a bounding spending rule on the account; build
+         * both messages with {@link io.github.qorechain.tx.Authenticator#linkAuthenticatorMsgs}.
+         *
+         * @throws IllegalArgumentException when the proof is empty or the key is a
+         *     65-byte uncompressed secp256k1 key (refused by the chain).
+         */
         public static TypedMessage registerAuthenticator(
                 qorechain.abstractaccount.v1.Tx.MsgRegisterAuthenticator m) {
+            if (m.getPossessionProof().isEmpty()) {
+                throw new IllegalArgumentException("possession_proof is required from chain v3.2.8: sign"
+                        + " Authenticator.authenticatorLinkMessage(chainId, accountAddress, scheme, pubkey) with the"
+                        + " key being linked (ed25519: over the text; secp256k1: over sha256(text); 20-byte"
+                        + " address: EIP-191 personal_sign) and set the signature as possession_proof");
+            }
+            if ("secp256k1".equals(m.getScheme()) && m.getPubkey().size() == 65) {
+                throw new IllegalArgumentException("a 65-byte uncompressed secp256k1 key is refused: link the"
+                        + " 33-byte compressed key or the 20-byte Ethereum address");
+            }
             return new TypedMessage("/qorechain.abstractaccount.v1.MsgRegisterAuthenticator", m);
         }
 
@@ -494,12 +590,28 @@ public final class QorechainMessages {
          * call. A field left out is set to zero, which the chain refuses for the
          * numeric limits; each target is {@code "<vm>:<contract>"}.
          *
+         * <p>Every field must be set (fields 7..18 from chain v3.2.8, among them
+         * {@code bridge_target_pins}, which a missing value would wipe): one at zero or
+         * empty is refused as missing ({@link ParamsUpdates}). Name deliberate zeros in
+         * {@code explicitZero}, or build the proposal with {@link #updateParamsFromCurrent}.
+         *
          * @throws IllegalArgumentException naming the problem.
          */
         public static TypedMessage updateParams(qorechain.crossvm.v1.Tx.MsgUpdateParams m) {
+            return updateParams(m, java.util.Set.of());
+        }
+
+        /** The REST route of the crossvm parameters in force. */
+        public static final String PARAMS_PATH = "/qorechain/crossvm/v1/params";
+
+        /** As {@link #updateParams(qorechain.crossvm.v1.Tx.MsgUpdateParams)}, with deliberate zeros named. */
+        public static TypedMessage updateParams(
+                qorechain.crossvm.v1.Tx.MsgUpdateParams m, java.util.Set<String> explicitZero) {
             if (m.getAuthority().isEmpty()) {
                 throw new IllegalArgumentException("authority (the governance module account) is required");
             }
+            ParamsUpdates.requireAll("crossvm MsgUpdateParams", m, java.util.Set.of("authority"), explicitZero,
+                    "crossvm.updateParamsFromCurrent");
             if (m.getMaxMessageSize() == 0 || m.getMaxQueueSize() == 0 || m.getQueueTimeoutBlocks() <= 0) {
                 throw new IllegalArgumentException(
                         "max_message_size, max_queue_size and queue_timeout_blocks must be positive");
@@ -512,6 +624,32 @@ public final class QorechainMessages {
                 }
             }
             return new TypedMessage("/qorechain.crossvm.v1.MsgUpdateParams", m);
+        }
+
+        /**
+         * The way to build a crossvm params proposal: read the values in force from
+         * {@value #PARAMS_PATH} (the query lists them with defaults substituted for
+         * zero, which is correct to copy), apply {@code changes} (proto field name to
+         * value; {@code bridge_target_pins} takes a list of {@code BridgeTargetPin} or
+         * maps with {@code target}, {@code code_id}, {@code history_len}) and compose
+         * the update.
+         */
+        public static TypedMessage updateParamsFromCurrent(
+                io.github.qorechain.query.RestClient rest, String authority, java.util.Map<String, ?> changes) {
+            return updateParamsFromCurrent(rest.get(PARAMS_PATH), authority, changes);
+        }
+
+        /** {@link #updateParamsFromCurrent(io.github.qorechain.query.RestClient, String, java.util.Map)} from a fetched body. */
+        public static TypedMessage updateParamsFromCurrent(
+                com.fasterxml.jackson.databind.JsonNode current, String authority, java.util.Map<String, ?> changes) {
+            if (current == null || !current.isObject()) {
+                throw new IllegalArgumentException("crossvm params query: empty answer");
+            }
+            com.fasterxml.jackson.databind.JsonNode p = current.has("params") ? current.get("params") : current;
+            var b = qorechain.crossvm.v1.Tx.MsgUpdateParams.newBuilder().setAuthority(authority == null ? "" : authority);
+            ParamsUpdates.applyJson(b, p, java.util.Set.of("authority"));
+            ParamsUpdates.applyChanges("crossvm MsgUpdateParams", b, changes);
+            return updateParams(b.build(), ParamsUpdates.allFieldNames(b));
         }
     }
 

@@ -75,7 +75,11 @@ public final class EvmPrecompiles {
         public BigInteger value = BigInteger.ZERO;
     }
 
-    /** Result of {@link #simulateWithRiskScore}: combined gas + advisory AI checks. */
+    /**
+     * Result of {@link #simulateWithRiskScore}: combined gas + advisory AI checks.
+     * {@link #gas} above the chain's EVM gas cap (30,000,000 on v3.2.8) is refused by
+     * {@link #simulateWithRiskScore} before anything is signed.
+     */
     public static final class Preflight {
         public final long gas;
         public final RiskScore risk;
@@ -126,6 +130,10 @@ public final class EvmPrecompiles {
      *
      * <p>The {@code safe} flag is advisory only ({@code risk.level < 3 &&
      * !anomaly.flagged}); it does not gate on-chain execution.
+     *
+     * @throws IllegalArgumentException when the estimate is above the chain's EVM gas
+     *     cap ({@link io.github.qorechain.tx.GasLimits#DEFAULT_EVM_TX_MAX_GAS}); the
+     *     chain would refuse the transaction.
      */
     public static Preflight simulateWithRiskScore(JsonRpcClient client, PreflightTx tx) {
         BigInteger value = tx.value == null ? BigInteger.ZERO : tx.value;
@@ -135,6 +143,7 @@ public final class EvmPrecompiles {
                 client.ethEstimateGas(
                         tx.to, tx.data, tx.from, "0x" + value.toString(16));
         long gas = parseHexLong(gasNode.asText());
+        io.github.qorechain.tx.GasLimits.checkEvmTxGas(gas);
 
         RiskScore risk = aiRiskScore(client, callData);
         Anomaly anomaly = aiAnomalyCheck(client, tx.from, value);

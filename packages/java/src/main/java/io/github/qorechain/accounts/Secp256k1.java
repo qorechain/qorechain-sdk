@@ -68,6 +68,74 @@ public final class Secp256k1 {
         return out;
     }
 
+    /**
+     * Sign a pre-computed 32-byte {@code hash} like {@link #signHash} and append the
+     * recovery id, returning the 65-byte {@code r || s || recId} signature
+     * ({@code recId} is 0 or 1; add 27 for the Ethereum {@code v}).
+     */
+    public static byte[] signHashRecoverable(byte[] privateKey, byte[] hash) {
+        byte[] rs = signHash(privateKey, hash);
+        byte[] pub = publicKey(privateKey, false);
+        BigInteger r = new BigInteger(1, java.util.Arrays.copyOfRange(rs, 0, 32));
+        BigInteger s = new BigInteger(1, java.util.Arrays.copyOfRange(rs, 32, 64));
+        for (int recId = 0; recId < 2; recId++) {
+            byte[] q = recoverPublicKey(recId, r, s, hash);
+            if (q != null && java.util.Arrays.equals(q, pub)) {
+                byte[] out = new byte[65];
+                System.arraycopy(rs, 0, out, 0, 64);
+                out[64] = (byte) recId;
+                return out;
+            }
+        }
+        throw new IllegalStateException("could not compute the signature recovery id");
+    }
+
+    /**
+     * Recover the 65-byte uncompressed public key from an ECDSA signature over
+     * {@code hash} (SEC 1 section 4.1.6), or {@code null} when {@code recId} does
+     * not give a point.
+     */
+    public static byte[] recoverPublicKey(int recId, BigInteger r, BigInteger s, byte[] hash) {
+        BigInteger n = CURVE_PARAMS.getN();
+        if (r.signum() <= 0 || r.compareTo(n) >= 0 || s.signum() <= 0 || s.compareTo(n) >= 0) {
+            return null;
+        }
+        org.bouncycastle.math.ec.ECCurve curve = CURVE_PARAMS.getCurve();
+        BigInteger p = curve.getField().getCharacteristic();
+        if (r.compareTo(p) >= 0) {
+            return null;
+        }
+        byte[] enc = new byte[33];
+        enc[0] = (byte) (0x02 | (recId & 1));
+        System.arraycopy(to32(r), 0, enc, 1, 32);
+        org.bouncycastle.math.ec.ECPoint bigR;
+        try {
+            bigR = curve.decodePoint(enc);
+        } catch (IllegalArgumentException e) {
+            return null;
+        }
+        BigInteger e = new BigInteger(1, hash);
+        BigInteger rInv = r.modInverse(n);
+        org.bouncycastle.math.ec.ECPoint q =
+                org.bouncycastle.math.ec.ECAlgorithms.sumOfTwoMultiplies(
+                                CURVE_PARAMS.getG(), e.negate().mod(n).multiply(rInv).mod(n),
+                                bigR, s.multiply(rInv).mod(n))
+                        .normalize();
+        return q.isInfinity() ? null : q.getEncoded(false);
+    }
+
+    /** The public key of a 32-byte private key: 33-byte compressed or 65-byte uncompressed. */
+    public static byte[] publicKey(byte[] privateKey, boolean compressed) {
+        return CURVE_PARAMS.getG().multiply(new BigInteger(1, privateKey)).normalize().getEncoded(compressed);
+    }
+
+    /** The 20-byte Ethereum address of a private key: {@code keccak256(uncompressed[1:])[12:]}. */
+    public static byte[] ethAddress(byte[] privateKey) {
+        byte[] pub = publicKey(privateKey, false);
+        byte[] h = Hashing.keccak256(java.util.Arrays.copyOfRange(pub, 1, 65));
+        return java.util.Arrays.copyOfRange(h, 12, 32);
+    }
+
     private static byte[] to32(BigInteger v) {
         byte[] b = v.toByteArray();
         byte[] out = new byte[32];

@@ -157,6 +157,86 @@ public final class SpendingRules {
         }
     }
 
+    /**
+     * The authenticator permissions that move value (chain v3.2.8): a key holding any
+     * of them may be linked only when the account has a spending rule that bounds
+     * every denom ({@link #requireValueBound}).
+     */
+    public static final Set<String> VALUE_PERMISSIONS = Set.of("send", "evm", "deploy", "svm", "all");
+
+    /** Whether any of {@code permissions} is a value permission ({@link #VALUE_PERMISSIONS}). */
+    public static boolean hasValuePermission(List<String> permissions) {
+        if (permissions == null) return false;
+        for (String p : permissions) {
+            if (p != null && VALUE_PERMISSIONS.contains(p.trim().toLowerCase(Locale.ROOT))) return true;
+        }
+        return false;
+    }
+
+    /** The first rule with {@code enabled = true}, the one the chain applies; {@code null} when none. */
+    public static SpendingRule firstEnabledRule(List<SpendingRule> rules) {
+        if (rules == null) return null;
+        for (SpendingRule r : rules) {
+            if (r.getEnabled()) return r;
+        }
+        return null;
+    }
+
+    /**
+     * Whether {@code rule} bounds every denom the way chain v3.2.8 requires for a
+     * value permission: {@code per_tx_limit > 0} or {@code daily_limit > 0}, or (both 0)
+     * a non-empty {@code allowed_denoms} where every listed denom has a
+     * {@code denom_limits} entry (denoms compared case-insensitively) that sets a
+     * non-zero per-tx or daily amount.
+     */
+    public static boolean boundsValue(SpendingRule rule) {
+        if (rule == null || !rule.getEnabled()) return false;
+        if (rule.getPerTxLimit() > 0 || rule.getDailyLimit() > 0) return true;
+        if (rule.getAllowedDenomsCount() == 0) return false;
+        Set<String> limited = new HashSet<>();
+        for (DenomLimit dl : rule.getDenomLimitsList()) {
+            if (nonZeroDecimal(dl.getPerTxLimit()) || nonZeroDecimal(dl.getDailyLimit())) {
+                limited.add(dl.getDenom().toLowerCase(Locale.ROOT));
+            }
+        }
+        for (String d : rule.getAllowedDenomsList()) {
+            if (!limited.contains(d.toLowerCase(Locale.ROOT))) return false;
+        }
+        return true;
+    }
+
+    /**
+     * Refuse linking a key with a value permission ({@link #VALUE_PERMISSIONS}) unless
+     * the account's FIRST enabled rule in {@code rules} bounds every denom
+     * ({@link #boundsValue}); this mirrors the chain's check from v3.2.8. Keys without a
+     * value permission pass whatever the rules.
+     *
+     * @throws IllegalArgumentException explaining what rule is needed.
+     */
+    public static void requireValueBound(List<SpendingRule> rules, List<String> permissions) {
+        if (!hasValuePermission(permissions)) return;
+        SpendingRule first = firstEnabledRule(rules);
+        if (first == null) {
+            throw new IllegalArgumentException("permissions " + permissions + " move value: from chain v3.2.8 the"
+                    + " account needs an enabled spending rule (MsgUpdateSpendingRules) that bounds every denom;"
+                    + " none is enabled");
+        }
+        if (!boundsValue(first)) {
+            throw new IllegalArgumentException("permissions " + permissions + " move value: from chain v3.2.8 the"
+                    + " account's first enabled spending rule must bound every denom: per_tx_limit > 0 or"
+                    + " daily_limit > 0, or a non-empty allowed_denoms where every listed denom has a denom_limits"
+                    + " entry with an amount");
+        }
+    }
+
+    private static boolean nonZeroDecimal(String s) {
+        if (s == null || !DECIMAL.matcher(s).matches()) return false;
+        for (int k = 0; k < s.length(); k++) {
+            if (s.charAt(k) != '0') return true;
+        }
+        return false;
+    }
+
     /** A denom-limit amount: {@code ""} is zero, otherwise a non-negative decimal integer. True when non-zero. */
     private static boolean isPositiveAmount(String s, String what, int i) {
         if (s.isEmpty()) return false;

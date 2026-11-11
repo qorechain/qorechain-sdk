@@ -29,6 +29,13 @@ import java.util.Map;
  *
  * <p>Native-lane transactions pay the full fee for their gas limit (gas limit x
  * gas price), so a smaller margin is a smaller fee.
+ *
+ * <p>A transaction that runs CosmWasm (execute, instantiate, migrate) or carries a
+ * {@code MsgCrossVMCall} gets at least {@code ceil(simulated * 1.3)}
+ * ({@link #WASM_GAS_MULTIPLIER}) whatever rule above applies: the first call of a
+ * contract code in a block costs much more than a repeat, so the margin of the
+ * simulation must cover it. Use simulation (auto gas) or an explicit gas limit for
+ * wasm and cross-VM transactions; see {@link GasLimits}.
  */
 public final class AutoGas {
 
@@ -39,6 +46,9 @@ public final class AutoGas {
 
     /** The fixed headroom added after {@link #EXACT_GAS_MULTIPLIER}. */
     public static final long EXACT_GAS_HEADROOM = 2000L;
+
+    /** The smallest multiplier applied to a simulation of a CosmWasm or cross-VM transaction. */
+    public static final double WASM_GAS_MULTIPLIER = 1.3;
 
     private static final ObjectMapper MAPPER = new ObjectMapper();
 
@@ -82,6 +92,19 @@ public final class AutoGas {
             return exactHybridGas(simulated);
         }
         return GasPrice.applyMultiplier(simulated, GasPrice.DEFAULT_GAS_MULTIPLIER);
+    }
+
+    /**
+     * {@link #gasWanted(long, boolean, boolean, Double)}, raised to at least
+     * {@code ceil(simulated * 1.3)} when {@code wasmOrCrossVm}.
+     */
+    public static long gasWanted(
+            long simulated, boolean hybrid, boolean exactNetwork, Double multiplier, boolean wasmOrCrossVm) {
+        long g = gasWanted(simulated, hybrid, exactNetwork, multiplier);
+        if (wasmOrCrossVm) {
+            g = Math.max(g, GasPrice.applyMultiplier(simulated, WASM_GAS_MULTIPLIER));
+        }
+        return g;
     }
 
     /**
@@ -137,9 +160,27 @@ public final class AutoGas {
     /** Simulate and choose the gas limit for the network behind {@code restUrl}. */
     public static Estimate estimate(
             String restUrl, byte[] txBytes, boolean hybrid, Double multiplier, Http.Options options) {
+        return estimate(restUrl, txBytes, hybrid, multiplier, options, false);
+    }
+
+    /**
+     * As {@link #estimate(String, byte[], boolean, Double, Http.Options)}; with
+     * {@code wasmOrCrossVm} (see {@link GasLimits#carriesWasmOrCrossVm}) the limit is
+     * at least {@code ceil(simulated * 1.3)}. The result is refused when it is above
+     * {@link GasLimits#MAX_COSMOS_TX_GAS}.
+     */
+    public static Estimate estimate(
+            String restUrl,
+            byte[] txBytes,
+            boolean hybrid,
+            Double multiplier,
+            Http.Options options,
+            boolean wasmOrCrossVm) {
         long simulated = simulate(restUrl, txBytes, options);
         boolean exact = multiplier == null && hybrid && exactGasApplies(restUrl);
-        return new Estimate(simulated, gasWanted(simulated, hybrid, exact, multiplier), exact);
+        long wanted = gasWanted(simulated, hybrid, exact, multiplier, wasmOrCrossVm);
+        GasLimits.checkCosmosTxGas(wanted);
+        return new Estimate(simulated, wanted, exact);
     }
 
     /** The refusal text of a failed simulate response: its {@code message}, else the body. */

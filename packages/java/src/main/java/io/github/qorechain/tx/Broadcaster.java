@@ -42,11 +42,61 @@ public final class Broadcaster {
          * {@code CrossVMClient.decodeCallResponses}).
          */
         public byte[] data;
+        /**
+         * The events the tx result carried (a {@link Mode#COMMIT} broadcast's
+         * in-block events; empty otherwise). Read failed authorised executions out of
+         * them with {@link Authenticator#executionResults}.
+         */
+        public java.util.List<Event> events = java.util.List.of();
 
         public Result(String transactionHash, int code) {
             this.transactionHash = transactionHash;
             this.code = code;
         }
+    }
+
+    /** One ABCI event of a tx result: its type and its attributes in order. */
+    public static final class Event {
+        public final String type;
+        /** The attributes as {@code (key, value)} pairs, in the order the chain emitted them. */
+        public final java.util.List<java.util.Map.Entry<String, String>> attributes;
+
+        public Event(String type, java.util.List<java.util.Map.Entry<String, String>> attributes) {
+            this.type = type;
+            this.attributes = java.util.List.copyOf(attributes);
+        }
+
+        /** The value of the first attribute named {@code key}, or {@code null}. */
+        public String attribute(String key) {
+            for (java.util.Map.Entry<String, String> a : attributes) {
+                if (a.getKey().equals(key)) {
+                    return a.getValue();
+                }
+            }
+            return null;
+        }
+    }
+
+    /** Decode the {@code events} array of a tx result JSON (RPC or REST shape). */
+    public static java.util.List<Event> eventsOf(JsonNode txResult) {
+        JsonNode arr = txResult == null ? null : txResult.get("events");
+        java.util.List<Event> out = new java.util.ArrayList<>();
+        if (arr == null || !arr.isArray()) {
+            return out;
+        }
+        for (JsonNode e : arr) {
+            java.util.List<java.util.Map.Entry<String, String>> attrs = new java.util.ArrayList<>();
+            JsonNode as = e.get("attributes");
+            if (as != null && as.isArray()) {
+                for (JsonNode a : as) {
+                    attrs.add(java.util.Map.entry(text(a, "key") == null ? "" : text(a, "key"),
+                            text(a, "value") == null ? "" : text(a, "value")));
+                }
+            }
+            String type = text(e, "type");
+            out.add(new Event(type == null ? "" : type, attrs));
+        }
+        return out;
     }
 
     private final JsonRpcClient rpc;
@@ -144,6 +194,7 @@ public final class Broadcaster {
             r.height = height.asLong();
         }
         r.rawLog = text(deliverTx, "log");
+        r.events = eventsOf(deliverTx);
         return r;
     }
 }

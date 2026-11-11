@@ -191,7 +191,7 @@ public final class SignEth {
 
         cosmos.tx.v1beta1.TxOuterClass.Fee.Builder fee =
                 cosmos.tx.v1beta1.TxOuterClass.Fee.newBuilder()
-                        .setGasLimit(Long.parseLong(opts.fee.gas));
+                        .setGasLimit(GasLimits.checkCosmosTxGas(opts.fee.gas));
         for (StdFee.Coin c : opts.fee.amount) {
             fee.addAmount(
                     cosmos.base.v1beta1.CoinOuterClass.Coin.newBuilder()

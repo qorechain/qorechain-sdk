@@ -389,17 +389,21 @@ class V325Test {
                 .setEnabled(true)
                 .addBridgeAllowedTargets("cosmwasm:" + ADDR)
                 .build();
-        TypedMessage m = QorechainMessages.crossvm.updateParams(ok);
+        java.util.Set<String> zeros = java.util.Set.of("bridge_target_pins", "max_pending_per_sender",
+                "max_cosmos_tx_gas", "record_retention_blocks", "max_block_wasm_gas", "max_tx_wasm_share_bps",
+                "max_block_level_wasm_gas", "queue_wasm_reserve_bps", "wasm_congestion_max_factor",
+                "wasm_congestion_target_bps", "max_block_upload_bps", "max_queue_timeouts_per_block");
+        TypedMessage m = QorechainMessages.crossvm.updateParams(ok, zeros);
         assertEquals("/qorechain.crossvm.v1.MsgUpdateParams", m.typeUrl);
         assertEquals(List.of("cosmwasm:" + ADDR),
                 ((qorechain.crossvm.v1.Tx.MsgUpdateParams) Messages.unpack(Messages.pack(m)))
                         .getBridgeAllowedTargetsList());
         assertThrows(IllegalArgumentException.class, () -> QorechainMessages.crossvm.updateParams(
-                ok.toBuilder().clearBridgeAllowedTargets().addBridgeAllowedTargets("cosmwasm").build()));
+                ok.toBuilder().clearBridgeAllowedTargets().addBridgeAllowedTargets("cosmwasm").build(), zeros));
         assertThrows(IllegalArgumentException.class, () -> QorechainMessages.crossvm.updateParams(
-                ok.toBuilder().setMaxQueueSize(0).build()));
+                ok.toBuilder().setMaxQueueSize(0).build(), zeros));
         assertThrows(IllegalArgumentException.class, () -> QorechainMessages.crossvm.updateParams(
-                ok.toBuilder().setAuthority("").build()));
+                ok.toBuilder().setAuthority("").build(), zeros));
     }
 
     @Test
@@ -413,6 +417,12 @@ class V325Test {
                 .setMaxDaBlobSize(2_097_152)
                 .setBlobRetentionBlocks(100_000)
                 .setMaxBatchesPerBlock(10)
+                .setFinalizedBatchRetentionBlocks(1)
+                .setMaxPostedDataBytes(1)
+                .setMaxPostedDataBytesPerBlock(1)
+                .setPostedDataFeePerByte(1)
+                .setPostedDataRetentionBlocks(1)
+                .setMinSubmitterBond(1)
                 .build();
         TypedMessage m = QorechainMessages.rdk.updateParams(ok);
         assertEquals("/qorechain.rdk.v1.MsgUpdateParams", m.typeUrl);
@@ -422,6 +432,7 @@ class V325Test {
             assertThrows(IllegalArgumentException.class, () -> QorechainMessages.rdk.updateParams(
                     ok.toBuilder().setRollupCreationBurnRate(bad).build()), bad);
         }
-        QorechainMessages.rdk.updateParams(ok.toBuilder().setRollupCreationBurnRate("0").build());
+        QorechainMessages.rdk.updateParams(ok.toBuilder().setRollupCreationBurnRate("0").build(),
+                java.util.Set.of("rollup_creation_burn_rate"));
     }
 }
