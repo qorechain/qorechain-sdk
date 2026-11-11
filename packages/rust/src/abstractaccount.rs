@@ -199,3 +199,231 @@ pub async fn fetch_authenticators(
 ) -> Result<Vec<AuthenticatorView>> {
     parse_authenticators(&rest.get(&authenticators_path(address), &[]).await?)
 }
+
+// ---- execute-lane results (chain v3.2.8) ----
+
+/// The event a failed but authorised `MsgExecuteEVM` / `MsgExecuteCosmos`
+/// emits from chain v3.2.8 (attributes `account`, `lane`, `nonce`, `reason`).
+pub const EXECUTION_FAILED_EVENT: &str = "abstractaccount_execution_failed";
+
+/// `MsgExecuteEVM` response type URL.
+pub const EXECUTE_EVM_RESPONSE: &str = "/qorechain.abstractaccount.v1.MsgExecuteEVMResponse";
+/// `MsgExecuteCosmos` response type URL.
+pub const EXECUTE_COSMOS_RESPONSE: &str = "/qorechain.abstractaccount.v1.MsgExecuteCosmosResponse";
+
+/// The lane of an execute message.
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub enum ExecutionLane {
+    /// `MsgExecuteEVM`.
+    Evm,
+    /// `MsgExecuteCosmos`.
+    Cosmos,
+}
+
+impl ExecutionLane {
+    fn matches(self, lane: &str) -> bool {
+        let lane = lane.to_ascii_lowercase();
+        match self {
+            ExecutionLane::Evm => lane.contains("evm"),
+            ExecutionLane::Cosmos => lane.contains("cosmos") || lane.contains("native"),
+        }
+    }
+}
+
+/// The outcome of one `MsgExecuteEVM` / `MsgExecuteCosmos` in a delivered
+/// transaction (see [`execution_results`]).
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub struct ExecutionResult {
+    /// The position of the message among the transaction's message responses.
+    pub msg_index: usize,
+    /// Which lane it ran on.
+    pub lane: ExecutionLane,
+    /// Whether the execution succeeded.
+    pub success: bool,
+    /// The EVM return data (empty on the Cosmos lane).
+    pub ret: Vec<u8>,
+    /// EVM gas used (0 on the Cosmos lane).
+    pub gas_used: u64,
+    /// The EVM error text (empty on success and on the Cosmos lane).
+    pub vm_error: String,
+    /// The `reason` of the matching [`EXECUTION_FAILED_EVENT`], when one was
+    /// emitted.
+    pub reason: Option<String>,
+}
+
+/// `(type_url, value)` of each message response.
+type MsgResponses = Vec<(String, Vec<u8>)>;
+
+fn msg_responses_from_json(tx: &Value) -> Result<Option<MsgResponses>> {
+    use base64::Engine as _;
+    let root = tx.get("tx_response").unwrap_or(tx);
+    if let Some(list) = root.get("msg_responses").and_then(Value::as_array) {
+        let mut out = Vec::with_capacity(list.len());
+        for entry in list {
+            let type_url = entry
+                .get("type_url")
+                .or_else(|| entry.get("@type"))
+                .and_then(Value::as_str)
+                .unwrap_or_default()
+                .to_string();
+            let value = entry.get("value").and_then(Value::as_str).unwrap_or("");
+            let bytes = base64::engine::general_purpose::STANDARD
+                .decode(value)
+                .map_err(|e| Error::InvalidResponse(format!("msg_responses value: {e}")))?;
+            out.push((type_url, bytes));
+        }
+        return Ok(Some(out));
+    }
+    // Fall back to `data`: the hex (or base64) TxMsgData.
+    let Some(data) = root
+        .get("data")
+        .and_then(Value::as_str)
+        .filter(|d| !d.is_empty())
+    else {
+        return Ok(None);
+    };
+    let bytes = hex::decode(data)
+        .or_else(|_| base64::engine::general_purpose::STANDARD.decode(data))
+        .map_err(|e| Error::InvalidResponse(format!("tx data is neither hex nor base64: {e}")))?;
+    use prost::Message as _;
+    let decoded = cosmrs::proto::cosmos::base::abci::v1beta1::TxMsgData::decode(bytes.as_slice())
+        .map_err(|e| Error::InvalidResponse(format!("decode TxMsgData: {e}")))?;
+    Ok(Some(
+        decoded
+            .msg_responses
+            .into_iter()
+            .map(|a| (a.type_url, a.value))
+            .collect(),
+    ))
+}
+
+fn event_attr(ev: &Value, key: &str) -> Option<String> {
+    ev.get("attributes")?.as_array()?.iter().find_map(|a| {
+        (a.get("key")?.as_str()? == key)
+            .then(|| a["value"].as_str().unwrap_or_default().to_string())
+    })
+}
+
+fn failure_events(tx: &Value) -> Vec<(String, String)> {
+    let root = tx.get("tx_response").unwrap_or(tx);
+    let mut events: Vec<&Value> = root
+        .get("events")
+        .and_then(Value::as_array)
+        .map(|a| a.iter().collect())
+        .unwrap_or_default();
+    if events.is_empty() {
+        if let Some(logs) = root.get("logs").and_then(Value::as_array) {
+            for log in logs {
+                if let Some(evs) = log.get("events").and_then(Value::as_array) {
+                    events.extend(evs.iter());
+                }
+            }
+        }
+    }
+    events
+        .into_iter()
+        .filter(|e| e.get("type").and_then(Value::as_str) == Some(EXECUTION_FAILED_EVENT))
+        .map(|e| {
+            (
+                event_attr(e, "lane").unwrap_or_default(),
+                event_attr(e, "reason").unwrap_or_default(),
+            )
+        })
+        .collect()
+}
+
+/// Reads the outcome of every `MsgExecuteEVM` / `MsgExecuteCosmos` in a
+/// delivered transaction: the REST tx JSON (`/cosmos/tx/v1beta1/txs/{hash}`,
+/// a block-mode broadcast answer, or [`crate::tx::TxResult::raw`]).
+///
+/// From chain v3.2.8 an authorised execution that fails returns
+/// `success = false` inside a transaction with code 0 and emits
+/// [`EXECUTION_FAILED_EVENT`]; the key's nonce is consumed, so the same
+/// signature cannot be relayed again. The responses are read from
+/// `msg_responses` (or the `data` field), and each failed result takes the
+/// `reason` of the failure event of its lane, in order.
+///
+/// Returns an empty list when the answer carries no responses (a `sync`
+/// broadcast answers before execution; wait for the transaction first).
+///
+/// # Errors
+///
+/// [`Error::InvalidResponse`] when a response does not decode.
+pub fn execution_results(tx: &Value) -> Result<Vec<ExecutionResult>> {
+    use crate::proto::qorechain::abstractaccount::v1 as pb;
+    use prost::Message as _;
+    let Some(responses) = msg_responses_from_json(tx)? else {
+        return Ok(Vec::new());
+    };
+    let mut events = failure_events(tx);
+    let mut out = Vec::new();
+    for (msg_index, (type_url, bytes)) in responses.iter().enumerate() {
+        let mut result = match type_url.as_str() {
+            EXECUTE_EVM_RESPONSE => {
+                let r = pb::MsgExecuteEvmResponse::decode(bytes.as_slice()).map_err(|e| {
+                    Error::InvalidResponse(format!("decode MsgExecuteEVMResponse: {e}"))
+                })?;
+                ExecutionResult {
+                    msg_index,
+                    lane: ExecutionLane::Evm,
+                    success: r.success,
+                    ret: r.ret,
+                    gas_used: r.gas_used,
+                    vm_error: r.vm_error,
+                    reason: None,
+                }
+            }
+            EXECUTE_COSMOS_RESPONSE => {
+                let r = pb::MsgExecuteCosmosResponse::decode(bytes.as_slice()).map_err(|e| {
+                    Error::InvalidResponse(format!("decode MsgExecuteCosmosResponse: {e}"))
+                })?;
+                ExecutionResult {
+                    msg_index,
+                    lane: ExecutionLane::Cosmos,
+                    success: r.success,
+                    ret: Vec::new(),
+                    gas_used: 0,
+                    vm_error: String::new(),
+                    reason: None,
+                }
+            }
+            _ => continue,
+        };
+        if !result.success {
+            let pos = events
+                .iter()
+                .position(|(lane, _)| lane.is_empty() || result.lane.matches(lane));
+            if let Some(pos) = pos {
+                result.reason = Some(events.remove(pos).1);
+            }
+        }
+        out.push(result);
+    }
+    Ok(out)
+}
+
+/// As [`execution_results`], but returns [`Error::ExecutionFailed`] when any
+/// execution failed even though the transaction code is 0, so a relayer does
+/// not report a failed execution as success.
+///
+/// # Errors
+///
+/// [`Error::ExecutionFailed`] naming the first failed message and its reason,
+/// or the errors of [`execution_results`].
+pub fn require_executions_succeeded(tx: &Value) -> Result<Vec<ExecutionResult>> {
+    let results = execution_results(tx)?;
+    if let Some(f) = results.iter().find(|r| !r.success) {
+        let why = f
+            .reason
+            .clone()
+            .filter(|r| !r.is_empty())
+            .or_else(|| (!f.vm_error.is_empty()).then(|| f.vm_error.clone()))
+            .unwrap_or_else(|| "no reason given".into());
+        return Err(Error::ExecutionFailed(format!(
+            "message {} ({:?} lane) was authorised but failed: {why}; its nonce is consumed, so \
+             sign a new execution with the next nonce",
+            f.msg_index, f.lane
+        )));
+    }
+    Ok(results)
+}

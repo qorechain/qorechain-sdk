@@ -88,6 +88,94 @@ pub fn validate_evm_window_targets(targets: &[String]) -> Result<()> {
     Ok(())
 }
 
+/// What an EVM window may reach beyond plain transfers: the v3.2.3 narrowing
+/// and the v3.2.8 grants. All empty / `false` is an unscoped window.
+///
+/// From chain v3.2.8 the standard precompile methods are deny-by-default
+/// through a window: staking delegate / redelegate need the validator in
+/// `staking_validators`, an ICS-20 transfer needs its
+/// `"<source channel>/<receiver>"` in `ibc_receivers`, and undelegate, votes
+/// and withdraw-address changes are refused through the window (use a
+/// PQC-signed Cosmos transaction). Rotating, migrating or re-registering the
+/// PQC key closes the window.
+#[derive(Debug, Clone, Default, PartialEq, Eq)]
+pub struct EvmWindowScope {
+    /// Only plain native transfers (v3.2.3).
+    pub native_only: bool,
+    /// The recipients the window is narrowed to, 0x addresses (v3.2.3).
+    pub allowed_targets: Vec<String>,
+    /// Validator contracts the window may call, 0x 20-byte addresses (v3.2.8).
+    pub validators: Vec<String>,
+    /// Validators staking delegate / redelegate may use, `qorvaloper1...`
+    /// (v3.2.8).
+    pub staking_validators: Vec<String>,
+    /// ICS-20 destinations, `"<source channel>/<receiver>"`, e.g.
+    /// `"channel-0/cosmos1..."` (v3.2.8).
+    pub ibc_receivers: Vec<String>,
+}
+
+fn is_hex_address(s: &str) -> bool {
+    matches!(s.strip_prefix("0x").or_else(|| s.strip_prefix("0X")), Some(h) if h.len() == 40 && h.bytes().all(|b| b.is_ascii_hexdigit()))
+}
+
+/// Light format checks on an [`EvmWindowScope`]: `allowed_targets` as in
+/// [`validate_evm_window_targets`], `validators` 0x 20-byte addresses,
+/// `staking_validators` bech32 `qorvaloper` addresses, `ibc_receivers`
+/// `"<source channel>/<receiver>"`, and no duplicates in any list.
+///
+/// # Errors
+///
+/// [`Error::EvmWindow`] naming the entry.
+pub fn validate_evm_window_scope(scope: &EvmWindowScope) -> Result<()> {
+    validate_evm_window_targets(&scope.allowed_targets)?;
+    let dup = |list: &[String], name: &str| -> Result<()> {
+        let mut seen = std::collections::HashSet::new();
+        for v in list {
+            if !seen.insert(v.to_ascii_lowercase()) {
+                return Err(Error::EvmWindow(format!("{name} lists {v} more than once")));
+            }
+        }
+        Ok(())
+    };
+    for v in &scope.validators {
+        if !is_hex_address(v) {
+            return Err(Error::EvmWindow(format!(
+                "validators: {v:?} is not a 0x-prefixed 20-byte address"
+            )));
+        }
+    }
+    dup(&scope.validators, "validators")?;
+    for v in &scope.staking_validators {
+        let ok = matches!(bech32::decode(v), Ok((hrp, _)) if hrp.as_str() == "qorvaloper");
+        if !ok {
+            return Err(Error::EvmWindow(format!(
+                "staking_validators: {v:?} is not a qorvaloper1... address"
+            )));
+        }
+    }
+    dup(&scope.staking_validators, "staking_validators")?;
+    // The chain's ParseIBCReceiver: 1 to 256 characters, no whitespace or
+    // comma, a "/" with text on both sides. Duplicates compare exactly.
+    let mut seen_ibc = std::collections::HashSet::new();
+    for r in &scope.ibc_receivers {
+        let ok = !r.is_empty()
+            && r.len() <= 256
+            && !r.contains(|c: char| c.is_whitespace() || c == ',')
+            && matches!(r.find('/'), Some(i) if i > 0 && i < r.len() - 1);
+        if !ok {
+            return Err(Error::EvmWindow(format!(
+                "ibc_receivers: {r:?} is not \"<source channel>/<receiver>\""
+            )));
+        }
+        if !seen_ibc.insert(r.as_str()) {
+            return Err(Error::EvmWindow(format!(
+                "ibc_receivers lists {r} more than once"
+            )));
+        }
+    }
+    Ok(())
+}
+
 /// The codespace every window refusal is reported under.
 pub const EVM_WINDOW_CODESPACE: &str = "pqc";
 

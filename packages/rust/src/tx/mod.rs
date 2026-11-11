@@ -69,8 +69,14 @@ pub use errors::{
 };
 pub use gas::{
     calculate_fee, estimate_fee, estimate_gas, estimate_gas_wanted, exact_gas_applies,
-    exact_hybrid_gas, hybrid_gas_wanted, is_hybrid_tx, GasEstimate, GasPrice,
-    DEFAULT_GAS_MULTIPLIER, DEFAULT_GAS_PRICE, EXACT_GAS_HEADROOM, EXACT_GAS_MULTIPLIER, GAS_AUTO,
+    exact_hybrid_gas, fetch_evm_limits, fetch_min_gas_price_uqor, hybrid_gas_wanted, is_hybrid_tx,
+    min_gas_price_uqor_from_params, needs_simulated_gas, parse_evm_limits,
+    recommended_gas_price_from_min, recommended_gas_price_uqor, refuse_fixed_gas_for,
+    tx_needs_simulated_gas, validate_cosmos_gas_limit, validate_evm_gas_limit, EvmLimits,
+    GasEstimate, GasPrice, DEFAULT_EVM_TX_MAX_GAS, DEFAULT_GAS_MULTIPLIER, DEFAULT_GAS_PRICE,
+    EVM_LIMITS_PATH, EXACT_GAS_HEADROOM, EXACT_GAS_MULTIPLIER, FEEMARKET_PARAMS_PATH, GAS_AUTO,
+    MAX_COSMOS_TX_GAS, MIN_GAS_PRICE_FLOOR_UQOR, RECOMMENDED_GAS_PRICE_FLOOR_UQOR,
+    SIMULATION_REQUIRED_TYPE_URLS, WASM_MIN_GAS_MULTIPLIER,
 };
 pub use search::{
     build_event_query, get_block, get_latest_block, get_tx, search_txs, TxSearchResult,
@@ -601,6 +607,7 @@ fn fee_to_proto(fee: &Fee) -> Result<ProtoFee> {
             .parse::<u64>()
             .map_err(|_| Error::Denom(format!("invalid gas: {:?}", fee.gas)))?
     };
+    gas::validate_cosmos_gas_limit(gas_limit)?;
     Ok(ProtoFee {
         amount,
         gas_limit,

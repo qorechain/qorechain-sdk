@@ -48,3 +48,18 @@ pub fn to_any<M: Message>(msg: &M, type_url: &str) -> Any {
 pub fn from_any<M: Message + Default>(any: &Any) -> Result<M, prost::DecodeError> {
     M::decode(any.value.as_slice())
 }
+
+/// Reads an optional integer field of a gRPC-gateway JSON object, given as a
+/// string or a number. `Ok(None)` when absent or null.
+pub(crate) fn json_num<T: std::str::FromStr>(
+    v: &serde_json::Value,
+    field: &str,
+) -> crate::Result<Option<T>> {
+    let bad = || crate::Error::InvalidResponse(format!("params field {field:?} is not an integer"));
+    match v.get(field) {
+        None | Some(serde_json::Value::Null) => Ok(None),
+        Some(serde_json::Value::String(s)) => s.trim().parse().map(Some).map_err(|_| bad()),
+        Some(serde_json::Value::Number(n)) => n.to_string().parse().map(Some).map_err(|_| bad()),
+        Some(_) => Err(bad()),
+    }
+}

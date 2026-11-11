@@ -496,17 +496,32 @@ async fn abstractaccount_reads() {
 // Governance parameter updates
 // --------------------------------------------------------------------------- //
 
+fn full_crossvm(targets: Vec<String>) -> msg::crossvm::CrossvmParamsUpdate {
+    msg::crossvm::CrossvmParamsUpdate {
+        max_message_size: Some(65_536),
+        max_queue_size: Some(1000),
+        queue_timeout_blocks: Some(100),
+        enabled: Some(true),
+        bridge_allowed_targets: Some(targets),
+        bridge_target_pins: Some(vec![]),
+        max_pending_per_sender: Some(0),
+        max_cosmos_tx_gas: Some(0),
+        record_retention_blocks: Some(0),
+        max_block_wasm_gas: Some(0),
+        max_tx_wasm_share_bps: Some(0),
+        max_block_level_wasm_gas: Some(0),
+        queue_wasm_reserve_bps: Some(0),
+        wasm_congestion_max_factor: Some(0),
+        wasm_congestion_target_bps: Some(0),
+        max_block_upload_bps: Some(0),
+        max_queue_timeouts_per_block: Some(0),
+    }
+}
+
 #[test]
 fn crossvm_update_params() {
-    let p = msg::crossvm::update_params(
-        GOV,
-        65_536,
-        1000,
-        100,
-        true,
-        vec![format!("cosmwasm:{ADDR}")],
-    )
-    .unwrap();
+    let p =
+        msg::crossvm::update_params(GOV, &full_crossvm(vec![format!("cosmwasm:{ADDR}")])).unwrap();
     let any = msg::crossvm::update_params_any(&p);
     assert_eq!(any.type_url, "/qorechain.crossvm.v1.MsgUpdateParams");
     let back =
@@ -516,36 +531,48 @@ fn crossvm_update_params() {
         back.bridge_allowed_targets,
         vec![format!("cosmwasm:{ADDR}")]
     );
-    assert!(msg::crossvm::update_params(GOV, 0, 1000, 100, true, vec![]).is_err());
-    assert!(msg::crossvm::update_params("", 1, 1, 1, true, vec![]).is_err());
-    assert!(msg::crossvm::update_params(GOV, 1, 1, 1, true, vec!["cosmwasm".into()]).is_err());
-    assert!(msg::crossvm::update_params(GOV, 1, 1, 1, true, vec![":x".into()]).is_err());
+    let mut zero = full_crossvm(vec![]);
+    zero.max_message_size = Some(0);
+    assert!(msg::crossvm::update_params(GOV, &zero).is_err());
+    assert!(msg::crossvm::update_params("", &full_crossvm(vec![])).is_err());
+    assert!(msg::crossvm::update_params(GOV, &full_crossvm(vec!["cosmwasm".into()])).is_err());
+    assert!(msg::crossvm::update_params(GOV, &full_crossvm(vec![":x".into()])).is_err());
+}
+
+fn full_rdk() -> msg::rdk::RdkParamsUpdate {
+    msg::rdk::RdkParamsUpdate {
+        max_rollups: Some(100),
+        min_stake_for_rollup: Some(10_000_000_000),
+        rollup_creation_burn_rate: Some("0.01".into()),
+        default_challenge_window: Some(604_800),
+        max_da_blob_size: Some(2_097_152),
+        blob_retention_blocks: Some(432_000),
+        max_batches_per_block: Some(10),
+        finalized_batch_retention_blocks: Some(0),
+        max_posted_data_bytes: Some(0),
+        max_posted_data_bytes_per_block: Some(0),
+        posted_data_fee_per_byte: Some(0),
+        posted_data_retention_blocks: Some(0),
+        min_submitter_bond: Some(0),
+    }
 }
 
 #[test]
 fn rdk_update_params() {
-    let p = RdkParams {
-        authority: GOV.into(),
-        max_rollups: 100,
-        min_stake_for_rollup: 10_000_000_000,
-        rollup_creation_burn_rate: "0.01".into(),
-        default_challenge_window: 604_800,
-        max_da_blob_size: 2_097_152,
-        blob_retention_blocks: 432_000,
-        max_batches_per_block: 10,
-    };
-    let any = msg::rdk::update_params_any(p.clone()).unwrap();
+    let p = full_rdk();
+    let any = msg::rdk::update_params_any(GOV, &p).unwrap();
     assert_eq!(any.type_url, "/qorechain.rdk.v1.MsgUpdateParams");
-    assert_eq!(RdkParams::decode(any.value.as_slice()).unwrap(), p);
+    let back = RdkParams::decode(any.value.as_slice()).unwrap();
+    assert_eq!(back.authority, GOV);
+    assert_eq!(back.max_rollups, 100);
+    assert_eq!(back.rollup_creation_burn_rate, "0.01");
     for rate in ["1", "1.0", "", "-0.1", "0.x", "2.5"] {
         let mut q = p.clone();
-        q.rollup_creation_burn_rate = rate.into();
-        assert!(msg::rdk::update_params(q).is_err(), "{rate}");
+        q.rollup_creation_burn_rate = Some(rate.into());
+        assert!(msg::rdk::update_params(GOV, &q).is_err(), "{rate}");
     }
     let mut q = p.clone();
-    q.rollup_creation_burn_rate = "0".into();
-    msg::rdk::update_params(q).unwrap();
-    let mut q = p;
-    q.authority.clear();
-    assert!(msg::rdk::update_params(q).is_err());
+    q.rollup_creation_burn_rate = Some("0".into());
+    msg::rdk::update_params(GOV, &q).unwrap();
+    assert!(msg::rdk::update_params("", &p).is_err());
 }

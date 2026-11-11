@@ -30,4 +30,7 @@ plugins:
       # Reuse the Cosmos coin type re-exported by cosmrs instead of emitting our
       # own copy, so generated messages share the wire/Any representation.
       - extern_path=.cosmos.base.v1beta1=::cosmrs::proto::cosmos::base::v1beta1
+      # Pagination (crossvm pending query) and Any (pqc) come from cosmrs too.
+      - extern_path=.cosmos.base.query.v1beta1=::cosmrs::proto::cosmos::base::query::v1beta1
+      - extern_path=.google.protobuf.Any=::cosmrs::Any
       - compile_well_known_types=false

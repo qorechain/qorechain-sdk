@@ -169,7 +169,12 @@ const STATIC_FALLBACK_GAS: &str = "200000";
 
 impl Fees {
     /// Estimates a fee for the given urgency via the AI fee oracle, falling back
-    /// to a deterministic static fee when the oracle is unavailable. The returned
+    /// to a deterministic static fee when the oracle is unavailable.
+    ///
+    /// The gas is a fixed 200,000: do not use it for a transaction that carries
+    /// a CosmWasm execute / instantiate / migrate or a `MsgCrossVMCall` (their
+    /// gas varies; use auto / simulation, see
+    /// [`crate::tx::refuse_fixed_gas_for`]). The returned
     /// value is a Native `StdFee`-shaped JSON document
     /// (`{"amount":[...],"gas":...}`).
     pub async fn estimate(&self, urgency: &str) -> Result<Value> {
@@ -193,6 +198,25 @@ impl Fees {
             STATIC_FALLBACK_DENOM,
             "",
         )
+    }
+}
+
+impl Fees {
+    /// As [`Fees::estimate`], for a transaction carrying messages of
+    /// `type_urls`: refuses the fixed 200,000 gas when one of them is a
+    /// CosmWasm execute / instantiate / migrate or a `MsgCrossVMCall`.
+    ///
+    /// # Errors
+    ///
+    /// [`Error::InvalidInput`] asking for simulation ("auto") or an explicit
+    /// gas limit; otherwise as [`Fees::estimate`].
+    pub async fn estimate_for<'a>(
+        &self,
+        urgency: &str,
+        type_urls: impl IntoIterator<Item = &'a str>,
+    ) -> Result<Value> {
+        crate::tx::refuse_fixed_gas_for(type_urls)?;
+        self.estimate(urgency).await
     }
 }
 

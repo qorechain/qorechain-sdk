@@ -114,6 +114,12 @@ pub use authenticator::{
     DERIVATION_LEGACY,
 };
 
+pub use authenticator::{
+    authenticator_link_message, authenticator_link_proof_ed25519, authenticator_link_proof_eip191,
+    authenticator_link_proof_secp256k1, eip191_digest, verify_authenticator_link_proof,
+    AuthenticatorLinkProof, AUTHENTICATOR_LINK_HEADER,
+};
+
 pub use unified::{
     addresses_from_20, derive_unified_account, qore_addresses, unified_account_from_seed,
     SeedPqcOptions, UnifiedAccount, UnifiedAddresses,
@@ -141,9 +147,10 @@ pub use signbytes::{
 pub use evm_window::{
     classify_evm_window_error, classify_tx_error, evm_window_path, get_evm_window,
     parse_evm_window, validate_evm_window_blocks, validate_evm_window_max_txs,
-    validate_evm_window_max_value, validate_evm_window_params, EvmWindowParams, EvmWindowRefusal,
-    EvmWindowStatus, ERR_EVM_WINDOW_EXHAUSTED, ERR_INVALID_EVM_WINDOW, ERR_NO_EVM_WINDOW,
-    EVM_WINDOW_CODESPACE, EVM_WINDOW_QUERY_PATH, MAX_EVM_WINDOW_BLOCKS, MAX_EVM_WINDOW_TXS,
+    validate_evm_window_max_value, validate_evm_window_params, validate_evm_window_scope,
+    EvmWindowParams, EvmWindowRefusal, EvmWindowScope, EvmWindowStatus, ERR_EVM_WINDOW_EXHAUSTED,
+    ERR_INVALID_EVM_WINDOW, ERR_NO_EVM_WINDOW, EVM_WINDOW_CODESPACE, EVM_WINDOW_QUERY_PATH,
+    MAX_EVM_WINDOW_BLOCKS, MAX_EVM_WINDOW_TXS,
 };
 
 pub use classical_key::{validate_classical_key_for_sender, ClassicalKeyMatch};
@@ -151,7 +158,10 @@ pub use evm_delegation::{
     classify_evm_delegation_error, get_evm_delegation_consent, EvmDelegationConsent,
     EvmDelegationRefusal, EVM_DELEGATION_CLEAR, MAX_EVM_DELEGATION_CONSENT_BLOCKS,
 };
-pub use msg::abstractaccount::{validate_spending_rules, MAX_ALLOWED_EVM_CALLS, MAX_DENOM_LIMITS};
+pub use msg::abstractaccount::{
+    check_value_permission_rules, link_authenticator_msgs, validate_spending_rules,
+    LinkAuthenticatorParams, MAX_ALLOWED_EVM_CALLS, MAX_DENOM_LIMITS, VALUE_PERMISSIONS,
+};
 pub use query::{JsonRpcClient, QorClient, RestClient, TypedQueryClient, QOR_METHODS};
 pub use upgrades::{
     clear_upgrade_cache, is_upgrade_applied, require_upgrade_applied, upgrade_applied_height,
@@ -159,7 +169,9 @@ pub use upgrades::{
 };
 
 pub use abstractaccount::{
-    fetch_authenticators, fetch_spending_rules, AuthenticatorRule, AuthenticatorView, SpendingRules,
+    execution_results, fetch_authenticators, fetch_spending_rules, require_executions_succeeded,
+    AuthenticatorRule, AuthenticatorView, ExecutionLane, ExecutionResult, SpendingRules,
+    EXECUTION_FAILED_EVENT,
 };
 
 pub use kem::{

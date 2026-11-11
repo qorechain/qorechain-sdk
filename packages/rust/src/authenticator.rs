@@ -116,7 +116,8 @@ pub fn evm_auth_sign_bytes(
 /// # Errors
 ///
 /// [`Error::Pqc`](crate::Error::Pqc) when `gas_limit` is zero; the chain
-/// refuses it.
+/// refuses it. [`Error::InvalidInput`](crate::Error::InvalidInput) when it is
+/// above the EVM gas cap ([`crate::tx::DEFAULT_EVM_TX_MAX_GAS`], chain v3.2.8).
 #[allow(clippy::too_many_arguments)]
 pub fn evm_auth_sign_bytes_v2(
     chain_id: &str,
@@ -134,6 +135,8 @@ pub fn evm_auth_sign_bytes_v2(
                 .into(),
         ));
     }
+    // From chain v3.2.8 an EVM gas limit above the cap is refused.
+    crate::tx::validate_evm_gas_limit(gas_limit, None)?;
     let mut body = Vec::new();
     body.extend_from_slice(b"qorechain-evm-auth-v2");
     lp(&mut body, chain_id.as_bytes());
@@ -531,4 +534,275 @@ pub fn rotate_pqc_key_msg_from_mnemonic(
         old_keypair: old_kp,
         new_keypair: new_kp,
     })
+}
+
+// ---- authenticator link possession proof (chain v3.2.8) ----
+
+/// The first line of the text a key signs to prove it may be linked
+/// ([`authenticator_link_message`]).
+pub const AUTHENTICATOR_LINK_HEADER: &str = "QoreChain authenticator link v1";
+
+/// The `ed25519` authenticator scheme.
+pub const SCHEME_ED25519: &str = "ed25519";
+/// The `secp256k1` authenticator scheme (a 33-byte compressed key, or a 20-byte
+/// Ethereum address for MetaMask-style links).
+pub const SCHEME_SECP256K1: &str = "secp256k1";
+
+/// The text the key being linked signs for `MsgRegisterAuthenticator.possession_proof`
+/// (required from chain v3.2.8):
+///
+/// ```text
+/// QoreChain authenticator link v1
+/// chain: <chain_id>
+/// account: <account_address>
+/// scheme: <scheme>
+/// key: <lowercase hex of pubkey>
+/// ```
+///
+/// Lines are joined with `"\n"`, with no trailing newline. `account_address` is
+/// the message's `account_address` and `pubkey` exactly the bytes put in its
+/// `pubkey` field: a 32-byte ed25519 key, a 33-byte compressed secp256k1 key, or
+/// the 20-byte Ethereum address of a MetaMask-style link.
+///
+/// How the chain checks the proof, per key:
+/// - ed25519: an ed25519 signature over these UTF-8 bytes (a wallet's
+///   `signMessage(text)`).
+/// - secp256k1, 33-byte key: a 64-byte `r || s` (low-S) ECDSA signature over
+///   `sha256(text)`.
+/// - secp256k1, 20-byte address: an EIP-191 `personal_sign` of the text, 65
+///   bytes `r || s || v` with `v` 27/28 (0/1 also accepted).
+///
+/// A browser wallet signs this text itself; the `authenticator_link_proof_*`
+/// helpers sign it from a local private key.
+pub fn authenticator_link_message(
+    chain_id: &str,
+    account_address: &str,
+    scheme: &str,
+    pubkey: &[u8],
+) -> String {
+    format!(
+        "{AUTHENTICATOR_LINK_HEADER}\nchain: {chain_id}\naccount: {account_address}\nscheme: {scheme}\nkey: {}",
+        to_hex_lower(pubkey)
+    )
+}
+
+/// A key to link plus its possession proof, from the
+/// `authenticator_link_proof_*` helpers. Pass the three fields to
+/// [`crate::msg::abstractaccount::register_authenticator`] or
+/// [`crate::msg::abstractaccount::link_authenticator_msgs`].
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub struct AuthenticatorLinkProof {
+    /// The scheme (`"ed25519"` or `"secp256k1"`).
+    pub scheme: String,
+    /// The bytes to put in `MsgRegisterAuthenticator.pubkey`.
+    pub pubkey: Vec<u8>,
+    /// The signature to put in `MsgRegisterAuthenticator.possession_proof`.
+    pub possession_proof: Vec<u8>,
+}
+
+/// Signs the link text for an ed25519 key given its 32-byte seed (private key),
+/// as a Phantom-style wallet would with `signMessage`.
+///
+/// # Errors
+///
+/// [`Error::InvalidInput`] when the seed is not 32 bytes.
+pub fn authenticator_link_proof_ed25519(
+    seed: &[u8],
+    chain_id: &str,
+    account_address: &str,
+) -> Result<AuthenticatorLinkProof> {
+    use ed25519_dalek::Signer;
+    let seed: [u8; 32] = seed.try_into().map_err(|_| {
+        Error::InvalidInput(format!(
+            "ed25519 link proof: the seed must be 32 bytes, got {}",
+            seed.len()
+        ))
+    })?;
+    let key = ed25519_dalek::SigningKey::from_bytes(&seed);
+    let pubkey = key.verifying_key().to_bytes().to_vec();
+    let text = authenticator_link_message(chain_id, account_address, SCHEME_ED25519, &pubkey);
+    let sig = key.sign(text.as_bytes());
+    Ok(AuthenticatorLinkProof {
+        scheme: SCHEME_ED25519.into(),
+        pubkey,
+        possession_proof: sig.to_bytes().to_vec(),
+    })
+}
+
+fn secp_signing_key(private_key: &[u8], what: &str) -> Result<k256::ecdsa::SigningKey> {
+    k256::ecdsa::SigningKey::from_slice(private_key)
+        .map_err(|e| Error::InvalidInput(format!("{what}: invalid secp256k1 private key: {e}")))
+}
+
+/// Signs the link text for a secp256k1 key in its 33-byte compressed form: a
+/// 64-byte `r || s` (low-S) signature over `sha256(text)`.
+///
+/// # Errors
+///
+/// [`Error::InvalidInput`] when the private key is not a valid secp256k1 scalar.
+pub fn authenticator_link_proof_secp256k1(
+    private_key: &[u8],
+    chain_id: &str,
+    account_address: &str,
+) -> Result<AuthenticatorLinkProof> {
+    use k256::ecdsa::signature::hazmat::PrehashSigner;
+    let key = secp_signing_key(private_key, "secp256k1 link proof")?;
+    let pubkey = key
+        .verifying_key()
+        .to_encoded_point(true)
+        .as_bytes()
+        .to_vec();
+    let text = authenticator_link_message(chain_id, account_address, SCHEME_SECP256K1, &pubkey);
+    let digest = sha256_32(text.as_bytes());
+    let sig: k256::ecdsa::Signature = key
+        .sign_prehash(&digest)
+        .map_err(|e| Error::InvalidInput(format!("secp256k1 link proof: {e}")))?;
+    let sig = sig.normalize_s().unwrap_or(sig);
+    Ok(AuthenticatorLinkProof {
+        scheme: SCHEME_SECP256K1.into(),
+        pubkey,
+        possession_proof: sig.to_bytes().to_vec(),
+    })
+}
+
+/// The EIP-191 `personal_sign` digest of `text`:
+/// `keccak256("\x19Ethereum Signed Message:\n" + len(text) + text)`.
+pub fn eip191_digest(text: &[u8]) -> [u8; 32] {
+    use sha3::Keccak256;
+    let mut h = Keccak256::new();
+    Digest::update(
+        &mut h,
+        format!("\x19Ethereum Signed Message:\n{}", text.len()).as_bytes(),
+    );
+    Digest::update(&mut h, text);
+    h.finalize().into()
+}
+
+fn eth_address_of(key: &k256::ecdsa::VerifyingKey) -> [u8; 20] {
+    use sha3::Keccak256;
+    let point = key.to_encoded_point(false);
+    let hash = Keccak256::digest(&point.as_bytes()[1..]);
+    let mut out = [0u8; 20];
+    out.copy_from_slice(&hash[12..]);
+    out
+}
+
+/// Signs the link text for a MetaMask-style link: the `pubkey` is the 20-byte
+/// Ethereum address of the secp256k1 key and the proof an EIP-191
+/// `personal_sign` of the text, 65 bytes `r || s || v` with `v` 27/28.
+///
+/// # Errors
+///
+/// [`Error::InvalidInput`] when the private key is not a valid secp256k1 scalar.
+pub fn authenticator_link_proof_eip191(
+    private_key: &[u8],
+    chain_id: &str,
+    account_address: &str,
+) -> Result<AuthenticatorLinkProof> {
+    let key = secp_signing_key(private_key, "EIP-191 link proof")?;
+    let pubkey = eth_address_of(key.verifying_key()).to_vec();
+    let text = authenticator_link_message(chain_id, account_address, SCHEME_SECP256K1, &pubkey);
+    let digest = eip191_digest(text.as_bytes());
+    let (sig, recid) = key
+        .sign_prehash_recoverable(&digest)
+        .map_err(|e| Error::InvalidInput(format!("EIP-191 link proof: {e}")))?;
+    let mut proof = sig.to_bytes().to_vec();
+    proof.push(27 + recid.to_byte());
+    Ok(AuthenticatorLinkProof {
+        scheme: SCHEME_SECP256K1.into(),
+        pubkey,
+        possession_proof: proof,
+    })
+}
+
+/// Checks a possession proof the way the chain does from v3.2.8 (see
+/// [`authenticator_link_message`]), so a wrong proof is caught before it is
+/// broadcast.
+///
+/// # Errors
+///
+/// [`Error::InvalidInput`] naming what does not match: an empty proof, a key of
+/// the wrong length (a 65-byte uncompressed secp256k1 key is refused), a
+/// scheme other than `ed25519` / `secp256k1`, or a signature that does not
+/// verify.
+pub fn verify_authenticator_link_proof(
+    chain_id: &str,
+    account_address: &str,
+    scheme: &str,
+    pubkey: &[u8],
+    possession_proof: &[u8],
+) -> Result<()> {
+    use k256::ecdsa::signature::hazmat::PrehashVerifier;
+    let bad = |m: String| Error::InvalidInput(format!("authenticator link proof: {m}"));
+    if possession_proof.is_empty() {
+        return Err(bad(missing_proof_hint()));
+    }
+    let text = authenticator_link_message(chain_id, account_address, scheme, pubkey);
+    match (scheme, pubkey.len()) {
+        (SCHEME_ED25519, 32) => {
+            let key_bytes: [u8; 32] = pubkey.try_into().expect("length checked");
+            let key = ed25519_dalek::VerifyingKey::from_bytes(&key_bytes)
+                .map_err(|e| bad(format!("invalid ed25519 key: {e}")))?;
+            let sig = ed25519_dalek::Signature::from_slice(possession_proof)
+                .map_err(|_| bad("an ed25519 proof is 64 bytes".into()))?;
+            key.verify_strict(text.as_bytes(), &sig)
+                .map_err(|_| bad("the ed25519 signature does not verify".into()))
+        }
+        (SCHEME_SECP256K1, 33) => {
+            let key = k256::ecdsa::VerifyingKey::from_sec1_bytes(pubkey)
+                .map_err(|e| bad(format!("invalid secp256k1 key: {e}")))?;
+            let sig = k256::ecdsa::Signature::from_slice(possession_proof)
+                .map_err(|_| bad("a secp256k1 proof is 64 bytes r || s".into()))?;
+            if sig.normalize_s().is_some() {
+                return Err(bad("the secp256k1 signature is not low-S".into()));
+            }
+            key.verify_prehash(&sha256_32(text.as_bytes()), &sig)
+                .map_err(|_| bad("the secp256k1 signature does not verify".into()))
+        }
+        (SCHEME_SECP256K1, 20) => {
+            if possession_proof.len() != 65 {
+                return Err(bad("an EIP-191 proof is 65 bytes r || s || v".into()));
+            }
+            let v = possession_proof[64];
+            let rec = match v {
+                27 | 28 => v - 27,
+                0 | 1 => v,
+                _ => return Err(bad(format!("EIP-191 v must be 27/28 (or 0/1), got {v}"))),
+            };
+            let sig = k256::ecdsa::Signature::from_slice(&possession_proof[..64])
+                .map_err(|_| bad("invalid EIP-191 signature".into()))?;
+            let recid = k256::ecdsa::RecoveryId::from_byte(rec)
+                .ok_or_else(|| bad("invalid EIP-191 recovery id".into()))?;
+            let key = k256::ecdsa::VerifyingKey::recover_from_prehash(
+                &eip191_digest(text.as_bytes()),
+                &sig,
+                recid,
+            )
+            .map_err(|_| bad("the EIP-191 signature does not recover a key".into()))?;
+            if eth_address_of(&key).as_slice() != pubkey {
+                return Err(bad(
+                    "the EIP-191 signature was made by another address".into(),
+                ));
+            }
+            Ok(())
+        }
+        (SCHEME_SECP256K1, 65) => Err(bad(
+            "an uncompressed 65-byte secp256k1 key is refused; link the 33-byte compressed key"
+                .into(),
+        )),
+        (SCHEME_ED25519 | SCHEME_SECP256K1, n) => Err(bad(format!(
+            "a {scheme} key of {n} bytes cannot be linked (ed25519: 32; secp256k1: 33, or a 20-byte Ethereum address)"
+        ))),
+        _ => Err(bad(format!(
+            "unknown scheme {scheme:?} (use \"ed25519\" or \"secp256k1\")"
+        ))),
+    }
+}
+
+/// How to make a possession proof, for the error a missing one returns.
+pub(crate) fn missing_proof_hint() -> String {
+    "possession_proof is required from chain v3.2.8: sign \
+     authenticator_link_message(chain_id, account_address, scheme, pubkey) with the key being \
+     linked (or use authenticator_link_proof_ed25519 / _secp256k1 / _eip191)"
+        .into()
 }

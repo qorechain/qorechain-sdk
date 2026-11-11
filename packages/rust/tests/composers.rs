@@ -52,6 +52,9 @@ fn sample_svm_params() -> msg::svm::SvmParams {
         svm_slot_offset: 0,
         default_sig_scheme: 1,
         max_cpi: 4,
+        max_custody_uqor: 1_000_000_000,
+        max_custody_hard_uqor: 5_000_000_000,
+        max_account_excess_uqor: 10_000_000,
     }
 }
 
@@ -276,7 +279,11 @@ fn all_custom_type_urls_are_produced() {
         ),
         (
             "/qorechain.svm.v1.MsgUpdateParams",
-            msg::svm::update_params_any(addr, sample_svm_params()),
+            msg::svm::update_params_any(
+                addr,
+                &msg::svm::SvmParamsUpdate::from_params(&sample_svm_params()),
+            )
+            .unwrap(),
         ),
         // lightnode (4)
         (
@@ -577,7 +584,7 @@ fn rotate_pqc_key_round_trips_through_any() {
 fn svm_update_params_round_trips_through_any() {
     const GOV: &str = "qor10d07y265gmmuvt4z0w9aw880jnsr700j6z2nqt";
     let params = sample_svm_params();
-    let m = msg::svm::update_params(GOV, params.clone());
+    let m = msg::svm::update_params(GOV, &msg::svm::SvmParamsUpdate::from_params(&params)).unwrap();
     let any = msg::to_any(&m, msg::svm::UPDATE_PARAMS);
     assert_eq!(any.type_url, "/qorechain.svm.v1.MsgUpdateParams");
     assert_eq!(msg::svm::UPDATE_PARAMS, "/qorechain.svm.v1.MsgUpdateParams");
@@ -595,17 +602,21 @@ fn svm_update_params_round_trips_through_any() {
     assert_eq!(got.svm_slot_offset, params.svm_slot_offset);
     assert_eq!(got.default_sig_scheme, params.default_sig_scheme);
     assert_eq!(got.max_cpi, params.max_cpi);
+    assert_eq!(got.max_custody_uqor, params.max_custody_uqor);
+    assert_eq!(got.max_custody_hard_uqor, params.max_custody_hard_uqor);
+    assert_eq!(got.max_account_excess_uqor, params.max_account_excess_uqor);
 
     // `enabled = false` is what closes the SVM lane by governance; it must
     // survive the round-trip even though `false` is the proto default and is
     // therefore absent from the wire.
     let off = msg::svm::update_params_any(
         GOV,
-        msg::svm::SvmParams {
+        &msg::svm::SvmParamsUpdate::from_params(&msg::svm::SvmParams {
             enabled: false,
             ..sample_svm_params()
-        },
-    );
+        }),
+    )
+    .unwrap();
     let decoded_off: qorechain::proto::qorechain::svm::v1::MsgUpdateParams =
         msg::from_any(&off).expect("decode");
     assert!(!decoded_off.params.expect("params").enabled);

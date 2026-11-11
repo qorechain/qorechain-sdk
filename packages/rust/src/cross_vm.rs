@@ -50,11 +50,15 @@
 //! message, but setting it changes nothing on a current chain.
 
 use crate::error::{Error, Result};
-use crate::msg::crossvm::{cross_vm_call_any, CROSS_VM_CALL_RESPONSE};
+use crate::msg::crossvm::{
+    cross_vm_call, validate_async_gas, CROSS_VM_CALL, CROSS_VM_CALL_RESPONSE,
+};
+use crate::msg::to_any;
 use crate::proto::qorechain::crossvm::v1 as pb;
 use crate::query::QorClient;
 use crate::tx::{
-    broadcast, send_messages, BroadcastMode, BuiltTx, Coin as TxCoin, Fee, SendMessagesParams,
+    broadcast, calculate_fee, send_messages, BroadcastMode, BuiltTx, Coin as TxCoin, Fee, GasPrice,
+    SendMessagesParams, DEFAULT_GAS_PRICE, GAS_AUTO,
 };
 use base64::engine::general_purpose::STANDARD as BASE64;
 use base64::Engine;
@@ -133,6 +137,15 @@ pub struct CallOptions {
     /// `executed == false` and no data - read the outcome later with
     /// [`CrossVm::get_message`].
     pub queue: bool,
+    /// For a queued call into CosmWasm (chain v3.2.8): the contract execution
+    /// it may use, in base gas. `0` = the chain default (500,000); a set value
+    /// is 250,000..=10,000,000. Refused on a synchronous call or another VM.
+    pub async_gas_limit: u64,
+    /// For a queued call into CosmWasm (chain v3.2.8): the highest wasm
+    /// congestion factor accepted, in millionths (1,000,000 = 1x). `0` = four
+    /// times the factor at submission. Refused on a synchronous call or
+    /// another VM.
+    pub async_max_factor: u64,
 }
 
 impl CallOptions {
@@ -151,7 +164,22 @@ impl CallOptions {
             payload: payload.into(),
             funds: Vec::new(),
             queue: false,
+            async_gas_limit: 0,
+            async_max_factor: 0,
         }
+    }
+
+    /// Sets the async CosmWasm gas terms (chain v3.2.8, see
+    /// [`CallOptions::async_gas_limit`] and [`CallOptions::async_max_factor`])
+    /// and queues the call. The call holds an escrow of
+    /// `async_gas_limit x factor x gas price` (about 0.2 QOR with the defaults),
+    /// refunded less what it used when it finishes, and pays a queue-slot fee;
+    /// a sender may have at most 100 calls pending.
+    pub fn async_gas(mut self, async_gas_limit: u64, async_max_factor: u64) -> Self {
+        self.queue = true;
+        self.async_gas_limit = async_gas_limit;
+        self.async_max_factor = async_max_factor;
+        self
     }
 
     /// Overrides the source VM.
@@ -262,7 +290,13 @@ pub struct CrossVm {
     pub account_number: u64,
     /// The signer's current account sequence (nonce).
     pub sequence: u64,
-    /// The fee to pay.
+    /// The fee to pay. `fee.gas` must be an explicit gas limit or
+    /// [`GAS_AUTO`]: a cross-VM call has no safe fixed
+    /// gas (the first call of a CosmWasm code in a block costs several times a
+    /// repeat), so an empty or zero gas is refused. With `"auto"` the async
+    /// `call*` methods simulate the transaction, take at least 1.3x the
+    /// simulated gas, and price it at
+    /// [`DEFAULT_GAS_PRICE`].
     pub fee: Fee,
     /// The REST (LCD) URL used to broadcast (`/cosmos/tx/v1beta1/txs`).
     pub rest_url: String,
@@ -282,15 +316,37 @@ impl CrossVm {
     /// Builds + signs a single `MsgCrossVMCall` and broadcasts it, returning the
     /// REST broadcast response JSON.
     pub async fn call(&self, opts: &CallOptions) -> Result<Value> {
-        let built = self.build_call(opts)?;
-        broadcast(&self.rest_url, &built.tx_raw_bytes, self.mode).await
+        self.call_atomic(std::slice::from_ref(opts)).await
     }
 
     /// Builds + signs **one** tx containing N `MsgCrossVMCall` messages (atomic)
     /// and broadcasts it, returning the REST broadcast response JSON.
     pub async fn call_atomic(&self, opts: &[CallOptions]) -> Result<Value> {
-        let built = self.build_atomic(opts)?;
+        let built = self.build_atomic_auto(opts).await?;
         broadcast(&self.rest_url, &built.tx_raw_bytes, self.mode).await
+    }
+
+    /// Builds + signs like [`CrossVm::build_atomic`], resolving a
+    /// [`GAS_AUTO`] gas by simulating against
+    /// [`CrossVm::rest_url`] (at least 1.3x the simulated gas, priced at
+    /// [`DEFAULT_GAS_PRICE`]).
+    ///
+    /// # Errors
+    ///
+    /// As [`CrossVm::build_atomic`], plus simulation errors.
+    pub async fn build_atomic_auto(&self, opts: &[CallOptions]) -> Result<BuiltTx> {
+        if self.fee.gas.trim() != GAS_AUTO {
+            return self.build_atomic(opts);
+        }
+        let messages = self.messages(opts)?;
+        let probe = self.sign(messages.clone(), Fee::default())?;
+        let estimate =
+            crate::tx::estimate_gas_wanted(&self.rest_url, &probe.tx_raw_bytes, 0.0).await?;
+        let price = GasPrice::parse(DEFAULT_GAS_PRICE)?;
+        let mut fee = calculate_fee(estimate.gas_wanted, 1.0, &price);
+        fee.granter = self.fee.granter.clone();
+        fee.payer = self.fee.payer.clone();
+        self.sign(messages, fee)
     }
 
     /// Like [`CrossVm::call`], but also decodes the chain's
@@ -322,8 +378,31 @@ impl CrossVm {
     }
 
     /// Builds + signs one tx containing N `MsgCrossVMCall` messages (does not
-    /// broadcast). Returns an error if `opts` is empty.
+    /// broadcast). Returns an error if `opts` is empty, if a call's async gas
+    /// terms are invalid ([`crate::msg::crossvm::validate_async_gas`]), or if
+    /// `fee.gas` is empty, zero or `"auto"` (use [`CrossVm::build_atomic_auto`]
+    /// or the async `call*` methods for `"auto"`).
     pub fn build_atomic(&self, opts: &[CallOptions]) -> Result<BuiltTx> {
+        let gas = self.fee.gas.trim();
+        if gas == GAS_AUTO {
+            return Err(Error::InvalidInput(
+                "cross_vm: fee.gas \"auto\" needs simulation; use build_atomic_auto or call()"
+                    .into(),
+            ));
+        }
+        if gas.is_empty() || gas.trim_start_matches('0').is_empty() {
+            return Err(Error::InvalidInput(
+                "cross_vm: set fee.gas to \"auto\" (simulation) or an explicit gas limit; a \
+                 cross-VM call has no safe fixed gas (the first CosmWasm call of a code in a \
+                 block costs several times a repeat)"
+                    .into(),
+            ));
+        }
+        let messages = self.messages(opts)?;
+        self.sign(messages, self.fee.clone())
+    }
+
+    fn messages(&self, opts: &[CallOptions]) -> Result<Vec<cosmrs::Any>> {
         if opts.is_empty() {
             return Err(Error::InvalidResponse(
                 "cross_vm: at least one call is required".into(),
@@ -336,8 +415,9 @@ impl CrossVm {
             } else {
                 o.source_vm.as_str()
             };
+            validate_async_gas(&o.target_vm, o.queue, o.async_gas_limit, o.async_max_factor)?;
             let payload = o.payload.to_bytes()?;
-            messages.push(cross_vm_call_any(
+            let mut m = cross_vm_call(
                 self.sender.clone(),
                 source_vm,
                 o.target_vm.clone(),
@@ -345,9 +425,15 @@ impl CrossVm {
                 payload,
                 to_proto_coins(&o.funds),
                 o.queue,
-            ));
+            );
+            m.async_gas_limit = o.async_gas_limit;
+            m.async_max_factor = o.async_max_factor;
+            messages.push(to_any(&m, CROSS_VM_CALL));
         }
+        Ok(messages)
+    }
 
+    fn sign(&self, messages: Vec<cosmrs::Any>, fee: Fee) -> Result<BuiltTx> {
         send_messages(SendMessagesParams {
             private_key: self.private_key.clone(),
             public_key: self.public_key.clone(),
@@ -355,7 +441,7 @@ impl CrossVm {
             chain_id: self.chain_id.clone(),
             account_number: self.account_number,
             sequence: self.sequence,
-            fee: self.fee.clone(),
+            fee,
             memo: String::new(),
             timeout_height: 0,
         })

@@ -283,6 +283,11 @@ pub fn open_evm_window(
         // `open_evm_window_scoped`, so a node below v3.2.3 accepts the message.
         native_only: false,
         allowed_targets: Vec::new(),
+        // The v3.2.8 grants stay off the wire unless set with
+        // `open_evm_window_with_scope`.
+        validators: Vec::new(),
+        staking_validators: Vec::new(),
+        ibc_receivers: Vec::new(),
     })
 }
 
@@ -327,6 +332,56 @@ pub fn open_evm_window_scoped(
     msg.native_only = native_only;
     msg.allowed_targets = allowed_targets;
     Ok(msg)
+}
+
+/// Builds `MsgOpenEVMWindow` with a full [`EvmWindowScope`](crate::evm_window::EvmWindowScope):
+/// the v3.2.3 narrowing (`native_only`, `allowed_targets`) plus the v3.2.8
+/// grants (`validators`, `staking_validators`, `ibc_receivers`).
+///
+/// From v3.2.8 the standard precompile methods are deny-by-default through a
+/// window: staking delegate / redelegate need the validator in
+/// `staking_validators`, an ICS-20 transfer needs `"<channel>/<receiver>"` in
+/// `ibc_receivers`, and undelegate, votes and withdraw-address changes are
+/// refused through the window (send them as a PQC-signed Cosmos
+/// transaction). Rotating, migrating or re-registering the PQC key closes the
+/// window. A node below a field's version refuses a message that sets it.
+///
+/// # Errors
+///
+/// [`Error::EvmWindow`](crate::Error::EvmWindow) naming the violated rule.
+pub fn open_evm_window_with_scope(
+    sender: impl Into<String>,
+    blocks: u64,
+    max_txs: u64,
+    max_value: &str,
+    scope: &crate::evm_window::EvmWindowScope,
+) -> crate::Result<pb::MsgOpenEvmWindow> {
+    crate::evm_window::validate_evm_window_scope(scope)?;
+    let mut msg = open_evm_window(sender, blocks, max_txs, max_value)?;
+    msg.native_only = scope.native_only;
+    msg.allowed_targets = scope.allowed_targets.clone();
+    msg.validators = scope.validators.clone();
+    msg.staking_validators = scope.staking_validators.clone();
+    msg.ibc_receivers = scope.ibc_receivers.clone();
+    Ok(msg)
+}
+
+/// Builds `MsgOpenEVMWindow` with a scope, packed into an `Any`.
+///
+/// # Errors
+///
+/// As [`open_evm_window_with_scope`].
+pub fn open_evm_window_with_scope_any(
+    sender: impl Into<String>,
+    blocks: u64,
+    max_txs: u64,
+    max_value: &str,
+    scope: &crate::evm_window::EvmWindowScope,
+) -> crate::Result<Any> {
+    Ok(to_any(
+        &open_evm_window_with_scope(sender, blocks, max_txs, max_value, scope)?,
+        OPEN_EVM_WINDOW,
+    ))
 }
 
 /// Builds `MsgCloseEVMWindow`: closes the sender's window, effective in the same

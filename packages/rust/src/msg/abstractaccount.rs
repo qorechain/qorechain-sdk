@@ -46,6 +46,12 @@ pub fn create_abstract_account_any(
 }
 
 /// Builds `MsgUpdateSpendingRules`.
+///
+/// The message REPLACES every spending rule of the account: rules left out are
+/// deleted. Pass the full list. From chain v3.2.8 it may be sent for an account
+/// that does not exist yet when `account_address == owner` (it creates the
+/// account), and the FIRST enabled rule is the one the chain applies to linked
+/// keys.
 pub fn update_spending_rules(
     owner: impl Into<String>,
     account_address: impl Into<String>,
@@ -293,6 +299,25 @@ pub fn validate_spending_rules(rules: &[SpendingRule]) -> crate::Result<()> {
 /// Builds `MsgRegisterAuthenticator`, linking a foreign-scheme wallet key (e.g. a
 /// Phantom ed25519 key) to `account_address` under time-bounded, revocable terms.
 /// Only the account owner (root key) may call it.
+///
+/// From chain v3.2.8 the message must carry `possession_proof`: a signature BY
+/// THE KEY BEING LINKED over
+/// [`authenticator_link_message`](crate::authenticator::authenticator_link_message)
+/// `(chain_id, account_address, scheme, pubkey)`. A browser wallet signs that
+/// text itself; from a local key use
+/// [`authenticator_link_proof_ed25519`](crate::authenticator::authenticator_link_proof_ed25519),
+/// [`authenticator_link_proof_secp256k1`](crate::authenticator::authenticator_link_proof_secp256k1)
+/// or [`authenticator_link_proof_eip191`](crate::authenticator::authenticator_link_proof_eip191).
+///
+/// A key with any of the value permissions ([`VALUE_PERMISSIONS`]) also needs
+/// a bounding spending rule on the account; [`link_authenticator_msgs`] builds
+/// both messages together and checks the rule.
+///
+/// # Errors
+///
+/// [`Error::InvalidInput`](crate::Error::InvalidInput) when `possession_proof`
+/// is empty (the message says how to make one) or `pubkey` is a 65-byte
+/// uncompressed secp256k1 key, which the chain refuses.
 #[allow(clippy::too_many_arguments)]
 pub fn register_authenticator(
     owner: impl Into<String>,
@@ -302,19 +327,39 @@ pub fn register_authenticator(
     permissions: Vec<String>,
     expiry_unix: i64,
     label: impl Into<String>,
-) -> pb::MsgRegisterAuthenticator {
-    pb::MsgRegisterAuthenticator {
+    possession_proof: Vec<u8>,
+) -> crate::Result<pb::MsgRegisterAuthenticator> {
+    let scheme = scheme.into();
+    if possession_proof.is_empty() {
+        return Err(crate::Error::InvalidInput(format!(
+            "register_authenticator: {}",
+            crate::authenticator::missing_proof_hint()
+        )));
+    }
+    if scheme == crate::authenticator::SCHEME_SECP256K1 && pubkey.len() == 65 {
+        return Err(crate::Error::InvalidInput(
+            "register_authenticator: an uncompressed 65-byte secp256k1 key is refused; link the \
+             33-byte compressed key (or the 20-byte Ethereum address)"
+                .into(),
+        ));
+    }
+    Ok(pb::MsgRegisterAuthenticator {
         owner: owner.into(),
         account_address: account_address.into(),
-        scheme: scheme.into(),
+        scheme,
         pubkey,
         permissions,
         expiry_unix,
         label: label.into(),
-    }
+        possession_proof,
+    })
 }
 
 /// Builds `MsgRegisterAuthenticator` packed into an `Any`.
+///
+/// # Errors
+///
+/// As [`register_authenticator`].
 #[allow(clippy::too_many_arguments)]
 pub fn register_authenticator_any(
     owner: impl Into<String>,
@@ -324,8 +369,9 @@ pub fn register_authenticator_any(
     permissions: Vec<String>,
     expiry_unix: i64,
     label: impl Into<String>,
-) -> Any {
-    to_any(
+    possession_proof: Vec<u8>,
+) -> crate::Result<Any> {
+    Ok(to_any(
         &register_authenticator(
             owner,
             account_address,
@@ -334,9 +380,166 @@ pub fn register_authenticator_any(
             permissions,
             expiry_unix,
             label,
-        ),
+            possession_proof,
+        )?,
         REGISTER_AUTHENTICATOR,
-    )
+    ))
+}
+
+/// The authenticator permissions that move value. From chain v3.2.8 a key
+/// holding any of them is linked only when the account has an enabled
+/// spending rule that bounds every denom (see [`check_value_permission_rules`]).
+pub const VALUE_PERMISSIONS: [&str; 5] = ["send", "evm", "deploy", "svm", "all"];
+
+/// Whether `permissions` holds any of the [`VALUE_PERMISSIONS`].
+pub fn has_value_permission(permissions: &[String]) -> bool {
+    permissions
+        .iter()
+        .any(|p| VALUE_PERMISSIONS.contains(&p.trim().to_ascii_lowercase().as_str()))
+}
+
+/// The client-side form of the chain v3.2.8 link check: when `permissions`
+/// holds a value permission ([`VALUE_PERMISSIONS`]), the FIRST enabled rule in
+/// `rules` (the one the chain applies) must bound every denom: a positive
+/// `per_tx_limit` or `daily_limit`, or, when both are 0, a non-empty
+/// `allowed_denoms` list where every denom has a `denom_limits` entry (matched
+/// case-insensitively) with a non-zero amount. Keys without a value permission
+/// pass whatever the rules.
+///
+/// # Errors
+///
+/// [`Error::SpendingRule`](crate::Error::SpendingRule) saying what is missing.
+pub fn check_value_permission_rules(
+    permissions: &[String],
+    rules: &[SpendingRule],
+) -> crate::Result<()> {
+    if !has_value_permission(permissions) {
+        return Ok(());
+    }
+    let Some((i, rule)) = rules.iter().enumerate().find(|(_, r)| r.enabled) else {
+        return Err(rule_error(
+            "a key with a value permission (send, evm, deploy, svm or all) needs an enabled \
+             spending rule on the account from chain v3.2.8; add one that sets a per-tx or daily \
+             limit, or lists allowed denoms that each carry a denom limit"
+                .into(),
+        ));
+    };
+    if rule.per_tx_limit > 0 || rule.daily_limit > 0 {
+        return Ok(());
+    }
+    if rule.allowed_denoms.is_empty() {
+        return Err(rule_error(format!(
+            "spending rule {i} (the first enabled one, which the chain applies) sets no per-tx or \
+             daily limit and no allowed denoms, so it does not bound a key with a value permission"
+        )));
+    }
+    for denom in &rule.allowed_denoms {
+        let bounded = rule.denom_limits.iter().any(|dl| {
+            dl.denom.eq_ignore_ascii_case(denom)
+                && (limit_amount_nonzero(&dl.per_tx_limit, "per-tx limit", i).unwrap_or(false)
+                    || limit_amount_nonzero(&dl.daily_limit, "daily limit", i).unwrap_or(false))
+        });
+        if !bounded {
+            return Err(rule_error(format!(
+                "spending rule {i} (the first enabled one, which the chain applies) allows {denom} \
+                 without a denom limit amount for it, so it does not bound a key with a value \
+                 permission; add a denom_limits entry for {denom} or set a rule-level limit"
+            )));
+        }
+    }
+    Ok(())
+}
+
+/// The inputs to [`link_authenticator_msgs`].
+#[derive(Debug, Clone, Default)]
+pub struct LinkAuthenticatorParams {
+    /// The account owner: signs the transaction and is also the
+    /// `account_address` of both messages.
+    pub owner: String,
+    /// The chain id the possession proof was made for.
+    pub chain_id: String,
+    /// The key's scheme (`"ed25519"` or `"secp256k1"`).
+    pub scheme: String,
+    /// The key bytes (32-byte ed25519, 33-byte compressed secp256k1, or a
+    /// 20-byte Ethereum address).
+    pub pubkey: Vec<u8>,
+    /// What the key may do.
+    pub permissions: Vec<String>,
+    /// Expiry, unix seconds.
+    pub expiry_unix: i64,
+    /// The owner's label.
+    pub label: String,
+    /// The key's signature over
+    /// [`authenticator_link_message`](crate::authenticator::authenticator_link_message).
+    pub possession_proof: Vec<u8>,
+    /// The account's spending rules. `MsgUpdateSpendingRules` REPLACES every
+    /// rule of the account, so pass the full list you want stored (read the
+    /// current one with [`crate::abstractaccount::fetch_spending_rules`]).
+    /// Empty means "do not touch the rules" and is accepted only for a key
+    /// without a value permission.
+    pub spending_rules: Vec<SpendingRule>,
+}
+
+/// Builds the recommended chain v3.2.8 link transaction:
+/// `[MsgUpdateSpendingRules, MsgRegisterAuthenticator]`, both with
+/// `owner == account_address`, to be sent as top-level messages of ONE
+/// transaction signed by the owner (not through authz). From v3.2.8
+/// `MsgUpdateSpendingRules` also creates the account when it does not exist
+/// yet, so this works for a fresh account too.
+///
+/// Checks, before anything is signed: the possession proof verifies
+/// ([`verify_authenticator_link_proof`](crate::authenticator::verify_authenticator_link_proof)),
+/// the rules pass [`validate_spending_rules`], and a key with a value
+/// permission is bounded by the first enabled rule
+/// ([`check_value_permission_rules`]). When `spending_rules` is empty only
+/// the `MsgRegisterAuthenticator` is returned (sending an empty rule list would
+/// erase the account's rules).
+///
+/// # Errors
+///
+/// [`Error::InvalidInput`](crate::Error::InvalidInput) for a missing owner or
+/// chain id or a proof that does not verify;
+/// [`Error::SpendingRule`](crate::Error::SpendingRule) for the rule checks.
+pub fn link_authenticator_msgs(p: &LinkAuthenticatorParams) -> crate::Result<Vec<Any>> {
+    if p.owner.is_empty() || p.chain_id.is_empty() {
+        return Err(crate::Error::InvalidInput(
+            "link_authenticator_msgs: owner and chain_id are required".into(),
+        ));
+    }
+    if p.possession_proof.is_empty() {
+        return Err(crate::Error::InvalidInput(format!(
+            "link_authenticator_msgs: {}",
+            crate::authenticator::missing_proof_hint()
+        )));
+    }
+    crate::authenticator::verify_authenticator_link_proof(
+        &p.chain_id,
+        &p.owner,
+        &p.scheme,
+        &p.pubkey,
+        &p.possession_proof,
+    )?;
+    validate_spending_rules(&p.spending_rules)?;
+    check_value_permission_rules(&p.permissions, &p.spending_rules)?;
+    let mut msgs = Vec::with_capacity(2);
+    if !p.spending_rules.is_empty() {
+        msgs.push(update_spending_rules_any(
+            p.owner.clone(),
+            p.owner.clone(),
+            p.spending_rules.clone(),
+        ));
+    }
+    msgs.push(register_authenticator_any(
+        p.owner.clone(),
+        p.owner.clone(),
+        p.scheme.clone(),
+        p.pubkey.clone(),
+        p.permissions.clone(),
+        p.expiry_unix,
+        p.label.clone(),
+        p.possession_proof.clone(),
+    )?);
+    Ok(msgs)
 }
 
 /// Builds `MsgRevokeAuthenticator`, instantly disabling a previously linked wallet

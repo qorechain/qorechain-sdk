@@ -15,7 +15,7 @@ mod typed;
 pub use jsonrpc::JsonRpcClient;
 pub use qor::{QorClient, QOR_METHODS};
 pub use rest::RestClient;
-pub use typed::TypedQueryClient;
+pub use typed::{TypedQueryClient, MAX_PENDING_PAGES, PENDING_PAGE_LIMIT};
 
 /// Default `User-Agent` sent with every request.
 pub(crate) const DEFAULT_USER_AGENT: &str = "qorechain-rust-sdk";

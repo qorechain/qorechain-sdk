@@ -37,6 +37,12 @@ pub fn create_rollup(
         profile: profile.into(),
         vm_type: vm_type.into(),
         stake_amount,
+        // Optional fields (v3.2.7 / v3.2.8) stay off the wire unless set on the
+        // returned struct: a node below them refuses a message that sets them.
+        verification_key: Vec::new(),
+        sequencing: String::new(),
+        execution_vm: String::new(),
+        privacy: String::new(),
     }
 }
 
@@ -87,6 +93,9 @@ pub fn submit_batch(
         // struct to anchor the batch in the same transaction.
         anchor_signature: Vec::new(),
         validator_set_hash: Vec::new(),
+        // Based rollups only (v3.2.8): set on the returned struct; zero for
+        // every other rollup and off the wire.
+        inbox_end: 0,
     }
 }
 
@@ -281,36 +290,184 @@ pub fn execute_withdrawal_any(
     )
 }
 
-/// Builds rdk `MsgUpdateParams` (chain v3.2.5): replace the rdk parameters
-/// wholesale. Governance only: `params.authority` is the gov module account.
-/// Copy the current values from `/qorechain/rdk/v1/params` and change only what
-/// you mean to. `default_challenge_window` is in seconds; a new optimistic
-/// rollup takes its challenge window from it.
+crate::msg::crossvm::params_update! {
+    /// Every field of rdk `MsgUpdateParams` except `authority` (chain v3.2.8
+    /// shape, fields 2..14). The message replaces the parameters wholesale, so
+    /// [`update_params`] requires each one to be given explicitly (`Some`).
+    /// Build it from the chain with [`fetch_params_update`] /
+    /// [`update_params_from_current`].
+    RdkParamsUpdate {
+        /// Field 2.
+        max_rollups: u32,
+        /// Field 3, uqor.
+        min_stake_for_rollup: i64,
+        /// Field 4, a decimal in `[0, 1)`.
+        rollup_creation_burn_rate: String,
+        /// Field 5, seconds.
+        default_challenge_window: u64,
+        /// Field 6.
+        max_da_blob_size: u64,
+        /// Field 7.
+        blob_retention_blocks: u64,
+        /// Field 8.
+        max_batches_per_block: u32,
+        /// Field 9 (0 = default).
+        finalized_batch_retention_blocks: u64,
+        /// Field 10 (0 = default).
+        max_posted_data_bytes: u64,
+        /// Field 11 (0 = default).
+        max_posted_data_bytes_per_block: u64,
+        /// Field 12 (0 = default), uqor per byte.
+        posted_data_fee_per_byte: u64,
+        /// Field 13 (0 = default).
+        posted_data_retention_blocks: u64,
+        /// Field 14 (0 = default), uqor.
+        min_submitter_bond: u64,
+    }
+}
+
+impl RdkParamsUpdate {
+    /// Every field from a typed `Query/Params` view.
+    pub fn from_view(v: &pb::ParamsView) -> Self {
+        Self {
+            max_rollups: Some(v.max_rollups),
+            min_stake_for_rollup: Some(v.min_stake_for_rollup),
+            rollup_creation_burn_rate: Some(v.rollup_creation_burn_rate.clone()),
+            default_challenge_window: Some(v.default_challenge_window),
+            max_da_blob_size: Some(v.max_da_blob_size),
+            blob_retention_blocks: Some(v.blob_retention_blocks),
+            max_batches_per_block: Some(v.max_batches_per_block),
+            finalized_batch_retention_blocks: Some(v.finalized_batch_retention_blocks),
+            max_posted_data_bytes: Some(v.max_posted_data_bytes),
+            max_posted_data_bytes_per_block: Some(v.max_posted_data_bytes_per_block),
+            posted_data_fee_per_byte: Some(v.posted_data_fee_per_byte),
+            posted_data_retention_blocks: Some(v.posted_data_retention_blocks),
+            min_submitter_bond: Some(v.min_submitter_bond),
+        }
+    }
+
+    /// The fields of the REST `/qorechain/rdk/v1/params` JSON (the `params`
+    /// object). A field the answer lacks stays `None`, which [`update_params`]
+    /// then refuses (an older node).
+    ///
+    /// # Errors
+    ///
+    /// [`Error::InvalidResponse`](crate::Error::InvalidResponse) when a number
+    /// does not parse.
+    pub fn from_rest_json(body: &serde_json::Value) -> crate::Result<Self> {
+        use crate::msg::json_num as n;
+        let v = body.get("params").filter(|p| p.is_object()).unwrap_or(body);
+        Ok(Self {
+            max_rollups: n(v, "max_rollups")?,
+            min_stake_for_rollup: n(v, "min_stake_for_rollup")?,
+            rollup_creation_burn_rate: v
+                .get("rollup_creation_burn_rate")
+                .and_then(serde_json::Value::as_str)
+                .map(str::to_string),
+            default_challenge_window: n(v, "default_challenge_window")?,
+            max_da_blob_size: n(v, "max_da_blob_size")?,
+            blob_retention_blocks: n(v, "blob_retention_blocks")?,
+            max_batches_per_block: n(v, "max_batches_per_block")?,
+            finalized_batch_retention_blocks: n(v, "finalized_batch_retention_blocks")?,
+            max_posted_data_bytes: n(v, "max_posted_data_bytes")?,
+            max_posted_data_bytes_per_block: n(v, "max_posted_data_bytes_per_block")?,
+            posted_data_fee_per_byte: n(v, "posted_data_fee_per_byte")?,
+            posted_data_retention_blocks: n(v, "posted_data_retention_blocks")?,
+            min_submitter_bond: n(v, "min_submitter_bond")?,
+        })
+    }
+}
+
+/// The REST path of the rdk parameters.
+pub const PARAMS_PATH: &str = "/qorechain/rdk/v1/params";
+
+/// Reads the rdk parameters over REST as a [`RdkParamsUpdate`].
+///
+/// # Errors
+///
+/// Transport / HTTP errors, or
+/// [`Error::InvalidResponse`](crate::Error::InvalidResponse).
+pub async fn fetch_params_update(
+    rest: &crate::query::RestClient,
+) -> crate::Result<RdkParamsUpdate> {
+    RdkParamsUpdate::from_rest_json(&rest.get(PARAMS_PATH, &[]).await?)
+}
+
+/// The way to build an rdk params proposal: reads the current parameters
+/// ([`fetch_params_update`]), applies the fields `changes` gives (`Some`) and
+/// builds `MsgUpdateParams` with [`update_params`].
+///
+/// # Errors
+///
+/// As [`fetch_params_update`] and [`update_params`].
+pub async fn update_params_from_current(
+    rest: &crate::query::RestClient,
+    authority: impl Into<String>,
+    changes: &RdkParamsUpdate,
+) -> crate::Result<pb::MsgUpdateParams> {
+    let current = fetch_params_update(rest).await?;
+    update_params(authority, &current.merged(changes))
+}
+
+/// Builds rdk `MsgUpdateParams` (chain v3.2.5; fields 9..14 from v3.2.8):
+/// replace the rdk parameters wholesale. Governance only: `authority` is the
+/// gov module account. Every field must be given (`Some`); build a proposal
+/// with [`update_params_from_current`]. `default_challenge_window` is in
+/// seconds; a new optimistic rollup takes its challenge window from it.
 ///
 /// # Errors
 ///
 /// [`Error::InvalidInput`](crate::Error::InvalidInput) when `authority` is
-/// empty, `min_stake_for_rollup` is negative, or `rollup_creation_burn_rate` is
-/// not a decimal in `[0, 1)`.
-pub fn update_params(params: pb::MsgUpdateParams) -> crate::Result<pb::MsgUpdateParams> {
+/// empty, fields are not given (named), `min_stake_for_rollup` is negative, or
+/// `rollup_creation_burn_rate` is not a decimal in `[0, 1)`.
+pub fn update_params(
+    authority: impl Into<String>,
+    params: &RdkParamsUpdate,
+) -> crate::Result<pb::MsgUpdateParams> {
+    let authority = authority.into();
     let bad = |m: String| crate::Error::InvalidInput(format!("rdk update_params: {m}"));
-    if params.authority.is_empty() {
+    if authority.is_empty() {
         return Err(bad("authority is required".into()));
     }
-    if params.min_stake_for_rollup < 0 {
+    let missing = params.missing();
+    if !missing.is_empty() {
+        return Err(bad(format!(
+            "every field must be given (the message replaces all parameters); missing: {}. \
+             Copy the current values with update_params_from_current",
+            missing.join(", ")
+        )));
+    }
+    let p = params.clone();
+    let min_stake_for_rollup = p.min_stake_for_rollup.unwrap_or_default();
+    if min_stake_for_rollup < 0 {
         return Err(bad("min_stake_for_rollup must not be negative".into()));
     }
-    let rate = params.rollup_creation_burn_rate.trim();
+    let burn = p.rollup_creation_burn_rate.unwrap_or_default();
+    let rate = burn.trim();
     let (int, frac) = rate.split_once('.').unwrap_or((rate, ""));
     let digits = |s: &str| s.bytes().all(|b| b.is_ascii_digit());
     let well_formed = !int.is_empty() && digits(int) && digits(frac);
     if !well_formed || int.bytes().any(|b| b != b'0') {
         return Err(bad(format!(
-            "rollup_creation_burn_rate {:?} must be a decimal in [0, 1)",
-            params.rollup_creation_burn_rate
+            "rollup_creation_burn_rate {burn:?} must be a decimal in [0, 1)"
         )));
     }
-    Ok(params)
+    Ok(pb::MsgUpdateParams {
+        authority,
+        max_rollups: p.max_rollups.unwrap_or_default(),
+        min_stake_for_rollup,
+        rollup_creation_burn_rate: burn,
+        default_challenge_window: p.default_challenge_window.unwrap_or_default(),
+        max_da_blob_size: p.max_da_blob_size.unwrap_or_default(),
+        blob_retention_blocks: p.blob_retention_blocks.unwrap_or_default(),
+        max_batches_per_block: p.max_batches_per_block.unwrap_or_default(),
+        finalized_batch_retention_blocks: p.finalized_batch_retention_blocks.unwrap_or_default(),
+        max_posted_data_bytes: p.max_posted_data_bytes.unwrap_or_default(),
+        max_posted_data_bytes_per_block: p.max_posted_data_bytes_per_block.unwrap_or_default(),
+        posted_data_fee_per_byte: p.posted_data_fee_per_byte.unwrap_or_default(),
+        posted_data_retention_blocks: p.posted_data_retention_blocks.unwrap_or_default(),
+        min_submitter_bond: p.min_submitter_bond.unwrap_or_default(),
+    })
 }
 
 /// Builds rdk `MsgUpdateParams` packed into an `Any`.
@@ -318,6 +475,9 @@ pub fn update_params(params: pb::MsgUpdateParams) -> crate::Result<pb::MsgUpdate
 /// # Errors
 ///
 /// As [`update_params`].
-pub fn update_params_any(params: pb::MsgUpdateParams) -> crate::Result<Any> {
-    Ok(to_any(&update_params(params)?, UPDATE_PARAMS))
+pub fn update_params_any(
+    authority: impl Into<String>,
+    params: &RdkParamsUpdate,
+) -> crate::Result<Any> {
+    Ok(to_any(&update_params(authority, params)?, UPDATE_PARAMS))
 }

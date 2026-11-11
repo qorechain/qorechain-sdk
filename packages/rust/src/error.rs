@@ -109,6 +109,12 @@ pub enum Error {
     #[error("sign-bytes: {0}")]
     SignBytes(String),
 
+    /// An authorised `MsgExecuteEVM` / `MsgExecuteCosmos` failed inside a
+    /// transaction that succeeded (code 0, chain v3.2.8). See
+    /// [`crate::abstractaccount::require_executions_succeeded`].
+    #[error("execution failed: {0}")]
+    ExecutionFailed(String),
+
     /// An API was removed because it was unsafe. The message names the
     /// replacement and, where funds may be at risk, what the caller must do.
     #[error("{0}")]

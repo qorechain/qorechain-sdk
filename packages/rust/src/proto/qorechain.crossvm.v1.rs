@@ -282,7 +282,7 @@ pub struct QueryParamsResponse {
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct QueryPendingMessagesRequest {
     #[prost(message, optional, tag="1")]
-    pub pagination: ::core::option::Option<super::super::super::cosmos::base::query::v1beta1::PageRequest>,
+    pub pagination: ::core::option::Option<::cosmrs::proto::cosmos::base::query::v1beta1::PageRequest>,
 }
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct QueryPendingMessagesResponse {
@@ -292,7 +292,7 @@ pub struct QueryPendingMessagesResponse {
     #[prost(uint32, tag="2")]
     pub count: u32,
     #[prost(message, optional, tag="3")]
-    pub pagination: ::core::option::Option<super::super::super::cosmos::base::query::v1beta1::PageResponse>,
+    pub pagination: ::core::option::Option<::cosmrs::proto::cosmos::base::query::v1beta1::PageResponse>,
 }
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct QueryMessageRequest {

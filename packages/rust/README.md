@@ -55,8 +55,8 @@ New in chain v3.1.97: `msg::svm::update_params` builds
 `/qorechain.svm.v1.MsgUpdateParams`, the governance message that replaces the SVM
 module's runtime `SVMParams` wholesale (so `enabled` - and therefore closing the
 SVM lane - is an ordinary proposal rather than a binary release). The replacement
-is wholesale, so pass every field at its intended value, not only the ones being
-changed.
+is wholesale, so every field must be given: from chain v3.2.8 the composer takes a
+`msg::svm::SvmParamsUpdate` and refuses a field left out (see "Chain v3.2.8").
 
 ```rust
 use qorechain::msg;
@@ -972,7 +972,152 @@ and, for text-only refusals, `tx::decode_refusal_text`.
   `enabled` switch and limits), `msg::crossvm::update_params` (including the
   EVM bridge precompile's `bridge_allowed_targets`, `"<vm>:<contract>"`), and
   `msg::rdk::update_params`. Each replaces the whole configuration: copy the
-  current values and change only what you mean to.
+  current values and change only what you mean to (from chain v3.2.8 use the
+  `update_params_from_current` helpers, see below).
+
+## Chain v3.2.8
+
+### Linking a key: possession proof and spending rule
+
+From v3.2.8 `MsgRegisterAuthenticator` must carry `possession_proof`: a
+signature by the key being linked over
+`authenticator::authenticator_link_message(chain_id, account_address, scheme, pubkey)`:
+
+```text
+QoreChain authenticator link v1
+chain: <chain-id>
+account: <account_address>
+scheme: <ed25519 | secp256k1>
+key: <lowercase hex of pubkey>
+```
+
+A browser wallet signs this text itself (Phantom `signMessage`, MetaMask
+`personal_sign`). From a local key, `authenticator_link_proof_ed25519` (32-byte
+seed), `authenticator_link_proof_secp256k1` (33-byte key, `r || s` over
+`sha256(text)`) and `authenticator_link_proof_eip191` (20-byte address, EIP-191,
+`v` 27/28) return the `pubkey` and the proof; `verify_authenticator_link_proof`
+checks one the way the chain does. `msg::abstractaccount::register_authenticator`
+now takes the proof and refuses an empty one.
+
+A key with `send`, `evm`, `deploy`, `svm` or `all` also needs an enabled spending
+rule on the account that bounds every denom. The chain applies the FIRST enabled
+rule. `msg::abstractaccount::link_authenticator_msgs` builds the recommended
+transaction, `[MsgUpdateSpendingRules, MsgRegisterAuthenticator]` with
+`owner == account_address`, sent as top-level messages signed by the owner. It
+also checks the proof and the rule before you sign
+(`check_value_permission_rules`). `MsgUpdateSpendingRules` replaces the
+account's rules wholesale and, from v3.2.8, creates an account that does not
+exist yet.
+
+```rust,no_run
+use qorechain::authenticator::authenticator_link_proof_ed25519;
+use qorechain::msg::abstractaccount::{link_authenticator_msgs, LinkAuthenticatorParams, SpendingRule};
+
+# fn run(seed: [u8; 32]) -> qorechain::Result<()> {
+let owner = "qor1owner…";
+let p = authenticator_link_proof_ed25519(&seed, "qorechain-diana", owner)?;
+let msgs = link_authenticator_msgs(&LinkAuthenticatorParams {
+    owner: owner.into(),
+    chain_id: "qorechain-diana".into(),
+    scheme: p.scheme,
+    pubkey: p.pubkey,
+    permissions: vec!["send".into()],
+    expiry_unix: 1_900_000_000,
+    label: "phantom".into(),
+    possession_proof: p.possession_proof,
+    spending_rules: vec![SpendingRule {
+        id: "daily".into(),
+        daily_limit: 5_000_000,
+        enabled: true,
+        ..Default::default()
+    }],
+})?;
+let _ = msgs; // sign with tx::send_messages / tx::build_hybrid_tx as the owner
+# Ok(())
+# }
+```
+
+### Execute-lane results
+
+A failed but authorised `MsgExecuteEVM` / `MsgExecuteCosmos` now returns
+`success = false` in a transaction with code 0, emits
+`abstractaccount_execution_failed` (`account`, `lane`, `nonce`, `reason`) and
+consumes the nonce. `abstractaccount::execution_results(&tx_json)` returns
+`{lane, success, ret, gas_used, vm_error, reason}` per execute message (from
+`msg_responses` or `data`), and `require_executions_succeeded(&tx_json)` returns
+`Error::ExecutionFailed` when any of them failed. Pass the confirmed tx JSON
+(`TxResult::raw`).
+
+### Governance params proposals
+
+The crossvm (fields 7..18: code pins, queue and wasm budget limits), svm
+(custody ceilings 10..12) and rdk (9..14) `MsgUpdateParams` replace the
+parameters wholesale, so a field left out is set to zero. The composers take
+`CrossvmParamsUpdate` / `SvmParamsUpdate` / `RdkParamsUpdate`, whose fields are
+all `Option`, and refuse any `None`, naming it. Build a proposal from what is in
+force:
+
+```rust,no_run
+use qorechain::msg::crossvm::{update_params_from_current, CrossvmParamsUpdate};
+
+# async fn run(rest: qorechain::RestClient, gov: &str) -> qorechain::Result<()> {
+let msg = update_params_from_current(&rest, gov, &CrossvmParamsUpdate {
+    max_queue_size: Some(2_000),
+    ..Default::default()
+}).await?;
+# let _ = msg; Ok(())
+# }
+```
+
+`msg::svm::update_params` also refuses `enabled = true` with
+`max_custody_hard_uqor == 0`: governance must set a hard custody ceiling before
+opening the lane.
+
+### Cross-VM
+
+- Async calls into CosmWasm take `async_gas_limit` (0 = 500,000; set value
+  250,000..10,000,000) and `async_max_factor` (millionths, 1,000,000 = 1x; 0 =
+  four times the factor at submission): `CallOptions::async_gas(limit, factor)`
+  or `msg::crossvm::cross_vm_call_async`. They are refused on synchronous calls
+  and other VMs. The call holds an escrow (`async_gas_limit x factor x gas price`,
+  about 0.2 QOR by default) refunded when it finishes, pays a queue-slot fee,
+  and a sender may have at most 100 pending calls.
+- `CrossVm.fee.gas` must be an explicit limit or `"auto"`: `call*` then
+  simulates and takes at least 1.3x the simulated gas. An empty or zero gas is
+  refused.
+- `TypedQueryClient::crossvm_pending_messages` now follows `pagination.next_key`
+  over every page (100 per page); `crossvm_pending_messages_page` reads one.
+  `payload_hex` in the list is cut to 1,024 bytes; `crossvm_message(id)` has the
+  full payload.
+
+### EVM window grants
+
+`msg::pqc::open_evm_window_with_scope` takes an `EvmWindowScope` with the new
+`validators` (0x contract addresses), `staking_validators` (`qorvaloper1...`) and
+`ibc_receivers` (`"channel-0/cosmos1..."`). Standard precompile methods are
+deny-by-default through a window: staking delegate / redelegate need
+`staking_validators`, ICS-20 needs `ibc_receivers`, and undelegate, votes and
+withdraw-address changes are refused through the window (use a PQC-signed Cosmos
+transaction). Rotating, migrating or re-registering the PQC key closes the window.
+
+### Gas
+
+- Cosmos transactions above 50,000,000 gas (`tx::MAX_COSMOS_TX_GAS`) are refused
+  before signing. EVM gas above the cap (`tx::DEFAULT_EVM_TX_MAX_GAS`,
+  30,000,000, or `tx::fetch_evm_limits(&rest)`) is refused by
+  `tx::validate_evm_gas_limit` and by `evm_auth_sign_bytes_v2`.
+- Use auto / simulation for wasm and cross-VM gas: the first call of a contract
+  code in a block costs much more than a repeat (a cw20 transfer about 533k gas,
+  repeats about 84k). `tx::estimate_gas_wanted` puts at least 1.3x on a
+  simulated tx that carries a CosmWasm execute / instantiate / migrate or a
+  `MsgCrossVMCall`; `tx::refuse_fixed_gas_for` / `Fees::estimate_for` refuse the
+  fixed 200,000 fallback for them.
+- Gas price: the default stays `tx::DEFAULT_GAS_PRICE` (`0.15uqor`). To follow
+  the chain's minimum instead (opt-in, one REST read of
+  `/cosmos/evm/feemarket/v1/params`), use `tx::fetch_min_gas_price_uqor(&rest)`
+  (`max(min_gas_price / 10^12, 0.1)`, exact) or
+  `tx::recommended_gas_price_uqor(&rest, "1.5")` (`max(0.15, min x margin)`) and
+  pass the `GasPrice` to `tx::calculate_fee`.
 
 ## Development
 

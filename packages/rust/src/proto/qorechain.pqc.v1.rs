@@ -393,7 +393,7 @@ pub struct QueryTextualSignDocRequest {
     pub signer_address: ::prost::alloc::string::String,
     /// public_key is the signer's public key (e.g. /cosmos.crypto.secp256k1.PubKey).
     #[prost(message, optional, tag="4")]
-    pub public_key: ::core::option::Option<::prost_types::Any>,
+    pub public_key: ::core::option::Option<::cosmrs::Any>,
     #[prost(uint64, tag="5")]
     pub account_number: u64,
     #[prost(uint64, tag="6")]

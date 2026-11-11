@@ -26,6 +26,8 @@ use serde_json::Value;
 /// Scales simulated gas to absorb estimation variance.
 pub const DEFAULT_GAS_MULTIPLIER: f64 = 1.4;
 /// The default price per gas unit, in uqor.
+/// To follow the chain's current minimum instead (opt-in, one network read),
+/// use [`recommended_gas_price_uqor`] / [`fetch_min_gas_price_uqor`].
 /// The chain enforces a genesis min-gas-price (BaseFee) of `0.1uqor`/gas on
 /// both networks; the default sits above the floor for headroom.
 pub const DEFAULT_GAS_PRICE: &str = "0.15uqor";
@@ -37,6 +39,162 @@ pub const EXACT_GAS_MULTIPLIER: f64 = 1.02;
 /// once per transaction, not per signer: the simulation already charges every
 /// signer's verification.
 pub const EXACT_GAS_HEADROOM: u64 = 2000;
+
+/// The largest gas limit a Native-lane (Cosmos) transaction may declare (the
+/// chain default from v3.2.8). The builders refuse a larger one before
+/// signing.
+pub const MAX_COSMOS_TX_GAS: u64 = 50_000_000;
+
+/// The EVM transaction gas cap in force on chain v3.2.8, used when it is not
+/// queried ([`fetch_evm_limits`]). A transaction above it is refused.
+pub const DEFAULT_EVM_TX_MAX_GAS: u64 = 30_000_000;
+
+/// The smallest multiplier the auto-gas path puts on a simulated transaction
+/// that carries a CosmWasm execute / instantiate / migrate or a
+/// `MsgCrossVMCall`: the first call of a contract code in a block costs much
+/// more than a repeat (a cw20 transfer about 533k gas against about 84k), so
+/// simulation can come in low.
+pub const WASM_MIN_GAS_MULTIPLIER: f64 = 1.3;
+
+/// The message type URLs whose gas needs simulation (no fixed fallback) and
+/// at least [`WASM_MIN_GAS_MULTIPLIER`] headroom.
+pub const SIMULATION_REQUIRED_TYPE_URLS: [&str; 5] = [
+    "/cosmwasm.wasm.v1.MsgExecuteContract",
+    "/cosmwasm.wasm.v1.MsgInstantiateContract",
+    "/cosmwasm.wasm.v1.MsgInstantiateContract2",
+    "/cosmwasm.wasm.v1.MsgMigrateContract",
+    "/qorechain.crossvm.v1.MsgCrossVMCall",
+];
+
+/// Whether any of `type_urls` is a CosmWasm execute / instantiate / migrate
+/// or a `MsgCrossVMCall` ([`SIMULATION_REQUIRED_TYPE_URLS`]). Such a
+/// transaction must not use a fixed fallback gas: simulate (`"auto"`) or set
+/// the gas limit explicitly.
+pub fn needs_simulated_gas<'a>(type_urls: impl IntoIterator<Item = &'a str>) -> bool {
+    type_urls
+        .into_iter()
+        .any(|t| SIMULATION_REQUIRED_TYPE_URLS.contains(&t))
+}
+
+/// [`needs_simulated_gas`] for the messages of signed `tx_bytes` (a `TxRaw`).
+/// Undecodable bytes are `false`.
+pub fn tx_needs_simulated_gas(tx_bytes: &[u8]) -> bool {
+    use cosmrs::proto::cosmos::tx::v1beta1::{TxBody, TxRaw};
+    use cosmrs::proto::traits::Message as _;
+    let Ok(raw) = TxRaw::decode(tx_bytes) else {
+        return false;
+    };
+    let Ok(body) = TxBody::decode(raw.body_bytes.as_slice()) else {
+        return false;
+    };
+    needs_simulated_gas(body.messages.iter().map(|m| m.type_url.as_str()))
+}
+
+/// Refuses a fixed fallback gas for messages that need simulation
+/// ([`needs_simulated_gas`]). Call it where a fixed gas (for example 200,000)
+/// would be used because simulation failed or was skipped.
+///
+/// # Errors
+///
+/// [`Error::InvalidInput`] asking for `"auto"` or an explicit gas limit.
+pub fn refuse_fixed_gas_for<'a>(type_urls: impl IntoIterator<Item = &'a str>) -> Result<()> {
+    if needs_simulated_gas(type_urls) {
+        return Err(Error::InvalidInput(
+            "this transaction carries a CosmWasm or cross-VM message, whose gas varies (the first \
+             call of a code in a block costs several times a repeat): use \"auto\" (simulation) \
+             or an explicit gas limit, not a fixed fallback"
+                .into(),
+        ));
+    }
+    Ok(())
+}
+
+/// Refuses a Native-lane gas limit above [`MAX_COSMOS_TX_GAS`].
+///
+/// # Errors
+///
+/// [`Error::InvalidInput`] naming the limit.
+pub fn validate_cosmos_gas_limit(gas_limit: u64) -> Result<()> {
+    if gas_limit > MAX_COSMOS_TX_GAS {
+        return Err(Error::InvalidInput(format!(
+            "gas limit {gas_limit} is above the chain's Cosmos transaction cap of {MAX_COSMOS_TX_GAS}"
+        )));
+    }
+    Ok(())
+}
+
+/// The EVM execution limits in force (`GET /qorechain/pqc/v1/evm_limits`,
+/// chain v3.2.8).
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub struct EvmLimits {
+    /// The largest gas limit an EVM transaction may declare.
+    pub tx_max_gas: u64,
+    /// The largest precompile input, in bytes.
+    pub precompile_input_max_bytes: u64,
+}
+
+/// The REST path of the EVM limits.
+pub const EVM_LIMITS_PATH: &str = "/qorechain/pqc/v1/evm_limits";
+
+/// Parses an `evm_limits` answer: the top-level values in force, falling back
+/// to the `limits` object for a field the top level lacks or has at zero.
+///
+/// # Errors
+///
+/// [`Error::InvalidResponse`] when a number does not parse.
+pub fn parse_evm_limits(v: &Value) -> Result<EvmLimits> {
+    let num = |o: &Value, f: &str| -> Result<u64> {
+        match o.get(f) {
+            None | Some(Value::Null) => Ok(0),
+            Some(Value::String(s)) if s.is_empty() => Ok(0),
+            Some(Value::String(s)) => s
+                .trim()
+                .parse()
+                .map_err(|_| Error::InvalidResponse(format!("evm_limits {f} {s:?}"))),
+            Some(Value::Number(n)) => n
+                .as_u64()
+                .ok_or_else(|| Error::InvalidResponse(format!("evm_limits {f} {n}"))),
+            Some(other) => Err(Error::InvalidResponse(format!("evm_limits {f} {other}"))),
+        }
+    };
+    let pick = |f: &str| -> Result<u64> {
+        let top = num(v, f)?;
+        if top != 0 {
+            return Ok(top);
+        }
+        num(&v["limits"], f)
+    };
+    Ok(EvmLimits {
+        tx_max_gas: pick("tx_max_gas")?,
+        precompile_input_max_bytes: pick("precompile_input_max_bytes")?,
+    })
+}
+
+/// Reads the EVM execution limits (`GET /qorechain/pqc/v1/evm_limits`).
+///
+/// # Errors
+///
+/// Transport / HTTP errors (a node below v3.2.8 has no such route), or
+/// [`Error::InvalidResponse`].
+pub async fn fetch_evm_limits(rest: &crate::query::RestClient) -> Result<EvmLimits> {
+    parse_evm_limits(&rest.get(EVM_LIMITS_PATH, &[]).await?)
+}
+
+/// Refuses an EVM gas limit above `cap` (or [`DEFAULT_EVM_TX_MAX_GAS`] when
+/// `cap` is `None` or 0), before anything is signed.
+///
+/// # Errors
+///
+/// [`Error::InvalidInput`] naming the cap.
+pub fn validate_evm_gas_limit(gas_limit: u64, cap: Option<u64>) -> Result<()> {
+    let cap = cap.filter(|c| *c > 0).unwrap_or(DEFAULT_EVM_TX_MAX_GAS);
+    if gas_limit > cap {
+        return Err(Error::InvalidInput(format!(
+            "EVM gas limit {gas_limit} is above the chain's EVM gas cap of {cap}"
+        )));
+    }
+    Ok(())
+}
 
 /// The gas limit for a hybrid transaction on a network that has applied
 /// `v3.2.5`: `ceil(simulated * 1.02) + 2000`, in integer arithmetic.
@@ -118,6 +276,10 @@ pub async fn hybrid_gas_wanted(rest_url: &str, simulated: u64, multiplier: f64) 
 /// Simulates signed `tx_bytes` and picks the gas limit: [`hybrid_gas_wanted`]
 /// for a hybrid transaction, `ceil(simulated * multiplier)` (default
 /// [`DEFAULT_GAS_MULTIPLIER`] when `multiplier <= 0`) for a classical one.
+/// A transaction that carries a CosmWasm execute / instantiate / migrate or a
+/// `MsgCrossVMCall` gets at least `ceil(simulated * 1.3)`
+/// ([`WASM_MIN_GAS_MULTIPLIER`]): use auto / simulation for wasm and cross-VM
+/// gas.
 ///
 /// # Errors
 ///
@@ -128,14 +290,23 @@ pub async fn estimate_gas_wanted(
     multiplier: f64,
 ) -> Result<GasEstimate> {
     let simulated = estimate_gas(rest_url, tx_bytes).await?;
-    if is_hybrid_tx(tx_bytes) {
-        return Ok(hybrid_gas_wanted(rest_url, simulated, multiplier).await);
+    let mut estimate = if is_hybrid_tx(tx_bytes) {
+        hybrid_gas_wanted(rest_url, simulated, multiplier).await
+    } else {
+        GasEstimate {
+            simulated,
+            gas_wanted: multiplied(simulated, multiplier),
+            exact: false,
+        }
+    };
+    if tx_needs_simulated_gas(tx_bytes) {
+        let floor = multiplied(simulated, WASM_MIN_GAS_MULTIPLIER);
+        if estimate.gas_wanted < floor {
+            estimate.gas_wanted = floor;
+            estimate.exact = false;
+        }
     }
-    Ok(GasEstimate {
-        simulated,
-        gas_wanted: multiplied(simulated, multiplier),
-        exact: false,
-    })
+    Ok(estimate)
 }
 
 /// A parsed price per unit of gas: an exact decimal amount plus a denom.
@@ -298,4 +469,152 @@ pub async fn estimate_fee(
     let price = GasPrice::parse(price_str)?;
     let estimate = estimate_gas_wanted(rest_url, tx_bytes, multiplier).await?;
     Ok(calculate_fee(estimate.gas_wanted, 1.0, &price))
+}
+
+// ---- the chain's minimum gas price (opt-in network read) ----
+
+/// The REST path of the feemarket parameters, whose `min_gas_price` is the
+/// minimum the chain enforces.
+pub const FEEMARKET_PARAMS_PATH: &str = "/cosmos/evm/feemarket/v1/params";
+
+/// The genesis floor, in uqor per gas, below which the helpers never go.
+pub const MIN_GAS_PRICE_FLOOR_UQOR: &str = "0.1";
+/// The lowest price [`recommended_gas_price_uqor`] returns, in uqor per gas
+/// (the same as [`DEFAULT_GAS_PRICE`]).
+pub const RECOMMENDED_GAS_PRICE_FLOOR_UQOR: &str = "0.15";
+
+/// An exact non-negative decimal as `(digits, scale)`.
+fn parse_decimal(s: &str) -> Result<(u128, u32)> {
+    let s = s.trim();
+    let (i, f) = s.split_once('.').unwrap_or((s, ""));
+    if (i.is_empty() && f.is_empty())
+        || !i.bytes().all(|b| b.is_ascii_digit())
+        || !f.bytes().all(|b| b.is_ascii_digit())
+    {
+        return Err(Error::InvalidResponse(format!("not a decimal: {s:?}")));
+    }
+    let digits = format!("{i}{f}");
+    let digits = digits.trim_start_matches('0');
+    let n = if digits.is_empty() {
+        0
+    } else {
+        digits
+            .parse::<u128>()
+            .map_err(|_| Error::InvalidResponse(format!("decimal too large: {s:?}")))?
+    };
+    Ok((n, f.len() as u32))
+}
+
+fn normalize(mut n: u128, mut scale: u32) -> (u128, u32) {
+    while scale > 0 && n % 10 == 0 {
+        n /= 10;
+        scale -= 1;
+    }
+    if n == 0 {
+        scale = 0;
+    }
+    (n, scale)
+}
+
+fn cmp_dec(a: (u128, u32), b: (u128, u32)) -> std::cmp::Ordering {
+    let s = a.1.max(b.1);
+    let up = |x: (u128, u32)| x.0.saturating_mul(10u128.pow(s - x.1));
+    up(a).cmp(&up(b))
+}
+
+fn uqor_price((n, scale): (u128, u32)) -> GasPrice {
+    let (scaled, scale) = normalize(n, scale);
+    GasPrice {
+        scaled,
+        scale,
+        denom: "uqor".into(),
+    }
+}
+
+/// The minimum gas price in uqor per gas from a feemarket params answer:
+/// `params.min_gas_price` (18-decimal EVM unit) divided by 10^12, exactly,
+/// and never below [`MIN_GAS_PRICE_FLOOR_UQOR`].
+///
+/// # Errors
+///
+/// [`Error::InvalidResponse`] when `min_gas_price` is missing or not a decimal.
+pub fn min_gas_price_uqor_from_params(body: &Value) -> Result<GasPrice> {
+    let raw = body["params"]["min_gas_price"]
+        .as_str()
+        .or_else(|| body["min_gas_price"].as_str())
+        .ok_or_else(|| Error::InvalidResponse("feemarket params carry no min_gas_price".into()))?;
+    let (n, scale) = parse_decimal(raw)?;
+    let price = normalize(n, scale + 12);
+    let floor = parse_decimal(MIN_GAS_PRICE_FLOOR_UQOR)?;
+    Ok(uqor_price(if cmp_dec(price, floor).is_lt() {
+        floor
+    } else {
+        price
+    }))
+}
+
+/// The recommended price for a minimum: `max(0.15, min * margin)` in uqor per
+/// gas, exact. `margin` is a decimal string such as `"1.5"`.
+///
+/// # Errors
+///
+/// [`Error::InvalidInput`] when `margin` is not a decimal.
+pub fn recommended_gas_price_from_min(min: &GasPrice, margin: &str) -> Result<GasPrice> {
+    let (m, ms) = parse_decimal(margin).map_err(|_| {
+        Error::InvalidInput(format!("gas price margin {margin:?} is not a decimal"))
+    })?;
+    let product = (
+        min.scaled
+            .checked_mul(m)
+            .ok_or_else(|| Error::InvalidInput("gas price times margin overflows".into()))?,
+        min.scale + ms,
+    );
+    let floor = parse_decimal(RECOMMENDED_GAS_PRICE_FLOOR_UQOR)?;
+    Ok(uqor_price(if cmp_dec(product, floor).is_lt() {
+        floor
+    } else {
+        product
+    }))
+}
+
+/// Reads the minimum gas price the chain enforces, in uqor per gas
+/// (`GET /cosmos/evm/feemarket/v1/params`, see
+/// [`min_gas_price_uqor_from_params`]). Opt-in: the default gas price
+/// ([`DEFAULT_GAS_PRICE`]) does not use it, and no default path makes this
+/// call. Useful if governance moves the minimum within its band.
+///
+/// # Errors
+///
+/// Transport / HTTP errors, or [`Error::InvalidResponse`].
+pub async fn fetch_min_gas_price_uqor(rest: &crate::query::RestClient) -> Result<GasPrice> {
+    min_gas_price_uqor_from_params(&rest.get(FEEMARKET_PARAMS_PATH, &[]).await?)
+}
+
+/// [`fetch_min_gas_price_uqor`] times `margin` (a decimal string; `"1.5"` is
+/// the usual choice), never below [`RECOMMENDED_GAS_PRICE_FLOOR_UQOR`]. Pass
+/// the result's [`GasPrice`] to [`calculate_fee`]. Opt-in, as
+/// [`fetch_min_gas_price_uqor`].
+///
+/// # Errors
+///
+/// As [`fetch_min_gas_price_uqor`] and [`recommended_gas_price_from_min`].
+pub async fn recommended_gas_price_uqor(
+    rest: &crate::query::RestClient,
+    margin: &str,
+) -> Result<GasPrice> {
+    let min = fetch_min_gas_price_uqor(rest).await?;
+    recommended_gas_price_from_min(&min, margin)
+}
+
+impl std::fmt::Display for GasPrice {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        let digits = self.scaled.to_string();
+        let scale = self.scale as usize;
+        if scale == 0 {
+            return write!(f, "{digits}{}", self.denom);
+        }
+        let padded = format!("{digits:0>width$}", width = scale + 1);
+        let (i, frac) = padded.split_at(padded.len() - scale);
+        write!(f, "{i}.{frac}{}", self.denom)
+    }
 }

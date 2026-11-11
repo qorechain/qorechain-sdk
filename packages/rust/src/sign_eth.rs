@@ -296,6 +296,7 @@ fn fee_to_proto(fee: &Fee) -> Result<ProtoFee> {
             .parse::<u64>()
             .map_err(|_| Error::Denom(format!("invalid gas: {:?}", fee.gas)))?
     };
+    crate::tx::validate_cosmos_gas_limit(gas_limit)?;
     Ok(ProtoFee {
         amount,
         gas_limit,

@@ -18,6 +18,12 @@ use base64::Engine;
 use prost::Message;
 use serde_json::json;
 
+/// The page size [`TypedQueryClient::crossvm_pending_messages`] asks for (the
+/// chain's maximum).
+pub const PENDING_PAGE_LIMIT: u64 = 100;
+/// The most pages [`TypedQueryClient::crossvm_pending_messages`] reads.
+pub const MAX_PENDING_PAGES: usize = 1_000;
+
 /// A typed query client over the chain RPC `abci_query` transport.
 #[derive(Debug, Clone)]
 pub struct TypedQueryClient {
@@ -131,15 +137,61 @@ impl TypedQueryClient {
         .await
     }
 
-    /// Queries `qorechain.crossvm.v1.Query/PendingMessages`.
-    pub async fn crossvm_pending_messages(
+    /// Queries one page of `qorechain.crossvm.v1.Query/PendingMessages`
+    /// (chain v3.2.8: paginated, at most 100 messages a page). Pass the
+    /// previous page's `pagination.next_key` to continue. `payload_hex` in the
+    /// list is cut to its first 1,024 bytes; read one message with
+    /// [`TypedQueryClient::crossvm_message`] for the whole payload.
+    pub async fn crossvm_pending_messages_page(
         &self,
+        pagination: Option<cosmrs::proto::cosmos::base::query::v1beta1::PageRequest>,
     ) -> Result<qorechain::crossvm::v1::QueryPendingMessagesResponse> {
         self.grpc_query(
             "/qorechain.crossvm.v1.Query/PendingMessages",
-            &qorechain::crossvm::v1::QueryPendingMessagesRequest {},
+            &qorechain::crossvm::v1::QueryPendingMessagesRequest { pagination },
         )
         .await
+    }
+
+    /// Queries every pending cross-VM message, following
+    /// `pagination.next_key` until it is empty (at most
+    /// [`MAX_PENDING_PAGES`](crate::query::MAX_PENDING_PAGES) pages of 100). The answer merges the pages:
+    /// `messages` holds them all, `count` their number, `pagination` is `None`.
+    /// `payload_hex` in the list is cut to its first 1,024 bytes; read one
+    /// message with [`TypedQueryClient::crossvm_message`] for the whole payload.
+    ///
+    /// # Errors
+    ///
+    /// Query errors, or [`Error::InvalidResponse`] when the queue still has
+    /// pages after [`MAX_PENDING_PAGES`](crate::query::MAX_PENDING_PAGES).
+    pub async fn crossvm_pending_messages(
+        &self,
+    ) -> Result<qorechain::crossvm::v1::QueryPendingMessagesResponse> {
+        use cosmrs::proto::cosmos::base::query::v1beta1::PageRequest;
+        let mut all = Vec::new();
+        let mut key: Vec<u8> = Vec::new();
+        for _ in 0..MAX_PENDING_PAGES {
+            let page = self
+                .crossvm_pending_messages_page(Some(PageRequest {
+                    key: key.clone(),
+                    limit: PENDING_PAGE_LIMIT,
+                    ..Default::default()
+                }))
+                .await?;
+            all.extend(page.messages);
+            key = page.pagination.map(|p| p.next_key).unwrap_or_default();
+            if key.is_empty() {
+                return Ok(qorechain::crossvm::v1::QueryPendingMessagesResponse {
+                    count: u32::try_from(all.len()).unwrap_or(u32::MAX),
+                    messages: all,
+                    pagination: None,
+                });
+            }
+        }
+        Err(Error::InvalidResponse(format!(
+            "crossvm pending messages: still more after {MAX_PENDING_PAGES} pages; use \
+             crossvm_pending_messages_page"
+        )))
     }
 
     /// Queries `qorechain.crossvm.v1.Query/Message`.
