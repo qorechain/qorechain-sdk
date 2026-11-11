@@ -465,7 +465,7 @@ class V328Test {
                 false, null, List.of("0x12"), null, null));
         assertThrows(IllegalArgumentException.class, () -> EvmWindow.openWithPolicy(sender, 100, 10, "1000",
                 false, null, null, List.of(sender), null));
-        for (String bad : List.of("cosmos1abc", "channel-0/", "chan/cosmos1", "channel-0/a b")) {
+        for (String bad : List.of("cosmos1abc", "channel-0/", "/cosmos1", "channel-0/a b", "channel-0/a,b")) {
             assertThrows(IllegalArgumentException.class, () -> EvmWindow.openWithPolicy(sender, 100, 10, "1000",
                     false, null, null, null, List.of(bad)), bad);
         }

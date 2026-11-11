@@ -268,8 +268,10 @@ public final class EvmWindow {
         java.util.Set<String> seenIbc = new java.util.HashSet<>();
         for (String r : msg.getIbcReceiversList()) {
             int slash = r.indexOf('/');
-            if (slash <= 0 || slash == r.length() - 1 || !r.substring(0, slash).matches("^channel-\\d+$")
-                    || r.chars().anyMatch(c -> c <= 0x20 || c == 0x7f)) {
+            // The chain's ParseIBCReceiver: 1 to 256 characters, no whitespace or
+            // comma, a "/" with text on both sides.
+            if (r.isEmpty() || r.length() > 256 || slash <= 0 || slash == r.length() - 1
+                    || r.chars().anyMatch(c -> Character.isWhitespace(c) || c == ',')) {
                 throw new IllegalArgumentException("open evm window: ibc_receivers: \"" + r
                         + "\" is not \"<source channel>/<receiver>\" (e.g. \"channel-0/cosmos1...\")");
             }
