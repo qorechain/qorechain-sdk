@@ -262,7 +262,7 @@ export function validateRdkUpdateParams(value: {
   zeroOrRange(value.maxPostedDataBytes, "maxPostedDataBytes", what);
   zeroOrRange(value.maxPostedDataBytesPerBlock, "maxPostedDataBytesPerBlock", what);
   zeroOrRange(value.postedDataFeePerByte, "postedDataFeePerByte", what);
-  zeroOrRange(value.postedDataRetentionBlocks, "postedDataRetentionBlocks", what);
+  zeroOrRange(value.postedDataRetentionBlocks, "postedDataRetentionBlocks", what, [1, 25_920_000]);
   zeroOrRange(value.minSubmitterBond, "minSubmitterBond", what);
 }
 

@@ -87,7 +87,7 @@ class RollupView(_message.Message):
     def __init__(self, rollup_id: _Optional[str] = ..., creator: _Optional[str] = ..., profile: _Optional[str] = ..., settlement_mode: _Optional[str] = ..., da_backend: _Optional[str] = ..., block_time_ms: _Optional[int] = ..., max_tx_per_block: _Optional[int] = ..., vm_type: _Optional[str] = ..., status: _Optional[str] = ..., stake_amount: _Optional[int] = ..., layer_id: _Optional[str] = ..., created_height: _Optional[int] = ..., escrow_balance: _Optional[int] = ..., challenge_window_sec: _Optional[int] = ..., challenge_bond: _Optional[int] = ..., proof_system: _Optional[str] = ..., has_verification_key: bool = ..., sequencing: _Optional[str] = ..., execution_vm: _Optional[str] = ..., privacy: _Optional[str] = ..., members: _Optional[_Iterable[str]] = ..., members_epoch: _Optional[int] = ..., deposit_pool: _Optional[int] = ...) -> None: ...
 
 class BatchView(_message.Message):
-    __slots__ = ("rollup_id", "batch_index", "state_root", "prev_state_root", "tx_count", "data_hash", "proof_type", "status", "submitted_at", "finalized_at", "withdrawals_root", "submitted_time", "withdrawals_bound", "inbox_start", "inbox_end")
+    __slots__ = ("rollup_id", "batch_index", "state_root", "prev_state_root", "tx_count", "data_hash", "proof_type", "status", "submitted_at", "finalized_at", "withdrawals_root", "submitted_time", "withdrawals_bound", "inbox_start", "inbox_end", "withdrawals_root_reduced")
     ROLLUP_ID_FIELD_NUMBER: _ClassVar[int]
     BATCH_INDEX_FIELD_NUMBER: _ClassVar[int]
     STATE_ROOT_FIELD_NUMBER: _ClassVar[int]
@@ -103,6 +103,7 @@ class BatchView(_message.Message):
     WITHDRAWALS_BOUND_FIELD_NUMBER: _ClassVar[int]
     INBOX_START_FIELD_NUMBER: _ClassVar[int]
     INBOX_END_FIELD_NUMBER: _ClassVar[int]
+    WITHDRAWALS_ROOT_REDUCED_FIELD_NUMBER: _ClassVar[int]
     rollup_id: str
     batch_index: int
     state_root: str
@@ -118,7 +119,8 @@ class BatchView(_message.Message):
     withdrawals_bound: bool
     inbox_start: int
     inbox_end: int
-    def __init__(self, rollup_id: _Optional[str] = ..., batch_index: _Optional[int] = ..., state_root: _Optional[str] = ..., prev_state_root: _Optional[str] = ..., tx_count: _Optional[int] = ..., data_hash: _Optional[str] = ..., proof_type: _Optional[str] = ..., status: _Optional[str] = ..., submitted_at: _Optional[int] = ..., finalized_at: _Optional[int] = ..., withdrawals_root: _Optional[str] = ..., submitted_time: _Optional[int] = ..., withdrawals_bound: bool = ..., inbox_start: _Optional[int] = ..., inbox_end: _Optional[int] = ...) -> None: ...
+    withdrawals_root_reduced: bool
+    def __init__(self, rollup_id: _Optional[str] = ..., batch_index: _Optional[int] = ..., state_root: _Optional[str] = ..., prev_state_root: _Optional[str] = ..., tx_count: _Optional[int] = ..., data_hash: _Optional[str] = ..., proof_type: _Optional[str] = ..., status: _Optional[str] = ..., submitted_at: _Optional[int] = ..., finalized_at: _Optional[int] = ..., withdrawals_root: _Optional[str] = ..., submitted_time: _Optional[int] = ..., withdrawals_bound: bool = ..., inbox_start: _Optional[int] = ..., inbox_end: _Optional[int] = ..., withdrawals_root_reduced: bool = ...) -> None: ...
 
 class QueryParamsRequest(_message.Message):
     __slots__ = ()
@@ -307,11 +309,13 @@ class QuerySubmitterBondRequest(_message.Message):
     def __init__(self, rollup_id: _Optional[str] = ..., submitter: _Optional[str] = ...) -> None: ...
 
 class QuerySubmitterBondResponse(_message.Message):
-    __slots__ = ("amount", "last_submit_time", "unbond_after")
+    __slots__ = ("amount", "last_submit_time", "unbond_after", "pending")
     AMOUNT_FIELD_NUMBER: _ClassVar[int]
     LAST_SUBMIT_TIME_FIELD_NUMBER: _ClassVar[int]
     UNBOND_AFTER_FIELD_NUMBER: _ClassVar[int]
+    PENDING_FIELD_NUMBER: _ClassVar[int]
     amount: int
     last_submit_time: int
     unbond_after: int
-    def __init__(self, amount: _Optional[int] = ..., last_submit_time: _Optional[int] = ..., unbond_after: _Optional[int] = ...) -> None: ...
+    pending: int
+    def __init__(self, amount: _Optional[int] = ..., last_submit_time: _Optional[int] = ..., unbond_after: _Optional[int] = ..., pending: _Optional[int] = ...) -> None: ...

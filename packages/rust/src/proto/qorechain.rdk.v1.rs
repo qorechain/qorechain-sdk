@@ -149,6 +149,14 @@ pub struct BatchView {
     pub inbox_start: u64,
     #[prost(uint64, tag="15")]
     pub inbox_end: u64,
+    /// withdrawals_root_reduced is true when withdrawals_root was stored reduced
+    /// modulo the BLS12-381 scalar field r: a Groth16 batch with
+    /// withdrawals_bound, settled with rdk-zk-canonical-inputs on (v3.2.8). Its
+    /// proof commits to the root modulo r, so a withdrawal against it is checked
+    /// by comparing roots modulo r. False for every other batch, whose root is
+    /// the submitted bytes.
+    #[prost(bool, tag="16")]
+    pub withdrawals_root_reduced: bool,
 }
 #[derive(Clone, Copy, PartialEq, ::prost::Message)]
 pub struct QueryParamsRequest {
@@ -346,6 +354,11 @@ pub struct QuerySubmitterBondResponse {
     /// succeeds.
     #[prost(int64, tag="3")]
     pub unbond_after: i64,
+    /// pending is the number of the submitter's batches on the rollup that are
+    /// still waiting for finality (submitted, not yet finalized or rejected), 0
+    /// when none. A submitter can have at most a fixed number pending at once.
+    #[prost(uint64, tag="4")]
+    pub pending: u64,
 }
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct MsgCreateRollup {

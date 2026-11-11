@@ -5074,6 +5074,21 @@ public final class QueryOuterClass extends com.google.protobuf.GeneratedFile {
      * @return The inboxEnd.
      */
     long getInboxEnd();
+
+    /**
+     * <pre>
+     * withdrawals_root_reduced is true when withdrawals_root was stored reduced
+     * modulo the BLS12-381 scalar field r: a Groth16 batch with
+     * withdrawals_bound, settled with rdk-zk-canonical-inputs on (v3.2.8). Its
+     * proof commits to the root modulo r, so a withdrawal against it is checked
+     * by comparing roots modulo r. False for every other batch, whose root is
+     * the submitted bytes.
+     * </pre>
+     *
+     * <code>bool withdrawals_root_reduced = 16 [json_name = "withdrawalsRootReduced"];</code>
+     * @return The withdrawalsRootReduced.
+     */
+    boolean getWithdrawalsRootReduced();
   }
   /**
    * <pre>
@@ -5510,6 +5525,26 @@ public final class QueryOuterClass extends com.google.protobuf.GeneratedFile {
       return inboxEnd_;
     }
 
+    public static final int WITHDRAWALS_ROOT_REDUCED_FIELD_NUMBER = 16;
+    private boolean withdrawalsRootReduced_ = false;
+    /**
+     * <pre>
+     * withdrawals_root_reduced is true when withdrawals_root was stored reduced
+     * modulo the BLS12-381 scalar field r: a Groth16 batch with
+     * withdrawals_bound, settled with rdk-zk-canonical-inputs on (v3.2.8). Its
+     * proof commits to the root modulo r, so a withdrawal against it is checked
+     * by comparing roots modulo r. False for every other batch, whose root is
+     * the submitted bytes.
+     * </pre>
+     *
+     * <code>bool withdrawals_root_reduced = 16 [json_name = "withdrawalsRootReduced"];</code>
+     * @return The withdrawalsRootReduced.
+     */
+    @java.lang.Override
+    public boolean getWithdrawalsRootReduced() {
+      return withdrawalsRootReduced_;
+    }
+
     private byte memoizedIsInitialized = -1;
     @java.lang.Override
     public final boolean isInitialized() {
@@ -5569,6 +5604,9 @@ public final class QueryOuterClass extends com.google.protobuf.GeneratedFile {
       if (inboxEnd_ != 0L) {
         output.writeUInt64(15, inboxEnd_);
       }
+      if (withdrawalsRootReduced_ != false) {
+        output.writeBool(16, withdrawalsRootReduced_);
+      }
       getUnknownFields().writeTo(output);
     }
     private int computeSerializedSize_0() {
@@ -5626,6 +5664,10 @@ public final class QueryOuterClass extends com.google.protobuf.GeneratedFile {
         size += com.google.protobuf.CodedOutputStream
           .computeUInt64Size(15, inboxEnd_);
       }
+      if (withdrawalsRootReduced_ != false) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeBoolSize(16, withdrawalsRootReduced_);
+      }
       return size;
     }
     @java.lang.Override
@@ -5680,6 +5722,8 @@ public final class QueryOuterClass extends com.google.protobuf.GeneratedFile {
           != other.getInboxStart()) return false;
       if (getInboxEnd()
           != other.getInboxEnd()) return false;
+      if (getWithdrawalsRootReduced()
+          != other.getWithdrawalsRootReduced()) return false;
       if (!getUnknownFields().equals(other.getUnknownFields())) return false;
       return true;
     }
@@ -5729,6 +5773,9 @@ public final class QueryOuterClass extends com.google.protobuf.GeneratedFile {
       hash = (37 * hash) + INBOX_END_FIELD_NUMBER;
       hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
           getInboxEnd());
+      hash = (37 * hash) + WITHDRAWALS_ROOT_REDUCED_FIELD_NUMBER;
+      hash = (53 * hash) + com.google.protobuf.Internal.hashBoolean(
+          getWithdrawalsRootReduced());
       hash = (29 * hash) + getUnknownFields().hashCode();
       memoizedHashCode = hash;
       return hash;
@@ -5879,6 +5926,7 @@ public final class QueryOuterClass extends com.google.protobuf.GeneratedFile {
         withdrawalsBound_ = false;
         inboxStart_ = 0L;
         inboxEnd_ = 0L;
+        withdrawalsRootReduced_ = false;
         return this;
       }
 
@@ -5957,6 +6005,9 @@ public final class QueryOuterClass extends com.google.protobuf.GeneratedFile {
         if (((from_bitField0_ & 0x00004000) != 0)) {
           result.inboxEnd_ = inboxEnd_;
         }
+        if (((from_bitField0_ & 0x00008000) != 0)) {
+          result.withdrawalsRootReduced_ = withdrawalsRootReduced_;
+        }
       }
 
       @java.lang.Override
@@ -6029,6 +6080,9 @@ public final class QueryOuterClass extends com.google.protobuf.GeneratedFile {
         }
         if (other.getInboxEnd() != 0L) {
           setInboxEnd(other.getInboxEnd());
+        }
+        if (other.getWithdrawalsRootReduced() != false) {
+          setWithdrawalsRootReduced(other.getWithdrawalsRootReduced());
         }
         this.mergeUnknownFields(other.getUnknownFields());
         onChanged();
@@ -6131,6 +6185,11 @@ public final class QueryOuterClass extends com.google.protobuf.GeneratedFile {
                 bitField0_ |= 0x00004000;
                 break;
               } // case 120
+              case 128: {
+                withdrawalsRootReduced_ = input.readBool();
+                bitField0_ |= 0x00008000;
+                break;
+              } // case 128
               default: {
                 if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                   done = true; // was an endgroup tag
@@ -6967,6 +7026,65 @@ public final class QueryOuterClass extends com.google.protobuf.GeneratedFile {
       public Builder clearInboxEnd() {
         bitField0_ = (bitField0_ & ~0x00004000);
         inboxEnd_ = 0L;
+        onChanged();
+        return this;
+      }
+
+      private boolean withdrawalsRootReduced_ ;
+      /**
+       * <pre>
+       * withdrawals_root_reduced is true when withdrawals_root was stored reduced
+       * modulo the BLS12-381 scalar field r: a Groth16 batch with
+       * withdrawals_bound, settled with rdk-zk-canonical-inputs on (v3.2.8). Its
+       * proof commits to the root modulo r, so a withdrawal against it is checked
+       * by comparing roots modulo r. False for every other batch, whose root is
+       * the submitted bytes.
+       * </pre>
+       *
+       * <code>bool withdrawals_root_reduced = 16 [json_name = "withdrawalsRootReduced"];</code>
+       * @return The withdrawalsRootReduced.
+       */
+      @java.lang.Override
+      public boolean getWithdrawalsRootReduced() {
+        return withdrawalsRootReduced_;
+      }
+      /**
+       * <pre>
+       * withdrawals_root_reduced is true when withdrawals_root was stored reduced
+       * modulo the BLS12-381 scalar field r: a Groth16 batch with
+       * withdrawals_bound, settled with rdk-zk-canonical-inputs on (v3.2.8). Its
+       * proof commits to the root modulo r, so a withdrawal against it is checked
+       * by comparing roots modulo r. False for every other batch, whose root is
+       * the submitted bytes.
+       * </pre>
+       *
+       * <code>bool withdrawals_root_reduced = 16 [json_name = "withdrawalsRootReduced"];</code>
+       * @param value The withdrawalsRootReduced to set.
+       * @return This builder for chaining.
+       */
+      public Builder setWithdrawalsRootReduced(boolean value) {
+
+        withdrawalsRootReduced_ = value;
+        bitField0_ |= 0x00008000;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * withdrawals_root_reduced is true when withdrawals_root was stored reduced
+       * modulo the BLS12-381 scalar field r: a Groth16 batch with
+       * withdrawals_bound, settled with rdk-zk-canonical-inputs on (v3.2.8). Its
+       * proof commits to the root modulo r, so a withdrawal against it is checked
+       * by comparing roots modulo r. False for every other batch, whose root is
+       * the submitted bytes.
+       * </pre>
+       *
+       * <code>bool withdrawals_root_reduced = 16 [json_name = "withdrawalsRootReduced"];</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearWithdrawalsRootReduced() {
+        bitField0_ = (bitField0_ & ~0x00008000);
+        withdrawalsRootReduced_ = false;
         onChanged();
         return this;
       }
@@ -22224,6 +22342,18 @@ public final class QueryOuterClass extends com.google.protobuf.GeneratedFile {
      * @return The unbondAfter.
      */
     long getUnbondAfter();
+
+    /**
+     * <pre>
+     * pending is the number of the submitter's batches on the rollup that are
+     * still waiting for finality (submitted, not yet finalized or rejected), 0
+     * when none. A submitter can have at most a fixed number pending at once.
+     * </pre>
+     *
+     * <code>uint64 pending = 4 [json_name = "pending"];</code>
+     * @return The pending.
+     */
+    long getPending();
   }
   /**
    * Protobuf type {@code qorechain.rdk.v1.QuerySubmitterBondResponse}
@@ -22314,6 +22444,23 @@ public final class QueryOuterClass extends com.google.protobuf.GeneratedFile {
       return unbondAfter_;
     }
 
+    public static final int PENDING_FIELD_NUMBER = 4;
+    private long pending_ = 0L;
+    /**
+     * <pre>
+     * pending is the number of the submitter's batches on the rollup that are
+     * still waiting for finality (submitted, not yet finalized or rejected), 0
+     * when none. A submitter can have at most a fixed number pending at once.
+     * </pre>
+     *
+     * <code>uint64 pending = 4 [json_name = "pending"];</code>
+     * @return The pending.
+     */
+    @java.lang.Override
+    public long getPending() {
+      return pending_;
+    }
+
     private byte memoizedIsInitialized = -1;
     @java.lang.Override
     public final boolean isInitialized() {
@@ -22337,6 +22484,9 @@ public final class QueryOuterClass extends com.google.protobuf.GeneratedFile {
       if (unbondAfter_ != 0L) {
         output.writeInt64(3, unbondAfter_);
       }
+      if (pending_ != 0L) {
+        output.writeUInt64(4, pending_);
+      }
       getUnknownFields().writeTo(output);
     }
     private int computeSerializedSize_0() {
@@ -22352,6 +22502,10 @@ public final class QueryOuterClass extends com.google.protobuf.GeneratedFile {
       if (unbondAfter_ != 0L) {
         size += com.google.protobuf.CodedOutputStream
           .computeInt64Size(3, unbondAfter_);
+      }
+      if (pending_ != 0L) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeUInt64Size(4, pending_);
       }
       return size;
     }
@@ -22383,6 +22537,8 @@ public final class QueryOuterClass extends com.google.protobuf.GeneratedFile {
           != other.getLastSubmitTime()) return false;
       if (getUnbondAfter()
           != other.getUnbondAfter()) return false;
+      if (getPending()
+          != other.getPending()) return false;
       if (!getUnknownFields().equals(other.getUnknownFields())) return false;
       return true;
     }
@@ -22403,6 +22559,9 @@ public final class QueryOuterClass extends com.google.protobuf.GeneratedFile {
       hash = (37 * hash) + UNBOND_AFTER_FIELD_NUMBER;
       hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
           getUnbondAfter());
+      hash = (37 * hash) + PENDING_FIELD_NUMBER;
+      hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
+          getPending());
       hash = (29 * hash) + getUnknownFields().hashCode();
       memoizedHashCode = hash;
       return hash;
@@ -22537,6 +22696,7 @@ public final class QueryOuterClass extends com.google.protobuf.GeneratedFile {
         amount_ = 0L;
         lastSubmitTime_ = 0L;
         unbondAfter_ = 0L;
+        pending_ = 0L;
         return this;
       }
 
@@ -22579,6 +22739,9 @@ public final class QueryOuterClass extends com.google.protobuf.GeneratedFile {
         if (((from_bitField0_ & 0x00000004) != 0)) {
           result.unbondAfter_ = unbondAfter_;
         }
+        if (((from_bitField0_ & 0x00000008) != 0)) {
+          result.pending_ = pending_;
+        }
       }
 
       @java.lang.Override
@@ -22601,6 +22764,9 @@ public final class QueryOuterClass extends com.google.protobuf.GeneratedFile {
         }
         if (other.getUnbondAfter() != 0L) {
           setUnbondAfter(other.getUnbondAfter());
+        }
+        if (other.getPending() != 0L) {
+          setPending(other.getPending());
         }
         this.mergeUnknownFields(other.getUnknownFields());
         onChanged();
@@ -22643,6 +22809,11 @@ public final class QueryOuterClass extends com.google.protobuf.GeneratedFile {
                 bitField0_ |= 0x00000004;
                 break;
               } // case 24
+              case 32: {
+                pending_ = input.readUInt64();
+                bitField0_ |= 0x00000008;
+                break;
+              } // case 32
               default: {
                 if (!super.parseUnknownField(input, extensionRegistry, tag)) {
                   done = true; // was an endgroup tag
@@ -22794,6 +22965,56 @@ public final class QueryOuterClass extends com.google.protobuf.GeneratedFile {
       public Builder clearUnbondAfter() {
         bitField0_ = (bitField0_ & ~0x00000004);
         unbondAfter_ = 0L;
+        onChanged();
+        return this;
+      }
+
+      private long pending_ ;
+      /**
+       * <pre>
+       * pending is the number of the submitter's batches on the rollup that are
+       * still waiting for finality (submitted, not yet finalized or rejected), 0
+       * when none. A submitter can have at most a fixed number pending at once.
+       * </pre>
+       *
+       * <code>uint64 pending = 4 [json_name = "pending"];</code>
+       * @return The pending.
+       */
+      @java.lang.Override
+      public long getPending() {
+        return pending_;
+      }
+      /**
+       * <pre>
+       * pending is the number of the submitter's batches on the rollup that are
+       * still waiting for finality (submitted, not yet finalized or rejected), 0
+       * when none. A submitter can have at most a fixed number pending at once.
+       * </pre>
+       *
+       * <code>uint64 pending = 4 [json_name = "pending"];</code>
+       * @param value The pending to set.
+       * @return This builder for chaining.
+       */
+      public Builder setPending(long value) {
+
+        pending_ = value;
+        bitField0_ |= 0x00000008;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * pending is the number of the submitter's batches on the rollup that are
+       * still waiting for finality (submitted, not yet finalized or rejected), 0
+       * when none. A submitter can have at most a fixed number pending at once.
+       * </pre>
+       *
+       * <code>uint64 pending = 4 [json_name = "pending"];</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearPending() {
+        bitField0_ = (bitField0_ & ~0x00000008);
+        pending_ = 0L;
         onChanged();
         return this;
       }
@@ -23027,7 +23248,7 @@ public final class QueryOuterClass extends com.google.protobuf.GeneratedFile {
       "execution_vm\030\023 \001(\tR\013executionVm\022\030\n\007priva" +
       "cy\030\024 \001(\tR\007privacy\022\030\n\007members\030\025 \003(\tR\007memb" +
       "ers\022#\n\rmembers_epoch\030\026 \001(\004R\014membersEpoch" +
-      "\022!\n\014deposit_pool\030\027 \001(\004R\013depositPool\"\202\004\n\t" +
+      "\022!\n\014deposit_pool\030\027 \001(\004R\013depositPool\"\274\004\n\t" +
       "BatchView\022\033\n\trollup_id\030\001 \001(\tR\010rollupId\022\037" +
       "\n\013batch_index\030\002 \001(\004R\nbatchIndex\022\035\n\nstate" +
       "_root\030\003 \001(\tR\tstateRoot\022&\n\017prev_state_roo" +
@@ -23040,103 +23261,105 @@ public final class QueryOuterClass extends com.google.protobuf.GeneratedFile {
       "lsRoot\022%\n\016submitted_time\030\014 \001(\003R\rsubmitte" +
       "dTime\022+\n\021withdrawals_bound\030\r \001(\010R\020withdr" +
       "awalsBound\022\037\n\013inbox_start\030\016 \001(\004R\ninboxSt" +
-      "art\022\033\n\tinbox_end\030\017 \001(\004R\010inboxEnd\"\024\n\022Quer" +
-      "yParamsRequest\"K\n\023QueryParamsResponse\0224\n" +
-      "\006params\030\001 \001(\0132\034.qorechain.rdk.v1.ParamsV" +
-      "iewR\006params\"1\n\022QueryRollupRequest\022\033\n\trol" +
-      "lup_id\030\001 \001(\tR\010rollupId\"K\n\023QueryRollupRes" +
-      "ponse\0224\n\006rollup\030\001 \001(\0132\034.qorechain.rdk.v1" +
-      ".RollupViewR\006rollup\"\025\n\023QueryRollupsReque" +
-      "st\"N\n\024QueryRollupsResponse\0226\n\007rollups\030\001 " +
-      "\003(\0132\034.qorechain.rdk.v1.RollupViewR\007rollu" +
-      "ps\"Q\n\021QueryBatchRequest\022\033\n\trollup_id\030\001 \001" +
-      "(\tR\010rollupId\022\037\n\013batch_index\030\002 \001(\004R\nbatch" +
-      "Index\"G\n\022QueryBatchResponse\0221\n\005batch\030\001 \001" +
-      "(\0132\033.qorechain.rdk.v1.BatchViewR\005batch\"6" +
-      "\n\027QueryLatestBatchRequest\022\033\n\trollup_id\030\001" +
-      " \001(\tR\010rollupId\"M\n\030QueryLatestBatchRespon" +
-      "se\0221\n\005batch\030\001 \001(\0132\033.qorechain.rdk.v1.Bat" +
-      "chViewR\005batch\"i\n\023QueryBatchesRequest\022\033\n\t" +
-      "rollup_id\030\001 \001(\tR\010rollupId\022\037\n\013start_index" +
-      "\030\002 \001(\004R\nstartIndex\022\024\n\005limit\030\003 \001(\rR\005limit" +
-      "\"l\n\024QueryBatchesResponse\0225\n\007batches\030\001 \003(" +
-      "\0132\033.qorechain.rdk.v1.BatchViewR\007batches\022" +
-      "\035\n\nnext_index\030\002 \001(\004R\tnextIndex\"\374\001\n\010BlobV" +
-      "iew\022\033\n\trollup_id\030\001 \001(\tR\010rollupId\022\035\n\nblob" +
-      "_index\030\002 \001(\004R\tblobIndex\022\036\n\ncommitment\030\003 " +
-      "\001(\tR\ncommitment\022\033\n\tdata_size\030\004 \001(\004R\010data" +
-      "Size\022\026\n\006height\030\005 \001(\003R\006height\022\033\n\tstored_a" +
-      "t\030\006 \001(\tR\010storedAt\022\026\n\006pruned\030\007 \001(\010R\006prune" +
-      "d\022*\n\021expires_at_height\030\010 \001(\003R\017expiresAtH" +
-      "eight\"N\n\020QueryBlobRequest\022\033\n\trollup_id\030\001" +
-      " \001(\tR\010rollupId\022\035\n\nblob_index\030\002 \001(\004R\tblob" +
-      "Index\"C\n\021QueryBlobResponse\022.\n\004blob\030\001 \001(\013" +
-      "2\032.qorechain.rdk.v1.BlobViewR\004blob\"\363\001\n\016P" +
-      "ostedDataView\022\033\n\trollup_id\030\001 \001(\tR\010rollup" +
-      "Id\022\032\n\010sequence\030\002 \001(\004R\010sequence\022\033\n\tdata_h" +
-      "ash\030\003 \001(\tR\010dataHash\022\022\n\004size\030\004 \001(\004R\004size\022" +
-      "\026\n\006poster\030\005 \001(\tR\006poster\022\026\n\006height\030\006 \001(\003R" +
-      "\006height\022\033\n\tinbox_acc\030\007 \001(\tR\010inboxAcc\022*\n\021" +
-      "expires_at_height\030\010 \001(\003R\017expiresAtHeight" +
-      "\"Q\n\026QueryPostedDataRequest\022\033\n\trollup_id\030" +
-      "\001 \001(\tR\010rollupId\022\032\n\010sequence\030\002 \001(\004R\010seque" +
-      "nce\"\\\n\027QueryPostedDataResponse\022A\n\013posted" +
-      "_data\030\001 \001(\0132 .qorechain.rdk.v1.PostedDat" +
-      "aViewR\npostedData\"\235\002\n\tInboxView\022\033\n\trollu" +
-      "p_id\030\001 \001(\tR\010rollupId\022\036\n\nsequencing\030\002 \001(\t" +
-      "R\nsequencing\022#\n\rhead_sequence\030\003 \001(\004R\014hea" +
-      "dSequence\022\031\n\010head_acc\030\004 \001(\tR\007headAcc\022+\n\021" +
-      "consumed_sequence\030\005 \001(\004R\020consumedSequenc" +
-      "e\022!\n\014consumed_acc\030\006 \001(\tR\013consumedAcc\022\033\n\t" +
-      "range_end\030\007 \001(\004R\010rangeEnd\022&\n\017range_data_" +
-      "hash\030\010 \001(\tR\rrangeDataHash\"M\n\021QueryInboxR" +
-      "equest\022\033\n\trollup_id\030\001 \001(\tR\010rollupId\022\033\n\ti" +
-      "nbox_end\030\002 \001(\004R\010inboxEnd\"G\n\022QueryInboxRe" +
-      "sponse\0221\n\005inbox\030\001 \001(\0132\033.qorechain.rdk.v1" +
-      ".InboxViewR\005inbox\"V\n\031QuerySubmitterBondR" +
-      "equest\022\033\n\trollup_id\030\001 \001(\tR\010rollupId\022\034\n\ts" +
-      "ubmitter\030\002 \001(\tR\tsubmitter\"\201\001\n\032QuerySubmi" +
-      "tterBondResponse\022\026\n\006amount\030\001 \001(\004R\006amount" +
-      "\022(\n\020last_submit_time\030\002 \001(\003R\016lastSubmitTi" +
-      "me\022!\n\014unbond_after\030\003 \001(\003R\013unbondAfter2\225\013" +
-      "\n\005Query\022w\n\006Params\022$.qorechain.rdk.v1.Que" +
-      "ryParamsRequest\032%.qorechain.rdk.v1.Query" +
-      "ParamsResponse\" \202\323\344\223\002\032\022\030/qorechain/rdk/v" +
-      "1/params\022\203\001\n\006Rollup\022$.qorechain.rdk.v1.Q" +
-      "ueryRollupRequest\032%.qorechain.rdk.v1.Que" +
-      "ryRollupResponse\",\202\323\344\223\002&\022$/qorechain/rdk" +
-      "/v1/rollup/{rollup_id}\022{\n\007Rollups\022%.qore" +
-      "chain.rdk.v1.QueryRollupsRequest\032&.qorec" +
-      "hain.rdk.v1.QueryRollupsResponse\"!\202\323\344\223\002\033" +
-      "\022\031/qorechain/rdk/v1/rollups\022\215\001\n\005Batch\022#." +
-      "qorechain.rdk.v1.QueryBatchRequest\032$.qor" +
-      "echain.rdk.v1.QueryBatchResponse\"9\202\323\344\223\0023" +
-      "\0221/qorechain/rdk/v1/batch/{rollup_id}/{b" +
-      "atch_index}\022\230\001\n\013LatestBatch\022).qorechain." +
-      "rdk.v1.QueryLatestBatchRequest\032*.qorecha" +
-      "in.rdk.v1.QueryLatestBatchResponse\"2\202\323\344\223" +
-      "\002,\022*/qorechain/rdk/v1/latest_batch/{roll" +
-      "up_id}\022\207\001\n\007Batches\022%.qorechain.rdk.v1.Qu" +
-      "eryBatchesRequest\032&.qorechain.rdk.v1.Que" +
-      "ryBatchesResponse\"-\202\323\344\223\002\'\022%/qorechain/rd" +
-      "k/v1/batches/{rollup_id}\022\210\001\n\004Blob\022\".qore" +
-      "chain.rdk.v1.QueryBlobRequest\032#.qorechai" +
-      "n.rdk.v1.QueryBlobResponse\"7\202\323\344\223\0021\022//qor" +
-      "echain/rdk/v1/blob/{rollup_id}/{blob_ind" +
-      "ex}\022\237\001\n\nPostedData\022(.qorechain.rdk.v1.Qu" +
-      "eryPostedDataRequest\032).qorechain.rdk.v1." +
-      "QueryPostedDataResponse\"<\202\323\344\223\0026\0224/qorech" +
-      "ain/rdk/v1/posted_data/{rollup_id}/{sequ" +
-      "ence}\022\177\n\005Inbox\022#.qorechain.rdk.v1.QueryI" +
-      "nboxRequest\032$.qorechain.rdk.v1.QueryInbo" +
-      "xResponse\"+\202\323\344\223\002%\022#/qorechain/rdk/v1/inb" +
-      "ox/{rollup_id}\022\254\001\n\rSubmitterBond\022+.qorec" +
-      "hain.rdk.v1.QuerySubmitterBondRequest\032,." +
-      "qorechain.rdk.v1.QuerySubmitterBondRespo" +
-      "nse\"@\202\323\344\223\002:\0228/qorechain/rdk/v1/submitter" +
-      "_bond/{rollup_id}/{submitter}B1Z/github." +
-      "com/qorechain/qorechain-core/x/rdk/types" +
-      "b\006proto3"
+      "art\022\033\n\tinbox_end\030\017 \001(\004R\010inboxEnd\0228\n\030with" +
+      "drawals_root_reduced\030\020 \001(\010R\026withdrawalsR" +
+      "ootReduced\"\024\n\022QueryParamsRequest\"K\n\023Quer" +
+      "yParamsResponse\0224\n\006params\030\001 \001(\0132\034.qorech" +
+      "ain.rdk.v1.ParamsViewR\006params\"1\n\022QueryRo" +
+      "llupRequest\022\033\n\trollup_id\030\001 \001(\tR\010rollupId" +
+      "\"K\n\023QueryRollupResponse\0224\n\006rollup\030\001 \001(\0132" +
+      "\034.qorechain.rdk.v1.RollupViewR\006rollup\"\025\n" +
+      "\023QueryRollupsRequest\"N\n\024QueryRollupsResp" +
+      "onse\0226\n\007rollups\030\001 \003(\0132\034.qorechain.rdk.v1" +
+      ".RollupViewR\007rollups\"Q\n\021QueryBatchReques" +
+      "t\022\033\n\trollup_id\030\001 \001(\tR\010rollupId\022\037\n\013batch_" +
+      "index\030\002 \001(\004R\nbatchIndex\"G\n\022QueryBatchRes" +
+      "ponse\0221\n\005batch\030\001 \001(\0132\033.qorechain.rdk.v1." +
+      "BatchViewR\005batch\"6\n\027QueryLatestBatchRequ" +
+      "est\022\033\n\trollup_id\030\001 \001(\tR\010rollupId\"M\n\030Quer" +
+      "yLatestBatchResponse\0221\n\005batch\030\001 \001(\0132\033.qo" +
+      "rechain.rdk.v1.BatchViewR\005batch\"i\n\023Query" +
+      "BatchesRequest\022\033\n\trollup_id\030\001 \001(\tR\010rollu" +
+      "pId\022\037\n\013start_index\030\002 \001(\004R\nstartIndex\022\024\n\005" +
+      "limit\030\003 \001(\rR\005limit\"l\n\024QueryBatchesRespon" +
+      "se\0225\n\007batches\030\001 \003(\0132\033.qorechain.rdk.v1.B" +
+      "atchViewR\007batches\022\035\n\nnext_index\030\002 \001(\004R\tn" +
+      "extIndex\"\374\001\n\010BlobView\022\033\n\trollup_id\030\001 \001(\t" +
+      "R\010rollupId\022\035\n\nblob_index\030\002 \001(\004R\tblobInde" +
+      "x\022\036\n\ncommitment\030\003 \001(\tR\ncommitment\022\033\n\tdat" +
+      "a_size\030\004 \001(\004R\010dataSize\022\026\n\006height\030\005 \001(\003R\006" +
+      "height\022\033\n\tstored_at\030\006 \001(\tR\010storedAt\022\026\n\006p" +
+      "runed\030\007 \001(\010R\006pruned\022*\n\021expires_at_height" +
+      "\030\010 \001(\003R\017expiresAtHeight\"N\n\020QueryBlobRequ" +
+      "est\022\033\n\trollup_id\030\001 \001(\tR\010rollupId\022\035\n\nblob" +
+      "_index\030\002 \001(\004R\tblobIndex\"C\n\021QueryBlobResp" +
+      "onse\022.\n\004blob\030\001 \001(\0132\032.qorechain.rdk.v1.Bl" +
+      "obViewR\004blob\"\363\001\n\016PostedDataView\022\033\n\trollu" +
+      "p_id\030\001 \001(\tR\010rollupId\022\032\n\010sequence\030\002 \001(\004R\010" +
+      "sequence\022\033\n\tdata_hash\030\003 \001(\tR\010dataHash\022\022\n" +
+      "\004size\030\004 \001(\004R\004size\022\026\n\006poster\030\005 \001(\tR\006poste" +
+      "r\022\026\n\006height\030\006 \001(\003R\006height\022\033\n\tinbox_acc\030\007" +
+      " \001(\tR\010inboxAcc\022*\n\021expires_at_height\030\010 \001(" +
+      "\003R\017expiresAtHeight\"Q\n\026QueryPostedDataReq" +
+      "uest\022\033\n\trollup_id\030\001 \001(\tR\010rollupId\022\032\n\010seq" +
+      "uence\030\002 \001(\004R\010sequence\"\\\n\027QueryPostedData" +
+      "Response\022A\n\013posted_data\030\001 \001(\0132 .qorechai" +
+      "n.rdk.v1.PostedDataViewR\npostedData\"\235\002\n\t" +
+      "InboxView\022\033\n\trollup_id\030\001 \001(\tR\010rollupId\022\036" +
+      "\n\nsequencing\030\002 \001(\tR\nsequencing\022#\n\rhead_s" +
+      "equence\030\003 \001(\004R\014headSequence\022\031\n\010head_acc\030" +
+      "\004 \001(\tR\007headAcc\022+\n\021consumed_sequence\030\005 \001(" +
+      "\004R\020consumedSequence\022!\n\014consumed_acc\030\006 \001(" +
+      "\tR\013consumedAcc\022\033\n\trange_end\030\007 \001(\004R\010range" +
+      "End\022&\n\017range_data_hash\030\010 \001(\tR\rrangeDataH" +
+      "ash\"M\n\021QueryInboxRequest\022\033\n\trollup_id\030\001 " +
+      "\001(\tR\010rollupId\022\033\n\tinbox_end\030\002 \001(\004R\010inboxE" +
+      "nd\"G\n\022QueryInboxResponse\0221\n\005inbox\030\001 \001(\0132" +
+      "\033.qorechain.rdk.v1.InboxViewR\005inbox\"V\n\031Q" +
+      "uerySubmitterBondRequest\022\033\n\trollup_id\030\001 " +
+      "\001(\tR\010rollupId\022\034\n\tsubmitter\030\002 \001(\tR\tsubmit" +
+      "ter\"\233\001\n\032QuerySubmitterBondResponse\022\026\n\006am" +
+      "ount\030\001 \001(\004R\006amount\022(\n\020last_submit_time\030\002" +
+      " \001(\003R\016lastSubmitTime\022!\n\014unbond_after\030\003 \001" +
+      "(\003R\013unbondAfter\022\030\n\007pending\030\004 \001(\004R\007pendin" +
+      "g2\225\013\n\005Query\022w\n\006Params\022$.qorechain.rdk.v1" +
+      ".QueryParamsRequest\032%.qorechain.rdk.v1.Q" +
+      "ueryParamsResponse\" \202\323\344\223\002\032\022\030/qorechain/r" +
+      "dk/v1/params\022\203\001\n\006Rollup\022$.qorechain.rdk." +
+      "v1.QueryRollupRequest\032%.qorechain.rdk.v1" +
+      ".QueryRollupResponse\",\202\323\344\223\002&\022$/qorechain" +
+      "/rdk/v1/rollup/{rollup_id}\022{\n\007Rollups\022%." +
+      "qorechain.rdk.v1.QueryRollupsRequest\032&.q" +
+      "orechain.rdk.v1.QueryRollupsResponse\"!\202\323" +
+      "\344\223\002\033\022\031/qorechain/rdk/v1/rollups\022\215\001\n\005Batc" +
+      "h\022#.qorechain.rdk.v1.QueryBatchRequest\032$" +
+      ".qorechain.rdk.v1.QueryBatchResponse\"9\202\323" +
+      "\344\223\0023\0221/qorechain/rdk/v1/batch/{rollup_id" +
+      "}/{batch_index}\022\230\001\n\013LatestBatch\022).qorech" +
+      "ain.rdk.v1.QueryLatestBatchRequest\032*.qor" +
+      "echain.rdk.v1.QueryLatestBatchResponse\"2" +
+      "\202\323\344\223\002,\022*/qorechain/rdk/v1/latest_batch/{" +
+      "rollup_id}\022\207\001\n\007Batches\022%.qorechain.rdk.v" +
+      "1.QueryBatchesRequest\032&.qorechain.rdk.v1" +
+      ".QueryBatchesResponse\"-\202\323\344\223\002\'\022%/qorechai" +
+      "n/rdk/v1/batches/{rollup_id}\022\210\001\n\004Blob\022\"." +
+      "qorechain.rdk.v1.QueryBlobRequest\032#.qore" +
+      "chain.rdk.v1.QueryBlobResponse\"7\202\323\344\223\0021\022/" +
+      "/qorechain/rdk/v1/blob/{rollup_id}/{blob" +
+      "_index}\022\237\001\n\nPostedData\022(.qorechain.rdk.v" +
+      "1.QueryPostedDataRequest\032).qorechain.rdk" +
+      ".v1.QueryPostedDataResponse\"<\202\323\344\223\0026\0224/qo" +
+      "rechain/rdk/v1/posted_data/{rollup_id}/{" +
+      "sequence}\022\177\n\005Inbox\022#.qorechain.rdk.v1.Qu" +
+      "eryInboxRequest\032$.qorechain.rdk.v1.Query" +
+      "InboxResponse\"+\202\323\344\223\002%\022#/qorechain/rdk/v1" +
+      "/inbox/{rollup_id}\022\254\001\n\rSubmitterBond\022+.q" +
+      "orechain.rdk.v1.QuerySubmitterBondReques" +
+      "t\032,.qorechain.rdk.v1.QuerySubmitterBondR" +
+      "esponse\"@\202\323\344\223\002:\0228/qorechain/rdk/v1/submi" +
+      "tter_bond/{rollup_id}/{submitter}B1Z/git" +
+      "hub.com/qorechain/qorechain-core/x/rdk/t" +
+      "ypesb\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
@@ -23160,7 +23383,7 @@ public final class QueryOuterClass extends com.google.protobuf.GeneratedFile {
     internal_static_qorechain_rdk_v1_BatchView_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_qorechain_rdk_v1_BatchView_descriptor,
-        new java.lang.String[] { "RollupId", "BatchIndex", "StateRoot", "PrevStateRoot", "TxCount", "DataHash", "ProofType", "Status", "SubmittedAt", "FinalizedAt", "WithdrawalsRoot", "SubmittedTime", "WithdrawalsBound", "InboxStart", "InboxEnd", });
+        new java.lang.String[] { "RollupId", "BatchIndex", "StateRoot", "PrevStateRoot", "TxCount", "DataHash", "ProofType", "Status", "SubmittedAt", "FinalizedAt", "WithdrawalsRoot", "SubmittedTime", "WithdrawalsBound", "InboxStart", "InboxEnd", "WithdrawalsRootReduced", });
     internal_static_qorechain_rdk_v1_QueryParamsRequest_descriptor =
       getDescriptor().getMessageType(3);
     internal_static_qorechain_rdk_v1_QueryParamsRequest_fieldAccessorTable = new
@@ -23298,7 +23521,7 @@ public final class QueryOuterClass extends com.google.protobuf.GeneratedFile {
     internal_static_qorechain_rdk_v1_QuerySubmitterBondResponse_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_qorechain_rdk_v1_QuerySubmitterBondResponse_descriptor,
-        new java.lang.String[] { "Amount", "LastSubmitTime", "UnbondAfter", });
+        new java.lang.String[] { "Amount", "LastSubmitTime", "UnbondAfter", "Pending", });
     descriptor.resolveAllFeaturesImmutable();
     com.google.api.AnnotationsProto.getDescriptor();
     com.google.protobuf.ExtensionRegistry registry =

@@ -128,6 +128,15 @@ export interface BatchView {
    */
   inboxStart: string;
   inboxEnd: string;
+  /**
+   * withdrawals_root_reduced is true when withdrawals_root was stored reduced
+   * modulo the BLS12-381 scalar field r: a Groth16 batch with
+   * withdrawals_bound, settled with rdk-zk-canonical-inputs on (v3.2.8). Its
+   * proof commits to the root modulo r, so a withdrawal against it is checked
+   * by comparing roots modulo r. False for every other batch, whose root is
+   * the submitted bytes.
+   */
+  withdrawalsRootReduced: boolean;
 }
 
 export interface QueryParamsRequest {
@@ -283,6 +292,12 @@ export interface QuerySubmitterBondResponse {
    * succeeds.
    */
   unbondAfter: string;
+  /**
+   * pending is the number of the submitter's batches on the rollup that are
+   * still waiting for finality (submitted, not yet finalized or rejected), 0
+   * when none. A submitter can have at most a fixed number pending at once.
+   */
+  pending: string;
 }
 
 function createBaseParamsView(): ParamsView {
@@ -1126,6 +1141,7 @@ function createBaseBatchView(): BatchView {
     withdrawalsBound: false,
     inboxStart: "0",
     inboxEnd: "0",
+    withdrawalsRootReduced: false,
   };
 }
 
@@ -1175,6 +1191,9 @@ export const BatchView: MessageFns<BatchView> = {
     }
     if (message.inboxEnd !== "0") {
       writer.uint32(120).uint64(message.inboxEnd);
+    }
+    if (message.withdrawalsRootReduced !== false) {
+      writer.uint32(128).bool(message.withdrawalsRootReduced);
     }
     return writer;
   },
@@ -1306,6 +1325,14 @@ export const BatchView: MessageFns<BatchView> = {
           message.inboxEnd = reader.uint64().toString();
           continue;
         }
+        case 16: {
+          if (tag !== 128) {
+            break;
+          }
+
+          message.withdrawalsRootReduced = reader.bool();
+          continue;
+        }
       }
       if ((tag & 7) === 4 || tag === 0) {
         break;
@@ -1388,6 +1415,11 @@ export const BatchView: MessageFns<BatchView> = {
         : isSet(object.inbox_end)
         ? globalThis.String(object.inbox_end)
         : "0",
+      withdrawalsRootReduced: isSet(object.withdrawalsRootReduced)
+        ? globalThis.Boolean(object.withdrawalsRootReduced)
+        : isSet(object.withdrawals_root_reduced)
+        ? globalThis.Boolean(object.withdrawals_root_reduced)
+        : false,
     };
   },
 
@@ -1438,6 +1470,9 @@ export const BatchView: MessageFns<BatchView> = {
     if (message.inboxEnd !== "0") {
       obj.inboxEnd = message.inboxEnd;
     }
+    if (message.withdrawalsRootReduced !== false) {
+      obj.withdrawalsRootReduced = message.withdrawalsRootReduced;
+    }
     return obj;
   },
 
@@ -1461,6 +1496,7 @@ export const BatchView: MessageFns<BatchView> = {
     message.withdrawalsBound = object.withdrawalsBound ?? false;
     message.inboxStart = object.inboxStart ?? "0";
     message.inboxEnd = object.inboxEnd ?? "0";
+    message.withdrawalsRootReduced = object.withdrawalsRootReduced ?? false;
     return message;
   },
 };
@@ -3363,7 +3399,7 @@ export const QuerySubmitterBondRequest: MessageFns<QuerySubmitterBondRequest> = 
 };
 
 function createBaseQuerySubmitterBondResponse(): QuerySubmitterBondResponse {
-  return { amount: "0", lastSubmitTime: "0", unbondAfter: "0" };
+  return { amount: "0", lastSubmitTime: "0", unbondAfter: "0", pending: "0" };
 }
 
 export const QuerySubmitterBondResponse: MessageFns<QuerySubmitterBondResponse> = {
@@ -3376,6 +3412,9 @@ export const QuerySubmitterBondResponse: MessageFns<QuerySubmitterBondResponse> 
     }
     if (message.unbondAfter !== "0") {
       writer.uint32(24).int64(message.unbondAfter);
+    }
+    if (message.pending !== "0") {
+      writer.uint32(32).uint64(message.pending);
     }
     return writer;
   },
@@ -3411,6 +3450,14 @@ export const QuerySubmitterBondResponse: MessageFns<QuerySubmitterBondResponse> 
           message.unbondAfter = reader.int64().toString();
           continue;
         }
+        case 4: {
+          if (tag !== 32) {
+            break;
+          }
+
+          message.pending = reader.uint64().toString();
+          continue;
+        }
       }
       if ((tag & 7) === 4 || tag === 0) {
         break;
@@ -3433,6 +3480,7 @@ export const QuerySubmitterBondResponse: MessageFns<QuerySubmitterBondResponse> 
         : isSet(object.unbond_after)
         ? globalThis.String(object.unbond_after)
         : "0",
+      pending: isSet(object.pending) ? globalThis.String(object.pending) : "0",
     };
   },
 
@@ -3447,6 +3495,9 @@ export const QuerySubmitterBondResponse: MessageFns<QuerySubmitterBondResponse> 
     if (message.unbondAfter !== "0") {
       obj.unbondAfter = message.unbondAfter;
     }
+    if (message.pending !== "0") {
+      obj.pending = message.pending;
+    }
     return obj;
   },
 
@@ -3458,6 +3509,7 @@ export const QuerySubmitterBondResponse: MessageFns<QuerySubmitterBondResponse> 
     message.amount = object.amount ?? "0";
     message.lastSubmitTime = object.lastSubmitTime ?? "0";
     message.unbondAfter = object.unbondAfter ?? "0";
+    message.pending = object.pending ?? "0";
     return message;
   },
 };
