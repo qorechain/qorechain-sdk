@@ -22,6 +22,22 @@ How the limit is sized:
 * Everything else (a classical transaction, a network below v3.2.5, or when
   the network cannot be asked): ``ceil(gas_used * 1.4)``, as before.
 * An explicit ``gas_multiplier`` always gives ``ceil(gas_used * gas_multiplier)``.
+* A transaction carrying a CosmWasm execute / instantiate / migrate or a
+  ``MsgCrossVMCall`` is sized at least ``ceil(gas_used * 1.3)``
+  (:data:`WASM_MIN_GAS_MULTIPLIER`) whatever rule applies: the first call of a
+  contract code in a block costs much more than a repeat (a cw20 transfer about
+  533k gas cold, about 84k warm). Use auto / simulation for wasm and cross-VM
+  gas; :func:`~qorsdk.fees.estimate_fee` refuses its fixed fallback for them.
+
+Caps (chain v3.2.8): a Cosmos transaction above 50,000,000 gas
+(:data:`~qorsdk.tx.COSMOS_TX_MAX_GAS`) is refused before signing, and an EVM
+transaction above the EVM gas cap (30,000,000 by default,
+:data:`EVM_TX_MAX_GAS`; read the value in force with :func:`fetch_evm_limits`)
+by :func:`check_evm_gas_limit`.
+
+Gas price: the default stays :data:`DEFAULT_GAS_PRICE`. The minimum the chain
+enforces can be read, opt-in, with :func:`fetch_min_gas_price_uqor` and
+:func:`recommended_gas_price_uqor` (no default path calls the network for it).
 """
 
 from __future__ import annotations
@@ -29,13 +45,16 @@ from __future__ import annotations
 import base64
 import math
 import re
+from collections.abc import Iterable
 from dataclasses import dataclass
+from decimal import Decimal, InvalidOperation, localcontext
 from typing import Any
 
 import httpx
 
 from .errors import DecodedTxError, QoreTxError, decode_tx_error, error_from_text
-from .tx import BuiltTx
+from .tx import COSMOS_TX_MAX_GAS as COSMOS_TX_MAX_GAS
+from .tx import BuiltTx, check_cosmos_gas_limit
 from .upgrades import CHAIN_UPGRADE_V3_2_5, upgrade_applied_height
 
 #: Default gas-used safety multiplier applied to a simulation result (every
@@ -49,6 +68,186 @@ EXACT_GAS_HEADROOM = 2000
 #: min-gas-price (BaseFee) of ``0.1uqor``/gas on both networks; the default sits
 #: above the floor for headroom.
 DEFAULT_GAS_PRICE = "0.15uqor"
+
+#: Minimum multiplier for a transaction that carries CosmWasm or cross-VM calls.
+WASM_MIN_GAS_MULTIPLIER = 1.3
+#: Default EVM gas cap of chain v3.2.8 (``tx_max_gas`` while governance has not
+#: set another).
+EVM_TX_MAX_GAS = 30_000_000
+#: Default largest guarded precompile input (bytes) when not queried.
+EVM_PRECOMPILE_INPUT_MAX_BYTES = 0
+#: REST route of the EVM limits query.
+EVM_LIMITS_PATH = "/qorechain/pqc/v1/evm_limits"
+#: REST route of the feemarket params (the minimum gas price the ante enforces).
+FEEMARKET_PARAMS_PATH = "/cosmos/evm/feemarket/v1/params"
+#: The chain's floor, in uqor per gas.
+MIN_GAS_PRICE_FLOOR_UQOR = Decimal("0.1")
+#: The lowest price :func:`recommended_gas_price_uqor` returns.
+RECOMMENDED_GAS_PRICE_FLOOR_UQOR = Decimal("0.15")
+
+#: Message types whose gas must come from simulation or an explicit limit.
+WASM_GAS_TYPE_URLS: frozenset[str] = frozenset(
+    {
+        "/cosmwasm.wasm.v1.MsgExecuteContract",
+        "/cosmwasm.wasm.v1.MsgInstantiateContract",
+        "/cosmwasm.wasm.v1.MsgInstantiateContract2",
+        "/cosmwasm.wasm.v1.MsgMigrateContract",
+        "/qorechain.crossvm.v1.MsgCrossVMCall",
+    }
+)
+
+
+def _type_url_of(message: Any) -> str:
+    if isinstance(message, str):
+        return message
+    if isinstance(message, dict):
+        return str(message.get("type_url") or message.get("typeUrl") or "")
+    return str(getattr(message, "type_url", "") or "")
+
+
+def needs_simulated_gas(messages: Iterable[Any]) -> bool:
+    """Whether a tx with ``messages`` carries a CosmWasm execute / instantiate /
+    migrate or a ``MsgCrossVMCall``, whose gas must come from simulation (auto)
+    or an explicit limit, never a fixed fallback.
+
+    ``messages`` are :class:`~qorsdk.messages.Msg` objects, ``{"type_url", ...}``
+    dicts or type URL strings.
+    """
+    return any(_type_url_of(m) in WASM_GAS_TYPE_URLS for m in messages)
+
+
+def _built_type_urls(built: BuiltTx) -> list[str]:
+    from cosmpy.protos.cosmos.tx.v1beta1.tx_pb2 import TxBody
+    from google.protobuf.message import DecodeError
+
+    body = TxBody()
+    try:
+        body.ParseFromString(built.tx_raw.body_bytes)
+    except DecodeError:
+        return []
+    return [m.type_url for m in body.messages]
+
+
+def check_evm_gas_limit(gas: int, *, cap: int = EVM_TX_MAX_GAS) -> int:
+    """Refuse an EVM gas limit above the chain's EVM gas cap before signing.
+
+    :param cap: The cap in force (from :func:`fetch_evm_limits`), default
+        30,000,000.
+    :raises ValueError: If ``gas`` is above ``cap``.
+    """
+    if gas > cap:
+        raise ValueError(
+            f"EVM gas limit {gas} exceeds the chain's EVM transaction gas cap of {cap:,} "
+            "(chain v3.2.8 refuses it); lower the limit"
+        )
+    return gas
+
+
+@dataclass(frozen=True)
+class EVMLimits:
+    """The EVM execution limits in force (``/qorechain/pqc/v1/evm_limits``)."""
+
+    #: The most gas one EVM transaction may ask for.
+    tx_max_gas: int
+    #: The largest input a guarded stateful precompile accepts (0 = unknown).
+    precompile_input_max_bytes: int
+
+
+def parse_evm_limits(payload: Any) -> EVMLimits:
+    """Parse the EVM limits answer: the top-level values in force, falling back
+    to ``limits`` (what governance set), then to the defaults."""
+    p: dict[str, Any] = payload if isinstance(payload, dict) else {}
+    raw_limits = p.get("limits")
+    limits: dict[str, Any] = raw_limits if isinstance(raw_limits, dict) else {}
+
+    def pick(name: str, default: int) -> int:
+        for source in (p, limits):
+            raw = source.get(name)
+            if raw is None or isinstance(raw, bool) or raw in ("", 0, "0"):
+                continue
+            try:
+                return int(raw)
+            except (TypeError, ValueError):
+                raise ValueError(f"evm_limits: {name} is not an integer: {raw!r}") from None
+        return default
+
+    return EVMLimits(
+        tx_max_gas=pick("tx_max_gas", EVM_TX_MAX_GAS),
+        precompile_input_max_bytes=pick(
+            "precompile_input_max_bytes", EVM_PRECOMPILE_INPUT_MAX_BYTES
+        ),
+    )
+
+
+def fetch_evm_limits(rest: Any) -> EVMLimits:
+    """Read the EVM execution limits (chain v3.2.8) over REST.
+
+    :param rest: A :class:`~qorsdk.rest.RestClient` (anything with ``get``).
+    """
+    return parse_evm_limits(rest.get(EVM_LIMITS_PATH))
+
+
+async def fetch_evm_limits_async(rest: Any) -> EVMLimits:
+    """Asynchronous mirror of :func:`fetch_evm_limits`."""
+    return parse_evm_limits(await rest.get(EVM_LIMITS_PATH))
+
+
+def _min_gas_price_from(payload: Any) -> Decimal:
+    params = payload.get("params") if isinstance(payload, dict) else None
+    raw = params.get("min_gas_price") if isinstance(params, dict) else None
+    if raw is None or raw == "":
+        value = Decimal(0)
+    else:
+        if not isinstance(raw, str):
+            raise ValueError(f"feemarket min_gas_price is not a decimal string: {raw!r}")
+        try:
+            value = Decimal(raw)
+        except InvalidOperation:
+            raise ValueError(f"feemarket min_gas_price is not a decimal: {raw!r}") from None
+        if not value.is_finite() or value < 0:
+            raise ValueError(f"feemarket min_gas_price is not a non-negative decimal: {raw!r}")
+    # 18-decimal EVM unit per gas -> uqor per gas, exactly (no context rounding).
+    with localcontext() as ctx:
+        ctx.prec = max(len(value.as_tuple().digits) + 4, 28)
+        return max(value.scaleb(-12), MIN_GAS_PRICE_FLOOR_UQOR)
+
+
+def _times(price: Decimal, margin: Decimal | str | int) -> Decimal:
+    m = Decimal(str(margin))
+    with localcontext() as ctx:
+        ctx.prec = len(price.as_tuple().digits) + len(m.as_tuple().digits) + 4
+        return max(price * m, RECOMMENDED_GAS_PRICE_FLOOR_UQOR)
+
+
+def fetch_min_gas_price_uqor(rest: Any) -> Decimal:
+    """The minimum gas price the chain enforces, in uqor per gas (opt-in).
+
+    Reads ``params.min_gas_price`` of ``/cosmos/evm/feemarket/v1/params`` (a
+    decimal in the 18-decimal EVM unit), divides it by 10^12 exactly and returns
+    ``max(that, 0.1)``. The package's default gas price does not use it.
+    """
+    return _min_gas_price_from(rest.get(FEEMARKET_PARAMS_PATH))
+
+
+async def fetch_min_gas_price_uqor_async(rest: Any) -> Decimal:
+    """Asynchronous mirror of :func:`fetch_min_gas_price_uqor`."""
+    return _min_gas_price_from(await rest.get(FEEMARKET_PARAMS_PATH))
+
+
+def recommended_gas_price_uqor(rest: Any, *, margin: Decimal | str | int = "1.5") -> Decimal:
+    """``max(0.15, fetch_min_gas_price_uqor(rest) * margin)`` uqor per gas (opt-in).
+
+    Pass ``f"{price}uqor"`` to :func:`calculate_fee` / :func:`auto_fee`.
+    """
+    return _times(fetch_min_gas_price_uqor(rest), margin)
+
+
+async def recommended_gas_price_uqor_async(
+    rest: Any, *, margin: Decimal | str | int = "1.5"
+) -> Decimal:
+    """Asynchronous mirror of :func:`recommended_gas_price_uqor`."""
+    return _times(await fetch_min_gas_price_uqor_async(rest), margin)
+
 
 _GAS_PRICE_RE = re.compile(r"^([0-9]+(?:\.[0-9]+)?)\s*([a-zA-Z][a-zA-Z0-9/:._-]*)$")
 
@@ -271,13 +470,20 @@ def _gas_limit(
     timeout: float,
     client: httpx.Client | None,
 ) -> int:
+    wasm = needs_simulated_gas(_built_type_urls(built))
     if gas_multiplier is not None:
-        return math.ceil(gas_used * gas_multiplier)
-    if built.pqc_signature and simulation_charges_pqc_verify(
+        if wasm:
+            gas_multiplier = max(gas_multiplier, WASM_MIN_GAS_MULTIPLIER)
+        limit = math.ceil(gas_used * gas_multiplier)
+    elif built.pqc_signature and simulation_charges_pqc_verify(
         rest_url, timeout=timeout, client=client
     ):
-        return exact_hybrid_gas(gas_used)
-    return math.ceil(gas_used * DEFAULT_GAS_MULTIPLIER)
+        limit = exact_hybrid_gas(gas_used)
+        if wasm:
+            limit = max(limit, -(-gas_used * 13 // 10))
+    else:
+        limit = math.ceil(gas_used * DEFAULT_GAS_MULTIPLIER)
+    return check_cosmos_gas_limit(limit)
 
 
 def estimate_gas(
@@ -293,7 +499,10 @@ def estimate_gas(
     With no ``gas_multiplier``: :func:`exact_hybrid_gas` for a hybrid-signed
     ``built`` on a network that has applied v3.2.5, otherwise
     ``ceil(gas_used * DEFAULT_GAS_MULTIPLIER)``. With one:
-    ``ceil(gas_used * gas_multiplier)``.
+    ``ceil(gas_used * gas_multiplier)``. A tx with CosmWasm or cross-VM calls
+    gets at least ``ceil(gas_used * 1.3)``.
+
+    :raises ValueError: If the limit would exceed the Cosmos gas cap.
     """
     gas_used = simulate_gas_used(rest_url, built, timeout=timeout, client=client)
     return _gas_limit(rest_url, built, gas_used, gas_multiplier, timeout, client)

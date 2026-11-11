@@ -9,12 +9,21 @@ The oracle can be unavailable, so this falls back to a deterministic static fee
 computed from a configurable gas price in the base denom - ``ceil(gas *
 gas_price)`` - using integer math (no floats). The fallback is transparent and
 never raises on a missing/erroring endpoint.
+
+The fixed fallback gas (:data:`STATIC_FALLBACK_GAS`) is NOT used for a
+transaction that carries a CosmWasm execute / instantiate / migrate or a
+``MsgCrossVMCall``: the first call of a contract code in a block costs far more
+than a repeat, so a fixed limit runs out on a cold load. Pass ``messages`` and
+:func:`estimate_fee` refuses such a tx unless ``gas`` is given explicitly; use
+auto / simulation (:func:`qorsdk.gas.auto_fee`) for wasm and cross-VM gas.
 """
 
 from __future__ import annotations
 
+from collections.abc import Iterable
 from typing import Any
 
+from .gas import needs_simulated_gas
 from .rest import FeeUrgency, RestClient
 
 #: Default static-fallback parameters used when the AI fee oracle is unavailable.
@@ -43,16 +52,32 @@ def estimate_fee(
     rest: RestClient,
     *,
     urgency: FeeUrgency = "normal",
-    gas: int | str = STATIC_FALLBACK_GAS,
+    gas: int | str | None = None,
     fallback_gas_price: str = STATIC_FALLBACK_GAS_PRICE,
     denom: str = STATIC_FALLBACK_DENOM,
+    messages: Iterable[Any] | None = None,
 ) -> dict[str, Any]:
     """Estimate a transaction fee for the given urgency.
 
     Queries the QoreChain AI fee oracle and returns a Native ``StdFee``-shaped
     dict. Falls back to a deterministic static fee when the oracle is
-    unavailable or returns no usable amount.
+    unavailable or returns no usable amount. ``gas`` defaults to
+    :data:`STATIC_FALLBACK_GAS`.
+
+    :param messages: The tx's messages. When they include a CosmWasm execute /
+        instantiate / migrate or a ``MsgCrossVMCall`` and ``gas`` is not given,
+        the fixed fallback is refused.
+    :raises ValueError: For such a tx without an explicit ``gas``.
     """
+    if gas is None:
+        if messages is not None and needs_simulated_gas(messages):
+            raise ValueError(
+                "this transaction carries a CosmWasm or cross-VM call, whose gas varies "
+                "widely (the first call of a code in a block costs much more): use "
+                "simulation (qorsdk.gas.auto_fee / estimate_gas) or pass an explicit gas limit "
+                "instead of the fixed fallback"
+            )
+        gas = STATIC_FALLBACK_GAS
     gas_str = str(int(gas)) if isinstance(gas, int) else gas
 
     try:

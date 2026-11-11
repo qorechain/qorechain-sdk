@@ -93,8 +93,41 @@ class CrossVmQueryClient:
     def params(self) -> Any:
         return self._params(crossvm_q.QueryParamsRequest())
 
-    def pending_messages(self) -> Any:
-        return self._pending(crossvm_q.QueryPendingMessagesRequest())
+    def pending_messages(self, *, key: bytes = b"", limit: int = 0) -> Any:
+        """One page of pending cross-VM messages (chain v3.2.8 paginates: at most
+        100 per page). Pass the previous page's ``pagination.next_key`` as
+        ``key`` for the next one, or use :meth:`all_pending_messages`.
+
+        ``payload_hex`` in the list is cut to its first 1,024 bytes; read the full
+        payload with :meth:`message`.
+        """
+        from cosmpy.protos.cosmos.base.query.v1beta1.pagination_pb2 import PageRequest
+
+        request = crossvm_q.QueryPendingMessagesRequest()
+        if key or limit:
+            request.pagination.CopyFrom(PageRequest(key=key, limit=limit))
+        return self._pending(request)
+
+    def all_pending_messages(self, *, page_limit: int = 100, max_pages: int = 1000) -> list[Any]:
+        """Every pending cross-VM message, following ``pagination.next_key`` until
+        it is empty (at most ``max_pages`` pages, a safety cap).
+
+        ``payload_hex`` of each entry is truncated to 1,024 bytes; use
+        :meth:`message` for the full payload.
+
+        :raises RuntimeError: If more than ``max_pages`` pages are returned.
+        """
+        out: list[Any] = []
+        key = b""
+        for _ in range(max_pages):
+            page = self.pending_messages(key=key, limit=page_limit)
+            out.extend(page.messages)
+            key = bytes(page.pagination.next_key) if page.HasField("pagination") else b""
+            if not key:
+                return out
+        raise RuntimeError(
+            f"crossvm pending messages: more than {max_pages} pages; raise max_pages"
+        )
 
     def message(self, message_id: str) -> Any:
         return self._message(crossvm_q.QueryMessageRequest(id=message_id))

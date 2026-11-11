@@ -389,6 +389,23 @@ def test_update_config_encodes_and_checks() -> None:
         )
 
 
+CROSSVM_V328_EXTRA: dict[str, Any] = {
+    "bridge_allowed_targets": [],
+    "bridge_target_pins": [],
+    "max_pending_per_sender": 0,
+    "max_cosmos_tx_gas": 0,
+    "record_retention_blocks": 0,
+    "max_block_wasm_gas": 0,
+    "max_tx_wasm_share_bps": 0,
+    "max_block_level_wasm_gas": 0,
+    "queue_wasm_reserve_bps": 0,
+    "wasm_congestion_max_factor": 0,
+    "wasm_congestion_target_bps": 0,
+    "max_block_upload_bps": 0,
+    "max_queue_timeouts_per_block": 0,
+}
+
+
 def test_crossvm_update_params_encodes_and_checks() -> None:
     m = msg.crossvm.update_params(
         authority=GOV,
@@ -396,7 +413,7 @@ def test_crossvm_update_params_encodes_and_checks() -> None:
         max_queue_size=1000,
         queue_timeout_blocks=100,
         enabled=True,
-        bridge_allowed_targets=[f"cosmwasm:{CONTRACT}"],
+        **{**CROSSVM_V328_EXTRA, "bridge_allowed_targets": [f"cosmwasm:{CONTRACT}"]},
     )
     assert m.type_url == "/qorechain.crossvm.v1.MsgUpdateParams"
     decoded = QORECHAIN_REGISTRY_TYPES[m.type_url].FromString(m.value.SerializeToString())  # type: ignore[attr-defined]
@@ -407,6 +424,7 @@ def test_crossvm_update_params_encodes_and_checks() -> None:
         max_queue_size=1000,
         queue_timeout_blocks=100,
         enabled=True,
+        **CROSSVM_V328_EXTRA,
     )
     for targets, match in [
         (["cosmwasm"], "<vm>:<contract>"),
@@ -415,7 +433,7 @@ def test_crossvm_update_params_encodes_and_checks() -> None:
         ([f"cosmwasm:{CONTRACT}"] * 2, "listed twice"),
     ]:
         with pytest.raises(ValueError, match=match):
-            msg.crossvm.update_params(**base, bridge_allowed_targets=targets)
+            msg.crossvm.update_params(**{**base, "bridge_allowed_targets": targets})
     with pytest.raises(ValueError, match="exceeds"):
         msg.crossvm.update_params(**{**base, "max_queue_size": 10_001})
     with pytest.raises(ValueError, match="positive"):
@@ -432,6 +450,12 @@ def test_rdk_update_params_encodes_and_checks() -> None:
         max_da_blob_size=1 << 20,
         blob_retention_blocks=1000,
         max_batches_per_block=10,
+        finalized_batch_retention_blocks=0,
+        max_posted_data_bytes=0,
+        max_posted_data_bytes_per_block=0,
+        posted_data_fee_per_byte=0,
+        posted_data_retention_blocks=0,
+        min_submitter_bond=0,
     )
     m = msg.rdk.update_params(**base)
     assert m.type_url == "/qorechain.rdk.v1.MsgUpdateParams"

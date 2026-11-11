@@ -584,7 +584,8 @@ from qorsdk import (
     get_tx, get_block, search_txs, build_events_query,  # search
 )
 
-# Simulate -> gas limit -> x 0.15uqor. A hybrid-signed tx on a v3.2.5+ network
+# Simulate -> gas limit -> x 0.15uqor (DEFAULT_GAS_PRICE; read the chain's
+# minimum with fetch_min_gas_price_uqor, opt-in). A hybrid-signed tx on a v3.2.5+ network
 # gets ceil(gas_used x 1.02) + 2000 (see "Exact gas" below); otherwise
 # ceil(gas_used x 1.4).
 fee = auto_fee(client.network.endpoints.rest, built)
@@ -926,7 +927,116 @@ got = fetch_kem_key(RestClient(get_network("mainnet").endpoints.rest), address) 
 - Governance-only composers: `msg.abstractaccount.update_config`,
   `msg.crossvm.update_params` (with the EVM bridge allowlist,
   `"cosmwasm:<contract>"` entries) and `msg.rdk.update_params`, each checked
-  against the chain's bounds before a proposal is built.
+  against the chain's bounds before a proposal is built. From chain v3.2.8 they
+  require every field; see "Chain v3.2.8" below.
+
+### Chain v3.2.8
+
+#### Linking a key: possession proof and spending rule
+
+`MsgRegisterAuthenticator` carries `possession_proof` (field 8), required from
+v3.2.8: a signature BY THE KEY BEING LINKED over the link message.
+`msg.abstractaccount.register_authenticator` refuses an empty proof.
+
+```python
+from qorsdk import (
+    authenticator_link_message, link_proof_ed25519, link_proof_secp256k1,
+    link_proof_eth, link_authenticator_msgs,
+)
+
+# A browser wallet signs this text itself (Phantom signMessage, MetaMask
+# personal_sign). Five lines: domain, chain, account, scheme, lowercase hex key.
+text = authenticator_link_message("qorechain-diana", owner, "ed25519", phantom_pubkey)
+
+# With the private key in hand:
+proof = link_proof_ed25519(seed32, chain_id="qorechain-diana", account_address=owner)
+# link_proof_secp256k1: 33-byte compressed key, 64-byte r||s over sha256(text)
+# link_proof_eth: 20-byte Ethereum address, EIP-191 personal_sign (65 bytes)
+
+# A key with send / evm / deploy / svm / all needs an enabled spending rule on
+# the ACCOUNT that bounds every denom (the chain applies the FIRST enabled
+# rule). Send both messages, owner-signed, in ONE transaction:
+msgs = link_authenticator_msgs(
+    owner=owner, chain_id="qorechain-diana",
+    scheme=proof.scheme, pubkey=proof.pubkey, possession_proof=proof.possession_proof,
+    permissions=["send"], expiry_unix=expiry, label="phantom",
+    spending_rule={"id": "default", "enabled": True, "per_tx_limit": 1_000_000},
+)  # -> [MsgUpdateSpendingRules, MsgRegisterAuthenticator]
+```
+
+`MsgUpdateSpendingRules` REPLACES the account's rules wholesale: pass every rule
+the account should keep. It may be sent for an account that does not exist yet
+when `account_address == owner` (it creates the account).
+
+#### Execution results
+
+A failed `MsgExecuteEVM` / `MsgExecuteCosmos` that was authorised now returns
+`success=false` inside a transaction with code 0, emits
+`abstractaccount_execution_failed` and consumes the nonce.
+`decode_execution_results(included)` returns one `ExecutionResult` per execute
+message (`success`, `ret`, `gas_used`, `vm_error`, `reason`);
+`require_executions_succeeded(included)` raises `ExecutionFailedError` when any
+failed.
+
+#### Governance params: every field, copied from the chain
+
+crossvm, svm and rdk `MsgUpdateParams` replace the parameters wholesale, so the
+composers refuse a missing field (a field left out would be zero: crossvm
+`bridge_target_pins` wiped, svm custody ceilings removed). svm also refuses
+`enabled=True` with `max_custody_hard_uqor == 0`. Build a proposal from the
+values in force:
+
+```python
+from qorsdk import crossvm_update_params_from_current, svm_update_params_from_current
+
+m = crossvm_update_params_from_current(rest, authority=gov, changes={"max_pending_per_sender": 50})
+# svm: nodes without /qorechain/svm/v1/params take current=<every SVMParams field>
+s = svm_update_params_from_current(rest, authority=gov, changes={"max_custody_hard_uqor": 10**12})
+```
+
+`rdk_update_params_from_current` works the same way.
+
+#### Cross-VM
+
+- Async calls into CosmWasm take `async_gas_limit` (0 = 500,000; else
+  250,000..10,000,000) and `async_max_factor` (millionths, 1,000,000 = 1x; 0 =
+  four times the factor at submission); both are refused on synchronous calls
+  and other targets. The call holds an escrow (`async_gas_limit x factor x gas
+  price`, about 0.2 QOR by default) refunded when it finishes, pays a queue-slot
+  fee, and a sender may have at most 100 pending calls.
+- The pending query is paginated (at most 100 per page):
+  `q.crossvm.all_pending_messages()` follows `next_key`. `payload_hex` in the
+  list is cut to 1,024 bytes; read the full payload with `q.crossvm.message(id)`.
+- `CrossVmClient(fee="auto")` simulates each transaction instead of using a
+  fixed fee.
+
+#### EVM window scope
+
+`msg.pqc.open_evm_window` takes `validators` (0x contract addresses),
+`staking_validators` (`qorvaloper...`) and `ibc_receivers`
+(`"channel-0/cosmos1..."`). Standard precompile methods are deny-by-default
+through a window: staking delegate / redelegate need `staking_validators`,
+ICS-20 needs `ibc_receivers`; undelegate, vote and withdraw-address changes are
+refused through the window (use a PQC-signed Cosmos transaction). Rotating,
+migrating or re-registering the PQC key closes the window.
+
+#### Gas
+
+- EVM transactions above the EVM gas cap are refused (30,000,000 by default):
+  `fetch_evm_limits(rest)` reads `/qorechain/pqc/v1/evm_limits`,
+  `check_evm_gas_limit(gas, cap=...)` refuses before signing, and
+  `execute_evm_msg` checks its `gas_limit`.
+- A Cosmos transaction above 50,000,000 gas is refused before signing.
+- Use auto / simulation for wasm and cross-VM gas: the first call of a contract
+  code in a block costs much more (a cw20 transfer about 533k gas, repeats about
+  84k). `estimate_fee(..., messages=msgs)` refuses its fixed 200,000 fallback for
+  a tx with a CosmWasm execute / instantiate / migrate or `MsgCrossVMCall`, and
+  simulation sizes such a tx at least `ceil(gas_used x 1.3)`.
+- Minimum gas price (opt-in, no default path calls it):
+  `fetch_min_gas_price_uqor(rest)` reads `/cosmos/evm/feemarket/v1/params` and
+  returns `max(min_gas_price / 10^12, 0.1)` uqor per gas as an exact `Decimal`;
+  `recommended_gas_price_uqor(rest, margin="1.5")` returns `max(0.15, that x
+  margin)`. The default gas price stays `0.15uqor`.
 
 ## Regenerating protobuf code (maintainers)
 

@@ -26,14 +26,24 @@ from ..evm_delegation import (
 from ..evm_window import (
     CLOSE_EVM_WINDOW_TYPE_URL,
     OPEN_EVM_WINDOW_TYPE_URL,
+    validate_evm_window_ibc_receivers,
     validate_evm_window_params,
+    validate_evm_window_staking_validators,
     validate_evm_window_targets,
+    validate_evm_window_validators,
 )
 from ..governance import (
+    CROSSVM_UPDATE_PARAMS_FIELDS,
+    RDK_UPDATE_PARAMS_FIELDS,
     UPDATE_CROSSVM_PARAMS_TYPE_URL,
     UPDATE_RDK_PARAMS_TYPE_URL,
+    UPDATE_SVM_PARAMS_TYPE_URL,
+    _non_negative_int,
+    require_fields,
+    validate_crossvm_target_pins,
     validate_crossvm_update_params,
     validate_rdk_update_params,
+    validate_svm_params,
 )
 from ..kem import (
     KEM_ALGORITHM_ML_KEM_1024,
@@ -125,34 +135,39 @@ bridge = SimpleNamespace(
 # --------------------------------------------------------------------------- #
 
 
-def _rdk_update_params(
-    *,
-    authority: str,
-    max_rollups: int,
-    min_stake_for_rollup: int,
-    rollup_creation_burn_rate: str,
-    default_challenge_window: int,
-    max_da_blob_size: int,
-    blob_retention_blocks: int,
-    max_batches_per_block: int,
-) -> Msg:
-    """Build rdk ``MsgUpdateParams`` (chain v3.2.5, governance only): replaces
-    every rdk parameter at once.
+_RDK_V328_FIELDS = (
+    "finalized_batch_retention_blocks",
+    "max_posted_data_bytes",
+    "max_posted_data_bytes_per_block",
+    "posted_data_fee_per_byte",
+    "posted_data_retention_blocks",
+    "min_submitter_bond",
+)
 
-    :raises ValueError: Naming the field, from
+
+def _rdk_update_params(**fields: Any) -> Msg:
+    """Build rdk ``MsgUpdateParams`` (governance only): replaces every rdk
+    parameter at once.
+
+    Every field is required (chain v3.2.8 added fields 9..14): ``authority`` and
+    each of :data:`~qorsdk.governance.RDK_UPDATE_PARAMS_FIELDS`. A field left out
+    would be reset to zero, so a missing or ``None`` field is refused. The
+    v3.2.8 fields may be 0 (the chain default). Build a proposal from the values
+    in force with :func:`~qorsdk.governance.rdk_update_params_from_current`.
+
+    :raises ValueError: Naming the missing fields, or the field that fails
         :func:`~qorsdk.governance.validate_rdk_update_params`.
     """
-    fields: dict[str, Any] = dict(
-        authority=authority,
-        max_rollups=max_rollups,
-        min_stake_for_rollup=min_stake_for_rollup,
-        rollup_creation_burn_rate=rollup_creation_burn_rate,
-        default_challenge_window=default_challenge_window,
-        max_da_blob_size=max_da_blob_size,
-        blob_retention_blocks=blob_retention_blocks,
-        max_batches_per_block=max_batches_per_block,
+    what = "rdk update_params"
+    unknown = set(fields) - {"authority", *RDK_UPDATE_PARAMS_FIELDS}
+    if unknown:
+        raise ValueError(f"{what}: unknown field(s): {', '.join(sorted(unknown))}")
+    require_fields(what, fields, ("authority", *RDK_UPDATE_PARAMS_FIELDS))
+    validate_rdk_update_params(
+        **{k: v for k, v in fields.items() if k not in _RDK_V328_FIELDS}
     )
-    validate_rdk_update_params(**fields)
+    for name in _RDK_V328_FIELDS:
+        _non_negative_int(fields[name], name, what)
     return Msg(type_url=UPDATE_RDK_PARAMS_TYPE_URL, value=rdk_tx.MsgUpdateParams(**fields))
 
 
@@ -174,7 +189,7 @@ rdk = SimpleNamespace(
     execute_withdrawal=composer(
         "/qorechain.rdk.v1.MsgExecuteWithdrawal", rdk_tx.MsgExecuteWithdrawal
     ),
-    # v3.2.5: replace the module parameters. Governance only.
+    # Replace the module parameters (governance only). Every field required.
     update_params=_rdk_update_params,
 )
 
@@ -225,6 +240,9 @@ def _open_evm_window(
     max_value: str | int,
     native_only: bool = False,
     allowed_targets: list[str] | tuple[str, ...] = (),
+    validators: list[str] | tuple[str, ...] = (),
+    staking_validators: list[str] | tuple[str, ...] = (),
+    ibc_receivers: list[str] | tuple[str, ...] = (),
 ) -> Msg:
     """Build ``MsgOpenEVMWindow`` (chain v3.2.0), validating the chain's bounds.
 
@@ -265,6 +283,9 @@ def _open_evm_window(
             max_value=params.max_value,
             native_only=native_only,
             allowed_targets=targets,
+            validators=validate_evm_window_validators(validators),
+            staking_validators=validate_evm_window_staking_validators(staking_validators),
+            ibc_receivers=validate_evm_window_ibc_receivers(ibc_receivers),
         ),
     )
 
@@ -384,6 +405,36 @@ pqc = SimpleNamespace(
 # --------------------------------------------------------------------------- #
 # SVM (Solana-style VM programs/accounts)
 # --------------------------------------------------------------------------- #
+
+
+def _svm_update_params(*, authority: str = "", params: Any = None) -> Msg:
+    """Build svm ``MsgUpdateParams`` (governance only): replaces ``SVMParams``
+    wholesale, among them whether the lane is enabled.
+
+    ``params`` is a mapping with EVERY ``SVMParams`` field
+    (:data:`~qorsdk.governance.SVM_PARAMS_FIELDS`, including the v3.2.8 custody
+    ceilings ``max_custody_uqor``, ``max_custody_hard_uqor`` and
+    ``max_account_excess_uqor``): a field left out would be zero, which removes
+    that ceiling. ``enabled = true`` with ``max_custody_hard_uqor == 0`` is
+    refused: governance must set a hard custody ceiling before opening the lane.
+    Build a proposal with :func:`~qorsdk.governance.svm_update_params_from_current`.
+
+    :raises ValueError: Naming the missing fields or the violated rule.
+    """
+    if not authority:
+        raise ValueError("svm update_params: authority (the governance module account) is required")
+    validate_svm_params(params)
+    return Msg(
+        type_url=UPDATE_SVM_PARAMS_TYPE_URL,
+        value=svm_tx.MsgUpdateParams(
+            authority=authority, params=svm_tx.SVMParams(**dict(params))
+        ),
+    )
+
+
+_svm_update_params.__name__ = "MsgUpdateParams"
+_svm_update_params.__qualname__ = "MsgUpdateParams"
+
 svm = SimpleNamespace(
     deploy_program=composer(
         "/qorechain.svm.v1.MsgDeployProgram", svm_tx.MsgDeployProgram
@@ -400,9 +451,8 @@ svm = SimpleNamespace(
     # Governance-only (authority = the gov module account): replaces the SVM
     # runtime parameters (``SVMParams``) wholesale, so the lane's limits - and
     # whether it is enabled at all - are a proposal rather than a binary release.
-    update_params=composer(
-        "/qorechain.svm.v1.MsgUpdateParams", svm_tx.MsgUpdateParams
-    ),
+    # Every field required (v3.2.8).
+    update_params=_svm_update_params,
 )
 
 # --------------------------------------------------------------------------- #
@@ -473,6 +523,46 @@ def _update_spending_rules(**fields: Any) -> Msg:
 _update_spending_rules.__name__ = "MsgUpdateSpendingRules"
 _update_spending_rules.__qualname__ = "MsgUpdateSpendingRules"
 
+_compose_register_authenticator = composer(
+    "/qorechain.abstractaccount.v1.MsgRegisterAuthenticator",
+    abstractaccount_tx.MsgRegisterAuthenticator,
+)
+
+
+def _register_authenticator(**fields: Any) -> Msg:
+    """Build ``MsgRegisterAuthenticator`` (owner-signed): link a foreign-scheme
+    key to an account.
+
+    From chain v3.2.8 ``possession_proof`` is required: the signature of the key
+    being linked over
+    :func:`qorsdk.authenticator.authenticator_link_message` (chain id, account,
+    scheme, key). An empty proof is refused here. A key with the ``send``,
+    ``evm``, ``deploy``, ``svm`` or ``all`` permission also needs a spending rule
+    on the account; :func:`qorsdk.authenticator.link_authenticator_msgs` builds
+    both messages and checks the rule.
+
+    :raises ValueError: If ``possession_proof`` is empty, or ``pubkey`` is a
+        65-byte uncompressed key.
+    """
+    if not fields.get("possession_proof"):
+        raise ValueError(
+            "register_authenticator: possession_proof is required from chain v3.2.8. Sign "
+            "qorsdk.authenticator.authenticator_link_message(chain_id, account_address, scheme, "
+            "pubkey) with the key being linked (Phantom signMessage, MetaMask personal_sign, or "
+            "link_proof_ed25519 / link_proof_secp256k1 / link_proof_eth) and pass the signature"
+        )
+    if len(bytes(fields.get("pubkey") or b"")) == 65:
+        raise ValueError(
+            "register_authenticator: a 65-byte uncompressed key is refused; link the 33-byte "
+            "compressed key or the 20-byte Ethereum address"
+        )
+    return _compose_register_authenticator(**fields)
+
+
+_register_authenticator.__name__ = "MsgRegisterAuthenticator"
+_register_authenticator.__qualname__ = "MsgRegisterAuthenticator"
+
+
 def _update_config(
     *,
     authority: str,
@@ -514,10 +604,8 @@ abstractaccount = SimpleNamespace(
         abstractaccount_tx.MsgCreateAbstractAccount,
     ),
     update_spending_rules=_update_spending_rules,
-    register_authenticator=composer(
-        "/qorechain.abstractaccount.v1.MsgRegisterAuthenticator",
-        abstractaccount_tx.MsgRegisterAuthenticator,
-    ),
+    # possession_proof required from v3.2.8.
+    register_authenticator=_register_authenticator,
     revoke_authenticator=composer(
         "/qorechain.abstractaccount.v1.MsgRevokeAuthenticator",
         abstractaccount_tx.MsgRevokeAuthenticator,
@@ -537,40 +625,62 @@ abstractaccount = SimpleNamespace(
 # --------------------------------------------------------------------------- #
 # Cross-VM (inter-VM messaging)
 # --------------------------------------------------------------------------- #
-def _crossvm_update_params(
-    *,
-    authority: str,
-    max_message_size: int,
-    max_queue_size: int,
-    queue_timeout_blocks: int,
-    enabled: bool,
-    bridge_allowed_targets: list[str] | tuple[str, ...] | None = None,
-) -> Msg:
-    """Build crossvm ``MsgUpdateParams`` (chain v3.2.5, governance only):
-    replaces every crossvm parameter at once, among them the allowlist of
-    ``"cosmwasm:<contract>"`` targets the EVM bridge precompile may call.
+def _crossvm_update_params(**fields: Any) -> Msg:
+    """Build crossvm ``MsgUpdateParams`` (governance only): replaces every
+    crossvm parameter at once, among them the allowlist of
+    ``"cosmwasm:<contract>"`` targets the EVM bridge precompile may call and
+    their code pins.
 
-    :raises ValueError: From
+    Every field is required (chain v3.2.8 added fields 7..18): ``authority`` and
+    each of :data:`~qorsdk.governance.CROSSVM_UPDATE_PARAMS_FIELDS`. A field left
+    out would be zero (``bridge_target_pins`` wiped), so a missing or ``None``
+    field is refused; zero given explicitly is allowed for the v3.2.8 limits
+    (the chain default). ``bridge_target_pins`` is a list of
+    ``{"target", "code_id", "history_len"}`` mappings (or ``BridgeTargetPin``).
+    Build a proposal from the values in force with
+    :func:`~qorsdk.governance.crossvm_update_params_from_current`.
+
+    :raises ValueError: Naming the missing fields, or from
         :func:`~qorsdk.governance.validate_crossvm_update_params`.
     """
-    targets = list(bridge_allowed_targets or ())
+    what = "crossvm update_params"
+    unknown = set(fields) - {"authority", *CROSSVM_UPDATE_PARAMS_FIELDS}
+    if unknown:
+        raise ValueError(f"{what}: unknown field(s): {', '.join(sorted(unknown))}")
+    require_fields(what, fields, ("authority", *CROSSVM_UPDATE_PARAMS_FIELDS))
+    targets = list(fields["bridge_allowed_targets"])
     validate_crossvm_update_params(
-        authority=authority,
-        max_message_size=max_message_size,
-        max_queue_size=max_queue_size,
-        queue_timeout_blocks=queue_timeout_blocks,
-        enabled=enabled,
+        authority=fields["authority"],
+        max_message_size=fields["max_message_size"],
+        max_queue_size=fields["max_queue_size"],
+        queue_timeout_blocks=fields["queue_timeout_blocks"],
+        enabled=fields["enabled"],
         bridge_allowed_targets=targets,
     )
+    pins = list(fields["bridge_target_pins"])
+    validate_crossvm_target_pins(pins, targets, what)
+    extra = {
+        name: _non_negative_int(fields[name], name, what)
+        for name in CROSSVM_UPDATE_PARAMS_FIELDS[6:]
+    }
     return Msg(
         type_url=UPDATE_CROSSVM_PARAMS_TYPE_URL,
         value=crossvm_tx.MsgUpdateParams(
-            authority=authority,
-            max_message_size=max_message_size,
-            max_queue_size=max_queue_size,
-            queue_timeout_blocks=queue_timeout_blocks,
-            enabled=bool(enabled),
+            authority=fields["authority"],
+            max_message_size=fields["max_message_size"],
+            max_queue_size=fields["max_queue_size"],
+            queue_timeout_blocks=fields["queue_timeout_blocks"],
+            enabled=bool(fields["enabled"]),
             bridge_allowed_targets=targets,
+            bridge_target_pins=[
+                p
+                if isinstance(p, crossvm_tx.BridgeTargetPin)
+                else crossvm_tx.BridgeTargetPin(
+                    target=p["target"], code_id=p["code_id"], history_len=p["history_len"]
+                )
+                for p in pins
+            ],
+            **extra,
         ),
     )
 
@@ -585,7 +695,7 @@ crossvm = SimpleNamespace(
     process_queue=composer(
         "/qorechain.crossvm.v1.MsgProcessQueue", crossvm_tx.MsgProcessQueue
     ),
-    # v3.2.5: replace the module parameters. Governance only.
+    # Replace the module parameters (governance only). Every field required.
     update_params=_crossvm_update_params,
 )
 

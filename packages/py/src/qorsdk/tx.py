@@ -108,6 +108,25 @@ from .signbytes import (
 #: The ``/cosmos.bank.v1beta1.MsgSend`` type URL.
 MSG_SEND_TYPE_URL = "/cosmos.bank.v1beta1.MsgSend"
 
+#: The largest gas limit a Cosmos-lane transaction may ask for (chain v3.2.8).
+#: A higher limit is refused here, before anything is signed.
+COSMOS_TX_MAX_GAS = 50_000_000
+
+
+def check_cosmos_gas_limit(gas: int) -> int:
+    """Refuse a Cosmos-lane gas limit above :data:`COSMOS_TX_MAX_GAS`.
+
+    :raises ValueError: If ``gas`` is negative or above the cap.
+    """
+    if gas < 0:
+        raise ValueError(f"gas limit must be non-negative, got {gas}")
+    if gas > COSMOS_TX_MAX_GAS:
+        raise ValueError(
+            f"gas limit {gas} exceeds the chain's Cosmos transaction cap of "
+            f"{COSMOS_TX_MAX_GAS:,} (chain v3.2.8); lower it or split the transaction"
+        )
+    return gas
+
 #: Broadcast mode for the REST ``/cosmos/tx/v1beta1/txs`` endpoint.
 BroadcastMode = Literal["sync", "async", "block"]
 
@@ -153,7 +172,7 @@ def _to_coins(amount: list[CoinDict]) -> list[Coin]:
 def _fee_to_proto(fee: FeeDict) -> Fee:
     """Convert an ``estimate_fee``-style dict into a protobuf ``Fee``."""
     amount = _to_coins(list(fee.get("amount", [])))
-    gas = int(fee.get("gas", 0))
+    gas = check_cosmos_gas_limit(int(fee.get("gas", 0)))
     granter = fee.get("granter", "") or ""
     payer = fee.get("payer", "") or ""
     return Fee(amount=amount, gas_limit=gas, granter=granter, payer=payer)

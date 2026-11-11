@@ -23,6 +23,18 @@ executes the call inside the transaction and returns the callee's answer - which
 is what a caller that needs the result requires. A queued call's
 ``MsgCrossVMCallResponse`` carries ``executed=False`` and no ``data`` yet.
 
+**Async calls into CosmWasm (chain v3.2.8).** ``async_gas_limit`` (field 8; 0 =
+500,000; a set value must be 250,000..10,000,000) and ``async_max_factor`` (field
+9, millionths, 1,000,000 = 1x; 0 = four times the congestion factor at
+submission) apply only to async calls into CosmWasm and are refused otherwise.
+The call holds an escrow of ``async_gas_limit x factor x gas price`` (about
+0.2 QOR by default) refunded when it finishes, pays a queue-slot fee, and a
+sender may have at most 100 pending calls.
+
+**Gas.** A cross-VM call's gas varies widely (the first call of a contract code
+in a block costs much more), so use simulation: pass ``fee="auto"`` to
+:class:`CrossVmClient` rather than a fixed fee.
+
 :func:`decode_cross_vm_responses` decodes the ``MsgCrossVMCallResponse`` entries
 out of a committed transaction's result, surfacing ``message_id`` together with
 ``executed`` / ``data`` / ``gas_used``.
@@ -54,6 +66,7 @@ from typing import Any, Literal
 from cosmpy.protos.cosmos.base.v1beta1.coin_pb2 import Coin
 
 from .accounts import Secp256k1Account
+from .gas import DEFAULT_GAS_PRICE, GasPrice, auto_fee
 from .messages._composer import Msg
 from .messages.qorechain import crossvm as crossvm_msg
 from .pqc import PqcKeypair
@@ -74,6 +87,15 @@ FeeDict = dict[str, Any]
 #: The ``MsgCrossVMCall`` field name for the queue flag. ``async`` is a Python
 #: keyword, so the generated protobuf class only accepts it through ``**kwargs``.
 _ASYNC_FIELD = "async"
+
+#: ``async_gas_limit`` bounds for a set value (0 = the chain default, 500,000).
+ASYNC_GAS_LIMIT_MIN = 250_000
+ASYNC_GAS_LIMIT_MAX = 10_000_000
+#: The most pending cross-VM calls one sender may have (chain v3.2.8).
+MAX_PENDING_PER_SENDER = 100
+
+#: The fee a transaction is built with for simulation only (never broadcast).
+_SIMULATION_FEE: FeeDict = {"amount": [], "gas": "0"}
 
 #: Type URL of the response the chain returns for each ``MsgCrossVMCall``.
 CROSS_VM_CALL_RESPONSE_TYPE_URL = "/qorechain.crossvm.v1.MsgCrossVMCallResponse"
@@ -106,6 +128,11 @@ class CrossVmCallOptions:
     #: Queue the call for a later ``MsgProcessQueue`` dispatch instead of
     #: executing it now. Default ``False`` - execute now and return the answer.
     async_: bool = False
+    #: Gas for an async call into CosmWasm (0 = 500,000; else 250,000..10,000,000).
+    async_gas_limit: int | None = None
+    #: Max congestion factor for an async CosmWasm call, in millionths (0 = 4x
+    #: the factor at submission).
+    async_max_factor: int | None = None
 
 
 @dataclass(frozen=True)
@@ -153,6 +180,42 @@ def _resolve_payload(
     return b""
 
 
+def validate_async_options(
+    *,
+    target_vm: str,
+    async_: bool,
+    async_gas_limit: int | None,
+    async_max_factor: int | None,
+) -> tuple[int, int]:
+    """Check ``async_gas_limit`` / ``async_max_factor`` (chain v3.2.8) and return
+    them as ints (0 = chain default).
+
+    :raises ValueError: If either is set on a synchronous call or a target other
+        than CosmWasm, or out of range.
+    """
+    gas = 0 if async_gas_limit is None else async_gas_limit
+    factor = 0 if async_max_factor is None else async_max_factor
+    for name, v in (("async_gas_limit", gas), ("async_max_factor", factor)):
+        if isinstance(v, bool) or not isinstance(v, int) or v < 0:
+            raise ValueError(f"{name} must be a non-negative integer, got {v!r}")
+    if gas or factor:
+        if not async_:
+            raise ValueError(
+                "async_gas_limit / async_max_factor apply only to async calls (async_=True)"
+            )
+        if target_vm != "cosmwasm":
+            raise ValueError(
+                "async_gas_limit / async_max_factor apply only to async calls into cosmwasm, "
+                f"not {target_vm!r}"
+            )
+    if gas and not ASYNC_GAS_LIMIT_MIN <= gas <= ASYNC_GAS_LIMIT_MAX:
+        raise ValueError(
+            f"async_gas_limit must be 0 (default 500,000) or {ASYNC_GAS_LIMIT_MIN:,}.."
+            f"{ASYNC_GAS_LIMIT_MAX:,}, got {gas}"
+        )
+    return gas, factor
+
+
 def _to_coins(funds: list[CoinDict] | None) -> list[Coin]:
     return [Coin(denom=c["denom"], amount=str(c["amount"])) for c in (funds or [])]
 
@@ -168,6 +231,8 @@ def build_cross_vm_call(
     cosmwasm: dict[str, Any] | None = None,
     svm: bytes | None = None,
     async_: bool = False,
+    async_gas_limit: int | None = None,
+    async_max_factor: int | None = None,
 ) -> Msg:
     """Build a ``MsgCrossVMCall`` :class:`~qorsdk.messages.Msg` (no signing).
 
@@ -179,9 +244,20 @@ def build_cross_vm_call(
     :param async_: Queue the call for ``MsgProcessQueue`` instead of executing
         it in this transaction. Default ``False`` (execute now, return the
         answer).
+    :param async_gas_limit: Gas for an async call into CosmWasm (chain v3.2.8;
+        0 or ``None`` = 500,000, else 250,000..10,000,000).
+    :param async_max_factor: Max congestion factor of an async CosmWasm call in
+        millionths (1,000,000 = 1x; 0 or ``None`` = 4x the factor at submission).
+    :raises ValueError: See :func:`validate_async_options`.
     """
     _validate_vm(source_vm, "source_vm")
     _validate_vm(target_vm, "target_vm")
+    gas, factor = validate_async_options(
+        target_vm=target_vm,
+        async_=async_,
+        async_gas_limit=async_gas_limit,
+        async_max_factor=async_max_factor,
+    )
     resolved = _resolve_payload(payload, cosmwasm, svm)
     message: Msg = crossvm_msg.cross_vm_call(
         sender=sender,
@@ -190,6 +266,8 @@ def build_cross_vm_call(
         target_contract=target_contract,
         payload=resolved,
         funds=_to_coins(funds),
+        async_gas_limit=gas,
+        async_max_factor=factor,
         **{_ASYNC_FIELD: bool(async_)},
     )
     return message
@@ -287,6 +365,11 @@ class CrossVmClient:
     a classical secp256k1 tx is built. ``sign_bytes_version`` (``"auto"`` |
     ``"v1"`` | ``"v2"``, default ``"auto"``) picks the hybrid sign-bytes form;
     ``"auto"`` asks ``rest_url`` and retries once on a ``pqc`` code 21 refusal.
+    ``fee`` is a fixed ``StdFee`` dict or ``"auto"``: with ``"auto"`` each
+    transaction is simulated first and its gas sized by
+    :func:`~qorsdk.gas.estimate_gas` (at least 1.3x the simulated gas for a
+    cross-VM call), priced at ``gas_price``. Prefer ``"auto"``: a fixed gas
+    limit runs out when a contract code is first loaded in a block.
     Pass a ``query`` (a
     :class:`~qorsdk.query.grpc.CrossVmQueryClient`) and/or a ``qor``
     (:class:`~qorsdk.qor.QorClient`) to enable :meth:`get_message`.
@@ -299,12 +382,13 @@ class CrossVmClient:
         chain_id: str,
         account_number: int,
         rest_url: str,
-        fee: FeeDict,
+        fee: FeeDict | Literal["auto"],
         sequence: int = 0,
         pqc_keypair: PqcKeypair | None = None,
         query: Any | None = None,
         qor: Any | None = None,
         sign_bytes_version: str = "auto",
+        gas_price: GasPrice | str = DEFAULT_GAS_PRICE,
     ) -> None:
         self._account = account
         self._chain_id = chain_id
@@ -316,6 +400,7 @@ class CrossVmClient:
         self._query = query
         self._qor = qor
         self._sign_bytes_version = sign_bytes_version
+        self._gas_price = gas_price
 
     @property
     def sender(self) -> str:
@@ -333,6 +418,8 @@ class CrossVmClient:
         cosmwasm: dict[str, Any] | None = None,
         svm: bytes | None = None,
         async_: bool = False,
+        async_gas_limit: int | None = None,
+        async_max_factor: int | None = None,
     ) -> Msg:
         """Build a ``MsgCrossVMCall`` for the bound sender, without broadcasting."""
         return build_cross_vm_call(
@@ -345,6 +432,8 @@ class CrossVmClient:
             cosmwasm=cosmwasm,
             svm=svm,
             async_=async_,
+            async_gas_limit=async_gas_limit,
+            async_max_factor=async_max_factor,
         )
 
     def _build_msg_from_options(self, opts: CrossVmCallOptions) -> Msg:
@@ -358,6 +447,8 @@ class CrossVmClient:
             cosmwasm=opts.cosmwasm,
             svm=opts.svm,
             async_=opts.async_,
+            async_gas_limit=opts.async_gas_limit,
+            async_max_factor=opts.async_max_factor,
         )
 
     def _sign_and_broadcast(
@@ -372,18 +463,26 @@ class CrossVmClient:
         if self._pqc_keypair is not None:
             keypair = self._pqc_keypair
 
-            def build(version: SignBytesVersion) -> Any:
+            def build_with(version: SignBytesVersion, fee: FeeDict) -> Any:
                 return build_hybrid_tx(
                     account=self._account,
                     pqc_keypair=keypair,
                     messages=messages,
-                    fee=self._fee,
+                    fee=fee,
                     chain_id=self._chain_id,
                     account_number=self._account_number,
                     sequence=seq,
                     memo=memo,
                     sign_bytes_version=version,
                 )
+
+            def build(version: SignBytesVersion) -> Any:
+                if self._fee == "auto":
+                    probe = build_with(version, _SIMULATION_FEE)
+                    return build_with(
+                        version, auto_fee(self._rest_url, probe, gas_price=self._gas_price)
+                    )
+                return build_with(version, self._fee)
 
             return hybrid_sign_and_broadcast(
                 build,
@@ -393,15 +492,23 @@ class CrossVmClient:
                 mode=mode,  # type: ignore[arg-type]
             )
         else:
-            built = send_messages(
-                account=self._account,
-                messages=messages,
-                chain_id=self._chain_id,
-                account_number=self._account_number,
-                sequence=seq,
-                fee=self._fee,
-                memo=memo,
-            )
+
+            def classical(fee: FeeDict) -> Any:
+                return send_messages(
+                    account=self._account,
+                    messages=messages,
+                    chain_id=self._chain_id,
+                    account_number=self._account_number,
+                    sequence=seq,
+                    fee=fee,
+                    memo=memo,
+                )
+
+            if self._fee == "auto":
+                probe = classical(_SIMULATION_FEE)
+                built = classical(auto_fee(self._rest_url, probe, gas_price=self._gas_price))
+            else:
+                built = classical(self._fee)
         return broadcast(self._rest_url, built.tx_raw_bytes, mode=mode)  # type: ignore[arg-type]
 
     def call(
@@ -415,6 +522,8 @@ class CrossVmClient:
         cosmwasm: dict[str, Any] | None = None,
         svm: bytes | None = None,
         async_: bool = False,
+        async_gas_limit: int | None = None,
+        async_max_factor: int | None = None,
         sequence: int | None = None,
         memo: str = "",
         mode: str = "sync",
@@ -439,6 +548,8 @@ class CrossVmClient:
             cosmwasm=cosmwasm,
             svm=svm,
             async_=async_,
+            async_gas_limit=async_gas_limit,
+            async_max_factor=async_max_factor,
         )
         return self._sign_and_broadcast(
             [message], sequence=sequence, memo=memo, mode=mode
@@ -492,14 +603,17 @@ def create_cross_vm_client(
     chain_id: str,
     account_number: int,
     rest_url: str,
-    fee: FeeDict,
+    fee: FeeDict | Literal["auto"],
     sequence: int = 0,
     pqc_keypair: PqcKeypair | None = None,
     query: Any | None = None,
     qor: Any | None = None,
     sign_bytes_version: str = "auto",
+    gas_price: GasPrice | str = DEFAULT_GAS_PRICE,
 ) -> CrossVmClient:
-    """Create a :class:`CrossVmClient` bound to a signing account and tx context."""
+    """Create a :class:`CrossVmClient` bound to a signing account and tx context.
+
+    Pass ``fee="auto"`` to size every transaction by simulation."""
     return CrossVmClient(
         account=account,
         chain_id=chain_id,
@@ -511,12 +625,17 @@ def create_cross_vm_client(
         query=query,
         qor=qor,
         sign_bytes_version=sign_bytes_version,
+        gas_price=gas_price,
     )
 
 
 __all__ = [
     "VM_TYPES",
     "CROSS_VM_CALL_RESPONSE_TYPE_URL",
+    "ASYNC_GAS_LIMIT_MIN",
+    "ASYNC_GAS_LIMIT_MAX",
+    "MAX_PENDING_PER_SENDER",
+    "validate_async_options",
     "VmType",
     "CrossVmCallOptions",
     "CrossVmCallResult",

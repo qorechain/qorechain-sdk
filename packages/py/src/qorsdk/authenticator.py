@@ -26,6 +26,24 @@ for each linked key, starting at 0 and incremented by each successful execution.
 For the EVM lane it is NOT the account's EVM nonce (the chain checks this counter
 since v3.2.0). Read it with :func:`fetch_auth_nonce` (chain v3.2.4); a mismatch
 is refused with abstractaccount code 11.
+
+**Linking a key (chain v3.2.8).** ``MsgRegisterAuthenticator`` must carry a
+``possession_proof``: a signature BY THE KEY BEING LINKED over
+:func:`authenticator_link_message`. A browser wallet signs that text itself
+(Phantom ``signMessage``, MetaMask ``personal_sign``); with the private key in
+hand use :func:`link_proof_ed25519`, :func:`link_proof_secp256k1` or
+:func:`link_proof_eth`. A key with any of the permissions ``send``, ``evm``,
+``deploy``, ``svm`` or ``all`` also needs an enabled spending rule on the
+account that bounds every denom; :func:`link_authenticator_msgs` builds the
+``[MsgUpdateSpendingRules, MsgRegisterAuthenticator]`` pair to send in ONE
+owner-signed transaction.
+
+**Failed executions (chain v3.2.8).** An authorised ``MsgExecuteEVM`` /
+``MsgExecuteCosmos`` whose execution fails no longer fails the transaction: the
+tx has code 0, the response carries ``success=false`` and the chain emits
+``abstractaccount_execution_failed``. The nonce is consumed, so the same
+signature cannot be relayed again. Check every delivered result with
+:func:`decode_execution_results` / :func:`require_executions_succeeded`.
 """
 
 from __future__ import annotations
@@ -308,7 +326,14 @@ def execute_evm_msg(
     gas_limit: int = 0,
     nonce: int = 0,
 ) -> Msg:
-    """Compose a ``MsgExecuteEVM`` - the relayer broadcasts it (fee payer)."""
+    """Compose a ``MsgExecuteEVM`` - the relayer broadcasts it (fee payer).
+
+    :raises ValueError: If ``gas_limit`` is above the chain's EVM gas cap
+        (:data:`~qorsdk.gas.EVM_TX_MAX_GAS`, 30,000,000 on v3.2.8).
+    """
+    from .gas import check_evm_gas_limit
+
+    check_evm_gas_limit(int(gas_limit))
     return Msg(
         type_url=EXECUTE_EVM_TYPE_URL,
         value=abstractaccount_tx.MsgExecuteEVM(
@@ -374,6 +399,612 @@ def rotate_pqc_key_msg(
             new_signature=bytes(new_signature),
         ),
     )
+
+
+# --------------------------------------------------------------------------- #
+# authenticator link: possession proof (chain v3.2.8)
+# --------------------------------------------------------------------------- #
+
+#: The first line of the link message (the chain's ``AuthenticatorLinkDomain``).
+AUTHENTICATOR_LINK_DOMAIN = "QoreChain authenticator link v1"
+
+#: The schemes a linked key may use.
+AUTHENTICATOR_SCHEMES = ("ed25519", "secp256k1")
+
+
+def _link_pubkey(scheme: str, pubkey: bytes | str) -> bytes:
+    """Check ``pubkey`` against ``scheme`` and return it as bytes."""
+    if isinstance(pubkey, str):
+        text = pubkey[2:] if pubkey[:2] in ("0x", "0X") else pubkey
+        if not _HEX.match(text) or len(text) % 2 != 0:
+            raise ValueError("authenticator pubkey must be bytes or a hex string")
+        key = bytes.fromhex(text)
+    else:
+        key = bytes(pubkey)
+    if scheme == "ed25519":
+        if len(key) != 32:
+            raise ValueError(f"an ed25519 authenticator key is 32 bytes, got {len(key)}")
+    elif scheme == "secp256k1":
+        if len(key) == 65:
+            raise ValueError(
+                "a 65-byte uncompressed secp256k1 key is refused: link the 33-byte "
+                "compressed key, or the 20-byte Ethereum address for a MetaMask-style link"
+            )
+        if len(key) not in (33, 20):
+            raise ValueError(
+                "a secp256k1 authenticator key is the 33-byte compressed key or the 20-byte "
+                f"Ethereum address, got {len(key)} bytes"
+            )
+    else:
+        raise ValueError(f"unknown authenticator scheme {scheme!r} (use ed25519 or secp256k1)")
+    return key
+
+
+def authenticator_link_text(
+    chain_id: str, account_address: str, scheme: str, pubkey: bytes | str
+) -> str:
+    """The text the key being linked signs for ``possession_proof`` (chain v3.2.8).
+
+    Five lines joined with ``"\\n"`` and no trailing newline::
+
+        QoreChain authenticator link v1
+        chain: <chain_id>
+        account: <account_address>
+        scheme: <scheme>
+        key: <lowercase hex of pubkey>
+
+    ``pubkey`` is exactly the bytes put in the message's ``pubkey``: the 32-byte
+    ed25519 key, the 33-byte compressed secp256k1 key, or the 20-byte Ethereum
+    address for a MetaMask-style link (bytes or hex).
+
+    :raises ValueError: If the scheme is unknown or the key has the wrong length
+        (a 65-byte uncompressed key is refused).
+    """
+    key = _link_pubkey(scheme, pubkey)
+    return (
+        f"{AUTHENTICATOR_LINK_DOMAIN}\nchain: {chain_id}\naccount: {account_address}"
+        f"\nscheme: {scheme}\nkey: {key.hex()}"
+    )
+
+
+def authenticator_link_message(
+    chain_id: str, account_address: str, scheme: str, pubkey: bytes | str
+) -> bytes:
+    """The UTF-8 bytes of :func:`authenticator_link_text`, the exact bytes signed.
+
+    How the chain verifies the proof over these bytes:
+
+    * ed25519 (32-byte key): ed25519 signature over the raw bytes (Phantom
+      ``signMessage``);
+    * secp256k1, 33-byte key: 64-byte ``r || s`` ECDSA signature (low-S) over
+      ``sha256(message)``;
+    * secp256k1, 20-byte Ethereum address: EIP-191 ``personal_sign`` of the
+      message, 65 bytes ``r || s || v`` (v = 27/28, 0/1 also accepted).
+    """
+    return authenticator_link_text(chain_id, account_address, scheme, pubkey).encode("utf-8")
+
+
+def eip191_hash(message: bytes) -> bytes:
+    """``keccak256("\\x19Ethereum Signed Message:\\n" + len(message) + message)``."""
+    from .utils.hash import keccak256
+
+    prefix = f"\x19Ethereum Signed Message:\n{len(message)}".encode()
+    return keccak256(prefix + bytes(message))
+
+
+@dataclass(frozen=True)
+class AuthenticatorLinkProof:
+    """A linked key and its possession proof, ready for ``MsgRegisterAuthenticator``."""
+
+    #: ``"ed25519"`` or ``"secp256k1"``.
+    scheme: str
+    #: The bytes for the message's ``pubkey`` field.
+    pubkey: bytes
+    #: The signature for the message's ``possession_proof`` field.
+    possession_proof: bytes
+
+
+def _ed25519_seed(private_key: bytes) -> bytes:
+    key = bytes(private_key)
+    if len(key) == 64:  # Solana-style secret key: seed || public key
+        return key[:32]
+    if len(key) != 32:
+        raise ValueError("an ed25519 private key is a 32-byte seed or a 64-byte secret key")
+    return key
+
+
+def link_proof_ed25519(
+    private_key: bytes, *, chain_id: str, account_address: str
+) -> AuthenticatorLinkProof:
+    """Sign the link message with an ed25519 key (32-byte seed, or the 64-byte
+    Solana-style secret key of :class:`~qorsdk.accounts.Ed25519Account`)."""
+    from nacl.signing import SigningKey as Ed25519SigningKey
+
+    signing = Ed25519SigningKey(_ed25519_seed(private_key))
+    pubkey = bytes(signing.verify_key)
+    message = authenticator_link_message(chain_id, account_address, "ed25519", pubkey)
+    return AuthenticatorLinkProof(
+        scheme="ed25519", pubkey=pubkey, possession_proof=bytes(signing.sign(message).signature)
+    )
+
+
+def link_proof_secp256k1(
+    private_key: bytes, *, chain_id: str, account_address: str
+) -> AuthenticatorLinkProof:
+    """Sign the link message with a secp256k1 key linked by its 33-byte
+    compressed public key: 64-byte low-S ``r || s`` over ``sha256(message)``."""
+    from ecdsa import SECP256k1, SigningKey
+    from ecdsa.util import sigencode_string_canonize
+
+    sk = SigningKey.from_string(bytes(private_key), curve=SECP256k1)
+    pubkey = bytes(sk.get_verifying_key().to_string("compressed"))
+    message = authenticator_link_message(chain_id, account_address, "secp256k1", pubkey)
+    proof = sk.sign_digest_deterministic(
+        hashlib.sha256(message).digest(),
+        hashfunc=hashlib.sha256,
+        sigencode=sigencode_string_canonize,
+    )
+    return AuthenticatorLinkProof(scheme="secp256k1", pubkey=pubkey, possession_proof=bytes(proof))
+
+
+def _eth_address(uncompressed64: bytes) -> bytes:
+    from .utils.hash import keccak256
+
+    return keccak256(uncompressed64)[12:]
+
+
+def _recover_eth_address(rs: bytes, digest: bytes, recid: int) -> bytes | None:
+    """The Ethereum address that signed ``digest`` with ``r || s`` and recovery id
+    ``recid`` (the parity of R's y), or ``None`` if no key recovers."""
+    from ecdsa import SECP256k1
+    from ecdsa.ellipticcurve import Point
+    from ecdsa.numbertheory import inverse_mod
+
+    curve = SECP256k1.curve
+    n = SECP256k1.order
+    p = curve.p()
+    r = int.from_bytes(rs[:32], "big")
+    s = int.from_bytes(rs[32:64], "big")
+    if not (0 < r < n and 0 < s < n):
+        return None
+    alpha = (pow(r, 3, p) + 7) % p
+    beta = pow(alpha, (p + 1) // 4, p)
+    if beta * beta % p != alpha:
+        return None
+    y = beta if beta % 2 == recid else p - beta
+    big_r = Point(curve, r, y, n)
+    gen = SECP256k1.generator
+    g = Point(curve, gen.x(), gen.y(), n)
+    e = int.from_bytes(digest, "big") % n
+    q = (big_r * s + g * ((-e) % n)) * inverse_mod(r, n)
+    if q.x() is None:
+        return None
+    return _eth_address(int(q.x()).to_bytes(32, "big") + int(q.y()).to_bytes(32, "big"))
+
+
+def link_proof_eth(
+    private_key: bytes, *, chain_id: str, account_address: str
+) -> AuthenticatorLinkProof:
+    """Sign the link message as MetaMask ``personal_sign`` would, for a key
+    linked by its 20-byte Ethereum address: 65 bytes ``r || s || v`` with
+    v = 27/28 over the EIP-191 hash."""
+    from ecdsa import SECP256k1, SigningKey
+    from ecdsa.util import sigencode_string_canonize
+
+    sk = SigningKey.from_string(bytes(private_key), curve=SECP256k1)
+    address = _eth_address(sk.get_verifying_key().to_string())
+    message = authenticator_link_message(chain_id, account_address, "secp256k1", address)
+    digest = eip191_hash(message)
+    rs = sk.sign_digest_deterministic(
+        digest, hashfunc=hashlib.sha256, sigencode=sigencode_string_canonize
+    )
+    recid = next(i for i in (0, 1) if _recover_eth_address(rs, digest, i) == address)
+    return AuthenticatorLinkProof(
+        scheme="secp256k1", pubkey=address, possession_proof=bytes(rs) + bytes([27 + recid])
+    )
+
+
+def verify_link_proof(
+    *,
+    chain_id: str,
+    account_address: str,
+    scheme: str,
+    pubkey: bytes,
+    possession_proof: bytes,
+) -> bool:
+    """Check a possession proof the way the chain does; ``False`` if it does not verify."""
+    try:
+        message = authenticator_link_message(chain_id, account_address, scheme, pubkey)
+    except ValueError:
+        return False
+    proof = bytes(possession_proof)
+    key = bytes(pubkey)
+    try:
+        if scheme == "ed25519":
+            from nacl.signing import VerifyKey
+
+            if len(proof) != 64:
+                return False
+            VerifyKey(key).verify(message, proof)
+            return True
+        from ecdsa import SECP256k1, VerifyingKey
+        from ecdsa.util import sigdecode_string
+
+        if len(key) == 33:
+            if len(proof) != 64:
+                return False
+            n = SECP256k1.order
+            if int.from_bytes(proof[32:], "big") > n // 2:
+                return False  # the chain accepts low-S only
+            vk = VerifyingKey.from_string(key, curve=SECP256k1)
+            return bool(
+                vk.verify_digest(
+                    proof, hashlib.sha256(message).digest(), sigdecode=sigdecode_string
+                )
+            )
+        if len(proof) != 65:
+            return False
+        v = proof[64]
+        recid = v - 27 if v >= 27 else v
+        if recid not in (0, 1):
+            return False
+        return _recover_eth_address(proof[:64], eip191_hash(message), recid) == key
+    except Exception:  # noqa: BLE001 - any decode/verify failure is "does not verify"
+        return False
+
+
+# --------------------------------------------------------------------------- #
+# linking a key: spending rule + registration in one transaction
+# --------------------------------------------------------------------------- #
+
+#: Permissions that let a linked key move value; from v3.2.8 each needs an
+#: enabled spending rule on the account that bounds every denom.
+VALUE_PERMISSIONS = ("send", "evm", "deploy", "svm", "all")
+
+
+def _rule_field(rule: Any, name: str) -> Any:
+    if isinstance(rule, dict):
+        return rule.get(name)
+    return getattr(rule, name, None)
+
+
+def _canonical_denom(denom: str) -> str:
+    return denom.lower()
+
+
+def _limit_set(value: Any) -> bool:
+    try:
+        return int(value or 0) > 0
+    except (TypeError, ValueError):
+        return False
+
+
+def spending_rule_bounds_every_denom(rule: Any) -> bool:
+    """Whether an (enabled) rule caps the outflow of every denom it admits, as
+    the chain requires for a value-permission key from v3.2.8.
+
+    True when ``per_tx_limit > 0`` or ``daily_limit > 0``; otherwise the rule
+    needs a non-empty ``allowed_denoms`` list where every denom has a
+    ``denom_limits`` entry (denoms compared case-insensitively) with a non-zero
+    per-tx or daily amount.
+    """
+    if rule is None or not _rule_field(rule, "enabled"):
+        return False
+    if _limit_set(_rule_field(rule, "per_tx_limit")) or _limit_set(
+        _rule_field(rule, "daily_limit")
+    ):
+        return True
+    allowed = list(_rule_field(rule, "allowed_denoms") or ())
+    if not allowed:
+        return False
+    limits = {
+        _canonical_denom(str(_rule_field(dl, "denom") or "")): dl
+        for dl in (_rule_field(rule, "denom_limits") or ())
+    }
+    for denom in allowed:
+        dl = limits.get(_canonical_denom(str(denom)))
+        if dl is None or not (
+            _limit_set(_rule_field(dl, "per_tx_limit"))
+            or _limit_set(_rule_field(dl, "daily_limit"))
+        ):
+            return False
+    return True
+
+
+def rules_cover_value_permissions(rules: Any) -> bool:
+    """Whether an account with ``rules`` may hold a value-permission key: the
+    chain applies the FIRST enabled rule, and that rule must bound every denom
+    (:func:`spending_rule_bounds_every_denom`)."""
+    for rule in rules or ():
+        if _rule_field(rule, "enabled"):
+            return spending_rule_bounds_every_denom(rule)
+    return False
+
+
+_VALUE_RULE_HELP = (
+    "a linked key with the send, evm, deploy, svm or all permission needs an enabled spending "
+    "rule on the account that bounds every denom (from chain v3.2.8): the first enabled rule "
+    "must set per_tx_limit or daily_limit above 0, or list allowed_denoms with a denom_limits "
+    "amount for every listed denom"
+)
+
+
+def link_authenticator_msgs(
+    *,
+    owner: str,
+    chain_id: str,
+    scheme: str,
+    pubkey: bytes,
+    permissions: list[str] | tuple[str, ...],
+    expiry_unix: int,
+    possession_proof: bytes,
+    label: str = "",
+    spending_rule: Any = None,
+    account_address: str | None = None,
+    verify_proof: bool = True,
+) -> list[Msg]:
+    """Build the messages that link a key to an account (chain v3.2.8).
+
+    Returns ``[MsgUpdateSpendingRules, MsgRegisterAuthenticator]`` to send as
+    top-level messages of ONE transaction signed by ``owner`` (not through
+    authz). ``MsgUpdateSpendingRules`` may be sent for an account that does not
+    exist yet when ``account_address == owner`` (it creates the account), which
+    is the default here. Without ``spending_rule`` and with no value permission,
+    only the registration is returned.
+
+    ``spending_rule`` is one rule (a mapping with the ``SpendingRule`` fields or
+    a protobuf ``SpendingRule``) or a list of them. ``MsgUpdateSpendingRules``
+    REPLACES the account's rules wholesale: pass every rule the account should
+    keep, not only the new one.
+
+    :param possession_proof: The linked key's signature over
+        :func:`authenticator_link_message` (see :func:`link_proof_ed25519`,
+        :func:`link_proof_secp256k1`, :func:`link_proof_eth`).
+    :param verify_proof: Check the proof locally first (default), so a proof
+        for another chain id or account is refused before anything is signed.
+    :raises ValueError: On an empty or non-verifying proof, or a value
+        permission without a rule that bounds every denom.
+    """
+    from .messages.qorechain import abstractaccount as aa_msgs
+
+    account = account_address or owner
+    key = _link_pubkey(scheme, pubkey)
+    if not possession_proof:
+        raise ValueError(
+            "possession_proof is required from chain v3.2.8: sign "
+            "authenticator_link_message(chain_id, account_address, scheme, pubkey) with the key "
+            "being linked"
+        )
+    if verify_proof and not verify_link_proof(
+        chain_id=chain_id,
+        account_address=account,
+        scheme=scheme,
+        pubkey=key,
+        possession_proof=possession_proof,
+    ):
+        raise ValueError(
+            "possession_proof does not verify: the linked key must sign "
+            f"authenticator_link_message for chain {chain_id!r} and account {account!r}"
+        )
+    if spending_rule is None:
+        rules: list[Any] = []
+    elif isinstance(spending_rule, (list, tuple)):
+        rules = list(spending_rule)
+    else:
+        rules = [spending_rule]
+    if any(p in VALUE_PERMISSIONS for p in permissions) and not rules_cover_value_permissions(
+        rules
+    ):
+        raise ValueError(_VALUE_RULE_HELP)
+    out: list[Msg] = []
+    if rules:
+        out.append(
+            aa_msgs.update_spending_rules(owner=owner, account_address=account, rules=rules)
+        )
+    out.append(
+        aa_msgs.register_authenticator(
+            owner=owner,
+            account_address=account,
+            scheme=scheme,
+            pubkey=key,
+            permissions=list(permissions),
+            expiry_unix=int(expiry_unix),
+            label=label,
+            possession_proof=bytes(possession_proof),
+        )
+    )
+    return out
+
+
+# --------------------------------------------------------------------------- #
+# execution results (chain v3.2.8: failures come back with tx code 0)
+# --------------------------------------------------------------------------- #
+
+EXECUTE_EVM_RESPONSE_TYPE_URL = "/qorechain.abstractaccount.v1.MsgExecuteEVMResponse"
+EXECUTE_COSMOS_RESPONSE_TYPE_URL = "/qorechain.abstractaccount.v1.MsgExecuteCosmosResponse"
+#: The event the chain emits for an authorised execution that failed.
+EXECUTION_FAILED_EVENT = "abstractaccount_execution_failed"
+
+
+@dataclass(frozen=True)
+class ExecutionResult:
+    """The outcome of one ``MsgExecuteEVM`` / ``MsgExecuteCosmos`` in a delivered tx."""
+
+    #: ``"evm"`` or ``"cosmos"``.
+    lane: str
+    #: Whether the execution succeeded. ``False`` with tx code 0 means it was
+    #: authorised but failed; its nonce is consumed.
+    success: bool
+    #: EVM return data (empty for the Cosmos lane).
+    ret: bytes = b""
+    #: EVM gas used (0 for the Cosmos lane).
+    gas_used: int = 0
+    #: The EVM error text, if any.
+    vm_error: str = ""
+    #: The ``reason`` of the matching ``abstractaccount_execution_failed`` event.
+    reason: str = ""
+    #: ``account`` / ``nonce`` of that event, when present.
+    account: str = ""
+    nonce: int | None = None
+
+
+class ExecutionFailedError(Exception):
+    """An authorised execution failed inside a transaction with code 0."""
+
+    def __init__(self, failures: list[ExecutionResult]) -> None:
+        detail = "; ".join(
+            f"{f.lane}: {f.reason or f.vm_error or 'execution failed'}" for f in failures
+        )
+        super().__init__(
+            f"{len(failures)} authorised execution(s) failed although the transaction "
+            f"succeeded (the nonce is consumed; sign again with the next nonce): {detail}"
+        )
+        self.failures = failures
+
+
+def _tx_response(result: Any) -> Any:
+    raw = getattr(result, "raw", None)
+    if raw is not None and not isinstance(result, dict):
+        result = raw
+    if isinstance(result, dict) and isinstance(result.get("tx_response"), dict):
+        return result["tx_response"]
+    return result
+
+
+def _attr_map(event: Any) -> dict[str, str]:
+    out: dict[str, str] = {}
+    for a in event.get("attributes") or ():
+        if isinstance(a, dict) and isinstance(a.get("key"), str):
+            out[a["key"]] = str(a.get("value") or "")
+    return out
+
+
+def _failure_events(tx: Any) -> list[dict[str, str]]:
+    if not isinstance(tx, dict):
+        return []
+    events = list(tx.get("events") or ())
+    if not events:
+        for log in tx.get("logs") or ():
+            events.extend((log or {}).get("events") or ())
+    return [
+        _attr_map(e)
+        for e in events
+        if isinstance(e, dict) and e.get("type") == EXECUTION_FAILED_EVENT
+    ]
+
+
+def _results_from_json(responses: list[Any]) -> list[ExecutionResult]:
+    import base64
+
+    out: list[ExecutionResult] = []
+    for r in responses:
+        if not isinstance(r, dict):
+            continue
+        t = r.get("@type") or r.get("type_url")
+        if t == EXECUTE_EVM_RESPONSE_TYPE_URL:
+            ret_raw = r.get("ret") or ""
+            out.append(
+                ExecutionResult(
+                    lane="evm",
+                    success=r.get("success") is True,
+                    ret=base64.b64decode(ret_raw) if isinstance(ret_raw, str) else b"",
+                    gas_used=int(r.get("gas_used") or 0),
+                    vm_error=str(r.get("vm_error") or ""),
+                )
+            )
+        elif t == EXECUTE_COSMOS_RESPONSE_TYPE_URL:
+            out.append(ExecutionResult(lane="cosmos", success=r.get("success") is True))
+    return out
+
+
+def decode_execution_results(result: Any) -> list[ExecutionResult]:
+    """Decode every ``MsgExecuteEVM`` / ``MsgExecuteCosmos`` outcome of a
+    delivered transaction, in message order.
+
+    Accepts a REST broadcast/tx body (``{"tx_response": {...}}``), a bare
+    ``tx_response`` dict, or an :class:`~qorsdk.track.IncludedTx`. The responses
+    come from the hex ``data`` (``TxMsgData``) or a JSON ``msg_responses`` list;
+    each failed one is paired, per lane and in order, with the ``reason``,
+    ``account`` and ``nonce`` of the ``abstractaccount_execution_failed`` events.
+    A ``sync``-mode broadcast response carries no result yet and yields ``[]``.
+    """
+    from dataclasses import replace
+
+    from cosmpy.protos.cosmos.base.abci.v1beta1.abci_pb2 import TxMsgData
+
+    from .cross_vm import _result_data_hex
+
+    tx = _tx_response(result)
+    results: list[ExecutionResult] = []
+    json_responses = tx.get("msg_responses") if isinstance(tx, dict) else None
+    if isinstance(json_responses, list) and json_responses:
+        results = _results_from_json(json_responses)
+    else:
+        data_hex = _result_data_hex(tx)
+        if data_hex:
+            try:
+                raw = bytes.fromhex(data_hex)
+            except ValueError as exc:
+                raise ValueError("tx result data is not hex-encoded TxMsgData") from exc
+            msg_data = TxMsgData()
+            msg_data.ParseFromString(raw)
+            for any_msg in msg_data.msg_responses:
+                if any_msg.type_url == EXECUTE_EVM_RESPONSE_TYPE_URL:
+                    evm = abstractaccount_tx.MsgExecuteEVMResponse()
+                    evm.ParseFromString(any_msg.value)
+                    results.append(
+                        ExecutionResult(
+                            lane="evm",
+                            success=evm.success,
+                            ret=bytes(evm.ret),
+                            gas_used=evm.gas_used,
+                            vm_error=evm.vm_error,
+                        )
+                    )
+                elif any_msg.type_url == EXECUTE_COSMOS_RESPONSE_TYPE_URL:
+                    cos = abstractaccount_tx.MsgExecuteCosmosResponse()
+                    cos.ParseFromString(any_msg.value)
+                    results.append(ExecutionResult(lane="cosmos", success=cos.success))
+    events = _failure_events(tx)
+    by_lane: dict[str, list[dict[str, str]]] = {}
+    for e in events:
+        by_lane.setdefault(e.get("lane", ""), []).append(e)
+    unlaned = by_lane.pop("", [])
+    out: list[ExecutionResult] = []
+    for r in results:
+        if r.success:
+            out.append(r)
+            continue
+        queue = by_lane.get(r.lane) or unlaned
+        if not queue:
+            out.append(r)
+            continue
+        ev = queue.pop(0)
+        nonce_text = ev.get("nonce", "")
+        out.append(
+            replace(
+                r,
+                reason=ev.get("reason", ""),
+                account=ev.get("account", ""),
+                nonce=int(nonce_text) if nonce_text.isdigit() else None,
+            )
+        )
+    return out
+
+
+def require_executions_succeeded(result: Any) -> list[ExecutionResult]:
+    """:func:`decode_execution_results`, raising when any execution failed.
+
+    Use it after every relayed ``MsgExecuteEVM`` / ``MsgExecuteCosmos``: from
+    chain v3.2.8 a failed execution leaves the transaction at code 0.
+
+    :raises ExecutionFailedError: Listing each failed execution and its reason.
+    """
+    results = decode_execution_results(result)
+    failures = [r for r in results if not r.success]
+    if failures:
+        raise ExecutionFailedError(failures)
+    return results
 
 
 # --------------------------------------------------------------------------- #
@@ -549,4 +1180,25 @@ __all__ = [
     "canonical_account",
     "rotate_pqc_key_msg_from_mnemonic",
     "RotationBuild",
+    "AUTHENTICATOR_LINK_DOMAIN",
+    "AUTHENTICATOR_SCHEMES",
+    "authenticator_link_text",
+    "authenticator_link_message",
+    "eip191_hash",
+    "AuthenticatorLinkProof",
+    "link_proof_ed25519",
+    "link_proof_secp256k1",
+    "link_proof_eth",
+    "verify_link_proof",
+    "VALUE_PERMISSIONS",
+    "spending_rule_bounds_every_denom",
+    "rules_cover_value_permissions",
+    "link_authenticator_msgs",
+    "EXECUTE_EVM_RESPONSE_TYPE_URL",
+    "EXECUTE_COSMOS_RESPONSE_TYPE_URL",
+    "EXECUTION_FAILED_EVENT",
+    "ExecutionResult",
+    "ExecutionFailedError",
+    "decode_execution_results",
+    "require_executions_succeeded",
 ]

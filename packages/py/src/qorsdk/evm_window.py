@@ -44,6 +44,23 @@ drain a window that never appears to move.
 network runs at 5s: the testnet is at ~1.03 s (17280 blocks is about 5 hours) and
 mainnet at ~3.1 s (about 15 hours). Say "up to 17280 blocks", or compute the
 duration from the chain's recent block time.
+
+Scope fields (chain v3.2.8)
+---------------------------
+
+Standard precompile methods are deny-by-default through a window. Three
+optional lists open them:
+
+* ``validators`` - 0x 20-byte contract addresses trusted to vouch for the
+  account's signature;
+* ``staking_validators`` - bech32 ``qorvaloper...`` operators the window may
+  delegate or redelegate to (staking delegate/redelegate need them);
+* ``ibc_receivers`` - ``"<source channel>/<receiver>"`` entries such as
+  ``"channel-0/cosmos1..."`` (ICS-20 transfers need them).
+
+Undelegate, vote and withdraw-address changes are always refused through the
+window: send them as a PQC-signed Cosmos transaction. Rotating, migrating or
+re-registering the PQC key closes the window.
 """
 
 from __future__ import annotations
@@ -98,6 +115,89 @@ def validate_evm_window_targets(targets: list[str] | tuple[str, ...]) -> list[st
         seen.add(t.lower())
         out.append(t)
     return out
+
+#: Longest ``ibc_receivers`` entry the chain accepts.
+MAX_IBC_RECEIVER_LEN = 256
+
+_IBC_FORBIDDEN = re.compile(r"[ \t\r\n,]")
+
+
+def validate_evm_window_validators(validators: list[str] | tuple[str, ...]) -> list[str]:
+    """Check ``validators`` (chain v3.2.8): at most 16 0x-prefixed 20-byte
+    addresses, no duplicates (case-insensitive).
+
+    :raises ValueError: Naming the rule that was violated.
+    """
+    if len(validators) > MAX_EVM_WINDOW_TARGETS:
+        raise ValueError(
+            f"validators lists {len(validators)} addresses, the maximum is "
+            f"{MAX_EVM_WINDOW_TARGETS}"
+        )
+    seen: set[str] = set()
+    for v in validators:
+        if not isinstance(v, str) or not _ADDRESS.match(v):
+            raise ValueError(f"validators: {v!r} is not a 0x-prefixed 20-byte address")
+        if v.lower() in seen:
+            raise ValueError(f"validators lists {v} more than once")
+        seen.add(v.lower())
+    return list(validators)
+
+
+def validate_evm_window_staking_validators(
+    validators: list[str] | tuple[str, ...],
+) -> list[str]:
+    """Check ``staking_validators`` (chain v3.2.8): at most 16 bech32
+    ``qorvaloper...`` operator addresses, no duplicates.
+
+    :raises ValueError: Naming the rule that was violated.
+    """
+    from .address import is_valid_bech32
+
+    if len(validators) > MAX_EVM_WINDOW_TARGETS:
+        raise ValueError(
+            f"staking_validators lists {len(validators)} validators, the maximum is "
+            f"{MAX_EVM_WINDOW_TARGETS}"
+        )
+    seen: set[str] = set()
+    for v in validators:
+        if not isinstance(v, str) or not is_valid_bech32(v, "qorvaloper"):
+            raise ValueError(
+                f"staking_validators: {v!r} is not a validator operator address (qorvaloper...)"
+            )
+        if v.lower() in seen:
+            raise ValueError(f"staking_validators lists {v} more than once")
+        seen.add(v.lower())
+    return list(validators)
+
+
+def validate_evm_window_ibc_receivers(receivers: list[str] | tuple[str, ...]) -> list[str]:
+    """Check ``ibc_receivers`` (chain v3.2.8): at most 16 entries
+    ``"<source channel>/<receiver>"``, each 1..256 characters, no whitespace or
+    comma, no duplicates.
+
+    :raises ValueError: Naming the rule that was violated.
+    """
+    if len(receivers) > MAX_EVM_WINDOW_TARGETS:
+        raise ValueError(
+            f"ibc_receivers lists {len(receivers)} destinations, the maximum is "
+            f"{MAX_EVM_WINDOW_TARGETS}"
+        )
+    seen: set[str] = set()
+    for e in receivers:
+        if not isinstance(e, str) or not 0 < len(e) <= MAX_IBC_RECEIVER_LEN:
+            raise ValueError(
+                f"ibc_receivers: {e!r} must be 1 to {MAX_IBC_RECEIVER_LEN} characters"
+            )
+        if _IBC_FORBIDDEN.search(e):
+            raise ValueError(f"ibc_receivers: {e!r} contains whitespace or a comma")
+        i = e.find("/")
+        if i <= 0 or i == len(e) - 1:
+            raise ValueError(f"ibc_receivers: {e!r} is not <source channel>/<receiver>")
+        if e in seen:
+            raise ValueError(f"ibc_receivers lists {e} more than once")
+        seen.add(e)
+    return list(receivers)
+
 
 # --------------------------------------------------------------------------- #
 # Error codes (codespace ``pqc``)
@@ -309,6 +409,12 @@ class EVMWindowStatus:
     native_only: bool = False
     #: The recipients the window is narrowed to; empty = any (chain v3.2.3).
     allowed_targets: tuple[str, ...] = ()
+    #: Contracts trusted to vouch for the account's signature (chain v3.2.8).
+    validators: tuple[str, ...] = ()
+    #: Validators the window may delegate or redelegate to (chain v3.2.8).
+    staking_validators: tuple[str, ...] = ()
+    #: ``"<source channel>/<receiver>"`` ICS-20 destinations (chain v3.2.8).
+    ibc_receivers: tuple[str, ...] = ()
 
 
 def _as_int(payload: Mapping[str, Any], field: str) -> int:
@@ -381,10 +487,15 @@ def parse_evm_window(payload: Mapping[str, Any]) -> EVMWindowStatus:
         remaining_txs=_as_int(payload, "remaining_txs"),
         remaining_value=_as_int(payload, "remaining_value"),
         native_only=payload.get("native_only") is True,
-        allowed_targets=tuple(
-            t for t in (payload.get("allowed_targets") or []) if isinstance(t, str)
-        ),
+        allowed_targets=_str_tuple(payload, "allowed_targets"),
+        validators=_str_tuple(payload, "validators"),
+        staking_validators=_str_tuple(payload, "staking_validators"),
+        ibc_receivers=_str_tuple(payload, "ibc_receivers"),
     )
+
+
+def _str_tuple(payload: Mapping[str, Any], field: str) -> tuple[str, ...]:
+    return tuple(t for t in (payload.get(field) or []) if isinstance(t, str))
 
 
 class _RestGet(Protocol):
@@ -526,6 +637,11 @@ __all__ = [
     "EVM_WINDOW_REMEDIES",
     "evm_window_remedy",
     "EVMWindowParams",
+    "MAX_IBC_RECEIVER_LEN",
+    "validate_evm_window_targets",
+    "validate_evm_window_validators",
+    "validate_evm_window_staking_validators",
+    "validate_evm_window_ibc_receivers",
     "validate_evm_window_blocks",
     "validate_evm_window_max_txs",
     "validate_evm_window_max_value",

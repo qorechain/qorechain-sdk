@@ -37,6 +37,45 @@ from qorsdk.messages.qorechain import (
     svm,
 )
 
+# Every field of the v3.2.8 params messages (the composers refuse a missing one).
+SVM_PARAMS_ALL = {
+    "max_program_size": 1024,
+    "max_account_data_size": 2048,
+    "compute_budget_max": 1_400_000,
+    "lamports_per_byte": 7,
+    "rent_exemption_multi": "2.000000000000000000",
+    "enabled": False,
+    "svm_slot_offset": -3,
+    "default_sig_scheme": 1,
+    "max_cpi": 4,
+    "max_custody_uqor": 0,
+    "max_custody_hard_uqor": 0,
+    "max_account_excess_uqor": 0,
+}
+CROSSVM_V328_FIELDS = {
+    "bridge_allowed_targets": [],
+    "bridge_target_pins": [],
+    "max_pending_per_sender": 0,
+    "max_cosmos_tx_gas": 0,
+    "record_retention_blocks": 0,
+    "max_block_wasm_gas": 0,
+    "max_tx_wasm_share_bps": 0,
+    "max_block_level_wasm_gas": 0,
+    "queue_wasm_reserve_bps": 0,
+    "wasm_congestion_max_factor": 0,
+    "wasm_congestion_target_bps": 0,
+    "max_block_upload_bps": 0,
+    "max_queue_timeouts_per_block": 0,
+}
+RDK_V328_FIELDS = {
+    "finalized_batch_retention_blocks": 0,
+    "max_posted_data_bytes": 0,
+    "max_posted_data_bytes_per_block": 0,
+    "posted_data_fee_per_byte": 0,
+    "posted_data_retention_blocks": 0,
+    "min_submitter_bond": 0,
+}
+
 TEST_MNEMONIC = (
     "abandon abandon abandon abandon abandon abandon abandon abandon "
     "abandon abandon abandon about"
@@ -149,7 +188,10 @@ QORECHAIN_COMPOSER_CASES = [
     (svm.create_account(sender="qor1"), "/qorechain.svm.v1.MsgCreateAccount"),
     (svm.execute_program(sender="qor1"), "/qorechain.svm.v1.MsgExecuteProgram"),
     (svm.register_svm_pqc_key(sender="qor1"), "/qorechain.svm.v1.MsgRegisterSVMPQCKey"),
-    (svm.update_params(authority="qor1"), "/qorechain.svm.v1.MsgUpdateParams"),
+    (
+        svm.update_params(authority="qor1", params=SVM_PARAMS_ALL),
+        "/qorechain.svm.v1.MsgUpdateParams",
+    ),
     # lightnode (4)
     (
         lightnode.register_light_node(operator="qor1"),
@@ -183,7 +225,7 @@ QORECHAIN_COMPOSER_CASES = [
         "/qorechain.abstractaccount.v1.MsgUpdateSpendingRules",
     ),
     (
-        abstractaccount.register_authenticator(owner="qor1"),
+        abstractaccount.register_authenticator(owner="qor1", possession_proof=b"\x01"),
         "/qorechain.abstractaccount.v1.MsgRegisterAuthenticator",
     ),
     (
@@ -250,7 +292,7 @@ QORECHAIN_COMPOSER_CASES = [
     (
         msg.crossvm.update_params(
             authority="qor1", max_message_size=65536, max_queue_size=1000,
-            queue_timeout_blocks=100, enabled=True,
+            queue_timeout_blocks=100, enabled=True, **CROSSVM_V328_FIELDS,
         ),
         "/qorechain.crossvm.v1.MsgUpdateParams",
     ),
@@ -259,6 +301,7 @@ QORECHAIN_COMPOSER_CASES = [
             authority="qor1", max_rollups=100, min_stake_for_rollup=1,
             rollup_creation_burn_rate="0.01", default_challenge_window=604800,
             max_da_blob_size=1 << 20, blob_retention_blocks=1000, max_batches_per_block=10,
+            **RDK_V328_FIELDS,
         ),
         "/qorechain.rdk.v1.MsgUpdateParams",
     ),
@@ -362,20 +405,7 @@ def test_rdk_execute_withdrawal_round_trip():
 
 def test_svm_update_params_round_trip():
     """The v3.1.97 governance message that replaces SVMParams wholesale."""
-    m = svm.update_params(
-        authority="qor1gov",
-        params={
-            "max_program_size": 1024,
-            "max_account_data_size": 2048,
-            "compute_budget_max": 1_400_000,
-            "lamports_per_byte": 7,
-            "rent_exemption_multi": "2.000000000000000000",
-            "enabled": False,
-            "svm_slot_offset": -3,
-            "default_sig_scheme": 1,
-            "max_cpi": 4,
-        },
-    )
+    m = svm.update_params(authority="qor1gov", params=SVM_PARAMS_ALL)
     assert m.type_url == "/qorechain.svm.v1.MsgUpdateParams"
     decoded = decode_any(m.type_url, m.value.SerializeToString())
     assert decoded.authority == "qor1gov"
