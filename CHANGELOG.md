@@ -5,6 +5,46 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased] (chain v3.2.8)
+
+Support for chain v3.2.8 in all five SDKs. Publish only after the target network
+runs v3.2.8.
+
+### Changed (breaking)
+
+- **Linking a key needs a possession proof.** `MsgRegisterAuthenticator` field 8
+  `possession_proof` is required from chain v3.2.8: the key being linked signs a
+  plain-text link message naming the chain, the account, the scheme and the key.
+  Each SDK adds the message builder and signers for ed25519, secp256k1 and
+  EIP-191 (`personal_sign`), and the register composers refuse an empty proof.
+- **Keys that move value need a spending rule.** A key with `send`, `evm`,
+  `deploy`, `svm` or `all` needs the account's first enabled spending rule to
+  bound every denom. A new helper builds `[MsgUpdateSpendingRules,
+  MsgRegisterAuthenticator]` for one owner-signed transaction and checks the rule.
+- **Governance parameter composers need every field.** The crossvm, svm and rdk
+  `MsgUpdateParams` composers refuse a missing field, since the chain replaces
+  parameters wholesale (a missing field would reset it, for example the crossvm
+  bridge code pins). New helpers build the update from the current parameters
+  read from the network. The svm composer refuses `enabled` while the hard
+  custody ceiling is 0.
+- The paged cross-VM pending query now returns every page.
+
+### Added
+
+- Execution results for `MsgExecuteEVM` / `MsgExecuteCosmos`: from chain v3.2.8
+  an authorised execution that fails returns `success=false` inside a successful
+  transaction and consumes the nonce. New helpers decode the responses and the
+  `abstractaccount_execution_failed` reason, and raise on a failed execution.
+- Cross-VM async calls take `async_gas_limit` and `async_max_factor`.
+- EVM window scope: `validators`, `staking_validators`, `ibc_receivers`.
+- Gas: EVM transactions above the chain's EVM gas cap (30,000,000, read from
+  `/qorechain/pqc/v1/evm_limits`) and Cosmos transactions above 50,000,000 are
+  refused before signing. CosmWasm and cross-VM transactions get at least 1.3x
+  the simulated gas and never fall back to a fixed gas limit.
+- Opt-in helpers that read the network's minimum gas price
+  (`/cosmos/evm/feemarket/v1/params`); the default gas price is unchanged.
+- Protos and generated code for all five languages follow chain v3.2.8.
+
 ## [0.13.0] - 2026-11-10
 
 All five SDKs (TypeScript, Python, Go, Rust, Java) move to 0.13.0, with
