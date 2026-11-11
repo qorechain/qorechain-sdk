@@ -31,6 +31,22 @@ deploy, a transfer or a contract call from an account without them is refused.
   account.
 - An account that has a registered key has no classical-only path on the native
   lane either: every native transaction it signs is hybrid.
+- Rotating, migrating or re-registering the PQC key closes the window.
+
+### What a window lets through (chain v3.2.8)
+
+Through a window the standard precompile methods are deny-by-default. Three
+optional lists of `MsgOpenEVMWindow` open them up (`openEvmWindowMsg` in
+`@qorechain/sdk` takes and checks them):
+
+| Field | Holds | Needed for |
+| --- | --- | --- |
+| `validators` | `0x` 20-byte contract addresses | contracts whose check of the account's signature counts for its own actions (a validator module, an ERC-4337 entry point) |
+| `stakingValidators` | `qorvaloper1...` addresses | staking `delegate` / `redelegate` to those validators |
+| `ibcReceivers` | `"<source channel>/<receiver>"`, e.g. `"channel-0/cosmos1..."` | ICS-20 transfers to those receivers |
+
+Undelegating, governance votes and withdraw-address changes are refused through
+the window altogether: send them as a PQC-signed native transaction.
 
 The rule is the protocol feature `evm-pqc-authorisation-window`, enabled on both
 networks. Check it at
@@ -76,6 +92,12 @@ Read live on both networks:
 | Block `gasLimit` in headers | 4,294,967,295 (`0xffffffff`) |
 
 The base fee sits at the chain's floor of 0.1 uqor per gas (100 gwei).
+
+From chain v3.2.8 an EVM transaction above the chain's EVM gas cap is refused
+(30,000,000 on v3.2.8; `GET /qorechain/pqc/v1/evm_limits` answers `tx_max_gas`
+and `precompile_input_max_bytes`, `fetchEvmLimits` in `@qorechain/sdk`). The
+SDK refuses an authenticator `MsgExecuteEVM` above the cap before signing. A
+native-lane transaction is capped at 50,000,000 gas.
 EIP-1559 (type 2) and legacy transactions are both accepted. Tools that set the
 fee cap to about twice the base fee (Foundry does) commit up to roughly
 200 gwei per gas against the window, even though they pay about 112.5 gwei.

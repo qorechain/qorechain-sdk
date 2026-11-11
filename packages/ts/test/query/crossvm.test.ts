@@ -3,6 +3,7 @@ import { RestClient } from "../../src/query/rest";
 import {
   getCrossVmMessage,
   getPendingCrossVmMessages,
+  getPendingCrossVmMessagesPage,
   getCrossVmParams,
 } from "../../src/query/crossvm";
 
@@ -47,8 +48,34 @@ describe("cross-VM query helpers", () => {
     const { fetchMock, rest } = setup({ messages: [] });
     await getPendingCrossVmMessages(rest);
     expect(calledUrl(fetchMock)).toBe(
-      "http://host:1317/qorechain/crossvm/v1/pending",
+      "http://host:1317/qorechain/crossvm/v1/pending?pagination.limit=100",
     );
+  });
+
+  it("getPendingCrossVmMessages follows next_key until it is empty", async () => {
+    const pages = [
+      { messages: [{ id: "1" }, { id: "2" }], pagination: { next_key: "a2V5MQ==" } },
+      { messages: [{ id: "3" }], pagination: { next_key: null } },
+    ];
+    const fetchMock = vi.fn(async () => jsonResponse(pages.shift()));
+    const rest = new RestClient("http://host:1317", { fetch: fetchMock });
+    const res = await getPendingCrossVmMessages(rest);
+    expect(res.messages?.map((m) => m.id)).toEqual(["1", "2", "3"]);
+    expect(res.count).toBe(3);
+    expect(String(fetchMock.mock.calls[1][0])).toContain("pagination.key=a2V5MQ%3D%3D");
+  });
+
+  it("getPendingCrossVmMessages stops at the page cap", async () => {
+    const fetchMock = vi.fn(async () => jsonResponse({ messages: [{ id: "x" }], pagination: { next_key: "bW9yZQ==" } }));
+    const rest = new RestClient("http://host:1317", { fetch: fetchMock });
+    await expect(getPendingCrossVmMessages(rest, { maxPages: 3 })).rejects.toThrow(/more than 3 pages/);
+    expect(fetchMock).toHaveBeenCalledTimes(3);
+  });
+
+  it("getPendingCrossVmMessagesPage caps the page size at 100", async () => {
+    const { fetchMock, rest } = setup({ messages: [] });
+    await getPendingCrossVmMessagesPage(rest, { limit: 500, key: "k" });
+    expect(calledUrl(fetchMock)).toBe("http://host:1317/qorechain/crossvm/v1/pending?pagination.key=k&pagination.limit=100");
   });
 
   it("getCrossVmParams hits the params path", async () => {

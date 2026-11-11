@@ -132,7 +132,7 @@ describe("createClient sub-clients and fees", () => {
     const client = createClient({ fetch: fetchMock });
     await client.crossvm.pending();
     expect(calledUrl(fetchMock, 0)).toBe(
-      `${TESTNET.rest}/qorechain/crossvm/v1/pending`,
+      `${TESTNET.rest}/qorechain/crossvm/v1/pending?pagination.limit=100`,
     );
     await client.crossvm.params();
     expect(calledUrl(fetchMock, 1)).toBe(

@@ -145,3 +145,72 @@ export function validateSpendingRules(rules: readonly RuleInput[] | undefined): 
     }
   });
 }
+
+/**
+ * The authenticator permissions that move value. From chain v3.2.8 a key
+ * linked with any of them needs an enabled, bounding spending rule on the
+ * account ({@link checkValuePermissionRules}).
+ */
+export const VALUE_PERMISSIONS = ["send", "evm", "deploy", "svm", "all"] as const;
+
+/** Whether `permissions` contains a permission that moves value ({@link VALUE_PERMISSIONS}). */
+export function hasValuePermission(permissions: readonly string[] | undefined): boolean {
+  return (permissions ?? []).some((p) => (VALUE_PERMISSIONS as readonly string[]).includes(p));
+}
+
+/**
+ * Whether a spending rule bounds every denom, the way the chain requires of
+ * the rule that covers a value-permission key (chain v3.2.8): `perTxLimit > 0`
+ * or `dailyLimit > 0`, or, when both are zero, a non-empty `allowedDenoms`
+ * list where every listed denom has a `denomLimits` entry with an amount
+ * (denoms compared case-insensitively). Does not look at `enabled`.
+ */
+export function ruleBoundsEveryDenom(rule: RuleInput): boolean {
+  const asInt = (v: string | number | bigint | undefined): bigint => {
+    if (v === undefined || v === "") return 0n;
+    try {
+      return BigInt(v);
+    } catch {
+      return 0n;
+    }
+  };
+  if (asInt(rule.perTxLimit) > 0n || asInt(rule.dailyLimit) > 0n) return true;
+  const denoms = rule.allowedDenoms ?? [];
+  if (denoms.length === 0) return false;
+  const limited = new Set<string>();
+  for (const dl of rule.denomLimits ?? []) {
+    if (!dl?.denom) continue;
+    const amount = (s: string | undefined) => (s !== undefined && /^\d+$/.test(s) ? BigInt(s) : 0n);
+    if (amount(dl.perTxLimit) > 0n || amount(dl.dailyLimit) > 0n) limited.add(dl.denom.toLowerCase());
+  }
+  return denoms.every((d) => limited.has(d.toLowerCase()));
+}
+
+/**
+ * The client-side mirror of the chain's v3.2.8 rule for linking a key with a
+ * value permission (`send`, `evm`, `deploy`, `svm`, `all`): the account's
+ * FIRST enabled rule in `rules` (the one the chain applies) must bound every
+ * denom ({@link ruleBoundsEveryDenom}). Throws an `Error` saying what to set;
+ * returns nothing when `permissions` moves no value or the rules cover it.
+ */
+export function checkValuePermissionRules(
+  permissions: readonly string[] | undefined,
+  rules: readonly RuleInput[] | undefined,
+): void {
+  if (!hasValuePermission(permissions)) return;
+  const first = (rules ?? []).find((r) => r.enabled === true);
+  const perms = (permissions ?? []).filter((p) => (VALUE_PERMISSIONS as readonly string[]).includes(p)).join(", ");
+  if (!first) {
+    throw new Error(
+      `a key with the permission(s) ${perms} needs an enabled spending rule on the account from chain v3.2.8: ` +
+        "pass a spending rule that sets perTxLimit or dailyLimit, or lists allowedDenoms with a denomLimits amount for each",
+    );
+  }
+  if (!ruleBoundsEveryDenom(first)) {
+    throw new Error(
+      `the account's first enabled spending rule${first.id ? ` (${first.id})` : ""} does not bound every denom, which a key ` +
+        `with the permission(s) ${perms} needs from chain v3.2.8: set perTxLimit > 0 or dailyLimit > 0, or list ` +
+        "allowedDenoms and give each one a denomLimits entry with an amount",
+    );
+  }
+}

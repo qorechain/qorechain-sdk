@@ -164,6 +164,14 @@ canonical PQC account via `MsgExecuteCosmos` / `MsgExecuteEVM` under a
 permission and a `SpendingRule`. See the
 [Authenticators guide](./authenticators.md).
 
+From chain v3.2.8 the link needs the linked key's own possession proof (a
+signature over `authenticatorLinkMessage(chainId, account, scheme, pubkey)`,
+e.g. from `signAuthenticatorLinkPhantom` / `signAuthenticatorLinkMetaMask`),
+and a key with a value permission needs a bounding spending rule on the
+account. `linkAuthenticatorMsgs` builds both messages for one owner-signed
+transaction. This is a signature that proves possession of the key being
+linked; it is never used as key material.
+
 Relatedly, `unifiedAccountFromSeed` takes the 32 bytes it is given as the spend
 key, so pass real secret entropy - a CSPRNG seed or a mnemonic-derived key -
 never a wallet signature.

@@ -11,6 +11,11 @@ the authorization.
 
 Shows:
 
+- `signAuthenticatorLinkPhantom(...)` + `linkAuthenticatorMsgs(...)` - from
+  chain v3.2.8 the key proves possession by signing the authenticator link
+  message, and the owner links it in ONE transaction
+  `[MsgUpdateSpendingRules, MsgRegisterAuthenticator]` with a spending rule
+  that bounds every denom (the update replaces the account's rules wholesale)
 - `cosmosAuthSignBytes(...)` - the byte-exact 32-byte digest the wallet signs
 - `buildPhantomExecuteCosmos(...)` - sign the digest with a Phantom-style
   ed25519 wallet and get a relayer-ready `MsgExecuteCosmos`
@@ -25,9 +30,12 @@ without a node.
 Broadcasting requires:
 
 - A live **relayer** account that pays fees and broadcasts the tx.
-- A **registered authenticator**: the account owner first links the key with
-  `MsgRegisterAuthenticator` (owner-signed), granting the `send` permission and
-  a spending rule.
+- A **registered authenticator**: the account owner first broadcasts the link
+  transaction built in step 1 (owner-signed), granting the `send` permission
+  under a bounding spending rule.
+- After the relayer broadcasts, `assertAuthenticatorExecutionsSucceeded(result,
+  [msg])`: from chain v3.2.8 a failed execution returns `success = false` in a
+  transaction with code 0 and consumes the nonce.
 
 ## Run
 

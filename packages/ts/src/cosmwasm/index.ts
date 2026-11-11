@@ -28,6 +28,21 @@ export type ContractMsg = Record<string, unknown>;
 /** A `StdFee`, or cosmjs's `"auto"` (simulate) / a raw gas multiplier number. */
 export type FeeInput = StdFee | "auto" | number;
 
+/** Smallest simulation multiplier the wrappers pass for execute / instantiate / migrate. */
+export const COSMWASM_MIN_GAS_MULTIPLIER = 1.3;
+
+/**
+ * The fee the execute / instantiate / migrate wrappers forward. The first call
+ * of a contract code in a block costs much more than a repeat (a cw20 transfer
+ * about 533k gas, repeats about 84k), so use `"auto"` (simulation) or an
+ * explicit `StdFee`; a numeric multiplier below
+ * {@link COSMWASM_MIN_GAS_MULTIPLIER} is raised to it.
+ */
+export function wasmFee(fee: FeeInput): FeeInput {
+  if (typeof fee === "number" && fee < COSMWASM_MIN_GAS_MULTIPLIER) return COSMWASM_MIN_GAS_MULTIPLIER;
+  return fee;
+}
+
 /**
  * Read-only slice of `CosmWasmClient` used by the read wrappers. Declaring the
  * methods we use (rather than importing the concrete class) lets tests inject a
@@ -173,7 +188,7 @@ export function instantiate<T = unknown>(
     codeId,
     initMsg,
     label,
-    fee,
+    wasmFee(fee),
     options,
   ) as Promise<T>;
 }
@@ -191,7 +206,7 @@ export function execute<T = unknown>(
     sender,
     contractAddress,
     msg,
-    fee,
+    wasmFee(fee),
     undefined,
     funds,
   ) as Promise<T>;
@@ -232,7 +247,7 @@ export function instantiate2<T = unknown>(
     salt,
     initMsg,
     label,
-    fee,
+    wasmFee(fee),
     options,
   ) as Promise<T>;
 }
@@ -252,7 +267,7 @@ export function migrate<T = unknown>(
     contractAddress,
     codeId,
     migrateMsg,
-    fee,
+    wasmFee(fee),
     memo,
   ) as Promise<T>;
 }

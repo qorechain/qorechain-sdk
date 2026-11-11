@@ -48,6 +48,7 @@ import {
 } from "@qorechain/evm/window";
 
 import { pqc as pqcMsg } from "../messages/qorechain";
+import { isValidBech32 } from "../utils/address";
 import type { FetchLike } from "../query/http";
 
 export {
@@ -62,13 +63,88 @@ export {
 } from "@qorechain/evm/window";
 
 /**
+ * The chain v3.2.8 scope fields of `MsgOpenEVMWindow`, on top of
+ * {@link OpenEvmWindowParams}. All optional; an empty list leaves the scope as
+ * before.
+ *
+ * Through a window the standard precompile methods are deny-by-default:
+ * staking delegate / redelegate need the validator in `stakingValidators`,
+ * an ICS-20 transfer needs its `"<channel>/<receiver>"` in `ibcReceivers`,
+ * and undelegate, governance votes and withdraw-address changes are refused
+ * through the window altogether (send them as a PQC-signed Cosmos
+ * transaction). Rotating, migrating or re-registering the PQC key closes the
+ * window.
+ */
+export interface OpenEvmWindowScope {
+  /**
+   * Contracts (0x 20-byte addresses) whose check of the account's signature
+   * counts for the account's own actions: a validator module its code consults,
+   * or an ERC-4337 entry point. Does not narrow where transactions may go.
+   */
+  validators?: readonly string[];
+  /** Validators (`qorvaloper1...`) the window may delegate or redelegate to through the staking precompile. */
+  stakingValidators?: readonly string[];
+  /** ICS-20 receivers the window may send to, each `"<source channel>/<receiver>"`, e.g. `"channel-0/cosmos1..."`. */
+  ibcReceivers?: readonly string[];
+}
+
+/** Check one list of the v3.2.8 window scope: format, no duplicates. */
+function checkScopeList(name: string, list: readonly string[] | undefined, ok: (s: string) => boolean, shape: string): string[] {
+  const out: string[] = [];
+  const seen = new Set<string>();
+  for (const raw of list ?? []) {
+    const v = String(raw).trim();
+    if (!ok(v)) throw new Error(`${name}: ${JSON.stringify(raw)} is not ${shape}`);
+    const key = v.toLowerCase();
+    if (seen.has(key)) throw new Error(`${name}: ${JSON.stringify(raw)} is listed twice`);
+    seen.add(key);
+    out.push(v);
+  }
+  return out;
+}
+
+/**
+ * Check the v3.2.8 window scope fields (light format checks: 0x 20-byte
+ * addresses, `qorvaloper1...` bech32, `"channel-N/<receiver>"`) and return
+ * them as the message takes them.
+ */
+export function checkOpenEvmWindowScope(scope: OpenEvmWindowScope): {
+  validators: string[];
+  stakingValidators: string[];
+  ibcReceivers: string[];
+} {
+  return {
+    validators: checkScopeList("validators", scope.validators, (v) => /^0[xX][0-9a-fA-F]{40}$/.test(v), "a 0x-prefixed 20-byte address"),
+    stakingValidators: checkScopeList(
+      "stakingValidators",
+      scope.stakingValidators,
+      (v) => isValidBech32(v, "qorvaloper"),
+      "a qorvaloper1... validator address",
+    ),
+    ibcReceivers: checkScopeList(
+      "ibcReceivers",
+      scope.ibcReceivers,
+      (v) => {
+        // The chain's ParseIBCReceiver: 1 to 256 characters, no whitespace or
+        // comma, a "/" with text on both sides.
+        if (v.length === 0 || v.length > 256 || /[\s,]/.test(v)) return false;
+        const i = v.indexOf("/");
+        return i > 0 && i < v.length - 1;
+      },
+      'of the form "<source channel>/<receiver>", e.g. "channel-0/cosmos1..."',
+    ),
+  };
+}
+
+/**
  * Build `MsgOpenEVMWindow`, checking the chain's bounds first so a mistake
- * fails here instead of costing a refused transaction.
+ * fails here instead of costing a refused transaction. Takes the v3.2.8 scope
+ * fields too ({@link OpenEvmWindowScope}).
  *
  * Remember that broadcasting this advances the account's EVM nonce.
  */
-export function openEvmWindowMsg(params: OpenEvmWindowParams): EncodeObject {
-  return pqcMsg.openEvmWindow(checkOpenEvmWindowParams(params));
+export function openEvmWindowMsg(params: OpenEvmWindowParams & OpenEvmWindowScope): EncodeObject {
+  return pqcMsg.openEvmWindow({ ...checkOpenEvmWindowParams(params), ...checkOpenEvmWindowScope(params) });
 }
 
 /** Build `MsgCloseEVMWindow`. The revocation takes effect in the same block. */

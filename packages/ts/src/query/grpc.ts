@@ -71,6 +71,34 @@ export interface CrossVmQueryClient {
   message(
     req: crossvm.QueryMessageRequest,
   ): Promise<crossvm.QueryMessageResponse>;
+  /**
+   * Every pending message: follows `pagination.nextKey` until it is empty
+   * (pages of at most 100 from chain v3.2.8), throwing after `maxPages` pages
+   * (default 100) rather than returning a partial list. `payloadHex` in the
+   * list is cut to 1,024 bytes; use {@link message} for the full payload.
+   */
+  allPendingMessages(opts?: { maxPages?: number }): Promise<crossvm.CrossVMMessageView[]>;
+}
+
+/** Follow the pending-messages pages of a crossvm query client. */
+async function allPending(
+  pendingMessages: CrossVmQueryClient["pendingMessages"],
+  maxPages = 100,
+): Promise<crossvm.CrossVMMessageView[]> {
+  const out: crossvm.CrossVMMessageView[] = [];
+  let key: Uint8Array | undefined;
+  for (let page = 0; page < maxPages; page++) {
+    const res = await pendingMessages(
+      crossvm.QueryPendingMessagesRequest.fromPartial({
+        pagination: { key: key ?? new Uint8Array(0), limit: "100" },
+      }),
+    );
+    out.push(...res.messages);
+    const next = res.pagination?.nextKey;
+    if (!next || next.length === 0) return out;
+    key = next;
+  }
+  throw new Error(`crossvm pending: more than ${maxPages} pages of pending messages; raise maxPages`);
 }
 
 /** Light-node module query client. */
@@ -444,29 +472,33 @@ export function createQueryClients(
         bridge.QueryOperationsResponse,
       ),
     },
-    crossvm: {
-      params: unary(
-        rpc,
-        "qorechain.crossvm.v1.Query",
-        "Params",
-        crossvm.QueryParamsRequest,
-        crossvm.QueryParamsResponse,
-      ),
-      pendingMessages: unary(
+    crossvm: (() => {
+      const pendingMessages = unary(
         rpc,
         "qorechain.crossvm.v1.Query",
         "PendingMessages",
         crossvm.QueryPendingMessagesRequest,
         crossvm.QueryPendingMessagesResponse,
-      ),
-      message: unary(
-        rpc,
-        "qorechain.crossvm.v1.Query",
-        "Message",
-        crossvm.QueryMessageRequest,
-        crossvm.QueryMessageResponse,
-      ),
-    },
+      );
+      return {
+        params: unary(
+          rpc,
+          "qorechain.crossvm.v1.Query",
+          "Params",
+          crossvm.QueryParamsRequest,
+          crossvm.QueryParamsResponse,
+        ),
+        pendingMessages,
+        message: unary(
+          rpc,
+          "qorechain.crossvm.v1.Query",
+          "Message",
+          crossvm.QueryMessageRequest,
+          crossvm.QueryMessageResponse,
+        ),
+        allPendingMessages: (opts?: { maxPages?: number }) => allPending(pendingMessages, opts?.maxPages),
+      };
+    })(),
     lightnode: {
       lightNode: unary(
         rpc,

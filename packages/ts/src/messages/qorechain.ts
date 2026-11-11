@@ -30,7 +30,7 @@ import * as crossvmTx from "../codegen/qorechain/crossvm/v1/tx";
 import * as rlconsensusTx from "../codegen/qorechain/rlconsensus/v1/tx";
 import { validateKemPublicKey, KEM_ALGORITHM_ML_KEM_1024 } from "../pqc/kem";
 import { validateUpdateConfig } from "../abstractaccount";
-import { validateCrossVmUpdateParams, validateRdkUpdateParams } from "../governance";
+import { validateCrossVmUpdateParams, validateRdkUpdateParams, validateSvmUpdateParams } from "../governance";
 
 /**
  * A generated message type with the methods the composers use.
@@ -55,6 +55,21 @@ function composer<T>(typeUrl: string, msg: MsgType<T>) {
     typeUrl,
     value: msg.fromPartial(value as never),
   });
+}
+
+/**
+ * Refuse a `MsgRegisterAuthenticator` without a possession proof (required
+ * from chain v3.2.8), saying how to make one.
+ */
+export function requirePossessionProof(proof: Uint8Array | undefined | null): void {
+  if (!proof || proof.length === 0) {
+    throw new Error(
+      "registerAuthenticator: possessionProof is required from chain v3.2.8. Sign " +
+        "authenticatorLinkMessage(chainId, accountAddress, scheme, pubkey) with the key being linked " +
+        "(signAuthenticatorLinkEd25519 / signAuthenticatorLinkSecp256k1 / signAuthenticatorLinkEip191, or " +
+        "signAuthenticatorLinkPhantom / signAuthenticatorLinkMetaMask for a browser wallet) and pass the signature",
+    );
+  }
 }
 
 /** AMM (automated market maker) message composers. */
@@ -184,8 +199,9 @@ export const rdk = {
     rdkTx.MsgExecuteWithdrawal,
   ),
   /**
-   * Governance (chain v3.2.5): replace the rdk parameters wholesale. Checked
-   * first ({@link validateRdkUpdateParams}).
+   * Governance (chain v3.2.5): replace the rdk parameters wholesale. From
+   * chain v3.2.8 every field (1..14) must be given explicitly; build it with
+   * `rdkUpdateParamsFromCurrent`. Checked first ({@link validateRdkUpdateParams}).
    */
   updateParams: (value: PartialMsg<rdkTx.MsgUpdateParams>): EncodeObject => {
     validateRdkUpdateParams(value);
@@ -351,11 +367,17 @@ export const svm = {
    * release. `params` is replaced in full - send every field, not just the ones
    * you mean to change. `rentExemptionMulti` is a `LegacyDec` string (e.g.
    * `"2.000000000000000000"`).
+   *
+   * From chain v3.2.8 every `SVMParams` field (1..12, among them the custody
+   * ceilings `maxCustodyUqor`, `maxCustodyHardUqor`, `maxAccountExcessUqor`)
+   * must be given explicitly, and `enabled: true` needs `maxCustodyHardUqor >
+   * 0`. Checked first ({@link validateSvmUpdateParams}); build it with
+   * `svmUpdateParamsFromCurrent`.
    */
-  updateParams: composer(
-    "/qorechain.svm.v1.MsgUpdateParams",
-    svmTx.MsgUpdateParams,
-  ),
+  updateParams: (value: PartialMsg<svmTx.MsgUpdateParams>): EncodeObject => {
+    validateSvmUpdateParams(value as Parameters<typeof validateSvmUpdateParams>[0]);
+    return composer("/qorechain.svm.v1.MsgUpdateParams", svmTx.MsgUpdateParams)(value);
+  },
 };
 
 /** Light-node lifecycle message composers. */
@@ -428,11 +450,20 @@ export const abstractaccount = {
    * Link a foreign-scheme wallet key (e.g. a Phantom ed25519 key) to an account
    * so it may act for that account under least-privilege, time-bounded, revocable
    * terms. Owner-signed.
+   *
+   * From chain v3.2.8 `possessionProof` is required: the linked key's own
+   * signature over `authenticatorLinkMessage(chainId, accountAddress, scheme,
+   * pubkey)`. An empty proof is refused here. A key with a value permission
+   * also needs a bounding spending rule on the account; `linkAuthenticatorMsgs`
+   * builds both messages together.
    */
-  registerAuthenticator: composer(
-    "/qorechain.abstractaccount.v1.MsgRegisterAuthenticator",
-    abstractaccountTx.MsgRegisterAuthenticator,
-  ),
+  registerAuthenticator: (value: PartialMsg<abstractaccountTx.MsgRegisterAuthenticator>): EncodeObject => {
+    requirePossessionProof(value.possessionProof as Uint8Array | undefined);
+    return composer(
+      "/qorechain.abstractaccount.v1.MsgRegisterAuthenticator",
+      abstractaccountTx.MsgRegisterAuthenticator,
+    )(value);
+  },
   /** Instantly disable a previously linked wallet key. Owner-signed. */
   revokeAuthenticator: composer(
     "/qorechain.abstractaccount.v1.MsgRevokeAuthenticator",
@@ -468,12 +499,69 @@ export const abstractaccount = {
   },
 };
 
+/** `asyncGasLimit` the chain uses when an async CosmWasm call leaves it 0. */
+export const CROSSVM_ASYNC_GAS_LIMIT_DEFAULT = 500_000;
+/** Smallest `asyncGasLimit` the chain accepts when one is set. */
+export const CROSSVM_ASYNC_GAS_LIMIT_MIN = 250_000;
+/** Largest `asyncGasLimit` the chain accepts. */
+export const CROSSVM_ASYNC_GAS_LIMIT_MAX = 10_000_000;
+/** `asyncMaxFactor` unit: 1,000,000 millionths is a factor of 1x. */
+export const CROSSVM_ASYNC_FACTOR_ONE = 1_000_000;
+/** Default bound on the async calls one sender may have pending (chain v3.2.8). */
+export const CROSSVM_MAX_PENDING_PER_SENDER_DEFAULT = 100;
+
+/**
+ * The client-side checks on the async gas fields of `MsgCrossVMCall` (chain
+ * v3.2.8). `asyncGasLimit` (0 = 500,000, otherwise 250,000 to 10,000,000) and
+ * `asyncMaxFactor` (millionths, 1,000,000 = 1x; 0 = four times the factor at
+ * submission) apply only to an async call into CosmWasm; a non-zero value on a
+ * synchronous call or another target VM is refused.
+ */
+export function validateCrossVmAsyncGas(value: {
+  async?: boolean;
+  targetVm?: string;
+  asyncGasLimit?: string | number | bigint;
+  asyncMaxFactor?: string | number | bigint;
+}): void {
+  const n = (v: string | number | bigint | undefined, name: string): bigint => {
+    let x: bigint;
+    try {
+      x = BigInt(v ?? 0);
+    } catch {
+      throw new Error(`crossVmCall: ${name} must be a non-negative integer, got ${String(v)}`);
+    }
+    if (x < 0n) throw new Error(`crossVmCall: ${name} must be a non-negative integer, got ${String(v)}`);
+    return x;
+  };
+  const gas = n(value.asyncGasLimit, "asyncGasLimit");
+  const factor = n(value.asyncMaxFactor, "asyncMaxFactor");
+  if (gas === 0n && factor === 0n) return;
+  if (value.async !== true) {
+    throw new Error("crossVmCall: asyncGasLimit and asyncMaxFactor apply only to async calls (set async: true)");
+  }
+  if (value.targetVm !== "cosmwasm") {
+    throw new Error(`crossVmCall: asyncGasLimit and asyncMaxFactor apply only to async calls into cosmwasm, not ${JSON.stringify(value.targetVm ?? "")}`);
+  }
+  if (gas !== 0n && (gas < BigInt(CROSSVM_ASYNC_GAS_LIMIT_MIN) || gas > BigInt(CROSSVM_ASYNC_GAS_LIMIT_MAX))) {
+    throw new Error(
+      `crossVmCall: asyncGasLimit must be 0 (the default ${CROSSVM_ASYNC_GAS_LIMIT_DEFAULT}) or ` +
+        `${CROSSVM_ASYNC_GAS_LIMIT_MIN}..${CROSSVM_ASYNC_GAS_LIMIT_MAX}, got ${gas}`,
+    );
+  }
+}
+
 /** Cross-VM message composers. */
 export const crossvm = {
-  crossVmCall: composer(
-    "/qorechain.crossvm.v1.MsgCrossVMCall",
-    crossvmTx.MsgCrossVMCall,
-  ),
+  /**
+   * A cross-VM call. From chain v3.2.8 an async call into CosmWasm may set
+   * `asyncGasLimit` and `asyncMaxFactor`; both are checked first
+   * ({@link validateCrossVmAsyncGas}) and refused on a synchronous call or
+   * another target VM.
+   */
+  crossVmCall: (value: PartialMsg<crossvmTx.MsgCrossVMCall>): EncodeObject => {
+    validateCrossVmAsyncGas(value);
+    return composer("/qorechain.crossvm.v1.MsgCrossVMCall", crossvmTx.MsgCrossVMCall)(value);
+  },
   processQueue: composer(
     "/qorechain.crossvm.v1.MsgProcessQueue",
     crossvmTx.MsgProcessQueue,
@@ -481,7 +569,10 @@ export const crossvm = {
   /**
    * Governance (chain v3.2.5): replace the crossvm parameters wholesale, among
    * them the allowlist of CosmWasm contracts the EVM bridge precompile may call.
-   * Checked first ({@link validateCrossVmUpdateParams}).
+   * From chain v3.2.8 every field (1..18) must be given explicitly (a left-out
+   * `bridgeTargetPins` would wipe the pins); build it with
+   * `crossvmUpdateParamsFromCurrent`. Checked first
+   * ({@link validateCrossVmUpdateParams}).
    */
   updateParams: (value: PartialMsg<crossvmTx.MsgUpdateParams>): EncodeObject => {
     validateCrossVmUpdateParams(value);

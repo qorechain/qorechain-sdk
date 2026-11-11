@@ -18,6 +18,12 @@
  * later `ProcessQueue` dispatch instead, in which case nothing has run yet and
  * only the message id is meaningful.
  *
+ * Gas: a transaction that carries a cross-VM call (or a CosmWasm execute)
+ * costs much more the first time a contract's code runs in a block, so keep
+ * the default `fee: "auto"` (simulation; the estimate gets at least a 1.3x
+ * margin) or pass an explicit gas limit. A fixed fallback gas is refused for
+ * such transactions.
+ *
  * Per-VM payload encoding (pick exactly one shape per call):
  *  - `{ payload }` - raw bytes / hex, passed through unchanged.
  *  - `{ evm: { abi, functionName, args } }` - ABI-encoded with viem's
@@ -126,8 +132,26 @@ export interface CrossVMCallBase {
    * the callee's answer (see {@link CrossVMCallResult.data}). With `async: true`
    * the call is only enqueued, so the response carries `executed: false` and no
    * `data` - use it when you do not need the result in this transaction.
+   *
+   * From chain v3.2.8 an async call into CosmWasm holds an escrow of
+   * `asyncGasLimit x factor x gas price` (about 0.2 QOR with the defaults),
+   * refunded for what it did not use when it finishes, pays a queue-slot fee,
+   * and a sender may have at most 100 calls pending.
    */
   async?: boolean;
+  /**
+   * For an async call into CosmWasm (chain v3.2.8): the contract execution it
+   * may use, in base gas units. 0 or unset means 500,000; a set value is
+   * 250,000 to 10,000,000. Refused on a synchronous call or another VM.
+   */
+  asyncGasLimit?: number | bigint | string;
+  /**
+   * For an async call into CosmWasm (chain v3.2.8): the highest wasm
+   * congestion factor the sender will pay, in millionths (1,000,000 = 1x).
+   * 0 or unset means four times the factor at submission. Refused on a
+   * synchronous call or another VM.
+   */
+  asyncMaxFactor?: number | bigint | string;
 }
 
 /** Options for a single cross-VM call (base + payload). */
@@ -375,6 +399,8 @@ export function createCrossVMClient(
       payload,
       funds: o.funds ?? [],
       async: o.async ?? false,
+      asyncGasLimit: String(o.asyncGasLimit ?? 0),
+      asyncMaxFactor: String(o.asyncMaxFactor ?? 0),
     });
 
   // Synchronous build-only path. Raw / svm / cosmwasm payloads need no async; the

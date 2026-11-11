@@ -140,6 +140,7 @@ describe("authenticator message composers", () => {
       owner: ACCOUNT,
       ethAddress: ETH_ADDRESS,
       expiryUnix: 1_900_000_000,
+      possessionProof: new Uint8Array(65).fill(1),
     });
     expect(m.typeUrl).toBe(
       "/qorechain.abstractaccount.v1.MsgRegisterAuthenticator",
@@ -147,6 +148,14 @@ describe("authenticator message composers", () => {
     const v = m.value as { scheme: string; pubkey: Uint8Array };
     expect(v.scheme).toBe("secp256k1");
     expect(v.pubkey.length).toBe(20);
+    expect(() =>
+      registerEthAuthenticatorMsg({
+        owner: ACCOUNT,
+        ethAddress: ETH_ADDRESS,
+        expiryUnix: 1_900_000_000,
+        possessionProof: new Uint8Array(0),
+      }),
+    ).toThrow(/possessionProof is required from chain v3\.2\.8.*authenticatorLinkMessage/);
   });
 
   it("rotatePqcKeyMsg has the pqc rotate typeUrl", () => {

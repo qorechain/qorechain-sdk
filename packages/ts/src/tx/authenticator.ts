@@ -311,3 +311,94 @@ export function rotationSignBytes(
 ): string {
   return `${ROTATE_DOMAIN}|${chainId}|${algorithmId}|${account}|${toHexLower(oldPub)}|${toHexLower(newPub)}`;
 }
+
+// ---- Authenticator link possession proof (chain v3.2.8) -----------------
+
+/** First line of the text a key signs to prove it consents to being linked. */
+export const AUTHENTICATOR_LINK_HEADER = "QoreChain authenticator link v1";
+
+/** The schemes a key can be linked under. */
+export type AuthenticatorScheme = "ed25519" | "secp256k1";
+
+/**
+ * Check a key the way the chain does before linking it: `ed25519` takes a
+ * 32-byte key; `secp256k1` takes a 33-byte compressed key or a 20-byte
+ * Ethereum address (MetaMask-style links). A 65-byte uncompressed key is
+ * refused. Throws an `Error` naming the problem.
+ */
+export function validateAuthenticatorKey(scheme: string, pubkey: Uint8Array): void {
+  if (scheme === "ed25519") {
+    if (pubkey.length !== 32) throw new Error(`an ed25519 authenticator key is 32 bytes, got ${pubkey.length}`);
+    return;
+  }
+  if (scheme === "secp256k1") {
+    if (pubkey.length === 65) {
+      throw new Error("uncompressed (65-byte) secp256k1 keys are refused: link the 33-byte compressed key or the 20-byte Ethereum address");
+    }
+    if (pubkey.length !== 33 && pubkey.length !== 20) {
+      throw new Error(`a secp256k1 authenticator key is a 33-byte compressed key or a 20-byte Ethereum address, got ${pubkey.length} bytes`);
+    }
+    return;
+  }
+  throw new Error(`unknown authenticator scheme ${JSON.stringify(scheme)} (use "ed25519" or "secp256k1")`);
+}
+
+/**
+ * The exact text a key signs to prove possession when it is linked with
+ * `MsgRegisterAuthenticator` (required from chain v3.2.8):
+ *
+ * ```
+ * QoreChain authenticator link v1
+ * chain: <chainId>
+ * account: <accountAddress>
+ * scheme: <scheme>
+ * key: <lowercase hex of pubkey>
+ * ```
+ *
+ * Lines are joined with `"\n"`, with no trailing newline. `pubkey` is exactly
+ * the bytes put in the message's `pubkey` field (a 32-byte ed25519 key, a
+ * 33-byte compressed secp256k1 key, or a 20-byte Ethereum address; a `0x` hex
+ * string is accepted too). How the key signs it:
+ *
+ * - ed25519: over the raw UTF-8 bytes of the text (Phantom `signMessage(text)`).
+ * - secp256k1, 33-byte key: 64-byte `r || s` (low-S) over `sha256(text)`.
+ * - secp256k1, 20-byte address: EIP-191 `personal_sign` of the text
+ *   (65-byte `r || s || v`).
+ */
+export function authenticatorLinkMessage(
+  chainId: string,
+  accountAddress: string,
+  scheme: AuthenticatorScheme | string,
+  pubkey: Uint8Array | string,
+): string {
+  if (!chainId) throw new Error("authenticatorLinkMessage: chainId is required");
+  if (!accountAddress) throw new Error("authenticatorLinkMessage: accountAddress is required");
+  const key = typeof pubkey === "string" ? hexKey(pubkey) : pubkey;
+  validateAuthenticatorKey(scheme, key);
+  return [
+    AUTHENTICATOR_LINK_HEADER,
+    `chain: ${chainId}`,
+    `account: ${accountAddress}`,
+    `scheme: ${scheme}`,
+    `key: ${toHexLower(key)}`,
+  ].join("\n");
+}
+
+/** {@link authenticatorLinkMessage} as UTF-8 bytes. */
+export function authenticatorLinkMessageBytes(
+  chainId: string,
+  accountAddress: string,
+  scheme: AuthenticatorScheme | string,
+  pubkey: Uint8Array | string,
+): Uint8Array {
+  return enc.encode(authenticatorLinkMessage(chainId, accountAddress, scheme, pubkey));
+}
+
+/** Parse a hex key (with or without `0x`). */
+function hexKey(hex: string): Uint8Array {
+  const h = hex.replace(/^0[xX]/, "");
+  if (h.length % 2 !== 0 || !/^[0-9a-fA-F]*$/.test(h)) throw new Error(`invalid hex key ${JSON.stringify(hex)}`);
+  const out = new Uint8Array(h.length / 2);
+  for (let i = 0; i < out.length; i++) out[i] = parseInt(h.slice(i * 2, i * 2 + 2), 16);
+  return out;
+}

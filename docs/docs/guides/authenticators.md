@@ -45,9 +45,11 @@ in order:
 3. otherwise **no rule - and no limit at all**.
 
 `MsgRegisterAuthenticator` carries no rule field, so a key linked with that
-message alone falls to step 2 or 3. **If nobody set an account-level rule, that
-key can move the whole balance.** Set a rule deliberately with
-`MsgUpdateSpendingRules`; do not assume a default.
+message alone falls to step 2 or 3. Below v3.2.8, **if nobody set an
+account-level rule, that key can move the whole balance.** From chain v3.2.8
+the chain refuses to link a key with a value permission (`send`, `evm`,
+`deploy`, `svm`, `all`) unless the account's first enabled rule bounds every
+denom; see [Linking a key](#linking-a-key-chain-v328).
 
 **A disabled rule is not a zero limit - it is no limit.** A rule stored with
 `Enabled` false resolves to nothing, and the spend check returns immediately
@@ -91,6 +93,98 @@ anyone who obtains it controls the derived account. Link the external key as an
 **authenticator** instead - that is what this guide describes.
 
 :::
+
+## Linking a key (chain v3.2.8)
+
+From chain v3.2.8 linking a key needs two things.
+
+**A possession proof.** `MsgRegisterAuthenticator.possessionProof` is a
+signature BY THE KEY BEING LINKED over this exact UTF-8 text (lines joined with
+`\n`, no trailing newline):
+
+```
+QoreChain authenticator link v1
+chain: <chain id>
+account: <bech32 account_address of the message>
+scheme: <ed25519 | secp256k1>
+key: <lowercase hex of the pubkey bytes>
+```
+
+`key` is the hex of exactly the bytes in `pubkey`: a 32-byte ed25519 key, a
+33-byte compressed secp256k1 key, or the 20-byte Ethereum address of a
+MetaMask-style link (65-byte uncompressed keys are refused). The chain checks
+an ed25519 signature over the raw text (Phantom `signMessage(text)`), a 64-byte
+low-S `r || s` over `sha256(text)` for a 33-byte key, and an EIP-191
+`personal_sign` of the text (65 bytes, `v` = 27/28) for a 20-byte address.
+
+`authenticatorLinkMessage(chainId, account, scheme, pubkey)` builds the text,
+so a browser wallet can sign it itself. The SDK also signs it:
+`signAuthenticatorLinkPhantom({ chainId, account, wallet })`,
+`signAuthenticatorLinkMetaMask({ chainId, account, provider, address })`, and,
+from a raw private key, `signAuthenticatorLinkEd25519`,
+`signAuthenticatorLinkSecp256k1` and `signAuthenticatorLinkEip191`.
+`verifyAuthenticatorLinkProof` checks a proof the way the chain does. Every
+composer that builds `MsgRegisterAuthenticator` refuses an empty proof.
+
+**A bounding spending rule** for a key with a value permission (`send`, `evm`,
+`deploy`, `svm`, `all`). The rule lives on the ACCOUNT (the message has no
+per-key rule) and the chain applies the account's first enabled rule, which
+must bound every denom: `perTxLimit > 0` or `dailyLimit > 0`, or, when both are
+0, an `allowedDenoms` list where every listed denom has a `denomLimits` entry
+with an amount. `MsgUpdateSpendingRules` may be sent for an account that does
+not exist yet when `account == owner` (it creates the account).
+
+The recommended order is ONE transaction, signed by the owner, with both
+messages at the top level (not through authz). `linkAuthenticatorMsgs` builds
+it and refuses a value permission without a bounding rule:
+
+```ts
+import { linkAuthenticatorMsgs, signAuthenticatorLinkPhantom } from "@qorechain/sdk";
+
+const proof = await signAuthenticatorLinkPhantom({ chainId, account: owner, wallet: window.solana });
+const msgs = linkAuthenticatorMsgs({
+  owner,
+  chainId, // optional: checks the proof before anything is built
+  ...proof, // scheme, pubkey, possessionProof
+  permissions: ["send"],
+  expiryUnix: Math.floor(Date.now() / 1000) + 30 * 24 * 3600,
+  label: "phantom",
+  spendingRule: { id: "phantom", enabled: true, perTxLimit: "1000000", dailyLimit: "5000000" },
+});
+// [MsgUpdateSpendingRules, MsgRegisterAuthenticator]
+await tx.signAndBroadcast(msgs, "auto");
+```
+
+:::warning `MsgUpdateSpendingRules` replaces the account's rules
+
+The message replaces every rule the account has. To keep existing rules, read
+them with `fetchSpendingRules` and pass the full list as `spendingRules`.
+
+:::
+
+## Execution results (chain v3.2.8)
+
+From v3.2.8 an execution that was authorised but then failed (a reverted call,
+a spending limit, a call policy) does NOT fail the transaction: the tx has code
+0, the response carries `success = false`, and the chain emits
+`abstractaccount_execution_failed` with `account`, `lane`, `nonce` and `reason`.
+**The nonce is consumed**, so the same signature cannot be relayed again; sign a
+new request with the next nonce.
+
+A relayer must read the result rather than the tx code:
+
+```ts
+import { assertAuthenticatorExecutionsSucceeded, decodeAuthenticatorExecutions } from "@qorechain/sdk";
+
+const res = await relayerTx.signAndBroadcast([msg], "auto");
+// Per message: { index, lane, success, ret, gasUsed, vmError, reason }.
+const results = decodeAuthenticatorExecutions(res, [msg]);
+// Or throw an AuthenticatorExecutionError when any execution failed:
+assertAuthenticatorExecutionsSucceeded(res, [msg]);
+```
+
+`MsgExecuteEVM` also refuses a `gasLimit` above the chain's EVM cap (30,000,000
+on v3.2.8; read it with `fetchEvmLimits`) before anything is signed.
 
 ## The relayer model
 
@@ -177,7 +271,9 @@ MetaMask works the same way via `buildMetaMaskExecuteEvm` /
 `buildMetaMaskExecuteCosmos`, which link the key by its 20-byte ETH address
 (scheme `secp256k1`) and produce a 65-byte `personal_sign` (EIP-191) signature.
 There are matching low-level composers (`executeEvmMsg`, `executeCosmosMsg`,
-`registerEthAuthenticatorMsg`, `revokeAuthenticatorMsg`, `rotatePqcKeyMsg`).
+`registerAuthenticatorMsg`, `registerEthAuthenticatorMsg`,
+`revokeAuthenticatorMsg`, `rotatePqcKeyMsg`); the register composers take the
+`possessionProof` described above.
 
 ## Nonces
 

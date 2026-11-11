@@ -192,12 +192,16 @@ export { QorClient } from "./query/qor";
 export {
   getCrossVmMessage,
   getPendingCrossVmMessages,
+  getPendingCrossVmMessagesPage,
   getCrossVmParams,
+  CROSSVM_PENDING_PAGE_LIMIT,
+  CROSSVM_PENDING_MAX_PAGES,
 } from "./query/crossvm";
 export type {
   CrossVmMessage,
   CrossVmMessageResponse,
   PendingCrossVmMessagesResponse,
+  PendingCrossVmMessagesOptions,
   CrossVmParamsResponse,
 } from "./query/crossvm";
 
@@ -238,6 +242,8 @@ export {
   getCodes,
   getContracts,
   getCodeDetails,
+  wasmFee,
+  COSMWASM_MIN_GAS_MULTIPLIER,
 } from "./cosmwasm";
 export type {
   ContractMsg,
@@ -251,8 +257,22 @@ export type {
 // broadcaster, the low-level PQC hybrid extension encode/attach helpers, and the
 // end-to-end hybrid (classical + PQC) signing/broadcast builder. See each module
 // for details.
-export { estimateFee, STATIC_FALLBACK } from "./tx/fees";
-export type { StdFee, EstimateFeeOptions } from "./tx/fees";
+export {
+  estimateFee,
+  STATIC_FALLBACK,
+  COSMOS_TX_MAX_GAS,
+  EVM_TX_MAX_GAS_DEFAULT,
+  WASM_GAS_MULTIPLIER_MIN,
+  WASM_EXECUTION_TYPE_URLS,
+  carriesWasmExecution,
+  checkCosmosGasLimit,
+  checkEvmGasLimit,
+  fetchEvmLimits,
+  MIN_GAS_PRICE_FLOOR_UQOR,
+  fetchMinGasPriceUqor,
+  recommendedGasPriceUqor,
+} from "./tx/fees";
+export type { StdFee, EstimateFeeOptions, EvmLimits } from "./tx/fees";
 export { directSignerFromPrivateKey } from "./tx/signer-adapter";
 export type { BroadcastMode, BroadcastResult } from "./tx/broadcast";
 export {
@@ -353,9 +373,14 @@ export {
   rotationSignBytes,
   be64,
   lengthPrefixed,
+  AUTHENTICATOR_LINK_HEADER,
+  authenticatorLinkMessage,
+  authenticatorLinkMessageBytes,
+  validateAuthenticatorKey,
 } from "./tx/authenticator";
 export type {
   AuthNonce,
+  AuthenticatorScheme,
   EvmAuthSignBytesInput,
   EvmAuthSignBytesV2Input,
   EvmAuthDigestVersion,
@@ -371,6 +396,7 @@ export {
   MAX_EVM_WINDOW_TXS,
   MAX_EVM_WINDOW_TARGETS,
   openEvmWindowMsg,
+  checkOpenEvmWindowScope,
   closeEvmWindowMsg,
   fetchEvmWindow,
   classifyEvmWindowRejection,
@@ -378,6 +404,7 @@ export {
 } from "./pqc/evm-window";
 export type {
   OpenEvmWindowParams,
+  OpenEvmWindowScope,
   EvmWindow,
   EvmWindowRejection,
 } from "./pqc/evm-window";
@@ -475,6 +502,15 @@ export type { SpendingRules, SpendingRuleView, AuthenticatorRuleView, Authentica
 export {
   validateCrossVmUpdateParams,
   validateRdkUpdateParams,
+  validateSvmUpdateParams,
+  CROSSVM_UPDATE_PARAMS_FIELDS,
+  RDK_UPDATE_PARAMS_FIELDS,
+  SVM_PARAMS_FIELDS,
+  fetchCrossVmUpdateParams,
+  fetchRdkUpdateParams,
+  crossvmUpdateParamsFromCurrent,
+  rdkUpdateParamsFromCurrent,
+  svmUpdateParamsFromCurrent,
   CROSSVM_MAX_MESSAGE_SIZE,
   CROSSVM_MAX_QUEUE_SIZE,
   CROSSVM_MAX_QUEUE_TIMEOUT_BLOCKS,
@@ -484,6 +520,7 @@ export {
   RDK_MAX_CHALLENGE_WINDOW_SEC,
   RDK_MAX_DA_BLOB_SIZE,
 } from "./governance";
+export type { CrossVmParamsInput, RdkParamsInput } from "./governance";
 
 export { buildHybridTx, signAndBroadcastHybrid } from "./tx/hybrid-tx";
 
@@ -598,6 +635,17 @@ export {
   validateEvmDenom,
   MAX_DENOM_LIMITS,
   MAX_ALLOWED_EVM_CALLS,
+  VALUE_PERMISSIONS,
+  hasValuePermission,
+  ruleBoundsEveryDenom,
+  checkValuePermissionRules,
+  requirePossessionProof,
+  validateCrossVmAsyncGas,
+  CROSSVM_ASYNC_GAS_LIMIT_DEFAULT,
+  CROSSVM_ASYNC_GAS_LIMIT_MIN,
+  CROSSVM_ASYNC_GAS_LIMIT_MAX,
+  CROSSVM_ASYNC_FACTOR_ONE,
+  CROSSVM_MAX_PENDING_PER_SENDER_DEFAULT,
 } from "./messages";
 // Generated message types, namespaced by module, for callers who want the raw
 // encode/decode/interface types (e.g. to decode a message read back from chain).
@@ -613,6 +661,18 @@ export {
   executeCosmosMsg,
   revokeAuthenticatorMsg,
   registerEthAuthenticatorMsg,
+  registerAuthenticatorMsg,
+  signAuthenticatorLinkEd25519,
+  signAuthenticatorLinkSecp256k1,
+  signAuthenticatorLinkEip191,
+  signAuthenticatorLinkPhantom,
+  signAuthenticatorLinkMetaMask,
+  verifyAuthenticatorLinkProof,
+  linkAuthenticatorMsgs,
+  decodeAuthenticatorExecutions,
+  assertAuthenticatorExecutionsSucceeded,
+  AuthenticatorExecutionError,
+  EXECUTION_FAILED_EVENT,
   rotatePqcKeyMsg,
   buildPhantomExecuteEvm,
   buildPhantomExecuteCosmos,
@@ -632,6 +692,12 @@ export type {
   ExecuteCosmosMsgInput,
   RevokeAuthenticatorMsgInput,
   RegisterEthAuthenticatorMsgInput,
+  RegisterAuthenticatorMsgInput,
+  AuthenticatorLinkProof,
+  AuthenticatorLinkTarget,
+  LinkAuthenticatorMsgsInput,
+  SpendingRuleInput,
+  AuthenticatorExecutionResult,
   RotatePqcKeyMsgInput,
   BuildPhantomExecuteEvmOptions,
   BuildPhantomExecuteCosmosOptions,

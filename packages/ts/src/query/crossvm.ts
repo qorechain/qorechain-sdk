@@ -31,10 +31,32 @@ export interface CrossVmMessageResponse {
   [key: string]: unknown;
 }
 
-/** Response of the pending-messages route. */
+/** Response of the pending-messages route (one page, or every page merged). */
 export interface PendingCrossVmMessagesResponse {
+  /**
+   * The pending messages. `payload_hex` in this list is cut to its first
+   * 1,024 bytes; fetch one message with {@link getCrossVmMessage} for its
+   * full payload.
+   */
   messages?: CrossVmMessage[];
+  /** Number of messages returned. */
+  count?: number;
+  /** Page metadata (`next_key` is empty on the last page). */
+  pagination?: { next_key?: string | null; total?: string };
   [key: string]: unknown;
+}
+
+/** Most messages the chain returns per pending page. */
+export const CROSSVM_PENDING_PAGE_LIMIT = 100;
+/** Default safety cap on the pages {@link getPendingCrossVmMessages} reads. */
+export const CROSSVM_PENDING_MAX_PAGES = 100;
+
+/** Options for {@link getPendingCrossVmMessages}. */
+export interface PendingCrossVmMessagesOptions {
+  /** Messages per page (at most {@link CROSSVM_PENDING_PAGE_LIMIT}, the default). */
+  pageLimit?: number;
+  /** Stop after this many pages ({@link CROSSVM_PENDING_MAX_PAGES} by default). */
+  maxPages?: number;
 }
 
 /** Response of the module params route. */
@@ -63,14 +85,48 @@ export function getCrossVmMessage<T = CrossVmMessageResponse>(
 }
 
 /**
- * Fetch all currently pending cross-VM messages.
+ * Fetch one page of pending cross-VM messages.
  *
- * GET `/qorechain/crossvm/v1/pending`.
+ * GET `/qorechain/crossvm/v1/pending?pagination.key=...&pagination.limit=...`.
+ * A page holds at most 100 messages and `payload_hex` is truncated to 1,024
+ * bytes.
  */
-export function getPendingCrossVmMessages<
-  T = PendingCrossVmMessagesResponse,
->(rest: RestClient): Promise<T> {
-  return rest.get<T>("/qorechain/crossvm/v1/pending");
+export function getPendingCrossVmMessagesPage<T = PendingCrossVmMessagesResponse>(
+  rest: RestClient,
+  pagination: { key?: string; limit?: number } = {},
+): Promise<T> {
+  const query: Record<string, string | number> = {};
+  if (pagination.key) query["pagination.key"] = pagination.key;
+  query["pagination.limit"] = Math.min(pagination.limit ?? CROSSVM_PENDING_PAGE_LIMIT, CROSSVM_PENDING_PAGE_LIMIT);
+  return rest.get<T>("/qorechain/crossvm/v1/pending", query);
+}
+
+/**
+ * Fetch ALL currently pending cross-VM messages, following
+ * `pagination.next_key` until it is empty (the route is paginated from chain
+ * v3.2.8, at most 100 per page). Stops after `maxPages` pages as a safety cap
+ * and then throws, so a caller never silently gets a partial list.
+ *
+ * `payload_hex` in the list is cut to its first 1,024 bytes; fetch a single
+ * message with {@link getCrossVmMessage} for the full payload.
+ */
+export async function getPendingCrossVmMessages(
+  rest: RestClient,
+  opts: PendingCrossVmMessagesOptions = {},
+): Promise<PendingCrossVmMessagesResponse> {
+  const maxPages = opts.maxPages ?? CROSSVM_PENDING_MAX_PAGES;
+  const messages: CrossVmMessage[] = [];
+  let key: string | undefined;
+  for (let page = 0; page < maxPages; page++) {
+    const res = await getPendingCrossVmMessagesPage(rest, { key, limit: opts.pageLimit });
+    messages.push(...(res.messages ?? []));
+    const next = res.pagination?.next_key;
+    if (!next) return { messages, count: messages.length };
+    key = next;
+  }
+  throw new Error(
+    `crossvm pending: more than ${maxPages} pages of pending messages; raise maxPages or read pages with getPendingCrossVmMessagesPage`,
+  );
 }
 
 /**

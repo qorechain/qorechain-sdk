@@ -54,6 +54,7 @@
  * ordering were used, callers must ensure their `Registry` encodes canonically.
  */
 
+import { checkCosmosGasLimit } from "./fees";
 import type { OfflineDirectSigner, Registry } from "@cosmjs/proto-signing";
 import {
   encodePubkey,
@@ -188,6 +189,7 @@ interface HybridTxSnapshot {
 /** Encode/copy everything the tx signs over. Must stay free of `await`. */
 function snapshotHybridTx(opts: BuildHybridTxOptions): HybridTxSnapshot {
   const { registry, messages, fee } = opts;
+  checkCosmosGasLimit(fee.gas);
   const baseBodyBytes = TxBody.encode(
     TxBody.fromPartial({
       messages: messages.map((m) => registry.encodeAsAny(m)),

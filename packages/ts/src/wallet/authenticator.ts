@@ -16,6 +16,16 @@
  *     wallet produces a 65-byte `personal_sign` (EIP-191) signature over the
  *     same digest.
  *
+ * Linking a key (chain v3.2.8): `MsgRegisterAuthenticator` carries a
+ * possession proof, the linked key's signature over
+ * `authenticatorLinkMessage(chainId, account, scheme, pubkey)`
+ * (`signAuthenticatorLink*`), and a key with a value permission needs a
+ * bounding spending rule on the account; {@link linkAuthenticatorMsgs} builds
+ * `[MsgUpdateSpendingRules, MsgRegisterAuthenticator]` for one owner-signed
+ * transaction. A failed, authorised execution returns `success = false` in a
+ * code-0 transaction and consumes the nonce: read it with
+ * {@link decodeAuthenticatorExecutions} / {@link assertAuthenticatorExecutionsSucceeded}.
+ *
  * Also included: the low-level message composers, and mnemonic-based PQC key
  * rotation (legacy→canonical migration) with both keys dual-signing the
  * rotation bytes.
@@ -23,6 +33,10 @@
 
 import type { EncodeObject } from "@cosmjs/proto-signing";
 
+import { ed25519 } from "@noble/curves/ed25519";
+import { secp256k1 } from "@noble/curves/secp256k1";
+import { sha256 } from "@noble/hashes/sha256";
+import { keccak_256 } from "@noble/hashes/sha3";
 import { mldsa, shake256 } from "@qorechain/pqc";
 import { generatePqcKeypair, type PqcKeypair } from "../accounts/pqc";
 import { qoreAddresses } from "../accounts/unified";
@@ -31,8 +45,16 @@ import {
   evmAuthSignBytesV2,
   cosmosAuthSignBytes,
   rotationSignBytes,
+  authenticatorLinkMessageBytes,
+  validateAuthenticatorKey,
+  type AuthenticatorScheme,
   type EvmAuthDigestVersion,
 } from "../tx/authenticator";
+import { abstractaccount as aaMsg, requirePossessionProof } from "../messages/qorechain";
+import { checkValuePermissionRules } from "../messages/spending-rules";
+import * as aaTx from "../codegen/qorechain/abstractaccount/v1/tx";
+import { checkEvmGasLimit } from "../tx/fees";
+import type { BroadcastResult } from "../tx/broadcast";
 
 const enc = new TextEncoder();
 
@@ -95,6 +117,8 @@ export interface ExecuteEvmMsgInput {
 /**
  * Build a `MsgExecuteEVM` (`{ typeUrl, value }`) - the relayer broadcasts this
  * and is the fee payer. `to` is a 0x-hex address, `value` a decimal wei string.
+ * A `gasLimit` above the chain's EVM cap (30,000,000 on v3.2.8, see
+ * `fetchEvmLimits`) is refused.
  */
 export function executeEvmMsg(input: ExecuteEvmMsgInput): EncodeObject {
   const {
@@ -109,6 +133,7 @@ export function executeEvmMsg(input: ExecuteEvmMsgInput): EncodeObject {
     gasLimit,
     nonce,
   } = input;
+  checkEvmGasLimit(gasLimit);
   return {
     typeUrl: "/qorechain.abstractaccount.v1.MsgExecuteEVM",
     value: {
@@ -188,6 +213,50 @@ export function revokeAuthenticatorMsg(
   };
 }
 
+/** Fields for {@link registerAuthenticatorMsg}. */
+export interface RegisterAuthenticatorMsgInput {
+  owner: string;
+  /** The account the key acts for; defaults to `owner`. */
+  account?: string;
+  scheme: AuthenticatorScheme;
+  /**
+   * The key: 32-byte ed25519 key, 33-byte compressed secp256k1 key, or the
+   * 20-byte Ethereum address (MetaMask-style links). 65-byte keys are refused.
+   */
+  pubkey: Uint8Array;
+  permissions: string[];
+  expiryUnix: number | bigint;
+  label?: string;
+  /**
+   * Required from chain v3.2.8: the linked key's signature over
+   * {@link authenticatorLinkMessage}`(chainId, account, scheme, pubkey)`
+   * (see the `signAuthenticatorLink*` helpers).
+   */
+  possessionProof: Uint8Array;
+}
+
+/**
+ * Build a `MsgRegisterAuthenticator` (`{ typeUrl, value }`). Owner-signed.
+ * Refuses an empty `possessionProof` (required from chain v3.2.8). A key with
+ * a value permission also needs a bounding spending rule on the account: use
+ * {@link linkAuthenticatorMsgs} to build both messages.
+ */
+export function registerAuthenticatorMsg(input: RegisterAuthenticatorMsgInput): EncodeObject {
+  const { owner, account = owner, scheme, pubkey, permissions, expiryUnix, label = "", possessionProof } = input;
+  validateAuthenticatorKey(scheme, pubkey);
+  requirePossessionProof(possessionProof);
+  return aaMsg.registerAuthenticator({
+    owner,
+    accountAddress: account,
+    scheme,
+    pubkey,
+    permissions,
+    expiryUnix: String(BigInt(expiryUnix)),
+    label,
+    possessionProof,
+  });
+}
+
 /** Fields for {@link registerEthAuthenticatorMsg}. */
 export interface RegisterEthAuthenticatorMsgInput {
   owner: string;
@@ -197,12 +266,19 @@ export interface RegisterEthAuthenticatorMsgInput {
   permissions?: string[];
   expiryUnix: number | bigint;
   label?: string;
+  /**
+   * Required from chain v3.2.8: the EIP-191 `personal_sign` of
+   * {@link authenticatorLinkMessage} by `ethAddress`
+   * ({@link signAuthenticatorLinkMetaMask} / {@link signAuthenticatorLinkEip191}).
+   */
+  possessionProof: Uint8Array;
 }
 
 /**
  * Build a `MsgRegisterAuthenticator` (`{ typeUrl, value }`) that links a
  * MetaMask / EVM key (by its 0x address, scheme `secp256k1`) to the owner's
- * account. Owner-signed. `account` defaults to `owner`.
+ * account. Owner-signed. `account` defaults to `owner`. Refuses an empty
+ * `possessionProof` (required from chain v3.2.8).
  */
 export function registerEthAuthenticatorMsg(
   input: RegisterEthAuthenticatorMsgInput,
@@ -214,19 +290,364 @@ export function registerEthAuthenticatorMsg(
     permissions = ["evm"],
     expiryUnix,
     label = "metamask",
+    possessionProof,
   } = input;
-  return {
-    typeUrl: "/qorechain.abstractaccount.v1.MsgRegisterAuthenticator",
-    value: {
-      owner,
-      accountAddress: account,
-      scheme: "secp256k1",
-      pubkey: hexToBytes(ethAddress),
-      permissions,
-      expiryUnix: BigInt(expiryUnix),
-      label,
-    },
-  };
+  return registerAuthenticatorMsg({
+    owner,
+    account,
+    scheme: "secp256k1",
+    pubkey: hexToBytes(ethAddress),
+    permissions,
+    expiryUnix,
+    label,
+    possessionProof,
+  });
+}
+
+// ---- possession proof (chain v3.2.8) ------------------------------------
+
+/** A linked key and its possession proof, ready for {@link registerAuthenticatorMsg}. */
+export interface AuthenticatorLinkProof {
+  scheme: AuthenticatorScheme;
+  /** The bytes that go in the message's `pubkey`. */
+  pubkey: Uint8Array;
+  /** The signature that goes in `possessionProof`. */
+  possessionProof: Uint8Array;
+}
+
+/** Where the link proof is bound: the chain id and the account the key will act for. */
+export interface AuthenticatorLinkTarget {
+  chainId: string;
+  /** The bech32 `account_address` of the `MsgRegisterAuthenticator`. */
+  account: string;
+}
+
+function privKeyBytes(k: Uint8Array | string): Uint8Array {
+  return typeof k === "string" ? hexToBytes(k) : k;
+}
+
+/** The Ethereum address (20 bytes) of a secp256k1 private key. */
+function ethAddressOf(priv: Uint8Array): Uint8Array {
+  return keccak_256(secp256k1.getPublicKey(priv, false).slice(1)).slice(12);
+}
+
+/** keccak256 of the EIP-191 `personal_sign` envelope of `message`. */
+function eip191Hash(message: Uint8Array): Uint8Array {
+  const prefix = enc.encode(`\x19Ethereum Signed Message:\n${message.length}`);
+  const buf = new Uint8Array(prefix.length + message.length);
+  buf.set(prefix);
+  buf.set(message, prefix.length);
+  return keccak_256(buf);
+}
+
+/**
+ * Prove possession of an ed25519 key (32-byte seed / private key): an ed25519
+ * signature over the raw bytes of {@link authenticatorLinkMessage}.
+ */
+export function signAuthenticatorLinkEd25519(
+  opts: AuthenticatorLinkTarget & { privateKey: Uint8Array | string },
+): AuthenticatorLinkProof {
+  const priv = privKeyBytes(opts.privateKey);
+  if (priv.length !== 32) throw new Error(`an ed25519 private key (seed) is 32 bytes, got ${priv.length}`);
+  const pubkey = ed25519.getPublicKey(priv);
+  const msg = authenticatorLinkMessageBytes(opts.chainId, opts.account, "ed25519", pubkey);
+  return { scheme: "ed25519", pubkey, possessionProof: ed25519.sign(msg, priv) };
+}
+
+/**
+ * Prove possession of a secp256k1 key linked by its 33-byte compressed public
+ * key: a 64-byte `r || s` (low-S) signature over `sha256(text)`.
+ */
+export function signAuthenticatorLinkSecp256k1(
+  opts: AuthenticatorLinkTarget & { privateKey: Uint8Array | string },
+): AuthenticatorLinkProof {
+  const priv = privKeyBytes(opts.privateKey);
+  const pubkey = secp256k1.getPublicKey(priv, true);
+  const msg = authenticatorLinkMessageBytes(opts.chainId, opts.account, "secp256k1", pubkey);
+  const sig = secp256k1.sign(sha256(msg), priv, { lowS: true });
+  return { scheme: "secp256k1", pubkey, possessionProof: sig.toCompactRawBytes() };
+}
+
+/**
+ * Prove possession of a secp256k1 key linked by its 20-byte Ethereum address
+ * (MetaMask-style): an EIP-191 `personal_sign` of the text, 65 bytes
+ * `r || s || v` with `v` = 27/28.
+ */
+export function signAuthenticatorLinkEip191(
+  opts: AuthenticatorLinkTarget & { privateKey: Uint8Array | string },
+): AuthenticatorLinkProof {
+  const priv = privKeyBytes(opts.privateKey);
+  const pubkey = ethAddressOf(priv);
+  const msg = authenticatorLinkMessageBytes(opts.chainId, opts.account, "secp256k1", pubkey);
+  const sig = secp256k1.sign(eip191Hash(msg), priv, { lowS: true });
+  const out = new Uint8Array(65);
+  out.set(sig.toCompactRawBytes());
+  out[64] = 27 + (sig.recovery ?? 0);
+  return { scheme: "secp256k1", pubkey, possessionProof: out };
+}
+
+/**
+ * Prove possession with a Phantom-style ed25519 wallet: `signMessage` of the
+ * UTF-8 bytes of {@link authenticatorLinkMessage}.
+ */
+export async function signAuthenticatorLinkPhantom(
+  opts: AuthenticatorLinkTarget & { wallet: AuthenticatorWallet },
+): Promise<AuthenticatorLinkProof> {
+  const pubkey = walletPubkey(opts.wallet);
+  const msg = authenticatorLinkMessageBytes(opts.chainId, opts.account, "ed25519", pubkey);
+  return { scheme: "ed25519", pubkey, possessionProof: normalizeSignature(await opts.wallet.signMessage(msg)) };
+}
+
+/**
+ * Prove possession with MetaMask / any EIP-1193 provider: `personal_sign` of
+ * {@link authenticatorLinkMessage} by `address` (the 20-byte address is the
+ * linked pubkey).
+ */
+export async function signAuthenticatorLinkMetaMask(
+  opts: AuthenticatorLinkTarget & { provider: Eip1193Provider; address: string },
+): Promise<AuthenticatorLinkProof> {
+  const pubkey = hexToBytes(opts.address);
+  const msg = authenticatorLinkMessageBytes(opts.chainId, opts.account, "secp256k1", pubkey);
+  const sigHex = await opts.provider.request({ method: "personal_sign", params: [bytesToHex0x(msg), opts.address] });
+  return { scheme: "secp256k1", pubkey, possessionProof: hexToBytes(sigHex) };
+}
+
+/**
+ * Verify a possession proof the way the chain does (chain v3.2.8): ed25519
+ * over the raw text; a 33-byte secp256k1 key over `sha256(text)` with a 64-byte
+ * low-S `r || s`; a 20-byte address by recovering the signer of the EIP-191
+ * hash from a 65-byte `r || s || v` (v = 27/28 or 0/1). Returns `false` for any
+ * other shape.
+ */
+export function verifyAuthenticatorLinkProof(
+  opts: AuthenticatorLinkTarget & { scheme: AuthenticatorScheme; pubkey: Uint8Array; possessionProof: Uint8Array },
+): boolean {
+  const { scheme, pubkey, possessionProof: sig } = opts;
+  let msg: Uint8Array;
+  try {
+    msg = authenticatorLinkMessageBytes(opts.chainId, opts.account, scheme, pubkey);
+  } catch {
+    return false;
+  }
+  try {
+    if (scheme === "ed25519") return sig.length === 64 && ed25519.verify(sig, msg, pubkey);
+    if (pubkey.length === 33) return sig.length === 64 && secp256k1.verify(sig, sha256(msg), pubkey, { lowS: true });
+    if (pubkey.length === 20) {
+      if (sig.length !== 65) return false;
+      const v = sig[64] >= 27 ? sig[64] - 27 : sig[64];
+      if (v !== 0 && v !== 1) return false;
+      const point = secp256k1.Signature.fromCompact(sig.slice(0, 64)).addRecoveryBit(v).recoverPublicKey(eip191Hash(msg));
+      const addr = keccak_256(point.toRawBytes(false).slice(1)).slice(12);
+      return toHexLower(addr) === toHexLower(pubkey);
+    }
+  } catch {
+    return false;
+  }
+  return false;
+}
+
+/** A spending rule as {@link linkAuthenticatorMsgs} takes it. */
+export type SpendingRuleInput = Partial<Omit<aaTx.SpendingRule, "dailyLimit" | "perTxLimit">> & {
+  dailyLimit?: string | number | bigint;
+  perTxLimit?: string | number | bigint;
+};
+
+/** Fields for {@link linkAuthenticatorMsgs}. */
+export interface LinkAuthenticatorMsgsInput {
+  /** The account owner; signs both messages as top-level messages. */
+  owner: string;
+  /** The account the key acts for; defaults to `owner` (the recommended form). */
+  account?: string;
+  /** When given, the possession proof is checked against it before anything is built. */
+  chainId?: string;
+  scheme: AuthenticatorScheme;
+  pubkey: Uint8Array;
+  permissions: string[];
+  expiryUnix: number | bigint;
+  label?: string;
+  possessionProof: Uint8Array;
+  /**
+   * The account's spending rules, as ONE rule or the full list.
+   * `MsgUpdateSpendingRules` REPLACES the account's rules wholesale, so pass
+   * every rule the account should keep. Required when `permissions` has a
+   * value permission (`send`, `evm`, `deploy`, `svm`, `all`): the first
+   * enabled rule must bound every denom.
+   */
+  spendingRule?: SpendingRuleInput;
+  spendingRules?: SpendingRuleInput[];
+}
+
+/**
+ * Build the messages that link a key from chain v3.2.8, in the order to send
+ * them in ONE transaction signed by the owner (top-level, not through authz):
+ * `[MsgUpdateSpendingRules, MsgRegisterAuthenticator]`.
+ *
+ * - The possession proof is required (and, with `chainId`, verified here).
+ * - A key with a value permission (`send`, `evm`, `deploy`, `svm`, `all`)
+ *   needs an enabled spending rule on the ACCOUNT that bounds every denom
+ *   (`perTxLimit > 0` or `dailyLimit > 0`, or an `allowedDenoms` list with a
+ *   `denomLimits` amount for each); the chain applies the first enabled rule,
+ *   so that is the one checked. The message has no per-key rule.
+ * - `MsgUpdateSpendingRules` replaces the account's rules wholesale.
+ * - It may be sent for an account that does not exist yet when `account ==
+ *   owner` (it creates the account).
+ *
+ * Without rules and without a value permission only the register message is
+ * returned.
+ */
+export function linkAuthenticatorMsgs(input: LinkAuthenticatorMsgsInput): EncodeObject[] {
+  const { owner, account = owner, scheme, pubkey, permissions, possessionProof } = input;
+  validateAuthenticatorKey(scheme, pubkey);
+  requirePossessionProof(possessionProof);
+  if (input.chainId !== undefined) {
+    if (!verifyAuthenticatorLinkProof({ chainId: input.chainId, account, scheme, pubkey, possessionProof })) {
+      throw new Error(
+        "linkAuthenticatorMsgs: possessionProof does not verify for this key over " +
+          "authenticatorLinkMessage(chainId, account, scheme, pubkey); sign that exact text with the key being linked",
+      );
+    }
+  }
+  if (input.spendingRule && input.spendingRules) {
+    throw new Error("linkAuthenticatorMsgs: pass spendingRule or spendingRules, not both");
+  }
+  const rules = input.spendingRules ?? (input.spendingRule ? [input.spendingRule] : undefined);
+  checkValuePermissionRules(permissions, rules);
+  const register = registerAuthenticatorMsg({
+    owner,
+    account,
+    scheme,
+    pubkey,
+    permissions,
+    expiryUnix: input.expiryUnix,
+    label: input.label,
+    possessionProof,
+  });
+  if (!rules) return [register];
+  const update = aaMsg.updateSpendingRules({
+    owner,
+    accountAddress: account,
+    rules: rules.map((r) => ({
+      ...r,
+      dailyLimit: r.dailyLimit === undefined ? undefined : String(r.dailyLimit),
+      perTxLimit: r.perTxLimit === undefined ? undefined : String(r.perTxLimit),
+    })),
+  });
+  return [update, register];
+}
+
+// ---- execution results (chain v3.2.8) -----------------------------------
+
+/** The event a failed, authorised execution emits (chain v3.2.8). */
+export const EXECUTION_FAILED_EVENT = "abstractaccount_execution_failed";
+
+const EXECUTE_EVM_RESPONSE = "/qorechain.abstractaccount.v1.MsgExecuteEVMResponse";
+const EXECUTE_COSMOS_RESPONSE = "/qorechain.abstractaccount.v1.MsgExecuteCosmosResponse";
+
+/** The outcome of one `MsgExecuteEVM` / `MsgExecuteCosmos` in a delivered tx. */
+export interface AuthenticatorExecutionResult {
+  /** Position of the message in the transaction. */
+  index: number;
+  lane: "evm" | "cosmos";
+  success: boolean;
+  /** EVM return data (empty for the Cosmos lane). */
+  ret: Uint8Array;
+  /** EVM gas used (0 for the Cosmos lane). */
+  gasUsed: bigint;
+  /** The EVM error, when the call failed. */
+  vmError: string;
+  /** The `reason` of the matching `abstractaccount_execution_failed` event, when failed. */
+  reason: string;
+  /** The `account` / `nonce` of the matching failure event, when failed. */
+  account?: string;
+  nonce?: string;
+}
+
+/**
+ * Decode the outcome of every `MsgExecuteEVM` / `MsgExecuteCosmos` in a
+ * delivered transaction (a `commit` broadcast result with `msgResponses` and
+ * `events`).
+ *
+ * From chain v3.2.8 a failed execution that was authorised returns
+ * `success = false` inside a transaction with code 0, emits
+ * `abstractaccount_execution_failed` (`account`, `lane`, `nonce`, `reason`)
+ * and CONSUMES the nonce: the same signature cannot be relayed again, so treat
+ * a failure as final. Failure events are matched to failed responses by
+ * account and nonce when `messages` (the tx's messages) is given, otherwise in
+ * order.
+ */
+export function decodeAuthenticatorExecutions(
+  result: Pick<BroadcastResult, "msgResponses" | "events">,
+  messages?: readonly EncodeObject[],
+): AuthenticatorExecutionResult[] {
+  const failures = (result.events ?? [])
+    .filter((e) => e.type === EXECUTION_FAILED_EVENT)
+    .map((e) => {
+      const attr = (k: string) => e.attributes.find((a) => a.key === k)?.value ?? "";
+      return { account: attr("account"), lane: attr("lane"), nonce: attr("nonce"), reason: attr("reason"), used: false };
+    });
+  const out: AuthenticatorExecutionResult[] = [];
+  (result.msgResponses ?? []).forEach((r, index) => {
+    let res: AuthenticatorExecutionResult;
+    if (r.typeUrl === EXECUTE_EVM_RESPONSE) {
+      const d = aaTx.MsgExecuteEVMResponse.decode(r.value);
+      res = { index, lane: "evm", success: d.success, ret: d.ret, gasUsed: BigInt(d.gasUsed || 0), vmError: d.vmError, reason: "" };
+    } else if (r.typeUrl === EXECUTE_COSMOS_RESPONSE) {
+      const d = aaTx.MsgExecuteCosmosResponse.decode(r.value);
+      res = { index, lane: "cosmos", success: d.success, ret: new Uint8Array(0), gasUsed: 0n, vmError: "", reason: "" };
+    } else {
+      return;
+    }
+    if (!res.success) {
+      const m = messages?.[index]?.value as { account?: string; nonce?: unknown } | undefined;
+      let f = m
+        ? failures.find((x) => !x.used && x.account === m.account && x.nonce === String(m.nonce))
+        : undefined;
+      f ??= failures.find((x) => !x.used);
+      if (f) {
+        f.used = true;
+        res.reason = f.reason;
+        res.account = f.account;
+        res.nonce = f.nonce;
+      }
+      if (!res.reason) res.reason = res.vmError;
+    }
+    out.push(res);
+  });
+  return out;
+}
+
+/** Thrown by {@link assertAuthenticatorExecutionsSucceeded} when an execution failed in a code-0 tx. */
+export class AuthenticatorExecutionError extends Error {
+  readonly failed: AuthenticatorExecutionResult[];
+  readonly txHash?: string;
+  constructor(failed: AuthenticatorExecutionResult[], txHash?: string) {
+    const what = failed.map((f) => `message ${f.index} (${f.lane}): ${f.reason || "failed"}`).join("; ");
+    super(
+      `authenticator execution failed although the transaction succeeded${txHash ? ` (tx ${txHash})` : ""}: ${what}. ` +
+        "The nonce was consumed; sign a new request with the next nonce",
+    );
+    this.name = "AuthenticatorExecutionError";
+    this.failed = failed;
+    this.txHash = txHash;
+    Object.setPrototypeOf(this, AuthenticatorExecutionError.prototype);
+  }
+}
+
+/**
+ * {@link decodeAuthenticatorExecutions}, throwing an
+ * {@link AuthenticatorExecutionError} when any execution reported
+ * `success = false` even though the transaction code is 0. Returns the
+ * results otherwise. Use it after a relayer broadcast so a failed execution
+ * is never read as a success.
+ */
+export function assertAuthenticatorExecutionsSucceeded(
+  result: Pick<BroadcastResult, "msgResponses" | "events" | "transactionHash">,
+  messages?: readonly EncodeObject[],
+): AuthenticatorExecutionResult[] {
+  const all = decodeAuthenticatorExecutions(result, messages);
+  const failed = all.filter((r) => !r.success);
+  if (failed.length > 0) throw new AuthenticatorExecutionError(failed, result.transactionHash);
+  return all;
 }
 
 /** Fields for {@link rotatePqcKeyMsg}. */
@@ -325,6 +746,7 @@ export async function buildPhantomExecuteEvm(
     gasLimit = 100000,
     nonce,
   } = opts;
+  checkEvmGasLimit(gasLimit);
   const pubkey = walletPubkey(wallet);
   const digest =
     opts.digestVersion === "v2"
@@ -446,6 +868,7 @@ export async function buildMetaMaskExecuteEvm(
     gasLimit = 100000,
     nonce,
   } = opts;
+  checkEvmGasLimit(gasLimit);
   const pubkey = hexToBytes(address);
   const digest =
     opts.digestVersion === "v2"

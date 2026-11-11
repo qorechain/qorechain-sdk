@@ -69,6 +69,42 @@ const msg = xvm.buildCall({
 });
 ```
 
+### Async calls into CosmWasm (chain v3.2.8)
+
+`async: true` queues the call for a later `ProcessQueue` dispatch. For an async
+call into **CosmWasm** two fields bound what it may cost:
+
+- `asyncGasLimit`: the contract execution the call may use, in base gas units.
+  0 or unset means 500,000; a set value is 250,000 to 10,000,000.
+- `asyncMaxFactor`: the highest wasm congestion factor the sender will pay, in
+  millionths (1,000,000 = 1x). 0 or unset means four times the factor at
+  submission.
+
+```ts
+await xvm.call({
+  targetVm: "cosmwasm",
+  targetContract: "qor1c...",
+  cosmwasm: { ping: {} },
+  async: true,
+  asyncGasLimit: 400_000,
+  asyncMaxFactor: 2_000_000,
+});
+```
+
+Both are refused on a synchronous call and on any other target VM, and the
+range is checked before anything is signed. The call holds an escrow of
+`asyncGasLimit x factor x gas price` (about 0.2 QOR with the defaults),
+refunded for what it did not use when it finishes, pays a queue-slot fee, and a
+sender may have at most 100 calls pending.
+
+### Gas: use simulation
+
+The first call of a contract code in a block costs much more than a repeat (a
+cw20 transfer about 533k gas, repeats about 84k). Keep `fee: "auto"` (the
+default; the estimate gets at least a 1.3x margin for a transaction with a
+cross-VM call) or pass an explicit gas limit. `estimateFee` refuses its fixed
+fallback gas for such a transaction when you pass the `messages`.
+
 ## Atomic triple-VM transactions
 
 `callAtomic` packs multiple `MsgCrossVMCall` messages into **one transaction
@@ -123,8 +159,10 @@ const client = createClient({
 // A single message by id.
 const msg = await getCrossVmMessage(client.rest, messageId);
 
-// All pending messages.
+// All pending messages: follows pagination.next_key page by page (at most
+// 100 per page), with a safety cap of 100 pages (`{ maxPages }`).
 const pending = await getPendingCrossVmMessages(client.rest);
+// One page: getPendingCrossVmMessagesPage(client.rest, { key, limit }).
 
 // Module parameters.
 const params = await getCrossVmParams(client.rest);
@@ -132,6 +170,33 @@ const params = await getCrossVmParams(client.rest);
 
 These return typed shapes: `CrossVmMessage`, `CrossVmMessageResponse`,
 `PendingCrossVmMessagesResponse`, and `CrossVmParamsResponse`.
+
+`payload_hex` in the pending list is cut to its first 1,024 bytes; read one
+message with `getCrossVmMessage` for its full payload. The typed query client
+has the same walk as `queries.crossvm.allPendingMessages()`.
+
+## Governance: crossvm parameters
+
+`MsgUpdateParams` replaces every crossvm parameter at once, so a field left out
+becomes 0 (and an empty `bridgeTargetPins` wipes the pins). From chain v3.2.8
+`msg.crossvm.updateParams` requires all 18 fields. Build a proposal from the
+values in force and change only what you mean to:
+
+```ts
+import { crossvmUpdateParamsFromCurrent } from "@qorechain/sdk";
+
+const update = await crossvmUpdateParamsFromCurrent({
+  rest: "https://api-testnet.qore.host",
+  authority: govModuleAddress,
+  changes: { maxQueueSize: 2000 },
+});
+```
+
+The params route lists the values in force (defaults filled in for a stored
+zero), so copying them keeps the current behaviour. `rdkUpdateParamsFromCurrent`
+does the same for the rdk module; `svmUpdateParamsFromCurrent` takes the current
+`SVMParams` from the caller (the svm module serves no params route) and refuses
+`enabled: true` without a `maxCustodyHardUqor`.
 
 You can also read a message through the `qor_` JSON-RPC namespace:
 

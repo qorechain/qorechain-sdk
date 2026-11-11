@@ -179,7 +179,26 @@ describe("spending rules and abstract accounts (chain v3.2.5)", () => {
 });
 
 describe("crossvm and rdk governance parameters (chain v3.2.5)", () => {
-  const cv = { authority: GOV, maxMessageSize: 65536n, maxQueueSize: 1000, queueTimeoutBlocks: 100n, enabled: true };
+  const cv = {
+    authority: GOV,
+    maxMessageSize: 65536n,
+    maxQueueSize: 1000,
+    queueTimeoutBlocks: 100n,
+    enabled: true,
+    bridgeAllowedTargets: [] as string[],
+    bridgeTargetPins: [],
+    maxPendingPerSender: 0,
+    maxCosmosTxGas: 0n,
+    recordRetentionBlocks: 0n,
+    maxBlockWasmGas: 0n,
+    maxTxWasmShareBps: 0,
+    maxBlockLevelWasmGas: 0n,
+    queueWasmReserveBps: 0,
+    wasmCongestionMaxFactor: 0,
+    wasmCongestionTargetBps: 0,
+    maxBlockUploadBps: 0,
+    maxQueueTimeoutsPerBlock: 0,
+  };
 
   it("crossvm updateParams is checked and encodes", () => {
     const any = qorechainRegistry().encodeAsAny(crossvm.updateParams({ ...cv, bridgeAllowedTargets: [`cosmwasm:${ADDR}`] }));
@@ -204,6 +223,12 @@ describe("crossvm and rdk governance parameters (chain v3.2.5)", () => {
       maxDaBlobSize: 2_097_152n,
       blobRetentionBlocks: 432000n,
       maxBatchesPerBlock: 10,
+      finalizedBatchRetentionBlocks: 0n,
+      maxPostedDataBytes: 0n,
+      maxPostedDataBytesPerBlock: 0n,
+      postedDataFeePerByte: 0n,
+      postedDataRetentionBlocks: 0n,
+      minSubmitterBond: 0n,
     };
     const any = qorechainRegistry().encodeAsAny(rdk.updateParams(p));
     expect(any.typeUrl).toBe("/qorechain.rdk.v1.MsgUpdateParams");

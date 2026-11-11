@@ -92,6 +92,17 @@ const res = await execute(
 );
 ```
 
+:::warning Use simulation for contract gas
+
+The first call of a contract code in a block costs much more than a repeat (a
+cw20 transfer about 533k gas, repeats about 84k), so a fixed gas limit sized on
+a repeat can run out. Pass `"auto"` (simulate) or an explicit `StdFee` with
+room. A numeric multiplier below 1.3 is raised to 1.3 by `instantiate`,
+`instantiate2`, `execute` and `migrate` (`wasmFee`). See
+[Gas, fees & errors](./gas-fees-errors.md).
+
+:::
+
 The exact argument shapes follow `@cosmjs/cosmwasm-stargate`; the SDK adds typed
 `ContractMsg`, `FeeInput`, `InstantiateOpts`, `CosmWasmReadClient`, and
 `CosmWasmSigningClient` types.

@@ -333,8 +333,38 @@ or `erc1155/` denom whose contract address does not parse.
 `msg.abstractaccount.updateConfig` (governance) switches the module.
 
 **Governance parameters.** `msg.crossvm.updateParams` (including the CosmWasm
-contracts the EVM bridge precompile may call) and `msg.rdk.updateParams`, each
-checked against the chain's bounds before signing.
+contracts the EVM bridge precompile may call), `msg.rdk.updateParams` and
+`msg.svm.updateParams`, each checked against the chain's bounds before signing.
+Each replaces the parameters wholesale, so from chain v3.2.8 every field must
+be given explicitly (the error names the missing ones). Build a proposal from
+the current values: `crossvmUpdateParamsFromCurrent({ rest, authority, changes })`,
+`rdkUpdateParamsFromCurrent(...)`, and `svmUpdateParamsFromCurrent({ authority,
+current, changes })` (no svm params route; it refuses `enabled: true` without a
+`maxCustodyHardUqor`).
+
+**Chain v3.2.8.**
+
+- Linking a key: `MsgRegisterAuthenticator` needs a `possessionProof`, the
+  linked key's signature over `authenticatorLinkMessage(chainId, account,
+  scheme, pubkey)` (`signAuthenticatorLinkPhantom`, `signAuthenticatorLinkMetaMask`,
+  `signAuthenticatorLinkEd25519`, `signAuthenticatorLinkSecp256k1`,
+  `signAuthenticatorLinkEip191`, `verifyAuthenticatorLinkProof`). A key with a
+  value permission needs a bounding spending rule on the account;
+  `linkAuthenticatorMsgs` builds `[MsgUpdateSpendingRules,
+  MsgRegisterAuthenticator]` for one owner-signed tx (the update replaces the
+  account's rules wholesale).
+- Execution results: a failed, authorised `MsgExecuteEVM` / `MsgExecuteCosmos`
+  returns `success = false` in a code-0 tx and consumes the nonce.
+  `decodeAuthenticatorExecutions(result)` / `assertAuthenticatorExecutionsSucceeded(result)`.
+- Cross-VM: `asyncGasLimit` / `asyncMaxFactor` on async CosmWasm calls; the
+  pending list is paginated (`getPendingCrossVmMessages` follows every page).
+- EVM window: `openEvmWindowMsg` takes `validators`, `stakingValidators`,
+  `ibcReceivers`.
+- Gas: native txs capped at 50,000,000 gas, EVM at the chain cap
+  (`fetchEvmLimits`, 30,000,000); CosmWasm / cross-VM txs get at least 1.3x the
+  simulation and never the fixed fallback gas. Opt-in
+  `fetchMinGasPriceUqor` / `recommendedGasPriceUqor` follow the chain minimum
+  gas price; the default `0.15uqor` does not change.
 
 **Feature detection.** Nodes do not report their binary version
 (`application_version` is empty on purpose). Ask by plan name, every name
@@ -641,7 +671,7 @@ See the [unified-wallet](https://github.com/qorechain/qorechain-sdk/blob/main/do
 You can also read cross-VM message state without the client above:
 
 ```ts
-const pending = await client.crossvm.pending();
+const pending = await client.crossvm.pending(); // every page; payload_hex cut to 1,024 bytes
 const message = await client.crossvm.message("42");
 const params = await client.crossvm.params();
 
@@ -687,7 +717,8 @@ both keys sign).
 **Wallet builders** sign the digest and return a ready-to-broadcast message:
 `buildPhantomExecuteEvm` / `buildPhantomExecuteCosmos` (ed25519),
 `buildMetaMaskExecuteEvm` / `buildMetaMaskExecuteCosmos` (secp256k1-by-address),
-and `registerEthAuthenticatorMsg` to link an EVM key first.
+and `registerEthAuthenticatorMsg` / `linkAuthenticatorMsgs` to link a key
+first (with its possession proof from chain v3.2.8).
 
 **Permission taxonomy & errors.** Query the on-chain permission schema with
 `client.query.getPermissionSchema()` (REST) / `client.grpc.permissionSchema()`

@@ -8,16 +8,27 @@
  * signature satisfies the ante on the envelope); the authenticator's signature
  * over the domain-separated, replay-bound sign-bytes IS the authorization.
  *
- * This is a DRY RUN: it derives a deterministic ed25519 keypair to stand in for
- * Phantom, builds the MsgExecuteCosmos, and prints it. It does NOT broadcast -
- * broadcasting requires a live relayer that pays fees and a registered
- * authenticator (see MsgRegisterAuthenticator, owner-signed).
+ * Step 1 (chain v3.2.8): link the key. The owner sends ONE transaction with
+ * [MsgUpdateSpendingRules, MsgRegisterAuthenticator]: the key proves possession
+ * by signing the authenticator link message, and a key with the "send"
+ * permission needs a spending rule on the account that bounds every denom.
+ *
+ * Step 2: spend. The Phantom key signs the auth digest and a relayer submits
+ * MsgExecuteCosmos. From v3.2.8 a failed execution returns success=false in a
+ * code-0 tx and consumes the nonce, so the relayer reads the result with
+ * assertAuthenticatorExecutionsSucceeded.
+ *
+ * This is a DRY RUN: it derives a random ed25519 keypair to stand in for
+ * Phantom, builds the messages, and prints them. It does NOT broadcast.
  */
 
 import {
+  authenticatorLinkMessage,
   buildPhantomExecuteCosmos,
   cosmosAuthSignBytes,
+  linkAuthenticatorMsgs,
   qorechainRegistry,
+  signAuthenticatorLinkPhantom,
   type AuthenticatorWallet,
 } from "@qorechain/sdk";
 import { ed25519 } from "@noble/curves/ed25519";
@@ -54,8 +65,25 @@ async function main(): Promise<void> {
       ? wallet.publicKey
       : wallet.publicKey.toBytes();
 
+  // ---- Step 1: link the key (owner-signed, chain v3.2.8) ----
+  console.log("Link message the wallet signs (possession proof):");
+  console.log(authenticatorLinkMessage(CHAIN_ID, ACCOUNT, "ed25519", pubkey).replace(/^/gm, "  | "));
+  const proof = await signAuthenticatorLinkPhantom({ chainId: CHAIN_ID, account: ACCOUNT, wallet });
+  const linkMsgs = linkAuthenticatorMsgs({
+    owner: ACCOUNT,
+    chainId: CHAIN_ID, // verifies the proof before building
+    ...proof,
+    permissions: ["send"],
+    expiryUnix: Math.floor(Date.now() / 1000) + 7 * 24 * 3600,
+    label: "phantom",
+    // MsgUpdateSpendingRules REPLACES the account's rules: pass every rule to keep.
+    spendingRule: { id: "phantom", enabled: true, perTxLimit: "1000000", dailyLimit: "5000000" },
+  });
+  console.log(`\nLink transaction (one tx, owner-signed): ${linkMsgs.map((m) => m.typeUrl).join(" + ")}\n`);
+
+  // ---- Step 2: spend through the relayer ----
   // The per-authenticator sequence for (account, pubkey). Query it from chain
-  // in production; here we start at 0.
+  // (fetchAuthNonce) in production; here we start at 0.
   const nonce = Number(process.env.QORE_NONCE ?? "0");
 
   console.log("Authenticator lane: Native (MsgExecuteCosmos)");
@@ -107,10 +135,10 @@ async function main(): Promise<void> {
   const bytes = registry.encode(m);
   console.log(`\nencoded ${bytes.length} bytes (ready for the relayer to sign + broadcast).`);
   console.log(
-    "\nDry run only - a live relayer (paying fees) and a registered authenticator",
+    "\nDry run only - the owner broadcasts the link tx, then a live relayer (paying fees)",
   );
   console.log(
-    "(MsgRegisterAuthenticator, owner-signed) are required to actually spend.",
+    "broadcasts the spend and checks it with assertAuthenticatorExecutionsSucceeded(result, [msg]).",
   );
 }
 

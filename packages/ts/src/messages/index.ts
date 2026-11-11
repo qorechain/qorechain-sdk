@@ -96,10 +96,26 @@ export {
   crossvm,
   rlconsensus,
   stakingtier,
+  requirePossessionProof,
+  validateCrossVmAsyncGas,
+  CROSSVM_ASYNC_GAS_LIMIT_DEFAULT,
+  CROSSVM_ASYNC_GAS_LIMIT_MIN,
+  CROSSVM_ASYNC_GAS_LIMIT_MAX,
+  CROSSVM_ASYNC_FACTOR_ONE,
+  CROSSVM_MAX_PENDING_PER_SENDER_DEFAULT,
 } from "./qorechain";
 
 // The registry that resolves all of the above.
 export { qorechainRegistry, qorechainRegistryTypes } from "./registry";
 
 // Client-side checks run by the abstract-account spending-rules composer.
-export { validateSpendingRules, validateEvmDenom, MAX_DENOM_LIMITS, MAX_ALLOWED_EVM_CALLS } from "./spending-rules";
+export {
+  validateSpendingRules,
+  validateEvmDenom,
+  MAX_DENOM_LIMITS,
+  MAX_ALLOWED_EVM_CALLS,
+  VALUE_PERMISSIONS,
+  hasValuePermission,
+  ruleBoundsEveryDenom,
+  checkValuePermissionRules,
+} from "./spending-rules";

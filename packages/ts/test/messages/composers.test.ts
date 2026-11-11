@@ -232,7 +232,23 @@ const cases: Array<{ name: string; obj: { typeUrl: string }; typeUrl: string }> 
     {
       name: "svm.updateParams",
       typeUrl: "/qorechain.svm.v1.MsgUpdateParams",
-      obj: msg.svm.updateParams({ authority: ADDR }),
+      obj: msg.svm.updateParams({
+        authority: ADDR,
+        params: {
+          maxProgramSize: "1",
+          maxAccountDataSize: "1",
+          computeBudgetMax: "1",
+          lamportsPerByte: "1",
+          rentExemptionMulti: "2.000000000000000000",
+          enabled: false,
+          svmSlotOffset: "0",
+          defaultSigScheme: 0,
+          maxCpi: 4,
+          maxCustodyUqor: "0",
+          maxCustodyHardUqor: "0",
+          maxAccountExcessUqor: "0",
+        },
+      }),
     },
     // lightnode
     {
@@ -414,6 +430,9 @@ describe("new composers round-trip through the registry (Any encode/decode)", ()
         svmSlotOffset: "100",
         defaultSigScheme: 1,
         maxCpi: 4,
+        maxCustodyUqor: "0",
+        maxCustodyHardUqor: "0",
+        maxAccountExcessUqor: "0",
       },
     }),
   ];

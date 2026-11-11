@@ -24,6 +24,7 @@
  * classical hash (keccak vs sha256) and the pubkey type URL change here.
  */
 
+import { checkCosmosGasLimit } from "./fees";
 import { secp256k1 } from "@noble/curves/secp256k1";
 import { keccak_256 } from "@noble/hashes/sha3";
 import {
@@ -157,6 +158,7 @@ function encodeMessages(params: EthSignParams): Any[] {
 
 /** Build the `authInfoBytes` for the single eth_secp256k1 signer. */
 function buildAuthInfoBytes(params: EthSignParams): Uint8Array {
+  checkCosmosGasLimit(params.fee.gas);
   const pubAny = Any.fromPartial({
     typeUrl: ETHSECP256K1_PUBKEY_TYPE,
     value: PubKey.encode(

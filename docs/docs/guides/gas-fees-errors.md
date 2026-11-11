@@ -55,6 +55,40 @@ of gas** - transactions priced below the floor are rejected. The SDK default
 below `0.1uqor`.
 :::
 
+### Following the chain minimum (opt-in)
+
+The chain may later move its minimum gas price inside a governance band. Two
+opt-in helpers read the minimum the ante enforces (the feemarket
+`params.min_gas_price` at `GET /cosmos/evm/feemarket/v1/params`, converted from
+the 18-decimal EVM unit to uqor and parsed exactly):
+
+```ts
+import { fetchMinGasPriceUqor, recommendedGasPriceUqor } from "@qorechain/sdk";
+
+await fetchMinGasPriceUqor({ rest });     // "0.1": max(min_gas_price / 1e12, 0.1)
+const price = await recommendedGasPriceUqor({ rest }); // max(0.15, minimum x 1.5)
+await tx.signAndBroadcast(msgs, "auto", "", { autoFee: { gasPrice: `${price}uqor` } });
+```
+
+Nothing calls them by default: `DEFAULT_GAS_PRICE` stays `0.15uqor` and no
+default path makes this network call.
+
+### Gas caps and CosmWasm / cross-VM gas (chain v3.2.8)
+
+- A native-lane transaction may declare at most **50,000,000** gas; the SDK
+  refuses a larger limit before signing (`COSMOS_TX_MAX_GAS`).
+- An EVM transaction may ask for at most the chain's EVM cap (30,000,000 on
+  v3.2.8). Read it with `fetchEvmLimits({ rest })`
+  (`GET /qorechain/pqc/v1/evm_limits`); `checkEvmGasLimit` refuses a larger
+  limit.
+- **Use `"auto"` (simulation) for CosmWasm and cross-VM gas.** The first call
+  of a contract code in a block costs much more than a repeat (a cw20 transfer
+  about 533k gas, repeats about 84k). For a transaction carrying a CosmWasm
+  execute / instantiate / migrate or a `MsgCrossVMCall`, `"auto"` multiplies the
+  simulation by at least 1.3 whatever rule applies, and `estimateFee` refuses
+  its fixed fallback gas (200,000) when you pass `messages` without a `gas`:
+  give an explicit gas limit or simulate.
+
 ## EVM fees
 
 `@qorechain/evm` wraps viem's fee estimation:

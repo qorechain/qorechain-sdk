@@ -48,6 +48,9 @@ const samples = [
       svmSlotOffset: "100",
       defaultSigScheme: 1,
       maxCpi: 4,
+      maxCustodyUqor: "0",
+      maxCustodyHardUqor: "0",
+      maxAccountExcessUqor: "0",
     },
   }),
   msg.rdk.createRollup({
@@ -116,6 +119,9 @@ describe("qorechainRegistry", () => {
         svmSlotOffset: "100",
         defaultSigScheme: 1,
         maxCpi: 4,
+        maxCustodyUqor: "0",
+        maxCustodyHardUqor: "0",
+        maxAccountExcessUqor: "0",
       },
     });
     const any = registry.encodeAsAny(m);

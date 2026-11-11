@@ -17,6 +17,7 @@
 
 import type { StdFee } from "@cosmjs/amino";
 import type { RestClient, FeeUrgency } from "../query/rest";
+import type { FetchLike } from "../query/http";
 
 /**
  * Re-export cosmjs's canonical `StdFee` so the SDK shares one fee type with what
@@ -58,6 +59,12 @@ export interface EstimateFeeOptions {
   fallbackGasPrice?: string;
   /** Base denomination for the fee. Defaults to {@link STATIC_FALLBACK.denom}. */
   denom?: string;
+  /**
+   * The messages the fee is for. When they carry a CosmWasm execute /
+   * instantiate / migrate or a `MsgCrossVMCall` and no `gas` is given, the
+   * fixed {@link STATIC_FALLBACK.gas} is refused (see {@link carriesWasmExecution}).
+   */
+  messages?: ReadonlyArray<{ typeUrl: string }>;
 }
 
 /**
@@ -113,7 +120,11 @@ export async function estimateFee(
   opts: EstimateFeeOptions = {},
 ): Promise<StdFee> {
   const urgency: FeeUrgency = opts.urgency ?? "normal";
+  if (opts.gas === undefined && opts.messages && carriesWasmExecution(opts.messages)) {
+    throw new Error(WASM_FIXED_GAS_REFUSAL);
+  }
   const gas = gasString(opts.gas);
+  checkCosmosGasLimit(gas);
   const denom = opts.denom ?? STATIC_FALLBACK.denom;
   const fallbackGasPrice = opts.fallbackGasPrice ?? STATIC_FALLBACK.gasPrice;
 
@@ -135,4 +146,158 @@ export async function estimateFee(
   }
 
   return staticFee(gas, fallbackGasPrice, denom);
+}
+
+// ---- gas caps and wasm gas (chain v3.2.8) -------------------------------
+
+/** Most gas one Cosmos-lane transaction may declare (chain v3.2.8 default). */
+export const COSMOS_TX_MAX_GAS = 50_000_000;
+/** Most gas one EVM transaction may ask for on chain v3.2.8, when not queried ({@link fetchEvmLimits}). */
+export const EVM_TX_MAX_GAS_DEFAULT = 30_000_000;
+/** Smallest multiplier applied to the simulated gas of a tx that runs CosmWasm or cross-VM code. */
+export const WASM_GAS_MULTIPLIER_MIN = 1.3;
+
+/** Messages whose gas depends on whether the contract code already ran in the block. */
+export const WASM_EXECUTION_TYPE_URLS: ReadonlySet<string> = new Set([
+  "/cosmwasm.wasm.v1.MsgExecuteContract",
+  "/cosmwasm.wasm.v1.MsgInstantiateContract",
+  "/cosmwasm.wasm.v1.MsgInstantiateContract2",
+  "/cosmwasm.wasm.v1.MsgMigrateContract",
+  "/qorechain.crossvm.v1.MsgCrossVMCall",
+]);
+
+const WASM_FIXED_GAS_REFUSAL =
+  "this transaction runs CosmWasm or cross-VM code, whose first call of a contract code in a block costs much " +
+  'more than later ones (a cw20 transfer about 533k gas, repeats about 84k): use fee "auto" (simulation) or ' +
+  "pass an explicit gas limit instead of the fixed fallback gas";
+
+/**
+ * Whether a transaction carries a CosmWasm execute / instantiate / migrate or a
+ * `MsgCrossVMCall`. Such a transaction is never given a fixed fallback gas,
+ * and its simulated gas gets at least {@link WASM_GAS_MULTIPLIER_MIN}.
+ */
+export function carriesWasmExecution(messages: ReadonlyArray<{ typeUrl: string }>): boolean {
+  return messages.some((m) => WASM_EXECUTION_TYPE_URLS.has(m.typeUrl));
+}
+
+/** Throw when a Cosmos-lane gas limit is above {@link COSMOS_TX_MAX_GAS}. */
+export function checkCosmosGasLimit(gas: number | string | bigint): void {
+  const g = BigInt(typeof gas === "number" ? Math.ceil(gas) : gas);
+  if (g > BigInt(COSMOS_TX_MAX_GAS)) {
+    throw new Error(`gas limit ${g} is above the chain's Cosmos transaction cap of ${COSMOS_TX_MAX_GAS} (chain v3.2.8); the transaction would be refused`);
+  }
+}
+
+/**
+ * Throw when an EVM gas limit is above the chain's EVM cap (`cap`, from
+ * {@link fetchEvmLimits}; {@link EVM_TX_MAX_GAS_DEFAULT} when not given).
+ */
+export function checkEvmGasLimit(gas: number | string | bigint, cap: number | bigint = EVM_TX_MAX_GAS_DEFAULT): void {
+  const g = BigInt(typeof gas === "number" ? Math.ceil(gas) : gas);
+  if (g > BigInt(cap)) {
+    throw new Error(`EVM gas limit ${g} is above the chain's EVM transaction cap of ${cap} (chain v3.2.8); the transaction would be refused`);
+  }
+}
+
+/** The EVM execution limits in force. */
+export interface EvmLimits {
+  /** Most gas one EVM transaction may ask for. */
+  txMaxGas: bigint;
+  /** Largest input a guarded stateful precompile accepts, in bytes. */
+  precompileInputMaxBytes: bigint;
+}
+
+/**
+ * Read the EVM execution limits in force (`GET /qorechain/pqc/v1/evm_limits`,
+ * chain v3.2.8): the top-level `tx_max_gas` / `precompile_input_max_bytes`,
+ * falling back to the governance-set `limits` object and then to
+ * {@link EVM_TX_MAX_GAS_DEFAULT} for the gas cap.
+ */
+export async function fetchEvmLimits(opts: { rest: string; fetch?: FetchLike }): Promise<EvmLimits> {
+  const f = opts.fetch ?? (globalThis.fetch as FetchLike);
+  const url = `${opts.rest.replace(/\/+$/, "")}/qorechain/pqc/v1/evm_limits`;
+  const res = await f(url);
+  if (!res.ok) throw new Error(`evm limits query failed: HTTP ${res.status} from ${url}`);
+  const body = (await res.json()) as Record<string, unknown>;
+  const limits = (body.limits ?? {}) as Record<string, unknown>;
+  const read = (snake: string, camel: string): bigint => {
+    for (const v of [body[snake], body[camel], limits[snake], limits[camel]]) {
+      if (v !== undefined && v !== null && v !== "" && BigInt(v as string) > 0n) return BigInt(v as string);
+    }
+    return 0n;
+  };
+  const txMaxGas = read("tx_max_gas", "txMaxGas");
+  return {
+    txMaxGas: txMaxGas > 0n ? txMaxGas : BigInt(EVM_TX_MAX_GAS_DEFAULT),
+    precompileInputMaxBytes: read("precompile_input_max_bytes", "precompileInputMaxBytes"),
+  };
+}
+
+// ---- minimum gas price (opt-in) -----------------------------------------
+
+/** Fixed-point scale (decimal places) of the min-gas-price arithmetic. */
+const PRICE_SCALE = 30;
+
+/** Parse a non-negative decimal string exactly into an integer at {@link PRICE_SCALE}, shifted `shift` places right. */
+function decToScaled(dec: string, shift = 0): bigint {
+  const m = /^(\d+)(?:\.(\d+))?$/.exec(dec.trim());
+  if (!m) throw new Error(`invalid decimal ${JSON.stringify(dec)}`);
+  const frac = m[2] ?? "";
+  const digits = BigInt(m[1] + frac);
+  const exp = PRICE_SCALE - frac.length - shift;
+  return exp >= 0 ? digits * 10n ** BigInt(exp) : digits / 10n ** BigInt(-exp);
+}
+
+/** Render an integer at {@link PRICE_SCALE} as a trimmed decimal string. */
+function scaledToDec(n: bigint): string {
+  const s = n.toString().padStart(PRICE_SCALE + 1, "0");
+  const int = s.slice(0, s.length - PRICE_SCALE);
+  const frac = s.slice(s.length - PRICE_SCALE).replace(/0+$/, "");
+  return frac ? `${int}.${frac}` : int;
+}
+
+/** The chain's floor on the gas price, in uqor per gas. */
+export const MIN_GAS_PRICE_FLOOR_UQOR = "0.1";
+
+/**
+ * The minimum gas price the chain enforces, in uqor per gas, as an exact
+ * decimal string: `max(min_gas_price / 1e12, 0.1)`, where `min_gas_price` is
+ * the feemarket minimum (`GET /cosmos/evm/feemarket/v1/params`,
+ * `params.min_gas_price`, in the 18-decimal EVM unit). Opt-in: nothing in the
+ * SDK calls this by default ({@link DEFAULT_GAS_PRICE} stays `0.15uqor`).
+ */
+export async function fetchMinGasPriceUqor(opts: { rest: string; fetch?: FetchLike }): Promise<string> {
+  const f = opts.fetch ?? (globalThis.fetch as FetchLike);
+  const url = `${opts.rest.replace(/\/+$/, "")}/cosmos/evm/feemarket/v1/params`;
+  const res = await f(url);
+  if (!res.ok) throw new Error(`feemarket params query failed: HTTP ${res.status} from ${url}`);
+  const body = (await res.json()) as { params?: { min_gas_price?: unknown; minGasPrice?: unknown } };
+  const raw = body?.params?.min_gas_price ?? body?.params?.minGasPrice;
+  if (typeof raw !== "string" && typeof raw !== "number") {
+    throw new Error(`feemarket params from ${url} carry no params.min_gas_price`);
+  }
+  const value = decToScaled(String(raw), 12);
+  const floor = decToScaled(MIN_GAS_PRICE_FLOOR_UQOR);
+  return scaledToDec(value > floor ? value : floor);
+}
+
+/**
+ * A gas price with headroom over the chain minimum, in uqor per gas, as an
+ * exact decimal string: `max(0.15, fetchMinGasPriceUqor() x margin)`. Use it
+ * as `autoFee.gasPrice` (append `"uqor"`) if you want the fee to follow a
+ * minimum governance may move. Opt-in, one REST call.
+ */
+export async function recommendedGasPriceUqor(opts: {
+  rest: string;
+  fetch?: FetchLike;
+  /** Multiplier over the minimum. Default 1.5. */
+  margin?: number | string;
+}): Promise<string> {
+  const min = decToScaled(await fetchMinGasPriceUqor(opts));
+  const marginStr = String(opts.margin ?? 1.5);
+  if (!/^\d+(\.\d+)?$/.test(marginStr)) throw new Error(`margin must be a non-negative decimal, got ${marginStr}`);
+  const margin = decToScaled(marginStr);
+  const product = (min * margin) / 10n ** BigInt(PRICE_SCALE);
+  const base = decToScaled(STATIC_FALLBACK.gasPrice);
+  return scaledToDec(product > base ? product : base);
 }

@@ -99,7 +99,10 @@ export interface ClientFees {
 export interface ClientCrossVm {
   /** A cross-VM message by id (`/qorechain/crossvm/v1/message/{id}`). */
   message(id: string): Promise<CrossVmMessageResponse>;
-  /** Currently pending cross-VM messages (`/qorechain/crossvm/v1/pending`). */
+  /**
+   * Every pending cross-VM message (`/qorechain/crossvm/v1/pending`, all pages
+   * followed). `payload_hex` in the list is cut to 1,024 bytes.
+   */
   pending(): Promise<PendingCrossVmMessagesResponse>;
   /** Cross-VM module params (`/qorechain/crossvm/v1/params`). */
   params(): Promise<CrossVmParamsResponse>;

@@ -40,10 +40,10 @@ import { SimulateRequest, SimulateResponse } from "cosmjs-types/cosmos/tx/v1beta
 import { qorechainRegistry } from "../messages/registry";
 import { MsgSend } from "cosmjs-types/cosmos/bank/v1beta1/tx";
 import type { Coin } from "../query/rest";
-import type { StdFee } from "./fees";
 import { lookupDeliverCodespace, type BroadcastMode, type BroadcastResult } from "./broadcast";
 import { txErrorFrom } from "../errors";
 import { GasPrice, calculateFee } from "./gas";
+import { carriesWasmExecution, checkCosmosGasLimit, WASM_GAS_MULTIPLIER_MIN, type StdFee } from "./fees";
 import { buildHybridTx, signAndBroadcastHybrid, type HybridBroadcaster } from "./hybrid-tx";
 import type { SignBytesVersionOption } from "./signbytes";
 import type { PqcKeypair } from "../accounts/pqc";
@@ -62,6 +62,11 @@ export const DEFAULT_GAS_MULTIPLIER = 1.4;
  *
  * The chain enforces a genesis min-gas-price (BaseFee) of `0.1uqor` per unit
  * of gas on both networks; the default sits above the floor for headroom.
+ *
+ * Should governance move the minimum, read it with `fetchMinGasPriceUqor({ rest })`
+ * or take `recommendedGasPriceUqor({ rest })` (the minimum x 1.5, at least
+ * 0.15) and pass it as `autoFee.gasPrice`. Both are opt-in network calls; this
+ * default never changes on its own.
  */
 export const DEFAULT_GAS_PRICE = "0.15uqor";
 
@@ -549,8 +554,27 @@ export class TxClient {
    *   hybrid simulation includes {@link HYBRID_VERIFY_GAS}.
    * - A `gasMultiplier` passed by the caller replaces either rule:
    *   `ceil(simulated × gasMultiplier)`.
+   * - A transaction that carries a CosmWasm execute / instantiate / migrate
+   *   or a `MsgCrossVMCall` (chain v3.2.8) gets at least
+   *   `ceil(simulated × 1.3)` whatever the rule above gives: the first call of
+   *   a contract code in a block costs much more than a repeat.
    */
   async estimateGasDetails(
+    messages: readonly EncodeObject[],
+    memo?: string,
+    gasMultiplier?: number,
+  ): Promise<GasEstimate> {
+    const est = await this.estimateGasRule(messages, memo, gasMultiplier);
+    if (!carriesWasmExecution(messages)) return est;
+    // CosmWasm / cross-VM: the first call of a contract code in a block costs
+    // much more than its simulation may show, so never less than 1.3x.
+    // ceil(simulated x 1.3) in integers (WASM_GAS_MULTIPLIER_MIN).
+    const floor = Math.floor((est.simulated * Math.round(WASM_GAS_MULTIPLIER_MIN * 10) + 9) / 10);
+    return floor > est.gasWanted ? { simulated: est.simulated, gasWanted: floor, exact: false } : est;
+  }
+
+  /** The gas rules of {@link estimateGasDetails} before the wasm floor. */
+  private async estimateGasRule(
     messages: readonly EncodeObject[],
     memo?: string,
     gasMultiplier?: number,
@@ -631,6 +655,7 @@ export class TxClient {
     const msgs = cloneMessages(messages);
     const feeInput: FeeInput = fee === "auto" ? fee : cloneDeep(fee);
     const resolvedFee = await this.resolveFee(msgs, feeInput, memo, opts.autoFee);
+    checkCosmosGasLimit(resolvedFee.gas);
 
     if (this.signsHybrid(msgs)) {
       const h = this.hybrid!;
