@@ -3775,7 +3775,7 @@ public final class Tx extends com.google.protobuf.GeneratedFile {
      * <pre>
      * wasm_congestion_max_factor bounds the CosmWasm congestion factor (how
      * many times the base price one unit of contract execution costs). Zero
-     * means the default (1,000); a set value is 1 to 10,000. Set from the
+     * means the default (20); a set value is 1 to 100. Set from the
      * wasm-congestion-pricing switch.
      * </pre>
      *
@@ -4244,7 +4244,7 @@ public final class Tx extends com.google.protobuf.GeneratedFile {
      * <pre>
      * wasm_congestion_max_factor bounds the CosmWasm congestion factor (how
      * many times the base price one unit of contract execution costs). Zero
-     * means the default (1,000); a set value is 1 to 10,000. Set from the
+     * means the default (20); a set value is 1 to 100. Set from the
      * wasm-congestion-pricing switch.
      * </pre>
      *
@@ -6232,7 +6232,7 @@ public final class Tx extends com.google.protobuf.GeneratedFile {
        * <pre>
        * wasm_congestion_max_factor bounds the CosmWasm congestion factor (how
        * many times the base price one unit of contract execution costs). Zero
-       * means the default (1,000); a set value is 1 to 10,000. Set from the
+       * means the default (20); a set value is 1 to 100. Set from the
        * wasm-congestion-pricing switch.
        * </pre>
        *
@@ -6247,7 +6247,7 @@ public final class Tx extends com.google.protobuf.GeneratedFile {
        * <pre>
        * wasm_congestion_max_factor bounds the CosmWasm congestion factor (how
        * many times the base price one unit of contract execution costs). Zero
-       * means the default (1,000); a set value is 1 to 10,000. Set from the
+       * means the default (20); a set value is 1 to 100. Set from the
        * wasm-congestion-pricing switch.
        * </pre>
        *
@@ -6266,7 +6266,7 @@ public final class Tx extends com.google.protobuf.GeneratedFile {
        * <pre>
        * wasm_congestion_max_factor bounds the CosmWasm congestion factor (how
        * many times the base price one unit of contract execution costs). Zero
-       * means the default (1,000); a set value is 1 to 10,000. Set from the
+       * means the default (20); a set value is 1 to 100. Set from the
        * wasm-congestion-pricing switch.
        * </pre>
        *

@@ -1,4 +1,6 @@
+from gogoproto import gogo_pb2 as _gogo_pb2
 from google.api import annotations_pb2 as _annotations_pb2
+from qorsdk.proto.qorechain.svm.v1 import tx_pb2 as _tx_pb2
 from google.protobuf import descriptor as _descriptor
 from google.protobuf import message as _message
 from typing import ClassVar as _ClassVar, Mapping as _Mapping, Optional as _Optional, Union as _Union
@@ -88,3 +90,13 @@ class QueryClusterInfoResponse(_message.Message):
     derivation: str
     execution_enabled: bool
     def __init__(self, chain_id: _Optional[str] = ..., genesis_hash: _Optional[str] = ..., caip2_chain_id: _Optional[str] = ..., derivation: _Optional[str] = ..., execution_enabled: bool = ...) -> None: ...
+
+class QueryParamsRequest(_message.Message):
+    __slots__ = ()
+    def __init__(self) -> None: ...
+
+class QueryParamsResponse(_message.Message):
+    __slots__ = ("params",)
+    PARAMS_FIELD_NUMBER: _ClassVar[int]
+    params: _tx_pb2.SVMParams
+    def __init__(self, params: _Optional[_Union[_tx_pb2.SVMParams, _Mapping]] = ...) -> None: ...

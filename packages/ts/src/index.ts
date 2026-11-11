@@ -508,6 +508,7 @@ export {
   SVM_PARAMS_FIELDS,
   fetchCrossVmUpdateParams,
   fetchRdkUpdateParams,
+  fetchSvmUpdateParams,
   crossvmUpdateParamsFromCurrent,
   rdkUpdateParamsFromCurrent,
   svmUpdateParamsFromCurrent,

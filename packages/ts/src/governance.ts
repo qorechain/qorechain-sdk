@@ -209,7 +209,7 @@ export function validateCrossVmUpdateParams(value: {
   zeroOrRange(value.maxTxWasmShareBps, "maxTxWasmShareBps", what, [1, 10_000]);
   zeroOrRange(value.maxBlockLevelWasmGas, "maxBlockLevelWasmGas", what, [1_000_000, 100_000_000]);
   zeroOrRange(value.queueWasmReserveBps, "queueWasmReserveBps", what, [1, 9_000]);
-  zeroOrRange(value.wasmCongestionMaxFactor, "wasmCongestionMaxFactor", what, [1, 10_000]);
+  zeroOrRange(value.wasmCongestionMaxFactor, "wasmCongestionMaxFactor", what, [1, 100]);
   zeroOrRange(value.wasmCongestionTargetBps, "wasmCongestionTargetBps", what, [1, 10_000]);
   zeroOrRange(value.maxBlockUploadBps, "maxBlockUploadBps", what, [1, 10_000]);
   zeroOrRange(value.maxQueueTimeoutsPerBlock, "maxQueueTimeoutsPerBlock", what, [1, 1_000]);
@@ -420,21 +420,48 @@ export async function rdkUpdateParamsFromCurrent(opts: {
   return { typeUrl: "/qorechain.rdk.v1.MsgUpdateParams", value: rdkTx.MsgUpdateParams.fromPartial(value) };
 }
 
+const SVM_PARAM_KEYS = [
+  "max_program_size", "max_account_data_size", "compute_budget_max", "lamports_per_byte",
+  "rent_exemption_multi", "enabled", "svm_slot_offset", "default_sig_scheme", "max_cpi",
+  "max_custody_uqor", "max_custody_hard_uqor", "max_account_excess_uqor",
+] as const;
+
 /**
- * Build an svm `MsgUpdateParams` from the current `SVMParams` plus `changes`.
- *
- * The svm module serves no params REST route in the v3.2.8 query service, so
- * `current` is supplied by the caller (for example the params of the last
- * passed svm proposal, or the node's exported genesis/app state). Every field
- * of `current` must be present; the result is checked
- * ({@link validateSvmUpdateParams}).
+ * Read the svm parameters (`GET /qorechain/svm/v1/params`, chain v3.2.8,
+ * `{ params }`) in the shape `MsgUpdateParams` takes. `enabled` is reported as
+ * in force (false while the lane is switched off). Every field must be present
+ * in the answer: a missing one would otherwise become zero in the proposal.
  */
-export function svmUpdateParamsFromCurrent(opts: {
+export async function fetchSvmUpdateParams(opts: { rest: string; fetch?: FetchLike }): Promise<svmTx.SVMParams> {
+  const body = await getParamsJson(opts, "/qorechain/svm/v1/params");
+  const o = (body.params && typeof body.params === "object" ? body.params : body) as Raw;
+  const missing = SVM_PARAM_KEYS.filter((k) => pick(o, k) === undefined);
+  if (missing.length > 0) {
+    throw new Error(`svm params query: the answer lacks ${missing.join(", ")} (a node before v3.2.8?)`);
+  }
+  return svmTx.SVMParams.fromJSON(o);
+}
+
+/**
+ * Build an svm `MsgUpdateParams` for a governance proposal from the current
+ * parameters plus `changes`. Pass `rest` to read them from
+ * `/qorechain/svm/v1/params` (chain v3.2.8), or `current` to supply them. The
+ * result is checked ({@link validateSvmUpdateParams}): every field is present,
+ * and `enabled` is refused while `maxCustodyHardUqor` is 0.
+ */
+export async function svmUpdateParamsFromCurrent(opts: {
   authority: string;
-  current: svmTx.SVMParams;
+  rest?: string;
+  fetch?: FetchLike;
+  current?: svmTx.SVMParams;
   changes?: Partial<svmTx.SVMParams>;
-}): EncodeObject {
-  const value = { authority: opts.authority, params: { ...opts.current, ...(opts.changes ?? {}) } };
+}): Promise<EncodeObject> {
+  let current = opts.current;
+  if (!current) {
+    if (!opts.rest) throw new Error("svmUpdateParamsFromCurrent: pass `rest` (to read the params) or `current`");
+    current = await fetchSvmUpdateParams({ rest: opts.rest, fetch: opts.fetch });
+  }
+  const value = { authority: opts.authority, params: { ...current, ...(opts.changes ?? {}) } };
   validateSvmUpdateParams(value);
   return { typeUrl: "/qorechain.svm.v1.MsgUpdateParams", value: svmTx.MsgUpdateParams.fromPartial(value) };
 }

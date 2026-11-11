@@ -413,6 +413,41 @@ public final class QorechainMessages {
             }
             return new TypedMessage("/qorechain.svm.v1.MsgUpdateParams", m);
         }
+
+        /** REST path of the svm parameters (chain v3.2.8). */
+        public static final String PARAMS_PATH = "/qorechain/svm/v1/params";
+
+        /**
+         * The way to build an svm params proposal: read the parameters from
+         * {@value #PARAMS_PATH} (chain v3.2.8; {@code enabled} is reported as in force),
+         * apply {@code changes} (proto field name to value) and compose the update.
+         * Every field must be in the answer, or a missing one would become zero.
+         */
+        public static TypedMessage updateParamsFromCurrent(
+                io.github.qorechain.query.RestClient rest, String authority, java.util.Map<String, ?> changes) {
+            return updateParamsFromCurrent(rest.get(PARAMS_PATH), authority, changes);
+        }
+
+        /** {@link #updateParamsFromCurrent(io.github.qorechain.query.RestClient, String, java.util.Map)} from a fetched body. */
+        public static TypedMessage updateParamsFromCurrent(
+                com.fasterxml.jackson.databind.JsonNode current, String authority, java.util.Map<String, ?> changes) {
+            com.fasterxml.jackson.databind.JsonNode p = current == null ? null : current.get("params");
+            if (p == null || !p.isObject()) {
+                throw new IllegalArgumentException("svm params query: no params object in the answer");
+            }
+            var pb = qorechain.svm.v1.Tx.SVMParams.newBuilder();
+            java.util.Set<String> given = ParamsUpdates.applyJson(pb, p, java.util.Set.of());
+            java.util.Set<String> missing = new java.util.TreeSet<>(ParamsUpdates.allFieldNames(pb));
+            missing.removeAll(given);
+            if (!missing.isEmpty()) {
+                throw new IllegalArgumentException("svm params query: the answer lacks " + String.join(", ", missing)
+                        + " (a node before v3.2.8?)");
+            }
+            ParamsUpdates.applyChanges("svm MsgUpdateParams", pb, changes);
+            var m = qorechain.svm.v1.Tx.MsgUpdateParams.newBuilder()
+                    .setAuthority(authority == null ? "" : authority).setParams(pb).build();
+            return updateParams(m, ParamsUpdates.allFieldNames(pb));
+        }
     }
 
     /** Light-node module composers. */

@@ -194,9 +194,10 @@ const update = await crossvmUpdateParamsFromCurrent({
 
 The params route lists the values in force (defaults filled in for a stored
 zero), so copying them keeps the current behaviour. `rdkUpdateParamsFromCurrent`
-does the same for the rdk module; `svmUpdateParamsFromCurrent` takes the current
-`SVMParams` from the caller (the svm module serves no params route) and refuses
-`enabled: true` without a `maxCustodyHardUqor`.
+does the same for the rdk module, and `svmUpdateParamsFromCurrent` for svm
+(`/qorechain/svm/v1/params`, served from chain v3.2.8, where `enabled` is
+reported as in force); it refuses `enabled: true` without a
+`maxCustodyHardUqor`.
 
 You can also read a message through the `qor_` JSON-RPC namespace:
 

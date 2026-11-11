@@ -117,8 +117,9 @@ TypedMessage r = QorechainMessages.rdk.updateParamsFromCurrent(rest, govAuthorit
 ```
 
 The crossvm query lists the values in force (defaults filled in), which is correct
-to copy. svm refuses `enabled = true` with `max_custody_hard_uqor == 0`; the chain
-has no svm params REST route, so svm proposals are built from known values.
+to copy. svm refuses `enabled = true` with `max_custody_hard_uqor == 0`;
+`svm.updateParamsFromCurrent` reads `/qorechain/svm/v1/params` (chain v3.2.8),
+where `enabled` is reported as in force.
 
 ### Cross-VM
 

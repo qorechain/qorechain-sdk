@@ -6,6 +6,7 @@
 
 /* eslint-disable */
 import { BinaryReader, BinaryWriter } from "@bufbuild/protobuf/wire";
+import { SVMParams } from "./tx";
 
 export const protobufPackage = "qorechain.svm.v1";
 
@@ -77,6 +78,14 @@ export interface QueryClusterInfoResponse {
    * network. It is false while the SVM lane is disabled.
    */
   executionEnabled: boolean;
+}
+
+export interface QueryParamsRequest {
+}
+
+export interface QueryParamsResponse {
+  /** params are the parameters in force. */
+  params?: SVMParams | undefined;
 }
 
 function createBaseQuerySlotRequest(): QuerySlotRequest {
@@ -915,6 +924,109 @@ export const QueryClusterInfoResponse: MessageFns<QueryClusterInfoResponse> = {
   },
 };
 
+function createBaseQueryParamsRequest(): QueryParamsRequest {
+  return {};
+}
+
+export const QueryParamsRequest: MessageFns<QueryParamsRequest> = {
+  encode(_: QueryParamsRequest, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): QueryParamsRequest {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseQueryParamsRequest();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(_: any): QueryParamsRequest {
+    return {};
+  },
+
+  toJSON(_: QueryParamsRequest): unknown {
+    const obj: any = {};
+    return obj;
+  },
+
+  create(base?: DeepPartial<QueryParamsRequest>): QueryParamsRequest {
+    return QueryParamsRequest.fromPartial(base ?? {});
+  },
+  fromPartial(_: DeepPartial<QueryParamsRequest>): QueryParamsRequest {
+    const message = createBaseQueryParamsRequest();
+    return message;
+  },
+};
+
+function createBaseQueryParamsResponse(): QueryParamsResponse {
+  return { params: undefined };
+}
+
+export const QueryParamsResponse: MessageFns<QueryParamsResponse> = {
+  encode(message: QueryParamsResponse, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.params !== undefined) {
+      SVMParams.encode(message.params, writer.uint32(10).fork()).join();
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): QueryParamsResponse {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseQueryParamsResponse();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.params = SVMParams.decode(reader, reader.uint32());
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(object: any): QueryParamsResponse {
+    return { params: isSet(object.params) ? SVMParams.fromJSON(object.params) : undefined };
+  },
+
+  toJSON(message: QueryParamsResponse): unknown {
+    const obj: any = {};
+    if (message.params !== undefined) {
+      obj.params = SVMParams.toJSON(message.params);
+    }
+    return obj;
+  },
+
+  create(base?: DeepPartial<QueryParamsResponse>): QueryParamsResponse {
+    return QueryParamsResponse.fromPartial(base ?? {});
+  },
+  fromPartial(object: DeepPartial<QueryParamsResponse>): QueryParamsResponse {
+    const message = createBaseQueryParamsResponse();
+    message.params = (object.params !== undefined && object.params !== null)
+      ? SVMParams.fromPartial(object.params)
+      : undefined;
+    return message;
+  },
+};
+
 /** Query defines the gRPC query service for the SVM module. */
 export type QueryDefinition = typeof QueryDefinition;
 export const QueryDefinition = {
@@ -997,6 +1109,54 @@ export const QueryDefinition = {
               110,
               102,
               111,
+            ]) as Uint8Array,
+          ],
+        },
+      },
+    },
+    /**
+     * Params returns the SVM runtime parameters in force, every field of
+     * SVMParams (the custody ceilings included), in the shape MsgUpdateParams
+     * takes: a proposal can start from the response and change only what it
+     * means to change. Read-only; it answers while the SVM lane is disabled.
+     */
+    params: {
+      name: "Params",
+      requestType: QueryParamsRequest as typeof QueryParamsRequest,
+      requestStream: false,
+      responseType: QueryParamsResponse as typeof QueryParamsResponse,
+      responseStream: false,
+      options: {
+        _unknownFields: {
+          578365826: [
+            new Uint8Array([
+              26,
+              18,
+              24,
+              47,
+              113,
+              111,
+              114,
+              101,
+              99,
+              104,
+              97,
+              105,
+              110,
+              47,
+              115,
+              118,
+              109,
+              47,
+              118,
+              49,
+              47,
+              112,
+              97,
+              114,
+              97,
+              109,
+              115,
             ]) as Uint8Array,
           ],
         },

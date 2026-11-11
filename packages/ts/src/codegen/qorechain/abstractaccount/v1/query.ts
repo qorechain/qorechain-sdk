@@ -2265,8 +2265,8 @@ export const QueryDefinition = {
     },
     /**
      * AuthNonce returns the sequence a linked authenticator key must sign next
-     * for an account: the nonce MsgExecuteEVM and MsgExecuteCosmos must carry
-     * (QSR-2026-0596). It is the key's own counter, not the account's EVM nonce.
+     * for an account: the nonce MsgExecuteEVM and MsgExecuteCosmos must carry.
+     * It is the key's own counter, not the account's EVM nonce.
      */
     authNonce: {
       name: "AuthNonce",

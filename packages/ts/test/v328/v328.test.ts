@@ -326,7 +326,7 @@ const CV_FULL = {
   maxTxWasmShareBps: 5000,
   maxBlockLevelWasmGas: "10000000",
   queueWasmReserveBps: 2500,
-  wasmCongestionMaxFactor: 1000,
+  wasmCongestionMaxFactor: 20,
   wasmCongestionTargetBps: 5000,
   maxBlockUploadBps: 5000,
   maxQueueTimeoutsPerBlock: 100,
@@ -372,7 +372,7 @@ describe("governance params composers carry every field (chain v3.2.8)", () => {
     ).not.toThrow();
   });
 
-  it("svm requires every SVMParams field and a hard ceiling before enabling", () => {
+  it("svm requires every SVMParams field and a hard ceiling before enabling", async () => {
     expect(() => msg.svm.updateParams({ authority: GOV })).toThrow(/params is required/);
     const partial: Partial<svmTx.SVMParams> = { ...SVM_FULL };
     delete partial.maxCustodyHardUqor;
@@ -383,8 +383,34 @@ describe("governance params composers carry every field (chain v3.2.8)", () => {
     const m = msg.svm.updateParams({ authority: GOV, params: { ...SVM_FULL, enabled: true, maxCustodyHardUqor: "5000000000" } });
     const any = qorechainRegistry().encodeAsAny(m);
     expect(svmTx.MsgUpdateParams.decode(any.value).params?.maxCustodyHardUqor).toBe("5000000000");
-    const built = svmUpdateParamsFromCurrent({ authority: GOV, current: SVM_FULL, changes: { maxCpi: 8 } });
+    const built = await svmUpdateParamsFromCurrent({ authority: GOV, current: SVM_FULL, changes: { maxCpi: 8 } });
     expect((built.value as svmTx.MsgUpdateParams).params).toMatchObject({ maxCpi: 8, maxCustodyUqor: "1000000000" });
+  });
+
+  it("svmUpdateParamsFromCurrent reads /qorechain/svm/v1/params and refuses an incomplete answer", async () => {
+    // The gateway answers with every field, snake_case, uint64 as strings.
+    const snake: Record<string, unknown> = {};
+    for (const [k, v] of Object.entries(SVM_FULL)) snake[k.replace(/[A-Z]/g, (c) => "_" + c.toLowerCase())] = v;
+    snake.enabled = false;
+    let url = "";
+    const fetch = async (u: string) => {
+      url = u;
+      return { ok: true, status: 200, json: async () => ({ params: snake }) };
+    };
+    const m = await svmUpdateParamsFromCurrent({
+      authority: GOV, rest: "https://lcd.example/", fetch: fetch as never, changes: { maxCustodyHardUqor: "9000000000" },
+    });
+    expect(url).toBe("https://lcd.example/qorechain/svm/v1/params");
+    expect((m.value as svmTx.MsgUpdateParams).params).toMatchObject({
+      maxCustodyUqor: SVM_FULL.maxCustodyUqor, maxCustodyHardUqor: "9000000000", enabled: false,
+    });
+    const partial = { ...snake };
+    delete partial.max_custody_hard_uqor;
+    const short = async () => ({ ok: true, status: 200, json: async () => ({ params: partial }) });
+    await expect(svmUpdateParamsFromCurrent({ authority: GOV, rest: "https://x", fetch: short as never })).rejects.toThrow(
+      /lacks max_custody_hard_uqor/,
+    );
+    await expect(svmUpdateParamsFromCurrent({ authority: GOV })).rejects.toThrow(/pass `rest`/);
   });
 
   it("rdk names the missing v3.2.8 fields", () => {
@@ -416,7 +442,7 @@ describe("governance params composers carry every field (chain v3.2.8)", () => {
       max_tx_wasm_share_bps: 5000,
       max_block_level_wasm_gas: "10000000",
       queue_wasm_reserve_bps: 2500,
-      wasm_congestion_max_factor: 1000,
+      wasm_congestion_max_factor: 20,
       wasm_congestion_target_bps: 5000,
       wasm_congestion_factor_micro: "1000000",
       max_block_upload_bps: 5000,

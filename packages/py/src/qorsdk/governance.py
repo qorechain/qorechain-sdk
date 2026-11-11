@@ -473,10 +473,10 @@ def svm_update_params_from_current(
     """Build an svm ``MsgUpdateParams`` from the current ``SVMParams`` plus
     ``changes`` (the way to build an svm params proposal).
 
-    Reads ``/qorechain/svm/v1/params``. Nodes that do not serve that route
-    answer "Not Implemented"; then pass the current parameters as ``current``
-    (every field, e.g. from an exported genesis or the module's stored params)
-    and ``rest`` is not used.
+    Reads ``/qorechain/svm/v1/params`` (served from chain v3.2.8; ``enabled``
+    is reported as in force). A node before v3.2.8 answers "Not Implemented";
+    then pass the current parameters as ``current`` (every field) and ``rest``
+    is not used.
     """
     from .messages.qorechain import svm
 

@@ -342,6 +342,25 @@ class V328Test {
     }
 
     @Test
+    void svmUpdateParamsFromCurrent() {
+        String full = "\"max_program_size\":\"10485760\",\"max_account_data_size\":\"10485760\","
+                + "\"compute_budget_max\":\"1400000\",\"lamports_per_byte\":\"3480\","
+                + "\"rent_exemption_multi\":\"2.000000000000000000\",\"enabled\":false,\"svm_slot_offset\":\"0\","
+                + "\"default_sig_scheme\":0,\"max_cpi\":4,\"max_custody_uqor\":\"1000000000\","
+                + "\"max_account_excess_uqor\":\"0\"";
+        routes.put("/qorechain/svm/v1/params", q -> "{\"params\":{" + full + ",\"max_custody_hard_uqor\":\"5000000000\"}}");
+        var m = (qorechain.svm.v1.Tx.MsgUpdateParams) QorechainMessages.svm.updateParamsFromCurrent(
+                new RestClient(baseUrl), GOV, Map.of("max_cpi", 8)).message;
+        assertEquals(8, m.getParams().getMaxCpi());
+        assertEquals(5_000_000_000L, m.getParams().getMaxCustodyHardUqor());
+        assertEquals(1_000_000_000L, m.getParams().getMaxCustodyUqor());
+        routes.put("/qorechain/svm/v1/params", q -> "{\"params\":{" + full + "}}");
+        IllegalArgumentException e = assertThrows(IllegalArgumentException.class,
+                () -> QorechainMessages.svm.updateParamsFromCurrent(new RestClient(baseUrl), GOV, Map.of()));
+        assertTrue(e.getMessage().contains("lacks max_custody_hard_uqor"), e.getMessage());
+    }
+
+    @Test
     void rdkUpdateParamsFromCurrent() {
         routes.put("/qorechain/rdk/v1/params", q -> "{\"params\":{\"max_rollups\":100,\"min_stake_for_rollup\":"
                 + "\"10000000\",\"rollup_creation_burn_rate\":\"0.010000000000000000\",\"default_challenge_window\":"

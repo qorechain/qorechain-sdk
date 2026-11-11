@@ -338,9 +338,9 @@ contracts the EVM bridge precompile may call), `msg.rdk.updateParams` and
 Each replaces the parameters wholesale, so from chain v3.2.8 every field must
 be given explicitly (the error names the missing ones). Build a proposal from
 the current values: `crossvmUpdateParamsFromCurrent({ rest, authority, changes })`,
-`rdkUpdateParamsFromCurrent(...)`, and `svmUpdateParamsFromCurrent({ authority,
-current, changes })` (no svm params route; it refuses `enabled: true` without a
-`maxCustodyHardUqor`).
+`rdkUpdateParamsFromCurrent(...)`, and `svmUpdateParamsFromCurrent({ rest,
+authority, changes })` (reads `/qorechain/svm/v1/params` from chain v3.2.8, or
+takes `current`; it refuses `enabled: true` without a `maxCustodyHardUqor`).
 
 **Chain v3.2.8.**
 

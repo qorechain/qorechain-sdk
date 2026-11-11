@@ -6688,6 +6688,1004 @@ public final class QueryOuterClass extends com.google.protobuf.GeneratedFile {
 
   }
 
+  public interface QueryParamsRequestOrBuilder extends
+      // @@protoc_insertion_point(interface_extends:qorechain.svm.v1.QueryParamsRequest)
+      com.google.protobuf.MessageOrBuilder {
+  }
+  /**
+   * Protobuf type {@code qorechain.svm.v1.QueryParamsRequest}
+   */
+  public static final class QueryParamsRequest extends
+      com.google.protobuf.GeneratedMessage implements
+      // @@protoc_insertion_point(message_implements:qorechain.svm.v1.QueryParamsRequest)
+      QueryParamsRequestOrBuilder {
+  private static final long serialVersionUID = 0L;
+    static {
+      com.google.protobuf.RuntimeVersion.validateProtobufGencodeVersion(
+        com.google.protobuf.RuntimeVersion.RuntimeDomain.PUBLIC,
+        /* major= */ 4,
+        /* minor= */ 35,
+        /* patch= */ 1,
+        /* suffix= */ "",
+        "QueryParamsRequest");
+    }
+    // Use QueryParamsRequest.newBuilder() to construct.
+    private QueryParamsRequest(com.google.protobuf.GeneratedMessage.Builder<?> builder) {
+      super(builder);
+    }
+    private QueryParamsRequest() {
+    }
+
+    public static final com.google.protobuf.Descriptors.Descriptor
+        getDescriptor() {
+      return qorechain.svm.v1.QueryOuterClass.internal_static_qorechain_svm_v1_QueryParamsRequest_descriptor;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Descriptors.Descriptor getDescriptorForType() {
+      return qorechain.svm.v1.QueryOuterClass.internal_static_qorechain_svm_v1_QueryParamsRequest_descriptor;
+    }
+
+    @java.lang.Override
+    protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+        internalGetFieldAccessorTable() {
+      return qorechain.svm.v1.QueryOuterClass.internal_static_qorechain_svm_v1_QueryParamsRequest_fieldAccessorTable
+          .ensureFieldAccessorsInitialized(
+              qorechain.svm.v1.QueryOuterClass.QueryParamsRequest.class, qorechain.svm.v1.QueryOuterClass.QueryParamsRequest.Builder.class);
+    }
+
+    private byte memoizedIsInitialized = -1;
+    @java.lang.Override
+    public final boolean isInitialized() {
+      byte isInitialized = memoizedIsInitialized;
+      if (isInitialized == 1) return true;
+      if (isInitialized == 0) return false;
+
+      memoizedIsInitialized = 1;
+      return true;
+    }
+
+    @java.lang.Override
+    public void writeTo(com.google.protobuf.CodedOutputStream output)
+                        throws java.io.IOException {
+      getUnknownFields().writeTo(output);
+    }
+    @java.lang.Override
+    public int getSerializedSize() {
+      int size = memoizedSize;
+      if (size != -1) return size;
+
+      size = 0;
+      size += getUnknownFields().getSerializedSize();
+      memoizedSize = size;
+      return size;
+    }
+
+    @java.lang.Override
+    public boolean equals(final java.lang.Object obj) {
+      if (obj == this) {
+       return true;
+      }
+      if (!(obj instanceof qorechain.svm.v1.QueryOuterClass.QueryParamsRequest)) {
+        return super.equals(obj);
+      }
+      qorechain.svm.v1.QueryOuterClass.QueryParamsRequest other = (qorechain.svm.v1.QueryOuterClass.QueryParamsRequest) obj;
+
+      if (!getUnknownFields().equals(other.getUnknownFields())) return false;
+      return true;
+    }
+
+    @java.lang.Override
+    public int hashCode() {
+      if (memoizedHashCode != 0) {
+        return memoizedHashCode;
+      }
+      int hash = 41;
+      hash = (19 * hash) + getDescriptor().hashCode();
+      hash = (29 * hash) + getUnknownFields().hashCode();
+      memoizedHashCode = hash;
+      return hash;
+    }
+
+    public static qorechain.svm.v1.QueryOuterClass.QueryParamsRequest parseFrom(
+        java.nio.ByteBuffer data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static qorechain.svm.v1.QueryOuterClass.QueryParamsRequest parseFrom(
+        java.nio.ByteBuffer data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static qorechain.svm.v1.QueryOuterClass.QueryParamsRequest parseFrom(
+        com.google.protobuf.ByteString data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static qorechain.svm.v1.QueryOuterClass.QueryParamsRequest parseFrom(
+        com.google.protobuf.ByteString data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static qorechain.svm.v1.QueryOuterClass.QueryParamsRequest parseFrom(byte[] data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static qorechain.svm.v1.QueryOuterClass.QueryParamsRequest parseFrom(
+        byte[] data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static qorechain.svm.v1.QueryOuterClass.QueryParamsRequest parseFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input);
+    }
+    public static qorechain.svm.v1.QueryOuterClass.QueryParamsRequest parseFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    public static qorechain.svm.v1.QueryOuterClass.QueryParamsRequest parseDelimitedFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseDelimitedWithIOException(PARSER, input);
+    }
+
+    public static qorechain.svm.v1.QueryOuterClass.QueryParamsRequest parseDelimitedFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static qorechain.svm.v1.QueryOuterClass.QueryParamsRequest parseFrom(
+        com.google.protobuf.CodedInputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input);
+    }
+    public static qorechain.svm.v1.QueryOuterClass.QueryParamsRequest parseFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    @java.lang.Override
+    public Builder newBuilderForType() { return newBuilder(); }
+    public static Builder newBuilder() {
+      return DEFAULT_INSTANCE.toBuilder();
+    }
+    public static Builder newBuilder(qorechain.svm.v1.QueryOuterClass.QueryParamsRequest prototype) {
+      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+    }
+    @java.lang.Override
+    public Builder toBuilder() {
+      return this == DEFAULT_INSTANCE
+          ? new Builder() : new Builder().mergeFrom(this);
+    }
+
+    @java.lang.Override
+    protected Builder newBuilderForType(
+        com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+      Builder builder = new Builder(parent);
+      return builder;
+    }
+    /**
+     * Protobuf type {@code qorechain.svm.v1.QueryParamsRequest}
+     */
+    public static final class Builder extends
+        com.google.protobuf.GeneratedMessage.Builder<Builder> implements
+        // @@protoc_insertion_point(builder_implements:qorechain.svm.v1.QueryParamsRequest)
+        qorechain.svm.v1.QueryOuterClass.QueryParamsRequestOrBuilder {
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return qorechain.svm.v1.QueryOuterClass.internal_static_qorechain_svm_v1_QueryParamsRequest_descriptor;
+      }
+
+      @java.lang.Override
+      protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return qorechain.svm.v1.QueryOuterClass.internal_static_qorechain_svm_v1_QueryParamsRequest_fieldAccessorTable
+            .ensureFieldAccessorsInitialized(
+                qorechain.svm.v1.QueryOuterClass.QueryParamsRequest.class, qorechain.svm.v1.QueryOuterClass.QueryParamsRequest.Builder.class);
+      }
+
+      // Construct using qorechain.svm.v1.QueryOuterClass.QueryParamsRequest.newBuilder()
+      private Builder() {
+
+      }
+
+      private Builder(
+          com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+        super(parent);
+
+      }
+      @java.lang.Override
+      public Builder clear() {
+        super.clear();
+        return this;
+      }
+
+      @java.lang.Override
+      public com.google.protobuf.Descriptors.Descriptor
+          getDescriptorForType() {
+        return qorechain.svm.v1.QueryOuterClass.internal_static_qorechain_svm_v1_QueryParamsRequest_descriptor;
+      }
+
+      @java.lang.Override
+      public qorechain.svm.v1.QueryOuterClass.QueryParamsRequest getDefaultInstanceForType() {
+        return qorechain.svm.v1.QueryOuterClass.QueryParamsRequest.getDefaultInstance();
+      }
+
+      @java.lang.Override
+      public qorechain.svm.v1.QueryOuterClass.QueryParamsRequest build() {
+        qorechain.svm.v1.QueryOuterClass.QueryParamsRequest result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(result);
+        }
+        return result;
+      }
+
+      @java.lang.Override
+      public qorechain.svm.v1.QueryOuterClass.QueryParamsRequest buildPartial() {
+        qorechain.svm.v1.QueryOuterClass.QueryParamsRequest result = new qorechain.svm.v1.QueryOuterClass.QueryParamsRequest(this);
+        onBuilt();
+        return result;
+      }
+
+      @java.lang.Override
+      public Builder mergeFrom(com.google.protobuf.Message other) {
+        if (other instanceof qorechain.svm.v1.QueryOuterClass.QueryParamsRequest) {
+          return mergeFrom((qorechain.svm.v1.QueryOuterClass.QueryParamsRequest)other);
+        } else {
+          super.mergeFrom(other);
+          return this;
+        }
+      }
+
+      public Builder mergeFrom(qorechain.svm.v1.QueryOuterClass.QueryParamsRequest other) {
+        if (other == qorechain.svm.v1.QueryOuterClass.QueryParamsRequest.getDefaultInstance()) return this;
+        this.mergeUnknownFields(other.getUnknownFields());
+        onChanged();
+        return this;
+      }
+
+      @java.lang.Override
+      public final boolean isInitialized() {
+        return true;
+      }
+
+      @java.lang.Override
+      public Builder mergeFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        if (extensionRegistry == null) {
+          throw new java.lang.NullPointerException();
+        }
+        try {
+          boolean done = false;
+          while (!done) {
+            int tag = input.readTag();
+            switch (tag) {
+              case 0:
+                done = true;
+                break;
+              default: {
+                if (!super.parseUnknownField(input, extensionRegistry, tag)) {
+                  done = true; // was an endgroup tag
+                }
+                break;
+              } // default:
+            } // switch (tag)
+          } // while (!done)
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          throw e.unwrapIOException();
+        } finally {
+          onChanged();
+        } // finally
+        return this;
+      }
+
+      // @@protoc_insertion_point(builder_scope:qorechain.svm.v1.QueryParamsRequest)
+    }
+
+    // @@protoc_insertion_point(class_scope:qorechain.svm.v1.QueryParamsRequest)
+    private static final qorechain.svm.v1.QueryOuterClass.QueryParamsRequest DEFAULT_INSTANCE;
+    static {
+      DEFAULT_INSTANCE = new qorechain.svm.v1.QueryOuterClass.QueryParamsRequest();
+    }
+
+    public static qorechain.svm.v1.QueryOuterClass.QueryParamsRequest getDefaultInstance() {
+      return DEFAULT_INSTANCE;
+    }
+
+    private static final com.google.protobuf.Parser<QueryParamsRequest>
+        PARSER = new com.google.protobuf.AbstractParser<QueryParamsRequest>() {
+      @java.lang.Override
+      public QueryParamsRequest parsePartialFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        Builder builder = newBuilder();
+        try {
+          builder.mergeFrom(input, extensionRegistry);
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          throw e.setUnfinishedMessage(builder.buildPartial());
+        } catch (com.google.protobuf.UninitializedMessageException e) {
+          throw e.asInvalidProtocolBufferException().setUnfinishedMessage(builder.buildPartial());
+        } catch (java.io.IOException e) {
+          throw new com.google.protobuf.InvalidProtocolBufferException(e)
+              .setUnfinishedMessage(builder.buildPartial());
+        }
+        return builder.buildPartial();
+      }
+    };
+
+    public static com.google.protobuf.Parser<QueryParamsRequest> parser() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Parser<QueryParamsRequest> getParserForType() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public qorechain.svm.v1.QueryOuterClass.QueryParamsRequest getDefaultInstanceForType() {
+      return DEFAULT_INSTANCE;
+    }
+
+  }
+
+  public interface QueryParamsResponseOrBuilder extends
+      // @@protoc_insertion_point(interface_extends:qorechain.svm.v1.QueryParamsResponse)
+      com.google.protobuf.MessageOrBuilder {
+
+    /**
+     * <pre>
+     * params are the parameters in force.
+     * </pre>
+     *
+     * <code>.qorechain.svm.v1.SVMParams params = 1 [json_name = "params", (.gogoproto.nullable) = false];</code>
+     * @return Whether the params field is set.
+     */
+    boolean hasParams();
+    /**
+     * <pre>
+     * params are the parameters in force.
+     * </pre>
+     *
+     * <code>.qorechain.svm.v1.SVMParams params = 1 [json_name = "params", (.gogoproto.nullable) = false];</code>
+     * @return The params.
+     */
+    qorechain.svm.v1.Tx.SVMParams getParams();
+    /**
+     * <pre>
+     * params are the parameters in force.
+     * </pre>
+     *
+     * <code>.qorechain.svm.v1.SVMParams params = 1 [json_name = "params", (.gogoproto.nullable) = false];</code>
+     */
+    qorechain.svm.v1.Tx.SVMParamsOrBuilder getParamsOrBuilder();
+  }
+  /**
+   * Protobuf type {@code qorechain.svm.v1.QueryParamsResponse}
+   */
+  public static final class QueryParamsResponse extends
+      com.google.protobuf.GeneratedMessage implements
+      // @@protoc_insertion_point(message_implements:qorechain.svm.v1.QueryParamsResponse)
+      QueryParamsResponseOrBuilder {
+  private static final long serialVersionUID = 0L;
+    static {
+      com.google.protobuf.RuntimeVersion.validateProtobufGencodeVersion(
+        com.google.protobuf.RuntimeVersion.RuntimeDomain.PUBLIC,
+        /* major= */ 4,
+        /* minor= */ 35,
+        /* patch= */ 1,
+        /* suffix= */ "",
+        "QueryParamsResponse");
+    }
+    // Use QueryParamsResponse.newBuilder() to construct.
+    private QueryParamsResponse(com.google.protobuf.GeneratedMessage.Builder<?> builder) {
+      super(builder);
+    }
+    private QueryParamsResponse() {
+    }
+
+    public static final com.google.protobuf.Descriptors.Descriptor
+        getDescriptor() {
+      return qorechain.svm.v1.QueryOuterClass.internal_static_qorechain_svm_v1_QueryParamsResponse_descriptor;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Descriptors.Descriptor getDescriptorForType() {
+      return qorechain.svm.v1.QueryOuterClass.internal_static_qorechain_svm_v1_QueryParamsResponse_descriptor;
+    }
+
+    @java.lang.Override
+    protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+        internalGetFieldAccessorTable() {
+      return qorechain.svm.v1.QueryOuterClass.internal_static_qorechain_svm_v1_QueryParamsResponse_fieldAccessorTable
+          .ensureFieldAccessorsInitialized(
+              qorechain.svm.v1.QueryOuterClass.QueryParamsResponse.class, qorechain.svm.v1.QueryOuterClass.QueryParamsResponse.Builder.class);
+    }
+
+    private int bitField0_;
+    public static final int PARAMS_FIELD_NUMBER = 1;
+    private qorechain.svm.v1.Tx.SVMParams params_;
+    /**
+     * <pre>
+     * params are the parameters in force.
+     * </pre>
+     *
+     * <code>.qorechain.svm.v1.SVMParams params = 1 [json_name = "params", (.gogoproto.nullable) = false];</code>
+     * @return Whether the params field is set.
+     */
+    @java.lang.Override
+    public boolean hasParams() {
+      return ((bitField0_ & 0x00000001) != 0);
+    }
+    /**
+     * <pre>
+     * params are the parameters in force.
+     * </pre>
+     *
+     * <code>.qorechain.svm.v1.SVMParams params = 1 [json_name = "params", (.gogoproto.nullable) = false];</code>
+     * @return The params.
+     */
+    @java.lang.Override
+    public qorechain.svm.v1.Tx.SVMParams getParams() {
+      return params_ == null ? qorechain.svm.v1.Tx.SVMParams.getDefaultInstance() : params_;
+    }
+    /**
+     * <pre>
+     * params are the parameters in force.
+     * </pre>
+     *
+     * <code>.qorechain.svm.v1.SVMParams params = 1 [json_name = "params", (.gogoproto.nullable) = false];</code>
+     */
+    @java.lang.Override
+    public qorechain.svm.v1.Tx.SVMParamsOrBuilder getParamsOrBuilder() {
+      return params_ == null ? qorechain.svm.v1.Tx.SVMParams.getDefaultInstance() : params_;
+    }
+
+    private byte memoizedIsInitialized = -1;
+    @java.lang.Override
+    public final boolean isInitialized() {
+      byte isInitialized = memoizedIsInitialized;
+      if (isInitialized == 1) return true;
+      if (isInitialized == 0) return false;
+
+      memoizedIsInitialized = 1;
+      return true;
+    }
+
+    @java.lang.Override
+    public void writeTo(com.google.protobuf.CodedOutputStream output)
+                        throws java.io.IOException {
+      if (((bitField0_ & 0x00000001) != 0)) {
+        output.writeMessage(1, getParams());
+      }
+      getUnknownFields().writeTo(output);
+    }
+    private int computeSerializedSize_0() {
+      int size = 0;
+      if (((bitField0_ & 0x00000001) != 0)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeMessageSize(1, getParams());
+      }
+      return size;
+    }
+    @java.lang.Override
+    public int getSerializedSize() {
+      int size = memoizedSize;
+      if (size != -1) return size;
+
+      size = 0;
+      size += computeSerializedSize_0();
+      size += getUnknownFields().getSerializedSize();
+      memoizedSize = size;
+      return size;
+    }
+
+    @java.lang.Override
+    public boolean equals(final java.lang.Object obj) {
+      if (obj == this) {
+       return true;
+      }
+      if (!(obj instanceof qorechain.svm.v1.QueryOuterClass.QueryParamsResponse)) {
+        return super.equals(obj);
+      }
+      qorechain.svm.v1.QueryOuterClass.QueryParamsResponse other = (qorechain.svm.v1.QueryOuterClass.QueryParamsResponse) obj;
+
+      if (hasParams() != other.hasParams()) return false;
+      if (hasParams()) {
+        if (!getParams()
+            .equals(other.getParams())) return false;
+      }
+      if (!getUnknownFields().equals(other.getUnknownFields())) return false;
+      return true;
+    }
+
+    @java.lang.Override
+    public int hashCode() {
+      if (memoizedHashCode != 0) {
+        return memoizedHashCode;
+      }
+      int hash = 41;
+      hash = (19 * hash) + getDescriptor().hashCode();
+      if (hasParams()) {
+        hash = (37 * hash) + PARAMS_FIELD_NUMBER;
+        hash = (53 * hash) + getParams().hashCode();
+      }
+      hash = (29 * hash) + getUnknownFields().hashCode();
+      memoizedHashCode = hash;
+      return hash;
+    }
+
+    public static qorechain.svm.v1.QueryOuterClass.QueryParamsResponse parseFrom(
+        java.nio.ByteBuffer data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static qorechain.svm.v1.QueryOuterClass.QueryParamsResponse parseFrom(
+        java.nio.ByteBuffer data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static qorechain.svm.v1.QueryOuterClass.QueryParamsResponse parseFrom(
+        com.google.protobuf.ByteString data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static qorechain.svm.v1.QueryOuterClass.QueryParamsResponse parseFrom(
+        com.google.protobuf.ByteString data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static qorechain.svm.v1.QueryOuterClass.QueryParamsResponse parseFrom(byte[] data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static qorechain.svm.v1.QueryOuterClass.QueryParamsResponse parseFrom(
+        byte[] data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static qorechain.svm.v1.QueryOuterClass.QueryParamsResponse parseFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input);
+    }
+    public static qorechain.svm.v1.QueryOuterClass.QueryParamsResponse parseFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    public static qorechain.svm.v1.QueryOuterClass.QueryParamsResponse parseDelimitedFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseDelimitedWithIOException(PARSER, input);
+    }
+
+    public static qorechain.svm.v1.QueryOuterClass.QueryParamsResponse parseDelimitedFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static qorechain.svm.v1.QueryOuterClass.QueryParamsResponse parseFrom(
+        com.google.protobuf.CodedInputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input);
+    }
+    public static qorechain.svm.v1.QueryOuterClass.QueryParamsResponse parseFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessage
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    @java.lang.Override
+    public Builder newBuilderForType() { return newBuilder(); }
+    public static Builder newBuilder() {
+      return DEFAULT_INSTANCE.toBuilder();
+    }
+    public static Builder newBuilder(qorechain.svm.v1.QueryOuterClass.QueryParamsResponse prototype) {
+      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+    }
+    @java.lang.Override
+    public Builder toBuilder() {
+      return this == DEFAULT_INSTANCE
+          ? new Builder() : new Builder().mergeFrom(this);
+    }
+
+    @java.lang.Override
+    protected Builder newBuilderForType(
+        com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+      Builder builder = new Builder(parent);
+      return builder;
+    }
+    /**
+     * Protobuf type {@code qorechain.svm.v1.QueryParamsResponse}
+     */
+    public static final class Builder extends
+        com.google.protobuf.GeneratedMessage.Builder<Builder> implements
+        // @@protoc_insertion_point(builder_implements:qorechain.svm.v1.QueryParamsResponse)
+        qorechain.svm.v1.QueryOuterClass.QueryParamsResponseOrBuilder {
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return qorechain.svm.v1.QueryOuterClass.internal_static_qorechain_svm_v1_QueryParamsResponse_descriptor;
+      }
+
+      @java.lang.Override
+      protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return qorechain.svm.v1.QueryOuterClass.internal_static_qorechain_svm_v1_QueryParamsResponse_fieldAccessorTable
+            .ensureFieldAccessorsInitialized(
+                qorechain.svm.v1.QueryOuterClass.QueryParamsResponse.class, qorechain.svm.v1.QueryOuterClass.QueryParamsResponse.Builder.class);
+      }
+
+      // Construct using qorechain.svm.v1.QueryOuterClass.QueryParamsResponse.newBuilder()
+      private Builder() {
+        maybeForceBuilderInitialization();
+      }
+
+      private Builder(
+          com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+        super(parent);
+        maybeForceBuilderInitialization();
+      }
+      private void maybeForceBuilderInitialization() {
+        if (com.google.protobuf.GeneratedMessage
+                .alwaysUseFieldBuilders) {
+          internalGetParamsFieldBuilder();
+        }
+      }
+      @java.lang.Override
+      public Builder clear() {
+        super.clear();
+        bitField0_ = 0;
+        params_ = null;
+        if (paramsBuilder_ != null) {
+          paramsBuilder_.dispose();
+          paramsBuilder_ = null;
+        }
+        return this;
+      }
+
+      @java.lang.Override
+      public com.google.protobuf.Descriptors.Descriptor
+          getDescriptorForType() {
+        return qorechain.svm.v1.QueryOuterClass.internal_static_qorechain_svm_v1_QueryParamsResponse_descriptor;
+      }
+
+      @java.lang.Override
+      public qorechain.svm.v1.QueryOuterClass.QueryParamsResponse getDefaultInstanceForType() {
+        return qorechain.svm.v1.QueryOuterClass.QueryParamsResponse.getDefaultInstance();
+      }
+
+      @java.lang.Override
+      public qorechain.svm.v1.QueryOuterClass.QueryParamsResponse build() {
+        qorechain.svm.v1.QueryOuterClass.QueryParamsResponse result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(result);
+        }
+        return result;
+      }
+
+      @java.lang.Override
+      public qorechain.svm.v1.QueryOuterClass.QueryParamsResponse buildPartial() {
+        qorechain.svm.v1.QueryOuterClass.QueryParamsResponse result = new qorechain.svm.v1.QueryOuterClass.QueryParamsResponse(this);
+        if (bitField0_ != 0) { buildPartial0(result); }
+        onBuilt();
+        return result;
+      }
+
+      private void buildPartial0(qorechain.svm.v1.QueryOuterClass.QueryParamsResponse result) {
+        int from_bitField0_ = bitField0_;
+        int to_bitField0_ = 0;
+        if (((from_bitField0_ & 0x00000001) != 0)) {
+          result.params_ = paramsBuilder_ == null
+              ? params_
+              : paramsBuilder_.build();
+          to_bitField0_ |= 0x00000001;
+        }
+        result.bitField0_ |= to_bitField0_;
+      }
+
+      @java.lang.Override
+      public Builder mergeFrom(com.google.protobuf.Message other) {
+        if (other instanceof qorechain.svm.v1.QueryOuterClass.QueryParamsResponse) {
+          return mergeFrom((qorechain.svm.v1.QueryOuterClass.QueryParamsResponse)other);
+        } else {
+          super.mergeFrom(other);
+          return this;
+        }
+      }
+
+      public Builder mergeFrom(qorechain.svm.v1.QueryOuterClass.QueryParamsResponse other) {
+        if (other == qorechain.svm.v1.QueryOuterClass.QueryParamsResponse.getDefaultInstance()) return this;
+        if (other.hasParams()) {
+          mergeParams(other.getParams());
+        }
+        this.mergeUnknownFields(other.getUnknownFields());
+        onChanged();
+        return this;
+      }
+
+      @java.lang.Override
+      public final boolean isInitialized() {
+        return true;
+      }
+
+      @java.lang.Override
+      public Builder mergeFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        if (extensionRegistry == null) {
+          throw new java.lang.NullPointerException();
+        }
+        try {
+          boolean done = false;
+          while (!done) {
+            int tag = input.readTag();
+            switch (tag) {
+              case 0:
+                done = true;
+                break;
+              case 10: {
+                input.readMessage(
+                    internalGetParamsFieldBuilder().getBuilder(),
+                    extensionRegistry);
+                bitField0_ |= 0x00000001;
+                break;
+              } // case 10
+              default: {
+                if (!super.parseUnknownField(input, extensionRegistry, tag)) {
+                  done = true; // was an endgroup tag
+                }
+                break;
+              } // default:
+            } // switch (tag)
+          } // while (!done)
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          throw e.unwrapIOException();
+        } finally {
+          onChanged();
+        } // finally
+        return this;
+      }
+      private int bitField0_;
+
+      private qorechain.svm.v1.Tx.SVMParams params_;
+      private com.google.protobuf.SingleFieldBuilder<
+          qorechain.svm.v1.Tx.SVMParams, qorechain.svm.v1.Tx.SVMParams.Builder, qorechain.svm.v1.Tx.SVMParamsOrBuilder> paramsBuilder_;
+      /**
+       * <pre>
+       * params are the parameters in force.
+       * </pre>
+       *
+       * <code>.qorechain.svm.v1.SVMParams params = 1 [json_name = "params", (.gogoproto.nullable) = false];</code>
+       * @return Whether the params field is set.
+       */
+      public boolean hasParams() {
+        return ((bitField0_ & 0x00000001) != 0);
+      }
+      /**
+       * <pre>
+       * params are the parameters in force.
+       * </pre>
+       *
+       * <code>.qorechain.svm.v1.SVMParams params = 1 [json_name = "params", (.gogoproto.nullable) = false];</code>
+       * @return The params.
+       */
+      public qorechain.svm.v1.Tx.SVMParams getParams() {
+        if (paramsBuilder_ == null) {
+          return params_ == null ? qorechain.svm.v1.Tx.SVMParams.getDefaultInstance() : params_;
+        } else {
+          return paramsBuilder_.getMessage();
+        }
+      }
+      /**
+       * <pre>
+       * params are the parameters in force.
+       * </pre>
+       *
+       * <code>.qorechain.svm.v1.SVMParams params = 1 [json_name = "params", (.gogoproto.nullable) = false];</code>
+       */
+      public Builder setParams(qorechain.svm.v1.Tx.SVMParams value) {
+        if (paramsBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          params_ = value;
+        } else {
+          paramsBuilder_.setMessage(value);
+        }
+        bitField0_ |= 0x00000001;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * params are the parameters in force.
+       * </pre>
+       *
+       * <code>.qorechain.svm.v1.SVMParams params = 1 [json_name = "params", (.gogoproto.nullable) = false];</code>
+       */
+      public Builder setParams(
+          qorechain.svm.v1.Tx.SVMParams.Builder builderForValue) {
+        if (paramsBuilder_ == null) {
+          params_ = builderForValue.build();
+        } else {
+          paramsBuilder_.setMessage(builderForValue.build());
+        }
+        bitField0_ |= 0x00000001;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * params are the parameters in force.
+       * </pre>
+       *
+       * <code>.qorechain.svm.v1.SVMParams params = 1 [json_name = "params", (.gogoproto.nullable) = false];</code>
+       */
+      public Builder mergeParams(qorechain.svm.v1.Tx.SVMParams value) {
+        if (paramsBuilder_ == null) {
+          if (((bitField0_ & 0x00000001) != 0) &&
+            params_ != null &&
+            params_ != qorechain.svm.v1.Tx.SVMParams.getDefaultInstance()) {
+            getParamsBuilder().mergeFrom(value);
+          } else {
+            params_ = value;
+          }
+        } else {
+          paramsBuilder_.mergeFrom(value);
+        }
+        if (params_ != null) {
+          bitField0_ |= 0x00000001;
+          onChanged();
+        }
+        return this;
+      }
+      /**
+       * <pre>
+       * params are the parameters in force.
+       * </pre>
+       *
+       * <code>.qorechain.svm.v1.SVMParams params = 1 [json_name = "params", (.gogoproto.nullable) = false];</code>
+       */
+      public Builder clearParams() {
+        bitField0_ = (bitField0_ & ~0x00000001);
+        params_ = null;
+        if (paramsBuilder_ != null) {
+          paramsBuilder_.dispose();
+          paramsBuilder_ = null;
+        }
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * params are the parameters in force.
+       * </pre>
+       *
+       * <code>.qorechain.svm.v1.SVMParams params = 1 [json_name = "params", (.gogoproto.nullable) = false];</code>
+       */
+      public qorechain.svm.v1.Tx.SVMParams.Builder getParamsBuilder() {
+        bitField0_ |= 0x00000001;
+        onChanged();
+        return internalGetParamsFieldBuilder().getBuilder();
+      }
+      /**
+       * <pre>
+       * params are the parameters in force.
+       * </pre>
+       *
+       * <code>.qorechain.svm.v1.SVMParams params = 1 [json_name = "params", (.gogoproto.nullable) = false];</code>
+       */
+      public qorechain.svm.v1.Tx.SVMParamsOrBuilder getParamsOrBuilder() {
+        if (paramsBuilder_ != null) {
+          return paramsBuilder_.getMessageOrBuilder();
+        } else {
+          return params_ == null ?
+              qorechain.svm.v1.Tx.SVMParams.getDefaultInstance() : params_;
+        }
+      }
+      /**
+       * <pre>
+       * params are the parameters in force.
+       * </pre>
+       *
+       * <code>.qorechain.svm.v1.SVMParams params = 1 [json_name = "params", (.gogoproto.nullable) = false];</code>
+       */
+      private com.google.protobuf.SingleFieldBuilder<
+          qorechain.svm.v1.Tx.SVMParams, qorechain.svm.v1.Tx.SVMParams.Builder, qorechain.svm.v1.Tx.SVMParamsOrBuilder> 
+          internalGetParamsFieldBuilder() {
+        if (paramsBuilder_ == null) {
+          paramsBuilder_ = new com.google.protobuf.SingleFieldBuilder<
+              qorechain.svm.v1.Tx.SVMParams, qorechain.svm.v1.Tx.SVMParams.Builder, qorechain.svm.v1.Tx.SVMParamsOrBuilder>(
+                  getParams(),
+                  getParentForChildren(),
+                  isClean());
+          params_ = null;
+        }
+        return paramsBuilder_;
+      }
+
+      // @@protoc_insertion_point(builder_scope:qorechain.svm.v1.QueryParamsResponse)
+    }
+
+    // @@protoc_insertion_point(class_scope:qorechain.svm.v1.QueryParamsResponse)
+    private static final qorechain.svm.v1.QueryOuterClass.QueryParamsResponse DEFAULT_INSTANCE;
+    static {
+      DEFAULT_INSTANCE = new qorechain.svm.v1.QueryOuterClass.QueryParamsResponse();
+    }
+
+    public static qorechain.svm.v1.QueryOuterClass.QueryParamsResponse getDefaultInstance() {
+      return DEFAULT_INSTANCE;
+    }
+
+    private static final com.google.protobuf.Parser<QueryParamsResponse>
+        PARSER = new com.google.protobuf.AbstractParser<QueryParamsResponse>() {
+      @java.lang.Override
+      public QueryParamsResponse parsePartialFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        Builder builder = newBuilder();
+        try {
+          builder.mergeFrom(input, extensionRegistry);
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          throw e.setUnfinishedMessage(builder.buildPartial());
+        } catch (com.google.protobuf.UninitializedMessageException e) {
+          throw e.asInvalidProtocolBufferException().setUnfinishedMessage(builder.buildPartial());
+        } catch (java.io.IOException e) {
+          throw new com.google.protobuf.InvalidProtocolBufferException(e)
+              .setUnfinishedMessage(builder.buildPartial());
+        }
+        return builder.buildPartial();
+      }
+    };
+
+    public static com.google.protobuf.Parser<QueryParamsResponse> parser() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Parser<QueryParamsResponse> getParserForType() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public qorechain.svm.v1.QueryOuterClass.QueryParamsResponse getDefaultInstanceForType() {
+      return DEFAULT_INSTANCE;
+    }
+
+  }
+
   private static final com.google.protobuf.Descriptors.Descriptor
     internal_static_qorechain_svm_v1_QuerySlotRequest_descriptor;
   private static final 
@@ -6738,6 +7736,16 @@ public final class QueryOuterClass extends com.google.protobuf.GeneratedFile {
   private static final 
     com.google.protobuf.GeneratedMessage.FieldAccessorTable
       internal_static_qorechain_svm_v1_QueryClusterInfoResponse_fieldAccessorTable;
+  private static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_qorechain_svm_v1_QueryParamsRequest_descriptor;
+  private static final 
+    com.google.protobuf.GeneratedMessage.FieldAccessorTable
+      internal_static_qorechain_svm_v1_QueryParamsRequest_fieldAccessorTable;
+  private static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_qorechain_svm_v1_QueryParamsResponse_descriptor;
+  private static final 
+    com.google.protobuf.GeneratedMessage.FieldAccessorTable
+      internal_static_qorechain_svm_v1_QueryParamsResponse_fieldAccessorTable;
 
   public static com.google.protobuf.Descriptors.FileDescriptor
       getDescriptor() {
@@ -6748,49 +7756,57 @@ public final class QueryOuterClass extends com.google.protobuf.GeneratedFile {
   static {
     java.lang.String[] descriptorData = {
       "\n\034qorechain/svm/v1/query.proto\022\020qorechai" +
-      "n.svm.v1\032\034google/api/annotations.proto\"\022" +
-      "\n\020QuerySlotRequest\"\'\n\021QuerySlotResponse\022" +
-      "\022\n\004slot\030\001 \001(\004R\004slot\"/\n\023QueryAccountReque" +
-      "st\022\030\n\007address\030\001 \001(\tR\007address\"R\n\024QueryAcc" +
-      "ountResponse\022:\n\007account\030\001 \001(\0132 .qorechai" +
-      "n.svm.v1.SVMAccountInfoR\007account\"/\n\023Quer" +
-      "yProgramRequest\022\030\n\007address\030\001 \001(\tR\007addres" +
-      "s\"O\n\024QueryProgramResponse\0227\n\007program\030\001 \001" +
-      "(\0132\035.qorechain.svm.v1.ProgramInfoR\007progr" +
-      "am\"\312\001\n\016SVMAccountInfo\022\030\n\007address\030\001 \001(\tR\007" +
-      "address\022\032\n\010lamports\030\002 \001(\004R\010lamports\022\031\n\010d" +
-      "ata_len\030\003 \001(\004R\007dataLen\022\022\n\004data\030\004 \001(\014R\004da" +
-      "ta\022\024\n\005owner\030\005 \001(\tR\005owner\022\036\n\nexecutable\030\006" +
-      " \001(\010R\nexecutable\022\035\n\nrent_epoch\030\007 \001(\004R\tre" +
-      "ntEpoch\"\321\001\n\013ProgramInfo\022\'\n\017program_addre" +
-      "ss\030\001 \001(\tR\016programAddress\022+\n\021upgrade_auth" +
-      "ority\030\002 \001(\tR\020upgradeAuthority\022\037\n\013deploy_" +
-      "slot\030\003 \001(\004R\ndeploySlot\022(\n\020last_deploy_sl" +
-      "ot\030\004 \001(\004R\016lastDeploySlot\022!\n\014data_account" +
-      "\030\005 \001(\tR\013dataAccount\"\031\n\027QueryClusterInfoR" +
-      "equest\"\313\001\n\030QueryClusterInfoResponse\022\031\n\010c" +
-      "hain_id\030\001 \001(\tR\007chainId\022!\n\014genesis_hash\030\002" +
-      " \001(\tR\013genesisHash\022$\n\016caip2_chain_id\030\003 \001(" +
-      "\tR\014caip2ChainId\022\036\n\nderivation\030\004 \001(\tR\nder" +
-      "ivation\022+\n\021execution_enabled\030\005 \001(\010R\020exec" +
-      "utionEnabled2\233\003\n\005Query\022O\n\004Slot\022\".qorecha" +
-      "in.svm.v1.QuerySlotRequest\032#.qorechain.s" +
-      "vm.v1.QuerySlotResponse\022X\n\007Account\022%.qor" +
-      "echain.svm.v1.QueryAccountRequest\032&.qore" +
-      "chain.svm.v1.QueryAccountResponse\022X\n\007Pro" +
-      "gram\022%.qorechain.svm.v1.QueryProgramRequ" +
-      "est\032&.qorechain.svm.v1.QueryProgramRespo" +
-      "nse\022\214\001\n\013ClusterInfo\022).qorechain.svm.v1.Q" +
-      "ueryClusterInfoRequest\032*.qorechain.svm.v" +
-      "1.QueryClusterInfoResponse\"&\202\323\344\223\002 \022\036/qor" +
-      "echain/svm/v1/cluster_infoB1Z/github.com" +
-      "/qorechain/qorechain-core/x/svm/typesb\006p" +
-      "roto3"
+      "n.svm.v1\032\024gogoproto/gogo.proto\032\034google/a" +
+      "pi/annotations.proto\032\031qorechain/svm/v1/t" +
+      "x.proto\"\022\n\020QuerySlotRequest\"\'\n\021QuerySlot" +
+      "Response\022\022\n\004slot\030\001 \001(\004R\004slot\"/\n\023QueryAcc" +
+      "ountRequest\022\030\n\007address\030\001 \001(\tR\007address\"R\n" +
+      "\024QueryAccountResponse\022:\n\007account\030\001 \001(\0132 " +
+      ".qorechain.svm.v1.SVMAccountInfoR\007accoun" +
+      "t\"/\n\023QueryProgramRequest\022\030\n\007address\030\001 \001(" +
+      "\tR\007address\"O\n\024QueryProgramResponse\0227\n\007pr" +
+      "ogram\030\001 \001(\0132\035.qorechain.svm.v1.ProgramIn" +
+      "foR\007program\"\312\001\n\016SVMAccountInfo\022\030\n\007addres" +
+      "s\030\001 \001(\tR\007address\022\032\n\010lamports\030\002 \001(\004R\010lamp" +
+      "orts\022\031\n\010data_len\030\003 \001(\004R\007dataLen\022\022\n\004data\030" +
+      "\004 \001(\014R\004data\022\024\n\005owner\030\005 \001(\tR\005owner\022\036\n\nexe" +
+      "cutable\030\006 \001(\010R\nexecutable\022\035\n\nrent_epoch\030" +
+      "\007 \001(\004R\trentEpoch\"\321\001\n\013ProgramInfo\022\'\n\017prog" +
+      "ram_address\030\001 \001(\tR\016programAddress\022+\n\021upg" +
+      "rade_authority\030\002 \001(\tR\020upgradeAuthority\022\037" +
+      "\n\013deploy_slot\030\003 \001(\004R\ndeploySlot\022(\n\020last_" +
+      "deploy_slot\030\004 \001(\004R\016lastDeploySlot\022!\n\014dat" +
+      "a_account\030\005 \001(\tR\013dataAccount\"\031\n\027QueryClu" +
+      "sterInfoRequest\"\313\001\n\030QueryClusterInfoResp" +
+      "onse\022\031\n\010chain_id\030\001 \001(\tR\007chainId\022!\n\014genes" +
+      "is_hash\030\002 \001(\tR\013genesisHash\022$\n\016caip2_chai" +
+      "n_id\030\003 \001(\tR\014caip2ChainId\022\036\n\nderivation\030\004" +
+      " \001(\tR\nderivation\022+\n\021execution_enabled\030\005 " +
+      "\001(\010R\020executionEnabled\"\024\n\022QueryParamsRequ" +
+      "est\"P\n\023QueryParamsResponse\0229\n\006params\030\001 \001" +
+      "(\0132\033.qorechain.svm.v1.SVMParamsB\004\310\336\037\000R\006p" +
+      "arams2\224\004\n\005Query\022O\n\004Slot\022\".qorechain.svm." +
+      "v1.QuerySlotRequest\032#.qorechain.svm.v1.Q" +
+      "uerySlotResponse\022X\n\007Account\022%.qorechain." +
+      "svm.v1.QueryAccountRequest\032&.qorechain.s" +
+      "vm.v1.QueryAccountResponse\022X\n\007Program\022%." +
+      "qorechain.svm.v1.QueryProgramRequest\032&.q" +
+      "orechain.svm.v1.QueryProgramResponse\022\214\001\n" +
+      "\013ClusterInfo\022).qorechain.svm.v1.QueryClu" +
+      "sterInfoRequest\032*.qorechain.svm.v1.Query" +
+      "ClusterInfoResponse\"&\202\323\344\223\002 \022\036/qorechain/" +
+      "svm/v1/cluster_info\022w\n\006Params\022$.qorechai" +
+      "n.svm.v1.QueryParamsRequest\032%.qorechain." +
+      "svm.v1.QueryParamsResponse\" \202\323\344\223\002\032\022\030/qor" +
+      "echain/svm/v1/paramsB1Z/github.com/qorec" +
+      "hain/qorechain-core/x/svm/typesb\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
         new com.google.protobuf.Descriptors.FileDescriptor[] {
+          com.google.protobuf.GoGoProtos.getDescriptor(),
           com.google.api.AnnotationsProto.getDescriptor(),
+          qorechain.svm.v1.Tx.getDescriptor(),
         });
     internal_static_qorechain_svm_v1_QuerySlotRequest_descriptor =
       getDescriptor().getMessageType(0);
@@ -6852,10 +7868,25 @@ public final class QueryOuterClass extends com.google.protobuf.GeneratedFile {
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_qorechain_svm_v1_QueryClusterInfoResponse_descriptor,
         new java.lang.String[] { "ChainId", "GenesisHash", "Caip2ChainId", "Derivation", "ExecutionEnabled", });
+    internal_static_qorechain_svm_v1_QueryParamsRequest_descriptor =
+      getDescriptor().getMessageType(10);
+    internal_static_qorechain_svm_v1_QueryParamsRequest_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessage.FieldAccessorTable(
+        internal_static_qorechain_svm_v1_QueryParamsRequest_descriptor,
+        new java.lang.String[] { });
+    internal_static_qorechain_svm_v1_QueryParamsResponse_descriptor =
+      getDescriptor().getMessageType(11);
+    internal_static_qorechain_svm_v1_QueryParamsResponse_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessage.FieldAccessorTable(
+        internal_static_qorechain_svm_v1_QueryParamsResponse_descriptor,
+        new java.lang.String[] { "Params", });
     descriptor.resolveAllFeaturesImmutable();
+    com.google.protobuf.GoGoProtos.getDescriptor();
     com.google.api.AnnotationsProto.getDescriptor();
+    qorechain.svm.v1.Tx.getDescriptor();
     com.google.protobuf.ExtensionRegistry registry =
         com.google.protobuf.ExtensionRegistry.newInstance();
+    registry.add(com.google.protobuf.GoGoProtos.nullable);
     registry.add(com.google.api.AnnotationsProto.http);
     com.google.protobuf.Descriptors.FileDescriptor
         .internalUpdateFileDescriptor(descriptor, registry);
