@@ -471,7 +471,13 @@ func feeToProto(fee Fee) (*sdktx.Fee, error) {
 		if !ok {
 			return nil, fmt.Errorf("invalid gas: %q", fee.Gas)
 		}
+		if !g.IsUint64() {
+			return nil, fmt.Errorf("invalid gas: %q", fee.Gas)
+		}
 		gas = g.Uint64()
+	}
+	if err := checkCosmosGas(gas); err != nil {
+		return nil, err
 	}
 	return &sdktx.Fee{
 		Amount:   amount,

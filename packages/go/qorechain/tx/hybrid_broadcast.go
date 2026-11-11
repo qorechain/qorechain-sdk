@@ -61,7 +61,9 @@ type HybridBroadcastResult struct {
 // Automatic fee: with Build.Fee.Gas set to GasAuto the tx is first simulated
 // as it will be sent and the gas limit comes from HybridGasWanted: on a
 // network that has applied v3.2.5, ceil(simulated * 1.02) + 2000; on an older
-// one, simulated * DefaultGasMultiplier. GasPrice and GasMultiplier tune it;
+// one, simulated * DefaultGasMultiplier. A tx carrying CosmWasm or cross-VM
+// messages gets at least ceil(simulated * WasmGasMultiplier) (1.3). GasPrice
+// and GasMultiplier tune it;
 // the result's Gas field reports the numbers.
 //
 // Retry rule: when the version was Auto and the chain refuses the tx with the
@@ -133,6 +135,25 @@ func autoHybridFee(params BroadcastHybridParams, version signbytes.Version) (Fee
 	fee, d, err := EstimateHybridFee(params.RestURL, probe.TxRawBytes, params.GasMultiplier, params.GasPrice, params.HTTPClient)
 	if err != nil {
 		return Fee{}, d, err
+	}
+	// CosmWasm and cross-VM gas varies with whether the contract code already
+	// ran in the block: scale the simulation by at least WasmGasMultiplier.
+	if RequiresSimulatedGas(b.Messages) {
+		if floor := WasmGasWanted(d.Simulated, params.GasMultiplier); floor > d.GasWanted {
+			d.GasWanted = floor
+			d.Exact = false
+			priceStr := params.GasPrice
+			if priceStr == "" {
+				priceStr = DefaultGasPrice
+			}
+			price, err := ParseGasPrice(priceStr)
+			if err != nil {
+				return Fee{}, d, err
+			}
+			if fee, err = CalculateFee(d.GasWanted, 1, price); err != nil {
+				return Fee{}, d, err
+			}
+		}
 	}
 	fee.Granter, fee.Payer = params.Build.Fee.Granter, params.Build.Fee.Payer
 	return fee, d, nil

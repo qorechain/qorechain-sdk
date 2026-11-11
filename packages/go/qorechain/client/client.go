@@ -21,8 +21,11 @@ import (
 	"net/http"
 	"strings"
 
+	sdk "github.com/cosmos/cosmos-sdk/types"
+
 	"github.com/qorechain/qorechain-sdk/packages/go/qorechain/networks"
 	"github.com/qorechain/qorechain-sdk/packages/go/qorechain/query"
+	"github.com/qorechain/qorechain-sdk/packages/go/qorechain/tx"
 )
 
 // EndpointOverrides holds optional per-endpoint URL overrides. Empty fields are
@@ -64,7 +67,8 @@ const (
 // Estimate estimates a fee for the given urgency via the AI fee oracle, falling
 // back to a deterministic static fee when the oracle is unavailable. The
 // returned value is a Cosmos StdFee-shaped JSON document
-// ({"amount":[...],"gas":...}).
+// ({"amount":[...],"gas":...}). The gas is a fixed 200000: do not use it for
+// CosmWasm or cross-VM transactions (see EstimateFor).
 func (f *Fees) Estimate(urgency string) (json.RawMessage, error) {
 	if urgency == "" {
 		urgency = "normal"
@@ -81,6 +85,20 @@ func (f *Fees) Estimate(urgency string) (json.RawMessage, error) {
 		}
 	}
 	return staticFee(staticFallbackGas, staticFallbackGasPrice, staticFallbackDenom, "")
+}
+
+// EstimateFor is Estimate for a known set of messages. The fixed fallback gas
+// (200000) is never used for a transaction that carries a CosmWasm execute /
+// instantiate / migrate or a MsgCrossVMCall: their gas varies widely (the
+// first call of a contract code in a block costs much more), so EstimateFor
+// returns tx.ErrFixedGasForWasm and the caller must simulate (Fee.Gas = "auto"
+// with tx.BroadcastHybridAndWait, or tx.EstimateFee) or give an explicit gas
+// limit. Use auto / simulation for wasm and cross-VM gas.
+func (f *Fees) EstimateFor(urgency string, msgs []sdk.Msg) (json.RawMessage, error) {
+	if tx.RequiresSimulatedGas(msgs) {
+		return nil, tx.ErrFixedGasForWasm
+	}
+	return f.Estimate(urgency)
 }
 
 // staticFee builds a StdFee JSON doc. When amount is non-empty it is used

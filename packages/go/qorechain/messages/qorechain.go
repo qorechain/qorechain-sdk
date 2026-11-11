@@ -1,6 +1,8 @@
 package messages
 
 import (
+	"fmt"
+
 	"cosmossdk.io/math"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
@@ -338,17 +340,6 @@ func (SvmComposers) RegisterPQCKey(sender string, svmAddr svmv1.Bytes32, pqcPubK
 	return &svmv1.MsgRegisterSVMPQCKey{Sender: sender, SVMAddr: svmAddr, PQCPubKey: pqcPubKey}
 }
 
-// UpdateParams builds MsgUpdateParams, the svm module's governance message
-// (chain v3.1.97+). It replaces the SVM runtime parameters WHOLESALE, so params
-// must carry every field - including Enabled, which is how the lane is turned on
-// or off by proposal rather than by a binary release.
-//
-// authority must be the governance module account; a tx signed by anyone else is
-// rejected on-chain. Submit it as the content of a gov proposal.
-func (SvmComposers) UpdateParams(authority string, params svmv1.SVMParams) *svmv1.MsgUpdateParams {
-	return &svmv1.MsgUpdateParams{Authority: authority, Params: params}
-}
-
 // ---- lightnode ----
 
 // LightnodeComposers builds lightnode module messages.
@@ -436,8 +427,20 @@ func (AbstractAccountComposers) UpdateSpendingRules(owner, accountAddress string
 // RegisterAuthenticator builds MsgRegisterAuthenticator, adding a signing
 // authenticator (scheme + pubkey) to an abstract account with optional
 // permissions, an expiry (unix seconds; 0 = none), and a label.
-func (AbstractAccountComposers) RegisterAuthenticator(owner, accountAddress, scheme string, pubkey []byte, permissions []string, expiryUnix int64, label string) *abstractaccountv1.MsgRegisterAuthenticator {
-	return &abstractaccountv1.MsgRegisterAuthenticator{Owner: owner, AccountAddress: accountAddress, Scheme: scheme, Pubkey: pubkey, Permissions: permissions, ExpiryUnix: expiryUnix, Label: label}
+//
+// possessionProof is required from chain v3.2.8: a signature by the key being
+// linked over AuthenticatorLinkMessage(chainID, accountAddress, scheme, pubkey)
+// (see the authenticator package for SignLinkEd25519 / SignLinkSecp256k1 /
+// SignLinkEIP191, or have the wallet sign the text). An empty proof is refused.
+// A key with a value permission also needs a bounding spending rule on the
+// account; authenticator.LinkAuthenticatorMsgs builds both messages.
+func (AbstractAccountComposers) RegisterAuthenticator(owner, accountAddress, scheme string, pubkey []byte, permissions []string, expiryUnix int64, label string, possessionProof []byte) (*abstractaccountv1.MsgRegisterAuthenticator, error) {
+	if len(possessionProof) == 0 {
+		return nil, fmt.Errorf("register authenticator: possession proof is required from chain v3.2.8: sign " +
+			"messages.AuthenticatorLinkMessage(chainID, accountAddress, scheme, pubkey) with the key being linked " +
+			"(ed25519 over the text, secp256k1 over sha256(text), or EIP-191 personal_sign for a 20-byte address)")
+	}
+	return &abstractaccountv1.MsgRegisterAuthenticator{Owner: owner, AccountAddress: accountAddress, Scheme: scheme, Pubkey: pubkey, Permissions: permissions, ExpiryUnix: expiryUnix, Label: label, PossessionProof: possessionProof}, nil
 }
 
 // RevokeAuthenticator builds MsgRevokeAuthenticator, removing the authenticator
@@ -486,6 +489,64 @@ var CrossVM CrossVMComposers
 // message id (Executed=false, no Data).
 func (CrossVMComposers) Call(sender string, sourceVM, targetVM crossvmv1.VMType, targetContract string, payload []byte, funds sdk.Coins, async bool) *crossvmv1.MsgCrossVMCall {
 	return &crossvmv1.MsgCrossVMCall{Sender: sender, SourceVM: sourceVM, TargetVM: targetVM, TargetContract: targetContract, Payload: payload, Funds: funds, Async: async}
+}
+
+// Async cross-VM call budget (chain v3.2.8, MsgCrossVMCall fields 8 and 9).
+const (
+	// CrossVMDefaultAsyncGasLimit is the gas an async CosmWasm call gets when
+	// async_gas_limit is 0.
+	CrossVMDefaultAsyncGasLimit uint64 = 500_000
+	// CrossVMMinAsyncGasLimit and CrossVMMaxAsyncGasLimit bound an explicit
+	// async_gas_limit.
+	CrossVMMinAsyncGasLimit uint64 = 250_000
+	CrossVMMaxAsyncGasLimit uint64 = 10_000_000
+	// CrossVMAsyncFactorUnit is async_max_factor 1x (millionths).
+	CrossVMAsyncFactorUnit uint64 = 1_000_000
+	// CrossVMMaxPendingPerSender is how many queued calls one sender may have.
+	CrossVMMaxPendingPerSender = 100
+)
+
+// ValidateCrossVMCall checks the async budget fields of a MsgCrossVMCall:
+// async_gas_limit and async_max_factor only apply to an async call into
+// CosmWasm, and an explicit async_gas_limit must be 250,000..10,000,000.
+func ValidateCrossVMCall(msg *crossvmv1.MsgCrossVMCall) error {
+	if msg == nil {
+		return fmt.Errorf("crossvm call: message is nil")
+	}
+	if msg.AsyncGasLimit == 0 && msg.AsyncMaxFactor == 0 {
+		return nil
+	}
+	if !msg.Async {
+		return fmt.Errorf("crossvm call: async_gas_limit and async_max_factor apply to async calls only; leave them 0 for a synchronous call")
+	}
+	if msg.TargetVM != "cosmwasm" {
+		return fmt.Errorf("crossvm call: async_gas_limit and async_max_factor apply to calls into CosmWasm only, the target is %q", msg.TargetVM)
+	}
+	if msg.AsyncGasLimit != 0 && (msg.AsyncGasLimit < CrossVMMinAsyncGasLimit || msg.AsyncGasLimit > CrossVMMaxAsyncGasLimit) {
+		return fmt.Errorf("crossvm call: async_gas_limit must be 0 (default %d) or %d..%d, got %d",
+			CrossVMDefaultAsyncGasLimit, CrossVMMinAsyncGasLimit, CrossVMMaxAsyncGasLimit, msg.AsyncGasLimit)
+	}
+	return nil
+}
+
+// CallAsync builds an async MsgCrossVMCall with its execution budget (chain
+// v3.2.8) and checks it (ValidateCrossVMCall).
+//
+// asyncGasLimit is the gas the queued CosmWasm call may use (0 = 500,000;
+// otherwise 250,000..10,000,000). asyncMaxFactor caps the congestion factor
+// the call accepts, in millionths (1,000,000 = 1x; 0 = four times the factor
+// at submission). Both apply only to calls into CosmWasm; pass 0 for others.
+//
+// The call holds an escrow of async_gas_limit x factor x gas price (about 0.2
+// QOR with the defaults), refunded when it finishes, and pays a queue-slot fee.
+// A sender may have at most 100 pending calls.
+func (CrossVMComposers) CallAsync(sender string, targetVM crossvmv1.VMType, targetContract string, payload []byte, funds sdk.Coins, asyncGasLimit, asyncMaxFactor uint64) (*crossvmv1.MsgCrossVMCall, error) {
+	msg := &crossvmv1.MsgCrossVMCall{Sender: sender, SourceVM: "evm", TargetVM: targetVM, TargetContract: targetContract,
+		Payload: payload, Funds: funds, Async: true, AsyncGasLimit: asyncGasLimit, AsyncMaxFactor: asyncMaxFactor}
+	if err := ValidateCrossVMCall(msg); err != nil {
+		return nil, err
+	}
+	return msg, nil
 }
 
 // ProcessQueue builds MsgProcessQueue.

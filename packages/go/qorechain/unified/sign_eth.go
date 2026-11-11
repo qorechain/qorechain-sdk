@@ -303,10 +303,16 @@ func encodeMessages(messages []Message) ([]*codectypes.Any, error) {
 	return out, nil
 }
 
+// maxCosmosTxGas is the chain's Native-lane gas cap (tx.MaxCosmosTxGas).
+const maxCosmosTxGas uint64 = 50_000_000
+
 func feeToProto(fee Fee) (*sdktx.Fee, error) {
 	amount, err := toCoins(fee.Amount)
 	if err != nil {
 		return nil, err
+	}
+	if fee.Gas > maxCosmosTxGas {
+		return nil, fmt.Errorf("gas limit %d is above the chain's transaction cap of %d", fee.Gas, maxCosmosTxGas)
 	}
 	return &sdktx.Fee{
 		Amount:   amount,

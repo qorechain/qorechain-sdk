@@ -5,7 +5,6 @@ import (
 	"testing"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/cosmos/cosmos-sdk/types/bech32"
 
 	abstractaccountv1 "github.com/qorechain/qorechain-sdk/packages/go/qorechain/proto/qorechain/abstractaccount/v1"
 )
@@ -143,76 +142,6 @@ func TestUpdateConfigComposer(t *testing.T) {
 	}{{0, 5, 1, "g"}, {1, 0, 1, "g"}, {1, 1, 0, "g"}, {1, 1, 1, ""}} {
 		if _, err := NewUpdateConfig(c.auth, false, c.keys, c.rules, c.ttl); err == nil {
 			t.Errorf("%+v accepted", c)
-		}
-	}
-}
-
-func TestCrossVMUpdateParamsComposer(t *testing.T) {
-	contract, err := bech32.ConvertAndEncode("qor", make([]byte, 32))
-	if err != nil {
-		t.Fatal(err)
-	}
-	msg, err := NewCrossVMUpdateParams("qor1gov", 65536, 1000, 100, true, []string{"cosmwasm:" + contract})
-	if err != nil {
-		t.Fatal(err)
-	}
-	if typeURL(msg) != "/qorechain.crossvm.v1.MsgUpdateParams" || len(msg.BridgeAllowedTargets) != 1 || msg.MaxMessageSize != 65536 {
-		t.Fatalf("msg = %+v", msg)
-	}
-	if _, err := NewCrossVMUpdateParams("qor1gov", 65536, 1000, 100, true, nil); err != nil {
-		t.Fatalf("empty allowlist: %v", err)
-	}
-	cases := []struct {
-		size    uint64
-		queue   uint32
-		timeout int64
-		targets []string
-	}{
-		{0, 1, 1, nil},
-		{1<<20 + 1, 1, 1, nil},
-		{1, 0, 1, nil},
-		{1, 10_001, 1, nil},
-		{1, 1, 0, nil},
-		{1, 1, 100_001, nil},
-		{1, 1, 1, []string{"evm:0x01"}},
-		{1, 1, 1, []string{"cosmwasm:notanaddress"}},
-		{1, 1, 1, []string{"cosmwasm:" + contract, "cosmwasm:" + contract}},
-	}
-	for _, c := range cases {
-		if _, err := NewCrossVMUpdateParams("qor1gov", c.size, c.queue, c.timeout, true, c.targets); err == nil {
-			t.Errorf("%+v accepted", c)
-		}
-	}
-}
-
-func TestRdkUpdateParamsComposer(t *testing.T) {
-	good := RdkParams{MaxRollups: 100, MinStakeForRollup: 10_000_000, RollupCreationBurnRate: "0.01",
-		DefaultChallengeWindow: 604800, MaxDABlobSize: 2 << 20, BlobRetentionBlocks: 100000, MaxBatchesPerBlock: 10}
-	msg, err := NewRdkUpdateParams("qor1gov", good)
-	if err != nil {
-		t.Fatal(err)
-	}
-	if typeURL(msg) != "/qorechain.rdk.v1.MsgUpdateParams" || msg.RollupCreationBurnRate != "0.01" || msg.DefaultChallengeWindow != 604800 || msg.MaxDaBlobSize != 2<<20 {
-		t.Fatalf("msg = %+v", msg)
-	}
-	mut := []func(p *RdkParams){
-		func(p *RdkParams) { p.MaxRollups = 0 },
-		func(p *RdkParams) { p.MinStakeForRollup = 0 },
-		func(p *RdkParams) { p.RollupCreationBurnRate = "1" },
-		func(p *RdkParams) { p.RollupCreationBurnRate = "-0.1" },
-		func(p *RdkParams) { p.RollupCreationBurnRate = "x" },
-		func(p *RdkParams) { p.DefaultChallengeWindow = 59 },
-		func(p *RdkParams) { p.DefaultChallengeWindow = 30*24*3600 + 1 },
-		func(p *RdkParams) { p.MaxDABlobSize = 0 },
-		func(p *RdkParams) { p.MaxDABlobSize = 8<<20 + 1 },
-		func(p *RdkParams) { p.BlobRetentionBlocks = 0 },
-		func(p *RdkParams) { p.MaxBatchesPerBlock = 0 },
-	}
-	for i, m := range mut {
-		p := good
-		m(&p)
-		if _, err := NewRdkUpdateParams("qor1gov", p); err == nil {
-			t.Errorf("mutation %d accepted", i)
 		}
 	}
 }

@@ -126,6 +126,13 @@ func ValidateSpendingRules(rules []abstractaccountv1.SpendingRule) error {
 // rules (ValidateSpendingRules): an enabled rule that bounds nothing, or a
 // denom limit that would remove the limit for its denom, is refused here
 // rather than stored as a limit that limits nothing. Owner-signed.
+//
+// The message REPLACES the account's rules wholesale: include every rule the
+// account should keep (read them with query.RestClient.GetSpendingRules). From
+// chain v3.2.8 it may be sent for an account that does not exist yet when
+// accountAddress == owner (it creates the account), and keys with a value
+// permission need the first enabled rule to bound every denom
+// (CheckSpendingRuleBoundsValueKeys).
 func NewUpdateSpendingRules(owner, accountAddress string, rules []abstractaccountv1.SpendingRule) (*abstractaccountv1.MsgUpdateSpendingRules, error) {
 	if err := ValidateSpendingRules(rules); err != nil {
 		return nil, err

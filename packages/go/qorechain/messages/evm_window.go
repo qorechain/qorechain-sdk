@@ -69,7 +69,98 @@ func ValidateOpenEVMWindow(msg *pqcv1.MsgOpenEVMWindow) error {
 		}
 		seen[strings.ToLower(t)] = true
 	}
-	return nil
+	return validateWindowScope(msg)
+}
+
+// validateWindowScope checks the v3.2.8 fields 7..9 lightly: validators are
+// 0x 20-byte addresses, staking_validators qorvaloper bech32 addresses, and
+// ibc_receivers "<source channel>/<receiver>" with a channel-N prefix. No
+// duplicates in any list.
+func validateWindowScope(msg *pqcv1.MsgOpenEVMWindow) error {
+	check := func(field string, list []string, ok func(string) error) error {
+		seen := make(map[string]bool, len(list))
+		for _, v := range list {
+			if err := ok(v); err != nil {
+				return fmt.Errorf("open evm window: %s: %w", field, err)
+			}
+			k := strings.ToLower(v)
+			if seen[k] {
+				return fmt.Errorf("open evm window: %s lists %s more than once", field, v)
+			}
+			seen[k] = true
+		}
+		return nil
+	}
+	if err := check("validators", msg.Validators, func(v string) error {
+		if !evmAddress.MatchString(v) {
+			return fmt.Errorf("%q is not a 0x-prefixed 20-byte contract address", v)
+		}
+		return nil
+	}); err != nil {
+		return err
+	}
+	if err := check("staking_validators", msg.StakingValidators, func(v string) error {
+		if !address.IsValidBech32(v, "qorvaloper") {
+			return fmt.Errorf("%q is not a qorvaloper bech32 address", v)
+		}
+		return nil
+	}); err != nil {
+		return err
+	}
+	return check("ibc_receivers", msg.IbcReceivers, func(v string) error {
+		// The chain's ParseIBCReceiver: 1 to 256 characters, no whitespace or
+		// comma, a "/" with text on both sides.
+		i := strings.IndexByte(v, '/')
+		if len(v) == 0 || len(v) > 256 || strings.ContainsAny(v, " \t\r\n,") || i <= 0 || i == len(v)-1 {
+			return fmt.Errorf("%q is not \"<source channel>/<receiver>\" (for example channel-0/cosmos1...)", v)
+		}
+		return nil
+	})
+}
+
+// EVMWindowScope narrows what an EVM authorisation window admits.
+//
+// Standard precompile methods are deny-by-default through a window (chain
+// v3.2.8): staking delegate and redelegate need the validator listed in
+// StakingValidators, an ICS-20 transfer needs its "<channel>/<receiver>" in
+// IBCReceivers. Undelegate, governance votes and withdraw-address changes are
+// refused through a window whatever it lists: send them as a PQC-signed Cosmos
+// transaction. Rotating, migrating or re-registering the PQC key closes the
+// window.
+type EVMWindowScope struct {
+	// NativeOnly admits plain native transfers only (v3.2.3).
+	NativeOnly bool
+	// AllowedTargets limits recipients/contracts to these 0x addresses, at most
+	// 16 (v3.2.3).
+	AllowedTargets []string
+	// Validators lists 0x 20-byte contract addresses (field 7, v3.2.8).
+	Validators []string
+	// StakingValidators lists qorvaloper... addresses staking delegate and
+	// redelegate may use (field 8, v3.2.8).
+	StakingValidators []string
+	// IBCReceivers lists "<source channel>/<receiver>" pairs ICS-20 may send
+	// to, for example "channel-0/cosmos1..." (field 9, v3.2.8).
+	IBCReceivers []string
+}
+
+// NewOpenEVMWindowWithScope builds a validated MsgOpenEVMWindow with every
+// scope field. The v3.2.8 fields (Validators, StakingValidators,
+// IBCReceivers) make a node below v3.2.8 refuse the transaction, so set them
+// only once the network has applied v3.2.8.
+func NewOpenEVMWindowWithScope(sender string, blocks, maxTxs uint64, maxValue string, scope EVMWindowScope) (*pqcv1.MsgOpenEVMWindow, error) {
+	msg, err := NewOpenEVMWindow(sender, blocks, maxTxs, maxValue)
+	if err != nil {
+		return nil, err
+	}
+	msg.NativeOnly = scope.NativeOnly
+	msg.AllowedTargets = scope.AllowedTargets
+	msg.Validators = scope.Validators
+	msg.StakingValidators = scope.StakingValidators
+	msg.IbcReceivers = scope.IBCReceivers
+	if err := ValidateOpenEVMWindow(msg); err != nil {
+		return nil, err
+	}
+	return msg, nil
 }
 
 // NewOpenEVMWindowScoped builds a validated MsgOpenEVMWindow narrowed to plain

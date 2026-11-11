@@ -62,7 +62,8 @@ fmt.Println(c.Network.ChainID) // qorechain-diana
 
 balances, err := c.REST.GetAllBalances("qor15yk64u7zc9g9k2yr2wmzeva5qgwxps6yjecvvu")
 stats, err := c.Qor.GetAIStats()
-fee, err := c.Fees.Estimate("fast")
+fee, err := c.Fees.Estimate("fast") // fixed 200000 gas: not for CosmWasm or cross-VM txs
+fee, err = c.Fees.EstimateFor("fast", msgs) // refuses CosmWasm / cross-VM messages: simulate those
 ```
 
 ### Network presets
@@ -488,6 +489,15 @@ fmt.Println(out.Gas.Simulated, out.Gas.GasWanted, out.Gas.Exact, out.Result.GasU
 `tx.EstimateHybridFee` does the same for a tx you broadcast yourself. Classical
 transactions keep `tx.EstimateFee`.
 
+**Gas price.** `tx.DefaultGasPrice` (`0.15uqor`) prices every automatic fee
+unless you pass a `GasPrice`. To follow the minimum the chain enforces (it may
+move inside a governance band), opt in to a network read:
+`tx.FetchMinGasPriceUqor(rest, nil)` returns `max(feemarket min_gas_price / 1e12, 0.1)`
+uqor per gas from `GET /cosmos/evm/feemarket/v1/params`, and
+`tx.RecommendedGasPriceUqor(rest, "", nil)` returns `max(0.15, minimum x 1.5)`
+(the margin is the second argument). Both return a decimal string; append
+`"uqor"` to use it as a `GasPrice`. No default path makes this call.
+
 **KEM key registry.** An account can publish one ML-KEM-1024 (FIPS 203)
 encapsulation key so that anyone can encrypt to it. It is not a signing key and
 needs no proof of possession: the registration is authenticated by the
@@ -520,7 +530,108 @@ configuration, wholesale), `messages.NewCrossVMUpdateParams` (crossvm
 parameters, including the EVM bridge allowlist of `cosmwasm:<contract>`
 targets) and `messages.NewRdkUpdateParams` (rdk parameters) build checked
 proposal messages; the authority is the governance module account.
-`rest.GetCrossVMParams()` reads the crossvm parameters.
+`rest.GetCrossVMParams()` reads the crossvm parameters. For chain v3.2.8
+these take every parameter explicitly; see "Chain v3.2.8" below.
+
+### Chain v3.2.8
+
+**Linking a key needs a possession proof and a spending rule.** From v3.2.8
+`MsgRegisterAuthenticator` carries `possession_proof`: a signature by the key
+being linked over `messages.AuthenticatorLinkMessage(chainID, account, scheme, pubkey)`:
+
+```text
+QoreChain authenticator link v1
+chain: <chain id>
+account: <account address>
+scheme: <ed25519 | secp256k1>
+key: <lowercase hex of the pubkey bytes>
+```
+
+ed25519 keys sign the text (Phantom `signMessage`); a 33-byte secp256k1 key
+signs `sha256(text)` (64-byte r||s, low-S); a 20-byte Ethereum address signs it
+with EIP-191 `personal_sign` (65 bytes, v = 27/28). 65-byte uncompressed keys
+are refused. `authenticator.SignLinkEd25519`, `SignLinkSecp256k1` and
+`SignLinkEIP191` make the proof from a key you hold;
+`authenticator.VerifyPossessionProof` checks one.
+`messages.AbstractAccount.RegisterAuthenticator` now takes the proof and
+refuses an empty one.
+
+A key with a value permission (`send`, `evm`, `deploy`, `svm`, `all`) also
+needs an enabled spending rule on the account whose first enabled rule bounds
+every denom (`per_tx_limit` or `daily_limit` above 0, or an `allowed_denoms`
+list where each denom has a `denom_limits` amount;
+`messages.CheckSpendingRuleBoundsValueKeys`). Send both in one transaction,
+signed by the owner as top-level messages:
+
+```go
+pub, proof, _ := authenticator.SignLinkEd25519(seed, "qorechain-diana", owner)
+msgs, err := authenticator.LinkAuthenticatorMsgs(authenticator.LinkParams{
+    Owner: owner, ChainID: "qorechain-diana", Scheme: "ed25519", Pubkey: pub,
+    Permissions: []string{"send"}, PossessionProof: proof,
+    SpendingRules: []abstractaccountv1.SpendingRule{{ID: "phantom", Enabled: true, PerTxLimit: 1_000_000}},
+})
+// msgs = [MsgUpdateSpendingRules, MsgRegisterAuthenticator]
+```
+
+`MsgUpdateSpendingRules` replaces the account's rules wholesale: pass every
+rule to keep. With `account_address == owner` it also creates an account that
+does not exist yet.
+
+**A delivered execution can still have failed.** An authorised
+`MsgExecuteEVM` / `MsgExecuteCosmos` that fails returns `success=false` in a
+code-0 transaction and emits `abstractaccount_execution_failed`; the nonce is
+consumed. Check it:
+
+```go
+results, err := authenticator.RequireExecutionsSucceeded(res) // *ExecutionFailedError on failure
+// results[i].Success, .Ret, .GasUsed, .VMError, .Reason
+```
+
+**Parameter proposals carry every field.** crossvm, svm and rdk
+`MsgUpdateParams` replace the parameters wholesale, so a missing field became
+zero (crossvm pins wiped, svm custody ceilings removed). The composers now take
+structs of pointers (`messages.CrossVMParams`, `messages.SvmParams`,
+`messages.RdkParams`, filled with `messages.Ptr(v)`) and refuse any nil field,
+naming it. svm also refuses `enabled = true` with `max_custody_hard_uqor == 0`.
+Build a proposal from the values in force:
+
+```go
+rest := query.NewRestClient(restURL, nil)
+msg, err := messages.CrossVMUpdateParamsFromCurrent(rest, govAuthority,
+    messages.CrossVMParams{MaxPendingPerSender: messages.Ptr(uint32(50))})
+// also messages.SvmUpdateParamsFromCurrent, messages.RdkUpdateParamsFromCurrent
+```
+
+**Cross-VM.** `CallOptions.AsyncGasLimit` (0 = 500,000; else 250,000 to
+10,000,000) and `AsyncMaxFactor` (millionths, 0 = four times the factor at
+submission) apply to async calls into CosmWasm only (also
+`messages.CrossVM.CallAsync`). An async call holds an escrow of
+async gas x factor x gas price (about 0.2 QOR by default), refunded when it
+finishes, pays a queue-slot fee, and a sender may have at most 100 pending
+calls. `rest.GetCrossVMPending(key, limit)` reads one page of the queue and
+`rest.GetAllCrossVMPending(maxPages)` follows `next_key`; payloads in the list
+are cut to 1,024 bytes, so use `rest.GetCrossVMMessage(id)` for the full one.
+
+**EVM window scope.** `messages.NewOpenEVMWindowWithScope` sets
+`Validators` (0x addresses), `StakingValidators` (`qorvaloper...`) and
+`IBCReceivers` (`"channel-0/cosmos1..."`). Standard precompile methods are
+deny-by-default through a window: staking delegate and redelegate need the
+validator in `StakingValidators`, ICS-20 needs the receiver in `IBCReceivers`;
+undelegate, votes and withdraw-address changes are refused through a window
+(send a PQC-signed Cosmos tx). Rotating, migrating or re-registering the PQC
+key closes the window.
+
+**Gas.** EVM transactions above the chain's cap (30,000,000) are refused:
+`rest.GetEVMLimits()` reads it, `evm.CheckEVMGasLimit` checks a limit, and
+`evm.Client.EthEstimateGas` returns an error for an estimate above
+`Client.TxMaxGas`. Native-lane transactions above 50,000,000 gas are refused
+before signing (`tx.MaxCosmosTxGas`). Use auto / simulation for wasm and
+cross-VM gas: the first call of a contract code in a block costs much more (a
+cw20 transfer about 533k gas, repeats about 84k). Transactions carrying a
+CosmWasm execute / instantiate / migrate or a `MsgCrossVMCall` never get a
+fixed fallback gas (`client.Fees.EstimateFor`, the `crossvm` helper with an
+empty `Fee.Gas`) and their simulated gas is scaled by at least 1.3
+(`tx.WasmGasMultiplier`). The `crossvm` helper accepts `Fee.Gas: tx.GasAuto`.
 
 ### Sidechains, paychains & rollups (v0.4.0)
 

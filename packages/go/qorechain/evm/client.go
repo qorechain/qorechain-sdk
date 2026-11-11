@@ -29,6 +29,23 @@ import (
 // (NetworkConfig.Endpoints.EVMRPC).
 type Client struct {
 	*query.JSONRPCClient
+	// TxMaxGas is the EVM transaction gas cap EthEstimateGas checks against.
+	// Zero uses query.DefaultEVMTxMaxGas (30,000,000 on chain v3.2.8); set it
+	// from query.RestClient.GetEVMLimits to follow governance.
+	TxMaxGas uint64
+}
+
+// CheckEVMGasLimit refuses a gas limit above the chain's EVM transaction gas
+// cap (txMaxGas; 0 = query.DefaultEVMTxMaxGas). From chain v3.2.8 a
+// transaction asking for more is refused, so check before signing.
+func CheckEVMGasLimit(gas, txMaxGas uint64) error {
+	if txMaxGas == 0 {
+		txMaxGas = query.DefaultEVMTxMaxGas
+	}
+	if gas > txMaxGas {
+		return fmt.Errorf("evm gas limit %d is above the chain's EVM transaction gas cap of %d; split the work or lower the gas", gas, txMaxGas)
+	}
+	return nil
 }
 
 // NewClient creates an EVM Client targeting the given EVM JSON-RPC URL. If
@@ -87,7 +104,9 @@ func (c *Client) EthCall(msg CallMsg, block string) ([]byte, error) {
 }
 
 // EthEstimateGas invokes `eth_estimateGas` for the given message and returns the
-// estimated gas as a uint64.
+// estimated gas as a uint64. An estimate above the EVM transaction gas cap
+// (Client.TxMaxGas) is returned with an error: the chain would refuse a
+// transaction asking for that much.
 func (c *Client) EthEstimateGas(msg CallMsg) (uint64, error) {
 	raw, err := c.Call("eth_estimateGas", []any{msg.toParams()})
 	if err != nil {
@@ -101,5 +120,8 @@ func (c *Client) EthEstimateGas(msg CallMsg) (uint64, error) {
 	if !ok {
 		return 0, fmt.Errorf("invalid gas quantity: %q", hexQty)
 	}
-	return n.Uint64(), nil
+	if !n.IsUint64() {
+		return 0, fmt.Errorf("gas quantity out of range: %q", hexQty)
+	}
+	return n.Uint64(), CheckEVMGasLimit(n.Uint64(), c.TxMaxGas)
 }

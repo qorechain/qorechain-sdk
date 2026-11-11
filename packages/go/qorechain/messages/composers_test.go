@@ -62,14 +62,14 @@ func TestQoreChainComposerTypeURLs(t *testing.T) {
 		"/qorechain.lightnode.v1.MsgHeartbeat":                   Lightnode.Heartbeat("s"),
 		"/qorechain.license.v1.MsgGrantLicense":                  License.Grant("a", "g", "f", 0, ""),
 		"/qorechain.abstractaccount.v1.MsgCreateAbstractAccount": AbstractAccount.Create("o", "smart"),
-		"/qorechain.abstractaccount.v1.MsgRegisterAuthenticator": AbstractAccount.RegisterAuthenticator("o", "qor1acct", "ed25519", []byte{0x01}, []string{"send"}, 0, "phantom"),
+		"/qorechain.abstractaccount.v1.MsgRegisterAuthenticator": mustMsg(AbstractAccount.RegisterAuthenticator("o", "qor1acct", "ed25519", []byte{0x01}, []string{"send"}, 0, "phantom", []byte{0x09})),
 		"/qorechain.abstractaccount.v1.MsgRevokeAuthenticator":   AbstractAccount.RevokeAuthenticator("o", "qor1acct", "ed25519", []byte{0x01}),
 		"/qorechain.abstractaccount.v1.MsgExecuteEVM":            AbstractAccount.ExecuteEVM("qor1relayer", "qor1acct", "ed25519", []byte{0x01}, []byte{0x02}, "0xabc", "1000", []byte{0x02, 0x02}, 100000, 5),
 		"/qorechain.abstractaccount.v1.MsgExecuteCosmos":         AbstractAccount.ExecuteCosmos("qor1relayer", "qor1acct", "ed25519", []byte{0x01}, []byte{0x02}, "qor1recv", coins, 3),
 		"/qorechain.pqc.v1.MsgRotatePQCKey":                      Pqc.RotatePQCKey("qor1acct", []byte{0xaa}, []byte{0xbb}, []byte{0x01}, []byte{0x02}),
 		"/qorechain.crossvm.v1.MsgCrossVMCall":                   CrossVM.Call("s", "evm", "svm", "prog", []byte{0x01}, coins, false),
 		"/qorechain.crossvm.v1.MsgProcessQueue":                  CrossVM.ProcessQueue("a"),
-		"/qorechain.svm.v1.MsgUpdateParams":                      Svm.UpdateParams("qor1gov", svmParamsFixture()),
+		"/qorechain.svm.v1.MsgUpdateParams":                      mustMsg(Svm.UpdateParams("qor1gov", svmParamsFixture())),
 		"/qorechain.rlconsensus.v1.MsgSetAgentMode":              RlConsensus.SetAgentMode("a", 1),
 	}
 	for want, msg := range cases {
@@ -83,21 +83,32 @@ func TestQoreChainComposerTypeURLs(t *testing.T) {
 	}
 }
 
-// svmParamsFixture is a fully-populated SVMParams for the governance
-// MsgUpdateParams composer. MsgUpdateParams replaces the params WHOLESALE, so a
-// realistic fixture sets every field rather than relying on zero values.
-func svmParamsFixture() svmv1.SVMParams {
-	return svmv1.SVMParams{
-		MaxProgramSize:     1 << 20,
-		MaxAccountDataSize: 10 * 1024,
-		ComputeBudgetMax:   1_400_000,
-		LamportsPerByte:    6960,
-		RentExemptionMulti: math.LegacyMustNewDecFromStr("2.0"),
-		Enabled:            false,
-		SvmSlotOffset:      12,
-		DefaultSigScheme:   1,
-		MaxCpi:             4,
+// svmParamsFixture is a fully-populated SvmParams for the governance
+// MsgUpdateParams composer. MsgUpdateParams replaces the params WHOLESALE, so
+// the composer requires every field.
+func svmParamsFixture() SvmParams {
+	return SvmParams{
+		MaxProgramSize:       Ptr(uint64(1 << 20)),
+		MaxAccountDataSize:   Ptr(uint64(10 * 1024)),
+		ComputeBudgetMax:     Ptr(uint64(1_400_000)),
+		LamportsPerByte:      Ptr(uint64(6960)),
+		RentExemptionMulti:   Ptr(math.LegacyMustNewDecFromStr("2.0")),
+		Enabled:              Ptr(false),
+		SvmSlotOffset:        Ptr(int64(12)),
+		DefaultSigScheme:     Ptr(uint32(1)),
+		MaxCpi:               Ptr(uint32(4)),
+		MaxCustodyUqor:       Ptr(uint64(0)),
+		MaxCustodyHardUqor:   Ptr(uint64(0)),
+		MaxAccountExcessUqor: Ptr(uint64(0)),
 	}
+}
+
+// mustMsg unwraps a composer that returns an error.
+func mustMsg[T any](v T, err error) T {
+	if err != nil {
+		panic(err)
+	}
+	return v
 }
 
 // TestSvmUpdateParamsComposer asserts the governance composer produces the new
@@ -105,7 +116,7 @@ func svmParamsFixture() svmv1.SVMParams {
 // switch that turns the SVM lane off by proposal instead of by binary release.
 func TestSvmUpdateParamsComposer(t *testing.T) {
 	params := svmParamsFixture()
-	msg := Svm.UpdateParams("qor1gov", params)
+	msg := mustMsg(Svm.UpdateParams("qor1gov", params))
 
 	if got, want := typeURL(msg), "/qorechain.svm.v1.MsgUpdateParams"; got != want {
 		t.Fatalf("type URL = %s, want %s", got, want)
@@ -116,7 +127,7 @@ func TestSvmUpdateParamsComposer(t *testing.T) {
 	if msg.Params.Enabled {
 		t.Error("Enabled must round-trip as false")
 	}
-	if msg.Params.MaxProgramSize != params.MaxProgramSize || msg.Params.MaxCpi != params.MaxCpi {
+	if msg.Params.MaxProgramSize != *params.MaxProgramSize || msg.Params.MaxCpi != *params.MaxCpi {
 		t.Errorf("params not carried through: %+v", msg.Params)
 	}
 }
@@ -125,7 +136,7 @@ func TestSvmUpdateParamsComposer(t *testing.T) {
 // and decodes it back through the registry, covering the nested SVMParams and
 // its LegacyDec custom type.
 func TestSvmUpdateParamsAnyRoundTrip(t *testing.T) {
-	original := Svm.UpdateParams("qor1gov", svmParamsFixture())
+	original := mustMsg(Svm.UpdateParams("qor1gov", svmParamsFixture()))
 
 	any, err := PackAny(original)
 	if err != nil {

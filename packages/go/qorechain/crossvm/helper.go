@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"net/http"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
@@ -31,9 +32,21 @@ type Signer struct {
 	AccountNumber uint64
 	// Sequence is the signer's current account sequence (nonce).
 	Sequence uint64
-	// Fee is the explicit fee to pay. Build it with tx.EstimateFee/CalculateFee
-	// when auto-gas is desired.
+	// Fee is the fee to pay. Set Fee.Gas to tx.GasAuto ("auto") to simulate
+	// the transaction and price ceil(simulated * max(GasMultiplier, 1.3)) at
+	// GasPrice, or give an explicit gas limit. An empty Fee.Gas is refused:
+	// cross-VM gas varies widely (the first call of a contract code in a block
+	// costs much more), so there is no fixed fallback. Use auto / simulation
+	// for wasm and cross-VM gas.
 	Fee tx.Fee
+	// GasPrice prices an automatic fee (Fee.Gas == tx.GasAuto). Empty uses
+	// tx.DefaultGasPrice.
+	GasPrice string
+	// GasMultiplier scales the simulated gas of an automatic fee; values below
+	// tx.WasmGasMultiplier (1.3) are raised to it.
+	GasMultiplier float64
+	// HTTPClient is used for simulation and broadcast (nil = the SDK default).
+	HTTPClient *http.Client
 	// Mode is the broadcast mode (defaults to tx.BroadcastSync).
 	Mode tx.BroadcastMode
 	// Wait configures post-broadcast polling (zero values use sensible defaults).
@@ -107,6 +120,18 @@ type CallOptions struct {
 	// id: Executed is false, Data is empty, and the outcome must be polled with
 	// GetMessage.
 	Async bool
+	// AsyncGasLimit is the gas a queued call into CosmWasm may use (chain
+	// v3.2.8): 0 = 500,000, otherwise 250,000..10,000,000. Async calls into
+	// CosmWasm only.
+	//
+	// An async call holds an escrow of AsyncGasLimit x factor x gas price
+	// (about 0.2 QOR with the defaults), refunded when the call finishes, and
+	// pays a queue-slot fee. A sender may have at most 100 pending calls.
+	AsyncGasLimit uint64
+	// AsyncMaxFactor caps the congestion factor the queued call accepts, in
+	// millionths (1,000,000 = 1x; 0 = four times the factor at submission).
+	// Async calls into CosmWasm only.
+	AsyncMaxFactor uint64
 }
 
 // resolvePayload returns the payload bytes implied by the options, enforcing the
@@ -147,7 +172,7 @@ func (c *Client) message(o CallOptions) (*crossvmv1.MsgCrossVMCall, error) {
 	if sourceVM == "" {
 		sourceVM = DefaultSourceVM
 	}
-	return messages.CrossVM.Call(
+	msg := messages.CrossVM.Call(
 		c.signer.Account.Address,
 		sourceVM,
 		o.TargetVM,
@@ -155,7 +180,13 @@ func (c *Client) message(o CallOptions) (*crossvmv1.MsgCrossVMCall, error) {
 		payload,
 		o.Funds,
 		o.Async,
-	), nil
+	)
+	msg.AsyncGasLimit = o.AsyncGasLimit
+	msg.AsyncMaxFactor = o.AsyncMaxFactor
+	if err := messages.ValidateCrossVMCall(msg); err != nil {
+		return nil, err
+	}
+	return msg, nil
 }
 
 // BuildCall builds and signs a single MsgCrossVMCall WITHOUT broadcasting,
@@ -234,15 +265,61 @@ func (c *Client) GetMessage(id string) (*crossvmv1.QueryMessageResponse, error) 
 }
 
 // build signs the given messages into a BuiltTx using the helper's Signer.
+// With Fee.Gas == tx.GasAuto the tx is simulated first and its gas scaled by
+// at least tx.WasmGasMultiplier; an empty Fee.Gas is refused.
 func (c *Client) build(msgs []sdk.Msg) (*tx.BuiltTx, error) {
+	fee := c.signer.Fee
+	switch fee.Gas {
+	case "":
+		return nil, fmt.Errorf("crossvm: %w", tx.ErrFixedGasForWasm)
+	case tx.GasAuto:
+		var err error
+		if fee, err = c.autoFee(msgs); err != nil {
+			return nil, err
+		}
+	}
+	return c.sign(msgs, fee)
+}
+
+func (c *Client) sign(msgs []sdk.Msg, fee tx.Fee) (*tx.BuiltTx, error) {
 	return tx.SendMessages(tx.SendMessagesParams{
 		Account:       c.signer.Account,
 		Messages:      msgs,
-		Fee:           c.signer.Fee,
+		Fee:           fee,
 		ChainID:       c.signer.ChainID,
 		AccountNumber: c.signer.AccountNumber,
 		Sequence:      c.signer.Sequence,
 	})
+}
+
+// autoFee simulates the tx and prices ceil(simulated * max(GasMultiplier,
+// 1.3)) at GasPrice.
+func (c *Client) autoFee(msgs []sdk.Msg) (tx.Fee, error) {
+	if c.signer.RestURL == "" {
+		return tx.Fee{}, fmt.Errorf("crossvm: automatic gas needs Signer.RestURL to simulate")
+	}
+	probe, err := c.sign(msgs, tx.Fee{Granter: c.signer.Fee.Granter, Payer: c.signer.Fee.Payer})
+	if err != nil {
+		return tx.Fee{}, err
+	}
+	simulated, err := tx.EstimateGas(c.signer.RestURL, probe.TxRawBytes, c.signer.HTTPClient)
+	if err != nil {
+		return tx.Fee{}, fmt.Errorf("crossvm: simulate: %w", err)
+	}
+	priceStr := c.signer.GasPrice
+	if priceStr == "" {
+		priceStr = tx.DefaultGasPrice
+	}
+	price, err := tx.ParseGasPrice(priceStr)
+	if err != nil {
+		return tx.Fee{}, err
+	}
+	fee, err := tx.CalculateFee(tx.WasmGasWanted(simulated, c.signer.GasMultiplier), 1, price)
+	if err != nil {
+		return tx.Fee{}, err
+	}
+	fee.Granter, fee.Payer = c.signer.Fee.Granter, c.signer.Fee.Payer
+	return fee, nil
 }
 
 // broadcast builds, signs, and broadcasts the given messages, waiting for
@@ -257,9 +334,10 @@ func (c *Client) broadcast(msgs []sdk.Msg) (*tx.TxResult, error) {
 		mode = tx.BroadcastSync
 	}
 	return tx.BroadcastAndWait(tx.BroadcastAndWaitParams{
-		RestURL: c.signer.RestURL,
-		TxBytes: built.TxRawBytes,
-		Mode:    mode,
-		Wait:    c.signer.Wait,
+		RestURL:    c.signer.RestURL,
+		TxBytes:    built.TxRawBytes,
+		Mode:       mode,
+		Wait:       c.signer.Wait,
+		HTTPClient: c.signer.HTTPClient,
 	})
 }

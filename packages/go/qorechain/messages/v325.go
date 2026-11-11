@@ -4,13 +4,8 @@ import (
 	"fmt"
 	"strings"
 
-	"cosmossdk.io/math"
-	"github.com/cosmos/cosmos-sdk/types/bech32"
-
 	abstractaccountv1 "github.com/qorechain/qorechain-sdk/packages/go/qorechain/proto/qorechain/abstractaccount/v1"
-	crossvmv1 "github.com/qorechain/qorechain-sdk/packages/go/qorechain/proto/qorechain/crossvm/v1"
 	pqcv1 "github.com/qorechain/qorechain-sdk/packages/go/qorechain/proto/qorechain/pqc/v1"
-	rdkv1 "github.com/qorechain/qorechain-sdk/packages/go/qorechain/proto/qorechain/rdk/v1"
 )
 
 // Messages added by chain v3.2.5 (plan query.ChainUpgradeV3_2_5). A node
@@ -157,7 +152,8 @@ func isHexAddress0x(s string) bool {
 }
 
 // ---------------------------------------------------------------------------
-// Governance: abstractaccount config, crossvm and rdk parameters
+// Governance: abstractaccount config (crossvm, svm and rdk parameters are in
+// params_v328.go)
 // ---------------------------------------------------------------------------
 
 // UpdateConfig builds MsgUpdateConfig without checking it. It replaces the
@@ -190,133 +186,4 @@ func NewUpdateConfig(authority string, enabled bool, maxSessionKeys, maxSpending
 		return nil, fmt.Errorf("update config: default_session_ttl must be positive, got %d", defaultSessionTTL)
 	}
 	return AbstractAccount.UpdateConfig(authority, enabled, maxSessionKeys, maxSpendingRules, defaultSessionTTL), nil
-}
-
-// Crossvm parameter bounds a governance update must respect (chain
-// ValidateUpdate).
-const (
-	CrossVMMaxUpdateMessageSize       uint64 = 1 << 20
-	CrossVMMaxUpdateQueueSize         uint32 = 10_000
-	CrossVMMaxUpdateQueueTimeout      int64  = 100_000
-	CrossVMMaxBridgeAllowedTargets           = 64
-	CrossVMMaxBridgeAllowedTargetSize        = 256
-)
-
-// UpdateParams builds crossvm MsgUpdateParams without checking it. It replaces
-// every crossvm parameter at once, among them bridge_allowed_targets (each
-// "<vm>:<contract>"; empty keeps the EVM bridge precompile shut). Governance
-// only. Prefer NewCrossVMUpdateParams.
-func (CrossVMComposers) UpdateParams(authority string, maxMessageSize uint64, maxQueueSize uint32, queueTimeoutBlocks int64, enabled bool, bridgeAllowedTargets []string) *crossvmv1.MsgUpdateParams {
-	return &crossvmv1.MsgUpdateParams{
-		Authority:            authority,
-		MaxMessageSize:       maxMessageSize,
-		MaxQueueSize:         maxQueueSize,
-		QueueTimeoutBlocks:   queueTimeoutBlocks,
-		Enabled:              enabled,
-		BridgeAllowedTargets: bridgeAllowedTargets,
-	}
-}
-
-// NewCrossVMUpdateParams builds crossvm MsgUpdateParams after the chain's
-// checks: positive limits under their ceilings, at most 64 bridge targets, no
-// duplicates, each "cosmwasm:<qor1... contract address>" (the bridge only
-// calls CosmWasm contracts).
-func NewCrossVMUpdateParams(authority string, maxMessageSize uint64, maxQueueSize uint32, queueTimeoutBlocks int64, enabled bool, bridgeAllowedTargets []string) (*crossvmv1.MsgUpdateParams, error) {
-	switch {
-	case authority == "":
-		return nil, fmt.Errorf("crossvm update params: authority is required")
-	case maxMessageSize == 0 || maxMessageSize > CrossVMMaxUpdateMessageSize:
-		return nil, fmt.Errorf("crossvm update params: max_message_size must be 1..%d, got %d", CrossVMMaxUpdateMessageSize, maxMessageSize)
-	case maxQueueSize == 0 || maxQueueSize > CrossVMMaxUpdateQueueSize:
-		return nil, fmt.Errorf("crossvm update params: max_queue_size must be 1..%d, got %d", CrossVMMaxUpdateQueueSize, maxQueueSize)
-	case queueTimeoutBlocks <= 0 || queueTimeoutBlocks > CrossVMMaxUpdateQueueTimeout:
-		return nil, fmt.Errorf("crossvm update params: queue_timeout_blocks must be 1..%d, got %d", CrossVMMaxUpdateQueueTimeout, queueTimeoutBlocks)
-	case len(bridgeAllowedTargets) > CrossVMMaxBridgeAllowedTargets:
-		return nil, fmt.Errorf("crossvm update params: at most %d bridge targets, got %d", CrossVMMaxBridgeAllowedTargets, len(bridgeAllowedTargets))
-	}
-	seen := make(map[string]bool, len(bridgeAllowedTargets))
-	for _, entry := range bridgeAllowedTargets {
-		if len(entry) > CrossVMMaxBridgeAllowedTargetSize {
-			return nil, fmt.Errorf("crossvm update params: bridge target %q is longer than %d bytes", entry, CrossVMMaxBridgeAllowedTargetSize)
-		}
-		if seen[entry] {
-			return nil, fmt.Errorf("crossvm update params: bridge target %q is listed twice", entry)
-		}
-		seen[entry] = true
-		vm, contract, ok := strings.Cut(entry, ":")
-		if !ok || vm != "cosmwasm" {
-			return nil, fmt.Errorf("crossvm update params: bridge target %q must be cosmwasm:<contract> (the bridge only calls CosmWasm contracts)", entry)
-		}
-		if hrp, _, err := bech32.DecodeAndConvert(contract); err != nil || hrp != "qor" {
-			return nil, fmt.Errorf("crossvm update params: bridge target %q: the contract is not a qor1... address", entry)
-		}
-	}
-	return CrossVM.UpdateParams(authority, maxMessageSize, maxQueueSize, queueTimeoutBlocks, enabled, bridgeAllowedTargets), nil
-}
-
-// RdkParams are the rdk module parameters, as MsgUpdateParams carries them.
-type RdkParams struct {
-	MaxRollups uint32
-	// MinStakeForRollup is a uqor amount.
-	MinStakeForRollup int64
-	// RollupCreationBurnRate is a decimal in [0, 1), for example "0.01".
-	RollupCreationBurnRate string
-	// DefaultChallengeWindow is in seconds (60 to 30 days).
-	DefaultChallengeWindow uint64
-	MaxDABlobSize          uint64
-	BlobRetentionBlocks    uint64
-	MaxBatchesPerBlock     uint32
-}
-
-// Rdk parameter bounds (chain ValidateUpdate).
-const (
-	RdkMinChallengeWindowSec uint64 = 60
-	RdkMaxChallengeWindowSec uint64 = 30 * 24 * 3600
-	RdkMaxDABlobSizeLimit    uint64 = 8 << 20
-)
-
-// UpdateParams builds rdk MsgUpdateParams without checking it. It replaces the
-// rdk parameters wholesale; governance only. Prefer NewRdkUpdateParams.
-func (RdkComposers) UpdateParams(authority string, p RdkParams) *rdkv1.MsgUpdateParams {
-	return &rdkv1.MsgUpdateParams{
-		Authority:              authority,
-		MaxRollups:             p.MaxRollups,
-		MinStakeForRollup:      p.MinStakeForRollup,
-		RollupCreationBurnRate: p.RollupCreationBurnRate,
-		DefaultChallengeWindow: p.DefaultChallengeWindow,
-		MaxDaBlobSize:          p.MaxDABlobSize,
-		BlobRetentionBlocks:    p.BlobRetentionBlocks,
-		MaxBatchesPerBlock:     p.MaxBatchesPerBlock,
-	}
-}
-
-// NewRdkUpdateParams builds rdk MsgUpdateParams after the chain's checks.
-func NewRdkUpdateParams(authority string, p RdkParams) (*rdkv1.MsgUpdateParams, error) {
-	if authority == "" {
-		return nil, fmt.Errorf("rdk update params: authority is required")
-	}
-	if p.MaxRollups == 0 {
-		return nil, fmt.Errorf("rdk update params: max_rollups must be positive")
-	}
-	if p.MinStakeForRollup <= 0 {
-		return nil, fmt.Errorf("rdk update params: min_stake_for_rollup must be positive")
-	}
-	rate, err := math.LegacyNewDecFromStr(p.RollupCreationBurnRate)
-	if err != nil || rate.IsNegative() || rate.GTE(math.LegacyOneDec()) {
-		return nil, fmt.Errorf("rdk update params: rollup_creation_burn_rate must be a decimal in [0, 1), got %q", p.RollupCreationBurnRate)
-	}
-	if p.DefaultChallengeWindow < RdkMinChallengeWindowSec || p.DefaultChallengeWindow > RdkMaxChallengeWindowSec {
-		return nil, fmt.Errorf("rdk update params: default_challenge_window must be %d..%d seconds, got %d",
-			RdkMinChallengeWindowSec, RdkMaxChallengeWindowSec, p.DefaultChallengeWindow)
-	}
-	if p.MaxDABlobSize == 0 || p.MaxDABlobSize > RdkMaxDABlobSizeLimit {
-		return nil, fmt.Errorf("rdk update params: max_da_blob_size must be 1..%d bytes, got %d", RdkMaxDABlobSizeLimit, p.MaxDABlobSize)
-	}
-	if p.BlobRetentionBlocks == 0 {
-		return nil, fmt.Errorf("rdk update params: blob_retention_blocks must be positive")
-	}
-	if p.MaxBatchesPerBlock == 0 {
-		return nil, fmt.Errorf("rdk update params: max_batches_per_block must be positive")
-	}
-	return Rdk.UpdateParams(authority, p), nil
 }
