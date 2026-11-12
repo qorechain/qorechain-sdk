@@ -6,7 +6,7 @@ import { defineConfig, loadEnv } from "vite";
 // In production, serve the app behind a proxy that does the same, or set
 // VITE_QORE_REST_URL to an endpoint that allows your origin.
 export default defineConfig(({ mode }) => {
-  const env = loadEnv(mode, process.cwd(), "");
+  const env = loadEnv(mode, ".", "");
   const target = env.QORE_REST_PROXY_TARGET || "http://localhost:1317";
   const proxy = {
     "/lcd": { target, changeOrigin: true, rewrite: (p: string) => p.replace(/^\/lcd/, "") },
