@@ -2,6 +2,7 @@ import { ConnectButton } from "@rainbow-me/rainbowkit";
 import {
   QORECHAIN_REST_ENDPOINTS,
   classifyEvmWindowRejection,
+  qorechainTestnet,
   evmWindowStatus,
   type EvmWindowRejection,
 } from "@qorechain/evm";
@@ -16,9 +17,21 @@ const REMEDY: Record<EvmWindowRejection, string> = {
   invalid: "The chain refused the window parameters.",
 };
 
+/**
+ * The REST API of each chain, through the dev server's proxy (vite.config.ts):
+ * the public REST endpoints send no CORS headers. Same chains as
+ * QORECHAIN_REST_ENDPOINTS.
+ */
+const REST_PROXY: Record<number, string | undefined> = Object.fromEntries(
+  Object.keys(QORECHAIN_REST_ENDPOINTS).map((id) => [
+    Number(id),
+    Number(id) === qorechainTestnet.id ? "/lcd-testnet" : "/lcd-mainnet",
+  ]),
+);
+
 /** The account's EVM authorisation window, read over the native-lane REST API. */
 function WindowStatus({ address, chainId }: { address: `0x${string}`; chainId: number }) {
-  const rest = QORECHAIN_REST_ENDPOINTS[chainId];
+  const rest = REST_PROXY[chainId];
   const { data, error, isLoading } = useQuery({
     queryKey: ["evm-window", chainId, address],
     queryFn: () => evmWindowStatus({ rest: rest!, address }),

@@ -28,8 +28,13 @@ browser):
 
 | Variable               | Purpose                | Default                 |
 | ---------------------- | ---------------------- | ----------------------- |
-| `VITE_QORE_REST_URL`     | Native REST (balances) | `http://localhost:1317` |
-| `VITE_QORE_EVM_RPC_URL`  | EVM JSON-RPC (`qor_*`) | `http://localhost:8545` |
+| `VITE_QORE_REST_URL`     | Native REST (balances) | `/lcd` (the dev server proxy) |
+| `QORE_REST_PROXY_TARGET` | Where `/lcd` goes      | the chosen network's REST     |
+| `VITE_QORE_EVM_RPC_URL`  | EVM JSON-RPC (`qor_*`) | the chosen network's EVM RPC  |
+
+The public REST API sends no CORS headers, so the browser reaches it through the
+Vite dev and preview servers (`/lcd`, see `vite.config.ts`). For production,
+serve the app behind a proxy that forwards `/lcd` the same way.
 
 ## Build / type-check
 

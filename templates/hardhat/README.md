@@ -75,7 +75,9 @@ has a different key registered; `pnpm window status` then shows
   250 gwei fee cap; set `QORE_WINDOW_MAX_UQOR` to choose the total yourself.
 - `blocks` is a block count, not a duration.
 - Opening a window **advances the account's nonce**. Open it first, then
-  deploy.
+  deploy. Hardhat Ignition waits for 5 confirmations of the account's last
+  transaction, so give the window about 10 seconds to settle before
+  `pnpm deploy:testnet`; otherwise it stops with HHE10402 and you run it again.
 - Opening replaces any earlier window.
 
 ## Deploy

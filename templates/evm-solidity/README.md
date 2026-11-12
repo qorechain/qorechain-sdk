@@ -12,6 +12,12 @@ increment → read) using [`@qorechain/evm`](https://github.com/qorechain/qorech
   (`qorechain-diana`) or mainnet (`qorechain-vladi`) node, or a local node.
 - A **funded EVM account** private key (`QORE_EVM_PRIVATE_KEY`, `0x`-prefixed,
   32 bytes). It needs enough QOR to cover gas for the deploy + one write.
+- A live **EVM authorisation window** for that account. Every QoreChain
+  account holds a post-quantum key, and the chain admits an EVM transaction only
+  inside a window that key opened. This template does not open one: use the
+  `window` helper of the `hardhat` or `foundry` template (`register`, then
+  `open`), or the SDK's `openEvmWindowMsg`. Opening a window advances the
+  account's nonce, so deploy after it lands.
 
 ## Setup
 
@@ -24,6 +30,9 @@ cp .env.example .env   # the scaffolder already does this for you
 $EDITOR .env
 ```
 
+`pnpm run deploy` reads `.env` itself. The scaffolder fills in the public endpoint
+of the network you chose.
+
 Environment variables (see `.env.example`):
 
 | Variable               | Purpose                                         | Default                 |
@@ -35,7 +44,7 @@ Environment variables (see `.env.example`):
 ## Run
 
 ```sh
-pnpm deploy
+pnpm run deploy   # not `pnpm deploy`, a pnpm built-in
 ```
 
 This deploys `Counter`, prints the deployed address, reads `count()`, calls
@@ -54,7 +63,7 @@ scripts/
 ## Compiling the contract
 
 To keep the toolchain light, this template ships a **pre-compiled artifact**
-(`contracts/Counter.artifact.ts`) so `pnpm deploy` works without a Solidity
+(`contracts/Counter.artifact.ts`) so `pnpm run deploy` works without a Solidity
 build pipeline. If you edit `Counter.sol`, regenerate the artifact with `solc`:
 
 ```sh
