@@ -29,12 +29,12 @@ const TEST_MNEMONIC =
   "test test test test test test test test test test test junk";
 
 async function main(): Promise<void> {
-  const mnemonic = process.env.QORE_MNEMONIC ?? TEST_MNEMONIC;
-  const rpcUrl = process.env.QORE_RPC_URL ?? "http://localhost:26657";
-  const restUrl = process.env.QORE_REST_URL ?? "http://localhost:1317";
-  const evmRpcUrl = process.env.QORE_EVM_RPC_URL ?? "http://localhost:8545";
-  const rollupId = process.env.QORE_ROLLUP_ID ?? "my-app-rollup";
-  const sidechainId = process.env.QORE_SIDECHAIN_ID ?? "my-app-sidechain";
+  const mnemonic = process.env.QORE_MNEMONIC || TEST_MNEMONIC;
+  const rpcUrl = process.env.QORE_RPC_URL || "http://localhost:26657";
+  const restUrl = process.env.QORE_REST_URL || "http://localhost:1317";
+  const evmRpcUrl = process.env.QORE_EVM_RPC_URL || "http://localhost:8545";
+  const rollupId = process.env.QORE_ROLLUP_ID || "my-app-rollup";
+  const sidechainId = process.env.QORE_SIDECHAIN_ID || "my-app-sidechain";
   const broadcast = process.env.QORE_BROADCAST === "1";
 
   const client = createClient({

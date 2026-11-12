@@ -5,7 +5,7 @@ import { fileURLToPath } from "node:url";
 
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
 
-import { resolveTemplatesRoot, scaffold } from "../src/scaffold.js";
+import { applyNetworkToEnv, resolveTemplatesRoot, scaffold } from "../src/scaffold.js";
 
 // Templates live at the monorepo root (cli/test → ../../templates).
 const here = fileURLToPath(new URL(".", import.meta.url));
@@ -61,11 +61,12 @@ describe("scaffold(evm-solidity)", () => {
     // Without --local, the published range is preserved.
     expect(pkg.dependencies?.["@qorechain/evm"]).toMatch(/^\^/);
 
-    // .env generated from .env.example.
+    // .env generated from .env.example, pointed at the testnet (the default).
     expect(existsSync(join(target, ".env"))).toBe(true);
-    expect(readFileSync(join(target, ".env"), "utf8")).toBe(
-      readFileSync(join(target, ".env.example"), "utf8"),
-    );
+    const env = readFileSync(join(target, ".env"), "utf8");
+    expect(env).toBe(applyNetworkToEnv(readFileSync(join(target, ".env.example"), "utf8"), "testnet"));
+    expect(env).toContain("QORE_EVM_RPC_URL=https://evm-testnet.qore.host");
+    expect(env).not.toContain("http://localhost");
 
     // node_modules not copied.
     expect(existsSync(join(target, "node_modules"))).toBe(false);
@@ -202,5 +203,39 @@ describe("scaffold errors", () => {
         templatesRoot,
       }),
     ).toThrow(/not empty/);
+  });
+});
+
+describe("applyNetworkToEnv", () => {
+  const example = [
+    "QORE_RPC_URL=http://localhost:26657",
+    "QORE_REST_URL=http://localhost:1317",
+    "QORE_EVM_RPC_URL=http://localhost:8545",
+    "QORE_NETWORK=testnet",
+    "QORE_MNEMONIC=",
+    "",
+  ].join("\n");
+
+  it("writes the public endpoints of the chosen network", () => {
+    expect(applyNetworkToEnv(example, "mainnet")).toBe(
+      [
+        "QORE_RPC_URL=https://rpc.qore.host",
+        "QORE_REST_URL=https://api.qore.host",
+        "QORE_EVM_RPC_URL=https://evm.qore.host",
+        "QORE_NETWORK=mainnet",
+        "QORE_MNEMONIC=",
+        "",
+      ].join("\n"),
+    );
+    expect(applyNetworkToEnv(example, "testnet")).toContain("QORE_REST_URL=https://api-testnet.qore.host");
+  });
+
+  it("scaffolds rollup-app with testnet endpoints and a .env the start script reads", () => {
+    const target = join(workdir, "rollup");
+    scaffold({ template: "rollup-app", targetDir: target, projectName: "rollup", network: "testnet" });
+    const env = readFileSync(join(target, ".env"), "utf8");
+    expect(env).toContain("QORE_RPC_URL=https://rpc-testnet.qore.host");
+    const pkg = JSON.parse(readFileSync(join(target, "package.json"), "utf8")) as { scripts: Record<string, string> };
+    expect(pkg.scripts.start).toContain("--env-file=.env");
   });
 });

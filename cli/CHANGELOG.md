@@ -1,5 +1,18 @@
 # create-qorechain-dapp
 
+## 0.13.1
+
+### Patch Changes
+
+- `--network` now points the generated `.env` at that network's public
+  endpoints (testnet by default) instead of localhost.
+- `rollup-app` ships a `.env.example` and its `start` script reads `.env`.
+- `evm-solidity`: `deploy` reads `.env`, and the README explains the EVM window
+  the account needs before it deploys.
+- `viem-wagmi` pins viem to `~2.53.1`, so `build` and `typecheck` pass again.
+- `hardhat` README: wait about 10 seconds after opening the window before
+  deploying with Ignition.
+
 ## 0.11.0
 
 ### Minor Changes

@@ -12,6 +12,12 @@ increment → read) using [`@qorechain/evm`](https://github.com/qorechain/qorech
   (`qorechain-diana`) or mainnet (`qorechain-vladi`) node, or a local node.
 - A **funded EVM account** private key (`QORE_EVM_PRIVATE_KEY`, `0x`-prefixed,
   32 bytes). It needs enough QOR to cover gas for the deploy + one write.
+- A live **EVM authorisation window** for that account. Every QoreChain
+  account holds a post-quantum key, and the chain admits an EVM transaction only
+  inside a window that key opened. This template does not open one: use the
+  `window` helper of the `hardhat` or `foundry` template (`register`, then
+  `open`), or the SDK's `openEvmWindowMsg`. Opening a window advances the
+  account's nonce, so deploy after it lands.
 
 ## Setup
 
@@ -23,6 +29,9 @@ pnpm install
 cp .env.example .env   # the scaffolder already does this for you
 $EDITOR .env
 ```
+
+`pnpm deploy` reads `.env` itself. The scaffolder fills in the public endpoint
+of the network you chose.
 
 Environment variables (see `.env.example`):
 

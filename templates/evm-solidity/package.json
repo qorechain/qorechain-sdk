@@ -5,7 +5,7 @@
   "type": "module",
   "description": "A QoreChain EVM dApp: a Solidity Counter contract deployed and exercised with viem via @qorechain/evm.",
   "scripts": {
-    "deploy": "tsx scripts/deploy.ts",
+    "deploy": "tsx --env-file=.env scripts/deploy.ts",
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {

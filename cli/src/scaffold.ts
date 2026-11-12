@@ -28,6 +28,34 @@ export type PackageManager = "pnpm" | "npm" | "yarn";
 /** Supported networks. */
 export type Network = "testnet" | "mainnet";
 
+/** Public endpoints of each network, written into a scaffolded `.env`. */
+export const NETWORK_ENDPOINTS: Record<Network, { rpc: string; rest: string; evmRpc: string }> = {
+  testnet: {
+    rpc: "https://rpc-testnet.qore.host",
+    rest: "https://api-testnet.qore.host",
+    evmRpc: "https://evm-testnet.qore.host",
+  },
+  mainnet: {
+    rpc: "https://rpc.qore.host",
+    rest: "https://api.qore.host",
+    evmRpc: "https://evm.qore.host",
+  },
+};
+
+/**
+ * Point a template's `.env` at the chosen network: the localhost endpoint
+ * placeholders become the network's public endpoints and `QORE_NETWORK` is set.
+ * Lines the template leaves empty stay empty.
+ */
+export function applyNetworkToEnv(env: string, network: Network): string {
+  const e = NETWORK_ENDPOINTS[network];
+  return env
+    .replace(/http:\/\/localhost:26657\b/g, e.rpc)
+    .replace(/http:\/\/localhost:1317\b/g, e.rest)
+    .replace(/http:\/\/localhost:8545\b/g, e.evmRpc)
+    .replace(/^QORE_NETWORK=.*$/m, `QORE_NETWORK=${network}`);
+}
+
 /** Options for {@link scaffold}. */
 export interface ScaffoldOptions {
   /** Template id (must exist in the registry). */
@@ -220,7 +248,7 @@ export function scaffold(options: ScaffoldOptions): ScaffoldResult {
   const envExample = join(targetDir, ".env.example");
   const envPath = join(targetDir, ".env");
   if (existsSync(envExample) && !existsSync(envPath)) {
-    writeFileSync(envPath, readFileSync(envExample, "utf8"));
+    writeFileSync(envPath, applyNetworkToEnv(readFileSync(envExample, "utf8"), options.network ?? "testnet"));
   }
 
   let installed = false;
