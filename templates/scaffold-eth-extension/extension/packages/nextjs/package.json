@@ -1,5 +1,5 @@
 {
   "dependencies": {
-    "@qorechain/evm": "^0.13.0"
+    "@qorechain/evm": "^0.14.0"
   }
 }

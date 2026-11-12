@@ -5,10 +5,13 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased] (chain v3.2.8)
+## [0.14.0] - 2026-11-12
 
-Support for chain v3.2.8 in all five SDKs. Publish only after the target network
-runs v3.2.8.
+Support for chain v3.2.8 (the testnet `qorechain-diana` runs it from 12 November
+2026) in all five SDKs, with `@qorechain/react`, `@qorechain/evm`,
+`@qorechain/svm` and `create-qorechain-dapp`. The new rules below apply on a
+network once it runs v3.2.8; on earlier networks the new fields stay optional.
+`create-qorechain-dapp` also carries the 0.13.1 template fixes.
 
 ### Changed (breaking)
 
