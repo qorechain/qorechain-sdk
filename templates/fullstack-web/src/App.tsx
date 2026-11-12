@@ -4,7 +4,7 @@ import { createClient, type QoreChainClient } from "@qorechain/sdk";
 
 // Endpoints come from Vite env vars (VITE_-prefixed), with localhost defaults so
 // the app runs out of the box against a local node. Override in `.env`.
-const REST_URL = import.meta.env.VITE_QORE_REST_URL ?? "http://localhost:1317";
+const REST_URL = import.meta.env.VITE_QORE_REST_URL ?? "/lcd";
 const EVM_RPC_URL =
   import.meta.env.VITE_QORE_EVM_RPC_URL ?? "http://localhost:8545";
 

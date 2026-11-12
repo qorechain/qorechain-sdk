@@ -128,7 +128,8 @@ function nextSteps(
 ): string {
   const lines: string[] = [`cd ${dir}`];
   if (!installed) lines.push(`${pm} install`);
-  const run = pm === "npm" ? "npm run" : pm;
+  // Always "<pm> run": `pnpm deploy` is a pnpm built-in, not the script.
+  const run = `${pm} run`;
   if (template === "fullstack-web" || template === "viem-wagmi") {
     lines.push(`${run} dev`);
   } else if (template === "foundry") {

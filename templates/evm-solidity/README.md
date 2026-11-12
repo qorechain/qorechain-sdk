@@ -30,7 +30,7 @@ cp .env.example .env   # the scaffolder already does this for you
 $EDITOR .env
 ```
 
-`pnpm deploy` reads `.env` itself. The scaffolder fills in the public endpoint
+`pnpm run deploy` reads `.env` itself. The scaffolder fills in the public endpoint
 of the network you chose.
 
 Environment variables (see `.env.example`):
@@ -44,7 +44,7 @@ Environment variables (see `.env.example`):
 ## Run
 
 ```sh
-pnpm deploy
+pnpm run deploy   # not `pnpm deploy`, a pnpm built-in
 ```
 
 This deploys `Counter`, prints the deployed address, reads `count()`, calls
@@ -63,7 +63,7 @@ scripts/
 ## Compiling the contract
 
 To keep the toolchain light, this template ships a **pre-compiled artifact**
-(`contracts/Counter.artifact.ts`) so `pnpm deploy` works without a Solidity
+(`contracts/Counter.artifact.ts`) so `pnpm run deploy` works without a Solidity
 build pipeline. If you edit `Counter.sol`, regenerate the artifact with `solc`:
 
 ```sh

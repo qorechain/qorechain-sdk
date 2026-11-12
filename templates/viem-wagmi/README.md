@@ -17,6 +17,11 @@ pnpm dev        # http://localhost:5173
 pnpm build      # type-check and build for production
 ```
 
+The EVM window panel reads the chain's REST API, which sends no CORS headers, so
+the dev and preview servers forward `/lcd-testnet` and `/lcd-mainnet` to it
+(`vite.config.ts`). For production, serve the app behind a proxy that does the
+same.
+
 ## Networks
 
 `src/wagmi.ts` lists both QoreChain EVM chains, testnet first:

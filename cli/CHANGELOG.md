@@ -12,6 +12,10 @@
 - `viem-wagmi` pins viem to `~2.53.1`, so `build` and `typecheck` pass again.
 - `hardhat` README: wait about 10 seconds after opening the window before
   deploying with Ignition.
+- `fullstack-web` and `viem-wagmi` reach the REST API through the Vite dev and
+  preview server (`/lcd`), since the public REST endpoints send no CORS headers.
+- "Next steps" and the `evm-solidity` README say `pnpm run deploy`
+  (`pnpm deploy` is a pnpm built-in).
 
 ## 0.11.0
 
