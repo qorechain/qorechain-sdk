@@ -157,15 +157,88 @@ public final class Authenticator {
     }
 
     /**
-     * The {@code MsgExecuteEVM} digest the network verifies now: {@code "v2"} once
-     * it has applied v3.2.3, {@code "v1"} before. A transport failure propagates -
-     * never guess, the other form is refused.
+     * The protocol feature switch that moves {@code MsgExecuteEVM} to the v2 digest
+     * ({@link #evmAuthSignBytesV2}).
+     */
+    public static final String ABSTRACTACCOUNT_HARDENING_FEATURE = "abstractaccount-hardening";
+
+    /** How long an answer of {@link #evmAuthDigestVersion} is reused, in ms. */
+    public static final long EVM_AUTH_DIGEST_TTL_MS = 60_000L;
+
+    /** Successful answers only, per {@code cacheKey}: {1 = v2 / 0 = v1, expiresAt}. */
+    private static final java.util.Map<String, long[]> DIGEST_CACHE =
+            new java.util.concurrent.ConcurrentHashMap<>();
+
+    /** Forget the cached {@link #evmAuthDigestVersion} answers (tests, network switches). */
+    public static void clearEvmAuthDigestCache() {
+        DIGEST_CACHE.clear();
+    }
+
+    /**
+     * The {@code MsgExecuteEVM} digest the network verifies now, {@code "v2"} or
+     * {@code "v1"}.
+     *
+     * <ul>
+     *   <li>HTTP 200 listing {@link #ABSTRACTACCOUNT_HARDENING_FEATURE}
+     *       ({@code /qorechain/pqc/v1/protocol_features}): {@code "v2"} when it is
+     *       enabled, {@code "v1"} when it is disabled; no plan is asked. This covers a
+     *       fork, a fresh devnet or a fest chain that runs the new rules from genesis and
+     *       answers {@code applied_plan} height 0.
+     *   <li>The node definitively does not serve the switch (HTTP 404 or 501, an empty
+     *       feature list, or a list without that name): {@code "v2"} when the
+     *       {@code v3.2.3} plan is applied, else {@code "v1"}.
+     *   <li>Anything else (transport failure, timeout, HTTP 429, HTTP 5xx other than
+     *       501, an unreadable body):
+     *       {@link io.github.qorechain.query.ProtocolFeatures.FeatureQueryException}. The
+     *       plan is not asked and no version is guessed: the other form is refused. Sign
+     *       with {@link #evmAuthSignBytes} or {@link #evmAuthSignBytesV2} directly to
+     *       choose the version yourself.
+     * </ul>
+     *
+     * <p>Answers are cached under {@code cacheKey} (the network's REST URL) for
+     * {@link #EVM_AUTH_DIGEST_TTL_MS}; failures are not cached. {@code null} asks the
+     * node every time.
+     *
+     * @throws io.github.qorechain.query.ProtocolFeatures.FeatureQueryException when the
+     *     network could not be asked.
      */
     public static String evmAuthDigestVersion(io.github.qorechain.query.RestClient rest, String cacheKey) {
-        return io.github.qorechain.query.ChainUpgrades.isApplied(
-                        rest, io.github.qorechain.query.ChainUpgrades.V3_2_3, cacheKey)
-                ? "v2"
-                : "v1";
+        long now = System.currentTimeMillis();
+        if (cacheKey != null) {
+            long[] hit = DIGEST_CACHE.get(cacheKey);
+            if (hit != null && now < hit[1]) {
+                return hit[0] == 1L ? "v2" : "v1";
+            }
+        }
+        io.github.qorechain.query.ProtocolFeatures.Lookup l =
+                io.github.qorechain.query.ProtocolFeatures.lookup(rest, ABSTRACTACCOUNT_HARDENING_FEATURE);
+        boolean v2;
+        switch (l.state) {
+            case ENABLED:
+                v2 = true;
+                break;
+            case DISABLED:
+                v2 = false;
+                break;
+            case NOT_SERVED:
+                v2 = io.github.qorechain.query.ChainUpgrades.isApplied(
+                        rest, io.github.qorechain.query.ChainUpgrades.V3_2_3, cacheKey);
+                break;
+            default:
+                throw new io.github.qorechain.query.ProtocolFeatures.FeatureQueryException(
+                        "cannot ask the network for its protocol feature \""
+                                + ABSTRACTACCOUNT_HARDENING_FEATURE
+                                + "\" ("
+                                + l.reason()
+                                + "); the network could not be asked which MsgExecuteEVM digest it"
+                                + " verifies, so it is not guessed: retry, or sign with an explicit"
+                                + " version (evmAuthSignBytes for v1, evmAuthSignBytesV2 for v2)",
+                        l.error);
+        }
+        if (cacheKey != null) {
+            DIGEST_CACHE.put(cacheKey, new long[] {v2 ? 1L : 0L, now + EVM_AUTH_DIGEST_TTL_MS});
+        }
+        return v2 ? "v2" : "v1";
     }
 
     /** A linked key's sequence, from {@link #fetchAuthNonce}. */

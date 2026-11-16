@@ -17,6 +17,8 @@ import io.github.qorechain.pqc.PqcDx;
 import io.github.qorechain.query.ChainUpgrades;
 import io.github.qorechain.query.Http;
 import io.github.qorechain.query.ProtocolFeatures;
+import io.github.qorechain.query.RestClient;
+import io.github.qorechain.tx.Authenticator;
 import io.github.qorechain.tx.Broadcaster;
 import io.github.qorechain.tx.SignBytes;
 import io.github.qorechain.tx.SignBytes.Version;
@@ -68,6 +70,7 @@ class ProtocolFeaturesFirstTest {
     @BeforeEach
     void start() throws IOException {
         PqcDx.clearProofOfPossessionCache();
+        Authenticator.clearEvmAuthDigestCache();
         ChainUpgrades.clearCache();
         server = HttpServer.create(new InetSocketAddress("127.0.0.1", 0), 0);
         server.createContext(
@@ -100,6 +103,7 @@ class ProtocolFeaturesFirstTest {
     void stop() {
         server.stop(0);
         PqcDx.clearProofOfPossessionCache();
+        Authenticator.clearEvmAuthDigestCache();
         ChainUpgrades.clearCache();
     }
 
@@ -470,5 +474,91 @@ class ProtocolFeaturesFirstTest {
 
         assertEquals(0, featureRequests.get());
         assertEquals(0, planRequests.get());
+    }
+
+    // ---- (C) MsgExecuteEVM digest version ----
+
+    private static final String HARDENING = Authenticator.ABSTRACTACCOUNT_HARDENING_FEATURE;
+
+    private String digest(String rest) {
+        return Authenticator.evmAuthDigestVersion(new RestClient(rest), rest);
+    }
+
+    @Test
+    void hardeningFeatureNameMatchesTheChain() {
+        assertEquals("abstractaccount-hardening", HARDENING);
+    }
+
+    @Test
+    void evmDigestFeatureEnabledIsV2WithoutPlan() {
+        serve(200, features(OTHER, feature(HARDENING, true)));
+        assertEquals("v2", digest(baseUrl));
+        assertEquals(0, planRequests.get());
+    }
+
+    @Test
+    void evmDigestFeatureDisabledIsV1WithoutPlan() {
+        serve(200, features(feature(HARDENING, false)));
+        planHeight = "6000000";
+        assertEquals("v1", digest(baseUrl));
+        assertEquals(0, planRequests.get());
+    }
+
+    @Test
+    void evmDigestNotServedFallsBackToPlan() {
+        String[][] cases = {
+            {"200", features(OTHER)}, {"200", features()}, {"200", "{}"},
+            {"404", NOT_IMPLEMENTED}, {"501", NOT_IMPLEMENTED}
+        };
+        for (String[] c : cases) {
+            for (String height : new String[] {"6000000", "0"}) {
+                Authenticator.clearEvmAuthDigestCache();
+                ChainUpgrades.clearCache();
+                planRequests.set(0);
+                serve(Integer.parseInt(c[0]), c[1]);
+                planHeight = height;
+                assertEquals(
+                        height.equals("0") ? "v1" : "v2",
+                        digest(baseUrl),
+                        "HTTP " + c[0] + " " + c[1] + ", plan " + height);
+                assertEquals(1, planRequests.get());
+            }
+        }
+    }
+
+    @Test
+    void evmDigestServerErrorThrowsWithoutPlan() {
+        serve(500, "{\"message\":\"busy\"}");
+        planHeight = "6000000";
+        ProtocolFeatures.FeatureQueryException e =
+                assertThrows(ProtocolFeatures.FeatureQueryException.class, () -> digest(baseUrl));
+        assertTrue(e.getMessage().contains("could not be asked"));
+        assertTrue(e.getMessage().contains("evmAuthSignBytesV2"));
+        assertEquals(0, planRequests.get());
+    }
+
+    @Test
+    void evmDigestConnectionRefusedThrows() throws IOException {
+        String dead = deadUrl();
+        assertThrows(ProtocolFeatures.FeatureQueryException.class, () -> digest(dead));
+    }
+
+    @Test
+    void evmDigestAnswerCachedWithinTtlErrorsNot() {
+        // A failure is not cached.
+        serve(500, "{}");
+        assertThrows(ProtocolFeatures.FeatureQueryException.class, () -> digest(baseUrl));
+        int afterError = featureRequests.get();
+        serve(200, features(feature(HARDENING, true)));
+        assertEquals("v2", digest(baseUrl));
+        assertEquals(afterError + 1, featureRequests.get());
+        // Within the TTL the answer is reused, even through a hiccup.
+        serve(500, "{}");
+        assertEquals("v2", digest(baseUrl));
+        assertEquals(afterError + 1, featureRequests.get());
+        // No cache key: asked every time.
+        assertThrows(
+                ProtocolFeatures.FeatureQueryException.class,
+                () -> Authenticator.evmAuthDigestVersion(new RestClient(baseUrl), null));
     }
 }
