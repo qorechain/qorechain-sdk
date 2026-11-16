@@ -97,6 +97,14 @@ range is checked before anything is signed. The call holds an escrow of
 refunded for what it did not use when it finishes, pays a queue-slot fee, and a
 sender may have at most 100 calls pending.
 
+The two fields exist from chain v3.2.8; a node below it cannot read them and
+refuses the whole transaction. Before signing, the SDK checks the network's
+protocol feature switches (`crossvm-async-gas-priced` for `asyncGasLimit`,
+`crossvm-async-escrow` for `asyncMaxFactor`) and stops with a clear "requires
+chain v3.2.8" error when the switch is not on. Leave both fields 0 on such a
+network. The check needs the network's REST endpoint (it is used for hybrid
+signing anyway); `skipFeatureCheck: true` skips it.
+
 ### Gas: use simulation
 
 The first call of a contract code in a block costs much more than a repeat (a

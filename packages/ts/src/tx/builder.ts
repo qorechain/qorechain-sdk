@@ -49,6 +49,7 @@ import type { SignBytesVersionOption } from "./signbytes";
 import type { PqcKeypair } from "../accounts/pqc";
 import type { FetchLike } from "../query/http";
 import { CHAIN_UPGRADE_V3_2_5, isUpgradeApplied } from "./upgrades";
+import { lookupProtocolFeature } from "../pqc/protocol-features";
 import { QueryAppliedPlanRequest, QueryAppliedPlanResponse } from "cosmjs-types/cosmos/upgrade/v1beta1/query";
 
 /** The `/cosmos.bank.v1beta1.MsgSend` type URL. */
@@ -304,6 +305,80 @@ export interface SignAndBroadcastOptions {
    * applied to the simulated gas to compute the fee.
    */
   autoFee?: AutoFeeOptions;
+  /**
+   * Skip the check that the network supports the `MsgCrossVMCall` async
+   * fields set in the transaction (see {@link assertCrossVmAsyncFieldsSupported}).
+   * Only for a network known to run chain v3.2.8 or later.
+   */
+  skipFeatureCheck?: boolean;
+}
+
+/** The switch a node lists when it understands `MsgCrossVMCall.async_gas_limit` (field 8, chain v3.2.8). */
+export const CROSSVM_ASYNC_GAS_PRICED_FEATURE = "crossvm-async-gas-priced";
+/** The switch a node lists when it understands `MsgCrossVMCall.async_max_factor` (field 9, chain v3.2.8). */
+export const CROSSVM_ASYNC_ESCROW_FEATURE = "crossvm-async-escrow";
+
+const crossVmFeatureCache = new Map<string, number>();
+
+/** Forget cached answers of {@link assertCrossVmAsyncFieldsSupported}. */
+export function clearCrossVmFeatureCache(): void {
+  crossVmFeatureCache.clear();
+}
+
+const isNonZero = (v: unknown): boolean => {
+  if (v === undefined || v === null || v === "") return false;
+  try {
+    return BigInt(String(v)) !== 0n;
+  } catch {
+    return true;
+  }
+};
+
+/**
+ * Before signing: a node below chain v3.2.8 does not know the `MsgCrossVMCall`
+ * fields `async_gas_limit` (8) and `async_max_factor` (9) and refuses the whole
+ * transaction with an unclear decoding error. When a message sets one of them,
+ * this reads the network's protocol feature switches and throws a clear error
+ * unless the matching switch ({@link CROSSVM_ASYNC_GAS_PRICED_FEATURE},
+ * {@link CROSSVM_ASYNC_ESCROW_FEATURE}) is on. A node that does not serve the
+ * switches is older than v3.2.8, so it is refused too. Nothing is asked when
+ * no message sets the fields. Answers are cached per REST URL for 60 s.
+ *
+ * @throws when a field is set and the network does not support it, when no
+ *   `rest` is known, or when the network cannot be asked.
+ */
+export async function assertCrossVmAsyncFieldsSupported(
+  messages: readonly EncodeObject[],
+  opts: { rest?: string; fetch?: FetchLike },
+): Promise<void> {
+  const needed: Array<[string, string, number]> = [];
+  for (const m of messages) {
+    if (m.typeUrl !== "/qorechain.crossvm.v1.MsgCrossVMCall") continue;
+    const v = (m.value ?? {}) as { asyncGasLimit?: unknown; asyncMaxFactor?: unknown };
+    if (isNonZero(v.asyncGasLimit)) needed.push(["async_gas_limit", CROSSVM_ASYNC_GAS_PRICED_FEATURE, 8]);
+    if (isNonZero(v.asyncMaxFactor)) needed.push(["async_max_factor", CROSSVM_ASYNC_ESCROW_FEATURE, 9]);
+  }
+  if (needed.length === 0) return;
+  if (!opts.rest) {
+    throw new Error(
+      `MsgCrossVMCall ${needed[0]![0]} (field ${needed[0]![2]}) needs chain v3.2.8, and no REST URL is known to check ` +
+        "the network: connect with the network's REST endpoint, leave the field 0, or pass skipFeatureCheck: true",
+    );
+  }
+  const rest = opts.rest.replace(/\/+$/, "");
+  for (const [field, feature, num] of needed) {
+    const key = `${rest}|${feature}`;
+    const at = crossVmFeatureCache.get(key);
+    if (at !== undefined && Date.now() - at < 60_000) continue;
+    const state = await lookupProtocolFeature({ rest, name: feature, fetch: opts.fetch });
+    if (state !== "enabled") {
+      throw new Error(
+        `MsgCrossVMCall ${field} (field ${num}) requires chain v3.2.8 (switch ${feature} is not on at ${rest}); ` +
+          "leave it 0 on this network",
+      );
+    }
+    crossVmFeatureCache.set(key, Date.now());
+  }
 }
 
 /** Options for {@link TxClient.simulate}. */
@@ -654,6 +729,9 @@ export class TxClient {
     // simulated one, or from what it passed in.
     const msgs = cloneMessages(messages);
     const feeInput: FeeInput = fee === "auto" ? fee : cloneDeep(fee);
+    if (!opts.skipFeatureCheck) {
+      await assertCrossVmAsyncFieldsSupported(msgs, { rest: this.hybrid?.rest, fetch: this.hybrid?.fetch });
+    }
     const resolvedFee = await this.resolveFee(msgs, feeInput, memo, opts.autoFee);
     checkCosmosGasLimit(resolvedFee.gas);
 

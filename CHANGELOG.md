@@ -30,6 +30,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **`MsgExecuteEVM` digest from its switch.** The v1/v2 authenticator digest
   choice reads `abstractaccount-hardening` first (on: v2), with the same
   fallback and error rules, in all five SDKs.
+- **Cross-VM async fields checked before signing.** A `MsgCrossVMCall` that
+  sets `async_gas_limit` (field 8) or `async_max_factor` (field 9) needs chain
+  v3.2.8; the SDK reads `crossvm-async-gas-priced` / `crossvm-async-escrow`
+  first and stops with a clear "requires chain v3.2.8" error instead of the
+  node's decoding error. TypeScript: `assertCrossVmAsyncFieldsSupported`,
+  `skipFeatureCheck`.
 
 ### Fixed
 

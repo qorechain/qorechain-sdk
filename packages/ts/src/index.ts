@@ -285,6 +285,10 @@ export {
   EXACT_GAS_MULTIPLIER,
   EXACT_GAS_HEADROOM,
   exactHybridGas,
+  assertCrossVmAsyncFieldsSupported,
+  clearCrossVmFeatureCache,
+  CROSSVM_ASYNC_GAS_PRICED_FEATURE,
+  CROSSVM_ASYNC_ESCROW_FEATURE,
 } from "./tx/builder";
 export type {
   GasEstimate,
