@@ -7,6 +7,27 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- **Protocol feature switches first, in all five SDKs.** The automatic choice of
+  the hybrid sign-bytes form and of whether a PQC key registration carries a
+  proof of possession now read `/qorechain/pqc/v1/protocol_features` first
+  (`pqc-sign-bytes-v2`, `pqc-possession-flag`). The upgrade plans are asked
+  only when the node has no answer for the switch (HTTP 404 or 501, an empty
+  list, the switch not listed). A network error or another HTTP error is now
+  an error instead of a fallback: forks, fresh devnets and event chains report
+  the upgrade plans at height 0 while they run the new rules, so the fallback
+  chose the old form and the chain refused the transaction. An explicit
+  version, proof or skip still makes no request. New helpers: TypeScript
+  `lookupProtocolFeature`, `isProofOfPossessionExpected`; Python
+  `lookup_protocol_feature`, `ProofOfPossessionResolver`,
+  `ensure_pqc_registered(attach_proof_of_possession=...)`; Go
+  `ProofOfPossessionWanted`, `RegisterOptions.SkipProofOfPossession`; Rust
+  `ProofOfPossessionMode`, `ensure_pqc_registered_with`; Java
+  `PqcDx.proofOfPossessionAccepted`, `EnsureOptions.attachProofOfPossession`.
+  Rust `SignBytesResolver::fetch_version_from_protocol_features` now returns
+  `Result<Option<_>>`.
+
 ### Fixed
 
 - **TypeScript subscriptions close for good.** `createSubscriptionClient` opened
