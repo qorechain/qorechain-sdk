@@ -35,7 +35,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   v3.2.8; the SDK reads `crossvm-async-gas-priced` / `crossvm-async-escrow`
   first and stops with a clear "requires chain v3.2.8" error instead of the
   node's decoding error. TypeScript: `assertCrossVmAsyncFieldsSupported`,
-  `skipFeatureCheck`.
+  `skipFeatureCheck`; Go: `tx.RequireCrossVMAsyncSupport`, `SkipFeatureCheck`;
+  Python: `skip_feature_check`; Java: `Signer.skipAsyncFieldsCheck`; Rust:
+  `require_async_gas_supported`, and the offline `build_call` / `build_atomic`
+  refuse these fields (use `call()` or the `_unchecked` variants).
 
 ### Fixed
 
