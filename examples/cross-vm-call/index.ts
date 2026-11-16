@@ -13,7 +13,10 @@
  *
  * Messages are built offline regardless of connectivity (logged for inspection).
  * Actually broadcasting needs a reachable node and a FUNDED account; otherwise it
- * fails cleanly at broadcast.
+ * fails cleanly at broadcast. QoreChain requires a hybrid signature (secp256k1 +
+ * ML-DSA-87) from an account with a registered PQC key, so before broadcasting
+ * the example registers the account's key once (ensurePqcRegistered) and then
+ * signs hybrid (connectTx(signer, { pqcKeypair })).
  */
 
 import { connectComet } from "@cosmjs/tendermint-rpc";
@@ -22,7 +25,9 @@ import {
   connectQueryClients,
   createCrossVMClient,
   deriveNativeAccount,
+  derivePqcCanonical,
   directSignerFromPrivateKey,
+  ensurePqcRegistered,
 } from "@qorechain/sdk";
 
 const TEST_MNEMONIC =
@@ -60,7 +65,9 @@ async function main(): Promise<void> {
   console.log(`sender: ${account.address}`);
 
   const signer = await directSignerFromPrivateKey(account.privateKey, prefix);
-  const tx = await client.connectTx(signer);
+  // The account's ML-DSA-87 key; every transaction it sends is signed hybrid.
+  const pqcKeypair = derivePqcCanonical(account.address, mnemonic);
+  const tx = await client.connectTx(signer, { pqcKeypair });
 
   // The helper signs as `tx.senderAddress`; sourceVm defaults to "evm".
   const xvm = createCrossVMClient(tx);
@@ -82,6 +89,13 @@ async function main(): Promise<void> {
     tx.disconnect();
     return;
   }
+
+  // Register the PQC key once (the one message the chain accepts signed
+  // classically); nothing is sent when this key is already registered.
+  const classical = await client.connectTx(signer);
+  const reg = await ensurePqcRegistered(classical, { pqcKeypair, rest: restUrl });
+  console.log(reg.alreadyRegistered ? "PQC key: already registered" : `PQC key: registered now (tx ${reg.txHash ?? "?"})`);
+  classical.disconnect();
 
   // Single EVM call from a native account - payload ABI-encoded via viem.
   console.log("\nCalling an EVM contract from a native account...");
