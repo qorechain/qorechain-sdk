@@ -24,6 +24,7 @@ package pqcdx
 
 import (
 	"bytes"
+	"context"
 	"encoding/base64"
 	"encoding/hex"
 	"encoding/json"
@@ -434,11 +435,20 @@ type RegisterOptions struct {
 	Force bool
 	// ProofOfPossession is the key's proof of possession (chain v3.2.3), from
 	// messages.SignProofOfPossession. Optional on the chain today and due to
-	// become mandatory. A node below v3.2.3 refuses the whole transaction when
-	// it is set, so set it only once the network has applied v3.2.3.
-	// EnsurePQCRegistered signs it itself when Signer.RestURL is set and the
-	// network has applied v3.2.3; set it here to override.
+	// become mandatory. A node that does not read the field refuses the whole
+	// transaction when it is set. When set here it is sent as given, with no
+	// network query.
+	//
+	// When it is empty and SkipProofOfPossession is false, EnsurePQCRegistered
+	// decides with ProofOfPossessionWanted against Signer.RestURL: the
+	// protocol feature switch "pqc-possession-flag" first, the v3.2.3 applied
+	// plan only when the node says the switches cannot say, and an error (no
+	// guess) when the node cannot be asked. With no Signer.RestURL no proof is
+	// attached.
 	ProofOfPossession []byte
+	// SkipProofOfPossession sends the registration without a proof and makes
+	// no network query for it. Ignored when ProofOfPossession is set.
+	SkipProofOfPossession bool
 }
 
 // EnsureResult reports the outcome of EnsurePQCRegistered.
@@ -538,15 +548,16 @@ func (c *Client) EnsurePQCRegistered(opts RegisterOptions) (EnsureResult, error)
 		}
 	}
 	// From chain v3.2.3 the registration carries a proof that the registrant
-	// holds the key. Sign it once the network has applied v3.2.3, never before:
-	// a node below it refuses the whole transaction for the field.
+	// holds the key. Attach it only when the network reads the field
+	// (ProofOfPossessionWanted): a node that does not refuses the whole
+	// transaction for it.
 	pop := opts.ProofOfPossession
-	if len(pop) == 0 && c.signer.RestURL != "" {
-		applied, err := query.NewRestClient(c.signer.RestURL, nil).IsUpgradeApplied(query.ChainUpgradeV3_2_3)
+	if len(pop) == 0 && !opts.SkipProofOfPossession && c.signer.RestURL != "" {
+		want, err := ProofOfPossessionWanted(context.Background(), c.signer.RestURL, c.signer.ChainID)
 		if err != nil {
-			return EnsureResult{}, fmt.Errorf("pqcdx: cannot tell whether the network applied v3.2.3: %w", err)
+			return EnsureResult{}, err
 		}
-		if applied {
+		if want {
 			if pop, err = messages.SignProofOfPossession(c.signer.ChainID, c.signer.Account.Address, c.signer.PQCKeypair); err != nil {
 				return EnsureResult{}, err
 			}

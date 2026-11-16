@@ -635,28 +635,21 @@ func TestResolverFeatureEnabledIsV2WithoutAppliedPlan(t *testing.T) {
 	}
 }
 
-func TestResolverFeatureDisabledOrAbsentIsV1(t *testing.T) {
-	for name, body := range map[string]string{
-		"disabled": featuresBody(featureOther, featureV2Off),
-		"absent":   featuresBody(featureOther),
-	} {
-		t.Run(name, func(t *testing.T) {
-			// A plan record saying v2 must not override the features.
-			ps := newLegacyPlanServer(t, `{"height":"5746000"}`)
-			ps.setFeatures(http.StatusOK, body)
-			got, err := NewResolver(ResolverOptions{}).Resolve(context.Background(), ps.URL, "qorechain-diana", Auto)
-			if err != nil || got != V1 {
-				t.Fatalf("got %s, %v; want v1", got, err)
-			}
-			if n := ps.requests.Load(); n != 0 {
-				t.Fatalf("plan requests = %d, want 0", n)
-			}
-		})
+func TestResolverFeatureDisabledIsV1(t *testing.T) {
+	// A plan record saying v2 must not override the features.
+	ps := newLegacyPlanServer(t, `{"height":"5746000"}`)
+	ps.setFeatures(http.StatusOK, featuresBody(featureOther, featureV2Off))
+	got, err := NewResolver(ResolverOptions{}).Resolve(context.Background(), ps.URL, "qorechain-diana", Auto)
+	if err != nil || got != V1 {
+		t.Fatalf("got %s, %v; want v1", got, err)
+	}
+	if n := ps.requests.Load(); n != 0 {
+		t.Fatalf("plan requests = %d, want 0", n)
 	}
 }
 
-// A node that cannot answer the features falls back to the applied-plan logic,
-// with both outcomes as before.
+// A node that answers definitively that its switches cannot say falls back to
+// the applied-plan logic, with both outcomes as before.
 func TestResolverFeaturesUnusableFallsBackToPlans(t *testing.T) {
 	cases := []struct {
 		name   string
@@ -665,7 +658,7 @@ func TestResolverFeaturesUnusableFallsBackToPlans(t *testing.T) {
 	}{
 		{"404", 0, ""},
 		{"501", http.StatusNotImplemented, `{"code":12,"message":"Not Implemented"}`},
-		{"unparseable", http.StatusOK, `<html>`},
+		{"absent", http.StatusOK, featuresBody(featureOther)},
 		{"empty list", http.StatusOK, `{"features":[],"height":"1"}`},
 		{"no list", http.StatusOK, `{}`},
 	}
@@ -736,7 +729,7 @@ func TestVersionFromFeatures(t *testing.T) {
 	}{
 		{featuresBody(featureV2On), V2, true},
 		{featuresBody(featureV2Off), V1, true},
-		{featuresBody(featureOther), V1, true},
+		{featuresBody(featureOther), "", false},
 		{featuresBody(), "", false},
 		{`{}`, "", false},
 		{`not json`, "", false},

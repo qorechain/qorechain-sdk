@@ -26,9 +26,11 @@ import (
 // rotation or migration to a key the account used before is refused, and none
 // of the key-management messages may travel inside authz MsgExec.
 //
-// proof_of_possession is a new field: a node below v3.2.3 refuses the whole
-// transaction when it is set. Set it only once the network has applied v3.2.3
-// (query.RestClient.IsUpgradeApplied(query.ChainUpgradeV3_2_3)).
+// proof_of_possession is a new field: a node that does not read it refuses the
+// whole transaction when it is set. Set it only once the network reads it:
+// pqcdx.ProofOfPossessionWanted asks the protocol feature switch
+// "pqc-possession-flag" first and the v3.2.3 applied plan only when the node
+// says the switches cannot say.
 const (
 	// MLDSA87PublicKeyLength is the size of an ML-DSA-87 public key.
 	MLDSA87PublicKeyLength = 2592

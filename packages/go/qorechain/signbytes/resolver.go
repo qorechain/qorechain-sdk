@@ -16,8 +16,9 @@ import (
 
 // FeatureV2 is the protocol feature switch that moves a network to the v2
 // sign-bytes. The Resolver reads it first, from
-// GET {restURL}/qorechain/pqc/v1/protocol_features (chain v3.2.4 and later).
-const FeatureV2 = "pqc-sign-bytes-v2"
+// GET {restURL}/qorechain/pqc/v1/protocol_features (chain v3.2.4 and later),
+// and asks applied_plan only when the node answers that the switch cannot say.
+const FeatureV2 = query.FeatureSignBytesV2
 
 // DefaultTTL is how long a Resolver trusts a node's answer. It is short on
 // purpose: a network can apply one of V2Upgrades while a wallet or service is
@@ -41,8 +42,9 @@ type ResolverOptions struct {
 }
 
 // Resolver decides the sign-bytes version per network, asking the node (its
-// FeatureV2 protocol feature, else whether any of V2Upgrades has been applied)
-// when the chain id alone is not enough, and
+// FeatureV2 protocol feature, else, when the node says the switches cannot
+// say, whether any of V2Upgrades has been applied; an unreachable node is an
+// error) when the chain id alone is not enough, and
 // caching the answer per (REST URL, chain id) for a short TTL. It is safe for
 // concurrent use.
 type Resolver struct {
@@ -95,20 +97,29 @@ var DefaultResolver = NewResolver(ResolverOptions{})
 //   - Auto (or ""): a non-legacy chain is V2 with no network access. A legacy
 //     chain is first decided by its protocol feature switches,
 //     GET {restURL}/qorechain/pqc/v1/protocol_features: V2 when FeatureV2 is
-//     listed and enabled, V1 when the node lists its features and FeatureV2 is
-//     disabled or absent. This also covers a fresh network that reuses a legacy
-//     chain id: it enables every feature at genesis and applies no plan.
-//     Only when that query cannot answer (older node, transport error,
-//     unexpected or empty payload) is the chain decided by
+//     listed and enabled, V1 when it is listed and disabled, with no
+//     applied-plan request. This also covers a fork, a fresh devnet or a
+//     fest chain that reuses a legacy chain id: it runs the new rules with no
+//     upgrade plan applied, so applied_plan alone would pick the wrong form.
+//   - Only when the node answers definitively that the switches cannot say
+//     (HTTP 404, HTTP 501 / gateway code 12, an empty list, or FeatureV2 not
+//     listed) is the chain decided by
 //     GET {restURL}/cosmos/upgrade/v1beta1/applied_plan/{name} for every name in
 //     V2Upgrades, in order, stopping at the first that answers a height greater
 //     than zero (V2). A missing height counts as 0; V1 only when every name
-//     answers 0. The answer is cached for the TTL.
+//     answers 0.
+//   - When the features query fails any other way (transport error, timeout,
+//     HTTP 429 or 5xx other than 501, a body that is not the expected JSON),
+//     Resolve returns an error wrapping ErrUnresolvedVersion. It never falls
+//     back to applied_plan and never defaults to V1 then.
+//
+// A successful answer is cached per (REST URL, chain id) for the TTL; errors
+// are never cached, so the next call asks again.
 //
 // A legacy chain with an empty restURL, or a failed applied-plan query after
-// the features could not answer, returns an error
-// wrapping ErrUnresolvedVersion: pass a REST URL or an explicit V1 / V2. The
-// Resolver never guesses.
+// the features could not say, also returns an error wrapping
+// ErrUnresolvedVersion: pass a REST URL or an explicit V1 / V2. The Resolver
+// never guesses.
 func (r *Resolver) Resolve(ctx context.Context, restURL, chainID string, requested Version) (Version, error) {
 	return r.resolve(ctx, restURL, chainID, requested, false)
 }
@@ -168,8 +179,13 @@ func (r *Resolver) resolve(ctx context.Context, restURL, chainID string, request
 			return e.version, nil
 		}
 	}
-	v, ok := r.featuresVersion(ctx, base)
-	if !ok {
+	v, decided, ferr := r.featuresVersion(ctx, base)
+	if ferr != nil {
+		return "", fmt.Errorf("%w for chain %q: cannot ask %s for its protocol features (%v); "+
+			"the network could not be asked, so no version is guessed: retry, or pass "+
+			"signbytes.V1 or signbytes.V2 explicitly", ErrUnresolvedVersion, chainID, base, ferr)
+	}
+	if !decided {
 		height, err := r.appliedPlanHeight(ctx, base)
 		if err != nil {
 			return "", fmt.Errorf("%w for chain %q: cannot ask %s whether upgrade %s is applied (%v); "+
@@ -185,44 +201,43 @@ func (r *Resolver) resolve(ctx context.Context, restURL, chainID string, request
 	return v, nil
 }
 
-// featuresVersion reads the node's protocol feature switches. ok is false when
-// they cannot answer: the route is not served (below chain v3.2.4), the request
-// fails, or the payload is unexpected or lists no features. The caller then
-// falls back to the applied-plan query.
-func (r *Resolver) featuresVersion(ctx context.Context, base string) (v Version, ok bool) {
-	if ctx == nil {
-		ctx = context.Background()
+// featuresVersion reads FeatureV2 from the node's protocol feature switches
+// (query.FetchProtocolFeatureStatus). decided is false when the node answered
+// definitively that it cannot say (route not served, empty list, switch
+// absent): the caller then falls back to the applied-plan query. err is set
+// when the node could not be asked at all; the caller must then fail, never
+// fall back.
+func (r *Resolver) featuresVersion(ctx context.Context, base string) (v Version, decided bool, err error) {
+	st, err := query.FetchProtocolFeatureStatus(ctx, r.httpClient, base, FeatureV2)
+	switch st {
+	case query.FeatureStatusEnabled:
+		return V2, true, nil
+	case query.FeatureStatusDisabled:
+		return V1, true, nil
+	case query.FeatureStatusNotServed:
+		return "", false, nil
+	default:
+		if err == nil {
+			err = fmt.Errorf("protocol_features: no answer")
+		}
+		return "", false, err
 	}
-	req, err := http.NewRequestWithContext(ctx, http.MethodGet, base+query.ProtocolFeaturesPath, nil)
-	if err != nil {
-		return "", false
-	}
-	req.Header.Set("Accept", "application/json")
-	resp, err := r.httpClient.Do(req)
-	if err != nil {
-		return "", false
-	}
-	defer resp.Body.Close()
-	body, err := io.ReadAll(io.LimitReader(resp.Body, 1<<20))
-	if err != nil || resp.StatusCode < 200 || resp.StatusCode >= 300 {
-		return "", false
-	}
-	return VersionFromFeatures(body)
 }
 
 // VersionFromFeatures decides the version from a protocol_features response
-// body: V2 when FeatureV2 is listed and enabled, V1 when the body lists
-// features and FeatureV2 is disabled or absent. ok is false when the body
-// cannot be parsed or lists no features.
+// body: V2 when FeatureV2 is listed and enabled, V1 when it is listed and
+// disabled. ok is false when the body cannot be parsed, lists no features, or
+// does not list FeatureV2; the Resolver tells those apart (an unparsable body
+// is an error there, the others fall back to the applied-plan query).
 func VersionFromFeatures(body []byte) (v Version, ok bool) {
-	p, err := query.ParseProtocolFeatures(body)
-	if err != nil || p == nil || len(p.Features) == 0 {
-		return "", false
-	}
-	if p.Enabled(FeatureV2) {
+	st, _ := query.ClassifyProtocolFeature(200, body, FeatureV2)
+	switch st {
+	case query.FeatureStatusEnabled:
 		return V2, true
+	case query.FeatureStatusDisabled:
+		return V1, true
 	}
-	return V1, true
+	return "", false
 }
 
 // appliedPlanHeight asks the node about EVERY name in V2Upgrades and returns the
