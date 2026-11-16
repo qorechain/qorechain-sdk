@@ -19,19 +19,26 @@ import java.util.function.LongSupplier;
  *       network call.
  *   <li>{@link SignBytes.Mode#AUTO} on {@code qorechain-vladi} /
  *       {@code qorechain-diana} - first {@code GET
- *       {restUrl}/qorechain/pqc/v1/protocol_features} (chain v3.2.4 and later): v2 when
- *       {@link #PQC_SIGN_BYTES_V2_FEATURE} is listed and enabled, v1 when the node lists
- *       its features and that one is disabled or absent. This also covers a fresh
- *       network that reuses a legacy chain id: it enables every feature at genesis and
- *       never applies an upgrade plan. Only when that query cannot answer (older node,
- *       transport error, unexpected or empty payload): {@code GET
- *       {restUrl}/cosmos/upgrade/v1beta1/applied_plan/{name}} for <b>every</b> name in
- *       {@link SignBytes#SIGN_BYTES_V2_UPGRADES}, in order, then apply
- *       {@link SignBytes#versionFor}: the first name whose {@code {"height":"<n>"}} is
- *       numerically greater than 0 means v2 and the rest are not asked; v1 only when
- *       every name answers {@code "0"}, {@code {}} or no height at all. With no
- *       {@code restUrl}, or when any applied-plan query fails, this throws: it never
- *       guesses.
+ *       {restUrl}/qorechain/pqc/v1/protocol_features} (chain v3.2.4 and later),
+ *       classified by {@link ProtocolFeatures#lookup}:
+ *       <ul>
+ *         <li>HTTP 200 listing {@link #PQC_SIGN_BYTES_V2_FEATURE}: v2 when it is enabled,
+ *             v1 when it is disabled; no plan is asked. This also covers a fork, a fresh
+ *             devnet or a fest chain that reuses a legacy chain id: it runs the new rules
+ *             from genesis and answers {@code applied_plan} height 0.
+ *         <li>The node definitively does not serve the switch (HTTP 404 or 501, an empty
+ *             feature list, or a list without that name): {@code GET
+ *             {restUrl}/cosmos/upgrade/v1beta1/applied_plan/{name}} for <b>every</b> name
+ *             in {@link SignBytes#SIGN_BYTES_V2_UPGRADES}, in order, then
+ *             {@link SignBytes#versionFor}: the first name whose {@code {"height":"<n>"}}
+ *             is numerically greater than 0 means v2 and the rest are not asked; v1 only
+ *             when every name answers {@code "0"}, {@code {}} or no height at all.
+ *         <li>Anything else (transport failure, timeout, HTTP 429, HTTP 5xx other than
+ *             501, an unreadable body): {@link SignBytesResolutionException}. The plans
+ *             are NOT asked and v1 is never assumed: pass an explicit version instead.
+ *       </ul>
+ *       With no {@code restUrl}, or when any applied-plan query fails, this throws too:
+ *       it never guesses.
  * </ul>
  *
  * <p>Asking a single name is the bug this class exists to avoid: the switch to v2 ships
@@ -41,7 +48,9 @@ import java.util.function.LongSupplier;
  * Mainnet after its own upgrade costs one request; the testnet costs two.
  *
  * <p>Answers are cached per {@code (restUrl, chainId)} for {@link #DEFAULT_TTL_MS}
- * (configurable), since a network can upgrade while an application is running.
+ * (configurable), since a network can upgrade while an application is running. Only
+ * answers are cached, never failures: one hiccup does not fail every transaction for
+ * the TTL, and the next call asks again.
  * {@link #resolve(SignBytes.Mode, String, String, boolean)} with
  * {@code forceRefresh = true} bypasses and replaces the cached answer;
  * {@link #clearCache()} drops everything. Thread-safe.
@@ -145,8 +154,9 @@ public final class SignBytesResolver {
      *     legacy chain.
      * @param forceRefresh ignore (and replace) any cached answer.
      * @throws SignBytesResolutionException when AUTO on a legacy chain cannot be
-     *     answered (no {@code restUrl}, or the protocol features could not answer and
-     *     an applied-plan query failed: transport failure, unparsable response).
+     *     answered: no {@code restUrl}; the protocol features query failed for a reason
+     *     other than "not served" (see the class notes); or the features are not served
+     *     and an applied-plan query failed (transport failure, unparsable response).
      */
     public SignBytes.Version resolve(
             SignBytes.Mode mode, String chainId, String restUrl, boolean forceRefresh) {
@@ -200,41 +210,55 @@ public final class SignBytesResolver {
 
     /**
      * The version the node reports through its protocol feature switches, or
-     * {@code null} when they cannot answer (route not served, request failed,
-     * unexpected or empty payload); the caller then asks the upgrade plans.
+     * {@code null} when the node definitively does not serve the switch (the caller
+     * then asks the upgrade plans).
+     *
+     * @throws SignBytesResolutionException when the node could not be asked.
      */
     private SignBytes.Version fetchFeaturesVersion(String restUrl) {
-        JsonNode res;
-        try {
-            res = fetcher.get(restUrl, ProtocolFeatures.PATH);
-        } catch (Exception e) {
-            return null;
+        ProtocolFeatures.Lookup l =
+                ProtocolFeatures.lookup(
+                        PQC_SIGN_BYTES_V2_FEATURE, () -> fetcher.get(restUrl, ProtocolFeatures.PATH));
+        switch (l.state) {
+            case ENABLED:
+                return SignBytes.Version.V2;
+            case DISABLED:
+                return SignBytes.Version.V1;
+            case NOT_SERVED:
+                return null;
+            default:
+                throw new SignBytesResolutionException(
+                        "cannot ask "
+                                + restUrl
+                                + " for its protocol feature \""
+                                + PQC_SIGN_BYTES_V2_FEATURE
+                                + "\" ("
+                                + l.reason()
+                                + "); the network could not be asked, so the hybrid sign-bytes"
+                                + " version is not guessed: retry, or pass an explicit sign-bytes"
+                                + " version (V1 or V2)",
+                        l.error);
         }
-        return versionFromProtocolFeatures(res);
     }
 
     /**
      * The version a {@code protocol_features} payload implies: v2 when
-     * {@link #PQC_SIGN_BYTES_V2_FEATURE} is listed and enabled, v1 when the payload
-     * lists features and that one is disabled or absent, {@code null} when it is not
-     * an object, lists no features or cannot be parsed.
+     * {@link #PQC_SIGN_BYTES_V2_FEATURE} is listed and enabled, v1 when it is listed and
+     * disabled, {@code null} when the payload does not settle it (no features, that
+     * switch absent, or not a feature list). For the full classification, including
+     * the difference between "not served" and "unreadable", use
+     * {@link ProtocolFeatures#classify}.
      */
     public static SignBytes.Version versionFromProtocolFeatures(JsonNode body) {
-        if (body == null || !body.isObject()) {
-            return null;
+        ProtocolFeatures.Lookup l = ProtocolFeatures.classify(PQC_SIGN_BYTES_V2_FEATURE, body);
+        switch (l.state) {
+            case ENABLED:
+                return SignBytes.Version.V2;
+            case DISABLED:
+                return SignBytes.Version.V1;
+            default:
+                return null;
         }
-        ProtocolFeatures parsed;
-        try {
-            parsed = ProtocolFeatures.of(body);
-        } catch (RuntimeException e) {
-            return null;
-        }
-        if (parsed.features.isEmpty()) {
-            return null;
-        }
-        return parsed.isEnabled(PQC_SIGN_BYTES_V2_FEATURE)
-                ? SignBytes.Version.V2
-                : SignBytes.Version.V1;
     }
 
     /**

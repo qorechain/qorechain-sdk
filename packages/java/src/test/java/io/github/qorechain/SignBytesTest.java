@@ -544,32 +544,29 @@ class SignBytesTest {
         }
     }
 
+    /** Listed and disabled: v1, even when a plan record would say v2; no plan asked. */
     @Test
-    void resolverFeatureDisabledOrAbsentIsV1() {
-        for (String body :
-                List.of(featuresBody(FEATURE_OTHER, FEATURE_V2_OFF), featuresBody(FEATURE_OTHER))) {
-            // A plan record saying v2 must not override the features.
-            FakeFetcher f = FakeFetcher.legacyName("{\"height\":\"5746000\"}");
-            f.features = body;
-            SignBytesResolver r = new SignBytesResolver(f, 60_000, () -> 0L);
-            assertEquals(
-                    Version.V1, r.resolve(SignBytes.Mode.AUTO, "qorechain-diana", "http://rest"));
-            assertTrue(f.calls.isEmpty(), "no plan asked");
-        }
+    void resolverFeatureDisabledIsV1() {
+        FakeFetcher f = FakeFetcher.legacyName("{\"height\":\"5746000\"}");
+        f.features = featuresBody(FEATURE_OTHER, FEATURE_V2_OFF);
+        SignBytesResolver r = new SignBytesResolver(f, 60_000, () -> 0L);
+        assertEquals(Version.V1, r.resolve(SignBytes.Mode.AUTO, "qorechain-diana", "http://rest"));
+        assertTrue(f.calls.isEmpty(), "no plan asked");
     }
 
-    /** A node that cannot answer the features falls back to the plans, both outcomes as before. */
+    /**
+     * The node definitively does not serve the switch (HTTP 404, an empty list, a list
+     * without it): the plans decide, both outcomes.
+     */
     @Test
-    void resolverFeaturesUnusableFallsBackToPlans() {
-        List<String> unusable =
+    void resolverFeaturesNotServedFallsBackToPlans() {
+        List<String> notServed =
                 Arrays.asList(
                         null, // HTTP 404
-                        "[\"unexpected\"]",
-                        "\"text\"",
                         "{\"features\":[],\"height\":\"1\"}",
                         "{}",
-                        "{\"features\":[" + FEATURE_V2_ON + "],\"height\":\"x\"}");
-        for (String features : unusable) {
+                        featuresBody(FEATURE_OTHER));
+        for (String features : notServed) {
             for (String[] c :
                     new String[][] {{"{\"height\":\"5746000\"}", "V2"}, {"{\"height\":\"0\"}", "V1"}}) {
                 FakeFetcher f = FakeFetcher.legacyName(c[0]);
@@ -585,8 +582,32 @@ class SignBytesTest {
         }
     }
 
+    /** An unreadable features body is an error: no plan asked, no guess. */
     @Test
-    void resolverFeaturesTransportFailureFallsBackToPlans() {
+    void resolverFeaturesUnreadableThrows() {
+        List<String> unreadable =
+                List.of(
+                        "[\"unexpected\"]",
+                        "\"text\"",
+                        "{\"features\":\"x\"}",
+                        "{\"features\":[" + FEATURE_V2_ON + "],\"height\":\"x\"}");
+        for (String features : unreadable) {
+            FakeFetcher f = FakeFetcher.legacyName("{\"height\":\"5746000\"}");
+            f.features = features;
+            SignBytesResolver r = new SignBytesResolver(f, 60_000, () -> 0L);
+            SignBytesResolver.SignBytesResolutionException e =
+                    assertThrows(
+                            SignBytesResolver.SignBytesResolutionException.class,
+                            () -> r.resolve(SignBytes.Mode.AUTO, "qorechain-diana", "http://rest"),
+                            "features " + features);
+            assertTrue(e.getMessage().contains("explicit sign-bytes version"));
+            assertTrue(f.calls.isEmpty(), "no plan asked for " + features);
+        }
+    }
+
+    /** A transport failure on the features query is an error, never a fallback. */
+    @Test
+    void resolverFeaturesTransportFailureThrows() {
         FakeFetcher f =
                 new FakeFetcher() {
                     @Override
@@ -599,8 +620,12 @@ class SignBytesTest {
                 };
         f.plans.put(PRIMARY_NAME, "{\"height\":\"7000000\"}");
         SignBytesResolver r = new SignBytesResolver(f, 60_000, () -> 0L);
-        assertEquals(Version.V2, r.resolve(SignBytes.Mode.AUTO, "qorechain-vladi", "http://rest"));
-        assertEquals(1, f.calls.size());
+        SignBytesResolver.SignBytesResolutionException e =
+                assertThrows(
+                        SignBytesResolver.SignBytesResolutionException.class,
+                        () -> r.resolve(SignBytes.Mode.AUTO, "qorechain-vladi", "http://rest"));
+        assertTrue(e.getMessage().contains("could not be asked"));
+        assertTrue(f.calls.isEmpty(), "no plan asked");
     }
 
     @Test
@@ -634,8 +659,9 @@ class SignBytesTest {
                 Version.V1,
                 SignBytesResolver.versionFromProtocolFeatures(
                         MAPPER.readTree(featuresBody(FEATURE_V2_OFF))));
+        // Absent: not settled by the features (the plans decide).
         assertEquals(
-                Version.V1,
+                null,
                 SignBytesResolver.versionFromProtocolFeatures(
                         MAPPER.readTree(featuresBody(FEATURE_OTHER))));
         assertEquals(

@@ -27,14 +27,22 @@ import java.nio.charset.StandardCharsets;
  * of the key-management messages may travel inside authz {@code MsgExec}.
  *
  * <p>{@code proof_of_possession} is a new field: a node below v3.2.3 refuses the
- * whole transaction when it is set. Set it only once the network has applied
- * v3.2.3 ({@code ChainUpgrades.isApplied(rest, ChainUpgrades.V3_2_3, ...)}).
+ * whole transaction when it is set. Set it only once the network accepts it: the
+ * protocol feature switch {@link #POSSESSION_FLAG_FEATURE} when the node serves it,
+ * else the applied v3.2.3 plan ({@code ChainUpgrades.isApplied(rest,
+ * ChainUpgrades.V3_2_3, ...)}). {@code PqcDx.ensurePqcRegistered} makes that choice.
  */
 public final class KeyIntegrity {
     private KeyIntegrity() {}
 
     /** The key type the chain refuses from v3.2.3. */
     public static final String KEY_TYPE_CLASSICAL_ONLY = "classical_only";
+
+    /**
+     * The protocol feature switch that says the network accepts (and records) a
+     * {@code proof_of_possession} on PQC key registration.
+     */
+    public static final String POSSESSION_FLAG_FEATURE = "pqc-possession-flag";
 
     /** Domain of the proof-of-possession sign-bytes. */
     public static final String PROOF_OF_POSSESSION_DOMAIN = "qorechain-pqc-pop-v1";

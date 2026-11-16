@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.google.protobuf.ByteString;
 import io.github.qorechain.messages.QorechainMessages;
 import io.github.qorechain.messages.TypedMessage;
+import io.github.qorechain.query.ProtocolFeatures;
 import io.github.qorechain.query.QorClient;
 import io.github.qorechain.tx.AutoGas;
 import io.github.qorechain.tx.Broadcaster;
@@ -153,9 +154,18 @@ public final class PqcDx {
          * The key's proof of possession (chain v3.2.3), from
          * {@link KeyIntegrity#signProofOfPossession}. Optional on the chain today and
          * due to become mandatory. A node below v3.2.3 refuses the whole transaction
-         * when it is set, so set it only once the network has applied v3.2.3.
+         * when it is set, so set it only once the network accepts it. When set, it is
+         * attached as given and the network is not asked.
          */
         public byte[] proofOfPossession;
+        /**
+         * Whether {@link #ensurePqcRegistered} signs and attaches a proof of possession
+         * when {@link #proofOfPossession} is not set. {@code null} (default) asks the
+         * network (see {@link #ensurePqcRegistered}); {@code TRUE} always signs and
+         * attaches it; {@code FALSE} never does. Either explicit value skips the network
+         * call.
+         */
+        public Boolean attachProofOfPossession;
         /**
          * A pre-read status to avoid a redundant {@code qor_getPQCKeyStatus} round-trip.
          * When provided and {@code registered}, the registration is skipped.
@@ -441,6 +451,15 @@ public final class PqcDx {
      * with the signer's Dilithium public key plus the supplied (or signer's) ECDSA
      * public key.
      *
+     * <p>Proof of possession: an {@code opts.proofOfPossession} is attached as given;
+     * {@code opts.attachProofOfPossession} {@code TRUE} / {@code FALSE} signs one or
+     * leaves it out, with no network call. Otherwise, with {@code signer.restUrl} set,
+     * the network decides ({@link #proofOfPossessionAccepted}): the protocol feature
+     * switch {@link KeyIntegrity#POSSESSION_FLAG_FEATURE} first (on: attach, off: do
+     * not), the applied {@code v3.2.3} plan only when the node definitively does not
+     * serve that switch, and a {@link ProtocolFeatures.FeatureQueryException} when the
+     * node could not be asked. Without {@code signer.restUrl} no proof is attached.
+     *
      * <p>This is the single call that registers the signer's ML-DSA-87 key: run it
      * once at startup (or before the first hybrid tx) and the account is
      * PQC-registered.
@@ -494,20 +513,16 @@ public final class PqcDx {
         }
 
         // From chain v3.2.3 the registration carries a proof that the registrant
-        // holds the key. Sign it once the network has applied v3.2.3, never
-        // before: a node below it refuses the whole transaction for the field.
+        // holds the key. Sign it once the network accepts it, never before: a node
+        // below it refuses the whole transaction for the field.
         if ((o.proofOfPossession == null || o.proofOfPossession.length == 0)
-                && signer.restUrl != null
-                && !signer.restUrl.isEmpty()
-                && io.github.qorechain.query.ChainUpgrades.isApplied(
-                        new io.github.qorechain.query.RestClient(signer.restUrl),
-                        io.github.qorechain.query.ChainUpgrades.V3_2_3,
-                        signer.restUrl)) {
+                && shouldAttachProofOfPossession(signer, o)) {
             EnsureOptions withProof = new EnsureOptions();
             withProof.ecdsaPubkey = o.ecdsaPubkey;
             withProof.keyType = o.keyType;
             withProof.status = o.status;
             withProof.force = o.force;
+            withProof.attachProofOfPossession = o.attachProofOfPossession;
             withProof.proofOfPossession =
                     KeyIntegrity.signProofOfPossession(signer.chainId, signer.sender, signer.pqcKeypair);
             o = withProof;
@@ -552,6 +567,88 @@ public final class PqcDx {
             throw e;
         }
         return new EnsureResult(false, null, result.transactionHash, result);
+    }
+
+    /** How long an answer of {@link #proofOfPossessionAccepted} is reused, in ms. */
+    public static final long PROOF_OF_POSSESSION_TTL_MS = 60_000L;
+
+    /** Successful answers only, per {@code (restUrl, chainId)}: {answer (0/1), expiresAt}. */
+    private static final Map<String, long[]> POP_CACHE = new ConcurrentHashMap<>();
+
+    /** Forget the cached proof-of-possession answers (tests, network switches). */
+    public static void clearProofOfPossessionCache() {
+        POP_CACHE.clear();
+    }
+
+    private static boolean shouldAttachProofOfPossession(Signer signer, EnsureOptions o) {
+        if (o.attachProofOfPossession != null) {
+            return o.attachProofOfPossession;
+        }
+        if (!hasRest(signer)) {
+            return false;
+        }
+        return proofOfPossessionAccepted(signer.restUrl, signer.chainId);
+    }
+
+    /**
+     * Whether the network behind {@code restUrl} accepts a {@code proof_of_possession}
+     * on {@code MsgRegisterPQCKeyV2}.
+     *
+     * <ul>
+     *   <li>HTTP 200 listing {@link KeyIntegrity#POSSESSION_FLAG_FEATURE}: its
+     *       {@code enabled} value; no plan is asked.
+     *   <li>The node definitively does not serve the switch (HTTP 404 or 501, an empty
+     *       feature list, or a list without that name): whether the {@code v3.2.3} plan
+     *       is applied ({@link io.github.qorechain.query.ChainUpgrades#isApplied}).
+     *   <li>Anything else (transport failure, timeout, HTTP 429, HTTP 5xx other than
+     *       501, an unreadable body): {@link ProtocolFeatures.FeatureQueryException}. The
+     *       plan is not asked and "no proof" is never assumed.
+     * </ul>
+     *
+     * <p>Answers are cached per {@code (restUrl, chainId)} for
+     * {@link #PROOF_OF_POSSESSION_TTL_MS}; failures are not cached.
+     *
+     * @throws ProtocolFeatures.FeatureQueryException when the network could not be asked.
+     */
+    public static boolean proofOfPossessionAccepted(String restUrl, String chainId) {
+        String rest = restUrl.replaceAll("/+$", "");
+        String key = rest + "\u0000" + (chainId == null ? "" : chainId);
+        long now = System.currentTimeMillis();
+        long[] hit = POP_CACHE.get(key);
+        if (hit != null && now < hit[1]) {
+            return hit[0] == 1L;
+        }
+        io.github.qorechain.query.RestClient client = new io.github.qorechain.query.RestClient(rest);
+        ProtocolFeatures.Lookup l = ProtocolFeatures.lookup(client, KeyIntegrity.POSSESSION_FLAG_FEATURE);
+        boolean accepted;
+        switch (l.state) {
+            case ENABLED:
+                accepted = true;
+                break;
+            case DISABLED:
+                accepted = false;
+                break;
+            case NOT_SERVED:
+                accepted =
+                        io.github.qorechain.query.ChainUpgrades.isApplied(
+                                client, io.github.qorechain.query.ChainUpgrades.V3_2_3, rest);
+                break;
+            default:
+                throw new ProtocolFeatures.FeatureQueryException(
+                        "cannot ask "
+                                + rest
+                                + " for its protocol feature \""
+                                + KeyIntegrity.POSSESSION_FLAG_FEATURE
+                                + "\" ("
+                                + l.reason()
+                                + "); the network could not be asked whether it accepts a PQC proof"
+                                + " of possession, so it is not guessed: retry, or set"
+                                + " EnsureOptions.proofOfPossession, or attachProofOfPossession"
+                                + " (TRUE or FALSE)",
+                        l.error);
+        }
+        POP_CACHE.put(key, new long[] {accepted ? 1L : 0L, now + PROOF_OF_POSSESSION_TTL_MS});
+        return accepted;
     }
 
     private static boolean hasRest(Signer signer) {
