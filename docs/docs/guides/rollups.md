@@ -132,9 +132,8 @@ const batch = await rollup.getBatch("my-app-rollup", 0);
 const latest = await rollup.getLatestBatch("my-app-rollup");
 const params = await rollup.getParams();
 
-// qor_ conveniences (need a qor client):
+// qor_ conveniences (need a qor client; served from chain v3.2.9):
 const status = await rollup.getRollupStatus("my-app-rollup");
-const profile = await rollup.suggestRollupProfile("payments");
 const blob = await rollup.getDaBlobStatus("my-app-rollup", 0);
 ```
 

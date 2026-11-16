@@ -30,8 +30,10 @@ account's ML-DSA-87 key and switches it to hybrid signing on the native lane.
 ## Check status
 
 `isPqcRegistered` / `getPqcStatus` read whether an address has a registered PQC
-key via the `qor_getPQCKeyStatus` JSON-RPC method. They accept either a
-`QorClient` or the composed client from `createClient`:
+key via the `qor_getPQCKeyStatus` JSON-RPC method, which public nodes serve
+from chain v3.2.9 (before that, use `fetchPqcStatus({ rest, address })`, which
+reads `/qorechain/pqc/v1/account/{address}`). They accept either a `QorClient`
+or the composed client from `createClient`:
 
 ```ts
 import { createClient, isPqcRegistered, getPqcStatus } from "@qorechain/sdk";

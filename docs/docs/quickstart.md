@@ -66,20 +66,25 @@ and the full derivation table.
 // Native bank balances over REST.
 const balances = await client.rest.getAllBalances(native.address);
 
-// A typed qor_ JSON-RPC call.
-const tokenomics = await client.qor.getTokenomicsOverview();
+// Chain module state over REST, e.g. burn statistics.
+const burn = await client.rest.getBurnStats();
 ```
 
 ## 4. Send a QOR transfer
 
-Derive a native account, adapt its private key into a signer, connect a
-`TxClient`, and send tokens. Use `toBase("1.5")` to convert QOR to base `uqor`.
+Derive a native account and its ML-DSA-87 key, register that key once, connect
+a `TxClient` that signs hybrid (secp256k1 + ML-DSA-87), and send tokens.
+QoreChain refuses a classical-only signature from an account with a registered
+PQC key, and an account without one can only send the registration. Use
+`toBase("1.5")` to convert QOR to base `uqor`.
 
 ```ts
 import {
   createClient,
   deriveNativeAccount,
+  derivePqcCanonical,
   directSignerFromPrivateKey,
+  ensurePqcRegistered,
   toBase,
 } from "@qorechain/sdk";
 
@@ -91,20 +96,24 @@ const client = createClient({
 });
 
 const account = await deriveNativeAccount(mnemonic);
+const pqcKeypair = derivePqcCanonical(account.address, mnemonic);
 
 // Adapt the raw secp256k1 key into an offline signer bound to the "qor" prefix.
 const signer = await directSignerFromPrivateKey(account.privateKey, "qor");
 
-// Connect a tx client at the consensus RPC endpoint.
-const tx = await client.connectTx(signer);
+// Register the PQC key once (the one message accepted with a classical
+// signature); nothing is sent when this key is already registered.
+const classical = await client.connectTx(signer);
+await ensurePqcRegistered(classical, { pqcKeypair, rest: "https://api-testnet.qore.host" });
+classical.disconnect();
 
-// Estimate a fee, then send 1.5 QOR.
-const fee = await client.fees.estimate(); // or "fast" | "normal" | "slow"
-const result = await tx.bankSend(
-  "qor1recipientaddress...",
-  [{ denom: "uqor", amount: toBase("1.5") }],
-  { fee },
-);
+// Connect a tx client that signs every transaction hybrid.
+const tx = await client.connectTx(signer, { pqcKeypair });
+
+// Send 1.5 QOR. The default fee "auto" simulates the hybrid transaction.
+const result = await tx.bankSend("qor1recipientaddress...", [
+  { denom: "uqor", amount: toBase("1.5") },
+]);
 
 console.log(result.transactionHash);
 ```
@@ -124,7 +133,7 @@ client = create_client()  # testnet preset (public endpoints)
 print(client.network.chain_id)  # "qorechain-diana"
 
 balances = client.rest.get_all_balances("qor1...")
-stats = client.qor.get_ai_stats()
+burn = client.rest.get_burn_stats()
 client.close()
 ```
 
@@ -140,7 +149,7 @@ if err != nil {
 fmt.Println(c.Network.ChainID) // qorechain-diana
 
 balances, err := c.REST.GetAllBalances("qor1...")
-stats, err := c.Qor.GetAIStats()
+burn, err := c.REST.GetBurnStats()
 ```
 
 ### Rust
@@ -152,8 +161,8 @@ use qorechain::ClientBuilder;
 async fn main() -> qorechain::Result<()> {
     let client = ClientBuilder::new().build()?; // defaults to "testnet"
     let balances = client.rest.get_all_balances("qor1...").await?;
-    let stats = client.qor.get_ai_stats().await?;
-    let _ = (balances, stats);
+    let burn = client.rest.get_burn_stats().await?;
+    let _ = (balances, burn);
     Ok(())
 }
 ```

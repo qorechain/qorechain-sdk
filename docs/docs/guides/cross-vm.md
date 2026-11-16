@@ -199,7 +199,8 @@ does the same for the rdk module, and `svmUpdateParamsFromCurrent` for svm
 reported as in force); it refuses `enabled: true` without a
 `maxCustodyHardUqor`.
 
-You can also read a message through the `qor_` JSON-RPC namespace:
+From chain v3.2.9 you can also read a message through the `qor_` JSON-RPC
+namespace:
 
 ```ts
 const m = await client.qor.getCrossVMMessage(messageId);
