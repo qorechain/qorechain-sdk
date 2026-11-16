@@ -217,8 +217,9 @@ pub use ai::{
 };
 
 pub use cross_vm::{
-    CallOptions, CrossVm, CrossVmCallResponse, Payload, VM_TYPES, VM_TYPE_COSMWASM, VM_TYPE_EVM,
-    VM_TYPE_SVM,
+    clear_async_gas_cache, require_async_gas_supported, CallOptions, CrossVm, CrossVmCallResponse,
+    Payload, CROSSVM_ASYNC_ESCROW_FEATURE, CROSSVM_ASYNC_GAS_CACHE_TTL,
+    CROSSVM_ASYNC_GAS_PRICED_FEATURE, VM_TYPES, VM_TYPE_COSMWASM, VM_TYPE_EVM, VM_TYPE_SVM,
 };
 
 pub use pqc_dx::{

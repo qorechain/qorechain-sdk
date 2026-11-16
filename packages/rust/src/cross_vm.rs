@@ -48,6 +48,25 @@
 //! the origin lane from the execution context instead of trusting the caller's
 //! self-description. The field is still sent so older nodes keep accepting the
 //! message, but setting it changes nothing on a current chain.
+//!
+//! ## Async gas terms need chain v3.2.8
+//!
+//! [`CallOptions::async_gas_limit`] (proto field 8) and
+//! [`CallOptions::async_max_factor`] (proto field 9) exist only from chain
+//! v3.2.8. A node below it cannot parse a message that sets them and refuses
+//! the transaction with an unclear decoding error. Before signing a call that
+//! sets either, the SDK reads the network's protocol feature switches
+//! ([`require_async_gas_supported`]): field 8 needs
+//! [`CROSSVM_ASYNC_GAS_PRICED_FEATURE`] on, field 9 needs
+//! [`CROSSVM_ASYNC_ESCROW_FEATURE`] on. A switch that is off, absent or not
+//! served means the network is older than v3.2.8, and the call is refused with
+//! a clear error before anything is signed. The async `call*` methods and
+//! [`CrossVm::build_atomic_auto`] run the check against [`CrossVm::rest_url`];
+//! the network-free [`CrossVm::build_call`] / [`CrossVm::build_atomic`] refuse
+//! the fields (they cannot ask), and [`CrossVm::build_call_unchecked`] /
+//! [`CrossVm::build_atomic_unchecked`] are the explicit opt-out for a caller
+//! who already knows the network runs v3.2.8. Calls that leave both fields at
+//! 0 make no request.
 
 use crate::error::{Error, Result};
 use crate::msg::crossvm::{
@@ -65,6 +84,141 @@ use base64::Engine;
 use cosmrs::proto::cosmos::base::v1beta1::Coin as ProtoCoin;
 use prost::Message;
 use serde_json::Value;
+use std::collections::HashMap;
+use std::sync::Mutex;
+use std::time::{Duration, Instant};
+
+/// The protocol feature switch that must be on before a `MsgCrossVMCall` may
+/// set `async_gas_limit` (proto field 8, chain v3.2.8).
+pub const CROSSVM_ASYNC_GAS_PRICED_FEATURE: &str = "crossvm-async-gas-priced";
+
+/// The protocol feature switch that must be on before a `MsgCrossVMCall` may
+/// set `async_max_factor` (proto field 9, chain v3.2.8).
+pub const CROSSVM_ASYNC_ESCROW_FEATURE: &str = "crossvm-async-escrow";
+
+/// How long a successful switch answer for [`require_async_gas_supported`] is
+/// cached per REST URL. Errors are never cached.
+pub const CROSSVM_ASYNC_GAS_CACHE_TTL: Duration = Duration::from_secs(60);
+
+/// `(rest_url, switch)` to `(on, when)`.
+type AsyncGasCache = HashMap<(String, &'static str), (bool, Instant)>;
+
+static ASYNC_GAS_CACHE: Mutex<Option<AsyncGasCache>> = Mutex::new(None);
+
+/// Refuses, before anything is signed, a set of calls that sets
+/// `async_gas_limit` (field 8) or `async_max_factor` (field 9) on a network
+/// that does not accept them (below chain v3.2.8).
+///
+/// Field 8 needs [`CROSSVM_ASYNC_GAS_PRICED_FEATURE`] listed and enabled in the
+/// node's protocol feature switches, field 9 needs
+/// [`CROSSVM_ASYNC_ESCROW_FEATURE`]. There is no upgrade-plan fall back: a node
+/// that does not serve the switches is older than v3.2.8. When both fields are
+/// 0 on every call, no request is made. One request answers both switches;
+/// successful answers are cached per REST URL for
+/// [`CROSSVM_ASYNC_GAS_CACHE_TTL`].
+///
+/// # Errors
+///
+/// - [`Error::InvalidInput`] when a field is set and its switch is off,
+///   absent or not served (HTTP 404 / 501, empty list), or when a field is set
+///   and `rest_url` is empty.
+/// - [`Error::Transport`] when the network could not be asked (transport
+///   error, timeout, another HTTP error, unparsable answer).
+pub async fn require_async_gas_supported(rest_url: &str, opts: &[CallOptions]) -> Result<()> {
+    let mut needed: Vec<(&'static str, &'static str)> = Vec::new();
+    if opts.iter().any(|o| o.async_gas_limit != 0) {
+        needed.push((
+            "async_gas_limit (field 8)",
+            CROSSVM_ASYNC_GAS_PRICED_FEATURE,
+        ));
+    }
+    if opts.iter().any(|o| o.async_max_factor != 0) {
+        needed.push(("async_max_factor (field 9)", CROSSVM_ASYNC_ESCROW_FEATURE));
+    }
+    if needed.is_empty() {
+        return Ok(());
+    }
+    let base = rest_url.trim().trim_end_matches('/');
+    if base.is_empty() {
+        return Err(Error::InvalidInput(format!(
+            "MsgCrossVMCall {} requires chain v3.2.8, and with no REST URL the SDK cannot ask \
+             the network whether it runs it; set rest_url, leave the field 0, or build with \
+             build_atomic_unchecked if you know the network runs v3.2.8",
+            needed[0].0
+        )));
+    }
+    let mut states: Vec<bool> = Vec::with_capacity(needed.len());
+    let mut missing: Vec<usize> = Vec::new();
+    {
+        let cache = ASYNC_GAS_CACHE.lock().unwrap_or_else(|p| p.into_inner());
+        for (i, (_, switch)) in needed.iter().enumerate() {
+            match cache
+                .as_ref()
+                .and_then(|m| m.get(&(base.to_string(), *switch)))
+            {
+                Some((on, at)) if at.elapsed() < CROSSVM_ASYNC_GAS_CACHE_TTL => states.push(*on),
+                _ => {
+                    states.push(false);
+                    missing.push(i);
+                }
+            }
+        }
+    }
+    if !missing.is_empty() {
+        let rest = crate::query::RestClient::new(base.to_string());
+        let answer = rest
+            .get(crate::protocol_features::PROTOCOL_FEATURES_PATH, &[])
+            .await;
+        let cannot_ask = |e: Error| {
+            Error::Transport(format!(
+                "cannot ask {base} for its protocol feature switches ({e}), so the SDK cannot \
+                 tell whether the network accepts MsgCrossVMCall async gas terms (chain \
+                 v3.2.8); retry, or leave async_gas_limit and async_max_factor 0"
+            ))
+        };
+        let body = match answer {
+            Ok(body) => Some(body),
+            // 404 / 501: the switches are not served, so none is on.
+            Err(e) => match crate::protocol_features::classify_protocol_feature(
+                Err(e),
+                needed[missing[0]].1,
+            ) {
+                Ok(_) => None,
+                Err(e) => return Err(cannot_ask(e)),
+            },
+        };
+        let mut cache = ASYNC_GAS_CACHE.lock().unwrap_or_else(|p| p.into_inner());
+        let map = cache.get_or_insert_with(HashMap::new);
+        for i in missing {
+            let switch = needed[i].1;
+            let on = match &body {
+                None => false,
+                Some(b) => {
+                    crate::protocol_features::classify_protocol_feature(Ok(b.clone()), switch)
+                        .map_err(cannot_ask)?
+                        == crate::protocol_features::ProtocolFeatureState::Enabled
+                }
+            };
+            states[i] = on;
+            map.insert((base.to_string(), switch), (on, Instant::now()));
+        }
+    }
+    for ((field, switch), on) in needed.iter().zip(states) {
+        if !on {
+            return Err(Error::InvalidInput(format!(
+                "MsgCrossVMCall {field} requires chain v3.2.8 (switch {switch} is not on at \
+                 {base}); leave it 0 on this network"
+            )));
+        }
+    }
+    Ok(())
+}
+
+/// Forgets cached [`require_async_gas_supported`] answers (tests, network
+/// switches).
+pub fn clear_async_gas_cache() {
+    *ASYNC_GAS_CACHE.lock().unwrap_or_else(|p| p.into_inner()) = None;
+}
 
 /// The EVM VM-type string.
 pub const VM_TYPE_EVM: &str = "evm";
@@ -309,8 +463,19 @@ pub struct CrossVm {
 impl CrossVm {
     /// Builds + signs a single `MsgCrossVMCall` into a broadcast-ready [`BuiltTx`]
     /// (does not broadcast).
+    ///
+    /// Network-free, so it refuses async gas terms (chain v3.2.8, see the
+    /// module docs): use [`CrossVm::build_atomic_auto`] to check the network
+    /// first, or [`CrossVm::build_call_unchecked`] to opt out.
     pub fn build_call(&self, opts: &CallOptions) -> Result<BuiltTx> {
         self.build_atomic(std::slice::from_ref(opts))
+    }
+
+    /// [`CrossVm::build_call`] without the network check on the async gas
+    /// terms: the explicit opt-out for a caller who knows the network runs
+    /// chain v3.2.8. A node below it refuses a call that sets them.
+    pub fn build_call_unchecked(&self, opts: &CallOptions) -> Result<BuiltTx> {
+        self.build_atomic_unchecked(std::slice::from_ref(opts))
     }
 
     /// Builds + signs a single `MsgCrossVMCall` and broadcasts it, returning the
@@ -331,12 +496,19 @@ impl CrossVm {
     /// [`CrossVm::rest_url`] (at least 1.3x the simulated gas, priced at
     /// [`DEFAULT_GAS_PRICE`]).
     ///
+    /// A call that sets async gas terms is first checked against the network
+    /// ([`require_async_gas_supported`] on [`CrossVm::rest_url`]).
+    ///
     /// # Errors
     ///
-    /// As [`CrossVm::build_atomic`], plus simulation errors.
+    /// As [`CrossVm::build_atomic_unchecked`], plus
+    /// [`require_async_gas_supported`] and simulation errors.
     pub async fn build_atomic_auto(&self, opts: &[CallOptions]) -> Result<BuiltTx> {
+        // Local checks first, then the network, then signing.
+        self.messages(opts)?;
+        require_async_gas_supported(&self.rest_url, opts).await?;
         if self.fee.gas.trim() != GAS_AUTO {
-            return self.build_atomic(opts);
+            return self.build_atomic_unchecked(opts);
         }
         let messages = self.messages(opts)?;
         let probe = self.sign(messages.clone(), Fee::default())?;
@@ -382,7 +554,33 @@ impl CrossVm {
     /// terms are invalid ([`crate::msg::crossvm::validate_async_gas`]), or if
     /// `fee.gas` is empty, zero or `"auto"` (use [`CrossVm::build_atomic_auto`]
     /// or the async `call*` methods for `"auto"`).
+    ///
+    /// Network-free, so a call that sets `async_gas_limit` or
+    /// `async_max_factor` (chain v3.2.8) is refused: it cannot ask whether the
+    /// network accepts them. Use [`CrossVm::build_atomic_auto`] (checks the
+    /// network) or [`CrossVm::build_atomic_unchecked`] (explicit opt-out).
     pub fn build_atomic(&self, opts: &[CallOptions]) -> Result<BuiltTx> {
+        // Local checks first; refuse before anything is signed.
+        self.messages(opts)?;
+        if opts
+            .iter()
+            .any(|o| o.async_gas_limit != 0 || o.async_max_factor != 0)
+        {
+            return Err(Error::InvalidInput(
+                "MsgCrossVMCall async_gas_limit (field 8) / async_max_factor (field 9) require \
+                 chain v3.2.8, and this network-free builder cannot ask whether the network \
+                 runs it: use build_atomic_auto or call() (they check the network), \
+                 build_atomic_unchecked if you know it runs v3.2.8, or leave both 0"
+                    .into(),
+            ));
+        }
+        self.build_atomic_unchecked(opts)
+    }
+
+    /// [`CrossVm::build_atomic`] without the network check on the async gas
+    /// terms: the explicit opt-out for a caller who knows the network runs
+    /// chain v3.2.8. A node below it refuses a call that sets them.
+    pub fn build_atomic_unchecked(&self, opts: &[CallOptions]) -> Result<BuiltTx> {
         let gas = self.fee.gas.trim();
         if gas == GAS_AUTO {
             return Err(Error::InvalidInput(

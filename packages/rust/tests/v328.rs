@@ -624,7 +624,10 @@ fn xvm(gas: &str) -> CrossVm {
 fn cross_vm_build_carries_async_terms_and_refuses_fixed_gas() {
     let opts =
         CallOptions::new(VM_TYPE_COSMWASM, "qor1c", json!({"ping": {}})).async_gas(400_000, 0);
-    let built = xvm("900000").build_call(&opts).unwrap();
+    // The network-free builder cannot ask whether the network runs v3.2.8.
+    let e = xvm("900000").build_call(&opts).unwrap_err().to_string();
+    assert!(e.contains("build_atomic_unchecked"), "{e}");
+    let built = xvm("900000").build_call_unchecked(&opts).unwrap();
     use cosmrs::proto::cosmos::tx::v1beta1::{TxBody, TxRaw};
     let raw = TxRaw::decode(built.tx_raw_bytes.as_slice()).unwrap();
     let body = TxBody::decode(raw.body_bytes.as_slice()).unwrap();
@@ -675,6 +678,204 @@ async fn cross_vm_auto_gas_simulates_with_wasm_headroom() {
     assert_eq!(auth.fee.unwrap().amount[0].amount, "21000");
     let resp = x.call(&opts).await.unwrap();
     assert_eq!(resp["tx_response"]["txhash"], "AB");
+}
+
+// --------------------------------------------------------------------------- //
+// Cross-VM async gas terms need the v3.2.8 switches
+// --------------------------------------------------------------------------- //
+
+const XVM_FEATURES_PATH: &str = "/qorechain/pqc/v1/protocol_features";
+
+fn xvm_features(gas_priced: Option<bool>, escrow: Option<bool>) -> String {
+    let mut items =
+        vec![r#"{"name":"pqc-sign-bytes-v2","enabled":true,"known":true,"staged":false}"#.into()];
+    for (name, flag) in [
+        ("crossvm-async-gas-priced", gas_priced),
+        ("crossvm-async-escrow", escrow),
+    ] {
+        if let Some(on) = flag {
+            items.push(format!(
+                r#"{{"name":"{name}","enabled":{on},"known":true,"staged":false}}"#
+            ));
+        }
+    }
+    format!(r#"{{"features":[{}],"height":"42"}}"#, items.join(","))
+}
+
+/// A node answering the features route with `(status, body)`, accepting
+/// simulation and broadcast.
+async fn xvm_node(status: u16, body: String) -> Mock {
+    Mock::start(Arc::new(move |path: &str, _: &str| {
+        if path == XVM_FEATURES_PATH {
+            (status, body.clone())
+        } else if path.ends_with("/simulate") {
+            (200, r#"{"gas_info":{"gas_used":"100000"}}"#.into())
+        } else if path.ends_with("/txs") {
+            (200, r#"{"tx_response":{"code":0,"txhash":"AB"}}"#.into())
+        } else {
+            (404, "{}".into())
+        }
+    }))
+    .await
+}
+
+fn xvm_hits(mock: &Mock, path: &str) -> usize {
+    mock.paths
+        .lock()
+        .unwrap()
+        .iter()
+        .filter(|p| *p == path)
+        .count()
+}
+
+fn xvm_at(mock: &Mock) -> CrossVm {
+    let mut x = xvm("auto");
+    x.rest_url = mock.base_url.clone();
+    x
+}
+
+fn async_opts(gas: u64, factor: u64) -> CallOptions {
+    CallOptions::new(VM_TYPE_COSMWASM, "qor1c", json!({"ping": {}})).async_gas(gas, factor)
+}
+
+#[test]
+fn crossvm_async_switch_names_match_the_chain() {
+    assert_eq!(
+        qorechain::cross_vm::CROSSVM_ASYNC_GAS_PRICED_FEATURE,
+        "crossvm-async-gas-priced"
+    );
+    assert_eq!(
+        qorechain::cross_vm::CROSSVM_ASYNC_ESCROW_FEATURE,
+        "crossvm-async-escrow"
+    );
+}
+
+#[tokio::test]
+async fn crossvm_async_terms_allowed_when_the_switches_are_on() {
+    let mock = xvm_node(200, xvm_features(Some(true), Some(true))).await;
+    let x = xvm_at(&mock);
+    let resp = x.call(&async_opts(400_000, 2_000_000)).await.unwrap();
+    assert_eq!(resp["tx_response"]["txhash"], "AB");
+    // A second call within the TTL is served from the cache.
+    x.call(&async_opts(400_000, 2_000_000)).await.unwrap();
+    assert_eq!(xvm_hits(&mock, XVM_FEATURES_PATH), 1);
+}
+
+/// Mainnet below v3.2.8 lists its switches but not these two.
+#[tokio::test]
+async fn crossvm_async_terms_refused_when_the_switch_is_absent() {
+    let mock = xvm_node(200, xvm_features(None, None)).await;
+    let x = xvm_at(&mock);
+    let e = x
+        .call(&async_opts(400_000, 0))
+        .await
+        .unwrap_err()
+        .to_string();
+    assert_eq!(
+        e,
+        format!(
+            "MsgCrossVMCall async_gas_limit (field 8) requires chain v3.2.8 \
+             (switch crossvm-async-gas-priced is not on at {}); leave it 0 on this network",
+            mock.base_url
+        )
+    );
+    let e = x
+        .call(&async_opts(0, 2_000_000))
+        .await
+        .unwrap_err()
+        .to_string();
+    assert!(e.contains("async_max_factor (field 9)"), "{e}");
+    assert!(e.contains("crossvm-async-escrow is not on"), "{e}");
+    assert!(
+        xvm_hits(&mock, "/cosmos/tx/v1beta1/txs") == 0,
+        "nothing sent"
+    );
+    assert!(
+        xvm_hits(&mock, "/cosmos/tx/v1beta1/simulate") == 0,
+        "nothing signed"
+    );
+}
+
+#[tokio::test]
+async fn crossvm_async_terms_refused_when_a_switch_is_disabled() {
+    // Field 8 is on, field 9 is listed but off.
+    let mock = xvm_node(200, xvm_features(Some(true), Some(false))).await;
+    let x = xvm_at(&mock);
+    x.call(&async_opts(400_000, 0)).await.unwrap();
+    let e = x
+        .call(&async_opts(400_000, 2_000_000))
+        .await
+        .unwrap_err()
+        .to_string();
+    assert!(e.contains("crossvm-async-escrow is not on"), "{e}");
+}
+
+#[tokio::test]
+async fn crossvm_async_terms_refused_when_not_served() {
+    for (status, body) in [
+        (404, r#"{"code":5,"message":"Not Found"}"#.to_string()),
+        (
+            501,
+            r#"{"code":12,"message":"Not Implemented"}"#.to_string(),
+        ),
+        (200, r#"{"features":[],"height":"1"}"#.to_string()),
+    ] {
+        let mock = xvm_node(status, body).await;
+        let e = xvm_at(&mock)
+            .call(&async_opts(400_000, 0))
+            .await
+            .unwrap_err();
+        assert!(
+            matches!(e, qorechain::Error::InvalidInput(_)),
+            "{status}: {e:?}"
+        );
+        assert!(
+            e.to_string().contains("requires chain v3.2.8"),
+            "{status}: {e}"
+        );
+    }
+}
+
+#[tokio::test]
+async fn crossvm_async_terms_cannot_ask_on_a_failing_node() {
+    let mock = xvm_node(500, r#"{"message":"boom"}"#.into()).await;
+    let e = xvm_at(&mock)
+        .call(&async_opts(400_000, 0))
+        .await
+        .unwrap_err();
+    assert!(matches!(e, qorechain::Error::Transport(_)), "{e:?}");
+    assert!(e.to_string().contains("cannot ask"), "{e}");
+    // Errors are not cached: the next call asks again.
+    let _ = xvm_at(&mock).call(&async_opts(400_000, 0)).await;
+    assert_eq!(xvm_hits(&mock, XVM_FEATURES_PATH), 2);
+
+    let e = qorechain::cross_vm::require_async_gas_supported(
+        "http://127.0.0.1:1",
+        &[async_opts(400_000, 0)],
+    )
+    .await
+    .unwrap_err();
+    assert!(matches!(e, qorechain::Error::Transport(_)), "{e:?}");
+}
+
+#[tokio::test]
+async fn crossvm_without_async_terms_makes_no_feature_request() {
+    // The switches are absent, which would refuse async terms.
+    let mock = xvm_node(200, xvm_features(None, None)).await;
+    let x = xvm_at(&mock);
+    let plain = CallOptions::new(VM_TYPE_COSMWASM, "qor1c", json!({"ping": {}})).queue(true);
+    x.call(&plain).await.unwrap();
+    assert_eq!(xvm_hits(&mock, XVM_FEATURES_PATH), 0);
+    // No REST URL is fine too when nothing needs checking.
+    qorechain::cross_vm::require_async_gas_supported("", &[plain])
+        .await
+        .unwrap();
+    // With async terms and no REST URL it is an error.
+    let e = qorechain::cross_vm::require_async_gas_supported("", &[async_opts(400_000, 0)])
+        .await
+        .unwrap_err()
+        .to_string();
+    assert!(e.contains("no REST URL"), "{e}");
 }
 
 #[test]
