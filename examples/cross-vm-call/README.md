@@ -22,6 +22,9 @@ Per-VM payload shapes (pick one per call): `{ payload }` (raw bytes/hex),
   `http://localhost:26657`) and REST (`QORE_REST_URL`, default
   `http://localhost:1317`).
 - For broadcast (`QORE_BROADCAST=1`): a FUNDED account via `QORE_MNEMONIC`.
+  The example registers the account's ML-DSA-87 key once (`ensurePqcRegistered`)
+  and signs every call hybrid (`connectTx(signer, { pqcKeypair })`), as QoreChain
+  requires.
 - Optional targets: `QORE_EVM_CONTRACT`, `QORE_SVM_PROGRAM`,
   `QORE_EVM_RECIPIENT`.
 
