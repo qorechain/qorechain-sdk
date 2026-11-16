@@ -451,6 +451,7 @@ def test_async_fields_are_encoded_and_checked() -> None:
     m = build_cross_vm_call(
         sender=ACCOUNT, target_vm="cosmwasm", target_contract=CONTRACT, cosmwasm={"a": 1},
         async_=True, async_gas_limit=1_000_000, async_max_factor=2_000_000,
+        skip_feature_check=True,
     )
     assert m.value.async_gas_limit == 1_000_000 and m.value.async_max_factor == 2_000_000
     with pytest.raises(ValueError, match="only to async calls"):

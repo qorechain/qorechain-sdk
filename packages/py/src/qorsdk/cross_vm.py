@@ -31,6 +31,17 @@ The call holds an escrow of ``async_gas_limit x factor x gas price`` (about
 0.2 QOR by default) refunded when it finishes, pays a queue-slot fee, and a
 sender may have at most 100 pending calls.
 
+A node below v3.2.8 cannot decode these two fields and refuses the whole
+transaction with an unclear parse error. So when either is set (non-zero), the
+SDK first checks the network's protocol feature switches
+(:mod:`qorsdk.crossvm_features`): ``crossvm-async-gas-priced`` for
+``async_gas_limit`` and ``crossvm-async-escrow`` for ``async_max_factor`` must
+be listed and enabled, otherwise a clear error says to leave the field 0. The
+check runs in :class:`CrossVmClient` (and :func:`build_cross_vm_call` given a
+``rest_url``) before signing, and again in :func:`qorsdk.tx.broadcast` for any
+signed transaction carrying such a message. Without a REST URL, setting either
+field needs ``skip_feature_check=True``. Both fields 0 makes no request.
+
 **Gas.** A cross-VM call's gas varies widely (the first call of a contract code
 in a block costs much more), so use simulation: pass ``fee="auto"`` to
 :class:`CrossVmClient` rather than a fixed fee.
@@ -66,6 +77,7 @@ from typing import Any, Literal
 from cosmpy.protos.cosmos.base.v1beta1.coin_pb2 import Coin
 
 from .accounts import Secp256k1Account
+from .crossvm_features import require_crossvm_async_fields_supported
 from .gas import DEFAULT_GAS_PRICE, GasPrice, auto_fee
 from .messages._composer import Msg
 from .messages.qorechain import crossvm as crossvm_msg
@@ -233,6 +245,8 @@ def build_cross_vm_call(
     async_: bool = False,
     async_gas_limit: int | None = None,
     async_max_factor: int | None = None,
+    rest_url: str | None = None,
+    skip_feature_check: bool = False,
 ) -> Msg:
     """Build a ``MsgCrossVMCall`` :class:`~qorsdk.messages.Msg` (no signing).
 
@@ -248,7 +262,17 @@ def build_cross_vm_call(
         0 or ``None`` = 500,000, else 250,000..10,000,000).
     :param async_max_factor: Max congestion factor of an async CosmWasm call in
         millionths (1,000,000 = 1x; 0 or ``None`` = 4x the factor at submission).
+    :param rest_url: The node to check when ``async_gas_limit`` or
+        ``async_max_factor`` is set: its protocol feature switches must list
+        them as on (chain v3.2.8). Not used when both are 0.
+    :param skip_feature_check: Set either field without asking a node (for
+        offline building against a network known to run v3.2.8).
     :raises ValueError: See :func:`validate_async_options`.
+    :raises qorsdk.crossvm_features.CrossVmAsyncFieldsUnsupportedError: Either
+        field is set and the network has not switched it on, or no
+        ``rest_url`` was given without ``skip_feature_check=True``.
+    :raises qorsdk.crossvm_features.CrossVmFeatureQueryError: The network
+        could not be asked.
     """
     _validate_vm(source_vm, "source_vm")
     _validate_vm(target_vm, "target_vm")
@@ -269,6 +293,9 @@ def build_cross_vm_call(
         async_gas_limit=gas,
         async_max_factor=factor,
         **{_ASYNC_FIELD: bool(async_)},
+    )
+    require_crossvm_async_fields_supported(
+        [message], rest_url, skip_feature_check=skip_feature_check
     )
     return message
 
@@ -370,6 +397,9 @@ class CrossVmClient:
     :func:`~qorsdk.gas.estimate_gas` (at least 1.3x the simulated gas for a
     cross-VM call), priced at ``gas_price``. Prefer ``"auto"``: a fixed gas
     limit runs out when a contract code is first loaded in a block.
+    ``async_gas_limit`` / ``async_max_factor`` (chain v3.2.8) are checked
+    against ``rest_url``'s protocol feature switches before signing (see the
+    module docstring); ``skip_feature_check=True`` turns that check off.
     Pass a ``query`` (a
     :class:`~qorsdk.query.grpc.CrossVmQueryClient`) and/or a ``qor``
     (:class:`~qorsdk.qor.QorClient`) to enable :meth:`get_message`.
@@ -389,6 +419,7 @@ class CrossVmClient:
         qor: Any | None = None,
         sign_bytes_version: str = "auto",
         gas_price: GasPrice | str = DEFAULT_GAS_PRICE,
+        skip_feature_check: bool = False,
     ) -> None:
         self._account = account
         self._chain_id = chain_id
@@ -401,6 +432,7 @@ class CrossVmClient:
         self._qor = qor
         self._sign_bytes_version = sign_bytes_version
         self._gas_price = gas_price
+        self._skip_feature_check = skip_feature_check
 
     @property
     def sender(self) -> str:
@@ -434,6 +466,8 @@ class CrossVmClient:
             async_=async_,
             async_gas_limit=async_gas_limit,
             async_max_factor=async_max_factor,
+            rest_url=self._rest_url,
+            skip_feature_check=self._skip_feature_check,
         )
 
     def _build_msg_from_options(self, opts: CrossVmCallOptions) -> Msg:
@@ -449,6 +483,8 @@ class CrossVmClient:
             async_=opts.async_,
             async_gas_limit=opts.async_gas_limit,
             async_max_factor=opts.async_max_factor,
+            rest_url=self._rest_url,
+            skip_feature_check=self._skip_feature_check,
         )
 
     def _sign_and_broadcast(
@@ -490,6 +526,7 @@ class CrossVmClient:
                 rest_url=self._rest_url,
                 sign_bytes_version=self._sign_bytes_version,
                 mode=mode,  # type: ignore[arg-type]
+                skip_feature_check=self._skip_feature_check,
             )
         else:
 
@@ -509,7 +546,12 @@ class CrossVmClient:
                 built = classical(auto_fee(self._rest_url, probe, gas_price=self._gas_price))
             else:
                 built = classical(self._fee)
-        return broadcast(self._rest_url, built.tx_raw_bytes, mode=mode)  # type: ignore[arg-type]
+        return broadcast(
+            self._rest_url,
+            built.tx_raw_bytes,
+            mode=mode,  # type: ignore[arg-type]
+            skip_feature_check=self._skip_feature_check,
+        )
 
     def call(
         self,
@@ -610,6 +652,7 @@ def create_cross_vm_client(
     qor: Any | None = None,
     sign_bytes_version: str = "auto",
     gas_price: GasPrice | str = DEFAULT_GAS_PRICE,
+    skip_feature_check: bool = False,
 ) -> CrossVmClient:
     """Create a :class:`CrossVmClient` bound to a signing account and tx context.
 
@@ -626,6 +669,7 @@ def create_cross_vm_client(
         qor=qor,
         sign_bytes_version=sign_bytes_version,
         gas_price=gas_price,
+        skip_feature_check=skip_feature_check,
     )
 
 

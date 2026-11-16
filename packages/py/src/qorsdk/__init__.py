@@ -103,6 +103,17 @@ from .cross_vm import (
     decode_cross_vm_responses,
     validate_async_options,
 )
+from .crossvm_features import (
+    CROSSVM_ASYNC_ESCROW_FEATURE,
+    CROSSVM_ASYNC_GAS_PRICED_FEATURE,
+    CROSSVM_FEATURE_CACHE_TTL,
+    CrossVmAsyncFieldsUnsupportedError,
+    CrossVmFeatureQueryError,
+    clear_crossvm_feature_cache,
+    require_crossvm_async_fields_supported,
+    require_crossvm_async_fields_supported_async,
+    require_crossvm_async_fields_supported_in_tx,
+)
 from .denom import from_base, to_base
 from .errors import (
     DecodedTxError,
@@ -749,6 +760,15 @@ __all__ = [
     "lookup_protocol_feature",
     "lookup_protocol_feature_async",
     "lookup_protocol_feature_rest",
+    "CROSSVM_ASYNC_GAS_PRICED_FEATURE",
+    "CROSSVM_ASYNC_ESCROW_FEATURE",
+    "CROSSVM_FEATURE_CACHE_TTL",
+    "CrossVmAsyncFieldsUnsupportedError",
+    "CrossVmFeatureQueryError",
+    "clear_crossvm_feature_cache",
+    "require_crossvm_async_fields_supported",
+    "require_crossvm_async_fields_supported_async",
+    "require_crossvm_async_fields_supported_in_tx",
     # chain v3.2.4: staking tiers (messages in msg.stakingtier)
     "STAKING_LOCK_MONTHS",
     "LOCK_DELEGATION_TYPE_URL",

@@ -1016,6 +1016,17 @@ s = svm_update_params_from_current(rest, authority=gov, changes={"max_custody_ha
   and other targets. The call holds an escrow (`async_gas_limit x factor x gas
   price`, about 0.2 QOR by default) refunded when it finishes, pays a queue-slot
   fee, and a sender may have at most 100 pending calls.
+- These two fields exist only from chain v3.2.8; an older node refuses the whole
+  transaction with an unclear parse error. When either is non-zero, the SDK
+  first reads the node's protocol feature switches: `crossvm-async-gas-priced`
+  (field 8) and `crossvm-async-escrow` (field 9) must be listed and enabled,
+  otherwise `CrossVmAsyncFieldsUnsupportedError` tells you to leave the field 0
+  on that network (no upgrade plan fallback). A node that cannot be asked raises
+  `CrossVmFeatureQueryError`. The check runs in `CrossVmClient` and in
+  `build_cross_vm_call(rest_url=...)` before signing, and in `broadcast` for any
+  signed tx carrying such a message. Without a REST URL, setting either field
+  needs `skip_feature_check=True`. Both fields 0 never cause a request; answers
+  are cached for 60 s.
 - The pending query is paginated (at most 100 per page):
   `q.crossvm.all_pending_messages()` follows `next_key`. `payload_hex` in the
   list is cut to 1,024 bytes; read the full payload with `q.crossvm.message(id)`.

@@ -89,6 +89,7 @@ from cosmpy.protos.cosmos.tx.v1beta1.tx_pb2 import (
 from google.protobuf.any_pb2 import Any as ProtoAny
 
 from .accounts import Secp256k1Account
+from .crossvm_features import require_crossvm_async_fields_supported_in_tx
 from .pqc import (
     ALGORITHM_DILITHIUM5,
     HYBRID_SIG_TYPE_URL,
@@ -447,6 +448,7 @@ def broadcast(
     mode: BroadcastMode = "sync",
     timeout: float = 30.0,
     client: httpx.Client | None = None,
+    skip_feature_check: bool = False,
 ) -> TypingAny:
     """Broadcast signed ``TxRaw`` bytes via the REST ``/cosmos/tx/v1beta1/txs``.
 
@@ -454,10 +456,23 @@ def broadcast(
     decoded JSON response. Broadcasting requires a live node; unit tests mock
     this POST.
 
+    Before sending, a ``MsgCrossVMCall`` that sets ``async_gas_limit`` (field
+    8) or ``async_max_factor`` (field 9) is checked against the node's protocol
+    feature switches (chain v3.2.8, see :mod:`qorsdk.crossvm_features`): a node
+    that has not switched them on would refuse the tx with an unclear parse
+    error. Transactions without those fields cause no extra request.
+
     :param mode: ``sync`` (after CheckTx), ``async`` (fire-and-forget), or
         ``block`` (wait for inclusion).
+    :param skip_feature_check: Do not run the v3.2.8 cross-VM field check.
     :raises httpx.HTTPStatusError: On a non-2xx response.
+    :raises qorsdk.crossvm_features.CrossVmAsyncFieldsUnsupportedError: See above.
+    :raises qorsdk.crossvm_features.CrossVmFeatureQueryError: The node could
+        not be asked for its protocol features.
     """
+    require_crossvm_async_fields_supported_in_tx(
+        tx_bytes, rest_url, skip_feature_check=skip_feature_check, client=client
+    )
     proto_mode = _BROADCAST_MODE_MAP[mode]
     payload = {
         "tx_bytes": base64.b64encode(tx_bytes).decode("ascii"),
@@ -484,6 +499,7 @@ def hybrid_sign_and_broadcast(
     mode: BroadcastMode = "sync",
     client: httpx.Client | None = None,
     resolver: SignBytesResolver | None = None,
+    skip_feature_check: bool = False,
 ) -> TypingAny:
     """Resolve the sign-bytes form, build via ``build(version)``, and broadcast.
 
@@ -498,6 +514,9 @@ def hybrid_sign_and_broadcast(
     any error after that is surfaced. An explicit ``"v1"`` / ``"v2"`` never
     touches the network for resolution and is never retried.
 
+    Each signed tx goes through :func:`broadcast`, so the v3.2.8 cross-VM
+    field check applies (``skip_feature_check`` is passed on).
+
     :returns: The decoded broadcast response of the final attempt.
     :raises SignBytesVersionError: If ``"auto"`` cannot be resolved.
     """
@@ -507,7 +526,13 @@ def hybrid_sign_and_broadcast(
     )
     auto = sign_bytes_version == "auto"
     try:
-        response = broadcast(rest_url, build(version).tx_raw_bytes, mode=mode, client=client)
+        response = broadcast(
+            rest_url,
+            build(version).tx_raw_bytes,
+            mode=mode,
+            client=client,
+            skip_feature_check=skip_feature_check,
+        )
     except httpx.HTTPStatusError as err:
         if not (auto and is_hybrid_signature_rejection(err)):
             raise
@@ -521,4 +546,10 @@ def hybrid_sign_and_broadcast(
         force_refresh=True,
         client=client,
     )
-    return broadcast(rest_url, build(version).tx_raw_bytes, mode=mode, client=client)
+    return broadcast(
+        rest_url,
+        build(version).tx_raw_bytes,
+        mode=mode,
+        client=client,
+        skip_feature_check=skip_feature_check,
+    )
