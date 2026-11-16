@@ -111,6 +111,9 @@ const (
 	// FeaturePossessionFlag makes the chain read the proof_of_possession field
 	// of MsgRegisterPQCKeyV2.
 	FeaturePossessionFlag = "pqc-possession-flag"
+	// FeatureAbstractAccountHardening moves MsgExecuteEVM to the v2
+	// authenticator digest, which binds the call's gas limit.
+	FeatureAbstractAccountHardening = "abstractaccount-hardening"
 )
 
 // FeatureStatus is what a node's protocol_features answer says about one
@@ -222,6 +225,9 @@ func FetchProtocolFeatureStatus(ctx context.Context, httpClient *http.Client, re
 	}
 	return ClassifyProtocolFeature(resp.StatusCode, body, name)
 }
+
+// BaseURL returns the node's REST base URL, without a trailing slash.
+func (c *RestClient) BaseURL() string { return c.baseURL }
 
 // ProtocolFeatureStatus is FetchProtocolFeatureStatus against this client's
 // node.

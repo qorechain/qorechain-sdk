@@ -28,7 +28,11 @@ import (
 	"encoding/hex"
 	"errors"
 	"fmt"
+	"net/http"
 	"strconv"
+	"strings"
+	"sync"
+	"time"
 
 	"github.com/cloudflare/circl/sign/mldsa/mldsa87"
 	"golang.org/x/crypto/sha3"
@@ -36,6 +40,7 @@ import (
 	"github.com/qorechain/qorechain-sdk/packages/go/qorechain/messages"
 	"github.com/qorechain/qorechain-sdk/packages/go/qorechain/pqc"
 	pqcv1 "github.com/qorechain/qorechain-sdk/packages/go/qorechain/proto/qorechain/pqc/v1"
+	"github.com/qorechain/qorechain-sdk/packages/go/qorechain/query"
 	"github.com/qorechain/qorechain-sdk/packages/go/qorechain/unified"
 )
 
@@ -112,7 +117,8 @@ func EVMAuthSignBytes(chainID, account string, pubkey []byte, to, value string, 
 //	        ‖ LP(to) ‖ LP(value) ‖ LP(data) ‖ BE64(nonce) ‖ BE64(gasLimit) )
 //
 // v1 left the gas limit to whoever relayed the message. The chain verifies
-// exactly one form per block: v1 below the v3.2.3 upgrade, v2 from it (see
+// exactly one form per block: v1 before the abstractaccount-hardening switch
+// is on (the v3.2.3 upgrade on mainnet and testnet), v2 from it (see
 // EVMAuthDigestVersion). gasLimit must be non-zero: the chain refuses 0.
 func EVMAuthSignBytesV2(chainID, account string, pubkey []byte, to, value string, data []byte, nonce, gasLimit uint64) ([32]byte, error) {
 	if gasLimit == 0 {
@@ -137,18 +143,140 @@ type UpgradeChecker interface {
 	IsUpgradeApplied(plan string) (bool, error)
 }
 
+// FeatureChecker reads one protocol feature switch of a network; a
+// *query.RestClient satisfies it.
+type FeatureChecker interface {
+	ProtocolFeatureStatus(name string) (query.FeatureStatus, error)
+}
+
+// FeatureEVMAuthV2 is the protocol feature switch that moves MsgExecuteEVM to
+// the v2 digest (EVMAuthSignBytesV2).
+const FeatureEVMAuthV2 = query.FeatureAbstractAccountHardening
+
+// EVMAuthDigest versions, as EVMAuthDigestVersion returns them.
+const (
+	EVMAuthDigestV1 = "v1"
+	EVMAuthDigestV2 = "v2"
+)
+
+// EVMAuthDigestTTL is how long a network's digest answer is trusted, per REST
+// URL. Only answers are cached, never errors.
+const EVMAuthDigestTTL = 60 * time.Second
+
+type evmDigestEntry struct {
+	version string
+	expires time.Time
+}
+
+var (
+	evmDigestMu    sync.Mutex
+	evmDigestCache = map[string]evmDigestEntry{}
+	// evmDigestNow is the clock of the cache (tests).
+	evmDigestNow = time.Now
+)
+
+// ClearEVMAuthDigestCache forgets every cached digest answer (tests, network
+// switches).
+func ClearEVMAuthDigestCache() {
+	evmDigestMu.Lock()
+	evmDigestCache = map[string]evmDigestEntry{}
+	evmDigestMu.Unlock()
+}
+
 // EVMAuthDigestVersion returns the MsgExecuteEVM digest the network verifies
-// now: "v2" once it has applied v3.2.3, "v1" before. An error means the node
-// could not be asked - never guess, the other form is refused.
+// now, EVMAuthDigestV1 or EVMAuthDigestV2.
+//
+//   - When rest also reads protocol feature switches (FeatureChecker, as a
+//     *query.RestClient does), FeatureEVMAuthV2 decides first: listed and
+//     enabled is v2, listed and disabled is v1, with no applied_plan request.
+//     This covers a fork, a fresh devnet or a fest chain that runs the new
+//     rules with no upgrade plan applied.
+//   - When the node answers definitively that the switches cannot say (HTTP
+//     404, HTTP 501 / gateway code 12, an empty list, or the switch not
+//     listed), or rest reads no switches: v2 once the network has applied
+//     v3.2.3, v1 before.
+//   - Any other failure of the features query (transport error, timeout,
+//     HTTP 429 or 5xx other than 501, a body that is not the expected JSON)
+//     is an error, with no applied_plan request: the network could not be
+//     asked, and the other form is refused, so nothing is guessed. Pass an
+//     explicit version to ResolveEVMAuthDigestVersion instead.
+//
+// When rest has a BaseURL (a *query.RestClient does), a successful answer is
+// cached per REST URL for EVMAuthDigestTTL; errors are never cached.
 func EVMAuthDigestVersion(rest UpgradeChecker) (string, error) {
-	ok, err := rest.IsUpgradeApplied("v3.2.3")
+	key := ""
+	if b, ok := rest.(interface{ BaseURL() string }); ok {
+		key = strings.TrimRight(b.BaseURL(), "/")
+	}
+	if key != "" {
+		evmDigestMu.Lock()
+		e, ok := evmDigestCache[key]
+		evmDigestMu.Unlock()
+		if ok && evmDigestNow().Before(e.expires) {
+			return e.version, nil
+		}
+	}
+	v, err := evmDigestVersion(rest)
+	if err != nil {
+		return "", err
+	}
+	if key != "" {
+		evmDigestMu.Lock()
+		evmDigestCache[key] = evmDigestEntry{version: v, expires: evmDigestNow().Add(EVMAuthDigestTTL)}
+		evmDigestMu.Unlock()
+	}
+	return v, nil
+}
+
+func evmDigestVersion(rest UpgradeChecker) (string, error) {
+	if fc, ok := rest.(FeatureChecker); ok {
+		st, err := fc.ProtocolFeatureStatus(FeatureEVMAuthV2)
+		switch st {
+		case query.FeatureStatusEnabled:
+			return EVMAuthDigestV2, nil
+		case query.FeatureStatusDisabled:
+			return EVMAuthDigestV1, nil
+		case query.FeatureStatusNotServed:
+			// Fall back to the applied plan below.
+		default:
+			if err == nil {
+				err = errors.New("protocol_features: no answer")
+			}
+			return "", fmt.Errorf("authenticator: the network could not be asked which MsgExecuteEVM digest "+
+				"it verifies (%v); nothing is guessed: retry, or pass an explicit version (%q or %q) "+
+				"to ResolveEVMAuthDigestVersion", err, EVMAuthDigestV1, EVMAuthDigestV2)
+		}
+	}
+	ok, err := rest.IsUpgradeApplied(query.ChainUpgradeV3_2_3)
 	if err != nil {
 		return "", err
 	}
 	if ok {
-		return "v2", nil
+		return EVMAuthDigestV2, nil
 	}
-	return "v1", nil
+	return EVMAuthDigestV1, nil
+}
+
+// ResolveEVMAuthDigestVersion returns requested when it is EVMAuthDigestV1
+// or EVMAuthDigestV2, with no network access. Empty or "auto" asks the node
+// at restURL with EVMAuthDigestVersion (features first, cached answers). A
+// nil httpClient uses the query package's default client.
+func ResolveEVMAuthDigestVersion(restURL, requested string, httpClient *http.Client) (string, error) {
+	switch strings.ToLower(strings.TrimSpace(requested)) {
+	case EVMAuthDigestV1:
+		return EVMAuthDigestV1, nil
+	case EVMAuthDigestV2:
+		return EVMAuthDigestV2, nil
+	case "", "auto":
+	default:
+		return "", fmt.Errorf("authenticator: unknown MsgExecuteEVM digest version %q (want %q, %q or auto)",
+			requested, EVMAuthDigestV1, EVMAuthDigestV2)
+	}
+	if strings.TrimSpace(restURL) == "" {
+		return "", fmt.Errorf("authenticator: no REST URL to ask which MsgExecuteEVM digest the network verifies; "+
+			"pass %q or %q explicitly", EVMAuthDigestV1, EVMAuthDigestV2)
+	}
+	return EVMAuthDigestVersion(query.NewRestClient(strings.TrimSpace(restURL), httpClient))
 }
 
 // CosmosAuthSignBytes rebuilds the 32-byte digest the chain re-derives for a
