@@ -110,8 +110,9 @@ pub fn evm_auth_sign_bytes(
 /// ```
 ///
 /// v1 left the gas limit to whoever relayed the message. The chain verifies
-/// exactly one form per block: v1 below the v3.2.3 upgrade, v2 from it - pick
-/// with [`evm_auth_digest_version`].
+/// exactly one form per block: v1 below the v3.2.3 upgrade (or while the
+/// `abstractaccount-hardening` switch is off), v2 from it - pick with
+/// [`evm_auth_digest_version`].
 ///
 /// # Errors
 ///
@@ -150,20 +151,97 @@ pub fn evm_auth_sign_bytes_v2(
     Ok(sha256_32(&body))
 }
 
-/// The `MsgExecuteEVM` digest the network verifies now: `"v2"` once it has
-/// applied v3.2.3, `"v1"` before.
+/// The protocol feature switch under which the chain verifies the v2
+/// `MsgExecuteEVM` digest ([`evm_auth_sign_bytes_v2`]).
+pub const ABSTRACTACCOUNT_HARDENING_FEATURE: &str = "abstractaccount-hardening";
+
+/// How long a successful [`evm_auth_digest_version`] answer is cached per
+/// network. Errors are never cached.
+pub const EVM_AUTH_DIGEST_CACHE_TTL: std::time::Duration = std::time::Duration::from_secs(60);
+
+/// Network key to `(version, when)`.
+type DigestCache = std::collections::HashMap<String, (&'static str, std::time::Instant)>;
+
+static DIGEST_CACHE: std::sync::Mutex<Option<DigestCache>> = std::sync::Mutex::new(None);
+
+/// The `MsgExecuteEVM` digest the network verifies now: `"v2"` or `"v1"`.
+///
+/// 1. The protocol feature switch [`ABSTRACTACCOUNT_HARDENING_FEATURE`] decides
+///    when the node lists it (on: `"v2"`, off: `"v1"`). A fork, devnet or fest
+///    chain runs the v2 rule from genesis and answers the v3.2.3 plan with
+///    height 0, so the switch is read first.
+/// 2. When the node definitively does not serve the switch (HTTP 404 / 501, or
+///    a list that is empty, missing or lacks the switch), the answer is `"v2"`
+///    once the network has applied [`crate::upgrades::CHAIN_UPGRADE_V3_2_3`],
+///    `"v1"` before.
+/// 3. When the node could not be asked, this is an error: never a fall back to
+///    the plan and never a guess, because the chain refuses the other form.
+///
+/// `cache_key` identifies the network (its REST URL) for a cache of successful
+/// answers ([`EVM_AUTH_DIGEST_CACHE_TTL`]); `None` asks the node every time.
+/// To choose the form yourself, call [`evm_auth_sign_bytes`] or
+/// [`evm_auth_sign_bytes_v2`] directly: no request is made.
 ///
 /// # Errors
 ///
-/// When the node cannot be asked - never guess, the other form is refused.
+/// [`Error::Pqc`] when the network could not be asked (transport error,
+/// timeout, HTTP 429 or 5xx other than 501, unparsable answer), or the plan
+/// query fails.
 pub async fn evm_auth_digest_version(
     rest: &crate::query::RestClient,
     cache_key: Option<&str>,
 ) -> crate::Result<&'static str> {
-    let applied =
-        crate::upgrades::is_upgrade_applied(rest, crate::upgrades::CHAIN_UPGRADE_V3_2_3, cache_key)
-            .await?;
-    Ok(if applied { "v2" } else { "v1" })
+    use crate::protocol_features::{read_protocol_feature, ProtocolFeatureState};
+    let key = cache_key.map(|k| k.trim_end_matches('/').to_string());
+    if let Some(k) = &key {
+        if let Some(map) = DIGEST_CACHE
+            .lock()
+            .unwrap_or_else(|p| p.into_inner())
+            .as_ref()
+        {
+            if let Some((v, at)) = map.get(k) {
+                if at.elapsed() < EVM_AUTH_DIGEST_CACHE_TTL {
+                    return Ok(v);
+                }
+            }
+        }
+    }
+    let cannot_ask = |e: Error| {
+        Error::Pqc(format!(
+            "cannot ask the network which MsgExecuteEVM digest it verifies ({e}); the SDK \
+             does not guess, because the chain refuses the other form: retry, or choose the \
+             form yourself with evm_auth_sign_bytes (v1) or evm_auth_sign_bytes_v2 (v2)"
+        ))
+    };
+    let v2 = match read_protocol_feature(rest, ABSTRACTACCOUNT_HARDENING_FEATURE)
+        .await
+        .map_err(cannot_ask)?
+    {
+        ProtocolFeatureState::Enabled => true,
+        ProtocolFeatureState::Disabled => false,
+        ProtocolFeatureState::NotServed => crate::upgrades::is_upgrade_applied(
+            rest,
+            crate::upgrades::CHAIN_UPGRADE_V3_2_3,
+            cache_key,
+        )
+        .await
+        .map_err(cannot_ask)?,
+    };
+    let version = if v2 { "v2" } else { "v1" };
+    if let Some(k) = key {
+        DIGEST_CACHE
+            .lock()
+            .unwrap_or_else(|p| p.into_inner())
+            .get_or_insert_with(std::collections::HashMap::new)
+            .insert(k, (version, std::time::Instant::now()));
+    }
+    Ok(version)
+}
+
+/// Forgets cached [`evm_auth_digest_version`] answers (tests, network
+/// switches).
+pub fn clear_evm_auth_digest_cache() {
+    *DIGEST_CACHE.lock().unwrap_or_else(|p| p.into_inner()) = None;
 }
 
 /// A linked key's sequence, from [`fetch_auth_nonce`].
