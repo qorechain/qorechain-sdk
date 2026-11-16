@@ -50,6 +50,7 @@ from __future__ import annotations
 
 import hashlib
 import re
+import time
 from dataclasses import dataclass
 from typing import Any
 from urllib.parse import quote
@@ -61,6 +62,7 @@ from .messages._composer import Msg
 from .pqc import ALGORITHM_DILITHIUM5, PqcKeypair
 from .proto.qorechain.abstractaccount.v1 import tx_pb2 as abstractaccount_tx
 from .proto.qorechain.pqc.v1 import tx_pb2 as pqc_tx
+from .protocol_features import ProtocolFeatureQueryError, lookup_protocol_feature_rest
 from .unified import qore_addresses
 from .upgrades import CHAIN_UPGRADE_V3_2_3, is_upgrade_applied
 
@@ -148,7 +150,8 @@ def evm_auth_sign_bytes_v2(
     || LP(to) || LP(value) || LP(data) || BE64(nonce) || BE64(gas_limit))``.
 
     v1 left the gas limit to whoever relayed the message. The chain verifies
-    exactly one form per block: v1 below the v3.2.3 upgrade, v2 from it - pick
+    exactly one form per block: v1 before the protocol feature
+    ``abstractaccount-hardening`` (shipped with v3.2.3), v2 from it - pick
     with :func:`evm_auth_digest_version`.
 
     :raises ValueError: If ``gas_limit`` is zero; the chain refuses it.
@@ -171,11 +174,70 @@ def evm_auth_sign_bytes_v2(
     return hashlib.sha256(body).digest()
 
 
-def evm_auth_digest_version(rest: Any, *, cache_key: str | None = None) -> str:
-    """The ``MsgExecuteEVM`` digest the network verifies now: ``"v2"`` once it
-    has applied v3.2.3, ``"v1"`` before. Raises when the node cannot be asked -
-    never guess, the other form is refused."""
-    return "v2" if is_upgrade_applied(rest, CHAIN_UPGRADE_V3_2_3, cache_key=cache_key) else "v1"
+#: The protocol feature switch that moves ``MsgExecuteEVM`` to the v2 digest.
+ABSTRACTACCOUNT_HARDENING_FEATURE = "abstractaccount-hardening"
+
+#: How long a successful :func:`evm_auth_digest_version` answer is reused, seconds.
+EVM_AUTH_DIGEST_CACHE_TTL = 60.0
+
+# cache_key -> (version, expiry on time.monotonic()); successes only.
+_evm_digest_cache: dict[str, tuple[str, float]] = {}
+
+
+class EvmAuthDigestVersionError(ProtocolFeatureQueryError):
+    """The network could not be asked which ``MsgExecuteEVM`` digest it verifies."""
+
+
+def evm_auth_digest_version(rest: Any, *, cache_key: str | None = None, fresh: bool = False) -> str:
+    """The ``MsgExecuteEVM`` digest the network verifies now, ``"v1"`` or ``"v2"``.
+
+    Reads the protocol feature switch :data:`ABSTRACTACCOUNT_HARDENING_FEATURE`
+    first: listed and enabled -> ``"v2"``, listed and disabled -> ``"v1"``, with
+    no upgrade plan query. Only when the node definitively does not serve it
+    (HTTP 404 or 501, an empty list, no feature list, or the switch absent)
+    does it fall back to the v3.2.3 upgrade plan (``"v2"`` once applied).
+
+    A caller that already knows the form simply builds that digest; this
+    function is only the automatic choice.
+
+    :param rest: A :class:`~qorsdk.rest.RestClient` (or anything with ``get``).
+    :param cache_key: Identifies the network (its REST URL). With one, a
+        successful answer is reused for :data:`EVM_AUTH_DIGEST_CACHE_TTL`
+        seconds; failures are never cached.
+    :param fresh: Ignore the cache and ask the node.
+    :raises EvmAuthDigestVersionError: When the protocol features cannot be
+        asked (transport error, timeout, HTTP 5xx or 429, a body that is not
+        the expected JSON). No upgrade plan is asked then: forks and fresh
+        devnets answer the plan with height 0 while verifying v2. A failure of
+        the fallback plan query raises as
+        :func:`qorsdk.upgrades.is_upgrade_applied` does. Never guess: the
+        other form is refused.
+    """
+    if cache_key and not fresh:
+        hit = _evm_digest_cache.get(cache_key)
+        if hit is not None and hit[1] > time.monotonic():
+            return hit[0]
+    lookup = lookup_protocol_feature_rest(rest, ABSTRACTACCOUNT_HARDENING_FEATURE)
+    if lookup.found:
+        version = "v2" if lookup.enabled else "v1"
+    elif lookup.state == "error":
+        raise EvmAuthDigestVersionError(
+            f"cannot ask the node for its protocol features to pick the MsgExecuteEVM "
+            f"digest ({lookup.detail}); the network could not be asked, so the SDK does "
+            "not guess from the upgrade plans. Retry, or build the v1 / v2 digest "
+            "explicitly"
+        )
+    else:
+        applied = is_upgrade_applied(rest, CHAIN_UPGRADE_V3_2_3, cache_key=cache_key, fresh=fresh)
+        version = "v2" if applied else "v1"
+    if cache_key:
+        _evm_digest_cache[cache_key] = (version, time.monotonic() + EVM_AUTH_DIGEST_CACHE_TTL)
+    return version
+
+
+def clear_evm_auth_digest_cache() -> None:
+    """Forget cached :func:`evm_auth_digest_version` answers."""
+    _evm_digest_cache.clear()
 
 
 @dataclass(frozen=True)

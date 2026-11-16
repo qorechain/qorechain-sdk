@@ -36,8 +36,10 @@ from .address import (
     is_valid_bech32,
 )
 from .authenticator import (
+    ABSTRACTACCOUNT_HARDENING_FEATURE,
     AUTHENTICATOR_LINK_DOMAIN,
     CANONICAL_DERIVATION,
+    EVM_AUTH_DIGEST_CACHE_TTL,
     EXECUTE_COSMOS_TYPE_URL,
     EXECUTE_EVM_TYPE_URL,
     LEGACY_DERIVATION,
@@ -45,6 +47,7 @@ from .authenticator import (
     VALUE_PERMISSIONS,
     AuthenticatorLinkProof,
     AuthNonce,
+    EvmAuthDigestVersionError,
     ExecutionFailedError,
     ExecutionResult,
     RotationBuild,
@@ -53,6 +56,7 @@ from .authenticator import (
     authenticator_link_text,
     be64,
     canonical_account,
+    clear_evm_auth_digest_cache,
     cosmos_auth_sign_bytes,
     decode_execution_results,
     derive_pqc_canonical,
@@ -310,6 +314,7 @@ from .protocol_features import (
     is_protocol_feature_enabled_async,
     lookup_protocol_feature,
     lookup_protocol_feature_async,
+    lookup_protocol_feature_rest,
     parse_protocol_features,
 )
 from .qor import QOR_METHODS, AsyncQorClient, QorClient
@@ -549,6 +554,10 @@ __all__ = [
     "evm_auth_sign_bytes",
     "evm_auth_sign_bytes_v2",
     "evm_auth_digest_version",
+    "ABSTRACTACCOUNT_HARDENING_FEATURE",
+    "EVM_AUTH_DIGEST_CACHE_TTL",
+    "EvmAuthDigestVersionError",
+    "clear_evm_auth_digest_cache",
     "cosmos_auth_sign_bytes",
     "rotation_sign_bytes",
     "execute_evm_msg",
@@ -739,6 +748,7 @@ __all__ = [
     "classify_protocol_feature_response",
     "lookup_protocol_feature",
     "lookup_protocol_feature_async",
+    "lookup_protocol_feature_rest",
     # chain v3.2.4: staking tiers (messages in msg.stakingtier)
     "STAKING_LOCK_MONTHS",
     "LOCK_DELEGATION_TYPE_URL",

@@ -205,6 +205,30 @@ class _RestGet(Protocol):
     def get(self, path: str, params: dict[str, Any] | None = ...) -> Any: ...
 
 
+def lookup_protocol_feature_rest(rest: _RestGet, name: str) -> FeatureLookup:
+    """:func:`lookup_protocol_feature` for a REST read client.
+
+    For APIs that take a :class:`~qorsdk.rest.RestClient` (or anything with a
+    ``get(path)`` that returns the parsed JSON and raises
+    :class:`~qorsdk.rest.QoreHttpError` on a non-2xx status) instead of a URL.
+    The answer is sorted by the same rules: a ``QoreHttpError`` by its status,
+    any other exception (transport failure, timeout, a body that is not JSON)
+    as ``"error"``.
+    """
+    from .rest import QoreHttpError
+
+    try:
+        payload = rest.get(PROTOCOL_FEATURES_PATH)
+    except QoreHttpError as err:
+        status = int(err.status)
+        if status in NOT_SERVED_STATUSES:
+            return FeatureLookup("not_served", f"HTTP {status}")
+        return FeatureLookup("error", f"HTTP {status}")
+    except Exception as err:  # noqa: BLE001 - transport failure, timeout, bad JSON
+        return FeatureLookup("error", f"{type(err).__name__}: {err}")
+    return classify_protocol_feature_response(200, lambda: payload, name)
+
+
 class _AsyncRestGet(Protocol):
     async def get(self, path: str, params: dict[str, Any] | None = ...) -> Any: ...
 
@@ -242,6 +266,7 @@ __all__ = [
     "classify_protocol_feature_response",
     "lookup_protocol_feature",
     "lookup_protocol_feature_async",
+    "lookup_protocol_feature_rest",
     "ProtocolFeature",
     "ProtocolFeatures",
     "parse_protocol_features",

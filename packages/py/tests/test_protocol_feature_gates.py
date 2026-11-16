@@ -17,21 +17,26 @@ import respx
 from cosmpy.protos.cosmos.tx.v1beta1.tx_pb2 import TxBody, TxRaw
 
 from qorsdk import (
+    ABSTRACTACCOUNT_HARDENING_FEATURE,
     PQC_POSSESSION_FEATURE,
+    EvmAuthDigestVersionError,
     FeatureLookup,
     ProofOfPossessionDecisionError,
     ProofOfPossessionResolver,
     ProtocolFeatureQueryError,
+    RestClient,
     classify_protocol_feature_response,
     clear_pqc_status_cache,
     clear_upgrade_cache,
     decode_any,
     derive_native_account,
     ensure_pqc_registered,
+    evm_auth_digest_version,
     generate_pqc_keypair,
     lookup_protocol_feature,
     should_attach_proof_of_possession,
 )
+from qorsdk import authenticator as authenticator_module
 
 REST = "http://localhost:1317"
 CHAIN_ID = "qorechain-diana"
@@ -360,3 +365,94 @@ def test_ensure_explicit_proof_is_attached_as_given():
 def test_ensure_refuses_a_proof_with_attach_false():
     with pytest.raises(ValueError, match="attach_proof_of_possession"):
         _ensure(proof_of_possession=b"\x01", attach_proof_of_possession=False)
+
+
+# --------------------------------------------------------------------------- #
+# MsgExecuteEVM authenticator digest version
+# --------------------------------------------------------------------------- #
+
+AA_ON = {"name": "abstractaccount-hardening", "enabled": True, "known": True, "staged": False}
+AA_OFF = {"name": "abstractaccount-hardening", "enabled": False, "known": True, "staged": False}
+
+
+class _DigestNode(_Node):
+    """The same fake node, read through a RestClient."""
+
+    def rest(self) -> RestClient:
+        return RestClient(REST, client=self.client())
+
+
+def test_digest_feature_name_matches_the_chain():
+    assert ABSTRACTACCOUNT_HARDENING_FEATURE == "abstractaccount-hardening"
+
+
+@pytest.mark.parametrize(("feature", "want"), [(AA_ON, "v2"), (AA_OFF, "v1")])
+def test_digest_listed_feature_decides_without_an_applied_plan(feature, want):
+    # The plan answers the opposite, to prove it is not asked.
+    node = _DigestNode(_features(OTHER, feature), v323_height="0" if want == "v2" else "9")
+    assert evm_auth_digest_version(node.rest()) == want
+    assert (node.feature_calls, node.plan_calls) == (1, 0)
+
+
+@pytest.mark.parametrize(
+    "answer",
+    [
+        _features(OTHER),
+        _features(),
+        httpx.Response(200, json={"height": "120"}),
+        httpx.Response(404, json={"code": 12, "message": "Not Implemented"}),
+        httpx.Response(501, json={"code": 12, "message": "Not Implemented"}),
+    ],
+    ids=["absent", "empty-list", "no-list", "404", "501"],
+)
+@pytest.mark.parametrize(("height", "want"), [("8003746", "v2"), ("0", "v1")])
+def test_digest_not_served_falls_back_to_the_v323_plan(answer, height, want):
+    node = _DigestNode(answer, v323_height=height)
+    assert evm_auth_digest_version(node.rest()) == want
+    assert (node.feature_calls, node.plan_calls) == (1, 1)
+
+
+@pytest.mark.parametrize(
+    "answer",
+    [
+        httpx.Response(500, json={"code": 13}),
+        httpx.Response(429, text="slow down"),
+        httpx.Response(200, text="<html>"),
+        _connect_error,
+    ],
+    ids=["500", "429", "not-json", "connection-error"],
+)
+def test_digest_unreachable_raises_without_asking_the_plan(answer):
+    node = _DigestNode(answer, v323_height="8003746")
+    with pytest.raises(EvmAuthDigestVersionError, match="could not be asked"):
+        evm_auth_digest_version(node.rest(), cache_key=REST)
+    assert node.plan_calls == 0
+    # Errors are not cached.
+    node.features_answer = _features(AA_ON)
+    assert evm_auth_digest_version(node.rest(), cache_key=REST) == "v2"
+    assert node.feature_calls == 2
+
+
+def test_digest_cache_hit_within_ttl_and_expiry(monkeypatch):
+    now = [1000.0]
+    monkeypatch.setattr(authenticator_module.time, "monotonic", lambda: now[0])
+    node = _DigestNode(_features(AA_OFF))
+    assert evm_auth_digest_version(node.rest(), cache_key=REST) == "v1"
+    node.features_answer = _features(AA_ON)
+    now[0] += 59
+    assert evm_auth_digest_version(node.rest(), cache_key=REST) == "v1"
+    assert node.feature_calls == 1
+    # fresh=True skips the cache.
+    assert evm_auth_digest_version(node.rest(), cache_key=REST, fresh=True) == "v2"
+    assert node.feature_calls == 2
+    now[0] += 61
+    node.features_answer = _features(AA_OFF)
+    assert evm_auth_digest_version(node.rest(), cache_key=REST) == "v1"
+    assert node.feature_calls == 3
+
+
+def test_digest_without_cache_key_asks_every_time():
+    node = _DigestNode(_features(AA_ON))
+    for _ in range(2):
+        assert evm_auth_digest_version(node.rest()) == "v2"
+    assert node.feature_calls == 2
