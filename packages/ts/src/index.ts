@@ -461,8 +461,15 @@ export type { UpgradeQueryOptions } from "./tx/upgrades";
 
 // Protocol feature switches (chain v3.2.4): which consensus rules a network
 // enforces today, by name.
-export { fetchProtocolFeatures, isProtocolFeatureEnabled } from "./pqc/protocol-features";
-export type { ProtocolFeature, ProtocolFeatures } from "./pqc/protocol-features";
+export {
+  fetchProtocolFeatures,
+  isProtocolFeatureEnabled,
+  lookupProtocolFeature,
+  isProofOfPossessionExpected,
+  ProtocolFeaturesUnavailableError,
+  PQC_POSSESSION_FLAG_FEATURE,
+} from "./pqc/protocol-features";
+export type { ProtocolFeature, ProtocolFeatures, ProtocolFeatureState } from "./pqc/protocol-features";
 
 // Staking tiers (chain v3.2.4): reads and the composers' checks. The messages
 // are in `msg.stakingtier`.

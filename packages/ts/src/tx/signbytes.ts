@@ -43,7 +43,7 @@
  */
 
 import type { FetchLike } from "../query/http";
-import { fetchProtocolFeatures } from "../pqc/protocol-features";
+import { lookupProtocolFeature } from "../pqc/protocol-features";
 
 /** A concrete sign-bytes form. */
 export type SignBytesVersion = "v1" | "v2";
@@ -344,24 +344,23 @@ export const PQC_SIGN_BYTES_V2_FEATURE = "pqc-sign-bytes-v2";
 /**
  * The form a network verifies, read from its protocol feature switches:
  * `"v2"` when {@link PQC_SIGN_BYTES_V2_FEATURE} is listed and enabled, `"v1"`
- * when the node lists its features and that one is disabled or absent.
+ * when it is listed and disabled.
  *
- * Returns `undefined` when the switches cannot answer: the node does not serve
- * the route (below chain v3.2.4), the request fails, or the payload lists no
- * features. Callers then fall back to the upgrade plans.
+ * Returns `undefined` only when the node has no answer: it does not serve the
+ * route (HTTP 404/501, below chain v3.2.4), lists no features, or does not list
+ * the switch. Callers then fall back to the upgrade plans.
+ *
+ * @throws {@link ProtocolFeaturesUnavailableError} when the network could not
+ *   be asked (a network error, another HTTP error, a bad answer): never guess
+ *   then, the wrong form is refused on chain.
  */
 export async function fetchSignBytesVersionFromProtocolFeatures(
   rest: string,
   fetchImpl: FetchLike = globalThis.fetch as FetchLike,
 ): Promise<SignBytesVersion | undefined> {
-  let features;
-  try {
-    ({ features } = await fetchProtocolFeatures({ rest, fetch: fetchImpl }));
-  } catch {
-    return undefined;
-  }
-  if (features.length === 0) return undefined;
-  return features.some((f) => f.name === PQC_SIGN_BYTES_V2_FEATURE && f.enabled) ? "v2" : "v1";
+  const state = await lookupProtocolFeature({ rest, name: PQC_SIGN_BYTES_V2_FEATURE, fetch: fetchImpl });
+  if (state === "not-served") return undefined;
+  return state === "enabled" ? "v2" : "v1";
 }
 
 /** Options for {@link resolveSignBytesVersion}. */
@@ -393,13 +392,16 @@ export function clearSignBytesCache(): void {
  * - `"auto"` on a chain that is not a legacy network: `"v2"`, no network call.
  * - `"auto"` on `qorechain-vladi` / `qorechain-diana`: reads the network's
  *   protocol feature switches (see
- *   {@link fetchSignBytesVersionFromProtocolFeatures}); when they cannot
- *   answer, asks `rest` whether any of {@link SIGN_BYTES_V2_UPGRADES} is
- *   applied. The answer is cached per (rest, chainId) for `ttlMs` because a
- *   network can upgrade while a wallet stays open.
+ *   {@link fetchSignBytesVersionFromProtocolFeatures}); only when the node has
+ *   no answer for them (HTTP 404/501, no such switch) asks `rest` whether any
+ *   of {@link SIGN_BYTES_V2_UPGRADES} is applied. An answer is cached per
+ *   (rest, chainId) for `ttlMs` because a network can upgrade while a wallet
+ *   stays open; failures are not cached.
  *
- * @throws when a legacy network has no `rest`, or both queries fail. Pass an
- * explicit `"v1"`/`"v2"` in that case - a wrong guess is refused on-chain.
+ * @throws when a legacy network has no `rest`, when the network cannot be
+ * asked (a network error is never read as "v1"), or when both queries fail.
+ * Pass an explicit `"v1"`/`"v2"` in that case - a wrong guess is refused
+ * on-chain.
  */
 export async function resolveSignBytesVersion(
   opts: ResolveSignBytesVersionOptions,
@@ -421,7 +423,15 @@ export async function resolveSignBytesVersion(
   const hit = cache.get(key);
   if (!opts.forceRefresh && hit && Date.now() - hit.at < ttl) return hit.version;
 
-  const fromFeatures = await fetchSignBytesVersionFromProtocolFeatures(opts.rest, opts.fetch);
+  let fromFeatures: SignBytesVersion | undefined;
+  try {
+    fromFeatures = await fetchSignBytesVersionFromProtocolFeatures(opts.rest, opts.fetch);
+  } catch (e) {
+    throw new Error(
+      `cannot ask ${opts.rest} which hybrid sign-bytes form it verifies (${(e as Error).message}); ` +
+        `retry, or pass signBytesVersion "v1" or "v2"`,
+    );
+  }
   if (fromFeatures !== undefined) {
     cache.set(key, { version: fromFeatures, at: Date.now() });
     return fromFeatures;

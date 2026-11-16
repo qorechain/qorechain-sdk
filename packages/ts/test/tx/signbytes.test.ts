@@ -352,10 +352,16 @@ describe("resolveSignBytesVersion reads the protocol features first", () => {
     expect(f).toHaveBeenCalledTimes(1);
   });
 
-  it("answers v1 when the node lists its features and the switch is absent", async () => {
+  it("falls back to the plans when the node lists its features but not the switch", async () => {
+    const f = vi.fn(async (url: string) =>
+      url.endsWith(FEATURES_PATH)
+        ? new Response(JSON.stringify({ features: [other] }))
+        : new Response(JSON.stringify({ height: "5746000" })),
+    );
     await expect(
-      resolveSignBytesVersion({ chainId: "qorechain-vladi", rest: REST, fetch: featuresFetch([other]) }),
-    ).resolves.toBe("v1");
+      resolveSignBytesVersion({ chainId: "qorechain-vladi", rest: REST, fetch: f }),
+    ).resolves.toBe("v2");
+    expect(f).toHaveBeenCalledWith(`${REST}/cosmos/upgrade/v1beta1/applied_plan/v3.2.0`);
   });
 
   it.each([
@@ -375,10 +381,28 @@ describe("resolveSignBytesVersion reads the protocol features first", () => {
     expect(f).toHaveBeenCalledWith(`${REST}/cosmos/upgrade/v1beta1/applied_plan/v3.2.0`);
   });
 
+  // The network could not be asked: never guess, a fork or event chain reads
+  // applied plans as height 0 while it verifies v2.
   it.each([
     ["a transport error", () => Promise.reject(new TypeError("fetch failed"))],
-    ["a 501", () => Promise.resolve(new Response("{}", { status: 501 }))],
+    ["a 500", () => Promise.resolve(new Response("{}", { status: 500 }))],
+    ["a 429", () => Promise.resolve(new Response("{}", { status: 429 }))],
     ["an unparseable body", () => Promise.resolve(new Response("<html>", { status: 200 }))],
+  ] as const)("throws on %s without asking the plans", async (_label, answer) => {
+    const f = vi.fn(async (url: string) =>
+      url.endsWith(FEATURES_PATH) ? answer() : new Response(JSON.stringify({ height: "0" })),
+    );
+    await expect(
+      resolveSignBytesVersion({ chainId: "qorechain-vladi", rest: REST, fetch: f }),
+    ).rejects.toThrow(/cannot ask .* which hybrid sign-bytes form/);
+    expect(f).toHaveBeenCalledTimes(1);
+    // A failure is not cached: the next call asks again.
+    await expect(resolveSignBytesVersion({ chainId: "qorechain-vladi", rest: REST, fetch: f })).rejects.toThrow();
+    expect(f).toHaveBeenCalledTimes(2);
+  });
+
+  it.each([
+    ["a 501", () => Promise.resolve(new Response("{}", { status: 501 }))],
     ["an empty feature list", () => Promise.resolve(new Response(JSON.stringify({ features: [] })))],
   ] as const)("falls back to the plans on %s", async (_label, answer) => {
     const f = vi.fn(async (url: string) =>

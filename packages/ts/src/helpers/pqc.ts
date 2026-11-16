@@ -42,6 +42,7 @@ import { pqc as pqcMsg } from "../messages/qorechain";
 import { validateClassicalKeyForSender } from "../pqc/classical-key";
 import { signProofOfPossession, validateRegisteredPqcKey } from "../pqc/key-integrity";
 import { CHAIN_UPGRADE_V3_2_3, isUpgradeApplied } from "../tx/upgrades";
+import { isProofOfPossessionExpected } from "../pqc/protocol-features";
 import {
   generatePqcKeypair,
   AlgorithmDilithium5,
@@ -530,11 +531,17 @@ export async function ensurePqcRegistered(
   }
 
   // From chain v3.2.3 the registration carries a proof that the registrant
-  // holds the key. Sign it when the network has applied v3.2.3 (and never
-  // before: a node below it refuses the whole transaction for the field).
+  // holds the key. Sign it when the network's "pqc-possession-flag" switch is
+  // on (or, on a node that does not list it, when v3.2.3 is applied), and never
+  // before: a node below it refuses the whole transaction for the field.
   let proofOfPossession = opts.proofOfPossession;
   if (!proofOfPossession && opts.rest) {
-    const applied = await isUpgradeApplied({ rest: opts.rest, upgrade: CHAIN_UPGRADE_V3_2_3, fetch: opts.fetch });
+    const rest = opts.rest;
+    const applied = await isProofOfPossessionExpected({
+      rest,
+      fetch: opts.fetch,
+      fallback: () => isUpgradeApplied({ rest, upgrade: CHAIN_UPGRADE_V3_2_3, fetch: opts.fetch }),
+    });
     if (applied) {
       const chainId = opts.chainId ?? (await fetchChainId(opts.rest, opts.fetch));
       proofOfPossession = signProofOfPossession({ chainId, account: sender, keypair: opts.pqcKeypair });

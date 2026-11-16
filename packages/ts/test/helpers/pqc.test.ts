@@ -302,7 +302,7 @@ describe("getPqcStatus over a source's REST client", () => {
 });
 
 describe("ensurePqcRegistered: proof of possession (chain v3.2.3)", () => {
-  async function register(plans: Record<string, string>) {
+  async function register(plans: Record<string, string>, features?: unknown) {
     clearPqcStatusCache();
     const { clearUpgradeCache } = await import("../../src/tx/upgrades");
     clearUpgradeCache();
@@ -310,12 +310,18 @@ describe("ensurePqcRegistered: proof of possession (chain v3.2.3)", () => {
     const fetch = vi.fn(async (url: string) => {
       const ok = (body: unknown) => ({ ok: true, status: 200, json: async () => body });
       if (url.includes("/qorechain/pqc/v1/account/")) return ok({ found: false, account: null });
+      if (url.endsWith("/qorechain/pqc/v1/protocol_features")) {
+        if (features === undefined) return { ok: false, status: 404, json: async () => ({}) };
+        if (features === "down") throw new TypeError("fetch failed");
+        return ok({ features });
+      }
       if (url.includes("/applied_plan/")) return ok({ height: plans[url.split("/").pop()!] ?? "0" });
       if (url.endsWith("/node_info")) return ok({ default_node_info: { network: "qorechain-diana" } });
       throw new Error(`unexpected ${url}`);
     });
     const kp = generatePqcKeypair(new Uint8Array(32).fill(1));
     await ensurePqcRegistered(tx, { pqcKeypair: kp, rest: `https://lcd-${Object.keys(plans).length}`, fetch });
+    if (signAndBroadcast.mock.calls.length === 0) throw new Error("nothing broadcast");
     const msg = (signAndBroadcast.mock.calls[0]![0] as Array<{ value: { proofOfPossession: Uint8Array } }>)[0]!;
     return { msg, kp };
   }
@@ -332,6 +338,27 @@ describe("ensurePqcRegistered: proof of possession (chain v3.2.3)", () => {
   it("leaves it off before v3.2.3 (an older node refuses the field)", async () => {
     const { msg } = await register({});
     expect(msg.value.proofOfPossession.length).toBe(0);
+  });
+
+  const flag = (enabled: boolean) => [{ name: "pqc-possession-flag", enabled, known: true, staged: false }];
+
+  it("signs it when the pqc-possession-flag switch is on, even with no applied plan (a fork or event chain)", async () => {
+    const { msg } = await register({}, flag(true));
+    expect(msg.value.proofOfPossession.length).toBe(4627);
+  });
+
+  it("leaves it off when the switch is listed and off, whatever the plans say", async () => {
+    const { msg } = await register({ "v3.2.3": "8003746" }, flag(false));
+    expect(msg.value.proofOfPossession.length).toBe(0);
+  });
+
+  it("falls back to the v3.2.3 plan when the node does not list the switch", async () => {
+    const other = [{ name: "pqc-sign-bytes-v2", enabled: true, known: true, staged: false }];
+    expect((await register({ "v3.2.3": "8003746" }, other)).msg.value.proofOfPossession.length).toBe(4627);
+  });
+
+  it("refuses to register when the network cannot be asked", async () => {
+    await expect(register({ "v3.2.3": "8003746" }, "down")).rejects.toThrow(/cannot reach/);
   });
 });
 
