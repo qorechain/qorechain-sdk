@@ -200,7 +200,24 @@ impl PqcDx {
     /// (`key_verified: Some(true)`) or carries none (`Some(false)`); any other
     /// non-zero CheckTx code in the broadcast answer is returned as
     /// [`Error::Tx`].
+    ///
+    /// Whether the registration carries a proof of possession is decided by
+    /// [`crate::key_integrity::proof_of_possession_accepted`] (the chain's
+    /// `pqc-possession-flag` switch first, the v3.2.3 plan only when the node
+    /// does not serve the switch). Use
+    /// [`PqcDx::ensure_pqc_registered_with`] to decide it yourself.
     pub async fn ensure_pqc_registered(&self) -> Result<EnsureResult> {
+        self.ensure_pqc_registered_with(crate::key_integrity::ProofOfPossessionMode::Auto)
+            .await
+    }
+
+    /// [`PqcDx::ensure_pqc_registered`] with an explicit proof-of-possession
+    /// choice: `Attach` or `Skip` decide without asking the network, `Auto`
+    /// asks it (an error when it cannot be asked, never a guess).
+    pub async fn ensure_pqc_registered_with(
+        &self,
+        proof_of_possession: crate::key_integrity::ProofOfPossessionMode,
+    ) -> Result<EnsureResult> {
         let status = fetch_pqc_status(&self.rest_url, &self.sender).await?;
         if status.registered {
             // Registered, but by whom? A different key means this signer's hybrid
@@ -219,16 +236,15 @@ impl PqcDx {
         }
 
         // From chain v3.2.3 the registration carries a proof that the registrant
-        // holds the key. Sign it once the network has applied v3.2.3, never
-        // before: a node below it refuses the whole transaction for the field.
-        let rest = crate::query::RestClient::new(self.rest_url.clone());
-        let applied = crate::upgrades::is_upgrade_applied(
-            &rest,
-            crate::upgrades::CHAIN_UPGRADE_V3_2_3,
-            Some(&self.rest_url),
+        // holds the key. Sign it once the network accepts the field, never
+        // before: a node that does not refuses the whole transaction for it.
+        let attach = crate::key_integrity::resolve_proof_of_possession(
+            proof_of_possession,
+            &self.rest_url,
+            &self.chain_id,
         )
         .await?;
-        let proof = if applied {
+        let proof = if attach {
             self.proof_of_possession()?
         } else {
             Vec::new()
@@ -285,9 +301,11 @@ impl PqcDx {
     }
 
     /// [`PqcDx::build_register`] carrying a proof of possession (from
-    /// [`PqcDx::proof_of_possession`]). A node below v3.2.3 refuses the whole
-    /// transaction when it is set: use this only once the network has applied
-    /// v3.2.3. An empty `proof` leaves the field off the wire.
+    /// [`PqcDx::proof_of_possession`]). A node that does not accept the field
+    /// refuses the whole transaction when it is set: use this only once the
+    /// network accepts it (see
+    /// [`crate::key_integrity::proof_of_possession_accepted`]). An empty
+    /// `proof` leaves the field off the wire.
     ///
     /// # Errors
     ///

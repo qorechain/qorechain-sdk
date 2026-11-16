@@ -20,12 +20,131 @@
 //! key-management messages may travel inside authz `MsgExec`.
 //!
 //! `proof_of_possession` is a new field: a node below v3.2.3 refuses the whole
-//! transaction when it is set. Set it only once the network has applied v3.2.3
+//! transaction when it is set. Set it only once the network accepts it:
+//! [`proof_of_possession_accepted`] reads the chain's protocol feature switch
+//! [`PQC_POSSESSION_FLAG_FEATURE`] first and asks whether v3.2.3 is applied
 //! ([`crate::upgrades::is_upgrade_applied`] with
-//! [`crate::upgrades::CHAIN_UPGRADE_V3_2_3`]).
+//! [`crate::upgrades::CHAIN_UPGRADE_V3_2_3`]) only when the node does not
+//! serve that switch.
+
+use std::collections::HashMap;
+use std::sync::Mutex;
+use std::time::{Duration, Instant};
 
 use crate::pqc::{pqc_sign, pqc_verify, ALGORITHM_DILITHIUM5};
+use crate::protocol_features::{read_protocol_feature, ProtocolFeatureState};
+use crate::query::RestClient;
 use crate::{Error, Result};
+
+/// The protocol feature switch under which the chain accepts
+/// `MsgRegisterPQCKeyV2.proof_of_possession`.
+pub const PQC_POSSESSION_FLAG_FEATURE: &str = "pqc-possession-flag";
+
+/// How long a successful [`proof_of_possession_accepted`] answer is cached per
+/// `(rest_url, chain_id)`. Errors are never cached.
+pub const PROOF_OF_POSSESSION_CACHE_TTL: Duration = Duration::from_secs(60);
+
+/// `(rest_url, chain_id)` to `(accepted, when)`.
+type PopCache = HashMap<(String, String), (bool, Instant)>;
+
+static POP_CACHE: Mutex<Option<PopCache>> = Mutex::new(None);
+
+/// Whether to attach a proof of possession to `MsgRegisterPQCKeyV2`.
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Default)]
+pub enum ProofOfPossessionMode {
+    /// Ask the network (see [`proof_of_possession_accepted`]). The default.
+    #[default]
+    Auto,
+    /// Always sign and attach the proof. No network call.
+    Attach,
+    /// Never attach it. No network call.
+    Skip,
+}
+
+/// Whether the network behind `rest_url` accepts
+/// `MsgRegisterPQCKeyV2.proof_of_possession`.
+///
+/// 1. The protocol feature switch [`PQC_POSSESSION_FLAG_FEATURE`] decides when
+///    the node lists it (on: attach, off: do not).
+/// 2. When the node definitively does not serve it (HTTP 404 / 501, or a list
+///    that is empty or lacks the switch), the answer is whether the network
+///    has applied [`crate::upgrades::CHAIN_UPGRADE_V3_2_3`].
+/// 3. When the node could not be asked, this is an error: never a fall back to
+///    the plans and never a guess.
+///
+/// Successful answers are cached per `(rest_url, chain_id)` for
+/// [`PROOF_OF_POSSESSION_CACHE_TTL`].
+///
+/// # Errors
+///
+/// [`Error::Pqc`] when the network could not be asked (transport error,
+/// timeout, HTTP 429 or 5xx other than 501, unparsable answer), or the plan
+/// query fails. Pass [`ProofOfPossessionMode::Attach`] or
+/// [`ProofOfPossessionMode::Skip`] to decide without the network.
+pub async fn proof_of_possession_accepted(rest_url: &str, chain_id: &str) -> Result<bool> {
+    let base = rest_url.trim_end_matches('/');
+    let key = (base.to_string(), chain_id.to_string());
+    if let Some(map) = POP_CACHE.lock().unwrap_or_else(|p| p.into_inner()).as_ref() {
+        if let Some((accepted, at)) = map.get(&key) {
+            if at.elapsed() < PROOF_OF_POSSESSION_CACHE_TTL {
+                return Ok(*accepted);
+            }
+        }
+    }
+    let cannot_ask = |e: Error| {
+        Error::Pqc(format!(
+            "cannot ask {base} whether it accepts a PQC proof of possession ({e}); the SDK \
+             does not guess, because a node that does not accept the field refuses the whole \
+             registration: retry, or pass an explicit choice (ProofOfPossessionMode::Attach \
+             or ProofOfPossessionMode::Skip)"
+        ))
+    };
+    let rest = RestClient::new(base.to_string());
+    let accepted = match read_protocol_feature(&rest, PQC_POSSESSION_FLAG_FEATURE)
+        .await
+        .map_err(cannot_ask)?
+    {
+        ProtocolFeatureState::Enabled => true,
+        ProtocolFeatureState::Disabled => false,
+        ProtocolFeatureState::NotServed => crate::upgrades::is_upgrade_applied(
+            &rest,
+            crate::upgrades::CHAIN_UPGRADE_V3_2_3,
+            Some(base),
+        )
+        .await
+        .map_err(cannot_ask)?,
+    };
+    POP_CACHE
+        .lock()
+        .unwrap_or_else(|p| p.into_inner())
+        .get_or_insert_with(HashMap::new)
+        .insert(key, (accepted, Instant::now()));
+    Ok(accepted)
+}
+
+/// Resolves `mode`: `Attach` is `true` and `Skip` is `false` with no network
+/// call; `Auto` is [`proof_of_possession_accepted`].
+///
+/// # Errors
+///
+/// As [`proof_of_possession_accepted`].
+pub async fn resolve_proof_of_possession(
+    mode: ProofOfPossessionMode,
+    rest_url: &str,
+    chain_id: &str,
+) -> Result<bool> {
+    match mode {
+        ProofOfPossessionMode::Attach => Ok(true),
+        ProofOfPossessionMode::Skip => Ok(false),
+        ProofOfPossessionMode::Auto => proof_of_possession_accepted(rest_url, chain_id).await,
+    }
+}
+
+/// Forgets cached [`proof_of_possession_accepted`] answers (tests, network
+/// switches).
+pub fn clear_proof_of_possession_cache() {
+    *POP_CACHE.lock().unwrap_or_else(|p| p.into_inner()) = None;
+}
 
 /// Size of an ML-DSA-87 public key.
 pub const ML_DSA_87_PUBLIC_KEY_LENGTH: usize = 2592;
@@ -93,8 +212,8 @@ pub fn proof_of_possession_sign_bytes(
 }
 
 /// Signs the proof of possession with the key being registered (deterministic
-/// ML-DSA-87). Set the result as `MsgRegisterPqcKeyV2::proof_of_possession` -
-/// only on a network that has applied v3.2.3.
+/// ML-DSA-87). Set the result as `MsgRegisterPqcKeyV2::proof_of_possession`,
+/// only on a network that accepts it (see [`proof_of_possession_accepted`]).
 ///
 /// # Errors
 ///

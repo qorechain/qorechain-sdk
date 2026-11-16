@@ -42,7 +42,7 @@
 //!   params / locks / pool reads and the error kinds (composers in
 //!   [`msg::stakingtier`]).
 //! - [`protocol_features`] - chain v3.2.4 protocol feature switches, read by
-//!   name.
+//!   name; the first source for upgrade-dependent "auto" choices.
 //! - [`kem`] - chain v3.2.5 KEM key registry: the key check and the read
 //!   (composers in [`msg::pqc`]).
 //! - [`abstractaccount`] - chain v3.2.5 abstract-account reads: stored
@@ -180,8 +180,14 @@ pub use kem::{
 };
 
 pub use protocol_features::{
-    fetch_protocol_features, is_protocol_feature_enabled, parse_protocol_features, ProtocolFeature,
+    classify_protocol_feature, fetch_protocol_features, is_protocol_feature_enabled,
+    parse_protocol_features, read_protocol_feature, ProtocolFeature, ProtocolFeatureState,
     ProtocolFeatures, PROTOCOL_FEATURES_PATH,
+};
+
+pub use key_integrity::{
+    clear_proof_of_possession_cache, proof_of_possession_accepted, resolve_proof_of_possession,
+    ProofOfPossessionMode, PQC_POSSESSION_FLAG_FEATURE, PROOF_OF_POSSESSION_CACHE_TTL,
 };
 
 pub use stakingtier::{

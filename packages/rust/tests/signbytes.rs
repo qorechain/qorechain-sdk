@@ -743,34 +743,30 @@ async fn resolver_feature_enabled_is_v2_without_an_applied_plan() {
 }
 
 #[tokio::test]
-async fn resolver_feature_disabled_or_absent_is_v1() {
-    for body in [
-        features_body(&[FEATURE_OTHER, FEATURE_V2_OFF]),
-        features_body(&[FEATURE_OTHER]),
-    ] {
-        // A plan record saying v2 must not override the features.
-        let node = MockNode::start(r#"{"height":"5746000"}"#, &["{}"]).await;
-        node.set_features(200, &body);
-        let got = SignBytesResolver::new()
-            .resolve(SignBytesMode::Auto, "qorechain-diana", Some(&node.base_url))
-            .await
-            .unwrap();
-        assert_eq!(got, SignBytesVersion::V1, "{body}");
-        assert!(node.plan_hits().is_empty());
-    }
+async fn resolver_feature_disabled_is_v1() {
+    // A plan record saying v2 must not override the switch.
+    let node = MockNode::start(r#"{"height":"5746000"}"#, &["{}"]).await;
+    node.set_features(200, &features_body(&[FEATURE_OTHER, FEATURE_V2_OFF]));
+    let got = SignBytesResolver::new()
+        .resolve(SignBytesMode::Auto, "qorechain-diana", Some(&node.base_url))
+        .await
+        .unwrap();
+    assert_eq!(got, SignBytesVersion::V1);
+    assert!(node.plan_hits().is_empty());
 }
 
 #[tokio::test]
-async fn resolver_features_unusable_falls_back_to_the_plans() {
+async fn resolver_features_not_served_falls_back_to_the_plans() {
+    let absent = features_body(&[FEATURE_OTHER]);
     let cases: [(Option<(u16, &str)>, &str); 5] = [
         (None, "404"),
         (
             Some((501, r#"{"code":12,"message":"Not Implemented"}"#)),
             "501",
         ),
-        (Some((200, "<html>")), "unparseable"),
         (Some((200, r#"{"features":[],"height":"1"}"#)), "empty list"),
         (Some((200, "{}")), "no list"),
+        (Some((200, &absent)), "switch absent"),
     ];
     for (features, label) in cases {
         for (plan, want) in [
@@ -790,6 +786,71 @@ async fn resolver_features_unusable_falls_back_to_the_plans() {
             assert_eq!(node.plan_hits()[0], PLAN_PATH_PRIMARY, "{label}");
         }
     }
+}
+
+/// A features query that could not be made is an error: no plan request, no
+/// default to v1.
+#[tokio::test]
+async fn resolver_features_failure_is_an_error_without_a_plan_request() {
+    let cases: [(u16, &str, &str); 5] = [
+        (500, r#"{"message":"boom"}"#, "500"),
+        (502, "bad gateway", "502"),
+        (503, "", "503"),
+        (429, "slow down", "429"),
+        (200, "<html>", "unparsable"),
+    ];
+    for (status, body, label) in cases {
+        let node = MockNode::start(r#"{"height":"0"}"#, &["{}"]).await;
+        node.set_features(status, body);
+        let err = SignBytesResolver::new()
+            .resolve(SignBytesMode::Auto, "qorechain-diana", Some(&node.base_url))
+            .await
+            .unwrap_err();
+        assert!(matches!(err, Error::SignBytes(_)), "{label}: {err:?}");
+        let msg = err.to_string();
+        assert!(msg.contains("protocol feature switches"), "{label}: {msg}");
+        assert!(msg.contains("v1 or v2"), "{label}: {msg}");
+        assert_eq!(node.feature_hits(), 1, "{label}");
+        assert!(node.plan_hits().is_empty(), "{label}: no plan fall back");
+    }
+}
+
+#[tokio::test]
+async fn resolver_features_connection_refused_is_an_error() {
+    let err = SignBytesResolver::new()
+        .resolve(
+            SignBytesMode::Auto,
+            "qorechain-diana",
+            Some("http://127.0.0.1:1"),
+        )
+        .await
+        .unwrap_err();
+    assert!(matches!(err, Error::SignBytes(_)), "{err:?}");
+    assert!(
+        err.to_string().contains("protocol feature switches"),
+        "{err}"
+    );
+}
+
+#[tokio::test]
+async fn resolver_does_not_cache_a_features_error() {
+    let node = MockNode::start(r#"{"height":"0"}"#, &["{}"]).await;
+    node.set_features(500, "{}");
+    let r = SignBytesResolver::new();
+    let url = Some(node.base_url.as_str());
+    assert!(r
+        .resolve(SignBytesMode::Auto, "qorechain-diana", url)
+        .await
+        .is_err());
+    node.set_features(200, &features_body(&[FEATURE_V2_ON]));
+    assert_eq!(
+        r.resolve(SignBytesMode::Auto, "qorechain-diana", url)
+            .await
+            .unwrap(),
+        SignBytesVersion::V2
+    );
+    assert_eq!(node.feature_hits(), 2);
+    assert!(node.plan_hits().is_empty());
 }
 
 #[tokio::test]
@@ -836,7 +897,7 @@ fn version_from_protocol_features_payloads() {
     );
     assert_eq!(
         sign_bytes_version_from_protocol_features(&parse(&features_body(&[FEATURE_OTHER]))),
-        Some(SignBytesVersion::V1)
+        None
     );
     assert_eq!(
         sign_bytes_version_from_protocol_features(&parse(&features_body(&[]))),

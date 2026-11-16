@@ -32,16 +32,20 @@
 //!
 //! Before the plans, the resolver reads the node's protocol feature switches
 //! (`/qorechain/pqc/v1/protocol_features`, chain v3.2.4 and later): v2 when
-//! [`PQC_SIGN_BYTES_V2_FEATURE`] is listed and enabled, v1 when the node lists
-//! its features and that one is disabled or absent. This also covers a fresh
-//! network that reuses a legacy chain id: it enables every feature at genesis
-//! and never applies an upgrade plan. Only when that query cannot answer
-//! (older node, transport error, unexpected or empty payload) does the resolver
-//! fall back to the plans.
+//! [`PQC_SIGN_BYTES_V2_FEATURE`] is listed and enabled, v1 when it is listed
+//! and disabled. This also covers a fork, devnet or fest network that reuses a
+//! legacy chain id: it enables every feature at genesis and never applies an
+//! upgrade plan, so its `applied_plan` answers height 0 while it verifies v2.
+//! The resolver falls back to the plans ONLY when the node definitively does
+//! not serve the switch: HTTP 404 or 501 (an older node), or HTTP 200 with an
+//! empty list or a list without the switch (see
+//! [`crate::protocol_features::read_protocol_feature`]).
 //!
-//! The resolver never guesses: a legacy chain with no REST URL, or a failed
-//! query, is an error that asks for a REST URL or an explicit
-//! [`SignBytesMode::V1`] / [`SignBytesMode::V2`].
+//! The resolver never guesses: a legacy chain with no REST URL, a features
+//! query that could not be made (transport error, timeout, HTTP 429 or 5xx
+//! other than 501, unparsable answer) or a failed plan query is an error that
+//! asks for a REST URL or an explicit [`SignBytesMode::V1`] /
+//! [`SignBytesMode::V2`]. Only successful answers are cached.
 
 use std::collections::HashMap;
 use std::fmt;
@@ -53,7 +57,9 @@ use std::time::{Duration, Instant};
 use serde_json::Value;
 
 use crate::error::{Error, Result};
-use crate::protocol_features::{parse_protocol_features, PROTOCOL_FEATURES_PATH};
+use crate::protocol_features::{
+    classify_protocol_feature, parse_protocol_features, read_protocol_feature, ProtocolFeatureState,
+};
 use crate::query::RestClient;
 
 /// Domain tag that opens the v2 hybrid-tx sign-bytes.
@@ -441,11 +447,15 @@ pub fn bridge_attestation_sign_bytes(
 ///
 /// For a non-legacy chain the answer is v2 with no network call. For a legacy
 /// chain it first reads `GET {rest_url}/qorechain/pqc/v1/protocol_features`
-/// (see [`sign_bytes_version_from_protocol_features`]). When that cannot answer,
-/// it asks `GET {rest_url}/cosmos/upgrade/v1beta1/applied_plan/{name}`
+/// (see [`SignBytesResolver::fetch_version_from_protocol_features`]): the
+/// switch [`PQC_SIGN_BYTES_V2_FEATURE`] decides when the node lists it. Only
+/// when the node definitively does not serve it (HTTP 404 / 501, or a list
+/// that is empty or lacks the switch) does it ask
+/// `GET {rest_url}/cosmos/upgrade/v1beta1/applied_plan/{name}`
 /// (`{"height":"<n>"}`; a missing height means `0`) for every name in
 /// [`SIGN_BYTES_V2_UPGRADES`], stopping at the first positive height, and
-/// applies [`sign_bytes_version_for`].
+/// apply [`sign_bytes_version_for`]. A features query that could not be made is
+/// an error, never a fall back to the plans. Errors are not cached.
 #[derive(Debug)]
 pub struct SignBytesResolver {
     http: reqwest::Client,
@@ -492,8 +502,9 @@ impl SignBytesResolver {
     /// - `Auto` on a non-legacy chain → v2, no network.
     /// - `Auto` on a legacy chain → the cached answer for `(rest_url, chain_id)`
     ///   when fresh, else the node is asked: its protocol feature switches first,
-    ///   the upgrade plans when those cannot answer. No `rest_url`, or a failed
-    ///   plan query, is an error (never a guess).
+    ///   the upgrade plans only when the node does not serve the switch. No
+    ///   `rest_url`, a features query that could not be made, or a failed plan
+    ///   query is an error (never a guess).
     pub async fn resolve(
         &self,
         mode: SignBytesMode,
@@ -582,20 +593,35 @@ impl SignBytesResolver {
     }
 
     /// The version `rest_url`'s node reports through its protocol feature
-    /// switches, or `None` when they cannot answer (route not served, request
-    /// failed, unexpected or empty payload). See
-    /// [`sign_bytes_version_from_protocol_features`].
+    /// switches: `Some(V2)` when [`PQC_SIGN_BYTES_V2_FEATURE`] is listed and
+    /// enabled, `Some(V1)` when it is listed and disabled, `None` when the node
+    /// definitively does not serve it (HTTP 404 / 501, or a list that is empty
+    /// or lacks the switch; the caller then asks the upgrade plans).
+    ///
+    /// # Errors
+    ///
+    /// [`Error::SignBytes`] when the node could not be asked (transport error,
+    /// timeout, HTTP 429 or 5xx other than 501, unparsable answer). Never read
+    /// that as "not served": pass an explicit sign-bytes version instead.
     pub async fn fetch_version_from_protocol_features(
         &self,
         rest_url: &str,
-    ) -> Option<SignBytesVersion> {
+    ) -> Result<Option<SignBytesVersion>> {
         let rest = RestClient::with_client(rest_url, self.http.clone());
-        let body = rest.get(PROTOCOL_FEATURES_PATH, &[]).await.ok()?;
-        sign_bytes_version_from_protocol_features(&body)
+        match read_protocol_feature(&rest, PQC_SIGN_BYTES_V2_FEATURE).await {
+            Ok(ProtocolFeatureState::Enabled) => Ok(Some(SignBytesVersion::V2)),
+            Ok(ProtocolFeatureState::Disabled) => Ok(Some(SignBytesVersion::V1)),
+            Ok(ProtocolFeatureState::NotServed) => Ok(None),
+            Err(e) => Err(Error::SignBytes(format!(
+                "cannot ask {rest_url} for its protocol feature switches ({e}), so the \
+                 network could not be asked which hybrid sign-bytes form it verifies; the SDK \
+                 does not guess: retry, or pass an explicit sign-bytes version (v1 or v2)"
+            ))),
+        }
     }
 
     async fn fetch_and_store(&self, chain_id: &str, rest_url: &str) -> Result<SignBytesVersion> {
-        let v = match self.fetch_version_from_protocol_features(rest_url).await {
+        let v = match self.fetch_version_from_protocol_features(rest_url).await? {
             Some(v) => v,
             None => {
                 let height = self.fetch_v2_applied_height_any(rest_url).await?;
@@ -632,19 +658,21 @@ impl SignBytesResolver {
 }
 
 /// The version a `protocol_features` payload implies: v2 when
-/// [`PQC_SIGN_BYTES_V2_FEATURE`] is listed and enabled, v1 when the payload
-/// lists features and that one is disabled or absent, `None` when it lists no
-/// features or cannot be parsed (the caller then asks the upgrade plans).
+/// [`PQC_SIGN_BYTES_V2_FEATURE`] is listed and enabled, v1 when it is listed
+/// and disabled, `None` when the payload lists no features, lacks the switch,
+/// or cannot be parsed.
+///
+/// This reads a payload already in hand. The resolver does not use it: it
+/// tells "not served" (fall back to the plans) apart from "unparsable" (an
+/// error) through [`crate::protocol_features::classify_protocol_feature`].
 pub fn sign_bytes_version_from_protocol_features(body: &Value) -> Option<SignBytesVersion> {
-    let parsed = parse_protocol_features(body).ok()?;
-    if parsed.features.is_empty() {
-        return None;
+    // Keep the payload check of the full parser (an unparsable height is None).
+    parse_protocol_features(body).ok()?;
+    match classify_protocol_feature(Ok(body.clone()), PQC_SIGN_BYTES_V2_FEATURE).ok()? {
+        ProtocolFeatureState::Enabled => Some(SignBytesVersion::V2),
+        ProtocolFeatureState::Disabled => Some(SignBytesVersion::V1),
+        ProtocolFeatureState::NotServed => None,
     }
-    Some(if parsed.is_enabled(PQC_SIGN_BYTES_V2_FEATURE) {
-        SignBytesVersion::V2
-    } else {
-        SignBytesVersion::V1
-    })
 }
 
 /// The process-wide resolver used by the high-level sign-and-broadcast paths.
