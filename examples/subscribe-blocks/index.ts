@@ -6,7 +6,7 @@
  *  - subscribeNewBlocks(client, handler) → an unsubscribe function
  *
  * Needs a reachable consensus RPC endpoint over a websocket: ws:// or wss://
- * (an http:// or https:// URL is turned into the matching ws:// or wss:// one).
+ * (the SDK turns an http:// or https:// URL into the matching ws:// or wss:// one).
  * The example prints a few blocks, unsubscribes, disconnects and exits.
  */
 
@@ -16,8 +16,8 @@ import {
 } from "@qorechain/sdk";
 
 async function main(): Promise<void> {
-  // Subscriptions need a websocket: accept an http(s) URL and switch the scheme.
-  const rpc = (process.env.QORE_RPC_URL ?? "ws://localhost:26657").replace(/^http(s?):\/\//, "ws$1://");
+  // Subscriptions need a websocket; the SDK switches an http(s) URL to ws(s).
+  const rpc = process.env.QORE_RPC_URL ?? "ws://localhost:26657";
   const max = Number(process.env.QORE_MAX_BLOCKS ?? "3");
 
   const client = await createSubscriptionClient(rpc);
@@ -46,13 +46,9 @@ async function main(): Promise<void> {
   });
 }
 
-main()
-  .catch((err: unknown) => {
-    console.error("\nFailed to subscribe to new blocks.");
-    console.error("Set QORE_RPC_URL to a reachable QoreChain consensus RPC websocket (ws:// or wss://).");
-    console.error(err instanceof Error ? err.message : err);
-    process.exitCode = 1;
-  })
-  // A disconnected websocket can stay open until the server closes it, which
-  // keeps Node running; the example is done, so exit.
-  .finally(() => process.exit());
+main().catch((err: unknown) => {
+  console.error("\nFailed to subscribe to new blocks.");
+  console.error("Set QORE_RPC_URL to a reachable QoreChain consensus RPC websocket (ws:// or wss://).");
+  console.error(err instanceof Error ? err.message : err);
+  process.exitCode = 1;
+});

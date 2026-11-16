@@ -5,6 +5,21 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+### Fixed
+
+- **TypeScript subscriptions close for good.** `createSubscriptionClient` opened
+  one websocket to read the node's consensus version and a second for the
+  subscriptions, and after `disconnect()` both reconnected on their own: a Node
+  script never exited and a long-lived app collected open sockets. It now uses
+  one websocket, `disconnect()` closes it without reconnecting, and an
+  `http://` or `https://` URL is switched to `ws://` or `wss://` (new
+  `toWebsocketUrl`).
+- **Examples.** `send-qor` and `cross-vm-call` register the account's ML-DSA-87
+  key once (`ensurePqcRegistered`) and sign hybrid, as the chain requires (they
+  signed classically and were refused). `subscribe-blocks` defaults to `ws://`.
+
 ## [0.14.0] - 2026-11-12
 
 Support for chain v3.2.8 (the testnet `qorechain-diana` runs it from 12 November
