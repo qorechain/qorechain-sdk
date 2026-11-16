@@ -27,6 +27,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   `PqcDx.proofOfPossessionAccepted`, `EnsureOptions.attachProofOfPossession`.
   Rust `SignBytesResolver::fetch_version_from_protocol_features` now returns
   `Result<Option<_>>`.
+- **`MsgExecuteEVM` digest from its switch.** The v1/v2 authenticator digest
+  choice reads `abstractaccount-hardening` first (on: v2), with the same
+  fallback and error rules, in all five SDKs.
 
 ### Fixed
 
