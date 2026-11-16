@@ -4,10 +4,10 @@
  * Shows:
  *  - createClient() with endpoint overrides from the environment
  *  - reading a native balance via client.rest.getAllBalances(addr)
- *  - reading client.qor.getTokenomicsOverview()
+ *  - reading burn statistics and the total supply over REST
  *
- * Both reads need a reachable node. With no env vars set, the client targets the
- * localhost defaults (REST :1317, EVM JSON-RPC :8545). If the node is
+ * The reads need a reachable node. With no env vars set, the client targets the
+ * localhost default (REST :1317). If the node is
  * unreachable the example prints a clear hint and exits non-zero.
  */
 
@@ -24,7 +24,6 @@ async function main(): Promise<void> {
     network: "testnet",
     endpoints: {
       rest: process.env.QORE_REST_URL ?? "http://localhost:1317",
-      evmRpc: process.env.QORE_EVM_RPC_URL ?? "http://localhost:8545",
     },
   });
 
@@ -40,15 +39,20 @@ async function main(): Promise<void> {
     }
   }
 
-  const overview = await client.qor.getTokenomicsOverview();
-  console.log("tokenomics overview:");
-  console.log(JSON.stringify(overview, null, 2));
+  const burn = await client.rest.getBurnStats<{ stats?: { total_burned?: string } }>();
+  console.log(`burned:   ${burn.stats?.total_burned ?? "?"} ${client.network.coin.base}`);
+
+  const supply = await client.rest.get<{ amount?: { amount?: string } }>(
+    "/cosmos/bank/v1beta1/supply/by_denom",
+    { denom: client.network.coin.base },
+  );
+  console.log(`supply:   ${supply.amount?.amount ?? "?"} ${client.network.coin.base}`);
 }
 
 main().catch((err: unknown) => {
   console.error("\nFailed to query the node.");
   console.error(
-    "Ensure a QoreChain node is reachable and QORE_REST_URL / QORE_EVM_RPC_URL point at it.",
+    "Ensure a QoreChain node is reachable and QORE_REST_URL points at it.",
   );
   console.error(err instanceof Error ? err.message : err);
   process.exitCode = 1;

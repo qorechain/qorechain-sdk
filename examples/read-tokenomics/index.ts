@@ -1,13 +1,14 @@
 /**
- * read-tokenomics - read tokenomics state via the qor_* JSON-RPC namespace.
+ * read-tokenomics - read QoreChain tokenomics state over the REST (LCD) API.
  *
- * Shows three QorClient methods (served over the EVM JSON-RPC endpoint):
- *  - client.qor.getBurnStats()        → qor_getBurnStats
- *  - client.qor.getXqorePosition(addr) → qor_getXQOREPosition
- *  - client.qor.getInflationRate()    → qor_getInflationRate
+ * Shows client.rest reads, each served by the chain module that owns the data:
+ *  - client.rest.getBurnStats()                     → /qorechain/burn/v1/stats
+ *  - client.rest.get("/qorechain/inflation/v1/epoch_info") → current inflation epoch and rate
+ *  - client.rest.get("/qorechain/inflation/v1/params")     → the inflation schedule
+ *  - client.rest.get("/cosmos/bank/v1beta1/supply/by_denom", { denom: "uqor" }) → total supply
  *
- * Needs a reachable EVM JSON-RPC (QORE_EVM_RPC_URL); the qor_* namespace is
- * served there. Reads are independent, so each is reported even if others fail.
+ * Needs a reachable REST endpoint (QORE_REST_URL). Reads are independent, so each
+ * is reported even if others fail.
  */
 
 import { createClient } from "@qorechain/sdk";
@@ -23,25 +24,24 @@ async function tryRead(label: string, fn: () => Promise<unknown>): Promise<void>
 }
 
 async function main(): Promise<void> {
-  const address =
-    process.env.QORE_ADDRESS ??
-    "qor1qqqsyqcyq5rqwzqfpg9scrgwpugpzysnzs23v9ccrydpk8qarc0jqscl8t9";
-
   const client = createClient({
     network: "testnet",
     endpoints: {
-      evmRpc: process.env.QORE_EVM_RPC_URL ?? "http://localhost:8545",
+      rest: process.env.QORE_REST_URL ?? "http://localhost:1317",
     },
   });
 
-  await tryRead("qor_getBurnStats", () => client.qor.getBurnStats());
-  await tryRead("qor_getXQOREPosition", () => client.qor.getXqorePosition(address));
-  await tryRead("qor_getInflationRate", () => client.qor.getInflationRate());
+  await tryRead("burn stats", () => client.rest.getBurnStats());
+  await tryRead("inflation epoch", () => client.rest.get("/qorechain/inflation/v1/epoch_info"));
+  await tryRead("inflation schedule", () => client.rest.get("/qorechain/inflation/v1/params"));
+  await tryRead("total supply", () =>
+    client.rest.get("/cosmos/bank/v1beta1/supply/by_denom", { denom: client.network.coin.base }),
+  );
 }
 
 main().catch((err: unknown) => {
-  console.error("\nFailed to reach the qor_* JSON-RPC endpoint.");
-  console.error("Set QORE_EVM_RPC_URL to a reachable QoreChain EVM endpoint.");
+  console.error("\nFailed to reach the REST endpoint.");
+  console.error("Set QORE_REST_URL to a reachable QoreChain REST (LCD) endpoint.");
   console.error(err instanceof Error ? err.message : err);
   process.exitCode = 1;
 });

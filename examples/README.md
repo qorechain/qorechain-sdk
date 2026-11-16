@@ -7,7 +7,7 @@ via `workspace:*`, with its own `README.md`, `.env.example`, and a single
 
 | Example | Shows | Needs a live node? |
 |---|---|---|
-| [`connect-and-query`](./connect-and-query) | `createClient`, read a native balance, read tokenomics overview | Yes |
+| [`connect-and-query`](./connect-and-query) | `createClient`, read a native balance, burn statistics and total supply | Yes |
 | [`send-qor`](./send-qor) | derive a native account, sign, broadcast a QOR transfer | Yes (+ funded account) |
 | [`pqc-hybrid-sign`](./pqc-hybrid-sign) | ML-DSA-87 sign/verify + build a hybrid tx | **No - runs offline** |
 | [`evm-precompile`](./evm-precompile) | EVM precompiles + ERC-20 `balanceOf` | Yes |
@@ -15,7 +15,7 @@ via `workspace:*`, with its own `README.md`, `.env.example`, and a single
 | [`cross-vm-call`](./cross-vm-call) | `createCrossVMClient`: call an EVM contract from a native account, then an atomic batch across two VMs | No to build; yes to send |
 | [`svm-transfer`](./svm-transfer) | build a SOL transfer + memo instruction | No to build; yes to send |
 | [`cosmwasm-query`](./cosmwasm-query) | smart-query a CosmWasm contract | Yes (+ deployed contract) |
-| [`read-tokenomics`](./read-tokenomics) | `qor_getBurnStats` / `qor_getXQOREPosition` / `qor_getInflationRate` | Yes |
+| [`read-tokenomics`](./read-tokenomics) | burn statistics, inflation epoch and schedule, total supply over REST | Yes |
 | [`connect-keplr`](./connect-keplr) | connect a Keplr/Leap browser wallet → send | Browser (web app) |
 | [`amm-swap`](./amm-swap) | compose + broadcast an AMM `SwapExactIn` | No to compose; yes to send |
 | [`register-sidechain`](./register-sidechain) | `createMultilayerClient`: register a sidechain + paychain, anchor state, route a tx, read layers | No to compose; yes to send/read |

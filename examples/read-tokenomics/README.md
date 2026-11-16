@@ -1,26 +1,27 @@
 # read-tokenomics
 
-Read QoreChain tokenomics state through the typed `qor_*` JSON-RPC namespace
-(`client.qor`), served over the EVM JSON-RPC endpoint:
+Read QoreChain tokenomics state over the REST (LCD) API with `client.rest`:
 
-- `client.qor.getBurnStats()` → `qor_getBurnStats`
-- `client.qor.getXqorePosition(address)` → `qor_getXQOREPosition`
-- `client.qor.getInflationRate()` → `qor_getInflationRate`
+- `client.rest.getBurnStats()` → `/qorechain/burn/v1/stats` (total burned, by source)
+- `client.rest.get("/qorechain/inflation/v1/epoch_info")` → the current inflation
+  epoch, rate and emission totals
+- `client.rest.get("/qorechain/inflation/v1/params")` → the inflation schedule
+- `client.rest.get("/cosmos/bank/v1beta1/supply/by_denom", { denom: "uqor" })` →
+  total supply
 
 ## Prerequisites
 
-- A reachable QoreChain EVM JSON-RPC endpoint (`QORE_EVM_RPC_URL`, default
-  `http://localhost:8545`) - the `qor_*` methods are served there.
-- Optionally set `QORE_ADDRESS` for the xQORE position lookup.
+- A reachable QoreChain REST endpoint (`QORE_REST_URL`, default
+  `http://localhost:1317`).
 
-The three reads are independent: each is reported even if the others are
+The reads are independent: each is reported even if the others are
 unavailable on the node.
 
 ## Run
 
 ```bash
 pnpm install
-QORE_EVM_RPC_URL=https://evm-testnet.qore.host QORE_ADDRESS=qor1... pnpm start
+QORE_REST_URL=https://api-testnet.qore.host pnpm start
 ```
 
 Needs a live node to produce output.
