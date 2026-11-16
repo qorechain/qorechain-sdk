@@ -11,6 +11,7 @@ import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpServer;
 import io.github.qorechain.accounts.Account;
 import io.github.qorechain.accounts.Accounts;
+import io.github.qorechain.crossvm.CrossVMClient;
 import io.github.qorechain.pqc.KeyIntegrity;
 import io.github.qorechain.pqc.Pqc;
 import io.github.qorechain.pqc.PqcDx;
@@ -71,6 +72,7 @@ class ProtocolFeaturesFirstTest {
     void start() throws IOException {
         PqcDx.clearProofOfPossessionCache();
         Authenticator.clearEvmAuthDigestCache();
+        CrossVMClient.clearAsyncFeatureCache();
         ChainUpgrades.clearCache();
         server = HttpServer.create(new InetSocketAddress("127.0.0.1", 0), 0);
         server.createContext(
@@ -104,6 +106,7 @@ class ProtocolFeaturesFirstTest {
         server.stop(0);
         PqcDx.clearProofOfPossessionCache();
         Authenticator.clearEvmAuthDigestCache();
+        CrossVMClient.clearAsyncFeatureCache();
         ChainUpgrades.clearCache();
     }
 
@@ -560,5 +563,130 @@ class ProtocolFeaturesFirstTest {
         assertThrows(
                 ProtocolFeatures.FeatureQueryException.class,
                 () -> Authenticator.evmAuthDigestVersion(new RestClient(baseUrl), null));
+    }
+
+    // ---- (D) MsgCrossVMCall async fields need chain v3.2.8 ----
+
+    private static final String GAS_PRICED = CrossVMClient.ASYNC_GAS_PRICED_FEATURE;
+    private static final String ESCROW = CrossVMClient.ASYNC_ESCROW_FEATURE;
+
+    private CrossVMClient crossVm(String rest, boolean skip) {
+        Account acct = Accounts.deriveNativeAccount(MNEMONIC, 0);
+        CrossVMClient.Signer s = new CrossVMClient.Signer();
+        s.sender = acct.address;
+        s.secp256k1PrivateKey = acct.privateKey;
+        s.secp256k1PublicKey = acct.publicKey;
+        s.fee = StdFee.of("uqor", "5000", "800000");
+        s.chainId = CHAIN_ID;
+        s.restUrl = rest;
+        s.skipAsyncFieldsCheck = skip;
+        return new CrossVMClient(s, new Broadcaster(baseUrl), null);
+    }
+
+    private static CrossVMClient.CallOptions asyncCall(long gasLimit, long maxFactor) {
+        CrossVMClient.CallOptions o = new CrossVMClient.CallOptions();
+        o.targetVm = CrossVMClient.VMType.COSMWASM;
+        o.targetContract = "qor1contract";
+        o.payload = new byte[] {1};
+        o.async = true;
+        o.asyncGasLimit = gasLimit;
+        o.asyncMaxFactor = maxFactor;
+        return o;
+    }
+
+    @Test
+    void asyncSwitchNamesMatchTheChain() {
+        assertEquals("crossvm-async-gas-priced", GAS_PRICED);
+        assertEquals("crossvm-async-escrow", ESCROW);
+    }
+
+    @Test
+    void asyncFieldsAllowedWhenSwitchesOn() {
+        serve(200, features(OTHER, feature(GAS_PRICED, true), feature(ESCROW, true)));
+        var msg = (qorechain.crossvm.v1.Tx.MsgCrossVMCall)
+                crossVm(baseUrl, false).buildCall(asyncCall(1_000_000, 2_000_000)).message;
+        assertEquals(1_000_000, msg.getAsyncGasLimit());
+        assertEquals(2_000_000, msg.getAsyncMaxFactor());
+        assertEquals(1, featureRequests.get(), "one request covers both switches");
+        assertEquals(0, planRequests.get());
+        // Confirmed switches are reused within the TTL.
+        serve(500, "{}");
+        crossVm(baseUrl, false).buildCall(asyncCall(1_000_000, 2_000_000));
+        crossVm(baseUrl + "/", false).call(asyncCall(1_000_000, 0));
+        assertEquals(1, featureRequests.get());
+        assertEquals(1, broadcastTxs.size());
+    }
+
+    @Test
+    void asyncFieldsRefusedOnMainnetShape() {
+        // A v3.2.7 node lists its switches but not the v3.2.8 ones.
+        serve(200, features(OTHER, feature("pqc-sign-bytes-v2", true)));
+        planHeight = "9000000";
+        CrossVMClient.AsyncFieldsNotSupportedException e =
+                assertThrows(
+                        CrossVMClient.AsyncFieldsNotSupportedException.class,
+                        () -> crossVm(baseUrl, false).buildCall(asyncCall(1_000_000, 0)));
+        assertEquals(
+                "MsgCrossVMCall async_gas_limit (field 8) requires chain v3.2.8 (switch"
+                        + " crossvm-async-gas-priced is not on at " + baseUrl + "); leave it 0 on this network",
+                e.getMessage());
+        CrossVMClient.AsyncFieldsNotSupportedException f =
+                assertThrows(
+                        CrossVMClient.AsyncFieldsNotSupportedException.class,
+                        () -> crossVm(baseUrl, false).buildCall(asyncCall(0, 2_000_000)));
+        assertEquals(
+                "MsgCrossVMCall async_max_factor (field 9) requires chain v3.2.8 (switch"
+                        + " crossvm-async-escrow is not on at " + baseUrl + "); leave it 0 on this network",
+                f.getMessage());
+        assertEquals(0, planRequests.get(), "no plan fallback");
+    }
+
+    @Test
+    void asyncFieldsRefusedWhenDisabledOrNotServed() {
+        String[][] cases = {
+            {"200", features(feature(GAS_PRICED, false), feature(ESCROW, true))},
+            {"200", features()}, {"200", "{}"}, {"404", NOT_IMPLEMENTED}, {"501", NOT_IMPLEMENTED}
+        };
+        for (String[] c : cases) {
+            serve(Integer.parseInt(c[0]), c[1]);
+            assertThrows(
+                    CrossVMClient.AsyncFieldsNotSupportedException.class,
+                    () -> crossVm(baseUrl, false).buildCall(asyncCall(1_000_000, 2_000_000)),
+                    "HTTP " + c[0] + " " + c[1]);
+        }
+        assertEquals(0, planRequests.get());
+    }
+
+    @Test
+    void asyncFieldsServerErrorIsCannotAsk() {
+        serve(500, "{\"message\":\"busy\"}");
+        ProtocolFeatures.FeatureQueryException e =
+                assertThrows(
+                        ProtocolFeatures.FeatureQueryException.class,
+                        () -> crossVm(baseUrl, false).call(asyncCall(1_000_000, 0)));
+        assertTrue(e.getMessage().startsWith("cannot ask"));
+        assertTrue(broadcastTxs.isEmpty(), "nothing signed or broadcast");
+    }
+
+    @Test
+    void asyncFieldsZeroMakesNoRequest() {
+        serve(500, "{}");
+        crossVm(baseUrl, false).buildCall(asyncCall(0, 0));
+        crossVm(null, false).buildCall(asyncCall(0, 0));
+        assertEquals(0, featureRequests.get());
+    }
+
+    @Test
+    void asyncFieldsWithoutRestUrlNeedOptOut() {
+        CrossVMClient.AsyncFieldsNotSupportedException e =
+                assertThrows(
+                        CrossVMClient.AsyncFieldsNotSupportedException.class,
+                        () -> crossVm(null, false).buildCall(asyncCall(1_000_000, 0)));
+        assertTrue(e.getMessage().contains("skipAsyncFieldsCheck"));
+        var msg = (qorechain.crossvm.v1.Tx.MsgCrossVMCall)
+                crossVm(null, true).buildCall(asyncCall(1_000_000, 0)).message;
+        assertEquals(1_000_000, msg.getAsyncGasLimit());
+        crossVm(baseUrl, true).buildCall(asyncCall(1_000_000, 0));
+        assertEquals(0, featureRequests.get());
     }
 }

@@ -414,6 +414,16 @@ class V328Test {
         return new CrossVMClient(s, new Broadcaster(baseUrl), null);
     }
 
+    /** A client that builds async fields without asking the network (offline build). */
+    private CrossVMClient offlineClient() {
+        Account acct = Accounts.deriveNativeAccount(MNEMONIC, 0);
+        CrossVMClient.Signer s = new CrossVMClient.Signer();
+        s.sender = acct.address;
+        s.chainId = CHAIN;
+        s.skipAsyncFieldsCheck = true;
+        return new CrossVMClient(s, new Broadcaster(baseUrl), null);
+    }
+
     private static CrossVMClient.CallOptions asyncWasm() {
         CrossVMClient.CallOptions o = new CrossVMClient.CallOptions();
         o.targetVm = CrossVMClient.VMType.COSMWASM;
@@ -428,7 +438,7 @@ class V328Test {
         CrossVMClient.CallOptions o = asyncWasm();
         o.asyncGasLimit = 1_000_000;
         o.asyncMaxFactor = 2_000_000;
-        var msg = (qorechain.crossvm.v1.Tx.MsgCrossVMCall) client(null, null).buildCall(o).message;
+        var msg = (qorechain.crossvm.v1.Tx.MsgCrossVMCall) offlineClient().buildCall(o).message;
         assertEquals(1_000_000, msg.getAsyncGasLimit());
         assertEquals(2_000_000, msg.getAsyncMaxFactor());
         for (long bad : new long[] {249_999, 10_000_001}) {

@@ -9,6 +9,7 @@ import com.google.protobuf.CodedInputStream;
 import com.google.protobuf.InvalidProtocolBufferException;
 import io.github.qorechain.messages.QorechainMessages;
 import io.github.qorechain.messages.TypedMessage;
+import io.github.qorechain.query.ProtocolFeatures;
 import io.github.qorechain.query.QorClient;
 import io.github.qorechain.query.RestClient;
 import io.github.qorechain.tx.AutoGas;
@@ -19,6 +20,8 @@ import io.github.qorechain.tx.StdFee;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * High-level helper for QoreChain's unified cross-VM call surface
@@ -40,6 +43,12 @@ import java.util.List;
  * or a {@code cosmwasm} object that is serialized to UTF-8 JSON via Jackson.
  * ABI-encoding of high-level arguments for EVM targets is not performed here;
  * for EVM targets supply the already-encoded call data as a raw {@code byte[]}.
+ *
+ * <p>{@link CallOptions#asyncGasLimit} (field 8) and {@link CallOptions#asyncMaxFactor}
+ * (field 9) exist only from chain v3.2.8; an older node refuses the whole transaction
+ * with a protobuf parse error. {@link #buildCall} (and so {@link #call} /
+ * {@link #callAtomic}) therefore checks the network's protocol feature switches before
+ * a non-zero value goes into a message; see {@link #requireAsyncFieldsSupported}.
  */
 public final class CrossVMClient {
 
@@ -63,6 +72,31 @@ public final class CrossVMClient {
     public static final long MAX_ASYNC_GAS_LIMIT = 10_000_000L;
     /** The default {@link CallOptions#asyncGasLimit} the chain applies for {@code 0}. */
     public static final long DEFAULT_ASYNC_GAS_LIMIT = 500_000L;
+
+    /** The protocol feature switch that must be on for a non-zero {@link CallOptions#asyncGasLimit}. */
+    public static final String ASYNC_GAS_PRICED_FEATURE = "crossvm-async-gas-priced";
+    /** The protocol feature switch that must be on for a non-zero {@link CallOptions#asyncMaxFactor}. */
+    public static final String ASYNC_ESCROW_FEATURE = "crossvm-async-escrow";
+    /** How long a confirmed switch is trusted, in ms. */
+    public static final long ASYNC_FEATURE_TTL_MS = 60_000L;
+
+    /** Confirmed-on switches only, per {@code restUrl|feature}: expiry time in ms. */
+    private static final Map<String, Long> ASYNC_FEATURE_CACHE = new ConcurrentHashMap<>();
+
+    /** Forget the confirmed async switches (tests, network switches). */
+    public static void clearAsyncFeatureCache() {
+        ASYNC_FEATURE_CACHE.clear();
+    }
+
+    /**
+     * Thrown before signing when a call sets {@link CallOptions#asyncGasLimit} or
+     * {@link CallOptions#asyncMaxFactor} on a network that does not run chain v3.2.8.
+     */
+    public static final class AsyncFieldsNotSupportedException extends IllegalStateException {
+        public AsyncFieldsNotSupportedException(String message) {
+            super(message);
+        }
+    }
 
     /** Per-call cross-VM options. */
     public static final class CallOptions {
@@ -153,6 +187,13 @@ public final class CrossVMClient {
          * not run yet when the result returns; poll {@link #getMessage} instead.
          */
         public Broadcaster.Mode broadcastMode = Broadcaster.Mode.SYNC;
+        /**
+         * Skip the chain v3.2.8 check of {@link CallOptions#asyncGasLimit} /
+         * {@link CallOptions#asyncMaxFactor} (default {@code false}). Set it only when
+         * you know the target network runs v3.2.8 or later and cannot give a
+         * {@link #restUrl} (an offline build); an older node refuses the transaction.
+         */
+        public boolean skipAsyncFieldsCheck = false;
     }
 
     /** The type URL of the response the chain returns for a {@code MsgCrossVMCall}. */
@@ -197,9 +238,22 @@ public final class CrossVMClient {
         this.qor = qor;
     }
 
-    /** Build a single {@code MsgCrossVMCall} {@link TypedMessage} (no signing). */
+    /**
+     * Build a single {@code MsgCrossVMCall} {@link TypedMessage} (no signing).
+     *
+     * <p>A non-zero {@link CallOptions#asyncGasLimit} / {@link CallOptions#asyncMaxFactor}
+     * is checked against the network first ({@link #requireAsyncFieldsSupported} over
+     * {@link Signer#restUrl}), unless {@link Signer#skipAsyncFieldsCheck} is set.
+     *
+     * @throws AsyncFieldsNotSupportedException when the network does not run v3.2.8, or
+     *     there is no REST URL to ask.
+     * @throws ProtocolFeatures.FeatureQueryException when the network could not be asked.
+     */
     public TypedMessage buildCall(CallOptions opts) {
         validateAsyncOptions(opts);
+        if (signer == null || !signer.skipAsyncFieldsCheck) {
+            requireAsyncFieldsSupported(signer == null ? null : signer.restUrl, opts);
+        }
         String sender = opts.sender != null ? opts.sender : (signer != null ? signer.sender : null);
         String sourceVm = opts.sourceVm != null ? opts.sourceVm : VMType.EVM;
 
@@ -373,6 +427,86 @@ public final class CrossVMClient {
                 && (opts.asyncGasLimit < MIN_ASYNC_GAS_LIMIT || opts.asyncGasLimit > MAX_ASYNC_GAS_LIMIT)) {
             throw new IllegalArgumentException("asyncGasLimit must be 0 (default 500,000) or between "
                     + MIN_ASYNC_GAS_LIMIT + " and " + MAX_ASYNC_GAS_LIMIT + ", got " + opts.asyncGasLimit);
+        }
+    }
+
+    /**
+     * Refuse {@link CallOptions#asyncGasLimit} (field 8) / {@link CallOptions#asyncMaxFactor}
+     * (field 9) on a network below chain v3.2.8, before anything is signed.
+     *
+     * <ul>
+     *   <li>Both fields 0: nothing to check, no request.
+     *   <li>Otherwise {@code GET {restUrl}/qorechain/pqc/v1/protocol_features} must list
+     *       {@link #ASYNC_GAS_PRICED_FEATURE} (for a non-zero gas limit) and
+     *       {@link #ASYNC_ESCROW_FEATURE} (for a non-zero max factor) as enabled.
+     *   <li>Listed but disabled, absent, or not served at all (HTTP 404 or 501, an empty
+     *       list, an empty body): {@link AsyncFieldsNotSupportedException}. There is no
+     *       upgrade-plan fallback: a node without these switches is older than v3.2.8.
+     *   <li>A transport failure or any other HTTP error:
+     *       {@link ProtocolFeatures.FeatureQueryException}.
+     *   <li>No {@code restUrl}: {@link AsyncFieldsNotSupportedException}; set
+     *       {@link Signer#skipAsyncFieldsCheck} to build without asking.
+     * </ul>
+     *
+     * <p>A switch confirmed on is trusted for {@link #ASYNC_FEATURE_TTL_MS} per REST URL;
+     * refusals and failures are not cached.
+     */
+    public static void requireAsyncFieldsSupported(String restUrl, CallOptions opts) {
+        List<String[]> needed = new ArrayList<>(2);
+        if (opts.asyncGasLimit != 0) {
+            needed.add(new String[] {"async_gas_limit (field 8)", ASYNC_GAS_PRICED_FEATURE});
+        }
+        if (opts.asyncMaxFactor != 0) {
+            needed.add(new String[] {"async_max_factor (field 9)", ASYNC_ESCROW_FEATURE});
+        }
+        if (needed.isEmpty()) {
+            return;
+        }
+        if (restUrl == null || restUrl.isBlank()) {
+            throw new AsyncFieldsNotSupportedException(
+                    "MsgCrossVMCall " + needed.get(0)[0] + " requires chain v3.2.8, and there is no REST URL"
+                            + " to check that the network runs it: set Signer.restUrl, or"
+                            + " Signer.skipAsyncFieldsCheck when you know it does; otherwise leave it 0");
+        }
+        String rest = restUrl.replaceAll("/+$", "");
+        long now = System.currentTimeMillis();
+        List<String[]> unconfirmed = new ArrayList<>(2);
+        for (String[] n : needed) {
+            Long until = ASYNC_FEATURE_CACHE.get(rest + "|" + n[1]);
+            if (until == null || now >= until) {
+                unconfirmed.add(n);
+            }
+        }
+        if (unconfirmed.isEmpty()) {
+            return;
+        }
+        JsonNode body = null;
+        Exception failure = null;
+        try {
+            body = new RestClient(rest).get(ProtocolFeatures.PATH);
+        } catch (Exception e) {
+            failure = e;
+        }
+        for (String[] n : unconfirmed) {
+            ProtocolFeatures.Lookup l = failure != null
+                    ? ProtocolFeatures.classifyFailure(n[1], failure)
+                    : ProtocolFeatures.classify(n[1], body);
+            switch (l.state) {
+                case ENABLED:
+                    ASYNC_FEATURE_CACHE.put(rest + "|" + n[1], now + ASYNC_FEATURE_TTL_MS);
+                    break;
+                case DISABLED:
+                case NOT_SERVED:
+                    throw new AsyncFieldsNotSupportedException(
+                            "MsgCrossVMCall " + n[0] + " requires chain v3.2.8 (switch " + n[1]
+                                    + " is not on at " + rest + "); leave it 0 on this network");
+                default:
+                    throw new ProtocolFeatures.FeatureQueryException(
+                            "cannot ask " + rest + " for its protocol feature \"" + n[1] + "\" ("
+                                    + l.reason() + "), so MsgCrossVMCall " + n[0] + " cannot be checked"
+                                    + " against chain v3.2.8: retry, or leave it 0",
+                            l.error);
+            }
         }
     }
 

@@ -128,6 +128,14 @@ where `enabled` is reported as in force.
 async calls into CosmWasm. An async call holds an escrow (about `asyncGasLimit x
 factor x gas price`, by default about 0.2 QOR) refunded when it finishes, pays a
 queue-slot fee, and a sender may have at most 100 pending calls.
+Both fields exist only from chain v3.2.8, and an older node refuses the whole
+transaction. Before a non-zero value is signed, `buildCall` / `call` / `callAtomic`
+read `Signer.restUrl` + `/qorechain/pqc/v1/protocol_features` and require
+`crossvm-async-gas-priced` (for `asyncGasLimit`) and `crossvm-async-escrow` (for
+`asyncMaxFactor`) to be enabled; otherwise they throw
+`CrossVMClient.AsyncFieldsNotSupportedException` (leave the field 0 on that network).
+With no `restUrl` they throw too, unless `Signer.skipAsyncFieldsCheck` is set. Both
+fields 0 need no request.
 `CrossVMClient.listPending(rest)` follows `pagination.next_key` (page cap 1000);
 `payload_hex` in the list is cut to 1,024 bytes, so use
 `CrossVMClient.getMessageRest(rest, id)` for the full payload.
