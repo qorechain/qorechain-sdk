@@ -51,6 +51,12 @@ type Signer struct {
 	Mode tx.BroadcastMode
 	// Wait configures post-broadcast polling (zero values use sensible defaults).
 	Wait tx.WaitOptions
+	// SkipFeatureCheck builds a call that sets AsyncGasLimit or AsyncMaxFactor
+	// without asking the network whether it reads those fields. By default
+	// (false) every Build* / Call* method first checks the protocol feature
+	// switches at RestURL (tx.RequireCrossVMAsyncSupport) and refuses the call
+	// on a network below chain v3.2.8, or when RestURL is empty.
+	SkipFeatureCheck bool
 }
 
 // QorRPC is the subset of query.QorClient used by GetMessage as a fallback when
@@ -122,7 +128,9 @@ type CallOptions struct {
 	Async bool
 	// AsyncGasLimit is the gas a queued call into CosmWasm may use (chain
 	// v3.2.8): 0 = 500,000, otherwise 250,000..10,000,000. Async calls into
-	// CosmWasm only.
+	// CosmWasm only. A non-zero value needs the switch
+	// "crossvm-async-gas-priced" on at Signer.RestURL (see
+	// Signer.SkipFeatureCheck); leave it 0 on an older network.
 	//
 	// An async call holds an escrow of AsyncGasLimit x factor x gas price
 	// (about 0.2 QOR with the defaults), refunded when the call finishes, and
@@ -130,7 +138,8 @@ type CallOptions struct {
 	AsyncGasLimit uint64
 	// AsyncMaxFactor caps the congestion factor the queued call accepts, in
 	// millionths (1,000,000 = 1x; 0 = four times the factor at submission).
-	// Async calls into CosmWasm only.
+	// Async calls into CosmWasm only. A non-zero value needs the switch
+	// "crossvm-async-escrow" on at Signer.RestURL.
 	AsyncMaxFactor uint64
 }
 
@@ -267,7 +276,17 @@ func (c *Client) GetMessage(id string) (*crossvmv1.QueryMessageResponse, error) 
 // build signs the given messages into a BuiltTx using the helper's Signer.
 // With Fee.Gas == tx.GasAuto the tx is simulated first and its gas scaled by
 // at least tx.WasmGasMultiplier; an empty Fee.Gas is refused.
+//
+// Unless Signer.SkipFeatureCheck is set, a MsgCrossVMCall that sets
+// AsyncGasLimit or AsyncMaxFactor is first checked against the network's
+// protocol feature switches (tx.RequireCrossVMAsyncSupport): a node below
+// chain v3.2.8 refuses the whole transaction for those fields.
 func (c *Client) build(msgs []sdk.Msg) (*tx.BuiltTx, error) {
+	if !c.signer.SkipFeatureCheck {
+		if err := tx.RequireCrossVMAsyncSupport(context.Background(), c.signer.RestURL, msgs, c.signer.HTTPClient); err != nil {
+			return nil, fmt.Errorf("crossvm: %w", err)
+		}
+	}
 	fee := c.signer.Fee
 	switch fee.Gas {
 	case "":

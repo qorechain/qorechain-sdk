@@ -37,6 +37,10 @@ type BroadcastHybridParams struct {
 	// ceil(simulated * GasMultiplier). Zero uses HybridGasWanted's rule
 	// (exact on a v3.2.5 network).
 	GasMultiplier float64
+	// SkipFeatureCheck skips RequireCrossVMAsyncSupport: a MsgCrossVMCall that
+	// sets async_gas_limit or async_max_factor is then signed and sent without
+	// asking the network whether it reads those fields (chain v3.2.8).
+	SkipFeatureCheck bool
 }
 
 // HybridBroadcastResult reports BroadcastHybridAndWait's outcome.
@@ -74,6 +78,11 @@ type HybridBroadcastResult struct {
 // attempt is returned. An explicit V1 / V2 is never retried, and code 21 from
 // any other codespace is not treated as this case.
 //
+// Cross-VM async fields: before anything is signed, a MsgCrossVMCall that sets
+// async_gas_limit or async_max_factor (chain v3.2.8) is checked against the
+// network's protocol feature switches (RequireCrossVMAsyncSupport) unless
+// SkipFeatureCheck is set.
+//
 // On error, the returned result (when non-nil) still carries the last BuiltTx.
 func BroadcastHybridAndWait(params BroadcastHybridParams) (*HybridBroadcastResult, error) {
 	ctx := params.Context
@@ -86,6 +95,12 @@ func BroadcastHybridAndWait(params BroadcastHybridParams) (*HybridBroadcastResul
 	}
 	requested := params.Build.SignBytesVersion
 	chainID := params.Build.ChainID
+
+	if !params.SkipFeatureCheck {
+		if err := RequireCrossVMAsyncSupport(ctx, params.RestURL, params.Build.Messages, params.HTTPClient); err != nil {
+			return nil, err
+		}
+	}
 
 	version, err := resolver.Resolve(ctx, params.RestURL, chainID, requested)
 	if err != nil {

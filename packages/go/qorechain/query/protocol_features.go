@@ -114,6 +114,12 @@ const (
 	// FeatureAbstractAccountHardening moves MsgExecuteEVM to the v2
 	// authenticator digest, which binds the call's gas limit.
 	FeatureAbstractAccountHardening = "abstractaccount-hardening"
+	// FeatureCrossVMAsyncGasPriced makes the chain read MsgCrossVMCall
+	// async_gas_limit (field 8, chain v3.2.8).
+	FeatureCrossVMAsyncGasPriced = "crossvm-async-gas-priced"
+	// FeatureCrossVMAsyncEscrow makes the chain read MsgCrossVMCall
+	// async_max_factor (field 9, chain v3.2.8).
+	FeatureCrossVMAsyncEscrow = "crossvm-async-escrow"
 )
 
 // FeatureStatus is what a node's protocol_features answer says about one

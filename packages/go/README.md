@@ -612,6 +612,17 @@ calls. `rest.GetCrossVMPending(key, limit)` reads one page of the queue and
 `rest.GetAllCrossVMPending(maxPages)` follows `next_key`; payloads in the list
 are cut to 1,024 bytes, so use `rest.GetCrossVMMessage(id)` for the full one.
 
+`AsyncGasLimit` (field 8) and `AsyncMaxFactor` (field 9) exist from chain
+v3.2.8; a node below it refuses the whole transaction. Before signing, the
+`crossvm` helper and `tx.BroadcastHybridAndWait` check the protocol feature
+switches at the REST URL (`tx.RequireCrossVMAsyncSupport`):
+`crossvm-async-gas-priced` for field 8 and `crossvm-async-escrow` for field 9
+must be on, otherwise the call is refused with a clear error ("leave it 0 on
+this network"). With no REST URL a non-zero field is refused too, unless you
+set `SkipFeatureCheck`. Both fields 0 makes no request. Offline builders
+(`tx.SendMessages`, `tx.BuildHybridMessages`) do not check: call
+`tx.RequireCrossVMAsyncSupport` yourself there.
+
 **EVM window scope.** `messages.NewOpenEVMWindowWithScope` sets
 `Validators` (0x addresses), `StakingValidators` (`qorvaloper...`) and
 `IBCReceivers` (`"channel-0/cosmos1..."`). Standard precompile methods are

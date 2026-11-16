@@ -4,6 +4,7 @@ import (
 	"errors"
 	"net/http"
 	"net/http/httptest"
+	"strings"
 	"testing"
 
 	sdktx "github.com/cosmos/cosmos-sdk/types/tx"
@@ -13,7 +14,9 @@ import (
 )
 
 func TestBuildCallAsyncBudget(t *testing.T) {
-	c := New(testSigner(t), Options{})
+	s := testSigner(t)
+	s.SkipFeatureCheck = true // offline: this test checks the message only
+	c := New(s, Options{})
 	built, err := c.BuildCall(CallOptions{TargetVM: VMTypeCosmWasm, TargetContract: "qor1c", Cosmwasm: map[string]any{"ping": struct{}{}},
 		Async: true, AsyncGasLimit: 400_000, AsyncMaxFactor: 2_000_000})
 	if err != nil {
@@ -73,5 +76,74 @@ func TestBuildCallAutoGasSimulates(t *testing.T) {
 	// round the last unit up.
 	if got := ai.Fee.Amount.AmountOf("uqor").Int64(); got < 103_935 || got > 103_936 {
 		t.Fatalf("fee = %d", got)
+	}
+}
+
+func TestBuildCallChecksAsyncSwitches(t *testing.T) {
+	cases := []struct {
+		name    string
+		status  int
+		body    string
+		skip    bool
+		restURL bool
+		wantErr string
+	}{
+		{"switch on", 200, `{"features":[{"name":"crossvm-async-gas-priced","enabled":true,"known":true,"staged":false}],"height":"9"}`, false, true, ""},
+		{"absent (mainnet shape)", 200, `{"features":[{"name":"pqc-sign-bytes-v2","enabled":true,"known":true,"staged":false}],"height":"9"}`, false, true,
+			"async_gas_limit (field 8) requires chain v3.2.8 (switch crossvm-async-gas-priced is not on at "},
+		{"404", 0, "", false, true, "requires chain v3.2.8"},
+		{"500", 500, `down`, false, true, "cannot ask"},
+		{"no REST URL", 200, "", false, false, "SkipFeatureCheck"},
+		{"no REST URL, skipped", 200, "", true, false, ""},
+	}
+	for _, c := range cases {
+		t.Run(c.name, func(t *testing.T) {
+			tx.ClearCrossVMAsyncFeatureCache()
+			var requests int
+			srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+				requests++
+				if c.status == 0 || r.URL.Path != "/qorechain/pqc/v1/protocol_features" {
+					http.NotFound(w, r)
+					return
+				}
+				w.WriteHeader(c.status)
+				_, _ = w.Write([]byte(c.body))
+			}))
+			defer srv.Close()
+			s := testSigner(t)
+			s.SkipFeatureCheck = c.skip
+			if c.restURL {
+				s.RestURL, s.HTTPClient = srv.URL, srv.Client()
+			}
+			_, err := New(s, Options{}).BuildCall(CallOptions{TargetVM: VMTypeCosmWasm, TargetContract: "qor1c",
+				Payload: []byte("{}"), Async: true, AsyncGasLimit: 400_000})
+			if c.wantErr == "" {
+				if err != nil {
+					t.Fatalf("unexpected error: %v", err)
+				}
+				return
+			}
+			if err == nil || !strings.Contains(err.Error(), c.wantErr) {
+				t.Fatalf("err = %v; want it to contain %q", err, c.wantErr)
+			}
+		})
+	}
+}
+
+func TestBuildCallWithoutAsyncFieldsMakesNoRequest(t *testing.T) {
+	var requests int
+	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		requests++
+		w.WriteHeader(500)
+	}))
+	defer srv.Close()
+	s := testSigner(t)
+	s.RestURL, s.HTTPClient = srv.URL, srv.Client()
+	if _, err := New(s, Options{}).BuildCall(CallOptions{TargetVM: VMTypeCosmWasm, TargetContract: "qor1c",
+		Payload: []byte("{}"), Async: true}); err != nil {
+		t.Fatal(err)
+	}
+	if requests != 0 {
+		t.Fatalf("requests = %d, want 0", requests)
 	}
 }
