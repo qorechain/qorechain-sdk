@@ -369,6 +369,8 @@ export {
   evmAuthSignBytes,
   evmAuthSignBytesV2,
   resolveEvmAuthDigestVersion,
+  AA_HARDENING_FEATURE,
+  clearEvmAuthDigestCache,
   fetchAuthNonce,
   cosmosAuthSignBytes,
   rotationSignBytes,

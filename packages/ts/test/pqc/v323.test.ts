@@ -1,4 +1,4 @@
-import { describe, it, expect, vi } from "vitest";
+import { describe, it, expect, vi, beforeEach } from "vitest";
 import { shake256 } from "@noble/hashes/sha3";
 
 import {
@@ -14,6 +14,8 @@ import {
   evmAuthSignBytes,
   evmAuthSignBytesV2,
   resolveEvmAuthDigestVersion,
+  AA_HARDENING_FEATURE,
+  clearEvmAuthDigestCache,
 } from "../../src/tx/authenticator";
 import { clearUpgradeCache } from "../../src/tx/upgrades";
 import { buildRegisterPqcKeyMsg } from "../../src/helpers/pqc";
@@ -146,10 +148,65 @@ describe("abstract-account EVM digest v2 (chain v3.2.3)", () => {
     expect(() => evmAuthSignBytesV2({ ...input, gasLimit: 0 })).toThrow(/gasLimit/);
   });
 
-  it("picks v2 only once v3.2.3 is applied", async () => {
+  it("picks v2 only once v3.2.3 is applied (node without the feature switches)", async () => {
     clearUpgradeCache();
+    clearEvmAuthDigestCache();
     expect(await resolveEvmAuthDigestVersion({ rest: "https://a", fetch: vi.fn(async () => json({ height: "0" })) })).toBe("v1");
     expect(await resolveEvmAuthDigestVersion({ rest: "https://b", fetch: vi.fn(async () => json({ height: "8003746" })) })).toBe("v2");
+  });
+
+  describe("reads the abstractaccount-hardening switch first", () => {
+    const FEATURES = "/qorechain/pqc/v1/protocol_features";
+    const sw = (enabled: boolean) => [{ name: AA_HARDENING_FEATURE, enabled, known: true, staged: false }];
+    const node = (features: unknown, planHeight = "0") =>
+      vi.fn(async (url: string) => {
+        if (url.endsWith(FEATURES)) {
+          if (features instanceof Error) throw features;
+          if (typeof features === "number") return new Response("{}", { status: features });
+          return json({ features });
+        }
+        return json({ height: planHeight });
+      });
+    beforeEach(() => {
+      clearUpgradeCache();
+      clearEvmAuthDigestCache();
+    });
+
+    it("answers v2 when the switch is on, with no applied plan (a fork or event chain)", async () => {
+      const f = node(sw(true));
+      expect(await resolveEvmAuthDigestVersion({ rest: "https://c", fetch: f })).toBe("v2");
+      expect(f).toHaveBeenCalledTimes(1);
+    });
+
+    it("answers v1 when the switch is listed and off, whatever the plan says", async () => {
+      expect(await resolveEvmAuthDigestVersion({ rest: "https://d", fetch: node(sw(false), "8003746") })).toBe("v1");
+    });
+
+    it.each([[404], [501]])("falls back to the v3.2.3 plan on HTTP %s", async (status) => {
+      expect(await resolveEvmAuthDigestVersion({ rest: "https://e", fetch: node(status, "8003746") })).toBe("v2");
+    });
+
+    it("falls back when the switch is not listed", async () => {
+      expect(await resolveEvmAuthDigestVersion({ rest: "https://f", fetch: node([{ name: "other", enabled: true }], "8003746") })).toBe("v2");
+    });
+
+    it.each([["a 500", 500], ["a network error", new TypeError("fetch failed")]])(
+      "throws on %s without asking the plan, and does not cache it",
+      async (_l, answer) => {
+        const f = node(answer, "8003746");
+        await expect(resolveEvmAuthDigestVersion({ rest: "https://g", fetch: f })).rejects.toThrow();
+        expect(f).toHaveBeenCalledTimes(1);
+        await expect(resolveEvmAuthDigestVersion({ rest: "https://g", fetch: f })).rejects.toThrow();
+        expect(f).toHaveBeenCalledTimes(2);
+      },
+    );
+
+    it("caches an answer for the same rest", async () => {
+      const f = node(sw(true));
+      await resolveEvmAuthDigestVersion({ rest: "https://h", fetch: f });
+      await resolveEvmAuthDigestVersion({ rest: "https://h/", fetch: f });
+      expect(f).toHaveBeenCalledTimes(1);
+    });
   });
 });
 

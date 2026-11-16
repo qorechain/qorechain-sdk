@@ -30,6 +30,7 @@
 import { sha256 } from "../utils/hash";
 import type { FetchLike } from "../query/http";
 import { CHAIN_UPGRADE_V3_2_3, isUpgradeApplied } from "./upgrades";
+import { lookupProtocolFeature } from "../pqc/protocol-features";
 
 const enc = new TextEncoder();
 
@@ -189,17 +190,43 @@ export function evmAuthSignBytesV2(input: EvmAuthSignBytesV2Input): Uint8Array {
 /** Which `MsgExecuteEVM` digest a network verifies. */
 export type EvmAuthDigestVersion = "v1" | "v2";
 
+/** The protocol feature switch under which the chain verifies the v2 `MsgExecuteEVM` digest. */
+export const AA_HARDENING_FEATURE = "abstractaccount-hardening";
+
+const evmDigestCache = new Map<string, { version: EvmAuthDigestVersion; at: number }>();
+
+/** Forget cached {@link resolveEvmAuthDigestVersion} answers. */
+export function clearEvmAuthDigestCache(): void {
+  evmDigestCache.clear();
+}
+
 /**
- * The `MsgExecuteEVM` digest the network verifies now: `"v2"` once it has
- * applied v3.2.3, `"v1"` before. Throws when the node cannot be asked - never
- * guess, the other form is refused.
+ * The `MsgExecuteEVM` digest the network verifies now. Reads the
+ * {@link AA_HARDENING_FEATURE} switch first: `"v2"` when it is on, `"v1"` when
+ * it is listed and off. Only when the node has no answer for it (HTTP 404/501,
+ * an empty list, not listed) asks whether v3.2.3 is applied. Throws when the
+ * node cannot be asked - never guess, the other form is refused. Answers are
+ * cached per `rest` for 60 s; failures are not cached.
  */
 export async function resolveEvmAuthDigestVersion(opts: {
   rest: string;
   fetch?: FetchLike;
+  forceRefresh?: boolean;
 }): Promise<EvmAuthDigestVersion> {
-  const applied = await isUpgradeApplied({ rest: opts.rest, upgrade: CHAIN_UPGRADE_V3_2_3, fetch: opts.fetch });
-  return applied ? "v2" : "v1";
+  const key = opts.rest.replace(/\/+$/, "");
+  const hit = evmDigestCache.get(key);
+  if (!opts.forceRefresh && hit && Date.now() - hit.at < 60_000) return hit.version;
+  const state = await lookupProtocolFeature({ rest: opts.rest, name: AA_HARDENING_FEATURE, fetch: opts.fetch });
+  const version: EvmAuthDigestVersion =
+    state === "not-served"
+      ? (await isUpgradeApplied({ rest: opts.rest, upgrade: CHAIN_UPGRADE_V3_2_3, fetch: opts.fetch }))
+        ? "v2"
+        : "v1"
+      : state === "enabled"
+        ? "v2"
+        : "v1";
+  evmDigestCache.set(key, { version, at: Date.now() });
+  return version;
 }
 
 /** A linked key's sequence, from {@link fetchAuthNonce}. */
