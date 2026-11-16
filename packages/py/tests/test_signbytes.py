@@ -396,10 +396,19 @@ def test_resolver_feature_disabled_is_v1_without_asking_the_plans():
     assert node.calls == 1
 
 
-def test_resolver_feature_absent_from_a_listing_is_v1():
-    node = _Features([OTHER])
-    got = SignBytesResolver().resolve("qorechain-vladi", rest_url=REST, client=node.client())
-    assert got == "v1"
+def test_resolver_feature_absent_from_a_listing_falls_back_to_the_plans():
+    asked: list[str] = []
+
+    def handler(request: httpx.Request) -> httpx.Response:
+        if str(request.url) == FEATURES_URL:
+            return httpx.Response(200, json={"features": [OTHER], "height": "120"})
+        asked.append(str(request.url))
+        return httpx.Response(200, json={"height": "5746000"})
+
+    client = httpx.Client(transport=httpx.MockTransport(handler))
+    got = SignBytesResolver().resolve("qorechain-vladi", rest_url=REST, client=client)
+    assert got == "v2"
+    assert asked == [f"{PLAN_PREFIX}v3.2.0"]
 
 
 @pytest.mark.parametrize(
@@ -425,15 +434,15 @@ def _connect_error(request: httpx.Request) -> httpx.Response:
 @pytest.mark.parametrize(
     "features_answer",
     [
-        lambda req: httpx.Response(501, json={"message": "not implemented"}),
-        lambda req: httpx.Response(200, text="<html>"),
-        lambda req: httpx.Response(200, json={"features": []}),
-        lambda req: httpx.Response(200, json=["unexpected"]),
-        _connect_error,
+        lambda req: httpx.Response(404, json={"code": 12, "message": "Not Implemented"}),
+        lambda req: httpx.Response(501, json={"code": 12, "message": "Not Implemented"}),
+        lambda req: httpx.Response(200, json={"features": [], "height": "120"}),
+        lambda req: httpx.Response(200, json={"height": "120"}),
+        lambda req: httpx.Response(200, json={"features": [OTHER], "height": "120"}),
     ],
-    ids=["501", "unparseable", "empty-list", "not-an-object", "transport-error"],
+    ids=["404", "501", "empty-list", "no-list", "feature-absent"],
 )
-def test_resolver_features_unusable_falls_back_to_the_plans(features_answer):
+def test_resolver_features_not_served_falls_back_to_the_plans(features_answer):
     asked: list[str] = []
 
     def handler(request: httpx.Request) -> httpx.Response:
@@ -446,6 +455,92 @@ def test_resolver_features_unusable_falls_back_to_the_plans(features_answer):
     got = SignBytesResolver().resolve("qorechain-vladi", rest_url=REST, client=client)
     assert got == "v2"
     assert asked == [f"{PLAN_PREFIX}v3.2.0"]
+
+
+def _timeout(request: httpx.Request) -> httpx.Response:
+    raise httpx.ReadTimeout("slow", request=request)
+
+
+@pytest.mark.parametrize(
+    "features_answer",
+    [
+        lambda req: httpx.Response(500, json={"code": 13, "message": "internal"}),
+        lambda req: httpx.Response(503, text="unavailable"),
+        lambda req: httpx.Response(502, text="bad gateway"),
+        lambda req: httpx.Response(429, text="slow down"),
+        lambda req: httpx.Response(400, json={"code": 3, "message": "bad"}),
+        lambda req: httpx.Response(200, text="<html>"),
+        lambda req: httpx.Response(200, json=["unexpected"]),
+        lambda req: httpx.Response(200, json={"features": "nope"}),
+        lambda req: httpx.Response(200, json={"features": [V2_ON], "height": "x"}),
+        _connect_error,
+        _timeout,
+    ],
+    ids=[
+        "500",
+        "503",
+        "502",
+        "429",
+        "400",
+        "not-json",
+        "not-an-object",
+        "features-not-a-list",
+        "bad-height",
+        "connection-error",
+        "timeout",
+    ],
+)
+def test_resolver_features_unreachable_raises_without_asking_the_plans(features_answer):
+    asked: list[str] = []
+
+    def handler(request: httpx.Request) -> httpx.Response:
+        if str(request.url) == FEATURES_URL:
+            return features_answer(request)
+        asked.append(str(request.url))
+        return httpx.Response(200, json={"height": "0"})
+
+    client = httpx.Client(transport=httpx.MockTransport(handler))
+    r = SignBytesResolver()
+    with pytest.raises(SignBytesVersionError, match="sign_bytes_version") as excinfo:
+        r.resolve("qorechain-vladi", rest_url=REST, client=client)
+    assert "could not be asked" in str(excinfo.value)
+    assert asked == []
+    # The failure is not cached: the next call asks again and can succeed.
+    node = _Features([V2_ON])
+    assert r.resolve("qorechain-vladi", rest_url=REST, client=node.client()) == "v2"
+    assert node.calls == 1
+
+
+async def test_resolver_async_features_unreachable_raises_without_asking_the_plans():
+    asked: list[str] = []
+
+    def handler(request: httpx.Request) -> httpx.Response:
+        if str(request.url) == FEATURES_URL:
+            return httpx.Response(500, text="boom")
+        asked.append(str(request.url))
+        return httpx.Response(200, json={"height": "0"})
+
+    client = httpx.AsyncClient(transport=httpx.MockTransport(handler))
+    with pytest.raises(SignBytesVersionError, match="could not be asked"):
+        await SignBytesResolver().resolve_async("qorechain-diana", rest_url=REST, client=client)
+    assert asked == []
+
+
+async def test_resolver_async_features_not_served_falls_back_to_the_plans():
+    plan = _Plan(bodies={"v3.2.0": {"height": "0"}, "v3.1.98": {"height": "0"}})
+    client = httpx.AsyncClient(transport=httpx.MockTransport(plan.handler))
+    got = await SignBytesResolver().resolve_async("qorechain-diana", rest_url=REST, client=client)
+    assert got == "v1"
+    assert plan.feature_calls == 1
+    assert plan.names == ["v3.2.0", "v3.1.98"]
+
+
+async def test_resolver_async_feature_disabled_is_v1():
+    node = _Features([OTHER, V2_OFF])
+    client = httpx.AsyncClient(transport=httpx.MockTransport(node.handler))
+    got = await SignBytesResolver().resolve_async("qorechain-vladi", rest_url=REST, client=client)
+    assert got == "v1"
+    assert node.calls == 1
 
 
 def test_resolver_explicit_version_beats_the_features():
@@ -467,6 +562,20 @@ def test_resolver_caches_the_features_answer():
     assert node.calls == 2
 
 
+def test_resolver_features_answer_cached_within_ttl_then_asked_again():
+    now = [1000.0]
+    node = _Features([V2_OFF])
+    r = SignBytesResolver(ttl=60, clock=lambda: now[0])
+    assert r.resolve("qorechain-diana", rest_url=REST, client=node.client()) == "v1"
+    node.features = [V2_ON]
+    now[0] += 59
+    assert r.resolve("qorechain-diana", rest_url=REST, client=node.client()) == "v1"
+    assert node.calls == 1
+    now[0] += 2
+    assert r.resolve("qorechain-diana", rest_url=REST, client=node.client()) == "v2"
+    assert node.calls == 2
+
+
 async def test_resolver_async_reads_the_features():
     node = _Features([V2_ON])
     client = httpx.AsyncClient(transport=httpx.MockTransport(node.handler))
@@ -480,7 +589,7 @@ async def test_resolver_async_reads_the_features():
 def test_sign_bytes_version_from_protocol_features_payloads():
     assert sign_bytes_version_from_protocol_features({"features": [V2_ON]}) == "v2"
     assert sign_bytes_version_from_protocol_features({"features": [V2_OFF]}) == "v1"
-    assert sign_bytes_version_from_protocol_features({"features": [OTHER]}) == "v1"
+    assert sign_bytes_version_from_protocol_features({"features": [OTHER]}) is None
     assert sign_bytes_version_from_protocol_features({"features": []}) is None
     assert sign_bytes_version_from_protocol_features({}) is None
     assert sign_bytes_version_from_protocol_features(None) is None

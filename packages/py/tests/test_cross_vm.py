@@ -60,6 +60,11 @@ def _mock_broadcast():
     # The hybrid path resolves the sign-bytes form ("auto") from the node first,
     # asking every upgrade name in turn. The testnet took the switch under the
     # earlier name only, so v3.2.0 answers 0 and v3.1.98 answers its height: v2.
+    # A node below chain v3.2.4: the protocol features route is not served, so
+    # the SDK falls back to the upgrade plans.
+    respx.get(f"{REST}/qorechain/pqc/v1/protocol_features").mock(
+        return_value=httpx.Response(404, json={"code": 12, "message": "Not Implemented"})
+    )
     respx.get(f"{REST}/cosmos/upgrade/v1beta1/applied_plan/v3.2.0").mock(
         return_value=httpx.Response(200, json={"height": "0"})
     )

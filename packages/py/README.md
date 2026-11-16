@@ -425,11 +425,23 @@ and every hybrid transaction there is refused with `pqc` code 21.
 The `"auto"` rule for `qorechain-vladi` / `qorechain-diana` first reads the
 node's protocol feature switches, `GET {rest}/qorechain/pqc/v1/protocol_features`
 (chain v3.2.4 and later): v2 when the listed feature `pqc-sign-bytes-v2`
-(`PQC_SIGN_BYTES_V2_FEATURE`) is enabled, v1 when the node lists its features and
-that one is disabled or absent. This also covers a fresh network that reuses one
-of those chain ids: it enables every feature at genesis and never applies an
-upgrade plan. Only when that query cannot answer (an older node, a transport
-error, an unexpected or empty payload) does the SDK fall back to the plans.
+(`PQC_SIGN_BYTES_V2_FEATURE`) is enabled, v1 when it is listed and disabled, with
+no plan query. This also covers a fork, devnet or event chain that reuses one of
+those chain ids: it enables every feature at genesis and never applies an
+upgrade plan. The SDK falls back to the plans only when the node says it does
+not serve the feature (HTTP 404 or 501, an empty list, or the feature absent).
+When the node cannot be asked at all (a transport error, a timeout, HTTP 5xx or
+429, a body that is not the expected JSON) it raises `SignBytesVersionError`
+and asks nothing else: pass `sign_bytes_version="v1"` or `"v2"` explicitly, or
+retry. Successful answers are cached for 60 s per (REST URL, chain id); errors
+are not cached.
+
+The same rule decides whether `ensure_pqc_registered` attaches a PQC proof of
+possession to `MsgRegisterPQCKeyV2`: feature `pqc-possession-flag`
+(`PQC_POSSESSION_FEATURE`) first, the `v3.2.3` plan only when the feature is not
+served, `ProofOfPossessionDecisionError` when the node cannot be asked. Pass
+`attach_proof_of_possession=True` / `False` (or `proof_of_possession=<bytes>`)
+to choose without a network question.
 
 The plan fallback (the chain's own `SignBytesVersionFor`): for EVERY name in
 `SIGN_BYTES_V2_UPGRADES`, ask the node

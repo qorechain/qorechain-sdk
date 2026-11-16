@@ -76,6 +76,11 @@ def _mock_status(*keys: bytes | None) -> respx.Route:
 
 def _mock_node(tx_response: dict | None = None) -> respx.Route:
     clear_upgrade_cache()
+    # A node below chain v3.2.4: the protocol features route is not served, so
+    # the SDK falls back to the upgrade plans.
+    respx.get(f"{REST}/qorechain/pqc/v1/protocol_features").mock(
+        return_value=httpx.Response(404, json={"code": 12, "message": "Not Implemented"})
+    )
     respx.get(url__regex=rf"{REST}/cosmos/upgrade/v1beta1/applied_plan/.*").mock(
         return_value=httpx.Response(200, json={"height": "0"})
     )

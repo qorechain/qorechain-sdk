@@ -209,9 +209,15 @@ from .kem import (
 )
 from .key_integrity import (
     KEY_TYPE_CLASSICAL_ONLY,
+    PQC_POSSESSION_FEATURE,
     PROOF_OF_POSSESSION_DOMAIN,
+    ProofOfPossessionDecisionError,
+    ProofOfPossessionResolver,
+    clear_possession_cache,
     is_degenerate_pqc_public_key,
     proof_of_possession_sign_bytes,
+    should_attach_proof_of_possession,
+    should_attach_proof_of_possession_async,
     sign_proof_of_possession,
     validate_registered_pqc_key,
     verify_proof_of_possession,
@@ -293,12 +299,17 @@ from .precompiles import (
 )
 from .protocol_features import (
     PROTOCOL_FEATURES_PATH,
+    FeatureLookup,
     ProtocolFeature,
+    ProtocolFeatureQueryError,
     ProtocolFeatures,
+    classify_protocol_feature_response,
     fetch_protocol_features,
     fetch_protocol_features_async,
     is_protocol_feature_enabled,
     is_protocol_feature_enabled_async,
+    lookup_protocol_feature,
+    lookup_protocol_feature_async,
     parse_protocol_features,
 )
 from .qor import QOR_METHODS, AsyncQorClient, QorClient
@@ -723,6 +734,11 @@ __all__ = [
     "fetch_protocol_features_async",
     "is_protocol_feature_enabled",
     "is_protocol_feature_enabled_async",
+    "FeatureLookup",
+    "ProtocolFeatureQueryError",
+    "classify_protocol_feature_response",
+    "lookup_protocol_feature",
+    "lookup_protocol_feature_async",
     # chain v3.2.4: staking tiers (messages in msg.stakingtier)
     "STAKING_LOCK_MONTHS",
     "LOCK_DELEGATION_TYPE_URL",
@@ -762,6 +778,12 @@ __all__ = [
     "sign_proof_of_possession",
     "validate_registered_pqc_key",
     "verify_proof_of_possession",
+    "PQC_POSSESSION_FEATURE",
+    "ProofOfPossessionDecisionError",
+    "ProofOfPossessionResolver",
+    "clear_possession_cache",
+    "should_attach_proof_of_possession",
+    "should_attach_proof_of_possession_async",
     "applied_plan_path",
     "clear_upgrade_cache",
     "is_upgrade_applied",

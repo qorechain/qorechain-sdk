@@ -42,14 +42,17 @@ from urllib.parse import quote
 from .accounts import Secp256k1Account
 from .classical_key import validate_classical_key_for_sender
 from .errors import parse_tx_code, tx_error_from, unreadable_code_error
-from .key_integrity import sign_proof_of_possession, validate_registered_pqc_key
+from .key_integrity import (
+    should_attach_proof_of_possession,
+    sign_proof_of_possession,
+    validate_registered_pqc_key,
+)
 from .messages import msg
 from .messages._composer import Msg
 from .pqc import ALGORITHM_DILITHIUM5, PqcKeypair
 from .rest import RestClient
 from .signbytes import SignBytesVersion
 from .tx import broadcast, build_hybrid_tx, hybrid_sign_and_broadcast, send_messages
-from .upgrades import CHAIN_UPGRADE_V3_2_3, is_upgrade_applied
 
 #: The default ``key_type`` registered for an ML-DSA-87 (Dilithium-5) key,
 #: matching the chain's ``x/pqc`` account ``KeyType`` string for hybrid
@@ -514,6 +517,8 @@ def ensure_pqc_registered(
     key_type: str = HYBRID_KEY_TYPE,
     memo: str = "",
     mode: str = "sync",
+    attach_proof_of_possession: bool | None = None,
+    proof_of_possession: bytes | None = None,
 ) -> EnsureResult:
     """Make sure ``account`` has a PQC key registered; register it if missing.
 
@@ -540,10 +545,24 @@ def ensure_pqc_registered(
     CheckTx code in the broadcast answer raises
     :class:`~qorsdk.errors.QoreTxError`.
 
+    ``proof_of_possession`` on the registration: an explicit
+    ``proof_of_possession`` (bytes) is attached as given, and
+    ``attach_proof_of_possession=True`` / ``False`` signs and attaches it / leaves
+    it off, all with no network question. Left at ``None`` (the default), the
+    SDK asks :func:`qorsdk.key_integrity.should_attach_proof_of_possession`: the
+    protocol feature ``pqc-possession-flag`` first, the v3.2.3 upgrade plan only
+    when the node definitively does not serve that feature, and it raises
+    :class:`~qorsdk.key_integrity.ProofOfPossessionDecisionError` (sending
+    nothing) when the node cannot be asked.
+
     The registration tx itself is signed classically (a wallet cannot yet sign
     hybrid for the very key it is registering); subsequent txs should use the
     hybrid path - see :func:`migrate_to_hybrid`.
     """
+    if proof_of_possession is not None and attach_proof_of_possession is False:
+        raise ValueError(
+            "proof_of_possession was given but attach_proof_of_possession=False; pass one"
+        )
     status = fetch_pqc_status(rest_url, account.address)
     if status["registered"]:
         # Registered, but by whom? A different key means the caller's hybrid
@@ -560,14 +579,22 @@ def ensure_pqc_registered(
         return {"already_registered": True, "key_verified": match is True}
 
     # From chain v3.2.3 the registration carries a proof that the registrant
-    # holds the key. Sign it once the network has applied v3.2.3 - never before:
-    # a node below it refuses the whole transaction for the field.
-    proof = b""
-    with RestClient(rest_url) as rest:
-        if is_upgrade_applied(rest, CHAIN_UPGRADE_V3_2_3, cache_key=rest_url):
-            proof = sign_proof_of_possession(
+    # holds the key. Attach it only where the network accepts the field: a node
+    # that does not refuses the whole transaction for it. An explicit choice
+    # wins; otherwise the protocol feature decides (upgrade plan as fallback).
+    if proof_of_possession is not None:
+        proof = bytes(proof_of_possession)
+    else:
+        attach = attach_proof_of_possession
+        if attach is None:
+            attach = should_attach_proof_of_possession(chain_id, rest_url)
+        proof = (
+            sign_proof_of_possession(
                 chain_id=chain_id, account=account.address, keypair=pqc_keypair
             )
+            if attach
+            else b""
+        )
 
     register = build_register_pqc_key(
         sender=account.address,
