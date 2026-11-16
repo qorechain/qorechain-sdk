@@ -319,6 +319,7 @@ export type {
 // events, each returning an unsubscribe function.
 export {
   createSubscriptionClient,
+  toWebsocketUrl,
   subscribeNewBlocks,
   subscribeTx,
   buildTxQuery,

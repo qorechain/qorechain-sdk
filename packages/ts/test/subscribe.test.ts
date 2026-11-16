@@ -83,3 +83,14 @@ describe("subscribeTx", () => {
     expect(subscribeTxFn).toHaveBeenCalledWith("tm.event='Tx'");
   });
 });
+
+describe("toWebsocketUrl", () => {
+  it("switches http(s) to ws(s) and leaves ws(s) alone", async () => {
+    const { toWebsocketUrl } = await import("../src/subscribe");
+    expect(toWebsocketUrl("http://localhost:26657")).toBe("ws://localhost:26657");
+    expect(toWebsocketUrl("https://rpc-testnet.qore.host")).toBe("wss://rpc-testnet.qore.host");
+    expect(toWebsocketUrl("HTTPS://rpc.qore.host")).toBe("wss://rpc.qore.host");
+    expect(toWebsocketUrl("wss://rpc.qore.host")).toBe("wss://rpc.qore.host");
+    expect(toWebsocketUrl(" ws://localhost:26657 ")).toBe("ws://localhost:26657");
+  });
+});

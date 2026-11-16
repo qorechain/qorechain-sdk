@@ -9,11 +9,11 @@
  * the stream type directly.
  *
  * {@link createSubscriptionClient} connects the websocket-capable consensus RPC
- * client. The connection works in Node (where it uses a websocket polyfill) and
+ * client (an `http(s)://` URL is switched to `ws(s)://`). The connection works in Node (where it uses a websocket polyfill) and
  * in the browser; nothing here depends on `window`.
  */
 
-import { connectComet } from "@cosmjs/tendermint-rpc";
+import { Comet1Client, Comet38Client, connectComet, WebsocketClient } from "@cosmjs/tendermint-rpc";
 
 /** A handler invoked for each emitted value. */
 export type Handler<T> = (value: T) => void;
@@ -57,17 +57,76 @@ export interface SubscriptionClient {
 }
 
 /**
+ * Turn a consensus RPC URL into its websocket form: `http://` becomes `ws://`
+ * and `https://` becomes `wss://`; a `ws(s)://` URL is returned unchanged.
+ *
+ * @param url - The consensus RPC endpoint.
+ * @returns The websocket URL.
+ */
+export function toWebsocketUrl(url: string): string {
+  return url.trim().replace(/^http(s?):\/\//i, (_m, tls: string) => (tls ? "wss://" : "ws://"));
+}
+
+/** The parts of the websocket RPC client's socket that disconnect touches. */
+interface ReconnectingSocketLike {
+  reconnectTimeout?: ReturnType<typeof setTimeout> | null;
+}
+
+/**
+ * Close a websocket RPC client for good. The underlying socket reconnects on
+ * its own whenever its connection drops, including the drop its own disconnect
+ * causes, which reopened a socket after every disconnect and kept the process
+ * running. Cancel that pending reconnect right after disconnecting.
+ */
+function disconnectForGood(ws: WebsocketClient): void {
+  ws.disconnect();
+  const socket = (ws as unknown as { socket?: ReconnectingSocketLike }).socket;
+  if (socket?.reconnectTimeout) {
+    clearTimeout(socket.reconnectTimeout);
+    socket.reconnectTimeout = null;
+  }
+}
+
+/**
  * Connect a websocket-capable consensus RPC client for subscriptions.
  *
- * @param rpcWsUrl - The consensus RPC endpoint (`endpoints.rpc`). An `http(s)://`
- *   URL is accepted - the client upgrades to a websocket internally.
+ * One websocket serves both the version check and the subscriptions, and
+ * `disconnect()` closes it for good (no reconnect afterwards), so a process
+ * that disconnects can exit and a long-lived one does not collect sockets.
+ *
+ * @param rpcWsUrl - The consensus RPC endpoint (`endpoints.rpc`), as `ws(s)://`
+ *   or `http(s)://` (switched to `ws(s)://`, see {@link toWebsocketUrl}).
  */
 export async function createSubscriptionClient(
   rpcWsUrl: string,
 ): Promise<SubscriptionClient> {
-  // `connectComet` auto-detects the consensus version and returns a client whose
-  // subscription methods are backed by a websocket connection.
-  return (await connectComet(rpcWsUrl)) as unknown as SubscriptionClient;
+  const ws = new WebsocketClient(toWebsocketUrl(rpcWsUrl));
+  let version: string;
+  try {
+    // Read the node's consensus version over the same websocket.
+    const res = await ws.execute({ jsonrpc: "2.0", id: 1, method: "status", params: {} });
+    const result = res.result as { node_info?: { version?: unknown } } | undefined;
+    version = String(result?.node_info?.version ?? "");
+  } catch (err) {
+    disconnectForGood(ws);
+    throw err;
+  }
+  let client: Comet38Client | Comet1Client;
+  if (version.startsWith("0.38.")) {
+    client = Comet38Client.create(ws);
+  } else if (version.startsWith("1.")) {
+    client = Comet1Client.create(ws);
+  } else {
+    // Any other consensus version: hand over to the library's own detection.
+    disconnectForGood(ws);
+    return (await connectComet(toWebsocketUrl(rpcWsUrl))) as unknown as SubscriptionClient;
+  }
+  const subscriptions = client as unknown as SubscriptionClient;
+  return {
+    subscribeNewBlock: () => subscriptions.subscribeNewBlock(),
+    subscribeTx: (query?: string) => subscriptions.subscribeTx(query),
+    disconnect: () => disconnectForGood(ws),
+  };
 }
 
 /**
