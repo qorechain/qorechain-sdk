@@ -38,8 +38,7 @@ network statistics. In TypeScript these are typed methods on `client.qor`
 
 Public nodes serve these methods from chain v3.2.9. Until a network runs it,
 read the same data over REST (`client.rest`), for example
-`client.rest.getBurnStats()` or `/qorechain/pqc/v1/account/{address}`. The
-tokenomics overview does not include xQORE totals.
+`client.rest.getBurnStats()` or `/qorechain/pqc/v1/account/{address}`.
 
 ## Tokens & denominations
 
