@@ -696,8 +696,10 @@ export class TxClient {
         transactionHash: res.transactionHash,
         code: res.code,
         height: res.height,
-        gasUsed: res.gasUsed,
-        gasWanted: res.gasWanted,
+        // cosmjs reports gas as bigint; normalize to plain numbers so the
+        // result is JSON-serializable (JSON.stringify throws on bigint).
+        gasUsed: Number(res.gasUsed),
+        gasWanted: Number(res.gasWanted),
         rawLog: res.rawLog,
         // Carried through so callers can read typed attributes / decode the
         // per-message responses (e.g. MsgCrossVMCallResponse) without a

@@ -184,8 +184,8 @@ export class EthNativeSigner {
     transactionHash: string;
     code: number;
     height?: number;
-    gasUsed?: bigint;
-    gasWanted?: bigint;
+    gasUsed?: number;
+    gasWanted?: number;
     rawLog?: string;
   }> {
     const once = async (forceRefresh: boolean) => {
@@ -205,7 +205,14 @@ export class EthNativeSigner {
           { transactionHash: res.transactionHash },
         );
       }
-      return res;
+      // The transport reports gas as bigint; normalize to plain numbers so
+      // the result is JSON-serializable (JSON.stringify throws on bigint).
+      return {
+        ...res,
+        gasUsed: res.gasUsed === undefined ? undefined : Number(res.gasUsed),
+        gasWanted:
+          res.gasWanted === undefined ? undefined : Number(res.gasWanted),
+      };
     };
     const auto =
       this.signMode === "hybrid" &&

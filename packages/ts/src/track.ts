@@ -35,10 +35,16 @@ export interface IncludedTx {
   height: number;
   /** ABCI result code (`0` = success). */
   code: number;
-  /** Gas used, when reported. */
-  gasUsed?: bigint;
-  /** Gas wanted, when reported. */
-  gasWanted?: bigint;
+  /**
+   * Gas used, when reported.
+   *
+   * A plain number, not a bigint: gas is bounded by the chain's max gas,
+   * far below `Number.MAX_SAFE_INTEGER`, so the result stays
+   * JSON-serializable (`JSON.stringify` throws on bigint).
+   */
+  gasUsed?: number;
+  /** Gas wanted, when reported. A plain number, for the same reason as `gasUsed`. */
+  gasWanted?: number;
   /** Raw ABCI log. */
   rawLog?: string;
   /** The full REST response, for callers that need more. */
@@ -70,8 +76,8 @@ function toIncludedTx(hash: string, res: GetTxResponse): IncludedTx {
     txHash: r?.txhash ?? hash,
     height: r?.height ? Number(r.height) : 0,
     code,
-    gasUsed: r?.gas_used ? BigInt(r.gas_used) : undefined,
-    gasWanted: r?.gas_wanted ? BigInt(r.gas_wanted) : undefined,
+    gasUsed: r?.gas_used ? Number(r.gas_used) : undefined,
+    gasWanted: r?.gas_wanted ? Number(r.gas_wanted) : undefined,
     rawLog: r?.raw_log,
     raw: res,
   };
