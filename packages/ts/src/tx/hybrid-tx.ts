@@ -407,8 +407,10 @@ async function broadcastHybridOnce(
       transactionHash: res.transactionHash,
       code: res.code,
       height: res.height,
-      gasUsed: res.gasUsed,
-      gasWanted: res.gasWanted,
+      // The transport reports gas as bigint; normalize to plain numbers so
+      // the result is JSON-serializable (JSON.stringify throws on bigint).
+      gasUsed: Number(res.gasUsed),
+      gasWanted: Number(res.gasWanted),
       rawLog: res.rawLog,
       events: res.events,
       msgResponses: res.msgResponses,
