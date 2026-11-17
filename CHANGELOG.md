@@ -42,6 +42,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- **Cross-VM source and target VM.** The chain refuses a `MsgCrossVMCall`
+  whose source VM equals its target VM, but the helpers defaulted the source
+  to `evm`, so an EVM-target call that left it unset was refused. The default
+  is now `evm`, or `cosmwasm` for an EVM target, and an explicit equal pair is
+  refused before signing. The `cross-vm-call` example's atomic batch sets it.
 - **TypeScript subscriptions close for good.** `createSubscriptionClient` opened
   one websocket to read the node's consensus version and a second for the
   subscriptions, and after `disconnect()` both reconnected on their own: a Node

@@ -111,11 +111,11 @@ export interface CrossVMCallBase {
   /**
    * The VM the call claims to originate from.
    *
-   * IGNORED BY THE CHAIN (v3.1.97). The chain derives the origin lane from the
-   * execution context rather than trusting the caller's self-description, so
-   * setting this changes nothing about how the call is handled. The field is
-   * retained - and still sent, defaulting to `"evm"` - purely for wire
-   * compatibility, so older nodes and clients keep accepting the message.
+   * Not used for routing (chain v3.1.97): the chain derives the origin lane
+   * from the execution context. It is still validated: it must differ from
+   * `targetVm`, or the chain refuses the message. Unset, it defaults to
+   * `"evm"`, or to `"cosmwasm"` when the target is the EVM. Setting it equal to
+   * `targetVm` is refused before signing.
    */
   sourceVm?: VMType;
   /** The VM the call targets. */
@@ -372,11 +372,27 @@ function decodeCallOutcomes(result: BroadcastResult): CrossVMCallOutcome[] {
 }
 
 /**
+ * The `sourceVm` to send: the caller's, or `"evm"` (`"cosmwasm"` when the
+ * target is the EVM). The chain refuses a call whose source and target VM are
+ * the same, so that is refused here before signing.
+ */
+export function resolveSourceVm(sourceVm: VMType | undefined, targetVm: VMType): VMType {
+  const source = sourceVm ?? (targetVm === "evm" ? "cosmwasm" : "evm");
+  if (source === targetVm) {
+    throw new Error(
+      `crossvm: sourceVm and targetVm must be different (both are ${String(targetVm)}); the chain refuses such a call`,
+    );
+  }
+  return source;
+}
+
+/**
  * Create a {@link CrossVMClient} bound to a connected {@link TxClient}.
  *
  * The `TxClient`'s sender address is used as the message `sender`, so the caller
- * never repeats their address. `sourceVm` still defaults to `"evm"` on the wire
- * but is ignored by the chain (see {@link CrossVMCallBase.sourceVm}); `async`
+ * never repeats their address. `sourceVm` defaults to `"evm"` (`"cosmwasm"` for
+ * an EVM target) and must differ from `targetVm` (see
+ * {@link CrossVMCallBase.sourceVm}); `async`
  * defaults to `false`, i.e. execute now and return the callee's answer.
  *
  * @param tx - A connected signing client (from `client.connectTx(signer)`).
@@ -393,7 +409,7 @@ export function createCrossVMClient(
   const buildFrom = (o: CrossVMCallOptions, payload: Uint8Array): EncodeObject =>
     crossvmMsg.crossVmCall({
       sender,
-      sourceVm: o.sourceVm ?? "evm",
+      sourceVm: resolveSourceVm(o.sourceVm, o.targetVm),
       targetVm: o.targetVm,
       targetContract: o.targetContract,
       payload,

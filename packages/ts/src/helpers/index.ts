@@ -43,6 +43,7 @@ export {
 
 export {
   createCrossVMClient,
+  resolveSourceVm,
   VM_TYPES,
   type VMType,
   type CrossVMClient,

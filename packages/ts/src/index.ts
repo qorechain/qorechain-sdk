@@ -766,6 +766,7 @@ export {
   createMultilayerClient,
   createRollupClient,
   createCrossVMClient,
+  resolveSourceVm,
   VM_TYPES,
 } from "./helpers";
 export type {

@@ -109,13 +109,17 @@ async function main(): Promise<void> {
 
   // Atomic batch hitting two VMs in ONE tx body / one signature.
   console.log("Submitting an atomic batch across EVM + SVM...");
+  // Each call needs a sourceVm different from its targetVm (the chain refuses
+  // equal VMs); the helper defaults to "evm", or "cosmwasm" for an EVM target.
   const atomic = await xvm.callAtomic([
     {
+      sourceVm: "cosmwasm",
       targetVm: "evm",
       targetContract: evmContract,
       evm: { abi: ERC20_ABI, functionName: "transfer", args: [recipient, 2n] },
     },
     {
+      sourceVm: "cosmwasm",
       targetVm: "svm",
       targetContract: svmProgram,
       svm: { data: new Uint8Array([9, 9, 9]) },

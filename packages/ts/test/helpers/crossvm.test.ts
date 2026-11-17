@@ -446,3 +446,18 @@ describe("crossvm response decoding", () => {
     expect(res.gasUsed).toBe(5n);
   });
 });
+
+describe("resolveSourceVm: source and target must differ (the chain refuses equal VMs)", () => {
+  it("defaults to evm, or to cosmwasm for an EVM target", async () => {
+    const { resolveSourceVm } = await import("../../src/helpers/crossvm");
+    expect(resolveSourceVm(undefined, "cosmwasm")).toBe("evm");
+    expect(resolveSourceVm(undefined, "svm")).toBe("evm");
+    expect(resolveSourceVm(undefined, "evm")).toBe("cosmwasm");
+    expect(resolveSourceVm("svm", "evm")).toBe("svm");
+  });
+
+  it("refuses an explicit source equal to the target", async () => {
+    const { resolveSourceVm } = await import("../../src/helpers/crossvm");
+    expect(() => resolveSourceVm("evm", "evm")).toThrow(/must be different \(both are evm\)/);
+  });
+});

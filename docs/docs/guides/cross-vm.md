@@ -132,6 +132,11 @@ const { messageIds, result } = await xvm.callAtomic([
 ]);
 ```
 
+Each call's `sourceVm` must differ from its `targetVm`; the chain refuses a
+call between a VM and itself. Unset, it defaults to `"evm"`, or to
+`"cosmwasm"` for an EVM target, and an explicit equal pair is refused before
+signing.
+
 ## Reading a message back
 
 `getMessage` reads a cross-VM message by id, preferring the typed query client
