@@ -21,9 +21,11 @@ pub const CROSS_VM_CALL_RESPONSE: &str = "/qorechain.crossvm.v1.MsgCrossVMCallRe
 /// Builds `MsgCrossVMCall`. `source_vm` / `target_vm` are the VM-type strings
 /// (e.g. `"VM_TYPE_EVM"`, `"VM_TYPE_SVM"`, `"VM_TYPE_WASM"`).
 ///
-/// `source_vm` is **ignored by the chain** (chain v3.1.97 and later): the origin
+/// `source_vm` is **not used for routing** (chain v3.1.97 and later): the origin
 /// lane is derived from the execution context, not from what the caller claims to
-/// be. The field is still sent so older nodes keep accepting the message.
+/// be. It must still differ from `target_vm`: the chain refuses a call whose
+/// source and target VM are the same. This composer does not check it;
+/// [`crate::cross_vm::CrossVm`] does, before signing.
 ///
 /// `queue` maps to the proto's `async` field (a Rust keyword, emitted by prost as
 /// `r#async`). The default, `false`, executes the call inside this transaction
@@ -162,7 +164,8 @@ pub fn cross_vm_call_async(
 }
 
 /// Builds `MsgCrossVMCall` packed into an `Any`. See [`cross_vm_call`] for the
-/// meaning of `source_vm` (ignored on input) and `queue` (the proto `async`).
+/// meaning of `source_vm` (not used for routing, but it must differ from
+/// `target_vm`) and `queue` (the proto `async`).
 #[allow(clippy::too_many_arguments)]
 pub fn cross_vm_call_any(
     sender: impl Into<String>,

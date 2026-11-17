@@ -413,8 +413,8 @@ async fn call_with_responses_surfaces_the_decoded_answer() {
 
 #[tokio::test]
 async fn source_vm_is_still_sent_for_older_nodes() {
-    // The chain ignores source_vm, but the SDK keeps sending it so a node on an
-    // older build still accepts the message.
+    // The chain does not route by source_vm, but the SDK keeps sending it (it
+    // must differ from the target) so a node on an older build still accepts it.
     let server = MockServer::start(r#"{"tx_response":{"code":0}}"#).await;
     let cv = make_cross_vm(server.base_url.clone(), None);
 
@@ -445,4 +445,67 @@ async fn get_message_uses_qor_method() {
 async fn get_message_requires_qor_client() {
     let cv = make_cross_vm("http://127.0.0.1:0".into(), None);
     assert!(cv.get_message("x").await.is_err());
+}
+
+// ---------------------------------------------------------------------------
+// Source VM must differ from the target VM
+// ---------------------------------------------------------------------------
+
+fn unset_source(target: &str, contract: &str) -> CallOptions {
+    let mut o = CallOptions::new(target, contract, vec![1u8]);
+    o.source_vm = String::new();
+    o
+}
+
+#[tokio::test]
+async fn unset_source_with_an_evm_target_defaults_to_cosmwasm() {
+    let server = MockServer::start(r#"{"tx_response":{"code":0}}"#).await;
+    let cv = make_cross_vm(server.base_url.clone(), None);
+    // Through `new` and through an empty field.
+    cv.call_atomic(&[
+        CallOptions::new(VM_TYPE_EVM, "0x1", vec![1u8]),
+        unset_source(VM_TYPE_EVM, "0x2"),
+    ])
+    .await
+    .unwrap();
+    let msgs = decode_broadcast_messages(&server);
+    for m in &msgs {
+        assert_eq!(m.source_vm, "cosmwasm");
+        assert_eq!(m.target_vm, "evm");
+    }
+}
+
+#[tokio::test]
+async fn unset_source_with_a_cosmwasm_target_defaults_to_evm() {
+    let server = MockServer::start(r#"{"tx_response":{"code":0}}"#).await;
+    let cv = make_cross_vm(server.base_url.clone(), None);
+    cv.call(&unset_source(VM_TYPE_COSMWASM, "qor1cw"))
+        .await
+        .unwrap();
+    let msgs = decode_broadcast_messages(&server);
+    assert_eq!(msgs[0].source_vm, "evm");
+    assert_eq!(msgs[0].target_vm, "cosmwasm");
+}
+
+#[tokio::test]
+async fn explicit_source_equal_to_target_is_refused_before_signing() {
+    let server = MockServer::start(r#"{"tx_response":{"code":0}}"#).await;
+    let cv = make_cross_vm(server.base_url.clone(), None);
+    let same = CallOptions::new(VM_TYPE_EVM, "0x1", vec![1u8]).source_vm(VM_TYPE_EVM);
+    let want = "crossvm: source_vm and target_vm must be different (both are evm); the chain \
+                refuses such a call";
+    let ok = CallOptions::new(VM_TYPE_COSMWASM, "qor1cw", vec![1u8]);
+    let pair = [ok, same.clone()];
+    let errors = [
+        cv.build_call(&same).unwrap_err(),
+        cv.build_call_unchecked(&same).unwrap_err(),
+        cv.build_atomic(&pair).unwrap_err(),
+        cv.build_atomic_unchecked(&pair).unwrap_err(),
+        cv.call(&same).await.unwrap_err(),
+        cv.call_atomic(&pair).await.unwrap_err(),
+    ];
+    for e in errors {
+        assert_eq!(e.to_string(), want);
+    }
+    assert!(server.recorded.lock().unwrap().is_empty(), "nothing sent");
 }

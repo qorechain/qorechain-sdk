@@ -41,13 +41,16 @@
 //!
 //! ## VM types
 //!
-//! [`CallOptions::source_vm`] defaults to [`VM_TYPE_EVM`]. The accepted target
-//! VM strings are [`VM_TYPE_EVM`], [`VM_TYPE_COSMWASM`], and [`VM_TYPE_SVM`].
+//! The accepted VM strings are [`VM_TYPE_EVM`], [`VM_TYPE_COSMWASM`], and
+//! [`VM_TYPE_SVM`].
 //!
-//! From chain v3.1.97 the **source** VM is ignored on input: the chain derives
-//! the origin lane from the execution context instead of trusting the caller's
-//! self-description. The field is still sent so older nodes keep accepting the
-//! message, but setting it changes nothing on a current chain.
+//! From chain v3.1.97 the **source** VM is not used for routing: the chain
+//! derives the origin lane from the execution context instead of trusting the
+//! caller's self-description. It is still checked, though: the chain refuses a
+//! call whose source VM equals its target VM. An unset (empty) source defaults
+//! to [`VM_TYPE_EVM`], or to [`VM_TYPE_COSMWASM`] when the target is
+//! [`VM_TYPE_EVM`] (see [`default_source_vm`]); a source set equal to the
+//! target is refused locally, before anything is signed.
 //!
 //! ## Async gas terms need chain v3.2.8
 //!
@@ -230,6 +233,17 @@ pub const VM_TYPE_SVM: &str = "svm";
 /// The set of valid VM-type strings.
 pub const VM_TYPES: &[&str] = &[VM_TYPE_EVM, VM_TYPE_COSMWASM, VM_TYPE_SVM];
 
+/// The source VM used when [`CallOptions::source_vm`] is unset:
+/// [`VM_TYPE_EVM`], or [`VM_TYPE_COSMWASM`] when the target is [`VM_TYPE_EVM`]
+/// (the chain refuses a call whose source and target VM are the same).
+pub fn default_source_vm(target_vm: &str) -> &'static str {
+    if target_vm == VM_TYPE_EVM {
+        VM_TYPE_COSMWASM
+    } else {
+        VM_TYPE_EVM
+    }
+}
+
 /// The payload of a cross-VM call.
 #[derive(Debug, Clone)]
 pub enum Payload {
@@ -267,13 +281,16 @@ impl From<Value> for Payload {
 /// Options for a single cross-VM call.
 #[derive(Debug, Clone)]
 pub struct CallOptions {
-    /// Source VM type. Defaults to [`VM_TYPE_EVM`] when empty.
+    /// Source VM type. When empty, [`default_source_vm`] picks one that
+    /// differs from the target ([`VM_TYPE_EVM`], or [`VM_TYPE_COSMWASM`] for an
+    /// EVM target).
     ///
-    /// **The chain ignores this field** (chain v3.1.97 and later): it derives the
+    /// **Not used for routing** (chain v3.1.97 and later): the chain derives the
     /// origin lane from the execution context rather than from the caller's own
-    /// description of itself. It is still sent, so a node running an older build
-    /// accepts the message; setting it cannot change where the call is credited
-    /// from.
+    /// description of itself, so setting it cannot change where the call is
+    /// credited from. It must still differ from [`CallOptions::target_vm`]: the
+    /// chain refuses a call whose source and target VM are the same, and the
+    /// SDK refuses it locally before signing.
     pub source_vm: String,
     /// Target VM type (e.g. [`VM_TYPE_COSMWASM`]).
     pub target_vm: String,
@@ -304,16 +321,18 @@ pub struct CallOptions {
 
 impl CallOptions {
     /// Creates options with the given target VM, contract, and payload, defaulting
-    /// `source_vm` to [`VM_TYPE_EVM`], no funds, and immediate (non-queued)
-    /// execution.
+    /// `source_vm` to [`default_source_vm`] for the target ([`VM_TYPE_EVM`], or
+    /// [`VM_TYPE_COSMWASM`] for an EVM target), no funds, and immediate
+    /// (non-queued) execution.
     pub fn new(
         target_vm: impl Into<String>,
         target_contract: impl Into<String>,
         payload: impl Into<Payload>,
     ) -> Self {
+        let target_vm = target_vm.into();
         Self {
-            source_vm: VM_TYPE_EVM.to_string(),
-            target_vm: target_vm.into(),
+            source_vm: default_source_vm(&target_vm).to_string(),
+            target_vm,
             target_contract: target_contract.into(),
             payload: payload.into(),
             funds: Vec::new(),
@@ -338,8 +357,8 @@ impl CallOptions {
 
     /// Overrides the source VM.
     ///
-    /// Kept for compatibility with older nodes; see [`CallOptions::source_vm`] -
-    /// the chain ignores the value.
+    /// Not used for routing, but it must differ from the target VM (see
+    /// [`CallOptions::source_vm`]).
     pub fn source_vm(mut self, vm: impl Into<String>) -> Self {
         self.source_vm = vm.into();
         self
@@ -609,10 +628,16 @@ impl CrossVm {
         let mut messages = Vec::with_capacity(opts.len());
         for o in opts {
             let source_vm = if o.source_vm.is_empty() {
-                VM_TYPE_EVM
+                default_source_vm(&o.target_vm)
             } else {
                 o.source_vm.as_str()
             };
+            if source_vm == o.target_vm {
+                return Err(Error::InvalidInput(format!(
+                    "crossvm: source_vm and target_vm must be different (both are {source_vm}); \
+                     the chain refuses such a call"
+                )));
+            }
             validate_async_gas(&o.target_vm, o.queue, o.async_gas_limit, o.async_max_factor)?;
             let payload = o.payload.to_bytes()?;
             let mut m = cross_vm_call(
@@ -688,6 +713,13 @@ mod tests {
         let o = CallOptions::new(VM_TYPE_COSMWASM, "qor1contract", vec![0u8]);
         assert_eq!(o.source_vm, VM_TYPE_EVM);
         assert_eq!(o.target_vm, "cosmwasm");
+    }
+
+    #[test]
+    fn call_options_default_source_differs_from_an_evm_target() {
+        let o = CallOptions::new(VM_TYPE_EVM, "0x1", vec![0u8]);
+        assert_eq!(o.source_vm, VM_TYPE_COSMWASM);
+        assert_eq!(default_source_vm(VM_TYPE_SVM), VM_TYPE_EVM);
     }
 
     #[test]
