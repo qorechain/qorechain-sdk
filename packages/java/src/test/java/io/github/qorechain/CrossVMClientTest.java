@@ -4,6 +4,7 @@ import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import com.fasterxml.jackson.databind.JsonNode;
@@ -110,7 +111,7 @@ class CrossVMClientTest {
         qorechain.crossvm.v1.Tx.MsgCrossVMCall msg =
                 (qorechain.crossvm.v1.Tx.MsgCrossVMCall) tm.message;
         assertEquals("qor1sender", msg.getSender());
-        assertEquals("evm", msg.getSourceVm()); // default
+        assertEquals("evm", msg.getSourceVm()); // default for a non-EVM target
         assertEquals("cosmwasm", msg.getTargetVm());
         assertEquals("qor1contract", msg.getTargetContract());
         assertEquals(1, msg.getFundsCount());
@@ -145,13 +146,9 @@ class CrossVMClientTest {
         assertEquals("qor1contract", back.getTargetContract());
     }
 
-    /**
-     * {@code sourceVm} is ignored by the chain (it derives the origin lane from the
-     * execution context), but it is still sent and still accepted, so an older client
-     * that sets it keeps working.
-     */
+    /** An explicit {@code sourceVm} that differs from the target is sent as given. */
     @Test
-    void sourceVmStillTravelsEvenThoughTheChainIgnoresIt() {
+    void explicitSourceVmTravels() {
         CrossVMClient.CallOptions o = new CrossVMClient.CallOptions();
         o.targetVm = CrossVMClient.VMType.EVM;
         o.targetContract = "0xc0ffee";
@@ -161,6 +158,56 @@ class CrossVMClientTest {
         qorechain.crossvm.v1.Tx.MsgCrossVMCall msg =
                 (qorechain.crossvm.v1.Tx.MsgCrossVMCall) client().buildCall(o).message;
         assertEquals("svm", msg.getSourceVm());
+    }
+
+    private static CrossVMClient.CallOptions call(String targetVm, String sourceVm) {
+        CrossVMClient.CallOptions o = new CrossVMClient.CallOptions();
+        o.targetVm = targetVm;
+        o.targetContract = "qor1contract";
+        o.sourceVm = sourceVm;
+        o.payload = new byte[] {0x01};
+        return o;
+    }
+
+    /** The chain refuses source == target, so an unset source never defaults to the target. */
+    @Test
+    void unsetSourceVmWithEvmTargetIsCosmwasm() {
+        var msg = (qorechain.crossvm.v1.Tx.MsgCrossVMCall)
+                client().buildCall(call(CrossVMClient.VMType.EVM, null)).message;
+        assertEquals("cosmwasm", msg.getSourceVm());
+        assertEquals("evm", msg.getTargetVm());
+        msg = (qorechain.crossvm.v1.Tx.MsgCrossVMCall)
+                client().buildCall(call(CrossVMClient.VMType.EVM, "")).message;
+        assertEquals("cosmwasm", msg.getSourceVm());
+    }
+
+    @Test
+    void unsetSourceVmWithCosmwasmTargetIsEvm() {
+        var msg = (qorechain.crossvm.v1.Tx.MsgCrossVMCall)
+                client().buildCall(call(CrossVMClient.VMType.COSMWASM, null)).message;
+        assertEquals("evm", msg.getSourceVm());
+        msg = (qorechain.crossvm.v1.Tx.MsgCrossVMCall)
+                client().buildCall(call(CrossVMClient.VMType.SVM, null)).message;
+        assertEquals("evm", msg.getSourceVm());
+    }
+
+    @Test
+    void explicitSourceEqualToTargetIsRefusedBeforeSigning() {
+        for (String vm : List.of(
+                CrossVMClient.VMType.EVM, CrossVMClient.VMType.COSMWASM, CrossVMClient.VMType.SVM)) {
+            IllegalArgumentException e = assertThrows(
+                    IllegalArgumentException.class, () -> client().buildCall(call(vm, vm)));
+            assertEquals(
+                    "crossvm: sourceVm and targetVm must be different (both are " + vm
+                            + "); the chain refuses such a call",
+                    e.getMessage());
+        }
+        // Atomic: one bad call refuses the whole batch before anything is signed.
+        assertThrows(
+                IllegalArgumentException.class,
+                () -> client().callAtomic(List.of(
+                        call(CrossVMClient.VMType.COSMWASM, null),
+                        call(CrossVMClient.VMType.EVM, CrossVMClient.VMType.EVM))));
     }
 
     /** The decoded response surfaces executed / data / gasUsed next to the message id. */

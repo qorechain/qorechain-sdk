@@ -410,9 +410,10 @@ for (CrossVMClient.CallResponse r : CrossVMClient.decodeCallResponses(result)) {
 }
 ```
 
-`sourceVm` is still accepted but the chain **ignores** it: the origin lane is derived
-from the execution context, not from what the caller claims to be. It is retained so
-older clients are not rejected.
+The chain does not route or charge by `sourceVm` (the origin lane comes from the
+execution context), but it refuses a call whose `sourceVm` equals its `targetVm`.
+Left unset, `sourceVm` is `evm`, or `cosmwasm` when the target is `evm`; a `sourceVm`
+set equal to the target is refused locally before signing.
 
 See the [cross-VM](https://docs.qorechain.io/sdk/guides/cross-vm) guide.
 

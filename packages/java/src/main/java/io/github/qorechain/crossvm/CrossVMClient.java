@@ -103,14 +103,16 @@ public final class CrossVMClient {
         /** Sender bech32 address (defaults to the signing context's sender). */
         public String sender;
         /**
-         * Source VM (default {@link VMType#EVM}).
+         * Source VM. {@code null} (default) = {@link VMType#EVM}, or
+         * {@link VMType#COSMWASM} when {@link #targetVm} is {@link VMType#EVM}
+         * ({@link #defaultSourceVm}).
          *
-         * <p>The chain IGNORES this on input - it derives the origin lane from the
-         * execution context, because a caller describing itself is not evidence of what
-         * it is. It is still sent (and still accepted) so older clients keep working;
-         * setting it changes nothing about how the call is routed or charged.
+         * <p>The chain does not use it for routing or charging: it derives the origin
+         * lane from the execution context. It does validate it, though: a call whose
+         * source equals its target is refused ("source and target VM must be
+         * different"), so {@link CrossVMClient#buildCall} refuses that before signing.
          */
-        public String sourceVm = VMType.EVM;
+        public String sourceVm;
         /** Target VM ({@link VMType}). */
         public String targetVm;
         /** Target contract identifier/address on the target VM. */
@@ -255,7 +257,7 @@ public final class CrossVMClient {
             requireAsyncFieldsSupported(signer == null ? null : signer.restUrl, opts);
         }
         String sender = opts.sender != null ? opts.sender : (signer != null ? signer.sender : null);
-        String sourceVm = opts.sourceVm != null ? opts.sourceVm : VMType.EVM;
+        String sourceVm = resolveSourceVm(opts.sourceVm, opts.targetVm);
 
         qorechain.crossvm.v1.Tx.MsgCrossVMCall.Builder msg =
                 qorechain.crossvm.v1.Tx.MsgCrossVMCall.newBuilder()
@@ -398,6 +400,32 @@ public final class CrossVMClient {
                     "CrossVMClient was constructed without a QorClient; cannot getMessage");
         }
         return qor.getCrossVmMessage(id);
+    }
+
+    /**
+     * The source VM used when {@link CallOptions#sourceVm} is unset: {@link VMType#EVM},
+     * or {@link VMType#COSMWASM} when the target is {@link VMType#EVM} (the chain refuses
+     * a call whose source equals its target).
+     */
+    public static String defaultSourceVm(String targetVm) {
+        return VMType.EVM.equals(targetVm) ? VMType.COSMWASM : VMType.EVM;
+    }
+
+    /**
+     * The source VM to send: {@code sourceVm} when set, else {@link #defaultSourceVm}.
+     *
+     * @throws IllegalArgumentException when a set {@code sourceVm} equals {@code targetVm}.
+     */
+    public static String resolveSourceVm(String sourceVm, String targetVm) {
+        if (sourceVm == null || sourceVm.isEmpty()) {
+            return defaultSourceVm(targetVm);
+        }
+        if (sourceVm.equals(targetVm)) {
+            throw new IllegalArgumentException(
+                    "crossvm: sourceVm and targetVm must be different (both are " + sourceVm
+                            + "); the chain refuses such a call");
+        }
+        return sourceVm;
     }
 
     /**
