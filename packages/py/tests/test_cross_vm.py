@@ -28,6 +28,7 @@ from qorsdk import (
     decode_any,
     decode_cross_vm_response,
     decode_cross_vm_responses,
+    default_source_vm,
     derive_native_account,
     generate_pqc_keypair,
 )
@@ -299,13 +300,54 @@ def test_call_atomic_carries_per_call_async_flags():
     assert [getattr(m, "async") for m in msgs] == [False, True]
 
 
-def test_source_vm_still_accepted_though_the_chain_ignores_it():
-    """The chain derives the origin lane itself; the field is kept for old nodes."""
+def test_source_vm_still_accepted_when_it_differs_from_the_target():
+    """The chain derives the origin lane itself; the field only has to differ."""
     m = build_cross_vm_call(
         sender="qor1s", target_vm="evm", target_contract="0xabc", source_vm="svm"
     )
     decoded = decode_any(m.type_url, m.value.SerializeToString())
     assert decoded.source_vm == "svm"
+
+
+def test_unset_source_vm_with_an_evm_target_is_cosmwasm():
+    m = build_cross_vm_call(sender="qor1s", target_vm="evm", target_contract="0xabc")
+    assert decode_any(m.type_url, m.value.SerializeToString()).source_vm == "cosmwasm"
+    assert default_source_vm("evm") == "cosmwasm"
+
+
+@pytest.mark.parametrize("target", ["cosmwasm", "svm"])
+def test_unset_source_vm_with_another_target_is_evm(target):
+    m = build_cross_vm_call(sender="qor1s", target_vm=target, target_contract="qor1c")
+    assert decode_any(m.type_url, m.value.SerializeToString()).source_vm == "evm"
+
+
+@pytest.mark.parametrize("vm", ["evm", "cosmwasm", "svm"])
+def test_explicit_equal_source_and_target_is_refused_before_signing(vm):
+    want = (
+        f"crossvm: source_vm and target_vm must be different (both are {vm}); "
+        "the chain refuses such a call"
+    )
+    with pytest.raises(ValueError) as excinfo:
+        build_cross_vm_call(sender="qor1s", target_vm=vm, target_contract="c", source_vm=vm)
+    assert str(excinfo.value) == want
+
+
+@respx.mock
+def test_atomic_unset_defaults_and_equal_refusal():
+    route = _mock_broadcast()
+    client = _client()
+    client.call_atomic(
+        [
+            CrossVmCallOptions(target_vm="evm", target_contract="0x" + "11" * 20),
+            CrossVmCallOptions(target_vm="cosmwasm", target_contract="qor1c", payload=b"{}"),
+        ]
+    )
+    assert [m.source_vm for m in _decoded_messages(route)] == ["cosmwasm", "evm"]
+    with pytest.raises(ValueError, match="must be different"):
+        client.call_atomic(
+            [CrossVmCallOptions(target_vm="svm", target_contract="p", source_vm="svm")]
+        )
+    assert route.call_count == 1
 
 
 # --- response decoding (message_id / executed / data / gas_used) --------------

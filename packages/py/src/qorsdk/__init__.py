@@ -101,6 +101,8 @@ from .cross_vm import (
     create_cross_vm_client,
     decode_cross_vm_response,
     decode_cross_vm_responses,
+    default_source_vm,
+    resolve_source_vm,
     validate_async_options,
 )
 from .crossvm_features import (
@@ -485,6 +487,8 @@ __all__ = [
     "ASYNC_GAS_LIMIT_MIN",
     "MAX_PENDING_PER_SENDER",
     "validate_async_options",
+    "default_source_vm",
+    "resolve_source_vm",
     "validate_evm_window_ibc_receivers",
     "validate_evm_window_staking_validators",
     "validate_evm_window_validators",

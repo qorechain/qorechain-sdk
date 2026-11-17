@@ -339,9 +339,11 @@ answer = decode_cross_vm_response(included)
 answer.message_id, answer.executed, answer.data, answer.gas_used
 ```
 
-`source_vm` is **ignored by the chain**, which derives the origin lane from the
-execution context; it is still accepted (and sent, default `"evm"`) so older
-nodes keep taking the message, but setting it has no on-chain effect.
+`source_vm` is **not used for routing** (the chain derives the origin lane from
+the execution context), but it **must differ from `target_vm`**: the chain
+refuses a call where they are equal. Left unset, the SDK sends `"evm"`, or
+`"cosmwasm"` when the target is `"evm"`; an explicit `source_vm` equal to the
+target raises `ValueError` before signing.
 
 `build_cross_vm_call(...)` is also available as a free function for hand-building
 the message. See the [cross-VM](https://docs.qorechain.io/sdk/guides/cross-vm) guide.

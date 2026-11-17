@@ -11,11 +11,14 @@ with type URL ``/qorechain.crossvm.v1.MsgCrossVMCall`` and
 ``source_vm`` / ``target_vm`` drawn from :data:`VM_TYPES` (``"evm"``,
 ``"cosmwasm"``, ``"svm"``).
 
-**``source_vm`` is IGNORED by the chain (v3.1.97).** The origin lane is derived
-from the execution context - a caller describing itself is not evidence of what
-it is - and the field is retained only so the field number stays taken and older
-clients that still set it are accepted rather than rejected. The SDK still
-accepts and sends it (default ``"evm"``), but setting it has no on-chain effect.
+**``source_vm`` is not used for routing (v3.1.97), but it must differ from
+``target_vm``.** The origin lane is derived from the execution context (a caller
+describing itself is not evidence of what it is), so the field does not decide
+where the call comes from. The chain still validates it: a message whose
+``source_vm`` equals its ``target_vm`` is refused ("source and target VM must be
+different"). Left unset, the SDK sends ``"evm"``, or ``"cosmwasm"`` when the
+target is ``"evm"`` (:func:`default_source_vm`); an explicit ``source_vm`` equal
+to the target raises ``ValueError`` before signing.
 
 ``async_`` (proto field ``async``, 7) queues the call for a later
 ``MsgProcessQueue`` dispatch instead of running it. The default, ``False``,
@@ -125,10 +128,11 @@ class CrossVmCallOptions:
     target_vm: VmType
     #: The contract/program address on the target VM.
     target_contract: str
-    #: The originating VM. Defaults to ``"evm"``. **Ignored by the chain** since
-    #: v3.1.97 (the origin lane is derived from the execution context); still
-    #: sent so older nodes keep accepting the message.
-    source_vm: VmType = "evm"
+    #: The originating VM. Not used for routing since v3.1.97 (the origin lane
+    #: is derived from the execution context), but the chain refuses a call
+    #: whose ``source_vm`` equals ``target_vm``. ``None`` (default) = ``"evm"``,
+    #: or ``"cosmwasm"`` when the target is ``"evm"``.
+    source_vm: VmType | None = None
     #: Funds to attach, as ``{"denom", "amount"}`` dicts.
     funds: list[CoinDict] | None = None
     #: Raw payload bytes (used verbatim).
@@ -170,6 +174,29 @@ class CrossVmCallResult:
 def _validate_vm(vm: str, field: str) -> None:
     if vm not in VM_TYPES:
         raise ValueError(f"{field} must be one of {VM_TYPES!r}, got {vm!r}")
+
+
+def default_source_vm(target_vm: str) -> VmType:
+    """The ``source_vm`` sent when the caller leaves it unset: ``"evm"``, or
+    ``"cosmwasm"`` when the target is ``"evm"`` (the chain refuses equal VMs)."""
+    return "cosmwasm" if target_vm == "evm" else "evm"
+
+
+def resolve_source_vm(source_vm: str | None, target_vm: str) -> VmType:
+    """Pick and check ``source_vm`` for a call into ``target_vm``.
+
+    :raises ValueError: If ``source_vm`` is not one of :data:`VM_TYPES`, or
+        equals ``target_vm`` (the chain refuses such a call).
+    """
+    if source_vm is None:
+        return default_source_vm(target_vm)
+    _validate_vm(source_vm, "source_vm")
+    if source_vm == target_vm:
+        raise ValueError(
+            f"crossvm: source_vm and target_vm must be different (both are {source_vm}); "
+            "the chain refuses such a call"
+        )
+    return source_vm  # type: ignore[return-value]
 
 
 def _resolve_payload(
@@ -237,7 +264,7 @@ def build_cross_vm_call(
     sender: str,
     target_vm: VmType,
     target_contract: str,
-    source_vm: VmType = "evm",
+    source_vm: VmType | None = None,
     funds: list[CoinDict] | None = None,
     payload: bytes | None = None,
     cosmwasm: dict[str, Any] | None = None,
@@ -253,8 +280,11 @@ def build_cross_vm_call(
     See the module docstring for payload-source resolution. ``source_vm`` and
     ``target_vm`` are validated against :data:`VM_TYPES`.
 
-    :param source_vm: Retained for older nodes; the chain **ignores** it and
-        derives the origin lane from the execution context.
+    :param source_vm: Not used for routing (the chain derives the origin lane
+        from the execution context), but it must differ from ``target_vm``:
+        the chain refuses a call where they are equal. ``None`` (default) picks
+        :func:`default_source_vm` (``"evm"``, or ``"cosmwasm"`` for an EVM
+        target).
     :param async_: Queue the call for ``MsgProcessQueue`` instead of executing
         it in this transaction. Default ``False`` (execute now, return the
         answer).
@@ -274,8 +304,8 @@ def build_cross_vm_call(
     :raises qorsdk.crossvm_features.CrossVmFeatureQueryError: The network
         could not be asked.
     """
-    _validate_vm(source_vm, "source_vm")
     _validate_vm(target_vm, "target_vm")
+    source_vm = resolve_source_vm(source_vm, target_vm)
     gas, factor = validate_async_options(
         target_vm=target_vm,
         async_=async_,
@@ -444,7 +474,7 @@ class CrossVmClient:
         *,
         target_vm: VmType,
         target_contract: str,
-        source_vm: VmType = "evm",
+        source_vm: VmType | None = None,
         funds: list[CoinDict] | None = None,
         payload: bytes | None = None,
         cosmwasm: dict[str, Any] | None = None,
@@ -558,7 +588,7 @@ class CrossVmClient:
         *,
         target_vm: VmType,
         target_contract: str,
-        source_vm: VmType = "evm",
+        source_vm: VmType | None = None,
         funds: list[CoinDict] | None = None,
         payload: bytes | None = None,
         cosmwasm: dict[str, Any] | None = None,
@@ -680,6 +710,8 @@ __all__ = [
     "ASYNC_GAS_LIMIT_MAX",
     "MAX_PENDING_PER_SENDER",
     "validate_async_options",
+    "default_source_vm",
+    "resolve_source_vm",
     "VmType",
     "CrossVmCallOptions",
     "CrossVmCallResult",
