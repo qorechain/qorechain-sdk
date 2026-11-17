@@ -98,13 +98,15 @@ func New(signer Signer, opts Options) *Client {
 //   - Cosmwasm: any JSON-serializable value, json.Marshal'd to UTF-8 bytes (use
 //     for CosmWasm execute messages).
 type CallOptions struct {
-	// SourceVM is the calling VM. Empty defaults to DefaultSourceVM ("evm").
+	// SourceVM is the calling VM. Empty defaults to "evm", or to "cosmwasm"
+	// when TargetVM is "evm" (SourceVMFor).
 	//
-	// The chain IGNORES this field (chain v3.1.97+): it derives the origin lane
-	// from the execution context, because a caller naming its own lane is not
-	// evidence of what it is. It is still sent - and still defaulted - so older
-	// nodes that read it keep working; setting it changes nothing on a current
-	// chain, and it can never be used to claim a lane the caller is not on.
+	// The chain does not use this field for routing (chain v3.1.97+ derives
+	// the origin lane from the execution context, because a caller naming its
+	// own lane is not evidence of what it is), so it can never claim a lane
+	// the caller is not on. It is still validated: it must differ from
+	// TargetVM, or the chain refuses the call. A SourceVM equal to TargetVM
+	// is refused here, before signing.
 	SourceVM crossvmv1.VMType
 	// TargetVM is the VM hosting the target contract (required).
 	TargetVM crossvmv1.VMType
@@ -179,7 +181,11 @@ func (c *Client) message(o CallOptions) (*crossvmv1.MsgCrossVMCall, error) {
 	}
 	sourceVM := o.SourceVM
 	if sourceVM == "" {
-		sourceVM = DefaultSourceVM
+		sourceVM = SourceVMFor(o.TargetVM)
+	}
+	if sourceVM == o.TargetVM {
+		return nil, fmt.Errorf("crossvm: sourceVm and targetVm must be different (both are %s); "+
+			"the chain refuses such a call", sourceVM)
 	}
 	msg := messages.CrossVM.Call(
 		c.signer.Account.Address,

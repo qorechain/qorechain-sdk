@@ -766,11 +766,13 @@ wants; with `Async: true` the response carries only the message id (`Executed`
 false, no `Data`) and the outcome is polled with `GetMessage`. It is per call, so
 one `CallAtomic` batch may mix queued and inline calls.
 
-**`SourceVM` is ignored by the chain.** The origin lane is derived from the
-execution context - a caller naming its own lane is not evidence of what it is.
-The field is still sent and still defaults to `evm` so older nodes keep working;
-setting it changes nothing on a current chain and can never claim a lane the
-caller is not on.
+**`SourceVM` is not used for routing, but it must differ from the target.**
+The origin lane is derived from the execution context (a caller naming its own
+lane is not evidence of what it is), so the field can never claim a lane the
+caller is not on. The chain still refuses a call whose source and target VM are
+the same. Left empty, it defaults to `evm`, or to `cosmwasm` when the target is
+`evm` (`crossvm.SourceVMFor`); set equal to the target, the helper refuses the
+call before signing.
 
 See the [cross-VM](https://docs.qorechain.io/sdk/guides/cross-vm) guide.
 

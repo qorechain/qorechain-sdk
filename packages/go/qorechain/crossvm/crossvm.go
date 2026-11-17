@@ -30,9 +30,22 @@ const (
 	VMTypeSVM crossvmv1.VMType = "svm"
 )
 
-// DefaultSourceVM is the source VM assumed when CallOptions.SourceVM is empty.
+// DefaultSourceVM is the source VM assumed when CallOptions.SourceVM is empty
+// and the target is not EVM. A call into EVM with an empty SourceVM gets
+// VMTypeCosmWasm instead (see SourceVMFor).
 //
-// The chain IGNORES the source_vm field (chain v3.1.97+) - it derives the origin
-// lane from the execution context. The default is kept only so older nodes that
-// still read the field receive a well-formed message.
+// The chain does not route by source_vm (chain v3.1.97+ derives the origin
+// lane from the execution context), but it does validate it: the source and
+// target VM must be different, or the call is refused.
 const DefaultSourceVM = VMTypeEVM
+
+// SourceVMFor returns the source VM the helper sends for a call into target
+// when the caller names none: DefaultSourceVM ("evm"), or VMTypeCosmWasm
+// when the target is EVM, because the chain refuses a call whose source and
+// target VM are the same.
+func SourceVMFor(target crossvmv1.VMType) crossvmv1.VMType {
+	if target == VMTypeEVM {
+		return VMTypeCosmWasm
+	}
+	return DefaultSourceVM
+}

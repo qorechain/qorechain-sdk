@@ -473,3 +473,53 @@ func TestDecodeCallResultErrors(t *testing.T) {
 		t.Error("expected an error when the tx carries no cross-VM response")
 	}
 }
+
+func TestSourceVMDefaultsDifferFromTarget(t *testing.T) {
+	c := New(testSigner(t), Options{})
+	for _, tc := range []struct {
+		target, want crossvmv1.VMType
+	}{
+		{VMTypeEVM, VMTypeCosmWasm},
+		{VMTypeCosmWasm, VMTypeEVM},
+		{VMTypeSVM, VMTypeEVM},
+	} {
+		built, err := c.BuildCall(CallOptions{TargetVM: tc.target, TargetContract: "x", Payload: []byte{1}})
+		if err != nil {
+			t.Fatalf("target %s: %v", tc.target, err)
+		}
+		if got := decodeMsgs(t, built)[0].SourceVM; got != tc.want {
+			t.Errorf("target %s: sourceVM = %q, want %q", tc.target, got, tc.want)
+		}
+	}
+	// The batch build applies the same default per call.
+	built, err := c.BuildCallAtomic([]CallOptions{
+		{TargetVM: VMTypeEVM, TargetContract: "0xa", Payload: []byte{1}},
+		{TargetVM: VMTypeCosmWasm, TargetContract: "qor1c", Payload: []byte("{}")},
+	})
+	if err != nil {
+		t.Fatal(err)
+	}
+	msgs := decodeMsgs(t, built)
+	if msgs[0].SourceVM != VMTypeCosmWasm || msgs[1].SourceVM != VMTypeEVM {
+		t.Fatalf("batch sourceVMs = %q, %q", msgs[0].SourceVM, msgs[1].SourceVM)
+	}
+}
+
+func TestSourceVMEqualToTargetIsRefused(t *testing.T) {
+	c := New(testSigner(t), Options{})
+	const want = "crossvm: sourceVm and targetVm must be different (both are evm); the chain refuses such a call"
+	_, err := c.BuildCall(CallOptions{SourceVM: VMTypeEVM, TargetVM: VMTypeEVM, TargetContract: "0xa", Payload: []byte{1}})
+	if err == nil || err.Error() != want {
+		t.Fatalf("err = %v; want %q", err, want)
+	}
+	_, err = c.BuildCallAtomic([]CallOptions{
+		{TargetVM: VMTypeSVM, TargetContract: "p", Payload: []byte{1}},
+		{SourceVM: VMTypeCosmWasm, TargetVM: VMTypeCosmWasm, TargetContract: "qor1c", Payload: []byte("{}")},
+	})
+	if err == nil || !strings.Contains(err.Error(), "call 1:") || !strings.Contains(err.Error(), "both are cosmwasm") {
+		t.Fatalf("batch err = %v", err)
+	}
+	if _, err := c.CallAtomic([]CallOptions{{SourceVM: VMTypeSVM, TargetVM: VMTypeSVM, TargetContract: "p", Payload: []byte{1}}}); err == nil {
+		t.Fatal("CallAtomic accepted an equal source and target VM")
+	}
+}
