@@ -45,3 +45,11 @@ localhost defaults - copy that folder's `.env.example` and adjust. Network
 examples fail gracefully with a hint if no node is reachable.
 
 > Use only test mnemonics / generated keys. Never commit real secrets.
+
+## Run them all
+
+Run every example against one network (exits non-zero when any fails; the mnemonic is never printed):
+
+```bash
+QORE_RPC_URL=https://rpc-testnet.qore.host QORE_REST_URL=https://api-testnet.qore.host QORE_EVM_RPC_URL=https://evm-testnet.qore.host QORE_CHAIN_ID=qorechain-diana QORE_MNEMONIC="<funded test mnemonic>" ./examples/run-all.sh
+```
