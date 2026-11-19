@@ -36,7 +36,9 @@ import (
 
 	"github.com/cloudflare/circl/sign/mldsa/mldsa87"
 	"golang.org/x/crypto/sha3"
+	"golang.org/x/text/unicode/norm"
 
+	"github.com/qorechain/qorechain-sdk/packages/go/qorechain/accounts"
 	"github.com/qorechain/qorechain-sdk/packages/go/qorechain/messages"
 	"github.com/qorechain/qorechain-sdk/packages/go/qorechain/pqc"
 	pqcv1 "github.com/qorechain/qorechain-sdk/packages/go/qorechain/proto/qorechain/pqc/v1"
@@ -411,7 +413,26 @@ func derivePQCCanonical(account, mnemonic string) (pqc.Keypair, error) {
 	if err != nil {
 		return pqc.Keypair{}, err
 	}
-	return pqcFromSeed(shake256([]byte("qorechain:pqc:v1|"+cosmos+"|"+mnemonic), 32))
+	phrase, err := CanonicalMnemonic(mnemonic)
+	if err != nil {
+		return pqc.Keypair{}, err
+	}
+	return pqcFromSeed(shake256([]byte("qorechain:pqc:v1|"+cosmos+"|"+phrase), 32))
+}
+
+// CanonicalMnemonic returns the one form of a BIP-39 phrase the PQC derivation
+// hashes: Unicode NFKD, lower case, words separated by single spaces, no leading
+// or trailing whitespace. It is checked against the English wordlist and
+// checksum, so a phrase typed with different case or spacing gives the same key
+// as in the TypeScript, Python, Java and Rust SDKs, and a mistyped one is
+// refused instead of giving a different key. The phrase is never put in the
+// error.
+func CanonicalMnemonic(mnemonic string) (string, error) {
+	phrase := strings.ToLower(strings.Join(strings.Fields(norm.NFKD.String(mnemonic)), " "))
+	if !accounts.ValidateMnemonic(phrase) {
+		return "", errors.New("invalid mnemonic")
+	}
+	return phrase, nil
 }
 
 // toCosmos normalizes an account address (bech32 "qor1…" or 0x EVM) to its

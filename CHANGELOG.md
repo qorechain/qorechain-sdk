@@ -56,12 +56,12 @@ Fixes and hardening for the five SDKs, `@qorechain/evm`, `@qorechain/svm`,
   closed cleanly.
 
 - **The canonical PQC key derivation now reads the phrase in one form.**
-  `derivePqcCanonical` (`derive_pqc_canonical`, `Authenticator.derivePqcCanonical`)
-  normalises the mnemonic first (Unicode NFKD, lower case, single spaces, no
+  `derivePqcCanonical` (`derive_pqc_canonical`, `Authenticator.derivePqcCanonical`,
+  Go `authenticator.DerivePQCCanonical`) normalises the mnemonic first (Unicode NFKD, lower case, single spaces, no
   surrounding whitespace) and checks it against the English wordlist, so a
   phrase typed with other case or spacing gives the account's key and a
   mistyped one is refused (`invalid mnemonic`) instead of giving another key.
-  New: `canonicalMnemonic`. The account is still resolved to its lower-case
+  New: `canonicalMnemonic` (Go `authenticator.CanonicalMnemonic`). The account is still resolved to its lower-case
   `qor1` form. Rust: `derive_pqc_canonical` now returns `Result` and refuses an
   address it cannot resolve instead of hashing it as given (breaking).
 - **`unifiedAccountFromSeed` refuses a recovery code that encodes the seed
