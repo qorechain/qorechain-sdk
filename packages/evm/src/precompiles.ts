@@ -91,6 +91,8 @@ export interface PqcKeyStatus {
   registered: boolean;
   algorithmId: number;
   pubkey: Hex;
+  /** Whether the current key was proven by a proof of possession (chain v3.2.4). */
+  possessionProven: boolean;
 }
 
 /** Query the on-chain post-quantum key registration status for an account. */
@@ -98,13 +100,13 @@ export async function pqcKeyStatus(
   client: PublicClient,
   account: Address,
 ): Promise<PqcKeyStatus> {
-  const [registered, algorithmId, pubkey] = await client.readContract({
+  const [registered, algorithmId, pubkey, possessionProven] = await client.readContract({
     address: addr(PRECOMPILE_ADDRESSES.pqcKeyStatus),
     abi: IQORE_PQC_ABI,
     functionName: "pqcKeyStatus",
     args: [account],
   });
-  return { registered, algorithmId, pubkey };
+  return { registered, algorithmId, pubkey, possessionProven };
 }
 
 /** Result of {@link aiRiskScore}. */

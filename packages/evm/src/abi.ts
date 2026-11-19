@@ -354,6 +354,7 @@ export const IQORE_PQC_ABI = [
       { name: "registered", type: "bool" },
       { name: "algorithmId", type: "uint8" },
       { name: "pubkey", type: "bytes" },
+      { name: "possessionProven", type: "bool" },
     ],
   },
 ] as const;

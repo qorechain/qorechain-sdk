@@ -99,14 +99,18 @@ describe("getEvmWalletClient", () => {
 });
 
 describe("addQoreChainNetwork", () => {
-  it("sends wallet_addEthereumChain with the right params", async () => {
+  it("sends wallet_addEthereumChain with the right params, chain id from the network's RPC, not the wallet", async () => {
     const provider = fakeProvider((method) => {
-      if (method === "eth_chainId") return "0x1a2b";
+      if (method === "eth_chainId") return "0x1"; // a wallet on another chain must not decide
       return undefined;
     });
+    const rpc = vi.fn(async () => new Response(JSON.stringify({ jsonrpc: "2.0", id: 1, result: "0x1a2b" })));
     await addQoreChainNetwork(provider, NETWORK, {
       blockExplorerUrl: "https://explorer.example",
+      fetch: rpc as unknown as typeof fetch,
     });
+    expect(rpc).toHaveBeenCalledWith("http://node:8545", expect.objectContaining({ method: "POST" }));
+    expect(provider.request.mock.calls.some((c) => (c[0] as { method: string }).method === "eth_chainId")).toBe(false);
 
     const call = provider.request.mock.calls.find(
       (c) => (c[0] as { method: string }).method === "wallet_addEthereumChain",
@@ -132,6 +136,13 @@ describe("addQoreChainNetwork", () => {
     const param = (provider.request.mock.calls[0][0] as { params: unknown[] })
       .params[0] as Record<string, unknown>;
     expect(param.chainId).toBe("0x63");
+  });
+
+  it("uses the configured evmChainId without asking anyone", async () => {
+    const provider = fakeProvider(() => undefined);
+    await addQoreChainNetwork(provider, { ...NETWORK, evmChainId: 9801 });
+    const param = (provider.request.mock.calls[0][0] as { params: unknown[] }).params[0] as Record<string, unknown>;
+    expect(param.chainId).toBe("0x2649");
   });
 });
 

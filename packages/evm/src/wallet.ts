@@ -45,6 +45,8 @@ export interface EvmNetworkInfo {
   endpoints: { evmRpc: string; evmWs?: string };
   /** Display coin info (used for the native currency). */
   coin: { display: string };
+  /** The network's EVM chain id from its configuration (9801 mainnet, 9800 testnet). */
+  evmChainId?: number;
 }
 
 /** Options for {@link getEvmWalletClient}. */
@@ -89,6 +91,19 @@ function resolveProvider(provider?: Eip1193Provider): Eip1193Provider {
   return injected;
 }
 
+/** Ask an EVM JSON-RPC endpoint (not the wallet) for its chain id. */
+async function rpcChainId(rpcUrl: string, fetchImpl: typeof fetch = globalThis.fetch): Promise<number> {
+  const res = await fetchImpl(rpcUrl, {
+    method: "POST",
+    headers: { "content-type": "application/json" },
+    body: JSON.stringify({ jsonrpc: "2.0", id: 1, method: "eth_chainId", params: [] }),
+  });
+  if (!res.ok) throw new Error(`EVM wallet: eth_chainId failed: HTTP ${res.status} from ${rpcUrl}`);
+  const body = (await res.json()) as { result?: unknown };
+  if (typeof body.result !== "string") throw new Error(`EVM wallet: eth_chainId returned no result from ${rpcUrl}`);
+  return Number(BigInt(body.result));
+}
+
 /** Convert a numeric chain id to its `0x`-prefixed hex form. */
 export function toHexChainId(chainId: number): `0x${string}` {
   return `0x${chainId.toString(16)}`;
@@ -114,17 +129,21 @@ export async function requestAccounts(
 /**
  * Add the QoreChain EVM network to the wallet via `wallet_addEthereumChain`.
  *
- * The EVM chain id is auto-detected (via `eth_chainId` against the network's
- * `evmRpc`) unless provided. Native currency is QOR with 18 decimals (the EVM
- * convention).
+ * The chain id comes from configuration, never from the wallet: `opts.chainId`,
+ * else `network.evmChainId`, else `eth_chainId` asked of the network's own
+ * `evmRpc` endpoint. Asking the wallet would let a wallet that is on another
+ * chain register that chain under QoreChain's name and RPC URL. Native currency
+ * is QOR with 18 decimals (the EVM convention).
  */
 export async function addQoreChainNetwork(
   provider: Eip1193Provider,
   network: EvmNetworkInfo,
-  opts: { chainId?: number; blockExplorerUrl?: string } = {},
+  opts: { chainId?: number; blockExplorerUrl?: string; fetch?: typeof fetch } = {},
 ): Promise<void> {
-  const chainId =
-    opts.chainId ?? Number(await provider.request({ method: "eth_chainId" }));
+  const chainId = opts.chainId ?? network.evmChainId ?? (await rpcChainId(network.endpoints.evmRpc, opts.fetch));
+  if (!Number.isSafeInteger(chainId) || chainId <= 0) {
+    throw new Error(`EVM wallet: invalid chain id ${String(chainId)}`);
+  }
   await provider.request({
     method: "wallet_addEthereumChain",
     params: [

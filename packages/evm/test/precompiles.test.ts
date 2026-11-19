@@ -73,12 +73,12 @@ describe("precompiles.pqcKeyStatus", () => {
       return encodeFunctionResult({
         abi: IQORE_PQC_ABI,
         functionName: "pqcKeyStatus",
-        result: [true, 1, "0xdeadbeef"],
+        result: [true, 1, "0xdeadbeef", true],
       });
     });
     const c = await client(transport);
     const res = await precompiles.pqcKeyStatus(c.publicClient, account);
-    expect(res).toEqual({ registered: true, algorithmId: 1, pubkey: "0xdeadbeef" });
+    expect(res).toEqual({ registered: true, algorithmId: 1, pubkey: "0xdeadbeef", possessionProven: true });
     expect(calls[0].to.toLowerCase()).toBe(PRECOMPILE_ADDRESSES.pqcKeyStatus.toLowerCase());
   });
 });

@@ -46,7 +46,7 @@ const status = await getPqcStatus(client, "qor1…");
 ```
 
 The same status is also readable on the EVM side via the
-`pqcKeyStatus(address) returns (bool registered, uint8 algorithmId, bytes pubkey)`
+`pqcKeyStatus(address) returns (bool registered, uint8 algorithmId, bytes pubkey, bool possessionProven)`
 precompile at `0x0000000000000000000000000000000000000A02` (exposed as
 `pqcKeyStatus` in `@qorechain/evm`). The helpers above prefer the JSON-RPC method,
 which needs no viem peer.

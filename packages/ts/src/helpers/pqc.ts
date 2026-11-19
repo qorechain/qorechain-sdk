@@ -28,7 +28,7 @@
  *
  * Precompile alternative: the same status is readable on the EVM side via the
  * `pqcKeyStatus(address) returns (bool registered, uint8 algorithmId, bytes
- * pubkey)` precompile at `0x0000000000000000000000000000000000000A02` (exposed
+ * pubkey, bool possessionProven)` precompile at `0x0000000000000000000000000000000000000A02` (exposed
  * as `pqcKeyStatus` in `@qorechain/evm`). The helpers below prefer the
  * `qor_getPQCKeyStatus` JSON-RPC method, which needs no viem peer; the
  * precompile is the documented alternative for callers already on the EVM side.
