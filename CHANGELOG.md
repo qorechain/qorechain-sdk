@@ -42,6 +42,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- **Subscriptions release their connection on close in every SDK.** Rust:
+  `SubscribeClient::close()` is new, and dropping the client also closes the
+  socket (before, the connection stayed open until the node closed it). Java:
+  `close()` aborts the socket when the node does not answer the close frame,
+  and each subscription now receives only its own events (a second
+  subscription's events went to the first one's handler). Go and Python already
+  closed cleanly.
+
 - **The canonical PQC key derivation now reads the phrase in one form.**
   `derivePqcCanonical` (`derive_pqc_canonical`, `Authenticator.derivePqcCanonical`)
   normalises the mnemonic first (Unicode NFKD, lower case, single spaces, no

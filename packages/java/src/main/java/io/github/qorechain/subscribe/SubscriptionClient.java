@@ -83,24 +83,32 @@ public final class SubscriptionClient implements AutoCloseable {
 
     private synchronized void subscribe(
             String query, Consumer<JsonNode> handler, Consumer<Throwable> onError) {
-        connect(handler, onError);
+        connect();
+        long id = nextId.getAndIncrement();
+        handlers.put(id, new Handlers(handler, onError));
         Map<String, Object> params = new LinkedHashMap<>();
         params.put("query", query);
         Map<String, Object> req = new LinkedHashMap<>();
         req.put("jsonrpc", "2.0");
-        req.put("id", nextId.getAndIncrement());
+        req.put("id", id);
         req.put("method", "subscribe");
         req.put("params", params);
         try {
             webSocket.sendText(MAPPER.writeValueAsString(req), true);
         } catch (Exception e) {
+            handlers.remove(id);
             if (onError != null) {
                 onError.accept(e);
             }
         }
     }
 
-    private void connect(Consumer<JsonNode> handler, Consumer<Throwable> onError) {
+    /** A subscription's consumers, keyed by its JSON-RPC request id. */
+    private record Handlers(Consumer<JsonNode> onEvent, Consumer<Throwable> onError) {}
+
+    private final Map<Long, Handlers> handlers = new java.util.concurrent.ConcurrentHashMap<>();
+
+    private void connect() {
         if (webSocket != null) {
             return;
         }
@@ -113,15 +121,7 @@ public final class SubscriptionClient implements AutoCloseable {
                         if (last) {
                             String full = buffer.toString();
                             buffer.setLength(0);
-                            try {
-                                JsonNode node = MAPPER.readTree(full);
-                                JsonNode result = node.get("result");
-                                handler.accept(result != null ? result : node);
-                            } catch (Exception e) {
-                                if (onError != null) {
-                                    onError.accept(e);
-                                }
-                            }
+                            dispatch(full);
                         }
                         ws.request(1);
                         return null;
@@ -129,8 +129,10 @@ public final class SubscriptionClient implements AutoCloseable {
 
                     @Override
                     public void onError(WebSocket ws, Throwable error) {
-                        if (onError != null) {
-                            onError.accept(error);
+                        for (Handlers h : handlers.values()) {
+                            if (h.onError() != null) {
+                                h.onError().accept(error);
+                            }
                         }
                     }
                 };
@@ -142,11 +144,60 @@ public final class SubscriptionClient implements AutoCloseable {
                         .join();
     }
 
+    /** Route one JSON-RPC frame to the subscription whose request id it carries. */
+    void dispatch(String frame) {
+        JsonNode node;
+        try {
+            node = MAPPER.readTree(frame);
+        } catch (Exception e) {
+            for (Handlers h : handlers.values()) {
+                if (h.onError() != null) {
+                    h.onError().accept(e);
+                }
+            }
+            return;
+        }
+        JsonNode idNode = node.get("id");
+        if (idNode == null || !idNode.canConvertToLong()) {
+            return;
+        }
+        Handlers h = handlers.get(idNode.asLong());
+        if (h == null) {
+            return;
+        }
+        JsonNode result = node.get("result");
+        try {
+            h.onEvent().accept(result != null ? result : node);
+        } catch (RuntimeException e) {
+            if (h.onError() != null) {
+                h.onError().accept(e);
+            }
+        }
+    }
+
+    /** Package-private for tests: register a handler as a subscription with {@code id} would. */
+    void registerForTest(long id, Consumer<JsonNode> handler) {
+        handlers.put(id, new Handlers(handler, null));
+    }
+
+    /**
+     * Close the socket: send a close frame, then abort the connection so it is
+     * released even if the node does not answer the close.
+     */
     @Override
     public synchronized void close() {
+        handlers.clear();
         if (webSocket != null) {
-            webSocket.sendClose(WebSocket.NORMAL_CLOSURE, "client close");
+            WebSocket ws = webSocket;
             webSocket = null;
+            try {
+                ws.sendClose(WebSocket.NORMAL_CLOSURE, "client close")
+                        .orTimeout(2, java.util.concurrent.TimeUnit.SECONDS)
+                        .exceptionally(e -> ws)
+                        .join();
+            } finally {
+                ws.abort();
+            }
         }
     }
 }

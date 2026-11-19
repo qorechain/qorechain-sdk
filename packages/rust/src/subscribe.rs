@@ -35,10 +35,14 @@ pub struct Event {
 type Subs = Arc<Mutex<HashMap<String, mpsc::UnboundedSender<Event>>>>;
 
 /// A WebSocket subscription client for the chain RPC.
+///
+/// Call [`SubscribeClient::close`] when done. Dropping the client also stops its
+/// background tasks, which closes the socket.
 pub struct SubscribeClient {
     writer: mpsc::UnboundedSender<WsMessage>,
     subs: Subs,
     next_id: Arc<Mutex<u64>>,
+    tasks: Vec<tokio::task::AbortHandle>,
 }
 
 /// A live subscription: a stream of [`Event`]s plus an `unsubscribe` handle.
@@ -86,7 +90,7 @@ impl SubscribeClient {
         let subs: Subs = Arc::new(Mutex::new(HashMap::new()));
 
         // Writer task: forward outbound frames to the socket.
-        tokio::spawn(async move {
+        let writer_task = tokio::spawn(async move {
             while let Some(msg) = write_rx.recv().await {
                 if sink.send(msg).await.is_err() {
                     break;
@@ -96,7 +100,7 @@ impl SubscribeClient {
 
         // Reader task: dispatch inbound frames to subscription channels.
         let reader_subs = subs.clone();
-        tokio::spawn(async move {
+        let reader_task = tokio::spawn(async move {
             while let Some(Ok(msg)) = source.next().await {
                 if let WsMessage::Text(text) = msg {
                     dispatch_frame(&reader_subs, text.as_bytes());
@@ -108,6 +112,7 @@ impl SubscribeClient {
             writer: write_tx,
             subs,
             next_id: Arc::new(Mutex::new(0)),
+            tasks: vec![writer_task.abort_handle(), reader_task.abort_handle()],
         })
     }
 
@@ -144,6 +149,19 @@ impl SubscribeClient {
         })
     }
 
+    /// Closes the connection: sends a close frame, ends every subscription's
+    /// event stream and stops the background tasks, so the socket is released
+    /// even while [`Subscription`] handles are still alive.
+    pub async fn close(&self) {
+        self.subs.lock().unwrap().clear();
+        let _ = self.writer.send(WsMessage::Close(None));
+        // Give the writer a moment to put the close frame on the wire.
+        tokio::time::sleep(std::time::Duration::from_millis(50)).await;
+        for t in &self.tasks {
+            t.abort();
+        }
+    }
+
     /// Subscribes to committed blocks ([`QUERY_NEW_BLOCK`]).
     pub fn subscribe_new_blocks(&self) -> Result<Subscription> {
         self.subscribe(QUERY_NEW_BLOCK)
@@ -161,6 +179,14 @@ impl SubscribeClient {
             query.to_string()
         };
         self.subscribe(&q)
+    }
+}
+
+impl Drop for SubscribeClient {
+    fn drop(&mut self) {
+        for t in &self.tasks {
+            t.abort();
+        }
     }
 }
 
