@@ -107,8 +107,24 @@ async function main(): Promise<void> {
   });
   console.log(`  ok - tx ${single.result.transactionHash}, message ${single.messageId}`);
 
-  // Atomic batch hitting two VMs in ONE tx body / one signature.
-  console.log("Submitting an atomic batch across EVM + SVM...");
+  // Atomic batch in ONE tx body / one signature. The chain refuses calls to a
+  // program that does not exist, so the SVM leg is added only when
+  // QORE_SVM_PROGRAM names a deployed program (and QORE_SVM_DATA, hex, its
+  // instruction data); otherwise the batch makes two EVM calls.
+  const svmLeg = process.env.QORE_SVM_PROGRAM
+    ? {
+        sourceVm: "cosmwasm" as const,
+        targetVm: "svm" as const,
+        targetContract: process.env.QORE_SVM_PROGRAM,
+        svm: { data: Uint8Array.from(Buffer.from((process.env.QORE_SVM_DATA ?? "").replace(/^0x/, ""), "hex")) },
+      }
+    : {
+        sourceVm: "cosmwasm" as const,
+        targetVm: "evm" as const,
+        targetContract: evmContract,
+        evm: { abi: ERC20_ABI, functionName: "transfer", args: [recipient, 3n] },
+      };
+  console.log(`Submitting an atomic batch across EVM + ${svmLeg.targetVm.toUpperCase()}...`);
   // Each call needs a sourceVm different from its targetVm (the chain refuses
   // equal VMs); the helper defaults to "evm", or "cosmwasm" for an EVM target.
   const atomic = await xvm.callAtomic([
@@ -118,12 +134,7 @@ async function main(): Promise<void> {
       targetContract: evmContract,
       evm: { abi: ERC20_ABI, functionName: "transfer", args: [recipient, 2n] },
     },
-    {
-      sourceVm: "cosmwasm",
-      targetVm: "svm",
-      targetContract: svmProgram,
-      svm: { data: new Uint8Array([9, 9, 9]) },
-    },
+    svmLeg,
   ]);
   console.log(
     `  ok - tx ${atomic.result.transactionHash}, messages ${atomic.messageIds.join(", ")}`,
