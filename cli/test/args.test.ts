@@ -23,6 +23,13 @@ describe("parseArgs", () => {
     expect(parseArgs(["-t", "evm-solidity"]).template).toBe("evm-solidity");
   });
 
+  it("does not consume the next option as a missing value", () => {
+    expect(() => parseArgs(["--template", "--yes"])).toThrow("Missing value for --template");
+    expect(() => parseArgs(["--network", "--yes"])).toThrow("Missing value for --network");
+    expect(() => parseArgs(["--package-manager", "--yes"])).toThrow("Missing value for --package-manager");
+    expect(() => parseArgs(["--template="])).toThrow("Missing value for --template");
+  });
+
   it("--no-install disables install", () => {
     expect(parseArgs(["--no-install"]).install).toBe(false);
   });

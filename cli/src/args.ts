@@ -34,7 +34,7 @@ const VALID_NETWORK: readonly Network[] = ["testnet", "mainnet"];
 export class ArgError extends Error {}
 
 function expectValue(name: string, value: string | undefined): string {
-  if (value === undefined) throw new ArgError(`Missing value for ${name}.`);
+  if (!value || value.startsWith("-")) throw new ArgError(`Missing value for ${name}.`);
   return value;
 }
 
@@ -90,12 +90,12 @@ export function parseArgs(argv: readonly string[]): ParsedArgs {
         break;
       default: {
         if (arg.startsWith("--template=")) {
-          out.template = arg.slice("--template=".length);
+          out.template = expectValue("--template", arg.slice("--template=".length));
         } else if (arg.startsWith("--network=")) {
-          out.network = parseNetwork(arg.slice("--network=".length));
+          out.network = parseNetwork(expectValue("--network", arg.slice("--network=".length)));
         } else if (arg.startsWith("--package-manager=")) {
           out.packageManager = parsePackageManager(
-            arg.slice("--package-manager=".length),
+            expectValue("--package-manager", arg.slice("--package-manager=".length)),
           );
         } else if (arg.startsWith("-")) {
           throw new ArgError(`Unknown option: ${arg}`);
