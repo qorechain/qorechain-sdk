@@ -107,11 +107,11 @@ pub use pqc::{
 };
 
 pub use authenticator::{
-    auth_nonce_path, canonical_account, cosmos_auth_sign_bytes, derive_pqc_canonical,
-    derive_pqc_legacy, evm_auth_sign_bytes, fetch_auth_nonce, parse_auth_nonce,
-    rotate_pqc_key_msg_from_mnemonic, rotation_sign_bytes, try_derive_pqc_canonical, AuthNonce,
-    AuthPubkey, RotateFromMnemonic, RotateFromMnemonicOptions, DERIVATION_CANONICAL,
-    DERIVATION_LEGACY,
+    auth_nonce_path, canonical_account, canonical_mnemonic, cosmos_auth_sign_bytes,
+    derive_pqc_canonical, derive_pqc_legacy, evm_auth_sign_bytes, fetch_auth_nonce,
+    parse_auth_nonce, rotate_pqc_key_msg_from_mnemonic, rotation_sign_bytes,
+    try_derive_pqc_canonical, AuthNonce, AuthPubkey, RotateFromMnemonic, RotateFromMnemonicOptions,
+    DERIVATION_CANONICAL, DERIVATION_LEGACY,
 };
 
 pub use authenticator::{

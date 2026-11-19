@@ -466,29 +466,44 @@ pub fn canonical_account(account: &str) -> Result<String> {
 }
 
 /// Derives the CANONICAL (SDK / wallet-adapter) address-bound ML-DSA-87 keypair:
-/// `keygen(shake256("qorechain:pqc:v1|" + cosmos + "|" + mnemonic, 32))`, where
-/// `cosmos` is `account` resolved by [`canonical_account`] - so an upper-case
-/// bech32 or a `0x` form of the same account yields the same key.
+/// `keygen(shake256("qorechain:pqc:v1|" + cosmos + "|" + phrase, 32))`, where
+/// `cosmos` is `account` resolved by [`canonical_account`] and `phrase` is the
+/// mnemonic in its one canonical form ([`canonical_mnemonic`]) - so an
+/// upper-case bech32 or `0x` form of the account, or the phrase typed with other
+/// case or spacing, yields the same key.
 ///
-/// Fails if `account` is not a valid 20-byte account address.
+/// Fails if `account` is not a valid 20-byte account address or the mnemonic is
+/// not a valid English BIP-39 phrase.
 pub fn try_derive_pqc_canonical(account: &str, mnemonic: &str) -> Result<PqcKeypair> {
     let cosmos = canonical_account(account)?;
-    Ok(derive_pqc_canonical_raw(&cosmos, mnemonic))
+    let mut phrase = canonical_mnemonic(mnemonic)?;
+    let kp = derive_pqc_canonical_raw(&cosmos, &phrase);
+    crate::recovery::wipe_string(&mut phrase);
+    Ok(kp)
 }
 
-/// Derives the CANONICAL (SDK / wallet-adapter) address-bound ML-DSA-87 keypair:
-/// `keygen(shake256("qorechain:pqc:v1|" + cosmos + "|" + mnemonic, 32))`.
-///
-/// `account` is first resolved to its canonical lower-case `qor1…` form (see
-/// [`canonical_account`]), so an upper-case bech32 or a `0x` form of the same
-/// account yields the same key. An `account` that is not a valid address cannot
-/// be resolved and is hashed as given (kept for compatibility); prefer
-/// [`try_derive_pqc_canonical`], which returns an error instead.
-pub fn derive_pqc_canonical(account: &str, mnemonic: &str) -> PqcKeypair {
-    match canonical_account(account) {
-        Ok(cosmos) => derive_pqc_canonical_raw(&cosmos, mnemonic),
-        Err(_) => derive_pqc_canonical_raw(account, mnemonic),
+/// Same as [`try_derive_pqc_canonical`]. Since 0.15.0 it returns an error for an
+/// invalid account or mnemonic instead of hashing the input as given (which
+/// gave a key no other SDK would derive).
+pub fn derive_pqc_canonical(account: &str, mnemonic: &str) -> Result<PqcKeypair> {
+    try_derive_pqc_canonical(account, mnemonic)
+}
+
+/// The one form of a BIP-39 phrase the PQC derivation hashes: lower case, words
+/// separated by single spaces, no surrounding whitespace, checked against the
+/// English wordlist and checksum. The error never contains the phrase.
+pub fn canonical_mnemonic(mnemonic: &str) -> Result<String> {
+    let phrase = mnemonic
+        .split_whitespace()
+        .collect::<Vec<_>>()
+        .join(" ")
+        .to_lowercase();
+    if bip39::Mnemonic::parse_normalized(&phrase).is_err() {
+        let mut p = phrase;
+        crate::recovery::wipe_string(&mut p);
+        return Err(Error::InvalidMnemonic);
     }
+    Ok(phrase)
 }
 
 fn derive_pqc_canonical_raw(cosmos: &str, mnemonic: &str) -> PqcKeypair {

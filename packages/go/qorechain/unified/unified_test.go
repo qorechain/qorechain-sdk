@@ -325,3 +325,24 @@ func TestParseOnChainPubKey(t *testing.T) {
 		t.Fatal("parsed pubkey mismatch")
 	}
 }
+
+func TestUnifiedAccountFromSeedRefusesRecoveryCodeEqualToSeed(t *testing.T) {
+	seed := make([]byte, 32)
+	for i := range seed {
+		seed[i] = 0x07
+	}
+	code, err := PQCRecoveryCodeFromSecret(seed)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if _, err := UnifiedAccountFromSeed(seed, SeedPQCOptions{RecoveryCode: code}); err == nil ||
+		!strings.Contains(err.Error(), "same 32 bytes as seed32") {
+		t.Fatalf("want refusal, got %v", err)
+	}
+	other := make([]byte, 32)
+	other[0] = 1
+	code2, _ := PQCRecoveryCodeFromSecret(other)
+	if _, err := UnifiedAccountFromSeed(seed, SeedPQCOptions{RecoveryCode: code2}); err != nil {
+		t.Fatalf("independent code refused: %v", err)
+	}
+}

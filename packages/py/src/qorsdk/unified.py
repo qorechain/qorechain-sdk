@@ -278,6 +278,11 @@ def unified_account_from_seed(
     assert recovery_code is not None
     secret = _decode_recovery_code(recovery_code)
     try:
+        if hmac.compare_digest(bytes(secret), bytes(seed32)):
+            raise ValueError(
+                "recovery_code encodes the same 32 bytes as seed32: the PQC key would be "
+                "derivable from the classical key; use an independent recovery code"
+            )
         return _account_from_privkey(bytes(seed32), None, pqc_secret=secret)
     finally:
         secret[:] = bytes(len(secret))

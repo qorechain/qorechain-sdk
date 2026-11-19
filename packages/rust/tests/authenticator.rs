@@ -42,7 +42,9 @@ fn canonical_derivation_normalises_account_like_go() {
         );
         // The infallible form agrees for every valid encoding.
         assert_eq!(
-            derive_pqc_canonical(&input, VEC_MNEMONIC).public_key,
+            derive_pqc_canonical(&input, VEC_MNEMONIC)
+                .unwrap()
+                .public_key,
             kp.public_key
         );
     }
@@ -175,14 +177,17 @@ fn legacy_and_canonical_derivations_differ() {
         "abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon about";
     let account = VEC_COSMOS;
     let legacy = derive_pqc_legacy(mnemonic);
-    let canonical = derive_pqc_canonical(account, mnemonic);
+    let canonical = derive_pqc_canonical(account, mnemonic).unwrap();
     assert_eq!(legacy.public_key.len(), qorechain::MLDSA87_PUBLIC_KEY_LEN);
     assert_ne!(legacy.public_key, canonical.public_key);
     // Legacy derivation is address-independent; canonical binds the address.
     let legacy2 = derive_pqc_legacy(mnemonic);
     assert_eq!(legacy.public_key, legacy2.public_key);
-    let canonical_other = derive_pqc_canonical("qor1other", mnemonic);
+    let canonical_other =
+        derive_pqc_canonical("0x2222222222222222222222222222222222222222", mnemonic).unwrap();
     assert_ne!(canonical.public_key, canonical_other.public_key);
+    // An address that cannot be resolved is refused, never hashed as given.
+    assert!(derive_pqc_canonical("qor1other", mnemonic).is_err());
 }
 
 /// `rotate_pqc_key_msg_from_mnemonic` builds a MsgRotatePQCKey dual-signed by the
@@ -207,7 +212,7 @@ fn rotate_from_mnemonic_is_dual_signed() {
     );
     assert_eq!(
         rot.new_keypair.public_key,
-        derive_pqc_canonical(account, mnemonic).public_key
+        derive_pqc_canonical(account, mnemonic).unwrap().public_key
     );
 
     // Both signatures verify against the exact rotation sign-bytes.
@@ -273,4 +278,30 @@ fn rotate_from_mnemonic_rejects_unknown_scheme() {
     opts.old_derivation = "nope";
     let err = rotate_pqc_key_msg_from_mnemonic(&opts).unwrap_err();
     assert!(err.to_string().contains("unknown derivation"), "got: {err}");
+}
+
+/// Case and whitespace in the phrase do not change the key; an invalid phrase
+/// is refused without being echoed.
+#[test]
+fn canonical_derivation_normalises_the_mnemonic() {
+    let m = "abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon about";
+    let want = derive_pqc_canonical(VEC_COSMOS, m).unwrap().public_key;
+    let upper = m.to_uppercase();
+    let spaced = format!("  {}\n", m.replace(' ', "  "));
+    let tabs = m.replace(' ', "\t");
+    for input in [upper.as_str(), spaced.as_str(), tabs.as_str()] {
+        assert_eq!(
+            derive_pqc_canonical(VEC_COSMOS, input).unwrap().public_key,
+            want
+        );
+    }
+    assert_eq!(
+        derive_pqc_canonical(&VEC_COSMOS.to_uppercase(), m)
+            .unwrap()
+            .public_key,
+        want
+    );
+    assert_eq!(qorechain::canonical_mnemonic(&upper).unwrap(), m);
+    let err = derive_pqc_canonical(VEC_COSMOS, "abandon abandon secretword").unwrap_err();
+    assert!(!format!("{err:?}{err}").contains("secretword"));
 }

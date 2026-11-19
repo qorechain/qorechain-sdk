@@ -154,6 +154,14 @@ ext, _ := pqc.EncodeHybridSignatureExtension(pqc.AlgorithmDilithium5, sig, kp.Pu
 // It is NOT JSON: a leading 0x7b ('{') is rejected by the tx decoder at CheckTx.
 ```
 
+> **A random key cannot be derived again.** `pqc.GeneratePQCKeypair()`
+> makes a new random key each time; nothing can rebuild it later. For an
+> account's key use `authenticator.DerivePQCCanonical(address, mnemonic)` (the same key every
+> time from the account's phrase) or a recovery code (`unified.UnifiedAccountFromSeed`
+> with `RecoveryCode`). If you register a random key, back up its secret key, or
+> the account can no longer sign.
+
+
 ### Denomination math
 
 ```go

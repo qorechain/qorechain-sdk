@@ -231,6 +231,10 @@ func (o SeedPQCOptions) derive(seed32 []byte, cosmos string) (PQCKeypair, error)
 			return PQCKeypair{}, err
 		}
 		defer zero(secret)
+		if subtle.ConstantTimeCompare(secret, seed32) == 1 {
+			return PQCKeypair{}, errors.New("SeedPQCOptions.RecoveryCode encodes the same 32 bytes as seed32: " +
+				"the PQC key would be derivable from the classical key again; use an independent recovery code")
+		}
 		return pqcFromRecoverySecret(secret, strings.ToLower(cosmos))
 	}
 }

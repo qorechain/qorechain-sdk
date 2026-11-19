@@ -56,6 +56,7 @@ from .authenticator import (
     authenticator_link_text,
     be64,
     canonical_account,
+    canonical_mnemonic,
     clear_evm_auth_digest_cache,
     cosmos_auth_sign_bytes,
     decode_execution_results,
@@ -580,6 +581,7 @@ __all__ = [
     "rotate_pqc_key_msg",
     "derive_pqc_legacy",
     "derive_pqc_canonical",
+    "canonical_mnemonic",
     "canonical_account",
     "rotate_pqc_key_msg_from_mnemonic",
     # eth_secp256k1 Native-lane signing

@@ -395,4 +395,22 @@ class AuthenticatorTest {
                             r.newKeypair.publicKey, signBytes, m.getNewSignature().toByteArray()));
         }
     }
+
+    @Test
+    void canonicalDerivationNormalisesTheMnemonic() {
+        String m = String.join(" ", java.util.Collections.nCopies(11, "abandon")) + " about";
+        String acc = "qor1zyg3zyg3zyg3zyg3zyg3zyg3zyg3zyg34kqp8d";
+        byte[] want = Authenticator.derivePqcCanonical(acc, m).publicKey;
+        for (String v : new String[] {
+                m.toUpperCase(java.util.Locale.ROOT), "  " + m + "\n", m.replace(" ", "  "), m.replace(" ", "\t")}) {
+            org.junit.jupiter.api.Assertions.assertArrayEquals(want, Authenticator.derivePqcCanonical(acc, v).publicKey);
+        }
+        org.junit.jupiter.api.Assertions.assertArrayEquals(
+                want, Authenticator.derivePqcCanonical(acc.toUpperCase(java.util.Locale.ROOT), m).publicKey);
+        org.junit.jupiter.api.Assertions.assertEquals(m, Authenticator.canonicalMnemonic(" " + m.toUpperCase(java.util.Locale.ROOT) + " "));
+        IllegalArgumentException e = org.junit.jupiter.api.Assertions.assertThrows(
+                IllegalArgumentException.class,
+                () -> Authenticator.derivePqcCanonical(acc, "abandon abandon secretword"));
+        org.junit.jupiter.api.Assertions.assertEquals("invalid mnemonic", e.getMessage());
+    }
 }

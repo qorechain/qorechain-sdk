@@ -148,6 +148,14 @@ assert pqc_verify(kp.public_key, b"msg", sig)
 ext = build_hybrid_signature_extension(ALGORITHM_DILITHIUM5, sig, kp.public_key)
 ```
 
+> **A random key cannot be derived again.** `generate_pqc_keypair()`
+> makes a new random key each time; nothing can rebuild it later. For an
+> account's key use `derive_pqc_canonical(address, mnemonic)` (the same key every
+> time from the account's phrase) or a recovery code (`unified_account_from_seed`
+> with `recovery_code`). If you register a random key, back up its secret key, or
+> the account can no longer sign.
+
+
 Sizes are **strict**: `pqc_verify` returns `False` for any signature that is not
 exactly 4627 bytes or any public key that is not exactly 2592 bytes (a truncated
 signature and one with an extra trailing byte are both rejected), and `pqc_sign`

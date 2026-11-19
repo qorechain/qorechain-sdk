@@ -40,6 +40,7 @@ import { keccak_256 } from "@noble/hashes/sha3";
 import { mldsa, shake256 } from "@qorechain/pqc";
 import { generatePqcKeypair, type PqcKeypair } from "../accounts/pqc";
 import { qoreAddresses } from "../accounts/unified";
+import { validateMnemonic } from "../accounts/wallet";
 import {
   evmAuthSignBytes,
   evmAuthSignBytesV2,
@@ -988,9 +989,26 @@ export function canonicalAccount(account: string): string {
  */
 export function derivePqcCanonical(account: string, mnemonic: string): PqcKeypair {
   const cosmos = canonicalAccount(account);
+  const phrase = canonicalMnemonic(mnemonic);
   return generatePqcKeypair(
-    shake256(enc.encode(`qorechain:pqc:v1|${cosmos}|${mnemonic}`), 32),
+    shake256(enc.encode(`qorechain:pqc:v1|${cosmos}|${phrase}`), 32),
   );
+}
+
+/**
+ * The one form of a BIP-39 phrase the PQC derivation hashes: Unicode NFKD,
+ * lower case, words separated by single spaces, no leading or trailing
+ * whitespace. Checked against the English wordlist and checksum, so a phrase
+ * typed with different case or spacing gives the same key as the phrase the
+ * account was created from, and a mistyped one is refused instead of giving a
+ * different key.
+ *
+ * @throws "invalid mnemonic" (the phrase itself is never put in the error).
+ */
+export function canonicalMnemonic(mnemonic: string): string {
+  const phrase = mnemonic.normalize("NFKD").trim().split(/\s+/).join(" ").toLowerCase();
+  if (!validateMnemonic(phrase)) throw new Error("invalid mnemonic");
+  return phrase;
 }
 
 /** Resolve a derivation name to its ML-DSA-87 keypair. */

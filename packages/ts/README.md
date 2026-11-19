@@ -142,6 +142,14 @@ const signature = pqcSign(keypair.secretKey, message);
 const ok = pqcVerify(keypair.publicKey, message, signature);
 ```
 
+> **A random key cannot be derived again.** `generatePqcKeypair()` with no seed
+> makes a new random key each time; nothing can rebuild it later. For an
+> account's key use `derivePqcCanonical(address, mnemonic)` (the same key every
+> time from the account's phrase) or a recovery code (`unifiedAccountFromSeed`
+> with `recoveryCode`). If you register a random key, back up its secret key, or
+> the account can no longer sign.
+
+
 #### Hybrid sign-bytes: v1 / v2 per network (v0.8.0)
 
 The ML-DSA-87 half of a hybrid transaction signs the body *without* the PQC

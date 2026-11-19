@@ -186,6 +186,14 @@ let ext =
 let _ = ext;
 ```
 
+> **A random key cannot be derived again.** `generate_pqc_keypair()`
+> makes a new random key each time; nothing can rebuild it later. For an
+> account's key use `derive_pqc_canonical(address, mnemonic)` (the same key every
+> time from the account's phrase) or a recovery code (`unified_account_from_seed`
+> with `SeedPqcOptions::recovery_code`). If you register a random key, back up its secret key, or
+> the account can no longer sign.
+
+
 **Lengths are exact.** Every entry point validates its inputs against the FIPS
 204 sizes - signature 4627, public key 2592, secret key 4896 - before touching
 the underlying library, and rejects anything else (`pqc_verify` returns `false`,

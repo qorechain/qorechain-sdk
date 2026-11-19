@@ -696,6 +696,7 @@ export {
   rotatePqcKeyMsgFromMnemonic,
   derivePqcLegacy,
   derivePqcCanonical,
+  canonicalMnemonic,
   canonicalAccount,
   CANONICAL_DERIVATION,
   LEGACY_DERIVATION,

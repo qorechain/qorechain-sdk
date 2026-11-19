@@ -82,6 +82,14 @@ const signature = pqcSign(keypair.secretKey, message);
 const ok = pqcVerify(keypair.publicKey, message, signature);
 ```
 
+> **A random key cannot be derived again.** `generatePqcKeypair()` with no seed
+> makes a new random key each time; nothing can rebuild it later. For an
+> account's key use `derivePqcCanonical(address, mnemonic)` (the same key every
+> time from the account's phrase) or a recovery code (`unifiedAccountFromSeed`
+> with `recoveryCode`). If you register a random key, back up its secret key, or
+> the account can no longer sign.
+
+
 The exported length constants (`ML_DSA_87_PUBLIC_KEY_LENGTH`,
 `ML_DSA_87_SECRET_KEY_LENGTH`, `ML_DSA_87_SIGNATURE_LENGTH`,
 `ML_DSA_87_SEED_LENGTH`) let you validate buffer sizes.

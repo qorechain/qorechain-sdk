@@ -127,3 +127,16 @@ def test_from_wallet_signature_derivation_is_removed():
     assert "MsgExecuteCosmos" in message
     assert "MsgExecuteEVM" in message
     assert "move its funds" in message
+
+
+def test_seed_refuses_recovery_code_equal_to_seed() -> None:
+    import pytest as _pytest
+
+    from qorsdk.recovery import pqc_recovery_code_from_secret
+    from qorsdk.unified import unified_account_from_seed
+
+    seed = bytes([7]) * 32
+    with _pytest.raises(ValueError, match="same 32 bytes as seed32"):
+        unified_account_from_seed(seed, recovery_code=pqc_recovery_code_from_secret(seed))
+    other = bytes([1]) + bytes(31)
+    unified_account_from_seed(seed, recovery_code=pqc_recovery_code_from_secret(other))

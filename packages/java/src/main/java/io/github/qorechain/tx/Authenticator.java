@@ -521,8 +521,32 @@ public final class Authenticator {
      */
     public static PqcKeypair derivePqcCanonical(String account, String mnemonic) {
         String cosmos = canonicalAccount(account);
-        byte[] seed = Hashing.shake256("qorechain:pqc:v1|" + cosmos + "|" + mnemonic, 32);
+        String phrase = canonicalMnemonic(mnemonic);
+        byte[] seed = Hashing.shake256("qorechain:pqc:v1|" + cosmos + "|" + phrase, 32);
         return Pqc.generatePqcKeypair(seed);
+    }
+
+    /**
+     * The one form of a BIP-39 phrase the PQC derivation hashes: Unicode NFKD, lower
+     * case, words separated by single spaces, no surrounding whitespace, checked
+     * against the English wordlist and checksum. A phrase typed with other case or
+     * spacing gives the same key; a mistyped one is refused.
+     *
+     * @throws IllegalArgumentException "invalid mnemonic" (the phrase is never echoed)
+     */
+    public static String canonicalMnemonic(String mnemonic) {
+        if (mnemonic == null) {
+            throw new IllegalArgumentException("invalid mnemonic");
+        }
+        String phrase = String.join(" ",
+                        java.text.Normalizer.normalize(mnemonic, java.text.Normalizer.Form.NFKD)
+                                .trim()
+                                .split("\\s+"))
+                .toLowerCase(java.util.Locale.ROOT);
+        if (!io.github.qorechain.accounts.Accounts.validateMnemonic(phrase)) {
+            throw new IllegalArgumentException("invalid mnemonic");
+        }
+        return phrase;
     }
 
     /**

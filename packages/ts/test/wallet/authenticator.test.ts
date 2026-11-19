@@ -12,6 +12,7 @@ import {
   rotatePqcKeyMsgFromMnemonic,
   derivePqcLegacy,
   derivePqcCanonical,
+  canonicalMnemonic,
   canonicalAccount,
   type AuthenticatorWallet,
   type Eip1193Provider,
@@ -396,5 +397,24 @@ describe("canonical PQC derivation normalises the account", () => {
       expect(() => canonicalAccount(bad)).toThrow();
       expect(() => derivePqcCanonical(bad, VEC_MNEMONIC)).toThrow();
     }
+  });
+});
+
+describe("derivePqcCanonical input canonicalisation", () => {
+  const M = "abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon about";
+  const ACC = "qor1zyg3zyg3zyg3zyg3zyg3zyg3zyg3zyg34kqp8d";
+  const pub = (a: string, m: string) => Buffer.from(derivePqcCanonical(a, m).publicKey).toString("hex");
+
+  it("gives the same key for upper/lower case and extra whitespace", () => {
+    const want = pub(ACC, M);
+    for (const m of [M.toUpperCase(), `  ${M}\n`, M.replace(/ /g, "  "), M.replace(/ /g, "\t")]) {
+      expect(pub(ACC, m)).toBe(want);
+    }
+    expect(pub(ACC.toUpperCase(), M)).toBe(want);
+    expect(canonicalMnemonic(` ${M.toUpperCase()} `)).toBe(M);
+  });
+
+  it("refuses an invalid phrase without echoing it", () => {
+    expect(() => derivePqcCanonical(ACC, "abandon abandon secretword")).toThrow(/^invalid mnemonic$/);
   });
 });

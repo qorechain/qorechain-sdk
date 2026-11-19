@@ -415,3 +415,19 @@ def test_canonical_account_rejects_invalid_like_go(bad):
         canonical_account(bad)
     with pytest.raises(ValueError):
         derive_pqc_canonical(bad, VEC_MNEMONIC)
+
+
+def test_derive_pqc_canonical_normalises_the_mnemonic() -> None:
+    import pytest as _pytest
+
+    from qorsdk import canonical_mnemonic, derive_pqc_canonical
+
+    m = " ".join(["abandon"] * 11 + ["about"])
+    acc = "qor1zyg3zyg3zyg3zyg3zyg3zyg3zyg3zyg34kqp8d"
+    want = derive_pqc_canonical(acc, m).public_key
+    for variant in (m.upper(), f"  {m}\n", m.replace(" ", "  "), m.replace(" ", "\t")):
+        assert derive_pqc_canonical(acc, variant).public_key == want
+    assert derive_pqc_canonical(acc.upper(), m).public_key == want
+    assert canonical_mnemonic(f" {m.upper()} ") == m
+    with _pytest.raises(ValueError, match="^invalid mnemonic$"):
+        derive_pqc_canonical(acc, "abandon abandon secretword")

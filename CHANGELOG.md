@@ -42,6 +42,26 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- **The canonical PQC key derivation now reads the phrase in one form.**
+  `derivePqcCanonical` (`derive_pqc_canonical`, `Authenticator.derivePqcCanonical`)
+  normalises the mnemonic first (Unicode NFKD, lower case, single spaces, no
+  surrounding whitespace) and checks it against the English wordlist, so a
+  phrase typed with other case or spacing gives the account's key and a
+  mistyped one is refused (`invalid mnemonic`) instead of giving another key.
+  New: `canonicalMnemonic`. The account is still resolved to its lower-case
+  `qor1` form. Rust: `derive_pqc_canonical` now returns `Result` and refuses an
+  address it cannot resolve instead of hashing it as given (breaking).
+- **`unifiedAccountFromSeed` refuses a recovery code that encodes the seed
+  itself** in Go and Python too (TypeScript, Java and Rust already did): the
+  PQC key would otherwise follow from the classical key.
+- **`@qorechain/evm`**: `pqcKeyStatus` decodes the fourth output,
+  `possessionProven`. `addQoreChainNetwork` takes the chain id from
+  configuration (`opts.chainId`, then `network.evmChainId`, then the network's
+  own EVM RPC), never from the wallet, so a wallet on another chain cannot have
+  that chain registered under QoreChain's name.
+- Docs: a random `generatePqcKeypair()` key cannot be derived again; derive an
+  account's key from its phrase or a recovery code, or back the key up.
+
 - **Cross-VM source and target VM.** The chain refuses a `MsgCrossVMCall`
   whose source VM equals its target VM, but the helpers defaulted the source
   to `evm`, so an EVM-target call that left it unset was refused. The default

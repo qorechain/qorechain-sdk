@@ -1119,6 +1119,26 @@ def canonical_account(account: str) -> str:
         ) from exc
 
 
+def canonical_mnemonic(mnemonic: str) -> str:
+    """The one form of a BIP-39 phrase the PQC derivation hashes.
+
+    Unicode NFKD, lower case, words separated by single spaces, no surrounding
+    whitespace, checked against the English wordlist and checksum. A phrase
+    typed with other case or spacing gives the same key; a mistyped one is
+    refused.
+
+    :raises ValueError: ``"invalid mnemonic"`` (the phrase is never echoed).
+    """
+    import unicodedata
+
+    from .accounts import validate_mnemonic
+
+    phrase = " ".join(unicodedata.normalize("NFKD", mnemonic).split()).lower()
+    if not validate_mnemonic(phrase):
+        raise ValueError("invalid mnemonic")
+    return phrase
+
+
 def derive_pqc_canonical(account: str, mnemonic: str) -> PqcKeypair:
     """Derive the canonical address-bound ML-DSA-87 keypair (SDK / wallet-adapter).
 
@@ -1132,8 +1152,9 @@ def derive_pqc_canonical(account: str, mnemonic: str) -> PqcKeypair:
     :raises ValueError: if ``account`` is not a valid 20-byte account address.
     """
     cosmos = canonical_account(account)
+    phrase = canonical_mnemonic(mnemonic)
     seed = hashlib.shake_256(
-        b"qorechain:pqc:v1|" + _utf8(cosmos) + b"|" + _utf8(mnemonic)
+        b"qorechain:pqc:v1|" + _utf8(cosmos) + b"|" + _utf8(phrase)
     ).digest(32)
     public_key, secret_key = ML_DSA_87.key_derive(seed)
     return PqcKeypair(public_key=bytes(public_key), secret_key=bytes(secret_key))
