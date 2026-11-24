@@ -5,6 +5,22 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.15.1] - 2026-11-24
+
+Patch release for the Go and Java SDKs only. The other packages stay at 0.15.0.
+
+### Fixed
+
+- **Go: `authenticator.DerivePQCCanonical` reads the phrase in one form, like
+  the other four SDKs.** It now normalises the mnemonic first (Unicode NFKD,
+  lower case, single spaces, no surrounding whitespace) and checks it against
+  the English wordlist, so a phrase typed with other case or spacing gives the
+  account's key and a mistyped one is refused instead of giving another key.
+  New: `authenticator.CanonicalMnemonic`.
+- **Java: `Base58.decode` of an all-`1` string.** It returned one byte too many,
+  so the System program `11111111111111111111111111111111` decoded to 33 bytes
+  instead of 32 zero bytes. It now gives exactly one zero byte per leading `1`.
+
 ## [0.15.0] - 2026-11-19
 
 Fixes and hardening for the five SDKs, `@qorechain/evm`, `@qorechain/svm`,
@@ -56,12 +72,12 @@ Fixes and hardening for the five SDKs, `@qorechain/evm`, `@qorechain/svm`,
   closed cleanly.
 
 - **The canonical PQC key derivation now reads the phrase in one form.**
-  `derivePqcCanonical` (`derive_pqc_canonical`, `Authenticator.derivePqcCanonical`,
-  Go `authenticator.DerivePQCCanonical`) normalises the mnemonic first (Unicode NFKD, lower case, single spaces, no
+  `derivePqcCanonical` (`derive_pqc_canonical`, `Authenticator.derivePqcCanonical`)
+  normalises the mnemonic first (Unicode NFKD, lower case, single spaces, no
   surrounding whitespace) and checks it against the English wordlist, so a
   phrase typed with other case or spacing gives the account's key and a
   mistyped one is refused (`invalid mnemonic`) instead of giving another key.
-  New: `canonicalMnemonic` (Go `authenticator.CanonicalMnemonic`). The account is still resolved to its lower-case
+  New: `canonicalMnemonic`. The account is still resolved to its lower-case
   `qor1` form. Rust: `derive_pqc_canonical` now returns `Result` and refuses an
   address it cannot resolve instead of hashing it as given (breaking).
 - **`unifiedAccountFromSeed` refuses a recovery code that encodes the seed
