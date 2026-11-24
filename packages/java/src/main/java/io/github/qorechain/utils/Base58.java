@@ -49,7 +49,8 @@ public final class Base58 {
             }
             num = num.multiply(BASE).add(BigInteger.valueOf(idx));
         }
-        byte[] bytes = num.toByteArray();
+        // An all-'1' string is all zero bytes: BigInteger.ZERO would add one more.
+        byte[] bytes = num.signum() == 0 ? new byte[0] : num.toByteArray();
         // Strip a leading sign byte if BigInteger added one.
         int offset = (bytes.length > 1 && bytes[0] == 0) ? 1 : 0;
         int leadingZeros = 0;

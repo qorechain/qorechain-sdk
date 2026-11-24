@@ -11,6 +11,7 @@ import io.github.qorechain.address.Validators;
 import io.github.qorechain.denom.Denom;
 import io.github.qorechain.networks.NetworkConfig;
 import io.github.qorechain.networks.Networks;
+import io.github.qorechain.utils.Base58;
 import io.github.qorechain.utils.Hashing;
 import io.github.qorechain.utils.Hex;
 import io.github.qorechain.utils.Units;
@@ -146,5 +147,20 @@ class UtilsTest {
         assertEquals("ws://my-node:8546", mine.requireEndpoint("evmWs"));
         assertEquals(mainnet.endpoints.rpc, mine.endpoints.rpc);
         assertEquals("qorechain-vladi", mine.chainId);
+    }
+
+    @Test
+    void base58AllOnesDecodesToZeroBytes() {
+        String system = "11111111111111111111111111111111";
+        byte[] b = Base58.decode(system);
+        assertEquals(32, b.length);
+        for (byte x : b) {
+            assertEquals(0, x);
+        }
+        assertEquals(system, Base58.encode(b));
+        assertEquals(1, Base58.decode("1").length);
+        byte[] memo = Base58.decode("MemoSq4gqABAXKb96qnH8TysNcWxMyWCqXgDLGmfcHr");
+        assertEquals(32, memo.length);
+        assertEquals("MemoSq4gqABAXKb96qnH8TysNcWxMyWCqXgDLGmfcHr", Base58.encode(memo));
     }
 }
