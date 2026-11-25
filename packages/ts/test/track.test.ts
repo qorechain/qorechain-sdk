@@ -36,7 +36,12 @@ describe("waitForTx", () => {
     const res = await p;
     expect(res.code).toBe(0);
     expect(res.height).toBe(10);
-    expect(res.gasUsed).toBe(50000n);
+    expect(res.gasUsed).toBe(50000);
+    expect(res.gasWanted).toBe(80000);
+    // Gas is a plain number, so the result is JSON-serializable (bigint
+    // would make JSON.stringify throw).
+    expect(() => JSON.stringify(res)).not.toThrow();
+    expect(JSON.parse(JSON.stringify(res)).gasUsed).toBe(50000);
     expect(getFn).toHaveBeenCalledTimes(3);
   });
 

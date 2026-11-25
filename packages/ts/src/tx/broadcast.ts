@@ -40,10 +40,20 @@ export interface BroadcastResult {
   code: number;
   /** Block height the tx was included in (only for `commit`). */
   height?: number;
-  /** Gas used by the tx (only for `commit`). */
-  gasUsed?: bigint;
-  /** Gas wanted by the tx (only for `commit`). */
-  gasWanted?: bigint;
+  /**
+   * Gas used by the tx (only for `commit`).
+   *
+   * A plain number, not a bigint: gas is bounded by the chain's max gas,
+   * far below `Number.MAX_SAFE_INTEGER`, so the result stays
+   * JSON-serializable (`JSON.stringify` throws on bigint).
+   */
+  gasUsed?: number;
+  /**
+   * Gas wanted by the tx (only for `commit`).
+   *
+   * A plain number, for the same reason as `gasUsed`.
+   */
+  gasWanted?: number;
   /** Raw ABCI log, when present. */
   rawLog?: string;
   /**

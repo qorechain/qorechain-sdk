@@ -75,6 +75,12 @@ describe("TxClient with a PQC keypair signs hybrid", () => {
     });
     expect(res.transactionHash).toBe("HYBRID");
     expect(res.events).toEqual([]);
+    // The transport reports gas as bigint; the SDK normalizes it to plain
+    // numbers so the result is JSON-serializable.
+    expect(res.gasUsed).toBe(2);
+    expect(res.gasWanted).toBe(3);
+    expect(() => JSON.stringify(res)).not.toThrow();
+    expect(JSON.parse(JSON.stringify(res)).gasUsed).toBe(2);
     expect(client.signAndBroadcast).not.toHaveBeenCalled();
     const body = TxBody.decode(TxRaw.decode(sent[0]).bodyBytes);
     expect(body.extensionOptions.map((e) => e.typeUrl)).toEqual([PQC_EXT]);
@@ -82,12 +88,17 @@ describe("TxClient with a PQC keypair signs hybrid", () => {
 
   it("keeps a bare key registration classical (the chain's bootstrap path)", async () => {
     const { tx, client, sent, address } = await setup();
-    await tx.signAndBroadcast(
+    const res = await tx.signAndBroadcast(
       [{ typeUrl: "/qorechain.pqc.v1.MsgRegisterPQCKeyV2", value: { sender: address } }],
       { amount: [], gas: "400000" },
     );
     expect(client.signAndBroadcast).toHaveBeenCalledOnce();
     expect(sent).toHaveLength(0);
+    // The classical path also normalizes the transport's bigint gas to
+    // plain numbers, so the result is JSON-serializable.
+    expect(res.gasUsed).toBe(1);
+    expect(res.gasWanted).toBe(1);
+    expect(() => JSON.stringify(res)).not.toThrow();
   });
 
   it("below v3.2.5, fee auto simulates the hybrid tx itself and adds the verification gas", async () => {
